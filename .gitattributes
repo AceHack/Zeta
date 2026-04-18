@@ -1,0 +1,42 @@
+# Normalise line endings across platforms.
+# Every text file is committed with LF; binaries are left untouched.
+
+* text=auto eol=lf
+
+# F# sources: explicit LF — never CRLF even on Windows checkouts.
+*.fs        text eol=lf
+*.fsi       text eol=lf
+*.fsx       text eol=lf
+*.fsproj    text eol=lf
+
+# C# + related.
+*.cs        text eol=lf
+*.csproj    text eol=lf
+*.sln       text eol=lf
+*.props     text eol=lf
+*.targets   text eol=lf
+
+# Prose / config.
+*.md        text eol=lf
+*.json      text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.xml       text eol=lf
+*.txt       text eol=lf
+
+# Binary markers — prevent accidental diff / line-ending munging.
+*.pdf       binary
+*.png       binary
+*.jpg       binary
+*.jpeg      binary
+*.gif       binary
+*.ico       binary
+*.zip       binary
+*.tar.gz    binary
+*.tgz       binary
+*.nupkg     binary
+*.snupkg    binary
+*.dll       binary
+*.exe       binary
+*.pdb       binary
+*.jar       binary

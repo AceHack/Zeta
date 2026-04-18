@@ -1,0 +1,296 @@
+# Semgrep rules for Zeta.Core — runs via `semgrep --config .semgrep.yml`
+# Targets the exact classes of bug past review rounds have found.
+
+rules:
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 1: Pool.Rent<T> N where N is computed from user input
+  # without a size guard → caught the int32-overflow-in-join class.
+  # ────────────────────────────────────────────────────────────────
+  - id: pool-rent-unguarded-multiply
+    patterns:
+      - pattern: Pool.Rent<$T> ($A * $B)
+    message: >-
+      `Pool.Rent<$T> ($A * $B)` may overflow int32 for large inputs.
+      Promote the multiplication to int64 and check against
+      `System.Array.MaxLength` — see ZSet.fs:cartesian for the pattern.
+    languages: [generic]
+    severity: ERROR
+    paths:
+      include:
+        - "src/Zeta.Core/**/*.fs"
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 2: Tick mutation without Interlocked → torn-read class.
+  # ────────────────────────────────────────────────────────────────
+  - id: plain-tick-increment
+    patterns:
+      - pattern-either:
+          - pattern: tick <- tick + 1L
+          - pattern: tick <- tick + 1
+    message: >-
+      Use `Interlocked.Increment &tick |> ignore` instead — plain
+      mutation of a shared int64 is not torn-read-safe on 32-bit
+      runtimes. See Circuit.fs for the correct pattern.
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 3: Unguarded `if connected then` → FeedbackOp.Connect class
+  # (race-condition hunter agent flagged this pattern).
+  # ────────────────────────────────────────────────────────────────
+  - id: boolean-flag-without-cas
+    patterns:
+      - pattern: |
+          if $FLAG = 1 then invalidOp $MSG
+          $OBJ.$FIELD <- $SRC
+          $FLAG <- 1
+    message: >-
+      Exactly-once flag without `Interlocked.CompareExchange` is a
+      race. Use `if Interlocked.CompareExchange(&$FLAG, 1, 0) <> 0
+      then invalidOp $MSG`.
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 4: Path.Combine with un-canonicalised user path → traversal
+  # risk. Flag call sites missing a `Path.GetFullPath`-based root
+  # check (see DiskSpine.fs pathFor for the correct pattern).
+  # ────────────────────────────────────────────────────────────────
+  - id: path-combine-without-canonicalize
+    patterns:
+      - pattern: Path.Combine($ROOT, $USER_INPUT)
+    paths:
+      include:
+        - "src/Zeta.Core/**/*.fs"
+      exclude:
+        - "**/DiskSpine.fs"   # the known-good site
+    message: >-
+      Path.Combine without a prior `Path.GetFullPath` + root-prefix
+      check allows path traversal. Mirror the pattern in DiskSpine.fs:pathFor.
+    languages: [generic]
+    severity: WARNING
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 5: `lock` around an `await` / `do!` / .Wait() — common
+  # deadlock / scheduler-starvation pattern in F# async code.
+  # ────────────────────────────────────────────────────────────────
+  - id: lock-across-await
+    patterns:
+      - pattern-either:
+          - pattern: |
+              lock $OBJ (fun () ->
+                $X.Wait()
+                $REST)
+          - pattern: |
+              lock $OBJ (fun () ->
+                do! $X
+                $REST)
+    message: >-
+      Holding a lock across a `.Wait()` or `do!` is a deadlock waiting
+      to happen. Release the lock before awaiting, or use a lock-free
+      primitive (ConcurrentDictionary, Interlocked, ReaderWriterLockSlim).
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 6: Public `mutable` fields on a sealed type — exposes
+  # shared state. Every public-facing mutable field should be
+  # behind a property with a get/set that can enforce invariants
+  # (or Interlocked semantics).
+  # ────────────────────────────────────────────────────────────────
+  - id: public-mutable-field
+    patterns:
+      - pattern: val mutable public $NAME : $T
+    message: >-
+      Public `val mutable` on a sealed type exposes shared mutable
+      state. Prefer a property with explicit get/set so future
+      threading / validation / event-raising can be added without
+      breaking callers.
+    languages: [generic]
+    severity: WARNING
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 7: Unchecked `Weight *` multiplication — silent overflow
+  # on int64. Caught the join-cardinality overflow class in round 8.
+  # ────────────────────────────────────────────────────────────────
+  - id: unchecked-weight-multiply
+    patterns:
+      - pattern: $A.Weight * $B.Weight
+    message: >-
+      Use `Checked.( * )` on weight multiplication — silent int64
+      wrap corrupts downstream Z-set state.
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 8: Unchecked deserialisation (Microsoft SDL practice #5) —
+  # BinaryFormatter / NetDataContractSerializer / SoapFormatter are
+  # known-unsafe under untrusted input. FsPickler and DataContract
+  # are acceptable when the type graph is schema-bound; any new
+  # deserialiser must justify itself in docs/security/THREAT-MODEL.md.
+  # ────────────────────────────────────────────────────────────────
+  - id: unsafe-deserialisation
+    patterns:
+      - pattern-either:
+          - pattern: BinaryFormatter()
+          - pattern: NetDataContractSerializer()
+          - pattern: SoapFormatter()
+    message: >-
+      BinaryFormatter / NetDataContractSerializer / SoapFormatter are
+      known-unsafe under untrusted input (arbitrary-type instantiation
+      via the `__type` header). Use FsPickler (schema-bound) or Arrow
+      IPC (typed) instead. See docs/security/THREAT-MODEL.md §I.3.
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 9: `File.ReadAllBytes` / `File.ReadAllText` on a user path
+  # without a size cap — memory-exhaustion DoS (SDL practice #6).
+  # Accept the call when wrapped with a `FileInfo.Length` check first
+  # (see Checkpoint loader pattern).
+  # ────────────────────────────────────────────────────────────────
+  - id: file-read-without-size-cap
+    patterns:
+      - pattern-either:
+          - pattern: File.ReadAllBytes($P)
+          - pattern: File.ReadAllText($P)
+    paths:
+      include:
+        - "src/Zeta.Core/**/*.fs"
+      exclude:
+        - "**/DiskBackingStore*.fs"   # size-checked in pathFor
+    message: >-
+      `File.ReadAllBytes/ReadAllText` without a `FileInfo.Length` cap
+      lets a poisoned file exhaust the heap. Check the size first:
+      `if (FileInfo(path)).Length > MaxBytes then invalidOp`. See
+      Checkpoint.fs loader for the pattern.
+    languages: [generic]
+    severity: WARNING
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 10: `Process.Start` with a path computed from user input —
+  # command-injection class. A `Process` launch inside `Zeta.Core` is
+  # almost always wrong; move it to the host (tools/, bench/, not
+  # library code).
+  # ────────────────────────────────────────────────────────────────
+  - id: process-start-in-core
+    patterns:
+      - pattern: Process.Start($_)
+    paths:
+      include:
+        - "src/Zeta.Core/**/*.fs"
+    message: >-
+      `Process.Start` inside `Zeta.Core` is a layering violation plus
+      a command-injection risk. Library code should not launch
+      external processes; move this to `tools/` or `bench/`.
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 11: `Activator.CreateInstance` from a string type name —
+  # arbitrary-type instantiation class. Always-blocked in library
+  # code; use F# static dispatch or a closed-sum DU instead.
+  # ────────────────────────────────────────────────────────────────
+  - id: activator-from-string
+    patterns:
+      - pattern-either:
+          - pattern: Activator.CreateInstance(Type.GetType $TYPE_NAME)
+          - pattern: Activator.CreateInstance($ASSEMBLY, $TYPE_NAME)
+    message: >-
+      `Activator.CreateInstance` on a type name string allows arbitrary
+      type instantiation — class of deserialisation attack. Use a
+      closed-sum DU or generic type parameter instead.
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 12: `System.Random` in a path that claims security — not
+  # cryptographically secure; use `RandomNumberGenerator` for
+  # tokens / salts / ids. `ChaosEnvironment` is the allowed exception
+  # (it uses seeded PRNG deliberately for replay determinism).
+  # ────────────────────────────────────────────────────────────────
+  - id: system-random-in-security-context
+    patterns:
+      - pattern-either:
+          - pattern: Random()
+          - pattern: Random($SEED)
+    paths:
+      include:
+        - "src/Zeta.Core/**/*Secure*.fs"
+        - "src/Zeta.Core/**/*Crypto*.fs"
+        - "src/Zeta.Core/**/*Shard*.fs"
+        - "src/Zeta.Core/**/*Sign*.fs"
+      exclude:
+        - "**/ChaosEnv.fs"   # seeded-PRNG is deliberate here
+    message: >-
+      `System.Random` is not cryptographically secure. For salts,
+      tokens, and any adversary-visible seed, use
+      `System.Security.Cryptography.RandomNumberGenerator`.
+    languages: [generic]
+    severity: WARNING
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 13: Invisible-Unicode codepoints in text files — classic
+  # steganographic channel for prompt-injection / attribution-laundering
+  # attacks. Zero-width spaces (U+200B..U+200D), word-joiners
+  # (U+2060), BOM (U+FEFF), bidi overrides (U+202A..U+202E), and
+  # isolates (U+2066..U+2069). This codifies the Prompt Protector
+  # skill's lint.
+  # ────────────────────────────────────────────────────────────────
+  - id: invisible-unicode-in-text
+    patterns:
+      # Includes the tag-character range U+E0000–U+E007F
+      # (Nadia round-21 finding — BP-10 required coverage that
+      # was missing from the earlier pattern).
+      - pattern-regex: "[\u200B\u200C\u200D\u2060\uFEFF\u202A-\u202E\u2066-\u2069\U000E0000-\U000E007F]"
+    paths:
+      include:
+        - "**/*.md"
+        - "**/*.fs"
+        - "**/*.fsproj"
+        - "**/*.yml"
+        - "**/*.yaml"
+        - "**/*.json"
+        - "**/*.toml"
+        - ".claude/skills/**/*.md"
+        - "docs/skill-notes/*.md"
+      exclude:
+        - "**/bin/**"
+        - "**/obj/**"
+    message: >-
+      Invisible Unicode codepoint detected. Zero-width spaces,
+      word-joiners, bidi overrides, and isolates are classic
+      steganographic carriers for hidden instructions, especially in
+      skill files and prompt-bearing documents. If this character is
+      legitimate (rare), justify in a comment; otherwise strip.
+    languages: [generic]
+    severity: ERROR
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 14: `NotImplementedException` in an IBackingStore / ISink /
+  # equivalent library interface that has no Mode-gated caller guard.
+  # Caught the WDC skeleton latent-DoS class (round-17): a `Save` that
+  # throws without an opt-in gate becomes a denial-of-service the
+  # moment a caller picks the mode in prod. Pair the throw with a
+  # feature flag or an invalidOp at construction.
+  # ────────────────────────────────────────────────────────────────
+  - id: notimplementedexception-in-library-interface
+    patterns:
+      - pattern: raise (NotImplementedException($_))
+    paths:
+      include:
+        - "src/Zeta.Core/*BackingStore*.fs"
+        - "src/Zeta.Core/*Sink*.fs"
+        - "src/Zeta.Core/Durability.fs"
+      exclude:
+        - "**/tests/**"
+    message: >-
+      `NotImplementedException` inside a library interface implementation
+      is a latent DoS: any caller opting into the mode crashes at
+      runtime. Pair with a construction-time `invalidOp` guard or a
+      feature flag so the failure surfaces at opt-in time, not on first
+      Save. See `src/Zeta.Core/Durability.fs` `createBackingStore`
+      `allowResearchPreview` pattern.
+    languages: [generic]
+    severity: ERROR

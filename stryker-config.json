@@ -1,0 +1,25 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-net/master/docs/stryker-config.schema.json",
+  "stryker-config": {
+    "project": "Zeta.Core.fsproj",
+    "test-projects": [
+      "tests/Zeta.Tests.FSharp/Zeta.Tests.FSharp.fsproj"
+    ],
+    "mutate": [
+      "!**/AssemblyInfo.fs",
+      "!**/bin/**",
+      "!**/obj/**"
+    ],
+    "thresholds": {
+      "high": 80,
+      "low": 60,
+      "break": 50
+    },
+    "reporters": [
+      "html",
+      "progress",
+      "cleartext"
+    ],
+    "since": { "enabled": false }
+  }
+}

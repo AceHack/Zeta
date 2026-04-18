@@ -1,0 +1,34 @@
+<Project>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- FS3517: InlineIfLambda not lambda — informational-only per F# docs.
+         FS3261: nullness warnings — enabled but not fatal for interop surfaces.
+         FS0893: partially-qualified opens — triggered by FsCheck.Xunit.v3 whose
+                 child namespace `v3` is a sibling of F#'s type-inferred scope. -->
+    <NoWarn>FS3517;FS3261;FS0893</NoWarn>
+    <WarningsNotAsErrors>FS0052;FS0064</WarningsNotAsErrors>
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    <Authors>zeta contributors</Authors>
+    <Product>Zeta (DBSP for .NET)</Product>
+    <Copyright>Copyright (c) 2026</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <OptimizeImplicitlyTriggeredBuild>true</OptimizeImplicitlyTriggeredBuild>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+    <TieredCompilation>true</TieredCompilation>
+    <TieredPGO>true</TieredPGO>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <Optimize>true</Optimize>
+    <DebugType>embedded</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+  </PropertyGroup>
+</Project>

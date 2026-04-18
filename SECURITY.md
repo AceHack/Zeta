@@ -1,0 +1,41 @@
+# Security Policy
+
+## Reporting a vulnerability
+
+Pre-v1 / greenfield — no production callers yet. If you think you've
+found a vulnerability before v1 ships, open a regular GitHub issue
+with the `security` label; there's no separate disclosure inbox until
+we have users. Post-v1 this will move to a coordinated-disclosure
+process.
+
+## Supported versions
+
+None yet. We ship once the full SDL checklist
+(`docs/security/SDL-CHECKLIST.md`) is green.
+
+## Security posture
+
+- **Trust boundaries** described in `docs/security/THREAT-MODEL.md`
+  (STRIDE-indexed).
+- **Crypto choices** rationale in `docs/security/CRYPTO.md`.
+- **Dependency audit** via `tools/audit-packages.sh` (the package
+  auditor skill reviews bumps).
+- **Static analysis** via Semgrep (`.semgrep.yml`, 12 rules) +
+  G-Research + Ionide + Meziantou F# analyzers.
+- **Formal verification** via 13 TLA+ specs (6 TLC-validated),
+  Z3 pointwise proofs, FsCheck property tests.
+- **Deterministic simulation testing** via `ChaosEnvironment` +
+  `VirtualTimeScheduler` (FoundationDB DST-inspired).
+
+## Threat-model-as-code
+
+We use `pytm` (P1) or `docs/security/THREAT-MODEL.md` markdown as
+the source of truth. Microsoft Threat Modeling Tool exports live in
+`docs/security/tmt-exports/` when a contributor runs TMT inside a
+Windows VM; the Mac-side authoritative source is the markdown.
+
+## Elevation of Privilege card game
+
+`docs/security/eop-full.pdf` + `docs/security/eop-onepager.pdf` —
+Adam Shostack's EoP game (CC-BY-3.0). Used as a reference during
+Security Auditor reviewer passes.

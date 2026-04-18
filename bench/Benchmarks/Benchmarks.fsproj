@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <IsPackable>false</IsPackable>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
+    <TieredPGO>true</TieredPGO>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <RootNamespace>Zeta.Benchmarks</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ZSetBench.fs" />
+    <Compile Include="CircuitBench.fs" />
+    <Compile Include="SpineBench.fs" />
+    <Compile Include="BloomBench.fs" />
+    <Compile Include="Nexmark.fs" />
+    <Compile Include="NexmarkFull.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" />
+    <PackageReference Include="BenchmarkDotNet" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,104 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <WarnOn>3390;3517;3570;3578</WarnOn>
+    <RootNamespace>Zeta.Core</RootNamespace>
+    <AssemblyName>Zeta.Core</AssemblyName>
+    <PackageId>Zeta.Core</PackageId>
+    <Description>Database Stream Processing (DBSP) for .NET — the algebra of streaming incremental view maintenance.</Description>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Algebra.fs" />
+    <Compile Include="Pool.fs" />
+    <Compile Include="ZSet.fs" />
+    <Compile Include="IndexedZSet.fs" />
+    <Compile Include="Circuit.fs" />
+    <Compile Include="Primitive.fs" />
+    <Compile Include="Operators.fs" />
+    <Compile Include="Handles.fs" />
+    <Compile Include="Environment.fs" />
+    <Compile Include="FeatureFlags.fs" />
+    <Compile Include="Simd.fs" />
+    <Compile Include="HardwareCrc.fs" />
+    <Compile Include="Sketch.fs" />
+    <Compile Include="CountMin.fs" />
+    <Compile Include="BloomFilter.fs" />
+    <Compile Include="Watermark.fs" />
+    <Compile Include="ConsistentHash.fs" />
+    <Compile Include="Crdt.fs" />
+    <Compile Include="NovelMath.fs" />
+    <Compile Include="NovelMathExt.fs" />
+    <Compile Include="FastCdc.fs" />
+    <Compile Include="Merkle.fs" />
+    <Compile Include="Residuated.fs" />
+    <Compile Include="Aggregate.fs" />
+    <Compile Include="Window.fs" />
+    <Compile Include="Advanced.fs" />
+    <Compile Include="Fusion.fs" />
+    <Compile Include="Spine.fs" />
+    <Compile Include="SpineAsync.fs" />
+    <Compile Include="BalancedSpine.fs" />
+    <Compile Include="SpineSelector.fs" />
+    <Compile Include="SimdMerge.fs" />
+    <Compile Include="TimeSeries.fs" />
+    <Compile Include="Upsert.fs" />
+    <Compile Include="Transaction.fs" />
+    <Compile Include="Shard.fs" />
+    <Compile Include="Metrics.fs" />
+    <Compile Include="Tracing.fs" />
+    <Compile Include="ChaosEnv.fs" />
+    <Compile Include="HigherOrder.fs" />
+    <Compile Include="DiskSpine.fs" />
+    <Compile Include="Durability.fs" />
+    <Compile Include="NestedCircuit.fs" />
+    <Compile Include="Runtime.fs" />
+    <Compile Include="WorkStealingRuntime.fs" />
+    <Compile Include="Recursive.fs" />
+    <Compile Include="Hierarchy.fs" />
+    <Compile Include="Plan.fs" />
+    <Compile Include="Incremental.fs" />
+    <Compile Include="Dsl.fs" />
+    <Compile Include="Query.fs" />
+    <Compile Include="Injection.fs" />
+    <Compile Include="InjectionExt.fs" />
+    <Compile Include="SpeculativeWatermark.fs" />
+    <Compile Include="Sink.fs" />
+    <Compile Include="MailboxRuntime.fs" />
+    <Compile Include="FSharpApi.fs" />
+    <Compile Include="Rx.fs" />
+    <Compile Include="Serializer.fs" />
+    <Compile Include="ArrowSerializer.fs" />
+    <Compile Include="DeltaCrdt.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FSharp.Core" />
+    <PackageReference Include="System.IO.Hashing" />
+    <PackageReference Include="System.Reactive" />
+    <PackageReference Include="System.Numerics.Tensors" />
+    <PackageReference Include="FsPickler" />
+    <PackageReference Include="Apache.Arrow" />
+  </ItemGroup>
+
+  <!-- F# static analyzers. Run via `dotnet msbuild -t:AnalyzeFSharpProject`. -->
+  <ItemGroup>
+    <PackageReference Include="G-Research.FSharp.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Ionide.Analyzers">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="FSharp.Analyzers.Build">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <FSharpAnalyzersOtherFlags>--analyzers-path &quot;$(NuGetPackageRoot)g-research.fsharp.analyzers/0.22.0/analyzers/dotnet/fs&quot; --analyzers-path &quot;$(NuGetPackageRoot)ionide.analyzers/0.15.0/analyzers/dotnet/fs&quot; --code-root &quot;$(MSBuildStartupDirectory)&quot; --exclude-files &quot;**/obj/**&quot; &quot;**/bin/**&quot;</FSharpAnalyzersOtherFlags>
+  </PropertyGroup>
+</Project>

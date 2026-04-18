@@ -1,0 +1,666 @@
+[
+  {
+    "name": "sqlite",
+    "url": "https://github.com/sqlite/sqlite.git",
+    "branch": "master",
+    "path": "references/upstreams/sqlite",
+    "categories": ["embedded-sql", "relational-engine"],
+    "notes": "Bootstrap reader/correctness reference for embeddability, corruption handling, and test discipline; not the intended long-term write-path identity."
+  },
+  {
+    "name": "duckdb",
+    "url": "https://github.com/duckdb/duckdb.git",
+    "branch": "main",
+    "path": "references/upstreams/duckdb",
+    "categories": ["relational-engine", "analytics"],
+    "notes": "Modern vectorized OLAP reference with strong SQL ergonomics."
+  },
+  {
+    "name": "rqlite",
+    "url": "https://github.com/rqlite/rqlite.git",
+    "branch": "master",
+    "path": "references/upstreams/rqlite",
+    "categories": ["distributed-sql", "consensus"],
+    "notes": "Log-centric replication and CDC design reference."
+  },
+  {
+    "name": "riak",
+    "url": "https://github.com/basho/riak.git",
+    "branch": "develop",
+    "path": "references/upstreams/riak",
+    "categories": ["distributed-store", "replication"],
+    "notes": "Distributed datastore reference for CRDTs, causal context, anti-entropy, and future multi-node primitives."
+  },
+  {
+    "name": "eventstore",
+    "url": "https://github.com/EventStore/EventStore.git",
+    "branch": "master",
+    "path": "references/upstreams/eventstore",
+    "categories": ["event-store", "streaming"],
+    "notes": "Primary current-round reference for stream-oriented append contracts, optimistic revisions, checkpoints, and projection-owned derived state."
+  },
+  {
+    "name": "spacetimedb",
+    "url": "https://github.com/clockworklabs/SpacetimeDB.git",
+    "branch": "master",
+    "path": "references/upstreams/spacetimedb",
+    "categories": ["streaming", "relational-engine"],
+    "notes": "Realtime relational-runtime reference for reducers, subscriptions, and server-owned state synchronization over relational tables without turning Dbsp.Core itself into a multiplayer/runtime product."
+  },
+  {
+    "name": "chaisql",
+    "url": "https://github.com/chaisql/chai.git",
+    "branch": "main",
+    "path": "references/upstreams/chaisql",
+    "categories": ["embedded-sql", "relational-engine"],
+    "notes": "Modern embedded SQL reference with a pragmatic, still-growing feature set."
+  },
+  {
+    "name": "redis",
+    "url": "https://github.com/redis/redis.git",
+    "branch": "unstable",
+    "path": "references/upstreams/redis",
+    "categories": ["distributed-store", "imdg"],
+    "notes": "Redis-side reference for append-only persistence, modules, and modern data-engine evolution."
+  },
+  {
+    "name": "postgresql",
+    "url": "https://github.com/postgres/postgres.git",
+    "branch": "master",
+    "path": "references/upstreams/postgresql",
+    "categories": ["relational-engine"],
+    "notes": "MVCC, planner, and WAL design reference."
+  },
+  {
+    "name": "mysql",
+    "url": "https://github.com/mysql/mysql-server.git",
+    "branch": "trunk",
+    "path": "references/upstreams/mysql",
+    "categories": ["relational-engine"],
+    "notes": "Broader SQL engine and storage reference."
+  },
+  {
+    "name": "mariadb",
+    "url": "https://github.com/MariaDB/server.git",
+    "branch": "main",
+    "path": "references/upstreams/mariadb",
+    "categories": ["relational-engine"],
+    "notes": "General-purpose pluggable SQL engine reference, especially for multi-engine boundaries and HTAP-style composition."
+  },
+  {
+    "name": "mariadb-columnstore",
+    "url": "https://github.com/mariadb-corporation/mariadb-columnstore-engine.git",
+    "branch": "stable-23.10",
+    "path": "references/upstreams/mariadb-columnstore",
+    "categories": ["analytics", "columnar-format"],
+    "notes": "Columnar storage-engine reference for extent elimination, MPP query shaping, and HTAP-oriented row/column seams."
+  },
+  {
+    "name": "parquet-format",
+    "url": "https://github.com/apache/parquet-format.git",
+    "branch": "master",
+    "path": "references/upstreams/parquet-format",
+    "categories": ["columnar-format", "lakehouse"],
+    "notes": "Columnar file-format reference for row groups, page indexes, encodings, and external analytical interchange."
+  },
+  {
+    "name": "orc",
+    "url": "https://github.com/apache/orc.git",
+    "branch": "main",
+    "path": "references/upstreams/orc",
+    "categories": ["columnar-format", "lakehouse"],
+    "notes": "Columnar file-format reference for stripe and row-group indexes, bloom filters, and base-plus-delta compaction ideas."
+  },
+  {
+    "name": "voltdb",
+    "url": "https://github.com/DBOS-project/voltdb.git",
+    "branch": "master",
+    "path": "references/upstreams/voltdb",
+    "categories": ["distributed-sql", "relational-engine"],
+    "notes": "Modern in-memory/distributed SQL reference. Uses the actively available open-source mirror."
+  },
+  {
+    "name": "foundationdb",
+    "url": "https://github.com/apple/foundationdb.git",
+    "branch": "main",
+    "path": "references/upstreams/foundationdb",
+    "categories": ["distributed-store", "consensus"],
+    "notes": "Transactional-substrate and layers-later reference for keeping future distribution over a smaller durable core."
+  },
+  {
+    "name": "tidb",
+    "url": "https://github.com/pingcap/tidb.git",
+    "branch": "master",
+    "path": "references/upstreams/tidb",
+    "categories": ["distributed-sql", "relational-engine"],
+    "notes": "Distributed SQL reference for stateless SQL fronts, transactional KV ranges, and HTAP row/column seams."
+  },
+  {
+    "name": "cockroachdb",
+    "url": "https://github.com/cockroachdb/cockroach.git",
+    "branch": "master",
+    "path": "references/upstreams/cockroachdb",
+    "categories": ["distributed-sql", "relational-engine"],
+    "notes": "Distributed SQL reference for layered SQL-to-KV architecture, serializable transactions, and quorum replication."
+  },
+  {
+    "name": "yugabytedb",
+    "url": "https://github.com/yugabyte/yugabyte-db.git",
+    "branch": "master",
+    "path": "references/upstreams/yugabytedb",
+    "categories": ["distributed-sql", "relational-engine"],
+    "notes": "Distributed SQL reference for tablet-based sharding, PostgreSQL-compatible SQL, multi-region topology, and CDC seams."
+  },
+  {
+    "name": "mongodb",
+    "url": "https://github.com/mongodb/mongo.git",
+    "branch": "master",
+    "path": "references/upstreams/mongodb",
+    "categories": ["distributed-store", "document-store"],
+    "notes": "Document-database reference for shard-key routing, replica-set-backed sharding, and flexible schema trade-offs."
+  },
+  {
+    "name": "cassandra",
+    "url": "https://github.com/apache/cassandra.git",
+    "branch": "trunk",
+    "path": "references/upstreams/cassandra",
+    "categories": ["distributed-store", "wide-column"],
+    "notes": "Wide-column distributed datastore reference for LSM-based storage, tunable consistency, and partition-first data modeling."
+  },
+  {
+    "name": "neo4j",
+    "url": "https://github.com/neo4j/neo4j.git",
+    "branch": "release/5.26.0",
+    "path": "references/upstreams/neo4j",
+    "categories": ["graph-db"],
+    "notes": "Graph-database reference for property-graph modeling, relationship-first querying, and graph-native indexing/traversal patterns."
+  },
+  {
+    "name": "arangodb",
+    "url": "https://github.com/arangodb/arangodb.git",
+    "branch": "devel",
+    "path": "references/upstreams/arangodb",
+    "categories": ["graph-db", "document-store"],
+    "notes": "Multi-model database reference for combining document, graph, and key-value patterns behind one query surface."
+  },
+  {
+    "name": "memgraph",
+    "url": "https://github.com/memgraph/memgraph.git",
+    "branch": "master",
+    "path": "references/upstreams/memgraph",
+    "categories": ["graph-db", "analytics"],
+    "notes": "In-memory graph database reference for real-time graph analytics, stream integration, and Cypher-oriented graph workloads."
+  },
+  {
+    "name": "janusgraph",
+    "url": "https://github.com/JanusGraph/janusgraph.git",
+    "branch": "master",
+    "path": "references/upstreams/janusgraph",
+    "categories": ["graph-db", "distributed-store"],
+    "notes": "Distributed graph reference for massive-scale graph storage over pluggable backends and Gremlin-centric traversal patterns."
+  },
+  {
+    "name": "dgraph",
+    "url": "https://github.com/hypermodeinc/dgraph.git",
+    "branch": "main",
+    "path": "references/upstreams/dgraph",
+    "categories": ["graph-db", "distributed-store"],
+    "notes": "Distributed graph/database reference for GraphQL-native APIs, predicate sharding, and transactional graph storage."
+  },
+  {
+    "name": "nebulagraph",
+    "url": "https://github.com/vesoft-inc/nebula.git",
+    "branch": "master",
+    "path": "references/upstreams/nebulagraph",
+    "categories": ["graph-db", "distributed-store"],
+    "notes": "Distributed graph database reference for graphd, storaged, and metad service separation at very large edge counts."
+  },
+  {
+    "name": "milvus",
+    "url": "https://github.com/milvus-io/milvus.git",
+    "branch": "master",
+    "path": "references/upstreams/milvus",
+    "categories": ["vector-db"],
+    "notes": "Cloud-native vector-database reference for disaggregated vector retrieval, WAL-backed ingestion, and ANN serving at scale."
+  },
+  {
+    "name": "weaviate",
+    "url": "https://github.com/weaviate/weaviate.git",
+    "branch": "main",
+    "path": "references/upstreams/weaviate",
+    "categories": ["vector-db", "document-store"],
+    "notes": "Vector/object database reference for hybrid vector plus inverted indexing, filtered ANN, and module-oriented ML integration."
+  },
+  {
+    "name": "qdrant",
+    "url": "https://github.com/qdrant/qdrant.git",
+    "branch": "master",
+    "path": "references/upstreams/qdrant",
+    "categories": ["vector-db"],
+    "notes": "Vector-database reference for strict filtered ANN, payload-aware HNSW design, and shard/replication safety controls."
+  },
+  {
+    "name": "chroma",
+    "url": "https://github.com/chroma-core/chroma.git",
+    "branch": "main",
+    "path": "references/upstreams/chroma",
+    "categories": ["vector-db"],
+    "notes": "Developer-friendly AI database reference for embedded/server modes, simple collection APIs, and rapid local prototyping."
+  },
+  {
+    "name": "pgvector",
+    "url": "https://github.com/pgvector/pgvector.git",
+    "branch": "master",
+    "path": "references/upstreams/pgvector",
+    "categories": ["vector-db", "relational-engine"],
+    "notes": "SQL-native vector indexing reference for integrating ANN and filtered similarity search into a relational engine."
+  },
+  {
+    "name": "faiss",
+    "url": "https://github.com/facebookresearch/faiss.git",
+    "branch": "main",
+    "path": "references/upstreams/faiss",
+    "categories": ["vector-db", "serialization"],
+    "notes": "Algorithm/library reference for dense-vector ANN, compression, GPU search, and evaluation/tuning primitives."
+  },
+  {
+    "name": "kafka",
+    "url": "https://github.com/apache/kafka.git",
+    "branch": "trunk",
+    "path": "references/upstreams/kafka",
+    "categories": ["streaming", "distributed-log"],
+    "notes": "Replicated-log reference for partitioned append-only streams, durable offsets, compaction, consumer checkpoints, and future distribution/log-shipping boundaries."
+  },
+  {
+    "name": "redpanda",
+    "url": "https://github.com/redpanda-data/redpanda.git",
+    "branch": "dev",
+    "path": "references/upstreams/redpanda",
+    "categories": ["streaming", "distributed-log"],
+    "notes": "Modern Kafka-compatible log-engine reference for Raft-backed streaming, tiered storage, and thread-per-core efficiency."
+  },
+  {
+    "name": "flink",
+    "url": "https://github.com/apache/flink.git",
+    "branch": "master",
+    "path": "references/upstreams/flink",
+    "categories": ["streaming", "analytics"],
+    "notes": "Streaming-dataflow reference for stateful/event-time processing, checkpoints, and SQL/Table APIs over streams."
+  },
+  {
+    "name": "materialize",
+    "url": "https://github.com/MaterializeInc/materialize.git",
+    "branch": "main",
+    "path": "references/upstreams/materialize",
+    "categories": ["streaming", "analytics"],
+    "notes": "Incremental-view-maintenance reference for streaming SQL, always-fresh materialized views, and dataflow-oriented execution."
+  },
+  {
+    "name": "druid",
+    "url": "https://github.com/apache/druid.git",
+    "branch": "master",
+    "path": "references/upstreams/druid",
+    "categories": ["analytics", "distributed-store"],
+    "notes": "Real-time analytics reference for segment-oriented OLAP, deep storage, and ingestion/query service separation."
+  },
+  {
+    "name": "hadoop",
+    "url": "https://github.com/apache/hadoop.git",
+    "branch": "trunk",
+    "path": "references/upstreams/hadoop",
+    "categories": ["analytics", "distributed-store"],
+    "notes": "Distributed storage and batch-platform reference for HDFS, large-scale data movement, and storage/compute substrate design."
+  },
+  {
+    "name": "spark",
+    "url": "https://github.com/apache/spark.git",
+    "branch": "master",
+    "path": "references/upstreams/spark",
+    "categories": ["analytics", "streaming"],
+    "notes": "Distributed compute and Structured Streaming reference for batch/stream unification and SQL-facing dataflow design."
+  },
+  {
+    "name": "iceberg",
+    "url": "https://github.com/apache/iceberg.git",
+    "branch": "main",
+    "path": "references/upstreams/iceberg",
+    "categories": ["lakehouse", "analytics"],
+    "notes": "Open table-format reference for snapshots, hidden partitioning, schema evolution, and multi-engine analytical interoperability."
+  },
+  {
+    "name": "deltalake",
+    "url": "https://github.com/delta-io/delta.git",
+    "branch": "master",
+    "path": "references/upstreams/deltalake",
+    "categories": ["lakehouse", "analytics"],
+    "notes": "Lakehouse/log-table reference for ACID metadata logs, time travel, streaming/batch unification, and change-friendly analytical tables."
+  },
+  {
+    "name": "clickhouse",
+    "url": "https://github.com/ClickHouse/ClickHouse.git",
+    "branch": "master",
+    "path": "references/upstreams/clickhouse",
+    "categories": ["analytics", "relational-engine"],
+    "notes": "Columnar OLAP reference for sparse primary indexes, vectorized execution, compression, and stateless-compute analytical scaling."
+  },
+  {
+    "name": "leveldb",
+    "url": "https://github.com/google/leveldb.git",
+    "branch": "main",
+    "path": "references/upstreams/leveldb",
+    "categories": ["embedded-kv"],
+    "notes": "Classic embedded LSM-tree reference for sorted key-value storage, memtables, SSTables, and background compaction."
+  },
+  {
+    "name": "rocksdb",
+    "url": "https://github.com/facebook/rocksdb.git",
+    "branch": "main",
+    "path": "references/upstreams/rocksdb",
+    "categories": ["embedded-kv"],
+    "notes": "Embedded LSM-tree reference optimized for flash and fast storage, with rich compaction and caching design trade-offs."
+  },
+  {
+    "name": "lmdb",
+    "url": "https://github.com/LMDB/lmdb.git",
+    "branch": "mdb.master",
+    "path": "references/upstreams/lmdb",
+    "categories": ["embedded-kv"],
+    "notes": "Memory-mapped embedded B+tree reference for zero-copy reads, copy-on-write pages, and high-concurrency read paths."
+  },
+  {
+    "name": "hdf5",
+    "url": "https://github.com/HDFGroup/hdf5.git",
+    "branch": "develop",
+    "path": "references/upstreams/hdf5",
+    "categories": ["scientific-format", "analytics"],
+    "notes": "Scientific data-format reference for chunked multidimensional arrays, rich metadata, compression, and long-lived file interoperability."
+  },
+  {
+    "name": "zarr",
+    "url": "https://github.com/zarr-developers/zarr-python.git",
+    "branch": "main",
+    "path": "references/upstreams/zarr",
+    "categories": ["scientific-format", "analytics"],
+    "notes": "Chunked array and cloud/object-store-friendly format reference for multidimensional data, metadata-first chunking, and scalable scientific interoperability."
+  },
+  {
+    "name": "netcdf",
+    "url": "https://github.com/Unidata/netcdf-c.git",
+    "branch": "main",
+    "path": "references/upstreams/netcdf",
+    "categories": ["scientific-format", "analytics"],
+    "notes": "Scientific data-model reference for dimensions, variables, attributes, groups, and netCDF-4/HDF5-backed interoperability."
+  },
+  {
+    "name": "arrow",
+    "url": "https://github.com/apache/arrow.git",
+    "branch": "main",
+    "path": "references/upstreams/arrow",
+    "categories": ["scientific-format", "columnar-format"],
+    "notes": "Columnar in-memory/interchange reference for zero-copy transport, language-neutral schemas, and vectorized analytical data movement."
+  },
+  {
+    "name": "ignite",
+    "url": "https://github.com/apache/ignite.git",
+    "branch": "master",
+    "path": "references/upstreams/ignite",
+    "categories": ["imdg", "distributed-store"],
+    "notes": "In-memory data-grid and distributed SQL reference for colocated compute, distributed caching, and data-fabric patterns."
+  },
+  {
+    "name": "ncache",
+    "url": "https://github.com/Alachisoft/NCache.git",
+    "branch": "master",
+    "path": "references/upstreams/ncache",
+    "categories": ["imdg", "distributed-store"],
+    "notes": ".NET-centric distributed cache/data-grid reference for clustered application data, ASP.NET/session sharing, and Microsoft-ecosystem ergonomics."
+  },
+  {
+    "name": "infinispan",
+    "url": "https://github.com/infinispan/infinispan.git",
+    "branch": "main",
+    "path": "references/upstreams/infinispan",
+    "categories": ["imdg", "distributed-store"],
+    "notes": "In-memory data-grid reference for embedded/server modes, Hot Rod remote access, distributed caches, and transactional data-grid patterns."
+  },
+  {
+    "name": "hazelcast",
+    "url": "https://github.com/hazelcast/hazelcast.git",
+    "branch": "master",
+    "path": "references/upstreams/hazelcast",
+    "categories": ["imdg", "distributed-store"],
+    "notes": "Open-source in-memory data-grid reference for clustered data structures, community-vs-enterprise packaging, and distributed compute/cache patterns."
+  },
+  {
+    "name": "geode",
+    "url": "https://github.com/apache/geode.git",
+    "branch": "develop",
+    "path": "references/upstreams/geode",
+    "categories": ["imdg", "distributed-store"],
+    "notes": "Distributed in-memory data management reference for partitioned regions, continuous queries, and client/server cache-grid behavior."
+  },
+  {
+    "name": "protobuf",
+    "url": "https://github.com/protocolbuffers/protobuf.git",
+    "branch": "main",
+    "path": "references/upstreams/protobuf",
+    "categories": ["wire-protocol", "schema-contract"],
+    "notes": "Cross-language schema-and-wire-format reference for compact binary messages, code generation, and schema evolution."
+  },
+  {
+    "name": "grpc",
+    "url": "https://github.com/grpc/grpc.git",
+    "branch": "master",
+    "path": "references/upstreams/grpc",
+    "categories": ["wire-protocol", "rpc"],
+    "notes": "RPC stack reference for HTTP/2-based contracts, streaming APIs, and generated strongly typed service surfaces."
+  },
+  {
+    "name": "avro",
+    "url": "https://github.com/apache/avro.git",
+    "branch": "main",
+    "path": "references/upstreams/avro",
+    "categories": ["wire-protocol", "schema-contract"],
+    "notes": "Schema-evolution and data-serialization reference, especially for event streams, data lakes, and language-neutral contracts."
+  },
+  {
+    "name": "capnproto",
+    "url": "https://github.com/capnproto/capnproto.git",
+    "branch": "v2",
+    "path": "references/upstreams/capnproto",
+    "categories": ["wire-protocol", "rpc"],
+    "notes": "Zero-copy serialization and capability-RPC reference from the Protobuf lineage, useful for low-latency transport ideas."
+  },
+  {
+    "name": "flatbuffers",
+    "url": "https://github.com/google/flatbuffers.git",
+    "branch": "master",
+    "path": "references/upstreams/flatbuffers",
+    "categories": ["wire-protocol", "schema-contract"],
+    "notes": "Zero-copy schema-and-buffer reference for low-allocation binary interchange and direct memory access patterns."
+  },
+  {
+    "name": "thrift",
+    "url": "https://github.com/apache/thrift.git",
+    "branch": "master",
+    "path": "references/upstreams/thrift",
+    "categories": ["wire-protocol", "rpc"],
+    "notes": "IDL-plus-RPC reference for cross-language service contracts and transport/protocol separation."
+  },
+  {
+    "name": "bond",
+    "url": "https://github.com/microsoft/bond.git",
+    "branch": "master",
+    "path": "references/upstreams/bond",
+    "categories": ["wire-protocol", "schema-contract"],
+    "notes": "Microsoft schema-and-serialization reference for strongly typed evolution-friendly contracts and RPC integration."
+  },
+  {
+    "name": "messagepack",
+    "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp.git",
+    "branch": "master",
+    "path": "references/upstreams/messagepack",
+    "categories": ["wire-protocol", "serialization"],
+    "notes": ".NET-friendly compact binary serialization reference for low-allocation transport and caching payloads."
+  },
+  {
+    "name": "json-schema",
+    "url": "https://github.com/json-schema-org/json-schema-spec.git",
+    "branch": "main",
+    "path": "references/upstreams/json-schema",
+    "categories": ["schema-contract"],
+    "notes": "Schema-contract reference for JSON-facing APIs and metadata validation, even when the transport is not itself a binary wire protocol."
+  },
+  {
+    "name": "etcd",
+    "url": "https://github.com/etcd-io/etcd.git",
+    "branch": "main",
+    "path": "references/upstreams/etcd",
+    "categories": ["consensus", "distributed-coordination"],
+    "notes": "Distributed key-value and Raft reference for membership, MVCC metadata stores, and production consensus-backed coordination."
+  },
+  {
+    "name": "hashicorp-raft",
+    "url": "https://github.com/hashicorp/raft.git",
+    "branch": "main",
+    "path": "references/upstreams/hashicorp-raft",
+    "categories": ["consensus", "distributed-coordination"],
+    "notes": "Library-style Raft reference for embeddable consensus, snapshotting, log compaction, and storage abstraction seams."
+  },
+  {
+    "name": "openraft",
+    "url": "https://github.com/datafuselabs/openraft.git",
+    "branch": "main",
+    "path": "references/upstreams/openraft",
+    "categories": ["consensus"],
+    "notes": "Rust Raft library reference with modern API design, storage separation, and strongly typed consensus state."
+  },
+  {
+    "name": "raft-rs",
+    "url": "https://github.com/tikv/raft-rs.git",
+    "branch": "master",
+    "path": "references/upstreams/raft-rs",
+    "categories": ["consensus"],
+    "notes": "Rust Raft core extracted from TiKV, useful for production-hardened consensus mechanics."
+  },
+  {
+    "name": "dotnext",
+    "url": "https://github.com/dotnet/dotNext.git",
+    "branch": "master",
+    "path": "references/upstreams/dotnext",
+    "categories": ["consensus", "dotnet"],
+    "notes": "C#/.NET reference that includes cluster and consensus primitives, useful for idiomatic managed distributed-systems design."
+  },
+  {
+    "name": "nuraft",
+    "url": "https://github.com/eBay/NuRaft.git",
+    "branch": "master",
+    "path": "references/upstreams/nuraft",
+    "categories": ["consensus"],
+    "notes": "C++ Raft library reference for embeddable consensus, snapshotting, and log replication mechanics."
+  },
+  {
+    "name": "omnipaxos",
+    "url": "https://github.com/haraldng/omnipaxos.git",
+    "branch": "master",
+    "path": "references/upstreams/omnipaxos",
+    "categories": ["consensus"],
+    "notes": "Rust Paxos-family reference for multi-leader or flexible replication research beyond Raft-only thinking."
+  },
+  {
+    "name": "dqlite",
+    "url": "https://github.com/canonical/dqlite.git",
+    "branch": "main",
+    "path": "references/upstreams/dqlite",
+    "categories": ["consensus", "distributed-sql"],
+    "notes": "C-level distributed SQLite reference that combines Raft-backed replication with a relational engine, useful for SQL-plus-consensus seams."
+  },
+  {
+    "name": "zookeeper",
+    "url": "https://github.com/apache/zookeeper.git",
+    "branch": "master",
+    "path": "references/upstreams/zookeeper",
+    "categories": ["distributed-coordination", "consensus"],
+    "notes": "Distributed coordination reference for metadata trees, watches, leader election, and configuration/state management."
+  },
+  {
+    "name": "consul",
+    "url": "https://github.com/hashicorp/consul.git",
+    "branch": "main",
+    "path": "references/upstreams/consul",
+    "categories": ["distributed-coordination", "distributed-store"],
+    "notes": "Distributed coordination and service-discovery reference for control-plane state, KV metadata, health checks, and multi-datacenter coordination."
+  },
+  {
+    "name": "bookkeeper",
+    "url": "https://github.com/apache/bookkeeper.git",
+    "branch": "master",
+    "path": "references/upstreams/bookkeeper",
+    "categories": ["distributed-log", "streaming"],
+    "notes": "Replicated log-storage reference for durable ledgers, metadata coordination, and log-service architectures adjacent to streaming systems."
+  },
+  {
+    "name": "rx-dotnet",
+    "url": "https://github.com/dotnet/reactive.git",
+    "branch": "main",
+    "path": "references/upstreams/rx-dotnet",
+    "categories": ["reactive-runtime", "dotnet"],
+    "notes": "Rx.NET, Ix, and async-sequence reference for observable/event LINQ, async sequence operators, and idiomatic .NET reactive composition."
+  },
+  {
+    "name": "rxcpp",
+    "url": "https://github.com/ReactiveX/RxCpp.git",
+    "branch": "main",
+    "path": "references/upstreams/rxcpp",
+    "categories": ["reactive-runtime"],
+    "notes": "C++ Reactive Extensions reference for push-based observable composition, schedulers, and low-level reactive operator design outside managed runtimes."
+  },
+  {
+    "name": "reaqtor",
+    "url": "https://github.com/reaqtive/reaqtor.git",
+    "branch": "main",
+    "path": "references/upstreams/reaqtor",
+    "categories": ["reactive-runtime", "expression-serialization", "dotnet"],
+    "notes": "Stateful event-processing and Nuqleon/Bonsai reference for checkpointable reactive runtimes, queryable observables, and portable serialized expression trees."
+  },
+  {
+    "name": "bonsai-rx",
+    "url": "https://github.com/bonsai-rx/bonsai.git",
+    "branch": "main",
+    "path": "references/upstreams/bonsai-rx",
+    "categories": ["reactive-runtime", "visual-dataflow", "dotnet"],
+    "notes": "Visual reactive programming reference built on Rx.NET, useful for observable/dataflow composition, interactive workflows, and .NET-friendly streaming tooling."
+  },
+  {
+    "name": "efcore",
+    "url": "https://github.com/dotnet/efcore.git",
+    "branch": "main",
+    "path": "references/upstreams/efcore",
+    "categories": ["dotnet-data-access", "linq-provider", "dotnet"],
+    "notes": "Entity Framework Core reference for modern .NET LINQ provider design, change tracking boundaries, query translation, provider seams, and natural .NET-facing data access APIs."
+  },
+  {
+    "name": "dapper",
+    "url": "https://github.com/DapperLib/Dapper.git",
+    "branch": "main",
+    "path": "references/upstreams/dapper",
+    "categories": ["dotnet-data-access", "micro-orm", "dotnet"],
+    "notes": "Dapper reference for low-overhead parameter binding, row materialization, and natural hand-authored SQL APIs that still feel idiomatic in .NET."
+  },
+  {
+    "name": "nats",
+    "url": "https://github.com/nats-io/nats-server.git",
+    "branch": "main",
+    "path": "references/upstreams/nats",
+    "categories": ["streaming", "wire-protocol", "distributed-coordination"],
+    "notes": "Subject-based pub/sub and request/reply wire-protocol reference for lightweight control-plane transport (circuit registration, shard gossip, liveness) adjacent to our Arrow Flight data-plane plan; Apache-2.0, small kernel, queue-group fan-out. See references/notes/NATS-RESEARCH.md."
+  },
+  {
+    "name": "nats-jetstream",
+    "url": "https://github.com/nats-io/nats-server.git",
+    "branch": "main",
+    "path": "references/upstreams/nats-jetstream",
+    "categories": ["streaming", "distributed-log", "event-store"],
+    "notes": "Durable streaming subsystem on top of NATS (MIT-licensed within the Apache-2.0 server repo; successor to retired NATS Streaming/STAN) — reference for stream+consumer abstractions, RAFT-backed replication, and AckExplicit/AckAll/AckNone semantics that map onto our DurabilityMode variants; candidate retraction-native ingestion source for ZSet delta feeds. See references/notes/NATS-RESEARCH.md."
+  }
+]

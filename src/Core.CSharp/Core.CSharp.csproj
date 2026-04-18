@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <RootNamespace>Zeta.Core.CSharp</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp</AssemblyName>
+    <PackageId>Zeta.Core.CSharp</PackageId>
+    <Description>Declaration-site variance on DBSP interfaces — the C# shim that F# can't express natively (`in`/`out` generic parameters).</Description>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.fsproj" />
+  </ItemGroup>
+</Project>
