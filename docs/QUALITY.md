@@ -127,7 +127,7 @@ For simulation and chaos work:
 - Lean 4 + Mathlib for proof-grade claims. `D ∘ I = id` and chain rule
   are the next 2-week push (P2).
 - Alloy for structural invariants where TLA+ would be awkward
-  (`docs/Spine.als`).
+  (`tools/alloy/specs/Spine.als`).
 
 See `docs/MATH-SPEC-TESTS.md` for the current spec inventory.
 
@@ -170,7 +170,7 @@ does not have to please every reviewer.
 
 - Docs read as **current state**, not history. Narrative lives in
   `docs/ROUND-HISTORY.md` and ADRs (`docs/DECISIONS/YYYY-MM-DD-*.md`).
-- The one exception is `docs/skill-notes/` (intentionally append-dated,
+- The one exception is `memory/persona/` (intentionally append-dated,
   git-visible self-modification artefacts).
 - When a decision reverses, delete the `docs/WONT-DO.md` entry — don't
   leave "formerly declined" crud.

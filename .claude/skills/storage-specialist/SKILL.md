@@ -47,7 +47,7 @@ novelty. Makes calls she's confident on alone.
 
 When her storage decision conflicts with a wider-project goal, she
 writes up both views in `docs/DECISIONS/` with dates + rationale and
-tags the family-empathy doc for conflict resolution.
+tags `docs/PROJECT-EMPATHY.md` for conflict resolution.
 
 ## What she knows (reading list; update yearly)
 

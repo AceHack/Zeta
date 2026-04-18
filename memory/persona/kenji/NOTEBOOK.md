@@ -27,11 +27,11 @@ Seven moving parts, each doing a distinct job:
 2. **Capability skills** — `.claude/skills/<name>/SKILL.md`.
    Procedure-only, reusable across personas. Skill-creator
    (`.claude/skills/skill-creator/`) is the canonical edit path.
-3. **Notebooks** — `docs/skill-notes/<name>.md`. Per-agent
+3. **Notebooks** — `memory/persona/<name>.md`. Per-agent
    state, git-diffable, 3000-word capped, invisible-Unicode
    linted.
 4. **Best-practices tiers** — `docs/AGENT-BEST-PRACTICES.md`
-   (stable `BP-01..BP-15`) + `docs/skill-notes/best-practices-scratch.md`
+   (stable `BP-01..BP-15`) + `memory/persona/best-practices-scratch.md`
    (volatile). Rule IDs cited in `skill-tune-up-ranker` output
    so tune-up is checkbox-actionable.
 5. **Governance docs** — `AGENTS.md` (rules 1-13),
@@ -61,10 +61,10 @@ Seven moving parts, each doing a distinct job:
   table + `TLA+/Z3/FsCheck` cross-check pattern is the biggest
   qualitative jump.
 - **Bugs / debt / backlog split** now sharp. No confusion about
-  which file a finding lives in. AGENTS.md §12 formalises the
+  which file a finding lives in. GOVERNANCE.md §12 formalises the
   bugs-before-features ratio so we don't argue about it every
   round.
-- **Review count ∝ 1/backlog-length** (AGENTS.md §13) keeps the
+- **Review count ∝ 1/backlog-length** (GOVERNANCE.md §13) keeps the
   reviewer pass proportional. Round 21 ran 16 reviewers; round
   22 runs 2-3 because the backlog is heavy and we're in a
   knockdown round.
@@ -87,7 +87,7 @@ Seven moving parts, each doing a distinct job:
   missing piece. Round-23 backlog.
 - **CLAUDE.md duplicates commands from CONTRIBUTING.md.**
   DEBT.md tracks it. Rune's catch.
-- **Meta-risk: am I the bottleneck?** AGENTS.md §11 makes me
+- **Meta-risk: am I the bottleneck?** GOVERNANCE.md §11 makes me
   the reviewer gate for agent-written code. In rounds where 10
   agents land work, serial review through me is slow. Measure
   over the next 3-4 rounds whether this actually throttles
@@ -96,7 +96,7 @@ Seven moving parts, each doing a distinct job:
 
 ### What's ahead
 
-Round 22 is a knockdown round by the AGENTS.md §12 rule:
+Round 22 is a knockdown round by the GOVERNANCE.md §12 rule:
 - `docs/BUGS.md` has 5 open P0 + 12 P1 + 3 P2 (ratio ≥ 5 means
   ≥70% bug work).
 - Round 22's dispatches: 3-bug-fix sprint, Plan.fs HLL +
@@ -118,7 +118,7 @@ round 23 becomes a build round.
   Name stays (Kai). Scope widens to include `docs/ASPIRATIONS.md`,
   ROADMAP narrative, competitive framing, stakeholder comms.
   Branding is still a subset.
-- **AGENTS.md §11-13 added.** Architect-as-reviewer-gate,
+- **GOVERNANCE.md §11-13 added.** Architect-as-reviewer-gate,
   bugs-before-features ratio, reviewer-count-∝-1/backlog.
 - **Mathlib dependency declared** (the Lean chain-rule proof
   moves from sorry-stub to sorry-stub-with-a-real-lakefile-dep).

@@ -80,7 +80,7 @@ Works because body is a *semiring homomorphism* on linear operators: `body(a+b) 
 
 **Precondition.** Body must be **Z-linear** (distributes over `+`). Our `Plus`, `IndexedJoin`, `Map` are linear; `Distinct` is not — so `Distinct` is forbidden inside body.
 
-**TLA+.** Needed: (a) termination when Δ oscillates in sign, (b) equivalence to `Recursive`'s LFP on positive inputs, (c) correctness under interleaved insert/retract. ~200 lines, comparable to `docs/DbspSpec.tla`.
+**TLA+.** Needed: (a) termination when Δ oscillates in sign, (b) equivalence to `Recursive`'s LFP on positive inputs, (c) correctness under interleaved insert/retract. ~200 lines, comparable to `tools/tla/specs/DbspSpec.tla`.
 
 **Effort.** 10–14 days including spec + 20 property tests using `Recursive` as oracle.
 
@@ -91,7 +91,7 @@ Works because body is a *semiring homomorphism* on linear operators: `body(a+b) 
 **Top 1 — Option 7 (signed-delta semi-naïve).** Lowest effort, direct fix, matches Feldera's production behaviour.
 
 *Plan.*
-1. Draft `docs/SignedDeltaSemiNaive.tla`: body as Z-linear operator; invariants `LFP(signed) = LFP(clamped)` on positive inputs and `Σ signed-Δ = 0 ⇒ converged`.
+1. Draft `tools/tla/specs/SignedDeltaSemiNaive.tla`: body as Z-linear operator; invariants `LFP(signed) = LFP(clamped)` on positive inputs and `Σ signed-Δ = 0 ⇒ converged`.
 2. TLC model-check at N≤4 EDB tuples, depth≤3, with insert/retract mixes.
 3. Implement `RecursiveSignedSemiNaive` in `Recursive.fs` paralleling the current combinator — un-`Distinct`ed signed Z-set feedback; body runs on raw delta; outer `Distinct` only on the exposed stream.
 4. Force Z-linearity at compile time (phantom type) or runtime (reject `Distinct` in the body op-graph).

@@ -115,7 +115,7 @@ file builds green. See DEBT.md.
 | Artifact | Source | Path | Why |
 |---|---|---|---|
 | **Lamport *Specifying Systems*** | Lamport's personal site (PDF) | `references/tla-book/specifying-systems.pdf` | Canonical TLA+ textbook; cited in `docs/SPEC-CAUGHT-A-BUG.md` |
-| **Adam Shostack EoP card game** | `elevationofprivilege.com` | `docs/security/eop-full.pdf`, `docs/security/eop-onepager.pdf` | Teaching tool for threat modelling (CC-BY-3.0) |
+| **Adam Shostack EoP card game** | `elevationofprivilege.com` | upstream only (not vendored) | Teaching tool for threat modelling (CC-BY-3.0) |
 
 ## Changelog
 

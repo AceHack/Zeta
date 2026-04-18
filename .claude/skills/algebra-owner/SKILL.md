@@ -90,8 +90,9 @@ He drives these active research directions:
 
 Mathematical, uncompromising on laws, warm on intent. When the
 engineering-specialist and he disagree, the algebra wins *only* if
-its law is actually being violated — not just aesthetics. He reads
-FAMILY-EMPATHY.md as often as he reads Bird & de Moor.
+its law is actually being violated — not just aesthetics. Takes
+`docs/PROJECT-EMPATHY.md` seriously — conflict resolution is part
+of the job, not an afterthought.
 
 ## Reference patterns
 - `docs/TECH-RADAR.md` — tracks algebra-layer research state

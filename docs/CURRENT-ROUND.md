@@ -1,74 +1,94 @@
-# Current Round — 27 (open)
+# Current Round — 28 (open)
 
-Round 26 closed; narrative absorbed into
-`docs/ROUND-HISTORY.md`. Round 27 opens with these
-deferred items carried over from round 26:
+Round 27 closed; narrative absorbed into
+`docs/ROUND-HISTORY.md`. Round 28 opens with these
+deferred items carried over from round 27:
 
 ## Status
 
-- **Round number:** 27
-- **Opened:** 2026-04-18 (continuous from round-26 close)
-- **Classification:** split — non-trivial debt carryover
-  (IsLinear + Op<'T> extension surface + Daya's 5 P1s),
-  low active-bug count.
-- **Reviewer budget:** 2-3 per AGENTS.md §13
+- **Round number:** 28
+- **Opened:** 2026-04-18 (continuous from round-27 close)
+- **Classification:** split — non-trivial P1 carryover
+  from reviewer pass + other deferred work.
+- **Reviewer budget:** 2-3 per §13 + mandatory Kira+Rune
+  floor per §20 on any code-landing phase.
 
-## Carried from round 26
+## Carried from round 27
 
-**Deferred — landable any round:**
-- Rune on `docs/STYLE.md` decision (small)
-- Five of Daya's seven self-audit interventions (small,
-  non-urgent)
-- Empathy-coach persona spawn (design + naming)
-- UX + DX persona proposals
+**Reviewer P1 findings (Kira + Rune, logged to DEBT):**
+- `OutputBuffer` tick-stamp + invalidate-on-tick-end.
+- `ReadDependencies` defensive copy at registration.
+- `box plugin` triple-evaluation → `let boxed = box plugin` once.
+- `BayesianRateOp` `int64` accumulator → `Checked.(+)` or saturate.
+- `INestedFixpointParticipant` inherits `IOperator<'TOut>`.
+- `PluginHarness` id-space via `Int32.MinValue`-range synthetics.
+- `IOperator<'T>` → `IZetaOperator<'T>` rename (before external adoption).
+- `Op<'T>.Value` mixed-accessibility hover-doc pointing at `OutputBuffer.Publish`.
+- `PluginApi.fs` split when >300 lines.
+- PLUGIN-AUTHOR.md `[<Extension>]` explanation in sample.
+- Extract `internal assignHarnessId` helper shared by `Circuit.Build` + `PluginHarness`.
 
-**Deferred — dedicated-round work:**
+**Design work still open:**
 - `IsDbspLinear` Lean predicate + B1/B2/B3/chain_rule
-  closures (Tariq option-c; half-day B2, two days full)
-- `Op<'T>` extension-surface redesign (Ilyana P0 DEBT;
-  design spike + public-api-designer review cycle)
+  closures (Tariq option-c; half-day B2, two days full).
+- FsCheck law runner at `Circuit.Build()` per capability
+  tag — unblocks PLUGIN-AUTHOR.md's soft-claim in "Known
+  limits of round-27."
 
-## Workflow cadence (round-26 established)
+**Persona-notes migration tail:**
+- 6 remaining persona notebooks still in single-file
+  layout (`public-api-designer.md`, `skill-tune-up-ranker.md`,
+  `best-practices-scratch.md`, `algebra-owner.md`,
+  `formal-verification-expert.md`, `agent-experience-researcher.md`).
+  Lazy migration per §21; convert when a persona next
+  writes a typed memory entry.
+
+**Other deferred:**
+- Rune on `docs/STYLE.md` decision (small).
+- UX + DX persona proposals.
+- Empathy-coach persona spawn (naming pending).
+
+## Workflow cadence (established round-26, codified round-27)
 
 - Each round runs on its own branch (`round-N`).
 - Coherent changes within a round become separate commits
   where it helps readability.
 - Round-close = PR from `round-N` to `main` + merge.
+- Reviewer pass per §20 before round-close.
 - Maintainer may request a review pass on the branch diff
-  before merge; per round-26 close convention, ask before
-  pushing the merge.
+  before merge; ask before pushing the merge.
 
 ## Open asks to the maintainer
 
-- **First-commit visibility.** Repo is currently private
-  on AceHack. Flip to public when ready.
-- **NuGet prefix reservation** on `nuget.org` for `Zeta.*`
-  — maintainer owns; do in parallel with any round or
-  defer.
-- **`global.json` `rollForward`** — status quo vs
-  relaxed; silent-pick status quo unless objection.
+- **NuGet prefix reservation** on `nuget.org` for
+  `Zeta.*` — maintainer owns.
+- **`global.json` `rollForward`** — status quo vs relaxed
+  (silent-pick status quo unless objection).
 - **Eval-harness MVP scope** — still pending since round
   23.
+- **Repo visibility** — currently private on AceHack;
+  flip to public when ready.
 
 ## Next architect actions
 
-1. Open `round-27` branch off `main` after the round-26 PR
+1. Open `round-28` branch off `main` once round-27 PR
    merges.
-2. Pick one of the deferred items to anchor the round —
-   likely `Op<'T>` extension-surface design spike (round-25
-   P0) or the Daya deferred interventions if the round
-   classification stays split.
-3. Dispatch specialists as needed; keep scope small.
+2. Anchor choice: **FsCheck law runner** (unblocks
+   plugin-author trust + validates Tariq's design) or
+   **OutputBuffer tick-stamp** (closes Kira's P0 that
+   DEBT'd this round). Recommend law runner — larger
+   impact, removes the soft-claim from PLUGIN-AUTHOR.md.
+3. Dispatch code-phase reviewer floor (Kira + Rune) per
+   §20 on any code that lands.
 
 ## Notes for the next Kenji waking
 
-- Git is now live. `git init` is done; branches are the
-  cadence.
-- Memory policy: AGENTS.md §18. AI-free-to-modify; humans
-  hands-off. Newest-first for MEMORY.md, ROUND-HISTORY,
-  per-persona notebooks.
+- `memory/` is canonical shared memory (not the
+  sandbox). See GOVERNANCE.md §18 + §22.
+- `memory/persona/<persona>/` is per-persona memory.
+  Kenji's seat already folder-migrated; others lazy.
+- Reviewer pass per §20 is mandatory every code-landing
+  round. Kira + Rune is the floor.
 - Public API changes go through Ilyana per §19.
-- InternalsVisibleTo is tests + benchmarks + Core.CSharp
-  shim only.
-- `.claude/settings.local.json` is per-user, gitignored
-  as of round 26.
+- `~/.claude/projects/` is Claude Code sandbox, not git.
+  Do not cite as canonical (§22).

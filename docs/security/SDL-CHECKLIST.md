@@ -5,7 +5,7 @@ for an embedded F# library with no network surface yet.
 
 | # | SDL practice | In scope? | Status | Artifact |
 |---|---|---|---|---|
-| 1 | Provide security training | yes | 🔜 | reviewer skills require STRIDE + EoP study — `.claude/skills/harsh-critic/SKILL.md` references `docs/security/eop-full.pdf` |
+| 1 | Provide security training | yes | 🔜 | reviewer skills require STRIDE + EoP study — Adam Shostack's EoP card game (upstream only, not vendored) |
 | 2 | Define security requirements | yes | ✅ | `docs/security/THREAT-MODEL.md` §Adversary model + trust boundaries |
 | 3 | Define metrics & compliance reporting | partial | 🔜 | bug bar to add in this file (below) |
 | 4 | Perform threat modeling | yes | ✅ | `docs/security/THREAT-MODEL.md` STRIDE × components matrix |

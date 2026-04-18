@@ -76,7 +76,7 @@ Four severities:
 
 ### Step 5 — publish
 
-Output to `docs/skill-notes/security-researcher.md`. If any
+Output to `memory/persona/security-researcher.md`. If any
 Critical, also open a BUGS.md entry immediately.
 
 ## Output format

@@ -46,4 +46,10 @@ lake-packages/
 tools/alloy/*.jar
 tools/tla/*.jar
 
+# TLC state-exploration dumps — regenerated on every counter-example;
+# not source. TLC writes these next to the spec it's checking.
+*_TTrace_*.tla
+*_TTrace_*.bin
+*_TTrace_*.out
+
 .fake

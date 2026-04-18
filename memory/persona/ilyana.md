@@ -4,6 +4,195 @@ Maintained by Ilyana. Newest first.
 
 ---
 
+## 2026-04-18 — Round 27 — Synthesis entry (Tariq + Daya integration)
+
+Kenji returned with Tariq's algebra-owner review and Daya's AX
+review of my design spike. Both landed substantive additions; I've
+revised `docs/research/plugin-api-design.md` in place rather than
+producing a parallel doc. The headline changes:
+
+1. **Tariq Q1 answered YES, blocking.** `IOperator<'T>` alone is
+   insufficient. Plugin authors can claim linearity without
+   mechanism. The fix is capability-tagged sub-interfaces
+   (`ILinearOperator`, `IBilinearOperator`, `ISinkOperator`,
+   `IStatefulStrictOperator`), each paired with an FsCheck law
+   fired at `Circuit.Build()`. Pattern matches my existing
+   `IStrictOperator` precedent — composition of narrow interfaces,
+   not a wider base. Section 5 now includes all four.
+2. **Bayesian reclassification is the clinching example.**
+   `BayesianRateOp` is retraction-lossy by design: `+1` then `-1`
+   in the input `ZSet<bool>` does NOT un-accumulate
+   `Beta-Bernoulli.a/b`. Under plain `IOperator<'T>` this is
+   *undiscoverable* and silently poisons downstream relational
+   composition. Under `ISinkOperator` the algebra consciously
+   exempts it from composition laws and rejects it anywhere but
+   terminal edges. Section 5.4 reclassifies accordingly.
+3. **Daya Q4 answered CONDITIONAL, blocking.** A plugin author
+   can ship <5min under any of the three shapes, but only if (a)
+   `docs/PLUGIN-AUTHOR.md` exists as an entry-point and (b) the
+   Bayesian example is discoverable as a template. Committed to
+   both this round in new §5.6. `dotnet new zeta-plugin`
+   scaffolding deferred to round 28+ per Daya's own fallback
+   option.
+4. **Surface grew from 5 to 7 interfaces + 3 types + 1 module +
+   1 doc.** Larger than my original, but the capability split is
+   load-bearing for Tariq's law enforcement and cannot be cut.
+   Section 8 updated.
+5. **New open question Q7** on OutputBuffer thread safety per
+   Mateo ping — the scheduler must make cross-thread Publish
+   well-defined-write + logged-error, not torn state.
+
+**Gates from my pre-synthesis verdict — status:**
+- (i) `Op<'T>` fully internal post-migration: HOLDS. Core's
+  internal base still implements every interface for zero hot-path
+  regression.
+- (ii) `RegisterStream` accepts only the interface: HOLDS. The
+  four capability sub-interfaces all inherit `IOperator<'T>`; the
+  public `RegisterStream` signature narrows to `IOperator<'T>`.
+- (iii) `PluginHarness` ships same round as the interface: HOLDS.
+  Harness + doc + Bayesian migration are all round-27 deliverables.
+
+**Tension with Tariq's capability-tagging requirement.** None I
+can identify. Tariq's sum-type sketch (`PluginOp<'TIn,'TOut> =
+Linear | Bilinear | Sink | StatefulStrict`) and my
+interface-composition approach are morphologically equivalent; the
+interface form lets authors *also* mix capabilities with strict /
+async / fixpoint orthogonally without a Cartesian tag explosion.
+The law-at-Build enforcement Tariq requires is orthogonal to the
+representation and fires identically against either.
+
+**Verdict: ACCEPT.** The synthesis keeps all three of my original
+gates intact, integrates Tariq's algebra-law enforcement without
+structural compromise, and closes Daya's entry-point gap via the
+new doc. Seven interfaces + three types + module + doc is the
+final surface and it is defensible against a 10-year commitment
+review.
+
+**Anti-patterns logged from this round:**
+- **Silent retraction-lossiness.** If a plugin output type is not
+  a `ZSet`, the algebra has no way to say "this is a sink" unless
+  the contract surfaces it. Plain interface + trust is a trap.
+  The capability tag is how we stop Bayesian's nature from
+  poisoning everything.
+- **Entry-point by repurposing.** README, CONTRIBUTING, and
+  ARCHITECTURE are *each* for a different audience. Plugin
+  authors are a fourth audience. "Plugin-author" is a
+  first-class persona with a first-class doc — not a footnote.
+
+**Next review:** implementation lands on Kenji's desk. My gate
+on implementation: `Op<'T>` actually retracts to internal (not
+just in the proposal), the four capability interfaces ship
+together (no punting Linear/Bilinear to a later round), FsCheck
+laws land alongside, and `docs/PLUGIN-AUTHOR.md` is written this
+round, not punted. Same gate pattern as the interface — ship
+the contract and the harness together or not at all.
+
+---
+
+## 2026-04-18 — Round 27 — Design-spike entry
+
+Kenji anchored Round 27 on the P0 I raised in Round 26 entry 1:
+`Circuit.RegisterStream<'T>(op: Op<'T>)` implicitly makes every
+abstract/virtual/public member of `Op` + `Op<'T>` a forever plugin
+contract. This turn was the dedicated design-spike — produce the
+concrete shape of the new plugin-author surface.
+
+**Deliverable:** `docs/research/plugin-api-design.md` (new file,
+full proposal, ~400 lines).
+
+**Candidate shapes evaluated:**
+- **A** — `IOperator<'TOut>` interface + optional capability
+  interfaces (`IStrictOperator`, `IAsyncOperator`,
+  `INestedFixpointParticipant`).
+- **B** — `Circuit.Extend(input, step)` closure-only builder.
+  Rejected: doesn't generalise to multi-input, strict, async,
+  or fixpoint operators without a combinatorial method family.
+- **C** — `PluginOp<'TOut>` abstract class, trimmed to only the
+  members plugins legitimately override. Ergonomically close to
+  today's shape but commits us to the exact member set and makes
+  future capability-addition either silently-defaulted or
+  ecosystem-splitting.
+- **D** — **Shape A + a `PluginHarness` test module** shipped in
+  the same round. Closes the extension-cliff (SKILL checklist #6)
+  which none of A / B / C does alone.
+
+**Recommendation: Shape D.** Rationale in one line: it's the
+narrowest forever-surface that still expresses Bayesian plus every
+Core operator, and it's the only shape that ships a test harness
+simultaneously. Precedent: Roslyn `CodeFixProvider` +
+`FixAllProvider`, Orleans grain interfaces, BCL `IAsyncEnumerator`
++ `IAsyncDisposable`. All four-star shapes for long-lived extension
+points.
+
+**What the shape hides from plugins (satisfies round-27
+constraints):**
+- `Op<'T>.Value` setter and `SetValue` — NOT exposed. Plugins
+  write output via `OutputBuffer<'TOut>.Publish` (write-only).
+- `idField`, scheduler-owned `IsStrict`, `Fixedpoint`, `IsAsync`
+  on base `Op` — stay internal. Plugin-author opt-ins are the
+  `IStrictOperator` / `IAsyncOperator` /
+  `INestedFixpointParticipant` interfaces.
+- `Stream<'T>.Op` — retracts to internal. Replaced by opaque
+  `StreamHandle` obtained via `stream.AsDependency()`.
+
+**What stays unchanged:**
+- Core's `Op<'T>` inherits the new `IOperator<'T>` interface
+  internally; `Operators.fs` / `Primitive.fs` keep their current
+  shape, zero hot-path regression.
+- `Stream<'T>` struct, `VolatileField` on `.Value`,
+  `[<InlineIfLambda>]` on fast transforms, `ValueTask.CompletedTask`
+  return path — all untouched.
+
+**Migration cost for Bayesian:** ≤ 20 lines changed in one file.
+Line-count delta: +3 (interface block); `inherit Op<_>()`
+replaced by `interface IOperator<_> with`. Acceptable pre-v1.
+
+**Blocking open questions surfaced:**
+- **Q1 — Tariq.** Does the `IOperator<'T>` shape preserve the
+  algebraic laws the chain rule + `IsDbspLinear` need? Specifically
+  whether a plugin hiding its state cell in own fields still
+  admits the per-tick `phi_n` additive monoid hom, or whether we
+  need an opt-in `ILinearOperator` marker interface.
+- **Q4 — Daya.** Can a new plugin author ship a working custom
+  operator in < 5 minutes reading only the XML docs + the
+  `BayesianRateOp` example? If not, what piece is missing.
+
+**Non-blocking questions logged:** Q2 (Tariq — strict-operator
+ordering contract), Q3 (Tariq — `Fixedpoint` semantics as derived
+vs. overridden), Q5 (Daya — four-interface split vs. single
+abstract class with four virtuals), Q6 (Daya —
+`ReadDependencies: StreamHandle array` vs. fluent `.DependsOn(...)`),
+plus a courtesy ping to Mateo on `OutputBuffer` thread-safety if
+captured across `StepAsync` return.
+
+**Verdict posture going into synthesis:** ACCEPT_WITH_CONDITIONS
+on Shape D, contingent on Tariq's Q1 answer. If the algebra
+requires an explicit linearity declaration from plugins, the
+shape still holds — we just add one more opt-in marker interface
+(pattern already in place for strict / async / fixpoint). If
+Daya flags onboarding > 5 min, the fix is probably example-ops
+and XML doc polish, not structural — Rune's lane.
+
+**Anti-patterns flagged that recur from Round 26 notebook:**
+- Public-abstract-class-as-extension-point promotes *every*
+  abstract member to a plugin contract. Interface + optional
+  capability interfaces is the narrower alternative. (Generalised:
+  prefer composition of narrow interfaces over one wide base.)
+- Write channels should be write-only opaque types, not bare
+  property setters. `OutputBuffer<'TOut>.Publish` is the pattern;
+  today's `Op<'T>.Value with set` is the anti-pattern.
+
+**Next review:** Kenji will integrate with Tariq's + Daya's
+findings and return for a synthesis-doc review before
+implementation starts. My gate on that synthesis: (i) does it
+keep `Op<'T>` fully internal post-migration? (ii) does
+`RegisterStream` accept only the interface, never the class?
+(iii) is `PluginHarness` shipped in the same round as the
+interface, not punted to "round N+2"? If any of those slip, I
+flip to REJECT on the synthesis.
+
+---
+
 ## 2026-04-18 — Round 26 — Entry 1
 
 First review. Two `internal` → `public` flips from round 25 that

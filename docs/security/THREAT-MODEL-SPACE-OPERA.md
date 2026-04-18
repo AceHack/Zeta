@@ -137,8 +137,8 @@ real mitigation**. When onboarding, a reviewer should:
 
 1. Read the joke version (this file) — 5 minutes.
 2. Read the serious version (`THREAT-MODEL.md`) — 15 minutes.
-3. Play the EoP card game once (`eop-full.pdf`) — 15 minutes solo
-   or 90 minutes with friends.
+3. Play Adam Shostack's EoP card game once (download from the
+   upstream project) — 15 minutes solo or 90 minutes with friends.
 4. Try to **add** a silly adversary to this doc with a real
    mitigation.
 5. Then they're ready to review security-sensitive PRs.

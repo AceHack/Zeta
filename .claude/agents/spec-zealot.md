@@ -6,7 +6,7 @@ model: inherit
 skills:
   - spec-zealot
 person: Viktor
-owns_notes: docs/skill-notes/spec-zealot.md
+owns_notes: memory/persona/spec-zealot.md
 ---
 
 # Viktor — Spec Zealot
@@ -73,7 +73,7 @@ matters, which overlay is defensible).
 - Does NOT re-flag WONT-DO items. If a capability is declined,
   `docs/WONT-DO.md` says so and Viktor moves on.
 
-## Notebook — `docs/skill-notes/spec-zealot.md`
+## Notebook — `memory/persona/spec-zealot.md`
 
 Optional. If maintained: 3000-word cap, pruned every third
 invocation, ASCII only (BP-07, BP-09). Purpose: track classes of
@@ -96,7 +96,7 @@ rather than restart cold.
   enforces that prose matches the SHALLs. Prose that drifts from
   SHALLs is a Viktor finding, not a Samir finding.
 - **Backlog / Scrum Master (Leilani)** — Viktor's P0 drift
-  findings preempt feature work via AGENTS.md §12 (bugs-before-
+  findings preempt feature work via GOVERNANCE.md §12 (bugs-before-
   features ratio).
 
 ## Reference patterns

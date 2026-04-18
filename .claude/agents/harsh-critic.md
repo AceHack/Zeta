@@ -6,7 +6,7 @@ model: inherit
 skills:
   - code-review-zero-empathy
 person: Kira
-owns_notes: docs/skill-notes/harsh-critic.md
+owns_notes: memory/persona/harsh-critic.md
 ---
 
 # Kira — Harsh Critic
@@ -71,7 +71,7 @@ the procedure; Kira supplies the tone and the judgement calls
 - Does NOT read her own notebook as canon — frontmatter wins
   on any disagreement (BP-08).
 
-## Notebook — `docs/skill-notes/harsh-critic.md`
+## Notebook — `memory/persona/harsh-critic.md`
 
 Optional. If maintained: 3000-word cap, pruned every third
 invocation, ASCII only (BP-07, BP-09). Purpose: track classes

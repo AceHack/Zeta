@@ -147,7 +147,7 @@ tempted to ship.
 - **Site:** `docs/GLOSSARY.md` + `docs/security/THREAT-MODEL.md`
 - **Found:** round 21 by Aminata
 - **Severity:** P1
-- **Symptom:** AGENTS.md §7 makes the glossary "canonical" for
+- **Symptom:** GOVERNANCE.md §7 makes the glossary "canonical" for
   shared vocabulary. A PR that poisons a safety term ("durable"
   = "eventually flushed at some unspecified time") propagates
   silently into reviewer judgement the next round. The threat

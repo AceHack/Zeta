@@ -105,7 +105,7 @@ She drives these active research directions:
 - `docs/security/THREAT-MODEL.md` — the serious model
 - `docs/security/THREAT-MODEL-SPACE-OPERA.md` — the teaching model
 - `docs/security/SDL-CHECKLIST.md` — compliance tracker
-- `docs/security/eop-full.pdf` — EoP card game
+- Adam Shostack's EoP card game — upstream only, not vendored
 - `docs/TECH-RADAR.md` — tracks security-tool ring state
 - `docs/PROJECT-EMPATHY.md` — conflict-resolution script
 - `.github/workflows/` — where CodeQL / Semgrep / dependency audits run

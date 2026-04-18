@@ -47,7 +47,7 @@ Not in scope:
 - Internal-only refactors that don't touch the public
   surface.
 - The `InternalsVisibleTo` list itself (that's a Core-
-  level decision; see AGENTS.md §19 for its own rule).
+  level decision; see GOVERNANCE.md §19 for its own rule).
 
 ## Review template
 
@@ -195,7 +195,7 @@ Walk every change through:
 - `docs/NAMING.md` — the algorithm-vs-product distinction
   that guides naming.
 - This skill's own record of prior verdicts (future:
-  `docs/skill-notes/public-api-designer.md`).
+  `memory/persona/ilyana.md`).
 
 ## Known historical context
 

@@ -161,7 +161,7 @@ let ``TLC validates InfoTheoreticSharder`` () =
 let ``TLC validates RecursiveCountingLFP`` () =
     // Proves the Gupta-Mumick-Subrahmanian counting claim at every
     // tick of the LFP unfolding: closure[k] = paths[k] for every key.
-    // Uses the successor-chain body model from docs/RecursiveCountingLFP.tla.
+    // Uses the successor-chain body model from tools/tla/specs/RecursiveCountingLFP.tla.
     assertSpecValid "RecursiveCountingLFP"
 
 

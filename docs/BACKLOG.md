@@ -110,6 +110,123 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Software-factory design — roles vs personas vs
+  skills architecture.** This is foundational work on the
+  Zeta software-factory pattern, not just on one repo's
+  agent layout. Everything we ship here informs the
+  factory-paper deliverable
+  (`docs/research/factory-paper-2026-04.md`) and the
+  competitive analysis against MetaGPT / ChatDev /
+  AutoGen / CAMEL / SWE-Agent / AutoCodeRover.
+
+  Aaron round-27: "this project needs certain roles but
+  any agent can satisfy the role and move around over
+  time. So we have named agents, who have unique personas
+  and are assigned to a role, skills can be assigned to
+  the persona or the role because certain roles will
+  require a skill."
+
+  Current state conflates all three: `.claude/agents/<role>.md`
+  filenames are role-keyed, persona names live inside the
+  file (Kenji = architect), skill assignments are in the
+  frontmatter of the persona file. A persona cannot be
+  reassigned to a different role without renaming files;
+  a role cannot exist without a persona filling it; role-
+  level skill requirements cannot be expressed separately
+  from the persona's own capabilities. Every other AI
+  factory system we have surveyed has a variant of this
+  conflation — resolving it cleanly is a real research
+  contribution, not just plumbing.
+
+  **Design targets** (open questions, not decisions):
+  - **Separation of concerns.** Role = requirement
+    (what the seat needs to do). Persona = named agent
+    with unique voice / stance / memory (who is doing
+    it). Skill = capability, attachable to either.
+  - **Dynamic assignment.** A persona moves between
+    roles across rounds. Roles may be temporarily
+    vacant. Multiple personas can share a role if the
+    role is plural (e.g. two reviewers).
+  - **Skill attachment.** Some skills attach to roles
+    (every architect needs `round-management`); some to
+    personas (Kenji personally carries `holistic-view`);
+    some to both. Frontmatter schema needs to
+    distinguish.
+  - **File-system layout.** Candidate:
+    `.claude/roles/<role>.md` (requirements) +
+    `.claude/personas/<persona-name>.md` (individuals) +
+    an assignments manifest. Persona memory already at
+    `memory/persona/<persona-name>/` post-round-27,
+    so that side is aligned.
+  - **Backward compatibility.** Pre-v1 repo; breaking
+    changes are cheap. Migration is mostly renaming
+    files and updating cross-refs.
+
+  **Prior art to survey** (research before design):
+
+  *AI / software-factory systems:*
+  - **MetaGPT** (Hong et al. 2023) — SOPs and role
+    assignment for Product Manager / Architect /
+    Engineer / QA Engineer.
+  - **ChatDev** (Qian et al. 2023) — "software
+    development virtual company" with role-scoped
+    phases.
+  - **AutoGen** (Microsoft 2023) — multi-agent
+    conversation patterns; agent-type vs agent-instance
+    distinction.
+  - **CAMEL** (Li et al. 2023) — role-playing
+    user-agent / assistant-agent framework.
+  - **SWE-Agent** (Yang et al. 2024) — agent-computer
+    interface; roles implicit in tools rather than
+    personas.
+  - **AutoCodeRover** (Zhang et al. 2024) — specialised
+    agents for reproduce / locate / fix cycle.
+
+  *General role-separation patterns:*
+  - **IFS (Internal Family Systems)** — Self / Parts /
+    Roles; loosely borrowed in
+    `docs/PROJECT-EMPATHY.md`.
+  - **DCI (Data-Context-Interaction)** — Reenskaug's
+    pattern separating role-playing from object
+    identity. Smalltalk / Ruby communities.
+  - **RBAC (Role-Based Access Control)** — principals /
+    roles / permissions; NIST RBAC model.
+  - **Agile ceremonies** — Product Owner / Scrum Master
+    / Developer are roles; people rotate through them.
+    Scrum Guide separation is useful precedent.
+  - **RACI matrices** — Responsible / Accountable /
+    Consulted / Informed as role-assignment primitive.
+  - **Theater / improv troupes** — actor vs character
+    vs role. Understudy patterns. Ensemble casting.
+  - **Military rank / role / individual** — three-level
+    separation with mutual independence.
+  - **DCR graphs** (Hildebrandt et al.) — formal role
+    semantics for workflows.
+
+  **Deliverable:** `docs/research/factory-roles-design.md`
+  (note: factory-level, not Zeta-repo-level) with:
+  - Prior-art survey: 1-2 paragraphs per candidate above,
+    grouped by AI-factory systems vs general role
+    patterns.
+  - Chosen model with justification (drawing from the
+    best parts of the prior art).
+  - Concrete schema: frontmatter shape for roles /
+    personas / skills; file-system layout; assignment
+    manifest format.
+  - Migration path for the current 25-seat roster.
+  - Publication hook: how this design differentiates
+    Zeta's factory from MetaGPT / ChatDev et al.,
+    feeding the factory-paper draft.
+
+  Land the design first; migration is its own round.
+
+  **Why P1 rather than P2:** every persona decision
+  (spawn / retire / reassign) currently re-opens this
+  question. Resolving the model makes round 28+ roster
+  decisions proceed without relitigating the shape each
+  time, and gives the factory-paper a concrete
+  contribution to point at.
+
 - [ ] **Wire HLL from `Sketch.fs` into `Plan.estimate`** (query-planner
   P1, Imani). `src/Core/Plan.fs:28-51` currently uses static
   heuristics (filter /2, groupBy /4, 1024L unknown); real per-input
@@ -156,7 +273,7 @@ within each priority tier.
   steward* (IFS-native — "Self" is the integrating
   consciousness, not a clinical term).
   Scope: holds `docs/PROJECT-EMPATHY.md` as the working
-  artifact. Relates to AGENTS.md §17 (productive friction) —
+  artifact. Relates to GOVERNANCE.md §17 (productive friction) —
   this seat sits *with* the friction rather than resolving
   it. Open design questions: (a) title (see safer candidates
   above), (b) personal name, (c) per-persona coaching-log vs
@@ -171,12 +288,12 @@ within each priority tier.
   stop writing history everywhere trying to save memories:
   (a) **shared** — cross-cutting facts / rules / lessons
   that apply to every persona. Lives at
-  `~/.claude/projects/<repo>/memory/` (outside git,
+  `memory/` (outside git,
   project-wide, Claude's auto-memory folder).
   (b) **per-persona** — each seat's unique lens, style,
   and working notes (e.g. Daya's cold-start audit
   heuristics, Viktor's overlay discipline). Lives at
-  `docs/skill-notes/<persona>.md` (in git when git lands;
+  `memory/persona/<persona>.md` (in git when git lands;
   3000-word cap; ASCII-only). Per-persona memory is
   essential — if every seat shares every memory, all seats
   collapse to a single averaged voice. Design work: codify

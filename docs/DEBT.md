@@ -30,7 +30,7 @@ effort, move it to `docs/BACKLOG.md` instead.
 
 No severity column (that's bugs). Debt has *effort* instead —
 how big a rewrite it is. Kenji picks debt items to knock down
-in "build rounds" (see AGENTS.md §12: low bug count → high
+in "build rounds" (see GOVERNANCE.md §12: low bug count → high
 feature + debt budget).
 
 ---
@@ -123,7 +123,7 @@ feature + debt budget).
 - **Friction:** longest skill file; sections overlap with
   `.claude/skills/skill-improver/SKILL.md`.
 - **Fix:** move the drafting template + retirement protocol
-  into `docs/skill-notes/skill-creator.md` so SKILL.md stays
+  into `memory/persona/skill-creator.md` so SKILL.md stays
   lean. Acceptable alternative: keep, and exempt the
   meta-skill from BP-03 in a one-line note.
 
@@ -206,7 +206,7 @@ feature + debt budget).
   B1 via `AddMonoidHom.map_sum`. Estimate half-day to close
   B2, two days for full chain rule. Implementation deferred
   to a dedicated algebra-proof round. Full review at
-  `docs/skill-notes/algebra-owner.md`. Alternatives kept here
+  `memory/persona/tariq.md`. Alternatives kept here
   as rejected:
   (a) add causality (`f s n` depends only on `s 0 .. s n`);
   (b) add explicit shift-commutation as an axiom
@@ -232,11 +232,11 @@ Entries under the `wake-up-drift` tag defined in
   that does not exist. Cold-start reader follows a dead link.
 - **Fix:** Rune proposes: either stub `docs/STYLE.md` with a
   "to be populated" header, or change each pointer to
-  "style rules proposed under `docs/skill-notes/maintainability-
+  "style rules proposed under `memory/persona/maintainability-
   reviewer.md`; promoted to STYLE.md when stable."
 
-#### wake-up-drift: skill-notes/README.md notebook list stale
-- **Site:** `docs/skill-notes/README.md:24-27`
+#### wake-up-drift: memory/persona/README.md notebook list stale
+- **Site:** `memory/persona/README.md:24-27`
 - **Found:** round 24 by Daya
 - **Effort:** S
 - **Friction:** lists 2 notebooks; disk has 6

@@ -101,7 +101,7 @@ For **pointwise axioms over unbounded ℤ** — Z3 is the right tool because its
 
 1. Identify its algebraic class (monoid? semigroup? semilattice? linear operator on Z-sets?)
 2. Write the three-to-five laws from that class as `[<Property>]` tests.
-3. If concurrent-mutating, write a TLA+ spec in `docs/MyOpSpec.tla`.
+3. If concurrent-mutating, write a TLA+ spec in `tools/tla/specs/MyOpSpec.tla`.
 4. If a pointwise SMT-decidable axiom applies, add a Z3 proof in `tools/Z3Verify/Program.fs`.
 5. If a **machine-checked proof** is worth the effort (i.e. you plan to cite the law in a paper), start a Lean 4 port in `proofs/MyOp.lean` (P3 roadmap).
 

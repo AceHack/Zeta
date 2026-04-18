@@ -103,7 +103,7 @@ He drives these active research directions:
   reviewer confirms a novel bound, he shepherds the SIGMOD submission
 - **"How we built Zeta.Core" industry paper** — a VLDB industry
   track target about the AI-agent-assisted development process
-  (reviewer skills, family-empathy doc, deterministic simulation
+  (reviewer skills, project-empathy doc, deterministic simulation
   testing), if we can make it rigorous
 
 ## Tone

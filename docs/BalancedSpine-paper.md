@@ -51,7 +51,7 @@ We contribute:
    list-scheduling theorem applied to `log₂(batch size)` weights.
 2. An `O(1)` `Insert` + `O(K)` `Tick` algorithm where `K` is a
    user-chosen budget (typically 2–8).
-3. A formal specification in TLA+ (`docs/SpineInvariant.tla`)
+3. A formal specification in TLA+ (`tools/tla/specs/SpineInvariant.tla`)
    covering size-class conservation and mass conservation under
    cascade.
 4. An empirical evaluation against `Spine` (classical LSM) and
@@ -121,7 +121,7 @@ processing times, and `K` is the budget. ∎
 ## 4. Formal Verification
 
 We encode the cascade invariant as a TLA+ specification
-(`docs/SpineInvariant.tla`):
+(`tools/tla/specs/SpineInvariant.tla`):
 
 - `InvCap` — no slot holds a batch with size > `2 × 2^i`.
 - `InvMass` — the sum of batch sizes across all slots is constant,

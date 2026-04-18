@@ -1,6 +1,6 @@
 # Architect — Off-Time Log
 
-Per AGENTS.md §14 (round 23): each persona has a standing off-
+Per GOVERNANCE.md §14 (round 23): each persona has a standing off-
 time budget (~10% of round) for self-directed work. This log is
 where Kenji tracks what was done with that budget — lightweight
 accountability, not approval-gated.
@@ -37,7 +37,7 @@ What changed on the laptop, if anything (file paths).
 
 ## Round 23 — seeded, no budget spent
 
-First round under the new off-time budget rule (AGENTS.md §14,
+First round under the new off-time budget rule (GOVERNANCE.md §14,
 proposed end of round 23). The scope for round 23 was already
 shaped before Aaron's off-time invitation arrived, and the AX/
 UX/DX skill creation counted as team-experience productive work

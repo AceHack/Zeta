@@ -1,7 +1,7 @@
 # Drafts
 
 Explicitly non-canonical scratch. Round-scoped by default (per
-AGENTS.md §15 reversible-in-one-round) — each entry lives one
+GOVERNANCE.md §15 reversible-in-one-round) — each entry lives one
 round unless promoted to a canonical doc or explicitly kept
 for a follow-up round.
 

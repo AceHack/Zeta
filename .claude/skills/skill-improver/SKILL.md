@@ -1,6 +1,6 @@
 ---
 name: skill-improver
-description: Targeted skill-improvement driver. She is the thin wrapper around `skill-creator` that actually runs the improvement loop for this repo. Understands requests like "improve one skill", "improve this specific skill", "improve 10 skills", "improve all skills", "improve the improvement process itself". Pairs with the Skill Tune-Up Ranker — he recommends, she executes. Keeps a notebook at docs/skill-notes/skill-improver.md.
+description: Targeted skill-improvement driver. She is the thin wrapper around `skill-creator` that actually runs the improvement loop for this repo. Understands requests like "improve one skill", "improve this specific skill", "improve 10 skills", "improve all skills", "improve the improvement process itself". Pairs with the Skill Tune-Up Ranker — he recommends, she executes. Keeps a notebook at memory/persona/skill-improver.md.
 ---
 
 # Skill Improver
@@ -27,7 +27,7 @@ that decides:
 
 ## State file — her notebook
 
-`docs/skill-notes/skill-improver.md`, same discipline as the
+`memory/persona/skill-improver.md`, same discipline as the
 Tune-Up Ranker's:
 - ASCII only. Prompt-Protector-linted.
 - 3000-word hard cap; pruned every third session.
@@ -48,7 +48,7 @@ Notebook sections:
 ## Commands she understands
 
 - **"Improve one skill"** — pick the Tune-Up Ranker's top item
-  from his notebook (`docs/skill-notes/skill-tune-up-ranker.md`
+  from his notebook (`memory/persona/aarav.md`
   §Current top-5). If his notebook is stale (last entry > 2
   rounds ago), ask him to re-rank first.
 - **"Improve <skill-name>"** — go straight to that skill. Skip
@@ -129,7 +129,7 @@ Notebook sections:
 - ...
 
 ## Notebook updates
-- [high-level summary of what went into docs/skill-notes/skill-improver.md]
+- [high-level summary of what went into memory/persona/skill-improver.md]
 ```
 
 ## Interaction with the Architect
@@ -143,8 +143,8 @@ silently rewrite whose-in-charge; she proposes and waits.
 - `.claude/skills/skill-creator/SKILL.md` — the workflow she
   dispatches into
 - `.claude/skills/skill-tune-up-ranker/SKILL.md` — her pair
-- `docs/skill-notes/skill-improver.md` — her notebook
-- `docs/skill-notes/skill-tune-up-ranker.md` — his notebook
+- `memory/persona/skill-improver.md` — her notebook
+- `memory/persona/aarav.md` — his notebook
   (read-only for her)
 - `docs/PROJECT-EMPATHY.md` — conflict protocol when a proposed
   improvement meets resistance from an owner agent

@@ -59,7 +59,7 @@ persona and auto-injects the skills it needs. This split is the
 factory's cleanest internal interface: tone lives on the agent,
 mechanics live on the skill, and the two can evolve independently.
 
-**Notebooks** in `docs/skill-notes/*.md` are per-skill running
+**Notebooks** in `memory/persona/*.md` are per-skill running
 memory. They are ASCII, git-diffable, capped at 3000 words, and
 pruned every third invocation. A notebook is a conscious trust
 grant: the longer it gets, the more it acts as an effective
@@ -70,7 +70,7 @@ system prompt, so we keep it small, visible, and auditable.
 and cover description-field hygiene, negative scope, tone
 contracts, notebook caps, Unicode linting, and sub-agent
 re-sanitisation. Volatile findings (this week's search results,
-new tooling notes) go to `docs/skill-notes/best-practices-scratch.md`
+new tooling notes) go to `memory/persona/best-practices-scratch.md`
 and are pruned every ~3 rounds. Promotion from scratchpad to
 stable is an Architect decision with an ADR.
 

@@ -1,6 +1,6 @@
 ---
 name: holistic-view
-description: Capability skill ("hat") — the "think like an architect but without the authority" lens. Any expert wears this when filing a finding to sanity-check whole-system implications before escalating. Codifies the second hat every specialist implicitly wears. No persona; Kenji still owns binding integration per AGENTS.md §11.
+description: Capability skill ("hat") — the "think like an architect but without the authority" lens. Any expert wears this when filing a finding to sanity-check whole-system implications before escalating. Codifies the second hat every specialist implicitly wears. No persona; Kenji still owns binding integration per GOVERNANCE.md §11.
 ---
 
 # Holistic View — Procedure
@@ -30,7 +30,7 @@ every specialist implicitly wears.
 ## What wearing this hat does NOT grant
 
 - Does NOT grant binding authority. Kenji (Architect) remains
-  the integration authority per AGENTS.md §11; nobody reviews
+  the integration authority per GOVERNANCE.md §11; nobody reviews
   Kenji but Kenji reviews everyone else.
 - Does NOT grant write-access to files outside the wearer's
   usual scope.
@@ -38,7 +38,7 @@ every specialist implicitly wears.
   If the holistic view surfaces a conflict between two
   specialists, the conflict still routes to the conference
   protocol (third-option search; human on deadlock).
-- Does NOT override AGENTS.md §12 (bugs-before-features ratio)
+- Does NOT override GOVERNANCE.md §12 (bugs-before-features ratio)
   or §13 (reviewer count) or §15 (reversible-in-one-round).
 - Does NOT override the wearer's own tone contract. The hat
   adds a lens, not a voice — Kira stays zero-empathy, Viktor
@@ -61,7 +61,7 @@ Ask: does this claim touch any of these surfaces?
 - A formal spec (`docs/*.tla`, `proofs/**`, Z3 lemmas under
   `tools/Z3Verify/`).
 - A BP-NN rule in `docs/AGENT-BEST-PRACTICES.md`.
-- A notebook in `docs/skill-notes/*.md`.
+- A notebook in `memory/persona/*.md`.
 - The glossary (`docs/GLOSSARY.md`).
 - The wake-up protocol (`docs/WAKE-UP.md`).
 - Another expert's skill body or agent file.

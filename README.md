@@ -24,9 +24,66 @@ query `Q` into its incremental form `Q^Δ = D ∘ Q^↑ ∘ I`. Key identities:
 - Bilinear `Q` (e.g. join): `(a ⋈ b)^Δ = Δa ⋈ Δb + z^-1(I(a)) ⋈ Δb + Δa ⋈ z^-1(I(b))`
 - `distinct^Δ`: the paper's `H` function, work bounded by `|Δ|`
 
-See `src/Dbsp.Core/Incremental.fs` for the implementation of these theorems
-and `tests/Dbsp.Tests.FSharp/IncrementalTests.fs` for the equivalence proofs
+See [src/Core/Incremental.fs](src/Core/Incremental.fs) for the implementation of these theorems
+and [tests/Tests.FSharp/Circuit/Incremental.Tests.fs](tests/Tests.FSharp/Circuit/Incremental.Tests.fs) for the equivalence proofs
 as executable tests.
+
+## What Zeta adds on top
+
+Zeta is not just the paper's three-primitive kernel — it ships an
+implementation + a catalogue of operators, sketches, CRDTs, and
+runtime primitives built on top:
+
+- **Kernel primitives.** Delay, Integrate, Differentiate, Constant —
+  the paper's three plus a `Constant` operator. See
+  [src/Core/Primitive.fs](src/Core/Primitive.fs).
+- **Operators.** Map, filter, join (inner + left-outer), groupBy-sum,
+  consolidate, index, distinct with H-incrementalization. See
+  [src/Core/Operators.fs](src/Core/Operators.fs) and
+  [src/Core/Advanced.fs](src/Core/Advanced.fs).
+- **Aggregates and windowing.** Sum, average, scalar-fold, sliding
+  window, lag-1, watermark + speculative-watermark. See
+  [src/Core/Aggregate.fs](src/Core/Aggregate.fs),
+  [src/Core/Window.fs](src/Core/Window.fs),
+  [src/Core/Watermark.fs](src/Core/Watermark.fs).
+- **Sketches.** Bloom + CountingBloom, Count-Min, HyperLogLog,
+  HyperMinHash, Kll, Haar, Tropical. See
+  [src/Core/BloomFilter.fs](src/Core/BloomFilter.fs),
+  [src/Core/CountMin.fs](src/Core/CountMin.fs),
+  [src/Core/Sketch.fs](src/Core/Sketch.fs).
+- **CRDT family.** G-counter, PN-counter, OR-set, LWW, DeltaCrdt.
+  See [src/Core/Crdt.fs](src/Core/Crdt.fs) and
+  [src/Core/DeltaCrdt.fs](src/Core/DeltaCrdt.fs).
+- **Recursion & hierarchy.** Fixed-point Recursive, ClosureTable,
+  NestedCircuit, HigherOrder, Residuated. See
+  [src/Core/Recursive.fs](src/Core/Recursive.fs),
+  [src/Core/Hierarchy.fs](src/Core/Hierarchy.fs).
+- **Storage & durability.** Spine family (Balanced / Disk /
+  SpineAsync / SpineSelector), Merkle, FastCdc content-defined
+  chunking, checkpoint / durability modes, Witness-Durable Commit
+  skeleton. See [src/Core/Spine.fs](src/Core/Spine.fs) and
+  [src/Core/Durability.fs](src/Core/Durability.fs).
+- **Runtime.** Mailbox + work-stealing runtimes, consistent-hash
+  sharding, information-theoretic sharder, chaos environment,
+  deterministic simulation harness, metrics + tracing. See
+  [src/Core/Runtime.fs](src/Core/Runtime.fs),
+  [src/Core/ConsistentHash.fs](src/Core/ConsistentHash.fs),
+  [src/Core/ChaosEnv.fs](src/Core/ChaosEnv.fs).
+- **Wire + SIMD.** Arrow IPC serializer, FsPickler serializer,
+  hardware-CRC, SIMD merge / dispatch. See
+  [src/Core/ArrowSerializer.fs](src/Core/ArrowSerializer.fs),
+  [src/Core/Simd.fs](src/Core/Simd.fs).
+- **Plugins.** [src/Bayesian/BayesianAggregate.fs](src/Bayesian/BayesianAggregate.fs)
+  — online Bayesian posteriors (Beta / Normal-Inverse-Gamma /
+  Dirichlet) as first-class operators. **Writing a plugin?
+  Start with [docs/PLUGIN-AUTHOR.md](docs/PLUGIN-AUTHOR.md)**
+  for the public `IOperator<'T>` surface, the capability-tag
+  system, and the `PluginHarness` test loop. Full design
+  rationale at [docs/research/plugin-api-design.md](docs/research/plugin-api-design.md).
+
+The paper's algebra is the invariant; Zeta is the F#/.NET
+realisation + a research surface for operators that compose
+correctly under the paper's rules.
 
 ## Quick tour
 

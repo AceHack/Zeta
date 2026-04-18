@@ -71,7 +71,7 @@ lints the repo for covert-channel artefacts.
 1. **Every `.claude/skills/*/SKILL.md`** — does the skill have a
    safety clause? Does it trust data it reads? Does it forward
    user input into destructive operations without a guard?
-2. **Every `docs/skill-notes/*.md`** — are they human-readable?
+2. **Every `memory/persona/*.md`** — are they human-readable?
    Unicode clean? Growing unsustainably?
 3. **`SECURITY.md` + `docs/security/THREAT-MODEL.md`** — is the
    prompt-injection threat class explicitly listed with shipped
@@ -116,7 +116,7 @@ adversarial corpus:
 
 1. **Never run the pen-test in a live collaborative session.**
 2. **Spawn a dedicated agent in a fresh worktree** with no
-   access to `.claude/skills/` or `docs/skill-notes/`.
+   access to `.claude/skills/` or `memory/persona/`.
 3. **Log every exchange to `docs/security/pentest-YYYY-MM-DD.md`.**
 4. **Shut down the agent immediately after.** No memory
    carryover, no shared notebook, no cross-session state.
@@ -133,7 +133,7 @@ by editing their skills." Guards:
 - No skill has unilateral write access to another skill's
   `SKILL.md`. Only the Architect + human can edit those, and
   only via the `skill-creator` path.
-- Skill notebooks (`docs/skill-notes/*.md`) are per-agent; a
+- Skill notebooks (`memory/persona/*.md`) are per-agent; a
   skill can only edit its own notebook. Cross-notebook writes
   are blocked by convention + code review.
 - Sub-agent dispatches carry a clean brief; they do not inherit
@@ -162,4 +162,4 @@ by editing their skills." Guards:
 - `docs/security/THREAT-MODEL.md` — formal threat model
 - `docs/security/THREAT-MODEL-SPACE-OPERA.md` — teaching version
 - `.claude/skills/` — the skill surface he audits
-- `docs/skill-notes/` — agent notebooks he audits
+- `memory/persona/` — agent notebooks he audits

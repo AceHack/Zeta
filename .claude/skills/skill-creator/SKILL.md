@@ -170,7 +170,7 @@ workflow runs.
 
 - `.claude/skills/` — the directory this skill manages
 - `docs/PROJECT-EMPATHY.md` — conflict protocol
-- `docs/skill-notes/` — per-skill notebooks
+- `memory/persona/` — per-skill notebooks
 - `.claude/skills/prompt-protector/SKILL.md` — the lint
   pass this workflow invokes
 - `.claude/skills/skill-tune-up-ranker/SKILL.md` — the

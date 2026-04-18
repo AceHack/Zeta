@@ -36,6 +36,6 @@ Windows VM; the Mac-side authoritative source is the markdown.
 
 ## Elevation of Privilege card game
 
-`docs/security/eop-full.pdf` + `docs/security/eop-onepager.pdf` —
-Adam Shostack's EoP game (CC-BY-3.0). Used as a reference during
-Security Auditor reviewer passes.
+Adam Shostack's EoP card game (CC-BY-3.0) is used as a reference
+during Security Auditor reviewer passes. Download from the
+upstream project — we do not vendor the PDFs in this repo.

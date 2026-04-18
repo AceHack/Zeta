@@ -22,7 +22,7 @@ high-leverage maintenance, not cosmetics.
 
 - `.claude/agents/*.md` — every persona file.
 - `.claude/skills/*/SKILL.md` — every capability skill.
-- `docs/skill-notes/*.md` — per-persona notebooks.
+- `memory/persona/*.md` — per-persona notebooks.
 - `docs/WAKE-UP.md` — the cold-start index.
 - `AGENTS.md`, `CLAUDE.md`, `docs/GLOSSARY.md` — global
   orientation docs (Tier 0).
@@ -67,7 +67,7 @@ Six friction types:
 - **duplicated-info** — same content lives in agent file + skill
   body (every wake-up re-reads both).
 - **missing-notebook** — persona has cross-round memory need but
-  no `docs/skill-notes/<name>.md` exists yet.
+  no `memory/persona/<name>.md` exists yet.
 - **over-long-notebook** — notebook exceeds BP-07 (3000 words);
   pruning overdue.
 - **unclear-contract** — tone / scope / authority ambiguous after
@@ -93,7 +93,7 @@ No multi-file refactor is proposed without Kenji sign-off first.
 
 ### Step 5 — publish
 
-Append findings to `docs/skill-notes/agent-experience-researcher.md`
+Append findings to `memory/persona/daya.md`
 in the output format below. Kenji reads this notebook on round-
 close and acts on the top-3 items.
 
@@ -174,7 +174,7 @@ P2 (small wins):
 - `.claude/agents/agent-experience-researcher.md` — the persona
 - `docs/WAKE-UP.md` — the cold-start index audited here
 - `docs/GLOSSARY.md` — AX / wake / hat / frontmatter
-- `docs/skill-notes/agent-experience-researcher.md` — Daya's
+- `memory/persona/daya.md` — Daya's
   notebook (created on first audit)
 - `docs/EXPERT-REGISTRY.md` — Daya's roster entry
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01, BP-03, BP-07, BP-08,

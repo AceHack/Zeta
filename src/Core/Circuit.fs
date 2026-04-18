@@ -60,9 +60,9 @@ type Op<'T>() =
 
     member _.Value
         with get () = value
-        and set v = value <- v
+        and internal set v = value <- v
 
-    member _.SetValue(v: 'T) = value <- v
+    member internal _.SetValue(v: 'T) = value <- v
 
 
 /// A lightweight, zero-allocation handle to an operator's output stream.
@@ -72,13 +72,12 @@ type Stream<'T> =
 
     internal new(op: Op<'T>) = { op = op }
 
-    /// The operator that produces this stream. Exposed as a
-    /// get-only property (not a field) so plugin libraries can
-    /// reference a stream's producer without binding to the
-    /// internal storage layout — the property can evolve to a
-    /// wrapper, interface, or lazy-compute in future versions
-    /// with source- and binary-compatible migration.
-    member this.Op : Op<'T> = this.op
+    /// The operator that produces this stream. Internal — plugin
+    /// authors use `Stream<'T>.AsDependency()` (in `PluginApi`) to
+    /// obtain an opaque `StreamHandle` for use in
+    /// `IOperator.ReadDependencies`. Direct `Op<'T>` access is
+    /// reserved for Zeta.Core's internal scheduler paths.
+    member internal this.Op : Op<'T> = this.op
 
     member this.Current = this.op.Value
 
@@ -119,11 +118,11 @@ type Circuit() =
             if op.IsAsync then anyAsync <- true
             op)
 
-    /// Register an operator and return a stream handle to its
-    /// output. The public registration point for plugin
-    /// libraries that implement custom operators and need to
-    /// hook them into the circuit graph.
-    member this.RegisterStream<'T>(op: Op<'T>) : Stream<'T> =
+    /// Register an internal `Op<'T>`-typed operator. Used by
+    /// Zeta.Core's own catalogue and by tests via
+    /// `InternalsVisibleTo`. **External plugin authors use the
+    /// `IOperator<'T>` overload in `PluginApi`, not this one.**
+    member internal this.RegisterStream<'T>(op: Op<'T>) : Stream<'T> =
         this.Register op |> ignore
         Stream op
 

@@ -16,7 +16,7 @@ Running observations (append-dated). Pruned every third session.
   zero-empathy mode. Next 2-3 invocations will tell whether the
   retune holds. Observe, don't tune again.
 - 2026-04-17 (round 18) — `architect` is brand-new. Notebook
-  `docs/skill-notes/architect.md` already exists. 140-line
+  `memory/persona/kenji.md` already exists. 140-line
   SKILL.md carries an ambitious self-edit clause; verify by
   observation over 2-3 real conflicts before pruning.
 - 2026-04-17 (round 18) — `product-manager` last mention in

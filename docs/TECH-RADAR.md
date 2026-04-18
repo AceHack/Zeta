@@ -65,7 +65,7 @@ ThoughtWorks-style radar for the technologies / research / papers
 | Semgrep | Trial | 12 | 12 rules; runs externally |
 | CodeQL | Assess | 9 | SDL practice #9; workflow TBD |
 | Stryker.NET | Trial | 10 | Mutation testing config shipped |
-| Alloy | Assess | 10 | `docs/Spine.als` |
+| Alloy | Assess | 10 | `tools/alloy/specs/Spine.als` |
 | Lean 4 + Mathlib | Assess | 10 | Stub proof `proofs/lean/ChainRule.lean`; full proof 2-week P2 |
 | pytm (threats-as-code) | Assess | 15 | P0 in BACKLOG |
 | OWASP Threat Dragon | Assess | 15 | Visual fallback |

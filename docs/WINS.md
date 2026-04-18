@@ -11,6 +11,123 @@ shipped." **Ordered newest-first** — recent rounds lead,
 older rounds trail below. Entries stay even after the moment
 passes, because the pattern is the value.
 
+## Wins — round 27
+
+### 1. Reviewer cadence caught two P0s in the same round the code landed
+
+§20 codified a mandatory code-phase reviewer pass (Kira +
+Rune floor) the same round the `Op<'T>` plugin API shipped.
+Dispatched immediately after implementation, they caught
+the `OutputBuffer.Publish` non-atomic-increment race and
+the false "FsCheck laws run at `Circuit.Build()`" claim in
+PLUGIN-AUTHOR.md — both fixable in-round (Interlocked call;
+docs softened to match reality). Without §20 the race would
+have shipped as a silent bug for async plugins; the claim
+would have misled first-week plugin authors into thinking
+law-coverage already existed.
+
+**What would have gone wrong:** previous rounds ran
+specialist dispatches (Ilyana / Tariq / Daya) but not
+zero-empathy code reviewers. Kira's review on a round that
+landed 220 lines of new public API would have deferred to
+"next governance round" — and by then the bug is in
+production.
+
+**Pattern to keep:** the reviewer floor is Kira + Rune
+every code-landing round. Additional reviewers scope-
+triggered. Findings P0 fix same round; P1 into DEBT the
+same round; P2 into notebook or defer. Round-close does
+not record clean until the pass is logged.
+
+### 2. Productive friction resolved to a richer public surface
+
+Ilyana proposed `IOperator<'T>` + harness — narrowest
+forever-surface, Roslyn-precedent compositional interface.
+Tariq proposed a tagged-DU capability system with algebra
+laws at `Circuit.Build()` — caught that Bayesian is
+retraction-lossy by design and needs a `Sink` tag to
+exempt it from composition. Daya proposed `PLUGIN-AUTHOR.md`
+entry-point doc because no existing doc repurposed well
+for plugin authors. The three dispatches returned
+*divergent* recommendations.
+
+The architect did not pick one. Ilyana re-reviewed her own
+design with Tariq + Daya findings embedded; her revised
+draft combines the compositional-interface shape *plus*
+capability sub-interfaces (`ILinearOperator`, `IBilinearOperator`,
+`ISinkOperator`, `IStatefulStrictOperator`) *plus* the
+`PluginHarness` *plus* the entry-point doc. Seven
+interfaces instead of four, but the capability split is
+load-bearing for Tariq's algebra check and cannot be cut.
+Her final verdict: ACCEPT, with the three gates intact.
+
+**What would have gone wrong:** if the architect had
+picked Ilyana's narrowest design alone, Bayesian's
+retraction-lossy nature would have silently poisoned
+downstream composition with no type-level signal. If the
+architect had picked Tariq's tagged-DU alone, the DU
+would have forced a closed-world surface that Ilyana's
+interface-composition pattern was specifically chosen
+to avoid. If Daya's entry-point doc had been deferred,
+the first plugin author would have bounced off the
+research design doc.
+
+**Pattern to keep:** when three specialists disagree, the
+synthesis is often "all three, composed" rather than
+"pick the winner." Send the author of the first draft
+back to integrate the other two — they know their own
+design better than the architect can. Friction between
+competent specialists is the signal that a richer design
+exists.
+
+### 3. Memory moved in-repo on one-line maintainer correction
+
+Round 25 placed the shared memory folder in Claude Code's
+harness sandbox (`~/.claude/projects/<slug>/memory/`).
+Maintainer flagged mid-round 27: "this is your sandbox
+folder too, there is no project folder in git." The move
+to `memory/` happened the same turn: nine files
+migrated, GOVERNANCE.md §18 rewritten, every pointer across
+the repo swept, a new §22 codifying `~/.claude/projects/`
+as sandbox-only.
+
+**What would have gone wrong:** memories in the sandbox
+travel with *this machine* but not with *clones*. A new
+contributor pulling the repo gets zero memory corpus.
+Every correction the maintainer had given across rounds
+24-26 would have been invisible to them. The "memories
+are the most valuable resource in the repo" rule becomes
+empty if the memories aren't actually in the repo.
+
+**Pattern to keep:** load-bearing artifacts live inside
+the repo tree. Claude Code's harness-level paths are
+conveniences, not canon. When a rule says "in the repo,"
+check that it literally is — one-line `git status` on the
+artifact says yes or no.
+
+### 4. `persona-notes` rename caught a conceptual conflation
+
+`docs/skill-notes/<persona>.md` had been the per-persona
+notebook location for ~5 rounds. Maintainer caught it this
+round: personas are not skills. Skills are capabilities;
+personas are experts that *wear* skills. The folder name
+conflated them and risked future readers confusing
+"persona state" with "skill state." Renamed to
+`memory/persona/` mid-round with a cross-file sweep.
+
+**What would have gone wrong:** the conflation would have
+propagated into round-28+ artifacts. New personas would
+get notebooks at `docs/skill-notes/<new-name>.md` for
+years, carrying the naming bug forward.
+
+**Pattern to keep:** naming bugs compound fast. When a
+maintainer catches a conceptual conflation, rename in the
+same round — even if the old name has soaked in. Five
+rounds of `skill-notes` was cheap to undo; twenty-five
+rounds would not have been.
+
+---
+
 ## Wins — round 26
 
 ### 1. Three parallel dispatches integrated in one round without context collision
@@ -122,7 +239,7 @@ for (1) and (3) an explicit section in either `AGENTS.md`
 §18 or the documentation-agent SKILL.md. None was
 discussed-and-forgotten; none waited for the "next
 governance round." The memory policy itself
-(AGENTS.md §18 + shared-vs-per-persona layering + newest-
+(GOVERNANCE.md §18 + shared-vs-per-persona layering + newest-
 first ordering) is the meta-result: the factory committed
 in-round to treating corrections as durable, and the
 infrastructure emerged to match.
@@ -221,7 +338,7 @@ how easily you flipped those internal methods public...
 it should have gone through a review with the public-api-
 design agent." The same round, the factory spawned the
 public-api-designer persona (tentatively **Ilyana**),
-added AGENTS.md §19 codifying the review requirement, and
+added GOVERNANCE.md §19 codifying the review requirement, and
 dispatched Ilyana's first review on the two flips. Her
 verdict (ACCEPT_WITH_CONDITIONS) caught a P1 field-over-
 property smell that was applied immediately (struct `val`
@@ -382,7 +499,7 @@ Round 22's FeedbackOp concurrency fix applied `[<VolatileField>]`
 to `val mutable internal source: Op<'T>` — plausible at read-time,
 but F# compile-error FS0823: the attribute is "only valid on 'let'
 bindings in classes." The bug-fixer agent wrote the code; the
-Architect (Kenji) review per AGENTS.md §11 caught it before merge.
+Architect (Kenji) review per GOVERNANCE.md §11 caught it before merge.
 Fix: remove the attribute, use explicit `Volatile.Write(&this.source,
 source)` in `Connect` and `Volatile.Read(&this.source)` with a null
 guard in every reader.
@@ -393,7 +510,7 @@ and the "concurrency bug fixed" claim in the round-22 summary would
 have read dishonestly (fix shipped, fix didn't build). Instead it
 caught at the last mile and the win is real.
 
-**Pattern to keep:** AGENTS.md §11 — Architect reviews every
+**Pattern to keep:** GOVERNANCE.md §11 — Architect reviews every
 agent-written code change, nobody reviews Architect. The gate is
 load-bearing precisely when the agent's fix *looks* right.
 `[<VolatileField>]` was the plausible-wrong; only a second reader
@@ -428,7 +545,7 @@ reason.
 
 ### 2. TLC caught real modelling bugs in our own TLA+ spec
 
-`docs/InfoTheoreticSharder.tla` was written round 21 to cover a
+`tools/tla/specs/InfoTheoreticSharder.tla` was written round 21 to cover a
 `docs/BUGS.md` P0 (the sharder had no formal spec, which is how
 the double-charge + tie-break bugs landed unchallenged in round
 20). During the concurrent test-add, TLC found *two pre-existing

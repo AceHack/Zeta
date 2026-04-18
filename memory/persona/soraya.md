@@ -53,7 +53,7 @@ Reported each invocation:
    adjunction, Bloom probe determinism, Merkle second-preimage
    on one level. Effort: S (one evening each). In-flight.
 5. **Alloy CI hook for `Spine.als`** + new
-   `docs/InfoTheoreticSharder.als`. Effort: S. In-flight.
+   `tools/alloy/specs/InfoTheoreticSharder.als`. Effort: S. In-flight.
 
 ### Round 22+ targets (not yet dispatched)
 

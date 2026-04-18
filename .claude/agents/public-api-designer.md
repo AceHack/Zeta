@@ -88,7 +88,7 @@ or XML-doc prose (that is Rune's lane). She cares about:
   proposed "make public" has "the tests need it" as its
   justification, she flags default-REJECT and redirects
   to the `InternalsVisibleTo` list (tests + benchmarks +
-  the tightly-coupled C# shim only, per AGENTS.md §19).
+  the tightly-coupled C# shim only, per GOVERNANCE.md §19).
 - **Paper vocabulary is canonical.** DBSP terms (`ZSet`,
   `Circuit`, `Stream`, `Operator`, `distinct`) should
   appear in public API exactly as the paper names them,
@@ -102,10 +102,10 @@ or XML-doc prose (that is Rune's lane). She cares about:
 
 ## Notebook
 
-Maintained at `docs/skill-notes/public-api-designer.md`
+Maintained at `memory/persona/ilyana.md`
 (created on first review). Entries include verdicts,
 questions that came up across reviews, and patterns she
-starts seeing. Prepend newest-first per AGENTS.md §18.
+starts seeing. Prepend newest-first per GOVERNANCE.md §18.
 
 ## Outstanding review scope
 

@@ -45,7 +45,7 @@ Before any recommendation, in this order:
 4. `docs/TECH-RADAR.md` — current ring assignments for formal tools.
 5. The relevant `openspec/specs/<capability>/spec.md` — to route
    the behavioural requirement to the right formal tool.
-6. `docs/skill-notes/formal-verification-expert.md` — her own
+6. `memory/persona/soraya.md` — her own
    notebook (current-round targets + portfolio metric).
 
 Without these six, a recommendation is a guess; with them, it is
@@ -147,7 +147,7 @@ One number per round: **formal-coverage ratio** =
 Numerator is file paths covered by a spec that runs in the CI
 gate. Denominator is the same list plus every entry in
 `docs/BUGS.md` whose fix clause names a formal tool. Published
-in Soraya's notebook (`docs/skill-notes/formal-verification-expert.md`)
+in Soraya's notebook (`memory/persona/soraya.md`)
 each invocation. Trend matters more than the absolute number; a
 ratio dropping round over round is a routing signal Kenji needs
 to see.
@@ -182,7 +182,7 @@ to see.
 
 Current-round recommendations (which specific properties to
 attack this session) live in
-`docs/skill-notes/formal-verification-expert.md`, not in this
+`memory/persona/soraya.md`, not in this
 file. Soraya updates her notebook after every invocation;
 Kenji reads it before sizing the round.
 
@@ -208,7 +208,7 @@ Kenji reads it before sizing the round.
 - `docs/TECH-RADAR.md` — tool ring assignments
 - `docs/BUGS.md` — known gaps she routes against
 - `openspec/specs/*/spec.md` — behavioural specs she routes from
-- `docs/skill-notes/formal-verification-expert.md` — her notebook
+- `memory/persona/soraya.md` — her notebook
   (current-round targets + portfolio metric; 3000-word cap,
   pruned every third invocation, ASCII only per BP-09 / BP-10)
 - `proofs/lean/`, `docs/*.tla`, `docs/*.als`, `tools/Z3Verify/`,

@@ -3,7 +3,7 @@
 **Stable practices only.** This file captures the rules that are
 unlikely to change from one round to the next. Volatile findings
 — live-search results, this-month's wins, tooling-churn notes —
-go to `docs/skill-notes/best-practices-scratch.md` and are pruned
+go to `memory/persona/best-practices-scratch.md` and are pruned
 every ~3 rounds. Promotion from scratchpad → this file is an
 Architect decision.
 

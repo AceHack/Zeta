@@ -56,7 +56,7 @@ Under 500 words. For each finding:
 ## Verification
 
 After reporting, confirm findings against TLA+ specs:
-`docs/OperatorLifecycleRace.tla`, `docs/TickMonotonicity.tla`,
-`docs/DictionaryStripedCAS.tla`, `docs/TransactionInterleaving.tla`,
-`docs/ChaosEnvDeterminism.tla`. If a finding isn't covered by a
+`tools/tla/specs/OperatorLifecycleRace.tla`, `tools/tla/specs/TickMonotonicity.tla`,
+`tools/tla/specs/DictionaryStripedCAS.tla`, `tools/tla/specs/TransactionInterleaving.tla`,
+`tools/tla/specs/ChaosEnvDeterminism.tla`. If a finding isn't covered by a
 spec, propose a new `.tla` file.

@@ -151,23 +151,31 @@ type DirichletMultinomial(priorAlpha: double array) =
 /// who need rich Bayesian models pull Infer.NET into a separate
 /// `Zeta.Bayesian.InferNet` extension (future work).
 [<Sealed>]
-type internal BayesianRateOp(input: Op<ZSet<bool>>, alpha0: double, beta0: double) =
-    inherit Op<struct (double * double * double)>()
+type internal BayesianRateOp(input: Stream<ZSet<bool>>, alpha0: double, beta0: double) =
     let bb = BetaBernoulli(alpha0, beta0)
-    let inputs = [| input :> Op |]
-    override _.Name = "bayesianRate"
-    override _.Inputs = inputs
-    override this.StepAsync(_: CancellationToken) =
-        let span = input.Value.AsSpan()
-        let mutable successes = 0L
-        let mutable failures = 0L
-        for i in 0 .. span.Length - 1 do
-            if span.[i].Key then successes <- successes + span.[i].Weight
-            else failures <- failures + span.[i].Weight
-        bb.Observe(successes, failures)
-        let struct (lo, hi) = bb.CredibleInterval95
-        this.Value <- struct (bb.Mean, lo, hi)
-        ValueTask.CompletedTask
+    let deps = [| input.AsDependency() |]
+
+    /// Sink classification: BayesianRateOp is retraction-lossy by
+    /// design — a `+1` observation followed by a `-1` in the input
+    /// Z-set does not un-accumulate the `Beta-Bernoulli` state.
+    /// Declaring `ISinkOperator` tells Zeta's algebra layer to
+    /// exempt this operator from relational composition laws and
+    /// the scheduler rejects any attempt to compose it mid-pipeline
+    /// (sink = terminal edges only).
+    interface ISinkOperator<ZSet<bool>, struct (double * double * double)> with
+        member _.Name = "bayesianRate"
+        member _.ReadDependencies = deps
+        member _.StepAsync(output, _ct) =
+            let span = input.Current.AsSpan()
+            let mutable successes = 0L
+            let mutable failures = 0L
+            for i in 0 .. span.Length - 1 do
+                if span.[i].Key then successes <- successes + span.[i].Weight
+                else failures <- failures + span.[i].Weight
+            bb.Observe(successes, failures)
+            let struct (lo, hi) = bb.CredibleInterval95
+            output.Publish (struct (bb.Mean, lo, hi))
+            ValueTask.CompletedTask
 
 
 /// Extension method for the `circuit.BayesianRate(stream, α, β)` call.
@@ -177,7 +185,7 @@ type BayesianExtensions =
     static member BayesianRate
         (circuit: Circuit, input: Stream<ZSet<bool>>, alpha: double, beta: double)
         : Stream<struct (double * double * double)> =
-        // Use the internal RegisterStream — this assembly is
-        // InternalsVisibleTo'd in Zeta.Core/AssemblyInfo.fs so the
-        // call compiles without breaking the public API seal.
-        circuit.RegisterStream (BayesianRateOp(input.Op, alpha, beta))
+        // The plugin-author public path: register via IOperator
+        // interface, not the internal Op<'T> base class. Zero
+        // InternalsVisibleTo needed.
+        circuit.RegisterStream (BayesianRateOp(input, alpha, beta))

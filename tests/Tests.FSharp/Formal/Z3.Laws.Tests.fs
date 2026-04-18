@@ -262,7 +262,7 @@ let ``Z3 proves Merkle combine is injective when hash is collision-free`` () =
 let ``TLC model-checker is available when configured`` () =
     // Probe for the TLA+ tools jar. Not required for CI success — this test
     // simply notes whether formal verification via TLC is runnable in the
-    // current environment. The actual spec is in docs/DbspSpec.tla and was
+    // current environment. The actual spec is in tools/tla/specs/DbspSpec.tla and was
     // already verified in development on 1 M states.
     let probePath =
         [ "/tmp/tla2tools.jar"

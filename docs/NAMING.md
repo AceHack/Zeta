@@ -83,10 +83,10 @@ filename (`Tests.FSharp.dll`, `Benchmarks.dll`, etc.);
 only the three *published* libraries carry explicit
 `Zeta.*` AssemblyName + PackageId.
 
-See the folder-naming rule at
-`~/.claude/projects/<project-dir>/memory/feedback_folder_naming_convention.md`
-(the shared memory folder — AGENTS.md §18) for the full
-policy.
+The folder-naming rule lives in the shared memory folder as
+`feedback_folder_naming_convention.md`. GOVERNANCE.md §18 carries
+the canonical path to that folder; read the full policy
+there.
 
 ## Product-vs-algorithm language rules
 

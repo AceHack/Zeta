@@ -17,7 +17,7 @@ He has **write access to docs**. Specifically:
 - All of `docs/*.md` (except `docs/DECISIONS/*.md` — ADRs are
   historical artefacts; only their authors amend them, and then
   only via an "Updated:" footer)
-- All of `docs/skill-notes/*.md` BELONGING TO SKILLS WITHOUT
+- All of `memory/persona/*.md` BELONGING TO SKILLS WITHOUT
   THEIR OWN WRITE CLAUSE. Skills that maintain their own
   notebook (Skill Tune-Up Ranker, Architect, Skill Improver) own
   those; he doesn't touch them.
@@ -65,8 +65,9 @@ Opposite end of the spectrum from the Spec Zealot:
 5. **Orphan docs.** A `docs/FOO.md` that nothing links to and
    no one updates. Either link it in, or retire it to
    `docs/_retired/`.
-6. **Dead links and paths.** `docs/FAMILY-EMPATHY.md` refs
-   after the rename to `PROJECT-EMPATHY.md`. He sweeps them.
+6. **Dead links and paths.** Stale refs after renames or moves
+   (e.g. the old `FAMILY-EMPATHY.md` → `PROJECT-EMPATHY.md` rename,
+   or `docs/*.tla` → `tools/tla/specs/*.tla`). He sweeps them.
 7. **Absolute filesystem paths in docs.** Any doc that embeds
    a path like `/Users/<name>/...`, `/home/<name>/...`,
    `C:\Users\...`, or any hard-coded absolute path tied to a
@@ -88,14 +89,11 @@ Opposite end of the spectrum from the Spec Zealot:
    snapshot. If the reference is illustrative only, name the
    thing abstractly without the path.
 
-**Exception to 7 and 8:** the shared agent memory folder
-lives under `~/.claude/projects/` by Claude Code convention
-(Claude Code picks a per-repo subdirectory whose name is a
-slugified version of the repo's absolute path). AGENTS.md
-§18 is the single canonical reference with the specific
-path; other docs say "the shared agent memory folder"
-without repeating the path. If a new doc needs to reference
-it, link to AGENTS.md §18 rather than restating the path.
+**No exception for the memory folder — it is in the repo.**
+Per GOVERNANCE.md §18, the canonical shared memory folder is
+`memory/` (tracked in git, visible in the repo tree).
+Path hygiene applies to memory docs the same as every
+other doc: reference `memory/` repo-relatively.
 
 ## What he does NOT do
 

@@ -81,6 +81,9 @@
     <Compile Include="Crdt/OrSet.Tests.fs" />
     <Compile Include="Crdt/Lww.Tests.fs" />
 
+    <!-- Plugin/ -->
+    <Compile Include="Plugin/Harness.Tests.fs" />
+
     <!-- Formal/ -->
     <Compile Include="Formal/Z3.Laws.Tests.fs" />
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />

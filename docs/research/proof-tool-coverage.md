@@ -144,7 +144,7 @@ machine-checked in Lean 4"* — a publication-grade claim.
 
 ## 4. Alloy — state
 
-- `docs/Spine.als` is the only Alloy model; checks LSM
+- `tools/alloy/specs/Spine.als` is the only Alloy model; checks LSM
   size-doubling invariant and batch-level-ownership over bound
   4 batches, 4 levels.
 - **Not in CI.** Requires `tools/alloy/alloy.jar` (downloaded by

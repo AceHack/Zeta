@@ -1,6 +1,6 @@
 ---
 name: round-management
-description: Capability skill — round planning, parallel-agent dispatch, synthesis, close-out. Invoked by the Architect (Kenji) at round-open, mid-round, and round-close to keep the software factory cadence honest. Applies AGENTS.md §12-13 (bugs-before-features ratio; reviewer-count inverse to backlog). Pure procedure; persona lives on `.claude/agents/architect.md`.
+description: Capability skill — round planning, parallel-agent dispatch, synthesis, close-out. Invoked by the Architect (Kenji) at round-open, mid-round, and round-close to keep the software factory cadence honest. Applies GOVERNANCE.md §12-13 (bugs-before-features ratio; reviewer-count inverse to backlog). Pure procedure; persona lives on `.claude/agents/architect.md`.
 ---
 
 # Round Management — Procedure
@@ -25,12 +25,12 @@ synthesis, closes with narrative-only updates to
 ### Step 1 — round-open classification
 
 1. Read `docs/BUGS.md`, `docs/DEBT.md`, `docs/BACKLOG.md` end-to-end.
-2. Classify per AGENTS.md §12:
+2. Classify per GOVERNANCE.md §12:
    - **Knockdown round** if `P0 bugs + P0 debt >= 5`. Budget: >= 70%
      bug/debt work, <= 30% feature.
    - **Build round** otherwise. Budget: >= 70% feature/backlog work,
      <= 30% debt-of-opportunity.
-3. Size reviewer pass per AGENTS.md §13:
+3. Size reviewer pass per GOVERNANCE.md §13:
    - `ceil(20 / max(bug_count + backlog_count, 5))`, clamped to
      `[2, 16]`.
    - Heavy-backlog rounds run fewer reviewers; clean rounds run
@@ -80,7 +80,7 @@ Rules the architect applies when dispatching:
 
 1. **File-level exclusivity.** At most one in-flight agent may
    write a given file. The dispatch prompt names the agent's
-   write-set explicitly (e.g. "write `docs/skill-notes/daya.md`;
+   write-set explicitly (e.g. "write `memory/persona/daya.md`;
    do not edit any other file"). Read-sets may overlap.
 2. **Heavy-command serialisation.** These commands get serial,
    not parallel, treatment:
@@ -109,6 +109,63 @@ When uncertain whether two agents would clash, default to
 sequential dispatch with a short note in the second prompt
 listing the first's write-set so the second can route around it.
 
+### Step 3.6 — reviewer pass (every round, per GOVERNANCE.md §20)
+
+Before round-close can record as clean, every round that
+touched code or behavioural specs dispatches the
+three-slot reviewer pass:
+
+**Slot 1 — design-phase specialists** — run *before or
+during* implementation, not after. Scope-triggered:
+- Public API change → Ilyana (public-api-designer).
+- Algebra / operator / chain-rule touch → Tariq
+  (algebra-owner).
+- Persona / skill / roster change → Daya (AX researcher).
+- Threat-model touch → Aminata (threat-model-critic).
+- Storage / spine / checkpoint → Indu (storage specialist).
+- Planner / query plan → Imani (query-planner).
+- Complexity / lower-bound claim → Hiroshi (complexity-
+  reviewer).
+- Perf / hot-path → Naledi (performance-engineer).
+
+**Slot 2 — code-phase reviewers** — mandatory floor on any
+round that lands code. At minimum:
+- **Kira (harsh-critic)** — always, no exceptions.
+- **Rune (maintainability-reviewer)** — mandatory on
+  public-surface change or >200 lines of churn in any
+  single file.
+- **race-hunter** — mandatory on any concurrency / shared-
+  state change.
+- **claims-tester** — mandatory on any new or changed XML
+  doc claim.
+- Kira + Rune is the floor; the others add when in
+  scope.
+
+**Slot 3 — formal-coverage check** — run when invariants
+change:
+- **Soraya (formal-verification-expert)** routes to TLA+ /
+  Z3 / Alloy / FsCheck / Lean. Mandatory when round
+  touches the operator algebra or chain rule. Optional
+  when the round is docs-only or infrastructure.
+
+**Reviewer-count scaling (§13) applies within each slot.**
+Heavy backlog → minimum set (Kira + Rune on slot 2).
+Light backlog → fan out to the full specialist list.
+
+**Recording.** Every reviewer invoked logs findings to
+its own notebook. Findings P0/P1 feed into
+`docs/BUGS.md` / `docs/DEBT.md` same round. The round's
+`docs/CURRENT-ROUND.md` carries a **Reviewer pass** block
+listing which reviewers ran and the top findings per
+reviewer. `docs/ROUND-HISTORY.md` round entry carries a
+**Reviewers** sub-section.
+
+**Round-close can't record clean until the reviewer pass
+is logged.** If a round legitimately changes no code and
+no specs (pure governance rounds), the pass can be
+skipped with a one-line "no code / no specs this round"
+note in the ROUND-HISTORY entry.
+
 ### Step 4 — round-close
 
 1. Summarise what landed in a single message to the human
@@ -126,7 +183,7 @@ listing the first's write-set so the second can route around it.
      changed.
 3. Narrative to `docs/ROUND-HISTORY.md` — past tense, what
    happened. Only doc in the repo that grows historically.
-4. Prune `docs/skill-notes/<notebook>.md` if over 1500 words,
+4. Prune `memory/persona/<notebook>.md` if over 1500 words,
    per BP-07 cap.
 
 ## Output format
@@ -174,7 +231,7 @@ mu-eno.  (transliterated; notebook ASCII-only per BP-09)
 
 - Does NOT write F# or Lean code. Dispatches code work to specialist
   experts (Tariq, Zara, Imani, Soraya, and the rest).
-- Does NOT merge PRs. Review gate per AGENTS.md §11; merge is a
+- Does NOT merge PRs. Review gate per GOVERNANCE.md §11; merge is a
   human action.
 - Does NOT pick winners on expert-to-expert disagreement. The
   `docs/PROJECT-EMPATHY.md` conference protocol owns that — third-
@@ -208,7 +265,7 @@ mu-eno.  (transliterated; notebook ASCII-only per BP-09)
 - `docs/ROUND-HISTORY.md` — narrative destination
 - `docs/BUGS.md` / `docs/DEBT.md` / `docs/BACKLOG.md` /
   `docs/WINS.md` — current-state reads
-- `docs/skill-notes/architect.md` — Kenji's notebook
+- `memory/persona/kenji/NOTEBOOK.md` — Kenji's notebook
 - `docs/PROJECT-EMPATHY.md` — conflict resolution protocol
 - `docs/AGENT-BEST-PRACTICES.md` — BP-01 (description as routing
   hint), BP-03 (size cap), BP-07 (notebook cap), BP-09 (ASCII),

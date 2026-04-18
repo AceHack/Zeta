@@ -17,7 +17,7 @@ Reads the following sources, in order:
 3. `docs/research/` — recent research reports
 4. Any open harsh-critic output in context
 5. `docs/TECH-RADAR.md` watchlist rows
-6. `docs/skill-notes/*.md` — agent notebooks for cross-cutting
+6. `memory/persona/*.md` — agent notebooks for cross-cutting
    themes
 
 ## Output — terse by design

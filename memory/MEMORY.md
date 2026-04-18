@@ -1,0 +1,7 @@
+- [Public API changes go through public-api-designer](feedback_public_api_review.md) — internal→public flips, new public members, signature changes all require Ilyana's review before landing; InternalsVisibleTo is not a workaround.
+- [Don't repeat project name in own folder tree](feedback_folder_naming_convention.md) — on-disk folders go bare (Core, Bayesian, Tests.FSharp); Zeta prefix survives only in published identity (NuGet / namespaces / published assembly names).
+- [Path hygiene in documentation](feedback_path_hygiene.md) — absolute filesystem paths and paths outside repo root are doc smells; documentation-agent greps and rewrites; GOVERNANCE.md §18 is the single memory-folder exception.
+- [Newest-first memory ordering](feedback_newest_first_ordering.md) — MEMORY.md, ROUND-HISTORY, per-persona notebooks all prepend new entries; recent history leads, ancient trails.
+- [Memories are the most valuable resource](project_memory_is_first_class.md) — human maintainer does not delete or modify the memory folder except as an absolute last resort; agents WRITE their own memories freely (that's the point). Per-entry policy in file.
+- [No regulated clinical titles on personas](feedback_regulated_titles.md) — never label a persona "therapist"/"counselor"/"psychologist"; use coach/steward/keeper/facilitator/liaison instead.
+- [Git init timing is the maintainer's call](feedback_git_timing.md) — never `git init` or commit on the Zeta repo without explicit authorization; "reversible" is not "authorized."

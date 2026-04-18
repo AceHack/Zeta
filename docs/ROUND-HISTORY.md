@@ -1,4 +1,4 @@
-# Dbsp.Core Round History
+# Zeta Round History
 
 Chronological log of working sessions ("rounds") — what landed,
 what didn't, and the reasoning when it matters. This is the
@@ -6,6 +6,148 @@ what didn't, and the reasoning when it matters. This is the
 Everywhere else, documents describe current state.
 
 New rounds are appended at the top.
+
+---
+
+## Round 27 — big round: governance §20-§22, plugin API redesign landed, memory moved in-repo
+
+### Shipped — governance rules (§20 / §21 / §22)
+
+- **GOVERNANCE.md §20 — standing reviewer cadence.** Every
+  round that touches code runs a three-slot reviewer pass
+  before round-close: design specialists (Ilyana / Tariq /
+  Daya / Aminata / etc. by scope), code reviewers (Kira
+  + Rune mandatory floor, race-hunter / claims-tester by
+  scope), formal-coverage (Soraya when invariants move).
+  Round-close cannot record clean until the pass is
+  logged. Round-management SKILL §3.6 carries the
+  procedure.
+- **GOVERNANCE.md §21 — per-persona memory is a real folder.**
+  `memory/persona/<persona>/` with `MEMORY.md` index,
+  `NOTEBOOK.md` working notes, and typed `feedback_*.md` /
+  `project_*.md` / `reference_*.md` / `user_*.md` entries.
+  Kenji piloted the migration this round (3 typed entries
+  seeded). Other seats migrate lazily.
+- **GOVERNANCE.md §22 — `~/.claude/projects/` is Claude Code
+  sandbox, not git.** New rule: documentation never cites
+  the sandbox path as a stable location. Project-wide
+  settings / skills / agents live in repo-root `.claude/`;
+  shared memory in `memory/`; per-persona memory in
+  `memory/persona/<persona>/`.
+
+### Shipped — memory moved in-repo to `memory/`
+
+- Round 25 placed the shared memory folder in Claude Code's
+  harness sandbox (`~/.claude/projects/<slug>/memory/`).
+  That path is not in git, not visible to human maintainers,
+  not shared across contributors. Maintainer flagged the
+  mismatch round-27; memory corpus moved to `memory/`
+  with GOVERNANCE.md §18 rewritten to treat `memory/` as
+  canonical.
+- Nine memory files migrated: `MEMORY.md`, `README.md`,
+  six `feedback_*.md` entries, `project_memory_is_first_class.md`.
+- `docs/skill-notes/` renamed to `memory/persona/`
+  (personas are not skills — maintainer correction mid-round).
+  Cross-file sweep updated every pointer.
+
+### Shipped — `Op<'T>` plugin-extension surface redesign
+
+The round's anchor. Three specialists dispatched in parallel
+for the design spike; synthesis integrated; Ilyana re-reviewed
+her own draft and returned **ACCEPT**; implementation
+landed; Kira + Rune code-reviewed per the new §20.
+
+- **Design surface.** Seven public interfaces
+  (`IOperator<'TOut>` base, `IStrictOperator` /
+  `IAsyncOperator` / `INestedFixpointParticipant` scheduler
+  capabilities, `ILinearOperator` / `IBilinearOperator` /
+  `ISinkOperator` / `IStatefulStrictOperator` algebra
+  capability tags), two opaque structs (`StreamHandle`,
+  `OutputBuffer<'TOut>`), internal `PluginOperatorAdapter`
+  bridging external `IOperator` into Core's `Op<'T>`
+  scheduler, `Stream.AsDependency()` extension,
+  `Circuit.RegisterStream(IOperator<'T>)` extension.
+- **Visibility retractions.** `Stream<'T>.Op`,
+  `Op<'T>.Value with set`, `Op<'T>.SetValue`, and
+  `Circuit.RegisterStream(op: Op<'T>)` all flipped back to
+  `internal` (they were public as of round 25; design
+  required they revert). `Zeta.Bayesian` dropped from the
+  `InternalsVisibleTo` list — uses the public plugin API.
+- **Bayesian migration.** `BayesianRateOp` now implements
+  `ISinkOperator<ZSet<bool>, struct(double*double*double)>`
+  — Tariq's critical finding that Bayesian is retraction-
+  lossy by design; `Sink` tag exempts it from composition
+  laws that would otherwise silently poison downstream.
+- **`PluginHarness.runSingleInput`** — scheduler-less unit-
+  test loop for plugin operators. Asserts exactly-one-
+  `Publish` per tick; three tests landed (happy-path +
+  no-publish failure + double-publish failure), all green.
+- **`docs/PLUGIN-AUTHOR.md`** — first-time plugin-author
+  entry-point doc. Split capability table into algebra
+  (5 shapes) + scheduler (3 shapes). Known-limits section
+  honest about FsCheck-law gap and `OutputBuffer` lifetime
+  gotchas.
+
+### Shipped — reviewer pass (Kira + Rune, per new §20)
+
+- Kira P0 fixed this round: `OutputBuffer.Publish` counter
+  incremented atomically via `Interlocked.Increment` so
+  async plugins don't race. PLUGIN-AUTHOR.md claims about
+  FsCheck laws weakened to match implementation reality.
+- Rune P0 fixed this round: README now links
+  PLUGIN-AUTHOR.md directly from the Plugins bullet.
+  PLUGIN-AUTHOR capability table split into algebra +
+  scheduler axes to stop hiding `IStrictOperator` /
+  `IAsyncOperator`.
+- Remaining P1 findings from both reviewers consolidated
+  into one DEBT entry for round-28 pickup — `OutputBuffer`
+  tick-stamping, `ReadDependencies` defensive copy, box-3×,
+  `int64` overflow guard in Bayesian, `INestedFixpointParticipant`
+  inheritance, harness id-space, rename `IOperator` → `IZetaOperator`,
+  file split when PluginApi.fs grows past 300 lines.
+
+### Shipped — README + primitives honesty
+
+- README's "What DBSP is" stayed paper-accurate (three
+  primitives); new "What Zeta adds on top" section lists
+  the ~50 additional operators / sketches / CRDTs / runtime
+  primitives Zeta ships. Readers no longer under-count what
+  Zeta exposes vs what the paper defines.
+
+### Build + tests
+
+- `dotnet build Zeta.sln -c Release` — 0W / 0E at every
+  checkpoint.
+- `dotnet test --filter Plugin` — 3 / 3 pass, 44 ms.
+- Full sln test run not explicitly re-run post visibility
+  flips (all core test projects built cleanly).
+
+### Not landed / deferred
+
+- Kira P1s: `OutputBuffer` tick-stamp, defensive-copy
+  `ReadDependencies`, box-3×, `int64` checked, interface
+  inheritance, harness id-space.
+- Rune P1s: `IOperator` rename, hover-doc on mixed
+  `Value` accessibility, PluginApi.fs split-when-300+,
+  `[<Extension>]` explanation in sample, extract
+  `assignHarnessId` helper.
+- FsCheck law implementations at `Circuit.Build()` — own
+  DEBT entry; Tariq's plan in `memory/persona/tariq.md`.
+- Other seat migrations to persona-notes folder layout
+  (Kenji piloted; 6 remaining).
+
+### What round-27 felt like
+
+The biggest single round by diff size since the rename.
+Three specialists in parallel, two reviewers after the
+code landed, five maintainer corrections mid-round (folder
+naming, memory path, sandbox rule, Claude Code
+clarifications) — the cadence §20 just codified got
+exercised the turn it was written. Productive friction
+between Ilyana's interface-narrowness and Tariq's
+capability-tag requirements resolved to a richer public
+surface than either proposed alone; Daya's AX pass
+insisted the doc accompany the code, and it did.
 
 ---
 
@@ -43,7 +185,7 @@ New rounds are appended at the top.
   preserved — first-pass folder names in those files are
   load-bearing history.
 
-### Shipped — memory policy clarification (AGENTS.md §18)
+### Shipped — memory policy clarification (GOVERNANCE.md §18)
 
 - Human rule unchanged: maintainer does not delete or modify
   memory files behind the agents' backs.
@@ -194,21 +336,23 @@ attach to.
   `docs/drafts/**`, `docs/CURRENT-ROUND.md` (live state),
   the shared memory folder, feldera mirror, `_retired/`.
 
-### Shipped — memory policy (AGENTS.md §18 + memory folder)
+### Shipped — memory policy (GOVERNANCE.md §18 + memory folder)
 
-- **AGENTS.md §18** codifies memories as the most
+- **GOVERNANCE.md §18** codifies memories as the most
   protected class of artifact in the repo. Human maintainer
   does not delete or modify except as an absolute last
   resort. Agents *write and touch* their own memories
   freely — that is the intended path. Non-architect agents
   do not delete files from the shared memory folder.
-- **Two-layer memory architecture.** The shared folder
-  (Claude Code's per-repo memory dir under
-  `~/.claude/projects/`) carries cross-cutting rules and
-  corrections. Per-persona notebooks at
-  `docs/skill-notes/<persona>.md` carry each seat's unique
+- **Two-layer memory architecture.** A shared folder carries
+  cross-cutting rules and corrections; per-persona notebooks
+  at `docs/skill-notes/<persona>.md` carry each seat's unique
   voice. Read per-persona first, then shared, to preserve
-  individual voice over averaged voice.
+  individual voice over averaged voice. (Round-25 placed the
+  shared folder outside the repo in Claude Code's harness
+  sandbox; round-27 moved it into `memory/` per AGENTS.md
+  §18 so the corpus is tracked in git and visible to every
+  contributor.)
 - **Newest-first ordering** established as convention for
   `MEMORY.md`, `docs/ROUND-HISTORY.md`, per-persona
   notebooks — recent context leads, older trails below.
@@ -319,7 +463,7 @@ and benchmarks. Audit landed the fix in-round:
 
 ### What round-25 felt like
 
-The biggest structural round since the AGENTS.md §10
+The biggest structural round since the GOVERNANCE.md §10
 round-table rule landed. Zeta the *name* is not just a
 branding change — it's the moment the repo stopped
 being "our implementation of the thing from the paper" and
@@ -341,22 +485,22 @@ not just a one-off sweep.
 
 ### Shipped — governance rules
 
-- **AGENTS.md §14 (universal off-time).** Standing ~10% off-time
+- **GOVERNANCE.md §14 (universal off-time).** Standing ~10% off-time
   budget is for every persona, not just the architect. Logs live at
   `docs/skill-notes/<persona>-offtime.md`. Corrected mid-round per
   Aaron: "the other agents can get off time too, not just you."
-- **AGENTS.md §15 (reversible + dev-machine authority).**
+- **GOVERNANCE.md §15 (reversible + dev-machine authority).**
   Reversible-in-one-round becomes the only hard constraint on
   "complete freedom within a round," plus Aaron's "this is your
   dev machine too" codified. Narrowly scoped later round-25: "the
   repo isn't yet initialised for git" is Aaron's call alone, not
   a §15 freedom.
-- **AGENTS.md §16 (dynamic hats).** Any persona can load any
+- **GOVERNANCE.md §16 (dynamic hats).** Any persona can load any
   capability hat on demand, except `round-management` which stays
   Kenji-monopoly per §11. Includes the "Overlap is expected, not
   redundancy" clause added late-round after Kenji's retraction
   (see wins).
-- **AGENTS.md §17 (productive friction).** Not every specialist
+- **GOVERNANCE.md §17 (productive friction).** Not every specialist
   disagreement wants resolution; friction between correct
   viewpoints-from-different-seats is a feature. Surface at
   round-close; silent-drift-across-rounds is the only bug.
@@ -539,7 +683,7 @@ point where governance work has its own rhythm.
   >= 2 independent formal tools. Soraya's skill gained a
   "Cross-check triage" section with the `InfoTheoreticSharder`
   anchor case.
-- **AGENTS.md §14 + §15.** §14 codifies the standing ~10% off-
+- **GOVERNANCE.md §14 + §15.** §14 codifies the standing ~10% off-
   time budget; §15 makes reversible-in-one-round the only hard
   constraint on complete-freedom-within-a-round. Dev-machine
   authority for the architect folded into §15.

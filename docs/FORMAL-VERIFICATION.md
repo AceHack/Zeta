@@ -6,7 +6,7 @@ Three independent oracles, each using the right tool for its problem.
 |---|---|---|---|
 | **FsCheck** (property-based tests) | Algebraic laws over generated Z-sets + pipelines | ✓ (xUnit) | `tests/Tests.FSharp/FuzzTests.fs` |
 | **Z3 SMT solver** | Pointwise axioms over **unbounded integers** | ✓ (xUnit shells to `z3`) | `tests/Tests.FSharp/FormalVerificationTests.fs` |
-| **TLA+ / TLC** | Concurrent-protocol invariants (interleavings) | Manual (optional) | `docs/SpineAsyncProtocol.tla` |
+| **TLA+ / TLC** | Concurrent-protocol invariants (interleavings) | Manual (optional) | `tools/tla/specs/SpineAsyncProtocol.tla` |
 
 ## Why each tool where
 
@@ -31,7 +31,7 @@ implementation bugs (off-by-one in consolidate, bad array indexing,
 etc.). The algebraic laws check for free (FsCheck generates adversarial
 Z-sets and pipelines).
 
-## `docs/DbspSpec.tla` status
+## `tools/tla/specs/DbspSpec.tla` status
 
 An earlier pass encoded the pointwise axioms in TLA+ and model-checked
 them on 1 million states. It's kept as **human-readable documentation**
@@ -48,10 +48,10 @@ dotnet test tests/Tests.FSharp -c Release \
     --filter "FullyQualifiedName~FormalVerificationTests"
 
 # TLA+ protocol spec
-java -cp tla2tools.jar tlc2.TLC -config docs/SpineAsyncProtocol.cfg \
-    docs/SpineAsyncProtocol.tla
+java -cp tla2tools.jar tlc2.TLC -config tools/tla/specs/SpineAsyncProtocol.cfg \
+    tools/tla/specs/SpineAsyncProtocol.tla
 
 # TLA+ pointwise axiom spec (documentation)
-java -cp tla2tools.jar tlc2.TLC -config docs/DbspSpec.cfg \
-    docs/DbspSpec.tla
+java -cp tla2tools.jar tlc2.TLC -config tools/tla/specs/DbspSpec.cfg \
+    tools/tla/specs/DbspSpec.tla
 ```

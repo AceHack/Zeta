@@ -30,7 +30,7 @@ Ships. Tests pass. Code review approves. Merged.
 ## The TLA+ spec gets written
 
 A few rounds later, the team writes a TLA+ specification for the
-operator lifecycle — `docs/OperatorLifecycleRace.tla` — modelling
+operator lifecycle — `tools/tla/specs/OperatorLifecycleRace.tla` — modelling
 concurrent `Register` calls against concurrent `HasAsyncOps` reads.
 The spec says:
 
@@ -90,7 +90,7 @@ for visibility. No iteration, no race, O(1) query.
 
 ## The cost and the value
 
-- **Cost:** one `docs/OperatorLifecycleRace.tla` file (~40 lines) +
+- **Cost:** one `tools/tla/specs/OperatorLifecycleRace.tla` file (~40 lines) +
   one `.cfg` file (~5 lines) + a TLC test wrapper in F# (~80 lines
   shared across every spec).
 - **Value:** TLC's state-space exploration found an interleaving no
@@ -140,8 +140,8 @@ When you add a new concurrent operation to `Zeta.Core`:
 
 ## References
 
-- `docs/OperatorLifecycleRace.tla` — the spec
-- `docs/OperatorLifecycleRace.cfg` — the TLC configuration
+- `tools/tla/specs/OperatorLifecycleRace.tla` — the spec
+- `tools/tla/specs/OperatorLifecycleRace.cfg` — the TLC configuration
 - `tests/Dbsp.Tests.FSharp/TlcRunnerTests.fs` — the test that shells
   out to TLC
 - `src/Core/Circuit.fs` — the code that was fixed

@@ -368,7 +368,7 @@ array; each entry auto-injects the matching
 **Plain:** A persona's own log — current-round targets, findings
 not yet landed, pruning notes. Gives a persona some cross-
 session memory without claiming continuous self.
-**Technical:** `docs/skill-notes/<persona-or-skill-name>.md`.
+**Technical:** `memory/persona/<persona-or-skill-name>.md`.
 Git-tracked; 3000-word cap (BP-07); ASCII only (BP-09);
 invisible-Unicode linted (Nadia); frontmatter wins over
 notebook on any disagreement (BP-08).
