@@ -14,7 +14,7 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
     <PackageVersion Include="FsCheck" Version="3.3.2" />
     <PackageVersion Include="FsCheck.Xunit.v3" Version="3.3.2" />
-    <PackageVersion Include="FsUnit.Xunit" Version="7.1.0" />
+    <PackageVersion Include="FsUnit.Xunit" Version="7.1.1" />
     <PackageVersion Include="Unquote" Version="7.0.1" />
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageVersion Include="coverlet.collector" Version="10.0.0" />
