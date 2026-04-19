@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v7 after Aaron's sixth pass of edits.
+> **Status:** round 33 v8 after Aaron's seventh pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
@@ -91,6 +91,34 @@ Concretely:
 - **LINQ + SQL + F# DSL all on the same surface.** Consumers
   pick their front-end per-query; Zeta routes everything
   through the shared IR + operator algebra.
+- **First-class event system.** Not a library-on-top;
+  subscriptions/projections/retraction-aware streams
+  are native. `services.AddZetaEvents(...)` wires them
+  into DI alongside the database.
+- **First-class caching system.** The retraction-native
+  algebra means cache invalidation is free — when the
+  underlying data retracts, dependent cache entries
+  retract with it. No TTL guessing, no cache-stampede
+  mitigation, no read-through/write-through/write-
+  behind taxonomy. `services.AddZetaCache(...)` gives
+  you a retraction-aware cache on the same store.
+- **Cross-API GraphQL with automatic spill-over.** A
+  GraphQL layer over Zeta — cross-service queries
+  traverse the graph, and because events + cache are
+  retraction-native, updates propagate across API
+  boundaries automatically. No manual cache-
+  invalidation-on-mutation plumbing; no subscription-
+  pushing-over-WebSocket glue per-field. The graph is
+  live by virtue of running on Zeta.
+- **Pluggable log back-end.** Kafka, NATS, NATS
+  JetStream, and Zeta's own native log all speak to
+  the multi-node substrate. Aaron round 33: "all with
+  pluggable wire protocol, hello kafka, nats, nats
+  streaming … and our own of course." Single-node
+  consumers pick in-memory; multi-node picks whatever
+  log infrastructure they already have; greenfield
+  multi-node can pick Zeta-native and get features the
+  emulated back-ends can't express.
 
 What lights up for .NET consumers:
 
@@ -104,6 +132,10 @@ What lights up for .NET consumers:
   travel queries for free, not bolted on.
 - **Distributed-systems research** — a reference
   implementation of events-as-truth at scale.
+- **GraphQL federated APIs** — retraction propagates
+  across service boundaries automatically.
+- **Caching-heavy workloads** — cache invalidation
+  becomes a solved problem, not a folklore one.
 
 ## Product 1 — Zeta the database
 
