@@ -144,6 +144,18 @@ within each priority tier.
   walk highlighting shape / contract / perf / correctness
   differences. Owned by `tech-radar-owner` role; feeds
   `docs/TECH-RADAR.md` Adopt/Trial/Assess/Hold moves.
+- [ ] **`product-visionary` role** (round 33 ask). Aaron: "we
+  are likely going to need some product owner that drives the
+  direction of the project when all the suggestions start rolling
+  in from upstream … they should have a longer vision for this
+  project." Owns `docs/VISION.md` as Aaron's proxy; runs the
+  loop: upstream signals + research + novel ideas → vision check
+  → backlog entry (or `WONT-DO.md` entry). Asks Aaron many
+  clarifying questions, especially on direction-shifting items.
+  Distinct from `branding-specialist` (messaging/positioning)
+  and `backlog-scrum-master` (tactical grooming). Ships via
+  `skill-creator` workflow. First audit when spawned: walk the
+  "needs Aaron validation" list at the bottom of VISION.md.
 - [ ] **Upstream categorisation audit (multi-round).** Aaron
   round 33: "we probably need some upstream maintenance to
   make sure all the categories are good and correct and make
