@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v10 after Aaron's ninth pass of edits.
+> **Status:** round 33 v11 after Aaron's tenth pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
@@ -159,10 +159,38 @@ on DBSP foundations, not to carve out a narrow niche.
   only. All on-disk format, durability, compaction, WAL,
   snapshotting, materialisation, indexing, and
   performance work lives inside Zeta. Ambition is
-  research-grade **fastest-in-all-classes** — OLTP +
-  OLAP + event-store + cache + analytical + streaming +
-  whatever workload we put it to. Aaron round 33
-  locked it: "fastest-in-all-classes ambition LFG."
+  research-grade **fastest-in-all-classes**. Zeta
+  refuses to be pigeonholed into one workload category;
+  the long-term aim is to cover the full multi-model
+  surface and chase the speed leader in each one:
+  - **HTAP / translytical** (hybrid transactional +
+    analytical on one engine) — row store + columnar
+    store under the façade; no separate OLTP-vs-OLAP
+    split per Gartner's HTAP framing, no bolt-on CDC
+    pipeline per Forrester's translytical framing.
+  - **Event streaming** — native DBSP surface, own
+    persistence, retraction-aware subscriptions.
+  - **Cache** — retraction-native invalidation for free.
+  - **Document / object store** — blow the doors off
+    NoSQL speed while staying schema-aware.
+  - **Graph store** — first-class graph queries over
+    the same retraction-native core.
+  - **In-memory-first speed** (VoltDB-class) — no
+    buffer-pool-as-excuse; memory is the primary tier,
+    disk is durability layer.
+
+  Aaron round 33: "fastest-in-all-classes ambition LFG
+  … we want to blow the doors off no-sql like database
+  too for speed so maybe we even need some sort of
+  document/object store, and graph store, and all the
+  in memory optimization like from voltdb. This really
+  is to research all the techniques not kidding just
+  getting there one round at a time."
+
+  The research trajectory is the point — Zeta exists to
+  study every data-management technique on one unified
+  retraction-native foundation and produce the fastest-
+  honest implementation of each. Round-by-round ratchet.
 - **Mathematically honest.** Every operator obeys laws
   Milewski would recognise. When a law cannot hold, the API
   tells you so, loudly and at compile time.
