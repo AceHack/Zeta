@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v6 after Aaron's fifth pass of edits.
+> **Status:** round 33 v7 after Aaron's sixth pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
@@ -50,6 +50,60 @@ This is load-bearing and worth stating first. Zeta is:
 
 Both are first-class. A decision that optimises (1) at the
 cost of (2) — or vice versa — is a design-doc event.
+
+## The developer-experience north star
+
+Aaron round 33: *"at the end of this any ASP.NET application
+should just be able to DI setup a db and boom they have a
+distributed database if they install on Kafka and we can
+test all this locally with Kind. Can you imagine how many
+things that could light up for any dotnet project. Your
+application just IS a database and your code IS stored
+procedures, plus LINQ and regular SQL."*
+
+This is the one-sentence pitch that the whole stack serves.
+Concretely:
+
+- **DI one-liner spin-up.** Something like
+  `services.AddZeta(opts => opts.UseKafkaLog(...))` →
+  ASP.NET app now has a distributed retraction-native
+  database. No separate server to run, no separate schema
+  migration pipeline, no separate client library. Zeta is
+  a NuGet package the app embeds.
+- **Kafka as the distribution substrate (option).** Aaron's
+  preferred multi-node shape: Kafka holds the log of
+  events; Zeta nodes read/write to it; the `events-as-
+  source-of-truth` principle maps cleanly to "the Kafka
+  log IS the source of truth." Kafka is one option among
+  several — NATS JetStream, raw Arrow Flight, gRPC,
+  bespoke — the design round picks. Pluggable log back-
+  end per §Foundational Principle.
+- **Kind for local testing.** A Kubernetes-in-Docker
+  local cluster validates multi-node Zeta + Kafka
+  (or chosen log back-end) end-to-end without cloud
+  dependencies. Test parity: same topology locally and
+  in production.
+- **Code IS stored procedures.** C# + F# methods decorated
+  as durable-Rx-style subscriptions (see Reaqtor-niche
+  entry) run inside Zeta, checkpointed, restart-safe.
+  Application logic and database logic live in the
+  same codebase, the same types, the same DI container.
+- **LINQ + SQL + F# DSL all on the same surface.** Consumers
+  pick their front-end per-query; Zeta routes everything
+  through the shared IR + operator algebra.
+
+What lights up for .NET consumers:
+
+- **Mainstream stack** — replace DbContext + Redis/Kafka +
+  cache + read-model projections with one Zeta.
+- **Event-sourcing crowd** — finally an event store that
+  speaks SQL when you want it to.
+- **Real-time analytics** — incremental plans over
+  continuously-updated tables without rewriting in Flink.
+- **Audit + compliance** — append-dated history + time-
+  travel queries for free, not bolted on.
+- **Distributed-systems research** — a reference
+  implementation of events-as-truth at scale.
 
 ## Product 1 — Zeta the database
 
