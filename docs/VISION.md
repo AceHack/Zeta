@@ -1,14 +1,14 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v2 after Aaron's first pass of edits.
+> **Status:** round 33 v3 after Aaron's second pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
 >
 > **Lore:** Aaron almost named the project "Database." The
-> codename landed on Zeta, but the ambition stayed: all DB
-> technologies in one big playground, built retraction-native
-> from the ground up.
+> codename landed on Zeta (locked as of round 33), but the
+> ambition stayed: all DB technologies in one big playground,
+> built retraction-native from the ground up.
 
 ## The project has two products
 
@@ -107,6 +107,25 @@ What makes `Zeta.Core 1.0.0` on NuGet:
 - FsCheck LawRunner — `checkBilinear`,
   `checkSinkTerminal`, `checkRetractionCompleteness`
   already landed.
+- **SQL frontend (v1).** Multiple dialect targets (T-SQL,
+  PostgreSQL, MySQL, SQLite, DuckDB) via a shared query
+  IR that compiles to the DBSP operator algebra.
+  `../SQLSharp/openspec/specs/query-frontends/` is the
+  pattern to study; that project has started the
+  LINQ-first frontend + planning convergence we want.
+- **Tight LINQ integration (v1).** `IQueryable<T>` roots
+  on mapped tables; LINQ lowers to the same IR the SQL
+  parser targets. This is the primary surface for F# +
+  C# consumers.
+- **Entity Framework provider (v1).** Zeta ships an EF
+  Core provider so EF consumers get DBSP incremental
+  query plans for free; downstream ORMs follow after EF.
+- **F# DSL reimagining SQL for the modern era (v1).** The
+  existing computational-expression sketch (`DSL.fs`,
+  `circuit { ... }`) is the seed. Long-term ambition: a
+  natively F# relational DSL that treats retractions,
+  bitemporality, and incremental plans as first-class —
+  not bolted on. Inspired by LINQ but shaped for DBSP.
 - Formal-method coverage — TLA+ / Alloy specs running
   green in CI.
 - CI parity + security posture — see Product 2 below.
@@ -117,11 +136,27 @@ What makes `Zeta.Core 1.0.0` on NuGet:
 - Retraction-aware analytic sketches (HyperBitBit,
   retraction-native quantiles; publication target).
 - Info-theoretic sharder (Alloy-verified).
-- Multi-node deployment (control-plane shape is an open
-  research question in-scope for this vision, not
-  deferred out).
-- SQL frontend on top of the algebra.
-- Bitemporal query surface.
+- **Multi-node deployment** (control-plane shape open —
+  NATS / gRPC / Arrow Flight / bespoke; sharding,
+  replication, consensus, info-theoretic sharder;
+  firmly IN scope).
+- **Bitemporal + time-travel queries (first-class v2).**
+  Append-dated history with retraction-aware point-in-
+  time queries. Paper-worthy and native to DBSP's
+  retraction model.
+- **Additional ORM providers.** Dapper, NHibernate, LLBLGen,
+  etc. — follow the EF Core provider as the pattern.
+- **"C# stored procedures" via Reaqtor-style durable Rx
+  queries.** Microsoft's Reaqtor (MIT, dormant-but-stable)
+  ships `IReactiveQbservable<T>` + a query engine that
+  persists operator state across restarts — "durable
+  Rx." Reaqtor is push/event-at-a-time with no native
+  retraction; Zeta would take the serializable-expression-
+  tree + durable-subscription shape and swap in DBSP
+  Z-set deltas so retractions are free. This is the
+  research-worthy niche: "Rx + durability + retraction-
+  native" is a Reaqtor-shaped hole nobody has filled.
+  See `docs/BACKLOG.md` for the design-doc task.
 
 ## Product 2 — The software factory
 
@@ -215,20 +250,26 @@ degrading the factory is a net-negative round.
 ## Commercial posture
 
 Pure research / open-source is the first-class experience.
-Commercial ambitions are on the table — not decided, not
-required, not refused. The factory and the library are
-designed to support either trajectory:
+Commercial ambitions are on the table.
 
-- If Zeta stays pure-OSS: research papers + reference
-  implementation + NuGet distribution.
+**Trigger event.** Aaron: "[Commercial moves to decided]
+when I'm able to use this in a real project at some point
+for its database." That's the milestone — when Zeta is
+load-bearing in a real Aaron-run project and could be
+shipped under a commercial license or hosted offering
+without degrading the OSS core.
+
+- If Zeta stays pure-OSS through that milestone: research
+  papers + reference implementation + NuGet distribution.
 - If commercial emerges: enterprise-grade features (tenancy,
   compliance attestations, hosted offering, etc.) layer on
   top of the OSS core; the OSS core never degrades for the
   commercial story.
 
 When commercial moves from "on the table" to "decided,"
-the `product-visionary` + `branding-specialist` pair updates
-this section.
+the `product-visionary` + `branding-specialist` pair
+updates this section and spawns the corresponding roles
+(sales, enterprise-support, hosted-ops, etc.).
 
 ## How we decide what to build
 
@@ -301,15 +342,40 @@ Things Aaron has now stated directly and Kenji is confident about:
 - NuGet library shipping at v1.0 (the first slice of the
   full database).
 
-Remaining gaps for the product-visionary's first audit
-with Aaron:
+Things Aaron resolved this round (round 33 v3):
 
-- Naming: Aaron almost named it "Database" — is "Zeta"
-  locked in, or is a rename still possible at v1.0?
-- SQL frontend: is it P1 post-v1 or much later?
-- Commercial trigger: what event / milestone would move
-  commercial from "on the table" to "decided"?
-- Bitemporal / time-travel queries: first-class v2 target
-  or speculative?
-- Query IR: is Zeta aiming at "multiple frontends target
-  one IR" or "the F# DSL is the surface" long-term?
+- **Zeta name is locked.**
+- **SQL frontend is v1**, not post-v1. With tight LINQ
+  integration + multiple SQL dialect targets + Entity
+  Framework provider first, then other ORMs.
+- **F# DSL reimagining SQL is v1** — extension of the
+  existing computational-expression sketch.
+- **Commercial trigger**: when Aaron uses Zeta in a real
+  project for its database.
+- **Bitemporal / time-travel: first-class v2.** ("yes
+  I want this haha" — framing distinction was noise.)
+- **Query IR**: multiple frontends (SQL dialects + LINQ +
+  native F# DSL) target one IR that compiles to the DBSP
+  operator algebra. Inspiration pattern: SQLSharp's
+  "SQL-text and integrated-query flows converge on one
+  logical planning pipeline."
+- **Reaqtor-shaped niche** ("C# stored procedures" as
+  durable Rx queries) is post-v1 research; genuinely
+  open territory because no upstream has Rx, durability,
+  and retraction-native semantics in one box.
+
+Remaining gaps the product-visionary walks on first
+audit:
+
+- Which SQL dialect lands first in v1? T-SQL, PostgreSQL,
+  SQLite (all three? incremental?)?
+- What's the license shape — Apache-2 / MIT / LGPL / dual-
+  licensed AGPL+commercial? Licensing is a commercial-
+  trajectory lever worth deciding before the commercial
+  trigger fires.
+- Entity Framework provider surface — full LINQ provider
+  or incremental rollout (query first, then save-changes,
+  then migrations)?
+- F# DSL name — does it need a name distinct from the
+  computational-expression builder syntax, or is
+  `circuit { ... }` the permanent brand?

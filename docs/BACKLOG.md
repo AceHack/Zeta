@@ -94,6 +94,62 @@ within each priority tier.
   side (Window.fs wiring pending). Target: measured numbers in
   `docs/BENCHMARKS.md` by end of round 20.
 
+## P1 — SQL frontend + query surface (round-33 vision, v1 scope)
+
+- [ ] **Shared query IR that compiles to the DBSP operator
+  algebra.** The pattern `../SQLSharp/openspec/specs/query-
+  frontends/spec.md` establishes: SQL-text parsing and
+  integrated-query (LINQ) both lower to one logical
+  planning pipeline. Zeta needs the same convergence point.
+  Design-doc round before code.
+- [ ] **LINQ integration (`IQueryable<T>` roots).** Mapped-
+  table query roots + property-to-column descriptors per
+  SQLSharp's shape. Lowers to the shared query IR.
+  First v1 surface consumers will touch.
+- [ ] **SQL parser with multi-dialect support.** Dialects to
+  target: T-SQL, PostgreSQL, MySQL, SQLite, DuckDB. Shared
+  parser front-end + dialect overlays per
+  `../SQLSharp/openspec/specs/language-and-extension-model/`
+  pattern. Aaron round 33: "we also want to target many
+  different SQL dialects."
+- [ ] **Entity Framework Core provider.** Zeta ships an EF
+  Core provider so EF consumers get DBSP incremental query
+  plans for free. Aaron: "work tightly with entity framework,
+  then branch out to other ORMs." First-class v1.
+- [ ] **F# DSL reimagining SQL for the modern era.** Extends
+  the existing `circuit { ... }` computational-expression
+  seed. Natively retraction-aware, bitemporal-ready,
+  incremental-by-default. Needs a design round; Aaron: "a
+  start with our computational workflow."
+- [ ] **Additional ORM providers (post-EF).** Dapper,
+  NHibernate, LLBLGen, etc. After the EF provider lands
+  and the pattern is understood.
+
+## P2 — Post-v1 query-surface research
+
+- [ ] **Reaqtor-inspired durable-Rx "stored procedures"
+  design doc.** Microsoft's Reaqtor (MIT, dormant-but-stable,
+  reaqtive/reaqtor on GitHub) ships serializable expression
+  trees + a query engine that persists operator state across
+  restarts — durable Rx. Reaqtor is push/event-at-a-time
+  with no native retraction; the Zeta niche is "Rx +
+  durability + retraction-native" (a Reaqtor-shaped hole
+  nobody has filled). Research questions: (a) does the
+  `IReactiveQbservable<T>` surface shape translate to DBSP
+  Z-set deltas cleanly? (b) what does the URI-keyed
+  operator vocabulary look like against Zeta's operator
+  algebra? (c) `OnError/OnCompleted` vs
+  `Result<_, DbspError>` — keep our error model? (d) is
+  this a Zeta feature or a separate library on top?
+  Output: `docs/research/reaqtor-shape-for-zeta.md`.
+- [ ] **Bitemporal + time-travel queries as a first-class
+  v2 surface.** Append-dated history with retraction-aware
+  point-in-time queries. Paper-worthy. Aaron round 33:
+  "yes I want this haha." Needs design round on storage
+  shape (append-dated rows vs versioned Spine), query
+  syntax (`AS OF TIMESTAMP` vs F# DSL primitives), and
+  retraction semantics under time-travel.
+
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
 - [ ] **`openspec-gap-finder` skill** (round 32 ask). Viktor
