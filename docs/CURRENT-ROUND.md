@@ -58,8 +58,7 @@ From `docs/BACKLOG.md` P1 "SQL frontend + query surface"
 11. **Declarative-manifest tiering** (match `../scratch`
     `min`/`runner`/`quality`/`all`).
 
-## Round-33 carry-forward (Tracks A + B from the round-33
-original plan, re-deferred)
+## Round-33 carry-forward (Tracks A + B re-deferred)
 
 **Track A — product (LawRunner):**
 
