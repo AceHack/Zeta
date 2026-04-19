@@ -43,8 +43,9 @@ Aaron ran 10 successive passes of vision edits:
 
 - **Foundational (Kreps/Kleppmann/Marz):** events are
   source of truth; everything else derived.
-- **Two first-class products:** Zeta the full database
-  + the cross-platform AI-automated software factory.
+- **Two first-class products:** Zeta the full database,
+  together with the cross-platform AI-automated software
+  factory.
 - **DX north star:** `services.AddZeta(...)` → distributed
   retraction-native database. Test on Kind. Code IS
   stored procedures. LINQ + SQL + F# DSL on one IR.
@@ -125,7 +126,7 @@ Landed:
 - **GOVERNANCE §28 — OpenSpec first-class** for every
   committed artefact.
 - **`openspec/specs/repo-automation/`** with base spec
-  + `profiles/bash.md` + `profiles/github-actions.md`.
+  plus `profiles/bash.md` and `profiles/github-actions.md`.
 - **`tools/setup/doctor.sh`** — read-only toolchain
   drift detector.
 

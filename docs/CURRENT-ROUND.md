@@ -21,8 +21,8 @@ candidates for 34's anchor.
 
 ## Round-33 newly-surfaced P1s (ready to execute)
 
-From `docs/BACKLOG.md` P1 "SQL frontend + query surface"
-+ "Factory / static-analysis / tooling" sections:
+From `docs/BACKLOG.md` P1 sections "SQL frontend / query
+surface" and "Factory / static-analysis / tooling":
 
 1. **`product-visionary` role spawn** — stewardship of
    `docs/VISION.md`; feeds the feature-selection loop;
