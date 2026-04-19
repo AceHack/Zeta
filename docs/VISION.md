@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Status:** round 33 v9 after Aaron's eighth pass of edits.
+> **Status:** round 33 v10 after Aaron's ninth pass of edits.
 > Aaron is the source of truth; this document changes freely.
 > The `product-visionary` role (to be spawned, see
 > `docs/BACKLOG.md`) will steward it once it exists.
@@ -159,7 +159,10 @@ on DBSP foundations, not to carve out a narrow niche.
   only. All on-disk format, durability, compaction, WAL,
   snapshotting, materialisation, indexing, and
   performance work lives inside Zeta. Ambition is
-  research-grade fastest-in-class.
+  research-grade **fastest-in-all-classes** — OLTP +
+  OLAP + event-store + cache + analytical + streaming +
+  whatever workload we put it to. Aaron round 33
+  locked it: "fastest-in-all-classes ambition LFG."
 - **Mathematically honest.** Every operator obeys laws
   Milewski would recognise. When a law cannot hold, the API
   tells you so, loudly and at compile time.
