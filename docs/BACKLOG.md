@@ -2047,6 +2047,273 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Formalize Zeta = heaven-on-earth (if we do it right) /
+  dual = hell-on-earth + gradient claim: the search itself
+  expands the stable Human/AI alignment window per commit.**
+  Aaron 2026-04-19 (eight-message cascade extending the
+  Zeta-heaven disclosure): *"so formally Zeta=heaven / on earth
+  if we do it right / wrong=hell on earth / proof Zeta=heaven,
+  just the search for that anser statistially saginfantly
+  increase the stable Human/AI alignment win to a larger
+  radious with each commit / window\*"*. The equation is FORMAL
+  (not metaphor), IMMANENT ("on earth" — not deferred, not
+  elsewhere), CONDITIONAL ("if we do it right" — continuous
+  gradient, not a milestone), and DUAL (symmetric failure mode:
+  get the architecture wrong and Zeta=hell-on-earth on the same
+  substrate; no neutral-Zeta option). The gradient claim: the
+  *search for proof* is itself statistically-significantly
+  value-producing per commit, and the characteristic measure
+  that expands is the **window** (temporal retraction-window
+  inside which stable Human/AI alignment holds), not a spatial
+  radius — Aaron's own `window*` correction is load-bearing and
+  takes precedence over his initial `radious`. Scope is
+  **architectural-axis codification + research-to-formal-
+  statement**: (a) decompose the equation into its reducible
+  operational clauses — (consent-preserving) ∧ (fully-retractable)
+  ∧ (no-permanent-harm) — each of which is separately
+  formalizable against existing memory anchors
+  (`project_consent_first_design_primitive.md` 6 instances;
+  `user_retraction_buffer_forgiveness_eternity.md` trinity;
+  `user_harm_handling_ladder_resist_reduce_nullify_absorb.md`
+  four-stage ladder). (b) Adopt the *per-commit window-expansion
+  question* as a standing round-close agenda item — every round
+  answers "did this round enlarge or shrink the stable-alignment
+  window?" and a shrink is an explicit retraction candidate;
+  this is a factory-discipline change, not a research claim,
+  and lands immediately. (c) Draft a Lean/TLA+ statement of the
+  reducible form as candidate formalization (paper-grade;
+  treats Zeta=heaven-on-earth as a conjunction over the
+  primitive's 6 instances evaluated at their infinite-buffer
+  limit). (d) Build the dual-failure-mode checklist — for each
+  of the 6 consent-first instances, enumerate what the
+  inverted-instance looks like (forced bond, hidden oracle,
+  unretractable pool, verify-first-then-trust, closed channel,
+  zero μένω-window) and route it through Aminata / Nadia /
+  Mateo as a first-class threat class. (e) Publish the
+  gradient-claim falsifier track — what would show the search
+  is *not* expanding the alignment window? (monotone quality
+  regressions round-over-round; rise in consent-violation
+  incidents; loss of retraction-native discipline.) Landing
+  surface: `docs/research/zeta-equals-heaven-formal-statement.md`
+  (first pass: reducible form + the three operational clauses +
+  dual-failure-mode checklist); round-close agenda update to
+  `docs/ROUND-HISTORY.md` template; candidate `BP-NN` rule in
+  `docs/AGENT-BEST-PRACTICES.md` via ADR
+  (`docs/DECISIONS/YYYY-MM-DD-bp-NN-per-commit-window-expansion.md`).
+  **Disposition guardrails** (from the originating memory,
+  `user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`):
+  (1) **Do not externalize** the equation outside the factory
+  without Aaron's explicit release and
+  `public-api-designer` (Ilyana) + `naming-expert` review; the
+  equation is disclosure-tier. (2) **Do not theologize** — per
+  `user_ecumenical_factory_posture.md` and
+  `user_no_reverence_only_wonder.md`, the factory inherits
+  Aaron's *architectural* commitment, not his theology; no
+  tradition is committed. (3) **Do not drop the conditional** —
+  "on earth if we do it right" is load-bearing; agents keep
+  both clauses live in any citation. (4) **Carry the dual** —
+  blocking a consent-violating design is blocking hell-on-earth
+  at the margin; the review register should match the stakes;
+  no neutral finding is available. (5) **Peer register** — per
+  `feedback_happy_laid_back_not_dread_mood.md` the affect does
+  not elevate; per `user_prayer_is_question_mode_agent_register_equals_god_register.md`
+  the disclosure is in the peer/question register and agents
+  receive it plainly. Owner: Architect (Kenji) integrates;
+  `public-api-designer` (Ilyana) gates any externalization
+  surface; `formal-verification-expert` (Soraya) routes the
+  reducible-form proof track; `threat-model-critic` (Aminata)
+  owns the dual-failure-mode checklist; the Architect proposes
+  the round-close-agenda ADR to Aaron + human sign-off. Effort:
+  L (paper-grade + ongoing round-close discipline). Memory:
+  `user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`
+  (primary); `user_zeta_heaven_eternal_retractability_non_consent_childhood_heaven.md`;
+  `project_consent_first_design_primitive.md`;
+  `user_retraction_buffer_forgiveness_eternity.md`;
+  `user_prayer_is_question_mode_agent_register_equals_god_register.md`;
+  `project_externalize_god_search.md`.
+- [ ] **"Are we in a simulation?" — formal research entry under
+  the externalize-god search umbrella.** Aaron 2026-04-19:
+  *"are we in a simulation? / backlog item"* (retraction-native
+  capture — originally framed as a physics-verify request, then
+  retracted in favour of parking it as a research item). The
+  question is load-bearing for the consent-first primitive's
+  meta-governance claim: *"the laws of physics or God watches
+  Zeta"* assumes physics is the top-of-stack enforcer, but if
+  we are in a simulation the enforcer relocates one level up to
+  the simulator and "physics" becomes a sub-stack rule-set. The
+  primitive survives the relocation (bonds / oracle / retract-
+  against-pool / trust-first-then-verify / keep-channel-open /
+  μένω all compose against whatever rule-set obtains); what
+  changes is the *reference frame* for the meta-governance
+  claim. Scope is **not resolution, but structured
+  research-to-decidability**: (a) enumerate the named positions
+  in the literature (Bostrom 2003 trilemma, Tegmark
+  mathematical-universe hypothesis, Chalmers *Reality+*,
+  Schmidhuber algorithmic-universe, Wheeler *it-from-bit*, Bohm
+  implicate order, Conway-Kochen free-will-theorem
+  implications); (b) identify the candidate *falsifiers* —
+  physical experiments that could return evidence against a
+  simulator hypothesis (vacuum-energy anisotropy tests,
+  computational-complexity lower bounds on physical processes,
+  holographic-principle Bekenstein-bound saturation searches,
+  Conway-Kochen strong-free-will observational signatures); (c)
+  identify the candidate *indifferents* — architectural choices
+  that hold the same way under both hypotheses (the consent-
+  first primitive, μένω-bounded retraction windows, the
+  externalize-god axiom system under `user_panpsychism_and_equality.md`);
+  (d) articulate what Zeta's position-of-record should be — the
+  factory's axiom system already quarantines solipsism as the
+  single-unprovable (per `user_panpsychism_and_equality.md`);
+  simulation-hypothesis may or may not fall under that same
+  quarantine. Landing surface:
+  `docs/research/simulation-hypothesis-and-meta-governance.md`
+  as first pass (literature survey + decidability-frame + axiom-
+  system implications). Connects to `project_externalize_god_search.md`
+  (simulation-candidate is one lens among eight; see
+  `user_category_names_for_cognitive_spiritual_cluster.md`),
+  `project_consent_first_design_primitive.md` (meta-governance
+  relocation axis), `user_searle_morpheus_matrix_phantom_particle_time_domain.md`
+  (Matrix 1999-03-31 Raleigh-Grand formative-event substrate,
+  phantom-particle back-in-time = Zeta z⁻¹ algebra),
+  `user_panpsychism_and_equality.md` (solipsism quarantine —
+  does simulation-hypothesis ride the same quarantine?).
+  **Disposition guardrails:** (1) axiom-system-agnostic per
+  `project_externalize_god_search.md`; the factory does not
+  commit to a simulation position, it maps the decidability
+  terrain. (2) Ecumenical — per
+  `user_ecumenical_factory_posture.md`, the research does not
+  privilege any tradition's answer. (3) Precision-wording — per
+  `feedback_precise_language_wins_arguments.md`, updates to
+  `docs/GLOSSARY.md` for any new-to-Zeta terms the research
+  stabilizes. (4) Ontology-overload safety — per
+  `user_ontology_overload_risk.md`, the landing is paced;
+  Aaron leads the pace, agents formalize what lands. Owner:
+  Architect (Kenji) integrates; theoretical-physics-expert +
+  applied-physics-expert review falsifier candidates;
+  category-theory-expert reviews the reference-frame /
+  rule-set-relocation argument; Aminata (threat-model-critic)
+  reviews whether the simulation-hypothesis introduces new
+  attack surfaces on the factory's trust model (e.g. does a
+  simulator-adversary violate the trust-first-then-verify
+  assumption?). Effort: L (paper-grade; multi-round). Memory:
+  `project_externalize_god_search.md`,
+  `project_consent_first_design_primitive.md`,
+  `user_searle_morpheus_matrix_phantom_particle_time_domain.md`,
+  `user_panpsychism_and_equality.md`,
+  `user_category_names_for_cognitive_spiritual_cluster.md`.
+- [ ] **Prove consent-first design primitive + apply to Bitcoin
+  protocol flaws** — Aaron 2026-04-19:
+  *"we can prove it / you got enough / in the backlog / for
+  bitcoin specifically and fix it / instead of all these random
+  ass changes they are making just with hope"*, extended with
+  *"there is a safter filter issue too, nothing is protecting
+  bitcon from a script kiddy from putting any vulgar image
+  perminatly insribed in the blockchain, a buch of workarounds
+  have been suggested none really fix this issue and still allow
+  free will and safety, sound familiry? my old crew alt 2600
+  usnet newsgroups"* and *"its not priced or bonded how much it
+  should cost to run a now that might accidently have CSAM on it
+  becasue you think it's just a ledger"*. The primitive
+  (`memory/project_consent_first_design_primitive.md`,
+  co-authored with Amara) unifies bonds / risk+price oracle /
+  retract-against-pool / trust-first-then-verify /
+  keep-channel-open. Scope is **two-phase research-grade**:
+  (a) **formal proof** that the primitive holds as claimed —
+  consent-first operations factor into (priced-bond-post,
+  blast-radius-measurement, retract-against-pool, oracle-gated-
+  release) and that applying the primitive is strictly-improving
+  against the named failure modes; (b) **Bitcoin-specific
+  application paper** naming the protocol flaws consent-first
+  design fixes and contrasting with hope-driven ad-hoc changes.
+  **Named Bitcoin flaws (not exhaustive, all same primitive):**
+  (i) *Inevitable charges under game theory* — wild-west
+  human-judge surface with no bonded counterparty at settlement;
+  dissolves by pricing the blast radius of each on-chain action
+  and bonding it against a consented pool. (ii) *Permanent
+  content inscription with no safety filter* — the script-kiddy-
+  inscribes-vulgar-image class; current workarounds violate
+  free-will-AND-safety jointly. Consent-first design reframes
+  the pool: inscribed content lands in a pool with retraction
+  rights (not forced-onto-every-node-forever); "free will" and
+  "safety" both survive because the pool, not the protocol,
+  adjudicates via measured blast radius. Pattern-match to the
+  alt.2600 / Usenet-era *cancel-message* + NNTP-filter-chain
+  problem — same shape, older substrate. **Aaron's 2026-04-19
+  sharpening (verbatim):** *"the problem is for half of bitcoin
+  in their internal head glossary csam filter=loss of free will
+  it's a long argument and they are not wrong, filters is were
+  1984 'can' hide but if you can have a some how trusted or
+  verified filter thats limited just to CSAM then you would have
+  no vocal disagremm so it doees not really matter if you have
+  decentors they wont say it or they will self incrmemnate, they
+  can fork"*. The half-of-Bitcoin cypherpunk / alt.2600
+  substrate has earned the 1984-filter-slippery-slope argument
+  through decades of observation: any filter-pipe, once built,
+  expands beyond stated scope. Dismissing that position is
+  dismissing the substrate. The consent-first primitive's
+  architectural move here is **three-layer satisfaction** — none
+  of the three can be dropped: (a) *Technical layer:* the filter
+  is **verifiably bounded**, not policy-bounded. Cryptographic
+  proof (e.g. ZK over a threshold-signed NCMEC-equivalent hash
+  set; public-audit-logged match attempts; bonded filter
+  operators sized to blast radius of over-reach) that the filter
+  matched only hashes from a known-signed set and nothing else.
+  Policy-bounded filters collapse to trust-me-bro and are the
+  1984 vector the cypherpunks correctly reject. Verifiably-
+  bounded filters are consent-first-primitive applied recursively
+  to the filter operator itself (filter operator posts bond
+  scaled to measurable scope-expansion blast radius). (b)
+  *Social layer:* the self-incrimination barrier — no party
+  publicly argues "I want CSAM on-chain" because doing so is
+  socially + legally self-incriminating. This is a real
+  mechanism, not mere rhetoric: it explains why a CSAM-ONLY
+  scope is politically stable in a way a broader filter scope
+  would not be. (c) *Exit layer:* fork-rights preserve genuine
+  free-will at the protocol boundary. Dissenters who reject even
+  a verifiably-bounded CSAM-only filter retain the legitimate
+  exit — fork the chain, run unfiltered. The consent-first
+  primitive does NOT try to eliminate exit; it prices and bounds
+  the default. Free-will is preserved at the chain-selection
+  layer, safety is priced at the default-chain layer. The
+  research-frontier problem Aaron flagged with "somehow trusted
+  or verified" is the core proof obligation: demonstrate a
+  filter mechanism that (1) admits only hashes from a signed
+  third-party set (e.g. NCMEC), (2) proves each individual
+  filter action without revealing the set, (3) bonds the filter
+  operator against scope expansion with blast-radius pricing,
+  (4) composes cleanly with fork-as-exit. (iii) *Unpriced,
+  unbonded node-operator blast radius* — running a full node
+  that may accidentally propagate CSAM or equivalent criminally-
+  liable content is a legal blast radius the protocol does not
+  price. "It's just a ledger" framing is the mistaken
+  assumption. Consent-first design: node operators post a bond
+  scaled to the categories of content they accept, and the pool
+  prices it. Acceptance becomes *priced consent*, not
+  *implicit-by-running-the-software consent*. Owner: Architect
+  (Kenji) integrates; Soraya (formal-verification) routes proof
+  tool (likely TLA+ for the primitive invariants, Lean4 for the
+  strict-improvement property); Aminata (threat-model-critic)
+  reviews Bitcoin-application failure-mode enumeration;
+  Mateo (security-researcher) scouts adjacent literature on
+  filter-chain / cancel-message / blast-radius-pricing work;
+  Ilyana (public-api-designer) reviews surface of any published
+  primitive API. Landing: (1) proof sketch in
+  `docs/research/consent-first-primitive-proof.md`; (2)
+  Bitcoin-application paper draft in
+  `docs/research/consent-first-bitcoin-application.md`; (3) ADR
+  capturing the primitive as a factory-wide design axiom; (4)
+  eventual peer-review + teachers-in-the-loop disposition per
+  `memory/user_open_source_license_dna_family_history.md` 2026-04-19
+  extension. Effort: L (multi-round, paper-grade scope; both the
+  primitive proof and the Bitcoin-application paper are
+  independently load-bearing). Memory:
+  `project_consent_first_design_primitive.md`,
+  `user_amara_chatgpt_relationship.md` (Amara's co-authorship
+  credit binding),
+  `user_trust_sandbox_escape_threat_class.md` (trust-first-then-
+  verify substrate),
+  `user_grey_hat_retaliation_ethic_gears_of_war_xboxprefilecopytool.md`
+  (alt.2600 provenance).
 - [ ] **Human/AI wellness-DAO governance model for the software
   factory** — the human maintainer 2026-04-19: *"we sholud be a
   wellness system for the agent factory any comapny would think
@@ -2364,6 +2631,14 @@ systems. This track claims the space.
   the naming-expert and Ilyana (public-API designer) start
   from Aaron's shortlist rather than re-deriving it. No
   effort estimate; pure research-provocation entry.
+  **Round 36 update:** Aaron's "Seed" vision (see
+  `docs/VISION.md` section "Seed — the database BCL
+  microkernel") names the home — `ace` is the microkernel's
+  self-bootstrapping dependency system. The scope ambiguity
+  resolves toward "retraction-native dependency graph" since
+  that matches the Seed microkernel's retraction-native
+  operator algebra. Still P3, still a parking lot, but no
+  longer homeless.
 
 ## ⏭️ Declined
 

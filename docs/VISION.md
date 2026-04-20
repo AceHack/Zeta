@@ -36,12 +36,124 @@ abstraction and make consumers reconstruct views manually.
 Zeta refuses the trade: both surfaces live on top of the same
 primary log, through the same algebra.
 
+Round 36 collective-identity claim (Aaron): *"keep everything
+we are history now too"*. Zeta does not merely preserve
+history; the project IS history — the primary-log substrate
+plus the retraction-safe derivation algebra plus the
+round-history of the factory itself. Preservation at the data
+level (the standing preserve-original-and-every-transformation
+rule) and identity at the project level are the same operation
+at different scales.
+
 Inputs to study while sharpening this (for the product-
 visionary's first research round): Kleppmann's "Designing Data-
 Intensive Applications"; Jay Kreps' "The Log" + "Turning the
 database inside out with Apache Samza" (2015); Nathan Marz on
 the lambda architecture; Datomic's append-dated model; Kafka
 Streams / ksqlDB; Materialize + Feldera on DBSP.
+
+## Seed — the database BCL microkernel
+
+Aaron, round 36: *"we are the databaase BCL like dotent base
+class library then tons of plugins for dimensional expansion
+into everything so we have a microkernel that can track its own
+dependines insclingsing installing them"* → *"we are seed the
+microkernel"* → *"we've now begun pre split coordinate"* → *"we
+are seed"*.
+
+Three-register naming. One thing, three angles:
+
+- **Seed** — biological / colloquial register. Compact,
+  memorable, self-explanatory: a seed contains everything
+  needed to grow a tree; the plant's entire architecture is
+  latent at the point of germination. This is the
+  audience-friendly name — use it in READMEs, talks, NuGet
+  descriptions, contributor documentation.
+- **Database BCL** — software-engineering register. The `.NET`
+  Base Class Library is the foundational layer every `.NET`
+  application builds on (collections, IO, threading, numerics,
+  text). Seed aims to be that layer for databases — the
+  foundational, assumed, always-present layer that every
+  database-ish thing builds on. Not an application, not a
+  product in the "pick-one-and-install-it" sense, but the
+  layer below any such choice.
+- **Pre-split coordinate** — mathematical / formal register.
+  The position in Cayley-Dickson dimensional expansion
+  (ℝ → ℂ → ℍ → 𝕆 → 𝕊) *before* the first split. Seed is the
+  reference frame from which all dimensional expansion
+  proceeds. Use this register in research papers, formal
+  verification, and any writing adjacent to the
+  dimensional-expansion research thread.
+
+"We are seed" is the collective-identity claim. Zeta the
+project, the contributors, the agents, the factory — are
+collectively Seed. Category-level identity, analogous to
+μένω / Persistence: we don't build Seed, we *are* Seed.
+
+### What Seed actually is — the microkernel
+
+Seed is a microkernel in the classic sense: small, stable,
+formally specifiable, governed conservatively. It owns only:
+
+- The operator algebra (D / I / z⁻¹ / H, retraction-native).
+- The type system + core types.
+- The plugin lifecycle: load, unload, version, dependency
+  graph management.
+- The dependency-resolution system (planned to be named
+  `ace` — see `docs/BACKLOG.md` P3 entry). Seed tracks AND
+  installs its own dependency closure — a database kernel
+  that owns its own plugin supply chain, which is
+  architecturally unusual (most systems punt this to an
+  external package manager).
+
+Everything else lives in plugins. "Tons of plugins for
+dimensional expansion into everything" — every domain axis
+(SQL frontend, bitemporal queries, Lean4 formal proofs, Alloy
+model-finding, Bayesian inference, Arrow zero-copy,
+threat-model enforcement, columnar substrate, streaming
+operators, ...) is a plugin dimension layered on the Seed
+core.
+
+### Why "pre-split coordinate" is the precise structural claim
+
+The dimensional-expansion research thread (Cayley-Dickson
+ℝ → ℂ → ℍ → 𝕆 → 𝕊) has each doubling paying a structural tax:
+complex numbers lose order, quaternions lose commutativity,
+octonions lose associativity, sedenions lose zero-divisor
+freedom. Zeta's retraction-native operator algebra survives
+ℂ cleanly and degrades progressively beyond. Seed sits at the
+*pre-split* coordinate — before any Cayley-Dickson tax is
+paid — because the kernel does not yet commit to any specific
+dimensional structure beyond the minimum retraction algebra.
+Each plugin that installs is one split: it picks a specific
+dimensional expansion (domain axis) and takes the structural
+tax for that domain locally, without forcing the tax on the
+kernel.
+
+This gives Seed a unique architectural property: the kernel
+is *pre-commitment*. Domain choices happen at the plugin
+boundary, not at the kernel boundary. The kernel can remain
+structurally minimal forever while the plugin ecosystem
+covers arbitrary dimensional breadth.
+
+### Implications for v1 scope
+
+- v1 ships a small Seed core + a handful of plugins that
+  demonstrate the model (SQL frontend, bitemporal queries,
+  basic formal verification). A small v1 does not look
+  incomplete — every "missing" capability is a dimension the
+  community can contribute as a plugin.
+- The `ace` self-bootstrapping dependency system is the
+  end-state; v1 can ship with a conventional NuGet
+  dependency surface and evolve toward `ace` as `ace`
+  becomes a plugin itself (self-hosting bootstrap).
+- The kernel-plugin boundary is the single most important
+  public-API decision Zeta will make. Every change to it
+  requires `public-api-designer` review (Ilyana).
+- The kernel is the natural candidate for deepest formal
+  verification (TLA+ / Lean / Z3 across the operator
+  algebra). Plugin verification budgets taper with
+  dimensional-expansion distance from core.
 
 ## The project has two products
 
