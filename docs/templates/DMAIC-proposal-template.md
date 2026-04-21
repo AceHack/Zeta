@@ -54,6 +54,7 @@ driving it?}}
 **Current-state baseline (what does the problem measure today?)**
 
 {{Quantitative where possible. Examples:
+
 - "X of Y memories have no scope declaration (87%)"
 - "Architect reviews block for a median of N rounds"
 - "Z rows of FACTORY-HYGIENE have TBD owners"
@@ -65,6 +66,7 @@ Improve step is often "establish baseline."}}
 
 {{Pre-specified success criterion. If the metric
 doesn't move, the Improve didn't work. Examples:
+
 - "Drop X/Y to below 20%"
 - "Architect review median drops to 1 round"
 - "All FACTORY-HYGIENE rows have named owners"}}
@@ -134,6 +136,7 @@ regression?**
 {{Every Improve must nominate a Control artifact. If
 the Improve lands but no Control prevents regression,
 the variance will return. Common Controls:
+
 - New FACTORY-HYGIENE row (cadenced check)
 - New BP-NN rule (always-on discipline)
 - Absorb-time filter in a skill's procedure

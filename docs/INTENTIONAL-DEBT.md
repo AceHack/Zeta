@@ -272,8 +272,8 @@ history, not a TODO list.
 
 ## Resolved
 
-_(empty — first row lands when one of the open rows
-resolves in a later round)_
+*(empty — first row lands when one of the open rows
+resolves in a later round)*
 
 ## Template for new rows
 

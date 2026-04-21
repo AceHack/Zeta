@@ -90,6 +90,7 @@ Six Sigma discipline.
 ### Control = FACTORY-HYGIENE row
 
 Every new hygiene row should answer:
+
 - **Measure** — what variance / defect was observed?
 - **Analyze** — why is this the right control?
 - **Control** — what exactly does the row prevent?
