@@ -8,9 +8,12 @@ configuration (see
 overlay: batched upstream rhythm"). This doc is that
 configuration for Zeta.
 
-## Terminology — git-native
+## Terminology — three surfaces, two vocabularies
 
-This doc uses git's own terminology. Two terms, no inventions:
+Zeta has **three surfaces**, each named in its own canonical
+vocabulary. No invented labels.
+
+Two of the three come from git (the repo axis):
 
 - **upstream** — `Lucent-Financial-Group/Zeta`. The parent
   repo. Where releases, stable URLs, issue numbers, and the
@@ -21,6 +24,25 @@ This doc uses git's own terminology. Two terms, no inventions:
   daily agent loop lands intermediate PRs so the billed
   upstream surfaces (Copilot coding-agent, Actions minutes,
   paid seats) aren't charged per-PR.
+
+The third comes from testing/QA vocabulary (the role axis):
+
+- **system under test (SUT)** — the Zeta product itself:
+  `src/**`, `openspec/specs/**`, `docs/**.tla`, tests,
+  libraries, the retractable-contract ledger. Distinct from
+  the **factory** (the tooling that builds and tests the SUT:
+  `.claude/**`, agents, skills, `tools/**`,
+  `docs/hygiene-history/**`). Both upstream and fork contain
+  SUT content and factory content; the SUT/factory distinction
+  is *not* about which repo hosts the bits but about what role
+  the bits play.
+
+The three surfaces compose: SUT and factory both live inside
+either upstream or fork; the rhythm described in this doc
+governs only the **upstream ↔ fork** cadence, not the
+**SUT ↔ factory** boundary (that lives in
+`docs/FACTORY-METHODOLOGIES.md` and the people-optimizer
+notes).
 
 The fork exists to feed into upstream. When fork-vs-upstream
 disagree on anything (scope, contents, governance), upstream
