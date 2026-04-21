@@ -847,6 +847,38 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Orthogonal-axes cadenced audit — make the factory's
+  axis set an orthogonal basis (round 44 absorb)** — Aaron
+  2026-04-22: *"also we need to make sure all our axises are
+  orthogaonal to the others so therre is not overlap, like
+  fully ... When all your axes are orthogonal basis covered
+  (meaning they are mutually perpendicular), the set of axes
+  is called an orthogonal basis"* + *"i guess this is a
+  cadence thing"* + *"backlog"*. The factory classifies
+  artefacts along many axes (skill-category, hygiene-scope,
+  persona-surface, cadence-bucket, memory-type, review-target,
+  trust-tier, …). For the axis set to form a proper basis
+  (linear-algebra sense), every pair must be independent —
+  an axis's values must carry information no other axis
+  carries. Distinct from the row-22 symmetry audit: symmetry
+  asks *"is A paired with its mirror B?"*; orthogonality asks
+  *"do axes A and B have zero overlap?"* Landed this round:
+  `docs/FACTORY-HYGIENE.md` row #41 (cadence, owner TBD,
+  scope factory). Durable rule in
+  `memory/feedback_orthogonal_axes_factory_hygiene.md`. **Work
+  queued here:** (a) first audit pass — enumerate current
+  factory axes, build pairwise overlap matrix, flag per-pair
+  verdicts (collapse / keep-and-document / split); (b)
+  decide owner — dedicated capability skill
+  `orthogonal-axes-auditor` vs. fold into skill-tune-up as
+  criterion #8 (parallels the scope-auditor option-a/option-b
+  debate in the sibling P1 row below); (c) seed the first
+  overlap matrix into `docs/research/` so subsequent rounds
+  have a delta surface. Effort: M for option (a); add S for
+  option (b) skill-tune-up extension, L for option (c) new
+  capability skill via `skill-creator`. Reviewer: Architect
+  (Kenji); Daya (AX) weighs in if axes touch agent-experience.
+
 - [ ] **Gap 3 closure — memory-file tampering cross-check at
   session start (round 44 trust-infra thread)** — Aaron
   2026-04-20 research question: *"can AI trust humans didn't

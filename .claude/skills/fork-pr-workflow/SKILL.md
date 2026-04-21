@@ -100,6 +100,59 @@ shortcut. Use an explicit `git push upstream` only when
 the action is intended (for example, force-pushing a
 tag you own).
 
+### Gotcha: `gh repo fork` suffixed my fork with `-1`
+
+GitHub will create your fork at `<you>/<repo>-1` (or
+`-2`, etc.) instead of `<you>/<repo>` when your
+personal namespace already has a **redirect record**
+for that repo name. This happens most often when you
+previously owned a repo named `<repo>` and transferred
+it elsewhere — the transfer leaves a 301 redirect
+record at the old name that reserves the slot. A fresh
+fork can't land on that exact name while the redirect
+lives.
+
+Detect:
+
+```bash
+# A redirect record looks like this:
+curl -sI https://github.com/<you>/<repo> | head -5
+# HTTP/2 301
+# location: https://github.com/<actual-owner>/<repo>
+```
+
+Or after the fork:
+
+```bash
+gh api /repos/<you>/<repo>-1 --jq '.full_name'
+# "<you>/<repo>-1"   ← suffix confirms redirect blocked <repo>
+```
+
+Recover — **you own the redirect record**, so you can
+override it by renaming your own fork into the slot:
+
+```bash
+gh repo rename --repo <you>/<repo>-1 <repo>
+```
+
+After rename, update any local remote URL that pointed
+at `-1`:
+
+```bash
+git remote set-url origin https://github.com/<you>/<repo>.git
+```
+
+An existing cross-repo PR you opened before the rename
+continues to work because GitHub tracks PR head
+references by repo ID (not name). Verify with
+`gh pr view <n> --repo <upstream> --json headRepositoryOwner,headRefName`.
+
+Prevention: if the canonical repo moved out of your
+namespace recently and you plan to fork it back, do
+the rename in the same session as the fork so
+contributors reading `git remote -v` never see the
+`-1` form.
+
 ## Daily loop — per-change upstream PR (default)
 
 The default rhythm is **one upstream PR per change**:
