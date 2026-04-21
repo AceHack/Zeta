@@ -17,3 +17,14 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps:"
+
+  # Python CLI tools (semgrep, ruff) live in
+  # `tools/setup/manifests/uv-tools`, installed via
+  # `common/python-tools.sh`. Dependabot does not support the
+  # uv-tools format, so pin drift is caught by the periodic
+  # uv-tools drift scan (BACKLOG P1) rather than by this file.
+  # Three-way-parity per GOVERNANCE §24 takes precedence over
+  # Dependabot-trackability — one canonical manifest, installed
+  # the same way on dev laptop / CI / devcontainer, beats a
+  # parallel `requirements.txt` that exists only to satisfy
+  # Dependabot's ecosystem list.
