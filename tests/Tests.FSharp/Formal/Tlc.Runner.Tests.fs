@@ -41,9 +41,15 @@ type TlcTestCollection () = class end
 
 
 let private repoRoot =
-    // Walk up from bin/Release/net10.0 to the repo root.
-    let cwd = Directory.GetCurrentDirectory()
-    let mutable dir = DirectoryInfo cwd
+    // Walk up from the test assembly's directory, NOT the process CWD.
+    // xUnit parallelizes test classes, so CWD-mutating tests can race
+    // with this module's static init (observed as
+    // TypeInitializationException on macOS-14 in the Alloy sibling
+    // module). AppContext.BaseDirectory is immutable for the lifetime
+    // of the AppDomain and always points at
+    // `<repo>/tests/Tests.FSharp/bin/Release/net10.0/` under
+    // `dotnet test`, so walking up reliably finds Zeta.sln.
+    let mutable dir = DirectoryInfo AppContext.BaseDirectory
     while not (isNull dir) && not (File.Exists (Path.Combine(dir.FullName, "Zeta.sln"))) do
         dir <- dir.Parent
     if isNull dir then invalidOp "Could not locate repo root (Zeta.sln)"

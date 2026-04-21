@@ -26,8 +26,13 @@ open global.Xunit
 
 
 let private repoRoot =
-    let cwd = Directory.GetCurrentDirectory()
-    let mutable dir = DirectoryInfo cwd
+    // Walk up from the test assembly's directory, NOT the process CWD.
+    // xUnit parallelizes test classes, so CWD-mutating tests (e.g.
+    // WitnessDurableBackingStore under-CWD-churn) can race with this
+    // module's static init on macOS and trip the walk-up loop. Fixed
+    // by reading AppContext.BaseDirectory, which is immutable for the
+    // lifetime of the AppDomain.
+    let mutable dir = DirectoryInfo AppContext.BaseDirectory
     while not (isNull dir) && not (File.Exists (Path.Combine(dir.FullName, "Zeta.sln"))) do
         dir <- dir.Parent
     if isNull dir then invalidOp "Could not locate repo root (Zeta.sln)"
