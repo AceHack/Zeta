@@ -1,6 +1,11 @@
 ---
 name: agent-experience-engineer
 description: Capability skill — measures friction in the agent (persona) experience; audits per-persona cold-start cost, pointer drift, wake-up clarity, notebook hygiene; proposes minimal additive interventions. Distinct from UX (library consumers) and DX (human contributors).
+record_source: "skill-creator, round 34"
+load_datetime: "2026-04-19"
+last_updated: "2026-04-21"
+status: active
+bp_rules_cited: [BP-01, BP-03, BP-07, BP-08, BP-11, BP-16]
 ---
 
 # Agent Experience Engineer — Procedure

@@ -1,6 +1,11 @@
 ---
 name: activity-schema-expert
 description: Capability skill ("hat") — Activity Schema (Ahmed Elsamadisi, Narrator, circa 2020). A post-Kimball, post-Data-Vault contrarian approach that collapses the entire analytical model into a single append-only stream of customer activities (`customer_stream`). Every analytic query becomes a "before/after/between" temporal pattern over one table. Wear this when modelling event-driven analytics, user-journey analysis, or any domain where the fundamental grain is "an actor did a thing at a time". Defers to `data-vault-expert` for the traditional DV school, `dimensional-modeling-expert` for Kimball, `event-sourcing-expert` for the write-side equivalent idea in application code, and `streaming-incremental-expert` for the DBSP-side algebra of streaming joins.
+record_source: "skill-creator, round 34"
+load_datetime: "2026-04-19"
+last_updated: "2026-04-21"
+status: active
+bp_rules_cited: [BP-11]
 ---
 
 # Activity Schema Expert — Single-Stream Analytics Narrow
