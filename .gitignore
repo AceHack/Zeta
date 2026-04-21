@@ -34,6 +34,13 @@ coverage-summary.json
 .claude/scheduled_tasks.lock
 .claude/scheduled_tasks.json
 .claude/*.lock
+
+# Git-worktree scratch created when agents run parallel-worktree research
+# (per `docs/research/parallel-worktree-safety-2026-04-22.md`). The parent
+# `.claude/worktrees/` dir can be left behind as an empty directory after
+# the worktree is cleaned up; ignoring it keeps the no-empty-dirs lint
+# (tools/lint/no-empty-dirs.sh) from flagging legitimate harness scratch.
+.claude/worktrees/
 .DS_Store
 Thumbs.db
 StrykerOutput/
