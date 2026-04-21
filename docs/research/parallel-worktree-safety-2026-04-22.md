@@ -220,4 +220,34 @@ Aaron: *"i think you are going to have to merge on one of those PRs"* — referr
 
 **PR #31:** not audited this tick (scope discipline — cartographer is mapping, not walking). Known: it exists; state unknown.
 
+## 9. Post-land incident log — PR #31 merge-tangle (2026-04-22 autonomous-loop)
+
+Aaron 2026-04-22 follow-up, after the factory merged #32/#33/#34/#35 and an autonomous-loop tick attempted to rebase #31: *"well you got yourself in a pickly good info for your parallels run research that's how we got here and why i said lets research it lol"* + *"i guess that;s what you tried to fix and found the missing stuff"*. The tangle is exactly the shape this research predicted. Logging the concrete data while the evidence is fresh.
+
+**Observed state.** PR #31 branch `round-41` was opened 2026-04-20. By the time this tick attempted the rebase (2026-04-22, two days later), `main` had absorbed PR #32 (114 squashed commits), #33, #34, and #35. The branch was 33 commits ahead of main; main was 200+ commits ahead of the branch's merge-base. `git merge origin/main` produced a five-file conflict:
+
+| File | Hazard class | Why this file collides |
+|---|---|---|
+| `docs/BACKLOG.md` | universal queue | every tick edits it; long-lived branch guarantees overlap |
+| `memory/persona/aarav/NOTEBOOK.md` | per-persona notebook | both branches append-only updates to the same persona |
+| `memory/persona/best-practices-scratch.md` | shared promotion-candidate buffer | same append-only collision, all personas share it |
+| `openspec/specs/operator-algebra/spec.md` | load-bearing primary spec | every capability that touches the operator algebra edits it |
+| `docs/research/grandfather-claims-inventory-2026-04-21.md` | date-stamped research doc | add/add: both branches created the same filename independently |
+
+**Aaron's second insight — attempted-merge as divergence-inventory.** *"i guess that;s what you tried to fix and found the missing stuff"*. The act of attempting the rebase surfaced, file-by-file, what the open PR has that main lacks. A failed-merge conflict list IS a divergence inventory; declining to treat it as "just noise" and instead reading it as "these are the edit-surfaces we've been dual-writing" turns a blocker into a factory observability signal. Candidate factory practice: **whenever a long-lived PR tangles on merge, log the conflict file list as a shared-surface fingerprint** — the recurring files across multiple tangled PRs are exactly the surfaces most urgent to restructure.
+
+**Reframing of §2.7.** §2.7 originally named "worktree-split state files" as the hazard. The PR #31 merge-tangle shows the class is broader: **any shared-write high-churn surface, edited on two branches that outlive each other's merge window, produces the same conflict pattern — worktrees are only one instance of the divergence generator**. Long-lived PR branches are another. Parallel subagents would be a third. The common cause is *shared-surface + time-divergence*, not worktrees specifically.
+
+**Ranked-by-collision shared surfaces (for mitigation design):**
+
+1. **`docs/BACKLOG.md`** — universal; hit by every tick. P0 candidate for append-only-section-per-tick layout, or per-row-file restructure where each backlog row lives as its own file and the BACKLOG.md becomes an index. A per-row-file layout would collapse this to near-zero conflicts.
+2. **`memory/persona/*/NOTEBOOK.md`** — per-persona but not per-tick. P1 candidate for per-tick-file append (already partially done in some personas via dated sections).
+3. **`memory/persona/best-practices-scratch.md`** — shared across all personas. P1 candidate for per-finding-file restructure (each candidate BP gets its own file; scratch.md becomes an index).
+4. **`openspec/specs/*/spec.md`** — load-bearing; rare edits but high-value. Lower priority; OpenSpec's per-capability structure already partitions somewhat.
+5. **Date-stamped research docs** — add/add collisions when two branches both create `docs/research/<same-topic>-<same-date>.md` independently. Preventive: require research-doc filenames to include branch/author discriminator, OR treat add/add resolution as a deliberate research-merge.
+
+**Lesson for the "always-parallel" factory-default staging.** R45-R49 staging in §4 assumes the *preventive-paired-with-compensating* discipline survives scale. This incident shows the compensating side (merge-conflict resolution) has real cost even today without worktrees. Scaling parallelism without first shrinking shared-write surfaces will amplify the tangle, not absorb it. **Revised staging recommendation:** before R45's reducer-agent EnterWorktree flip, land at least the P0 BACKLOG restructure (item 1 above); otherwise every parallel reducer-agent tick is one more branch accumulating conflict against BACKLOG.md.
+
+**PR #31 disposition.** This tick did not force-merge PR #31 — the agent-merges-own-PRs directive is scoped to green / no-unresolved-findings state, and #31 has 8 Copilot findings + 5 conflicts + unclear subsumption by #32's scope. The harness permission layer correctly refused the merge flow mid-resolution, flagging it as a shared-repo-state modification requiring precise authorization for this specific PR. Disposition is an Aaron-scoped decision (flagged in the PR's own classification comment: *"does #31 merge as a smaller slice, or close in favour of #32?"*). The stash-and-revisit pattern from §2.4 (stale-branch cleanup preventive+compensating) applies.
+
 The live-lock-between-PRs risk Aaron flagged is *not* structural between PR #31 and PR #32 specifically — it's the general class. If PR #31 and PR #32 both touch `docs/BACKLOG.md` (likely, given BACKLOG.md is the busiest file in the repo), merging PR #32 first means PR #31 needs a rebase; rebasing after PR #32's markdownlint-fix touches BACKLOG.md may or may not conflict. **Action deferred to Aaron** — pushing or merging either PR without his sign-off during map-before-walk is wrong.
