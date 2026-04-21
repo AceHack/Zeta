@@ -98,6 +98,38 @@ fixed in the same round the rule landed (commit `ac0eb1f`,
 meta-wins-log depth-1 row). Arc-by-arc narrative lands at
 round-close.
 
+A late-round arc landed the **`AceHack/Zeta` →
+`Lucent-Financial-Group/Zeta` org migration** (HB-001
+resolved via `POST /repos/AceHack/Zeta/transfer` with
+`new_owner=Lucent-Financial-Group`, completed instantly
+because Aaron is admin on both sides). Post-transfer
+verification diffed 13 settings groups against a
+pre-transfer scorecard: all preserved **except**
+`secret_scanning` and `secret_scanning_push_protection`,
+which GitHub's org-transfer code path silently flipped
+`enabled → disabled` — re-enabled same session via
+`PATCH /repos/.../Zeta` with
+`security_and_analysis[secret_scanning*]=enabled`. This
+silent drift is the founding incident for a new factory
+hygiene class: **settings-as-code-by-convention for
+platforms that lack native declarative config**. The
+pattern is `docs/GITHUB-SETTINGS.md` (human-readable
+narrative) + `tools/hygiene/github-settings.expected.json`
+(machine-readable canonical state) +
+`tools/hygiene/check-github-settings-drift.sh` (detector) +
+`.github/workflows/github-settings-drift.yml` (weekly cron
+and PR-triggered cadence). Landed as FACTORY-HYGIENE row #40.
+Same round: the human maintainer's 2026-04-21 praise — *"this
+is great standing rules on blast-radius ops ... i'm glad you
+understand blast radius and pricing the blast radius"* —
+reframed the CLAUDE.md "confirm before hard-to-reverse
+actions" discipline as load-bearing rather than overcautious,
+and as a Zeta product-feature signal connecting to the
+retractable-contract ledger. The pattern generalizes beyond
+GitHub — any click-ops platform (AWS / GCP / Slack /
+org-level settings) gets the same markdown-declaration +
+cadenced-diff treatment when adopted.
+
 ---
 
 ## Round 43 — invariant-substrates program + empirical BP-03 harness evidence + agent-cadence telemetry

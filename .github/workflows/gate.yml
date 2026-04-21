@@ -214,7 +214,16 @@ jobs:
           ./actionlint --version
 
       - name: Run actionlint
-        run: ./actionlint -color
+        # -ignore 'unknown permission scope "administration"' is a
+        # documented workaround for a known actionlint gap — the
+        # `administration` permission IS valid in GitHub Actions
+        # (used by .github/workflows/github-settings-drift.yml to
+        # read rulesets + branch protection + security_and_analysis)
+        # but actionlint v1.7.x has not yet added it to its allow-
+        # list. Remove when actionlint catches up. See:
+        # https://github.com/rhysd/actionlint/issues (search
+        # "administration permission").
+        run: ./actionlint -color -ignore 'unknown permission scope "administration"'
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a

@@ -1,0 +1,237 @@
+{
+  "repo": {
+    "allow_auto_merge": true,
+    "allow_forking": true,
+    "allow_merge_commit": false,
+    "allow_rebase_merge": false,
+    "allow_squash_merge": true,
+    "allow_update_branch": true,
+    "archived": false,
+    "custom_properties": {},
+    "default_branch": "main",
+    "delete_branch_on_merge": true,
+    "description": "F# implementation of DBSP for .NET 10",
+    "disabled": false,
+    "has_discussions": true,
+    "has_downloads": true,
+    "has_issues": true,
+    "has_pages": true,
+    "has_projects": true,
+    "has_pull_requests": true,
+    "has_wiki": true,
+    "homepage": "https://lucent-financial-group.github.io/Zeta/",
+    "is_template": false,
+    "merge_commit_message": "PR_TITLE",
+    "merge_commit_title": "MERGE_MESSAGE",
+    "pull_request_creation_policy": "all",
+    "security_and_analysis": {
+      "dependabot_security_updates": {
+        "status": "enabled"
+      },
+      "secret_scanning": {
+        "status": "enabled"
+      },
+      "secret_scanning_ai_detection": {
+        "status": "disabled"
+      },
+      "secret_scanning_delegated_alert_dismissal": {
+        "status": "disabled"
+      },
+      "secret_scanning_delegated_bypass": {
+        "status": "disabled"
+      },
+      "secret_scanning_non_provider_patterns": {
+        "status": "disabled"
+      },
+      "secret_scanning_push_protection": {
+        "status": "enabled"
+      },
+      "secret_scanning_validity_checks": {
+        "status": "disabled"
+      }
+    },
+    "squash_merge_commit_message": "COMMIT_MESSAGES",
+    "squash_merge_commit_title": "COMMIT_OR_PR_TITLE",
+    "use_squash_pr_title_as_default": false,
+    "visibility": "public",
+    "web_commit_signoff_required": false
+  },
+  "topics": [],
+  "rulesets": [
+    {
+      "conditions": {
+        "ref_name": {
+          "exclude": [],
+          "include": [
+            "~DEFAULT_BRANCH"
+          ]
+        }
+      },
+      "enforcement": "active",
+      "id": 15256879,
+      "name": "Default",
+      "rules": [
+        {
+          "parameters": null,
+          "type": "deletion"
+        },
+        {
+          "parameters": null,
+          "type": "non_fast_forward"
+        },
+        {
+          "parameters": {
+            "review_draft_pull_requests": true,
+            "review_on_push": true
+          },
+          "type": "copilot_code_review"
+        },
+        {
+          "parameters": {
+            "severity": "all"
+          },
+          "type": "code_quality"
+        },
+        {
+          "parameters": {
+            "allowed_merge_methods": [
+              "squash"
+            ],
+            "dismiss_stale_reviews_on_push": false,
+            "require_code_owner_review": false,
+            "require_last_push_approval": false,
+            "required_approving_review_count": 0,
+            "required_review_thread_resolution": true,
+            "required_reviewers": []
+          },
+          "type": "pull_request"
+        },
+        {
+          "parameters": null,
+          "type": "required_linear_history"
+        }
+      ],
+      "target": "branch"
+    }
+  ],
+  "default_branch_protection": {
+    "allow_deletions": false,
+    "allow_force_pushes": false,
+    "allow_fork_syncing": false,
+    "enforce_admins": false,
+    "lock_branch": false,
+    "required_conversation_resolution": true,
+    "required_linear_history": true,
+    "required_pull_request_reviews": {
+      "dismiss_stale_reviews": true,
+      "require_code_owner_reviews": false,
+      "require_last_push_approval": false,
+      "required_approving_review_count": 0
+    },
+    "required_signatures": false,
+    "required_status_checks": {
+      "contexts": [
+        "build-and-test (macos-14)",
+        "build-and-test (ubuntu-22.04)",
+        "lint (actionlint)",
+        "lint (markdownlint)",
+        "lint (semgrep)",
+        "lint (shellcheck)"
+      ],
+      "strict": true
+    }
+  },
+  "actions_permissions": {
+    "allowed_actions": "all",
+    "enabled": true
+  },
+  "actions_variables": [
+    {
+      "name": "COPILOT_AGENT_FIREWALL_ALLOW_LIST_ADDITIONS",
+      "value": " "
+    },
+    {
+      "name": "COPILOT_AGENT_FIREWALL_ENABLED",
+      "value": "true"
+    }
+  ],
+  "workflows": [
+    {
+      "name": ".github/workflows/github-settings-drift.yml",
+      "path": ".github/workflows/github-settings-drift.yml",
+      "state": "active"
+    },
+    {
+      "name": "Automatic Dependency Submission",
+      "path": "dynamic/dependency-graph/auto-submission",
+      "state": "active"
+    },
+    {
+      "name": "CodeQL",
+      "path": ".github/workflows/codeql.yml",
+      "state": "active"
+    },
+    {
+      "name": "Copilot code review",
+      "path": "dynamic/copilot-pull-request-reviewer/copilot-pull-request-reviewer",
+      "state": "active"
+    },
+    {
+      "name": "Dependabot Updates",
+      "path": "dynamic/dependabot/dependabot-updates",
+      "state": "active"
+    },
+    {
+      "name": "gate",
+      "path": ".github/workflows/gate.yml",
+      "state": "active"
+    }
+  ],
+  "environments": [
+    {
+      "name": "github-pages",
+      "protection_rule_types": [
+        "branch_policy"
+      ]
+    }
+  ],
+  "pages": {
+    "build_type": "workflow",
+    "https_enforced": true,
+    "public": true,
+    "source": {
+      "branch": "main",
+      "path": "/"
+    }
+  },
+  "codeql_default_setup": {
+    "languages": [
+      "actions",
+      "csharp",
+      "java-kotlin",
+      "javascript",
+      "javascript-typescript",
+      "typescript"
+    ],
+    "query_suite": "default",
+    "state": "not-configured"
+  },
+  "security": {
+    "vulnerability_alerts_enabled": true,
+    "automated_security_fixes": {
+      "enabled": true,
+      "paused": false
+    },
+    "private_vulnerability_reporting": {
+      "enabled": true
+    }
+  },
+  "interaction_limits": null,
+  "autolinks": [],
+  "counts": {
+    "webhooks": 0,
+    "deploy_keys": 0,
+    "actions_secrets": 0,
+    "dependabot_secrets": 0
+  }
+}
