@@ -102,14 +102,10 @@ last_sha="$(echo "$last" | jq -r '.factory_git_sha')"
 # Delta computation requires N >= 2.
 delta_available="false"
 per_pr_ms="null"
-span_seconds="0"
 pr_delta="0"
 if [ "$n" -ge 2 ]; then
   first_total_ms="$(echo "$first" | jq -r '[.repos[].agg.total_duration_ms // 0] | add')"
   first_recent_merged="$(echo "$first" | jq -r '[.repos[].pr.recent_merged // 0] | add')"
-  first_epoch="$(date -u -j -f "%Y-%m-%dT%H:%M:%SZ" "$first_ts" +%s 2>/dev/null || date -u -d "$first_ts" +%s)"
-  last_epoch="$(date -u -j -f "%Y-%m-%dT%H:%M:%SZ" "$last_ts" +%s 2>/dev/null || date -u -d "$last_ts" +%s)"
-  span_seconds=$((last_epoch - first_epoch))
   # Note: recent_merged is a rolling-window count (last 10), not a
   # cumulative count. A robust per-PR-burn calc needs a cumulative
   # PR counter. For now use the naive proxy: if last_total_ms
