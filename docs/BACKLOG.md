@@ -5923,6 +5923,32 @@ systems. This track claims the space.
   `project_zeta_as_retractable_contract_ledger.md` § "A.
   Blockchain != ledger".
 
+## P3 — LFG-only experiment track (throttled)
+
+- [ ] **LFG-only capability experiments (throttled, not every
+  round).** Aaron 2026-04-22: *"I paid for copilot and teams
+  on LFG so I'm paid over there if you want to put some
+  experinments around explorgin whats possible with LFG that
+  we cant do with AceHAck and we can have certain experiments
+  we run overthere throttled not every round so it will be
+  cheap."* LFG is a Copilot Business + Teams plan with all
+  enhancements enabled; AceHack is free tier. The routine-
+  work rhythm (PRs land on AceHack per `docs/UPSTREAM-
+  RHYTHM.md`) stays; this is a parallel, slower track for
+  capabilities **only LFG can provide**. Budget stays $0 =
+  hard cost-stop; experiments run inside free-tier allowance.
+  **Scouting inventory:** `docs/research/lfg-only-
+  capabilities-scout.md` (10 candidate experiments, cadences
+  defined per experiment). **Gate for Enterprise upgrade:**
+  Aaron explicit — "only if enough stuff you can do only over
+  there we end up with a large backlog" (≥10 experiments
+  genuinely LFG-only). **Owner:** Architect (Kenji) to
+  schedule; individual experiments get per-row tracking once
+  they're ready to run. **Effort:** per-experiment; most S-M.
+  **Source of truth:**
+  `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`
+  + `docs/research/lfg-only-capabilities-scout.md`.
+
 ## P2 — Skill-family expansions (Aaron-authorised)
 
 - [ ] **Game-theory skill family/group.** Aaron 2026-04-20:

@@ -130,7 +130,7 @@ gh api -X POST /repos/AceHack/Zeta/merge-upstream -f branch=main
 
 ## When to bypass the batched rhythm
 
-Five named exceptions where a change goes direct to LFG
+Six named exceptions where a change goes direct to LFG
 (not through AceHack):
 
 1. **Security P0** — any `docs/BUGS.md` P0-security row,
@@ -146,6 +146,12 @@ Five named exceptions where a change goes direct to LFG
    recover.
 5. **Bulk-sync PR itself** — the one PR that batches 10
    PRs targets LFG by design.
+6. **LFG-only capability experiment** — a deliberate probe
+   of a capability that exists on LFG (Copilot Business,
+   Teams plan, merge queue, larger Actions runners) but not
+   on AceHack. The whole point is to exercise LFG. Cadence
+   is throttled per `docs/research/lfg-only-capabilities-
+   scout.md`. Not every round.
 
 Outside these cases, default to AceHack. If in doubt, ask.
 
