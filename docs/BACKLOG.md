@@ -847,6 +847,71 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **LFG budget-tracking substrate — unblock three-repo-split
+  Stage 1 with evidence-based burn history** — Aaron 2026-04-22:
+  *"you need to make sure you can track the budget then you are
+  good to start splitting i think thats the only blocker, we don't
+  want to run out of credits mid swap"* + *"i want evidence based
+  budgiting so you might have to build some observaiblity first or
+  run some gh commands even if gh commands work we want some amount
+  of price history in git, maybe just looking like before and after
+  PRs on LFG and those measurements might be enough"* + *"they have
+  great graphs for the Humans with the live costs in real time, you
+  can do what you think is best"*. GitHub's UI gives live graphs for
+  humans; the factory needs machine-readable history persisted in
+  git so it can diff burn across time and project mid-swap credit
+  runway. **Landed this tick (baseline — N=1):**
+  `tools/budget/snapshot-burn.sh` + `docs/budget-history/README.md`
+  + first snapshot in `docs/budget-history/snapshots.jsonl`. Script
+  works on current `gh` token scopes (`gist, read:org, repo,
+  workflow`) — no escalation required. Captures Copilot seats
+  (`/orgs/<org>/copilot/billing`), per-repo last-20 run timing
+  (`/repos/<r>/actions/runs/<id>/timing`), recent-merged PR count,
+  and a `scope_coverage` manifest so gaps remain legible across
+  scope changes. **Remaining work to clear the Stage 1 gate:**
+  (a) accumulate cadence ≥ 3 snapshots across a span of ≥ 2 LFG
+  merges so per-PR burn delta is observable — opportunistic
+  snapshots on each LFG merge plus weekly background cadence;
+  (b) author `tools/budget/project-runway.sh` companion that
+  reads the JSONL and projects Stages-1-4 workload against
+  remaining free-credit allowance; (c) file a FACTORY-HYGIENE row
+  for cadenced snapshots once the substrate is exercised enough
+  to know the right cadence; (d) revisit for promotion to
+  permanent hygiene vs retirement as research artifact after
+  Stage 2 ships. **Optional scope escalation (not blocking):**
+  `gh auth refresh -s admin:org` by Aaron would unlock
+  `/settings/billing/actions` + Packages storage + shared-storage
+  axes; the script already encodes the missing-axes list in its
+  `scope_coverage` block and would pick up the added axes without
+  re-authoring. Alternative automation path: scheduled LFG
+  workflow with a `REPO_TOKEN` secret holding `admin:org` so the
+  whole capture is agent-ownable (not Aaron-in-the-loop).
+  **Acceptance criteria for three-repo-split Stage 1 unblock:**
+  projection of Stages-1-4 burn has been computed from the N≥3
+  evidence base and **shown to Aaron**; Aaron has made an informed
+  call on whether the projection fits free-tier or whether to
+  pre-trigger Enterprise. Aaron 2026-04-22 *"If i need more credits
+  i can buy enterprise"* — Enterprise upgrade is the
+  credit-exhaustion escape valve, so Stage 1 is no longer gated on
+  "fits within free-credit allowance with margin" — it is gated on
+  "Aaron has visibility to make the call." If projection shows
+  insufficient free-tier margin, the fork in the road is Aaron's
+  (pre-upgrade to Enterprise vs accept possible mid-swap pause vs
+  shrink workload).
+  Source of truth: ADR
+  `docs/DECISIONS/2026-04-22-three-repo-split-zeta-forge-ace.md`
+  §Blockers to Stage 1 execution; memory
+  `project_three_repo_split_zeta_forge_ace_software_factory_named_forge.md`;
+  methodology doc `docs/budget-history/README.md`. Effort: S
+  for cadence build-up + companion projection script; M only if
+  we author the automated LFG-workflow capture path or switch
+  to admin:org-scoped capture. Owner: Architect (Kenji) decides
+  cadence + projection thresholds; Dejan (devops) reviews before
+  any CI-ownable capture path lands. No specialist review
+  required for the current local-only substrate since it reads
+  public endpoints + commits to the fork. Gates three-repo-split
+  Stage 1; does not gate anything else.
+
 - [ ] **Complete-GitHub-surface map integration — extend repo-level
   ten-surface playbook up to org / sideways to enterprise / across to
   platform (round 44 absorb)** — Aaron 2026-04-22: *"you mapped out the
