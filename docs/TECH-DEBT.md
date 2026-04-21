@@ -113,7 +113,6 @@ the target has moved or vanished.
 discovered the drift at fetch time rather than at authorship.
 
 **Example from this repo:**
-
 - `STYLE.md referenced 3x but absent` in `docs/DEBT.md` —
   `maintainability-reviewer` skill cited `docs/STYLE.md`
   before it existed.
@@ -136,7 +135,6 @@ claim the spec was proving no longer holds because the spec's
 model of the world drifted.
 
 **Example from this repo:**
-
 - `Lean IsLinear predicate too weak for B2` in `docs/DEBT.md`
   — the Lean predicate covers `map_zero + map_add` at stream
   level only; DBSP linearity requires additive AND time-
@@ -158,7 +156,6 @@ looks like it has the capability, but has never exercised it.
 actually invokes it.
 
 **Example from this repo:**
-
 - `FACTORY-RESUME.md Honest scope limits` lists
   SonarAnalyzer.CSharp as pinned with 15+ unreviewed
   findings. Cannot honestly claim adoption until the
@@ -179,7 +176,6 @@ across duplicated invocations.
 finds reality does not match.
 
 **Example from this repo:**
-
 - "Round-N fix" historical-voice survivors in
   `src/Core/FastCdc.fs:68`, `Residuated.fs:39`,
   `Durability.fs:17` etc. — docstrings talk about when the
@@ -203,7 +199,6 @@ stale. The system that was supposed to catch debt has itself
 become debt.
 
 **Example from this repo:**
-
 - Daya notebook at ~4400 words vs BP-07 3000-word cap, 10
   rounds overdue on prune as of round 44. Re-flagged as
   blocker for next Daya audit.
@@ -222,7 +217,6 @@ repo only, or to both.
 own context; contributors guess wrong about ownership.
 
 **Example from this repo:**
-
 - `docs/FACTORY-HYGIENE.md` lacked a Scope column until round
   44. 29 rows landed without scope tags. Remediated in the
   same round; scope declaration is now a requirement for new
@@ -243,7 +237,6 @@ convention survive in places the sweep missed.
 pick the wrong one.
 
 **Example from this repo:**
-
 - `Stale path src/Zeta.Core/** in two Semgrep rules` —
   `feedback_folder_naming_convention` sweep missed two
   `.semgrep.yml` rules; corrected in-round.
@@ -265,7 +258,6 @@ implementations; removing members becomes a breaking change
 for consumers the factory did not know existed.
 
 **Example from this repo:**
-
 - `Op<'T> implicitly publicised as a plugin subclass-
   extension point` — `Circuit.RegisterStream<'T>` accepts
   `Op<'T>`; every member of `Op` / `Op<'T>` became a plugin
@@ -285,7 +277,6 @@ is ignored as a flake.
 the flake signal; contributors learn to distrust the CI.
 
 **Example from this repo:**
-
 - `Flaky FsCheck property in the F# suite` — seeds
   `(5370856837815825128, 13581531945998878741)` reproduce;
   second run green with a different seed.
@@ -306,7 +297,6 @@ suppression, the pattern repeats, more suppressions stack up,
 the rule's signal/noise ratio collapses.
 
 **Example from this repo:**
-
 - `Semgrep rule 2 plain-tick-increment — four nosemgrep
   suppressions` across `FSharpApi.fs`, `LawRunner.fs`,
   `PluginHarness.fs`. Fix: sharpen the rule to match only
@@ -325,7 +315,6 @@ body; triggering becomes imprecise.
 signal; ranker recommends SPLIT or SHRINK.
 
 **Example from this repo:**
-
 - `.claude/skills/skill-creator/SKILL.md` at ~180 lines
   (still under cap but large); `skill-tune-up` itself
   hit 436 lines in round 42 → content-extraction to
@@ -349,7 +338,6 @@ expecting a real target, finds nothing, has to reconstruct
 intent.
 
 **Example from this repo:**
-
 - Caught by the CLAUDE.md-level rule
   `verify-before-deferring` (memory:
   `feedback_verify_target_exists_before_deferring.md`) —
@@ -373,7 +361,6 @@ redundant statements accumulate in multiple places;
 contradictions between homes develop silently.
 
 **Example from this repo:**
-
 - Ontology-home check every round
   (`feedback_ontology_home_check_every_round.md`) —
   memories that should be AGENTS.md rules, CLAUDE.md
@@ -395,7 +382,6 @@ signal; reviews cannot cite a stable rule because the rule is
 still a candidate.
 
 **Example from this repo:**
-
 - Every `skill-tune-up` live-search step diffs findings
   against `docs/AGENT-BEST-PRACTICES.md`; candidate
   promotions get flagged for Architect ADR. The Architect's
