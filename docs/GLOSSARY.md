@@ -918,6 +918,7 @@ order-theoretic sense (Dedekind 1897, Birkhoff 1940) — a
 partially-ordered set with **meet** (greatest lower bound,
 notated `∧`) and **join** (least upper bound, notated `∨`).
 Factory operation mapping:
+
 - **Cleave = meet (∧)** — separate conflated terms into
   orthogonal dimensions. Cleaving an informal "refactor"
   term might yield {carpenter-refactor, gardener-refactor}.

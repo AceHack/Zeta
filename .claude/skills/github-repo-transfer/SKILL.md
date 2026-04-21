@@ -124,8 +124,8 @@ diff -u tools/hygiene/github-settings.expected.json \
 
 If the live repo differs from the in-tree expected JSON,
 **fix the in-tree expected first** — either re-snapshot
-+ commit, or revert the live repo. The post-transfer diff
-needs a clean baseline.
+and commit, or revert the live repo. The post-transfer
+diff needs a clean baseline.
 
 ### Step 3 — Adjacent-surface scorecard
 

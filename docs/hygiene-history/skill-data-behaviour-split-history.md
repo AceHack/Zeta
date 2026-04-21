@@ -167,7 +167,7 @@ rubric is roughly 4-5x tighter than the initial one.
 
 #### Borderline (1) — observe one more cycle
 
-5. **`consent-ux-researcher`** (448 lines, score 2).
+1. **`consent-ux-researcher`** (448 lines, score 2).
    - Mix section: `## Dark-pattern catalog — what to
      never design` (~60 lines). The rest of the body
      is procedural (`## The five preconditions of real
@@ -187,7 +187,7 @@ rubric is roughly 4-5x tighter than the initial one.
 
 #### False positive (1) — rubric-refinement data
 
-6. **`sweep-refs`** (160 lines, score 2).
+1. **`sweep-refs`** (160 lines, score 2).
    - Signal triggered by: `## Pitfalls we've hit`
      (~20 lines, 5-6 bullets) + length > 400 (wait —
      this file is 160 lines, not >400; the signal was

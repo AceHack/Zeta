@@ -337,9 +337,9 @@ bulk-sync rhythm.
 
 Aaron: *"try to setup the repos with best practices so i
 don't have to go back in and flip everything again lol"*
-+ *"all public"* + *"it's probably obvious but they follow
-all our experience so they are best practices by default
-all the ones we already follow."*
+and *"all public"* and *"it's probably obvious but they
+follow all our experience so they are best practices by
+default all the ones we already follow."*
 
 **The "by-default" principle.** The checklist below is
 *every lesson Zeta has learned*, applied to Forge and ace

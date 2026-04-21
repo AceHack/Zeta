@@ -158,6 +158,7 @@ gh api /repos/<new>/<name>/code-scanning/default-setup \
 ```
 
 **Three fixes, pick one.**
+
 1. Turn off the `code_scanning` ruleset rule (chosen
    2026-04-21 — advanced-setup SARIF uploads still gate
    merges via required status checks, so security
@@ -264,6 +265,7 @@ secret-scanning-push-protection, both flipped
 `PATCH /repos/.../security_and_analysis`.
 
 **Cross-cutting heal.**
+
 - Local git remote updated same session.
 - README badges + doc URLs fixed in commit `d96fe95`
   ("cleanup: update 4 outdated AceHack/Zeta URLs").
