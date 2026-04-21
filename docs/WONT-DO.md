@@ -10,10 +10,34 @@ this file (to BACKLOG, ROADMAP, or delete entirely).
 
 Entries are grouped by area. Each entry has:
 
+- **Status** (one of `Rejected`, `Declined`, `Deprecated`,
+  `Superseded`) — matches ADR (Nygard) vocabulary.
 - **Decision date** (for the record)
 - **Proposal** (what was suggested)
 - **Why not** (one or two sentences)
 - **Revisit criteria** (what would flip the decision)
+
+## What the statuses mean
+
+- **`Rejected`** — considered and turned down for a durable
+  architectural, values-level, correctness, or security
+  reason. Revisit-when is typically "never" or "only if the
+  underlying constraint moves". Most entries in this file.
+- **`Declined`** — turn-down with a plausibly-reachable
+  revisit threshold — usually evidence, hardware /
+  ecosystem maturation, or an explicit scope extension. No
+  architectural mismatch; the answer is "not now", not
+  "not ever".
+- **`Deprecated`** — was once accepted, now being phased
+  out. Pointer to the replacement should appear in the
+  entry.
+- **`Superseded`** — replaced by a different decision.
+  Pointer to the superseding ADR or entry required.
+
+The filename `WONT-DO.md` echoes the Jira / Bugzilla
+`WONTFIX` / `Won't Do` lineage and is kept as the recognisable
+slug; status verbs per entry match ADR convention for
+precision about the reason shape.
 
 ---
 
@@ -21,6 +45,7 @@ Entries are grouped by area. Each entry has:
 
 ### Cuckoo / Morton filter as a replacement for counting Bloom
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Use cuckoo / Morton filters — smaller, faster,
   support native deletes.
@@ -36,6 +61,7 @@ Entries are grouped by area. Each entry has:
 
 ### DRed (Delete and Re-derive) for retraction-safe recursion
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Implement Gupta-Mumick-Subrahmanian DRed to make
   `RecursiveSemiNaive` retraction-safe.
@@ -50,6 +76,7 @@ Entries are grouped by area. Each entry has:
 
 ### Plain / Sandwiched / Partitioned Learned Bloom Filters
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Add learned-Bloom variants (Kraska 2018 / Mitzenmacher 2018 / Vaidya 2021).
 - **Why not:** Classifier retraining per retraction batch breaks
@@ -62,6 +89,7 @@ Entries are grouped by area. Each entry has:
 
 ### Deletable Bloom (Rothenberg 2010)
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Use deletable Bloom for a cheaper counting variant.
 - **Why not:** Only deletes non-collided bits; produces silent
@@ -74,6 +102,7 @@ Entries are grouped by area. Each entry has:
 
 ### Lock-free `Circuit.Register` via CAS-on-record
 
+- **Status:** Declined
 - **Decision:** 2026-04-17
 - **Proposal:** Replace the `lock registerLock` in `Circuit.Register`
   with a CAS-on-record loop.
@@ -89,6 +118,7 @@ Entries are grouped by area. Each entry has:
 
 ### Centralised feature-flag server (LaunchDarkly / Unleash / GrowthBook)
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Use a SaaS feature-flag service.
 - **Why not:** Library consumers must be able to run offline.
@@ -100,6 +130,7 @@ Entries are grouped by area. Each entry has:
 
 ### CXL persistent memory integration
 
+- **Status:** Declined
 - **Decision:** 2026-04-17 (early decision)
 - **Proposal:** Target CXL-backed persistent memory for the
   storage tier.
@@ -111,6 +142,7 @@ Entries are grouped by area. Each entry has:
 
 ### io_uring as the I/O primitive
 
+- **Status:** Declined
 - **Decision:** early decision (undated)
 - **Proposal:** Use `io_uring` for disk I/O in the Linux path.
 - **Why not:** No first-class .NET support; P/Invoke only, which
@@ -121,6 +153,7 @@ Entries are grouped by area. Each entry has:
 
 ### Microsoft Threat Modeling Tool for the threat model
 
+- **Status:** Declined
 - **Decision:** early decision (undated)
 - **Proposal:** Use Microsoft's GUI Threat Modeling Tool.
 - **Why not:** Windows-only; Parallels-only workflow on macOS.
@@ -130,6 +163,7 @@ Entries are grouped by area. Each entry has:
 
 ### Sakana AI Scientist / Karpathy autoresearch for research-pipeline
 
+- **Status:** Rejected
 - **Decision:** early decision (undated)
 - **Proposal:** Adopt one of these autoresearch frameworks.
 - **Why not:** Sakana is RAIL-licensed + GPU-only; workshop-tier
@@ -141,6 +175,7 @@ Entries are grouped by area. Each entry has:
 
 ### git-crypt for secrets management
 
+- **Status:** Rejected
 - **Decision:** 2026-04-21
 - **Proposal:** Adopt `git-crypt` (GPG / symmetric, AES-256-CTR
   with SHA-1-HMAC-derived IV) for secrets-at-rest inside the
@@ -184,6 +219,7 @@ Entries are grouped by area. Each entry has:
 
 ### Archive completed changes into `openspec/changes/archive/`
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Use the upstream OpenSpec change-history
   archive flow.
@@ -197,6 +233,7 @@ Entries are grouped by area. Each entry has:
 
 ### BinaryFormatter / NetDataContractSerializer / SoapFormatter
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Use one of these for `.NET`-native serialisation.
 - **Why not:** Known-unsafe under untrusted input (arbitrary
@@ -209,6 +246,7 @@ Entries are grouped by area. Each entry has:
 
 ### Round-named test files (`Round17Tests.fs`)
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Keep ad-hoc `RoundNTests.fs` files as a chronological
   grab-bag.
@@ -222,6 +260,7 @@ Entries are grouped by area. Each entry has:
 
 ### Automatic skill self-modification without git visibility
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Let skills rewrite their own `SKILL.md` freely.
 - **Why not:** A skill that edits its own prompt is effectively
@@ -234,6 +273,7 @@ Entries are grouped by area. Each entry has:
 
 ### Fetching adversarial prompt-injection corpora for pen-testing
 
+- **Status:** Declined
 - **Decision:** 2026-04-17
 - **Proposal:** Fetch the elder-plinius repos (`L1B3RT4S`,
   `OBLITERATUS`, `G0DM0D3`, `ST3GG`) for in-repo pen-tests.
@@ -257,6 +297,7 @@ library in F#. Declining them here saves review cycles.
 
 ### SQL tokenizer / parser / binder / logical planner / optimizer
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Build a full SQL front-end pipeline (parser → binder
   → logical plan → optimizer → physical plan → executor).
@@ -271,6 +312,7 @@ library in F#. Declining them here saves review cycles.
 
 ### SQL standards-conformance feature matrix
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Track per-feature SQL:2023 conformance in a generated
   matrix modelled on PostgreSQL's `sql_features` table.
@@ -281,6 +323,7 @@ library in F#. Declining them here saves review cycles.
 
 ### Vendor-dialect adapters (PostgreSQL / SQLite / MySQL / T-SQL)
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Build interface-layer dialect adapters so one engine
   serves many SQL surfaces.
@@ -290,6 +333,7 @@ library in F#. Declining them here saves review cycles.
 
 ### B-tree page parsing, varint decoding, overflow-page reconstruction
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Build B-tree page parsers, varint encoders, overflow
   pages — the SQLite-style storage-reader primitives.
@@ -302,6 +346,7 @@ library in F#. Declining them here saves review cycles.
 
 ### ACID transactions, MVCC snapshots, crash recovery as engine core
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Build the standard single-node ACID engine (WAL,
   MVCC, crash recovery, isolation-level semantics) inside
@@ -317,6 +362,7 @@ library in F#. Declining them here saves review cycles.
 
 ### Root-catalog discovery / catalog snapshots / table metadata parsing
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Parse a root catalog, maintain immutable catalog
   snapshots, resolve table/index metadata on open.
@@ -327,6 +373,7 @@ library in F#. Declining them here saves review cycles.
 
 ### Typed CLR materialization with constructor-binding
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Ship a reflection-compiled materializer that maps
   table rows to immutable CLR types with `required init` binding.
@@ -339,6 +386,7 @@ library in F#. Declining them here saves review cycles.
 
 ### JDBC-like driver / DB-API / `IQueryable` provider
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Ship an `IQueryable<T>` + `IQueryProvider` public
   surface so LINQ queries translate into our operators.
@@ -349,12 +397,25 @@ library in F#. Declining them here saves review cycles.
   async step without contorting the algebra. `IQbservable`
   (P2, Reaqtor / Bonsai slim-IR) is the direction for persistable
   queries.
+- **Scope clarification:** today the only Rx-family surface we ship
+  is `IObservable<'T>` via `RxAdapter.asObservable` in
+  `src/Core/Rx.fs` — push, no expression tree. We ship neither
+  `IQbservable<'T>` nor `IAsyncQueryable<'T>`. Both of those carry
+  `System.Linq.Expressions` machinery — the same substrate
+  `IQueryable` owns — so "expose async LINQ but not sync LINQ" is
+  not a clean split: picking up the expression-tree substrate
+  re-opens the `IQueryable` question even if we only wanted the
+  async variant. What's rejected here is the pull-LINQ contract,
+  not the expression-tree substrate.
 - **Revisit when:** A user workload specifically needs `IQueryable`
   compatibility and the cost of implementing it honestly doesn't
-  distort the async circuit step.
+  distort the async circuit step; or when the IQbservable /
+  IAsyncQueryable work begins and the expression-tree substrate
+  needs to be re-adjudicated.
 
 ### `WITHOUT ROWID` tables / alternative row-identity schemes
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Support SQLite-style `WITHOUT ROWID` or other
   row-identity modes.
@@ -363,6 +424,7 @@ library in F#. Declining them here saves review cycles.
 
 ### Networked single-node service shell
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Wrap the embedded engine in a management + query
   service with versioned wire contracts, gRPC/JSON/etc.
@@ -377,6 +439,7 @@ library in F#. Declining them here saves review cycles.
 
 executor layering as a package
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Adopt the mature analytical-DB layering.
 - **Why not:** Same reason — no SQL compiler to layer. The DBSP
@@ -389,6 +452,7 @@ executor layering as a package
 
 ### EventStore-style server-side JavaScript projections
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Adopt the EventStoreDB projection model where
   projections are JS code stored on the server.
@@ -400,6 +464,7 @@ executor layering as a package
 
 ### PostgreSQL-style `sql_features` conformance table
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Publish per-feature SQL standards conformance.
 - **Why not:** Same reason as the matrix entry above. The
@@ -410,6 +475,7 @@ executor layering as a package
 
 ### MariaDB-style pluggable storage engines
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Support multiple storage engines behind one SQL
   surface.
@@ -422,6 +488,7 @@ executor layering as a package
 
 ClickHouse / Iceberg / Delta Lake)
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Build a columnar analytical projection engine
   alongside the row/event engine for HTAP workloads.
@@ -437,6 +504,7 @@ ClickHouse / Iceberg / Delta Lake)
 
 parser research
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Adopt the layered "SQL front-ends normalise into the
   same logical model" architecture.
@@ -449,6 +517,7 @@ parser research
 
 module manifests
 
+- **Status:** Declined
 - **Decision:** 2026-04-17
 - **Proposal:** Build a PostgreSQL-style extension lifecycle with
   versioned module manifests, upgrade scripts, and DI composition.
@@ -462,6 +531,7 @@ module manifests
 
 ### "Log-only durability" as a repository-level posture
 
+- **Status:** Rejected
 - **Decision:** 2026-04-17
 - **Proposal:** Ban any non-log durability mode at the repo level.
 - **Why not:** Storage ownership belongs to the sink, not the
@@ -477,6 +547,7 @@ module manifests
 
 ### Emulating a deceased family member of a maintainer without the authorized surviving-consent-holders' agreement
 
+- **Status:** Rejected
 - **Decision:** 2026-04-19
 - **Proposal:** Build an agent, skill, persona, research
   artifact, training dataset, fictional backstory, or composite
@@ -519,6 +590,7 @@ module manifests
 
 ### Generalising a single-instance consent rule by analogy
 
+- **Status:** Declined
 - **Decision:** 2026-04-19
 - **Proposal:** Extend the Elisabeth-specific consent rule by
   analogy to other deceased individuals without explicit
