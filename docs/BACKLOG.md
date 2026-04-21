@@ -5545,26 +5545,33 @@ systems. This track claims the space.
     etc.) deferred to first dedicated round.
 
     *Research infrastructure — emulators + ROM library
-    (legal grey-area — log-and-track, not uniform
+    (grey-hat register — log-and-track, not uniform
     adoption).* Aaron 2026-04-21: *"enulators backlog
     can do lots of fun experiments here too i have all
-    the roms"* + *"grey ^ here"*. Aaron's personal ROM
-    library (NES / SNES / Game Boy / PS1 / N64 / etc.)
-    plus the emulator ecosystem (Mesen, Dolphin, RPCS3,
-    PCSX2, etc.) is a **research-infrastructure
-    surface** — distinct from the media-catalog seeds
-    above. Emulation enables save-state experiments on
+    the roms"* + *"grey ^ here"* + the crystallization
+    directive *"^=hat*"* (`^` = hat, universally — so
+    *"grey ^ here"* decodes to *"grey hat here"*, the
+    security-research register for legal-grey-zone
+    operators). Aaron's personal ROM library (NES /
+    SNES / Game Boy / PS1 / N64 / etc.) plus the
+    emulator ecosystem (Mesen, Dolphin, RPCS3, PCSX2,
+    etc.) is a **research-infrastructure surface** —
+    distinct from the media-catalog seeds above.
+    Emulation enables save-state experiments on
     substrate-narrative games (FF VI / VII / Zelda /
     Mario / Brütal Legend) with the same mechanical
     freedom the factory applies to commits: retractibly-
     rewrite at the save-state level, preserve real order
     via save-slot chronology, test branching timelines
-    without losing prior state. **Grey-area context flag
-    (Aaron-marked):** ROM-distribution legal status is
-    jurisdiction-dependent (DMCA carve-outs, Nintendo's
-    2024 Yuzu/Ryujinx enforcement actions, personal-
-    backup-exemption varies by country). The factory
-    logs-and-tracks per
+    without losing prior state. **Grey-hat register flag
+    (Aaron-marked).** In security-research vocabulary,
+    grey-hat = operates in legal grey-zone, neither
+    black-hat (malicious) nor white-hat (strictly
+    authorized). Maps here because ROM-distribution
+    legal status is jurisdiction-dependent (DMCA
+    carve-outs, Nintendo's 2024 Yuzu/Ryujinx enforcement
+    actions, personal-backup-exemption varies by
+    country). The factory logs-and-tracks per
     `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
     — retractibility-preserving (personal backup of
     owned media is retractible; public distribution is
