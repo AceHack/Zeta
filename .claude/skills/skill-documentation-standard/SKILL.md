@@ -1,6 +1,11 @@
 ---
 name: skill-documentation-standard
 description: Capability skill ("hat") — the Zeta SKILL.md documentation standard, modelled on Data Vault 2.0's audit-column discipline. Specifies the provenance breadcrumbs every SKILL.md should carry (record source, load datetime, superseded-by, hash-diff, record hash) so the skill catalog is auditable with the same rigour Data Vault demands of data. Also codifies the reusable "capability skill — no inline persona" frontmatter pattern, the "When to wear / When to defer / Reference patterns / What this skill does NOT do" body scaffold, BP-NN citation style, and the on-disk skill-folder shape. Wear this when authoring or reviewing any SKILL.md, when the `skill-improver` is about to land a change, when `skill-creator` is drafting a new skill, or when auditing skill-documentation drift. Defers to `skill-creator` for the authoring workflow, `skill-improver` for mechanical fixes, `skill-tune-up` for the periodic audit, `prompt-protector` for the invisible-Unicode lint (BP-10), and `data-vault-expert` for the provenance discipline it inherits.
+record_source: "skill-creator, round 34"
+load_datetime: "2026-04-19"
+last_updated: "2026-04-22"
+status: active
+bp_rules_cited: [BP-02, BP-10, BP-11]
 ---
 
 # Skill Documentation Standard — DV-2.0-style breadcrumbs for SKILL.md

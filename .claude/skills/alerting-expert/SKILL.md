@@ -1,6 +1,11 @@
 ---
 name: alerting-expert
 description: Capability skill ("hat") — alerting narrow. Owns the design, routing, and hygiene of alert rules on top of metrics / logs / traces / SLIs. Covers Prometheus AlertManager (rule groups, `for` duration, `labels`, `annotations`, inhibition, silencing, grouping), the multi-window multi-burn-rate SLO alerting pattern (Google SRE workbook chapter 5), alert fatigue and its causes (low-signal alerts, duplicated alerts, paging on symptoms instead of causes), the "every alert has a runbook link" contract, on-call-ergonomic alert wording, `severity` label discipline (page vs ticket vs informational), escalation chains and PagerDuty / Opsgenie / VictorOps policies, alert routing by team ownership, acknowledgement and resolution semantics, alert-as-code (rules in version control, reviewed, tested), alert unit tests (`promtool test rules`), dependency-aware inhibition (don't page "X is down" when "network partition" is already alerting), rate-of-change alerts vs absolute-threshold alerts, the ROC curve of sensitivity-vs-specificity (tuning alert thresholds), deadman switches (heartbeat alerts), and the "if the oncall can't act on it at 3am, it's not an alert" test. Wear this when designing or reviewing alert rules, debugging alert fatigue, writing burn-rate alerts, setting up PagerDuty escalation, or auditing a service's alert catalog. Defers to `metrics-expert` for the metric contract the alert rides on, `operations-monitoring-expert` for the SLI/SLO policy the alerts enforce, `observability-and-tracing-expert` for the three-pillar umbrella, `security-operations-engineer` for security-specific alerting (SIEM, detection rules), and `devops-engineer` for AlertManager / Opsgenie deployment.
+record_source: "skill-creator, round 34"
+load_datetime: "2026-04-19"
+last_updated: "2026-04-21"
+status: active
+bp_rules_cited: [BP-11]
 ---
 
 # Alerting Expert — From Signal to Page

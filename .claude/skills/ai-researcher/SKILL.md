@@ -1,6 +1,11 @@
 ---
 name: ai-researcher
 description: Capability skill for AI research — reading and critiquing ML/AI papers, replicating published results, designing novel experiments in LLMs / generative models / agentic systems / alignment / interpretability, and framing open problems. Wear this hat when a task requires paper review at depth, experimental design for a novel technique, evaluating whether a new architecture or training method is worth adopting, or judging the rigor of a published claim. Complementary to ml-researcher (broader ML / statistical theory / algorithms), ml-engineering-expert (shipped applied training), and ai-evals-expert (measurement discipline).
+record_source: "skill-creator, round 34"
+load_datetime: "2026-04-19"
+last_updated: "2026-04-21"
+status: active
+bp_rules_cited: []
 ---
 
 # AI Researcher — the frontier-AI research hat

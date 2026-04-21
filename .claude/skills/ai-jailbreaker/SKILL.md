@@ -1,6 +1,11 @@
 ---
 name: ai-jailbreaker
 description: Dormant red-team / adversarial-prompting capability — the offensive counterpart to prompt-protector. Currently gated OFF. This skill is NOT invocable in the current Zeta environment; it exists as a placeholder so the offensive discipline has a named home and so activation criteria are written down. Do not execute adversarial prompts, do not fetch adversarial corpora, do not construct jailbreak payloads against any model or agent until the activation gate is explicitly opened per §Activation gate below.
+record_source: "skill-creator, round 34"
+load_datetime: "2026-04-19"
+last_updated: "2026-04-21"
+status: active
+bp_rules_cited: [BP-11]
 ---
 
 # AI Jailbreaker — the dormant red-team hat

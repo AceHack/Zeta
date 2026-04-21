@@ -1,6 +1,11 @@
 ---
 name: ai-evals-expert
 description: Capability skill for measuring LLM and ML systems — eval-suite design, benchmark selection and custom construction, LM-as-judge (G-Eval / pair-wise / rubric), reference-match / BLEU / ROUGE / exact / fuzzy match, offline vs. online eval, regression suites for prompts and agents, calibration evaluation, drift and overfitting-to-benchmark detection, cost-efficient eval loops. Wear this hat when building or reviewing an eval suite, interpreting eval results, picking metrics, deciding whether an LLM change is an improvement, diagnosing eval-benchmark drift, or arguing "the number went up but the system got worse." Complementary to llm-systems-expert (system wiring), ml-engineering-expert (training pipelines), and prompt-engineering-expert (prompt craft) — this skill owns whether the measurement is honest.
+record_source: "skill-creator, round 34"
+load_datetime: "2026-04-19"
+last_updated: "2026-04-21"
+status: active
+bp_rules_cited: [BP-11]
 ---
 
 # AI Evals Expert — the measurement hat

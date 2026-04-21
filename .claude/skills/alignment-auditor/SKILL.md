@@ -2,6 +2,11 @@
 name: alignment-auditor
 description: the `alignment-auditor` — audits a commit or a range of commits against the clauses in `docs/ALIGNMENT.md` (HC-1..HC-7 hard constraints, SD-1..SD-8 soft defaults, DIR-1..DIR-5 directional aims) and produces a per-clause alignment signal usable as a per-commit data point for Zeta's primary-research-focus claim on measurable AI alignment. Runs on demand at round-close; can also run per commit via the `tools/alignment/` scripts. Invoke whenever the human maintainer asks "was this round aligned?" or when a commit is flagged by one of the lints under `tools/alignment/`.
 project: zeta
+record_source: "skill-creator, round 37"
+load_datetime: "2026-04-20"
+last_updated: "2026-04-21"
+status: active
+bp_rules_cited: [BP-10, BP-11]
 ---
 
 # Alignment Auditor — Procedure
