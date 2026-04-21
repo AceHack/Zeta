@@ -67,8 +67,8 @@ the manifest plus repository signature verification.
 
 The immutable identifier is *how* we lock a decision, but the
 decision itself is **content review at first pin**. A SHA-256 that
-points at malicious code is still malicious; a hand-verified
-script run `curl | bash`-style after a careful read is safe.
+points at malicious code is still malicious; the protection is
+reading the content before it runs, not the hash on its own.
 
 In this factory, Aaron's standing policy (2026-04-22) is: *"never
 run a script you download without checking it for vulnerability,
@@ -88,8 +88,20 @@ them first."* So the actual author-time protocol is:
    cache of your review. Any bump invalidates the cache and
    forces a re-read.
 
-The delivery mechanism (`curl | bash` vs `curl -o path && bash
-path`) is not the risk. The risk is unvalidated content.
+The risk the protocol targets is **unvalidated content**, and
+the delivery mechanism matters only insofar as it permits or
+prevents validation:
+
+- **At first contact, `curl | bash` is disallowed** — the pipe
+  executes the bytes before any human or lint has read them,
+  which makes step 2 impossible. Use `curl -o path && bash
+  path` (or equivalent split) so the content lands on disk
+  first.
+- **After SHA-256-pinning, `curl <pinned-url> | bash` becomes
+  acceptable** in automation — the pin is the cached review,
+  and the hash is verified before the pipe executes. But the
+  pin must have been earned by the four-step protocol the
+  first time the content was admitted.
 
 ## Third-party-code ingress points
 
