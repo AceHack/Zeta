@@ -74,7 +74,6 @@ claim whose evidence disappears (package removed,
 workflow deleted, skill retired) gets downgraded or
 removed at the next sweep.
 
-<!-- markdownlint-disable-next-line MD024 -->
 ## How to read the state column
 
 - **Active** — currently wired into build / CI / test

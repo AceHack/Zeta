@@ -44,7 +44,6 @@ invariance + causality, bilinearity, retraction
 completeness) has not been proved and may not hold.
 
 **Example from this repo:**
-
 - `LawRunner has no test covering operators that omit the
   marker tag` (`docs/DEBT.md`) — the law runner claims to
   verify the `ILinearOperator` tag; no fixture implements
@@ -70,7 +69,6 @@ semantic check shows the spec's model diverges from the
 code it nominally verifies.
 
 **Example from this repo:**
-
 - `docs/FACTORY-HYGIENE.md` row #16 (verification-drift
   audit) — cadenced exactly for this class.
 - `tools/lean4/Lean4/DbspChainRule.lean` — pending closure
@@ -94,7 +92,6 @@ becomes breaking-change for consumers the factory did not
 know existed.
 
 **Example from this repo:**
-
 - `Op<'T> implicitly publicised as a plugin subclass-
   extension point` (`docs/DEBT.md`) —
   `Circuit.RegisterStream<'T>` accepts `Op<'T>`, which
@@ -120,7 +117,6 @@ stuck at Trial because the promoting benchmark does not
 exist yet.
 
 **Example from this repo:**
-
 - `bench/Benchmarks/BloomBench.fs referenced but absent on
   disk` (`docs/DEBT.md`) — referenced in `docs/BUGS.md`,
   `docs/research/bloom-filter-frontier.md`, and
@@ -144,7 +140,6 @@ appears in a project file without a cited reason; an
 analyzer flags a pattern the team has no policy on.
 
 **Example from this repo:**
-
 - `SonarAnalyzer.CSharp pinned with 15+ findings waiting for
   a cleanup pass` (`docs/FACTORY-RESUME.md` honest-scope-
   limits) — this is also a factory-class-3 debt (pinned-
@@ -167,7 +162,6 @@ preview milestone; or a caller uses a preview API without
 acknowledging the gate.
 
 **Example from this repo:**
-
 - `Durability.createBackingStore invalidOp message spans 6
   lines of prose` (`docs/DEBT.md`) — preview surface leaks
   English-prose error; fix: `DbspError.WitnessDurablePreview`
@@ -193,7 +187,6 @@ invisible to CI; tests that need it skip rather than
 validate.
 
 **Example from this repo:**
-
 - `CI parity-swap — gate.yml runs actions/setup-dotnet not
   tools/setup/install.sh` (`docs/DEBT.md`) — explicit
   intentional debt; the fix requires `mise trust`
@@ -213,7 +206,6 @@ assertion, shrink behaviour) and needs seed-pinning rather
 than root-cause fix.
 
 **Example from this repo:**
-
 - `Flaky FsCheck property in the F# suite` (`docs/DEBT.md`)
   — seeds `(5370856837815825128, 13581531945998878741)` and
   `(2518361587550814727, 17790701944329487187, 23)`
@@ -233,7 +225,6 @@ track the F# code they describe.
 as drifted: code evolved, spec did not.
 
 **Example from this repo:**
-
 - Periodically surfaced by Viktor on round cadence; no
   specific open entry in `docs/DEBT.md` right now, but the
   discovery surface is active.
@@ -248,7 +239,6 @@ rather than resolving path relative to assembly location.
 Fails non-deterministically on harness-level CWD flips.
 
 **Example from this repo:**
-
 - `TlcRunnerTests repoRoot lookup CWD-brittle`
   (`docs/DEBT.md`) — walk-up from CWD fails when
   full-solution `dotnet test` lands with CWD outside the
