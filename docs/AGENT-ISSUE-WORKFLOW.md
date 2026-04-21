@@ -33,6 +33,7 @@ picked at setup time:
 ## Adapter choices (adopter picks at setup)
 
 ### (1) GitHub Issues
+
 - Pros: free, integrated with PRs, good label / milestone
   tooling, `gh` CLI scriptable, Claude Code `github` plugin
   provides MCP access.
@@ -42,6 +43,7 @@ picked at setup time:
   See "Zeta-specific: GitHub Issues configuration" below.
 
 ### (2) Jira (or any ticketing SaaS — Linear, Asana, Shortcut)
+
 - Pros: richer workflow states, cross-repo visibility,
   enterprise SSO.
 - Requirements: agent access via MCP (Anthropic provides
@@ -54,6 +56,7 @@ picked at setup time:
   transfers 1:1.
 
 ### (3) Git-native only
+
 - Pros: zero external dependency, fully offline, perfect for
   private / air-gapped work.
 - Requirements: none beyond git.
@@ -66,6 +69,7 @@ picked at setup time:
   visible to parallel agents running `git log docs/BACKLOG.md`.
 
 ### Choosing at setup
+
 The canonical setup script under `tools/setup/` currently does
 not prompt for this. A **BACKLOG row is open** to add the
 prompt: "Which issue tracker will this project use?
@@ -86,6 +90,7 @@ adapters; only the mechanism differs:
 | Git-native | Short commit touching the row: `BACKLOG: claim row #42 — session <id> <UTC-ts>` | Commit touching the row: `BACKLOG: release row #42 — landed in <SHA>` | `git log --grep="claim row" docs/BACKLOG.md` |
 
 ### Claim windows and stale-claim force-release
+
 - A claim is considered **active** for 24 hours.
 - After 24 hours of inactivity (no release, no
   progress-signal comment / commit), a claim is **stale**.

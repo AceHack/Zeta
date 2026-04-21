@@ -111,6 +111,7 @@ factory substrate.
 ## Experience
 
 ### Zeta DBSP for .NET · 2024 – present · Active
+
 **My role:** architect-reviewed multi-agent library for
 retraction-native incremental view maintenance.
 

@@ -19,10 +19,10 @@ introduce or upgrade a dependency.
 - GitHub's dependency-review docs —
   <https://docs.github.com/en/code-security/supply-chain-security>
 - Canonical incidents (both mutable-tag class):
-    - **CVE-2025-30066** — tj-actions/changed-files tag-rewrite
+  - **CVE-2025-30066** — tj-actions/changed-files tag-rewrite
       cascade (March 2025), malicious commit landed on 23,000+
       repos via a single mutable `@v1` tag.
-    - **Trivy TeamPCP attack** — 2026-03-19, Aqua Security's
+  - **Trivy TeamPCP attack** — 2026-03-19, Aqua Security's
       Trivy scanner ecosystem compromised by force-push of 76 of
       77 version tags on `aquasecurity/trivy-action` + 7 of 7 on
       `aquasecurity/setup-trivy`, plus a malicious binary
