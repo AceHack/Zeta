@@ -342,11 +342,18 @@ agents both editing `docs/BACKLOG.md` in parallel worktrees still
 produce a merge conflict at queue time; the queue just makes the
 firing deterministic.
 
-### 10.3 Action — enable merge queue (2026-04-22, direct)
+### 10.3 Action — merge queue prerequisites + platform gate
 
 Aaron 2026-04-22: *"i'm the admin you can toggle it all you want"* —
-standing permission granted; no HB-001 filing needed, admin toggles
-done inline. Discovered state and actions:
+standing permission for repo-settings toggles was granted and used
+for the workflow-trigger prerequisite (landed inline via PR #41).
+Enabling merge queue *itself*, however, turned out to be
+platform-gated in a way the permission cannot reach — see the
+"Merge queue ruleset config" block below. The durable resolution
+moved out of the admin-toggle surface onto the org-migration
+surface, filed as `HB-001` in `docs/HUMAN-BACKLOG.md`.
+
+Discovered state and actions taken:
 
 **Already on (no action needed):**
 
@@ -367,26 +374,51 @@ listen to `merge_group` events, or merges deadlock. Added
 (all six required checks) and `.github/workflows/codeql.yml` (best-
 effort though not required). Landed as PR #41 to main.
 
-**Merge queue ruleset config (2026-04-22 landed):**
+**Merge queue ruleset config — blocked at the platform level (not the API):**
 
-Created repository ruleset "Merge queue for main":
+Attempted to create a repository ruleset "Merge queue for main"
+via `POST /repos/AceHack/Zeta/rulesets` targeting `~DEFAULT_BRANCH`.
+GitHub returned `422 Validation Failed` with the body
+`{"errors":["Invalid rule 'merge_queue': "]}` — empty error detail.
+Tried both the original params and the docs-example params
+verbatim; same response in both cases. The failure class initially
+looked like the public-beta instability reported in
+[community discussion #156625](https://github.com/orgs/community/discussions/156625).
 
-- Target: `~DEFAULT_BRANCH` (`main`).
-- Rule type: `merge_queue`.
-- `merge_method: SQUASH` — matches current `gh pr merge --squash`
-  convention.
-- `grouping_strategy: ALLGREEN` — safer than `HEADGREEN`; a failing
-  PR in the group fails the whole group rather than partially merging.
-- `min_entries_to_merge: 1`, `max_entries_to_merge: 5`,
-  `min_entries_to_merge_wait_minutes: 5`,
-  `max_entries_to_merge_wait_minutes: 60`,
-  `max_entries_to_build: 5`,
-  `check_response_timeout_minutes: 60` — conservative defaults;
-  revisit after observing a month of queue traffic.
-- Required checks stay the same six classic-branch-protection
-  requires; the queue re-runs them against the merge-group branch.
+Escalated to the UI path (Settings → Rules → Rulesets → "New
+branch ruleset") expecting a ~30-second toggle. Aaron reported the
+UI path equally missing: *"so it's missing for me in the UI too,
+it's supposed to be there becasue we are public, i also turned up
+the settings"*. Diagnosis via `gh api /users/AceHack --jq '.type'`
+returned `"User"` — not `"Organization"`. Per GitHub platform
+rules, **merge queue is an organization-only feature** regardless
+of plan tier or public/private status; user-owned repos cannot
+enable it through the UI, the REST API, or any other surface. The
+empty-body `422` from the ruleset API is the platform gate, not a
+beta-API quirk.
 
-Once both are enabled, the agent convention shifts from:
+**Resolution path — HB-001 (org migration).** Filed for Aaron in
+`docs/HUMAN-BACKLOG.md`. The durable fix is migrating
+`AceHack/Zeta` → `Lucent-Financial-Group/Zeta` (Aaron's LFG
+umbrella org, see `memory/persona/project_lucent_financial_group_external_umbrella.md`),
+which Aaron has independently flagged as the right home for
+external contributors. **Constraint: preserve all current
+settings** — rulesets, required checks (gate + CodeQL + semgrep),
+auto-delete-head-branch, auto-merge, Dependabot, CodeScanning,
+Copilot Code Review, concurrency groups, workflow triggers incl.
+`merge_group:`. No deadline ("at some point"); accepted 2026-04-21.
+
+**Interim policy — skip merge-queue parallelism, accept
+rebase-tax.** Per Aaron 2026-04-21: *"i think we are going to have
+to go without merge queue parallelism for now."* The factory keeps
+the `merge_group:` workflow triggers landed via PR #41 (they are
+no-ops until merge queue is enabled, so harmless) and relies on
+`gh pr merge --auto --squash` alone. Serial PRs pay the rebase
+cost; the structural fix is the org migration, not a workflow
+tweak.
+
+Once the org migration lands and merge queue can be enabled, the
+agent convention shifts from:
 
 > Open PR → wait for CI → manually `gh pr merge`
 

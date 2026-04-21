@@ -187,6 +187,33 @@ Each row is one entry in the table below. Columns:
 - **Resolution** — when Resolved, what the human decided
   and why. Blank while Open.
 
+## Name attribution — explicit carve-out
+
+`docs/AGENT-BEST-PRACTICES.md` §"No name attribution in code,
+docs, or skills" instructs docs to use role-refs ("the human
+maintainer") instead of personal names. **This file is a
+deliberate exception** by the maintainer's own directive
+(2026-04-20: *"can you put my tasks at the top of the human
+backlog i don't want to have to go digging through it to find
+my tasks"*). The `For:` column and the per-addressee sub-table
+headers intrinsically require personal names to do their job —
+a human must be able to find their own asks at a glance.
+
+The carve-out is narrow:
+
+- **In scope for names:** the `For:` column and the sub-table
+  headers (`### For: Aaron`, `### For: <other name>`, etc.),
+  plus direct quotations in `Source` or `Ask` fields where
+  redaction would lose evidential value.
+- **Out of scope for names:** any prose *outside* the row
+  schema in this file (e.g. the intro, filing rules, prior
+  art). Those paragraphs continue to use role-refs. Other
+  docs / skills / code still follow the BP unchanged.
+
+This carve-out is also recorded in
+`memory/feedback_maintainer_name_redaction.md` (exempt-surfaces
+list) so the doc-set and the agent memory stay consistent.
+
 ## Rows
 
 Rows are grouped by `For:` addressee so a given human can
@@ -204,10 +231,7 @@ are ordered by `State: Open` first, then `Stale`, then
 
 | ID | When | Category | Ask | Source | State | Resolution |
 |---|---|---|---|---|---|---|
-
-*(Aaron currently has no open asks — the 2026-04-20 pm
-signoff released all previously gated items. When new
-asks arise for Aaron, they land in this sub-table.)*
+| HB-001 | 2026-04-21 | decision / org-migration | Plan + execute the migration of `AceHack/Zeta` → `Lucent-Financial-Group/Zeta` (Aaron's LFG umbrella org — `project_lucent_financial_group_external_umbrella.md`). Drivers: (a) GitHub gates merge queue and other org-level features to organization-owned repos — user-owned repos cannot enable merge queue on any plan tier, which is the real blocker behind the `422 Invalid rule 'merge_queue':` failure against `POST /repos/AceHack/Zeta/rulesets` (see §10.3 of `docs/research/parallel-worktree-safety-2026-04-22.md`); (b) aligns the repo with Aaron's stated destination for external contributors. **Constraints (Aaron 2026-04-21):** (1) **preserve all current settings** — rulesets, required checks (gate + CodeQL + semgrep), branch-protection behaviours, auto-delete-head-branch, auto-merge, Dependabot, CodeScanning, Copilot Code Review, concurrency groups, workflow triggers incl. `merge_group:`; (2) **public from the start** at the new location — no private-during-transition staging period. No deadline — "at some point". Until transferred, the factory accepts the rebase-tax on serial PRs and relies on `gh pr merge --auto --squash` alone (merge queue off). | `docs/research/parallel-worktree-safety-2026-04-22.md` §10.3; session transcript 2026-04-21 (Aaron: "we can move tih to https://github.com/Lucent-Financial-Group at some point it's my org for LFG" + "we need to move it to lucent for contributor at some point anyways, we want to keep all the settings we have now" + "i think we are going to have to go without merge queue parallelism for now" + "we can just make it public from the start") | Open | — |
 
 ### For: `any` (any human contributor)
 
