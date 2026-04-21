@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Zeta repository social-preview (GitHub Open Graph card).
+  Spec: 1280x640 with 40pt safe-area border.
+  Source-of-truth: this SVG. GitHub's social-preview upload UI
+  accepts PNG/JPG/GIF only, so when uploading, rasterize on-demand:
+    rsvg-convert -w 1280 -h 640 social-preview.svg -o social-preview.png
+  The .png is NOT committed — regenerable from this SVG in one
+  command, so keeping the raster in-repo would just be weight
+  (see memory/feedback_svg_preferred_vector_raster_decided_at_ui_time.md).
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1280" height="640" viewBox="0 0 1280 640"
+     font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+  <rect width="1280" height="640" fill="#0B0F19"/>
+
+  <!-- zeta glyph, cool cyan, left-of-center -->
+  <text x="200" y="420" font-size="420" fill="#78C8FF"
+        text-anchor="middle" font-family="Helvetica Neue, Helvetica, serif">&#950;</text>
+
+  <!-- "Zeta" wordmark -->
+  <text x="400" y="320" font-size="116" font-weight="700" fill="#F0F0F5">Zeta</text>
+
+  <!-- tagline -->
+  <text x="400" y="400" font-size="40" fill="#8C96AA">Retractable-contract ledger for .NET</text>
+
+  <!-- accent line above footer -->
+  <line x1="240" y1="530" x2="1040" y2="530" stroke="#283750" stroke-width="2"/>
+
+  <!-- footer pillars, mono -->
+  <text x="640" y="575" font-size="26" fill="#8C96AA" text-anchor="middle"
+        font-family="Menlo, Consolas, monospace">incremental  .  retractable  .  formally-specified</text>
+</svg>

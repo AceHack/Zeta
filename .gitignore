@@ -90,3 +90,10 @@ tools/tla/states/
 # docs/DECISIONS/2026-04-20-tools-scripting-language.md. The
 # bun.lock file IS committed; node_modules is not.
 node_modules/
+
+# GitHub-provided templates (e.g. social-preview template from
+# Settings -> Social preview -> "Download template"). Local-only
+# reference file; GitHub is the canonical source. Aaron's drop
+# 2026-04-22 triggered this entry. Our own source-of-truth lives
+# at docs/assets/social-preview.svg and is rasterized to .png.
+repository-open-graph-template.png
