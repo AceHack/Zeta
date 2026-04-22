@@ -3923,6 +3923,48 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Compoundings-per-tick audit — tick-close self-
+  diagnostic with confidence-axis failure-mode taxonomy.**
+  Recurrence threshold met auto-loop-16/17/18 (2026-04-22):
+  tick-history rows started narrating "compoundings this
+  tick" as free prose (six compoundings auto-loop-18, etc.)
+  without a named audit. Per the frontier-confidence memory
+  (`memory/feedback_frontier_confidence_load_bearing_terrain_map_moat_build_hand_hold_withdrawn_2026_04_22.md`),
+  zero compoundings this tick has two distinct diagnoses
+  with different fixes: (a) **livelock** — no compounding
+  attempted; narrative-without-advancement; substrate-
+  missing-layer; fix = generative factory improvement to
+  add the missing layer; (b) **low-confidence** —
+  compounding-attempted-but-not-trusted-enough-to-land;
+  substrate-present-but-not-applied; fix = confidence-
+  restoration via substrate-re-read, not new-substrate-
+  creation. Codification path: add a step 6 (or extend step
+  3) in `docs/AUTONOMOUS-LOOP.md` "tick-close" section
+  naming the audit — count new-substrate-items-this-tick
+  that use-prior-substrate, classify zero-cases into
+  livelock vs low-confidence before the visibility signal
+  fires. Tick-history row schema already carries the
+  narrative; the audit makes it explicit and makes zero-
+  count ticks legible rather than silent. Related:
+  auto-loop-16 livelock-as-factory-discipline memory
+  (narrative-without-advancement = livelock) gives the
+  first failure-mode; auto-loop-18 frontier-confidence
+  gives the second; ARC3-DORA memory-accumulation
+  component gives the *positive* framing (compoundings
+  *are* the moat). **Open questions, flagged to maintainer,
+  not self-resolved:** (i) does the audit belong in
+  `docs/AUTONOMOUS-LOOP.md` step-6 or as a standalone
+  `docs/research/compoundings-per-tick-audit.md` research
+  note? (ii) should tick-history rows carry an explicit
+  `compoundings: N` field in a structured header, or stay
+  narrative? (iii) what's the right threshold for
+  "flagged low" — one? zero? two below recent-average?
+  (iv) should the audit run per-tick or per-round (tick-
+  history aggregation)? Owner: Architect + maintainer.
+  Effort: S (AUTONOMOUS-LOOP.md edit + one-tick smoke
+  test); M if tick-history row schema changes and the
+  round-44 history needs back-annotation.
+
 - [ ] **Architect role — Kenji makes 3 big decisions
   (scope TBD).** Aaron 2026-04-22 directive after the
   freedom-self-report tick: *"backlok Kenji makes 3 big
