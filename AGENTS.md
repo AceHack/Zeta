@@ -330,6 +330,17 @@ Detail lives in:
   checklist, tick-history append protocol, the
   never-idle priority ladder. Required reading for
   any harness running `/loop` autonomously.
+- `docs/AGENT-ISSUE-WORKFLOW.md` — the
+  **dual-track principle** (active-workflow
+  surface for claims + parallelization locks,
+  durable in-repo markdown as the research
+  substrate) plus the three adapter choices
+  adopters pick at setup (GitHub Issues / Jira
+  or any ticketing SaaS / git-native only).
+  Covers the adapter-neutral claim / release /
+  stale-force-release protocol for parallel
+  agents. Zeta's current choice is GitHub
+  Issues; other adopters are not forced into it.
 - `docs/category-theory/README.md` — category-theory
   foundations the operator algebra rests on. Upstream
   CTFP sources (Milewski + the .NET port) live under
