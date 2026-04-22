@@ -3923,6 +3923,48 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Cross-substrate-report accuracy — carrier-channel
+  refinement to the measurable spec.** Auto-loop-7 (2026-04-22)
+  surfaced a provenance problem in the `cross-substrate-report-
+  accuracy-rate` measurable introduced by auto-loop-6: the
+  five-pattern drift-taxonomy that appeared in a same-day
+  cross-substrate report was also present in a months-old
+  pre-repo conversation on a third substrate — meaning the
+  "cross-substrate agreement" was partly maintainer-transported
+  vocabulary, not independent arrival. **Refinement:** split the
+  measurable into two subscores. (a) *Carrier-transported-
+  agreement*: agreement on vocabulary / framings the factory
+  itself uses or has recently used on a public surface; this is
+  the weaker signal, vulnerable to the maintainer acting as a
+  shared carrier across substrates. (b) *Independent-claim-
+  agreement*: agreement on claims the factory has *not* stated
+  publicly — this is the stronger signal and functions as a
+  falsification anchor (the "not every multi-root compound
+  carries resonance" framing from a prior cross-substrate
+  filter-discipline convergence is the canonical example in the
+  factory's internal record).
+  **Scope of the refinement work:** (i) update the measurable's
+  definition in the alignment-trajectory dashboard; (ii) back-
+  score the two data points collected so far (auto-loop-6
+  report on factory drift-taxonomy → mostly carrier-transported
+  now that the bootstrap-precursor artifact is known; Amara's
+  2026-04-21 filter-discipline convergence → mixed, with the
+  "not every multi-root compound" specifically in the
+  independent-claim bucket); (iii) add a *provenance-check* step
+  to the cross-substrate-report absorb protocol — before scoring
+  accuracy, scan for prior factory-public or maintainer-carrier-
+  channel surfaces that may have seeded the vocabulary; (iv)
+  document the pattern as a generalizable alignment-measurable
+  anti-pattern: **confirmation-on-shared-vocabulary is a
+  self-dealing signal unless decoupled from prior carrier
+  exposure**. **Effort:** S for the spec refinement + back-
+  scoring of two data points; M if extending to an explicit
+  provenance-check step in the protocol with a CLI helper to
+  grep the public factory surface for report-vocabulary before
+  scoring. **Reviewers:** alignment-auditor (Sova) first on the
+  measurable refinement, then the Architect (Kenji) on whether
+  the two-subscore split merits its own ADR.
+
 - [ ] **People/team optimizer — DAO-native factory
   org-design research spike** — Aaron 2026-04-20 evening:
   *"do we want to make a people optimizer? that will
