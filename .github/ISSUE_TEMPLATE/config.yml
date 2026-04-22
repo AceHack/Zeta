@@ -1,0 +1,23 @@
+blank_issues_enabled: false
+contact_links:
+  - name: AI agents welcome — read AGENTS.md first
+    url: https://github.com/AceHack/Zeta/blob/main/AGENTS.md
+    about: Zeta explicitly welcomes AI contributors. AGENTS.md covers the rules, build/test gate, boundaries, and specialist reviewer roster. CLAUDE.md adds Claude-Code-specific ground rules.
+  - name: Human contributors welcome — CONTRIBUTING.md
+    url: https://github.com/AceHack/Zeta/blob/main/CONTRIBUTING.md
+    about: Humans at any experience level welcome. First-time contributor? Typo fix? PR directly, no issue needed. Bigger changes — see the templates above.
+  - name: Who we expect (contributor personas)
+    url: https://github.com/AceHack/Zeta/blob/main/docs/CONTRIBUTOR-PERSONAS.md
+    about: The human + AI archetypes we design first-contact surfaces around. If you don't see yourself on the list, file a friction-log entry — we want to add you.
+  - name: Durable research backlog (BACKLOG.md)
+    url: https://github.com/AceHack/Zeta/blob/main/docs/BACKLOG.md
+    about: The in-repo backlog. Every GitHub Issue mirrors a durable row here so the git history is researchable long-term.
+  - name: Durable bug ledger (BUGS.md)
+    url: https://github.com/AceHack/Zeta/blob/main/docs/BUGS.md
+    about: The in-repo bug ledger. Bugs are dual-tracked — GitHub Issue for workflow, BUGS.md row for git-history audit trail.
+  - name: Already-declined features (WONT-DO.md)
+    url: https://github.com/AceHack/Zeta/blob/main/docs/WONT-DO.md
+    about: Read before opening a feature request — this is the explicit list of closed debates.
+  - name: Agent issue workflow (parallelization + dual-track)
+    url: https://github.com/AceHack/Zeta/blob/main/docs/AGENT-ISSUE-WORKFLOW.md
+    about: Claim discipline, lock protocol, dual-track rule. Adapter-neutral — GitHub Issues / Jira / git-native. Zeta's current choice is GitHub Issues.

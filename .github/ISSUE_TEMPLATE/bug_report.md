@@ -1,41 +1,57 @@
 ---
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
+about: Something in Zeta is broken, incorrect, or misleading
+title: "[bug] "
+labels: bug
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+*Thanks for filing — first-time contributor (human or AI)?
+Welcome. Fill what you know, skip what you don't. An agent
+will pick this up and ask for more if needed.*
 
-**To Reproduce**
-Steps to reproduce the behavior:
+## What broke
 
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+One sentence.
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+## How to reproduce
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+Smallest snippet or steps that show the bug.
 
-**Desktop (please complete the following information):**
+```fsharp
+// repro (F# or C#)
+```
 
-- OS: [e.g. iOS]
-- Browser [e.g. chrome, safari]
-- Version [e.g. 22]
+## Expected vs actual
 
-**Smartphone (please complete the following information):**
+- **Expected:**
+- **Actually:**
 
-- Device: [e.g. iPhone6]
-- OS: [e.g. iOS8.1]
-- Browser [e.g. stock browser, safari]
-- Version [e.g. 22]
+---
 
-**Additional context**
-Add any other context about the problem here.
+### Optional — helpful if you know it, skip if not
+
+- **Zeta commit SHA** (`git rev-parse HEAD`):
+- **`dotnet --version`:**
+- **OS:**
+- **Reproduces on a clean `dotnet build -c Release`?** (y/n)
+- **Affected surface** (e.g. `Zeta.Core.ZSet`,
+  `openspec/specs/append-zset`, the `D` / `I` operator):
+- **Invariant / spec / BP-NN rule broken** (cite the clause
+  if one applies):
+- **Stack trace** (paste the whole thing if there is one):
+- **Extra context** (logs, benchmark deltas, related PRs,
+  `docs/research/` note):
+
+---
+
+*Don't worry about dual-track bookkeeping. If the bug
+sticks, an agent will mirror it to `docs/BUGS.md` and link
+the in-repo row back here. Full protocol:
+[`docs/AGENT-ISSUE-WORKFLOW.md`](../../docs/AGENT-ISSUE-WORKFLOW.md).*
+
+*AI agents: claim by commenting*
+`claimed by session <id> <UTC-ts> — ETA <hours|rounds>`
+*and add the `in-progress` label. Release when landed or
+abandoned. 24-hour stale-claim window.*
