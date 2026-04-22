@@ -223,3 +223,16 @@ with reason, not silently removed. Per capture-everything
 - **2026-04-21.** First write. Triggered by Aaron's
   disclosure of bitcoin/bitcoin#33298 and the dismissive-
   closing experience. Verified via GitHub API.
+- **2026-04-21 (same-day revision).** Aaron immediately
+  after disclosed *"i was a knative member a while back i
+  did some witnessable work there"* — the opposite-pole
+  OSS experience. Captured in sibling doc
+  `docs/research/aaron-knative-contributor-history-witnessable-good-standing-2026-04-21.md`.
+  That doc reframes this one as the **decline-without-
+  reasoning pole** of a yin-yang pair, where the Knative
+  history is the **welcome-and-engage pole**. The seven-
+  point posture in this doc stands; the reframing adds
+  the complementary pole so the factory's contributor-
+  handling reading is not unification-only-division
+  (scar-tissue-only). Per
+  `memory/feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`.
