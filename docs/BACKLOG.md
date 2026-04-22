@@ -6085,3 +6085,9 @@ Aarav.
 - Every ✅ shipped item should cite a test or benchmark that proves it works
 - Every P0 item should have a `tests/*ClaimTests.fs` target when shipped
 - Every P2 research item should name its publication venue target
+- Rows translated to a GitHub issue tracker are cross-
+  indexed in `docs/ISSUES-INDEX.md` (git-native record
+  for soul-file independence per Aaron 2026-04-21 "we
+  are git native so still keep a record in the soul
+  file for independence"). BACKLOG.md remains
+  authoritative; issue trackers are dispatch surfaces.
