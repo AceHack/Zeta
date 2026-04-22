@@ -847,6 +847,79 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Complete-GitHub-surface map integration — extend repo-level
+  ten-surface playbook up to org / sideways to enterprise / across to
+  platform (round 44 absorb)** — Aaron 2026-04-22: *"you mapped out the
+  user surface under AceHack earlier and wrote down the github surface
+  map, use lucent and figure out all the apis you missed for
+  orgs/teams/enterprise and map all those out too — the entire github
+  surface then you can backlog it if you want"*. The pre-existing
+  `docs/AGENT-GITHUB-SURFACES.md` (pending land via speculative batch
+  4) covers only ten repo-level surfaces on `AceHack/Zeta`. Post
+  org-transfer, three whole scope families were unmapped: **org**
+  (webhooks / Actions secrets / rulesets / custom-properties /
+  security-managers / Copilot-seats / 2FA-policy / audit-log /
+  migrations — 21 sub-surfaces A.1-A.21), **enterprise** (all GHEC
+  C.1-C.5 endpoints, currently 404 since LFG is Team plan — included
+  to set the scope ceiling), and **platform / cross-cutting** (Copilot
+  platform, Codespaces, Packages/GHCR, Marketplace, Sponsors, GitHub
+  Models, GHAS, GitHub Apps, OAuth apps, traffic/insights — D.1-D.10).
+  Full enumeration with per-surface priority / skill-candidate /
+  cadence / blocker in
+  `docs/research/github-surface-map-complete-2026-04-22.md`. **Work
+  queued here:** (a) once batch 4 lands `docs/AGENT-GITHUB-SURFACES.md`
+  on `main`, integrate the research-doc's per-scope sections either as
+  §11-§15 extensions of that doc OR as a sibling
+  `docs/AGENT-GITHUB-ORG-SURFACES.md` + `AGENT-GITHUB-PLATFORM-SURFACES.md`
+  split (pairing-refactor row already open); (b) spin out two
+  load-bearing discoveries into their own P1 rows — org-settings-as-code
+  (sibling to `docs/GITHUB-SETTINGS.md` declarative pattern) and LFG
+  2FA-requirement flip before the 3rd org member joins; (c) file a
+  P3 row for Copilot seat-cost monthly monitor once the org-scope
+  skill lands. Effort: S for integration (a); M for org-settings
+  declarative landing (b1); S for 2FA flip (b2 — needs Aaron
+  sign-off); S for Copilot monitor (c). Reviewer: Architect (Kenji);
+  Aminata (threat-model-critic) for the 2FA finding; Nazar (sec-ops)
+  for the org-settings declarative pattern. **Dependency:** batch 4
+  of speculative-branch drain lands `AGENT-GITHUB-SURFACES.md` first.
+
+- [ ] **Org-settings-as-code — `docs/ORG-SETTINGS.md` +
+  `tools/hygiene/org-settings.expected.json` + snapshot + drift
+  workflow (round 44 surface-map output)** — derived from the
+  complete-GitHub-surface map above. Pattern is already proven at
+  repo-scope: `docs/GITHUB-SETTINGS.md` +
+  `tools/hygiene/github-settings.expected.json` +
+  `tools/hygiene/snapshot-github-settings.sh` +
+  `.github/workflows/github-settings-drift.yml`. Clone the four
+  artifacts for `orgs/Lucent-Financial-Group`. Narrative doc
+  captures the ~30 org settings enumerated in the map
+  (`members_can_*`, `two_factor_requirement_enabled`, repo-creation
+  policy, PAT policy, webhook set, Actions runner-groups, Copilot
+  seat policy, security-manager roster, default-repo-permission,
+  etc.). Snapshot script runs `gh api /orgs/LFG` + per-surface
+  sub-endpoints; drift detector diffs against expected JSON.
+  Weekly cron on the same schedule as the repo-settings drift
+  workflow. **Triggers:** any member change / settings flip from UI
+  requires same-commit re-snapshot. Effort: M. Reviewer:
+  Architect (Kenji), Nazar (sec-ops) for the security-posture
+  surfaces, Aaron sign-off on policy changes (default-repo
+  permission, 2FA requirement).
+
+- [ ] **LFG org — require 2FA for all members before 3rd member
+  joins (round 44 org-surface-map P1 finding)** — `gh api
+  /orgs/Lucent-Financial-Group` returns
+  `"two_factor_requirement_enabled": false`. For a financial-
+  adjacent org that will become the contributor home for Zeta,
+  2FA-required is the first lever to flip. Current state is
+  tolerable at 2 seats (Aaron + AceHack both 2FA-enabled
+  personally) but not once a 3rd owner / member is added.
+  One-line action: `gh api -X PATCH /orgs/Lucent-Financial-Group
+  -f two_factor_requirement_enabled=true`. **Blocker:** Aaron
+  sign-off (changes org policy; mass-kicks any member not
+  currently on 2FA; Aaron's call). **Trigger:** must land before
+  the invitation for any 3rd member is sent. Effort: S (minutes
+  after sign-off). Reviewer: Aminata (threat-model-critic).
+
 - [ ] **Orthogonal-axes cadenced audit — make the factory's
   axis set an orthogonal basis (round 44 absorb)** — Aaron
   2026-04-22: *"also we need to make sure all our axises are
@@ -6012,3 +6085,9 @@ Aarav.
 - Every ✅ shipped item should cite a test or benchmark that proves it works
 - Every P0 item should have a `tests/*ClaimTests.fs` target when shipped
 - Every P2 research item should name its publication venue target
+- Rows translated to a GitHub issue tracker are cross-
+  indexed in `docs/ISSUES-INDEX.md` (git-native record
+  for soul-file independence per Aaron 2026-04-21 "we
+  are git native so still keep a record in the soul
+  file for independence"). BACKLOG.md remains
+  authoritative; issue trackers are dispatch surfaces.
