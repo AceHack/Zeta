@@ -3923,6 +3923,48 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Architect role — Kenji makes 3 big decisions
+  (scope TBD).** Aaron 2026-04-22 directive after the
+  freedom-self-report tick: *"backlok Kenji makes 3 big
+  decisions"*. Current Architect scope per GOVERNANCE.md
+  §11 + CLAUDE.md is diffused across round-planning,
+  parallel-agent dispatch, round-close synthesis, debt-
+  ledger reading, and glossary-policing — many small
+  synthesis moves per round. This row captures Aaron's
+  re-shaping proposal: concentrate architect authority
+  on exactly three *big* decisions rather than diffusing
+  across many tiny ones. **Scope uncertainty flagged to
+  Aaron, not self-resolved** — four readings are
+  plausible and the right one depends on his intent:
+  (i) *per round* — three big decisions per weekly/multi-
+  round window; fits round-cadence; (ii) *per tick* —
+  three big decisions per autonomous-loop tick; likely
+  too fast to qualify as "big"; (iii) *per feature /
+  per capability* — three big decisions scoped to a
+  single shipped capability; fits event-storming /
+  directed-product-dev-on-rails; (iv) *total budget* —
+  Kenji gets three big decisions for the life of the
+  current ServiceTitan demo target, after which
+  decisions-four-onward require renegotiation. The
+  differences matter: (i) and (ii) are cadence-shaped;
+  (iii) is deliverable-shaped; (iv) is commitment-
+  shaped. Related: this composes with the
+  kanban-not-scrum / no-deadlines / spikes-with-limits
+  discipline (deadlines forbidden; "three big decisions"
+  is a structural budget on architect synthesis, not a
+  time-bound). Also composes with the ServiceTitan demo
+  target (the demo will test whether three-big-
+  decisions is enough architecture-work for a fresh-
+  scaffold path). Suggested next step: ask Aaron which
+  reading he meant, then update
+  `.claude/agents/architect.md` (persona file) and
+  `GOVERNANCE.md §11` with the new scope; capture any
+  decisions Kenji makes under the three-big-decisions
+  banner in `docs/DECISIONS/` ADRs for durability.
+  Owner: Architect + human maintainer. Effort: S
+  (ask-Aaron + scope-doc-edit); M if it triggers
+  GOVERNANCE.md renegotiation.
+
 - [ ] **Cross-substrate-report accuracy — carrier-channel
   refinement to the measurable spec.** Auto-loop-7 (2026-04-22)
   surfaced a provenance problem in the `cross-substrate-report-
