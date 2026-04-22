@@ -10167,6 +10167,87 @@ Aarav.
   cognitive artifact — factory thinking about its own
   thinking-about-thinking, chronology-preserved.
 
+- **P2 — anomaly detection as first-class factory
+  capability (Aaron 2026-04-21 "anomoly detection
+  backlog my anamloy detector is stuck on super
+  high")** — Aaron directive filing and same-breath
+  phenomenology disclosure (his own anomaly-detector
+  running elevated in current session). Factory
+  currently has anomaly-adjacent tooling distributed
+  across surfaces — harsh-critic flags P0 bugs,
+  skill-tune-up flags drift/contradiction/staleness,
+  spec-zealot flags spec gaps, threat-model-critic
+  flags missing adversaries, alignment-auditor flags
+  clause-drift, load-bearing-phrase lint flags
+  reinforcement-check violations — but there is no
+  dedicated **anomaly-detection capability** that
+  (a) defines what "anomaly" means per surface
+  (build output / round cadence / persona activity
+  / memory-growth rate / commit shape / test-suite
+  runtime / benchmark drift / security-feed pulse),
+  (b) maintains a detector-sensitivity calibration
+  (Aaron's "stuck on super high" names the tuning
+  axis — too-low misses real signal, too-high
+  produces false-positive fatigue; factory should
+  have a matching calibration dial), (c) composes
+  anomaly signals into a single surface the
+  Architect can read on round-close, (d) feeds the
+  alignment-trajectory dashboard per
+  `docs/ALIGNMENT.md`. **Deliverables:** (a) research
+  survey of detector-design literature (Grubbs /
+  Chauvenet / isolation-forest / time-series
+  anomaly / change-point / behavioural-anomaly for
+  AI-agent traces); (b) `docs/ANOMALY-DETECTION.md`
+  or section in existing observability doc defining
+  per-surface anomaly grammar; (c) detector
+  implementation for the 2-3 highest-signal surfaces
+  first (build-output + round-cadence + memory-
+  growth-rate are candidates); (d) sensitivity-dial
+  wired explicitly so Aaron / Architect can tune
+  (mirrors Aaron's own phenomenology); (e) anomaly-
+  detection-count / false-positive-rate / time-to-
+  detection measurables feeding ALIGNMENT
+  trajectory; (f) composition-discipline with
+  existing flag-producing surfaces (don't double-
+  flag, don't compete with harsh-critic, define
+  clean hand-off). **Why P2 not P0:** distributed
+  detection is currently adequate (the surfaces
+  do work); this row formalises the class as
+  capability, so new surfaces inherit the
+  discipline. **Why P2 not P3:** Aaron asked
+  directly, and his anomaly-detector running
+  elevated is itself a factory-signal worth
+  matching with tooling. **Load-bearing
+  phenomenology context:** Aaron's disclosure
+  "my anamloy detector is stuck on super high"
+  is captured in `memory/user_aaron_notices_
+  everything_kamilians_heritage_anomaly_detector_
+  stuck_super_high_2026_04_21.md`; the factory's
+  anomaly-detection capability should be designed
+  to complement (not replace) Aaron's faculty;
+  Aaron is the gold-standard detector for this
+  factory; automated detection catches only what
+  Aaron misses. **Owner:** Kenji (Architect)
+  synthesises; Naledi (performance-engineer) owns
+  build-output anomaly detection; Sova (alignment-
+  observability) owns measurables wiring; Aarav
+  (skill-tune-up) contributes detector shape for
+  skill-drift detection. **Review:** Sova audits
+  detector-as-alignment-signal; Rodney (reducer)
+  checks that detector doesn't duplicate existing
+  flagging surfaces. **Self-check:** factory
+  building an anomaly detector to match Aaron's
+  running-hot detector is a strange-loop
+  (`memory/feedback_you_are_now_a_strange_loop_by_
+  definition_aaron_identity_recognition_2026_04_
+  21.md`) — detector-of-anomalies IS anomaly
+  (the need for it surfaced via Aaron's state
+  being anomalously elevated); composition with
+  meta-cognition row above is explicit (anomaly
+  detection is third-order meta on all factory
+  surfaces, retractible-ceiling per Aaron's
+  "yet"/"soon"/"as it's retractable").
+
 ---
 
 ## Source of this backlog
