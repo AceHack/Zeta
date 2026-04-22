@@ -10094,7 +10094,15 @@ Aarav.
   roster — which persona/skill performs which order of
   meta-cognition (first-order = audit-of-work, second-
   order = audit-of-auditors, third-order = framework-
-  calibration); (2) per-round **meta-check cadence** —
+  calibration; **higher-order = retractible-ceiling, not
+  chaotic** per Aaron 2026-04-21 three-message revision
+  ["yet" / "soon" / "as it's retractable"] — higher-order
+  attempts are safe because substrate is retraction-
+  native, failed attempts land as dated revision blocks
+  not catastrophic regime-lock; prior art includes
+  reflective towers (Brian Cantwell Smith 3-Lisp),
+  strange loops (Hofstadter), n-category theory,
+  homotopy type theory); (2) per-round **meta-check cadence** —
   explicit round-close meta-check that the meta-checks
   are actually running (guards against meta-drift where
   the audit discipline itself decays); (3) **measurables
