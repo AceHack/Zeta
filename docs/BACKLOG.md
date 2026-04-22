@@ -847,6 +847,82 @@ within each priority tier.
 
 ## P1 — Factory / static-analysis / tooling (round-33 surface)
 
+- [ ] **Dependency update cadence → doc-refresh trigger (round 44
+  auto-loop-20 absorb)** — maintainer 2026-04-22 auto-loop-20
+  mid-tick directive: *"for our dependencies we need to track
+  theri update cadence. it's a trigger for a document refresh
+  on that dependency"*. Establishes a concrete signal-to-action
+  linkage the factory currently lacks: dependencies age (NuGet
+  packages, external tools, Claude Code harness, SDKs,
+  standards like DORA / SPACE / DV-2.0, AI-model versions) and
+  docs referencing them drift silently. Rule to codify: every
+  dependency has an update cadence; every dependency release
+  is a trigger for doc-refresh on docs referencing that dep;
+  doc-currency must track dep-currency, not float
+  independently. On dep release, each referencing doc resolves
+  one of three states — **refresh** (release changed something
+  doc-relevant), **defer** (recorded decision with reason), or
+  **irrelevant-here** (doc references the dep but no release
+  would ever affect it). Prevention-layer composition: extends
+  the intentionality-enforcement framework — a dep release
+  without a recorded refresh-decision is a silent gap; with a
+  recorded decision is intentionality. **Factory substrate is
+  partially present: wiring is what's missing.** (a)
+  `submit-nuget` workflow enumerates 62 NuGet components per
+  build = dep-detection. (b) DV-2.0 `last_updated` frontmatter
+  per skill = doc-currency. (c) Prevention-layer classification
+  (`docs/hygiene-history/prevention-layer-classification.md`) =
+  discipline taxonomy. All three nodes exist; the edge
+  `dep-release-event → doc-refresh-trigger` does not. **Cadence
+  is not uniform across deps** (Anthropic SDKs weekly; .NET SDK
+  quarterly; standards like DORA / OWASP multi-year). **Dep
+  classes are heterogeneous** (NuGet / external docs / CLI tools
+  / AI-model versions / standards / workflow-action pins) —
+  each needs class-specific cadence detection. **Trigger must
+  be persistent, not one-shot** — a cadenced audit with
+  release-history, so a forensic audit can answer "which
+  dep-release caused this doc refresh?" from one substrate.
+  **Four-phase work queued:** (1) **Inventory** — enumerate
+  factory-dependencies across classes; output a dep-registry
+  table with (name, class, current-version, cadence-source,
+  last-known-release-date, docs-referencing). Effort M. (2)
+  **Cadence-detection** — per-class mechanisms: NuGet API /
+  GitHub Releases API / HTTP Last-Modified / Anthropic
+  changelog / standards-publisher URLs; cron-driven audit
+  writes observed release-dates to the registry. Effort M. (3)
+  **Refresh-trigger wiring** — new release-date vs last-known
+  produces a refresh-list → BACKLOG row or labelled Issue with
+  intentionality-shape (each doc gets a recorded decision
+  block per mini-ADR pattern). Effort S per trigger. (4)
+  **Hygiene-audit composition** — join the hygiene ledger
+  (numbered FACTORY-HYGIENE row); per prevention-layer
+  classification this is **prevention-bearing**, not
+  detection-only. Effort S. **Full reasoning, composition
+  map, and five flagged-to-maintainer questions:**
+  `memory/feedback_dependency_update_cadence_triggers_doc_refresh_2026_04_22.md`.
+  **Five open questions that must NOT be self-resolved before
+  Phase 1 locks scope** (all need maintainer input): (i)
+  scope of "our dependencies" — code-only / code+docs /
+  code+docs+tools / code+docs+tools+standards; (ii)
+  cadence-detection authority — empirical-observed vs
+  expected-cadence-encoded; (iii) refresh-decision authority —
+  doc-owner per doc vs central triage; (iv) audit cadence —
+  daily / weekly / per-tick; (v) historical seeding — zero
+  (start-now) vs last-N-months (requires per-class history
+  lookup). **What this is NOT:** NOT a commitment to
+  auto-refresh docs (trigger fires; refresh is a recorded
+  decision); NOT a license to expand scope silently; NOT a
+  replacement for `submit-nuget` (security / SCA vs
+  doc-hygiene — overlapping data source, distinct downstream
+  consumers); NOT a one-off tool (cadenced-itself, accumulates
+  release-history); NOT a blocker for ServiceTitan demo or
+  drain-PR landings. Reviewer: Architect (Kenji); Aarav
+  (skill-tune-up) for the discipline-shape check; Nazar
+  (sec-ops) for the security-adjacent dep-release events
+  (Anthropic SDK CVE windows, `actions/*` pin rotations).
+  **Dependency:** maintainer sign-off on the five scope
+  questions before Phase 1 inventory lands.
+
 - [ ] **Complete-GitHub-surface map integration — extend repo-level
   ten-surface playbook up to org / sideways to enterprise / across to
   platform (round 44 absorb)** — Aaron 2026-04-22: *"you mapped out the
