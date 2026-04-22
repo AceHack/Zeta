@@ -166,8 +166,12 @@ wait for instruction. Priority ladder:
    - **If unresolved review threads on a non-fork PR**,
      triage findings (accept / reject / modify) with
      principled reasoning per the rejection-grounds catalog
-     accumulated in the tick-history log; resolve threads
-     via GraphQL `resolveReviewThread`.
+     at `docs/research/copilot-rejection-grounds-catalog.md`
+     (five grounds: stale-rationale,
+     self-contradicting-suggestion,
+     grammatical-attributive-adjective,
+     design-intrinsic-hardcode, verbatim-quote-preservation);
+     resolve threads via GraphQL `resolveReviewThread`.
    - **If fork-PR** (maintainer's fork owns head-ref),
      un-refreshable from agent harness without fork-write
      scope — skip, log as fork-PR-refresh gap.
