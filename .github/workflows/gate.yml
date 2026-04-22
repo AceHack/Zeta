@@ -46,12 +46,35 @@ concurrency:
 
 jobs:
   build-and-test:
+    # Matrix is computed from `github.repository` at plan time so the
+    # macos-14 leg (≈10× Linux cost) only exists on contributor forks,
+    # not on the canonical Lucent-Financial-Group/Zeta repo. On any
+    # fork both legs exist; on the canonical repo only the ubuntu leg
+    # exists. This keeps the YAML byte-identical on both sides — no
+    # repo-specific variable, no second workflow file — with runtime
+    # differentiation driven by the built-in `github.repository`
+    # context.
+    #
+    # Job-level `if:` with `matrix.*` is rejected by actionlint (the
+    # matrix context is not available at job-level), so the split is
+    # done at strategy-expansion time via `fromJSON`. The expression
+    # evaluates once per workflow run; each matrix leg that survives
+    # creates its own check status.
+    #
+    # Rationale: maintainer 2026-04-21 "Mac is very very expensive
+    # to run" + "we should leave [LFG's] build as linux only if
+    # that's possible where a contributor fork also builds mac".
+    # `build-and-test (macos-14)` is NOT in the canonical repo's
+    # required-checks list — it was removed from branch protection
+    # on the same change that introduced this matrix split so PRs
+    # don't block on a leg that
+    # no longer exists there.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-14]
+        os: ${{ fromJSON(github.repository == 'Lucent-Financial-Group/Zeta' && '["ubuntu-22.04"]' || '["ubuntu-22.04","macos-14"]') }}
     runs-on: ${{ matrix.os }}
 
     steps:

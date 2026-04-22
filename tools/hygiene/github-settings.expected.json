@@ -131,7 +131,6 @@
     "required_signatures": false,
     "required_status_checks": {
       "contexts": [
-        "build-and-test (macos-14)",
         "build-and-test (ubuntu-22.04)",
         "lint (actionlint)",
         "lint (markdownlint)",
