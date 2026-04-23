@@ -5918,6 +5918,75 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- **Language + concepts age-classification skill.** The
+  human maintainer 2026-04-23 (two-message directive):
+
+  > *"we should probably have some language age
+  > classification skill probably based on our own
+  > statendard we come up with that make sense for AI
+  > and huamsn both, and like the existing human ones,
+  > so it's easy to know what's safer for what age range
+  > based on existing human standards and a new evolving
+  > standard that is more logical and based on real
+  > physisolgy with evidense and research we can do, low
+  > backlog item."*
+
+  > *"it's probably concepts too not just the language
+  > like that seems like what many of the human
+  > classifactions are on"*
+
+  > *"i tried to also say psychology lol i also like
+  > physiology too"*
+
+  **Two-axis classification**: **language** (profanity,
+  slurs, suggestive terms) + **concepts** (violence, sex,
+  drugs, themes, behaviours, ideology exposure). Most
+  existing human standards (MPAA / ESRB / PEGI / TV
+  ratings) are primarily concept-based — the skill
+  should be too.
+
+  **Goal**: classify any text / content / docs / code /
+  memory-entry by age-appropriateness along two output
+  strands simultaneously — existing human standards
+  (MPAA G/PG/PG-13/R/NC-17, ESRB E/E10+/T/M/AO, PEGI
+  3/7/12/16/18, TV Y/Y7/G/PG/14/MA) AND a new
+  psychology + physiology / research-based standard the factory can
+  evolve (developmental-psychology + reading-comprehension
+  + cognitive-load + media-effect literature).
+
+  **Bi-audience target**: works for AI and humans both.
+  AI-side flags content that might violate safety training
+  / content policies at inference; human-side flags
+  content for minors / school-curriculum fit.
+
+  **Composes with**: per-user memory
+  `feedback_pinned_random_seeds_containing_69_or_420_when_agent_picks_2026_04_23.md`
+  (at `~/.claude/projects/<slug>/memory/`) already
+  captures the high-school-curriculum-friendly target
+  with R-rated-when-necessary-for-effect exception; this
+  skill is the enforcement surface. Adjacent safety
+  skills `prompt-protector` / `ai-jailbreaker`.
+  `docs/AGENT-BEST-PRACTICES.md` content-policy
+  substrate.
+
+  **First-pass output** (per classified item):
+
+  ```text
+  { language_rating, concept_ratings (per category),
+    mpaa, esrb, pegi, tv, factory_rating, reasons }
+  ```
+
+  **Research deliverable first**: `docs/research/age-classification-standard-YYYY-MM-DD.md` before skill
+  implementation. Covers existing standards' criteria,
+  physiology-based standard proposal, rating-axis design,
+  edge cases, AI-safety vs human-age-appropriateness
+  convergence.
+
+  **Scope**: research note first; skill lands after
+  standard stabilises. No commitment to adopt. Effort S for
+  research; M for skill. Priority P3 per "low backlog
+  item".
+
 - **Rational Rose — research pass.** The human maintainer
   2026-04-23 (low-priority directive): *"backlog rational
   rose research low priority"*. Rational Rose is the
@@ -5981,7 +6050,7 @@ systems. This track claims the space.
 
   Scope: research note under
   `docs/research/uml-modelling-for-the-factory-YYYY-MM-DD.md`
-  when prioritised. No adopt commitment. No deadline.
+  when prioritised. No commitment to adopt. No deadline.
   Effort S for first-pass note; M if adoption is chosen.
 
 - **Conversational bootstrap UX for factory-reuse
