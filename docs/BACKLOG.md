@@ -6824,6 +6824,65 @@ Keeping them adjacent preserves the directive cluster.
   Aarav reviews the split/freeze recommendations; Kenji
   integrates actions.
 
+- [ ] **Git-native PR-review archive + reviewer-tuning
+  substrate.** Human maintainer 2026-04-23 Otto-57: *"do we
+  keep some gitnative log of the PR reviews? that way a
+  future model can be trained on all that too and we have
+  it for history without the host? backlog?"* + follow-up
+  *"you and the copilot are producing very high signal data
+  there and it will also let you have the data you need
+  to tune copilot over time"*. Current state: PR reviews
+  (Copilot findings, Codex findings, human-maintainer chat
+  approvals, Otto fix-commit rationale, policy-pushback
+  threads) live only on GitHub. If GitHub went away or the
+  factory migrated hosts, the review substrate — which
+  this session has confirmed is the factory's primary
+  substantive-review layer per `memory/feedback_codex_as_
+  substantive_reviewer_teamwork_pattern_...` — would
+  disappear. The review cycles also contain HIGH-signal
+  training data: finding → fix → response → resolution
+  forms a labelled supervised-learning pair useful for
+  tuning reviewer agents. **Scope:** (1) research doc
+  `docs/research/pr-review-archive-design-2026-MM-DD.md`
+  evaluating archive shape candidates — (a) periodic
+  `gh api` → markdown dump under
+  `docs/history/pr-reviews/PR-<NNN>/` with per-thread
+  files; (b) git-notes attached to merge commits
+  (`git notes add --ref=pr-review <SHA>`); (c) hybrid
+  with markdown as durable + git-notes as index; (2)
+  prototype tool `tools/archive/archive-pr-reviews.sh`
+  that takes an owner/repo + optional PR list + emits the
+  archive; (3) first-run baseline: archive all currently-
+  merged Zeta PRs (~214+ series) into `docs/history/pr-
+  reviews/` to capture the substrate before it ages off
+  GitHub; (4) **reviewer-tuning composition** — the
+  archive should preserve enough structure (finding-text,
+  author, timestamp, fix-commit-SHA, resolution-body,
+  policy-pushback-reason) to serve as a training corpus
+  for future Copilot / Codex tuning experiments; the
+  schema design should prioritize this dual-use even
+  though training is out-of-scope for this row.
+  **Composes with:** (a) `memory/project_factory_is_git_
+  native_github_first_host_hygiene_cadences_for_
+  frictionless_operation_2026_04_23.md` — the positioning
+  this row implements; (b) `memory/feedback_codex_as_
+  substantive_reviewer_teamwork_pattern_address_findings_
+  honestly_aaron_endorsed_2026_04_23.md` — reviewer
+  teamwork pattern the archive preserves; (c) Otto-52
+  multi-agent peer-review BACKLOG row (CLI-first per Otto-55; Docker adds reproducibility across environments per Otto-57 clarification — not required for the initial prototype) in the
+  Foundation aspirational-reference section (archive is
+  the corpus the peer-review experiment would be trained (CLI-based prototype, Docker-later per Otto-55)
+  on). **Not in scope:** actual Copilot/Codex tuning
+  experiments; that requires training pipeline +
+  labelled-dataset work several layers downstream. This
+  row's deliverable is the substrate, not the tuning run.
+  **Effort:** M (research doc + prototype tool + first-
+  run baseline; tuning-pipeline is a separate L/XL arc).
+  **Owner:** Dejan (git-surface + tooling) drives the
+  archive tool; Mateo (security-researcher) reviews the
+  schema for adversarial-training-corpus risks; Kenji
+  synthesizes the dual-use deliverable.
+
 ## P2 — Production-code performance discipline
 
 - [ ] **Checked vs unchecked arithmetic audit across Zeta
