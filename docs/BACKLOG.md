@@ -3117,6 +3117,78 @@ within each priority tier.
 
 ## P1 — within 2-3 rounds
 
+- [ ] **Fresh-session quality research — close the gap
+  between fresh and resumed Claude sessions.**
+  Aaron 2026-04-23 observation: *"i tried a fresh session
+  instead of resuming form the existing, its not as goona,
+  maybe do some research on yourself on how to make sure
+  fresh cluade sessions are as good as you, backlog item"*.
+
+  **Observed phenomenon:** resumed Claude Code sessions on
+  this project operate at a noticeably higher quality than
+  fresh-session starts, despite fresh sessions loading the
+  same CLAUDE.md + AGENTS.md + MEMORY.md index. Something
+  the resumed session has that fresh sessions don't
+  recover cleanly.
+
+  **Candidate causes to investigate:**
+  1. **Context-accumulation compounding** — resumed
+     sessions have accumulated reasoning, tool-use
+     patterns, and per-tick calibrations in their own
+     context window that MEMORY.md / CLAUDE.md do not
+     capture.
+  2. **Session-specific prompt-cache warmth** — resumed
+     sessions hit cached prompt prefixes; fresh sessions
+     pay cold-start cost on every tool schema / system
+     prompt chunk.
+  3. **Per-session calibration loss** — fresh sessions
+     don't know about mid-session directive shifts the
+     resumed session absorbed (e.g., today's
+     scheduling-authority sharpening; the in-repo-preferred
+     discipline before its memory landed).
+  4. **CURRENT-<maintainer>.md pattern coverage gaps** —
+     the per-maintainer distillation files are designed
+     exactly for fresh-session orientation; gaps in them
+     are fresh-session quality regressions.
+  5. **Soulfile-as-substrate is the real fix** — fresh
+     sessions should compile-time-ingest the DSL substrate
+     (per the soulfile staged-absorption research doc landing via PR #156 at `docs/research/soulfile-staged-absorption-model-2026-04-23.md`),
+     not bootstrap from CLAUDE.md + AGENTS.md + MEMORY.md
+     alone.
+
+  **Deliverables:**
+  1. Diagnostic protocol — run a fresh session through a
+     benchmark set (same prompts the resumed session has
+     handled well) and capture specifically what degrades.
+  2. Gap-analysis against AutoMemory + AutoDream — what
+     Anthropic's features don't yet cover that the resumed
+     session's advantage comes from.
+  3. Recommendations — concrete factory-overlay improvements
+     to `CURRENT-<maintainer>.md` pattern, in-repo memory
+     migration discipline, or soulfile compile-time-ingest
+     design that would narrow the gap.
+  4. Research landing under `docs/research/fresh-vs-resumed-session-quality-gap-YYYY-MM-DD.md`.
+
+  **Scope:** research-grade, not implementation. Factory
+  discipline improvements flow from the findings but are
+  separate ADR-gated work.
+
+  **Priority:** P1 because fresh-session quality is a
+  scaling property — factories with excellent resumed-session
+  behaviour but poor fresh-session behaviour don't
+  transplant to new maintainers cleanly. Composes with the
+  multi-maintainer framing (Max anticipated next human
+  maintainer per the CURRENT-<maintainer>.md distillation
+  pattern, which lives in per-user memory not in-repo).
+
+  **Self-scheduled:** free work under the 2026-04-23
+  scheduling-authority rule (captured in per-user memory —
+  not in-repo; the rule governs that Amara + Kenji own
+  free-work scheduling while the maintainer owns paid-work
+  authorisation).
+
+  **Effort:** M (1-3 days of agent research + write-up).
+
 - [ ] **Claude-harness cadenced audit — first full sweep.**
   Aaron 2026-04-20 late, verbatim: *"part of our stay up to
   date on everything we should always research claude and
@@ -5657,6 +5729,22 @@ systems. This track claims the space.
   exists; BP-HOME is what makes its sweep mechanical).
 
 ## P3 — noted, deferred
+
+- **Rational Rose — research pass.** The human maintainer
+  2026-04-23 (low-priority directive): *"backlog rational
+  rose research low priority"*. Rational Rose is the
+  legacy UML modelling tool lineage (Rational Software →
+  IBM Rational → discontinued 2013, still surfaces as a
+  reference point in enterprise architecture discussions).
+  Research prompt: what does Rational Rose's approach (UML
+  model-as-source-of-truth, code-generation from model,
+  round-trip engineering) offer / warn against for the
+  factory's own model-vs-code discipline? Composes with
+  the factory's OpenSpec workflow (behavioural specs first)
+  and the formal-spec stack (Lean / TLA+ / Z3 — spec-first
+  is a parallel discipline from the formal-verification
+  side). No commitment to adopt; research pointer only.
+  No deadline. Effort S for the first-pass research note.
 
 - **Conversational bootstrap UX for factory-reuse
   consumers — two-persona (non-developer + developer)
