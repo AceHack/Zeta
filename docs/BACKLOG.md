@@ -5934,6 +5934,56 @@ systems. This track claims the space.
   side). No commitment to adopt; research pointer only.
   No deadline. Effort S for the first-pass research note.
 
+- **Is UML modelling useful for the factory, and what
+  tools would it require us to map?** The human
+  maintainer 2026-04-23: *"backlog is uml modeling
+  useful for the factory and what tools would it
+  require us map?"*. Two-question research pointer:
+
+  1. **Utility question**: does the factory benefit
+     from UML modelling? The factory's current
+     discipline is spec-as-source-of-truth via
+     OpenSpec (behavioural specs) + formal specs (TLA+,
+     Lean, Z3, FsCheck, Alloy). UML's class / sequence
+     / state / activity / deployment diagrams overlap
+     those roles partially — where do they add value
+     the factory doesn't already have?
+  2. **Tooling-map question**: if we do adopt UML, what
+     tools would the factory need to inventory? The
+     factory-technology-inventory (PR #170) already
+     tracks language / runtime / data / harness /
+     verification / static-analysis / CI rows; adding
+     UML would add a modelling-tools row-set covering:
+     - **Diagram editors** (PlantUML, Mermaid, draw.io,
+       Structurizr, Rational Rose lineage — see the
+       Rational Rose P3 row)
+     - **Text-based formats** (PlantUML / Mermaid /
+       Structurizr DSL are Markdown-compatible and
+       git-native; fit row #49 post-setup stack)
+     - **Model-to-code round-trip** (if we want
+       code-generation from model)
+     - **Model-vs-code drift detection** — parallel to
+       `verification-drift-auditor` but for UML
+
+  Composes with the adjacent Rational Rose P3 row (in-repo
+  via PR #163; sits immediately above this row), `docs/FACTORY-TECHNOLOGY-INVENTORY.md`
+  (lands via PR #170; target inventory surface), the
+  OpenSpec workflow, and the formal-spec stack.
+
+  **First-pass recommendation** (to be validated by the
+  research pass): **Mermaid** is the factory-aligned
+  lightweight default — git-native, renders in GitHub,
+  zero toolchain. **PlantUML** adds expressiveness but
+  needs Java. **Structurizr** adds architecture-as-code
+  framing. Heavy UML tools (Rational Rose / Enterprise
+  Architect / MagicDraw) are likely over-scoped for a
+  factory that already has formal-spec discipline.
+
+  Scope: research note under
+  `docs/research/uml-modelling-for-the-factory-YYYY-MM-DD.md`
+  when prioritised. No adopt commitment. No deadline.
+  Effort S for first-pass note; M if adoption is chosen.
+
 - **Conversational bootstrap UX for factory-reuse
   consumers — two-persona (non-developer + developer)
   elicitation surface.** Aaron 2026-04-20: *"the end
