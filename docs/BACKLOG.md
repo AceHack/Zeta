@@ -2309,6 +2309,56 @@ within each priority tier.
 
 ## P1 — CI / DX follow-ups (after round-29 anchor)
 
+- [ ] **HLL property-test flakiness — investigate before
+  retry (DST discipline).** Observed 2026-04-23 (auto-loop-88):
+  `Zeta.Tests.Properties.FuzzTests.fuzz: HLL estimate
+  within theoretical error bound` failed in CI on PR #159
+  (gh run 24849954881 / build-and-test ubuntu-22.04 /
+  FsCheck.Xunit.PropertyFailedException). The failing PR
+  only touches `memory/*.md` files — unrelated to the
+  test. Failure is inherited from the main-branch state
+  at rebase time.
+
+  Per the DST discipline
+  (`memory/feedback_retries_are_non_determinism_smell_DST_holds_investigate_first_2026_04_23.md`
+  — per-user), retries are a non-determinism smell. A
+  flaky property test is genuine non-determinism; the
+  investigation should answer:
+
+  1. **Is the error bound formula correct?** HLL has a
+     known standard-error of `1.04 / sqrt(m)` where `m`
+     is the number of registers. The test bound should
+     reflect that + a factor for confidence interval.
+  2. **Is the test seeded deterministically?** FsCheck
+     supports explicit seeds; a flaky property under
+     random seeds should be seed-pinned + the failing
+     seed captured for regression.
+  3. **Is it actually a real regression?** The test
+     was passing recently (session PRs earlier today ran
+     CI green on this check). Bisect against recent
+     commits to identify when it started failing.
+  4. **What's the cost of re-running?** If the failure
+     is a genuine edge-case at one seed in ten thousand,
+     re-run succeeds. But DST discipline says investigate
+     first: understand WHY this seed fails before
+     accepting "flaky = retry."
+
+  **Deliverable**: research note under
+  `docs/research/hll-property-test-flakiness-YYYY-MM-DD.md`
+  naming the cause + fix (either tighten bound, pin
+  seed, or fix the HLL implementation). No deadline; but
+  the test is currently blocking session PRs from
+  merging until re-run passes.
+
+  **Effort**: S if the bound formula is wrong (tighten +
+  rerun); M if it's a genuine implementation edge case
+  requiring investigation.
+
+  **Composes with**: the DST retry-is-smell memory; the
+  samples-readability-real-code-zero-alloc memory (HLL
+  is library-internal, so low-alloc + correctness are
+  library-scope).
+
 - [ ] **Declarative parity across dev-inner-loop / qa / dev / stage / prod — environment-parity research, time-budgeted (research-first, no implementation tonight).**
   Aaron (2026-04-20): *"also we want our dev innner loop, qa,
   dev, stage, prod to all have declarative pairty someting
