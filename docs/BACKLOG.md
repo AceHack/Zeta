@@ -6620,6 +6620,108 @@ systems. This track claims the space.
   L (family, not a single skill). **Source of truth:** same
   as above.
 
+## P2 — Production-code performance discipline
+
+- [ ] **Checked vs unchecked arithmetic audit across Zeta
+  hot paths.** Aaron 2026-04-23 Otto-47: *"make sure we are
+  using uncheck and check arithmatic approperatily, unchecked
+  is much faster when its safe to use it, … make sure our
+  production code does this"*. Current state: `Checked.(+)`
+  and `Checked.(*)` appear ~30 times across
+  `src/Core/{ZSet, Operators, Aggregate, TimeSeries, Crdt,
+  CountMin, NovelMath, IndexedZSet}.fs`. Canonical rationale
+  lives at `src/Core/ZSet.fs:227-230` (stream-weight-sum
+  cumulative overflow would sign-flip the multiset). Rationale
+  is correct for **unbounded stream sums** but applies unevenly
+  — counter increments, SIMD-lane partial sums, bounded-domain
+  products should demote to unchecked. F# defaults to
+  unchecked; `Checked.` is a deliberate opt-in paying
+  2-5ns/op and disabling `Vector<int64>` SIMD-vectorisation.
+  **Scope:** per-site bound analysis + BenchmarkDotNet
+  throughput measurement + property-test bound assertions.
+  **Classification matrix:** bounded-by-construction →
+  unchecked; bounded-by-workload → unchecked + citing comment;
+  bounded-by-pre-check → unchecked with boundary guard;
+  unbounded stream sums → keep Checked; user-controlled
+  products → keep Checked; SIMD-candidate → unchecked with
+  pre-check. **Deliverable chain:**
+  `docs/research/checked-unchecked-audit-2026-MM-DD.md`
+  (inventory + per-site classification) → FsCheck property
+  tests asserting each proved bound → PR series (one
+  subsystem per PR) with BenchmarkDotNet deltas showing ≥5%
+  improvement required per demoted site. **Owner:** Naledi
+  (perf) runs benchmarks; Soraya (formal-verification)
+  validates bound proofs; Kenji integrates; Kira (harsh-
+  critic) reviews — unjustified demotion is a P0. **Effort:**
+  L (per-site analysis + benchmarks + property tests for ~30
+  sites; PR series spans multiple rounds). **Source of
+  truth:** this entry + **out-of-repo** (per-user memory,
+  not yet in-repo) factory-generic memory
+  `feedback_checked_unchecked_arithmetic_production_tier_craft_and_zeta_audit_2026_04_23.md`
+  (candidate for Overlay-A migration once reviewer capacity
+  permits) + `src/Core/ZSet.fs:227-230` rationale comment +
+  `bench/Benchmarks/CheckedVsUncheckedBench.fs` (shipped on
+  main via PR #209, commit `3e1b97f` — measurement harness
+  covering the three site archetypes).
+
+- [ ] **Craft production-tier ladder — first module:
+  checked-vs-unchecked arithmetic in F#/.NET.** Same Aaron
+  directive: *"this is production code training level not
+  onboarding materials"*. Craft onboarding tier currently
+  ships `docs/craft/subjects/zeta/retraction-intuition/` on
+  main (PR #201); additional onboarding modules — zset-basics
+  (#200), operator-composition (#203), semiring-basics (#206)
+  — are in-flight PRs awaiting reviewer approval. Production-
+  tier is a distinct ladder for readers already fluent in
+  the onboarding basics: performance-correctness tradeoffs,
+  JIT behaviour, allocation discipline, bound-proving,
+  benchmark-driven tuning. **First module topic:** checked
+  vs unchecked arithmetic. **Scope:** `docs/craft/subjects/
+  production-dotnet/checked-vs-unchecked/module.md`
+  (**proposed in PR #208 — open; path does not yet exist on
+  main**). **Lesson shape:**
+  (1) runnable BenchmarkDotNet harness showing 2-4× delta on
+  a 100M-int64 sum loop (shipped: PR #209 merged as
+  `bench/Benchmarks/CheckedVsUncheckedBench.fs`); (2)
+  decision tree (when to opt into Checked); (3) bound-
+  proving techniques (FsCheck property tests, upstream
+  invariant arguments, algebraic bounds); (4) silent-
+  overflow detection in production (sign-flip invariant
+  checks); (5) the Zeta-specific choice — stream-weight-sums
+  stay Checked; counter increments and SIMD-lane sums
+  demote; composes with audit row above as cross-link.
+  **Prereqs:** onboarding-tier Craft foundations + Benchmark
+  DotNet literacy. **New structural concept:** production-
+  tier Craft — adds a directory tier (`docs/craft/subjects/
+  production-{lang}/{topic}/`) and per-tier README
+  (`docs/craft/subjects/production-dotnet/README.md`
+  **proposed in PR #208 — open; the directory itself is not
+  yet on main**). The per-tier README names the ladder,
+  four neighbour-module stubs, and the tier-split rationale.
+  A top-level
+  `docs/craft/README.md` does not yet exist; authoring it is
+  a follow-up hygiene task listed below. **Owner:** Naledi
+  (perf authorial voice); Kenji integration; Rune
+  readability review; Aarav skill-tune-up when structure
+  lands. **Effort:** M (first module + tier restructure +
+  top-level README). **Source of truth:** same per-user
+  memory as audit row; sibling work.
+
+- [ ] **Top-level `docs/craft/README.md` authoring.**
+  Follow-up hygiene from the production-tier ladder row
+  above. Current state: `docs/craft/` contains only
+  `subjects/` with the per-tier `subjects/production-dotnet/
+  README.md` landed in PR #208. A top-level README should
+  introduce the tier split (onboarding vs. production), list
+  the subject roots (`zeta/`, `production-dotnet/`, future
+  CS / math / linguistic-seed subjects), and point at the
+  five Craft pedagogy principles. **Effort:** S (single
+  file, ~60-100 lines). **Owner:** Rune (readability review
+  of the tier-split explanation) + Kenji (integration).
+  **Source of truth:** this entry +
+  `docs/craft/subjects/production-dotnet/README.md` as the
+  per-tier template.
+
 ## P2 — AX/UX — BP-07 3000-word notebook-cap review
 
 - [ ] **Per-persona AX/UX poll on BP-07's 3000-word notebook
