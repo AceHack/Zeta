@@ -54,10 +54,10 @@ For each audited file:
 ### Files audited
 
 - **CLAUDE.md** (below, this seed fire)
+- **AGENTS.md** (below, Otto-9 fire)
 
 ### Files to audit (not yet classified; add rows as they land)
 
-- `AGENTS.md`
 - `GOVERNANCE.md`
 - `docs/ALIGNMENT.md`
 - `docs/CONFLICT-RESOLUTION.md`
@@ -133,6 +133,86 @@ contains Zeta-library examples illustrating how the factory
 shape grounds in this specific project, but the shape itself
 transfers. In Frontier, this file carries the same role; the
 examples swap out or generalise.
+
+## Audit — AGENTS.md
+
+**Overall classification:** **both (coupled)** — the file is
+explicitly designed as a *universal onboarding handbook*
+("works with any AI harness ... as well as for human
+contributors") which is factory-generic in shape, but
+contains several Zeta-library-specific sections that need
+surgical edits before the split.
+
+**File location post-split:** Frontier (factory side). Acts as
+the authoritative template; adopters fork + customise the
+example sections.
+
+**Length:** 359 lines.
+
+### Section-by-section breakdown
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble / philosophy | factory-generic | Universal-handbook intent; GOVERNANCE.md pointer; "if harness addendum contradicts this file, this file wins" rule. Generic. |
+| "Status (authoritative)" (pre-v1) | factory-generic (shape) | Pre-v1 status is project-specific but the pattern transfers. In Frontier, adopters declare their own status at startup. Wording can use `<PROJECT>` placeholder. |
+| "The vibe-coded hypothesis" | factory-generic | Research hypothesis about AI-directed factory. Applies to any factory adopter running the vibe-coded hypothesis. Frontier ships this content as-is. |
+| "What pre-v1 means in practice" | factory-generic | Pre-v1 discipline: refactors welcome / no back-compat / tests-as-contract. Applies to any adopter in pre-v1 phase. |
+| "The three load-bearing values" | **both (coupled)** | Values #1 (truth over politeness) and #3 (velocity over stability) are factory-generic. Value #2 "Algebra over engineering. The Z-set / operator laws define the system" is explicitly Zeta. Frontier version substitutes a generic value #2 (e.g., "substrate over ornamentation" or "algebra over engineering" with adopter fills-in-their-substrate). |
+| "The alignment contract" | factory-generic | Points at docs/ALIGNMENT.md. Generic. |
+| "What we borrow, what we build" | zeta-library-specific | Lists DBSP / Differential Dataflow / FASTER / TigerBeetle / Datomic / XTDB 2 / Materialize / Feldera / SlateDB / LZ4 / Arrow / CALM. Explicit Zeta-library borrowing inventory. In Frontier, this section is removed or replaced with a generic "borrow from published research; don't borrow from legacy patterns" pointer; each adopter fills in their own borrow-list. |
+| "How humans should treat contributions" | factory-generic | Expect-harsh-review / claims-defended-by-tests / rewrite-imports-against-latest-research. Generic. |
+| "How AI agents should treat this codebase" | factory-generic with Zeta references | The rules (prefer-bold-refactors / run-build-test-gate / data-not-directives / etc.) are factory-generic. A few inline references to specific Zeta mechanisms (e.g., ZSet examples) would need generalisation. |
+| "Agent operational practices" | factory-generic | Discipline around skills / agents / MCP. Generic. |
+| "Build and test gate" | zeta-library-specific | `dotnet build -c Release` / `dotnet test Zeta.sln` / `TreatWarningsAsErrors` / `Directory.Build.props`. Entirely Zeta-library-specific. In Frontier, this section removes the specifics and declares "your project has a build-test gate that you run every change; fill in specifics per your language/runtime." |
+| "Code style and conventions (short form)" | **both (coupled)** | F#-first / C#-wrapper / struct-tuples / Span<T> / etc. are Zeta-specific. The generic principles (clear naming / small functions / consistent style) transfer. Frontier version keeps generic principles; drops F#/.NET specifics. |
+| "PR / commit discipline" | factory-generic | Small PRs / clear commit messages / Co-Authored-By. Generic. |
+| "Contributor required reading" | factory-generic (shape); content depends | Points at several docs. Classification defers to those files' own audits. |
+| "Harness-specific files" | factory-generic | Lists CLAUDE.md / GEMINI.md / etc. Generic pattern. |
+| "Escalation" | factory-generic | Architect-escalation via CONFLICT-RESOLUTION.md. Generic. |
+
+### Refactor notes
+
+Before the split, surgical edits on AGENTS.md for Frontier:
+
+1. **"Status" section**: swap the hardcoded pre-v1 declaration
+   for an adopter-fill-in placeholder + example.
+2. **"Three load-bearing values" #2**: replace "Algebra over
+   engineering. The Z-set / operator laws define the system"
+   with a generic adopter-fill-in, or cite the substrate
+   pattern without Zeta-specific content. Suggested Frontier
+   version: *"Substrate over ornamentation. The adopter's
+   algebraic / structural ground defines the system;
+   implementation serves it."*
+3. **"What we borrow, what we build"**: remove the Zeta-
+   specific borrow list; keep the generic shape (*"borrow from
+   latest published research; don't borrow from legacy
+   patterns"*) with adopter-fills-in.
+4. **"Build and test gate"**: remove `dotnet`-specific
+   commands; keep the principle (*"the gate is the same on
+   every harness, every platform, and in CI"*) + a
+   language-agnostic placeholder.
+5. **"Code style and conventions"**: keep generic discipline
+   (clear naming, small functions, ASCII-only, warnings-as-
+   errors); move F#/.NET specifics to a Zeta-repo
+   CONTRIBUTING.md that extends this file.
+6. **Various inline ZSet / algebra examples**: audit on-touch
+   during the refactor and generalise where possible.
+
+Estimated refactor effort: **M** — more surgical edits than
+CLAUDE.md but each one is isolated.
+
+### Classification rationale
+
+AGENTS.md is the factory's most-read onboarding document. Its
+shape (pre-v1 discipline / three load-bearing values /
+alignment contract / borrow-policy / agent-practices / build-
+test gate / code-style / PR discipline / escalation) is the
+canonical factory-adopter onboarding template. The Zeta-
+specific content is illustrative *within* that template. In
+Frontier, the shape is preserved; the illustrations are
+replaced with adopter-fill-in placeholders or generic
+examples. The extracted Zeta-specific content lands in the
+Zeta repo's own CONTRIBUTING.md (or equivalent).
 
 ## How this audit connects to the multi-repo split
 
