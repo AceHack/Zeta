@@ -55,12 +55,11 @@ For each audited file:
 
 - **CLAUDE.md** (below, this seed fire)
 - **AGENTS.md** (below, Otto-9 fire)
+- **docs/CONFLICT-RESOLUTION.md** (below, Otto-12 fire) — note: GOVERNANCE.md audit landing separately via PR #181
 
 ### Files to audit (not yet classified; add rows as they land)
 
-- `GOVERNANCE.md`
 - `docs/ALIGNMENT.md`
-- `docs/CONFLICT-RESOLUTION.md`
 - `docs/AGENT-BEST-PRACTICES.md`
 - `docs/GLOSSARY.md`
 - `docs/WONT-DO.md`
@@ -213,6 +212,77 @@ Frontier, the shape is preserved; the illustrations are
 replaced with adopter-fill-in placeholders or generic
 examples. The extracted Zeta-specific content lands in the
 Zeta repo's own CONTRIBUTING.md (or equivalent).
+
+## Audit — docs/CONFLICT-RESOLUTION.md
+
+**Overall classification:** **both (coupled)** — the conflict-
+conference protocol (Architect-as-orchestrator / alignment-
+cite-first / specialists-are-advisory / principles-list /
+reflection-cadence) is factory-generic in shape, but the
+specific persona roster includes Zeta-library-specific
+specialists AND the Active Tensions section embeds specific
+Zeta implementation references.
+
+**File location post-split:** Frontier (factory side). The
+conference-protocol shape is the factory's multi-specialist-
+advisory mechanism; adopters get the shape with their own
+specialist roster.
+
+**Length:** 247 lines. **9 top-level sections.**
+
+### Section-by-section breakdown
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble + "The Architect is the orchestrator" | factory-generic | Architect-as-orchestrator pattern. Generic. |
+| "Alignment-related conflicts cite `docs/ALIGNMENT.md` first" | factory-generic | Cite-alignment-first pattern. Generic. |
+| "Principles (the list the Architect consults when parts disagree)" | factory-generic | Integration-over-veto / load-bearing-values / humane-and-technical / make-the-parts-conscious / productive-friction / specialism-without-silos. All generic. |
+| "How to run a conflict conference" | factory-generic | Six-step conference protocol. Generic. |
+| "The parts" (persona roster) | **both (coupled)** | Shape (specialists-named-not-roles / adversarial-stance-values / wary-of / distinct-from disambiguations) is factory-generic. Specific specialists have Zeta-library refs: **Storage Specialist — Zara** (WDC patterns, checkpoints), **Algebra Owner** (Z-set algebra, residuated-lattice, operator-composition laws), **Query Planner Specialist** (`Plan.fs`, SIMD / tensor intrinsics), **DevOps Engineer — Dejan** (mentions `tools/setup/` + `.github/workflows/*` which are structurally factory-shape paths), **Public API Designer — Ilyana** (auditing the three published libraries). In Frontier: preserve the roster-shape discipline; generalise specialists whose scope is tied to a specific Zeta artefact (Zara → "Storage Specialist" generic; Algebra Owner → adopter-specific; Query Planner → adopter-specific). Factory-generic specialists stay as-is (Kenji / Aarav / Kira / Viktor / Ilyana as public-API-designer shape / Daya / Iris / Bodhi / Mateo / Nazar / Aminata / Rune / Dejan / Rodney / Naledi / Soraya / Hiroshi / Imani / Samir / Kai / Yara / Nadia). |
+| "Active tensions" | **zeta-library-specific** | Concrete tensions cite `docs/DECISIONS/2026-04-21-router-coherence-v2.md`, `IStorageCostProbe`, WDC claims, residuated lattices, Plan.fs durability-mode latencies. All Zeta-library references. In Frontier: this section reduces to a template ("list your current active tensions here") or is removed; Zeta repo keeps the current content as its own tension log. |
+| "Humans are part of the system" | factory-generic | Humans-equal-standing / on-deadlock-human-decides / agents-not-bots. Generic. |
+| "When a part takes over" | factory-generic | Temporary-dominance-not-permanent-authority. Generic. |
+| "Reflection cadence" | factory-generic | ~10-round re-read pattern. Generic. |
+
+### Refactor notes
+
+Before the split, surgical edits on CONFLICT-RESOLUTION.md
+for Frontier:
+
+1. **"The parts" roster**: keep the full persona list but
+   generalise the scope of Zeta-tied specialists (Zara →
+   generic storage; Algebra Owner → generic algebra; Query
+   Planner → generic query-planner). Most specialists
+   (Kenji / Aarav / Kira / Viktor / Daya / Iris / Bodhi /
+   Mateo / Nazar / Aminata / Rune / Dejan / Rodney /
+   Naledi / Soraya / Hiroshi / Imani / Samir / Kai / Yara
+   / Nadia / Ilyana) stay as-is — their scopes are already
+   factory-generic.
+2. **"Active tensions" section**: remove the Zeta-specific
+   tensions; replace with a template "list your current
+   active tensions here" with adopter-fill-in example.
+   Zeta repo keeps the current content as its own tension
+   log (e.g., in a `docs/LIBRARY-TENSIONS.md`).
+3. **Remove Otto addition?** NO — Otto is factory-generic
+   (loop-agent PM hat for any autonomous-loop-using
+   adopter). Otto stays in Frontier's roster.
+
+Estimated refactor effort: **M** — roster edits are
+surgical per-specialist; Active tensions is a larger rewrite
+(or removal + migration).
+
+### Classification rationale
+
+CONFLICT-RESOLUTION.md is the factory's multi-specialist-
+advisory conference protocol. The *shape* is purely factory-
+generic (the Architect-as-orchestrator pattern transfers to
+any adopter). The Zeta-library content sits in two places:
+a few specialists whose scope is Zeta-library-specific (Zara,
+Algebra Owner, Query Planner), and the Active Tensions
+section which is entirely project-specific by nature. Both
+surgically extract. The rest of the persona roster is
+already factory-generic by design (named personas with
+generic scopes applicable to any factory adopter).
 
 ## How this audit connects to the multi-repo split
 
