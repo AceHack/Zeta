@@ -1,0 +1,111 @@
+name: nightly-cross-platform
+
+# Cross-platform build confidence on a daily cadence.
+# The PR-gate workflow (gate.yml) stays Linux-only —
+# unambiguously free on public repos — per the
+# Otto-164 pricing verification outcome (see
+# docs/research/nightly-cross-platform-workflow-design.md
+# and the BACKLOG "Otto-161 macOS CI enablement"
+# history for the verification trace).
+#
+# This workflow adds Windows + macOS coverage at
+# controlled cost:
+#   - ubuntu-22.04  standard runner; free on public repos
+#                   (kept for matrix-parity comparison)
+#   - windows-2022  standard runner; free on public repos
+#   - macos-14      larger-runner classification; BILLED
+#                   at $0.062/min per GitHub's billing
+#                   docs. ~15 min run * $0.062 * 30 days
+#                   = ~$28/month worst-case per repo.
+#
+# Scheduled daily (not per-PR) per the maintainer's
+# Otto-209 directive: "we are going to do macos once a
+# day schedued, for both repos, unless acehack is getting
+# it free." The lucent-ksk parallel workflow lands via a
+# separate BACKLOG row + cross-repo coordination.
+#
+# Rollback: delete macos-14 from the matrix (one-line
+# diff), or delete this workflow file entirely.
+#
+# Security note: this workflow uses only first-party
+# trusted context (github.repository, github.ref,
+# github.event_name, runner.os, matrix.os). No user-
+# authored fields (issue title, PR body, commit
+# message, head_ref, etc.) are referenced.
+
+on:
+  schedule:
+    - cron: '0 9 * * *'
+  workflow_dispatch: {}
+  # Also run on PR when this workflow file itself changes
+  # so workflow edits get exercised before landing.
+  pull_request:
+    paths:
+      - '.github/workflows/nightly-cross-platform.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-cross-platform-${{ github.ref }}
+  # Nightly runs can safely supersede each other if a
+  # manual-dispatch queues during a scheduled run; the
+  # opposite of gate.yml's PR-gate semantics.
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    # Fork-scoping: scheduled runs ONLY fire on the
+    # canonical repo. On any fork, scheduled trigger
+    # evaluates false to avoid burning fork-owner minutes.
+    # Manual dispatch + PR trigger on the workflow file
+    # still work on forks so contributors can opt in.
+    if: >-
+      github.repository == 'Lucent-Financial-Group/Zeta'
+      || github.event_name == 'workflow_dispatch'
+      || github.event_name == 'pull_request'
+    name: build-and-test (${{ matrix.os }})
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-14]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Cache .NET SDK
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.dotnet
+          key: dotnet-${{ runner.os }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.nuget/packages
+            ~/.local/share/NuGet
+          key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
+
+      - name: Install toolchain (GOVERNANCE §24 single source)
+        shell: bash
+        run: ./tools/setup/install.sh
+
+      - name: Build (0 Warning(s) / 0 Error(s) required)
+        shell: bash
+        run: dotnet build Zeta.sln -c Release
+
+      - name: Test
+        shell: bash
+        run: dotnet test Zeta.sln -c Release --no-build --logger "trx;LogFileName=test-results-${{ matrix.os }}.trx" --results-directory ./test-results
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: test-results-${{ matrix.os }}
+          path: ./test-results/*.trx
+          retention-days: 7
