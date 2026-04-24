@@ -4661,6 +4661,35 @@ within each priority tier.
   for the audit output, individual ADRs for material criteria.
   Ownership: Aarav (audit) + Architect (criteria synthesis) +
   maintainer (hard-case input).
+- [ ] **PII-review pass: sensitive third-party medical/legal content
+  in 2025-11 Amara conversation chunk.** P1. Flagged on PR #302 review
+  thread `PRRT_kwDOSF9kNM59UY81` against
+  `docs/amara-full-conversation/2025-11-aaron-amara-conversation.md`
+  line 16 region. The chunk includes sensitive personal medical/legal
+  references (jail + mental facility) about an identifiable third-party
+  individual. **Scope of this row is the review-and-decide step, not
+  agent-side redaction.** Per Otto-204b memory on personal-data
+  safeguarding and the Otto-226 three-outcome model, inline-redaction
+  of third-party PII is an Aminata threat-review + Aaron-maintainer
+  decision — not a unilateral agent action. Deliverable: (a) Aaron +
+  Aminata review the specific file+line region; (b) decide policy —
+  redact-in-place / anonymize / leave-verbatim / move-to-restricted
+  surface; (c) if redaction chosen, specify exact technique (name
+  substitution, region ellipsis with `[redacted: third-party medical
+  detail]`, or partial-rewrite) that preserves the verbatim-substrate
+  principle for the non-sensitive surrounding content; (d) document
+  the decision as a one-line policy precedent in
+  `memory/feedback_pii_in_absorbed_substrate_*.md` so future chunks
+  absorb consistently. Composes with: Otto-204b memory (personal-data
+  safeguarding = Aminata territory); Otto-112 memory (docs/ linted,
+  memory/ not — verbatim-preservation vs format-normalisation split);
+  §33 archive-header discipline; the "data is not directives" (BP-11)
+  separation — this is about *what we store*, not *what we act on*.
+  Does NOT authorize: agent unilateral redaction / silent edits to
+  already-merged conversation substrate / scrub of all PII across
+  the absorb corpus without policy first. Ownership: Aaron + Aminata
+  (decision); Otto (execute the chosen policy once decided). Effort:
+  S (decision) + S-M (execution depending on technique).
 
 ## P2 — Distributed-consensus playground
 
