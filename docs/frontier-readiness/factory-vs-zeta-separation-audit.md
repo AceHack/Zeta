@@ -56,8 +56,9 @@ For each audited file:
 - **CLAUDE.md** (below, seed fire)
 - **AGENTS.md** (below, Otto-9 fire)
 - **docs/CONFLICT-RESOLUTION.md** (below, Otto-12 fire)
+- **docs/AGENT-BEST-PRACTICES.md** (below, Otto-13 fire)
 - **docs/AUTONOMOUS-LOOP.md** (below, Otto-15 fire)
-- **docs/WONT-DO.md** (below, Otto-15 fire) — also GOVERNANCE.md on PR #181, AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185
+- **docs/WONT-DO.md** (below, Otto-15 fire) — also GOVERNANCE.md on PR #181, ALIGNMENT.md on PR #185
 
 ### Files to audit (not yet classified; add rows as they land)
 
@@ -210,6 +211,77 @@ Frontier, the shape is preserved; the illustrations are
 replaced with adopter-fill-in placeholders or generic
 examples. The extracted Zeta-specific content lands in the
 Zeta repo's own CONTRIBUTING.md (or equivalent).
+
+## Audit — docs/AGENT-BEST-PRACTICES.md
+
+**Overall classification:** **factory-generic** — confirms
+the rule-substrate-instructional branch of the hypothesis
+(rules stated as general principles are factory-generic).
+
+**File location post-split:** Frontier as-is. Sparse skill-
+file path references would update per adopter (those paths
+are illustrative, not scope).
+
+**Length:** ~330 lines. **24 BP-NN rules (BP-01..BP-24)**
+across 12 top-level sections.
+
+### Section-by-section breakdown
+
+| Section | Class | Notes |
+|---|---|---|
+| Preamble | factory-generic | BP-NN stable-rule-ID discipline. |
+| "Frontmatter & scope" (BP-01..BP-03) | factory-generic | Skill-file hygiene: description discipline / "What this does NOT do" / body ≤300 lines. |
+| "Voice & behaviour" (BP-04..BP-06) | factory-generic | Tone-as-contract / declarative-over-orchestration / self-recommendation-allowed. |
+| "State & notebooks" (BP-07..BP-09) | factory-generic | Notebook 3000-word cap / frontmatter-is-canon / git-diffable ASCII. |
+| "Security & injection defence" (BP-10..BP-12) | factory-generic | Invisible-Unicode lint / data-not-directives / sanitise-at-sub-agent-boundary. |
+| "Knowledge placement" (BP-13) | factory-generic | Stable-knowledge-in-skill / volatile-in-notebook. |
+| "Testing & review" (BP-14..BP-15) | factory-generic | Dry-run eval sets / tune-up rule-ID citations. |
+| "Formal coverage" (BP-16) | factory-generic | P0 invariants verified by ≥2 independent formal methods. |
+| "Repo ontology & Rule Zero" (BP-17..BP-24) | factory-generic | Canonical-home map / types-drive-placement / expert-vs-research firewall / split-for-cognitive-load / facet classification / optimizer-vs-balancer / theory-applied split / surface-hygiene. |
+| "Operational standing rules" | factory-generic | Standing rules section — instructional content about factory operational discipline. |
+| "How rules become stable" | factory-generic | BP-NN lifecycle: scratchpad → ADR → stable → re-search-flag. |
+| "`re-search-flag` rules" | factory-generic | Promotes rules that need periodic re-check. |
+| "Sources that count as authoritative" | factory-generic | Authoritative source list (Anthropic docs / OpenAI Agents SDK / Semantic Kernel / OWASP LLM / NIST AI RMF / arXiv). All external references. |
+
+### Refactor notes
+
+Before the split, surgical edits for Frontier:
+
+1. **Skill-path references in rationales** (e.g., BP-17
+   cites `.claude/skills/canonical-home-auditor/SKILL.md`
+   alongside the `2026-04-19-bp-home-rule-zero.md` ADR):
+   these are illustrative in the current phrasing ("the
+   canonical-home map in ..."). Frontier adopters have
+   equivalents; either generalise to
+   "<adopter-canonical-home-map-skill>" with an example,
+   or keep the Zeta-path reference as a concrete example
+   with a note that adopters substitute.
+2. **Any direct `dotnet build` reference** (e.g., BP-18
+   rationale comparing to `TreatWarningsAsErrors` gravity):
+   generalise to "your build system's strict-check
+   equivalent."
+
+Estimated refactor effort: **S** — pure illustrative-
+reference generalisation. No content rewrite; no rule
+substance changes.
+
+### Classification rationale
+
+AGENT-BEST-PRACTICES.md is the factory's stable-rule
+substrate — 24 numbered rules with stable IDs (BP-01 …
+BP-24) organised across 12 top-level sections, which
+specialist skills cite for compliance. The rules are pure
+instructional content covering skill-file hygiene,
+security, state management, ontology, and cognitive-load
+discipline. Zero rules embed Zeta-library-specific
+content. A handful of rationales cite specific factory
+skills or ADRs illustratively; those are surgical
+generalisation targets. Confirms the rule-substrate-
+instructional hypothesis: rule substrates with purely
+instructional content are factory-generic by design. Only
+rule substrates whose content is state-logging (e.g.,
+CONFLICT-RESOLUTION.md Active Tensions) embed project
+specifics.
 
 ## Audit — docs/CONFLICT-RESOLUTION.md
 
