@@ -1,46 +1,76 @@
 # Frontier UI Rename — Name Pass 2 (Otto-175)
 
-**Status:** research-grade advisory (pre-v1). Origin: Aaron
-Otto-175 directive (paraphrased): *"Starboard I guess for
-now... do one more name pass just in case something else
-clever comes up other than Starboard. Maybe some mythical
-choices that fit?"*. Extends Otto-170 candidate analysis
-with: (a) conflict scan on additional candidates from
-pass-1 adjacent categories; (b) **mythological candidates
-(Aaron's ask)**; (c) Scientology-thematic notes bounded by
-strict public-domain discipline. **Advisory only**. Aaron
-is the concept owner.
+**Status:** research-grade advisory (pre-v1). Origin: the
+human maintainer's Otto-175 directive (paraphrased):
+*"Starboard I guess for now... do one more name pass just
+in case something else clever comes up other than
+Starboard. Maybe some mythical choices that fit?"*. Extends
+Otto-170 candidate analysis with: (a) conflict scan on
+additional candidates from pass-1 adjacent categories;
+(b) **mythological candidates (requester's ask)**;
+(c) Scientology-thematic notes bounded by strict
+public-domain discipline. **Advisory only**. The human
+maintainer is the concept owner.
 
 ## 1. Current status
 
-**Starboard is the confirmed pick.** Aaron Otto-175 initial
-framing: *"Starboard I guess for now"*; Aaron Otto-175b
-confirmation after this pass-2 analysis was drafted:
-*"Starboard okay"*. The rest of this doc is preserved as
-glass-halo transparency record of the options considered,
-including the Hindu / FF7 / Egyptian / Greek / Norse passes
-Aaron requested after the initial tentative pick. It is NOT
-a "still-deciding" doc; Starboard is the decision. Otto-170 analysis confirmed
+**Starboard is the confirmed pick.** Otto-175 initial
+framing from the human maintainer: *"Starboard I guess for
+now"*; Otto-175b confirmation after this pass-2 analysis
+was drafted: *"Starboard okay"*. The rest of this doc is
+preserved as glass-halo transparency record of the options
+considered, including the Hindu / FF7 / Egyptian / Greek /
+Norse passes the requester asked for after the initial
+tentative pick. It is NOT a "still-deciding" doc;
+Starboard is the decision. Otto-170 analysis confirmed
 it is the only pass-1 VIABLE candidate with zero direct
 agentic-AI-platform conflict. Starboard adjacencies include
 Starboard Suite (passenger-vessel reservations, unrelated
 market) and StarBoard Solution (interactive whiteboards,
 unrelated market) — brand-confusion risk low.
 
-Aaron noted the nautical Starboard choice creates a
-thematic resonance with Scientology's heavy nautical
-vocabulary (Sea Org, Commodore, auditing-on-ship L. Ron
-Hubbard period). This memo treats that resonance as
-thematic inspiration only — **no adoption of Scientology-
-trademarked material or paid content** per Aaron's
-explicit scope.
+The human maintainer noted the nautical Starboard choice
+creates a thematic resonance with Scientology's heavy
+nautical vocabulary (Sea Org, Commodore, auditing-on-ship
+L. Ron Hubbard period). This memo treats that resonance
+as thematic inspiration only — **no adoption of
+Scientology-trademarked material or paid content** per
+the requester's explicit scope.
+
+**Genre clarification (Otto-175c from the human
+maintainer):** *"our Starboard are spaceships though not
+boats like startrek and star citizen, backlog star
+citizen, star field, star trek all series and moves map
+backlog"*. Starboard's product-framing is **Star-Trek-era
+starship bridge**, not sailing-era ship. Internal-UI
+vocabulary drafts from starship-bridge conventions
+(Helm / Conn / Ops / Tactical / Viewscreen / Science /
+Engineering / Communications / Briefing Room) — the
+word-etymology is nautical but the intended product genre
+is science-fiction starship. Separate BACKLOG row tracks
+systematic vocabulary mapping across Star Trek + Star
+Citizen + Starfield under strict IP discipline (same
+pattern as §4 Scientology discipline).
+
+**Incidental coincidence surfaced Otto-175c:** both Star
+Trek and Starfield have ships / factions with a name
+matching the "Frontier" term. "Space, the final frontier"
+is Star Trek's TOS opening monologue (1966-); the word is
+canonically-starship-genre vocabulary for decades. OpenAI's
+2026 Frontier product arrived into a word already
+culturally saturated by science fiction. The human
+maintainer's *"i hate frontier is taken by open ai. hmm"*
+frustration recorded here without further litigation — the
+factory move is Starboard; OpenAI's
+Frontier is their business.
 
 ## 2. Pass-2 conflict scans
 
 ### Additional pass-1-adjacent candidates checked
 
-From Otto-170 doc §6 ("Other candidates worth Aaron's
-consideration") that had not yet been conflict-scanned:
+From Otto-170 doc §6 ("Other candidates worth the
+requester's consideration") that had not yet been
+conflict-scanned:
 
 | Candidate  | 2026 Agentic-AI Conflict                                        | Verdict |
 |------------|-----------------------------------------------------------------|---------|
@@ -86,7 +116,7 @@ than the pass-1 did, reflecting the crowded 2026 namespace:
 - **Palantir** — already an incumbent in enterprise AI-
   agent platforms; Tolkien word. **NOT VIABLE.**
 
-## 3. Mythological candidates (Aaron's ask)
+## 3. Mythological candidates (requester's ask)
 
 Weighted by semantic fit with Zeta's actual substrate
 (algebraic retraction-native, veridicality, governance,
@@ -182,7 +212,7 @@ UI) and by agentic-AI-conflict scan results.
   Tech, Orion Energy). None directly in agentic-AI per
   pass-2 search, but the brand is crowded.
 
-### 3.8 Hindu mythological / religious candidates (Aaron Otto-175 follow-up)
+### 3.8 Hindu mythological / religious candidates (Otto-175 follow-up from the human maintainer)
 
 Pulling from Hindu / Vedic vocabulary. All candidates below
 are public-domain mythological / religious concepts in wide
@@ -233,7 +263,7 @@ products. Otto's read: **concept-nouns are viable;
 deity-names are not**, absent specific cultural
 consultation.
 
-### 3.9 Final Fantasy VII candidates (Aaron Otto-175 follow-up)
+### 3.9 Final Fantasy VII candidates (Otto-175 follow-up from the human maintainer)
 
 FF7's world-building includes substrate / life-force /
 modular-power semantics that map well to Zeta. **BUT
@@ -304,7 +334,8 @@ trademark discipline):**
 | Vishnu / Shiva / Brahma / Ganesha | Deity-names | None direct | Varies | Appropriation risk; not recommended |
 
 **Top picks across sources, reordered by Otto's semantic-fit
-assessment (advisory only; Aaron is concept owner):**
+assessment (advisory only; the human maintainer is concept
+owner):**
 
 1. **Dharma** (Hindu — truth/order/law) — universal wisdom
    term; maps to Veridicality + KSK; low cultural-risk
@@ -319,10 +350,10 @@ assessment (advisory only; Aaron is concept owner):**
    persistence fit.
 
 **Nautical-companion composition with Starboard:** if
-Aaron goes with a mythological primary (e.g. "Zeta
-Dharma"), Starboard-and-friends can remain the internal
-UI vocabulary (bridge / helm / compass / sextant /
-wake). Two-layer naming is viable.
+the human maintainer goes with a mythological primary
+(e.g. "Zeta Dharma"), Starboard-and-friends can remain
+the internal UI vocabulary (bridge / helm / compass /
+sextant / wake). Two-layer naming is viable.
 
 Any of these three composes with a nautical companion
 name (e.g. Thoth's UI might still have a "Starboard"
@@ -332,12 +363,12 @@ the same lexeme.
 
 ## 4. Scientology-thematic notes (PUBLIC-DOMAIN-ONLY)
 
-Aaron's Otto-175 framing: "we can get thematic ideas
-from here if Starboard is our [pick now]." Bounded by
-Aaron's explicit constraint: *"i have all their paid
-content but they are like nintendo and sony they don't
-fuck around, i'm not putting their paid material here,
-it was leaked a long time ago."*
+The human maintainer's Otto-175 framing: "we can get
+thematic ideas from here if Starboard is our [pick now]."
+Bounded by the requester's explicit constraint: *"i have
+all their paid content but they are like nintendo and sony
+they don't fuck around, i'm not putting their paid material
+here, it was leaked a long time ago."*
 
 This section:
 
@@ -352,8 +383,8 @@ This section:
   LIMITS for factory use.
 - Treats any leaked-but-still-copyrighted material as
   **unusable regardless of availability**. Factory
-  discipline: if Aaron won't put it in the repo,
-  research memos don't either.
+  discipline: if the human maintainer won't put it in
+  the repo, research memos don't either.
 
 ### Thematic resonances (public knowledge)
 
@@ -402,8 +433,9 @@ This section:
 
 ## 5. Recommendation envelope
 
-**Still not picking a name (Aaron is concept owner).**
-Three framings Aaron can consider:
+**Still not picking a name (the human maintainer is
+concept owner).** Three framings the requester can
+consider:
 
 **Framing A (keep Starboard).** Otto-170 already showed
 Starboard is the cleanest pass-1 candidate. Pass-2
@@ -435,7 +467,7 @@ ergonomic cost.
 
 ## 6. What this doc does NOT do
 
-- Does not pick a name. Aaron is concept owner.
+- Does not pick a name. The human maintainer is concept owner.
 - Does not replace formal trademark clearance (TSDR /
   vendor databases required before any public launch).
 - Does not escalate to same-tick rename. Discovery
@@ -455,8 +487,12 @@ ergonomic cost.
 
 - `docs/research/frontier-rename-analysis-otto-170.md` —
   pass-1 analysis; this pass-2 extends.
-- `docs/BACKLOG.md` Otto-168 row (line ~4360) — tracking
-  row; action step #4 (Aaron final call) still pending.
+- `docs/BACKLOG.md` Otto-168 Frontier-rename tracking row
+  (search for the row anchor "Frontier-UI rename
+  (Aaron Otto-168 naming-conflict" in `docs/BACKLOG.md` —
+  line number intentionally omitted; file is append-heavy
+  and line numbers drift) — action step #4 (maintainer
+  final call) still pending.
 - `docs/BACKLOG.md` Otto-175 Scientology-research row
   (new this tick) — public-domain research scope for
   thematic inspiration.

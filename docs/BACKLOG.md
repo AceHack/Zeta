@@ -6922,6 +6922,125 @@ systems. This track claims the space.
 
 - [ ] **Git / GitHub best-practices audit — trunk-based development + GitHub Flow + GitHub's `branch-deploy` release/deployment flow.** Maintainer 2026-04-24 Otto-233 directive: *"backlog research trunk based development and GitHub Flow and https://github.com/github/branch-deploy branch deploy, trunk based is git native and we want to make sure we are following (it seems we are you can verify) and github flow and github branch deploy are both github host release/deployments flows we want to make sure we follow this well. Although all this is overkill for our first github pages starboard ui lol. It will be important for best practices for git/github."* Scope: (1) audit current repo against trunk-based development discipline — short-lived feature branches, always-green main, feature flags over long-lived branches, pair/mob friendly merges, <24h feature-branch lifespan target. Verify we are following (initial read says yes — main is protected, squash-merge convention, feature branches short-lived); document gaps. (2) Audit against GitHub Flow — branch from main → commit → open PR → review → merge → deploy. Current flow: branch from main → commit → open PR → auto-merge (CI+review gated). Document where we deviate and why (e.g. parallel drain-subagents via worktree, subagent dispatch prompts, Otto-229 append-only discipline for audit-trail files). (3) Study `https://github.com/github/branch-deploy` — GitHub's official branch-deployment pattern that lets a PR be deployed to a temporary environment before merging to main. Assess fit for Zeta's `starboard` GitHub Pages UI (likely overkill for v1 per maintainer) + future deployable-service layer. (4) Write `docs/research/git-github-best-practices-audit-otto-233.md` with verified-against-current-repo grade per dimension, gap list, and a future-follow-up row for any gap worth closing. Priority P2 research-grade; effort S + S + M (three studies). Composes with Otto-215 (Windows cross-platform via peer-harness) + Otto-223 (post-drain AceHack-first routing is ORTHOGONAL to these flows — it sits on top of whichever base flow we run). **Does NOT authorize** changing branch-protection / merge discipline / deploy flow pre-research; the research produces a recommendation, maintainer decides adoption.
 
+- [ ] **Starship-franchise thematic mapping — Star Citizen,
+  Starfield, Star Trek (all series + movies). Vocabulary
+  inspiration ONLY; strict IP discipline (no trademarked-
+  term adoption, no ingested proprietary content).**
+  Aaron Otto-175c directive (verbatim): *"our Starboard
+  are spaceships though not boats like startrek and star
+  citizen, backlog star citizen, star field, star trek all
+  series and moves map backlog"*.
+
+  **Context.** Aaron clarified Starboard's semantic
+  framing: the UI is a **starship bridge**, not a sailing
+  ship. That re-frames the adjacent vocabulary (Helm /
+  Conn / Ops / Tactical / Viewscreen / Science /
+  Engineering) toward Star-Trek-and-successors rather
+  than nautical-age terminology. Research goal: map
+  existing vocabulary from the three franchises to
+  surface candidate internal-UI-section names without
+  adopting any proprietary character / ship / faction
+  name.
+
+  **Research scope (public-domain-only, same discipline
+  as Scientology row):**
+
+  - **Star Trek corpus** (Paramount / CBS trademarks).
+    Series: all live-action and animated series
+    (TOS, TAS, TNG, DS9, VOY, ENT, DIS, PIC, LD, PRO,
+    SNW) + any later series at research time. Films:
+    every theatrically-, streaming-, or
+    home-release-distributed feature film, regardless
+    of release channel or year — no cutoff. Map
+    bridge-station vocabulary (Captain's chair, Helm,
+    Operations, Science, Tactical, Engineering,
+    Communications, Viewscreen, Ready Room, Briefing
+    Room). Starfleet-as-organization + Federation-as-
+    governance are genre concepts; individual
+    ship-class designations are trademarked compounds.
+  - **Star Citizen** (Roberts Space Industries / Cloud
+    Imperium Games trademarks). In-game vocabulary
+    categories (do NOT list specific proper nouns in
+    this row — that is research-memo territory):
+    empire / government acronyms, in-game comms /
+    network brand names, in-game personal-device
+    brand names, starmap terminology, ship-class
+    naming conventions, planet / system names.
+  - **Starfield** (Bethesda trademarks). In-game
+    vocabulary categories (no specific proper nouns
+    in this row): in-game faction names, in-game
+    city / settlement names, in-game
+    government / collective names, in-game
+    corporation names, ship-component / module
+    vocabulary.
+
+  **Strict non-adoption list (categories, not
+  specific examples — this row is for scope, not for
+  enumerating trademarked terms):**
+
+  - No trademarked character names from any of the
+    three franchises (no starship officer names, no
+    companion / crew names).
+  - No trademarked ship names from any of the three
+    franchises (no hero-ship names, no rival-ship
+    names).
+  - No trademarked faction / government / organization
+    names adopted as factory labels (genre-originated
+    concepts may be referenced as context, not
+    adopted as Zeta-internal vocabulary).
+  - No ingested game / script / novel content;
+    Wikipedia-level encyclopedic + official public-
+    published references only.
+  - No positioning of factory as franchise-adjacent
+    in public branding.
+
+  **What the research IS for:**
+
+  - Mapping internal-UI-section vocabulary ("Helm" /
+    "Ops" / "Tactical" / "Engineering" / "Science" /
+    "Communications" / "Briefing Room") against Zeta's
+    substrate areas (ingest / governance / detection /
+    retraction-audit / observer / broadcast / decision-
+    review). 1:1 or N:M mappings surfaced.
+  - Surfacing candidate internal-section nouns that
+    carry starship-bridge resonance without trademark
+    adoption. "Conn" is generic naval / spacefaring
+    term; "Helm" is generic; etc.
+  - Capturing three-franchise overlap: terms all three
+    use that have become generic starship-genre
+    vocabulary are the safest adoption candidates.
+
+  **Deliverable:** research memo at `docs/research/
+  starship-franchise-thematic-mapping-starboard-
+  adjacency.md`. Three-franchise vocabulary tables +
+  mapping to Zeta substrate areas + candidate internal-
+  section names + Aminata threat-pass review (IP +
+  cultural-sensitivity).
+
+  **Coincidence-note (preserve for glass-halo
+  transparency):** both Star Trek and Starfield have
+  ships / factions with a name matching the "Frontier"
+  term; Star Trek's *"space, the final frontier"*
+  opening monologue has made the word
+  canonically-starship-genre vocabulary for decades.
+  The human maintainer recorded frustration (Otto-175)
+  that OpenAI's claim on "Frontier" in enterprise
+  AI-agents feels usurpative given the
+  science-fiction precedent. Factory glass-halo note:
+  record the coincidence; don't litigate it.
+
+  **Priority P3 convenience** (thematic enrichment);
+  effort S (research memo) + S (Aminata threat-pass).
+  Composes with `docs/research/frontier-rename-name-
+  pass-2-otto-175.md` (pass-2 analysis; Starboard-as-
+  starship clarification belongs in context) + Otto-170
+  §6 bridge-vocab candidate list (Helm / Conn /
+  Viewscreen) + Scientology research row above (IP
+  discipline pattern template) + Otto-168 Frontier-
+  rename row (action step #5 repo-wide rename needs
+  informed starship-vocabulary choices from this
+  research).
+
 ## P2 — Rule-Zero axiomatic substrate (round-35 round-36 thread)
 
 - [ ] **Self-directed wellness / life-coach AI product — measure,
