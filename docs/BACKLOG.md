@@ -5599,6 +5599,208 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Blockchain block ingestion — first-class BTC /
+  ETH / SOL streaming into Zeta's distributed database;
+  bi-directional protocol participation; cross-chain
+  stream bridge.** Maintainer 2026-04-24 directive
+  (verbatim):
+
+  > *"i would love to test our database by having first
+  > class support for bitcoin, eth, and solana blocks
+  > into our database in the order of priority unless you
+  > tell me there are other ones worth exploring for two
+  > reason, 1 to help us understand blockchain for Aurora
+  > we don't want to just jump in and we will be starting
+  > from scriatch so making sure we completely understand
+  > everysing thing about the blocks are important so we
+  > get ours right. can you make a post install script
+  > that will streaing ingest these block chains into our
+  > database and make them querable will all our entry
+  > points/intefaces backlog. this is not a full node
+  > implimentation or anyting yet that will come leter
+  > layed on top of our multinode database so we can have
+  > distributed node support from the start cause we are
+  > on top of our distributed db. we can stick a ui in
+  > front of that too lol. Also you need to do a lot of
+  > research here cause some nodes will try to call you a
+  > bad node if you don't hame some amount of the full
+  > protocol, they give extra tests exactly to try to
+  > stop this freeloader scenaro where you download but
+  > dont upload, you can look at their source code to
+  > figure it out. Also if you have to do full nodes of
+  > those types to be able to download we have to upload
+  > too go ahead and to that, i want those interfaces too
+  > just like our SQL interfaces and i also want deep
+  > integration into those networks so we can 'bridge'
+  > them in streams and maybe further. backlog"*
+
+  **Two load-bearing motivations:**
+  1. **Aurora preparation** — Zeta's own blockchain-ish
+     substrate (Aurora / Lucent-KSK lineage per the
+     existing memory cluster) wants concrete grounding
+     before we design the Aurora chain shape. Ingesting
+     real BTC / ETH / SOL blocks into our database gives
+     us deep understanding of the actual data model
+     before we specify ours.
+  2. **Database stress-test** — BTC / ETH / SOL are
+     three of the most battle-tested streaming workloads
+     on the planet (continuous append, chain
+     reorganizations, finality semantics, adversarial
+     environment). If Zeta's distributed DB can absorb
+     them live and serve queries through the existing
+     interfaces, that's a load-bearing proof of the
+     substrate.
+
+  **Priority order (maintainer-specified):** BTC → ETH →
+  SOL. Priority is authoritative; additional chains
+  (Cosmos Hub / Polkadot / Cardano / Avalanche / L2
+  rollups like Base / Optimism / Arbitrum) should be
+  evaluated in a later phase, not reordered.
+
+  **Phased plan (scope decomposition — each phase a
+  future dedicated PR or PR cluster; this row is the
+  umbrella):**
+
+  **Phase 0 — Research pass (no code; starts the work):**
+  - Read the actual client source for each chain:
+    `bitcoin/bitcoin` (C++), `ethereum/go-ethereum`
+    + `paradigmxyz/reth` (Go + Rust), `solana-labs/solana`
+    (Rust). Map the block shape verbatim; capture field
+    semantics (timestamps / merkle roots / witness data /
+    slot-vs-block distinctions / SOL's entries-within-slot
+    model).
+  - Identify **misbehavior / freeloader detection** per
+    chain — specifically what each client does to detect
+    a download-only peer and how it penalizes / bans.
+    Key sources: BTC's `net_processing.cpp` DoS scoring,
+    ETH's devp2p / Snap-sync reciprocity tests, SOL's
+    turbine-shred forwarding requirements. This
+    determines whether **Phase 2 full-node participation
+    is REQUIRED or OPTIONAL** per chain.
+  - Identify what's pullable WITHOUT running a full node:
+    BTC block explorer APIs + Electrum + public RPC;
+    ETH public RPC + Alchemy/Infura snapshot archives;
+    SOL public RPC + warehouse archive (Google BigQuery
+    has a public SOL blocks dataset). This bounds the
+    Phase 1 scope.
+  - Produce `docs/research/blockchain-ingestion-phase-0-bitcoin.md`,
+    `docs/research/blockchain-ingestion-phase-0-ethereum.md`,
+    `docs/research/blockchain-ingestion-phase-0-solana.md`.
+
+  **Phase 1 — Post-install block-ingestion script
+  (NOT a full node):**
+  - Post-install script under `tools/setup/blockchain-ingest/`
+    (composes with GOVERNANCE §24 three-way-parity
+    install script). Per-chain: `bitcoin.sh`,
+    `ethereum.sh`, `solana.sh`.
+  - Each script streams blocks via public RPC / explorer
+    APIs into Zeta's distributed DB as Z-set entries —
+    retraction-native (chain reorgs are first-class
+    retractions; our substrate was designed for this).
+  - Schema-design: use the paced-ontology-landing
+    discipline; each chain gets a dedicated ontology
+    (block / transaction / log / witness / slot /
+    entry-vs-block-vs-shred) and the cross-chain
+    umbrella ontology comes later (Phase 4).
+  - Queryable through all existing entry points: SQL
+    binder, operator algebra, LINQ, any future
+    GraphQL / REST surface. NO new interface class
+    unique to blockchain; re-use what Zeta already has.
+  - `dotnet run -- --chain bitcoin --from-height N
+    --to-height latest --follow` shape.
+
+  **Phase 2 — Full-node protocol participation
+  (CONDITIONAL on Phase 0 finding):**
+  - If Phase 0 research shows that the target chain's
+    client BANS download-only peers after a window
+    (true for BTC's DoS scoring, likely for ETH's Snap
+    sync, and definitely for SOL's turbine),
+    implement the minimum UPLOAD side of the protocol
+    to stay a good network citizen.
+  - Maintainer directive is explicit: *"if you have to
+    do full nodes of those types to be able to download
+    we have to upload too go ahead and to that, i want
+    those interfaces too just like our SQL interfaces"*.
+    Upload-side interfaces expose as first-class Zeta
+    interfaces on par with SQL — not private internals.
+  - Architecturally this is **full-node-layered-on-top
+    of Zeta's distributed DB** (maintainer's explicit
+    frame), not a standalone fork of bitcoind / geth /
+    solana-labs. We use Zeta as the storage / consensus
+    / query substrate and implement the chain protocol
+    ON TOP of it. Distributed-node support falls out of
+    Zeta's multi-node primitives for free.
+  - This is where Zeta's distributed-consensus substrate
+    (`distributed-consensus-expert` / `raft-expert` /
+    `paxos-expert` / `calm-theorem-expert` /
+    `replication-expert`) becomes load-bearing.
+
+  **Phase 3 — Cross-chain stream bridge:**
+  - Deep integration per maintainer: *"deep integration
+    into those networks so we can 'bridge' them in
+    streams and maybe further"*.
+  - Bridge = Z-set operator composition across chain
+    streams. Each chain is a ZSet; cross-chain joins
+    produce derived ZSets (e.g. Bitcoin timestamp vs
+    Ethereum block for time alignment; SOL finality vs
+    ETH finality for comparative-consensus research).
+  - "Maybe further" = likely cross-chain atomic ops,
+    value-transfer bridges, or unified-view layers;
+    scope intentionally open at this phase.
+  - Composes with `distributed-coordination-expert` +
+    `crdt-expert` + `gossip-protocols-expert`.
+
+  **Phase 4 — UI:**
+  - Per maintainer: *"stick a ui in front of that too
+    lol"*. Frontier-UX / former-Starboard-now-rename-
+    target (kernel-A farm-related + kernel-B
+    carpentry-related per the 2026-04-24 rename
+    directive) — cross-chain block explorer + streaming
+    dashboard + cross-chain bridge visualizer as initial
+    surfaces.
+
+  **Additional chains worth evaluating in a later phase**
+  (do NOT reorder the primary BTC/ETH/SOL priority):
+  - **Cosmos Hub** — IBC is a canonical cross-chain
+    bridging primitive; directly relevant to Phase 3.
+  - **Polkadot** — substrate chain + parachain
+    composition = close architectural cousin to Zeta's
+    multi-node + cross-chain design.
+  - **Cardano** — Ouroboros PoS pedagogy (Ouroboros is
+    the most formally-verified consensus protocol
+    deployed at scale).
+  - **Avalanche** — sub-net architecture is a real
+    distributed-systems primitive worth studying.
+  - **L2 rollups** (Base / Optimism / Arbitrum / zkSync
+    Era / StarkNet) — bridge-to-ETH substrate; good
+    study material for Phase 3 bridging.
+
+  **Priority / effort:** P2 research-grade; umbrella
+  effort is L (phased across many rounds). Phase 0 is
+  M (three research docs, deep source reading). Phase 1
+  per-chain is M-L each (ingest script + schema +
+  retraction-native integration). Phase 2 per-chain is
+  L each (full-node protocol on top of Zeta). Phase 3
+  is L+ (cross-chain bridge). Phase 4 is S (UI on top
+  of existing query surface).
+
+  **Composes with:** Aurora substrate (all Lucent-KSK +
+  Aurora ferry absorbs), paced-ontology-landing (one
+  ontology per chain), `distributed-consensus-expert` +
+  sibling consensus hats (Phase 2), GOVERNANCE §24
+  install-script discipline (Phase 1 post-install),
+  Otto-175c rename directive (the Frontier-UI surface
+  for Phase 4), Otto-275 log-don't-implement (this row
+  is the capture, not the kickoff).
+
+  **Does NOT authorize:** starting implementation yet —
+  Phase 0 research is the gate. Does NOT authorize
+  expanding scope to additional chains before BTC / ETH
+  / SOL are understood. Does NOT authorize running a
+  live Zeta instance on mainnet without Aminata
+  threat-model sign-off on the network-exposure surface
+  (Phase 2 only).
+
 - [ ] **Land per-maintainer CURRENT-memory ADR + companion
   feedback memory.** PR #153 landed the CLAUDE.md fast-path
   pointer at the per-user `CURRENT-<maintainer>.md`
