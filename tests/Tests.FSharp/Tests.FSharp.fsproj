@@ -21,6 +21,7 @@
     <Compile Include="Algebra/TemporalCoordinationDetection.Tests.fs" />
     <Compile Include="Algebra/Veridicality.Tests.fs" />
     <Compile Include="Algebra/Graph.Tests.fs" />
+    <Compile Include="Algebra/PhaseExtraction.Tests.fs" />
 
     <!-- Circuit/ -->
     <Compile Include="Circuit/Circuit.Tests.fs" />
