@@ -42,6 +42,7 @@
     <Compile Include="RobustStats.fs" />
     <Compile Include="TemporalCoordinationDetection.fs" />
     <Compile Include="Veridicality.fs" />
+    <Compile Include="Graph.fs" />
     <Compile Include="Window.fs" />
     <Compile Include="Advanced.fs" />
     <Compile Include="Fusion.fs" />
