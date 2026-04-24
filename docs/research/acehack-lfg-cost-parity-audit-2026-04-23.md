@@ -206,3 +206,170 @@ observations; this doc is the first in-repo Overlay-A mirror of
 that memory's findings. Future-session Otto with admin:org scope
 fills in the billing-side unobservables + lands a second-pass
 audit as an updated row under `docs/research/`.
+
+---
+
+## Second-pass corrections — Otto-65 real billing data
+
+Human maintainer 2026-04-23 Otto-65 pasted the actual GitHub
+billing UI for both accounts (LFG org + AceHack personal).
+This addendum supersedes the speculative figures above.
+
+### LFG (Lucent-Financial-Group) — April 2026 actuals
+
+**Subscription:** GitHub Team, $96/yr (= $8/mo) for 2
+licenses filled.
+
+**Metered usage:** $43.71 gross, $66.62 included-usage
+discount → net $0 billed on Actions for the month. Cap
+is inclusive: gross exposure > discount would flip to
+billed.
+
+**Copilot Business:** 1 license × $0.633/day ≈ $19/mo
+(billed, not discounted). Per-day reconciles exactly
+with Otto-62's $19-for-1-seat figure.
+
+**Top-5 repos this month:**
+
+| Repo | Gross |
+|---|---:|
+| Zeta | $41.72 |
+| lucent-infrastructure | $0.02 |
+| lucent-frontend | $0.02 |
+| lucent-user-service | $0.02 |
+| lucent-api-gateway | $0.02 |
+
+Zeta is the near-total consumer of LFG Actions gross.
+
+**Per-day breakdown (sample):**
+
+- Apr 21: 766 min Linux + 145 min macOS-3-core ($14.22 gross, $0.63 billed from Copilot only)
+- Apr 22: 2,133 min Linux + 196 min macOS-3-core ($25.58 gross, $0.63 billed from Copilot only)
+- Apr 23: 575 min Linux ($4.08 gross, $0.63 billed from Copilot only)
+
+**Org budgets:** All products have `Stop usage: Yes`
+at $0 budget except GHAS and Copilot (which allow
+consumption). This is a hard safety rail — if discount
+ever fails to cover, the budget stops spend cold.
+
+**Confirmed monthly baseline:** **~$27/mo** =
+$8 Team + $19 Copilot Business × 1 seat. Matches
+Otto-62 estimate exactly.
+
+### AceHack (personal) — April 2026 actuals
+
+**Subscription:** GitHub Pro, $48/yr (= $4/mo), 3000
+Actions min/mo included.
+
+**Metered usage:** $50.45 gross, $51.21 discount → $0
+billed for the month.
+
+**Actions minutes used:** 1,773.7 / 3,000 included
+(59%). Does NOT count discounted public-repo usage;
+this is the AceHack personal quota.
+
+**Top repos this month:**
+
+| Repo | Gross |
+|---|---:|
+| Zeta | $36.44 |
+| Zeta (separate) | $13.77 |
+| devcontainer-codespace | varies |
+
+Two "Zeta" entries: the human-maintainer noted *"i think
+there was a little acehack before too, you can figure it
+out"* — suggests a prior fork / namespace is still
+generating billing rows. Archaeology pending.
+
+**Per-day breakdown (sample):**
+
+- Apr 19: 638 min Linux + 215 min macOS-3-core + Codespaces 4-core ($17.36 gross, $0 billed)
+- Apr 20: 444 min Linux + 91 min macOS-3-core ($8.32 gross, $0 billed)
+- Apr 21: 1,005 min Linux + 250 min macOS-3-core ($21.54 gross, $0 billed)
+
+**AceHack monthly baseline:** **$4/mo Pro** (flat). Plus
+whatever exceeds public-repo-discount-covered usage (so
+far: $0 billed despite $50+ gross).
+
+### Correction to Otto-61 claim: macOS multiplier cost
+
+Otto-61 memory said macOS runs incur 10x multiplier cost
+even on public repos. Actual April 2026 billing data
+shows **macOS-3-core at $0.062/min gross**, entirely
+covered by the public-repo discount. The `gate.yml`
+matrix avoidance (macOS only on AceHack, not LFG) is
+still sound cost-discipline because:
+
+- Gross exposure would become billed if quota exceeded
+- macOS seats are slower in wall-clock (2-10x slowdown)
+  even when cost-discounted — CI feedback latency is
+  its own resource
+
+But the stark *"macOS is 10x expensive"* framing was
+too strong. Corrected: **macOS is 10x gross but
+currently 0x billed on public repos within quota**.
+The avoidance is good practice; the reason is latency
++ quota-headroom preservation, not immediate cost.
+
+### Aaron's personal Copilot
+
+Confirmed via the human maintainer's Copilot settings
+page: *"You are assigned a seat as part of a GitHub
+Copilot Business subscription managed by servicetitan."*
+Personal Copilot is ServiceTitan-sponsored (employment
+benefit); **separate from LFG's Copilot Business seat**.
+
+Current-month personal premium-request usage: **84%**
+of monthly allotment. Approaching cap but not exceeded.
+Resets start of next month. This is the number that
+generalized to the "Frontier burn-rate UI" Otto-63
+directive — adopters on ServiceTitan-sponsored (or
+similarly-capped) subscriptions need the cap-awareness
+surface.
+
+### Answer to "does AceHack get anything free that
+would limit LFG?"
+
+**No.** Confirmed empirically:
+
+- AceHack's $50 gross Actions = fully discounted by
+  public-repo free tier
+- LFG's $43 gross Actions = fully discounted by
+  public-repo free tier
+- AceHack's Copilot = ServiceTitan-sponsored (free to
+  human maintainer) — does NOT cover LFG
+- LFG's Copilot Business = paid $19/mo — provides
+  Copilot PR reviews on LFG's PRs, which are
+  LFG-specific
+
+The two hosts have **parallel, independently-covered
+cost structures**. Neither subsidizes the other. Moving
+work between them is a purpose decision (Amara
+authority-axis) not a cost decision.
+
+### Updated BACKLOG candidates
+
+Retaining Otto-62 candidates + one new:
+
+1. Parity-audit tool (now with real-numbers fidelity since admin:org scope available)
+2. admin:org-scoped Actions-usage-history tool
+3. Enable dependabot on AceHack (free, increases parity)
+4. ADR documenting the confirmed baseline: **LFG $27/mo, AceHack $4/mo flat; both $0 billed beyond baseline under current usage**
+5. **NEW: archaeology on the "separate Zeta" in AceHack billing** ($13.77 gross/mo suggests a prior fork still accumulating — could be moribund and should be archived, or could be intentional)
+
+### Updated "Otto-61 claim retractions"
+
+Otto-61 memory's *"AceHack is the poor-man host for per-
+PR work"* framing is **refined**, not retracted:
+
+- AceHack is cheaper in absolute terms ($4 vs $27/mo)
+- Both currently-$0-billed on Actions via public-repo
+  discount
+- Work placement remains Amara authority-axis driven,
+  not cost-driven
+- Budget caps at $0 on both are the safety rail; if
+  either tips to billed, the cap stops spend
+
+The Otto-62 final rule **stands as written**:
+> per-PR work on whichever substrate matches purpose
+> (experiments→AceHack, decisions→LFG), not cost-driven.
