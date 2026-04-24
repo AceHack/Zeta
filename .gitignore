@@ -90,3 +90,9 @@ tools/tla/states/
 # docs/DECISIONS/2026-04-20-tools-scripting-language.md. The
 # bun.lock file IS committed; node_modules is not.
 node_modules/
+
+# playwright-mcp artifacts — per-session browser state
+# (screenshots / console / page-dump YAMLs). Regenerated per
+# use; not needed in-repo. Parallel to drop/ staging per
+# PR #265 Otto-90.
+.playwright-mcp/
