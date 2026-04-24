@@ -5,39 +5,39 @@ open System
 
 /// **Temporal Coordination Detection — foundational primitives.**
 ///
-/// This module hosts the single-node-shippable detection primitives
-/// from Aaron's *differentiable firefly network + trivial cartel
-/// detect* design, as formalized by Amara in the 11th courier
-/// ferry (`docs/aurora/2026-04-24-amara-temporal-coordination-
-/// detection-cartel-graph-influence-surface-11th-ferry.md`). Full
-/// multi-node architecture awaits Zeta's multi-node foundation;
-/// these pure-function primitives ship incrementally per the
-/// Otto-105 graduation-cadence.
+/// Pure-function detection primitives over pairs of numeric event
+/// streams. Honest distributed actors produce noisy, partially-
+/// independent streams; coordinated actors produce phase-aligned
+/// ones. These primitives quantify that difference in two
+/// complementary registers — amplitude (cross-correlation at a
+/// lag) and phase (phase-locking value + mean phase offset) — so
+/// downstream detectors can compose both and catch cartels that
+/// flatten one register while preserving the other.
 ///
-/// **Attribution.** The underlying concepts (temporal-coordination
-/// detection as a primary defence surface, the firefly-synchronization
-/// metaphor, trivial-cartel-detect as the first-order-signal tier)
-/// are Aaron's design. Amara's contribution is the technical
-/// vocabulary and specific formulations (phase-locking value, cross-
-/// correlation, modularity spikes, eigenvector centrality drift, …).
-/// This module implements Amara's formalizations; the design intent
-/// behind them is Aaron's.
+/// Two return-shape families live here:
 ///
-/// **Scope of this first graduation.** Only `crossCorrelation` and
-/// `crossCorrelationProfile` ship here — the single most portable
-/// primitive for detecting timing coordination between two event
-/// streams. Downstream primitives (phase-locking value, burst-
-/// alignment clusters, modularity-spike detectors, eigenvector-
-/// centrality drift) are separate graduation candidates that
-/// compose over this one.
+/// * Single-value primitives — `crossCorrelation`,
+///   `phaseLockingValue`, `meanPhaseOffset`,
+///   `phaseLockingWithOffset` — return `Option`-wrapped values.
+///   `None` means the input could not satisfy the math (details
+///   per function; covers empty, length-mismatched where the
+///   function requires equal length, degenerate-variance, and
+///   zero-magnitude mean vector). Silent nan-propagation would
+///   invite subtle detection bugs downstream, so these primitives
+///   refuse rather than fabricate.
+/// * Profile / array primitives — `crossCorrelationProfile`,
+///   `significantLags`, `burstAlignment` — return plain arrays.
+///   Per-element defined-ness is carried inside each element
+///   (the `double option` slot in a profile entry; absence from
+///   the significant-lags list).
 ///
-/// **Why it matters for cartel detection.** Honest distributed
-/// actors produce noisy, partially-independent event streams;
-/// coordinated actors produce phase-aligned streams. Pearson cross-
-/// correlation at lag τ quantifies how similarly two series move
-/// at a time offset, yielding the core signal for the "obvious
-/// coordinated timing" (trivial-cartel) case. Subtler coordination
-/// requires the harder primitives added in later graduations.
+/// Note on length semantics: `crossCorrelation` tolerates
+/// mismatched lengths — it computes over the overlap window at
+/// the given lag and returns `None` only when that window is
+/// too short or has zero variance. The phase-pair primitives
+/// (`phaseLockingValue`, `meanPhaseOffset`,
+/// `phaseLockingWithOffset`) require equal lengths and return
+/// `None` otherwise.
 [<AutoOpen>]
 module TemporalCoordinationDetection =
 
@@ -83,72 +83,32 @@ module TemporalCoordinationDetection =
     /// Cross-correlation across the full lag range `[-maxLag, maxLag]`.
     /// Returns one entry per lag; `None` entries indicate lags where
     /// the overlap window was too short or degenerate (flat input)
-    /// to compute a correlation.
-    ///
-    /// Intended downstream use: feed to a burst-alignment / cluster
-    /// detector that flags lags where `|corr|` is unusually high
-    /// versus a baseline, the operational "firefly detection" case
-    /// from the 11th ferry's signal model.
+    /// to compute a correlation. Intended input to a burst-alignment
+    /// or cluster detector that flags lags where `|corr|` is
+    /// unusually high versus a baseline.
     let crossCorrelationProfile (xs: double seq) (ys: double seq) (maxLag: int) : (int * double option) array =
         if maxLag < 0 then [||]
         else
             [| for tau in -maxLag .. maxLag ->
                    tau, crossCorrelation xs ys tau |]
 
-    /// **Phase-locking value (PLV)** — the magnitude of the mean
-    /// complex phase-difference vector between two phase series.
-    /// Returns a value in `[0.0, 1.0]`:
-    ///
-    /// * `1.0` — perfect phase locking (the phase difference
-    ///   `φ_a[k] - φ_b[k]` is constant across the series; two
-    ///   actors whose events always arrive at the same phase
-    ///   offset look like this, which is the classical firefly-
-    ///   synchronization signature)
-    /// * `0.0` — phase differences uniformly spread around the
-    ///   unit circle (the null hypothesis of independent timing)
-    /// * in between — partial coordination
-    ///
-    /// Returns `None` when the input sequences are empty or of
-    /// unequal length; PLV is undefined for mismatched pairs
-    /// and silently truncating would invite a subtle detection
-    /// bug downstream.
-    ///
-    /// Input phases `phasesA` and `phasesB` are expected in
-    /// radians; the computation uses the Euler identity
-    /// `e^{iθ} = cos θ + i sin θ` and only depends on the
-    /// phase *difference*, so any consistent wrapping convention
-    /// (`[-π, π]` or `[0, 2π]`) works — callers do not need to
-    /// pre-unwrap.
-    ///
-    /// Complementary to `crossCorrelation`: cross-correlation
-    /// answers "do amplitudes move together?"; PLV answers "do
-    /// the events fire at matching phases?". Cartels that flatten
-    /// amplitude cross-correlation by adding noise may still
-    /// reveal themselves through preserved phase structure, and
-    /// vice versa. Detectors compose both.
-    ///
-    /// Provenance: primitive from the human maintainer's
-    /// differentiable firefly-network design, formalized in an
-    /// external AI collaborator's 11th courier ferry (§1 Signal
-    /// model; ferry content tracked in the Otto-105 operationalize
-    /// queue, see `memory/MEMORY.md` "Amara's 11th ferry"). Third
-    /// graduation under the Otto-105 cadence.
-    /// Shared epsilon floor for phase-difference mean-vector
-    /// magnitude. Used ONLY by `meanPhaseOffset` +
-    /// `phaseLockingWithOffset` to decide when the offset
-    /// (angle of the mean vector) is mathematically
-    /// undefined. `phaseLockingValue` does not apply any
-    /// floor — it returns magnitude arbitrarily close to 0
-    /// as normal output. Value `1e-12` chosen well below
-    /// any physically-meaningful PLV magnitude.
+    /// Epsilon floor for the magnitude of the phase-difference
+    /// mean-vector. Used by `meanPhaseOffset` and
+    /// `phaseLockingWithOffset` to treat the offset as undefined
+    /// when the mean vector is effectively zero-length. The floor
+    /// is applied to the offset decision only; `phaseLockingValue`
+    /// reports magnitude arbitrarily close to zero as normal
+    /// output. `1e-12` sits well below any physically-meaningful
+    /// PLV magnitude.
     let private phasePairEpsilon : double = 1e-12
 
-    /// Shared single-pass accumulation of sin/cos of phase
-    /// differences. Returns `None` on empty / mismatched
-    /// input, otherwise `Some (meanCos, meanSin, n)`. All
-    /// three phase-pair primitives (`phaseLockingValue`,
-    /// `meanPhaseOffset`, `phaseLockingWithOffset`) route
-    /// through this to avoid accumulation-logic drift.
+    /// Single-pass accumulation of `(cos d, sin d)` over the
+    /// element-wise phase differences `d[i] = phasesA[i] -
+    /// phasesB[i]`. Returns `None` on empty or length-mismatched
+    /// input, otherwise `Some (meanCos, meanSin, n)`. All three
+    /// phase-pair primitives route through this helper so the
+    /// magnitude-returned-by-PLV and the offset-returned-by-atan2
+    /// cannot drift out of sync.
     let private meanPhaseDiffVector
             (phasesA: double seq)
             (phasesB: double seq)
@@ -166,6 +126,33 @@ module TemporalCoordinationDetection =
             let n = double aArr.Length
             Some (struct (sumCos / n, sumSin / n, aArr.Length))
 
+    /// **Phase-locking value (PLV)** — the magnitude of the mean
+    /// complex phase-difference vector between two phase series.
+    /// Returns a value in `[0.0, 1.0]`:
+    ///
+    /// * `1.0` — perfect phase locking: the phase difference
+    ///   `phasesA[k] - phasesB[k]` is constant across the series.
+    /// * `0.0` — phase differences uniformly spread around the
+    ///   unit circle (the null hypothesis of independent timing).
+    /// * in between — partial coordination.
+    ///
+    /// Returns `None` when input sequences are empty or of
+    /// unequal length; PLV is undefined for mismatched pairs
+    /// and silently truncating would invite a subtle detection
+    /// bug downstream.
+    ///
+    /// Phases are expected in radians. The computation uses the
+    /// Euler identity `e^{i*theta} = cos theta + i sin theta` and
+    /// depends only on the phase *difference*, so any consistent
+    /// wrapping convention (`[-pi, pi]` or `[0, 2*pi]`) works and
+    /// callers do not need to pre-unwrap.
+    ///
+    /// Complementary to `crossCorrelation`: cross-correlation
+    /// answers "do amplitudes move together?"; PLV answers "do
+    /// events fire at matching phases?". A coordinator that
+    /// flattens amplitude correlation by adding noise may still
+    /// reveal itself through preserved phase structure, and vice
+    /// versa. Detectors should compose both.
     let phaseLockingValue (phasesA: double seq) (phasesB: double seq) : double option =
         match meanPhaseDiffVector phasesA phasesB with
         | None -> None
@@ -173,53 +160,26 @@ module TemporalCoordinationDetection =
             Some (sqrt (meanCos * meanCos + meanSin * meanSin))
 
     /// **Mean phase offset between two phase series** — the
-    /// argument (angle) of the same mean complex phase-
-    /// difference vector whose magnitude is the PLV. Returns
-    /// a value in `[-pi, pi]` (the full `System.Math.Atan2`
-    /// range, which includes both endpoints under IEEE-754
-    /// signed-zero semantics) when defined, or `None` when
-    /// input sequences are empty, of unequal length, or
-    /// when the mean vector has effectively zero magnitude
-    /// (direction is undefined). The epsilon floor
-    /// (`phasePairEpsilon`, 1e-12) applies ONLY to this
-    /// offset decision — `phaseLockingValue` does not
-    /// apply any floor and will return magnitude values
-    /// arbitrarily close to zero as normal output.
+    /// argument (angle) of the same mean complex phase-difference
+    /// vector whose magnitude is the PLV (i.e. the value returned
+    /// by `phaseLockingValue` on the same inputs). Returns a
+    /// value in `[-pi, pi]` (the full `System.Math.Atan2` range,
+    /// which includes both endpoints under IEEE-754 signed-zero
+    /// semantics) when defined, or `None` when input sequences are
+    /// empty, of unequal length, or when the mean vector has
+    /// effectively zero magnitude (direction undefined). The
+    /// `phasePairEpsilon` floor applies to this offset decision
+    /// only.
     ///
-    /// Why this complements `phaseLockingValue`: PLV
-    /// magnitude alone cannot distinguish "same-time
-    /// locking" (offset near 0) from "anti-phase locking"
-    /// (offset near +/- pi) or "lead-lag locking" (offset
-    /// between). Both extremes return magnitude 1.0. Per
-    /// Amara 18th-ferry correction #6: cartel-detection
-    /// that relies on "PLV = 1 means synchronized action"
-    /// misreads anti-phase coordinators as same-time
-    /// coordinators. Downstream detectors should consume
-    /// BOTH magnitude (coherence of locking) and offset
-    /// (nature of locking: in-phase, anti-phase, lead-lag).
-    ///
-    /// Computation routes through the shared
-    /// `meanPhaseDiffVector` helper (single-pass sin/cos
-    /// accumulation). The `phasePairEpsilon` floor guards
-    /// `atan2` against reading a spurious argument from a
-    /// mean vector that is mathematically zero-length
-    /// (happens when phase differences are uniformly
-    /// distributed around the unit circle).
-    ///
-    /// Provenance: external AI collaborator's 18th
-    /// courier ferry, Part 2 correction #6 (§"Ten
-    /// required corrections"). The ferry absorb doc
-    /// lives under `docs/aurora/` when landed; at primitive-
-    /// ship time the substance is captured in session
-    /// memory + the related 19th-ferry DST-audit absorb
-    /// at `docs/aurora/2026-04-24-amara-dst-audit-deep-
-    /// research-plus-5-5-corrections-19th-ferry.md`.
-    /// Complements the original PLV primitive from the
-    /// 11th ferry without changing its contract.
-    /// Downstream score vectors (see
-    /// `Graph.coordinationRiskScore*`) consuming PLV
-    /// should add a separate offset-based term rather than
-    /// collapsing both into one scalar.
+    /// Why this matters alongside `phaseLockingValue`: magnitude
+    /// alone cannot distinguish same-phase locking (offset near
+    /// 0), anti-phase locking (offset near `+/- pi`), or lead-lag
+    /// locking (offset between). All three cases can return PLV
+    /// = 1.0. A detector that reads "PLV = 1 means synchronized
+    /// action" misreads anti-phase coordinators as same-time
+    /// coordinators. Consume magnitude and offset together;
+    /// callers that need both on a single pass should use
+    /// `phaseLockingWithOffset`.
     let meanPhaseOffset (phasesA: double seq) (phasesB: double seq) : double option =
         match meanPhaseDiffVector phasesA phasesB with
         | None -> None
@@ -228,25 +188,25 @@ module TemporalCoordinationDetection =
             if magnitude < phasePairEpsilon then None
             else Some (atan2 meanSin meanCos)
 
-    /// **Phase locking + offset together** — returns both the
-    /// PLV magnitude and the mean phase offset as a single
-    /// option-tuple, sharing the cos/sin accumulation pass
-    /// for callers that want both. Returns `None` under the
-    /// same input conditions as `phaseLockingValue` (empty
-    /// or length-mismatched series).
+    /// **Phase locking + offset together** — returns the PLV
+    /// magnitude and the mean phase offset as a single option-
+    /// tuple, sharing the cos/sin accumulation pass for callers
+    /// that want both. Returns `None` under the same input
+    /// conditions as `phaseLockingValue` (empty or length-
+    /// mismatched series).
     ///
-    /// When the mean complex vector has effectively zero
-    /// magnitude the offset field is set to `nan` rather
-    /// than `None`; the magnitude will itself be `< 1e-12`
-    /// which is the caller's reliable "offset is undefined"
-    /// signal. This keeps the return type flat for
-    /// downstream composition.
+    /// When the mean vector has effectively zero magnitude the
+    /// offset field is set to `nan` rather than `None`; the
+    /// magnitude will itself be `< 1e-12`, which is the caller's
+    /// reliable "offset is undefined" signal. Keeping the return
+    /// type flat (non-nested option) preserves clean composition
+    /// at downstream call sites.
     ///
     /// Prefer this over separate `phaseLockingValue` +
     /// `meanPhaseOffset` calls when you need both, to avoid
     /// traversing the sequences twice. Use the individual
-    /// primitives when you only need one quantity, to keep
-    /// call sites honest about what they consume.
+    /// primitives when you only need one quantity, to keep call
+    /// sites honest about what they consume.
     let phaseLockingWithOffset
             (phasesA: double seq)
             (phasesB: double seq)
@@ -268,11 +228,11 @@ module TemporalCoordinationDetection =
     /// signal.
     ///
     /// Threshold semantics: caller-supplied. Typical values for
-    /// trivial-cartel-detect use cases: `0.7`-`0.8` for "strong
-    /// coordination", `0.9` for "unusually strong". For null-
-    /// hypothesis testing against a baseline, compute the
-    /// baseline's profile for independent streams and derive the
-    /// threshold from its percentile rather than hard-coding.
+    /// obvious-coordination use cases are `0.7`-`0.8` for "strong"
+    /// and `0.9` for "unusually strong". For null-hypothesis
+    /// testing, compute the profile for independent baseline
+    /// streams and derive the threshold from its percentile rather
+    /// than hard-coding.
     ///
     /// This is the input to downstream cluster / burst detectors;
     /// alone it answers "which lags look coordinated?" and leaves
@@ -297,19 +257,15 @@ module TemporalCoordinationDetection =
     /// isolated significant lag reports as `(n, n)`.
     ///
     /// Returns an empty array when the profile has no significant
-    /// lags. Non-finite correlations are filtered by the underlying
-    /// `significantLags` pass.
+    /// lags. Non-finite correlations are filtered by the
+    /// underlying `significantLags` pass.
     ///
-    /// The 11th-ferry signal-model definition (Amara, §1):
-    /// > *"Firefly detection = identify clusters where ∃ S ⊂ N
-    /// > such that ∀ i,j ∈ S, corr(E_i, E_j) ≫ baseline"*
-    ///
-    /// This function operationalises the pair-wise case (two
-    /// streams) — `S` is represented as the set of lags at which
-    /// two streams clear the threshold, clustered into contiguous
-    /// runs. The node-set generalisation (clustering across many
-    /// stream pairs into coordinated subsets of N) is a separate
-    /// graduation candidate that composes over this primitive.
+    /// Operationalises the pair-wise firefly-detection case: two
+    /// streams, clustered into contiguous runs of lags that clear
+    /// the threshold. The node-set generalisation — clustering
+    /// across many stream pairs into coordinated subsets of `N`
+    /// nodes — composes over this primitive and belongs in a
+    /// separate module alongside the graph-level detectors.
     let burstAlignment (profile: (int * double option) array) (threshold: double) : (int * int) array =
         let significant = significantLags profile threshold
         if significant.Length = 0 then [||]
