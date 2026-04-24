@@ -751,6 +751,82 @@ within each priority tier.
   then `openspec/specs/f-dsl-surface/` once shape
   stabilizes.
 
+- [ ] **Parser technology for external language / flavor /
+  dialect surfaces — F# parser combinators (FParsec) first,
+  ANTLR as fallback.** Aaron Otto-160 directive: *"maybe
+  for sql and the other exernal languages and flavor/
+  dialects we could use f# parser combinators, if that
+  does not fit good then antlr, backlog"*. Binding
+  ordering when Zeta implements an external-language
+  compatibility surface (SQL / GQL ISO 39075 / Cypher /
+  Gremlin / SPARQL / Datalog / PostgreSQL wire protocol /
+  MySQL wire protocol / Esper EPL / Flink SQL / Flux /
+  PromQL / KQL / etc.): try FParsec first; fall back to
+  ANTLR only if FParsec demonstrably does not scale or
+  fit the grammar. Rationale:
+  - **FParsec strengths.** Stephan Tolksdorf's combinator
+    library is idiomatic F#; integrates directly with
+    discriminated unions for AST construction; composes
+    with existing Zeta operator algebra; no code-gen
+    step; no build-time dependency on Java; permissive
+    license (BSD-style); already the de-facto F# parser
+    library. A parser built in FParsec lowers to Zeta
+    operator algebra via the SAME type system as the rest
+    of the codebase, not through a generated-code
+    boundary.
+  - **When FParsec does not fit.** Very large ambiguous
+    grammars (full-SQL-92 + vendor extensions),
+    performance-critical parsers over multi-MB queries,
+    grammars with deeply interlocking precedence that
+    parser-combinator expression-parsing ergonomics fight
+    against, left-recursive grammars that require
+    non-trivial transforms. In those cases ANTLR
+    (ANTLR4 for .NET) generates a proper LL(*) parser
+    with predicate support. ANTLR grammars are
+    declarative + reusable (official grammars repo has
+    SQL / Cypher / GraphQL / etc.), which saves grammar
+    engineering effort for well-specified standards.
+  - **Decision rule per surface.** Each DSL surface (row
+    above) picks parser tech with a short written
+    justification: (a) FParsec attempted with effort
+    estimate + ergonomic fit assessment; (b) ANTLR if
+    (a) fails a documented bar (performance or
+    ergonomics); (c) never both for the same surface
+    (parsers are not composed across tech stacks within
+    one surface). The justification lands in the
+    surface's design doc under `docs/research/f-dsl-*.md`.
+  - **Hybrid architecture allowed across surfaces.** It
+    is fine for `graph { Cypher parser }` to be ANTLR
+    (using the official openCypher ANTLR grammar) while
+    `signal { simple DSL }` stays FParsec. What is NOT
+    allowed is mixing the two within one surface.
+  - **License compatibility.** FParsec: BSD 2-clause (or
+    Simplified BSD) — factory-compatible. ANTLR4 + its
+    .NET runtime: BSD 3-clause — factory-compatible.
+    No license concerns either direction.
+  - **Package dependencies.** FParsec lands as one NuGet
+    reference (`FParsec` or `FParsecCS`); ANTLR lands as
+    `Antlr4.Runtime.Standard` + a build-time `antlr4-
+    tool.jar` (the code-generator). The build-time Java
+    dependency of ANTLR is the key ergonomic cost — it
+    means `tools/setup/` must ensure a JDK is present,
+    and `Directory.Build.props` needs a custom target
+    that invokes antlr4-tool at pre-build. FParsec has
+    none of this cost — it is pure F#.
+
+  Priority P1 post-v1-roadmap (follows the per-entry-
+  point F# DSLs row above); effort: per-surface
+  justification is S (written argument in each surface's
+  design doc); FParsec learning-curve investment is S-M
+  (one team-ramp across the factory); ANTLR build-
+  integration is S (one-time setup per surface that
+  adopts it). Composes with: per-entry-point F# DSLs row
+  above; F# DSL composition + container-DSL row above;
+  LINQ-compatible entry points row above; pluggable
+  wire-protocol layer row below (which directly needs
+  SQL + MySQL grammar parsers and is a natural first
+  application).
+
 - [ ] **Pluggable wire-protocol layer with PostgreSQL +
   MySQL + Zeta-native plugins.** Aaron round 33: "can
   we make the wire protocol pluggable and we could just
