@@ -96,3 +96,12 @@ node_modules/
 # use; not needed in-repo. Parallel to drop/ staging per
 # PR #265 Otto-90.
 .playwright-mcp/
+
+# drop/ — in-repo staging folder for external content (courier
+# ferries, downloaded conversations, raw artifacts) awaiting
+# absorb. By convention the content is temporary; absorbed content
+# lands in docs/ with §33 archive headers, not from drop/. Gitignore
+# prevents accidental commit of staging material. Parallel intent to
+# the Otto-90 framing in memory; correcting that the gitignore line
+# had not actually landed.
+drop/
