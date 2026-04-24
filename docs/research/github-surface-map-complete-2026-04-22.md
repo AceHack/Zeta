@@ -314,12 +314,33 @@ not script.
 
 - `GET /orgs/{org}/audit-log` — audit-log entries (GHE/GHEC; on
   Team it's UI-only).
-- `GET /orgs/{org}/settings/billing/actions` — Actions billing.
-- `GET /orgs/{org}/settings/billing/packages` — Packages billing.
+- `GET /orgs/{org}/settings/billing/actions` — **MOVED
+  2026-04-22** (`410 Gone`; `documentation_url:
+  https://gh.io/billing-api-updates-org`). Old-path kept here
+  for drift-log purposes; successor endpoint TBD per the
+  migration doc. See "Map drift log" at the foot of this doc.
+- `GET /orgs/{org}/settings/billing/packages` — Packages billing
+  (likely also affected by the 2026-04-22 billing-API migration;
+  **re-verify before use**).
 - `GET /orgs/{org}/settings/billing/shared-storage` — shared
-  storage billing.
+  storage billing (same caveat).
 - `GET /orgs/{org}/settings/network-configurations` — GHE Cloud
   private networking (not applicable here).
+
+**UI-only companion surfaces** (no REST equivalent; `ui-only`
+tag):
+
+- Org **spending-budget management** —
+  `https://github.com/organizations/{org}/billing/budgets` (web
+  UI only; no public REST endpoint to read or write budgets
+  programmatically). Budget-cap-change is still in the
+  *forbidden* class per
+  `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`;
+  audit is **human-only via UI screenshot** until GitHub ships a
+  Budgets API.
+- Org-level audit-log (on Team plan) —
+  `/organizations/{org}/settings/audit-log` — web UI only;
+  GraphQL `auditLog` returns a subset (noted above).
 
 **Team-plan limit:** audit log is UI-only under
 `/organizations/{org}/settings/audit-log`; no REST on Team.
@@ -746,3 +767,29 @@ verification before they can land as rows:
 - GitHub REST API top-level:
   `https://docs.github.com/en/rest` — the source-of-truth for
   endpoint categories used to build the per-scope tables above.
+
+## Map drift log
+
+Any mapped endpoint that returns `410 Gone` / `301 Moved
+Permanently` / `404 Not Found` due to platform drift (not scope
+issues) lands here with: old-path, drift-date, observed
+response, and new-path (or "pending — see migration doc"). This
+log is the **post-call arm of FACTORY-HYGIENE row #50**
+(surface-map-drift smell). Agents encountering a drift on any
+listed endpoint MUST append a row.
+
+| Old path | Drift date | Response | New path | Notes |
+|---|---|---|---|---|
+| `GET /orgs/{org}/settings/billing/actions` | 2026-04-22 | `410 Gone`; `documentation_url: https://gh.io/billing-api-updates-org`; requires `admin:org` scope | pending — see migration doc | Discovered during LFG budget audit when `admin:org` scope was also absent from token. Token carried `gist, read:org, repo, workflow`; 410 fires regardless of scope per test with `read:org`. Successor endpoint per migration doc TBD; re-verify `/orgs/{org}/settings/billing/packages` and `/orgs/{org}/settings/billing/shared-storage` simultaneously since all three are in the same migration batch. |
+
+## UI-only surfaces (no REST equivalent at map-time)
+
+Some GitHub surfaces have no public REST endpoint and must be
+audited by human-in-the-loop (screenshot / CSV export /
+manual-read). These are legitimate map entries so agents don't
+waste attempts on non-existent paths. Tag: `ui-only`.
+
+| Surface | UI path | Audit workaround | Notes |
+|---|---|---|---|
+| Org spending-budget management | `https://github.com/organizations/{org}/billing/budgets` | Human screenshot / manual-read; agent cannot read-or-write programmatically | **Forbidden class** per `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md` — agent cannot change budgets without Aaron renegotiation; audit is read-intent only. |
+| Org audit-log (Team plan) | `/organizations/{org}/settings/audit-log` | GraphQL `auditLog` returns subset | Documented above in §A.16. |

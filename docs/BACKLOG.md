@@ -1530,6 +1530,45 @@ within each priority tier.
   the invitation for any 3rd member is sent. Effort: S (minutes
   after sign-off). Reviewer: Aminata (threat-model-critic).
 
+- [ ] **Map-completeness audit — proactive "do our maps cover
+  the surfaces we touch?" cadence** (round 44 surface-map-drift
+  absorb) — Aaron 2026-04-22: *"missing map hygene on backlog?"*
+  after agent tripped on a surface (GitHub org spending-budget)
+  that was never in the map. FACTORY-HYGIENE row #50 covers the
+  *reactive* smell (wrong URL on a mapped surface); this row
+  covers the complementary *proactive* audit: enumerate every
+  surface the factory actually touches — from `gh api` calls in
+  `tools/**`, `.github/workflows/**`, `.claude/skills/**`, and
+  docs — cross-reference against each mapping doc
+  (`docs/HARNESS-SURFACES.md`,
+  `docs/research/github-surface-map-complete-2026-04-22.md`,
+  `docs/AGENT-GITHUB-SURFACES.md`, `docs/GITHUB-SETTINGS.md`),
+  and flag surfaces-used-but-unmapped. **Known gaps surfaced by
+  the triggering incident:** (1) GitHub org spending-budget UI
+  at `https://github.com/organizations/{org}/billing/budgets`
+  (added to map as `ui-only` row 2026-04-22); (2) Copilot
+  Business per-feature toggle state
+  (`public_code_suggestions`, `ide_chat`, `cli`, `platform_chat`
+  — values documented in
+  `memory/feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`
+  but not yet mapped as a declarative surface); (3) the
+  `coding-agent` / `internet-search` / custom-instruction
+  enablement flags Aaron referenced ("turned all them on") —
+  each is a distinct UI toggle with no declarative home yet.
+  **Detection script:** `tools/hygiene/audit-map-completeness.sh`
+  greps `gh api` usage + URL patterns across the tree,
+  normalises to `{org-or-repo}/<path>`, diffs against mapping
+  docs' enumerated endpoints, outputs surface-used-but-unmapped
+  list. **Cadence:** every 5-10 rounds (same cadence as
+  skill-tune-up, row #46, row #48) so the map isn't a write-once
+  artifact that rots. **Companion:** FACTORY-HYGIENE row for
+  map-completeness (a new row #51 once this lands). **Effort:**
+  S (detection script + first sweep) + S per gap closure.
+  **Reviewer:** Dejan (devops-engineer) for the detection
+  mechanics; Architect (Kenji) for map-extension decisions
+  (which gaps land where). Related: `memory/feedback_surface_map_consultation_before_guessing_urls.md`;
+  FACTORY-HYGIENE row #50.
+
 - [ ] **Orthogonal-axes cadenced audit — make the factory's
   axis set an orthogonal basis (round 44 absorb)** — Aaron
   2026-04-22: *"also we need to make sure all our axises are
