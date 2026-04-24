@@ -283,3 +283,78 @@ module Graph =
             if converged then Some lambda
             else if iter >= maxIterations then Some lambda
             else None
+
+    /// `map f g` — relabel nodes via `f`. Wraps `ZSet.map` with
+    /// projection over the node-tuple. Operator-algebra
+    /// composition per ADR property 5.
+    let map (f: 'N -> 'M) (g: Graph<'N>) : Graph<'M> when 'M : comparison =
+        { Edges = ZSet.map (fun (s, t) -> (f s, f t)) g.Edges }
+
+    /// `filter predicate g` — keep only edges matching the
+    /// predicate. Delegates to `ZSet.filter`.
+    let filter (predicate: 'N * 'N -> bool) (g: Graph<'N>) : Graph<'N> =
+        { Edges = ZSet.filter predicate g.Edges }
+
+    /// `distinct g` — collapse multi-edges to multiplicity 1;
+    /// drop anti-edges. Delegates to `ZSet.distinct`.
+    let distinct (g: Graph<'N>) : Graph<'N> =
+        { Edges = ZSet.distinct g.Edges }
+
+    /// `union a b` — add edge weights across graphs. Wraps
+    /// `ZSet.add`.
+    let union (a: Graph<'N>) (b: Graph<'N>) : Graph<'N> =
+        { Edges = ZSet.add a.Edges b.Edges }
+
+    /// `difference a b` — subtract b from a. Wraps `ZSet.sub`.
+    let difference (a: Graph<'N>) (b: Graph<'N>) : Graph<'N> =
+        { Edges = ZSet.sub a.Edges b.Edges }
+
+    /// **Modularity score (Q)** for a node partition. Newman's
+    /// formula over the symmetrized adjacency. Returns Some Q
+    /// in [-0.5, 1]; None for empty graph or zero total weight.
+    ///
+    /// Formula: Q = (1/2m) * sum_{i,j} [A_sym[i,j] - k_i*k_j/(2m)] * delta(c_i, c_j)
+    ///
+    /// Nodes missing from `partition` are treated as singleton
+    /// groups (each in a unique community, no shared label).
+    ///
+    /// Provenance: 11th + 13th + 14th ferries Graph metric §.
+    let modularityScore
+            (partition: Map<'N, int>)
+            (g: Graph<'N>)
+            : double option =
+        let nodeList = nodes g |> Set.toList
+        let n = nodeList.Length
+        if n = 0 then None
+        else
+            let idx = nodeList |> List.mapi (fun i node -> node, i) |> Map.ofList
+            let adj = Array2D.create n n 0.0
+            let span = g.Edges.AsSpan()
+            for k in 0 .. span.Length - 1 do
+                let entry = span.[k]
+                let (s, t) = entry.Key
+                adj.[idx.[s], idx.[t]] <- adj.[idx.[s], idx.[t]] + double entry.Weight
+            let sym = Array2D.create n n 0.0
+            for i in 0 .. n - 1 do
+                for j in 0 .. n - 1 do
+                    sym.[i, j] <- (adj.[i, j] + adj.[j, i]) / 2.0
+            let k = Array.create n 0.0
+            for i in 0 .. n - 1 do
+                let mutable acc = 0.0
+                for j in 0 .. n - 1 do
+                    acc <- acc + sym.[i, j]
+                k.[i] <- acc
+            let twoM = Array.sum k
+            if twoM = 0.0 then None
+            else
+                let community i =
+                    let node = nodeList.[i]
+                    match Map.tryFind node partition with
+                    | Some c -> c
+                    | None -> -(i + 1)
+                let mutable q = 0.0
+                for i in 0 .. n - 1 do
+                    for j in 0 .. n - 1 do
+                        if community i = community j then
+                            q <- q + (sym.[i, j] - (k.[i] * k.[j]) / twoM)
+                Some (q / twoM)

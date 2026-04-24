@@ -233,3 +233,63 @@ let ``largestEigenvalue grows when a dense cartel clique is injected`` () =
     // (K_4 with weight 10 has lambda_1 = 3*10 = 30, since
     // K_n has lambda_1 = n-1 scaled by weight).
     attackedLambda |> should (be greaterThan) (baselineLambda * 5.0)
+
+
+// ─── map / filter / distinct / union / difference / modularity ─────────
+
+[<Fact>]
+let ``map relabels nodes`` () =
+    let g = Graph.fromEdgeSeq [ (1, 2, 3L); (2, 3, 1L) ]
+    let g' = Graph.map (fun n -> n * 10) g
+    Graph.edgeWeight 10 20 g' |> should equal 3L
+    Graph.edgeWeight 20 30 g' |> should equal 1L
+
+[<Fact>]
+let ``filter keeps matching edges`` () =
+    let g = Graph.fromEdgeSeq [ (1, 2, 3L); (2, 3, 1L); (3, 1, 5L) ]
+    let g' = Graph.filter (fun (s, _) -> s > 1) g
+    Graph.edgeCount g' |> should equal 2
+    Graph.edgeWeight 1 2 g' |> should equal 0L
+
+[<Fact>]
+let ``distinct collapses multi-edges and drops anti-edges`` () =
+    let (g1, _) = Graph.addEdge 1 2 3L Graph.empty
+    let (g2, _) = Graph.addEdge 1 2 4L g1
+    let g' = Graph.distinct g2
+    Graph.edgeWeight 1 2 g' |> should equal 1L
+    let (gNeg, _) = Graph.removeEdge 3 4 3L Graph.empty
+    let gNeg' = Graph.distinct gNeg
+    Graph.edgeWeight 3 4 gNeg' |> should equal 0L
+
+[<Fact>]
+let ``union + difference round-trip restores original`` () =
+    let a = Graph.fromEdgeSeq [ (1, 2, 5L); (2, 3, 3L) ]
+    let b = Graph.fromEdgeSeq [ (1, 2, 2L); (3, 4, 7L) ]
+    let restored = Graph.difference (Graph.union a b) b
+    Graph.edgeWeight 1 2 restored |> should equal 5L
+    Graph.edgeWeight 2 3 restored |> should equal 3L
+    Graph.edgeWeight 3 4 restored |> should equal 0L
+
+[<Fact>]
+let ``modularityScore returns None for empty graph`` () =
+    (Graph.empty : Graph<int>) |> Graph.modularityScore Map.empty |> should equal (None: double option)
+
+[<Fact>]
+let ``modularityScore is high for well-separated communities`` () =
+    let edges = [
+        (1, 2, 10L); (2, 1, 10L); (2, 3, 10L); (3, 2, 10L); (3, 1, 10L); (1, 3, 10L)
+        (4, 5, 10L); (5, 4, 10L); (5, 6, 10L); (6, 5, 10L); (6, 4, 10L); (4, 6, 10L)
+        (3, 4, 1L); (4, 3, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let partition = Map.ofList [ (1, 0); (2, 0); (3, 0); (4, 1); (5, 1); (6, 1) ]
+    let q = Graph.modularityScore partition g |> Option.defaultValue 0.0
+    q |> should (be greaterThan) 0.3
+
+[<Fact>]
+let ``modularityScore for single-community is 0`` () =
+    let edges = [ (1,2,1L); (2,1,1L); (2,3,1L); (3,2,1L); (3,1,1L); (1,3,1L) ]
+    let g = Graph.fromEdgeSeq edges
+    let p = Map.ofList [ (1,0); (2,0); (3,0) ]
+    let q = Graph.modularityScore p g |> Option.defaultValue nan
+    abs q |> should (be lessThan) 1e-9
