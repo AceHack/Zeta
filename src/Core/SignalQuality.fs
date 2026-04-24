@@ -5,7 +5,6 @@ open System.Collections.Immutable
 open System.IO
 open System.IO.Compression
 open System.Text
-open System.Runtime.CompilerServices
 
 
 /// ═══════════════════════════════════════════════════════════════════
@@ -408,9 +407,18 @@ module SignalQuality =
 
     /// Combine findings into a composite score. If the sum of weights
     /// for findings present is positive, the composite is the
-    /// weighted mean; otherwise zero. NaN in any score poisons the
-    /// composite to NaN (deliberate: NaN is an honest read when a
-    /// measure failed).
+    /// weighted mean; otherwise zero. NaN in any score under a
+    /// *positive* weight poisons the composite to NaN (deliberate:
+    /// NaN is an honest read when a weighted-in measure failed).
+    ///
+    /// **Weight semantics.** Only dimensions with `w > 0.0`
+    /// participate in the weighted mean. Weights of `0.0` (explicit
+    /// opt-out) and *negative* weights (treated as misconfiguration)
+    /// are silently ignored — their scores do not enter `sumWeighted`
+    /// and their NaN scores do not flip `sawNaN`. This matches the
+    /// documented "missing/ignored dimensions contribute 0" behavior
+    /// and avoids silent corruption when a caller misconfigures a
+    /// weight (e.g. `-1.0` from config drift).
     let composite (weights: Map<QualityDimension, float>) (findings: QualityFinding list) : QualityScore =
         if List.isEmpty findings then
             { Composite = 0.0; Findings = [] }
@@ -423,9 +431,12 @@ module SignalQuality =
                     match Map.tryFind f.Dimension weights with
                     | Some w -> w
                     | None -> 0.0
-                if Double.IsNaN f.Score then sawNaN <- true
-                sumWeighted <- sumWeighted + w * f.Score
-                sumWeights <- sumWeights + w
+                if w > 0.0 then
+                    if Double.IsNaN f.Score then
+                        sawNaN <- true
+                    else
+                        sumWeighted <- sumWeighted + w * f.Score
+                        sumWeights <- sumWeights + w
             let composite =
                 if sawNaN then nan
                 elif sumWeights > 0.0 then sumWeighted / sumWeights
