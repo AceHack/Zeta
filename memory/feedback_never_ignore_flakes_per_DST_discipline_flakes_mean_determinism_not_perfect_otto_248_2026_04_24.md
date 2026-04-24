@@ -1,6 +1,6 @@
 ---
-name: NEVER ignore flakes — per DST (Deterministic Simulation Testing) discipline, flakes are not "transient, retry" but active determinism violations; a flake means the DST isn't perfect and there's a real bug (race condition, undefined initialization order, environment dependency, etc); retry-and-move-on is the wrong pattern; fix the flake, capture the reproduction, add regression coverage; Aaron Otto-248 after I (and multiple drain subagents) kept retrying the F# compiler SIGSEGV "flake" instead of investigating; 2026-04-24
-description: Aaron Otto-248 critical discipline after I treated the dotnet 10.0.203 F# compiler SIGSEGV (exit 139) as a transient flake and retried without investigation for multiple sessions. Rule: every "flake" is a DST violation to be diagnosed and fixed. Retry-and-succeed is not resolution; it's masking.
+name: NEVER ignore flakes — per DST (Deterministic Simulation Testing) discipline, flakes are not "transient, retry" but active determinism violations; a flake means the DST isn't perfect and there's a real bug (race condition, undefined initialization order, environment dependency, etc); retry-and-move-on is the wrong pattern; fix the flake, capture the reproduction, add regression coverage; human maintainer Otto-248 after I (and multiple drain subagents) kept retrying the F# compiler SIGSEGV "flake" instead of investigating; 2026-04-24
+description: Human maintainer Otto-248 critical discipline after I treated the dotnet 10.0.203 F# compiler SIGSEGV (exit 139) as a transient flake and retried without investigation for multiple sessions. Rule: every "flake" is a DST violation to be diagnosed and fixed. Retry-and-succeed is not resolution; it's masking.
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
@@ -8,7 +8,7 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 **Flakes are determinism violations. Fix them, don't retry.**
 
-Direct Aaron quote:
+Direct human-maintainer quote (verbatim):
 
 > *"never ignore flakes per DST they must be fixed,
 > flakes just mean that your DST isnt perfect."*
@@ -42,8 +42,8 @@ Pattern observed across multiple sessions today (2026-04-24):
 4. Clean build: 0W/0E.
 
 I (and multiple drain subagents in this session) adopted
-the retry pattern silently. Aaron caught it and surfaced
-the rule.
+the retry pattern silently. The human maintainer caught
+it and surfaced the rule.
 
 **Three crash reports from today** confirm this is a real
 repeatable phenomenon, not a one-off:
@@ -131,12 +131,12 @@ answer but we must distinguish.
   DOES require **capturing** the flake (crash dump, seed,
   reproducing command) and **filing** a BACKLOG row so
   the fix isn't silently lost.
-- Does NOT override Aaron's other priorities. If a critical
-  merge needs to ship and a flake is blocking, the ship
-  can use retry-as-workaround — but the flake MUST be
-  captured and scheduled for fix.
+- Does NOT override the human maintainer's other
+  priorities. If a critical merge needs to ship and a
+  flake is blocking, the ship can use retry-as-workaround
+  — but the flake MUST be captured and scheduled for fix.
 
-## Direct Aaron quote to preserve
+## Direct human-maintainer quote to preserve (verbatim)
 
 > *"never ignore flakes per DST they must be fixed, flakes
 > just mean that your DST isnt perfect."*
