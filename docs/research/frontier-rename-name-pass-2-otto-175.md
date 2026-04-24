@@ -50,7 +50,8 @@ word-etymology is nautical but the intended product genre
 is science-fiction starship. Separate BACKLOG row tracks
 systematic vocabulary mapping across Star Trek + Star
 Citizen + Starfield under strict IP discipline (same
-pattern as §4 Scientology discipline).
+pattern as §5 Scientology discipline; specific
+starship-genre non-adoption enumeration in §4).
 
 **Incidental coincidence surfaced Otto-175c:** both Star
 Trek and Starfield have ships / factions with a name
@@ -269,7 +270,7 @@ FF7's world-building includes substrate / life-force /
 modular-power semantics that map well to Zeta. **BUT
 Square Enix trademarks are aggressively enforced on
 proprietary character / product names**; same discipline
-as Scientology ( §4 below). Thematic inspiration only;
+as Scientology (§5 below). Thematic inspiration only;
 no adoption of trademarked character names.
 
 | Candidate | FF7 Role / Meaning | Trademark Status | Fit |
@@ -361,7 +362,127 @@ section or "Compass" internal vocabulary); the outermost
 brand and the bridge-computer metaphor don't have to be
 the same lexeme.
 
-## 4. Scientology-thematic notes (PUBLIC-DOMAIN-ONLY)
+## 4. Starship-genre IP non-adoption list (Otto-237)
+
+**These names are publicly-available references
+(Wikipedia-grade); mentioning them here is not adoption.
+Factory vocabulary must not adopt any of them.** Per
+Otto-237 (human maintainer clarification, 2026-04-24):
+mentioning trademarked proper nouns in a research memo
+is fine — mention permitted; adoption prohibited. Without
+concrete names a future reader cannot tell what is
+prohibited, so the list below enumerates specifics. This
+is a **negative enumeration** — a list of what-NOT-to-adopt
+into factory vocabulary, not a list of things the factory
+uses or endorses.
+
+Scope: Star Trek (Paramount / CBS), Star Citizen (Roberts
+Space Industries / Cloud Imperium Games), Starfield
+(Bethesda). Any name below appearing in code, internal UI,
+public branding, skill files, or persona vocabulary is a
+policy violation and must be renamed. Any new franchise
+surfaced later extends this list by the same rule.
+
+### 4.1 Starship / ship-class names — DO NOT ADOPT
+
+Star Trek hero ships and classes: Enterprise, Voyager,
+Defiant, Discovery, Galaxy (class), Intrepid (class),
+Constellation (class), Constitution (class), Sovereign
+(class), Excelsior (class), Nebula (class), Miranda
+(class).
+
+Star Citizen ship designations: Idris, Javelin, Polaris,
+Carrack, Hammerhead, Constellation (RSI line — note name
+collision with Star Trek class, both off-limits),
+Caterpillar, Hornet, Gladius, Cutlass, Avenger, Freelancer,
+Aurora (ship line — note collision with Zeta's separate
+Aurora naming triangle which is internal-factory
+vocabulary unrelated to the Star Citizen ship).
+
+Starfield vessels: Frontier (player starter ship — note
+this is the incidental "Frontier" collision surfaced in
+§1), Razorleaf, Star Eagle.
+
+### 4.2 Faction / government / organization names — DO NOT ADOPT
+
+Star Trek factions: Federation (United Federation of
+Planets), Starfleet (as a proper-noun organization name —
+the generic bridge-station vocabulary in §1 is not the
+trademarked compound), Klingon Empire, Romulan Star Empire,
+Cardassian Union, Vulcan High Command, Borg Collective,
+Dominion, Bajoran, Ferengi Alliance.
+
+Star Citizen factions: UEE (United Empire of Earth),
+Xi'an, Banu, Vanduul, Tevarin, Advocacy, Nine Tails.
+
+Starfield factions: United Colonies, Freestar Collective,
+Crimson Fleet, House Va'ruun, Ryujin Industries,
+Constellation (the in-game explorer faction — note this
+name collides with Star Trek ship class; both off-limits).
+
+### 4.3 Character names — DO NOT ADOPT
+
+Star Trek bridge crew archetypes commonly-referenced:
+Kirk, Spock, Picard, Janeway, Sisko, Archer, Burnham,
+Pike, Data, Worf, Seven (of Nine), Riker. The generic
+role words (Captain, Commander, Science Officer, Chief
+Engineer, Communications Officer, Helmsman, Navigator)
+are genre-generic and not trademarked compounds.
+
+Star Citizen and Starfield have named NPCs across their
+corpus; no adoption regardless of prominence.
+
+### 4.4 Branded surfaces / in-world-tech names — DO NOT ADOPT
+
+Star Citizen branded in-game tech: MobiGlas (personal
+augmented-reality device), Spectrum (in-game
+communications network), starmap (as Cloud Imperium's
+product-named surface; the generic word "star map" is
+unremarkable), quantum drive (as a trademarked compound
+in-context; the generic physics term is unremarkable),
+Arena Commander, Star Marine.
+
+Star Trek branded in-world tech: LCARS (Library Computer
+Access and Retrieval System — the canonical Star Trek UI
+vocabulary, highly tempting for a starship-bridge UI
+project, **explicitly off-limits**), PADD (Personal Access
+Display Device), tricorder, replicator (as a trademarked
+compound), Holodeck, transporter (as a trademarked
+compound).
+
+Starfield branded surfaces: Grav Drive, Starborn, Artifact
+(as in-game proper noun), Unity.
+
+### 4.5 Why this list exists
+
+- **Enforceability.** Without specifics, reviewers cannot
+  tell whether a PR is importing prohibited vocabulary.
+  The list becomes a grep target.
+- **Glass-halo transparency.** The factory's
+  starship-bridge framing (Otto-175c) draws on this genre
+  lineage; acknowledging what was considered-and-declined
+  is more honest than pretending the genre doesn't exist.
+- **Otto-237 principle.** Mentioning publicly-available
+  proper nouns in a research doc is legitimate context.
+  Adopting them into factory code / UI / branding is
+  prohibited. The distinction is adoption, not visibility.
+
+### 4.6 What IS permitted (for contrast)
+
+- **Generic starship-bridge role vocabulary** (Helm, Conn,
+  Ops, Tactical, Science, Engineering, Communications,
+  Briefing Room) — these are pre-franchise genre words,
+  not trademarked compounds, and Zeta may adopt them for
+  internal UI sections.
+- **Public-domain mythology** (Thoth, Ma'at, Themis,
+  Dharma, Yantra, Mímir) — covered in §3; trademark-clear
+  candidates are separately cleared via TSDR before any
+  public launch.
+- **Mentioning the prohibited names above** in research
+  docs / design memos / threat models as context — this
+  doc IS that.
+
+## 5. Scientology-thematic notes (PUBLIC-DOMAIN-ONLY)
 
 The human maintainer's Otto-175 framing: "we can get
 thematic ideas from here if Starboard is our [pick now]."
@@ -431,7 +552,7 @@ This section:
   Scientology ritual terminology, or L. Ron Hubbard
   biographical framing into factory vocabulary.
 
-## 5. Recommendation envelope
+## 6. Recommendation envelope
 
 **Still not picking a name (the human maintainer is
 concept owner).** Three framings the requester can
@@ -465,7 +586,7 @@ Starboard is already acceptable. Framing A is the
 simplest-ship path; Framing B adds semantic depth at
 ergonomic cost.
 
-## 6. What this doc does NOT do
+## 7. What this doc does NOT do
 
 - Does not pick a name. The human maintainer is concept owner.
 - Does not replace formal trademark clearance (TSDR /
@@ -483,7 +604,7 @@ ergonomic cost.
   Vantage NOT VIABLE, Aurora NOT VIABLE, Bridge NOT
   RECOMMENDED, Starboard VIABLE) remain in force.
 
-## 7. Cross-references
+## 8. Cross-references
 
 - `docs/research/frontier-rename-analysis-otto-170.md` —
   pass-1 analysis; this pass-2 extends.
@@ -502,7 +623,7 @@ ergonomic cost.
 - `.claude/skills/naming-expert/SKILL.md` — the rubric
   applied.
 
-## 8. Sources
+## 9. Sources
 
 - [Hermes Agent — The Agent That Grows With You | Nous Research](https://hermes-agent.nousresearch.com/)
 - [Hermes Atlas — The community map for Hermes Agent](https://hermesatlas.com/)
