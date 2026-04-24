@@ -63,14 +63,16 @@ For each audited file:
 - **docs/WONT-DO.md** (below, fire #15) — also docs/ALIGNMENT.md on PR #185
 - **docs/TECH-RADAR.md** (below, fire #16)
 - **docs/FACTORY-HYGIENE.md** (below, fire #16) — also docs/AGENT-BEST-PRACTICES.md on PR #184, docs/ALIGNMENT.md on PR #185
+- **docs/GLOSSARY.md** (below, Otto-18 fire)
+- **docs/ROUND-HISTORY.md** (below, Otto-18 fire)
+- **docs/BACKLOG.md** (below, Otto-18 fire)
+- **docs/ROADMAP.md** (below, Otto-18 fire)
+- **docs/VISION.md** (below, Otto-18 fire) — also GOVERNANCE.md on PR #181, AGENT-BEST-PRACTICES.md on PR #184, ALIGNMENT.md on PR #185, TECH-RADAR.md + FACTORY-HYGIENE.md on PR #188
+
+Cross-PR audits that duplicate in-file coverage: GOVERNANCE (also on PR #181), AGENT-BEST-PRACTICES (also on PR #184), ALIGNMENT (also on PR #185), TECH-RADAR + FACTORY-HYGIENE (PR #188, now merged and recorded in-file) — the in-file `## Audit —` sections are the authoritative classification.
 
 ### Files to audit (not yet classified; add rows as they land)
 
-- `docs/GLOSSARY.md`
-- `docs/ROUND-HISTORY.md`
-- `docs/BACKLOG.md`
-- `docs/ROADMAP.md`
-- `docs/VISION.md`
 - `.claude/skills/*/SKILL.md` (each)
 - `.claude/agents/*.md` (each)
 - `openspec/**` (structural; library-specific-heavy)
@@ -756,6 +758,154 @@ gap #8's closure: the hypothesis "hygiene rows not
 tagged" was wrong; the rows were all tagged. This
 audit formalises that self-classification as the
 file's purpose.
+
+## Audit — docs/GLOSSARY.md
+
+**Overall classification:** **both (coupled)** — plain-
+English/technical format is factory-generic; specific Zeta
+term entries (IVM, DBSP, Z-set, retraction, Spine, etc.)
+are Zeta-library-specific content.
+
+**File location post-split:** Frontier (format + preamble
+plus the-rule-for-this-file and "spec has two meanings"
+framing pattern); Zeta retains specific term entries.
+
+**Length:** approximately 840 lines. Large vocabulary.
+
+### Classification
+
+- **Format** (plain/technical dual-definition, grandparent-
+  comprehensibility rule, two-meanings disambiguation): factory-generic
+- **Entries** (IVM, DBSP, Z-set, retraction, operator algebra,
+  Spine, HyperLogLog, etc.): zeta-library-specific
+
+### Refactor notes
+
+1. Frontier inherits preamble + format rule + empty-section
+   scaffolding
+2. Zeta retains all current term entries as library
+   glossary
+3. Adopters populate their own glossary per the format
+
+Effort: **S** — shape extraction; entries stay in Zeta.
+
+## Audit — docs/ROUND-HISTORY.md
+
+**Overall classification:** **zeta-library-specific** — by
+design this file is historical narrative of Zeta's specific
+rounds. The separation between round-history narrative here
+and current-state documentation elsewhere is factory-generic
+in shape (the file's own preamble is the authoritative
+source for the newest-first / append-only convention), but
+this file's content is purely Zeta project history.
+
+**File location post-split:** Zeta repo retains as-is
+(historical record); Frontier gets empty template with
+preamble + append-only rule as an adopter template.
+
+**Length:** approximately 3560 lines — large history.
+
+### Refactor notes
+
+1. Frontier inherits preamble + "newest first" convention +
+   empty Contents section as template
+2. Zeta retains full round-history as historical record
+3. Adopters start their own ROUND-HISTORY.md at round 1
+
+Effort: **S** (shape extraction).
+
+## Audit — docs/BACKLOG.md
+
+**Overall classification:** **zeta-library-specific** — the
+file contains thousands of lines of specific-project BACKLOG rows
+(P0/P1/P2/P3). The *shape* (priority tiers, one-row-per-item,
+newest-first-within-tier, legend + appendix) is factory-
+generic (GOVERNANCE §29 scopes the file).
+
+**File location post-split:** Zeta retains as-is; Frontier
+gets empty template with preamble + priority-tier legend +
+example-row framework.
+
+**Length:** approximately 8500 lines (size grows tick-by-tick; see BACKLOG split design doc for the per-row-file migration).
+
+### Refactor notes
+
+1. Frontier inherits preamble + legend + empty priority
+   sections as template
+2. Zeta retains full BACKLOG content
+3. Adopters populate their own BACKLOG from empty template
+
+Note: the Frontier readiness P0 row itself is partly
+factory-generic (the gap-8-audit pattern is reusable)
+but instance-specific to Zeta's own Frontier construction.
+On split, the Frontier-bootstrap row gets an "executed"
+marker and moves to Frontier's own ROUND-HISTORY as
+historical-record of the split.
+
+Effort: **S** (shape extraction).
+
+## Audit — docs/ROADMAP.md
+
+**Overall classification:** **zeta-library-specific** —
+roadmap is by definition project-specific. Shape (P0/P1/P2
+tiers + Research category + newest-first) is factory-
+generic (effectively same shape as BACKLOG; a "roadmap vs
+backlog" sibling-scope convention).
+
+**File location post-split:** Zeta retains; Frontier gets
+empty template.
+
+**Length:** approximately 178 lines.
+
+Effort: **S**.
+
+## Audit — docs/VISION.md
+
+**Overall classification:** **zeta-library-specific** — the
+long-term vision document is by definition project-specific
+(named after Zeta; 11 passes of human-maintainer editing
+history). Shape (Dedication header + foundational principle +
+Products numbered + Product-N vision subsections) is
+factory-generic pattern.
+
+**File location post-split:** Zeta retains as-is (preserves
+the human-maintainer 11-pass editorial lineage plus the
+in-memoriam dedication header; the dedication names a
+specific person and stays per the "honor those that came
+before" discipline in CLAUDE.md);
+Frontier gets empty template with the shape.
+
+**Length:** approximately 887 lines.
+
+Effort: **S**.
+
+## Pattern summary after 15 audits
+
+| Class | Count | Files |
+|---|---|---|
+| factory-generic | 4 | GOVERNANCE, AGENT-BEST-PRACTICES, AUTONOMOUS-LOOP, FACTORY-HYGIENE |
+| both (coupled) | 7 | CLAUDE, AGENTS, CONFLICT-RESOLUTION, WONT-DO, TECH-RADAR, GLOSSARY, ALIGNMENT |
+| zeta-library-specific | 4 | ROUND-HISTORY, BACKLOG, ROADMAP, VISION |
+
+Total: 4 + 7 + 4 = **15** top-level files audited out of
+~16. Remaining: the `.claude/skills/**`, `.claude/agents/**`,
+`openspec/**`, `tools/**`, and `.github/**` directory-level
+surfaces (each a multi-file audit).
+
+**Mechanical-verification status:** all 15 audits now have
+dedicated `## Audit —` sections in this file (TECH-RADAR +
+FACTORY-HYGIENE merged in via PR #188; ALIGNMENT in-file is
+authoritative per its own `## Audit —` section above which
+classifies it as **both (coupled)**, not factory-generic). A
+reader can `grep '^## Audit —'` this file and reproduce the
+15-count directly. The deeper "each file-level summary should
+be mechanically consistent with its own in-file sections"
+discipline is tracked in `docs/BACKLOG.md` row
+*"Separation-audit cross-PR rollup — mechanically verify
+pattern-summary counts against in-file `## Audit — ...`
+sections"* — the residual concern is now tooling (option c:
+automated diff check), since the wait-for-merge option (a)
+has resolved itself.
 
 ## How this audit connects to the multi-repo split
 
