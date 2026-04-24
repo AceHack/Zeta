@@ -90,18 +90,32 @@ tools/tla/states/
 # docs/DECISIONS/2026-04-20-tools-scripting-language.md. The
 # bun.lock file IS committed; node_modules is not.
 node_modules/
-
-# playwright-mcp artifacts — per-session browser state
-# (screenshots / console / page-dump YAMLs). Regenerated per
-# use; not needed in-repo. Parallel to drop/ staging per
+# Playwright MCP session artifacts — browser automation
+# snapshots captured during MCP-tool use. Ephemeral; one set
+# per browser session; not source. Includes `console-*.log`
+# (browser console output), `page-*.yml` (page-state snapshots),
+# and any per-session JSON the MCP writes. See Aaron's
+# 2026-04-23 Otto-90 hygiene flag ("missing files from
+# gitignore current listed as untracked, could get
+# accidentally checked in"). Parallel to drop/ staging per
 # PR #265 Otto-90.
 .playwright-mcp/
 
-# drop/ — in-repo staging folder for external content (courier
-# ferries, downloaded conversations, raw artifacts) awaiting
-# absorb. By convention the content is temporary; absorbed content
-# lands in docs/ with §33 archive headers, not from drop/. Gitignore
-# prevents accidental commit of staging material. Parallel intent to
-# the Otto-90 framing in memory; correcting that the gitignore line
-# had not actually landed.
+# `drop/` — per-user staging area for incoming content
+# (courier-ferry pastes waiting to be absorbed, usage reports,
+# personal scratch). Not source; not intended for version
+# control. Contents are per-maintainer, not factory-shared.
+# Ferry content that lands via absorb goes to
+# `docs/aurora/**` per GOVERNANCE §33; `drop/` is the
+# pre-absorb landing zone. Gitignore prevents accidental
+# commit of staging material.
 drop/
+
+# Browser/MCP console log files — wherever they land.
+# Belt-and-suspenders pattern per Aaron's Otto-90 hygiene
+# flag: `.playwright-mcp/` is gitignored above, but future
+# MCPs or other browser-automation tools might drop
+# `console-*.log` files elsewhere in the tree. Cover the
+# whole tree to prevent accidental check-in regardless of
+# host directory.
+console-*.log
