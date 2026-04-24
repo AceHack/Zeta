@@ -101,6 +101,7 @@ Aurora-layer substrate is preserved here per [`GOVERNANCE.md §33`](../../GOVERN
 | `2026-04-23-amara-memory-drift-alignment-claude-to-memories-drift.md` | 4th (PR #221) | Otto-67 |
 | `2026-04-23-amara-zeta-ksk-aurora-validation-5th-ferry.md` | 5th (PR #235) | Otto-78 |
 | [`2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md`](2026-04-23-amara-muratori-pattern-mapping-6th-ferry.md) | 6th (PR #245) | Otto-82 |
+| [`2026-04-23-amara-aurora-deep-research-report-10th-ferry.md`](2026-04-23-amara-aurora-deep-research-report-10th-ferry.md) | 10th (PR #294) | Otto-105 |
 
 The first two absorb docs predate `GOVERNANCE.md §33` and use
 a different header field-format (Date / From / Via / Status /
