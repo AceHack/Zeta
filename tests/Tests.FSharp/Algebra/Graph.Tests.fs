@@ -163,3 +163,73 @@ let ``fromEdgeSeq drops zero-weight triples`` () =
         ]
     Graph.edgeCount g |> should equal 1
     Graph.edgeWeight 2 3 g |> should equal 1L
+
+
+// ─── largestEigenvalue ─────────
+
+[<Fact>]
+let ``largestEigenvalue returns None for empty graph`` () =
+    let g : Graph<int> = Graph.empty
+    Graph.largestEigenvalue 1e-9 100 g |> should equal (None: double option)
+
+[<Fact>]
+let ``largestEigenvalue of complete bipartite-like 2-node graph approximates edge weight`` () =
+    // Graph with single symmetric edge (1,2,5) + (2,1,5). After
+    // symmetrization: A_sym = [[0, 5], [5, 0]]. Eigenvalues of
+    // that 2x2 are ±5. Largest by magnitude = 5.
+    let g =
+        Graph.fromEdgeSeq [
+            (1, 2, 5L)
+            (2, 1, 5L)
+        ]
+    let lambda = Graph.largestEigenvalue 1e-9 1000 g
+    match lambda with
+    | Some v -> abs (v - 5.0) |> should (be lessThan) 1e-6
+    | None -> failwith "expected Some"
+
+[<Fact>]
+let ``largestEigenvalue of K3 triangle (weight 1) approximates 2`` () =
+    // Complete graph K3 with unit weights. Adjacency eigenvalues
+    // of K_n are (n-1) and -1 (multiplicity n-1). So for K3,
+    // lambda_1 = 2.
+    let g =
+        Graph.fromEdgeSeq [
+            (1, 2, 1L); (2, 1, 1L)
+            (2, 3, 1L); (3, 2, 1L)
+            (3, 1, 1L); (1, 3, 1L)
+        ]
+    let lambda = Graph.largestEigenvalue 1e-9 1000 g
+    match lambda with
+    | Some v -> abs (v - 2.0) |> should (be lessThan) 1e-6
+    | None -> failwith "expected Some"
+
+[<Fact>]
+let ``largestEigenvalue grows when a dense cartel clique is injected`` () =
+    // Baseline: a 5-node graph with a few light connections.
+    // Attack: add a 4-node clique with heavy weight 10. This is
+    // the load-bearing cartel-detection signal — lambda_1
+    // should grow noticeably.
+    let baseline =
+        Graph.fromEdgeSeq [
+            (1, 2, 1L); (2, 1, 1L)
+            (3, 4, 1L); (4, 3, 1L)
+            (2, 5, 1L); (5, 2, 1L)
+        ]
+    let cartelEdges =
+        [
+            for s in [6; 7; 8; 9] do
+                for t in [6; 7; 8; 9] do
+                    if s <> t then yield (s, t, 10L)
+        ]
+    let attacked = Graph.fromEdgeSeq (List.append [ (1, 2, 1L); (2, 1, 1L); (3, 4, 1L); (4, 3, 1L); (2, 5, 1L); (5, 2, 1L) ] cartelEdges)
+    let baselineLambda =
+        Graph.largestEigenvalue 1e-9 1000 baseline
+        |> Option.defaultValue 0.0
+    let attackedLambda =
+        Graph.largestEigenvalue 1e-9 1000 attacked
+        |> Option.defaultValue 0.0
+    // Baseline lambda on sparse 5-node graph is ~1 (max
+    // single-edge weight).  Attacked lambda should be ~30
+    // (K_4 with weight 10 has lambda_1 = 3*10 = 30, since
+    // K_n has lambda_1 = n-1 scaled by weight).
+    attackedLambda |> should (be greaterThan) (baselineLambda * 5.0)

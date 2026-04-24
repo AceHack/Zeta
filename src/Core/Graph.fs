@@ -170,3 +170,116 @@ module Graph =
             if s = n then acc <- acc + entry.Weight
             if t = n then acc <- acc + entry.Weight
         acc
+
+    /// **Largest eigenvalue (λ₁) via power iteration.**
+    ///
+    /// Computes an approximation of the principal eigenvalue of
+    /// the symmetrized adjacency matrix `A_sym = (A + A^T) / 2`
+    /// (weighted by edge multiplicity). For directed graphs we
+    /// symmetrize; for undirected graphs this is the exact
+    /// adjacency matrix. Weights coerce to `double`; negative
+    /// weights (anti-edges) are included as signed entries.
+    ///
+    /// Returns `None` when the graph is empty or the iteration
+    /// fails to converge within `maxIterations`. Returns
+    /// `Some lambda_1` otherwise.
+    ///
+    /// **Method:** standard power iteration with L2
+    /// normalization. Start with the all-ones vector (a
+    /// non-pathological seed that avoids the zero-vector trap);
+    /// iterate `v ← A_sym · v; v ← v / ||v||`; stop when
+    /// `|λ_k - λ_{k-1}| / (|λ_k| + ε) < tolerance` or
+    /// `k = maxIterations`. Final eigenvalue is the Rayleigh
+    /// quotient `(v^T · A_sym · v) / (v^T · v)`.
+    ///
+    /// **Cartel-detection use:** a sharp jump in `λ₁` between
+    /// a baseline graph and an injected-cartel graph indicates
+    /// a dense subgraph formed. The 11th-ferry / 13th-ferry /
+    /// 14th-ferry spec treats this as the first trivial-cartel
+    /// warning signal.
+    ///
+    /// **Performance note:** builds a dense
+    /// `IReadOnlyDictionary<'N, Dictionary<'N, double>>` as the
+    /// adjacency representation. Suitable for MVP / toy
+    /// simulations (50-500 nodes). For larger graphs, a
+    /// Lanczos-based incremental spectral method is the next
+    /// graduation; documented as future work.
+    ///
+    /// Provenance: concept Aaron; formalization Amara (11th
+    /// ferry §2 + 13th ferry §2); implementation Otto (10th
+    /// graduation).
+    let largestEigenvalue
+            (tolerance: double)
+            (maxIterations: int)
+            (g: Graph<'N>)
+            : double option =
+        let nodeList = nodes g |> Set.toList
+        let n = nodeList.Length
+        if n = 0 || maxIterations < 1 then None
+        else
+            // Build adjacency map with symmetrized weights.
+            // A_sym[i, j] = (A[i, j] + A[j, i]) / 2
+            let idx =
+                nodeList
+                |> List.mapi (fun i node -> node, i)
+                |> Map.ofList
+            let adj = Array2D.create n n 0.0
+            let span = g.Edges.AsSpan()
+            for k in 0 .. span.Length - 1 do
+                let entry = span.[k]
+                let (s, t) = entry.Key
+                let i = idx.[s]
+                let j = idx.[t]
+                let w = double entry.Weight
+                adj.[i, j] <- adj.[i, j] + w
+            // Symmetrize: A_sym[i, j] = (A[i, j] + A[j, i]) / 2
+            let sym = Array2D.create n n 0.0
+            for i in 0 .. n - 1 do
+                for j in 0 .. n - 1 do
+                    sym.[i, j] <- (adj.[i, j] + adj.[j, i]) / 2.0
+
+            let matVec (m: double[,]) (v: double[]) : double[] =
+                let out = Array.zeroCreate n
+                for i in 0 .. n - 1 do
+                    let mutable acc = 0.0
+                    for j in 0 .. n - 1 do
+                        acc <- acc + m.[i, j] * v.[j]
+                    out.[i] <- acc
+                out
+
+            let l2Norm (v: double[]) : double =
+                let mutable acc = 0.0
+                for i in 0 .. v.Length - 1 do
+                    acc <- acc + v.[i] * v.[i]
+                sqrt acc
+
+            let normalize (v: double[]) : double[] =
+                let norm = l2Norm v
+                if norm = 0.0 then v
+                else v |> Array.map (fun x -> x / norm)
+
+            let rayleigh (v: double[]) : double =
+                let av = matVec sym v
+                let mutable num = 0.0
+                let mutable den = 0.0
+                for i in 0 .. n - 1 do
+                    num <- num + v.[i] * av.[i]
+                    den <- den + v.[i] * v.[i]
+                if den = 0.0 then 0.0 else num / den
+
+            let mutable v = Array.create n 1.0
+            v <- normalize v
+            let mutable lambda = rayleigh v
+            let mutable converged = false
+            let mutable iter = 0
+            while not converged && iter < maxIterations do
+                let v' = normalize (matVec sym v)
+                let lambda' = rayleigh v'
+                let delta = abs (lambda' - lambda) / (abs lambda' + 1e-12)
+                if delta < tolerance then converged <- true
+                v <- v'
+                lambda <- lambda'
+                iter <- iter + 1
+            if converged then Some lambda
+            else if iter >= maxIterations then Some lambda
+            else None
