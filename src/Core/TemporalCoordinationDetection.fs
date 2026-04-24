@@ -148,3 +148,71 @@ module TemporalCoordinationDetection =
             let meanCos = sumCos / n
             let meanSin = sumSin / n
             Some (sqrt (meanCos * meanCos + meanSin * meanSin))
+
+    /// **Significant lags from a correlation profile.** Returns the
+    /// subset of lags from a `crossCorrelationProfile` where the
+    /// absolute correlation meets or exceeds `threshold`. `None`
+    /// entries (undefined-variance lags) are never counted as
+    /// significant — a missing measurement is not a coordination
+    /// signal.
+    ///
+    /// Threshold semantics: caller-supplied. Typical values for
+    /// trivial-cartel-detect use cases: `0.7`-`0.8` for "strong
+    /// coordination", `0.9` for "unusually strong". For null-
+    /// hypothesis testing against a baseline, compute the
+    /// baseline's profile for independent streams and derive the
+    /// threshold from its percentile rather than hard-coding.
+    ///
+    /// This is the input to downstream cluster / burst detectors;
+    /// alone it answers "which lags look coordinated?" and leaves
+    /// "are they bursty / clustered / sustained?" to the next
+    /// primitive.
+    let significantLags (profile: (int * double option) array) (threshold: double) : int array =
+        profile
+        |> Array.choose (fun (lag, corrOpt) ->
+            match corrOpt with
+            | Some c when System.Double.IsFinite c && abs c >= threshold -> Some lag
+            | _ -> None)
+
+    /// **Burst alignment — contiguous significant-lag ranges.**
+    /// Groups significant lags (from `significantLags`) into
+    /// contiguous runs. Each run is reported as `(startLag,
+    /// endLag)` inclusive. Two consecutive lags count as
+    /// contiguous if they differ by exactly `1`.
+    ///
+    /// Output encodes "bursts" of coordinated timing — a run of
+    /// lags `[-2 .. 3]` suggests actors that coordinate across a
+    /// 5-step window, not a single-point coincidence. A single
+    /// isolated significant lag reports as `(n, n)`.
+    ///
+    /// Returns an empty array when the profile has no significant
+    /// lags. Non-finite correlations are filtered by the underlying
+    /// `significantLags` pass.
+    ///
+    /// The 11th-ferry signal-model definition (Amara, §1):
+    /// > *"Firefly detection = identify clusters where ∃ S ⊂ N
+    /// > such that ∀ i,j ∈ S, corr(E_i, E_j) ≫ baseline"*
+    ///
+    /// This function operationalises the pair-wise case (two
+    /// streams) — `S` is represented as the set of lags at which
+    /// two streams clear the threshold, clustered into contiguous
+    /// runs. The node-set generalisation (clustering across many
+    /// stream pairs into coordinated subsets of N) is a separate
+    /// graduation candidate that composes over this primitive.
+    let burstAlignment (profile: (int * double option) array) (threshold: double) : (int * int) array =
+        let significant = significantLags profile threshold
+        if significant.Length = 0 then [||]
+        else
+            let runs = ResizeArray<int * int>()
+            let mutable runStart = significant.[0]
+            let mutable runEnd = significant.[0]
+            for i in 1 .. significant.Length - 1 do
+                let lag = significant.[i]
+                if lag = runEnd + 1 then
+                    runEnd <- lag
+                else
+                    runs.Add(runStart, runEnd)
+                    runStart <- lag
+                    runEnd <- lag
+            runs.Add(runStart, runEnd)
+            runs.ToArray()

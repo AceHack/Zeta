@@ -181,3 +181,84 @@ let ``phaseLockingValue handles single-element series`` () =
     TemporalCoordinationDetection.phaseLockingValue a b
     |> Option.map (fun v -> Math.Round(v, 9))
     |> should equal (Some 1.0)
+// ─── significantLags ─────────
+
+[<Fact>]
+let ``significantLags picks only above-threshold entries`` () =
+    let profile =
+        [| (-2, Some 0.2)
+           (-1, Some 0.5)
+           ( 0, Some 0.9)
+           ( 1, Some 0.8)
+           ( 2, Some 0.1) |]
+    TemporalCoordinationDetection.significantLags profile 0.7
+    |> should equal [| 0; 1 |]
+
+[<Fact>]
+let ``significantLags picks strong negative correlation by absolute value`` () =
+    // Perfect anti-correlation at lag 0 is coordination, just
+    // inverse. |corr| = 1 >= threshold.
+    let profile =
+        [| (-1, Some 0.1)
+           ( 0, Some -0.95)
+           ( 1, Some 0.1) |]
+    TemporalCoordinationDetection.significantLags profile 0.8
+    |> should equal [| 0 |]
+
+[<Fact>]
+let ``significantLags skips None entries`` () =
+    // None correlations are undefined; never count as significant.
+    let profile =
+        [| (-1, None)
+           ( 0, Some 0.99)
+           ( 1, None) |]
+    TemporalCoordinationDetection.significantLags profile 0.5
+    |> should equal [| 0 |]
+
+[<Fact>]
+let ``significantLags returns empty when threshold above all values`` () =
+    let profile =
+        [| (-1, Some 0.3); (0, Some 0.4); (1, Some 0.2) |]
+    TemporalCoordinationDetection.significantLags profile 0.95
+    |> should equal ([||]: int array)
+
+
+// ─── burstAlignment ─────────
+
+[<Fact>]
+let ``burstAlignment groups contiguous lags into single run`` () =
+    let profile =
+        [| (-2, Some 0.2); (-1, Some 0.9); (0, Some 0.95); (1, Some 0.85); (2, Some 0.1) |]
+    TemporalCoordinationDetection.burstAlignment profile 0.7
+    |> should equal [| (-1, 1) |]
+
+[<Fact>]
+let ``burstAlignment separates non-contiguous significant lags into distinct runs`` () =
+    let profile =
+        [| (-3, Some 0.9); (-2, Some 0.2); (-1, Some 0.1); (0, Some 0.85); (1, Some 0.9); (2, Some 0.3) |]
+    TemporalCoordinationDetection.burstAlignment profile 0.7
+    |> should equal [| (-3, -3); (0, 1) |]
+
+[<Fact>]
+let ``burstAlignment returns empty when no significant lags`` () =
+    let profile =
+        [| (-1, Some 0.2); (0, Some 0.3); (1, Some 0.2) |]
+    TemporalCoordinationDetection.burstAlignment profile 0.9
+    |> should equal ([||]: (int * int) array)
+
+[<Fact>]
+let ``burstAlignment handles a single significant lag as isolated run`` () =
+    let profile = [| (5, Some 0.99) |]
+    TemporalCoordinationDetection.burstAlignment profile 0.8
+    |> should equal [| (5, 5) |]
+
+[<Fact>]
+let ``burstAlignment ignores None entries when forming runs`` () =
+    // (-1, None) breaks contiguity between -2 and 0 even if they're
+    // both significant — significantLags discards None entries, so
+    // the run-detector sees only lags [-2; 0] which are not
+    // consecutive, producing two separate runs.
+    let profile =
+        [| (-2, Some 0.9); (-1, None); (0, Some 0.9) |]
+    TemporalCoordinationDetection.burstAlignment profile 0.7
+    |> should equal [| (-2, -2); (0, 0) |]
