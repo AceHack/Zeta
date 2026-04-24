@@ -4180,6 +4180,189 @@ within each priority tier.
 - [ ] **pytm threat model** — `docs/security/pytm/threatmodel.py`
   replaces markdown-only threat-model as authoritative source.
 
+## P1 — Otto-257..270 counterweight-discipline bundle (2026-04-24)
+
+Each row below cites a memory file under `memory/`
+capturing the originating discipline. Per Otto-267/269
+these rows are corpus pointers (training signal).
+Landed in task #261 bundle.
+
+- [ ] **Corpus-as-Bayesian-teaching-curriculum strategic
+  artifact (Otto-267 + Otto-269 + Otto-270)** —
+  operationalize gitnative corpus as prompt-time
+  curriculum AND training-time data AND enriched event
+  stream. Deliverables: `docs/CURRICULUM.md` with
+  BP-ordered reading sequence; infer.net vs Pyro/Stan/Gen
+  ADR for BP substrate; `tools/corpus/emit-event-stream.*`
+  (post-install / soul-file command emitting chronological
+  stream with enriched additive-only annotation envelope);
+  eval harness verifying trained models internalize the
+  disciplines + score agents against the stream. Subject =
+  gitops; method = Bayesian BP for curriculum design; form
+  = enriched event stream (Otto-270 enriched-CT framing,
+  Zeta DBSP as natural ingest substrate — Ouroboros).
+  See `memory/feedback_bayesian_teaching_curriculum_*_otto_267_*`,
+  `memory/feedback_gitnative_corpus_as_training_data_*_otto_269_*`,
+  and `memory/feedback_enriched_event_stream_corpus_*_otto_270_*`.
+  Effort: L (research-grade, multi-tick scope).
+
+- [ ] **Event-stream generator + enriched envelope
+  (Otto-270 execution)** — Phase 1: design stream format
+  (JSONL / Arrow / Zeta-native Z-set serialization) via
+  `docs/DECISIONS/YYYY-MM-DD-corpus-event-stream-format.md`.
+  Phase 2: `tools/corpus/emit-event-stream.*` generates
+  chronological events from repo history + all gitnative
+  artifacts (Otto-261). Phase 3: annotation-envelope
+  schema (additive-only; original preserved per Otto-238)
+  capturing assumed-current-state / rules / permissions /
+  order-of-operations / counterweights-active. Phase 4:
+  Zeta DBSP `Source<Event>` adapter for ingest. Phase 5:
+  agent-scoring eval harness. Ouroboros: Zeta ingests own
+  history via Zeta. See
+  `memory/feedback_enriched_event_stream_corpus_*_otto_270_*`.
+  Effort: L.
+
+- [ ] **Word-discipline (Otto-268) as training-time
+  alignment criterion** — words perfectly aligned to ideas
+  = harmonic resonance; drift = destructive interference.
+  Under Otto-269 training-time framing, drift pollutes
+  weights not just prompt comprehension. Every durable
+  artifact edit (memory, skill, ADR, commit message) checks
+  word-idea alignment before landing. Cross-reviewer
+  terminology bridged to canonical vocabulary or glossary
+  updated. See
+  `memory/feedback_words_perfectly_aligned_to_ideas_*_otto_268_*`.
+  Effort: S per artifact; standing discipline.
+
+- [ ] **Gitnative-sync all GitHub artifacts to LFG
+  (Otto-261)** — branches + PRs + issues + discussions +
+  wiki + projects + releases + repo metadata (environments
+  / env-var NAMES / secret NAMES; values NEVER) + CI
+  history + billing HISTORY snapshots. LFG-only; forks
+  don't duplicate. Iterative enhancement-backlog at
+  `docs/gitnative-sync-enhancement-backlog.md`. Per-artifact
+  sync tool under `tools/sync/<artifact>.sh`. See
+  `memory/feedback_gitnative_store_all_github_artifacts_*_otto_261_*`.
+  Effort: L total; M per artifact; Phase 1 issues first.
+
+- [ ] **Rule of Balance discipline (Otto-264) documented
+  + maintained** — every found mistake-class triggers
+  counterweight filing (prevent / detect+repair / both);
+  counterweights need maintenance cadence (~5-10 ticks
+  initial, ~20-50 stabilized); NEVER take shortcuts.
+  Document as `docs/RULE-OF-BALANCE.md` primary doc;
+  factory-hygiene standing cadence row. See
+  `memory/feedback_rule_of_balance_*_otto_264_*`.
+  Effort: S doc; standing discipline.
+
+- [ ] **Auto-format on PR (Otto-258)** — markdownlint +
+  `dotnet format` + shfmt + prettier as pre-commit +
+  CI force-format-and-commit-back job ("super force
+  format" static-analyzer pattern); editorconfig seeded
+  from proven defaults; three-way parity per GOVERNANCE
+  §24. Phased: markdownlint first, dotnet-format second,
+  shfmt + prettier third. See
+  `memory/feedback_auto_format_on_pr_ci_job_*_otto_258_*`.
+  Effort: M.
+
+- [ ] **Verify-before-destructive factory upgrade
+  (Otto-259)** — subagent classifications feeding
+  destructive actions require independent verification
+  gate; sample N ≥ max(3, sqrt(total)); 100% agreement
+  required. Tool: `tools/hygiene/verify-audit.sh`.
+  Subagent-prompt template requires raw primary-source
+  output. Semgrep/custom lint catches bulk-destructive
+  patterns without preceding verification. See
+  `memory/feedback_verify_subagent_claims_before_destructive_action_*_otto_259_*`.
+  Effort: M.
+
+- [ ] **Trunk-based-dev discipline (Otto-262)** — only
+  main long-lived; 7-day branch-age audit signal;
+  recover-or-prune not preserve. Phase 1 sweep (task
+  #264); Phase 2 `tools/hygiene/tbd-branch-audit.sh`
+  weekly cadence; Phase 3 auto-delete-head-branches +
+  auto-merge-armed + branch-age notification. See
+  `memory/feedback_trunk_based_development_*_otto_262_*`.
+  Effort: M phase 1; S phase 2; S phase 3.
+
+- [ ] **Merge queue adoption counterweight (Otto-265)**
+  — GitHub merge queue on LFG main serializes merges,
+  prevents rebase-thread-ping-pong (observed this session
+  on #188/#190/#147). Verify merge-queue ON; verify
+  branch-protection requires merge-queue; test routing;
+  document in `docs/GITHUB-SETTINGS.md` gitnative mirror.
+  Detection: rebase-cycles-per-PR > 3 in one session =
+  structural-problem signal. See
+  `memory/feedback_rebase_thread_ping_pong_pattern_*_otto_265_*`.
+  Effort: S verify + M documentation.
+
+- [ ] **Clean-default smell detection cadence (Otto-257)**
+  — drift from "keep things clean" triggers "what did I
+  forget?" reflex. Surfaces: git-native + github-host.
+  Cadence: every 5-10 rounds + on-demand. Tool:
+  `tools/hygiene/recovery-audit.sh`. Findings classify
+  landed / obsolete / unfinished; recovery PRs per
+  unfinished. See
+  `memory/feedback_clean_default_smell_detection_*_otto_257_*`.
+  Effort: S steady state; L first sweep (partly done).
+
+- [ ] **SignalQuality design-alternative evaluation
+  (Otto-266 greenfield)** — PR #147's alternative
+  `src/Core/SignalQuality.fs` (empty-string → 0.0-neutral
+  with `compressionMinInputBytes = 64` byte threshold)
+  vs main's current (0.5-neutral, no threshold, via PR
+  #142). Evaluate on merits; if better, land as separate
+  PR. See
+  `memory/feedback_zeta_is_still_greenfield_*_otto_266_*`.
+  Effort: S eval + S implementation if adopted.
+
+## P2 — hygiene refinements (Otto-254/255/256/260/263)
+
+- [ ] **Roll-forward default (Otto-254) standing
+  reminder** — revert is the exception (credential leak,
+  destructive prod break, PII, maintainer directive);
+  forward-roll is default. Add to
+  `docs/FACTORY-HYGIENE.md` as row. See
+  `memory/feedback_always_prefer_rolling_forward_*_otto_254_*`.
+  Effort: S doc row.
+
+- [ ] **Symmetry in naming (Otto-255)** — default
+  symmetric names across parallel locations (e.g.
+  `docs/pr-preservation/` mirrors
+  `forks/<fork>/pr-preservation/`). Asymmetry requires
+  inline opt-out reason. Optional lint tooling for
+  cross-tree same-concept name checks. See
+  `memory/feedback_prefer_symmetry_in_naming_*_otto_255_*`.
+  Effort: S doc row + M lint tool.
+
+- [ ] **First-names-in-history-files refinement
+  (Otto-256)** — update `docs/AGENT-BEST-PRACTICES.md`
+  line 284 with history-file carve-out
+  (`docs/DECISIONS/**`, `docs/ROUND-HISTORY.md`,
+  `docs/hygiene-history/**`, `docs/research/**`,
+  `memory/**`). First names allowed there; not in
+  current-state / code / skills / public-API. See
+  `memory/feedback_first_names_are_not_pii_*_otto_256_*`.
+  Effort: S BP-edit.
+
+- [ ] **`F#`/`C#` preservation lint (Otto-260)** —
+  never rename to `F-Sharp` / `C-Sharp` under lint
+  pressure. Reflow or backtick-wrap at EOL. Custom
+  lint in `tools/hygiene/` catches rename-attempts
+  in markdown. Subagent-prompt template includes
+  constraint (already applied wave 3 drain). See
+  `memory/feedback_fsharp_csharp_in_markdown_*_otto_260_*`.
+  Effort: S lint tool.
+
+- [ ] **Best-of-both-worlds root principle (Otto-263)
+  documented** — gitnative durability + host first-class
+  UX simultaneously; composes Otto-250/251/252/261/262
+  under single root. Doc at
+  `docs/BEST-OF-BOTH-WORLDS.md` or inline into governance
+  as "why" behind gitnative-sync execution. See
+  `memory/feedback_best_of_both_worlds_*_otto_263_*`.
+  Effort: S doc landing.
+
 ## P1 — within 2-3 rounds
 
 - [ ] **Fresh-session quality research — close the gap
