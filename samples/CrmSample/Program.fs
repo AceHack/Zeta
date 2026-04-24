@@ -1,4 +1,4 @@
-module Zeta.Samples.ServiceTitanCrm.Program
+module Zeta.Samples.CrmSample.Program
 
 open System
 open Zeta.Core
@@ -15,7 +15,7 @@ open Zeta.Core
 //     duplicates, retracting shows ones that have been resolved
 //
 // The demo is narrow on purpose: four canonical views, each updated per
-// tick, each printed before and after. The full ServiceTitan-CRM surface
+// tick, each printed before and after. A full production CRM surface
 // (contact history, lead scoring, pipeline kanban, duplicate merging,
 // call/SMS/email integration) is a much larger project — this file is
 // the algebraic kernel.

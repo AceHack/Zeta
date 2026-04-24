@@ -1,19 +1,22 @@
 # `drop/` — the maintainer-to-agent inbox
 
-The maintainer (Aaron) deposits files here for the autonomous
+The maintainer deposits files here for the autonomous
 loop to absorb. This folder is the canonical "dropbox" — the
-one place Aaron can park a research report, a transcript, a
-screenshot, a PDF, a zip, without any discussion beforehand.
+one place the maintainer can park a research report, a
+transcript, a screenshot, a PDF, a zip, without any
+discussion beforehand.
 The agent audits this folder at **every tick-open** and
 absorbs anything new.
 
-This file is the protocol. It is the **only** file in
-`drop/` that git tracks. Everything else gets gitignored so
-deposits never enter history.
+This file is the protocol. `drop/` tracks exactly two
+sentinel files: `README.md` (this doc) and `.gitignore`
+(the "ignore everything except these two" ruleset).
+Everything else gets gitignored so deposits never enter
+history.
 
-## Design rationale — one tracked sentinel, everything else ignored
+## Design rationale — two tracked sentinels, everything else ignored
 
-Aaron, 2026-04-22 auto-loop-43:
+Maintainer, 2026-04-22 auto-loop-43:
 
 > *"if i put a binary in there we should have specific rules
 > for hadling the bindaries we know but they never get
@@ -24,7 +27,7 @@ The shape that satisfies the directive:
 
 - `drop/` **exists** on every clone (the folder is present
   because the tracked sentinel keeps it present).
-- Everything Aaron drops is **gitignored** — PDFs,
+- Everything the maintainer drops is **gitignored** — PDFs,
   transcripts, zips, images, audio files, video files,
   binary executables, text notes, proprietary docs. None
   of it enters history.
@@ -50,8 +53,8 @@ ls -la drop/
   (`.DS_Store`) are present — no-op, continue with the rest
   of the tick.
 - If any other file is present — **absorb it this tick**.
-  Absorption beats other speculative work because Aaron's
-  deposit is the closest signal to *directed* work the
+  Absorption beats other speculative work because the
+  maintainer's deposit is the closest signal to *directed* work the
   factory gets; ignoring it stacks drop-folder debt.
 
 ## Absorption protocol
@@ -81,8 +84,9 @@ For every file `drop/<name>`:
 
 ## Known binary-type registry
 
-When Aaron drops a binary, the agent handles it per the
-registry below. **Unknown binary types flag to Aaron** —
+When the maintainer drops a binary, the agent handles it
+per the registry below. **Unknown binary types flag to the
+maintainer** —
 they don't get absorbed silently. This is a closed
 enumeration by design; new kinds require a registry update.
 
@@ -92,12 +96,12 @@ enumeration by design; new kinds require a registry update.
 | Source code  | `.fs`, `.cs`, `.ts`, `.py`, `.sh`, `.fsx`, `.lean`      | `Read` directly; absorption note summarises the pattern.  |
 | PDF          | `.pdf`                          | `Read` with `pages` param (1-20 pages); chunk if larger.    |
 | Image        | `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`                | `Read` — harness renders visually for description/OCR.     |
-| Audio        | `.mp3`, `.wav`, `.m4a`, `.ogg`, `.flac`                 | Ask Aaron — substrate-access-grant may apply (Gemini-Ultra transcript path per `memory/project_aaron_ai_substrate_access_grant_gemini_ultra_all_ais_again_cli_tomorrow_2026_04_22.md`). |
-| Video        | `.mp4`, `.mov`, `.webm`, `.mkv`                         | Ask Aaron — substrate-access-grant path (Gemini-Ultra / frame-extraction). |
+| Audio        | `.mp3`, `.wav`, `.m4a`, `.ogg`, `.flac`                 | Ask the maintainer — substrate-access-grant may apply (Gemini-Ultra transcript path per `memory/project_aaron_ai_substrate_access_grant_gemini_ultra_all_ais_again_cli_tomorrow_2026_04_22.md`). |
+| Video        | `.mp4`, `.mov`, `.webm`, `.mkv`                         | Ask the maintainer — substrate-access-grant path (Gemini-Ultra / frame-extraction). |
 | Archive      | `.zip`, `.tar.gz`, `.tar`, `.7z`                        | `unzip -l` / `tar -tzf` first, then extract under `drop/_expand-<name>/` (also gitignored), then recurse over contents. Clean up `_expand-<name>/` after absorption. |
-| Binary exec  | `.exe`, `.dll`, `.so`, `.dylib`                         | Flag to Aaron. Do not run. Describe metadata only (file size, header bytes) via `file` command. |
-| Office       | `.docx`, `.xlsx`, `.pptx`                               | Flag to Aaron. These need parsing tools (python-docx, openpyxl) — if substrate allows, otherwise ask Aaron for a markdown/text export. |
-| Unknown      | anything else                                           | Flag to Aaron: *"drop/`<name>` is kind `<ext>`; no handler registered — please advise or export to a supported kind."* |
+| Binary exec  | `.exe`, `.dll`, `.so`, `.dylib`                         | Flag to the maintainer. Do not run. Describe metadata only (file size, header bytes) via `file` command. |
+| Office       | `.docx`, `.xlsx`, `.pptx`                               | Flag to the maintainer. These need parsing tools (python-docx, openpyxl) — if substrate allows, otherwise ask the maintainer for a markdown/text export. |
+| Unknown      | anything else                                           | Flag to the maintainer: *"drop/`<name>` is kind `<ext>`; no handler registered — please advise or export to a supported kind."* |
 
 The registry is authoritative. Do **not** improvise a
 handler for an unknown kind. Ask.
@@ -107,16 +111,16 @@ handler for an unknown kind. Ask.
 - **Not a long-term archive.** Files here are ephemeral. The
   absorption note under `docs/research/` is the durable
   artifact.
-- **Not a staging area for committed files.** If Aaron wants
+- **Not a staging area for committed files.** If the maintainer wants
   to commit something wholesale (a doc he wrote, a test
   dataset, a fixture), he commits it directly to its
   destination — not via `drop/`.
 - **Not a build output sink.** Build artifacts go under
   `bin/`, `obj/`, `coverage/`, etc. per the top-level
   `.gitignore`.
-- **Not a secrets drop.** Aaron does not put secrets here
+- **Not a secrets drop.** The maintainer does not put secrets here
   and the agent does not expect any — the folder is
-  local-only but the absorption note is public. If Aaron
+  local-only but the absorption note is public. If the maintainer
   accidentally drops a secret, the agent flags immediately
   and does not copy the secret into the absorption note.
 

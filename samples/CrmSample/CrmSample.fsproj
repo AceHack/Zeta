@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Zeta.Samples.ServiceTitanCrm</RootNamespace>
+    <RootNamespace>Zeta.Samples.CrmSample</RootNamespace>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <TrimmerSingleWarn>true</TrimmerSingleWarn>
     <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>

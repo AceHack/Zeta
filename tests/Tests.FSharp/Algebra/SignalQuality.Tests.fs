@@ -11,8 +11,8 @@ open Zeta.Core
 // ═══════════════════════════════════════════════════════════════════
 
 [<Fact>]
-let ``compressionRatio on empty string returns neutral 1.0`` () =
-    SignalQuality.compressionRatio "" |> should (equalWithin 1e-9) 1.0
+let ``compressionRatio on empty string returns neutral 0.5`` () =
+    SignalQuality.compressionRatio "" |> should (equalWithin 1e-9) 0.5
 
 
 [<Fact>]
@@ -153,7 +153,7 @@ let ``driftScore is 1.0 when snapshots are disjoint`` () =
 
 
 [<Fact>]
-let ``driftScore is 0.5 when half the union overlaps`` () =
+let ``driftScore is 2/3 when one of three union elements overlaps`` () =
     let a = SignalQuality.claimsOf [ ("x", 1L); ("y", 1L) ]
     let b = SignalQuality.claimsOf [ ("y", 1L); ("z", 1L) ]
     // Union = {x,y,z} size 3; Intersect = {y} size 1; 1 - 1/3 = 2/3.

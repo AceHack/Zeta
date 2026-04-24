@@ -4,7 +4,7 @@ description: Non-interrupting aside — absorb the aside into substrate and cont
 
 # /btw — maintainer aside without interrupting in-flight work
 
-The maintainer (Aaron) invoked `/btw` with an aside. The purpose
+The human maintainer invoked `/btw` with an aside. The purpose
 of this command is to **reduce maintainer interrupt cost**: the
 aside carries context, a directive, a note, or a correction,
 but should **not** derail whatever work-stream is currently in
@@ -54,12 +54,12 @@ Maintainer directive, 2026-04-22 auto-loop-44:
 > persison and abored what i say?  becasue then i would not
 > have interrupt"*
 
-Translation: Aaron wants a channel for non-interrupting asides.
-Without this command, every aside is a full conversation turn
-that displaces in-flight work from the agent's working context.
-With this command, asides are absorbed and current work
-continues — Aaron pays less interrupt cost, agent pays less
-context-switch cost.
+Translation: the human maintainer wants a channel for
+non-interrupting asides. Without this command, every aside is a
+full conversation turn that displaces in-flight work from the
+agent's working context. With this command, asides are absorbed
+and current work continues — the maintainer pays less interrupt
+cost, agent pays less context-switch cost.
 
 ## Arguments
 
@@ -115,8 +115,8 @@ Agent: *"Pivoting. Investigating the CI break now."*
 - Does NOT treat every aside as a pivot — pivots require
   explicit demand in the aside text.
 - Does NOT mute the acknowledgement — even one-line
-  acknowledgement is load-bearing so Aaron sees the aside
-  landed.
+  acknowledgement is load-bearing so the maintainer sees the
+  aside landed.
 
 ## Composes with
 
@@ -126,7 +126,7 @@ Agent: *"Pivoting. Investigating the CI break now."*
   — aside signal must be preserved through classification.
 - `memory/feedback_maintainer_only_grey_is_bottleneck_agent_judgment_in_grey_zone_2026_04_22.md`
   — agent exercises judgment on classification without
-  serialising through Aaron.
+  serialising through the maintainer.
 - `memory/feedback_never_idle_speculative_work_over_waiting.md`
   — an aside doesn't reset the never-idle invariant; the
   current work continues.

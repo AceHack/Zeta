@@ -31,8 +31,8 @@ open System.Text
 /// confidence (positive = asserted, negative = retracted). This
 /// aligns the module with the retraction-native model: a claim that
 /// arrives and is then contradicted resolves to zero weight (no
-/// residual), matching the "zero-sum rule" Amara's spec names as
-/// the first-line algebraic invariant. See
+/// residual), matching the "zero-sum rule" named as the first-line
+/// algebraic invariant. See
 /// `docs/research/oss-deep-research-zeta-aurora-2026-04-22.md` for
 /// the seven-layer oracle-gate framing this module operates inside.
 
@@ -40,7 +40,7 @@ open System.Text
 /// Which quality dimension a finding reports on. Dimensions are
 /// orthogonal axes — high quality on one dimension does not
 /// guarantee high quality on another, which is why the composite
-/// score is a weighted sum, not an AND.
+/// score is a weighted mean, not an AND.
 type QualityDimension =
     /// Compression ratio — proxy for Kolmogorov complexity relative
     /// to length. Content with low ratio (compresses well) tends to
@@ -102,8 +102,9 @@ type QualityFinding = {
 
 
 /// A composite assessment across multiple dimensions. `Composite` is
-/// the weighted sum of per-dimension scores; callers supply the
-/// weights via `composite`.
+/// the weighted mean of per-dimension scores (sum of weighted scores
+/// divided by sum of weights); callers supply the weights via
+/// `composite`.
 type QualityScore = {
     Composite: float
     Findings: QualityFinding list
@@ -142,35 +143,43 @@ module SignalQuality =
 
 
     // ───────────────────────────────────────────────────────────────
-    // Compression dimension — section 2.2 of Amara's spec. Kolmogorov
+    // Compression dimension — section 2.2 of the bullshit-detector
+    // design spec. Kolmogorov
     // complexity is uncomputable, so we approximate via the ratio of
     // gzip-compressed length to raw length: low ratio = structured,
     // high ratio = noisy.
     // ───────────────────────────────────────────────────────────────
 
     /// Compression ratio `|compress(x)| / |x|` using gzip as a
-    /// Kolmogorov-complexity proxy. Returns `1.0` for the empty
-    /// string (neutral). Clamped to `[0.0, 1.0]` — a well-behaved
+    /// Kolmogorov-complexity proxy. Returns `0.5` for the empty
+    /// string — this is the genuine neutral under `severityOfScore`
+    /// (Warn band at `0.30-0.60`). Returning `1.0` would contradict
+    /// the neutrality intent by classifying empty input as
+    /// Quarantine. Clamped to `[0.0, 1.0]` — a well-behaved
     /// compressor cannot exceed the input length for realistic
     /// inputs, but tiny strings can expand slightly under the gzip
     /// header overhead; the clamp keeps the return value in the
     /// interval the composite math assumes.
     let compressionRatio (text: string) : float =
-        if String.IsNullOrEmpty text then 1.0
+        if String.IsNullOrEmpty text then 0.5
         else
             let raw = Encoding.UTF8.GetBytes text
             use out = new MemoryStream()
+            // Inner scope forces the GZipStream to flush / dispose
+            // before we read `out.Length`, so we can measure the
+            // compressed payload without materialising it via
+            // `ToArray()` (per review feedback: avoid the byte-copy
+            // just to read the length).
             (use gz = new GZipStream(out, CompressionLevel.Optimal, leaveOpen = true)
              gz.Write(raw, 0, raw.Length))
-            let compressed = out.ToArray()
-            let ratio = float compressed.Length / float raw.Length
+            let ratio = float out.Length / float raw.Length
             if ratio < 0.0 then 0.0
             elif ratio > 1.0 then 1.0
             else ratio
 
     /// Compression-dimension measure. Suspicion score is the
     /// compression ratio directly — high ratio means low structural
-    /// regularity, which is a bullshit signal in Amara's framing.
+    /// regularity, which is a bullshit signal in the spec's framing.
     let compressionMeasure : IQualityMeasure<string> =
         { new IQualityMeasure<string> with
             member _.Dimension = Compression
@@ -389,10 +398,11 @@ module SignalQuality =
 
 
     // ───────────────────────────────────────────────────────────────
-    // Composite — weighted sum across dimensions. Weights do not need
-    // to sum to 1; callers pick a normalisation that suits their
-    // scoring convention. Missing dimensions (no finding supplied)
-    // contribute 0 to the composite.
+    // Composite — weighted mean across dimensions (sum of weighted
+    // scores divided by sum of weights). Weights do not need to sum
+    // to 1; the mean normalisation handles that. Missing dimensions
+    // (no finding supplied) contribute 0 to the numerator and nothing
+    // to the denominator.
     // ───────────────────────────────────────────────────────────────
 
     /// Default uniform weights — every dimension weighted 1.0.

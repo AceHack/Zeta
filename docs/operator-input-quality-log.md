@@ -1,16 +1,16 @@
 # Operator-input quality log
 
-**Status:** per Aaron 2026-04-22 auto-loop-43 directive.
+**Status:** per maintainer 2026-04-22 auto-loop-43 directive.
 **Purpose:** score the quality of inputs arriving from the
-human operator (Aaron) and from operator-adjacent sources
-(research drops, recommended videos, third-party tooling
-Aaron forwards). Symmetric counterpart to
+human maintainer and from operator-adjacent sources
+(research drops, recommended videos, third-party tooling the
+maintainer forwards). Symmetric counterpart to
 `docs/force-multiplication-log.md` — that log measures signal
 going *from* factory to operator; this log measures signal
 going *to* factory from operator.
 
 **Reframe — this is a teaching loop, not just a retrospective
-scorecard.** Aaron, same tick:
+scorecard.** Maintainer, same tick:
 
 > *"this is teach opportunity"*
 >
@@ -19,41 +19,42 @@ scorecard.** Aaron, same tick:
 > *"if my qualit is low you teach me if its high i teach you"*
 
 The quality score determines the **direction of teaching**.
-Low-quality Aaron input (low signal density, ambiguous,
+Low-quality maintainer input (low signal density, ambiguous,
 unverifiable, under-specified) → the factory **teaches
-Aaron**: surfaces the ambiguity, proposes the
+the maintainer**: surfaces the ambiguity, proposes the
 better-structured version, explains what would have made
-the input actionable. High-quality Aaron input (compressed,
-anchor-rich, novel, verifiable) → Aaron is **teaching the
-factory**: absorb as direction, update substrate, let the
-factory's model of what-Aaron-wants evolve toward the new
-signal. The log is *how the factory decides which direction
+the input actionable. High-quality maintainer input
+(compressed, anchor-rich, novel, verifiable) → the
+maintainer is **teaching the factory**: absorb as direction,
+update substrate, let the factory's model of
+what-the-maintainer-wants evolve toward the new signal. The
+log is *how the factory decides which direction
 to teach in*. A quality row is not a verdict — it's the
 pedagogical direction-setter for that input.
 
-Default posture: **not symmetric in effort**. Teaching Aaron
-happens in chat (terse, present-tense: *"I read this as X
-because of ambiguity in clause Y — did you mean Z?"*).
-Teaching the factory happens in substrate (memory / BACKLOG
-/ research doc). The *information flows both ways naturally*,
-as Aaron put it — the quality score picks which one is the
-right move this tick.
+Default posture: **not symmetric in effort**. Teaching the
+maintainer happens in chat (terse, present-tense: *"I read
+this as X because of ambiguity in clause Y — did you mean
+Z?"*). Teaching the factory happens in substrate (memory /
+BACKLOG / research doc). The *information flows both ways
+naturally*, as the maintainer put it — the quality score
+picks which one is the right move this tick.
 
-**Meta-perspective — either direction grows Zeta.** Aaron,
-same tick:
+**Meta-perspective — either direction grows Zeta.**
+Maintainer, same tick:
 
 > *"eaither way Zeta grows"*
 >
 > *"i think from the meta persepetive most of the time"*
 
 Whichever direction teaching flows in, the factory grows.
-Aaron teaching factory → substrate absorbs higher-quality
-signal → factory's model of what-Aaron-wants sharpens.
-Factory teaching Aaron → Aaron's input quality trends
+Maintainer teaching factory → substrate absorbs higher-quality
+signal → factory's model of what-the-maintainer-wants sharpens.
+Factory teaching maintainer → maintainer's input quality trends
 up over time → future ticks absorb sharper signal → the
 teaching-factory direction accelerates. The loop has no
 dissipation direction; the meta-property is **growth
-via either flow**. Aaron qualifies with *"most of the time"*
+via either flow**. The *"most of the time"* qualifier
 — the claim is strong-but-not-universal, acknowledging
 the occasional absorption that grows neither side (pure
 retrospective calibration, e.g.). But most of the time
@@ -65,7 +66,7 @@ and not just a housekeeping artifact.
 
 ## The directive
 
-Aaron, 2026-04-22 auto-loop-43:
+Maintainer, 2026-04-22 auto-loop-43:
 
 > *"can you tell me how the quality of that research you
 > received was?"*
@@ -99,17 +100,17 @@ which dimensions mattered most for *this kind* of input.
 Not every operator message gets a row. Score only inputs
 that are **load-bearing enough to absorb into substrate**
 (research doc, memory edit, BACKLOG row, ADR, code change).
-Terse Aaron directives that land as memories get scored
+Terse maintainer directives that land as memories get scored
 because they direct factory work. Casual chat does not.
 
-- **A: Maintainer direct** — Aaron types a directive
-  directly.
-- **B: Maintainer forwarded** — Aaron forwards a tweet,
-  video timestamp, article, conversation overheard.
+- **A: Maintainer direct** — the maintainer types a
+  directive directly.
+- **B: Maintainer forwarded** — the maintainer forwards a
+  tweet, video timestamp, article, conversation overheard.
 - **C: Maintainer-dropped research** — deposits into
   `drop/` (OpenAI Deep Research, Gemini outputs, etc.).
-- **D: Maintainer-requested capability** — he asks the
-  factory to check / build / verify something.
+- **D: Maintainer-requested capability** — a check / build
+  / verify ask for the factory.
 
 ## Running log
 
@@ -117,15 +118,16 @@ Newest-first.
 
 | Date       | Source              | Class | What                                                                                                                      | Signal | Action | Specif | Novelty | Verif | Risk | Overall | Notes |
 |------------|---------------------|-------|---------------------------------------------------------------------------------------------------------------------------|--------|--------|--------|---------|-------|------|---------|-------|
-| 2026-04-22 | Aaron direct        | A     | ARC-3 adversarial three-role loop (creator/adversary/player) as scoring mechanism for emulator absorption; symmetric quality loop; SOTA-changes-daily | 5 | 3 | 4 | 5 | 3 | 4 | **4.5** | Four compressed messages, high leverage; directionally verifiable (ARC-3, POET, OMNI literature exists); scope-binding not yet authorized — six open questions blocking implementation. |
-| 2026-04-22 | Aaron direct        | A     | Operator-input quality-log directive (this log's origin)                                                                  | 5 | 5 | 5 | 4 | 5 | 5 | **4.8** | Self-evidencing — the directive's value is confirmed the moment we act on it. Low load-bearing risk because the log is additive and can be retracted. |
-| 2026-04-22 | Aaron direct        | A     | Drop-zone protocol (`drop/` folder with gitignore-except-sentinel; binary-type registry; absorb-then-delete cadence)      | 5 | 5 | 4 | 4 | 5 | 5 | **4.7** | Two compressed messages; the follow-up ("binaries never get checked in / untracked with a single tracked file") was unusually well-specified in one sentence. Immediately implementable. |
+| 2026-04-22 | Maintainer direct   | A     | ARC-3 adversarial three-role loop (creator/adversary/player) as scoring mechanism for emulator absorption; symmetric quality loop; SOTA-changes-daily | 5 | 3 | 4 | 5 | 3 | 4 | **4.5** | Four compressed messages, high leverage; directionally verifiable (ARC-3, POET, OMNI literature exists); scope-binding not yet authorized — six open questions blocking implementation. |
+| 2026-04-22 | Maintainer direct   | A     | Operator-input quality-log directive (this log's origin)                                                                  | 5 | 5 | 5 | 4 | 5 | 5 | **4.8** | Self-evidencing — the directive's value is confirmed the moment we act on it. Low load-bearing risk because the log is additive and can be retracted. |
+| 2026-04-22 | Maintainer direct   | A     | Drop-zone protocol (`drop/` folder with gitignore-except-sentinel; binary-type registry; absorb-then-delete cadence)      | 5 | 5 | 4 | 4 | 5 | 5 | **4.7** | Two compressed messages; the follow-up ("binaries never get checked in / untracked with a single tracked file") was unusually well-specified in one sentence. Immediately implementable. |
 | 2026-04-22 | Drop (Deep Research)| C     | `deep-research-report.md` — Lucent-vs-AceHack comparison + 7-layer oracle-gate design + Aurora branding-clearance analysis | 4 | 3 | 4 | 3 | 2 | 3 | **3.5** | See "Inaugural grading" section below for full rationale. B+ / 8/10. Useful starting point; verification-first on specifics. |
 
 ## Inaugural grading — `deep-research-report.md`
 
-Aaron's first question (*"can you tell me how the quality of
-that research you received was?"*) is answered here in full.
+The maintainer's first question (*"can you tell me how the
+quality of that research you received was?"*) is answered
+here in full.
 
 ### What the report did well
 
@@ -185,8 +187,8 @@ that research you received was?"*) is answered here in full.
   Treat as design sketch, not drop-in.
 - **Brand decision treated as settled.** The report writes
   as if "Aurora" is the already-chosen successor-project
-  name. That's not established on our side — it could be
-  Aaron's choice, the research tool's suggestion, or a
+  name. That's not established on our side — it could be the
+  maintainer's choice, the research tool's suggestion, or a
   carried-forward assumption from the source documents the
   tool was given. The branding section cannot be
   load-bearing without that clarified.
@@ -212,7 +214,7 @@ that research you received was?"*) is answered here in full.
   Lucent-vs-AceHack table (our own `git log` / file
   enumeration).
 - **Don't lift without more context:** Aurora as brand
-  decision (Aaron confirmation needed), recommended
+  decision (maintainer confirmation needed), recommended
   Aurora work items (`docs/adr/oracle-gate.md` etc. —
   useful as naming, but we'll author them to our own
   conventions not the report's).
@@ -235,9 +237,9 @@ wholesale.
 
 As the log grows, watch for:
 
-- **Do Aaron-direct A-class inputs consistently score
+- **Do maintainer-direct A-class inputs consistently score
   higher than C-class research drops?** If yes, the
-  factory should prioritise Aaron-direct processing
+  factory should prioritise maintainer-direct processing
   over research-drop absorption when both are in flight.
 - **Do forwarded-from-X-source B-class inputs cluster
   by source?** If all "YouTube wink" inputs score low
@@ -256,9 +258,9 @@ overall score:
 
 | Band          | Overall   | Direction                                         | How it lands                                              |
 |---------------|-----------|---------------------------------------------------|-----------------------------------------------------------|
-| Factory teaches Aaron | 1.0 – 2.4 | Factory surfaces ambiguity, proposes better form | Chat reply: *"I read this as X because of Y — did you mean Z?"* |
+| Factory teaches maintainer | 1.0 – 2.4 | Factory surfaces ambiguity, proposes better form | Chat reply: *"I read this as X because of Y — did you mean Z?"* |
 | Bidirectional | 2.5 – 3.9 | Absorb what's clear, ask on what isn't           | Partial substrate land + open-questions section in doc    |
-| Aaron teaches factory | 4.0 – 5.0 | Absorb as direction, update substrate            | Substrate landing (memory / BACKLOG / research / ADR)     |
+| Maintainer teaches factory | 4.0 – 5.0 | Absorb as direction, update substrate            | Substrate landing (memory / BACKLOG / research / ADR)     |
 
 The bands are guidance, not gates. A 2.8 "bidirectional"
 input that happens to clarify a long-running architectural
@@ -269,7 +271,7 @@ The log's Overall column is a judgment summary (see
 
 ## What this log does NOT do
 
-- Does not score Aaron as a person. Scores **inputs**.
+- Does not score the maintainer as a person. Scores **inputs**.
 - Does not gatekeep absorption. Low-score inputs still get
   absorbed if they land in scope; the score is signal to
   future-self about how much to trust wholesale.
@@ -283,8 +285,8 @@ The log's Overall column is a judgment summary (see
 - `docs/force-multiplication-log.md` — the symmetric
   counterpart (factory → operator signal quality).
 - `memory/feedback_aaron_terse_directives_high_leverage_do_not_underweight.md`
-  — why terse Aaron messages score well on signal density
-  despite low word count.
+  — why terse maintainer messages score well on signal
+  density despite low word count.
 - `memory/feedback_signal_in_signal_out_clean_or_better_dsp_discipline.md`
   — the clean-or-better invariant this log measures
   against.
