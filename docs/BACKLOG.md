@@ -6883,6 +6883,33 @@ Keeping them adjacent preserves the directive cluster.
   schema for adversarial-training-corpus risks; Kenji
   synthesizes the dual-use deliverable.
 
+## P2 — BP-25 promotion candidate — live-state-before-policy
+
+- [ ] **Promote "live-state-before-policy" to BP-25 via ADR.**
+  Amara's 4th ferry (PR #221 absorb) named the rule; Otto-72
+  landed schema-enforcement of it via the `live_state_checks:`
+  field in `docs/decision-proxy-evidence/` records (documented
+  in the `README.md` "Live-state-before-policy" section
+  after PR <this>). BP-NN promotion is Aarav's call per the
+  BP-NN-promotion-cadence FACTORY-HYGIENE row; this row
+  queues the promotion consideration. Rule text candidate:
+  *"Never recommend a repository settings change, required-
+  check change, merge policy change, or branch-rule change
+  unless the current live state has been queried in the same
+  work unit."* **Scope:** draft ADR under
+  `docs/DECISIONS/YYYY-MM-DD-bp-25-live-state-before-policy.md`
+  citing the Amara ferry + the schema-enforcement in
+  `docs/decision-proxy-evidence/README.md` + the HB-004
+  failure-mode evidence Amara sampled. If adopted, promote
+  to BP-25 in `docs/AGENT-BEST-PRACTICES.md` (current max
+  is BP-24). **Effort:** S (ADR drafting + policy
+  inclusion). **Owner:** Aarav drives the promotion call;
+  Kenji integrates; Rune readability. **Source of truth:**
+  `docs/aurora/2026-04-23-amara-memory-drift-alignment-
+  claude-to-memories-drift.md` (PR #221 absorb) +
+  `docs/decision-proxy-evidence/README.md` (PR #222 + this
+  PR's addendum).
+
 ## P1 — Principle-adherence review cadence (Otto-58 new hygiene class)
 
 - [ ] **Principle-adherence review — cadenced agent judgment on

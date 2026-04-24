@@ -205,6 +205,71 @@ author can set `false` with a one-line justification in
 
 ---
 
+## Live-state-before-policy — the principle behind `live_state_checks:`
+
+Amara's 4th ferry (PR #221) named this as a Determinize-
+stage rule, paired with the evidence-record format:
+
+> Never recommend a repository settings change, required-
+> check change, merge policy change, or branch-rule change
+> unless the current live state has been queried in the
+> same work unit.
+
+**Why it exists:** Amara's commit-sample HB-004 arc shows
+the failure mode — same-day propose-from-symptoms → policy-
+stance → empirical-correction. The pattern generalizes
+whenever an agent proposes substrate changes from inferred
+state rather than verified state. The fix is mechanical:
+run the `gh api` / `git log` / equivalent check **first**,
+propose **second**.
+
+**How the schema enforces it:**
+
+The `live_state_checks:` field is required for every
+`settings-change` and `branch-shaping` task class. At least
+one entry must name an actual command that was executed to
+verify the state the decision operates on. Examples from
+the DP-001 worked example:
+
+- `gh api repos/Lucent-Financial-Group/Zeta/branches/main/protection`
+- `gh api repos/AceHack/Zeta --jq '.fork // .parent.full_name'`
+- `gh api users/AceHack/events (repo-level create/delete scan)`
+
+An evidence record with an empty `live_state_checks:` array
+for those task classes is a flag: either the rule was
+skipped (fix the record), or the task class was
+misclassified (change the field).
+
+**Scope:**
+
+Applies whenever a durable change to state-with-public-
+consequences is proposed:
+
+- Settings changes (repo, org, branch, workflow,
+  required-checks, rulesets)
+- Branch-shaping (branch-protection, policy flips, merge
+  method changes)
+- Scope / authority claims that assume repo state
+  ("I'll merge this because branch protection allows it")
+- Roadmap edits that assume current capability state
+  ("this works because test X passes" — verify test X
+  actually passes)
+
+Does NOT apply to:
+
+- Pure read / observation work (research docs, memory
+  absorbs, BACKLOG row filings that don't assert state)
+- Mechanical fixes where the state is self-evident in
+  the change (typo, lint, format)
+
+**Future BP-NN promotion candidate:** this rule meets the
+bar for a stable BP rule per `docs/AGENT-BEST-PRACTICES.md`
+(multiple occurrences + cross-agent applicability). Aarav
+considers for BP-25 promotion via ADR; until then it lives
+here as schema-enforced practice.
+
+---
+
 ## Relationship to the "hard rule"
 
 Across all four Amara ferries (PRs #196, #211, #219, #221)
