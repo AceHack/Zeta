@@ -1,13 +1,6 @@
 # Current operative memory — Aaron Stainback (human maintainer)
 
-> **Migrated to in-repo `memory/` on 2026-04-23** per the
-> in-repo-first policy shift (Otto-27 tick, Aaron: *"yeah i
-> like it, we can have a machine specific scrubber/lint
-> hygene task for anyting that makes it in by default"*).
-> Previously per-user only; now accessible to external AI
-> collaborators (Amara) + future maintainers via the public
-> repo. Matching per-user source retains a "Migrated to
-> in-repo" marker for provenance.
+> **Migrated to in-repo `memory/CURRENT-aaron.md` on 2026-04-23** per Aaron's Otto-27 "yeah i like it" greenlight on Option D (in-repo-first policy). This per-user copy preserved for provenance per Overlay A pattern; **in-repo copy is canonical going forward**.
 
 **Purpose:** The per-user memory folder accumulates append-only
 snapshots from conversations. When Aaron says X, realises it's

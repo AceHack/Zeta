@@ -18,7 +18,7 @@
     "references/upstreams/**",
     // Memory directory is agent-written append-logs; treating it
     // as source content would add drift to every OFFTIME entry.
-    "memory/persona/**",
+    "memory/**",
     // Lean proof dir has its own idioms.
     "tools/lean4/**",
     // Aaron+Amara verbatim conversation archive (PR #301/#302/

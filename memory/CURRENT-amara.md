@@ -1,12 +1,6 @@
 # Current operative memory — Amara (external AI maintainer)
 
-> **Migrated to in-repo `memory/` on 2026-04-23** per the
-> in-repo-first policy shift (Otto-27 tick). Amara explicitly
-> flagged inability to inspect the per-user memory tree in
-> her operational-gap assessment (`docs/aurora/
-> 2026-04-23-amara-operational-gap-assessment.md`); this
-> migration directly answers that gap. Matching per-user
-> source retains a "Migrated to in-repo" marker.
+> **Migrated to in-repo `memory/CURRENT-amara.md` on 2026-04-23** per Aaron's Otto-27 in-repo-first greenlight. In-repo copy is canonical going forward; this per-user copy preserved for provenance.
 
 **Purpose:** Distilled currently-in-force rules / design
 directions from Amara's direct interactions. Sibling to
