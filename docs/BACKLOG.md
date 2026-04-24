@@ -8425,6 +8425,119 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- [ ] **Rename Starboard → farm-related seed-extension
+  kernel; pair with carpentry-related second seed-extension
+  kernel.** Maintainer 2026-04-24 directive (verbatim):
+  *"Instead of Starboard lets go with someting farm related
+  and carperntry related since those will be our two seed
+  extenion kernels we can shrink over time, i saw one of
+  your researcher i think write like big bangs at every
+  layer i thought that was cool. this is from google ai,
+  just suggestions, we can idate, keep all the exiting
+  nautical and elron and all that research but we will be
+  renaming starboard to someting else."*
+
+  **Reverses Otto-175c Starboard-as-Frontier-rename.**
+  Otto-175 picked Starboard as the Frontier-UI rename
+  (Otto-168 naming-conflict resolution). The current
+  directive supersedes that pick. Per Otto-229
+  append-only on history rows: do NOT edit Otto-175 /
+  Otto-175c rows; this row records the reversal forward.
+
+  **Two seed-extension kernels (new architecture frame):**
+  - **Kernel A — farm-related** (replaces Starboard).
+    Property: shrinks over time. Maintainer's farm-grown-up
+    background grounds the metaphor.
+  - **Kernel B — carpentry-related** (new addition).
+    Property: shrinks over time. Pairs with Kernel A.
+  - **"Big bangs at every layer"** — research metaphor a
+    factory persona produced that the maintainer flagged
+    as compositionally aligned with the seed-extension
+    frame. Find and cite the producing-persona's research
+    when the rename lands so the metaphor is preserved.
+
+  **IP / mention-vs-adoption discipline (Otto-237):**
+  - PRESERVE all existing nautical / Elron / Hubbard
+    research substrate (`docs/research/frontier-rename-
+    analysis-otto-170.md`, the Otto-175 thematic-mapping
+    research, all Sea Org / Commodore / auditing-at-sea
+    notes). The maintainer is explicit: "keep all the
+    existing nautical and elron and all that research".
+    Renaming does NOT mean purging the substrate.
+  - CHANGE the chosen factory-vocabulary name only.
+  - Mention vs adoption: Starboard-thematic research
+    remains MENTIONED throughout the substrate; the new
+    kernel-A / kernel-B names become the ADOPTED factory
+    vocabulary going forward.
+
+  **Google AI ideation seed — batch 1 (general farm,
+  verbatim categories from directive — do NOT auto-adopt;
+  iterate via `naming-expert` skill review):**
+  - Tech-Focused & Industrial: AgriNexus AI, HortiCore,
+    SiloSync, BioSync Innovations, GridGrain.
+  - Rare & Obscure Words: The Mow, Firkin, Barrack,
+    Humpty-Dumpty, Mispeld.
+  - Action-Oriented & Creative: Cultivate, YieldBotics,
+    Root & Rise, Seed & Soil, HarvestOS.
+  - Frontier & Heritage: FarmFrontier, Pioneer Valley,
+    Landmark Acres, Evergreen Horizon.
+
+  **Google AI ideation seed — batch 2 (Q/Z + algebraic
+  blend, second 2026-04-24 share, verbatim categories;
+  same do-NOT-auto-adopt rule):**
+  - Technical & Algebraic Concepts: Zeta-ic Yield,
+    Quar-Tectory, Alge-Zanja, Re-Zonal Stream,
+    Event-Quanta.
+  - Unique Agricultural Jargon: Siliqua-Core,
+    Zamindary-OS, Quinze-Fields, Zoonotic-Logic,
+    Zero-Till Qubits.
+  - Abstract & Experimental: Squiz-Factor,
+    Queazy-Algebra, PQC-Pastures.
+
+  **Notable resonances flagged for `naming-expert`
+  review** (do NOT settle; surface for triage):
+  - **Siliqua-Core** — *siliqua* literally = seed pod;
+    direct linguistic match for the maintainer's
+    "seed-extension kernel" framing.
+  - **Zeta-ic Yield** — pairs the existing
+    repo/mathematical-foundation name with farm yield
+    (compositional with the Riemann-zeta lineage Zeta
+    already riffs on).
+  - **Zanja** — irrigation canal; pairs cleanly with
+    "flow of logic through an automated stream"
+    (matches the existing dataflow / push-pull substrate
+    in Zeta's operator algebra).
+  - **Zamindary-OS** — archaic landowner term; fits
+    factory-as-multi-agent-host metaphor.
+
+  **Carpentry-side has no ideation seed yet** — the
+  directive named carpentry as the second kernel but
+  did not propose names. Work scope: parallel slate of
+  carpentry-related candidates (Awl, Plane, Lathe,
+  Mortise, Joinery, Workbench, Truss, Rafter, Dovetail,
+  ...) for `naming-expert` triage alongside the farm
+  slate.
+
+  **Process gate.** No rename PR until the maintainer
+  iterates the slate to two finalists (kernel-A + kernel-B)
+  and `naming-expert` runs IP discipline + Otto-244
+  no-symlinks + cross-substrate-conflict check on each.
+  Otto-275 log-don't-implement applies — capture the
+  directive durably + iterate when the maintainer chooses
+  the timing.
+
+  **Composes with:** Otto-168 (Frontier naming-conflict
+  origin), Otto-170 / Otto-175 / Otto-175c (Starboard
+  research + adoption + thematic-mapping), Otto-237 (IP
+  adoption-vs-mention), Otto-244 (no-symlinks rule for
+  cross-placement), Otto-275 (rapid-fire absorb /
+  log-don't-implement).
+
+  **Companion memory file** capturing the directive +
+  framing constraints lands alongside this row so the
+  reversal of Otto-175c is recoverable from a fresh
+  session via grep.
+
 - [ ] **Multi-account access design — safety-first research + design proposal for eventually letting Otto operate across multiple accounts (ServiceTitan / personal / other) without confusion or privilege-bleed. Design allowed now; implementation gated on Aaron's personal security review of the design before any code lands.** Aaron 2026-04-23 Otto-76: *"FYI don't get confused i switchd the codex CLI to service titan like you so you would be on the same account, if you open the playwrite it's logged into my personal account with amara access. i happy to expand multi account access design in the future we don't need to worry about it right now, this is how we are setup for now, free free to resaerch, design multi account access and how to make it safe as part of this proiject low backlog item"* — then Otto-76 refinement: *"its fine to design and all that now on multi account thats one i just would want to review a design first, i want to validate that one for securty consers myself"* + *"you can pick the timing"*.
 
   **Two-phase structure — design-now-implementation-later:**
