@@ -3,9 +3,14 @@
 # Runs on every PR (opened / reopened / synchronize / ready_for_review)
 # and every push to main, plus workflow_dispatch for manual triage.
 #
-# Discipline (design doc: docs/research/ci-workflow-design.md, Aaron-
-# reviewed 2026-04-18; parity-swap landed round 32):
-#   - Runners digest-pinned (ubuntu-22.04, macos-14), not -latest.
+# Discipline (design doc: docs/research/ci-workflow-design.md, human
+# maintainer reviewed 2026-04-18; parity-swap landed round 32; matrix
+# refresh 2026-04-24 per PR #375):
+#   - Runners pinned to explicit versions (not -latest). Active build-
+#     and-test matrix: macos-26, ubuntu-24.04, ubuntu-24.04-arm,
+#     ubuntu-slim (experimental; not in required-checks today).
+#     Lint jobs pinned to ubuntu-22.04 (short-lived, OS-independent
+#     work). Windows legs deferred to peer-harness milestone.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
 #   - permissions: contents: read at the workflow level; no job
@@ -46,46 +51,80 @@ concurrency:
 
 jobs:
   build-and-test:
-    # Matrix is computed from `github.repository` at plan time so the
-    # macos-14 leg (≈10× Linux cost) only exists on contributor forks,
-    # not on the canonical Lucent-Financial-Group/Zeta repo. On any
-    # fork both legs exist; on the canonical repo only the ubuntu leg
-    # exists. This keeps the YAML byte-identical on both sides — no
-    # repo-specific variable, no second workflow file — with runtime
-    # differentiation driven by the built-in `github.repository`
-    # context.
+    # Final runner matrix (maintainer directive 2026-04-24): symmetric
+    # across AceHack fork and LFG canonical — same legs run everywhere.
+    # Standard GitHub-hosted runners are free for public repositories,
+    # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
+    # no longer applies.
     #
-    # Job-level `if:` with `matrix.*` is rejected by actionlint (the
-    # matrix context is not available at job-level), so the split is
-    # done at strategy-expansion time via `fromJSON`. The expression
-    # evaluates once per workflow run; each matrix leg that survives
-    # creates its own check status.
+    # Active legs (4):
+    #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
+    #   - ubuntu-24.04      Ubuntu 24.04 LTS x64 (4 CPU, 16 GB)
+    #   - ubuntu-24.04-arm  Ubuntu 24.04 LTS arm64 (4 CPU, 16 GB)
+    #   - ubuntu-slim       Ubuntu slim x64 (1 vCPU, 5 GB RAM;
+    #                       15-minute HARD job cap — a runner-
+    #                       class limit enforced by GitHub, not a
+    #                       configurable `timeout-minutes` value.
+    #                       Raising `timeout-minutes` has no
+    #                       effect on this leg). EXPERIMENTAL leg
+    #                       per maintainer directive 2026-04-24:
+    #                       try it and see how small a runner can
+    #                       handle the Zeta workload. Because the
+    #                       15-minute cap is fixed at the runner
+    #                       class, mitigation options are limited:
+    #                       the full `dotnet build` + `dotnet test`
+    #                       may not fit the cap or the 5 GB memory
+    #                       envelope; if it consistently times out
+    #                       or OOMs, either remove from the matrix
+    #                       or shift to a minimal lint-only task
+    #                       set. Reference:
+    # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
     #
-    # Rationale: maintainer 2026-04-21 "Mac is very very expensive
-    # to run" + "we should leave [LFG's] build as linux only if
-    # that's possible where a contributor fork also builds mac".
-    # `build-and-test (macos-14)` is NOT in the canonical repo's
-    # required-checks list — it was removed from branch protection
-    # on the same change that introduced this matrix split so PRs
-    # don't block on a leg that
-    # no longer exists there.
+    # Deferred legs (commented, enable when Windows peer-harness
+    # milestone ships — maintainer's Windows machine available for
+    # second peer agent validation):
+    #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
+    #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
+    #
+    # Deferred: per maintainer 2026-04-24 "we can delay windows
+    # until i can test with a second peer agent on my windows
+    # machine." Uncomment both Windows legs when that milestone
+    # lands.
+    #
+    # fail-fast: false so one leg's failure doesn't cancel the
+    # others — we want the full signal across the matrix.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        os: ${{ fromJSON(github.repository == 'Lucent-Financial-Group/Zeta' && '["ubuntu-22.04"]' || '["ubuntu-22.04","macos-14"]') }}
+        os:
+          - macos-26
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - ubuntu-slim  # experimental; fail-fast:false; not currently required-check (viability TBD)
+          # Deferred until Windows peer-harness milestone:
+          # - windows-2025
+          # - windows-11-arm
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      # Cache keys include `runner.arch` in addition to `runner.os` so
+      # Linux x64 (ubuntu-24.04, ubuntu-slim) and Linux arm64
+      # (ubuntu-24.04-arm) do not share entries for arch-sensitive
+      # paths. `runner.os` resolves to `Linux` on both arches, which
+      # would otherwise cause wrong-arch restores (for example,
+      # `~/.dotnet` with x64 binaries restored onto arm64). See
+      # https://docs.github.com/en/actions/learn-github-actions/
+      # contexts#runner-context for `runner.arch` values.
       - name: Cache .NET SDK
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.dotnet
-          key: dotnet-${{ runner.os }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
+          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
 
       - name: Cache mise runtimes (python only post round 32)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -93,13 +132,13 @@ jobs:
           path: |
             ~/.local/share/mise
             ~/.cache/mise
-          key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}
 
       - name: Cache elan (Lean 4 toolchain)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('tools/setup/common/elan.sh') }}
+          key: elan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/common/elan.sh') }}
 
       - name: Cache verifier jars (TLC + Alloy)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -108,7 +147,8 @@ jobs:
             tools/tla
             tools/alloy
           # Manifest is the single source of truth — cache busts when
-          # either URL or (future) SHA changes.
+          # either URL or (future) SHA changes. Jars are JVM bytecode
+          # so arch-neutral; key kept os-only on purpose.
           key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers') }}
 
       - name: Cache NuGet packages
@@ -120,7 +160,10 @@ jobs:
           # Keys on `Directory.Packages.props`. The `packages.lock.json`
           # ideal is round-33 Track B. No `restore-keys` — partial hit
           # would restore against different resolved versions.
-          key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
+          # `runner.arch` is included because some NuGet packages ship
+          # native RID-specific assets (for example, runtime.linux-
+          # x64.*).
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Single source of truth for toolchain state. Installs:
@@ -189,8 +232,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Installs shellcheck via mise (pinned in .mise.toml). Single
+        # source of truth — the same version on dev laptops + CI
+        # runners. Prior step relied on shellcheck shipping pre-
+        # installed on ubuntu-22.04, which broke parity (dev machines
+        # may have a different version) and wouldn't survive newer
+        # runner images like ubuntu-slim that don't ship shellcheck.
+        run: ./tools/setup/install.sh
+
       - name: Run shellcheck
-        # shellcheck ships pre-installed on ubuntu-22.04 runners.
         # Scope: Zeta's own scripts under `tools/setup/` only —
         # `tools/lean4/.lake/packages/**` is Lean/Mathlib vendored
         # code not governed by Zeta standards.
@@ -226,15 +277,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Download actionlint (pinned)
-        # Download directly from the rhysd/actionlint release; SHA
-        # pin in the install script below. Avoids a third-party
-        # action just to install a linter.
-        run: |
-          set -euo pipefail
-          ACTIONLINT_VERSION="1.7.7"
-          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash) "${ACTIONLINT_VERSION}"
-          ./actionlint --version
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Installs actionlint via mise (pinned in .mise.toml). Single
+        # source of truth — the same version flows to dev laptops and
+        # CI. Replaces a prior inline `Download actionlint (pinned)`
+        # step whose version was maintained separately from the
+        # declarative pin.
+        run: ./tools/setup/install.sh
 
       - name: Run actionlint
         # -ignore 'unknown permission scope "administration"' is a
@@ -246,7 +295,7 @@ jobs:
         # list. Remove when actionlint catches up. See:
         # https://github.com/rhysd/actionlint/issues (search
         # "administration permission").
-        run: ./actionlint -color -ignore 'unknown permission scope "administration"'
+        run: actionlint -color -ignore 'unknown permission scope "administration"'
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a

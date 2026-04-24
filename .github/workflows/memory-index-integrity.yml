@@ -13,7 +13,7 @@ name: memory-index-integrity
 #     github.event.before). No user-authored text is referenced anywhere.
 #   - Values passed via env: and quoted in shell.
 #   - Concurrency group + cancel-in-progress: false.
-#   - runs-on: ubuntu-22.04 pinned.
+#   - runs-on: ubuntu-24.04 pinned.
 #
 # Scope — triggers the check:
 #   memory/*.md  (top-level session memories,
@@ -51,7 +51,7 @@ concurrency:
 jobs:
   check:
     name: check memory/MEMORY.md paired edit
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:

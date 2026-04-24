@@ -156,7 +156,9 @@ process_one() {
     inject+=("load_datetime: \"$(compute_load_datetime "$file")\"")
   fi
   if ! field_present "last_updated" "$file"; then
-    inject+=("last_updated: \"${TODAY}\"")
+    local last_updated
+    last_updated="$(compute_last_updated "$file")"
+    inject+=("last_updated: \"${last_updated:-$TODAY}\"")
   fi
   if ! field_present "status" "$file"; then
     inject+=("status: active")

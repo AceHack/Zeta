@@ -5617,6 +5617,79 @@ systems. This track claims the space.
   prose. Companion feedback memory captures the original
   human-maintainer framing.
 
+- [ ] **Land an explicit list of history-class files
+  (carve-out registry).** Maintainer 2026-04-24 directive
+  triggered by PR #375 thread on `docs/pr-preservation/375-drain-log.md`:
+  *"first names are fine in history like files is this a
+  history like file / make sure to add an explicit list of
+  history files including this one now somewhere backlog"*.
+  The "No name attribution in code, docs, or skills" rule
+  in `docs/AGENT-BEST-PRACTICES.md` (around BP-284) carves
+  out history files but the carve-out has no enumeration —
+  reviewer bots (and fresh-session subagents) cannot
+  mechanically tell whether a given file qualifies, which
+  produced the false-positive on #375. Scope: (1) add an
+  explicit list under the rule body in
+  `docs/AGENT-BEST-PRACTICES.md` enumerating the
+  history-class roots —
+  `docs/hygiene-history/**`,
+  `docs/ROUND-HISTORY.md`,
+  `docs/DECISIONS/**`,
+  `docs/pr-preservation/**` (Otto-250 PR-preservation),
+  `docs/aurora/**` (verbatim ferry absorbs),
+  `docs/research/**` (verbatim research absorbs),
+  `memory/**` (per-fact memory entries with provenance);
+  (2) add the same enumerated list to
+  `docs/FACTORY-DISCIPLINE.md` so subagents reading the
+  agent-visible rule index see it; (3) add a one-line
+  decision rule for ambiguous future files
+  ("the file's purpose IS the audit trail" → history-class).
+  Priority P2 hygiene; effort S (single-PR doc edit
+  across two files). Composes with Otto-237 IP-discipline
+  adoption-vs-mention (registries need specifics to be
+  enforceable) and Otto-250 PR-preservation
+  (`docs/pr-preservation/**` is the new history-class
+  member that triggered this).
+
+- [ ] **`install.sh --lint-only` fast-path OR lint-job
+  cache backport — lint-job 5-min timeout risk when
+  full-install runs on cold runner.** Copilot P0 on PR
+  #375 (Thread `PRRT_kwDOSF9kNM59hqnf`,
+  `.github/workflows/gate.yml:243`): `lint (shellcheck)`
+  and `lint (actionlint)` now run the full
+  `./tools/setup/install.sh` before the actual lint
+  command, but the job timeout is still 5 minutes and
+  there are NO cache restore steps in these jobs (unlike
+  `build-and-test` which caches `~/.local/share/mise`).
+  `install.sh` installs mise + all runtimes/tools in
+  `.mise.toml` (dotnet, python, java, bun, uv, lint
+  tools), which on a cold runner is unlikely to complete
+  in 5 min, making the required lint checks prone to
+  timeout flakes. Two mitigation paths:
+  (a) **Backport the cache block** from `build-and-test`
+  to the `lint (shellcheck)` and `lint (actionlint)`
+  jobs (copy the `actions/cache` step keyed on
+  `.mise.toml` + `runner.os` + `runner.arch`). Zero API
+  change; reduces cold-runner risk; steady-state after
+  first green main run is fast.
+  (b) **Add `install.sh --lint-only` flag** that
+  installs ONLY the lint tool the job actually needs
+  (`actionlint` / `shellcheck` via mise) rather than
+  the full declarative manifest. Touches the
+  three-way-parity script's API surface (dev laptop /
+  CI runner / devcontainer) and wants a dedicated
+  review per GOVERNANCE §24.
+  Priority P2 hygiene (not blocking PR #375; mise-cache
+  on build-and-test jobs warm-starts the runtime cache
+  for subsequent runs); effort S (option a) or S+S
+  (option b with devops-engineer review). Composes with
+  GOVERNANCE §24 three-way-parity install-script
+  discipline and Otto-213 (runner-version-freshness).
+  **Does NOT authorize** extending PR #375's scope to
+  include either fix — the narrow thread-drain
+  resolution is BACKLOG-and-resolve per Otto-236; fix
+  lands in a dedicated follow-up PR.
+
 - [ ] **Tier the missing-file search-surfaces list by
   usefulness.** PR #391 landed an organized-by-class list
   in `docs/FACTORY-DISCIPLINE.md` (six classes: in-tree /

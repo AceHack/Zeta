@@ -36,6 +36,16 @@ bun = "1.3"
 # reproducible versions across laptops + CI. See BACKLOG
 # "Python tool management via uv tool (from ../scratch)".
 uv = "0.9"
+# actionlint: GitHub Actions workflow linter. Declarative install
+# (GOVERNANCE §24 three-way-parity) so dev laptops + CI runners
+# (including ubuntu-slim which doesn't ship with it) have identical
+# pinned versions. Replaces the prior inline `Download actionlint`
+# step in gate.yml.
+actionlint = "1.7.12"
+# shellcheck: bash-script linter. Same parity rationale — ubuntu-
+# slim + ubuntu-24.04-arm runners don't ship shellcheck pre-
+# installed, so declarative pin here ensures dev/CI parity.
+shellcheck = "0.11.0"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)

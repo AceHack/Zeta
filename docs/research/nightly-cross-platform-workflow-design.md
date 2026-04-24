@@ -1,6 +1,20 @@
 # Nightly Cross-Platform Workflow — Design Proposal
 
-**Status:** research-grade proposal (pre-v1). Scope:
+**Status:** SUPERSEDED 2026-04-24. The factory decided
+against a nightly scheduled cross-platform workflow:
+standard GitHub-hosted runners are free for public
+repositories, so the macOS-pricing concern that drove
+the "scheduled, not per-PR" design no longer applies.
+`gate.yml` runs the full active matrix per-PR (macos-26,
+ubuntu-24.04, ubuntu-24.04-arm, ubuntu-slim
+experimental) with Windows deferred to the peer-agent
+milestone. See the CI matrix PR
+[Lucent-Financial-Group/Zeta#375](https://github.com/Lucent-Financial-Group/Zeta/pull/375).
+This doc is preserved for the reasoning trail; do not
+revive it without re-evaluating the free-runner-for-
+public-repos pricing context.
+
+**Original status:** research-grade proposal (pre-v1). Scope:
 design-only — no workflow file lands with this doc; the
 shape exists on paper so the human maintainer (or
 next-tick sign-off) can approve before anything touches
