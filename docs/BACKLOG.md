@@ -5586,6 +5586,24 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Land per-maintainer CURRENT-memory ADR + companion
+  feedback memory.** PR #153 landed the CLAUDE.md fast-path
+  pointer at the per-user `CURRENT-<maintainer>.md`
+  distillation pattern, but the supporting docs the original
+  draft cited were never landed. The two intended targets are
+  `docs/DECISIONS/2026-04-23-per-maintainer-current-memory-pattern.md`
+  and
+  `memory/feedback_current_memory_per_maintainer_distillation_pattern_prefer_progress_2026_04_23.md`.
+  PR #153 review left the pointer in CLAUDE.md but removed
+  the dead links; this backlog row tracks landing the actual
+  ADR (per-user vs in-repo split, role-ref filename
+  discipline per the "No name attribution in code, docs, or
+  skills" rule in `docs/AGENT-BEST-PRACTICES.md`, same-tick
+  update rule, conflict-precedence over raw `feedback_*.md`)
+  so the pattern has a citable substrate beyond CLAUDE.md
+  prose. Companion feedback memory captures the original
+  human-maintainer framing.
+
 - [ ] **Separation-audit cross-PR rollup — automate `## Audit — ...` count verification.** Codex reviewer Otto (2026-04-24) on PR #190 originally flagged that the pattern-summary table in `docs/frontier-readiness/factory-vs-zeta-separation-audit.md` listed ALIGNMENT / FACTORY-HYGIENE / TECH-RADAR as completed classifications even though those sections then lived only in sibling PRs (#185 + #188). PR #188 has since merged, ALIGNMENT classification was corrected from `factory-generic` to `both (coupled)` to match the in-file audit section, and all 15 audits now have dedicated `## Audit —` sections (verifiable via `grep '^## Audit — '`). The residual discipline question — "completed" audits counted in a file's summary should be mechanically reproducible from that file's own contents — remains for the **future**: as new audits land via separate PRs, the same drift can recur. Remaining option: (c) add a tooling / CI check that diffs pattern-summary claims against `grep '^## Audit — '`. Options (a) wait-for-merge and (b) per-PR summary-row landings have resolved naturally for the first 15 audits. Priority P2 research-grade; effort S (tooling). Composes with glass-halo transparency + audit-as-source-of-truth principle.
 
 - [ ] **KSK naming definition doc — `docs/definitions/KSK.md` leading with canonical expansion `KSK = Kinetic Safeguard Kernel`.** **Authority: Aaron Otto-140 rewrite approved; Max attribution preserved as initial-starting-point contributor (Otto-77).** Amara 2026-04-24 (16th courier ferry, GPT-5.5 Thinking) flagged the naming ambiguity: *"'KSK' has multiple possible meanings: DNSSEC-style Key Signing Key, your emerging Kinetic Safeguard Kernel / trust-anchor idea, maybe broader 'ceremony + root-of-trust + governance key' structure."* Aaron Otto-142..145 (self-correcting Otto-141 typo "SDK") canonicalized: *"kinetic safeguare Kernel, i did the wrong name / it is what amara said / kinetic safeguard kernel"* — matches Amara's 5th and 16th ferry phrasing. Doc scope: (1) lead sentence *"KSK = Kinetic Safeguard Kernel. 'Kernel' here is safety-kernel / security-kernel sense (Anderson 1972, Saltzer-Schroeder reference-monitor, aviation safety-kernel) — a small trusted enforcement core, **NOT OS-kernel-mode** (not ring 0, not Linux/Windows kernel)"*; (2) "Inspired by..." DNSSEC KSK / DNSCrypt / threshold-sig ceremonies / security-kernel lineage; (3) "NOT identical to..." OS kernel, DNSSEC KSK (signs zone keys); (4) cross-refs to 5 ferries elaborating architecture; (5) Max attribution: *"Initial starting point committed by Max under Aaron's direction in LFG/lucent-ksk; substrate is Aaron+Amara's concept, completely rewritable."* (Otto-140 lifted the Max-coordination gate; Otto-77 attribution stands.) Priority P2 research-grade (elevated from P3); effort S (doc) — coordination overhead removed. Composes with Amara 17th-ferry correction #7 (now resolved), Otto-77 Max attribution, Otto-90 Aaron+Max-not-gates, Otto-140..145 Aaron canonical expansion + gate-lift, Otto-108 single-team-until-interfaces-harden.

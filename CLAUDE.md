@@ -82,6 +82,23 @@ These are the knobs this repo actually uses:
   (AGENTS.md authored / CLAUDE.md curated /
   MEMORY.md earned) is encoded in
   `.claude/skills/claude-md-steward/`.
+  **Fast-path on wake:** read any
+  `CURRENT-<maintainer>.md` files (one per human or
+  external-AI maintainer; filename uses a role-ref
+  placeholder per the "No name attribution in code,
+  docs, or skills" rule in
+  `docs/AGENT-BEST-PRACTICES.md`, not a real name) in
+  `~/.claude/projects/<slug>/memory/` *before* the
+  raw `feedback_*.md` / `project_*.md` log. CURRENT
+  files are the distilled currently-in-force
+  projection per maintainer; they win on conflict
+  with older raw memories. Individual CURRENT files
+  live per-user (not in-repo) — same per-user split
+  as the rest of `~/.claude/projects/<slug>/memory/`.
+  **Same-tick update discipline:** when a new memory
+  lands that updates a rule in a CURRENT file, edit
+  CURRENT in the same tick. Skipping is
+  lying-by-omission.
 - **Session compaction** — the harness summarises
   old messages as it approaches context limits.
   Important decisions go to committed docs (ADRs
