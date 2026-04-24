@@ -216,7 +216,7 @@ the seven posture-points is found to conflict with
 factory-scale operation (e.g., no-silent-closes becomes
 infeasible at N-thousand issues), the point gets revised
 with reason, not silently removed. Per capture-everything
-+ chronology-preservation.
+and chronology-preservation.
 
 ## Revision history
 
