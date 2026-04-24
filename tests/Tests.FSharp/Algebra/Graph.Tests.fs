@@ -335,3 +335,49 @@ let ``labelPropagation produces partition consumable by modularityScore`` () =
     let partition = Graph.labelPropagation 50 g
     let q = Graph.modularityScore partition g |> Option.defaultValue 0.0
     q |> should (be greaterThan) 0.3
+
+
+// ─── coordinationRiskScore (composite) ─────────
+
+[<Fact>]
+let ``coordinationRiskScore returns None on empty-input pair`` () =
+    let empty : Graph<int> = Graph.empty
+    Graph.coordinationRiskScore 0.5 0.5 1e-9 200 50 empty empty
+    |> should equal (None: double option)
+
+[<Fact>]
+let ``coordinationRiskScore is high when cartel is injected`` () =
+    // Baseline: sparse 5-node graph.
+    // Attacked: baseline + K4 clique among new nodes.
+    let baselineEdges = [
+        (1, 2, 1L); (2, 1, 1L)
+        (3, 4, 1L); (4, 3, 1L)
+        (2, 5, 1L); (5, 2, 1L)
+    ]
+    let cartelEdges = [
+        for s in [6; 7; 8; 9] do
+            for t in [6; 7; 8; 9] do
+                if s <> t then yield (s, t, 10L)
+    ]
+    let baseline = Graph.fromEdgeSeq baselineEdges
+    let attacked = Graph.fromEdgeSeq (List.append baselineEdges cartelEdges)
+    let score =
+        Graph.coordinationRiskScore 0.5 0.5 1e-9 500 50 baseline attacked
+        |> Option.defaultValue 0.0
+    // Composite should be clearly positive — both signals fire.
+    score |> should (be greaterThan) 1.0
+
+[<Fact>]
+let ``coordinationRiskScore is near zero when attacked == baseline`` () =
+    // If the "attacked" graph is identical to the baseline, no
+    // new structure was added; composite should be near zero.
+    let edges = [
+        (1, 2, 1L); (2, 1, 1L)
+        (3, 4, 1L); (4, 3, 1L)
+        (2, 5, 1L); (5, 2, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let score =
+        Graph.coordinationRiskScore 0.5 0.5 1e-9 500 50 g g
+        |> Option.defaultValue nan
+    abs score |> should (be lessThan) 0.2

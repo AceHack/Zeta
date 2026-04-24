@@ -448,3 +448,81 @@ module Graph =
             for i in 0 .. n - 1 do
                 result <- Map.add nodeArr.[i] labels.[i] result
             result
+
+    /// **Coordination risk score (composite).**
+    ///
+    /// Combines multiple detection signals into a single
+    /// scalar risk score for an `attacked` graph relative to
+    /// a `baseline` graph. Higher scores indicate stronger
+    /// evidence of coordinated structure that wasn't present
+    /// in the baseline.
+    ///
+    /// Composite formula (MVP):
+    /// ```
+    ///   risk = alpha * Δλ₁_rel + beta * ΔQ
+    /// ```
+    /// where:
+    /// * `Δλ₁_rel = (λ₁(attacked) - λ₁(baseline)) / max(λ₁(baseline), eps)`
+    ///   — relative growth of principal eigenvalue
+    /// * `ΔQ = Q(attacked, LP(attacked)) - Q(baseline, LP(baseline))`
+    ///   — modularity gain with label-propagation-derived
+    ///   partitions on each graph independently
+    ///
+    /// Both signals fire when a dense subgraph (cartel clique)
+    /// is injected into a previously sparse baseline:
+    /// `λ₁` grows because the cartel adjacency has a high
+    /// leading eigenvalue; `Q` grows because LP finds the
+    /// cartel as its own community and modularity evaluates
+    /// that partition highly.
+    ///
+    /// Returns `None` when any underlying computation is
+    /// undefined (empty graphs, iteration failure, degenerate
+    /// cases). Returns `Some score` otherwise.
+    ///
+    /// **Calibration note (per Amara Otto-132 Part 2
+    /// correction #4 — robust statistics):** this MVP uses
+    /// simple linear weighting over raw differences. A full
+    /// `CoordinationRiskScore` (per Amara's 17th-ferry
+    /// corrected composite) uses robust z-scores
+    /// `(x - median(baseline)) / (1.4826 * MAD(baseline))` over
+    /// each metric, combined with tunable weights. That version
+    /// is a future graduation once baseline-null-distribution
+    /// calibration machinery ships.
+    ///
+    /// **Weight defaults (per Amara 17th-ferry initial priors):**
+    /// * `alpha = 0.5` — spectral growth half-weight
+    /// * `beta = 0.5` — modularity-shift half-weight
+    /// Callers override when composite weighting is tuned
+    /// against labelled examples.
+    ///
+    /// Provenance: 12th + 13th + 14th + 17th-ferry composite
+    /// score formulations. Otto's 14th graduation — first
+    /// full integration ship using four Graph primitives
+    /// (`largestEigenvalue` + `labelPropagation` +
+    /// `modularityScore` + this composer).
+    let coordinationRiskScore
+            (alpha: double)
+            (beta: double)
+            (eigenTol: double)
+            (eigenIter: int)
+            (lpIter: int)
+            (baseline: Graph<'N>)
+            (attacked: Graph<'N>)
+            : double option =
+        let lambdaBaseline = largestEigenvalue eigenTol eigenIter baseline
+        let lambdaAttacked = largestEigenvalue eigenTol eigenIter attacked
+        match lambdaBaseline, lambdaAttacked with
+        | Some lb, Some la when lb > 1e-12 || la > 1e-12 ->
+            let partitionBaseline = labelPropagation lpIter baseline
+            let partitionAttacked = labelPropagation lpIter attacked
+            let qBaseline =
+                modularityScore partitionBaseline baseline
+                |> Option.defaultValue 0.0
+            let qAttacked =
+                modularityScore partitionAttacked attacked
+                |> Option.defaultValue 0.0
+            let eps = 1e-12
+            let spectralGrowth = (la - lb) / (max lb eps)
+            let modularityShift = qAttacked - qBaseline
+            Some (alpha * spectralGrowth + beta * modularityShift)
+        | _ -> None
