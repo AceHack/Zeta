@@ -24,17 +24,66 @@ flight unless the aside itself demands pivot.
      acknowledge in one line.
    - **Directive-queued** — maintainer is adding a new task
      that should run *after* the current one (e.g. *"btw also
-     update the README"*). Append to `.btw-queue.md` at repo
-     root (gitignored; session-scoped) OR add a TodoWrite task,
-     whichever is more visible for this session.
+     update the README"*). **Durability escalation is
+     mandatory:** classify the lifetime of the nudge:
+     - **Same-session only** (finish before session ends,
+       ephemeral) → TodoWrite task OR `.btw-queue.md`
+       (gitignored, session-scoped) is sufficient.
+     - **Cross-session** (might persist past this session's
+       context-compaction or into a fresh session) → MUST land
+       in a **durable store**:
+         - `docs/BACKLOG.md` row (committed; survives fresh
+           sessions; visible to all agents via grep)
+         - `memory/*.md` file (committed to the repo;
+           readable by fresh sessions via git / grep per
+           `memory/README.md` + GOVERNANCE §18). In-repo
+           memory is the durable mirror; auto-loading
+           behaviour depends on harness configuration and
+           is NOT universally guaranteed — treat durability
+           as "committed and discoverable" not
+           "automatically materialised in context."
+         - **MANDATORY pair when landing a new
+           `memory/*.md`**: update `memory/MEMORY.md` with
+           a pointer row in the same commit. Memory-index-
+           integrity rule: a new memory file without a
+           MEMORY.md row is effectively lost to fresh
+           sessions (the index is how discoverability
+           works).
+       Both are durable across sessions. Pick per scope:
+       BACKLOG for action-bearing work; memory for
+       factory-discipline / preference / substrate.
+     - **When in doubt, escalate to durable.** The cost of
+       a stale BACKLOG row is tiny; the cost of a dropped
+       nudge is compounding (maintainer 2026-04-24
+       directive: *"crutial to not divert your attention"*
+       — which only works if the nudges survive).
+     - TodoWrite / `.btw-queue.md` alone are **NOT**
+       sufficient for a cross-session nudge. They evaporate
+       when the session ends.
    - **Correction** — maintainer is correcting the agent's
      direction on the current work (e.g. *"btw I meant X not Y"*).
      Apply the correction to the current work and acknowledge;
      do NOT treat as pivot.
    - **Substrate-add** — the aside is a memory-worthy fact,
-     preference, or anecdote (e.g. *"btw my dog's name is Apollo"*).
-     File as a memory entry per the auto-memory protocol in
-     CLAUDE.md; acknowledge filing.
+     preference, or anecdote (e.g. *"btw my dog's name is
+     Apollo"*). Two landing paths depending on how
+     interruptive full absorption would be:
+     - **Quick capture** (small fact, ≤5 min to file) →
+       create the memory entry directly per the auto-memory
+       protocol in CLAUDE.md; acknowledge filing.
+     - **Deferred absorption** (larger substrate work —
+       research, full memory-file drafting, or would
+       require a dedicated PR) → **file a BACKLOG row
+       capturing the observation + intent to absorb**, then
+       continue. The BACKLOG row is itself durable; the
+       full absorption happens later without derailing
+       in-flight work (maintainer 2026-04-24 directive:
+       *"it could be backlog the absorption if that's less
+       interruptive"*; composes with Otto-275 log-but-
+       dont-implement).
+     - **When in doubt → BACKLOG the absorption.** Otto-275
+       counterweight discipline: capture-mode pivoting on
+       every aside is the drift we're guarding against.
    - **Pivot-demanding** — the aside explicitly demands pivot
      (e.g. *"btw stop that, do this instead"*, *"btw urgent, I
      broke main"*). Then and only then: pivot.
@@ -75,13 +124,22 @@ cost, agent pays less context-switch cost.
 
 Agent: *"Noted — dating the research to 2024. Continuing with the oracle-gate module."*
 
-**Directive-queued:**
+**Directive-queued (same-session):**
 
 ```
 /btw also fix the broken link in README when you're done
 ```
 
-Agent: *"Queued README link fix for after the current task. Continuing."*
+Agent: *"Queued README link fix (TodoWrite). Continuing."*
+
+**Directive-queued (cross-session; durable escalation):**
+
+```
+/btw we need to evangelize this pattern to other maintainers
+```
+
+Agent: *"Filed as BACKLOG row (durable; survives fresh
+sessions). Continuing."*
 
 **Correction:**
 
@@ -117,6 +175,9 @@ Agent: *"Pivoting. Investigating the CI break now."*
 - Does NOT mute the acknowledgement — even one-line
   acknowledgement is load-bearing so the maintainer sees the
   aside landed.
+- Does NOT drop directive-queued items into session-scoped
+  stores when the nudge needs cross-session durability (see
+  durability-escalation rule in the directive-queued class).
 
 ## Composes with
 
