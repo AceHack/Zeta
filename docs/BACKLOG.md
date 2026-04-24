@@ -5604,6 +5604,36 @@ systems. This track claims the space.
   prose. Companion feedback memory captures the original
   human-maintainer framing.
 
+- [ ] **Tier the missing-file search-surfaces list by
+  usefulness.** PR #391 landed an organized-by-class list
+  in `docs/FACTORY-DISCIPLINE.md` (six classes: in-tree /
+  git-managed / in-repo factory state / GitHub-side /
+  out-of-repo agent state / local-machine + external).
+  The flat-by-class layout is good for COMPLETENESS but
+  not for ORDER-OF-OPERATIONS — an agent hunting a
+  missing file should hit the highest-yield surfaces
+  first. Maintainer 2026-04-24 directive: *"nice that's
+  super detailed, maybe split it into tiers of usefulness
+  backlog"*. Scope: (1) define tier classes — Tier-1
+  *first place to look* (`git status`, `git log --all`,
+  `git stash list`, `gh pr list`, `git worktree list`),
+  Tier-2 *common second-pass* (reflog, `git fsck
+  --lost-found`, closed-not-merged PRs, in-repo factory
+  state surfaces), Tier-3 *recovery / forensic*
+  (Time Machine, APFS snapshots, Trash, IDE
+  local-history, xattrs, terminal scrollback,
+  diagnostic reports), Tier-4 *external-substrate*
+  (sibling LFG repos, gists, courier-ferry imports
+  pre-absorption); (2) reorganize the section into a
+  tiered checklist while preserving the by-class
+  context as a secondary view; (3) add a "first
+  command to run" hint per tier (e.g. Tier-1 starts
+  with `git status && git log --all -- <path>`).
+  Priority P2 hygiene; effort S (doc reorganization +
+  add tier headers + first-command hints). Composes
+  with Otto-230 fresh-session-quality-gap and the
+  search-surfaces section it refines.
+
 - [ ] **Separation-audit cross-PR rollup — automate `## Audit — ...` count verification.** Codex reviewer Otto (2026-04-24) on PR #190 originally flagged that the pattern-summary table in `docs/frontier-readiness/factory-vs-zeta-separation-audit.md` listed ALIGNMENT / FACTORY-HYGIENE / TECH-RADAR as completed classifications even though those sections then lived only in sibling PRs (#185 + #188). PR #188 has since merged, ALIGNMENT classification was corrected from `factory-generic` to `both (coupled)` to match the in-file audit section, and all 15 audits now have dedicated `## Audit —` sections (verifiable via `grep '^## Audit — '`). The residual discipline question — "completed" audits counted in a file's summary should be mechanically reproducible from that file's own contents — remains for the **future**: as new audits land via separate PRs, the same drift can recur. Remaining option: (c) add a tooling / CI check that diffs pattern-summary claims against `grep '^## Audit — '`. Options (a) wait-for-merge and (b) per-PR summary-row landings have resolved naturally for the first 15 audits. Priority P2 research-grade; effort S (tooling). Composes with glass-halo transparency + audit-as-source-of-truth principle.
 
 - [ ] **KSK naming definition doc — `docs/definitions/KSK.md` leading with canonical expansion `KSK = Kinetic Safeguard Kernel`.** **Authority: Aaron Otto-140 rewrite approved; Max attribution preserved as initial-starting-point contributor (Otto-77).** Amara 2026-04-24 (16th courier ferry, GPT-5.5 Thinking) flagged the naming ambiguity: *"'KSK' has multiple possible meanings: DNSSEC-style Key Signing Key, your emerging Kinetic Safeguard Kernel / trust-anchor idea, maybe broader 'ceremony + root-of-trust + governance key' structure."* Aaron Otto-142..145 (self-correcting Otto-141 typo "SDK") canonicalized: *"kinetic safeguare Kernel, i did the wrong name / it is what amara said / kinetic safeguard kernel"* — matches Amara's 5th and 16th ferry phrasing. Doc scope: (1) lead sentence *"KSK = Kinetic Safeguard Kernel. 'Kernel' here is safety-kernel / security-kernel sense (Anderson 1972, Saltzer-Schroeder reference-monitor, aviation safety-kernel) — a small trusted enforcement core, **NOT OS-kernel-mode** (not ring 0, not Linux/Windows kernel)"*; (2) "Inspired by..." DNSSEC KSK / DNSCrypt / threshold-sig ceremonies / security-kernel lineage; (3) "NOT identical to..." OS kernel, DNSSEC KSK (signs zone keys); (4) cross-refs to 5 ferries elaborating architecture; (5) Max attribution: *"Initial starting point committed by Max under Aaron's direction in LFG/lucent-ksk; substrate is Aaron+Amara's concept, completely rewritable."* (Otto-140 lifted the Max-coordination gate; Otto-77 attribution stands.) Priority P2 research-grade (elevated from P3); effort S (doc) — coordination overhead removed. Composes with Amara 17th-ferry correction #7 (now resolved), Otto-77 Max attribution, Otto-90 Aaron+Max-not-gates, Otto-140..145 Aaron canonical expansion + gate-lift, Otto-108 single-team-until-interfaces-harden.
