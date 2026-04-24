@@ -293,3 +293,45 @@ let ``modularityScore for single-community is 0`` () =
     let p = Map.ofList [ (1,0); (2,0); (3,0) ]
     let q = Graph.modularityScore p g |> Option.defaultValue nan
     abs q |> should (be lessThan) 1e-9
+
+
+// ─── labelPropagation ─────────
+
+[<Fact>]
+let ``labelPropagation returns empty map for empty graph`` () =
+    (Graph.empty : Graph<int>) |> Graph.labelPropagation 10 |> Map.count |> should equal 0
+
+[<Fact>]
+let ``labelPropagation converges two dense cliques to two labels`` () =
+    // Two K3 cliques bridged by one thin edge. Label propagation
+    // should settle with nodes {1,2,3} sharing one label and
+    // nodes {4,5,6} sharing another.
+    let edges = [
+        (1, 2, 10L); (2, 1, 10L); (2, 3, 10L); (3, 2, 10L); (3, 1, 10L); (1, 3, 10L)
+        (4, 5, 10L); (5, 4, 10L); (5, 6, 10L); (6, 5, 10L); (6, 4, 10L); (4, 6, 10L)
+        (3, 4, 1L); (4, 3, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let partition = Graph.labelPropagation 50 g
+    let labelA = partition.[1]
+    let labelB = partition.[4]
+    // Both cliques share a label within themselves
+    partition.[2] |> should equal labelA
+    partition.[3] |> should equal labelA
+    partition.[5] |> should equal labelB
+    partition.[6] |> should equal labelB
+
+[<Fact>]
+let ``labelPropagation produces partition consumable by modularityScore`` () =
+    // The composition that enables a full cartel detector: LP
+    // produces a partition, modularityScore evaluates it. High
+    // modularity means LP found real community structure.
+    let edges = [
+        (1, 2, 10L); (2, 1, 10L); (2, 3, 10L); (3, 2, 10L); (3, 1, 10L); (1, 3, 10L)
+        (4, 5, 10L); (5, 4, 10L); (5, 6, 10L); (6, 5, 10L); (6, 4, 10L); (4, 6, 10L)
+        (3, 4, 1L); (4, 3, 1L)
+    ]
+    let g = Graph.fromEdgeSeq edges
+    let partition = Graph.labelPropagation 50 g
+    let q = Graph.modularityScore partition g |> Option.defaultValue 0.0
+    q |> should (be greaterThan) 0.3

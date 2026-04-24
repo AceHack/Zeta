@@ -358,3 +358,93 @@ module Graph =
                         if community i = community j then
                             q <- q + (sym.[i, j] - (k.[i] * k.[j]) / twoM)
                 Some (q / twoM)
+
+    /// **Label propagation community detector.**
+    ///
+    /// A simple, non-spectral community detection algorithm. Each
+    /// node starts in its own community. Each iteration, every
+    /// node adopts the label that appears with greatest weighted
+    /// frequency among its neighbors (ties broken by lowest
+    /// community id for determinism). The algorithm stops when
+    /// no node changes label in a pass, or when `maxIterations`
+    /// is reached.
+    ///
+    /// Returns `Map<'N, int>` — node → community label. Empty
+    /// map on empty graph.
+    ///
+    /// **Trade-offs (documented to calibrate expectations):**
+    /// * Fast: O(iterations × edges), works without dense matrix.
+    /// * Quality: below Louvain / spectral methods for complex
+    ///   structures, but catches obvious dense cliques reliably —
+    ///   exactly the trivial-cartel-detect case.
+    /// * Determinism: tie-break by lowest community id (stable
+    ///   across runs given same input).
+    /// * NOT a replacement for Louvain; a dependency-free first
+    ///   pass. Future graduation: `Graph.louvain` using the
+    ///   full modularity-optimizing procedure.
+    ///
+    /// Provenance: 12th ferry §5 + 13th ferry §2 "community
+    /// detection" + 14th ferry alert row "Modularity Q jump >
+    /// 0.1 or Q > 0.4 (community-detection-based)".
+    let labelPropagation
+            (maxIterations: int)
+            (g: Graph<'N>)
+            : Map<'N, int> =
+        let nodeList = nodes g |> Set.toList
+        let n = nodeList.Length
+        if n = 0 then Map.empty
+        else
+            let nodeArr = List.toArray nodeList
+            let idx =
+                nodeList
+                |> List.mapi (fun i node -> node, i)
+                |> Map.ofList
+            // Initial labels: each node in its own community
+            let labels = Array.init n id
+            // Pre-compute neighbor-list (combined in+out, weighted
+            // sum). For cartel detection we symmetrize.
+            let neighbors = Array.init n (fun _ -> ResizeArray<int * int64>())
+            let span = g.Edges.AsSpan()
+            for k in 0 .. span.Length - 1 do
+                let entry = span.[k]
+                let (s, t) = entry.Key
+                let si = idx.[s]
+                let ti = idx.[t]
+                if entry.Weight <> 0L && si <> ti then
+                    neighbors.[si].Add(ti, entry.Weight)
+                    neighbors.[ti].Add(si, entry.Weight)
+            let mutable iter = 0
+            let mutable stable = false
+            while not stable && iter < maxIterations do
+                stable <- true
+                // Iterate nodes in fixed order for determinism
+                for i in 0 .. n - 1 do
+                    let nbrs = neighbors.[i]
+                    if nbrs.Count > 0 then
+                        // Count weighted votes per label
+                        let votes = System.Collections.Generic.Dictionary<int, int64>()
+                        for (ni, w) in nbrs do
+                            let lbl = labels.[ni]
+                            let cur =
+                                match votes.TryGetValue(lbl) with
+                                | true, v -> v
+                                | false, _ -> 0L
+                            votes.[lbl] <- cur + (if w > 0L then w else 0L)
+                        // Pick label with highest vote; tie-break by
+                        // lowest id for determinism
+                        let mutable bestLbl = labels.[i]
+                        let mutable bestVote = -1L
+                        for kvp in votes do
+                            if kvp.Value > bestVote ||
+                               (kvp.Value = bestVote && kvp.Key < bestLbl) then
+                                bestLbl <- kvp.Key
+                                bestVote <- kvp.Value
+                        if labels.[i] <> bestLbl then
+                            labels.[i] <- bestLbl
+                            stable <- false
+                iter <- iter + 1
+            // Build result map
+            let mutable result = Map.empty
+            for i in 0 .. n - 1 do
+                result <- Map.add nodeArr.[i] labels.[i] result
+            result
