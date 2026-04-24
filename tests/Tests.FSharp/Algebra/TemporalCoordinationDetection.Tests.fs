@@ -99,3 +99,85 @@ let ``crossCorrelationProfile with negative maxLag returns empty array`` () =
     let xs = [ 1.0; 2.0; 3.0 ]
     let ys = [ 1.0; 2.0; 3.0 ]
     TemporalCoordinationDetection.crossCorrelationProfile xs ys -1 |> should equal ([||]: (int * double option) array)
+
+
+// ─── phaseLockingValue ─────────
+
+[<Fact>]
+let ``phaseLockingValue of identical phase series is 1`` () =
+    let phases = [ 0.0; 0.5; 1.0; 1.5; 2.0 ]
+    TemporalCoordinationDetection.phaseLockingValue phases phases
+    |> Option.map (fun v -> Math.Round(v, 9))
+    |> should equal (Some 1.0)
+
+[<Fact>]
+let ``phaseLockingValue with constant phase offset is 1 (perfect locking)`` () =
+    // Constant offset of pi/4 — the complex phase-difference
+    // vector is the same unit vector every step, so magnitude = 1.
+    let a = [ 0.0; 0.3; 0.6; 0.9; 1.2 ]
+    let offset = Math.PI / 4.0
+    let b = a |> List.map (fun x -> x + offset)
+    TemporalCoordinationDetection.phaseLockingValue a b
+    |> Option.map (fun v -> Math.Round(v, 9))
+    |> should equal (Some 1.0)
+
+[<Fact>]
+let ``phaseLockingValue of empty series is None`` () =
+    TemporalCoordinationDetection.phaseLockingValue [] [] |> should equal (None: double option)
+
+[<Fact>]
+let ``phaseLockingValue on mismatched-length series is None`` () =
+    // PLV is undefined for mismatched pairs. Silently truncating
+    // would mask a caller bug; None surfaces it.
+    let a = [ 0.0; 0.5; 1.0 ]
+    let b = [ 0.0; 0.5 ]
+    TemporalCoordinationDetection.phaseLockingValue a b |> should equal (None: double option)
+
+[<Fact>]
+let ``phaseLockingValue of anti-phase series is 1 (locking at pi offset)`` () =
+    // Two phase series that differ by exactly pi every step are
+    // perfectly anti-phase-locked; PLV measures the magnitude of
+    // the mean complex vector, which is 1 when the offset is
+    // constant (regardless of offset value).
+    let a = [ 0.0; 0.5; 1.0; 1.5 ]
+    let b = a |> List.map (fun x -> x + Math.PI)
+    TemporalCoordinationDetection.phaseLockingValue a b
+    |> Option.map (fun v -> Math.Round(v, 9))
+    |> should equal (Some 1.0)
+
+[<Fact>]
+let ``phaseLockingValue of uniformly-distributed differences is near 0`` () =
+    // Evenly-spaced phase differences spanning [0, 2*pi); the
+    // complex vectors sum to approximately zero by symmetry.
+    // Large N for the cancellation to be numerically clean.
+    let n = 360
+    let a = [ for _ in 0 .. n - 1 -> 0.0 ]
+    let b = [ for i in 0 .. n - 1 -> 2.0 * Math.PI * double i / double n ]
+    let plv =
+        TemporalCoordinationDetection.phaseLockingValue a b
+        |> Option.defaultValue -1.0
+    plv |> should (be lessThan) 1e-9
+
+[<Fact>]
+let ``phaseLockingValue is commutative`` () =
+    // Swapping arguments flips the sign of every phase difference,
+    // which negates sin but leaves cos unchanged; the magnitude of
+    // the mean complex vector is invariant.
+    let a = [ 0.0; 0.4; 0.8; 1.2; 1.6 ]
+    let b = [ 0.1; 0.3; 0.7; 1.4; 1.5 ]
+    let ab = TemporalCoordinationDetection.phaseLockingValue a b
+    let ba = TemporalCoordinationDetection.phaseLockingValue b a
+    ab |> Option.map (fun v -> Math.Round(v, 12))
+    |> should equal (ba |> Option.map (fun v -> Math.Round(v, 12)))
+
+[<Fact>]
+let ``phaseLockingValue handles single-element series`` () =
+    // N=1 is a degenerate case: the single complex vector has
+    // magnitude 1 regardless of phase. Not useful as a detector
+    // at that size (no statistical power), but the function
+    // must not crash and must return a defined value.
+    let a = [ 0.0 ]
+    let b = [ 0.0 ]
+    TemporalCoordinationDetection.phaseLockingValue a b
+    |> Option.map (fun v -> Math.Round(v, 9))
+    |> should equal (Some 1.0)

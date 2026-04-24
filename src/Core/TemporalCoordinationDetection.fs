@@ -94,3 +94,57 @@ module TemporalCoordinationDetection =
         else
             [| for tau in -maxLag .. maxLag ->
                    tau, crossCorrelation xs ys tau |]
+
+    /// **Phase-locking value (PLV)** — the magnitude of the mean
+    /// complex phase-difference vector between two phase series.
+    /// Returns a value in `[0.0, 1.0]`:
+    ///
+    /// * `1.0` — perfect phase locking (the phase difference
+    ///   `φ_a[k] - φ_b[k]` is constant across the series; two
+    ///   actors whose events always arrive at the same phase
+    ///   offset look like this, which is the classical firefly-
+    ///   synchronization signature)
+    /// * `0.0` — phase differences uniformly spread around the
+    ///   unit circle (the null hypothesis of independent timing)
+    /// * in between — partial coordination
+    ///
+    /// Returns `None` when the input sequences are empty or of
+    /// unequal length; PLV is undefined for mismatched pairs
+    /// and silently truncating would invite a subtle detection
+    /// bug downstream.
+    ///
+    /// Input phases `phasesA` and `phasesB` are expected in
+    /// radians; the computation uses the Euler identity
+    /// `e^{iθ} = cos θ + i sin θ` and only depends on the
+    /// phase *difference*, so any consistent wrapping convention
+    /// (`[-π, π]` or `[0, 2π]`) works — callers do not need to
+    /// pre-unwrap.
+    ///
+    /// Complementary to `crossCorrelation`: cross-correlation
+    /// answers "do amplitudes move together?"; PLV answers "do
+    /// the events fire at matching phases?". Cartels that flatten
+    /// amplitude cross-correlation by adding noise may still
+    /// reveal themselves through preserved phase structure, and
+    /// vice versa. Detectors compose both.
+    ///
+    /// Provenance: primitive from Aaron's differentiable firefly
+    /// network design, formalized in Amara's 11th courier ferry
+    /// (`docs/aurora/2026-04-24-amara-temporal-coordination-
+    /// detection-cartel-graph-influence-surface-11th-ferry.md`,
+    /// §1 Signal model). Third graduation under the Otto-105
+    /// cadence.
+    let phaseLockingValue (phasesA: double seq) (phasesB: double seq) : double option =
+        let aArr = Seq.toArray phasesA
+        let bArr = Seq.toArray phasesB
+        if aArr.Length = 0 || aArr.Length <> bArr.Length then None
+        else
+            let mutable sumCos = 0.0
+            let mutable sumSin = 0.0
+            for i in 0 .. aArr.Length - 1 do
+                let d = aArr.[i] - bArr.[i]
+                sumCos <- sumCos + cos d
+                sumSin <- sumSin + sin d
+            let n = double aArr.Length
+            let meanCos = sumCos / n
+            let meanSin = sumSin / n
+            Some (sqrt (meanCos * meanCos + meanSin * meanSin))
