@@ -20,7 +20,19 @@
     // as source content would add drift to every OFFTIME entry.
     "memory/persona/**",
     // Lean proof dir has its own idioms.
-    "tools/lean4/**"
+    "tools/lean4/**",
+    // Aaron+Amara verbatim conversation archive (PR #301/#302/
+    // #303/#304 and future landings). Content is by-design non-
+    // conformant to Zeta's markdown-lint profile — it's preserved
+    // verbatim per GOVERNANCE §33 archive-header discipline +
+    // Aaron Otto-109 "glass halo / absorb everyting (not amara
+    // herself)" directive. Reformatting the verbatim content to
+    // satisfy MD009/MD022/MD032/etc would violate verbatim
+    // preservation. The README.md manifest inside the directory
+    // IS author-controlled and could lint clean, but applying
+    // the ignore to the whole directory keeps the rule simple
+    // (one path, not 10 file-specific entries).
+    "docs/amara-full-conversation/**"
   ],
   "noBanner": true,
   "noProgress": true,
