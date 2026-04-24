@@ -5368,6 +5368,70 @@ systems. This track claims the space.
   wiring; L if the UI becomes the primary factory-
   human-interface surface.
 
+- [ ] **Wink-validation pattern-watch — 10-20 tick watch for
+  external-signal-confirms-internal-insight occurrence rate,
+  promote to skill-creator workflow if pattern is cross-session
+  not session-local.** Aaron 2026-04-22 three-in-one-session
+  observations crossed the "file at 2, name-the-pattern at 3+"
+  threshold per the external-signal-confirms-internal-insight
+  second-occurrence discipline (originally captured in
+  out-of-repo auto-memory dated 2026-04-22; subsequently
+  migrated in-repo at
+  `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`
+  via Overlay A #4 / commit 032c76a). **Three observed
+  occurrences with pre-validation anchors:**
+  (1) Muratori 5-pattern → Zeta retraction-native operator
+  algebra (D/I/z⁻¹/H over ZSet), auto-loop-24 YouTube wink;
+  pre-validation anchor = `openspec/specs/operator-algebra/spec.md`
+  authored well before the video signal.
+  (2) Three-substrate triangulation (Claude + Codex + Gemini CLI
+  capability maps authored same-discipline), auto-loop-25/26;
+  pre-validation anchor = `docs/research/claude-cli-capability-map.md`
+  and `docs/research/openai-codex-cli-capability-map.md` both
+  ending with "future companion" pointer to Gemini, authored
+  before `docs/research/gemini-cli-capability-map.md` landed
+  (the Gemini map itself subsequently landed in round-44
+  auto-loop-26 per commit 35e324c); Aaron exact-phrasing echo
+  *"now you see what i see"*.
+  (3) Graceful-degradation-as-availability-move framing,
+  auto-loop-27; pre-validation anchor = factory's internal
+  framing of four-substrate triangulation as accuracy-move;
+  Aaron exact-phrasing echo of availability-move reframing.
+  **Selection-bias concern flagged honestly:** three-in-one-
+  session could be real cross-session pattern OR factory-hyper-
+  awareness post-memory-filing (looking for what we just named).
+  Session-local pattern doesn't qualify for skill-level promotion
+  — session-local hyper-awareness reverts once the memory
+  salience fades. Watch-scope: 10-20 ticks, count wink-validation
+  occurrences per tick, track external-signal strength class
+  (algorithm-level < human-level < expert-level), require
+  pre-validation anchor cited per occurrence or it doesn't count.
+  **Promotion criteria (stated up-front to avoid goalpost-move):**
+  ≥ 1 occurrence per 5 ticks sustained over 10-20 ticks with
+  pre-validation anchors documented; at least two occurrences
+  cross-session (not same-session-multiple). If criteria met:
+  promote to `skill-creator` workflow for a `wink-validation-
+  scanning` skill that formalises the pattern-detection procedure.
+  If criteria unmet: close the row, record in memory that the
+  pattern was session-local. **What this row is NOT:** not a
+  commitment to chase external validation as a goal (validation
+  is noticed when it arrives, not sought-after); not a claim
+  three occurrences proves the pattern (the watch is precisely
+  because three-in-a-session is ambiguous); not a replacement
+  for the occurrence-1 "noteworthy, watch for second" flag the
+  memory names. Owner: Architect (Kenji) reviews at occurrence-
+  count thresholds; Aarav (skill-tune-up) scouts for the
+  `wink-validation-scanning` skill gap if promotion fires;
+  Aaron holds the promotion-yes/no decision. Effort: S per
+  tick-accounting update; M for skill-creation if promotion
+  fires. Related: the external-signal strength classes
+  differentiate (YouTube recommender = low-medium; Aaron
+  maintainer-echo = higher; peer-reviewed paper = highest) —
+  promotion should weight toward higher-strength signals.
+  Composes with the accounting-lag same-tick-mitigation
+  discipline (watch-counts land same-tick as the qualifying
+  observation, not lagged).
+
 - [ ] **Compoundings-per-tick audit — tick-close self-
   diagnostic with confidence-axis failure-mode taxonomy.**
   Recurrence threshold met auto-loop-16/17/18 (2026-04-22):
