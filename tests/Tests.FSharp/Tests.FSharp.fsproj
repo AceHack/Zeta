@@ -11,6 +11,7 @@
   <ItemGroup>
     <!-- _Support/ helpers first (they're consumed by subject files below). -->
     <Compile Include="_Support/ConcurrencyHarness.fs" />
+    <Compile Include="_Support/CartelInjector.fs" />
 
     <!-- Algebra/ -->
     <Compile Include="Algebra/Weight.Tests.fs" />
@@ -22,6 +23,7 @@
     <Compile Include="Algebra/Veridicality.Tests.fs" />
     <Compile Include="Algebra/Graph.Tests.fs" />
     <Compile Include="Algebra/PhaseExtraction.Tests.fs" />
+    <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
     <Compile Include="Circuit/Circuit.Tests.fs" />
