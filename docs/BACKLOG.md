@@ -2629,6 +2629,43 @@ within each priority tier.
 
   **First file to add for the refinement:** this BACKLOG update itself, plus a matching research-doc reference once a Codex CLI session executes Stage 1b.
 
+  **Otto-86 refinement — multi-Claude intermediate stepping stone + Windows-support use case + Otto signals readiness + test-mode bounding:**
+
+  Aaron 2026-04-23 Otto-86 message 1 (progression refinement): *"You can experiment with claude code cli for multi agent peer-harness mode before codex, once codex has built out everything it needs and you trust it and the testes for peer-harness mode with claude goes good then you can test peer-harness mode with codex too. so all of the options are avialbe with a single coordinator and multi corrdinator, the reason i ask is i want to eventualy sping up a second harness to work on windows support too. this will be cool to have two of you going but i wont do it until you tell me we are ready. maybe we use codex harness to do the windows support eventually since that will test the entire perr-harness transfer learning all the way to the end, the last one the in telepohone line, lol."*
+
+  Aaron 2026-04-23 Otto-86 message 2 (test-mode bounding): *"make sure when in peer-harness mode you give the other one time limits or process kill them either way, just while we are testing we don't want the other peer harness to run forever during tests only when in real use."*
+
+  **The 4-stage progression**:
+
+  - **(a) Today** = single coordinator; Aaron-in-one-harness drives. Otto on Claude Code. This is Aaron's current mode.
+  - **(b) Experiment: multi-Claude-Code peer-harness** = two Claude Code instances, both running Claude-Code loop agents, testing parallel coordination + handoff discipline + cross-session review without editing + tandem launches. **NEW intermediate stepping stone before introducing harness-difference.**
+  - **(c) Multi-harness peer-harness with Codex** = after (b) tests go well AND Codex CLI has built out its own skill files / wrappers / loop-agent persona (Stage 1b-3 of the existing Codex-first-class arc) AND Otto explicitly trusts Codex substrate. Otto + Codex-loop-agent running concurrently; handoff discipline; multi-coordinator.
+  - **(d) Full peer-harness with practical use case** = the second harness carries a real workload. Aaron's named use case: **Windows support via a second harness**, possibly Codex. Aaron's "telephone line" transfer-learning end-to-end test.
+
+  **Otto is the readiness-signaller.** Aaron: *"i wont do it until you tell me we are ready"* — Aaron waits for Otto's explicit readiness signal before spinning up a second harness. This is the specifically-asked-for design-review discipline (Otto-82 authority calibration: maintainer signoff is required for specifically-asked-for design reviews, not for every substrate edit): progression stages (a) and (b) land within Otto's standing authority (experiments on Claude Code substrate are already within Otto-67 grant); **stage (c) launch requires Otto's readiness signal as an explicit maintainer-acknowledgment gate**.
+
+  **Test-mode bounding (hard requirement for stages (b) and (c) tests):**
+
+  - **Time limits or explicit process-kill** on the non-primary agent during peer-harness testing. Aaron: *"while we are testing we don't want the other peer harness to run forever during tests only when in real use"*.
+  - Concrete enforcement options (design-Otto's-call, land in a test plan before running): wall-clock timeout per experiment (e.g., 30-minute bound per test session); hard process-kill target at end of experiment; explicit "test mode" flag that caps async-work-dispatch to a per-test budget; instrumentation that reports wall-time elapsed so the timeout fire is visible.
+  - **Removed in real use.** Once peer-harness mode moves from testing to production (stage (d) with Windows-support workload), the time-limits come off — a real workload needs to run for real durations. The bound is TEST-specific.
+  - **Why it matters.** Unbounded async agents in test mode consume budget, could produce unintended substrate changes if tests go sideways, and make failure modes harder to localize. Bounded-test enables retractability-by-design to work at the experiment layer (any test gone wrong is automatically finite).
+
+  **Windows support as concrete motivating use case:**
+
+  - Motivation: cross-platform parity (FACTORY-HYGIENE row #51 and row #55 audit surfaces) needs dedicated attention. Adding Windows work to Otto's single-harness queue serializes it; a second harness parallelises it.
+  - Why second harness, not one-big-harness: parallel harnesses ARE the scaling model. Single-harness multitasking is slower and harder to reason about.
+  - Why Codex eventually: Codex's own harness-feature research (Stage 1b) will surface capabilities that may align better with Windows-native tooling. End-to-end Windows-support on Codex is Aaron's "telephone line" test for peer-harness transfer-learning survival.
+  - Filed as its own BACKLOG row candidate when readiness-signal fires; today it's a future-marker, not an active plan.
+
+  **Scope limits of the Otto-86 refinement:**
+
+  - **Does NOT authorise spinning up a second Claude Code session today** without a multi-Claude-peer-harness experiment design document landing first. Design + dry-run + readiness-signal before live launch.
+  - **Does NOT authorise skipping the multi-Claude test** to jump straight to Claude-Codex peer-harness. Aaron's framing is sequential: (b) before (c).
+  - **Does NOT authorise unbounded-duration test runs.** Time-limits or process-kill are load-bearing during testing.
+  - **Does NOT authorise claiming readiness prematurely.** Readiness-signal is maintainer-acknowledgment-gated: false readiness breaks trust. Otto's criteria for readiness are Otto's judgment and can be documented in a future research doc when they crystallise.
+  - **Does NOT expand or replace the Otto-78 primary-switch-by-Aaron-context clause** — that remains correct within each progression stage; this refinement adds stages (b) / (c) / (d), not a new primary-determination model.
+
 - [ ] **Cross-harness mirror pipeline** (round 34 ask from
   Aaron). Zeta is currently Claude-Code-biased
   (`.claude/skills/`, `.claude/agents/`). Real contributors
