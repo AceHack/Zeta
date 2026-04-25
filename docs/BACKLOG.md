@@ -9960,6 +9960,141 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- [ ] **Local-DB shortlist for factory indexing / search
+  (code, docs, skills, memory) — research-lane, pick the
+  two-to-three bets we'd actually integrate.** Human
+  maintainer 2026-04-24 directive (verbatim): *"backlog
+  what local dbs can be use to help with code/docs/
+  skills/etc... indexing/serarching etc... backlog"*.
+
+  **Why this row exists separately from the Zeta engine
+  itself:** Zeta is the long-horizon factory-owned
+  substrate, but there's also a factory-today need —
+  subagents grepping the repo hit quadratic scaling,
+  skill cold-start is expensive per AX audits, and
+  memory / research retrieval today is wholly structural
+  (filename + frontmatter + grep). A local-DB
+  intermediate layer (off-the-shelf, narrowly scoped)
+  could close the gap before Zeta's own retrieval
+  substrate matures, without becoming the substrate the
+  factory commits to long-term.
+
+  **Hard constraints:**
+
+  - **Local-only, no cloud.** Matches factory anti-cloud
+    stance.
+  - **Gitignored or regeneratable from in-repo source.**
+    Index artifacts are derived state — Otto-114
+    memory-sync pattern applies; no committed `.db`
+    files.
+  - **Works for subagents.** Subagent sessions have
+    `Read` + `Bash`; chosen DBs must be reachable via
+    shell or small helper without a long-running daemon
+    (or with startup ≤ 2 s).
+  - **.NET-friendly where reasonable.** Prefer libraries
+    with clean F#/.NET bindings (SQLite via
+    `Microsoft.Data.Sqlite`, LiteDB, RocksDB via
+    `RocksDbSharp`). Accept a CLI-wrapper exception
+    when the win is large (tantivy / DuckDB CLI are
+    fine).
+
+  **Initial candidate shortlist (research-pass needs to
+  down-select before commit), by surface:**
+
+  - **Code / symbol indexing:**
+    - Universal-ctags (SQLite backend) — battle-tested,
+      language-agnostic, tiny footprint.
+    - Tree-sitter + custom SQLite/DuckDB schema —
+      structural AST queries beyond ctags; already used
+      by Claude-Code-adjacent tools.
+    - CodeQL database — we already backlog CodeQL
+      installation; the DB format is queryable.
+  - **Full-text search (docs, skills, research, memory):**
+    - SQLite FTS5 — zero-op, ships with SQLite,
+      adequate for < 100 k docs.
+    - Tantivy (Rust, CLI-queryable) — production-grade
+      FTS if we outgrow FTS5.
+    - Meilisearch local — typo-tolerant natural-language
+      search; daemon is the cost.
+  - **Embedding / vector retrieval:**
+    - sqlite-vec (or sqlite-vss) — SQLite-native,
+      zero-op, no daemon; best-fit for factory-small
+      vector sets.
+    - LanceDB — columnar vector DB, zero-op, more
+      features; scales further if the corpus grows.
+    - FAISS (via .NET binding) — industry standard but
+      heavier; not worth it unless we outgrow sqlite-vec.
+  - **Graph / provenance (citations, ADR lineage, memory
+    cross-references):**
+    - Kuzu DB — embedded property graph, Cypher-style
+      query, fast for medium graphs. Matches the
+      provenance-cone work in the claim-veracity
+      detector spec if we ever implement it locally.
+    - Oxigraph (RDF) — full knowledge-graph; probably
+      overkill.
+    - DuckDB with recursive CTEs — not a graph DB but
+      handles transitive-closure queries adequately at
+      factory scale.
+  - **General columnar / analytics (cross-tree audits,
+    "how many rows in BACKLOG.md reference Otto-279?"):**
+    - DuckDB — CLI, queries CSV/JSON/Parquet in place,
+      SQL-native, zero-op. Very likely worth adopting
+      for factory analytics regardless of the other
+      picks.
+
+  **Research-pass scope (what this row actually
+  produces):**
+
+  1. Feasibility triage per candidate against the hard
+     constraints — which are genuinely zero-op for a
+     subagent, which pull in a daemon, which bind to
+     .NET cleanly.
+  2. A 2-to-3-bet shortlist for pilot integration. Not
+     every candidate ships; the right answer is probably
+     one FTS + one vector + one columnar + maybe graph,
+     not the whole matrix.
+  3. Integration sketch per pilot: where the index
+     artifact lives (`.zeta-index/` gitignored?), how
+     it's regenerated (hook? periodic?), how a subagent
+     queries it, how it composes with `Read` + `Grep`
+     rather than replacing them.
+  4. Explicit reject-with-reason for candidates that
+     don't make the shortlist (so we don't re-litigate).
+
+  **Not in scope:**
+
+  - Replacing `Read` / `Grep` / the file-system-first
+    discipline. Index layers accelerate discovery;
+    authoritative state stays in the file system.
+  - Building a factory-specific new DB. Zeta IS the
+    long-horizon factory-specific DB; this row is about
+    off-the-shelf immediate gains while Zeta matures.
+  - Replacing Otto-114 memory-sync design. Whatever DB
+    we pick consumes the in-repo `memory/` mirror as
+    its source, not the other way around.
+  - Cloud-hosted alternatives (Pinecone, Weaviate
+    Cloud, Algolia, etc.) — violates anti-cloud stance.
+
+  **Composes with:**
+
+  - Otto-114 memory-sync (in-repo `memory/` is the
+    source; index is downstream derived state).
+  - AX audits — subagent cold-start friction is one of
+    the problems this would relieve.
+  - `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md`
+    — provenance-cone retrieval is exactly the kind of
+    thing a local graph DB could make tractable.
+  - CodeQL-installation row (CodeQL's local DB format
+    is a candidate for the code-indexing surface).
+
+  **Effort:** M (research-pass + shortlist + integration
+  sketch for 2-to-3 candidates). No implementation in
+  this row — down-stream rows file per-candidate pilots
+  after the shortlist lands.
+
+  **Memory:** none yet — doctrine lands after the
+  shortlist PR lands and one pilot proves out.
+
 - [ ] **User-mode filesystem driver interface — Zeta as
   a mountable FS via FUSE / WinFsp / macFUSE; research
   first; composes with eventual microkernel + all-
