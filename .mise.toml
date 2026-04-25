@@ -46,6 +46,13 @@ actionlint = "1.7.12"
 # slim + ubuntu-24.04-arm runners don't ship shellcheck pre-
 # installed, so declarative pin here ensures dev/CI parity.
 shellcheck = "0.11.0"
+# markdownlint-cli2: markdown linter. Declarative pin per Aaron's
+# "update declarativly everywhere" directive (2026-04-24); moves
+# the version off a hardcoded `.github/workflows/gate.yml` line
+# and into the single source of truth the rest of the toolchain
+# already uses. 0.22.1 (npm latest as of 2026-04-24); prior pin
+# was 0.18.1 inlined in gate.yml.
+"npm:markdownlint-cli2" = "0.22.1"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)

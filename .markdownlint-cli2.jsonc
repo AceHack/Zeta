@@ -32,7 +32,20 @@
     // IS author-controlled and could lint clean, but applying
     // the ignore to the whole directory keeps the rule simple
     // (one path, not 10 file-specific entries).
-    "docs/amara-full-conversation/**"
+    "docs/amara-full-conversation/**",
+    // PR-preservation archive (tools/pr-preservation/archive-pr.sh
+    // output) is verbatim preservation of PR bodies + review-thread
+    // content. By design, the archive carries the input markdown
+    // structure unchanged (blank-line-around-lists, duplicate
+    // "Pull request overview" headings from GitHub's auto-preamble,
+    // consecutive blank lines from the source, etc.). Reformatting
+    // to satisfy MD032/MD024/MD012 would violate the verbatim-
+    // preservation contract (Otto-250 + Otto-279 pr-preservation IS
+    // a history surface). The scripts that generate these files
+    // already ship their own hygiene pass; the archive output is
+    // not author-controlled prose.
+    "docs/pr-discussions/**",
+    "docs/pr-preservation/**"
   ],
   "noBanner": true,
   "noProgress": true,
