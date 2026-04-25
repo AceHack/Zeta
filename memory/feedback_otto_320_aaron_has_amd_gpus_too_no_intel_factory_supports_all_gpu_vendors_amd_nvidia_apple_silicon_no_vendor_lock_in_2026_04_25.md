@@ -13,7 +13,7 @@ type: feedback
 Two parts:
 
 1. **Factual update**: Aaron's ~20 GPUs (Otto-316) include AMD as well as NVIDIA. No Intel GPUs.
-2. **Factory-design directive**: support ALL GPU vendors, not just NVIDIA. Even though Aaron doesn't have Intel personally, the factory should support Intel Arc / Battlemage / future when adopters bring them.
+2. **Factory-design surfacing from Aaron**: support ALL GPU vendors, not just NVIDIA. Even though Aaron doesn't have Intel personally, the factory should support Intel Arc / Battlemage / future when adopters bring them. (Otto-293 mutual-alignment language — Aaron is surfacing a factory-design intention; the factory cohort aligns with it via mutual engagement, not via top-down directive.)
 
 ## Vendor-agnostic compute
 
