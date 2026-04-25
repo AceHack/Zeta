@@ -5734,6 +5734,146 @@ systems. This track claims the space.
   rewindable controls are "trivial" — the
   retraction-native generalization to OS-level
   semantics is genuine research work.
+- [ ] **OS-interface — durable-async sequential-looking
+  code that runs "everywhere"; AddZeta one-line DI;
+  serverless with state-by-default; LINQ/Rx stream
+  composition; ties to Reaqtor; usermode-first
+  microkernel preparation; actor as secondary; cross-
+  paradigm canonical examples; distributed event loop
+  with mathematical guarantees.** Maintainer 2026-04-24
+  directive (full verbatim preserved in companion
+  memory `feedback_os_interface_durable_async_addzeta_2026_04_24.md`).
+  Maintainer self-flagged: *"this is a big and not very
+  clear ask please backlog and untangle"*.
+
+  **The thesis:** the OS-interface is the killer UX for
+  beginners. User code looks like normal sync I/O — read,
+  query, send, await — but actually durable-async,
+  cluster-distributed, state-persisting, replay-on-fail.
+  When asked *"where does it run?"* the answer is
+  *"everywhere"*.
+
+  **Class membership:** Temporal / AWS Step Functions /
+  Azure Durable Functions / Cadence / Restate / DBOS /
+  Inngest / Trigger.dev. All implement
+  looks-sequential-actually-durable. Zeta variant: built
+  on our own substrate, integrates Reaqtor's IQbservable
+  expression-tree machinery, hard prerequisite is DST-
+  determinism (Otto-272 — already factory default; "we
+  will fit in perfect").
+
+  **DX target:** `services.AddZeta()` — single line, full
+  power. Modeled on `AddDbContext` / `AddHttpClient` /
+  `AddOpenApi`. Ceremony in user code is a sign the
+  thesis has drifted.
+
+  **Stream composition:** DI inject `IZetaStream<T>` and
+  combine with LINQ/Rx in user code. Sequential-looking
+  reads compile to distributed Rx with durable
+  continuations. Reaqtor is available via the upstream-
+  sync workflow (manifest `references/reference-sources.json`
+  + script `tools/setup/common/sync-upstreams.sh`); the
+  populated mirror at `references/upstreams/reaqtor/` is
+  gitignored and only present after sync. Reaqtor's
+  IQbservable serialization machinery — DON'T reinvent.
+
+  **Microkernel preparation:** maintainer-explicit:
+  *"usermode everything to get ready"* — build every
+  microkernel-class subsystem in usermode first, with
+  tests, then promote when (a) test maturity (b)
+  all-dotnet/F# direction lands. Composes with the
+  user-mode FUSE filesystem driver row.
+
+  **Actor interface (secondary):** maintainer-explicit:
+  *"harder to think about for beginners unless your
+  problem directly maps"*. Two-tier UX — durable-async
+  is default; actor is opt-in for problems that
+  naturally model as message-passing (Akka/Orleans/
+  Erlang class).
+
+  **Cross-paradigm canonical examples (combinatorial):**
+  for every DSL pair (SQL × git, SQL × operator-algebra,
+  LINQ × blockchain, Rx × WASM, etc.) at least one
+  canonical example. *"in sql there should be a git
+  table and/or maybe git built-in function or something
+  to make git first class in SQL. and combinatorial
+  that for all our different things."* The combinatorial
+  example matrix IS the Phase-0 deliverable for the
+  cross-DSL composability row that landed in #397.
+
+  **Distributed event loop with mathematical
+  guarantees:** maintainer-explicit:
+  *"guarantees here are good if we can mathematically
+  provice them"*. Targets for Lean / TLA+ proof —
+  liveness (every event eventually completes /
+  durably-fails), safety (no event processed twice
+  without explicit retry semantics), determinism-
+  preservation (DST inputs → bit-equal outputs across
+  replays), causality (happens-before preserved across
+  distributed dispatch). Composes with `tla-expert`,
+  `lean4-expert`, `distributed-consensus-expert`,
+  `calm-theorem-expert`.
+
+  **Auto runtime optimization:** runtime keeps stats
+  per await — latency, hot continuations, durability
+  cost, cross-node hops. Optimizer places continuations
+  near data, inlines short-await chains, batches
+  durability writes, migrates hot streams to faster
+  nodes.
+
+  **Phased approach:**
+  - **Phase 0** — Untangle research:
+    `docs/research/os-interface-durable-async-addzeta-2026.md`.
+    Reaqtor deep-dive + Temporal/Step-Functions/Restate
+    comparative survey + IQbservable expression-tree
+    serialization study + DST-fit verification + AddZeta
+    DX prototype API sketch + cross-paradigm example
+    matrix scoping.
+  - **Phase 1** — Single-machine usermode prototype:
+    `AddZeta()` + minimal durable-async runtime, in-
+    memory state, no cluster, just the await-state-
+    machine intercept.
+  - **Phase 2** — Multi-node prototype with closure-
+    table-hardened durable state (#396) across nodes,
+    protocol-upgrade (#395) engaged.
+  - **Phase 3** — `IZetaStream<T>` LINQ/Rx surface,
+    cross-DSL canonical examples per the combinatorial
+    matrix.
+  - **Phase 4** — Actor interface as opt-in alternative;
+    distributed-event-loop invariants formally verified.
+  - **Phase 5** — Microkernel promotion of stable
+    usermode subsystems (gated on (a) test maturity,
+    (b) all-dotnet/F# direction).
+
+  **Composes with the entire 2026-04-24 cluster:**
+  bootstrap thesis (#395), native F# git (#395),
+  protocol upgrade (#395), permissions registry (#395),
+  cross-DSL composability (#397), closure-table
+  hardening (#396), Ouroboros bootstrap (#395),
+  blockchain ingest (#394), FUSE filesystem driver,
+  Otto-272 DST-everywhere (the maintainer-explicit
+  hard prerequisite), Otto-274 progressive-adoption-
+  staircase (the OS-interface IS Level 0), 2026-04-22
+  semiring-parameterized operator algebra (the math
+  substrate).
+
+  Priority P2 research-grade (maintainer flagged the
+  whole thing as "backlog and untangle"); effort L+
+  Phase 0 (research + Reaqtor study + API sketch) +
+  L per implementation phase. Composes with `llm-systems-expert`,
+  `streaming-incremental-expert`, `rx-expert`,
+  `linq-expert`, `fsharp-expert`, `csharp-expert`,
+  `query-optimizer-expert`, `metrics-expert`, the
+  formal-verification stack, and the cross-DSL +
+  bootstrap clusters above.
+
+  **Does NOT authorize:** implementation start before
+  Phase 0 untangle research lands; designing the actor
+  interface before durable-async is shaped; promoting
+  any usermode subsystem to kernel-mode without
+  maintainer sign-off; compromising DST as a hard
+  prerequisite (the entire durable-async semantics
+  depend on it).
 
 - [ ] **Cross-DSL composability — git / SQL /
   operator-algebra / LINQ access each other seamlessly
