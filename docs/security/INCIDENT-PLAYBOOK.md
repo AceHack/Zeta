@@ -48,10 +48,26 @@ investigate before you fix.
 malicious release, OR the upstream repo is compromised
 and someone rewrites a tag to point at a malicious commit.
 
-**Canonical case:** tj-actions/changed-files cascade
-(CVE-2025-30066, March 2025). 4 hops deep, 3-4 month
-dwell, SpotBugs PAT → reviewdog → tj-actions → 23,000
-repos.
+**Canonical cases** (both mutable-tag class):
+
+- **tj-actions/changed-files cascade** (CVE-2025-30066,
+  March 2025). 4 hops deep, 3-4 month dwell, SpotBugs PAT
+  → reviewdog → tj-actions → 23,000 repos.
+- **Trivy TeamPCP attack** (2026-03-19). 76 of 77 version
+  tags force-pushed on `aquasecurity/trivy-action` plus 7
+  of 7 on `aquasecurity/setup-trivy`, malicious binary
+  `v0.69.4` published via the compromised `aqua-bot`
+  service account. Notable because (a) the target was a
+  *security scanner itself* — the very thing ecosystems use
+  to audit each other — and (b) even SHA-pinned consumers
+  were hit if they bumped during the compromise window,
+  which underscores why `docs/security/SUPPLY-CHAIN-SAFE-
+  PATTERNS.md` §"Content review is the load-bearing step"
+  matters: a SHA-256 of a compromised release is still a
+  valid SHA-256. We do not currently consume `trivy-action`;
+  scanner-adoption decisions are tracked in
+  `docs/research/vuln-and-dep-scanner-landscape-2026-04-
+  22.md`, which defers Trivy pending rebuild-trust.
 
 ### Detect
 
