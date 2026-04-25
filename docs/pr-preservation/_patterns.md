@@ -358,6 +358,78 @@ into one-line stale-resolved-by-reality replies:
 
 ---
 
+## Known divergence: drain-log shape (Otto-250 canonical vs Otto-268 abbreviated)
+
+The drain-log corpus has two co-existing shapes:
+
+**Canonical Otto-250 shape** (used in older drain-logs like
+`108-drain-log.md`, `247-drain-log.md`):
+
+```markdown
+## Thread N — `path/file.md:LINE` — heading
+
+- Reviewer: <handle>
+- Thread ID: `PRRT_...`
+- Severity: P0/P1/P2
+
+### Original comment (verbatim)
+
+> verbatim quote of reviewer's full text
+
+### Outcome — FIX / STALE-RESOLVED-BY-REALITY / ...
+
+Discussion + commit SHA where fix landed.
+
+### Reply (verbatim)
+
+> verbatim quote of the reply that resolved the thread.
+```
+
+**Abbreviated Otto-268 shape** (used across the 2026-04-25 backfill
+wave; in-tree examples at `docs/pr-preservation/421-drain-log.md`,
+`docs/pr-preservation/422-drain-log.md`,
+`docs/pr-preservation/423-drain-log.md`):
+
+```markdown
+### Thread N — short description
+
+- Reviewer: <handle>
+- Severity: P0/P1/P2
+- Finding: short prose summary of the reviewer's concern.
+- Outcome: **CLASS** — short prose explanation. Commit `SHA`.
+```
+
+The abbreviated shape preserves key metadata (reviewer, severity,
+outcome class, commit SHA) and a paraphrased Finding bullet, but
+verbatim original-comment + verbatim reply text are NOT preserved.
+Multi-section structure, file:line locator, and Thread ID are also
+typically omitted vs the canonical Otto-250 shape.
+
+**Maintainer-decision pending** — three options:
+
+(a) **Rewrite** the abbreviated-shape drain-logs from the
+2026-04-25 backfill wave to canonical shape with verbatim
+reviewer/reply. Highest faithfulness; high churn (~5-8 hours).
+
+(b) **Accept divergence** — document both shapes here as valid
+(this section); keep abbreviated shape for low-thread-count or
+bulk-backfill logs; use canonical for high-thread-count or
+substantive drains where verbatim preservation pays back.
+
+(c) **Hybrid** — backfill canonical shape only for the
+highest-substantive logs (#206 math content, #268 BLAKE3
+crypto-protocol, #226 algorithm spec, #85 ADR draft) where
+verbatim training-signal value is highest; leave low-substance
+logs in abbreviated shape.
+
+This file is the synthesis-index where the maintainer-decision
+should land + propagate via the canonical reference. Until
+then, drain-runners writing future logs should default to
+canonical shape; existing Otto-268-wave logs stay
+abbreviated-with-this-known-divergence-note.
+
+---
+
 ## How to update this file
 
 When a new drain-log lands in `docs/pr-preservation/`:
