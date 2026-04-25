@@ -125,7 +125,21 @@ Rules (applied in order):
 1. Lowercase all characters
 2. Replace whitespace sequences with single space
 3. Strip leading/trailing whitespace
-4. Remove markdown emphasis markers (`**`, `*`, `_`, backticks)
+4. Strip markdown formatting *delimiters* — i.e. unwrap
+   text from paired emphasis/code spans rather than
+   removing every occurrence of those characters as raw
+   chars. Concretely:
+   - `**text**` → `text` (paired `**` removed, content kept)
+   - `*text*` → `text` (paired `*` around a word removed)
+   - `_text_` → `text` (paired `_` around a word removed,
+     where `text` matches `[A-Za-z0-9-]+`; this preserves
+     identifiers like `_internal_var` or `__private` from
+     being stripped)
+   - `` `text` `` → `text` (paired backticks removed)
+
+   Single occurrences and unpaired delimiters are NOT
+   stripped — `_internal_var` stays as `_internal_var`,
+   `a_b_c` stays as `a_b_c`, and a stray backtick survives.
 5. Normalize smart/curly quotes (left-double U+201C, right-
    double U+201D, left-single U+2018, right-single U+2019)
    to plain ASCII straight quotes (`"` and `'`)
@@ -212,14 +226,22 @@ function reconcile(facts):
     if chain_head is not None and chain_head.status == "active":
       # Multiple active records that all map to the same
       # canonical key (invariant-2 violation) surface as a
-      # ConflictRow; chain head is the winner.
-      siblings_active = [f for f in group
-                         if f.status == "active"
-                         and f.id != chain_head.id]
-      if siblings_active:
-        conflicts.append(ConflictRow(
-          key, [chain_head, *siblings_active], winner=chain_head))
-      accepted[key] = chain_head
+      # ConflictRow. Per invariant 6, the winner is chosen
+      # by priority tie-break (max priority, then max
+      # timestamp), NOT chain-head precedence — chain-head
+      # only determines liveness, not winner-among-actives.
+      # The chain head is one candidate among the actives;
+      # it wins only if it has the highest (priority,
+      # timestamp) tuple.
+      actives = [chain_head] + [f for f in group
+                                 if f.status == "active"
+                                 and f.id != chain_head.id]
+      if len(actives) > 1:
+        winner = max(actives, key=lambda f: (f.priority, f.timestamp_utc))
+        conflicts.append(ConflictRow(key, actives, winner=winner))
+        accepted[key] = winner
+      else:
+        accepted[key] = chain_head
     # else: key is fully retired (chain head retracted or
     # superseded with no successor). Don't mark live;
     # chain integrity is still validated below.
@@ -291,11 +313,18 @@ set.
 
 ### `MEMORY.md` index generation
 
-Accept facts where `source_kind == "memory"`; emit
-newest-first list of `(source_path, first-sentence-of-object,
-tags)` tuples. Cap at configurable size (default: 250 entries
-or 24,000 bytes — strictly under the FACTORY-HYGIENE row #11
-24,976-byte hard cap, with ~1KB headroom for any header /
+Accept facts where `source_kind == "memory"`, then
+**deduplicate by `source_path`**: a single prose memory file
+backfilled into multiple typed facts (per the Phase-3
+backfill plan) MUST emit one MEMORY.md row per file, not
+one row per fact. Dedup picks the highest-priority fact
+per source_path as the row representative; the row's
+description text is that representative's first sentence.
+Emit a newest-first list of `(source_path, first-sentence-
+of-representative-fact, tags-union)` tuples. Cap at
+configurable size (default: 250 entries or 24,000 bytes —
+strictly under the FACTORY-HYGIENE row #11 24,976-byte
+hard cap, with ~1KB headroom for any header /
 index annotations the generator writes around the entry list).
 
 Older entries move to dated archive files
