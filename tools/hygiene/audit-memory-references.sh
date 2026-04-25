@@ -103,18 +103,20 @@ fi
 broken=""
 ok_count=0
 while IFS= read -r ref; do
-  # Resolve: if ref is already a path with a subdir, check literally;
-  # otherwise prefix with base_dir
-  if [[ "$ref" == */* ]]; then
-    full="$ref"
-  else
-    full="$base_dir/$ref"
-  fi
-
-  if [[ -f "$full" ]]; then
+  # Resolve in two passes:
+  # 1. file-relative (standard markdown): base_dir/ref
+  # 2. workspace-root (legacy convention): ref directly
+  # Accept either — both forms are in use across MEMORY.md history; the
+  # standard-markdown form is preferred for browser/IDE rendering, the
+  # workspace-root form is preferred for grep/audit tooling. Codex flagged
+  # the discrepancy on PR #506; this dual-resolution unblocks both.
+  full_filerel="$base_dir/$ref"
+  if [[ -f "$full_filerel" ]]; then
+    ok_count=$((ok_count + 1))
+  elif [[ "$ref" == */* ]] && [[ -f "$ref" ]]; then
     ok_count=$((ok_count + 1))
   else
-    broken+="  $ref -> $full (not found)"$'\n'
+    broken+="  $ref -> $full_filerel (not found)"$'\n'
   fi
 done <<< "$refs"
 

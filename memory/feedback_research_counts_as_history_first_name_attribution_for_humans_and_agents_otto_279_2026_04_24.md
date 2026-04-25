@@ -54,11 +54,21 @@ applying a name-policy rule.
 
 ## Surfaces where first-name attribution IS allowed
 
-Per Aaron's directive, the canonical list extends from
-"only persona memory + optionally BACKLOG" to:
+Per Aaron's surfacing (Otto-293 mutual-alignment language —
+this rule was framed as a "directive" originally; the
+substrate-body prose has since shifted to mutual-alignment
+vocabulary), the canonical list extends from "only persona
+memory + optionally BACKLOG" to the closed enumeration
+below. This list MUST stay in sync with the same
+enumeration in `docs/AGENT-BEST-PRACTICES.md` and
+`.github/copilot-instructions.md`.
 
-- `memory/persona/<name>/` — always (canonical persona home)
-- `docs/BACKLOG.md` — when capturing a specific request
+- `memory/**` — factory-wide memory + per-persona notebooks
+- `docs/BACKLOG.md` — root index when capturing a specific request
+- `docs/backlog/**` — per-row backlog files (Otto-181 schema:
+  `B-NNNN-*.md` with attribution in the `directive:` schema
+  field plus body attribution); same history class as the
+  root index
 - `docs/research/**` — research docs are history (Otto-279)
 - `docs/ROUND-HISTORY.md` — round-close history
 - `docs/DECISIONS/**` — ADRs are historical decisions
@@ -66,8 +76,27 @@ Per Aaron's directive, the canonical list extends from
   per GOVERNANCE §33)
 - `docs/pr-preservation/**` — PR conversation archive (Otto-
   250) — preserves who-said-what verbatim
+- `docs/hygiene-history/**` — tick-history + drain-logs are
+  append-only history surfaces (Otto-229)
+- `docs/WINS.md` — historical wins log
 - (commit messages, git log, GitHub PR titles/bodies) — not
   factory-doc surfaces but record-of-truth
+
+**Roster-mapping carve-out** (added to canonical
+enumeration in `docs/AGENT-BEST-PRACTICES.md` +
+`.github/copilot-instructions.md`): governance /
+instructions files (`AGENTS.md`, `GOVERNANCE.md`,
+`docs/CONFLICT-RESOLUTION.md`,
+`docs/AGENT-BEST-PRACTICES.md`,
+`.github/copilot-instructions.md`) MAY contain a
+one-time persona-to-role mapping ("the harsh-critic
+is named Kira; the maintainability-reviewer is named
+Rune; the architect is named Kenji") because consumers
+need to resolve role-refs to persona-names to do their
+job. The carve-out covers roster-mapping ONLY —
+body-prose attribution ("Kira said X" / "Rune added
+this fix") remains forbidden on these current-state
+surfaces; use the role-ref ("the harsh-critic said X").
 
 ## Surfaces where role-refs are still preferred
 

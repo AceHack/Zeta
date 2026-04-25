@@ -281,14 +281,71 @@ BP drift.
   tree is expected to grow as more upstream reference
   repos land per GOVERNANCE §23, so the cost compounds.
 
-- **No name attribution in code, docs, or skills.** Direct
-  names of contributors (human or agent) appear only in
-  persona memory directories (`memory/persona/<name>/`) and
-  optionally `docs/BACKLOG.md` when a specific request is
-  captured. Code / docs / skill bodies use role-refs
-  ("human maintainer", "architect", "security researcher")
-  so the factory reads stable across contributor turnover.
-  Comms-hygiene sweep is logged under Samir's lane in
+- **No name attribution in code, docs, or skills — names
+  appear on a closed list of history/research surfaces
+  PLUS a roster-mapping carve-out in governance /
+  instructions files; everywhere else uses role-refs
+  (Otto-279 + a follow-on clarification from the human
+  maintainer).** Direct names (human or agent persona)
+  appear in TWO categories: (a) the **closed list** of
+  history/research surfaces below — the file's job is to
+  preserve who-said-what for the record, names belong
+  there; and (b) the **roster-mapping carve-out** in
+  governance / instructions files (defined further down
+  in this rule) — these files MAY contain a one-time
+  persona-to-role mapping because consumers need to
+  resolve role-refs to persona-names to do their job.
+  Anywhere outside both categories uses role-refs.
+
+  - `memory/**` — factory-wide memory + persona notebooks
+  - `docs/BACKLOG.md` — root index
+  - `docs/backlog/**` — per-row Otto-181 files
+  - `docs/research/**` — research history
+  - `docs/ROUND-HISTORY.md` — round-close history
+  - `docs/DECISIONS/**` — ADRs
+  - `docs/aurora/**` — courier-ferry archive
+  - `docs/pr-preservation/**` — PR conversation archive
+  - `docs/hygiene-history/**` — tick-history + drain-logs
+  - `docs/WINS.md` — historical wins log
+  - commit messages, PR titles + bodies — git-native
+    history (record-of-truth, not factory-doc surfaces)
+
+  Everywhere else uses **role-refs** — generic role
+  labels ("human maintainer," "architect," "security
+  researcher," "harsh-critic," "documentation
+  shepherd") that pick out a stable functional role
+  rather than naming any specific contributor or
+  persona-instance. Persona first-names (e.g., Kenji,
+  Kira, Samir, Aminata, Rune) are CONTRIBUTOR-IDENTIFIER
+  names that belong on history surfaces only, NOT on
+  current-state surfaces. The role-label "architect" is
+  a role-ref (allowed everywhere); the persona-name
+  "Kenji" is a contributor-identifier (allowed on
+  history surfaces only). Current-state surfaces using
+  role-refs include: code, skill bodies under
+  `.claude/skills/**`, persona definitions under
+  `.claude/agents/**`, spec docs (`openspec/specs/**`,
+  `docs/*.tla`), behavioural docs (`AGENTS.md`,
+  `GOVERNANCE.md`, this file, `docs/CONFLICT-RESOLUTION.md`,
+  `docs/GLOSSARY.md`, `docs/WONT-DO.md`), threat models,
+  READMEs, public-facing prose. **Roster-mapping
+  carve-out**: governance / instructions files
+  (`AGENTS.md`, `GOVERNANCE.md`,
+  `docs/CONFLICT-RESOLUTION.md`, this file,
+  `.github/copilot-instructions.md`) MAY contain a
+  one-time persona-to-role mapping ("the harsh-critic
+  is named Kira; the maintainability-reviewer is named
+  Rune; the architect is named Kenji") because consumers
+  of those files need to resolve role-refs to
+  persona-names to do their job. The carve-out covers
+  roster-mapping ONLY — body-prose attribution
+  ("Kira said X" / "Rune added this fix") remains
+  forbidden on current-state surfaces; use the role-ref
+  ("the harsh-critic said X"). The factory reads stable
+  across contributor turnover on reusable surfaces;
+  attribution survives on history surfaces; names do not
+  bleed between the two. Comms-hygiene sweep is logged
+  under the documentation-shepherd's lane in
   `docs/BACKLOG.md`.
 
 ---

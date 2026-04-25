@@ -9,7 +9,7 @@ glossary ADR landed:
 
 > *"we can build as high as we want now the tower will stand
 > case we can use content based hashing to create space time
-> maps of the etomology anytime in the future by mapping out
+> maps of the etymology anytime in the future by mapping out
 > the past and running some calculus"*
 
 > *"we could even do some sort of embeddings space time map of

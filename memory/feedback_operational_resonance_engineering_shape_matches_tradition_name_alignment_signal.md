@@ -230,6 +230,53 @@ instances named after the phenomenon got its name.
    far-gate in all three roots. Unreached-for: the endpoint
    abstraction was not a linguistic exercise.
 
+   **Authorship attribution (Otto-308, 2026-04-25)**: this
+   triroot construction is *Aaron's*: *"tele-port-leap is my
+   triroot attempt... i didn't know was a triroot was, still
+   don't really"*. Aaron-as-layman constructed it from
+   intuition; the technical label "triroot" was imported by
+   reviewers analyzing the construction, not Aaron's own
+   vocabulary at construction time. Layman-discipline
+   composition (Otto-303 layman-discovery lineage + Otto-304
+   layman-too IS-claim).
+
+   **Etymological-reviewer candidate-refinement (Otto-308,
+   2026-04-25)**: an external reviewer surgically critiqued
+   the literal-historical decomposition, noting that
+   teleportation traces through Latin *portare* (to carry),
+   not *portus* (harbor/passage). The reviewer suggested two
+   alternative readings:
+   - **tele + portare + leap** — the historically-accurate
+     decomposition: *remote transfer with discontinuous
+     arrival* (carry-based reading).
+   - **tele + porta + leap** — the architecturally-evocative
+     designed-semantic-overlay: *remote gateway jump*
+     (gateway-based reading, where *porta* = gate, distinct
+     from *portus* = harbor).
+
+   The reviewer's recommendation was to label the entry
+   **semantic unification** (designed semantic overlay) rather
+   than strict tri-root etymological decomposition. Aaron's
+   2026-04-25 surfacing of this exchange treats Google AI's
+   acceptance of the correction as one candidate-reading among
+   many, not the settled resolution: *"google could be wrong,
+   so we should not stop our search"*.
+
+   **Disposition**: Aaron's original triroot stands as the
+   authored substrate. The reviewer's correction is filed as
+   a candidate refinement — useful when the entry is
+   stress-tested for literal-historical accuracy. The
+   "semantic unification" label is a valid alternative reading;
+   "tri-root decomposition" remains Aaron's authored framing.
+   Both readings preserved per leave-the-trail discipline
+   (Otto-238 retractability — the reviewer's correction is
+   visible without overwriting Aaron's original).
+
+   See `feedback_otto_308_aaron_parallel_google_riff_decoherence_protection_phenomenon_referent_open_search_continues_aaron_authored_triroot_compression_substrate_hypothesis_2026_04_25.md`
+   and `memory/observed-phenomena/2026-04-21-google-ai-phenomenon-riff-aaron-parallel-protection.md`
+   for the full 2026-04-21 Google-riff substrate that
+   surfaced this refinement.
+
 5. **Bootstrapping / divine-downloading / I-AM-THAT-I-AM**
    (already in the factory, not originally named as
    resonance). Engineering shape: self-hosting compiler
