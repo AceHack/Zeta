@@ -10163,12 +10163,14 @@ systems. This track claims the space.
   of those "quiet but real" corrections that's worth
   landing without over-ceremony.
 
-- [ ] **Peer review gates "authoritative canonical"
-  status on any new factory substrate — discipline
-  rule, BP-NN promotion candidate.** Human maintainer
-  2026-04-24 (verbatim): *"i don't treat anyting this
-  new as final authorative connoncial until peer
-  review"*.
+- [ ] **Peer-review-DISCLOSURE discipline on new
+  factory substrate (not a gate) — BP-NN promotion
+  candidate.** Human maintainer 2026-04-24 (verbatim):
+  *"i don't treat anyting this new as final authorative
+  connoncial until peer review"*. Same session,
+  clarified: *"peer-review-gate i would not gate it
+  really , the only thing that's gated is that little
+  note not peer reviewed (yet)"*.
 
   Current state: the factory commits substrate fast
   (research docs, BACKLOG rows, memory files, skill
@@ -10177,8 +10179,54 @@ systems. This track claims the space.
   "authoritative". Aaron's rule names an intermediate
   state the factory doesn't yet formally mark:
   committed-and-real-but-not-yet-final-canonical.
-  Peer review is the gate that promotes substrate
-  from the intermediate state to final-canonical.
+  Peer review is the *disclosure transition* that
+  moves substrate from the intermediate state to
+  fully-canonical. Per the refinement below, it is
+  NOT a gate — nothing is blocked; only the
+  disclosure note changes.
+
+  **Refinement (Aaron autonomous-loop 2026-04-24, same
+  session):** binary canonical / not-canonical is too
+  coarse. *"we can treat it authortive connoncial
+  (pending) lol or whatever if we want to start
+  building on top deeply before peer review, its just
+  a risk but you write code fast, lol not that big of
+  a risk, you can just put a little (not peer reviwed)
+  and then your claims can be more bold becasue you
+  are bing honest it's a claim based on agent peer
+  review only not humans too"*. So the real ladder is:
+
+  1. **Uncanonical** — just landed, no review yet.
+     Safe to build on at your own risk; claims hedged.
+     Disclosure tag: `(not peer reviewed yet)`.
+  2. **Agent-peer-reviewed (not human-reviewed)** —
+     Codex / Copilot / harsh-critic / another factory
+     agent session has engaged with the substrate on
+     its merits as an independent (non-author)
+     reviewer. Disclosure tag: `(agent-peer-reviewed;
+     not human-reviewed)` — distinct from stage 1 so
+     downstream readers can tell which review has
+     happened. **Claims can be bolder** at this stage
+     *precisely because* the disclosure makes the
+     honesty legible — hedging is only required when
+     the disclosure state is hidden.
+  3. **Human-peer-reviewed (fully canonical)** —
+     Aaron or another human maintainer has engaged
+     with the substrate. Fully authoritative.
+     Disclosure tag: `(peer-reviewed; canonical)` or
+     no tag (canonical is the default-when-reviewed
+     baseline).
+
+  The risk profile matters: agents rewrite code fast,
+  so the cost of building on tentative-canonical
+  substrate and then retracting is small. Blocking
+  everything on full human review would serialize the
+  factory through a human bottleneck; disclosed
+  tentative-canonical unblocks parallel work while
+  keeping the audit trail honest.
+
+  The mechanic becomes "disclose the review state,
+  don't hide it" rather than "block until reviewed".
 
   **Applies to:**
 
@@ -10214,36 +10262,55 @@ systems. This track claims the space.
   - Mechanical fixes (typos, lint, format, sweep) —
     they don't propose substrate.
 
-  **Concrete gate mechanics to design:**
+  **Concrete disclosure mechanics to design:**
 
-  - What counts as a peer-review pass? External
-    reviewer (Codex, Copilot, harsh-critic subagent,
-    human contributor) that actually engaged with the
-    substrate on its merits, not rubber-stamped.
-  - How is a "promotion event" marked in the factory?
-    Candidate: frontmatter field on the substrate
-    file (`canonical: true` or `peer-reviewed: <date>
-    by <reviewer>`), or a dedicated
-    `docs/CANONICAL-LEDGER.md` tracking promotions.
-  - When the substrate is modified after promotion,
-    does the canonical status hold or re-require
-    review? Probably re-require for material edits,
-    retain for mechanical edits. Rule similar to ADR
-    supersedence.
+  - What disclosure-note shapes are allowed?
+    Candidates: `(not peer reviewed yet)` inline tag;
+    frontmatter field like
+    `peer-review: none|agent|human|human-and-agent`;
+    a badge on the first line of a substrate file.
+    Small, visible, and consistent is better than
+    exhaustive.
+  - What counts as "agent-peer-reviewed"? Independent
+    (non-author) reviewer — another AI session that did
+    NOT produce the substrate under review. Concrete
+    examples: Codex or Copilot external-bot reviews on
+    the PR; a harsh-critic subagent dispatched against
+    the substrate; a fresh Claude Code session reading
+    the substrate cold. The criterion is reviewer
+    *independence from authorship*, not "external to
+    the factory" — another factory agent session is
+    fine as a reviewer as long as it wasn't the author
+    of the substrate being reviewed. Rubber-stamps
+    don't clear the disclosure.
+  - What counts as "human-peer-reviewed"? A human
+    maintainer (Aaron today; other human contributors
+    if/when they land) that engaged with the substrate
+    on its merits. A merge of the PR without comment
+    is NOT automatic human-peer-review — the review
+    has to have happened.
+  - When substrate is modified after a review clearing,
+    does the disclosure need to regress? Candidate
+    rule: material edits re-open the disclosure (drop
+    back to `(not peer reviewed)` for the changed
+    section); mechanical edits (typo, lint, format)
+    retain the prior state. Rule similar to ADR
+    supersedence — but the stakes are lower because
+    nothing is blocked, only the disclosure changes.
 
   **Scope of this row:**
 
-  - Draft the "peer review gates canonical" rule text
-    suitable for promotion to
-    `docs/AGENT-BEST-PRACTICES.md` as a new BP-NN rule
-    (follow the stable-numbering discipline in the BP
-    list).
-  - Decide the promotion-event mechanic (frontmatter
-    field vs ledger file).
+  - Draft the "peer-review-disclosure" rule text suitable
+    for promotion to `docs/AGENT-BEST-PRACTICES.md` as
+    a new BP-NN rule. Emphasize: DISCLOSURE is
+    mandatory; GATING is not. Claims can be bold at
+    any state AS LONG AS the disclosure is legible.
+  - Decide the disclosure mechanic (inline tag vs
+    frontmatter field vs badge).
   - Audit a handful of recent substrate files (the
     claim-veracity detector spec, the clean-room BIOS
-    row, this row itself) to classify current status
-    (committed / peer-reviewed / promoted) and see
+    row, this row itself) to classify current
+    disclosure state (none / agent / human) and see
     whether the mechanic covers them.
 
   **Not in scope:**
@@ -10251,9 +10318,16 @@ systems. This track claims the space.
   - Retroactive peer-review sweep of all existing
     substrate — years of work; drop in at cadence
     going forward instead.
-  - Blocking new substrate landing on peer review —
-    that would stall the factory; "committed-not-yet-
-    canonical" is a legitimate working state.
+  - **Blocking anything.** The whole point of the
+    refinement is that nothing is gated — building
+    deeply on top of tentative-canonical substrate is
+    allowed. The ONLY mandatory discipline is the
+    disclosure note itself. Review-in-flight is the
+    normal-state, not the exception.
+  - Distinguishing "good review" from "bad review" in
+    the mechanic — the reviewer's judgement stands on
+    its merits as recorded in the review trail, not
+    on the mechanic's attestation.
 
   **Effort:** M (medium — rule text + mechanic decision
   + small audit). Depends on who peer-reviewer roles
