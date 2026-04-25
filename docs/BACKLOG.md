@@ -1234,6 +1234,49 @@ within each priority tier.
   NHibernate, LLBLGen, etc. After the EF provider lands
   and the pattern is understood.
 
+## P2 — Internationalization / i18n / l10n / g11n (2026-04-25)
+
+- [ ] **Translate the repo (code, skills, documents,
+  memory) into other human languages — i18n + l10n + g11n
+  + a11y.** Aaron 2026-04-25 directive (verbatim):
+  *"backlog other human language translations of everyting
+  in this repo, code skills, documents, everying this is
+  about being inclusive and going to the humans starting
+  point for bidirectional alignment through learning and
+  education and teaching biderictionally"* + follow-up:
+  *"backlog internatalization and all those workds that
+  everyone shortents into numbers like i8whatever i forget
+  you know what i mean."*
+  Effort L. Per-row file: `docs/backlog/P2/B-0004-translate-repo-to-other-human-languages.md`.
+
+  **Why P2:** active research direction Aaron explicitly
+  asked to be backlogged; not blocking operational gates;
+  L effort spanning multiple rounds + likely external
+  collaboration. Composes with bidirectional-alignment
+  (B-0003 ALIGNMENT.md rewrite + matrix-pill spread),
+  precision-dictionary product vision, Otto-291
+  kernel-extension deployment discipline.
+
+  **Initial languages:** UN-6 (Spanish, French, Russian,
+  Arabic, Mandarin, English-as-source) + large
+  populations not in UN-6 (Hindi, Bengali, Portuguese,
+  Japanese, Korean, German, Indonesian/Malay, Swahili,
+  Cantonese/Traditional Chinese as separate per
+  Otto-286). Otto-283 tracked: revisit-if contributor
+  demand reorders.
+
+  **Mechanism per Otto-291:** pace (one language at a
+  time + verify reception), document expansion, order
+  basic→advanced (CLAUDE/AGENTS/ALIGNMENT first, then
+  memory canon, then skills, then research),
+  retractability (English source preserved; per-language
+  stale-translation lint).
+
+  **Tooling owed (Phase 1):** AI-assisted translation
+  pipeline, cross-reference preservation across language
+  trees, drift-detection lint, glossary anchoring tied
+  to precision-dictionary.
+
 ## P2 — Post-v1 query-surface research
 
 - [ ] **Reaqtor-inspired durable-Rx "stored procedures"
