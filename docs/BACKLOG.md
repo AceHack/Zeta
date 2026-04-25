@@ -10248,6 +10248,17 @@ systems. This track claims the space.
 
 ## P3 — noted, deferred
 
+- [ ] **Migrate `tools/git/batch-resolve-pr-threads.sh` to bun+TS
+  once a sibling post-setup tool migrates first.** PR #199 review
+  feedback (exception-label requirement per
+  `docs/POST-SETUP-SCRIPT-STACK.md`) plus the sibling-migration
+  guardrail. The script is non-trivial (paginated GraphQL fetch,
+  JSON parsing, classification state machine, mutation dispatch);
+  bun+TS would land cleaner with discriminated unions and one
+  cross-platform implementation (no Windows-twin obligation).
+  Effort S, P3. Per-row file:
+  `docs/backlog/P3/B-0015-migrate-batch-resolve-pr-threads-to-bun-ts.md`.
+
 - [ ] **Otto-287 Noether-style formalization — quantify
   cognitive Lagrangian + identify continuous symmetries +
   derive conserved currents.** Aaron 2026-04-25 directive:
