@@ -2,11 +2,12 @@
 # tools/lint/runner-version-freshness.sh
 #
 # Fails CI when a GitHub Actions workflow pins a runner
-# to a version-older-than-latest. Otto-213 durable
-# compounding-failure mitigation: training-data version
-# numbers are stale by definition; structural lint is
-# the enforcement mechanism that memory-alone doesn't
-# provide.
+# to a label that is not on the current allow-list. The
+# allow-list is sourced from the authoritative GitHub
+# standard-runners docs page; structural lint is the
+# enforcement mechanism that prevents stale-version pins
+# (whose "latest at training time" decays the moment they
+# land) from accumulating in CI.
 #
 # Allow-list sourced from the authoritative GitHub docs
 # page:
@@ -18,10 +19,11 @@
 # Allow-list verified: 2026-04-24 via the above URL.
 # Refresh cadence: the ALLOWED_LABELS list below has an
 # explicit "LAST_VERIFIED" timestamp. If the timestamp
-# is >30 days old, the script warns (not fails) reminding
-# the operator to re-verify. When GitHub announces a new
-# stable runner (macos-27 GA, windows-2028 GA, etc.),
-# the allow-list must be updated + LAST_VERIFIED bumped.
+# is >30 days old, the script prints a warning to stderr
+# but still exits 0 (warning-only — it does NOT fail CI).
+# When GitHub announces a new stable runner (macos-27 GA,
+# windows-2028 GA, etc.), the allow-list must be updated
+# + LAST_VERIFIED bumped.
 #
 # Deliberately NOT allowed: older pinned versions
 # (ubuntu-22.04, macos-14, macos-15, windows-2022,
@@ -34,12 +36,42 @@
 #   tools/lint/runner-version-freshness.sh <file>...      # lint specific files
 #
 # Exit codes:
-#   0  all runner labels are current
-#   1  environment / usage error
-#   2  one or more stale labels detected
-#   3  allow-list age warning (stale LAST_VERIFIED > 30 days)
+#   0  all runner labels are current (or only freshness
+#      warning printed to stderr — non-fatal)
+#   1  environment / usage error (unreadable file, missing
+#      tool, etc.) — distinct from stale-label findings so
+#      callers can tell the two apart
+#   2  one or more stale / rolling-alias labels detected
+#      (or a label not on the allow-list)
 
 set -euo pipefail
+
+# Resolve REPO_ROOT and cd there so the default
+# `find .github/workflows ...` discovery works regardless
+# of the caller's cwd. Aligns with other tools/lint/*.sh
+# scripts that establish the same invariant.
+if ! REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
+  echo "ERROR: not inside a git working tree" >&2
+  exit 1
+fi
+
+# Normalize CLI args to absolute paths BEFORE `cd`, so paths
+# given relative to the caller's cwd survive the chdir into
+# REPO_ROOT. Without this, `script.sh ./foo.yml` from outside
+# REPO_ROOT would error after the cd because `./foo.yml` no
+# longer resolves.
+if [ $# -gt 0 ]; then
+  abs_args=()
+  for arg in "$@"; do
+    case "$arg" in
+      /*) abs_args+=("$arg") ;;
+      *)  abs_args+=("$PWD/$arg") ;;
+    esac
+  done
+  set -- "${abs_args[@]}"
+fi
+
+cd "$REPO_ROOT"
 
 # Allow-list verified 2026-04-24. Source URL:
 # https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job#standard-github-hosted-runners-for-public-repositories
@@ -110,10 +142,15 @@ _verify_age_ok() {
   # Linux (GNU date) and macOS (BSD date).
   local now_epoch last_epoch age_days
   now_epoch="$(date -u +%s)"
-  if date -j -f "%Y-%m-%d" "$LAST_VERIFIED" "+%s" >/dev/null 2>&1; then
-    last_epoch="$(date -j -f "%Y-%m-%d" "$LAST_VERIFIED" "+%s")"
-  elif date -d "$LAST_VERIFIED" "+%s" >/dev/null 2>&1; then
-    last_epoch="$(date -d "$LAST_VERIFIED" "+%s")"
+  # Both branches must compute UTC epoch to avoid TZ skew
+  # between now (UTC) and last (locally-interpreted). BSD
+  # date treats the input as local-time by default; force
+  # UTC via `TZ=UTC` so age_days is computed in a single
+  # timezone.
+  if TZ=UTC date -j -f "%Y-%m-%d" "$LAST_VERIFIED" "+%s" >/dev/null 2>&1; then
+    last_epoch="$(TZ=UTC date -j -f "%Y-%m-%d" "$LAST_VERIFIED" "+%s")"
+  elif TZ=UTC date -d "$LAST_VERIFIED" "+%s" >/dev/null 2>&1; then
+    last_epoch="$(TZ=UTC date -d "$LAST_VERIFIED" "+%s")"
   else
     echo "WARN: could not parse LAST_VERIFIED=$LAST_VERIFIED on this platform" >&2
     return 0
@@ -161,29 +198,31 @@ stale_pattern="$(IFS='|'; echo "${escaped_stales[*]}")"
 nonword_start='([^A-Za-z0-9_]|^)'
 nonword_end='([^A-Za-z0-9_]|$)'
 
-fail=0
-warn=0
+fail=0       # 1 = stale / rolling / not-allow-listed label
+env_error=0  # 1 = unreadable file or other env/usage problem
+warn=0       # 1 = allow-list LAST_VERIFIED is stale (>30d)
+             # MUST be initialized before the final `[ "$warn" = "1" ]`
+             # check; under `set -u`, an unset var would abort.
 
 for file in "${files[@]}"; do
   # Verify file exists and is readable. Without this, the
   # grep below would silently swallow a missing-file error
-  # and report 'ok' for nothing-actually-linted.
+  # and report 'ok' for nothing-actually-linted. Tracked
+  # in env_error (exit 1) NOT fail (exit 2) so callers can
+  # distinguish 'usage problem' from 'stale-label finding'.
   if [ ! -r "$file" ]; then
     echo "ERROR: cannot read $file (does not exist or unreadable)" >&2
-    fail=1
+    env_error=1
     continue
   fi
-  # Two-pass YAML comment stripping:
-  # 1. Drop full-line comments (first non-whitespace = `#`).
-  # 2. Strip trailing comments — anything after a ` #` (with
-  #    a leading space, the YAML-spec comment-start
-  #    sentinel) on lines that aren't already comment-only.
-  #    Conservative: doesn't try to handle `#` inside
-  #    quoted strings (rare in workflow YAML); tolerates
-  #    the corner case at the cost of an occasional false
-  #    positive.
+  # Two-pass YAML comment stripping. The `grep -vE`-pass exits
+  # 1 if EVERY line is a comment (no output); under
+  # `set -o pipefail` that would propagate as the pipeline's
+  # exit code, even though "no output" is a normal outcome.
+  # Group ONLY the grep with `|| true` so a real `sed` failure
+  # (missing tool, unsupported `-E`) still surfaces.
   uncommented="$(
-    grep -vE '^[[:space:]]*#' "$file" \
+    { grep -vE '^[[:space:]]*#' "$file" || true; } \
       | sed -E 's/[[:space:]]+#.*$//'
   )"
   # Extract lines that look like runner-label references,
@@ -208,6 +247,71 @@ for file in "${files[@]}"; do
     printf '%s\n' "$rolling_hits" | sed 's/^/  /'
     fail=1
   fi
+
+  # Allow-list validation: any runner label NOT in
+  # ALLOWED_LABELS or in expression form (`${{ ... }}` /
+  # matrix expansion) is flagged as not-on-allow-list.
+  # This catches future-stale labels (e.g., `ubuntu-30.04`
+  # invented after this script was last verified) that
+  # don't appear in the explicit STALE_LABELS subset.
+  #
+  # Escape ALLOWED + ROLLING labels for ERE alternation —
+  # labels like `ubuntu-24.04` contain `.` which is an ERE
+  # wildcard; without escaping, typos like `ubuntu-24x04`
+  # would slip through as "allow-listed".
+  escaped_allowed=()
+  for label in "${ALLOWED_LABELS[@]}"; do
+    escaped_allowed+=("$(escape_for_regex "$label")")
+  done
+  allowed_pattern="$(IFS='|'; echo "${escaped_allowed[*]}")"
+  escaped_rolling=()
+  for label in "${ROLLING_ALIASES[@]}"; do
+    escaped_rolling+=("$(escape_for_regex "$label")")
+  done
+  escaped_rolling_pattern="$(IFS='|'; echo "${escaped_rolling[*]}")"
+  rolling_or_allowed="${allowed_pattern}|${escaped_rolling_pattern}"
+  # Validate both direct scalar `runs-on:` labels and matrix
+  # list entries (the same `matrix_prefix` form used for
+  # stale/rolling above). Skip expression-form labels
+  # (`${{ ... }}`) which the workflow author explicitly
+  # templated — those are validated via the matrix entries
+  # they expand from.
+  scalar_unknown="$(printf '%s\n' "$uncommented" \
+    | grep -nE 'runs-on:[[:space:]]*[A-Za-z0-9_-][A-Za-z0-9._-]*' \
+    | grep -vE 'runs-on:[[:space:]]*\$\{\{' \
+    | grep -vE "runs-on:[[:space:]]*(${rolling_or_allowed})($|[[:space:]]|#)" \
+    || true)"
+  # Matrix list entries: `- ubuntu-24.04` / `- "ubuntu-24.04"`.
+  # Looks at lines under a `matrix:` block; we approximate by
+  # scanning every list entry that names an OS-like label
+  # (contains a digit) and checking the literal label against
+  # the allow-list. False-positive risk: arbitrary list
+  # entries with digits get checked — labels like `ci-1.0` in
+  # an unrelated matrix would fire. Mitigation: this is an
+  # advisory not-on-allow-list check, not a hard reject.
+  #
+  # The exclude filters use a "line-number-aware" prefix
+  # `(^|^[0-9]+:)` because grep -n prepends `<linenum>:` to
+  # each line; an unprefixed `^` anchor would not match.
+  matrix_prefix_ln='(^|^[0-9]+:)[[:space:]]*-[[:space:]]+(['"'"'"]?)'
+  matrix_unknown="$(printf '%s\n' "$uncommented" \
+    | grep -nE "${matrix_prefix}[A-Za-z][A-Za-z0-9._-]*[0-9][A-Za-z0-9._-]*" \
+    | grep -vE "${matrix_prefix_ln}(${rolling_or_allowed})(['\"]?)([[:space:]]|$|#)" \
+    | grep -vE "${matrix_prefix_ln}(${stale_pattern})" \
+    || true)"
+  unknown_hits="${scalar_unknown}"
+  if [ -n "$matrix_unknown" ]; then
+    if [ -n "$unknown_hits" ]; then
+      unknown_hits="${unknown_hits}"$'\n'"${matrix_unknown}"
+    else
+      unknown_hits="${matrix_unknown}"
+    fi
+  fi
+  if [ -n "$unknown_hits" ]; then
+    echo "NOT-ON-ALLOW-LIST RUNNER LABEL(S) in $file (label is neither stale nor allowed; allow-list may need refresh):"
+    printf '%s\n' "$unknown_hits" | sed 's/^/  /'
+    fail=1
+  fi
 done
 
 if _verify_age_ok; then
@@ -216,10 +320,21 @@ else
   warn=1
 fi
 
+if [ "$env_error" = "1" ]; then
+  echo "" >&2
+  echo "Environment / usage error encountered (see ERROR" >&2
+  echo "lines above). This is distinct from stale-label" >&2
+  echo "findings; exit 1 reserves an out-of-band code so" >&2
+  echo "callers can distinguish 'something broke' from" >&2
+  echo "'stale labels found'." >&2
+  exit 1
+fi
+
 if [ "$fail" = "1" ]; then
   echo ""
-  echo "One or more workflow files pin stale runner versions."
-  echo "Update to the current standard-runner labels. Canonical list:"
+  echo "One or more workflow files pin stale / rolling /"
+  echo "not-on-allow-list runner labels. Update to current"
+  echo "standard-runner labels. Canonical list:"
   for l in "${ALLOWED_LABELS[@]}"; do
     echo "  - $l"
   done
