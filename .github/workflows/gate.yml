@@ -45,6 +45,20 @@ on:
 permissions:
   contents: read
 
+# Workflow-level env: exposes GITHUB_TOKEN to every step so mise's
+# `aqua:` backend (used for uv / shellcheck / actionlint /
+# markdownlint-cli2 / etc) can authenticate its GitHub API calls.
+# Without a token, mise hits the unauthenticated rate limit
+# (60 requests per hour per IP, shared across all GitHub Actions
+# runners) and fails to fetch release tags with a 403. With the
+# token, the limit is 5000/hr per token. See
+# https://mise.jdx.dev/dev-tools/github-tokens.html for mise's
+# supported token sources. The token inherits the workflow's
+# `permissions: contents: read` — no write escalation; mise only
+# reads release-tag metadata.
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
