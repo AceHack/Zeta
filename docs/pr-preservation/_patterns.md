@@ -273,7 +273,9 @@ permitted; preserves provenance:
 - `docs/DECISIONS/**`
 - `docs/ROUND-HISTORY.md`
 - `docs/aurora/**`
-- `docs/pr-preservation/**`
+- `docs/pr-preservation/*-drain-log.md` (per-log records;
+  `_patterns.md` is the synthesis-over-history exception per
+  the section below)
 - `memory/**` (out-of-scope for code-style rules anyway)
 
 **Current-state-class surfaces** — role-ref discipline applies; no
@@ -285,6 +287,17 @@ first-name attribution:
 - Behavioural docs, threat models
 - Spec docs (`docs/**` not in history-class above)
 
+**Synthesis-over-history surfaces** — current-state-tracking
+abstractions over history-class corpora; reflect current state
+not historical sequence:
+
+- `docs/pr-preservation/_patterns.md` (this file) —
+  synthesis-index over the per-PR drain-log corpus. Edited as
+  new logs land + patterns surface; should reflect current
+  corpus state. Underscore-prefix candidate convention for
+  "synthesis-indices over history-class corpora" co-located
+  with the corpus.
+
 **Tension surfaces** — both apply; defer to maintainer:
 
 - `docs/bootstrap/**` (#195) — current-state operational substrate
@@ -295,7 +308,9 @@ first-name attribution:
 The **Otto-279 history-vs-current-state carve-out is mature enough
 to codify in `docs/AGENT-BEST-PRACTICES.md` as a stable BP-NN rule.**
 Tension surfaces need either a third surface class or explicit
-carve-out within current-state.
+carve-out within current-state. Synthesis-over-history is now
+named as a third class that's distinct from both pure history-
+class and pure current-state.
 
 ---
 
@@ -357,9 +372,31 @@ When a new drain-log lands in `docs/pr-preservation/`:
 3. If an outcome class needs renaming or a tension surface gets a
    maintainer-decision, update the taxonomy sections.
 
-This file is itself current-state operational substrate: it should
-reflect the corpus state, not the historical sequence in which
-patterns were discovered.
+This file is a **synthesis-index over a history-class corpus** —
+the per-PR `*-drain-log.md` files in this directory are the
+history-class records (preserve names, point-in-time records,
+provenance, Otto-279 carve-out applies), and this `_patterns.md`
+is the current-state-tracking abstraction over them. The two
+surface classes coexist in the same directory by design:
+
+- `docs/pr-preservation/*-drain-log.md` — **history-class** per-PR
+  records (per the surface-class taxonomy above; Otto-279 carve-out
+  applies; first-name attribution preserves provenance).
+- `docs/pr-preservation/_patterns.md` (this file) —
+  **current-state synthesis-index** that should reflect the
+  corpus state, not the historical sequence in which patterns
+  were discovered. This is a third surface class —
+  *synthesis-over-history* — distinct from both pure
+  history-class and pure current-state surfaces.
+
+The directory-level surface-class declaration in the
+"Surface-class taxonomy" section above applies to the per-log
+records (the per-log glob `docs/pr-preservation/*-drain-log.md`);
+the index file is explicitly carved out as a synthesis-index.
+The underscore prefix (`_patterns.md`) is a candidate
+naming convention for "synthesis-indices over history-class
+corpora" — when the convention matures, it could be promoted to
+a named pattern itself.
 
 ## Reference patterns
 
