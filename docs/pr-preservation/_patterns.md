@@ -136,6 +136,39 @@ heading to scope explicitly.
 
 **Future doc-lint candidate**: claim-vs-list cardinality check.
 
+### Line-leading list-marker confusion (CommonMark MD032)
+
+Observed on: #377 (`+ manifest files` continuation), #280
+(`+ provenance-aware scoring` continuation), #195 (`+ Kenji
+(Architect)` owner-list continuation), #235 + #219 (Amara
+verbatim ferry content with `+ git history` / `- [link]`
+continuation lines). 5 instances in one tick (2026-04-25).
+
+Pattern: line wrap in multi-line prose / inline-bold spans /
+multi-author lists hits a CommonMark special character (`+`,
+`-`, `*`, `1.`) at line start. Markdownlint MD032 sees the
+wrap-line as a list-item start and complains about missing
+blank-line separators. The author intent is paragraph
+continuation; the parser sees a new list.
+
+Decision tree:
+
+- **Author-controlled prose** (#377, #280, #195) — reflow
+  inline by extending the prior line, switching to
+  comma-separator (`A + B + C` → `A, B, C`), or replacing
+  `+` with `plus`. Fix the rendering, preserve the meaning.
+- **Verbatim ferry / courier content** (#235, #219) — Otto-227
+  forbids editing the verbatim text. Add the surface to the
+  markdownlint ignore list (precedent: `docs/aurora/**`,
+  `docs/amara-full-conversation/**`). Config-PR fix unblocks
+  every downstream PR touching the same surface in one shot.
+
+**Pre-commit-lint candidate**: regex check for line-leading
+`+ ` / `- ` / `* ` inside non-list contexts (paragraph
+continuation lines without preceding blank). Compose with
+the existing Class A inline-code-span line-wrap check; same
+shape (line-wrap hits a CommonMark special).
+
 ### External-source verifiability gaps
 
 Observed on: #219 (OpenAI help-center / DBSP paper / provenance-
