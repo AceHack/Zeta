@@ -10095,6 +10095,186 @@ systems. This track claims the space.
   **Memory:** none yet — doctrine lands after the
   shortlist PR lands and one pilot proves out.
 
+- [ ] **Naming correction: "three-way-parity" →
+  "four-way-parity" for the install script target
+  matrix.** Human maintainer 2026-04-24 (verbatim):
+  *"three-way-parity it's really 4 way macos (older
+  bash), ubuntu, widows git bash, and wsl bash ubuntu"*.
+
+  Current factory substrate names the install script
+  parity as "three-way" (dev laptop + CI runner +
+  devcontainer image), which was a deployment-target
+  count. The real portability axis Aaron is pointing at
+  is the shell-runtime matrix the script has to boot on:
+
+  1. macOS (bash 3.2 — older syntax, no assoc arrays,
+     `[[` caveats).
+  2. Ubuntu (modern bash 5.x — assoc arrays, modern
+     `mapfile` etc).
+  3. Windows Git Bash (MSYS2-flavoured bash; path
+     translation, line endings, Unix-tool subset).
+  4. WSL Ubuntu bash (hybrid — Linux kernel, Windows
+     filesystem semantics when crossing the /mnt
+     boundary).
+
+  Each of the four has its own bash idiom constraints,
+  and the install script needs to work on all four
+  cleanly. The "three-way deployment-target parity" is
+  a different axis than the "four-way shell-runtime
+  parity" and both are real; the factory today
+  conflates them under one "three-way-parity" label.
+
+  **Scope:**
+
+  - Update `.claude/skills/devops-engineer/SKILL.md`
+    description + step-6 parity-check section to use
+    the four-way framing explicitly, calling out the
+    two axes (deployment target × shell runtime)
+    rather than one count.
+  - Sweep ~20 docs that reference "three-way-parity"
+    (docs/ROUND-HISTORY.md, docs/DEBT.md,
+    docs/AGENT-BEST-PRACTICES.md, etc.) and land the
+    updated framing where the reference is load-
+    bearing. Leave historical ROUND-HISTORY rows
+    alone — they describe what the factory believed
+    at the time.
+  - If GOVERNANCE.md §24 language ever uses the
+    "three-way" count (it doesn't today — the file
+    currently avoids the count), preserve the two-axis
+    framing if it ever does.
+
+  **Not in scope:**
+
+  - Changing the script's actual portability contract —
+    it already has to work on all four shells; only the
+    name was wrong.
+  - Adding new target shells (zsh, fish, dash, busybox
+    ash) — the four named are the existing contract.
+
+  **Effort:** S (small, mechanical sweep + one skill
+  description edit + one or two docs page rewrites).
+
+  **Memory:** the 4-shell matrix (macOS 3.2 / Ubuntu /
+  Git Bash / WSL Ubuntu) is now captured in this row;
+  promote to a `memory/feedback_*` file only if Aaron
+  reinforces it in another tick. The directive is
+  terse but specific — caught because my response
+  used "three-way" and he pushed back — so it's one
+  of those "quiet but real" corrections that's worth
+  landing without over-ceremony.
+
+- [ ] **Peer review gates "authoritative canonical"
+  status on any new factory substrate — discipline
+  rule, BP-NN promotion candidate.** Human maintainer
+  2026-04-24 (verbatim): *"i don't treat anyting this
+  new as final authorative connoncial until peer
+  review"*.
+
+  Current state: the factory commits substrate fast
+  (research docs, BACKLOG rows, memory files, skill
+  bodies) and the commit history gives a good audit
+  trail. But "committed" is not the same as
+  "authoritative". Aaron's rule names an intermediate
+  state the factory doesn't yet formally mark:
+  committed-and-real-but-not-yet-final-canonical.
+  Peer review is the gate that promotes substrate
+  from the intermediate state to final-canonical.
+
+  **Applies to:**
+
+  - Research docs under `docs/research/**` — committed,
+    cited within the factory, but not authoritative
+    until peer-reviewed.
+  - BACKLOG rows proposing new methodology — not
+    authoritative for "this is how we do it" until
+    peer-reviewed; they're proposals.
+  - Memory files capturing a new rule — in-force
+    because Aaron said it, but not BP-NN-canonical
+    until peer-reviewed and promoted.
+  - Skill files shipping a new workflow — runnable,
+    but not authoritative as "the right way" until
+    peer-reviewed.
+  - The provenance-aware claim-veracity detector vN
+    promotion path (already reinforced in-spec after
+    this directive landed — the axiomatic substrate
+    ALONE doesn't promote the detector; axioms +
+    peer-reviewed axioms does).
+
+  **Does NOT apply to:**
+
+  - Committed code under `src/**` — the code is
+    authoritative by virtue of compiling and passing
+    tests. Peer review is still valuable but "final
+    canonical" for code means "in production + green
+    CI", which is a different gate.
+  - Historical surfaces (ROUND-HISTORY, DECISIONS,
+    aurora, pr-preservation, hygiene-history) — these
+    are history, not claims-about-the-present; they
+    don't need "final authoritative" promotion.
+  - Mechanical fixes (typos, lint, format, sweep) —
+    they don't propose substrate.
+
+  **Concrete gate mechanics to design:**
+
+  - What counts as a peer-review pass? External
+    reviewer (Codex, Copilot, harsh-critic subagent,
+    human contributor) that actually engaged with the
+    substrate on its merits, not rubber-stamped.
+  - How is a "promotion event" marked in the factory?
+    Candidate: frontmatter field on the substrate
+    file (`canonical: true` or `peer-reviewed: <date>
+    by <reviewer>`), or a dedicated
+    `docs/CANONICAL-LEDGER.md` tracking promotions.
+  - When the substrate is modified after promotion,
+    does the canonical status hold or re-require
+    review? Probably re-require for material edits,
+    retain for mechanical edits. Rule similar to ADR
+    supersedence.
+
+  **Scope of this row:**
+
+  - Draft the "peer review gates canonical" rule text
+    suitable for promotion to
+    `docs/AGENT-BEST-PRACTICES.md` as a new BP-NN rule
+    (follow the stable-numbering discipline in the BP
+    list).
+  - Decide the promotion-event mechanic (frontmatter
+    field vs ledger file).
+  - Audit a handful of recent substrate files (the
+    claim-veracity detector spec, the clean-room BIOS
+    row, this row itself) to classify current status
+    (committed / peer-reviewed / promoted) and see
+    whether the mechanic covers them.
+
+  **Not in scope:**
+
+  - Retroactive peer-review sweep of all existing
+    substrate — years of work; drop in at cadence
+    going forward instead.
+  - Blocking new substrate landing on peer review —
+    that would stall the factory; "committed-not-yet-
+    canonical" is a legitimate working state.
+
+  **Effort:** M (medium — rule text + mechanic decision
+  + small audit). Depends on who peer-reviewer roles
+  include (external reviewers already review; the
+  mechanic formalizes the pass).
+
+  **Composes with:**
+
+  - `docs/AGENT-BEST-PRACTICES.md` BP-NN rule list
+    (this becomes a new stable rule if it lands).
+  - `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md`
+    — vN promotion gate already references this
+    discipline explicitly ("axioms + peer review
+    together gate the promotion").
+  - The #404 clean-room BIOS workflow — that row's
+    standards-pass persona is in the peer-review
+    family; this discipline generalizes the gate.
+  - Otto-237 mention-vs-adoption discipline (same
+    shape: committed ≠ authoritative, adoption is a
+    separate gate).
+
 - [ ] **User-mode filesystem driver interface — Zeta as
   a mountable FS via FUSE / WinFsp / macFUSE; research
   first; composes with eventual microkernel + all-
