@@ -120,20 +120,54 @@ From the oracle-scoring design (PR #266):
 Combined with Aminata's binding additions named earlier:
 Amara's 7th-ferry proposal had 7 base fields (`h_inputs`,
 `h_actions`, `h_outputs`, `budget_id`, `policy_version`,
-`approval_set_commitment`, `node_id`); v0 adds
-`hash_version` (cryptographic-agility prefix) and now
-`parameter_file_sha` (oracle-scoring binding above), so the
-v0 input set extends to **9 fields total**.
+`approval_set` [raw, replaced by `approval_set_commitment`
+in v0 per Aminata's side-channel finding — same slot,
+different binding], `node_id`); v0 adds `hash_version`
+(cryptographic-agility prefix), `parameter_file_sha`
+(oracle-scoring binding above — naming-note: `_sha` is legacy
+Otto-91 notation meaning "hash digest"; the algorithm bound
+by `hash_version = 0x01` is BLAKE3-256, not SHA-256; details
+in the canonical-encoding section below), and
+`issuance_epoch` (replay-determinism + deprecation-gate
+binding — receipts carry which epoch they were issued under,
+bound into `h_r` so an attacker cannot **post-facto rewrite**
+the claimed epoch on a published receipt). v0 input set
+extends to **10 fields total**.
+
+**Backdating limitation (known, NOT addressed by binding
+alone).** Binding `issuance_epoch` into `h_r` prevents
+post-signature mutation but does NOT prevent a compromised
+signer or coerced agent from setting `issuance_epoch` to a
+value BEFORE the deprecation cutoff at the receipt-creation
+moment. Mitigations require an out-of-band time witness:
+
+1. **Trusted timestamping authority (TSA per RFC 3161)** —
+   a third-party countersignature with the TSA's authoritative
+   timestamp. Adds external dependency but provides
+   independent epoch attestation.
+2. **Aurora-anchored chained timestamps** — issuance epoch
+   chained against a recently-published lucent-ksk anchor
+   (Bitcoin block hash, Aurora chain head, or similar). An
+   attacker would need to also forge a block-anchor to
+   backdate.
+3. **Forward-only registry** — lucent-ksk's policy registry
+   records the highest-seen `issuance_epoch` per
+   `(version, signer)` and rejects any future receipt
+   claiming an earlier epoch from the same signer.
+
+v0 documents the backdating gap as a known limitation; the
+specific countermeasure is left to the lucent-ksk ADR.
 
 ---
 
 ## Proposed v0 scheme (design input for lucent-ksk ADR)
 
-### Hash input set (9 fields)
+### Hash input set (10 fields)
 
 ```text
 h_r = BLAKE3(
   encode(hash_version)
+  ∥ encode(issuance_epoch)
   ∥ encode(h_inputs)
   ∥ encode(h_actions)
   ∥ encode(h_outputs)
@@ -160,10 +194,21 @@ order listed:
 
 - `hash_version`: 1-byte unsigned integer (versions
   `0x00`-`0xFF` reserved; `0x01` = this scheme).
+- `issuance_epoch`: 8-byte unsigned big-endian integer
+  (`u64-be`), milliseconds since Unix epoch. Bound into
+  `h_r` so the verifier-side issuance-epoch deprecation
+  gate (req #2) cannot be circumvented by post-facto
+  rewriting the claimed epoch on a forged receipt.
 - `h_inputs` / `h_actions` / `h_outputs` / `parameter_file_sha`
-  / `approval_set_commitment`: 32-byte fixed-width BLAKE3
+  / `approval_set_commitment`: 32-byte fixed-width BLAKE3-256
   digests (no length prefix needed — every value is exactly
-  32 bytes).
+  32 bytes). Note: `parameter_file_sha` is named after the
+  legacy Otto-91 oracle-scoring naming (`_sha` historically
+  meant "hash digest" in that context). The actual algorithm
+  bound by `hash_version = 0x01` is BLAKE3-256, not SHA-256.
+  Future schemes may select a different digest algorithm
+  via the `hash_version` registry; the field name stays for
+  backward-compatibility with Otto-91 prose.
 - `budget_id` / `policy_version` / `node_id`: variable-length
   identifiers encoded as `len:u32-be ∥ bytes` length-prefix
   framing, where `bytes = NFC-normalised UTF-8 octets` of the
@@ -191,7 +236,15 @@ Changes from Amara's 7th-ferry proposal:
    cost (adversary now has to modify code + ship receipts
    claiming old parameters, which don't match the actual
    parameter-file SHA).
-3. **Replace `approval_set` with `approval_set_commitment`**
+3. **Add `issuance_epoch`** — bound into `h_r` so the
+   verifier-side issuance-epoch deprecation gate (req #2)
+   cannot be circumvented by post-facto rewriting the
+   claimed epoch. 8-byte u64-be milliseconds since Unix
+   epoch. Without this binding, an attacker could forge a
+   receipt under a deprecated `hash_version` and put the
+   claimed epoch BEFORE the deprecation cutoff to slip
+   past the gate.
+4. **Replace `approval_set` with `approval_set_commitment`**
    — Aminata side-channel: raw `approval_set` leaks
    cardinality + identities to read-only ledger observers.
    Instead, bind a **commitment** (Merkle root or hash of
