@@ -10210,7 +10210,7 @@ systems. This track claims the space.
      Human peer review is additional-trust, not an
      additional required gate — substrate does not
      have to wait on a human to be canonical. Aaron
-     autonomous-loop 2026-04-25 clarification:
+     autonomous-loop 2026-04-24 clarification:
      *"agent peer review is enough to graduate it"*.
      Disclosure tag: `(peer-reviewed; canonical)` or
      no tag (canonical-when-reviewed is the default).
@@ -10699,6 +10699,58 @@ systems. This track claims the space.
   memory file until actual customer engagement work
   begins — same discipline as `#404`: doctrine lands
   only when the work becomes real.
+
+- [ ] **Exempt `memory/CURRENT-*.md` from memory-index-
+  integrity paired-edit trigger.** The
+  `memory-index-integrity.yml` workflow (NSA-001 guard)
+  requires any modify to a top-level `memory/*.md` file
+  to be paired with a `memory/MEMORY.md` edit in the same
+  PR. The intent is real — new session memories must
+  have index pointers — but the trigger-exemption list
+  (`memory/README.md`, `memory/persona/*`, `memory/MEMORY.md`
+  itself — matching the single-star pattern the workflow
+  actually uses) misses `memory/CURRENT-*.md`. CURRENT files
+  are per-maintainer distillations of memories that are
+  ALREADY indexed under their own `feedback_` / `project_` /
+  `reference_` entries; the CURRENT file itself isn't a
+  new indexable memory. Modifying CURRENT shouldn't
+  require a MEMORY.md edit, but today it does (hit on
+  PR #412 2026-04-24, worked around by adding a dated
+  "refreshed" note to MEMORY.md's fast-path line).
+
+  **Scope:**
+
+  - Add `memory/CURRENT-*.md` (equivalently
+    `memory/CURRENT-aaron.md` / `memory/CURRENT-amara.md`
+    / future CURRENT-<name>.md) to the case-statement
+    exemption list in
+    `.github/workflows/memory-index-integrity.yml:60-95`,
+    alongside the existing `memory/README.md` and
+    `memory/persona/*` cases.
+  - Regression-verify: a PR that modifies only
+    `memory/CURRENT-aaron.md` should pass without
+    touching MEMORY.md.
+  - Leave the core NSA-001 guard intact — any new
+    `memory/feedback_*.md` / `memory/project_*.md` /
+    `memory/user_*.md` / `memory/reference_*.md` still
+    requires a paired MEMORY.md index pointer. (Directory
+    prefix spelled consistently on each for clarity since
+    all four live at the same depth.)
+
+  **Not in scope:**
+
+  - Widening or loosening the NSA-001 guard itself.
+  - Backfilling missed MEMORY.md pointers for prior
+    CURRENT refreshes (none missing today — the
+    cadence has always touched MEMORY.md as part of
+    the refresh).
+
+  **Effort:** S (one case-statement entry in the
+  workflow + one-shot verify).
+
+  **Composes with:** NSA-001 incident
+  (`docs/hygiene-history/nsa-test-history.md`) — same
+  rule, refined exemption.
 
 - [ ] **User-mode filesystem driver interface — Zeta as
   a mountable FS via FUSE / WinFsp / macFUSE; research
