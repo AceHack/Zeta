@@ -708,6 +708,145 @@ within each priority tier.
   side (Window.fs wiring pending). Target: measured numbers in
   `docs/BENCHMARKS.md` by end of round 20.
 
+- [ ] **Itron-lineage signal-processing → factory-observability
+  mapping**. Second-wave Itron disclosure
+  (auto-loop-34, captured in
+  `memory/user_aaron_itron_pki_supply_chain_secure_boot_background.md`)
+  named a specific portfolio of published signal-processing /
+  anomaly-detection techniques the maintainer worked on at
+  director-level IoT engineering scope. Each technique maps
+  concretely onto unfinished factory surfaces. The ARC3-DORA
+  PNNL-HITL composition landed in
+  `docs/research/arc3-dora-benchmark.md` (auto-loop-35) is the
+  first executed mapping; the remainder are research-doc
+  candidates. **Scope: produce a one-page research doc per
+  mapping pair below; do NOT implement yet — first occurrence
+  per pair is prior-art cite + composition sketch only.**
+
+  Mapping pairs (each a candidate research doc
+  under `docs/research/itron-lineage/`):
+
+  1. **PNNL HITL expert-derived confidence → agent-output-
+     under-uncertainty measurement substrate (the layer
+     between agent output and DORA grade, NOT DORA itself;
+     DORA stays objective devops-delivery metrics).** LANDED
+     auto-loop-35 in `docs/research/arc3-dora-benchmark.md`
+     §Prior-art lineage. Occurrence-3 of wink-validation.
+  2. **Disaggregation discipline → ZSet retraction-native
+     operator algebra.** ZSet preserves per-multiplicity;
+     aggregation loses it. Industrial-scale disaggregation
+     (DriveNets network-disaggregation) validates the
+     architectural direction the Escro maintain-every-dep +
+     microkernel-endpoint directive already committed to.
+     Composition sketch: aggregate-view operators as
+     derivations, disaggregated-view as primitive.
+  3. **PRIDES (Power Rising and Descending Signature,
+     low-overhead binary) → per-commit alignment-clause
+     signature.** Every commit produces a binary
+     rising/falling pattern against the 20 ALIGNMENT clauses
+     (HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5). PRIDES-style
+     compact signature is IoT-memory-compatible — usable by a
+     resource-constrained alignment-observability sidecar.
+  4. **Wavelet-GAT (Graph Attention Network over wavelet
+     decomposition) → clause-graph anomaly detection.**
+     Clause-commit graph attends to suspicious edges; wavelet
+     decomposes low+high-freq components of the compliance
+     time-series. 99% published accuracy target in grid
+     literature; portable signal.
+  5. **GESL (Grid Event Signature Library, 900+ types) →
+     factory-event signature library.** Curate a library of
+     named alignment-anomaly types (clause drift, scope creep,
+     retraction-not-restored, operator-misuse) matchable
+     against commit-stream. Complements `docs/WONT-DO.md` +
+     `docs/TECH-DEBT.md` as positive/negative
+     anomaly-signature catalog.
+  6. **Context-Agnostic Learning (SCADA) → universal operator
+     algebra calibration.** SCADA's universal context-agnostic
+     values that work across network locations map to Zeta's
+     design goal that retraction-native operators compose at
+     any point in the pipeline. Composition sketch: anomaly
+     signals normalised against operator-algebra axioms rather
+     than per-module conventions.
+  7. **Physics-Informed Generators → operator-algebra-informed
+     code generators.** Physics priors constrain ML-generator
+     output; Zeta's operator-algebra axioms can constrain
+     Copilot / Codex / Claude generators. This IS the factory's
+     well-defined-Occam's discipline (Rodney's Razor: prefer
+     the simplest generator output that still satisfies the
+     operator-algebra invariants — a constraint-narrowing
+     prior over generator hypothesis space) at the
+     code-generation layer.
+  8. **MUSIC spectral (SINR under noise) → clause-compliance
+     spectral decomposition.** Commit-cadence, round-close
+     cadence, tick-cadence make alignment time-series noisy;
+     MUSIC extracts dominant frequencies (ambient drift vs.
+     directed work).
+  9. **FFT foundation → time-series instruments across the
+     factory.** Any series we hold (commit-cadence,
+     clause-compliance, tick-duration, compoundings-per-tick)
+     has an FFT view. Cheapest, most portable. Likely first
+     instrument to land if instrumentation work starts.
+  10. **Micro-Doppler (µD) / VWCD → commit-vibration signature
+     extraction.** Which files vibrate together under which
+     work-session rhythm. Adjacent to existing pipeline-churn
+     analysis.
+
+  **Why this is one row, not 10.** Per the factory's
+  occurrence-1 discipline, each pair is research-doc-level
+  first-pass only; no implementation commits without
+  occurrence-2+ calibration. One row tracks the portfolio so
+  the promotion threshold is visible and the composition
+  pattern is explicit. The research docs land as a family
+  under `docs/research/itron-lineage/` once started.
+
+  **Why research-project-tier.** These are measurement /
+  observability instruments, not shipped library surface.
+  They unlock ALIGNMENT measurability (Zeta's primary research
+  focus per `docs/ALIGNMENT.md`) by giving specific, published,
+  validated signal-extraction techniques. They do NOT need to
+  be implemented to be valuable — naming + citing is
+  occurrence-1 contribution.
+
+  **Effort.** Research doc per pair: 1-2 ticks of speculative
+  work each. Pair #1 already LANDED. Pairs #2, #3, #5, #9
+  likely strongest next candidates (highest composition-value
+  with existing factory surfaces). Pairs #6, #7 are architectural
+  claims that compose with well-defined-Occam's; can land as
+  short citation sections in existing docs rather than new
+  research docs. Pairs #4, #8, #10 require more background
+  before they're tractable.
+
+  **Composes with.**
+  - `docs/ALIGNMENT.md` — measurable alignment primary research
+    focus; every pair above is a measurement instrument for
+    a clause-compliance signal.
+  - `docs/research/arc3-dora-benchmark.md` — cognition-layer
+    measurement substrate where pair #1 landed.
+  - `memory/user_aaron_itron_pki_supply_chain_secure_boot_background.md`
+    — verbatim maintainer disclosure + calibration context.
+  - `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`
+    — the occurrence-discipline that gates promotion from
+    research-doc to ADR / BP-NN / shipped instrument.
+  - `docs/TECH-RADAR.md` — candidate destination for pair #9
+    (FFT) once a first instrument lands.
+  - Escro maintain-every-dep → microkernel-endpoint directive
+    — disaggregation (pair #2) is the industrial-scale pattern
+    Aaron lived through that the directive already follows.
+
+  **What this is NOT.**
+  - NOT a commitment to implement any pair (occurrence-1
+    discipline: cite prior-art + compose sketch, wait for
+    occurrence-2 to promote).
+  - NOT a cap on pairs — additional pairs may emerge; this row
+    tracks the portfolio without closing it.
+  - NOT a reframe of ALIGNMENT.md clauses — the clauses stay
+    stable; these are instruments for measuring them.
+  - NOT signal-to-noise-ratio-chasing (MUSIC's SINR utility is
+    literal, not the measurement philosophy).
+  - NOT an Itron-specific dependency — all named techniques
+    are publicly published; maintainer's prior art accelerates
+    composition understanding but does not constrain adoption.
+
 ## P1 — SQL frontend + query surface (round-33 vision, v1 scope)
 
 - [ ] **Shared query IR that compiles to the DBSP operator

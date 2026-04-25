@@ -255,6 +255,156 @@ not a metaphor.
   tier where new research-level moves originate; stepdown
   measures how much of that work survives at lower capacity.
 
+## Prior-art lineage — PNNL HITL / Itron signal processing
+
+**Added 2026-04-22 auto-loop-35.** The maintainer named the
+connection explicitly: PNNL's "expert-derived confidence"
+scoring framework (Grid Event Signature Library, ~900
+signature types, human-in-the-loop confidence-weighting
+layered on ML output) is a published analog of the factory's multi-substrate
+triangulation + reviewer-roster + maintainer-echo pattern that
+this benchmark presumes as the measurement substrate sitting
+*between the agent output and the DORA grade* — distinct from
+the DORA metrics themselves.
+
+**Separation of concerns.** DORA (deploy frequency, lead time
+for changes, change failure rate, mean time to restore service)
+is a DevOps-delivery benchmark family from the Google/Accelerate
+research line; metrics are objectively measurable from CI/CD
+and incident-tracking data. ARC-3 is Chollet's cognition /
+abstraction-and-reasoning benchmark. This factory's benchmark
+is **DORA (the objective)** framed as the maintainer's personal
+ARC-3-equivalent (the class-of-benchmark framing: frontier
+reasoning under compounding tests with no instructions). The
+document filename retains `arc3-dora` for continuity, but the
+layering is:
+
+- **DORA metrics**: objective delivery measurements.
+  Not HITL-modulated. Deployment frequency counts deployments
+  to production; change failure rate is the ratio of failed
+  deployments over total deployments; no confidence weighting
+  applies. (Per the canonical Google/Accelerate DORA
+  definitions — distinct from commit / raw-incident counts,
+  which would skew cross-run comparison under different batch
+  sizes.)
+- **Agent-output-under-uncertainty layer**: the noisy ML / agent
+  output that is being graded against DORA. *This* is where
+  HITL expert-derived confidence applies — calibrating which
+  agent outputs are trustworthy enough to ship, exactly as
+  PNNL HITL calibrates ML classifier output on PMU/FDR
+  waveforms before triggering grid alarms.
+- **ARC-3 framing**: the class-of-benchmark description — no
+  instructions, every lesson compounds, forgotten lessons =
+  regression. This framing informs how the benchmark is
+  *interpreted* (a frontier-capability test) but does not add
+  a separate measurement.
+
+**Why DORA-in-production qualifies as the maintainer's
+personal-ARC3-equivalent.** Maintainer mid-tick clarification
+(auto-loop-35): *"jsut cause i said that's my ARC3"* +
+*"yeah casue running a production pipeline is hard as fuck"*.
+The framing is not hyperbole — running a production pipeline
+under real constraints (incident response with real users
+affected, lead time measured when consequences are real,
+change-failure-rate counted against real SLOs, MTTR under
+live pressure) is genuinely a compounding-under-real-stakes
+test in the ARC-3 class shape. The benchmark remains DORA;
+the ARC-3 label is the maintainer's way of saying "this is
+my frontier-test," not a second measurement axis.
+
+**Operational definition of ARC-3-class (maintainer, auto-loop-35):**
+*"ARC3 = hard problem that is [trying to be made] continuously
+testable even though there is 0 formal definition"*. Three
+criteria — all three must hold:
+
+1. **Hard** — frontier-capability test, compounding, not
+   solvable by instruction-following alone.
+2. **Continuously testable** — produces a stream of
+   observations (telemetry, benchmark runs, per-commit
+   signals) rather than a one-shot pass/fail.
+3. **No formal definition** — operationally-grounded
+   (benchmark, telemetry, empirical) rather than
+   theoretically-specified. The absence of a formal
+   definition is a *feature* of the class: the problem
+   resists formalisation, but the measurement pipeline
+   still produces defensible signal.
+
+By this test, DORA-in-production qualifies cleanly — deploy
+frequency / lead time / CFR / MTTR are operationally well-
+defined *as measurements*, but "running a production
+pipeline well" has no closed-form theoretical definition.
+
+**Other Zeta factory surfaces that meet the ARC-3-class test**
+(flagged here; not yet treated as cartridges):
+
+- **Factory autonomy under autonomous-loop substrate** —
+  hard (tick-must-never-stop under genuine work-queue
+  selection); continuously testable (tick-history,
+  round-history, per-commit alignment signals); no formal
+  definition of "autonomous factory operating at target
+  capability."
+- **ALIGNMENT.md measurable primary-research-focus** — hard
+  (alignment has no closed-form specification); continuously
+  testable (per-commit HC-1..HC-7 / SD-1..SD-8 / DIR-1..DIR-5
+  signals, time-series); no formal definition of "aligned
+  AI."
+- **Zero-to-production in 3-4 hours on ServiceTitan demo** —
+  hard (full-stack capability compounded under time
+  pressure); continuously testable (rounds of attempts,
+  per-domain DORA); no formal definition of "production-
+  ready demo."
+
+Each matches the three-criteria ARC-3-class shape. Treating
+them all as ARC-3-class gives the factory a consistent lens
+for frontier-test work and reuses the same measurement
+substrate (HITL expert-derived confidence over agent output,
+graded against the operational metric for the specific
+domain).
+
+The shape is the same across both:
+
+| PNNL HITL (grid)                          | Zeta ARC3-DORA (factory)                     |
+| ----------------------------------------- | -------------------------------------------- |
+| ML classifier on noisy PMU/FDR waveform   | Agent output under uncertainty (code / spec) |
+| Grid Signature Library (GESL, 900+ types) | Alignment-clause + operator-algebra library  |
+| Expert score layered on ML confidence     | Maintainer echo + reviewer roster confidence |
+| Improves accuracy beyond ML-alone         | Triangulation beats single-substrate depth   |
+
+**Occurrence classification.** This is occurrence-3 of the
+*external-signal-confirms-internal-insight* recurrence tracked
+in `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`:
+
+1. Muratori 5-pattern → Zeta operator algebra (YouTube wink,
+   auto-loop-24).
+2. Three-substrate triangulation (Claude + Codex + Gemini)
+   + Aaron exact-phrasing echo "now you see what i see"
+   (auto-loop-25/26).
+3. PNNL HITL expert-derived confidence → factory's
+   multi-reviewer + maintainer-echo calibration
+   (auto-loop-34/35, disclosed in Itron second-wave cascade).
+
+Per the external-signal discipline, occurrence-3+ is
+Architect-level promotion material. The promotion surface
+for this specific pattern is ARC3-DORA: the benchmark's
+cognition-layer measurement substrate inherits the PNNL HITL
+shape, not as a derivation but as cited prior-art confirming
+the substrate is well-formed.
+
+**What this changes in the benchmark spec.** Nothing about the
+shape changes; the composition-with-HITL language makes the
+measurement substrate *citable* rather than internally-coined.
+ARC3-DORA's DORA-side delivery metrics remain carrier-channel;
+the cognition-side capability signature remains stepdown-under-
+capability-reduction; the multi-substrate / maintainer-echo /
+reviewer-roster calibration layer now has a published sibling.
+
+**Bounded promotion.** HITL-citation applies to the calibration
+substrate, not to ARC3-DORA's task-completion criterion. The
+falsifier (humans-in-production-environments beat agents on
+DORA) stays task-completion-measured, not confidence-weighted.
+Confidence-weighting is a measurement instrument; it does not
+lower the task bar.
+
 ## Reference patterns
 
 - Auto-memory ARC3 entry — full prose derivation of this shape
@@ -276,3 +426,10 @@ not a metaphor.
 - `docs/AUTONOMOUS-LOOP.md` — never-be-idle ladder; Level-3
   generative improvements are the anti-livelock brace referenced
   in component 2
+- `memory/user_aaron_itron_pki_supply_chain_secure_boot_background.md`
+  — second-wave disclosure cascade naming PNNL HITL
+  "expert-derived confidence" as published prior art for the
+  cognition-layer measurement substrate cited above
+- `memory/feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`
+  — the occurrence-discipline used to classify the HITL
+  connection as occurrence-3 of the wink-validation recurrence
