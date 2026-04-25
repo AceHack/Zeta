@@ -102,3 +102,51 @@ When the OS-interface emulator implementation activates
   capture, not the kickoff. Emulator runtime
   implementation gates on the OS-interface Phase 1
   landing first.
+
+## Removed platforms (no viable open-source BIOS alternative)
+
+Per the human maintainer directive during an autonomous-loop session (2026-04-24):
+
+> *"if there are any you need bios files you can't create
+> yourself lets remove those"* + *"just keep the ones you
+> don't need anything but your code"* + *"open source bios
+> is fine too"* + *"keeping only those that work standalone
+> or have viable open BIOS replacements or ones we can
+> write ourself from scratch without cheating"*
+
+The rule: **self-contained emulator code + safe-to-
+redistribute ROM must be enough to boot something**.
+Platforms with clean-room open-source BIOS (Altirra for
+Atari 800, EmuTOS for Atari ST, AROS for Amiga, C-BIOS for
+MSX, Open Source Speccy ROM for ZX Spectrum, mGBA's HLE
+for GBA, Minestorm-in-emulator for Vectrex) satisfy this
+— they ship with the emulator as code, not as a separate
+user-supplied firmware dump.
+
+Removed because no viable clean-room open-source BIOS
+alternative exists (re-adding would require shipping
+proprietary firmware the factory doesn't have rights to):
+
+- Sony PlayStation 1 / 2 / Portable
+- Sega CD / Saturn / Dreamcast
+- SNK Neo Geo AES / MVS (`neogeo.zip` BIOS)
+- 3DO Interactive Multiplayer
+- Microsoft Xbox (MCPX ROM + HDD)
+- Nintendo GameCube / Wii / DS
+- PC Engine CD / TurboGrafx-CD (Super System Card)
+- Intellivision (Mattel Exec ROM)
+- ColecoVision (Coleco BIOS)
+- Atari 5200, 7800, Lynx
+- Apple II (no clean-room ROM replacement)
+- Amstrad CPC, BBC Micro
+- Commodore 64, VIC-20 (OpenROMs exists but incomplete)
+- MAME / FinalBurn Neo arcade (per-board BIOSes: Neo Geo,
+  Capcom Q-Sound, Naomi, Atomiswave, etc.)
+
+Re-adding any of the above would require either (a) the
+factory shipping proprietary firmware we don't have the
+rights to, or (b) a supplementary user-supplied-firmware
+protocol beyond the safe-ROM scope. Both are out of scope
+for this tree. When a clean-room open-source BIOS matures
+for one of these platforms (e.g. if OpenROMs grows to
+cover C64 game libraries), the platform can be added back.
