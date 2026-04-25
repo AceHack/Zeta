@@ -9,37 +9,40 @@
 # Otto-276 drifted within hours; Otto-277 re-tightened;
 # Otto-278 named the gap.
 #
-# This is Phase 1: the shell tool. Phase 2 will be a
+# This is Phase 1: the shell tool. Phase 2 is the
 # `.claude/skills/counterweight-audit/SKILL.md` that invokes
 # this tool and prompts the agent with the emitted questions.
 #
-# Aaron quote (autonomous-loop 2026-04-24):
+# Human-maintainer quote (autonomous-loop 2026-04-24, preserved
+# in the originating memory file):
 #
 #   "memory is enough assuming you have a inspect memory for
 #    missing balance and lessions on a cadence it's probably
 #    enough, but you forget often when it's just in memory"
 #
 # What this tool does:
-#   1. Enumerate counterweight memory files. Default set:
-#      `memory/feedback_*otto_*.md` (in-repo mirror).
+#   1. Enumerate counterweight memory files. Default glob:
+#      `memory/*otto_*.md` (matches `feedback_*otto_*.md`,
+#      `project_*otto_*.md`, etc. — any memory file whose
+#      name carries the Otto-NNN convention).
 #   2. For each file, extract:
 #      - the Otto-NNN identifier from the filename
 #      - the `name:` field from YAML frontmatter (rule summary)
-#      - the "direct quote" or "### The rule" section (the
-#        invariant it's counter-weighting)
-#   3. Emit audit questions per counterweight:
-#      - "In the last N ticks, did I exhibit the drift this
-#         counter was filed for?"
-#      - "If yes: file a tighter counterweight (like
-#         Otto-276 → Otto-277)"
-#      - "Is the counter still needed at this cadence, or
-#         can maintenance-cadence stretch?"
+#   3. Emit audit questions per counterweight.
+#
+# Quote extraction from the file body (the "### The rule" and
+# maintainer-quote sections) is deliberately NOT automated
+# here — the audit's point is forcing the agent to open each
+# file and read it. Auto-extracting the quote into the audit
+# output would let the agent skim the questions without
+# opening the file, which is exactly the drift this tool
+# exists to counter.
 #
 # What this tool does NOT do:
-#   - Read agent behaviour log (no such log exists yet; this
-#     is the prompt surface, the agent self-scores).
+#   - Read an agent-behaviour log (no such log exists yet; the
+#     agent self-scores).
 #   - Automatically update counterweight memories. The
-#     re-read is the point; human + agent judgement owns
+#     re-read IS the operation; human + agent judgement owns
 #     the "did I drift" decision.
 #   - Run on a schedule. Cadencing happens via
 #     (a) autonomous-loop tick-open hook integration (Phase
@@ -59,7 +62,10 @@
 #                     10 for medium, unbounded for long).
 #
 # Exit codes:
-#   0  always (this is a prompt tool, not a check-gate).
+#   0  normal completion (clean or drift-flagged — both reported via
+#      stdout; the tool doesn't pass/fail on content).
+#   2  usage error (unknown flag, missing value, non-integer count,
+#      invalid cadence, or memory/ dir not found).
 
 set -euo pipefail
 
@@ -68,14 +74,24 @@ set -euo pipefail
 CADENCE="quick"
 COUNT=""
 
+usage_error() {
+  echo "error: $1" >&2
+  echo "run with --help for usage" >&2
+  exit 2
+}
+
 while [ $# -gt 0 ]; do
   case "$1" in
     --cadence)
-      CADENCE="${2:-}"
+      # Guard against missing value: `$2` must be present or
+      # `shift 2` trips under set -e.
+      [ $# -ge 2 ] || usage_error "--cadence requires a value"
+      CADENCE="$2"
       shift 2
       ;;
     --count)
-      COUNT="${2:-}"
+      [ $# -ge 2 ] || usage_error "--count requires a value"
+      COUNT="$2"
       shift 2
       ;;
     -h|--help)
@@ -83,9 +99,7 @@ while [ $# -gt 0 ]; do
       exit 0
       ;;
     *)
-      echo "error: unknown argument '$1'" >&2
-      echo "run with --help for usage" >&2
-      exit 2
+      usage_error "unknown argument '$1'"
       ;;
   esac
 done
@@ -95,8 +109,7 @@ case "$CADENCE" in
   medium) DEFAULT_COUNT=10 ;;
   long)   DEFAULT_COUNT=0 ;;  # 0 = unbounded
   *)
-    echo "error: --cadence must be quick|medium|long (got '$CADENCE')" >&2
-    exit 2
+    usage_error "--cadence must be quick|medium|long (got '$CADENCE')"
     ;;
 esac
 
@@ -104,15 +117,22 @@ if [ -z "$COUNT" ]; then
   COUNT="$DEFAULT_COUNT"
 fi
 
+# Validate COUNT as a non-negative integer before numeric
+# comparisons. Rejects empty string (via regex anchor) and
+# any non-digit content.
+case "$COUNT" in
+  ''|*[!0-9]*)
+    usage_error "--count must be a non-negative integer (got '$COUNT')"
+    ;;
+esac
+
 # -------- discover counterweight files ------------------------------------
 
 REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 MEMORY_DIR="${REPO_ROOT}/memory"
 
 if [ ! -d "$MEMORY_DIR" ]; then
-  echo "error: memory/ not found at $MEMORY_DIR" >&2
-  echo "(run from a Zeta checkout)" >&2
-  exit 2
+  usage_error "memory/ not found at $MEMORY_DIR (run from a Zeta checkout)"
 fi
 
 # Counterweight memories match `*otto_*.md` by convention.
@@ -122,17 +142,25 @@ TMP="$(mktemp -t zeta-counterweight-audit.XXXXXX)"
 trap 'rm -f "$TMP"' EXIT
 
 # Portable stat: BSD (macOS) uses `stat -f "%m"`; GNU (Linux) uses
-# `stat -c "%Y"`. Probe once; use the result in the loop.
+# `stat -c "%Y"`. Probe once, set a variable that controls which
+# branch the loop takes — no eval on filename-sourced strings.
 if stat -f "%m" "$MEMORY_DIR" >/dev/null 2>&1; then
-  STAT_MTIME='stat -f "%m"'
+  STAT_FLAVOR="bsd"
 else
-  STAT_MTIME='stat -c "%Y"'
+  STAT_FLAVOR="gnu"
 fi
 
+# Branch on STAT_FLAVOR, passing "$f" as a proper argument.
+# Never pass the filename through `eval` — a crafted filename
+# containing `$(...)` could otherwise be re-parsed as shell.
 # shellcheck disable=SC2044
 for f in "$MEMORY_DIR"/*otto_*.md; do
   [ -f "$f" ] || continue  # glob didn't match
-  mtime=$(eval "$STAT_MTIME" "\"$f\"")
+  if [ "$STAT_FLAVOR" = "bsd" ]; then
+    mtime=$(stat -f "%m" "$f")
+  else
+    mtime=$(stat -c "%Y" "$f")
+  fi
   printf '%s\t%s\n' "$mtime" "$f"
 done | sort -rn > "$TMP"
 
@@ -148,9 +176,9 @@ fi
 echo "# Counterweight audit — $CADENCE cadence"
 echo ""
 echo "Reading $SHOWN of $TOTAL counterweight memories under"
-echo "\`memory/*otto_*.md\` (newest first). For each one, read"
-echo "the named rule and the direct Aaron quote, then answer"
-echo "the per-counterweight audit questions below."
+echo "\`memory/*otto_*.md\` (newest first). For each one, open"
+echo "the file and read the rule body + maintainer quote, then"
+echo "answer the per-counterweight audit questions below."
 echo ""
 echo "_Tool: \`tools/hygiene/counterweight-audit.sh\` (Otto-278"
 echo "cadenced-inspect Phase 1). Agent self-scores; no automatic"
@@ -173,7 +201,9 @@ while IFS="$(printf '\t')" read -r _mtime file; do
   [ -z "$otto_id" ] && otto_id="(no Otto-ID in filename)"
 
   # Extract the `name:` frontmatter field (first line starting
-  # with `name:` inside the YAML fence).
+  # with `name:` inside the YAML fence). Body content
+  # (direct maintainer quote, "### The rule" section) is
+  # deliberately NOT auto-extracted — see header for why.
   name_line="$(awk '
     /^---[[:space:]]*$/ { fence = !fence; next }
     fence && /^name:/ {
