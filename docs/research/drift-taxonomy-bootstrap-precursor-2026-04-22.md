@@ -1,6 +1,14 @@
 # Drift-taxonomy bootstrap-precursor — research-grade absorb of a pre-factory conversation artifact
 
-**Status:** research-grade. Do not treat as operational policy.
+**Status:** research-grade. Do not treat as operational
+policy. **Superseded-for-operational-use 2026-04-23 (Otto-79)**
+by [`docs/DRIFT-TAXONOMY.md`](../DRIFT-TAXONOMY.md) per Amara's
+5th-ferry Artifact A recommendation. This file is retained as
+staging-substrate: the operational file is the policy; this
+file is the provenance of how the taxonomy arrived. Do not
+edit the pattern definitions here — if an operational change
+is needed, edit `docs/DRIFT-TAXONOMY.md` and leave this file
+as the historical record.
 
 **Provenance:** extracted from a months-old ChatGPT-substrate
 conversation (title: "Event sourcing framework plan", custom

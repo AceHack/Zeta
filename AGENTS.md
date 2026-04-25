@@ -357,6 +357,14 @@ Detail lives in:
   git-history surface) and the three platform
   adapters. Read at factory setup to pick the
   active-workflow surface.
+- `docs/DRIFT-TAXONOMY.md` — five-pattern drift
+  diagnostic: identity-blending /
+  cross-system-merging / emotional-centralization /
+  agency-upgrade-attribution /
+  truth-confirmation-from-agreement. Shared
+  real-time vocabulary for spotting drift during PR
+  review, tick narration, memory curation, and
+  maintainer chat.
 - `docs/category-theory/README.md` — category-theory
   foundations the operator algebra rests on. Upstream
   CTFP sources (Milewski + the .NET port) live under
