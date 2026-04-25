@@ -10009,8 +10009,9 @@ systems. This track claims the space.
     - Tree-sitter + custom SQLite/DuckDB schema —
       structural AST queries beyond ctags; already used
       by Claude-Code-adjacent tools.
-    - CodeQL database — we already backlog CodeQL
-      installation; the DB format is queryable.
+    - CodeQL database — `docs/INSTALLED.md` lists
+      CodeQL CLI as pending install (`brew install codeql`);
+      when it lands the local DB format is queryable.
   - **Full-text search (docs, skills, research, memory):**
     - SQLite FTS5 — zero-op, ships with SQLite,
       adequate for < 100 k docs.
@@ -10086,12 +10087,14 @@ systems. This track claims the space.
   - `docs/research/provenance-aware-claim-veracity-detector-2026-04-23.md`
     — provenance-cone retrieval is exactly the kind of
     thing a local graph DB could make tractable.
-  - CodeQL-installation row (CodeQL's local DB format
-    is a candidate for the code-indexing surface).
+  - `docs/INSTALLED.md` CodeQL CLI pending-install row
+    (CodeQL's local DB format is a candidate for the
+    code-indexing surface; the BACKLOG.md **CodeQL
+    workflow** checkbox item covers the CI side only).
 
   **Effort:** M (research-pass + shortlist + integration
   sketch for 2-to-3 candidates). No implementation in
-  this row — down-stream rows file per-candidate pilots
+  this row — downstream rows file per-candidate pilots
   after the shortlist lands.
 
   **Memory:** none yet — doctrine lands after the
@@ -10140,10 +10143,14 @@ systems. This track claims the space.
     bearing. Leave historical ROUND-HISTORY rows
     alone — they describe what the factory believed
     at the time.
-  - If GOVERNANCE.md §24 language ever uses the
-    "three-way" count (it doesn't today — the file
-    currently avoids the count), preserve the two-axis
-    framing if it ever does.
+  - GOVERNANCE.md §24 currently uses an explicit
+    "three consumers / three ways" count (dev laptop /
+    CI runner / devcontainer). That's the deployment-
+    target axis — distinct from the four-way shell-
+    runtime axis this row describes. The sweep keeps
+    §24's deployment-target count intact and adds a
+    sibling note that the install script also has a
+    four-way shell-runtime contract.
 
   **Not in scope:**
 
