@@ -14,7 +14,14 @@
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
 #   - permissions: contents: read at the workflow level; no job
-#     elevates. No secrets referenced.
+#     elevates. The only secret referenced is the auto-generated
+#     per-run secrets.GITHUB_TOKEN (see workflow-level env: block
+#     below) — needed because mise's aqua: backend authenticates
+#     to the GitHub API for release-tag lookups. The token
+#     inherits the read-only permissions; no write escalation.
+#     Workflow-level scope chosen over per-step for DRY (~7
+#     install-toolchain steps would otherwise repeat the env);
+#     trade-off documented at the env: block.
 #   - Concurrency: workflow-scoped; cancel-in-progress only for PR
 #     events (main pushes queue so every main commit gets a record).
 #   - fail-fast: false so one OS failure doesn't hide another.

@@ -153,7 +153,7 @@ output.**
 |---|---|---|
 | G_similarity | `sim(e_q, e_y) < τ_low` — below retrieval-noise floor | `sim < τ_med` — weak match only |
 | G_evidence_independent | `y` has no independent-oracle-verified evidence | `y` has evidence but only self-attested |
-| G_carrier_overlap | `overlap(q, y) > θ_high` where `overlap(q, y) = 0` when `size(cone(y)) = 0`, else `size(cone(q) ∩ cone(y)) / size(cone(y))` — majority of y's provenance shared with q | `overlap(q, y) > θ_med` |
+| G_carrier_overlap | `overlap(q, y) > θ_high` (majority of y's provenance shared with q) **OR** `size(cone(y)) = 0` (no provenance to verify against — carrier-laundering safeguard treats missing-lineage as suspicious, not clean) | `overlap(q, y) > θ_med`. When `size(cone(y)) > 0`, `overlap(q, y) = size(cone(q) ∩ cone(y)) / size(cone(y))`. |
 | G_contradiction | `y` or its provenance cone contains an unresolved contradiction with a known-good anchor | a resolved contradiction within cone |
 | G_status | `y.status = known-bad` or `y.status = superseded` | `y.status = unresolved` (no status pins it) |
 

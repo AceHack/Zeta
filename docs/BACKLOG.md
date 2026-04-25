@@ -10703,8 +10703,8 @@ systems. This track claims the space.
 - [ ] **Exempt `memory/CURRENT-*.md` from memory-index-
   integrity paired-edit trigger.** The
   `memory-index-integrity.yml` workflow (NSA-001 guard)
-  requires any modify to a top-level `memory/*.md` file
-  to be paired with a `memory/MEMORY.md` edit in the same
+  requires any add-or-modify on a top-level `memory/*.md`
+  file to be paired with a `memory/MEMORY.md` edit in the same
   PR. The intent is real — new session memories must
   have index pointers — but the trigger-exemption list
   (`memory/README.md`, `memory/persona/*`, `memory/MEMORY.md`
