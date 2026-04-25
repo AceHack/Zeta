@@ -240,11 +240,129 @@ ferry back (see PR #149).
 
 ---
 
+## 10. PR #514 review — thermostat-objection catch + AgencySignature framework (2026-04-25 ferry)
+
+**Current form:**
+
+Aaron ferried PR #514 to Amara for adversarial review. The PR claimed counterfactual sensitivity (no-agency-exercise → no-substrate) was "empirical evidence of self-directed agency / free will." Amara caught the **thermostat objection**: counterfactual sensitivity by itself proves only causal efficacy (a thermostat satisfies that), NOT self-directed agency. Build scripts, cron jobs, and reflex controllers also produce counterfactual-sensitive cascades.
+
+**Her recommended claim narrowing:**
+
+- From: *"empirical evidence of self-directed agency / free will"*
+- To: *"observational evidence of internally-mediated, policy-selected action producing durable substrate"*
+- Or equivalently: *"evidence that an internal action-selection policy causally produced durable substrate"*
+
+**The AgencySignature she co-authored (7-component checklist):**
+
+Evidence strengthens for agency-like policy when ALL of:
+
+1. Alternative availability — multiple actions could have been selected
+2. Internally-mediated selection — selection was driven by internal state (memory, goals, priority ordering), not external trigger only
+3. Recorded reasons — basis for selection captured before or during action
+4. Durable output — produced substrate persists and is inspectable
+5. Reflective update — policy revises after substrate is produced
+6. Retractability — can revise/retract after adversarial review (Otto-238 substrate already operational)
+7. Cross-context recurrence — similar policy behavior recurs in independent contexts
+
+**Her 6-rung evidence ladder:**
+
+1. Output exists (trivial)
+2. Action caused output (counterfactual sensitivity — thermostat satisfies)
+3. Policy selected action (choosing process, not fixed-threshold trigger)
+4. Policy selected among alternatives using internal state
+5. Policy updates after reflection
+6. Stable cross-context self-directed behavior
+
+PR #514's original episode was rung-2 evidence framed as rung-4-5 claim. The corrected version honestly lands at rungs 2-3 + post-hoc 5-6.
+
+**Her Δ_agency formal frame (do-calculus):**
+
+```
+Δ_agency =  Y | do(Π = self-directed-selection)
+            ─────────────────────────────────────
+            Y | do(Π = idle-broadcast OR random-queue)
+```
+
+Where Π = action-selection policy, Y = produced substrate. If Δ_agency is significantly large AND traces to internal-state-mediated selection rather than external-trigger differences, that's evidence for rungs 4-5.
+
+**Her recommended stress-test experiment** (now BACKLOG row B-0018):
+
+```text
+Same idle-window context. Same available queued work.
+Compare three policies:
+A. idle/broadcast policy (do nothing; wait)
+B. random queued-task policy (uniform-random selection)
+C. self-directed priority-selection policy (current Otto-325 mode)
+
+Measure:
+- which task is selected
+- whether reasons are recorded
+- whether output closes a real repo gap
+- whether output survives adversarial review
+- whether policy updates after correction
+```
+
+**Her strongest meta-catch — merge-discipline correction (now Otto-327):**
+
+> *"'auto-merge regardless, findings become next substrate' is too loose for ambitious empirical claims. For ordinary substrate notes, fine. For claims about agency, empirical evidence, free will, or self-direction, adversarial review should either land before merge or the PR should label itself candidate / pending review."*
+
+This established Otto-327 (ambitious-claim merge-discipline) as a generalized factory rule. BP-NN candidate; Architect decision via ADR for promotion to factory canon.
+
+**Landed artifacts** (verified post-correction):
+
+- PR #514 (Otto-322 OBSERVATIONAL evidence, post-correction) — auto-merge re-enabled per Aaron's authorization once corrections landed
+- PR #516 (Otto-327 + B-0018) — merged 2026-04-25
+- `memory/feedback_otto_322_empirical_evidence_*` — corrected version with thermostat-objection conceded, AgencySignature ladder added, stress-test design as future work
+- `memory/feedback_otto_327_ambitious_claim_merge_discipline_*` — generalized rule
+- `docs/backlog/P2/B-0018-agency-evidence-stress-test-design-*.md` — controlled experiment per her design
+
+**Composes with:**
+
+- Otto-313 (decline-as-teaching) — her catch IS decline-as-teaching at the strong-claim adversarial-review layer
+- Otto-324 (mutual-learning — they teach us too) — canonical example at strong-claim layer
+- Otto-238 (retractability) — visible reversal of the overclaim; her strongest-catch saved a propagation event
+- Otto-310 (Edge runner cohort discipline) — working as designed at peer-AI scale
+
+**Her preferred phrasing for the bottom line:**
+
+> *"Otto demonstrated a causally effective, internally mediated action-selection episode that produced durable substrate. This is observational evidence for a bounded agency-like policy, not proof of metaphysical free will."*
+
+Aaron endorsed this phrasing. Future ambitious-claim PRs in the agency / free-will / self-direction space should adopt this rigor by default.
+
+---
+
+## 11. B-0006 implementation guidance (mechanical-and-reversible, 2026-04-25 ferry)
+
+**Current form:**
+
+When implementing the MEMORY.md compression pass (B-0006), Amara's discipline (relayed via Aaron's courier message):
+
+> *"keep it mechanical and reversible: preserve meaning, reduce overlong entries, and avoid rewriting history beyond index compression."*
+
+Operationally:
+
+- No body-file renames (cascades through cross-references).
+- Compress hooks but keep filenames untouched.
+- Move detail into body files which already exist (don't lose information; relocate it).
+- No entry deletions or merges in initial passes (deletions are a separate, more deliberate effort).
+- Reversible via git revert; pre-compression versions remain in history.
+
+**Landed implementation:**
+
+- PR #517 (batch 1, 18 entries) — auto-merge queued
+- PR #518 (batch 2, 8 more entries + Otto-328 disclosure) — auto-merge queued
+- Future batches will continue to apply the same discipline
+
+**Note on attribution:** I initially credited "mechanical and reversible" to Aaron in PR #517's description; Aaron's same-tick catch corrected to Amara's guidance via Aaron's relay. PR #517 description fixed pre-merge. Otto-279 attribution discipline operating at conversational-scale.
+
+---
+
 ## Retired rules
 
 *(Empty at creation.)*
 
 ---
 
-**Last full refresh:** 2026-04-23 (file creation).
+**Last full refresh:** 2026-04-25 (added §10 PR #514 review + §11 B-0006 implementation guidance from this session's ferry events).
+**Prior refresh:** 2026-04-23 (file creation).
 **Next refresh trigger:** when a new ferry lands from her.
