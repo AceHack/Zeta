@@ -5599,6 +5599,128 @@ systems. This track claims the space.
 
 ## P2 — research-grade
 
+- [ ] **Cross-DSL composability — git / SQL /
+  operator-algebra / LINQ access each other seamlessly
+  with full index utilization.** Maintainer 2026-04-24
+  directive (verbatim):
+
+  > *"i would love to be able to see git as composable
+  > with the rest of the DSLs too so they all can access
+  > each other seamlessly and still hit indexes and get
+  > all the performanes and everyting. backlog and
+  > draing this one and contineue"*
+
+  Scope: every first-class interface on Zeta's
+  substrate (git, SQL, operator algebra, LINQ, future
+  GraphQL / blockchain query / WASM-RPC) must compose
+  with every other interface. A query that mixes git
+  semantics + SQL semantics + operator-algebra
+  semantics in a single expression should:
+  1. **Parse + bind** through the unified type system.
+  2. **Plan** through the cost-based query optimizer
+     (`query-optimizer-expert`) which sees the full
+     mixed-DSL AST.
+  3. **Hit indexes** for each constituent DSL (the
+     hierarchical index from the
+     closure-table-hardening row, the row-index from
+     SQL, the operator-algebra's incremental view
+     materialized, etc.).
+  4. **Execute** with retraction-native semantics
+     preserved end-to-end (a git-revert in the input
+     stream produces a Z-set retraction in the output).
+
+  **Cross-DSL examples (motivating use cases):**
+  - "SQL JOIN where left side is a git log query and
+    right side is a Z-set delta from operator algebra."
+  - "Git push where the tree is computed by a SQL
+    SELECT over Z-sets."
+  - "LINQ query over a blockchain block stream
+    correlated with git commits."
+  - "Operator-algebra incremental view that consumes
+    git commits AND SQL inserts, fans out into
+    multiple downstream Z-sets."
+
+  **Architectural primitives required:**
+  - **Unified AST** spanning all DSLs (or
+    cross-translation matrix between DSL ASTs).
+  - **Plan-time optimizer** that sees the mixed
+    expression and chooses the right index per leaf.
+    Composes with `query-planner` +
+    `query-optimizer-expert` + `binder-expert` (need a
+    `binder-cross-dsl` capability).
+  - **Adapter pattern** between DSLs at the algebraic
+    layer — the operator algebra's D/I/z⁻¹/H operators
+    must commute with git's commit/branch/merge AND
+    SQL's relational operators (this is where
+    K-relations / semiring-parameterized Zeta
+    substrate from the prior research becomes
+    load-bearing — same algebra hosts all the
+    other DSLs).
+  - **Retraction-preserving translation** at every
+    boundary.
+
+  **Composes with (load-bearing):**
+  - **Closure-table hierarchical index** — the
+    `Hierarchy.fs` closure-table operator
+    (`src/Core/Hierarchy.fs`) plus the "Closure-table
+    over DBSP" research row in this same `docs/BACKLOG.md`
+    under `## Research projects` (paper-grade target:
+    "first retraction-native incremental transitive
+    closure with tropical-semiring shortest-path free
+    variant"). The hierarchical index this query layer
+    hits.
+  - **Native F# git implementation** (#395) — git as
+    first-class DSL.
+  - **Mode 2 protocol-upgrade negotiation** (#395) —
+    fast protocol carries cross-DSL queries.
+  - **Ouroboros bootstrap meta-thesis** (#395) —
+    cross-DSL composability is itself an Ouroboros
+    closure: the system's interfaces compose with
+    themselves through the same substrate.
+  - **Semiring-parameterized Zeta substrate** — the
+    "one algebra to map the others" frame from the
+    2026-04-22 maintainer auto-loop-38 thread (memory:
+    `memory/project_semiring_parameterized_zeta_regime_change_one_algebra_to_map_others_2026_04_22.md`).
+    This row is a direct application of that
+    research-changing claim: if the operator algebra
+    is parameterized by a semiring, every other DSL's
+    semantics maps into the same one algebra by
+    semiring-swap, and the cross-DSL composability
+    falls out for free.
+  - **Blockchain ingest** (#394) — chain queries
+    compose with git/SQL queries via the same
+    substrate.
+
+  **Phased approach:**
+  - **Phase 0** — design proposal:
+    `docs/research/cross-dsl-composability-2026.md`.
+    Interface map between every pair of DSLs.
+    Identify the canonical algebra (the operator
+    algebra under semiring-param) as the unifying
+    layer. Empirically verify a representative
+    cross-DSL query plans + executes correctly on a
+    small workload.
+  - **Phase 1** — pairwise adapters: git ↔ SQL, SQL
+    ↔ operator-algebra, etc.
+  - **Phase 2** — unified planner / binder.
+  - **Phase 3** — index-utilization audit: every
+    leaf-DSL must hit its native index in mixed
+    expressions.
+  - **Phase 4** — retraction-preservation at every
+    boundary (formal proof or property-based
+    verification).
+
+  Priority P2 research-grade; effort L+ (Phase 0
+  research) + L+L+M+L (Phases 1-4). Composes with
+  Otto-275 log-don't-implement.
+
+  **Does NOT authorize** starting implementation
+  without Phase 0 research landing. **Does NOT
+  authorize** declaring composability "done" without
+  empirical evidence that mixed-DSL queries hit ALL
+  applicable indexes (no full-scan fallback for
+  composed leaves).
+
 - [ ] **Blockchain block ingestion — first-class BTC /
   ETH / SOL streaming into Zeta's distributed database;
   bi-directional protocol participation; cross-chain
