@@ -136,13 +136,17 @@ heading to scope explicitly.
 
 **Future doc-lint candidate**: claim-vs-list cardinality check.
 
-### Line-leading list-marker confusion (CommonMark MD032)
+### Line-leading list-marker confusion (markdownlint MD032)
 
-Observed on: #377 (`+ manifest files` continuation), #280
-(`+ provenance-aware scoring` continuation), #195 (`+ Kenji
-(Architect)` owner-list continuation), #235 + #219 (Amara
-verbatim ferry content with `+ git history` / `- [link]`
-continuation lines). 5 instances in one tick (2026-04-25).
+Observed on: #377 (`+ manifest files` continuation), #195
+(`+ Kenji (Architect)` owner-list continuation), #235 + #219
+(Amara verbatim ferry content with `+ git history` / `- [link]`
+continuation lines). PR #280's research-doc fix (commit
+`cce1df2`) is a same-class instance — `+ provenance-aware
+scoring` continuation reflowed at write-time before any
+drain-log was filed for #280, so the citation here is to the
+fix-commit rather than to a per-PR drain log. 5 instances in
+one tick (2026-04-25).
 
 Pattern: line wrap in multi-line prose / inline-bold spans /
 multi-author lists hits a CommonMark special character (`+`,
@@ -163,11 +167,17 @@ Decision tree:
   `docs/amara-full-conversation/**`). Config-PR fix unblocks
   every downstream PR touching the same surface in one shot.
 
-**Pre-commit-lint candidate**: regex check for line-leading
-`+ ` / `- ` / `* ` inside non-list contexts (paragraph
-continuation lines without preceding blank). Compose with
-the existing Class A inline-code-span line-wrap check; same
-shape (line-wrap hits a CommonMark special).
+**Pre-commit-lint candidate**: the repo already has
+`tools/hygiene/audit-md032-plus-linestart.sh` covering the
+`+`-at-line-start case. The new work here is either (a)
+extending that audit to `- ` / `* ` in the same
+non-list paragraph-continuation context, or (b) promoting
+the audit from detect-only hygiene to pre-commit
+enforcement. Same general failure mode as the
+"Inline-code-span line-wrap rendering bug" class above
+(line-wrap hits a CommonMark special character and the
+parser reads it as a structural marker instead of prose
+continuation).
 
 ### External-source verifiability gaps
 
