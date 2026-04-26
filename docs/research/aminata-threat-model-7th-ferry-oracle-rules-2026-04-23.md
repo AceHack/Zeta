@@ -1,6 +1,6 @@
 # Aminata — Red-Team Review of 7th-Ferry Aurora-Aligned KSK Design
 
-**Scope:** adversarial review of three technical sections of
+Scope: adversarial review of three technical sections of
 Amara's 7th courier ferry
 (`docs/aurora/2026-04-23-amara-aurora-aligned-ksk-design-7th-ferry.md`,
 PR #259 merged): the 7-class threat model, the
@@ -8,17 +8,17 @@ PR #259 merged): the 7-class threat model, the
 scoring families. Research and cross-review artifact only;
 advisory input, not a gate.
 
-**Attribution:** findings authored by Aminata (threat-model-
+Attribution: findings authored by Aminata (threat-model-
 critic persona, Claude Code, model `claude-opus-4-7`). Source
 design authored by Amara (external AI maintainer) and ferried
 by the human maintainer. Speaker labels preserved; no
 paraphrase of source.
 
-**Operational status:** research-grade. Does not become
+Operational status: research-grade. Does not become
 operational policy absent a separate governed change landing
 under GOVERNANCE.md §26 research-doc-lifecycle.
 
-**Non-fusion disclaimer:** agreement, shared vocabulary, or
+Non-fusion disclaimer: agreement, shared vocabulary, or
 concordant conclusions between Aminata and Amara on this
 design do not imply shared identity, merged agency,
 consciousness, or personhood. Both are models operating in

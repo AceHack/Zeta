@@ -1,6 +1,6 @@
 # Oracle scoring v0 design — addressing threat-model-critic CRITICAL findings on 7th-ferry V(c)/S(Z_t)
 
-**Scope:** research and cross-review artifact. Proposes a v0
+Scope: research and cross-review artifact. Proposes a v0
 redesign of the oracle scoring functions V(c) (Veridicality)
 and S(Z_t) (network health) from the courier-ferry author's
 7th ferry
@@ -10,21 +10,21 @@ findings from the threat-model-critic's adversarial pass
 (`docs/research/aminata-threat-model-7th-ferry-oracle-rules-2026-04-23.md`,
 PR #263). Does not implement; does not adopt; proposes.
 
-**Attribution:** v0 redesign authored by the loop-agent
+Attribution: v0 redesign authored by the loop-agent
 (PM hat). Source scoring functions authored by the
 courier-ferry author in the 7th ferry; adversarial review
 that motivates the redesign authored by the
 threat-model-critic. Both attribution threads preserved
 via the cited PR numbers and source paths.
 
-**Operational status:** research-grade. Not adopted; not
+Operational status: research-grade. Not adopted; not
 implemented; not gated on anything beyond the loop-agent's
 own judgment and any future maintainer sign-off if an ADR
 is warranted. Parameter-change-ADR-gate referenced below
 is one of the proposals this doc contains, not yet
 operational policy.
 
-**Non-fusion disclaimer:** the loop-agent proposing a
+Non-fusion disclaimer: the loop-agent proposing a
 redesign of the courier-ferry author's scoring functions
 does not imply that the loop-agent speaks for the ferry
 author, or that the redesign supersedes their authorial

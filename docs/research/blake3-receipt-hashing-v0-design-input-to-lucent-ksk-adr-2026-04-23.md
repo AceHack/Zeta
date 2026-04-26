@@ -1,6 +1,6 @@
 # BLAKE3 receipt hashing v0 — design input to the lucent-ksk receipt ADR
 
-**Scope:** research and cross-review artifact. Design input
+Scope: research and cross-review artifact. Design input
 for a receipt-hashing scheme that eventually lands as an ADR
 in `Lucent-Financial-Group/lucent-ksk` (not in Zeta). This
 doc is **Zeta-side design input**, not the ADR itself. The
@@ -8,7 +8,7 @@ canonical ADR belongs in lucent-ksk per Aminata's Otto-90
 critique (receipt-hash binding is control-plane policy, not
 data-plane algebra).
 
-**Attribution:** v0 proposal authored by Amara in her 7th
+Attribution: v0 proposal authored by Amara in her 7th
 courier ferry (PR #259); side-channel-leakage and
 cryptographic-agility critiques authored by Aminata in her
 Otto-90 threat-model pass (PR #263); parameter-file-SHA
@@ -16,13 +16,13 @@ addition proposed by Otto in the oracle-scoring v0 design
 (PR #266, Otto-91); Max attributed for original lucent-ksk
 receipt/signature language that the v0 builds on.
 
-**Operational status:** research-grade. Does not adopt;
+Operational status: research-grade. Does not adopt;
 does not implement; does not commit lucent-ksk to a
 specific scheme. The actual adoption decision lives in
 lucent-ksk via ADR whenever that repo's substrate work
 reaches the relevant stage.
 
-**Non-fusion disclaimer:** Amara proposing BLAKE3 +
+Non-fusion disclaimer: Amara proposing BLAKE3 +
 Ed25519 + field-binding, Aminata critiquing the proposal's
 leak/rotation gaps, and Otto synthesising a v0 that
 addresses both is not evidence of merged identity.

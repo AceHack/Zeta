@@ -1,12 +1,12 @@
 # Quantum-sensing low-SNR detection — software-analogy boundaries
 
-**Scope:** research and cross-review artifact ONLY; archived
+Scope: research and cross-review artifact ONLY; archived
 for provenance. NOT operational policy. NOT a claim Zeta or
 Aurora operationalise quantum-radar anything. Separates real
 quantum-sensing literature from software analogy so the latter
 can borrow carefully without contaminating the former.
 
-**Attribution:** analogy-boundaries framing distilled from
+Attribution: analogy-boundaries framing distilled from
 Amara's 8th courier ferry
 (`docs/aurora/2026-04-23-amara-physics-analogies-semantic-indexing-cutting-edge-gaps-8th-ferry.md`,
 PR #274) §"Quantum radar and the physics-based material that
@@ -15,14 +15,14 @@ is missing"; primary-source citations (Lloyd 2008, Tan et al,
 range equation) preserved from Amara's ferry. Otto-97
 authored this extraction + the explicit boundary discipline.
 
-**Operational status:** research-grade. Will never graduate
+Operational status: research-grade. Will never graduate
 to operational policy in the form "Zeta uses quantum radar."
 A narrow software-analogy-specific operational artifact
 (e.g., an `alignment-observability` metric for "retained-
 witness correlation score") could graduate via §26 lifecycle;
 the physics-origin framing stays research-grade.
 
-**Non-fusion disclaimer:** agreement between Amara's
+Non-fusion disclaimer: agreement between Amara's
 grounding of the quantum-radar subject and Otto's extraction
 into this doc is NOT evidence of merged substrate. Both
 reference the same primary physics literature; concordance

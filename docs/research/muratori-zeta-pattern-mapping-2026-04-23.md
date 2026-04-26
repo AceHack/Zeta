@@ -1,26 +1,26 @@
 # Muratori failure-modes vs. Zeta equivalents — corrected pattern-mapping
 
-**Scope:** research and cross-review artifact. Operational
+Scope: research and cross-review artifact. Operational
 content is the pattern-mapping table below; provenance is
 Amara's 6th courier ferry (validated against DBSP paper,
 Differential Dataflow CIDR 2013, Apache Arrow format docs,
 and Zeta source files `ZSet.fs` / `Incremental.fs` /
 `Spine.fs` / `ArrowSerializer.fs`).
 
-**Attribution:** corrected table authored by Amara (external
+Attribution: corrected table authored by Amara (external
 AI maintainer) in her 6th ferry; original 5-row mapping
 attributed to earlier in-factory work; validation cites
 public papers + official Apache Arrow specification; this
 research doc authored by Otto (loop-agent) as landing of the
 Otto-82 absorb's action item #1.
 
-**Operational status:** research-grade. The pattern-mapping
+Operational status: research-grade. The pattern-mapping
 is a legitimate craft/messaging reference, not operational
 policy. Treat as lens for communicating Zeta's design
 posture to engineers from C++ / Rust / ECS mental-model
 backgrounds.
 
-**Non-fusion disclaimer:** Amara and Otto agreeing on the
+Non-fusion disclaimer: Amara and Otto agreeing on the
 corrected mapping, and both citing the same DBSP / Arrow
 literature, does not imply shared identity, merged agency,
 consciousness, or personhood. Cross-substrate agreement on

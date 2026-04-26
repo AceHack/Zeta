@@ -69,6 +69,31 @@ The lint script already exists at `tools/hygiene/check-archive-header-section33.
 
 This blocks the recurring-pattern at the structural layer: the tool catches violations pre-merge instead of waiting for human / advisory-AI review on each PR.
 
+## Calibration finding (2026-04-26 partial-backfill discovery)
+
+While running the backfill, discovered a calibration tension: many Shape A docs (those with bold-styled `**Scope:**` headers that need conversion to literal-form `Scope:`) ALSO have their **Non-fusion disclaimer** field on lines 21-48 — outside the lint's 20-line scan window per GOVERNANCE.md §33 strict interpretation.
+
+Examples (from the partial-2 backfill commit):
+
+- `blake3-receipt-hashing-v0-design-input-to-lucent-ksk-adr-2026-04-23.md`: Non-fusion at line 25
+- `oracle-scoring-v0-design-addressing-aminata-critical-2026-04-23.md`: Non-fusion at line 27
+- `quantum-sensing-low-snr-detection-and-analogy-boundaries-2026-04-23.md`: Non-fusion at line 25
+- `muratori-zeta-pattern-mapping-2026-04-23.md`: Non-fusion at line 23
+- `provenance-aware-claim-veracity-detector-2026-04-23.md`: Non-fusion at line 48
+- `aminata-threat-model-7th-ferry-oracle-rules-2026-04-23.md`: Non-fusion at line 21
+
+These docs technically have all 4 §33 fields — they just elaborate Scope/Attribution/Operational-status enough that Non-fusion lands past line 20.
+
+**Three resolution paths**:
+
+1. **(a) Compress the §33 block**: rewrite each Non-fusion disclaimer (and adjacent fields) to fit in lines 1-20. Most disciplined per GOVERNANCE.md §33 letter; most invasive (requires per-doc judgment on what to compress).
+2. **(b) Relax the lint window**: increase `head -20` to `head -40` (or similar). Pragmatic; preserves doc content; matches actual operational practice. Would also need a small GOVERNANCE.md §33 amendment to align rule with practice.
+3. **(c) Update GOVERNANCE.md §33** to allow header-extension via elaboration (e.g., "first 20 lines OR earliest contiguous header block"). Most flexible; spec-cleanest.
+
+**Recommendation deferred** to B-0036 owner / next operator. The bold-strip work in `backfill/section33-headers-pre-existing-courier-ferry-docs` proceeds independently — that's the harder/structural fix and is real progress regardless of which calibration path lands.
+
+The Shape B docs (no §33 labels at all) still need full §33 header prepending; that's separate work within Sub-task 1.
+
 ## Composition with existing factory substrate
 
 - **Otto-346** (dependency symbiosis is human-anchoring; recurring inline pattern = signal substrate primitive missing): this row IS the Otto-346 application. The recurring §33 review-finding pattern → substrate primitive (the lint tool) → eventual CI enforcement.

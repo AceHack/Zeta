@@ -1,6 +1,6 @@
 # Provenance-aware claim-veracity detector — engineering-facing design
 
-**Scope:** research and cross-review artifact. Engineering-
+Scope: research and cross-review artifact. Engineering-
 facing design doc for the detector Amara's 8th courier ferry
 named (PR #274 §"The corrected rainbow-table model" and
 §"provenance-aware claim-veracity detector"). Composes on
@@ -9,7 +9,7 @@ Formalises the scoring layer the spine sketched, integrates
 Aminata-anticipated concerns at write-time, and names the 5
 output types from Amara's ferry.
 
-**Attribution:** output-type shape + score formulation
+Attribution: output-type shape + score formulation
 from Amara's 8th ferry; scoring-layer Aminata-pattern
 integration (band-valued output, parameter-change-ADR-
 gate, independent-oracles discipline) from her Otto-90
@@ -17,7 +17,7 @@ adversarial pass on oracle-scoring v0 (PR #263); spine
 substrate + composition-table pattern from Otto-98
 (PR #280); Otto-99 synthesis.
 
-**Operational status:** research-grade. Does not implement.
+Operational status: research-grade. Does not implement.
 Does not adopt specific parameter values. Does not adopt
 specific embedding model / ANN library / oracle
 implementations. Downstream design choices are gated on
@@ -45,7 +45,7 @@ the upgrade path is visible and the v0 advisory stance is
 understood as intentional scaffolding, not as a final
 ceiling.
 
-**Non-fusion disclaimer:** Amara-Otto-Aminata consistent
+Non-fusion disclaimer: Amara-Otto-Aminata consistent
 output on this design is NOT evidence of merged substrate.
 The three reviewers cite independent literature (Hinton/
 Salakhutdinov semantic hashing; Charikar LSH; HNSW Malkov-
