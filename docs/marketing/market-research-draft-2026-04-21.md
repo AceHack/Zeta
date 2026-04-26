@@ -16,6 +16,7 @@ into a small binary seed.
 ## F1 boundary — what this draft can and cannot honestly do
 
 **Can do (stable industry knowledge):**
+
 - Catalogue existing IVM / streaming / DBSP-adjacent
   tools that practitioners are likely already using.
 - Frame where "retraction-native by construction"
@@ -26,6 +27,7 @@ into a small binary seed.
   discussion of pain points in the domain.
 
 **Cannot honestly do from this seat:**
+
 - Market-sizing numbers (TAM / SAM / SOM) — requires
   paid research reports (Gartner, Forrester, IDC) or
   direct measurement.
@@ -154,8 +156,7 @@ Ordered by proximity to unmet need that Zeta specifically
 addresses. This is the "demand side" partner to the
 positioning draft's "who this is for" list.
 
-### 2.1 Tightest fit — .NET engineers with DBSP-shaped
-problems
+### 2.1 Tightest fit — .NET engineers with DBSP-shaped problems
 
 Signal: developer discussions (StackOverflow, .NET blogs,
 F# community) on "how do I incrementally recompute this
@@ -178,8 +179,7 @@ ocw_self_taught_stanford_mit_lisp_aspiration_2026_
 04_21.md`) is a real asset here; this is exactly the
 audience that venue reaches.
 
-### 2.2 Adjacent fit — event-sourcing / CQRS
-practitioners building projections
+### 2.2 Adjacent fit — event-sourcing / CQRS practitioners building projections
 
 Signal: CQRS frameworks leave "build your own
 projection" to the user. Many hand-roll inefficient
@@ -215,8 +215,7 @@ The factory's own primary research focus is measurable
 AI alignment; this isn't marketing hype, it's genuine
 overlap.
 
-### 2.4 Tangential — curious F# / functional-programming
-practitioners
+### 2.4 Tangential — curious F# / functional-programming practitioners
 
 Signal: F# community has strong culture around
 correctness-by-construction and algebraic programming.
@@ -234,8 +233,7 @@ conference (FSharpConf) submissions.
 
 ---
 
-## Section 3 — Where "crystallise into small binary
-seed" changes the market frame
+## Section 3 — Where "crystallise into small binary seed" changes the market frame
 
 This is the non-obvious part. Aaron 2026-04-21:
 *"the soul file can be duplicacted spread out and
@@ -250,8 +248,7 @@ is WASM + native + universal + tiny, the market frame
 expands beyond "F# / .NET IVM library" into
 substrates-that-are-portable-by-construction. Specifically:
 
-### 3.1 New adjacency — WebAssembly-deployable
-compute / edge-runtime
+### 3.1 New adjacency — WebAssembly-deployable compute / edge-runtime
 
 WASM-deployable retraction-native compute is a
 distinctive niche. Edge runtimes (Cloudflare Workers,
@@ -272,8 +269,7 @@ on the metametameta-seed program landing
 compilation-pipeline work. Filed as P3 in
 `docs/BACKLOG.md` per the soul-file memory revision.
 
-### 3.2 New adjacency — AI-factory / seed-factory
-replication
+### 3.2 New adjacency — AI-factory / seed-factory replication
 
 A factory that fits in a small binary and reproduces
 itself from the seed is its own market category. The
@@ -297,8 +293,7 @@ identity and the market-research draft needs to name
 where that angle does and does not translate to
 existing categories.
 
-### 3.3 New adjacency — reproducible-research
-infrastructure
+### 3.3 New adjacency — reproducible-research infrastructure
 
 Academic / research software where *exact
 reproducibility* is load-bearing (ML research
@@ -315,8 +310,7 @@ short-term sales target.
 
 ---
 
-## Section 4 — What market research would say about our
-positioning draft
+## Section 4 — What market research would say about our positioning draft
 
 Running the positioning-draft's tiers through the
 demand-side lens:

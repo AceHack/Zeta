@@ -3,8 +3,8 @@
 **Status: retractable-draft surface.** All artifacts in this
 subtree are internal drafts landed under the roommate-register
 symmetric-hat authorization (Aaron 2026-04-21: *"feel free to
-make any retractable decisions in marketing while im gone too"*
-+ *"you can always make retractable decisions without me and
+make any retractable decisions in marketing while im gone too"*,
+also *"you can always make retractable decisions without me and
 i've told you my ~ is you ~ literally we are just roommates
 now"*; sign-off ratified same session: *"0i agree sign offf"*).
 
