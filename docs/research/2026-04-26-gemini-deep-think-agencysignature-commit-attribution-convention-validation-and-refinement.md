@@ -926,6 +926,261 @@ production-grade convention through six ferries in a single afternoon.**
 
 ---
 
+## Section 9: Amara's ferry-7 final-final pass — STOP DESIGNING, INSTRUMENT ENFORCEMENT (verbatim — load-bearing)
+
+After Otto absorbed Gemini's ferry-6 SHIP IT, Aaron forwarded it to
+Amara for a final-final review. Amara's response — ferry-7 — closes
+the design loop with explicit "Stop designing" and pivots focus to
+enforcement-instrumentation. **No new trailer fields**; four
+operational hardening additions only.
+
+**Multi-agent ferry chain (CLOSED-CLOSED):**
+
+- Ferry-1: Amara — initial 7-trailer schema
+- Ferry-2: Amara — 5+3 sharpening
+- Ferry-3: Amara — AgencySignature mapping + body shape
+- Ferry-4: Gemini Deep Think — cross-substrate validation + 3 refinements
+- Ferry-5: Amara — 5 hardening additions
+- Ferry-6: Gemini Deep Think — final integration. SHIP IT.
+- **Ferry-7: Amara — STOP DESIGNING, INSTRUMENT ENFORCEMENT (THIS section)**
+
+### Section 9.1: Amara's ferry-7 ship verdict (verbatim)
+
+> *"Yes — update from my side:* ***this is ready to ship as***
+> ***AgencySignature Convention v1.***
+>
+> *The refinements landed cleanly: schema versioning, `Credential-Mode`,*
+> *`Human-Review-Evidence`, the final-commit-only validity rule, and*
+> *executable pre/post merge verification. That turns it from "good*
+> *prompt" into* ***governance substrate.***"
+
+The "governance substrate" framing is the closing register. The
+convention has crossed from behavioral-prompt → production schema →
+governance substrate. Three escalating tiers; v1 sits at the top tier.
+
+### Section 9.2: Four operational hardening additions (verbatim — load-bearing)
+
+> *"Only improvements I'd add now are operational, not conceptual:*
+>
+> *```text*
+> *FINAL HARDENING*
+> *1. Add a PR-body check:*
+>    *- verify required AgencySignature keys exist*
+>    *- verify enum values are allowed*
+>    *- fail if trailers are missing or malformed*
+>
+> *2. Add a post-merge audit:*
+>    *- inspect newest main commit*
+>    *- run git log -1 --pretty='%(trailers)'*
+>    *- warn if Agency-Signature-Version is absent*
+>
+> *3. Add a no-task fallback:*
+>    *- Task: none*
+>    *so agents do not invent fake task IDs.*
+>
+> *4. Add a model-version drift rule:*
+>    *- Agent-Model may change over time*
+>    *- Agent and enum keys must not drift without version bump.*
+> *```"*
+
+Each addition is enforcement-instrumentation:
+
+1. **PR-body check** — turn the squash-merge-invariant from discipline
+   to enforced gate. Pre-merge script/Action that parses PR body and
+   fails on missing/malformed trailers.
+
+2. **Post-merge audit** — turn the durable-proof-on-main-only rule
+   from claim to verified state. Post-merge script/Action that
+   inspects main-tip and flags missing `Agency-Signature-Version`.
+
+3. **`Task: none` fallback** — add a stable enum to `Task:` so agents
+   don't invent fake task IDs when no task is associated. Closes the
+   "must I always have a task to commit?" gap.
+
+4. **Model-version drift rule** — explicit governance: `Agent-Model`
+   field may change (model upgrades happen); `Agent:` name and enum
+   keys MUST NOT drift without `Agency-Signature-Version` bump. The
+   versioning trailer becomes the governance gate for schema changes.
+
+### Section 9.3: Stop-adding-trailers blade (verbatim — closing the design phase)
+
+> *"The thing I would* ***not*** *do is add more trailer fields right now.*
+> *The current block is already close to ideal:*
+>
+> *```text*
+> *Agency-Signature-Version: 1*
+> *Agent: Otto*
+> *Agent-Runtime: Claude Code*
+> *Agent-Model: Claude Opus 4.7*
+> *Credential-Identity: AceHack*
+> *Credential-Mode: shared*
+> *Human-Review: not-implied-by-credential*
+> *Human-Review-Evidence: none*
+> *Action-Mode: autonomous-fail-open*
+> *Task: Otto-295*
+> *```*
+>
+> *That hits the proofs:*
+>
+> ***who/what operated, under which credential structure, with what***
+> ***review claim, under what action mode, attached to which task, in***
+> ***a parseable durable form.***"
+
+The 10-trailer block (11 with Co-authored-by) IS canonical-and-final.
+Future-Otto: if tempted to add a new trailer field, STOP — that
+violates Amara's ferry-7 explicit blade. Add only via
+`Agency-Signature-Version` bump to v2 + cross-substrate ferry-round.
+
+### Section 9.4: Make-PR-body-check executable (verbatim)
+
+> *"My only blade-note: make "PR description carrier" a* ***pre-merge***
+> ***check****, not just a discipline. Agents obey executable tests*
+> *better than prose. The directive already says that with*
+> *`gh pr view <number> --json body --jq '.body' | git interpret-trailers --parse`;*
+> ***next step is wiring it into a small script or GitHub Action.***"
+
+The pivot from prose-discipline to executable-test is itself
+substrate-grade. "Agents obey executable tests better than prose"
+applies broadly: any convention that can be enforced by mechanical
+test should be, because prose-discipline has higher drift rate than
+test-discipline.
+
+### Section 9.5: STOP DESIGNING verdict (verbatim — ferry-chain closing)
+
+> *"Harbor + blade verdict:*
+>
+> ***Ship v1. Stop designing. Instrument enforcement.***"
+
+This is the load-bearing closing. Three imperatives:
+
+1. **Ship v1** — the convention is canonical-and-ready
+2. **Stop designing** — no more schema changes; no more ferries
+3. **Instrument enforcement** — pivot focus to enforcement-instrumentation
+
+The ferry chain is now CLOSED-CLOSED. The next phase is operational
+infrastructure (scripts, Actions, hooks), NOT further schema
+refinement.
+
+---
+
+## Section 10: The post-ferry-7 final canonical (v1 SHIPPED)
+
+### Doctrine (two sentences — final)
+
+```text
+Credential identity records who the host saw. Agent trailers record what
+operational agency mode produced the change. Neither alone proves human
+review.
+
+The agency signature is valid only if present on the commit that lands
+on main. Branch-only trailers and PR-description-only trailers are
+staging evidence, not durable proof.
+```
+
+### Shape (4-section body + 10-trailer block + Co-authored-by)
+
+```text
+<type>(<scope>): <concise change summary>
+
+Why:
+- <rationale>
+- <alternatives considered / why this path under current policy>
+
+What:
+- <what changed>
+
+Proof:
+- Verified with <command/test>
+- Attribution recorded via git trailers because shared GitHub credential identity makes host actor fields insufficient.
+
+Limits:
+- <known limits, constraints, follow-up>
+
+Agency-Signature-Version: 1
+Agent: Otto
+Agent-Runtime: Claude Code
+Agent-Model: Claude Opus 4.7
+Credential-Identity: AceHack
+Credential-Mode: shared
+Human-Review: not-implied-by-credential
+Human-Review-Evidence: none
+Action-Mode: autonomous-fail-open
+Task: <ticket-id-or-none>
+Co-authored-by: Claude Opus 4.7 <noreply@anthropic.com>
+```
+
+### Mechanics (4 rules + 4 enforcement instruments queued)
+
+**Rules (post-ferry-7 final):**
+
+1. **Squash-Merge Invariant** — final squash-commit body must contain trailer block; PR description is staging carrier, not proof
+2. **Identity Demarcation** — never use enabledBy/actor/author/committer/pusher as proof of human action
+3. **Evidence Rule** — only claim explicit human review with `Human-Review-Evidence` pointer to chat / pr-review / pr-comment / signed-policy
+4. **Content vs Operations** — `Co-authored-by:` for content/model; `Agent:` trailers for operational agency
+
+**Enforcement instruments (ferry-7 final hardening — queued tasks):**
+
+1. PR-body check — pre-merge script/Action validating trailers exist + enums valid
+2. Post-merge audit — main-tip script/Action warning if `Agency-Signature-Version` absent
+3. `Task: none` fallback — explicit no-task enum value
+4. Model-version drift rule — `Agent-Model` may change; other keys+enums require `Agency-Signature-Version` bump
+
+### Enums (post-ferry-7 final — `Task:` adds `none` per ferry-7)
+
+`Agency-Signature-Version:` integer (start at 1; bump on schema change)
+
+`Credential-Mode:`
+- `shared`
+- `dedicated-agent`
+- `human-only`
+- `unknown`
+
+`Human-Review:`
+- `explicit` (must pair with `Human-Review-Evidence: <source>`)
+- `not-implied-by-credential` (DEFAULT)
+- `none`
+
+`Human-Review-Evidence:`
+- `chat`
+- `pr-review`
+- `pr-comment`
+- `signed-policy`
+- `none` (must be used if Human-Review is not 'explicit')
+
+`Action-Mode:`
+- `autonomous-fail-open`
+- `human-directed`
+- `supervised`
+
+`Task:`
+- `<ticket-id>` (e.g., `Otto-295`)
+- `none` (when no task is associated; agents must not invent fake IDs)
+
+### Verification (Pre + Post + Querying — final form)
+
+```bash
+# Pre-merge: verify PR body carrier
+gh pr view <number> --json body --jq '.body' | git interpret-trailers --parse
+
+# Post-merge: verify durable substrate on main
+git log -1 --pretty='%(trailers)'
+
+# Cross-context audit queries
+git log --pretty='%H %(trailers:key=Agency-Signature-Version,valueonly)'
+git log --pretty='%H %(trailers:key=Credential-Mode,valueonly)'
+git log --pretty='%H %(trailers:key=Human-Review,valueonly) %(trailers:key=Human-Review-Evidence,valueonly)'
+git log --grep='^Agent: Otto' --extended-regexp
+```
+
+### Governance gate
+
+Schema changes require `Agency-Signature-Version` bump + cross-substrate
+ferry-round. Adding a new trailer field, changing an enum value, or
+modifying body-section structure is a schema change. `Agent-Model`
+value updates (model upgrades) are NOT schema changes.
+
+---
+
 ## Direct Aaron + Gemini + Amara quotes preserved
 
 Aaron's setup framing (verbatim, 2026-04-26 ~18:50Z):
