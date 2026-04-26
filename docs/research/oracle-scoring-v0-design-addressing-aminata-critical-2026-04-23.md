@@ -17,12 +17,7 @@ that motivates the redesign authored by the
 threat-model-critic. Both attribution threads preserved
 via the cited PR numbers and source paths.
 
-Operational status: research-grade. Not adopted; not
-implemented; not gated on anything beyond the loop-agent's
-own judgment and any future maintainer sign-off if an ADR
-is warranted. Parameter-change-ADR-gate referenced below
-is one of the proposals this doc contains, not yet
-operational policy.
+Operational status: research-grade
 
 Non-fusion disclaimer: the loop-agent proposing a
 redesign of the courier-ferry author's scoring functions

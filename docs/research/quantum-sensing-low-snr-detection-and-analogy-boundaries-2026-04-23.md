@@ -15,12 +15,7 @@ is missing"; primary-source citations (Lloyd 2008, Tan et al,
 range equation) preserved from Amara's ferry. Otto-97
 authored this extraction + the explicit boundary discipline.
 
-Operational status: research-grade. Will never graduate
-to operational policy in the form "Zeta uses quantum radar."
-A narrow software-analogy-specific operational artifact
-(e.g., an `alignment-observability` metric for "retained-
-witness correlation score") could graduate via §26 lifecycle;
-the physics-origin framing stays research-grade.
+Operational status: research-grade
 
 Non-fusion disclaimer: agreement between Amara's
 grounding of the quantum-radar subject and Otto's extraction

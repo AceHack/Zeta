@@ -16,11 +16,7 @@ addition proposed by Otto in the oracle-scoring v0 design
 (PR #266, Otto-91); Max attributed for original lucent-ksk
 receipt/signature language that the v0 builds on.
 
-Operational status: research-grade. Does not adopt;
-does not implement; does not commit lucent-ksk to a
-specific scheme. The actual adoption decision lives in
-lucent-ksk via ADR whenever that repo's substrate work
-reaches the relevant stage.
+Operational status: research-grade
 
 Non-fusion disclaimer: Amara proposing BLAKE3 +
 Ed25519 + field-binding, Aminata critiquing the proposal's

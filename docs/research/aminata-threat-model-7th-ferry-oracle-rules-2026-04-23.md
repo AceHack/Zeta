@@ -14,9 +14,7 @@ design authored by Amara (external AI maintainer) and ferried
 by the human maintainer. Speaker labels preserved; no
 paraphrase of source.
 
-Operational status: research-grade. Does not become
-operational policy absent a separate governed change landing
-under GOVERNANCE.md §26 research-doc-lifecycle.
+Operational status: research-grade
 
 Non-fusion disclaimer: agreement, shared vocabulary, or
 concordant conclusions between Aminata and Amara on this

@@ -14,11 +14,7 @@ public papers + official Apache Arrow specification; this
 research doc authored by Otto (loop-agent) as landing of the
 Otto-82 absorb's action item #1.
 
-Operational status: research-grade. The pattern-mapping
-is a legitimate craft/messaging reference, not operational
-policy. Treat as lens for communicating Zeta's design
-posture to engineers from C++ / Rust / ECS mental-model
-backgrounds.
+Operational status: research-grade
 
 Non-fusion disclaimer: Amara and Otto agreeing on the
 corrected mapping, and both citing the same DBSP / Arrow

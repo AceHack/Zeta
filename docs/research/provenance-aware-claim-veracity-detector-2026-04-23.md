@@ -17,12 +17,7 @@ adversarial pass on oracle-scoring v0 (PR #263); spine
 substrate + composition-table pattern from Otto-98
 (PR #280); Otto-99 synthesis.
 
-Operational status: research-grade. Does not implement.
-Does not adopt specific parameter values. Does not adopt
-specific embedding model / ANN library / oracle
-implementations. Downstream design choices are gated on
-Aminata adversarial pass + candidate #4 operational
-promotion.
+Operational status: research-grade
 
 **Promotion path to authoritative-detector status (long-
 horizon, not v0/v1):** Aaron Otto-2026-04-24 framed the
