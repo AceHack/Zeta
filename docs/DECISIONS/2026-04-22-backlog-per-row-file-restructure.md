@@ -387,6 +387,64 @@ discipline fails without this restructure.
    If we want it, file a Phase 1b directive to extend the
    parser; otherwise the existing `tags:` array can carry
    `scope-factory` / `scope-zeta` tag values.
+
+   **Partial-migration revisit (2026-04-26, ~36 of ~350 rows
+   migrated):** The current per-row corpus has **240 distinct
+   tag values** across 36 rows. **Trigger-formulation
+   correction (Codex P2 catch):** the original task #270
+   trigger "tag noise grows past ~12 distinct scope values"
+   was malformed — a `scope: factory | zeta | shared` enum
+   only permits 3 values, so 12 distinct scope values can
+   never fire under the proposed schema. The intended
+   measurement was **tag-prefix clusters acting AS scope**
+   (the implicit scope-like axis already in use). Restated:
+   if the tag corpus develops more than ~8 distinct
+   scope-like prefix clusters, that's the signal to add a
+   first-class `scope:` field. Currently observed: ~6
+   clusters (`factory-*` / `aurora-*` / `alignment-*` /
+   `substrate-*` / `hygiene-*` / `tooling-*`) — under
+   threshold, but trending up. The scope-like axis IS
+   implicit in tag prefixes
+   (`factory-as-superfluid` / `factory-discipline` /
+   `factory-maintenance` cluster, `aurora` / `aurora-ksk`
+   cluster, `alignment` / `alignment-foundation` /
+   `alignment-substrate` cluster, `substrate-as-mechanism`
+   / `substrate-as-revenue-surface` / `substrate-poisoning`
+   cluster). The tags-only approach is functioning at
+   partial-migration scale — none of the operational
+   workflows (PR review, BACKLOG-pickup per Aaron's
+   "non-speculative work" rule, hot-file-detector audits)
+   have hit the "factory-vs-zeta scope distinction is
+   load-bearing for a generated dashboard / report"
+   trigger from task #270.
+
+   **Provisional finding:** tags-only approach is **holding**
+   at partial-migration scale. Final reflection deferred
+   until bulk migration completes (Phase 2 ships all ~350
+   rows). At that point: re-check (a) whether any reporting/
+   dashboard surface needs scope-as-coarse-filter, and (b)
+   whether the ~12-tag threshold meaningfully predicts
+   needing a separate field — at 240 tags, the threshold
+   may have been off by an order of magnitude. **Math-correctness
+   note (Copilot P1 catch):** my prior draft conflated
+   "distinct tag values" (union; what 240 measures) with
+   "average tags-per-row" (mentions ÷ rows) — different metrics.
+   240 is the distinct-union count; average tags-per-row would
+   require counting all tag mentions (independent measurement),
+   not extrapolating from the union. The 350-row extrapolation
+   "350 × 6.7 = 2300 tag-mentions" was unsound and is removed;
+   the meaningful prediction is just that distinct-union
+   plateaus as Phase 2 lands more rows, not a specific number.
+   Tag-corpus grows with row count, but new rows largely reuse
+   existing tags. Falsification #1 recalibrates to "distinct
+   scope-like prefix clusters past 8" — currently 6 clusters,
+   under threshold.
+
+   **Action:** none this round. Phase 2 bulk migration is
+   the gating event; reflection completes there. Per
+   Otto-283 standing directive (`memory/feedback_decide_track_reflect_revisit_then_talk_with_experience_otto_283_2026_04_25.md`):
+   decided, tracked, partially reflected, full revisit when
+   bulk migration ships.
 3. **Concurrent-migration with R45 original intent** — Aaron
    may prefer to land the restructure *and* the reducer-agent
    flip in the same round, trusting the restructure to absorb
