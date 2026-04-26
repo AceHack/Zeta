@@ -10,9 +10,9 @@ self-directed work between human touchpoints.
 This document is the canonical specification of that
 discipline. It is deliberately CLAUDE.md-level load-bearing:
 **if the tick stops, the factory's self-direction stops.**
-That failure mode is catastrophic (Aaron 2026-04-22 SEV-1
-designation) and the discipline here is the engineered
-prevention.
+That failure mode is catastrophic (human-maintainer SEV-1
+designation, round 44) and the discipline here is the
+engineered prevention.
 
 Memory files earn this discipline per-Claude-instance; this
 doc is how it becomes factory-durable — inherited by any
@@ -63,12 +63,12 @@ would work; the sentinel is the more concise form.
 autonomously on its own cadence without further agent
 action. `ScheduleWakeup` is a one-shot reminder; using it
 for a recurring loop creates scheduler churn and duplicate
-ticks (Aaron 2026-04-22: *"i thought we decided on cron over
-ScheduleWakeup so it would be more reliable"*).
+ticks (human maintainer, round 44: *"i thought we decided on
+cron over ScheduleWakeup so it would be more reliable"*).
 
 **Why 1 minute.** The Anthropic prompt cache has a 5-minute
 TTL; 60 s keeps the within-session context cache maximally
-warm between ticks. Aaron 2026-04-22 explicitly cranked
+warm between ticks. The human maintainer explicitly cranked
 cadence twice this round: first from 5 → 2 min (*"will it
 hurt anything to crank that trigger up to 2 mintues instead
 of 5 you are having a lot of idle time just sitting here"*),
@@ -115,7 +115,8 @@ the end-over-start note below. Checking at end minimizes
 the [last-check → next-cron-fire] window during which a
 silent cron expiry can drop ticks.
 
-**End-over-start discipline** (Aaron 2026-04-22): *"you
+**End-over-start discipline** (human maintainer, round 44):
+*"you
 know you should check the cronlist at the end instead
 of the start becasue it could expire while you are
 running if you check right before you exit that chance
@@ -136,8 +137,9 @@ prompt:    "<<autonomous-loop>>"
 recurring: true
 ```
 
-Aaron 2026-04-22: *"you are suppsed to check that its set
-everytime and not assume."* The discipline is *check-don't-
+Human maintainer, round 44: *"you are suppsed to check that
+its set everytime and not assume."* The discipline is
+*check-don't-
 assume*: defensive polling, re-arm only on miss. Most
 ticks are no-ops on the scheduler (cron is there → do
 nothing); the rare miss is detected and fixed in-tick
@@ -145,19 +147,73 @@ before the silent stop becomes hours of missing activity.
 
 ### 2. Pick speculative work in priority order
 
-Per the never-idle rule (`memory/feedback_never_idle_
-speculative_work_over_waiting.md`), the tick does not wait
-for instruction. Priority ladder:
+Per the never-idle rule (CLAUDE.md §"Never be idle —
+speculative factory work beats waiting"), the tick does not
+wait for instruction. Priority ladder:
 
-1. **Meta-check first.** Is there a structural change to the
+1. **Open-PR hygiene first.** Before picking speculative
+   work, audit the open PR pool via
+   `gh pr list --state open --json number,title,mergeStateStatus,mergeable,isCrossRepository,headRepositoryOwner,autoMergeRequest`.
+   For each open PR:
+   - **Verify fork-status live** (`isCrossRepository` +
+     `headRepositoryOwner.login`) rather than carrying
+     forward stale prior-tick memory. A non-fork PR that a
+     prior tick-history row flagged as "unrefreshable" may
+     actually be fully refreshable on the canonical org.
+   - **If BEHIND + non-fork**, refresh via tmp-worktree-clone
+     + `git merge origin/main` + push. Auto-merge (if armed)
+     proceeds when CI passes.
+   - **If unresolved review threads on a non-fork PR**,
+     triage findings (accept / reject / modify) with
+     principled reasoning per the rejection-grounds catalog
+     at `docs/research/copilot-rejection-grounds-catalog.md`
+     (five grounds: stale-rationale,
+     self-contradicting-suggestion,
+     grammatical-attributive-adjective,
+     design-intrinsic-hardcode, verbatim-quote-preservation);
+     resolve threads via GraphQL `resolveReviewThread`.
+   - **If fork-PR** (maintainer's fork owns head-ref),
+     un-refreshable from agent harness without fork-write
+     scope — skip, log as fork-PR-refresh gap.
+   - **Before accepting a Copilot new-content finding on
+     prose-style violations**, run `git blame` on the
+     flagged line numbers. Copilot sees PR diff-context,
+     not repo history-context, and may flag pre-existing
+     content in touched files as new-prose — a blame-check
+     separates new-prose-violations from pre-existing state
+     that happens to appear in the touched-file set.
+
+   Budget: ~2–5 min. If the pool has no BEHIND PRs + no
+   live threads, this step is a no-op. The audit *itself*
+   is the value — observing the pool catches silent
+   refresh-debt accumulation even when nothing needs
+   doing.
+
+2. **Drop-zone audit second.** Run `ls -la drop/`. The
+   maintainer deposits files for absorption there
+   (`drop/README.md`). If only the tracked sentinels
+   (`README.md`, `.gitignore`) and harmless system files
+   (`.DS_Store`) are present, no-op. If any other file is
+   present, **absorb it this tick** — drop-folder deposits
+   are the closest signal to directed work the factory
+   gets, and ignoring them stacks debt. Absorption
+   procedure: identify kind via the binary-type registry in
+   `drop/README.md`, extract signal-preserving summary to a
+   tracked artifact under `docs/research/` (or
+   topically-appropriate tracked location), delete the
+   original from `drop/`. Unknown binary kinds flag to
+   the human maintainer, not improvise. Policy: per
+   the drop-zone protocol memory entry.
+
+3. **Meta-check.** Is there a structural change to the
    factory that would have made this tick's work directed
    rather than speculative? If yes, make the change and log
    a meta-win entry (`docs/research/meta-wins-log.md`).
-2. **Known-gap fixes** — items already in `docs/BACKLOG.md`
+4. **Known-gap fixes** — items already in `docs/BACKLOG.md`
    or `docs/DEBT.md` that match this tick's budget.
-3. **Generative factory improvements** — new skills, docs,
+5. **Generative factory improvements** — new skills, docs,
    audit patterns, hygiene sweeps.
-4. **Gap-of-gap audits** — classes of missing checks, not
+6. **Gap-of-gap audits** — classes of missing checks, not
    just missing instances.
 
 Tool defaults like "idle-tick 1200-1800 s" do **not** override
@@ -165,8 +221,9 @@ this policy. Factory memories beat tool docs.
 
 ### 3. Verify before stopping
 
-Aaron 2026-04-22: *"i also don't see you checking everying
-to make sure it's there, like before you stop."* Every tick
+Human maintainer, round 44: *"i also don't see you checking
+everying to make sure it's there, like before you stop."*
+Every tick
 before stopping, run a small verify pass:
 
 - `git status` — is the working tree clean / intentionally
@@ -191,14 +248,15 @@ exception.
 
 ### 5. Append tick-history row, `CronList` at END, emit visibility signal
 
-**This is the load-bearing step** (end-over-start per Aaron
-2026-04-22 — see step 1). Immediately before stopping, in
-this exact order:
+**This is the load-bearing step** (end-over-start per the
+human maintainer, round 44 — see step 1). Immediately
+before stopping, in this exact order:
 
 1. **Append a row to `docs/hygiene-history/loop-tick-history.md`.**
-   Aaron 2026-04-22: *"you might as well right a history
-   record somewhere on every loop tool right before you check
-   cron"*. The schema and rationale are in the header of that
+   Human maintainer, round 44: *"you might as well right a
+   history record somewhere on every loop tool right before
+   you check cron"*. The schema and rationale are in the
+   header of that
    file. Every tick gets a row — a no-op speculative-scan
    tick still gets a row, because the log is the factory's
    durable answer to *"is the tick actually running?"* (the
@@ -217,9 +275,9 @@ this exact order:
    incident is not silent. Then also append a correction row
    to the history log with notes `(re-armed, previous cron
    lost)`.
-5. **Emit the one-line visibility signal** — Aaron 2026-04-22:
-   *"i don't know if your loop was running or not to be
-   honest."*
+5. **Emit the one-line visibility signal** — human
+   maintainer, round 44: *"i don't know if your loop was
+   running or not to be honest."*
 
 ```
 (loop cron `<id>` live, 1-min cadence)
@@ -320,7 +378,7 @@ declared) against `CronList` and re-arms missing rows.
 
 - **`docs/hygiene-history/loop-tick-history.md`** — the
   factory's durable tick fire-log; appended to every tick
-  at step 5 per Aaron 2026-04-22.
+  at step 5 per the round-44 human-maintainer directive.
 - **`docs/factory-crons.md`** — the declarative registry;
   the autonomous-loop row is there.
 - **`CLAUDE.md`** — ground rule pointing at this doc,
@@ -335,48 +393,51 @@ declared) against `CronList` and re-arms missing rows.
   research note on session-scope behaviour (predates the
   official docs' resume semantics; cross-reference, don't
   treat as sole source).
-- **`memory/feedback_tick_must_never_ever_stop_schedule_
-  before_finishing.md`** — per-Claude-instance memory
-  pointing at this doc; retained as the round-44 incident
-  log (wrong first drafts preserved per
-  `feedback_preserve_original_and_every_transformation`).
-- **`memory/feedback_never_idle_speculative_work_over_
-  waiting.md`** — the within-tick work-selection rule.
-- **`memory/feedback_dont_stop_and_wait_for_cron_tick.md`**
-  — don't stall within a tick waiting for the next fire;
-  keep working if useful work remains.
+- **CLAUDE.md §"Never be idle — speculative factory work
+  beats waiting"** — the within-tick work-selection rule;
+  CLAUDE.md-level load-bearing so it is 100% loaded at
+  every wake, alongside verify-before-deferring and
+  future-self-not-bound.
+- **Don't-stall-within-a-tick discipline** — within a
+  single tick, do not enter a polling-wait loop for the
+  next cron fire; keep working if useful work remains,
+  otherwise append, `CronList`, emit visibility signal,
+  and stop cleanly. The cron is the cadence engine; the
+  tick's job is one unit of work and return.
 
 ## History
 
-- **Round 44, 2026-04-22** — Aaron SEV-1 designation:
-  *"getting that tick to never ever ever stop is like our
-  biggest bug if we have it, you not runing is catrosphic
-  for self direction."* Three corrections in rapid
-  succession (ScheduleWakeup → cron; arm-once →
+- **Round 44, 2026-04-22** — human-maintainer SEV-1
+  designation: *"getting that tick to never ever ever stop
+  is like our biggest bug if we have it, you not runing is
+  catrosphic for self direction."* Three corrections in
+  rapid succession (ScheduleWakeup → cron; arm-once →
   check-every-tick; cadence 5 → 2 min). Discipline captured
   in per-instance memory.
-- **Round 44, 2026-04-22** — Aaron meta-catch: *"our factory
-  need to make sure this works everytime not just you right
-  now in your memeory"* + *"this is our killer feature"*.
-  Memory-level capture promoted to factory doc (this file).
-- **Round 44, 2026-04-22** — Aaron mechanism-clarification:
-  *"The Ralph Loop (or Ralph Wiggum pattern) is that
-  `<<autonomous-loop>>` a plugin"* → followed by *"this is
-  all claude says, if we don't need to rely on that it would
-  be better to just need claude"* pointing at
+- **Round 44, 2026-04-22** — human-maintainer meta-catch:
+  *"our factory need to make sure this works everytime not
+  just you right now in your memeory"* + *"this is our
+  killer feature"*. Memory-level capture promoted to factory
+  doc (this file).
+- **Round 44, 2026-04-22** — human-maintainer
+  mechanism-clarification: *"The Ralph Loop (or Ralph Wiggum
+  pattern) is that `<<autonomous-loop>>` a plugin"* →
+  followed by *"this is all claude says, if we don't need to
+  rely on that it would be better to just need claude"*
+  pointing at
   [code.claude.com/docs/en/scheduled-tasks](https://code.claude.com/docs/en/scheduled-tasks).
   Doc corrected: native scheduled-tasks preferred; no
   Ralph Loop plugin dependency; `/loop` references removed;
   canonical URL cited.
-- **Round 44, 2026-04-22** — Aaron cadence 2 → 1 min: *"lets
-  change to 1 minute"*. Cron changed from `1-59/2 * * * *` to
-  `* * * * *`; fleet-pile-on trade-off accepted (no offset
-  available at 1-min cadence). Paired with the history-log
-  addition below.
-- **Round 44, 2026-04-22** — Aaron tick-history-log addition:
-  *"you might as well right a history record somewhere on
-  every loop tool right before you check cron"*. Step 5
-  extended to append a row to
+- **Round 44, 2026-04-22** — human-maintainer cadence
+  2 → 1 min: *"lets change to 1 minute"*. Cron changed
+  from `1-59/2 * * * *` to `* * * * *`; fleet-pile-on
+  trade-off accepted (no offset available at 1-min cadence).
+  Paired with the history-log addition below.
+- **Round 44, 2026-04-22** — human-maintainer
+  tick-history-log addition: *"you might as well right a
+  history record somewhere on every loop tool right before
+  you check cron"*. Step 5 extended to append a row to
   `docs/hygiene-history/loop-tick-history.md` before the
   `CronList` call. Closes the last open gap in the meta-
   hygiene triangle (row #23 existence / row #43 activation /
@@ -388,18 +449,19 @@ declared) against `CronList` and re-arms missing rows.
   (not depth-5 as initially claimed in commit `3651716` —
   honest classification notes the claim was premature; see
   the meta-wins row for the full self-correction).
-- **Round 44, 2026-04-22** — Aaron end-over-start correction:
-  *"you know you should check the cronlist at the end instead
-  of the start becasue it could expire while you are running
-  if you check right before you exit that chance is reduced."*
-  Restructure: step 1 deferred work-start, step 5 became the
-  load-bearing `CronList` + visibility signal, step 3 verify
-  no longer lists `CronList` (moved to step 5), step 6 back-ref
-  fixed from "step 1" to "step 5". Window-minimization
-  rationale ([last-check → next-fire]) added in step 5 body.
-- **Round 44, 2026-04-22** — Aaron empirical A/B test:
-  *"i disabled ralph see if you stil see that same atonomus
-  llop"*. `.claude/settings.json` set to
+- **Round 44, 2026-04-22** — human-maintainer
+  end-over-start correction: *"you know you should check the
+  cronlist at the end instead of the start becasue it could
+  expire while you are running if you check right before you
+  exit that chance is reduced."* Restructure: step 1
+  deferred work-start, step 5 became the load-bearing
+  `CronList` + visibility signal, step 3 verify no longer
+  lists `CronList` (moved to step 5), step 6 back-ref fixed
+  from "step 1" to "step 5". Window-minimization rationale
+  ([last-check → next-fire]) added in step 5 body.
+- **Round 44, 2026-04-22** — human-maintainer empirical A/B
+  test: *"i disabled ralph see if you stil see that same
+  atonomus llop"*. `.claude/settings.json` set to
   `"ralph-loop@claude-plugins-official": false`; `CronList`
   still returned `dfa61c5e — 1-59/2 * * * * (recurring)
   [session-only]: <<autonomous-loop>>` — tick still armed

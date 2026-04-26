@@ -1,10 +1,26 @@
 # Market research draft — 2026-04-21
 
+> **Merge note (2026-04-26 fork-divergence sync):** this draft
+> contains both AceHack-fork and LFG variants of some sections
+> preserved per Aaron 2026-04-26 *"merge everything, label draft
+> if it's draft"*. Substantive content is identical between forks;
+> the editorial difference is attribution phrasing — the **AceHack
+> draft** uses the named maintainer "Aaron" (per the named-agent
+> attribution-credit memory + Otto-279 history-surface carve-out +
+> Otto-231 first-party consent), while the **LFG draft** uses the
+> role-ref "human maintainer" (per the no-name-attribution rule in
+> `docs/AGENT-BEST-PRACTICES.md`). Body uses AceHack named-
+> attribution form; LFG role-ref alternates are footnoted at first
+> occurrence per section. Aaron picks the canonical form on sign-off.
+
 **Status: retractable draft.** Internal candidate, awaiting
 Aaron sign-off for any external use. Lives in
 `docs/marketing/` per the subtree's README governance
 (retractable-under-roommate-register; revert + dated
 revision block is sufficient to undo).
+
+> **LFG variant phrasing:** "awaiting human-maintainer sign-off
+> for any external use."
 
 **Companion to:** `docs/marketing/positioning-draft-2026-04-21.md`.
 Positioning says *who we are*. This draft sketches *who
@@ -179,6 +195,10 @@ ocw_self_taught_stanford_mit_lisp_aspiration_2026_
 04_21.md`) is a real asset here; this is exactly the
 audience that venue reaches.
 
+> **LFG variant phrasing of the acquisition-angle paragraph:**
+> *"...the human maintainer's Strange-Loop expert-register (per
+> [same memory ref]) is a real asset here..."*
+
 ### 2.2 Adjacent fit — event-sourcing / CQRS practitioners building projections
 
 Signal: CQRS frameworks leave "build your own
@@ -243,6 +263,9 @@ tiny little bin ... that makes self replication very
 easy"* (per `memory/user_git_repo_is_factory_soul_
 file_reproducibility_substrate_aaron_2026_04_21.md`).
 
+> **LFG variant phrasing:** "the human maintainer 2026-04-21:
+> [same quote, same memory ref]."
+
 If Zeta crystallises into a **small binary seed** that
 is WASM + native + universal + tiny, the market frame
 expands beyond "F# / .NET IVM library" into
@@ -278,6 +301,9 @@ but the Aaron-retracted "not-docker" framing
 (per the soul-file memory) insists this is
 declarative-reproducible-build at the *computation*
 layer, not container layer.
+
+> **LFG variant phrasing:** "...the human-maintainer-retracted
+> 'not-docker' framing..."
 
 **Market-shape signal:** undefined-but-real — there is
 no named market category for "AI factory seed
@@ -360,6 +386,8 @@ crystallise-to-binary-seed program, not present-tense.
   in-flight. Landscape placement ≠ market readiness.
 - NOT public-facing without Aaron sign-off per the
   marketing-subtree governance.
+  > **LFG variant phrasing:** "NOT public-facing without
+  > human-maintainer sign-off per the marketing-subtree governance."
 
 ---
 
@@ -384,6 +412,8 @@ priority order:
 5. **Do not broadcast this draft externally** — marketing
    subtree is retractable internal-only; external use
    requires Aaron sign-off per subtree governance.
+   > **LFG variant phrasing:** "...external use requires
+   > human-maintainer sign-off per subtree governance."
 
 ---
 
@@ -398,6 +428,8 @@ priority order:
   register_symmetric_hat_authority_retractable_decisions_
   without_aaron.md`** — authorization for retractable
   marketing work without Aaron sign-off per item.
+  > **LFG variant phrasing:** "...without human-maintainer
+  > sign-off per item."
 - **`memory/user_git_repo_is_factory_soul_file_
   reproducibility_substrate_aaron_2026_04_21.md`** —
   soul-file / metametameta-seed / crystallise-to-
@@ -424,3 +456,11 @@ priority order:
   recommendations for positioning-draft (CQRS tier;
   WASM adjacency footnote). Four follow-on BACKLOG
   candidates (§6.3, §6.4) named but not filed.
+  > **LFG variant phrasing:** "Triggered by the human maintainer
+  > 2026-04-21 [same quote]..."
+- **2026-04-26.** Fork-divergence merge: AceHack and LFG
+  variants reconciled per Aaron 2026-04-26 *"merge
+  everything, label draft if it's draft"*. Substantive
+  content unchanged; LFG role-ref alternate phrasings
+  preserved as inline footnotes for editorial-form
+  selection on sign-off.

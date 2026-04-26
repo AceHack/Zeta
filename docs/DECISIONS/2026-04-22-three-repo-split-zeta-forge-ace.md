@@ -337,9 +337,9 @@ bulk-sync rhythm.
 
 Aaron: *"try to setup the repos with best practices so i
 don't have to go back in and flip everything again lol"*
-and *"all public"* and *"it's probably obvious but they
-follow all our experience so they are best practices by
-default all the ones we already follow."*
+plus *"all public"* plus *"it's probably obvious but they follow
+all our experience so they are best practices by default
+all the ones we already follow."*
 
 **The "by-default" principle.** The checklist below is
 *every lesson Zeta has learned*, applied to Forge and ace
@@ -370,13 +370,13 @@ in the governing repo (declarative-settings-as-code per
 - [ ] Delete head branches on merge
 - [ ] Auto-merge enabled at repo level
 - [ ] Merge queue enabled (LFG org only; requires org
-      hosting per `project_zeta_org_migration_to_lucent_financial_group.md`)
+      hosting per `memory/project_zeta_org_migration_to_lucent_financial_group.md`)
 
 **Branch protection (main):**
 
 - [ ] Require PR before merge
 - [ ] Require 1 review (will bump to 2 per
-      `feedback_second_ai_reviewer_required_check_deferred_until_multi_contributor.md`
+      `memory/feedback_second_ai_reviewer_required_check_deferred_until_multi_contributor.md`
       once multi-contributor)
 - [ ] Require status checks: build, test, scorecard,
       codeql-default-setup, factory-hygiene lint
@@ -394,7 +394,7 @@ in the governing repo (declarative-settings-as-code per
 - [ ] Code scanning via CodeQL **default-setup**
       (non-negotiable — advanced-only fails the
       `code_scanning` ruleset rule per
-      `reference_github_code_scanning_ruleset_rule_requires_default_setup.md`)
+      `memory/reference_github_code_scanning_ruleset_rule_requires_default_setup.md`)
 - [ ] Private vulnerability reporting on
 - [ ] OpenSSF Scorecard workflow wired in
 - [ ] SECURITY.md authored
@@ -450,7 +450,7 @@ in the governing repo (declarative-settings-as-code per
 **Social preview:**
 
 - [ ] SVG social-preview authored per
-      `feedback_svg_preferred_vector_raster_decided_at_ui_time.md`
+      `memory/feedback_svg_preferred_vector_raster_decided_at_ui_time.md`
 - [ ] Rasterized PNG uploaded to GitHub (format-gated by
       GitHub's social-preview requirement)
 
@@ -458,7 +458,7 @@ in the governing repo (declarative-settings-as-code per
 
 - [ ] `docs/GITHUB-SETTINGS.md` in each repo, cadenced diff
       vs `gh api` (FACTORY-HYGIENE class per
-      `feedback_github_settings_as_code_declarative_checked_in_file.md`)
+      `memory/feedback_github_settings_as_code_declarative_checked_in_file.md`)
 
 **Fork-PR workflow per repo:**
 
@@ -725,7 +725,7 @@ one-repo-three-surfaces to three-repos-three-surfaces.
   — batched bulk-sync rhythm.
 - `memory/feedback_blast_radius_pricing_standing_rule_alignment_signal.md`
   — blast-radius reasoning for each migration stage.
-- `reference_github_code_scanning_ruleset_rule_requires_default_setup.md`
+- `memory/reference_github_code_scanning_ruleset_rule_requires_default_setup.md`
   — why CodeQL default-setup is in the best-practice
   checklist.
 - `docs/BACKLOG.md` — row filed alongside this ADR for

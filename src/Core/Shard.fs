@@ -3,6 +3,7 @@ namespace Zeta.Core
 
 open System
 open System.Collections.Generic
+open System.IO.Hashing
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
 open System.Threading
@@ -51,6 +52,16 @@ type Shard =
     /// Shard a key using `HashCode.Combine` mixed with the per-process
     /// salt. Good default for any ingest path that touches user-controlled
     /// keys — rules out the HashDoS attack.
+    ///
+    /// **Intentionally non-deterministic across processes.** `HashCode.Combine`
+    /// is process-randomized by .NET design; combining with the per-process
+    /// `Shard.Salt` doubles down on that. Two processes will assign the same
+    /// key to different shards. That is the *point* — it's HashDoS defence:
+    /// an attacker cannot pre-compute a worst-case input set for our shard
+    /// distribution because they don't know our seed.
+    ///
+    /// If you need cross-process / cross-restart determinism, use
+    /// `OfFixed`, which uses `XxHash3` instead.
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
     static member OfKey(key: 'K, shards: int) : int =
         let h = uint32 (HashCode.Combine(key, Shard.Salt))
@@ -59,9 +70,51 @@ type Shard =
     /// Shard without the per-process salt — stable across restarts.
     /// Prefer `OfKey` unless you *specifically* need cross-process
     /// determinism (e.g. for Kafka key-to-partition consistency).
+    ///
+    /// **Determinism contract** (Otto-281 honesty audit):
+    ///
+    /// - For **value-type keys** (`int`, `int64`, `uint32`, `byte`, etc.):
+    ///   fully deterministic across processes. `int.GetHashCode()` returns
+    ///   `this` and the rest is deterministic mixing.
+    /// - For **string keys**: NOT deterministic across processes.
+    ///   `string.GetHashCode()` is per-process-randomized in .NET Core+
+    ///   (anti-hash-flooding), and we cannot recover from that within a
+    ///   generic `'K` API. String-key callers who need cross-process
+    ///   consistency MUST hash their UTF-8 bytes themselves and call
+    ///   `Shard.Of(uint32 hash, shards)` directly — for example with
+    ///   `XxHash3.HashToUInt64(Encoding.UTF8.GetBytes(s))`.
+    /// - For **other reference types**: deterministic only if the type's
+    ///   `GetHashCode()` is deterministic (most user-defined records are;
+    ///   classes that depend on instance identity are not).
+    ///
+    /// Otto-281 fix replaced an earlier implementation that used
+    /// `HashCode.Combine key`, which is *also* process-randomized for
+    /// value types (because `HashCode.Combine`'s mixer is randomized
+    /// regardless of input). The new implementation is strictly better
+    /// for value types and no-worse for strings.
+    ///
+    /// String-key cross-process consistency is tracked as a separate
+    /// follow-up: typed overloads `OfFixedString(s: string, shards)` and
+    /// `OfFixedBytes(bytes: ReadOnlySpan&lt;byte&gt;, shards)`.
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
     static member OfFixed(key: 'K, shards: int) : int =
-        Shard.Of(uint32 (HashCode.Combine key), shards)
+        let intHash = key.GetHashCode()
+        let bytes = BitConverter.GetBytes intHash
+        let h64 = XxHash3.HashToUInt64 (ReadOnlySpan bytes)
+        Shard.Of(uint32 h64, shards)
+
+    /// Shard a UTF-8 byte sequence without per-process salt — fully
+    /// deterministic across processes and machines. Use this for any
+    /// cross-process / cross-restart shard assignment where the key
+    /// has a canonical byte representation.
+    ///
+    /// String callers: `Shard.OfFixedBytes(Encoding.UTF8.GetBytes s, shards)`
+    /// is the cross-process-consistent shard for `s`. The plain
+    /// `Shard.OfFixed("...", shards)` is NOT (see `OfFixed` doc).
+    [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
+    static member OfFixedBytes(bytes: ReadOnlySpan<byte>, shards: int) : int =
+        let h64 = XxHash3.HashToUInt64 bytes
+        Shard.Of(uint32 h64, shards)
 
 
 /// Exchange operator — partitions a Z-set across `shards` sub-streams by

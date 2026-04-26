@@ -16,6 +16,7 @@
     <Compile Include="BloomBench.fs" />
     <Compile Include="Nexmark.fs" />
     <Compile Include="NexmarkFull.fs" />
+    <Compile Include="CheckedVsUncheckedBench.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

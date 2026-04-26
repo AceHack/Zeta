@@ -46,7 +46,7 @@ Line-level review comments (where the substantive catches
 live) are at the pull-request *review-comments* endpoint:
 
 ```bash
-gh api "repos/AceHack/Zeta/pulls/<N>/comments?per_page=100" \
+gh api "repos/Lucent-Financial-Group/Zeta/pulls/<N>/comments?per_page=100" \
   --jq '.[] | select(.user.login == "copilot-pull-request-reviewer[bot]")
         | "\(.path):\(.line // "n/a") — \(.body)"'
 ```

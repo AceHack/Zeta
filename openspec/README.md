@@ -1,4 +1,4 @@
-# OpenSpec in Dbsp.Core
+# OpenSpec in Zeta.Core
 
 OpenSpec is the source of truth for this project.
 
