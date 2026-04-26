@@ -29,6 +29,26 @@ mkdir -p "$ZETA_ENV_DIR"
     echo "eval \"\$($(command -v brew) shellenv)\""
   fi
 
+  # Workaround: .NET 10 Server GC crashes on Apple Silicon ARM64
+  # macOS. Three crash reports captured 2026-04-24 (intermittent
+  # SIGSEGV in SVR::gc_heap::{plan_phase, background_mark_phase,
+  # find_first_object} with "possible pointer authentication
+  # failure" = ARM64 PAC memory-corruption detection). Workstation
+  # GC is stable; small build-time perf cost. Apply only on Apple
+  # Silicon HARDWARE under Darwin; Linux / Intel macOS / Windows
+  # see no change. The hardware probe is `sysctl -n
+  # hw.optional.arm64` (returns "1" on Apple Silicon regardless of
+  # whether the current process runs natively or under Rosetta 2 —
+  # `uname -m` reports "x86_64" under Rosetta, which would falsely
+  # skip the workaround even though the OS is on the affected
+  # hardware). Remove once upstream `dotnet/runtime` ships a fix.
+  # Per Otto-248 DST discipline: flakes are bugs; this is the
+  # mitigation layer while the upstream fix lands.
+  echo "if [ \"\$(uname -s)\" = \"Darwin\" ] && [ \"\$(sysctl -n hw.optional.arm64 2>/dev/null || echo 0)\" = \"1\" ]; then"
+  echo "  # .NET 10 Server GC workaround — Apple Silicon crash (Otto-248)"
+  echo "  export DOTNET_gcServer=0"
+  echo "fi"
+
   # Round-34 flip: dotnet SDK comes from mise (see .mise.toml
   # `[tools] dotnet`). Mise shims put `dotnet` on PATH via
   # `mise activate --shims` below. We still add

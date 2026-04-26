@@ -18,9 +18,54 @@
     "references/upstreams/**",
     // Memory directory is agent-written append-logs; treating it
     // as source content would add drift to every OFFTIME entry.
-    "memory/persona/**",
+    "memory/**",
     // Lean proof dir has its own idioms.
-    "tools/lean4/**"
+    "tools/lean4/**",
+    // Aaron+Amara verbatim conversation archive (PR #301/#302/
+    // #303/#304 and future landings). Content is by-design non-
+    // conformant to Zeta's markdown-lint profile — it's preserved
+    // verbatim per GOVERNANCE §33 archive-header discipline +
+    // Aaron Otto-109 "glass halo / absorb everyting (not amara
+    // herself)" directive. Reformatting the verbatim content to
+    // satisfy MD009/MD022/MD032/etc would violate verbatim
+    // preservation. The README.md manifest inside the directory
+    // IS author-controlled and could lint clean, but applying
+    // the ignore to the whole directory keeps the rule simple
+    // (one path, not 10 file-specific entries).
+    "docs/amara-full-conversation/**",
+    // PR-preservation archive (`tools/pr-preservation/archive-pr.sh`
+    // output) is verbatim preservation of PR bodies + review-thread
+    // content. By design, the archive carries the input markdown
+    // structure unchanged (blank-line-around-lists, duplicate
+    // "Pull request overview" headings from GitHub's auto-preamble,
+    // consecutive blank lines from the source, etc.). Reformatting
+    // to satisfy MD032/MD024/MD012 would violate the verbatim-
+    // preservation contract — the policy lives in
+    // `docs/AGENT-BEST-PRACTICES.md` "PR-preservation archive
+    // discipline" + "history-surface name attribution exemption"
+    // sections. The scripts that generate these files already ship
+    // their own hygiene pass; the archive output is not author-
+    // controlled prose.
+    "docs/pr-discussions/**",
+    "docs/pr-preservation/**",
+    // Aurora ferry absorbs (`docs/aurora/2026-*-amara-*.md`) are
+    // verbatim courier-protocol preservation of Amara's deepresearch
+    // ferry reports per Otto-227 verbatim-preservation discipline.
+    // Each absorb has a "## Verbatim preservation (Amara's report)"
+    // section containing Amara's report as paste, including AI-tool
+    // citation anchors (`citeturn…file…`/`citeturn…search…`),
+    // wrap points that hit CommonMark special characters (`+ ...`/
+    // `- ...` line-leading), and ordered-list numbering preserved
+    // across heading breaks. Reformatting the verbatim content to
+    // satisfy MD032/MD029/etc. would violate Otto-227
+    // signal-in-signal-out discipline — same policy that already
+    // covers `docs/amara-full-conversation/**`. Ignore is scoped to
+    // the named ferry-absorb pattern only; non-Amara, non-ferry
+    // docs in `docs/aurora/` (README.md, collaborators.md, the
+    // initial-operations-integration plan, the codex-4 peer-review
+    // archive, the transfer-report which has its own lint-compliance
+    // carve-out, etc.) stay linted.
+    "docs/aurora/2026-*-amara-*.md"
   ],
   "noBanner": true,
   "noProgress": true,

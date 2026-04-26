@@ -340,3 +340,33 @@ rules:
   # "file lacks any of these headings"; a bespoke diff-level lint
   # (which round-30 spec calls the "safety-clause-diff lint") is
   # the stronger signal. Tracked in docs/DEBT.md; target round-31.
+
+  # ────────────────────────────────────────────────────────────────
+  # Rule 17 — GitHub Actions workflow-injection: inline untrusted
+  # context on a `run:` line. The primary workflow-injection vector
+  # per https://github.blog/security/vulnerability-research/how-to-
+  # catch-github-actions-workflow-injections-before-attackers-do/.
+  # Matches single-line `run: ... ${{ github.<unsafe-path> }} ...`
+  # forms for the attacker-controlled contexts enumerated in
+  # docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md. Multi-line `run:
+  # |` blocks are covered by actionlint's YAML-aware parser.
+  # Fix: bind the value to an `env:` entry on the step and read it
+  # as `"$VAR"` in the shell. See the safe-patterns doc.
+  # ────────────────────────────────────────────────────────────────
+  - id: gha-untrusted-in-run-line
+    patterns:
+      - pattern-regex: '(?m)^\s*-?\s*run:.*\$\{\{\s*github\.(head_ref|event\.(issue\.(title|body)|pull_request\.(title|body|head_ref|head\.ref|head\.label)|comment\.body|review\.body|head_commit\.message|commits))'
+    paths:
+      include:
+        - ".github/workflows/*.yml"
+        - ".github/workflows/*.yaml"
+    message: >-
+      Attacker-controlled `github.event.*` / `github.head_ref` value
+      expanded directly into a `run:` shell command — classic GitHub
+      Actions workflow-injection sink. A PR title / issue body /
+      branch name containing shell metacharacters will execute on
+      the runner. Bind the value to the step's `env:` block and
+      reference it as `"$VAR"` in the shell instead. See
+      `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md` §Do / don't.
+    languages: [generic]
+    severity: ERROR

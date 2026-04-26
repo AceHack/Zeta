@@ -60,6 +60,10 @@ how I extend the factory?"*
 
 - [`FACTORY-HYGIENE.md`](FACTORY-HYGIENE.md) — the
   audit rows that run on a schedule.
+- [`RULE-OF-BALANCE.md`](RULE-OF-BALANCE.md) — the
+  counterweight-filing discipline (Otto-264) that
+  stabilises operational resonance; how every mistake-
+  class triggers a counterweight.
 - [`CONFLICT-RESOLUTION.md`](CONFLICT-RESOLUTION.md) —
   the conference protocol for the reviewer roster.
 - [`EXPERT-REGISTRY.md`](EXPERT-REGISTRY.md) — the

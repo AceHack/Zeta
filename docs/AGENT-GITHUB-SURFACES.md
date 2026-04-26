@@ -75,7 +75,7 @@ capture, upstream-sync (FACTORY-HYGIENE row #15).
 row to the surface's fire-history. Not exhaustive — the
 round-close catches what on-touch missed.
 
-**Fire-history surfaces** (append-only, FACTORY-HYGIENE row #44
+**Fire-history surfaces** (append-only, FACTORY-HYGIENE row #47
 compliance):
 
 - PRs -> `docs/hygiene-history/pr-triage-history.md`
@@ -585,8 +585,8 @@ retired (with a row-history-preserved note, not deletion).
   abstract dual-track principle + three adapter choices
 - [`docs/HUMAN-BACKLOG.md`](HUMAN-BACKLOG.md) — mirror rows for
   Aaron-scoped decisions across all four surfaces
-- [`docs/FACTORY-HYGIENE.md`](FACTORY-HYGIENE.md) — row #45
-  (four-surface triage cadence) + row #44 (fire-history for
+- [`docs/FACTORY-HYGIENE.md`](FACTORY-HYGIENE.md) — row #48
+  (ten-surface triage cadence) + row #47 (fire-history for
   every cadenced surface)
 - [`docs/hygiene-history/pr-triage-history.md`](hygiene-history/pr-triage-history.md)
 - [`docs/hygiene-history/issue-triage-history.md`](hygiene-history/issue-triage-history.md)

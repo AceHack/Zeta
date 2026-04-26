@@ -2,9 +2,18 @@ module Zeta.Tests.Sketches.CountMinTests
 #nowarn "0893"
 
 open System
+open System.IO.Hashing
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+
+
+/// Deterministic 64-bit hash for a string key, used in CountMin tests
+/// to bypass `string.GetHashCode()`'s per-process randomization. Same
+/// pattern as `tests/Tests.FSharp/Formal/Sharder.InfoTheoretic.Tests.fs`
+/// `detHash` (Otto-281 fix).
+let private detStringHash (s: string) : uint64 =
+    XxHash3.HashToUInt64 (ReadOnlySpan (System.Text.Encoding.UTF8.GetBytes s))
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -28,8 +37,11 @@ let ``CountMinSketch handles retractions via median`` () =
     cms.Add("x", 5L)
     cms.Add("x", -2L)
     let est = cms.EstimateMedian(
-        let h = HashCode.Combine("x") |> uint64
-        h * 0x9E3779B97F4A7C15UL)
+        // Mix the deterministic XxHash3 of "x" with the
+        // SplitMix64 golden-ratio multiplier; any 64-bit input
+        // through `SplitMix64.mix` gives uniform avalanche.
+        // See `src/Core/SplitMix64.fs` for the constant rationale.
+        SplitMix64.mix (detStringHash "x"))
     // Just verify it ran — for single-key the result should be in range.
     est |> should be (greaterThanOrEqualTo 0L)
 

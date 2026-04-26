@@ -5,7 +5,7 @@ today. Prose bullets, no RFC-2119; those live in the base `spec.md`.
 
 ## Namespace and source files
 
-- Types and the factory live in the `Dbsp.Core` namespace, across:
+- Types and the factory live in the `Zeta.Core` namespace, across:
   - `src/Core/Durability.fs` — the `DurabilityMode` discriminated union,
     the `WitnessDurableBackingStore` skeleton, the `DurabilityMode` module
     with `createBackingStore` and `recoveryProperty`.

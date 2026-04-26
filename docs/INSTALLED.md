@@ -9,7 +9,7 @@ be able to recreate the environment from this doc.
 
 | Tool | Version | Why | How installed |
 |---|---|---|---|
-| **.NET SDK** | 10.0.202 | Primary build runtime for F# + C# projects | Pre-installed (`/usr/local/share/dotnet`) + `/opt/homebrew/Cellar/dotnet/10.0.105` |
+| **.NET SDK** | 10.0.203 | Primary build runtime for F# + C# projects | mise-managed via `.mise.toml` + `global.json`; installed by `tools/setup/install.sh` (the canonical update path — see `memory/feedback_install_script_is_preferred_update_method_2026_04_24.md`). Older Homebrew / system installs (`/usr/local/share/dotnet`, `/opt/homebrew/Cellar/dotnet/`) MAY remain on personal machines but are NOT used for the build — `mise exec -- dotnet` resolves to the pinned SDK. |
 | **Java** | OpenJDK 21.0.1 LTS | Required by TLA+ `tla2tools.jar` and Alloy `alloy.jar` | Pre-installed (Oracle JDK) |
 | **Rust / cargo** | rustc 1.94.1 (Homebrew) | Building Feldera (apples-to-apples benchmark) | Pre-installed via Homebrew |
 | **Python 3** | system default | Package-audit script JSON parsing + helper scripts | Pre-installed |
@@ -76,15 +76,27 @@ audit is idempotent; `⚠ bump available` lines are actionable.
 
 ```bash
 # From a fresh macOS box (Linux variants noted inline):
-brew install --cask dotnet          # .NET 10.0.202
+# Preferred path: mise-managed toolchain via tools/setup/install.sh.
+# Brew is NOT used for .NET — `.mise.toml` + `global.json` pin the SDK,
+# `tools/setup/install.sh` installs it on every machine (dev / CI /
+# devcontainer). See
+# memory/feedback_install_script_is_preferred_update_method_2026_04_24.md.
 brew install openjdk@21             # Java for TLC / Alloy
 brew install rustup && rustup-init   # Rust for Feldera
-# Everything else, including dotnet-stryker, TLC, Alloy, elan:
-bash tools/setup/install.sh
+# .NET SDK + dotnet-stryker + TLC + Alloy + elan:
+./tools/setup/install.sh            # reads .mise.toml + global.json pins
+                                    # (CI-parity form; same as `bash tools/...`
+                                    # but catches missing exec-bit / shebang
+                                    # issues early)
+
+# Source the managed shellenv so DOTNET_gcServer=0 (Otto-248
+# Apple-Silicon GC workaround), PATH, and other vars are
+# active in this shell:
+. "$HOME/.config/zeta/shellenv.sh"
 
 # Project packages:
-dotnet restore Zeta.sln
-dotnet build Zeta.sln -c Release
+mise exec -- dotnet restore Zeta.sln
+mise exec -- dotnet build Zeta.sln -c Release
 
 # Audit upstream:
 bash tools/audit-packages.sh

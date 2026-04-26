@@ -1,0 +1,16 @@
+# `drop/` is the maintainer-to-agent inbox — everything
+# Aaron deposits is ephemeral and must NOT enter git history.
+#
+# Track only:
+#   - README.md  (the protocol doc)
+#   - .gitignore (this file)
+#
+# Everything else is ignored and absorbed-then-deleted per
+# the protocol in README.md.
+
+# Ignore everything in this folder ...
+*
+
+# ... then re-include the two tracked sentinel files.
+!README.md
+!.gitignore
