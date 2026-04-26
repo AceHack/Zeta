@@ -1,5 +1,4 @@
-# Aaron's Knative contributor history — witnessable work in
-good standing — 2026-04-21
+# Aaron's Knative contributor history — witnessable work in good standing — 2026-04-21
 
 **Scope.** Capture the second pole of Aaron's public-OSS
 advocacy history alongside the bitcoin/bitcoin#33298
