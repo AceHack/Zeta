@@ -214,7 +214,7 @@ cat <<OUT
 Budget projection — three-repo-split Stages 1-4
 ================================================
 
-Evidence source:   $file
+Evidence source:   ${file#"$repo_root"/}
 Samples (N):       $n
 First snapshot:    $first_ts
 Latest snapshot:   $last_ts
