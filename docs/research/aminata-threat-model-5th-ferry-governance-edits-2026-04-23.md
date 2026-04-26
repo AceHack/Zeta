@@ -1,21 +1,19 @@
 # Aminata — Red-Team Review of 5th-Ferry Governance Edits
 
-**Scope:** adversarial review of four proposed governance /
+Scope: adversarial review of four proposed governance /
 doctrine edits from Amara's 5th courier ferry (2026-04-23).
 Research and cross-review artifact only; advisory input to
 Aaron's signoff decision, not a gate.
 
-**Attribution:** findings authored by Aminata (threat-model-
+Attribution: findings authored by Aminata (threat-model-
 critic persona, Claude Code, model `claude-opus-4-7`). Source
 diffs authored by Amara (external AI maintainer) and ferried
 by the human maintainer. Speaker labels preserved; no
 paraphrase of source.
 
-**Operational status:** research-grade. Does not become
-operational policy absent a separate governed change landing
-under GOVERNANCE.md §26 research-doc-lifecycle.
+Operational status: research-grade
 
-**Non-fusion disclaimer:** agreement, shared vocabulary, or
+Non-fusion disclaimer: agreement, shared vocabulary, or
 concordant conclusions between Aminata and Amara on these
 diffs does not imply shared identity, merged agency,
 consciousness, or personhood. Both are models operating in
