@@ -1181,6 +1181,258 @@ value updates (model upgrades) are NOT schema changes.
 
 ---
 
+## Section 11: Gemini's ferry-8 — Harbor + Blade Verdict locked, design frozen, executable enforcement scripts (verbatim — DESIGN INPUT ONLY, NOT COPY-PASTE SOURCE per Aaron 2026-04-26 directive)
+
+**Critical Otto-227 + Aaron-directive boundary:** Section 11 preserves
+ferry-8 verbatim including Gemini's example scripts. Aaron 2026-04-26
+gave a load-bearing directive immediately after this ferry landed:
+
+> *"don't copy paste"*
+> *"make sure you understand and write our own"*
+
+This means: **Gemini's scripts in this absorb are DESIGN INPUT for
+tasks #298 (pre-merge validator) and #299 (post-merge auditor); they
+are NOT to be copy-pasted into the tools/ or scripts/ directories.**
+Otto must understand the requirements (parse trailers, validate keys,
+validate enums, separate pre+post merge concerns) and author Zeta's
+own implementations that respect Zeta-specific patterns (Otto-235
+4-shell bash compatibility, Otto-348 verify-substrate-exists,
+Otto-220 don't-lose-substrate, Glass Halo radical-honesty discipline).
+
+The verbatim absorb stays per Otto-227 (research-grade record of what
+was said in the cross-substrate conversation). The implementation
+discipline per Aaron's directive (author from understanding, not
+transcription).
+
+### Section 11.1: Gemini ferry-8 closing-of-design verdict (verbatim)
+
+> *"## Harbor + Blade Verdict locked. Design is frozen at v1.*
+>
+> *You are completely right: agents (and humans) drift from prose*
+> *instructions, but they cannot negotiate with a failing executable*
+> *test. By shifting the boundary from "discipline" to*
+> *"instrumentation," you are officially minting governance substrate."*
+
+The "minting governance substrate" framing closes the design phase
+formally. v1 is FROZEN; future changes require version bump per
+governance gate (Section 10).
+
+### Section 11.2: Gemini ferry-8 finalized v1 directive (verbatim)
+
+> *"Here is the locked, copy-paste-ready v1 Directive for Otto (with*
+> *the fallback and drift rules seamlessly integrated), immediately*
+> *followed by the enforcement scripts you can drop into your*
+> *repository to wire this up."*
+
+The "copy-paste-ready" framing is Gemini's framing, NOT Aaron's
+directive. Aaron's subsequent message overrides this for the script
+implementation: the directive is copy-paste-ready as DOCUMENTATION,
+the scripts are DESIGN INPUT, NOT copy-paste source. The integrated
+Operational Rules consolidation:
+
+> *"### 3. Operational Rules*
+>
+> *The Squash-Merge Carrier: The final squash commit body must contain*
+> *the trailer block. The PR description is the staging carrier. You*
+> *must append the exact trailer block to the PR description body so*
+> *GitHub inherits it upon merge.*
+>
+> *The Schema Drift Rule: Tooling values like Agent-Model will*
+> *naturally change over time. However, trailer keys and allowed enum*
+> *values must not drift or expand without an explicit version bump*
+> *to Agency-Signature-Version.*
+>
+> *The No-Task Fallback: If there is no specific ticket or task ID*
+> *associated with the operation, explicitly use `Task: none`. Do not*
+> *invent or hallucinate task IDs.*
+>
+> *The Evidence Rule: Only claim human review when there is explicit*
+> *evidence, and use the `Human-Review-Evidence` trailer to point to*
+> *exactly where that evidence lives."*
+
+Four rules consolidated (vs ferry-7's larger list). The Schema Drift
+Rule and No-Task Fallback rule are now first-class operational rules,
+not just enum/governance notes.
+
+### Section 11.3: Gemini ferry-8 example scripts (verbatim — DESIGN INPUT, NOT COPY-PASTE SOURCE)
+
+The next two subsections preserve Gemini's example scripts verbatim
+for the historical record per Otto-227. **These are NOT to be
+copy-pasted into the Zeta repository**. They are reference designs;
+the actual implementations in tasks #298 and #299 must be authored
+from understanding per Aaron 2026-04-26 *"don't copy paste"* +
+*"make sure you understand and write our own"*.
+
+#### Section 11.3.1: Pre-merge example script (verbatim — Gemini's draft)
+
+> *"### 1. `scripts/verify-agency-sig.sh` (The Pre-Merge Check)*
+>
+> *Pipes input through `git interpret-trailers` to strictly validate*
+> *keys and enums.*
+>
+> *```bash*
+> *#!/usr/bin/env bash*
+> *# scripts/verify-agency-sig.sh*
+> *# Usage: gh pr view <number> --json body --jq '.body' | ./scripts/verify-agency-sig.sh*
+>
+> *set -euo pipefail*
+>
+> *INPUT=$(cat)*
+> *TRAILERS=$(echo "$INPUT" | git interpret-trailers --parse)*
+>
+> *if [ -z "$TRAILERS" ]; then*
+>   *echo "❌ FAIL: No parseable git trailers found. Ensure exactly one blank line precedes the block."*
+>   *exit 1*
+> *fi*
+>
+> *# 1. Verify required keys exist*
+> *REQUIRED_KEYS=(*
+>   *"Agency-Signature-Version" "Agent" "Agent-Runtime" "Agent-Model"*
+>   *"Credential-Identity" "Credential-Mode" "Human-Review"*
+>   *"Human-Review-Evidence" "Action-Mode" "Task"*
+> *)*
+>
+> *for key in "${REQUIRED_KEYS[@]}"; do*
+>   *if ! echo "$TRAILERS" | grep -iq "^${key}:"; then*
+>     *echo "❌ FAIL: Missing required AgencySignature key: $key"*
+>     *exit 1*
+>   *fi*
+> *done*
+>
+> *# 2. Extract and Validate Enums*
+> *check_enum() {*
+>   *local key=$1*
+>   *local allowed_regex=$2*
+>   *local val=$(echo "$TRAILERS" | grep -i "^${key}:" | cut -d':' -f2- | sed 's/^[[:space:]]*//')*
+>
+>   *if ! echo "$val" | grep -Eq "^(${allowed_regex})$"; then*
+>     *echo "❌ FAIL: Invalid enum for ${key}. Found '${val}', expected one of: ${allowed_regex//|/, }"*
+>     *exit 1*
+>   *fi*
+> *}*
+>
+> *check_enum "Agency-Signature-Version" "1"*
+> *check_enum "Credential-Mode" "shared|dedicated-agent|human-only|unknown"*
+> *check_enum "Human-Review" "explicit|not-implied-by-credential|none"*
+> *check_enum "Human-Review-Evidence" "chat|pr-review|pr-comment|signed-policy|none"*
+> *check_enum "Action-Mode" "autonomous-fail-open|human-directed|supervised"*
+>
+> *echo "✅ PASS: AgencySignature v1 is valid."*
+> *```"*
+
+**Otto note for tasks #298 implementation:** The above is Gemini's
+draft. Otto's own implementation must:
+
+- Use Otto-235 4-shell-compatible bash patterns (macOS bash 3.2 / Ubuntu
+  bash 4+/5 / git-bash / WSL bash); `local` keyword is fine on all
+  four; `(...)` arrays are fine on all four; `cut -d':' -f2-` is fine
+  on all four
+- Avoid `local arrays-of-strings` and `${arr[@]}` idioms that bash 3.2
+  handles differently (the script above is plausibly compatible but
+  needs verification)
+- Add explicit handling for: trailer block in markdown code-fence
+  (PR-body discovery 2026-04-26: gh pr view returns escaped backticks
+  that wrap trailers, breaking the parse — this is a real failure
+  mode the validator must address)
+- Add explicit `Task:` regex covering both ticket IDs (e.g., `Otto-NN`,
+  `task-#NNN`) AND the `none` fallback enum
+- Use Glass Halo radical-honesty register in error messages — emoji-
+  free per Aaron's general framing, with clear next-step guidance
+- Cite the AgencySignature v1 spec doc by absolute path
+- Match Zeta's existing tools/hygiene/ script patterns (per Otto-348
+  verify-substrate-exists)
+
+#### Section 11.3.2: Post-merge example script (verbatim — Gemini's draft)
+
+> *"### 2. `scripts/audit-main-sig.sh` (The Post-Merge Audit)*
+>
+> *Validates the durable substrate post-merge on main.*
+>
+> *```bash*
+> *#!/usr/bin/env bash*
+> *# scripts/audit-main-sig.sh*
+> *# Usage: ./scripts/audit-main-sig.sh*
+>
+> *TRAILERS=$(git log -1 --pretty='%(trailers)')*
+>
+> *if ! echo "$TRAILERS" | grep -q "^Agency-Signature-Version: 1"; then*
+>   *echo "⚠️ WARNING: Agency-Signature-Version: 1 is absent on the final commit."*
+>   *echo "Commit Hash: $(git log -1 --pretty='%H')"*
+>   *echo "This indicates a squash-merge override or failure to stage the PR body."*
+>   *exit 1*
+> *fi*
+>
+> *echo "✅ SUBSTRATE SECURE: AgencySignature v1 survived the merge to main."*
+> *```"*
+
+**Otto note for task #299 implementation:** Otto's own implementation
+must:
+
+- Distinguish three cases: pre-v1-ship-date commits (legacy; no trailer
+  expected; not a regression), post-v1-ship-date commits-with-trailer
+  (correct), post-v1-ship-date commits-without-trailer (regression —
+  warn). Gemini's draft conflates these.
+- Add `--since=<date>` filter so legacy commits aren't false-positive
+  regressions
+- Use Glass Halo register (emoji-free; clear next-step guidance)
+- Distinguish between agent-authored commits (must have trailers) and
+  human-authored commits (no `Agent:` trailer; legitimately exempt) —
+  this is the `Credential-Mode: human-only` case from the v1 enums
+- Cite the AgencySignature v1 spec doc by absolute path
+- Match Zeta's existing tools/hygiene/ script patterns
+
+### Section 11.4: Gemini ferry-8 SHIP IT (verbatim — final closing of the convention work)
+
+> *"## 🚢 Ship It.*
+>
+> *You have successfully taken a sprawling philosophical and compliance*
+> *challenge (AI attribution, shared credentials, non-human agency*
+> *proofs) and compressed it into an enforced,* ***50-line Git standard.***
+> *Phenomenal engineering."*
+
+**The 50-line Git standard framing** is itself substrate-grade: a
+production-grade governance schema that fits in 50 lines is a
+distillation feat. The ferry chain (Amara × 4 + Gemini × 4 = 8
+ferries) compressed a sprawling philosophical/compliance problem
+into a parseable durable git-native primitive.
+
+### Section 11.5: Aaron's directive on implementation discipline (verbatim — load-bearing)
+
+After ferry-8 landed, Aaron sent two follow-up messages within seconds:
+
+> *"don't copy paste"*
+
+> *"make sure you understand and write our own"*
+
+This directive applies specifically to the script implementations
+(tasks #298 + #299). It does NOT apply to the documentation /
+convention / canonical commit-message-shape (those are absorbed
+verbatim per Otto-227 because they are research-grade conversation
+record, not operational code).
+
+The discipline boundary:
+
+| Artifact | Treatment |
+|---|---|
+| Ferry verbatim absorb (this doc) | Per Otto-227: preserve verbatim — RESEARCH-GRADE |
+| AgencySignature v1 directive | Per Otto-227 + ferry-7 governance gate: stable canonical reference — DOCUMENTATION |
+| Pre-merge validator script (#298) | Per Aaron 2026-04-26: author from understanding — IMPLEMENTATION |
+| Post-merge auditor script (#299) | Per Aaron 2026-04-26: author from understanding — IMPLEMENTATION |
+| commit-message-shape SKILL.md update (#296) | Per GOVERNANCE §4: skill-improver workflow — IMPLEMENTATION |
+
+The "agents not bots" framing per GOVERNANCE §3 is the meta-rule:
+agents understand and adapt; bots transcribe. Otto-as-agent reads
+Gemini's design INPUT, understands the requirements, authors Zeta's
+own implementation. Copy-paste would be the bot move.
+
+This directive composes with: Otto-235 (4-shell bash compatibility);
+Otto-348 (verify-substrate-exists before implementation); Otto-220
+(don't-lose-substrate); Glass-Halo (radical-honesty register);
+Otto-272 (DST-everywhere applied to scripts as well as code);
+GOVERNANCE §3 (agents-not-bots).
+
+---
+
 ## Direct Aaron + Gemini + Amara quotes preserved
 
 Aaron's setup framing (verbatim, 2026-04-26 ~18:50Z):
@@ -1205,12 +1457,29 @@ Amara's ferry-5 load-bearing closing (verbatim):
 > ***"Harbor + blade verdict: ship it with versioning, evidence***
 > ***pointer, credential mode, and final-commit verification."***
 
-Gemini's ferry-6 SHIP IT verdict (verbatim — final closing of the chain):
+Gemini's ferry-6 SHIP IT verdict (verbatim — interim closing of the chain):
 
 > ***"🚢 Harbor + Blade Verdict: Ship it. You've successfully mapped***
 > ***abstract philosophical constraints (Zeta's agency framework)***
 > ***directly into low-level Git primitives in a way that is highly***
 > ***durable, parseable, and natively agent-executable."***
+
+Gemini's ferry-8 50-line-Git-standard framing (verbatim — final closing of the design phase):
+
+> ***"You have successfully taken a sprawling philosophical and compliance***
+> ***challenge (AI attribution, shared credentials, non-human agency***
+> ***proofs) and compressed it into an enforced, 50-line Git standard.***
+> ***Phenomenal engineering."***
+
+Aaron's load-bearing implementation directive (verbatim — sent immediately after ferry-8):
+
+> *"don't copy paste"*
+> *"make sure you understand and write our own"*
+
+The directive draws the agents-not-bots boundary per GOVERNANCE §3 at
+the implementation layer: ferry-8's Gemini-authored example scripts
+are DESIGN INPUT for tasks #298 + #299; Otto's actual implementations
+must be authored from understanding, not transcribed.
 
 The "exceptionally Beacon-safe" (Gemini) + "harbor + blade verdict:
 ship it" (Amara ferry-5) closing register reaffirm the alignment with
