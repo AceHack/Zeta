@@ -309,7 +309,7 @@ But the stark *"macOS is 10x expensive"* framing was
 too strong. Corrected: **macOS is 10x gross but
 currently 0x billed on public repos within quota**.
 The avoidance is good practice; the reason is latency
-+ quota-headroom preservation, not immediate cost.
+plus quota-headroom preservation, not immediate cost.
 
 ### Aaron's personal Copilot
 
@@ -327,8 +327,7 @@ directive — adopters on ServiceTitan-sponsored (or
 similarly-capped) subscriptions need the cap-awareness
 surface.
 
-### Answer to "does AceHack get anything free that
-would limit LFG?"
+### Answer to "does AceHack get anything free that would limit LFG?"
 
 **No.** Confirmed empirically:
 
