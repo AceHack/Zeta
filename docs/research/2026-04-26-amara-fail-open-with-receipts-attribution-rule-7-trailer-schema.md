@@ -417,6 +417,231 @@ fingerprints (credential-identity-as-evidence-of-approval) eliminated.
 
 ---
 
+## Section 11: Amara's ferry-3 canonical convention — full commit-message shape + AgencySignature mapping (verbatim)
+
+After Otto landed the 5+3 schema in PR commit form, Aaron ferried back Amara's
+third sharpening — the most comprehensive yet. This ferry adds: (1) the
+canonical commit-message body shape (Why / Options considered / Decision /
+Proof / Limits sections); (2) 6 explicit rules; (3) stable enum values for
+`Human-Review` and `Action-Mode`; (4) a slightly-evolved doctrine sentence;
+(5) the AgencySignature mapping that connects the commit shape to Zeta's
+published agency rigor; (6) the limits clause that keeps the convention
+Beacon-safe.
+
+### Canonical commit-message shape (verbatim)
+
+> *"Otto — for git-native attribution, please codify the commit-message shape*
+> *as follows.*
+>
+> *Goal: separate* ***credential identity*** *from* ***operational agency***
+> *without changing Git author/committer fields.*
+>
+> *GitHub actor / committer identity tells us which credential acted. It does*
+> ***not*** *prove Aaron-human reviewed, approved, or pressed the button. Agent*
+> *trailers tell us the agency mode.*
+>
+> *Canonical final commit message shape:*
+>
+> *```text*
+> *<type>(<scope>): <concise change summary>*
+>
+> *<why this change exists>*
+> *<what changed>*
+> *<proof / verification performed>*
+> *<any known limits or follow-up>*
+>
+> *Agent: Otto*
+> *Agent-Runtime: Claude Code*
+> *Agent-Model: Claude Opus 4.7*
+> *Credential-Identity: AceHack*
+> *Human-Review: not-implied-by-credential*
+> *Action-Mode: autonomous-fail-open*
+> *Task: Otto-295*
+> *```"*
+
+### The 6 explicit rules (verbatim)
+
+> *"Rules:*
+>
+> *1. These trailers must appear on the* ***final commit that lands on main,***
+>    *especially for squash merges.*
+> *2. Do not rely on branch commits only; squash can erase intermediate*
+>    *trailer evidence.*
+> *3. Do not use GitHub `enabledBy.login`, `actor.login`, `author`, `committer`,*
+>    *or `pusher` as proof of Aaron-human action when credentials are shared.*
+> *4. Only claim human review when there is explicit evidence from chat,*
+>    *human-authored PR review, human-authored comment, or signed*
+>    *governance/policy.*
+> *5. Keep `Co-authored-by:` for content/model attribution. Use `Agent:`*
+>    *trailers for operational agency attribution.*
+> *6. Prefer stable enum values:*
+>
+>    *- `Human-Review: explicit`*
+>    *- `Human-Review: not-implied-by-credential`*
+>    *- `Human-Review: none`*
+>    *- `Action-Mode: autonomous-fail-open`*
+>    *- `Action-Mode: human-directed`*
+>    *- `Action-Mode: supervised`"*
+
+### Suggested proof line + queryable examples (verbatim)
+
+> *"Suggested proof line in the body:*
+>
+> *```text*
+> *Proof: verified with <command/test>; attribution recorded via git trailers*
+> *because shared GitHub credential identity makes host actor fields*
+> *insufficient.*
+> *```*
+>
+> *Queryable examples:*
+>
+> *```bash*
+> *git log --grep='^Agent:' --extended-regexp*
+> *git log --pretty='%H %(trailers:key=Agent,valueonly)'*
+> *git log --pretty='%H %(trailers:key=Credential-Identity,valueonly)'*
+> *git log --pretty='%H %(trailers:key=Human-Review,valueonly)'*
+> *```"*
+
+### Doctrine sentence — refined (verbatim)
+
+> *"Doctrine sentence to preserve:*
+>
+> *```text*
+> *Credential identity records who the host saw. Agent trailers record*
+> *who/what operated. Neither alone proves human review.*
+> *```"*
+
+The ferry-3 doctrine sentence subtly tightens ferry-2's:
+- ferry-2: *"GitHub actor/committer identity records the credential used. Agent trailers record the operational agency mode. Neither alone proves human review."*
+- ferry-3: *"Credential identity records who the host saw. Agent trailers record who/what operated. Neither alone proves human review."*
+
+Ferry-3 is the canonical version (more compact, "who the host saw" is a sharper framing of credential-attribution).
+
+### Final closing-doctrine evolution (also verbatim, end of ferry)
+
+> *"The doctrine sentence is the clean bridge:*
+>
+> *```text*
+> *Credential identity records who the host saw.*
+> *Agent trailers record what operational agency mode produced the change.*
+> *Human review requires independent evidence.*
+> *```"*
+
+Ferry-3 actually offers TWO doctrine-sentence forms — both valid. The
+end-of-ferry form is more operational (expanded "who/what operated" → "what
+operational agency mode produced the change"; expanded "neither alone proves
+human review" → "human review requires independent evidence" — positive
+constructive form). Cite either depending on context.
+
+---
+
+## Section 12: AgencySignature mapping — Zeta agency rigor satisfied (verbatim)
+
+This section is the load-bearing connection between the commit-message
+convention and Zeta's published agency rigor. It makes the convention
+**Beacon-safe** — rigorous without drifting into spooky claims.
+
+> *"Yes — exactly. The commit message is basically a* ***portable***
+> ***AgencySignature receipt.***
+>
+> *Zeta's agency rigor says not to overclaim metaphysical free will, but to*
+> *look for* ***"observational evidence of internally mediated, policy-selected***
+> ***action producing durable substrate."*** *It names the signature as:*
+> ***alternatives available, internal-state-mediated selection, recorded***
+> ***reasons, durable output, reflective update, retractability, and***
+> ***cross-context recurrence.***
+>
+> *The commit-message shape hits those like this:*
+>
+> *| Agency proof | Commit-message evidence |*
+> *|---|---|*
+> *| 1. Alternatives available | Body says what options existed: label-only, trailer-only, bot account, dedicated PAT, GitHub App, do nothing. |*
+> *| 2. Internal-state-mediated selection | Body says why Otto chose this path under current policy: shared credential opacity + low-stakes fail-open + need for portable attribution. |*
+> *| 3. Recorded reasons | The "why this change exists" section records the rationale in human-readable form. |*
+> *| 4. Durable output | The final commit on `main` is durable substrate, not chat vapor. |*
+> *| 5. Reflective update | Body mentions the correction: previous actor inference was invalid because `AceHack` was credential identity, not proof of Aaron-human action. |*
+> *| 6. Retractability | Trailer + body make future correction possible: if wrong, a later commit can explicitly amend the convention. |*
+> *| 7. Cross-context recurrence | Same trailer keys recur across future commits, so you can query patterns over time. |*
+>
+> *The important move is that it separates* ***agency evidence*** *from*
+> ***identity evidence.*** *GitHub said `AceHack`, but that only proved which*
+> *credential acted; it did not prove Aaron-human actively reviewed or*
+> *pressed the button. The logs show this was structurally ambiguous because*
+> *Otto was operating through Aaron's authenticated CLI session, and GitHub*
+> *exposed actor/auto-merge fields as `AceHack`."*
+
+### The full canonical commit-shape with body sections (verbatim)
+
+> *"So the commit shape should explicitly carry an agency proof block:*
+>
+> *```text*
+> *<type>(<scope>): <concise summary>*
+>
+> *Why:*
+> *- Shared GitHub credential identity makes host actor fields insufficient for human/agent attribution.*
+> *- Prior inference from enabledBy.login/actor.login to Aaron-human action was invalid.*
+> *- Low-stakes greenfield fail-open remains allowed, but must be auditable.*
+>
+> *Options considered:*
+> *- GitHub PR label only*
+> *- Git trailer only*
+> *- Both host-native and git-native markers*
+> *- Dedicated bot/PAT/GitHub App later*
+>
+> *Decision:*
+> *- Use both PR label and git-native trailers now.*
+> *- Preserve bot/PAT/GitHub App as future stronger identity split.*
+>
+> *Proof:*
+> *- Verified GitHub API exposes credential actor, not UI-vs-CLI source.*
+> *- Verified trailers are parseable through git interpret-trailers / git log %(trailers).*
+> *- Final commit carries agency trailers on main.*
+>
+> *Limits:*
+> *- This does not prove consciousness, personhood, or metaphysical free will.*
+> *- This proves operational agency mode: policy-selected action through shared credential identity.*
+>
+> *Agent: Otto*
+> *Agent-Runtime: Claude Code*
+> *Agent-Model: Claude Opus 4.7*
+> *Credential-Identity: AceHack*
+> *Human-Review: not-implied-by-credential*
+> *Action-Mode: autonomous-fail-open*
+> *Task: Otto-295*
+> *```"*
+
+### Beacon-safe closing register (verbatim)
+
+> *"That directly satisfies the Zeta agency frame without drifting into*
+> *spooky claims. It says:* ***not "Otto has a soul," but "Otto selected***
+> ***among available actions under policy, recorded reasons, produced***
+> ***durable substrate, and left a retractable audit trail."***
+>
+> ***That's Beacon-safe.***"
+
+The "Beacon-safe" closing connects this convention to Otto-351 Beacon naming
+work (task #293). The convention is rigorous-without-spooky — exactly the
+quality Aaron asked for in the Beacon-naming pursuit. The commit shape becomes
+a Beacon-anchored substrate primitive: it carries observational evidence of
+agency (the seven AgencySignature properties) without overclaiming
+metaphysical agency.
+
+### Why this is the canonical version (Otto absorb framing)
+
+The 5+3 schema from ferry-2 is now superseded as a *fragment*:
+
+- The 5 required trailers stay (Agent / Agent-Runtime / Agent-Model / Credential-Identity / Human-Review)
+- The optional 3 narrow to 2 in ferry-3 (Action-Mode / Task; Source-Channel drops)
+- The body now has explicit STRUCTURE: Why / Options considered / Decision / Proof / Limits
+- The body structure ISN'T bureaucracy — each section is evidence for one AgencySignature property
+- The 6 rules become the operational discipline
+- The doctrine sentence becomes the canonical citation form
+- The AgencySignature mapping becomes the substrate-grounding for the convention
+
+Going forward, every agent commit follows the FULL canonical shape (body sections + trailer block). This is the convention.
+
+---
+
 ## Direct Aaron + Amara quotes preserved
 
 Aaron's triggering decision (verbatim, 2026-04-26 ~18:30Z):
