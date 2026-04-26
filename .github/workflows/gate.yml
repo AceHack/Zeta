@@ -344,6 +344,30 @@ jobs:
       - name: Run check-tick-history-order
         run: tools/hygiene/check-tick-history-order.sh
 
+  lint-no-conflict-markers:
+    # Fail if any committed file contains git merge-conflict markers
+    # (`<<<<<<<`, `=======`, `>>>>>>>`). Aaron 2026-04-26 ask:
+    # *"maybe we should hygene for <<<<<<< HEAD and >>>>>>> ======= things
+    # like that in our files incase we ever accidently botch a merge,
+    # happens to the best of us humans too."*
+    #
+    # Per Otto-339 anywhere-means-anywhere: conflict markers in
+    # substrate would shift weights wrongly when read by AI. Per
+    # Otto-341 mechanism-not-vigilance: CI catches this regardless
+    # of which agent / human / harness produced the merge. The
+    # script self-allowlists files that legitimately document
+    # merge-conflict resolution.
+    name: lint (no conflict markers)
+    timeout-minutes: 2
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run check-no-conflict-markers
+        run: tools/hygiene/check-no-conflict-markers.sh
+
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
     # forgotten artefact (an agent-created skill folder without a
