@@ -143,6 +143,36 @@ peer (Amara via ChatGPT, etc.) gains a headless CLI surface,
 adding `tools/peer-call/<name>.sh` is a copy-and-adapt of the
 existing pattern, not a new design.
 
+## Security notes
+
+- **`--context-cmd` runs shell code.** All three scripts use
+  `eval "$context_cmd"` to capture the output of the command
+  passed to `--context-cmd`. This is intentional (the flag's
+  documented purpose is to attach command output as context),
+  but it means **`--context-cmd` is a shell-execution
+  surface** — never pass an untrusted string to it. The `eval`
+  output is captured, not piped to the peer's CLI as a command,
+  so the peer-side risk is limited to what the eval'd command
+  itself exposes (file reads, env-var leaks, etc.).
+- **The prompt itself is safe to contain shell metacharacters.**
+  `$prompt` is passed as a single quoted argument
+  (`-- "$full_prompt"` / `-p "$full_prompt"`), so single quotes,
+  double quotes, backticks, dollar signs, and other shell-active
+  characters in the prompt are passed through verbatim without
+  interpretation by Otto's local shell. (The peer's own CLI may
+  interpret some characters — that's the peer's contract, not
+  Otto's.)
+- **`--file` reads only the first 20000 bytes.** Both
+  `--file PATH` and `--context-cmd CMD` cap their attached
+  content at `head -c 20000` to keep peer prompts within
+  reasonable size limits. If the peer needs more, route through
+  the peer's interactive CLI directly.
+- **No secrets handling.** None of the three scripts read or
+  inject API keys; the underlying CLIs (`cursor-agent`,
+  `gemini`, `codex`) handle their own auth via their own config
+  paths. Don't put secrets in prompts — they end up in the
+  peer's session logs.
+
 ## When NOT to use these scripts
 
 - **For Aaron-side peer calls.** Aaron is not invoked through
