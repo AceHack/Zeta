@@ -8224,9 +8224,10 @@ systems. This track claims the space.
     + yin-yang composition-discipline check to each
     candidate. Record candidate / confirmed / failed per
     `feedback_no_permanent_harm_mathematical_safety_retractibility_preservation.md`
-    log-and-track. Ammous's *The Bitcoin Standard* (Wiley
-    2018) is **candidate-probe already**, filed 2026-04-21
-    from Aaron's Google-dump naming hard-money-as-μένω /
+    log-and-track. Ammous's *The Bitcoin Standard*
+    (Wiley, 2018) is **candidate-probe already**, filed
+    2026-04-21 from Aaron's Google-dump naming
+    hard-money-as-μένω /
     21M-cap / tri-root filter / low-time-preference ↔
     persistence:
     - Unification pole strong (21M cap → monetary-function
