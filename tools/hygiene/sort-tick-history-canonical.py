@@ -45,8 +45,27 @@ Exit codes:
 
 import argparse
 import re
+import subprocess
 import sys
 from pathlib import Path
+
+
+def repo_root() -> Path | None:
+    """Resolve the repo root via `git rev-parse --show-toplevel`.
+
+    Mirrors sibling hygiene scripts so that running this tool from a
+    subdirectory still resolves the default `--file` correctly. Returns
+    None if not in a git repo (caller falls back to CWD)."""
+    try:
+        out = subprocess.run(
+            ["git", "rev-parse", "--show-toplevel"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return Path(out.stdout.strip())
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
 
 
 def find_separator_line(lines: list[str]) -> int | None:
@@ -95,16 +114,79 @@ def sort_canonical(text: str) -> tuple[str, dict]:
     header = lines[: sep_idx + 1]
     data = lines[sep_idx + 1 :]
 
+    # File-line offset for converting post-separator indices into
+    # 1-based file line numbers in error diagnostics. Reviewer P2:
+    # 0-based post-separator indices were confusing; the user wants
+    # to grep / open-at-line, not arithmetic in their head.
+    sep_file_line = sep_idx + 1  # 1-based line number of separator
+
     data_rows: list[tuple[str, int, str]] = []
+    unmatched_table_rows: list[tuple[int, str]] = []
     for original_index, line in enumerate(data):
         if not line.strip():
             continue
         ts = get_timestamp(line)
         if ts:
             data_rows.append((ts, original_index, line))
+        elif line.lstrip().startswith("|"):
+            # Looks like a table row but no timestamp matched —
+            # schema drift or malformed row. Refuse to silently drop;
+            # caller decides whether to fail or skip after seeing
+            # the count.
+            unmatched_table_rows.append((original_index, line))
 
     rows_in = len(data_rows)
     original_order = [line for _, _, line in data_rows]
+
+    # Trailing non-row content after the table — anything that isn't
+    # blank and isn't a table row must be preserved (Codex P2 finding:
+    # naive header+rows reconstruction would lose trailing prose).
+    # Find the index of the last table-shaped line (matched OR
+    # unmatched); everything after that index is trailing content.
+    trailing_lines: list[str] = []
+    table_indices = sorted(
+        [idx for _, idx, _ in data_rows]
+        + [idx for idx, _ in unmatched_table_rows]
+    )
+    if table_indices:
+        last_table_idx = table_indices[-1]
+        # Trailing = lines AFTER the last table-row. Strip leading
+        # blank-line separator(s) so the reconstructed file gets a
+        # single canonical blank between table-end and prose-start.
+        trailing_candidate = data[last_table_idx + 1 :]
+        first_non_blank = next(
+            (i for i, line in enumerate(trailing_candidate) if line.strip()),
+            len(trailing_candidate),
+        )
+        if first_non_blank < len(trailing_candidate):
+            trailing_lines = trailing_candidate[first_non_blank:]
+
+    # P0 guard: if the data region has table-shaped lines but zero
+    # match the timestamp regex, the schema has drifted and the
+    # naive write-back would wipe the table. Refuse.
+    if rows_in == 0 and unmatched_table_rows:
+        first_orig = unmatched_table_rows[0][0]
+        raise ValueError(
+            f"schema drift: {len(unmatched_table_rows)} table-shaped row(s) "
+            f"found but ZERO matched the ISO-8601 timestamp regex. "
+            f"Refusing to write — would wipe tick-history. "
+            f"First unmatched row at file-line "
+            f"{sep_file_line + 1 + first_orig}: "
+            f"{unmatched_table_rows[0][1][:120]}"
+        )
+
+    # P1 guard: any unmatched table row is a discipline violation;
+    # silently dropping rows is exactly the failure mode this script
+    # is supposed to prevent. Surface and refuse.
+    if unmatched_table_rows:
+        first = unmatched_table_rows[0]
+        raise ValueError(
+            f"refusing to drop {len(unmatched_table_rows)} unmatched "
+            f"table row(s); per Otto-229 (append-only discipline) the "
+            f"sort tool must not silently lose rows. "
+            f"First unmatched at file-line "
+            f"{sep_file_line + 1 + first[0]}: {first[1][:120]}"
+        )
 
     # Stable sort by (timestamp, original_index) so ties preserve
     # input order. ISO-8601 strings sort lex == chronological.
@@ -118,7 +200,17 @@ def sort_canonical(text: str) -> tuple[str, dict]:
         seen.add(line)
         unique_rows.append(line)
 
-    new_text = "\n".join(header) + "\n" + "\n".join(unique_rows) + "\n"
+    # Reconstruct: header + sorted-rows + (blank-line separator +
+    # trailing prose if any). Without trailing-content preservation
+    # the naive header + rows reconstruction would silently drop any
+    # post-table prose paragraph (Codex P2 finding). The blank-line
+    # separator between table-end and trailing-content is required by
+    # CommonMark to terminate the table and start a new block.
+    parts = ["\n".join(header), "\n".join(unique_rows)]
+    if trailing_lines:
+        parts.append("")  # explicit blank-line separator
+        parts.append("\n".join(trailing_lines))
+    new_text = "\n".join(parts) + "\n"
     rows_out = len(unique_rows)
     reordered = unique_rows != original_order[: len(unique_rows)] or rows_out != rows_in
 
@@ -127,6 +219,7 @@ def sort_canonical(text: str) -> tuple[str, dict]:
         "rows_out": rows_out,
         "duplicates_removed": rows_in - rows_out,
         "reordered": reordered,
+        "trailing_lines_preserved": len(trailing_lines),
     }
 
 
@@ -142,11 +235,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--file",
         default="docs/hygiene-history/loop-tick-history.md",
-        help="Path to tick-history file (relative to repo root)",
+        help="Path to tick-history file (relative paths resolve to repo "
+             "root via 'git rev-parse --show-toplevel'; if not in a git "
+             "checkout, falls back to current working directory)",
     )
     args = parser.parse_args(argv)
 
+    # Resolve --file relative to repo root when it is a relative path,
+    # so the tool works the same whether invoked from repo root or any
+    # subdirectory. Sibling hygiene scripts share this convention.
     p = Path(args.file)
+    if not p.is_absolute():
+        root = repo_root()
+        if root is not None:
+            p = root / args.file
     if not p.exists():
         print(f"ERROR: file not found: {p}", file=sys.stderr)
         return 1
