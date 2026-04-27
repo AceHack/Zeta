@@ -144,4 +144,12 @@ module RobustStats =
             | None -> None
             | Some m ->
                 let scale = 1.4826 * max m MadFloor
-                Some ((measurement - med) / scale)
+                let z = (measurement - med) / scale
+                // Per Codex review on PR #26 (P2): if `measurement`
+                // is non-finite (NaN / ±Infinity), the ratio is also
+                // non-finite. Returning Some NaN propagates silently
+                // through downstream `coordinationRiskScore` arithmetic
+                // and corrupts the score. Match the same NaN-guard
+                // pattern as `TemporalCoordinationDetection`'s
+                // Pearson + circular-mean (Otto-358 fix).
+                if Double.IsFinite z then Some z else None

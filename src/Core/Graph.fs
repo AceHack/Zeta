@@ -238,6 +238,31 @@ module Graph =
                 for j in 0 .. n - 1 do
                     sym.[i, j] <- (adj.[i, j] + adj.[j, i]) / 2.0
 
+            // Per Codex review on PR #26 (P1): plain power iteration
+            // converges to the eigenpair with largest |λ|, not largest
+            // algebraic λ. For signed adjacencies (e.g.
+            // [[0,-2],[-2,0]] with eigenvalues +2/-2), magnitude alone
+            // can return -2 — the wrong answer for largest-eigenvalue
+            // semantics. Fix: spectral shift A' = A + ρI where
+            // ρ = max_i Σ_j |A[i,j]| (∞-norm row-sum bound). By
+            // Gershgorin, every eigenvalue of symmetric A lies in
+            // [-ρ, +ρ], so A' has eigenvalues in [0, 2ρ] — all
+            // non-negative — and largest-magnitude of A' = largest-
+            // algebraic of A' = largest-algebraic of A plus ρ.
+            // Subtract ρ at the end. Negligible cost; correctness
+            // is the win.
+            let mutable shift = 0.0
+            for i in 0 .. n - 1 do
+                let mutable rowSum = 0.0
+                for j in 0 .. n - 1 do
+                    rowSum <- rowSum + abs sym.[i, j]
+                if rowSum > shift then shift <- rowSum
+            let shifted = Array2D.create n n 0.0
+            for i in 0 .. n - 1 do
+                for j in 0 .. n - 1 do
+                    shifted.[i, j] <- sym.[i, j]
+                shifted.[i, i] <- shifted.[i, i] + shift
+
             let matVec (m: double[,]) (v: double[]) : double[] =
                 let out = Array.zeroCreate n
                 for i in 0 .. n - 1 do
@@ -259,7 +284,7 @@ module Graph =
                 else v |> Array.map (fun x -> x / norm)
 
             let rayleigh (v: double[]) : double =
-                let av = matVec sym v
+                let av = matVec shifted v
                 let mutable num = 0.0
                 let mutable den = 0.0
                 for i in 0 .. n - 1 do
@@ -271,18 +296,50 @@ module Graph =
             v <- normalize v
             let mutable lambda = rayleigh v
             let mutable converged = false
+            let mutable degenerate = false
             let mutable iter = 0
-            while not converged && iter < maxIterations do
-                let v' = normalize (matVec sym v)
-                let lambda' = rayleigh v'
-                let delta = abs (lambda' - lambda) / (abs lambda' + 1e-12)
-                if delta < tolerance then converged <- true
-                v <- v'
-                lambda <- lambda'
-                iter <- iter + 1
-            if converged then Some lambda
-            else if iter >= maxIterations then Some lambda
-            else None
+            // Per Copilot review on PR #26: detect zero-vector
+            // iterates (signed graphs where the all-ones seed lies
+            // in the nullspace, e.g. [[1,-1],[-1,1]] whose true
+            // largest eigenvalue is 2 but matVec on [1,1] gives
+            // [0,0]). Without this guard, normalize returns the
+            // zero vector unchanged, rayleigh returns 0, delta
+            // becomes 0, and the iteration falsely reports
+            // convergence to lambda = 0 — silent underestimation,
+            // false negatives in coordinationRiskScore. Fail with
+            // None instead; the caller pattern-matches and handles
+            // None correctly.
+            while not converged && not degenerate && iter < maxIterations do
+                let av = matVec shifted v
+                if l2Norm av = 0.0 then
+                    degenerate <- true
+                else
+                    let v' = normalize av
+                    let lambda' = rayleigh v'
+                    let delta = abs (lambda' - lambda) / (abs lambda' + 1e-12)
+                    if delta < tolerance then converged <- true
+                    v <- v'
+                    lambda <- lambda'
+                    iter <- iter + 1
+            // Subtract the spectral shift to recover λ_max(A) from
+            // λ_max(A + ρI). For non-negative-weight graphs (the
+            // common case), shift ≥ 0 and the result equals what
+            // plain magnitude-iteration would have given; for signed
+            // graphs, this corrects the sign-of-eigenvalue bug.
+            //
+            // Per Codex review on PR #26 (Graph.fs:315): if the
+            // symmetrized adjacency is the zero matrix (shift = 0
+            // and degenerate hit immediately), the largest
+            // eigenvalue is well-defined as 0 — not None. Return
+            // Some 0.0 rather than None for that case so callers
+            // see the actual eigenvalue rather than misreading
+            // "no answer" as "score unavailable". Other degenerate
+            // paths (seed in nullspace of A + ρI, ran out of
+            // iterations) still return None, since those represent
+            // genuine "could not compute" rather than "answer is 0".
+            if converged then Some (lambda - shift)
+            elif degenerate && shift = 0.0 then Some 0.0
+            else None  // power-iteration ran out of budget OR hit zero-norm iterate on shifted matrix
 
     /// `map f g` — relabel nodes via `f`. Wraps `ZSet.map` with
     /// projection over the node-tuple. Operator-algebra
@@ -347,11 +404,22 @@ module Graph =
             let twoM = Array.sum k
             if twoM = 0.0 then None
             else
+                // Per Copilot review on PR #26: pre-compute the
+                // minimum existing community label so the singleton
+                // fallback is guaranteed disjoint from any
+                // caller-supplied label. Prior `-(i + 1)` could
+                // collide with a caller-supplied negative id (e.g.
+                // -1), merging an unpartitioned node into a real
+                // community and miscomputing Q.
+                let minLabel =
+                    if Map.isEmpty partition then 0
+                    else partition |> Map.toSeq |> Seq.map snd |> Seq.min
+                let singletonBase = (min minLabel 0) - 1
                 let community i =
                     let node = nodeList.[i]
                     match Map.tryFind node partition with
                     | Some c -> c
-                    | None -> -(i + 1)
+                    | None -> singletonBase - i
                 let mutable q = 0.0
                 for i in 0 .. n - 1 do
                     for j in 0 .. n - 1 do
@@ -423,13 +491,23 @@ module Graph =
                     if nbrs.Count > 0 then
                         // Count weighted votes per label
                         let votes = System.Collections.Generic.Dictionary<int, int64>()
+                        // Per Copilot review on PR #26: skip
+                        // non-positive-weight edges entirely.
+                        // Prior code added a zero entry which
+                        // populated the votes dict, then because
+                        // bestVote starts at -1L, a node with only
+                        // non-positive incident edges would switch
+                        // to a neighbor label even with zero
+                        // supporting weight. anti-edges and zero-
+                        // weight edges should not influence label.
                         for (ni, w) in nbrs do
-                            let lbl = labels.[ni]
-                            let cur =
-                                match votes.TryGetValue(lbl) with
-                                | true, v -> v
-                                | false, _ -> 0L
-                            votes.[lbl] <- cur + (if w > 0L then w else 0L)
+                            if w > 0L then
+                                let lbl = labels.[ni]
+                                let cur =
+                                    match votes.TryGetValue(lbl) with
+                                    | true, v -> v
+                                    | false, _ -> 0L
+                                votes.[lbl] <- cur + w
                         // Pick label with highest vote; tie-break by
                         // lowest id for determinism
                         let mutable bestLbl = labels.[i]
@@ -515,16 +593,28 @@ module Graph =
         | Some lb, Some la when lb > 1e-12 || la > 1e-12 ->
             let partitionBaseline = labelPropagation lpIter baseline
             let partitionAttacked = labelPropagation lpIter attacked
-            let qBaseline =
-                modularityScore partitionBaseline baseline
-                |> Option.defaultValue 0.0
-            let qAttacked =
+            // Per Copilot review on PR #26: propagate undefined
+            // modularity as None instead of coercing to 0.0. The
+            // doc claims this function returns None when ANY
+            // component metric is undefined; the prior coercion
+            // contradicted that. modularityScore returns None
+            // when twoM = 0 (signed graphs reach this case).
+            match
+                modularityScore partitionBaseline baseline,
                 modularityScore partitionAttacked attacked
-                |> Option.defaultValue 0.0
-            let eps = 1e-12
-            let spectralGrowth = (la - lb) / (max lb eps)
-            let modularityShift = qAttacked - qBaseline
-            Some (alpha * spectralGrowth + beta * modularityShift)
+                with
+            | Some qBaseline, Some qAttacked ->
+                // Per Copilot review on PR #26: use abs(lb) for
+                // the denominator scale so signed-graph baselines
+                // (lb < 0) don't collapse the denominator to eps
+                // and produce massive artificial growth. Example
+                // of the prior bug: lb=-2, la=1 with the old
+                // formula gave growth ≈ 3e12 (false positive).
+                let eps = 1e-12
+                let spectralGrowth = (la - lb) / (max (abs lb) eps)
+                let modularityShift = qAttacked - qBaseline
+                Some (alpha * spectralGrowth + beta * modularityShift)
+            | _ -> None
         | _ -> None
 
     /// **Robust-z-score variant of coordinationRiskScore.**
@@ -722,7 +812,15 @@ module StakeCovariance =
                 for i in 0 .. windowSize - 1 do
                     cov <- cov + (deltasA.[start + i] - meanA) *
                                  (deltasB.[start + i] - meanB)
-                Some (cov / double windowSize)
+                let result = cov / double windowSize
+                // Per Codex review on PR #26 (Graph.fs:803): if any
+                // input is non-finite (NaN / ±Infinity), the running
+                // sum and final ratio propagate that non-finiteness.
+                // Returning Some NaN corrupts downstream
+                // coordinationRiskScore arithmetic. Same NaN-guard
+                // pattern as Otto-358's Pearson + circular-mean fix
+                // and the RobustStats.robustZScore guard.
+                if System.Double.IsFinite result then Some result else None
 
     /// 2nd-difference acceleration `A_ij(t) = C(t) - 2·C(t-1) + C(t-2)`
     /// given three consecutive covariance values. Returns None when
