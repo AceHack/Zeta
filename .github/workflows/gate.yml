@@ -82,10 +82,12 @@ jobs:
     # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
     # no longer applies.
     #
-    # Active legs (4):
+    # Active legs (3):
     #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
     #   - ubuntu-24.04      Ubuntu 24.04 LTS x64 (4 CPU, 16 GB)
     #   - ubuntu-24.04-arm  Ubuntu 24.04 LTS arm64 (4 CPU, 16 GB)
+    #
+    # Moved-to-nightly leg (per maintainer 2026-04-27):
     #   - ubuntu-slim       Ubuntu slim x64 (1 vCPU, 5 GB RAM;
     #                       15-minute HARD job cap). Too slow for
     #                       per-PR gating (~10+ min vs ~1.5 min on

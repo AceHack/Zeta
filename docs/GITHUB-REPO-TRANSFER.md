@@ -13,7 +13,7 @@ Peer to [`docs/GITHUB-SETTINGS.md`](GITHUB-SETTINGS.md)
 [`docs/hygiene-history/repo-transfer-history.md`](hygiene-history/repo-transfer-history.md)
 (fire-history event log).
 
-Why split? The human maintainer on 2026-04-22:
+Why split? Aaron 2026-04-22:
 *"seperating thing by data and behiaver is a tried and true way
 and you mentied it for the skills earler, works in code too lol"*.
 The skill encodes *how* to transfer; this doc encodes *what*
@@ -240,8 +240,8 @@ the list of silent drifts vary.
 
 ### 2026-04-21 — `AceHack/Zeta` → `Lucent-Financial-Group/Zeta`
 
-**Context.** User-owned repo moved to org the human maintainer
-had already set up as the long-term home for LFG-related
+**Context.** User-owned repo moved to org Aaron had
+already set up as the long-term home for LFG-related
 work. Two drivers:
 
 1. Contributor-facing fit (org repo matches the
@@ -250,7 +250,7 @@ work. Two drivers:
    see S6).
 
 **Authorization.** `HB-001` in `docs/HUMAN-BACKLOG.md`
-(now resolved). The human maintainer's three-message direction:
+(now resolved). Aaron's three-message direction:
 *"we can move tih to https://github.com/Lucent-Financial-Group at some point it's my org for LFG"* +
 *"we need to move it to lucent for contributor at some point anyways, we want to keep all the settings we have now"* +
 *"i think we are going to have to go without merge queue parallelism for now."*

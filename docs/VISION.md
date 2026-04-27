@@ -352,9 +352,16 @@ the long-term scope. Non-exhaustive menu:
 - **Planner / optimiser** (cost model, SIMD kernel
   dispatch, join ordering, predicate pushdown, adaptive
   re-planning under retractions).
-- **Multi-node control plane** (shape TBD — NATS vs gRPC
-  vs Arrow Flight vs bespoke; sharding, replication,
-  consensus, info-theoretic sharder).
+- **Multi-node control plane** — **Arrow Flight** as the
+  wire (P1 per `docs/ROADMAP.md`; shard-level operators
+  exchange Z-set deltas bi-directionally per
+  `docs/ARCHITECTURE.md` §The shape the future takes).
+  **Raft** for the replicated log first (P2); CAS-Paxos
+  with state-transition-function consensus as the
+  research-grade alternative. Sharding via consistent
+  hashing (Jump / HRW / Memento) with power-of-two-choices
+  for load-awareness. Info-theoretic sharder is an
+  independent research track (post-v1 exploration below).
 - **CRDT / replication layer** (OrSet already shipping;
   more as multi-node matures).
 - **Bitemporal / time-travel** (append-dated history,
@@ -456,10 +463,15 @@ What makes `Zeta.Core 1.0.0` on NuGet:
 - Retraction-aware analytic sketches (HyperBitBit,
   retraction-native quantiles; publication target).
 - Info-theoretic sharder (Alloy-verified).
-- **Multi-node deployment** (control-plane shape open —
-  NATS / gRPC / Arrow Flight / bespoke; sharding,
-  replication, consensus, info-theoretic sharder;
-  firmly IN scope).
+- **Multi-node deployment** — wire + first-consensus
+  already chosen (Arrow Flight P1, Raft P2; see
+  §What the DB eventually covers above and
+  `docs/ROADMAP.md`). The post-v1 exploration bullet
+  here covers the **research-grade variants**: CAS-Paxos
+  state-transition-function consensus (NSDI/OSDI
+  target); the consensus-family playground below;
+  the info-theoretic sharder as Alloy-verified
+  placement research. Firmly IN scope.
 - **Distributed-consensus playground.** Multi-node is
   not just a database play — it's a distributed-consensus
   playground too. Zeta natively implements and TLA+-proves
@@ -654,8 +666,13 @@ the immune system wasn't enough.
 - **Cross-platform.** Dev-laptop (macOS + Linux today,
   Windows via PowerShell when it lands) + CI runner +
   devcontainer all bootstrap via the same source of truth.
-  Post-install automation moves to a single cross-platform
-  runtime (Bun/Deno/Python/.NET — research-pending).
+  Post-install automation runs on **bun + TypeScript** per
+  `docs/DECISIONS/2026-04-20-tools-scripting-language.md`
+  (round 43, medium confidence; UI-TS amortization makes
+  bun a runtime Zeta adopts anyway). Pre-setup surface
+  stays bash + PowerShell (constrained, not chosen).
+  F#/.NET retained for engine-adjacent tools already on
+  the .NET surface (e.g. Z3Verify).
 - **Declarative dependencies.** Every installed tool lives
   in a committed manifest. `../scratch`'s tiered shape
   (`min` / `runner` / `quality` / `all`) is the ratchet
@@ -673,11 +690,15 @@ the immune system wasn't enough.
   gate, Semgrep-in-CI, shellcheck-in-CI, actionlint-in-CI,
   markdownlint-in-CI, all green on main. A red factory is
   a factory down.
-- **Fully self-directed eventually.** The loop is
-  upstream-signals + research + novel-ideas → vision-
-  check → backlog → next-steps → round work → merge.
-  Humans set direction; agents run the loop. UI comes
-  "way down the road" — text-first today.
+- **Fully self-directed eventually.** The loop is the
+  **cartographer crystallization loop** per
+  `docs/research/crystallization-loop.md`: research →
+  crystallize → vision edit → backlog residue → factory
+  improvements → round work → merge, with each turn
+  producing a **diamond** (crystallized artifact) and
+  leaving residue that speeds the next turn. Humans set
+  direction; agents run the loop. UI comes "way down the
+  road" — text-first today.
 
 ### v1.0 subset of the factory
 
@@ -876,11 +897,49 @@ Things Aaron resolved round 33 v5:
 Remaining gaps the product-visionary walks on first
 audit (after round 33):
 
-- Wire protocol server: v1 or slip to early post-v1?
-  Scope impact is significant.
-- Own admin UI: F# + web (Fable? SAFE Stack? Blazor?)
+- ~~Wire protocol server: v1 or slip to early post-v1?
+  Scope impact is significant.~~
+  **Resolved 2026-04-22 (crystallization turn 2):** the
+  body answers this at `§v1.0 subset` above: the pluggable
+  wire-protocol layer is explicitly labeled **"v1-or-early-
+  post-v1"** with the open timing framed as *"may slip
+  from v1 to early post-v1 depending on design round
+  outcome"*. The gap as phrased is a residual binary; the
+  body's resolution is honest-indeterminacy gated on a
+  design round. The gap closes as: **decision deferred to
+  the wire-protocol design round; both v1 and early-post-v1
+  are acceptable landings**. No new direction needed; the
+  indeterminacy is by design.
+  See `docs/research/crystallization-ledger.md` turn 2.
+- ~~Own admin UI: F# + web (Fable? SAFE Stack? Blazor?)
   or native GUI (Avalonia?). Far-future but the choice
-  signals the polyglot story.
-- Naming within the wire-protocol layer — Zeta as "a
+  signals the polyglot story.~~
+  **Resolved 2026-04-22 (crystallization turn 2):** this
+  gap asks a specific tech choice on a **far-future**
+  item; the question is premature. The vision's stated
+  stance is (a) "F# primary, polyglot over time" (line
+  827) and (b) own admin UI is **long-term** while
+  PostgreSQL wire-protocol support handles the
+  in-the-meantime admin surface via existing tools (line
+  869-872). The cartographer resolution is: **no tech
+  pick until the admin-UI design round fires**; the
+  polyglot-over-time stance means the choice gets made
+  against the actual platform landscape at design-round
+  time, not speculatively today. Narrows the gap from
+  "pick one of 4 technologies" to "far-future; design-
+  round picks when it fires." See
+  `docs/research/crystallization-ledger.md` turn 2.
+- ~~Naming within the wire-protocol layer — Zeta as "a
   PostgreSQL" (we emulate) vs "behind Postgres-shaped
-  endpoint" (we translate on ingress/egress)?
+  endpoint" (we translate on ingress/egress)?~~
+  **Resolved 2026-04-22 (crystallization turn 1):** neither.
+  The pluggable-wire-protocol architecture established above
+  already resolves the binary — it is **"Zeta with a
+  PostgreSQL wire-protocol plugin"**. Zeta's identity is
+  not PostgreSQL (different semantics: retraction-native,
+  bitemporal, DBSP operator algebra); the plugin translates
+  Postgres wire-protocol messages into Zeta's internal
+  query surface. The honest framing is "Zeta speaks
+  Postgres wire protocol via a plugin", not "Zeta is a
+  Postgres" and not "Zeta sits behind a Postgres façade".
+  See `docs/research/crystallization-ledger.md` turn 1.

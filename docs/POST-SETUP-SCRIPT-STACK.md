@@ -151,7 +151,9 @@ Two audit scripts run the hygiene sweep:
   `docs/FACTORY-HYGIENE.md`, whether a prevention layer
   exists or the row is justifiably detection-only.
 
-## Baseline status (2026-04-22 — all-labelled, Windows-twin cost now visible)
+## Baseline status (2026-04-22 — all-labelled, Windows-twin
+
+cost now visible)
 
 First audit-fire at this doc's land surfaced 9 violations.
 Per-file intentional-decision classification was applied

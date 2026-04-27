@@ -98,7 +98,18 @@ type Shard =
     /// `OfFixedBytes(bytes: ReadOnlySpan&lt;byte&gt;, shards)`.
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
     static member OfFixed(key: 'K, shards: int) : int =
-        let intHash = key.GetHashCode()
+        // Null-safe AND non-boxing hash path. Per Copilot review
+        // on LFG #649 (P1/perf): the prior `box key` form allocated
+        // on every call for value-type 'K (struct boxing → GC
+        // regression on hot paths). EqualityComparer<'K>.Default is
+        // null-safe for reference types and non-boxing for structs;
+        // it returns the correct null-tolerant hash without the
+        // allocation cost. Original null-safety fix from Copilot
+        // review on PR #26 (prior version called key.GetHashCode()
+        // directly which crashed on null reference keys) is
+        // preserved — the comparer's default behavior treats null
+        // refs as hash 0.
+        let intHash = EqualityComparer<'K>.Default.GetHashCode(key)
         let bytes = BitConverter.GetBytes intHash
         let h64 = XxHash3.HashToUInt64 (ReadOnlySpan bytes)
         Shard.Of(uint32 h64, shards)

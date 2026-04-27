@@ -74,20 +74,6 @@ claim whose evidence disappears (package removed,
 workflow deleted, skill retired) gets downgraded or
 removed at the next sweep.
 
-<!-- markdownlint-disable-next-line MD024 -->
-## How to read the state column
-
-- **Active** — currently wired into build / CI / test
-  pipelines; running now; measurable output.
-- **Pin-only** — package or tool pinned in config but
-  not yet referenced by any target. Honest state for
-  things we're parking.
-- **Researched** — evaluated in `docs/research/` or a
-  skill; not yet applied to repo code. No interview
-  claim except "evaluated."
-- **Retired** — previously active, now removed. Listed
-  so nobody re-litigates a closed decision.
-
 ## 1. Build gates and language-strictness (F# / C# / .NET 10)
 
 | Capability | Form in this repo | What we used it for on Zeta | State |

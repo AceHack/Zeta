@@ -78,21 +78,25 @@ picked at setup time:
   (`git show origin/claim/<slug>:docs/claims/<slug>.md`);
   `ls docs/claims/` on `main` only shows merged-but-not-
   released claims, not active ones still in flight.
-- Backlog row markers (`[in-progress ...]`, `[blocked ...]`)
-  remain useful as **row-local annotations** on the durable
-  backlog row, but they are not the locking mechanism — the
-  claim file is. Adopters who want backlog-only claims (no
-  separate `docs/claims/` directory) can document that
-  divergence in their own ADR.
+- Backlog row markers (`[in-progress 2026-04-22 by session X]`,
+  `[blocked on ...]`, `[done in SHA]`) remain useful as
+  **row-local annotations** on the durable backlog row, but
+  they are not the locking mechanism — the claim file is.
+  Adopters who want backlog-only claims (no separate
+  `docs/claims/` directory) can document that divergence in
+  their own ADR; in that simpler mode, claims happen via
+  short status-marker commits visible to parallel agents
+  running `git log docs/BACKLOG.md`.
 
 ### Choosing at setup
 
 The canonical setup script under `tools/setup/` currently does
-not prompt for this. **TODO:** file a BACKLOG row to add the
-prompt: "Which issue tracker will this project use?
-[GitHub Issues / Jira / git-native] — agent workflow defaults
-adapt." Until that lands, Zeta's default is (1) and adopters
-copying the factory should read this doc and choose consciously.
+not prompt for this. Tracked at task #267-adjacent (factory-
+adoption configuration prompts) — the planned prompt: "Which
+issue tracker will this project use? [GitHub Issues / Jira /
+git-native] — agent workflow defaults adapt." Until that lands,
+Zeta's default is (1) and adopters copying the factory should
+read this doc and choose consciously.
 
 ## The claim / lock protocol (adapter-neutral)
 
@@ -111,6 +115,7 @@ the other two adapters mirror.
 | GitHub Issues | Comment `claimed by session <id> <UTC-ts> — ETA <...>` + add `in-progress` label | Comment `releasing — landed in <SHA>` + remove label + close (if done) | `gh issue list --label in-progress` |
 | Jira | Transition to `In Progress` state + assign to self + add comment | Transition to `Done` / `Released` + comment with commit | `jql: status = "In Progress"` |
 | Git-native | Claim file at `docs/claims/<slug>.md` on a `claim/<slug>` branch pushed to `origin` (directory tracked on `main`, `README.md` placeholder); commit `claim: <slug> - <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> - landed in <SHA>` | `git fetch origin && git branch -r --list 'origin/claim/*'` (active claims) plus `ls docs/claims/` (claims merged to `main`) |
+| Git-native (legacy row-marker variant) | Short commit touching the row: `BACKLOG: claim row #42 — session <id> <UTC-ts>` | Commit touching the row: `BACKLOG: release row #42 — landed in <SHA>` | `git log --grep="claim row" docs/BACKLOG.md` |
 
 ### Claim windows and stale-claim force-release
 

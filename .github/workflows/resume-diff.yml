@@ -115,7 +115,7 @@ jobs:
 
                 CLAIM_LINES="$(printf '%s\n' "$RAW_DIFF" \
                   | grep -E '^[+-][^+-]' \
-                  | grep -E '^[+-]\s*(- \*\*|\| |#{2,4} |.*\b(ships?|shipped|verified|proven|complete[ds]?|honest|already absorbed|implement(ed|s)?|in[- ]repo evidence)\b)' \
+                  | grep -P '^[+-]\s*(- \*\*|\| |#{2,4} |.*\b(ships?|shipped|verified|proven|complete[ds]?|honest|already absorbed|implement(ed|s)?|in[- ]repo evidence)\b)' \
                   || true)"
 
                 if [ -n "$CLAIM_LINES" ]; then
@@ -156,11 +156,65 @@ jobs:
             echo "has_changes=$HAS_CHANGES"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Post PR comment
+      - name: Post or update PR comment
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           DIFF_FILE: ${{ steps.diff.outputs.diff_file }}
         run: |
           set -euo pipefail
-          gh pr comment "$PR_NUMBER" --body-file "$DIFF_FILE"
+
+          # Per Copilot review on PR #26: avoid posting a fresh
+          # comment on every PR sync — that creates spam on actively-
+          # updated PRs. Find an existing bot comment by a unique
+          # marker header and edit-in-place; create a new comment
+          # only if no marker is found. Marker is the HTML comment
+          # `<!-- resume-diff-bot-marker -->` which is stable across
+          # runs but invisible in the rendered comment.
+          MARKER='<!-- resume-diff-bot-marker -->'
+
+          # Prepend marker to the body so future runs can find it.
+          BODY_FILE="$(mktemp)"
+          {
+            printf '%s\n' "$MARKER"
+            cat "$DIFF_FILE"
+          } > "$BODY_FILE"
+
+          # Look for an existing comment containing the marker.
+          # Per Codex review on LFG #649 (P1): `gh pr view --json
+          # comments` returns GraphQL node IDs (e.g. `IC_xxx`), but
+          # the PATCH endpoint at `/repos/.../issues/comments/{id}`
+          # requires the REST integer comment_id. Using the node ID
+          # 404s and breaks the anti-spam edit-in-place behavior on
+          # synchronized PRs. Fix: query the REST API directly via
+          # `gh api repos/.../issues/{pr}/comments` which returns the
+          # integer `id` field that PATCH accepts.
+          existing_id=$(gh api \
+              "repos/${{ github.repository }}/issues/${PR_NUMBER}/comments" \
+              --paginate \
+              --jq ".[] | select(.body | contains(\"$MARKER\")) | .id" \
+              | head -n 1 || true)
+
+          if [ -n "$existing_id" ]; then
+            # Edit the existing comment via the REST API. `gh pr
+            # comment` does not yet support --edit by id directly,
+            # so fall through to the api wrapper.
+            #
+            # Per Copilot review on PR #26: pass the body via stdin
+            # (jq-built JSON payload) rather than command-substituting
+            # the file contents into a -f flag. The substituted form
+            # risks ARG_MAX (~2 MB on Linux) for large diffs and is
+            # brittle around shell escaping. The stdin form streams
+            # the body and isn't subject to argv size limits.
+            jq -n --rawfile body "$BODY_FILE" '{body: $body}' \
+              | gh api \
+                  --method PATCH \
+                  -H "Accept: application/vnd.github+json" \
+                  --input - \
+                  "/repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" \
+                  >/dev/null
+            echo "updated existing resume-diff comment ($existing_id)"
+          else
+            gh pr comment "$PR_NUMBER" --body-file "$BODY_FILE"
+            echo "posted new resume-diff comment"
+          fi

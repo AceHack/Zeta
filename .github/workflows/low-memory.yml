@@ -35,14 +35,16 @@
 #   so the per-merge run has no cost downside.
 #
 # What this workflow does:
-#   - push to main: runs on every merge (primary trigger).
+#   - push to main: runs on every push to main (in practice every
+#     merge; primary trigger).
 #   - Schedule: daily at 06:00 UTC (backstop for weekends + missed
 #     pushes).
 #   - workflow_dispatch: manual trigger for ad-hoc verification.
 #   - Single ubuntu-slim leg matching gate.yml's install / build /
 #     test sequence on the smaller runner. ubuntu-slim was REMOVED
-#     from gate.yml's matrix in this same PR (per Codex P2) so we
-#     don't double-run the slim leg on every push.
+#     from gate.yml's matrix when the per-merge trigger landed (per
+#     Codex P2 review on LFG #644) so we don't double-run the slim
+#     leg on every push.
 #   - Failure = drift on low-memory runners. File a BACKLOG row;
 #     does not block PRs in flight.
 #

@@ -16,12 +16,17 @@ vocabulary. No invented labels.
 Two of the three come from git (the repo axis):
 
 - **upstream** — `Lucent-Financial-Group/Zeta`. The parent
-  repo. Where releases, stable URLs, issue numbers, and the
-  social / governance edge live.
+  repo. Where releases, stable URLs, issue numbers, the
+  canonical commit history, and the social / governance
+  edge live. GitHub's API confirms the relation:
+  `POST /repos/AceHack/Zeta/merge-upstream` pulls *from*
+  LFG *into* AceHack.
 - **fork** — `AceHack/Zeta`. The fork the human maintainer
-  develops on day-to-day. Lower CI cost, faster iteration;
+  develops on day-to-day. The downstream copy where the
+  daily agent loop lands intermediate PRs so the billed
   upstream surfaces (Copilot coding-agent, Actions minutes,
-  paid seats) aren't charged per-PR there.
+  paid seats) aren't charged per-PR. Lower CI cost, faster
+  iteration.
 
 The third comes from testing/QA vocabulary (the role axis):
 
@@ -50,18 +55,23 @@ The fork exists to feed into upstream. When fork-vs-upstream
 disagree on anything (scope, contents, governance), upstream
 wins.
 
+Operationally, the agent loop *targets* the fork for most PRs
+(see next section); that is a cost-optimization, not a
+redefinition. Upstream is still the repo-of-record.
+
 Lineage: this section adapts AceHack commit `268100a` (Round 44 — *"3 surfaces, not 2"*) into the upstream LFG version per the option-c rewrite-into-current-architecture sync discipline (`docs/sync/acehack-to-lfg-cherry-pick-audit-2026-04-26.md`). The AceHack commit's substantive contribution was the three-surfaces vocabulary; this version preserves LFG's existing wording around upstream/fork while adding the SUT/factory orthogonality framing.
 
 ## Zeta's choice: batched fork-first rhythm
 
-**Default PR target:** `AceHack/Zeta:main`, not
-`Lucent-Financial-Group/Zeta:main`.
+**Default PR target for daily agent work:** the fork
+(`AceHack/Zeta:main`) — **not** upstream
+(`Lucent-Financial-Group/Zeta:main`).
 
-Agents develop on fork feature branches, open PRs against
-`AceHack/Zeta:main`, auto-merge there. AceHack's free-tier
-CI minutes run the gate. Once `AceHack/Zeta:main` is ~10
-commits ahead of `Lucent-Financial-Group/Zeta:main`, **one**
-bulk sync PR lifts all accumulated work into LFG.
+Agents develop on fork feature branches, open PRs against the
+fork's `main`, auto-merge there. The fork's free-tier CI
+minutes run the gate. Once `AceHack/Zeta:main` is ~10 commits
+ahead of `Lucent-Financial-Group/Zeta:main`, **one** bulk sync
+PR lifts all accumulated work into upstream.
 
 ```text
 feature-branches (AceHack)
@@ -91,10 +101,12 @@ today because:
 - **AceHack is free.** `AceHack/Zeta` is a personal fork on
   a free plan. CI + Copilot on AceHack are zero-cost or
   use free-tier allowances.
-- **Budgets are capped, not unlimited.** LFG has budget caps.
-  The caps protect the human maintainer's wallet; the risk they
-  don't protect against is *build-grinds-to-a-halt when the
-  free allowance exhausts.*
+- **Budgets are capped, not unlimited.** Per
+  `memory/feedback_lfg_budgets_set_permits_free_experimentation.md`,
+  LFG has budget caps. The caps protect the human
+  maintainer's wallet; the risk they don't protect against
+  is *build-grinds-to-a-halt when the free allowance
+  exhausts.*
 - **Poor-man's setup.** The human maintainer's framing
   2026-04-22: *"This is the poor mans setup got to bet money
   concious"*. The batched rhythm is an explicit
@@ -195,7 +207,9 @@ Six named exceptions where a change goes direct to LFG
    external contributor is actively waiting on. Zeta is
    pre-v1 so this is rare, but possible.
 3. **Human maintainer explicit request** — *"push this one
-   direct to LFG"* overrides the rhythm.
+   direct to LFG"* overrides the rhythm. (AceHack-side
+   wording: "Aaron explicit request" — same rule, named
+   maintainer.)
 4. **CI-repair to LFG** — when LFG's gate is broken and
    the fix must land on LFG immediately for LFG CI to
    recover.
@@ -247,3 +261,22 @@ free surfaces," "poor-man's setup posture" — all traced back
 to 2026-04-21 / 2026-04-22 maintainer clarifications that
 collapsed earlier per-PR-to-LFG defaults into the batched
 shape described above.
+
+## Source memories
+
+*(AceHack-side: explicit memory-file references for the
+underlying directives. LFG-side keeps these out of the
+in-repo doc per the per-user-agent-memory split described in
+Provenance above; preserved here so the memory pointers are
+not lost during sync.)*
+
+- `memory/feedback_fork_pr_cost_model_prs_land_on_acehack_sync_to_lfg_in_bulk.md`
+  — 2026-04-22 Aaron correction on misunderstood cost model
+- `memory/feedback_fork_upstream_batched_every_10_prs_rhythm.md`
+  — original 2026-04-21 "every 10 PRs" directive
+- `memory/feedback_fork_based_pr_workflow_for_personal_copilot_usage.md`
+  — the underlying fork-PR workflow
+- `memory/project_lfg_org_cost_reality_copilot_models_paid_contributor_tradeoff.md`
+  — the cost-reality this rhythm responds to
+- `memory/feedback_lfg_budgets_set_permits_free_experimentation.md`
+  — budget caps don't make cost invisible

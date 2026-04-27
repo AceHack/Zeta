@@ -9,11 +9,10 @@ absorbed into this repo via PR #144 (as
 `docs/aurora/2026-04-23-transfer-report-from-amara.md`).
 
 **Repo-state note:** the files referenced below under
-`docs/aurora/...` and `docs/plans/...` landed in PR #144,
-which has since merged into main. This PR (Amara
-collaborator registration) was originally stacked atop that
-landing; with #144 merged, all cross-doc links below now
-resolve in main.
+`docs/aurora/...` and `docs/plans/...` are present in the
+repo (cross-doc links below resolve in main). Original
+authoring history may show staged-PR numbers; on cross-fork
+sync (PR #26), all referenced artifacts land together.
 **Purpose:** Give Amara a concise view of what we adopted,
 what we adapted, what we declined — so she can iterate on
 her side with current factory state in hand.

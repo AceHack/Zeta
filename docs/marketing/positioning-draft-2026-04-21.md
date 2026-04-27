@@ -1,8 +1,24 @@
 # Positioning draft — 2026-04-21
 
+> **Merge note (2026-04-26 fork-divergence sync):** this draft
+> contains both AceHack-fork and LFG variants of some sections
+> preserved per Aaron 2026-04-26 *"merge everything, label draft
+> if it's draft"*. Substantive content is identical between forks;
+> the editorial difference is attribution phrasing — the **AceHack
+> draft** uses the named maintainer "Aaron" (per the named-agent
+> attribution-credit memory + Otto-279 history-surface carve-out +
+> Otto-231 first-party consent), while the **LFG draft** uses the
+> role-ref "human maintainer" (per the no-name-attribution rule
+> in `docs/AGENT-BEST-PRACTICES.md`). Body uses AceHack named-
+> attribution form; LFG role-ref alternates are footnoted at first
+> occurrence per section. Aaron picks the canonical form on sign-off.
+
 **Status: retractable draft.** Internal candidate, awaiting
-human-maintainer sign-off for any external use. Lives in this subtree per
+Aaron sign-off for any external use. Lives in this subtree per
 `docs/marketing/README.md`.
+
+> **LFG variant phrasing:** "awaiting human-maintainer sign-off
+> for any external use."
 
 ## The one-line attempt
 
@@ -78,7 +94,10 @@ notes below.)
 ## Voice — candidate brand-voice sketches
 
 Three voices to test; none committed. Picking one will
-happen in a later round with the human maintainer's input.
+happen in a later round with Aaron's input.
+
+> **LFG variant phrasing:** "Picking one will happen in a later
+> round with the human maintainer's input."
 
 ### Candidate A — the quiet craftsman
 
@@ -136,20 +155,27 @@ Each retractable; none committed:
 
 Per the P3 BACKLOG row's "marketing channels" sub-scope;
 this is where the factory *might* eventually show up,
-logged for human-maintainer sign-off before any actual outreach:
+logged for Aaron sign-off before any actual outreach:
+
+> **LFG variant phrasing:** "...logged for human-maintainer
+> sign-off before any actual outreach."
 
 - **F# for Fun and Profit** — community blog with
   architectural reach; a guest post on retraction-native
   IVM would hit the Scott Wlaschin-adjacent audience.
 - **.NET Conf / F# Online** — conference abstracts are
-  human-maintainer-sign-off irretractable (abstracts commit to
+  Aaron-sign-off irretractable (abstracts commit to
   delivery); drafting abstract text here is retractable.
+  > **LFG variant phrasing:** "conference abstracts are
+  > human-maintainer-sign-off irretractable..."
 - **Arxiv (cs.DB + cs.LG)** — research-register channel;
   a paper-grade write-up of the retraction-native
   operator algebra is already on the BACKLOG
   (`docs/research/factory-paper-2026-04.md`).
 - **Hacker News** — launch-register channel;
-  timing-sensitive, human-maintainer-sign-off-required.
+  timing-sensitive, Aaron-sign-off-required.
+  > **LFG variant phrasing:** "...timing-sensitive,
+  > human-maintainer-sign-off-required."
 - **r/fsharp + r/dotnet** — smaller community register.
 - **NuGet package metadata** — SEO-adjacent;
   irretractable-once-published (each version's metadata
@@ -184,7 +210,10 @@ No commitment to target any of these keywords in
 published metadata; just the inventory for eventual
 selection.
 
-## What happens when the human maintainer wakes
+## What happens when Aaron wakes
+
+> **LFG variant heading:** "What happens when the human
+> maintainer wakes"
 
 This draft is ready for sign-off on any of the following:
 
@@ -199,12 +228,17 @@ This draft is ready for sign-off on any of the following:
   go / no-go / defer.
 - **Sign-off on NuGet metadata changes** — retractable
   drafting here is complete; any actual metadata edit is
-  the human maintainer's call because each version's metadata is
+  Aaron's call because each version's metadata is
   immutable post-publish.
+  > **LFG variant phrasing:** "...any actual metadata edit is
+  > the human maintainer's call..."
 
 No commitments are made by this draft existing. All
-items above are retractable until the human maintainer stamps
+items above are retractable until Aaron stamps
 something specifically.
+
+> **LFG variant phrasing:** "...retractable until the human
+> maintainer stamps something specifically."
 
 ## Cross-references
 
@@ -227,3 +261,16 @@ something specifically.
 - `memory/feedback_yin_yang_unification_plus_harmonious_division_paired_invariant.md`
   — composition-discipline check applied to voice-slate
   selection.
+
+---
+
+## Revision history
+
+- **2026-04-21.** First write of the positioning draft. See
+  body for content. Retractable under roommate-register.
+- **2026-04-26.** Fork-divergence merge: AceHack and LFG
+  variants reconciled per Aaron 2026-04-26 *"merge
+  everything, label draft if it's draft"*. Substantive
+  content unchanged; LFG role-ref alternate phrasings
+  preserved as inline footnotes for editorial-form
+  selection on sign-off.

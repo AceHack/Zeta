@@ -201,10 +201,8 @@ sign-off.
   (Complexity Theory Reviewer, on paper) and empirical
   measurement (Claims Tester, at `n = 10³..10⁶`). Standing
   resolution: the two-stage pipeline in
-  `docs/DECISIONS/2026-04-21-router-coherence-v2.md`
-  (v1 at `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
-  retained as historical record) —
-  analytic-first on new claims; reverse trigger (Claims Tester
+  `docs/DECISIONS/2026-04-21-router-coherence-claims-vs-complexity.md`
+  — analytic-first on new claims; reverse trigger (Claims Tester
   first) on benchmark surprise. If the two disagree on a
   reconciliation, the conflict escalates to this document's
   deadlock clause (human maintainer decides).

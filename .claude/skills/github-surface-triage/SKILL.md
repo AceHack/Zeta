@@ -277,8 +277,11 @@ load-bearing for greps on archived fire-history).
   (shape definitions, rationale, Aaron directive quotes)
 - `docs/AGENT-ISSUE-WORKFLOW.md` — abstract dual-track
   principle for issues (GitHub / Jira / git-native)
-- `docs/FACTORY-HYGIENE.md` row #48 — ten-surface triage
-  cadence + fire-history requirement
+- `docs/FACTORY-HYGIENE.md` ten-surface triage
+  cadence + fire-history requirement (row #45 in
+  AceHack/Zeta layout; row #48 in LFG/Zeta layout —
+  resolve to actual row after FACTORY-HYGIENE.md
+  fork-divergence merge lands)
 - `docs/hygiene-history/pr-triage-history.md`
 - `docs/hygiene-history/issue-triage-history.md`
 - `docs/hygiene-history/wiki-history.md`

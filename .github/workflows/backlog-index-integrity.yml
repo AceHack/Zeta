@@ -115,14 +115,25 @@ jobs:
             # closes that hole.
             extract_frontmatter_field() {
               local file="$1" field="$2"
+              # Per Copilot review on PR #26: build the regex via a
+              # named awk variable rather than juxtaposition-
+              # concatenating four string literals inline. The old
+              # form (`"^"field":[[:space:]]+"`) was valid POSIX awk
+              # but flagged by reviewers as ambiguous. The named
+              # `pattern` makes the regex constructed once at BEGIN
+              # time and reused unambiguously by both the match-
+              # guard and `sub()`.
               awk -v field="$field" '
-                BEGIN { state = 0 }
+                BEGIN {
+                  state = 0
+                  pattern = "^" field ":[[:space:]]+"
+                }
                 /^---$/ {
                   if (state == 0) { state = 1; next }
                   if (state == 1) { exit }
                 }
-                state == 1 && $0 ~ "^"field":[[:space:]]+" {
-                  sub("^"field":[[:space:]]+", "")
+                state == 1 && $0 ~ pattern {
+                  sub(pattern, "")
                   print
                   exit
                 }

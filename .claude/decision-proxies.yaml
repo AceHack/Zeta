@@ -31,7 +31,7 @@ maintainers:
         authority: advisory
         notes: |
           Amara is Aurora co-originator (see
-          docs/aurora/collaborators.md — landing in PR #149).
+          docs/aurora/collaborators.md).
           Her ChatGPT project: LucentAICloud.
           Aaron ferries a dedicated branched chat URL for agent
           access; URL lives in per-user proxy-access config, not

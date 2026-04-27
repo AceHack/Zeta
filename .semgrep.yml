@@ -349,7 +349,11 @@ rules:
   # Matches single-line `run: ... ${{ github.<unsafe-path> }} ...`
   # forms for the attacker-controlled contexts enumerated in
   # docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md. Multi-line `run:
-  # |` blocks are covered by actionlint's YAML-aware parser.
+  # |` blocks are NOT covered by this rule and are also NOT covered
+  # by actionlint (which validates workflow/YAML correctness, not
+  # shell-injection patterns inside script contents). Multi-line
+  # coverage is owed via a separate semgrep rule (or shellcheck-
+  # over-extracted-script-bodies) — tracked under §rule-17-followups.
   # Fix: bind the value to an `env:` entry on the step and read it
   # as `"$VAR"` in the shell. See the safe-patterns doc.
   # ────────────────────────────────────────────────────────────────

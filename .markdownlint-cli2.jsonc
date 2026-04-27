@@ -16,8 +16,18 @@
     "obj/**",
     // Upstream reference repos under `../` are not part of Zeta.
     "references/upstreams/**",
-    // Memory directory is agent-written append-logs; treating it
-    // as source content would add drift to every OFFTIME entry.
+    // Memory directory is mostly agent-written append-logs (623+
+    // top-level files at the time of writing); treating it as
+    // source content would add drift to every OFFTIME entry.
+    // Acknowledged trade-off (per Copilot review on PR #26):
+    // curated memory docs (memory/CURRENT-aaron.md,
+    // memory/CURRENT-amara.md, memory/MEMORY.md, memory/README.md)
+    // are also covered by this broad ignore. Tightening this to
+    // `memory/persona/**` only — so the curated docs become
+    // lintable — is the right long-horizon move but requires a
+    // bulk-cleanup pass on the 600+ existing memory files first
+    // (deferred to a separate PR per Otto-275 log-but-don't-
+    // implement-yet discipline; tracked at task #267-adjacent).
     "memory/**",
     // Lean proof dir has its own idioms.
     "tools/lean4/**",

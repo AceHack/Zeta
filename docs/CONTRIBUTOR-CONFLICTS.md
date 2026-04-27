@@ -1,6 +1,6 @@
 # Contributor conflicts log
 
-Durable log of differences of opinion / external requirement
+Durable log of differences of opinion / external requirements
 between contributors (human maintainers + external AI
 maintainers + factory-internal personas + external human
 contributors once they arrive). Captures both the conflict
