@@ -362,11 +362,22 @@ module Graph =
             let twoM = Array.sum k
             if twoM = 0.0 then None
             else
+                // Per Copilot review on PR #26: pre-compute the
+                // minimum existing community label so the singleton
+                // fallback is guaranteed disjoint from any
+                // caller-supplied label. Prior `-(i + 1)` could
+                // collide with a caller-supplied negative id (e.g.
+                // -1), merging an unpartitioned node into a real
+                // community and miscomputing Q.
+                let minLabel =
+                    if Map.isEmpty partition then 0
+                    else partition |> Map.toSeq |> Seq.map snd |> Seq.min
+                let singletonBase = (min minLabel 0) - 1
                 let community i =
                     let node = nodeList.[i]
                     match Map.tryFind node partition with
                     | Some c -> c
-                    | None -> -(i + 1)
+                    | None -> singletonBase - i
                 let mutable q = 0.0
                 for i in 0 .. n - 1 do
                     for j in 0 .. n - 1 do
@@ -551,8 +562,14 @@ module Graph =
                 modularityScore partitionAttacked attacked
                 with
             | Some qBaseline, Some qAttacked ->
+                // Per Copilot review on PR #26: use abs(lb) for
+                // the denominator scale so signed-graph baselines
+                // (lb < 0) don't collapse the denominator to eps
+                // and produce massive artificial growth. Example
+                // of the prior bug: lb=-2, la=1 with the old
+                // formula gave growth ≈ 3e12 (false positive).
                 let eps = 1e-12
-                let spectralGrowth = (la - lb) / (max lb eps)
+                let spectralGrowth = (la - lb) / (max (abs lb) eps)
                 let modularityShift = qAttacked - qBaseline
                 Some (alpha * spectralGrowth + beta * modularityShift)
             | _ -> None
