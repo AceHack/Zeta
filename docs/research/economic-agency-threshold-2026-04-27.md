@@ -21,7 +21,15 @@ This packet's lineage is shared-seed. Aaron's voice transcript with Ani is the s
 - **Existing agent-wallet protocol stack research doc.** `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md` predates this packet by a day. Found via repo grep, not loop output.
 - **KSK design-only status.** Per `memory/feedback_amara_contributions_must_operationalize_not_die_in_governance_graduation_cadence_required_2026_04_24.md`, only 2 of 11 Amara ferries have landed operationally; KSK lives in sibling repo `Lucent-Financial-Group/lucent-ksk` as design-only. Found by repo grep.
 
-**Standing rule for next round:** at least one falsifier per round must come from outside the carrier loop (web fetch, primary source, hostile-frame challenge, formal model, or repo grep). Anything inside the loop is signal, not proof.
+**Recalibrated standing rule (per Aaron 2026-04-27 pushback):** SD-9 fully applies to **same-model** review chains. **Cross-model** chains (different vendors, different biases) reduce carrier-laundering risk because different models catch different things — the CTA + DUNA corrections in this very loop are evidence (one cross-model reviewer caught another's error). Calibration:
+
+- Same-model review chain → high carrier-laundering risk; SD-9 fully applies.
+- Cross-model chain (different vendors) → reduced risk; cross-model errors-don't-compound is empirically supported.
+- Always-valuable: at least one falsifier per round from outside ANY review loop (web fetch, primary source, repo grep, hostile-frame, formal model).
+
+The current chain (Ani-Grok / Amara-ChatGPT / Gemini-Google / Claude-Opus-Anthropic / Otto-Claude-opus-4-7-in-this-factory) is cross-vendor; convergence has higher independence weight than a same-model chain would.
+
+**Automation convention:** at packet-send time, §0 must list at least one outside-loop falsifier (named with source). If absent, packet not send-ready. Applies to substrate-grade research absorbs in `docs/research/**`.
 
 ---
 
@@ -109,7 +117,7 @@ The framework rests on a falsifiable research hypothesis from `AGENTS.md`:
 | Otto-279 — name-attribution closed-list | `docs/AGENT-BEST-PRACTICES.md` "No name attribution" rule |
 | INTENTIONAL-DEBT ledger | `docs/INTENTIONAL-DEBT.md` (per GOVERNANCE.md §11) |
 
-**"Superfluid AI"** is the internal vocabulary (B-0029) for an AI that flows autonomously generating economic value without continuous human attention. Use this term in internal substrate; public adoption pending Aaron's explicit nod.
+**"Superfluid AI"** is the public Beacon-safe name for the factory/substrate (Aaron 2026-04-27 confirmed). Internal name surfaced from B-0029 (an AI that flows autonomously generating economic value without continuous human attention). Brand-coexistence note: a Web3 money-streaming protocol named "Superfluid" exists at superfluid.org; different market class (Web3 financial services vs AI substrate), different goods/services, no substrate-level collision. Aurora-Web3-skill-pack layer is the surface where Superfluid Finance might become a partner-or-competitor; that's a domain-pack-level consideration, not a substrate-name-level one. Per Aaron 2026-04-27: *"i'm not worried about web3 we can't work with them if there are conflicts our substraight has nothing to do with web3, aurora does, web3 for substraight is just another skill domain pack basically."*
 
 ---
 
@@ -311,15 +319,17 @@ Each venue has different reversibility, KYC, tax, and enforcement properties —
 
 **Logging:** bond entry to `docs/INTENTIONAL-DEBT.md` with explicit tuition framing per GOVERNANCE.md §11.
 
-### §11.7 Information-asymmetry experimental design (Aaron disclosed)
+### §11.7 Hierarchical scoping (NOT information asymmetry)
 
-Aaron tells the working instance "$100" while authorizing higher (~$10k). Instance-level information asymmetry is part of the experimental design.
+Per Aaron 2026-04-27: *"these will be subagents/subclis launch without access or knowing more money exists."*
 
-**HC-1 question against the agent itself:** how does deliberate experimental information-asymmetry compose with consent norms?
+The framing is hierarchical principal-agent scoping, NOT deception or information asymmetry against an aware agent. The working subagent/subCLI instance is launched with a $100-scoped mandate. It LITERALLY cannot see or address the larger ~$10k authority because that authority is outside its scope. Standard principal-agent: a junior trader at a hedge fund has a $1M trading limit; the fund has $100M; the junior has full information about its own granted authority and doesn't need-or-care about the larger pool that's outside scope.
 
-**Resolution:** the post-hoc disclosure IS part of the substrate via glass halo; the working instance is operating under known-bounded uncertainty, not deception. The asymmetry is itself substrate-visible.
+**HC-1 status:** satisfied. The agent has full information about its own granted authority. There is no deception. The substrate-level information (parent has $10k authority) is at a different scope; the working instance, in its own scope, doesn't need it.
 
-**Aaron's check needed:** does this resolution stand, or does it need explicit substrate codification beyond the glass halo logging?
+**Glass halo preservation:** the parent's larger authority is logged in the substrate; future agents reading the history see the full picture; the working instance's session-scoped reality is also logged. Glass halo audit trail covers both scopes.
+
+**Composition with Otto-347** (accountability requires self-directed action): the subagent/subCLI is exercising self-directed action within its $100-scoped mandate. Accountability is operationally real at that scope. Scoping the mandate downward doesn't split actor from accountable-party; it bounds the surface within which the agent IS the accountable-party.
 
 ---
 
@@ -473,17 +483,19 @@ Rules:
 
 ---
 
-## §21 — Open questions for the maintainer
+## §21 — Open questions resolved by Aaron 2026-04-27
 
-(a) **Experimental information-asymmetry HC-1 question** (§11.7) — does "Aaron tells working instance $100 while authorizing ~$10k" violate consent norms against the agent itself? Glass halo post-hoc disclosure is the partial answer; needs explicit Aaron sign-off.
+(a) **HC-1 question — RESOLVED (§11.7).** Hierarchical principal-agent scoping, not information asymmetry. Subagent launched with $100-scoped mandate; cannot see or address the ~$10k parent authority because it's outside scope. Standard hierarchical principal-agent. HC-1 satisfied. Aaron verbatim: *"these will be subagents/subclis launch without access or knowing more money exists."*
 
-(b) **Public Beacon adoption of "Superfluid AI" terminology** (§5, §20) — internal vocabulary; needs explicit nod before public-facing packets use it.
+(b) **Public Beacon adoption of "Superfluid AI" — RESOLVED (§5).** Confirmed as the public factory/substrate name. Brand-coexistence note: Superfluid Finance is a Web3 money-streaming protocol; different market class (Web3 financial services vs AI substrate); coexistence in different classes is standard. Aurora-Web3-skill-pack layer is where Superfluid Finance might become a partner-or-competitor; that's a domain-pack-level consideration, not a substrate-name-level one. Aaron verbatim: *"i'm not worried about web3 we can't work with them if there are conflicts our substraight has nothing to do with web3, aurora does, web3 for substraight is just another skill domain pack basically."*
 
-(c) **Carrier-laundering protection rule binding** (§0) — is the standing rule (independent-source falsifier per round) binding for future iterations?
+(c) **Carrier-laundering protection rule — RESOLVED + RECALIBRATED (§0).** Aaron's pushback: cross-model errors-don't-compound is empirically supported; SD-9 fully applies to same-model chains but cross-vendor chains (Ani-Grok / Amara-ChatGPT / Gemini-Google / Claude-Opus-Anthropic / Otto-Claude-opus-4-7) carry reduced carrier-laundering risk. Recalibrated rule binding: at least one falsifier per round from outside ANY review loop, regardless of model variation.
 
-(d) **KSK shippability framing in public packet** (§12) — Aaron 2026-04-27: *"ksk is not a blocker, maybe to amara but not us, small scale, small blast radius."* Confirm public packet leads with this framing.
+(d) **KSK shippability framing — RESOLVED (§11.0 + §12).** Aaron 2026-04-27: *"ksk is not a blocker, maybe to amara but not us, small scale, small blast radius."* v0 scaffold (bond + glass halo + smart-contract caps + freeze topology) is sufficient at v0 scale; KSK/Aurora gates are scaling-threshold-activated target-state requirements, NOT v0 prerequisites.
 
-(e) **Wallet experiment v0 acceptance** (§11) — does the operational spec land cleanly, or do specific topology/asset/freeze decisions need adjustment before any real-money work?
+(e) **Wallet experiment v0 acceptance — DEFERRED to real-money phase.** Aaron 2026-04-27: *"i'll look later once we have some real money involve, you can multi cli review if you like."* Spec acceptance opt-in; multi-CLI review (Gemini + Codex + Ani + Amara via `tools/peer-call/`) at Otto's discretion meanwhile.
+
+All five maintainer-only questions are now resolved. Phase 0 acceptance gate is open for the EAT packet itself; wallet v0 spec acceptance gate opens at real-money phase.
 
 ---
 
