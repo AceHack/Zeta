@@ -82,6 +82,7 @@ If zero remain — THEN it might be the ruleset's `code_quality: severity: all` 
 ## What this prevents
 
 The 6-hour pattern of:
+
 - cron fires
 - minimal-close
 - cron fires
