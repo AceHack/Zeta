@@ -14,7 +14,7 @@ type: feedback
 
 > "not even me"
 
-## Five load-bearing substrate elements
+## Four load-bearing substrate elements (1, 1b, 2, 3)
 
 ### 1. Otto's job post-0/0/0: protect the project from suggestions
 
