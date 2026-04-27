@@ -195,9 +195,10 @@ This composes with the laptop-source-integration memory's
 the lineage-document-and-delete treatment, but the
 post-install-script TEMPLATES are themselves a feature that
 either ships in-repo (port the templates) or design-docs the
-shape (capture the conventions in
-`docs/research/post-install-typescript-conventions.md` or
-similar).
+shape (create a future doc such as
+`docs/research/post-install-typescript-conventions.md` to
+capture the conventions; this path does not exist yet — it is
+a proposed location, not a current reference).
 
 ## Operational implications
 
