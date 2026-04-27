@@ -41,7 +41,7 @@ context_cmd=""
 prompt=""
 
 usage() {
-  sed -n '2,32p' "$0" | sed 's/^# \?//'
+  sed -n '2,32p' "$0" | sed -E 's/^# ?//'
 }
 
 while [ $# -gt 0 ]; do
@@ -112,7 +112,7 @@ if [ -n "$file" ]; then
 
 File context: $file
 \`\`\`
-$(head -c 20000 -- "$file")
+$(head -c 20000 < "$file")
 \`\`\`"
 fi
 
@@ -129,12 +129,15 @@ $ctx_output
 \`\`\`"
 fi
 
-# Invoke gemini in headless mode. --yolo skips approval prompts
-# (Gemini is read-only for peer-call; not running shell
-# commands). Pass --skip-trust so the workspace doesn't gate
-# on per-session trust prompts.
+# Invoke gemini in headless mode. --approval-mode plan keeps the
+# call genuinely read-only (per gemini --help: plan = "read-only
+# mode"). Earlier draft used --yolo which auto-approved ALL tool
+# calls (write operations included) — that violates the "peer-call
+# is read-only" contract per Copilot review on PR #28. Pass
+# --skip-trust so the workspace doesn't gate on per-session
+# trust prompts.
 exit_code=0
-gemini_args=(-p "$full_prompt" --yolo --skip-trust -o "$output_format")
+gemini_args=(-p "$full_prompt" --approval-mode plan --skip-trust -o "$output_format")
 if [ -n "$model" ]; then
   gemini_args+=(-m "$model")
 fi

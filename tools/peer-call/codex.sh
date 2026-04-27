@@ -45,7 +45,7 @@ context_cmd=""
 prompt=""
 
 usage() {
-  sed -n '2,33p' "$0" | sed 's/^# \?//'
+  sed -n '2,33p' "$0" | sed -E 's/^# ?//'
 }
 
 while [ $# -gt 0 ]; do
@@ -113,7 +113,7 @@ if [ -n "$file" ]; then
 
 File context: $file
 \`\`\`
-$(head -c 20000 -- "$file")
+$(head -c 20000 < "$file")
 \`\`\`"
 fi
 
