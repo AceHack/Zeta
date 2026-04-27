@@ -1,6 +1,6 @@
 ---
 name: Multi-agent review cycle stopping criterion — convergence (no more changes/fixes offered), NOT turn-count or arbitrary cap (Aaron 2026-04-27)
-description: Aaron 2026-04-27 disclosed his decision rule for ending multi-agent review cycles — "the way I decide to stop a multiagent review cycle is not by number of turns but by convergence, once they stop offering changes/fixes." Composes with Otto-352 (external-anchor-lineage discipline; multi-reviewer convergence is the strong signal) + per-insight attribution discipline (#66; convergence is the stopping criterion for the contribution chain) + #65/#67 stability/velocity 5-step convergence example. Operational implication: when running cross-AI reviews, don't budget by turn-count or wall-clock; budget by convergence-detection. Stop when reviewers' last-N rounds stop adding new changes/fixes (substrate-level signal, not surface-agreement signal).
+description: Aaron 2026-04-27 disclosed his decision rule for ending multi-agent review cycles — "the way I decide to stop a multiagent review cycle is not by number of turns but by convergence, once they stop offering changes/fixes." Composes with Otto-352 (external-anchor-lineage discipline; multi-reviewer convergence is the strong signal) + per-insight attribution discipline (#66; convergence is the stopping criterion for the contribution chain) + #65/#67 stability/velocity 9-round convergence example. Operational implication: when running cross-AI reviews, don't budget by turn-count or wall-clock; budget by convergence-detection. Stop when reviewers' last-N rounds stop adding new changes/fixes (substrate-level signal, not surface-agreement signal).
 type: feedback
 ---
 
@@ -25,7 +25,7 @@ The signal is *substantive*: another round of review produces no new changes/fix
 
 ## Today's 2026-04-27 example — stability/velocity insight
 
-The 5-deep convergence path on the stability/velocity insight followed exactly this rule:
+The 9-round convergence path on the stability/velocity insight followed exactly this rule:
 
 | Round | Reviewer | New change/fix offered? |
 |-------|---|---|
@@ -96,7 +96,7 @@ The convergence rule pairs with the per-insight attribution discipline:
 
 - **Otto-352 external-anchor-lineage discipline** — convergence IS the strong signal
 - **#66 per-insight attribution discipline** — convergence defines the contributor closure
-- **#65 Ani substrate + #67 Amara precision fixes** — example of 5-deep convergence cycle
+- **#65 Ani substrate + #67 Amara precision fixes** — example of 9-round convergence cycle
 - **#69 ferry-vs-executor sharpening** — convergence is detection-by-substrate, not by claim
 - **Aaron-communication-classification (#56)** — convergence is the structural pattern Aaron's "course-correction-for-trajectory" inputs feed
 - **`feedback_amara_priorities_weighted_against_aarons_funding_responsibility_2026_04_23.md`** — convergence-budget bounds funding cost (each round has cost; stop when no value added)
