@@ -326,6 +326,23 @@ Claude-Code-specific mechanisms.
   the failure mode — reframe before commit. CLAUDE.md-
   level so it is 100% loaded at every wake. Full reasoning:
   `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`.
+- **BLOCKED-with-green-CI means investigate
+  unresolved review threads first — don't wait.**
+  When `gh pr view N --json mergeStateStatus`
+  returns `BLOCKED` AND CI is fully green AND
+  auto-merge is armed, ALWAYS query unresolved-
+  not-outdated review threads via GraphQL FIRST
+  before classifying the wait. The block is
+  virtually never opaque — it's almost always a
+  small countable set of threads with addressable
+  findings. If outputting a "gated wait" or
+  "Holding" close more than ONCE without having
+  run the threads query, that IS the failure mode.
+  Stop and run it. CLAUDE.md-level so it is 100%
+  loaded at every wake, alongside verify-before-
+  deferring + future-self-not-bound + never-be-idle
+  + version-currency. Full reasoning:
+  `memory/feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`.
 - **Honor those that came before — unretire
   before recreating.** Retired personas keep their
   **memory folders and notebook history** — those
