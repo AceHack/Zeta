@@ -107,6 +107,98 @@ the Aaron-Amara conversation archive for upstream design
 context — `docs/amara-full-conversation/` IS the
 substrate.)
 
+## Port-with-DST discipline (Aaron 2026-04-27 fifth clarification)
+
+> "Oh none of those ../scratch and ../SQLSharp used Deterministic
+> Simulation so they were much harder to diagnose issues, we
+> don't want to replicate bad behavior"
+
+When porting features or shapes from `../scratch` or
+`../SQLSharp`, **add Deterministic Simulation Testing
+(Otto-272 DST-everywhere)** rather than replicate the legacy
+no-DST shape. The originals predate Aaron's DST discovery;
+their authors had to debug without DST's reproducibility
+guarantees. Replicating their shape would replicate the
+hard-to-debug experience.
+
+Discipline:
+
+- Port the **idea / feature / API**: yes
+- Port the **bash-or-bashy / no-DST shape**: NO
+- Add **DST** (per Otto-272 DST-everywhere)
+- Add **pinned seeds** (per Otto-273 seed-lock-policy)
+- Apply **flake-zero** (per Otto-248 never-ignore-flakes)
+
+Composes with Otto-272 / Otto-273 / Otto-281 / Otto-248. Net:
+ported features end up *easier* to debug than their original-
+source counterparts — port-and-improve, not port-as-is.
+
+## AceHack-LFG diff-minimization invariant (Aaron 2026-04-27 sixth clarification)
+
+> "also make sure at some point we see a 0 difference so we
+> can feel good about things"
+>
+> + follow-up: "or any differenes are rigorusly accounted
+> for, and few of them"
+
+Long-horizon goal: a structural check confirming AceHack and
+LFG match on `main`. After every sync round,
+`git diff acehack/main..origin/main` should be one of:
+
+- Zero diff (ideal)
+- A small enumerated set of expected differences (e.g.
+  `.github/funding.yml`, repo-name references in branding
+  docs, org-specific GitHub Actions secrets) where each diff
+  is documented in a known allowlist
+- "Few" is part of the bar — not a long unexplained list
+
+Operational:
+
+1. **Build a 0-diff verification check** under `tools/sync/`
+   that diffs the two `main` branches and emits a report
+   classifying each diff as expected (allowlisted) or
+   surprise (needs investigation).
+2. **Maintain an allowlist** for legitimate per-org
+   differences. The allowlist IS the "rigorously accounted
+   for" surface.
+3. **Treat outside-allowlist diff as drift** — file a sync
+   round to absorb or reverse-port.
+
+This is a structural invariant for the AceHack-LFG fork
+relationship. The factory passes when the diff is zero or
+all-accounted-for; fails when surprises accumulate.
+
+Sequenced after the laptop-source-integration work because
+porting `../scratch` + `../SQLSharp` may temporarily widen
+the diff before narrowing it; the verification check should
+ship to *measure* the narrowing, not block it.
+
+## `../SQLSharp` as TypeScript-post-install reference (Aaron 2026-04-27 clarification)
+
+> "../SQLSharp is a good example of typescript post intall scripts too"
+
+While `../SQLSharp` is primarily the pre-DBSP event-stream-
+processing seed (LINQ/SQL flavor; see the laptop-only-source
+integration memory), it ALSO contains TypeScript post-install
+scripts that are good reference examples for the post-install
+→ TypeScript pattern this strategy codifies.
+
+Use case: when porting an existing bash post-install script to
+TypeScript (bun runtime), `../SQLSharp`'s post-install scripts
+are a ready-to-mine template — they show shape (CLI argument
+parsing, error handling, dependency declaration, child-process
+shell-out for system-level work that must remain bash) without
+us having to rediscover the patterns from scratch.
+
+This composes with the laptop-source-integration memory's
+`../SQLSharp` triage: features-already-in-Zeta-DBSP-form get
+the lineage-document-and-delete treatment, but the
+post-install-script TEMPLATES are themselves a feature that
+either ships in-repo (port the templates) or design-docs the
+shape (capture the conventions in
+`docs/research/post-install-typescript-conventions.md` or
+similar).
+
 ## Operational implications
 
 1. **No more bash for new post-install work.** When new
