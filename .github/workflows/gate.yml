@@ -221,19 +221,20 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-22.04
 
+    # Run via the official semgrep/semgrep Docker image, SHA-pinned by
+    # multi-arch manifest digest. This satisfies Scorecard
+    # PinnedDependenciesID at the actual supply-chain level — the image
+    # bytes are content-addressed; tag mutation cannot affect us. The
+    # earlier `pip install semgrep` shape was version-floating and
+    # surfaced two PinnedDependenciesID alerts (#17, #18) for unpinned
+    # pipCommands. Per Aaron 2026-04-27 "preserve quality signals":
+    # fix, don't relax.
+    container:
+      image: semgrep/semgrep:1.161.0@sha256:326e5f41cc972bb423b764a14febbb62bbad29ee1c01820805d077dd868fea48
+
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-      - name: Setup Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        with:
-          python-version: '3.14'
-
-      - name: Install Semgrep
-        run: |
-          python -m pip install --upgrade pip
-          pip install semgrep
 
       - name: Run Semgrep
         # --error exits non-zero if any rule matches. The 14 rules in
