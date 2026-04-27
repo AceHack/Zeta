@@ -1,0 +1,124 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e5]:
+      - link [ref=e7] [cursor=pointer]:
+        - /url: /
+        - img [ref=e10]
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - button "⌘ K" [ref=e14] [cursor=pointer]:
+            - generic [ref=e15]:
+              - img [ref=e18]
+              - generic [ref=e21]:
+                - generic [ref=e22]: ⌘
+                - generic [ref=e23]: K
+          - button "Toggle theme" [ref=e24] [cursor=pointer]:
+            - img [ref=e26]
+            - generic [ref=e28]: Toggle theme
+        - button "A" [ref=e29] [cursor=pointer]:
+          - generic [ref=e31]: A
+    - generic [ref=e32]:
+      - complementary [ref=e33]:
+        - generic [ref=e34]:
+          - heading "Welcome, Aaron Stainback (🧂,🧂). Manage your xAI account." [level=1] [ref=e36]:
+            - text: Welcome, Aaron Stainback (🧂,🧂).
+            - text: Manage your xAI account.
+          - navigation [ref=e38]:
+            - link "Account" [ref=e39] [cursor=pointer]:
+              - /url: /account
+              - img [ref=e41]
+              - text: Account
+            - link "Security" [ref=e44] [cursor=pointer]:
+              - /url: /security
+              - img [ref=e45]
+              - text: Security
+            - link "Sessions" [ref=e48] [cursor=pointer]:
+              - /url: /sessions
+              - img [ref=e49]
+              - text: Sessions
+            - link "Data" [ref=e53] [cursor=pointer]:
+              - /url: /data
+              - img [ref=e54]
+              - text: Data
+        - generic [ref=e60]:
+          - link "Return to Cloud Console" [ref=e61] [cursor=pointer]:
+            - /url: https://console.x.ai
+            - generic [ref=e62]:
+              - img [ref=e63]
+              - text: Return to
+              - generic [ref=e66]: Cloud Console
+          - button [ref=e67] [cursor=pointer]:
+            - link [ref=e68]:
+              - /url: com.grokapp://login
+              - img [ref=e70]
+          - button [ref=e72] [cursor=pointer]:
+            - link [ref=e73]:
+              - /url: https://docs.x.ai
+              - img [ref=e74]
+      - main [ref=e76]:
+        - generic [ref=e78]:
+          - generic [ref=e79]:
+            - generic [ref=e81]:
+              - heading "Your account" [level=1] [ref=e82]
+              - paragraph [ref=e83]: Manage your account information.
+            - generic [ref=e86] [cursor=pointer]:
+              - generic [ref=e88]: A
+              - button [ref=e90]:
+                - img [ref=e92]
+          - generic [ref=e94]:
+            - generic [ref=e96]:
+              - generic [ref=e99]:
+                - generic [ref=e100]:
+                  - generic [ref=e101]: Full name
+                  - generic [ref=e102]: Aaron Stainback (🧂,🧂)
+                - button "Edit name" [ref=e104] [cursor=pointer]
+              - generic [ref=e107]:
+                - generic [ref=e108]:
+                  - generic [ref=e109]: Email
+                  - generic [ref=e110]: aaron_bond@yahoo.com
+                - button "Update email" [ref=e112] [cursor=pointer]
+              - generic [ref=e115]:
+                - generic [ref=e116]:
+                  - generic [ref=e117]: Subscription
+                  - generic [ref=e118]: Manage your Grok subscription
+                - link "Manage" [ref=e120] [cursor=pointer]:
+                  - /url: "https://grok.com?_s=billing "
+                  - text: Manage
+                  - img [ref=e121]
+              - generic [ref=e127]:
+                - generic [ref=e128]: Account created
+                - generic [ref=e129]: 18 Jun 2025
+            - generic [ref=e130]:
+              - generic [ref=e133]:
+                - paragraph [ref=e135]: Sign-in methods
+                - paragraph [ref=e136]: Manage your ways of logging into xAI & Grok.
+              - generic [ref=e138]:
+                - generic [ref=e139]:
+                  - generic [ref=e140]:
+                    - img [ref=e142]
+                    - generic [ref=e145]:
+                      - generic [ref=e147]: Email and password
+                      - generic [ref=e148]: Enable login with email
+                  - button "Enable" [ref=e150] [cursor=pointer]
+                - generic [ref=e151]:
+                  - generic [ref=e152]:
+                    - img [ref=e155]
+                    - generic [ref=e157]:
+                      - generic [ref=e159]: 𝕏
+                      - generic [ref=e160]: AceHack00
+                  - button "Disable" [ref=e162] [cursor=pointer]
+                - generic [ref=e163]:
+                  - generic [ref=e164]:
+                    - img [ref=e167]
+                    - generic [ref=e172]:
+                      - generic [ref=e174]: Google
+                      - generic [ref=e175]: acehack00@gmail.com
+                  - button "Disable" [ref=e177] [cursor=pointer]
+                - generic [ref=e178]:
+                  - generic [ref=e179]:
+                    - img [ref=e182]
+                    - generic [ref=e184]:
+                      - generic [ref=e186]: Apple
+                      - generic [ref=e187]: 000634.fd82704f781c47eba30e24d97d78e778.2248
+                  - button "Disable" [ref=e189] [cursor=pointer]
+  - region "Notifications alt+T"

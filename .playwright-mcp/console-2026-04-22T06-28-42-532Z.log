@@ -1,0 +1,4 @@
+[    7245ms] [WARNING] The resource https://chatgpt.com/cdn/assets/root-lj9s644x.css was preloaded using link preload in Early Hints but not used within a few seconds from the window's load event. @ https://chatgpt.com/g/g-p-68b53efe8f408191ad5e97552f23f2d5/c/ac43b13d-0468-832e-910b-b4ffb5fbb3ed:0
+[   16709ms] [WARNING] Allow attribute will take precedence over 'allowfullscreen'. @ https://chatgpt.com/cdn/assets/2340486e-epv5pa20wdn92ya5.js:8
+[   18325ms] [WARNING] Allow attribute will take precedence over 'allowfullscreen'. @ https://connector_openai_deep_research.web-sandbox.oaiusercontent.com/assets/main-BRUU7UQA.js:1
+[   19240ms] [ERROR] WebSocket connection to 'wss://ws.chatgpt.com/p5/ws/user/user-NvSIkaowbcwCXjQwH4S04eW0__910ffb17-295c-455e-b2fb-973020ca9a4a?verify=1776836357-otp9jjGCqrcm%252Ff1J8GWhwFo5gxgWvPJmrTkiFiUg2qU%253D' failed: HTTP Authentication failed; no valid credentials available @ :57

@@ -55,8 +55,8 @@ deleted because the code is here. Right when:
 ### Tactic B — Write a detailed design
 
 Write design documentation (likely under `docs/research/` or
-`docs/DECISIONS/` or `docs/drafts/`) that captures the WHAT
-+ WHY + HOW of the laptop-only feature in enough detail that
+`docs/DECISIONS/` or `docs/drafts/`) that captures the WHAT,
+WHY, and HOW of the laptop-only feature in enough detail that
 a future maintainer reading ONLY the design — without reading
 the original source — could rebuild or extend the concept.
 The reference is deleted because the design is here. Right

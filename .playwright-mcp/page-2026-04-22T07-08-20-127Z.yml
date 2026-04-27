@@ -1,0 +1,440 @@
+- generic [ref=e2]:
+  - generic:
+    - img [ref=e3]:
+      - generic:
+        - generic:
+          - img
+        - generic:
+          - img
+    - img [ref=e4]
+  - iframe [ref=e5]:
+    
+  - generic [ref=e6]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - img "Proton" [ref=e12]
+        - generic [ref=e17]:
+          - navigation [ref=e19]:
+            - tablist [ref=e20]:
+              - tab "For individuals" [selected] [ref=e21] [cursor=pointer]:
+                - generic [ref=e22]: For individuals
+              - tab "For businesses" [ref=e23] [cursor=pointer]:
+                - generic [ref=e24]: For businesses
+              - listitem [ref=e25]
+          - tabpanel "For individuals"
+        - button "English" [ref=e26] [cursor=pointer]:
+          - img [ref=e27]
+          - generic [ref=e29]: English
+          - img [ref=e30]
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "An encrypted email service that puts your privacy first" [level=1] [ref=e35]
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - img [ref=e39]
+            - generic [ref=e41]: End-to-end encrypted
+          - generic [ref=e43]:
+            - img [ref=e45]
+            - generic [ref=e47]: Open source
+          - generic [ref=e51]: Protected by Swiss privacy laws
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - generic [ref=e55]:
+              - generic "Step 1" [ref=e57]: "1"
+              - heading "Select your plan" [level=2] [ref=e58]
+            - generic [ref=e60]:
+              - 'button "Billing cycle: 1 month" [ref=e61] [cursor=pointer]': 1 month
+              - 'button "Billing cycle: 12 months" [pressed]': 12 months
+          - generic [ref=e62]:
+            - generic [ref=e63]:
+              - generic [ref=e64]:
+                - generic [ref=e65]: Loading
+                - button "Free Up to 1 GB Mail storage 1 email address" [disabled]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - strong: Free
+                      - generic:
+                        - list:
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Up to 1 GB Mail storage
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: 1 email address
+              - generic [ref=e66]:
+                - generic [ref=e67]: Loading
+                - button "Mail Plus Proton Mail Mail Proton Calendar Calendar 15 GB storage 1 custom email domain 10 email addresses/aliases Unlimited folders, labels, and filters Unlimited messages per day Priority support Proton Calendar" [disabled]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - strong: Mail Plus
+                      - generic:
+                        - list:
+                          - listitem "Proton Mail":
+                            - generic:
+                              - img "Proton Mail"
+                            - generic: Mail
+                          - listitem "Proton Calendar":
+                            - generic:
+                              - img "Proton Calendar"
+                            - generic: Calendar
+                        - list:
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic:
+                                  - generic: 15 GB storage
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: 1 custom email domain
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: 10 email addresses/aliases
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Unlimited folders, labels, and filters
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Unlimited messages per day
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Priority support
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Proton Calendar
+              - generic [ref=e68]:
+                - generic [ref=e69]: Loading
+                - button "Recommended Proton Unlimited Proton Mail Mail Proton Calendar Calendar Proton Drive Drive Proton VPN VPN Proton Pass Pass Proton Docs Docs 500 GB storage 3 custom email domains All premium features from Proton Mail, Pass, VPN, Drive, and Calendar 15 email addresses/aliases Unlimited folders, labels, and filters Unlimited messages per day Priority support" [disabled] [pressed]:
+                  - generic: Recommended
+                  - generic:
+                    - generic:
+                      - generic:
+                        - strong: Proton Unlimited
+                      - generic:
+                        - list:
+                          - listitem "Proton Mail":
+                            - generic:
+                              - img "Proton Mail"
+                            - generic: Mail
+                          - listitem "Proton Calendar":
+                            - generic:
+                              - img "Proton Calendar"
+                            - generic: Calendar
+                          - listitem "Proton Drive":
+                            - generic:
+                              - img "Proton Drive"
+                            - generic: Drive
+                          - listitem "Proton VPN":
+                            - generic:
+                              - img "Proton VPN"
+                            - generic: VPN
+                          - listitem "Proton Pass":
+                            - generic:
+                              - img "Proton Pass"
+                            - generic: Pass
+                          - listitem "Proton Docs":
+                            - generic:
+                              - img "Proton Docs"
+                            - generic: Docs
+                        - list:
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic:
+                                  - generic: 500 GB storage
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: 3 custom email domains
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: All premium features from Proton Mail, Pass, VPN, Drive, and Calendar
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: 15 email addresses/aliases
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Unlimited folders, labels, and filters
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Unlimited messages per day
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Priority support
+              - generic [ref=e70]:
+                - generic [ref=e71]: Loading
+                - button "Proton Family Proton Mail Mail Proton Calendar Calendar Proton Drive Drive Proton VPN VPN Proton Pass Pass Proton Docs Docs 3 TB storage 3 custom email domains Up to 6 users All premium features from Proton Mail, Pass, VPN, Drive, and Calendar 90 email addresses/aliases Unlimited folders, labels, and filters Unlimited messages per day Priority support" [disabled]:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - strong: Proton Family
+                      - generic:
+                        - list:
+                          - listitem "Proton Mail":
+                            - generic:
+                              - img "Proton Mail"
+                            - generic: Mail
+                          - listitem "Proton Calendar":
+                            - generic:
+                              - img "Proton Calendar"
+                            - generic: Calendar
+                          - listitem "Proton Drive":
+                            - generic:
+                              - img "Proton Drive"
+                            - generic: Drive
+                          - listitem "Proton VPN":
+                            - generic:
+                              - img "Proton VPN"
+                            - generic: VPN
+                          - listitem "Proton Pass":
+                            - generic:
+                              - img "Proton Pass"
+                            - generic: Pass
+                          - listitem "Proton Docs":
+                            - generic:
+                              - img "Proton Docs"
+                            - generic: Docs
+                        - list:
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic:
+                                  - generic: 3 TB storage
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: 3 custom email domains
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Up to 6 users
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: All premium features from Proton Mail, Pass, VPN, Drive, and Calendar
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: 90 email addresses/aliases
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Unlimited folders, labels, and filters
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Unlimited messages per day
+                          - listitem:
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - img
+                              - generic:
+                                - generic: Priority support
+            - button "CHF" [ref=e74] [cursor=pointer]:
+              - generic: CHF
+              - img
+            - generic [ref=e76]:
+              - img [ref=e77]
+              - text: 30-day money-back guarantee
+        - generic [ref=e79]:
+          - generic [ref=e81]:
+            - generic "Step 2" [ref=e83]: "2"
+            - heading "Create your Proton account" [level=2] [ref=e84]
+          - generic [ref=e86]:
+            - generic [ref=e88]:
+              - generic [ref=e89]:
+                - generic [ref=e92]:
+                  - generic [ref=e94] [cursor=pointer]: Username
+                  - generic [ref=e96]:
+                    - textbox "Username" [ref=e98]
+                    - button "proton.me" [ref=e100] [cursor=pointer]:
+                      - generic: "@proton.me"
+                      - img
+                - generic [ref=e102]:
+                  - button "Use your current email instead" [ref=e103] [cursor=pointer]
+                  - 'button "More info: You will need a Proton address to use Proton Mail and Proton Calendar" [ref=e104] [cursor=pointer]':
+                    - img [ref=e105]
+                    - generic [ref=e107]: "More info: You will need a Proton address to use Proton Mail and Proton Calendar"
+                - generic [ref=e108]:
+                  - generic [ref=e110] [cursor=pointer]: Password
+                  - generic [ref=e112]:
+                    - textbox "Password" [ref=e114]
+                    - button "Reveal password" [ref=e116] [cursor=pointer]:
+                      - img [ref=e117]
+              - generic [ref=e121]:
+                - text: Already have an account?
+                - button "Sign in" [ref=e122] [cursor=pointer]
+            - generic [ref=e124]:
+              - generic [ref=e125]: Proton benefits
+              - list [ref=e126]:
+                - listitem [ref=e127]:
+                  - img [ref=e129]
+                  - generic [ref=e131]: End-to-end encryption
+                - listitem [ref=e132]:
+                  - img [ref=e134]
+                  - generic [ref=e136]: Protected by Swiss privacy laws
+                - listitem [ref=e137]:
+                  - img [ref=e139]
+                  - generic [ref=e141]: Open source and audited
+                - listitem [ref=e142]:
+                  - img [ref=e144]
+                  - generic [ref=e146]: Works on all devices
+                - listitem [ref=e147]:
+                  - img [ref=e149]
+                  - generic [ref=e151]: Integrated email, calendar, file storage, password manager, and VPN
+              - generic [ref=e152]: Join over 100 million people who have chosen Proton to stay safe online
+        - generic [ref=e153]:
+          - generic [ref=e155]:
+            - generic "Step 3" [ref=e157]: "3"
+            - heading "Checkout" [level=2] [ref=e158]
+          - generic [ref=e160]:
+            - generic [ref=e163]:
+              - img [ref=e164]
+              - generic [ref=e167]: Loading
+            - generic [ref=e169]:
+              - generic [ref=e170]: Summary
+              - generic [ref=e171]:
+                - generic "Proton Unlimited" [ref=e172]:
+                  - img "Proton Unlimited" [ref=e174]
+                - generic [ref=e175]:
+                  - generic [ref=e177]: Proton Unlimited
+                  - generic [ref=e181]: 1 year
+              - list [ref=e182]:
+                - listitem [ref=e183]:
+                  - generic [ref=e184]:
+                    - img [ref=e187]
+                    - generic [ref=e191]: 500 GB storage
+                - listitem [ref=e192]:
+                  - generic [ref=e193]:
+                    - img [ref=e196]
+                    - generic [ref=e199]: Proton Mail
+                - listitem [ref=e200]:
+                  - generic [ref=e201]:
+                    - img [ref=e204]
+                    - generic [ref=e207]: Proton Calendar
+                - listitem [ref=e208]:
+                  - generic [ref=e209]:
+                    - img [ref=e212]
+                    - generic [ref=e215]: Proton Drive
+                - listitem [ref=e216]:
+                  - generic [ref=e217]:
+                    - img [ref=e220]
+                    - generic [ref=e223]: Proton VPN
+                - listitem [ref=e224]:
+                  - generic [ref=e225]:
+                    - img [ref=e228]
+                    - generic [ref=e231]: Proton Pass
+                - listitem [ref=e232]:
+                  - generic [ref=e233]:
+                    - img [ref=e236]
+                    - generic [ref=e239]: Proton Wallet
+              - generic [ref=e240]:
+                - generic [ref=e242]: Total for 12 months
+                - generic [ref=e245]: Loading
+      - contentinfo [ref=e248]:
+        - generic [ref=e249]:
+          - text: "*Subscription auto-renews every 12 months. Your next billing date is April 22nd, 2027. You can cancel at any time. Renewal pricing subject to change according to"
+          - link "terms and conditions" [ref=e250] [cursor=pointer]:
+            - /url: https://proton.me/legal/terms
+          - text: .
+        - generic [ref=e251]:
+          - generic [ref=e252]:
+            - generic [ref=e253]:
+              - generic "Proton Mail" [ref=e254]:
+                - img "Proton Mail" [ref=e255]
+              - generic "Proton Calendar" [ref=e259]:
+                - img "Proton Calendar" [ref=e260]
+              - generic "Proton Drive" [ref=e265]:
+                - img "Proton Drive" [ref=e266]
+              - generic "Proton VPN" [ref=e269]:
+                - img "Proton VPN" [ref=e270]
+              - generic "Proton Pass" [ref=e273]:
+                - img "Proton Pass" [ref=e274]
+              - generic "Proton Wallet" [ref=e278]:
+                - img "Proton Wallet" [ref=e279]
+            - generic [ref=e287]: Proton. Privacy by default.
+          - button "Need help?" [ref=e288] [cursor=pointer]

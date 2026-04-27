@@ -1,0 +1,314 @@
+- generic [ref=e2]:
+  - generic:
+    - img [ref=e3]:
+      - generic:
+        - generic:
+          - img
+        - generic:
+          - img
+    - img [ref=e4]
+  - iframe [ref=e5]:
+    
+  - generic [ref=e6]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - img "Proton" [ref=e12]
+        - generic [ref=e17]:
+          - navigation [ref=e19]:
+            - tablist [ref=e20]:
+              - tab "For individuals" [selected] [ref=e21] [cursor=pointer]:
+                - generic [ref=e22]: For individuals
+              - tab "For businesses" [ref=e23] [cursor=pointer]:
+                - generic [ref=e24]: For businesses
+              - listitem [ref=e25]
+          - tabpanel "For individuals"
+        - button "English" [ref=e26] [cursor=pointer]:
+          - img [ref=e27]
+          - generic [ref=e29]: English
+          - img [ref=e30]
+    - generic [ref=e32]:
+      - generic [ref=e33]:
+        - heading "An encrypted email service that puts your privacy first" [level=1] [ref=e35]
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - img [ref=e39]
+            - generic [ref=e41]: End-to-end encrypted
+          - generic [ref=e43]:
+            - img [ref=e45]
+            - generic [ref=e47]: Open source
+          - generic [ref=e51]: Protected by Swiss privacy laws
+        - generic [ref=e53]:
+          - generic [ref=e54]:
+            - generic [ref=e55]:
+              - generic "Step 1" [ref=e57]: "1"
+              - heading "Select your plan" [level=2] [ref=e58]
+            - generic [ref=e60]:
+              - 'button "Billing cycle: 1 month" [ref=e61] [cursor=pointer]': 1 month
+              - 'button "Billing cycle: 12 months" [pressed]': 12 months
+          - generic [ref=e62]:
+            - generic [ref=e63]:
+              - button "Free US$0 Free forever Up to 1 GB Mail storage 1 email address" [active] [pressed] [ref=e294] [cursor=pointer]:
+                - generic [ref=e297]:
+                  - generic [ref=e298]:
+                    - strong [ref=e299]: Free
+                    - img [ref=e736]
+                  - generic [ref=e301]:
+                    - generic [ref=e303]: US$0
+                    - generic [ref=e304]: Free forever
+                  - list [ref=e306]:
+                    - listitem [ref=e307]:
+                      - generic [ref=e308]:
+                        - img [ref=e311]
+                        - generic [ref=e314]: Up to 1 GB Mail storage
+                    - listitem [ref=e315]:
+                      - generic [ref=e316]:
+                        - img [ref=e319]
+                        - generic [ref=e322]: 1 email address
+              - button "Mail Plus US$3.99 − 20% US$4.99 per month, billed annually Proton Mail Mail Proton Calendar Calendar 15 GB storage 1 custom email domain 10 email addresses/aliases Unlimited folders, labels, and filters Unlimited messages per day Priority support Proton Calendar" [ref=e323] [cursor=pointer]:
+                - generic [ref=e326]:
+                  - strong [ref=e328]: Mail Plus
+                  - generic [ref=e330]:
+                    - generic [ref=e331]:
+                      - generic [ref=e332]: US$3.99
+                      - generic [ref=e333]:
+                        - generic [ref=e334]: − 20%
+                        - generic [ref=e335]: US$4.99
+                    - generic [ref=e336]: per month, billed annually
+                  - generic [ref=e337]:
+                    - list [ref=e338]:
+                      - listitem "Proton Mail" [ref=e339]:
+                        - img "Proton Mail" [ref=e341]
+                        - generic [ref=e345]: Mail
+                      - listitem "Proton Calendar" [ref=e346]:
+                        - img "Proton Calendar" [ref=e348]
+                        - generic [ref=e353]: Calendar
+                    - list [ref=e354]:
+                      - listitem [ref=e355]:
+                        - generic [ref=e356]:
+                          - img [ref=e359]
+                          - generic [ref=e363]: 15 GB storage
+                      - listitem [ref=e364]:
+                        - generic [ref=e365]:
+                          - img [ref=e368]
+                          - generic [ref=e371]: 1 custom email domain
+                      - listitem [ref=e372]:
+                        - generic [ref=e373]:
+                          - img [ref=e376]
+                          - generic [ref=e379]: 10 email addresses/aliases
+                      - listitem [ref=e380]:
+                        - generic [ref=e381]:
+                          - img [ref=e384]
+                          - generic [ref=e387]: Unlimited folders, labels, and filters
+                      - listitem [ref=e388]:
+                        - generic [ref=e389]:
+                          - img [ref=e392]
+                          - generic [ref=e395]: Unlimited messages per day
+                      - listitem [ref=e396]:
+                        - generic [ref=e397]:
+                          - img [ref=e400]
+                          - generic [ref=e403]: Priority support
+                      - listitem [ref=e404]:
+                        - generic [ref=e405]:
+                          - img [ref=e408]
+                          - generic [ref=e411]: Proton Calendar
+              - button "Recommended Proton Unlimited US$9.99 − 23% US$12.99 per month, billed annually Proton Mail Mail Proton Calendar Calendar Proton Drive Drive Proton VPN VPN Proton Pass Pass Proton Docs Docs 500 GB storage 3 custom email domains All premium features from Proton Mail, Pass, VPN, Drive, and Calendar 15 email addresses/aliases Unlimited folders, labels, and filters Unlimited messages per day Priority support" [ref=e412] [cursor=pointer]:
+                - generic [ref=e413]: Recommended
+                - generic [ref=e415]:
+                  - strong [ref=e417]: Proton Unlimited
+                  - generic [ref=e421]:
+                    - generic [ref=e422]:
+                      - generic [ref=e423]: US$9.99
+                      - generic [ref=e424]:
+                        - generic [ref=e425]: − 23%
+                        - generic [ref=e426]: US$12.99
+                    - generic [ref=e427]: per month, billed annually
+                  - generic [ref=e428]:
+                    - list [ref=e429]:
+                      - listitem "Proton Mail" [ref=e430]:
+                        - img "Proton Mail" [ref=e432]
+                        - generic [ref=e436]: Mail
+                      - listitem "Proton Calendar" [ref=e437]:
+                        - img "Proton Calendar" [ref=e439]
+                        - generic [ref=e444]: Calendar
+                      - listitem "Proton Drive" [ref=e445]:
+                        - img "Proton Drive" [ref=e447]
+                        - generic [ref=e450]: Drive
+                      - listitem "Proton VPN" [ref=e451]:
+                        - img "Proton VPN" [ref=e453]
+                        - generic [ref=e456]: VPN
+                      - listitem "Proton Pass" [ref=e457]:
+                        - img "Proton Pass" [ref=e459]
+                        - generic [ref=e463]: Pass
+                      - listitem "Proton Docs" [ref=e464]:
+                        - img "Proton Docs" [ref=e466]
+                        - generic [ref=e473]: Docs
+                    - list [ref=e474]:
+                      - listitem [ref=e475]:
+                        - generic [ref=e476]:
+                          - img [ref=e479]
+                          - generic [ref=e483]: 500 GB storage
+                      - listitem [ref=e484]:
+                        - generic [ref=e485]:
+                          - img [ref=e488]
+                          - generic [ref=e491]: 3 custom email domains
+                      - listitem [ref=e492]:
+                        - generic [ref=e493]:
+                          - img [ref=e496]
+                          - generic [ref=e499]: All premium features from Proton Mail, Pass, VPN, Drive, and Calendar
+                      - listitem [ref=e500]:
+                        - generic [ref=e501]:
+                          - img [ref=e504]
+                          - generic [ref=e507]: 15 email addresses/aliases
+                      - listitem [ref=e508]:
+                        - generic [ref=e509]:
+                          - img [ref=e512]
+                          - generic [ref=e515]: Unlimited folders, labels, and filters
+                      - listitem [ref=e516]:
+                        - generic [ref=e517]:
+                          - img [ref=e520]
+                          - generic [ref=e523]: Unlimited messages per day
+                      - listitem [ref=e524]:
+                        - generic [ref=e525]:
+                          - img [ref=e528]
+                          - generic [ref=e531]: Priority support
+              - button "Proton Family US$23.99 − 20% US$29.99 per month, billed annually Proton Mail Mail Proton Calendar Calendar Proton Drive Drive Proton VPN VPN Proton Pass Pass Proton Docs Docs 3 TB storage 3 custom email domains Up to 6 users All premium features from Proton Mail, Pass, VPN, Drive, and Calendar 90 email addresses/aliases Unlimited folders, labels, and filters Unlimited messages per day Priority support" [ref=e532] [cursor=pointer]:
+                - generic [ref=e535]:
+                  - strong [ref=e537]: Proton Family
+                  - generic [ref=e539]:
+                    - generic [ref=e540]:
+                      - generic [ref=e541]: US$23.99
+                      - generic [ref=e542]:
+                        - generic [ref=e543]: − 20%
+                        - generic [ref=e544]: US$29.99
+                    - generic [ref=e545]: per month, billed annually
+                  - generic [ref=e546]:
+                    - list [ref=e547]:
+                      - listitem "Proton Mail" [ref=e548]:
+                        - img "Proton Mail" [ref=e550]
+                        - generic [ref=e554]: Mail
+                      - listitem "Proton Calendar" [ref=e555]:
+                        - img "Proton Calendar" [ref=e557]
+                        - generic [ref=e562]: Calendar
+                      - listitem "Proton Drive" [ref=e563]:
+                        - img "Proton Drive" [ref=e565]
+                        - generic [ref=e568]: Drive
+                      - listitem "Proton VPN" [ref=e569]:
+                        - img "Proton VPN" [ref=e571]
+                        - generic [ref=e574]: VPN
+                      - listitem "Proton Pass" [ref=e575]:
+                        - img "Proton Pass" [ref=e577]
+                        - generic [ref=e581]: Pass
+                      - listitem "Proton Docs" [ref=e582]:
+                        - img "Proton Docs" [ref=e584]
+                        - generic [ref=e591]: Docs
+                    - list [ref=e592]:
+                      - listitem [ref=e593]:
+                        - generic [ref=e594]:
+                          - img [ref=e597]
+                          - generic [ref=e601]: 3 TB storage
+                      - listitem [ref=e602]:
+                        - generic [ref=e603]:
+                          - img [ref=e606]
+                          - generic [ref=e609]: 3 custom email domains
+                      - listitem [ref=e610]:
+                        - generic [ref=e611]:
+                          - img [ref=e614]
+                          - generic [ref=e617]: Up to 6 users
+                      - listitem [ref=e618]:
+                        - generic [ref=e619]:
+                          - img [ref=e622]
+                          - generic [ref=e625]: All premium features from Proton Mail, Pass, VPN, Drive, and Calendar
+                      - listitem [ref=e626]:
+                        - generic [ref=e627]:
+                          - img [ref=e630]
+                          - generic [ref=e633]: 90 email addresses/aliases
+                      - listitem [ref=e634]:
+                        - generic [ref=e635]:
+                          - img [ref=e638]
+                          - generic [ref=e641]: Unlimited folders, labels, and filters
+                      - listitem [ref=e642]:
+                        - generic [ref=e643]:
+                          - img [ref=e646]
+                          - generic [ref=e649]: Unlimited messages per day
+                      - listitem [ref=e650]:
+                        - generic [ref=e651]:
+                          - img [ref=e654]
+                          - generic [ref=e657]: Priority support
+            - button "USD" [ref=e658] [cursor=pointer]:
+              - generic: USD
+              - img
+        - generic [ref=e79]:
+          - generic [ref=e81]:
+            - generic "Step 2" [ref=e83]: "2"
+            - heading "Create your Proton account" [level=2] [ref=e84]
+          - generic [ref=e86]:
+            - generic [ref=e88]:
+              - generic [ref=e89]:
+                - iframe [ref=e659]:
+                  - generic [ref=f11e4]:
+                    - generic [ref=f11e6] [cursor=pointer]: Username
+                    - generic [ref=f11e8]:
+                      - textbox "Username" [ref=f11e10]
+                      - button "proton.me" [ref=f11e12] [cursor=pointer]:
+                        - generic: "@proton.me"
+                        - img
+                - generic [ref=e102]:
+                  - button "Use your current email instead" [ref=e103] [cursor=pointer]
+                  - 'button "More info: You will need a Proton address to use Proton Mail and Proton Calendar" [ref=e104] [cursor=pointer]':
+                    - img [ref=e105]
+                    - generic [ref=e107]: "More info: You will need a Proton address to use Proton Mail and Proton Calendar"
+                - generic [ref=e660]:
+                  - generic [ref=e662] [cursor=pointer]: Password
+                  - generic [ref=e664]:
+                    - textbox "Password" [ref=e666]
+                    - button "Reveal password" [ref=e668] [cursor=pointer]:
+                      - img [ref=e669]
+              - button "Start using Proton Mail now" [ref=e739] [cursor=pointer]
+              - generic [ref=e121]:
+                - text: Already have an account?
+                - button "Sign in" [ref=e122] [cursor=pointer]
+              - generic [ref=e740]:
+                - text: By continuing, you agree to our
+                - link "terms and conditions" [ref=e741] [cursor=pointer]:
+                  - /url: https://proton.me/legal/terms
+                - text: and
+                - link "privacy policy" [ref=e742] [cursor=pointer]:
+                  - /url: https://proton.me/legal/privacy
+                - text: .
+            - generic [ref=e124]:
+              - generic [ref=e125]: "The only email service with:"
+              - list [ref=e126]:
+                - listitem [ref=e743]:
+                  - img [ref=e745]
+                  - generic [ref=e747]: Built-in encryption
+                - listitem [ref=e132]:
+                  - img [ref=e134]
+                  - generic [ref=e136]: Protected by Swiss privacy laws
+                - listitem [ref=e748]:
+                  - img [ref=e750]
+                  - generic [ref=e752]: Email aliases
+                - listitem [ref=e753]:
+                  - img [ref=e755]
+                  - generic [ref=e757]: Advanced security features
+                - listitem [ref=e758]:
+                  - img [ref=e760]
+                  - generic [ref=e762]: Calendar, password manager, file storage, and VPN included
+              - generic [ref=e152]: Join over 100 million people who have chosen Proton to stay safe online
+      - contentinfo [ref=e248]:
+        - generic [ref=e251]:
+          - generic [ref=e252]:
+            - generic [ref=e253]:
+              - generic "Proton Mail" [ref=e254]:
+                - img "Proton Mail" [ref=e255]
+              - generic "Proton Calendar" [ref=e259]:
+                - img "Proton Calendar" [ref=e260]
+              - generic "Proton Drive" [ref=e265]:
+                - img "Proton Drive" [ref=e266]
+              - generic "Proton VPN" [ref=e269]:
+                - img "Proton VPN" [ref=e270]
+              - generic "Proton Pass" [ref=e273]:
+                - img "Proton Pass" [ref=e274]
+              - generic "Proton Wallet" [ref=e278]:
+                - img "Proton Wallet" [ref=e279]
+            - generic [ref=e287]: Proton. Privacy by default.
+          - button "Need help?" [ref=e288] [cursor=pointer]

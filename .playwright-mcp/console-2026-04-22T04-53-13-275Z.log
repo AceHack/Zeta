@@ -1,0 +1,11 @@
+[    2794ms] [WARNING] [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#display_moment and https://developers.google.com/identity/gsi/web/guides/fedcm-migration?s=dc#skipped_moment @ https://accounts.google.com/gsi/client:84
+[    2811ms] [ERROR] Not signed in with the identity provider. @ https://chatgpt.com/:0
+[    4110ms] [ERROR] [GSI_LOGGER]: FedCM get() rejects with AbortError: signal is aborted without reason @ https://chatgpt.com/cdn/assets/2340486e-kq3iqmq65mbvf7ni.js:62
+[    4436ms] [WARNING] [passkey][no-auth-conditional-ui] starting authentication flow @ https://chatgpt.com/cdn/assets/1a7ebd5f-i54y6qpgh2s4mw41.js:1
+[    9100ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ https://appleid.apple.com/auth/authorize?response_type=code&client_id=com.openai.chat.sia&redirect_uri=https%3A%2F%2Fauth.openai.com%2Fapi%2Faccounts%2Fcallback%2Fapple&scope=openid+name+email&state=3c28b6ea-9242-4ee0-91e6-21fa7745a479&audience=com.openai.chat.sia&nonce=YC7QuK8iuTCZ7LHvaWIx&response_mode=form_post:0
+[   26430ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://appleid.apple.com/appleauth/auth/oauth/authorize:0
+[   27859ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://appleid.apple.com/appleauth/auth/oauth/authorize:0
+[   28533ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://appleid.apple.com/appleauth/auth/oauth/authorize:0
+[   28834ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://appleid.apple.com/appleauth/auth/oauth/authorize:0
+[   29037ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://appleid.apple.com/appleauth/auth/oauth/authorize:0
+[   29312ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ https://appleid.apple.com/appleauth/auth/oauth/authorize:0
