@@ -84,17 +84,25 @@ These are the knobs this repo actually uses:
   `.claude/skills/claude-md-steward/`.
   **Fast-path on wake:** read any
   `CURRENT-<maintainer>.md` files (one per human or
-  external-AI maintainer; filename uses a role-ref
-  placeholder per the "No name attribution in code,
-  docs, or skills" rule in
-  `docs/AGENT-BEST-PRACTICES.md`, not a real name) in
+  external-AI maintainer) in
   `~/.claude/projects/<slug>/memory/` *before* the
-  raw `feedback_*.md` / `project_*.md` log. CURRENT
-  files are the distilled currently-in-force
-  projection per maintainer; they win on conflict
-  with older raw memories. Individual CURRENT files
-  live per-user (not in-repo) — same per-user split
-  as the rest of `~/.claude/projects/<slug>/memory/`.
+  raw `feedback_*.md` / `project_*.md` log. The
+  filename takes a real name in two cases — the
+  first-party human maintainer on his own user-scope
+  (`CURRENT-aaron.md`; per Otto-231 a content-creator
+  is consented-by-creation on his own substrate)
+  and a named-agent role-ref
+  (`CURRENT-amara.md`; persona names like Amara, Otto,
+  Soraya, etc. ARE the factory role-refs per the
+  named-agents-get-attribution carve-out from
+  `docs/AGENT-BEST-PRACTICES.md` BP-24). Third-party
+  human maintainers get a role-ref-only filename per
+  the BP-24 default. CURRENT files are the distilled
+  currently-in-force projection per maintainer; they
+  win on conflict with older raw memories. Individual
+  CURRENT files live per-user (not in-repo) — same
+  per-user split as the rest of
+  `~/.claude/projects/<slug>/memory/`.
   **Same-tick update discipline:** when a new memory
   lands that updates a rule in a CURRENT file, edit
   CURRENT in the same tick. Skipping is

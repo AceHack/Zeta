@@ -192,11 +192,20 @@ jobs:
             # Edit the existing comment via the REST API. `gh pr
             # comment` does not yet support --edit by id directly,
             # so fall through to the api wrapper.
-            gh api \
-              --method PATCH \
-              -H "Accept: application/vnd.github+json" \
-              "/repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" \
-              -f body="$(cat "$BODY_FILE")" >/dev/null
+            #
+            # Per Copilot review on PR #26: pass the body via stdin
+            # (jq-built JSON payload) rather than command-substituting
+            # the file contents into a -f flag. The substituted form
+            # risks ARG_MAX (~2 MB on Linux) for large diffs and is
+            # brittle around shell escaping. The stdin form streams
+            # the body and isn't subject to argv size limits.
+            jq -n --rawfile body "$BODY_FILE" '{body: $body}' \
+              | gh api \
+                  --method PATCH \
+                  -H "Accept: application/vnd.github+json" \
+                  --input - \
+                  "/repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" \
+                  >/dev/null
             echo "updated existing resume-diff comment ($existing_id)"
           else
             gh pr comment "$PR_NUMBER" --body-file "$BODY_FILE"

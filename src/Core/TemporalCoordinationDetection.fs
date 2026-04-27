@@ -51,6 +51,41 @@ module TemporalCoordinationDetection =
     /// `xs[i]`; negative `tau` aligns `ys[i]` with `xs[i - tau]`.
     /// A detector asking "does `ys` lead `xs` by `k` steps?" passes
     /// `tau = k`.
+    /// Internal: same algorithm as `crossCorrelation` but takes
+    /// already-materialized arrays. Avoids `Seq.toArray` re-walks
+    /// when called in a tight loop (e.g. by `crossCorrelationProfile`).
+    /// Per Codex review on PR #26 (TemporalCoordinationDetection.fs:100):
+    /// the public API materializes once, then this helper is used
+    /// for every lag.
+    let private crossCorrelationArrays (xArr: double[]) (yArr: double[]) (tau: int) : double option =
+        let startX, startY =
+            if tau >= 0 then 0, tau
+            else -tau, 0
+        let overlap = min (xArr.Length - startX) (yArr.Length - startY)
+        if overlap < 2 then None
+        else
+            let mutable meanX = 0.0
+            let mutable meanY = 0.0
+            for i in 0 .. overlap - 1 do
+                meanX <- meanX + xArr.[startX + i]
+                meanY <- meanY + yArr.[startY + i]
+            let n = double overlap
+            meanX <- meanX / n
+            meanY <- meanY / n
+            let mutable cov = 0.0
+            let mutable varX = 0.0
+            let mutable varY = 0.0
+            for i in 0 .. overlap - 1 do
+                let dx = xArr.[startX + i] - meanX
+                let dy = yArr.[startY + i] - meanY
+                cov <- cov + dx * dy
+                varX <- varX + dx * dx
+                varY <- varY + dy * dy
+            if varX = 0.0 || varY = 0.0 then None
+            else
+                let r = cov / sqrt (varX * varY)
+                if Double.IsFinite r then Some r else None
+
     let crossCorrelation (xs: double seq) (ys: double seq) (tau: int) : double option =
         let xArr = Seq.toArray xs
         let yArr = Seq.toArray ys
@@ -96,8 +131,13 @@ module TemporalCoordinationDetection =
     let crossCorrelationProfile (xs: double seq) (ys: double seq) (maxLag: int) : (int * double option) array =
         if maxLag < 0 then [||]
         else
+            // Materialize once, then loop with crossCorrelationArrays
+            // so we don't re-walk the seq for every lag (Codex review
+            // PR #26: O(n*lags) → O(n + lags*overlap)).
+            let xArr = Seq.toArray xs
+            let yArr = Seq.toArray ys
             [| for tau in -maxLag .. maxLag ->
-                   tau, crossCorrelation xs ys tau |]
+                   tau, crossCorrelationArrays xArr yArr tau |]
 
     /// Epsilon floor for the magnitude of the phase-difference
     /// mean-vector. Used by `meanPhaseOffset` and

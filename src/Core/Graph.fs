@@ -326,8 +326,20 @@ module Graph =
             // common case), shift ≥ 0 and the result equals what
             // plain magnitude-iteration would have given; for signed
             // graphs, this corrects the sign-of-eigenvalue bug.
+            //
+            // Per Codex review on PR #26 (Graph.fs:315): if the
+            // symmetrized adjacency is the zero matrix (shift = 0
+            // and degenerate hit immediately), the largest
+            // eigenvalue is well-defined as 0 — not None. Return
+            // Some 0.0 rather than None for that case so callers
+            // see the actual eigenvalue rather than misreading
+            // "no answer" as "score unavailable". Other degenerate
+            // paths (seed in nullspace of A + ρI, ran out of
+            // iterations) still return None, since those represent
+            // genuine "could not compute" rather than "answer is 0".
             if converged then Some (lambda - shift)
-            else None  // power-iteration ran out of budget OR hit zero-norm iterate
+            elif degenerate && shift = 0.0 then Some 0.0
+            else None  // power-iteration ran out of budget OR hit zero-norm iterate on shifted matrix
 
     /// `map f g` — relabel nodes via `f`. Wraps `ZSet.map` with
     /// projection over the node-tuple. Operator-algebra
@@ -800,7 +812,15 @@ module StakeCovariance =
                 for i in 0 .. windowSize - 1 do
                     cov <- cov + (deltasA.[start + i] - meanA) *
                                  (deltasB.[start + i] - meanB)
-                Some (cov / double windowSize)
+                let result = cov / double windowSize
+                // Per Codex review on PR #26 (Graph.fs:803): if any
+                // input is non-finite (NaN / ±Infinity), the running
+                // sum and final ratio propagate that non-finiteness.
+                // Returning Some NaN corrupts downstream
+                // coordinationRiskScore arithmetic. Same NaN-guard
+                // pattern as Otto-358's Pearson + circular-mean fix
+                // and the RobustStats.robustZScore guard.
+                if System.Double.IsFinite result then Some result else None
 
     /// 2nd-difference acceleration `A_ij(t) = C(t) - 2·C(t-1) + C(t-2)`
     /// given three consecutive covariance values. Returns None when
