@@ -50,8 +50,9 @@
 #     (read-only inheritance from workflow permissions). No
 #     untrusted github.event.* fields are referenced anywhere
 #     in this workflow.
-#   - timeout-minutes set even though the runner-class cap (15 min)
-#     is the binding constraint; defense in depth.
+#   - timeout-minutes set to 14 — one minute under the 15-minute
+#     runner-class hard cap so the job fails gracefully (with a
+#     proper Actions log) before the platform kills it.
 #
 # References:
 #   - 1-vCPU runner availability: https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
@@ -73,14 +74,20 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 concurrency:
-  group: low-memory
+  # Per-commit concurrency group: every push to main gets its own slot
+  # so no run is silently replaced by a newer one (per Codex P2 +
+  # Copilot P1 review on LFG #644). On schedule/workflow_dispatch the
+  # SHA is whatever main is pointing at when the run starts; two such
+  # runs against the same SHA queue (cancel-in-progress: false) — the
+  # right behaviour, since the second run has nothing new to check.
+  group: low-memory-${{ github.sha }}
   cancel-in-progress: false
 
 jobs:
   build-and-test-low-memory:
     name: build-and-test (ubuntu-slim, low-memory)
     runs-on: ubuntu-slim
-    timeout-minutes: 30   # runner-class cap is 15 min; this is defense-in-depth
+    timeout-minutes: 14   # fail gracefully before the 15-minute runner-class hard cap
 
     steps:
       - name: Checkout
