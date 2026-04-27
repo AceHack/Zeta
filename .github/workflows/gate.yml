@@ -10,8 +10,9 @@
 #     and-test matrix: macos-26, ubuntu-24.04, ubuntu-24.04-arm.
 #     The ubuntu-slim low-memory verification leg moved to
 #     `.github/workflows/low-memory.yml` per maintainer 2026-04-27
-#     — too slow for per-PR gating; runs on every merge to main +
-#     nightly schedule.
+#     — too slow for per-PR gating; runs on every push to main +
+#     nightly schedule (in practice every merge, since direct
+#     pushes are blocked by branch protection).
 #     Lint jobs pinned to ubuntu-22.04 (short-lived, OS-independent
 #     work). Windows legs deferred to peer-harness milestone.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;

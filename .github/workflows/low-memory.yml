@@ -1,9 +1,11 @@
 # Low-memory verification (ubuntu-slim).
 #
 # Runs the full `dotnet build` + `dotnet test` workload on the
-# 1-vCPU / 5GB-RAM `ubuntu-slim` runner class on every merge to
-# main + nightly. Goal: detect drift that would break Zeta on
-# resource-constrained environments before contributors hit it.
+# 1-vCPU / 5GB-RAM `ubuntu-slim` runner class on every push to
+# main (in practice every merge — direct pushes are blocked by
+# branch protection) + nightly. Goal: detect drift that would
+# break Zeta on resource-constrained environments before
+# contributors hit it.
 #
 # Filename history: this file was originally `nightly-low-memory.yml`
 # when its only trigger was the 06:00 UTC schedule. After the
