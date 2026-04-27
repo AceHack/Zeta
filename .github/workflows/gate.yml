@@ -221,20 +221,26 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-22.04
 
-    # Run via the official semgrep/semgrep Docker image, SHA-pinned by
-    # multi-arch manifest digest. This satisfies Scorecard
-    # PinnedDependenciesID at the actual supply-chain level — the image
-    # bytes are content-addressed; tag mutation cannot affect us. The
-    # earlier `pip install semgrep` shape was version-floating and
-    # surfaced two PinnedDependenciesID alerts (#17, #18) for unpinned
-    # pipCommands. Per Aaron 2026-04-27 "preserve quality signals":
-    # fix, don't relax.
-    container:
-      image: semgrep/semgrep:1.161.0@sha256:326e5f41cc972bb423b764a14febbb62bbad29ee1c01820805d077dd868fea48
-
+    # Toolchain via three-way-parity install.sh (GOVERNANCE §24): same
+    # semgrep version that dev laptops + devcontainers get, pinned in
+    # `.mise.toml` as `pipx:semgrep`. No `actions/setup-python` here
+    # — the maintainer's host-portability invariant (Aaron 2026-04-27)
+    # is to minimise GitHub-specific surface so switching CI hosts is
+    # cheap, and to keep dev-machine and build-machine setup as close
+    # as possible. Resolves Scorecard PinnedDependenciesID #17 + #18
+    # (pip install --upgrade pip + pip install semgrep) by removing
+    # the unpinned pip-bootstrap surface entirely.
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Single source of truth for toolchain state. mise installs
+        # python + pipx + semgrep (per `.mise.toml` `pipx:semgrep`
+        # pin); shellenv.sh wires BASH_ENV so subsequent run: steps
+        # auto-source the managed shellenv. Same pattern as
+        # build-and-test job above.
+        run: ./tools/setup/install.sh
 
       - name: Run Semgrep
         # --error exits non-zero if any rule matches. The 14 rules in

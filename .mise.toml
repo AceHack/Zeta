@@ -36,6 +36,10 @@ bun = "1.3"
 # reproducible versions across laptops + CI. See BACKLOG
 # "Python tool management via uv tool (from ../scratch)".
 uv = "0.9"
+# pipx: required by mise's `pipx:` backend below (`pipx:semgrep`).
+# Aqua-backed, so the install runs through the same SHA-pinned
+# release verification path as `actionlint` / `shellcheck` / `uv`.
+pipx = "1.11.1"
 # actionlint: GitHub Actions workflow linter. Declarative install
 # (GOVERNANCE §24 three-way-parity) so dev laptops + CI runners
 # (including ubuntu-slim which doesn't ship with it) have identical
@@ -62,6 +66,19 @@ node = "22"
 # script in package.json) so dev laptops can also `bun run
 # lint:markdown`. Both pins point at the same version.
 "npm:markdownlint-cli2" = "0.22.1"
+# semgrep: SAST linter (the 14 rules in `.semgrep.yml`). Pinned
+# here per Aaron 2026-04-27 three-way-parity invariant — dev
+# laptops + CI runners + devcontainers should all install
+# semgrep through the same `tools/setup/install.sh` rather than
+# CI fetching its own copy via `actions/setup-python` + pip.
+# Reasons: (a) `bun run lint:semgrep` (or equivalent) on a dev
+# laptop hits the same version, (b) easier to switch CI hosts
+# (no GitHub-specific actions/setup-python dependency), (c) CI
+# runs become more deterministic. Resolves Scorecard
+# PinnedDependenciesID #17 + #18 (pip install --upgrade pip +
+# pip install semgrep — the unpinned pip-bootstrap surface goes
+# away entirely once mise owns this tool).
+"pipx:semgrep" = "1.161.0"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)
