@@ -82,6 +82,113 @@ That would:
 The discipline is: **understand each feature deeply enough
 to either ship it OR document it; THEN remove the reference.**
 
+## What `../scratch` and `../SQLSharp` actually are (Aaron 2026-04-27 third clarification)
+
+> "../scratch is basiclaly the start of what will be our ace
+> package manger and ../SQLSharp was the start of an event
+> stream processing with LINQ/SQL, kind of Zeta but not a
+> rigorsly mathmatically grounded approach to streaming, this
+> was before I knew about DBSP"
+
+This sharpens the integration scope significantly. Both
+laptop-only directories are **product-seed prototypes** with
+specific identities, not random scratchpad code:
+
+### `../scratch` = Ace Package Manager (seed)
+
+The future **Ace package manager** — Aaron's declarative
+package management system. Design intent matters more than
+exact code; the integration tactic for `../scratch` references
+should lean **design-doc** for substantive feature decisions
+(how the package manager will work, what its contract is,
+what mise / homebrew / npm parallels it preserves vs breaks)
+and **port** only for already-working primitives that compose
+with the current `tools/setup/` machinery.
+
+The Python 3.14 mise-pin pickup in PR #26 was an example of
+the design-driven pattern: Aaron's `../scratch` declared the
+declarative-pin shape, Otto absorbed the specific pin into
+`.mise.toml`, the design-intent stays in `../scratch` until
+the Ace package manager itself ships.
+
+Future-of-Ace integration question: when does the Ace
+package manager itself become a Zeta deliverable? When that
+happens, `../scratch` becomes the source of truth for that
+product — at which point we either move it in-repo as a
+sibling project OR document its design comprehensively
+in-repo so the Ace package manager can be built without
+reading `../scratch`.
+
+### `../SQLSharp` = pre-DBSP event-stream-processing (LINQ/SQL)
+
+The pre-DBSP-era **event stream processing system with
+LINQ/SQL** — Aaron's Zeta-progenitor before he discovered
+DBSP. Specifically: stream processing surfaced through LINQ
+/ SQL syntax, but WITHOUT the rigorous mathematical
+grounding DBSP provides (which is what makes Zeta's
+operator algebra retraction-native, compositional,
+equationally-reasonable).
+
+This is critical historical context for Zeta itself:
+
+- `../SQLSharp` represents the "we tried streaming without
+  mathematical rigor" path. Zeta represents "streaming WITH
+  mathematical rigor (DBSP)".
+- Features `../SQLSharp` had → potentially redesigned /
+  reimplemented in DBSP form within Zeta proper. The
+  integration tactic for `../SQLSharp` should ask: *"Does
+  this feature have a DBSP-equivalent in Zeta? If yes, the
+  reference is decorative; document the lineage and delete.
+  If no, design what the DBSP-rigorous version would be
+  in-repo, since that's the Zeta-canonical form."*
+- Features that DON'T have a DBSP-rigorous equivalent are
+  the most interesting — they may be either (a) genuinely
+  outside DBSP scope (good design-doc candidates) or
+  (b) opportunities for new Zeta-graduations (port-by-
+  redesign rather than port-as-is).
+
+The LINQ/SQL surface ITSELF is something Zeta's
+`linq-expert` + `sql-expert` skills already track as a
+class of work. `../SQLSharp` is a concrete pre-DBSP
+attempt at that surface; the Zeta-canonical implementation
+is the rigorous-math-grounded version that Zeta's SQL-
+engine + LINQ surfaces are building toward.
+
+### Implications for the integration framing
+
+The original three feature clusters (toolchain/setup,
+CI/repo-automation, research/design hints) are mostly
+references to `../scratch` (Ace package manager seed). The
+SQLSharp cluster is its own thing.
+
+Refined per-reference triage questions:
+
+**For `../scratch` references:**
+
+- Is this a toolchain pin / declarative-state hint? → Absorb
+  into canonical location (.mise.toml / package.json / etc.),
+  delete reference.
+- Is this an Ace-package-manager design decision? → Write
+  design doc under `docs/research/` or `docs/DECISIONS/`
+  capturing the intent + rationale, delete reference.
+- Is this just a "remember to look here later"? → Delete
+  reference (decorative).
+
+**For `../SQLSharp` references:**
+
+- Is the feature already in Zeta (DBSP-rigorous form)? →
+  Document the lineage ("Zeta's `Foo` operator subsumes
+  `../SQLSharp`'s X feature; here's how the DBSP-rigorous
+  version improves on it"), delete reference.
+- Is the feature outside DBSP scope but operationally
+  needed? → Design doc capturing the intent, delete reference.
+- Is the feature an opportunity for a future Zeta graduation?
+  → BACKLOG row capturing the Zeta-canonical reimagining,
+  delete reference.
+
+This refined framing makes "design-or-port" decisions
+substantially clearer for each cluster.
+
 ## Current scope (2026-04-27 grep)
 
 - **`../scratch` references:** 22 files, ~80 lines
