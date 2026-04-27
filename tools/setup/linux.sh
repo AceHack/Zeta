@@ -53,12 +53,41 @@ fi
 echo "✓ apt packages up to date"
 
 # ── 2. mise ─────────────────────────────────────────────────────────
+# Pinned to a specific mise release tarball + verified SHA256 (per
+# arch). Resolves Scorecard PinnedDependenciesID #16 (downloadThenRun
+# not pinned by hash). The official `curl mise.run | sh` installer
+# auto-detects the latest release at runtime, which is what Scorecard
+# flags. Bumping: pull /repos/jdx/mise/releases/latest, update
+# MISE_VERSION + both MISE_SHA256_* values together — they form a
+# content-pin set.
 if ! command -v mise >/dev/null 2>&1; then
-  echo "↓ installing mise via the official installer..."
-  curl -fsSL https://mise.run | sh
+  echo "↓ installing mise from pinned release tarball..."
+  MISE_VERSION="v2026.4.24"
+  MISE_SHA256_X64="de2f924940c29b8983035833e2fb3a50092c5794562ca0dcd0cf87b40cae2c58"
+  MISE_SHA256_ARM64="cf5f4899c3f1b56239d2eedf173c68c47b7db95400c4fa1b61e943dee4965727"
+  case "$(uname -m)" in
+    x86_64|amd64)  MISE_ARCH=x64;  MISE_SHA256="${MISE_SHA256_X64}"   ;;
+    aarch64|arm64) MISE_ARCH=arm64; MISE_SHA256="${MISE_SHA256_ARM64}" ;;
+    *) echo "error: unsupported arch $(uname -m) for mise install" >&2; exit 1 ;;
+  esac
+  MISE_TARBALL="mise-${MISE_VERSION}-linux-${MISE_ARCH}.tar.gz"
+  MISE_URL="https://github.com/jdx/mise/releases/download/${MISE_VERSION}/${MISE_TARBALL}"
+  MISE_TMP="$(mktemp -d)"
+  curl -fsSL "${MISE_URL}" -o "${MISE_TMP}/${MISE_TARBALL}"
+  # Portable SHA256 verification: sha256sum (Linux) or shasum (macOS,
+  # though linux.sh runs on Linux only). Per Otto-235 4-shell target.
+  if command -v sha256sum >/dev/null 2>&1; then
+    echo "${MISE_SHA256}  ${MISE_TMP}/${MISE_TARBALL}" | sha256sum -c -
+  else
+    echo "${MISE_SHA256}  ${MISE_TMP}/${MISE_TARBALL}" | shasum -a 256 -c -
+  fi
+  tar -C "${MISE_TMP}" -xzf "${MISE_TMP}/${MISE_TARBALL}"
+  mkdir -p "${HOME}/.local/bin"
+  mv "${MISE_TMP}/mise/bin/mise" "${HOME}/.local/bin/mise"
+  rm -rf "${MISE_TMP}"
   # The installer puts mise at $HOME/.local/bin/mise; ensure we can
   # invoke it for the remainder of this script run.
-  export PATH="$HOME/.local/bin:$PATH"
+  export PATH="${HOME}/.local/bin:${PATH}"
 fi
 echo "✓ mise: $(mise --version)"
 
