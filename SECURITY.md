@@ -3,10 +3,14 @@
 ## Reporting a vulnerability
 
 Pre-v1 / greenfield — no production callers yet. If you think you've
-found a vulnerability before v1 ships, open a regular GitHub issue
-with the `security` label; there's no separate disclosure inbox until
-we have users. Post-v1 this will move to a coordinated-disclosure
-process.
+found a vulnerability before v1 ships:
+
+- **Open a [GitHub issue](https://github.com/Lucent-Financial-Group/Zeta/issues/new?labels=security)** with the `security` label.
+- **Or use [GitHub's private vulnerability reporting](https://github.com/Lucent-Financial-Group/Zeta/security/advisories/new)** for anything that could be sensitive.
+
+There's no separate disclosure inbox until we have users. Post-v1 this
+will move to a coordinated-disclosure process documented at the
+[GitHub security advisories page](https://github.com/Lucent-Financial-Group/Zeta/security/advisories).
 
 ## Supported versions
 

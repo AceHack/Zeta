@@ -86,6 +86,12 @@ on:
     # of landed PRs to go un-swept with the heavier query pack.
     - cron: '43 6 * * 2'
 
+# Top-level token permissions — least-privilege default per
+# Scorecard TokenPermissionsID. Per-job blocks below escalate
+# to specific scopes only where needed.
+permissions:
+  contents: read
+
 concurrency:
   # PR force-push supersedes the previous run. Schedule runs
   # carry a distinct ref (`refs/heads/main` on cron) so they
@@ -109,8 +115,10 @@ jobs:
     permissions:
       contents: read
       security-events: write
+      actions: read
     outputs:
       code_changed: ${{ steps.decide.outputs.code_changed }}
+      is_fork_pr: ${{ steps.decide.outputs.is_fork_pr }}
     steps:
       - name: Checkout (full history for diff)
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
@@ -138,9 +146,15 @@ jobs:
           BASE_REPO: ${{ github.repository }}
         run: |
           set -uo pipefail
+          # Default fork-PR flag false; set true if this is an
+          # external-contributor PR. Used downstream to gate the
+          # baseline-SARIF emit/upload steps off fork PRs whose
+          # GITHUB_TOKEN cannot write security-events (would 403).
+          is_fork_pr=false
           # Safe default: when unsure, run full analysis.
           decide_fallback_true() {
             echo "code_changed=true" >> "$GITHUB_OUTPUT"
+            echo "is_fork_pr=${is_fork_pr}" >> "$GITHUB_OUTPUT"
             exit 0
           }
           # push and schedule always run full analysis.
@@ -148,8 +162,11 @@ jobs:
             decide_fallback_true
           fi
           # Fork-PR guard: skip the short-circuit on external
-          # contributor PRs (see HEAD_REPO comment above).
+          # contributor PRs (see HEAD_REPO comment above). Mark
+          # is_fork_pr so the baseline-SARIF steps below skip
+          # (their upload would 403 on the read-only fork token).
           if [ "${GH_EVENT}" = "pull_request" ] && [ -n "${HEAD_REPO}" ] && [ "${HEAD_REPO}" != "${BASE_REPO}" ]; then
+            is_fork_pr=true
             decide_fallback_true
           fi
           if [ "${GH_EVENT}" = "pull_request" ]; then
@@ -171,8 +188,11 @@ jobs:
           # build props, the GitHub Actions workflows that
           # CodeQL's `actions` language leg covers, the
           # CodeQL workflow/config themselves (a change to
-          # either MUST rerun the real analysis), and the
-          # toolchain install script (affects the csharp build).
+          # either MUST rerun the real analysis), the
+          # toolchain install script (affects the csharp build),
+          # plus Python and JavaScript/TypeScript sources for
+          # the `python` and `javascript-typescript` analyze
+          # legs.
           #
           # Note: `case` pattern `*` matches across `/` in bash,
           # so `src/*` covers any depth under `src/`.
@@ -180,34 +200,77 @@ jobs:
           while IFS= read -r f; do
             [ -z "${f}" ] && continue
             case "${f}" in
-              src/*|test/*) code_changed=true ;;
+              # `tools/*` covers `tools/setup/*`, `tools/budget/*`,
+              # etc. — `*` after the slash matches across slashes
+              # in case patterns. Earlier branches kept a separate
+              # `tools/setup/*` line; collapsed here per shellcheck
+              # SC2222 (later pattern shadowed by earlier one).
+              src/*|tests/*|tools/*) code_changed=true ;;
               *.cs|*.fs|*.fsproj|*.csproj|*.sln) code_changed=true ;;
+              *.py|pyproject.toml|requirements*.txt) code_changed=true ;;
+              *.js|*.jsx|*.ts|*.tsx|*.mjs|*.cjs) code_changed=true ;;
+              package.json|package-lock.json|tsconfig*.json) code_changed=true ;;
               Directory.Build.props|Directory.Packages.props) code_changed=true ;;
               .github/workflows/*|.github/codeql/*) code_changed=true ;;
-              tools/setup/*) code_changed=true ;;
             esac
             [ "${code_changed}" = "true" ] && break
           done <<< "${changed}"
           echo "code_changed=${code_changed}" >> "$GITHUB_OUTPUT"
+          echo "is_fork_pr=${is_fork_pr}" >> "$GITHUB_OUTPUT"
 
-      # Docs-only branch: synthesise a minimal empty SARIF per
-      # language and upload each under the matching analyze-job
-      # category (/language:actions/ and /language:csharp/) so
-      # GitHub code scanning records "analysis ran, no new
-      # alerts" (SUCCESS aggregate check) rather than NEUTRAL.
+      # Aggregate-CodeQL baseline: synthesise a minimal empty SARIF
+      # per language and upload each under the matching analyze-job
+      # category (/language:actions/, /language:csharp/,
+      # /language:python/, /language:javascript-typescript/) so
+      # GitHub code scanning records "analysis ran, no new alerts"
+      # (SUCCESS aggregate check) rather than NEUTRAL.
+      #
+      # Why this runs UNCONDITIONALLY (not gated on docs-only):
+      # The aggregate `CodeQL` status check is set when path-gate's
+      # SARIF uploads complete, BEFORE the matrix `analyze` jobs
+      # finish. If we only emit on docs-only PRs, code-changed PRs
+      # leave the aggregate without input → NEUTRAL → trips the
+      # `code_quality` ruleset rule even though all per-language
+      # `Analyze (X)` checks pass. By emitting empty SARIF
+      # unconditionally, the aggregate gets a clean baseline early.
+      # The matrix analyses' REAL SARIF is uploaded later under the
+      # same `(commit, ref, category, tool)` key and replaces the
+      # empty baseline (per GitHub's SARIF-replace-by-key rule),
+      # so any real findings still surface as code-scanning alerts.
+      # The `code_quality severity:all` rule gates on alerts, not on
+      # the aggregate status, so real findings still block merges.
+      #
       # Categories must match the `analyze` matrix categories or
       # the code-scanning service treats them as unrelated
       # configurations. The `category:` action-param overrides
       # whatever `automationDetails.id` is in the SARIF, so the
-      # upload steps below set it explicitly per language.
-      - name: Emit no-findings SARIF (docs-only PRs)
-        if: steps.decide.outputs.code_changed != 'true'
+      # upload steps below set it explicitly per language. The
+      # `lang` loop must include every category the `analyze`
+      # matrix covers.
+      - name: Emit no-findings SARIF (aggregate-CodeQL baseline)
+        # Skip on fork PRs: their GITHUB_TOKEN cannot write
+        # security-events, so the upload steps below would 403
+        # and fail the workflow before `analyze` could run. The
+        # full `analyze` matrix is forced on fork PRs (see decide
+        # step) and uploads via its own pull_request_target /
+        # CodeQL-fallback path, so the baseline is unnecessary.
+        if: steps.decide.outputs.is_fork_pr != 'true'
         env:
           HEAD_SHA_ENV: ${{ github.event.pull_request.head.sha || github.event.merge_group.head_sha || github.sha }}
         run: |
           set -euo pipefail
           mkdir -p sarif
-          for lang in actions csharp; do
+          # `java-kotlin` is included even though our `analyze` matrix
+          # doesn't cover it: GitHub Advanced Security still expects
+          # the category because main's history once carried it (the
+          # configuration is sticky per `refs/heads/main`). Without
+          # this empty baseline upload, the aggregate `CodeQL` check
+          # surfaces "1 configuration not found" and goes NEUTRAL,
+          # tripping the `code_quality` ruleset rule. Emitting empty
+          # SARIF for `/language:java-kotlin` satisfies the
+          # expectation; we have no Java/Kotlin source so empty is
+          # also correct.
+          for lang in actions csharp python javascript-typescript java-kotlin; do
             cat > "sarif/empty-${lang}.sarif" <<SARIF
           {
             "version": "2.1.0",
@@ -245,20 +308,55 @@ jobs:
       # action-param -- which overrides SARIF automationDetails --
       # can differ per file.
       - name: Upload no-findings SARIF (actions)
-        if: steps.decide.outputs.code_changed != 'true'
+        if: steps.decide.outputs.is_fork_pr != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-actions.sarif
           category: "/language:actions"
 
       - name: Upload no-findings SARIF (csharp)
-        if: steps.decide.outputs.code_changed != 'true'
+        if: steps.decide.outputs.is_fork_pr != 'true'
         uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
         with:
           sarif_file: sarif/empty-csharp.sarif
           category: "/language:csharp"
 
+      - name: Upload no-findings SARIF (python)
+        if: steps.decide.outputs.is_fork_pr != 'true'
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        with:
+          sarif_file: sarif/empty-python.sarif
+          category: "/language:python"
+
+      - name: Upload no-findings SARIF (javascript-typescript)
+        if: steps.decide.outputs.is_fork_pr != 'true'
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        with:
+          sarif_file: sarif/empty-javascript-typescript.sarif
+          category: "/language:javascript-typescript"
+
+      - name: Upload no-findings SARIF (java-kotlin)
+        # No Java/Kotlin source in this repo, but main's history
+        # carries the configuration; satisfy the sticky expectation.
+        if: steps.decide.outputs.is_fork_pr != 'true'
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225  # v4.35.2
+        with:
+          sarif_file: sarif/empty-java-kotlin.sarif
+          category: "/language:java-kotlin"
+
   analyze:
+    # Cadence note (maintainer 2026-04-27 + follow-up): the matrix
+    # `Analyze (X)` legs — especially `Analyze (csharp)` — were
+    # the per-PR bottleneck. An attempt to skip the matrix on PRs
+    # (keeping path-gate's empty-SARIF baseline as the aggregate
+    # signal) hit GitHub's `code_quality severity:all` ruleset
+    # rule which expects the per-language `Analyze (X)` status
+    # checks to actually appear on the PR — the merge gate kept
+    # showing "Code quality results are pending for 4 analyzed
+    # languages." Reverted to running the matrix on PR + push +
+    # schedule; cadence-fast-revisit deferred. macos-26 build +
+    # Windows legs in gate.yml stay on the per-merge cadence
+    # because they don't trip the same gate.
     name: Analyze (${{ matrix.language }})
     needs: path-gate
     if: needs.path-gate.outputs.code_changed == 'true'
@@ -279,6 +377,10 @@ jobs:
             build-mode: none
           - language: csharp
             build-mode: manual
+          - language: python
+            build-mode: none
+          - language: javascript-typescript
+            build-mode: none
 
     steps:
       - name: Checkout

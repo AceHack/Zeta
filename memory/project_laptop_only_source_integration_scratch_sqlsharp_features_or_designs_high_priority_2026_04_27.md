@@ -1,6 +1,6 @@
 ---
 name: Laptop-only-source integration — `../scratch` and `../SQLSharp` features OR detailed designs (HIGH PRIORITY)
-description: Aaron 2026-04-27 input — repo currently has ~24 files with `../scratch` references and ~18 files with `../SQLSharp` references (counts drift as new substrate lands; check `git grep -l '\.\./scratch'` for current) pointing at out-of-tree directories that exist ONLY on Aaron's laptop; future maintainers / agents / contributors can't access them; HIGH PRIORITY backlog item to fully integrate the features OR write detailed-enough designs that we no longer need the out-of-tree references for understanding; KEY CLARIFICATION (Aaron 2026-04-27 second message) — "this is not a copy past, we just want to have either all their features or a design for any of the features we don't have that's detailed enough we no longer need ../scratch or ../SQLSharp reference for understanding"; goal is self-contained understanding + repo independence, NOT literal source copy.
+description: Aaron 2026-04-27 input — repo currently has 22 files with `../scratch` references and 14 files with `../SQLSharp` references (125 total grep hits) pointing at out-of-tree directories that exist ONLY on Aaron's laptop; future maintainers / agents / contributors can't access them; HIGH PRIORITY backlog item to fully integrate the features OR write detailed-enough designs that we no longer need the out-of-tree references for understanding; KEY CLARIFICATION (Aaron 2026-04-27 second message) — "this is not a copy past, we just want to have either all their features or a design for any of the features we don't have that's detailed enough we no longer need ../scratch or ../SQLSharp reference for understanding"; goal is self-contained understanding + repo independence, NOT literal source copy.
 type: project
 ---
 
@@ -191,13 +191,18 @@ substantially clearer for each cluster.
 
 ## Current scope (2026-04-27 grep)
 
-- **`../scratch` references:** ~24 files (count drifts as new
-  substrate lands; this memory file itself adds to the count)
-- **`../SQLSharp` references:** ~18 files (same drift caveat)
-- **Total:** ~42 unique files (point-in-time snapshot;
-  authoritative source is `git grep -l '\.\./scratch'` and
-  `git grep -l '\.\./SQLSharp'` at audit time, not a frozen
-  count)
+> **Counts drift as new substrate lands.** Numbers below are
+> a dated snapshot from `git grep -l -- '../scratch' && git grep -l -- '../SQLSharp'`
+> run on 2026-04-27 against the PR-651 branch tip
+> (`acehack/sync-to-lfg-batch-650-2026-04-27`). The
+> authoritative current count is whatever `git grep` reports
+> at the moment of reading; do not treat the snapshot as
+> still-current after substrate lands. Re-run the same
+> commands to refresh.
+
+- **`../scratch` references:** 22 files, ~80 lines (snapshot 2026-04-27)
+- **`../SQLSharp` references:** 14 files, ~45 lines (snapshot 2026-04-27)
+- **Total:** 36 unique files, 125 grep hits (snapshot 2026-04-27)
 
 Files with `../scratch` references (top-level):
 
@@ -307,18 +312,8 @@ than going file-by-file blindly.
 
 The integration work completes when:
 
-- `git grep -- '../scratch'` returns zero matches OUTSIDE the
-  enumerated history-of-the-work surface (this memory file +
-  its `MEMORY.md` index entry + any `docs/ROUND-HISTORY.md`
-  entries that document the integration). The point is to
-  eliminate active references that block understanding, not
-  to scrub the historical record. Codex review on PR #642
-  flagged the original "zero matches" criterion as
-  self-blocking against this memory file itself; the
-  refined criterion excludes the canonical record of the
-  work from the count.
-- `git grep -- '../SQLSharp'` same scope: zero matches
-  outside the enumerated history-of-the-work surface.
+- `git grep -- '../scratch'` returns zero matches *outside* the closed-list history surfaces (`memory/**`, `docs/BACKLOG.md`, `docs/backlog/**`, `docs/research/**`, `docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`, `docs/aurora/**`, `docs/pr-preservation/**`, `docs/hygiene-history/**`, `docs/WINS.md`, commit messages + PR bodies — see the "No name attribution in code, docs, or skills" rule in `docs/AGENT-BEST-PRACTICES.md` for the canonical list; rule lineage Otto-279 + follow-on maintainer clarification; this file lands on the list as `memory/**`)
+- `git grep -- '../SQLSharp'` returns zero matches *outside* the same closed-list history surfaces
 - Every feature/idea/enhancement that WAS referenced is
   EITHER (a) shipped in the repo, OR (b) documented in the
   repo with enough detail to be rebuilt without reading
@@ -404,18 +399,25 @@ enough detail to rebuild without external reference,
 Aaron's clarification: NOT literal copy-paste. Goal is
 self-contained understanding, NOT verbatim source mirror.
 
-Scope: ~24 files reference `../scratch`, ~18 reference
-`../SQLSharp`; ~42 unique files at point-in-time. Three
+Scope: 22 files reference `../scratch`, 14 reference
+`../SQLSharp`; 36 unique files, 125 grep hits. Three
 feature clusters: (1) toolchain/setup, (2) CI/repo-
 automation, (3) research/design hints.
 
 Effort: L (3+ days). Done = `git grep -- '../scratch'`
 and `git grep -- '../SQLSharp'` both return zero matches
-OUTSIDE the enumerated history-of-the-work surface (this
-memory file + MEMORY.md index entry + any
-docs/ROUND-HISTORY.md entries documenting the integration),
-and every previously-referenced feature is either shipped
-or design-documented in-repo.
+*outside the closed-list history surfaces* (`memory/**`,
+`docs/BACKLOG.md`, `docs/backlog/**`, `docs/research/**`,
+`docs/ROUND-HISTORY.md`, `docs/DECISIONS/**`,
+`docs/aurora/**`, `docs/pr-preservation/**`,
+`docs/hygiene-history/**`, `docs/WINS.md`, plus commit
+messages + PR bodies — see the "No name attribution in
+code, docs, or skills" rule in
+`docs/AGENT-BEST-PRACTICES.md` for the canonical list;
+rule lineage Otto-279 + follow-on maintainer
+clarification; this file lands on the list as
+`memory/**`), and every previously-referenced feature is
+either shipped or design-documented in-repo.
 
 Composes Otto-275 (log-but-don't-implement; default to
 design when uncertain) + Otto-323/346 (these are NOT

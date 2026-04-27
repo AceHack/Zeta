@@ -37,14 +37,16 @@ When triaging work, the reverse-sync project (LFG→AceHack content closure) goe
 4. **Memory file diffs** (~35 lines, 30min): the laptop-only-source-integration entry mostly.
 5. **0-diff verification check under `tools/sync/`** per #43's spec — automate the diff measurement so we never lose track of where we are.
 
-## Distinction: commit-count vs content-diff
+## SUPERSEDED — see `feedback_zero_diff_means_both_content_and_commits_cognitive_load_for_future_changes_2026_04_27.md`
 
-Two metrics, different goals:
+The original framing here said "commit-count NEVER zero, structural; content-diff is the only metric." Aaron 2026-04-27 reinforcement updated that: **0-diff means BOTH axes** (content AND commit-count) zero, with documented exceptions. The dev-mirror / project-trunk topology + double-hop workflow makes this achievable: AceHack absorbs LFG's squash-SHA via hard-reset, so commit-count returns to 0/0 after every paired-sync round.
 
-- **Commit-count (76 / 492 today)**: NEVER zero. This is parallel-SHA-history (per task #284's Option C decision). Every paired sync adds one commit to each side. Numbers grow forever even with perfect work. Not the metric to track.
-- **Content-diff (53 files / 6065 lines today)**: CAN reach 0. This is what #43's invariant targets. This is the metric for "started."
+Done criterion (refined):
 
-Don't confuse them. Don't claim "we're at 0" by pointing at commit-count divergence stabilizing — that's irrelevant. Point at `git diff acehack/main..origin/main --stat` returning empty.
+- `git diff acehack/main..origin/main` empty
+- `git rev-list --left-right --count origin/main...acehack/main` returns `0  0`
+
+The cognitive-load justification: when both axes are 0/0/0, every diff a reviewer sees is real change since the last sync round, not noise from accumulated parallel-SHA-history.
 
 ## Composes with
 
