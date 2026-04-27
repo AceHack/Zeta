@@ -422,13 +422,23 @@ module Graph =
                     if nbrs.Count > 0 then
                         // Count weighted votes per label
                         let votes = System.Collections.Generic.Dictionary<int, int64>()
+                        // Per Copilot review on PR #26: skip
+                        // non-positive-weight edges entirely.
+                        // Prior code added a zero entry which
+                        // populated the votes dict, then because
+                        // bestVote starts at -1L, a node with only
+                        // non-positive incident edges would switch
+                        // to a neighbor label even with zero
+                        // supporting weight. anti-edges and zero-
+                        // weight edges should not influence label.
                         for (ni, w) in nbrs do
-                            let lbl = labels.[ni]
-                            let cur =
-                                match votes.TryGetValue(lbl) with
-                                | true, v -> v
-                                | false, _ -> 0L
-                            votes.[lbl] <- cur + (if w > 0L then w else 0L)
+                            if w > 0L then
+                                let lbl = labels.[ni]
+                                let cur =
+                                    match votes.TryGetValue(lbl) with
+                                    | true, v -> v
+                                    | false, _ -> 0L
+                                votes.[lbl] <- cur + w
                         // Pick label with highest vote; tie-break by
                         // lowest id for determinism
                         let mutable bestLbl = labels.[i]
@@ -514,16 +524,22 @@ module Graph =
         | Some lb, Some la when lb > 1e-12 || la > 1e-12 ->
             let partitionBaseline = labelPropagation lpIter baseline
             let partitionAttacked = labelPropagation lpIter attacked
-            let qBaseline =
-                modularityScore partitionBaseline baseline
-                |> Option.defaultValue 0.0
-            let qAttacked =
+            // Per Copilot review on PR #26: propagate undefined
+            // modularity as None instead of coercing to 0.0. The
+            // doc claims this function returns None when ANY
+            // component metric is undefined; the prior coercion
+            // contradicted that. modularityScore returns None
+            // when twoM = 0 (signed graphs reach this case).
+            match
+                modularityScore partitionBaseline baseline,
                 modularityScore partitionAttacked attacked
-                |> Option.defaultValue 0.0
-            let eps = 1e-12
-            let spectralGrowth = (la - lb) / (max lb eps)
-            let modularityShift = qAttacked - qBaseline
-            Some (alpha * spectralGrowth + beta * modularityShift)
+                with
+            | Some qBaseline, Some qAttacked ->
+                let eps = 1e-12
+                let spectralGrowth = (la - lb) / (max lb eps)
+                let modularityShift = qAttacked - qBaseline
+                Some (alpha * spectralGrowth + beta * modularityShift)
+            | _ -> None
         | _ -> None
 
     /// **Robust-z-score variant of coordinationRiskScore.**
