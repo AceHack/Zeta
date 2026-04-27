@@ -91,12 +91,15 @@ jobs:
               memory/README.md)
                 :
                 ;;
-              memory/persona/* | memory/persona/*/* | memory/persona/*/*/*)
-                # Per Copilot review on PR #26: bash case patterns
-                # don't support `**`; the prior single-level pattern
-                # silently failed to exclude nested persona notebook
-                # paths (e.g., memory/persona/<name>/NOTEBOOK.md).
-                # Enumerate depths 1, 2, 3 explicitly.
+              memory/persona/*)
+                # Note: bash case `*` matches slashes (unlike
+                # pathname globbing). So this single pattern
+                # correctly covers ALL nested persona notebook
+                # paths including memory/persona/<name>/NOTEBOOK.md.
+                # An earlier "fix" enumerated depths 1+2+3 which
+                # tripped shellcheck SC2221 (redundant patterns)
+                # because the deeper alternations are subsets of
+                # this one. Verified empirically.
                 :
                 ;;
               memory/*.md)
