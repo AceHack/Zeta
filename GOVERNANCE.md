@@ -786,7 +786,10 @@ than renumbering the rest.
     **Scope of this rule.**
 
     - **In scope:** `docs/aurora/**` absorb docs (courier
-      ferries; cross-AI reviews), any future `docs/archive/**`
+      ferries; cross-AI reviews), `docs/amara-full-conversation/**`
+      verbatim conversation archive (per glass-halo directive —
+      preserved-verbatim register; per-month chunks land via
+      the absorb cadence), any future `docs/archive/**`
       directory, and `docs/research/**` files whose content
       is an import of external conversation rather than
       internal research.
