@@ -107,6 +107,103 @@ the Aaron-Amara conversation archive for upstream design
 context — `docs/amara-full-conversation/` IS the
 substrate.)
 
+## DST-first substrate — port-with-DST is the default (Aaron 2026-04-27 fifth + seventh clarification)
+
+> "Oh none of those ../scratch and ../SQLSharp used Deterministic
+> Simulation so they were much harder to diagnose issues, we
+> don't want to replicate bad behavior"
+>
+> + further refinement: "for this substraight since we are DST
+> first any absorbs or ports should just by default be with DST,
+> it keeps us in a clean I/O monad for our Zetaspace that's
+> really what DST is i/o monad system pushed to the extreeme
+> kind of like haskel"
+
+The factory is **DST-first**. DST is not a port-time add-on;
+it is the substrate's default and any absorb / port goes into
+the DST-monadic substrate by default. Explicit non-DST is the
+special case (and rare).
+
+**DST as clean separation between side-effects and pure** —
+Aaron's framing. (Aaron's clarifying note: "I/O monad pushed
+to extreme is a bit strong"; the right level of claim is
+closer to clean separation between side-effects and pure
+code, in the same neighborhood as Haskell's I/O monad
+without the strong typed-monad commitment.) DST reifies
+non-determinism (timing, randomness, concurrency, scheduling,
+IO) into a deterministic-seed-driven runtime, leaving the
+substrate's pure-function core unchanged. Effects sit at
+the runtime boundary; the substrate stays clean.
+
+This gives Zetaspace its mathematical cleanliness:
+
+- **Reproducibility** — same seed → same trace
+- **Equational reasoning** — pure-function-at-substrate-level
+  even when effects are involved (the simulation runtime is
+  the only effecting party)
+- **Bug reproduction** — every flake reduces to a seed
+- **Compositionality** — DST-monadic functions compose as
+  cleanly as pure functions
+
+`../scratch` and `../SQLSharp` predate Aaron's DST discovery
+(same era as pre-DBSP for `../SQLSharp`). Their authors had to
+debug without these guarantees. Replicating their shape would
+replicate the hard-to-debug experience.
+
+The discipline:
+
+- Port the **idea / feature / API**: yes
+- Port the **bash-or-bashy / no-DST shape**: NO — by default
+  ANY ported feature lands in DST shape
+- DST is **default**, not port-time decision
+- Compose Otto-272 (DST-everywhere) + Otto-273 (seed-lock-
+  policy) + Otto-281 (DST-exempt-is-deferred-bug) + Otto-248
+  (never-ignore-flakes)
+
+Net: ported features end up *easier* to debug than their
+original-source counterparts — port-and-improve via DST-
+monadic substrate is automatic, not opt-in.
+
+## AceHack-LFG diff-minimization invariant (Aaron 2026-04-27 sixth clarification)
+
+> "also make sure at some point we see a 0 difference so we
+> can feel good about things"
+>
+> + follow-up: "or any differenes are rigorusly accounted
+> for, and few of them"
+
+Long-horizon goal: a structural check confirming AceHack and
+LFG match on `main`. After every sync round,
+`git diff acehack/main..origin/main` should be one of:
+
+- Zero diff (ideal)
+- A small enumerated set of expected differences (e.g.
+  `.github/funding.yml`, repo-name references in branding
+  docs, org-specific GitHub Actions secrets) where each diff
+  is documented in a known allowlist
+- "Few" is part of the bar — not a long unexplained list
+
+Operational:
+
+1. **Build a 0-diff verification check** under `tools/sync/`
+   that diffs the two `main` branches and emits a report
+   classifying each diff as expected (allowlisted) or
+   surprise (needs investigation).
+2. **Maintain an allowlist** for legitimate per-org
+   differences. The allowlist IS the "rigorously accounted
+   for" surface.
+3. **Treat outside-allowlist diff as drift** — file a sync
+   round to absorb or reverse-port.
+
+This is a structural invariant for the AceHack-LFG fork
+relationship. The factory passes when the diff is zero or
+all-accounted-for; fails when surprises accumulate.
+
+Sequenced after the laptop-source-integration work because
+porting `../scratch` + `../SQLSharp` may temporarily widen
+the diff before narrowing it; the verification check should
+ship to *measure* the narrowing, not block it.
+
 ## `../SQLSharp` as TypeScript-post-install reference (Aaron 2026-04-27 clarification)
 
 > "../SQLSharp is a good example of typescript post intall scripts too"
