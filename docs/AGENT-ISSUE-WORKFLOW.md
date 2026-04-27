@@ -91,11 +91,12 @@ picked at setup time:
 ### Choosing at setup
 
 The canonical setup script under `tools/setup/` currently does
-not prompt for this. **TODO:** file a BACKLOG row to add the
-prompt: "Which issue tracker will this project use?
-[GitHub Issues / Jira / git-native] — agent workflow defaults
-adapt." Until that lands, Zeta's default is (1) and adopters
-copying the factory should read this doc and choose consciously.
+not prompt for this. Tracked at task #267-adjacent (factory-
+adoption configuration prompts) — the planned prompt: "Which
+issue tracker will this project use? [GitHub Issues / Jira /
+git-native] — agent workflow defaults adapt." Until that lands,
+Zeta's default is (1) and adopters copying the factory should
+read this doc and choose consciously.
 
 ## The claim / lock protocol (adapter-neutral)
 
