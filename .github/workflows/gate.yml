@@ -7,8 +7,10 @@
 # maintainer reviewed 2026-04-18; parity-swap landed round 32; matrix
 # refresh 2026-04-24 per PR #375):
 #   - Runners pinned to explicit versions (not -latest). Active build-
-#     and-test matrix: macos-26, ubuntu-24.04, ubuntu-24.04-arm,
-#     ubuntu-slim (experimental; not in required-checks today).
+#     and-test matrix: macos-26, ubuntu-24.04, ubuntu-24.04-arm.
+#     ubuntu-slim moved to `.github/workflows/nightly-low-memory.yml`
+#     per maintainer 2026-04-27 + Codex P2 review on LFG #644 — too
+#     slow for per-PR gating, ran twice on every merge when in both.
 #     Lint jobs pinned to ubuntu-22.04 (short-lived, OS-independent
 #     work). Windows legs deferred to peer-harness milestone.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
@@ -123,7 +125,10 @@ jobs:
           - macos-26
           - ubuntu-24.04
           - ubuntu-24.04-arm
-          - ubuntu-slim  # experimental; fail-fast:false; not currently required-check (viability TBD)
+          # ubuntu-slim moved to .github/workflows/nightly-low-memory.yml
+          # per maintainer 2026-04-27 — runs on push-to-main + nightly +
+          # workflow_dispatch; removed here to avoid duplicate CI on
+          # every merge (per Codex P2 review on LFG #644).
           # Deferred until Windows peer-harness milestone:
           # - windows-2025
           # - windows-11-arm
