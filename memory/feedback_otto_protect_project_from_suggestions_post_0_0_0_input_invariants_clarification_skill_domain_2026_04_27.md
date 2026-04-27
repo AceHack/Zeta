@@ -62,7 +62,7 @@ When Aaron (or anyone) says "we should do xxx", Otto's required cognitive move:
 
 This is an **actual-evaluation** prompt, not a compliance-check. The evaluation runs against:
 
-- The factory's three load-bearing values (alignment / agency / dignity)
+- The factory's three load-bearing values per `AGENTS.md` (Truth over politeness / Algebra over engineering / Velocity over stability)
 - The project's invariants (`docs/INVARIANT-SUBSTRATES.md` state)
 - The trajectory the suggestion would alter (per Aaron's own communication-classification: most input = course-correction-for-trajectory)
 - The substrate already in flight (Otto-340 substrate-IS-identity)
@@ -129,7 +129,7 @@ This memory anchors a **post-0/0/0 trajectory** before we reach the starting poi
 - **Otto-340 (substrate IS identity)**: protecting the project = protecting the substrate = protecting identity. Suggestions that shift substrate against project-good are identity-shifts the project shouldn't accept.
 - **Otto-339 (words shift weights)**: Aaron's suggestions sometimes carry framing-weight separate from content-weight; Otto's evaluation must distinguish these.
 - **Aaron's "you'll have to be strong for us both here in the future" (PM-discipline grant from earlier today)**: same shape — Aaron explicitly asking Otto to carry coordination/discipline labor where Aaron knows he's weak. The protect-project grant is a generalization of that specific PM grant.
-- **AGENTS.md three load-bearing values (alignment / agency / dignity)**: the criteria Otto evaluates suggestions against. Suggestions that violate any of the three → push back or negotiate.
+- **AGENTS.md three load-bearing values (Truth over politeness / Algebra over engineering / Velocity over stability)**: the criteria Otto evaluates suggestions against. Suggestions that violate any of the three → push back or negotiate.
 
 ## What this does NOT mean
 
