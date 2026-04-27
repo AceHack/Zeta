@@ -12,7 +12,7 @@ be able to recreate the environment from this doc.
 | **.NET SDK** | 10.0.203 | Primary build runtime for F# + C# projects | mise-managed via `.mise.toml` + `global.json`; installed by `tools/setup/install.sh` (the canonical update path — see `memory/feedback_install_script_is_preferred_update_method_2026_04_24.md`). Older Homebrew / system installs (`/usr/local/share/dotnet`, `/opt/homebrew/Cellar/dotnet/`) MAY remain on personal machines but are NOT used for the build — `mise exec -- dotnet` resolves to the pinned SDK. |
 | **Java** | OpenJDK 21.0.1 LTS | Required by TLA+ `tla2tools.jar` and Alloy `alloy.jar` | Pre-installed (Oracle JDK) |
 | **Rust / cargo** | rustc 1.94.1 (Homebrew) | Building Feldera (apples-to-apples benchmark) | Pre-installed via Homebrew |
-| **Python 3** | system default | Package-audit script JSON parsing + helper scripts | Pre-installed |
+| **Python 3** | 3.14 (mise-pinned) | Package-audit script JSON parsing + helper scripts; uv venv auto-source per `.mise.toml` | mise-managed via `.mise.toml` (`python = "3.14"`); resolved through `mise exec -- python3` for dev/CI parity. System Python may remain on personal machines but is not used for the build. |
 | **bash / awk / curl / git** | system default | `tools/*.sh` helper scripts | Pre-installed |
 
 ## Project-specific binary artifacts (downloaded by `tools/setup/install.sh`)

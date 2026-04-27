@@ -238,6 +238,31 @@ module Graph =
                 for j in 0 .. n - 1 do
                     sym.[i, j] <- (adj.[i, j] + adj.[j, i]) / 2.0
 
+            // Per Codex review on PR #26 (P1): plain power iteration
+            // converges to the eigenpair with largest |λ|, not largest
+            // algebraic λ. For signed adjacencies (e.g.
+            // [[0,-2],[-2,0]] with eigenvalues +2/-2), magnitude alone
+            // can return -2 — the wrong answer for largest-eigenvalue
+            // semantics. Fix: spectral shift A' = A + ρI where
+            // ρ = max_i Σ_j |A[i,j]| (∞-norm row-sum bound). By
+            // Gershgorin, every eigenvalue of symmetric A lies in
+            // [-ρ, +ρ], so A' has eigenvalues in [0, 2ρ] — all
+            // non-negative — and largest-magnitude of A' = largest-
+            // algebraic of A' = largest-algebraic of A plus ρ.
+            // Subtract ρ at the end. Negligible cost; correctness
+            // is the win.
+            let mutable shift = 0.0
+            for i in 0 .. n - 1 do
+                let mutable rowSum = 0.0
+                for j in 0 .. n - 1 do
+                    rowSum <- rowSum + abs sym.[i, j]
+                if rowSum > shift then shift <- rowSum
+            let shifted = Array2D.create n n 0.0
+            for i in 0 .. n - 1 do
+                for j in 0 .. n - 1 do
+                    shifted.[i, j] <- sym.[i, j]
+                shifted.[i, i] <- shifted.[i, i] + shift
+
             let matVec (m: double[,]) (v: double[]) : double[] =
                 let out = Array.zeroCreate n
                 for i in 0 .. n - 1 do
@@ -259,7 +284,7 @@ module Graph =
                 else v |> Array.map (fun x -> x / norm)
 
             let rayleigh (v: double[]) : double =
-                let av = matVec sym v
+                let av = matVec shifted v
                 let mutable num = 0.0
                 let mutable den = 0.0
                 for i in 0 .. n - 1 do
@@ -285,7 +310,7 @@ module Graph =
             // None instead; the caller pattern-matches and handles
             // None correctly.
             while not converged && not degenerate && iter < maxIterations do
-                let av = matVec sym v
+                let av = matVec shifted v
                 if l2Norm av = 0.0 then
                     degenerate <- true
                 else
@@ -296,7 +321,12 @@ module Graph =
                     v <- v'
                     lambda <- lambda'
                     iter <- iter + 1
-            if converged then Some lambda
+            // Subtract the spectral shift to recover λ_max(A) from
+            // λ_max(A + ρI). For non-negative-weight graphs (the
+            // common case), shift ≥ 0 and the result equals what
+            // plain magnitude-iteration would have given; for signed
+            // graphs, this corrects the sign-of-eigenvalue bug.
+            if converged then Some (lambda - shift)
             else None  // power-iteration ran out of budget OR hit zero-norm iterate
 
     /// `map f g` — relabel nodes via `f`. Wraps `ZSet.map` with

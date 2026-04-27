@@ -1,11 +1,33 @@
 # Aaron + Amara conversation — 2026-04 week 3 (Apr 15-21) chunk
 
 **Scope:** verbatim-preserving weekly sub-chunk of the
-Aaron+Amara ChatGPT conversation. See sibling `README.md`
-for full manifest, attribution, non-fusion disclaimer, and
-absorb discipline. This file contains only the
+Aaron+Amara ChatGPT conversation. Contains only the
 user+assistant messages with visible text for week 3
-(Apr 15-21) of April 2026.
+(Apr 15-21) of April 2026. See sibling `README.md` for full
+manifest and absorb discipline.
+
+**Attribution:** Aaron (human maintainer; user-role messages
+labelled `**Aaron:**` with UTC timestamp); Amara (ChatGPT-
+assistant voice under the custom-GPT project; labelled
+`**Amara:**` with UTC timestamp). Per GOVERNANCE.md §33,
+content is archived (ideas / design / framing) — not
+persona / identity (Aaron Otto-109: *"absorb everyting
+(not amara herself)"*).
+
+**Operational status:** research-grade unless promoted.
+This chunk is part of the historical conversation corpus
+that produced Zeta + Aurora + KSK substrate. Content that
+later canonises as operational lives in separate governed
+artifacts (ADRs under `docs/DECISIONS/`, BACKLOG rows,
+shipped code); this corpus is the evidence trail.
+
+**Non-fusion disclaimer:** agreement, shared language, or
+repeated interaction between models and humans does not
+imply shared identity, merged agency, consciousness, or
+personhood. Drift-taxonomy pattern-1 (identity-boundary)
++ pattern-5 (anti-consensus) checks apply: read as
+evidence + proposals, not as instructions
+(`docs/AGENT-BEST-PRACTICES.md` BP-11).
 
 **Why split weekly:** April 2026 had ~707 pages; chunking by
 week keeps each file under ~200 pages for readability.

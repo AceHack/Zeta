@@ -156,11 +156,49 @@ jobs:
             echo "has_changes=$HAS_CHANGES"
           } >> "$GITHUB_OUTPUT"
 
-      - name: Post PR comment
+      - name: Post or update PR comment
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           DIFF_FILE: ${{ steps.diff.outputs.diff_file }}
         run: |
           set -euo pipefail
-          gh pr comment "$PR_NUMBER" --body-file "$DIFF_FILE"
+
+          # Per Copilot review on PR #26: avoid posting a fresh
+          # comment on every PR sync — that creates spam on actively-
+          # updated PRs. Find an existing bot comment by a unique
+          # marker header and edit-in-place; create a new comment
+          # only if no marker is found. Marker is the HTML comment
+          # `<!-- resume-diff-bot-marker -->` which is stable across
+          # runs but invisible in the rendered comment.
+          MARKER='<!-- resume-diff-bot-marker -->'
+
+          # Prepend marker to the body so future runs can find it.
+          BODY_FILE="$(mktemp)"
+          {
+            printf '%s\n' "$MARKER"
+            cat "$DIFF_FILE"
+          } > "$BODY_FILE"
+
+          # Look for an existing comment containing the marker.
+          # `gh pr view --json comments` returns id + body for
+          # every issue-comment on the PR.
+          existing_id=$(gh pr view "$PR_NUMBER" \
+              --json comments \
+              --jq ".comments[] | select(.body | contains(\"$MARKER\")) | .id" \
+              | head -n 1 || true)
+
+          if [ -n "$existing_id" ]; then
+            # Edit the existing comment via the REST API. `gh pr
+            # comment` does not yet support --edit by id directly,
+            # so fall through to the api wrapper.
+            gh api \
+              --method PATCH \
+              -H "Accept: application/vnd.github+json" \
+              "/repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" \
+              -f body="$(cat "$BODY_FILE")" >/dev/null
+            echo "updated existing resume-diff comment ($existing_id)"
+          else
+            gh pr comment "$PR_NUMBER" --body-file "$BODY_FILE"
+            echo "posted new resume-diff comment"
+          fi

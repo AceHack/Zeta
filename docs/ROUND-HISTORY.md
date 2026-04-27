@@ -98,13 +98,15 @@ fixed in the same round the rule landed (commit `ac0eb1f`,
 meta-wins-log depth-1 row). Arc-by-arc narrative lands at
 round-close.
 
-A further arc separated the three distinct products under
+A further arc separated the four distinct products under
 the GitHub Copilot brand that the factory had been
 conflating — Copilot PR code review (a reviewer robot, not
 a harness), Copilot in VS Code (the actual harness variant,
-stub), and Copilot coding agent `@copilot` (autonomous PR
-author, stub) — landing (a) the `docs/HARNESS-SURFACES.md`
-three-product split with explicit capability-boundary
+stub), Copilot coding agent `@copilot` (autonomous PR
+author, stub), and Copilot CLI (`gh copilot` / `copilot`,
+terminal harness; later expansion) — landing (a) the
+`docs/HARNESS-SURFACES.md` multi-product split with explicit
+capability-boundary
 scoping, (b) the rewritten `.github/copilot-instructions.md`
 self-identifying as a reviewer-robot contract, (c) the
 harness-vs-reviewer-robot correction captured in those
