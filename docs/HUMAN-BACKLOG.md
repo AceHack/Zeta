@@ -241,7 +241,6 @@ are ordered by `State: Open` first, then `Stale`, then
 
 | HB-002 | 2026-04-22 | decision / backlog-restructure | Answer the four open questions in `docs/DECISIONS/2026-04-22-backlog-per-row-file-restructure.md` so the migration can be scheduled. **(1) ID scheme** — numeric (`0042`), slug (`hot-file-path-detector`), or UUID? Numeric is sort-friendly and stable; slug is human-readable but prone to rename churn; UUID is churn-proof but unreadable. **(2) Script home** — `tools/backlog/` (new dir) or inline in an existing tool? Matters for discoverability and for the declarative-deps boundary. **(3) Sort order** — by creation date, last-updated, or priority-then-date? Drives the index file's canonical ordering and agent workflow when scanning the backlog. **(4) Concurrent-migration trade** — one mechanical PR that moves all 300+ rows at once (massive diff but atomic), or staged migration by tier (smaller diffs but longer window where both formats coexist)? Answers unblock the migration PR which is P0 post-R45. | `docs/DECISIONS/2026-04-22-backlog-per-row-file-restructure.md`; landed 2026-04-22 on AceHack/Zeta as **Proposed** via AceHack PR #4 (batch 5 of 6 speculative drain) | Open |  |
 
-
 ### For: `any` (any human contributor)
 
 | ID | When | Category | Ask | Source | State | Resolution |
