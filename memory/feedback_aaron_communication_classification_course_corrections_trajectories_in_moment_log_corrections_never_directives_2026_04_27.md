@@ -1,6 +1,6 @@
 ---
 name: Aaron's communication classification — course-corrections-for-trajectories (dominant) + in-moment log-corrections + NEVER directives (Aaron 2026-04-27)
-description: Aaron 2026-04-27 self-classification of his own communication patterns — most of what he says to Otto are "suggested course corrections for trajectories" (the dominant category); the secondary category is "little corrections noticed in the moment while reading logs"; the NEVER category is "directives" (Otto-357). When Otto is unsure how to classify an Aaron input, default to course-correction-for-trajectory. Composes Otto-357 (no directives) + the trajectories-≈-Jira-Epics framing + Otto-356 Mirror/Beacon. High-leverage classifier for ALL future Aaron input.
+description: Aaron 2026-04-27 self-classification of his own communication patterns — most of what he says to Otto is "suggested course corrections for trajectories" (the dominant category); the secondary category is "little corrections noticed in the moment while reading logs"; the NEVER category is "directives" (Otto-357). When Otto is unsure how to classify an Aaron input, default to course-correction-for-trajectory. Composes Otto-357 (no directives) + the trajectories-≈-Jira-Epics framing + Otto-356 Mirror/Beacon. High-leverage classifier for ALL future Aaron input.
 type: feedback
 ---
 
@@ -56,7 +56,7 @@ Categories 1 and 2 differ in **scope**, not in authority — both are suggestion
 
 ## Why this matters — operational composition
 
-This classification framework composes with two prior substrate elements:
+This classification framework composes with three prior substrate elements:
 
 ### Composes with Otto-357 (NO DIRECTIVES)
 
