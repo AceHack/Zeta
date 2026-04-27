@@ -468,6 +468,123 @@ in the governing repo (declarative-settings-as-code per
 - [ ] Bulk-sync cadence monitor (proposed FACTORY-HYGIENE
       row per `docs/UPSTREAM-RHYTHM.md` §Cadence monitor)
 
+### Blockers to Stage 1 execution
+
+Aaron 2026-04-22 post-ADR-draft:
+
+> *"you need to make sure you can track the budget then you
+> are good to start splitting i think thats the only blocker,
+> we don't want to run out of credits mid swap"*
+
+And on the shape of the check itself:
+
+> *"i want evidence based budgiting so you might have to
+> build some observaiblity first or run some gh commands
+> even if gh commands work we want some amount of price
+> history in git, maybe just looking like before and after
+> PRs on LFG and those measurements might be enough"*
+>
+> *"they have great graphs for the Humans with the live
+> costs in real time, you can do what you think is best"*
+
+**Blocker — LFG free-credit-burn visibility.** Aaron's $0
+budgets on LFG Copilot + Actions + Packages are *designed
+cost-stops* (cross the threshold, GitHub pauses the
+billable surface) — per
+`memory/feedback_lfg_budgets_set_permits_free_experimentation.md`.
+The caps protect the wallet; they do **not** protect the
+build. Running out of free credits mid-swap would leave the
+factory in a half-migrated state with three repos stood up
+but CI paused on all. The fix is consumption-visibility,
+not spending-cap — and per Aaron's reframe, visibility means
+**evidence persisted in git**, not a live UI graph the
+factory can't diff against itself across time.
+
+**Evidence substrate — landed 2026-04-22.**
+
+`tools/budget/snapshot-burn.sh` captures a point-in-time LFG
+state and appends one JSON line to
+`docs/budget-history/snapshots.jsonl`. Works on the current
+`gh` token (scopes: `gist, read:org, repo, workflow`) — no
+scope escalation required to begin accumulating evidence.
+What each snapshot covers:
+
+- **Copilot seats** via `/orgs/<org>/copilot/billing`
+  (`read:org` sufficient). Returns seat breakdown (plan,
+  active count, management mode). Copilot is LFG's only
+  paid-plan axis today.
+- **Per-repo run timing** via
+  `/repos/<r>/actions/runs/<id>/timing` for the last 20
+  runs, aggregated into `total_duration_ms` and
+  `billable_{UBUNTU,MACOS,WINDOWS}_ms`. On public repos
+  the billable counts are typically zero (included
+  minutes), but `run_duration_ms` is the real
+  consumption signal regardless of who is being billed.
+- **Recently-merged PRs** via `/repos/<r>/pulls?state=closed`
+  — supplies the denominator for per-PR burn math.
+- **Scope-coverage manifest** — every snapshot records
+  what it can and cannot see given current scopes, so
+  stale snapshots remain interpretable after a scope
+  change.
+
+Methodology + projection approach in
+`docs/budget-history/README.md`. The baseline snapshot
+was taken the same tick this ADR section was written
+(git SHA recorded inside the snapshot itself —
+self-describing).
+
+**Gate condition for Stage 1.** Snapshot cadence ≥ 3 with
+at least one pre-event and one post-event sample, so
+per-PR burn delta is observable. Current state at ADR
+time: N=1 (baseline). Stage 1 may kick off once:
+
+1. The snapshot cadence has captured ≥ 3 samples across
+   a span of ≥ 2 merged PRs on LFG.
+2. A projection of Stages 1-4 workload burn has been
+   computed from that evidence base (N-extra PRs worth of
+   CI + N-days Copilot seat fraction) and shown to Aaron.
+3. Aaron has approved the projection — either accepting
+   the remaining free-credit runway as sufficient, or
+   acknowledging that an Enterprise upgrade may be
+   triggered mid-migration.
+
+**Enterprise upgrade as the credit-exhaustion escape
+valve.** Aaron 2026-04-22: *"If i need more credits i can
+buy enterprise"*. This changes the shape of the gate
+materially. The failure mode of *"run out of credits mid
+swap"* is no longer existential (factory frozen until
+next free-credit cycle) — it's a *trigger for a manual
+Aaron decision* (upgrade to Enterprise, factory continues).
+Evidence-based budgeting therefore shifts purpose: it no
+longer has to guarantee migration-fits-within-free-tier,
+it has to give Aaron *visibility so the upgrade decision
+can be evidence-driven* rather than surprise-driven.
+This softens Gate condition (3) from "must fit with
+margin" to "Aaron has seen the projection and made an
+informed call on whether to upgrade pre-migration vs
+accept possible mid-migration pause." Memory
+`feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md`
+previously framed the Enterprise upgrade as gated on a
+≥10-item LFG-only backlog (capability trigger); this ADR
+opens a second independent trigger (credit-exhaustion
+escape valve) that Aaron holds the decision for.
+
+**Scope escalation, optional.** For deeper visibility
+(Actions aggregate, Packages storage, shared-storage) the
+token needs `admin:org`. Aaron can run
+`gh auth refresh -s admin:org` as a one-click unlock;
+the snapshot script will then pick up the added axes via
+its `scope_coverage` block without re-authoring.
+Alternatively, a scheduled LFG workflow with a
+`REPO_TOKEN` secret holding `admin:org` would make the
+whole capture agent-ownable without Aaron-in-the-loop.
+Neither is blocking today — the `read:org` substrate is
+live.
+
+Filed as P1 BACKLOG row "LFG budget-tracking substrate —
+unblock for three-repo-split Stage 1." Stage 1 cannot
+kick off until the gate condition above holds.
+
 ### Incremental migration plan
 
 *"LFG this will be nice but we don't have to blow everything

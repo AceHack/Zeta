@@ -81,6 +81,20 @@ catches worth cataloguing in this log.
 
 ## Log (newest-first)
 
+### PR #32 — Round 44 copilot-split + TypeScript tooling + DMAIC + kanban/six-sigma bundle
+
+| Class | Location | Catch |
+|-------|----------|-------|
+| ~~shell~~ **false-positive** | ~~`docs/copilot-wins.md:51`~~ | Copilot claimed jq string quoting broken (inner `"n/a"` terminating outer jq string); **false positive — verified 2026-04-22**: jq handles nested strings inside `\(...)` interpolation correctly; `gh api … --jq '"\(.path):\(.line // "n/a") — \(.body)"'` runs successfully. Copilot's suggested fix (`\\\"n/a\\\"`) would actually break the command. Logged for calibration — Copilot reviewer can produce confidently-phrased false positives on shell/tool syntax. |
+| xref | `docs/research/openspec-coverage-audit-2026-04-21.md:45` | still references sibling `openspec-coverage-audit-2026-04-21-inventory.md` that is not in the PR (repeat finding from PR #31 — not yet actioned) |
+| xref | `docs/research/agent-free-time-notes.md:7` | cross-reference uses placeholder `memory/.../...` rather than real memory file path; non-auditable |
+| xref | `docs/research/agent-cadence-log.md:7` | same placeholder `memory/.../...` path issue; cross-reference integrity broken |
+| config-drift | `docs/CONFLICT-RESOLUTION.md:204` | standing-resolution link points to v1 ADR, but updated skills (`complexity-reviewer`/`claims-tester`) state the authoritative contract is v2 — canonical-ADR pointer conflict |
+| config-compat | `eslint.config.ts:59` | `tseslint.configs.disableTypeChecked` shape varies by version (array vs object); spreading into object produces numeric keys and invalid flat-config entry |
+| config-drift | `eslint.config.ts:71` | root-pattern-only ignore for `references/upstreams/**` with no doubled `**/references/upstreams/**` form; diverges from node_modules rationale in same file |
+
+**Meta-win upgrade:** this PR is the first round where Copilot reviewer delivered substantive findings on factory/governance artifacts beyond code-shell — the `copilot-split` row in `docs/research/meta-wins-log.md` upgrades retrospectively from **partial meta-win** to **clean meta-win depth-1** per its documented upgrade trigger ("if PR-Copilot experiment successfully gets review value on factory docs, retrospective upgrades to clean meta-win").
+
 ### PR #31 — Round 41 OpenSpec backfill + router-coherence v2
 
 | Class | Location | Catch |

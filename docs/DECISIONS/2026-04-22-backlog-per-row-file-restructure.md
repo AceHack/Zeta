@@ -5,6 +5,11 @@ Otto-181 substrate (Otto 2026-04-25 decision after Aaron
 delegated the call: *"i'll leaf it up to you if you want per
 row for backlog... it's your ownership so you make the finial
 decision"*).
+
+<!-- Earlier AceHack-side status was "Proposed" (2026-04-22); LFG-side
+evolution finalised the call as Accepted on 2026-04-25 after Aaron's
+delegation. Status reflects the evolved state. -->
+
 **Decision date:** 2026-04-22 (per-row variant proposed) /
 2026-04-25 (substrate acknowledged, schema aligned with
 Otto-181, decision finalised in favour of bulk migration).
@@ -25,6 +30,10 @@ Zeta factory. It is append-only, organized newest-first within
 four priority tiers (P0/P1/P2/P3), and currently spans
 **~12,800 lines** (12,781 at time of writing) in one file.
 
+<!-- AceHack-side originally reported 5,957 lines on 2026-04-22; LFG-side
+updated count to ~12,800 on 2026-04-25 after substrate growth. The
+~12,800 figure is current. -->
+
 Every autonomous-loop tick touches it. Every round-close
 touches it. Every cadenced audit touches it. Every persona that
 proposes a new line-item touches it. Parallel branches touch it
@@ -43,6 +52,21 @@ shrink. Otherwise every parallel tick accumulates one more
 branch-conflict against the same file, and the compensating
 side (merge-conflict resolution) becomes the tax that kills the
 promised preventive-paired-with-compensating discipline.
+
+A **per-row-file restructure** converts `docs/BACKLOG.md` from a
+single multi-thousand-line text file into an **index file**
+plus one file per backlog row under
+`docs/backlog/<tier>/<id>.md`. Add-a-row becomes "create a new
+file" (zero collision — filename disambiguates); edit-a-row
+becomes "edit one small file" (low collision — only branches
+actually touching that row conflict); ship-a-row becomes "move
+or rename that one file" (isolated operation).
+
+This is the standard pattern for collapsing universal-queue
+hotspots into per-row files when the shared-write cost exceeds
+the read-together cost — the same pattern the factory already
+applies to ADRs (one file per decision under `docs/DECISIONS/`)
+and to skills (one folder per skill under `.claude/skills/`).
 
 ## Existing substrate (Otto-181 prior work)
 
@@ -134,6 +158,23 @@ ADR proposed `tier`, `owner`, `updated`, `scope`, which did not
 match the real schema and would have required parser
 re-engineering — corrected per copilot review on PR #474.)
 
+<!-- AceHack-side earlier draft schema (superseded; preserved for the
+ID-scheme open-question discussion):
+---
+id: <slug>
+tier: P0 | P1 | P2 | P3 | shipped | declined
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+owner: <persona name or TBD>
+effort: S | M | L
+scope: factory | zeta | shared
+---
+
+The proposed `History` section in that earlier draft has been
+folded into per-row `last_updated` + `directive` provenance
+fields under the Otto-181 schema. `scope:` is captured in the
+Open questions section below. -->
+
 ### Index file shape (already in tree)
 
 `docs/BACKLOG.md` is a **generated** index — short pointer per
@@ -156,6 +197,24 @@ Two-phase migration relative to the existing substrate:
    `AGENTS.md`, `CLAUDE.md`, `docs/AGENT-BEST-PRACTICES.md`,
    and any skill bodies that reference `docs/BACKLOG.md` as a
    grep target — most should switch to `docs/backlog/**`.
+
+<!-- AceHack-side earlier (5-step) variant of the migration plan,
+preserved for the human-review checkpoint detail:
+
+1. Script splits current `docs/BACKLOG.md` into per-row files,
+   preserving verbatim body text.
+2. Script generates new `docs/BACKLOG.md` index from the
+   split files.
+3. Each row file starts with the frontmatter derived from its
+   tier, slug, and the dates found in the original body.
+4. `History` section seeded with one entry: "YYYY-MM-DD —
+   migrated from monolithic BACKLOG.md".
+5. Human review of the generated diff before merge. This
+   migration is a single PR that touches the entire
+   `docs/backlog/**` tree + shrinks `docs/BACKLOG.md` — the
+   biggest single-PR diff the factory will have made, but
+   it is a pure mechanical transform with no semantic edits.
+-->
 
 ### Authoring rules after migration
 
@@ -382,6 +441,14 @@ discipline fails without this restructure.
    ascending so older rows get lower numbers? Aaron's call.
    (Default if no answer: newest-first within tier; matches
    the existing single example file `B-0001-...`.)
+
+   <!-- AceHack-side earlier framing of this question (preserved):
+   ID scheme — is `<slug>-<date>.md` the right filename
+   pattern, or is `<NNNN>-<slug>.md` better? Dates are
+   human-readable; numbers are stable across renames.
+   Resolved by Otto-181 schema adoption: `B-<NNNN>-<slug>.md`
+   wins (numbers stable across renames). -->
+
 2. **`scope: factory | zeta | shared`** — was proposed in
    earlier ADR drafts but is *not* in the Otto-181 schema.
    If we want it, file a Phase 1b directive to extend the
@@ -445,8 +512,25 @@ discipline fails without this restructure.
    Otto-283 standing directive (`memory/feedback_decide_track_reflect_revisit_then_talk_with_experience_otto_283_2026_04_25.md`):
    decided, tracked, partially reflected, full revisit when
    bulk migration ships.
+
 3. **Concurrent-migration with R45 original intent** — Aaron
    may prefer to land the restructure *and* the reducer-agent
    flip in the same round, trusting the restructure to absorb
    the parallelism tax live. Staging recommendation above is
    conservative (separate rounds) but not load-bearing.
+
+4. **Order within a tier** *(AceHack-side question, preserved)*
+   — the current monolithic file is "newest-first within each
+   priority tier". The index file inherits that; the row files
+   carry dates in frontmatter. The index can be regenerated in
+   date-order trivially. But for per-tier files with 100+ rows,
+   is date-order still the right default, or is
+   "alphabetical-by-slug" easier to grep? Aaron's call.
+
+5. **Script ownership** *(AceHack-side question, partially
+   resolved)* — does the migration script live in
+   `tools/backlog/` or in the ADR itself as a code block?
+   Convention adopted: one-shot migration scripts live under
+   `tools/migrations/YYYY-MM-DD-<name>/`; ongoing tooling
+   under `tools/backlog/` (per existing
+   `tools/backlog/generate-index.sh`).

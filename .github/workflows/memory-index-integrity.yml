@@ -92,6 +92,14 @@ jobs:
                 :
                 ;;
               memory/persona/*)
+                # Note: bash case `*` matches slashes (unlike
+                # pathname globbing). So this single pattern
+                # correctly covers ALL nested persona notebook
+                # paths including memory/persona/<name>/NOTEBOOK.md.
+                # An earlier "fix" enumerated depths 1+2+3 which
+                # tripped shellcheck SC2221 (redundant patterns)
+                # because the deeper alternations are subsets of
+                # this one. Verified empirically.
                 :
                 ;;
               memory/*.md)

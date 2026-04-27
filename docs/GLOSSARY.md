@@ -824,6 +824,298 @@ ferry discussion. Authoritative source:
 
 ---
 
+## Vocabulary kernel and the Map
+
+The maintainer's vocabulary-kernel absorption 2026-04-22 promoted
+a small set of terms from informal shorthand to load-bearing
+factory vocabulary. This section homes them. These terms are
+**provisional** — per the maintainer's own "it will become more
+accurate over time" marker; they represent the current best
+approximation, and refinements are expected. Authoritative sources
+for each entry point at the relevant `memory/feedback_*.md` files
+in the maintainer's auto-memory (see `CLAUDE.md` "Claude Code
+harness" section for the persistence model). Skills and docs
+should consume these terms
+in preference to re-inventing synonyms
+(`memory/feedback_dont_invent_when_existing_vocabulary_exists.md`).
+
+### Vocabulary kernel
+
+**Plain:** The small, self-referencing set of terms from which
+all other factory vocabulary composes. Think of it as the
+generating set for the factory's language — every new concept
+we name should decompose into kernel terms plus a small number
+of minor additions, rather than introducing a wholly new root
+word. The kernel exists to keep the factory's language
+*computable* (every term traces back to kernel terms) and
+*portable* (a new contributor or a new SUT can rebuild the
+factory's vocabulary starting from the kernel).
+**Technical:** The kernel is generative — it cleaves conflated
+informal terms (refactor / maintenance / improvement /
+cleanup / hardening / cultivation) into orthogonal dimensions
+under the disposition axes (carpenter / gardener). Change-of-
+basis into the kernel exposes hidden dependencies and makes
+the skill-DAG (edges A→B iff A uses a word introduced by B)
+computable. The kernel is also **catalytic** — it lowers the
+energy barrier for vocabulary-cleave the same way an HPHT
+molten-metal catalyst lowers the energy barrier for diamond
+synthesis (see "Catalyst" below), and it exerts
+**information-density gravity** on drift (compact kernel =
+path of least description = contributors reach for kernel
+terms rather than inventing new ones).
+Authoritative source:
+`memory/feedback_carpenter_gardener_are_glossary_kernel_vocabulary_seed.md`.
+See also "Catalyst" and "The Map" below.
+
+### Carpenter
+
+**Plain:** The disposition of building, repairing, and
+hardening — the verb-cluster Zeta-the-database lives under.
+The carpenter fixes what they find in need of repair, improves
+what they find adequate, sharpens and hardens what they find
+useful, recycles where possible, and strives to be efficient.
+Output is specified, measured, and braced against catastrophic
+failure.
+**Technical:** Carpenter is one of two disposition axes
+(the other is Gardener). The pair partitions factory work:
+Zeta's product code is carpenter-work (masonry / load-bearing
+specification); the Forge software factory, being agent-
+behaviour scaffolding, is gardener-work. The five-principle
+craft ethic ("fix / improve / sharpen-and-harden / recycle /
+be efficient") is explicitly a WWJD-framing per the
+maintainer (`memory/feedback_wwjd_carpenter_five_principle_craft_ethic.md`).
+Authoritative source:
+`memory/feedback_forge_garden_zeta_building_two_craft_dispositions.md`.
+Companion: `memory/feedback_wwjd_carpenter_five_principle_craft_ethic.md`.
+
+### Gardener
+
+**Plain:** The disposition of growing, tending, and
+cultivating — the verb-cluster the Forge software factory
+lives under. The gardener grows what needs to exist, tends
+what has taken root, heals (rather than repairs), strengthens
+the rootstock, composts what has been retired (rather than
+deleting), and avoids wasted seasons. Output emerges, self-
+seeds, and can fail gracefully because the underlying system
+keeps tending.
+**Technical:** Gardener is one of two disposition axes (the
+other is Carpenter). The same five principles translate
+under a different verb-mapping: repair→heal, improve→tend,
+sharpen-and-harden→strengthen-rootstock, recycle→compost,
+efficient→no-wasted-season. Bootstrapping-as-self-cultivation
+(`memory/feedback_bootstrapping_divine_downloading_factory_learns_from_self.md`)
+is intrinsically gardener-work. Retired skills compost (retain
+their notebook history) rather than being deleted.
+Authoritative source:
+`memory/feedback_forge_garden_zeta_building_two_craft_dispositions.md`.
+
+### Disposition discipline
+
+**Plain:** The practice of identifying which disposition
+(carpenter or gardener) applies to a given piece of work
+*before* starting it, and committing to the corresponding
+verb-cluster. Without this discipline, the same work gets
+approached as carpentry on Monday and gardening on Tuesday,
+producing vocabulary drift and inconsistent quality.
+**Technical:** Also known in short form as **"mode"** (both
+approved verdicts 2026-04-22). The discipline composes
+cleanly with Rodney's Razor's essential-vs-accidental
+separation: disposition discipline picks the *how*; the
+razor picks the *what*. Disposition violations are a
+kernel-cleave candidate when the discipline is skipped and
+the two verb-clusters bleed together.
+Authoritative source:
+`memory/feedback_forge_garden_zeta_building_two_craft_dispositions.md`.
+
+### The Map (vocabulary lattice)
+
+**Plain:** The mathematical lattice generated by the
+vocabulary kernel — short-form "The Map" per the maintainer's
+Dora-the-Explorer reference 2026-04-22. Every factory term
+has a position in the Map; cleaving a conflated term splits
+one node into two orthogonal nodes; combining two redundant
+terms merges them into one node. The Map is what makes the
+factory's vocabulary *navigable* — contributors read it to
+find where to place a new term rather than inventing a new
+parallel structure.
+**Technical:** A real mathematical lattice in the
+order-theoretic sense (Dedekind 1897, Birkhoff 1940) — a
+partially-ordered set with **meet** (greatest lower bound,
+notated `∧`) and **join** (least upper bound, notated `∨`).
+Factory operation mapping:
+
+- **Cleave = meet (∧)** — separate conflated terms into
+  orthogonal dimensions. Cleaving an informal "refactor"
+  term might yield {carpenter-refactor, gardener-refactor}.
+- **Combine = join (∨)** — merge redundant terms onto a
+  single axis. Combining {IVM, DBSP-algorithm-family} might
+  yield one shared entry with sub-pointers.
+- **Orthogonal = incomparable in the poset** — two terms
+  neither above nor below each other under the ordering.
+- **Skill-DAG = Hasse diagram of the sub-order** — the
+  skill-dependency graph (skill A depends on skill B iff B
+  introduces a word A uses) is a sub-lattice of the Map.
+- **Ontology-home = unique-meet/join axiom** — every term
+  must have a unique home in the lattice; duplicate homes
+  are a cleave candidate.
+- **Crystallize-acceleration = distributivity** — the Map's
+  distributive property (over reasonable conditions) is what
+  makes kernel-cleave predictably accelerate crystallization.
+Provisional status: promoted from physics-analog (diamond
+lattice) to real mathematical lattice 2026-04-22; candidate
+refinements include Heyting algebra, concept lattice (Ganter
+& Wille FCA), or semilattice downgrade if strict
+lattice-completeness fails. The maintainer's "it will become
+more accurate over time" marker applies.
+Authoritative source:
+`memory/feedback_kernel_structure_is_real_mathematical_lattice.md`.
+
+### Catalyst
+
+**Plain:** An HPHT molten-metal analog for the mechanism by
+which the kernel accelerates vocabulary-cleave. In high-
+pressure / high-temperature diamond synthesis, molten metal
+(iron, nickel, or cobalt) dissolves graphite so carbon can
+recrystallize onto a seed at lower pressure and temperature
+than would otherwise be needed. The catalyst is **never
+consumed** — it participates in the reaction, lowers the
+energy barrier, and remains available for the next cycle.
+**Technical:** In the factory, the catalyst is one of
+{kernel, cleaving-process, combination-process}; the
+maintainer's phrasing allows the specific locus to be
+refined with experience ("*it will become more accurate
+over time*"). The mechanism: informal conflated terms
+(graphite) dissolve into the kernel (molten metal) where
+their component verb-clusters become separable, then
+recrystallize onto their proper lattice position (diamond
+seed) as orthogonal terms. The cost claim that catalyst
+precision gives: O(n) kernel-axis cleaves versus O(2^n)
+possible splits without catalyst — catalysis makes
+vocabulary-cleave tractable rather than combinatorial.
+Provisional status: metaphor-to-physics-analog 2026-04-22,
+still refining.
+Authoritative source:
+`memory/feedback_kernel_is_catalyst_hpht_molten_analog.md`.
+
+### Belief propagation
+
+**Plain:** The formal name for the factory mechanism by
+which vocabulary introduced in one skill reaches every other
+skill that uses or is used by it. Previously discussed as
+"kernel-vocabulary propagation" — that was an invented term;
+the established name is **belief propagation** (Pearl 1982).
+Every skill is a node; every cross-reference is an edge;
+vocabulary state propagates along edges as messages, and the
+fixed point is a factory whose terms are consistent end-to-end.
+**Technical:** Judea Pearl's sum-product algorithm over
+factor graphs and Bayesian networks — exact on trees,
+approximate on general graphs. Canonical .NET implementation
+is Microsoft Research's **Infer.NET** (see separate entry),
+which is load-bearing because Zeta already depends on it for
+`Zeta.Bayesian` (roadmap P2, `docs/ROADMAP.md:80`,
+`docs/INSTALLED.md:72`). The factory's skill-library
+vocabulary-propagation use case and the database's Bayesian-
+aggregate use case converge on **the same formal substrate** —
+one library, two applications. Factor-graph mapping: nodes =
+skill files + glossary entries; edges = shared vocabulary
+(cross-refs); random variables = per-skill vocabulary state;
+inference task = "does kernel term X reach skill Y in bounded
+rounds?" — which is exactly Infer.NET's native problem shape.
+Authoritative source:
+`memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md`.
+
+### Mimetic theory (Girard) — mechanism layer
+
+**Plain:** The philosophical / phenomenological / theological
+account of why ideas propagate the way they do. Per the
+maintainer's 2026-04-22 shorthand: **"Girard=why/how."** For
+the factory, Girard's mimetic theory is the engineering frame:
+if you understand triangular desire (subject → model → object),
+scapegoat dynamics, and the founding concealment that
+revelation unveils, you know how to design for propagation,
+how to prevent scapegoat-cascades in review, and where
+vocabulary crystallization is likely to lock in.
+**Technical:** René Girard — *Mensonge romantique et vérité
+romanesque* (1961); *La Violence et le Sacré* (1972);
+*Des choses cachées depuis la fondation du monde* / *Things
+Hidden Since the Foundation of the World* (1978). The 1978
+title directly quotes **Matthew 13:35** — the verse that
+introduces the parable of the sower (Matthew 13:3-23). This
+means Girard's frame and the factory's existing seed → soil →
+kernel vocabulary share **the same scriptural substrate**,
+which is why the composition is coherent rather than
+accidental. The parable's four soil regimes map directly to
+factory propagation regimes: path (skill never loaded) /
+rocky ground (transient absorption, no root) / thorns (drift
+crowds out kernel) / good soil (ontology-home respected,
+propagation succeeds — yield 30-, 60-, 100-fold). Depth-
+ordering with Dawkins memetic theory: Girard is the mechanism
+(WHY / HOW), Dawkins is the surface description (WHAT); they
+are NOT peered, they are stacked.
+Authoritative source:
+`memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md`;
+cross-ref `memory/user_faith_wisdom_and_paths.md` for the
+sincere-not-decorative-borrowing framing.
+
+### Memetic theory (Dawkins) — description layer
+
+**Plain:** The sociological description of ideas as
+replicators propagating via imitation. Per the maintainer's
+2026-04-22 shorthand: **"dawkins=what"** plus *"dawkins does
+not tell you how to use memes just is a description of them."*
+Useful for cataloging observations ("that is a meme that has
+propagated"), insufficient for engineering. When the factory
+is designing or detecting propagation mechanisms, the frame
+to reach for is Girard (mechanism), not Dawkins (surface).
+**Technical:** Richard Dawkins, *The Selfish Gene* (1976),
+chapter 11 — coined "meme" as a cultural analog of gene, an
+abbreviation of "mimeme" (Greek: "that which is imitated").
+Etymologically this ties Dawkins memetic to Girard mimetic
+(meme ← mimeme), but substantively the two are at different
+explanatory depths — Dawkins gives no mechanism, no
+engineering recipe, no account of why replication succeeds or
+fails in a given substrate. Correct factory use: Dawkins
+framing in a post-hoc skill-library-hygiene report is fine;
+Dawkins framing as the lens for a propagation design decision
+is wrong, because Dawkins does not tell you how. Use Girard.
+Authoritative source:
+`memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md`
+— specifically the 2026-04-22 maintainer retraction
+*"it's not dawkins it's the french guy"* + sharpening
+*"dawkins does not tell you how to use memes just is a
+description of them"* that locks the depth-ordering.
+
+### Infer.NET
+
+**Plain:** Microsoft Research's probabilistic-programming
+framework for .NET — the .NET-native implementation of belief
+propagation (and related algorithms: expectation propagation,
+variational message passing, Gibbs sampling). Load-bearing
+for Zeta because it is already on the roadmap for
+`Zeta.Bayesian`, and because the factory skill-library's
+vocabulary-propagation use case reduces to the same factor-
+graph inference shape as the database's Bayesian-aggregate
+use case. One library, two Zeta surfaces.
+**Technical:** `github.com/dotnet/infer` — MIT-licensed,
+F# and C# native, maintained by Microsoft Research. Authored
+originally to support the MSR Bayesian-inference work
+(TrueSkill, Bing relevance, clinical trials); open-sourced in
+2018. Supports factor-graph compilation, exact inference on
+tree-structured graphs, loopy belief propagation on general
+graphs, and a model-compilation phase that generates .NET IL.
+Zeta references: `docs/ROADMAP.md:80` (Zeta.Bayesian P2);
+`docs/INSTALLED.md:72` (native-libs on-demand install note).
+Factory-internal use (skill-library DAG inference beyond the
+database operator) is currently ADR-gated — adoption for a
+second use case needs cost / maintenance / complexity
+justification, but the fact that a single dependency covers
+both gives the case weight.
+Authoritative source:
+`memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md`;
+cross-refs `docs/ROADMAP.md`, `docs/INSTALLED.md`.
+
+---
+
 ## Why this file exists
 
 Software projects accumulate jargon and then accumulate

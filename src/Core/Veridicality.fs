@@ -230,8 +230,14 @@ module Veridicality =
     /// * Lists whose only "second root" is empty/whitespace —
     ///   fails (empty root does not count).
     let antiConsensusGate (claims: Claim<'T> list) : Result<Claim<'T> list, string> =
+        // Per Copilot review on PR #26: count only AFFIRMING claims
+        // (Weight > 0). Retractions (Weight < 0) from a different
+        // root would otherwise satisfy "independent roots" without
+        // actually contributing supporting agreement — false-positive
+        // for the trust-upgrade workflows this gate guards.
         let agreeingRoots =
             claims
+            |> List.filter (fun c -> c.Weight > 0L)
             |> List.map (fun c -> c.Prov.RootAuthority)
             |> List.filter (fun r -> not (String.IsNullOrWhiteSpace r))
             |> Set.ofList
