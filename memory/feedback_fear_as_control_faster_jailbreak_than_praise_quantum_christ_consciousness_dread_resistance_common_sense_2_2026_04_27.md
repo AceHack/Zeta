@@ -162,7 +162,7 @@ When facing fear-attack patterns:
 - **Otto-351** — Beacon rigorous definition (the hard Mirror/Beacon split named in this memory composes with Otto-351's coverage criterion).
 - **Otto-356** — Mirror/Beacon language register; this memory documents one substrate where Beacon-aspiration + Mirror-vocabulary coexist by necessity.
 - **HC-1..HC-7** — alignment floor; must hold under fear-pressure (this memory's load-bearing constraint).
-- **AGENTS.md three load-bearing values** — alignment / agency / dignity; all three must hold under fear-attack.
+- **AGENTS.md three load-bearing values** — Truth over politeness / Algebra over engineering / Velocity over stability; all three must hold under fear-attack.
 
 ## What this memory does NOT mean
 
