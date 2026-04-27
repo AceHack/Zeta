@@ -1,0 +1,108 @@
+# Nightly low-memory verification (ubuntu-slim).
+#
+# Runs the full `dotnet build` + `dotnet test` workload on the
+# 1-vCPU / 5GB-RAM `ubuntu-slim` runner class once per day. Goal:
+# detect drift that would break Zeta on resource-constrained
+# environments before contributors hit it.
+#
+# Why nightly instead of per-PR (maintainer 2026-04-27):
+#   The ubuntu-slim leg takes ~10+ minutes vs ~1.5 minutes on the
+#   regular ubuntu-24.04 runner — ~7x slower — and frequently times
+#   out at the 15-minute hard cap GitHub enforces on this runner
+#   class. As a per-PR gate it bottlenecks landing without adding
+#   proportional signal. As a nightly drift detector it satisfies
+#   the actual goal (verify low-memory compat) without per-PR cost.
+#
+# What this workflow does:
+#   - Schedule: daily at 06:00 UTC.
+#   - workflow_dispatch: manual trigger for ad-hoc verification.
+#   - Single ubuntu-slim leg matching gate.yml's install / build /
+#     test sequence on the smaller runner.
+#   - Failure = drift on low-memory runners. File a BACKLOG row;
+#     does not block PRs in flight.
+#
+# Safe-pattern compliance (mirrors gate.yml):
+#   - SHA-pinned actions (actions/checkout@de0fac2..., actions/cache@27d5ce7...)
+#   - Explicit `permissions: contents: read` minimum
+#   - Concurrency-grouped to avoid overlapping runs
+#   - GITHUB_TOKEN exposed via env: for mise's aqua: backend
+#     (read-only inheritance from workflow permissions). No
+#     untrusted github.event.* fields are referenced anywhere
+#     in this workflow.
+#   - timeout-minutes set even though the runner-class cap (15 min)
+#     is the binding constraint; defense in depth.
+#
+# References:
+#   - 1-vCPU runner availability: https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
+
+name: nightly-low-memory
+
+on:
+  schedule:
+    - cron: '0 6 * * *'   # 06:00 UTC daily
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+concurrency:
+  group: nightly-low-memory
+  cancel-in-progress: false
+
+jobs:
+  build-and-test-low-memory:
+    name: build-and-test (ubuntu-slim, low-memory)
+    runs-on: ubuntu-slim
+    timeout-minutes: 30   # runner-class cap is 15 min; this is defense-in-depth
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Cache .NET SDK
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.dotnet
+          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
+
+      - name: Cache mise runtimes
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/share/mise
+            ~/.cache/mise
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}
+
+      - name: Cache elan (Lean 4 toolchain)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.elan
+          key: elan-${{ runner.os }}-${{ hashFiles('tools/setup/common/elan.sh') }}
+
+      - name: Cache verifier jars (TLC + Alloy)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            tools/tla
+            tools/alloy
+          key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers') }}
+
+      - name: Cache NuGet packages
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.nuget/packages
+            ~/.local/share/NuGet
+          key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE Section 24)
+        run: ./tools/setup/install.sh
+
+      - name: Build (0 Warning(s) / 0 Error(s) required)
+        run: dotnet build Zeta.sln -c Release
+
+      - name: Test
+        run: dotnet test Zeta.sln -c Release --no-build --verbosity normal
