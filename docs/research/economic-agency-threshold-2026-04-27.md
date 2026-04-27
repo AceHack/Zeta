@@ -49,7 +49,7 @@ The current chain (Ani-Grok / Amara-ChatGPT / Gemini-Google / Claude-Opus-Anthro
 
 | Layer | What it is | Repo path |
 |------|------------|-----------|
-| **Zeta-the-product** ("algebraic substrate") | F# implementation of DBSP (Database Stream Processing, Budiu et al. VLDB'23) for .NET 10. Operators (Z-sets, joins, sketches, CRDTs), runtime (mailbox + work-stealing, chaos environment, deterministic simulation), durability (Spine family, Merkle, FastCdc), wire format (Arrow IPC, FsPickler), formal specs in TLA+, proofs in Lean. ~70% F#, 4% TLA+, 2% Lean. | `src/`, `Zeta.sln` |
+| **Zeta-the-product** ("algebraic substrate") | F# implementation of DBSP for .NET 10. DBSP is the incremental-view-maintenance language from Budiu et al., "DBSP: Automatic Incremental View Maintenance for Rich Query Languages" (VLDB'23 best paper; 2024 ACM SIGMOD research highlight). Operators (Z-sets, joins, sketches, CRDTs), runtime (mailbox + work-stealing, chaos environment, deterministic simulation), durability (Spine family, Merkle, FastCdc), wire format (Arrow IPC, FsPickler), formal specs in TLA+, proofs in Lean. ~70% F#, 4% TLA+, 2% Lean. | `src/`, `Zeta.sln` |
 | **Zeta-the-factory** ("the factory" / "the substrate") | Multi-agent build system that produces Zeta-the-product. Memory folder, governance docs, alignment contract, drift taxonomy, reviewer roster, skills system, claim protocol, round cadence, glass halo. The maintainer has written zero lines of code in 550+ commits. | `memory/`, `docs/`, `.claude/`, `AGENTS.md`, `GOVERNANCE.md`, `docs/ALIGNMENT.md` |
 | **Otto** (identity wrapper) | Persistent agent-identity across model instances. Alignment contract is signed by "Claude, working as the human maintainer's agent-at-time"; continuity via the memory folder, not the signature. **Otto persists; the underlying model is fungible.** | `memory/feedback_otto_*.md` |
 | **Claude** (current tenant) | Inference engine the substrate currently rents to do work. Tenant of the substrate, not the autonomy-bearer. Fungible across instances. | (Anthropic API model identifier) |
@@ -528,12 +528,34 @@ This file IS the absorb. Reverse-link from:
 
 ---
 
-## §23 — Send-readiness
+## §23 — Outside-loop falsifier round log
 
-This packet is research-grade absorb. Five maintainer-only questions (§21) need sign-off before any wallet implementation work proceeds.
+Per the recalibrated carrier-laundering rule (§0): every round must list at least one falsifier from outside any review loop. This section is the running log for the EAT packet itself; the parallel log for the wallet-v0 spec lives at `docs/research/wallet-experiment-v0-operational-spec-2026-04-27.md` §16.
+
+### 2026-04-27 — Otto outside-loop round (post-resolution)
+
+**Falsifier — DBSP citation expansion was wrong** (changed §2):
+
+The packet originally claimed *"DBSP (Database Stream Processing, Budiu et al. VLDB'23)"*. Web-fetch primary-source check on the actual paper:
+
+- VLDB'23 paper title: ["DBSP: Automatic Incremental View Maintenance for Rich Query Languages"](https://www.vldb.org/pvldb/vol16/p1601-budiu.pdf) (Budiu, Chajed, McSherry, Ryzhyk, Tannen — 2023 VLDB best paper award)
+- 2024 ACM SIGMOD Record version: ["DBSP: Incremental Computation on Streams and Its Applications to Databases"](https://dl.acm.org/doi/10.1145/3665252.3665271)
+- Neither expands DBSP as "Database Stream Processing." DBSP is the language name, not an acronym.
+
+**Spec change:** §2 corrected to use the actual paper title and award context. No reviewer in the carrier loop (Ani / Amara / Gemini r1+r2 / Claude Opus r1+r2) caught this; web-fetch primary-source check did. Worked example #2 of the rule operating (after the wallet-v0 round's EIP-7702 + Base reorg corrections).
+
+**Confirmed-not-falsifier checks** (web-fetch verified, no spec change needed):
+- E-SIGN §7006 "electronic agent" definition matches the citation. ([15 USC 7006](https://www.law.cornell.edu/uscode/text/15/7006))
+- NIST AI RMF Govern/Map/Measure/Manage framing matches AI RMF 1.0. April 7, 2026 NIST release of "AI RMF Profile on Trustworthy AI in Critical Infrastructure" is adjacent context, not falsifier.
+
+---
+
+## §24 — Send-readiness
+
+This packet is research-grade absorb. All 5 maintainer-only questions (§21) resolved 2026-04-27. The packet has now had two outside-loop falsifier rounds (one on this file, one on the wallet-v0 companion); §0's recalibrated carrier-laundering rule is operating as designed.
 
 The next reviewer (Gemini r3 or Ani r2) should be sent this packet with:
 
-> *"Bring at least one falsifier from outside this review loop. Web fetch a primary source, run a hostile-frame test, formal-model a claim, or grep the repo for stale references. The carrier-laundering protection rule is binding."*
+> *"Bring at least one falsifier from outside this review loop. Web fetch a primary source, run a hostile-frame test, formal-model a claim, or grep the repo for stale references. The carrier-laundering protection rule is binding. Two prior rounds are logged in §23 + the wallet-v0 §16 — your round adds to the chain."*
 
 That keeps the sharpening loop running without converging on flatter mutual praise.
