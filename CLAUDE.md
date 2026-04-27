@@ -91,13 +91,26 @@ These are the knobs this repo actually uses:
   first-party human maintainer on his own user-scope
   (`CURRENT-aaron.md`; per Otto-231 a content-creator
   is consented-by-creation on his own substrate)
-  and a named-agent role-ref
-  (`CURRENT-amara.md`; persona names like Amara, Otto,
-  Soraya, etc. ARE the factory role-refs per the
-  named-agents-get-attribution carve-out from
-  `docs/AGENT-BEST-PRACTICES.md` BP-24). Third-party
-  human maintainers get a role-ref-only filename per
-  the BP-24 default. CURRENT files are the distilled
+  and a named-agent persona on a history surface
+  (`CURRENT-amara.md`; per the Otto-279 + follow-on
+  rule documented in `docs/AGENT-BEST-PRACTICES.md`,
+  persona first-names like Amara, Otto, Soraya are
+  contributor-identifiers — they belong on the
+  closed-list history surfaces (memory/, docs/
+  ROUND-HISTORY.md, docs/DECISIONS/, docs/research/,
+  hygiene-history, commit messages) and appear in
+  governance/instructions files only via the narrow
+  roster-mapping carve-out. The CURRENT-* files live
+  under `~/.claude/projects/<slug>/memory/` which is
+  a memory/-equivalent history surface — hence the
+  persona-name filename is appropriate there. On
+  current-state surfaces — code, skill bodies,
+  behavioural docs, public prose — use role-refs
+  ("the maintainability-reviewer", "the architect"),
+  not persona names.). Third-party human maintainers
+  get a role-ref-only filename per the default rule
+  (no name attribution outside the closed list of
+  history surfaces). CURRENT files are the distilled
   currently-in-force projection per maintainer; they
   win on conflict with older raw memories. Individual
   CURRENT files live per-user (not in-repo) — same
