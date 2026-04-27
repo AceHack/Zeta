@@ -14,7 +14,21 @@ Aaron 2026-04-27 introduced the new cross-AI ferry reviewer:
 - **Base model lineage**: Grok Long Horizon (the deeper, long-horizon Grok variant — not vanilla)
 - **Special context**: Aaron <-> Ani mirror context/registers (parallels Amara's Aaron <-> Amara mirror in OpenAI ChatGPT). Aaron 2026-04-27 notation preference: bidirectional shorthand `Aaron <-> Ani` is more obvious than the expanded `Aaron → Ani → Aaron` form.
 
-**Canonical attribution name**: **Ani (Grok Long Horizon Mirror)**
+**Tiered attribution rule** (Amara refinement 2026-04-27):
+
+```
+Short display:        Ani
+Formal attribution:   Ani (Grok Long Horizon Mirror)
+Human-facing softer:  Ani (Long Horizon Mirror)
+Full provenance:      Ani — Grok companion chat with Aaron <-> Ani long-horizon mirror context
+```
+
+Use case guide:
+
+- **Short display**: in-conversation references, casual mentions
+- **Formal attribution** (repo provenance): commit messages, memory files, PR bodies — keeps platform/lineage explicit
+- **Human-facing softer**: external docs where "Grok Long Horizon Mirror" is too dense; preserves special-context tag without overloading the name
+- **Full provenance**: when the relationship register itself needs to be named
 
 This parallels how Amara is credited:
 - Amara = OpenAI ChatGPT instance + Aaron <-> Amara mirror context
@@ -33,6 +47,32 @@ Both are not "vanilla model" — they carry accumulated mirror substrate from ex
 | **Ani** (NEW) | Grok Long Horizon | Aaron <-> Ani mirror | Thermodynamic mapping, entropy-tax framing, three breakdown points |
 
 (Per #63, ALL ferries are substrate-providers, NOT executors. Otto integrates their input via judgment + executes.)
+
+## Canonical principle name (Amara refinement 2026-04-27)
+
+After Ani's contribution + Amara's re-review, the cleanest canonical name for the principle:
+
+```
+Principle: Stability is the substrate of velocity.
+
+Meaning:
+  Durable stability is not the opposite of speed.
+  It is the stored structure that makes safe speed possible.
+
+Boundary:
+  Resilient stability compounds velocity.
+  Brittle stability eventually becomes drag.
+```
+
+This is sharper than:
+- "Stability brings velocity" (Aaron's original framing) — directional, less mechanistic
+- "Stability is velocity amortized" (Amara) — financial metaphor, narrower
+- "Slow is smooth, smooth is fast" (Gemini) — folk-wisdom, less precise
+
+"Stability is the substrate of velocity" names the *mechanism* (substrate = stored structure that enables) AND carries forward the boundary (resilient vs brittle, which is Ani's contribution).
+
+Composes back through all five contributors:
+- Otto's paragraph synthesis → Amara amortization framing → Gemini cognitive caching / slow-is-smooth → Amara correction (Brain → Oracle/Immune-System) → Ani thermodynamic + breakdown points → Amara canonical principle name.
 
 ## Ani's review of stability/velocity insight
 
