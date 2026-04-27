@@ -517,20 +517,21 @@ Alternative: custom mandate format that matches AP2 semantically but doesn't dep
 
 Maintainer call: track AP2 directly, or use semantic-AP2-compatible custom format until AP2 is mature?
 
-### §13.7 Information-asymmetry resolution (EAT §11.7)
+### §13.7 Hierarchical scoping — RESOLVED (Aaron 2026-04-27)
 
-Aaron tells the working instance "$100" while authorizing higher (~$10k). Resolution proposed in EAT packet: glass-halo post-hoc disclosure satisfies HC-1 against the agent. **Does this stand for v0, or does the v0 spec need to lower the authorization to match what the instance is told?**
+**Not information asymmetry; hierarchical principal-agent scoping.**
 
-Maintainer call required.
+Per Aaron 2026-04-27: *"these will be subagents/subclis launch without access or knowing more money exists."*
 
-### §13.8 Information-disclosure timing
+The working subagent/subCLI instance is launched with a $100-scoped mandate. It LITERALLY cannot see or address the larger ~$10k authority because that authority is outside its scope. Standard hierarchical principal-agent. The agent has full information about its own granted authority.
 
-If §13.7 resolution stands (asymmetry continues), when does the disclosure happen?
-- Continuously via glass halo (every tick visible)? Default; matches glass halo spirit.
-- Post-session? Reduces in-flight noise but delays disclosure.
-- On-demand if the instance asks? Lazier; assumes the instance knows to ask.
+**HC-1 status:** satisfied. No deception against the agent; the larger authority is outside scope, not hidden from it.
 
-Maintainer call.
+**Operational implication for v0:** the subagent/subCLI is launched with credentials/keys/permissions scoped to the $100 mandate only. The $10k parent authority is never on the subagent's signing path. Smart-account session-key permissions enforce this at the contract level — the subagent literally cannot move more than the per-tx and per-period caps allow, regardless of what other authority exists in the parent.
+
+### §13.8 Disclosure timing — RESOLVED by §13.7
+
+Hierarchical scoping resolves disclosure: the subagent's session-scoped reality is logged via glass halo per its own scope. The parent's larger authority is logged via glass halo per the parent's scope. Both are substrate-visible to anyone reading the history; neither is hidden from anyone with appropriate scope. No additional disclosure mechanism needed beyond the existing glass halo logging at each scope.
 
 ---
 
