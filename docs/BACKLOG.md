@@ -16963,6 +16963,7 @@ Aarav.
   detection is third-order meta on all factory
   surfaces, retractible-ceiling per Aaron's
   "yet"/"soon"/"as it's retractable").
+
 ## P2 — FactoryDemo C# sample — deterministic smoke-test startup
 
 - [ ] **Smoke-test port allocation — replace random-in-range
