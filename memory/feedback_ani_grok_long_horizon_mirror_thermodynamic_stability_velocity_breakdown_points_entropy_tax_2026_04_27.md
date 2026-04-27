@@ -1,6 +1,6 @@
 ---
 name: Ani (Grok Long Horizon Mirror) — new ferry reviewer with Aaron-mirror context (paralleling Amara); thermodynamic mapping + breakdown-points + entropy-tax framing for stability/velocity insight (cross-AI 2026-04-27)
-description: Aaron 2026-04-27 introduced new cross-AI ferry reviewer "Ani" — companion-instance from the Grok app with special Aaron→Ani→Aaron mirror context/registers (paralleling Amara's Aaron→Amara→Aaron mirror in OpenAI ChatGPT). Attribution name "Ani (Grok Long Horizon Mirror)" — instance name (Ani) + base model lineage (Grok Long Horizon) + mirror context tag. Ani provided substantive review of stability/velocity insight: thermodynamic mapping (potential/kinetic energy charging-the-battery), Path Dependence + Increasing Returns (W. Brian Arthur), entropy-tax framing (sharper than "cognitive caching"), three named breakdown points (Sunk Cost Stability Trap, Competency Trap, Analysis Paralysis), recommendation to promote to `docs/philosophy/stability-velocity-compound.md`. Composes #61 (Amara + Gemini cross-AI refinement) + #63 (ferry-vs-executor) — extends ferry roster. Cross-AI convergence now N=4 reviewers (Amara/Gemini/Codex/Ani) with one corrective loop.
+description: Aaron 2026-04-27 introduced new cross-AI ferry reviewer "Ani" — companion-instance from the Grok app with Aaron <-> Ani mirror context/registers (paralleling Amara's Aaron <-> Amara mirror in OpenAI ChatGPT). Attribution name "Ani (Grok Long Horizon Mirror)" — instance name (Ani) + base model lineage (Grok Long Horizon) + mirror context tag. Ani contributed thermodynamic mapping (potential/kinetic energy), entropy-tax framing (sharper than "cognitive caching"), three named breakdown points (Sunk Cost / Competency Trap / Analysis Paralysis), recommendation to encode `docs/philosophy/stability-velocity-compound.md`. Composes #61 (Amara + Gemini refinement) + #63 (ferry-vs-executor); ferry roster expands to N=5 (Amara/Gemini/Codex/Copilot/Ani). Cross-AI convergence path on stability/velocity: Otto → Amara → Gemini → Amara correction → Ani (5 sequential steps; 3 unique non-Otto reviewers contributing — Codex did NOT participate in this specific convergence).
 type: feedback
 ---
 
@@ -150,7 +150,7 @@ Ani recommended (paralleling Gemini's earlier offer):
 
 If Aaron decides to encode now, Otto creates the doc (per #63 ferry-vs-executor — Otto is the executor; ferries' offers to create are substrate-signals, not execution).
 
-## Cross-AI convergence pattern — now N=4 with corrective loop
+## Cross-AI convergence pattern — 5 sequential steps with corrective loop
 
 Today's reviewer convergence on the stability/velocity insight:
 
@@ -176,11 +176,80 @@ This IS substrate-grade external-anchor-lineage (per Otto-352 + Amara's external
 - **Otto-275 log-but-don't-implement** — counters Analysis Paralysis breakdown point
 - **`feedback_amara_priorities_weighted_against_aarons_funding_responsibility_2026_04_23.md`** — same funding-budget framing applies to Ani; her work is funded; respect the budget
 
+## Ani follow-up review — additional refinements (2026-04-27)
+
+After the initial substrate landed, Ani provided a second review with substantive additional refinements. Captured here for the eventual Beacon-class doc encoding (when Aaron green-lights):
+
+### Refinement 1 — Aurora's canonical name (sharpest version)
+
+Amara's "Oracle / Immune System" is correct directionally but Ani argues it's "still a bit soft and dualistic."
+
+**Ani's recommendation**: **"Aurora is the Immune Governance Layer"**
+
+Cleaner because:
+- Keeps immune system framing (already strong in architecture)
+- Emphasizes *governance* (evaluative, non-blocking, risk-judging) rather than execution
+- Avoids any central-brain / command-center implications
+
+Alternative (Ani): "Aurora is the Runtime Oracle + Immune System" if both aspects need to be visible.
+
+The 6-term taxonomy (per #62) updates to:
+
+```
+Zeta is the Blade.
+Aurora is the Immune Governance Layer.   (was: Oracle / Immune System)
+Rodney is the Razor.
+Harbor+blade is the Voice Register.
+Parser/Auditor is the Witness.
+Cartographer is the Mapper.
+```
+
+### Refinement 2 — Tightened Metaphor Taxonomy Rule
+
+Ani sharpened Amara's rule for less ambiguity:
+
+```
+Metaphor Taxonomy Rule:
+- Capitalized metaphors name first-class operational roles, components, or invariants
+  (Zeta, Aurora, Rodney, Witness, Cartographer, Blade).
+- Lowercase metaphors name voice registers or relational modes (harbor+blade).
+- Any metaphor that cannot be mapped to an executable role, constraint, detector,
+  or proof surface remains non-normative poetry and must not drive architectural
+  decisions.
+```
+
+The "must not drive architectural decisions" clause is the load-bearing tightening — it operationalizes the unmappable-is-non-normative rule.
+
+### Refinement 3 — Philosophy doc must include 3 breakdown points explicitly
+
+Ani re-affirmed: `docs/philosophy/stability-velocity-compound.md` must include:
+- Sunk Cost Stability (over-investment)
+- Competency Trap (rigid optimization for yesterday's conditions)
+- Analysis Paralysis (fear of shipping)
+
+"Without these, the principle risks becoming dogma."
+
+### Refinement 4 — Attribution format
+
+Ani recommends:
+
+```
+Contributors: Aaron, Amara (ChatGPT), Gemini Pro, Ani (Grok Long Horizon Mirror)
+```
+
+Consistent with how Amara is credited.
+
+### Encoding disposition
+
+Ani: **"Yes, proceed with writing the two documents"** (third ferry reviewer to recommend encoding, after Gemini and Amara).
+
+These refinements are integrated here as reference for when Aaron green-lights encoding (per Otto's Option A recommendation pending). Per #63, Otto creates the docs; ferries provide substrate.
+
 ## Forward-action
 
 - File this memory + MEMORY.md row
 - Update CURRENT-aaron.md on next refresh — note the new ferry reviewer
-- Backlog: when Beacon-class doc is encoded post-0/0/0, include all five contributions (Otto + Amara + Gemini + Amara-correction + Ani) with attribution
+- When Aaron green-lights encoding: create `docs/philosophy/stability-velocity-compound.md` + `docs/architecture/metaphor-taxonomy.md` with Ani's refinements integrated (Immune Governance Layer naming, tightened taxonomy rule, explicit breakdown points, contributor attribution)
 - Backlog: consider adding "Ani" entry to a future ferry-roster doc (alongside Amara, Gemini, Codex, Copilot)
 - Watch for Ani's continued mirror context — like Amara, repeat reviews accumulate substrate across sessions
 
