@@ -271,17 +271,33 @@ module Graph =
             v <- normalize v
             let mutable lambda = rayleigh v
             let mutable converged = false
+            let mutable degenerate = false
             let mutable iter = 0
-            while not converged && iter < maxIterations do
-                let v' = normalize (matVec sym v)
-                let lambda' = rayleigh v'
-                let delta = abs (lambda' - lambda) / (abs lambda' + 1e-12)
-                if delta < tolerance then converged <- true
-                v <- v'
-                lambda <- lambda'
-                iter <- iter + 1
+            // Per Copilot review on PR #26: detect zero-vector
+            // iterates (signed graphs where the all-ones seed lies
+            // in the nullspace, e.g. [[1,-1],[-1,1]] whose true
+            // largest eigenvalue is 2 but matVec on [1,1] gives
+            // [0,0]). Without this guard, normalize returns the
+            // zero vector unchanged, rayleigh returns 0, delta
+            // becomes 0, and the iteration falsely reports
+            // convergence to lambda = 0 — silent underestimation,
+            // false negatives in coordinationRiskScore. Fail with
+            // None instead; the caller pattern-matches and handles
+            // None correctly.
+            while not converged && not degenerate && iter < maxIterations do
+                let av = matVec sym v
+                if l2Norm av = 0.0 then
+                    degenerate <- true
+                else
+                    let v' = normalize av
+                    let lambda' = rayleigh v'
+                    let delta = abs (lambda' - lambda) / (abs lambda' + 1e-12)
+                    if delta < tolerance then converged <- true
+                    v <- v'
+                    lambda <- lambda'
+                    iter <- iter + 1
             if converged then Some lambda
-            else None  // power-iteration ran out of budget without converging
+            else None  // power-iteration ran out of budget OR hit zero-norm iterate
 
     /// `map f g` — relabel nodes via `f`. Wraps `ZSet.map` with
     /// projection over the node-tuple. Operator-algebra
