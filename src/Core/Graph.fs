@@ -281,8 +281,7 @@ module Graph =
                 lambda <- lambda'
                 iter <- iter + 1
             if converged then Some lambda
-            else if iter >= maxIterations then Some lambda
-            else None
+            else None  // power-iteration ran out of budget without converging
 
     /// `map f g` — relabel nodes via `f`. Wraps `ZSet.map` with
     /// projection over the node-tuple. Operator-algebra

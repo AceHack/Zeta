@@ -98,7 +98,15 @@ type Shard =
     /// `OfFixedBytes(bytes: ReadOnlySpan&lt;byte&gt;, shards)`.
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
     static member OfFixed(key: 'K, shards: int) : int =
-        let intHash = key.GetHashCode()
+        // Null-safe path: box key first so reference-type nulls
+        // don't NPE on .GetHashCode(). Value types box without
+        // null. Per Copilot review on PR #26: prior version called
+        // key.GetHashCode() directly which crashed on null reference
+        // keys.
+        let intHash =
+            match box key with
+            | null -> 0
+            | boxed -> boxed.GetHashCode()
         let bytes = BitConverter.GetBytes intHash
         let h64 = XxHash3.HashToUInt64 (ReadOnlySpan bytes)
         Shard.Of(uint32 h64, shards)

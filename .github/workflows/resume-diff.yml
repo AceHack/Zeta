@@ -115,7 +115,7 @@ jobs:
 
                 CLAIM_LINES="$(printf '%s\n' "$RAW_DIFF" \
                   | grep -E '^[+-][^+-]' \
-                  | grep -E '^[+-]\s*(- \*\*|\| |#{2,4} |.*\b(ships?|shipped|verified|proven|complete[ds]?|honest|already absorbed|implement(ed|s)?|in[- ]repo evidence)\b)' \
+                  | grep -P '^[+-]\s*(- \*\*|\| |#{2,4} |.*\b(ships?|shipped|verified|proven|complete[ds]?|honest|already absorbed|implement(ed|s)?|in[- ]repo evidence)\b)' \
                   || true)"
 
                 if [ -n "$CLAIM_LINES" ]; then
