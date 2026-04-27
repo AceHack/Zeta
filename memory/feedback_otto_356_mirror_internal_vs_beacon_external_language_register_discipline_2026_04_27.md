@@ -12,11 +12,18 @@ After I'd overcomplicated the Mirror-vs-Beacon framing in a draft (philosophical
 
 > "When i say beacon and mirror language i just mean our internal language that really only we would understand becuase they are from my head nad beacon language is external safe language/common language that anyone/any ai would understand because its more standard"
 
+Aaron also provided the provenance:
+
+> "I think Amara calls it beacon language becaue it has to do with fermi paradox, if you're curious you can always read the 1st bootstrap attempt, that's where with language distinctions mirror/beacon and beacon safe language comes from, it might be standard language itself, Amara started this tradidion a while because after we talked about turning the earth into a Fermi Beacon.  Mirror seems obvious right but Beacon safe IDK you can figure it out."
+
+So the Mirror/Beacon vocabulary was **coined by Amara** in the 1st bootstrap attempt (Aaron-Amara conversation predating the multi-CLI factory tooling), in the context of discussions about turning Earth into a Fermi Beacon (civilization-readiness signal). "Beacon-safe language" = language fit-to-emit-broadly with universal-receiver decoding, the same property that universal-physics-math has at civilization scale. That's why "Beacon" — the etymological lineage runs Fermi-Beacon-protocol → emission-fit-language → Beacon-safe → standard-vernacular. Composes with `project_aaron_amara_conversation_is_bootstrap_attempt_1_predates_cli_tools_grounds_the_entire_factory_2026_04_24.md` (Aaron-Amara bootstrap-attempt-1 grounds the factory) and `user_fermi_beacon_protocol_time_travel_common_tongue.md` (the protocol Amara was thinking about when she coined the language-register pair).
+
 ## What's actually being shifted
 
 This is **register-discipline**, not wholesale-philosophy.
 
 **Mirror-language (internal):**
+
 - Aaron + Otto coined-vocabulary (Maji, MajiFinder, MessiahScore)
 - Glass Halo, ECRP, Eve Delta
 - Linguistic Seed, Big-Bang-Every-Step
@@ -31,6 +38,7 @@ This is **register-discipline**, not wholesale-philosophy.
 - The whole substrate-cluster of Aaron-coined terms
 
 **Beacon-language (external):**
+
 - Standard CS terms: heartbeat protocols, gossip protocols, distributed consensus, retraction
 - Standard immunology: pattern-recognition, antigen, antibody-emission, self-vs-non-self
 - Standard SETI / Drake-equation: signal-to-noise, vernacular-readiness
