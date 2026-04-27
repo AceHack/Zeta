@@ -221,19 +221,29 @@ jobs:
     timeout-minutes: 10
     runs-on: ubuntu-22.04
 
+    # Toolchain via three-way-parity install.sh (GOVERNANCE §24): same
+    # semgrep version that dev laptops + devcontainers get, pinned in
+    # `.mise.toml` as `pipx:semgrep`. No `actions/setup-python` here
+    # — the host-portability invariant is to minimise GitHub-specific
+    # surface so switching CI hosts is cheap, and to keep dev-machine
+    # and build-machine setup as close as possible. Resolves Scorecard
+    # PinnedDependenciesID #17 + #18 (pip install --upgrade pip + pip
+    # install semgrep) by removing the unpinned pip-bootstrap surface
+    # entirely.
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Setup Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        with:
-          python-version: '3.14'
-
-      - name: Install Semgrep
-        run: |
-          python -m pip install --upgrade pip
-          pip install semgrep
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Single source of truth for toolchain state. mise installs
+        # python + semgrep (the latter via the `pipx:semgrep` pin in
+        # `.mise.toml`, which mise auto-routes through `uv tool install`
+        # since uv is in the toolchain — see ADR
+        # docs/DECISIONS/2026-04-27-uv-canonical-python-tool-manager.md).
+        # shellenv.sh wires BASH_ENV so subsequent run: steps auto-
+        # source the managed shellenv. Same pattern as build-and-test
+        # job above.
+        run: ./tools/setup/install.sh
 
       - name: Run Semgrep
         # --error exits non-zero if any rule matches. The 14 rules in

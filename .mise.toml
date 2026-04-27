@@ -34,8 +34,11 @@ bun = "1.3"
 # uv pinned (round-34 pull-in from ../scratch). Manages Python
 # CLI tooling (ruff etc.) via `uv tool install` with
 # reproducible versions across laptops + CI. See BACKLOG
-# "Python tool management via uv tool (from ../scratch)".
-uv = "0.9"
+# "Python tool management via uv tool (from ../scratch)". Also
+# powers mise's `pipx:` backend below (mise auto-routes `pipx:`
+# tools through `uv tool install` when uv is available — no
+# pipx package needed, faster + already in our toolchain).
+uv = "0.11.8"
 # actionlint: GitHub Actions workflow linter. Declarative install
 # (GOVERNANCE §24 three-way-parity) so dev laptops + CI runners
 # (including ubuntu-slim which doesn't ship with it) have identical
@@ -62,6 +65,22 @@ node = "22"
 # script in package.json) so dev laptops can also `bun run
 # lint:markdown`. Both pins point at the same version.
 "npm:markdownlint-cli2" = "0.22.1"
+# semgrep: SAST linter (the 14 rules in `.semgrep.yml`). Pinned
+# here per the three-way-parity invariant (GOVERNANCE §24) — dev
+# laptops + CI runners + devcontainers should all install
+# semgrep through the same `tools/setup/install.sh` rather than
+# CI fetching its own copy via `actions/setup-python` + pip.
+# The `pipx:` backend prefix is mise's naming; the actual
+# installer mise uses is `uv tool install` (since `uv` above is
+# in this toolchain — mise auto-routes pipx: through uv when
+# uv is available; faster than real pipx, no separate package
+# needed). See docs/DECISIONS/2026-04-27-uv-canonical-python-
+# tool-manager.md for the uv-as-canonical decision and lineage
+# from ../scratch. Resolves Scorecard PinnedDependenciesID #17
+# + #18 (pip install --upgrade pip + pip install semgrep — the
+# unpinned pip-bootstrap surface goes away entirely once mise
+# owns this tool).
+"pipx:semgrep" = "1.161.0"
 
 [settings]
 # `python-build-standalone` (upstream for mise's python plugin)
