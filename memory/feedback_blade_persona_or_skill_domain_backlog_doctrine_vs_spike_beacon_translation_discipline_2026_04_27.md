@@ -35,14 +35,16 @@ Amara 2026-04-27 follow-up — TIGHTENED the taxonomy:
 
 > "There is only one capital-B Blade in Zeta: the Zeta data plane. The others are 'blade-like' by metaphor, but they should be categorized differently so the project does not blur its own architecture."
 
-The repo's clean core phrase: **"Zeta is the Blade. Aurora is the Brain."** Defines a Data Plane vs Control Plane split — Zeta's core is fast, deterministic, bounded, runs `append → index → return`; Aurora is deep probabilistic / control-plane intelligence and must NOT put unbounded inference on the commit path.
+The repo's core split: **Zeta is the Blade (Data Plane); Aurora is the Oracle / Immune System (Control Plane).** Zeta's core is fast, deterministic, bounded, runs `append → index → return`; Aurora is deep probabilistic / control-plane intelligence and must NOT put unbounded inference on the commit path.
+
+(Amara revised the "Aurora is the Brain" naming Gemini Pro initially proposed — "Brain" risks implying central command and smuggling personhood/agency language. Canonical term: "Oracle / Immune System.")
 
 ### Amara's 6-term taxonomy (canonical)
 
 | Term | Category | What it does | Capital-B Blade? |
 |---|---|---|---|
 | **Zeta Blade** | Core substrate / data-plane blade | Bounded hot path: append, index, return; no unbounded work on commit path | **Yes. This is the Blade.** |
-| **Aurora Brain** | Control plane / immune governance | Advises, gates, scores, detects, runs probabilistic reasoning asynchronously | **No. It is the Brain / immune system.** |
+| **Aurora Oracle / Immune System** | Control plane / immune governance | Advises, gates, scores, detects, runs probabilistic reasoning asynchronously | **No. It is the Oracle / Immune System.** |
 | **Rodney's Razor** | Reduction razor / design-time cutter | Cuts accidental complexity while preserving essential structure, logical depth, effective complexity | **No. It is a razor, not the Blade.** |
 | **Harbor+blade** | Relational / communication register | Warmth plus precise correction; care personally, challenge directly | **No. Lowercase blade-mode only.** |
 | **Parser / auditor** | Substrate witness / executable truth gate | Determines whether prose survived as parseable structure | **No. It is the witness/gate.** |
@@ -73,15 +75,15 @@ Do not use capital-B Blade for:
 
 Aurora can be smart because it is NOT on the raw write path. The repo's Round-3 pivot explicitly names "Blade vs Brain" as strict separation and says there must be **no unbounded work on the commit path.** That is why Zeta is the Blade and Aurora is the Brain.
 
-### Cleaned canonical phrase
+### Cleaned canonical phrase (Amara-corrected, post-Gemini)
 
 ```
 Zeta is the Blade.
-Aurora is the Brain.
+Aurora is the Oracle / Immune System.
 Rodney is the Razor.
-Harbor+blade is the voice register.
-The parser/auditor is the Witness.
-The cartographer is the Mapper.
+Harbor+blade is the Voice Register.
+Parser/Auditor is the Witness.
+Cartographer is the Mapper.
 ```
 
 Or in softer register:
@@ -89,9 +91,32 @@ Or in softer register:
 > Zeta cuts time.
 > Aurora judges risk.
 > Rodney trims excess.
-> Harbor+blade tells the truth without breaking the person.
-> The parser witnesses what actually survived.
-> The cartographer names the terrain before we walk it.
+> The Witness proves survival.
+> The Cartographer names terrain.
+> Harbor+blade keeps correction humane.
+
+### Metaphor Taxonomy Rule (Amara proposal)
+
+```
+Capitalized metaphors name operational roles.
+Lowercase metaphors name voice/register.
+If a metaphor cannot map to an executable role, constraint, detector, or
+proof surface, it remains poetic and non-normative.
+```
+
+This rule is the structural protection against vocabulary drift — keeps the magic alive without letting it drive the bus. Composes with Otto-356 Mirror/Beacon (Beacon = mappable to executable role; Mirror = poetic/non-normative until mapped).
+
+### Encoding decision (BACKLOG, not this session)
+
+Amara recommended encoding the taxonomy in `docs/architecture/metaphor-taxonomy.md` plus short GLOSSARY.md entries pointing there. Rationale: GLOSSARY.md alone wouldn't carry the operational separation; a dedicated architecture doc gives the taxonomy load-bearing status.
+
+**Per protect-project mandate**, NOT creating that doc this session because:
+- It's a Beacon-class current-state architecture doc — needs careful long-term thought
+- Cross-AI feedback is fresh; let it season before encoding to permanent surface
+- Pre-0/0/0 priority is closing drift; new doc creation expands scope
+- Mirror-class memory file (this one) captures the substrate without the Beacon-doc commitment
+
+Backlog item: post-0/0/0, route through `skill-creator` / Architect for the architecture doc landing.
 
 ### What this means for the proposed new blade-job
 
