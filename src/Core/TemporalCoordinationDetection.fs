@@ -78,7 +78,14 @@ module TemporalCoordinationDetection =
                 varX <- varX + dx * dx
                 varY <- varY + dy * dy
             if varX = 0.0 || varY = 0.0 then None
-            else Some (cov / sqrt (varX * varY))
+            else
+                // Guard against non-finite inputs (NaN/Infinity in upstream
+                // telemetry). Returning Some NaN would silently poison
+                // downstream detectors that treat Some as a valid measurement;
+                // None is the correct undefined-state signal. Per Codex review
+                // on PR #26.
+                let r = cov / sqrt (varX * varY)
+                if Double.IsFinite r then Some r else None
 
     /// Cross-correlation across the full lag range `[-maxLag, maxLag]`.
     /// Returns one entry per lag; `None` entries indicate lags where
@@ -124,7 +131,16 @@ module TemporalCoordinationDetection =
                 sumCos <- sumCos + cos d
                 sumSin <- sumSin + sin d
             let n = double aArr.Length
-            Some (struct (sumCos / n, sumSin / n, aArr.Length))
+            let meanCos = sumCos / n
+            let meanSin = sumSin / n
+            // Guard against non-finite phase inputs: cos/sin of NaN/Infinity
+            // produces NaN, which would propagate through PLV / phase-offset /
+            // phaseLockingWithOffset as Some NaN — undermining downstream
+            // gating that treats Some as valid evidence. None is the correct
+            // undefined-state signal. Per Codex review on PR #26.
+            if Double.IsFinite meanCos && Double.IsFinite meanSin then
+                Some (struct (meanCos, meanSin, aArr.Length))
+            else None
 
     /// **Phase-locking value (PLV)** — the magnitude of the mean
     /// complex phase-difference vector between two phase series.
