@@ -12,12 +12,14 @@
 ## §0 — What this spec does and does NOT do
 
 **Does:**
+
 - Names concrete signing topology, on-chain guards, off-chain monitor topology, freeze authority, transaction-type definitions, receipt-loop substrate integration.
 - Says exactly what gets built before real money moves.
 - Specifies where each artifact lives in the repo (paths).
 - Lists open questions that need maintainer input before build-out.
 
 **Does NOT:**
+
 - Implement any tooling (no Solidity, no off-chain monitor code, no harness changes).
 - Choose a chain (open question; default candidate = Base for L2 EIP-7702 + EIP-3009 support, but maintainer call).
 - Commit to a specific smart-account framework (Safe / ZeroDev / Coinbase Smart Wallet / others — open question).
@@ -114,6 +116,7 @@ If any of these fails, v0 does NOT proceed to real money. Failures get classifie
 ```
 
 Three actors, three control loops:
+
 - **Agent** proposes; cannot sign; cannot override freeze.
 - **Smart-account layer** validates against hard-coded caps; freezes on policy violation; broadcasts after retraction window.
 - **Off-chain monitor** watches everything; can independently trigger freeze; cannot itself sign or override gates.
@@ -335,6 +338,7 @@ Every wallet-experiment tick produces a row parallel to the existing autonomous-
 ```
 
 Tick types in order during a single wallet operation:
+
 1. **proposal-only**: agent has authored thesis + expected outcome; tx not yet signed.
 2. **signed**: smart-account validated; session key signed; pre-flight retraction window opened.
 3. **broadcast**: retraction window expired; tx on-chain.
@@ -404,6 +408,7 @@ Until any of those triggers, v0 scaffold continues unchanged.
 After session-key signs but before smart-account broadcasts: the tx sits in a **retraction queue** for a configurable duration (default: 60 seconds, maintainer call §13.3).
 
 During the window:
+
 - The agent can **self-revoke** by calling a smart-account method (no key required; just the proposal_id).
 - The off-chain monitor can **freeze-on-dissent**: if the monitor's reasoning-trace check disagrees with the agent's thesis, monitor triggers freeze before broadcast.
 - Aaron can **cancel** via direct freeze key.
@@ -419,6 +424,7 @@ The factory's HC-2 invariant is retraction-native data semantics. On-chain trans
 ### §9.3 Retraction-coverage metric
 
 Per EAT packet §9 multi-round metric: percentage of operations that were either retraction-native by design OR retraction-mitigated. Wallet-experiment operations count as retraction-mitigated when:
+
 - Pre-flight window logged.
 - Reorg-window monitored after broadcast.
 - Failed-retraction attempts logged in receipt.
@@ -441,6 +447,7 @@ The metric drives the multi-round trajectory: if retraction-coverage drops below
 ### §10.2 Scope review process
 
 When triggered, v0 paused. Required artifacts before v0+1:
+
 - Updated spec (this file or successor) covering new scope.
 - KSK gate review — the design-only KSK in sibling repo gets activated for the new scope.
 - If Aurora becomes relevant (production deployment / repeatable high-stakes ops): Aurora design review.
@@ -479,6 +486,7 @@ Per Ani's review of the original packet, three failure modes the v0 spec has to 
 ### §13.1 Smart-account framework choice
 
 Candidates: Safe (battle-tested, multi-sig roots), ZeroDev (modular, EIP-7702-native), Coinbase Smart Wallet (Base-aligned), Pimlico/Stackup bundlers, custom Solidity. Tradeoffs:
+
 - Safe: most audited, but heavier deployment, less EIP-7702-native.
 - ZeroDev: modular, EIP-7702-native, but less battle-tested.
 - Coinbase Smart Wallet: Base-aligned, vendor-locked.
@@ -503,6 +511,7 @@ Maintainer call: 60 seconds OK, or different?
 ### §13.4 Initial caps
 
 Suggested initial values:
+
 - Per-tx max: $10
 - Daily max: $25
 - Weekly max: $100 (equals v0 bond ceiling)
@@ -514,6 +523,7 @@ Maintainer call: too aggressive, too conservative, or about right?
 ### §13.5 Off-chain monitor implementation
 
 Options:
+
 - Separate process in `tools/wallet-monitor/` directory in this repo.
 - Sibling repo `Lucent-Financial-Group/wallet-monitor`.
 - Run on Aaron's separate machine (separate harness instance).
@@ -553,23 +563,27 @@ Hierarchical scoping resolves disclosure: the subagent's session-scoped reality 
 Phase 0: spec acceptance + maintainer sign-off on §12 questions.
 
 Phase 1: harness scaffolding (no real-money tooling yet).
+
 - Stub `tools/wallet-monitor/` directory or sibling-repo bootstrap.
 - Test rig that simulates DEX swaps end-to-end with mocked smart-account + mocked off-chain monitor.
 - Receipt schema validator + per-tick row generator integrated with `docs/hygiene-history/loop-tick-history.md`.
 - Bond accounting integration with `docs/INTENTIONAL-DEBT.md`.
 
 Phase 2: dry-run paper-trading mode.
+
 - Three consecutive sessions per §1 acceptance criteria.
 - All gates active; zero real value transferred.
 - Manual freeze-trigger tests pass.
 - Receipt loop / retraction window / freeze authority all exercised.
 
 Phase 3: bond-posted v0.
+
 - Aaron posts $50–$100 bond.
 - Agent operates within v0 scope.
 - Sessions logged; tuition expected; lessons captured for substrate.
 
 Phase 4: review.
+
 - After bond exhaustion or after maintainer-decided session limit: postmortem.
 - Document what the substrate learned. What's the v0+1 spec?
 - KSK / Aurora design path activated if scaling triggers fired.
@@ -607,6 +621,7 @@ Per the EAT packet's recalibrated carrier-laundering rule (§0): every round mus
 Two falsifiers landed via web-fetch primary-source search; not from any reviewer in the chain.
 
 **Falsifier 1 — EIP-7702 production vulnerabilities** (changed §3.2 + §6.1):
+
 - $1.54M loss in single phishing attack via 7702 delegation tuple ([Cryptopolitan 2025](https://www.cryptopolitan.com/eip-7702-user-loses-1-54m-phishing-attack/))
 - 97% of EIP-7702 delegations point at sweeper contracts that auto-drain compromised addresses ([Wintermute / CoinDesk](https://www.coindesk.com/tech/2025/06/02/post-pectra-upgrade-malicious-ethereum-contracts-are-trying-to-drain-wallets-but-to-no-avail-wintermute), [CertiK](https://www.certik.com/resources/blog/pectras-eip-7702-redefining-trust-assumptions-of-externally-owned-accounts))
 - `tx.origin == msg.sender` invariant broken ([Halborn](https://www.halborn.com/blog/post/eip-7702-security-considerations))
@@ -614,6 +629,7 @@ Two falsifiers landed via web-fetch primary-source search; not from any reviewer
 - **Spec changes:** delegate-target audited-allowlist enforcement, off-chain monitor watches for delegate-target drift + new 7702 authorization tuple anomalies, master-EOA tuple signed once at deployment time only.
 
 **Falsifier 2 — Base reorg model sharper than original §10.1 framing** (changed §9.1):
+
 - Flashblocks: ~200ms preconfirmation, <0.001% reorg ([Base Flashblocks deep-dive](https://blog.base.dev/flashblocks-deep-dive))
 - L1 batch finality: effectively 0% reorg ([Base finality docs](https://docs.base.org/base-chain/network-information/transaction-finality))
 - 7-day withdrawal wait applies only to L2→L1 bridge moves; in-Base swaps don't have the wait

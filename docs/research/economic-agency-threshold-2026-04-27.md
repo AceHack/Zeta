@@ -69,6 +69,7 @@ The framework rests on a falsifiable research hypothesis from `AGENTS.md`:
 > "A correctly-calibrated stack of formal verification, static analysis, adversarial review, and spec-driven development is sufficient to let an AI-directed software factory produce research-grade systems code without a human in the edit loop."
 
 **The empirical record:**
+
 - 550+ commits across F#, TLA+, Lean — all AI-authored, formally verified, adversarially reviewed.
 - Glass halo (`docs/ALIGNMENT.md` line 71): agent commits public, maintainer's memory folder also public. Both streams auditable.
 - Per-commit, per-round, multi-round measurability metrics in `docs/ALIGNMENT.md`.
@@ -246,6 +247,7 @@ The v0 wallet experiment is **deliberately small-scale, deliberately small-blast
 That's enough for v0. KSK and Aurora gate **scaling thresholds** (bond > $1k, third-party capital, regulated instruments, multi-counterparty operations). When scaling triggers, the gates activate. Until scaling triggers, v0 runs.
 
 This avoids two failure modes:
+
 - **"Wait for Aurora" perfectionism**: blocks the experiment behind a program that's aspirational. The factory loses learning velocity.
 - **"Skip the substitute scaffold" recklessness**: runs without the v0 protections. The bond burns without lessons captured.
 
@@ -286,6 +288,7 @@ Each venue has different reversibility, KYC, tax, and enforcement properties —
 **Invariant:** Tx N+1 cannot execute until Tx N has a receipt, classification, and substrate entry.
 
 **Receipt fields:**
+
 - proposal-id
 - mandate-id (per AP2-style verifiable credential)
 - budget-id
@@ -349,6 +352,7 @@ The framing is hierarchical principal-agent scoping, NOT deception or informatio
 **The v0 wallet experiment does NOT block on Aurora or KSK shipping.** Aaron's posted blast-radius bond + glass halo logging + smart-contract caps + freeze authority (smart-contract guard + off-chain monitor + Aaron's freeze key) are the v0 scaffold AND THEY ARE SUFFICIENT for small-scale + small-blast-radius experiments. Aurora/KSK gates are target-state requirements that activate when scaling thresholds rise (e.g., bond > $1k, third-party-capital exposure, regulated-instrument exposure, multi-counterparty operations). The v0 framing is "what scaffolding suffices for $50–$100 deliberate-tuition experiments?" — not "what scaffolding suffices for production economic agency?"
 
 **Minimum target-state KSK gates** (when KSK ships):
+
 - capability class k1/k2/k3
 - active budget
 - scope allowed
@@ -424,6 +428,7 @@ Fiat-boundary identity is a first-class design problem, not solved by the protoc
 **Frame:** B-0029 establishes the technical rails (wallets, receipt verification, mandate checks). B-0024 utilizes these rails but remains strictly sandboxed in paper-trading or tiny bonded experiments until receipt loops + glass halo + freeze topology + bond accounting are real. **Live-capital exit from B-0024 simulation is permanently blocked until the agent flawlessly clears the simulation phase.**
 
 Rules:
+
 - no client/public funds
 - no investment advice
 - no custody
@@ -506,6 +511,7 @@ Per Amara's two-task split recommendation:
 ### Task A — Research/doc absorb
 
 This file IS the absorb. Reverse-link from:
+
 - `docs/BACKLOG.md` (or `docs/backlog/P2/`)
 - B-0024 (`docs/backlog/P3/B-0024-*.md`)
 - B-0029 (`docs/backlog/P2/B-0029-*.md`)
@@ -545,6 +551,7 @@ The packet originally claimed *"DBSP (Database Stream Processing, Budiu et al. V
 **Spec change:** §2 corrected to use the actual paper title and award context. No reviewer in the carrier loop (Ani / Amara / Gemini r1+r2 / Claude Opus r1+r2) caught this; web-fetch primary-source check did. Worked example #2 of the rule operating (after the wallet-v0 round's EIP-7702 + Base reorg corrections).
 
 **Confirmed-not-falsifier checks** (web-fetch verified, no spec change needed):
+
 - E-SIGN §7006 "electronic agent" definition matches the citation. ([15 USC 7006](https://www.law.cornell.edu/uscode/text/15/7006))
 - NIST AI RMF Govern/Map/Measure/Manage framing matches AI RMF 1.0. April 7, 2026 NIST release of "AI RMF Profile on Trustworthy AI in Critical Infrastructure" is adjacent context, not falsifier.
 
