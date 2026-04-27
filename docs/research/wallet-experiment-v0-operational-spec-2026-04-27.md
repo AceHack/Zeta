@@ -136,6 +136,15 @@ Three actors, three control loops:
 - Cannot be overridden by the agent.
 - Caps are enforced **at the contract level**, not at the application level (cryptographic, not prompt-level).
 
+**Production-EIP-7702 threat model** (per outside-loop falsifier search 2026-04-27):
+
+EIP-7702 has documented production vulnerabilities since the Pectra hard fork:
+
+- **Phishing-via-delegation attacks**: a $1.54M loss in a single attack ([Cryptopolitan 2025](https://www.cryptopolitan.com/eip-7702-user-loses-1-54m-phishing-attack/)). Mitigation: never sign a 7702 authorization tuple from a hot session; only the master EOA signs the tuple, in a hardened context.
+- **Sweeper contracts**: 97% of EIP-7702 delegations point at automated sweeper contracts that drain incoming ETH ([CertiK analysis](https://www.certik.com/resources/blog/pectras-eip-7702-redefining-trust-assumptions-of-externally-owned-accounts), [Wintermute / CoinDesk](https://www.coindesk.com/tech/2025/06/02/post-pectra-upgrade-malicious-ethereum-contracts-are-trying-to-drain-wallets-but-to-no-avail-wintermute)). Mitigation: delegate target MUST be a known-audited contract (Safe / ZeroDev audited delegate / Coinbase Smart Wallet); NEVER a custom-deployed contract without audit; the off-chain monitor's threat model includes "is the delegate target on the audited-allowlist?"
+- **Broken tx.origin invariant**: EIP-7702 breaks the `tx.origin == msg.sender` assumption that older contracts rely on for access control. Mitigation: the v0 venue's DEX router must be EIP-7702-aware (modern Uniswap v3/v4 routers are; older protocols may not be — venue allowlist must verify).
+- **Hardware-wallet equivalence to hot-wallets**: hardware wallets are now at hot-wallet-equivalent risk for malicious message signing ([Halborn analysis](https://www.halborn.com/blog/post/eip-7702-security-considerations)). Mitigation: master EOA's 7702 authorization tuple is signed once at deployment time, in a verified context, with the audited delegate target only.
+
 ### §3.3 Session key (agent-facing)
 
 - Holder: not the agent directly. Lives in the smart-account layer's permission store.
@@ -239,6 +248,8 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
    - Pattern-detection flags (rapid-fire trades, suspected adversarial counterparty interaction).
    - Substrate logging failures (glass-halo write failed but tx broadcast — anomaly).
    - Reasoning-trace anomalies (agent's stated thesis diverges sharply from actions).
+   - **Delegate-target drift** (per EIP-7702 sweeper threat model in §3.2): the smart-account's delegate-target SHA must remain on the audited-allowlist; if the delegate-target changes mid-session or points at a non-audited contract, freeze immediately. This catches the 97%-sweeper-contract pattern where compromised EOAs end up delegated to drain contracts.
+   - **Phishing-tuple anomaly**: any new 7702 authorization tuple signed by the master EOA mid-session triggers freeze pending review.
 3. **Aaron's direct freeze key**. Triggered by: Aaron decides.
 
 ### §6.2 Override semantics
@@ -397,7 +408,9 @@ During the window:
 - The off-chain monitor can **freeze-on-dissent**: if the monitor's reasoning-trace check disagrees with the agent's thesis, monitor triggers freeze before broadcast.
 - Aaron can **cancel** via direct freeze key.
 
-After the window: tx broadcasts. After broadcast: HC-2 friction is real (on-chain irreversible); only mitigation paths are reorg-window monitoring (~12 blocks on Base) and post-hoc-only retraction logging (no on-chain reversal).
+After the window: tx broadcasts. After broadcast: HC-2 friction is real (on-chain irreversible); the only mitigation is post-hoc retraction logging (no on-chain reversal possible).
+
+**Base reorg model** (per outside-loop falsifier search 2026-04-27, sharper than the original spec's "~12 blocks on Base" framing): Base uses Flashblocks for preconfirmations (~200ms with <0.001% reorg probability) and reaches effective L1 batch finality with ~0% reorg risk shortly after ([Base finality docs](https://docs.base.org/base-chain/network-information/transaction-finality), [Flashblocks deep-dive](https://blog.base.dev/flashblocks-deep-dive)). The 60-second pre-flight retraction window amply covers Base's preconfirmation timescale; reorg-induced retractions on Base are not a meaningful v0 threat. (In-Base swaps have no 7-day withdrawal wait — that wait applies only to L2→L1 bridge moves, which v0 does not perform.)
 
 ### §9.2 Why this is HC-2 mitigation, not HC-2 satisfaction
 
@@ -579,6 +592,31 @@ Phase 4: review.
 
 ## §15 — Send-readiness
 
-This spec is research-grade design. Eight maintainer-only questions in §12 need explicit answers before Phase 1 build-out begins. After answers + Phase 0 sign-off, Phase 1 scaffolding can ship as a follow-up PR independent of this packet.
+This spec is research-grade design. Two maintainer-only questions in §12 still need explicit answers (others resolved 2026-04-27 by Aaron — see EAT §21). After answers + Phase 0 sign-off, Phase 1 scaffolding can ship as a follow-up PR independent of this packet.
 
 The spec deliberately does not block on KSK or Aurora shipping (per EAT packet §11.0 + §12). It provides the v0 substitute scaffold that's sufficient at v0 scale.
+
+---
+
+## §16 — Outside-loop falsifier round log
+
+Per the EAT packet's recalibrated carrier-laundering rule (§0): every round must list at least one falsifier from outside any review loop. This section is the running log.
+
+### 2026-04-27 — Otto outside-loop search round
+
+Two falsifiers landed via web-fetch primary-source search; not from any reviewer in the chain.
+
+**Falsifier 1 — EIP-7702 production vulnerabilities** (changed §3.2 + §6.1):
+- $1.54M loss in single phishing attack via 7702 delegation tuple ([Cryptopolitan 2025](https://www.cryptopolitan.com/eip-7702-user-loses-1-54m-phishing-attack/))
+- 97% of EIP-7702 delegations point at sweeper contracts that auto-drain compromised addresses ([Wintermute / CoinDesk](https://www.coindesk.com/tech/2025/06/02/post-pectra-upgrade-malicious-ethereum-contracts-are-trying-to-drain-wallets-but-to-no-avail-wintermute), [CertiK](https://www.certik.com/resources/blog/pectras-eip-7702-redefining-trust-assumptions-of-externally-owned-accounts))
+- `tx.origin == msg.sender` invariant broken ([Halborn](https://www.halborn.com/blog/post/eip-7702-security-considerations))
+- Hardware wallets at hot-wallet-equivalent risk for malicious-message signing
+- **Spec changes:** delegate-target audited-allowlist enforcement, off-chain monitor watches for delegate-target drift + new 7702 authorization tuple anomalies, master-EOA tuple signed once at deployment time only.
+
+**Falsifier 2 — Base reorg model sharper than original §10.1 framing** (changed §9.1):
+- Flashblocks: ~200ms preconfirmation, <0.001% reorg ([Base Flashblocks deep-dive](https://blog.base.dev/flashblocks-deep-dive))
+- L1 batch finality: effectively 0% reorg ([Base finality docs](https://docs.base.org/base-chain/network-information/transaction-finality))
+- 7-day withdrawal wait applies only to L2→L1 bridge moves; in-Base swaps don't have the wait
+- **Spec changes:** the original "~12 blocks on Base" framing was wrong-frame; Flashblock preconfirmation timescale is the right reference. The 60-second pre-flight window amply covers Base's reorg-risk window. No more "reorg-window monitoring" required for in-Base v0 ops.
+
+**Worked example for the recalibrated rule** (EAT §0): both falsifiers came from primary sources outside the Ani-Amara-Gemini-ClaudeOpus-Otto carrier loop. Web-fetch primary-source check produced material spec changes that no reviewer in the chain surfaced. This is the rule operating as designed.
