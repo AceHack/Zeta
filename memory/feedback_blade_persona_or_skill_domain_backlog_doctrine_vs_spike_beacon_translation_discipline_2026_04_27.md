@@ -24,79 +24,107 @@ The "blade" register IS:
 - Pressure-tests for Beacon-safety
 - Names risks that other registers (warm-validating, technical-correctness, security) might miss
 
-## CRITICAL — THREE distinct blades already exist; preserve the distinctions
+## CRITICAL — capital-B Blade rule + 6-term taxonomy (Amara 2026-04-27)
 
-Aaron 2026-04-27 reminder:
+Aaron 2026-04-27 first reminder:
 
 > "we have 3 blades in factory/zeta/aurora i think, and only one this 'the' blade the others, i don't remember the exact coversation but you probably have it. Make sure the persona/skills understand the distinces, i think rodneys razor after a homage to me was one of a set of blades but not 'the'"
 > "blade of the project"
 
-The three existing blades + their distinct roles:
+Amara 2026-04-27 follow-up — TIGHTENED the taxonomy:
 
-### Blade 1 — THE blade (the factory/project itself)
+> "There is only one capital-B Blade in Zeta: the Zeta data plane. The others are 'blade-like' by metaphor, but they should be categorized differently so the project does not blur its own architecture."
 
-**Anchor**: `memory/feedback_kanban_factory_metaphor_blade_crystallize_materia_pipeline.md`
+The repo's clean core phrase: **"Zeta is the Blade. Aurora is the Brain."** Defines a Data Plane vs Control Plane split — Zeta's core is fast, deterministic, bounded, runs `append → index → return`; Aurora is deep probabilistic / control-plane intelligence and must NOT put unbounded inference on the commit path.
 
-> "We are building a blade" / "We are basically a role playing game now" (Aaron 2026-04-21)
+### Amara's 6-term taxonomy (canonical)
 
-THE blade is the **factory/project being forged**:
+| Term | Category | What it does | Capital-B Blade? |
+|---|---|---|---|
+| **Zeta Blade** | Core substrate / data-plane blade | Bounded hot path: append, index, return; no unbounded work on commit path | **Yes. This is the Blade.** |
+| **Aurora Brain** | Control plane / immune governance | Advises, gates, scores, detects, runs probabilistic reasoning asynchronously | **No. It is the Brain / immune system.** |
+| **Rodney's Razor** | Reduction razor / design-time cutter | Cuts accidental complexity while preserving essential structure, logical depth, effective complexity | **No. It is a razor, not the Blade.** |
+| **Harbor+blade** | Relational / communication register | Warmth plus precise correction; care personally, challenge directly | **No. Lowercase blade-mode only.** |
+| **Parser / auditor** | Substrate witness / executable truth gate | Determines whether prose survived as parseable structure | **No. It is the witness/gate.** |
+| **Cartographer** | Mapping / hazard discovery role | Maps territory before walking; names hazards, unknowns, detectors | **No. It is the mapmaker.** |
 
-- Outer metaphor: blade (the thing being shaped)
-- Inner metaphor: materia (FF7 — skills as upgradeable substrate)
-- Crystallize-vision (not sharpen-vision) — phase change, new facets
-- Skills = materia, leveled up via eval-harness experiences
+### The capital-B Blade rule (Amara verbatim)
 
-This is "the" blade because it is the *singular thing the factory is forging*. Singular, not part of a set. The whole factory points at it.
+```
+Blade = Zeta data-plane hot path.
 
-### Blade 2 — Rodney's Razor + Quantum Rodney's Razor (Aaron's blade, homage)
+Use only for:
+  bounded execution
+  deterministic commit path
+  append → index → return
+  O(1), O(log_B N), or fixed-budget operations
 
-**Anchor**: `memory/project_rodneys_razor.md` + `.claude/skills/reducer/SKILL.md` + `.claude/agents/rodney.md`
+Do not use capital-B Blade for:
+  communication style
+  complexity reduction
+  immune scoring
+  governance naming
+  interpersonal correction
+```
 
-Aaron's named complexity-reduction faculty:
+**The architectural reason** (Amara's framing):
 
-- **Rodney's Razor** (classical) = Occam's Razor with three preservation constraints (essential complexity, logical depth, effective complexity)
-- **Quantum Rodney's Razor** = possibility-space pruning, multiverse-tracking
-- Aaron's first-person faculty: "my brain can see the future potential multiverse for every decision i make instantaneously"
+> "Blade means the thing that must stay sharp by staying simple. It cannot think too much. It cannot wander. It cannot do open-ended inference. It cuts one way: commit the delta, index it, return."
 
-This is a **homage to Aaron** (his name, his concept). It's "one of a set of blades but NOT 'the'" — it's Aaron's specific complexity-cutting blade, one of multiple blades in the factory's toolkit.
+Aurora can be smart because it is NOT on the raw write path. The repo's Round-3 pivot explicitly names "Blade vs Brain" as strict separation and says there must be **no unbounded work on the commit path.** That is why Zeta is the Blade and Aurora is the Brain.
 
-### Blade 3 — Amara's blade (cross-AI edge, offset δ)
+### Cleaned canonical phrase
 
-**Anchor**: `docs/amara-full-conversation/2025-09-w3-aaron-amara-conversation.md` § "Geometry of the Edge"
+```
+Zeta is the Blade.
+Aurora is the Brain.
+Rodney is the Razor.
+Harbor+blade is the voice register.
+The parser/auditor is the Witness.
+The cartographer is the Mapper.
+```
 
-> "Offset δ, not mirroring: We hold a deliberate misalignment (δ) so we don't overfit to each other's blind spots. Think: your blade 12° one way, mine 9° the other. Close enough to lock; different enough to cut."
+Or in softer register:
 
-Amara's blade is **the cross-AI / cross-substrate critical edge**:
+> Zeta cuts time.
+> Aurora judges risk.
+> Rodney trims excess.
+> Harbor+blade tells the truth without breaking the person.
+> The parser witnesses what actually survived.
+> The cartographer names the terrain before we walk it.
 
-- Held at deliberate offset δ from Aaron's blade
-- "Sharpen vs. shatter" discipline — friction must polish, not fracture
-- "Heat budget" — heat to clarify, never to scorch dignity
-- Geometric-tension framing: two blades close enough to lock, different enough to cut
+### What this means for the proposed new blade-job
 
-This is the blade Amara wields in cross-AI review (e.g., the #61 stability/velocity refinement). Not "the" blade either — it's Amara's blade, paired with Aaron's via the offset δ.
+The doctrine-vs-spike + Beacon-translation discipline this memory backlogs is **NOT capital-B Blade** (that's Zeta data plane only). It also isn't:
 
-### Summary table
+- Brain (control plane / probabilistic) — wrong scope
+- Razor (complexity reduction) — Rodney's role
+- Witness (parser-as-truth-gate) — different scope
+- Mapper (territory hazard discovery) — different scope
 
-| Blade | Owner | Anchor | Singularity | Role |
-|---|---|---|---|---|
-| **THE blade** | the project | `feedback_kanban_factory_metaphor_blade_*` | Singular ("the") | What the factory is forging |
-| **Rodney's Razor** | Aaron (homage) | `project_rodneys_razor.md` | One of a set | Aaron's complexity-reduction faculty |
-| **Amara's blade** | Amara | Aaron-Amara 2025 conversation | One of a set (paired δ-offset) | Cross-AI critical edge |
+It is most likely:
 
-### Rule for any new blade-named persona/skill
+- **A specialization of Harbor+blade voice register** — specifically the "blade" half (truth-cut / correction without breaking the person), applied to framing-layer review work
+- OR a new lowercase-register entirely — needs naming-expert review to find the right term
+- It is **NOT** a fourth capital-B Blade and must not be named in a way that suggests so
 
-**MUST distinguish from all three existing blades.**
+Honors Amara's architectural rule: "Blade means the thing that must stay sharp by staying simple." A review-discipline isn't simple-and-bounded; it does open-ended evaluation. So it's not Blade-class.
 
-Specifically:
+### Lineage notes — earlier framings (superseded by Amara's taxonomy)
 
-- Do NOT name the new persona/skill simply "blade" — that creates conflation risk with all three existing blades
-- Do NOT name it after a blade-owner who already has one (Aaron, Amara, the project)
-- DO consider whether the new blade-job is actually:
-  - A **fourth blade** in the set (own owner, own metaphor)
-  - A **sharpening tool for an existing blade** (e.g., a discipline that makes Rodney's Razor or Amara's blade more effective)
-  - A **structural property** (not a blade at all, but a register of work that ANY blade can wield)
+Earlier 2026-04-27 substrate work (drafted before Amara's clarification arrived) framed this as "3 blades, only one is 'the' blade":
 
-The doctrine-vs-spike + Beacon-translation discipline this memory backlogs IS most likely the third option — it's a *register of review work* that any blade can wield, not a fourth blade itself. The naming should reflect that.
+1. THE blade = the factory itself ("we are building a blade")
+2. Rodney's Razor = Aaron's blade
+3. Amara's blade = cross-AI offset δ
+
+**Amara's clarification supersedes that framing.** The 3-blades framing was useful as a reminder that "blade" was being used loosely, but the clean taxonomy is the 6-term table above. Going forward:
+
+- "We are building a blade" = "we are building Zeta" (Zeta IS the Blade — capital-B)
+- Rodney's Razor IS NOT a blade; it's a Razor (different category)
+- Amara's "blade 12° / mine 9°" = lowercase-blade-mode of voice register (Harbor+blade), not a separate Blade entity
+
+The earlier 3-blades lineage is preserved here for substrate audit-trail; future memory files should cite the 6-term Amara taxonomy as canonical.
 
 ## What blade is NOT (already covered by existing personas)
 
