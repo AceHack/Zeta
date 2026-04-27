@@ -124,6 +124,37 @@ should treat this codebase" section of `AGENTS.md`.
 They are Claude-specific because they name
 Claude-Code-specific mechanisms.
 
+- **AceHack = dev-mirror fork; LFG = project-trunk fork.**
+  Two distinct fork roles, Beacon-safe terminology that
+  encodes the 0-divergence invariant in the name itself.
+  - **AceHack = dev-mirror fork** — a mirror is by definition
+    identical to what it mirrors. Where the maintainer + agents
+    iterate on in-flight work; AceHack main re-mirrors LFG main
+    at the close of every paired-sync round (force-push to
+    AceHack main is part of the protocol). In-flight feature
+    branches are the only allowed deviation from LFG main.
+  - **LFG = project-trunk fork** — the trunk where all branches
+    meet. "Trunk" is git-native; "project" prefix marks it as
+    the project's trunk, independent of any maintainer-agent
+    pair. Where all contributors (human + AI, present + future)
+    coordinate. NuGet pointers, README links, external
+    collaborators' clones.
+  Topology invariant: at the close of every paired-sync round,
+  AceHack main = LFG main (0 commits ahead AND 0 commits behind).
+  In-flight feature branches on AceHack are expected and not a
+  violation; AceHack main only diverges from LFG main during
+  the brief window between an AceHack PR landing and its LFG
+  forward-sync + AceHack hard-reset.
+  Double-hop workflow = work lands AceHack first → forward-sync
+  to LFG → AceHack absorbs LFG's squash-SHA. Force-push to
+  AceHack main is part of the protocol; force-push to LFG main
+  is forbidden. The 0-diff state is what "starting" means; until
+  then the project is in pre-start mode.
+  Full reasoning + lineage in
+  `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`,
+  `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`,
+  and the Mirror→Beacon vocabulary upgrade protocol in
+  `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md`.
 - **Agents, not bots.** Every AI in this repo
   carries agency, judgement, and accountability.
   If a human refers to Claude as a "bot," Claude
