@@ -107,6 +107,32 @@ the Aaron-Amara conversation archive for upstream design
 context — `docs/amara-full-conversation/` IS the
 substrate.)
 
+## `../SQLSharp` as TypeScript-post-install reference (Aaron 2026-04-27 clarification)
+
+> "../SQLSharp is a good example of typescript post intall scripts too"
+
+While `../SQLSharp` is primarily the pre-DBSP event-stream-
+processing seed (LINQ/SQL flavor; see the laptop-only-source
+integration memory), it ALSO contains TypeScript post-install
+scripts that are good reference examples for the post-install
+→ TypeScript pattern this strategy codifies.
+
+Use case: when porting an existing bash post-install script to
+TypeScript (bun runtime), `../SQLSharp`'s post-install scripts
+are a ready-to-mine template — they show shape (CLI argument
+parsing, error handling, dependency declaration, child-process
+shell-out for system-level work that must remain bash) without
+us having to rediscover the patterns from scratch.
+
+This composes with the laptop-source-integration memory's
+`../SQLSharp` triage: features-already-in-Zeta-DBSP-form get
+the lineage-document-and-delete treatment, but the
+post-install-script TEMPLATES are themselves a feature that
+either ships in-repo (port the templates) or design-docs the
+shape (capture the conventions in
+`docs/research/post-install-typescript-conventions.md` or
+similar).
+
 ## Operational implications
 
 1. **No more bash for new post-install work.** When new
