@@ -5,13 +5,23 @@
 # detect drift that would break Zeta on resource-constrained
 # environments before contributors hit it.
 #
-# Why nightly instead of per-PR (maintainer 2026-04-27):
+# Why post-merge + nightly instead of per-PR (maintainer 2026-04-27):
 #   The ubuntu-slim leg takes ~10+ minutes vs ~1.5 minutes on the
 #   regular ubuntu-24.04 runner — ~7x slower — and frequently times
 #   out at the 15-minute hard cap GitHub enforces on this runner
 #   class. As a per-PR gate it bottlenecks landing without adding
-#   proportional signal. As a nightly drift detector it satisfies
-#   the actual goal (verify low-memory compat) without per-PR cost.
+#   proportional signal.
+#
+#   Maintainer 2026-04-27: "no reason we don't change that nightly
+#   job for slim to just trigger on every merge to main, it's free
+#   for open source projects." So the trigger surface is now:
+#     1. push to main (every merge) — primary drift detection
+#     2. daily 06:00 UTC schedule — catches weekend drift +
+#        backstops if push triggers somehow miss
+#     3. workflow_dispatch — manual ad-hoc verification
+#   Standard GitHub-hosted runners are free for public repos
+#   (per Otto-249 — standard runners free for public repos),
+#   so the per-merge run has no cost downside.
 #
 # What this workflow does:
 #   - Schedule: daily at 06:00 UTC.
@@ -38,8 +48,11 @@
 name: nightly-low-memory
 
 on:
+  push:
+    branches: [main]
   schedule:
-    - cron: '0 6 * * *'   # 06:00 UTC daily
+    - cron: '0 6 * * *'   # 06:00 UTC daily (catches drift on
+                          # weekends / when no main commits land)
   workflow_dispatch: {}
 
 permissions:
