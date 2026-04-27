@@ -8,9 +8,10 @@
 # refresh 2026-04-24 per PR #375):
 #   - Runners pinned to explicit versions (not -latest). Active build-
 #     and-test matrix: macos-26, ubuntu-24.04, ubuntu-24.04-arm.
-#     The ubuntu-slim low-memory verification leg moved to a nightly
-#     schedule (`.github/workflows/nightly-low-memory.yml`) per
-#     maintainer 2026-04-27 — too slow for per-PR gating.
+#     The ubuntu-slim low-memory verification leg moved to
+#     `.github/workflows/low-memory.yml` per maintainer 2026-04-27
+#     — too slow for per-PR gating; runs on every merge to main +
+#     nightly schedule.
 #     Lint jobs pinned to ubuntu-22.04 (short-lived, OS-independent
 #     work). Windows legs deferred to peer-harness milestone.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
@@ -92,10 +93,12 @@ jobs:
     #                       ubuntu-24.04 — ~7× slower, often times
     #                       out at the runner-class cap). Goal of
     #                       the slim leg is verifying low-memory
-    #                       compat — a nightly cadence satisfies
-    #                       that without bottlenecking PR landing.
-    #                       Now runs on a daily schedule via
-    #                       `.github/workflows/nightly-low-memory.yml`.
+    #                       compat — a per-merge + nightly cadence
+    #                       satisfies that without bottlenecking PR
+    #                       landing. Now runs via
+    #                       `.github/workflows/low-memory.yml`
+    #                       (push-to-main + 06:00 UTC schedule +
+    #                       workflow_dispatch).
     #                       Reference:
     # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
     #
@@ -121,7 +124,7 @@ jobs:
           - macos-26
           - ubuntu-24.04
           - ubuntu-24.04-arm
-          # ubuntu-slim moved to .github/workflows/nightly-low-memory.yml
+          # ubuntu-slim moved to .github/workflows/low-memory.yml
           # per maintainer 2026-04-27 — see header comment for rationale.
           # Deferred until Windows peer-harness milestone:
           # - windows-2025
