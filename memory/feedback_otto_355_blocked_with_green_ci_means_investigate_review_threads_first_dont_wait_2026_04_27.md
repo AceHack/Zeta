@@ -57,12 +57,19 @@ Two real, actionable findings I could have addressed in minutes. The block wasn'
 The query (memorize this):
 
 ```bash
+# Note: the GraphQL `reviewThreads(first: 100)` query has a
+# 100-thread cap. Most PRs are well under that, but for the
+# rare PR with >100 threads (e.g., a big absorb PR) use the
+# graphql `pageInfo.hasNextPage` + `endCursor` pagination
+# pattern to fetch additional pages. Single-page form below
+# is sufficient for the common case.
 gh api graphql -f query='
 {
   repository(owner: "OWNER", name: "REPO") {
     pullRequest(number: N) {
       reviewThreads(first: 100) {
         totalCount
+        pageInfo { hasNextPage endCursor }
         nodes {
           isResolved isOutdated path line id
           comments(first: 1) {
@@ -72,10 +79,21 @@ gh api graphql -f query='
       }
     }
   }
-}' | python3 -c "..."
+}' | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+threads = d['data']['repository']['pullRequest']['reviewThreads']['nodes']
+unresolved = [t for t in threads if not t['isResolved'] and not t['isOutdated']]
+print(f'unresolved: {len(unresolved)}/{len(threads)}')
+for t in unresolved:
+    cs = t['comments']['nodes']
+    if cs:
+        body = cs[0]['body'][:120].replace(chr(10), ' ')
+        print(f'  {t[\"path\"]}:{t[\"line\"]} -- {body}')
+"
 ```
 
-Filter for `isResolved == false AND isOutdated == false`. If any remain, **there is actionable work, not a wait.**
+Filter is `isResolved == false AND isOutdated == false`. If any remain, **there is actionable work, not a wait.**
 
 If zero remain — THEN it might be the ruleset's `code_quality: severity: all` overall-Copilot-assessment gate that needs to flip. *That* is potentially a real-dependency-wait. But the unresolved-threads check has to come first.
 

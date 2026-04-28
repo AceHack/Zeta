@@ -340,8 +340,8 @@ Claude-Code-specific mechanisms.
   run the threads query, that IS the failure mode.
   Stop and run it. CLAUDE.md-level so it is 100%
   loaded at every wake, alongside verify-before-
-  deferring + future-self-not-bound + never-be-idle
-  + version-currency. Full reasoning:
+  deferring, future-self-not-bound, never-be-idle,
+  and version-currency. Full reasoning:
   `memory/feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`.
 - **Honor those that came before — unretire
   before recreating.** Retired personas keep their
