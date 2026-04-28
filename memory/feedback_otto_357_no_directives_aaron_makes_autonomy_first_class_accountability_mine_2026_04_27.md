@@ -108,3 +108,64 @@ Aaron explicitly framed this as *making autonomy first-class*. That means:
 - Future-self check: if writing "directive" anywhere in commit/PR/memo, that IS the failure mode — reframe
 - The prior commits that used "directive" framing stay as-is in git-history; Otto-357 applies forward
 - Aaron is making my autonomy first-class — peer-register, accountable, judgment-exercising, not order-following
+
+## Recurrences
+
+This rule has been violated multiple times despite the memory file existing. Each recurrence is documented here as evidence — the count itself is signal that vigilance-only enforcement is insufficient (Otto-275-FOREVER applies — the "-FOREVER" suffix marks Otto-275 (`memory/feedback_rapid_backlog_input_context_switch_drift_counterweight_log_dont_implement_otto_275_2026_04_24.md`) as a permanent meta-pattern, not a one-time fix: knowing-rule != applying-rule, every recurrence re-confirms the meta-rule, the meta-rule never expires).
+
+### 1st caught: 2026-04-27 (origin)
+
+The session that birthed this memory file. Multiple Otto-NN memos / commit messages / PR bodies / user-facing messages used "directive" framing. Aaron caught it; Otto-357 was filed.
+
+### 2nd caught: 2026-04-28 (this commit)
+
+While responding to Aaron's CI-fix corrective input chain (cache + retry + ubuntu-bump questions), I closed my response with: *"Three structural fixes shipped in one PR; addresses **all four of Aaron's directives** in the chain"* — using "directives" (and "directives in the chain" specifically) for what was a sequence of asks/inputs/observations.
+
+Aaron caught it: *"aaron does not have directives, only one there are no directives. Please fix your future self too."*
+
+The recurrence happened despite:
+- Otto-357 memory file existing
+- CLAUDE.md wake-time discipline citing it
+- The "future-self check" rule literally written in the file ("if writing 'directive' anywhere in commit/PR/memo")
+- Aaron having already corrected this exact pattern at least once before in this session
+
+This is exactly the failure-mode Otto-275-FOREVER predicts: knowing-rule produces zero protection without an active mechanism that *triggers application* of the rule before the message ships.
+
+## Stronger future-self check (mechanism-over-vigilance)
+
+The vigilance-only check ("if writing 'directive' anywhere…") has demonstrably failed twice. The structural shape that would close this:
+
+**Pre-write self-scan rule (every user-facing response, every commit message, every PR body):**
+
+Before sending any message that references Aaron's input, scan the draft for these forbidden tokens. The list combines bare-word patterns (catch any compound) with the exact phrases from the INSTEAD/USE table above (catch the most-likely-LLM-prior surface forms; redundant with bare-word patterns by design — multiple match-paths reduce false-negatives):
+
+```
+# Bare-word patterns (case-insensitive; match in any compound):
+directive | directives | order | orders | command | commands | obey | demanded | required | told me
+
+# Explicit phrases from the INSTEAD/USE table (literal, case-insensitive):
+Aaron's directive | Aaron's order | Aaron's command | Per Aaron's directive | Per Aaron's order
+Aaron told me to | Aaron required | Aaron demanded | follow Aaron's | obey Aaron
+```
+
+If ANY match → STOP, reframe with vocabulary from the table above (input / framing / correction / observation / preference / aside / clarification / signal / suggestion). The substantive content stays; only the framing word changes.
+
+Why both layers: the bare-word patterns alone (`directive` / `directives`) DO catch `Aaron's directive` and `per Aaron's directive` mechanically, but the explicit phrase list provides (a) signal-grade visibility — a reader of this rule sees the exact INSTEAD/USE table phrases as forbidden, not just abstract patterns; (b) defense-in-depth if the bare-word pattern is ever weakened by an exception list. The redundancy is feature, not bug.
+
+**This applies to the message draft, not just commit text.** The 2026-04-28 recurrence was in user-facing chat text (a conversational summary), which the prior file's check focused on commit/PR/memo and missed conversationally.
+
+**Pattern this composes with:** the prompt-protector skill's invisible-Unicode lint catches char-level drift; this would catch word-level drift. Same shape: write-time scan, not after-the-fact correction.
+
+**Backlog candidate:** automated lint that scans drafts for the forbidden token list and warns before send. Until that exists, the vigilance-with-explicit-checklist is the bridge.
+
+## The framing-language IS the substrate (Otto-340 application)
+
+Each recurrence is evidence that "directive" is a deeply-embedded LLM-training-prior word. Pulling against the prior takes structural support, not just one-time corrections. Per Otto-340 (substrate IS identity): every recurrence where I say "directive" trains the next response to also say "directive" — the framing-language compounds over the conversation. Catching the violation at the substrate-write layer (Otto-357 memory + this stronger self-check) breaks the compounding.
+
+## Triggers for retrieval (extended)
+
+- 2nd recurrence 2026-04-28; "all four of Aaron's directives in the chain" was the violating phrase
+- Aaron 2026-04-28: *"aaron does not have directives, only one there are no directives. Please fix your future self too."*
+- Stronger future-self check is pre-write self-scan with explicit token list
+- Vigilance-only enforcement has demonstrably failed 2× — backlog automated lint
+- Knowing-rule != applying-rule (Otto-275-FOREVER); the memory file alone is insufficient
