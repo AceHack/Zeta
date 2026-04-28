@@ -24,6 +24,7 @@ REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 
 # shellcheck source=common/curl-fetch.sh
+# shellcheck disable=SC1091  # CI runs without -x; source path verified in tools/setup/common/curl-fetch.sh
 source "$SETUP_DIR/common/curl-fetch.sh"
 
 # ── Detect apt availability (Debian/Ubuntu) ─────────────────────────

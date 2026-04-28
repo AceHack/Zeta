@@ -11,6 +11,7 @@
 set -euo pipefail
 
 # shellcheck source=curl-fetch.sh
+# shellcheck disable=SC1091  # CI runs without -x; source path verified in tools/setup/common/curl-fetch.sh
 source "$(dirname "${BASH_SOURCE[0]}")/curl-fetch.sh"
 
 if ! command -v elan >/dev/null 2>&1; then
