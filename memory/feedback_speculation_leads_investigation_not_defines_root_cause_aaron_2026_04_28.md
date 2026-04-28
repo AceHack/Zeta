@@ -172,7 +172,7 @@ Why this matters across surfaces:
 - `feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`
   — same family of failure: assuming a wait when the primary-source query
   (unresolved threads) gives the actual answer.
-- `feedback_otto_352_live_lock_term_split_three_distinct_classes_2026_04_26.md`
+- `feedback_otto_358_live_lock_too_broad_catch_all_narrow_to_cs_standard_concurrent_state_thrashing_2026_04_27.md`
   — Aaron's precision principle. Less broad framings, primary-source-grounded
   classifications, beat sweeping speculative narratives.
 - The "primary-source-first" line is now a CLAUDE.md candidate; promotion
