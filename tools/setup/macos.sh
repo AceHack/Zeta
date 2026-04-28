@@ -23,6 +23,9 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 
+# shellcheck source=common/curl-fetch.sh
+source "$SETUP_DIR/common/curl-fetch.sh"
+
 # ── 1. Xcode Command Line Tools ─────────────────────────────────────
 if ! xcode-select -p >/dev/null 2>&1; then
   echo "↓ installing Xcode Command Line Tools (non-interactive)..."
@@ -37,7 +40,7 @@ echo "✓ Xcode CLT at $(xcode-select -p 2>/dev/null || echo 'pending user confi
 # ── 2. Homebrew ─────────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
   echo "↓ installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  /bin/bash -c "$(curl_fetch https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   # Ensure brew is on PATH for the remainder of this script run.
   if [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"

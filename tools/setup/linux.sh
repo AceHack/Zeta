@@ -23,6 +23,9 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 
+# shellcheck source=common/curl-fetch.sh
+source "$SETUP_DIR/common/curl-fetch.sh"
+
 # ── Detect apt availability (Debian/Ubuntu) ─────────────────────────
 if ! command -v apt-get >/dev/null 2>&1; then
   echo "error: this script currently supports Debian/Ubuntu only"
@@ -55,7 +58,7 @@ echo "✓ apt packages up to date"
 # ── 2. mise ─────────────────────────────────────────────────────────
 if ! command -v mise >/dev/null 2>&1; then
   echo "↓ installing mise via the official installer..."
-  curl -fsSL https://mise.run | sh
+  curl_fetch https://mise.run | sh
   # The installer puts mise at $HOME/.local/bin/mise; ensure we can
   # invoke it for the remainder of this script run.
   export PATH="$HOME/.local/bin:$PATH"

@@ -10,9 +10,12 @@
 
 set -euo pipefail
 
+# shellcheck source=curl-fetch.sh
+source "$(dirname "${BASH_SOURCE[0]}")/curl-fetch.sh"
+
 if ! command -v elan >/dev/null 2>&1; then
   echo "↓ installing elan (Lean 4 toolchain manager)..."
-  curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+  curl_fetch https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
     | sh -s -- -y --default-toolchain none
 fi
 

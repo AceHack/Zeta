@@ -13,6 +13,9 @@
 
 set -euo pipefail
 
+# shellcheck source=curl-fetch.sh
+source "$(dirname "${BASH_SOURCE[0]}")/curl-fetch.sh"
+
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 MANIFEST="$REPO_ROOT/tools/setup/manifests/verifiers"
 
@@ -47,15 +50,14 @@ grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
     # ~13:52 UTC, hit PR #481 CodeQL csharp + PR #482 markdownlint
     # CI runs). Per Otto-285 (don't use determinism to avoid
     # edge-case handling — handle the network-non-determinism
-    # algorithmically), curl handles the retry: `--retry 5` attempts,
-    # exponential backoff (2/4/8/16/32 s default), `--retry-all-errors`
-    # so 4xx/5xx server errors retry too (curl's default only retries
-    # connect / dns / 408 / 429 / 5xx-with-Retry-After). Keeps
-    # `-fsSL` semantics — fail at the end if all 5 attempts hit
-    # the same transient.
+    # algorithmically), curl_fetch (from common/curl-fetch.sh)
+    # handles the retry: 5 attempts, 2-4-8-16-32 s exponential
+    # backoff, --retry-all-errors so 4xx/5xx errors retry too.
+    # Keeps -fsSL semantics — fail at the end if all 5 attempts
+    # hit the same transient. (Aaron 2026-04-28: helper extracted
+    # from copy-pasted call sites; was previously inline here.)
     echo "↓ downloading $target from $url"
-    curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors \
-      -o "$dest.part" "$url"
+    curl_fetch -o "$dest.part" "$url"
     mv "$dest.part" "$dest"
     echo "✓ $target"
   fi
