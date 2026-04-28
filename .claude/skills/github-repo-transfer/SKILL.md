@@ -1,6 +1,6 @@
 ---
 name: github-repo-transfer
-description: Capability skill ("hat") — behaviour layer for transferring a GitHub repository between owners (user→org, org→org, user→user). Wear when executing a transfer, diagnosing post-transfer drift, capturing a pre-transfer scorecard, or teaching the routine to a contributor. This file is the **routine** only; the **data** (known silent drifts, what-survives inventory, adapter mapping, worked examples) lives at `docs/GITHUB-REPO-TRANSFER.md` per Aaron's data/behaviour split. The declarative scorecard lives at `docs/GITHUB-SETTINGS.md` + `tools/hygiene/github-settings.expected.json`. Fire-history at `docs/hygiene-history/repo-transfer-history.md`. The routine is graceful-degradation-aware (pre-transfer scorecard → diff after → heal silent drifts) and cartographer-backed (every firing adds a row that a future offline agent can read without re-querying `gh api`).
+description: Capability skill ("hat") — behaviour layer for transferring a GitHub repository between owners (user→org, org→org, user→user). Wear when executing a transfer, diagnosing post-transfer drift, capturing a pre-transfer scorecard, or teaching the routine to a contributor. This file is the **routine** only; the **data** (known silent drifts, what-survives inventory, adapter mapping, worked examples) lives at `docs/GITHUB-REPO-TRANSFER.md` per the human maintainer's data/behaviour split. The declarative scorecard lives at `docs/GITHUB-SETTINGS.md` + `tools/hygiene/github-settings.expected.json`. Fire-history at `docs/hygiene-history/repo-transfer-history.md`. The routine is graceful-degradation-aware (pre-transfer scorecard → diff after → heal silent drifts) and cartographer-backed (every firing adds a row that a future offline agent can read without re-querying `gh api`).
 record_source: "architect, round 44"
 load_datetime: "2026-04-22"
 last_updated: "2026-04-22"
@@ -68,7 +68,7 @@ Do **not** wear this hat for:
     scorecard                (per AGENT-GITHUB-SURFACES.md)
        |
 [4] Pre-flight               blast radius enumerated; in-flight work noted;
-                             confirm with Aaron immediately before step 5
+                             confirm with the human maintainer immediately before step 5
        |
 [5] Execute                  POST /repos/<old>/<name>/transfer
                              -f new_owner=<new>
@@ -158,7 +158,7 @@ Write these into the fire-history row template for step 9.
 - **In-flight work.** `gh pr list --state open` — any
   PRs mid-review that might break on re-run?
 - **Timing.** Prefer a quiet window.
-- **Confirm with Aaron** immediately before step 5,
+- **Confirm with the human maintainer** immediately before step 5,
   even with standing `HB-NNN` authorization (CLAUDE.md
   §Executing actions with care: transfer is
   hard-to-reverse and affects shared systems beyond
@@ -256,8 +256,8 @@ drifts, what-survives inventory, adapter mappings, and
 worked-example summaries live at
 `docs/GITHUB-REPO-TRANSFER.md`. Those change as new
 transfers surface new patterns; the routine changes as
-the *procedure* evolves. Split by change-rate, per Aaron
-2026-04-22:
+the *procedure* evolves. Split by change-rate, per the
+human maintainer 2026-04-22:
 *"seperating thing by data and behiaver is a tried and true
 way and you mentied it for the skills earler, works in code too lol"*.
 
@@ -295,6 +295,6 @@ way and you mentied it for the skills earler, works in code too lol"*.
 - `memory/feedback_blast_radius_pricing_standing_rule_alignment_signal.md`
   — step 4 discipline.
 - `memory/feedback_text_indexing_for_factory_qol_research_gated.md`
-  — Aaron's data/behaviour-split principle, verbatim.
+  — the human maintainer's data/behaviour-split principle, verbatim.
 - `memory/project_local_agent_offline_capable_factory_cartographer_maps_as_skills.md`
   — why step 9 is non-optional.

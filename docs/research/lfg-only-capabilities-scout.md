@@ -118,7 +118,7 @@ Ranked. "Cadence" = how often this experiment fires.
 
 | # | Experiment | Capability class | Cadence | Cost class |
 |---|---|---|---|---|
-| 1 | Merge queue enablement | Org-level | **one-shot** (HB-001) | free (enable) |
+| 1 | Merge queue enablement | Org-level | **one-shot** (follow-up to HB-001 org-migration, now Resolved) | free (enable) |
 | 2 | Copilot coding-agent review vs `harsh-critic` on sample PRs | Copilot Business | every 5 rounds | ~50 Actions min/run + Copilot seat-usage |
 | 3 | Copilot org-level custom-instructions mirror of AGENTS.md | Copilot Business | one-shot author, observe 10 PRs | free (config) + seat-usage |
 | 4 | Larger-runner benchmark (4-core vs 2-core for test matrix) | Actions runners | one-shot, then decide | ~20 Actions min @ 2x billing rate |
@@ -182,5 +182,5 @@ Re-read every 10 rounds. Update when:
 - `memory/project_lfg_org_cost_reality_copilot_models_paid_contributor_tradeoff.md`
 - `memory/feedback_fork_pr_cost_model_prs_land_on_acehack_sync_to_lfg_in_bulk.md`
 - `docs/UPSTREAM-RHYTHM.md`
-- `docs/HUMAN-BACKLOG.md` HB-001 (merge queue on LFG)
+- `docs/HUMAN-BACKLOG.md` HB-001 (org-migration to LFG, Resolved 2026-04-21; merge-queue enable is a separate follow-up)
 - `docs/GITHUB-SETTINGS.md` (settings-as-code surface)

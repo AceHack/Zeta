@@ -1,0 +1,213 @@
+# Zeta resume-claim diff reviewer-helper
+#
+# Runs on every PR that touches `docs/FACTORY-RESUME.md` or
+# `docs/SHIPPED-VERIFICATION-CAPABILITIES.md` — the two files
+# that form the factory's "job-interview honesty" surface per
+# `memory/feedback_factory_resume_job_interview_honesty_only_direct_experience.md`.
+#
+# Purpose (BACKLOG row "Shipped-capabilities resume diff-based
+# CI check (round 44 follow-up, H-risk row 24)"; H-risk flagged
+# in `docs/research/imperfect-enforcement-hygiene-audit.md`):
+# emit a structured claim-level diff as a PR comment so a
+# reviewer can eyeball added / removed / modified claims for
+# substantive drift. Tighter than round-cadence; NOT a gate —
+# judgment stays with the reviewer and with Aaron (honesty-
+# floor owner).
+#
+# Security (reviewed 2026-04-22; complies with the pre-write
+# checklist in `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md`,
+# which is in turn derived from the GitHub Security Lab guide at
+# https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/):
+#   - All `${{ github.event.* }}` values are consumed ONLY via
+#     `env:` blocks and referenced as shell variables in `run:`
+#     scripts. No inline `${{ ... }}` interpolation inside any
+#     `run:` command.
+#   - Inputs are limited to commit SHAs (40-hex, injection-proof)
+#     and the PR number (numeric). None of the risky inputs
+#     (issue/PR titles, commit messages, body text, head refs,
+#     branch names) appear anywhere in this workflow.
+#   - Third-party actions SHA-pinned (only actions/checkout is
+#     used). `gh pr comment` is pre-installed on GitHub-hosted
+#     runners; uses the default workflow token.
+#   - permissions: contents: read at the workflow level;
+#     pull-requests: write only at the single job that posts
+#     the comment.
+#   - concurrency: workflow-scoped; cancel-in-progress for PR
+#     events.
+#   - Runner digest-pinned (ubuntu-22.04).
+#   - Graceful no-change handling: if the diff has no claim-
+#     bearing lines, posts a clarifying message and passes.
+#     Does not fail the PR.
+
+name: resume-diff
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - 'docs/FACTORY-RESUME.md'
+      - 'docs/SHIPPED-VERIFICATION-CAPABILITIES.md'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: resume-diff-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  resume-diff:
+    name: claim-level diff
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout PR head with full history
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Compute claim-level diff
+        id: diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+
+          FILES=(
+            "docs/FACTORY-RESUME.md"
+            "docs/SHIPPED-VERIFICATION-CAPABILITIES.md"
+          )
+
+          OUTPUT_FILE="$(mktemp)"
+          HAS_CHANGES=0
+
+          {
+            echo "### Resume claim-level diff — reviewer attention requested"
+            echo
+            echo "This PR touches one or both of the factory's"
+            echo "**job-interview honesty** docs. Per the honesty"
+            echo "floor (\`memory/feedback_factory_resume_job_interview_honesty_only_direct_experience.md\`),"
+            echo "every resume claim must be backed by in-repo evidence"
+            echo "a reader can verify. Confirm each added claim has"
+            echo "evidence, each removed claim is intentionally retired,"
+            echo "each modified line preserves the honesty floor."
+            echo
+            echo "Base SHA: \`${BASE_SHA}\`"
+            echo "Head SHA: \`${HEAD_SHA}\`"
+          } > "$OUTPUT_FILE"
+
+          for FILE in "${FILES[@]}"; do
+            if ! git diff --quiet "$BASE_SHA" "$HEAD_SHA" -- "$FILE"; then
+              HAS_CHANGES=1
+              {
+                echo
+                echo "#### \`$FILE\`"
+                echo
+
+                RAW_DIFF="$(git diff --no-color --unified=1 \
+                  "$BASE_SHA" "$HEAD_SHA" -- "$FILE")"
+
+                CLAIM_LINES="$(printf '%s\n' "$RAW_DIFF" \
+                  | grep -E '^[+-][^+-]' \
+                  | grep -P '^[+-]\s*(- \*\*|\| |#{2,4} |.*\b(ships?|shipped|verified|proven|complete[ds]?|honest|already absorbed|implement(ed|s)?|in[- ]repo evidence)\b)' \
+                  || true)"
+
+                if [ -n "$CLAIM_LINES" ]; then
+                  echo "**Claim-bearing lines** (bullets, table rows, headers, honesty-keyword hits):"
+                  echo
+                  echo '```diff'
+                  printf '%s\n' "$CLAIM_LINES"
+                  echo '```'
+                else
+                  echo "_No claim-bearing lines detected in this file's diff_"
+                  echo "_(changes may be formatting / punctuation / whitespace — still worth a reviewer glance)._"
+                fi
+
+                echo
+                echo "<details><summary>Full unified diff</summary>"
+                echo
+                echo '```diff'
+                printf '%s\n' "$RAW_DIFF"
+                echo '```'
+                echo
+                echo "</details>"
+              } >> "$OUTPUT_FILE"
+            fi
+          done
+
+          if [ "$HAS_CHANGES" -eq 0 ]; then
+            {
+              echo
+              echo "_No changes detected in either resume file at claim level._"
+              echo "_(The \`paths\` filter matched one of the two files but"
+              echo "the diff resolved to zero lines — likely a rename or a"
+              echo "whitespace-only change.)_"
+            } >> "$OUTPUT_FILE"
+          fi
+
+          {
+            echo "diff_file=$OUTPUT_FILE"
+            echo "has_changes=$HAS_CHANGES"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Post or update PR comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          DIFF_FILE: ${{ steps.diff.outputs.diff_file }}
+        run: |
+          set -euo pipefail
+
+          # Per Copilot review on PR #26: avoid posting a fresh
+          # comment on every PR sync — that creates spam on actively-
+          # updated PRs. Find an existing bot comment by a unique
+          # marker header and edit-in-place; create a new comment
+          # only if no marker is found. Marker is the HTML comment
+          # `<!-- resume-diff-bot-marker -->` which is stable across
+          # runs but invisible in the rendered comment.
+          MARKER='<!-- resume-diff-bot-marker -->'
+
+          # Prepend marker to the body so future runs can find it.
+          BODY_FILE="$(mktemp)"
+          {
+            printf '%s\n' "$MARKER"
+            cat "$DIFF_FILE"
+          } > "$BODY_FILE"
+
+          # Look for an existing comment containing the marker.
+          # `gh pr view --json comments` returns id + body for
+          # every issue-comment on the PR.
+          existing_id=$(gh pr view "$PR_NUMBER" \
+              --json comments \
+              --jq ".comments[] | select(.body | contains(\"$MARKER\")) | .id" \
+              | head -n 1 || true)
+
+          if [ -n "$existing_id" ]; then
+            # Edit the existing comment via the REST API. `gh pr
+            # comment` does not yet support --edit by id directly,
+            # so fall through to the api wrapper.
+            #
+            # Per Copilot review on PR #26: pass the body via stdin
+            # (jq-built JSON payload) rather than command-substituting
+            # the file contents into a -f flag. The substituted form
+            # risks ARG_MAX (~2 MB on Linux) for large diffs and is
+            # brittle around shell escaping. The stdin form streams
+            # the body and isn't subject to argv size limits.
+            jq -n --rawfile body "$BODY_FILE" '{body: $body}' \
+              | gh api \
+                  --method PATCH \
+                  -H "Accept: application/vnd.github+json" \
+                  --input - \
+                  "/repos/${GITHUB_REPOSITORY}/issues/comments/${existing_id}" \
+                  >/dev/null
+            echo "updated existing resume-diff comment ($existing_id)"
+          else
+            gh pr comment "$PR_NUMBER" --body-file "$BODY_FILE"
+            echo "posted new resume-diff comment"
+          fi
