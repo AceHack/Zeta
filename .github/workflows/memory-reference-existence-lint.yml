@@ -1,0 +1,58 @@
+name: memory-reference-existence-lint
+
+# Every `](foo.md)` link target in memory/MEMORY.md MUST
+# resolve to an actual file under memory/. Amara's 4th-ferry
+# (PR #221 absorb) Determinize-stage item: prevent the
+# retrieval-drift class where prose cites paths that don't
+# exist.
+#
+# Third leg of memory-index hygiene:
+#   1. PR #220 — every memory/*.md change updates MEMORY.md
+#   2. AceHack #12 — MEMORY.md has no duplicate link targets
+#   3. THIS workflow — every MEMORY.md link target resolves
+#      to a real file
+#
+# Safe-pattern compliance (per FACTORY-HYGIENE row #43):
+#   - SHA-pinned actions/checkout
+#   - Explicit minimum permissions
+#   - No user-authored context; purely repo-file reads
+#   - Concurrency group + pinned runs-on
+#
+# See:
+#   - tools/hygiene/audit-memory-references.sh (the tool)
+#   - docs/aurora/2026-04-23-amara-memory-drift-alignment-
+#     claude-to-memories-drift.md (Amara ferry)
+
+on:
+  pull_request:
+    paths:
+      - "memory/**"
+      - "tools/hygiene/audit-memory-references.sh"
+      - ".github/workflows/memory-reference-existence-lint.yml"
+  push:
+    branches: [main]
+    paths:
+      - "memory/**"
+      - "tools/hygiene/audit-memory-references.sh"
+      - ".github/workflows/memory-reference-existence-lint.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: memory-reference-existence-lint-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    name: lint memory/MEMORY.md reference-existence
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: run reference-existence lint
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools/hygiene/audit-memory-references.sh --enforce

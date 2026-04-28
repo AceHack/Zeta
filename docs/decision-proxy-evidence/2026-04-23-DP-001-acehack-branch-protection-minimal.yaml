@@ -1,0 +1,73 @@
+# Worked example — backfilled retroactively to seed the format.
+# Documents the Otto-66 decision to apply minimum-viable branch
+# protection on AceHack/Zeta (force-push + deletion blocks only;
+# no richer gates). See README.md for schema semantics.
+
+decision_id: DP-001
+timestamp_utc: 2026-04-23T23:45:00Z
+
+requested_by: Aaron
+proxied_by: Otto
+task_class: settings-change
+authority_level: retroactive
+escalation_required: false
+
+repo_canonical: AceHack/Zeta
+head_commit: "5b2f1ac"
+
+model:
+  vendor: anthropic
+  snapshot: claude-opus-4-7
+  prompt_bundle_hash: null
+  loaded_memory_files:
+    - "./CLAUDE.md"
+    - "~/.claude/CLAUDE.md"
+
+consulted_views:
+  - memory/CURRENT-aaron.md
+  - memory/CURRENT-amara.md
+
+consulted_memory_ids:
+  - feedback_agent_owns_all_github_settings_and_config_all_projects_zeta_frontier_poor_mans_mode_default_budget_asks_require_scheduled_backlog_and_cost_estimate_2026_04_23
+  - feedback_lfg_free_actions_credits_limited_acehack_is_poor_man_host_big_batches_to_lfg_not_one_for_one_2026_04_23
+  - feedback_honor_those_that_came_before
+
+live_state_checks:
+  - "gh api repos/Lucent-Financial-Group/Zeta/branches/main/protection"
+  - "gh api repos/AceHack/Zeta --jq '.fork // .parent.full_name'"
+  - "gh api users/AceHack/events (repo-level create/delete scan)"
+
+decision_summary: >
+  Applied minimum-viable branch protection on AceHack/Zeta:
+  allow_force_pushes=false + allow_deletions=false. Left richer
+  LFG-style gates OFF (required_status_checks, review_required,
+  required_linear_history, required_conversation_resolution)
+  because Amara's authority-axis split names AceHack as
+  experimentation-frontier where heavier gates slow iteration;
+  canonical-decision substrate lives on LFG. The protection
+  asymmetry is load-bearing, not a consistency defect.
+
+disagreements:
+  present: false
+  conflict_row: null
+
+outputs_touched:
+  - memory/project_acehack_branch_protection_minimal_applied_prior_zeta_archaeology_inconclusive_2026_04_23.md
+  - (GitHub API PUT repos/AceHack/Zeta/branches/main/protection)
+
+review:
+  peer_review_required: true
+  peer_reviewer: null
+  peer_review_status: null
+  peer_review_evidence: null
+
+retraction_of: null
+follow_up_evidence: []
+notes: >
+  Backfilled retroactively as a worked example during Otto-68
+  when the decision-proxy-evidence schema landed. Timestamp is
+  the Otto-66 tick time. authority_level=retroactive reflects
+  that the decision was made before the evidence-record format
+  existed. Peer reviewer null because no reviewer was named at
+  Otto-66 time; Codex / Kira / Kenji synthesis could catch this
+  later if the rationale is questioned.

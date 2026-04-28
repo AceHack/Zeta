@@ -2,9 +2,27 @@ module Zeta.Tests.Formal.SharderInfoTheoreticTests
 #nowarn "0893"
 
 open System
+open System.IO.Hashing
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+
+
+/// Deterministic 64-bit hash for an integer key. Replaces the
+/// process-randomized `HashCode.Combine` (which by .NET design
+/// re-seeds per-process to deter hash flooding) with `XxHash3` on
+/// the key's 4-byte little-endian representation. Same convention
+/// `src/Core/Sketch.fs` `AddBytes` already uses.
+///
+/// Otto-281 fix (DST discipline, Aaron 2026-04-25): the prior
+/// `HashCode.Combine`-based `Pick` made
+/// `SharderInfoTheoreticTests` flake across CI runs because the
+/// Jump-consistent-hash output depends on the input hash, and
+/// `HashCode.Combine` produces different hashes in different
+/// processes for the same int. Process-randomization is good for
+/// dictionary security; bad for determinism tests.
+let private detHash (k: int) : uint64 =
+    XxHash3.HashToUInt64 (ReadOnlySpan (BitConverter.GetBytes k))
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -51,7 +69,7 @@ let ``Consistent-hash bucket skew is material on Zipfian keys`` () =
     let shards = 16
     let loads = Array.zeroCreate<int> shards
     for k in keys do
-        let h = uint64 (HashCode.Combine k)
+        let h = detHash k
         let s = JumpConsistentHash.Pick(h, shards)
         loads.[s] <- loads.[s] + 1
     let ratio = maxAvgRatio loads
@@ -62,6 +80,11 @@ let ``Consistent-hash bucket skew is material on Zipfian keys`` () =
     printfn "Jump ratio on Zipf(s=1.2): %.3f" ratio
 
 
+// DST-clean per Otto-281 fix (Aaron 2026-04-25): all three
+// `HashCode.Combine`-based hashes in this file are now `detHash`
+// (XxHash3 on the key's bytes), which is deterministic across
+// processes. Earlier "DST-exempt" marker dropped — the test is
+// no longer exempt; it's required to be deterministic and is.
 [<Fact>]
 let ``InfoTheoreticSharder does not make skew worse`` () =
     // 100k Zipf keys, 16 shards. Observe then query with the MI-sharder.
@@ -83,7 +106,7 @@ let ``InfoTheoreticSharder does not make skew worse`` () =
 
     let jumpLoads = Array.zeroCreate<int> shards
     for k in keys do
-        let h = uint64 (HashCode.Combine k)
+        let h = detHash k
         let s = JumpConsistentHash.Pick(h, shards)
         jumpLoads.[s] <- jumpLoads.[s] + 1
     let jumpRatio = maxAvgRatio jumpLoads
@@ -111,7 +134,7 @@ let ``Uniform traffic: consistent-hash is already near-optimal`` () =
     let shards = 16
     let loads = Array.zeroCreate<int> shards
     for k in keys do
-        let h = uint64 (HashCode.Combine k)
+        let h = detHash k
         let s = JumpConsistentHash.Pick(h, shards)
         loads.[s] <- loads.[s] + 1
     let ratio = maxAvgRatio loads

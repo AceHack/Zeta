@@ -27,6 +27,7 @@
     <Compile Include="FeatureFlags.fs" />
     <Compile Include="Simd.fs" />
     <Compile Include="HardwareCrc.fs" />
+    <Compile Include="SplitMix64.fs" />
     <Compile Include="Sketch.fs" />
     <Compile Include="CountMin.fs" />
     <Compile Include="BloomFilter.fs" />
@@ -39,6 +40,11 @@
     <Compile Include="Merkle.fs" />
     <Compile Include="Residuated.fs" />
     <Compile Include="Aggregate.fs" />
+    <Compile Include="RobustStats.fs" />
+    <Compile Include="TemporalCoordinationDetection.fs" />
+    <Compile Include="Veridicality.fs" />
+    <Compile Include="Graph.fs" />
+    <Compile Include="PhaseExtraction.fs" />
     <Compile Include="Window.fs" />
     <Compile Include="Advanced.fs" />
     <Compile Include="Fusion.fs" />
@@ -76,6 +82,7 @@
     <Compile Include="Serializer.fs" />
     <Compile Include="ArrowSerializer.fs" />
     <Compile Include="DeltaCrdt.fs" />
+    <Compile Include="SignalQuality.fs" />
   </ItemGroup>
 
   <ItemGroup>

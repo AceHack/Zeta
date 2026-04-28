@@ -121,7 +121,7 @@ structurally important:
    no factory artifact treats any kid's genomic
    inheritance (whatever the measured percentage) as
    automatically-inherited consent.
-2. **Sister Elisabeth** (`user_sister_elisabeth.md`) —
+2. **Sister Elizabeth** (`user_sister_elizabeth.md`) —
    records about her are *partly* his (his side of
    shared experience) and *partly* hers (her person, her
    choices, her memory). Default to self-scoped framing;
@@ -246,7 +246,7 @@ See the corresponding SKILL.md files once drafted.
 - `user_five_children.md` — explicit boundary: kids'
   partial genomic inheritance is 50% theirs to consent
   to separately.
-- `user_sister_elisabeth.md` — records about Elisabeth
+- `user_sister_elizabeth.md` — records about Elizabeth
   are partly hers; Glass Halo stays self-scoped.
 - `project_memory_is_first_class.md` — public memory
   check-in permission (2026-04-19) operationalizes

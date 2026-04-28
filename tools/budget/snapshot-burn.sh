@@ -3,16 +3,17 @@
 # append it to docs/budget-history/snapshots.jsonl as a single JSON
 # line. Append-only; git is the time-series storage.
 #
-# Why this exists: Aaron 2026-04-22 scoped the three-repo-split Stage 1
-# gate as evidence-based budget tracking — *"i want evidence based
-# budgiting so you might have to build some observaiblity first or run
-# some gh commands even if gh commands work we want some amount of
-# price history in git, maybe just looking like before and after PRs
-# on LFG and those measurements might be enough"*. The live cost graphs
-# on github.com are for humans and disappear the moment we stop
-# looking; the factory needs persisted evidence to project mid-swap
-# credit-exhaustion risk. See docs/budget-history/README.md for the
-# methodology + projection approach.
+# Why this exists: the human maintainer 2026-04-22 scoped the
+# three-repo-split Stage 1 gate as evidence-based budget tracking —
+# *"i want evidence based budgiting so you might have to build some
+# observaiblity first or run some gh commands even if gh commands
+# work we want some amount of price history in git, maybe just
+# looking like before and after PRs on LFG and those measurements
+# might be enough"*. The live cost graphs on github.com are for
+# humans and disappear the moment we stop looking; the factory needs
+# persisted evidence to project mid-swap credit-exhaustion risk.
+# See docs/budget-history/README.md for the methodology + projection
+# approach.
 #
 # Usage:
 #   tools/budget/snapshot-burn.sh              # append a snapshot
@@ -21,9 +22,10 @@
 #
 # Scopes required (current gh token has these): read:org, repo, workflow.
 # admin:org scope would unlock /settings/billing/{actions,packages,
-# shared-storage} too — if Aaron runs `gh auth refresh -s admin:org`
-# we can add those axes (see tools/budget/README notes), but the
-# script is designed to work without them.
+# shared-storage} too — if the human maintainer runs
+# `gh auth refresh -s admin:org` we can add those axes (see
+# tools/budget/README notes), but the script is designed to work
+# without them.
 #
 # Exit codes: 0 success, 2 on CLI-argument errors, non-zero if any
 # required gh/jq step fails.
@@ -72,23 +74,46 @@ copilot_raw="$(gh api "/orgs/${org}/copilot/billing" 2>/dev/null || echo "{}")"
 #    capture run_duration_ms because it is the consumption signal
 #    regardless of who is being billed.
 repo_stats=""
+api_warnings=0
 for r in "${repos[@]}"; do
-  runs_json="$(gh api "/repos/${r}/actions/runs?per_page=20" 2>/dev/null || echo '{"workflow_runs":[]}')"
+  if ! runs_json="$(gh api "/repos/${r}/actions/runs?per_page=20" 2>/dev/null)"; then
+    echo "warning: gh api /repos/${r}/actions/runs failed; using empty workflow_runs" >&2
+    runs_json='{"workflow_runs":[]}'
+    api_warnings=$((api_warnings + 1))
+  fi
   per_run="$(echo "$runs_json" | jq -c '[.workflow_runs[] | {id, name, conclusion, run_started_at, updated_at}]')"
-  run_ids="$(echo "$runs_json" | jq -r '.workflow_runs[].id')"
+  # Read into array via while-read for portability — `mapfile -t` is bash >=4
+  # only and macOS ships bash 3.2 (Codex P2 NM59qH2J). The redirected pipe
+  # into `done < <(...)` keeps the loop in the parent shell so the array
+  # survives. Avoids word-splitting / globbing on $run_ids (Codex P0
+  # NM59qAlk).
+  run_id_list=()
+  while IFS= read -r line; do
+    run_id_list+=("$line")
+  done < <(echo "$runs_json" | jq -r '.workflow_runs[].id')
   timings="[]"
-  for id in $run_ids; do
-    t="$(gh api "/repos/${r}/actions/runs/${id}/timing" 2>/dev/null || echo '{}')"
+  for id in "${run_id_list[@]:-}"; do
+    [ -z "$id" ] && continue
+    if ! t="$(gh api "/repos/${r}/actions/runs/${id}/timing" 2>/dev/null)"; then
+      echo "warning: gh api /repos/${r}/actions/runs/${id}/timing failed; using empty timing" >&2
+      t='{}'
+      api_warnings=$((api_warnings + 1))
+    fi
     timings="$(echo "$timings" | jq --argjson entry "{\"id\":$id,\"timing\":$t}" '. + [$entry]')"
   done
+  # Default `add` to 0 on empty array (Codex/Copilot P0 findings NM59qAlL/NM59qAlX).
   agg="$(echo "$timings" | jq '
     { total_runs: length,
-      total_duration_ms: ([.[].timing.run_duration_ms // 0] | add),
-      billable_ubuntu_ms: ([.[].timing.billable.UBUNTU.total_ms // 0] | add),
-      billable_macos_ms: ([.[].timing.billable.MACOS.total_ms // 0] | add),
-      billable_windows_ms: ([.[].timing.billable.WINDOWS.total_ms // 0] | add) }')"
-  pr_stats="$(gh api "/repos/${r}/pulls?state=closed&per_page=10" 2>/dev/null \
-    | jq '[.[] | select(.merged_at != null)] | { recent_merged: length, last_merged_at: (.[0].merged_at // null) }' || echo '{}')"
+      total_duration_ms: (([.[].timing.run_duration_ms // 0] | add) // 0),
+      billable_ubuntu_ms: (([.[].timing.billable.UBUNTU.total_ms // 0] | add) // 0),
+      billable_macos_ms: (([.[].timing.billable.MACOS.total_ms // 0] | add) // 0),
+      billable_windows_ms: (([.[].timing.billable.WINDOWS.total_ms // 0] | add) // 0) }')"
+  if ! pr_raw="$(gh api "/repos/${r}/pulls?state=closed&per_page=10" 2>/dev/null)"; then
+    echo "warning: gh api /repos/${r}/pulls failed; using empty pr_stats" >&2
+    pr_raw='[]'
+    api_warnings=$((api_warnings + 1))
+  fi
+  pr_stats="$(echo "$pr_raw" | jq '[.[] | select(.merged_at != null)] | { recent_merged: length, last_merged_at: (.[0].merged_at // null) }')"
   entry="$(jq -n --arg repo "$r" \
                  --argjson agg "$agg" \
                  --argjson runs "$per_run" \
@@ -101,6 +126,9 @@ for r in "${repos[@]}"; do
   fi
 done
 repo_stats="${repo_stats}]"
+if [ "$api_warnings" -gt 0 ]; then
+  echo "warning: ${api_warnings} GitHub API call(s) failed; snapshot is partial — review stderr above" >&2
+fi
 
 # 3) Compose the snapshot. One JSON object per line (JSONL).
 snapshot="$(jq -n \
@@ -125,7 +153,15 @@ snapshot="$(jq -n \
     }
   }')"
 
-line="$(echo "$snapshot" | jq -c '.')"
+if ! line="$(echo "$snapshot" | jq -c '.' 2>&1)"; then
+  echo "error: failed to compact snapshot to JSONL — refusing to append" >&2
+  echo "jq stderr: $line" >&2
+  exit 1
+fi
+if [ -z "$line" ] || [ "$line" = "null" ]; then
+  echo "error: snapshot compaction produced empty/null output — refusing to append" >&2
+  exit 1
+fi
 
 if [ "$dry_run" = "true" ]; then
   echo "$line" | jq '.'

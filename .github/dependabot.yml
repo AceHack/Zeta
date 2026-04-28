@@ -8,6 +8,56 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps:"
+    # Group related NuGet updates into a single PR. Rationale:
+    # ungrouped per-package PRs add noise to the drain queue when
+    # several packages bump in the same week — every System.* /
+    # Microsoft.* package bump on a .NET monthly servicing roll
+    # would otherwise open as its own PR within hours of the
+    # others, multiplying CI runs and human review for what is
+    # effectively a single coordinated change. Grouping cuts the
+    # queue depth and lets a single CI run validate the cluster.
+    # Major bumps still open as individual PRs so they get
+    # scrutiny.
+    groups:
+      # System.* / Microsoft.* runtime libraries usually bump together
+      # on .NET servicing rolls (e.g., 10.0.6 to 10.0.7 across
+      # System.Numerics.Tensors / System.IO.Hashing / etc.).
+      # `Microsoft.NET.Test.Sdk` ships on the same monthly .NET
+      # servicing cadence (its 18.x track follows .NET 10), so it
+      # belongs in the runtime rollup — bundling avoids two PRs that
+      # would land within hours of each other.
+      # `Microsoft.Z3` is the Microsoft Research SMT solver — its
+      # release cadence is independent of .NET (its 4.x track ships on
+      # solver-team timelines), so we exclude it; it falls through to
+      # the catch-all `nuget-minor-patch` group.
+      dotnet-runtime:
+        patterns:
+          - "System.*"
+          - "Microsoft.*"
+        exclude-patterns:
+          - "Microsoft.Z3"
+        update-types:
+          - "patch"
+          - "minor"
+      # F# / xUnit / FsCheck / analyzer ecosystem.
+      fsharp-and-tooling:
+        patterns:
+          - "FSharp.*"
+          - "FsCheck*"
+          - "xunit*"
+          - "Meziantou.*"
+          - "Mono.*"
+        update-types:
+          - "patch"
+          - "minor"
+      # Catch-all minor/patch group for anything else; majors still
+      # open as individual PRs.
+      nuget-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"
 
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -17,3 +67,15 @@ updates:
       - "dependencies"
     commit-message:
       prefix: "deps:"
+    # Group third-party action SHA-pins into a single PR per week
+    # rather than one PR per action. Same rationale as the nuget
+    # group above — minor/patch action bumps are coordinated
+    # often enough that bundling them cuts queue depth without
+    # losing review signal.
+    groups:
+      github-actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "patch"
+          - "minor"

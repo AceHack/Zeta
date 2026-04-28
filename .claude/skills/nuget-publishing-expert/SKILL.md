@@ -27,8 +27,11 @@ a first-ever release. Stub-weight until then.
 - **Prefix reservation** on `nuget.org` for `Zeta.*` is
   a pending Aaron-owned task (from `docs/
   CURRENT-ROUND.md` open-asks).
-- **Repo visibility** — currently private on AceHack;
-  public flip is a prerequisite for NuGet publish.
+- **Repo visibility** — public at
+  `Lucent-Financial-Group/Zeta`. Visibility
+  prerequisite for NuGet publish is satisfied;
+  remaining gates are NuGet-prefix reservation and
+  `release.yml`.
 - **No release workflow** — `mutation.yml` / `bench.yml`
   are in the phase-3 plan but `release.yml` (NuGet
   publish) is further out.
@@ -42,11 +45,11 @@ Every Zeta package's `.fsproj` / `.csproj` needs:
   <PackageId>Zeta.Core</PackageId>
   <Version>0.1.0</Version>
   <Authors>Rodney "Aaron" Stainback</Authors>
-  <Company>AceHack</Company>
+  <Company>Lucent Financial Group</Company>
   <Description>F# implementation of DBSP ...</Description>
   <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  <PackageProjectUrl>https://github.com/AceHack/Zeta</PackageProjectUrl>
-  <RepositoryUrl>https://github.com/AceHack/Zeta.git</RepositoryUrl>
+  <PackageProjectUrl>https://github.com/Lucent-Financial-Group/Zeta</PackageProjectUrl>
+  <RepositoryUrl>https://github.com/Lucent-Financial-Group/Zeta.git</RepositoryUrl>
   <RepositoryType>git</RepositoryType>
   <PackageTags>dbsp;streaming;database;incremental;fsharp</PackageTags>
   <PackageReadmeFile>README.md</PackageReadmeFile>

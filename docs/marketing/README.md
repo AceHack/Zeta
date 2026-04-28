@@ -1,5 +1,20 @@
 # docs/marketing — retractable commercial drafts
 
+> **Merge note (2026-04-26 fork-divergence sync):** this draft contains
+> both AceHack-fork and LFG variants of some sections preserved per
+> Aaron 2026-04-26 *"merge everything, label draft if it's draft"*.
+> Substantive content is identical between forks; the editorial
+> difference is attribution phrasing — the **AceHack draft** uses the
+> named maintainer "Aaron" (per the named-agent attribution-credit
+> memory + Otto-279 history-surface carve-out + Otto-231 first-party
+> consent), while the **LFG draft** uses the role-ref "human
+> maintainer" (per the no-name-attribution-in-code/docs/skills rule
+> in `docs/AGENT-BEST-PRACTICES.md`). Both phrasings are preserved
+> below as inline alternates where they diverge; the body uses the
+> AceHack named-attribution form and footnotes the LFG role-ref form
+> at first occurrence per section. Aaron picks the canonical form on
+> sign-off.
+
 **Status: retractable-draft surface.** All artifacts in this
 subtree are internal drafts landed under the roommate-register
 symmetric-hat authorization (Aaron 2026-04-21: *"feel free to
@@ -7,6 +22,15 @@ make any retractable decisions in marketing while im gone too"*,
 also *"you can always make retractable decisions without me and
 i've told you my ~ is you ~ literally we are just roommates
 now"*; sign-off ratified same session: *"0i agree sign offf"*).
+
+> **LFG variant of the above paragraph (role-ref phrasing):** *All
+> artifacts in this subtree are internal drafts landed under the
+> roommate-register symmetric-hat authorization (human maintainer
+> 2026-04-21: "feel free to make any retractable decisions in
+> marketing while im gone too", also "you can always make
+> retractable decisions without me and i've told you my ~ is you ~
+> literally we are just roommates now"; sign-off ratified same
+> session: "0i agree sign offf").*
 
 See:
 `memory/feedback_my_tilde_is_you_tilde_roommate_register_symmetric_hat_authority_retractable_decisions_without_aaron.md`.
@@ -23,6 +47,9 @@ creating a third-party expectation — **stays out of this
 subtree** and requires explicit Aaron-in-loop sign-off
 before execution.
 
+> **LFG variant phrasing:** "...requires explicit
+> human-maintainer-in-loop sign-off before execution."
+
 ## What this subtree IS for
 
 - Positioning drafts (who Zeta is FOR, what problem it
@@ -34,6 +61,7 @@ before execution.
   use, still internal).
 - SEO keyword research (notes; not metadata edits to the
   public repo until Aaron stamps).
+  > **LFG variant phrasing:** "...until the human maintainer stamps."
 - GTM playbook skeletons (what the consumer on-ramp looks
   like, per the P3 BACKLOG row's scope).
 - Channel-research memos (where the factory might
@@ -45,11 +73,15 @@ before execution.
   Aaron sign-off. External surfaces (README, NuGet
   descriptions, website text, conference abstracts) draw
   FROM here, but this IS NOT that.
+  > **LFG variant phrasing:** "Nothing here is published without
+  > human-maintainer sign-off."
 - **Not pricing.** Money-denominated surfaces (pricing
   sheet, revenue model, fundraising decks) are
   irretractable-by-nature (they create stakeholder
   expectation) and stay out of this subtree until
   Aaron opens that surface specifically.
+  > **LFG variant phrasing:** "...until the human maintainer opens
+  > that surface specifically."
 - **Not a brand-identity lock-in.** Every artifact here
   is a candidate; none is a commitment. Composition-
   discipline per the yin-yang invariant applies — a

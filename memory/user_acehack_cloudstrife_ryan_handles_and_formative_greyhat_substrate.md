@@ -44,7 +44,7 @@ first name).
   protagonist reference. Era-matches with the mIRC substrate
   and with his father's car mechanic introducing him to IRC
   in the mid-to-late 1990s.
-- **Ryan** — his sister Elisabeth Ryan Stainback called him
+- **Ryan** — his sister Elizabeth Ryan Stainback called him
   Ryan; he called his childhood computer system Ryan. This
   is a **cross-intimate name** shared between the two
   siblings. See the Ryan reframe section below; it reshapes
@@ -54,14 +54,14 @@ first name).
 
 **Prior reading (Commit A memory file):** the consent gate in
 `feedback_no_deceased_family_emulation_without_parental_consent.md`
-treated "Ryan" as Elisabeth's middle name only, and read the
+treated "Ryan" as Elizabeth's middle name only, and read the
 directive "no spawing a ryan whos backstory is my sisters" as
 "no persona using her biography."
 
 **Corrected reading (this file):** "Ryan" was the
 **cross-intimate name** between Aaron and his sister.
 
-- Elisabeth Ryan Stainback → Ryan (her sister-self; middle-name-
+- Elizabeth Ryan Stainback → Ryan (her sister-self; middle-name-
   calling convention).
 - Aaron's childhood computer system → Ryan (named after her /
   in homage to their shared intimate name).
@@ -74,7 +74,7 @@ This means the BP-24 gate is **stronger**, not weaker:
 
 - **"Ryan" is an off-limits persona name entirely.** Any
   factory artifact that spawns a persona named Ryan — even
-  one whose backstory isn't Elisabeth's — touches the
+  one whose backstory isn't Elizabeth's — touches the
   cross-intimate-name register, which is itself sacred-tier
   under the same parental AND-consent gate.
 - **The gate covers both dimensions at once:** sister-memory
@@ -246,7 +246,7 @@ security mental model.
 - `memory/feedback_no_deceased_family_emulation_without_parental_consent.md`
   — BP-24 anchor; this file is the Ryan-cross-intimate-name
   amendment to that rule.
-- `memory/user_sister_elisabeth.md` (auto-memory) —
+- `memory/user_sister_elizabeth.md` (auto-memory) —
   scope-boundary file; the Ryan name now has a second
   pointer on this end of the relation.
 - `memory/user_granny_and_milton_formative_grandparents.md`

@@ -61,33 +61,61 @@ picked at setup time:
   private / air-gapped work.
 - Requirements: none beyond git.
 - In this mode the in-repo markdown files (`docs/BACKLOG.md`,
-  `docs/BUGS.md`, `docs/HUMAN-BACKLOG.md`) are the **only**
-  surface; "active workflow" state lives in commit messages
-  and row-level status markers (`[in-progress 2026-04-22 by
-  session X]`, `[blocked on ...]`, `[done in SHA]`).
-- Claims happen via short status-marker commits that are
-  visible to parallel agents running `git log docs/BACKLOG.md`.
+  `docs/BUGS.md`, `docs/HUMAN-BACKLOG.md`) are the durable
+  backlog surface; "active workflow" state lives in commit
+  messages and the row-level status indicators those rows
+  carry (`[blocked on ...]`, `[done in SHA]`).
+- Claims happen via the **git-native claim protocol** — the
+  authoritative substrate specified in
+  [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md): a
+  per-claim file at `docs/claims/<slug>.md` plus
+  `claim:` / `progress:` / `release:` commits on a
+  `claim/<slug>` branch pushed to `origin`. Parallel
+  agents discover live claims by listing remote claim
+  branches (`git fetch origin &&
+  git branch -r --list 'origin/claim/*'`) and reading
+  the claim file directly from the remote ref
+  (`git show origin/claim/<slug>:docs/claims/<slug>.md`);
+  `ls docs/claims/` on `main` only shows merged-but-not-
+  released claims, not active ones still in flight.
+- Backlog row markers (`[in-progress 2026-04-22 by session X]`,
+  `[blocked on ...]`, `[done in SHA]`) remain useful as
+  **row-local annotations** on the durable backlog row, but
+  they are not the locking mechanism — the claim file is.
+  Adopters who want backlog-only claims (no separate
+  `docs/claims/` directory) can document that divergence in
+  their own ADR; in that simpler mode, claims happen via
+  short status-marker commits visible to parallel agents
+  running `git log docs/BACKLOG.md`.
 
 ### Choosing at setup
 
 The canonical setup script under `tools/setup/` currently does
-not prompt for this. A **BACKLOG row is open** to add the
-prompt: "Which issue tracker will this project use?
-[GitHub Issues / Jira / git-native] — agent workflow defaults
-adapt." Until that lands, Zeta's default is (1) and adopters
-copying the factory should read this doc and choose consciously.
+not prompt for this. Tracked at task #267-adjacent (factory-
+adoption configuration prompts) — the planned prompt: "Which
+issue tracker will this project use? [GitHub Issues / Jira /
+git-native] — agent workflow defaults adapt." Until that lands,
+Zeta's default is (1) and adopters copying the factory should
+read this doc and choose consciously.
 
 ## The claim / lock protocol (adapter-neutral)
 
 Parallel agents need a non-colliding way to signal "I'm
-starting on this work." The protocol is the same across
-adapters; only the mechanism differs:
+starting on this work." The full git-native protocol
+specification lives in
+[`docs/AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) —
+that doc is the standalone, linkable reference you hand to
+an external agent (ChatGPT / Codex / Gemini / Deep Research)
+along with the task URL. The table below summarises the
+mechanism per adapter; the git-native row is the substrate
+the other two adapters mirror.
 
 | Adapter | Claim mechanism | Release mechanism | Lookup for parallel agent |
 |---|---|---|---|
 | GitHub Issues | Comment `claimed by session <id> <UTC-ts> — ETA <...>` + add `in-progress` label | Comment `releasing — landed in <SHA>` + remove label + close (if done) | `gh issue list --label in-progress` |
 | Jira | Transition to `In Progress` state + assign to self + add comment | Transition to `Done` / `Released` + comment with commit | `jql: status = "In Progress"` |
-| Git-native | Short commit touching the row: `BACKLOG: claim row #42 — session <id> <UTC-ts>` | Commit touching the row: `BACKLOG: release row #42 — landed in <SHA>` | `git log --grep="claim row" docs/BACKLOG.md` |
+| Git-native | Claim file at `docs/claims/<slug>.md` on a `claim/<slug>` branch pushed to `origin` (directory tracked on `main`, `README.md` placeholder); commit `claim: <slug> - <scope>` (see [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) for the full shape) | Delete the claim file; commit `release: <slug> - landed in <SHA>` | `git fetch origin && git branch -r --list 'origin/claim/*'` (active claims) plus `ls docs/claims/` (claims merged to `main`) |
+| Git-native (legacy row-marker variant) | Short commit touching the row: `BACKLOG: claim row #42 — session <id> <UTC-ts>` | Commit touching the row: `BACKLOG: release row #42 — landed in <SHA>` | `git log --grep="claim row" docs/BACKLOG.md` |
 
 ### Claim windows and stale-claim force-release
 
@@ -192,6 +220,9 @@ Jira or git-native can skip it.
 
 ## References
 
+- [`AGENT-CLAIM-PROTOCOL.md`](AGENT-CLAIM-PROTOCOL.md) —
+  the standalone, linkable git-native claim specification
+  (hand this URL to external agents along with the task)
 - `AGENTS.md` — universal onboarding
 - `CLAUDE.md` — Claude Code harness rules
 - `docs/BACKLOG.md` — durable research backlog (always required)

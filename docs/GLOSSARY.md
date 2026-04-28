@@ -797,6 +797,31 @@ Authoritative source: `.claude/skills/reducer/SKILL.md`
 `.claude/skills/glossary-anchor-keeper/`, and across
 `docs/ROUND-HISTORY.md`.
 
+### KSK (Kinetic Safeguard Kernel)
+
+**Plain:** A small trusted library that AI agents and
+applications call to ask "am I allowed to do this?" — and
+that answers with a signed receipt, a budget decrement, and
+a traffic-light colour. "Kernel" here is in the safety-kernel
+sense (a small bit of code that gets disproportionate review
+because it guards the important decisions), **not** in the
+operating-system-kernel sense (it does not run in ring 0).
+**Technical:** A retraction-native authorization substrate
+with k1/k2/k3 capability tiers, revocable budgets, multi-
+party consent quorums, BLAKE3-hashed signed receipts,
+traffic-light outputs, and optional ledger anchoring. Every
+authorization and revocation is a ZSet signed-weight event;
+quorum satisfaction is a Graph operation over consent-edge
+weights. Concept owners: the human maintainer + an external
+AI collaborator. Initial starting-point code: contributed by
+a trusted external contributor in the external repository
+`Lucent-Financial-Group/lucent-ksk`
+(`https://github.com/Lucent-Financial-Group/lucent-ksk`) —
+not a local `LFG/` directory in this repo. Canonical
+expansion ratified 2026-04-24 after session-level courier-
+ferry discussion. Authoritative source:
+`docs/definitions/KSK.md`.
+
 ---
 
 ## Vocabulary kernel and the Map

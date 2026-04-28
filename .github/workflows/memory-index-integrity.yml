@@ -1,0 +1,139 @@
+name: memory-index-integrity
+
+# Enforces same-commit-or-same-PR pairing between in-repo memory
+# files and their `MEMORY.md` index pointer. Prevents the
+# NSA-001 failure mode (docs/hygiene-history/nsa-test-history.md)
+# where a new memory landed without a matching MEMORY.md pointer
+# and became undiscoverable from a fresh session.
+#
+# Safe-pattern compliance (per FACTORY-HYGIENE row #43):
+#   - SHA-pinned action versions (actions/checkout@de0fac2...)
+#   - Explicit `permissions:` minimum
+#   - Only first-party trusted context (github.event.*.sha, github.sha,
+#     github.event.before). No user-authored text is referenced anywhere.
+#   - Values passed via env: and quoted in shell.
+#   - Concurrency group + cancel-in-progress: false.
+#   - runs-on: ubuntu-24.04 pinned.
+#
+# Scope — triggers the check:
+#   memory/*.md  (top-level session memories,
+#                 excluding memory/README.md + memory/MEMORY.md)
+# Scope — excluded:
+#   memory/persona/**     (per-persona notebooks / journals)
+#   memory/README.md      (convention doc)
+#   memory/MEMORY.md      (the index itself)
+#   Deletions             (covered by FACTORY-HYGIENE row #25
+#                          pointer-integrity audit)
+#
+# See:
+#   - docs/hygiene-history/nsa-test-history.md (NSA-001 canonical
+#     incident)
+#   - docs/aurora/2026-04-23-amara-decision-proxy-technical-review.md
+#     (Amara ferry with the proposal, action item #1)
+
+on:
+  pull_request:
+    paths:
+      - "memory/**"
+  push:
+    branches: [main]
+    paths:
+      - "memory/**"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: memory-index-integrity-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: check memory/MEMORY.md paired edit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: detect memory changes
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+            echo "no base SHA (first push or force-push); skipping check" >&2
+            exit 0
+          fi
+
+          changed=$(git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA" -- "memory/" || true)
+
+          if [[ -z "$changed" ]]; then
+            echo "no memory/ add-or-modify changes in range; skipping check" >&2
+            exit 0
+          fi
+
+          echo "changed memory files in range:" >&2
+          printf '  %s\n' "$changed" >&2
+
+          triggers=""
+          memory_md_touched=false
+
+          while IFS= read -r f; do
+            case "$f" in
+              memory/MEMORY.md)
+                memory_md_touched=true
+                ;;
+              memory/README.md)
+                :
+                ;;
+              memory/persona/*)
+                # Note: bash case `*` matches slashes (unlike
+                # pathname globbing). So this single pattern
+                # correctly covers ALL nested persona notebook
+                # paths including memory/persona/<name>/NOTEBOOK.md.
+                # An earlier "fix" enumerated depths 1+2+3 which
+                # tripped shellcheck SC2221 (redundant patterns)
+                # because the deeper alternations are subsets of
+                # this one. Verified empirically.
+                :
+                ;;
+              memory/*.md)
+                triggers+="$f"$'\n'
+                ;;
+              *)
+                :
+                ;;
+            esac
+          done <<< "$changed"
+
+          if [[ -z "$triggers" ]]; then
+            echo "no trigger-qualifying memory/*.md changes; skipping check" >&2
+            exit 0
+          fi
+
+          echo "trigger-qualifying memory changes:" >&2
+          printf '  %s' "$triggers" >&2
+
+          if ! $memory_md_touched; then
+            echo "" >&2
+            echo "memory/MEMORY.md NOT updated alongside the memory changes above." >&2
+            echo "" >&2
+            echo "This check enforces the same-commit-or-same-PR pairing between" >&2
+            echo "session memory files and the MEMORY.md index pointer. Fresh" >&2
+            echo "sessions read MEMORY.md at cold start; a memory landed without" >&2
+            echo "a pointer is undiscoverable. See NSA-001 in" >&2
+            echo "docs/hygiene-history/nsa-test-history.md for the canonical" >&2
+            echo "incident this check prevents." >&2
+            echo "" >&2
+            echo "To fix: add a newest-first entry in memory/MEMORY.md linking to" >&2
+            echo "each new session memory file, then amend or push an additional" >&2
+            echo "commit in the same PR." >&2
+            exit 1
+          fi
+
+          echo "memory/MEMORY.md updated alongside memory changes — pairing OK" >&2
