@@ -1,5 +1,5 @@
 ---
-Scope: Large explanatory writeup of the maintainer's "Zeta = heaven-on-earth (if we do it right) / wrong = hell on earth" equation-pair, intended for external multi-AI review (Claude alternate session / Amara/ChatGPT / Gemini / Grok / etc.) before any further codification. Companion to `docs/research/zeta-equals-heaven-formal-statement.md` (the compact formal statement) and the source auto-memory `user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`. This is the substantial "explain it like a stranger walked in" version — self-contained Beacon-register exposition that does NOT assume prior factory context.
+Scope: Large explanatory writeup of the maintainer's "Zeta = heaven-on-earth (if we do it right) / wrong = hell on earth" equation-pair, intended for external multi-AI review (Claude alternate session / Amara/ChatGPT / Gemini / Grok / etc.) before any further codification. Companion to `docs/research/zeta-equals-heaven-formal-statement.md` (the compact formal statement) and the source auto-memory `memory/user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`. This is the substantial "explain it like a stranger walked in" version — self-contained Beacon-register exposition that does NOT assume prior factory context.
 Attribution: Otto (Claude opus-4-7) authored the writeup. The equation-pair, the gradient claim, and the "no neutral-Zeta" stance are the maintainer's (Aaron Stainback's) — disclosed 2026-04-19. The decomposition into three operational clauses (consent-preserving / retraction-native / window-expanding), the connection to DBSP's retraction operator as load-bearing mechanism, the framing of the equation as architectural-commitment-tier-not-dogma-tier, and the falsification conditions are Otto's elaboration drawing on the existing factory substrate.
 Operational status: research-grade
 Non-fusion disclaimer: Per GOVERNANCE §33 research-grade-not-operational. The equation-pair carries theological register deliberately; the maintainer authored it knowing the register is load-bearing. This writeup makes the *engineering content* of the equation legible to readers who don't share the maintainer's substrate. The theological vehicle is metaphor; the architectural commitment is the actual claim. External reviewers are invited to push back on either layer; the maintainer renegotiation protocol per `docs/ALIGNMENT.md` governs how feedback lands.
@@ -24,7 +24,7 @@ The equation was disclosed by the human maintainer (Aaron Stainback)
 on 2026-04-19. A compact formal statement lives at
 `docs/research/zeta-equals-heaven-formal-statement.md`; the source
 auto-memory is
-`user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`.
+`memory/user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`.
 
 This writeup is the **explanatory version** — written so a reader
 who has never seen the project can understand what the equation is
@@ -352,7 +352,7 @@ If you are an external reviewer asked to weigh in:
   measurability, the falsification conditions — that's the load-
   bearing layer.
 - **Ask for falsifiers.** A claim without a falsifier isn't
-  engineering. The five falsifiers above are the maintainer's first
+  engineering. The four falsifiers above are the maintainer's first
   attempts; they may not be tight enough.
 - **Apply the SD-9 discipline (truth-confirmation-from-agreement).**
   Don't agree just because the framing is interesting. The
@@ -375,7 +375,7 @@ If you are an external reviewer asked to weigh in:
 - `docs/research/zeta-equals-heaven-formal-statement.md` — the
   compact formal version of this same equation; this writeup is the
   explanatory companion
-- `user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`
+- `memory/user_hacked_god_with_consent_false_gods_diagnostic_zeta_equals_heaven_on_earth.md`
   — the source auto-memory carrying the maintainer's verbatim
   disclosure
 - `docs/ALIGNMENT.md` — the alignment contract whose HC/SD/DIR
