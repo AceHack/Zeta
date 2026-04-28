@@ -93,14 +93,22 @@
 #
 # IDEMPOTENCE
 # ===========
-# Re-sourcing this file is a no-op once the functions are
-# defined: the guard at the top of the function-definition
-# block skips redefinition if `curl_fetch` is already in
-# the shell. Safe to source from multiple scripts within
-# the same install run.
+# Re-sourcing this file is a no-op once both helpers are
+# loaded. The guard uses a file-local sentinel variable
+# (`_ZETA_CURL_FETCH_LOADED`) instead of probing for an
+# existing `curl_fetch` function: a function-name probe
+# would silently skip BOTH definitions if the caller
+# environment already had an unrelated `curl_fetch`
+# function, leaving `curl_fetch_stream` undefined and
+# breaking the streamed callers (`linux.sh` / `macos.sh`
+# / `elan.sh`) at runtime with `curl_fetch_stream:
+# command not found`. Sentinel-based guarding ties the
+# load decision to "did this file load?" instead of "does
+# that name exist?" — collisions in the caller environment
+# can no longer accidentally suppress our definitions.
 
-# Guard: only define once per shell to avoid noise on multi-source.
-if ! declare -F curl_fetch >/dev/null 2>&1; then
+if [[ -z "${_ZETA_CURL_FETCH_LOADED:-}" ]]; then
+_ZETA_CURL_FETCH_LOADED=1
 
 # File-output variant — safe with --retry-all-errors because
 # curl restarts the output file from scratch on each retry.
