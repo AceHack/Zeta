@@ -22,7 +22,11 @@ with zero approving reviews as long as the other gates clear.
 ## What `mergeStateStatus: BLOCKED` actually means on Zeta
 
 When the GitHub API reports `mergeStateStatus: BLOCKED` on a Zeta PR,
-the blocker is one of (and ONLY one of) these three classes:
+the blocker is **one OR MORE** of these three classes (they CAN
+coexist — e.g., a PR can simultaneously have unresolved threads AND
+pending CI; fixing only one class won't unblock the merge until ALL
+classes are clear; the diagnostic playbook below MUST check all three
+before declaring the diagnosis exhausted):
 
 1. **Unresolved review threads.** `requiresConversationResolution: true`
    is set on both forks. Even ONE unresolved thread blocks merge. Even
