@@ -42,7 +42,7 @@ rows to `docs/BACKLOG.md`.
 **Legacy stockpile:** `docs/BACKLOG.md` remains as a
 read-only archive of un-migrated rows during the migration
 window. Its top-of-file warning header points at this README
-+ the migration-tracking row (B-0061). Once migration
+and the migration-tracking row (B-0061). Once migration
 completes, the monolith collapses to an auto-generated
 pointer index via `tools/backlog/generate-index.sh`.
 
