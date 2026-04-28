@@ -34,7 +34,8 @@
 #     the comment.
 #   - concurrency: workflow-scoped; cancel-in-progress for PR
 #     events.
-#   - Runner digest-pinned (ubuntu-22.04).
+#   - Runner pinned to ubuntu-24.04 (not -latest, so OS image
+#     changes are explicit and tracked).
 #   - Graceful no-change handling: if the diff has no claim-
 #     bearing lines, posts a clarifying message and passes.
 #     Does not fail the PR.
@@ -58,7 +59,7 @@ concurrency:
 jobs:
   resume-diff:
     name: claim-level diff
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       contents: read

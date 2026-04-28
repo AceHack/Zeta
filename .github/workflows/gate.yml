@@ -13,7 +13,7 @@
 #     — too slow for per-PR gating; runs on every push to main +
 #     nightly schedule (in practice every merge, since direct
 #     pushes are blocked by branch protection).
-#     Lint jobs pinned to ubuntu-22.04 (short-lived, OS-independent
+#     Lint jobs pinned to ubuntu-24.04 (short-lived, OS-independent
 #     work). Windows legs deferred to peer-harness milestone.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
@@ -266,7 +266,7 @@ jobs:
     # elevation design (docs/research/threat-model-elevation.md).
     name: lint (semgrep)
     timeout-minutes: 10
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     # Toolchain via three-way-parity install.sh (GOVERNANCE §24): same
     # semgrep version that dev laptops + devcontainers get, pinned in
@@ -307,7 +307,7 @@ jobs:
     # See openspec/specs/static-analysis/profiles/shell.md.
     name: lint (shellcheck)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -317,9 +317,11 @@ jobs:
         # Installs shellcheck via mise (pinned in .mise.toml). Single
         # source of truth — the same version on dev laptops + CI
         # runners. Prior step relied on shellcheck shipping pre-
-        # installed on ubuntu-22.04, which broke parity (dev machines
-        # may have a different version) and wouldn't survive newer
-        # runner images like ubuntu-slim that don't ship shellcheck.
+        # installed on ubuntu-22.04 (the older runner image), which
+        # broke parity (dev machines may have a different version)
+        # and wouldn't survive newer runner images like ubuntu-slim
+        # that don't ship shellcheck. Same parity concern applies on
+        # ubuntu-24.04 — install via mise regardless.
         run: ./tools/setup/install.sh
 
       - name: Run shellcheck
@@ -352,7 +354,7 @@ jobs:
     # github-actions.md.
     name: lint (actionlint)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -395,7 +397,7 @@ jobs:
     # layer.
     name: lint (tick-history order)
     timeout-minutes: 2
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -419,7 +421,7 @@ jobs:
     # merge-conflict resolution.
     name: lint (no conflict markers)
     timeout-minutes: 2
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -447,7 +449,7 @@ jobs:
     # backfilled all pre-existing violations to 0.
     name: lint (archive header §33)
     timeout-minutes: 2
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -468,7 +470,7 @@ jobs:
     # No untrusted input used in run: — only a fixed repo path.
     name: lint (no empty dirs)
     timeout-minutes: 3
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -484,7 +486,7 @@ jobs:
     # See openspec/specs/static-analysis/profiles/markdown.md.
     name: lint (markdownlint)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
