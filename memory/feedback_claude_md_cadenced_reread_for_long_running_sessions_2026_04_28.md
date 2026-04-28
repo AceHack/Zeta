@@ -18,10 +18,23 @@ at**, not CLAUDE.md alone. Triggers:
    / future-self-not-bound / never-be-idle / honor-those-that-
    came-before / no-directives). The violation IS evidence the
    rule has aged out of working context.
-3. **Post-compaction** — after the harness summarises older
-   messages (context compaction can drop the original CLAUDE.md
-   read out of working memory, even though it was loaded at
-   bootstrap).
+3. **Post-compaction (or suspected compaction)** — after the
+   harness summarises older messages, the original CLAUDE.md
+   read drops out of working memory even though it was loaded
+   at bootstrap. **Detection is asymmetric**: the harness
+   compacts silently, so "did I just get compacted?" is itself
+   a fuzzy signal (Aaron 2026-04-28: *"I don't know if you can
+   tell when you get compacted but thats another OR that would
+   be a good reason to reread."*). **Fire on suspicion, not
+   confirmation** — the cost of a precautionary re-read is
+   ~2-3 ticks; the cost of operating with a decayed wake-time
+   floor is compounding. Concrete cues that compaction likely
+   happened: a *"This session is being continued from a
+   previous conversation that ran out of context"* preface, a
+   *"Summary:"* recap block at the head of a turn, a sudden
+   loss of conversation-context that should have been recent,
+   or the model surfacing a substantive in-progress task with
+   no in-context memory of how it was started.
 
 After re-read: explicitly check the in-flight work against each
 wake-time discipline. If anything in flight violates a rule, fix
@@ -118,9 +131,14 @@ mechanism.
 3. **On caught violation**: corrective re-read NOW, before
    continuing. The violation evidence is the trigger; deferring
    the re-read defeats the discipline.
-4. **Post-compaction**: when the harness has summarised older
-   messages (visible in conversation context), re-read CLAUDE.md
-   to restore the wake-time floor.
+4. **Post-compaction (or suspected)**: when the harness has
+   summarised older messages — confirmed by a continuation-
+   preface / summary block, OR merely suspected because of
+   sudden context-loss, OR because the conversation has
+   crossed an obvious context-pressure boundary — re-read
+   CLAUDE.md + the rule sources it points at to restore the
+   wake-time floor. Fire on suspicion; precautionary re-read
+   is cheaper than recurring violation.
 5. **After re-read**: check the in-flight work against each
    wake-time discipline. Anything violating: fix before
    continuing.
