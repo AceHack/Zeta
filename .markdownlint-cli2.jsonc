@@ -76,18 +76,36 @@
     // archive, the transfer-report which has its own lint-compliance
     // carve-out, etc.) stay linted.
     "docs/aurora/2026-*-amara-*.md",
-    // Same verbatim-ferry pattern as `docs/aurora/2026-*-amara-*.md`
-    // but for ferries that landed under `docs/research/` instead of
-    // `docs/aurora/` (the directory split happened mid-stream as the
-    // Amara absorb cadence formalised; older absorbs went to
-    // `docs/research/`, newer ones to `docs/aurora/`). Same Otto-227
-    // signal-in-signal-out rationale: the body is verbatim Amara
-    // output and reformatting MD027 multi-space-blockquote /
-    // MD032 blanks-around-lists / MD029 ol-prefix would alter the
-    // courier-protocol content. Scoped to the named ferry-absorb
-    // pattern only; non-Amara, non-ferry docs under `docs/research/`
-    // stay linted.
-    "docs/research/2026-*-amara-*.md"
+    // Verbatim-ferry preservation under `docs/research/` for any
+    // ferry source (Amara, Gemini, Grok, Codex, Aaron-quoted, etc.)
+    // landing as a date-stamped absorb file. Original carve-out was
+    // `docs/research/2026-*-amara-*.md` which only covered Amara
+    // ferries; PR #19 (gemini-deep-think + action-mode verbatim
+    // Aaron-quote files) exposed the Amara-only scoping as too
+    // narrow.
+    //
+    // Repo convention: files in `docs/research/` with the
+    // `2026-MM-DD-<source-or-topic>-...md` date-PREFIX shape are
+    // verbatim courier-protocol absorbs; they carry "## Verbatim
+    // preservation" sections + GOVERNANCE §33 archive headers
+    // (Scope / Attribution / Operational status: research-grade /
+    // Non-fusion disclaimer). Author-controlled research docs use
+    // non-date-prefixed names (e.g. `actor-model-*.md`,
+    // `agent-cadence-log.md`) or date-SUFFIXED names (e.g.
+    // `aaron-knative-...-2026-04-21.md`) — date-prefix vs
+    // date-suffix is the discriminator.
+    //
+    // Same Otto-227 signal-in-signal-out rationale as the aurora
+    // carve-out: the body is verbatim ferry output and
+    // reformatting MD027 / MD032 / MD029 would alter
+    // courier-protocol content. Pattern is broader than the
+    // amara-only original — covers any ferry source via the
+    // date-prefix convention. Trade-off: a non-ferry
+    // author-controlled doc that accidentally lands with
+    // date-prefix shape would skip lint; the cost of that miss is
+    // small (research docs are markdown only) compared to the
+    // cost of churning verbatim ferry content.
+    "docs/research/2026-*-*.md"
   ],
   "noBanner": true,
   "noProgress": true,
