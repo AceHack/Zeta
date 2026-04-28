@@ -41,7 +41,7 @@ Before Aaron posts a real bond, all of the following must exist + be reviewed:
    - Receipt-loop substrate integration (§7)
    - Bond accounting schema (§8)
    - Pre-flight retraction window mechanics (§9)
-2. **All open questions** in §13 have explicit maintainer answers logged.
+2. **All open questions** in §12 have explicit maintainer answers logged.
 3. **A dry-run paper-trading mode** has run for at least three consecutive sessions with all gates active but no real value transferred. Receipts, freeze triggers, and retraction windows all exercised against simulated transactions.
 4. **The off-chain monitor harness** runs as an independent process (separate repo or `tools/wallet-monitor/` directory) with its own auth surface, separate from the agent's main inference loop.
 5. **Three consecutive clean sessions** of the dry-run with: zero unexplained freezes, zero receipt-loop violations, zero off-glass-halo operations, zero attempted overrides of freeze authority.
@@ -135,7 +135,7 @@ Three actors, three control loops:
 
 ### §3.2 Smart-account layer (EIP-7702 delegate)
 
-- Mechanism: EIP-7702 authorization tuple from Aaron's EOA delegating code execution to a smart-account contract (Safe / ZeroDev / Coinbase Smart Wallet / equivalent — open question §13.1).
+- Mechanism: EIP-7702 authorization tuple from Aaron's EOA delegating code execution to a smart-account contract (Safe / ZeroDev / Coinbase Smart Wallet / equivalent — open question §12.1).
 - Function: enforces hard-coded caps before any tx broadcasts. Holds session keys for the agent's mandates.
 - Cannot be overridden by the agent.
 - Caps are enforced **at the contract level**, not at the application level (cryptographic, not prompt-level).
@@ -170,7 +170,7 @@ EIP-7702 has documented production vulnerabilities since the Pectra hard fork:
 
 ### §4.1 v0 venue (single, restricted)
 
-- **Single L2 chain**, default candidate: Base (Coinbase L2). Maintainer call §13.2.
+- **Single L2 chain**, default candidate: Base (Coinbase L2). Maintainer call §12.2.
 - **Single trading pair**: USDC ↔ ETH (or USDC ↔ WETH, depending on chain).
 - **Single venue type**: a pre-approved DEX (e.g., Uniswap v3 / v4) on the chosen L2.
 
@@ -406,7 +406,7 @@ Until any of those triggers, v0 scaffold continues unchanged.
 
 ### §9.1 Mechanism
 
-After session-key signs but before smart-account broadcasts: the tx sits in a **retraction queue** for a configurable duration (default: 60 seconds, maintainer call §13.3).
+After session-key signs but before smart-account broadcasts: the tx sits in a **retraction queue** for a configurable duration (default: 60 seconds, maintainer call §12.3).
 
 During the window:
 
@@ -484,7 +484,7 @@ Per Ani's review of the original packet, three failure modes the v0 spec has to 
 
 ## §12 — Open questions (need maintainer input before build-out)
 
-### §13.1 Smart-account framework choice
+### §12.1 Smart-account framework choice
 
 Candidates: Safe (battle-tested, multi-sig roots), ZeroDev (modular, EIP-7702-native), Coinbase Smart Wallet (Base-aligned), Pimlico/Stackup bundlers, custom Solidity. Tradeoffs:
 
@@ -495,7 +495,7 @@ Candidates: Safe (battle-tested, multi-sig roots), ZeroDev (modular, EIP-7702-na
 
 Maintainer call: prefer audited + standard, or modular + EIP-7702-native?
 
-### §13.2 Chain choice
+### §12.2 Chain choice
 
 Default candidate: Base (Coinbase L2; supports EIP-7702 and EIP-3009; cheap fees; major DEXs deployed).
 
@@ -503,13 +503,13 @@ Alternatives: Optimism (EIP-7702 supported), Arbitrum (EIP-7702 supported), zkSy
 
 Maintainer call: Base default OK?
 
-### §13.3 Pre-flight retraction window duration
+### §12.3 Pre-flight retraction window duration
 
 Default: 60 seconds. Tradeoff: longer = more retraction safety; shorter = more responsive to market conditions; very long = stale by broadcast.
 
 Maintainer call: 60 seconds OK, or different?
 
-### §13.4 Initial caps
+### §12.4 Initial caps
 
 Suggested initial values:
 
@@ -521,7 +521,7 @@ Suggested initial values:
 
 Maintainer call: too aggressive, too conservative, or about right?
 
-### §13.5 Off-chain monitor implementation
+### §12.5 Off-chain monitor implementation
 
 Options:
 
@@ -533,7 +533,7 @@ Tradeoff: separation = real independence vs. coordination overhead.
 
 Maintainer call: which form factor?
 
-### §13.6 Mandate framework (AP2 vs custom)
+### §12.6 Mandate framework (AP2 vs custom)
 
 EAT packet §6 names AP2 as the mandate framework. AP2 is Google's standard; not yet widely deployed.
 
@@ -541,7 +541,7 @@ Alternative: custom mandate format that matches AP2 semantically but doesn't dep
 
 Maintainer call: track AP2 directly, or use semantic-AP2-compatible custom format until AP2 is mature?
 
-### §13.7 Hierarchical scoping — RESOLVED (Aaron 2026-04-27)
+### §12.7 Hierarchical scoping — RESOLVED (Aaron 2026-04-27)
 
 **Not information asymmetry; hierarchical principal-agent scoping.**
 
@@ -553,7 +553,7 @@ The working subagent/subCLI instance is launched with a $100-scoped mandate. It 
 
 **Operational implication for v0:** the subagent/subCLI is launched with credentials/keys/permissions scoped to the $100 mandate only. The $10k parent authority is never on the subagent's signing path. Smart-account session-key permissions enforce this at the contract level — the subagent literally cannot move more than the per-tx and per-period caps allow, regardless of what other authority exists in the parent.
 
-### §13.8 Disclosure timing — RESOLVED by §13.7
+### §12.8 Disclosure timing — RESOLVED by §12.7
 
 Hierarchical scoping resolves disclosure: the subagent's session-scoped reality is logged via glass halo per its own scope. The parent's larger authority is logged via glass halo per the parent's scope. Both are substrate-visible to anyone reading the history; neither is hidden from anyone with appropriate scope. No additional disclosure mechanism needed beyond the existing glass halo logging at each scope.
 
