@@ -256,7 +256,7 @@ The hallucination isn't just training-data drift; it's **multi-layer default dom
 
 ## 2nd-agent audit findings (Aaron 2026-04-26 dispatch)
 
-Aaron asked for a 2nd-agent opinion. Audit doc landed at `/tmp/live-lock-audit-2026-04-26.md`. Key independent findings beyond the 8 patterns:
+Aaron asked for a 2nd-agent opinion. The transient audit notes were not checked into the repo (durable-pointer rule: absolute `/tmp/...` paths are not recoverable across machines or sessions). The key independent findings are preserved below in this memory entry beyond the 8 patterns:
 
 1. **PR #143 irony** — the PR titled "live-lock audit tool" has been live-locked for 69 hours with failing CI. Strongest single evidence the discipline isn't sticking.
 2. **mergeStateStatus has 5 causes not 4** — `DIRTY` (merge conflicts) is conflated with `BLOCKED` in my mental model. Diagnostic must distinguish.

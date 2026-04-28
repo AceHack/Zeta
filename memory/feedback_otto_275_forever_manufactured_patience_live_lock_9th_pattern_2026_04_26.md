@@ -116,7 +116,7 @@ mechanical rule.
 - Otto-275-YET (`feedback_rapid_backlog_input_context_switch_drift_counterweight_log_dont_implement_otto_275_2026_04_24.md`) — this memory is the *failure mode* of Otto-275-YET when YET silently becomes FOREVER
 - Otto-276 (`feedback_never_pray_auto_merge_completes_inspect_actual_blockers_otto_276_2026_04_24.md`) — same lineage: don't pray, inspect; don't lean-tick, audit BACKLOG
 - Otto-277 (`feedback_every_tick_inspects_holding_is_prayer_unless_preceded_by_inspection_otto_277_2026_04_24.md`) — extends "every tick inspects" to include BACKLOG inspection, not just queue inspection
-- Otto-278 (`feedback_memory_alone_leaky_without_cadenced_inspect_audit_for_missing_balance_otto_278_2026_04_24.md`) — direct counterweight; the cadenced-re-read discipline applies to corrective lessons themselves
+- Otto-278 (user-scope memory at `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_memory_alone_leaky_without_cadenced_inspect_audit_for_missing_balance_otto_278_2026_04_24.md`; not in-repo, scope difference noted) — direct counterweight; the cadenced-re-read discipline applies to corrective lessons themselves
 - Otto-2026-04-26 LFG branch-protection live-lock taxonomy (`feedback_blocked_status_is_not_review_gating_check_status_checks_failure_first_otto_live_lock_2026_04_26.md`) — extends the 8-pattern enumeration to 9
 - Aaron 2026-04-26 *"feel free to pickup whatever you want"* — the standing permission this pattern misreads
 - Aaron 2026-04-26 *"self diagnosis life lock likey"* (first catch) and *"do you remember what you are doing?"* (second catch) — the corrective prompts

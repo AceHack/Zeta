@@ -305,16 +305,24 @@ correction-as-steering, not correction-as-exile.
 Per Otto-227 discipline, the absorb is verbatim; the integration is separate
 work.
 
-### Integration items (proposed; this PR is research-grade only)
+### Integration items (proposed; verbatim absorbs landed in PR #17, refinements deferred)
 
-> **Scope note (Copilot review on PR #17 caught the wording):** this section
-> previously stated each item as already-landed ("memory landed",
-> "MEMORY.md updated"). That overstated this PR's actual scope — this PR
-> contains research docs only, no `memory/**` or `memory/MEMORY.md`
-> changes. Reframed below as a **proposal list** so future readers can
-> tell which items are committed substrate vs. follow-up work for separate
-> PRs. Per GOVERNANCE §33 research-grade-not-operational: integration
-> follows research absorb in separate work.
+> **Scope note (review thread history on this file):** earlier revisions of
+> this section stated each item as already-landed ("memory landed",
+> "MEMORY.md updated"). The accurate scope of PR #17 (the original landing
+> PR for this file) was: **two research-doc absorbs** AND **four memory
+> files capturing the verbatim absorb** (so Aurora-substrate is preserved
+> across sessions) plus a **`memory/MEMORY.md` index update**. The
+> *refinements* below — touching `memory/feedback_otto_354_*` and the
+> commit-message-shape skill — were the work that PR #17 explicitly did
+> NOT contain; those are tracked as follow-ups. This is a proposal list
+> for future readers — no PR-relative phrasing — so the distinction
+> between (a) verbatim absorbs already in-tree and (b) refinement work
+> deferred to follow-up PRs stays legible after this doc is moved /
+> reviewed outside the original PR context. Per GOVERNANCE §33
+> research-grade-not-operational: substantive *refinement* of operational
+> substrate (e.g. Otto-354 schema upgrade) follows the verbatim absorb in
+> separate work.
 
 1. **Otto-354 trailer-discipline memory should be refined** with Amara's
    7-trailer schema (replacing the initial single-`Agent: otto` schema)

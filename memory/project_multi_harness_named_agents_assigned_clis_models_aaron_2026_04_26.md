@@ -92,8 +92,13 @@ The persona registry becomes a routing table:
      the shipping precursor
    - **`docs/HARNESS-SURFACES.md`** is the existing
      harness-surface substrate
-   - **`docs/research/per-named-agent-memory-architecture-*`**
-     covers memory-side architecture
+   - **`docs/research/memory-role-restructure-plan-2026-04-21.md`** +
+     **`docs/research/memory-reconciliation-algorithm-design-2026-04-24.md`** +
+     **`docs/research/memory-scope-frontmatter-schema.md`** +
+     **`docs/research/memory-optimization-under-identity-preservation-2026-04-26.md`**
+     cover the memory-side architecture (the per-named-agent
+     framing lives at Otto-243/244/245 — references in user-scope
+     memory only, not in-repo, scope difference noted)
 
 4. **Aaron has authorized the direction.** This message is
    forward-looking authorization framing, not opposition.
