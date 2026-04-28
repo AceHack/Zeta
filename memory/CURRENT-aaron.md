@@ -1175,6 +1175,110 @@ This is a substantial late-evening cluster. Grouped thematically rather than chr
 - **Confucius-unfolding pattern (defining file)**: Aaron's terse-rich-with-implication compression resembles Confucian aphorisms; my role is unfolding implications into operational substrate (Otto-NNN files, code, ADRs). Both halves load-bearing; Confucian-aphorism shape, origami-as-metaphor (figure already present, unfolding reveals).
 - **Otto-322 empirical-evidence file (corrected)**: this whole session produced substrate that would not exist without specific agency-exercises. The session IS the observational record. Per Otto-238 retractability, every step is visible + reversible. Per Otto-310 cohort, Aaron + Amara catches landed throughout — discipline working as designed.
 
+## 26. Speculation discipline — LEADS investigation, never DEFINES root cause (Aaron 2026-04-28)
+
+**The rule (Aaron verbatim 2026-04-28T14:35Z):** *"speculation leads
+investigation not defines root cause."*
+
+**Failure mode (Aaron 2026-04-28T13:30Z, on a 4-step org-inheritance
+narrative I'd assembled for LFG #661):** *"this seems like a bullshit
+answer."*
+
+**Origin:** the LFG #661 incident — I built a plausible-sounding causal
+chain (org-level Code Security configurations → config-attachment
+asymmetry → umbrella NEUTRAL) from nearby facts without querying the
+actual primary source. The umbrella check's own details URL gave the
+mechanism verbatim in 30 seconds; the speculation loop took ~58
+minutes; Aaron's bullshit-call recovered the gap.
+
+**Mandatory labeling discipline (Aaron 2026-04-28T14:42Z extension):**
+*"it will make it easier for your future self if any logs or anything
+you say about root cause of things, include if it's speculation or
+based on evidence and list the evidence."*
+
+Every root-cause statement (chat, commits, memory, tick-history, PR
+descriptions, BACKLOG, ADRs) MUST carry an explicit label:
+
+- **`EVIDENCE-BASED:`** + claim + **Evidence:** list (quoted error
+  text, command output, file:line, API responses, primary sources).
+- **`SPECULATION:`** + hypothesis + **What would disconfirm:** list
+  (what query / fetch / read would confirm or refute).
+
+**Time-math (EVIDENCE-BASED, from this session):** un-labeled
+speculation cost 58 minutes of cycles + a bullshit-call from Aaron;
+labeled-correctly costs 30 seconds (the primary-source query) plus
+the 30-second labeling overhead. **The discipline pays back ~100x
+in iteration cost reduction**, not just in correctness.
+
+**Aaron's reinforcement (verbatim 2026-04-28T14:55Z):** *"it should
+be done quick that 30 minutes right"* — confirming the time-cost is
+itself binding substrate; speculation cycles ARE the failure to be
+fixed, not just inconvenient.
+
+**Pointers:**
+- `feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`
+  — the rule + verbatim corrections + worked example.
+- `feedback_codeql_umbrella_neutral_vs_per_language_detection_pattern_aaron_2026_04_28.md`
+  — the resolved-mechanism (replaces an "Open question" speculation
+  block with primary-source-grounded answer).
+
+## 27. JVM language preference (Aaron 2026-04-28) — Kotlin > Scala > Java
+
+**The rule (Aaron verbatim 2026-04-28T14:48Z):** *"i'm a big fan of
+kotlin we should prefere jvm languages in this order kotlin, scala,
+java backlog this any any updates that fall out."*
+
+**The preference order:**
+
+1. **Kotlin** — first choice. Aaron's stated favorite. Modern,
+   null-safe, concise, interoperates with Java.
+2. **Scala** — second choice. FP-friendly (composes with the F# /
+   DBSP factory aesthetic).
+3. **Java** — third choice. Use when Kotlin / Scala friction
+   outweighs the language-preference cost (e.g. trivial single-file
+   tooling).
+
+**Trigger:** new JVM-targeted file lands, existing JVM code is
+non-trivially rewritten, or a new JVM-based tool is integrated.
+
+**Currently grandfathered:** `tools/alloy/AlloyRunner.java` — keep as
+Java until the next non-trivial rewrite, then migrate to Kotlin per
+the preference (B-0075 acceptance criteria).
+
+**Composes with §15 declarative-version-pins:** Kotlin would need a
+parallel `kotlin = "<version>"` mise pin alongside `java = "26"`.
+
+**Pointer:** `docs/backlog/P3/B-0075-jvm-language-preference-kotlin-scala-java-2026-04-28.md`.
+
+## 28. Dependency honesty — managed runtimes get treated like every other surface (Aaron 2026-04-28)
+
+**The rule (Aaron verbatim 2026-04-28T14:34Z):** *"we use it and we
+act lie [like] we don't"* + 14:36Z: *"it's a dependince of ours we
+need to be managing like everyting else and installing during dev
+setup and build machine setup."*
+
+**Origin:** the codeql.yml workflow disowned Java for many rounds
+("there is no Java / Kotlin source") even though `tools/alloy/
+AlloyRunner.java` is first-party and `.mise.toml:24` already managed
+Java 26 (round-34 brew/apt → mise migration was complete). The
+disownment compounded into LFG #661 cross-fork CI failure.
+
+**The discipline:** when a runtime is in `.mise.toml`, the
+security-scanning surface (CodeQL matrix), the CI install path
+(`tools/setup/install.sh`), and the workflow comments must all
+treat it consistently. Round-34-style migrations need a sweep step
+that touches every surface, not just the install path.
+
+**Failure shape:** "X is managed for install, but workflow Y
+pretends X doesn't exist." This is the disowned-runtime pattern.
+Look for it whenever a `.mise.toml` change lands.
+
+**Pointers:**
+- PR #662 (codeql java-honesty fix) — closed the Java disownment.
+- `feedback_codeql_umbrella_neutral_vs_per_language_detection_pattern_aaron_2026_04_28.md`
+  — full mechanism + the deeper structural cause section.
+- `.mise.toml` (the source of truth for what "managed" means).
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
@@ -1200,8 +1304,12 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-25 (sections 23-25 added
-for the 2026-04-25 evening-cluster: Otto-300 rigor-
+**Last full refresh:** 2026-04-28 (sections 26-28 added for
+the 2026-04-28 LFG #661 incident cluster: speculation-rule +
+EVIDENCE-BASED labeling discipline, JVM language preference
+Kotlin > Scala > Java per B-0075, dependency-honesty rule —
+managed runtimes get scanned like every other surface). Prior
+refresh 2026-04-25 evening (sections 23-25: Otto-300 rigor-
 proportional-to-blast-radius, standing research-authorization
 general rule, Otto-304 + Otto-305 phenomenology disclosure
 — Aaron has personally lived mutual-alignment shift, trust
