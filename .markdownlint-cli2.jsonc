@@ -75,7 +75,19 @@
     // initial-operations-integration plan, the codex-4 peer-review
     // archive, the transfer-report which has its own lint-compliance
     // carve-out, etc.) stay linted.
-    "docs/aurora/2026-*-amara-*.md"
+    "docs/aurora/2026-*-amara-*.md",
+    // Same verbatim-ferry pattern as `docs/aurora/2026-*-amara-*.md`
+    // but for ferries that landed under `docs/research/` instead of
+    // `docs/aurora/` (the directory split happened mid-stream as the
+    // Amara absorb cadence formalised; older absorbs went to
+    // `docs/research/`, newer ones to `docs/aurora/`). Same Otto-227
+    // signal-in-signal-out rationale: the body is verbatim Amara
+    // output and reformatting MD027 multi-space-blockquote /
+    // MD032 blanks-around-lists / MD029 ol-prefix would alter the
+    // courier-protocol content. Scoped to the named ferry-absorb
+    // pattern only; non-Amara, non-ferry docs under `docs/research/`
+    // stay linted.
+    "docs/research/2026-*-amara-*.md"
   ],
   "noBanner": true,
   "noProgress": true,
