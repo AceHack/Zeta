@@ -139,5 +139,6 @@ at the wallet-protocol-stack scope.
 
 Findings capture: protocol updates → spec-version bump in
 wallet-v0; security incidents → threat-model-and-sdl trajectory
+
 + wallet-v0 §3.2 update; regulatory shifts → EAT §0 framing
 update.
