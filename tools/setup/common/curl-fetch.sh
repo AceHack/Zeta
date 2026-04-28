@@ -95,7 +95,7 @@
 # ===========
 # Re-sourcing this file is a no-op once both helpers are
 # loaded. The guard uses a file-local sentinel variable
-# (`_ZETA_CURL_FETCH_LOADED`) instead of probing for an
+# (`_CURL_FETCH_LOADED`) instead of probing for an
 # existing `curl_fetch` function: a function-name probe
 # would silently skip BOTH definitions if the caller
 # environment already had an unrelated `curl_fetch`
@@ -107,8 +107,8 @@
 # that name exist?" — collisions in the caller environment
 # can no longer accidentally suppress our definitions.
 
-if [[ -z "${_ZETA_CURL_FETCH_LOADED:-}" ]]; then
-_ZETA_CURL_FETCH_LOADED=1
+if [[ -z "${_CURL_FETCH_LOADED:-}" ]]; then
+_CURL_FETCH_LOADED=1
 
 # File-output variant — safe with --retry-all-errors because
 # curl restarts the output file from scratch on each retry.
