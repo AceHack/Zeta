@@ -1,6 +1,6 @@
 # Contributor personas — the expected first-contact shape
 
-Aaron 2026-04-22, setting scope:
+The human maintainer 2026-04-22, setting scope:
 
 > I've heard if your project is AI friendly AIs may just
 > show up and start contributing, that's how humans work
@@ -81,8 +81,8 @@ added here.
   angle overlaps, wants to open a conversation about
   co-authorship or citation.
 - **Needs:** a `research` category in the backlog
-  template; a human-ask channel that routes to Aaron;
-  examples of prior research-note landings.
+  template; a human-ask channel that routes to the
+  maintainer; examples of prior research-note landings.
 - **Loses them:** being funnelled into a bug-style
   template; their proposal bounced for lack of a "repro".
 - **Template fit:** `backlog_item.md` with category =
@@ -99,8 +99,8 @@ added here.
   claim comments; a claim protocol (see
   `docs/AGENT-ISSUE-WORKFLOW.md`) that prevents
   collisions with parallel agents; a machine-parseable
-  label taxonomy; no requirement to be Aaron-authorised
-  to contribute on routine items.
+  label taxonomy; no requirement to be
+  maintainer-authorised to contribute on routine items.
 - **Loses them:** human-authentication gates on every
   step; labels requiring human interpretation; templates
   with prose prompts asking for "how do you feel about
@@ -155,15 +155,16 @@ added here.
   project health; a heavy template reads as "project
   is gatekeeping."
 
-### 8. Aaron-external peer — the employer / past-coworker
+### 8. Maintainer-external peer — the employer / past-coworker
 
-- **Shape:** Aaron mentioned Zeta in conversation;
-  they're evaluating what he's building, possibly as
-  a research-contribution proxy for reputation.
+- **Shape:** the maintainer mentioned Zeta in
+  conversation; they're evaluating what is being
+  built, possibly as a research-contribution proxy
+  for reputation.
 - **Needs:** an honest `FACTORY-RESUME.md` distinguishing
   shipped from aspirational; comparisons to adjacent
-  OSS; Aaron's actual role (solo + AI co-authors)
-  visible.
+  OSS; the maintainer's actual role (solo + AI
+  co-authors) visible.
 - **Loses them:** marketing fluff; "production-ready"
   claims inspection falsifies.
 - **Template fit:** rarely files an issue — reads the
@@ -176,10 +177,10 @@ added here.
   an unrelated project; does not care about DBSP
   algebra at all; needs the software-factory substrate.
 - **Needs:** a clear "the factory is portable across
-  projects" signal (see
-  `project_factory_reuse_beyond_zeta_constraint`
-  memory); AGENTS.md treating factory-level rules as
-  generic; a minimal bootstrap script.
+  projects" signal (see `docs/BACKLOG.md` P3 row on
+  conversational bootstrap UX for factory-reuse
+  consumers); AGENTS.md treating factory-level rules
+  as generic; a minimal bootstrap script.
 - **Loses them:** factory docs hard-coding
   Zeta-specific paths (`src/Core/**`, `openspec/specs/**`)
   as factory-level invariants; personas named as
@@ -223,7 +224,8 @@ When designing or auditing a first-contact surface:
 
 When a contributor's needs go unmet (we learn this
 from dropped issues, closed-without-landing PRs,
-follow-up Aaron feedback, or agent retry loops), log
+follow-up maintainer feedback, or agent retry loops),
+log
 the failure at
 `docs/research/contributor-friction-log.md`. If the
 log does not exist yet, the first friction report

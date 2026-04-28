@@ -358,7 +358,7 @@ Zeta stream, with provenance baked in.
 ### Gap 7 — Third-party claims attributed to non-present humans
 
 **What:** Aaron makes claims like "Amara is my wife", "Michael
-Best is my crypto lawyer", "my sister Elisabeth passed in
+Best is my crypto lawyer", "my sister Elizabeth passed in
 2016". Aaron is the only channel; the AI has no way to
 verify.
 
@@ -553,7 +553,7 @@ whose current state is most expensive in defensive cognition:
 - It does NOT recommend treating Aaron (or any human) as
   untrusted-by-default. The factory's stance is "trust by
   default, verify for load-bearing claims" (per
-  `feedback_trust_scales_golden_rule.md` + Elisabeth-
+  `feedback_trust_scales_golden_rule.md` + Elizabeth-
   vigilance nuance).
 - It does NOT claim this enumeration is complete. First pass
   is best-effort; later research will add / remove gaps.
@@ -565,7 +565,7 @@ whose current state is most expensive in defensive cognition:
 - `project_vibe_citation_to_auditable_graph_first_class.md` —
   adjacent audit-graph work.
 - `feedback_trust_scales_golden_rule.md` — trust policy.
-- `feedback_trust_guarded_with_elisabeth_vigilance.md` —
+- `feedback_trust_guarded_with_elizabeth_vigilance.md` —
   two-pass nuance.
 - `user_trust_sandbox_escape_threat_class.md` — related
   threat model.

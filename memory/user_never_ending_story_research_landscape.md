@@ -221,7 +221,7 @@ standing approval.
   mechanism.
 - `user_five_children.md` — boundary: his DNA /
   records are his; each kid's are each kid's.
-- `user_sister_elisabeth.md` — boundary: records
+- `user_sister_elizabeth.md` — boundary: records
   about her stay self-scoped per Glass Halo.
 - `feedback_fighter_pilot_register.md` — research
   register is peer, not clinical.

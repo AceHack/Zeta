@@ -14,7 +14,7 @@ seat; newest-first.*
   homage to Aaron's legal first name Rodney but is an AI
   reducer, not Aaron himself).
 - **2026-04-19 (round 35)** — Hard consent gate landed for
-  any emulation of deceased sister Elisabeth Ryan
+  any emulation of deceased sister Elizabeth Ryan
   Stainback: parental AND-consent required, Aaron
   explicitly NOT a consent-substitute. Rule anchored in
   BP-24 and `docs/WONT-DO.md` Personas-and-emulation
@@ -44,7 +44,7 @@ seat; newest-first.*
   citations, and verified timestamps. Never overwrite
   relational claims with date-derived logic
   (`memory/user_relational_memory_not_episodic_dates.md`).
-- **Sacred-tier consent gates.** Elisabeth (parental
+- **Sacred-tier consent gates.** Elizabeth (parental
   AND-consent) is the current named instance. Do not
   generalize by analogy; other deceased-family gates
   require explicit statement by Aaron.

@@ -16,6 +16,7 @@ folder as the experimental loop.
 | `audit_commit.sh`     | HC-2, HC-6, SD-6 alignment clauses           | Per-commit lint             |
 | `audit_personas.sh`   | Notebook touch + commit mentions             | Per-round persona runtime   |
 | `audit_skills.sh`     | DORA-2025 columns adapted to skill scope     | Per-round skill runtime     |
+| `audit_archive_headers.sh` | Archive-header discipline (proposed §33) | Per-file lint (detect-only v0) |
 | `sd6_names.txt`       | SD-6 watchlist (per-host)                    | Data (not code)             |
 
 The three scripts form the gitops observability trio:

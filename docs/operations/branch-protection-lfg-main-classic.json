@@ -1,0 +1,83 @@
+{
+    "url": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/branches/main/protection",
+    "required_status_checks": {
+        "url": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/branches/main/protection/required_status_checks",
+        "strict": false,
+        "contexts": [
+            "lint (semgrep)",
+            "lint (shellcheck)",
+            "lint (actionlint)",
+            "lint (markdownlint)",
+            "build-and-test (macos-26)",
+            "build-and-test (ubuntu-24.04)",
+            "build-and-test (ubuntu-24.04-arm)"
+        ],
+        "contexts_url": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/branches/main/protection/required_status_checks/contexts",
+        "checks": [
+            {
+                "context": "lint (semgrep)",
+                "app_id": 15368
+            },
+            {
+                "context": "lint (shellcheck)",
+                "app_id": 15368
+            },
+            {
+                "context": "lint (actionlint)",
+                "app_id": 15368
+            },
+            {
+                "context": "lint (markdownlint)",
+                "app_id": 15368
+            },
+            {
+                "context": "build-and-test (macos-26)",
+                "app_id": 15368
+            },
+            {
+                "context": "build-and-test (ubuntu-24.04)",
+                "app_id": 15368
+            },
+            {
+                "context": "build-and-test (ubuntu-24.04-arm)",
+                "app_id": 15368
+            }
+        ]
+    },
+    "required_pull_request_reviews": {
+        "url": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/branches/main/protection/required_pull_request_reviews",
+        "dismiss_stale_reviews": true,
+        "require_code_owner_reviews": false,
+        "require_last_push_approval": false,
+        "required_approving_review_count": 0
+    },
+    "required_signatures": {
+        "url": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/branches/main/protection/required_signatures",
+        "enabled": false
+    },
+    "enforce_admins": {
+        "url": "https://api.github.com/repos/Lucent-Financial-Group/Zeta/branches/main/protection/enforce_admins",
+        "enabled": false
+    },
+    "required_linear_history": {
+        "enabled": true
+    },
+    "allow_force_pushes": {
+        "enabled": false
+    },
+    "allow_deletions": {
+        "enabled": false
+    },
+    "block_creations": {
+        "enabled": false
+    },
+    "required_conversation_resolution": {
+        "enabled": true
+    },
+    "lock_branch": {
+        "enabled": false
+    },
+    "allow_fork_syncing": {
+        "enabled": false
+    }
+}

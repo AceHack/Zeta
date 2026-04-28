@@ -5,12 +5,13 @@
 # works with N=1 (reports "insufficient data for delta; baseline
 # only"), grows more useful as cadence accumulates.
 #
-# Aaron 2026-04-22: *"i want evidence based budgiting ... we want
-# some amount of price history in git ... If i need more credits i
-# can buy enterprise"*. This script is the projection layer that
-# turns persisted history into a decision-ready summary for Aaron.
-# It never initiates an upgrade — it only surfaces the projection
-# so Aaron's call is evidence-driven.
+# Human maintainer note, 2026-04-22: *"i want evidence based
+# budgiting ... we want some amount of price history in git ...
+# If i need more credits i can buy enterprise"*. This script is
+# the projection layer that turns persisted history into a
+# decision-ready summary for the human maintainer. It never
+# initiates an upgrade — it only surfaces the projection so the
+# human maintainer's call is evidence-driven.
 #
 # Usage:
 #   tools/budget/project-runway.sh
@@ -47,6 +48,21 @@ copilot_rate=19
 actions_free_ms=180000000
 emit_json="false"
 
+# require_int FLAG_NAME VALUE — exit 2 with documented CLI-error code if
+# VALUE is not a non-negative integer. Catches bad input at parse time
+# so the documented "exit 2 on CLI-argument errors" contract holds even
+# when an arithmetic-using flag receives a non-numeric value (Codex P2
+# NM59qF00 + NM59qH2H, Copilot P1 NM59qGJ-).
+require_int() {
+  local flag="$1"
+  local val="$2"
+  case "$val" in
+    ''|*[!0-9]*)
+      echo "error: $flag requires a non-negative integer (got: '$val')" >&2
+      exit 2 ;;
+  esac
+}
+
 while [ $# -gt 0 ]; do
   case "$1" in
     --file)
@@ -54,12 +70,15 @@ while [ $# -gt 0 ]; do
       file="$2"; shift 2 ;;
     --stages)
       if [ $# -lt 2 ]; then echo "error: --stages requires INT" >&2; exit 2; fi
+      require_int "--stages" "$2"
       stages="$2"; shift 2 ;;
     --copilot-rate)
       if [ $# -lt 2 ]; then echo "error: --copilot-rate requires USD" >&2; exit 2; fi
+      require_int "--copilot-rate" "$2"
       copilot_rate="$2"; shift 2 ;;
     --actions-free-ms)
       if [ $# -lt 2 ]; then echo "error: --actions-free-ms requires INT" >&2; exit 2; fi
+      require_int "--actions-free-ms" "$2"
       actions_free_ms="$2"; shift 2 ;;
     --json) emit_json="true"; shift ;;
     -h|--help)
@@ -95,8 +114,8 @@ first_ts="$(echo "$first" | jq -r '.ts')"
 last_ts="$(echo "$last" | jq -r '.ts')"
 last_copilot_seats="$(echo "$last" | jq -r '.copilot_billing.seat_breakdown.total // 0')"
 last_plan="$(echo "$last" | jq -r '.copilot_billing.plan_type // "unknown"')"
-last_total_ms="$(echo "$last" | jq -r '[.repos[].agg.total_duration_ms // 0] | add')"
-last_recent_merged="$(echo "$last" | jq -r '[.repos[].pr.recent_merged // 0] | add')"
+last_total_ms="$(echo "$last" | jq -r '([.repos[].agg.total_duration_ms // 0] | add) // 0')"
+last_recent_merged="$(echo "$last" | jq -r '([.repos[].pr.recent_merged // 0] | add) // 0')"
 last_sha="$(echo "$last" | jq -r '.factory_git_sha')"
 
 # Delta computation requires N >= 2.
@@ -104,8 +123,8 @@ delta_available="false"
 per_pr_ms="null"
 pr_delta="0"
 if [ "$n" -ge 2 ]; then
-  first_total_ms="$(echo "$first" | jq -r '[.repos[].agg.total_duration_ms // 0] | add')"
-  first_recent_merged="$(echo "$first" | jq -r '[.repos[].pr.recent_merged // 0] | add')"
+  first_total_ms="$(echo "$first" | jq -r '([.repos[].agg.total_duration_ms // 0] | add) // 0')"
+  first_recent_merged="$(echo "$first" | jq -r '([.repos[].pr.recent_merged // 0] | add) // 0')"
   # Note: recent_merged is a rolling-window count (last 10), not a
   # cumulative count. A robust per-PR-burn calc needs a cumulative
   # PR counter. For now use the naive proxy: if last_total_ms
@@ -123,7 +142,7 @@ fi
 # Actions: projected_ms = per_pr_ms * stages; remaining = free_ms - cumulative_billable.
 # Copilot: constant $copilot_rate/month per seat; migration-span-months * seats * rate.
 # Conservative bound: use last snapshot billable counters (sum of all OS) for cumulative.
-last_billable_ms="$(echo "$last" | jq -r '[.repos[] | .agg.billable_ubuntu_ms + .agg.billable_macos_ms + .agg.billable_windows_ms] | add')"
+last_billable_ms="$(echo "$last" | jq -r '([.repos[] | (.agg.billable_ubuntu_ms // 0) + (.agg.billable_macos_ms // 0) + (.agg.billable_windows_ms // 0)] | add) // 0')"
 remaining_free_ms=$((actions_free_ms - last_billable_ms))
 projected_actions_ms=0
 actions_fit="unknown (N<2)"
@@ -195,7 +214,7 @@ cat <<OUT
 Budget projection — three-repo-split Stages 1-4
 ================================================
 
-Evidence source:   $file
+Evidence source:   ${file#"$repo_root"/}
 Samples (N):       $n
 First snapshot:    $first_ts
 Latest snapshot:   $last_ts
@@ -237,7 +256,7 @@ fi
 cat <<OUT
   Copilot projected USD (single span):           \$$copilot_projected_usd
 
-Aaron-decision surface
+Human-maintainer-decision surface
 ----------------------
 OUT
 
@@ -252,12 +271,12 @@ else
   echo "  Gate conditions (see ADR §Blockers):"
   echo "    (1) N>=3 samples:                 $( [ "$n" -ge 3 ] && echo yes || echo no )"
   echo "    (2) projection computed:          yes"
-  echo "    (3) Aaron has seen projection:    (surface via Architect)"
+  echo "    (3) human maintainer has seen projection:    (surface via Architect)"
   echo ""
   echo "  If Actions projection shows EXCEEDS, the escape valves are:"
   echo "    - Shrink Stage 1-4 workload (reduce --stages parameter)"
   echo "    - Wait for next free-credit cycle"
-  echo "    - Aaron-decision: Enterprise upgrade (Trigger B per memory"
+  echo "    - Human-maintainer decision: Enterprise upgrade (Trigger B per memory"
   echo "      feedback_lfg_paid_copilot_teams_throttled_experiments_allowed.md)"
 fi
 
