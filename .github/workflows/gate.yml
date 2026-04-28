@@ -76,12 +76,18 @@ concurrency:
 
 jobs:
   # Dynamic matrix for build-and-test: pre-merge events (pull_request
-  # and merge_group) get Linux-only (production build path, fast —
-  # keeps PR checks and merge-queue runs short). Push-to-main /
-  # workflow_dispatch get the full set including macos-26
-  # (developer-experience verification) and the Windows experimental
+  # and merge_group) get Linux production legs + macos-26
+  # (developer-experience verification — duration-verified ~3 min total
+  # codeql.yml run on recent code-PR per maintainer 2026-04-28). Push-to-main /
+  # workflow_dispatch additionally include the Windows experimental
   # legs. Standard GitHub-hosted runners are free for public repos so
-  # the post-merge run has no cost downside.
+  # all PR cadence has no cost downside.
+  #
+  # Maintainer 2026-04-28: "mac is less than that too so we might as
+  # wel move that back form per merge to per pr, i think that means
+  # only low memory is per merge now." → macos-26 moves to PR cadence;
+  # only ubuntu-slim (low-memory.yml) + Windows experimental remain
+  # on per-merge.
   matrix-setup:
     name: matrix setup
     runs-on: ubuntu-24.04
@@ -93,20 +99,15 @@ jobs:
         shell: bash
         run: |
           # Pre-merge (pull_request + merge_group): Linux production
-          # legs only (~3 min wall clock).
-          # Push-to-main / workflow_dispatch: full surface incl.
-          # macos-26 (developer-experience) + Windows legs
-          # (peer-harness milestone seeding per maintainer 2026-04-27 —
-          # "start the windows one as a per push to main too/merge to
-          # main, you can start slowly building that out before I get
-          # my windows laptop running the peer-mode agent, windows
-          # will be mostly ready and they can just clean it up").
+          # legs + macos-26 dev-experience leg (~3-4 min total).
+          # Push-to-main / workflow_dispatch: pre-merge legs + Windows
+          # experimental legs (peer-harness milestone seeding).
           # Windows legs are gated by `continue-on-error: true` at the
           # build-and-test job level so initial failures (e.g. missing
           # tools/setup/install.ps1) don't block per-merge runs while
           # the peer-agent polishes the path.
           if [ "${GH_EVENT}" = "pull_request" ] || [ "${GH_EVENT}" = "merge_group" ]; then
-            echo 'os=["ubuntu-24.04","ubuntu-24.04-arm"]' >> "$GITHUB_OUTPUT"
+            echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26"]' >> "$GITHUB_OUTPUT"
           else
             echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26","windows-2025","windows-11-arm"]' >> "$GITHUB_OUTPUT"
           fi
