@@ -2,7 +2,7 @@
 # validate-agencysignature-pr-body.sh — pre-merge validator for the
 # AgencySignature Convention v1 trailer block in a PR description body.
 # Pairs with audit-agencysignature-main-tip.sh (task #299) as the
-# pre-merge / post-merge enforcement instrument set per Amara ferry-7
+# pre-merge / post-merge enforcement instrument set per courier-ferry-7 absorb
 # ("stop designing, instrument enforcement").
 #
 # Usage:
@@ -23,9 +23,9 @@
 #  - Glass Halo radical-honesty register: no emoji; structured FAIL
 #    messages carry cause + fix + spec citation by absolute path.
 #  - Task: enum extension covers ticket-ids AND the 'none' fallback per
-#    Amara ferry-7's no-task rule (so agents do not invent fake task IDs).
+#    courier-ferry-7 absorb's no-task rule (so agents do not invent fake task IDs).
 #  - Consistency check: Human-Review-Evidence must be 'none' when
-#    Human-Review is not 'explicit' (Amara ferry-5 evidence-pointer rule).
+#    Human-Review is not 'explicit' (courier-ferry-5 absorb evidence-pointer rule).
 #
 # Exit codes:
 #   0 — all required trailers present and enums valid
@@ -57,7 +57,7 @@ trailers="$(printf '%s\n' "$stripped" | git interpret-trailers --parse 2>/dev/nu
 
 if [ -z "$trailers" ]; then
   printf '%s\n' "FAIL: no parseable git trailers found in PR body"
-  printf '%s\n' "  Class:  Trailer Contiguity Survival Failure (Amara ferry-12)"
+  printf '%s\n' "  Class:  Trailer Contiguity Survival Failure (courier-ferry-12 absorb)"
   printf '%s\n' "  Cause:  AgencySignature trailer block missing OR blank-line discipline broken"
   printf '%s\n' "  Fix:    ensure the trailer block at PR body bottom has exactly ONE blank"
   printf '%s\n' "          line preceding it and ZERO blank lines within it"
@@ -67,7 +67,7 @@ if [ -z "$trailers" ]; then
   exit 1
 fi
 
-# Substrate Truth Principle check (Grok ferry-16): the entire trailer block
+# Substrate Truth Principle check (courier-ferry-16 absorb): the entire trailer block
 # must be at the very end of the PR body. No non-trailer non-empty content
 # may appear after the trailer block. Non-trailer content after the trailers
 # would push the trailer block out of the terminal-block position when
@@ -79,18 +79,47 @@ fi
 # strip-trailing-whitespace).
 last_trailer_line="$(printf '%s\n' "$trailers" | grep -v '^[[:space:]]*$' | tail -1)"
 if [ -n "$last_trailer_line" ]; then
-  # Find LAST occurrence of the last_trailer_line in the stripped input to
-  # locate the trailer block's tail in the original.
+  # Locate the trailer block's tail in the stripped input. Strategy:
+  # 1. Try EXACT match (`grep -nFx`). Fast path; works when the
+  #    parser preserved the line verbatim.
+  # 2. Fall back to KEY-PREFIX match. Trailer lines are `Key: value`;
+  #    extract the key from the parsed line and match the LAST
+  #    occurrence of `^Key:` in the stripped input.
+  # 3. If BOTH miss, fail-closed (exit 1) — silent skip of an
+  #    invariant check is worse than a false-positive (per codex P1
+  #    review on PR #24: trailer normalization can break exact-match;
+  #    keep terminal-block check active when text is normalized).
   tail_lineno="$(printf '%s\n' "$stripped" \
     | grep -nFx "$last_trailer_line" \
     | tail -1 \
     | cut -d: -f1)"
+  if [ -z "$tail_lineno" ]; then
+    last_trailer_key="$(printf '%s\n' "$last_trailer_line" | cut -d: -f1)"
+    if [ -n "$last_trailer_key" ]; then
+      tail_lineno="$(printf '%s\n' "$stripped" \
+        | grep -nE "^${last_trailer_key}:" \
+        | tail -1 \
+        | cut -d: -f1)"
+    fi
+  fi
+  if [ -z "$tail_lineno" ]; then
+    printf '%s\n' "FAIL: terminal-block check could not locate trailer tail in PR body"
+    printf '%s\n' "  Class:    Validator-Lookup Failure (fail-closed per codex P1 review on PR #24)"
+    printf '%s\n' "  Cause:    parsed trailer line did not match any stripped-input line"
+    printf '%s\n' "            via either exact-match or key-prefix-match strategy."
+    printf '%s\n' "            Likely cause: parser normalized the trailer (multi-line"
+    printf '%s\n' "            continuation, non-ASCII whitespace, case-fold collision)."
+    printf '%s\n' "  Fix:      simplify PR-body trailer block (single-line trailers,"
+    printf '%s\n' "            literal Key: value, ASCII whitespace) OR extend this"
+    printf '%s\n' "            validator's lookup-fallback chain. Do NOT silently skip."
+    exit 1
+  fi
   if [ -n "$tail_lineno" ]; then
     after="$(printf '%s\n' "$stripped" | tail -n +"$((tail_lineno + 1))" \
       | grep -v '^[[:space:]]*$' || true)"
     if [ -n "$after" ]; then
       printf '%s\n' "FAIL: non-trailer content found after the trailer block in PR body"
-      printf '%s\n' "  Class:    Trailer Contiguity Survival Failure (Grok ferry-16 invariant)"
+      printf '%s\n' "  Class:    Trailer Contiguity Survival Failure (courier-ferry-16 absorb invariant)"
       printf '%s\n' "  Cause:    text after the trailer block can push trailers out of the"
       printf '%s\n' "            terminal-block position when GitHub squash-merge inherits"
       printf '%s\n' "            the PR description as the squash commit body"
@@ -98,7 +127,7 @@ if [ -n "$last_trailer_line" ]; then
       printf '%s\n' "            no non-trailer non-whitespace content may follow it"
       printf '%s\n' "  Found after trailer block:"
       printf '%s\n' "$after" | sed 's/^/    /' | head -5
-      printf '%s\n' "  Principle: Substrate Truth Principle (Grok ferry-16)"
+      printf '%s\n' "  Principle: Substrate Truth Principle (courier-ferry-16 absorb)"
       printf '%s\n' "             A governance convention has not shipped until the parser"
       printf '%s\n' "             extracts the expected trailers as a contiguous terminal block."
       printf '%s\n' "  Spec:      $spec_doc Section 7.5 (Squash-Merge Invariant)"
@@ -120,13 +149,13 @@ done
 
 if [ -n "$missing" ]; then
   printf '%s\n' "FAIL: missing required AgencySignature v1 trailer keys:$missing"
-  printf '%s\n' "  Class:    Trailer Contiguity Survival Failure (Amara ferry-12) — likely cause"
+  printf '%s\n' "  Class:    Trailer Contiguity Survival Failure (courier-ferry-12 absorb) — likely cause"
   printf '%s\n' "            when keys appear textually but blank-line breaks parsing"
   printf '%s\n' "  Cause:    PR body trailer block is incomplete OR a blank line splits the"
   printf '%s\n' "            block such that only the final contiguous group parses"
   printf '%s\n' "  Fix:      add the missing trailers at the PR body bottom OR remove the"
   printf '%s\n' "            blank line that splits the contiguous block"
-  printf '%s\n' "  Principle: Substrate Truth Principle (Grok ferry-16) — text presence is"
+  printf '%s\n' "  Principle: Substrate Truth Principle (courier-ferry-16 absorb) — text presence is"
   printf '%s\n' "             insufficient; the parser is the witness"
   printf '%s\n' "  Spec:     $spec_doc Section 7.4 (canonical 10-trailer block)"
   exit 1
@@ -160,7 +189,7 @@ check_enum "Human-Review" "explicit|not-implied-by-credential|none"
 check_enum "Human-Review-Evidence" "chat|pr-review|pr-comment|signed-policy|none"
 check_enum "Action-Mode" "autonomous-fail-open|human-directed|supervised"
 
-# Task: ticket-id pattern OR 'none' (Amara ferry-7 no-task fallback so agents
+# Task: ticket-id pattern OR 'none' (courier-ferry-7 absorb no-task fallback so agents
 # do not invent fake IDs). Accepted ticket-id forms: Otto-NN, task-#NNN,
 # task-NNN, #NNN, NNN, FOO-NN, FOO-NNNN. Numeric-only allowed because GitHub
 # issue/PR refs are bare integers.
@@ -171,11 +200,11 @@ if ! printf '%s\n' "$task_val" \
   printf '%s\n' "  Found:    '$task_val'"
   printf '%s\n' "  Expected: a ticket-id (e.g. Otto-NN, task-#NNN, #NNN, FOO-NN)"
   printf '%s\n' "            or the literal 'none' fallback"
-  printf '%s\n' "  Spec:     $spec_doc Section 9.2 (Task: none fallback per Amara ferry-7)"
+  printf '%s\n' "  Spec:     $spec_doc Section 9.2 (Task: none fallback per courier-ferry-7 absorb)"
   exit 1
 fi
 
-# Consistency rule (Amara ferry-5): if Human-Review is not 'explicit', then
+# Consistency rule (courier-ferry-5 absorb): if Human-Review is not 'explicit', then
 # Human-Review-Evidence must be 'none'. The evidence pointer only attaches
 # to actual review claims.
 hr_val="$(get_value "Human-Review")"
@@ -190,7 +219,7 @@ if [ "$hr_val" != "explicit" ] && [ "$hre_val" != "none" ]; then
   exit 1
 fi
 
-# Conversely (Amara ferry-5): if Human-Review IS 'explicit', then
+# Conversely (courier-ferry-5 absorb): if Human-Review IS 'explicit', then
 # Human-Review-Evidence must NOT be 'none' (the explicit claim must cite
 # its source).
 if [ "$hr_val" = "explicit" ] && [ "$hre_val" = "none" ]; then
