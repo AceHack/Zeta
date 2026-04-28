@@ -360,6 +360,50 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   preserve who-said-what for the record. On any other
   path, DO flag name attribution — names should not bleed
   into reusable code/docs/skills.
+
+  **Inverse-direction rule (added 2026-04-28 after a
+  same-substrate-verifier failure):** the carve-out is
+  bidirectional — applies to both *flagging existing
+  attribution* AND *suggesting attribution removal*. When
+  proposing a de-naming edit (replacing "Aaron" with "the
+  human maintainer," or "Otto" with "the architect," or
+  similar), check the surface path FIRST. If the path is in
+  the closed-list history surfaces above, the existing names
+  are correct as-is and a de-naming suggestion is the bug,
+  not the fix. The 2026-04-28 surfacing: a same-substrate
+  reviewer (the `pr-review-toolkit:silent-failure-hunter`
+  plugin agent in Claude Code) passed an over-scrubbed
+  de-naming on `docs/research/**` as *"consistent with
+  Otto-279 history-surface attribution carve-out —
+  non-history-surface prose drops the named-attribution
+  form"* — i.e., the verifier inverted the carve-out the
+  same direction the actor did. When the actor and the
+  verifier share the same rule-misreading, single-CLI
+  verify is insufficient. **Surface-path-first** is the
+  corrective: identify the surface category before
+  suggesting any name-related edit.
+
+  **Surface-category quick reference** (use this BEFORE
+  flagging or suggesting a name-related edit):
+  - **History surfaces** (preserve attribution as-is):
+    `memory/**`, `docs/research/**`, `docs/ROUND-HISTORY.md`,
+    `docs/DECISIONS/**`, `docs/aurora/**`,
+    `docs/pr-preservation/**`, `docs/hygiene-history/**`,
+    `docs/WINS.md`, `docs/BACKLOG.md`, `docs/backlog/**`,
+    commit messages, PR titles + bodies.
+  - **Roster-mapping carve-out** (governance / instructions
+    files with one-time persona-to-role mapping permitted):
+    `.github/copilot-instructions.md`, `AGENTS.md`,
+    `GOVERNANCE.md`, `docs/CONFLICT-RESOLUTION.md`. Body-prose
+    attribution still forbidden on these.
+  - **Current-state surfaces** (use role-refs only): code
+    (F#/C#/TS/shell), skill bodies under `.claude/skills/**`,
+    persona definitions under `.claude/agents/**`, spec docs
+    (`openspec/specs/**`, `docs/*.tla`), behavioural docs
+    (`docs/AGENT-BEST-PRACTICES.md`, `docs/GLOSSARY.md`,
+    `docs/WONT-DO.md`), threat models, READMEs,
+    public-facing prose, trajectory files
+    (`docs/trajectories/**`).
 - **Analyzer findings: right-long-term-fix OR documented
   suppression, never the third path of "quick appeasement."**
   For every `Sxxxx` (Sonar) / `MAxxxx` (Meziantou) /
