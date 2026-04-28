@@ -1,0 +1,39 @@
+# Factory-demo — one-command Postgres with schema + seed applied.
+#
+#   docker-compose up -d         # start Postgres, apply schema + seed
+#   docker-compose exec db psql -U postgres  # poke around
+#   docker-compose down -v       # stop + wipe volume
+#
+# Pinning Postgres 16. The demo only relies on standard SQL; any 14+
+# would work but 16 is the current LTS-ish choice.
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: factory-demo-db
+    # Throwaway credentials — demo only, not a production Postgres.
+    # Override via env vars if this container ever shares a host.
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      # schema.sql and seed-data.sql are applied in alphabetical order
+      # by the official Postgres image's docker-entrypoint-initdb.d
+      # convention. Rename here so schema runs before seed.
+      - ./schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./seed-data.sql:/docker-entrypoint-initdb.d/02-seed-data.sql:ro
+      # Named volume so the seed survives restarts; remove with
+      # `docker-compose down -v` to re-apply a fresh seed.
+      - factory-demo-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  factory-demo-db-data:

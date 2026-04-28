@@ -11,12 +11,20 @@
   <ItemGroup>
     <!-- _Support/ helpers first (they're consumed by subject files below). -->
     <Compile Include="_Support/ConcurrencyHarness.fs" />
+    <Compile Include="_Support/CartelInjector.fs" />
 
     <!-- Algebra/ -->
     <Compile Include="Algebra/Weight.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/ZSet.Overflow.Tests.fs" />
     <Compile Include="Algebra/IndexedZSet.Tests.fs" />
+    <Compile Include="Algebra/RobustStats.Tests.fs" />
+    <Compile Include="Algebra/TemporalCoordinationDetection.Tests.fs" />
+    <Compile Include="Algebra/Veridicality.Tests.fs" />
+    <Compile Include="Algebra/Graph.Tests.fs" />
+    <Compile Include="Algebra/PhaseExtraction.Tests.fs" />
+    <Compile Include="Algebra/SignalQuality.Tests.fs" />
+    <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
     <Compile Include="Circuit/Circuit.Tests.fs" />
@@ -37,6 +45,8 @@
     <Compile Include="Operators/ResidualMax.Tests.fs" />
     <Compile Include="Operators/Differentiate.Tests.fs" />
     <Compile Include="Operators/RecursiveCounting.MultiSeed.Tests.fs" />
+    <Compile Include="Operators/RecursiveSemiNaive.Boundary.Tests.fs" />
+    <Compile Include="Operators/CrmScenarios.Tests.fs" />
 
     <!-- Storage/ -->
     <Compile Include="Storage/Spine.Tests.fs" />

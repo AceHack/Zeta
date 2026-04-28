@@ -3,13 +3,32 @@
 # Runs on every PR (opened / reopened / synchronize / ready_for_review)
 # and every push to main, plus workflow_dispatch for manual triage.
 #
-# Discipline (design doc: docs/research/ci-workflow-design.md, Aaron-
-# reviewed 2026-04-18; parity-swap landed round 32):
-#   - Runners digest-pinned (ubuntu-22.04, macos-14), not -latest.
+# Discipline (design doc: docs/research/ci-workflow-design.md, human
+# maintainer reviewed 2026-04-18; parity-swap landed round 32; matrix
+# refresh 2026-04-24 per PR #375):
+#   - Runners pinned to explicit versions (not -latest). Active build-
+#     and-test matrix: macos-26, ubuntu-24.04, ubuntu-24.04-arm.
+#     The ubuntu-slim low-memory verification leg moved to
+#     `.github/workflows/low-memory.yml` per maintainer 2026-04-27
+#     — too slow for per-PR gating; runs on every push to main +
+#     nightly schedule (in practice every merge, since direct
+#     pushes are blocked by branch protection).
+#     Lint jobs pinned to ubuntu-24.04 (short-lived, OS-independent
+#     work; bumped from 22.04 on 2026-04-28 per Aaron's "we better
+#     not be using that old version of ubuntu" + Otto-247 version-
+#     currency WebSearch — ubuntu-latest = 24.04 since Jan 2025).
+#     Windows legs deferred to peer-harness milestone.
 #   - Third-party actions SHA-pinned by full 40-char commit SHA;
 #     trailing `# vX.Y.Z` comments for humans.
 #   - permissions: contents: read at the workflow level; no job
-#     elevates. No secrets referenced.
+#     elevates. The only secret referenced is the auto-generated
+#     per-run secrets.GITHUB_TOKEN (see workflow-level env: block
+#     below) — needed because mise's aqua: backend authenticates
+#     to the GitHub API for release-tag lookups. The token
+#     inherits the read-only permissions; no write escalation.
+#     Workflow-level scope chosen over per-step for DRY (~7
+#     install-toolchain steps would otherwise repeat the env);
+#     trade-off documented at the env: block.
 #   - Concurrency: workflow-scoped; cancel-in-progress only for PR
 #     events (main pushes queue so every main commit gets a record).
 #   - fail-fast: false so one OS failure doesn't hide another.
@@ -40,29 +59,99 @@ on:
 permissions:
   contents: read
 
+# Workflow-level env: exposes GITHUB_TOKEN to every step so mise's
+# `aqua:` backend (used for uv / shellcheck / actionlint /
+# markdownlint-cli2 / etc) can authenticate its GitHub API calls.
+# Without a token, mise hits the unauthenticated rate limit
+# (60 requests per hour per IP, shared across all GitHub Actions
+# runners) and fails to fetch release tags with a 403. With the
+# token, the limit is 5000/hr per token. See
+# https://mise.jdx.dev/dev-tools/github-tokens.html for mise's
+# supported token sources. The token inherits the workflow's
+# `permissions: contents: read` — no write escalation; mise only
+# reads release-tag metadata.
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build-and-test:
+    # Final runner matrix (maintainer ask 2026-04-24): symmetric
+    # across AceHack fork and LFG canonical — same legs run everywhere.
+    # Standard GitHub-hosted runners are free for public repositories,
+    # so the prior fork/LFG cost-opt split (which kept macOS off LFG)
+    # no longer applies.
+    #
+    # Active legs (3):
+    #   - macos-26          macOS 26, Apple Silicon M1 (3 CPU, 7 GB)
+    #   - ubuntu-24.04      Ubuntu 24.04 LTS x64 (4 CPU, 16 GB)
+    #   - ubuntu-24.04-arm  Ubuntu 24.04 LTS arm64 (4 CPU, 16 GB)
+    #
+    # Moved-to-nightly leg (per maintainer 2026-04-27):
+    #   - ubuntu-slim       Ubuntu slim x64 (1 vCPU, 5 GB RAM;
+    #                       15-minute HARD job cap). Too slow for
+    #                       per-PR gating (~10+ min vs ~1.5 min on
+    #                       ubuntu-24.04 — ~7× slower, often times
+    #                       out at the runner-class cap). Goal of
+    #                       the slim leg is verifying low-memory
+    #                       compat — a per-merge + nightly cadence
+    #                       satisfies that without bottlenecking PR
+    #                       landing. Now runs via
+    #                       `.github/workflows/low-memory.yml`
+    #                       (push-to-main + 06:00 UTC schedule +
+    #                       workflow_dispatch).
+    #                       Reference:
+    # https://github.blog/changelog/2026-01-22-1-vcpu-linux-runner-now-generally-available-in-github-actions/
+    #
+    # Deferred legs (commented, enable when Windows peer-harness
+    # milestone ships — maintainer's Windows machine available for
+    # second peer agent validation):
+    #   - windows-2025      Windows Server 2025 x64 (4 CPU, 16 GB)
+    #   - windows-11-arm    Windows 11 arm64 (4 CPU, 16 GB)
+    #
+    # Deferred: per maintainer 2026-04-24 "we can delay windows
+    # until i can test with a second peer agent on my windows
+    # machine." Uncomment both Windows legs when that milestone
+    # lands.
+    #
+    # fail-fast: false so one leg's failure doesn't cancel the
+    # others — we want the full signal across the matrix.
     name: build-and-test (${{ matrix.os }})
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, macos-14]
+        os:
+          - macos-26
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          # ubuntu-slim moved to .github/workflows/low-memory.yml
+          # per maintainer 2026-04-27 — see header comment for rationale.
+          # Deferred until Windows peer-harness milestone:
+          # - windows-2025
+          # - windows-11-arm
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      # Cache keys include `runner.arch` in addition to `runner.os` so
+      # Linux x64 (ubuntu-24.04, ubuntu-slim) and Linux arm64
+      # (ubuntu-24.04-arm) do not share entries for arch-sensitive
+      # paths. `runner.os` resolves to `Linux` on both arches, which
+      # would otherwise cause wrong-arch restores (for example,
+      # `~/.dotnet` with x64 binaries restored onto arm64). See
+      # https://docs.github.com/en/actions/learn-github-actions/
+      # contexts#runner-context for `runner.arch` values.
       - name: Cache .NET SDK
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.dotnet
-          key: dotnet-${{ runner.os }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
+          key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('global.json', 'tools/setup/common/dotnet.sh') }}
 
       - name: Cache mise runtimes (python only post round 32)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -70,13 +159,13 @@ jobs:
           path: |
             ~/.local/share/mise
             ~/.cache/mise
-          key: mise-${{ runner.os }}-${{ hashFiles('.mise.toml') }}
+          key: mise-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml') }}
 
       - name: Cache elan (Lean 4 toolchain)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ~/.elan
-          key: elan-${{ runner.os }}-${{ hashFiles('tools/setup/common/elan.sh') }}
+          key: elan-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/common/elan.sh') }}
 
       - name: Cache verifier jars (TLC + Alloy)
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
@@ -85,7 +174,8 @@ jobs:
             tools/tla
             tools/alloy
           # Manifest is the single source of truth — cache busts when
-          # either URL or (future) SHA changes.
+          # either URL or (future) SHA changes. Jars are JVM bytecode
+          # so arch-neutral; key kept os-only on purpose.
           key: verifiers-${{ runner.os }}-${{ hashFiles('tools/setup/manifests/verifiers') }}
 
       - name: Cache NuGet packages
@@ -97,7 +187,10 @@ jobs:
           # Keys on `Directory.Packages.props`. The `packages.lock.json`
           # ideal is round-33 Track B. No `restore-keys` — partial hit
           # would restore against different resolved versions.
-          key: nuget-${{ runner.os }}-${{ hashFiles('Directory.Packages.props') }}
+          # `runner.arch` is included because some NuGet packages ship
+          # native RID-specific assets (for example, runtime.linux-
+          # x64.*).
+          key: nuget-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('Directory.Packages.props') }}
 
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         # Single source of truth for toolchain state. Installs:
@@ -129,7 +222,7 @@ jobs:
     # elevation design (docs/research/threat-model-elevation.md).
     name: lint (semgrep)
     timeout-minutes: 10
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -160,14 +253,79 @@ jobs:
     # See openspec/specs/static-analysis/profiles/shell.md.
     name: lint (shellcheck)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # Comprehensive cache of everything `tools/setup/install.sh`
+        # writes — keeps dev laptops and CI runners as close to the
+        # same state as possible per Aaron's 2026-04-28 directive:
+        #   "we want to make sure dev seutp and build machine setup
+        #    are as close to the same a possible"
+        #   "why not cache the whole install/setup"
+        # Without comprehensive caching every CI run hits CDNs cold
+        # (mise.run + GitHub releases for bun/shellcheck/actionlint +
+        # NuGet + Lean toolchain). Transient 502s become avoidable
+        # failures rather than first-run-only cost.
+        # Cache key hashes BOTH .mise.toml (runtime versions) AND
+        # tools/setup/** (install logic itself) so changes to either
+        # invalidate cache → vanilla install path gets re-tested
+        # whenever the install discipline changes.
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            tools/tla
+            tools/alloy
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Installs shellcheck via mise (pinned in .mise.toml). Single
+        # source of truth — the same version on dev laptops + CI
+        # runners. Prior step relied on shellcheck shipping pre-
+        # installed on ubuntu (any version), which broke parity (dev machines
+        # may have a different version) and wouldn't survive newer
+        # runner images like ubuntu-slim that don't ship shellcheck.
+        # Note: install.sh is idempotent (detect-first-install-else-update);
+        # safe to run on every CI invocation including cache-hit (it
+        # short-circuits when tools are already present).
+        # CI-level retry per Aaron 2026-04-28: PR #23 failed because
+        # mise's internal 3-attempt retry exhausted on a github
+        # releases CDN 502 for bun-1.3.13. CI runs are non-interactive
+        # so retry is safe; dev runs stay interactive (user decides).
+        # 5 attempts (bumped from 3 per Aaron 2026-04-28); backoff
+        # 10s/30s/60s/120s covers short-burst through multi-minute
+        # CDN outages.
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            # Backoff: 10s, 30s, 60s, 120s — covers transient CDN
+            # blips from short-burst-and-recover up to multi-minute
+            # outages. Aaron 2026-04-28 input: bumped from 3 to 5
+            # because PR #23's bun-1.3.13 502 burned all 3 prior
+            # mise-internal retries and a 3-attempt wrapper on top
+            # didn't add enough margin.
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
       - name: Run shellcheck
-        # shellcheck ships pre-installed on ubuntu-22.04 runners.
         # Scope: Zeta's own scripts under `tools/setup/` only —
         # `tools/lean4/.lake/packages/**` is Lean/Mathlib vendored
         # code not governed by Zeta standards.
@@ -197,21 +355,52 @@ jobs:
     # github-actions.md.
     name: lint (actionlint)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Download actionlint (pinned)
-        # Download directly from the rhysd/actionlint release; SHA
-        # pin in the install script below. Avoids a third-party
-        # action just to install a linter.
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # Comprehensive cache — see lint-shell job above for the
+        # rationale (Aaron 2026-04-28 dev-CI parity directive +
+        # transient 502 prevention). Same cache key shape so all
+        # lint jobs share the cache when toolchain unchanged.
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            tools/tla
+            tools/alloy
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # See lint-shell job above for retry rationale (Aaron 2026-04-28).
         run: |
           set -euo pipefail
-          ACTIONLINT_VERSION="1.7.7"
-          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/v${ACTIONLINT_VERSION}/scripts/download-actionlint.bash) "${ACTIONLINT_VERSION}"
-          ./actionlint --version
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            # Backoff: 10s, 30s, 60s, 120s — covers transient CDN
+            # blips from short-burst-and-recover up to multi-minute
+            # outages. Aaron 2026-04-28 input: bumped from 3 to 5
+            # because PR #23's bun-1.3.13 502 burned all 3 prior
+            # mise-internal retries and a 3-attempt wrapper on top
+            # didn't add enough margin.
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
 
       - name: Run actionlint
         # -ignore 'unknown permission scope "administration"' is a
@@ -223,7 +412,85 @@ jobs:
         # list. Remove when actionlint catches up. See:
         # https://github.com/rhysd/actionlint/issues (search
         # "administration permission").
-        run: ./actionlint -color -ignore 'unknown permission scope "administration"'
+        run: actionlint -color -ignore 'unknown permission scope "administration"'
+
+  lint-tick-history-order:
+    # Validates that docs/hygiene-history/loop-tick-history.md
+    # rows appear in non-decreasing chronological order
+    # (specifically: the LAST row in the file is the latest
+    # timestamp). This catches the recurring row-ordering bug
+    # where the Edit tool's old_string=existing-line pattern
+    # inserts the new row BEFORE the matched line, producing
+    # reverse-chronological order. Maintainer 2026-04-26 asked for
+    # structural prevention after the bug was caught at least
+    # three times across recent ticks. The check is the
+    # "fail-fast at commit/push time" mechanism that doesn't
+    # rely on each agent's vigilance — Otto-339 anywhere-means-
+    # anywhere applied to discipline-enforcement: enforce at
+    # the layer that catches all paths, not at the input-tool
+    # layer.
+    name: lint (tick-history order)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run check-tick-history-order
+        run: tools/hygiene/check-tick-history-order.sh
+
+  lint-no-conflict-markers:
+    # Fail if any committed file contains git merge-conflict markers
+    # (`<<<<<<<`, `=======`, `>>>>>>>`). Maintainer 2026-04-26 ask:
+    # *"maybe we should hygene for <<<<<<< HEAD and >>>>>>> ======= things
+    # like that in our files incase we ever accidently botch a merge,
+    # happens to the best of us humans too."*
+    #
+    # Per Otto-339 anywhere-means-anywhere: conflict markers in
+    # substrate would shift weights wrongly when read by AI. Per
+    # Otto-341 mechanism-not-vigilance: CI catches this regardless
+    # of which agent / human / harness produced the merge. The
+    # script self-allowlists files that legitimately document
+    # merge-conflict resolution.
+    name: lint (no conflict markers)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run check-no-conflict-markers
+        run: tools/hygiene/check-no-conflict-markers.sh
+
+  lint-archive-header-section33:
+    # Fail if any courier-ferry / external-conversation import under
+    # docs/research/** is missing the GOVERNANCE.md §33 4-field archive
+    # boundary header in the first 20 lines, OR if its 'Operational
+    # status:' value is not enum-strict ('research-grade' or
+    # 'operational'). Factory observation 2026-04-26: §33 archive header
+    # was the most-common review finding across the 11-refinement
+    # courier-ferry lineage this session — every PR retrofitted post-
+    # review.
+    #
+    # Per Otto-346 (recurring pattern → substrate primitive) +
+    # Otto-341 (mechanism over vigilance), this lint catches the
+    # discipline at the structural layer: agents and humans cannot
+    # land courier-ferry imports without the §33 header anymore.
+    #
+    # B-0036 Sub-task 2 — wire the lint to gate.yml after Sub-task 1
+    # backfilled all pre-existing violations to 0.
+    name: lint (archive header §33)
+    timeout-minutes: 2
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run check-archive-header-section33
+        run: tools/hygiene/check-archive-header-section33.sh
 
   lint-no-empty-dirs:
     # Fail if a committed directory has no files — almost always a
@@ -237,7 +504,7 @@ jobs:
     # No untrusted input used in run: — only a fixed repo path.
     name: lint (no empty dirs)
     timeout-minutes: 3
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
@@ -253,20 +520,54 @@ jobs:
     # See openspec/specs/static-analysis/profiles/markdown.md.
     name: lint (markdownlint)
     timeout-minutes: 5
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Setup Node
-        # Pinned Node is enough for markdownlint-cli2; no bun needed.
-        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # Comprehensive cache — see lint-shell job above for the
+        # rationale. PR #23 2026-04-28 root-cause was a transient
+        # 502 on bun-1.3.13 download from GitHub releases CDN
+        # (bun is what mise's npm: backend uses to run
+        # markdownlint-cli2); cache hit avoids the CDN entirely.
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
-          node-version: '22'
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+            tools/tla
+            tools/alloy
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
 
-      - name: Install markdownlint-cli2
-        run: npm install -g markdownlint-cli2@0.18.1
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # See lint-shell job above for retry rationale (Aaron 2026-04-28
+        # PR #23 mise+bun-1.3.13 502).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            # Backoff: 10s, 30s, 60s, 120s — covers transient CDN
+            # blips from short-burst-and-recover up to multi-minute
+            # outages. Aaron 2026-04-28 input: bumped from 3 to 5
+            # because PR #23's bun-1.3.13 502 burned all 3 prior
+            # mise-internal retries and a 3-attempt wrapper on top
+            # didn't add enough margin.
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
 
       - name: Run markdownlint
-        run: markdownlint-cli2 "**/*.md"
+        run: mise exec -- markdownlint-cli2 "**/*.md"

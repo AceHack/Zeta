@@ -1,0 +1,64 @@
+# docs/decision-proxy-evidence/_template.yaml
+#
+# Copy to `YYYY-MM-DD-DP-NNN-<slug>.yaml` (in this directory)
+# and fill in. See README.md for field semantics.
+
+decision_id: DP-000            # unique; matches filename
+timestamp_utc: 2026-04-24T00:00:00Z
+
+requested_by: Aaron            # human maintainer
+proxied_by: Otto               # Amara | Otto | Kenji | other persona
+task_class: other              # backlog-shaping | settings-change | branch-shaping | roadmap-edit | scope-claim | governance-edit | memory-migration | other
+authority_level: proposed      # delegated | proposed | escalated | retroactive
+escalation_required: false
+
+repo_canonical: Lucent-Financial-Group/Zeta
+head_commit: "<git-sha>"
+
+model:
+  vendor: anthropic
+  snapshot: claude-opus-4-7
+  prompt_bundle_hash: null
+  loaded_memory_files:
+    - "./CLAUDE.md"
+    - "~/.claude/CLAUDE.md"
+
+consulted_views:
+  - memory/CURRENT-aaron.md
+  - memory/CURRENT-amara.md
+
+consulted_memory_ids: []
+# Example:
+# consulted_memory_ids:
+#   - feedback_aaron_full_github_access_authorization_all_acehack_lfg_only_restriction_no_spending_increase_2026_04_23
+#   - project_acehack_branch_protection_minimal_applied_prior_zeta_archaeology_inconclusive_2026_04_23
+
+live_state_checks: []
+# Example:
+# live_state_checks:
+#   - "gh api /repos/Lucent-Financial-Group/Zeta/branches/main/protection"
+#   - "git log origin/main --oneline -5"
+
+decision_summary: >
+  (2-5 sentences: what was decided, why, what it changes.)
+
+disagreements:
+  present: false
+  conflict_row: null
+
+outputs_touched: []
+# Example:
+# outputs_touched:
+#   - docs/FACTORY-HYGIENE.md
+#   - https://github.com/Lucent-Financial-Group/Zeta/pull/NNN
+
+review:
+  peer_review_required: true
+  peer_reviewer: null          # agent or human name when known
+  peer_review_status: null     # pending | accepted | revise-requested
+  peer_review_evidence: null   # link when complete
+
+# Optional
+retraction_of: null            # DP-NNN being retracted / superseded
+follow_up_evidence: []         # expected future DP-NNN rows
+notes: null                    # brief extra context

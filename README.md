@@ -11,6 +11,16 @@ references are Zeta. See [docs/NAMING.md](docs/NAMING.md) for the full split.
 
 [paper]: https://arxiv.org/abs/2203.16684
 
+## The thesis: reproducible stability
+
+Maintainer directive, 2026-04-22:
+
+> is obvious to all personas who come across our project the whole
+> point is reproducable stability
+
+See [AGENTS.md §"The purpose: reproducible
+stability"](AGENTS.md#the-purpose-reproducible-stability).
+
 ## What DBSP is
 
 DBSP defines a tiny, complete calculus for incremental computation over
@@ -90,7 +100,7 @@ correctly under the paper's rules.
 ## Quick tour
 
 ```fsharp
-open Dbsp.Core
+open Zeta.Core
 
 let circuit = Circuit.create ()
 let orders = circuit.ZSetInput<string * int64> ()
@@ -103,17 +113,20 @@ let totals =
 
 let view = circuit.Output(circuit.IntegrateZSet totals)
 
-orders.Send(ZSet.ofKeys [ "alice", 100L ; "bob", 50L ])
-do! circuit.StepAsync ()
+async {
+    orders.Send(ZSet.ofKeys [ "alice", 100L ; "bob", 50L ])
+    do! circuit.StepAsync () |> Async.AwaitTask
 
-for e in view.Current do
-    printfn "%A -> weight %d" e.Key e.Weight
+    for e in view.Current do
+        printfn "%A -> weight %d" e.Key e.Weight
+}
+|> Async.RunSynchronously
 ```
 
 And the same thing, C#-side:
 
 ```csharp
-using Dbsp.Core;
+using Zeta.Core;
 
 var circuit = new Circuit();
 var orders = circuit.ZSetInput<(string, long)>();
@@ -193,6 +206,22 @@ dotnet msbuild src/Core/Core.fsproj \
 [gr]: https://github.com/G-Research/fsharp-analyzers
 [ia]: https://github.com/ionide/ionide-analyzers
 [fab]: https://github.com/ionide/FSharp.Analyzers.Build
+
+## Contributing
+
+Three entry points, pick whichever fits:
+
+- **First time contributing, or directing an AI to do the
+  work for you?** Read [`docs/FIRST-PR.md`](docs/FIRST-PR.md).
+  UI-first, plain-language, no git or F# required.
+- **Comfortable with GitHub, git, and F#?** Read
+  [`CONTRIBUTING.md`](CONTRIBUTING.md). Shorter; assumes
+  the tools.
+- **An AI agent coordinating work without a human in the
+  loop?** Read [`docs/AGENT-CLAIM-PROTOCOL.md`](docs/AGENT-CLAIM-PROTOCOL.md)
+  for the git-native claim spec, and
+  [`docs/AGENT-ISSUE-WORKFLOW.md`](docs/AGENT-ISSUE-WORKFLOW.md)
+  for the dual-track principle and platform adapters.
 
 ## Acknowledgements
 

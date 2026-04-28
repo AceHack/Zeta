@@ -1,0 +1,50 @@
+# `roms/` is the safe-ROM testbed substrate for the
+# OS-interface durable-async runtime + emulator workload
+# (see `roms/README.md` for the full protocol). Everything
+# in here is binary or copyrighted-but-licensed material
+# that must NOT enter git history without explicit
+# license verification.
+#
+# Track only:
+#   - `.gitignore` (this file) — root-level gate
+#   - `README.md` (top-level protocol doc)
+#   - directory structure (manufacturer/platform hierarchy)
+#   - per-directory `README.md` sentinels at the factory-
+#     defined depths (top-level / branch / leaf); any
+#     deeper README.md is assumed to be bundled with a
+#     ROM set and stays ignored
+#
+# Everything else — ROM files, BIOS dumps, save states,
+# screenshots, patches, ANY binary — is ignored regardless
+# of subdirectory depth. ROMs are added by the human
+# maintainer per the protocol in `roms/README.md`, used by
+# the emulator runtime locally, and never committed.
+#
+# Gitignore mechanics (depth-limited, review-tightened
+# after Codex flagged the blanket `!**/README.md` as a
+# leak path for ROM-set-bundled README.md files):
+# - `*` at the top ignores every file at this level.
+# - `!*/` re-includes directories so git recurses into them.
+# - `!README.md` re-includes the top-level sentinel.
+# - `!*/README.md` re-includes a branch-level sentinel
+#   (one directory deep — manufacturer folders like
+#    `roms/nintendo/README.md`).
+# - `!*/*/README.md` re-includes a leaf-level sentinel
+#   (two directories deep — platform folders like
+#    `roms/nintendo/nes/README.md`).
+# - No `**/README.md` glob — a `README.md` at three or
+#   more directories deep (e.g. inside an unpacked ROM
+#   set) stays ignored by default, closing the leak
+#   path. If the hierarchy ever grows beyond 2 levels,
+#   add the exact depth pattern here.
+# - No `!**/.gitignore` — a nested `.gitignore` could
+#   otherwise override the sentinel-only posture and
+#   unignore ROM binaries. If a subdirectory ever
+#   genuinely needs its own gitignore rules, land that
+#   change through this file's review gate instead.
+
+*
+!*/
+!/README.md
+!/*/README.md
+!/*/*/README.md

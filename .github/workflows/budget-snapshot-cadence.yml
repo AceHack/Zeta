@@ -1,0 +1,260 @@
+name: budget-snapshot-cadence
+
+# Weekly cadence for evidence-based LFG burn tracking. Runs
+# tools/budget/snapshot-burn.sh, captures the resulting JSONL row,
+# opens a PR (per the AceHack-first UPSTREAM-RHYTHM rhythm) with the
+# snapshot included, and arms auto-merge so the row lands without
+# human intervention. Closes task #297 (cadence half of the
+# evidence-based-budgeting work; tooling was task #285, baseline
+# snapshot was task #287).
+#
+# Why weekly: docs/budget-history/README.md says "On a cadenced
+# schedule (weekly) — catches drift when no PRs are merging." Weekly
+# is the right balance for a small project — daily produces too many
+# rows for the burn pattern to be informative; monthly is too coarse
+# for the Stage-1-blocker decision the snapshots were originally
+# designed to gate.
+#
+# Why off-the-hour: GHA cron thundering-herd avoidance per
+# .github/workflows/github-settings-drift.yml convention. Sunday is
+# chosen over weekdays so the snapshot isn't competing with PR
+# cadence for runner minutes.
+#
+# Security note (safe-pattern compliance per
+# https://github.blog/security/vulnerability-research/how-to-catch-github-actions-workflow-injections-before-attackers-do/
+# ): this workflow consumes only first-party trusted context —
+# secrets.GITHUB_TOKEN, github.repository, github.run_id. Every
+# expression value is passed via env: into run blocks and quoted
+# there as "$VAR"; no expressions are interpolated directly inside
+# run-block scripts. The workflow_dispatch `note` input is also
+# routed via env: + quoted to neutralise potentially-malicious
+# content if an attacker with dispatch permissions tries injection.
+#
+# Scope coverage limits per docs/budget-history/README.md:
+# snapshot-burn.sh works without admin:org but captures the
+# scope_coverage block honestly. If the human maintainer later runs
+# `gh auth refresh -s admin:org` the snapshots get richer
+# automatically (Actions billing / Packages / shared-storage).
+#
+# AgencySignature v1 attribution (per the post-ferry-7 convention):
+# this workflow's commits identify themselves as the
+# budget-cadence-workflow agent running on GitHub Actions. The
+# Human-Review-Evidence trailer is "signed-policy" because the
+# cadence is authorized by docs/budget-history/README.md +
+# the maintainer's 2026-04-22 standing direction for evidence-based
+# budgeting.
+#
+# Auto-merge limitation (Codex review #25 P1): events triggered by
+# secrets.GITHUB_TOKEN do not fire downstream workflow runs (GitHub's
+# anti-infinite-loop guard). That means a PR opened by this workflow
+# would never accumulate the required-status-check runs that
+# auto-merge needs to fire on, and `gh pr merge --auto` would sit
+# in a dead-end. Until a PAT secret is configured, this workflow
+# opens the snapshot PR and leaves it for the next human-or-agent
+# pass through the queue to merge — explicit-no-auto-merge over
+# silent-stall is the operational call.
+
+on:
+  schedule:
+    # Weekly Sundays 16:23 UTC — off-the-hour weekend slot to
+    # avoid GHA cron thundering-herd + PR cadence competition.
+    - cron: "23 16 * * 0"
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Optional note to attach to this snapshot row"
+        required: false
+        default: ""
+
+permissions:
+  # Need contents:write to push the snapshot branch; pull-requests:write
+  # to open the auto-merge PR. No other permissions needed.
+  contents: write
+  pull-requests: write
+
+concurrency:
+  # Only one cadence run at a time. Retriggers queue (rather than
+  # cancel) so a partially-through snapshot doesn't get clobbered
+  # mid-write — the snapshots.jsonl file is append-only and we'd
+  # rather sequence appends than risk a half-written row.
+  group: budget-snapshot-cadence
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          # Need full history so snapshot-burn.sh can compute
+          # factory_git_sha correctly.
+          fetch-depth: 0
+
+      - name: Verify required tooling
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          command -v jq >/dev/null
+          command -v gh >/dev/null
+          gh auth status
+
+      - name: Run budget snapshot
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NOTE_INPUT: ${{ inputs.note }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          # Build note: workflow-dispatch input wins; otherwise default
+          # to a cadence label. Both env vars are quoted as "$VAR" to
+          # neutralise potentially-malicious content per safe pattern.
+          if [ -n "${NOTE_INPUT:-}" ]; then
+            note="$NOTE_INPUT"
+          else
+            note="weekly cadence run via .github/workflows/budget-snapshot-cadence.yml (run $RUN_ID)"
+          fi
+          tools/budget/snapshot-burn.sh --note "$note"
+
+      - name: Inspect diff
+        id: diff
+        run: |
+          set -euo pipefail
+          if git diff --quiet docs/budget-history/snapshots.jsonl; then
+            echo "changed=false" >>"$GITHUB_OUTPUT"
+            echo "snapshot-burn.sh produced no diff — nothing to commit"
+            exit 0
+          fi
+          echo "changed=true" >>"$GITHUB_OUTPUT"
+
+      - name: Open snapshot PR
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          ts="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
+          branch="ops/budget-cadence-${ts}-run-${RUN_ID}"
+          # Configure committer identity for the workflow commit.
+          # github-actions[bot] is the canonical workflow identity;
+          # using it makes the AgencySignature Credential-Identity
+          # honest about the workflow being the actor.
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add docs/budget-history/snapshots.jsonl
+
+          # Commit message uses the AgencySignature v1 canonical shape.
+          # Trailer block is at the end with strict blank-line discipline
+          # (one blank line before, zero within). Per the four-ferry
+          # consensus: this workflow is a named-agent acting under
+          # signed-policy authorization (the maintainer's 2026-04-22 evidence-
+          # based budgeting direction + docs/budget-history/README.md).
+          {
+            echo "ops(budget): cadence snapshot $ts — task #297"
+            echo
+            echo "Why:"
+            echo "- Weekly cadence per docs/budget-history/README.md"
+            echo "  ('catches drift when no PRs are merging')."
+            echo "- Closes task #297 by automating what task #287"
+            echo "  required a maintainer or Otto to do manually."
+            echo
+            echo "What:"
+            echo "- One JSONL row appended to"
+            echo "  docs/budget-history/snapshots.jsonl by"
+            echo "  tools/budget/snapshot-burn.sh."
+            echo
+            echo "Proof:"
+            echo "- snapshot-burn.sh ran successfully in workflow"
+            echo "  run $RUN_ID."
+            echo "- jq round-trip verifies row is valid JSON."
+            echo "- Attribution recorded via git trailers because"
+            echo "  shared GitHub credential identity makes host"
+            echo "  actor fields insufficient."
+            echo
+            echo "Limits:"
+            echo "- This does not prove consciousness, personhood,"
+            echo "  or metaphysical free will."
+            echo "- This proves operational agency mode: the"
+            echo "  budget-cadence-workflow ran under signed-policy"
+            echo "  authorization (the cadence is authorized by"
+            echo "  README + the maintainer's 2026-04-22"
+            echo "  evidence-based budgeting direction)."
+            echo "- scope_coverage in the row honestly reports what"
+            echo "  the current GH token can and cannot see."
+            echo
+            echo "Agency-Signature-Version: 1"
+            echo "Agent: budget-cadence-workflow"
+            echo "Agent-Runtime: GitHub Actions"
+            echo "Agent-Model: bash + jq + gh CLI"
+            echo "Credential-Identity: github-actions[bot]"
+            echo "Credential-Mode: dedicated-agent"
+            echo "Human-Review: not-implied-by-credential"
+            echo "Human-Review-Evidence: signed-policy"
+            echo "Action-Mode: autonomous-fail-open"
+            echo "Task: Otto-297"
+            echo "Co-authored-by: Otto <noreply@anthropic.com>"
+          } | git commit --file=-
+
+          git push -u origin "$branch"
+
+          # Open PR with trailer block in body (Squash-Merge Invariant
+          # per Amara ferry-7 + Grok ferry-16 — no non-trailer text
+          # after the trailer block).
+          {
+            echo "## Summary"
+            echo
+            echo "Weekly budget snapshot cadence run via"
+            echo ".github/workflows/budget-snapshot-cadence.yml"
+            echo "(run $RUN_ID, $ts)."
+            echo
+            echo "## What this PR adds"
+            echo
+            echo "- One JSONL row appended to"
+            echo "  docs/budget-history/snapshots.jsonl."
+            echo
+            echo "## Cadence policy"
+            echo
+            echo "Per docs/budget-history/README.md: weekly cadence"
+            echo "catches drift when no PRs are merging. Authorized by"
+            echo "the human maintainer's 2026-04-22 evidence-based"
+            echo "budgeting direction (Human-Review-Evidence: signed-policy)."
+            echo
+            echo "Agency-Signature-Version: 1"
+            echo "Agent: budget-cadence-workflow"
+            echo "Agent-Runtime: GitHub Actions"
+            echo "Agent-Model: bash + jq + gh CLI"
+            echo "Credential-Identity: github-actions[bot]"
+            echo "Credential-Mode: dedicated-agent"
+            echo "Human-Review: not-implied-by-credential"
+            echo "Human-Review-Evidence: signed-policy"
+            echo "Action-Mode: autonomous-fail-open"
+            echo "Task: Otto-297"
+            echo "Co-authored-by: Otto <noreply@anthropic.com>"
+          } > /tmp/pr-body.md
+
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title "ops(budget): cadence snapshot $ts (task #297)" \
+            --body-file /tmp/pr-body.md \
+            --label "agent-otto"
+
+          # Intentional: no `gh pr merge --auto` here. See header
+          # comment §"Auto-merge limitation" — GITHUB_TOKEN-created
+          # PRs don't trigger downstream workflows, so auto-merge
+          # would dead-end waiting for required-status-checks that
+          # never fire. Leave the PR open; the next maintainer or
+          # agent pass merges it.
+
+      - name: No-change report
+        if: steps.diff.outputs.changed == 'false'
+        run: |
+          echo "snapshot-burn.sh ran but produced no diff."
+          echo "This typically means the underlying GitHub state"
+          echo "didn't change in a way the snapshot captures."
+          echo "No PR opened; no commit made."

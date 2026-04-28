@@ -6,7 +6,7 @@ realised in F# today. Prose bullets, no RFC-2119; those live in the base
 
 ## Namespace and source files
 
-- Types and extension methods live in the `Dbsp.Core` namespace, assembled
+- Types and extension methods live in the `Zeta.Core` namespace, assembled
   from:
   - `src/Core/Recursive.fs` — feedback cells, the three recursive
     combinators, and the fixed-point iteration driver.

@@ -54,14 +54,26 @@ type HyperLogLog(logBuckets: int) =
     /// ≥ ~65 k the 32-bit floor begins to dominate; use `AddHash`
     /// directly with a proper `XxHash3`/`XxHash64` on bytes if you need
     /// billions-scale accuracy.
+    ///
+    /// **Process-randomization caveat (Otto-281 audit):**
+    /// `HashCode.Combine` re-seeds per-process by .NET design (anti-
+    /// hash-flooding). Two processes will produce different cardinality
+    /// estimates for the same input stream — the *bound* is correct
+    /// (within ~2% relative error per HLL's `alpha`), but the exact
+    /// estimate jitters. For tests requiring deterministic estimates
+    /// across runs, use `AddBytes` with a canonical byte representation;
+    /// see `tests/Tests.FSharp/Sketches/HyperLogLog.Tests.fs` for the
+    /// XxHash3 path. The jittery estimate is a *deliberate* trade-off
+    /// for hot-path performance: an earlier revision called
+    /// `XxHash3.HashToUInt64` on a 4-byte heap array per Add; for a 1 M
+    /// element stream that's 1 M Gen-0 allocations purely for HLL.
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
     member this.Add(value: 'T) =
         let h32 = HashCode.Combine value |> uint64
-        // SplitMix64 finaliser — public-domain constants, 5 ops, no alloc.
-        let mutable z = h32 * 0x9E3779B97F4A7C15UL
-        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-        this.AddHash (z ^^^ (z >>> 31))
+        // SplitMix64 finaliser — see `src/Core/SplitMix64.fs` for the
+        // constant rationale (golden-ratio + Vigna's BigCrush-validated
+        // multipliers). 5 ops, no alloc, hot-path safe.
+        this.AddHash (SplitMix64.mix h32)
 
     /// Add a byte span directly — lets callers with a canonical byte
     /// representation (serialised key, UTF-8 string) bypass the 32-bit

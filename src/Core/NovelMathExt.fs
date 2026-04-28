@@ -119,6 +119,21 @@ type InfoTheoreticSharder(shardCount: int, epsilon: double, delta: double, seed:
     /// index computed from the key's hash — so on a cold start
     /// (all shards at zero load) load is distributed by the hash
     /// rather than always falling on shard 0.
+    ///
+    /// **Process-randomization caveat (Otto-281 audit):** the
+    /// `hashTieBreak` uses `HashCode.Combine` which re-seeds
+    /// per-process. On a *cold start*, two processes will pick
+    /// different tie-break shards for the same key — the
+    /// load-distribution is process-dependent at the cold-start
+    /// boundary. Once observed loads diverge (after a few
+    /// `Observe` + `Pick` cycles), the load-based picker
+    /// dominates and the assignment becomes deterministic given
+    /// the CMS seed. Tests asserting cross-process determinism
+    /// of cold-start `Pick`s would flake; tests asserting
+    /// post-warmup load-based picks are robust. The trade-off
+    /// is intentional: cold-start tie-breaking by hash is a
+    /// load-distribution flexibility feature, not a correctness
+    /// invariant.
     member _.Pick(key: 'K) : int =
         let predicted = cms.Estimate key
         let hash32 = uint32 (HashCode.Combine key)

@@ -2,6 +2,7 @@ module Zeta.Tests.Properties.FuzzTests
 #nowarn "0893"
 
 open System
+open System.Buffers.Binary
 open FsCheck
 open FsCheck.FSharp
 open FsUnit.Xunit
@@ -226,10 +227,37 @@ let ``fuzz: integrate then differentiate is identity for any linear pipeline`` (
 [<FsCheck.Xunit.Property>]
 let ``fuzz: HLL estimate within theoretical error bound`` (n: PositiveInt) =
     // For 14 logBuckets, expected error ≈ 1.04 / √(2^14) ≈ 0.81%; we allow
-    // 3% to cover tail variance.
+    // 4% to cover tail variance (~5σ above expected; empirically the max
+    // observed across a 500-trial sweep with 5 different starting offsets
+    // was 1.96%).
+    //
+    // **Otto-281 fix:** earlier this test called `hll.Add i` directly,
+    // which routes through `HashCode.Combine` — process-randomized by
+    // .NET design. Different CI processes produced different bucket-
+    // landings for the same int, occasionally pushing the estimate past
+    // the 4% tolerance and flaking the test (e.g., #480 ubuntu-24.04
+    // run 24932270073). Per Otto-281 (DST-exempt is deferred bug, fix
+    // the determinism not the comment), we route int keys through
+    // `AddBytes` with a canonical 4-byte representation — same hash
+    // distribution properties HLL needs, deterministic across runs.
+    //
+    // Endianness: we pin little-endian via `BinaryPrimitives` rather
+    // than `BitConverter.GetBytes` so the byte sequence is the same
+    // on big-endian hosts (HLL's contract is "uniform 64-bit hash";
+    // any deterministic 4-byte projection works, but a host-endian
+    // one would still be deterministic-per-host and undermine cross-
+    // platform DST equivalence). 4 bytes is `stackalloc`-cheap; no
+    // Gen-0 alloc per Add.
     let count = min n.Get 5_000
     let hll = HyperLogLog 14
-    for i in 1 .. count do hll.Add i
+    // One 4-byte buffer reused across the loop (one-time alloc, not
+    // per-element). `BinaryPrimitives.WriteInt32LittleEndian` writes
+    // through the Span; `AddBytes` accepts ReadOnlySpan via implicit
+    // conversion of the underlying memory.
+    let bufArr = Array.zeroCreate<byte> 4
+    for i in 1 .. count do
+        BinaryPrimitives.WriteInt32LittleEndian(Span<byte> bufArr, i)
+        hll.AddBytes (ReadOnlySpan<byte> bufArr)
     let est = float (hll.Estimate())
     let err = abs (est - float count) / float count
     err < 0.04
