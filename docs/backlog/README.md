@@ -25,13 +25,31 @@ docs/backlog/
   P3/B-<NNNN>-<slug>.md   ← convenience / deferred
 ```
 
-## Current state — Phase 1a
+## Current state — Phase 2 in progress
 
-Tooling + schema landed. One placeholder row (`B-0001`)
-exists to exercise the generator against non-empty input;
-it is not substantive backlog content. Phase 2 will migrate
-the existing single-file `docs/BACKLOG.md` content into per-row
-files starting at `B-0002`. Until Phase 2 lands, the single-
-file `docs/BACKLOG.md` remains the authoritative source of
-substantive backlog rows; this directory + its generator
-exist to provide the target structure + schema demonstration.
+Tooling + schema landed (Phase 1a complete). Phase 2 row
+migration is **in progress, not finished**: at the time of
+this README refresh (2026-04-28) there are ~58 per-row files
+under `P1/`/`P2/`/`P3/` while `docs/BACKLOG.md` still carries
+~384 row markers, leaving roughly 326 rows un-migrated.
+
+**Authoritative source:** the per-row files in this directory
+are the authoritative source for everything that has been
+migrated. New rows MUST be added here as
+`docs/backlog/PN/B-<next-NNNN>-<slug>.md`. Do **NOT** add new
+rows to `docs/BACKLOG.md`.
+
+**Legacy stockpile:** `docs/BACKLOG.md` remains as a
+read-only archive of un-migrated rows during the migration
+window. Its top-of-file warning header points at this README
++ the migration-tracking row (B-0061). Once migration
+completes, the monolith collapses to an auto-generated
+pointer index via `tools/backlog/generate-index.sh`.
+
+**Tracking the migration itself:**
+`P1/B-0061-finish-monolith-to-per-row-migration-no-residue-
+aaron-2026-04-28.md` owns the audit + batched-migration +
+cutover. Aaron 2026-04-28 explicit framing:
+*"don't miss anyting make sure it's all accounted for, and
+make sure not BACKLOG.md residue is left over in the
+substrate for next you."*

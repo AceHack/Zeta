@@ -1,8 +1,29 @@
 # Zeta.Core Unified Backlog
 
-Single source of truth. Replaces scattered "flagged P1" notes in
-ROADMAP.md and round summaries. Append-only; keep ordered newest-first
-within each priority tier.
+> **⚠️ MIGRATION IN PROGRESS — DO NOT ADD NEW ROWS HERE.**
+>
+> The authoritative source for backlog rows is the per-row
+> directory `docs/backlog/PN/B-NNNN-<slug>.md`. New rows go
+> there, NOT in this file.
+>
+> This file is a transitional stockpile of rows that have not
+> yet been migrated to per-row format. Existing rows below
+> remain readable until the migration completes; on
+> completion this file becomes a short auto-generated pointer
+> index (per `tools/backlog/generate-index.sh`).
+>
+> Tracking task: `docs/backlog/P1/B-0061-finish-monolith-to-
+> per-row-migration-no-residue-aaron-2026-04-28.md`. Coverage
+> audit + batch migration is L-effort multi-tick work.
+>
+> Future-Otto: if you find yourself about to edit this file
+> to add a row, **stop**. Use
+> `docs/backlog/PN/B-<next-NNNN>-<slug>.md` instead. The
+> per-row schema lives in `tools/backlog/README.md`.
+
+Single source of truth (legacy, pending migration). Replaces
+scattered "flagged P1" notes in ROADMAP.md and round summaries.
+Append-only; keep ordered newest-first within each priority tier.
 
 ## Legend
 
