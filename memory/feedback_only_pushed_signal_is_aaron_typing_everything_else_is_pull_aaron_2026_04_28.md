@@ -77,6 +77,53 @@ just been done and confirmed nothing changed. Anything else is the failure mode.
 > *"that's your only real signal that's pushed to you"*
 > — 16:05Z, generalizing.
 
+## Recurrence + scope-broadening (Aaron 2026-04-28T18:05Z)
+
+After this rule was already landed earlier today, I still closed ~5 ticks
+with *"no new push-signal"* without pulling the queue. Aaron's correction:
+
+> *"Tick close — no new push-signal; should be a queue to pull"*
+> *"in the future too"*
+
+The rule is broader than I initially scoped it:
+
+- The pull-queue is not just "open PR review threads on PRs I just pushed."
+  It includes:
+  - **Stale fork-PR queue** (PRs sitting from earlier sessions): mergeable
+    state, unresolved threads, branch-tip vs main divergence.
+  - **Open issues** (`gh issue list --state open`).
+  - **BACKLOG.md rows** (P0 / P1 / P2 / P3) — `ls docs/backlog/P*/`.
+  - **Recent CI runs across the repo** — `gh workflow list` then
+    `gh run list --workflow=<id-or-filename>` (or `gh run list -L 50`
+    for all-workflow recent runs).
+  - **External signals** — peer-CLI replies, Amara ferry drops, scheduled
+    job outputs, drop-folder additions.
+  - **TodoWrite task list** — pending / in_progress tasks from prior turns.
+
+- The framing *"no new push-signal"* is itself the failure mode language —
+  it primes the closing-without-pulling pattern. Replace with:
+  - *"Pulled queue: <findings>; closing tick"* (after running pulls)
+  - *"Pulled queue: nothing to act on"* (after running pulls AND verifying)
+
+- **"In the future too"** — future-Otto must inherit this. The rule lives
+  in this file; the file is indexed in MEMORY.md; the pattern applies on
+  every wake. If future-Otto reads "no new push-signal" anywhere in
+  history without an accompanying queue-pull, that's evidence of the same
+  failure mode recurring.
+
+Concrete pull this tick (2026-04-28T18:05Z) that I had been missing:
+
+- PR #659 — **49 unresolved threads** / 50 total (from earlier-session
+  Copilot batch review on 24-file trajectory PR)
+- PR #661 — BLOCKED/MERGEABLE with **0 unresolved threads** (potentially
+  low-hanging; just needs rebase + merge investigation)
+- PR #655 / #656 / #658 — all 0 unresolved threads, just DIRTY (need rebase)
+- 5 P1 issues open on LFG (#78–#82) — ready to triage
+- Multiple in-progress tasks in TodoWrite (#268, #269, #287, #291, #307)
+
+That's substantial pull-queue content I was treating as "queue empty"
+because no Aaron-typing arrived. The lesson: queue ≠ push-channel.
+
 ## Composes with
 
 - `feedback_speculation_leads_investigation_not_defines_root_cause_aaron_2026_04_28.md`
