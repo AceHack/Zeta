@@ -60,7 +60,7 @@ These are the project's product identity.
 - **`<AssemblyName>`** on published libraries:
   `Zeta.Core.dll`, `Zeta.Core.CSharp.dll`,
   `Zeta.Bayesian.dll`.
-- **GitHub repo** — currently `AceHack/Zeta`.
+- **GitHub repo** — `Lucent-Financial-Group/Zeta`.
 - **README title** — "Zeta — an F# implementation of DBSP
   for .NET 10".
 

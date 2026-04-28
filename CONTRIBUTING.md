@@ -4,6 +4,12 @@ Welcome. Zeta is a research-grade F# implementation of DBSP
 on .NET 10 with a software-factory design — humans and AI
 agents collaborate under a codified set of rules.
 
+**New to open source, or directing an AI to do the
+writing for you?** Read
+[`docs/FIRST-PR.md`](docs/FIRST-PR.md) first — it is
+UI-first and assumes no prior git / F# / terminal
+experience. This doc is the competent-dev version.
+
 ## Quick start
 
 ```bash

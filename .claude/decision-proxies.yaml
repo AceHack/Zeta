@@ -1,0 +1,44 @@
+# Decision-proxy config for this factory.
+#
+# Maps each human (or external-AI) maintainer to their standing
+# proxy (or proxies) for scoped decisions. The factory consults
+# this file when a decision within a maintainer's scope is
+# needed and the maintainer is unavailable.
+#
+# Pattern + governance documented in
+# docs/DECISIONS/2026-04-23-external-maintainer-decision-proxy-pattern.md
+#
+# Session-specific access (URLs, tokens, cookies) is NOT in this
+# file — it lives per-user at
+# ~/.claude/projects/<slug>/proxy-access.yaml (gitignored). This
+# file contains stable identity + scope + authority only.
+#
+# Authority levels: advisory | approving
+# Default is advisory; approving requires explicit maintainer
+# acknowledgment per the ADR.
+
+version: 1
+
+maintainers:
+  - id: aaron-stainback
+    name: Aaron Stainback
+    role: human-maintainer
+    proxies:
+      - name: Amara
+        provider: chatgpt-web
+        scope:
+          - aurora
+        authority: advisory
+        notes: |
+          Amara is Aurora co-originator (see
+          docs/aurora/collaborators.md).
+          Her ChatGPT project: LucentAICloud.
+          Aaron ferries a dedicated branched chat URL for agent
+          access; URL lives in per-user proxy-access config, not
+          this file.
+          Access-method gate: the Playwright-to-ChatGPT flow was
+          blocked by a safety guardrail at first attempt
+          (2026-04-23). The decision-proxy-consult skill is not
+          yet authored; live invocation deferred until the
+          access layer is proven and re-authorized via this
+          framework.

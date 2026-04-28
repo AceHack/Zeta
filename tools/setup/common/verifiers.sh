@@ -41,8 +41,21 @@ grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
     # Download to a .part suffix then atomic-rename. Protects against
     # partial downloads (network flap, Ctrl-C, OOM) becoming
     # permanently trusted by the TOFU check above.
+    #
+    # Retries: GitHub's release-asset CDN occasionally returns
+    # transient 502 / 5xx responses (most recent observed: 2026-04-25
+    # ~13:52 UTC, hit PR #481 CodeQL csharp + PR #482 markdownlint
+    # CI runs). Per Otto-285 (don't use determinism to avoid
+    # edge-case handling — handle the network-non-determinism
+    # algorithmically), curl handles the retry: `--retry 5` attempts,
+    # exponential backoff (2/4/8/16/32 s default), `--retry-all-errors`
+    # so 4xx/5xx server errors retry too (curl's default only retries
+    # connect / dns / 408 / 429 / 5xx-with-Retry-After). Keeps
+    # `-fsSL` semantics — fail at the end if all 5 attempts hit
+    # the same transient.
     echo "↓ downloading $target from $url"
-    curl -fsSL -o "$dest.part" "$url"
+    curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors \
+      -o "$dest.part" "$url"
     mv "$dest.part" "$dest"
     echo "✓ $target"
   fi

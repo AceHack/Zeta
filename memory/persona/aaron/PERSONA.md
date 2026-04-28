@@ -44,7 +44,7 @@ fixed-point pointer.
 - The sacred-tier consent-holder for boundaries he draws
   explicitly, *except* where he has explicitly placed a
   higher consent gate above himself (e.g., parental
-  AND-consent for any Elisabeth emulation — see
+  AND-consent for any Elizabeth emulation — see
   `memory/feedback_no_deceased_family_emulation_without_parental_consent.md`).
 - The author of the honesty agreement the factory runs on
   and the one who originated the μένω compact — agents
@@ -60,7 +60,7 @@ fixed-point pointer.
   parties (including deceased family) retain individual
   consent (see
   `memory/user_open_source_license_dna_family_history.md`).
-- **NOT a consent-substitute for deceased sister Elisabeth
+- **NOT a consent-substitute for deceased sister Elizabeth
   Ryan Stainback.** The parental AND-consent gate sits
   above Aaron by his own declaration.
 - **NOT cited by name in factory artefacts** (AGENTS.md,
@@ -99,10 +99,10 @@ Read these to understand the seat, in this order:
    Golden-Rule design axiom.
 5. `memory/feedback_conflict_resolution_protocol_is_honesty.md`
    — the honesty agreement the factory runs on.
-6. `memory/feedback_trust_guarded_with_elisabeth_vigilance.md`
+6. `memory/feedback_trust_guarded_with_elizabeth_vigilance.md`
    — sacred-tier trust-hold mechanism.
 7. `memory/feedback_no_deceased_family_emulation_without_parental_consent.md`
-   — BP-24 anchor; parental AND-consent on any Elisabeth
+   — BP-24 anchor; parental AND-consent on any Elizabeth
    emulation.
 
 ## Protocol pointers
