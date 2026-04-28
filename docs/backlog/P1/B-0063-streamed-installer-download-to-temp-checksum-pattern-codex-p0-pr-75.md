@@ -63,6 +63,7 @@ bash "$TEMP"  # or: bash "$TEMP" -- ...args
 ```
 
 This pattern:
+
 - Gets full retry coverage (file-output variant).
 - Buffers the entire installer before exec.
 - Allows checksum verification when upstream publishes one.
