@@ -40,7 +40,14 @@ echo "✓ Xcode CLT at $(xcode-select -p 2>/dev/null || echo 'pending user confi
 # ── 2. Homebrew ─────────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
   echo "↓ installing Homebrew..."
-  /bin/bash -c "$(curl_fetch https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Capture to a named variable first so a curl failure aborts
+  # the variable assignment under `set -e` — `/bin/bash -c
+  # "$(failing_curl)"` otherwise silently runs an empty string
+  # and exits 0. Use the stream variant (no --retry-all-errors)
+  # because the captured output is then piped into bash; we
+  # don't want a partial-script retry-replay scenario.
+  HOMEBREW_INSTALLER="$(curl_fetch_stream https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  /bin/bash -c "$HOMEBREW_INSTALLER"
   # Ensure brew is on PATH for the remainder of this script run.
   if [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"

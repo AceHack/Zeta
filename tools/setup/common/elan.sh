@@ -15,7 +15,11 @@ source "$(dirname "${BASH_SOURCE[0]}")/curl-fetch.sh"
 
 if ! command -v elan >/dev/null 2>&1; then
   echo "↓ installing elan (Lean 4 toolchain manager)..."
-  curl_fetch https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+  # Use the stream variant (bare --retry only, no
+  # --retry-all-errors) — the curl output is piped directly
+  # into sh, and partial-output replay on retry would be a
+  # supply-chain hazard.
+  curl_fetch_stream https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
     | sh -s -- -y --default-toolchain none
 fi
 

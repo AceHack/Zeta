@@ -4,9 +4,9 @@
 # (TLC, Alloy) to `tools/tla/` and `tools/alloy/` respectively.
 #
 # Manifest format: `<target-dir>/<target-file>  <url>` per line,
-# comments starting with `#`. Per Aaron's round-29 call we do not
-# verify checksums (trust-on-first-use); when upstream provides a
-# published SHA256SUMS we may revisit.
+# comments starting with `#`. Per the human maintainer's round-29
+# call we do not verify checksums (trust-on-first-use); when
+# upstream provides a published SHA256SUMS we may revisit.
 #
 # This replaces the legacy tools/install-verifiers.sh in the same
 # commit (greenfield — no alias per GOVERNANCE.md §24 fallout).
@@ -38,7 +38,7 @@ grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
   mkdir -p "$(dirname "$dest")"
   if [ -f "$dest" ]; then
     # Trust-on-first-use: if the file exists we assume it's intact.
-    # Per Aaron's round-29 call we do not re-verify content.
+    # Per the human maintainer's round-29 call we do not re-verify content.
     echo "✓ $target already present"
   else
     # Download to a .part suffix then atomic-rename. Protects against
@@ -54,8 +54,9 @@ grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
     # handles the retry: 5 attempts, 2-4-8-16-32 s exponential
     # backoff, --retry-all-errors so 4xx/5xx errors retry too.
     # Keeps -fsSL semantics — fail at the end if all 5 attempts
-    # hit the same transient. (Aaron 2026-04-28: helper extracted
-    # from copy-pasted call sites; was previously inline here.)
+    # hit the same transient. (Human maintainer 2026-04-28
+    # framing: helper extracted from copy-pasted call sites; was
+    # previously inline here.)
     echo "↓ downloading $target from $url"
     curl_fetch -o "$dest.part" "$url"
     mv "$dest.part" "$dest"
