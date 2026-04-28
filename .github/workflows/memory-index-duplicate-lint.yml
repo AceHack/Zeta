@@ -1,0 +1,59 @@
+name: memory-index-duplicate-lint
+
+# Detects duplicate link targets in `memory/MEMORY.md` —
+# Amara 2026-04-23 decision-proxy + technical review action
+# item #2 (PR #219 absorb). An index with duplicate entries
+# is a discoverability defect: fresh sessions can't tell
+# which entry is authoritative; the newest-first ordering
+# invariant breaks when the same file appears twice.
+#
+# Companion to `.github/workflows/memory-index-integrity.yml`
+# (the same-commit-pairing check for memory/ changes +
+# MEMORY.md updates). That check ensures index edits happen;
+# this check ensures those edits don't create duplicates.
+#
+# Safe-pattern compliance (FACTORY-HYGIENE row #43):
+#   - SHA-pinned actions/checkout
+#   - Explicit minimum `permissions: contents: read`
+#   - No user-authored context referenced
+#   - Concurrency group + cancel-in-progress: false
+#   - runs-on: ubuntu-22.04 pinned
+#
+# See:
+#   - tools/hygiene/audit-memory-index-duplicates.sh (the tool)
+#   - docs/aurora/2026-04-23-amara-decision-proxy-technical-
+#     review.md (ferry with the proposal)
+
+on:
+  pull_request:
+    paths:
+      - "memory/MEMORY.md"
+      - "tools/hygiene/audit-memory-index-duplicates.sh"
+      - ".github/workflows/memory-index-duplicate-lint.yml"
+  push:
+    branches: [main]
+    paths:
+      - "memory/MEMORY.md"
+      - "tools/hygiene/audit-memory-index-duplicates.sh"
+      - ".github/workflows/memory-index-duplicate-lint.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: memory-index-duplicate-lint-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    name: lint memory/MEMORY.md for duplicate link targets
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: run duplicate-link lint
+        shell: bash
+        run: |
+          set -euo pipefail
+          tools/hygiene/audit-memory-index-duplicates.sh --enforce
