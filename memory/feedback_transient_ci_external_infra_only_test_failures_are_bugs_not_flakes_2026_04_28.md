@@ -52,6 +52,32 @@ vocabulary. Lazy categorisation enables future flake-tolerance.
    classify it as either *external-infra* or *test failure*
    explicitly. If unsure, investigate before assuming.
 
+   **Hardened verify-first rule (Aaron 2026-04-28: "do you
+   check before you rerun?"):** before asserting any failure
+   is external-infra, **read the failure log first**:
+
+   ```bash
+   gh run view <run-id> --repo <owner>/<repo> --log-failed \
+     | grep -iE "(error|curl|timeout|exit|failed|FAIL)" | head -10
+   ```
+
+   Confirm the actual failure cause. Only after seeing the
+   concrete external-infra signature (e.g., `curl: (22) The
+   requested URL returned error: 502` from upstream package
+   mirror) is the "external-infra → rerun" path correct.
+
+   If the log shows an assertion error, a Python traceback in
+   a test, an FsCheck shrink output, a shell exit-1 from our
+   own script — that's a test failure class. File it as a
+   bug. Phrase the assertion as evidence-based: "the failure
+   log shows `curl 502` from `nuget.org`, classifying as
+   external-infra; rerunning" — not "this is probably
+   transient; rerun."
+
+   `gh run rerun --failed` is correct ONLY after the verify
+   step. Skipping verify and assuming "probably transient"
+   IS the anti-pattern Aaron flagged.
+
    Bad:
    > "6 BLOCKED-with-1-failing = diagnose CI (mostly
    > probably transient CI; a few may need real fixes)"
