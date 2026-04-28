@@ -1,11 +1,13 @@
 ---
 id: B-0071
 priority: P2
-title: Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split
 status: open
-opened: 2026-04-28
-class: substrate-rename
-trigger: codex review on PR #17 thread (chatgpt-codex-connector P2)
+title: Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split
+effort: M
+ask: codex review on PR #17 thread (chatgpt-codex-connector P2)
+created: 2026-04-28
+last_updated: 2026-04-28
+tags: [substrate-rename, taxonomy, live-lock, otto-352, memory-hygiene]
 ---
 
 # B-0071 — Rename `feedback_otto_275_forever_manufactured_patience_live_lock_9th_pattern_2026_04_26.md`
