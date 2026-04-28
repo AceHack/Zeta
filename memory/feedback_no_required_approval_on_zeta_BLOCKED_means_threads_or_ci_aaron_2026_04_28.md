@@ -49,10 +49,10 @@ with zero approving reviews as long as the other gates clear.
 ## What `mergeStateStatus: BLOCKED` actually means on Zeta
 
 When the GitHub API reports `mergeStateStatus: BLOCKED` on a Zeta PR,
-the blocker is **one OR MORE** of these three classes (they CAN
+the blocker is **one OR MORE** of these FOUR classes (they CAN
 coexist — e.g., a PR can simultaneously have unresolved threads AND
 pending CI; fixing only one class won't unblock the merge until ALL
-classes are clear; the diagnostic playbook below MUST check all three
+classes are clear; the diagnostic playbook below MUST check all four
 before declaring the diagnosis exhausted):
 
 1. **Unresolved review threads.** `requiresConversationResolution: true`
@@ -77,6 +77,43 @@ before declaring the diagnosis exhausted):
    `mergeable: CONFLICTING` in the same API response and as `DIRTY`
    in `mergeStateStatus`.
 
+4. **Required check missing entirely from the tip commit's rollup
+   contexts.** This is the SNEAKIEST class — every reported context
+   is `SUCCESS`, no failures, no pending, no conflicts, all threads
+   resolved, and `statusCheckRollup.state == SUCCESS` — but a
+   required check from `branchProtectionRule.requiredStatusCheckContexts`
+   is **absent** from the contexts list (it never reported). Branch
+   protection treats absent-required as blocking even though the
+   visible signal is all-green.
+
+   **How this happens:** matrix workflows where one leg failed to
+   start (resource unavailable, fork-permission gate, runner-class
+   capacity exhaustion, transient infrastructure error pre-job-
+   queue), workflows that didn't trigger because of `paths:` filter
+   on a PR that didn't touch matching paths, deleted required-check
+   names that no longer match any workflow output.
+
+   **Diagnostic:** compare
+   `branchProtectionRule.requiredStatusCheckContexts` (the required
+   list) against the SET of `name` fields from
+   `statusCheckRollup.contexts.nodes`. ANY required name not in the
+   actual set is a class-4 blocker.
+
+   **Empirically observed 2026-04-28 on LFG #660:** required list
+   includes `build-and-test (macos-26)` but the tip commit's rollup
+   only had `build-and-test (ubuntu-24.04)` and
+   `build-and-test (ubuntu-24.04-arm)` — the macos-26 leg never
+   reported. This was discovered AFTER claiming "all green, all
+   threads resolved" — the rollup state was misleadingly SUCCESS
+   because GitHub's rollup state only reflects the contexts that
+   DID report, not the contexts that SHOULD have reported.
+
+   **Resolution:** find the workflow run, check why the missing leg
+   didn't report (failed to start / not triggered / dispatched via
+   different workflow), then either re-trigger the leg, fix the
+   workflow config so the leg runs, or (last resort) update the
+   branch protection rule to remove the absent required-check name.
+
 ## What BLOCKED does NOT mean on Zeta
 
 **It does NOT mean "waiting for a human reviewer to approve."**
@@ -97,6 +134,7 @@ gh api graphql --field query='query {
       reviewDecision
       reviewThreads(first:100){pageInfo{hasNextPage} nodes{isResolved}}
       commits(last:1){nodes{commit{statusCheckRollup{state contexts(first:100){pageInfo{hasNextPage} nodes{__typename ... on CheckRun{name conclusion status} ... on StatusContext{context state}}}}}}}
+      baseRef{branchProtectionRule{requiredStatusCheckContexts}}
     }
   }
 }'
@@ -108,6 +146,12 @@ Then check, in order:
 2. Are any required status checks `FAILURE` / `IN_PROGRESS` / `QUEUED`?
    If yes — that's the blocker.
 3. Is `mergeable: CONFLICTING`? If yes — rebase needed.
+4. **Is any name in `requiredStatusCheckContexts` MISSING from the
+   `contexts.nodes` list entirely?** If yes — that's the class-4
+   blocker (sneakiest class — rollup state will report SUCCESS
+   because it only counts contexts that DID report). Compare set
+   membership: `set(required) - set([n.name for n in contexts])`.
+   Any non-empty diff = absent-required blocker.
 4. Are 1-3 all clear and BLOCKED still shows? Then check the branch-
    protection rule directly via `baseRef.branchProtectionRule` — but
    on Zeta this should never happen because `requiredApprovingReviewCount: 0`.
