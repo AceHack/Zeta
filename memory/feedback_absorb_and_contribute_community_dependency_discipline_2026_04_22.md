@@ -148,6 +148,46 @@ better discipline that the block was protecting the space for.
   first-class factory asset — the footprint of our upstream
   participation.
 
+## End-goal sharpening (Aaron 2026-04-28T19:00Z)
+
+> *"build-our-own as last resort. our good citizen is because our
+> end goal is we build all of our dependncies but still contribute
+> back our enhancements and such"*
+
+This sharpens the discipline. The previous framing positioned
+absorb-and-contribute as the right way to consume community tools
+indefinitely. Aaron's 2026-04-28 clarification reframes it as a
+**transitional state** with a clearer end goal:
+
+- **End goal: factory-built-everything.** Long-term, the factory
+  builds all of its own dependencies. This is the autonomy axis —
+  the factory should not ship dependent on third-party tooling
+  for its core capabilities.
+- **"Good citizen" is what we do DURING the bridge.** Use community
+  tools as bridges; contribute back our enhancements; eventually
+  replace with factory-built versions.
+- **Contribution-back continues after the bridge ends.** Even after
+  the factory has built its own version of capability X, we keep
+  contributing relevant enhancements to the upstream community
+  project — because (a) the community project still serves users
+  who don't need factory-grade implementation, and (b) our
+  contributions back are themselves a moat-building signal
+  (peer-maintainer status survives our own implementation).
+- **"Build-our-own as last resort" reads as last-resort-FOR-NOW.**
+  We don't immediately reach for build-our-own when a community
+  tool exists; we use it, contribute back, and trajectory toward
+  building our own when the time is right (e.g., when the
+  community tool has structural limitations, when we need
+  factory-grade integration, when upstream stalls).
+
+The trajectory: **community-tool → absorb-and-contribute →
+factory-built + ongoing-contribution-back**. Three phases, not two.
+
+The contribution-back across all three phases is what "good
+citizen" actually means. It's not just "use polite community
+practices while we depend on them"; it's "continue giving back
+to the commons across the trajectory of our own self-sufficiency".
+
 ## Composition with existing memory
 
 - `feedback_external_signal_confirms_internal_insight_second_occurrence_discipline_2026_04_22.md`
