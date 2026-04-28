@@ -24,7 +24,7 @@ for free that would limit us on LFG"*.
   per-Actions spend.
 - **AceHack as user account**: exact Copilot-Pro status requires
   human-maintainer billing page (not exposed to the agent read-only
-  API). If Aaron holds Copilot Pro personally, AceHack inherits
+  API). If the human maintainer holds Copilot Pro personally, AceHack inherits
   Copilot PR reviews + Chat. If not, AceHack has no Copilot.
 - **Conclusion**: LFG is richer (Team plan + Copilot Business); AceHack
   is cheaper. Amara's authority-axis split (experiments → AceHack;
@@ -184,7 +184,7 @@ the elevated scope to fill the unobservable fields.
 
 ### Long-term (if cost becomes binding)
 
-1. If LFG costs approach Aaron's budget ceiling, consider
+1. If LFG costs approach the human maintainer's budget ceiling, consider
    Copilot-only-on-AceHack mirror-PR workflow: author on AceHack
    (uses personal Copilot Pro if present), cherry-pick to LFG
    periodically. Preserves decision-canon on LFG while shifting
@@ -247,6 +247,20 @@ Zeta is the near-total consumer of LFG Actions gross.
 - Apr 22: 2,133 min Linux + 196 min macOS-3-core ($25.58 gross, $0.63 billed from Copilot only)
 - Apr 23: 575 min Linux ($4.08 gross, $0.63 billed from Copilot only)
 
+> **Errata 2026-04-28:** the three sample-day gross
+> totals (`$14.22 + $25.58 + $4.08 = $43.88`) exceed the
+> declared monthly Actions gross of `$43.71` above by
+> `$0.17`. At least one of the per-day sample values is
+> rounded against a slightly different daily snapshot
+> than the monthly aggregate. The per-day breakdown
+> above is preserved verbatim from the original audit
+> snapshot for traceability; readers should treat the
+> monthly `$43.71` as the canonical figure and the
+> per-day samples as illustrative. Reconciling the
+> exact per-day → monthly delta requires re-pulling raw
+> billing data, which is logged as a follow-up task
+> rather than blocking this research-grade absorb.
+
 **Org budgets:** All products have `Stop usage: Yes`
 at $0 budget except GHAS and Copilot (which allow
 consumption). This is a hard safety rail — if discount
@@ -296,22 +310,45 @@ far: $0 billed despite $50+ gross).
 Otto-61 memory said macOS runs incur 10x multiplier cost
 even on public repos. Actual April 2026 billing data
 shows **macOS-3-core at $0.062/min gross**, entirely
-covered by the public-repo discount. The `gate.yml`
-matrix avoidance (macOS only on AceHack, not LFG) is
-still sound cost-discipline because:
+covered by the public-repo discount.
 
-- Gross exposure would become billed if quota exceeded
+**Correction (errata to original draft):** the original
+draft of this section claimed `gate.yml` runs macOS only
+on AceHack, not LFG. That's incorrect — the LFG per-day
+breakdown above shows macOS-3-core minutes on Apr 21
+(145 min) and Apr 22 (196 min), and the actual `gate.yml`
+matrix runs macOS on both forks. The original
+"matrix avoidance" framing was wrong. The cost-discipline
+points still hold:
+
 - macOS seats are slower in wall-clock (2-10x slowdown)
   even when cost-discounted — CI feedback latency is
-  its own resource
+  its own resource.
+- Gross exposure stays absorbed by the public-repo
+  discount as long as both forks remain public; should
+  either fork flip to private OR upstream policy change
+  the discount terms, the gross exposure becomes the
+  billed cost.
 
 But the stark *"macOS is 10x expensive"* framing was
 too strong. Corrected: **macOS is 10x gross but
-currently 0x billed on public repos within quota**.
-The avoidance is good practice; the reason is latency
-plus quota-headroom preservation, not immediate cost.
+currently 0x billed on public repos within the
+public-repo discount**. The reason to be careful with
+macOS minute-counts is latency + future-policy
+risk-headroom, not immediate cost.
 
-### Aaron's personal Copilot
+**Note on "quota" terminology:** earlier draft phrasing
+mixed "quota" between two different discount mechanisms
+(GitHub's per-account included-minutes pool vs the
+public-repo unlimited discount). For public repos the
+relevant mechanism is the public-repo discount, not a
+quota. Should the public-repo discount terms ever
+change OR a fork flip to private, that's where the
+billed-cost flip happens — not on a quota threshold per
+se. Erratum logged here to avoid future readers being
+misled.
+
+### Human maintainer's personal Copilot
 
 Confirmed via the human maintainer's Copilot settings
 page: *"You are assigned a seat as part of a GitHub
