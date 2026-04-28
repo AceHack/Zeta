@@ -100,6 +100,7 @@ pointing at that SHA.
 # List ALL check-runs on the SHA (not deduped)
 gh api "repos/<owner>/<repo>/commits/<SHA>/check-runs?per_page=100" --jq '
   .check_runs
+  | sort_by(.name)
   | group_by(.name)
   | map({name:.[0].name, count:length, conclusions:[.[] | {conclusion, started_at, run_id:(.details_url | split("/")[-3] | tonumber)}]})
   | .[]
