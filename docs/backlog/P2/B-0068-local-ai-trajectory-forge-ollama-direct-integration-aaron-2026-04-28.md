@@ -1,12 +1,13 @@
 ---
 id: B-0068
 priority: P2
-slug: local-ai-trajectory-forge-ollama-direct-integration
-status: backlog
-created: 2026-04-28
-maintainer: aaron
-ownership: otto
+status: open
 title: Local AI trajectory — Forge CLI/harness + Ollama + direct local-model integration (umbrella)
+effort: L
+ask: maintainer Aaron 2026-04-28 /btw aside
+created: 2026-04-28
+last_updated: 2026-04-28
+tags: [local-ai, multi-harness, ollama, forge, hardware-aware]
 ---
 
 # B-0068 — Local AI trajectory umbrella

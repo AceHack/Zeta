@@ -1,12 +1,13 @@
 ---
 id: B-0070
 priority: P2
-slug: orphan-role-ref-detector-lint
-status: backlog
-created: 2026-04-28
-maintainer: aaron
-ownership: otto
+status: open
 title: Orphan role-ref detector lint — catch ferry-N without named source on code surfaces (Aaron 2026-04-28)
+effort: M
+ask: maintainer Aaron 2026-04-28 /btw aside
+created: 2026-04-28
+last_updated: 2026-04-28
+tags: [hygiene-lint, name-attribution, otto-279, current-state-surfaces]
 ---
 
 # B-0070 — Orphan role-ref detector lint
