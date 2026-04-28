@@ -75,7 +75,7 @@ it (closed-thread links survive in the PR's review history).
 
 ### Spec-logic — agent self-revocation
 
-5. **Define a revocation auth path the agent can actually use**
+1. **Define a revocation auth path the agent can actually use**
    (cid 3151301493 P1). §9.1 requires the agent to self-
    revoke via a call authenticated by the active session
    key, but §3.3/§3.4 say the agent doesn't hold keys.
@@ -83,23 +83,23 @@ it (closed-thread links survive in the PR's review history).
    mandate (separate from tx-signing), or the revocation
    goes through a different auth channel (oracle, monitor-
    signed message, etc.).
-6. **Clarify §9.1 revocation mechanism vs §3.3/§3.4 no-keys**
-   (cid 3151222680 P1). Same root cause as #5; fix needed
+2. **Clarify §9.1 revocation mechanism vs §3.3/§3.4 no-keys**
+   (cid 3151222680 P1). Same root cause as item 1 above; fix needed
    in both sections to remove the contradiction.
 
 ### Spec-logic — monitor placement + lifecycle
 
-7. **§12.5 sibling-repo vs in-repo monitor reconciliation**
+1. **§12.5 sibling-repo vs in-repo monitor reconciliation**
    (cids 3151300145, 3151300160 P1). §12.5 RESOLVED the
    monitor implementation to a sibling repository; the
    acceptance criteria + Phase 1 roadmap still permit the
    in-repo `tools/wallet-monitor/` form factor. Pick one.
-8. **Topology section alignment with §12.1 framework choice**
+2. **Topology section alignment with §12.1 framework choice**
    (cid 3151260676 P2). Topology section still labels the
    smart-account framework as "open question" but §12.1
    RESOLVED it to ZeroDev-on-7702. Update topology to
    match.
-9. **Phase 1 roadmap sibling-repo monitor requirement**
+3. **Phase 1 roadmap sibling-repo monitor requirement**
    (cid 3151260677 P2). Phase 1 still lists "stub
    tools/wallet-monitor/ directory or sibling-repo
    bootstrap"; §12.5 RESOLVED removes the "or in-repo"
@@ -107,12 +107,12 @@ it (closed-thread links survive in the PR's review history).
 
 ### Spec-logic — monitor-stall freeze + classification
 
-10. **Enforce monitor-stall freeze before broadcast**
+1. **Enforce monitor-stall freeze before broadcast**
     (cid 3151321309 P1). The spec requires the monitor
     pipeline to complete within 60s; needs an explicit
     `freeze-on-monitor-stall` rule + the terminal state
     that the freeze creates.
-11. **Define an on-chain classification signal for Tx N+1
+2. **Define an on-chain classification signal for Tx N+1
     gating** (cid 3151333578 P1). §7.1 requires the
     smart-account contract to reject Tx N+1 if Tx N's
     classification is unresolved. The spec doesn't define
@@ -122,13 +122,13 @@ it (closed-thread links survive in the PR's review history).
 
 ### Spec-logic — drawdown oracle + glass-halo logging
 
-12. **Define a deterministic oracle for drawdown freeze
+1. **Define a deterministic oracle for drawdown freeze
     checks** (cid 3151362883 P1). §5.5 requires the
     smart-account to freeze when bond drawdown crosses a
     threshold. The on-chain check needs a deterministic
     oracle (Chainlink? own pricing oracle? off-chain
     monitor-signed update?). Spec needs the choice.
-13. **Move glass-halo logging gate out of smart-contract
+2. **Move glass-halo logging gate out of smart-contract
     enforcement** (cid 3151362886 P1). The spec currently
     makes "logging failure ⇒ tx fails" an on-chain
     enforcement rule. Logging is off-chain infrastructure;
@@ -137,39 +137,39 @@ it (closed-thread links survive in the PR's review history).
 
 ### Acceptance-criteria + auth + metric alignment
 
-14. **Require auth for retraction-queue cancellation** (cid
+1. **Require auth for retraction-queue cancellation** (cid
     3150816618 P1). The spec currently says a pending
     transaction can be self-revoked without auth; needs
-    the auth path matching #5.
-15. **Material-spend criteria for second-agent review** (cid
+    the auth path matching item 1 in 'Spec-logic — agent self-revocation'.
+2. **Material-spend criteria for second-agent review** (cid
     3151321306 P2). Receipt schema makes `second_agent_
     review.required` a boolean; spec needs the predicate
     that decides when it's required (spend > $X? new
     counterparty? new venue?).
-16. **Align retraction metric with updated Base reorg
+3. **Align retraction metric with updated Base reorg
     policy** (cid 3150816620 P2). Retraction metric still
     requires "reorg-window monitored after" the §12.2
     Base-reorg policy. Update to current policy.
-17. **Unify the unfreeze quorum across sections** (cid
+4. **Unify the unfreeze quorum across sections** (cid
     3151220963 P2). Test text requires "Aaron-plus-monitor"
     for unfreeze; §6.2 defines a different quorum. Pick
     one + propagate.
-18. **§15 send-readiness statement reconciliation** (cid
+5. **§15 send-readiness statement reconciliation** (cid
     3150897613 P2). §15 says only two maintainer-only
     questions remain; current state is §12.1-§12.6
     Otto-resolved + §12.7-§12.8 Aaron-resolved. Refresh
     statement.
-19. **EAT retraction-coverage metric alignment with wallet
+6. **EAT retraction-coverage metric alignment with wallet
     spec** (cid 3151233791 P2). Companion-spec drift
     between EAT doc and wallet v0; align metric.
-20. **EAT Task B in-repo monitor option removal** (cid
+7. **EAT Task B in-repo monitor option removal** (cid
     3151301494 P2). EAT Task B still permits in-repo
     monitor form factor; align with §12.5 sibling-repo
     resolution.
 
 ### Schema migration
 
-21. **INTENTIONAL-DEBT.md YAML schema vs current prose
+1. **INTENTIONAL-DEBT.md YAML schema vs current prose
     format** (cid 3151337321 P1). Spec proposes recording
     bond entries in a YAML schema; INTENTIONAL-DEBT.md is
     currently a prose/bulleted ledger. Either land the
