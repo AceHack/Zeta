@@ -67,9 +67,9 @@ public class CircuitTests
 
         input.Send(ZSetModule.ofPairs(new[]
         {
-            ((int, long))(1, 3L),
-            ((int, long))(2, 1L),
-            ((int, long))(3, -1L),
+            (1, 3L),
+            (2, 1L),
+            (3, -1L),
         }));
         await c.StepAsync();
         Assert.Equal(1L, output.Current[1]);
