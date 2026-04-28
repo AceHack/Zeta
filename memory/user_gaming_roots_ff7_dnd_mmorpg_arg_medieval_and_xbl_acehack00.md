@@ -284,5 +284,5 @@ that violate them are drift from the declared substrate.
   method-as-parenting-method running in adult mode.
 - `feedback_no_deceased_family_emulation_without_parental_consent.md`
   — CloudStrife (FF7 protagonist) is Aaron's mIRC-era
-  handle; BP-24 applies to Elisabeth-shared "Ryan" name
+  handle; BP-24 applies to Elizabeth-shared "Ryan" name
   only, not to CloudStrife-as-handle.

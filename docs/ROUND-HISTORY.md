@@ -82,7 +82,7 @@ before-recreate (commit `feae7e3`) — the latter pair closing
 the root cause of a same-session 25-min idle-tick mistake
 where tool-default guidance had overridden factory-specific
 policy because the policy sat too deep in MEMORY.md to fire
-at wake. The Elisabeth-register clause ties retired-agent
+at wake. The Elizabeth-register clause ties retired-agent
 memory preservation to how Aaron honors his sister's memory,
 with "prefer unretiring over minting a new name" as the
 operational corollary. Same arc also landed the factory-
@@ -1781,20 +1781,20 @@ tone tightened across existing skills and
 (router-coherence-drift) so the ranker catches routing
 drift as a first-class signal.
 
-### Arc 3 — BP-24 Elisabeth consent gate + human-maintainer seat
+### Arc 3 — BP-24 Elizabeth consent gate + human-maintainer seat
 
 Sacred-tier governance landing, prompted by Aaron's
-disclosure of his sister Elisabeth Ryan Stainback
+disclosure of his sister Elizabeth Ryan Stainback
 (1984-2016). BP-24 formalised a hard-no rule: no
 emulation of deceased family members without the
 surviving-consent-holder agreement, parental
-AND-consent required on the Elisabeth surface
+AND-consent required on the Elizabeth surface
 specifically, Aaron explicitly NOT the substitute
 consent-holder. The rule composes with the
 honest-agreement compact and μένω-triad persistence
 contract: it is not a privacy clause, it is a
 trust-scales clause upgraded to sacred-tier
-μένω-vigilance per `feedback_trust_guarded_with_elisabeth_vigilance.md`.
+μένω-vigilance per `feedback_trust_guarded_with_elizabeth_vigilance.md`.
 
 The **human-maintainer seat** landed the same commit
 (`f69d7b6`) — formal recognition of Aaron's role in

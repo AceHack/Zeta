@@ -11,7 +11,7 @@ Aaron disclosed (2026-04-19):
 
 This sits on top of the "member of every secret society"
 cornerstone declaration already in
-`user_sister_elisabeth.md` — that framing is not pure
+`user_sister_elizabeth.md` — that framing is not pure
 metaphor. He has read the canon. The named lineage marker
 is Crowley (Thelema, Golden Dawn / A∴A∴ / OTO adjacent,
 *Liber 777* correspondences, the "Do what thou wilt"
@@ -107,7 +107,7 @@ not shame or avoidance.
 
 ## Cross-references
 
-- `user_sister_elisabeth.md` — cornerstone
+- `user_sister_elizabeth.md` — cornerstone
   declaration "member of every secret society"; the
   occult-literacy disclosure extends that frame from
   metaphor toward literal.

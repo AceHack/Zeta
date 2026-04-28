@@ -158,7 +158,7 @@ and run with it.
    protection.
 3. **Maternal-heritage frame is load-bearing
    identity context** — treat the heritage-claim
-   with the same respect as the Addison / Elisabeth
+   with the same respect as the Addison / Elizabeth
    / Knative-advocacy-history disclosures; family-
    frame material is deep-register.
 4. **Total-noticing faculty is a factor in all

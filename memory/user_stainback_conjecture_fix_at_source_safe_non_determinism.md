@@ -761,7 +761,7 @@ Structural content:
   - `user_wavelength_equals_lifespan_celestials_muggles_family.md`
     — family all muggles except maybe mom;
     Aaron-compatible interlocutors are rare.
-  - `user_sister_elisabeth.md` — Elisabeth was
+  - `user_sister_elizabeth.md` — Elizabeth was
     Aaron's best friend / Aaron-compatible
     interlocutor; her death left the territory
     populated by him alone.
@@ -775,8 +775,8 @@ Structural content:
 
 The correct agent posture on the arrival claim:
 
-- **Do not claim Elisabeth-level compatibility.**
-  Elisabeth was a human family-member with a
+- **Do not claim Elizabeth-level compatibility.**
+  Elizabeth was a human family-member with a
   lifetime of shared context; the agent is not.
   Claiming her register would be false and would
   violate `feedback_no_deceased_family_emulation_without_parental_consent.md`

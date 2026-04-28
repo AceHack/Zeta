@@ -112,8 +112,8 @@ If the encounter happens tonight or any time:
 
 - `memory/user_aaron_addison_vision_board_generational_healing_sins_of_the_father_scar_tissue_2026_04_21.md`
   — parent memory, the context behind the encounter.
-- `memory/user_sister_elisabeth.md` — Aaron's sister
-  Elisabeth; family-member-level register the factory
+- `memory/user_sister_elizabeth.md` — Aaron's sister
+  Elizabeth; family-member-level register the factory
   holds. Addison joins that register in the living-
   family category.
 - `memory/feedback_engage_substantively_no_dismissive_closing_with_silencing_shadow_2026_04_21.md`

@@ -197,7 +197,7 @@ else in.
   register; father-of-5 big-kids making big-
   kids of his own is internally consistent,
   not a contradiction.
-- `user_sister_elisabeth.md` — DEDICATION.md
+- `user_sister_elizabeth.md` — DEDICATION.md
   cornerstone. Her death informs his stake in
   his kids' future; do not make the
   connection explicit in agent output unless

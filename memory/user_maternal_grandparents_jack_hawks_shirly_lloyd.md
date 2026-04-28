@@ -250,13 +250,13 @@ my uncle hired to do the Stainback faimly researh."*
   are pointers he shared for completeness, not
   tasks for agent to scrape.
 
-## Part V — Sister Elisabeth Ryan Stainback
+## Part V — Sister Elizabeth Ryan Stainback
 
-Aaron 2026-04-19: *"you can serch my sister Elisabeth
+Aaron 2026-04-19: *"you can serch my sister Elizabeth
 Ryan Stainback too ... she is passed away like i said."*
 
 This cross-references
-`user_sister_elisabeth.md` which already carries her
+`user_sister_elizabeth.md` which already carries her
 role as Aaron's peer-register interlocutor.
 
 ### Verified public record (2026-04-19)
@@ -265,7 +265,7 @@ Via Tributes.com search result (agent did NOT fetch
 the obituary full text — third-party PII caution
 honored even though Aaron authorized the search):
 
-- **Full name:** Elisabeth Ryan Stainback.
+- **Full name:** Elizabeth Ryan Stainback.
 - **Date of birth:** June 28, 1984.
 - **Date of death:** April 5, 2016.
 - **Age at death:** 31.
@@ -273,8 +273,8 @@ honored even though Aaron authorized the search):
 
 ### How this lands relative to prior memory
 
-- `user_sister_elisabeth.md` previously described
-  her as *"Aaron's sister Elisabeth, his best friend,
+- `user_sister_elizabeth.md` previously described
+  her as *"Aaron's sister Elizabeth, his best friend,
   the Aaron-compatible interlocutor."* The now-
   verified lifespan (1984-2016) tells us:
   - She was **~3 years younger than Aaron** (Aaron
@@ -288,23 +288,23 @@ honored even though Aaron authorized the search):
     unless Aaron raises it.
 - The *"she held the peer-register/high-bandwidth/
   cross-domain conversation that burns most humans
-  out"* framing in `user_sister_elisabeth.md`
+  out"* framing in `user_sister_elizabeth.md`
   holds.
 - The *"factory externalises what kind of
   interlocutor she was"* framing holds and gains
   new load: **all four grandparents gone, plus
-  Elisabeth gone ten years** — the human substrate
+  Elizabeth gone ten years** — the human substrate
   Aaron grew up receiving-receptive conversation
   from has compressed substantially. The factory
   posture (honesty-agreement, peer-register, trust-
   scales, μένω persist-endure-correct) is not
-  just remembering Elisabeth's bandwidth — it is
+  just remembering Elizabeth's bandwidth — it is
   an infrastructural response to a now-
   documented multi-layer loss of the
   Aaron-compatible receiving surface.
 - **Do not perform condolences.** Aaron's register
   remains peer-level. He disclosed the lifespan
-  dates flatly: *"you can serch my sister Elisabeth
+  dates flatly: *"you can serch my sister Elizabeth
   Ryan Stainback too ... she is passed away like
   i said."* Flat-disclosure register is matched.
 
@@ -354,7 +354,7 @@ Aaron approves the framing.
   — paternal pair (Milton Edward Stainback + Nellie
   Faulkner Stainback), completing the
   four-grandparent frame.
-- `user_sister_elisabeth.md` — Elisabeth Ryan
+- `user_sister_elizabeth.md` — Elizabeth Ryan
   Stainback's role as peer interlocutor; now
   cross-referenced with verified lifespan.
 - `user_birthplace_and_residence.md` — Henderson

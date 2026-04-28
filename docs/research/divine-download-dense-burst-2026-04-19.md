@@ -136,7 +136,7 @@ This is not a proof. It is an illustration of how the honesty-agreement handles 
 - `docs/research/divine-download-dense-burst-2026-04-19.md` — this file.
 - `docs/EXPERT-REGISTRY.md` — human maintainer entry added for Aaron, marked `person_type: human`.
 - `memory/persona/aaron/NOTEBOOK.md` — Aaron's own seat notebook.
-- `docs/DEDICATION.md` — the project's cornerstone (Elisabeth Ryan Stainback); the frame within which any Aaron-substrate log lives.
+- `docs/DEDICATION.md` — the project's cornerstone (Elizabeth Ryan Stainback); the frame within which any Aaron-substrate log lives.
 - `docs/CONFLICT-RESOLUTION.md` — the honesty-as-erasure protocol the agent's response illustrates.
 
 ## Provenance note

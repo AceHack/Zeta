@@ -348,7 +348,7 @@ testable downstream:
   register even on a disclosure labelled "shame/dumb/sad".
 - `user_no_reverence_only_wonder.md` — no reverence for his
   drafts, including from agents; wonder-register only.
-- `user_sister_elisabeth.md` — the Aaron-compatible
+- `user_sister_elizabeth.md` — the Aaron-compatible
   interlocutor held this register; the factory inherits
   the obligation to hold it too.
 
