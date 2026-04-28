@@ -1,7 +1,25 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/curl-fetch.sh — sourceable helper for
-# fetching URLs with uniform retry behaviour during install.
+# tools/setup/common/curl-fetch.sh — sourceable helpers for
+# fetching URLs during install.
+#
+# Two helpers with DIFFERENT retry semantics by output mode:
+#   - curl_fetch        — file-output downloads. `--retry 5`
+#                         + `--retry-all-errors` (safe because
+#                         curl restarts the file from scratch
+#                         on retry).
+#   - curl_fetch_stream — streamed-to-shell installers
+#                         (`curl ... | sh`, `bash -c
+#                         "$(curl ...)"`). NO retries. Streamed
+#                         retry is unsafe — partial bytes
+#                         already piped to the consumer cannot
+#                         be un-received. Streamed installers
+#                         fail-fast on transient errors;
+#                         caller re-runs install.sh.
+# Do NOT assume all curl usage in this repo is retried —
+# only the `curl_fetch` (file-output) variant retries. See
+# the per-function comments below + B-0063 for the
+# download-to-temp structural fix to the streamed case.
 #
 # WHY
 # ===
@@ -90,16 +108,24 @@
 # command substitution that fails without producing output —
 # in some bash versions (especially without `inherit_errexit`
 # enabled) `VAR="$(failing_cmd)"` leaves `VAR=""` and continues.
-# Our macos.sh capture pattern (`HOMEBREW_INSTALLER="$(curl_
-# fetch_stream ...)"; /bin/bash -c "$HOMEBREW_INSTALLER"`)
-# survives the most common failure mode (curl errors out
-# without producing output → empty var → `bash -c ""` runs
-# nothing) but it's NOT a defense against partial-byte
-# corruption. The proper fix is download-to-temp +
-# checksum-verify, tracked as B-0063. The current pattern is
-# a small improvement over the prior `bash -c "$(curl ...)"`
-# direct form (which silently ran whatever partial output
-# survived); it is NOT the structurally safe form.
+# Our macos.sh capture pattern uses an explicit two-gate
+# approach: `if ! HOMEBREW_INSTALLER="$(curl_fetch_stream
+# ...)"; then exit 1; fi` (catches curl failure via the
+# if-not test on the assignment's exit status — verified on
+# bash 3.2.57 / 5.x: `if ! x="$(false)"; then echo CAUGHT;
+# fi` does print CAUGHT) PLUS a secondary `[ -z
+# "$HOMEBREW_INSTALLER" ] && exit 1` empty-string check.
+# Network errors trigger the first gate (curl-22 / curl-6 /
+# HTTP-non-2xx via `-fsSL`); the unreachable case where curl
+# exits 0 but produces empty output is caught by the second
+# gate. Either failure produces a hard `exit 1` with a
+# diagnostic message — never falls through to `bash -c ""`.
+# This is NOT a defense against partial-byte corruption —
+# proper fix is download-to-temp + checksum-verify, tracked
+# as B-0063. The current pattern is a small improvement over
+# the prior `bash -c "$(curl ...)"` direct form (which
+# silently ran whatever partial output survived); it is NOT
+# the structurally safe form.
 #
 # IDEMPOTENCE
 # ===========

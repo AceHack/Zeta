@@ -53,7 +53,19 @@ if [ ! -s "$TEMP" ]; then
 fi
 # (when upstream publishes a SHA256SUMS or .sig:)
 EXPECTED_SHA="<pinned>"
-if [ "$(sha256sum "$TEMP" | awk '{print $1}')" != "$EXPECTED_SHA" ]; then
+# Cross-platform SHA-256: macOS ships `shasum -a 256` (Perl
+# script in /usr/bin) but not `sha256sum`; Linux has both;
+# `openssl dgst -sha256` works everywhere openssl is
+# available. Detect-and-dispatch keeps the install path
+# 4-shell-portable per Otto-235.
+if command -v sha256sum >/dev/null 2>&1; then
+  ACTUAL_SHA="$(sha256sum "$TEMP" | awk '{print $1}')"
+elif command -v shasum >/dev/null 2>&1; then
+  ACTUAL_SHA="$(shasum -a 256 "$TEMP" | awk '{print $1}')"
+else
+  ACTUAL_SHA="$(openssl dgst -sha256 "$TEMP" | awk '{print $NF}')"
+fi
+if [ "$ACTUAL_SHA" != "$EXPECTED_SHA" ]; then
   echo "error: installer checksum mismatch; refusing to exec" >&2
   exit 1
 fi
