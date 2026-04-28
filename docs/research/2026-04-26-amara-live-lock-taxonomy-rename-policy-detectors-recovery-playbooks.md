@@ -95,6 +95,18 @@ the agent inherits the word as ontology rather than warning flare.
 >   *fix: inspect actual PR/CI/merge state before claiming done*
 > *```"*
 
+> **Detector-label-vs-rename-policy mapping note (Otto absorb,
+> NOT verbatim Amara):** the snake_case detector keys above
+> (`confirmation_bias`, `manufactured_patience`,
+> `wishful_auto_merge`) are Amara's working draft from earlier
+> in the same message. Section 7 below codifies the canonical
+> rename policy with these mappings: `confirmation_bias` →
+> **self-verification fault**, `manufactured_patience` →
+> **manufactured patience** (unchanged), `wishful_auto_merge` →
+> **prayer-not-inspection**. Both label sets are preserved here
+> verbatim per Otto-227. Future detector implementations should
+> use the Section 7 canonical names (per Codex review on PR #17).
+
 ---
 
 ## Section 5: Connection to "12-hour stuck cadence" (verbatim)

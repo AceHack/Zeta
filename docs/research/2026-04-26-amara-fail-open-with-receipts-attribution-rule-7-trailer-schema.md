@@ -305,24 +305,39 @@ correction-as-steering, not correction-as-exile.
 Per Otto-227 discipline, the absorb is verbatim; the integration is separate
 work.
 
-### Integration items
+### Integration items (proposed; this PR is research-grade only)
 
-1. **Otto-354 trailer-discipline memory refined** with Amara's 7-trailer
-   schema (replacing the initial single-`Agent: otto` schema).
+> **Scope note (Copilot review on PR #17 caught the wording):** this section
+> previously stated each item as already-landed ("memory landed",
+> "MEMORY.md updated"). That overstated this PR's actual scope — this PR
+> contains research docs only, no `memory/**` or `memory/MEMORY.md`
+> changes. Reframed below as a **proposal list** so future readers can
+> tell which items are committed substrate vs. follow-up work for separate
+> PRs. Per GOVERNANCE §33 research-grade-not-operational: integration
+> follows research absorb in separate work.
 
-2. **New ATTRIBUTION RULE memory landed** capturing the never-infer-approval
-   rule for cross-session enforcement.
+1. **Otto-354 trailer-discipline memory should be refined** with Amara's
+   7-trailer schema (replacing the initial single-`Agent: otto` schema)
+   — proposed for a follow-up PR that touches `memory/**`.
 
-3. **MEMORY.md updated** with the new attribution-rule entry; the Otto-354
-   entry refined to note the 7-trailer schema.
+2. **New ATTRIBUTION RULE memory should be landed** capturing the
+   never-infer-approval rule for cross-session enforcement — proposed for
+   the same follow-up PR.
 
-4. **Task #295** (separate cryptographic identity) note updated to reflect
-   that Otto-354 7-trailer schema is the bridging discipline until #295
-   lands.
+3. **`memory/MEMORY.md` should be updated** with the new attribution-rule
+   entry; the Otto-354 entry refined to note the 7-trailer schema —
+   landed alongside (1) and (2).
 
-5. **Future commits**: every agent-authored commit going forward uses the
-   8-line trailer block (7 Amara-schema trailers + Co-authored-by). The
-   trailer block is appended to every commit message HEREDOC.
+4. **Task #295** (separate cryptographic identity) note should be updated
+   to reflect that the Otto-354 7-trailer schema is the bridging discipline
+   until #295 lands — task-tracker edit, not in this PR.
+
+5. **Future commits convention**: every agent-authored commit going forward
+   should use the 8-line trailer block (7 Amara-schema trailers +
+   Co-authored-by). The trailer block is to be appended to every commit
+   message HEREDOC — convention proposed here, enforcement instruments
+   tracked as task #298 (pre-merge validator, landed) + task #299
+   (post-merge auditor, landed via PR #22).
 
 6. **The "jazz trio with unit tests" framing** is itself substrate. Composes
    with multi-harness future (per
