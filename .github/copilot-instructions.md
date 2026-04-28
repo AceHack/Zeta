@@ -360,6 +360,61 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   preserve who-said-what for the record. On any other
   path, DO flag name attribution — names should not bleed
   into reusable code/docs/skills.
+
+  **Inverse-direction rule (added 2026-04-28 after a
+  same-substrate-verifier failure):** the carve-out is
+  bidirectional — applies to both *flagging existing
+  attribution* AND *suggesting attribution removal*. When
+  proposing a de-naming edit (replacing a human-maintainer
+  first-name with "the human maintainer," or replacing an
+  agent-persona first-name with the role-ref defined in the
+  roster mapping above — e.g., the architect persona's
+  first-name with "the architect" — or similar), check the
+  surface path FIRST. If the path is in
+  the closed-list history surfaces above, the existing names
+  are correct as-is and a de-naming suggestion is the bug,
+  not the fix. The 2026-04-28 surfacing: a same-substrate
+  reviewer (the `pr-review-toolkit:silent-failure-hunter`
+  plugin agent in Claude Code) passed an over-scrubbed
+  de-naming on `docs/research/**` as *"consistent with
+  Otto-279 history-surface attribution carve-out —
+  non-history-surface prose drops the named-attribution
+  form"* — i.e., the verifier inverted the carve-out the
+  same direction the actor did. When the actor and the
+  verifier share the same rule-misreading, single-CLI
+  verify is insufficient. **Surface-path-first** is the
+  corrective: identify the surface category before
+  suggesting any name-related edit.
+
+  **Surface-category quick reference** (use this BEFORE
+  flagging or suggesting a name-related edit):
+  - **History surfaces** (preserve attribution as-is):
+    `memory/**`, `docs/research/**`, `docs/ROUND-HISTORY.md`,
+    `docs/DECISIONS/**`, `docs/aurora/**`,
+    `docs/pr-preservation/**`, `docs/hygiene-history/**`,
+    `docs/WINS.md`, `docs/BACKLOG.md`, `docs/backlog/**`,
+    commit messages, PR titles + bodies.
+  - **Roster-mapping carve-out** (governance / instructions
+    files where a one-time persona-to-role mapping section
+    is permitted because the file's job requires resolving
+    role-refs to persona-names): the *roster sections* of
+    `.github/copilot-instructions.md`, `AGENTS.md`,
+    `GOVERNANCE.md`, `docs/CONFLICT-RESOLUTION.md`. The
+    carve-out covers the explicit roster mapping ONLY;
+    body-prose attribution outside the roster section
+    remains forbidden on these files (i.e., elsewhere in
+    these files use role-refs, not persona-names).
+  - **Current-state surfaces** (use role-refs only): code
+    (F#/C#/TS/shell), skill bodies under `.claude/skills/**`,
+    persona definitions under `.claude/agents/**`, spec docs
+    (`openspec/specs/**`, `docs/*.tla`), behavioural docs
+    (`docs/AGENT-BEST-PRACTICES.md`, `docs/GLOSSARY.md`,
+    `docs/WONT-DO.md`), `CLAUDE.md`, threat models, READMEs,
+    public-facing prose, trajectory files (when present
+    under `docs/trajectories/**`; the directory is part
+    of the planned trajectory-pattern but lives on a
+    separate branch on this branch's tip — treat as
+    "current-state when present").
 - **Analyzer findings: right-long-term-fix OR documented
   suppression, never the third path of "quick appeasement."**
   For every `Sxxxx` (Sonar) / `MAxxxx` (Meziantou) /
