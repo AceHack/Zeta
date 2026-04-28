@@ -20,9 +20,11 @@
 > `docs/backlog/PN/B-<next-NNNN>-<slug>.md` instead. The
 > per-row schema lives in `tools/backlog/README.md`.
 
-Single source of truth (legacy, pending migration). Replaces
+Legacy stockpile of un-migrated rows (NOT the source of truth
+during migration — see header warning above; per-row files in
+`docs/backlog/PN/B-<NNNN>-<slug>.md` are authoritative). Replaces
 scattered "flagged P1" notes in ROADMAP.md and round summaries.
-Append-only; keep ordered newest-first within each priority tier.
+Existing rows below are read-only; ordered newest-first within each priority tier.
 
 ## Legend
 

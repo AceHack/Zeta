@@ -2,7 +2,10 @@
 
 Source of truth for individual backlog rows. Each row is one
 markdown file with YAML frontmatter. The top-level
-`docs/BACKLOG.md` is auto-generated from this directory.
+`docs/BACKLOG.md` is a read-only legacy stockpile during the
+Phase 2 migration window (see "Current state" below); it
+collapses to an auto-generated pointer index only **after**
+migration completes.
 
 See `tools/backlog/README.md` for the full schema, scaffolder,
 generator, and phase plan.

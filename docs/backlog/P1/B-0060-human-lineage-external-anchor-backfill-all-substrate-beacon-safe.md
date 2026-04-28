@@ -61,8 +61,8 @@ Targets to enumerate:
 - HC-1..HC-7 / SD-1..SD-9 / DIR-1..DIR-5 alignment clauses
   (`docs/ALIGNMENT.md`)
 - Otto-NN named principles (~360 entries; the per-Otto-NN
-  mapping is already a backlog item — `B-0288` adjacent /
-  Otto-349 mapping)
+  mapping is already tracked as task #288 — Otto-349
+  per-Otto-NN ↔ named-principle mapping, BACKLOG-deferred)
 - BP-NN best-practice rules (`docs/AGENT-BEST-PRACTICES.md`)
 - Glass-Halo substrate doctrines (radical honesty, total-
   observability, etc.)

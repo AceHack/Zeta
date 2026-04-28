@@ -16,7 +16,7 @@ The "also self check?" question prompted Otto to actually run the self-check tha
 
 ## The honest-wait test that passed
 
-Per the manufactured-patience-vs-real-dependency-wait Otto distinction (`feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md` in user-scope memory; in-repo migration pending per `feedback_natural_home_of_memories_is_in_repo_now_all_types_glass_halo_full_git_native_2026_04_24.md`), before honest-close requires:
+Per the manufactured-patience-vs-real-dependency-wait Otto distinction (`memory/feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md` — now in-repo per the 2026-04-24 directive that memory's natural home is in-repo; the originating directive memory `feedback_natural_home_of_memories_is_in_repo_now_all_types_glass_halo_full_git_native_2026_04_24.md` lives at user-scope `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`), before honest-close requires:
 
 - ✅ Specific dependency named: Aaron's call on `code_quality severity:all` rule enforcement
 - ✅ Specific owner: Aaron only (the harness denied direct rule modification earlier in the session)

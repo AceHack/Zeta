@@ -88,11 +88,12 @@ remember, fewer manual reruns, less time spent on triage.
 
 **Composes with:**
 
-- `feedback_otto_341_lint_suppression_is_self_deception_*`
+- `feedback_otto_341_lint_suppression_is_self_deception_noise_signal_or_underlying_fix_greenfield_large_refactors_welcome_training_data_human_shortcut_bias_2026_04_26.md`
   (Otto-341 mechanism-over-vigilance is about agent
   discipline; this rule generalises to failure handling).
-- `feedback_otto_275_forever_*` (knowing-rule-≠-applying-rule;
-  structural fixes don't depend on application).
+- `feedback_otto_275_forever_manufactured_patience_live_lock_9th_pattern_2026_04_26.md`
+  (knowing-rule-≠-applying-rule; structural fixes don't
+  depend on application).
 - `feedback_transient_ci_external_infra_only_test_failures_are_bugs_not_flakes_2026_04_28.md`
   (the verify-first discipline that prompted Aaron to point at
   the structural alternative). Now scoped to "OTHER classes

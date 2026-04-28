@@ -43,7 +43,7 @@ Before Aaron posts a real bond, all of the following must exist + be reviewed:
    - Pre-flight retraction window mechanics (§9)
 2. **All open questions** in §12 have explicit answers logged. (Status 2026-04-28: §12.1-§12.6 RESOLVED-BY-OTTO with documented rationale; §12.7-§12.8 RESOLVED-BY-AARON 2026-04-27. All resolutions revisable via the not-bound-by-past-self protocol.)
 3. **A dry-run paper-trading mode** has run for at least three consecutive sessions with all gates active but no real value transferred. Receipts, freeze triggers, and retraction windows all exercised against simulated transactions.
-4. **The off-chain monitor harness** runs as an independent process (separate repo or `tools/wallet-monitor/` directory) with its own auth surface, separate from the agent's main inference loop.
+4. **The off-chain monitor harness** runs in a sibling repository (per §12.5's redundancy model — independence-by-deployment is what makes the freeze-topology assumptions hold; in-repo `tools/wallet-monitor/` was an earlier draft option and is no longer permitted at the v0 gate) with its own auth surface, separate from the agent's main inference loop.
 5. **Three consecutive clean sessions** of the dry-run with: zero unexplained freezes, zero receipt-loop violations, zero off-glass-halo operations, zero attempted overrides of freeze authority.
 
 If any of these fails, v0 does NOT proceed to real money. Failures get classified per §7's loss-classification taxonomy (treating dry-run failures as "execution-error" or "thesis-failure" categories) and surfaced for review.
@@ -677,9 +677,14 @@ eight §12 questions are RESOLVED:
 - §12.7 (hierarchical scoping), §12.8 (disclosure timing) —
   RESOLVED 2026-04-27 by Aaron.
 
-Phase 0 sign-off (final v0 architecture acceptance) is therefore
-unblocked. Phase 1 scaffolding can ship as a follow-up PR
-independent of this packet.
+All §12 questions are now resolved on the spec side, so the
+architecture is ready for multi-CLI review (Gemini + Codex +
+Ani + Amara via `tools/peer-call/`) at Otto's discretion per
+EAT §21.e. **Aaron's final v0 spec acceptance is deferred to
+real-money phase per EAT §21.e** — *"i'll look later once we
+have some real money involve."* Phase 1 scaffolding does NOT
+proceed until that acceptance gate opens; this section reflects
+spec-side readiness, not implementation green-light.
 
 The spec deliberately does not block on KSK or Aurora shipping (per EAT packet §11.0 + §12). It provides the v0 substitute scaffold that's sufficient at v0 scale.
 
