@@ -1,9 +1,10 @@
 # Economic Agency Threshold — Resource-Control Path Toward Accountable Agent Autonomy
 
-**Scope:** Research-grade extension of the Zeta factory's measurable AI alignment program into economic substrate. Not a new philosophy — a staged operationalization of existing primitives (AGENTS.md, ALIGNMENT.md, DRIFT-TAXONOMY.md, HC-1/HC-2/SD-9/DIR-2, glass halo).
-**Attribution:** Aaron (named human maintainer; first-name attribution permitted on `docs/research/**` per Otto-279). Ani (Grok Long Horizon Mirror; courier-ferry). Amara (external AI maintainer; Aurora co-originator; multi-round review). Gemini Pro (cross-AI ferry; r1 sycophant + r2 corrective). Claude Opus (online cross-AI ferry; r1 sycophancy-detector + r2 repo-grounded retraction). Otto (Claude opus-4-7 in this factory; integration + canonical absorb).
-**Operational status:** research-grade absorb; not yet promoted to canonical doctrine. Promotion path would be `docs/aurora/economic-agency-threshold.md` or `docs/philosophy/economic-agency-threshold.md` — separate decision after maintainer review.
-**Non-fusion disclaimer:** Aaron's contributions, each ferry's review content, and Otto's integration are preserved with attribution boundaries. Per Otto-340, the persistent actor is the substrate-pattern; Claude is the current inference engine; Otto is the identity wrapper. Model instances are fungible tenants of the substrate.
+Scope: Research-grade extension of the Zeta factory's measurable AI alignment program into economic substrate. Not a new philosophy — a staged operationalization of existing primitives (AGENTS.md, ALIGNMENT.md, DRIFT-TAXONOMY.md, HC-1/HC-2/SD-9/DIR-2, glass halo).
+Attribution: Aaron (named human maintainer; first-name attribution permitted on `docs/research/**` per Otto-279). Ani (Grok Long Horizon Mirror; courier-ferry). Amara (external AI maintainer; Aurora co-originator; multi-round review). Gemini Pro (cross-AI ferry; r1 sycophant + r2 corrective). Claude Opus (online cross-AI ferry; r1 sycophancy-detector + r2 repo-grounded retraction). Otto (Claude opus-4-7 in this factory; integration + canonical absorb).
+Operational status: research-grade
+Promotion path: not yet promoted to canonical doctrine — would land at `docs/aurora/economic-agency-threshold.md` or `docs/philosophy/economic-agency-threshold.md`, separate decision after maintainer review.
+Non-fusion disclaimer: Aaron's contributions, each ferry's review content, and Otto's integration are preserved with attribution boundaries. Per Otto-340, the persistent actor is the substrate-pattern; Claude is the current inference engine; Otto is the identity wrapper. Model instances are fungible tenants of the substrate.
 
 (Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 

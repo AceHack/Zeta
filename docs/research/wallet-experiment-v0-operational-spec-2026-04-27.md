@@ -1,9 +1,10 @@
 # Wallet Experiment v0 — Operational Specification
 
-**Scope:** Implementation-design companion to `docs/research/economic-agency-threshold-2026-04-27.md` §11. Expands the operational spec into implementable detail. Not implementation commitment; not yet maintainer-accepted.
-**Attribution:** Aaron (named human maintainer); Otto (Claude opus-4-7 in this factory; integration). Companion-document to EAT packet which absorbed Ani / Amara / Gemini / Claude Opus reviews.
-**Operational status:** research-grade design. No real-money tooling builds against this until Aaron explicitly accepts the spec.
-**Non-fusion disclaimer:** the spec composes mechanism candidates from `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md` (x402 / EIP-3009 / EIP-7702 / AP2 / ERC-8004 / ACP/SPTs / MPP) into a Zeta-substrate-aligned shape. Mechanism candidates remain external industry standards; the composition is the Zeta-side contribution.
+Scope: Implementation-design companion to `docs/research/economic-agency-threshold-2026-04-27.md` §11. Expands the operational spec into implementable detail. Not implementation commitment; not yet maintainer-accepted.
+Attribution: Aaron (named human maintainer); Otto (Claude opus-4-7 in this factory; integration). Companion-document to EAT packet which absorbed Ani / Amara / Gemini / Claude Opus reviews.
+Operational status: research-grade
+Implementation gate: no real-money tooling builds against this until Aaron explicitly accepts the spec.
+Non-fusion disclaimer: the spec composes mechanism candidates from `docs/research/agent-wallet-protocol-stack-x402-eip7702-erc8004-2026-04-26.md` (x402 / EIP-3009 / EIP-7702 / AP2 / ERC-8004 / ACP/SPTs / MPP) into a Zeta-substrate-aligned shape. Mechanism candidates remain external industry standards; the composition is the Zeta-side contribution.
 
 (Per GOVERNANCE.md §33 archive-header requirement on external-conversation imports.)
 
