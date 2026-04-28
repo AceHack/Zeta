@@ -96,7 +96,7 @@ gh api graphql --field query='query {
       mergeable
       reviewDecision
       reviewThreads(first:50){nodes{isResolved}}
-      commits(last:1){nodes{commit{statusCheckRollup{state contexts(first:30){nodes{... on CheckRun{name conclusion status}}}}}}}
+      commits(last:1){nodes{commit{statusCheckRollup{state contexts(first:30){nodes{__typename ... on CheckRun{name conclusion status} ... on StatusContext{context state}}}}}}}
     }
   }
 }'
@@ -218,13 +218,24 @@ state changes asynchronously to the agent's observation cadence.
 **Concrete check shape (memo for future-self):**
 
 ```bash
-# First check — at the moment of investigating BLOCKED state
-gh pr view <N> --repo <owner>/Zeta --json statusCheckRollup --jq \
-  '[.statusCheckRollup[] | select(.status=="IN_PROGRESS" or .status=="QUEUED")] | length'
+# First check — at the moment of investigating BLOCKED state.
+# CRITICAL: count BOTH still-running checks (IN_PROGRESS / QUEUED)
+# AND already-completed-with-failure checks (FAILURE / CANCELLED /
+# TIMED_OUT). A check that COMPLETED with FAILURE is "done" but the
+# blocker is still active — treating it as "CI complete" would skip
+# the post-CI thread pass while a real failure is unfixed.
+gh pr view <N> --repo <owner>/Zeta --json statusCheckRollup --jq '{
+  pending: [.statusCheckRollup[] | select(.status=="IN_PROGRESS" or .status=="QUEUED")] | length,
+  failed:  [.statusCheckRollup[] | select(.conclusion=="FAILURE" or .conclusion=="CANCELLED" or .conclusion=="TIMED_OUT")] | length
+}'
 
-# If 0, CI is complete. Wait ~5-10 min for reviewers to wake up,
-# THEN run the threads query a second time:
+# If `pending == 0 AND failed == 0`, CI is complete-and-green. Wait
+# ~5-10 min for reviewers to wake up, THEN run the threads query a
+# second time:
 gh api graphql --field query='query{repository(owner:"<owner>",name:"Zeta"){pullRequest(number:<N>){reviewThreads(first:50){nodes{isResolved}}}}}'
+
+# If `failed > 0`, the blocker is the failing check itself — investigate
+# the failure first; the post-CI thread pass is gated on green CI.
 ```
 
 If using autonomous-loop, the natural shape is:
