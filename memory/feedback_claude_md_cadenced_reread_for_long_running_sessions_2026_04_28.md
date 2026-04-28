@@ -6,8 +6,10 @@ type: feedback
 
 # CLAUDE.md cadenced re-read for long-running sessions
 
-**Rule:** in autonomous-loop mode (long-running sessions), re-read
-CLAUDE.md on a cadence — not just at session start. Triggers:
+**Rule:** in autonomous-loop mode (long-running sessions),
+re-read the wake-time floor on a cadence — not just at session
+start. The floor is **CLAUDE.md + the rule sources it points
+at**, not CLAUDE.md alone. Triggers:
 
 1. **Periodic** — every 10 ticks (cadence picked by Aaron
    2026-04-28; ~1 tick of overhead; refreshes wake-time floor).
@@ -24,6 +26,49 @@ CLAUDE.md on a cadence — not just at session start. Triggers:
 After re-read: explicitly check the in-flight work against each
 wake-time discipline. If anything in flight violates a rule, fix
 it before continuing.
+
+**Scope of the re-read (Aaron 2026-04-28 surfaced this when
+CLAUDE.md-alone re-read failed to prevent an Otto-279 violation
+on `docs/research/**`):**
+
+CLAUDE.md is a *pointer tree*, not the rule corpus. Re-reading
+CLAUDE.md alone refreshes the bootstrap-pointer set, not the
+actual rules. The rules live in:
+
+- `docs/AGENT-BEST-PRACTICES.md` — BP-NN stable rule list
+  (including the role-refs / first-name-attribution rule with
+  the Otto-279 history-surface carve-out at lines 284-348). This
+  is where the "is this surface a history surface?" question is
+  answered, not in CLAUDE.md.
+- `docs/CONFLICT-RESOLUTION.md` — reviewer roster + conference
+  protocol; load-bearing for any specialist-review task.
+- `AGENTS.md` — the universal cross-harness handbook (the rule
+  corpus's wider home).
+- `docs/AUTONOMOUS-LOOP.md` — the tick six-step checklist.
+- Memory files referenced by CLAUDE.md as load-bearing
+  (Otto-279 history-surface carve-out file, Otto-357
+  no-directives, verify-before-deferring,
+  future-self-not-bound-by-past, never-be-idle, version-
+  currency).
+
+So the cadenced re-read covers all of these (~5-6 files), not
+just CLAUDE.md. Cost: ~2-3 ticks per refresh instead of ~1.
+Still cheap relative to the cost of mis-applied carve-outs.
+
+**Why CLAUDE.md-alone is insufficient (concrete surfacing):**
+2026-04-28 I re-read CLAUDE.md after an Otto-357 violation
+(directive-language leak), then later edited research files
+and *over-scrubbed first names*, violating the Otto-279
+history-surface carve-out. CLAUDE.md doesn't itself state
+"`docs/research/**` is a history surface where attribution is
+preserved" — that's in `docs/AGENT-BEST-PRACTICES.md` (and the
+EAT packet's own archive header line 4: *"first-name attribution
+permitted on `docs/research/**` per Otto-279"*). Re-reading
+CLAUDE.md alone left me with a half-remembered version of the
+role-refs rule (de-name everywhere) instead of the calibrated
+version (de-name on current-state surfaces; preserve on history
+surfaces). The fix is to re-read the rule source, not just the
+pointer.
 
 **Why:** this came directly from Aaron 2026-04-28:
 
@@ -92,10 +137,25 @@ Re-read before continuing is the corrective.
   still load-bearing).
 - Does NOT excuse violations during the gap between re-reads
   ("but I hadn't re-read yet" is not a defence — the rule was in
-  CLAUDE.md the whole time).
+  the corpus the whole time).
 - Does NOT substitute for filing new rules. If a violation
   surfaces a NEW rule worth landing, file it as a memory + index
   in MEMORY.md; the re-read covers refresh, not authoring.
+
+**Composes with: single-CLI verify is a known failure mode
+(Otto-347).** A 2026-04-28 surfacing demonstrated the
+single-CLI-verify limit: the `pr-review-toolkit:silent-failure-
+hunter` plugin agent passed an over-scrubbed de-naming as
+*"consistent with Otto-279 history-surface attribution carve-
+out"* — i.e., the verifier got the rule inverted in the same
+direction I did. When the actor and the verifier share the same
+rule-misreading, single-CLI verify is insufficient. Otto-347's
+"would be good to ask another cli/harness" is the actual
+corrective; in this session Aaron's external check caught what
+the plugin-agent missed. So: **for rule-application checks
+where the rule has carve-outs, prefer cross-CLI/harness verify
+(or maintainer review) over single-CLI verify** — same-substrate
+agents can share the same rule-misreading.
 
 ## Cross-references
 

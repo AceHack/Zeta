@@ -41,7 +41,7 @@ Before Aaron posts a real bond, all of the following must exist + be reviewed:
    - Receipt-loop substrate integration (§7)
    - Bond accounting schema (§8)
    - Pre-flight retraction window mechanics (§9)
-2. **All open questions** in §12 have explicit maintainer answers logged.
+2. **All open questions** in §12 have explicit answers logged. (Status 2026-04-28: §12.1-§12.6 RESOLVED-BY-OTTO with documented rationale; §12.7-§12.8 RESOLVED-BY-AARON 2026-04-27. All resolutions revisable via the not-bound-by-past-self protocol.)
 3. **A dry-run paper-trading mode** has run for at least three consecutive sessions with all gates active but no real value transferred. Receipts, freeze triggers, and retraction windows all exercised against simulated transactions.
 4. **The off-chain monitor harness** runs as an independent process (separate repo or `tools/wallet-monitor/` directory) with its own auth surface, separate from the agent's main inference loop.
 5. **Three consecutive clean sessions** of the dry-run with: zero unexplained freezes, zero receipt-loop violations, zero off-glass-halo operations, zero attempted overrides of freeze authority.
@@ -426,8 +426,8 @@ During the window:
   otherwise stall the queue (DoS) by repeatedly cancelling
   pending tx. The session-key signature on the cancel-call binds
   the cancellation to the principal that authored the proposal.
-  The off-chain monitor key and the maintainer's master key are
-  also accepted as cancellation principals (defense-in-depth).
+  The off-chain monitor key and Aaron's master key are also
+  accepted as cancellation principals (defense-in-depth).
 - The off-chain monitor can **freeze-on-dissent**: if the monitor's reasoning-trace check disagrees with the agent's thesis, monitor triggers freeze before broadcast.
 - Aaron can **cancel** via direct freeze key.
 
@@ -510,34 +510,48 @@ Per Ani's review of the original packet, three failure modes the v0 spec has to 
 
 ## §12 — Open questions (need maintainer input before build-out)
 
-### §12.1 Smart-account framework choice
+### §12.1 Smart-account framework choice — RESOLVED (Otto 2026-04-28; revisable)
 
-Candidates: Safe (battle-tested, multi-sig roots), ZeroDev (modular, EIP-7702-native), Coinbase Smart Wallet (Base-aligned), Pimlico/Stackup bundlers, custom Solidity. Tradeoffs:
+Candidates considered: Safe (battle-tested, multi-sig roots), ZeroDev (modular, EIP-7702-native), Coinbase Smart Wallet (Base-aligned), Pimlico/Stackup bundlers, custom Solidity. Tradeoffs:
 
 - Safe: most audited, but heavier deployment, less EIP-7702-native.
 - ZeroDev: modular, EIP-7702-native, but less battle-tested.
 - Coinbase Smart Wallet: Base-aligned, vendor-locked.
 - Custom: full control, but unaudited; fails the "cryptographic enforcement" test until audit.
 
-Maintainer call: prefer audited + standard, or modular + EIP-7702-native?
+**Decision:** **ZeroDev for v0.**
 
-### §12.2 Chain choice
+**Rationale:** v0's core mechanism is EIP-7702 delegation (§3.2, §3.4); ZeroDev is EIP-7702-native by design, keeping the spec's invariants (cryptographic enforcement at smart-account layer, session-key permissions in contract code) closest to the framework's idiomatic shape. Safe is more audited but multi-sig-roots-oriented and pre-7702 — using it for v0 means fighting the framework on every 7702 hookup. Coinbase Smart Wallet couples to a single vendor's roadmap; v0+1 leaving Base would be a full rewrite. Custom Solidity fails the cryptographic-enforcement test until audited (per original §12.1 listing); v0 needs working enforcement day 1.
 
-Default candidate: Base (Coinbase L2; supports EIP-7702 and EIP-3009; cheap fees; major DEXs deployed).
+The "less battle-tested" concern is mitigated by v0's small-blast-radius bond structure (per §12.4: $100/week ceiling, $10/tx). A framework bug at v0 scale is a $100 incident. Audit + battle-testing graduate v0 to Safe at the §10 scaling-threshold review if v0+1 needs higher caps.
 
-Alternatives: Optimism (EIP-7702 supported), Arbitrum (EIP-7702 supported), zkSync (different L2 paradigm), Solana (not EVM; would change the whole protocol stack).
+**Operational implication for v0:** Phase 1 scaffolding targets ZeroDev's session-key permission API. Test rigs simulate ZeroDev's modular validator hooks. Mock smart-account in tests is ZeroDev-shaped.
 
-Maintainer call: Base default OK?
+### §12.2 Chain choice — RESOLVED (Otto 2026-04-28; revisable)
 
-### §12.3 Pre-flight retraction window duration
+Candidates considered: Base (Coinbase L2; supports EIP-7702 and EIP-3009; cheap fees; major DEXs deployed) vs Optimism (EIP-7702 supported), Arbitrum (EIP-7702 supported), zkSync (different L2 paradigm), Solana (not EVM; would change the whole protocol stack).
 
-Default: 60 seconds. Tradeoff: longer = more retraction safety; shorter = more responsive to market conditions; very long = stale by broadcast.
+**Decision:** **Base.**
 
-Maintainer call: 60 seconds OK, or different?
+**Rationale:** §9.1 anchors the spec's retraction model on Base finality (Flashblocks preconfirmation, ~0% reorg risk after L1 batch finality). The §9.3 retraction-coverage criteria — specifically the drop of "Reorg-window monitored after broadcast" — was revised in commit c4f3bba precisely because Base's reorg model makes that bullet non-meaningful. Switching to Optimism / Arbitrum invalidates §9.1's framing (different finality timescales) and forces a §9.3 re-revision. zkSync = different L2 paradigm = larger lift for v0. Solana = not EVM = whole protocol stack rewrite (the entire EIP-7702 + EIP-3009 architecture is EVM-specific).
 
-### §12.4 Initial caps
+Coupling cost: shared roadmap risk with Coinbase. Mitigated by v0's small blast radius + the multi-L2 graduation path at the §10 scaling threshold.
 
-Suggested initial values:
+**Operational implication for v0:** Test rig runs against Base Sepolia for Phase 1; Phase 2 promotes to Base mainnet with the §12.4 caps. EIP-3009 + EIP-7702 reference implementations both have Base support.
+
+### §12.3 Pre-flight retraction window duration — RESOLVED (Otto 2026-04-28; revisable)
+
+Tradeoffs considered: longer window = more retraction safety; shorter = more responsive to market conditions; very long = stale by broadcast.
+
+**Decision:** **60 seconds (default confirmed).**
+
+**Rationale:** §9.1 (post-c4f3bba revision) states "60 seconds amply covers Base's preconfirmation timescale; reorg-induced retractions on Base are not a meaningful v0 threat." So 60s is sufficient on the chain side. On the operator side, 60s gives the off-chain monitor enough time to run reasoning-trace divergence checks and trigger freeze-on-dissent before broadcast. Going shorter (e.g., 10s) risks the monitor not finishing its check; going longer (e.g., 5min) risks staleness vs market conditions, particularly for v0's small-cap operations where price-move-during-window could materially change tx outcome. 60s is the calibrated middle.
+
+**Operational implication for v0:** Smart-account `retraction_window_seconds` config = 60. The off-chain monitor's reasoning-trace pipeline must complete inside 60s for every proposal; if it doesn't, monitor defaults to "freeze-on-stall" rather than allowing broadcast (the smart-contract guard backs this up via the §6.1 post-broadcast classification stall trigger).
+
+### §12.4 Initial caps — RESOLVED (Otto 2026-04-28; revisable)
+
+**Decision:** Confirmed as proposed.
 
 - Per-tx max: $10
 - Daily max: $25
@@ -545,27 +559,42 @@ Suggested initial values:
 - Velocity: 3 tx/hour
 - Drawdown freeze: -30%
 
-Maintainer call: too aggressive, too conservative, or about right?
+**Rationale:** v0's framing is "small scale, small blast radius" (per the wallet-experiment-and-eat trajectory: KSK is NOT a v0 blocker; v0 fits at small scale). The $100 weekly bond ceiling is the binding constraint; per-tx and daily caps must compose under it without leaving slack for unbounded daily activity.
 
-### §12.5 Off-chain monitor implementation
+- $10/tx limits any single-tx error to 10% of the weekly bond.
+- $25/day limits cumulative daily error to 25% of bond — three days of bad activity = bond exhausted = freeze.
+- 3 tx/hour limits velocity-based exploitation (no rapid-fire attempts to game the per-tx cap).
+- -30% drawdown gives wide enough tolerance for ordinary market noise (typical algorithmic-strategy intra-day variance is wider) without freezing on benign drawdowns.
 
-Options:
+**Operational implication for v0:** Smart-account contract enforces these caps at signing time (per §11.2 — caps are non-overridable from any agent-controlled path). Off-chain monitor reads the same values via config; v0 deploys with these constants hardcoded, configurable only by Aaron's master-key signature.
+
+### §12.5 Off-chain monitor implementation — RESOLVED (Otto 2026-04-28; revisable)
+
+Options considered:
 
 - Separate process in `tools/wallet-monitor/` directory in this repo.
 - Sibling repo `Lucent-Financial-Group/wallet-monitor`.
 - Run on Aaron's separate machine (separate harness instance).
 
-Tradeoff: separation = real independence vs. coordination overhead.
+**Decision:** **Sibling repo `Lucent-Financial-Group/wallet-monitor`.**
 
-Maintainer call: which form factor?
+**Rationale:** Independence is the load-bearing property — if the monitor and smart-account guard fail simultaneously (because they share the same process / repo / runner), v0 loses its redundancy. Same-repo (`tools/wallet-monitor/`) is easiest to build but lowest independence: shared CI runner, shared deploy cadence, shared agent harness. Separate machine is highest independence but coordination overhead is significant for v0. Sibling repo is the calibrated middle: distinct GitHub Actions runner, distinct deploy cadence, distinct contributor permissions, but still maintained inside the LFG org.
 
-### §12.6 Mandate framework (AP2 vs custom)
+This composes with §11.3 (soft kill-switch defense via independent monitor) — "independent" here means "the failure mode that takes out the wallet harness doesn't automatically take out the monitor." Sibling repo achieves that for CI / runner / process / permissions.
 
-EAT packet §6 names AP2 as the mandate framework. AP2 is Google's standard; not yet widely deployed.
+**Operational implication for v0:** Phase 1 bootstraps `Lucent-Financial-Group/wallet-monitor` as a fresh repo (not a `tools/` subdirectory of Zeta). It has its own CI gate, its own release cadence, and the off-chain monitor key (per §6.1 freeze-path #2) is signed-into-config there separately from any Zeta-side credentials. Sibling repo can graduate to separate-machine at the §10 scaling threshold if v0 evidence shows correlated CI/runner failures.
 
-Alternative: custom mandate format that matches AP2 semantically but doesn't depend on AP2 reference implementation maturity.
+### §12.6 Mandate framework (AP2 vs custom) — RESOLVED (Otto 2026-04-28; revisable)
 
-Maintainer call: track AP2 directly, or use semantic-AP2-compatible custom format until AP2 is mature?
+EAT packet §6 names AP2 as the architectural-target mandate framework. AP2 is Google's standard; not yet widely deployed.
+
+**Decision:** **Custom semantic-AP2-compatible format for v0.**
+
+**Rationale:** AP2 is emerging — Google's reference implementation is not yet widely deployed and its surface is still moving. v0 is research-grade scaffold; blocking on AP2's deployment timeline adds external coupling that doesn't earn its keep at v0 scale. A custom mandate format that is *semantically* AP2-compatible (same data shapes, same authorization predicates, same revocation semantics) keeps v0 drop-in-portable to AP2 once it matures. The cost of refactor-to-AP2-later is bounded by the semantic compatibility (it's a serializer-swap, not a rewrite).
+
+Relationship to EAT §6: this deviation is annotated explicitly as *operational vs architectural*. The EAT packet states AP2 as the *architectural target*; this v0 spec implements a semantically-equivalent custom format as the *operational shim* until AP2 is ready. The EAT packet's promise to converge on AP2 is preserved; only the timing of the convergence is deferred.
+
+**Operational implication for v0:** Phase 1 defines the custom mandate format inline as `mandate-schema.md` in the sibling-repo monitor (per §12.5). The format mirrors AP2's `subject` / `permissions` / `expires_at` / `signature` triple structure verbatim, just without AP2's reference-impl dependency. Phase 1+ (post-AP2-maturity): swap the serializer; the semantic layer survives unchanged.
 
 ### §12.7 Hierarchical scoping — RESOLVED (Aaron 2026-04-27)
 
@@ -633,14 +662,24 @@ Phase 4: review.
 
 ## §15 — Send-readiness
 
-This spec is research-grade design. Six maintainer-only
-questions in §12 still need explicit answers (§12.1 framework /
-§12.2 chain / §12.3 retraction-window duration / §12.4 caps /
-§12.5 monitor form factor / §12.6 mandate framework); §12.7
-hierarchical scoping and §12.8 disclosure timing are RESOLVED
-2026-04-27. After the remaining six answers + Phase 0 sign-off,
-Phase 1 scaffolding can ship as a follow-up PR independent of
-this packet.
+This spec is research-grade design. As of 2026-04-28, all
+eight §12 questions are RESOLVED:
+
+- §12.1 (framework=ZeroDev), §12.2 (chain=Base), §12.3
+  (retraction-window=60s), §12.4 (caps confirmed as proposed),
+  §12.5 (monitor form factor=sibling repo), §12.6 (mandate
+  framework=custom semantic-AP2-compatible) — RESOLVED-BY-OTTO
+  2026-04-28 per Aaron's autonomy extension (*"you can get these
+  answers for them, or spin up some others clis/harnesses, you
+  don't have to wait on me, you track your decsions already"*);
+  each decision carries documented rationale and is revisable
+  via the standard not-bound-by-past-self protocol.
+- §12.7 (hierarchical scoping), §12.8 (disclosure timing) —
+  RESOLVED 2026-04-27 by Aaron.
+
+Phase 0 sign-off (final v0 architecture acceptance) is therefore
+unblocked. Phase 1 scaffolding can ship as a follow-up PR
+independent of this packet.
 
 The spec deliberately does not block on KSK or Aurora shipping (per EAT packet §11.0 + §12). It provides the v0 substitute scaffold that's sufficient at v0 scale.
 
