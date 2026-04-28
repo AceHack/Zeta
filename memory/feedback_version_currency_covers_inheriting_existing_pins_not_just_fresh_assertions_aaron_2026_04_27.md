@@ -74,10 +74,13 @@ Skip-the-search is allowed only when:
 - Otto-210 — corrective on a wrong version-fact (macOS-is-free
   on public repos): the same shape, "trust upstream API not
   Web-search narrative."
-- BP-XX gha-action-mutable-tag (semgrep rule) — enforces
+- `.semgrep.yml` rule `gha-action-mutable-tag` — enforces
   full-SHA pinning (defense-in-depth against tag-rewrite
   attacks like the tj-actions/changed-files cascade
-  CVE-2025-30066 March 2025).
+  CVE-2025-30066 March 2025). Triggered on PR #25 when Otto
+  initially used `actions/checkout@v4`; the rule is the
+  factory's compile-time enforcement of the discipline this
+  memory captures at the human-judgment layer.
 
 ## Pre-mortem signature for next time
 
