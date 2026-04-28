@@ -1,6 +1,33 @@
 ---
-name: BOTH FORKS — `requiredApprovingReviewCount: 0` on Zeta; BLOCKED never means "waiting for reviewer approval"; the only blockers are unresolved review threads, failing/pending status checks, or merge conflicts; this is a CALIBRATION CONSTANT for the project's branch protection ruleset on AceHack/Zeta and Lucent-Financial-Group/Zeta — verified empirically via gh api graphql against `branchProtectionRule` 2026-04-28; Aaron 2026-04-28 caught me parroting "blocked on reviewer approval" multiple times in this session despite zero approvals being required
-description: Aaron 2026-04-28 input after I claimed LFG #660 was "BLOCKED awaiting reviewer" — he asked *"are you sure, it's not something simple you can figure out?"* prompting me to actually query the branch-protection rule via GraphQL. Result — `requiredApprovingReviewCount: 0` on origin/main (LFG). The same is true on AceHack/main. **No approval is required to merge on this project — neither fork.** A `mergeStateStatus: BLOCKED` with green CI on Zeta MUST mean one of: (1) unresolved review threads (`requiresConversationResolution: true`), (2) pending or failing status checks in the required list, (3) merge conflicts. NEVER means "waiting for human reviewer approval" — there is no human-reviewer-approval gate configured. I made this same misdiagnosis multiple times in this session despite Otto-355 (BLOCKED-investigate-threads-first) being a wake-time discipline. Aaron explicit: *"requiredApprovingReviewCount you've made this mistake several time, can you just save soewhere that requiredApprovingReviewCount: 0 or something that reminds you of that on this project?"* — this memory IS that durable reminder, indexed in MEMORY.md so fresh sessions hit it before falling into the same misdiagnosis.
+name: >-
+  BOTH FORKS — requiredApprovingReviewCount=0 on Zeta; BLOCKED never
+  means "waiting for reviewer approval"; the only blockers are
+  unresolved review threads, failing/pending status checks, or merge
+  conflicts; this is a CALIBRATION CONSTANT for the project's branch
+  protection ruleset on AceHack/Zeta and Lucent-Financial-Group/Zeta
+  — verified empirically via gh api graphql against
+  branchProtectionRule 2026-04-28; Aaron 2026-04-28 caught me
+  parroting "blocked on reviewer approval" multiple times in this
+  session despite zero approvals being required
+description: >-
+  Aaron 2026-04-28 input after I claimed LFG #660 was "BLOCKED
+  awaiting reviewer" — he asked *"are you sure, it's not something
+  simple you can figure out?"* prompting me to actually query the
+  branch-protection rule via GraphQL. Result —
+  requiredApprovingReviewCount=0 on origin/main (LFG). The same is
+  true on AceHack/main. **No approval is required to merge on this
+  project — neither fork.** A mergeStateStatus=BLOCKED with green CI
+  on Zeta MUST mean one or more of: (1) unresolved review threads
+  (requiresConversationResolution=true), (2) pending or failing
+  status checks in the required list, (3) merge conflicts. NEVER
+  means "waiting for human reviewer approval" — there is no
+  human-reviewer-approval gate configured. I made this same
+  misdiagnosis multiple times in this session despite Otto-355
+  (BLOCKED-investigate-threads-first) being a wake-time discipline.
+  Aaron explicit ask — save somewhere that
+  requiredApprovingReviewCount=0 on this project — this memory IS
+  that durable reminder, indexed in MEMORY.md so fresh sessions hit
+  it before falling into the same misdiagnosis.
 type: project
 ---
 
