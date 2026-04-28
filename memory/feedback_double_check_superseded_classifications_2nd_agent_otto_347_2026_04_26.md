@@ -19,10 +19,19 @@ Composes with Otto-275-FOREVER (manufactured-patience as failure mode of Otto-27
 
 **Same-agent diff-as-helper-not-as-gate (use as 2nd-agent prep, not as substitute):**
 
+> **Scope-of-comparison note:** the `-- $FILE` scope below is for a
+> single-file walk-through. To decide whether an entire PR/commit is
+> safe to discard as superseded, the equivalence check must be repeated
+> for **every file** the superseded PR touches (drop the `-- $FILE`
+> scope or iterate `for FILE in $(git diff --name-only $BASE_SHA $SUPERSEDED_SHA)`).
+> A per-file pass is necessary but not sufficient — a single missed
+> file is the silent-loss failure mode the rule is guarding against.
+
 ```bash
 # Get the merge-base or fork point first
 BASE_SHA=$(git merge-base $SUPERSEDED_SHA $SUPERSEDING_SHA)
 
+# Per-file walk-through (substitute or iterate $FILE):
 # Compare the FULL semantic diff each PR introduces, not just added lines
 git diff $BASE_SHA $SUPERSEDED_SHA -- $FILE > /tmp/old.diff
 git diff $BASE_SHA $SUPERSEDING_SHA -- $FILE > /tmp/new.diff
@@ -32,6 +41,15 @@ diff /tmp/old.diff /tmp/new.diff
 
 # OR: compare the resulting file contents (final-state equivalence)
 diff <(git show $SUPERSEDED_SHA:$FILE) <(git show $SUPERSEDING_SHA:$FILE)
+
+# Whole-PR scope (drop the `-- $FILE` to capture every touched file):
+git diff $BASE_SHA $SUPERSEDED_SHA > /tmp/old-pr.diff
+git diff $BASE_SHA $SUPERSEDING_SHA > /tmp/new-pr.diff
+diff /tmp/old-pr.diff /tmp/new-pr.diff
+
+# Verify file-set equivalence first (catches missed-file silent loss):
+diff <(git diff --name-only $BASE_SHA $SUPERSEDED_SHA | sort) \
+     <(git diff --name-only $BASE_SHA $SUPERSEDING_SHA | sort)
 ```
 
 **Why the earlier "grep ^+" gate was buggy** (Copilot 2026-04-26 caught): grep "^+" includes `+++ b/<file>` patch header lines (false positives in the diff comparison) AND ignores deletions / context lines, so it would silently miss non-additive changes. The full-diff or final-state-comparison shapes above don't have those failure modes.

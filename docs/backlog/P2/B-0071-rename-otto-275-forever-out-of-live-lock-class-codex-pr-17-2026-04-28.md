@@ -62,8 +62,13 @@ follow-up.
 
 ## Composes with
 
-- **Otto-352** (`memory/feedback_live_lock_term_split_three_distinct_classes_otto_352_2026_04_26.md`)
-  — the canonical taxonomy split that this rename realigns to
+- **Otto-352** (user-scope memory at
+  `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_live_lock_term_split_three_distinct_classes_otto_352_2026_04_26.md`;
+  not in-repo, scope difference noted) — the canonical taxonomy split
+  that this rename realigns to. The in-repo follow-up that narrows
+  live-lock to its CS-standard meaning is
+  `memory/feedback_otto_358_live_lock_too_broad_catch_all_narrow_to_cs_standard_concurrent_state_thrashing_2026_04_27.md`
+  (Otto-358), which completes the work Otto-352 started.
 - **Aaron 2026-04-26** *"we discussed a while back that the live-lock
   defintion i gave was overly broad but the word itself is fine"* — the
   framing-correction that drove the Otto-352 split
