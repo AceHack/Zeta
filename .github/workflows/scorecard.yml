@@ -52,7 +52,7 @@ concurrency:
 jobs:
   analysis:
     name: scorecard analysis
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
 
     permissions:
