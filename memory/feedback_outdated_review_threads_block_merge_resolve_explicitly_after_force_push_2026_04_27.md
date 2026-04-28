@@ -6,6 +6,51 @@ type: feedback
 
 # Outdated review threads block merge — operational lesson
 
+## Class name (Amara 2026-04-28T20:06Z)
+
+**Outdated Review-Thread Merge Gate Residue** — Amara
+formalized this pattern after seeing it pay out concretely on
+PR #684 (chronological-order Copilot thread that remained
+unresolved after the canonical-sort fix landed in commit
+3d3ca6f).
+
+### Definition
+
+> A PR remains blocked because an unresolved review thread
+> describes pre-fix state, even though the corrective commit
+> has already landed.
+
+### Control (Amara prescribed shape)
+
+When you see this pattern, **reply with**:
+
+- what changed
+- fixing commit SHA
+- why the thread is now outdated
+- then resolve explicitly (GraphQL `resolveReviewThread`
+  mutation, or "Resolve conversation" in the GH UI)
+
+This preserves the review trace (the original objection
+remains visible in the thread history) while unblocking the
+merge gate. The reply IS the evidence; the resolve IS the
+gate clearance.
+
+### Composes with the counterweight taxonomy
+
+- **Cheap prevention**: lint hook catches the issue before the
+  thread is filed (e.g. `lint (tick-history order)` for
+  Chronological Insertion Polarity Error).
+- **Cadenced detect+repair**: when prevention misses, fix lands
+  on a force-push; the new corrective commit IS the repair.
+- **Defense-in-depth**: this class — the outdated-thread
+  resolution discipline catches the merge-gate residue that
+  remains AFTER prevention + cadenced repair both did their
+  jobs.
+
+The class earns its keep by closing the third layer of the
+counterweight stack. Without it, prevention + repair both
+succeed but the PR still fails to merge.
+
 ## The pattern
 
 PR state showing as stuck:
