@@ -23,6 +23,10 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 
+# shellcheck source=common/curl-fetch.sh
+# shellcheck disable=SC1091  # CI runs without -x; source path verified in tools/setup/common/curl-fetch.sh
+source "$SETUP_DIR/common/curl-fetch.sh"
+
 # ── 1. Xcode Command Line Tools ─────────────────────────────────────
 if ! xcode-select -p >/dev/null 2>&1; then
   echo "↓ installing Xcode Command Line Tools (non-interactive)..."
@@ -37,7 +41,24 @@ echo "✓ Xcode CLT at $(xcode-select -p 2>/dev/null || echo 'pending user confi
 # ── 2. Homebrew ─────────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
   echo "↓ installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Capture to a named variable + check exit code explicitly.
+  # bash's `set -e` is not reliably triggered by a failing
+  # command substitution without `inherit_errexit`; codex P0
+  # review on PR #75 flagged this. Pattern: capture, check
+  # length, exec only on non-empty + curl-success. The proper
+  # fix (download-to-temp + checksum-verify) is tracked as
+  # B-0063; this is a small-improvement-not-structurally-safe
+  # form acknowledged in tools/setup/common/curl-fetch.sh
+  # COMMAND-SUBSTITUTION + SET-E section.
+  if ! HOMEBREW_INSTALLER="$(curl_fetch_stream https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+    echo "error: failed to fetch Homebrew installer; check network and re-run install.sh" >&2
+    exit 1
+  fi
+  if [ -z "$HOMEBREW_INSTALLER" ]; then
+    echo "error: Homebrew installer was empty; refusing to exec" >&2
+    exit 1
+  fi
+  /bin/bash -c "$HOMEBREW_INSTALLER"
   # Ensure brew is on PATH for the remainder of this script run.
   if [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"
