@@ -17,7 +17,7 @@ name: memory-index-duplicate-lint
 #   - Explicit minimum `permissions: contents: read`
 #   - No user-authored context referenced
 #   - Concurrency group + cancel-in-progress: false
-#   - runs-on: ubuntu-22.04 pinned
+#   - runs-on: ubuntu-24.04 pinned
 #
 # See:
 #   - tools/hygiene/audit-memory-index-duplicates.sh (the tool)
@@ -48,7 +48,7 @@ concurrency:
 jobs:
   lint:
     name: lint memory/MEMORY.md for duplicate link targets
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
