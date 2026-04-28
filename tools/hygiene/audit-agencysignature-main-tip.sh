@@ -18,9 +18,10 @@
 #   docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-
 #   attribution-convention-validation-and-refinement.md Section 10
 #
-# Per Aaron 2026-04-26 "don't copy paste / make sure you understand and
-# write our own" — this implementation is authored from the v1 spec, not
-# transcribed from Gemini ferry-8's example draft. Zeta-specific shape:
+# Per the human maintainer 2026-04-26 framing ("don't copy paste / make
+# sure you understand and write our own") — this implementation is
+# authored from the v1 spec, not transcribed from the Gemini ferry-8
+# example draft. Zeta-specific shape:
 #  - Three-state classification (per task #299 spec, beyond Gemini's draft):
 #    LEGACY (pre-v1-ship-date; no trailer expected; not regression)
 #    CORRECT (post-v1-ship-date with trailer; properly attributed)
@@ -193,8 +194,16 @@ classify_commit() {
         || TZ=UTC date -j -f '%Y-%m-%dT%H:%M:%S%z' "$v1_ship_date" +%s 2>/dev/null \
         || echo '')"
       if [ -z "$ship_ts" ]; then
-        printf 'ERROR cannot parse v1-ship-date as timestamp: %s\n' "$v1_ship_date"
-        return
+        # Hard-fail to stderr with exit code 2 (tooling / input error
+        # per the header's exit-code spec). Prior version printed
+        # 'ERROR ...' to stdout and returned, which the caller's
+        # case-statement treated as an unmatched status token —
+        # the audit could still print 'PASS: no regressions detected'
+        # despite the unparseable input. Copilot review on PR #22
+        # caught this — the error class needs to short-circuit the
+        # whole audit, not silently fall through.
+        printf 'error: cannot parse v1-ship-date as timestamp: %s\n' "$v1_ship_date" >&2
+        exit 2
       fi
       # Cache (function-local; persists for this invocation only)
       v1_ship_ts_cached="$ship_ts"
