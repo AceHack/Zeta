@@ -245,9 +245,10 @@ the original workflow needing mental-rewrite at every reference.
 - `memory/feedback_version_currency_always_search_first_training_data_is_stale_otto_247_2026_04_24.md`
   — same-shape "make the surface explicit before asserting"
   discipline.
-- `docs/trajectories/threat-model-and-sdl.md` — supply-chain
-  trajectory; plugins + MCP servers are an analogous attack
-  surface.
+- The threat-model-and-sdl trajectory (pending forward-sync
+  from `docs/trajectories-pattern-2026-04-28` branch into
+  AceHack main) — plugins + MCP servers are an analogous
+  attack surface to the supply-chain risks tracked there.
 - `.claude/settings.json` — where enabled plugins are pinned
   (Claude-Code-only).
 - `CLAUDE.md` — Claude Code harness section enumerates the

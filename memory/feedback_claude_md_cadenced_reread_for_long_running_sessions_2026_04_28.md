@@ -162,13 +162,12 @@ agents can share the same rule-misreading.
 - `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`
   — the rule I just violated; the corrective re-read pattern
   was named after this violation.
-- `memory/feedback_otto_275_forever_manufactured_patience_live_lock_9th_pattern_2026_04_26.md`
-  — knowing-rule != applying-rule; this discipline closes that
-  gap structurally.
-- `memory/feedback_otto_341_mechanism_over_vigilance.md` (or
-  equivalent) — substrate-as-mechanism beats agent-vigilance;
-  cadenced re-read is the mechanism-form of CLAUDE.md
-  application.
+- The "knowing-rule != applying-rule" failure mode and the
+  "mechanism-over-vigilance" framing are referenced by name
+  here; the canonical files for those Otto-NN principles are
+  not yet on this branch (pending the per-Otto-NN ↔
+  named-principle mapping in BACKLOG task #288). Cited by name
+  for intent; the file links can land when the mapping ships.
 - `CLAUDE.md` — the document whose re-read this discipline
   governs.
 - `docs/AUTONOMOUS-LOOP.md` — the tick discipline; this
