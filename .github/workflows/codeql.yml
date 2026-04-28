@@ -9,8 +9,24 @@
 #
 # WHAT THIS DOES DIFFERENTLY FROM THE GITHUB DEFAULT
 # ----------------------------------------------------
-#   1. Dropped the `java-kotlin` matrix cell. Zeta is F#/C#
-#      on .NET 10; there is no Java / Kotlin source.
+#   1. `java-kotlin` matrix cell kept (was previously dropped
+#      based on the wrong assumption "no Java/Kotlin source").
+#      Zeta is primarily F#/C# on .NET 10 but
+#      `tools/alloy/AlloyRunner.java` is first-party Java — a
+#      headless JVM driver that runs `.als` Alloy specs from the
+#      formal-verification surface. Java is a managed dependency
+#      pinned via `.mise.toml` (Java 26, round-34 migration off
+#      brew/apt onto mise) and installed by `tools/setup/install.sh`
+#      on dev laptops, devcontainers, and CI runners. Treating
+#      it as scannable code is consistent with how every other
+#      managed runtime in the repo is treated; pretending
+#      otherwise gates LFG PRs (empirical 2026-04-28 LFG #661 —
+#      umbrella `CodeQL` check NEUTRAL with verbatim summary
+#      "1 configuration present on `refs/heads/main` was not
+#      found: codeql.yml /language:java-kotlin", which the
+#      `code_quality:severity=all` ruleset rule reads as
+#      "results pending"). Detection + mechanism captured in
+#      `memory/feedback_codeql_umbrella_neutral_vs_per_language_detection_pattern_aaron_2026_04_28.md`.
 #   2. `csharp` leg uses `build-mode: manual` with
 #      `./tools/setup/install.sh` + `dotnet build Zeta.sln`.
 #      The GitHub default was `build-mode: none` (source-only),
@@ -207,6 +223,10 @@ jobs:
               # SC2222 (later pattern shadowed by earlier one).
               src/*|tests/*|tools/*) code_changed=true ;;
               *.cs|*.fs|*.fsproj|*.csproj|*.sln) code_changed=true ;;
+              # Java surface: tools/alloy/AlloyRunner.java is the
+              # only first-party Java today; java is a mise-pinned
+              # runtime per .mise.toml.
+              *.java) code_changed=true ;;
               *.py|pyproject.toml|requirements*.txt) code_changed=true ;;
               *.js|*.jsx|*.ts|*.tsx|*.mjs|*.cjs) code_changed=true ;;
               package.json|package-lock.json|tsconfig*.json) code_changed=true ;;
@@ -377,6 +397,22 @@ jobs:
             build-mode: none
           - language: csharp
             build-mode: manual
+          # java-kotlin scans `tools/alloy/AlloyRunner.java` —
+          # a single-file JVM driver with no Maven/Gradle build,
+          # so `build-mode: none` (CodeQL's source-only pack)
+          # produces a real DB. Java 26 is on PATH via mise per
+          # tools/setup/install.sh; the GitHub-hosted runner has
+          # mise-shimmed Java available after the install step
+          # below, but we don't need to invoke `javac` ourselves.
+          #
+          # JVM language preference (B-0075): Kotlin > Scala >
+          # Java. New JVM code lands in Kotlin by default;
+          # AlloyRunner.java is grandfathered until its next
+          # non-trivial rewrite. The `java-kotlin` extractor
+          # scans all three so this matrix cell does not need
+          # to change when the preference activates.
+          - language: java-kotlin
+            build-mode: none
           - language: python
             build-mode: none
           - language: javascript-typescript
