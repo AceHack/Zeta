@@ -41,13 +41,23 @@ echo "✓ Xcode CLT at $(xcode-select -p 2>/dev/null || echo 'pending user confi
 # ── 2. Homebrew ─────────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
   echo "↓ installing Homebrew..."
-  # Capture to a named variable first so a curl failure aborts
-  # the variable assignment under `set -e` — `/bin/bash -c
-  # "$(failing_curl)"` otherwise silently runs an empty string
-  # and exits 0. Use the stream variant (no --retry-all-errors)
-  # because the captured output is then piped into bash; we
-  # don't want a partial-script retry-replay scenario.
-  HOMEBREW_INSTALLER="$(curl_fetch_stream https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Capture to a named variable + check exit code explicitly.
+  # bash's `set -e` is not reliably triggered by a failing
+  # command substitution without `inherit_errexit`; codex P0
+  # review on PR #75 flagged this. Pattern: capture, check
+  # length, exec only on non-empty + curl-success. The proper
+  # fix (download-to-temp + checksum-verify) is tracked as
+  # B-0063; this is a small-improvement-not-structurally-safe
+  # form acknowledged in tools/setup/common/curl-fetch.sh
+  # COMMAND-SUBSTITUTION + SET-E section.
+  if ! HOMEBREW_INSTALLER="$(curl_fetch_stream https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+    echo "error: failed to fetch Homebrew installer; check network and re-run install.sh" >&2
+    exit 1
+  fi
+  if [ -z "$HOMEBREW_INSTALLER" ]; then
+    echo "error: Homebrew installer was empty; refusing to exec" >&2
+    exit 1
+  fi
   /bin/bash -c "$HOMEBREW_INSTALLER"
   # Ensure brew is on PATH for the remainder of this script run.
   if [ -x /opt/homebrew/bin/brew ]; then

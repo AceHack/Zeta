@@ -37,14 +37,16 @@
 #
 #   curl_fetch_stream — for streamed-to-shell installers
 #                       (`curl ... | sh`, `bash -c "$(curl
-#                       ...)"`). Uses bare `--retry`
-#                       (without `--retry-all-errors`) so
-#                       curl will only retry on transient
-#                       conditions where nothing has been
-#                       written yet — avoiding the risk of
-#                       a partial install script being
-#                       piped, then the retry's full output
-#                       appended on top.
+#                       ...)"`). NO --retry. Codex P0 review
+#                       on PR #75 confirmed: even bare
+#                       `--retry` (without `--retry-all-
+#                       errors`) can retry after bytes have
+#                       already been written to stdout, and
+#                       the consumer cannot un-receive piped
+#                       bytes. Streamed installers fail-fast
+#                       on transient errors; the user re-runs
+#                       install.sh. Proper download-to-temp
+#                       hardening tracked as B-0063.
 #
 # USAGE
 # =====
@@ -82,14 +84,22 @@
 #                            -S: show errors when silent
 #                            -L: follow redirects
 #
-# COMMAND-SUBSTITUTION + SET-E
-# ============================
-# Calling `bash -c "$(curl_fetch_stream ...)"` directly will
-# silently swallow curl failures under `set -e` because the
-# outer `bash -c` succeeds with an empty string. The pattern
-# we use everywhere is: capture to a named variable first,
-# then exec the variable. That way a curl failure aborts the
-# variable assignment, which set -e *does* honour.
+# COMMAND-SUBSTITUTION + SET-E (caveat per codex review)
+# ======================================================
+# bash's `errexit` (`set -e`) is NOT reliably triggered by a
+# command substitution that fails without producing output —
+# in some bash versions (especially without `inherit_errexit`
+# enabled) `VAR="$(failing_cmd)"` leaves `VAR=""` and continues.
+# Our macos.sh capture pattern (`HOMEBREW_INSTALLER="$(curl_
+# fetch_stream ...)"; /bin/bash -c "$HOMEBREW_INSTALLER"`)
+# survives the most common failure mode (curl errors out
+# without producing output → empty var → `bash -c ""` runs
+# nothing) but it's NOT a defense against partial-byte
+# corruption. The proper fix is download-to-temp +
+# checksum-verify, tracked as B-0063. The current pattern is
+# a small improvement over the prior `bash -c "$(curl ...)"`
+# direct form (which silently ran whatever partial output
+# survived); it is NOT the structurally safe form.
 #
 # IDEMPOTENCE
 # ===========
@@ -116,11 +126,32 @@ curl_fetch() {
   curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors "$@"
 }
 
-# Streamed variant — bare --retry only, no --retry-all-errors,
-# to avoid the partial-output-replay risk on pipe-to-shell or
-# command-substitution-into-bash use sites.
+# Streamed variant — NO --retry, NO --retry-all-errors.
+#
+# Codex P0 review on PR #75 surfaced that even bare `curl
+# --retry` (without --retry-all-errors) can still retry after
+# bytes have been written to stdout: the connect error happens
+# mid-transfer, curl resets the input but the bytes already
+# piped into the consumer (`sh`, `bash -c "$(...)"`) cannot be
+# un-written. The consumer then sees concatenated partial+full
+# script content, which can re-execute commands or run
+# truncated halves. There is no curl-flag combination that
+# gives both retry-on-transient AND safe-restart-on-streamed-
+# stdout — those are mutually exclusive without an
+# intermediate buffer.
+#
+# Therefore this variant ships WITHOUT retries. Streamed
+# installer failures (mise.run / Homebrew / elan) bubble up
+# as install errors; the user re-runs install.sh.
+#
+# The proper structural fix — download to a temp file with
+# `curl_fetch` (file-output), checksum-verify if available,
+# then `bash <tempfile` — is tracked as a backlog item under
+# `docs/backlog/P1/B-0063-streamed-installer-download-to-temp-
+# pattern-codex-p0-pr-75.md`. Until that lands, this variant
+# is fail-fast-no-retry by design.
 curl_fetch_stream() {
-  curl -fsSL --retry 5 --retry-delay 2 "$@"
+  curl -fsSL "$@"
 }
 
 fi

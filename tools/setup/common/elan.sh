@@ -16,10 +16,13 @@ source "$(dirname "${BASH_SOURCE[0]}")/curl-fetch.sh"
 
 if ! command -v elan >/dev/null 2>&1; then
   echo "↓ installing elan (Lean 4 toolchain manager)..."
-  # Use the stream variant (bare --retry only, no
-  # --retry-all-errors) — the curl output is piped directly
-  # into sh, and partial-output replay on retry would be a
-  # supply-chain hazard.
+  # Use the stream variant (NO --retry, NO --retry-all-errors).
+  # Codex P0 review on PR #75: even bare `--retry` can retry
+  # after bytes are piped to sh, and the consumer cannot
+  # un-receive piped bytes. Streamed installers fail-fast on
+  # transient errors; user re-runs install.sh. Proper
+  # download-to-temp + checksum-verify hardening tracked as
+  # B-0063.
   curl_fetch_stream https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
     | sh -s -- -y --default-toolchain none
 fi
