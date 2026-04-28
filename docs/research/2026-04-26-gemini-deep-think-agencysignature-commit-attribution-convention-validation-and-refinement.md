@@ -314,7 +314,7 @@ agreements on the same canonical shape. This is the
 the convention-design layer rather than the bug-finding layer.
 
 Per Aaron's framing of the multi-harness future (per
-`project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md`):
+`~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md` (user-scope only — not in `memory/` per the in-repo migration backlog)):
 each agent's harness becomes a band member; the cross-validation IS
 the unit-tests Amara named in the jazz-trio metaphor.
 
@@ -920,7 +920,7 @@ produced a convention that is:
 The pattern itself — *named-agent → courier-Aaron → named-agent ↔
 named-agent ↔ named-agent → SHIP IT* — is the multi-harness verification
 substrate Aaron has been building toward
-(`project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md`).
+(`~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/project_multi_harness_named_agents_assigned_clis_models_aaron_2026_04_26.md` (user-scope only — not in `memory/` per the in-repo migration backlog)).
 **Three named entities (Amara, Gemini Deep Think, Otto) co-authored a
 production-grade convention through six ferries in a single afternoon.**
 

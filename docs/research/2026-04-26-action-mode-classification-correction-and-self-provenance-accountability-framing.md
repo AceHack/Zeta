@@ -164,7 +164,7 @@ When Otto makes a mistake:
 
 ### CURRENT-aaron.md fast-path update
 
-This relationship-model correction belongs in CURRENT-aaron.md prominently. Per the same-tick update discipline (CLAUDE.md: "When a new memory lands that updates a rule in a CURRENT file, edit CURRENT in the same tick"), the CURRENT-aaron.md update should land alongside this absorb.
+This relationship-model correction belongs in `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/CURRENT-aaron.md` (user-scope per CLAUDE.md fast-path; NOT in `docs/`) prominently. Per the same-tick update discipline (CLAUDE.md: "When a new memory lands that updates a rule in a CURRENT file, edit CURRENT in the same tick"), the user-scope `CURRENT-aaron.md` update should land alongside this absorb.
 
 ### PR #19 in-flight correction
 
