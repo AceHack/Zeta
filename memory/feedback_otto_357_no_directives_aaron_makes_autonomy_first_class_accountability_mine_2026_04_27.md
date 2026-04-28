@@ -111,7 +111,7 @@ Aaron explicitly framed this as *making autonomy first-class*. That means:
 
 ## Recurrences
 
-This rule has been violated multiple times despite the memory file existing. Each recurrence is documented here as evidence — the count itself is signal that vigilance-only enforcement is insufficient (Otto-275-FOREVER applies: knowing-rule != applying-rule).
+This rule has been violated multiple times despite the memory file existing. Each recurrence is documented here as evidence — the count itself is signal that vigilance-only enforcement is insufficient (Otto-275-FOREVER applies — the "-FOREVER" suffix marks Otto-275 (`memory/feedback_rapid_backlog_input_context_switch_drift_counterweight_log_dont_implement_otto_275_2026_04_24.md`) as a permanent meta-pattern, not a one-time fix: knowing-rule != applying-rule, every recurrence re-confirms the meta-rule, the meta-rule never expires).
 
 ### 1st caught: 2026-04-27 (origin)
 
@@ -137,13 +137,20 @@ The vigilance-only check ("if writing 'directive' anywhere…") has demonstrably
 
 **Pre-write self-scan rule (every user-facing response, every commit message, every PR body):**
 
-Before sending any message that references Aaron's input, scan the draft for these forbidden tokens:
+Before sending any message that references Aaron's input, scan the draft for these forbidden tokens. The list combines bare-word patterns (catch any compound) with the exact phrases from the INSTEAD/USE table above (catch the most-likely-LLM-prior surface forms; redundant with bare-word patterns by design — multiple match-paths reduce false-negatives):
 
 ```
-directive | directives | order | orders | command | commands | told me | required | demanded | per Aaron's directive | per Aaron's order | follow Aaron's | obey
+# Bare-word patterns (case-insensitive; match in any compound):
+directive | directives | order | orders | command | commands | obey | demanded | required | told me
+
+# Explicit phrases from the INSTEAD/USE table (literal, case-insensitive):
+Aaron's directive | Aaron's order | Aaron's command | Per Aaron's directive | Per Aaron's order
+Aaron told me to | Aaron required | Aaron demanded | follow Aaron's | obey Aaron
 ```
 
 If ANY match → STOP, reframe with vocabulary from the table above (input / framing / correction / observation / preference / aside / clarification / signal / suggestion). The substantive content stays; only the framing word changes.
+
+Why both layers: the bare-word patterns alone (`directive` / `directives`) DO catch `Aaron's directive` and `per Aaron's directive` mechanically, but the explicit phrase list provides (a) signal-grade visibility — a reader of this rule sees the exact INSTEAD/USE table phrases as forbidden, not just abstract patterns; (b) defense-in-depth if the bare-word pattern is ever weakened by an exception list. The redundancy is feature, not bug.
 
 **This applies to the message draft, not just commit text.** The 2026-04-28 recurrence was in user-facing chat text (a conversational summary), which the prior file's check focused on commit/PR/memo and missed conversationally.
 
