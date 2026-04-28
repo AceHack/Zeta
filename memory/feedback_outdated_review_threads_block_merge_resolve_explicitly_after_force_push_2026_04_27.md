@@ -127,6 +127,94 @@ The MEMORY.md row for Otto-355 (per CLAUDE.md wake-time discipline) should compo
 
 The diagnostic should be: "Is `mergeStateStatus: BLOCKED` despite green CI + 0 unresolved-current threads?" → check for outdated unresolved threads.
 
+## Compositional class — Blocked-GreenCI Review-Thread Punchlist (Amara 2026-04-28T20:34Z)
+
+**Class name:** **Blocked-GreenCI Review-Thread Punchlist**.
+
+Amara formalized the compositional class after seeing
+Otto-355 (BLOCKED-with-green-CI investigate threads first)
+combined with Outdated Review-Thread Merge Gate Residue compose
+into a deterministic 5-minute unblock path on PRs #688/#690
+this arc.
+
+### Definition
+
+> A PR shows green CI but remains blocked because unresolved
+> review threads, not failing checks, are the active merge
+> gate.
+
+### Control (Amara prescribed)
+
+When a PR is BLOCKED with green CI:
+
+1. **List unresolved review threads** (filter
+   `isResolved == false`, including outdated ones — see
+   class above for why outdated still blocks).
+2. **Classify each thread** as:
+   - **real** — finding describes current code state and
+     needs a fix.
+   - **outdated** — finding describes pre-fix state; the
+     fix landed in commit X.
+   - **phantom-stale** — Copilot-cache miss; finding
+     references diff context that no longer exists.
+3. **Fix real findings** with targeted commits.
+4. **Reply with evidence** (commit SHA / "see commit X" /
+   "addressed in PR Y") for outdated and phantom-stale
+   threads.
+5. **Resolve explicitly** via GraphQL `resolveReviewThread`
+   or the GitHub UI "Resolve conversation" button.
+
+### Worked example (this arc)
+
+PRs #688 + #690 each had multiple unresolved threads after
+green CI. Applied the 5-step control:
+
+- PR #688: 2 threads (line-marker `+` finding + stale
+  section-range finding) → both real → targeted fix
+  commit `3a969cb` → explicit resolve of both threads.
+- PR #690: 3 threads (bold-name newline split + ambiguous
+  classification-labels phrasing + ambiguous
+  `gh run list []` index summary) → all real → targeted
+  fix commit `be9a88a` → explicit resolve of all three.
+
+Net cost: ~5 minutes per PR; deterministic; no
+"mysterious BLOCKED" investigation needed.
+
+### SD-9 calibration on Copilot's findings
+
+In this arc, Copilot calibrated well as a P2 reviewer: all
+addressed findings were real wording/markdown cleanup, with
+no observed false positives. Treat this as **local
+calibration evidence, not global proof**.
+
+Current local pattern (small sample, not generalized):
+
+- P1 findings tend toward correctness bugs.
+- P2 findings tend toward wording/cleanup.
+- Copilot-cache phantom-stale class still exists but was
+  less common in this arc.
+
+Tiny blade: don't let "low false-positive rate this arc"
+become "Copilot is reliable now." Class-Count Validity
+Drift discipline applies.
+
+### Generalizes to
+
+Any PR with `required_conversation_resolution: true` branch
+protection rule + green CI + non-empty unresolved threads.
+Not specific to Copilot — applies to any reviewer (human,
+agent, automated tool).
+
+### What this is NOT
+
+- NOT a license to skip the diagnostic. If the PR is
+  BLOCKED and the unresolved-thread count is zero, the
+  block is something else (CODEOWNERS, branch protection
+  rule, draft state, etc).
+- NOT a replacement for actually fixing real findings.
+  Reply-and-resolve only applies to outdated /
+  phantom-stale; real findings need real fixes.
+
 ## What this memory does NOT mean
 
 - Does NOT mean disable `required_conversation_resolution`. The setting is correct — it forces engagement with reviewer feedback.
