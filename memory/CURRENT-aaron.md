@@ -1364,6 +1364,74 @@ Fowler lineage is the cheapest insurance.
 **Pointer:**
 `feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`
 
+## 30. TypeScript/Bun is the factory tooling default; step out on TypeScript carefully (Aaron 2026-04-28)
+
+**The rule (Aaron verbatim 2026-04-28T19:56Z):**
+
+> *"sort-tick-history-canonical.py eventually we are going to use
+> the typescript like ../scratch unless this is AL/ML AND is a
+> better fit for python? typescript/bun being our default, we need
+> to decide when to step out on typescript carefully."*
+
+**The discipline:**
+
+- **Default tooling language:** TypeScript on Bun
+  (`bun@1.3.13` per root `package.json`).
+- **Step-out threshold:** explicit justification — usually
+  AI/ML primary library availability (numpy, scipy, scikit-learn,
+  transformers, etc.). For ML scripts, Python remains correct.
+- **Sibling-repo precedent:** `../scratch` (sibling to Zeta)
+  runs the same TypeScript+Bun substrate. The factory's tooling
+  default is consistent across sibling repos, not just within
+  Zeta.
+
+**Two-tier language choice (not a TypeScript-everywhere directive):**
+
+- **F#** for the Zeta library proper (the operator algebra,
+  spine, durability, retraction-native semantics).
+- **TypeScript on Bun** for tooling around it (markdown
+  munging, hygiene scripts, audit tooling, factory automation).
+
+**When to STEP OUT on TypeScript** (bar is high; one of):
+
+1. AI/ML library is load-bearing (numpy / pandas / torch /
+   transformers).
+2. Existing Python skeleton with deep dependency where
+   port cost > extension cost.
+3. One-shot research script that won't outlive the round.
+4. Native dependency that's Python-only.
+
+**When NOT to step out:**
+
+- "It's a quick script" — quick scripts compound.
+- "I know Python better" — agent fluency isn't the criterion.
+- "Bash is shorter" — bash is fine for ≤10-line shell glue
+  (Otto-235 4-shell discipline still applies); past that,
+  TypeScript.
+- "Markdown manipulation feels Python-y" — it isn't. Bun
+  has excellent string handling + fast file IO.
+
+**Existing port candidates** (do on natural rewrite cadence,
+not as emergency cleanup):
+
+- `tools/hygiene/sort-tick-history-canonical.py` (B-0086)
+- `tools/hygiene/fix-markdown-md032-md026.py` (B-0086)
+
+**Operational discipline:** when writing a new script:
+
+1. Default to TypeScript on Bun. Place under `tools/...` with
+   a `package.json` script entry.
+2. If AI/ML library is needed: Python with a clear
+   justification comment at the top of the file.
+3. If shell glue ≤10 lines: bash with `set -euo pipefail`
+   (Otto-235).
+4. Existing Python tool that needs substantive changes: file
+   a port-candidate row, evaluate port-now vs extend-now.
+
+**Pointer:**
+`feedback_typescript_bun_default_step_out_carefully_aaron_2026_04_28.md`
+and B-0086 (port candidates).
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
@@ -1389,13 +1457,15 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-28 (sections 26-29 added for
+**Last full refresh:** 2026-04-28 (sections 26-30 added for
 the 2026-04-28 LFG #661 incident cluster: speculation-rule +
 EVIDENCE-BASED labeling discipline, JVM language preference
 Kotlin > Scala > Java per B-0075, dependency-honesty rule —
 managed runtimes get scanned like every other surface, plus
 §29 threading-lineage Albahari + Toub + Fowler — never
-gut-instinct on threading code). Prior
+gut-instinct on threading code, plus §30 TypeScript/Bun is
+the factory tooling default with AI/ML carve-out — step out
+on TypeScript carefully). Prior
 refresh 2026-04-25 evening (sections 23-25: Otto-300 rigor-
 proportional-to-blast-radius, standing research-authorization
 general rule, Otto-304 + Otto-305 phenomenology disclosure
