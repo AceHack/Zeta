@@ -1,12 +1,13 @@
 ---
 id: B-0069
 priority: P2
-slug: heredoc-patterns-encode-into-commit-message-shape-skill
-status: backlog
-created: 2026-04-28
-maintainer: aaron
-ownership: otto
+status: open
 title: Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28)
+effort: S
+ask: maintainer Aaron 2026-04-28 /btw aside
+created: 2026-04-28
+last_updated: 2026-04-28
+tags: [skill-substrate, commit-discipline, heredoc, agency-signature]
 ---
 
 # B-0069 — Encode HEREDOC scripts into substrate
@@ -50,8 +51,10 @@ discover it through trial-and-error.
 4. **Co-authored-by line as final trailer** — the `Co-authored-by:`
    line attributes the agent contribution; lives at end of trailer
    block. Composes with the AgencySignature 7-trailer schema (per
-   task #298 + task #299 + Amara ferry-7 absorb at
-   `docs/research/2026-04-26-amara-fail-open-with-receipts-attribution-rule-7-trailer-schema.md`).
+   task #298 (pre-merge validator landed) + task #299 (post-merge
+   auditor landed); the canonical schema is documented in
+   `tools/hygiene/validate-agencysignature-pr-body.sh` which is
+   already in-tree and authoritative).
 
 5. **PR body HEREDOC vs commit message HEREDOC** — same shape,
    different consumers. PR body has GitHub-flavor markdown (tables,
