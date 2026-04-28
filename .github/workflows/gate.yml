@@ -92,21 +92,22 @@ jobs:
       - id: set
         shell: bash
         run: |
-          # Pre-merge (pull_request + merge_group): Linux production
-          # legs only (~3 min wall clock).
-          # Push-to-main / workflow_dispatch: full surface incl.
-          # macos-26 (developer-experience) + Windows legs
-          # (peer-harness milestone seeding per maintainer 2026-04-27 —
-          # "start the windows one as a per push to main too/merge to
-          # main, you can start slowly building that out before I get
-          # my windows laptop running the peer-mode agent, windows
-          # will be mostly ready and they can just clean it up").
-          # Windows legs are gated by `continue-on-error: true` at the
-          # build-and-test job level so initial failures (e.g. missing
-          # tools/setup/install.ps1) don't block per-merge runs while
-          # the peer-agent polishes the path.
+          # Pre-merge (pull_request + merge_group): Linux + macos-26
+          # (~5 min wall clock with macos in parallel). macos-26 is
+          # required by branch protection's required-status-checks,
+          # so it runs on every PR — moved back to per-PR cadence
+          # 2026-04-28 after maintainer correction ("we pull out mac
+          # and codeql to merge to main time instead of per pr, and
+          # then moved it back to per pr"). The earlier per-merge-only
+          # split structurally blocked the PR queue.
+          # Push-to-main / workflow_dispatch: full surface adds Windows
+          # legs (peer-harness milestone seeding per maintainer
+          # 2026-04-27). Windows legs are gated by `continue-on-error:
+          # true` at the build-and-test job level so initial failures
+          # (e.g. missing tools/setup/install.ps1) don't block per-merge
+          # runs while the peer-agent polishes the path.
           if [ "${GH_EVENT}" = "pull_request" ] || [ "${GH_EVENT}" = "merge_group" ]; then
-            echo 'os=["ubuntu-24.04","ubuntu-24.04-arm"]' >> "$GITHUB_OUTPUT"
+            echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26"]' >> "$GITHUB_OUTPUT"
           else
             echo 'os=["ubuntu-24.04","ubuntu-24.04-arm","macos-26","windows-2025","windows-11-arm"]' >> "$GITHUB_OUTPUT"
           fi
