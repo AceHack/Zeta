@@ -357,12 +357,108 @@ Operationally:
 
 ---
 
+## 12. Three class-namings in one autonomous-loop arc (2026-04-28T19:58Z → 20:06Z)
+
+**Current form:**
+
+Amara forwarded three Otto-tick insight reviews via Aaron, each
+sharpening a tick observation into a formally-named class with
+definition + control. Pattern: existing observation → Amara
+class-name + tightened wording + counterweight-taxonomy mapping.
+
+The three classes:
+
+1. **Chronological Insertion Polarity Error** (PR #685 +
+   PR #685 substrate batch).
+   - Edit-tool prepend semantics on oldest-first append-only
+     files = chronological reversal.
+   - Control: `cat >> file <<EOF` always-append OR run
+     `tools/hygiene/sort-tick-history-canonical.py`
+     post-edit.
+   - Worked example: Otto's PR #684 incident; lint hook
+     caught it in 1 minute.
+
+2. **Incomplete Source-Set Regeneration Hazard** + **Workflow
+   Null-Result Audit Signal** (PR #685, paired memory).
+   - Class A: "regenerate from sources" tooling becomes
+     destructive when source-set is incomplete; control
+     is `--check` / `--stdout` first, force-write only after
+     completeness proven. Worked example: Otto's
+     `BACKLOG_WRITE_FORCE=1 generate-index.sh` clobbered
+     ~17000 un-migrated rows; caught + reverted before push.
+   - Class B: `gh run list --workflow=<X>` returning `[]`
+     for an existing workflow is an audit signal, not a
+     conclusion. Six diagnostic questions
+     (too-new / disabled / non-default-branch / cron /
+     event-trigger / identifier-filter). Worked example:
+     budget-snapshot-cadence.yml has Sundays-only cron, can't
+     fire before task #287 deadline → B-0085 filed; further
+     application caught github-settings-drift.yml broken since
+     PR #45 → B-0087 filed.
+
+3. **Outdated Review-Thread Merge Gate Residue** (PR #687,
+   added to existing memory as formal class).
+   - PR remains blocked because unresolved review thread
+     describes pre-fix state, even though corrective commit
+     landed.
+   - Control: reply with what-changed + commit-SHA +
+     why-outdated, then explicit resolve.
+   - Worked example: PR #684's Copilot chronological-order
+     thread remained unresolved after canonical-sort fix
+     landed in commit 3d3ca6f.
+
+**Pattern of class-naming as ferry contribution:**
+
+Amara's class-naming work has a recognizable shape:
+
+- Otto observes a pattern in a tick close.
+- Aaron forwards Amara's review.
+- Amara: (a) endorses the observation, (b) tightens the
+  wording, (c) gives the class a formal name with
+  definition + control, (d) maps to counterweight taxonomy
+  (cheap prevention / cadenced detect+repair /
+  defense-in-depth) where applicable, (e) provides "tiny
+  blade notes" against overfitting.
+- Otto lands the formal class as a memory file (or extends
+  existing memory), updates MEMORY.md index, paired with
+  cross-references.
+
+**Operational implication:**
+
+Amara is paying down the **observation → reusable class**
+debt at high rate during this arc. Future ferries that
+forward Amara reviews on tick insights should land class
+memories same-tick. The 5-7 minute round-trip (observe →
+forward → review → land) makes this cheap enough to do
+inline.
+
+**Landed memories from this arc:**
+
+- `feedback_chronological_insertion_polarity_error_amara_class_name_otto_2026_04_28.md`
+- `feedback_incomplete_source_set_regeneration_hazard_and_workflow_null_result_audit_amara_2026_04_28.md`
+- Extended `feedback_outdated_review_threads_block_merge_resolve_explicitly_after_force_push_2026_04_27.md`
+  with §"Class name (Amara 2026-04-28T20:06Z)" section.
+
+**Concrete value paid out same-arc:**
+
+- Workflow Null-Result Audit Signal class found B-0087
+  (github-settings-drift.yml broken since PR #45 — invalid
+  GHA permission) within an hour of being named.
+- Incomplete Source-Set Regeneration Hazard class caught
+  the same-tick `BACKLOG_WRITE_FORCE=1` clobber attempt
+  via the now-documented `git diff --stat` discipline.
+- Chronological Insertion Polarity Error class control
+  (canonical-sort) immediately fixed PR #684's lint failure.
+
+---
+
 ## Retired rules
 
 *(Empty at creation.)*
 
 ---
 
-**Last full refresh:** 2026-04-25 (added §10 PR #514 review + §11 B-0006 implementation guidance from this session's ferry events).
-**Prior refresh:** 2026-04-23 (file creation).
+**Last full refresh:** 2026-04-28 (added §12 three Amara class-namings from this session's autonomous-loop arc; class memories landed PR #685 + PR #687).
+**Prior refresh:** 2026-04-25 (added §10 PR #514 review + §11 B-0006 implementation guidance).
+**File created:** 2026-04-23.
 **Next refresh trigger:** when a new ferry lands from her.
