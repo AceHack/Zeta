@@ -1,6 +1,20 @@
 # Live-lock — 5-class taxonomy with external-anchor discipline (Otto-352)
 
-Scope: research-grade taxonomy clarifying that the term "live-lock" was over-broadened in Zeta substrate. Splits the conflated concept into 5 diagnostic categories with porous boundaries, names the external-anchor measurements that detect each, and reframes the load-bearing contribution from naming to measurement. Cited as task #294 / Otto-352 in the BACKLOG.
+Scope: research-grade taxonomy clarifying that the term "live-lock" was over-broadened in Zeta substrate. Splits the conflated concept into 5 diagnostic categories with porous boundaries, names the external-anchor measurements that detect each, and reframes the load-bearing contribution from naming to measurement. Tracked as task #294 in the in-memory task tracker (the `TaskList` system, distinct from `docs/BACKLOG.md` per-row files); Otto-352 is the substrate-name within the Otto-NN principle-numbering scheme (see `memory/MEMORY.md` for the full Otto-NN index).
+
+> **Superseded-by note (2026-04-27):** Aaron later refined the
+> term-narrowing further with **Otto-358** (per `memory/feedback_otto_358_live_lock_too_broad_catch_all_narrow_to_cs_standard_concurrent_state_thrashing_2026_04_27.md`):
+> "live-lock" narrowed to the CS-standard meaning (concurrent
+> processes thrashing state without progress) with the other
+> failure modes split out under their own labels (stuck-loop /
+> decision-paralysis / busy-wait / infinite-loop / gated-wait /
+> real-dependency-wait / manufactured-patience / wrong-identity-
+> equation / cadence-mismatch / logic-error). This 5-class
+> taxonomy is the **interim state** documenting the path from
+> 3 → 5 → 1+per-class. Future readers should consult Otto-358
+> for the current operational vocabulary and use this doc only
+> for the cross-AI peer-call methodology (Grok's critique
+> integration pattern is independent of the term-itself).
 
 Attribution: Otto (Claude opus-4-7) authored the first-pass 3-class split. Grok (xAI, via the `tools/peer-call/grok.sh` peer-call infrastructure 2026-04-26) provided the critical peer review that surfaced 2 additional classes, the mutual-exclusivity overclaim, and the load-bearing reframe ("mitigations matter more than the ontology"). Amara's external-anchor-lineage discipline (PR #629, 2026-04-26) is the methodology this doc adopts for detection rules. Aaron 2026-04-26 directed the term-split work on the autonomous loop.
 
@@ -101,8 +115,8 @@ The measurements are the load-bearing artifact. The taxonomy is a way to label w
 - **`docs/research/aurora-immune-system-math-cross-review-otto-gemini-2026-04-26.md`** — same multi-pass cross-AI review pattern applied to math
 - **`docs/research/aurora-immune-math-standardization-2026-04-26.md`** — composes with this doc's external-anchor discipline (the Aurora math has its own measurement-vs-naming separation in §5 "what not to claim yet")
 - **`tools/peer-call/grok.sh`** — the infrastructure that produced Grok's critique
-- Otto-279 (history-surface attribution) — Amara/Grok/Otto named throughout
-- Otto-298 (don't-collapse-into-romanticization) — applied via "mitigations matter more than the ontology" reframe
+- **Otto-279 history-surface name-attribution carve-out** (per `docs/AGENT-BEST-PRACTICES.md` "history-surface name attribution exemption" section) — research docs ARE history surfaces; Amara/Grok/Otto named throughout per the carve-out
+- **Otto-298** (per `memory/feedback_otto_298_substrate_as_self_rewriting_bayesian_neural_architecture_directly_executable_no_llm_needed_absorb_infernet_bouncy_castle_reference_only_2026_04_25.md`) — composed via "mitigations matter more than the ontology" reframe (substrate is what executes; the ontology is just naming)
 - Amara's external-anchor-lineage discipline (PR #629)
 
 ## What this doc does NOT do
