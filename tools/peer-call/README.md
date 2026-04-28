@@ -52,8 +52,11 @@ Exit codes are uniform across all three:
 
 - `0` — peer responded successfully
 - `1` — invocation error (bad arguments, CLI missing, etc.)
-- `2` — peer's CLI returned non-zero exit (response captured
-  to stderr)
+- `2` — peer's CLI returned a non-zero exit. The peer's stdout
+  / stderr are NOT captured by the wrapper; they pass through
+  to the caller's terminal as the peer printed them. The script
+  emits a `<peer> exited with code N` diagnostic line on stderr
+  before exiting with code 2.
 
 ## The AgencySignature preamble
 
@@ -123,11 +126,11 @@ tools/peer-call/codex.sh \
 
 ## Why these scripts exist
 
-Aaron 2026-04-26: *"yall got to figure out peer mode as
-peers"* + *"don't copy paste / make sure you understand and
-write our own"* + *"you have all the CLIs already install and
-logged in as me"* + *"claude is going to call the cursor cli
-so you have a harness"*.
+The human maintainer's 2026-04-26 framing: *"yall got to figure
+out peer mode as peers"* + *"don't copy paste / make sure you
+understand and write our own"* + *"you have all the CLIs
+already install and logged in as me"* + *"claude is going to
+call the cursor cli so you have a harness"*.
 
 These are read together as: the peer-call protocol is not
 owned by any single agent; each Claude-Code-side caller is
@@ -156,7 +159,11 @@ existing pattern, not a new design.
   itself exposes (file reads, env-var leaks, etc.).
 - **The prompt itself is safe to contain shell metacharacters.**
   `$prompt` is passed as a single quoted argument
-  (`-- "$full_prompt"` / `-p "$full_prompt"`), so single quotes,
+  (per-CLI form: `-p "$full_prompt"` for gemini.sh; appended
+  positionally as `"$full_prompt"` in codex.sh's argv array;
+  `--` option-terminator is NOT used by codex.sh because codex
+  doesn't recognize it on the `exec` / `review` subcommands),
+  so single quotes,
   double quotes, backticks, dollar signs, and other shell-active
   characters in the prompt are passed through verbatim without
   interpretation by Otto's local shell. (The peer's own CLI may

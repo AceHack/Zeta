@@ -34,7 +34,11 @@
 # Exit codes:
 #   0 — Codex responded successfully
 #   1 — invocation error (bad arguments, codex missing, etc.)
-#   2 — Codex returned a non-zero exit (response captured to stderr)
+#   2 — Codex returned a non-zero exit. The peer's stdout/stderr
+#       pass through to the caller's terminal as printed; this
+#       script then emits a "codex exited with code N" diagnostic
+#       on stderr and exits 2 (no capture/redirect of the peer's
+#       output).
 
 set -uo pipefail
 
@@ -136,11 +140,17 @@ fi
 exit_code=0
 if [ "$review_mode" = "true" ]; then
   codex_args=(review)
+  # Note: `codex review` does not accept `-m` model override;
+  # the model selection there is taken from codex's own config.
+  # Only apply --model when in non-review mode (`codex exec`).
+  if [ -n "$model" ]; then
+    echo "warning: --model is ignored in --review mode (codex review uses its own model selection)" >&2
+  fi
 else
   codex_args=(exec -s read-only --skip-git-repo-check)
-fi
-if [ -n "$model" ]; then
-  codex_args+=(-m "$model")
+  if [ -n "$model" ]; then
+    codex_args+=(-m "$model")
+  fi
 fi
 codex_args+=("$full_prompt")
 

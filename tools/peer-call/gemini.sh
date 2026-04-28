@@ -13,15 +13,17 @@
 #   tools/peer-call/gemini.sh --file path/to/file.fs "prompt text"
 #   tools/peer-call/gemini.sh --context-cmd "git diff HEAD~3..HEAD" "prompt text"
 #   tools/peer-call/gemini.sh --json "prompt text"
+#   tools/peer-call/gemini.sh --stream "prompt text"
 #
 # Routing: this script wraps `gemini -p` (non-interactive
 # headless mode). Default model is whatever the gemini CLI is
 # configured to use; override with --model.
 #
-# Per Aaron 2026-04-26 "don't copy paste / make sure you
-# understand and write our own" — this implementation is
-# authored from `gemini --help` output (verified flags: -p / -m
-# / -o / --yolo), not transcribed from any draft.
+# Per the human maintainer's 2026-04-26 framing "don't copy
+# paste / make sure you understand and write our own" — this
+# implementation is authored from `gemini --help` output
+# (verified flags: -p / -m / -o / --yolo / --skip-trust),
+# not transcribed from any draft.
 #
 # Per the four-ferry consensus: Gemini proposes, Grok critiques,
 # Amara sharpens, Otto tests, Git decides. This script is Otto
@@ -30,7 +32,11 @@
 # Exit codes:
 #   0 — Gemini responded successfully
 #   1 — invocation error (bad arguments, gemini missing, etc.)
-#   2 — Gemini returned a non-zero exit (response captured to stderr)
+#   2 — Gemini returned a non-zero exit. The peer's stdout/stderr
+#       pass through to the caller's terminal as printed; this
+#       script then emits a "gemini exited with code N" diagnostic
+#       on stderr and exits 2 (no capture/redirect of the peer's
+#       output).
 
 set -uo pipefail
 
