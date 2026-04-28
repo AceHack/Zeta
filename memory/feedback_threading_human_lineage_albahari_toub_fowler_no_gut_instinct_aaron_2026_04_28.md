@@ -1,6 +1,6 @@
 ---
-name: Threading code follows Albahari + Toub + Fowler human lineage; never gut-instinct (Aaron 2026-04-28)
-description: Aaron 2026-04-28T16:48Z — binding rule: any threading or TPL code in Zeta MUST follow guidance from Joseph Albahari, Stephen Toub (Microsoft), and David Fowler (Microsoft, authored System.Threading.Channels). High-performance, low-allocation, thread-safe, prefer wait-free / lock-free patterns. No gut-instinct decisions on threading — it's "very hard" and the human lineage exists for a reason. Future-Otto's MUST inherit this rule; load it via MEMORY.md index at session bootstrap. Cite specific Albahari / Toub / Fowler references in commit messages or comments when threading code lands.
+name: Threading code follows Albahari + Toub + Fowler + Microsoft Learn advanced .NET docs (Aaron 2026-04-28)
+description: Aaron 2026-04-28T16:48Z + 17:43Z update — binding rule: any threading or TPL code in Zeta MUST follow guidance from Joseph Albahari (foundational, 2011 — still very good but old), Stephen Toub (Microsoft .NET runtime team), David Fowler (Microsoft, authored System.Threading.Channels), AND Microsoft Learn's official advanced .NET programming docs (https://learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/) which carries .NET 10-current guidance and replaces some of Albahari's older chapter content. High-performance, low-allocation, thread-safe, prefer wait-free / lock-free patterns. No gut-instinct decisions on threading — it's "very hard" and the human lineage exists for a reason. Future-Otto's MUST inherit this rule; load it via MEMORY.md index at session bootstrap. Cite specific Albahari / Toub / Fowler / MS-Learn references in commit messages or comments when threading code lands.
 type: feedback
 ---
 
@@ -19,24 +19,140 @@ type: feedback
 >
 > *"make sure future you's know this too"*
 
-## The three-source human lineage
+## Lineage update (Aaron verbatim 2026-04-28T17:43Z)
+
+> *"offical reference documentation for advanced dotnet from Microsoft
+> the creators of dotnet
+> https://learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/"*
+>
+> *"replaces some guidance from J[oseph]"*
+>
+> *"Joseph with newer guidance for .NET 10  Joseph is from 2011 but
+> still very good but old"*
+>
+> *"Like I know there is a real Lock object now instead of just a
+> regular object, the monitor changed in .NET 10 i think"*
+
+## Concrete worked example: `lock(object)` → `System.Threading.Lock`
+
+Aaron's `Lock` example is the canonical instance of "Albahari old vs
+MS-Learn current". Primary-source verified via Microsoft Learn search
+2026-04-28T17:48Z:
+
+- **`System.Threading.Lock` landed in .NET 9 / C# 13** (not .NET 10
+  as Aaron recalled — but .NET 10 is the current LTS so the type is
+  available throughout). [docs:
+  whats-new/csharp-13#new-lock-object](https://learn.microsoft.com/dotnet/csharp/whats-new/csharp-13#new-lock-object).
+- **The `lock` statement now specializes on `Lock`**: when the target
+  is a `Lock` the C# compiler lowers `lock (x) { ... }` to
+  `using (x.EnterScope()) { ... }` (a `ref struct` Dispose pattern),
+  *not* `Monitor.Enter/Exit`. Monitor-based behaviour remains the
+  fallback for plain reference-type targets. [docs:
+  language-reference/statements/lock](https://learn.microsoft.com/dotnet/csharp/language-reference/statements/lock).
+- **IDE0330 analyzer enforces this for new code**: `Prefer
+  'System.Threading.Lock'` (default `true`). Old pattern
+  `private object _gate = new object();` triggers the analyzer with
+  fix `private Lock _gate = new Lock();`. [docs:
+  ide0330](https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0330).
+- **CS9216 warning** fires if you cast a known `Lock` to another type
+  (since the cast falls back to Monitor-based locking).
+- **CS9217 error** fires if you `lock` a `Lock` inside an `async`
+  method or lambda (since `await` cannot cross a `Lock` scope).
+
+This is the exact shape of "Albahari guidance superseded by MS Learn":
+Albahari's 2011 advice was to lock on a dedicated private `object`
+instance. That advice is **still correct** in pre-.NET-9 codebases
+but is **no longer the .NET-current recommendation** for new code.
+Always cross-check Albahari guidance against MS Learn before applying
+it to .NET 10 / C# 13+ code.
+
+## Worked-example absorb: Gemini Pro Deep Research threading guide
+
+Aaron 2026-04-28T17:51Z framing:
+
+> *"that document you pull from drop from gemini try to create modern
+> guidance that is still in line with albamari"*
+
+The absorbed Gemini Pro Deep Research note at
+[`docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`](../docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md)
+is itself a worked example of the "MS-Learn current + Albahari
+foundational" composition: it walks the Albahari topic-set
+(locks, async, parallel, channels, memory model) and updates each
+to the .NET 10 / C# 14 idiom while preserving Albahari's
+pattern-orientation.
+
+**When reading Albahari, also pull this absorb** — the absorb
+already did the cross-reference for the patterns most likely to
+have evolved (Lock vs object-monitor, ValueTask, JIT
+deabstraction, escape-analysis-driven delegate stack-allocation).
+
+The Microsoft Learn advanced .NET programming hub at
+[learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/](https://learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/)
+is the canonical .NET 10-current reference. It is **the first place
+to look** for any advanced threading / async / parallel /
+memory-management / native-interop question. Albahari's "Threading
+in C#" remains foundational reading for patterns and idioms (Aaron:
+"still very good but old"), but where the MS Learn docs cover the
+same topic with newer guidance, MS Learn wins for .NET 10-current
+recommendations.
+
+Concrete sub-surfaces (from the landing page):
+
+- **Asynchronous programming**: Pattern overview, TAP overview, EAP
+  overview, APM overview
+  ([standard/asynchronous-programming-patterns/](https://learn.microsoft.com/en-us/dotnet/standard/asynchronous-programming-patterns/))
+- **Threading**: Managed threading basics, managed thread pool
+  ([standard/threading/managed-threading-basics](https://learn.microsoft.com/en-us/dotnet/standard/threading/managed-threading-basics))
+- **Parallel programming**: TPL, task-based async, task cancellation,
+  Parallel.ForEach, return-value-from-task
+  ([standard/parallel-programming/](https://learn.microsoft.com/en-us/dotnet/standard/parallel-programming/))
+- **Native interoperability**: P/Invoke, type marshalling
+  ([standard/native-interop/](https://learn.microsoft.com/en-us/dotnet/standard/native-interop/))
+- **Memory management**: GC, unmanaged resources, Dispose,
+  DisposeAsync
+  ([standard/garbage-collection/](https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/))
+
+## The four-source human lineage
 
 When Zeta touches threading, async, parallelism, TPL, channels, or any
 concurrent-state code, the canonical references are:
 
-### 1. Joseph Albahari — patterns + idioms
+### 1. Microsoft Learn — Advanced .NET programming (canonical, .NET 10-current)
+
+- [learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/](https://learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/)
+  — the official Microsoft hub for advanced .NET programming.
+  Covers: asynchronous programming patterns (TAP / EAP / APM),
+  threading (managed threading basics, thread pool), parallel
+  programming (TPL, task-based async, cancellation), native
+  interoperability (P/Invoke, marshalling), memory management
+  (GC, Dispose, DisposeAsync).
+- **First place to look** for any threading / async / parallel
+  question. Replaces some older Albahari chapter content for
+  .NET 10-current recommendations.
+- Use for: canonical-reference verification before writing code;
+  cross-checking older guidance against current Microsoft
+  recommendations; understanding what the .NET team itself
+  recommends today.
+
+### 2. Joseph Albahari — patterns + idioms (foundational, 2011)
 
 - **"Threading in C#"** (free ebook, [albahari.com/threading](https://www.albahari.com/threading/))
   — the textbook on .NET threading. Covers locks, monitors,
   signaling, non-blocking sync, parallel programming, async/await
-  semantics, deadlock + livelock + race conditions.
+  semantics, deadlock + livelock + race conditions. From 2011 —
+  still very good for foundational understanding but old; check
+  Microsoft Learn for .NET 10-current recommendations on the
+  same topic.
 - **"C# in a Nutshell"** chapters on Concurrency & Asynchrony +
   Parallel Programming.
-- Use for: foundational understanding, when authoring or reviewing
-  any thread-safe code, when reasoning about memory models, when
-  picking between primitives.
+- Use for: foundational understanding, when reasoning about
+  memory models, when picking between primitives at a conceptual
+  level. Do **not** use as the sole source for current API
+  recommendations — Albahari's primitive recommendations may pre-
+  date `System.Threading.Channels`, `System.Threading.Lock`
+  (C# 13/14), `ValueTask`-based patterns, and `IAsyncEnumerable`.
 
-### 2. Stephen Toub — performance + async/parallel deep dives
+### 3. Stephen Toub — performance + async/parallel deep dives
 
 - Microsoft .NET runtime team; foundational author of TPL, async
   state machines, PFX, ValueTask, IAsyncEnumerable.
@@ -49,7 +165,7 @@ concurrent-state code, the canonical references are:
   for understanding allocation cost; for reasoning about
   thread-pool dynamics.
 
-### 3. David Fowler — channels + high-perf low-alloc
+### 4. David Fowler — channels + high-perf low-alloc
 
 - Microsoft, authored **System.Threading.Channels** (the canonical
   high-performance bounded/unbounded queue primitive in .NET).

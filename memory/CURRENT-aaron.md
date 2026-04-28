@@ -1279,9 +1279,9 @@ Look for it whenever a `.mise.toml` change lands.
   — full mechanism + the deeper structural cause section.
 - `.mise.toml` (the source of truth for what "managed" means).
 
-## 29. Threading code follows Albahari + Toub + Fowler human lineage; never gut-instinct (Aaron 2026-04-28)
+## 29. Threading code follows MS Learn advanced .NET docs + Albahari + Toub + Fowler human lineage; never gut-instinct (Aaron 2026-04-28)
 
-**The rule (Aaron verbatim 2026-04-28T16:48Z):**
+**The original rule (Aaron verbatim 2026-04-28T16:48Z):**
 
 > *"please follow this guidance around threading unless you find
 > something better from stephen toub from Microsoft, don't go based
@@ -1293,20 +1293,44 @@ Look for it whenever a `.mise.toml` change lands.
 >
 > *"make sure future you's know this too"*
 
-**The three-source canonical reference for any threading / TPL /
-async / parallel code in Zeta:**
+**The lineage update (Aaron verbatim 2026-04-28T17:43Z):**
 
-1. **Joseph Albahari** — "Threading in C#" (free ebook,
-   albahari.com/threading) + "C# in a Nutshell" concurrency
-   chapters. Use for: foundational understanding, pattern
-   selection, deadlock / livelock / race reasoning.
-2. **Stephen Toub** (Microsoft .NET runtime team) — yearly
+> *"offical reference documentation for advanced dotnet from
+> Microsoft the creators of dotnet
+> https://learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/"*
+>
+> *"replaces some guidance from J[oseph]"*
+>
+> *"Joseph with newer guidance for .NET 10  Joseph is from 2011
+> but still very good but old"*
+
+**The four-source canonical reference for any threading / TPL /
+async / parallel code in Zeta (precedence order, .NET 10-current
+first):**
+
+1. **Microsoft Learn — Advanced .NET programming hub** —
+   [learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/](https://learn.microsoft.com/en-us/dotnet/navigate/advanced-programming/)
+   First place to look. Covers asynchronous programming patterns
+   (TAP / EAP / APM), threading, parallel programming (TPL,
+   task-cancellation), native interop, memory management
+   (GC / Dispose / DisposeAsync). The .NET-10-current canonical
+   reference; replaces some older Albahari chapter content where
+   the recommendation has evolved.
+2. **Joseph Albahari** — "Threading in C#" (free ebook,
+   albahari.com/threading, 2011) + "C# in a Nutshell" concurrency
+   chapters. **Foundational but old** — Aaron: "still very good
+   but old". Use for: foundational understanding, pattern
+   selection, memory-model reasoning, deadlock / race analysis.
+   Do **not** use as the sole source for current API
+   recommendations (predates Channels, `System.Threading.Lock`
+   C# 13/14, `ValueTask`-first patterns, `IAsyncEnumerable`).
+3. **Stephen Toub** (Microsoft .NET runtime team) — yearly
    "Performance Improvements in .NET" posts on
    devblogs.microsoft.com + async / parallel deep dives. Use
    for: choosing between TaskScheduler / Channel / lock /
    Interlocked / Volatile / SemaphoreSlim / etc.; allocation
    cost; thread-pool dynamics.
-3. **David Fowler** (Microsoft, authored
+4. **David Fowler** (Microsoft, authored
    `System.Threading.Channels`) — public discussions on
    high-performance low-allocation patterns; canonical
    producer / consumer + backpressure + pipeline composition.
@@ -1320,19 +1344,22 @@ from Toub's posts. Producer/consumer queues invented from
 tool.
 
 **Operational discipline:** every threading / TPL PR cites the
-specific Albahari chapter / Toub blog post URL / Fowler talk or
-GitHub issue in the commit message OR code comment. Default to
-lock-free / wait-free where possible (Aaron's stated preference).
-Verify currency before asserting (Otto-247 — .NET evolves
-recommended patterns each release). Cross-CLI verify for
-non-trivial threading code (Otto-347).
+specific Microsoft Learn doc URL / Albahari chapter / Toub blog
+post URL / Fowler talk or GitHub issue in the commit message OR
+code comment. **Cross-check Albahari guidance against MS Learn
+before using** — when the recommendation has evolved (e.g. Lock,
+Channels, ValueTask), MS Learn wins. Default to lock-free /
+wait-free where possible (Aaron's stated preference). Verify
+currency before asserting (Otto-247 — .NET evolves recommended
+patterns each release). Cross-CLI verify for non-trivial
+threading code (Otto-347).
 
 **Why it matters for Zeta specifically:** Z-set algebra is
 naturally data-parallel (operators commute when bag-multiset
 semantics let writes commute). Threading errors on the operator
 pipeline cost correctness (lost updates, double-counted
-retractions) AND performance. The Albahari + Toub + Fowler
-lineage is the cheapest insurance.
+retractions) AND performance. The MS-Learn + Albahari + Toub +
+Fowler lineage is the cheapest insurance.
 
 **Pointer:**
 `feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`
