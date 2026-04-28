@@ -246,7 +246,16 @@ All caps enforced in smart-account contract code, not in any prompt or off-chain
    - Velocity violation.
    - Allowlist violation.
    - Receipt-loop failure (Tx N+1 attempted before Tx N classified).
-   - Pre-flight retraction window expired without classification.
+   - **Post-broadcast classification stall**: a broadcast tx
+     remains unclassified beyond a configurable timeout (default
+     60s after broadcast). Anchored at the post-broadcast pipeline
+     stage where classification can actually occur (per §7.3 tick
+     types: classification follows broadcast, not signed). The
+     §7.1 invariant ("Tx N+1 cannot execute until Tx N classified")
+     already structurally prevents stale-unclassified accumulation;
+     this trigger is a defense-in-depth backstop for monitor / I/O
+     failures that would otherwise let a single classification
+     stall hold up the queue silently.
 2. **Off-chain monitor** (independent harness). Triggered by:
    - Stricter drawdown (-20%).
    - Pattern-detection flags (rapid-fire trades, suspected adversarial counterparty interaction).
@@ -410,7 +419,15 @@ After session-key signs but before smart-account broadcasts: the tx sits in a **
 
 During the window:
 
-- The agent can **self-revoke** by calling a smart-account method (no key required; just the proposal_id).
+- The agent can **self-revoke** by calling a smart-account
+  method, **authenticated by the active session key** (the same
+  key that signed the proposal). proposal_id alone is not
+  sufficient — anyone observing or guessing a proposal_id could
+  otherwise stall the queue (DoS) by repeatedly cancelling
+  pending tx. The session-key signature on the cancel-call binds
+  the cancellation to the principal that authored the proposal.
+  The off-chain monitor key and the maintainer's master key are
+  also accepted as cancellation principals (defense-in-depth).
 - The off-chain monitor can **freeze-on-dissent**: if the monitor's reasoning-trace check disagrees with the agent's thesis, monitor triggers freeze before broadcast.
 - Aaron can **cancel** via direct freeze key.
 
@@ -426,9 +443,18 @@ The factory's HC-2 invariant is retraction-native data semantics. On-chain trans
 
 Per EAT packet §9 multi-round metric: percentage of operations that were either retraction-native by design OR retraction-mitigated. Wallet-experiment operations count as retraction-mitigated when:
 
-- Pre-flight window logged.
-- Reorg-window monitored after broadcast.
-- Failed-retraction attempts logged in receipt.
+- Pre-flight retraction window logged (signed → broadcast
+  transition).
+- Failed-retraction attempts logged in receipt (post-broadcast
+  on-chain irreversibility acknowledged in substrate).
+
+(Earlier drafts also required "Reorg-window monitored after
+broadcast"; dropped 2026-04-28 to align with §9.1's Base
+finality framing — reorg-induced retractions on Base are not a
+meaningful v0 threat per Flashblocks preconfirmation timescales,
+so requiring the bullet would fail the §9.3 100% threshold for
+non-real reasons. If v0 ever moves off Base, this subsection
+re-enters scope.)
 
 The metric drives the multi-round trajectory: if retraction-coverage drops below threshold (initial: 100% retraction-mitigated for v0), v0 paused.
 
@@ -607,7 +633,14 @@ Phase 4: review.
 
 ## §15 — Send-readiness
 
-This spec is research-grade design. Two maintainer-only questions in §12 still need explicit answers (others resolved 2026-04-27 by Aaron — see EAT §21). After answers + Phase 0 sign-off, Phase 1 scaffolding can ship as a follow-up PR independent of this packet.
+This spec is research-grade design. Six maintainer-only
+questions in §12 still need explicit answers (§12.1 framework /
+§12.2 chain / §12.3 retraction-window duration / §12.4 caps /
+§12.5 monitor form factor / §12.6 mandate framework); §12.7
+hierarchical scoping and §12.8 disclosure timing are RESOLVED
+2026-04-27. After the remaining six answers + Phase 0 sign-off,
+Phase 1 scaffolding can ship as a follow-up PR independent of
+this packet.
 
 The spec deliberately does not block on KSK or Aurora shipping (per EAT packet §11.0 + §12). It provides the v0 substitute scaffold that's sufficient at v0 scale.
 
