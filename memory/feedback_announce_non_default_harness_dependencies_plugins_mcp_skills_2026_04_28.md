@@ -71,9 +71,12 @@ This composes with the version-currency rule (always-WebSearch
 before asserting a version is current): both are "make the
 dependency / claim surface explicit before relying on it"
 disciplines. It also composes with the supply-chain trajectory
-(`docs/trajectories/threat-model-and-sdl.md` covers Action / NPM
-/ NuGet supply-chain; plugins + MCP servers are an analogous
-surface).
+covering Action / NPM / NuGet supply-chain hardening (the
+trajectory file lives on a separate branch — `docs/trajectories/`
+is not present on this branch; see the
+trajectories-pattern branch for the actual artifacts); plugins +
+MCP servers are an analogous surface to track in that
+trajectory once it lands here.
 
 Same-shape failure-mode prevention as Otto-348 (verify-substrate-
 exists before drafting an inline replacement): announce the

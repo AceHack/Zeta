@@ -1,5 +1,5 @@
 ---
-name: "Transient CI" means external-infra only — test failures are bugs, never flakes
+name: '"Transient CI" means external-infra only — test failures are bugs, never flakes'
 description: When categorizing CI failure causes, use "transient" ONLY for external-infrastructure failures (curl 502 from upstream package mirrors during tools/setup/install.sh, GitHub Actions runner-pool unavailability, registry timeout). NEVER use "transient" for test failures. A test that passes on retry is hidden non-determinism in OUR code per Otto-248 (never ignore flakes) + Otto-272 (DST-everywhere) + the retries-are-non-determinism-smell discipline. The lazy bucket "transient CI" that includes both is itself an anti-pattern — it lets test flakes slip past as "noise" instead of being investigated as bugs. Aaron 2026-04-28 caught me using "mostly probably transient CI" without distinguishing: *"transient CI what does this mean flakey test?"* The fix is vocabulary discipline: external-infra failures are reruns, test failures are bugs. Use those exact words.
 type: feedback
 ---

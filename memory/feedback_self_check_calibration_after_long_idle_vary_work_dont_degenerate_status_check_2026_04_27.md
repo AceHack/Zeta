@@ -16,7 +16,7 @@ The "also self check?" question prompted Otto to actually run the self-check tha
 
 ## The honest-wait test that passed
 
-Per `feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md`, before honest-close requires:
+Per the manufactured-patience-vs-real-dependency-wait Otto distinction (`feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md` in user-scope memory; in-repo migration pending per `feedback_natural_home_of_memories_is_in_repo_now_all_types_glass_halo_full_git_native_2026_04_24.md`), before honest-close requires:
 
 - ✅ Specific dependency named: Aaron's call on `code_quality severity:all` rule enforcement
 - ✅ Specific owner: Aaron only (the harness denied direct rule modification earlier in the session)
@@ -66,7 +66,7 @@ The threshold isn't "time waiting" — it's "ticks of same-loop-no-new-state."
 ## Composes with
 
 - `feedback_self_check_trigger_after_n_idle_loops_routine_discipline_for_current_otto_and_future_wakes_2026_04_27.md` — earlier memory; this file refines its threshold guidance with today's data
-- `feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md` — the prerequisite test before honest-wait
+- `feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md` (user-scope; in-repo migration pending) — the prerequisite test before honest-wait
 - `feedback_never_idle_speculative_work_over_waiting.md` — the speculative-work priority ladder
 - `feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md` — also caught today: "unbreakable from my side" was Mirror-register dramatic-absolute language; better Beacon-safe phrasing is "exhausted operational options within my authority"
 
