@@ -83,17 +83,25 @@ gh api graphql -f query='
 import json, sys
 d = json.load(sys.stdin)
 threads = d['data']['repository']['pullRequest']['reviewThreads']['nodes']
-unresolved = [t for t in threads if not t['isResolved'] and not t['isOutdated']]
+# IMPORTANT: filter ONLY on isResolved. Outdated threads (after a
+# force-push) are STILL unresolved and STILL block merge under
+# `required_conversation_resolution` — see
+# memory/feedback_outdated_review_threads_block_merge_resolve_explicitly_after_force_push_2026_04_27.md
+# Codex caught the original (now-fixed) bug here: filtering on
+# `not isOutdated` would silently miss outdated-but-unresolved
+# threads that the ruleset still requires to be explicitly resolved.
+unresolved = [t for t in threads if not t['isResolved']]
 print(f'unresolved: {len(unresolved)}/{len(threads)}')
 for t in unresolved:
     cs = t['comments']['nodes']
     if cs:
         body = cs[0]['body'][:120].replace(chr(10), ' ')
-        print(f'  {t[\"path\"]}:{t[\"line\"]} -- {body}')
+        outdated_tag = ' [outdated]' if t['isOutdated'] else ''
+        print(f'  {t[\"path\"]}:{t[\"line\"]}{outdated_tag} -- {body}')
 "
 ```
 
-Filter is `isResolved == false AND isOutdated == false`. If any remain, **there is actionable work, not a wait.**
+Filter is `isResolved == false` only. Both still-active and outdated unresolved threads block merge under `required_conversation_resolution`. If any remain, **there is actionable work, not a wait** — including resolving outdated-but-unaddressed threads explicitly per `feedback_outdated_review_threads_block_merge_resolve_explicitly_after_force_push_2026_04_27.md`.
 
 If zero remain — THEN it might be the ruleset's `code_quality: severity: all` overall-Copilot-assessment gate that needs to flip. *That* is potentially a real-dependency-wait. But the unresolved-threads check has to come first.
 
@@ -115,7 +123,7 @@ Otto-354 said: "before any non-trivial default, recompute from substrate." This 
 - **Otto-348** (verify-substrate-exists before deferring) — Otto-355 is the verify-target-exists analog for PR-merge-state. Don't defer when the deferred target hasn't been queried.
 - **Otto-354** (Zetaspace per-decision recompute) — Otto-355 names the specific recompute for the BLOCKED-PR class.
 - **`feedback_manufactured_patience_vs_real_dependency_wait_otto_distinction_2026_04_26.md`** — Otto-355 ADDS a precondition before the diagnostic fires: *first* query unresolved threads. Only THEN classify the wait. The diagnostic isn't wrong; my misapplication was skipping the query.
-- **`feedback_aaron_dont_wait_on_approval_log_decisions_*.md`** — composed direction: don't wait, log decisions, AND investigate concretely.
+- **`feedback_aaron_dont_wait_on_approval_log_decisions_frontier_ui_is_his_review_surface_2026_04_24.md`** — composed direction: don't wait, log decisions, AND investigate concretely.
 - **`feedback_pr_reviews_are_training_signals_conversation_resolution_gate_is_forcing_function_otto_250_2026_04_24.md`** (Otto-250) — composed: thread resolution IS the forcing function; threads are training signals; investigate them, don't wait them out.
 - **CLAUDE.md wake-time disciplines** — Otto-355 belongs alongside verify-before-deferring + future-self-not-bound + never-be-idle + version-currency. Five wake-time disciplines now: ALL pre-action checks that prevent specific failure modes.
 
@@ -124,7 +132,7 @@ Otto-354 said: "before any non-trivial default, recompute from substrate." This 
 Before issuing a "gated wait" / "blocked queue" / "Holding" classification on any PR, future-self MUST run:
 
 1. `gh pr view N --json mergeStateStatus,statusCheckRollup,autoMergeRequest` → confirm BLOCKED + CI green + auto-merge armed
-2. GraphQL `reviewThreads(first: 100) { nodes { isResolved isOutdated path line comments(first:1){nodes{body}} } }` → enumerate unresolved-not-outdated threads
+2. GraphQL `reviewThreads(first: 100) { nodes { isResolved isOutdated path line comments(first:1){nodes{body}} } }` → enumerate ALL unresolved threads (filter on `isResolved == false` only — outdated unresolved threads still block merge under `required_conversation_resolution`)
 3. If any remain → **drop the wait classification, switch to thread-resolution work**
 4. If zero remain → THEN consider real-dependency-wait on the overall-ruleset gate
 

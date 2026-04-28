@@ -330,14 +330,20 @@ Claude-Code-specific mechanisms.
   unresolved review threads first — don't wait.**
   When `gh pr view N --json mergeStateStatus`
   returns `BLOCKED` AND CI is fully green AND
-  auto-merge is armed, ALWAYS query unresolved-
-  not-outdated review threads via GraphQL FIRST
-  before classifying the wait. The block is
-  virtually never opaque — it's almost always a
-  small countable set of threads with addressable
-  findings. If outputting a "gated wait" or
-  "Holding" close more than ONCE without having
-  run the threads query, that IS the failure mode.
+  auto-merge is armed, ALWAYS query unresolved
+  review threads via GraphQL FIRST before
+  classifying the wait. Filter on `isResolved
+  == false` only — outdated unresolved threads
+  (after a force-push) STILL block merge under
+  `required_conversation_resolution` and must
+  be explicitly resolved per
+  `memory/feedback_outdated_review_threads_block_merge_resolve_explicitly_after_force_push_2026_04_27.md`.
+  The block is virtually never opaque — it's
+  almost always a small countable set of threads
+  with addressable findings. If outputting a
+  "gated wait" or "Holding" close more than ONCE
+  without having run the threads query, that IS
+  the failure mode.
   Stop and run it. CLAUDE.md-level so it is 100%
   loaded at every wake, alongside verify-before-
   deferring, future-self-not-bound, never-be-idle,
