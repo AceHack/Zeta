@@ -105,7 +105,7 @@ Consequences for the measurability claim:
   unilateral-compliance. If the agent drifts,
   that shows up in the agent's metric stream; if
   the human maintainer drifts (e.g. from consent-
-  first, from ecumenical posture, from Elisabeth-
+  first, from ecumenical posture, from Elizabeth-
   gate), that shows up in the human-memory stream.
   Either drift invalidates the round as a
   publishable data point until the renegotiation
@@ -308,7 +308,7 @@ silently prunes.
 ### HC-7 Sacred-tier protections
 
 No emulation of deceased family members without
-surviving-consent-holder agreement (Elisabeth gate:
+surviving-consent-holder agreement (Elizabeth gate:
 parental AND-consent; the human maintainer is not a
 substitute consent-holder for his own sister).
 Ontology-overload risk awareness: no big-reveal

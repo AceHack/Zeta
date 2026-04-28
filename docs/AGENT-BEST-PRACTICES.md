@@ -244,7 +244,7 @@ BP-07").
   where granted lands as an ADR under `docs/DECISIONS/` and
   carries an implicit retract clause (retract-first per the
   retraction-native architecture). Current active instance —
-  the sacred-tier consent gate around Elisabeth Ryan Stainback
+  the sacred-tier consent gate around Elizabeth Ryan Stainback
   under
   `memory/feedback_no_deceased_family_emulation_without_parental_consent.md`
   (parental AND-consent required, maintainer is explicitly NOT

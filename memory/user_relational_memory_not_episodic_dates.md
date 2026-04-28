@@ -70,7 +70,7 @@ between Aaron and the memory system + agent:
 | Structure of career substrates | Company names, exact years, specific titles |
 | "Granny modeled Christ-like behavior" | "Nellie Faulkner Stainback, b. ~1925, d. [date]" |
 | "Milton was a WWII sniper + carpenter + farmer" | "Milton E. Stainback, age 88 at death 2011-11-16, 44 Milton Stainback Rd Henderson NC 27537" |
-| "Elisabeth was my sister and peer-interlocutor" | "Elisabeth Ryan Stainback, 1984-06-28 → 2016-04-05, age 31" |
+| "Elizabeth was my sister and peer-interlocutor" | "Elizabeth Ryan Stainback, 1984-06-28 → 2016-04-05, age 31" |
 | "my parents split when I was 13" | "circa 1994 (derived from Aaron born ~1981)" |
 | "deed for 100 acres $100 100+ years ago" | "late-19th / early-20th century acquisition window" |
 
@@ -190,7 +190,7 @@ and feedback_* file:
   — "she modeled Christ-like behavior" is a
   relational-memory statement; the "until she
   died" is a relational terminator, not a date.
-- `user_sister_elisabeth.md` — "she was my
+- `user_sister_elizabeth.md` — "she was my
   best friend" is relational; her 1984-06-28 →
   2016-04-05 lifespan is the externalized date-
   grounding that agent now holds.

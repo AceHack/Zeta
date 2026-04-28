@@ -4638,7 +4638,7 @@ within each priority tier.
     protocol the five-reviewer gate operates under
   - `GOVERNANCE.md §4` — skills-via-skill-creator
     workflow; the ADR track for hooks is parallel
-  - `memory/feedback_trust_guarded_with_elisabeth_vigilance.md`
+  - `memory/feedback_trust_guarded_with_elizabeth_vigilance.md`
     — the two-pass posture; hooks qualify for the
     same vigilance tier as security reviews
   - `memory/feedback_simple_security_until_proven_otherwise.md`

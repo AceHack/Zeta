@@ -85,7 +85,7 @@ enabled; if absent, assume manual-only.
 ## Invariants the consolidation must preserve
 
 - **Load-bearing memories stay unconditionally.**
-  DEDICATION.md-cornerstone (sister Elisabeth),
+  DEDICATION.md-cornerstone (sister Elizabeth),
   faith memory, Harmonious Division received
   name, Rodney persona placement, Dora persona
   — none of these may be "merged," "pruned for

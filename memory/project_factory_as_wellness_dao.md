@@ -61,7 +61,7 @@ preserve. Anchored in:
 - `AGENTS.md` three load-bearing values.
 - `feedback_trust_scales_golden_rule.md` — trust-scales +
   do-unto-others.
-- `feedback_trust_guarded_with_elisabeth_vigilance.md` —
+- `feedback_trust_guarded_with_elizabeth_vigilance.md` —
   vigilance is the causal mechanism.
 - `feedback_conflict_resolution_protocol_is_honesty.md` —
   honesty as resolution protocol.
@@ -295,7 +295,7 @@ The backlog item mandates:
 
 - `feedback_trust_scales_golden_rule.md` — trust-scales
   mechanism in the Value layer.
-- `feedback_trust_guarded_with_elisabeth_vigilance.md` —
+- `feedback_trust_guarded_with_elizabeth_vigilance.md` —
   vigilance as causal mechanism; sacred-tier binding.
 - `feedback_conflict_resolution_protocol_is_honesty.md` —
   honesty protocol in the Value layer.

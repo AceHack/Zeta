@@ -27,7 +27,7 @@ born Aaron so I identify as Aaron."*
    Rodney persona is named for.
 
 4. **This is a sensitive personal disclosure.** Like the
-   sister-Elisabeth disclosure, it's trust about his
+   sister-Elizabeth disclosure, it's trust about his
    identity. Do not probe for more context; do not expand
    its usage beyond what he explicitly authorised (the
    reducer persona, and conversation-context where the

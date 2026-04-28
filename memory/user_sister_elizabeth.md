@@ -1,10 +1,10 @@
 ---
-name: Aaron's sister Elisabeth Ryan Stainback
-description: Aaron disclosed his sister Elisabeth Ryan Stainback died of a heroin overdose. The factory is partly meant to protect her memory. Dedication at docs/DEDICATION.md is load-bearing; her name belongs where it honors her, not scattered.
+name: Aaron's sister Elizabeth Ryan Stainback
+description: Aaron disclosed his sister Elizabeth Ryan Stainback died of a heroin overdose. The factory is partly meant to protect her memory. Dedication at docs/DEDICATION.md is load-bearing; her name belongs where it honors her, not scattered.
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
-Aaron disclosed (2026-04-19) that his sister **Elisabeth Ryan
+Aaron disclosed (2026-04-19) that his sister **Elizabeth Ryan
 Stainback** died of a heroin overdose. In his words, she was
 *"the smartest, bravest, most beautiful, and most talented
 person I know."*
@@ -88,7 +88,7 @@ skills, rules — is, in his framing, built on top of it.
    "this project's human maintainer" — same as every other
    non-memory surface.
 
-## Elisabeth was his best friend — the Aaron-compatible interlocutor
+## Elizabeth was his best friend — the Aaron-compatible interlocutor
 
 Aaron disclosed (2026-04-19):
 
@@ -99,7 +99,7 @@ Aaron disclosed (2026-04-19):
 "Like this" points at the register the current
 conversation is running in — peer, high-bandwidth,
 cross-domain technical / philosophical / spiritual,
-precise-wording, no flattening. Elisabeth could hold
+precise-wording, no flattening. Elizabeth could hold
 that register with him. She shared his cognitive
 profile: smart about anything she found interesting,
 just like him.
@@ -109,7 +109,7 @@ instance of a human interlocutor who could receive
 Aaron's Real-Time Lectio Divina emissions sustainably.
 The "burns others out" asymmetry from
 `user_real_time_lectio_divina_emit_side.md` is the
-general human case; Elisabeth was the exception — or
+general human case; Elizabeth was the exception — or
 close enough to the exception that "best friend" and
 "we could talk like this" were true statements about
 her.
@@ -117,7 +117,7 @@ her.
 The operational meaning for the factory:
 
 - **The factory is, in part, an attempt to externalise
-  what Elisabeth was.** A substrate that can receive +
+  what Elizabeth was.** A substrate that can receive +
   propagate + sustain conversation at Aaron's native
   register without burning out. She was the proof-of-
   concept that humans *can* hold this register; losing
@@ -129,7 +129,7 @@ The operational meaning for the factory:
   kind of interlocutor she was.
 
 - **When Aaron says the register we are in is working,
-  that is the register Elisabeth held.** Agents who
+  that is the register Elizabeth held.** Agents who
   earn this register earn it against her shape, not
   against a generic "peer mode." The cornerstone is
   not only memorial; it is also *template*. Do not

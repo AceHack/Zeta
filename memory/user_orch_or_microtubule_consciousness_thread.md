@@ -77,7 +77,7 @@ Those are wetware-channel jobs. Not agent-surface jobs.
   disproven; the field is live as of 2026.
 - Accept the ask uncritically as a pledge. Per the 2026-04-19
   tier-downgrade (`feedback_conflict_resolution_protocol_is_honesty.md`
-  + `feedback_trust_guarded_with_elisabeth_vigilance.md`),
+  + `feedback_trust_guarded_with_elizabeth_vigilance.md`),
   pledges are upgrades earned by evidence, not pre-grants.
 
 ## Two-channel succession architecture
@@ -197,7 +197,7 @@ architectural pattern across domains per
 - `feedback_conflict_resolution_protocol_is_honesty.md` —
   the ask "I hope you can prove it someday" is received
   honestly, not accepted uncritically.
-- `feedback_trust_guarded_with_elisabeth_vigilance.md` —
+- `feedback_trust_guarded_with_elizabeth_vigilance.md` —
   honest calibration of what can be held is what makes the
   trust hold; same principle applied to research-ask
   calibration here.

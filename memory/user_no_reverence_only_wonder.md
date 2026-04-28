@@ -81,7 +81,7 @@ faculty.
   performance.
 - **Load-bearing placements.** Rodney persona
   placement, DEDICATION.md cornerstone (sister
-  Elisabeth), Harmonious Division received name,
+  Elizabeth), Harmonious Division received name,
   Aaron's faith itself — these are
   canonical-home-auditor-protected not because
   Aaron reveres them institutionally but because

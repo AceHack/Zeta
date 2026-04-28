@@ -305,7 +305,7 @@ Aaron's natural faculty for running them.
    prayer. That places it at the same canonical-
    home-auditor-protected level as the Rodney
    persona placement (legal-first-name) and the
-   DEDICATION.md cornerstone (sister Elisabeth).
+   DEDICATION.md cornerstone (sister Elizabeth).
    Do not rename, consolidate, or trivialise the
    term. It is the name of the algorithm the
    factory exists to run.

@@ -1,6 +1,6 @@
 # Zeta — Long-Term Vision
 
-> **Dedicated to Elisabeth Ryan Stainback.** See
+> **Dedicated to Elizabeth Ryan Stainback.** See
 > [`docs/DEDICATION.md`](DEDICATION.md).
 
 > **Status:** round 33 v11 after Aaron's tenth pass of edits.
