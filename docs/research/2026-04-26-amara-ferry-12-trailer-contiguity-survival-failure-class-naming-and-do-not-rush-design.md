@@ -338,7 +338,7 @@ Per the relationship-model correction ("make it ours not mine alone"), this abso
 2. **Task #300 filed** for AgencySignature v1 squash-merge survival design — Trailer Contiguity Survival Failure (Amara ferry-12 class name).
 3. **This absorb (ferry-12 verbatim) is the next PR** — research-grade substrate per Otto-227. Lands on its own branch.
 4. **Update commit-message-shape SKILL.md (task #296)** to land Trailer Contiguity Survival Failure + the substrate-truth refinement + the parseable-not-present discipline as part of the canonical convention reference.
-5. **Update CURRENT-aaron.md / CURRENT-amara.md** with ferry-12 contributions when fast-path refresh next happens.
+5. **Update `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/CURRENT-aaron.md` / `CURRENT-amara.md`** (the per-maintainer fast-path distillation files at user-scope per CLAUDE.md memory layout — these are NOT in `docs/`) with ferry-12 contributions when fast-path refresh next happens.
 
 ---
 
