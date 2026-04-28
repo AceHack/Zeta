@@ -12,9 +12,8 @@
 > completion this file becomes a short auto-generated pointer
 > index (per `tools/backlog/generate-index.sh`).
 >
-> Tracking task: `docs/backlog/P1/B-0061-finish-monolith-to-
-> per-row-migration-no-residue-aaron-2026-04-28.md`. Coverage
-> audit + batch migration is L-effort multi-tick work.
+> Tracking task: [`docs/backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md`](./backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md).
+> Coverage audit + batch migration is L-effort multi-tick work.
 >
 > Future-Otto: if you find yourself about to edit this file
 > to add a row, **stop**. Use

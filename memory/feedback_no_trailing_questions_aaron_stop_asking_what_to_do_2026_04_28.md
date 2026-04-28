@@ -114,15 +114,21 @@ with declarative status + autonomous next step.
   — same family of anti-autonomy framing ("directive" word
   was the prior failure mode; "Want me to..." question is
   this one).
-- `feedback_block_only_when_aaron_must_do_something_only_he_can_do_otherwise_drive_with_best_long_term_judgment_2026_04_27.md`
-  — only block on Aaron when he MUST act personally;
-  trailing questions invert this default to "block
-  everything for permission."
-- `feedback_claude_md_cadenced_reread_for_long_running_sessions_2026_04_28.md`
-  — application failure recurring this session (multiple
-  catches before this rule landed) is direct evidence the
-  cadenced re-read needs to include this rule's source +
-  the pre-edit reflex pattern.
+- The block-only-when-Aaron-must-act-personally principle
+  (Aaron 2026-04-27 framing — captured in maintainer notes;
+  not yet a standalone in-repo memory) — only block on Aaron
+  when he MUST act personally; trailing questions invert
+  this default to "block everything for permission."
+- The CLAUDE.md cadenced-re-read discipline for long-running
+  sessions (Aaron 2026-04-28 framing — captured in maintainer
+  notes; not yet a standalone in-repo memory) — application
+  failure recurring this session (multiple catches before
+  this rule landed) is direct evidence the cadenced re-read
+  needs to include this rule's source + the pre-edit reflex
+  pattern.
 - `feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
-  — visibility-first surfacing is declarative status, not a
-  question; both rules compose.
+  (user-scope memory at
+  `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/`;
+  not in-repo, scope difference noted) — visibility-first
+  surfacing is declarative status, not a question; both
+  rules compose.
