@@ -1,7 +1,7 @@
 # AceHack vs LFG cost-parity audit
 
 **Date:** 2026-04-23
-**Status:** first-pass audit; `admin:org` scope elevation authorized but not yet applied
+**Status:** first-pass audit; `admin:org` scope elevation authorized but not yet applied via `gh auth refresh`. The Otto-65 addendum below uses billing-UI screenshots pasted by the human maintainer, NOT scope-elevated agent reads.
 **Lives on:** AceHack (experimentation-frontier per Amara authority-axis split — Otto-61 memory)
 **Companion memory (per-user, pending in-repo migration):**
 `feedback_lfg_free_actions_credits_limited_acehack_is_poor_man_host_big_batches_to_lfg_not_one_for_one_2026_04_23.md`
@@ -14,8 +14,14 @@ for free that would limit us on LFG"*.
 ## TL;DR
 
 - **Linux Actions**: both repos public → both unlimited-free. Parity.
-- **macOS-14 runner**: already cost-aware — `gate.yml` matrix runs it
-  only on AceHack. Keep.
+- **macOS-14 runner**: corrected by Otto-65 addendum (see
+  "Correction to Otto-61 claim: macOS multiplier cost"
+  below). The original "matrix runs only on AceHack" claim
+  was wrong — `gate.yml` matrix runs macOS on both forks,
+  and LFG had macOS minutes on Apr 21 + 22. The
+  cost-discipline rationale is latency + future-policy /
+  fork-visibility-flip risk-headroom, not "matrix
+  avoidance."
 - **LFG monthly baseline cost** (confirmed by human-maintainer
   Otto-62, with follow-up Otto-62 correction *"i only used one user
   seat so only 19, maybe will update max later"*): Team plan
@@ -59,15 +65,26 @@ for free that would limit us on LFG"*.
 
 ### Actions runner cost-awareness (`gate.yml`)
 
+> **Errata 2026-04-28 (corrected by Otto-65 addendum
+> below):** the snapshot below was authored from a stale
+> read of `.github/workflows/gate.yml`. The current matrix
+> runs macOS on **both** forks; the conditional below does
+> NOT match what the file says today. The Otto-65 addendum
+> ("Correction to Otto-61 claim: macOS multiplier cost")
+> covers the corrected reality and the cost-discipline
+> rationale.
+
 ```yaml
 os: ${{ fromJSON(github.repository == 'Lucent-Financial-Group/Zeta'
         && '["ubuntu-22.04"]'
         || '["ubuntu-22.04","macos-14"]') }}
 ```
 
-Deliberate cost split: macOS-14 (10x multiplier even on public repos)
-runs on AceHack only. LFG is Linux-only. This predates the Otto-61
-directive chain; recognising it as already-correct.
+Original framing (now superseded): "deliberate cost split:
+macOS-14 (10x multiplier even on public repos) runs on
+AceHack only. LFG is Linux-only." Preserved verbatim for
+audit-trail traceability; the Otto-65 addendum is the
+canonical reference.
 
 ### Workflow run history (snapshot 2026-04-23)
 
@@ -179,8 +196,14 @@ the elevated scope to fill the unobservable fields.
    billing-side of this audit.
 3. **Enable dependabot_security_updates on AceHack** (free,
    increases parity). One-click through repo settings.
-4. **Document the LFG baseline $46/mo** in an ADR so future Otto
-   sessions can cost-account with numbers, not speculation.
+4. **Document the LFG baseline $27/mo** ($8 Team + $19 Copilot
+   Business × 1 seat) in an ADR so future Otto sessions can
+   cost-account with numbers, not speculation. Original draft
+   said `$46/mo` based on a pre-correction estimate; Otto-62's
+   correction *"i only used one user seat so only 19, maybe
+   will update max later"* drops the Copilot Business line by
+   ~$19, and the addendum's "Confirmed monthly baseline:
+   ~$27/mo" is the canonical figure.
 
 ### Long-term (if cost becomes binding)
 
@@ -221,9 +244,16 @@ This addendum supersedes the speculative figures above.
 licenses filled.
 
 **Metered usage:** $43.71 gross, $66.62 included-usage
-discount → net $0 billed on Actions for the month. Cap
-is inclusive: gross exposure > discount would flip to
-billed.
+discount → net $0 billed on Actions for the month. The
+billed-flip claim ("gross exposure > discount → billed")
+holds **conditional on current org budget settings**: per
+"Org budgets" below, all products have `Stop usage: Yes`
+at $0 budget except GHAS and Copilot. So in practice the
+flip would NOT happen as written — gross-exceeding-
+discount triggers the budget hard-stop, not a billed
+amount. The text-as-written describes the underlying GitHub
+billing semantic (what *would* happen without the budget
+rail); the actual operational behaviour is hard-stop.
 
 **Copilot Business:** 1 license × $0.633/day ≈ $19/mo
 (billed, not discounted). Per-day reconciles exactly
@@ -387,8 +417,15 @@ authority-axis) not a cost decision.
 
 Retaining Otto-62 candidates + one new:
 
-1. Parity-audit tool (now with real-numbers fidelity since admin:org scope available)
-2. admin:org-scoped Actions-usage-history tool
+1. Parity-audit tool — now with real-numbers fidelity from
+   the manually-pasted billing UI (Otto-65). The
+   `admin:org` scope elevation is still authorized but not
+   yet applied via `gh auth refresh`; once it is, the tool
+   can pull the same numbers programmatically. The
+   addendum's data is from the human maintainer's billing
+   UI paste, not scope-elevated agent reads.
+2. `admin:org`-scoped Actions-usage-history tool (depends on
+   the not-yet-applied scope elevation).
 3. Enable dependabot on AceHack (free, increases parity)
 4. ADR documenting the confirmed baseline: **LFG $27/mo, AceHack $4/mo flat; both $0 billed beyond baseline under current usage**
 5. **NEW: archaeology on the "separate Zeta" in AceHack billing** ($13.77 gross/mo suggests a prior fork still accumulating — could be moribund and should be archived, or could be intentional)
