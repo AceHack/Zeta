@@ -40,13 +40,26 @@ Reverse leg (LFG → AceHack): full-reconciliation merge (step 6)
 Steady state: UPSTREAM-RHYTHM batched cadence (step 7)
 ```
 
+**Citation conventions for this section:** all `Commit:` /
+`Tick-history:` SHAs in steps 1-6 reference the
+**`Lucent-Financial-Group/Zeta`** repository (the forward-sync
+target); all `PR:` numbers in steps 1-6 reference the same.
+Step 7 (steady-state cadence) examples reference
+**`AceHack/Zeta`** explicitly; deviations from this default are
+noted inline. SHAs are short (7-char) for in-prose readability;
+qualify to full SHAs via `gh api repos/<owner>/<repo>/commits/<sha>`
+when programmatic verification matters. Per Codex review on this
+ADR (PR #31): bare short-SHAs without repo context create
+verification ambiguity once forks diverge — this preamble
+removes that ambiguity for the entire steps-1-6 block.
+
 ### Step 1 — batch-1: foundation files
 
 Forward-sync 17 missing files + audit doc + Otto-347 discipline. Establishes the cherry-pick-with-rewrites pattern; lands the audit infrastructure that subsequent batches use to verify content preservation.
 
-- **Commit:** `1c1bd95` — sync(acehack→lfg) batch-1: 17 missing files + audit doc + Otto-347
-- **PR:** #592
-- **Tick-history:** `790be82` (2026-04-26T12:23:02Z)
+- **Commit:** `Lucent-Financial-Group/Zeta@1c1bd95` — sync(acehack→lfg) batch-1: 17 missing files + audit doc + Otto-347
+- **PR:** Lucent-Financial-Group/Zeta#592
+- **Tick-history:** `Lucent-Financial-Group/Zeta@790be82` (2026-04-26T12:23:02Z)
 
 ### Step 2 — batch-2: BACKLOG row migration
 
