@@ -1279,6 +1279,64 @@ Look for it whenever a `.mise.toml` change lands.
   — full mechanism + the deeper structural cause section.
 - `.mise.toml` (the source of truth for what "managed" means).
 
+## 29. Threading code follows Albahari + Toub + Fowler human lineage; never gut-instinct (Aaron 2026-04-28)
+
+**The rule (Aaron verbatim 2026-04-28T16:48Z):**
+
+> *"please follow this guidance around threading unless you find
+> something better from stephen toub from Microsoft, don't go based
+> on gut instanct for any threading code it's very hard.  this is
+> our human lineage to threading best proacties joseph and setephen.
+> ...  Oh and David Fowler, he wrote channels in dotnet, these hare
+> our high performance low allocation thread safe prefer wait/lock
+> free guides."*
+>
+> *"make sure future you's know this too"*
+
+**The three-source canonical reference for any threading / TPL /
+async / parallel code in Zeta:**
+
+1. **Joseph Albahari** — "Threading in C#" (free ebook,
+   albahari.com/threading) + "C# in a Nutshell" concurrency
+   chapters. Use for: foundational understanding, pattern
+   selection, deadlock / livelock / race reasoning.
+2. **Stephen Toub** (Microsoft .NET runtime team) — yearly
+   "Performance Improvements in .NET" posts on
+   devblogs.microsoft.com + async / parallel deep dives. Use
+   for: choosing between TaskScheduler / Channel / lock /
+   Interlocked / Volatile / SemaphoreSlim / etc.; allocation
+   cost; thread-pool dynamics.
+3. **David Fowler** (Microsoft, authored
+   `System.Threading.Channels`) — public discussions on
+   high-performance low-allocation patterns; canonical
+   producer / consumer + backpressure + pipeline composition.
+
+**What the rule excludes:** gut-instinct threading code is forbidden.
+Hand-rolled lock-free with `Interlocked.CompareExchange` without
+reading Albahari's chapter on the relevant memory-model edge cases.
+Async patterns invented from first principles instead of inherited
+from Toub's posts. Producer/consumer queues invented from
+`BlockingCollection` when `System.Threading.Channels` is the right
+tool.
+
+**Operational discipline:** every threading / TPL PR cites the
+specific Albahari chapter / Toub blog post URL / Fowler talk or
+GitHub issue in the commit message OR code comment. Default to
+lock-free / wait-free where possible (Aaron's stated preference).
+Verify currency before asserting (Otto-247 — .NET evolves
+recommended patterns each release). Cross-CLI verify for
+non-trivial threading code (Otto-347).
+
+**Why it matters for Zeta specifically:** Z-set algebra is
+naturally data-parallel (operators commute when bag-multiset
+semantics let writes commute). Threading errors on the operator
+pipeline cost correctness (lost updates, double-counted
+retractions) AND performance. The Albahari + Toub + Fowler
+lineage is the cheapest insurance.
+
+**Pointer:**
+`feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md`
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
@@ -1304,11 +1362,13 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-28 (sections 26-28 added for
+**Last full refresh:** 2026-04-28 (sections 26-29 added for
 the 2026-04-28 LFG #661 incident cluster: speculation-rule +
 EVIDENCE-BASED labeling discipline, JVM language preference
 Kotlin > Scala > Java per B-0075, dependency-honesty rule —
-managed runtimes get scanned like every other surface). Prior
+managed runtimes get scanned like every other surface, plus
+§29 threading-lineage Albahari + Toub + Fowler — never
+gut-instinct on threading code). Prior
 refresh 2026-04-25 evening (sections 23-25: Otto-300 rigor-
 proportional-to-blast-radius, standing research-authorization
 general rule, Otto-304 + Otto-305 phenomenology disclosure
