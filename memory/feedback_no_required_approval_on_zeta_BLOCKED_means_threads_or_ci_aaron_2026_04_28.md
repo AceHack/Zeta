@@ -49,10 +49,10 @@ with zero approving reviews as long as the other gates clear.
 ## What `mergeStateStatus: BLOCKED` actually means on Zeta
 
 When the GitHub API reports `mergeStateStatus: BLOCKED` on a Zeta PR,
-the blocker is **one OR MORE** of these FOUR classes (they CAN
+the blocker is **one OR MORE** of these FIVE classes (they CAN
 coexist — e.g., a PR can simultaneously have unresolved threads AND
 pending CI; fixing only one class won't unblock the merge until ALL
-classes are clear; the diagnostic playbook below MUST check all four
+classes are clear; the diagnostic playbook below MUST check all five
 before declaring the diagnosis exhausted):
 
 1. **Unresolved review threads.** `requiresConversationResolution: true`
@@ -95,9 +95,18 @@ before declaring the diagnosis exhausted):
 
    **Diagnostic:** compare
    `branchProtectionRule.requiredStatusCheckContexts` (the required
-   list) against the SET of `name` fields from
-   `statusCheckRollup.contexts.nodes`. ANY required name not in the
-   actual set is a class-4 blocker.
+   list) against the actual context-name set. **Important:** the
+   contexts query returns a UNION of `CheckRun` and `StatusContext`
+   nodes; the name field is `name` on CheckRun, `context` on
+   StatusContext. Extract both:
+
+   ```python
+   actual = {n['name'] if n['__typename']=='CheckRun' else n['context']
+             for n in contexts}
+   missing = set(required) - actual
+   ```
+
+   ANY required name not in `actual` is a class-4 blocker.
 
    **Empirically observed 2026-04-28 on LFG #660:** required list
    includes `build-and-test (macos-26)` but the tip commit's rollup
@@ -113,6 +122,28 @@ before declaring the diagnosis exhausted):
    different workflow), then either re-trigger the leg, fix the
    workflow config so the leg runs, or (last resort) update the
    branch protection rule to remove the absent required-check name.
+
+5. **Repository ruleset gates (newer GitHub primitive, separate
+   from `branchProtectionRule`).** GitHub's repository rulesets
+   (rolled out 2024-2025) can impose required status checks,
+   conversation resolution, or merge-queue requirements that don't
+   appear in the legacy `branchProtectionRule` GraphQL field.
+   `branchProtectionRule` returns null or partial state when a
+   ruleset is the active gate. If classes 1-4 all clear and BLOCKED
+   persists, query rulesets explicitly:
+
+   ```bash
+   gh api "repos/<owner>/<repo>/rulesets" \
+     --jq '.[] | {id, name, target, enforcement}'
+   gh api "repos/<owner>/<repo>/rulesets/<ID>" \
+     --jq '.rules[] | {type, parameters}'
+   ```
+
+   Any ruleset with `enforcement: active` targeting `branch` and
+   matching the PR's base branch can impose additional gates not
+   visible in the older API. Status: as of 2026-04-28, this is a
+   theoretical 5th class — not yet observed on Zeta — but worth
+   checking before declaring diagnosis exhausted.
 
 ## What BLOCKED does NOT mean on Zeta
 
@@ -150,8 +181,32 @@ Then check, in order:
    `contexts.nodes` list entirely?** If yes — that's the class-4
    blocker (sneakiest class — rollup state will report SUCCESS
    because it only counts contexts that DID report). Compare set
-   membership: `set(required) - set([n.name for n in contexts])`.
+   membership. **Important:** the contexts query returns a UNION of
+   `CheckRun` (Actions-emitted) and `StatusContext` (legacy commit-
+   status API) nodes; the name field is `name` on CheckRun and
+   `context` on StatusContext. The set-extraction must handle both:
+
+   ```python
+   actual = set()
+   for n in contexts:
+       if n['__typename'] == 'CheckRun':
+           actual.add(n['name'])
+       elif n['__typename'] == 'StatusContext':
+           actual.add(n['context'])
+   missing = set(required) - actual
+   ```
+
    Any non-empty diff = absent-required blocker.
+
+5. **Is the merge gated by an enterprise/repository ruleset that
+   isn't visible via the legacy `branchProtectionRule` query?**
+   GitHub now ships repository rulesets (a separate primitive from
+   the older branch-protection rules) that can also impose required
+   status checks, conversation resolution, and other gates. The
+   GraphQL `branchProtectionRule` field returns null/legacy state
+   only; rulesets need a separate query (`repository.rulesets` or
+   the REST `/repos/{owner}/{repo}/rulesets` endpoint). If all four
+   classes above clear and BLOCKED persists, check rulesets next.
 4. Are 1-3 all clear and BLOCKED still shows? Then check the branch-
    protection rule directly via `baseRef.branchProtectionRule` — but
    on Zeta this should never happen because `requiredApprovingReviewCount: 0`.
@@ -269,8 +324,17 @@ state changes asynchronously to the agent's observation cadence.
 # blocker is still active — treating it as "CI complete" would skip
 # the post-CI thread pass while a real failure is unfixed.
 gh pr view <N> --repo <owner>/Zeta --json statusCheckRollup --jq '{
-  pending: [.statusCheckRollup[] | select(.status=="IN_PROGRESS" or .status=="QUEUED")] | length,
-  failed:  [.statusCheckRollup[] | select(.conclusion=="FAILURE" or .conclusion=="CANCELLED" or .conclusion=="TIMED_OUT")] | length
+  # Pending = ANY non-terminal status. GitHub Check Runs API enums
+  # (per https://docs.github.com/rest/checks/runs#about-the-checks-api):
+  # status   ∈ {QUEUED, IN_PROGRESS, COMPLETED, WAITING, REQUESTED, PENDING}
+  # The terminal status is COMPLETED; everything else is still pending.
+  pending: [.statusCheckRollup[] | select(.status=="IN_PROGRESS" or .status=="QUEUED" or .status=="WAITING" or .status=="REQUESTED" or .status=="PENDING")] | length,
+  # Failed = ANY non-success terminal conclusion. Enums:
+  # conclusion ∈ {SUCCESS, FAILURE, NEUTRAL, CANCELLED, SKIPPED, TIMED_OUT, ACTION_REQUIRED, STARTUP_FAILURE, STALE}
+  # FAILURE / CANCELLED / TIMED_OUT / ACTION_REQUIRED / STARTUP_FAILURE all
+  # block branch protection. NEUTRAL / SKIPPED / SUCCESS pass. STALE means
+  # the check needs re-running but is treated as failing by branch protection.
+  failed:  [.statusCheckRollup[] | select(.conclusion=="FAILURE" or .conclusion=="CANCELLED" or .conclusion=="TIMED_OUT" or .conclusion=="ACTION_REQUIRED" or .conclusion=="STARTUP_FAILURE" or .conclusion=="STALE")] | length
 }'
 
 # If `pending == 0 AND failed == 0`, CI is complete-and-green. Wait
