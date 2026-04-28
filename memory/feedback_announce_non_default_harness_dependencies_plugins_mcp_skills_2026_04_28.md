@@ -201,6 +201,31 @@ factory's roster of skill *content* lives in `.claude/skills/`
 will need to either (a) agree on a shared skill home and migrate
 or (b) port per-harness via the canonical-home pattern.
 
+**Empirical-test gate (Aaron 2026-04-28):** *"any harness that
+tries to use a shared location will need to test like you can
+they actuall load the skill, you though you would be able to in
+a shared non .claude location but you could not."* Cross-harness
+portability claims must be **tested per harness**, not assumed.
+Empirical fact: Claude Code's skill discovery is **scoped to
+`.claude/skills/`**; a previous attempt to put a skill in a
+shared non-`.claude/` location *failed to load* in Claude Code,
+contrary to my assumption. So:
+
+- Before claiming a "shared skill home" is portable across N
+  harnesses, verify each harness can actually find + load
+  skills there. Don't assume "the skill exists at path X" implies
+  "harness Y loads it."
+- The `.claude/skills/` empirical-failure result for non-default
+  paths is a calibration data point: even Claude Code (which
+  *does* support skills) doesn't auto-discover outside its
+  canonical home. Other harnesses are likely similarly scoped.
+- The portable surface that *is* empirically tested across
+  harnesses is **AGENTS.md** — every coding-agent harness reads
+  it (it's the established universal convention). For
+  not-yet-tested cross-harness skill-home proposals, treat them
+  as research-grade until each target harness's load behaviour
+  is verified.
+
 **Why this matters (cross-harness portability lens):** the
 factory's vision (per CLAUDE.md "Claude Code harness — what
 this buys us" + the peer-mode-agent trajectory + `tools/
