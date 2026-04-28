@@ -21,7 +21,7 @@ range, recently-added 2026-04-28 entries):
 > `memory/README.md` specifies the index is capped (~200
 > lines) and should be kept terse ("one line per memory
 > file"). Consider shortening each bullet to just the title
-> + a very brief hint, and move the detailed
+> plus a very brief hint, and move the detailed
 > rationale/examples into the referenced memory files.
 
 CLAUDE.md memory section similarly states:
@@ -33,6 +33,7 @@ CLAUDE.md memory section similarly states:
 `memory/MEMORY.md` is a hot spine file. Every PR touching it
 flips siblings DIRTY (empirically twice-confirmed in 2026-04-28
 session). Re-shaping ~30+ entries inline on PR #72 would:
+
 1. Generate massive cascade churn on the open PR queue
 2. Mix substrate-cleanup with the EAT/wallet content that PR
    #72 already covers
