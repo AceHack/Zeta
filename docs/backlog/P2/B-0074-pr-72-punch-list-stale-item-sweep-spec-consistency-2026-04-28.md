@@ -40,8 +40,14 @@ session. Codex flagged 4 stale entries:
 3. **L161 — §15 unresolved-questions item (cid: SIvLus5-BHvU)**:
    the §15 entry that was open is now closed; drop from punch.
 4. **L62 — pre-broadcast freeze item (cid: SIvLus5-Bk-Z)**:
-   resolved by the §13.4 in-repo-monitor removal (earlier tick
-   edit aligning with §12.5 sibling-repo redundancy).
+   the in-repo-monitor topology aspect of this entry was
+   resolved by the §13.4 in-repo-monitor removal (earlier
+   tick edit aligning with §12.5 sibling-repo redundancy);
+   **but the state-machine semantics aspect (pre-flight vs
+   post-broadcast classification timing — the actual safety
+   invariant the punch-list item flagged) remains OPEN.**
+   The B-0062 entry should be split: close the topology
+   sub-item, keep the state-machine sub-item open.
 
 ### EAT/wallet cross-doc alignment
 
@@ -64,10 +70,13 @@ session. Codex flagged 4 stale entries:
    PR's branch). Once #28's content propagates to AceHack
    main + PR #72 rebases, the reference becomes valid. Either
    wait for the rebase or relabel the reference now.
-2. **`docs/research/2026-04-28-cadenced-git-hotspot-detection-
-   *.md` L50 (cid: SIvLus5-B6tS)**: log-line analysis should
-   exclude blank lines from hotspot scoring. Small algorithmic
-   refinement to whichever tool the doc references.
+2. **`docs/backlog/P1/B-0067-cadenced-git-hotspot-detection-aaron-2026-04-28.md`
+   L50 (cid: SIvLus5-B6tS)**: log-line analysis should
+   exclude blank lines from hotspot scoring. Small
+   algorithmic refinement to whichever tool the doc references.
+   (Earlier draft incorrectly cited the location as
+   `docs/research/...` — the actual file is the B-0067
+   backlog row at the path above.)
 
 ## Why deferred (not fixed in PR #72)
 

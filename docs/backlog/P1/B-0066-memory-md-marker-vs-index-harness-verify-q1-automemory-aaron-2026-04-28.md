@@ -119,8 +119,15 @@ leaked source for."* This step is the verification.
 - Author `tools/memory/generate-memory-index.sh` modelled
   on `tools/backlog/generate-index.sh`. Reads each
   `memory/*.md`, extracts `name:` + `description:` from
-  frontmatter, emits a one-line-per-file index sorted by
-  `created:` field descending (newest first).
+  frontmatter, emits a one-line-per-file index. **Sort
+  order:** memory frontmatter only carries
+  `name`/`description`/`type` (not `created:`), so sort by
+  filename's embedded date stamp (most memory filenames
+  end in `_YYYY_MM_DD.md`) descending, falling back to
+  filesystem mtime, then alphabetical name. Phase 1
+  also: extend the memory frontmatter spec to make
+  `created:` optional but supported, so future files can
+  use it for finer-grained ordering.
 - Pre-commit hook: on any `memory/*.md` add or modify,
   regenerate `memory/MEMORY.md`.
 - CI check: `tools/memory/generate-memory-index.sh
@@ -157,9 +164,13 @@ leaked source for."* This step is the verification.
       conclusions about what's in `memory/` as before.
 - [ ] AutoDream / AutoMemory continues to function (or
       its writes are correctly intercepted).
-- [ ] git-hotspot status of `memory/MEMORY.md` drops to
-      0 in the cadenced hotspot detector (B-0067) within
-      one round of cutover.
+- [ ] git-hotspot status of `memory/MEMORY.md` drops
+      below the top-10 hotspot threshold in the cadenced
+      detector (B-0067) within one round of cutover.
+      (Note: cannot be 0 — the regenerator-on-every-
+      memory-add commits MEMORY.md continuously by
+      design. The threshold-based criterion is what's
+      observable; 0 would be uncloseable.)
 
 ## Composes with
 

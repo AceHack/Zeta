@@ -51,9 +51,13 @@ training-data cutoff makes default knowledge stale.
 
 ## Composes with
 
-- `tools/peer-call/grok.sh` + `tools/peer-call/codex.sh`
-  + `tools/peer-call/gemini.sh` (existing sibling
-  callers; kiro.sh would be a parallel-shape addition).
+- `tools/peer-call/grok.sh` (existing sibling caller on
+  AceHack main as of 2026-04-28). `tools/peer-call/codex.sh`
+  + `tools/peer-call/gemini.sh` were added via PR #28
+  (merged on AceHack main 2026-04-28T09:04Z) but are not
+  yet rebased into PR #72's branch — verify post-rebase
+  before relying on them. kiro.sh would be a parallel-shape
+  addition.
 - Otto-247 version-currency rule (WebSearch before
   asserting CLI versions / capabilities).
 - Otto-347 cross-CLI verify (more harnesses = more

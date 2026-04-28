@@ -101,7 +101,9 @@ using it on the GitHub-UI surface specifically.
     drain log.
   - No mutation on shared-production state without the
     visibility constraint already in
-    `feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
+    `~/.claude/projects/-Users-acehack-Documents-src-repos-Zeta/memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`
+    (user-scope only at this commit; in-repo migration deferred
+    per the natural-home-of-memories directive)
     being satisfied (the change must show up somewhere
     the maintainer can see it).
   - Reversibility: every mutation has a documented

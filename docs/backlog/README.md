@@ -12,8 +12,12 @@ generator, and phase plan.
 
 ## Quick reference
 
-- **Add a row:** `tools/backlog/new-row.sh --priority P2 --slug your-slug`
-  (Phase 1b; manual file creation works in the interim).
+- **Add a row:** create the file directly at
+  `docs/backlog/PN/B-<next-NNNN>-<slug>.md` with the schema
+  documented in `tools/backlog/README.md`. (A scaffolder
+  `tools/backlog/new-row.sh` is planned but not yet shipped
+  — track via task #299 or relevant phase row; manual file
+  creation is the path today.)
 - **Regenerate index:** `tools/backlog/generate-index.sh`.
 - **Check for drift:** `tools/backlog/generate-index.sh --check`.
 
