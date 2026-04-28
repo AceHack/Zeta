@@ -31,10 +31,15 @@ docs/backlog/
 ## Current state — Phase 2 in progress
 
 Tooling + schema landed (Phase 1a complete). Phase 2 row
-migration is **in progress, not finished**: at the time of
-this README refresh (2026-04-28) there are ~58 per-row files
-under `P1/`/`P2/`/`P3/` while `docs/BACKLOG.md` still carries
-~384 row markers, leaving roughly 326 rows un-migrated.
+migration is **in progress, not finished**: per-row files
+under `P0/`/`P1/`/`P2/`/`P3/` are the authoritative source for
+everything that has been migrated; the monolith
+`docs/BACKLOG.md` still carries the un-migrated remainder.
+Approximate counts at the time of writing (these drift as
+migration proceeds — for current values, count files in
+`docs/backlog/P*/` and row markers in `docs/BACKLOG.md`):
+roughly 60 per-row files migrated, several hundred row
+markers still in the monolith.
 
 **Authoritative source:** the per-row files in this directory
 are the authoritative source for everything that has been

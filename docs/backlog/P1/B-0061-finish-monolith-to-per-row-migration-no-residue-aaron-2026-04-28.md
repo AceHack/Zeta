@@ -15,10 +15,12 @@ tags: [factory-hygiene, backlog, migration, beacon-safety, no-residue]
 # Finish monolith → per-row migration so future-Otto can't slip
 
 The split-target structure under `docs/backlog/PN/B-NNNN-<slug>.md`
-is real and partially populated (~58 per-row files at the time of
-filing). The 17,084-line monolith `docs/BACKLOG.md` still has ~384
-row markers, of which roughly 326 have not yet been migrated to
-per-row files. Aaron caught this 2026-04-28 when a new row landed
+is real and partially populated (~60 per-row files at the time of
+filing — the count drifts as new per-row rows land in flight). The
+~17K-line monolith `docs/BACKLOG.md` still has ~384 row markers, of
+which several hundred have not yet been migrated to per-row files;
+exact counts are intentionally approximate because they drift as
+the migration proceeds. Aaron caught this 2026-04-28 when a new row landed
 in the monolith instead of as a per-row file:
 
 > *"docs/BACKLOG.md we had split this into multiple how did it
