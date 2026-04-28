@@ -19,21 +19,34 @@
 #     this tool is the extension Amara named.
 #
 # Detection strategy:
-#   Grep for link targets matching `[text](filename.md)`
-#   at the index level (outside code blocks / other noise).
-#   Tally by filename. Any count > 1 is a duplicate.
+#   Line-grep the target file for `](filename.md)` link
+#   targets, normalize equivalent paths (strip leading
+#   `./`), tally by normalized filename. Any count > 1 is
+#   a duplicate.
 #
 #   This catches:
 #     - Exact duplicate entries (same file linked twice)
 #     - Old + new pointer to same file (forgot to dedupe
 #       after an edit)
+#     - Equivalent paths that look different
+#       (`feedback_x.md` vs `./feedback_x.md`)
 #
 #   This does NOT catch:
 #     - Substantially similar descriptions of different
-#       files (that's a judgment call requiring content
-#       review, not a mechanical check)
-#     - External links (http://...) — deliberately scoped
-#       to in-repo memory files
+#       files (judgment call requiring content review,
+#       not a mechanical check).
+#     - External links (http://...) — the regex requires
+#       a `.md` suffix and excludes URL characters, so
+#       in practice only repo-local `.md` link targets
+#       match.
+#     - `.md` link targets inside fenced code blocks —
+#       the grep is line-level, not block-aware. This is
+#       acceptable because the intended target
+#       (`memory/MEMORY.md` — a flat link list) does not
+#       use fenced code blocks. If applied to a target
+#       file that does, false positives are possible;
+#       for that case the caller should pre-strip code
+#       fences.
 #
 # Usage:
 #   tools/hygiene/audit-memory-index-duplicates.sh              # in-repo memory/MEMORY.md
@@ -80,8 +93,17 @@ if [[ ! -f "$target" ]]; then
 fi
 
 # Extract link targets: anything of the form `](foo.md)` where
-# foo.md matches a memory-index entry shape. Tally by target.
-dups=$(grep -oE '\]\([a-zA-Z_0-9./-]+\.md\)' "$target" \
+# foo.md matches a memory-index entry shape. Normalize equivalent
+# paths (`./feedback_x.md` -> `feedback_x.md`) so duplicates that
+# differ only in the `./` prefix get tallied together. Then tally
+# by normalized target.
+#
+# `grep || true` swallows the no-match exit (status 1) under
+# `set -euo pipefail` — without it, an empty / link-free target
+# file would abort the script before the empty-result check
+# below.
+dups=$( { grep -oE '\]\([a-zA-Z_0-9./-]+\.md\)' "$target" || true; } \
+       | sed 's|\](\./|](|' \
        | sort | uniq -c | sort -rn | awk '$1 > 1')
 
 if [[ -z "$dups" ]]; then
