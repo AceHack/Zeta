@@ -95,8 +95,8 @@ gh api graphql --field query='query {
       mergeStateStatus
       mergeable
       reviewDecision
-      reviewThreads(first:50){nodes{isResolved}}
-      commits(last:1){nodes{commit{statusCheckRollup{state contexts(first:30){nodes{__typename ... on CheckRun{name conclusion status} ... on StatusContext{context state}}}}}}}
+      reviewThreads(first:100){pageInfo{hasNextPage} nodes{isResolved}}
+      commits(last:1){nodes{commit{statusCheckRollup{state contexts(first:100){pageInfo{hasNextPage} nodes{__typename ... on CheckRun{name conclusion status} ... on StatusContext{context state}}}}}}}
     }
   }
 }'
@@ -232,7 +232,16 @@ gh pr view <N> --repo <owner>/Zeta --json statusCheckRollup --jq '{
 # If `pending == 0 AND failed == 0`, CI is complete-and-green. Wait
 # ~5-10 min for reviewers to wake up, THEN run the threads query a
 # second time:
-gh api graphql --field query='query{repository(owner:"<owner>",name:"Zeta"){pullRequest(number:<N>){reviewThreads(first:50){nodes{isResolved}}}}}'
+gh api graphql --field query='query{repository(owner:"<owner>",name:"Zeta"){pullRequest(number:<N>){reviewThreads(first:100){pageInfo{hasNextPage} nodes{isResolved}}}}}'
+
+# CRITICAL: if `hasNextPage: true` on either reviewThreads or contexts,
+# the playbook is SHOWING A TRUNCATED VIEW. Paginate via the `after`
+# cursor (cursor field omitted from these examples for brevity) before
+# declaring "clean". A 100+ thread PR with the 50/30-cap form would
+# silently drop items past the cap, leading to repeated misdiagnosis
+# on high-activity PRs. The 100-cap reduces likelihood of truncation
+# but DOES NOT replace the hasNextPage check — always read the flag
+# before treating the count as authoritative.
 
 # If `failed > 0`, the blocker is the failing check itself — investigate
 # the failure first; the post-CI thread pass is gated on green CI.
