@@ -54,6 +54,9 @@ Optional sections:
 | Formal analysis | [formal-analysis.md](trajectories/formal-analysis.md) | Soraya (formal-verification-expert) | per-property review monthly; tool radar quarterly | 2026-04-28 |
 | OpenSpec specs | [openspec-specs.md](trajectories/openspec-specs.md) | Otto + spec-zealot | per-capability when spec churns; full audit monthly | 2026-04-28 |
 | Documentation | [docs.md](trajectories/docs.md) | Otto + Samir (documentation-agent) | per-PR (touched-files); hot-file audit weekly | 2026-04-28 |
+| Memory hygiene | [memory-hygiene.md](trajectories/memory-hygiene.md) | Otto + claude-md-steward | per-memory-file (paired with index); monthly index audit | 2026-04-28 |
+| Skill ecosystem | [skill-ecosystem.md](trajectories/skill-ecosystem.md) | Aarav (skill-tune-up) + Yara (skill-improver) | per-5-10-rounds tune-up; per-gap-finder invocation | 2026-04-28 |
+| CI/CD infrastructure | [ci-infrastructure.md](trajectories/ci-infrastructure.md) | Dejan (devops-engineer) + Otto | per-workflow-edit; per-incident; weekly cost/duration review | 2026-04-28 |
 
 (Add a row when a new trajectory lands; never remove rows —
 retired trajectories get a "Retired" status in the file head.)
