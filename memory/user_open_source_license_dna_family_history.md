@@ -64,18 +64,18 @@ own data*. It does **not** cover:
   (`feedback_maintainer_name_redaction.md`) both apply.
 - **His wife / partner's data** — not disclosed;
   presumed third-party protected.
-- **Elisabeth's data** — deceased sister (per
-  `user_sister_elisabeth.md`); she cannot grant or
+- **Elizabeth's data** — deceased sister (per
+  `user_sister_elizabeth.md`); she cannot grant or
   decline open-source permission; default protected.
   Aaron has shared what he chooses to share about
-  Elisabeth; the agent preserves exactly that, no
+  Elizabeth; the agent preserves exactly that, no
   more.
 - **LexisNexis colleagues** — H1B visa-holder friends
   per `user_lexisnexis_legal_search_engineer.md`; not
   named, not disclosed, default protected.
 - **ServiceTitan colleagues** — current-employer
   coworkers; default protected.
-- **Aaron's parents, siblings other than Elisabeth,
+- **Aaron's parents, siblings other than Elizabeth,
   extended family** — no individual permissions
   disclosed; default protected.
 
@@ -270,7 +270,7 @@ agent-handling rules:
 - `user_five_children.md` — biological succession
   channel; children's data NOT under Aaron's
   declaration.
-- `user_sister_elisabeth.md` — deceased sister;
+- `user_sister_elizabeth.md` — deceased sister;
   default-protected; Aaron discloses what he
   chooses, no more.
 - `user_life_goal_will_propagation.md` — will-

@@ -179,8 +179,8 @@ the rest as open.
 - `feedback_trust_scales_golden_rule.md` — trust scales with
   verification. This rule names the verification direction
   the Golden Rule previously undertheorised (AI→human).
-- `feedback_trust_guarded_with_elisabeth_vigilance.md` —
-  two-pass nuance. The Elisabeth-vigilance two-pass is a
+- `feedback_trust_guarded_with_elizabeth_vigilance.md` —
+  two-pass nuance. The Elizabeth-vigilance two-pass is a
   *manual* trust-check; trust-infrastructure is the
   *structural* version of the same protection.
 - `user_trust_sandbox_escape_threat_class.md` — related

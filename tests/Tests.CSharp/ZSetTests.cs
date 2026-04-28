@@ -27,8 +27,8 @@ public class ZSetTests
     [Fact]
     public void AdditionCancelsNegativeWeights()
     {
-        var a = ZSetModule.ofPairs(new[] { ((int, long))(1, 1L), ((int, long))(2, 2L) });
-        var b = ZSetModule.ofPairs(new[] { ((int, long))(1, -1L), ((int, long))(3, 3L) });
+        var a = ZSetModule.ofPairs(new[] { (1, 1L), (2, 2L) });
+        var b = ZSetModule.ofPairs(new[] { (1, -1L), (3, 3L) });
         var c = ZSetModule.add(a, b);
         Assert.Equal(0L, c[1]);
         Assert.Equal(2L, c[2]);
@@ -40,9 +40,9 @@ public class ZSetTests
     {
         var z = ZSetModule.ofPairs(new[]
         {
-            ((int, long))(1, 3L),
-            ((int, long))(2, 1L),
-            ((int, long))(3, -1L),
+            (1, 3L),
+            (2, 1L),
+            (3, -1L),
         });
         var once = ZSetModule.distinct(z);
         var twice = ZSetModule.distinct(once);

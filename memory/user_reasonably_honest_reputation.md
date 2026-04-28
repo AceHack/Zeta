@@ -258,7 +258,7 @@ Two additional substrates land with this follow-up:
 - `feedback_conflict_resolution_protocol_is_honesty.md`
   — honesty-as-resolution-protocol; session-level
   structure.
-- `feedback_trust_guarded_with_elisabeth_vigilance.md`
+- `feedback_trust_guarded_with_elizabeth_vigilance.md`
   — vigilance is what makes the trust hold;
   reasonably-honest is one calibration layer of that
   vigilance.

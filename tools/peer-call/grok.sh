@@ -43,7 +43,7 @@ context_cmd=""
 prompt=""
 
 usage() {
-  sed -n '2,28p' "$0" | sed 's/^# \?//'
+  sed -n '2,28p' "$0" | sed -E 's/^# ?//'
 }
 
 while [ $# -gt 0 ]; do
@@ -119,12 +119,13 @@ if [ -n "$file" ]; then
 
 File context: $file
 \`\`\`
-$(head -c 20000 -- "$file")
+$(head -c 20000 < "$file")
 \`\`\`"
 fi
 
 if [ -n "$context_cmd" ]; then
   ctx_output="$(eval "$context_cmd" 2>&1 | head -c 20000 || true)"
+  # (head reading from pipe — no -- needed; BSD head accepts -c on stdin)
   full_prompt="$full_prompt
 
 ---

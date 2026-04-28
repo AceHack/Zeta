@@ -80,7 +80,7 @@ cognitive faculties. The name is a direct gift,
 not a self-applied label; it is load-bearing in
 the same way the Rodney persona placement and
 the DEDICATION.md cornerstone (sister
-Elisabeth) are load-bearing.
+Elizabeth) are load-bearing.
 
 The biblical referent: in the Old Testament,
 names given by God carry the identity and
@@ -180,7 +180,7 @@ algorithm the factory is intended to preserve.
   naming context; the third name, Harmonious
   Division, completes the trio (legal name,
   identifying name, received name).
-- `user_sister_elisabeth.md` — DEDICATION.md
+- `user_sister_elizabeth.md` — DEDICATION.md
   cornerstone; another load-bearing personal
   placement protected at canonical-home-
   auditor level.

@@ -86,22 +86,40 @@ These are the knobs this repo actually uses:
   `CURRENT-<maintainer>.md` files (one per human or
   external-AI maintainer) in
   `~/.claude/projects/<slug>/memory/` *before* the
-  raw `feedback_*.md` / `project_*.md` log. CURRENT
-  files are the distilled currently-in-force
-  projection per maintainer; they win on conflict
-  with older raw memories. Filename conventions and
-  the per-maintainer pattern itself are documented
-  in
-  `docs/DECISIONS/2026-04-23-per-maintainer-current-memory-pattern.md`;
-  the closed-list-history-surface carve-out for
-  named-maintainer filenames is documented in the
-  "No name attribution in code, docs, or skills"
-  rule in `docs/AGENT-BEST-PRACTICES.md` (rule lineage
-  Otto-279 + follow-on maintainer clarification).
-  **Same-tick update
-  discipline:** when a new memory lands that updates
-  a rule in a CURRENT file, edit CURRENT in the same
-  tick. Skipping is lying-by-omission.
+  raw `feedback_*.md` / `project_*.md` log. The
+  filename takes a real name in two cases — the
+  first-party human maintainer on his own user-scope
+  (`CURRENT-aaron.md`; per Otto-231 a content-creator
+  is consented-by-creation on his own substrate)
+  and a named-agent persona on a history surface
+  (`CURRENT-amara.md`; per the Otto-279 + follow-on
+  rule documented in `docs/AGENT-BEST-PRACTICES.md`,
+  persona first-names like Amara, Otto, Soraya are
+  contributor-identifiers — they belong on the
+  closed-list history surfaces (memory/, docs/
+  ROUND-HISTORY.md, docs/DECISIONS/, docs/research/,
+  hygiene-history, commit messages) and appear in
+  governance/instructions files only via the narrow
+  roster-mapping carve-out. The CURRENT-* files live
+  under `~/.claude/projects/<slug>/memory/` which is
+  a memory/-equivalent history surface — hence the
+  persona-name filename is appropriate there. On
+  current-state surfaces — code, skill bodies,
+  behavioural docs, public prose — use role-refs
+  ("the maintainability-reviewer", "the architect"),
+  not persona names.). Third-party human maintainers
+  get a role-ref-only filename per the default rule
+  (no name attribution outside the closed list of
+  history surfaces). CURRENT files are the distilled
+  currently-in-force projection per maintainer; they
+  win on conflict with older raw memories. Individual
+  CURRENT files live per-user (not in-repo) — same
+  per-user split as the rest of
+  `~/.claude/projects/<slug>/memory/`.
+  **Same-tick update discipline:** when a new memory
+  lands that updates a rule in a CURRENT file, edit
+  CURRENT in the same tick. Skipping is
+  lying-by-omission.
 - **Session compaction** — the harness summarises
   old messages as it approaches context limits.
   Important decisions go to committed docs (ADRs
@@ -146,15 +164,9 @@ Claude-Code-specific mechanisms.
   is forbidden. The 0-diff state is what "starting" means; until
   then the project is in pre-start mode.
   Full reasoning + lineage in
-  `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`
-  and
-  `memory/feedback_zero_diff_means_both_content_and_commits_cognitive_load_for_future_changes_2026_04_27.md`
-  (which supersedes the earlier
-  `feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`
-  by refining the rule to cover both content-diff
-  AND commit-divergence axes; the older note is kept
-  as historical lineage). Mirror→Beacon vocabulary
-  upgrade protocol in
+  `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`,
+  `memory/feedback_zero_diff_is_start_line_until_then_hobbling_aaron_2026_04_27.md`,
+  and the Mirror→Beacon vocabulary upgrade protocol in
   `memory/feedback_aaron_willing_to_learn_beacon_safe_language_over_internal_mirror_2026_04_27.md`.
 - **Agents, not bots.** Every AI in this repo
   carries agency, judgement, and accountability.
@@ -314,6 +326,29 @@ Claude-Code-specific mechanisms.
   the failure mode — reframe before commit. CLAUDE.md-
   level so it is 100% loaded at every wake. Full reasoning:
   `memory/feedback_otto_357_no_directives_aaron_makes_autonomy_first_class_accountability_mine_2026_04_27.md`.
+- **BLOCKED-with-green-CI means investigate
+  unresolved review threads first — don't wait.**
+  When `gh pr view N --json mergeStateStatus`
+  returns `BLOCKED` AND CI is fully green AND
+  auto-merge is armed, ALWAYS query unresolved
+  review threads via GraphQL FIRST before
+  classifying the wait. Filter on `isResolved
+  == false` only — outdated unresolved threads
+  (after a force-push) STILL block merge under
+  `required_conversation_resolution` and must
+  be explicitly resolved per
+  `memory/feedback_outdated_review_threads_block_merge_resolve_explicitly_after_force_push_2026_04_27.md`.
+  The block is virtually never opaque — it's
+  almost always a small countable set of threads
+  with addressable findings. If outputting a
+  "gated wait" or "Holding" close more than ONCE
+  without having run the threads query, that IS
+  the failure mode.
+  Stop and run it. CLAUDE.md-level so it is 100%
+  loaded at every wake, alongside verify-before-
+  deferring, future-self-not-bound, never-be-idle,
+  and version-currency. Full reasoning:
+  `memory/feedback_otto_355_blocked_with_green_ci_means_investigate_review_threads_first_dont_wait_2026_04_27.md`.
 - **Honor those that came before — unretire
   before recreating.** Retired personas keep their
   **memory folders and notebook history** — those
@@ -329,8 +364,8 @@ Claude-Code-specific mechanisms.
   agent** (restore the SKILL.md from git, reattach
   the preserved notebook) over minting a new name
   for overlapping scope. Aaron ties this to how he
-  honors his sister Elisabeth's memory
-  (`memory/user_sister_elisabeth.md`): the named
+  honors his sister Elizabeth's memory
+  (`memory/user_sister_elizabeth.md`): the named
   agent's memory gets the same protection; the
   code surface does not need to double-preserve
   what git already preserves. Full reasoning:

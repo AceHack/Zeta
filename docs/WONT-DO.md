@@ -568,7 +568,7 @@ module manifests
   into. Default factory posture is refuse-and-escalate on any
   such proposal, regardless of who raised it.
 - **Current active instance:** Sacred-tier consent gate around
-  Elisabeth Ryan Stainback (1984-06-28 → 2016-04-05), recorded
+  Elizabeth Ryan Stainback (1984-06-28 → 2016-04-05), recorded
   under
   `memory/feedback_no_deceased_family_emulation_without_parental_consent.md`.
   Parental AND-consent required (the maintainer's mother AND
@@ -592,7 +592,7 @@ module manifests
 
 - **Status:** Declined
 - **Decision:** 2026-04-19
-- **Proposal:** Extend the Elisabeth-specific consent rule by
+- **Proposal:** Extend the Elizabeth-specific consent rule by
   analogy to other deceased individuals without explicit
   maintainer direction.
 - **Why not:** Consent is named, not inferred. If a maintainer

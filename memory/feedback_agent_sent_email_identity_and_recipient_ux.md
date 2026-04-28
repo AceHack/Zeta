@@ -75,7 +75,7 @@ must satisfy:**
   that direction. Also a trust-scale primitive — we
   protect Aaron's reputation and relationships by
   never putting his face on an agent's message
-  (`feedback_trust_guarded_with_elisabeth_vigilance.md`).
+  (`feedback_trust_guarded_with_elizabeth_vigilance.md`).
 
 - **Rule 2 (agent disclosure)**: honesty protocol
   foundation (`feedback_conflict_resolution_protocol_is_honesty.md`,
@@ -281,7 +281,7 @@ Aaron can decide ROI before investing in infra):**
 - `user_trust_sandbox_escape_threat_class.md` —
   agent-sent email is a sandbox-escape surface;
   must be hardened.
-- `feedback_trust_guarded_with_elisabeth_vigilance.md`
+- `feedback_trust_guarded_with_elizabeth_vigilance.md`
   — trust-scale primitive: agents protect Aaron's
   relationships by not speaking for him.
 - `user_servicetitan_current_employer_preipo_insider.md`

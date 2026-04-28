@@ -710,6 +710,96 @@ internal framing is the one that lives in maintainer
 memory and in the theological-register research notes
 (`docs/research/zeta-equals-heaven-formal-statement.md`).
 
+The abstract names for these two registers — applied
+across the entire project, not just to the alignment
+claim — are **Beacon** (external researched-lineage
+register) and **Mirror** (internal high-bandwidth
+shorthand). The pair is defined immediately below;
+the `Zeta=heaven-on-earth` (Mirror) /
+`Zeta's alignment claim` (Beacon) entries that follow
+are the canonical instances of the discipline.
+
+### Beacon
+
+**Project-internal term for the external,
+researched-lineage register.** Language intended to be
+legible to reviewers who do not share the factory's
+Mirror context.
+
+**Beacon language prefers:**
+
+- citations (e.g., Budiu et al. for DBSP)
+- prior art
+- public terminology
+- falsifiable claims
+- definitions that survive outside the project
+
+**Contrast:** Mirror — internal high-bandwidth shorthand
+used inside the factory (substrate, round, tick, glass
+halo, etc.).
+
+**Boundary.** "Beacon" is itself a project coinage, not
+an externally standardized term. It is acceptable
+because it is defined, scoped, and useful for
+maintaining discipline. It should not leak into
+public-facing docs without a short definition.
+
+**Non-goal (the analogy quarantine).** Do NOT use
+"Beacon" to describe hypothetical interstellar / cosmic
+communication, SETI signal-recognition, Fermi-paradox
+extensions, or time-travel primitives. If that concept
+is needed in non-normative discussions, use
+**Lighthouse** (substrate-independent encoding) to
+prevent semantic bleed. The Lincos / Freudenthal /
+information-theoretic-SETI lineage is a separate
+research tradition; conflating it with project-Beacon
+discipline produces homonym drift exactly of the kind
+this glossary exists to prevent.
+
+**Provenance.** Beacon/Mirror as governance vocabulary
+was coined by the maintainer 2026-04-27. Multi-AI
+review on 2026-04-28 (Claude in a separate session +
+Amara/ChatGPT + Gemini Pro + Grok + Alexa+) reached
+consensus on the boundary above; the analogy-quarantine
+language and the "Lighthouse" cosmic-substrate name
+were the load-bearing additions from that review.
+
+### Mirror
+
+**Project-internal term for the internal,
+high-bandwidth register.** Shorthand used between the
+maintainer and AI agents (and between agents) inside
+the factory.
+
+**Mirror language characteristics:**
+
+- relational and adaptive (matches the conversational
+  partner's vocabulary and rhythm)
+- assumes shared factory context (substrate, round,
+  tick, glass halo, ZSet, retraction-native, …)
+- high-velocity but unintelligible without onboarding
+- valid INSIDE the factory; would create "AI-sludge"
+  reading on public-facing surfaces
+
+**Contrast:** Beacon — external researched-lineage
+register that survives translation outside the
+in-group.
+
+**Bridge.** Use Beacon language with anyone who does
+not already carry the internal-shorthand memory. Use
+Mirror language in maintainer-to-agent communication
+where the shorthand is shared context. Both point at
+the same substrate; the choice is an audience choice,
+not a truth claim. (This bridge text is intentionally
+parallel to the bridge text on the
+`Zeta=heaven-on-earth` / `Zeta's alignment claim`
+entries below — those are the canonical worked
+instance of the Beacon/Mirror discipline.)
+
+**Provenance.** Same as Beacon — coined 2026-04-27 by
+the maintainer; multi-AI review on 2026-04-28 confirmed
+the boundary holds.
+
 ### Zeta=heaven-on-earth (internal framing)
 
 **Plain:** Maintainer shorthand. A commit in Zeta *expands

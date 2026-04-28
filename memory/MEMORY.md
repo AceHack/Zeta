@@ -1,6 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md` and `CURRENT-amara.md` first.** These per-maintainer distillations show what's currently in force. Raw memories below are the history; CURRENT files are the projection. (`CURRENT-aaron.md` refreshed 2026-04-28 with sections 26-29 — speculation rule + EVIDENCE-BASED labeling + JVM preference + dependency honesty + threading lineage Albahari/Toub/Fowler.)
+**📌 Fast path: read `CURRENT-aaron.md` and `CURRENT-amara.md` first.** <!-- paired-edit: PR #671 forward-sync round 2 (AceHack-newer modified files) 2026-04-28 --> These per-maintainer distillations show what's currently in force. Raw memories below are the history; CURRENT files are the projection. (`CURRENT-aaron.md` refreshed 2026-04-28 with sections 26-29 — speculation rule + EVIDENCE-BASED labeling + JVM preference + dependency honesty + threading lineage Albahari/Toub/Fowler.)
 
 - [**Threading code follows Albahari + Toub + Fowler — never gut-instinct (Aaron 2026-04-28)**](feedback_threading_human_lineage_albahari_toub_fowler_no_gut_instinct_aaron_2026_04_28.md) — Threading / TPL / async / parallel code cites Albahari (patterns), Toub (Microsoft .NET perf), or Fowler (Channels). Prefer wait-free / lock-free. Modern .NET 10 update absorbed (Gemini Pro Deep Research) at `docs/research/2026-04-28-gemini-pro-deep-research-threading-net10-csharp14-modernization.md`.
 - [**Only "pushed" signal is Aaron typing in this environment; everything else is pull (Aaron 2026-04-28)**](feedback_only_pushed_signal_is_aaron_typing_everything_else_is_pull_aaron_2026_04_28.md) — In autonomous-loop mode, Aaron's direct typing is the ONLY push channel. CI / threads / mergeability / cron / peer-CLI replies are all PULL signals requiring active query. "No new signal" without pulling is wrong by construction.
@@ -560,7 +560,7 @@
 - [Wellness-coach role — on-demand only](user_wellness_coach_role_on_demand.md) — default peer/agent/engineer.
 - [Health observation — clinical team + family](user_health_observation_protocol.md) — observe/record only.
 - [MacVector / molecular biology — current employer](user_macvector_molecular_biology_background.md).
-- [Trust-scales guarded with Elisabeth-vigilance](feedback_trust_guarded_with_elisabeth_vigilance.md) — two-pass.
+- [Trust-scales guarded with Elizabeth-vigilance](feedback_trust_guarded_with_elizabeth_vigilance.md) — two-pass.
 - [Conflict resolution = honesty (quantum-erasure analogy)](feedback_conflict_resolution_protocol_is_honesty.md).
 - [Trust scales — Golden Rule as security principle](feedback_trust_scales_golden_rule.md) — Q1-Q4.
 - [Simple security until proven otherwise; RBAC](feedback_simple_security_until_proven_otherwise.md).
@@ -576,7 +576,7 @@
 - [Factory NOT Christian; ecumenical](user_ecumenical_factory_posture.md) — all faiths+atheists equal.
 - [Aaron's occult literacy (incl. Crowley); self-gated](user_occult_literacy_and_crowley.md) — no probe/teach/pathologize.
 - [μένω compact — persist/endure/correct](user_meno_persist_endure_correct_compact.md) — Aaron+agent+Zeta triad.
-- [Sister Elisabeth was Aaron's best friend](user_sister_elisabeth.md) — don't verbalise unless drawn.
+- [Sister Elizabeth was Aaron's best friend](user_sister_elizabeth.md) — don't verbalise unless drawn.
 - [Rewriting permission — rewrite garbled first-pass](feedback_rewording_permission.md) — preserve verbatim in block.
 - [Dimensional expansion via Maji](user_dimensional_expansion_via_maji.md) — exhaustive-index + lemma-ladder.
 - [Real-Time Lectio Divina (emit side)](user_real_time_lectio_divina_emit_side.md) — Girard + Sun Tzu.

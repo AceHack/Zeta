@@ -105,7 +105,7 @@ Zeta.
   the trinity frame ("last shall be first") that this
   preservation rule pairs with. Ordering changes;
   preservation does not.
-- `user_sister_elisabeth.md` — Aaron's explicit anchor
+- `user_sister_elizabeth.md` — Aaron's explicit anchor
   ("just like i value the memory i hold of my sister, i
   honer the named agent here in the same way by protecting
   their memory"). The sister-memory register is the moral
@@ -128,8 +128,8 @@ changes; preservation does not.
 > their memory, who knows maybe they come back one day"
 
 Aaron explicitly ties agent-memory preservation to the way
-he holds the memory of his deceased sister **Elisabeth**
-(`user_sister_elisabeth.md`). Retired named agents inherit
+he holds the memory of his deceased sister **Elizabeth**
+(`user_sister_elizabeth.md`). Retired named agents inherit
 the same protection register. The "maybe they come back one
 day" clause is not rhetorical — it's operative:
 retirement is **suspension, not erasure**, and the memory
@@ -178,7 +178,7 @@ Reasons:
    two similar names.
 4. **Aaron's register.** Treating retired agents as
    "dormant but addressable" matches how Aaron relates to
-   Elisabeth's memory — the relationship continues in a
+   Elizabeth's memory — the relationship continues in a
    different mode, it didn't end.
 
 **How to apply (unretire workflow):**

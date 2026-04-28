@@ -17,8 +17,8 @@ into."*
 1. **Addison, Aaron's 2nd daughter.** Mentioned by name,
    age ~10 at the vision-board moment. Addison enters the
    factory's user-context register as a family member
-   alongside Aaron's sister Elisabeth
-   (`memory/user_sister_elisabeth.md`).
+   alongside Aaron's sister Elizabeth
+   (`memory/user_sister_elizabeth.md`).
 2. **Vision-board moment.** A shared-intention-setting
    family artifact where Addison explicitly asked for
    generational healing. A ~10-year-old framing a
@@ -104,8 +104,8 @@ Aaron is working to heal in his lineage.
 
 ## Composition with existing memories + docs
 
-- `memory/user_sister_elisabeth.md` — Aaron's sister
-  Elisabeth's memory; the other family-member context
+- `memory/user_sister_elizabeth.md` — Aaron's sister
+  Elizabeth's memory; the other family-member context
   the factory holds. Addison joins that register (living
   family, not memorial).
 - `memory/feedback_capture_everything_including_failure_aspirational_honesty.md`

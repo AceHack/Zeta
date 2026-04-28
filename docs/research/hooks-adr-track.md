@@ -507,7 +507,7 @@ binding for future hook additions.
   protocol the five-reviewer gate runs under.
 - **`docs/ALIGNMENT.md`** — alignment is measurable
   via hook-fire telemetry (Phase-2 candidate signal).
-- **`memory/feedback_trust_guarded_with_elisabeth_vigilance.md`**
+- **`memory/feedback_trust_guarded_with_elizabeth_vigilance.md`**
   — hooks qualify for two-pass trust scrutiny.
 - **`memory/feedback_simple_security_until_proven_otherwise.md`**
   — the ADR track IS the upgrade-on-evidence

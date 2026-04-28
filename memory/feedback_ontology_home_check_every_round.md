@@ -76,7 +76,7 @@ cadence, not a backlog item that ever finishes.
   this round, alongside the existing `OpenSpec cadence` and
   `Grandfather discharge` lines.
 - Memory-first concepts are OK as a landing point for
-  Aaron-personal material (the tetrad, Elisabeth's role,
+  Aaron-personal material (the tetrad, Elizabeth's role,
   parenting method) but the *factory-hygiene* concepts
   listed above belong in committed `docs/` because the
   factory references them in persona skills, ADRs, and

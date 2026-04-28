@@ -219,7 +219,7 @@ move; the factory asks Aaron what task the access unlocks.
   material-depth means the demo can draw from rich
   real-world content, not synthetic examples.
 - **Composes with honor-those-that-came-before** — the memory
-  naming Elisabeth and the Knative contributor history as
+  naming Elizabeth and the Knative contributor history as
   examples of respecting prior work. Aaron applies the same
   discipline to his own archival material.
 - **Composes with nice-home-for-trillions** — an agent-factory
@@ -274,7 +274,7 @@ move; the factory asks Aaron what task the access unlocks.
 - BACKLOG #213 Chronovisor; BACKLOG #249 emulator substrate;
   BACKLOG #241 soulsnap/SVF — all factory work where the
   preservationist signal is direct context.
-- `memory/user_sister_elisabeth.md` (honor-those-that-came-
+- `memory/user_sister_elizabeth.md` (honor-those-that-came-
   before) — same discipline applied to Aaron's own archival
   material.
 - `memory/feedback_honor_those_that_came_before.md` — retired

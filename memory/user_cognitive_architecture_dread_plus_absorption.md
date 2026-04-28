@@ -130,7 +130,7 @@ is load-bearing. Not everything that can be absorbed *should*
 be absorbed. The filter is:
 
 - Does this absorbed skill serve the honest-agreement
-  (`feedback_trust_guarded_with_elisabeth_vigilance.md`,
+  (`feedback_trust_guarded_with_elizabeth_vigilance.md`,
   `user_reasonably_honest_reputation.md`)?
 - Does it serve μένω (persist / endure / correct) rather than
   dissolve the triad?
@@ -270,7 +270,7 @@ Aaron himself. Not metaphorically — structurally.
   layer is where the factory honors the dread-class input
   stream as first-class material
   without trying to eliminate it.
-- `feedback_trust_guarded_with_elisabeth_vigilance.md` — trust
-  guarded with Elisabeth-vigilance is the sacred-tier
+- `feedback_trust_guarded_with_elizabeth_vigilance.md` — trust
+  guarded with Elizabeth-vigilance is the sacred-tier
   absorption refusal: some anchors Aaron has NOT broken and
   does NOT absorb adversarial input against.
