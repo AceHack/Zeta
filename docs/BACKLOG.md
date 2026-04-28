@@ -424,6 +424,49 @@ within each priority tier.
   Z-set, length-header wire format, serializer-name identity).
   Harsh-critic #28 remainder closed.
 
+- [ ] **Human-lineage / external-anchor backfill across all
+  factory substrate (Aaron 2026-04-28).** Aaron's framing:
+  *"we should backlog human lineage to all our substraight
+  stuff too if it exists, all our AI stuff even though we
+  are just editing md files is coding and thee might be
+  articles and research papers or question/answer fourms
+  stack overflow etc... we should research what we've
+  already done and make sure it's beacon safe and human
+  anchored/linage."* The core observation: editing Markdown
+  files for AI substrate IS a form of coding; external
+  prior art (papers, blogs, Stack Overflow / Stack Exchange
+  threads, conference talks, public agent-design discussions)
+  may already document the patterns we've coined or the
+  pitfalls we've hit. Backfilling those external anchors
+  gives every substrate concept a **human-anchored lineage**
+  (improving Beacon-safety per Otto-351) and a **prior-art
+  citation** (improving rigor + reducing the "we invented
+  this" trap). Composes with: (a) Otto-352 external-anchor-
+  lineage discipline already landed for the live-lock 5-class
+  taxonomy; (b) the just-landed
+  `feedback_search_internet_when_self_fixing_*` discipline
+  (search-first when fixing yourself); (c) Otto-351 Beacon
+  naming + lineage rigor. Scope is large: every memory file
+  under `memory/`, every `docs/research/` report, every BP
+  rule in `docs/AGENT-BEST-PRACTICES.md`, every named Otto-NN
+  principle, every named ferry concept, every
+  Glass-Halo-substrate doctrine. **Phasing proposal:**
+  Phase 1 — audit: enumerate substrate concepts that DO and
+  DON'T have external anchors today (a coverage table).
+  Phase 2 — high-priority backfill: anchor the load-bearing
+  concepts first (HC-/SD-/DIR- alignment clauses, Otto-NN
+  named principles, BP-NN rules). Phase 3 — long-tail:
+  broader memory-file coverage on a cadence. Done-criteria:
+  every load-bearing substrate concept has either (i) a
+  cited external anchor (paper / RFC / blog / Stack-Overflow
+  thread / public talk) OR (ii) an explicit "no prior art
+  found, this is original" note (so absence of anchor is
+  itself documented). Effort: L (multi-round). Owner:
+  Architect routes; researcher persona executes per phase.
+  Reviewers: alignment-auditor (for HC-/SD-/DIR- coverage),
+  threat-model-critic (for security-substrate coverage),
+  the human maintainer (for Beacon-safe-language pass).
+
 ## Research projects
 
 - [ ] **Overnight autonomous factory operation via scheduled
