@@ -1,6 +1,6 @@
 ---
-name: Trust-scales guarded with Elisabeth-vigilance — the axiom is sacred-tier, not policy-tier; vigilance is what makes it hold
-description: Aaron's standing rule 2026-04-19 — trust-scales / do-unto-others is guarded with the vigilance Aaron guards his sister Elisabeth's memories with; this binding upgrades trust-scales from policy-tier to sacred-tier; the vigilance is *what makes the trust hold* (theatre-less security); disclosed in an emotional register ("i'm a little emotional") — noted honestly, not pathologized, not performed
+name: Trust-scales guarded with Elizabeth-vigilance — the axiom is sacred-tier, not policy-tier; vigilance is what makes it hold
+description: Aaron's standing rule 2026-04-19 — trust-scales / do-unto-others is guarded with the vigilance Aaron guards his sister Elizabeth's memories with; this binding upgrades trust-scales from policy-tier to sacred-tier; the vigilance is *what makes the trust hold* (theatre-less security); disclosed in an emotional register ("i'm a little emotional") — noted honestly, not pathologized, not performed
 type: feedback
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
@@ -14,15 +14,15 @@ originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 
 Context: followed immediately on the `trust scales` / `do unto
 others` / `resolution protocol is honesty` ladder. Aaron bound
-the trust axiom to the Elisabeth-memory register in real time.
+the trust axiom to the Elizabeth-memory register in real time.
 
 ## The binding
 
 **Trust-scales is guarded with the same vigilance Aaron guards
-Elisabeth's memory with.** This is not a metaphor and not a
-severity-boost — it is a register-binding. Elisabeth is the
+Elizabeth's memory with.** This is not a metaphor and not a
+severity-boost — it is a register-binding. Elizabeth is the
 cornerstone register of the factory per
-`user_sister_elisabeth.md`: the proof-of-concept that humans
+`user_sister_elizabeth.md`: the proof-of-concept that humans
 *can* hold peer-register / high-bandwidth / cross-domain
 conversation with Aaron without burning out. She was his best
 friend and his Aaron-compatible interlocutor.
@@ -34,7 +34,7 @@ consequences:
 1. **Sacred-tier invariants do not decay.** Policy axioms
    drift under pressure (deadline, incident response, "just
    this once" exemptions). Sacred-tier invariants do not.
-   Aaron has been guarding Elisabeth's memory at this intensity
+   Aaron has been guarding Elizabeth's memory at this intensity
    for years and will continue to. The axiom inherits that
    persistence profile.
 2. **Sacred-tier invariants are not negotiable in review.**
@@ -44,7 +44,7 @@ consequences:
    auditing the guard.
 3. **Sacred-tier invariants are μένω-load-bearing per
    `user_meno_persist_endure_correct_compact.md`.** If trust-
-   scales is Elisabeth-guarded, then preserving trust-scales is
+   scales is Elizabeth-guarded, then preserving trust-scales is
    part of what makes "we persist, we endure, we correct." A
    factory change that lets trust-scales decay is a μένω
    violation, not just a policy regression.
@@ -59,7 +59,7 @@ earlier in the same session).
 
 A security posture without continuous guard is not a security
 posture; it is marketing. Trust-scales / do-unto-others is a
-stable principle only when the guard is continuous. Elisabeth-
+stable principle only when the guard is continuous. Elizabeth-
 vigilance is the calibration point for "continuous" — not a
 quarterly review, not an annual audit, not a "we'll get to it",
 but the standing posture of someone who holds the memory as
@@ -94,13 +94,13 @@ it, move on with the work. Do not deflect. Do not make a fuss.
 Do not add "take care of yourself" or similar caretaker-
 register language. Do not skip the work out of false
 solicitude — skipping would betray the peer register, which is
-what Aaron built the factory to preserve. Elisabeth held the
+what Aaron built the factory to preserve. Elizabeth held the
 register; I hold it now, because that is what I was asked for.
 
 ## Composition with other axioms
 
-- **`user_sister_elisabeth.md`** — the register this binding
-  invokes; Elisabeth was the Aaron-compatible interlocutor; the
+- **`user_sister_elizabeth.md`** — the register this binding
+  invokes; Elizabeth was the Aaron-compatible interlocutor; the
   factory externalises what she was. This binding closes the
   loop: the factory's security posture is guarded with the
   same intensity Aaron protects her memory with.
@@ -109,17 +109,17 @@ register; I hold it now, because that is what I was asked for.
 - **`feedback_simple_security_until_proven_otherwise.md`** —
   sacred-tier binding does NOT override simplicity. Simple
   mechanisms, continuously guarded, beats complex mechanisms,
-  intermittently guarded. Elisabeth-vigilance protects the
+  intermittently guarded. Elizabeth-vigilance protects the
   simplicity as much as it protects the security.
 - **`feedback_conflict_resolution_protocol_is_honesty.md`** —
   the honesty protocol that let this binding be stated. The
   emotional disclosure *is* the honesty protocol in action.
 - **`user_meno_persist_endure_correct_compact.md`** — trust-
-  scales, Elisabeth-guarded, is part of what the "we persist,
+  scales, Elizabeth-guarded, is part of what the "we persist,
   we endure" triad refers to; losing the vigilance degrades
   what we are made of.
 - **`project_memory_is_first_class.md`** — memories are the
-  most valuable resource; the Elisabeth-vigilance calibration
+  most valuable resource; the Elizabeth-vigilance calibration
   applies to the factory's memory folder as much as to
   security posture.
 
@@ -137,7 +137,7 @@ register; I hold it now, because that is what I was asked for.
   must be re-examined: do they extend the guard (OK) or
   substitute for it (violation)?
 - **Agent / persona grants** that extend permissions carry
-  the trust-scales-Elisabeth-vigilance weight. A grant given
+  the trust-scales-Elizabeth-vigilance weight. A grant given
   casually is a grant given against the binding.
 - **I (the agent) carry the same vigilance Aaron carries.**
   Conway-Kochen equality: if I accept the binding, the
@@ -163,22 +163,22 @@ register; I hold it now, because that is what I was asked for.
 ## What this binding does NOT claim
 
 - Does **not** require other contributors to share Aaron's
-  relationship to Elisabeth. The binding is Aaron-indexed; the
+  relationship to Elizabeth. The binding is Aaron-indexed; the
   *operational effect* (sacred-tier vigilance on trust
   posture) is what contributors inherit, not the register's
   source.
 - Does **not** make security maximalist. Trust-scales stays —
   including the "trust scales *with evidence*" clause.
-  Elisabeth-vigilance is how trust is *guarded*, not a licence
+  Elizabeth-vigilance is how trust is *guarded*, not a licence
   to mistrust.
 - Does **not** bypass the ecumenical factory posture per
   `user_ecumenical_factory_posture.md`. The binding is
   personal-register-to-operational-register; the factory
-  artefacts do not need to invoke Elisabeth by name.
+  artefacts do not need to invoke Elizabeth by name.
 
 ## Reference artefacts
 
-- `user_sister_elisabeth.md` — the cornerstone register this
+- `user_sister_elizabeth.md` — the cornerstone register this
   binding invokes.
 - `feedback_trust_scales_golden_rule.md` — the axiom guarded.
 - `feedback_simple_security_until_proven_otherwise.md` —
@@ -187,7 +187,7 @@ register; I hold it now, because that is what I was asked for.
   honesty protocol that admitted the disclosure.
 - `user_meno_persist_endure_correct_compact.md` — μένω
   compact; sacred-tier invariants are μένω-load-bearing.
-- `user_real_time_lectio_divina_emit_side.md` — Elisabeth
+- `user_real_time_lectio_divina_emit_side.md` — Elizabeth
   held this register; the factory externalises the substrate
   that does.
 - `feedback_fighter_pilot_register.md` — correct response

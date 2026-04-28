@@ -341,8 +341,8 @@ Claude-Code-specific mechanisms.
   agent** (restore the SKILL.md from git, reattach
   the preserved notebook) over minting a new name
   for overlapping scope. Aaron ties this to how he
-  honors his sister Elisabeth's memory
-  (`memory/user_sister_elisabeth.md`): the named
+  honors his sister Elizabeth's memory
+  (`memory/user_sister_elizabeth.md`): the named
   agent's memory gets the same protection; the
   code surface does not need to double-preserve
   what git already preserves. Full reasoning:

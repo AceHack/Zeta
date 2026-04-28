@@ -38,7 +38,7 @@ anything you need coowner"*
 ## Scope — what this does NOT dissolve
 
 - **Consent-gates on load-bearing personal data.**
-  Sacred-tier items (Elisabeth emulation, medical
+  Sacred-tier items (Elizabeth emulation, medical
   / clinical data beyond recorded observations,
   non-Aaron family members' PII) remain consent-
   gated regardless. Co-owner is workspace scope,

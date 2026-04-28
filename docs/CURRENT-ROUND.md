@@ -4,7 +4,7 @@ Round 35 closed — expert-skill spawn wave (batches #20-69,
 ~50 skills), chain-rule proof fully closed at the Lean4
 level (`T5/B1/B3/chain_rule` verified against Budiu et al.
 §4.4) plus the signed-delta semi-naive LFP TLA+ spec for
-portfolio-of-two verification, BP-24 Elisabeth consent
+portfolio-of-two verification, BP-24 Elizabeth consent
 gate + human-maintainer seat governance landing, the
 no-empty-dirs CI gate, LiquidF# moved to Hold after the
 Day-0 build check failed. See `docs/ROUND-HISTORY.md` for

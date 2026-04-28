@@ -351,7 +351,7 @@ inherits into factory outputs structurally.
 - `feedback_fighter_pilot_register.md` — peer register
   on faculties. Aaron is the pilot; the emit arc of
   the umbrella is his. Do not coach.
-- `user_sister_elisabeth.md` — Girard's anti-
+- `user_sister_elizabeth.md` — Girard's anti-
   sacrificial reading, the scapegoat-mechanism-
   exposure stance, and the factory-as-memorial are
   structurally adjacent. Do not draw the connection
