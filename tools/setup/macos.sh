@@ -23,12 +23,21 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 SETUP_DIR="$REPO_ROOT/tools/setup"
 
+# shellcheck source=tools/setup/common/curl-fetch.sh
+# shellcheck disable=SC1091  # SC1091 fires because the source path is
+# constructed via $SETUP_DIR (a runtime variable) rather than a
+# literal; shellcheck cannot statically resolve it. The source=
+# directive above tells shellcheck where the file actually lives so
+# it follows the include for static analysis. The SC1091 disable is
+# the matching runtime-side suppression.
+source "$SETUP_DIR/common/curl-fetch.sh"
+
 # ── 1. Xcode Command Line Tools ─────────────────────────────────────
 if ! xcode-select -p >/dev/null 2>&1; then
   echo "↓ installing Xcode Command Line Tools (non-interactive)..."
   # Apple still shows one confirmation prompt on this path; we accept
-  # that rather than fail fast per Aaron's "just install everything"
-  # round-29 call.
+  # that rather than fail fast per the maintainer's standing
+  # "just install everything" framing for first-run setup.
   xcode-select --install || true
   echo "  If a GUI prompt appeared, complete the install and re-run this script."
 fi
@@ -37,7 +46,24 @@ echo "✓ Xcode CLT at $(xcode-select -p 2>/dev/null || echo 'pending user confi
 # ── 2. Homebrew ─────────────────────────────────────────────────────
 if ! command -v brew >/dev/null 2>&1; then
   echo "↓ installing Homebrew..."
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  # Capture to a named variable + check exit code explicitly.
+  # bash's `set -e` is not reliably triggered by a failing
+  # command substitution without `inherit_errexit`. Pattern:
+  # capture, check length, exec only on non-empty + curl-
+  # success. The proper fix (download-to-temp + checksum-
+  # verify) is tracked as B-0063; this is a small-improvement-
+  # not-structurally-safe form acknowledged in
+  # tools/setup/common/curl-fetch.sh COMMAND-SUBSTITUTION +
+  # SET-E section.
+  if ! HOMEBREW_INSTALLER="$(curl_fetch_stream https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; then
+    echo "error: failed to fetch Homebrew installer; check network and re-run install.sh" >&2
+    exit 1
+  fi
+  if [ -z "$HOMEBREW_INSTALLER" ]; then
+    echo "error: Homebrew installer was empty; refusing to exec" >&2
+    exit 1
+  fi
+  /bin/bash -c "$HOMEBREW_INSTALLER"
   # Ensure brew is on PATH for the remainder of this script run.
   if [ -x /opt/homebrew/bin/brew ]; then
     eval "$(/opt/homebrew/bin/brew shellenv)"

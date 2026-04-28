@@ -1,11 +1,10 @@
 name: memory-index-duplicate-lint
 
-# Detects duplicate link targets in `memory/MEMORY.md` —
-# Amara 2026-04-23 decision-proxy + technical review action
-# item #2 (PR #219 absorb). An index with duplicate entries
-# is a discoverability defect: fresh sessions can't tell
-# which entry is authoritative; the newest-first ordering
-# invariant breaks when the same file appears twice.
+# Detects duplicate link targets in `memory/MEMORY.md`. An index
+# with duplicate entries is a discoverability defect: fresh
+# sessions can't tell which entry is authoritative; the
+# newest-first ordering invariant breaks when the same file
+# appears twice.
 #
 # Companion to `.github/workflows/memory-index-integrity.yml`
 # (the same-commit-pairing check for memory/ changes +
@@ -21,8 +20,6 @@ name: memory-index-duplicate-lint
 #
 # See:
 #   - tools/hygiene/audit-memory-index-duplicates.sh (the tool)
-#   - docs/aurora/2026-04-23-amara-decision-proxy-technical-
-#     review.md (ferry with the proposal)
 
 on:
   pull_request:

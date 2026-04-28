@@ -2,11 +2,13 @@ name: budget-snapshot-cadence
 
 # Weekly cadence for evidence-based LFG burn tracking. Runs
 # tools/budget/snapshot-burn.sh, captures the resulting JSONL row,
-# opens a PR (per the AceHack-first UPSTREAM-RHYTHM rhythm) with the
-# snapshot included, and arms auto-merge so the row lands without
-# human intervention. Closes task #297 (cadence half of the
-# evidence-based-budgeting work; tooling was task #285, baseline
-# snapshot was task #287).
+# and opens a PR (per the AceHack-first UPSTREAM-RHYTHM rhythm)
+# with the snapshot included. The PR is left for the next
+# human-or-agent pass through the queue to merge — auto-merge is
+# NOT armed here, see "Auto-merge limitation" section below for
+# why. Closes task #297 (cadence half of the evidence-based-
+# budgeting work; tooling was task #285, baseline snapshot was
+# task #287).
 #
 # Why weekly: docs/budget-history/README.md says "On a cadenced
 # schedule (weekly) — catches drift when no PRs are merging." Weekly
@@ -36,23 +38,29 @@ name: budget-snapshot-cadence
 # `gh auth refresh -s admin:org` the snapshots get richer
 # automatically (Actions billing / Packages / shared-storage).
 #
-# AgencySignature v1 attribution (per the post-ferry-7 convention):
-# this workflow's commits identify themselves as the
-# budget-cadence-workflow agent running on GitHub Actions. The
-# Human-Review-Evidence trailer is "signed-policy" because the
-# cadence is authorized by docs/budget-history/README.md +
-# the maintainer's 2026-04-22 standing direction for evidence-based
-# budgeting.
+# AgencySignature v1 attribution (per the canonical 10-trailer
+# convention documented in tools/hygiene/validate-
+# agencysignature-pr-body.sh): this workflow's commits identify
+# themselves as the budget-cadence-workflow agent running on
+# GitHub Actions. The Human-Review-Evidence trailer is "none"
+# because the validator's consistency rule (Amara ferry-5 evidence-
+# pointer rule) requires Evidence="none" whenever Human-Review is
+# not "explicit". The signed-policy authorization for the cadence
+# itself (docs/budget-history/README.md + the maintainer's
+# 2026-04-22 standing direction for evidence-based budgeting) is
+# documented in the commit body prose, not the per-run trailer
+# fields — per-run trailers describe the per-run state, not the
+# deployment-time authorization.
 #
-# Auto-merge limitation (Codex review #25 P1): events triggered by
-# secrets.GITHUB_TOKEN do not fire downstream workflow runs (GitHub's
-# anti-infinite-loop guard). That means a PR opened by this workflow
-# would never accumulate the required-status-check runs that
-# auto-merge needs to fire on, and `gh pr merge --auto` would sit
-# in a dead-end. Until a PAT secret is configured, this workflow
-# opens the snapshot PR and leaves it for the next human-or-agent
-# pass through the queue to merge — explicit-no-auto-merge over
-# silent-stall is the operational call.
+# Auto-merge limitation: events triggered by
+# secrets.GITHUB_TOKEN do not fire downstream workflow runs
+# (GitHub's anti-infinite-loop guard). That means a PR opened by
+# this workflow would never accumulate the required-status-check
+# runs that auto-merge needs to fire on, and `gh pr merge --auto`
+# would sit in a dead-end. Until a PAT secret is configured, this
+# workflow opens the snapshot PR and leaves it for the next
+# human-or-agent pass through the queue to merge — explicit-no-
+# auto-merge over silent-stall is the operational call.
 
 on:
   schedule:
@@ -68,9 +76,17 @@ on:
 
 permissions:
   # Need contents:write to push the snapshot branch; pull-requests:write
-  # to open the auto-merge PR. No other permissions needed.
+  # to open the snapshot PR; actions:read so snapshot-burn.sh can call
+  # the Actions REST endpoints (/repos/.../actions/runs and
+  # /actions/runs/{id}/timing) to populate burn metrics. Without
+  # actions:read, those API calls 403 silently and snapshot-burn.sh
+  # falls back to empty/zeroed timing data while still writing a
+  # snapshot — producing misleading evidence rather than a hard
+  # failure. With explicit workflow permissions, omitted scopes are
+  # `none`, so actions:read MUST be listed explicitly here.
   contents: write
   pull-requests: write
+  actions: read
 
 concurrency:
   # Only one cadence run at a time. Retriggers queue (rather than
@@ -105,7 +121,11 @@ jobs:
       - name: Run budget snapshot
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NOTE_INPUT: ${{ inputs.note }}
+          # `inputs.note` is only defined for workflow_dispatch / reusable
+          # workflows; on schedule runs that context is undefined and the
+          # expression would fail evaluation. `github.event.inputs.note` is
+          # safe across both trigger types (returns empty string on schedule).
+          NOTE_INPUT: ${{ github.event.inputs.note || '' }}
           RUN_ID: ${{ github.run_id }}
         run: |
           set -euo pipefail
@@ -150,10 +170,10 @@ jobs:
 
           # Commit message uses the AgencySignature v1 canonical shape.
           # Trailer block is at the end with strict blank-line discipline
-          # (one blank line before, zero within). Per the four-ferry
-          # consensus: this workflow is a named-agent acting under
-          # signed-policy authorization (the maintainer's 2026-04-22 evidence-
-          # based budgeting direction + docs/budget-history/README.md).
+          # (one blank line before, zero within). This workflow is a
+          # named-agent acting under signed-policy authorization (the
+          # maintainer's 2026-04-22 evidence-based budgeting direction +
+          # docs/budget-history/README.md).
           {
             echo "ops(budget): cadence snapshot $ts — task #297"
             echo
@@ -161,7 +181,8 @@ jobs:
             echo "- Weekly cadence per docs/budget-history/README.md"
             echo "  ('catches drift when no PRs are merging')."
             echo "- Closes task #297 by automating what task #287"
-            echo "  required a maintainer or Otto to do manually."
+            echo "  previously required a human maintainer or agent to"
+            echo "  trigger manually."
             echo
             echo "What:"
             echo "- One JSONL row appended to"
@@ -194,7 +215,7 @@ jobs:
             echo "Credential-Identity: github-actions[bot]"
             echo "Credential-Mode: dedicated-agent"
             echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: signed-policy"
+            echo "Human-Review-Evidence: none"
             echo "Action-Mode: autonomous-fail-open"
             echo "Task: Otto-297"
             echo "Co-authored-by: Otto <noreply@anthropic.com>"
@@ -203,8 +224,8 @@ jobs:
           git push -u origin "$branch"
 
           # Open PR with trailer block in body (Squash-Merge Invariant
-          # per Amara ferry-7 + Grok ferry-16 — no non-trailer text
-          # after the trailer block).
+          # per the canonical 10-trailer convention — no non-trailer
+          # text after the trailer block).
           {
             echo "## Summary"
             echo
@@ -222,7 +243,9 @@ jobs:
             echo "Per docs/budget-history/README.md: weekly cadence"
             echo "catches drift when no PRs are merging. Authorized by"
             echo "the human maintainer's 2026-04-22 evidence-based"
-            echo "budgeting direction (Human-Review-Evidence: signed-policy)."
+            echo "budgeting direction; per-run trailer fields use"
+            echo "Human-Review-Evidence=none per the validator consistency"
+            echo "rule, since per-run review is not explicit."
             echo
             echo "Agency-Signature-Version: 1"
             echo "Agent: budget-cadence-workflow"
@@ -231,18 +254,26 @@ jobs:
             echo "Credential-Identity: github-actions[bot]"
             echo "Credential-Mode: dedicated-agent"
             echo "Human-Review: not-implied-by-credential"
-            echo "Human-Review-Evidence: signed-policy"
+            echo "Human-Review-Evidence: none"
             echo "Action-Mode: autonomous-fail-open"
             echo "Task: Otto-297"
             echo "Co-authored-by: Otto <noreply@anthropic.com>"
           } > /tmp/pr-body.md
 
+          # NOTE: --label "agent-otto" was previously added here for
+          # host-native attribution but the labels API is part of the
+          # Issues API. Adding it would require widening permissions to
+          # `issues: write`, which this workflow doesn't currently grant
+          # (and shouldn't widen casually for a single host-native nice-
+          # to-have when the AgencySignature commit-trailer-block already
+          # covers the attribution at the git-native layer). Labeling is
+          # deferred to a maintainer / human pass through the queue, or
+          # to a future workflow with an explicit `issues: write` scope.
           gh pr create \
             --base main \
             --head "$branch" \
             --title "ops(budget): cadence snapshot $ts (task #297)" \
-            --body-file /tmp/pr-body.md \
-            --label "agent-otto"
+            --body-file /tmp/pr-body.md
 
           # Intentional: no `gh pr merge --auto` here. See header
           # comment §"Auto-merge limitation" — GITHUB_TOKEN-created

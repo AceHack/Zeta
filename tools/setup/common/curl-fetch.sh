@@ -55,8 +55,8 @@
 #
 #   curl_fetch_stream — for streamed-to-shell installers
 #                       (`curl ... | sh`, `bash -c "$(curl
-#                       ...)"`). NO --retry. Codex P0 review
-#                       on PR #75 confirmed: even bare
+#                       ...)"`). NO --retry. Reviewers
+#                       confirmed: even bare
 #                       `--retry` (without `--retry-all-
 #                       errors`) can retry after bytes have
 #                       already been written to stdout, and
@@ -86,9 +86,11 @@
 #
 # RETRY POLICY (rationale)
 # ========================
-#   --retry 5            — five attempts total. Empirically
-#                          covers the upstream 5xx blips
-#                          this install path has hit.
+#   --retry 5            — up to 5 retries (6 total attempts
+#                          including the initial try, per
+#                          curl(1)). Empirically covers the
+#                          upstream 5xx blips this install
+#                          path has hit.
 #   --retry-delay 2      — 2-second base delay between retries.
 #   --retry-all-errors   — (file-output only) retry on ALL
 #                          transient errors including HTTP
@@ -136,8 +138,9 @@
 # would silently skip BOTH definitions if the caller
 # environment already had an unrelated `curl_fetch`
 # function, leaving `curl_fetch_stream` undefined and
-# breaking the streamed callers (`linux.sh` / `macos.sh`
-# / `elan.sh`) at runtime with `curl_fetch_stream:
+# breaking the streamed callers (`tools/setup/linux.sh` /
+# `tools/setup/macos.sh` / `tools/setup/common/elan.sh`)
+# at runtime with `curl_fetch_stream:
 # command not found`. Sentinel-based guarding ties the
 # load decision to "did this file load?" instead of "does
 # that name exist?" — collisions in the caller environment
@@ -146,15 +149,43 @@
 if [[ -z "${_CURL_FETCH_LOADED:-}" ]]; then
 _CURL_FETCH_LOADED=1
 
+# Feature-detect --retry-all-errors support. The flag was added in
+# curl 7.71.0 (2020-06-24); older OS-provided curl builds (notably
+# pre-2020 LTS distros, some embedded environments, some older macOS
+# system curl) reject it as an unknown option and fail the entire
+# call. This helper is sourced from install.sh BEFORE any toolchain
+# manager has put a newer curl on PATH, so the OS-provided curl IS
+# what runs first. Memoised so the `curl --help` probe runs once per
+# shell, not once per call.
+_curl_fetch_supports_retry_all_errors() {
+  if [[ -z "${_CURL_FETCH_SUPPORTS_RETRY_ALL_ERRORS:-}" ]]; then
+    if curl --help all 2>/dev/null | grep -Fq -- '--retry-all-errors'; then
+      _CURL_FETCH_SUPPORTS_RETRY_ALL_ERRORS=1
+    else
+      _CURL_FETCH_SUPPORTS_RETRY_ALL_ERRORS=0
+    fi
+  fi
+  [[ "${_CURL_FETCH_SUPPORTS_RETRY_ALL_ERRORS}" == "1" ]]
+}
+
 # File-output variant — safe with --retry-all-errors because
-# curl restarts the output file from scratch on each retry.
+# curl restarts the output file from scratch on each retry. Falls
+# back to plain --retry / --retry-delay on older curl builds that
+# don't support --retry-all-errors (curl < 7.71.0). The fallback
+# loses the "retry on HTTP 5xx without Retry-After" coverage but
+# keeps the connect/DNS/408/429/5xx-with-Retry-After retry behaviour
+# that bare --retry already provides.
 curl_fetch() {
-  curl -fsSL --retry 5 --retry-delay 2 --retry-all-errors "$@"
+  local -a retry_args=(--retry 5 --retry-delay 2)
+  if _curl_fetch_supports_retry_all_errors; then
+    retry_args+=(--retry-all-errors)
+  fi
+  curl -fsSL "${retry_args[@]}" "$@"
 }
 
 # Streamed variant — NO --retry, NO --retry-all-errors.
 #
-# Codex P0 review on PR #75 surfaced that even bare `curl
+# Reviewers surfaced that even bare `curl
 # --retry` (without --retry-all-errors) can still retry after
 # bytes have been written to stdout: the connect error happens
 # mid-transfer, curl resets the input but the bytes already
@@ -172,10 +203,9 @@ curl_fetch() {
 #
 # The proper structural fix — download to a temp file with
 # `curl_fetch` (file-output), checksum-verify if available,
-# then `bash <tempfile` — is tracked as a backlog item under
-# `docs/backlog/P1/B-0063-streamed-installer-download-to-temp-
-# pattern-codex-p0-pr-75.md`. Until that lands, this variant
-# is fail-fast-no-retry by design.
+# then `bash <tempfile` — is tracked as backlog item B-0063
+# (streamed-installer download-to-temp pattern). Until that
+# lands, this variant is fail-fast-no-retry by design.
 curl_fetch_stream() {
   curl -fsSL "$@"
 }

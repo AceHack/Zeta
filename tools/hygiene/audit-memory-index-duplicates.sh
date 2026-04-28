@@ -2,13 +2,11 @@
 # tools/hygiene/audit-memory-index-duplicates.sh
 #
 # Detects duplicate link targets (same `.md` file referenced
-# more than once) in a MEMORY.md-shaped index. Amara's 2026-
-# 04-23 decision-proxy + technical review (PR #219) flagged
-# the pattern: an index with duplicate entries is a
-# discoverability defect — fresh sessions can't tell which
-# entry is authoritative; external reviewers miss the newest-
-# first ordering because duplicates break the implicit
-# "one row per memory" invariant.
+# more than once) in a MEMORY.md-shaped index. An index with
+# duplicate entries is a discoverability defect — fresh
+# sessions can't tell which entry is authoritative; external
+# reviewers miss the newest-first ordering because duplicates
+# break the implicit "one row per memory" invariant.
 #
 # Companion to:
 #   - `.github/workflows/memory-index-integrity.yml` — checks
@@ -16,7 +14,8 @@
 #     This tool checks that MEMORY.md doesn't list the same
 #     file twice.
 #   - FACTORY-HYGIENE row #11 (MEMORY.md cap enforcement) —
-#     this tool is the extension Amara named.
+#     this tool extends that cap discipline to also enforce
+#     no-duplicate-entries.
 #
 # Detection strategy:
 #   Line-grep the target file for `](filename.md)` link
