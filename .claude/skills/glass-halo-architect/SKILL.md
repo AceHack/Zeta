@@ -1,6 +1,6 @@
 ---
 name: glass-halo-architect
-description: Capability skill for the *architectural stance* layer of Glass Halo — radical honesty / total personal transparency as a nation-state-adversary defence mechanism, with the strategic identity coercion_power ∝ (known_to_attacker - known_to_public); the concept was named by Amara in a ChatGPT session (credit preserved verbatim; do not paraphrase). Wear this hat when a Zeta project artefact intersects Glass Halo commitments (DNA open-source, personal-record open-source, memory-public), when a proposed feature makes the stance more or less achievable, when the scope boundary is in question (self-scoped only; kids' measured-DNA-inheritance, Elisabeth's records, third-party joint data are not covered), when the composition with retraction-native algebra matters (revocability preserved under Glass Halo — grant-and-retract history survives while effect zeroes), when evaluating whether radical transparency is the *right* defence for a given surface (strong for coercion-attack surfaces, wrong for surfaces where the adversary is not asymmetric-information-based), or when the Christian-ecumenical posture boundary matters (Glass Halo is Aaron's stance, not the factory's default ethic; no evangelism). Hands off the algebraic substrate to `consent-primitives-expert` and the UX surface to `consent-ux-researcher`.
+description: Capability skill for the *architectural stance* layer of Glass Halo — radical honesty / total personal transparency as a nation-state-adversary defence mechanism, with the strategic identity coercion_power ∝ (known_to_attacker - known_to_public); the concept was named by Amara in a ChatGPT session (credit preserved verbatim; do not paraphrase). Wear this hat when a Zeta project artefact intersects Glass Halo commitments (DNA open-source, personal-record open-source, memory-public), when a proposed feature makes the stance more or less achievable, when the scope boundary is in question (self-scoped only; kids' measured-DNA-inheritance, Elizabeth's records, third-party joint data are not covered), when the composition with retraction-native algebra matters (revocability preserved under Glass Halo — grant-and-retract history survives while effect zeroes), when evaluating whether radical transparency is the *right* defence for a given surface (strong for coercion-attack surfaces, wrong for surfaces where the adversary is not asymmetric-information-based), or when the Christian-ecumenical posture boundary matters (Glass Halo is Aaron's stance, not the factory's default ethic; no evangelism). Hands off the algebraic substrate to `consent-primitives-expert` and the UX surface to `consent-ux-researcher`.
 ---
 
 # Glass Halo Architect — the radical-transparency-as-defence hat
@@ -189,12 +189,12 @@ disclose.
 Some of Aaron's kids like the idea of Glass Halo;
 others do not. That variance is respected.
 
-### Sister Elisabeth — hers to narrate
+### Sister Elizabeth — hers to narrate
 
-Records about Elisabeth (`memory/user_sister_elisabeth.md`)
+Records about Elizabeth (`memory/user_sister_elizabeth.md`)
 are *partly* Aaron's (his side of shared experience)
 and *partly* hers (her person, her choices, her memory).
-Default to self-scoped framing; Elisabeth's memory
+Default to self-scoped framing; Elizabeth's memory
 stays hers to narrate if anyone narrates it.
 
 ### Third-party records — joint consent required
@@ -253,7 +253,7 @@ is the wrong defence:
   proximity rather than from knowing-what-others-don't,
   publishing does not reduce the leverage.
 - **The information is not yours to publish.** Joint
-  data with non-consenting parties (Elisabeth, kids,
+  data with non-consenting parties (Elizabeth, kids,
   third parties) — Glass Halo does not apply.
 - **The adversary wants the target to publish.**
   Provocation attacks benefit from target-side
@@ -393,8 +393,8 @@ layer and hands off the others.
   voice, not as factory default.
 - `memory/user_five_children.md` — scope-boundary
   anchor; kids' measured-DNA-inheritance is theirs.
-- `memory/user_sister_elisabeth.md` — scope-boundary
-  anchor; Elisabeth's memory is hers.
+- `memory/user_sister_elizabeth.md` — scope-boundary
+  anchor; Elizabeth's memory is hers.
 - `memory/project_memory_is_first_class.md` — memory
   folder standing-consent operationalises Glass Halo
   for Aaron-scoped memory.

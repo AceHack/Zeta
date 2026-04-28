@@ -1,0 +1,56 @@
+[
+    {
+        "type": "deletion",
+        "ruleset_source_type": "Repository",
+        "ruleset_source": "Lucent-Financial-Group/Zeta",
+        "ruleset_id": 15256879
+    },
+    {
+        "type": "non_fast_forward",
+        "ruleset_source_type": "Repository",
+        "ruleset_source": "Lucent-Financial-Group/Zeta",
+        "ruleset_id": 15256879
+    },
+    {
+        "type": "copilot_code_review",
+        "parameters": {
+            "review_on_push": true,
+            "review_draft_pull_requests": true
+        },
+        "ruleset_source_type": "Repository",
+        "ruleset_source": "Lucent-Financial-Group/Zeta",
+        "ruleset_id": 15256879
+    },
+    {
+        "type": "code_quality",
+        "parameters": {
+            "severity": "all"
+        },
+        "ruleset_source_type": "Repository",
+        "ruleset_source": "Lucent-Financial-Group/Zeta",
+        "ruleset_id": 15256879
+    },
+    {
+        "type": "pull_request",
+        "parameters": {
+            "required_approving_review_count": 0,
+            "dismiss_stale_reviews_on_push": false,
+            "required_reviewers": [],
+            "require_code_owner_review": false,
+            "require_last_push_approval": false,
+            "required_review_thread_resolution": true,
+            "allowed_merge_methods": [
+                "squash"
+            ]
+        },
+        "ruleset_source_type": "Repository",
+        "ruleset_source": "Lucent-Financial-Group/Zeta",
+        "ruleset_id": 15256879
+    },
+    {
+        "type": "required_linear_history",
+        "ruleset_source_type": "Repository",
+        "ruleset_source": "Lucent-Financial-Group/Zeta",
+        "ruleset_id": 15256879
+    }
+]

@@ -105,7 +105,7 @@ jobs:
   # default branch.
   path-gate:
     name: Path gate
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       security-events: write
@@ -262,7 +262,7 @@ jobs:
     name: Analyze (${{ matrix.language }})
     needs: path-gate
     if: needs.path-gate.outputs.code_changed == 'true'
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     permissions:

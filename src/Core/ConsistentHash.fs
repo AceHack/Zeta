@@ -73,10 +73,8 @@ type RendezvousHash(bucketSeeds: uint64 array) =
     [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
     static member private Mix(a: uint64, b: uint64) : uint64 =
         // SplitMix64 of (a xor b) — good enough for HRW scoring.
-        let mutable z = (a ^^^ b) * 0x9E3779B97F4A7C15UL
-        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
-        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-        z ^^^ (z >>> 31)
+        // See `src/Core/SplitMix64.fs` for the constant rationale.
+        SplitMix64.mix (a ^^^ b)
 
     /// Pick a bucket by maximum-score-wins. O(bucketCount).
     member _.Pick(key: uint64) : int =

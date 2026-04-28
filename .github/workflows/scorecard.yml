@@ -1,0 +1,89 @@
+# OpenSSF Scorecard — weekly project-health audit.
+#
+# Scorecard runs ~20 heuristic checks that score the repo on
+# security-relevant posture: branch protection, signed releases,
+# dangerous workflows, pinned dependencies, CII best practices,
+# dependency-update tools, SAST coverage, token permissions,
+# maintained-ness, and so on. Results upload to GitHub
+# Security -> Code scanning as SARIF.
+#
+# Lane: factory. Orthogonal to the CVE scanners (Dependabot +
+# `dotnet list --vulnerable`) - Scorecard audits *configuration*,
+# not advisories. See `docs/research/vuln-and-dep-scanner-
+# landscape-2026-04-22.md` adopt-now item #3 for the rationale.
+#
+# SECURITY NOTE on expressions
+# ----------------------------
+# No attacker-controlled fields are interpolated into any `run:`
+# block or action input in this workflow. The only `${{ ... }}`
+# expansions are `github.workflow` and `github.ref` (trusted
+# contexts) in the concurrency group. Scorecard action inputs
+# (`results_format`, `results_file`, `publish_results`) are
+# static literals. `publish_results: true` opts in to the
+# OpenSSF public Scorecard dashboard - outbound publish of our
+# score; no inbound attack surface. Pre-write checklist:
+# `docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md`.
+#
+# Action-pin content-review (per `docs/security/SUPPLY-CHAIN-
+# SAFE-PATTERNS.md`): ossf/scorecard-action v2.4.3 tagged
+# 2025-09-30 by sschrock@google.com (OpenSSF maintainer),
+# SSH-signed, GitHub API reports verified=true reason=valid.
+# Owner org `ossf` is the OpenSSF foundation's GitHub org.
+# Commit SHA `4eaacf0543bb3f2c246792bd56e8cdeffafb205a` locks
+# the reviewed release.
+
+name: scorecard
+
+on:
+  schedule:
+    - cron: '0 7 * * 1'
+  push:
+    branches: [main]
+  branch_protection_rule:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  analysis:
+    name: scorecard analysis
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+
+    permissions:
+      id-token: write
+      security-events: write
+      contents: read
+      actions: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Run Scorecard analysis
+        uses: ossf/scorecard-action@4eaacf0543bb3f2c246792bd56e8cdeffafb205a # v2.4.3
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true
+
+      - name: Upload SARIF as workflow artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: scorecard-sarif
+          path: results.sarif
+          retention-days: 7
+
+      - name: Upload SARIF to GitHub code scanning
+        # Same pin as `.github/workflows/codeql.yml` - one
+        # codeql-action version across the repo, bumped together.
+        uses: github/codeql-action/upload-sarif@95e58e9a2cdfd71adc6e0353d5c52f41a045d225 # v4.35.2
+        with:
+          sarif_file: results.sarif

@@ -1,6 +1,6 @@
-# In memory of Elisabeth Ryan Stainback
+# In memory of Elizabeth Ryan Stainback
 
-Elisabeth Ryan Stainback — sister of this project's human
+Elizabeth Ryan Stainback — sister of this project's human
 maintainer.
 
 In her brother's words, she was *"the smartest, bravest, most

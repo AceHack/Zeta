@@ -8,7 +8,7 @@ vanishes when we stop looking.
 
 ## Why evidence-based
 
-Aaron 2026-04-22:
+The human maintainer 2026-04-22:
 
 > *"i want evidence based budgiting so you might have to build some
 > observaiblity first or run some gh commands even if gh commands
@@ -27,7 +27,7 @@ a $0-designed-cost-stop could fire mid-swap (per
 `memory/feedback_lfg_budgets_set_permits_free_experimentation.md`:
 *"budget-enforced cap ≠ cost-invisible"*) and leave the factory
 with three repos stood up but CI paused on all of them. Mid-swap
-credit exhaustion is the specific failure mode Aaron named:
+credit exhaustion is the specific failure mode the human maintainer named:
 *"we don't want to run out of credits mid swap"*.
 
 ## What we capture
@@ -38,7 +38,7 @@ commits are the time-axis. Each snapshot contains:
 | Field | Source | Scope | What it tells us |
 | --- | --- | --- | --- |
 | `ts` | local wall clock (UTC) | — | When the snapshot was taken |
-| `factory_git_sha` | `git rev-parse HEAD` | — | AceHack fork commit at snapshot time |
+| `factory_git_sha` | `git rev-parse HEAD` | — | git SHA at snapshot time (whichever repo / fork the script runs in) |
 | `org` | literal | — | Which org this covers |
 | `note` | optional `--note` flag | — | Human annotation for unusual snapshots |
 | `copilot_billing.seat_breakdown.total` | `/orgs/<org>/copilot/billing` | `read:org` | Total paid Copilot seats |
@@ -52,7 +52,7 @@ commits are the time-axis. Each snapshot contains:
 
 What we cannot see with current `gist, read:org, repo, workflow`
 scopes: Actions-billing aggregate, Packages storage, shared-storage.
-These need `admin:org`. Aaron can unlock them with
+These need `admin:org`. The human maintainer can unlock them with
 `gh auth refresh -s admin:org` if we later decide the partial view
 is insufficient; the snapshot captures `scope_coverage.missing_requires_admin_org`
 explicitly so the gap is legible.
@@ -74,11 +74,11 @@ Each snapshot captures a point-in-time state. Burn rate comes from
 3. **Projected runway** — given an estimated Stage 1-4 migration
    workload (≈N extra PRs / Actions-minutes / Copilot token burn),
    does remaining free-credit allowance cover it? If not, hold
-   Stage 1 until (a) the workload estimate shrinks, (b) Aaron
-   tops up free credits via another channel, (c) we switch to
-   an Actions-minutes-frugal migration shape, or (d) Aaron
-   triggers an Enterprise upgrade (the credit-exhaustion
-   escape valve documented in the ADR).
+   Stage 1 until (a) the workload estimate shrinks, (b) the human
+   maintainer tops up free credits via another channel, (c) we
+   switch to an Actions-minutes-frugal migration shape, or (d) the
+   human maintainer triggers an Enterprise upgrade (the
+   credit-exhaustion escape valve documented in the ADR).
 
 `tools/budget/project-runway.sh` implements this projection. It
 reads `snapshots.jsonl`, computes per-PR burn from the first-vs-last
@@ -103,7 +103,7 @@ At minimum:
 
 Opportunistic triggers:
 
-- When Aaron asks "what's our burn look like" — run and diff vs
+- When the human maintainer asks "what's our burn look like" — run and diff vs
   the last commit to this file.
 - When a check fails in a way that suggests quota exhaustion
   (`billing_required`, `actions_disabled`) — snapshot first, then
@@ -115,10 +115,10 @@ Opportunistic triggers:
 
 - **Payment credentials.** Never. Snapshots capture consumption,
   not credit-card state.
-- **Third-party billing amounts.** Aaron
-  (`memory/feedback_budget_amounts_ok_in_source_for_research.md`)
-  explicitly scoped in-repo cost transparency to Zeta's own spend,
-  not to any customer/vendor invoice.
+- **Third-party billing amounts.** Per
+  `memory/feedback_budget_amounts_ok_in_source_for_research.md`,
+  the human maintainer explicitly scoped in-repo cost transparency
+  to Zeta's own spend, not to any customer/vendor invoice.
 - **Live projections.** Projections are computed on demand from the
   JSONL (a companion script `tools/budget/project-runway.sh` can
   live here later); the evidence is the substrate, projections are

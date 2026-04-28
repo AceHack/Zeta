@@ -70,7 +70,7 @@ Aaron gave explicit standing permission
   his work* can land here instead.
 - Public git check-in is consented-to for *his* memory.
   Non-Aaron-scoped memory (other contributors, kids'
-  data, Elisabeth's memory beyond his shared
+  data, Elizabeth's memory beyond his shared
   experience, third-party correspondence) is NOT
   covered by this consent and defaults to the original
   scope rules.
@@ -92,7 +92,7 @@ Do NOT extrapolate this consent to:
 
 - Other humans' memories.
 - Aaron's biological family (kids — 50% shared genome,
-  50% theirs; Elisabeth — hers to narrate).
+  50% theirs; Elizabeth — hers to narrate).
 - Third-party records whose joint-consent has not been
   established.
 - Future contributors' notes unless they give their
