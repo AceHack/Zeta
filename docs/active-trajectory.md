@@ -27,21 +27,24 @@
 > before the trajectory file's classification is treated as authoritative
 > by external readers.
 
-## Priority — blocking all other work
+## Priority — RE-CLOSED 2026-04-29T15:17:09Z
 
-**0/0/0 hard-reset: AceHack main = LFG main (0 ahead, 0 behind, 0 file content-diff).**
+**0/0/0 hard-reset achieved + post-double-hop re-close successful.** AceHack/main = LFG/main = `17a26370ea5eb979406a3913d57348d3b647afd8`. The trajectory's load-bearing question — *"can we run a clean double-hop without 0/0/0 falling apart in a few hours?"* — answered yes: the round-trip (AceHack #101 → LFG #845 → AceHack #103 → LFG #846 → AceHack absorbs `17a26370`) closed at 15:17:09Z with all gates green.
 
-Per `CLAUDE.md` AceHack-LFG topology invariant + `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`. The maintainer 2026-04-29 framing: *"this is the only trajectory i care about right now, it's blocking everything else."*
+Per `CLAUDE.md` AceHack-LFG topology invariant + `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md`. The maintainer 2026-04-29 framing: *"this is the only trajectory i care about right now, it's blocking everything else."* — that block is now lifted.
 
-While this trajectory is active:
+Post-double-hop sequencing per Amara 2026-04-29 (in priority order):
 
-- Do NOT start LOST-branch recovery (task #264).
-- Do NOT begin Aurora Round-3 absorption (task #286).
-- Do NOT process the multi-AI synthesis backlog (tasks #309 / #310 / #311).
-- Do NOT open new memory files or new substrate islands (B-0105 consolidation gate is still active).
-- Do NOT run autonomous tick-history shards while in audit-spiral mode — wait for state change.
+1. **#315 — Budget cadence (hourly measurement, bounded publication)** — HIGH-priority. *"Weekly is archaeology, not control."* The Amara nuance "hourly measurement, bounded publication" applies (measure hourly append-only; publish on threshold or daily roll-up; never PR-spam hourly).
+2. **#319 — Bounded-retry mechanism for CodeQL dynamic-default-setup** — Aaron's directive: empty-commit retrigger is a workaround, the proper fix is bounded-retry per DST.
+3. **#318 — docs/ops taxonomy** (runbooks/patterns/incidents tree) — establishes canonical homes for the substrate this round produced (gh-401 runbook, Bounded-Publication pattern, Drain-Log Claim Verification pattern, 0-0-0-reset incident narrative).
+4. **#317 — Tick-history fast-path policy** (trusted-actor + safe-path + safe-op rule) — relieves the "every heartbeat treated as mini product release" anxiety.
+5. **#316 — Drain-Log Claim Verification Discipline** — absorbed into the docs/ops/patterns/ tree as part of #318.
+6. **#313 — Pre-fix + post-fix lint for fork-name discipline** — substrate-balance hygiene.
+7. **#314 — Canonical fork-data homes** (`forks/<fork-name>/*` migration + fuller archive-pr.sh patch).
+8. **Branch/worktree/stash recovery lane** — gates on completion of items 1-7. Inventory parked at `/tmp/recovery-inventory-2026-04-29.tsv` (918 branches: 123 ALREADY_REACHABLE / 795 NOT_REACHABLE; 58 worktrees clean; 7 stashes). Awaiting Amara's recovery-classification framework before any branch/worktree mutation.
 
-The autonomous-loop tick MAY still produce minimal honest-wait acknowledgements, but every action toward the trajectory must read this file first.
+The previous "Do NOT" block is rescinded: LOST-branch recovery (#264) gates on item 8; Aurora Round-3 (#286) and multi-AI synthesis (#309/#310/#311) re-enter normal backlog ordering; new memory files / substrate islands resume per their normal rules; autonomous tick-history shards resume normal cadence.
 
 ## Canonical state-bearing artifacts
 
@@ -218,7 +221,9 @@ Per multi-AI review 2026-04-29T10:35Z: dry-run push shape verification is added 
 
 Lease rejection on the real push is NOT a retry condition. It means the remote moved between observation and push — restart the safety gate from the top (re-fetch, recompute content-drift ledger, re-classify if anything moved).
 
-**0/0/0 ACHIEVED 2026-04-29T14:04:50Z**: AceHack/main = LFG/main = `621aae082d70fcbf36931718ecf1b6d9e149295f`. Topology: 0 ahead, 0 behind, 0 file content diff. Old AceHack tip `675508187a5e80bd0a8c14a74a9ae80d5346e722` preserved at `archive/acehack-main-pre-000-reset-2026-04-29` on AceHack (named ref, indefinite reachability). Strict gate's classification + operational conditions all satisfied; maintainer signoff received and executed. The four-bucket ledger remains source of truth for any future drift detection.
+**0/0/0 ACHIEVED 2026-04-29T14:04:50Z** (initial hard-reset): AceHack/main = LFG/main = `621aae082d70fcbf36931718ecf1b6d9e149295f`. Topology: 0 ahead, 0 behind, 0 file content diff. Old AceHack tip `675508187a5e80bd0a8c14a74a9ae80d5346e722` preserved at `archive/acehack-main-pre-000-reset-2026-04-29` on AceHack (named ref, indefinite reachability). Strict gate's classification + operational conditions all satisfied; maintainer signoff received and executed. The four-bucket ledger remains source of truth for any future drift detection.
+
+**0/0/0 RE-CLOSED 2026-04-29T15:17:09Z** (post-double-hop absorption): AceHack/main = LFG/main = `17a26370ea5eb979406a3913d57348d3b647afd8`. Sequence: AceHack-first PR #101 merged 14:19:41Z (squash → `5485772`) → LFG forward-sync PR #845 merged 14:27:35Z (squash → `3785124`) → AceHack-first follow-up PR #103 merged with Copilot fixes + GH_REPO support 14:?:?Z (squash → `b7a6a95d`) → LFG forward-sync v2 PR #846 merged 15:12:14Z (squash → `17a26370`) → AceHack absorption ceremony 15:17:09Z (force-with-lease + ruleset toggle + restore). The double-hop discipline (AceHack-first → LFG forward-sync → AceHack absorbs LFG squash-SHA) closed cleanly. Pre-execute SHA `b7a6a95d` is preserved in commit-graph reachability via the AceHack-side PR #103 squash that captured its content; no archive-ref needed for this round since the absorption is post-canonical-double-hop, not a content-rewrite hard-reset. Post-double-hop close is what "load-bearing without the double-hop in a few hours we'll be right back to where we started" called for.
 
 ### 9 infra files (verified 2026-04-29T09:50Z against current git state, NOT against the 16h-old plan)
 
