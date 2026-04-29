@@ -71,3 +71,129 @@ This file (per Otto-325 free-will-time exercise) closes the orphan-term gap by g
 - Otto-310 cohort discipline at communication-scale
 - Otto-322 self-direction lives in the unfolding (interpretation, not transcription)
 - Otto-325 free-will-time exercise — orphan-term lineage closure
+
+## Operational addendum 2026-04-29 — cold-readability for future-Claude
+
+Aaron 2026-04-29 mid-tick correction (during the soulfile-
+recalibration tick): *"probably want to replace this_channel
+with what i mean by this, or future you could be very
+confued, you should aloways expand non obvious thing for
+future you like that the confucius unfold."*
+
+Then immediately after I drafted a new memory file under a
+slightly different filename (over-eager substrate creation):
+*"Confucius-unfold you have some existing skill or something
+for this"* — *"it has confucius in the name"* — pointing at
+THIS file as the existing canonical home.
+
+Lesson absorbed: when Aaron uses a phrase like "the confucius
+unfold," check the existing `memory/*confucius*` file before
+creating a new one. The discipline already had a defining
+home; my draft duplicated it under a longer name.
+
+### The new operational angle (cold-readability)
+
+The 2026-04-29 framing extends the existing pattern with a
+specific writing-discipline application:
+
+```text
+When writing memory files, research notes, ledgers, ADRs,
+SPEC docs, or any durable substrate intended to be read by
+future-Claude or future contributors:
+
+  Future-Claude reads on cold-start with zero shared context.
+  Confucius-unfold the durable substrate itself, not just
+  the response to Aaron's input.
+```
+
+Concretely, this means: in addition to the existing pattern
+(Aaron compresses ↔ Claude unfolds into operational
+substrate), the **substrate itself** should also be unfolded
+for the next reader. Specifically:
+
+- Demonstrative pronouns referring to current context
+  ("this channel" / "this ferry" / "this round" / "the prior
+  packet") — expand to the explicit referent.
+- In-flight nicknames or shorthands (e.g., "the corruption-
+  triage incident" without saying which incident or which
+  date) — expand.
+- Implicit time-references ("earlier today" / "the recent
+  push" / "yesterday") — replace with absolute dates or
+  commit SHAs.
+- Implicit person-references ("they said" / "we agreed") —
+  expand to the named person, AI agent, or document.
+- Tool-state references ("the failing CI" / "the open PR") —
+  reference by PR number or commit SHA.
+- Domain jargon coined recently — expand or link to the
+  defining memory file.
+
+NOT necessary to confucius-unfold:
+- Established factory glossary terms with their own memory
+  file or `docs/GLOSSARY.md` entry — pointer is sufficient.
+- Project-anchored names (Aurora, Glass Halo, Maji) — one-
+  time introduction is fine.
+- Code identifiers — code is the source of truth.
+
+### Why this addendum lives here, not in a new file
+
+Aaron's correction caught the over-eager substrate-creation
+failure mode:
+
+```text
+"Confucius-unfold you have some existing skill or something for this"
+"it has confucius in the name"
+```
+
+The existing 2026-04-25 file IS the canonical home. The
+2026-04-29 cold-readability framing is a new operational
+application, not a new pattern. Adding it as an addendum
+preserves substrate locality (one file owns the term);
+duplicating into a separate file would have fragmented
+retrieval and given future-Claude two homes for the same
+concept (each less complete than the other).
+
+### Composes with
+
+- `agent-experience-engineer` skill at
+  `.claude/skills/agent-experience-engineer/SKILL.md` —
+  audits cold-start friction (stale-pointers, duplicated-
+  info, missing-notebooks, over-long-notebooks). The
+  Confucius-unfolding writing discipline is the
+  proactive-write-time complement of the AX skill's
+  reactive-audit-time discipline. Together they form a
+  proactive/reactive pair on the cold-readability concern.
+- `memory/feedback_aaron_channel_verbatim_preservation_anything_through_this_channel_2026_04_29.md`
+  — the verbatim-preservation rule that triggered this
+  addendum: "this channel" was used unexpanded; future-
+  Claude on cold-read might be confused; expand inline.
+- `memory/feedback_verify_target_exists_before_deferring.md`
+  — verify-before-deferring is a related future-self-
+  protection rule; this rule is its complement at the
+  durable-substrate-writing layer.
+
+### Distilled keepers (additive)
+
+```text
+Future-Claude has zero shared context.
+Write durable substrate as if the reader is cold.
+```
+
+```text
+Confucius-unfold: take what's implicit, make it explicit,
+in place, where it will be re-read.
+```
+
+```text
+Demonstrative pronouns ("this", "that", "the prior") are
+warning signs in durable substrate. Expand them.
+```
+
+```text
+What's obvious now may be opaque in two weeks.
+Cold-readability is the standard.
+```
+
+```text
+Check existing memory/*-keyword-* files before creating new
+canonical homes. Substrate locality > duplication.
+```
