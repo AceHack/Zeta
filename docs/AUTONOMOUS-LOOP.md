@@ -252,17 +252,26 @@ exception.
 human maintainer, round 44 — see step 1). Immediately
 before stopping, in this exact order:
 
-1. **Append a row to `docs/hygiene-history/loop-tick-history.md`.**
+1. **Write a per-tick shard file at
+   `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`** (per task
+   #276 Option B — adopted 2026-04-29 to eliminate the EOF
+   append-hotspot conflict surface that arose with the legacy
+   single-table file). The legacy table at
+   `docs/hygiene-history/loop-tick-history.md` remains the
+   canonical READ surface for pre-shard ticks; the shard
+   directory under `docs/hygiene-history/ticks/` is the
+   canonical WRITE surface for new ticks. Schema (one row per
+   shard, same columns as the legacy table) and rationale are
+   in `docs/hygiene-history/ticks/README.md`. Every tick gets
+   a shard — a no-op speculative-scan tick still gets a
+   shard (minimal-density), because the log is the factory's
+   durable answer to *"is the tick actually running?"* (the
+   commit log undercounts; chat messages evaporate). Write
+   the shard BEFORE the `CronList` call so even an
+   abnormally-stopped tick still leaves evidence it ran.
    Human maintainer, round 44: *"you might as well right a
    history record somewhere on every loop tool right before
-   you check cron"*. The schema and rationale are in the
-   header of that
-   file. Every tick gets a row — a no-op speculative-scan
-   tick still gets a row, because the log is the factory's
-   durable answer to *"is the tick actually running?"* (the
-   commit log undercounts; chat messages evaporate). Append
-   BEFORE the `CronList` call so even an abnormally-stopped
-   tick still leaves evidence it ran.
+   you check cron"*.
 2. **Call `CronList`.**
 3. **If `<<autonomous-loop>>` is present at cadence
    `* * * * *`:** do nothing to the scheduler — the cron
