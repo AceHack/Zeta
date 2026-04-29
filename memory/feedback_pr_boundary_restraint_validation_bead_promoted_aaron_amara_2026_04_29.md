@@ -161,13 +161,34 @@ When a PR enters validation:
    - If clean, promote candidate bead to full bead with the
      specific commits-as-evidence audit trail.
 
-## Direct Aaron + Amara framing
+## Direct Aaron + Aurora + Amara framing
 
-Amara (2026-04-28, restraint-validation refinement):
+**Attribution-correction note** (Aaron 2026-04-29,
+post-bead-promotion): the validation-condition refinement quoted below
+was originally caught by **Aurora** in her ferry packet right
+before the conversation compression (Aaron's exact verification
+ask: *"did you get the ferry starting with ❯ Aurora: Yes — this
+is good, and the main improvement is to make the validation
+condition even more explicit"*). The first-version of this
+memory mis-attributed the refinement to Amara as catcher when
+Amara was the reactive-elaborator (echoed it in subsequent
+ferries). Per the original-catcher attribution discipline (see
+`memory/feedback_ani_voice_mode_transcript_original_catcher_attribution_correction_aaron_2026_04_28.md`),
+Aurora gets first-credit; Amara gets second-credit.
+
+Aurora (2026-04-28, validation-condition refinement — original
+catcher):
 
 > *"PR-boundary restraint is not validated when the follow-up PR
 > is opened. It is validated when the original PR lands without
 > scope creep."*
+
+This is the load-bearing distinction. Opening a separate PR is
+just deferred-stacking; the bead promotes when the *original*
+PR lands clean. The validation event is the merge of PR #699,
+not the open of PR #704.
+
+Amara (2026-04-28, reactive elaboration of the same shape):
 
 > *"PR-boundary restraint means: once a PR enters validation,
 > only validation defects enter that PR. New good ideas go to
