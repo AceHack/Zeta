@@ -112,13 +112,24 @@ if ! REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"; then
 fi
 
 # Dynamic owner / name — works from forks or after rename.
-# Requires `gh repo view` to succeed; the script hard-fails
-# with exit 1 rather than silently defaulting to a baked-in
-# NWO (better to fail loud than archive to the wrong repo
-# path on a fork).
-REPO_NWO="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
-if [ -z "${REPO_NWO}" ]; then
-  echo "error: could not detect repo via 'gh repo view'. Is gh authenticated and this a GitHub repo?" >&2
+# Resolution order:
+#   1. GH_REPO env var (e.g. GH_REPO=AceHack/Zeta) — needed for cross-fork
+#      archives where the local clone's `gh repo view` resolves to a
+#      different repo than the PR's home (e.g. local origin = LFG but
+#      archiving an AceHack PR).
+#   2. `gh repo view --json nameWithOwner` — falls back to whichever repo
+#      gh-cli resolves for the current working directory (typically
+#      the local clone's `origin` remote, or the explicit `gh repo
+#      set-default` setting if one is in effect).
+# The script hard-fails with exit 1 rather than silently defaulting to a
+# baked-in NWO (better to fail loud than archive to the wrong repo path).
+if [ -n "${GH_REPO:-}" ]; then
+  REPO_NWO="${GH_REPO}"
+else
+  REPO_NWO="$(gh repo view --json nameWithOwner --jq .nameWithOwner 2>/dev/null || true)"
+fi
+if [ -z "${REPO_NWO}" ] || [ "${REPO_NWO}" = "${REPO_NWO#*/}" ]; then
+  echo "error: could not detect repo (need GH_REPO=<owner>/<name> env var or 'gh repo view' to succeed). Is gh authenticated and this a GitHub repo?" >&2
   exit 1
 fi
 REPO_OWNER="${REPO_NWO%/*}"
