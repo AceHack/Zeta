@@ -104,3 +104,135 @@ Once both are zero, factory has "started." Any subsequent divergence is a violat
 - Aaron's `/btw` non-interrupting aside protocol still applies.
 - Otto-357 NO DIRECTIVES still applies (Aaron's input here is observation/reframe, not directive — Otto's judgment update is "shift priority and topology accordingly").
 - The `0-diff is start line` framing from the earlier 2026-04-27 memory is reinforced, not replaced — this memory describes HOW to operationalize that line.
+
+## Hard-reset safety addendum (2026-04-29 Amara round-9 catch)
+
+**LOAD-BEARING SAFETY RULE — read before any AceHack hard-reset.**
+
+Source: forwarded multi-AI feedback packet 2026-04-29.
+
+> *"No AceHack-only files ≠ no AceHack-only content."*
+> *"Same path is not same substrate."*
+> *"Hard reset is allowed only after content-loss proof, not content-loss confidence."*
+
+### What went wrong (saved by peer review)
+
+A prior reset-readiness audit ran `--diff-filter=A` on
+`origin/main..acehack/main` and found no files that exist
+ONLY on AceHack. From that, it concluded 19/23 PRs were
+ALREADY-COVERED and a hard-reset was likely safe.
+
+The peer-harness check (Codex independently sampling, Grok
+attacking the methodology) caught the gap: file-presence
+is not content-equivalence. A deeper probe of
+`.github/workflows/gate.yml` and `.github/codeql/codeql-config.yml`
+found shared files with unique AceHack content NOT on LFG.
+
+The peer-harness paid for itself: same-tools-under-review
+caught missing content in the reset-readiness claim.
+**Hard-reset BLOCKED until content-equivalence proof.**
+
+### Required content-equivalence audit (BEFORE any hard-reset)
+
+```bash
+# Both checks required for safety:
+
+# (1) Files present only on AceHack (not on LFG)
+git diff --name-status --diff-filter=A origin/main..acehack/main
+
+# (2) Shared files MODIFIED on AceHack (may contain unique content)
+git diff --numstat --diff-filter=M origin/main..acehack/main
+
+# Then for each modified shared path, content-compare:
+git diff origin/main..acehack/main -- <path>
+
+# And test reachability of each candidate SHA:
+git merge-base --is-ancestor <sha> origin/main  # 0=ancestor, 1=not
+git merge-base --is-ancestor <sha> acehack/main
+```
+
+### Required classification per unforwarded substantive PR
+
+```text
+PR number / SHA
+files touched (added vs modified)
+is commit reachable from origin/main? (merge-base --is-ancestor)
+is equivalent content present on origin/main?
+classification:
+  ALREADY-COVERED         (content equivalent on LFG)
+  NEEDS-FORWARD-SYNC      (substantive AceHack-only content)
+  OBSOLETE                (superseded; intentional drop with rationale)
+  INTENTIONAL-DROP        (explicit decision; rationale recorded)
+  NEEDS-HUMAN-REVIEW      (cannot classify automatically)
+evidence command(s) used
+```
+
+### Priority for classification
+
+```text
+P0  workflows / CI / CodeQL / tooling used by current automation
+P1  peer-call tools and safety/governance primitives
+P2  research / memory / docs
+P3  tick-history / stale process artifacts
+```
+
+### Hard-reset gate (binding)
+
+```text
+Hard-reset can only return to the table after:
+  - all NEEDS-FORWARD-SYNC items have been forwarded to LFG
+  - all OBSOLETE / INTENTIONAL-DROP items have rationale recorded
+  - all NEEDS-HUMAN-REVIEW items resolved by maintainer sign-off
+  - final content-loss audit returns clean
+```
+
+### Methodology rung the prior audit was missing
+
+```text
+old metric ladder:
+  commit count → tree diff → file-level classification
+
+new metric ladder (this addendum adds the bottom rung):
+  file exists on both sides → not enough
+  shared file content equivalence → required
+```
+
+### Distilled keepers (binding)
+
+```text
+Same path is not same substrate.
+File-presence is not coverage.
+Commit absence is not content absence.
+Only content-equivalence proves reset safety.
+```
+
+```text
+Tree-diff nonzero is not automatically unsafe.
+Tree-diff "covered" is not automatically safe.
+Reset safety requires content-loss = zero.
+```
+
+```text
+Hard reset is allowed only after content-loss proof,
+not content-loss confidence.
+```
+
+```text
+The sample was useful.
+The conclusion was too large.
+The peer check saved the substrate.
+```
+
+### Anti-overcorrection note
+
+The new evidence does NOT mean every one of the 145 AceHack
+commits must be forwarded. Some may still be stale, duplicate,
+tick-history, or obsolete. The corrected rule is:
+
+```text
+145 commits is still not the work queue.
+Unverified content-loss candidates are the work queue.
+```
+
+Avoid swinging from "probably all covered" to "all 145 must
+be ported." The middle path is classification.
