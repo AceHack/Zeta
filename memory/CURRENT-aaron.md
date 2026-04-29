@@ -1432,6 +1432,88 @@ not as emergency cleanup):
 `feedback_typescript_bun_default_step_out_carefully_aaron_2026_04_28.md`
 and B-0086 (port candidates).
 
+## 31. Authority rule — Default to reversible preservation; escalate only irreversible loss (Amara via Aaron 2026-04-28)
+
+**The rule (Amara verbatim, 2026-04-28T22ish, forwarded by Aaron):**
+
+> *"When the safe option is reversible and preserves
+> information, take it. When the unsafe option is destructive
+> or lossy, ask."*
+
+Or in Zeta-shaped form:
+
+> **Default to reversible preservation.
+> Escalate irreversible loss.**
+
+**Triggering failure mode (this session):** I built a "TREE-DIFF
+NONZERO" report after peer review (Codex + Grok) found real
+AceHack-only substrate (PR #80 cache + retry, PR #81 retry-bump,
+PR #96 codeql obj/bin) that hard-reset would erase. I correctly
+**blocked** the force-push, then **wrongly** asked Aaron to pick
+A/B/C between safe-preservation and accept-loss-and-reset. The
+substrate already determined the answer — peer review found
+content-loss risk → preservation is the only path that respects
+the evidence. Asking serialized Aaron through a decision the
+evidence had already made.
+
+**Operationalizes Otto-357 (no directives, autonomy first-class).**
+For autonomy to be operationally real, Otto must take SAFE
+PRESERVING actions WITHOUT asking. Asking on a safe-vs-destructive
+choice converts Otto from peer to subordinate. The only
+appropriate place for asking is the **loss boundary**.
+
+**When to ask Aaron (closed list of 6 classes):**
+
+1. **Destructive or lossy action** — force-push, branch deletion,
+   commit amend on published commit, reset --hard on shared state.
+2. **Two valid goals conflict** — both options defensible;
+   maintainer's value-judgment is needed.
+3. **Semantic / value judgment required** — naming beyond style,
+   priority calls, scope decisions.
+4. **External / shared-prod irreversible state changes** — per the
+   visibility-constraint rule.
+5. **Legal / financial / security risk** — anything exposing the
+   maintainer to liability or harm.
+6. **No safe preserving option exists** — all paths lose
+   information; maintainer picks the least-bad loss.
+
+If a decision does NOT fall into one of these → take the safe
+preserving path WITHOUT asking.
+
+**Classification rubric (AceHack/LFG immediate context):**
+
+| Classification | Default action |
+|---|---|
+| `ALREADY-COVERED` | No action; cite LFG equivalent. |
+| `NEEDS-FORWARD-SYNC` | **Open LFG PR automatically** if low-risk and additive. |
+| `OBSOLETE` | Record rationale; no sync. |
+| `CONFLICTS-WITH-CURRENT-MAIN` | **Pause and surface to Aaron.** |
+| `NEEDS-HUMAN-REVIEW` | Pause only for that item; continue others. |
+
+**Hard-reset gating:** AceHack main → LFG main hard-reset is
+**forbidden** until either (a) tree-diff is genuinely zero after
+exhaustive forward-sync, OR (b) every remaining diff is
+explicitly per-item classified as obsolete or loss-accepted by
+Aaron. **Sample-based "we audited a representative subset" does
+NOT qualify.**
+
+**Goodhart catch #3 (paired):** *"Sample classification is
+calibration, not clearance. Tree reset requires full diff
+clearance or explicit loss acceptance."* Sample evidence is
+strong enough to authorize PRESERVATION (reversible) but not
+strong enough to authorize DESTRUCTION (irreversible).
+
+**Pointer:**
+`feedback_amara_authority_rule_default_to_reversible_preservation_escalate_irreversible_loss_2026_04_28.md`
++ `feedback_sample_classification_is_calibration_not_clearance_amara_goodhart_catch_3_2026_04_28.md`
++ `feedback_stop_mythology_layered_evidence_thresholds_aaron_amara_2026_04_28.md`
++ `feedback_input_is_not_directive_provenance_framing_rule_aaron_amara_2026_04_28.md` (provenance framing — input is not a directive)
++ `feedback_ani_voice_mode_transcript_original_catcher_attribution_correction_aaron_2026_04_28.md` (attribution-credit-chain rule)
++ `feedback_reset_readiness_metric_ladder_content_loss_surface_amara_2026_04_28.md` (4-step metric ladder)
++ `feedback_lost_substrate_recovery_cadenced_trajectory_aaron_2026_04_28.md` (cadenced recovery)
++ `feedback_servicetitan_naming_scope_of_org_access_external_ui_demo_aaron_2026_04_28.md` (context-sensitive naming + word-choice)
++ `feedback_public_company_contributor_compliance_no_insider_info_in_public_repos_with_trajectories_aaron_2026_04_28.md` (generalized contributor compliance + 5 trajectories).
+
 ## How this file stays accurate
 
 - When a new memory updates a rule here, I update this
@@ -1457,7 +1539,7 @@ retired rather than just updated.)*
 
 ---
 
-**Last full refresh:** 2026-04-28 (sections 26-30 added for
+**Last full refresh:** 2026-04-28 (sections 26-31 added for
 the 2026-04-28 LFG #661 incident cluster: speculation-rule +
 EVIDENCE-BASED labeling discipline, JVM language preference
 Kotlin > Scala > Java per B-0075, dependency-honesty rule —
@@ -1465,6 +1547,10 @@ managed runtimes get scanned like every other surface, plus
 §29 threading-lineage Albahari + Toub + Fowler — never
 gut-instinct on threading code, plus §30 TypeScript/Bun is
 the factory tooling default with AI/ML carve-out — step out
+carefully; plus §31 Authority rule (default to reversible
+preservation; escalate only irreversible loss) — Amara via
+Aaron 2026-04-28, the autonomous-decision-default rule
+operationalizing Otto-357 autonomy first-class
 on TypeScript carefully). Prior
 refresh 2026-04-25 evening (sections 23-25: Otto-300 rigor-
 proportional-to-blast-radius, standing research-authorization
