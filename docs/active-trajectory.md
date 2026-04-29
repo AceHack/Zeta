@@ -218,7 +218,7 @@ Per multi-AI review 2026-04-29T10:35Z: dry-run push shape verification is added 
 
 Lease rejection on the real push is NOT a retry condition. It means the remote moved between observation and push — restart the safety gate from the top (re-fetch, recompute content-drift ledger, re-classify if anything moved).
 
-**Currently NOT signoff-eligible**: see the live ledger above (`unclassified_lines`, `HEURISTIC_LFG_DOMINATES` row count). The four-bucket ledger is the single source of truth for classification progress; downstream prose paragraphs are no longer hand-maintained synonyms of the ledger.
+**0/0/0 ACHIEVED 2026-04-29T14:04:50Z**: AceHack/main = LFG/main = `621aae082d70fcbf36931718ecf1b6d9e149295f`. Topology: 0 ahead, 0 behind, 0 file content diff. Old AceHack tip `675508187a5e80bd0a8c14a74a9ae80d5346e722` preserved at `archive/acehack-main-pre-000-reset-2026-04-29` on AceHack (named ref, indefinite reachability). Strict gate's classification + operational conditions all satisfied; maintainer signoff received and executed. The four-bucket ledger remains source of truth for any future drift detection.
 
 ### 9 infra files (verified 2026-04-29T09:50Z against current git state, NOT against the 16h-old plan)
 
@@ -410,7 +410,7 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 ## Next action
 
-**Hard-reset is NOT YET signoff-eligible.** The strict gate above requires `unclassified_lines = 0`. The live four-bucket ledger above is the source of truth for the current count; the remaining files are listed in the `unclassified_lines` composition block. The next agent-owned work is per-file semantic inspection of each remaining file to either promote each to SAFE_TO_RESET_LFG_SUPERSEDES (with named evidence) or downgrade to NEEDS_FORWARD_SYNC.
+**Hard-reset complete (2026-04-29T14:04:50Z).** All gate conditions cleared; force-with-lease push executed; 0 ahead / 0 behind / 0 file diff verified. Old AceHack tip preserved at `archive/acehack-main-pre-000-reset-2026-04-29`. Next-action lane is now post-reset cleanup + INVENTORY-ONLY recovery classification of local branches/worktrees/stashes (per Amara's 7-bucket framework). Mutation gates remain on Aaron's authority for irreversible operations.
 
 ### Deferred follow-ups (NOT blocking 0/0/0 progress, captured for visibility)
 
