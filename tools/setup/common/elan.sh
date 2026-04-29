@@ -10,6 +10,17 @@
 
 set -euo pipefail
 
+# elan.sh runs as a subprocess from linux.sh + macos.sh, so it must
+# source curl-fetch.sh itself (a sourced helper in the parent shell
+# does NOT propagate to subprocess shells). Provides the
+# retry-equipped curl_fetch helper for the elan-init.sh download —
+# absorbs transient upstream 5xx without requiring a workflow
+# rerun (durable fix in code, not ephemeral retry at the workflow
+# layer).
+REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
+# shellcheck source=tools/setup/common/curl-fetch.sh
+source "$REPO_ROOT/tools/setup/common/curl-fetch.sh"
+
 if ! command -v elan >/dev/null 2>&1; then
   echo "↓ installing elan (Lean 4 toolchain manager)..."
   # Pinned to v4.2.1 commit SHA + verified SHA256 of elan-init.sh.
@@ -26,7 +37,11 @@ if ! command -v elan >/dev/null 2>&1; then
   # mismatch, installer non-zero exit). `set -euo pipefail` would
   # otherwise leak the file on any failure path.
   trap 'rm -f "${ELAN_INIT_TMP}"' EXIT
-  curl -fsSL "${ELAN_INIT_URL}" -o "${ELAN_INIT_TMP}"
+  # Retry-equipped fetch — absorbs transient upstream 5xx (the
+  # elan-init.sh URL on raw.githubusercontent.com has hit 502 in
+  # CI runs; durable retry in the script avoids needing a workflow
+  # rerun).
+  curl_fetch --output "${ELAN_INIT_TMP}" "${ELAN_INIT_URL}"
   # Portable SHA256 verification: sha256sum (Linux/git-bash/WSL) or
   # shasum -a 256 (macOS default). Per the 4-shell portability target
   # (macOS bash 3.2 / Ubuntu / git-bash / WSL).
