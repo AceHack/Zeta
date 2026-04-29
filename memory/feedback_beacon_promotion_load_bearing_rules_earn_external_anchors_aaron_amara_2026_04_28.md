@@ -191,3 +191,82 @@ Both inform the alignment trajectory.
 > earn external anchors when they're correct, and the absence
 > of an external anchor on a long-running internal rule is
 > itself a useful drift signal.'"*
+
+## Rendering-side specification — anchors stay for observer legibility (Aaron 2026-04-29 addendum)
+
+A standalone memory file (now consolidated here per Amara's
+round-4-followup catch) initially captured the rendering-side
+specification of this rule. Folding into Beacon-promotion
+because it's not a distinct concept — it's how Beacon
+promotion shows up in prose once an anchor is earned.
+
+### Source quote (verbatim)
+
+Aaron 2026-04-29 (mid-tick correction, reversing one
+direction of an Amara round-4 push to drop Conway-Kochen):
+
+> *"The human lineage link is always important like the The
+> Conway-Kochen parity intuition we might have engineering on
+> our side like Amara says but we still need to link to human
+> lineage so external observerse have a frame of references
+> without fully understading our engineering"*
+
+(Typos preserved per the channel-verbatim-preservation rule.)
+
+### The two failure modes around metaphor + engineering
+
+1. **Using metaphors as engineering proof.** Bad. The
+   metaphor doesn't prove the claim; the substrate does.
+   The push to delete metaphors-as-proof is correct.
+
+2. **Removing human-lineage anchors entirely because the
+   engineering claim is self-sufficient.** Also bad. External
+   observers (people without our vocabulary) lose their
+   reference frame. The push to keep lineage-as-attribution
+   is correct.
+
+The synthesis composes both:
+
+```text
+Cite the lineage, do not dress engineering claims with it.
+```
+
+### How Beacon-promotion renders in prose
+
+Once a load-bearing rule earns its external anchor (per the
+Beacon-promotion criteria above), the anchor stays in
+research notes / chat commentary / memory files / round-
+history entries as **attributed external reference for
+observer legibility**:
+
+```markdown
+This pattern is the engineering analog of the
+<Anchor Name> from <field>: <one-sentence explanation>.
+```
+
+The anchor is named, attributed, AND tied to the engineering
+claim it accompanies. The reader can verify the lineage
+externally OR read the engineering directly; both paths
+work.
+
+The rule does NOT mean every engineering claim needs a
+metaphor. Many claims (CI failures, lint pseudocode, file
+naming) are best left in operational terms with no anchor
+at all. The rule only fires when an anchor exists; once it
+does, the anchor stays.
+
+### Distilled keepers
+
+```text
+Anchors are observability infrastructure, not proof scaffolding.
+```
+
+```text
+Cite the lineage, do not dress engineering claims with it.
+```
+
+The rendering-side specification was originally landed as a
+standalone memory file (`feedback_human_lineage_anchors_always_stay_*.md`)
+during the round-4 absorb. Amara's round-4-followup correctly
+flagged that as rule-sprawl: this isn't a distinct concept,
+it's how Beacon-promotion shows up in prose. Folded back here.
