@@ -36,10 +36,28 @@ So both layers had been configured at different times, both enforced together, a
 > *"you could turn off both and leave the legacy off — when you turn back on, just turn back on the rulesets"*
 
 Executed:
-- `gh api -X DELETE repos/AceHack/Zeta/branches/main/protection` → "Branch not protected" (404)
-- `gh api -X PUT repos/AceHack/Zeta/rulesets/15524390 --input '{"enforcement": "disabled"}'` (briefly disabled for the push)
-- `git push --force-with-lease=...` → succeeded
-- `gh api -X PUT repos/AceHack/Zeta/rulesets/15524390 --input '{"enforcement": "active"}'` (re-enabled rulesets)
+
+```bash
+# Delete legacy branch protection
+gh api -X DELETE repos/AceHack/Zeta/branches/main/protection
+# → "Branch not protected" (404)
+
+# Disable rulesets enforcement (--input - reads JSON body from stdin via heredoc)
+gh api -X PUT repos/AceHack/Zeta/rulesets/15524390 --input - <<'EOF'
+{"enforcement": "disabled"}
+EOF
+
+# The destructive force-push (now permitted)
+git push --force-with-lease=refs/heads/main:OLD_SHA \
+  acehack refs/remotes/origin/main:refs/heads/main
+
+# Re-enable rulesets enforcement (same heredoc pattern)
+gh api -X PUT repos/AceHack/Zeta/rulesets/15524390 --input - <<'EOF'
+{"enforcement": "active"}
+EOF
+```
+
+Note on `gh api --input`: it takes a FILE PATH, not inline JSON. Use `--input -` to read from stdin (then pipe / heredoc the JSON body in), or `--input path/to/file.json` for a file. Inline JSON via `--input '{...}'` is not supported syntax — `gh` would treat the JSON string as a filename and fail. Alternative: `-f key=value` for individual fields, or `-F` for typed fields.
 
 Final config: rulesets active, legacy gone. Single source of truth for AceHack/Zeta branch policy.
 
