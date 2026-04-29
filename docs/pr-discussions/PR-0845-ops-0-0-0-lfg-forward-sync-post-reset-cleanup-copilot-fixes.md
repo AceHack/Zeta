@@ -72,7 +72,7 @@ Copilot reviewed 6 out of 6 changed files in this pull request and generated no 
 
 | File | Description |
 | ---- | ----------- |
-| memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md | Documents the dual-layer protection discovery, error-code mapping, and the operational sequence (incl. corrected `gh api --input -` usage). |
+| memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md | Documents the dual-layer protection discovery, error-code mapping, and the operational sequence (incl. corrected `gh api --input -` usage). |
 | memory/MEMORY.md | Adds an index entry pointing to the new protection-config memory. |
 | docs/pr-preservation/lfg-844-drain-log.md | Records LFG-side PR #844 review threads and resolutions for training-signal preservation. |
 | docs/pr-preservation/acehack-101-drain-log.md | Records AceHack-side PR #101 outcome (auto-merged/no-review) for the double-hop record. |

@@ -48,7 +48,7 @@ Derived-Rollup Drift class — primary state changed, downstream prose still cla
 
 ## Protection-config memory
 
-`memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md`:
+`memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md`:
 
 - AceHack/Zeta had BOTH legacy branch protection AND repository rulesets on `main`
 - Both layers enforced independently; GitHub UI doesn't surface dual-layer state
@@ -112,26 +112,26 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
 
 | File | Description |
 | ---- | ----------- |
-| memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md | New memory documenting dual-layer protection enforcement + commands/error-code mapping. |
+| memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md | New memory documenting dual-layer protection enforcement + commands/error-code mapping. |
 | memory/MEMORY.md | Adds newest-first index entry pointing to the new protection-config memory. |
 | docs/hygiene-history/ticks/2026/04/29/1410Z.md | New tick shard entry recording the 0/0/0 reset arc + follow-up PR. |
 | docs/active-trajectory.md | Flips stale “not signoff-eligible” / “not yet” language to post-reset “complete/achieved” state. |
 
 ## Review threads
 
-### Thread 1: memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:101 (unresolved)
+### Thread 1: memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:101 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-29T14:24:11Z):
 
 P1: This file references `memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md`, but that file does not exist in-repo (the path 404s). This leaves a broken cross-reference in the new memory. Either add the missing memory file in this PR, or update the reference to the correct existing in-repo memory that captures the same rule.
 
-### Thread 2: memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:41 (unresolved)
+### Thread 2: memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:41 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-29T14:24:12Z):
 
 P1: The “Delete legacy branch protection” example is confusing/internally inconsistent: the comment says legacy protection was deleted, but the shown DELETE call returns “Branch not protected” (404), which indicates there was nothing to delete at that moment. Consider clarifying the sequence (e.g., DELETE returns 204 when protection exists; 404 means it was already removed) or adjusting the narrative so readers don’t infer that 404 = successful deletion.
 
-### Thread 3: memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:18 (unresolved)
+### Thread 3: memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:18 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-29T14:24:12Z):
 

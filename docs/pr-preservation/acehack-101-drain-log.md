@@ -13,7 +13,7 @@ The threads landed AFTER the merge because AceHack has no required-conversation-
 
 ### Thread 1 — Copilot P1 — broken xref to user-scope memory file
 
-**Path:** memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md
+**Path:** memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md
 **Filed:** 2026-04-29T14:24:11Z
 **Outcome class:** FIX (real broken-xref)
 
@@ -23,7 +23,7 @@ The threads landed AFTER the merge because AceHack has no required-conversation-
 
 ### Thread 2 — Copilot P1 — internal consistency on legacy DELETE response
 
-**Path:** memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md
+**Path:** memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md
 **Filed:** 2026-04-29T14:24:12Z
 **Outcome class:** FIX (already-applied — was duplicate of LFG #844 Thread 3)
 

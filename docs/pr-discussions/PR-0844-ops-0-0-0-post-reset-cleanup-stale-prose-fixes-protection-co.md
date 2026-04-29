@@ -41,7 +41,7 @@ This is **Derived-Rollup Drift** class — primary state changed, downstream pro
 
 ## Protection-config memory
 
-`memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md`:
+`memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md`:
 
 - AceHack/Zeta had BOTH legacy branch protection AND repository rulesets on `main`
 - Both layers enforced independently; GitHub UI doesn't surface dual-layer state
@@ -133,14 +133,14 @@ Copilot reviewed 4 out of 4 changed files in this pull request and generated 4 c
 
 | File | Description |
 | ---- | ----------- |
-| `memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md` | New memory capturing the GH013/GH006 dual-layer behavior, decision, and diagnostics. |
+| `memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md` | New memory capturing the GH013/GH006 dual-layer behavior, decision, and diagnostics. |
 | `memory/MEMORY.md` | Adds an index entry pointing to the new protection-config memory. |
 | `docs/hygiene-history/ticks/2026/04/29/1410Z.md` | New tick shard recording the 0/0/0 achievement and follow-on cleanup PR. |
 | `docs/active-trajectory.md` | Flips two stale paragraphs to reflect the achieved post-reset state. |
 
 ## Review threads
 
-### Thread 1: memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:40 (resolved)
+### Thread 1: memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:40 (resolved)
 
 **@chatgpt-codex-connector** (2026-04-29T14:16:33Z):
 
@@ -150,13 +150,13 @@ The `Executed` commands document `gh api ... --input '{"enforcement": "disabled"
 
 Useful? React with 👍 / 👎.
 
-### Thread 2: memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:42 (unresolved)
+### Thread 2: memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:42 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-29T14:19:27Z):
 
 The `gh api ... --input '{"enforcement": ...}'` invocations won’t work as written: `gh api --input` expects a file path (or stdin via `--input -`), not an inline JSON string. Use `-f enforcement=...`/`-F enforcement=...`, or pass JSON via stdin (e.g., `--input -`) so this is copy/paste-correct for future audits.
 
-### Thread 3: memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:43 (unresolved)
+### Thread 3: memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:43 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-29T14:19:28Z):
 
@@ -167,13 +167,13 @@ gh api -X DELETE repos/AceHack/Zeta/branches/main/protection
 # → 204 No Content
 ```
 
-### Thread 4: memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:82 (unresolved)
+### Thread 4: memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:82 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-29T14:19:28Z):
 
 References to “Task #305” here are ambiguous in-repo (this repo already has a PR #305, and backlog rows use `B-####` IDs under `docs/backlog/**`). Consider replacing “Task #305”/“#305-adjacent” with the actual backlog-row ID (if any) or a direct URL so readers don’t chase the wrong artifact.
 
-### Thread 5: memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:18 (unresolved)
+### Thread 5: memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md:18 (unresolved)
 
 **@copilot-pull-request-reviewer** (2026-04-29T14:19:28Z):
 
