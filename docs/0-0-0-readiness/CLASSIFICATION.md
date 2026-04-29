@@ -116,7 +116,17 @@ Per `docs/active-trajectory.md` strict bucket taxonomy: classification requires 
 
 **Batch 2 result (as of #838 merge, 2026-04-29T11:53:43Z): 8 of 9 files SAFE_TO_RESET_LFG_SUPERSEDES (81 lines), 1 file NEEDS_HUMAN_DECISION (12 lines).**
 
-**Post-option-(c)-migration result (contingent on the migration PR landing): all 9 Batch 2 files SAFE_TO_RESET_LFG_SUPERSEDES (93 lines).** The `loop-tick-history.md` row above flips from NEEDS_HUMAN_DECISION → SAFE_TO_RESET_LFG_SUPERSEDES atomically with that PR's merge (decision-vs-resolution discipline: in-force state until merge is the pre-merge state).
+**Post-option-(c)-migration result (in-force as of #839 merge, 2026-04-29T12:46:29Z): all 9 Batch 2 files SAFE_TO_RESET_LFG_SUPERSEDES (93 lines).** The `loop-tick-history.md` row above flipped from NEEDS_HUMAN_DECISION → SAFE_TO_RESET_LFG_SUPERSEDES atomically with #839's merge.
+
+### Batch 3a (2026-04-29T12:48Z)
+
+| File | Diff +/- | Status | Evidence |
+|---|---|---|---|
+| `memory/project_laptop_only_source_integration_scratch_sqlsharp_features_or_designs_high_priority_2026_04_27.md` | +8/-27 | **SAFE_TO_RESET_LFG_SUPERSEDES** | LFG has `cabaabe sync: AceHack→LFG bulk content forward-port + CI cadence split + Windows trajectory seed (#651)` (forward-port + cadence-split) and `6a2f08e substrate: laptop-only source integration (#642)` (LFG-side reapplication). AceHack-only `+8` lines drop the **closed-list-scope qualifier** from the `../scratch` / `../SQLSharp` zero-matches completion criterion. AceHack version: `git grep -- '../scratch' returns zero matches`. LFG version: `git grep -- '../scratch' returns zero matches *outside the closed-list history surfaces* (memory/**, docs/BACKLOG.md, docs/backlog/**, docs/research/**, ...)`. Without the qualifier, the criterion is **technically unsatisfiable** because grep would always hit references on the closed-list surfaces themselves (this very file is one of those surfaces). LFG version is more accurate AND rule-compliant; AceHack version is a simplification regression. |
+
+**Batch 3a result: 1 of 1 files SAFE_TO_RESET_LFG_SUPERSEDES.** (Post-merge of this PR — atomic with merge per decision-vs-resolution discipline. Ledger update from headline `classified_safe_lines = 227 → 235` and `unclassified_lines = 46 → 38` lands in a small follow-up PR after this PR merges; this PR holds the classification record only, not the ledger headline edit.)
+
+**Remaining unclassified after Batch 3a (38 lines / 1 file)**: `.github/workflows/budget-snapshot-cadence.yml` — has real behavioral divergence (auto-merge policy + Scorecard `TokenPermissionsID` security fix) requiring explicit Level-1 buddy review per the Second-Agent Design Review Gate (Amara 2026-04-29 packet 10) before classification.
 
 ### Calibration batch reclassification (older "ALREADY-COVERED" label)
 

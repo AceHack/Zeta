@@ -145,7 +145,7 @@ unsafe_lines          = 0      no NEEDS_FORWARD_SYNC or NEEDS_HUMAN_DECISION
 unclassified_lines    = 46     HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
 ```
 
-**Decision-vs-resolution discipline note (per Amara 2026-04-29)**: the `unsafe_lines = 0` value lands ON MERGE of the option-(c) migration PR. While that PR is open, the in-force ledger state is `unsafe_lines = 12 / classified_safe_lines = 215`. The above values represent post-merge state, contingent on the migration PR landing. A plan is not a state change.
+**Ledger state**: in-force as of post-#839-merge (option-(c) migration landed 2026-04-29T12:46:29Z). The 9 ACEHACK_ONLY tick rows are durably preserved as Option B shards under `docs/hygiene-history/ticks/2026/04/28/` on LFG main. Hard-reset of `loop-tick-history.md` is content-preservation-safe.
 
 `potential_loss_lines = 273` was computed 2026-04-29T10:25Z via `git diff --numstat refs/remotes/origin/main..refs/remotes/acehack/main` and remains canonical: the AceHack and LFG main tips have not advanced relative to each other in a way that touched the divergent files (#837 + #838 + the option-(c) migration only touch docs in `docs/0-0-0-readiness/` and add new shard files in `docs/hygiene-history/ticks/2026/04/28/` — neither set affects the existing AceHack-vs-LFG diff for the divergent file set). Re-compute on next batch open if either tip moves materially.
 
@@ -170,7 +170,7 @@ Per the Migration Preflight Ledger discipline (per multi-AI review 2026-04-29 pa
 
 Net: 9 shard writes; 1 no-op (COMMON_IDENTICAL with positional drift). The misclassification of `2026-04-21T17:28` as SAME_TIMESTAMP_DRIFT (caught during the trajectory's earlier prose-only classification on #838) was corrected here by the preflight ledger's content-hash check — exactly the bug-class the discipline is designed to prevent. **A timestamp is an address, not an identity.**
 
-Composition of `classified_safe_lines = 227` (post-merge values, contingent on this PR landing — pre-merge in-force value is 215):
+Composition of `classified_safe_lines = 227` (in-force post-#839-merge):
 
 - 9 infra files (97 lines): see "9 infra files" table above. SAFE_TO_RESET_LFG_SUPERSEDES with named per-file evidence.
 - 5 calibration-batch files (28 lines, 2026-04-28): MEMORY.md (11) + codeql_umbrella (12) + doc_class_mirror_beacon (1) + CURRENT-aaron (2) + CURRENT-amara (2). Originally labeled "ALREADY-COVERED" in older taxonomy; under strict bucket each has named evidence in `docs/0-0-0-readiness/CLASSIFICATION.md` → SAFE_TO_RESET_LFG_SUPERSEDES.
@@ -178,13 +178,13 @@ Composition of `classified_safe_lines = 227` (post-merge values, contingent on t
 - Batch 2 (81 lines, 2026-04-29T12:05Z): codeql-config.yml (6) + memory-index-duplicate-lint.yml (8) + audit-memory-index-duplicates.sh (8) + Shard.fs (9) + AUTONOMOUS-LOOP.md (9) + macos.sh (11) + fix-markdown-md032-md026.py (16) + curl-fetch.sh (14). See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 2 table for named evidence per file. Common pattern: LFG version is either rule-compliant (role-refs vs persona-name violations on current-state surfaces), more accurate (correct retry-math on curl-fetch.sh), the perf-fixed form (Shard.fs non-boxing comparer), the current doctrine (AUTONOMOUS-LOOP.md Option B shard-mode), or strict superset (fix-markdown-md032-md026.py YAML frontmatter handling).
 - Option-(c) migration (12 lines, this PR): `loop-tick-history.md` reclassifies from NEEDS_HUMAN_DECISION → SAFE_TO_RESET_LFG_SUPERSEDES because the 9 ACEHACK_ONLY rows are durably preserved as Option B shards under `docs/hygiene-history/ticks/2026/04/28/`. Hard-reset of the table on AceHack is then content-preservation-safe.
 
-Composition of `unsafe_lines = 0` (post-merge values; pre-merge in-force value is 12 — the file is `loop-tick-history.md` until this PR lands):
+Composition of `unsafe_lines = 0` (in-force post-#839-merge):
 
 ```text
-(empty post-merge)
+(empty)
 ```
 
-Pre-merge composition (in-force until this PR lands): `12  docs/hygiene-history/loop-tick-history.md  (mutual divergence — 9 truly-unique-AceHack timestamps + 9 truly-unique-LFG timestamps + 1 COMMON_IDENTICAL_REORDERED row, per the Migration Preflight Ledger above; maintainer-(c) decision recorded; awaiting this PR's merge for resolution).
+`loop-tick-history.md` was previously NEEDS_HUMAN_DECISION (12 lines, mutual divergence — 9 truly-unique-AceHack timestamps + 9 truly-unique-LFG timestamps + 1 COMMON_IDENTICAL_REORDERED row per the Migration Preflight Ledger above). Maintainer chose option (c); the option-(c) migration PR (#839, merged 2026-04-29T12:46:29Z) wrote 9 ACEHACK_ONLY rows as Option B shards on LFG, making hard-reset content-preservation-safe. File now classifies SAFE_TO_RESET_LFG_SUPERSEDES.
 
 Composition of `unclassified_lines = 46` (2 files):
 
