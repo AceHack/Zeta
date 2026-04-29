@@ -59,6 +59,38 @@ _HEADING_WITH_PUNCT = re.compile(r"^(#+ .+?)([.,;:!?]+)\s*$")
 # backtick fences cannot interrupt each other — track which fence opened.
 _FENCE_OPEN = re.compile(r"^( {0,3})(`{3,}|~{3,})\s*([^`]*)$")
 
+# YAML frontmatter line discriminator: matches a non-empty line that
+# starts with a key followed by `:` (with optional leading whitespace
+# and optional value). Examples that match: `id: B-0001`, `tags:`,
+# `composes_with:`. YAML list items like `  - item` are intentionally
+# NOT matched here; the discriminator only needs a simple `key:` check
+# because the very-first content line of a real frontmatter should be
+# a key:value, not a list item. List items + indented continuation
+# lines are handled separately in the ratio check via the
+# `_is_yaml_continuation` helper below.
+_YAML_KEY_LINE = re.compile(r"^\s*[A-Za-z_][\w-]*\s*:")
+
+
+def _is_yaml_continuation(line: str) -> bool:
+    """Return True if a line plausibly continues a YAML key's value:
+    indented continuation (>= 2 spaces or tab) of any non-blank
+    content. Does NOT match column-0 lines (those should be either
+    blank, a new key, or non-frontmatter content).
+
+    Critically: this does NOT count `- item` at column 0 as
+    continuation. A column-0 `- item` is almost always a markdown
+    list, not a YAML list item under a parent key. YAML list items
+    appear with leading indent (`  - X`); the leading indent is
+    what disambiguates them.
+
+    Used by the frontmatter-detection ratio check to count
+    indented-continuation lines toward the "YAML-shaped majority"
+    threshold without double-counting markdown list items as
+    YAML."""
+    if not line.strip():
+        return False  # blank lines counted separately
+    return line.startswith(("  ", "\t"))
+
 
 def _is_list_or_continuation(line: str) -> bool:
     """Return True if line is a list item or its continuation
@@ -73,41 +105,150 @@ def _is_list(line: str) -> bool:
 
 def _classify_lines(lines: list[str]) -> list[bool]:
     """Return a boolean list `inside[i]` = True iff line `i` is inside
-    a fenced code block (and therefore must NOT be touched by the
-    MD032/MD026 transforms — that would mutate code examples).
+    a region that must NOT be touched by the MD032/MD026 transforms.
 
-    A code fence is a line starting with 3+ backticks or 3+ tildes;
-    closing fence must be the same character class as the opener and
-    have at least as many characters. We only track the simple case
-    sufficient for committed-markdown shapes; nested or weird
-    indentation (>3 spaces makes it a code-indent rather than a fence)
-    is conservatively treated as "inside" once opened until matching
-    close — better to skip transforms than to corrupt code."""
-    inside: list[bool] = []
+    Two such regions:
+
+    1. **YAML frontmatter** (Jekyll/Hugo/factory-convention shape):
+       file starts with a line `---`, line 1 is YAML-shaped
+       (matches `key:` at start), and a closing `---` exists later.
+       Lines from line 0 through the closing `---` are frontmatter.
+       Inserting blanks here breaks YAML parsing (e.g.
+       `composes_with:` followed by blank line then `  - X` parses
+       as `composes_with: null` plus a separate top-level list).
+       MD026 would only affect frontmatter if a YAML-key line
+       happened to match the ATX-heading pattern (`^#+ `) — which
+       it can't, since YAML keys don't start with `#`. So the YAML
+       risk is concentrated in MD032's blank-insertion behavior,
+       and the frontmatter-skip protects that.
+
+    2. **Fenced code blocks**: a line starting with 3+ backticks or
+       3+ tildes; closing fence must be the same character class as
+       the opener and have at least as many characters. Inserting
+       blanks here would mutate code examples (e.g. shell-script
+       with `- option` flags would acquire spurious blanks).
+
+    Both regions are conservatively treated as "inside" so transforms
+    skip them. Better to skip than to corrupt structure.
+
+    YAML frontmatter detection is conservative — must distinguish
+    real frontmatter from a markdown file that happens to start with
+    a thematic break (`---` followed by content):
+
+      Real frontmatter:  line 0 is `---`,
+                         line 1 looks YAML-shaped (`key: value` or `key:`),
+                         a closing `---` exists later.
+      Thematic break:    line 0 is `---`,
+                         line 1 is markdown body (heading / prose / etc.).
+
+    The YAML-shape check on line 1 is the discriminator. Without it,
+    a file starting with a horizontal rule would have all subsequent
+    content marked as "inside frontmatter," skipping every list and
+    heading from being processed.
+
+    Files without frontmatter (line 0 not `---`, or line 1 not
+    YAML-shaped, or no closing `---`) skip the frontmatter region
+    entirely — pass-through to the fence-detection logic."""
+    inside: list[bool] = [False] * len(lines)
+
+    # Pass 1: YAML frontmatter region — only if all FIVE conditions:
+    # (a) line 0 is exactly `---`
+    # (b) line 1 is YAML-shaped (matches `key:` at start, ignoring
+    #     leading whitespace)
+    # (c) a closing `---` line exists within the next 200 lines
+    # (d) the line immediately BEFORE the closing `---` is YAML-
+    #     shaped, blank, or a YAML continuation (catches the case
+    #     where a closing `---` is just a thematic break — its
+    #     preceding line is markdown prose, not a YAML key)
+    # (e) at least 75% of non-blank lines BETWEEN the bookends are
+    #     YAML-shaped (catches files where a single YAML-looking
+    #     line appears after a thematic break, with a closing
+    #     thematic break further down — typical "tip:" / "note:" /
+    #     "warning:" prose patterns)
+    #
+    # The (b)/(d)/(e) checks together distinguish real frontmatter
+    # from prose where `note: ...` happens to follow a thematic
+    # break with another thematic break later. (c)'s 200-line cap
+    # is defense-in-depth: real frontmatter is rarely >50 lines.
+    _MAX_FRONTMATTER = 200
+    _YAML_RATIO_MIN = 0.75
+    if (
+        len(lines) >= 2
+        and lines[0].rstrip() == "---"
+        and _YAML_KEY_LINE.match(lines[1])
+    ):
+        fm_end = -1
+        for j in range(2, min(len(lines), _MAX_FRONTMATTER + 1)):
+            if lines[j].rstrip() == "---":
+                fm_end = j
+                break
+        if fm_end > 0:
+            # Check (d): line immediately before closing `---` is
+            # YAML-shaped, blank, or YAML continuation. (No need
+            # for `if fm_end > 0` ternary — already in the
+            # `if fm_end > 0:` block.)
+            prev_line = lines[fm_end - 1]
+            prev_ok = (
+                not prev_line.strip()
+                or _YAML_KEY_LINE.match(prev_line)
+                or _is_yaml_continuation(prev_line)
+            )
+            # Check (e): YAML-shaped majority of non-blank lines.
+            # Counts: `key:` lines (via _YAML_KEY_LINE) and
+            # indented-continuation lines (via _is_yaml_continuation).
+            # Does NOT count column-0 `- item` lines — those are
+            # almost always markdown list items, not YAML, and
+            # counting them would mis-classify ordinary markdown
+            # documents (e.g. a thematic break + "note: ..." +
+            # bullet list) as frontmatter.
+            yaml_count = 0
+            non_blank = 0
+            for j in range(1, fm_end):
+                if lines[j].strip():
+                    non_blank += 1
+                    if (
+                        _YAML_KEY_LINE.match(lines[j])
+                        or _is_yaml_continuation(lines[j])
+                    ):
+                        yaml_count += 1
+            ratio_ok = (
+                non_blank == 0
+                or (yaml_count / non_blank) >= _YAML_RATIO_MIN
+            )
+            if prev_ok and ratio_ok:
+                for k in range(fm_end + 1):  # inclusive of closing `---`
+                    inside[k] = True
+        # If conditions don't all hold, conservatively don't mark
+        # any lines as frontmatter (treat as thematic break / body).
+
+    # Pass 2: fenced code blocks (skip lines already marked
+    # inside-frontmatter — they don't open / close fences).
     open_char: str | None = None  # '`' or '~'
     open_len: int = 0
-    for line in lines:
+    for i, line in enumerate(lines):
+        if inside[i]:
+            continue  # Already marked as frontmatter
         m = _FENCE_OPEN.match(line)
         if m and open_char is None:
             # Opening fence
             fence = m.group(2)
             open_char = fence[0]
             open_len = len(fence)
-            inside.append(True)
+            inside[i] = True
         elif m and open_char is not None:
             # Possible closing fence — must be same char class and
             # length >= open_len, with no info string.
             fence = m.group(2)
             if fence[0] == open_char and len(fence) >= open_len and not m.group(3).strip():
-                inside.append(True)  # The closing fence line itself
+                inside[i] = True  # The closing fence line itself
                 open_char = None
                 open_len = 0
             else:
                 # A different fence char or shorter — still inside the
                 # outer block (it's just code that looks fence-shaped).
-                inside.append(True)
+                inside[i] = True
         else:
-            inside.append(open_char is not None)
+            inside[i] = open_char is not None
     return inside
 
 
