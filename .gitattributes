@@ -40,3 +40,26 @@
 *.exe       binary
 *.pdb       binary
 *.jar       binary
+
+# Diagnostic artifacts (corruption triage, profile dumps, etc.):
+# track but suppress diffs so PR review stays focused on
+# conclusions, not raw evidence walls. The artifacts directory
+# is mostly text (fsck output / rev-list output / config
+# snapshots) — text compresses well in git pack-delta storage,
+# so the cost is review-readability, not soul-storage. Per the
+# recalibrated soulfile-cleanliness rule
+# (memory/feedback_repo_is_soulfile_dont_commit_raw_diagnostic_dumps_*.md):
+# - text artifacts → track freely; .gitattributes diff
+#   suppression for review-noise
+# - binary artifacts → git-lfs or non-soul repo
+# Note: `-merge` is intentionally NOT used here. `-merge` unsets
+# the merge driver (binary-file behavior) and would break 3-way
+# text merges with conflict markers — undesirable for the
+# tracked text artifacts. `-diff` alone gives the diff
+# suppression we want without changing merge semantics.
+# Narrow to raw-evidence file types only — fsck/rev-list outputs,
+# refs dumps, config snapshots, log files. Markdown summaries (like
+# triage-report.md) are NOT suppressed — those are human-readable
+# conclusions and should remain reviewable in PRs.
+docs/lost-substrate/artifacts/**/*.txt linguist-generated=true -diff
+docs/lost-substrate/artifacts/**/*.log linguist-generated=true -diff
