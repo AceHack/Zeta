@@ -11,7 +11,7 @@
 ### Thread 1 — Codex P2 — `gh api --input` syntax (RESOLVED via commit f6d6a94)
 
 **Author:** chatgpt-codex-connector
-**Path:** memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md
+**Path:** memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md
 **Filed:** 2026-04-29T14:16:33Z
 **Outcome class:** FIX
 
@@ -24,7 +24,7 @@
 ### Thread 2 — Copilot — `gh api --input` (UNRESOLVED at close, addressed in carry-forward to #101 + LFG forward-sync)
 
 **Author:** copilot-pull-request-reviewer
-**Path:** memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md (line 42)
+**Path:** memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md (line 42)
 **Filed:** 2026-04-29T14:19:27Z
 **Outcome class:** FIX (duplicate finding, same root cause as Codex Thread 1)
 
@@ -35,7 +35,7 @@
 ### Thread 3 — Copilot — internal consistency on legacy DELETE response (UNRESOLVED, FIX in carry-forward)
 
 **Author:** copilot-pull-request-reviewer
-**Path:** memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md (line 43)
+**Path:** memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md (line 43)
 **Filed:** 2026-04-29T14:19:28Z
 **Outcome class:** FIX
 
@@ -60,7 +60,7 @@
 ### Thread 4 — Copilot — "Task #305" ambiguous reference (UNRESOLVED, FIX in carry-forward)
 
 **Author:** copilot-pull-request-reviewer
-**Path:** memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md (line 82)
+**Path:** memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md (line 82)
 **Filed:** 2026-04-29T14:19:28Z
 **Outcome class:** FIX (real ambiguity — wrong reference)
 
@@ -73,7 +73,7 @@
 ### Thread 5 — Copilot — wording nit "the only rulesets ruleset" (UNRESOLVED, FIX in carry-forward)
 
 **Author:** copilot-pull-request-reviewer
-**Path:** memory/feedback_acehack_zeta_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md (line 18)
+**Path:** memory/feedback_protection_config_dual_layer_legacy_deleted_rulesets_canonical_2026_04_29.md (line 18)
 **Filed:** 2026-04-29T14:19:28Z
 **Outcome class:** FIX (small)
 
