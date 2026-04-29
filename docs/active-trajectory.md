@@ -136,13 +136,35 @@ For the text-file ledger, the conceptual computation is straightforward: `git di
 
 Verified 2026-04-29T10:43Z: the 5 binary-classified files in the current diff have status `D` (LFG-only), so `binary_acehack_only_files = 0` and `binary_modified_or_renamed_files = 0` in this specific round.
 
-Current ledger (computed 2026-04-29T10:25Z):
+Current ledger (computed 2026-04-29T11:32Z):
 
 ```text
 potential_loss_lines  = 273    all AceHack-only +lines (would be erased on hard-reset)
-classified_safe_lines = 97     semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
+classified_safe_lines = 134    semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
 unsafe_lines          = 0      no NEEDS_FORWARD_SYNC or NEEDS_HUMAN_DECISION
-unclassified_lines    = 176    HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
+unclassified_lines    = 139    HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
+```
+
+Composition of `classified_safe_lines = 134`:
+
+- 9 infra files (97 lines): see "9 infra files" table above. SAFE_TO_RESET_LFG_SUPERSEDES with named per-file evidence.
+- 5 calibration-batch files (28 lines, 2026-04-28): MEMORY.md (11) + codeql_umbrella (12) + doc_class_mirror_beacon (1) + CURRENT-aaron (2) + CURRENT-amara (2). Originally labeled "ALREADY-COVERED" in older taxonomy; under strict bucket each has named evidence in `docs/0-0-0-readiness/CLASSIFICATION.md` → SAFE_TO_RESET_LFG_SUPERSEDES.
+- Batch 1 (9 lines, 2026-04-29T11:32Z): SECURITY.md (4) + validate-agencysignature-pr-body.sh (5). See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 1 table for named evidence per file.
+
+Composition of `unclassified_lines = 139` (11 files):
+
+```text
+38  .github/workflows/budget-snapshot-cadence.yml
+16  tools/hygiene/fix-markdown-md032-md026.py
+14  tools/setup/common/curl-fetch.sh
+12  docs/hygiene-history/loop-tick-history.md
+11  tools/setup/macos.sh
+ 9  src/Core/Shard.fs
+ 9  docs/AUTONOMOUS-LOOP.md
+ 8  tools/hygiene/audit-memory-index-duplicates.sh
+ 8  memory/project_laptop_only_source_integration_scratch_sqlsharp_features_or_designs_high_priority_2026_04_27.md
+ 8  .github/workflows/memory-index-duplicate-lint.yml
+ 6  .github/codeql/codeql-config.yml
 ```
 
 ### Hard-reset signoff gate (strict)
@@ -167,7 +189,7 @@ Per multi-AI review 2026-04-29T10:35Z: dry-run push shape verification is added 
 
 Lease rejection on the real push is NOT a retry condition. It means the remote moved between observation and push — restart the safety gate from the top (re-fetch, recompute content-drift ledger, re-classify if anything moved).
 
-**Currently NOT signoff-eligible**: 176 unclassified lines remain (18 files in HEURISTIC_LFG_DOMINATES).
+**Currently NOT signoff-eligible**: see the live ledger above (`unclassified_lines`, `HEURISTIC_LFG_DOMINATES` row count). The four-bucket ledger is the single source of truth for classification progress; downstream prose paragraphs are no longer hand-maintained synonyms of the ledger.
 
 ### 9 infra files (verified 2026-04-29T09:50Z against current git state, NOT against the 16h-old plan)
 
@@ -359,7 +381,7 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 ## Next action
 
-**Hard-reset is NOT YET signoff-eligible.** The strict gate above requires `unclassified_lines = 0`, and the current ledger says `unclassified_lines = 176` (18 files in HEURISTIC_LFG_DOMINATES). The next agent-owned work is per-file semantic inspection of those 18 files to either promote each to SAFE_TO_RESET_LFG_SUPERSEDES (with named evidence) or downgrade to NEEDS_FORWARD_SYNC.
+**Hard-reset is NOT YET signoff-eligible.** The strict gate above requires `unclassified_lines = 0`. The live four-bucket ledger above is the source of truth for the current count; the remaining files are listed in the `unclassified_lines` composition block. The next agent-owned work is per-file semantic inspection of each remaining file to either promote each to SAFE_TO_RESET_LFG_SUPERSEDES (with named evidence) or downgrade to NEEDS_FORWARD_SYNC.
 
 ### Deferred follow-ups (NOT blocking 0/0/0 progress, captured for visibility)
 
@@ -373,7 +395,7 @@ Per multi-AI review 2026-04-29T10:50Z packet:
 State summary:
 
 - 9 infra files: SAFE_TO_RESET_LFG_SUPERSEDES (6 files, 97 lines, named evidence) or ALREADY_RESOLVED (3 files, 0 lines, identical content).
-- 18 files in HEURISTIC_LFG_DOMINATES (176 lines, line-ratio dominance only — NOT proof per the strict bucket rule).
+- HEURISTIC_LFG_DOMINATES files remain (line-ratio dominance only — NOT proof per the strict bucket rule). Live count + per-file enumeration in the four-bucket ledger above.
 - Branch / worktree / stash preflight: hard-reset of `acehack/main` does not modify these refs.
 - Pack corruption found in local clone, **fresh clone passes fsck clean → corruption is local-only, remote intact**.
 - Local clone frozen as forensic evidence. All future destructive work happens from `/tmp/zeta-clean-2026-04-29/lfg`.

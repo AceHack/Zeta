@@ -307,6 +307,15 @@ BP drift.
   - `docs/pr-preservation/**` — PR conversation archive
   - `docs/hygiene-history/**` — tick-history + drain-logs
   - `docs/WINS.md` — historical wins log
+  - `docs/active-trajectory.md` — load-state file +
+    cumulative trajectory log (per maintainer
+    2026-04-29T10:30Z: "active-trajectory.md should
+    count as history I think and keep maintainer names
+    like backlog"); names + filenames-with-names
+    (e.g. `CURRENT-aaron.md`) are first-class here
+    because the file's job is to preserve who-said-
+    what + per-file named evidence for the 0/0/0
+    reconciliation record
   - commit messages, PR titles + bodies — git-native
     history (record-of-truth, not factory-doc surfaces)
 
