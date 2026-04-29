@@ -12,6 +12,28 @@ external-AI reviewer 2026-04-29): every tick-history PR added a
 row to the same EOF surface, and parallel in-flight PRs
 conflicted with each other, generating recursive maintenance work.
 
+## External lineage — Git-native CQRS / Event Sourcing
+
+The shard transport maps cleanly onto well-established
+software architecture patterns (per the multi-AI convergence
+2026-04-29):
+
+- **Shard files = write model / event store.** Each shard is
+  an immutable per-tick event. High-concurrency writes are
+  collision-free because each event is a unique file.
+- **Aggregate table = read model / projection.** The legacy
+  `docs/hygiene-history/loop-tick-history.md` is a
+  materialized view derived from the event stream.
+- **Generator = projector.** Updates the read model from the
+  event store on a separate cadence — NEVER inside a shard PR
+  (or the EOF-collision returns at the projection layer).
+
+External anchors: Microsoft's CQRS guidance describes
+separating read and write models; Event Sourcing literature
+treats the event store as the source of truth with read models
+generated on demand. The Git-native version replaces the SQL
+event store with timestamped Markdown files in this directory.
+
 Per task #276 architectural choice (per-tick shard files —
 "Option B"), each tick now writes a unique shard file at:
 
@@ -52,6 +74,25 @@ docs/hygiene-history/ticks/2026/04/30/0900Z.md
 If a tick lands within the same minute as a prior tick (rare —
 the autonomous-loop cron is `* * * * *`), append `-01`, `-02`,
 ... to disambiguate: `0215Z-01.md`, `0215Z-02.md`.
+
+**Recommended naming for multi-agent / high-concurrency**
+(per the 2026-04-29 multi-AI hardening review):
+
+```text
+docs/hygiene-history/ticks/YYYY/MM/DD/HHMMSSZ-<short-content-hash>.md
+```
+
+Why content-hash:
+
+- **Idempotent**: same content + same second = same path; the
+  Git tree naturally deduplicates.
+- **Collision-discriminating**: different content + same second
+  = different path automatically.
+- **No coordination required** between concurrent writers.
+
+Either form (`HHMMZ.md` or `HHMMSSZ-<short-content-hash>.md`)
+is valid; the second is preferred when concurrency pressure is
+expected.
 
 ## What goes in a shard
 
