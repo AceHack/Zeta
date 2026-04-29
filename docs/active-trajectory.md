@@ -30,7 +30,7 @@ These are the substrate the trajectory has produced. Read them in order; do NOT 
 3. **`docs/research/2026-04-28-forward-sync-merge-direction-proposal-9-infra-files.md`** — the per-file plan with risk levels and recommended order. **16+ hours stale as of 2026-04-29T09:40Z**; verify against current git state before executing per-file decisions.
 4. **`memory/feedback_destructive_git_op_5_pre_flight_disciplines_codex_gemini_2026_04_28.md`** — pre-flight disciplines that apply during any forward-sync or hard-reset.
 
-## Current state (verified 2026-04-29T09:40Z)
+## Current state (verified 2026-04-29T09:50Z)
 
 Numerical (these numbers are NOT the trajectory; do not chase them):
 
@@ -41,19 +41,69 @@ Modified files:          30
 Deleted on AceHack:     155 (LFG-only — hard-reset adds these back)
 ```
 
-File-level (the actual substrate that determines hard-reset safety):
+### Hard-reset-safety classification (NOT merge-direction)
 
-- 9 infra files were originally flagged in the 2026-04-28 plan as needing per-file decisions.
-- **3 already in sync** (verified 2026-04-29T09:36Z): `tools/setup/common/verifiers.sh`, `.markdownlint-cli2.jsonc`, `.github/workflows/scorecard.yml`.
-- **6 still diverging** (verified 2026-04-29T09:36Z):
-  - `tools/setup/linux.sh` (~65 lines diff)
-  - `tools/setup/common/elan.sh` (~51 lines diff)
-  - `.mise.toml` (~23 lines diff)
-  - `.github/workflows/codeql.yml` (~174 lines diff)
-  - `.github/workflows/resume-diff.yml` (~20 lines diff)
-  - `.github/workflows/gate.yml` (~148 lines diff)
+Per Amara 2026-04-29T09:50Z framing correction: "merge-direction is a plan shape; content-loss is the reset gate; do not confuse them." The question for 0/0/0 is NOT "which fork wins this file" but "what unique AceHack content would be LOST on hard-reset?"
 
-The 30-file modified-list is a SUPERSET of those 9 — most of the other 21 modified files are memory / docs / tick-history / setup-script edits the prior calibration batch + heuristic projected as ALREADY-COVERED.
+Classification taxonomy:
+
+```text
+SAFE_TO_RESET_LFG_SUPERSEDES   — LFG has the same or better content; hard-reset is safe and may even improve AceHack.
+ALREADY_RESOLVED               — file already identical between forks; nothing to lose.
+NEEDS_FORWARD_SYNC             — AceHack has unique substantive content not on LFG; forward-sync to LFG before hard-reset.
+EXPLICIT_ACCEPT_LOSS_REQUIRED  — AceHack has unique content but the maintainer chooses to accept its loss rather than forward-sync.
+NEEDS_HUMAN_DECISION           — ambiguous; surface to maintainer.
+```
+
+### 9 infra files (verified 2026-04-29T09:50Z against current git state, NOT against the 16h-old plan)
+
+| File | Hard-reset safety | Evidence |
+|---|---|---|
+| `tools/setup/common/verifiers.sh` | ALREADY_RESOLVED | Git shows identical content on both forks (2026-04-29T09:36Z `git diff --stat` empty). |
+| `.markdownlint-cli2.jsonc` | ALREADY_RESOLVED | Identical content on both forks. |
+| `.github/workflows/scorecard.yml` | ALREADY_RESOLVED | Identical content on both forks. |
+| `.mise.toml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `uv = "0.9"`; LFG has `uv = "0.11.8"`. LFG-newer pins. |
+| `.github/workflows/resume-diff.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `gh pr view --json comments` (returns GraphQL node IDs, broken per Codex P1 on LFG #649). LFG uses `gh api .../issues/.../comments --paginate --jq` (returns REST integer IDs, fixed). LFG version is the bug-fix. |
+| `tools/setup/common/elan.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream <url> \| sh` (streamed pipe-to-sh). LFG uses `curl_fetch --output` to temp + per-arch SHA256 verify + run. LFG version is structurally safer per Scorecard PinnedDependenciesID hardening. |
+| `tools/setup/linux.sh` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack uses `curl_fetch_stream https://mise.run \| sh`. LFG uses pinned-tarball + per-arch SHA256 + temp-dir + trap. LFG version is structurally safer. |
+| `.github/workflows/codeql.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack dropped `java-kotlin` matrix cell. LFG kept it with explicit code-scanning-service rationale (no-findings SARIF per language). LFG-newer matrix structure. |
+| `.github/workflows/gate.yml` | SAFE_TO_RESET_LFG_SUPERSEDES | AceHack has `Setup Python` + `pip install semgrep` steps. The maintainer 2026-04-29T09:51Z framing: *"pip-install is wrong, uv we decided a long time ago"* — i.e., AceHack's pip-install path violates a prior maintainer decision (uv-only for Python tool management). LFG installs semgrep via `install.sh` three-way-parity (`pipx:semgrep` from `.mise.toml`, which is uv-managed under the hood). LFG's approach is the canonical-per-decision form. AceHack's extra `tools/tla`/`tools/alloy` cache paths are ALREADY on LFG (in the `Cache verifier jars (TLC + Alloy)` step). The retry-attempts logic (`for attempt in 1 2 3 4 5; do`) is identical on both sides — the diff is just comment wording (AceHack uses "Aaron 2026-04-28 directive" — would also trip the just-landed no-directives lint; LFG uses "the human maintainer's 2026-04-28 input"). Hard-reset REMOVES the wrong-per-decision pip path, GAINS the correct uv path, and cleans the lint-tripping prose register. The declarative pattern matches the broader factory direction (maintainer 2026-04-29T09:53Z: *"everything is declarative; we need all the functionality of `../scratch` — that's what we're aiming for for the ace package manager release"*). AceHack's imperative `pip install` step violates this; LFG's pin-in-`.mise.toml` form is declarative. |
+
+**Result: 9 of 9 infra files SAFE_TO_RESET or ALREADY_RESOLVED.** No NEEDS_FORWARD_SYNC. No NEEDS_HUMAN_DECISION on these 9.
+
+### The other 21 modified files (heuristic-projected; not yet per-file verified)
+
+The 30-file modified-list is a superset of the 9 infra files. The remaining 21 are mostly memory / docs / tick-history / setup-script edits. The prior calibration batch (5 of 23 verified ALREADY-COVERED) + heuristic strongly project the 21 as also ALREADY_RESOLVED or SAFE_TO_RESET_LFG_SUPERSEDES. The pattern: when LFG-newer (-) line count >> AceHack-newer (+) line count, the AceHack content is older drafts of content LFG has since advanced.
+
+Action: spot-verify 3-5 of the 21 before requesting hard-reset sign-off. Specifically, the 5 LARGEST-by-line files among the 21 are the highest-value spot-checks.
+
+### Hard-reset preflight (per Amara 2026-04-29T09:50Z addition)
+
+Before hard-reset, run a NARROW reachability-preservation pass — NOT broad LOST-branch recovery. Purpose: determine whether hard-reset would make AceHack-only substrate harder to recover.
+
+Required checks:
+
+```text
+- list local branches whose commits are not reachable from origin/main
+- list AceHack remote branches not merged to origin/main
+- list worktrees and their HEAD SHAs
+- list stashes and their base commits
+- list known dangling commits from the corruption / lost-substrate ledger, if any
+- classify whether each item intersects 0/0/0 hard-reset safety
+```
+
+Preflight classification:
+
+```text
+RESET_PREREQ_PRESERVE       — create named preservation ref or PR before hard-reset
+RESET_IRRELEVANT_PARKED     — leave parked until after 0/0/0; do NOT recover during the active lane
+ALREADY_REACHABLE           — already preserved via origin/main or other ref; no action
+NEEDS_HUMAN_DECISION        — surface to maintainer
+```
+
+Best rule (Amara): *"Before hard-reset, preserve reachability. After hard-reset, recover history."*
+
+Best blade: *"Do not do archaeology before reset. Do preserve the exits before closing the door."*
 
 ## Honest assessment of safety
 
@@ -69,31 +119,16 @@ A peer-call to Grok this session reported the inverse claim ("AceHack has the se
 
 ## Next action
 
-**Update the 2026-04-28 plan against current git state, file by file, for the 6 still-diverging infra files.**
+**All 9 infra files now classified ALREADY_RESOLVED or SAFE_TO_RESET_LFG_SUPERSEDES (verified 2026-04-29T09:50Z). Remaining steps to hard-reset:**
 
-For each of the 6 files, the question is one shape:
+1. **Spot-verify 3-5 of the other 21 modified files** to confirm the calibration heuristic still holds at scale. Pick the 5 LARGEST-by-line-count files. Update this file with results.
+2. **Run the hard-reset preflight** (see "Hard-reset preflight" section above): list local branches not reachable from origin/main, AceHack remote branches, worktrees, stashes, dangling commits. Classify each per RESET_PREREQ_PRESERVE / RESET_IRRELEVANT_PARKED / ALREADY_REACHABLE / NEEDS_HUMAN_DECISION. Preserve any RESET_PREREQ_PRESERVE items via named refs or PRs BEFORE hard-reset.
+3. **Surface to maintainer**: the 9-file table + 21-file spot-check + preflight result. Request explicit sign-off for hard-reset (per `memory/feedback_lfg_master_acehack_zero_divergence_fork_double_hop_aaron_2026_04_27.md` step 3: *"NEEDS AARON SIGN-OFF"*).
+4. **After sign-off**: hard-reset acehack/main = origin/main per the destructive-git-op pre-flight memory.
+5. **Verify 0/0/0**: `git rev-list --count origin/main..acehack/main` (expect 0) AND `git rev-list --count acehack/main..origin/main` (expect 0) AND `git diff origin/main..acehack/main` (expect empty).
+6. **Update this file**: replace "active trajectory" with the next priority (or delete if no follow-on).
 
-> Does AceHack have UNIQUE content (not on LFG) that we want to preserve via forward-sync, OR is the AceHack content older drafts of LFG-newer content (safe to lose on hard-reset)?
-
-The form per file:
-
-```text
-File: <path>
-AceHack-only content summary: <one sentence>
-LFG-newer-equivalent on LFG main: <yes/no/partial>
-Decision: ALREADY-COVERED | NEEDS-FORWARD-SYNC | NEEDS-3-WAY | NEEDS-HUMAN-REVIEW
-Forward-sync target if NEEDS-FORWARD-SYNC or NEEDS-3-WAY: <branch + PR plan>
-```
-
-Record the per-file analysis in `docs/0-0-0-readiness/CLASSIFICATION.md` (the doc body that's currently lagging the commit narrative). After all 6 are recorded:
-
-1. Surface NEEDS-HUMAN-REVIEW cases to the maintainer.
-2. Forward-sync the NEEDS-FORWARD-SYNC + NEEDS-3-WAY files (per-file PRs to LFG, smallest-safest first).
-3. Verify current state vs LFG main: ideally `git diff origin/main..acehack/main --name-only` returns only the 30-file set minus the synced ones.
-4. Request maintainer sign-off for hard-reset (the plan file's path-to-0/0/0 step 3 explicitly: *"NEEDS AARON SIGN-OFF"*).
-5. After sign-off: hard-reset acehack/main = origin/main per the destructive-git-op pre-flight memory.
-6. Verify 0/0/0: `git rev-list --count origin/main..acehack/main` AND `git rev-list --count acehack/main..origin/main` AND `git diff origin/main..acehack/main` all empty.
-7. Update this file: replace "active trajectory" with the next priority (or delete if no follow-on).
+**Steps 1 + 2 are non-destructive overnight-safe work.** Steps 3-5 require maintainer presence + explicit sign-off.
 
 ## Stop conditions
 

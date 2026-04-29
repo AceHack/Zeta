@@ -121,7 +121,12 @@ if [ -z "$CHANGED_FILES" ]; then
 fi
 
 # Filter to Otto-authored prose surfaces only.
-PROSE_FILES=$(printf '%s\n' "$CHANGED_FILES" | grep -E '^(memory/[^/]+\.md|docs/hygiene-history/ticks/.*\.md|docs/research/[^/]+\.md|\.github/copilot-instructions\.md)$' || true)
+# Note: this surface list is duplicated in line 121 (rule-doc-whitelist
+# clause) and the manual fixtures in tests.md. Centralizing the surface
+# list into a single variable / config file is a deferred follow-up
+# (per the multi-AI roundup absorption packet at
+# docs/research/multi-ai-feedback-2026-04-29-no-directives-otto-prose-roundup.md).
+PROSE_FILES=$(printf '%s\n' "$CHANGED_FILES" | grep -E '^(memory/[^/]+\.md|docs/hygiene-history/ticks/.*\.md|docs/research/[^/]+\.md|docs/active-trajectory\.md|\.github/copilot-instructions\.md)$' || true)
 
 if [ -z "$PROSE_FILES" ]; then
   echo "no-directives-otto-prose: no Otto-prose surfaces changed; skipping"
