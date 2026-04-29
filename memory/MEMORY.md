@@ -1,6 +1,6 @@
 [AutoDream last run: 2026-04-23]
 
-**📌 Fast path: read `CURRENT-aaron.md` and `CURRENT-amara.md` first.** <!-- paired-edit: hard-reset safety addendum on AceHack/LFG fork-topology memory + content-equivalence audit rule (2026-04-29 round-9 peer-harness save) -->
+**📌 Fast path: read `CURRENT-aaron.md` and `CURRENT-amara.md` first.** <!-- latest-paired-edit: fork-audit R/C/T diff-filter coverage + plumbing-vs-porcelain note (2026-04-29 round-10 Amara). NOTE: this comment is a single-slot "latest paired edit" marker (not a paired-edit log). Per the round-10 Amara framing the slot semantics are now explicit. -->
 
 - [**Bare `main` is ambiguous — automation uses explicit refs (Amara, 2026-04-29)**](feedback_bare_main_ambiguity_automation_discipline_explicit_refs_required_amara_2026_04_29.md) — Generic multi-remote-repo automation rule: scripts use `refs/remotes/<remote>/<branch>` (or `refs/heads/<branch>`); bare branch names only for interactive humans. Hard-stop on fatal base-ref errors. Caught when bare `git checkout main` was hitting `fatal: matched multiple (2) remote tracking branches` and the loop continued past the failure with wrong downstream state.
 
