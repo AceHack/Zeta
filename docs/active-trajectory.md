@@ -136,35 +136,39 @@ For the text-file ledger, the conceptual computation is straightforward: `git di
 
 Verified 2026-04-29T10:43Z: the 5 binary-classified files in the current diff have status `D` (LFG-only), so `binary_acehack_only_files = 0` and `binary_modified_or_renamed_files = 0` in this specific round.
 
-Current ledger (computed 2026-04-29T11:32Z):
+Current ledger (last updated 2026-04-29T12:13Z, post-Batch-2):
 
 ```text
 potential_loss_lines  = 273    all AceHack-only +lines (would be erased on hard-reset)
-classified_safe_lines = 134    semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
-unsafe_lines          = 0      no NEEDS_FORWARD_SYNC or NEEDS_HUMAN_DECISION
-unclassified_lines    = 139    HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
+classified_safe_lines = 215    semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
+unsafe_lines          = 12     1 NEEDS_HUMAN_DECISION (loop-tick-history.md mutual divergence)
+unclassified_lines    = 46     HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
 ```
 
-Composition of `classified_safe_lines = 134`:
+`potential_loss_lines = 273` was computed 2026-04-29T10:25Z via `git diff --numstat refs/remotes/origin/main..refs/remotes/acehack/main` and remains canonical at the time of the most recent batch-PR open (the AceHack and LFG main tips have not advanced relative to each other in a way that touched the divergent files — see "Drift cadence observation" earlier; LFG advanced via #837 but #837 only touched docs in `docs/0-0-0-readiness/` which are not in the AceHack-vs-LFG file set). Re-compute on next batch open if either tip moves.
+
+Arithmetic sanity check: `273 = 215 + 12 + 46` ✓ (per the multi-AI review discipline — verify mechanically, do not trust the math because it "looks plausible").
+
+Composition of `classified_safe_lines = 215`:
 
 - 9 infra files (97 lines): see "9 infra files" table above. SAFE_TO_RESET_LFG_SUPERSEDES with named per-file evidence.
 - 5 calibration-batch files (28 lines, 2026-04-28): MEMORY.md (11) + codeql_umbrella (12) + doc_class_mirror_beacon (1) + CURRENT-aaron (2) + CURRENT-amara (2). Originally labeled "ALREADY-COVERED" in older taxonomy; under strict bucket each has named evidence in `docs/0-0-0-readiness/CLASSIFICATION.md` → SAFE_TO_RESET_LFG_SUPERSEDES.
 - Batch 1 (9 lines, 2026-04-29T11:32Z): SECURITY.md (4) + validate-agencysignature-pr-body.sh (5). See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 1 table for named evidence per file.
+- Batch 2 (81 lines, 2026-04-29T12:05Z): codeql-config.yml (6) + memory-index-duplicate-lint.yml (8) + audit-memory-index-duplicates.sh (8) + Shard.fs (9) + AUTONOMOUS-LOOP.md (9) + macos.sh (11) + fix-markdown-md032-md026.py (16) + curl-fetch.sh (14). See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 2 table for named evidence per file. Common pattern: LFG version is either rule-compliant (role-refs vs persona-name violations on current-state surfaces), more accurate (correct retry-math on curl-fetch.sh), the perf-fixed form (Shard.fs non-boxing comparer), the current doctrine (AUTONOMOUS-LOOP.md Option B shard-mode), or strict superset (fix-markdown-md032-md026.py YAML frontmatter handling).
 
-Composition of `unclassified_lines = 139` (11 files):
+Composition of `unsafe_lines = 12` (1 file, NEEDS_HUMAN_DECISION):
+
+```text
+12  docs/hygiene-history/loop-tick-history.md  (mutual divergence — 9-10 unique tick rows on each fork)
+```
+
+Per Batch 2 evidence: each fork has unique tick rows for periods when the loop ran independently on that fork. All AceHack-only rows are pre-Option-B (Option B shard-mode landed 2026-04-29T02:04:38Z on LFG via PR #724). Maintainer call is needed on whether to (a) accept the loss on hard-reset, (b) forward-sync to LFG first, or (c) migrate to per-tick shard files first then hard-reset. Recommended path: (c) — preserves evidence in modern format AND makes the file content-identical between forks.
+
+Composition of `unclassified_lines = 46` (2 files):
 
 ```text
 38  .github/workflows/budget-snapshot-cadence.yml
-16  tools/hygiene/fix-markdown-md032-md026.py
-14  tools/setup/common/curl-fetch.sh
-12  docs/hygiene-history/loop-tick-history.md
-11  tools/setup/macos.sh
- 9  src/Core/Shard.fs
- 9  docs/AUTONOMOUS-LOOP.md
- 8  tools/hygiene/audit-memory-index-duplicates.sh
  8  memory/project_laptop_only_source_integration_scratch_sqlsharp_features_or_designs_high_priority_2026_04_27.md
- 8  .github/workflows/memory-index-duplicate-lint.yml
- 6  .github/codeql/codeql-config.yml
 ```
 
 ### Hard-reset signoff gate (strict)
