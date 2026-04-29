@@ -15,7 +15,7 @@ remote: error: GH013: Repository rule violations found for refs/heads/main.
 remote: - Cannot force-push to this branch
 ```
 
-After disabling the only rulesets ruleset (id=15524390 "Default", `enforcement: disabled`) and retrying, the push was rejected AGAIN with a **different error code**:
+After disabling the only ruleset (id=15524390 "Default", `enforcement: disabled`) and retrying, the push was rejected AGAIN with a **different error code**:
 
 ```
 remote: error: GH006: Protected branch update failed for refs/heads/main.
@@ -38,9 +38,12 @@ So both layers had been configured at different times, both enforced together, a
 Executed:
 
 ```bash
-# Delete legacy branch protection
+# Delete legacy branch protection (this removed the GH006 blocker)
 gh api -X DELETE repos/AceHack/Zeta/branches/main/protection
-# → "Branch not protected" (404)
+# → success (rc=0, no body printed; GitHub returns 204 No Content)
+# Subsequent verification GET returns 404 "Branch not protected":
+#   gh api repos/AceHack/Zeta/branches/main/protection
+#   → {"message":"Branch not protected", "status":"404"}
 
 # Disable rulesets enforcement (--input - reads JSON body from stdin via heredoc)
 gh api -X PUT repos/AceHack/Zeta/rulesets/15524390 --input - <<'EOF'
@@ -91,11 +94,11 @@ gh api repos/{owner}/{repo}/branches/{branch} --jq '.protected'
 1. **Operational diagnosis**: future force-push or branch-policy issues should check BOTH surfaces. Don't trust `branch.protected` flag alone.
 2. **Config drift**: future config changes must go through rulesets only; never re-create legacy branch protection on AceHack/Zeta.
 3. **Cross-org applicability**: this is a GitHub-wide UI confusion (not specific to AceHack). Other repos in Lucent-Financial-Group / etc. might have the same dual-layer config. Worth checking on cadence.
-4. **CLAUDE.md protocol verification**: CLAUDE.md says *"Force-push to AceHack main is part of the protocol"*. The rulesets `non_fast_forward` rule blocks this, which means **the rulesets config still doesn't match the documented protocol**. Either the protocol gets revised (no force-push, only sync via PR) or the ruleset's `non_fast_forward` rule needs a bypass-actor allowlist for the maintainer credential. Task #305-adjacent ("Set up acehack-first development workflow") is the home for that decision.
+4. **CLAUDE.md protocol verification**: CLAUDE.md says *"Force-push to AceHack main is part of the protocol"*. The rulesets `non_fast_forward` rule blocks this, which means **the rulesets config still doesn't match the documented protocol**. Either the protocol gets revised (no force-push, only sync via PR) or the ruleset's `non_fast_forward` rule needs a bypass-actor allowlist for the maintainer credential. task #275-adjacent ("Set up acehack-first development workflow") is the home for that decision.
 
 ## Composes with
 
 - `memory/feedback_destructive_git_op_5_pre_flight_disciplines_codex_gemini_2026_04_28.md` — pre-flight disciplines for destructive git ops (force-push needs `--force-with-lease=ref:exact-old-sha`)
 - `docs/active-trajectory.md` — 0/0/0 hard-reset gate spec + post-reset state
-- Task #305 (BACKLOG, pending) — set up acehack-first development workflow; protection-config protocol-vs-ruleset alignment goes here
+- task #275 (TaskList, pending: "Set up acehack-first development workflow") — protection-config protocol-vs-ruleset alignment goes under that lane. Note: distinct from PR numbers #305/etc. which are unrelated artifacts; this is the in-session TaskCreate/TaskList tracker.
 - `memory/feedback_aaron_visibility_constraint_no_changes_he_cant_see_2026_04_28.md` — Aaron's visibility constraint; this case satisfied it because Aaron was repo admin on AceHack/Zeta and could see the toggles in UI (even if confused by the dual-layer surface)
