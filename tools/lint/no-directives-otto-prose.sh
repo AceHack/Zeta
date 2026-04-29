@@ -93,11 +93,22 @@ if [ "$SCOPE" = "worktree" ]; then
   # file with new violations is included). Copies are intentionally
   # omitted here (no need for content-equivalence in this lint;
   # only added-line discipline matters).
+  #
+  # `git diff` only reports TRACKED file changes. A freshly-created
+  # prose file that has not been `git add`-ed yet is UNTRACKED, and
+  # `git diff --name-only` will not list it. The pre-commit
+  # use case explicitly includes about-to-be-committed prose, so
+  # worktree mode also pulls untracked-but-not-ignored files via
+  # `git ls-files --others --exclude-standard`. The PR mode does
+  # not need this because its changed-file set is the BASE_REF
+  # diff — anything not in that diff is by definition not part of
+  # the PR.
   CHANGED_FILES=$(
     {
       git diff --name-only --diff-filter=AMR
       git diff --cached --name-only --diff-filter=AMR
       git diff --name-only --diff-filter=AMR "$BASE_REF...HEAD"
+      git ls-files --others --exclude-standard
     } | sort -u
   )
 else
@@ -164,7 +175,17 @@ trap 'rm -f "$HITS_FILE" "$FILTERED_HITS_FILE" "$ADDED_LINES_FILE"' EXIT
 while IFS= read -r f; do
   [ -z "$f" ] && continue
   [ -f "$f" ] || continue
-  if [ "$SCOPE" = "worktree" ]; then
+  # Untracked-file detection: `git ls-files --error-unmatch` exits 0
+  # when the path is in the index, non-zero otherwise. In worktree
+  # mode an untracked file's contents are treated as ALL added
+  # lines (since there's nothing to diff against); the entire file
+  # is prefixed with `+` and fed into the same awk pipeline as a
+  # tracked-file diff. PR mode never sees untracked files because
+  # the BASE_REF...HEAD diff only includes committed content.
+  if [ "$SCOPE" = "worktree" ] && \
+     ! git ls-files --error-unmatch -- "$f" >/dev/null 2>&1; then
+    awk '{ printf "+%s\n", $0 }' "$f"
+  elif [ "$SCOPE" = "worktree" ]; then
     {
       git diff -U0 -- "$f"
       git diff --cached -U0 -- "$f"

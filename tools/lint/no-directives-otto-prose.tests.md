@@ -134,12 +134,106 @@ narration of a past bad-event reference is borderline.)
 
 ## How to run the test fixtures manually
 
+The block at the bottom of this section gives a single-pass
+"verify-everything-at-once" run. The blocks before it are the
+per-fixture-class executable reproductions Amara called for in
+round-12 ("documented fixtures are coverage intent; executed
+fixtures are coverage proof"). Each one creates a temporary
+prose file under `memory/`, runs `SCOPE=worktree`, asserts the
+expected pass/fail, and then cleans up.
+
+These are intended to be copy-pasted into a fresh shell from the
+repo root. They make no commits; they only create a temporary
+prose file under `memory/`, run the lint, and remove the file.
+
+Assume a clean working tree (no unstaged prose modifications).
+If you have unstaged changes, either commit/stash them first
+yourself, or run a single fixture at a time with manual cleanup.
+
+Round-13 verified A/B/C return the expected results against
+commit `<round-13>` of this lint. D (renamed-file) requires
+temporary commits and is documented-only.
+
+### A. Real violation MUST flag — `Aaron's directive`
+
 ```bash
-# Snapshot fixtures into a scratch file in the changed-files scope,
-# run the lint in worktree mode, verify hits/misses match the
-# expectations above:
+echo "Aaron's directive elevates introspection." > memory/feedback_TEMP_lint_test_real_violation.md
+SCOPE=worktree tools/lint/no-directives-otto-prose.sh \
+  || echo "EXPECTED: lint flagged (advisory mode exits 0; --strict would exit 1)"
+SCOPE=worktree tools/lint/no-directives-otto-prose.sh --strict \
+  && echo "UNEXPECTED PASS — lint did not flag Aaron's directive" \
+  || echo "OK: --strict mode flagged Aaron's directive"
+rm -f memory/feedback_TEMP_lint_test_real_violation.md
+```
+
+### B. Filename contains regex token but content clean — MUST NOT flag
+
+```bash
+echo "the lineage anchor is preserved per the engineering claim" \
+  > memory/feedback_TEMP_human_lineage_anchors_clean.md
+SCOPE=worktree tools/lint/no-directives-otto-prose.sh --strict \
+  && echo "OK: clean content with 'human' in filename did NOT flag" \
+  || echo "REGRESSION: false positive on filename token (round-12 P0 fix broken)"
+rm -f memory/feedback_TEMP_human_lineage_anchors_clean.md
+```
+
+### C. Blockquote with violation string — MUST NOT flag (whitelist)
+
+```bash
+echo "> Aaron's directive elevates introspection." \
+  > memory/feedback_TEMP_lint_test_blockquote.md
+SCOPE=worktree tools/lint/no-directives-otto-prose.sh --strict \
+  && echo "OK: blockquote-prefixed content did NOT flag" \
+  || echo "REGRESSION: blockquote whitelist broken"
+rm -f memory/feedback_TEMP_lint_test_blockquote.md
+```
+
+### D. Renamed file with new violation — MUST flag (--diff-filter=AMR)
+
+This case requires temporary commits + `git reset --hard HEAD~1`.
+Run inside a disposable `git worktree` (per round-13 review)
+rather than the active checkout, to keep the scar-testing away
+from in-flight work. The shape:
+
+```bash
+# Run from the active checkout root:
+tmpdir=$(mktemp -d)
+git worktree add --detach "$tmpdir" HEAD
+(
+  cd "$tmpdir"
+  echo "clean original content" > memory/feedback_TEMP_rename_orig.md
+  git add memory/feedback_TEMP_rename_orig.md
+  git commit -m "lint test: stage original" --quiet
+  git mv memory/feedback_TEMP_rename_orig.md memory/feedback_TEMP_rename_new.md
+  echo "Aaron's directive added in renamed copy" \
+    >> memory/feedback_TEMP_rename_new.md
+  git add -A
+  SCOPE=worktree tools/lint/no-directives-otto-prose.sh --strict \
+    && echo "REGRESSION: renamed file with violation did NOT flag" \
+    || echo "OK: renamed file with violation flagged"
+)
+git worktree remove --force "$tmpdir"
+```
+
+The R-coverage path through the lint is exercised by
+`git diff --name-only --diff-filter=AMR --cached` returning the
+renamed prose file in CHANGED_FILES; the per-file extraction
+loop then runs `git diff -U0 --cached` on it, which produces a
+diff showing the appended violation line as an added line. The
+pattern-match phase does the rest.
+
+### Single-pass advisory run
+
+```bash
+# Snapshot any current changes, run the lint in worktree mode, verify
+# hits/misses match the expectations above:
 SCOPE=worktree tools/lint/no-directives-otto-prose.sh
 ```
 
 Promote to a real CI test (e.g., bats / shunit2) when wiring the
-lint into `.github/workflows/gate.yml` as advisory.
+lint into `.github/workflows/gate.yml` as advisory. The four
+copy-pasteable blocks above are the manual equivalent until that
+harness lands — they exercise the four canonical fixture classes
+(real-violation / filename-token-clean / blockquote-whitelist /
+renamed-file-violation) that the round-12 rewrite was designed
+around.
