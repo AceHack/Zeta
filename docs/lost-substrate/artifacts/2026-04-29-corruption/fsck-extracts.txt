@@ -1,0 +1,89 @@
+# fsck extracts — load-bearing matches with context
+# Source: `git fsck --full --no-progress 2>&1 | grep <obj> -C 5` (reflog-inclusive)
+# Captured 2026-04-29 (Day 3 corruption triage)
+
+## Reflog-inclusive fsck — context for 8d5e67fd
+error: inflate: data stream error (incorrect data check)
+error: corrupt loose object '8d5e67fd313573855848705e4af114f3ff0eecbc'
+error: unable to unpack contents of .git/objects/8d/5e67fd313573855848705e4af114f3ff0eecbc
+error: 8d5e67fd313573855848705e4af114f3ff0eecbc: object corrupt or missing: .git/objects/8d/5e67fd313573855848705e4af114f3ff0eecbc
+error: inflate: data stream error (incorrect data check)
+error: cannot unpack 9bf2daee3ce53c88633824f9532a0158aaa92ed9 from .git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack at offset 4973478
+dangling blob 1f003ef9077ba9779af779c18efa3ff5a6f39470
+dangling commit 2a00a9f5168ddfd359f62f2e274cb768159f9014
+dangling blob e20172cea3dd96f93dc3004d5ebc7eb137693701
+--
+dangling commit 795b1d3a5b7c5379cd6a1ad8419f0a5e9535c476
+dangling commit b55b5628445f31bb2f1df636859915daef5be582
+dangling tree f65bb21a7409dcdadb9ee6e8f02f1c0d07c93a96
+dangling commit 6e5c40364b078f5a947bf79d9cc9540c3ae940e7
+dangling tree ba5cc0356d2b571ba19477f5be8c16e15993faf6
+missing blob 8d5e67fd313573855848705e4af114f3ff0eecbc
+dangling commit 385f12ddc72e05da9be752c5a5acc53ba472bb90
+dangling commit c95f5c65cbae62fd249fedb38c9e45d59260d061
+dangling tree 78606cccb9ba0693d61a3cad81d71b05727ddf2f
+dangling commit a1605b88ddb8dd3543610235c585b1372f1eaba4
+dangling commit f5609f368a7e17ba22224eec4bbc715ba3c6f4dc
+
+## Reflog-inclusive fsck — context for 9bf2daee
+error: inflate: data stream error (incorrect data check)
+error: corrupt loose object '8d5e67fd313573855848705e4af114f3ff0eecbc'
+error: unable to unpack contents of .git/objects/8d/5e67fd313573855848705e4af114f3ff0eecbc
+error: 8d5e67fd313573855848705e4af114f3ff0eecbc: object corrupt or missing: .git/objects/8d/5e67fd313573855848705e4af114f3ff0eecbc
+error: inflate: data stream error (incorrect data check)
+error: cannot unpack 9bf2daee3ce53c88633824f9532a0158aaa92ed9 from .git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack at offset 4973478
+dangling blob 1f003ef9077ba9779af779c18efa3ff5a6f39470
+dangling commit 2a00a9f5168ddfd359f62f2e274cb768159f9014
+dangling blob e20172cea3dd96f93dc3004d5ebc7eb137693701
+dangling tree fa019e9576ad659d4a75caf4599d831ee4df415b
+dangling tree 490275af8f57e4fac5e77d026c4b47f97e81bf27
+
+## --no-reflogs fsck — context for 8d5e67fd
+error: inflate: data stream error (incorrect data check)
+error: corrupt loose object '8d5e67fd313573855848705e4af114f3ff0eecbc'
+error: unable to unpack contents of .git/objects/8d/5e67fd313573855848705e4af114f3ff0eecbc
+error: 8d5e67fd313573855848705e4af114f3ff0eecbc: object corrupt or missing: .git/objects/8d/5e67fd313573855848705e4af114f3ff0eecbc
+error: inflate: data stream error (incorrect data check)
+error: cannot unpack 9bf2daee3ce53c88633824f9532a0158aaa92ed9 from .git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack at offset 4973478
+dangling blob 1f003ef9077ba9779af779c18efa3ff5a6f39470
+dangling commit 2a00a9f5168ddfd359f62f2e274cb768159f9014
+dangling commit 9f01f442e7362a9efcd6fc7b1c87fed41eb4146f
+--
+dangling tree f65bb21a7409dcdadb9ee6e8f02f1c0d07c93a96
+dangling commit 6e5c40364b078f5a947bf79d9cc9540c3ae940e7
+dangling commit 8d5ca82de7eaa851a12c952ef9ae162ee675581a
+dangling tree ba5cc0356d2b571ba19477f5be8c16e15993faf6
+dangling commit 9d5db210aee2b017e99c8d2c78f77242fb24ec0b
+missing blob 8d5e67fd313573855848705e4af114f3ff0eecbc
+dangling commit be5ed39f8f223aac1149a287fa8f24e3a94c52ae
+dangling commit e15e99645306000c5f9d6ee549b8bdff88069a71
+dangling commit fc5ec3b3552af63e82f8f9992a3d1fdcd7931c6e
+dangling commit 145ff57c8a073d0fc8ff11dece9ac7e492c85adc
+dangling commit 255ff59fc67565e9be345b810aa2b784360c7887
+
+## --no-reflogs fsck — context for 9bf2daee
+error: inflate: data stream error (incorrect data check)
+error: corrupt loose object '8d5e67fd313573855848705e4af114f3ff0eecbc'
+error: unable to unpack contents of .git/objects/8d/5e67fd313573855848705e4af114f3ff0eecbc
+error: 8d5e67fd313573855848705e4af114f3ff0eecbc: object corrupt or missing: .git/objects/8d/5e67fd313573855848705e4af114f3ff0eecbc
+error: inflate: data stream error (incorrect data check)
+error: cannot unpack 9bf2daee3ce53c88633824f9532a0158aaa92ed9 from .git/objects/pack/pack-16732bccb3ace9ec45c913c57a1fd050fd730c3f.pack at offset 4973478
+dangling blob 1f003ef9077ba9779af779c18efa3ff5a6f39470
+dangling commit 2a00a9f5168ddfd359f62f2e274cb768159f9014
+dangling commit 9f01f442e7362a9efcd6fc7b1c87fed41eb4146f
+dangling blob e20172cea3dd96f93dc3004d5ebc7eb137693701
+dangling commit e5019d81cf9d549bfeee9c6751f7c8d5911af94f
+
+## Connectivity-only fsck — context for 8d5e67fd
+(no match)
+
+## Connectivity-only fsck — context for 9bf2daee
+(no match)
+
+## Mode-comparison summary
+fsck-full (reflog-inclusive)        line count:      627
+fsck-full-no-reflogs                line count:     1116
+fsck-connectivity                   line count:      620
+
+(Mode-dependent reachability: --no-reflogs reports MORE objects as
+ dangling because reflog-tip commits no longer count as reachable.)

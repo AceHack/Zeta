@@ -1,0 +1,9 @@
+# rev-list extracts — load-bearing matches only
+# Source: `git rev-list --objects --all | grep <obj>`
+# Captured 2026-04-29 (Day 3 corruption triage)
+
+## Matches for 8d5e67fd313573855848705e4af114f3ff0eecbc
+8d5e67fd313573855848705e4af114f3ff0eecbc docs/hygiene-history/loop-tick-history.md
+
+## Matches for 9bf2daee3ce53c88633824f9532a0158aaa92ed9
+9bf2daee3ce53c88633824f9532a0158aaa92ed9 docs/category-theory/ctfp-milewski.pdf

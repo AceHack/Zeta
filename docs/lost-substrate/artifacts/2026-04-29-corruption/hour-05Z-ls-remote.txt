@@ -1,0 +1,10 @@
+# git ls-remote --heads origin chore/heartbeat-batch-2026-04-26-hour-05Z
+# Captured 2026-04-29 (Day 3 corruption triage)
+#
+# Result: empty (no output below this header).
+#
+# Empty output proves origin no longer has the branch
+# `refs/heads/chore/heartbeat-batch-2026-04-26-hour-05Z`.
+# The same-named local remote-tracking ref under
+# `refs/remotes/origin/chore/heartbeat-batch-2026-04-26-hour-05Z`
+# is therefore stale (preserved evidence, not origin recovery).

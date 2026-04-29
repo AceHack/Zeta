@@ -1,0 +1,13 @@
+# git gc + rerere config snapshot — 2026-04-29 corruption triage
+# (read-only inspection; no mutation)
+
+git version              = git version 2.54.0
+
+gc.auto                  = (unset; default ~6700)
+gc.autoPackLimit         = (unset; default 50)
+gc.pruneExpire           = (unset; default 2.weeks.ago)
+gc.reflogExpire          = (unset; default 90.days.ago)
+gc.reflogExpireUnreachable = (unset; default 30.days.ago)
+gc.worktreePruneExpire   = (unset; default 3.months.ago)
+gc.rerereResolved        = (unset; default 60.days)
+gc.rerereUnresolved      = (unset; default 15.days)
