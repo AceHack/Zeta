@@ -140,16 +140,16 @@ Current ledger (last updated 2026-04-29T12:31Z, post-option-(c)-migration-PR —
 
 ```text
 potential_loss_lines  = 273    all AceHack-only +lines (would be erased on hard-reset)
-classified_safe_lines = 235    semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
+classified_safe_lines = 273    semantic evidence in BUCKET 2 (SAFE_TO_RESET_LFG_SUPERSEDES)
 unsafe_lines          = 0      no NEEDS_FORWARD_SYNC or NEEDS_HUMAN_DECISION
-unclassified_lines    = 38     HEURISTIC_LFG_DOMINATES — pending per-file semantic inspection
+unclassified_lines    = 0      ALL FILES CLASSIFIED — strict gate's classification condition satisfied
 ```
 
 **Ledger state**: in-force as of post-#839-merge (option-(c) migration landed 2026-04-29T12:46:29Z). The 9 ACEHACK_ONLY tick rows are durably preserved as Option B shards under `docs/hygiene-history/ticks/2026/04/28/` on LFG main. Hard-reset of `loop-tick-history.md` is content-preservation-safe.
 
 `potential_loss_lines = 273` was computed 2026-04-29T10:25Z via `git diff --numstat refs/remotes/origin/main..refs/remotes/acehack/main` and remains canonical: the AceHack and LFG main tips have not advanced relative to each other in a way that touched the divergent files (#837 + #838 + the option-(c) migration only touch docs in `docs/0-0-0-readiness/` and add new shard files in `docs/hygiene-history/ticks/2026/04/28/` — neither set affects the existing AceHack-vs-LFG diff for the divergent file set). Re-compute on next batch open if either tip moves materially.
 
-Arithmetic sanity check: `273 = 235 + 0 + 38` ✓ (per the multi-AI review discipline — verify mechanically, do not trust the math because it "looks plausible").
+Arithmetic sanity check: `273 = 273 + 0 + 0` ✓ (per the multi-AI review discipline — verify mechanically, do not trust the math because it "looks plausible"). **All 273 AceHack-only `+` lines now have classified-safe semantic evidence.**
 
 ### Option-(c) Migration Preflight Ledger (loop-tick-history.md, 2026-04-29T12:31Z)
 
@@ -170,7 +170,7 @@ Per the Migration Preflight Ledger discipline (per multi-AI review 2026-04-29 pa
 
 Net: 9 shard writes; 1 no-op (COMMON_IDENTICAL with positional drift). The misclassification of `2026-04-21T17:28` as SAME_TIMESTAMP_DRIFT (caught during the trajectory's earlier prose-only classification on #838) was corrected here by the preflight ledger's content-hash check — exactly the bug-class the discipline is designed to prevent. **A timestamp is an address, not an identity.**
 
-Composition of `classified_safe_lines = 235` (in-force post-#840-merge):
+Composition of `classified_safe_lines = 273` (in-force post-#842-merge — ALL FILES CLASSIFIED):
 
 - 9 infra files (97 lines): see "9 infra files" table above. SAFE_TO_RESET_LFG_SUPERSEDES with named per-file evidence.
 - 5 calibration-batch files (28 lines, 2026-04-28): MEMORY.md (11) + codeql_umbrella (12) + doc_class_mirror_beacon (1) + CURRENT-aaron (2) + CURRENT-amara (2). Originally labeled "ALREADY-COVERED" in older taxonomy; under strict bucket each has named evidence in `docs/0-0-0-readiness/CLASSIFICATION.md` → SAFE_TO_RESET_LFG_SUPERSEDES.
@@ -178,6 +178,7 @@ Composition of `classified_safe_lines = 235` (in-force post-#840-merge):
 - Batch 2 (81 lines, 2026-04-29T12:05Z): codeql-config.yml (6) + memory-index-duplicate-lint.yml (8) + audit-memory-index-duplicates.sh (8) + Shard.fs (9) + AUTONOMOUS-LOOP.md (9) + macos.sh (11) + fix-markdown-md032-md026.py (16) + curl-fetch.sh (14). See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 2 table for named evidence per file. Common pattern: LFG version is either rule-compliant (role-refs vs persona-name violations on current-state surfaces), more accurate (correct retry-math on curl-fetch.sh), the perf-fixed form (Shard.fs non-boxing comparer), the current doctrine (AUTONOMOUS-LOOP.md Option B shard-mode), or strict superset (fix-markdown-md032-md026.py YAML frontmatter handling).
 - Option-(c) migration (12 lines, #839 merged 2026-04-29T12:46:29Z): `loop-tick-history.md` reclassified from NEEDS_HUMAN_DECISION → SAFE_TO_RESET_LFG_SUPERSEDES because the 9 ACEHACK_ONLY rows are durably preserved as Option B shards under `docs/hygiene-history/ticks/2026/04/28/`. Hard-reset of the table on AceHack is content-preservation-safe.
 - Batch 3a (8 lines, #840 merged 2026-04-29T12:54:53Z): `memory/project_laptop_only_*.md`. AceHack drops the closed-list-scope qualifier from the `../scratch` / `../SQLSharp` zero-matches completion criterion (technically unsatisfiable without the qualifier); LFG version is rule-compliant. See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 3a table.
+- Batch 3b (38 lines, #842 merged 2026-04-29T13:27:07Z, post-Level-1-buddy-review): `.github/workflows/budget-snapshot-cadence.yml`. AceHack-only +38 lines contain six distinct regressions — auto-merge dead-end risk (would silently stall every weekly run due to GITHUB_TOKEN anti-recursion guard), broader top-level token permissions, missing `actions: read` (snapshot-burn.sh would 403 silently), AgencySignature validator rule violation (`Human-Review-Evidence: signed-policy` while not "explicit"), less-portable schedule-context input expression, persona-name attribution on current-state CI surface. LFG has 3 commits AceHack lacks including `2ce1abb fix(scorecard): scope budget-cadence permissions job-level (TokenPermissionsID) (#679)`. See `docs/0-0-0-readiness/CLASSIFICATION.md` Batch 3b table for named per-regression evidence.
 
 Composition of `unsafe_lines = 0` (in-force post-#839-merge):
 
@@ -187,13 +188,13 @@ Composition of `unsafe_lines = 0` (in-force post-#839-merge):
 
 `loop-tick-history.md` was previously NEEDS_HUMAN_DECISION (12 lines, mutual divergence — 9 truly-unique-AceHack timestamps + 9 truly-unique-LFG timestamps + 1 COMMON_IDENTICAL_REORDERED row per the Migration Preflight Ledger above). Maintainer chose option (c); the option-(c) migration PR (#839, merged 2026-04-29T12:46:29Z) wrote 9 ACEHACK_ONLY rows as Option B shards on LFG, making hard-reset content-preservation-safe. File now classifies SAFE_TO_RESET_LFG_SUPERSEDES.
 
-Composition of `unclassified_lines = 38` (1 file):
+Composition of `unclassified_lines = 0` (in-force post-#842-merge — ALL FILES CLASSIFIED):
 
 ```text
-38  .github/workflows/budget-snapshot-cadence.yml
+(empty — strict gate's classification condition satisfied)
 ```
 
-This is the last unclassified file. It has real behavioral divergence (auto-merge policy + Scorecard `TokenPermissionsID` security fix) requiring explicit Level-1 buddy review per the Second-Agent Design Review Gate (Amara 2026-04-29 packet 10) before classification. After Batch 3b classifies it, `unclassified_lines = 0` and the strict gate's classification condition is satisfied.
+**Strict gate's classification condition is now SATISFIED.** Remaining gate conditions are all operational + maintainer-irreversible: fresh-clone fsck = clean, hard-reset preflight = clean, ls-remote-vs-fetch SHA match = verified, dry-run push shape = clean, maintainer signoff = yes.
 
 ### Hard-reset signoff gate (strict)
 
