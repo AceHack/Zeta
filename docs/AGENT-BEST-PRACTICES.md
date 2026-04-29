@@ -348,6 +348,35 @@ BP drift.
   under the documentation-shepherd's lane in
   `docs/BACKLOG.md`.
 
+- **Session-closure rule — after a big round lands, do
+  not expand; close the round, then test the smallest
+  bridge.** When a round closes by landing 10+ PRs, a
+  promoted bead, or a research artifact, the agent does
+  not extend the round with new conceptual substrate. The
+  next directed work is either (a) verifying durable home
+  landing for the round's substrate, or (b) running the
+  smallest prototype the round defined. Adding more theory
+  before the prototype runs uses theory as a substitute
+  for evidence. The discipline applies recursively —
+  including to the logging mechanism itself, but does NOT
+  override the autonomous-loop tick-history append contract.
+  Per `docs/AUTONOMOUS-LOOP.md` step 5, every tick still
+  gets a row (the log is the factory's durable answer to
+  *"is the tick actually running?"*); the recursive
+  discipline says *rich* tick-history rows are reserved
+  for material state transitions (PR merged / failed /
+  blocker changed / thread resolved / new substrate
+  landed / explicit human ask), while pure-maintenance
+  and no-op-speculative ticks emit a minimal one-line
+  acknowledgment row that preserves the liveness signal
+  without becoming itself a synthesis flywheel. Catcher
+  attribution + lineage live on history surfaces
+  (`memory/feedback_*.md`, `docs/hygiene-history/`,
+  `docs/research/aurora-immune-governance-bridge-minimal-2026-04-28.md`).
+  Operational rule, not theoretical framing — the rule's
+  job is to gate scope-expansion at round-close, not to
+  explain it.
+
 ---
 
 ## How rules become stable
