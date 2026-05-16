@@ -1,0 +1,21 @@
+name: Sync from upstream (LFG/Zeta)
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'   # every 6 hours at :17 (off the round-number contention)
+  workflow_dispatch:          # also manual-fire-able from Actions UI
+
+permissions:
+  contents: write             # only what merge-upstream needs
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Sync main from upstream LFG/Zeta
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X POST \
+            repos/${{ github.repository }}/merge-upstream \
+            -f branch=main
