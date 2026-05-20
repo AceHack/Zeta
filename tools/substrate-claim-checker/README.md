@@ -3,7 +3,7 @@
 Substrate-claim-checker per the verify-then-claim discipline memo
 (`memory/feedback_verify_then_claim_discipline_dominant_failure_mode_substrate_authoring_otto_2026_05_03.md`).
 
-Catches 5 B-0170 check-types:
+Catches 6 B-0170 check-types:
 
 - **Count drift** (v0.4.4) — between narrative claims (e.g. "18+ drift
   instances", "13-row table", "5 procedure skills") and the actual
@@ -23,9 +23,13 @@ Catches 5 B-0170 check-types:
   an earlier ADR when the earlier ADR lacks the reciprocal top-of-file
   `Superseded by` marker naming the superseding ADR. Implemented in
   `check-convention.ts`.
+- **Self-recursive drift** (v0.9.0) — a memo declaring itself ABOUT a
+  drift sub-class violates that same discipline within its own body.
+  Opt-in via a `self-check:` frontmatter directive. Implemented in
+  `check-self-recursive.ts`.
 
-The remaining deferred check-types include semantic-equivalence,
-empirical-output, and self-recursive drift.
+The remaining deferred check-types are semantic-equivalence and
+empirical-output drift.
 
 ## Usage
 
@@ -72,9 +76,9 @@ input error).
 - **Existence drift** (file/dir/tool claimed to exist; doesn't) — shipped v0.5
 - **Path-form drift** (fully-qualified vs bare paths inconsistent) — shipped v0.7
 - **Convention drift** (recommended pattern doesn't match canonical) — shipped v0.9
+- **Self-recursive drift** (the memo about drift contains its own drift) — shipped v0.9.0 (count-topic only; others deferred per B-0170.3 slice)
 - **Semantic-equivalence drift** (command substitution claims) — v1
 - **Empirical-output drift** (run-the-command-and-compare) — v1
-- **Self-recursive drift** (the memo about drift contains its own drift) — v1
 
 ## Composes with
 
@@ -280,3 +284,60 @@ Exit codes: `0` clean, `1` drift detected or input error.
   matching. A document with a 15-row drift table and a 3-row
   sub-classes table would pass a "15 sub-classes" claim
   (false negative). v0.9 noun-matching would address this.
+
+## v0.9.0 — `check-self-recursive.ts` (self-recursive drift)
+
+The sixth sub-class checker, covering **self-recursive drift** —
+the meta-failure where a memo declares itself ABOUT a drift
+sub-class and then violates that same discipline within its own
+body. Per the verify-then-claim memo's taxonomy: "the memo about
+drift contains its own drift."
+
+### Opt-in via frontmatter
+
+Files declare their self-check topic explicitly:
+
+```yaml
+---
+self-check: count
+---
+```
+
+OR list form:
+
+```yaml
+---
+self-check: [count]
+---
+```
+
+The directive is operationally honest — no heuristic topic
+detection. A file only participates in self-recursive checks if
+it opts in.
+
+### Supported topics (v0.9.0)
+
+- `count` — composes `check-counts.ts`; a memo about count drift
+  should not contain its own count drift.
+
+Adding additional topics (existence, path-forms, cross-surface,
+convention) is a 1-line dispatch each; deferred to follow-up
+slices per the B-0170 done-criteria.
+
+### Usage
+
+```bash
+bun tools/substrate-claim-checker/check-self-recursive.ts <file>
+bun tools/substrate-claim-checker/check-self-recursive.ts <file> ...
+```
+
+Exit codes: `0` clean (or no `self-check:` directive); `1` drift
+detected or input error.
+
+### Behavior notes
+
+- Files without frontmatter or without `self-check:` are no-ops
+  (exit 0).
+- Unknown topic tokens are dropped with a stderr warning so
+  misspellings do not silently disable the check.
+- A directive containing only unknown topics is a no-op (exit 0).

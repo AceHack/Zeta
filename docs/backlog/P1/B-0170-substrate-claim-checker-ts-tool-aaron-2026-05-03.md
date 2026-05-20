@@ -7,7 +7,7 @@ tier: tooling
 effort: M
 ask: Otto 2026-05-03 self-grading, surfaced via drift instances (the verify-then-claim memo's body table is canonical) across 9+ PRs in single session despite naming the verify-then-claim discipline; manual discipline provably insufficient against trained-prior pull
 created: 2026-05-03
-last_updated: 2026-05-11
+last_updated: 2026-05-20
 depends_on: []
 decomposition: decomposed
 classification: buildable-now
@@ -51,7 +51,7 @@ Per the verify-then-claim catalogue:
 | Empirical-output drift | v0.9 | "command returns X" vs actual output |
 | Convention drift | v0.9 | recommended pattern matches canonical convention |
 | Path-form drift | ✓ shipped | fully-qualified vs bare paths consistent across document |
-| Self-recursive drift | v0.9 | the memo about X contains its own X |
+| Self-recursive drift | ✓ shipped (v0.9.0 — count-topic only via `self-check:` frontmatter directive; other topics deferred) | the memo about X contains its own X |
 | Cross-surface count drift (frontmatter ↔ body ↔ section heading ↔ carved sentence ↔ MEMORY.md) | ✓ shipped (v0.8 — frontmatter description vs body table; full cross-surface v0.9) | five surfaces should match consistent N |
 
 ## Hooks integration (planned, not v0)
