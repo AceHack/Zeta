@@ -131,6 +131,39 @@ If any of these would fail, do NOT commit (verify is the gating
 half of step 4; commit is the post-pass half). Fix the gate
 failure first, then re-verify before committing.
 
+**Tick-shard-specific gate** (per the 2026-05-20T17:03Z empirical anchor —
+see [PR #4441](https://github.com/Lucent-Financial-Group/Zeta/pull/4441) for the 1703Z
+tick shard that documents the original investigation; the shard lands at
+`docs/hygiene-history/ticks/2026/05/20/1703Z.md` once #4441 merges):
+when the substantive landing IS a tick shard (or any file under
+`docs/hygiene-history/ticks/YYYY/MM/DD/`), run the bundled pre-push checker
+BEFORE the push so the path-depth / MD032 / markdownlint findings surface
+locally rather than as PR review threads:
+
+```bash
+bun tools/hygiene/check-shard-before-push.ts docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md
+```
+
+The checker bundles three gates (per the source header in
+`tools/hygiene/check-shard-before-push.ts`): an **internal MD032 scan**
+(paragraph-immediately-followed-by-bullet detection), `markdownlint-cli2`
+(the broader markdown lint surface), and `audit-tick-shard-relative-paths`
+(the 5-up-vs-6-up depth catch). It is a DX shortcut — the CI gates remain
+authoritative — but running it locally avoids the BLOCKED-with-green-CI
+investigate-thread cycle for catchable shard bugs.
+
+Empirical anchor: [PR #4435](https://github.com/Lucent-Financial-Group/Zeta/pull/4435)
+landed 10 broken `.claude/rules/*` link targets (5-up paths resolving to
+`docs/.claude/...` which doesn't exist; 6-up paths required from a 6-deep
+shard directory). Both Codex and Copilot independently flagged the bug.
+Running `check-shard-before-push.ts` on the 1614Z+1626Z+1643Z shards
+pre-push would have caught it. The TEMPLATE at
+[`docs/hygiene-history/tick-shard-TEMPLATE.md`](hygiene-history/tick-shard-TEMPLATE.md)
+already documents the path-depth gotcha; the failure mode was that the
+shards were authored by copy-from-prior-shard (the 1413Z pattern) rather
+than by template-instantiation, and the verify step skipped the
+shard-specific checker.
+
 ### 5. Write tick shard
 
 `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md`. Substrate-or-it-
