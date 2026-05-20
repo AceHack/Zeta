@@ -58,19 +58,33 @@ because that's the diff against the empty staging area, not against the
 parent commit. Visual inspection of the commit looks normal. Only the
 ls-tree count reveals the corruption.
 
-## Pre-worktree-creation guard (STRONGEST)
+## Pre-worktree-creation guard (STRONGEST when followed; verify-before-defer composition)
 
 **Empirically: CPU % is NOT a reliable indicator.** Lior at 0.0% CPU has
 been observed corrupting indices at worktree-creation time. The ONLY
-reliable safe-window check is the process list:
+reliable substrate-state check is the process list:
 
 ```bash
 if ps -A | grep -qE "gemini.*Lior|lior.*loop"; then
-  echo "Lior-gemini active — DO NOT create worktree"
+  echo "Lior-gemini active — pre-worktree defer is SAFEST"
   echo "Use memory-file + bus-envelope substrate paths instead"
   exit 1
 fi
 ```
+
+**Verify-before-defer composition (when bounded substrate work is at
+stake)**: per `.claude/rules/verify-before-deferring.md` the substrate-
+honest discipline is to test the operative question rather than narrate
+the obstacle from inferred conditions. The composite pattern is:
+attempt isolated worktree creation → run post-worktree-creation guard
+IMMEDIATELY (next section) → proceed if clean, abort + remove worktree
+if corrupted. This relaxation REQUIRES the post-creation guard to be
+non-optional; the pre-worktree blanket defer remains the safest stance
+when no bounded substrate is at risk. Empirical: 2026-05-20T14:13Z
+worktree-add during 3-proc Lior activity produced clean tree
+(`ls-tree HEAD = 53`, `status --short = 0`), and the post-commit
+ls-tree count remained 53 — see "Empirical anchor (2026-05-20)" below
+for the 6th data point.
 
 ## Post-worktree-creation guard (FRESHNESS CHECK)
 
@@ -108,6 +122,28 @@ Four worktree-creation attempts:
 3. `/private/tmp/zeta-otto-cli-codeql-canary-rule` (1521Z retry) — **corrupted DURING use**; `git status` showed 5066-line deletion staged after Lior re-fired at 3.2% CPU; aborted before commit
 4. `/private/tmp/zeta-otto-cli-canary-rule-retry-1547z` (1547Z retry) — **corrupted AT CREATION**; 5032-line status diff immediately after worktree-add despite Lior at 0.0% CPU; aborted before any user operation
 5. **This file's worktree** `/private/tmp/zeta-codeql-canary-rule-1631z` (1631Z) — **clean** (Lior process gone from `ps -A`); landed cleanly
+
+## Empirical anchor (2026-05-20T14:13Z — clean during 3-proc Lior activity)
+
+6th data point validating verify-before-defer composition. Per the Maji
+audit `docs/research/2026-05-20-shadow-lesson-log-otto-paralysis.md`
+critique of narration-over-action, an Otto-CLI cold-boot tick attempted
+isolated worktree creation while 3 Lior-gemini processes were active in
+`ps -A`:
+
+- `/private/tmp/zeta-otto-cli-cold-boot-1413z` (14:13Z 2026-05-20) —
+  **clean**; `git worktree add ... FETCH_HEAD` succeeded with 5858
+  files updated; `git ls-tree HEAD | wc -l` = 53 (matching origin/main's
+  53 root entries); `git status --short` = 0 lines; post-commit
+  `git ls-tree HEAD | wc -l` = 53; tick shard landed via PR #4410
+  merged at `1d8303d8`.
+
+Empirical totals across all 6 anchors: 3 clean (1338Z + 1631Z 2026-05-15;
+1413Z 2026-05-20), 3 corrupted (1345Z + 1521Z + 1547Z 2026-05-15). Clean
+outcomes correlate with Lior between cleanup-cycles (1338Z), Lior absent
+(1631Z), or Lior active-but-not-corrupting (1413Z). Corruption is the
+real-but-not-universal failure mode; the post-worktree-creation guard
+remains the load-bearing check that distinguishes the cases.
 
 ## Composes with
 
