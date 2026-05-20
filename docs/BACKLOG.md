@@ -641,6 +641,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0658](backlog/P2/B-0658-two-invariant-maximalist-position-kid-safety-plus-ai-sovereignty-aaron-mika-2026-05-18.md)** Two-invariant maximalist position — kid-safety + AI-sovereignty as only-two-defended-with-force at country scope (Aaron + Mika 2026-05-18 LOCKED-IN with Mika red-team caveat)
 - [ ] **[B-0662](backlog/P2/B-0662-closed-bidirectional-causal-loop-spec-fsharp-csharp-rust-chain-aaron-mika-2026-05-18.md)** Closed bidirectional causal loop spec ↔ F# ↔ C# ↔ Rust — each layer can regenerate the layer above + below; broken link = integrity violation (Aaron + Mika 2026-05-18 LOCKED-IN sharpening of B-0632)
 - [ ] **[B-0672](backlog/P2/B-0672-b0590-slice5-bare-metal-install-automation.md)** B-0590 slice 5: Bare-metal install automation
+- [ ] **[B-0676](backlog/P2/B-0676-b0620-slice-4-consolidator-script.md)** B-0620 slice 4 consolidator script
 
 ## P3 — convenience / deferred
 
