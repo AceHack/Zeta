@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { join } from "node:path";
 import {
   DEFAULT_CONFIG,
   defaultHistoryFile,
@@ -469,12 +470,15 @@ title: only a title
 
   describe("assignment-history cooldown (slice 5a)", () => {
     test("defaultHistoryFile honors ZETA_BUS_DIR env var when set", () => {
+      // Use `path.join` for expected values so the assertion is platform-
+      // independent (PR #4449 review finding: hard-coded forward slashes
+      // would fail on Windows where path.join returns backslashes).
       const before = process.env.ZETA_BUS_DIR;
       try {
         process.env.ZETA_BUS_DIR = "/var/zeta-test";
-        expect(defaultHistoryFile()).toBe("/var/zeta-test/assignment-history.json");
+        expect(defaultHistoryFile()).toBe(join("/var/zeta-test", "assignment-history.json"));
         delete process.env.ZETA_BUS_DIR;
-        expect(defaultHistoryFile()).toBe("/tmp/zeta-bus/assignment-history.json");
+        expect(defaultHistoryFile()).toBe(join("/tmp/zeta-bus", "assignment-history.json"));
       } finally {
         if (before === undefined) delete process.env.ZETA_BUS_DIR;
         else process.env.ZETA_BUS_DIR = before;
