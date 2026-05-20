@@ -50,8 +50,8 @@ provides a less-ambiguous concrete claim — eliminating the
          decompositionSuggestion: <slice-breakdown> } }` (Slice 4, shipped)
 - [x] Honors agent autonomy — assignment is suggestion, not directive
       (per `.claude/rules/no-directives.md`) — by design; envelope is advisory
-- [ ] Tracks assignment history to avoid re-assigning same row
-      within short window (Slice 5a, B-0501 open — `historyFile`/cooldown logic not yet in `tools/bg/backlog-ready-notifier.ts`)
+- [x] Tracks assignment history to avoid re-assigning same row
+      within short window (Slice 5a, B-0501 shipped — `historyFile`/`cooldownMin` config + read/write adapters + cooldown-gate logic in `tools/bg/backlog-ready-notifier.ts`; 8 new tests cover skip-within-window / re-assign-after-window / first-assignment / multi-row-mix / pruning)
 - [x] Tests cover the readiness-detection heuristics
       (`tools/bg/backlog-ready-notifier.test.ts`)
 - [x] Documented in `docs/AUTONOMOUS-LOOP.md`

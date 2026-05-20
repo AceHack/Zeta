@@ -1,12 +1,12 @@
 ---
 id: B-0501
 priority: P1
-status: open
+status: closed
 title: "B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)"
 tier: factory-infrastructure
 effort: S
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-20
 parent: B-0441
 depends_on: []
 composes_with: [B-0441, B-0500, B-0502]
@@ -28,33 +28,43 @@ busy. This produces noisy bus output and makes the assignment signal less meanin
 
 ## Acceptance criteria
 
-- [ ] `NotifierConfig` gains a `historyFile` field (default
+- [x] `NotifierConfig` gains a `historyFile` field (default
       `"/tmp/zeta-bus/assignment-history.json"`; respects `ZETA_BUS_DIR` if set)
       and a `cooldownMin` field (default `30`)
-- [ ] Before publishing a work-assignment envelope for a given `rowId`, check the
+- [x] Before publishing a work-assignment envelope for a given `rowId`, check the
       history file:
   - If `rowId` appears in the history with a timestamp within `cooldownMin` minutes
     of `now()` → skip that row (do not publish)
   - If absent or expired → publish and record `{ rowId, publishedAt: now().toISOString() }`
-- [ ] After publishing, write the updated history back to `historyFile`:
+- [x] After publishing, write the updated history back to `historyFile`:
   - Prune entries older than `cooldownMin` before writing to bound file size
   - Use atomic write (write to `<historyFile>.tmp` then rename) to survive concurrent
     access from multiple notifier instances
-- [ ] `PollResult` gains a `skippedDueToCooldown: string[]` field listing any `rowId`s
+- [x] `PollResult` gains a `skippedDueToCooldown: string[]` field listing any `rowId`s
       that were skipped because of cooldown
-- [ ] Adapters interface gains:
+- [x] Adapters interface gains:
   - `readHistoryFile: (path: string) => AssignmentHistory | null`
     (returns null when file absent or unreadable)
   - `writeHistoryFile: (path: string, history: AssignmentHistory) => void`
   - Tests inject fake implementations; production uses `REAL_ADAPTERS` with
     `fs.readFileSync` / atomic-rename write
-- [ ] Tests added (DST-replayable with injected adapters):
+- [x] Tests added (DST-replayable with injected adapters):
   - Row assigned at T=0; same row at T=15min (within 30min cooldown) → skipped
   - Row assigned at T=0; same row at T=35min (after 30min cooldown) → re-assigned
   - History file absent → treated as empty; first assignment proceeds normally
   - Multiple rows in cooldown → only expired rows published; `skippedDueToCooldown`
     lists skipped IDs
   - History pruning: entries older than `cooldownMin` removed on write
+
+## Resolution
+
+Shipped in this PR. 8 new tests (45 total) cover all acceptance criteria + bonus
+coverage of `defaultHistoryFile()` honoring `ZETA_BUS_DIR` + new `--history-file`
+and `--cooldown-min` CLI flags. REAL_ADAPTERS uses atomic-rename via
+`renameSync(tmp, path)` after `writeFileSync(tmp, ...)`. Default config resolves
+the history-file path at module-load time via `defaultHistoryFile()` honoring
+`process.env.ZETA_BUS_DIR`. B-0441 parent acceptance criterion "Tracks assignment
+history to avoid re-assigning same row within short window" is now satisfied.
 
 ## Design sketch
 

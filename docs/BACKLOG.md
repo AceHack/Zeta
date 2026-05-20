@@ -305,7 +305,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0496](backlog/P1/B-0496-hamiltonian-viz-slice-2-live-github-api-2026-05-14.md)** Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory
 - [ ] **[B-0497](backlog/P1/B-0497-b0440-slice-6-standing-by-detector-launchd-registration-2026-05-14.md)** B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update
 - [x] **[B-0500](backlog/P1/B-0500-b0441-slice-3-queue-state-guard-poll-once-wiring-2026-05-14.md)** B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce
-- [ ] **[B-0501](backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md)** B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)
+- [x] **[B-0501](backlog/P1/B-0501-b0441-slice-5-assignment-history-dedup-cooldown-2026-05-14.md)** B-0441 slice 5 — assignment history dedup cooldown (avoid re-assigning same row within short window)
 - [ ] **[B-0502](backlog/P1/B-0502-b0441-slice-6-launchd-plist-autonomous-loop-docs-2026-05-14.md)** B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update
 - [x] **[B-0503](backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md)** B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests
 - [x] **[B-0504](backlog/P1/B-0504-b0442-slice5b-wire-auto-recover-into-pollonce-2026-05-14.md)** B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags

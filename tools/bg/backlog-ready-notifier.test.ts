@@ -1,12 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import {
   DEFAULT_CONFIG,
+  defaultHistoryFile,
   parseArgs,
   parseRow,
   parsePositiveMinutes,
   pollOnce,
   runOnce,
   type Adapters,
+  type AssignmentHistory,
   type BacklogRow,
 } from "./backlog-ready-notifier";
 import type { AgentId, MessageEnvelope, SenderAgentId } from "../bus/types";
@@ -19,12 +21,18 @@ type FakeAssignmentCall = {
   rationale: string;
 };
 
+type HistoryStore = {
+  read: AssignmentHistory | null;
+  written: AssignmentHistory[];
+};
+
 function fakeAdapters(
   nowIso: string,
   rows: BacklogRow[],
   capturedCalls: FakeAssignmentCall[] = [],
   gitLogStr: string = "",
   ghPrListStr: string = "",
+  history: HistoryStore = { read: null, written: [] },
 ): Adapters {
   return {
     now: () => new Date(nowIso),
@@ -46,6 +54,11 @@ function fakeAdapters(
     },
     execGitLog: () => gitLogStr,
     execGhPrList: () => ghPrListStr,
+    readHistoryFile: () => history.read,
+    writeHistoryFile: (_path, h) => {
+      history.written.push(h);
+      history.read = h;
+    },
   };
 }
 
@@ -445,12 +458,275 @@ title: only a title
       // clean git log and prs
       const adapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured, "", "");
       const config = { ...DEFAULT_CONFIG, targetAgent: "testagent" };
-      
+
       const result = pollOnce(config, adapters);
-      
+
       expect(result.queueBusy).toBe(false);
       expect(result.publishedEnvelopeIds).toHaveLength(1);
       expect(captured).toHaveLength(1);
+    });
+  });
+
+  describe("assignment-history cooldown (slice 5a)", () => {
+    test("defaultHistoryFile honors ZETA_BUS_DIR env var when set", () => {
+      const before = process.env.ZETA_BUS_DIR;
+      try {
+        process.env.ZETA_BUS_DIR = "/var/zeta-test";
+        expect(defaultHistoryFile()).toBe("/var/zeta-test/assignment-history.json");
+        delete process.env.ZETA_BUS_DIR;
+        expect(defaultHistoryFile()).toBe("/tmp/zeta-bus/assignment-history.json");
+      } finally {
+        if (before === undefined) delete process.env.ZETA_BUS_DIR;
+        else process.env.ZETA_BUS_DIR = before;
+      }
+    });
+
+    test("row assigned at T=0; same row at T=15min (within 30min cooldown) → skipped", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // Pre-populate history with B-9001 published at T=0.
+      const history: HistoryStore = {
+        read: { entries: [{ rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }] },
+        written: [],
+      };
+      // Poll at T+15min.
+      const adapters = fakeAdapters(
+        "2026-05-13T18:15:00.000Z",
+        [ROW_OPEN_NO_DEPS],
+        captured,
+        "",
+        "",
+        history,
+      );
+      const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
+      expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(captured).toHaveLength(0);
+      expect(result.note).toContain("skipped 1 due to cooldown");
+    });
+
+    test("row assigned at T=0; same row at T=35min (after 30min cooldown) → re-assigned", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const history: HistoryStore = {
+        read: { entries: [{ rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" }] },
+        written: [],
+      };
+      // Poll at T+35min — entry is expired (older than 30min cooldown).
+      const adapters = fakeAdapters(
+        "2026-05-13T18:35:00.000Z",
+        [ROW_OPEN_NO_DEPS],
+        captured,
+        "",
+        "",
+        history,
+      );
+      const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
+      expect(result.skippedDueToCooldown).toEqual([]);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured).toHaveLength(1);
+      // History rewritten: pruned the stale entry, appended fresh entry.
+      expect(history.written).toHaveLength(1);
+      expect(history.written[0]!.entries).toEqual([
+        { rowId: "B-9001", publishedAt: "2026-05-13T18:35:00.000Z" },
+      ]);
+    });
+
+    test("history file absent → first assignment proceeds normally and writes history", () => {
+      const captured: FakeAssignmentCall[] = [];
+      const history: HistoryStore = { read: null, written: [] };
+      const adapters = fakeAdapters(
+        "2026-05-13T18:00:00.000Z",
+        [ROW_OPEN_NO_DEPS],
+        captured,
+        "",
+        "",
+        history,
+      );
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+      expect(result.skippedDueToCooldown).toEqual([]);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(history.written).toHaveLength(1);
+      expect(history.written[0]!.entries[0]).toMatchObject({
+        rowId: "B-9001",
+        publishedAt: "2026-05-13T18:00:00.000Z",
+      });
+    });
+
+    test("multiple rows in cooldown → only expired rows published; skippedDueToCooldown lists skipped IDs", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // B-9001 published 15min ago (still in cooldown); B-9002 published 45min ago (expired).
+      const history: HistoryStore = {
+        read: {
+          entries: [
+            { rowId: "B-9001", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "B-9002", publishedAt: "2026-05-13T17:30:00.000Z" },
+          ],
+        },
+        written: [],
+      };
+      const rowB9001: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "B-9001" };
+      const rowB9002: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "B-9002" };
+      const adapters = fakeAdapters(
+        "2026-05-13T18:15:00.000Z", // T+15min from B-9001; T+45min from B-9002
+        [rowB9001, rowB9002],
+        captured,
+        "",
+        "",
+        history,
+      );
+      const result = pollOnce({ ...DEFAULT_CONFIG, maxAssignments: 10, cooldownMin: 30 }, adapters);
+      expect(result.skippedDueToCooldown).toEqual(["B-9001"]);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured.map(c => c.rowId)).toEqual(["B-9002"]);
+    });
+
+    test("history pruning: entries older than cooldownMin removed on write", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // One ancient entry + one fresh entry from a different row that's about to be re-published-fresh.
+      const history: HistoryStore = {
+        read: {
+          entries: [
+            { rowId: "B-OLD", publishedAt: "2026-05-13T17:00:00.000Z" }, // 60min old (expired)
+            { rowId: "B-RECENT", publishedAt: "2026-05-13T17:50:00.000Z" }, // 10min old (kept)
+          ],
+        },
+        written: [],
+      };
+      const rowNew: BacklogRow = { ...ROW_OPEN_NO_DEPS, id: "B-NEW" };
+      const adapters = fakeAdapters(
+        "2026-05-13T18:00:00.000Z",
+        [rowNew],
+        captured,
+        "",
+        "",
+        history,
+      );
+      const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      // Written history should NOT include B-OLD (pruned) but should keep B-RECENT and add B-NEW.
+      expect(history.written).toHaveLength(1);
+      const writtenIds = history.written[0]!.entries.map(e => e.rowId);
+      expect(writtenIds).not.toContain("B-OLD");
+      expect(writtenIds).toContain("B-RECENT");
+      expect(writtenIds).toContain("B-NEW");
+    });
+
+    test("--history-file and --cooldown-min flags parse correctly", () => {
+      const config = parseArgs([
+        "--history-file", "/custom/path/assignment-history.json",
+        "--cooldown-min", "60",
+      ]);
+      expect(config.historyFile).toBe("/custom/path/assignment-history.json");
+      expect(config.cooldownMin).toBe(60);
+    });
+
+    test("--history-file rejects missing value", () => {
+      expect(() => parseArgs(["--history-file"])).toThrow(/requires a value/);
+    });
+
+    test("cooled-down rows do NOT consume maxAssignments quota — later eligible rows still publish (Codex P1 #4449)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // First 3 ready rows are in cooldown; 4th and 5th are eligible.
+      // With maxAssignments=3, all 3 publishes should go to the 4th, 5th, and... wait we need 3 eligible.
+      // Re-cast: 3 in cooldown + 3 eligible; maxAssignments=3 must publish the 3 eligible.
+      const history: HistoryStore = {
+        read: {
+          entries: [
+            { rowId: "B-COOLED-1", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "B-COOLED-2", publishedAt: "2026-05-13T18:00:00.000Z" },
+            { rowId: "B-COOLED-3", publishedAt: "2026-05-13T18:00:00.000Z" },
+          ],
+        },
+        written: [],
+      };
+      const rows: BacklogRow[] = [
+        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-1" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-2" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-COOLED-3" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-1" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-2" },
+        { ...ROW_OPEN_NO_DEPS, id: "B-ELIG-3" },
+      ];
+      // Poll at T+15min — cooldown 30min still active for COOLED-* rows.
+      const adapters = fakeAdapters(
+        "2026-05-13T18:15:00.000Z",
+        rows,
+        captured,
+        "",
+        "",
+        history,
+      );
+      const result = pollOnce({ ...DEFAULT_CONFIG, maxAssignments: 3, cooldownMin: 30 }, adapters);
+      expect(result.publishedEnvelopeIds).toHaveLength(3);
+      expect(captured.map(c => c.rowId)).toEqual(["B-ELIG-1", "B-ELIG-2", "B-ELIG-3"]);
+      expect(result.skippedDueToCooldown).toEqual(["B-COOLED-1", "B-COOLED-2", "B-COOLED-3"]);
+    });
+
+    test("readHistoryFile NOT called when noPublish: true (Copilot P1 #4449 — defer history IO)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      let readCount = 0;
+      const baseAdapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_OPEN_NO_DEPS], captured);
+      const adapters: Adapters = {
+        ...baseAdapters,
+        readHistoryFile: (_path) => {
+          readCount += 1;
+          return null;
+        },
+      };
+      const result = pollOnce({ ...DEFAULT_CONFIG, noPublish: true }, adapters);
+      expect(result.publishedEnvelopeIds).toHaveLength(0);
+      expect(readCount).toBe(0);
+    });
+
+    test("readHistoryFile NOT called when readyRows is empty (Copilot P1 #4449 — defer history IO)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      let readCount = 0;
+      const baseAdapters = fakeAdapters("2026-05-13T18:00:00Z", [ROW_CLOSED], captured);
+      const adapters: Adapters = {
+        ...baseAdapters,
+        readHistoryFile: (_path) => {
+          readCount += 1;
+          return null;
+        },
+      };
+      const result = pollOnce(DEFAULT_CONFIG, adapters);
+      expect(result.readyRowsFound).toBe(0);
+      expect(readCount).toBe(0);
+    });
+
+    test("read-merge-write preserves concurrent peer's history entry (Codex P1 #4449)", () => {
+      const captured: FakeAssignmentCall[] = [];
+      // Initial read: empty (our snapshot says no prior history).
+      // Pre-write read: peer wrote B-PEER between our two reads.
+      // We're publishing B-OURS. Expect both B-PEER + B-OURS in the final write.
+      const initialHistory: AssignmentHistory = { entries: [] };
+      const peerWroteBetween: AssignmentHistory = {
+        entries: [{ rowId: "B-PEER", publishedAt: "2026-05-13T17:55:00.000Z" }],
+      };
+      let readIdx = 0;
+      const writtenHistory: AssignmentHistory[] = [];
+      const baseAdapters = fakeAdapters(
+        "2026-05-13T18:00:00.000Z",
+        [{ ...ROW_OPEN_NO_DEPS, id: "B-OURS" }],
+        captured,
+      );
+      const adapters: Adapters = {
+        ...baseAdapters,
+        readHistoryFile: () => {
+          // 1st read: initial (empty); 2nd read: just before write (peer added entry)
+          const result = readIdx === 0 ? initialHistory : peerWroteBetween;
+          readIdx += 1;
+          return result;
+        },
+        writeHistoryFile: (_path, h) => {
+          writtenHistory.push(h);
+        },
+      };
+      const result = pollOnce({ ...DEFAULT_CONFIG, cooldownMin: 30 }, adapters);
+      expect(result.publishedEnvelopeIds).toHaveLength(1);
+      expect(captured[0]!.rowId).toBe("B-OURS");
+      expect(writtenHistory).toHaveLength(1);
+      const writtenIds = writtenHistory[0]!.entries.map(e => e.rowId).sort();
+      expect(writtenIds).toEqual(["B-OURS", "B-PEER"]);
     });
   });
 
