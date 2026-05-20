@@ -69,6 +69,30 @@ When the tier hits Pure-git mode:
 
 The branch sits on origin pushed-but-unPRed; PR creation in the post-reset tick costs ~5-10 GraphQL but covers all the deferred branches at once. Net cost is the same; spread across time.
 
+### Prefer `origin/main` over `FETCH_HEAD` for isolated-worktree base ref (empirical anchor 2026-05-20T16:14Z)
+
+Step 5 of the Pure-git tick pattern names `origin/main` (a remote-tracking ref under `refs/remotes/origin/main`) as the base ref — not `FETCH_HEAD` (a transient file at `.git/FETCH_HEAD`). The naming is deliberate; this subsection captures the empirical evidence.
+
+Empirical anchor 2026-05-20T16:14Z ([`docs/hygiene-history/ticks/2026/05/20/1614Z.md`](../../docs/hygiene-history/ticks/2026/05/20/1614Z.md)): a fresh-cold-boot Otto-CLI session under 8-Claude-process saturation ran:
+
+```bash
+git fetch origin main   # printed "* branch main -> FETCH_HEAD" — success
+git worktree add /private/tmp/zeta-shard-1614z-cold-boot FETCH_HEAD
+# → fatal: invalid reference: FETCH_HEAD
+```
+
+Despite the fetch printing the same ref milliseconds earlier, the worktree-add failed with `invalid reference`. Clean rollback (no partial directory; no entry in `git worktree list`). The retry against `origin/main` directly succeeded cleanly (HEAD `24da4ee0`, ls-tree=53, status=0).
+
+**Hypothesis**: `.git/FETCH_HEAD` is a file (not a ref under `refs/`) — concurrent peer-Otto fetches in the shared `.git/` race on it; a peer `git fetch`, `git gc`, or worktree-cleanup operation can delete or truncate it between your fetch and your worktree-add. The named remote-tracking ref `origin/main` is more durable because ref updates use atomic filesystem rename, are namespaced under `refs/remotes/`, and survive peer fetch operations targeting other branches.
+
+**Operational discipline** (composes with the canonical step 5):
+
+- **DO** base isolated worktrees on remote-tracking refs: `git worktree add <path> origin/main` or `git worktree add -b <branch> <path> origin/main`
+- **DO NOT** rely on `FETCH_HEAD` under multi-Otto saturation: `git worktree add <path> FETCH_HEAD` may fail with `invalid reference` even right after a successful fetch
+- This is distinct from the `unable to update local ref` wedge documented in [`claim-acquire-before-worktree-work.md`](claim-acquire-before-worktree-work.md) borrow-on-existing — that wedge fails the *fetch* under ref-lock contention; this one fails the *post-fetch worktree-add* under FETCH_HEAD-file contention. Same multi-Otto-shared-`.git/` root cause class; different observable symptom
+
+The 1614Z tick shard documented the anchor; this rule subsection lands the operational discipline for future-Otto cold-boots.
+
 ### REST PR-creation fallback under Pure-git tier (empirical anchor 2026-05-17T21:54Z)
 
 `gh pr create` uses the GitHub GraphQL `createPullRequest` mutation, so it fails under Pure-git tier. However, the **REST endpoint `POST /repos/{owner}/{repo}/pulls`** is on a separate budget (`resources.core` not `resources.graphql`) — when GraphQL is at 0/5000, REST is typically still at thousands available.
