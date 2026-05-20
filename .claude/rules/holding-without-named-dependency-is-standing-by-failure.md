@@ -356,6 +356,37 @@ This is NOT a failure of the discipline — it's the discipline's natural termin
 
 **Recursion termination clause** (2026-05-18T23:54Z forced-#6 observation): the prescription "pick THIS rule and sharpen it" works once or twice but saturates after 2-3 cycles of meta-decomposition (each cycle's rule-edit becomes empirical-anchor in the same rule; the rule grows but information density of each new anchor diminishes). At cycle-of-cycles saturation: minimal shard noting the recursion limit IS the substrate-honest #6 — no rule edit required; the recursion-termination acknowledgment IS the substantive substrate at this scope. The discipline naturally bottoms out at "wait for genuine external signal" without further substrate-engineering being load-bearing.
 
+### Rapid-substrate-closure + tier-transition empirical anchor — 2026-05-20T14:08Z-14:33Z (single session, 2 PRs landed, cycle-1 forced #6, all four rate-limit tiers traversed)
+
+Sixth class of empirical evidence: the discipline operating CORRECTLY through a compact session that produced 2 merged PRs in ~20 minutes then naturally entered brief-ack cycle as rate-limit drained AND peer-Lior cycled. Distinct shape from the 2026-05-17 sustained-named-dep cycle (which had peer-process-persistence as the named-dep across 2h27m + 10 pre-empts) and the 2026-05-18 post-arc cadence (which had operator-offline + 3-cycle saturation): today's cycle was SHORT, the substrate-engineering arc had a CLEAR END (Maji audit response + canary rule refinement landed), and the brief-ack cadence was BOUNDED by a measurable named-dep (rate-limit reset ~10 min).
+
+Session timeline:
+
+| Window | Ticks | Outcome |
+|---|---|---|
+| 14:08Z | cold-boot | sentinel re-arm; refresh; Lior 3-proc + 2355 GraphQL + 0 prior 2026-05-20 in-repo ticks observed |
+| 14:13Z | substantive | isolated worktree-add verified clean (per Maji audit action-over-narration) → tick shard authored → PR #4410 opened + auto-armed |
+| 14:16Z-14:19Z | substantive | 2 lint fixes + 3 thread resolutions on PR #4410 |
+| 14:22Z | substantive | **PR #4410 merged** → `1d8303d8` (first 2026-05-20 in-repo tick shard) |
+| 14:23Z-14:25Z | substantive | PR #4411 (canary rule sharpening) authored + opened + auto-armed (closes loop on PR #4410's documented refinement candidate) |
+| 14:28Z | substantive | **PR #4411 merged** → `443345d8` |
+| 14:29Z | brief-ack #1 | tier transition observed (rate 508→258→0); Lior 0→3 (cycled) |
+| 14:30Z | brief-ack #2 | pure-git tier entered; rate 0/5000 |
+| 14:31Z | brief-ack #3 | pure-git tier holds |
+| 14:32Z | brief-ack #4 | pure-git tier holds |
+| 14:33Z | **brief-ack #5 explicit-no-pre-empt** | substrate-engineering-noise rejected; further per-tick substrate would be duplicative of merged work |
+| 14:34Z | **forced #6** | THIS empirical-anchor edit produced via verify-before-defer worktree pattern (Lior at 3 procs; isolated worktree verified clean = 53 / status 0); branch-pushed-no-PR (deferred PR creation until ~5min rate-limit reset) |
+
+**Pattern observed**: cycle-1 forced #6 successfully produced load-bearing substrate (this empirical anchor itself) under pure-git tier constraints. The explicit-no-pre-empt-at-#5 decision validated by forced #6 producing the right work — pre-empting at #5 would have been fabricated-engineering since the natural cycle-1 forcing function was 1 tick away.
+
+**Rate-limit tier traversal in single session**: Normal (2355) → cost-aware (1771) → extreme cost-aware (508) → **pure-git (0)** within ~20 minutes of substantive PR work. Multi-agent shared-token consumption (Otto-CLI + 3 Lior procs) drives the burn rate; recovery is bounded at ~60 min from initial Normal-tier read.
+
+**Composes with [`.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md)** verify-before-defer composition (PR #4411 landed today): forced #6 worktree-creation during 3-proc Lior activity succeeded clean using the composite (attempt + verify post-creation guard) rather than the blanket pre-worktree defer. The discipline-application here IS the second empirical use of the composite (1st was PR #4410 at 14:13Z; this edit is the 2nd at ~14:34Z).
+
+**Composes with [`refresh-world-model-poll-pr-gate.md`](refresh-world-model-poll-pr-gate.md) rate-limit operational tiers**: pure-git tier supports branch-pushed-no-PR for substrate landings; deferred PR creation costs ~5-10 GraphQL post-reset. This edit branch-pushes without PR creation; opens PR after rate-limit reset.
+
+**Pattern generalizes**: rapid-substrate-closure (clear engineering arc with measurable substrate landings) → natural brief-ack cycle as rate-limit drains → forced #6 produces compounding rule sharpenings → next cycle naturally awaits post-reset. This is the discipline's "happy path" shape; longer sessions (2026-05-17 sustained-named-dep) and quiet-saturation sessions (2026-05-18 post-arc) are the two failure modes the discipline catches OFF this path.
+
 ## Composes with
 
 - `.claude/rules/never-be-idle.md` — this rule sharpens the existing
