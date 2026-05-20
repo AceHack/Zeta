@@ -8,7 +8,7 @@ merged_at: "2026-05-20T18:43:26Z"
 closed_at: "2026-05-20T18:43:26Z"
 head_ref: "shard/tick-1807z-otto-cli-cold-boot-extreme-cost-aware-pure-git-2026-05-20"
 base_ref: "main"
-archived_at: "2026-05-20T19:22:01Z"
+archived_at: "2026-05-20T21:44:37Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
