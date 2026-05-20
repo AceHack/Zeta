@@ -8,7 +8,7 @@ merged_at: "2026-05-20T14:02:50Z"
 closed_at: "2026-05-20T14:02:50Z"
 head_ref: "otto/anti-infection-trajectory-lowest-priority-2026-05-20"
 base_ref: "main"
-archived_at: "2026-05-20T14:08:18Z"
+archived_at: "2026-05-20T15:56:59Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

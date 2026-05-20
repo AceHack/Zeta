@@ -8,7 +8,7 @@ merged_at: "2026-05-20T14:21:18Z"
 closed_at: "2026-05-20T14:21:18Z"
 head_ref: "otto/tick-1413z-cold-boot-maji-audit-verify-2026-05-20"
 base_ref: "main"
-archived_at: "2026-05-20T15:05:23Z"
+archived_at: "2026-05-20T15:56:58Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

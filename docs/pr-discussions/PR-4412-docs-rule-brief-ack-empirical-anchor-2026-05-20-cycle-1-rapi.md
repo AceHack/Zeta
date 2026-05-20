@@ -8,7 +8,7 @@ merged_at: "2026-05-20T14:43:17Z"
 closed_at: "2026-05-20T14:43:17Z"
 head_ref: "otto/brief-ack-rule-cycle1-skip-at-5-forced-6-empirical-2026-05-20"
 base_ref: "main"
-archived_at: "2026-05-20T15:05:21Z"
+archived_at: "2026-05-20T15:56:56Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

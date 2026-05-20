@@ -8,7 +8,7 @@ merged_at: "2026-05-20T14:27:30Z"
 closed_at: "2026-05-20T14:27:30Z"
 head_ref: "otto/canary-rule-compose-verify-before-deferring-2026-05-20"
 base_ref: "main"
-archived_at: "2026-05-20T15:05:22Z"
+archived_at: "2026-05-20T15:56:57Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
