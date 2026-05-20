@@ -643,6 +643,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0672](backlog/P2/B-0672-b0590-slice5-bare-metal-install-automation.md)** B-0590 slice 5: Bare-metal install automation
 - [ ] **[B-0676](backlog/P2/B-0676-b0620-slice-4-consolidator-script.md)** B-0620 slice 4 consolidator script
 - [ ] **[B-0677](backlog/P2/B-0677-b0620-slice-6-cross-operator-generalization.md)** B-0620 slice 6 cross-operator generalization
+- [ ] **[B-0678](backlog/P2/B-0678-b0620-slice-5-category-classifier.md)** B-0620 slice 5 category classifier
 
 ## P3 — convenience / deferred
 
