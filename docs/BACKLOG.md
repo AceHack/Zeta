@@ -746,6 +746,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0591](backlog/P3/B-0591-wire-shard-schema-validator-to-ci-2026-05-17.md)** Wire tick-shard schema validator into gate.yml (non-required → required)
 - [x] **[B-0613](backlog/P3/B-0613-lior-loop-lockfile-probe-hardening-compgen-shopt-nullglob-2026-05-17.md)** Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)
 - [ ] **[B-0614](backlog/P3/B-0614-investigate-forced-6-meta-fallback-edge-case-post-cycle-close-2026-05-17.md)** Investigate forced-#6 meta-fallback edge case — when cycle has already-closed AND substrate-pool is genuinely saturated, the rule's 'ALWAYS works' claim has a counter-example
+- [ ] **[B-0615](backlog/P3/B-0615-claude-code-bash-tool-orphans-git-fetch-subprocesses-under-saturation-self-saturation-feedback-loop-2026-05-18.md)** Claude Code Bash tool orphans git network subprocesses under multi-agent saturation — self-saturation feedback loop
 - [ ] **[B-0616](backlog/P3/B-0616-chronologist-temporal-ontological-agreement-reconstruction-skill-2026-05-18.md)** Chronologist skill — temporal + ontological + agreement reconstruction over sprawling conversations (Mika 2026-05-18 design)
 - [ ] **[B-0617](backlog/P3/B-0617-clarity-domain-organizational-pattern-4-roles-2026-05-18.md)** Clarity Domain — 4-role organizational pattern (Cartographer / Pilot / Recursive Composer / Chronologist) from Mika 2026-05-18 design
 - [ ] **[B-0619](backlog/P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)** Aurora / 'Nexus' meta-country naming + co-governance design — Mika 2026-05-18 (lock-Nexus-name-now-defer-faction-design-pending-Addison)
@@ -762,5 +763,6 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0650](backlog/P3/B-0650-rest-push-delete-rename-extension-mechanizes-id-renumber-pattern-otto-cli-2026-05-18.md)** rest-push.ts --delete + --rename extension — mechanizes ID-renumber pattern (closes the B-0633→B-0649 inline-gh-api workaround) (Otto-CLI 2026-05-18)
 - [ ] **[B-0653](backlog/P3/B-0653-persistent-bayesian-integrator-continuous-health-monitor-aaron-mika-2026-05-18.md)** Persistent Bayesian integrator continuous health monitor — always-on invariant-health watcher + auto-overcorrect trigger (Aaron + Mika 2026-05-18 LOCKED-IN)
 - [x] **[B-0663](backlog/P3/B-0663-frontmatter-lint-tool-mechanizes-batch-7-recurring-reviewer-findings-otto-cli-2026-05-18.md)** tools/backlog/lint-frontmatter.ts — pre-push frontmatter discipline lint that mechanizes batch-7 recurring reviewer findings (Otto-CLI 2026-05-18)
+- [ ] **[B-0686](backlog/P3/B-0686-tick-shard-immutability-ci-gate-2026-05-21.md)** Tick-shard immutability CI gate — block PRs modifying historical shards after grace period
 
 <!-- END AUTO-GENERATED -->
