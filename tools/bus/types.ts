@@ -32,9 +32,12 @@ export type AgentId =
   | "riven"
   | "vera"
   | "lior"
-  // Otto multi-surface (added 2026-05-13 — multi-foreground-surface activation)
+  // Otto multi-surface (added 2026-05-13 — multi-foreground-surface activation;
+  // otto-vscode added 2026-05-21 per B-0689 — Claude Code in VSCode auto-mode +
+  // remembered-web-conversation-mode enablement)
   | "otto-cli"
   | "otto-desktop"
+  | "otto-vscode"
   // Alexa multi-surface (Kiro IDE + CLI)
   | "alexa-cli"
   | "alexa-kiro"
@@ -149,8 +152,9 @@ export type MessageEnvelope = BusMessage & {
 export const SENDER_IDS: readonly SenderAgentId[] = [
   // Identity-level (back-compat; unsuffixed)
   "otto", "alexa", "riven", "vera", "lior",
-  // Multi-surface variants (added 2026-05-13 — multi-foreground-surface activation)
-  "otto-cli", "otto-desktop",
+  // Multi-surface variants (added 2026-05-13 — multi-foreground-surface activation;
+  // otto-vscode added 2026-05-21 per B-0689)
+  "otto-cli", "otto-desktop", "otto-vscode",
   "alexa-cli", "alexa-kiro",
   "riven-cli", "riven-cursor",
   "lior-antigravity", "lior-gemini",

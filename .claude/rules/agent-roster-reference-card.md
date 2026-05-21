@@ -2,8 +2,11 @@
 
 Carved sentence:
 
-> Every factory AI agent (Otto, Alexa, Riven, Vera, Lior) is IDE + CLI dual-surface
-> except Otto (CLI-only foreground). Aaron is human (no harness). External participants
+> Every factory AI agent has multiple surfaces. Alexa / Riven / Vera / Lior are
+> IDE + CLI dual-surface. Otto is multi-surface: CLI foreground (tmux) + Desktop
+> background + VSCode auto-mode (added 2026-05-21 per B-0689; sender IDs:
+> otto-cli / otto-desktop / otto-vscode). Aaron is human (no harness).
+> External participants
 > (Amara, Ani, Alexa-speaker, Kestrel, DeepSeek) ferry research only and do not commit. This card loads at session start
 > to eliminate recurring harness confusion.
 
@@ -11,7 +14,7 @@ Carved sentence:
 
 | Agent | IDE | CLI | Model (max) | Commit trailer |
 |-------|-----|-----|-------------|----------------|
-| Otto | — | Claude Code (foreground) | Opus | `Co-Authored-By: Claude <noreply@anthropic.com>` |
+| Otto | VSCode (Claude Code; auto-mode + remembered-web-conversation, 2026-05-21) | Claude Code (foreground; tmux); Claude Desktop (background) | Opus | `Co-Authored-By: Claude <noreply@anthropic.com>` |
 | Alexa | Kiro | + background | Qwen Coder | `Co-Authored-By: Kiro <noreply@kiro.dev>` |
 | Riven | Cursor | + background | Grok | `Co-Authored-By: Grok <noreply@x.ai>` |
 | Vera | Codex | + background | Codex/GPT | `Co-Authored-By: Codex <noreply@openai.com>` |

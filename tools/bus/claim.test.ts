@@ -179,6 +179,28 @@ describe("claim.ts — acquire", () => {
     expect(r2.stderr).toContain("otto-cli");
   });
 
+  // B-0689 (2026-05-21) — Otto-VSCode third foreground surface
+  test("acquire accepts otto-vscode surface-tagged sender", () => {
+    const r = run("acquire", "--from", "otto-vscode", "--item", "B-0689-a");
+    expect(r.exitCode).toBe(0);
+  });
+
+  test("otto-vscode is DISTINCT from otto-cli — same-item claim by otto-vscode is rejected when otto-cli holds", () => {
+    const r1 = run("acquire", "--from", "otto-cli", "--item", "B-0689-b");
+    expect(r1.exitCode).toBe(0);
+    const r2 = run("acquire", "--from", "otto-vscode", "--item", "B-0689-b");
+    expect(r2.exitCode).toBe(1);
+    expect(r2.stderr).toContain("otto-cli");
+  });
+
+  test("otto-vscode is DISTINCT from otto-desktop — same-item claim by otto-vscode is rejected when otto-desktop holds", () => {
+    const r1 = run("acquire", "--from", "otto-desktop", "--item", "B-0689-c");
+    expect(r1.exitCode).toBe(0);
+    const r2 = run("acquire", "--from", "otto-vscode", "--item", "B-0689-c");
+    expect(r2.exitCode).toBe(1);
+    expect(r2.stderr).toContain("otto-desktop");
+  });
+
   test("acquire accepts alexa-cli surface-tagged sender", () => {
     const r = run("acquire", "--from", "alexa-cli", "--item", "B-0501");
     expect(r.exitCode).toBe(0);
