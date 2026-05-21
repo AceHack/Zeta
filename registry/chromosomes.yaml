@@ -1,0 +1,13 @@
+schema: zeta-registry/v1
+total_slots: 32
+description: "Core trajectory chromosomes (23 reserved, 9 spare in 32-slot namespace)"
+entries:
+  - id: 0
+    name: MetaCoherence
+    description: "Core coherence and long-term trajectory maintenance"
+    deprecated: false
+  - id: 7
+    name: FinancialIntegrity
+    description: "Financial-grade observation integrity, auditability, and causal accountability"
+    deprecated: false
+  # TODO: 21 more chromosomes to define

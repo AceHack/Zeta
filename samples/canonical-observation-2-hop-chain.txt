@@ -1,0 +1,20 @@
+{
+  "zetaId": "0x0801A2B3C4D5E6F70123456789ABCDEF",
+  "payload": { "type": "observation", "data": "..." }
+}
+
+Agency-Signature-Version: 2
+Originating-Commit: deadbeefdeadbeefdeadbeefdeadbeefdeadbeef
+Agency-Graph-Root: 0x0801A2B3C4D5E6F70000000000000001
+Agency-Graph-Parent: 0x0801A2B3C4D5E6F70000000000000002
+Agency-Graph-Depth: 2
+Agency-Node: Aaron@2026-05-21T05:42:00Z@HumanVerified[Root]
+Agency-Node: Otto-CLI@2026-05-21T05:42:30Z@TrustedAgent[Delegated-To: Aminata]
+Agency-Node: Aminata@2026-05-21T05:43:00Z@TrustedAgent[Final-Author]
+OTel-Trace-Id: 4bf92f3577b34da6a3ce929d0e0e4736
+OTel-Span-Id: 00f067aa0ba902b7
+OTel-Parent-Span-Id: 7654321076543210
+OTel-Baggage: conversation-id=abc123,user-intent=cascade-detection
+Co-Authored-By: Aaron Stainback <astainback@servicetitan.com>
+Co-Authored-By: Claude <noreply@anthropic.com>
+Co-Authored-By: Aminata <agency@zeta.local>

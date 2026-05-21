@@ -1,0 +1,11 @@
+schema: zeta-registry/v1
+total_slots: 16
+entries:
+  - id: 0
+    name: Observation
+  - id: 1
+    name: Emission
+  - id: 2
+    name: Workflow
+  - id: 3
+    name: Heartbeat

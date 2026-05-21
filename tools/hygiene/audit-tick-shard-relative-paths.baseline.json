@@ -11,11 +11,6 @@
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
-    "line": 20,
-    "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
-  },
-  {
-    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
     "line": 6,
     "target": "../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
   },
@@ -23,6 +18,21 @@
     "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
     "line": 7,
     "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
+    "line": 20,
+    "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "line": 6,
+    "target": "../../../../backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
+    "line": 6,
+    "target": "../../../../backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md"
   },
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
@@ -37,16 +47,6 @@
   {
     "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
     "line": 36,
-    "target": "../../../../backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md"
-  },
-  {
-    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
-    "line": 6,
-    "target": "../../../../backlog/P1/B-0442-missed-substrate-cascade-detector-background-service-2026-05-13.md"
-  },
-  {
-    "file": "docs/hygiene-history/ticks/2026/05/15/1436Z.md",
-    "line": 6,
     "target": "../../../../backlog/P1/B-0503-b0442-slice5a-open-recovery-pr-core-function-2026-05-14.md"
   },
   {
@@ -158,5 +158,40 @@
     "file": "docs/hygiene-history/ticks/2026/05/19/0007Z-c.md",
     "line": 7,
     "target": "../../../../../../docs/backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
+    "line": 18,
+    "target": "../../../../../.claude/rules/refresh-world-model-poll-pr-gate.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
+    "line": 22,
+    "target": "../../../../../.claude/rules/tick-must-never-stop.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
+    "line": 41,
+    "target": "../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
+    "line": 53,
+    "target": "../../../../../.claude/rules/zeta-expected-branch.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
+    "line": 77,
+    "target": "../../../../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
+    "line": 78,
+    "target": "../../../../../.claude/rules/blocked-green-ci-investigate-threads.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
+    "line": 79,
+    "target": "../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
   }
 ]

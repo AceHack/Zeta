@@ -1,0 +1,57 @@
+version: 2
+description: "AgencySignature v2 — Full recursive agency graph + OTel integration"
+format: git-trailer-block
+parser: git interpret-trailers
+
+trailers:
+  - name: Agency-Signature-Version
+    value: "2"
+    required: true
+
+  - name: Originating-Commit
+    value: "<git-sha>"
+    required: true
+
+  - name: Agency-Graph-Root
+    value: "<full-128-bit-ZetaId-hex>"
+    description: "ZetaId of the original root observation that started this lineage"
+    required: false
+
+  - name: Agency-Graph-Parent
+    value: "<full-128-bit-ZetaId-hex>"
+    description: "ZetaId of the immediate upstream observation (authoritative link)"
+    required: false
+
+  - name: Agency-Graph-Depth
+    value: "<integer>"
+    description: "Delegation depth from root (0 = root)"
+    required: false
+
+  - name: Agency-Node
+    value: "<Persona>@<ISO8601-timestamp>@<Authority>[Delegated-To: <NextPersona>]"
+    description: "One entry per agent/operator in the delegation chain. MUST preserve source order (root first, final author last)."
+    repeatable: true
+    order: execution
+
+  - name: OTel-Trace-Id
+    value: "<128-bit-hex>"
+    description: "OTel TraceID — invariant across entire derived lineage"
+    required: false
+
+  - name: OTel-Span-Id
+    value: "<64-bit-hex>"
+    description: "OTel SpanID for this specific operator transformation"
+    required: false
+
+  - name: OTel-Parent-Span-Id
+    value: "<64-bit-hex>"
+    description: "OTel ParentSpanID of the upstream operator"
+    required: false
+
+  - name: OTel-Baggage
+    value: "key1=value1,key2=value2"
+    description: "Propagated context"
+    required: false
+
+  - name: Co-Authored-By
+    repeatable: true

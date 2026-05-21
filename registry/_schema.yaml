@@ -1,0 +1,6 @@
+schema_version: 1
+description: "Schema for Zeta registry files (enum_ref and cases_ref targets)"
+required_keys: [schema, entries]
+entry_shape:
+  required: [id, name]
+  optional: [description, deprecated]

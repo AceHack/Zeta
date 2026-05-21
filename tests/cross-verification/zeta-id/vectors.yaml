@@ -1,0 +1,171 @@
+version: 1
+description: "Canonical ZetaId test vectors for F# ↔ TS cross-verification (flat schema)"
+
+vectors:
+  - id: authority-human-verified
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: HumanVerified
+    authority_raw: null
+    persona: 1
+    momentum_type: Normal
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d19c1f80b000800000000"
+
+  - id: authority-trusted-agent
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: TrustedAgent
+    authority_raw: null
+    persona: 1
+    momentum_type: Normal
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d19c1a00b000800000000"
+
+  - id: authority-standard
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 0
+    category: 0
+    firefly: 1
+    authority_type: Standard
+    authority_raw: null
+    persona: 2
+    momentum_type: Elevated
+    momentum_raw: null
+    location: 2
+    expected_hex: "080cb77ed58d18017815001000000000"
+
+  - id: authority-best-effort
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 0
+    category: 3
+    firefly: 1
+    authority_type: BestEffort
+    authority_raw: null
+    persona: 2
+    momentum_type: High
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d18074017000800000000"
+
+  - id: authority-simulated
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 0
+    category: 3
+    firefly: 1
+    authority_type: Simulated
+    authority_raw: null
+    persona: 2
+    momentum_type: Critical
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d18071817c00800000000"
+
+  - id: momentum-background
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: HumanVerified
+    authority_raw: null
+    persona: 1
+    momentum_type: Background
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d19c1f809000800000000"
+
+  - id: momentum-normal
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: HumanVerified
+    authority_raw: null
+    persona: 1
+    momentum_type: Normal
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d19c1f80b000800000000"
+
+  - id: momentum-elevated
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: TrustedAgent
+    authority_raw: null
+    persona: 1
+    momentum_type: Elevated
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d19c1a00d000800000000"
+
+  - id: momentum-high
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: HumanVerified
+    authority_raw: null
+    persona: 1
+    momentum_type: High
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d19c1f80f000800000000"
+
+  - id: momentum-critical
+    version: 1
+    timestamp: 1747780809123
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: HumanVerified
+    authority_raw: null
+    persona: 1
+    momentum_type: Critical
+    momentum_raw: null
+    location: 1
+    expected_hex: "080cb77ed58d19c1f80fc00800000000"
+
+  - id: authority-raw-0
+    version: 1
+    timestamp: 0
+    chromosome: 0
+    category: 0
+    firefly: 1
+    authority_type: Raw
+    authority_raw: 0
+    persona: 1
+    momentum_type: Normal
+    momentum_raw: null
+    location: 1
+    expected_hex: "0800000000000001000b000800000000"
+
+  - id: momentum-raw-255
+    version: 1
+    timestamp: 281474976710655
+    chromosome: 7
+    category: 0
+    firefly: 1
+    authority_type: HumanVerified
+    authority_raw: null
+    persona: 1
+    momentum_type: Raw
+    momentum_raw: 255
+    location: 1
+    expected_hex: "0ffffffffffff9c1f80ff80800000000"

@@ -1,0 +1,81 @@
+version: 1
+total_bits: 128
+endianness: big                    # MSB at bit 127
+bit_numbering: lsb_zero            # bit 0 = LSB, bit 127 = MSB
+description: "Zeta Observation ID v1 — 128-bit semantic DNA"
+
+fields:
+  - name: Version
+    offset: 123
+    width: 5
+    type: enum
+    enum_ref: registry/id-versions.yaml
+    required: true
+
+  - name: Timestamp
+    offset: 75
+    width: 48
+    type: int64
+    unit: ms
+    validation: { min: 0, max: 281474976710655 }   # 2^48 - 1
+    required: true
+
+  - name: Chromosome
+    offset: 70
+    width: 5
+    type: enum
+    enum_ref: registry/chromosomes.yaml
+    required: true
+
+  - name: Category
+    offset: 65
+    width: 4
+    type: enum
+    enum_ref: registry/categories.yaml
+    required: true
+
+  - name: Firefly
+    offset: 64
+    width: 1
+    type: enum
+    enum_ref: registry/firefly-cases.yaml
+    description: "V1 case-of-one: NoDirective = 1. Kept as enum for V2+ evolution."
+    required: true
+
+  - name: Authority
+    offset: 59
+    width: 5
+    type: discriminated_union
+    cases_ref: registry/authority-cases.yaml
+    raw_escape: true
+    required: true
+
+  - name: Persona
+    offset: 51
+    width: 8
+    type: enum
+    enum_ref: registry/personas.yaml
+    required: true
+
+  - name: Momentum
+    offset: 43
+    width: 8
+    type: discriminated_union
+    cases_ref: registry/momentum-cases.yaml
+    raw_escape: true
+    required: true
+
+  - name: Location
+    offset: 35
+    width: 8
+    type: enum
+    enum_ref: registry/locations.yaml
+    required: true
+
+  - name: Randomness
+    offset: 0
+    width: 32
+    type: random
+    source: env.nextInt64
+    mask: 0xFFFFFFFF
+    description: "Safe 32-bit window. 64-bit randomness in earlier versions corrupted higher fields (empirically caught by round-trip test)."

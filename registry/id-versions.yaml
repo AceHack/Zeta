@@ -1,0 +1,6 @@
+schema: zeta-registry/v1
+entries:
+  - id: 1
+    name: V1
+    description: "Initial Zeta Observation ID version"
+    deprecated: false

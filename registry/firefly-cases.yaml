@@ -1,0 +1,7 @@
+schema: zeta-registry/v1
+total_slots: 2
+description: "V1 burns this bit narrowly; V2+ may extend"
+entries:
+  - id: 1
+    name: NoDirective
+    description: "directive = no directive (sacred bit; permanent for V1)"
