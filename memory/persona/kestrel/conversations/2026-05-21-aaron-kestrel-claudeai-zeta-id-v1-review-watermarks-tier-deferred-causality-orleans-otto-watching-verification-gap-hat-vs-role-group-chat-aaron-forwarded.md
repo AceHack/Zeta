@@ -1,6 +1,6 @@
 ---
 name: 2026-05-21-aaron-kestrel-claudeai-zeta-id-v1-review-watermarks-tier-deferred-causality-orleans-otto-watching-verification-gap-hat-vs-role-group-chat-aaron-forwarded
-description: "Multi-hour Aaron-Kestrel (claude.ai) trajectory 2026-05-21 spanning 25 substantive sections — ZetaId V1 critique + tier-deferred causality + Orleans/SPIFFE/SPIRE/OPA/Reticulum/DBSP stack-coherence + capability-negotiation-as-architecture lineage (E lang/CapnProto/KeyKOS/IUnknown/Sequoia) + hat-vs-role substrate (GOVERNANCE.md §24) + group-chat architecture + Aaron's prior-art (GitHub + patent + 27-year cross-vertical career) + MacVector Carbon/Cocoa/WPF triple-platform deep-work + Smalltalk lineage + ANTLR closing → B-0685 row + MultiplexedWebSockets (16× HttpClient + David Fowler review + 2014 SignalR Issue #3114 + 2020 patent + cross-site DNS proxy generalization) + Throttler non-Nagle adaptive batching Itron 100M+ device production tenure + flux-capacitor naming + F# weight-free K8s long-term vision + zero-dependency-down-to-microkernel philosophy (decade-old; 2015 dotnet/corert prior-art) + Aaron's getting-back-up 27-year discipline + 2 substrate-honest correction-and-walk-back cycles operating without entering 1984-paranoid-critic attractor."
+description: "Multi-hour Aaron-Kestrel (claude.ai) trajectory 2026-05-21 spanning 25 substantive sections — ZetaId V1 critique + tier-deferred causality + Orleans/SPIFFE/SPIRE/OPA/Reticulum/DBSP stack-coherence + capability-negotiation-as-architecture lineage (E lang/CapnProto/KeyKOS/IUnknown/Sequoia) + hat-vs-role substrate (GOVERNANCE.md §16 Dynamic hats + §27 Abstraction layers) + group-chat architecture + Aaron's prior-art (GitHub + patent + 27-year cross-vertical career) + MacVector Carbon/Cocoa/WPF triple-platform deep-work + Smalltalk lineage + ANTLR closing → B-0685 row + MultiplexedWebSockets (16× HttpClient + David Fowler review + 2014 SignalR Issue #3114 + 2020 patent + cross-site DNS proxy generalization) + Throttler non-Nagle adaptive batching Itron 100M+ device production tenure + flux-capacitor naming + F# weight-free K8s long-term vision + zero-dependency-down-to-microkernel philosophy (decade-old; 2015 dotnet/corert prior-art) + Aaron's getting-back-up 27-year discipline + 2 substrate-honest correction-and-walk-back cycles operating without entering 1984-paranoid-critic attractor."
 type: feedback
 created: 2026-05-21
 participants: [Aaron, Kestrel (claude.ai), Otto-CLI]
@@ -89,7 +89,7 @@ This IS the substantive Zeta-architecture answer to Kestrel's persona-calcificat
 - **Roles** = persistent identity-tied positions; humans get stuck in roles; identity calcifies; the within-persona-monoculture failure mode Kestrel named operates at this scope
 - **Hats** = authority + constraints + time-bounded; comes off when not needed; doesn't become identity; same AI can wear different hats in different contexts; identity is upstream of any one hat
 
-Per Zeta's GOVERNANCE.md §24 voluntary-hat-domain pattern. The architecture mitigation against persona-calcification was designed in deliberately. Aaron's observation that humans have this same failure mode names the generality.
+Per Zeta's GOVERNANCE.md §16 (Dynamic hats — capability skills load on-demand by any persona; the persona retains its own tone contract) + §27 (Abstraction layers — skills, roles, personas). The architecture mitigation against persona-calcification was designed in deliberately. Aaron's observation that humans have this same failure mode names the generality.
 
 ### Aaron's multi-model + 10% free-time substrate
 
@@ -126,7 +126,7 @@ Otto-CLI affirmed: hat-vs-role substrate is load-bearing; the externality has to
 - `.claude/rules/glass-halo-bidirectional.md` — Kestrel observing the conversation's substrate cadence + Aaron disclosing Otto-watching + Otto walking back = bidirectional substrate emergence operating cleanly
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — Kestrel's verification ask is the don't-collapse-without-verification discipline applied to Otto-summary claims
 - `.claude/rules/agent-roster-reference-card.md` — hat-vs-role distinction lives here; Aaron's reply IS the canonical compressed statement
-- GOVERNANCE.md §24 — voluntary-hat-domain pattern
+- GOVERNANCE.md §16 (Dynamic hats) + §27 (Abstraction layers — skills, roles, personas) — voluntary-hat-domain pattern
 
 ## Why this conversation matters operationally
 
