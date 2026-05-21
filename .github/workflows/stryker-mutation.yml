@@ -1,8 +1,29 @@
 name: stryker-mutation
 
-# Runs Stryker.NET mutation testing against `src/Core/Core.fsproj`
-# using `tests/Tests.FSharp/Tests.FSharp.fsproj` as the kill-rate
-# oracle. Per the math-proofs honest assessment
+# Runs Stryker.NET mutation testing against the C# peer oracle
+# (`src/Core.CSharp.ZetaId/Zeta.Core.CSharp.ZetaId.csproj`) using
+# `tests/Tests.CSharp/Tests.CSharp.csproj` as the kill-rate oracle.
+#
+# RETARGETED 2026-05-21 from F# to C# per Stryker.NET 4.x F# unsupported
+# constraint. Original target was `src/Core/Core.fsproj` (F#); Stryker.NET
+# explicitly throws `NotSupportedException: Language not supported: Fsharp`
+# — tool limitation, not config bug. Workflow could never succeed against F#.
+#
+# Substrate-honest framing for the retarget: the multi-oracle architecture
+# shipped 2026-05-21 (PRs #4517 TS + #4522 C# + #4548 F# all peer oracles
+# for ZetaId V1; 12/12 cross-verify byte-identical hex) changes the
+# formal-verification calculus. C# mutation coverage on `Core.CSharp.ZetaId`
+# transitively constrains F# substrate: if C# tests catch C# mutants AND
+# C# output cross-verifies byte-for-byte with F# output, equivalent F# bugs
+# WOULD have been caught. The cross-verify harness at
+# `tests/cross-verification/zeta-id/` provides the transitive bridge.
+#
+# F# coverage remains rich via other formal-verification tools: FsCheck
+# (property invariants), TLA+/TLC (concurrency + safety via tools/tla/specs/
+# + Soraya loop B-0691), Lean 4 (theorem-grade), Z3 (constraint satisfaction),
+# Alloy (relational model checking), CodeQL + Semgrep (security/SAST).
+#
+# Per the math-proofs honest assessment
 # (docs/research/2026-05-03-math-proofs-honest-assessment.md) the
 # Stryker artifact is B3-grade today (config exists, runs locally,
 # threshold-break at 50% wired) but was MISSING CI gating + a
@@ -16,17 +37,20 @@ name: stryker-mutation
 #      via Stryker's exit-code semantics
 #
 # Path-filtered + out-of-band from gate.yml because mutation testing
-# is slow (15-30 min per run on the current Core.fsproj surface) and
-# would block the existing fast PR-loop. Same pattern as
-# lean-proof.yml — formal-verification-grade workflows run on their
-# own cadence, not in the gate-blocking path.
+# is slow (15-30 min per run) and would block the existing fast PR-loop.
+# Same pattern as lean-proof.yml — formal-verification-grade workflows
+# run on their own cadence, not in the gate-blocking path.
 #
 # Composes with:
-#   - stryker-config.json (the artifact this runs against)
+#   - stryker-config.json (retargeted 2026-05-21 to C# peer oracle)
 #   - tools/setup/manifests/dotnet-tools (dotnet-stryker installed
 #     globally by tools/setup/install.sh)
 #   - docs/research/2026-05-03-math-proofs-honest-assessment.md
 #     (this workflow closes the B3 -> A upgrade with-CI line)
+#   - tests/cross-verification/zeta-id/ (the transitive-bridge that makes
+#     C# mutation coverage transfer to F# substrate)
+#   - PRs #4517 / #4522 / #4548 (the 3 peer oracles whose cross-verify
+#     enables the transitive-coverage rationale)
 #
 # Safe-pattern compliance (per FACTORY-HYGIENE row #43):
 #   - SHA-pinned actions/checkout + actions/upload-artifact
@@ -43,15 +67,19 @@ name: stryker-mutation
 on:
   pull_request:
     paths:
-      - "src/Core/**"
-      - "tests/Tests.FSharp/**"
+      - "src/Core.CSharp.ZetaId/**"
+      - "src/Core/**"  # Tests.CSharp.csproj references src/Core/Core.fsproj transitively (Codex P2 catch)
+      - "tests/Tests.CSharp/**"
+      - "tests/cross-verification/zeta-id/**"  # CrossVerifyTests.cs reads vectors.yaml from this path (Copilot P1 catch)
       - "stryker-config.json"
       - ".github/workflows/stryker-mutation.yml"
   push:
     branches: [main]
     paths:
+      - "src/Core.CSharp.ZetaId/**"
       - "src/Core/**"
-      - "tests/Tests.FSharp/**"
+      - "tests/Tests.CSharp/**"
+      - "tests/cross-verification/zeta-id/**"
       - "stryker-config.json"
       - ".github/workflows/stryker-mutation.yml"
   workflow_dispatch: {}
@@ -68,7 +96,7 @@ concurrency:
 
 jobs:
   mutation-test:
-    name: Stryker.NET mutation test (Core.fsproj)
+    name: Stryker.NET mutation test (Core.CSharp.ZetaId.csproj — F# transitive via cross-verify)
     runs-on: ubuntu-24.04
     timeout-minutes: 60
 

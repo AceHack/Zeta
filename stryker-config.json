@@ -1,12 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-net/master/docs/stryker-config.schema.json",
   "stryker-config": {
-    "project": "src/Core/Core.fsproj",
+    "project": "src/Core.CSharp.ZetaId/Zeta.Core.CSharp.ZetaId.csproj",
     "test-projects": [
-      "tests/Tests.FSharp/Tests.FSharp.fsproj"
+      "tests/Tests.CSharp/Tests.CSharp.csproj"
     ],
     "mutate": [
-      "!**/AssemblyInfo.fs",
+      "!**/AssemblyInfo.cs",
       "!**/bin/**",
       "!**/obj/**"
     ],
