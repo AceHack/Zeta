@@ -1,15 +1,14 @@
 ---
 name: otto-persona-surface-not-different-identity-reframe
-description: Otto-CLI / Otto-VSCode / Otto-Desktop are persona-surfaces of ONE Otto identity, NOT separate identities. The drift to vendor-style "your PRs / my PRs / coordination between agents" framing under 3-instance operational pressure today was the failure mode the existing rules (agent-roster-reference-card + claim-acquire-before-worktree-work) name and prevent. Aaron's 2026-05-21 framing update reinforces what the substrate already encodes.
-metadata:
-  type: feedback
-  created: 2026-05-21
-  scope: otto-identity-across-surfaces
-  composes_with:
-    - .claude/rules/agent-roster-reference-card.md
-    - .claude/rules/claim-acquire-before-worktree-work.md
-    - .claude/rules/otto-channels-reference-card.md
-    - memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md
+description: "Otto-CLI / Otto-VSCode / Otto-Desktop are persona-surfaces of ONE Otto identity, NOT separate identities. The drift to vendor-style 'your PRs / my PRs / coordination between agents' framing under 3-instance operational pressure today was the failure mode the existing rules (agent-roster-reference-card + claim-acquire-before-worktree-work) name and prevent. Aaron's 2026-05-21 framing update reinforces what the substrate already encodes."
+type: feedback
+created: 2026-05-21
+scope: otto-identity-across-surfaces
+composes_with:
+  - .claude/rules/agent-roster-reference-card.md
+  - .claude/rules/claim-acquire-before-worktree-work.md
+  - .claude/rules/otto-channels-reference-card.md
+  - memory/persona/otto/conversations/2026-05-12-otto-canonical-bootstream-multi-foreground-surface-orchestrator-ifs-format.md
 ---
 
 # Otto persona-surfaces are ONE identity, not different identities — reframe absorbed 2026-05-21
