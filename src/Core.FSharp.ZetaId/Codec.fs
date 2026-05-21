@@ -47,6 +47,39 @@ module ZetaIdCodec =
         validateEnumField (byte obs.Category)   4 "Category"
         validateEnumField (byte obs.Firefly)    1 "Firefly"
 
+        // Re-validate Authority.Raw / Momentum.Raw at Pack time. F# DU cases
+        // are inherently public — callers can construct `Authority.Raw 31` directly,
+        // bypassing `Authority.raw` smart-constructor validation. Pack re-checks
+        // for named-case collision + Authority bounds. C# achieves the equivalent
+        // via sealed-record private setter; F# achieves it via re-validation here.
+        // Per Copilot + Codex post-merge thread on PR #4548.
+        match obs.Authority with
+        | Authority.Raw v ->
+            if v > 31uy then
+                raise (System.ArgumentOutOfRangeException(
+                    "obs", v :> obj,
+                    sprintf "ZetaObservation.Authority = Authority.Raw(%d) exceeds 5-bit Authority field (0..31). Use Authority.raw smart constructor (rejects this at construction) or named case." v))
+            if v = byte AuthorityValue.HumanVerified
+               || v = byte AuthorityValue.TrustedAgent
+               || v = byte AuthorityValue.Standard
+               || v = byte AuthorityValue.BestEffort
+               || v = byte AuthorityValue.Simulated then
+                raise (System.ArgumentOutOfRangeException(
+                    "obs", v :> obj,
+                    sprintf "ZetaObservation.Authority = Authority.Raw(%d) aliases a named case (round-trip unstable). Use the named Authority case directly, or Authority.raw smart constructor (rejects this at construction)." v))
+        | _ -> ()
+        match obs.Momentum with
+        | Momentum.Raw v ->
+            if v = byte MomentumValue.Background
+               || v = byte MomentumValue.Normal
+               || v = byte MomentumValue.Elevated
+               || v = byte MomentumValue.High
+               || v = byte MomentumValue.Critical then
+                raise (System.ArgumentOutOfRangeException(
+                    "obs", v :> obj,
+                    sprintf "ZetaObservation.Momentum = Momentum.Raw(%d) aliases a named case (round-trip unstable). Use the named Momentum case directly, or Momentum.raw smart constructor (rejects this at construction)." v))
+        | _ -> ()
+
         let mutable id = System.UInt128.Zero
         id <- setBits id layout.Version    (uint64 (byte obs.Version))
         id <- setBits id layout.Timestamp  (uint64 obs.Timestamp)

@@ -120,7 +120,8 @@ let ``cross-verify twelve vectors match TS+C# bootstrap hex`` () =
         if not roundtripOk then roundtripMismatches <- roundtripMismatches + 1
         if not matchesExpected then hexMismatches <- hexMismatches + 1
 
-    let outputPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "fs-output.json")
+    // compare.ts reads `fsharp-output.json` (not `fs-output.json`) — match per Copilot #4548 thread
+    let outputPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "fsharp-output.json")
     let options = JsonSerializerOptions(WriteIndented = true)
     let json = JsonSerializer.Serialize(results, options)
     File.WriteAllText(outputPath, json)

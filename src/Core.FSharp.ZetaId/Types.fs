@@ -32,7 +32,7 @@ type Persona =
 
 /// Location field — 8 bits. Mirrors `src/Core.CSharp.ZetaId/Location.cs`.
 /// Codes 1-11 cover major regions across AWS / GCP / Azure / DigitalOcean.
-/// Backlog (Aaron 2026-05-21): registry/locations.yaml + provider-specific
+/// Backlog (human maintainer 2026-05-21): registry/locations.yaml + provider-specific
 /// mapping layer ships in a separate follow-up PR.
 type Location =
     | EastUsVa = 1uy          // AWS us-east-1, Azure East US, GCP us-east4

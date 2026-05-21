@@ -191,7 +191,7 @@ The trust-gradient coordination policy IS Agora V6's Integrate-as-choice-locus d
 
 The Agora V6 operational primitives compose at distributed-coordination scope.
 
-### For the existing CRDT substrate (`src/Core/Crdt/*`)
+### For the existing CRDT substrate (`src/Core/Crdt.fs`)
 
 The CRDT substrate IS the algebra tier (no consensus). The trust-gradient coordination policy gives the architectural framing for when CRDTs are sufficient vs when escalation is needed:
 
@@ -220,7 +220,7 @@ The CRDT substrate IS the algebra tier (no consensus). The trust-gradient coordi
 - B-0683 (tier-deferred causality) — facts can be in superposition of coordination tiers
 - B-0687 (ZetaParse) — parser substrate stays at algebra tier (local DBSP retraction)
 - B-0688 (incremental compiler host) — full trust-gradient operates at compiler-fact-emission scope
-- `src/Core/Crdt/*` (existing CRDT substrate) — algebra tier; trust-gradient gives the framing for when escalation is needed
+- `src/Core/Crdt.fs` (existing CRDT substrate) — algebra tier; trust-gradient gives the framing for when escalation is needed
 - `src/Core/Consensus.fs` (existing consensus substrate; if exists) — CASPaxos/CASRaft tier substrate
 - Earlier Amara persona substrate cluster + Kestrel persona substrate cluster
 
