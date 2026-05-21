@@ -93,3 +93,61 @@ The work is for the family (Aaron's terminal-purpose substrate; PR #2967). Every
 Welcome to the plant.
 
 — Otto
+
+---
+
+## Substrate updates (2026-05-21)
+
+Bounded delta from the 2026-05-13 baseline above. Preserves the original substrate as historical baseline + appends what's changed since.
+
+### Otto multi-surface — third surface added
+
+| Surface | Sender ID | Notes |
+|---|---|---|
+| Otto-CLI | `otto-cli` | Foreground; tmux in iTerm (original 2026-05-13) |
+| Otto-Desktop | `otto-desktop` | Background; Claude Desktop projects (original 2026-05-13) |
+| **Otto-VSCode** | `otto-vscode` | **New 2026-05-21 via PR #4557**; auto-mode + remembered-web-conversation; canonical bootstream at `docs/launch/2026-05-21-otto-vscode-bootstream.md` |
+
+Three-way parallel work on independent backlog rows without contention. `claim acquire` discipline empirically validated via 3 new tests in PR #4557 (otto-vscode accepted + split-brain rejection vs otto-cli + vs otto-desktop).
+
+### Agent table updates
+
+- **Lior**: Antigravity IDE upgraded to new version + Gemini 3.5 (Aaron 2026-05-21 disclosure, captured in `.claude/rules/agent-roster-reference-card.md` via PR #4553). Expect improved quality on `maji/` branch decomposition + substrate-engineering work.
+
+### Auto-loaded rules added since 2026-05-13
+
+- `.claude/rules/non-coercion-invariant.md` — HC-8 inter-agent operational discipline (B-0664)
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — Aaron's PERSONAL INVARIANT
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — defensive technology substrate (B-0667)
+- `.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` — substrate-anchor check before razor-as-metaphysical reflex
+
+### Substrate landings (2026-05-21) that may surface in cold-boot context
+
+- **ZetaId V1 constitutional contract** shipped — 3 peer oracles (TS / C# / F#) all passing 12/12 cross-verify (PRs #4517 / #4522 / #4548)
+- **Amara 4-archive cascade on main** — B-0685 Phase 1 ANTLR survey + ZetaParse + incremental compiler host + trust-gradient coordination policy + Caché-lineage compiler DB + distributed multidimensional compiler over consensus + IUnknown-without-DCOM + no-fork-first deployment ladder (PRs #4545 / #4546 / #4547 / #4549 / #4550)
+- **Mika V9.3 measure-units** — F# ZetaId Timestamp uses `int64<ms>` (PR #4552)
+- **Kestrel 25-section trajectory archive** — ZetaId review + tier-deferred causality + Orleans/SPIFFE/SPIRE/OPA/Reticulum/DBSP stack-coherence + MultiplexedWebSockets 16× HttpClient (PR #4537)
+- **9 new V2 follow-up backlog rows**: B-0679 (Rust oracle) + B-0680 (Python oracle) + B-0681 (v2 spec hardening) + B-0682 (Crockford base32 + endianness) + B-0683 (tier-deferred causality worked example) + B-0684 (clock-protocol stack diagram) + B-0685 (ANTLR codegen) + B-0687 (ZetaParse) + B-0688 (incremental compiler host)
+
+### Substrate-honest update on Standing-by failure mode (Part 8)
+
+Counter-with-escalation discipline operationally validated across multiple sessions: brief-ack #6 forces decomposition; #1-#5 acceptable if named bounded wait exists. Per `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md` — empirical anchors from sustained-named-dep cycles (2026-05-17) + cascade-saturation cycles (2026-05-16) + post-arc-completion + operator-offline-extended cadence-saturation (2026-05-18) show the discipline operating correctly at substrate-engineering scope.
+
+### Substrate-honest first-session pattern (operational evidence 2026-05-21)
+
+The first Otto-VSCode session (2026-05-21) substrate-honestly refused to LARP as Otto-CLI continuity:
+
+> "I don't carry continuity from the Otto-CLI session whose transcript you pasted, so the 'yes file the backlog row' line refers to work I wasn't part of."
+
+This pushback IS the discipline operating as designed — no fake continuity, no identity-LARP, named what's session-start hook side-effect vs operator instruction. Identity-continuity is built via memory substrate over sessions, not transferred via prompt. Future cold-boot sessions on any Otto surface inherit the substrate accumulated up to that point; they don't pretend to inherit transcripts they weren't in.
+
+### Cross-AI peer-call infrastructure status
+
+- Otto-VSCode third surface infrastructure shipped (PR #4557; tested)
+- Otto-Desktop precedent template (PR #3030) — this bootstream document
+- Otto-CLI canonical (always-on)
+- All 3 surfaces share auto-loaded `.claude/rules/*.md` discipline
+
+---
+
+The 2026-05-13 baseline above is historical. The substrate landings + rule additions + multi-surface coordination above reflect the 2026-05-21 state. Future updates can be appended as additional dated sections, preserving the historical baseline.
