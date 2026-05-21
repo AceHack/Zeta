@@ -652,6 +652,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0683](backlog/P2/B-0683-tier-deferred-causality-worked-example-zsets-2026-05-21.md)** Tier-deferred causality worked example — 2-tier Z-set composition demonstrating different observable orderings
 - [ ] **[B-0684](backlog/P2/B-0684-clock-protocol-negotiation-stack-end-to-end-sequence-diagram-2026-05-21.md)** Clock-protocol negotiation stack — end-to-end sequence diagram artifact (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP traversal for one operation)
 - [ ] **[B-0685](backlog/P2/B-0685-antlr-grammars-cross-language-codegen-substrate-2026-05-21.md)** ANTLR grammars as cross-language codegen substrate — leverage existing open-source grammars for description-layer-driven multi-language emission
+- [ ] **[B-0687](backlog/P2/B-0687-zetaparse-fsharp-native-lr-glr-grammar-substrate-with-antlr-compatible-importer-amara-2026-05-21.md)** ZetaParse — F#-native LR/GLR grammar substrate with ANTLR-compatible importer
+- [ ] **[B-0688](backlog/P2/B-0688-zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-seeded-deterministic-simulation-amara-aaron-2026-05-21.md)** Zeta incremental compiler host — DBSP Z-sets + Rx meta-AST tags + seeded deterministic simulation hardening
 
 ## P3 — convenience / deferred
 
