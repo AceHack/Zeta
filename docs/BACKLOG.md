@@ -658,6 +658,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0693](backlog/P2/B-0693-otto-vscode-pr7-morsel-span-execution-imorseloperator-2026-05-21.md)** Morsel/span-based execution — IMorselOperator + cache-sized chunked processing (Otto-VSCode 8-PR campaign PR #7)
 - [ ] **[B-0694](backlog/P2/B-0694-otto-vscode-pr8-standing-query-codegen-iincrementalgenerator-2026-05-21.md)** Standing-query codegen — IIncrementalGenerator that rewrites circuit expressions to fused IL (Otto-VSCode 8-PR campaign PR #8 — the capstone)
 - [ ] **[B-0695](backlog/P2/B-0695-fast-life-branch-experiment-hourly-batched-gates-cost-reduction-2026-05-21.md)** fast/life branch experiment — hourly batched CI gates with promotion-path; per-PR CI cost reduction is burst-dependent (cost-neutral at 1 PR/hr; ~33% reduction at example 6 PRs/hr burst per corrected math; Phase 5 measures empirical savings) while preserving Copilot/Codex 100k-line review capability + Soraya-promotion-gate
+- [ ] **[B-0698](backlog/P2/B-0698-zsetw-phase-2-operator-and-algorithm-migration-plan-2026-05-21.md)** ZSetW Phase 2 plan — operator + algorithm migration onto polymorphic Z-set substrate; tier-A operator parity (map/filter/cartesian/join/distinct/weightedCount); two worked-example algorithms (TropicalSemiring shortest-path; IntervalRing propagation); migration documentation for callers
 
 ## P3 — convenience / deferred
 
