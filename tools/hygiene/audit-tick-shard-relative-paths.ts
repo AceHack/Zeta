@@ -261,6 +261,51 @@ function buildCodeFenceFlags(lines: readonly string[]): boolean[] {
   return flags;
 }
 
+// CommonMark inline code spans: a run of N backticks opens a code span
+// that closes at the next run of EXACTLY N backticks. This handles the
+// double-backtick wrap pattern used to display single-backtick examples
+// in prose (e.g. `` `[link](docs/foo.md)` `` — the inner literal is a
+// prose illustration, not a real markdown link). Replaces each code-span
+// span (including the surrounding delimiters) with spaces of the same
+// length so byte offsets are preserved.
+export function stripInlineCodeSpans(line: string): string {
+  const out: string[] = [];
+  let i = 0;
+  while (i < line.length) {
+    if (line[i] !== "`") {
+      out.push(line[i]!);
+      i++;
+      continue;
+    }
+    let run = 0;
+    while (i + run < line.length && line[i + run] === "`") run++;
+    let j = i + run;
+    let found = -1;
+    while (j < line.length) {
+      if (line[j] === "`") {
+        let close = 0;
+        while (j + close < line.length && line[j + close] === "`") close++;
+        if (close === run) {
+          found = j;
+          break;
+        }
+        j += close;
+      } else {
+        j++;
+      }
+    }
+    if (found === -1) {
+      for (let k = 0; k < run; k++) out.push("`");
+      i += run;
+    } else {
+      const end = found + run;
+      for (let k = i; k < end; k++) out.push(" ");
+      i = end;
+    }
+  }
+  return out.join("");
+}
+
 function extractLinks(file: string): LinkRef[] {
   const text = readFileSync(file, "utf8");
   const lines = text.split("\n");
@@ -268,11 +313,11 @@ function extractLinks(file: string): LinkRef[] {
   const out: LinkRef[] = [];
   for (let i = 0; i < lines.length; i++) {
     if (fenceFlags[i]) continue;
-    const line = lines[i]!;
+    const stripped = stripInlineCodeSpans(lines[i]!);
     MD_LINK_RE.lastIndex = 0;
-    let m: RegExpExecArray | null;
-    while ((m = MD_LINK_RE.exec(line)) !== null) {
-      const target = m[1]!;
+    let match: RegExpExecArray | null;
+    while ((match = MD_LINK_RE.exec(stripped)) !== null) {
+      const target = match[1]!;
       if (isRelativeTarget(target) && !isPlaceholderTarget(target)) {
         out.push({ file, line: i + 1, target });
       }
