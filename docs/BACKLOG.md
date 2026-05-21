@@ -651,6 +651,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0682](backlog/P2/B-0682-zeta-id-canonical-string-encoding-endianness-2026-05-21.md)** ZetaId canonical string encoding (Crockford base32) + endianness + bit-numbering spec
 - [ ] **[B-0683](backlog/P2/B-0683-tier-deferred-causality-worked-example-zsets-2026-05-21.md)** Tier-deferred causality worked example — 2-tier Z-set composition demonstrating different observable orderings
 - [ ] **[B-0684](backlog/P2/B-0684-clock-protocol-negotiation-stack-end-to-end-sequence-diagram-2026-05-21.md)** Clock-protocol negotiation stack — end-to-end sequence diagram artifact (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP traversal for one operation)
+- [ ] **[B-0685](backlog/P2/B-0685-antlr-grammars-cross-language-codegen-substrate-2026-05-21.md)** ANTLR grammars as cross-language codegen substrate — leverage existing open-source grammars for description-layer-driven multi-language emission
 
 ## P3 — convenience / deferred
 
