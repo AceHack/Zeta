@@ -14,6 +14,11 @@ type internal DelayOp<'T>(input: Op<'T>, initial: 'T) =
     override _.Name = "z^-1"
     override _.Inputs = inputs
     override _.IsStrict = true
+    /// Linear: `z⁻¹` is a time-shift; it distributes over addition
+    /// trivially when `initial = 0` for the group. Callers passing a
+    /// non-zero initial are responsible for the resulting affine
+    /// offset — DBSP usage always passes the group zero.
+    override _.IsLinear = true
     override this.StepAsync(_: CancellationToken) =
         this.Value <- state
         ValueTask.CompletedTask
@@ -35,6 +40,11 @@ type internal IntegrateOp<'T>(input: Op<'T>, zero: 'T, add: Func<'T, 'T, 'T>) =
     let mutable state = zero
     override _.Name = "integrate"
     override _.Inputs = inputs
+    /// Linear: `I` is the running sum operator; it commutes with the
+    /// group operation by associativity/commutativity of the supplied
+    /// `add` function. Caller is responsible for passing a true
+    /// group `(zero, add)` — Z-set's `(Empty, ZSet.add)` qualifies.
+    override _.IsLinear = true
     // Integration is causal but NOT strict (per the DBSP paper, §2.18). The
     // scheduler runs us in topological order *after* `input`, so at StepAsync
     // time `input.Value` is the current tick's delta. We update state and
@@ -52,6 +62,10 @@ type internal DifferentiateOp<'T>(input: Op<'T>, zero: 'T, sub: Func<'T, 'T, 'T>
     let mutable prev = zero
     override _.Name = "differentiate"
     override _.Inputs = inputs
+    /// Linear: `D` distributes over the group operation by linearity
+    /// of `sub` on an abelian group. Inverse of `IntegrateOp` (modulo
+    /// initial conditions).
+    override _.IsLinear = true
     // IsStrict remains false — non-strict ops run in topo order so by the time
     // we execute, the input operator's `Value` reflects the current tick.
     override this.StepAsync(_: CancellationToken) =

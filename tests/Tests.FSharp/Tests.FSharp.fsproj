@@ -106,6 +106,7 @@
     <!-- Plugin/ -->
     <Compile Include="Plugin/Harness.Tests.fs" />
     <Compile Include="Plugin/LawRunner.Tests.fs" />
+    <Compile Include="Plugin/Capabilities.Tests.fs" />
 
     <!-- Formal/ -->
     <Compile Include="Formal/Z3.Laws.Tests.fs" />

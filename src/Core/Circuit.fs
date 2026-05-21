@@ -42,6 +42,52 @@ type Op() =
     abstract IsAsync: bool
     default _.IsAsync = false
 
+    // ─────────────────────────────────────────────────────────────────
+    //  Algebra capability tags. Promoted from plugin-only marker
+    //  interfaces (PluginApi.fs) to first-class fields on the Op base
+    //  class so internal operators and plugin operators declare
+    //  capabilities through the same surface. The scheduler, fusion
+    //  engine, and incremental-rewriter dispatcher all consult these
+    //  fields — they're load-bearing for capability-aware optimization,
+    //  not decorative.
+    //
+    //  Default false; each concrete operator overrides only the
+    //  capabilities it actually has. Lying about a tag is an algebraic
+    //  contract violation — LawRunner can verify each in test mode.
+    // ─────────────────────────────────────────────────────────────────
+
+    /// Algebra capability: operator is *linear* — `op(a + b) = op(a) +
+    /// op(b)` and `op(0) = 0`. Retraction-native: a negative-weight
+    /// input un-accumulates correctly. `IncrementalAuto` uses this to
+    /// emit `Q^Δ = Q` (linear operators incrementalize trivially).
+    abstract IsLinear: bool
+    default _.IsLinear = false
+
+    /// Algebra capability: operator is *bilinear* in its two inputs.
+    /// `op(a₁+a₂, b) = op(a₁, b) + op(a₂, b)` and symmetrically for the
+    /// second argument; additionally `op(0, b) = op(a, 0) = 0`.
+    /// `IncrementalAuto` uses this to emit the three-term incremental
+    /// form `Δa ⋈ Δb + z⁻¹(I(a)) ⋈ Δb + Δa ⋈ z⁻¹(I(b))`.
+    abstract IsBilinear: bool
+    default _.IsBilinear = false
+
+    /// Algebra capability: operator is a *sink* — terminal,
+    /// retraction-lossy, may emit a non-Z-set output. Sinks are
+    /// excluded from relational composition: `Circuit.Build()` rejects
+    /// any operator that reads from a sink's output stream (terminal-
+    /// placement enforcement). Bayesian aggregates and external-system
+    /// sinks are canonical examples.
+    abstract IsSink: bool
+    default _.IsSink = false
+
+    /// Algebra capability: operator carries explicit stateful-strict
+    /// semantics — init/step/retract triple — distinct from `IsStrict`
+    /// (feedback-cut). Stateful-strict operators hold per-key state
+    /// that must retract cleanly when a negative-weight input arrives.
+    /// `LawRunner.checkRetractionCompleteness` verifies the claim.
+    abstract IsStatefulStrict: bool
+    default _.IsStatefulStrict = false
+
 
 /// An operator with a typed output slot.
 ///

@@ -17,6 +17,10 @@ type internal FilterMapOp<'A, 'B when 'A : comparison and 'B : comparison>
     let inputs = [| input :> Op |]
     override _.Name = "filterMap"
     override _.Inputs = inputs
+    /// Linear: filter ∘ map is the composition of two linear ops —
+    /// distributes over Z-set addition. The fused implementation
+    /// preserves linearity by construction.
+    override _.IsLinear = true
     override this.StepAsync(_: CancellationToken) =
         let span = input.Value.AsSpan()
         if span.IsEmpty then
@@ -50,6 +54,9 @@ type internal FilterMapOptionalOp<'A, 'B when 'A : comparison and 'B : compariso
     let inputs = [| input :> Op |]
     override _.Name = "filterMap"
     override _.Inputs = inputs
+    /// Linear: same reasoning as FilterMapOp — the choose-shaped
+    /// `pickMap` is equivalent to a filter+map composition.
+    override _.IsLinear = true
     override this.StepAsync(_: CancellationToken) =
         let span = input.Value.AsSpan()
         if span.IsEmpty then
