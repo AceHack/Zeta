@@ -70,7 +70,7 @@ let private toMomentum (v: FlatVector) : Momentum =
 let private toObservation (v: FlatVector) : ZetaObservation =
     {
         Version    = LanguagePrimitives.EnumOfValue<byte, IdVersion>   (checkByte v.Version "Version")
-        Timestamp  = v.Timestamp
+        Timestamp  = LanguagePrimitives.Int64WithMeasure<ms> v.Timestamp
         Chromosome = LanguagePrimitives.EnumOfValue<byte, Chromosome>  (checkByte v.Chromosome "Chromosome")
         Category   = LanguagePrimitives.EnumOfValue<byte, Category>    (checkByte v.Category "Category")
         Firefly    = LanguagePrimitives.EnumOfValue<byte, Firefly>     (checkByte v.Firefly "Firefly")

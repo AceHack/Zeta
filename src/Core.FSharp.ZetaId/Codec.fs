@@ -10,8 +10,10 @@ module ZetaIdCodec =
     let private layout = BitLayout.Default
 
     /// Timestamp is packed into a 48-bit field; valid range [0, 2^48 - 1].
-    [<Literal>]
-    let private MaxTimestamp = 281474976710655L  // (1L <<< 48) - 1L
+    /// Typed with the `ms` measure to compose with ZetaObservation.Timestamp
+    /// (per Mika V9.3). `[<Literal>]` removed — measure-typed values can't be
+    /// F# literals; this is a regular let-binding (computed once per module init).
+    let private MaxTimestamp : int64<ms> = 281474976710655L<ms>  // (1L <<< 48) - 1L
 
     let private setBits (id: System.UInt128) (field: BitField) (fieldValue: uint64) : System.UInt128 =
         let mask = (System.UInt128.One <<< field.Width) - System.UInt128.One
@@ -37,10 +39,10 @@ module ZetaIdCodec =
         if isNull (box env) then
             raise (System.ArgumentNullException("env"))
 
-        if obs.Timestamp < 0L || obs.Timestamp > MaxTimestamp then
+        if obs.Timestamp < 0L<ms> || obs.Timestamp > MaxTimestamp then
             raise (System.ArgumentOutOfRangeException(
                 "obs", obs.Timestamp :> obj,
-                sprintf "ZetaObservation.Timestamp must be 0..%d (48-bit field). Values outside this range would silently truncate and collide." MaxTimestamp))
+                sprintf "ZetaObservation.Timestamp must be 0..%d ms (48-bit field). Values outside this range would silently truncate and collide." (int64 MaxTimestamp)))
 
         validateEnumField (byte obs.Version)    5 "Version"
         validateEnumField (byte obs.Chromosome) 5 "Chromosome"
@@ -82,7 +84,7 @@ module ZetaIdCodec =
 
         let mutable id = System.UInt128.Zero
         id <- setBits id layout.Version    (uint64 (byte obs.Version))
-        id <- setBits id layout.Timestamp  (uint64 obs.Timestamp)
+        id <- setBits id layout.Timestamp  (uint64 (int64 obs.Timestamp))
         id <- setBits id layout.Chromosome (uint64 (byte obs.Chromosome))
         id <- setBits id layout.Category   (uint64 (byte obs.Category))
         id <- setBits id layout.Firefly    (uint64 (byte obs.Firefly))
@@ -103,7 +105,7 @@ module ZetaIdCodec =
         let toByte field = byte (getBits id field)
         {
             Version    = LanguagePrimitives.EnumOfValue<byte, IdVersion>   (toByte layout.Version)
-            Timestamp  = int64 (getBits id layout.Timestamp)
+            Timestamp  = LanguagePrimitives.Int64WithMeasure<ms> (int64 (getBits id layout.Timestamp))
             Chromosome = LanguagePrimitives.EnumOfValue<byte, Chromosome>  (toByte layout.Chromosome)
             Category   = LanguagePrimitives.EnumOfValue<byte, Category>    (toByte layout.Category)
             Firefly    = LanguagePrimitives.EnumOfValue<byte, Firefly>     (toByte layout.Firefly)

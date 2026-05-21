@@ -1,5 +1,11 @@
 namespace Zeta.Core.FSharp.ZetaId
 
+/// Milliseconds units of measure. Duplicated locally (not imported from
+/// `src/Core/Units.fs`) to preserve the zero-external-dependencies discipline
+/// of the production library. Per Mika V9.3 substrate (2026-05-21).
+[<Measure>]
+type ms
+
 /// Version field — 5 bits. Currently V1 only.
 /// Mirrors `src/Core.CSharp.ZetaId/IdVersion.cs`.
 type IdVersion =
@@ -167,7 +173,7 @@ module Momentum =
 /// Observation record. All fields explicit; no default-init shortcuts.
 type ZetaObservation = {
     Version: IdVersion
-    Timestamp: int64
+    Timestamp: int64<ms>
     Chromosome: Chromosome
     Category: Category
     Firefly: Firefly
