@@ -68,6 +68,63 @@ This gate catches the failure modes the seven-rule cascade
 lineage was designed to catch — at the *start of work* scope
 rather than the *substrate-landing* scope.
 
+## Orphaned-branch triage discriminator (generalizes step 0 to branch scope)
+
+Fires when a fresh-cold-boot session inherits an orphaned feature
+branch (substantive unmerged commits + no associated PR + days/weeks
+of peer-agent activity since the branch was last touched).
+
+The substrate-honest insight: peer agents (Lior preservation passes,
+peer Otto rescues, decompose-into-slices patterns) often rescue
+stranded substrate via separate PRs before a slow-cold-boot Otto
+finds the orphaned branch. Assuming re-landing without verification
+produces duplicate substrate, substrate regression (re-applying stale
+commits OVER newer-on-main work), and wasted operator review.
+
+Procedure per orphaned commit `<sha>`:
+
+- `git log --oneline origin/main --grep="<key terms from commit message>"`
+  — does main carry a rescue PR for this substrate?
+- `git show --name-only --format="" <sha> | head -1` — pick the first
+  file the commit touched
+- `git diff origin/main..<sha> -- "<that file>"` — count lines
+
+Interpretation:
+`0 lines` = substrate identical; fully rescued; no re-landing needed
+(e.g., `f0abf3ed` HC-8 NCI was rescued by
+[PR #4205](https://github.com/Lucent-Financial-Group/Zeta/pull/4205)).
+`20–50 lines` = partial drift; substrate evolved on main; cell-by-cell
+triage needed; the on-main version is usually preferred unless the
+orphaned content carries genuine deltas.
+`hundreds of lines` = genuine substrate not yet on main; cherry-pick
+worth considering (with operator awareness, since orphaned-branch
+context may have been superseded by newer architectural decisions).
+
+**Special-case guard — runtime scripts**: when an orphaned commit
+modifies a runtime substrate file (e.g., `.gemini/bin/lior-loop-tick.ts`,
+peer-agent loop tick scripts, install-graph files in `tools/setup/`),
+DO NOT re-apply without explicit operator awareness even if `git diff`
+shows large deltas. Runtime scripts evolve continuously on main as
+agents tune their own loops; re-applying a multi-day-old version
+regresses prompt-engineering or operational tuning that happened in
+the intervening window. The Lior prompt fix at `467424ec` was 22 lines
+of diff vs main — re-applying it would have regressed substantive
+newer prompt-engineering work.
+
+Empirical anchors:
+[PR #4461](https://github.com/Lucent-Financial-Group/Zeta/pull/4461)
+(the 0059Z cold-boot under orphaned `otto/2012z-...`),
+[PR #4472](https://github.com/Lucent-Financial-Group/Zeta/pull/4472)
+(the 0149Z follow-up shard naming the discovery — 4 of 5 commits
+already rescued, the 5th was the runtime-script special case),
+[PR #4205](https://github.com/Lucent-Financial-Group/Zeta/pull/4205)
+(the peer-agent rescue this discriminator catches).
+
+Composes with [`honor-those-that-came-before.md`](honor-those-that-came-before.md)
+at orphaned-commit scope: verifying substrate exists on main IS the
+honor — re-landing without checking dishonors the peer agent's
+rescue work.
+
 ## Composes with
 
 - B-0169 (decision-archaeology procedure)
@@ -76,6 +133,8 @@ rather than the *substrate-landing* scope.
 - B-0553 (substrate-drift auditor — mechanizes step 0 across all open rows)
 - [`memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md`](../../memory/feedback_substrate_drift_catch_pattern_claim_acquire_plus_existence_check_otto_cli_2026_05_16.md) — step 0 origin substrate
 - [`.claude/rules/wake-time-substrate.md`](wake-time-substrate.md) — the discipline this rule extension lands
+- [`.claude/rules/honor-those-that-came-before.md`](honor-those-that-came-before.md) — orphaned-branch triage discriminator composes; verifying substrate-on-main IS the honor at orphaned-commit scope
+- [PR #4205 (HC-8 rescue)](https://github.com/Lucent-Financial-Group/Zeta/pull/4205) + [PR #4461 (0059Z cold-boot)](https://github.com/Lucent-Financial-Group/Zeta/pull/4461) + [PR #4472 (0149Z discovery)](https://github.com/Lucent-Financial-Group/Zeta/pull/4472) — empirical anchors for the orphaned-branch triage discriminator
 
 ## Full reasoning
 
