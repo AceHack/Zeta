@@ -28,6 +28,7 @@ const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$GEMINI_PR
   env: { ...process.env, GEMINI_PROMPT: prompt },
   stdio: ["inherit", "inherit", "pipe"],
   maxBuffer: 10 * 1024 * 1024,
+  timeout: 30 * 60 * 1000, // 30-minute timeout to prevent permanent deadlocks
 });
 
 if (result.error) {
