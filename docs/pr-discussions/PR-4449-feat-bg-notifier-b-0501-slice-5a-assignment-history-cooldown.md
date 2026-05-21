@@ -8,7 +8,7 @@ merged_at: "2026-05-20T20:11:43Z"
 closed_at: "2026-05-20T20:11:43Z"
 head_ref: "otto/b0501-assignment-history-cooldown-2026-05-20"
 base_ref: "main"
-archived_at: "2026-05-20T23:01:35Z"
+archived_at: "2026-05-21T01:14:20Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

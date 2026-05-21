@@ -8,7 +8,7 @@ merged_at: "2026-05-20T20:17:43Z"
 closed_at: "2026-05-20T20:17:43Z"
 head_ref: "fix/b0501-test-windows-path-portability-2026-05-20"
 base_ref: "main"
-archived_at: "2026-05-20T23:01:34Z"
+archived_at: "2026-05-21T01:14:12Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
