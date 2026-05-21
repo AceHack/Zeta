@@ -230,6 +230,33 @@ type Circuit() =
                     if inDeg.[c] = 0 then q.Enqueue c
             if k <> n then
                 invalidOp "Circuit has a cycle that does not pass through a strict operator"
+            // Sink-terminality enforcement. The `ISinkOperator` docstring
+            // (PluginApi.fs) promises *"the scheduler enforces terminal
+            // placement (a sink may not feed another operator inside a
+            // relational path)"*. PR 2 makes that promise load-bearing:
+            // any operator whose `Inputs` contains a sink is rejected
+            // with a diagnostic naming both endpoints, the sink's
+            // position in the DAG, and a pointer to the algebra-tag
+            // contract. Sinks are retraction-lossy by design (e.g.
+            // BayesianRateOp aggregates state that doesn't un-accumulate);
+            // letting a downstream operator read from a sink would
+            // violate the relational composition laws Z-set algebra
+            // depends on.
+            //
+            // Defensive ordering: this runs AFTER the topo-sort succeeds
+            // so the error message can reference op IDs that are stable.
+            // O(N + E) — each edge checked exactly once.
+            for op in ops do
+                for dep in op.Inputs do
+                    if dep.IsSink then
+                        invalidOp
+                            (sprintf
+                                "Sink-terminality violation: operator '%s' (id=%d) reads from \
+                                 sink operator '%s' (id=%d). Sinks are terminal — they may not \
+                                 feed other operators in a relational path because sink state is \
+                                 retraction-lossy and breaks Z-set composition laws. See \
+                                 PluginApi.fs:ISinkOperator for the contract."
+                                op.Name op.Id dep.Name dep.Id)
             schedule <- order
             let sn = ResizeArray<Op>()
             for op in ops do if op.IsStrict then sn.Add op
