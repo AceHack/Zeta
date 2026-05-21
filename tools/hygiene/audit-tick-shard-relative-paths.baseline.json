@@ -10,21 +10,6 @@
     "target": "docs/foo.md"
   },
   {
-    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
-    "line": 6,
-    "target": "../../../../backlog/P3/B-0519-multi-otto-branch-state-contamination-rca-2026-05-14.md"
-  },
-  {
-    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
-    "line": 7,
-    "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
-  },
-  {
-    "file": "docs/hygiene-history/ticks/2026/05/15/0329Z.md",
-    "line": 20,
-    "target": "../../../../backlog/P3/B-0528-shadow-launchd-installer-unit-tests-2026-05-15.md"
-  },
-  {
     "file": "docs/hygiene-history/ticks/2026/05/18/0436Z.md",
     "line": 45,
     "target": "../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
