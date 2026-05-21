@@ -37,6 +37,7 @@
     <Compile Include="Circuit/Plan.Tests.fs" />
     <Compile Include="Circuit/Plan.Branches.Tests.fs" />
     <Compile Include="Circuit/SinkTerminality.Tests.fs" />
+    <Compile Include="Circuit/IncrementalAuto.Tests.fs" />
 
     <!-- Operators/ -->
     <Compile Include="Operators/Aggregate.Tests.fs" />

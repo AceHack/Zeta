@@ -77,6 +77,130 @@ type IncrementalExtensions =
         let prev = this.DelayZSet integrated   // z^-1(I(Δa)) = snapshot before this tick
         this.DistinctIncremental(prev, delta)
 
+    /// **Capability-aware incremental dispatcher.** Picks the right
+    /// incrementalization for `q` based on the algebra capability tag
+    /// on the operator `q` produces:
+    ///
+    ///   - `IsLinear  = true`  →  `Q^Δ = Q` (trivial; deltas pass through)
+    ///   - `IsSink    = true`  →  throws (sinks are terminal; can't be
+    ///                            incrementalized — see PR 2's
+    ///                            sink-terminality enforcement)
+    ///   - otherwise           →  `D ∘ Q ∘ I` fallback (always correct
+    ///                            but expensive — materializes the full
+    ///                            integrated relation every tick)
+    ///
+    /// ## How the dispatch works (and important side-effects)
+    ///
+    /// `q` is a `Stream → Stream` factory. We **probe** it by invoking
+    /// `q.Invoke input` *before* deciding the dispatch path; the
+    /// resulting `Stream<'TOut>.Op` carries the capability tags from
+    /// PR 1. The probe is then either:
+    ///
+    ///   - **Linear case**: probed output returned directly (correct
+    ///     because linear ops commute with `D`/`I`); no orphan.
+    ///   - **Sink case**: throws — but the sink operator has *already
+    ///     been registered* in the circuit by the probe `q.Invoke`.
+    ///   - **Fallback case**: probed op kept in circuit as **orphan**
+    ///     (no consumers); fallback rebuilds via `IncrementalizeZSet`.
+    ///
+    /// ## ⚠️ Side-effect warning
+    ///
+    /// **The probe `q.Invoke input` ALWAYS runs once, regardless of
+    /// dispatch path.** This has two implications callers must
+    /// account for:
+    ///
+    ///   1. **Side-effecting builders execute**: if `q` is a factory
+    ///      like `AdvancedExtensions.Inspect` that performs work at
+    ///      construction time (logging, registering hooks, allocating
+    ///      external resources), that work runs **even when the
+    ///      dispatcher throws or falls back**. Use a non-side-effecting
+    ///      `q` factory, or accept the probe-side-effect cost.
+    ///   2. **Circuit is mutated even on the throw path**: when the
+    ///      sink case fires, the sink operator is **already in the
+    ///      circuit** when the exception is raised. The caller's
+    ///      circuit has been modified; catching the exception and
+    ///      continuing leaves an orphan sink that will still be
+    ///      scheduled and ticked. Either don't catch + recover from
+    ///      `IncrementalAuto` exceptions on a circuit you'll continue
+    ///      to use, or accept that the sink op stays registered.
+    ///
+    /// A non-registering probe path would close both gaps but requires
+    /// architectural changes to the `Op` / `Circuit` contract
+    /// (registration rollback isn't currently supported). Tracked as
+    /// future work; the dispatcher's correctness on the happy paths
+    /// (linear + fallback) doesn't depend on it.
+    ///
+    /// ## Known cost: orphan operator in the non-linear fallback path
+    ///
+    /// When the fallback fires, the probed operator stays registered
+    /// in the circuit with no consumers — the scheduler will still tick
+    /// it every cycle (wasted work), but it produces no observable
+    /// output. Pruning unreachable operators at `Circuit.Build()` time
+    /// is a future improvement; the dispatcher's correctness doesn't
+    /// depend on it.
+    ///
+    /// ## When NOT to use this
+    ///
+    /// For bilinear joins, use `IncrementalJoin` directly — it has a
+    /// richer signature (key functions, combine function) that this
+    /// unary dispatcher can't express. A `IncrementalAutoJoin`
+    /// dispatcher for bilinear ops can be added in a later PR.
+    ///
+    /// ## Reads
+    ///
+    /// `Op.IsLinear` and `Op.IsSink` (PR 1). For internal operators
+    /// these are overridden in the concrete subclasses; for plugin
+    /// operators they're surfaced via the `PluginOperatorAdapter`
+    /// marker detection.
+    [<Extension>]
+    static member IncrementalAuto<'K when 'K : comparison>
+        (this: Circuit,
+         q: Func<Stream<ZSet<'K>>, Stream<ZSet<'K>>>,
+         input: Stream<ZSet<'K>>) : Stream<ZSet<'K>> =
+        // Probe: apply q to input directly to inspect the resulting
+        // operator's capability tag. Registration is a side effect;
+        // see "orphan operator" note above.
+        let probedOutput = q.Invoke input
+        let resultOp = probedOutput.Op
+        // Check the WHOLE CHAIN from the probed terminal op back to
+        // the original input, not just the terminal op's IsLinear
+        // tag. A query like `q(s) = Map(Distinct(s))` has a terminal
+        // Map (IsLinear=true) but a non-linear Distinct inside; the
+        // composed query is NOT linear and the Q^Δ = Q rewrite would
+        // produce wrong incremental results. Walk Inputs back to
+        // `input.Op`: if every op in the chain is linear AND we reach
+        // `input.Op` only through linear ops, the chain is linear.
+        // Multi-input ops (Plus, Minus — currently default
+        // IsLinear=false) correctly fall back via this check.
+        let rec isLinearChainToInput (op: Op) (inputOp: Op) : bool =
+            if System.Object.ReferenceEquals(op, inputOp) then true
+            elif op.Inputs.Length = 0 then false   // source op that isn't the input
+            elif not op.IsLinear then false
+            else op.Inputs |> Array.forall (fun dep -> isLinearChainToInput dep inputOp)
+        if resultOp.IsSink then
+            invalidOp
+                (sprintf
+                    "IncrementalAuto: cannot incrementalize a sink operator. \
+                     '%s' (id=%d) declared IsSink=true; sinks are terminal \
+                     and excluded from relational composition. Note: the \
+                     probe already registered '%s' in this circuit before \
+                     this check; the orphan sink will be scheduled and \
+                     ticked unless the circuit is discarded. Use a \
+                     non-sink operator, or consume the sink's output \
+                     directly without incrementalization."
+                    resultOp.Name resultOp.Id resultOp.Name)
+        elif isLinearChainToInput resultOp (input.Op :> Op) then
+            // Q^Δ = Q. For *whole-chain* linear q, q(delta) IS the
+            // delta of q(full). The probed output is correct as-is;
+            // return directly. Distinction from `resultOp.IsLinear`
+            // alone: this guards against terminal-linear-but-inner-
+            // non-linear queries like `Map(Distinct(s))`.
+            probedOutput
+        else
+            // Generic D ∘ Q ∘ I fallback. The probed op above is orphan
+            // in the circuit — wasteful but functionally correct.
+            this.IncrementalizeZSet(q, input)
+
 
 /// F#-idiomatic piping. `stream |> Stream.map f |> Stream.filter p` is
 /// equivalent to `circuit.Filter(circuit.Map(stream, f), p)` but reads in
