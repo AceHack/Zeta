@@ -654,9 +654,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0685](backlog/P2/B-0685-antlr-grammars-cross-language-codegen-substrate-2026-05-21.md)** ANTLR grammars as cross-language codegen substrate — leverage existing open-source grammars for description-layer-driven multi-language emission
 - [ ] **[B-0687](backlog/P2/B-0687-zetaparse-fsharp-native-lr-glr-grammar-substrate-with-antlr-compatible-importer-amara-2026-05-21.md)** ZetaParse — F#-native LR/GLR grammar substrate with ANTLR-compatible importer
 - [ ] **[B-0688](backlog/P2/B-0688-zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-seeded-deterministic-simulation-amara-aaron-2026-05-21.md)** Zeta incremental compiler host — DBSP Z-sets + Rx meta-AST tags + seeded deterministic simulation hardening
-- [ ] **[B-0692](backlog/P2/B-0692-otto-vscode-pr6-push-based-hot-path-ipushoperator-2026-05-21.md)** Push-based hot-path — IPushOperator<'T> + per-entry callback bridged at materialize boundaries (Otto-VSCode 8-PR campaign PR #6)
-- [ ] **[B-0693](backlog/P2/B-0693-otto-vscode-pr7-morsel-span-execution-imorseloperator-2026-05-21.md)** Morsel/span-based execution — IMorselOperator + cache-sized chunked processing (Otto-VSCode 8-PR campaign PR #7)
-- [ ] **[B-0694](backlog/P2/B-0694-otto-vscode-pr8-standing-query-codegen-iincrementalgenerator-2026-05-21.md)** Standing-query codegen — IIncrementalGenerator that rewrites circuit expressions to fused IL (Otto-VSCode 8-PR campaign PR #8 — the capstone)
+- [ ] **[B-0695](backlog/P2/B-0695-fast-life-branch-experiment-hourly-batched-gates-cost-reduction-2026-05-21.md)** fast/life branch experiment — hourly batched CI gates with promotion-path; per-PR CI cost reduction is burst-dependent (cost-neutral at 1 PR/hr; ~33% at example burst per corrected math; Phase 5 measures empirical savings) while preserving Copilot/Codex 100k-line review capability + Soraya-promotion-gate
 
 ## P3 — convenience / deferred
 
