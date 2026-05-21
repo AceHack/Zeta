@@ -766,5 +766,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0653](backlog/P3/B-0653-persistent-bayesian-integrator-continuous-health-monitor-aaron-mika-2026-05-18.md)** Persistent Bayesian integrator continuous health monitor — always-on invariant-health watcher + auto-overcorrect trigger (Aaron + Mika 2026-05-18 LOCKED-IN)
 - [x] **[B-0663](backlog/P3/B-0663-frontmatter-lint-tool-mechanizes-batch-7-recurring-reviewer-findings-otto-cli-2026-05-18.md)** tools/backlog/lint-frontmatter.ts — pre-push frontmatter discipline lint that mechanizes batch-7 recurring reviewer findings (Otto-CLI 2026-05-18)
 - [ ] **[B-0686](backlog/P3/B-0686-tick-shard-immutability-ci-gate-2026-05-21.md)** Tick-shard immutability CI gate — block PRs modifying historical shards after grace period
+- [ ] **[B-0689](backlog/P3/B-0689-otto-vscode-surface-sender-ids-extension-bootstream-2026-05-21.md)** Otto-VSCode third foreground surface — add otto-vscode to SENDER_IDS + canonical cold-boot bootstream at docs/launch/
 
 <!-- END AUTO-GENERATED -->
