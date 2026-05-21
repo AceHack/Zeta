@@ -153,5 +153,15 @@
     "file": "docs/hygiene-history/ticks/2026/05/21/0603Z.md",
     "line": 79,
     "target": "../../../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
+    "line": 27,
+    "target": "docs/hygiene-history/ticks/2026/05/21/0822Z.md"
+  },
+  {
+    "file": "docs/hygiene-history/ticks/2026/05/21/0822Z.md",
+    "line": 57,
+    "target": "docs/hygiene-history/ticks/2026/05/21/0822Z.md"
   }
 ]
