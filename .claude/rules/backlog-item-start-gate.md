@@ -117,6 +117,12 @@ Empirical anchors:
 [PR #4472](https://github.com/Lucent-Financial-Group/Zeta/pull/4472)
 (the 0149Z follow-up shard naming the discovery — 4 of 5 commits
 already rescued, the 5th was the runtime-script special case),
+[PR #4478](https://github.com/Lucent-Financial-Group/Zeta/pull/4478)
+(the 0202Z follow-up upgrading the spot-check to full per-file diff
+across all 32 + 4 + 4 + 4 + 2 files of the 5 orphaned commits —
+the cheap first-file heuristic correctly classified 4 of 4 cases
+this session checked exhaustively, anchoring the discriminator's
+operational reliability),
 [PR #4205](https://github.com/Lucent-Financial-Group/Zeta/pull/4205)
 (the peer-agent rescue this discriminator catches).
 
