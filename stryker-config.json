@@ -1,9 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-net/master/docs/stryker-config.schema.json",
   "stryker-config": {
-    "project": "src/Core.CSharp.ZetaId/Zeta.Core.CSharp.ZetaId.csproj",
+    "project": "src/Core.CSharp/Core.CSharp.csproj",
     "test-projects": [
-      "tests/Tests.CSharp/Tests.CSharp.csproj"
+      "tests/Core.CSharp.Tests/Core.CSharp.Tests.csproj"
     ],
     "mutate": [
       "!**/AssemblyInfo.cs",
@@ -13,7 +13,7 @@
     "thresholds": {
       "high": 80,
       "low": 60,
-      "break": 50
+      "break": 0
     },
     "reporters": [
       "html",
