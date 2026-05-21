@@ -73,6 +73,78 @@ module PluginHarness =
                         "PluginHarness: tick %d expected exactly one Publish; saw %d."
                         tick delta)
             outputs.Add adapter.Value
+            // Strict-op post-step hook — see runTwoInputs for the
+            // rationale; same fix applies symmetrically to single-
+            // input strict plugins (e.g. IStrictOperator-tagged
+            // ops exercised via LawRunner.checkLinear).
+            let postVt = (adapter :> Op).AfterStepAsync ct
+            if not postVt.IsCompletedSuccessfully then
+                postVt.AsTask().GetAwaiter().GetResult()
+            // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
+            tick <- tick + 1
+        List.ofSeq outputs
+
+    /// Drive a two-input plugin operator through a pair of parallel
+    /// input sequences. Each tick advances BOTH inputs in lock-step;
+    /// the shorter sequence determines the run length (`Seq.zip`
+    /// semantics).
+    ///
+    /// Used by `LawRunner.checkBilinear` to exercise per-argument
+    /// linearity and sign-distribution. Same exactly-one-`Publish`
+    /// assertion as `runSingleInput`.
+    let runTwoInputs<'TIn1, 'TIn2, 'TOut>
+        (makeOp: Stream<'TIn1> -> Stream<'TIn2> -> IOperator<'TOut>)
+        (inputs1: seq<'TIn1>)
+        (inputs2: seq<'TIn2>)
+        : 'TOut list =
+        let source1 = HarnessSourceOp<'TIn1>()
+        let source2 = HarnessSourceOp<'TIn2>()
+        // Synthetic ids — sources at 0+1, adapter at 2. Real circuits
+        // assign these during `Circuit.Build`; the harness mirrors
+        // the layout so the adapter's per-tick state semantics match
+        // production exactly.
+        source1.idField <- 0
+        source2.idField <- 1
+        let stream1 = Stream<'TIn1>(source1)
+        let stream2 = Stream<'TIn2>(source2)
+        let plugin = makeOp stream1 stream2
+
+        let inputOps : Op array =
+            plugin.ReadDependencies
+            |> Array.map (fun h -> h.op)
+        let adapter = PluginOperatorAdapter<'TOut>(plugin, inputOps)
+        adapter.idField <- 2
+
+        let outputs = ResizeArray<'TOut>()
+        let ct = CancellationToken.None
+        let mutable tick = 0
+        let zipped = Seq.zip inputs1 inputs2
+        for (in1, in2) in zipped do
+            source1.Feed in1
+            source2.Feed in2
+            let before = adapter.PublishCount.Value
+            let vt = (adapter :> Op).StepAsync ct
+            if not vt.IsCompletedSuccessfully then
+                vt.AsTask().GetAwaiter().GetResult()
+            let after = adapter.PublishCount.Value
+            let delta = after - before
+            if delta <> 1 then
+                invalidOp (
+                    sprintf
+                        "PluginHarness: tick %d expected exactly one Publish; saw %d."
+                        tick delta)
+            outputs.Add adapter.Value
+            // Mirror Circuit.Step/StepAsync's strict-op post-step
+            // hook: after StepAsync completes, invoke AfterStepAsync
+            // so strict bilinear/stateful ops commit per-tick state
+            // before the next tick begins. Without this, plugins
+            // implementing IStrictOperator would see different
+            // semantics in `runTwoInputs` than in real circuit
+            // execution, and `LawRunner.checkBilinear` would
+            // validate against incorrect strict-op state.
+            let postVt = (adapter :> Op).AfterStepAsync ct
+            if not postVt.IsCompletedSuccessfully then
+                postVt.AsTask().GetAwaiter().GetResult()
             // nosemgrep: plain-tick-increment -- method-local loop counter, not shared across threads
             tick <- tick + 1
         List.ofSeq outputs
