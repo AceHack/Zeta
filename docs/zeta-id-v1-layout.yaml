@@ -79,3 +79,20 @@ fields:
     source: env.nextInt64
     mask: 0xFFFFFFFF
     description: "Safe 32-bit window. 64-bit randomness in earlier versions corrupted higher fields (empirically caught by round-trip test)."
+
+reserved_bits:
+  # Sum of named field widths = 124. Total bits = 128. Difference = 4 reserved bits
+  # at the offsets below. Pack() leaves them zero; Unpack() ignores them. Reserved
+  # bits are V2+ evolution surface (e.g., signature-version stripe, parity bit,
+  # confidentiality flag, or a 4-bit extension to one of the existing fields).
+  # Touching them in V1 is an unversioned schema break.
+  - offset: 32
+    width: 3
+    note: "Gap between Randomness end (bit 31) and Location start (bit 35)"
+  - offset: 69
+    width: 1
+    note: "Gap between Category end (bit 68) and Chromosome start (bit 70)"
+
+# Sanity check (for spec readers):
+#   5 + 48 + 5 + 4 + 1 + 5 + 8 + 8 + 8 + 32 = 124 named-field bits
+#   124 + 4 reserved = 128 total_bits

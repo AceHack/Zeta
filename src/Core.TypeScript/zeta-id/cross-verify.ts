@@ -1,4 +1,4 @@
-import { pack, unpack } from './zeta-id';
+import { pack, unpack, DETERMINISTIC_ENV } from './zeta-id';
 import type { ZetaObservation, Authority, Momentum } from './types';
 
 interface FlatVector {
@@ -49,7 +49,7 @@ let hexMismatches = 0;
 
 for (const v of vectors) {
   const obs = toObservation(v);
-  const packed = pack(obs);
+  const packed = pack(obs, DETERMINISTIC_ENV);
   const hex = packed.toString(16).padStart(32, '0');
 
   const unpacked = unpack(packed);
@@ -70,3 +70,11 @@ for (const v of vectors) {
 
 await Bun.write('ts-output.json', JSON.stringify(results, null, 2));
 console.log(`Cross-verify: ${vectors.length} vectors. Roundtrip ${vectors.length - unpackMismatches}/${vectors.length} OK. Hex matches expected ${vectors.length - hexMismatches}/${vectors.length}.`);
+
+// Enforce: non-zero exit on any mismatch so CI / automation catches regressions.
+// Per Codex P1 finding (PR #4517 cross-verify.ts:72) — silent-non-enforcing
+// harness is a known antipattern.
+if (unpackMismatches > 0 || hexMismatches > 0) {
+  console.error(`FAIL: ${unpackMismatches} roundtrip mismatch + ${hexMismatches} hex mismatch`);
+  process.exit(1);
+}

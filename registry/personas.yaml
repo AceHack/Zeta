@@ -1,11 +1,18 @@
 schema: zeta-registry/v1
 total_slots: 256
-description: "Agent identity registry (256 slots for future agents)"
+description: |
+  Persona-role registry (256 slots for the agent roster).
+  Per docs/AGENT-BEST-PRACTICES.md "No name attribution in code, docs, or
+  skills": this registry uses neutral role-refs, not personal names. The
+  enumerated history surfaces (docs/hygiene-history/, memory/persona/) and
+  the roster carve-outs (.claude/rules/agent-roster-reference-card.md) are
+  where named attribution lives.
 entries:
   - id: 1
-    name: Aaron
-    description: "Human maintainer and system architect"
+    name: HumanMaintainer
+    description: "Maintainer role; sole authorization source per .claude/rules/mechanical-authorization-check.md"
   - id: 2
     name: FireflyCoherence
-    description: "Coherence agent — tracks Firefly heartbeats and trajectory anchors"
-  # TODO: more agents as the roster grows
+    description: "Coherence role — tracks Firefly heartbeats and trajectory anchors"
+  # TODO: more role-refs as the roster grows. Use neutral role identifiers,
+  # not personal names (per AGENT-BEST-PRACTICES).

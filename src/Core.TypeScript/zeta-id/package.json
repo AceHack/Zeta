@@ -10,8 +10,8 @@
     "./types": "./types.ts"
   },
   "keywords": ["zeta", "zeta-id", "observation", "canonical-id", "128-bit", "firefly", "agency", "bun"],
-  "author": "Aaron Stainback (AceHack)",
-  "license": "MIT",
+  "author": "Lucent Financial Group",
+  "license": "Apache-2.0",
   "peerDependencies": {
     "bun": ">=1.0.0"
   }

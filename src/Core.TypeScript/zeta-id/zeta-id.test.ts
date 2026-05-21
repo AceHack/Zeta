@@ -1,5 +1,5 @@
 import { test, expect } from 'bun:test';
-import { pack, unpack } from './zeta-id';
+import { pack, unpack, DETERMINISTIC_ENV } from './zeta-id';
 import type { ZetaObservation } from './types';
 
 const fixedObservation: ZetaObservation = {
@@ -15,7 +15,7 @@ const fixedObservation: ZetaObservation = {
 };
 
 test('ZetaId round-trips all fields correctly', () => {
-  const id = pack(fixedObservation);
+  const id = pack(fixedObservation, DETERMINISTIC_ENV);
   const result = unpack(id);
 
   expect(result.version).toBe(fixedObservation.version);

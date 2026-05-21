@@ -47,7 +47,7 @@
   "momentum-critical": {
     "hex": "080cb77ed58d19c1f80fc00800000000",
     "roundtripOk": true,
-    "matchesExpected": false
+    "matchesExpected": true
   },
   "authority-raw-0": {
     "hex": "0800000000000001000b000800000000",
