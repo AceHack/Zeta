@@ -123,10 +123,14 @@
     <Compile Include="MajiTests.fs" />
     <Compile Include="Consensus.Tests.fs" />
     <Compile Include="Arena.Tests.fs" />
+
+    <!-- ZetaId/ — F# peer oracle cross-verify (matches TS + C# canonical hex) -->
+    <Compile Include="ZetaId/CrossVerifyTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -152,5 +156,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="YamlDotNet" />
   </ItemGroup>
 </Project>
