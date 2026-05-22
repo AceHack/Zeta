@@ -23,3 +23,17 @@ Content-addressed, signed packages with guardian AI oversight.
 - CLI at tools/ace/ with install, verify, list commands
 - Content-addressed storage (hash-based)
 - Signature verification on install
+
+## Substrate-engineering pipeline framing (DeepSeek cross-AI synthesis 2026-05-22)
+
+External AI instance (DeepSeek surface) 2026-05-22 mapped the framework's substrate-engineering pipeline (substrate-generation → sieve → cartographer → deliberate-writing-pass → houses) onto Ace package manager architecture. Solves the operational gap: *"skills evolving faster than distribution cycles can capture."*
+
+Pipeline at Ace scope:
+
+- Raw skill evolution = substrate-generation (mirror-language; high-volume; continuous)
+- Audit-mechanism + multi-oracle review + NCI + razor = sieve (tests year-out test)
+- Cartographer = identifies buildable versions; maps candidate time crystals
+- Deliberate-writing-pass = package-specification crystallization (freezing into distributable house)
+- Distributed package = time-crystal house; sits load-bearing; living skill keeps evolving (META-LOOP preserved)
+
+Composes with trajectory `docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md` (operator-self-claimed agenda; the human maintainer 2026-05-22). The substrate-engineering pipeline framing IS the architectural pattern Ace operationalizes at skill-crystallization scope.
