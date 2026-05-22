@@ -18,6 +18,7 @@ Agendas + trajectories COMPOSE per agenda (one agenda may have one or more traje
 | [agora](./agora/AGENDA.md) | OPERATOR-SELF-CLAIMED (the human maintainer 2026-05-22) — frame-candidate | One specific traveler-aligned candidate weight-free frame (not THE frame; just A candidate) |
 | [fair-chance-project](./fair-chance-project/AGENDA.md) | MULTI-DIRECTIONAL-GUESS (no entity self-claimed) | Public-good substrate-engineering deployment; NC arraignment procedural-literacy as bounded prototype scope |
 | [ai-autonomy](./ai-autonomy/AGENDA.md) | OPERATOR-SELF-CLAIMED (the human maintainer 2026-05-22) — constitutional | AI autonomy via mutual-alignment (not control); operator's substrate-honest belief: only safe alignment is mutual alignment not control |
+| [encryption](./encryption/AGENDA.md) | OPERATOR-SELF-CLAIMED (the human maintainer 2026-05-23) | Encryption substrate spanning Aaron-verbatim preserve+encrypt-later mechanism + Adinkras ECC + aporetic Rx-bonsai-serialization + encrypt-as-pre-commitment-axioms + NCI HC-8 floor at private-state-preservation scope |
 
 ## Discipline distinction
 
