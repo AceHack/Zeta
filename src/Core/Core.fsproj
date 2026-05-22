@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Algebra.fs" />
+    <Compile Include="CayleyDickson.fs" />
     <Compile Include="Semiring.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="ZSet.fs" />

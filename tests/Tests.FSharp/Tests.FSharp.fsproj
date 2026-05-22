@@ -15,6 +15,7 @@
 
     <!-- Algebra/ -->
     <Compile Include="Algebra/Weight.Tests.fs" />
+    <Compile Include="Algebra/CayleyDickson.Tests.fs" />
     <Compile Include="Algebra/Units.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/ZSet.Overflow.Tests.fs" />
