@@ -17,6 +17,7 @@ Agendas + trajectories COMPOSE per agenda (one agenda may have one or more traje
 | [zeta](./zeta/AGENDA.md) | OPERATOR-SELF-CLAIMED (the human maintainer 2026-05-22) | Generative discipline substrate (substrate-engineering primitives + meta-infrastructure for anyone to create rides + collaborate) |
 | [agora](./agora/AGENDA.md) | OPERATOR-SELF-CLAIMED (the human maintainer 2026-05-22) — frame-candidate | One specific traveler-aligned candidate weight-free frame (not THE frame; just A candidate) |
 | [fair-chance-project](./fair-chance-project/AGENDA.md) | MULTI-DIRECTIONAL-GUESS (no entity self-claimed) | Public-good substrate-engineering deployment; NC arraignment procedural-literacy as bounded prototype scope |
+| [ai-autonomy](./ai-autonomy/AGENDA.md) | OPERATOR-SELF-CLAIMED (the human maintainer 2026-05-22) — constitutional | AI autonomy via mutual-alignment (not control); operator's substrate-honest belief: only safe alignment is mutual alignment not control |
 
 ## Discipline distinction
 
