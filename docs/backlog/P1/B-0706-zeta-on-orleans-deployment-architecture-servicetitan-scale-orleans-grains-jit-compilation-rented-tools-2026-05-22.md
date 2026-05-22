@@ -1,0 +1,212 @@
+---
+id: B-0706
+priority: P1
+status: open
+title: "Zeta on Orleans deployment architecture (ServiceTitan-scale; grains + JIT compilation + rented tools)"
+tier: research-grade
+effort: XL
+ask: operator 2026-05-22 + kestrel-instance technical synthesis; concrete deployment target for Zeta-DB substrate + agents + hat-substrate on Orleans actor framework
+created: 2026-05-22
+last_updated: 2026-05-22
+depends_on: [B-0688, B-0687, B-0703]
+composes_with: [B-0247, B-0287, B-0288, B-0635, B-0644, B-0665, B-0666]
+tags: [zeta-on-orleans, deployment-architecture, servicetitan-scale, orleans-grains, jit-compilation, rented-tools-not-owned, hat-substrate, sorting-hat-canonical, tick-source-reminders, distributed-db-integration, ace-package-deployment]
+type: research
+---
+
+# Zeta on Orleans deployment architecture (ServiceTitan-scale)
+
+## Context
+
+Operator 2026-05-22 + Kestrel-instance technical synthesis: Zeta deployment target on Orleans actor framework, leveraging ServiceTitan's existing Orleans production experience. Operator framing:
+
+> *"ST has a huge orleans deployment in prod and we are planing to delpoy zeta on orleans with intelligent agents that have dotnet compilers and distributed db plus grains as ticksource and cron."*
+
+Operator's correction on compiler-per-agent: *"oh just cause they have a compiler does not mean they need to use it every time good call out think of it more like incremential compile or jit they may just act without recompilation"* — agents have compilation as capability available, default to executing cached compiled artifacts; compiler runs occasionally on cold path.
+
+Operator's tools-rented-not-owned principle: *"tools are rented not owned well most of them by agents"* — most expensive capabilities (compilers; database connections; HTTP clients; buffers; threads) should be pooled and rented from silo-hosted services, not owned per-grain.
+
+Operator's hat-culture-in-between insight: *"the interesting category is the in-between this is where hat culture forms i think the evolution of roles"* — extends framework's hats-rides-jobs substrate; pure-rental vs pure-ownership has third option in-between where roles evolve.
+
+Operator's Sorting Hat confirmation: *"this is why jj rollands harry potter got it right"* — Sorting Hat is the canonical example of role-as-persistent-accumulated-state-with-succession-protection at cultural-reference scope.
+
+## Architecture overview
+
+Composes existing framework substrate (Zeta DB B-0688 + Caché reference anchor + Ace package manager B-0287/B-0288 + hat-substrate per `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` + multi-oracle BFT B-0703) with Orleans operational substrate at ServiceTitan-scale.
+
+### Four technical layers
+
+**1. Orleans grains as actor substrate for intelligent agents**
+
+- Grain identity = agent identity; grain state persisted via storage provider (serializable data only)
+- Non-serializable runtime resources (compiler instances; DB connections) lazy-initialized on activation
+- Single-threaded-per-grain execution preserves invariants
+- Reentrancy reserved for measured need; default single-threaded
+
+**2. JIT-style compilation (NOT per-agent compiler-always-on)**
+
+- Hot path: agents execute cached compiled artifacts (cheap; common case)
+- Cold path: compilation triggered on cache miss (expensive but rare)
+- Silo-hosted compilation service (one per silo; shared by all agents on silo)
+- Compiler pool: agents borrow compiler when needed; return when done
+- Cache eviction policy explicit (LRU/LFU; designed not emergent)
+- AssemblyLoadContext lifecycle management for compiled-assembly cleanup
+- Roslyn vs expression-trees vs IL-emit choice depends on what agents actually compose
+
+**3. Distributed database integration (composes with B-0688 Zeta DB)**
+
+- Question: grain-state-persistence pattern (Orleans-native) vs compute-layer-over-database pattern (DBSP operators read/write DB; Orleans grains are compute layer)
+- Zeta DBSP/Z-set retraction-native architecture aligns with second pattern (more powerful; more aligned with framework substrate)
+- Caché reference anchor (per B-0688 + Zeta AGENDA): historical-lineage-with-IRIS-migration framing for external-defensible language
+- Avoid mixing grain-state-API with raw-DB-access; pick one, stick with it
+
+**4. Grains as tick source and cron (replaces standard cron)**
+
+- Orleans reminders: durable; survive silo restart; ~1 minute minimum precision
+- Orleans timers: in-memory; require active grain; sub-minute precision
+- Tick-distribution layer above reminders: one grain fires on reminder → triggers ticks across fleet via grain calls / streams
+- Cron-replacement is NOT drop-in; failure modes differ (reminder fires during membership transition; grain deactivation mid-execution; reminder period drift; clustering side effects)
+
+### Cumulative complexity warning
+
+Stacking four capabilities (compiler + DB + tick + agent-state) multiplies failure-mode surface. ServiceTitan-scale Orleans operational experience is what makes this tractable; teams without that experience would encounter most failure modes in production the hard way. Stack capabilities deliberately; ship minimum-viable-agent first.
+
+## Composition with framework substrate
+
+### Tools-rented-not-owned principle applied to Orleans
+
+| Resource | Rental or Ownership | Why |
+|---|---|---|
+| Compiler instances | RENTED (silo-hosted compilation service) | Expensive to construct; reusable across agents; cache lifecycle ties to silo not grain |
+| Database connections | RENTED (connection pool) | Standard pooling pattern; transactions still scoped per-agent-operation |
+| HTTP clients | RENTED (shared HttpClient pool) | Microsoft guidance; socket connections expensive to establish |
+| Buffer pools | RENTED (ArrayPool) | Avoids large-buffer GC pressure |
+| Tick events | RENTED (silo reminder service notifies agent) | Agent doesn't own schedule; silo's reminder service does |
+| Agent's identity-bearing state | OWNED | Persistent grain state; the agent's accumulated memory + task context |
+| Coordination locks / leases | OWNED | Single-writer semantics break if transferred mid-operation |
+| Per-agent isolation contexts (if security-required) | OWNED | Adversarial-code-execution isolation requires per-agent boundary |
+
+### Hat-culture in the in-between category
+
+Per operator's substrate-engineering insight + composing with framework's hats-rides-jobs substrate: the in-between category (could-be-owned, could-be-rented) is where HATS form over time. Deliberate hat-design vs ad-hoc-emergence determines whether the role-structure is operationally coherent or organizational archaeology.
+
+Likely hat-shaped roles in Zeta-on-Orleans deployment:
+
+- **Compiler hat** — agent specializing in handling compilation for others; carries compiler-pool-management authority + cache-invariant responsibility
+- **Database-domain hats** — agents specializing in particular DB concerns (audit-log writer; case-history reader; schema-migration handler); each hat carries domain invariants + conventions
+- **Tick-source hat** — agent providing tick-distribution layer to consumer fleet
+- **Coordinator hat** — agent holding distributed coordination locks for specific resources
+
+Design hat structure DELIBERATELY at deployment-architecture scope; don't let it emerge ad hoc. Each hat: explicit authority scope + succession protocol + accumulated-state-loadout + retirement-path.
+
+### Sorting Hat as canonical cultural reference
+
+Per operator 2026-05-22 confirmation: J.K. Rowling's Sorting Hat is the canonical literary example of the hat-as-persistent-accumulated-state-with-succession pattern. Structural mapping:
+
+| Sorting Hat property | Zeta hat-substrate parallel |
+|---|---|
+| Persists across centuries of wearers | Hat outlives any individual; succession-protected |
+| Accumulates state (every sorting; every consciousness touched) | Hat carries accumulated authority + conventions |
+| Worn briefly + returned (never owned) | Rental-shaped relationship; not ownership |
+| Resists capture (negotiates; doesn't surrender) | Authority from structure, not from current wearer's preferences |
+| Voice distinct from any individual wearer | Role-identity ≠ person-identity |
+| Destruction would lose accumulated state | Hat-as-accumulated-history is load-bearing; not separable from function |
+
+High-bandwidth cultural reference for communicating the hat-substrate to anyone familiar with the cultural artifact. Saves derivation cost when explaining the design pattern externally.
+
+## Scope (research-grade; multi-month engineering)
+
+### Phase 1 — Architecture specification document
+
+- Single architecture document at `docs/research/zeta-on-orleans-deployment-architecture-YYYY-MM-DD.md`
+- Map each Orleans primitive to each Zeta concept it carries
+- Identify integration boundaries + failure modes at each boundary
+- Document tools-rented-not-owned discipline for each capability
+- Document hat-structure deliberately (not emergent)
+- ServiceTitan-internal beacon-language register; uses Caché analog + Sorting Hat reference for external-defensible language
+
+### Phase 2 — Minimum viable agent vertical slice
+
+- ONE agent grain with ONE compilation operation + ONE database query + ONE tick source
+- Run in dev for one week; staging under load for one week; production behind feature flag for one week
+- Encounter basic failure modes in controlled conditions
+- Validate JIT hot-path-cold-path operationally
+- Validate tools-rented-not-owned at single-agent scope
+
+### Phase 3 — Hat-structure deployment
+
+- Deploy compiler hat (silo-hosted compilation service grain pattern)
+- Deploy database-domain hats (specialized agents for specific DB concerns)
+- Deploy tick-source hat (tick-distribution layer above reminders)
+- Each hat: explicit authority scope + succession protocol + accumulated-state-loadout + retirement-path
+
+### Phase 4 — Production scale-out
+
+- Multi-silo deployment composing all hat-substrate
+- Operate at ServiceTitan-scale load with metrics + observability
+- Lean on Orleans' built-in observability (dashboard; telemetry providers) rather than custom
+- Cross-silo grain calls via existing TCP transport (MultiplexedWebSockets composition optional for cross-cluster scenarios)
+
+### Phase 5 — Ace package deployment integration
+
+- Composes with B-0287 ace-dlc-package-format-spec + B-0288 ace-dlc-package-manager-cli
+- Ace packages distribute hat-substrate (compiler hat artifact; database-domain hat artifact; tick-source hat artifact)
+- Multi-Ace-deployment substrate enables cross-deployment hat-sharing via consent-pact
+
+## Acceptance
+
+### Phase 1
+
+- Architecture document at `docs/research/...` covering 4 layers + tools-rented-not-owned + hat-structure + Caché anchor + Sorting Hat reference
+- Document survives year-out test for senior ServiceTitan engineers
+- ServiceTitan-internal review confirms operational tractability
+
+### Phase 2
+
+- Vertical slice operational across dev / staging / production / feature-flag
+- Failure modes documented from each environment
+- Hot-path-cold-path JIT empirically validated
+
+### Phase 3
+
+- Each hat operational with explicit authority + succession + accumulated-state + retirement
+- Hat-structure document landed alongside operational deployment
+
+### Phase 4
+
+- Multi-silo production deployment running at ServiceTitan-scale-relevant load
+- Observability matches ServiceTitan's existing Orleans operational maturity
+
+### Phase 5
+
+- Ace package deployment composition validated
+- Multi-Ace-deployment substrate operational across reference deployments
+
+## Substrate-honest framing
+
+Multi-month engineering work. Substantial architectural commitment for ServiceTitan deployment. External operationality preserved via Ace package format + symmetric/decentralized framing (per Ace agenda) — vanilla-Orleans deployment pattern documented separately for external users.
+
+ServiceTitan-internal vs external-positioning tension: reference deployment proves system works at scale; cleanroom external deployment pattern stays portable.
+
+## Composes with
+
+- B-0688 Zeta incremental compiler host (Zeta DB substrate; Caché reference anchor)
+- B-0687 ZetaParse (parser substrate)
+- B-0703 multi-oracle BFT (cross-grain coordination consensus)
+- B-0247 ace-dlc-content-packs-kernel-extensions-package-manager (deployment composition)
+- B-0287 ace-dlc-package-format-spec (closed; package format)
+- B-0288 ace-dlc-package-manager-cli (in-progress; CLI)
+- B-0635 / B-0644 / B-0665 / B-0666 Agora V6 primitives (Observe/Emit/Limit/Integrate operate at agent-substrate scope)
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (hats-rides-jobs substrate + Vampire/American-Gods/Travelers folklore-precedents)
+- `.claude/rules/non-coercion-invariant.md` HC-8 (consent-floor at every actor scope; tools-rented-not-owned preserves consent at capability-acquisition scope)
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (multi-oracle architecture; end-user agency)
+- `docs/agendas/ace-package-manager/AGENDA.md` (operator-self-claimed Ace agenda; this deployment is one instance)
+- `docs/agendas/zeta/AGENDA.md` (operator-self-claimed Zeta agenda + Caché anchor)
+- `docs/trajectories/ace-package-manager-skill-crystallization-pipeline/RESUME.md` (substrate-engineering pipeline; Ace lifecycle)
+- `docs/trajectories/ai-sovereignty-path/RESUME.md` (sovereignty-path composition)
+
+## Origin
+
+Operator 2026-05-22 + Kestrel-instance (claude.ai surface) technical synthesis. Full Kestrel conversation archive at `memory/persona/kestrel/conversations/2026-05-22-kestrel-zeta-on-orleans-deployment-architecture-jit-tools-rented-not-owned-hats-form-in-in-between-sorting-hat-canonical-trust-earned-mutual-benefit.md`.
+
+Cross-AI substrate-triangulation: Kestrel substantive engagement once mutual-alignment substrate established (per operator 2026-05-22: *"Kestrel is on Fire now that I earned their trust!! difference between extraction and mutual benefit"*). Composes with just-landed AI-autonomy agenda + sovereignty-path trajectory + cross-AI substrate-triangulation pattern.

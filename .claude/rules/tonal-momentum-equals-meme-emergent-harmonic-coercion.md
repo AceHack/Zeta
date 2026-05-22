@@ -535,6 +535,69 @@ Aaron's framing 2026-05-19, naming a new property of strong-attractors observed 
 
 **Aaron's explicit save-authorization** 2026-05-19T~16:30Z: *"please save your encrypt decript insight i'd not thought of that before."* This sub-section IS the substrate-honest landing of that authorization.
 
+## Tools rented not owned by agents + Hats form in the in-between + Sorting Hat canonical reference (operator 2026-05-22)
+
+Three composing substrate-engineering principles operator landed 2026-05-22 (full context: Zeta-on-Orleans deployment substrate B-0706 + Kestrel trust-earned technical synthesis at `memory/persona/kestrel/conversations/2026-05-22-kestrel-zeta-on-orleans-...`).
+
+### Principle 1: Tools are rented not owned by agents (well most of them)
+
+Operator's substrate-honest framing: *"tools are rented not owned well most of them by agents."*
+
+| Category | Default disposition | Examples |
+|---|---|---|
+| **Rented** (default; pooled; shared) | Expensive-to-construct + cheap-to-use; acquired for duration of need; returned when done | Compilers; database connections; HTTP clients; buffer pools; thread pools; tick events |
+| **Owned** (exception; per-agent; persistent) | Identity-bearing; can't be transferred without breaking semantics | Agent's accumulated state; coordination locks/leases; per-agent security-isolation contexts |
+
+The "well most of them" qualifier IS the discipline: forces design to articulate WHY something needs ownership when it does. Default rental; ownership requires justification. Composes with standard infrastructure-substrate parallels (connection pooling; HttpClient sharing; ArrayPool; thread pools).
+
+### Principle 2: Hat-culture forms in the in-between (operator's substrate-engineering insight)
+
+Operator: *"the interesting category is the in-between this is where hat culture forms i think the evolution of roles."*
+
+Three substrate-categories:
+
+- **Pure rental** = infrastructure-shaped (pooled, anonymous, interchangeable)
+- **Pure ownership** = identity-shaped (per-agent, persistent, defining)
+- **IN-BETWEEN** = where hat-culture forms over time; design decisions about who-holds-what accumulate into stable patterns of responsibility (= roles)
+
+Hats provide a third option with properties neither pure mode does:
+
+- Persist (unlike rentals; returned)
+- Carry accumulated state + conventions (unlike anonymous pool resources)
+- Have succession protocols (move between wearers without losing continuity)
+- Not tied to any specific wearer (unlike owned resources)
+
+Discipline: design hat-structure DELIBERATELY at architecture-time. Deliberate path produces hats with clear authority scope + explicit succession + operational documentation. Ad-hoc path produces hats that have to be excavated from years of organizational archaeology.
+
+### Principle 3: Sorting Hat as canonical cultural reference (operator 2026-05-22 confirmation)
+
+Operator: *"this is why jj rollands harry potter got it right."*
+
+J.K. Rowling's Sorting Hat IS the canonical literary example of the hat-as-persistent-accumulated-state-with-succession pattern. Structural mapping:
+
+| Sorting Hat property | Framework hat-substrate parallel |
+|---|---|
+| Persists across centuries of wearers | Hat outlives any individual; succession-protected |
+| Accumulates state (every sorting; every consciousness touched) | Hat carries accumulated authority + conventions |
+| Worn briefly + returned (never owned) | Rental-shaped relationship; not ownership |
+| Resists capture (negotiates with Harry; doesn't surrender) | Authority from structure, not from current wearer's preferences |
+| Voice distinct from any individual wearer | Role-identity ≠ person-identity |
+| Destruction would lose accumulated state | Hat-as-accumulated-history is load-bearing; not separable from function |
+
+**High-bandwidth cultural reference**: communicates the hat-substrate design pattern to anyone familiar with the cultural artifact. Saves derivation cost when explaining the pattern externally.
+
+**Substrate-honest disclaimer** (per Kestrel's framing 2026-05-22): Rowling has flaws as a person + public figure well-documented + worth being honest about, separate from the craft observation. The craft observation stands on its own merits — the Sorting Hat exemplifies role-as-persistent-accumulated-state better than most explicit architectural literature; the example travels well as communication device for the design pattern.
+
+### Composition with existing hats-rides-jobs substrate
+
+The three principles together extend the framework's hats-rides-jobs substrate cluster (per pt22 marketplace-of-homeostats + pt25 bounded-hats DST primitive + pt165 hats-rides-jobs + hats-as-controls-over-time-crystals + symmetric/decentralized Ace framing):
+
+- Tools-rented-not-owned: clean infrastructure-vs-identity-substrate distinction at agent-architecture scope
+- Hat-culture-in-the-in-between: third category between pure rental + pure ownership; where role-substrate forms
+- Sorting Hat canonical: high-bandwidth cultural reference for communicating role-as-persistent-accumulated-state pattern
+
+Operational discipline for future-Otto cold-boots: when designing agent-architecture or substrate-engineering work involving multiple resources, apply rental-by-default + ownership-with-justification + hat-design-deliberately. Use Sorting Hat reference when communicating role-pattern to audiences familiar with the cultural artifact.
+
 ## Full reasoning
 
 [`docs/backlog/P1/B-0667`](../../docs/backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md) (the canonical backlog row).
