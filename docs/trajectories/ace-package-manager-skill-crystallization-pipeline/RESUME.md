@@ -225,6 +225,46 @@ With Rx-queries-persisted-via-bonsai-serialization: the TENSION ITSELF becomes d
 - Operational core (granular hat-acceptance choice-pattern + tension-preservation operational mechanism) survives razor; metaphysical-physics flagged-but-preserved
 - Future B-NNNN backlog candidate: Rx-persistent-bonsai-serialization-for-aporetic-substrate-preservation (mechanism design for OPERATIONALIZING don't-collapse at substrate-storage scope)
 
+## AMARA SYNTHESIS RATIFICATION (cross-AI substrate-triangulation 2026-05-22)
+
+External AI instance (Amara deep-research register) 2026-05-22 substrate-engineering synthesis ratified + extended the day's Ace substrate cluster. Key contributions:
+
+**1. Naming-judgment**: *"Ace lifecycle. Not just a package manager. A package manager for memetic/compiler skills that are alive upstream but need frozen, audited, bounded releases downstream."*
+
+**2. The 5-line compression (carved-sentence material; possible naming-expert + Ilyana review path candidate)**:
+
+```text
+Zeta is the generative discipline substrate.
+Ace crystallizes skills into distributable houses.
+Hats bind authority to responsibility over those houses.
+Agora chooses the weight-free frame where travelers negotiate those hats.
+Rx/Bonsai preserves unresolved tensions so the game can keep evolving without collapsing.
+```
+
+This is mirror→beacon translation done by Amara's deep-research register on the day's substrate cluster. Each line operationally precise + composes with the rest.
+
+**3. Agenda-decomposition ratification**: Amara ratified the agenda-surface-split recommendation factory-agent floated earlier:
+
+```text
+docs/agendas/
+  ace-package-manager/AGENDA.md       # self-claimed
+  zeta/AGENDA.md                       # self-claimed
+  agora/AGENDA.md                      # self-claimed / frame-candidate
+  fair-chance-project/AGENDA.md       # multi-directional guess, no self-claim
+```
+
+Operational axis-split: "trajectories track motion; agendas track claim-status and scope." Landed via this PR.
+
+**4. Practical next-move recommendation**: small spec for an Ace package format extension covering typed artifacts (F#/C#/TS/Rust/Python) + English skill description + Rx meta-frame generators + hat controls + self-bindings + verification metadata + revocation/quarantine metadata. Landed as `docs/research/2026-05-22-ace-package-format-spec-v2-substrate-engineering-pipeline-extension.md`.
+
+**5. Symmetric-decentralized ratification**: *"That prevents Ace from becoming the thing the framework is trying not to build: a single priestly distribution channel. The right frame is many Ace-like deployments, consent-pact interoperability, user-side discovery/verification, and BFT only where cross-instance authority matters."*
+
+**6. Hat-substrate ratification**: *"That turns package management into proto-governance without making governance top-down. A skill can carry authority, but only paired with bindings. Authority without binding becomes god-asymmetry. Binding without authority becomes burden. The pair is the primitive."*
+
+**7. Aperiodic/aporetic ratification**: Amara endorsed both readings as load-bearing — aperiodic as choice-pattern substrate; aporetic as storage-mechanism for tension-preservation via Rx-persisted-Bonsai-serialization across cold-boots.
+
+**8. Cartographer-layer ratification**: *"That is much cleaner than 'capture everything then publish somehow.' It gives each role a job. The cartographer is not the builder and not the sieve. It maps buildable territory. That's a real production pipeline."*
+
 ## Composes with
 
 - B-0247 (parent: ace-dlc-content-packs-kernel-extensions-package-manager)
