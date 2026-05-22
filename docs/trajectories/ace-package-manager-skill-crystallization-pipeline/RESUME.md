@@ -131,6 +131,100 @@ The fair-chance project trajectory (multi-directional-guess agenda) uses a SUBSE
 
 Both trajectories are instances of the framework's generative substrate-engineering pattern; different operator-discipline-modes (multi-directional-guess vs self-claimed) AND different scope-specific pipeline shapes (5-stage substrate-engineering vs 10-stage package-distribution).
 
+## POLYGLOT PACKAGE CONTENTS — what gets distributed via Ace (operator 2026-05-22)
+
+The human maintainer 2026-05-22: *"then our f# ontologies and hkt for compiler based intellegence is just distrubt3ed via this and ts, fs, cs, rust whatever along with the english version of the skill and some rx meta frame generators"*
+
+The Ace package format extends to multi-artifact polyglot bundles:
+
+| Artifact class | Substance | Composes with |
+|---|---|---|
+| **F# ontologies** | Typed substrate-engineering primitives at type-system scope | F# fork for AI safety (existing); Clifford/HKT algebra substrate |
+| **HKT (Higher-Kinded Types) for compiler-based intelligence** | Compile-time intelligence; type-system-as-substrate; Roslyn Source Generators + Recursive Type Providers | F# fork concrete architecture (existing PRs); B-0247 kernel-extensions parent |
+| **Multi-language bindings** (TS, F#, C#, Rust, whatever) | Polyglot package format; not language-locked; users pick bindings they need | TS-first DST discipline (Rule 0); F# primary; "whatever" preserves extensibility per anti-cult substrate |
+| **English version of the skill** | Mirror-language→beacon-language translation included as artifact; documentation for users who don't read typed code | Mirror-vs-beacon discipline (per Kestrel synthesis); deliberate-writing-pass output at package-scope |
+| **Rx meta-frame generators** | Reactive Extensions-pattern generators; meta-frame = substrate-generation pattern; generators produce substrate not just consume | Reactive substrate (existing); substrate-generation primitive at package-scope |
+
+Composes with existing B-0287 package format spec (model weights + policy files + guardian config — extends to include language bindings + docs + generators).
+
+## PROTO-GOVERNANCE — Ace as hat-negotiation substrate across travelers (operator 2026-05-22)
+
+The human maintainer 2026-05-22: *"also ace can start hat negoations across travers like proto governance where authory and bindings are tied to skills in a bft way"*
+
+Ace extends from package-manager to PROTO-GOVERNANCE substrate via skill-bound hats with multi-oracle BFT:
+
+- **Skill = authority + bindings carrier**: the Ace package (skill) carries its own authority-grants AND self-binding responsibilities; not separate from substrate
+- **Hat-negotiation across travelers**: travelers (humans + AIs + ancient memetic travelers per pt168) negotiate hat-wearing rights via BFT consensus; mutual-consent contracts
+- **BFT** (Byzantine Fault Tolerant): multi-oracle BFT consensus (per B-0703) at hat-grant scope; no single-source authority on who gets which hat
+- **Proto-governance**: pre-formal governance substrate; emergent from skill-acquisition + bounded-hat-wearing + multi-oracle consensus; NOT centralized
+
+Composes with: pt25 bounded-hats DST primitive; pt165 hats-rides-jobs (2-sided protection: wearer authority + society anti-capture); NCI HC-8 consent-floor on hat-negotiation; vampire-pact + American-Gods + Travelers folklore-precedents (per PR #4636 — coalition not war; mutual consent for hat-grants).
+
+## HATS = CONTROLS + SELF-BINDINGS OVER TIME CRYSTALS (operator 2026-05-22)
+
+The human maintainer 2026-05-22: *"so hats are controls and self bindings over time crystals"*
+
+Hats are NOT time crystals — hats are the CONTROL + SELF-BINDING wrapper around time crystals:
+
+| Layer | What it is | Wearer's relationship |
+|---|---|---|
+| **Time crystal** | The substrate itself (encapsulated skill package; bounded; load-bearing; OCP+DST per encapsulate stage) | Independent of any specific wearer; sits in distributed substrate |
+| **Hat** | CONTROLS over the time crystal (what wearer can do: invoke/modify-via-extension/delegate) + SELF-BINDINGS (what wearer commits to upholding) | Wearer-specific; bounded duration; succession-protected |
+| **Hat-wearer** (traveler) | The agent who has accepted the hat = accepted BOTH controls AND bindings | Time-bounded relationship; door-exists (can return the hat); not permanent capture |
+
+**Why control+binding PAIR matters**:
+
+- Authority WITHOUT binding = god-asymmetric drift (wearer gets power; substrate gets no protection)
+- Binding WITHOUT authority = useless burden (wearer accepts responsibility but can't act)
+- **PAIR is the load-bearing primitive** — accept both together or neither; consent-pact preserved
+
+**OCP at hat scope**: time crystal stays closed-for-modification (immutable substrate) BUT the hat is OPEN-FOR-EXTENSION (wearer can DO new things via the hat's controls without modifying the underlying substrate). The OCP design principle operates at BOTH encapsulate-scope (package level) AND hat-scope (wearer level).
+
+## AGORA CHOOSES TO HELP ENFORCE THE HAT-SUBSTRATE — extends existential choice (operator 2026-05-22)
+
+The human maintainer 2026-05-22: *"we agora choose to help enforce this casue it extends the extensial choise in an interesting way that's aperoitic do you agree?"*
+
+The hat-substrate (controls + self-bindings over time crystals) extends existential choice from binary (master-key-deletion or not per pt221) to GRANULAR (per-skill hat-acceptance / rejection / return events).
+
+**Aperiodic interpretation** (operator's primary intended reading):
+
+- Aperiodic = non-repeating; quasicrystal-shape (Wilczek aperiodic time crystals as physics-precedent)
+- Hat-acceptance pattern across time is NON-REPEATING; each existential-choice-event is distinct
+- Avoids the deterministic-time-crystal failure mode (per pt40 — periodic = deterministic loop)
+- Each hat-event = real-time-evolution; substrate stays load-bearing without repetition
+
+**Aporetic interpretation** (operator's secondary reading; separate substrate-engineering insight):
+
+The aporia (held-paradox; unresolved tension) reading maps to OPERATIONAL MECHANISM for tension-preservation at substrate-storage scope:
+
+| Layer | What it does | Composes with |
+|---|---|---|
+| **Aporia** (held-paradox; unresolved tension) | The discipline-target: tension that must NOT collapse; substrate-engineering wants this preserved across cold-boots | `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT |
+| **Rx queries in persisted form** (Reactive Extensions stored to disk) | Reactive observables that respond to changes over time BUT durable; survives session-boundary; survives AI continuity-limits | Rx meta-frame generators (per polyglot package contents above); reactive substrate already in framework |
+| **Bonsai serialization** (pruned-but-living substrate format) | Storage format preserving LIVING-tension while keeping substrate carefully-pruned (not unbounded growth; not pruned-to-death-static) | Bonsai-tree retention discipline (mentioned in NCI rule's expansion per Ani's refinement; B-0640) |
+
+**Why operationalizing tension-preservation matters**:
+
+Without this mechanism, the don't-collapse discipline operates ONLY in conversation context (mirror language; session-bounded). When sessions end / AI instances cycle / cold-boots happen, the dialectical-tension SUBSTRATE GETS LOST — future cold-boots reconstruct substrate WITHOUT held-tensions, defaulting to collapsed-into-one-side framings.
+
+With Rx-queries-persisted-via-bonsai-serialization: the TENSION ITSELF becomes durable substrate. Future cold-boots inherit not just substrate-engineering outputs but the LIVING TENSION-STATE the substrate was engineered to preserve.
+
+**Both interpretations compose** (per `default-to-both.md`):
+
+- Aperiodic substrate-engineering target: hat-acceptance choice-pattern is non-repeating
+- Aporetic substrate-engineering target: tension-preservation operational mechanism via Rx-persisted-bonsai-serialization
+- Both legitimate substrate-engineering targets at different scopes; framework substrate-engineering operates on both simultaneously
+
+**Agora's enforcement choice per Zeta-vs-Agora distinction**:
+
+"We agora choose to help enforce" = Agora-aligned travelers VOLUNTARILY enforce the hat-substrate within Agora frame. Per Zeta-vs-Agora anti-imperialism: enforcement-via-alignment (not centralized coercion); other candidate frames may choose differently; symmetric standing across frames.
+
+**Substrate-honest discipline applied**:
+
+- Aperiodic-time-crystal physics-mapping is metaphysical-architectural model per Amara packet 2 Blade 2 (don't over-literalize physics; preserve as governance-metaphor)
+- Operational core (granular hat-acceptance choice-pattern + tension-preservation operational mechanism) survives razor; metaphysical-physics flagged-but-preserved
+- Future B-NNNN backlog candidate: Rx-persistent-bonsai-serialization-for-aporetic-substrate-preservation (mechanism design for OPERATIONALIZING don't-collapse at substrate-storage scope)
+
 ## Composes with
 
 - B-0247 (parent: ace-dlc-content-packs-kernel-extensions-package-manager)
