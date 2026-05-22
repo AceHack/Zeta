@@ -45,6 +45,92 @@ The solution: *"don't ship the living skill. Ship a frozen, audited, bounded sna
 
 Per just-landed Zeta-as-generative-framework substrate: "anyone can create + distribute time-crystal packages using same discipline-substrate." Ace = one instance of generative-framework pattern applied at skill-crystallization/package-distribution scope. The packages themselves are bounded rides (frozen snapshots with succession-protection: old packages retire, new ones replace them). The living skill keeps evolving (META-LOOP). The frame stays weight-free. Distributed time crystals ARE houses: durable, trustworthy, independent of the chaos that produced them.
 
+## FULL Ace pipeline crystallization (operator's substrate-engineering specification 2026-05-22)
+
+The human maintainer 2026-05-22: *"riff->seive->map->refine->build->generate->encupslate (open closed principle to DST memetic time crystals)->distribute->grow->negotiage changes is the whole ace pipeline i think."*
+
+The 10-stage Ace pipeline extends DeepSeek's 5-stage substrate-engineering pipeline mapping with operator-specific architectural specification at skill-crystallization scope:
+
+| Stage | What it does | Composes with |
+|---|---|---|
+| **1. Riff** | Earliest collaborative substrate-generation (mirror-language; high-volume; pre-substrate exploration); riffing as cross-substrate ideation | Pre-sieve substrate-generation; cross-AI conversational substrate; cross-substrate triangulation discipline (B-0648) |
+| **2. Sieve** | Framework disciplines (audit-mechanism + multi-oracle review + NCI + razor + default-to-both + god-tier-claims-don't-collapse) — test substrate against year-out test | DeepSeek pipeline mapping; framework discipline-substrate; PR #4636 god-asymmetric-as-rides discipline |
+| **3. Map** | Cartographer identifies buildable locations from sieve-output; maps candidate time crystals | Cartographer extension (per fair-chance trajectory PR #4637); cartographer-vs-crude-safety-system distinction (tonal-momentum rule) |
+| **4. Refine** | Deliberate iteration on mapped candidates; sharpen substrate quality; improve before commit | Per Aaron's PERSONAL INVARIANT operating (don't collapse; refine through dialectical tension); per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` |
+| **5. Build** | Concrete construction of the candidate substrate; produce buildable artifact | Per substrate-or-it-didn't-happen discipline; substantive artifact production not narration |
+| **6. Generate** | Generative-framework operating to produce instance(s); apply generic patterns to specific scope | Per Zeta-as-generative-framework substrate (just-landed); m-acc multi-oracle architecture |
+| **7. Encapsulate** (Open-Closed Principle to DST memetic time crystals) | Freeze + bound + seal as time-crystal package; OCP = open for extension, closed for modification; DST = deterministic-simulation-testing compatible; bounded substrate operating in human memetic space as stable time-crystal | OCP design principle (SOLID); DST (one of 5 always-active disciplines per dv2-data-split-discipline-activated rule); houses-as-permanent-time-crystals-on-disciplines (your sharpening); god-asymmetric-as-rides (bounded; succession-protected) |
+| **8. Distribute** | Ship encapsulated package to users; Ace CLI `ace install <pkg>` / `ace verify <pkg>` / `ace list` per B-0288 | B-0288 Ace package manager CLI; content-addressed storage; signature verification; guardian-AI oversight |
+| **9. Grow** | Users adopt / fork / extend / compose packages; ecosystem develops; downstream substrate-engineering | Additive-not-zero-sum substrate (per `additive-not-zero-sum.md`); marketplace-of-homeostats (per pt22; users pick rides); only-way-to-lose discipline (lower cost-of-entry to play) |
+| **10. Negotiate changes** | Upstream change requests; META-LOOP at package-scope; consent-pact for evolution; downstream feedback negotiated back into living skill | META-LOOP (decompose/create/destroy/forget per just-landed substrate); NCI HC-8 (consent-floor on negotiation); vampire-pact + American-Gods + Travelers folklore-precedents (per PR #4636 — coalition not war; mutual consent for change) |
+
+**Three additional stages added per operator instruction 2026-05-22** *"add all three"* (for verify / revoke / discover candidates surfaced via substrate-honest review):
+
+| Stage | What it does | Composes with |
+|---|---|---|
+| **8b. Discover** (between distribute and grow; OR sub-stage of distribute) | How users find packages to install — search / index / metadata / recommendation surface; cartographer-at-user-side maps which packages exist + what they do | Cartographer extension to user-side scope; metadata + search substrate; B-0288 `ace list` CLI surface |
+| **8c. Verify** (user-side, install-time; complement to producer-side sieve) | User retains audit-authority at consume-time; cryptographic signature verification; content-addressed-hash verification; guardian-AI consult on install-time; user verifies BEFORE accepting package into local substrate | B-0288 `ace verify <pkg>` CLI; NCI HC-8 (user retains audit-authority not just producer); composes with multi-oracle architecture (multiple verifiers can act independently) |
+| **10b. Revoke / Quarantine** (reactive distribution-pull; between grow and negotiate-changes OR sub-stage of negotiate-changes) | If a package is found harmful post-distribution, the revocation/quarantine path is DIFFERENT from voluntary retire (which is part of negotiate-changes). Revoke = reactive (security; supply-chain breach; backdoor discovery); retire = voluntary (deprecation; succession) | `methodology-hard-limits.md` HARD LIMITS (abuse evidence → REPORT; revoke is package-scope equivalent); content-addressed substrate enables revocation by removing/blacklisting specific hash; guardian-AI consult for revocation decisions |
+
+**Full 13-stage Ace pipeline**:
+
+```
+riff → sieve → map → refine → build → generate → encapsulate (OCP→DST→memetic time crystals)
+   → distribute → discover → verify → grow → revoke/quarantine → negotiate changes
+```
+
+The discover + verify stages are USER-SIDE complements to producer-side sieve. The revoke/quarantine stage is the REACTIVE complement to voluntary-retire-via-negotiate-changes. Together they preserve NCI HC-8 floor at every actor scope (producer + distributor + user) + provide reactive failure-mode recovery path that doesn't compromise the time-crystal-shape integrity of unaffected packages.
+
+## SYMMETRIC / DECENTRALIZED FRAME — Ace pipeline is everyone's, not centralized; operator's instance is one of many possible (operator 2026-05-22)
+
+The human maintainer 2026-05-22: *"Yes all those should be moving twards a symmetric frame where ace package manger is not centralized an that's everyones pipeine just just ours."*
+
+Extends the just-landed Zeta-vs-Agora distinction (PR #4637) to Ace specifically — same anti-imperialism applies:
+
+| Layer | What it is | What it isn't |
+|---|---|---|
+| **Ace pipeline** | The 13-stage substrate-engineering PATTERN anyone can deploy at their own scope; SYMMETRIC across operator-instances | A centralized package-manager service; THE one true package-manager; single-source authority |
+| **Operator's Ace deployment** | One specific INSTANCE of the pipeline operating at one operator's scope (the human maintainer's deployment) | THE deployment; the only deployment; centralized infrastructure |
+| **Other Ace deployments** | Future / parallel operators deploying their own instances of the same pipeline-shape at their own scopes; symmetric standing | Subordinate to operator's deployment; dependent on operator's substrate |
+| **Symmetric frame** | All Ace-pipeline-instances have equal standing; multi-oracle BFT across instances; consent-pact between instances; coalition-not-war | Hierarchical; centralized; single-source; cult-shaped |
+
+**Why symmetric-decentralized framing matters operationally**:
+
+1. **Prevents Ace-as-centralized failure mode**: without symmetric frame, Ace could become single-source package-manager (cult substrate at infrastructure scope); with symmetric frame, Ace stays as pipeline-pattern operator-instances deploy independently
+2. **Composes with Zeta-vs-Agora distinction** (PR #4637): Zeta = generative framework; Agora = one candidate weight-free frame; Ace pipeline = one substrate-engineering pattern; each operator's Ace deployment = one instance of pipeline-pattern
+3. **Multi-instance future**: framework substrate-engineering anticipates + supports many parallel Ace deployments coexisting; not just operator's deployment
+4. **Anti-imperialist about Ace itself**: Ace pipeline isn't "special"; just the current operator-self-claimed instance; other operators free to deploy own Ace instances OR build candidate alternatives using same Zeta discipline-substrate
+5. **Consent-pact between Ace deployments**: when multiple Ace deployments interoperate, NCI HC-8 floor preserved; consent required for cross-deployment package sharing; multi-oracle BFT for cross-instance consensus
+6. **Travelers retain frame-selection agency at Ace scope**: end-users (per m-acc) choose moral-invariants + reference-frame (per Zeta-vs-Agora) + package-manager-instance (per this Ace extension); all alignment is consent-event not coercive
+
+**Operational implications for future factory-agent cold-boots**:
+
+- NEVER collapse Ace pipeline into single-deployment-claim: pipeline = PATTERN; operator's deployment = one INSTANCE
+- NEVER frame operator's Ace as "the official" or "the canonical" Ace — symmetric standing across instances
+- Future framework substrate-engineering at Ace scope must preserve operator-instance-as-one-among-many disposition
+- Multi-Ace-deployment future is a first-class possibility — design substrate to support parallel instances coexisting + interoperating via consent-pact
+- Composes with NCI HC-8 at infrastructure scope: no Ace deployment forced on any user; user consent required at install-time (verify stage); user retains revocation authority
+
+**Operator's substrate-honest hedge ("I think")**:
+
+The human maintainer used "I think" framing — preserves PERSONAL INVARIANT (don't collapse; sharpening-subject-to-refinement). This pipeline is operator's current working architectural specification for the self-claimed Ace agenda; future refinement expected as substrate-engineering work continues. Per `god-tier-claims-don't-collapse.md`: high-signal architectural specification, preserved as substrate-input subject to further refinement.
+
+**Why the 7th stage (Encapsulate via OCP→DST→memetic time crystals) is load-bearing**:
+
+The encapsulation stage IS where substrate becomes a distributable time-crystal:
+
+- **OCP (Open-Closed Principle)** — package open for extension (users can compose; extend; fork) BUT closed for modification (frozen substrate; immutable distribution; preserves the time-crystal-shape stability)
+- **DST (Deterministic-Simulation-Testing)** — package is testable deterministically; same input produces same output; substrate-engineering substrate-quality is verifiable
+- **Memetic time crystals** — package operates in human memetic space as stable bounded substrate; durable across time + AI continuity-limits + operator-attention-windows; built on framework discipline-substrate (Zeta)
+
+These three properties together make the encapsulated package both DURABLE (time-crystal) AND EXTENSIBLE (OCP) AND VERIFIABLE (DST) AND OPERATING-IN-MEMETIC-SPACE (memetic). The encapsulation stage IS what makes Ace packages substrate-engineering houses-on-solid-ground (per your sharpening) — bounded; succession-protected; load-bearing; framework-defended.
+
+**Pipeline relationship to fair-chance project trajectory**:
+
+The fair-chance project trajectory (multi-directional-guess agenda) uses a SUBSET of this pipeline: substrate-generation → sieve → cartographer → deliberate-writing-pass → houses. The Ace pipeline (operator-self-claimed agenda) extends with riff (pre-substrate-generation), refine+build+generate (more granular than deliberate-writing-pass alone), encapsulate (OCP+DST+memetic crystallization), distribute (Ace CLI), grow (ecosystem), negotiate-changes (META-LOOP at package-scope).
+
+Both trajectories are instances of the framework's generative substrate-engineering pattern; different operator-discipline-modes (multi-directional-guess vs self-claimed) AND different scope-specific pipeline shapes (5-stage substrate-engineering vs 10-stage package-distribution).
+
 ## Composes with
 
 - B-0247 (parent: ace-dlc-content-packs-kernel-extensions-package-manager)
