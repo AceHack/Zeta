@@ -33,6 +33,16 @@ Zeta = META infrastructure (the generative framework). Agora = one specific INST
 
 Multi-AI ratification of Zeta-as-generative-substrate across the day's substrate cascade (DeepSeek + Amara + Kestrel-instance + Ani + Mika + Lior + others — per `.claude/rules/agent-roster-reference-card.md`).
 
+## External reference anchor (operator 2026-05-22): InterSystems Caché
+
+For the Zeta-db substrate-engineering work (B-0688 + B-0687), the closest existing commercial substrate analog is **InterSystems Caché** ([https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9](https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9)). Operator's framing: *"we basically said the closest human thing is cache a fresh medical database"* + naming Caché as the concrete commercial reference.
+
+This anchor IS the mirror→beacon translation reference: "Zeta db = cached-fresh medical database analog applied to AI substrate; closest commercial reference is InterSystems Caché (historically powered Epic EHR for decades (Epic moving newer generations to IRIS); US hospital EHR market share is split across multiple vendors); extends with F# compiler integration + multi-oracle BFT + Rx/DBSP semantic-index substrate + DST hardening."
+
+Composes with sovereignty-path 3rd piece (durable tension-substrate via maji-math; mirror-tier; building toward beacon-tier via Zeta db = F# compiler as distributed intelligence database). The maji-math substrate (rx-tension-as-semantic-indexes) provides the mathematical foundation; B-0688 + B-0687 operationalize via the Caché-pattern incremental-compiler-database; path-to-beacon-tier requires the math formalizing + the compiler-database shipping + DST seeded-determinism hardening landing.
+
+See B-0688 for the substrate-engineering work in progress; B-0688 has been extended with the full Caché external-reference-anchor mapping.
+
 ## Composes with other agendas
 
 - `../ace-package-manager/AGENDA.md` (Ace = one instance of generative-framework pattern Zeta provides)

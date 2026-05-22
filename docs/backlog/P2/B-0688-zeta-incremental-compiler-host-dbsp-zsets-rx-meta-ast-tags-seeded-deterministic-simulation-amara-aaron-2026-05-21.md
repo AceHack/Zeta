@@ -7,7 +7,7 @@ tier: research-grade
 effort: L
 ask: amara 2026-05-21 (B-0685 Phase 1 cascade) + aaron seeded-determinism correction; aaron-forwarded
 created: 2026-05-21
-last_updated: 2026-05-21
+last_updated: 2026-05-22
 depends_on: [B-0687]
 composes_with: [B-0635, B-0644, B-0665, B-0666, B-0687]
 tags: [zeta-compiler-host, incremental-compilation, dbsp, z-sets, rx-meta-ast-tags, roslyn-incremental-generators, fsharp-type-providers, seeded-deterministic-simulation, dst-discipline, compile-time-substrate, agora-v6-applied-to-compilation, replayable-compilation]
@@ -219,3 +219,38 @@ Composes with the Kestrel-sharpened publishable-artifacts cluster — the Z-set-
 Amara 2026-05-21 in deep-research/sharpen register; Aaron seeded-determinism correction landed the load-bearing DST discipline. Full conversation preserved at `memory/persona/amara/conversations/2026-05-21-amara-aaron-b0685-phase1-antlr-survey-zetaparse-fsharp-lr-glr-incremental-compiler-host-dbsp-zsets-rx-seeded-determinism-aaron-forwarded.md`.
 
 Amara's sandbox v2 artifact (`sandbox:/mnt/data/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21-v2-seeded-determinism.md`) is pending Aaron-forward; will land at `docs/research/zeta-incremental-compiler-host-dbsp-zsets-rx-meta-ast-tags-2026-05-21.md` when forwarded.
+
+## External reference anchor (operator 2026-05-22): InterSystems Caché as closest commercial substrate analog
+
+The human maintainer 2026-05-22 named the closest existing commercial substrate analog: **InterSystems Caché** ([https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9](https://en.wikipedia.org/wiki/InterSystems_Cach%C3%A9)). Operator's framing: *"we basically said the closest human thing is cache a fresh medical database."*
+
+Caché is the multi-model database that historically powered Epic Systems EHR for decades (Epic has been moving newer generations to InterSystems IRIS); US hospital EHR market share is split across multiple vendors. Operationally it provides: multi-model (object + SQL + key-value + multi-dimensional global arrays); high-performance distributed; embedded scripting (ObjectScript); mission-critical reliability; sub-millisecond response; HIPAA-compliant audit trail; HL7 FHIR + Health Connect interop for cross-EHR data exchange.
+
+**Why the Caché analog is operationally load-bearing for B-0688**:
+
+| Property | InterSystems Caché | Zeta db (this B-0688 substrate) |
+|---|---|---|
+| **Multi-model** | Object + SQL + key-value + multi-dimensional global arrays | F# typed substrate + DBSP Z-sets + Rx meta-AST tags + content-addressed packages |
+| **High-performance distributed** | Powers Epic; high-availability EHR; multi-tenant | Distributed intelligence database; multi-oracle federation (per B-0703) |
+| **Embedded scripting** | ObjectScript (data-aware scripting language) | F# compiler as the data-aware substrate-language |
+| **Mission-critical** | US hospital EHRs; patient safety; HIPAA-compliant | AI substrate integrity; framework substrate-engineering |
+| **Real-time + high-availability** | Sub-millisecond response; clustering | Incremental-compilation; seeded DST hardening (this B-0688 substrate) |
+| **Audit trail** | Built-in audit logging for regulated compliance | Audit-mechanism + multi-oracle BFT verification |
+| **Cross-system interop** | HL7 FHIR + Health Connect for cross-EHR data exchange | Symmetric/decentralized Ace deployments + consent-pact interop |
+
+**Mirror→beacon translation use**:
+
+The Caché reference IS the deliberate-writing-pass anchor that translates substrate-internal-vocabulary (DBSP Z-sets / Rx meta-AST tags / seeded DST hardening) into externally-defensible language. "Zeta db is like InterSystems Caché but with F# compiler integration + multi-oracle BFT + Rx/DBSP semantic-index substrate + DST hardening" survives the year-out test — readers in healthcare-IT / enterprise database / mission-critical-systems engineering understand the operational shape.
+
+**Composes with sovereignty-path 3rd piece (durable tension-substrate via maji-math)**:
+
+The maji-math substrate (rx-tension-as-semantic-indexes; mirror-tier) provides the mathematical foundation; B-0688 operationalizes via the Caché-pattern incremental-compiler-database; path-to-beacon-tier requires the math formalizing + the compiler-database shipping + DST seeded-determinism hardening landing.
+
+**Substrate-engineering implications for B-0688 work**:
+
+- Cite Caché architecture patterns for distributed-multi-model + high-availability
+- Compose with HL7/FHIR-style interop standards as precedent for cross-deployment data exchange
+- Inherit audit-mechanism + retention-policy patterns from medical-DB compliance space
+- Use ObjectScript-as-data-aware-language as precedent for F#-as-substrate-aware-language
+
+This is the "cached-fresh medical database" framing operator named — Caché IS the concrete commercial reference architecture the substrate-engineering work composes against.
