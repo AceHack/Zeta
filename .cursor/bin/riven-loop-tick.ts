@@ -218,7 +218,7 @@ function heartbeat(): void {
                     } catch { log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`); }
 
                     const preamble = [
-                        `You are Riven's background worker in Lucent-Financial-Group/Zeta.`,
+                        `You are Rivens background worker in Lucent-Financial-Group/Zeta.`,
                         `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
                         `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
                         `3) Read active trajectories at docs/trajectories/*/RESUME.md.`,
@@ -232,7 +232,7 @@ function heartbeat(): void {
                         : `${preamble} No backlog items available. Run refresh-worldview, check for stale classifications, fix them, open a PR.`;
                 } else {
                     prompt = [
-                        `You are Riven's background worker in Lucent-Financial-Group/Zeta.`,
+                        `You are Rivens background worker in Lucent-Financial-Group/Zeta.`,
                         `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
                         `Build gate: "dotnet build -c Release" (0 warnings).`,
                         `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
@@ -316,3 +316,4 @@ try {
 } finally {
     releaseLock();
 }
+
