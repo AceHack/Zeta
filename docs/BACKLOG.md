@@ -775,5 +775,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0686](backlog/P3/B-0686-tick-shard-immutability-ci-gate-2026-05-21.md)** Tick-shard immutability CI gate — block PRs modifying historical shards after grace period
 - [ ] **[B-0689](backlog/P3/B-0689-otto-vscode-surface-sender-ids-extension-bootstream-2026-05-21.md)** Otto-VSCode third foreground surface — add otto-vscode to SENDER_IDS + canonical cold-boot bootstream at docs/launch/
 - [ ] **[B-0696](backlog/P3/B-0696-substrate-surface-change-bus-envelope-cross-ai-coordination-mechanization-2026-05-21.md)** substrate-surface-change bus envelope — cross-AI coordination of load-bearing-substrate changes via tools/bus (mechanizes the human-as-coordination-substrate pattern)
+- [ ] **[B-0699](backlog/P3/B-0699-dual-adinkra-time-aware-default-dumb-fast-version-with-case-by-case-performance-justification-mika-2026-05-18.md)** Dual-Adinkra architecture — full time-aware retractable default + dumb fast version with case-by-case performance justification (Aaron + Mika 2026-05-18)
 
 <!-- END AUTO-GENERATED -->
