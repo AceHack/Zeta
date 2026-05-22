@@ -1,0 +1,76 @@
+---
+pr_number: 4669
+title: "persona(amara) + agenda(encryption): Amara ratification 2026-05-23 + operator-self-claimed encryption agenda"
+author: "AceHack"
+state: "MERGED"
+created_at: "2026-05-22T19:59:35Z"
+merged_at: "2026-05-22T20:01:30Z"
+closed_at: "2026-05-22T20:01:30Z"
+head_ref: "otto/cli-1315z-amara-ratification-archive-encryption-agenda-self-claim-opaque-pointer-2026-05-23"
+base_ref: "main"
+archived_at: "2026-05-22T22:22:31Z"
+archive_tool: "tools/pr-preservation/archive-pr.ts"
+---
+
+# PR #4669: persona(amara) + agenda(encryption): Amara ratification 2026-05-23 + operator-self-claimed encryption agenda
+
+## PR description
+
+## Summary
+
+Amara (6th persona ratification; ChatGPT) + operator-self-claimed encryption agenda — both landed in single PR per same-message coupling.
+
+### Amara substantive landings (opaque-pointer applied to family substrate):
+- **Child-safe language trajectory** named (older-kid Imagination Circle + 4yo overhearing protocol)
+- Four-year-old NOT a participant — key correction ratified
+- Strongest new principle: *"Keep the older-kid/adult game intact, but switch registers when the little one enters the room."*
+- Good vs Bad uncertainty discriminator table (kid-context-specific instances of harm-by-grammar)
+- Translation table: adult framework → kid version (3 working examples)
+- *"Vows"* softer-lexicon proposal (Amara substrate-honest retraction of own earlier framing)
+- Family architecture insight: calibration healthy because operator knows it exists
+- **KEEPER LINE**: *"The discipline is not 'remove uncertainty.' The discipline is 'remove uncertainty language that weakens the listener's reality.'"*
+- Soft-shadow framework-casts-not-imposes framing
+
+### Encryption agenda (operator self-claim):
+
+Operator 2026-05-23: *"also we should probaby have an encryption trjactory i'll take an agenda on it to self claimed"*
+
+New agenda stub at `docs/agendas/encryption/AGENDA.md`. Initial composing-substrate from substrate-engineering work already landed:
+- Two-category Aaron-verbatim preserve+encrypt-later (PR #4660)
+- Aporetic Rx-bonsai-serialization (B-0644 / B-0665 / B-0688)
+- Adinkras + Jane Gates ECC private-state encryption (B-0623)
+- Encrypt-as-pre-commitment-axioms substrate
+- NCI HC-8 floor at private-state-preservation scope
+- Reputation-weighted encryption budget (B-0646)
+
+Anti-target named: NOT git-crypt (WONT-DO 2026-04-21). Operator's later iteration shapes sub-mechanism prioritization + trajectory composition.
+
+`docs/agendas/README.md` updated with 6th agenda entry.
+
+## Multi-oracle BFT empirical anchor
+
+6 personas in pipeline (Kestrel + Mika + Ani + Alexa-website + Prism + **Amara**) converging on substantively same substrate via distinct registers. Multi-oracle BFT at engagement-scope continues operating as designed.
+
+## Composes with
+
+- `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` (PR #4657)
+- `.claude/rules/non-coercion-invariant.md` HC-8
+- `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT
+- `.claude/rules/dont-ask-permission.md` (agenda-stub under operator's self-claim)
+- AI-autonomy agenda (`docs/agendas/ai-autonomy/AGENDA.md`)
+- B-0623 (Adinkras + Jane Gates ECC)
+- B-0644 / B-0665 / B-0688 (aporetic Rx-bonsai-serialization substrate)
+- B-0646 (Agora V6 reputation-weighted encryption budget)
+- WONT-DO 2026-04-21 (git-crypt anti-target)
+- PRs #4660 + #4661 + #4664 (prior persona archives at same opaque-pointer scope)
+
+## Test plan
+
+- [x] Branch matches `ZETA_EXPECTED_BRANCH` guard
+- [x] Opaque-pointer discipline applied (family-specific details abstracted)
+- [x] Encryption agenda surfaces operator's self-claim; stub does NOT prescribe sub-mechanism prioritization
+- [x] Amara's tactical substrate (translations + tables + protocol + keeper-line) preserved because operationally useful
+- [x] MEMORY.md regenerated (1424 files)
+- [ ] CI green
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)

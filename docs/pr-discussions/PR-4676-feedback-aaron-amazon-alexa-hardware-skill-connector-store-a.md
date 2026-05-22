@@ -1,0 +1,64 @@
+---
+pr_number: 4676
+title: "feedback(aaron): Amazon Alexa+ hardware + skill/connector store as competitor-substrate to Ace + conversation-interface-bootstrap + comprehensive-testbed framing"
+author: "AceHack"
+state: "MERGED"
+created_at: "2026-05-22T20:59:12Z"
+merged_at: "2026-05-22T21:00:45Z"
+closed_at: "2026-05-22T21:00:46Z"
+head_ref: "otto/cli-1500z-amazon-alexa-plus-competitor-substrate-rodney-legal-name-harry-potter-echo-dot-2026-05-23"
+base_ref: "main"
+archived_at: "2026-05-22T22:22:23Z"
+archive_tool: "tools/pr-preservation/archive-pr.ts"
+---
+
+# PR #4676: feedback(aaron): Amazon Alexa+ hardware + skill/connector store as competitor-substrate to Ace + conversation-interface-bootstrap + comprehensive-testbed framing
+
+## PR description
+
+## Summary
+
+Six substantive observations from operator's same-cycle Amazon shipping forward + two follow-ups:
+
+1. **Amazon+ skill/connector store** = competitor-substrate to Ace package manager (centralized vendor-controlled vs decentralized symmetric); both legitimate frames per m-acc-multi-oracle
+2. **Hardware proliferation** across human-interface + business-interface scope
+3. **"Rodney" = legal first name** per shipping address-of-record — resolves earlier Alexa-website "Rodney" framing as Amazon CRM-name-of-record lookup, NOT shadow-star autocomplete artifact
+4. **Harry Potter Limited-Edition Echo Dot** composes with parenting-register substrate (Sorting Hat shared-vocabulary)
+5. **Zeta-native-AI-hardware = business-in-a-box + cash-register + IoT + coincidence-data = conversation-interface-bootstrap** — operator's framing: *"We use this pattern to make Zeta native AI speakers and cameras and sensors and such in our business in a box concept and cash register than makes money with iot and cowidence data. this composes as the conversation interface bootstrap"*
+6. **One-of-each Alexa+ comprehensive-testbed** — operator's framing: *"i bought one of each alexa+ hardward device model"* — full surface-family coverage; operator-as-substrate-engineering-testbed-operator at residence scale
+
+## Composes with
+
+- `docs/agendas/ace-package-manager/AGENDA.md` (Ace competitor-substrate observation directly informs Ace design)
+- `docs/agendas/agora/AGENDA.md` (Amazon+ store IS a frame; Ace + Agora alternative frames)
+- `docs/agendas/encryption/AGENDA.md` (PR #4669 stub — Zeta-native-AI-hardware data privacy)
+- `docs/agendas/zeta/AGENDA.md` (Zeta-native-AI-hardware substrate-engineering trajectory)
+- `.claude/rules/agent-roster-reference-card.md` (multi-surface Alexa cognition)
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` (multi-frame governance)
+- `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` (PR #4657 — Harry Potter composes at parenting register)
+- `.claude/rules/shadow-star-shorthand-autocomplete-marker.md` (distinguishes grey-text-autocomplete from CRM-name-of-record lookup)
+- `.claude/rules/zeta-ships-with-skills-immediate-value.md` (skills-layer ships first; F# crystallization later)
+- Cash register substrate cluster (PR #2822 gift-multiplication economy)
+- B-0043 (universal company + government information substrate)
+- DePIN play (PR #2826)
+- Aurora data sovereignty (PR #2825)
+- Quantum-tunnel mapping (PR #2820)
+- Divine-coincidence-architecting (PR #2821)
+- Aporetic Rx-bonsai-serialization (B-0644/B-0665/B-0688)
+- B-0288 (Ace skill-crystallization pipeline)
+- B-0703 (multi-oracle BFT)
+- B-0704 (frame-relative observation)
+
+## Substrate-honest framing
+
+Street address NOT preserved (operationally sensitive); legal first-name "Rodney" preserved per operator-authority-on-own-substrate (operator chose to share via shipping confirmation forward). Hardware-order detail preserved at general-shape (model names + Alexa+ tier + comprehensive-testbed framing).
+
+## Test plan
+
+- [x] Branch matches `ZETA_EXPECTED_BRANCH` guard
+- [x] Street address omitted; legal first-name preserved per operator-authority
+- [x] Both operator follow-ups composed into single memory file
+- [x] MEMORY.md regenerated (1427 files)
+- [ ] CI green
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)

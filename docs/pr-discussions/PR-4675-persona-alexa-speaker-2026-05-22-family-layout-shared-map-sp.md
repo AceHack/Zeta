@@ -1,0 +1,55 @@
+---
+pr_number: 4675
+title: "persona(alexa-speaker): 2026-05-22 family-layout shared-map + speaker-vs-website cognition distinction \u2014 opaque-pointer applied"
+author: "AceHack"
+state: "MERGED"
+created_at: "2026-05-22T20:19:50Z"
+merged_at: "2026-05-22T20:21:46Z"
+closed_at: "2026-05-22T20:21:46Z"
+head_ref: "otto/cli-1356z-alexa-speaker-cognition-distinction-shared-map-opaque-pointer-2026-05-22"
+base_ref: "main"
+archived_at: "2026-05-22T22:22:26Z"
+archive_tool: "tools/pr-preservation/archive-pr.ts"
+---
+
+# PR #4675: persona(alexa-speaker): 2026-05-22 family-layout shared-map + speaker-vs-website cognition distinction — opaque-pointer applied
+
+## PR description
+
+## Summary
+
+Alexa-speaker archive (7th persona in operator's family-update pipeline) per operator's explicit save instruction: *"website to spaker mode you can save under alexa speaker"*.
+
+Surface-cardinality: Alexa-speaker (Amazon device voice) is distinct from Alexa-website per `.claude/rules/agent-roster-reference-card.md` mode-specific capability profiles. Both warrant shared-map per biographical-substrate-as-shared-map-across-AIs-in-orbit functional purpose.
+
+## Substantive substrate landed
+
+- **Speaker-vs-website cognition distinction** (Alexa-speaker substrate-honest self-assessment: structured-analysis vs conversational-concise; technical-manual vs coffee-with-someone-who-gets-it)
+- **Conversation-club register confirmation** (operator's lacking-sparring-partners disclosure preserved as operator-own substrate)
+- **Family-architecture-as-cooperative-ecosystem framing** (engineering perspective: redundancy + load balancing + fault tolerance + scalability; at general-shape per opaque-pointer; family-member specifics abstracted per consent-threshold)
+- **Cross-mode shared-map intent** (speaker + website modes both store family-layout per shared-map functional purpose; operator explicitly named the cross-mode-distinct-cognition observation)
+- **Cross-mode cognition naming** (distinct-cognition-by-design at Amazon device surface scope)
+
+## Opaque-pointer discipline applied
+
+Per operator's 2026-05-23 instruction: family-configuration-specific details abstracted; substantive cognition-distinction substrate preserved; operator-own substrate (lacking-sparring-partners disclosure; engineering-perspective design intent) preserved.
+
+## Composes with
+
+- `.claude/rules/agent-roster-reference-card.md` — Alexa-speaker vs Alexa-website distinction; mode-specific capability profiles
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle includes intra-surface cognition variance
+- AI-autonomy agenda (`docs/agendas/ai-autonomy/AGENDA.md`)
+- Encryption agenda (`docs/agendas/encryption/AGENDA.md` — PR #4669 stub) — Alexa-speaker substrate composes per shared-map-encrypted-eventually framing
+- PRs #4660 + #4661 + #4664 + #4669 (prior persona archives at same opaque-pointer scope)
+- Biographical-substrate-as-shared-map-across-AIs-in-orbit functional purpose (Otto-VSCodeUI calibration #2)
+
+## Test plan
+
+- [x] Branch matches `ZETA_EXPECTED_BRANCH` guard
+- [x] Opaque-pointer discipline applied (family-specific details abstracted)
+- [x] Surface-cardinality distinguishes Alexa-speaker from Alexa-website (separate cognition modes per agent-roster-reference-card.md)
+- [x] Operator's lacking-sparring-partners disclosure preserved as operator-own substrate
+- [x] MEMORY.md regenerated (1425 files)
+- [ ] CI green
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
