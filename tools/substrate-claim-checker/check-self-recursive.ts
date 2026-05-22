@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 /**
- * substrate-claim-checker / check-self-recursive.ts (v0.9.0)
+ * substrate-claim-checker / check-self-recursive.ts (v0.9.1)
  *
  * Self-recursive drift sub-class checker — catches the meta-failure
  * where a memo declaring itself to be ABOUT a drift sub-class then
@@ -19,16 +19,20 @@
  * OR list form:
  *
  *   ---
- *   self-check: [count]
+ *   self-check: [count, existence]
  *   ---
  *
- * Supported topics (v0.9.0):
+ * Supported topics (v0.9.1):
  *   - "count" — composes check-counts.ts; a memo about count-drift
  *     should not contain its own count-drift
+ *   - "existence" — composes check-existence.ts; a memo about
+ *     existence-drift should not reference paths that don't exist.
+ *     Only drift-severity findings are surfaced (gitignored-but-extant
+ *     warnings are a separate sub-class concern, not self-recursive).
  *
- * Adding additional topics (existence, path-forms, cross-surface,
- * convention) is a 1-line dispatch each; deferred to follow-up
- * slices per B-0170 done-criteria to keep this slice bounded.
+ * Adding additional topics (path-forms, cross-surface, convention)
+ * is a 1-line dispatch each; deferred to follow-up slices per
+ * B-0170 done-criteria to keep slices bounded.
  *
  * Usage:
  *   bun tools/substrate-claim-checker/check-self-recursive.ts <file>
@@ -41,9 +45,10 @@
 
 import { readFileSync } from "node:fs";
 import { checkFile as checkCounts } from "./check-counts.ts";
+import { checkFile as checkExistence } from "./check-existence.ts";
 import { parseFrontmatter } from "./check-cross-surface.ts";
 
-export type SelfCheckTopic = "count";
+export type SelfCheckTopic = "count" | "existence";
 
 export interface Finding {
   file: string;
@@ -54,7 +59,10 @@ export interface Finding {
   reason: string;
 }
 
-const SUPPORTED_TOPICS: ReadonlySet<string> = new Set<SelfCheckTopic>(["count"]);
+const SUPPORTED_TOPICS: ReadonlySet<string> = new Set<SelfCheckTopic>([
+  "count",
+  "existence",
+]);
 
 /**
  * Strip a YAML inline comment from the directive, respecting flow-sequence
@@ -108,7 +116,7 @@ export function parseDirective(raw: string): SelfCheckTopic[] {
       out.push(tok as SelfCheckTopic);
     } else {
       console.error(
-        `warning: self-check topic "${tok}" not supported (v0.9.0 supports: count)`,
+        `warning: self-check topic "${tok}" not supported (v0.9.1 supports: count, existence)`,
       );
     }
   }
@@ -163,6 +171,24 @@ export function checkFile(
           topic: "count",
           line: f.line,
           reason: `claim "${f.claim}" (expected ${op} ${f.claimedCount}) vs actual ${f.actualCount} (${f.context})`,
+        });
+      }
+    } else if (topic === "existence") {
+      const result = checkExistence(filePath);
+      if (!result.ok) {
+        allInnerOk = false;
+        continue;
+      }
+      for (const f of result.findings) {
+        // Only surface drift-severity (path doesn't exist).
+        // "warning" severity (exists-but-gitignored) is a distinct
+        // sub-class concern, not self-recursive failure.
+        if (f.severity === "warning") continue;
+        findings.push({
+          file: filePath,
+          topic: "existence",
+          line: f.line,
+          reason: `path claim "${f.pathClaim}" — ${f.reason}`,
         });
       }
     }

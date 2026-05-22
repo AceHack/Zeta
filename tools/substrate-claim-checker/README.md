@@ -23,10 +23,10 @@ Catches 6 B-0170 check-types:
   an earlier ADR when the earlier ADR lacks the reciprocal top-of-file
   `Superseded by` marker naming the superseding ADR. Implemented in
   `check-convention.ts`.
-- **Self-recursive drift** (v0.9.0) — a memo declaring itself ABOUT a
+- **Self-recursive drift** (v0.9.1) — a memo declaring itself ABOUT a
   drift sub-class violates that same discipline within its own body.
   Opt-in via a `self-check:` frontmatter directive. Implemented in
-  `check-self-recursive.ts`.
+  `check-self-recursive.ts`. Supported topics: `count`, `existence`.
 
 The remaining deferred check-types are semantic-equivalence and
 empirical-output drift.
@@ -303,11 +303,11 @@ self-check: count
 ---
 ```
 
-OR list form:
+OR list form (v0.9.1+ supports multiple topics in one directive):
 
 ```yaml
 ---
-self-check: [count]
+self-check: [count, existence]
 ---
 ```
 
@@ -315,14 +315,20 @@ The directive is operationally honest — no heuristic topic
 detection. A file only participates in self-recursive checks if
 it opts in.
 
-### Supported topics (v0.9.0)
+### Supported topics (v0.9.1)
 
 - `count` — composes `check-counts.ts`; a memo about count drift
   should not contain its own count drift.
+- `existence` (v0.9.1) — composes `check-existence.ts`; a memo
+  about existence drift should not reference paths that don't
+  exist. Only drift-severity findings are surfaced from the
+  existence checker; the `warning` severity for
+  exists-on-disk-but-gitignored is a distinct sub-class concern
+  and not treated as a self-recursive violation.
 
-Adding additional topics (existence, path-forms, cross-surface,
-convention) is a 1-line dispatch each; deferred to follow-up
-slices per the B-0170 done-criteria.
+Adding additional topics (path-forms, cross-surface, convention)
+is a 1-line dispatch each; deferred to follow-up slices per the
+B-0170 done-criteria.
 
 ### Usage
 

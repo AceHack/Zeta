@@ -42,8 +42,19 @@ describe("parseDirective", () => {
     expect(parseDirective("count")).toEqual(["count"]);
   });
 
+  test("parses bare existence topic", () => {
+    expect(parseDirective("existence")).toEqual(["existence"]);
+  });
+
   test("parses single-element array", () => {
     expect(parseDirective("[count]")).toEqual(["count"]);
+  });
+
+  test("parses mixed-topic array preserving order", () => {
+    expect(parseDirective("[count, existence]")).toEqual([
+      "count",
+      "existence",
+    ]);
   });
 
   test("parses array preserving order and duplicates", () => {
@@ -241,6 +252,79 @@ Claims 99 rows.
       expect(result.ok).toBe(false);
     } finally {
       console.error = origErr;
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("detects self-recursive existence drift (nonexistent path)", () => {
+    const dir = tmp();
+    try {
+      const content = `---
+self-check: existence
+---
+
+# Existence-drift memo
+
+This memo references \`tools/nonexistent-subdir/missing-file.md\`
+in its body even though no such path exists.
+`;
+      const f = write(dir, "self-recursive-existence.md", content);
+      const result = checkFile(f);
+      expect(result.ok).toBe(true);
+      expect(result.findings.length).toBeGreaterThan(0);
+      expect(result.findings[0]!.topic).toBe("existence");
+      expect(result.findings[0]!.reason).toContain(
+        "tools/nonexistent-subdir/missing-file.md",
+      );
+      expect(result.findings[0]!.reason).toContain("does not exist");
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("clean existence memo passes (no path claims)", () => {
+    const dir = tmp();
+    try {
+      const content = `---
+self-check: existence
+---
+
+# Clean existence memo
+
+This memo makes no path claims, so existence check is vacuous.
+`;
+      const f = write(dir, "clean-existence.md", content);
+      const result = checkFile(f);
+      expect(result.ok).toBe(true);
+      expect(result.findings).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  test("mixed-topic array dispatches both checkers independently", () => {
+    const dir = tmp();
+    try {
+      const content = `---
+self-check: [count, existence]
+---
+
+# Mixed memo
+
+Body claims 7 rows but only 1 row follows, AND references
+\`tools/another-nonexistent/file.md\` which does not exist.
+
+| a | b |
+|---|---|
+| 1 | 2 |
+`;
+      const f = write(dir, "mixed.md", content);
+      const result = checkFile(f);
+      expect(result.ok).toBe(true);
+      const topics = result.findings.map((f) => f.topic).sort();
+      expect(topics).toContain("count");
+      expect(topics).toContain("existence");
+    } finally {
       rmSync(dir, { recursive: true, force: true });
     }
   });
