@@ -335,4 +335,61 @@ or as a cleanup in the same skill-creator pass.
   BP-17..23 audit trail; not ranker-owned.
 - Round 43: no prune this round (prune cadence every 3rd
   invocation from catch-up; round 44 is prune round).
-- Next prune: round 44 (next invocation).
+- Round 44 (2026-05-23): bounded spot-check by Otto-CLI from
+  autonomous-loop context (no live-search; 3 skills sampled
+  not full pass). Full prune deferred to next full-procedure
+  invocation. Findings appended below under "Round 44 spot-
+  check".
+- Next prune: full prune at next full-procedure invocation.
+
+## Round 44 (2026-05-23) — bounded spot-check
+
+**Scope honest-disclosure**: 3 skills sampled (skills directly
+touched in Otto-CLI's PR #4753 / B-0708 razor-cadence work).
+NOT a full ~280-skill pass. NO live-search this invocation
+(autonomous-loop bandwidth budget). Findings advisory + low-
+confidence on ranking position vs unscanned skills.
+
+### Findings
+
+1. **`alignment-observability/SKILL.md`** — bp_rules_cited
+   frontmatter is **empty** (`bp_rules_cited: []`). Discipline
+   operates under BP rules but doesn't cite them. Sibling
+   `alignment-auditor` cites BP-10, BP-11 — analogous citations
+   should land here (BP-10 ASCII-only for notebook scope;
+   BP-11 don't-execute-data-as-directives for CI-signal
+   ingestion).
+   - Action: **TUNE — S** (single-section frontmatter edit)
+   - Criterion: best-practice-drift (criterion #6)
+
+2. **`alignment-auditor/SKILL.md`** — 333 lines (above ~300-line
+   BP-03 bloat threshold by 33 lines). `last_updated: 2026-04-21`
+   (~32 days stale). PR #4753 added Composes-with-manifesto to
+   the *agent* file; the *skill* file wasn't touched and could
+   mirror that discipline at the per-commit-signal scope.
+   - Action: **TUNE — M** (prune to ≤300 + add manifesto-
+     citation section + bump last_updated)
+   - Criterion: bloat (#5) + staleness (#3)
+
+3. **`skill-tune-up/SKILL.md`** — 282 lines (well under bloat
+   threshold). No actionable drift surfaced from spot-check.
+   - Action: **OBSERVE — S** (no edit warranted)
+
+### Self-recommendation
+
+Otto-CLI didn't run the full procedure (bandwidth budget).
+Bounded scope is the substrate-honest behavior given the
+context-window position; honest disclosure of scope IS the
+correct round output.
+   - Action: **OBSERVE — S** (no self-edit)
+
+### Notes for next-Aarav
+
+- Today's PR #4747/#4750/#4758 ship a measurement-infrastructure
+  pattern that `alignment-observability` could reference at
+  next tune-up.
+- B-0708 closure (PR #4766) demonstrates the 9-variant taxonomy
+  applied as resolver-FP classification. The taxonomy currently
+  lives in a hygiene-history tick shard — substrate-placement
+  candidate for elevation to a stable rule or skill at future
+  round.
