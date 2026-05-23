@@ -624,6 +624,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0581](backlog/P2/B-0581-gh-auth-refresh-skill-wrapper-2026-05-16.md)** Skill — wrap `gh auth refresh` interactive flow + record scope-grant registry (per-machine, per-human-touch)
 - [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
 - [ ] **[B-0584](backlog/P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md)** Imaginary stack Step 1 — formalize 4D cube (R/W/P/A) and imaginary intersection as categorical/algebraic primitives
+- [ ] **[B-0590](backlog/P2/B-0590-fleet-replication-20-machines-bare-metal-os-install-kvm-mini-pcs-2026-05-16.md)** 20-machine Otto fleet replication with bare-metal OS install — KVM-driven provisioning + Beelink-class mini-PC hardware preference
 - [ ] **[B-0600](backlog/P2/B-0600-family-distributed-ai-interface-miner-fleet-mom-dad-2026-05-16.md)** Family-distributed AI interface for the miner fleet — per-relative AI identity with accountability
 - [ ] **[B-0610](backlog/P2/B-0610-amazon-orders-extract-v3-design-pass-2026-05-16.md)** Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 - [ ] **[B-0611](backlog/P2/B-0611-dangling-memory-refs-cleanup-35-refs-6-surfaces-2026-05-17.md)** Dangling memory-refs cleanup — 35 refs across 6 substrate surfaces (use PR #4042 audit tool)
