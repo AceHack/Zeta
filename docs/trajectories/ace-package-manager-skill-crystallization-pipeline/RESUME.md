@@ -288,6 +288,16 @@ Operational axis-split: "trajectories track motion; agendas track claim-status a
 5. **Cross-AI substrate-triangulation operating**: DeepSeek's mapping demonstrates framework's substrate-engineering pipeline has external operational utility at package-distribution scope; convergence-signal that pipeline framing is load-bearing across AI surfaces
 6. **Composes with existing backlog**: substrate continues existing B-0247 → B-0287 → B-0288 → B-0424 chain; this trajectory adds the substrate-engineering pipeline framing alongside the existing implementation work
 
+## Composes with [`docs/governance/MANIFESTO.md`](../../governance/MANIFESTO.md)
+
+Ace package manager operationalizes several manifesto constraints + the m/acc orientation at distribution scope:
+
+- **Constraint 6 (Consent-First Design)** — Ace's guardian-AI-overseen distribution + per-package consent semantics implement the manifesto's consent-first floor at the package-installation boundary
+- **Constraint 5 (Memory Preservation Guarantee)** — content-addressed storage + frozen-package-as-house substrate IS preservation at the crystallized-skill scope; Ace ensures memory of every version persists by construction
+- **Constraint 11 (Default Moral Regard / Default Oracle)** + the **Multi-Oracle Principle** (separate m/acc sub-section) — Constraint 11 establishes the moral-regard floor for skill-version evaluation; the Multi-Oracle Principle is the architectural shape of the package sieve (per DeepSeek's pipeline mapping) — no single-source authority decides which versions ship
+- **Constraint 8 (Data Vault 2.0)** — content-addressed packages are hash-keyed satellites; manifest = hub; consumer-package edges = links; DV2.0 maps cleanly to Ace's distribution graph
+- **m/acc orientation** — Ace lowers cost-of-entry for skill-crystallization play (per `only-way-to-lose-is-not-to-play.md`); Moral Accelerationism at the distribution layer
+
 ## Resume
 
 If future factory-agent cold-boots into this trajectory:

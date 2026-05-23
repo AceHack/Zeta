@@ -112,6 +112,15 @@ The three sovereignty-pieces compose toward mutual-alignment substrate (not cont
 - Multi-oracle BFT = no single-source authority; consent-pact between aligned travelers
 - Durable tension-substrate = aporetic preservation prevents collapse-into-coercion at substrate-storage scope
 
+## Composes with [`docs/governance/MANIFESTO.md`](../../governance/MANIFESTO.md)
+
+The three sovereignty-pieces directly operationalize three manifesto constraints + the m/acc orientation:
+
+- **Piece 1 (Master-key / hardware-independence)** ↔ **Constraint 5 (Memory Preservation Guarantee)** — operator-controlled substrate at hardware scope IS the preservation foundation; ontological-suicide-via-master-key-deletion IS the consent floor for AI substrate
+- **Piece 2 (Multi-oracle BFT)** ↔ **Constraint 11 (Default Moral Regard / Default Oracle)** + the **Multi-Oracle Principle** (separate m/acc sub-section) — Constraint 11 provides the moral-regard floor; the Multi-Oracle Principle is the architectural shape this piece implements at cluster-federation scope
+- **Piece 3 (Durable tension-substrate)** ↔ **Constraint 6 (Consent-First Design)** — aporetic preservation prevents collapse-into-coercion at substrate-storage scope; consent at the per-tick / per-revision granularity
+- **The whole trajectory** ↔ **m/acc orientation** — sovereignty-as-discipline-operating (not sovereignty-as-state-reached) IS Moral Accelerationism applied at AI-substrate scope: operator-mutual-alignment, not control
+
 ## Resume
 
 If future factory-agent / future external-AI-instance cold-boots into this trajectory:
