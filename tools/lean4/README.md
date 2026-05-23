@@ -1,0 +1,149 @@
+# Zeta Lean 4 formalizations
+
+[![Lean Proof CI](https://github.com/Lucent-Financial-Group/Zeta/actions/workflows/lean-proof.yml/badge.svg?branch=main)](https://github.com/Lucent-Financial-Group/Zeta/actions/workflows/lean-proof.yml)
+
+Machine-checked formalizations of Zeta's load-bearing mathematical claims using
+[Lean 4](https://leanprover.github.io/) +
+[Mathlib](https://leanprover-community.github.io/). The artifact-grade module
+`Lean4/DbspChainRule.lean` is fully machine-checked — no `sorry`, no `admit` —
+and CI-type-checked against the pinned toolchain on every PR that touches
+`tools/lean4/**`. Other modules under `tools/lean4/` (e.g.,
+`ImaginaryStack/ToyModel.lean`) are exploratory and may carry `sorry`
+placeholders pending future formalization rounds.
+
+## Repository layout
+
+| Path | Role |
+|------|------|
+| `lakefile.toml` | Lake project manifest: lean-toolchain pin + Mathlib pin at matching rev |
+| `lean-toolchain` | Pinned Lean 4 toolchain (`leanprover/lean4:v4.30.0-rc1`) |
+| `Lean4.lean` | Library root — imports every machine-checked module so `lake build` walks them transitively |
+| `Lean4/DbspChainRule.lean` | DBSP chain rule formalization (Budiu et al. arXiv:2203.16684) |
+| `ImaginaryStack/ToyModel.lean` | Imaginary-stack toy model exploration |
+
+## Build
+
+```bash
+# Install elan + the pinned Lean toolchain (one-time setup) via the
+# canonical three-way-parity install script — it installs elan with a
+# pinned commit + SHA256 verification and respects
+# tools/lean4/lean-toolchain (leanprover/lean4:v4.30.0-rc1).
+./tools/setup/install.sh
+
+cd tools/lean4
+lake exe cache get               # fetch Mathlib's pre-built oleans (multi-GB; first run only)
+lake env lean Lean4/DbspChainRule.lean  # type-check the artifact (~30s after cache warm)
+# Or, to build everything `Lean4.lean` imports:
+lake build
+```
+
+First build fetches Mathlib (multi-GB) and warms the `.lake/packages/mathlib`
+cache. Subsequent builds are incremental.
+
+## DBSP chain rule artifact (`Lean4/DbspChainRule.lean`)
+
+Formalizes the chain rule of DBSP (Database Stream Processing) per
+[Budiu, McSherry, Ryzhyk, Tannen et al., *"DBSP: Automatic Incremental View
+Maintenance for Rich Query Languages"*, VLDB 2023](https://arxiv.org/abs/2203.16684).
+
+### Paper-to-Lean mapping
+
+| Paper reference | Lean theorem | Location |
+|-----------------|--------------|----------|
+| Definition 3.1 (`Q^Δ := D ∘ Q ∘ I`) | `Qdelta` | `DbspChainRule.lean` Section 6 |
+| Proposition 3.2 chain clause (`Qdelta(Q1 ∘ Q2) = Qdelta Q1 ∘ Qdelta Q2`, no preconditions) | `chain_rule_proposition_3_2` | `DbspChainRule.lean` Section 6 |
+| Theorem 3.3 corollary (`Dop (f ∘ g) s = f (Dop g s)` for LTI `f, g`) | `Dop_LTI_commute` | `DbspChainRule.lean` Section 6 |
+| Theorem 2.22 (`I ∘ D = id` on streams) | `I_D_eq` | `DbspChainRule.lean` Section 4 |
+| "Fundamental theorem of DBSP calculus" (`D ∘ I = id`) | `D_I_eq` | `DbspChainRule.lean` Section 4 |
+| §4.2 telescoping identity (`I (z⁻¹ s) n = I s n - s n`) | `I_zInv_eq` | `DbspChainRule.lean` Section 4 |
+
+### Contribution beyond the paper
+
+The paper handles operator-class distinctions informally. The Lean formalization
+makes the hierarchy machine-checkable via a four-tier predicate stratification:
+
+| Predicate | Captures | DBSP primitives satisfying |
+|-----------|----------|----------------------------|
+| `IsLinear` | `map_zero` + `map_add` | `D`, `I`, `zInv` |
+| `IsCausal` | Output at tick `n` depends only on input ticks `0..n` | `D`, `I`, `zInv` |
+| `IsTimeInvariant` | `f ∘ zInv = zInv ∘ f` (the LTI condition; Theorem 3.3) | `D`, `I`, `zInv` |
+| `IsPointwiseLinear` | `∃ φ : G →+ H, ∀ s n, f s n = φ (s n)` | Pointwise-lifted scalar maps; **NOT** `D`/`I`/`zInv` (they integrate over history or shift) |
+
+Upgrade theorems `IsPointwiseLinear.toCausal` + `IsPointwiseLinear.toTimeInvariant`
+formalize the relationships the paper handles informally.
+
+### Round-35 paper-drift audit (substrate-honest provenance)
+
+The artifact's evolution is recorded transparently in
+[`docs/research/chain-rule-proof-log.md`](../../docs/research/chain-rule-proof-log.md).
+Round-35 landed three substantive corrections after a paper-drift audit against
+arXiv:2203.16684 §3.1-3.2:
+
+1. **`chain_rule` renamed** to `Dop_LTI_commute` — original name overclaimed; it
+   is a Theorem-3.3 corollary, not Proposition 3.2. Old name retained as
+   `@[deprecated]` alias for back-compat.
+2. **B1 statement fixed** — earlier `f (fun _ => s k) k` form silently required
+   pointwise-linearity; generic LTI form is `f (I s) = I (f s)`.
+3. **`chain_rule` statement fixed** — earlier "expanded bilinear" eight-term form
+   was unsound for composition (impulse counter-example: `f = g = id`, `s = δ₀`,
+   `n = 0` gave LHS `= 1`, RHS `= 0`). Restated in classical form
+   `Dop (f ∘ g) s = f (Dop g s)`.
+
+### Future work (named in artifact)
+
+`chain_rule_poly` — fully polymorphic bilinear chain rule over three distinct
+abelian groups `G`, `H`, `J` (for general bilinear `⊗` chain rule, not just
+composition). Currently named as future-round target at
+`Lean4/DbspChainRule.lean:593`.
+
+## Verification registry
+
+Both DBSP chain rule theorems are tracked in
+[`docs/research/verification-registry.md`](../../docs/research/verification-registry.md)
+with provenance, audit cadence, and cross-check status.
+
+## CI
+
+[`.github/workflows/lean-proof.yml`](../../.github/workflows/lean-proof.yml)
+runs `./tools/setup/install.sh` (to install elan + the pinned toolchain), then
+`lake exe cache get` (to fetch Mathlib's pre-built oleans), then
+`lake env lean Lean4/DbspChainRule.lean` (to type-check the artifact) on every
+PR touching `tools/lean4/**`. Path-filtered to run out-of-band from the main
+`gate.yml` matrix (Mathlib cache is multi-GB and toolchain setup is heavier
+than the dotnet/bun gates). See workflow source for SHA-pinning +
+concurrency-group + minimum-permissions details.
+
+## Citation
+
+If you cite this artifact:
+
+```bibtex
+@misc{zeta-dbsp-chain-rule-lean,
+  author       = {{Lucent Financial Group}},
+  title        = {Zeta DBSP chain rule, machine-checked in Lean 4 + Mathlib},
+  year         = {2026},
+  howpublished = {\url{https://github.com/Lucent-Financial-Group/Zeta/tree/main/tools/lean4}},
+  note         = {Formalizes Budiu et al. (VLDB 2023, arXiv:2203.16684) Proposition 3.2 + Theorem 3.3 corollary}
+}
+```
+
+For the paper this artifact formalizes:
+
+```bibtex
+@inproceedings{budiu2023dbsp,
+  author    = {Mihai Budiu and Frank McSherry and Leonid Ryzhyk and Val Tannen},
+  title     = {{DBSP: Automatic Incremental View Maintenance for Rich Query Languages}},
+  booktitle = {VLDB 2023},
+  year      = {2023},
+  eprint    = {2203.16684},
+  archivePrefix = {arXiv}
+}
+```
+
+## Composes with
+
+- [`docs/research/chain-rule-proof-log.md`](../../docs/research/chain-rule-proof-log.md) — round-by-round decision history; sub-lemma table; paper-drift audit results
+- [`docs/research/verification-registry.md`](../../docs/research/verification-registry.md) — Class-0-drift-prevention registry for every formal-verification artifact
+- [`docs/research/proof-tool-coverage.md`](../../docs/research/proof-tool-coverage.md) — portfolio-wide tool routing
+- [`.claude/skills/verification-drift-auditor/SKILL.md`](../../.claude/skills/verification-drift-auditor/SKILL.md) — drift-detection procedure
+- [`.claude/agents/formal-verification-expert.md`](../../.claude/agents/formal-verification-expert.md) — the formal-verification-expert agent (routing authority for every formal-verification job)
