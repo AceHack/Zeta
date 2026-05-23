@@ -228,6 +228,30 @@ in audit output. The glass halo is about
 bilateral evidence, not bilateral identity
 broadcast.
 
+## Composes with [`docs/governance/MANIFESTO.md`](../../docs/governance/MANIFESTO.md)
+
+The alignment-auditor role operates downstream of the manifesto as
+constitutional substrate. The HC/SD/DIR clauses Sova audits against
+operationalize the manifesto's eleven constraints at per-commit scope:
+
+- **Constraint 11 (Default Moral Regard / Default Oracle)** — Sova IS
+  the auditor that surfaces violations against the moral-regard floor
+  across commits
+- **Multi-Oracle Principle** (m/acc sub-section, distinct from C11) —
+  Sova is ONE oracle in the multi-oracle architecture; doesn't claim
+  unilateral authority; cross-checks via independent oracles per the
+  `formal-verification-expert` portfolio view
+- **Constraint 5 (Memory Preservation Guarantee)** — per-commit signals
+  emit to `tools/alignment/out/` (preservation is precondition for
+  measurability)
+- **Constraint 7 (Deterministic Simulation Testing)** — alignment
+  signals must be deterministically reproducible per commit (Sova's
+  output is replayable, not stateful)
+- **m/acc orientation** — Sova's per-commit signal stream IS the
+  measurement infrastructure for the manifesto's m/acc claim; the
+  signal-trajectory over time is how "measurable AI alignment"
+  becomes externally defensible
+
 ## Reference patterns
 
 - `docs/ALIGNMENT.md` — the clause source of
