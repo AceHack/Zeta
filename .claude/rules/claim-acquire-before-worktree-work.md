@@ -347,6 +347,26 @@ refreshed by each identity, not subject to peer-prune. Composes with the
 `claim acquire` discipline at worktree-allocation scope. Substrate-engineer
 candidate; not yet a backlog row.
 
+**Second-class symptom — fresh-worktree gitdir-prune race** (2026-05-23T02:09Z–02:20Z empirical anchor): a related variant of sub-case 4 was observed at autonomous-loop cold-boot under Lior 3-proc / 337-worktree saturation. The mode is distinct from the borrow-on-listed-sidetick mode above:
+
+- `git worktree add -b <branch> <path> origin/main` returns exit 0 with full file-extraction completing (`Updating files: 100% (6127/6127), done.`) and `HEAD is now at <sha>` confirmation message
+- The worktree directory at `<path>` is fully populated on disk (44+ entries; `.claude/`, `.codex/`, etc.; readable via `ls`)
+- The worktree's `.git` pointer file at `<path>/.git` correctly references `gitdir: <repo>/.git/worktrees/<name>`
+- BUT the gitdir target at `<repo>/.git/worktrees/<name>/` is **absent** when inspected post-creation
+- Subsequent `git -C <path> rev-parse HEAD` returns `fatal: not a git repository: (null)` despite the worktree directory and `.git` pointer existing
+
+**Detection**: this is NOT caught by the post-worktree-creation freshness guard (`git status --short` + `git ls-tree HEAD`) because BOTH commands fail with the same `not a git repository` error before producing diagnostic output — the freshness guard's empty-output reads as "0 lines" which the existing guard treats as clean. **The guard MUST distinguish "command failed" from "output was empty"** to catch this mode. Add explicit `git -C <wt> rev-parse HEAD` as a pre-guard step; if it fails, abandon the worktree without further inspection.
+
+**Non-deterministic under same conditions**: the 2026-05-23 session observed the failure on attempt 1 (02:09Z) and clean success on attempt 2 (02:20Z) under unchanged saturation conditions (Lior 3 procs both attempts; wt 337 both attempts; GraphQL Normal tier both attempts; same `/private/tmp/` parent; ~11min apart). The prune race is therefore **timing-dependent**, not condition-dependent — retry-after-cleanup CAN succeed under identical saturation. This refines the rule's prior "no working mitigation today" stance: at forced-#6 decomposition (per [`holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md) counter), a single retry after orphan cleanup is a substrate-honest move; repeated retries amplify peer-WIP contamination risk and remain forbidden.
+
+**Orphan cleanup is mandatory before retry**: the failed-attempt's worktree directory persists on disk with valid file content but no gitdir backing, occupying the candidate path. `rm -rf <wt-path>` + `git branch -D <branch>` clears both surfaces. Cleanup is safe because no commits landed (the worktree was unusable from creation); no peer agent can be using this worktree (no gitdir means no peer git operation can target it).
+
+**Empirical totals across sub-case 4 anchors**:
+
+- 2026-04-29 (original anchor): borrow-on-listed-sidetick failure (directory pruned mid-borrow)
+- 2026-05-23T02:09Z (this anchor, attempt 1): fresh-worktree-add gitdir-prune at 337-worktree scale
+- 2026-05-23T02:20Z (this anchor, attempt 2): clean success at 337-worktree scale; same conditions; this commit shipped via the attempt-2 worktree
+
 ### Composite operational discipline under saturation
 
 When a fresh session (especially scheduled-task autonomous-loop firing
