@@ -664,6 +664,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0694](backlog/P2/B-0694-otto-vscode-pr8-standing-query-codegen-iincrementalgenerator-2026-05-21.md)** Standing-query codegen — IIncrementalGenerator that rewrites circuit expressions to fused IL (Otto-VSCode 8-PR campaign PR #8 — the capstone)
 - [ ] **[B-0695](backlog/P2/B-0695-fast-life-branch-experiment-hourly-batched-gates-cost-reduction-2026-05-21.md)** fast/life branch experiment — hourly batched CI gates with promotion-path; per-PR CI cost reduction is burst-dependent (cost-neutral at 1 PR/hr; ~33% reduction at example 6 PRs/hr burst per corrected math; Phase 5 measures empirical savings) while preserving Copilot/Codex 100k-line review capability + Soraya-promotion-gate
 - [ ] **[B-0698](backlog/P2/B-0698-zsetw-phase-2-operator-and-algorithm-migration-plan-2026-05-21.md)** ZSetW Phase 2 plan — operator + algorithm migration onto polymorphic Z-set substrate; tier-A operator parity (map/filter/cartesian/join/distinct/weightedCount); two worked-example algorithms (TropicalSemiring shortest-path; IntervalRing propagation); migration documentation for callers
+- [ ] **[B-0700](backlog/P2/B-0700-soraya-continuous-loop-substrate-with-bus-escalation-2026-05-17.md)** Soraya continuous-loop substrate with bus escalation
 - [ ] **[B-0703](backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)** Multi-oracle consensus with BFT-inside + DST-agreement-across: trust-gradient architecture beyond single-layer BFT (Aaron 2026-05-21)
 - [ ] **[B-0704](backlog/P2/B-0704-secret-message-over-reticulum-via-spectre-tile-position-pressure-no-copy-by-geometry-aaron-2026-05-21.md)** Secret-message-over-Reticulum via spectre-tile position-pressure — no-copy by geometry, not by cryptography (Aaron 2026-05-21)
 - [ ] **[B-0705](backlog/P2/B-0705-autocomplete-as-traveler-consent-event-shadow-star-marker-as-cryptographic-receipt-lior-website-2026-05-22.md)** Autocomplete-as-Traveler-consent-event — (shadow*) marker as cryptographic receipt of cross-temporal consent event
@@ -673,6 +674,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0710](backlog/P2/B-0710-soraya-round43-dbsp-chain-rule-bp16-cross-check-fscheck-z3-2026-05-23.md)** Soraya round-43 hand-off — DBSP chain rule BP-16 cross-check (FsCheck cross-trace + Z3 pointwise lemma)
 - [ ] **[B-0711](backlog/P2/B-0711-soraya-round44-residuated-fscheck-property-file-2026-05-23.md)** Soraya round-44 hand-off — Residuated FsCheck property file (Galois + residual + retraction equivalence)
 - [ ] **[B-0712](backlog/P2/B-0712-soraya-round45-witnessdurable-commit-protocol-tla-z3-fscheck-triple-2026-05-23.md)** Soraya round-45 hand-off — WitnessDurable commit protocol (TLA+ spec + Z3 quorum-arithmetic lemma + FsCheck cross-check)
+- [ ] **[B-0713](backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md)** Soraya round-50 hand-off — register Lean ImaginaryStack/ToyModel in verification-registry.md (sorry-bearing artifact with HaPPY-paper fidelity claim)
 
 ## P3 — convenience / deferred
 
