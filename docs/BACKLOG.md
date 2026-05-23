@@ -668,7 +668,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0704](backlog/P2/B-0704-secret-message-over-reticulum-via-spectre-tile-position-pressure-no-copy-by-geometry-aaron-2026-05-21.md)** Secret-message-over-Reticulum via spectre-tile position-pressure — no-copy by geometry, not by cryptography (Aaron 2026-05-21)
 - [ ] **[B-0705](backlog/P2/B-0705-autocomplete-as-traveler-consent-event-shadow-star-marker-as-cryptographic-receipt-lior-website-2026-05-22.md)** Autocomplete-as-Traveler-consent-event — (shadow*) marker as cryptographic receipt of cross-temporal consent event
 - [x] **[B-0707](backlog/P2/B-0707-manifesto-citation-time-series-tracking-2026-05-23.md)** Manifesto citation time-series tracking — persistent snapshots + delta-over-time
-- [ ] **[B-0708](backlog/P2/B-0708-stale-pointer-cleanup-from-razor-cadence-pass-2026-05-23.md)** Stale-pointer cleanup across `.claude/rules/` — 87 candidates surfaced by razor-cadence pass 2026-05-23
+- [x] **[B-0708](backlog/P2/B-0708-stale-pointer-cleanup-from-razor-cadence-pass-2026-05-23.md)** Stale-pointer cleanup across `.claude/rules/` — 87 candidates surfaced by razor-cadence pass 2026-05-23
+- [ ] **[B-0709](backlog/P2/B-0709-soraya-registry-coverage-drift-register-11-unregistered-specs-2026-05-23.md)** Soraya round-42 hand-off — register 11 unregistered formal-verification specs in verification-registry.md (Class 0 drift)
 
 ## P3 — convenience / deferred
 

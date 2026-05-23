@@ -1,7 +1,9 @@
 ---
 id: B-0708
 priority: P2
-status: open
+status: closed
+closed: 2026-05-23
+closed_by: "slice 1 (PR #4764) reduced 87 → 17 candidates (-80%) via audit-rule-cross-refs.ts resolver improvements + 1 real-stale fix; remaining 17 all classify as rule-acknowledged-healthy per 9-variant taxonomy"
 title: "Stale-pointer cleanup across `.claude/rules/` — 87 candidates surfaced by razor-cadence pass 2026-05-23"
 tier: governance
 effort: M
@@ -27,11 +29,36 @@ Stale pointers in rules erode rule trustworthiness: when an auto-loaded rule cit
 
 ## Acceptance criteria
 
-- [ ] Run `bun tools/hygiene/audit-rule-cross-refs.ts --report stale-pointer-report.md` to capture full candidate list with file + reference context
-- [ ] Apply 9-variant taxonomy classification to each candidate (concrete / glob / template-path / backlog-ID / legacy-noted / transient / anti-pattern / conditional / alternative-location)
-- [ ] For each "real stale" candidate: fix the pointer OR remove the dead reference OR mark the reference as transient with explicit note
-- [ ] Re-run audit; target ≤5% MISS rate (healthy-FP floor only)
-- [ ] Land cleanup as a single PR or small slice of PRs (one per rule cluster if too large)
+- [x] Run `bun tools/hygiene/audit-rule-cross-refs.ts --report stale-pointer-report.md` to capture full candidate list with file + reference context — shipped slice 1 (PR #4764)
+- [x] Apply 9-variant taxonomy classification to each candidate — shipped slice 1
+- [x] For each "real stale" candidate: fix the pointer OR remove the dead reference OR mark the reference as transient with explicit note — 1 real-stale fixed (`tonal-momentum` apostrophe-wording-drift); 86 reclassified as resolver-FP
+- [x] Re-run audit; target ≤5% MISS rate (healthy-FP floor only) — **3.1% MISS** achieved (17/552); below 5% floor
+- [x] Land cleanup as a single PR or small slice of PRs — shipped as single slice PR #4764
+
+## Closure rationale
+
+PR #4764 reduced candidates 87 → 17 (-80%) via:
+
+1. **Resolver improvements** (5 new paths in `refExists()`):
+   - Template-placeholder patterns (`...` / `YYYY`) → healthy-FP
+   - Command-snippet detection (embedded path in shell command)
+   - Sibling-rule resolution (bare `<name>.md` → `.claude/rules/<name>`)
+   - Peer-call wrapper resolution (bare `<name>.ts` → `tools/peer-call/<name>`)
+   - tools/hygiene/, tools/github/, memory/MEMORY.md fallbacks
+
+2. **1 real-stale fix**: `tonal-momentum-equals-meme-emergent-harmonic-coercion.md` cited `god-tier-claims-don't-collapse.md` (apostrophe-wording-drift); fixed to canonical `god-tier-claims-high-signal-high-suspicion-dont-collapse.md`.
+
+## Remaining 17 candidates — all healthy-FP per 9-variant taxonomy
+
+| Class | Count | Examples |
+|---|---|---|
+| User-scope memory references | ~7 | `codeql-no-source-...md` cites `memory/feedback_codeql_..._2026_05_15.md` (rule body: "user-scope only — preserved at `~/.claude/projects/.../memory/`") |
+| Anti-pattern citations | ~4 | `rule-0-no-sh-files.md` cites legacy `audit-*.sh` files to call out the cleared anti-pattern; `tick-must-never-stop.md` cites `loop-tick-history.md` as "NOT legacy" |
+| IF-fail-clause hypotheticals | ~2 | `test-canary.md` cites `tools/substrate-discovery/discover.ts` with "would land as..." conditional (rule body: "If fail (auto-load doesn't work in our harness)") |
+| Glob with user-scope component | ~3 | `m-acc-multi-oracle-...md` cites `memory/feedback_aaron_..._*_2026_05_15.md` user-scope; `persistence-choice-...md` similar |
+| Alternative-location / sibling-but-not-found | ~1 | `.claude/CLAUDE.md` vs root `CLAUDE.md` (test-canary acknowledges both alternative locations) |
+
+All 17 fall within the 5% healthy-FP floor per the 9-variant taxonomy. No further action warranted.
 
 ## Out of scope
 
