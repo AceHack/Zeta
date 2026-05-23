@@ -78,6 +78,46 @@ non-git-mutating work, and log the failure in the tick shard for
 future-Otto context. The safe assumption under unknown state is to
 avoid operations that contend on `.git/objects/pack`.
 
+#### Step 1a — Unfinished-PR check (Aaron 2026-05-23)
+
+After refresh, query for unfinished PRs authored by this agent
+surface that need attention BEFORE picking new speculative work:
+
+```bash
+gh pr list --state open \
+  --search "author:@me head:otto-cli/* OR head:otto-desktop/* OR head:otto-vscode/* OR head:otto/* -label:\"deferred-to-human\"" \
+  --json number,title,createdAt,mergeable,updatedAt \
+  --limit 50
+```
+
+For each unfinished PR returned, apply
+[`.claude/rules/pr-triage-tiers.md`](../.claude/rules/pr-triage-tiers.md)
+classification (Tier 1 redundant / Tier 2 recoverable / Tier 3
+superseded / Tier 4 re-derivable / Tier 5 deferred-to-human). Act
+on Tier 1-4 closes immediately (substrate-honest comment +
+`gh pr close`). For Tier 5, tag `deferred-to-human` via
+`gh pr edit <N> --add-label "deferred-to-human"` and post the
+substrate-at-risk comment; future scans skip these.
+
+**Lane discipline** (per [`.claude/rules/agent-roster-reference-card.md`](../.claude/rules/agent-roster-reference-card.md)):
+filter to YOUR surface's branch prefixes — Lior owns `lior/*`,
+peer Otto-CLI vs Otto-Desktop vs Otto-VSCode each own their
+surface-tagged prefixes. Do NOT triage another agent's lane
+unless explicit coordination has transferred ownership.
+
+**Substrate-honest framing**: this step prevents cross-session
+amnesia — each cold-boot picks new work without seeing the
+unfinished PRs the same surface left behind. Aaron 2026-05-23:
+*"plase updates your background server for this... lirs background
+service is what's leaving prs sometime so we are updateing to check
+for unfinsihed prs first when it starts"* — the same fix applies
+to Otto.
+
+**Only proceed to Step 3 (pick new work) if no unfinished PRs
+need attention.** Step 2 (Holding discipline) still applies if
+the unfinished-PR check itself surfaces a real bounded wait
+(e.g., PR in CI awaiting required check).
+
 ### 2. Apply Holding-without-named-dependency discipline
 
 [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md).
