@@ -53,7 +53,7 @@ Perform a second Cayley-Dickson doubling on the entire 8-dimensional space, intr
 
 The resulting 16-dimensional real algebra is our toy "imaginary stack".
 
-For computational simplicity we work over a finite field (e.g., ℤ/7ℤ or ℤ/17ℤ) so that all arithmetic is exact and we can enumerate small cases.
+For computational simplicity we work over a finite field (e.g., ℤ/7ℤ or ℤ/17ℤ) so that all arithmetic is exact and we can enumerate small cases. The lemma below admits two readings consistent with this scope: in the **finite-field reading** the symbol ‖·‖ is interpreted as Hamming distance over the chosen basis and the bound is exact (ε = 0); in the **ℝ-analytic reading** (treating the construction over ℝ rather than ℤ/pℤ) ‖·‖ is the Euclidean norm induced by the orthonormal basis above and ε is a small real constant. The toy model targets the finite-field reading; the ℝ-analytic form is included for compatibility with the boundary-bulk reconstruction picture that motivates Lemma 1 in the parent research.
 
 ## Reconstruction Property (Toy Version)
 
@@ -86,13 +86,6 @@ The 16-dimensional algebra obtained by two Cayley-Dickson doublings on the 4D (R
 ‖v – R(proj_S(v))‖ ≤ ε · ‖v‖
 
 for a small constant ε (ideally 0 in the exact arithmetic case), whenever the missing coordinates lie in a subspace spanned by a fixed 4-dimensional "code subspace" determined by the multiplication table.
-
-**Note on field choice (ℝ vs ZMod 17).** The lemma above is the ℝ-valued statement — an orthonormal basis on a real vector space and the norm `‖·‖` are well-defined there. The Lean toy model in `tools/lean4/ImaginaryStack/ToyModel.lean` instead uses `F := ZMod 17` for exact arithmetic and enumerability; over a finite field the ambient norm is not defined, so the inequality `‖v − R(proj_S(v))‖ ≤ ε · ‖v‖` degenerates to *exact* reconstruction (`ε = 0`) on the code subspace, with the role of the norm replaced by the count of disagreeing coordinates (Hamming distance on `F¹⁶`). Both versions are intended:
-
-- **ℝ-valued lemma** — the structural claim to lift to the continuous case (step 5 of the proof program).
-- **`ZMod 17` instantiation** — the computable existence proof that can be enumerated by SMT or Lean's `decide` tactic.
-
-The reviewer's concern that the ℝ-based norm inequality and the finite-field Lean type are mixed is correct; this note makes the two layers explicit so a proof engineer can pick the relevant version.
 
 ## Next Steps for a Proof Engineer
 
