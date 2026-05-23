@@ -47,7 +47,7 @@ See B-0688 for the substrate-engineering work in progress; B-0688 has been exten
 
 Zeta IS the generative framework that operationalizes the manifesto's eleven constraints + m/acc orientation as substrate-engineering primitives:
 
-- **Constraints 1-4** (Scale-free / Lock-Wait-free / Weight-free / Bounded Mobility) ↔ Zeta's substrate-engineering primitives — the always-active discipline set
+- **Constraints 1-4** (Scale-free / Lock/Wait-free / Weight-free / Bounded Mobility) ↔ Zeta's substrate-engineering primitives — the always-active discipline set
 - **Constraint 5 (Memory Preservation Guarantee)** ↔ Zeta DB = F# compiler as distributed intelligence database (B-0688); preservation is the DB's first job
 - **Constraint 7 (Deterministic Simulation Testing)** ↔ Zeta substrate is DST-friendly throughout; seeded determinism is the universal-DST gate
 - **Constraint 8 (Data Vault 2.0)** ↔ DBSP Z-sets + DV2.0 substrate operates throughout Zeta's data layer
