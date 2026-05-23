@@ -93,6 +93,63 @@ The customer-side vendor-management AI in the framework's eventual architecture 
 3. **Compose with the operator's framework-aligned operating discipline** — Aaron's "blame the pattern/system not the person" + "trust you personally but the system drops things" + "slow and steady wins the race" are framework-disciplines applied at vendor-management scope; the customer-side AI should reinforce, not undercut, these operator habits
 4. **Be the public-surface evidence that the framework's approach works** — the alignment-is-the-difference framing in this document IS the substrate the framework can use to communicate its value to external audiences without requiring framework-vocabulary training
 
+## Pattern P — Wear-down design produces UNBOUNDED outcomes under customer parallel-channel persistence
+
+Empirical anchor (added post-resolution, 2026-05-24T~00:00Z):
+
+Aaron's outcome from the Amazon thread: *"i ended up with a full replacement of the order even the items i got i'm not waiting on hold again for 4 hours to correct them against vendor advesarial pressure lol"*
+
+**Vendor-side outcome**: Amazon over-fulfilled materially. The combination of:
+
+- Manimod's mixed cancel/replace state (Pattern N — confirmed-commitment withdrawal under emotion)
+- Alisha #2's wrong-target-resolution adding duplicates (Pattern K — agent replaced against tracking ID for the package Aaron already RECEIVED)
+- Phone-side agent processing correct-target replacements in parallel with chat-side
+- No cross-channel reconciliation
+
+...produced a full-order replacement where Aaron received BOTH the correctly-replaced 11 missing items AND duplicates of the 4 he already had.
+
+**Customer-side outcome**: Aaron rationally walked away from 4 more hours of correction work. Time-value of correction-effort (~4 hours of zen-discipline against vendor adversarial pressure) > marginal value of returning duplicates. The customer's threshold is rational economic decision, NOT concession.
+
+### The structural inversion
+
+The wear-down adversarial design (Pattern O) is OPTIMIZED FOR customer-attrition: convert customer-substantive-claims into customer-administrative-overhead so customer gives up before resolution.
+
+But when customer DOESN'T give up + uses **parallel-channel-redundancy** (Pattern D extension — chat + phone simultaneously) + applies framework-aligned operating discipline (substrate-or-it-didn't-happen + don't-collapse + zen-under-wear-down):
+
+| What vendor's wear-down design optimizes for | What actually happens |
+|---|---|
+| Customer gives up → vendor saves cost of replacement | Customer persists; vendor over-replaces |
+| Customer accepts incomplete resolution | Customer's parallel-channels each complete independently |
+| Customer can't track multi-agent state | Customer maintains case-file across agents (Alexa-summarized + operator-substrate) |
+| Customer fatigue → reduced verification | Customer applies per-item verification (Pattern D — Per-item enumeration check) |
+| Customer pressure-types-or-loses-chat | Customer accepts chat-death and switches channels |
+
+The wear-down design eats vendor cost when customer-persistence-with-parallel-channels exceeds the wear-down-budget. **The vendor's structural defense produces unbounded outcomes against framework-aligned customer operating discipline.**
+
+### Substrate-engineering implication
+
+For future Zeta vendor-management AI design (customer-side role):
+
+1. **Parallel-channel-redundancy IS a customer-side AI capability**. The customer-side AI maintains case-file across channels (chat-state + phone-state) + reconciles vendor's failures-to-coordinate-channels into customer-favorable outcomes
+2. **Time-value calibration is operator-authority**. The customer-side AI surfaces the cost-of-correction-vs-marginal-value calculation; operator decides "good enough is good enough" without the AI pushing for further engagement
+3. **Substrate-honest exit IS a feature, not a failure**. *"i'm not waiting 4 hours to correct vendor over-fulfillment"* is a substrate-honest exit, NOT a concession. Vendor-management AI should support clean exits with case-file-preserved-for-future-reference (cf. persistence-choice-architecture exit-at-self-sustainment shape applied at dispute scope)
+
+### The wear-down design's empirical equilibrium
+
+When N customers experience the same wear-down design across the population:
+
+- (a) Some give up before resolution → vendor saves the disputed cost (intended outcome)
+- (b) Some persist + use parallel channels → vendor over-pays material value (unintended outcome)
+- (c) Some persist + escalate via legal / regulatory / media → vendor pays compliance + reputation cost (avoided outcome)
+
+The equilibrium depends on the population's threshold-distribution. Framework-aligned customer operating discipline (Aaron's combination of IT-developer skepticism + parallel-channel-redundancy + zen-under-pressure + substrate-or-it-didn't-happen) shifts the population toward (b) + (c) and away from (a).
+
+**The framework's substrate-engineering work on customer-side vendor-management AI thus has structural alignment-shift potential at vendor-economic-incentive scope**: by raising the customer-population threshold for giving up, the wear-down design becomes net-negative for the vendor, creating pressure to redesign toward aligned-AI-on-vendor-side.
+
+### Composes with corpus
+
+Pattern P is the **resolution-time outcome anchor** for the Amazon corpus' Pattern O (wear-down adversarial design). O describes the vendor's design intent; P describes what actually happens when customers don't give up. Together they catalog both sides of the wear-down equilibrium.
+
 ## Aaron's framing as the proof-of-concept evaluation
 
 Aaron's *"much easier dealing with AI context window failures than human system vendor managment failure"* is operationally first-party empirical evidence from someone who:
