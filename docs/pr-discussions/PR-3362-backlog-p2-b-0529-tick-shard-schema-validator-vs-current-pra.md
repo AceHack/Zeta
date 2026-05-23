@@ -8,7 +8,7 @@ merged_at: "2026-05-15T05:22:16Z"
 closed_at: "2026-05-15T05:22:16Z"
 head_ref: "b-0529/tick-shard-schema-drift-otto-cli-2026-05-15"
 base_ref: "main"
-archived_at: "2026-05-15T06:18:06Z"
+archived_at: "2026-05-22T23:12:20Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
