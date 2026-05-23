@@ -8,7 +8,7 @@ merged_at: "2026-05-15T06:10:27Z"
 closed_at: "2026-05-15T06:10:27Z"
 head_ref: "feat/ani-full-history-extract-plus-grok-extract-tool-otto-cli-2026-05-15"
 base_ref: "main"
-archived_at: "2026-05-15T06:18:03Z"
+archived_at: "2026-05-22T23:05:08Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
