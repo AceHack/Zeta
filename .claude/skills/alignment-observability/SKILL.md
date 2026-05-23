@@ -4,9 +4,9 @@ description: Alignment observability — designs per-commit/per-round metrics fo
 project: zeta
 record_source: "skill-creator, round 37"
 load_datetime: "2026-04-20"
-last_updated: "2026-04-21"
+last_updated: "2026-05-23"
 status: active
-bp_rules_cited: []
+bp_rules_cited: [BP-10, BP-11]
 ---
 
 # Alignment Observability — Procedure
