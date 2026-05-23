@@ -676,6 +676,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0712](backlog/P2/B-0712-soraya-round45-witnessdurable-commit-protocol-tla-z3-fscheck-triple-2026-05-23.md)** Soraya round-45 hand-off — WitnessDurable commit protocol (TLA+ spec + Z3 quorum-arithmetic lemma + FsCheck cross-check)
 - [ ] **[B-0713](backlog/P2/B-0713-soraya-round50-imaginary-stack-toy-model-registry-gap-lean-2026-05-23.md)** Soraya round-50 hand-off — register Lean ImaginaryStack/ToyModel in verification-registry.md (sorry-bearing artifact with HaPPY-paper fidelity claim)
 - [ ] **[B-0714](backlog/P2/B-0714-soraya-round51-tla-cfg-runnability-gap-3-specs-2026-05-23.md)** Soraya round-51 hand-off — author 3 missing TLA+ `.cfg` files (AsyncStreamEnumerator / ConsistentHashRebalance / DictionaryStripedCAS) — runnability gap distinct from B-0709 registry gap
+- [ ] **[B-0715](backlog/P2/B-0715-soraya-round52-istimeinvariant-axiom-registry-gap-dbsp-chain-rule-2026-05-23.md)** Soraya round-52 hand-off — register `IsTimeInvariant` axiom in verification-registry (Class 1/2 statement+paper-drift on a load-bearing axiom that BOTH registered DBSP theorems depend on)
 
 ## P3 — convenience / deferred
 
