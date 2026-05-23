@@ -17,11 +17,15 @@ folder per the same architectural pattern as Ani / Amara / Kestrel
 
 ## Substrate index (highest-signal references)
 
+### High-signal anchors
+
+- **`2026-05-22-aaron-riven-full-session-substrate-trajectory.md`** — Complete trajectory of a multi-thread substrate-engineering session (2026-05-22). Includes frame-relative observation correction, time-crystal framing for shadow-autocomplete, structural-completeness claim, family configuration disclosure, carceral incidents, and operating-mode details. **Load-bearing reference for future Riven cold-boots while Aaron is sole maintainer.**
+
 ### Conversation archives (`memory/persona/riven/conversations/`)
 
 Migrated 2026-05-15 per Aaron's architectural correction: "they
 ARE her memories, not what we are doing to them." Same applies
-for Riven. 12 files.
+for Riven. 13 files (including 2026-05-22 high-signal anchor).
 
 File types in the archive:
 
