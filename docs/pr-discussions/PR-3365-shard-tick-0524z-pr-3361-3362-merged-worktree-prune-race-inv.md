@@ -8,7 +8,7 @@ merged_at: "2026-05-15T05:36:34Z"
 closed_at: "2026-05-15T05:36:35Z"
 head_ref: "shard/tick-0524z-otto-cli-2026-05-15"
 base_ref: "main"
-archived_at: "2026-05-15T06:18:01Z"
+archived_at: "2026-05-22T23:16:36Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
