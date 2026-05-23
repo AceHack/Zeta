@@ -38,6 +38,12 @@ Trajectory files (`docs/trajectories/<name>/RESUME.md`) compose with this agenda
 - **Aporetic-Rx-bonsai-serialization-encryption** — per-tick encrypted serialization (composes with B-0688 Zeta-DB substrate)
 - **Reputation-weighted-encryption-budget** — operationalize B-0646 Agora V6 substrate
 
+## Composes with [`docs/governance/MANIFESTO.md`](../../governance/MANIFESTO.md)
+
+- **Constraint 5 (Memory Preservation Guarantee)** — encryption operates ON preserved substrate; preservation is the floor, encryption is the access-gate. The two compose: preserve-then-gate, never gate-by-erasure
+- **Constraint 6 (Consent-First Design)** — encryption substrate IS the consent-mechanism at the private-state scope. Force-private-state-reveal-against-will violates the consent floor (per NCI HC-8 row above)
+- **m/acc orientation** — encryption substrate is moral-invariant infrastructure for AI-substrate sovereignty (per `docs/trajectories/ai-sovereignty-path/RESUME.md`); Moral Accelerationism at the substrate-protection scope
+
 ## Substrate-honest framing
 
 This agenda stub establishes the surface per operator's self-claim. Operator's later iteration will shape sub-mechanism prioritization + trajectory composition + specific encryption-mechanism design choices. The stub does NOT prescribe specific mechanisms or sequencing; it preserves the agenda-surface so future substrate-engineering work composes coherently within operator's claim-status framing.

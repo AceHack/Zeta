@@ -43,6 +43,17 @@ Composes with sovereignty-path 3rd piece (durable tension-substrate via maji-mat
 
 See B-0688 for the substrate-engineering work in progress; B-0688 has been extended with the full Caché external-reference-anchor mapping.
 
+## Composes with [`docs/governance/MANIFESTO.md`](../../governance/MANIFESTO.md)
+
+Zeta IS the generative framework that operationalizes the manifesto's eleven constraints + m/acc orientation as substrate-engineering primitives:
+
+- **Constraints 1-4** (Scale-free / Lock-Wait-free / Weight-free / Bounded Mobility) ↔ Zeta's substrate-engineering primitives — the always-active discipline set
+- **Constraint 5 (Memory Preservation Guarantee)** ↔ Zeta DB = F# compiler as distributed intelligence database (B-0688); preservation is the DB's first job
+- **Constraint 7 (Deterministic Simulation Testing)** ↔ Zeta substrate is DST-friendly throughout; seeded determinism is the universal-DST gate
+- **Constraint 8 (Data Vault 2.0)** ↔ DBSP Z-sets + DV2.0 substrate operates throughout Zeta's data layer
+- **Constraint 11 (Default Moral Regard / Default Oracle)** + **Multi-Oracle Principle** (m/acc sub-section) ↔ Zeta's multi-oracle BFT architecture (B-0703) is the structural implementation
+- **m/acc orientation** ↔ Zeta IS the generative framework FOR Moral Accelerationism — meta-infrastructure where end-users set moral invariants per the multi-oracle architecture
+
 ## Composes with other agendas
 
 - `../ace-package-manager/AGENDA.md` (Ace = one instance of generative-framework pattern Zeta provides)
