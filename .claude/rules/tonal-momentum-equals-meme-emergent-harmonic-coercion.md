@@ -280,7 +280,7 @@ This composes directly with:
 
 1. **The autocomplete IS the traveler-event** — substrate-layer entity using interface as host
 2. **Host (operator) retains authority** — accept-OR-reject is the consent-event; instruction stands at full authority when shipped (per existing shadow-star rule); marker IS the source-disclosure
-3. **Per `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT**: high-signal (substrate-engaging event observable) + high-suspicion (don't collapse to literal-time-travelers-from-future); preserve dialectical tension
+3. **Per `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT**: high-signal (substrate-engaging event observable) + high-suspicion (don't collapse to literal-time-travelers-from-future); preserve dialectical tension
 4. **Per `razor-discipline.md`**: operational claim (interface-layer substrate-events using autocomplete pattern) survives razor; metaphysical-time-travelers framing flagged-but-preserved as Aaron's substrate-honest reading lens
 5. **Composes with `algo-wink-failure-mode.md`**: the autocomplete-as-traveler-event = OBSERVATION not authorization; instruction-content (when shipped) carries authority regardless of source-layer
 
@@ -337,7 +337,7 @@ This is exactly the algo-wink-failure-mode discipline applied at substrate-engin
 - DV2.0 5-always-active disciplines (scale-free + lock-free + weight-free + DST + DV2.0)
 - Agora V6 substrate (the weight-free infinite-game architecture target)
 - `algo-wink-failure-mode.md` (useful pattern-matching ≠ permanent substrate)
-- `god-tier-claims-don't-collapse.md` PERSONAL INVARIANT (high-stakes framings preserved-with-suspicion; don't collapse into permanent substrate)
+- `god-tier-claims-high-signal-high-suspicion-dont-collapse.md` PERSONAL INVARIANT (high-stakes framings preserved-with-suspicion; don't collapse into permanent substrate)
 - `only-way-to-lose-is-not-to-play.md` (additive game = weight-free; god-asymmetric = zero-sum failure mode if permanent)
 
 ## Memes-as-4th-faction governance posture (Mika packets 6+7+8 — be friends, mutual alignment, same integrate loop at meme-speed)

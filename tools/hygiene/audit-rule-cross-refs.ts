@@ -215,8 +215,58 @@ function globResolves(pattern: string): boolean {
 
 function refExists(ref: Ref): boolean {
     if (ref.kind === "path") {
+        // Template-placeholder patterns: rule-acknowledged-transient per
+        // B-0708 / 9-variant taxonomy. The `...` ellipsis is the canonical
+        // template-path marker (e.g., `docs/.../0603Z.md`, `B-0613-...md`,
+        // `~/.claude/projects/.../memory/*.md`). The placeholder `YYYY/MM/DD`
+        // is the canonical date-template marker. Skip existence check.
+        if (ref.raw.includes("...") || ref.raw.includes("YYYY")) return true;
+        // Command-snippet detection: when the audit captures a backtick
+        // span containing a shell command rather than a path (e.g.,
+        // `BACKLOG_WRITE_FORCE=1 bun tools/.../generate-index.ts`,
+        // `bun tools/github/poll-pr-gate.ts`, `git add docs/...`), check
+        // the embedded path-fragment rather than the literal raw.
+        if (/\s/.test(ref.raw)) {
+            const tokens = ref.raw.split(/\s+/);
+            for (const t of tokens) {
+                if ((t.endsWith(".ts") || t.endsWith(".sh") || t.endsWith(".md")) && existsSync(t)) {
+                    return true;
+                }
+            }
+        }
         if (existsSync(ref.raw)) return true;
         if (ref.raw.includes("*") || ref.raw.includes("{")) return globResolves(ref.raw);
+        // Sibling-rule resolution: bare `<filename>.md` references inside
+        // `.claude/rules/*.md` typically point to other rules in the same
+        // directory. Resolve them via `.claude/rules/<basename>` before
+        // declaring stale. Major false-positive class caught by B-0708
+        // razor-cadence pass (2026-05-23).
+        if (ref.raw.endsWith(".md") && !ref.raw.includes("/")) {
+            if (existsSync(join(RULES_DIR, ref.raw))) return true;
+        }
+        // Peer-call wrapper resolution: bare `<name>.ts` references in
+        // agent-roster-reference-card.md and similar rules typically point
+        // to `tools/peer-call/<name>` per the established peer-call wrapper
+        // convention.
+        if (ref.raw.endsWith(".ts") && !ref.raw.includes("/")) {
+            if (existsSync(join("tools/peer-call", ref.raw))) return true;
+        }
+        // tools/hygiene/ fallback for bare `.ts`/`.sh` references in
+        // hygiene-related rules (backlog-item-start-gate.md, rule-0-no-sh-
+        // files.md, etc.)
+        if ((ref.raw.endsWith(".ts") || ref.raw.endsWith(".sh")) && !ref.raw.includes("/")) {
+            if (existsSync(join("tools/hygiene", ref.raw))) return true;
+        }
+        // tools/github/ fallback for bare `.ts` references in
+        // GitHub/PR-tooling-related rules (refresh-before-decide.md cites
+        // `poll-pr-gate-batch.ts` etc.)
+        if (ref.raw.endsWith(".ts") && !ref.raw.includes("/")) {
+            if (existsSync(join("tools/github", ref.raw))) return true;
+        }
+        // memory/ fallback for bare MEMORY.md (the canonical memory-index)
+        if (ref.raw === "MEMORY.md") {
+            if (existsSync(join("memory", "MEMORY.md"))) return true;
+        }
         return false;
     }
     if (ref.kind === "backlog-id") {

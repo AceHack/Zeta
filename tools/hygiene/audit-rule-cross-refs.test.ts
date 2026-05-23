@@ -100,6 +100,51 @@ describe("refExists", () => {
             }),
         ).toBe(false);
     });
+
+    // B-0708 resolver improvements (2026-05-23): false-positive class fixes
+    // for template-paths, command-snippets, sibling-rule references, and
+    // tools/* directory fallbacks.
+
+    test("resolves template-placeholder paths with `...` ellipsis as healthy-FP", () => {
+        expect(
+            refExists({ fromRule: "test.md", raw: "docs/.../0603Z.md", kind: "path" }),
+        ).toBe(true);
+        expect(
+            refExists({ fromRule: "test.md", raw: "docs/backlog/P3/B-0613-...md", kind: "path" }),
+        ).toBe(true);
+    });
+
+    test("resolves template-placeholder paths with `YYYY` date-template as healthy-FP", () => {
+        expect(
+            refExists({
+                fromRule: "test.md",
+                raw: "docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md",
+                kind: "path",
+            }),
+        ).toBe(true);
+    });
+
+    test("resolves command-snippet with embedded existing path", () => {
+        // `bun tools/hygiene/audit-rule-cross-refs.ts` — the .ts path exists
+        expect(
+            refExists({
+                fromRule: "test.md",
+                raw: "bun tools/hygiene/audit-rule-cross-refs.ts",
+                kind: "path",
+            }),
+        ).toBe(true);
+    });
+
+    test("resolves sibling-rule reference (bare `<name>.md` in .claude/rules/)", () => {
+        // refresh-before-decide.md is a real rule file
+        expect(
+            refExists({ fromRule: "test.md", raw: "refresh-before-decide.md", kind: "path" }),
+        ).toBe(true);
+    });
+
+    test("resolves bare MEMORY.md via memory/ fallback", () => {
+        expect(refExists({ fromRule: "test.md", raw: "MEMORY.md", kind: "path" })).toBe(true);
+    });
 });
 
 describe("renderReport", () => {
