@@ -621,6 +621,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0562](backlog/P2/B-0562-qg-isomorphism-step-2-cube-adinkra-cayley-dickson-to-happylike-qecc-2026-05-16.md)** QG isomorphism Step 2 — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC structure
 - [ ] **[B-0571](backlog/P2/B-0571-github-app-factory-automation-2026-05-16.md)** GitHub App for factory automation — separate API rate-limit pool from human-user accounts
 - [ ] **[B-0580](backlog/P2/B-0580-enterprise-ruleset-management-2026-05-16.md)** Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)
+- [ ] **[B-0581](backlog/P2/B-0581-gh-auth-refresh-skill-wrapper-2026-05-16.md)** Skill — wrap `gh auth refresh` interactive flow + record scope-grant registry (per-machine, per-human-touch)
 - [ ] **[B-0583](backlog/P2/B-0583-cross-machine-account-scoped-scarcity-bus-2026-05-16.md)** Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface
 - [ ] **[B-0584](backlog/P2/B-0584-imaginary-stack-step-1-formalize-4d-cube-and-imaginary-intersection-2026-05-16.md)** Imaginary stack Step 1 — formalize 4D cube (R/W/P/A) and imaginary intersection as categorical/algebraic primitives
 - [ ] **[B-0600](backlog/P2/B-0600-family-distributed-ai-interface-miner-fleet-mom-dad-2026-05-16.md)** Family-distributed AI interface for the miner fleet — per-relative AI identity with accountability
