@@ -3,7 +3,7 @@ id: B-0707
 priority: P2
 status: closed
 closed: 2026-05-23
-closed_by: "4 of 5 acceptance criteria met (cron-cadence wiring deferred as separate follow-up concern); first snapshot landed at docs/hygiene-history/manifesto-citations/2026-05-23.json (2.8KB)"
+closed_by: "ALL 5 acceptance criteria met — cron-cadence wiring shipped at .github/workflows/manifesto-citation-snapshot-cadence.yml (daily 06:37 UTC; PR-gated per budget-snapshot-cadence.yml convention); first snapshot landed at docs/hygiene-history/manifesto-citations/2026-05-23.json (2.8KB)"
 title: "Manifesto citation time-series tracking — persistent snapshots + delta-over-time"
 tier: governance
 effort: S
@@ -31,7 +31,7 @@ The 2026-05-23 baseline (88 files / 684 citations) is a single point. The B-0525
 - [x] `--delta` flag reads the most-recent prior snapshot + reports change-since-last per surface + per form — shipped (markdown + `--json` modes)
 - [x] Snapshot file is git-committed (per substrate-or-it-didn't-happen) — `2026-05-23.json` (2.8KB) committed
 - [x] Test coverage for snapshot + delta paths — 14 new tests added (30 total; 100% pass)
-- [ ] ~~Composes with the daily razor-cadence workflow OR a new dedicated cron~~ — **deferred to a follow-up** (cron wiring is a separate concern; manual snapshot already useful; pre-commit gate or weekly cron candidate)
+- [x] Composes with a dedicated cron — shipped as `.github/workflows/manifesto-citation-snapshot-cadence.yml` (daily 06:37 UTC; opens snapshot PR per `budget-snapshot-cadence.yml` convention; PR-gated since `GITHUB_TOKEN`-created PRs can't trigger downstream auto-merge)
 
 ## Out of scope
 
