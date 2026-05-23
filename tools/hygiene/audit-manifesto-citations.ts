@@ -25,9 +25,15 @@
 //
 // Usage:
 //
-//   bun tools/hygiene/audit-manifesto-citations.ts             # detect-only, exit 0 always
+//   bun tools/hygiene/audit-manifesto-citations.ts                # detect-only, exit 0 always
 //   bun tools/hygiene/audit-manifesto-citations.ts --report PATH  # write markdown report
 //   bun tools/hygiene/audit-manifesto-citations.ts --json         # machine-readable
+//   bun tools/hygiene/audit-manifesto-citations.ts --snapshot     # write today's snapshot
+//                                                                   to docs/hygiene-history/
+//                                                                   manifesto-citations/YYYY-MM-DD.json
+//   bun tools/hygiene/audit-manifesto-citations.ts --snapshot --date 2026-05-23  # override date
+//   bun tools/hygiene/audit-manifesto-citations.ts --delta        # delta vs most-recent prior snapshot
+//   bun tools/hygiene/audit-manifesto-citations.ts --delta --json # machine-readable delta
 //
 // Exit codes:
 //
@@ -40,10 +46,11 @@
 //   Read-only audit. "Generated" timestamp in markdown is the only non-
 //   deterministic surface. Per `typescript.md` universal-DST gate.
 
-import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const MANIFESTO_PATH = "docs/governance/MANIFESTO.md";
+const SNAPSHOT_DIR = "docs/hygiene-history/manifesto-citations";
 
 const SURFACES: ReadonlyArray<{ name: string; dir: string; recurse: boolean }> = [
     { name: "rules", dir: ".claude/rules", recurse: false },
@@ -64,6 +71,17 @@ type AuditExitCode = 0 | 64;
 interface Args {
     readonly report: string | null;
     readonly json: boolean;
+    readonly snapshot: boolean;
+    readonly delta: boolean;
+    readonly date: string | null;
+}
+
+interface Snapshot {
+    readonly date: string;
+    readonly totalCitations: number;
+    readonly totalFilesWithCitation: number;
+    readonly totalFilesScanned: number;
+    readonly surfaces: SurfaceResult[];
 }
 
 interface Citation {
@@ -94,6 +112,9 @@ interface AuditResult {
 function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "error"; message: string } {
     let report: string | null = null;
     let json = false;
+    let snapshot = false;
+    let delta = false;
+    let date: string | null = null;
     let i = 0;
     while (i < argv.length) {
         const a = argv[i]!;
@@ -105,11 +126,32 @@ function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "erro
         } else if (a === "--json") {
             json = true;
             i += 1;
+        } else if (a === "--snapshot") {
+            snapshot = true;
+            i += 1;
+        } else if (a === "--delta") {
+            delta = true;
+            i += 1;
+        } else if (a === "--date") {
+            const next = argv[i + 1];
+            if (!next || !/^\d{4}-\d{2}-\d{2}$/.test(next)) {
+                return { kind: "error", message: "--date requires YYYY-MM-DD" };
+            }
+            date = next;
+            i += 2;
         } else {
             return { kind: "error", message: `Unknown argument: ${a}` };
         }
     }
-    return { kind: "args", args: { report, json } };
+    // Mode mutual-exclusion: --snapshot and --delta are mutually exclusive;
+    // --report applies only to the default-report mode (not snapshot/delta).
+    if (snapshot && delta) {
+        return { kind: "error", message: "--snapshot and --delta are mutually exclusive" };
+    }
+    if (report !== null && (snapshot || delta)) {
+        return { kind: "error", message: "--report is not compatible with --snapshot or --delta" };
+    }
+    return { kind: "args", args: { report, json, snapshot, delta, date } };
 }
 
 // Citation patterns — priority order; earlier-priority matches win for overlaps.
@@ -264,6 +306,132 @@ function renderReport(result: AuditResult, now: Date): string {
     return lines.join("\n");
 }
 
+function toSnapshot(result: AuditResult, date: string): Snapshot {
+    return {
+        date,
+        totalCitations: result.totalCitations,
+        totalFilesWithCitation: result.totalFilesWithCitation,
+        totalFilesScanned: result.totalFilesScanned,
+        surfaces: result.surfaces,
+    };
+}
+
+function snapshotDate(now: Date): string {
+    return now.toISOString().slice(0, 10);
+}
+
+function snapshotPath(date: string): string {
+    return join(SNAPSHOT_DIR, `${date}.json`);
+}
+
+function writeSnapshot(snap: Snapshot): string {
+    if (!existsSync(SNAPSHOT_DIR)) mkdirSync(SNAPSHOT_DIR, { recursive: true });
+    const path = snapshotPath(snap.date);
+    writeFileSync(path, JSON.stringify(snap, null, 2) + "\n");
+    return path;
+}
+
+function readSnapshot(path: string): Snapshot {
+    return JSON.parse(readFileSync(path, "utf8")) as Snapshot;
+}
+
+function listSnapshots(): string[] {
+    if (!existsSync(SNAPSHOT_DIR)) return [];
+    return readdirSync(SNAPSHOT_DIR)
+        .filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f))
+        .sort();
+}
+
+function mostRecentPriorSnapshot(currentDate: string): Snapshot | null {
+    const prior = listSnapshots().filter((f) => f.slice(0, 10) < currentDate);
+    if (prior.length === 0) return null;
+    return readSnapshot(join(SNAPSHOT_DIR, prior[prior.length - 1]!));
+}
+
+interface SurfaceDelta {
+    readonly surface: string;
+    readonly filesWithCitationDelta: number;
+    readonly citationCountDelta: number;
+    readonly byFormDelta: Readonly<Record<CitationForm, number>>;
+}
+
+interface DeltaResult {
+    readonly priorDate: string;
+    readonly currentDate: string;
+    readonly totalCitationsDelta: number;
+    readonly totalFilesWithCitationDelta: number;
+    readonly surfaceDeltas: SurfaceDelta[];
+}
+
+function computeDelta(prior: Snapshot, current: Snapshot): DeltaResult {
+    const priorBySurface = new Map(prior.surfaces.map((s) => [s.surface, s]));
+    const currentBySurface = new Map(current.surfaces.map((s) => [s.surface, s]));
+    // Union of surface keys — preserves order of current first, then any
+    // removed-in-current surfaces from prior (so removals show as negative
+    // deltas instead of being silently dropped).
+    const surfaceOrder: string[] = [];
+    for (const cur of current.surfaces) surfaceOrder.push(cur.surface);
+    for (const prv of prior.surfaces) {
+        if (!currentBySurface.has(prv.surface)) surfaceOrder.push(prv.surface);
+    }
+
+    const surfaceDeltas: SurfaceDelta[] = [];
+    for (const surface of surfaceOrder) {
+        const cur = currentBySurface.get(surface);
+        const prv = priorBySurface.get(surface);
+        const curByForm = cur?.byForm ?? { path: 0, name: 0, "version-tag": 0, "constraint-N": 0 };
+        const prvByForm = prv?.byForm ?? { path: 0, name: 0, "version-tag": 0, "constraint-N": 0 };
+        const byFormDelta: Record<CitationForm, number> = {
+            path: curByForm.path - prvByForm.path,
+            name: curByForm.name - prvByForm.name,
+            "version-tag": curByForm["version-tag"] - prvByForm["version-tag"],
+            "constraint-N": curByForm["constraint-N"] - prvByForm["constraint-N"],
+        };
+        surfaceDeltas.push({
+            surface,
+            filesWithCitationDelta: (cur?.filesWithCitation ?? 0) - (prv?.filesWithCitation ?? 0),
+            citationCountDelta: (cur?.citationCount ?? 0) - (prv?.citationCount ?? 0),
+            byFormDelta,
+        });
+    }
+    return {
+        priorDate: prior.date,
+        currentDate: current.date,
+        totalCitationsDelta: current.totalCitations - prior.totalCitations,
+        totalFilesWithCitationDelta: current.totalFilesWithCitation - prior.totalFilesWithCitation,
+        surfaceDeltas,
+    };
+}
+
+function renderDelta(d: DeltaResult): string {
+    const lines: string[] = [];
+    lines.push("# Manifesto citation delta");
+    lines.push("");
+    lines.push(`Prior: ${d.priorDate}`);
+    lines.push(`Current: ${d.currentDate}`);
+    lines.push("");
+    lines.push("## Totals");
+    lines.push("");
+    lines.push(`- Citations delta: ${signedNum(d.totalCitationsDelta)}`);
+    lines.push(`- Files-with-citation delta: ${signedNum(d.totalFilesWithCitationDelta)}`);
+    lines.push("");
+    lines.push("## Per-surface deltas");
+    lines.push("");
+    lines.push("| Surface | Δ Files w/ Citation | Δ Citations | Δ path | Δ name | Δ version-tag | Δ constraint-N |");
+    lines.push("|---------|---------------------|-------------|--------|--------|---------------|----------------|");
+    for (const s of d.surfaceDeltas) {
+        lines.push(
+            `| \`${s.surface}\` | ${signedNum(s.filesWithCitationDelta)} | ${signedNum(s.citationCountDelta)} | ${signedNum(s.byFormDelta.path)} | ${signedNum(s.byFormDelta.name)} | ${signedNum(s.byFormDelta["version-tag"])} | ${signedNum(s.byFormDelta["constraint-N"])} |`,
+        );
+    }
+    lines.push("");
+    return lines.join("\n");
+}
+
+function signedNum(n: number): string {
+    return n > 0 ? `+${n}` : `${n}`;
+}
+
 function main(argv: string[]): AuditExitCode {
     const parsed = parseArgs(argv);
     if (parsed.kind === "error") {
@@ -272,6 +440,44 @@ function main(argv: string[]): AuditExitCode {
     }
 
     const result = audit();
+    const now = new Date();
+    const date = parsed.args.date ?? snapshotDate(now);
+
+    if (parsed.args.snapshot) {
+        const path = writeSnapshot(toSnapshot(result, date));
+        console.log(`wrote snapshot ${path}`);
+        return 0;
+    }
+
+    if (parsed.args.delta) {
+        const prior = mostRecentPriorSnapshot(date);
+        if (prior === null) {
+            if (parsed.args.json) {
+                console.log(
+                    JSON.stringify(
+                        {
+                            kind: "no-prior-snapshot",
+                            snapshotDir: SNAPSHOT_DIR,
+                            currentDate: date,
+                            message: "no prior snapshot found; run with --snapshot first to create the first baseline",
+                        },
+                        null,
+                        2,
+                    ),
+                );
+            } else {
+                console.log("# No prior snapshot found");
+                console.log("");
+                console.log(`Snapshot directory: ${SNAPSHOT_DIR}`);
+                console.log("Run with --snapshot first to create the first baseline.");
+            }
+            return 0;
+        }
+        const current = toSnapshot(result, date);
+        const delta = computeDelta(prior, current);
+        console.log(parsed.args.json ? JSON.stringify(delta, null, 2) : renderDelta(delta));
+        return 0;
+    }
 
     if (parsed.args.json) {
         console.log(JSON.stringify(result, null, 2));
@@ -294,4 +500,19 @@ if (import.meta.main) {
     process.exit(main(process.argv.slice(2)));
 }
 
-export { audit, listMarkdownFiles, parseArgs, renderReport, scanFile };
+export {
+    audit,
+    computeDelta,
+    listMarkdownFiles,
+    listSnapshots,
+    mostRecentPriorSnapshot,
+    parseArgs,
+    renderDelta,
+    renderReport,
+    scanFile,
+    signedNum,
+    snapshotDate,
+    snapshotPath,
+    toSnapshot,
+};
+export type { DeltaResult, Snapshot, SurfaceDelta };

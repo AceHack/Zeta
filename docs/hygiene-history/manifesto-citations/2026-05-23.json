@@ -1,0 +1,140 @@
+{
+  "date": "2026-05-23",
+  "totalCitations": 712,
+  "totalFilesWithCitation": 91,
+  "totalFilesScanned": 4388,
+  "surfaces": [
+    {
+      "surface": "rules",
+      "filesScanned": 62,
+      "filesWithCitation": 4,
+      "citationCount": 6,
+      "byForm": {
+        "path": 1,
+        "name": 1,
+        "version-tag": 2,
+        "constraint-N": 2
+      }
+    },
+    {
+      "surface": "skills",
+      "filesScanned": 251,
+      "filesWithCitation": 2,
+      "citationCount": 10,
+      "byForm": {
+        "path": 1,
+        "name": 4,
+        "version-tag": 2,
+        "constraint-N": 3
+      }
+    },
+    {
+      "surface": "agents",
+      "filesScanned": 19,
+      "filesWithCitation": 0,
+      "citationCount": 0,
+      "byForm": {
+        "path": 0,
+        "name": 0,
+        "version-tag": 0,
+        "constraint-N": 0
+      }
+    },
+    {
+      "surface": "commands",
+      "filesScanned": 5,
+      "filesWithCitation": 0,
+      "citationCount": 0,
+      "byForm": {
+        "path": 0,
+        "name": 0,
+        "version-tag": 0,
+        "constraint-N": 0
+      }
+    },
+    {
+      "surface": "governance",
+      "filesScanned": 2,
+      "filesWithCitation": 1,
+      "citationCount": 3,
+      "byForm": {
+        "path": 0,
+        "name": 0,
+        "version-tag": 2,
+        "constraint-N": 1
+      }
+    },
+    {
+      "surface": "trajectories",
+      "filesScanned": 14,
+      "filesWithCitation": 2,
+      "citationCount": 16,
+      "byForm": {
+        "path": 4,
+        "name": 3,
+        "version-tag": 0,
+        "constraint-N": 9
+      }
+    },
+    {
+      "surface": "agendas",
+      "filesScanned": 7,
+      "filesWithCitation": 0,
+      "citationCount": 0,
+      "byForm": {
+        "path": 0,
+        "name": 0,
+        "version-tag": 0,
+        "constraint-N": 0
+      }
+    },
+    {
+      "surface": "research",
+      "filesScanned": 465,
+      "filesWithCitation": 15,
+      "citationCount": 24,
+      "byForm": {
+        "path": 0,
+        "name": 11,
+        "version-tag": 11,
+        "constraint-N": 2
+      }
+    },
+    {
+      "surface": "backlog",
+      "filesScanned": 761,
+      "filesWithCitation": 11,
+      "citationCount": 92,
+      "byForm": {
+        "path": 13,
+        "name": 55,
+        "version-tag": 12,
+        "constraint-N": 12
+      }
+    },
+    {
+      "surface": "memory",
+      "filesScanned": 1633,
+      "filesWithCitation": 42,
+      "citationCount": 513,
+      "byForm": {
+        "path": 31,
+        "name": 311,
+        "version-tag": 88,
+        "constraint-N": 83
+      }
+    },
+    {
+      "surface": "hygiene-history",
+      "filesScanned": 1169,
+      "filesWithCitation": 14,
+      "citationCount": 48,
+      "byForm": {
+        "path": 6,
+        "name": 30,
+        "version-tag": 8,
+        "constraint-N": 4
+      }
+    }
+  ]
+}

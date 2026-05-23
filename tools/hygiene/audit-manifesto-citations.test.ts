@@ -2,7 +2,18 @@
 // Tests for audit-manifesto-citations.ts
 
 import { describe, expect, test } from "bun:test";
-import { parseArgs, renderReport, scanFile } from "./audit-manifesto-citations.ts";
+import {
+    computeDelta,
+    parseArgs,
+    renderDelta,
+    renderReport,
+    scanFile,
+    signedNum,
+    snapshotDate,
+    snapshotPath,
+    toSnapshot,
+} from "./audit-manifesto-citations.ts";
+import type { Snapshot } from "./audit-manifesto-citations.ts";
 
 describe("parseArgs", () => {
     test("defaults", () => {
@@ -11,7 +22,55 @@ describe("parseArgs", () => {
         if (r.kind === "args") {
             expect(r.args.report).toBe(null);
             expect(r.args.json).toBe(false);
+            expect(r.args.snapshot).toBe(false);
+            expect(r.args.delta).toBe(false);
+            expect(r.args.date).toBe(null);
         }
+    });
+
+    test("--snapshot flag", () => {
+        const r = parseArgs(["--snapshot"]);
+        if (r.kind !== "args") throw new Error("expected args");
+        expect(r.args.snapshot).toBe(true);
+    });
+
+    test("--delta flag", () => {
+        const r = parseArgs(["--delta"]);
+        if (r.kind !== "args") throw new Error("expected args");
+        expect(r.args.delta).toBe(true);
+    });
+
+    test("--date YYYY-MM-DD", () => {
+        const r = parseArgs(["--date", "2026-05-23"]);
+        if (r.kind !== "args") throw new Error("expected args");
+        expect(r.args.date).toBe("2026-05-23");
+    });
+
+    test("--date rejects non-YYYY-MM-DD", () => {
+        const r = parseArgs(["--date", "May 23"]);
+        expect(r.kind).toBe("error");
+    });
+
+    test("--date without value errors", () => {
+        const r = parseArgs(["--date"]);
+        expect(r.kind).toBe("error");
+    });
+
+    test("--snapshot + --delta are mutually exclusive (Copilot P1 PR #4750)", () => {
+        const r = parseArgs(["--snapshot", "--delta"]);
+        expect(r.kind).toBe("error");
+        if (r.kind === "error") expect(r.message).toContain("mutually exclusive");
+    });
+
+    test("--report incompatible with --snapshot (Copilot P1 PR #4750)", () => {
+        const r = parseArgs(["--snapshot", "--report", "out.md"]);
+        expect(r.kind).toBe("error");
+        if (r.kind === "error") expect(r.message).toContain("not compatible");
+    });
+
+    test("--report incompatible with --delta (Copilot P1 PR #4750)", () => {
+        const r = parseArgs(["--delta", "--report", "out.md"]);
+        expect(r.kind).toBe("error");
     });
 
     test("--report PATH", () => {
@@ -133,5 +192,179 @@ describe("renderReport", () => {
             new Date("2026-05-23T00:00:00Z"),
         );
         expect(r).toContain("| `rules` | 50 | 3 | 7 | 2 | 3 | 1 | 1 |");
+    });
+});
+
+describe("signedNum", () => {
+    test("positive shows +", () => {
+        expect(signedNum(5)).toBe("+5");
+    });
+
+    test("zero shows 0 (no sign)", () => {
+        expect(signedNum(0)).toBe("0");
+    });
+
+    test("negative shows -", () => {
+        expect(signedNum(-3)).toBe("-3");
+    });
+});
+
+describe("snapshotDate / snapshotPath", () => {
+    test("snapshotDate strips time component", () => {
+        expect(snapshotDate(new Date("2026-05-23T18:42:01.123Z"))).toBe("2026-05-23");
+    });
+
+    test("snapshotPath joins dir + date.json", () => {
+        const p = snapshotPath("2026-05-23");
+        expect(p).toContain("manifesto-citations");
+        expect(p).toContain("2026-05-23.json");
+    });
+});
+
+describe("toSnapshot", () => {
+    test("strips citations[] (keeps only summary)", () => {
+        const snap = toSnapshot(
+            {
+                surfaces: [
+                    {
+                        surface: "rules",
+                        filesScanned: 10,
+                        filesWithCitation: 2,
+                        citationCount: 5,
+                        byForm: { path: 2, name: 1, "version-tag": 1, "constraint-N": 1 },
+                    },
+                ],
+                totalCitations: 5,
+                totalFilesWithCitation: 2,
+                totalFilesScanned: 10,
+                citations: [
+                    { file: "x.md", surface: "rules", form: "path", snippet: "snip" },
+                ],
+            },
+            "2026-05-23",
+        );
+        expect(snap.date).toBe("2026-05-23");
+        expect(snap.totalCitations).toBe(5);
+        expect(snap.surfaces).toHaveLength(1);
+        // Snapshot should NOT carry the heavy citations[] array
+        expect((snap as unknown as Record<string, unknown>).citations).toBeUndefined();
+    });
+});
+
+describe("computeDelta", () => {
+    const baseSurface = (overrides: Partial<{ path: number; name: number; "version-tag": number; "constraint-N": number; files: number; cites: number }>) => ({
+        surface: "rules",
+        filesScanned: 10,
+        filesWithCitation: overrides.files ?? 1,
+        citationCount: overrides.cites ?? 1,
+        byForm: {
+            path: overrides.path ?? 0,
+            name: overrides.name ?? 0,
+            "version-tag": overrides["version-tag"] ?? 0,
+            "constraint-N": overrides["constraint-N"] ?? 0,
+        },
+    });
+
+    test("computes positive deltas", () => {
+        const prior: Snapshot = {
+            date: "2026-05-22",
+            totalCitations: 100,
+            totalFilesWithCitation: 20,
+            totalFilesScanned: 1000,
+            surfaces: [baseSurface({ files: 2, cites: 5, path: 2, name: 3 })],
+        };
+        const current: Snapshot = {
+            date: "2026-05-23",
+            totalCitations: 150,
+            totalFilesWithCitation: 30,
+            totalFilesScanned: 1000,
+            surfaces: [baseSurface({ files: 5, cites: 12, path: 5, name: 7 })],
+        };
+        const d = computeDelta(prior, current);
+        expect(d.totalCitationsDelta).toBe(50);
+        expect(d.totalFilesWithCitationDelta).toBe(10);
+        expect(d.surfaceDeltas[0]!.filesWithCitationDelta).toBe(3);
+        expect(d.surfaceDeltas[0]!.citationCountDelta).toBe(7);
+        expect(d.surfaceDeltas[0]!.byFormDelta.path).toBe(3);
+        expect(d.surfaceDeltas[0]!.byFormDelta.name).toBe(4);
+    });
+
+    test("missing-in-CURRENT surface shows as negative delta (Copilot P1 PR #4750)", () => {
+        const prior: Snapshot = {
+            date: "2026-05-22",
+            totalCitations: 10,
+            totalFilesWithCitation: 2,
+            totalFilesScanned: 50,
+            surfaces: [
+                baseSurface({ files: 1, cites: 5, path: 3 }),
+                { ...baseSurface({ files: 1, cites: 5, path: 5 }), surface: "old-removed-surface" },
+            ],
+        };
+        const current: Snapshot = {
+            date: "2026-05-23",
+            totalCitations: 5,
+            totalFilesWithCitation: 1,
+            totalFilesScanned: 50,
+            surfaces: [baseSurface({ files: 1, cites: 5, path: 3 })],
+        };
+        const d = computeDelta(prior, current);
+        // Removed surface must appear as negative delta, not be silently dropped
+        const removed = d.surfaceDeltas.find((s) => s.surface === "old-removed-surface");
+        expect(removed).toBeDefined();
+        expect(removed!.filesWithCitationDelta).toBe(-1);
+        expect(removed!.citationCountDelta).toBe(-5);
+        expect(removed!.byFormDelta.path).toBe(-5);
+    });
+
+    test("missing-in-prior surface treats as zero", () => {
+        const prior: Snapshot = {
+            date: "2026-05-22",
+            totalCitations: 0,
+            totalFilesWithCitation: 0,
+            totalFilesScanned: 0,
+            surfaces: [],
+        };
+        const current: Snapshot = {
+            date: "2026-05-23",
+            totalCitations: 5,
+            totalFilesWithCitation: 1,
+            totalFilesScanned: 10,
+            surfaces: [baseSurface({ files: 1, cites: 5, path: 5 })],
+        };
+        const d = computeDelta(prior, current);
+        expect(d.surfaceDeltas[0]!.filesWithCitationDelta).toBe(1);
+        expect(d.surfaceDeltas[0]!.byFormDelta.path).toBe(5);
+    });
+});
+
+describe("renderDelta", () => {
+    test("renders delta with signed numbers", () => {
+        const out = renderDelta({
+            priorDate: "2026-05-22",
+            currentDate: "2026-05-23",
+            totalCitationsDelta: 15,
+            totalFilesWithCitationDelta: 2,
+            surfaceDeltas: [
+                {
+                    surface: "trajectories",
+                    filesWithCitationDelta: 2,
+                    citationCountDelta: 15,
+                    byFormDelta: { path: 4, name: 4, "version-tag": 0, "constraint-N": 7 },
+                },
+                {
+                    surface: "agents",
+                    filesWithCitationDelta: 0,
+                    citationCountDelta: 0,
+                    byFormDelta: { path: 0, name: 0, "version-tag": 0, "constraint-N": 0 },
+                },
+            ],
+        });
+        expect(out).toContain("# Manifesto citation delta");
+        expect(out).toContain("Prior: 2026-05-22");
+        expect(out).toContain("Current: 2026-05-23");
+        expect(out).toContain("Citations delta: +15");
+        expect(out).toContain("`trajectories`");
+        expect(out).toContain("+15");
+        expect(out).toContain("`agents`");
     });
 });

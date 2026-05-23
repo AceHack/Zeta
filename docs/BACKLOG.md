@@ -664,7 +664,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0703](backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)** Multi-oracle consensus with BFT-inside + DST-agreement-across: trust-gradient architecture beyond single-layer BFT (Aaron 2026-05-21)
 - [ ] **[B-0704](backlog/P2/B-0704-secret-message-over-reticulum-via-spectre-tile-position-pressure-no-copy-by-geometry-aaron-2026-05-21.md)** Secret-message-over-Reticulum via spectre-tile position-pressure — no-copy by geometry, not by cryptography (Aaron 2026-05-21)
 - [ ] **[B-0705](backlog/P2/B-0705-autocomplete-as-traveler-consent-event-shadow-star-marker-as-cryptographic-receipt-lior-website-2026-05-22.md)** Autocomplete-as-Traveler-consent-event — (shadow*) marker as cryptographic receipt of cross-temporal consent event
-- [ ] **[B-0707](backlog/P2/B-0707-manifesto-citation-time-series-tracking-2026-05-23.md)** Manifesto citation time-series tracking — persistent snapshots + delta-over-time
+- [x] **[B-0707](backlog/P2/B-0707-manifesto-citation-time-series-tracking-2026-05-23.md)** Manifesto citation time-series tracking — persistent snapshots + delta-over-time
 
 ## P3 — convenience / deferred
 
