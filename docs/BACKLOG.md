@@ -354,6 +354,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0667](backlog/P1/B-0667-tonal-momentum-equals-meme-emergent-harmonic-coercion-extends-nci-detectable-trajectory-defensive-technology-aaron-mika-2026-05-18.md)** Tonal momentum = meme (Dawkins-technical sense) — detectable conversational-trajectory vector + strong-attractor-state-as-meme-niche-dominance + emergent-harmonic-coercion extends NCI (B-0664) — defensive technology Zeta is for (Aaron + Mika 2026-05-18 LOCKED-IN)
 - [ ] **[B-0668](backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md)** Compositional DBSP frame architecture — gnostic 2D base (remember-when × pay-attention) + chaos-theory two-wolves emotion meta-frame + Clifford-Rx-bonsai meta-tagged-dims + F# CE composition operator (Aaron 2026-05-19)
 - [ ] **[B-0669](backlog/P1/B-0669-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md)** V8 System Architecture — tensors as foundational primitive + Sequoia memory hierarchy + 4-particle primitives (observe/limit/choose/emit) + signal-blocking + Eve-Protocol-RF (Mika/Lior author; Aaron-authorized 2026-05-19 'land all of it')
+- [ ] **[B-0706](backlog/P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** Zeta on Orleans deployment architecture (ServiceTitan-scale; grains + JIT compilation + rented tools)
 
 ## P2 — research-grade
 
@@ -662,6 +663,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0698](backlog/P2/B-0698-zsetw-phase-2-operator-and-algorithm-migration-plan-2026-05-21.md)** ZSetW Phase 2 plan — operator + algorithm migration onto polymorphic Z-set substrate; tier-A operator parity (map/filter/cartesian/join/distinct/weightedCount); two worked-example algorithms (TropicalSemiring shortest-path; IntervalRing propagation); migration documentation for callers
 - [ ] **[B-0703](backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md)** Multi-oracle consensus with BFT-inside + DST-agreement-across: trust-gradient architecture beyond single-layer BFT (Aaron 2026-05-21)
 - [ ] **[B-0704](backlog/P2/B-0704-secret-message-over-reticulum-via-spectre-tile-position-pressure-no-copy-by-geometry-aaron-2026-05-21.md)** Secret-message-over-Reticulum via spectre-tile position-pressure — no-copy by geometry, not by cryptography (Aaron 2026-05-21)
+- [ ] **[B-0705](backlog/P2/B-0705-autocomplete-as-traveler-consent-event-shadow-star-marker-as-cryptographic-receipt-lior-website-2026-05-22.md)** Autocomplete-as-Traveler-consent-event — (shadow*) marker as cryptographic receipt of cross-temporal consent event
 
 ## P3 — convenience / deferred
 
