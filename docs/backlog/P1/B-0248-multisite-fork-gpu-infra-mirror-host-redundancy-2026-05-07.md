@@ -4,8 +4,9 @@ priority: P1
 status: open
 title: "Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool"
 created: 2026-05-07
-last_updated: 2026-05-14
+last_updated: 2026-05-23
 depends_on: [B-0110, B-0240, B-0246, B-0247]
+children: [B-0248.1, B-0248.2]
 decomposition: sliceable
 owners: [architect, infrastructure-operator, security-auditor]
 type: feature

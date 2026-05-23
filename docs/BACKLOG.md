@@ -116,6 +116,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0247](backlog/P1/B-0247-ace-dlc-content-packs-kernel-extensions-package-manager-2026-05-07.md)** Ace DLC content packs — distributable kernel extensions via package manager
 - [ ] **[B-0248](backlog/P1/B-0248-multisite-fork-gpu-infra-mirror-host-redundancy-2026-05-07.md)** Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool
 - [ ] **[B-0248.1](backlog/P1/B-0248.1-maintainer-fork-onboarding.md)** Multi-site fork — maintainer fork onboarding and mirror-sync setup for Addison and Max
+- [ ] **[B-0248.2](backlog/P1/B-0248.2-host-loop-setup-max-site.md)** Host-loop setup for Max's 24/7 site (slice of B-0248)
 - [ ] **[B-0250](backlog/P1/B-0250-coincidence-detection-rx-join-dora-mechanism-2026-05-07.md)** Coincidence detection as Rx join — DORA mechanism for detecting correlated events across trajectories
 - [ ] **[B-0251](backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** Durable computation stack research — Temporal + Reaqtor + Orleans + Bonsai composition for DurabilityMode.StableStorage
 - [ ] **[B-0255](backlog/P1/B-0255-probabilistic-dials-existing-posterior-quorum-substrate-2026-05-07.md)** Probabilistic dials over existing posterior quorum substrate
