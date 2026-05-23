@@ -341,11 +341,18 @@ was listed in `git worktree list` BUT the directory had been pruned between
 the list snapshot and the borrow attempt. `git -C` returned "cannot change
 to ... No such file or directory".
 
-**Mitigation (no working mitigation today)**: requires a worktree-pool
-primitive — pre-allocated isolated sideticks per Otto identity, owned and
-refreshed by each identity, not subject to peer-prune. Composes with the
-`claim acquire` discipline at worktree-allocation scope. Substrate-engineer
-candidate; not yet a backlog row.
+**Mitigation (default = ABANDON; narrow exception at forced-#6 below)**:
+no structural mitigation exists today — the durable fix requires a
+worktree-pool primitive (pre-allocated isolated sideticks per Otto
+identity, owned and refreshed by each identity, not subject to peer-prune;
+composes with the `claim acquire` discipline at worktree-allocation scope;
+substrate-engineer candidate, not yet a backlog row). Until the pool ships,
+the default operational response when sub-case 4 fires is ABANDON the
+shard write (per the composite discipline below). The narrow exception
+authorized by the 2026-05-23 anchor (single-retry-after-orphan-cleanup at
+forced-#6 decomposition only) is described in the "Non-deterministic
+under same conditions" paragraph below; it does NOT generalize to other
+contexts.
 
 **Second-class symptom — fresh-worktree gitdir-prune race** (2026-05-23T02:09Z–02:20Z empirical anchor): a related variant of sub-case 4 was observed at autonomous-loop cold-boot under Lior 3-proc / 337-worktree saturation. The mode is distinct from the borrow-on-listed-sidetick mode above:
 
@@ -385,9 +392,21 @@ during peer cascade) needs to ship a shard / substrate edit:
 6. Use `gh pr create --head <my-branch>` with explicit head ref (per
    [`zeta-expected-branch.md`](zeta-expected-branch.md) companion defense)
 7. If sub-cases 3 or 4 are hit and the attempt fails, ABANDON the shard
-   write — document the empirical evidence in turn output and end the
-   tick. Repeated retries under contention amplify the risk of peer-WIP
-   contamination.
+   write by default — document the empirical evidence in turn output and
+   end the tick. Repeated retries under contention amplify the risk of
+   peer-WIP contamination and remain forbidden.
+
+   **Narrow exception (forced-#6 only)**: at forced-#6 decomposition per
+   [`holding-without-named-dependency-is-standing-by-failure.md`](holding-without-named-dependency-is-standing-by-failure.md)
+   counter, a **single** retry after orphan cleanup (run `rm -rf <wt-path>`
+   then `git branch -D <branch>`) is authorized for sub-case 4 specifically
+   (per the 2026-05-23 timing-dependent-not-condition-dependent anchor in
+   the sub-case 4 section above). The exception does NOT apply to
+   sub-case 3 (pack-dir contention has no analogous timing-dependence
+   evidence yet) and does NOT generalize to brief-ack #1-#5 (the default
+   ABANDON path is correct there because pre-empt artifacts of other
+   shapes are usually available). One retry only; if it also fails,
+   ABANDON applies absolutely.
 
 ## Composes with other rules
 
