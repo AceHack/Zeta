@@ -8,7 +8,7 @@ merged_at: "2026-05-22T22:18:30Z"
 closed_at: "2026-05-22T22:18:30Z"
 head_ref: "shard/tick-2215z-otto-cli-pr4668-thread-triage-2026-05-22"
 base_ref: "main"
-archived_at: "2026-05-22T22:19:45Z"
+archived_at: "2026-05-22T23:50:44Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
