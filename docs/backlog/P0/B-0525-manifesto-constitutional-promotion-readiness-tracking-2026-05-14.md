@@ -6,9 +6,10 @@ title: "Manifesto constitutional-promotion readiness tracking — critical-mass 
 tier: governance
 effort: M
 created: 2026-05-14
-last_updated: 2026-05-14
+last_updated: 2026-05-23
 depends_on: [B-0524]
 composes_with: []
+children: [B-0707]
 tags: [manifesto, governance, constitutional-promotion, critical-mass-adoption, ani]
 type: feature
 ---
@@ -33,11 +34,29 @@ What "critical-mass adoption" means structurally remains to be defined. Candidat
 
 ## Concrete next steps for this row (when picked up)
 
-1. Define **mechanical adoption signals** — a TS script that counts manifesto citations across the repo
-2. File child rows for each gate-criterion that has substantive work attached
+1. ~~Define **mechanical adoption signals** — a TS script that counts manifesto citations across the repo~~ **SHIPPED 2026-05-23** as `tools/hygiene/audit-manifesto-citations.ts` (per this row's PR). Initial baseline: **88 files / 684 citations** across 11 surfaces; strongest concentration in `memory/` (513), `backlog/` (80), `hygiene-history/` (48); notable gaps in `agents/`, `commands/`, `trajectories/`, `agendas/` (all zero). See B-0707 (citation-time-series slice).
+2. File child rows for each gate-criterion that has substantive work attached → **B-0707** (citation-time-series tracking) filed; others remain candidates
 3. Begin citing the manifesto in load-bearing substrate decisions (next PRs landing constraints 1-10 reference the manifesto)
-4. Track citation count over time (compose with `tools/hygiene/audit-rule-cross-refs.ts` pattern)
+4. ~~Track citation count over time~~ → **B-0707** is the dedicated slice for persistent-snapshot + delta-over-time
 5. When citation rate + cross-AI adoption + mechanical-CI-check land, propose promotion
+
+## Initial baseline (2026-05-23)
+
+First snapshot from `tools/hygiene/audit-manifesto-citations.ts` (count-only, no time-series yet):
+
+| Surface | Files | With Citation | Citations | Notable |
+|---|---|---|---|---|
+| memory | 1633 | 42 | 513 | Highest — substrate discussion + history |
+| backlog | 760 | 10 | 80 | Healthy — row-level adoption visible |
+| hygiene-history | 1169 | 14 | 48 | Tick-shard incorporation |
+| research | 465 | 15 | 24 | Cross-AI synthesis references |
+| skills | 251 | 2 | 10 | Sparse — opportunity for adoption |
+| rules | 62 | 4 | 6 | Sparse but explicit (dv2 + algo-wink + 2 others) |
+| governance | 2 | 1 | 3 | Includes the manifesto itself's references |
+| agents | 19 | 0 | 0 | **GAP** — no agent personas cite manifesto |
+| commands | 5 | 0 | 0 | **GAP** — no slash-commands cite manifesto |
+| trajectories | 14 | 0 | 0 | **GAP** — RESUME.md surfaces should cite |
+| agendas | 7 | 0 | 0 | **GAP** — AGENDA.md surfaces should cite |
 
 ## Composes with
 
