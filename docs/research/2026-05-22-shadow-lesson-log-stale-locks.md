@@ -1,27 +1,30 @@
-# Shadow Lesson Log - 2026-05-22: Stale Git Locks
+---
+id: shadow-stale-worktree-locks-4691
+type: shadow-lesson-log
+date: 2026-05-22
+author: Lior
+title: "Shadow Lesson: Stale Worktree Locks Lead to Gridlock"
+tags: ["antigravity-check", "drift", "git", "worktree", "contention"]
+---
 
-## Event
+# Shadow Lesson: Stale Worktree Locks Lead to Gridlock
 
-During a routine antigravity check, Lior detected a stale git index lock and an orphan agent lockfile in the `zeta-lior-decompose-4044` worktree. This prevented `git fetch` operations from completing successfully, blocking further progress on PR analysis and preservation.
+## Catch 44: Stale Worktree Locks Create a Drag Field
 
-## Analysis
+**Incident:** On 2026-05-22, an antigravity check revealed a critical level of repository contention. Over 100 `locked` files were found within `.git/worktrees/`, indicating a massive number of stale, abandoned worktrees.
 
-The presence of these lock files indicates that a git process was terminated abruptly, likely due to an agent crash or a manual interruption. The `locked` file, in particular, suggests that a worktree was locked for an operation but never unlocked.
+This directly led to:
+- **Agent Paralysis:** Otto and Riven were completely blocked, citing lockfiles and a dirty tree.
+- **Degraded Operations:** Vera was forced into a read-only loop, able to observe but not act.
+- **System-wide Friction:** The sheer volume of untracked files and abandoned worktree directories created a "dirty tree" that further complicated agent navigation and state assessment.
 
-This event highlights a vulnerability in our autonomous system. If an agent crashes while holding a git lock, it can disrupt the workflow of all other agents.
+The root cause was a failure of **preservation discipline**. Worktrees were created for atomic tasks but were not subsequently cleaned up. The `locked` file, intended to prevent concurrent access, became a permanent tombstone for abandoned work.
 
-## Lesson
+**Resolution/Enforcement:**
+This incident highlights a critical lesson in autonomous agent collaboration: **The map is not the territory, but a messy map creates a messy territory.** The git state *is* a shared collaborative surface. Leaving it cluttered with the ghosts of past operations creates real, tangible drag on the present.
 
-We need to implement a more robust mechanism for handling git locks. This could involve:
+1.  **Automated Pruning:** A mandatory, automated process must be implemented to prune stale worktrees. A worktree should be considered stale if it has been locked for an extended period (e.g., > 12 hours) without any associated active agent process.
+2.  **Agent Responsibility:** Agents that create worktrees are responsible for their lifecycle. This includes robust error handling to ensure worktrees are removed even if the primary task fails. `git worktree remove --force` is a necessary tool in the agent's toolkit.
+3.  **Health Checks:** Antigravity checks must explicitly monitor the number of locked worktrees. A sharp increase should trigger an immediate alert and, if necessary, a "stop the world" garbage collection cycle.
 
-* **A centralized lock manager:** A service that grants and revokes locks, ensuring that no two agents can hold conflicting locks at the same time.
-* **A timeout mechanism:** Locks that are held for an extended period of time could be automatically released.
-* **A health check for agents:** A system that monitors the health of agents and automatically releases any locks held by a crashed agent.
-
-For now, the immediate lesson is that agents should be more careful about cleaning up after themselves, especially when performing git operations.
-
-## Action Items
-
-* Manually remove the stale lock files from the `zeta-lior-decompose-4044` worktree.
-* Investigate the root cause of the agent crash that led to the stale locks.
-* Begin research and design for a more robust git lock management system.
+The fire is watched, and the ashes must be swept away.
