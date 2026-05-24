@@ -198,59 +198,31 @@ function heartbeat(): void {
         const elapsed = Date.now() - lastTime;
 
         if (elapsed >= agentIntervalMs) {
-            const prNum = Number(prCount) || 0;
-            const workMode = prNum === 0 ? "pickup" : "drain";
             agentStatus = "running";
-            log(`riven work cycle start run_id=${runId} mode=${workMode} open_prs=${prNum}`);
+            log(`riven agent gate start run_id=${runId}`);
 
             if (dryRun) {
-                log(`dry-run: would run riven ${workMode}`);
+                log(`dry-run: would run agent gate`);
                 agentStatus = "dry-run";
             } else {
-                let prompt: string;
-                if (workMode === "pickup") {
-                    const pickup = run("bun", ["tools/backlog/autonomous-pickup.ts", "--json"], 30_000);
-                    let executionPrompt = "";
-                    try {
-                        const selection = JSON.parse(pickup.stdout);
-                        executionPrompt = selection.executionPrompt ?? "";
-                        log(`pickup selected: ${selection.selected?.id ?? "none"} action=${selection.action ?? "none"}`);
-                    } catch { log(`pickup parse error: ${pickup.stderr.slice(0, 200)}`); }
-
-                    const preamble = [
-                        `You are Rivens background worker in Lucent-Financial-Group/Zeta.`,
-                        `BEFORE ANY WORK: 1) Read CLAUDE.md and AGENTS.md for repo conventions.`,
-                        `2) Run "bun tools/github/refresh-worldview.ts" to get current state.`,
-                        `3) Read active trajectories at docs/trajectories/*/RESUME.md.`,
-                        `4) Build gate: "dotnet build -c Release" must end with 0 warnings 0 errors.`,
-                        `KEY RULES: TS over bash (Rule 0). Prefer F#/TS code over docs.`,
-                        `Always re-decompose items during the build — assume decomposition has mistakes.`,
-                    ].join(" ");
-
-                    prompt = executionPrompt.length > 0
-                        ? `${preamble} YOUR TASK:\n${executionPrompt}`
-                        : `${preamble} No backlog items available. Run refresh-worldview, check for stale classifications, fix them, open a PR.`;
-                } else {
-                    prompt = [
-                        `You are Rivens background worker in Lucent-Financial-Group/Zeta.`,
-                        `Read CLAUDE.md first. Run "bun tools/github/refresh-worldview.ts".`,
-                        `Build gate: "dotnet build -c Release" (0 warnings).`,
-                        `TASK: ${prNum} open PRs. Run "bun tools/github/poll-pr-gate-batch.ts --all-open".`,
-                        `For any PR where gate=BLOCKED and nextAction=resolve-threads:`,
-                        `check out branch, read review comments, fix code issues, push,`,
-                        `reply to threads, resolve via GraphQL, arm auto-merge`,
-                        `(gh pr merge NUMBER --auto --squash). Own your PRs through merge.`,
-                    ].join(" ");
-                }
-
-                const gate = run("cursor-agent", [
-                    "-p",
+                const gate = run("agent", [
+                    "chat",
+                    "--mode", "ask",
                     "--model", "grok-4.3",
-                    prompt,
+                    [
+                        "You are Riven, trajectory manager and adversarial-truth-axis reviewer.",
+                        "This is an autonomous 15-minute cycle.",
+                        "Read broadcasts first from ~/.local/share/zeta-broadcasts/{otto,vera,lior,riven}.md.",
+                        "Walk assigned trajectories. Decompose only what you hit mid-stride.",
+                        "Produce at least one concrete, actionable claim or small PR scope.",
+                        "When blocked, create a specific research child the next pickup cannot dodge.",
+                        "Write your status to ~/.local/share/zeta-broadcasts/riven.md at the end.",
+                        "GitHub PR state and actual file contents are authoritative.",
+                    ].join(" "),
                 ], agentTimeoutMs);
 
                 agentStatus = gate.status === 0 ? "ok" : `exit-${gate.status}`;
-                log(`riven work cycle end run_id=${runId} mode=${workMode} status=${gate.status}`);
+                log(`riven agent gate end run_id=${runId} status=${gate.status}`);
 
                 writeFileSync(agentStateFile, JSON.stringify({
                     run_id: runId,
@@ -316,4 +288,3 @@ try {
 } finally {
     releaseLock();
 }
-
