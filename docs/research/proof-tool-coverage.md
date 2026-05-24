@@ -178,8 +178,7 @@ modes, chain rule pipeline.
 - **PN-Counter, OR-Set, LWW-Register** (`Crdt.fs`) — only
   G-Counter has the three semilattice properties tested.
 - **DeltaCrdt** (`DeltaCrdt.fs`) — anti-entropy merge laws.
-- **Residuated lattice** (`Residuated.fs`) — Galois-connection
-  axiom `(a ⇒ b) ≤ c ⟺ a ≤ (b ⇐ c)`.
+- **Residuated lattice** (`Residuated.fs`) — Galois connection + residual under max + retraction equivalence laws **(FsCheck property-covered since 2026-05-24; all laws now have basic property-based test coverage)**.
 - **Recursive fixpoint monotonicity** (`Recursive.fs`).
 - **Merkle tree collision-freedom** at the leaf pair level.
 - **Watermark monotonicity + bounded-lateness axiom**.

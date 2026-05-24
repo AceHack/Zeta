@@ -19,6 +19,7 @@
     <Compile Include="Algebra/Units.Tests.fs" />
     <Compile Include="Algebra/ZSet.Tests.fs" />
     <Compile Include="Algebra/ZSet.Overflow.Tests.fs" />
+    <Compile Include="Algebra/Residuated.Tests.fs" />
     <Compile Include="Algebra/IndexedZSet.Tests.fs" />
     <Compile Include="Algebra/RobustStats.Tests.fs" />
     <Compile Include="Algebra/TemporalCoordinationDetection.Tests.fs" />
