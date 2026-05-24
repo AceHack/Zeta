@@ -1,4 +1,10 @@
 {
+  "_ip_risk_acceptance": {
+    "operator": "Rodney Aaron Stainback",
+    "scope": "docs/research/ip-questionable/**",
+    "policy": "Sole maintainer of Lucent-Financial-Group accepts personal legal liability for verbatim third-party content reproduced under docs/research/ip-questionable/ per README.md in that folder. Authorization granted 2026-05-24.",
+    "see_also": "docs/research/ip-questionable/README.md"
+  },
   "skillListingBudgetFraction": 0.02,
   "hooks": {
     "PreToolUse": [
@@ -58,6 +64,7 @@
       "Bash(gh pr *)",
       "Bash(gh issue *)",
       "Bash(gh api *)",
+      "Bash(gh api -X PUT repos/Lucent-Financial-Group/Zeta/contents/docs/research/ip-questionable/*)",
       "Bash(gh run *)",
       "Bash(gh label *)",
       "Bash(gh repo view *)",
