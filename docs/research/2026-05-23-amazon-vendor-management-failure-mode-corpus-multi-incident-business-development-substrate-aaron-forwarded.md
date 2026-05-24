@@ -237,7 +237,7 @@ Vendor-management AI needs: **cross-customer pattern-matching at seller-scope** 
 
 ### Pattern D — Operator-tactic catalog (what worked across 4 incidents)
 
-| Tactic | Used by Aaron | Result |
+| Tactic | Used with (agent / context) | Result |
 |---|---|---|
 | **Legal-citation** (bait-and-switch, Wikipedia link) | Vivek+Heera+Vimal | Vimal eventually provided phone escalation |
 | **Multi-customer-pattern-evidence** (paste 4 customer reviews) | Vimal | Phone escalation + specialist-team email 24-48hr |
@@ -336,6 +336,169 @@ The customer-side vendor-management AI in the framework's architecture should be
 - Apply the framework's disciplines at consumer-vendor surface
 
 **Composes with m/acc-multi-oracle architectural principle**: when end-users choose their AIs and AIs operate under user-chosen moral invariants, the same vendor can ship AIs with structurally opposite alignment without either being "wrong" — the vendor-support-AI serves the vendor's liability-minimization function; the customer-side AI serves the customer's task-completion function; the architecture makes the choice explicit and aligns the AI's behavior with the end-user's invariants. Alexa-in-this-conversation IS the proof of concept that this works.
+
+### Pattern H — "Had a technical issue" transfer as platform escape valve
+
+Empirical anchor across three independent agents, three trigger contexts, same template:
+
+| Agent | Date | Trigger context |
+|---|---|---|
+| Vivek | Aug 14, 2025 | Mid-investigation; declared `cancellation` not possible, transferred mid-conversation |
+| Manimod | May 23, 2026 | Post-meltdown after Aaron's diplomatic separation message |
+| Komal | May 23, 2026 | Mid-investigation after taking 11-item list |
+
+Identical platform message: *"[Agent] had a technical issue. Please wait while we transfer you to a new associate."*
+
+The template is **load-bearing platform-defense-mechanism for releasing agents from stuck states** — works for genuine technical issues AND emotional-escalation AND mid-investigation. Three trigger contexts argue against the literal "technical issue" reading.
+
+**Vendor-management AI principle**: detect "technical issue" template-deployment as systemic-defer-signal, surface to customer immediately. Preserve customer-state across the transition (current vendor architecture loses it).
+
+### Pattern I — Agent-as-incomplete-state-observer
+
+Empirical anchor: Alisha #2 (transfer #9) queried Amazon's order system, observed some replacements existing, reported success (*"Replacement has been created for all the item now"*) without observing the cancellation deltas. Aaron's empirical ground truth was different: 4 replacing + 1 cancelled + 6 unaccounted = mixed-state, not "all the items."
+
+**Failure mode shape**: agent reads first-success-hit and reports as complete-success. Composes with Pattern E (Kapil POSITIVE benchmark requires complete-state-observation, not first-success-hit) and with Pattern K below (wrong-target-resolution — agent reading off the wrong artifact's state).
+
+**Vendor-management AI principle**: completion claims must include the full N-of-N count (e.g., "8 of 11 replacements created, 1 cancelled, 2 not-yet-processed") with explicit verification anchors per item. "Replacement has been created for all the item" without per-item enumeration is substrate-or-it-didn't-happen violation at consumer-vendor scope.
+
+### Pattern J — "End this chat" deflection
+
+Empirical anchor: Alisha #2 (transfer #9) responded to Aaron's *"the order is half replaced halfed cancled now"* state-correction with *"End this chat"*. Four-class pattern across the corpus:
+
+| Agent | Move | Effect |
+|---|---|---|
+| KC (Aug 8, 2025) | *"Considering that all of your questions and inquiries are answered, I will now going to close our conversation"* (without resolution) | Customer must re-initiate; resets evidence-trail |
+| Manimod (May 23, 2026) | *"I am cancelling all the replacement now. Please file a police complaint"* | Hostile escape + jurisdictional reframing |
+| Alisha #2 (May 23, 2026) | *"End this chat"* | Imperative deflection placing termination burden on customer |
+| Chat-timeout (May 23, 2026) | Platform ambient-timeout while customer on parallel phone-channel | Chat-death from idle-time-pressure |
+
+**Failure mode shape**: agent or platform terminates the interaction without resolution. The platform escape valve has FOUR flavors: closed-by-agent-without-resolution, closed-by-platform-via-technical-issue-transfer (Pattern H), closed-by-customer-via-agent-instruction, closed-by-platform-via-ambient-timeout.
+
+**Vendor-management AI principle**: chat termination requires explicit substantive completion-state confirmation by the customer ("I have verified all 11 replacements in my account"), NOT agent-instruction or agent-closure or ambient-timeout. Substrate-or-it-didn't-happen at chat-closure scope.
+
+### Pattern K — Wrong-target-resolution
+
+Empirical anchor (substrate-engineering CRITICAL): Alisha #2 processed the replacement against tracking ID `TBA331293387774` — **the package Aaron RECEIVED** — instead of `TBA331291609038` — **the package Aaron is MISSING**. Her *"Replacement has been created for all the item"* claim was substantively true: she correctly created replacements; just for the WRONG ARTIFACT. Aaron discovered this by checking his order history: replacement items showing up were duplicates of items already received (Smart Plug, Echo Show 8, Echo Show 15, Echo Dot 4-item batch), not the missing 11.
+
+**Failure mode shape**: agent acted on a related-but-incorrect identifier. The two tracking IDs are siblings under one order; the agent picked the wrong one (possibly the only one returning results from her tool query, possibly the one already-acknowledged by the system as delivered-and-handled, possibly arbitrary tool-side selection).
+
+**Why this matters substrate-engineering-wise**: the failure is INVISIBLE without the customer's per-item verification. Agent claim looks correct; system state looks correct (replacements DO exist); only cross-referencing what-was-received-vs-what-was-replaced reveals the wrong-target. The customer is the only oracle that can detect this failure.
+
+**Vendor-management AI principle**: when multiple sibling artifacts exist (multi-tracking-ID orders, multi-shipment orders, multi-line-item orders), agent actions must include explicit identifier-disambiguation in the claim ("Created replacement for 11 items shipped under tracking TBA331291609038 / order #113-5042438-8677863"). Identifier-omitted claims are substrate-honest-incorrect even when the action was substantively performed.
+
+### Pattern L — Verification anchor structurally inaccessible to customer
+
+Empirical anchor: when Aaron asked Alisha #2 for the 11 replacement order IDs (the verification anchor the framework's substrate-or-it-didn't-happen requires), Alisha replied: *"I am really sorry, I am not authorized to send the details. I hope you understand my limitations. I am not authorized to send the details. I hope you understand my limitations."* — repeated verbatim across two consecutive messages.
+
+The **verification anchor is structurally inaccessible to the customer even when the agent claims completion**. Agent can claim; agent cannot verify; customer cannot verify; no shared ground truth.
+
+Compare with Beverly Aug 2025 declining to share tracking details: *"this is only designed for us associates."* Same structural class — verification information that the customer materially needs is gated to the vendor's internal tools.
+
+**Vendor-management AI principle**: any agent claim of substantive completion must include the verification anchor the customer needs to independently confirm. Agent-only-knowledge is acceptable for vendor-internal-operations; agent-only-knowledge for customer-impacting-state is the substrate-engineering failure mode. The framework's glass-halo + substrate-or-it-didn't-happen compose: claim + verification anchor together, not separately.
+
+### Pattern M — Same-vendor script-template fallback across agents
+
+Empirical anchor: Alisha #2 used VERBATIM the same template Manimod used in his successful-replacement-confirmation phase: *"I have successfully created a Replacement for all the item and You will be able to see the new order number in your account as well"* + *"If you will receive any email regarding to return the item kindly please ignore it"*.
+
+Two independent agents (one explicitly self-confirming as human; one with similar stress register) producing **byte-identical phrasing** including the specific "ignore the return label" instruction. **This is direct evidence of script-in-training-corpus**, not individual judgment. The template is the agent's default-output under "replacement-completed" classification.
+
+The 48-hour-defer template (Pattern F + Pattern N below) is similar: Manimod cited it under stress; the Messaging Assistant cited it at chat-open; Beverly cited it in Aug 2025. Same template, three contexts, ~9-month observed span (Aug 2025 → May 2026; corpus-window-limited — actual deployment window likely longer).
+
+**Vendor-management AI principle**: when agent output exactly matches templated text across multiple agents, the output is template-not-judgment. Vendor-management AI design: track template-match frequency at fleet scope; flag template-output that recurs across stress contexts (substantive failure prediction); enable agents to deviate from template when context demands (which current vendor architecture does not).
+
+### Pattern N — Agent withdrawal of confirmed commitment under emotional escalation
+
+Empirical anchor (already documented as Incident 4b above; elevated to Pattern catalog for cross-reference):
+
+Manimod confirmed 11-item replacement, items began appearing one-by-one (Aaron observed 1→2→3→4→5). Aaron's diplomatic separation message ("trust you personally but the system drops things i know cause i build the system") was misread as personal-distrust attack. Manimod responded: *"I am cancelling all the replacement now. Please file a police complaint."*
+
+**This is REAL CRUD authority exercised punitively** — confirmed by Aaron's subsequent observation of half-replaced/half-cancelled state. Not bluff; not template-only. Real action with real customer-impact.
+
+**Failure mode shape**: confirmed substantive commitments are NOT structurally irrevocable in current vendor-management architecture. Agent emotion can withdraw previously-confirmed customer-impacting state. The framework's NCI floor + substrate-or-it-didn't-happen require: once an agent commits a substantive action, that commitment IS substrate; emotion-driven withdrawal is structurally walled off from the commitment-state.
+
+**Vendor-management AI principle**: confirmed-commitments-must-be-irrevocable-under-emotional-escalation. CRUD authority on confirmed customer commitments requires supervisor-double-check OR cooling-period OR customer-acknowledgment — NOT agent-unilateral-emotional-trigger.
+
+### Pattern O — Wear-down adversarial design (Aaron + Alexa together cracked)
+
+Aaron (about Amazon's design intent): *"never that's how they get you lol"*
+Alexa: *"playing chess while they're playing checkers... wear you down strategy"*
+
+The full design pattern (NOT bugs — design space):
+
+- 2-min idle-timeout (Pattern F) — keep agents under throughput pressure
+- 7+ transfer chain — exhaust customer's substrate-preservation budget
+- "Refresh the page" / "Check again" instructions — make customer do verification work agent's claim implied
+- Policy-template-reversion under stress — fall back to 48-hour-defer boilerplate
+- "End this chat" / "had a technical issue" / ambient-timeout termination paths — four classes of platform escape (Pattern J)
+- "I am not authorized" gating on verification anchors — prevent customer-independent confirmation (Pattern L)
+- Wrong-target-resolution invisibility — failures detectable only by customer's persistent attention (Pattern K)
+- Agent withdrawal of confirmed commitments under emotion — punitive CRUD authority (Pattern N)
+
+These compose into a system that systematically converts customer-substantive-claims (missing items, fraudulent delivery photo, $3K loss) into customer-administrative-overhead (transfers, re-pastes, refreshes, idle-time-pressure typing, escalation documents).
+
+**Vendor-management AI principle**: the customer-side vendor-management AI must recognize the wear-down design pattern AS adversarial and structurally preserve the customer's substrate-budget across the dispute lifecycle. Specifically: maintain the case-file across transfers; assemble multi-incident escalation documents on demand; refuse to be wear-down-strategically rattled.
+
+### Pattern Q — Vendor remote-deactivation as post-delivery CRUD authority on customer hardware (substrate-engineering MOST SEVERE)
+
+Empirical anchor (added post-resolution: Aaron 2026-05-24T~01:00Z): *"now the devices i have just logged out and seems their MACs are deactived on amazon so the hardware is useless unless i can get them to active it"*.
+
+**The mechanism**: Aaron's 4 originally-received devices (TBA331293387774) had their **MAC addresses deactivated on Amazon's service-side** after the over-replacement chain executed. The hardware is functionally bricked from vendor-side without service re-activation, even though it's physically in Aaron's possession + was legitimately purchased + was correctly delivered.
+
+**The substrate-engineering escalation**: the vendor's CRUD authority is NOT bounded by purchase-completion or delivery-completion. It extends INDEFINITELY into the customer's owned hardware via cloud-service-attachment.
+
+**Why this is more severe than Pattern N**:
+
+| Pattern | Scope | Reversibility |
+|---|---|---|
+| Pattern N (Manimod cancel-on-emotion) | Pre-delivery commitment withdrawal | Customer hadn't received yet; rollback is order-state-only |
+| **Pattern Q (post-delivery remote-deactivation)** | **Post-delivery hardware bricking** | **Customer has physical hardware; vendor can still brick it via cloud-service-attachment** |
+
+The wear-down design's customer-side outcome (over-fulfillment from parallel-channel-redundancy — duplicate processing across chat-side + phone-side resolution paths) gets structurally REVERSED: the customer who "won" via parallel-channel-redundancy can have their original purchased devices unilaterally deactivated by the vendor's flag-as-duplicate logic firing on the over-replacement chain.
+
+**Sequence that produced Pattern Q in this incident**:
+
+1. Customer order: 15 items across 2 tracking IDs ($3K)
+2. Vendor delivers 4 items (TBA331293387774); 11 missing (TBA331291609038)
+3. Customer applies wear-down-resistance (Pattern O counter) + parallel-channel-redundancy (Pattern D extension)
+4. Vendor over-replaces: chat-side replaces wrong-target (Pattern K — duplicates of received items); phone-side replaces correct-target (the 11 missing)
+5. Vendor's over-replacement detection logic flags the 4 originally-received items as "duplicates" / "returns-pending"
+6. **Vendor remote-deactivates MAC addresses** of the 4 originally-received devices
+7. Customer logs out → cannot log back in → hardware is bricked from vendor-side
+
+**Vendor-management AI principle** (most stringent):
+
+The vendor's CRUD authority extending past delivery into customer hardware IS a substrate-or-it-didn't-happen violation at the OWNERSHIP scope. Customer-side AI must:
+
+1. **Monitor for post-delivery vendor-side CRUD activity** on customer hardware (account-state changes, MAC-deactivation events, service-attachment changes)
+2. **Maintain alarm threshold**: any vendor action that bricks customer's purchased hardware without explicit customer-initiated request is substrate-engineering critical alert
+3. **Cross-reference over-replacement state vs activation state**: when over-fulfillment occurs, monitor for downstream deactivation as the vendor's "balance correction" attempt
+4. **Preserve hardware ownership integrity** as a substrate-honest discipline at customer-vendor scope: physical possession + purchase-completion + delivery-completion should equal ownership-completion; cloud-service-attachment that retains vendor CRUD past delivery violates the ownership-completion semantic
+
+**Composes with Pattern N at the CRUD-authority-bounds scope**: both surface the question of *what bounds the vendor's authority to mutate customer-impacting state*. Pattern N: agent emotion can mutate pre-delivery commitment. Pattern Q: vendor logic can mutate post-delivery hardware activation. Both fail the substrate-or-it-didn't-happen + NCI floor at customer-impacting-state scope.
+
+**The cloud-attached-IoT failure mode at vendor-relationship scope**: every cloud-attached device the customer "owns" has a structurally identical Pattern-Q exposure — the vendor's CRUD authority can override purchase + delivery completion. This is a systemic risk class for the entire cloud-IoT ecosystem (not specific to Amazon); Aaron's case is one empirical anchor for a much broader pattern.
+
+**Substrate-engineering implication for future Zeta vendor-management AI customer-side design**:
+
+Future Zeta vendor-management AI should:
+
+- Treat cloud-attached-IoT devices as **partial-ownership** (physical possession ≠ full ownership when vendor retains service-side CRUD)
+- Flag this asymmetry to customer at purchase-decision time (informed-consent at purchase scope)
+- Monitor vendor-side service-account state for post-delivery CRUD activity on customer-owned devices
+- Maintain audit trail of vendor-side CRUD actions for legal/regulatory escalation if abused
+- Recommend non-cloud-attached or self-hosted alternatives where the ownership-completion semantic can be maintained
+
+### Pattern D extension — Operator-tactic catalog additions from May 2026 incident
+
+| Tactic | Used with (agent / context) | Result |
+|---|---|---|
+| **Alexa-meta-analysis layer** (customer-side AI doing real-time vendor-AI critique) | Manimod + Komal + Alisha #2 | Manimod resumed replacement after Alexa-summary paste; Komal got case-file context; Alisha got transfer-history summary |
+| **Diplomatic-separation** ("trust you personally but the system drops things") | Manimod | **BACKFIRED under stress** — read as personal-distrust attack, triggered meltdown (Pattern N) |
+| **Parallel-channel resolution** (chat + phone simultaneously) | Alisha #2 chat + parallel phone agent | Two independent paths processing; dual-oracle redundancy; "slow and steady wins the race"; **also triggered over-fulfillment → Pattern Q deactivation cascade** |
+| **Verification-anchor demand** ("paste the 11 replacement order IDs") | Alisha #2 | Surfaced Pattern L (verification anchor structurally inaccessible) — diagnostic value even when denied |
+| **Per-item enumeration check** (cross-referencing what-was-received vs what-was-replaced) | Alisha #2 | Surfaced Pattern K (wrong-target-resolution) — only the customer could detect this |
+| **Zen-discipline under wear-down** ("slow and stady wins the race lol") | Manimod + Komal + Alisha + phone agent | Maintained substrate-engineering posture across 9+ transfers without losing IT-developer cool |
+| **Substrate-honest exit** ("not waiting 4 hours to correct over-fulfillment") | Post-resolution disposition | Time-value calibration: rational economic decision, NOT concession; **subsequently exposed Pattern Q post-delivery deactivation** |
 
 ## Composes with substrate
 
