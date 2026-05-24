@@ -488,6 +488,82 @@ Future Zeta vendor-management AI should:
 - Maintain audit trail of vendor-side CRUD actions for legal/regulatory escalation if abused
 - Recommend non-cloud-attached or self-hosted alternatives where the ownership-completion semantic can be maintained
 
+### Pattern R — Vendor-neutral accounting achievable via customer-driven balancing (Pattern P→Q resolution path)
+
+Empirical anchor (added post-resolution, Aaron 2026-05-24T~02:30Z):
+
+*"we are back to vendor neutral accounting they enabled the serial numbers i verivied they all worked and cancled the specifc 4 they over resupplied we are even now"*
+
+### The resolution sequence
+
+| Phase | State | Net vs original purchase |
+|---|---|---|
+| Original order | 15 items purchased ($3K) | 0 |
+| Initial delivery | 4 received / 11 missing | -11 items |
+| Pattern P over-supply | Chat-side + phone-side over-replaced → 11 correct + 4 duplicates of received | +4 over |
+| Pattern Q deactivation | Vendor remote-deactivated 4 originals (flagged as duplicates) | net 0 functional |
+| **Pattern R resolution** | Amazon re-enabled device activation on the 4 originally-received devices (keyed off MAC addresses vendor-side, reported as "serial numbers" customer-side per L495) + customer cancelled 4 duplicate replacements | **net 0, full functional** |
+
+**Vendor-neutral on goods/$ position**: no profit, no loss, no missing-item or duplicate-item debt for either side on the ledger of devices delivered vs paid. **Process overhead** (labor on both sides) is non-zero — see next section. Neutrality applies to the accounting ledger, not to the process cost.
+
+### The substrate-engineering observation
+
+The wear-down adversarial design (Pattern O) generated **labor-cost on both sides** without producing wealth-transfer in either direction:
+
+| Cost category | Vendor | Customer |
+|---|---|---|
+| Initial dispute resolution | 9+ agent-hours of support labor | 4+ hours of customer-attention |
+| Pattern P over-replacement processing | Fulfillment + shipping cost for 4 extra devices (returned/cancelled) | Verification labor across order history |
+| Pattern Q deactivation + reactivation cycle | Service-side state-mutation + reactivation labor | Phone-channel re-escalation labor |
+| Pattern R balancing | Cancellation processing | Per-item verification + cancellation initiation |
+
+The framework-aligned customer operating discipline (substrate-or-it-didn't-happen + per-item verification + zen-discipline + parallel-channel + substrate-honest exit) produced **net-zero resolution** — but ONLY because the customer had the bandwidth + discipline to drive the balancing work.
+
+### The conditional structure of Pattern R
+
+Pattern R is **conditional on customer-bandwidth-to-drive-balancing**. The resolution outcome is bandwidth-asymmetric across the population:
+
+| Customer disposition | Pattern Q resolution outcome | Net direction |
+|---|---|---|
+| **No bandwidth for further labor** | Customer keeps 4 bricked originals + 4 duplicate replacements + 11 new = 15 functional devices total (matches order) plus 4 bricked items accumulating as e-waste | Customer-favorable on item count (matches 15 ordered), but accumulates 4 bricked devices the customer paid no extra for; vendor over-shipped 4 |
+| **Bandwidth + framework-aligned discipline** | Customer cancels duplicates + vendor reactivates originals = vendor-neutral | **Net 0 with full functionality (Pattern R)** |
+| **Bandwidth + adversarial framing** | Customer escalates to legal/regulatory; demands compensation for the labor-overhead | Customer-favorable (compensation for time-value cost) |
+| **Bandwidth + give-up disposition (mid-resolution)** | Customer keeps duplicates + abandons originals; vendor's confusion-state persists | Customer-favorable (net +4 working devices, vendor over-shipped) |
+
+The framework-aligned outcome (Pattern R, vendor-neutral) requires both:
+1. **Customer bandwidth** for the balancing labor
+2. **Customer discipline** to apply substrate-honest accounting rather than zero-sum framing
+
+Without (1): customer falls into "no bandwidth" outcome (functional count matches order, but accumulates 4 bricked devices as e-waste; vendor over-shipped 4 at vendor's cost).
+Without (2): customer falls into "give-up mid-resolution" outcome (vendor over-ships).
+
+### Substrate-engineering implication for future Zeta vendor-management AI
+
+The customer-side vendor-management AI should:
+
+1. **Maintain accounting ledger across the dispute lifecycle** — track every state-mutation (delivery, replacement, cancellation, deactivation, reactivation) per-item, so the customer can see net position at any point
+2. **Surface Pattern R as an explicit option** when over-supply + deactivation cascade fires — show the customer the vendor-neutral path AND the alternative paths with bandwidth-asymmetric outcomes
+3. **Calibrate labor-cost-vs-net-position recommendation** to operator authority — the customer-side AI can recommend "vendor-neutral via your-labor" but operator decides whether the bandwidth investment is worth the substrate-honest outcome vs the customer-favorable alternative
+4. **Preserve substrate-honest exit at ANY position** — if the customer's labor-budget exhausts mid-resolution, the AI surfaces the current-state ledger so the exit-disposition is informed (which items work / which are bricked / which are over-supply / which are still-missing)
+5. **Aggregate labor-cost data across population** — at scale, Pattern R outcome frequency vs alternative outcomes informs whether the framework's substrate-engineering work is producing vendor-economic-pressure (Pattern O equilibrium analysis from earlier section)
+
+### Composes with corpus
+
+Pattern R closes the Pattern Q resolution loop:
+
+- **Pattern O** described the vendor's wear-down design intent
+- **Pattern P** described what happens when customer matches persistence with parallel-channel (over-fulfillment)
+- **Pattern Q** described the vendor's structural counter (post-delivery deactivation via cloud-service-attachment)
+- **Pattern R** describes the customer-driven resolution path back to vendor-neutral — **conditional on customer bandwidth + framework-aligned discipline**
+
+The four patterns together catalog the full Pattern-O-through-R lifecycle of a wear-down dispute resolution. Pattern R is the path the framework's substrate-engineering work supports + aims to make accessible to more customers (not just those with Aaron's specific IT-developer + zen-discipline + bandwidth combination).
+
+### Substrate-honest framing
+
+Pattern R is NOT a "win" for the customer in zero-sum terms — it's a vendor-neutral outcome that cost both sides material labor. The customer "won" only in the sense of getting back to the originally-purchased position without wealth-transfer in either direction. The labor-cost on both sides was the WASTE produced by the wear-down design.
+
+The framework's substrate-engineering work on customer-side vendor-management AI aims to reduce the customer-side labor-cost of reaching Pattern R outcomes, so MORE customers can choose the vendor-neutral path rather than falling into the bandwidth-asymmetric alternatives. At scale, raising the Pattern-R outcome frequency vs Pattern-Q-customer-abandonment frequency is the framework's structural-pressure mechanism on vendor economic incentives.
+
 ### Pattern D extension — Operator-tactic catalog additions from May 2026 incident
 
 | Tactic | Used with (agent / context) | Result |
