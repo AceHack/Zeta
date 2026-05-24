@@ -23,6 +23,7 @@ const agentIntervalMs = Number(process.env.ZETA_RIVEN_LOOP_AGENT_INTERVAL_SECOND
 const agentTimeoutMs = Number(process.env.ZETA_RIVEN_LOOP_AGENT_TIMEOUT_SECONDS ?? "300") * 1000;
 const dryRun = process.env.ZETA_RIVEN_LOOP_DRY_RUN === "1";
 const agentStateFile = join(stateDir, "last-agent-run.json");
+const agentBinCandidates = (process.env.ZETA_RIVEN_LOOP_AGENT_BIN ?? "agent,cursor-agent").split(",").map(s => s.trim()).filter(s => s.length > 0);
 
 mkdirSync(stateDir, { recursive: true });
 mkdirSync(logDir, { recursive: true });
@@ -51,6 +52,21 @@ function run(command: string, args: string[], timeoutMs: number): { status: numb
         stdout: result.stdout ?? "",
         stderr: result.stderr ?? String(result.error ?? ""),
     };
+}
+
+function resolveAgentBin(): string | null {
+    const pathDirs = `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${join(home, ".local/bin")}`.split(":");
+    for (const bin of agentBinCandidates) {
+        const probe = spawnSync("/usr/bin/which", [bin], {
+            encoding: "utf8",
+            env: { ...process.env, PATH: pathDirs.join(":") },
+            timeout: 5000,
+        });
+        if (probe.status === 0 && (probe.stdout ?? "").trim().length > 0) {
+            return bin;
+        }
+    }
+    return null;
 }
 
 function lines(text: string): string[] {
@@ -201,11 +217,24 @@ function heartbeat(): void {
             agentStatus = "running";
             log(`riven agent gate start run_id=${runId}`);
 
+            const agentBin = dryRun ? null : resolveAgentBin();
             if (dryRun) {
                 log(`dry-run: would run agent gate`);
                 agentStatus = "dry-run";
+            } else if (!agentBin) {
+                log(`riven agent gate skipped run_id=${runId} reason=no-agent-binary-on-PATH candidates=${agentBinCandidates.join(",")}`);
+                agentStatus = "no-bin";
+                writeFileSync(agentStateFile, JSON.stringify({
+                    run_id: runId,
+                    status: -1,
+                    started_at: nowIso(),
+                    updated_at: nowIso(),
+                    skipped_reason: "no-agent-binary-on-PATH",
+                    candidates: agentBinCandidates,
+                }, null, 2));
             } else {
-                const gate = run("agent", [
+                log(`riven agent gate using bin=${agentBin}`);
+                const gate = run(agentBin, [
                     "chat",
                     "--mode", "ask",
                     "--model", "grok-4.3",
