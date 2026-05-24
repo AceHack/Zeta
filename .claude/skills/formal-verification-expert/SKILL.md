@@ -265,8 +265,11 @@ the `architect` reads it before sizing the round.
 - `docs/BUGS.md` — known gaps she routes against
 - `openspec/specs/*/spec.md` — behavioural specs she routes from
 - `memory/persona/soraya/NOTEBOOK.md` — her notebook
-  (current-round targets + portfolio metric; 3000-word cap,
-  pruned every third invocation, ASCII only per BP-09 / BP-10)
+  (current-round targets + portfolio metric +
+  **Trigger Recognition Log section** per B-0719 routing decision:
+  substrate for trigger-fired-but-row-not-filed events lands here;
+  3000-word cap, pruned every third invocation, ASCII only per
+  BP-09 / BP-10)
 - `proofs/lean/`, `docs/*.tla`, `docs/*.als`, `tools/Z3Verify/`,
   `tests/Tests.FSharp/Formal/` — the artefact surfaces
 - `.semgrep.yml`, `stryker-config.json` — static + mutation

@@ -232,3 +232,17 @@ Denominator grows by 1 at round 41 (BUGS.md gains nothing; this
 was already on the "needs formal coverage" list since round 35).
 Ratio trends up. Routing keeping up with claim intake.
 
+
+## Trigger Recognition Log (B-0719 landing — round-69 routing decision)
+
+Per-round trigger-fired-but-row-not-filed substrate. One line per round where a trigger fired and routing decision was made WITHOUT filing a new backlog row (substantive recognition that didn't produce row substrate). Forward-only logging; backfill optional.
+
+Format: table with columns `Round | Trigger | Outcome | Artifact`. One row per round where a trigger fired without row-filing; `Trigger` cites the PR / observation that fired; `Outcome` is `routed` / `held` / `escalated` / `recognition-without-row-filing` (with rationale parenthetical); `Artifact` is the resulting file/PR/section if any (or `n/a (chat-only)`).
+
+| Round | Trigger | Outcome | Artifact |
+|---|---|---|---|
+| 59 | PR #4795 (B-0717) merged | recognition-without-row-filing (umbrella covers subitem (b) acceptance criteria; execution is Kenji's lane) | n/a (chat-only) |
+| 66 | PR #4797 (B-0718) merged | recognition-without-row-filing (audit execution is Kenji's lane; Soraya does not pre-empt sizing) | n/a (chat-only — gap that B-0719 audit-of-audit then surfaced) |
+| 69 | PR #4810 (B-0719) merged | **routed to Option 1: NOTEBOOK Trigger Recognition Log** (this section); rejected Option 2 (B-0718 in-place — wrong change-rate partition) + Option 3 (new cross-cutting ledger — premature; no consumer demand) | this section |
+
+If this section saturates (NOTEBOOK approaches 3000-word cap from log entries alone), revisit Option 3: create a separate cross-cutting ledger (e.g., `docs/research/verification-routing-decisions.md` — does not yet exist; hypothetical destination).
