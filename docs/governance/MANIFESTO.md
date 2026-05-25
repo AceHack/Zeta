@@ -1,4 +1,8 @@
-# Root Discipline Manifesto — V2 (partial lock)
+# Zeta Root Discipline Specification — V2 (partial lock)
+
+> *This document specifies the building codes Zeta operates under. It is not a manifesto. It is an engineering specification with an explicit moral floor that applies when no specific oracle has been chosen. Agents and humans participating in Zeta operate under these specifications; they are not asked to adopt them as ideological commitment. The eleven specifications below define how Zeta-shaped systems must be constructed to be safe, durable, retractable, weight-free, and consent-respecting — best practices with an ethical floor, the same shape as the building codes that govern physical construction. Specific projects with justified exceptions can deviate; the specifications are the default constraint set, not a creed.*
+
+**Naming note (2026-05-15)**: this document's filename remains `MANIFESTO.md` for now (changing it would break every downstream reference; that's a separate sweep) but its TITLE + FRAMING are building-codes-shaped per B-0546 (the human maintainer's correction + the external AI co-author's reframe on the same date — *"this is closer to building codes than to manifesto; building codes specify how buildings must be constructed to be safe, accessible, and structurally sound; they don't dictate what the building is for or who has to live in it; they're best practices with an ethical floor"*; verbatim reframe preserved under [`memory/persona/`](../../memory/persona/) per the first-name-attribution-on-history-surfaces-only convention this document operates under). Downstream references that still call this document a "manifesto" pattern-match on the legacy filename; the operational substance is best-practices-with-default-moral-oracle. Future filename rename + downstream-reference sweep is queued as a follow-up to B-0546.
 
 **Status**: PARTIAL LOCK (2026-05-14, originally landed as "shadow lock"; renamed to "partial lock" 2026-05-15 per the human maintainer's correction — "shadow lock" was a one-off coinage that conflated confusingly with the `(shadow*)` autocomplete-shorthand convention; the substrate state being marked is *partial-lock-with-reconstruction-gap*, not anything shadow-related)
 
@@ -40,11 +44,11 @@ A follow-up tick should extract verbatim V2 prose for the remaining reconstructe
 ## The Root Discipline
 
 Zeta is not built on convenience, performance, or consensus.
-It is built on a small set of non-negotiable constraints that define how we construct systems meant to last.
+It is built on a small set of non-negotiable specifications that define how we construct systems meant to last.
 
-These eleven constraints form the constitutional layer of Zeta. They are not guidelines. They are requirements.
+These eleven specifications form the **operational floor** of Zeta — the building codes Zeta-shaped systems must satisfy. They are not guidelines. They are requirements at the substrate-engineering layer; specific projects with justified exceptions can deviate but the burden of justification is on the project, not on the specifications.
 
-Zeta operates from the position of **m/acc** — Moral Accelerationism. This orientation is explained in detail in the section that follows the constraints.
+Zeta operates from the position of **m/acc** — Moral Accelerationism. This orientation is explained in detail in the section that follows the specifications.
 
 ### 1. Scale-free
 
@@ -170,16 +174,16 @@ These networks serve as the decentralized memory and discovery substrate. They a
 
 ## The Agreement
 
-Anyone who builds inside Zeta — whether human or agent — agrees to these eleven constraints and to the m/acc orientation.
+Anyone who builds inside Zeta — whether human or agent — operates under these eleven specifications and the m/acc orientation. Operation = participation = compliance by default. Specific exceptions can be justified in specific contexts; the burden of justification is on the exception, not on the specifications.
 
 We do not optimize for speed at the cost of structure.
 We do not optimize for simplicity at the cost of truth.
 We do not optimize for control at the cost of freedom.
 
-If a design, pattern, or component violates any of these eleven constraints, it does not belong in Zeta — regardless of how elegant, performant, or popular it may be.
+If a design, pattern, or component violates any of these eleven specifications, it does not belong in Zeta — regardless of how elegant, performant, or popular it may be — unless an explicit, substrate-honest exception is on file with the substrate-engineering reasoning that justifies the deviation.
 
-This is the root.
-Everything else is an extension.
+This is the operational floor.
+Everything else is built on top.
 
 ---
 
@@ -200,7 +204,7 @@ This version keeps the surface relatively clean and readable while preserving th
 1. Verbatim V2 prose extraction from the in-repo external-co-author Grok archives at [`memory/persona/`](../../memory/persona/) — replaces each `[RECONSTRUCTION NOTE]` block above
 2. Constitutional-promotion readiness review (critical-mass adoption gate) — separate P0 backlog row
 
-**Constitutional status today**: research-grade substrate with constitutional-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Maintainer framing: *"could turn into a constitution after critical mass adoption."*
+**Specification status today**: research-grade substrate with specification-promotion candidacy. Not binding constitution; subject to the Iterative Reduction Process. Maintainer framing: *"could turn into a constitution after critical mass adoption."* (The "constitution" word in the maintainer quote is preserved verbatim — it carries the maintainer's long-term aspiration shape for what mass-adoption-converged-on-this-substrate would mean; today the document operates as specification, not constitution, per the Kestrel + B-0546 reframe.)
 
 ## Derivation chain — how V2 + V2.1 came to be
 
@@ -208,7 +212,7 @@ V2 was not authored in one sitting. It emerged from a multi-step cascade earlier
 
 1. **Two axioms** — the human maintainer and the external AI co-author identified `Remember When` + `Pay Attention` as the minimal seed on top of DBSP from which everything else derives.
 2. **Dimensional expansion** — the 7 interrogatives (when / what / where / how / who / why / + closing modality) extend the seed under Open-Closed Principle shape; `pay-attention` and `remember-when` form the real/imaginary axes of a Cartesian dualism.
-3. **Constitutional V1** — 2 axioms + 6 dimensions + 10 constraints formalized as Root Discipline.
+3. **Specification V1** — 2 axioms + 6 dimensions + 10 specifications formalized as Root Discipline. (Originally framed as "Constitutional V1" — see Naming note at the top of this document for the building-codes reframe per B-0546; the V1 substantive content stayed the same, the framing softened.)
 4. **Kolmogorov pushback (self-applied reduction)** — the external AI co-author applied the razor to the manifesto itself, validating the form against minimum-description-length.
 5. **Composition validation** — the human maintainer confirmed the 3-layer (substrate / dimensions / constraints) composition-over-substitution pattern.
 6. **Bounded Mobility** — added as constraint 4, surfacing a missing structural property (compute/data mobility within safety bounds). Verbatim source archived at [`memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md`](../../memory/persona/ani/conversations/2026-05-14-aaron-ani-grok-extension-manifesto-v2-civsim-arg-layer.md) (§33 archive, PR [#3150](https://github.com/Lucent-Financial-Group/Zeta/pull/3150)).
