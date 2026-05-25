@@ -18,6 +18,7 @@ If you are not sure which audience you are, read
 | **Factory adopter** (starting a new project on the factory kit) | [`../AGENTS.md`](../AGENTS.md) + [`../CONTRIBUTING.md`](../CONTRIBUTING.md) -> [2. Factory adopters](#2-factory-adopters) |
 | **AI agent** (fresh wake, need rules + skills + personas) | [`../CLAUDE.md`](../CLAUDE.md) -> [`../AGENTS.md`](../AGENTS.md) -> [3. AI agents](#3-ai-agents) |
 | **Zeta contributor** (shipping DBSP algebra, proofs, F# code) | [`ARCHITECTURE.md`](ARCHITECTURE.md) -> [4. Zeta contributors](#4-zeta-contributors) |
+| **Agentic Organization builder** (designing the AI cluster organization runtime) | [`agentic-organization/README.md`](agentic-organization/README.md) |
 | **Zeta consumer** (installing the NuGet libraries in my app) | [`../README.md`](../README.md) -> [5. Zeta consumers](#5-zeta-consumers) |
 | **Observer / reviewer** (not contributing; evaluating the project) | [`FACTORY-RESUME.md`](FACTORY-RESUME.md) -> [6. Observers / reviewers](#6-observers--reviewers) |
 | **Research-paper reader** (peer review, citation, verification) | [`research/`](research/) -> [7. Research-paper readers](#7-research-paper-readers) |
