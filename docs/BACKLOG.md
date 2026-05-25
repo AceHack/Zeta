@@ -682,6 +682,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0724](backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md)** TS hat-system operator — second polyglot implementation alongside the Go scaffold; proves the polyglot-operator pattern for the cluster
 - [ ] **[B-0726](backlog/P2/B-0726-reticulum-throughout-cluster-and-edge-composing-substrate-alongside-k8s-2026-05-25.md)** Reticulum throughout — cluster nodes AND edge devices on the same mesh; K8s and Reticulum compose as layers rather than partition by network tier
 - [ ] **[B-0728](backlog/P2/B-0728-destructive-tool-authoring-contract-rails-plus-permission-grants-invocation-plus-runtime-acceptance-gate-2026-05-25.md)** Destructive-tool authoring contract — safety rails + permission-grants-INVOCATION-not-absolution + runtime-acceptance gate with nonce; canonical pattern landed in flash-usb.ts
+- [ ] **[B-0729](backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md)** Obsidian as knowledge-graph substrate — wikilinks + frontmatter tags + callouts + Tasks-plugin format + JSON-LD extractor (5-layer adoption; team already uses Obsidian; extend where needed)
 
 ## P3 — convenience / deferred
 
