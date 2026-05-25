@@ -16,6 +16,12 @@ Implementation can begin once we define:
 
 Everything else can evolve through the Organization itself.
 
+The first narrowed contracts are now captured in:
+
+- [V0 Executable Contract](./V0_EXECUTABLE_CONTRACT.md);
+- [V0 Schema and Commands](./V0_SCHEMA_AND_COMMANDS.md);
+- [V0 Policy and Runtime Boundaries](./V0_POLICY_AND_RUNTIME_BOUNDARIES.md).
+
 ## 1. MVP Slice
 
 Define the first end-to-end workflow we will build.
@@ -66,7 +72,13 @@ Need to decide:
 - whether this is a new app under `agentic-team/packages` or a separate top-level workspace;
 - whether frontend and backend live together at first;
 - whether initial deployment target is local Docker Compose, k3s, or both.
-- whether runtime code belongs under `full-ai-cluster/` as a cluster subsystem or as a parallel top-level product tree.
+
+Placement decision:
+
+- documentation lives under `agentic-organization/docs/`;
+- product/runtime code may live under the Agentic Organization app tree;
+- cluster deployment belongs under `full-ai-cluster/k8s/applications/agentic-organization/` as an ArgoCD-managed workload;
+- Agentic Organization consumes the `full-ai-cluster` substrate and must not create a parallel cluster substrate.
 
 Recommendation:
 
@@ -74,7 +86,7 @@ Recommendation:
 - use dev-portal/TPM only as reference and selective extraction source;
 - build modular monolith first, with clear boundaries for later service extraction.
 - use a TypeScript monorepo with `apps/api`, `apps/web`, `apps/workers`, `apps/temporal-worker`, `apps/dapr-actors`, and shared `packages/*` as defined in the build plan.
-- decide placement before code lands. Docs can live at `agentic-organization/docs/`; runtime implementation should not create a second parallel substrate by accident.
+- treat deployment as a `full-ai-cluster` consumer workload from the first cluster integration.
 
 ## 3. Source of Truth
 
