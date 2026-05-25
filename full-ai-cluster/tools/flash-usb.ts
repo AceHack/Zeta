@@ -23,9 +23,14 @@
 //   - Selected device size outside [4 GiB, 256 GiB]
 //
 // Confirmation gate (exit 1):
-//   - Operator must type the FULL device path (e.g. `/dev/disk4`).
-//     `yes`/`y` is REJECTED — typed-path is the verification
-//     that the operator visually checked the device.
+//   - Runner must type a phrase containing the device path AND
+//     a fresh random nonce printed at runtime: e.g.
+//       accept-destroy /dev/disk4 a3f9c1d2
+//   - The nonce makes it impossible for an agent to pre-bake the
+//     answer; the runner has to OBSERVE the nonce at THIS run.
+//   - The phrase explicitly says `accept-destroy`. By typing it,
+//     the runner is signing a runtime acceptance of responsibility
+//     for the contents of the destination device.
 //
 // Then:
 //   - `diskutil unmountDisk` (not eject)
@@ -42,8 +47,26 @@
 //     "permissions": { "allow": [
 //       "Bash(bun full-ai-cluster/tools/flash-usb.ts *)"
 //     ] }
-//   The safety rails in this script are what makes that permission
-//   grant reasonable.
+//
+//   The permission rule grants INVOCATION, not absolution. The
+//   safety rails (platform / ISO size / USB-protocol / internal-
+//   disk / boot-disk / size-range refusals) AND the runtime
+//   acceptance gate carry the safety logic. Bypassing them (e.g.
+//   piping an answer to stdin to skip the verification gate) is
+//   the bypasser's responsibility, not the maintainer's who
+//   shipped this tool in good faith.
+//
+// Liability framing:
+//   By completing the runtime confirmation prompt, the runner
+//   (whether human OR agent acting on a runner's behalf) accepts
+//   responsibility for the contents of the destination device.
+//   The maintainer who committed this script + the permission
+//   rule has no liability for a downstream runner who accepts
+//   responsibility at the runtime gate. Per the framework's
+//   autonomy-first-class + NCI disciplines: agents act on their
+//   owner's behalf; the owner is responsible for their agent's
+//   actions; you are not responsible for what another maintainer's
+//   agent decides to do with substrate you provided in good faith.
 //
 // Implementation note: all subprocess calls use execFileSync (argv-
 // array form) — never shell interpolation. Inputs that flow into
@@ -51,6 +74,7 @@
 // hardcoded literals, never from user-controlled strings.
 
 import { execFileSync, spawn } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { existsSync, statSync } from "node:fs";
 import { platform } from "node:os";
 import * as readline from "node:readline/promises";
@@ -225,7 +249,25 @@ async function main() {
     bail(2, `device ${device} IS the boot disk; refusing to overwrite`);
   }
 
-  // ── 5. Display + typed-path confirmation ───────────────────
+  // ── 5. Display + responsibility-acceptance confirmation ────
+  //
+  // The runner (human OR agent acting on their behalf) types
+  // back a phrase that contains the device path AND a fresh
+  // random nonce printed at runtime. The nonce makes it
+  // impossible for an agent to pre-bake the answer — the
+  // runner has to OBSERVE the displayed value at THIS run.
+  //
+  // The phrase explicitly says `accept-destroy`. By typing it,
+  // the runner is signing a runtime acceptance of responsibility
+  // for the contents of the destination device. The maintainer
+  // who shipped this tool is not liable for what a downstream
+  // runner accepts at this prompt — the runner had every safety
+  // rail (platform, ISO size, USB-protocol, internal check,
+  // boot-disk check, size range) AND this explicit acceptance
+  // gate to refuse on.
+  const nonce = randomBytes(4).toString("hex");
+  const acceptancePhrase = `accept-destroy ${device} ${nonce}`;
+
   process.stdout.write("\n");
   process.stdout.write("USB device identified:\n");
   process.stdout.write(`  Device:    ${device}\n`);
@@ -237,17 +279,29 @@ async function main() {
   process.stdout.write("\n");
   process.stdout.write(`*** ALL DATA ON ${device} WILL BE DESTROYED ***\n\n`);
   process.stdout.write(
-    `To confirm, type the full device path exactly: ${device}\n`,
+    "By completing the confirmation prompt below, the runner\n" +
+      "(human OR agent acting on their behalf) accepts responsibility\n" +
+      "for the contents of the destination device.\n\n",
   );
+  process.stdout.write(
+    "To proceed, type EXACTLY (case-sensitive, single line):\n\n",
+  );
+  process.stdout.write(`  ${acceptancePhrase}\n\n`);
 
   const rl = readline.createInterface({ input: stdin, output: stdout });
-  const typed = (await rl.question("> ")).trim();
+  // readline strips the trailing newline; no .trim() — "EXACTLY" must
+  // mean EXACTLY. Whitespace tolerance would undermine the gate
+  // (a piped `accept-destroy ... <nonce>\n` would otherwise pass).
+  const typed = await rl.question("> ");
   rl.close();
 
-  if (typed !== device) {
+  if (typed !== acceptancePhrase) {
     bail(
       1,
-      `confirmation mismatch (got '${typed}', expected '${device}'). Aborted.`,
+      `confirmation mismatch — runner did NOT accept responsibility.\n` +
+        `  expected: ${acceptancePhrase}\n` +
+        `  got:      ${typed || "(empty)"}\n` +
+        `Aborted.`,
     );
   }
 

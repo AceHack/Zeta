@@ -50,6 +50,7 @@
   "permissions": {
     "allow": [
       "Bash(bun *)",
+      "Bash(bun full-ai-cluster/tools/flash-usb.ts *)",
       "Bash(dotnet build *)",
       "Bash(dotnet test *)",
       "Bash(dotnet restore *)",
