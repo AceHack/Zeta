@@ -56,20 +56,31 @@ Organization state only by calling Organization commands.
   concrete state adapters, Cockroach adapters, NestJS, NATS, Dapr,
   Temporal, Drizzle, Postgres, or other runtime clients
 - **AND** a violation fails the test suite before the boundary can drift
+- **AND** state adapter source files are checked for forbidden imports
+  of messaging, NATS, JetStream, or other event transport clients
 
 ### Requirement: Commands are idempotent
 
 Organization commands MUST use deterministic idempotency keys at the
 command boundary.
 
-#### Scenario: Cockroach core state schema exists
+#### Scenario: Durable core state schema exists
 
-- **WHEN** the first CockroachDB migration contract is loaded
+- **WHEN** the first durable state migration contract is loaded
 - **THEN** it declares work item, supervisor signal, audit event,
   outbox event, and idempotency record tables
 - **AND** outbox rows include trace ID, correlation ID, and canonical
   envelope JSON fields for later NATS publication and workflow
   visibility
+
+#### Scenario: Durable state adapter is replaceable
+
+- **WHEN** application or messaging package source is inspected
+- **THEN** it does not import CockroachDB, Drizzle, Postgres, or
+  database-client packages
+- **AND** it depends on generic state and outbox-source ports instead
+- **AND** CockroachDB is treated as the first replaceable durable adapter
+  for the cluster, not as the application model
 
 #### Scenario: Matching replay
 
@@ -141,6 +152,29 @@ Organization NATS subjects MUST use a stable organization-scoped shape.
 - **WHEN** a work event is prepared for NATS publication
 - **THEN** the subject shape is
   `agentic-org.<environment>.<organization>.<domain>.<event-type>`
+
+### Requirement: Outbox publisher is idempotent and adapter-backed
+
+Organization outbox publication MUST be driven by a generic publisher
+and a concrete event-publisher adapter.
+
+#### Scenario: Outbox event is published
+
+- **WHEN** unpublished outbox events are claimed
+- **THEN** the publisher resolves the typed Organization messaging
+  domain and builds the stable NATS subject
+- **AND** the publisher sends the event through an `EventPublisher` port
+- **AND** the outbox row is marked published only after the publish
+  succeeds
+
+#### Scenario: NATS adapter publishes event
+
+- **WHEN** the NATS JetStream adapter publishes an event publication
+- **THEN** it sends the canonical event envelope as JSON
+- **AND** it uses the event ID as the message ID
+- **AND** it includes typed headers for event ID, event type,
+  correlation ID, causation ID, trace ID, idempotency key, and outbox
+  event ID
 
 ### Requirement: Telemetry is complete at the event boundary
 

@@ -55,7 +55,8 @@ The Organization owns:
 
 The cluster provides:
 
-- CockroachDB for authoritative Organization state;
+- CockroachDB as the first durable SQL adapter for authoritative
+  Organization state;
 - NATS JetStream for event transport, fanout, inboxes, replay, and DLQ;
 - Temporal TS for durable long-running workflows;
 - Dapr Actors for hot entity-local coordination;
@@ -77,7 +78,7 @@ Runtime host
       -> command handler registry
       -> policy check
       -> domain state transition
-      -> CockroachDB transaction
+      -> durable state transaction through the state adapter
         -> authoritative state
         -> audit event
         -> outbox event
@@ -163,9 +164,10 @@ calling them.
 
 | Package                                  | Owns                                                                                            |
 | ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `@agentic-org/state`                     | Drizzle schema, migrations, repositories, transactions, outbox, inbox, idempotency, leases      |
-| `@agentic-org/state-cockroach`           | CockroachDB implementation of state-store ports, SQL statement catalog, and migration contracts |
+| `@agentic-org/state`                     | generic state-store, outbox-source, inbox, idempotency, transaction, and lease ports            |
+| `@agentic-org/state-cockroach`           | first replaceable durable SQL implementation of state-store and outbox-source ports             |
 | `@agentic-org/messaging`                 | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts    |
+| `@agentic-org/messaging-nats`            | NATS JetStream implementation of the event publisher port, canonical JSON, headers, message IDs |
 | `@agentic-org/workflows-temporal`        | Temporal workflow and activity contracts, task queues, workflow clients                         |
 | `@agentic-org/actors-dapr`               | Dapr actor interfaces, actor implementations, reminders, actor state projection                 |
 | `@agentic-org/mcp`                       | MCP schemas, tool registry, preflight checks, policy-checked tool handlers                      |
@@ -240,9 +242,10 @@ commands should register a handler; new persistence backends should
 implement the same store-factory port.
 
 State-store ports are async at the application boundary. In-memory
-adapters may resolve immediately, but CockroachDB, transactional
-outbox, inbox, and lease adapters must be able to perform real I/O
-without changing command-handler contracts.
+adapters may resolve immediately, but durable SQL, transactional outbox,
+inbox, and lease adapters must be able to perform real I/O without
+changing command-handler contracts. CockroachDB is the first durable SQL
+adapter in the cluster, not an application-layer dependency.
 
 ## SOLID Rules
 
@@ -281,10 +284,11 @@ implement it. Runtime hosts bind implementations.
 
 All state transitions are event-producing commands.
 
-CockroachDB stores authoritative state, audit, idempotency, and outbox.
-NATS JetStream carries event distribution, inboxes, live UI updates,
-replayable integration streams, and DLQs. Logs, traces, and metrics are
-evidence. They are not business truth.
+The durable state adapter stores authoritative state, audit,
+idempotency, and outbox. In `full-ai-cluster`, the first implementation
+is CockroachDB. NATS JetStream carries event distribution, inboxes, live
+UI updates, replayable integration streams, and DLQs. Logs, traces, and
+metrics are evidence. They are not business truth.
 
 ### Canonical Event Envelope
 
@@ -343,6 +347,15 @@ type AgenticEventEnvelope<TPayload> = {
 
 No app should publish raw NATS payloads directly. Publishing should go
 through `@agentic-org/messaging`.
+
+The generic outbox publisher should claim unpublished outbox events from
+an `OutboxEventSource`, resolve the typed Organization messaging
+domain, publish through an `EventPublisher` port, and mark the outbox
+row published only after the publish succeeds. The NATS adapter is an
+implementation of that port; it owns transport-specific concerns such as
+headers, message IDs, and JSON serialization. This keeps the
+Organization event loop extensible and testable without coupling the
+publisher to the NATS client.
 
 ### Event-to-Automation Contract
 
@@ -579,7 +592,7 @@ tree.
 
 | Adapter package                   | Cluster dependency                               | Expected in-cluster target                                            |
 | --------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------- |
-| `@agentic-org/state`              | CockroachDB ArgoCD app                           | `cockroachdb-public.cockroachdb.svc.cluster.local:26257`              |
+| `@agentic-org/state-cockroach`    | CockroachDB ArgoCD app                           | `cockroachdb-public.cockroachdb.svc.cluster.local:26257`              |
 | `@agentic-org/messaging`          | NATS ArgoCD app with JetStream enabled           | `nats.nats.svc.cluster.local:4222`                                    |
 | `@agentic-org/workflows-temporal` | Temporal ArgoCD app                              | `temporal-frontend.temporal.svc.cluster.local:7233`                   |
 | `@agentic-org/actors-dapr`        | Dapr control plane                               | Dapr sidecar plus `dapr-system` placement service                     |
@@ -668,7 +681,8 @@ They should get the narrowest network policy and credential scope first.
 
 Current cluster readiness:
 
-- CockroachDB exists as the distributed SQL substrate.
+- CockroachDB exists as the first distributed SQL substrate. It is
+  consumed only through the durable state adapter boundary.
 - NATS exists with JetStream enabled and Longhorn-backed file storage.
 - Temporal and Dapr are present, but their Organization-specific
   persistence/components still need wiring.
@@ -690,11 +704,11 @@ each substrate becomes live.
 
 The same package architecture should run in three modes:
 
-| Mode              | Purpose                                    | Runtime adapters                                                                |
-| ----------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
-| unit/test         | package and command tests                  | in-memory/fake adapters                                                         |
-| local dev cluster | k3d/K3S parity with `full-ai-cluster` apps | real NATS/Cockroach when available, fake Hermes/hat-system if needed            |
-| full cluster      | production-like AI cluster                 | real CockroachDB, NATS, Hindsight, Hermes, OpenZiti, hat-system, Temporal, Dapr |
+| Mode              | Purpose                                    | Runtime adapters                                                                                |
+| ----------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------- |
+| unit/test         | package and command tests                  | in-memory/fake adapters                                                                         |
+| local dev cluster | k3d/K3S parity with `full-ai-cluster` apps | real NATS/durable SQL when available, fake Hermes/hat-system if needed                          |
+| full cluster      | production-like AI cluster                 | CockroachDB-backed state adapter, NATS, Hindsight, Hermes, OpenZiti, hat-system, Temporal, Dapr |
 
 Do not create a Docker Compose architecture that diverges from
 `full-ai-cluster`. Local development can use fakes or a dev cluster, but
@@ -761,6 +775,7 @@ other work.
    - `@agentic-org/state-cockroach`;
    - `@agentic-org/policy`;
    - `@agentic-org/messaging`;
+   - `@agentic-org/messaging-nats`;
    - `@agentic-org/observability`;
    - `@agentic-org/work-os`;
    - `@agentic-org/hats`;
@@ -770,8 +785,8 @@ other work.
    - `@agentic-org/ui-projections`.
 2. Implement the canonical command context, event envelope, typed enums,
    and idempotency key builder.
-3. Implement the first CockroachDB schema and Drizzle migrations for the
-   V0 executable contract.
+3. Implement the first durable SQL schema and migrations for the V0
+   executable contract, using CockroachDB as the initial adapter.
 4. Implement command handlers for:
    - send supervisor signal;
    - triage supervisor signal;
@@ -786,13 +801,15 @@ other work.
 5. Use fake adapters for Hermes, Hindsight, Dapr, Temporal, and
    hat-system.
 6. Add NATS outbox publisher and one consumer after command tests pass.
-7. Add the first rule catalog and reaction executor for ready work,
+7. Add inbox/consumer dedupe before any NATS-driven automation performs
+   side effects.
+8. Add the first rule catalog and reaction executor for ready work,
    review staffing, QA staffing, blocker escalation, and late run
    incidents.
-8. Add the NestJS API and worker hosts.
-9. Add UI projections for work board, review center, and evidence
-   timeline.
-10. Add real cluster adapters one at a time.
+9. Add the NestJS API and worker hosts.
+10. Add UI projections for work board, review center, and evidence
+    timeline.
+11. Add real cluster adapters one at a time.
 
 ## Extraction Path
 

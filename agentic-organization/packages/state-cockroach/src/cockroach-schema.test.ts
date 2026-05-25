@@ -20,6 +20,8 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("trace_id STRING NOT NULL"));
     ok(migration.sql.includes("correlation_id STRING NOT NULL"));
     ok(migration.sql.includes("envelope_json JSONB NOT NULL"));
+    ok(migration.sql.includes("claimed_at TIMESTAMPTZ"));
+    ok(migration.sql.includes("claim_expires_at TIMESTAMPTZ"));
     ok(migration.sql.includes("result_json JSONB NOT NULL"));
   });
 });

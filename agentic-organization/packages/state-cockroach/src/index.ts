@@ -7,6 +7,14 @@ export {
   type CreateCockroachCommandStateStoreFactoryInput,
 } from "./cockroach-command-state-store.ts";
 export {
+  CockroachOutboxEventSourceStatement,
+  createCockroachOutboxEventSource,
+  type CockroachOutboxSqlExecutor,
+  type CockroachOutboxSqlResult,
+  type CockroachOutboxSqlStatement,
+  type CreateCockroachOutboxEventSourceInput,
+} from "./cockroach-outbox-event-source.ts";
+export {
   CockroachCoreStateMigrationName,
   CockroachTableName,
   createCockroachCoreStateMigration,

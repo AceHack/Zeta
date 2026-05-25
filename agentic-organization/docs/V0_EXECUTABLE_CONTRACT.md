@@ -18,20 +18,20 @@ not a parallel substrate.
 
 The current `origin/main` cluster shape gives V0 these host primitives:
 
-| Cluster component | V0 use |
-|---|---|
-| K3S + ArgoCD App-of-Apps | deploy Agentic Organization as a future `full-ai-cluster/k8s/applications/agentic-organization/` application |
-| Cilium + Hubble | pod networking, L7 policy, flow observability, and service-mesh behavior without Istio |
-| cert-manager, Vault, SPIRE, Trust Manager, External Secrets | workload identity, TLS trust, and secret delivery |
-| CockroachDB | authoritative Organization database |
-| NATS JetStream | event transport, outbox fanout, live UI updates, and replayable integration streams |
-| Temporal TS | durable workflows after the native command model is proven |
-| Dapr Actors | hot entity coordination after the DB-backed service contract is proven |
-| Hindsight | Hermes memory backend, wrapped with Organization attribution and scope |
-| Hermes | agent runtime that performs the work |
-| OZ/OpenZiti | zero-trust transport, not the Organization business orchestrator |
-| hat-system | Kubernetes hat enforcement/projection surface using Hat, HatBinding, HatSwap, and HatPolicy CRDs |
-| Loki, Tempo, Alloy, Mimir, kube-prometheus-stack | logs, traces, metrics, dashboards, and audit correlation |
+| Cluster component                                           | V0 use                                                                                                       |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| K3S + ArgoCD App-of-Apps                                    | deploy Agentic Organization as a future `full-ai-cluster/k8s/applications/agentic-organization/` application |
+| Cilium + Hubble                                             | pod networking, L7 policy, flow observability, and service-mesh behavior without Istio                       |
+| cert-manager, Vault, SPIRE, Trust Manager, External Secrets | workload identity, TLS trust, and secret delivery                                                            |
+| CockroachDB                                                 | first durable SQL adapter for the authoritative Organization database boundary                               |
+| NATS JetStream                                              | event transport, outbox fanout, live UI updates, and replayable integration streams                          |
+| Temporal TS                                                 | durable workflows after the native command model is proven                                                   |
+| Dapr Actors                                                 | hot entity coordination after the DB-backed service contract is proven                                       |
+| Hindsight                                                   | Hermes memory backend, wrapped with Organization attribution and scope                                       |
+| Hermes                                                      | agent runtime that performs the work                                                                         |
+| OZ/OpenZiti                                                 | zero-trust transport, not the Organization business orchestrator                                             |
+| hat-system                                                  | Kubernetes hat enforcement/projection surface using Hat, HatBinding, HatSwap, and HatPolicy CRDs             |
+| Loki, Tempo, Alloy, Mimir, kube-prometheus-stack            | logs, traces, metrics, dashboards, and audit correlation                                                     |
 
 Sync-wave implication: Agentic Organization is a consumer app. It should
 land after the foundation, data planes, hat-system CRDs, Hindsight,
@@ -89,15 +89,15 @@ This is the smallest useful loop because it proves:
 
 Keep the first hat set small:
 
-| Hat | V0 reason |
-|---|---|
-| Director | accepts or rejects escalated supervisor signals or capability requests for V0 scope |
-| Engineering Manager | grooms the work item, selects schedule, assigns implementer and reviewer hats |
-| Implementer | executes the prompt flow and submits evidence |
-| Code Reviewer | reviews the evidence and blocks self-approval |
-| Memory Curator | reviews memory writes or flags memory gaps when the run ends |
-| Platform Operator | handles runtime failure, pod/session issues, and integration health |
-| Security Reviewer | required only when the request needs a new credential or external tool scope |
+| Hat                 | V0 reason                                                                           |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| Director            | accepts or rejects escalated supervisor signals or capability requests for V0 scope |
+| Engineering Manager | grooms the work item, selects schedule, assigns implementer and reviewer hats       |
+| Implementer         | executes the prompt flow and submits evidence                                       |
+| Code Reviewer       | reviews the evidence and blocks self-approval                                       |
+| Memory Curator      | reviews memory writes or flags memory gaps when the run ends                        |
+| Platform Operator   | handles runtime failure, pod/session issues, and integration health                 |
+| Security Reviewer   | required only when the request needs a new credential or external tool scope        |
 
 The Executive Board, TPM, Product Owner, Architect, QA Reviewer, Hat
 Designer, and department directors remain first-class in the reference
@@ -196,7 +196,7 @@ the native service layer:
 ```text
 Temporal workflow or Dapr actor
   -> Organization command service
-  -> CockroachDB transaction
+  -> durable state transaction through the state adapter
   -> outbox event
   -> NATS publish
   -> trace, log, metric
@@ -234,7 +234,8 @@ request -> ready gate -> hat assignment -> prompt-flow run
 
 The demo must show:
 
-- CockroachDB state for the work item and assignment;
+- durable state for the work item and assignment, backed by CockroachDB
+  in the first cluster adapter;
 - NATS/outbox events for every transition;
 - a discussion anchor tied to the work item;
 - a hat token with expiry;
