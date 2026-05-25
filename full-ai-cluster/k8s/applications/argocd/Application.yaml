@@ -1,0 +1,61 @@
+# full-ai-cluster/k8s/applications/argocd/Application.yaml
+#
+# ArgoCD self-management. ArgoCD was already installed by the K3S
+# bootstrap manifests (full-ai-cluster/k8s/bootstrap/argocd-install.yaml);
+# this Application adopts the existing installation so subsequent
+# chart upgrades / value tweaks land via git → ArgoCD instead of
+# requiring a bootstrap-manifest edit + K3S server restart.
+#
+# Sync wave -90: must be in the EARLY wave so ArgoCD reconciles
+# itself before reconciling other apps. If a chart bump here would
+# break ArgoCD, having it land first means downstream apps don't
+# get half-reconciled by a broken ArgoCD mid-wave.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-90"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    # Keep aligned with full-ai-cluster/k8s/bootstrap/argocd-install.yaml
+    # `spec.version`. A drift between the bootstrap version and this
+    # self-management version would cause ArgoCD to immediately try to
+    # downgrade/upgrade itself on first reconcile — wedge risk in the
+    # earliest sync wave.
+    targetRevision: 7.7.10
+    helm:
+      releaseName: argocd
+      valuesObject:
+        # Mirror the bootstrap values so adopting this Application is
+        # a no-op transition. Subsequent value changes happen here.
+        global:
+          domain: argocd.zeta.local
+        server:
+          service:
+            type: ClusterIP   # ingress lands separately
+        configs:
+          params:
+            server.insecure: true   # TLS terminated upstream once ingress lands
+        notifications:
+          enabled: false
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: false        # never let ArgoCD prune itself
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      # Ignore the resources-finalizer the bootstrap installer
+      # already added — preserves the existing release.
+      - ApplyOutOfSyncOnly=true

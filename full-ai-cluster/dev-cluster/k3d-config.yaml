@@ -1,0 +1,80 @@
+# full-ai-cluster/dev-cluster/k3d-config.yaml
+#
+# k3d cluster config for local dev/test. Brings up a 1-server +
+# 2-agent K3S cluster inside Docker that mirrors the bare-metal
+# prod cluster's substrate as closely as possible:
+#
+#   - K3S server with the same CNI-takeover flags as prod
+#     (--flannel-backend=none --disable-kube-proxy
+#      --disable-network-policy --disable=traefik)
+#   - Two agents so multi-node behavior (Longhorn replicas,
+#     ArgoCD reconciliation, NFD daemonsets) is observable
+#   - A local registry so dev container images don't round-trip
+#     to ghcr.io for every push
+#   - Port forwards so ArgoCD UI is reachable at localhost:8443
+#
+# Why this matches prod: ArgoCD reconciles the SAME
+# `k8s/applications/` directory into both clusters. The only
+# environment-specific deltas live in up.sh's root App-of-Apps
+# `exclude:` glob (cilium installed directly via Helm with dev
+# values; Longhorn → local-path-provisioner; no GPU stack).
+# Everything else — ArgoCD, NFD, hat-system, OPA, Vault, SPIRE,
+# cert-manager — runs the same code on both substrates.
+#
+# Usage: `./up.sh` (it reads this file).
+# Docs: https://k3d.io/v5/usage/configfile/
+
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: zeta-dev
+
+servers: 1
+agents: 2
+
+image: rancher/k3s:v1.31.2-k3s1
+
+network: zeta-dev   # named docker network so cilium can reach pods
+
+# Local registry — k3d auto-configures K3S to trust it. Push dev
+# images via: docker tag X k3d-zeta-dev-registry:5000/X && docker push
+registries:
+  create:
+    name: zeta-dev-registry
+    host: "0.0.0.0"
+    hostPort: "5000"
+
+# Port forwards: ArgoCD UI + an HTTPS port for ingress experimentation.
+ports:
+  - port: "8443:443"
+    nodeFilters: [loadbalancer]
+  - port: "8080:80"
+    nodeFilters: [loadbalancer]
+
+# K3S server args — mirror prod's CNI-takeover stance so Cilium can
+# install cleanly. Host kubeconfig perms are handled by k3d itself
+# (writes to ~/.kube/config when `kubeconfig.updateDefaultKubeconfig`
+# is true below); no extra --write-kubeconfig-mode flag needed.
+options:
+  k3s:
+    extraArgs:
+      # Disable bundled CNI / kube-proxy / network-policy — Cilium
+      # takes all three.
+      - arg: --flannel-backend=none
+        nodeFilters: [server:*]
+      - arg: --disable-kube-proxy
+        nodeFilters: [server:*]
+      - arg: --disable-network-policy
+        nodeFilters: [server:*]
+      # Skip the bundled HelmChart-Traefik install; ArgoCD ships
+      # its own ingress story (we use Cilium Gateway API in prod).
+      - arg: --disable=traefik
+        nodeFilters: [server:*]
+      # Node labels so workloads can target the dev cluster:
+      - arg: --node-label=zeta.io/env=dev
+        nodeFilters: [all]
+      - arg: --node-label=zeta.io/substrate=k3d
+        nodeFilters: [all]
+  kubeconfig:
+    updateDefaultKubeconfig: true
+    switchCurrentContext: true
