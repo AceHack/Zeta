@@ -1,0 +1,138 @@
+# .github/workflows/build-ai-cluster-iso.yml
+#
+# Builds the AI-cluster installer ISO from full-ai-cluster/flake.nix's
+# `installer-iso` package output. Sibling to build-installer-iso.yml
+# (which targets the root flake's `infra/nixos/hosts/installer/`);
+# this one targets the canonical AI-cluster substrate at
+# `full-ai-cluster/usb-nixos-installer/`.
+#
+# Why two parallel workflows: the repo currently carries two installer
+# substrates — `infra/` (older, root flake) and `full-ai-cluster/`
+# (newer, dedicated AI-cluster bootstrap, with disko + hwloc +
+# zeta-install helper baked in). Consolidating them into a single
+# canonical path is a separate follow-up; this workflow makes the
+# AI-cluster ISO downloadable from CI in the meantime.
+#
+# Triggers on PRs touching any of:
+#   - `full-ai-cluster/flake.nix`
+#   - `full-ai-cluster/flake.lock`
+#   - `full-ai-cluster/usb-nixos-installer/**`
+#   - `full-ai-cluster/nixos/modules/disko-shapes/**`
+#     (because the installer references the disko shape at build time)
+#   - this workflow file
+# Also on push to main + workflow_dispatch.
+#
+# Discipline mirrors build-installer-iso.yml:
+#   - Runner pinned to ubuntu-24.04 (not -latest)
+#   - Third-party actions SHA-pinned with trailing # vX.Y.Z comments
+#   - permissions: contents: read at workflow level
+#   - Concurrency: workflow-scoped, cancel-in-progress only for PRs
+#   - No github.event.* values interpolated into run: lines
+
+name: build-ai-cluster-iso
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - 'full-ai-cluster/flake.nix'
+      - 'full-ai-cluster/flake.lock'
+      - 'full-ai-cluster/usb-nixos-installer/**'
+      - 'full-ai-cluster/nixos/modules/disko-shapes/**'
+      - '.github/workflows/build-ai-cluster-iso.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'full-ai-cluster/flake.nix'
+      - 'full-ai-cluster/flake.lock'
+      - 'full-ai-cluster/usb-nixos-installer/**'
+      - 'full-ai-cluster/nixos/modules/disko-shapes/**'
+      - '.github/workflows/build-ai-cluster-iso.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-ai-cluster-iso-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: build-iso
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+
+      - name: Show flake metadata
+        working-directory: full-ai-cluster
+        run: nix flake metadata --json | jq '{description, lastModified, revision}'
+
+      - name: Check flake evaluates
+        working-directory: full-ai-cluster
+        # Eval-only check — catches typos, missing imports, undefined
+        # attributes before paying for the build. Skip building checks
+        # to keep this cheap.
+        run: nix flake check --no-build --show-trace
+
+      - name: Build installer ISO
+        working-directory: full-ai-cluster
+        run: nix build .#installer-iso --print-build-logs
+
+      - name: Locate ISO + capture metadata
+        id: iso
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_path_rel="${iso_candidates[0]}"
+          iso_path_abs="$(pwd)/${iso_path_rel}"
+          iso_name=$(basename "$iso_path_abs")
+          iso_size=$(stat -c%s "$iso_path_abs" | numfmt --to=iec --suffix=B)
+          iso_sha256=$(sha256sum "$iso_path_abs" | awk '{print $1}')
+          {
+            echo "path=$iso_path_abs"
+            echo "name=$iso_name"
+            echo "size=$iso_size"
+            echo "sha256=$iso_sha256"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "## AI-cluster installer ISO built"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| File   | \`$iso_name\` |"
+            echo "| Size   | $iso_size |"
+            echo "| SHA256 | \`$iso_sha256\` |"
+            echo ""
+            echo "Download from the **Artifacts** section of this workflow run."
+            echo "Then \`dd if=<iso> of=/dev/<USB> bs=4M status=progress conv=fsync\`"
+            echo "to flash the stick. (ISO is ~1.5–2 GiB.)"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload ISO as workflow artifact
+        # Available for download from the workflow run page for ~90 days.
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: ${{ steps.iso.outputs.name }}
+          path: ${{ steps.iso.outputs.path }}
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0   # ISO is already compressed; re-zipping wastes time
