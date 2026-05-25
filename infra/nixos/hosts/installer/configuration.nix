@@ -264,15 +264,21 @@
          lsblk
     5. Clone Zeta onto /mnt/etc/zeta after partitioning:
          git clone https://github.com/Lucent-Financial-Group/Zeta /mnt/etc/zeta
-    6. Generate hardware config for this machine:
+    6. Generate hardware config for this machine + copy it into the
+       per-host directory so the install picks it up:
          nixos-generate-config --root /mnt
-       (commit the resulting hardware-configuration.nix as a per-host
-        artifact under infra/nixos/hosts/<host>/ when those land.)
+         cp /mnt/etc/nixos/hardware-configuration.nix \
+            /mnt/etc/zeta/infra/nixos/hosts/<host>/hardware-configuration.nix
+       (commit the per-host hardware-configuration.nix after install
+        so future rebuilds reproduce the same boot environment.)
     7. Install:
          nixos-install --flake /mnt/etc/zeta#<host>
        — where <host> is one of the names declared in the repo-root
-         `flake.nix` `nixosConfigurations`. (Today: `installer` only;
-         per-host configs land in follow-up PRs.)
+         `flake.nix` `nixosConfigurations`:
+           installer       — this USB ISO config (not for target install)
+           control-plane   — K3S server + ArgoCD bootstrap
+           worker-gpu-01   — NVIDIA AI worker (joins control-plane)
+           worker-gpu-02   — NVIDIA AI worker (joins control-plane)
     8. Reboot. K3S, ArgoCD, Orleans land automatically from the flake.
 
     The flake itself is the tick source. Everything downstream reconciles
