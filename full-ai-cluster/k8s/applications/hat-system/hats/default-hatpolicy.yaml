@@ -1,0 +1,21 @@
+# Cluster-wide singleton carrying the default values for every
+# throttle plus the operator's tick-emit configuration. Edits to
+# this resource require the policy-admin hat.
+
+apiVersion: society.zeta.io/v1alpha1
+kind: HatPolicy
+metadata:
+  name: default
+spec:
+  throttles:
+    cooldownSeconds: 300
+    stickyAttributionSeconds: 600
+    warmupSeconds: 180
+    maxBindingsPerWearer: 3
+    maxNewHatsPerDay: 5
+    quorumDefaultSize: 3
+  swapRetentionDays: 365
+  tickEmit:
+    natsSubject: zeta.society.hats.ticks
+    enableLokiStructuredLogs: true
+    enableEvents: true

@@ -1,0 +1,29 @@
+# Policy admin hat — edits cluster-wide HatPolicy defaults. Highest
+# blast radius in the system (raising maxNewHatsPerDay relaxes the
+# whole catalog growth ceiling). Quorum of 5 to make this expensive.
+
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata:
+  name: policy-admin
+spec:
+  description: |
+    Authority to edit the cluster-wide HatPolicy singleton. Any
+    change re-tunes the floor of every throttle for every hat.
+    Designed to be RARELY worn — quorum of five, long cooldown,
+    long warmup. Wearers typically rotate quarterly.
+  authority:
+    namespaces: []
+    rules:
+      - apiGroups: ["society.zeta.io"]
+        resources: ["hatpolicies"]
+        verbs: ["update", "patch", "get", "list", "watch"]
+  throttles:
+    quorumGated: true
+    quorumSize: 5
+    cooldownSeconds: 7200       # 2h between policy edits per wearer
+    warmupSeconds: 3600         # 1h probation
+    conflictsWith:
+      - executor
+      - hat-designer            # policy edits should not coincide with
+                                # active catalog design or execution

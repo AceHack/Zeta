@@ -1,0 +1,30 @@
+# Executor hat — namespace-scoped workload authority. The
+# common-case hat for an agent doing work on a specific service.
+
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata:
+  name: executor
+spec:
+  description: |
+    Authority to mutate workload state within an assigned namespace.
+    The default hat for agents executing tasks against a service.
+    Always namespace-scoped — the operator rejects bindings whose
+    HatBinding namespace differs from the wearer's permitted scope.
+  authority:
+    namespaces: []  # any single namespace at bind time
+    rules:
+      - apiGroups: ["apps"]
+        resources: ["deployments", "statefulsets", "daemonsets"]
+        verbs: ["get", "list", "watch", "create", "update", "patch"]
+      - apiGroups: [""]
+        resources: ["pods", "services", "configmaps"]
+        verbs: ["get", "list", "watch", "create", "update", "patch"]
+      - apiGroups: ["batch"]
+        resources: ["jobs"]
+        verbs: ["get", "list", "watch", "create"]
+  throttles:
+    cooldownSeconds: 300
+    warmupSeconds: 60
+    conflictsWith:
+      - hat-designer

@@ -1,0 +1,59 @@
+# Max new hats per day — rate-limits Hat resource creation
+# cluster-wide. Caps the catalog growth rate so even a captured
+# hat-designer wearer can't spam the namespace with novel hats.
+
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: hatmaxnew
+spec:
+  crd:
+    spec:
+      names:
+        kind: HatMaxNew
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            maxNewHatsPerDay:
+              type: integer
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package hatmaxnew
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "Hat"
+          input.review.operation == "CREATE"
+
+          # Count Hats created in the last 24h by inspecting their
+          # creationTimestamp.
+          now := time.now_ns()
+          window := 24 * 60 * 60 * 1000000000
+
+          recent := [h |
+            some name
+            h := data.inventory.cluster["society.zeta.io/v1alpha1"]["Hat"][name]
+            created := time.parse_rfc3339_ns(h.metadata.creationTimestamp)
+            (now - created) < window
+          ]
+
+          count(recent) >= input.parameters.maxNewHatsPerDay
+
+          msg := sprintf(
+            "catalog grew by %v hats in last 24h; max %v",
+            [count(recent), input.parameters.maxNewHatsPerDay],
+          )
+        }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: HatMaxNew
+metadata:
+  name: hat-max-new-default
+spec:
+  match:
+    kinds:
+      - apiGroups: ["society.zeta.io"]
+        kinds: ["Hat"]
+  parameters:
+    maxNewHatsPerDay: 5

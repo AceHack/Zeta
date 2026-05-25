@@ -1,0 +1,75 @@
+# OPA Gatekeeper template — cooldown throttle.
+#
+# Reject HatBinding creation if the wearer (by SPIFFE ID) had a
+# SwapOff for the same hat within `cooldownSeconds`. The operator's
+# resolveThrottles() handles per-hat overrides; this template only
+# needs to know the resolved value, which the operator stores in a
+# ConfigMap snapshot the policy reads (avoids the template needing
+# Hat / HatPolicy data lookups, which Gatekeeper supports via
+# referential constraints but adds a dependency on the
+# config.gatekeeper.sh sync).
+
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: hatcooldown
+spec:
+  crd:
+    spec:
+      names:
+        kind: HatCooldown
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            cooldownSeconds:
+              type: integer
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package hatcooldown
+
+        # input.review.object is the HatBinding being created.
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "HatBinding"
+          input.review.operation == "CREATE"
+
+          hat := input.review.object.spec.hat
+          wearer := input.review.object.spec.wearer.spiffeID
+
+          # data.inventory.namespace.<ns>.society.zeta.io.v1alpha1.HatSwap
+          # is the Gatekeeper sync of HatSwap CRs. The operator writes
+          # one HatSwap per state transition (see internal/tick/emitter.go).
+          some ns
+          some name
+          swap := data.inventory.namespace[ns]["society.zeta.io/v1alpha1"]["HatSwap"][name]
+          swap.spec.hat == hat
+          swap.spec.event == "SwapOff"
+          swap.spec.previousWearer.spiffeID == wearer
+
+          # Time arithmetic — Gatekeeper's time built-in returns ns.
+          off_ns := time.parse_rfc3339_ns(swap.spec.occurredAt)
+          now_ns := time.now_ns()
+          delta_s := (now_ns - off_ns) / 1000000000
+          delta_s < input.parameters.cooldownSeconds
+
+          msg := sprintf(
+            "wearer %v in cooldown for hat %v (%v s since SwapOff < %v s required)",
+            [wearer, hat, delta_s, input.parameters.cooldownSeconds],
+          )
+        }
+---
+# Default cooldown — overridden per-Hat by the operator setting
+# annotations the operator-managed instance reads. Skeleton uses
+# 300s (matches HatPolicy default).
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: HatCooldown
+metadata:
+  name: hat-cooldown-default
+spec:
+  match:
+    kinds:
+      - apiGroups: ["society.zeta.io"]
+        kinds: ["HatBinding"]
+  parameters:
+    cooldownSeconds: 300

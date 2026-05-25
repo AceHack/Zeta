@@ -1,0 +1,27 @@
+# Observer hat — read-only across the cluster, no swap throttle
+# (the always-instant escape-hatch hat). Designed to be safe for
+# any wearer at any time, including during another hat's cooldown.
+
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata:
+  name: observer
+spec:
+  description: |
+    Read-only access across all cluster resources for observability
+    work. Cannot mutate state; cannot grant authority. Always
+    swap-able with zero cooldown — this is the hat a wearer falls
+    back to when revoked from a higher-authority hat.
+  authority:
+    namespaces: []  # cluster-wide read
+    rules:
+      - apiGroups: [""]
+        resources: ["*"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: ["apps", "batch", "society.zeta.io"]
+        resources: ["*"]
+        verbs: ["get", "list", "watch"]
+  throttles:
+    cooldownSeconds: 0
+    warmupSeconds: 0
+    quorumGated: false

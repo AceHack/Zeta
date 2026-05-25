@@ -1,0 +1,54 @@
+# Max bindings per wearer — caps simultaneous hats one SPIFFE
+# identity can hold. Prevents authority accumulation.
+
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: hatmaxbindings
+spec:
+  crd:
+    spec:
+      names:
+        kind: HatMaxBindings
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            maxBindingsPerWearer:
+              type: integer
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package hatmaxbindings
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "HatBinding"
+          input.review.operation == "CREATE"
+          wearer := input.review.object.spec.wearer.spiffeID
+
+          existing := [b |
+            some ns
+            some name
+            b := data.inventory.namespace[ns]["society.zeta.io/v1alpha1"]["HatBinding"][name]
+            b.spec.wearer.spiffeID == wearer
+            b.status.phase != "Revoked"
+          ]
+          count(existing) >= input.parameters.maxBindingsPerWearer
+
+          msg := sprintf(
+            "wearer %v already holds %v hats; max is %v",
+            [wearer, count(existing), input.parameters.maxBindingsPerWearer],
+          )
+        }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: HatMaxBindings
+metadata:
+  name: hat-max-bindings-default
+spec:
+  match:
+    kinds:
+      - apiGroups: ["society.zeta.io"]
+        kinds: ["HatBinding"]
+  parameters:
+    maxBindingsPerWearer: 3

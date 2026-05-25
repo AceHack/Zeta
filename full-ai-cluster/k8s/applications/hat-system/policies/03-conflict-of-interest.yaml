@@ -1,0 +1,53 @@
+# Conflict-of-interest — reject HatBinding if the wearer already
+# holds a hat listed in Hat.spec.throttles.conflictsWith of the
+# hat being bound (or vice-versa).
+
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: hatconflict
+spec:
+  crd:
+    spec:
+      names:
+        kind: HatConflict
+      validation:
+        openAPIV3Schema:
+          type: object
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package hatconflict
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "HatBinding"
+          input.review.operation == "CREATE"
+          wearer := input.review.object.spec.wearer.spiffeID
+          target_name := input.review.object.spec.hat
+
+          target_hat := data.inventory.cluster["society.zeta.io/v1alpha1"]["Hat"][target_name]
+          some conflict_name
+          conflict_name := target_hat.spec.throttles.conflictsWith[_]
+
+          some ns
+          some name
+          existing := data.inventory.namespace[ns]["society.zeta.io/v1alpha1"]["HatBinding"][name]
+          existing.spec.wearer.spiffeID == wearer
+          existing.spec.hat == conflict_name
+          existing.status.phase != "Revoked"
+
+          msg := sprintf(
+            "wearer %v cannot bind hat %v while holding conflicting hat %v",
+            [wearer, target_name, conflict_name],
+          )
+        }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: HatConflict
+metadata:
+  name: hat-conflict-default
+spec:
+  match:
+    kinds:
+      - apiGroups: ["society.zeta.io"]
+        kinds: ["HatBinding"]

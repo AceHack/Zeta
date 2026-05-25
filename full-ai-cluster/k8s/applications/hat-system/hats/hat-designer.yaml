@@ -1,0 +1,65 @@
+# full-ai-cluster/k8s/applications/hat-system/hats/hat-designer.yaml
+#
+# Hat designer hat — meta-hat. The bootstrap-bottleneck answer:
+# rather than one human being the SPOF for "what hats does this
+# society need", designing-the-catalog is itself a hat that
+# multiple wearers can hold.
+#
+# Threat model: this is a high-blast-radius hat. Whoever wears it
+# can create new Hat resources, which the society then treats as
+# legitimate roles. Two safeguards:
+#
+#   1. quorumGated + quorumSize 3 — every new Hat creation needs
+#      three co-signatures from other hat-designer wearers (or
+#      from human-maintainer wearers, which compose because the
+#      operator checks SPIFFE ID, not role).
+#
+#   2. maxNewHatsPerDay (cluster-wide via HatPolicy default 5) —
+#      caps the catalog growth rate so a captured wearer can't
+#      spam novel hats. This is the cluster-wide ceiling; bumps
+#      require HatPolicy update, which requires its own quorum.
+#
+# conflictsWith the executor hat: same workload should not both
+# design AND execute under the catalog it designed — anti-
+# self-dealing safeguard. Wearers swap (cooldown applies) between
+# design and execution work.
+
+apiVersion: society.zeta.io/v1alpha1
+kind: Hat
+metadata:
+  name: hat-designer
+spec:
+  description: |
+    Authority to create, update, and retire Hat resources. Holders
+    propose additions to the society's role catalog. Bootstrap
+    answer to "who designs the hats" — the hat-designer hat
+    itself, held by a rotating quorum so no single wearer is the
+    bottleneck.
+  skills:
+    - name: role-catalog-design
+      level: expert
+    - name: opa-policy-authoring
+      level: intermediate
+    - name: rbac-design
+      level: intermediate
+    - name: threat-modeling
+      level: intermediate
+  authority:
+    namespaces: []  # cluster-wide (only valid because quorumGated)
+    rules:
+      - apiGroups: ["society.zeta.io"]
+        resources: ["hats"]
+        verbs: ["create", "update", "patch", "delete", "get", "list", "watch"]
+      - apiGroups: ["society.zeta.io"]
+        resources: ["hatpolicies"]
+        # Policy edits are read-only from this hat — bumping the
+        # cluster-wide ceiling needs the policy-admin hat, which has
+        # its own (higher) quorum.
+        verbs: ["get", "list", "watch"]
+  throttles:
+    quorumGated: true
+    quorumSize: 3
+    cooldownSeconds: 1800       # 30 min between design sessions per wearer
+    warmupSeconds: 600          # 10 min probation before first edit
+    conflictsWith:
+      - executor                # can't design + execute the same catalog

@@ -1,0 +1,52 @@
+# Standard kubebuilder PROJECT file. Generated layout — extend with
+# `kubebuilder create api` if/when adding additional resource kinds
+# beyond the four CRDs already authored under ../crds/.
+
+domain: society.zeta.io
+layout:
+  - go.kubebuilder.io/v4
+projectName: hat-system-operator
+repo: github.com/Lucent-Financial-Group/Zeta/full-ai-cluster/k8s/applications/hat-system/operator
+multigroup: false
+resources:
+  - api:
+      crdVersion: v1
+      namespaced: false
+    domain: society.zeta.io
+    group: society
+    kind: Hat
+    path: github.com/Lucent-Financial-Group/Zeta/full-ai-cluster/k8s/applications/hat-system/operator/api/v1alpha1
+    version: v1alpha1
+    controller: true
+  - api:
+      crdVersion: v1
+      namespaced: true
+    domain: society.zeta.io
+    group: society
+    kind: HatBinding
+    path: github.com/Lucent-Financial-Group/Zeta/full-ai-cluster/k8s/applications/hat-system/operator/api/v1alpha1
+    version: v1alpha1
+    controller: true
+    webhooks:
+      validation: true
+      defaulting: true
+      webhookVersion: v1
+  - api:
+      crdVersion: v1
+      namespaced: true
+    domain: society.zeta.io
+    group: society
+    kind: HatSwap
+    path: github.com/Lucent-Financial-Group/Zeta/full-ai-cluster/k8s/applications/hat-system/operator/api/v1alpha1
+    version: v1alpha1
+    controller: false
+  - api:
+      crdVersion: v1
+      namespaced: false
+    domain: society.zeta.io
+    group: society
+    kind: HatPolicy
+    path: github.com/Lucent-Financial-Group/Zeta/full-ai-cluster/k8s/applications/hat-system/operator/api/v1alpha1
+    version: v1alpha1
+    controller: true
+version: "3"

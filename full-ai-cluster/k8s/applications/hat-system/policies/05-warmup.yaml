@@ -1,0 +1,49 @@
+# Warmup — newly-bound hats start in Warmup phase; this template
+# rejects any HatBinding STATUS update that moves Phase to Active
+# inside the warmup window. The operator transitions
+# Warmup → Active legitimately via its own reconciler when
+# WarmupEndsAt is reached, with no human intervention; this
+# constraint catches drift / mistaken manual overrides.
+
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: hatwarmup
+spec:
+  crd:
+    spec:
+      names:
+        kind: HatWarmup
+      validation:
+        openAPIV3Schema:
+          type: object
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package hatwarmup
+
+        violation[{"msg": msg}] {
+          input.review.kind.kind == "HatBinding"
+          input.review.operation == "UPDATE"
+          input.review.object.status.phase == "Active"
+          input.review.oldObject.status.phase == "Warmup"
+
+          ends := time.parse_rfc3339_ns(input.review.oldObject.status.warmupEndsAt)
+          now := time.now_ns()
+          now < ends
+
+          msg := sprintf(
+            "warmup not complete for hat %v binding %v; cannot promote to Active",
+            [input.review.object.spec.hat, input.review.object.metadata.name],
+          )
+        }
+---
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: HatWarmup
+metadata:
+  name: hat-warmup-default
+spec:
+  match:
+    kinds:
+      - apiGroups: ["society.zeta.io"]
+        kinds: ["HatBinding"]

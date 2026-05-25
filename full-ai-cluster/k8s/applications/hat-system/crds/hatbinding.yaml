@@ -1,0 +1,150 @@
+# full-ai-cluster/k8s/applications/hat-system/crds/hatbinding.yaml
+#
+# HatBinding CRD — wearer X is currently wearing hat Y.
+#
+# Binding is the SWAP-ON event. Deletion is SWAP-OFF. The operator
+# enforces throttles by rejecting the binding (validating webhook)
+# or by patching status to a probation state (warmup).
+#
+# Wearer identity is SPIFFE — the SPIRE SVID issued to the workload.
+# That keeps the system honest about "who is acting" — workload
+# identity is cryptographically attested, not self-declared.
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: hatbindings.society.zeta.io
+spec:
+  group: society.zeta.io
+  scope: Namespaced
+  names:
+    kind: HatBinding
+    listKind: HatBindingList
+    plural: hatbindings
+    singular: hatbinding
+    shortNames: [hb]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [hat, wearer]
+              properties:
+                hat:
+                  type: string
+                  description: Name of the Hat being worn.
+                wearer:
+                  type: object
+                  required: [spiffeID]
+                  properties:
+                    spiffeID:
+                      type: string
+                      pattern: '^spiffe://[^/]+/.+$'
+                      description: SPIFFE ID of the workload binding the hat.
+                    serviceAccountRef:
+                      type: object
+                      description: |
+                        Optional — for human-readable cross-reference.
+                        SPIFFE ID is the canonical wearer identifier.
+                      properties:
+                        name: { type: string }
+                        namespace: { type: string }
+                cosignedBy:
+                  type: array
+                  description: |
+                    Quorum signatures for quorum-gated hats. Each entry is
+                    the SPIFFE ID of a co-signing workload that already
+                    holds an appropriate hat. The operator validates that
+                    the signatures meet the hat's quorumSize before
+                    allowing the binding to become Active.
+                  items:
+                    type: object
+                    required: [spiffeID, signedAt]
+                    properties:
+                      spiffeID: { type: string }
+                      signedAt: { type: string, format: date-time }
+                      attestation: { type: string }
+                requestedAt:
+                  type: string
+                  format: date-time
+                  description: When the wearer requested the binding.
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                  enum: [Pending, Warmup, Active, Probation, Revoked]
+                  description: |
+                    Pending  — waiting for cooldown / quorum / warmup gate
+                    Warmup   — bound with reduced authority during probation
+                    Active   — full authority
+                    Probation — anomaly detected; authority reduced
+                    Revoked  — hat removed; sticky attribution may still apply
+                effectiveAuthority:
+                  type: object
+                  description: Authority actually granted (may be reduced
+                    from the hat spec during Warmup or Probation).
+                  properties:
+                    namespaces:
+                      type: array
+                      items: { type: string }
+                    rules:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          verbs:
+                            type: array
+                            items: { type: string }
+                          resources:
+                            type: array
+                            items: { type: string }
+                          apiGroups:
+                            type: array
+                            items: { type: string }
+                boundAt:
+                  type: string
+                  format: date-time
+                  description: When the binding became Active.
+                warmupEndsAt:
+                  type: string
+                  format: date-time
+                stickyAttributionEndsAt:
+                  type: string
+                  format: date-time
+                  description: |
+                    After swap-off, actions matching the wearer's SPIFFE ID
+                    are still attributed to this hat until this time. Lets
+                    the society pin late-arriving consequences to the right
+                    hat instead of the next wearer.
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type: { type: string }
+                      status: { type: string }
+                      lastTransitionTime: { type: string, format: date-time }
+                      reason: { type: string }
+                      message: { type: string }
+      additionalPrinterColumns:
+        - name: Hat
+          type: string
+          jsonPath: .spec.hat
+        - name: Wearer
+          type: string
+          jsonPath: .spec.wearer.spiffeID
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

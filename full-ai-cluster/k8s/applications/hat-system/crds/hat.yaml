@@ -1,0 +1,186 @@
+# full-ai-cluster/k8s/applications/hat-system/crds/hat.yaml
+#
+# Hat CRD — a named role with a fixed authority scope.
+#
+# A Hat is identity-of-the-role, not identity-of-the-wearer. The same
+# Hat persists across many wearers (workload identities). The Hat
+# carries the role's reputation; wearers earn / lose it during their
+# tenure.
+#
+# Design call: hats bind to workload identities (SPIFFE/SVID), not to
+# human or agent identities. Workloads come and go more often than the
+# roles they fill — keeping role-identity separate from wearer-identity
+# is what makes succession work without losing accumulated reputation.
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: hats.society.zeta.io
+spec:
+  group: society.zeta.io
+  scope: Cluster
+  names:
+    kind: Hat
+    listKind: HatList
+    plural: hats
+    singular: hat
+    shortNames: [ht]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [authority]
+              properties:
+                description:
+                  type: string
+                  description: Human-readable description of the role.
+                skills:
+                  type: array
+                  description: |
+                    Capabilities the wearer is expected to have. The
+                    operator does NOT enforce skills — they're matchable
+                    metadata used by hat-designer agents and assignment
+                    reactors ("which workloads have the required
+                    skills?"). The compression: hat = skills + opa/rbac.
+                    Skills are what you CAN do; authority is what you're
+                    PERMITTED to do.
+                  items:
+                    type: object
+                    required: [name]
+                    properties:
+                      name:
+                        type: string
+                        description: Skill identifier (e.g. read-fsharp,
+                          spec-formal-verification, route-incident).
+                      level:
+                        type: string
+                        enum: [novice, intermediate, expert]
+                      providedBy:
+                        type: string
+                        description: Reference to the skill provider
+                          (e.g. claude-plugins-official/skill-name,
+                          or a SkillProvider CRD if one is added later).
+                authority:
+                  type: object
+                  description: |
+                    What the wearer is authorized to do while wearing this hat.
+                    Expressed as a set of (verb, resource) pairs scoped to
+                    namespaces. The operator translates these into RBAC + OPA
+                    constraints at bind time.
+                  properties:
+                    namespaces:
+                      type: array
+                      items: { type: string }
+                      description: |
+                        Empty = cluster-wide (only valid for hats that pass the
+                        quorum-gated throttle). Otherwise namespace allowlist.
+                    rules:
+                      type: array
+                      items:
+                        type: object
+                        required: [verbs, resources]
+                        properties:
+                          verbs:
+                            type: array
+                            items: { type: string }
+                          resources:
+                            type: array
+                            items: { type: string }
+                          apiGroups:
+                            type: array
+                            items: { type: string }
+                supervises:
+                  type: array
+                  items: { type: string }
+                  description: |
+                    Names of hats this hat has supervisory authority over.
+                    Forms a DAG — supervision cycles are rejected by the
+                    no-supervisor-cycles OPA constraint. Supervisors can
+                    revoke a HatBinding of a supervised hat, trigger
+                    Probation, and read all HatSwap events for it.
+                    Max's framing: "hierarchy / ontology of hats where
+                    the hats are not weight free but supervisor graphs."
+                    Time-bounded by every other throttle on this same
+                    spec, which keeps the supervisory weight on the
+                    ROLE not on the wearer — hat-as-chosen-and-returnable
+                    instead of role-as-cage.
+                throttles:
+                  type: object
+                  description: |
+                    Per-hat throttle overrides. Defaults live in the
+                    cluster-wide HatPolicy singleton; values here override
+                    only the listed fields.
+                  properties:
+                    cooldownSeconds:
+                      type: integer
+                      minimum: 0
+                      description: Seconds before a former wearer can re-bind.
+                    stickyAttributionSeconds:
+                      type: integer
+                      minimum: 0
+                      description: Window after swap-off during which the
+                        previous wearer is still attributed for actions.
+                    warmupSeconds:
+                      type: integer
+                      minimum: 0
+                      description: Probation period with reduced authority.
+                    quorumGated:
+                      type: boolean
+                      description: |
+                        If true, binding this hat requires a quorum of other
+                        hats to co-sign the HatBinding. Use for any hat with
+                        cluster-wide authority or destructive verbs.
+                    quorumSize:
+                      type: integer
+                      minimum: 1
+                      description: Required co-signature count when quorumGated.
+                    conflictsWith:
+                      type: array
+                      items: { type: string }
+                      description: Names of hats that cannot be worn
+                        simultaneously by the same wearer (anti-collusion).
+            status:
+              type: object
+              properties:
+                reputation:
+                  type: integer
+                  description: |
+                    Accumulated reputation score across all wearers.
+                    Increases on successful authority use; decreases on
+                    revocation. Society uses this for trust calculus.
+                currentWearers:
+                  type: array
+                  items: { type: string }
+                  description: SPIFFE IDs of workloads currently bound.
+                lifetimeWearers:
+                  type: integer
+                  description: Count of distinct wearers since hat creation.
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type: { type: string }
+                      status: { type: string }
+                      lastTransitionTime: { type: string, format: date-time }
+                      reason: { type: string }
+                      message: { type: string }
+      additionalPrinterColumns:
+        - name: Wearers
+          type: integer
+          jsonPath: .status.lifetimeWearers
+        - name: Reputation
+          type: integer
+          jsonPath: .status.reputation
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp

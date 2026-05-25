@@ -1,0 +1,107 @@
+# full-ai-cluster/k8s/applications/hat-system/crds/hatswap.yaml
+#
+# HatSwap CRD — append-only event record of a single swap-on or
+# swap-off event.
+#
+# WHY a CRD and not just an Event:
+#
+#   The operator's reconcile loop already produces a structured tick
+#   stream — each HatBinding create/update/delete fires reconcile;
+#   each reconcile emits exactly one HatSwap. Storing swaps as
+#   first-class CRDs (vs k8s Events with 1h TTL) gives:
+#
+#     • Durable replay surface (etcd persists; backups carry it)
+#     • Queryable across years via kubectl + jq
+#     • Joinable to Hubble flow logs and Loki by spiffeID
+#     • Audit-trail substrate for the society's reputation system
+#     • Structured tick source for downstream reactors
+#       (NATS subscribers, Hindsight memory, anomaly detectors)
+#
+# Swap events are immutable — controllers WRITE them on transition
+# and never UPDATE them. Garbage collection is by TTL controller
+# (configurable via HatPolicy.swapRetentionDays; default 365).
+
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: hatswaps.society.zeta.io
+spec:
+  group: society.zeta.io
+  scope: Namespaced
+  names:
+    kind: HatSwap
+    listKind: HatSwapList
+    plural: hatswaps
+    singular: hatswap
+    shortNames: [hs]
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          required: [spec]
+          properties:
+            spec:
+              type: object
+              required: [hat, wearer, event, occurredAt]
+              properties:
+                hat:
+                  type: string
+                  description: Name of the Hat involved.
+                wearer:
+                  type: object
+                  required: [spiffeID]
+                  properties:
+                    spiffeID: { type: string }
+                event:
+                  type: string
+                  enum:
+                    - SwapOn       # Binding created and Active
+                    - SwapOff      # Binding deleted or Revoked
+                    - WarmupBegin  # Probation entry
+                    - WarmupEnd    # Probation exit (Active)
+                    - Probation    # Anomaly-triggered authority drop
+                    - QuorumGrant  # Quorum signature collected
+                    - Throttled    # Throttle denied a binding/swap
+                occurredAt:
+                  type: string
+                  format: date-time
+                reason:
+                  type: string
+                  description: Short machine-readable code (e.g. CooldownActive).
+                message:
+                  type: string
+                  description: Human-readable detail.
+                bindingRef:
+                  type: object
+                  properties:
+                    name: { type: string }
+                    namespace: { type: string }
+                    uid: { type: string }
+                throttleName:
+                  type: string
+                  description: Which throttle fired, if event == Throttled.
+                previousWearer:
+                  type: object
+                  description: For SwapOn — the prior holder, if any.
+                  properties:
+                    spiffeID: { type: string }
+                    revokedAt: { type: string, format: date-time }
+      additionalPrinterColumns:
+        - name: Hat
+          type: string
+          jsonPath: .spec.hat
+        - name: Event
+          type: string
+          jsonPath: .spec.event
+        - name: Wearer
+          type: string
+          jsonPath: .spec.wearer.spiffeID
+        - name: When
+          type: string
+          jsonPath: .spec.occurredAt
+        - name: Reason
+          type: string
+          jsonPath: .spec.reason

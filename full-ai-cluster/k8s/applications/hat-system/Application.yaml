@@ -1,0 +1,42 @@
+# full-ai-cluster/k8s/applications/hat-system/Application.yaml
+#
+# ArgoCD reconciles every YAML under this directory into the cluster.
+# The operator image itself is NOT built / pushed yet — see operator/
+# README for the local build path. The image reference here is a
+# placeholder until a maintainer pushes a first build; until then
+# the Deployment ships with replicas: 0 so ArgoCD reports OK while
+# the rest of the substrate (CRDs, policies, seed hats) is live.
+#
+# Sync gating: this Application is on `automated:` (default-on). The
+# CRDs land first; OPA policies next; seed hats last. The operator
+# Deployment with replicas:0 reconciles last and is a no-op until a
+# maintainer scales up + sets the real image.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hat-system
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/hat-system
+    directory:
+      recurse: true
+      # Skip the operator's Go source — it's not a manifest. Same for
+      # the graph/render helper and the queries docs.
+      exclude: '{operator/**,graph/**,queries/**}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hat-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

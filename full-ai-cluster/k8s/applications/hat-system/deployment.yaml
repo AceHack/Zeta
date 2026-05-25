@@ -1,0 +1,100 @@
+# Operator Deployment. replicas: 0 until a maintainer:
+#   1. Initializes the Go module under operator/ via
+#      `kubebuilder init --domain society.zeta.io --repo <module-path>`
+#   2. Runs `go build` + pushes an image to ghcr.io/lucent-financial-group/hat-system-operator
+#   3. Updates `image:` below + bumps replicas to 1 (HA: 2 with
+#      leader election already wired in cmd/main.go)
+#
+# Until then ArgoCD reports the Deployment as healthy at 0/0 ready
+# and the CRDs + OPA policies + seed hats are all installed and
+# inspectable via kubectl. This lets the surface land + be reviewed
+# before the binary exists.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hat-system-operator
+  namespace: hat-system
+  labels:
+    app: hat-system-operator
+spec:
+  replicas: 0  # see header note
+  selector:
+    matchLabels:
+      app: hat-system-operator
+  template:
+    metadata:
+      labels:
+        app: hat-system-operator
+    spec:
+      serviceAccountName: hat-system-operator
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: operator
+          image: ghcr.io/lucent-financial-group/hat-system-operator:placeholder
+          args:
+            - --leader-elect
+            - --metrics-bind-address=:8080
+            - --health-probe-bind-address=:8081
+            - --nats-url=nats://nats.nats.svc.cluster.local:4222
+          ports:
+            - name: metrics
+              containerPort: 8080
+            - name: probe
+              containerPort: 8081
+          livenessProbe:
+            httpGet: { path: /healthz, port: probe }
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet: { path: /readyz, port: probe }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests: { cpu: 100m, memory: 128Mi }
+            limits:   { cpu: 500m, memory: 512Mi }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ ALL ]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hat-system-operator
+  namespace: hat-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: hat-system-operator
+rules:
+  - apiGroups: ["society.zeta.io"]
+    resources: ["hats", "hatbindings", "hatswaps", "hatpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: ["society.zeta.io"]
+    resources: ["hats/status", "hatbindings/status", "hatpolicies/status"]
+    verbs: ["get", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch"]
+  - apiGroups: ["coordination.k8s.io"]
+    resources: ["leases"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hat-system-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: hat-system-operator
+subjects:
+  - kind: ServiceAccount
+    name: hat-system-operator
+    namespace: hat-system
