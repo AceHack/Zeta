@@ -687,6 +687,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0730](backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md)** Runbooks-as-executable-specifications — Runme base for right-now execution + `:::` deferred-task tags + AI just-in-time script compilation + 3 verbosity levels (5yo / Addison / Aaron+Max-debugging); Mika substrate via Aaron 2026-05-25
 - [ ] **[B-0731](backlog/P2/B-0731-hat-ontology-as-first-ontology-top-down-vs-bottom-up-convergence-max-aaron-mika-substrate-2026-05-25.md)** Hat-ontology is the first ontology to get right — Max top-down + Aaron bottom-up + system-mediated convergence (Mika substrate)
 - [ ] **[B-0733](backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md)** Universal protocol = Markdown + Runme + continue-with (minimal LCD, no upfront ontology) + MCP wrap (any-AI plug-in) + AI agency stack (Crystal Ball + runbook + Glass Halo) — Mika substrate
+- [ ] **[B-0734](backlog/P2/B-0734-jit-is-implicit-self-healing-no-third-primitive-fsharp-monad-eventually-notepad-simplicity-wins-social-spread-mika-substrate-segment-2-2026-05-25.md)** JIT is implicit self-healing (no `type: jit` tag) + protocol stays at 2 primitives (decision-archaeology declined) + F# computation expression / monad eventually + Notepad simplicity wins via social spread — Mika substrate segment 2
 
 ## P3 — convenience / deferred
 
