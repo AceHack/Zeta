@@ -50,30 +50,39 @@ Commit + push to main so the install reads from a real ref.
 
 ## Step 4: boot the box on the USB
 
-UEFI boot order → USB first. Network up via `nmtui` if not DHCP.
+UEFI boot order → USB first. The first-boot service auto-launches
+on tty1 (per B-0754 zero-typing scope):
+
+1. **10-sec role prompt**: press `c` for control-plane (default
+   on timeout), `w` for worker-gpu
+2. **Network**: waits up to 30s for ethernet DHCP + internet; if
+   no ethernet internet, auto-launches `nmtui` (one TUI form)
+3. **Install**: runs `zeta-install $HOST` non-interactively
+   (env vars: `ZETA_AUTO_CONFIRM=WIPE`, `BOOT_DISK=auto`)
+4. **Reboot**: 10-sec countdown after install completes
+
+Total node-side typing: **0 commands** (ethernet-DHCP) or **1
+nmtui form** (wifi). Switch to `Ctrl-Alt-F2` for a normal login
+shell if you need to override the auto-flow (e.g., debug, non-
+2-NVMe shape, recovery).
+
+## Step 5 (manual override only — first-boot service handles this automatically)
+
+These commands run automatically in the zero-typing flow. Use
+this section only if you switched to tty2 to override:
 
 ```bash
-# Clone Zeta to the live system's writable scratch
-sudo git clone https://github.com/Lucent-Financial-Group/Zeta /mnt/etc/zeta
-cd /mnt/etc/zeta/full-ai-cluster
+zeta-install control-plane   # or worker-gpu
+# Equivalent to:
+#   sudo disko --mode disko --flake .#control-plane
+#   sudo nixos-install --flake .#control-plane --no-root-password
+#   sudo reboot
 ```
 
-## Step 5: disko + nixos-install (the actual cookie-cutter install)
-
-```bash
-# Step 5a — disko wipes + partitions + formats + mounts both disks
-sudo disko --mode disko --flake .#worker-gpu-03
-
-# Step 5b — install NixOS onto the mounted layout
-sudo nixos-install --flake .#worker-gpu-03 --no-root-password
-
-# Step 5c — reboot. Box joins cluster on first boot.
-sudo reboot
-```
-
-That's it. Subsequent boxes: repeat steps 1-5 with new placeholder
-values. Each provision is ~10 minutes wall-clock, ~6 lines of
-human edits, zero hand-partitioning.
+That's it. Subsequent boxes: repeat steps 1-4 with new placeholder
+values (only needed for `worker-gpu-NN` per-node host configs).
+Each provision is ~10 minutes wall-clock, **~0 lines of human edits
+on the node side**, zero hand-partitioning.
 
 ## What happens after first boot
 
