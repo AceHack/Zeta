@@ -11,7 +11,7 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 
 const home = process.env.HOME ?? "/Users/acehack";
-const worktree = process.env.ZETA_RIVEN_LOOP_WORKTREE ?? join(home, ".local/share/zeta-riven-loop/Zeta");
+const worktree = process.env.ZETA_RIVEN_LOOP_WORKTREE ?? "/tmp/zeta-riven-loop-2";
 const stateDir = process.env.ZETA_RIVEN_LOOP_STATE_DIR ?? join(home, "Library/Application Support/ZetaRivenLoop");
 const logDir = process.env.ZETA_RIVEN_LOOP_LOG_DIR ?? join(home, "Library/Logs/zeta-riven-loop");
 const lockDir = join(stateDir, "lock");
