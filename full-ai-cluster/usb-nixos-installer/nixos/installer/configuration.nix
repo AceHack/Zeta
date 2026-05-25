@@ -127,6 +127,9 @@
     lm_sensors
     nvme-cli
     hdparm
+    hwloc       # lstopo — visualize NUMA / PCI / cache hierarchy
+                # BEFORE install so disk-by-id picks + GPU socket
+                # assignments are informed by the real topology.
 
     # GPU detection (drivers come in per-host on installed system)
     glxinfo
@@ -173,6 +176,15 @@
     man-pages
     man-pages-posix
     tldr
+
+    # Guided install script — wipes both NVMes, partitions per the
+    # 2-NVMe shape, formats, mounts, clones Zeta, and runs
+    # nixos-install. Lives in the installer's PATH as `zeta-install`.
+    # Source lives at full-ai-cluster/usb-nixos-installer/bin/zeta-install
+    # in the repo and is baked into the ISO via the writeShellScriptBin
+    # below.
+    (writeShellScriptBin "zeta-install"
+      (builtins.readFile ../../zeta-install.sh))
   ];
 
   isoImage = {
@@ -192,18 +204,24 @@
     3. Bring up the network:
          nmtui                       # interactive, or
          nmcli device wifi connect <SSID> password <PSK>
-    4. Identify the target disk:
-         lsblk
-    5. Partition + mount /mnt as desired.
-    6. Generate hardware config:
+    4. (Optional) See the hardware topology:
+         lstopo                      # NUMA / PCI / GPU layout
+         lsblk -d -o NAME,SIZE,TRAN,MODEL,SERIAL
+
+    GUIDED INSTALL (2-NVMe machines):
+         zeta-install <host>         # e.g. zeta-install control-plane
+       Prompts for which disk is the boot disk, requires typed WIPE
+       confirmation, then partitions + formats + mounts + clones +
+       installs end-to-end. Use this for the standard 2-NVMe shape.
+
+    MANUAL INSTALL (other shapes, or recovery):
+         lsblk                                # pick disks
+         # partition + mkfs + mount /mnt manually
          nixos-generate-config --root /mnt
-    7. Clone the full cluster flake (or this minimal USB flake):
          git clone <git-url> /mnt/etc/zeta
-    8. Install:
          nixos-install --flake /mnt/etc/zeta/full-ai-cluster#<host>
-       or for USB-only:
-         nixos-install --flake /mnt/etc/zeta/usb-nixos-installer#installer
-    9. Reboot.
+
+    Reboot when done.
   '';
 
   system.stateVersion = "24.11";

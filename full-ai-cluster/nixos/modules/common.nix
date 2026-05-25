@@ -50,6 +50,10 @@
     git vim htop btop tmux ripgrep jq yq-go curl wget rsync tree
     file unzip iproute2 iputils dnsutils nmap tcpdump mtr
     pciutils usbutils lshw nvme-cli smartmontools lm_sensors
+    hwloc           # lstopo — NUMA/PCI/cache hierarchy diagrams;
+                    # composes with Node Feature Discovery for
+                    # precise per-node hardware inventory.
+    dmidecode
     skopeo
     kubectl kubernetes-helm k9s argocd
     cilium-cli hubble
