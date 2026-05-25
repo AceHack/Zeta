@@ -138,6 +138,12 @@
     nix-output-monitor
     nvd
     nh
+    # Declarative disk partitioning — used by the cookie-cutter
+    # disko-shapes/ modules. Pre-staged on the ISO so installs
+    # don't need network access just to fetch disko itself.
+    # Invocation:
+    #   disko --mode disko --flake /mnt/etc/zeta/full-ai-cluster#<host>
+    disko
 
     # Secrets management
     age

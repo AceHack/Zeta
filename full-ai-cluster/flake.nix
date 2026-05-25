@@ -30,9 +30,19 @@
       url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # disko — declarative disk partitioning + formatting + mounting.
+    # Together with the disko-shapes/ modules under ./nixos/modules,
+    # adding a new node is: copy a host template, change hostname/IP,
+    # commit, run `nixos-install --flake .#<host> --disko`.
+    # No interactive partitioning, no per-host shell scripts.
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, flake-utils, nix-darwin, ... }@inputs:
+  outputs = { self, nixpkgs, nixos-hardware, flake-utils, nix-darwin, disko, ... }@inputs:
     let
       stateVersion = "24.11";
 
@@ -79,6 +89,18 @@
             ./nixos/hosts/worker-gpu/configuration.nix
           ];
         };
+
+        # Cookie-cutter worker template — uses disko for declarative
+        # disk partitioning + Longhorn multi-disk wiring. Copy
+        # ./nixos/hosts/worker-template/ to ./nixos/hosts/worker-gpu-NN/,
+        # change the six placeholder values documented in the file,
+        # then add a `worker-gpu-NN = mkSystem { ... };` entry here
+        # mirroring this one. See full-ai-cluster/PROVISIONING.md.
+        worker-template = mkSystem {
+          modules = [
+            ./nixos/hosts/worker-template/default.nix
+          ];
+        };
       };
 
       # Shared NixOS modules — per-host configs import these via
@@ -93,6 +115,8 @@
         gpu-device-plugin = ./nixos/modules/gpu-device-plugin.nix;
         docker = ./nixos/modules/docker.nix;
         local-storage = ./nixos/modules/local-storage.nix;
+        longhorn-disks = ./nixos/modules/longhorn-disks.nix;
+        disko-shape-2nvme = ./nixos/modules/disko-shapes/2nvme.nix;
       };
 
       # nix-darwin config for maintainer Macs (Apple Silicon). Enables
