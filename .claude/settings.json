@@ -51,6 +51,8 @@
     "allow": [
       "Bash(bun *)",
       "Bash(bun full-ai-cluster/tools/flash-usb.ts *)",
+      "Bash(bun full-ai-cluster/tools/zflash.ts *)",
+      "Bash(bun full-ai-cluster/tools/zflash-setup.ts *)",
       "Bash(dotnet build *)",
       "Bash(dotnet test *)",
       "Bash(dotnet restore *)",
