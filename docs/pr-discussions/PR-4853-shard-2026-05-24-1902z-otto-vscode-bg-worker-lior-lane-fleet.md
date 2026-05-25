@@ -8,7 +8,7 @@ merged_at: "2026-05-24T19:35:28Z"
 closed_at: "2026-05-24T19:35:28Z"
 head_ref: "otto-vscode/tick-1902z-bg-worker"
 base_ref: "main"
-archived_at: "2026-05-24T20:17:52Z"
+archived_at: "2026-05-24T21:25:28Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

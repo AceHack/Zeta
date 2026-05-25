@@ -8,7 +8,7 @@ merged_at: "2026-05-24T14:08:20Z"
 closed_at: "2026-05-24T14:08:20Z"
 head_ref: "otto-cli/tick-1333z-pr-4816-tier-5-deferral-hard-limits-floor-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T14:24:01Z"
+archived_at: "2026-05-24T21:25:53Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

@@ -8,7 +8,7 @@ merged_at: "2026-05-24T18:36:24Z"
 closed_at: "2026-05-24T18:36:24Z"
 head_ref: "otto-vscode/bg-worker-shard-1758z-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T20:19:49Z"
+archived_at: "2026-05-24T21:25:33Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
