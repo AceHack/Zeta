@@ -125,7 +125,7 @@ Signals:
 
 ## Phase 3: Customer or Stakeholder Interview
 
-The Customer Interviewer hat should run a structured interview. This can be a human conversation, an async questionnaire, or a scoped chat. The key is that answers become evidence, not unstructured chat residue.
+The Customer Interviewer hat should run a structured interview. This can be a human conversation, an async questionnaire, or a scoped chat. The key is that answers become evidence, not unstructured chat residue. The interview thread should anchor to the goal intake, project, initiative, requirement gap, or discovery work item before it starts.
 
 Interview modes:
 

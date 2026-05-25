@@ -467,9 +467,12 @@ Supports:
 - review panels;
 - incident triage.
 
+Opening a meeting, thread, one-on-one, vote, report, or broadcast should require an anchor selector. The UI should not provide a generic "start chat" path; the user or agent chooses the project, initiative, task, defect, review, gate, incident, release, policy, capability request, or context gap first.
+
 For each meeting:
 
 - purpose;
+- work anchor and reason;
 - participants and hats;
 - conversation mode;
 - current speaker/turn order;

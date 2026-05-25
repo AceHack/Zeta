@@ -1716,7 +1716,26 @@ Reports and messages should include:
 - links to evidence;
 - whether response is required.
 
-Department-wide reporting should be the default for structured findings. Ad hoc chat should be used when a conversation is needed to resolve ambiguity or make a decision.
+Department-wide reporting should be the default for structured findings. Ad hoc chat should be used when a conversation is needed to resolve ambiguity or make a decision, and it still needs a work anchor.
+
+## Discussion Anchor Policy
+
+The Organization should treat every communication as a work artifact. No discussion opens without an anchor and reason.
+
+Required anchors:
+
+- executive-down meetings anchor to project, initiative, policy, capability request, or organization-level decision item;
+- director meetings anchor to department plus project, initiative, policy, queue health, or capability request;
+- TPM meetings anchor to initiative, mission, blocker, dependency, release, or task set;
+- engineering manager/team meetings anchor to team plus task, defect, review, performance review, outcome review, blocker, or capability request;
+- developer discussions anchor to task, defect, review, run, subtask, or context gap;
+- QA discussions anchor to test case, QA run, defect, release candidate, task, or QA gate;
+- security discussions anchor to credential request, tool expansion, policy change, incident, or security review;
+- product, BA, and architecture discussions anchor to project, initiative, BRD, CA, ADR, requirement gap, or approval gate;
+- one-on-ones anchor to handoff, clarification, review, performance review, memory adaptation, task planning, hat proposal, conflict resolution, or context gap;
+- broadcasts and reports anchor to the team, department, project, initiative, task, incident, release, or signal they are about.
+
+If an agent wants to talk but cannot identify the anchor, the system should create a context-gap or service-request work item first. The resulting discussion is then tied to that work item. This keeps the Organization from accumulating unanchored chat while still allowing agents to resolve ambiguity.
 
 ## One-on-One Chats
 
@@ -1734,7 +1753,7 @@ They can be opened for:
 - conflict resolution;
 - task planning.
 
-One-on-one chat should require a reason and scope.
+One-on-one chat should require a reason, scope, and discussion anchor.
 
 During one-on-one mode, the participants can:
 
@@ -1749,7 +1768,7 @@ One-on-one chat should be allowed with same-level or lower-hierarchy hats by def
 
 ## Team Chats and Meetings
 
-Team chats are multi-agent conversations with a defined membership, purpose, and conversation mode.
+Team chats are multi-agent conversations with a defined membership, purpose, conversation mode, and discussion anchor.
 
 Meeting types:
 

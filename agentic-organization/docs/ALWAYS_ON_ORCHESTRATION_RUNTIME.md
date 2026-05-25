@@ -249,7 +249,7 @@ Concurrency policies:
 - replace running job;
 - queue behind running job.
 
-Scheduled jobs should create work, reports, meetings, reviews, or Oz run requests. They should not bypass work management.
+Scheduled jobs should create work, reports, meetings, reviews, or Oz run requests. They should not bypass work management. If a job opens a meeting, review, broadcast, or report, it must provide a discussion anchor such as project, initiative, task, defect, incident, release, gate, policy, capability request, or context gap.
 
 ## Durable Timers
 

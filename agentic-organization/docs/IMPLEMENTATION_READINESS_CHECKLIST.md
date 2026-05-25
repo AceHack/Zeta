@@ -116,6 +116,7 @@ Must include:
 - gate decisions;
 - assignments;
 - releases;
+- discussion anchors;
 - artifacts;
 - signals;
 - audit events;
@@ -226,6 +227,30 @@ Need to define:
 - state transition effects;
 - emitted signals;
 - audit fields.
+
+Knowledge Graph/Retrieval V0 decisions:
+
+- first node and edge schema;
+- context pack contract;
+- indexing provider and reindex triggers;
+- access-control envelope;
+- provenance envelope;
+- deterministic traversal versus semantic retrieval behavior;
+- contradiction lifecycle;
+- discussion anchor contract;
+- handoff brief requirements;
+- attention queue contract.
+
+Minimum preflight tools:
+
+- `validate_start_work`;
+- `validate_discussion_anchor`;
+- `validate_context_pack_current`;
+- `validate_handoff_complete`;
+- `validate_decision_memory_current`;
+- `validate_no_blocking_contradictions`;
+- `validate_required_docs_acknowledged`;
+- `validate_lifecycle_transition`.
 
 ## 9. Hermes/Oz Boundary
 

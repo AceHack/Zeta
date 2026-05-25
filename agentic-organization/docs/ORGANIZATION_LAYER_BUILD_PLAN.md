@@ -141,7 +141,7 @@ No implementation should silently move long-running state from Orleans to NestJS
 | Work Management Service | Owns projects, initiatives, tasks, defects, service requests, blockers, queues, lifecycle state | TPMs, Product, BA, Engineering, QA, Delivery |
 | Gate and Review Service | Owns readiness, BRD, architecture, code, QA, security, delivery, memory, and outcome gates | Review hats and managers |
 | Department Runtime Service | Maintains department rules, queues, schedules, standing meetings, director reports, escalation paths | Directors and department managers |
-| Meeting and Communication Service | Provides inboxes, reports, broadcasts, one-on-one chats, team rooms, meeting modes, decisions | All hats, especially TPMs, directors, executives |
+| Meeting and Communication Service | Provides inboxes, reports, broadcasts, one-on-one chats, team rooms, meeting modes, decisions, and mandatory work anchors for every discussion | All hats, especially TPMs, directors, executives |
 | Documentation Context Service | Organizes BRDs, CAs, ADRs, design docs, project docs, repo docs, and required context by scope | Product, BA, Architecture, Engineering, QA, Reviewers |
 | Project Skill Service | Stores project/repo skills with frontmatter, graph links, review state, deprecation, and ingestion | Engineering Managers, Documentation hats, Memory hats |
 | Memory Scope Service | Mediates Hindsight recall/write attribution by agent, hat, project, task, team, and meeting | Memory hats, all execution hats |
@@ -161,6 +161,7 @@ Every active hat should open into a role-specific workspace. A workspace is the 
 
 - Role brief: current hat, department, scope, reporting chain, active policies, token TTL, and current assignment.
 - Work queue: tasks, reports, gates, reviews, meetings, incidents, or capability requests relevant to the hat.
+- Discussion anchor: the current project, initiative, task, defect, review, incident, release, policy, capability request, or context gap that justifies a meeting/thread/broadcast.
 - Required context: documents, memories, project skills, artifacts, traces, and prior decisions the hat must consider.
 - Allowed tools: MCP tools available under the current hat and why each is available.
 - Blocked tools: MCP tools denied under the current hat with escalation path.
@@ -220,8 +221,9 @@ The Organization DB must capture the full operating reality. The first schema ne
 
 - `inboxes`: agent, hat, team, department, and organization inboxes.
 - `messages`: typed messages, reports, escalations, broadcasts, and decision notices.
-- `conversation_threads`: one-on-one, team, department, executive, incident, and review threads.
-- `meetings`: scheduled or ad hoc meetings with scope, mode, facilitator, participants, decisions.
+- `discussion_anchors`: immutable opening anchors for meetings, one-on-ones, broadcasts, votes, reports, review comments, and conversation threads.
+- `conversation_threads`: one-on-one, team, department, executive, incident, and review threads with mandatory anchors.
+- `meetings`: scheduled or ad hoc meetings with scope, mode, facilitator, participants, anchors, decisions.
 - `votes`: voting scope, eligible hats, quorum, options, close policy, result.
 - `decisions`: durable decision records linked to votes, gates, meetings, docs, tasks, and policies.
 
@@ -565,6 +567,7 @@ Build:
 - broadcasts;
 - one-on-one and team chats;
 - meetings;
+- discussion anchor validation;
 - votes;
 - role-specific queues.
 
@@ -573,6 +576,8 @@ Proof:
 - a TPM can create a team and meeting;
 - a reviewer receives the right gate queue;
 - executive votes and department escalations are durable decisions.
+- unanchored meetings, threads, and broadcasts are rejected;
+- executive meetings anchor to project/initiative/policy, TPM meetings anchor to initiatives/missions, and developer discussions anchor to tasks/defects/reviews.
 
 ### Phase 4: Oz/Hermes Runtime Binding
 

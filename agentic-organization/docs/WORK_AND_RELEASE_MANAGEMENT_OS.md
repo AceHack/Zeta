@@ -187,7 +187,7 @@ Signals are durable, typed events. They are not chat messages. They drive boards
 | Anti-stall | `QueueSloViolated`, `BlockedWorkStale`, `BlockerOwnerMissing`, `AssignmentSilent`, `AlternateWorkAssigned`, `DependencyCleared`, `WorkReactivated` | TPMs, Engineering Managers, Directors, Operations |
 | Quality | `RepeatedQaBounceBack`, `MemoryGapDetected`, `FlakyTestDetected`, `AcceptanceCriteriaMissing` | Engineering Managers, QA Engineering, Memory |
 | Capability | `CapabilityRequested`, `SecurityReviewRequired`, `WorkflowRegistered`, `ToolActivated` | Directors, Architecture, Security |
-| Meeting | `MeetingRequested`, `DecisionRecorded`, `VoteOpened`, `VoteClosed` | Participants, governance hats |
+| Meeting | `DiscussionAnchorValidated`, `MeetingRequested`, `DecisionRecorded`, `VoteOpened`, `VoteClosed` | Participants, governance hats |
 
 Every signal should include:
 
@@ -460,6 +460,7 @@ This slice proves:
 
 - No work should be invisible. If an agent is doing work, it must be tied to a work item, hat assignment, run, and trace.
 - No assignment should be implied by chat. Assignment requires hat supply reservation and active token.
+- No discussion may be unanchored. Meetings, threads, broadcasts, one-on-ones, votes, reports, and review comments must reference project, initiative, task, defect, review, gate, incident, release, policy, capability request, or context-gap work.
 - No release should happen without an evidence chain.
 - No workflow should bypass the Work OS. Schedulers and agents create work or signals, then the Work OS drives state.
 - No role should rely on polling chat. Each role needs a queue, board, and signal-driven inbox.

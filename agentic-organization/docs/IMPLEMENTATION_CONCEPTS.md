@@ -121,7 +121,7 @@ Primary services:
 
 ### Meetings and Communication
 
-Owns messages, reports, inboxes, meetings, conversation modes, broadcasts, and escalations.
+Owns messages, reports, inboxes, meetings, conversation modes, broadcasts, escalations, and discussion anchor enforcement.
 
 Core entities:
 
@@ -129,6 +129,7 @@ Core entities:
 - `InboxMessage`
 - `Report`
 - `Thread`
+- `DiscussionAnchor`
 - `Meeting`
 - `MeetingParticipant`
 - `ConversationMode`
@@ -141,6 +142,7 @@ Primary services:
 - `ReportService`
 - `MeetingService`
 - `ThreadService`
+- `DiscussionAnchorService`
 - `EscalationService`
 - `NatsEventBridge`
 
@@ -1071,7 +1073,7 @@ NATS failure behavior:
 
 ## Meetings
 
-Meetings should be implemented as first-class entities, not only chat transcripts.
+Meetings should be implemented as first-class entities, not only chat transcripts. They should not open unless the caller supplies a valid work anchor.
 
 Meeting state:
 
@@ -1089,6 +1091,7 @@ cancelled
 Meeting fields:
 
 - purpose;
+- discussion anchor;
 - organizer hat assignment;
 - participants;
 - hierarchy scope;
@@ -1102,6 +1105,23 @@ Meeting fields:
 - memory outputs.
 
 Conversation modes should be enforced by the Meeting Service at the turn-routing level.
+
+Meeting/thread open preflight:
+
+1. Validate the active hat assignment and token.
+2. Validate the discussion anchor exists and is visible under the hat scope.
+3. Validate the requested participants are allowed for the anchor and hierarchy.
+4. Validate expected outputs such as decision, follow-up task, document, gate result, status, or memory.
+5. If the topic is ambiguous, create or link a context-gap, report, service-request, or capability-request work item before opening the discussion.
+
+Anchor rules:
+
+- executive-down meetings anchor to project, initiative, policy, or capability request;
+- TPM meetings anchor to initiative, mission, blocker, dependency, release, or task set;
+- developer discussions anchor to task, defect, review, run, or context gap;
+- QA, security, architecture, product, and BA discussions anchor to their gate, document, defect, requirement gap, project, or initiative;
+- one-on-ones require both a reason and a work anchor, including performance review or memory adaptation items when the conversation is coaching-oriented;
+- broadcasts and reports carry anchors the same way meetings do.
 
 First MVP can support:
 

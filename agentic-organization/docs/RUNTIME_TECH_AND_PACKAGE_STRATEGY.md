@@ -118,8 +118,8 @@ Use Dapr Actors for live, entity-local coordination:
 - `AgentSessionActor`: one live context actor per Hermes session.
 - `AgentMailboxActor`: one mailbox per Hermes agent/session.
 - `HatSupplyActor`: one allocator per hat/project/department scope.
-- `TeamRoomActor`: live team chat, broadcast, and turn-taking state.
-- `MeetingActor`: active meeting agenda, speaker order, votes, and transcript pointer.
+- `TeamRoomActor`: live team chat, broadcast, anchor validation state, and turn-taking state.
+- `MeetingActor`: active meeting agenda, work anchor, speaker order, votes, and transcript pointer.
 - `TaskActor`: hot task coordination, lock/heartbeat, and current assignment state.
 - `ProjectRuntimeActor`: project-local runtime status and aggregate health.
 - `IncidentActor`: live incident command state.
@@ -178,6 +178,7 @@ Runtime context should include:
 - active hat assignment ID;
 - current task ID;
 - current team ID;
+- current discussion anchor;
 - current meeting ID;
 - current Oz run ID;
 - current project ID;

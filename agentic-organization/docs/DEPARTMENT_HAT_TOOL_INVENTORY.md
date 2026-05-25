@@ -68,8 +68,8 @@ Hat records should store concrete tool IDs, but the design is easier to reason a
 | Team Runtime | `create_team`, `spawn_agent`, `spawn_team`, `assign_task`, `stop_agent`, `stop_team` |
 | Task | `create_task`, `claim_task`, `update_task`, `block_task`, `groom_task`, `mark_ready`, `submit_red_tests`, `submit_green_tests`, `complete_task` |
 | Backlog and Defect | `create_backlog_item`, `prioritize_backlog_item`, `link_backlog_item`, `convert_backlog_item`, `create_backlog_item_from_review`, `create_defect_from_report` |
-| Messaging | `send_message`, `read_inbox`, `send_report`, `open_thread`, `reply_thread`, `request_one_on_one_chat`, `open_team_chat`, `send_team_broadcast`, `escalate` |
-| Meeting | `request_meeting`, `schedule_meeting`, `open_meeting`, `set_conversation_mode`, `submit_meeting_decision`, `close_meeting` |
+| Messaging | `send_message`, `read_inbox`, `send_report`, `open_thread`, `reply_thread`, `request_one_on_one_chat`, `open_team_chat`, `send_team_broadcast`, `validate_discussion_anchor`, `escalate` |
+| Meeting | `request_meeting`, `schedule_meeting`, `open_meeting`, `set_conversation_mode`, `submit_meeting_decision`, `close_meeting`, `validate_discussion_anchor` |
 | Artifact and Evidence | `submit_artifact`, `list_artifacts`, `link_artifact`, `require_artifact`, `attach_screenshot`, `attach_trace`, `attach_log` |
 | Business | `start_customer_interview`, `record_customer_answer`, `create_brd`, `approve_brd`, `reject_brd` |
 | Architecture | `create_ca`, `request_architecture_review`, `approve_architecture`, `reject_architecture` |

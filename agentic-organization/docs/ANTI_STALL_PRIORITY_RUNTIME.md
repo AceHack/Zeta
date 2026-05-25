@@ -258,7 +258,7 @@ If intended and actual state diverge, the system creates a report, inbox item, o
 
 ## Prioritization Meetings and Votes
 
-Routine priority should be handled by the appropriate hats through scheduled reviews and triggered inbox tasks. Meetings and votes occur when a decision crosses role boundaries or policy says judgment is required.
+Routine priority should be handled by the appropriate hats through scheduled reviews and triggered inbox tasks. Meetings and votes occur when a decision crosses role boundaries or policy says judgment is required. Each meeting or vote must anchor to the project, initiative, task, defect, blocker, release, policy, or capability request that created the priority question.
 
 Trigger meetings for:
 
