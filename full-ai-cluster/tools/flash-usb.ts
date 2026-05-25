@@ -207,7 +207,16 @@ async function main() {
 
   // ── 3. Enumerate USB devices ───────────────────────────────
   const list = diskutilListPlist() as {
-    AllDisksAndPartitions: { DeviceIdentifier: string }[];
+    AllDisksAndPartitions: {
+      DeviceIdentifier: string;
+      Partitions?: {
+        DeviceIdentifier: string;
+        Content?: string;
+        Size?: number;
+        VolumeName?: string;
+      }[];
+      Content?: string;
+    }[];
   };
   const externalDevices = list.AllDisksAndPartitions.map(
     (d) => `/dev/${d.DeviceIdentifier}`,
@@ -301,15 +310,72 @@ async function main() {
     ? `yes ${nonce}`
     : `accept-destroy ${device} ${nonce}`;
 
+  // Extra-detail fields (best-effort — diskutil may omit any of these
+  // depending on the USB controller; show "?" rather than fail).
+  const vendor = String(info.DeviceVendor ?? info.IORegistryEntryName ?? "?");
+  const serial = String(info.DeviceSerial ?? info.DeviceSerialNumber ?? "?");
+  const ioRegName = String(info.IORegistryEntryName ?? "?");
+  const partitionTable = String(info.Content ?? "?");
+  const writable =
+    info.WritableMedia === true || info.Writable === true ? "yes" : "no";
+
   process.stdout.write("\n");
   process.stdout.write("USB device identified:\n");
-  process.stdout.write(`  Device:    ${device}\n`);
-  process.stdout.write(`  Model:     ${model}\n`);
-  process.stdout.write(`  Size:      ${human(size)}\n`);
-  process.stdout.write(`  Protocol:  ${info.BusProtocol}\n`);
-  process.stdout.write(`  Removable: ${removable}\n`);
-  process.stdout.write(`  Boot disk: ${bootDisk}  (target is not boot disk)\n`);
+  process.stdout.write(`  Device:      ${device}\n`);
+  process.stdout.write(`  Model:       ${model}\n`);
+  process.stdout.write(`  Vendor:      ${vendor}\n`);
+  process.stdout.write(`  IORegName:   ${ioRegName}\n`);
+  process.stdout.write(`  Serial:      ${serial}\n`);
+  process.stdout.write(`  Size:        ${human(size)}\n`);
+  process.stdout.write(`  Protocol:    ${info.BusProtocol}\n`);
+  process.stdout.write(`  Removable:   ${removable}\n`);
+  process.stdout.write(`  Writable:    ${writable}\n`);
+  process.stdout.write(`  Part. table: ${partitionTable}\n`);
+  process.stdout.write(`  Boot disk:   ${bootDisk}  (target is not boot disk)\n`);
   process.stdout.write("\n");
+
+  // Show what's currently on the USB so the runner sees exactly what
+  // they're about to destroy BEFORE the consent prompt. Per-partition
+  // filesystem + volume name + used-space, pulled from diskutil info
+  // for each partition listed under the candidate device.
+  const candidateEntry = list.AllDisksAndPartitions.find(
+    (d) => `/dev/${d.DeviceIdentifier}` === device,
+  );
+  const partitions = candidateEntry?.Partitions ?? [];
+  process.stdout.write(`Currently on ${device} (will be DESTROYED):\n`);
+  if (partitions.length === 0) {
+    process.stdout.write(
+      `  (no partitions detected — raw / freshly-erased device)\n`,
+    );
+  } else {
+    for (const p of partitions) {
+      const partDev = `/dev/${p.DeviceIdentifier}`;
+      // Defense-in-depth: partition-device identifier comes from diskutil's
+      // own plist (trusted) but we still validate the path shape before
+      // feeding it to another diskutil invocation, matching the same
+      // discipline `assertSafeDevicePath` enforces on the whole-disk
+      // candidate. Partition paths have an additional 's<N>' suffix
+      // (e.g. /dev/disk6s1), so we use a partition-aware regex here.
+      if (!/^\/dev\/disk\d+s\d+$/.test(partDev)) {
+        bail(2, `unsafe partition path from diskutil: ${partDev}`);
+      }
+      const pInfo = diskutilInfo(partDev);
+      const pSize = Number(p.Size ?? pInfo.TotalSize ?? 0);
+      const pContent = String(p.Content ?? pInfo.Content ?? "?");
+      const pFs = String(pInfo.FilesystemName ?? pInfo.FilesystemUserVisibleName ?? "(none)");
+      const pVol = p.VolumeName ?? pInfo.VolumeName;
+      const pMount = String(pInfo.MountPoint ?? "");
+      const pUsedRaw = pInfo.VolumeUsedSpaceInBytes;
+      const pUsed = typeof pUsedRaw === "number" && pUsedRaw > 0 ? ` — ${human(pUsedRaw)} used` : "";
+      const label = pVol ? ` "${pVol}"` : "";
+      const mountStr = pMount ? ` mounted at ${pMount}` : "";
+      process.stdout.write(
+        `  ${partDev.padEnd(14)} ${pContent.padEnd(18)} ${human(pSize).padStart(10)}   ${pFs}${label}${mountStr}${pUsed}\n`,
+      );
+    }
+  }
+  process.stdout.write("\n");
+
   process.stdout.write(`*** ALL DATA ON ${device} WILL BE DESTROYED ***\n\n`);
   process.stdout.write(
     "By completing the confirmation prompt below, the runner\n" +
