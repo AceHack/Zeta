@@ -1,0 +1,32 @@
+# vLLM — LLM serving (option B). Higher throughput than Ollama for
+# production-shape inference; harder to swap models on the fly.
+# Choose one of Ollama / vLLM (or run both targeting different model
+# tiers — Ollama for quick interactive, vLLM for high-concurrency).
+#
+# No official Helm chart from the vLLM project. We point at a
+# community chart (substratusai/llm-operator-style) or hand-rolled
+# manifests in this directory.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vllm
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/vllm
+    directory:
+      include: '{namespace,deployment,service}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vllm
+  # DEFERRED: local-models phase on hold. The deployment.yaml ships
+  # replicas: 0 (already) AND syncPolicy is manual-only so ArgoCD
+  # doesn't reconcile until a maintainer explicitly triggers
+  # `argocd app sync vllm`. Mirrors the ollama Application's gating.
+  syncPolicy:
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

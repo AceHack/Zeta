@@ -1,0 +1,43 @@
+# CockroachDB — distributed SQL. Backs Temporal + GitLab + Forgejo
+# + any workload wanting strong consistency + horizontal scale.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cockroachdb
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.cockroachdb.com/
+    chart: cockroachdb
+    targetRevision: 14.0.5
+    helm:
+      releaseName: cockroachdb
+      valuesObject:
+        statefulset:
+          replicas: 3
+        storage:
+          persistentVolume:
+            enabled: true
+            size: 100Gi
+            storageClass: longhorn
+        conf:
+          single-node: false
+          cache: 25%
+          max-sql-memory: 25%
+        tls:
+          enabled: true
+          certs:
+            selfSigner:
+              enabled: true
+              caProvided: false
+        prometheus:
+          enabled: true   # for kube-prometheus-stack scrape
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cockroachdb
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

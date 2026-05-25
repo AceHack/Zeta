@@ -1,0 +1,49 @@
+# HashiCorp Vault — runtime secrets engine + Vault Agent injector
+# for pods. Pair with Sealed Secrets (above): Sealed for config-style
+# secrets, Vault for dynamic + rotated secrets + audit trail.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://helm.releases.hashicorp.com
+    chart: vault
+    targetRevision: 0.29.1
+    helm:
+      releaseName: vault
+      valuesObject:
+        global:
+          enabled: true
+          tlsDisable: false   # generate TLS via cert-manager or self-signed
+        server:
+          ha:
+            enabled: true
+            replicas: 3
+            raft:
+              enabled: true
+              setNodeId: true
+          dataStorage:
+            enabled: true
+            storageClass: longhorn
+            size: 20Gi
+          auditStorage:
+            enabled: true
+            storageClass: longhorn
+            size: 10Gi
+        injector:
+          enabled: true
+          replicas: 2
+        ui:
+          enabled: true
+          serviceType: ClusterIP
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vault
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

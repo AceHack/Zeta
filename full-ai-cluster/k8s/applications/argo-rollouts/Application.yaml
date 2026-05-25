@@ -1,0 +1,30 @@
+# Argo Rollouts — progressive delivery (canary, blue-green).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-rollouts
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-rollouts
+    targetRevision: 2.39.5
+    helm:
+      releaseName: argo-rollouts
+      valuesObject:
+        controller:
+          replicas: 1
+        dashboard:
+          enabled: true
+          serviceType: ClusterIP
+        notifications:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-rollouts
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

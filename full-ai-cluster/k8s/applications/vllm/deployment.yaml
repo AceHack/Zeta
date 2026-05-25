@@ -1,0 +1,69 @@
+# vLLM serving deployment. Replicas start at 0 — choose a model
+# (image tag) and bump to 1+ once you've picked between Ollama and
+# vLLM (or which models each one serves).
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vllm
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm
+  namespace: vllm
+spec:
+  replicas: 0
+  selector:
+    matchLabels: { app.kubernetes.io/name: vllm }
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: vllm }
+    spec:
+      nodeSelector:
+        zeta.io/gpu: nvidia
+      containers:
+        - name: vllm
+          image: vllm/vllm-openai:latest
+          args:
+            # Defaults — override per model by tweaking these args:
+            - --model
+            - deepseek-ai/deepseek-coder-33b-instruct
+            - --tensor-parallel-size
+            - "1"
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "8000"
+          ports:
+            - { containerPort: 8000, name: http }
+          resources:
+            requests: { cpu: "4", memory: "16Gi", "nvidia.com/gpu": 1 }
+            limits:   { cpu: "8", memory: "64Gi", "nvidia.com/gpu": 1 }
+          volumeMounts:
+            - { name: cache, mountPath: /root/.cache/huggingface }
+      volumes:
+        - name: cache
+          persistentVolumeClaim: { claimName: vllm-cache }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: vllm-cache
+  namespace: vllm
+spec:
+  accessModes: [ ReadWriteOnce ]
+  storageClassName: longhorn
+  resources:
+    requests: { storage: 200Gi }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vllm
+  namespace: vllm
+spec:
+  type: ClusterIP
+  selector: { app.kubernetes.io/name: vllm }
+  ports:
+    - { name: http, port: 8000, targetPort: 8000 }

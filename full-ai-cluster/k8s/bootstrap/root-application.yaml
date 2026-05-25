@@ -1,0 +1,48 @@
+# full-ai-cluster/k8s/bootstrap/root-application.yaml
+#
+# App-of-Apps root. K3S auto-applies after ArgoCD is running.
+# ArgoCD then watches `k8s/applications/` for Application CRs and
+# reconciles everything declared there.
+#
+# Adding a workload to the cluster:
+#   1. mkdir full-ai-cluster/k8s/applications/<name>/
+#   2. Author Application.yaml + any supporting manifests
+#   3. git commit + push to main
+#   4. ArgoCD picks it up on the next sync (~3 min)
+#
+# Either/or gating: some directories ship multiple alternatives
+# (e.g. gitlab/ vs forgejo/, ollama/ vs vllm/). The root App-of-Apps
+# picks them ALL up — gating happens at the per-Application
+# `syncPolicy` level. Default-on apps keep an `automated:` block;
+# alternatives omit it (manual sync only via `argocd app sync`).
+# Each alternative's Application.yaml header names the swap procedure.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zeta-root
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications
+    directory:
+      recurse: true
+      # Only pick up Application CRs (one per workload directory).
+      # Supporting manifests in the same dirs are reconciled by the
+      # specific app's Application, not by the root.
+      include: '{*/Application.yaml,Application.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

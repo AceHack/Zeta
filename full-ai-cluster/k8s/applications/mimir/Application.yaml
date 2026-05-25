@@ -1,0 +1,46 @@
+# Mimir — long-term metrics storage. Complements kube-prometheus-stack
+# which keeps recent metrics; Mimir holds the long tail for trend
+# analysis.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mimir
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: mimir-distributed
+    targetRevision: 5.5.1
+    helm:
+      releaseName: mimir
+      valuesObject:
+        metaMonitoring:
+          serviceMonitor: { enabled: false }
+        # MinIO bundled for object storage. Swap to external S3
+        # once you stand up real object storage.
+        minio:
+          enabled: true
+          persistence:
+            storageClass: longhorn
+            size: 100Gi
+        ingester:
+          persistentVolume:
+            storageClass: longhorn
+            size: 50Gi
+        store_gateway:
+          persistentVolume:
+            storageClass: longhorn
+            size: 50Gi
+        compactor:
+          persistentVolume:
+            storageClass: longhorn
+            size: 50Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mimir
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

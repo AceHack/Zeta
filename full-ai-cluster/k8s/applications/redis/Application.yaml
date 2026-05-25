@@ -1,0 +1,39 @@
+# Redis — cache. Bitnami chart for the standard ergonomics.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.bitnami.com/bitnami
+    chart: redis
+    targetRevision: 20.5.0
+    helm:
+      releaseName: redis
+      valuesObject:
+        architecture: replication
+        auth:
+          enabled: true
+          existingSecret: redis-auth   # create via Sealed Secret / Vault
+          existingSecretPasswordKey: password
+        master:
+          persistence:
+            enabled: true
+            storageClass: longhorn
+            size: 10Gi
+        replica:
+          replicaCount: 2
+          persistence:
+            enabled: true
+            storageClass: longhorn
+            size: 10Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: redis
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

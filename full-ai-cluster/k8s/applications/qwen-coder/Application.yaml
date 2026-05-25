@@ -1,0 +1,23 @@
+# Qwen Coder — same pattern as deepseek-coder/. Served by Ollama
+# or vLLM via the same endpoints.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: qwen-coder
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/qwen-coder
+    directory:
+      include: '{namespace,configmap}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: models
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

@@ -1,0 +1,31 @@
+# Istio — service mesh. Sidecar OR ambient mode (ambient = no
+# sidecar per pod; lighter). Cilium handles low-level networking;
+# Istio handles L7 routing / auth / mTLS.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://istio-release.storage.googleapis.com/charts
+    chart: base
+    targetRevision: 1.24.0
+    helm:
+      releaseName: istio-base
+      valuesObject:
+        defaultRevision: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
+# NOTE: Istio actually needs THREE Helm releases to be useful
+# (base, istiod, gateway). This Application installs the CRDs (base);
+# add istio-istiod/Application.yaml + istio-gateway/Application.yaml
+# in follow-up dirs once base is healthy. Splitting the apps lets
+# ArgoCD sync them in the right order.

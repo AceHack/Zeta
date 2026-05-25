@@ -1,0 +1,32 @@
+# Dapr — distributed actor runtime #3.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: dapr
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://dapr.github.io/helm-charts/
+    chart: dapr
+    targetRevision: 1.14.4
+    helm:
+      releaseName: dapr
+      valuesObject:
+        global:
+          ha: { enabled: false }   # bump once multi-control-plane
+        dapr_placement:
+          replicaCount: 1
+        # Actors persistence: configure a Redis/CockroachDB state
+        # store via a Dapr Component once those land. Example:
+        # configuration:
+        #   metricSpec:
+        #     enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dapr-system
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

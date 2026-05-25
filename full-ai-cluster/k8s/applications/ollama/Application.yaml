@@ -1,0 +1,63 @@
+# Ollama — LLM serving (option A).
+# Schedules onto worker-gpu nodes via nvidia.com/gpu request.
+#
+# DEFERRED: local-models phase is on hold per "we only care about
+# cloud right now." The Application is shipped in scaled-to-zero
+# form so the topology is preserved + the chart pin is reviewable,
+# but NO pods schedule + NO models pull until a maintainer:
+#   1. Removes the `replicaCount: 0` override below
+#   2. Re-enables automated sync (currently set to manual)
+#   3. Adds models back to `ollama.models.pull` + `.run`
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ollama
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://otwld.github.io/ollama-helm/
+    chart: ollama
+    targetRevision: 1.6.0
+    helm:
+      releaseName: ollama
+      valuesObject:
+        replicaCount: 0   # ← deferred local-models phase
+        ollama:
+          gpu:
+            enabled: true
+            type: nvidia
+            number: 1
+          models:
+            # Pull + run lists intentionally empty — no model pull
+            # at deploy time. Re-enable when the local phase comes
+            # back online (example values left as comments):
+            pull: [ ]
+              # - deepseek-coder:33b
+              # - qwen2.5-coder:32b
+            run: [ ]
+              # - deepseek-coder:33b
+              # - qwen2.5-coder:32b
+        persistentVolume:
+          enabled: true
+          size: 200Gi
+          storageClass: longhorn
+        nodeSelector:
+          zeta.io/gpu: nvidia
+        resources:
+          requests: { cpu: "2", memory: "8Gi", "nvidia.com/gpu": 1 }
+          limits:   { cpu: "8", memory: "32Gi", "nvidia.com/gpu": 1 }
+        service:
+          type: ClusterIP
+          port: 11434
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ollama
+  # syncPolicy without `automated` — manual-sync-only so ArgoCD
+  # doesn't reconcile this app on its own during the deferred
+  # phase. Maintainer triggers via `argocd app sync ollama` when
+  # ready to enable local serving.
+  syncPolicy:
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

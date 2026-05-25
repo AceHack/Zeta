@@ -1,0 +1,34 @@
+# Longhorn — distributed block storage. Stateful workloads land here
+# (Postgres for GitLab, CockroachDB data dirs, Weaviate, etc.).
+# Local-path storage (NixFlake module) covers stateless workloads.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.longhorn.io
+    chart: longhorn
+    targetRevision: 1.7.2
+    helm:
+      releaseName: longhorn
+      valuesObject:
+        defaultSettings:
+          defaultDataPath: /var/lib/longhorn
+          defaultReplicaCount: 2   # bump to 3 once 3+ workers exist
+        persistence:
+          defaultClass: false
+          defaultClassReplicaCount: 2
+          reclaimPolicy: Retain
+        ingress:
+          enabled: false   # turn on after cert-manager + ingress-nginx
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }   # never prune storage
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

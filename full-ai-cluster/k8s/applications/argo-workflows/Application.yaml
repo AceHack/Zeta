@@ -1,0 +1,34 @@
+# Argo Workflows — DAG job scheduler. Drives AI pipelines + batch jobs.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-workflows
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-workflows
+    targetRevision: 0.42.5
+    helm:
+      releaseName: argo-workflows
+      valuesObject:
+        controller:
+          workflowDefaults:
+            spec:
+              activeDeadlineSeconds: 86400
+              ttlStrategy: { secondsAfterCompletion: 604800 }
+              podGC: { strategy: OnPodCompletion }
+          parallelism: 50
+        server:
+          authModes: [ server ]
+        executor:
+          image: { tag: "" }
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-workflows
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

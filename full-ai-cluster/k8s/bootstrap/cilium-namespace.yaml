@@ -1,0 +1,12 @@
+# full-ai-cluster/k8s/bootstrap/cilium-namespace.yaml
+#
+# Cilium runs in kube-system by convention. This file just ensures
+# the namespace exists before ArgoCD's Cilium Application tries to
+# create resources in it. Applied by K3S on first boot.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-system
+  labels:
+    app.kubernetes.io/managed-by: zeta-bootstrap

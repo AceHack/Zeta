@@ -1,0 +1,28 @@
+# Deepseek Coder — model deploy via Ollama OR vLLM.
+#
+# This Application is structural — the model itself is pulled by
+# whichever serving stack you chose (Ollama via the `models.pull:`
+# in its Helm values, OR vLLM via its `--model` arg). This
+# Application just declares the namespace + an info ConfigMap so
+# operators can grep for the model deploy via the same tooling.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: deepseek-coder
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/deepseek-coder
+    directory:
+      include: '{namespace,configmap}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: models
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

@@ -1,0 +1,42 @@
+# full-ai-cluster/k8s/bootstrap/cilium-install.yaml
+#
+# K3S HelmChart CR — K3S's Helm Controller installs Cilium at
+# first boot. This is the only thing that gets a CNI running before
+# ArgoCD's own pods need to schedule (chicken-and-egg avoidance).
+#
+# After cluster is up, the ArgoCD Cilium Application at
+# k8s/applications/cilium/Application.yaml adopts the running
+# install and reconciles ongoing changes.
+
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: cilium
+  namespace: kube-system
+spec:
+  chart: cilium
+  repo: https://helm.cilium.io
+  version: 1.16.5
+  targetNamespace: kube-system
+  valuesContent: |-
+    kubeProxyReplacement: true
+    k8sServiceHost: control-plane.zeta.local
+    k8sServicePort: 6443
+    ipam:
+      mode: cluster-pool
+      operator:
+        clusterPoolIPv4PodCIDRList: [ "10.42.0.0/16" ]
+    bpf:
+      masquerade: true
+    routingMode: native
+    ipv4NativeRoutingCIDR: "10.42.0.0/16"
+    autoDirectNodeRoutes: true
+    hubble:
+      enabled: true
+      relay: { enabled: true }
+      ui: { enabled: true }
+      metrics:
+        enabled: [ dns, drop, tcp, flow, icmp, http ]
+        enableOpenMetrics: true
+    operator:
+      replicas: 1

@@ -1,0 +1,35 @@
+# NATS — messaging.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nats
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://nats-io.github.io/k8s/helm/charts/
+    chart: nats
+    targetRevision: 1.2.7
+    helm:
+      releaseName: nats
+      valuesObject:
+        config:
+          jetstream:
+            enabled: true
+            fileStore:
+              pvc:
+                size: 20Gi
+                storageClassName: longhorn
+        cluster:
+          enabled: true
+          replicas: 3
+        natsBox:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nats
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

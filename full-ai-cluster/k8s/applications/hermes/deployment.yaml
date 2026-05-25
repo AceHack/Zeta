@@ -1,0 +1,80 @@
+# Hermes — custom AI agent oriented at CLOUD LLM endpoints.
+#
+# The image at `ghcr.io/lucent-financial-group/zeta-hermes` is built
+# via the Docker module (NixFlake) on a maintainer host. SOPS-decrypted
+# CLOUD API KEYS are baked into the image at build time so the running
+# container doesn't need access to the SOPS keys.
+#
+# Build pipeline:
+#   1. sops -d encrypted/cloud-keys.env > secrets/cloud-keys.env
+#   2. docker buildx build --secret id=hermes-secrets,src=secrets/ ...
+#   3. docker push ghcr.io/lucent-financial-group/zeta-hermes:vN.N.N
+#   4. Bump `image:` below + commit + push
+#
+# Hermes' connections (cloud-only for now; local models deferred):
+#   - OpenZiti (OZ) for zero-trust transport:
+#       ziti-controller.openziti.svc.cluster.local:443
+#   - Cloud LLM APIs via baked-in keys:
+#       Anthropic Claude
+#       OpenAI
+#       (add more as the SOPS file grows)
+#   - Hindsight (memory plugin) — once its Application lands, point at
+#       hindsight.hindsight.svc.cluster.local
+#
+# Local LLM serving (Ollama/vLLM) endpoints are kept in commented-out
+# form below for when local models come back online.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hermes
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hermes
+  namespace: hermes
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermes
+  namespace: hermes
+spec:
+  replicas: 0   # set >=1 once a real image exists
+  selector:
+    matchLabels: { app.kubernetes.io/name: hermes }
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: hermes }
+    spec:
+      serviceAccountName: hermes
+      containers:
+        - name: hermes
+          image: ghcr.io/lucent-financial-group/zeta-hermes:placeholder
+          env:
+            # OpenZiti transport
+            - { name: OZ_CONTROLLER_URL,
+                value: "https://ziti-controller.openziti.svc.cluster.local:443" }
+            # Cloud LLM providers — API keys baked in at image build via SOPS
+            - { name: LLM_PROVIDER, value: "anthropic" }  # or "openai" / "bedrock"
+            # Hindsight memory backend (Application lands separately)
+            - { name: HINDSIGHT_URL,
+                value: "http://hindsight.hindsight.svc.cluster.local" }
+            # Local LLM endpoints — kept commented for when local models are re-enabled:
+            # - { name: OLLAMA_ENDPOINT, value: "http://ollama.ollama.svc.cluster.local:11434" }
+            # - { name: VLLM_ENDPOINT,   value: "http://vllm.vllm.svc.cluster.local:8000" }
+          resources:
+            requests: { cpu: "200m", memory: "256Mi" }
+            limits:   { cpu: "1",    memory: "1Gi"   }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hermes
+  namespace: hermes
+spec:
+  type: ClusterIP
+  selector: { app.kubernetes.io/name: hermes }
+  ports:
+    - { name: http, port: 80, targetPort: 8080 }

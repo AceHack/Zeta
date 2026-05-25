@@ -1,0 +1,33 @@
+# Orleans — distributed actor runtime / "distributed cron" #1.
+#
+# Orleans doesn't have an official Helm chart. The pattern is to
+# build a custom Silo image embedding your grain code and deploy it
+# as a StatefulSet. This Application points at the manifests in
+# the same directory; bump replicas to >=1 and replace the image
+# once you have a published silo image.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: orleans
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/orleans
+    directory:
+      include: '{namespace,rbac,configmap,service,statefulset}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: orleans
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

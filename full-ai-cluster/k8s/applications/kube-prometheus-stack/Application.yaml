@@ -1,0 +1,56 @@
+# Prometheus + Grafana + Alertmanager (kube-prometheus-stack).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: 65.5.0
+    helm:
+      releaseName: kube-prometheus-stack
+      valuesObject:
+        prometheus:
+          prometheusSpec:
+            retention: 15d
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: longhorn
+                  accessModes: [ ReadWriteOnce ]
+                  resources: { requests: { storage: 100Gi } }
+        grafana:
+          # Admin password sourced from a Secret rather than
+          # hardcoded. Create the secret BEFORE this app syncs:
+          #   kubectl -n monitoring create secret generic grafana-admin-credentials \
+          #     --from-literal=admin-user=admin \
+          #     --from-literal=admin-password="$(openssl rand -hex 16)"
+          # Or use a Sealed Secret committed to Git so the credential
+          # is reproducible from the cluster definition.
+          admin:
+            existingSecret: grafana-admin-credentials
+            userKey: admin-user
+            passwordKey: admin-password
+          persistence:
+            enabled: true
+            storageClassName: longhorn
+            size: 10Gi
+        alertmanager:
+          alertmanagerSpec:
+            storage:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: longhorn
+                  accessModes: [ ReadWriteOnce ]
+                  resources: { requests: { storage: 10Gi } }
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: monitoring
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

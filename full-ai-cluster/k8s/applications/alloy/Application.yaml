@@ -1,0 +1,46 @@
+# Alloy — Grafana's OpenTelemetry collector. Ships logs to Loki,
+# metrics to Mimir/Prometheus, traces to Tempo.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: alloy
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://grafana.github.io/helm-charts
+    chart: alloy
+    targetRevision: 0.10.1
+    helm:
+      releaseName: alloy
+      valuesObject:
+        controller:
+          type: daemonset   # collect from every node
+        alloy:
+          configMap:
+            create: true
+            content: |
+              logging {
+                level = "info"
+                format = "logfmt"
+              }
+              // Logs -> Loki
+              loki.write "loki" {
+                endpoint { url = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push" }
+              }
+              // Traces -> Tempo
+              otelcol.exporter.otlp "tempo" {
+                client { endpoint = "http://tempo.tempo.svc.cluster.local:4317" }
+              }
+              // Metrics -> Mimir (or fall back to local Prometheus)
+              prometheus.remote_write "mimir" {
+                endpoint { url = "http://mimir-distributor.mimir.svc.cluster.local:8080/api/v1/push" }
+              }
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: alloy
+  syncPolicy:
+    automated: { prune: true, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

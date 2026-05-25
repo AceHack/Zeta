@@ -1,0 +1,39 @@
+# Forgejo — self-hosted Git. Lighter than GitLab; pick one.
+#
+# DEFAULT: NOT reconciled. The repo ships both gitlab/ and forgejo/
+# Application definitions for review; only one should run at a time.
+# GitLab is the default-on; Forgejo is manual-sync. To switch:
+#   1. Move `automated` block from gitlab/Application.yaml here
+#   2. Remove `automated` from gitlab/Application.yaml
+#   3. argocd app delete gitlab + argocd app sync forgejo
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: forgejo
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://code.forgejo.org/forgejo-helm/
+    chart: forgejo
+    targetRevision: 9.0.6
+    helm:
+      releaseName: forgejo
+      valuesObject:
+        gitea:
+          admin:
+            existingSecret: forgejo-initial-admin
+        persistence:
+          enabled: true
+          size: 20Gi
+          storageClass: zeta-local-path   # or longhorn for HA
+        postgresql:
+          enabled: true   # ships its own postgres; swap to CockroachDB later
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: forgejo
+  # Manual sync only by default — see header comment for swap procedure.
+  syncPolicy:
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

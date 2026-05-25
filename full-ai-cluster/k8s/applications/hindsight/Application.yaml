@@ -1,0 +1,46 @@
+# Hindsight — agent persistent memory system for Hermes.
+# Standalone Helm chart deployed via ArgoCD.
+#
+# TODO(maintainer): provide the Helm chart URL + chart name + version.
+# Confirm which Hindsight chart this refers to:
+#   - public OSS chart (helm repo URL)
+#   - private chart (repoURL + auth)
+#   - in-repo chart (sibling repo URL + path)
+#
+# Once repoURL + chart name + version are provided, this Application
+# wires up directly. Until then, this placeholder declares the
+# namespace + intent so the structure is in place.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hindsight
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    # TODO(maintainer): replace with the real Helm repo + chart name.
+    # Example shape:
+    #   repoURL: https://your-org.github.io/hindsight-chart/
+    #   chart: hindsight
+    #   targetRevision: 1.0.0
+    #   helm:
+    #     releaseName: hindsight
+    #     valuesObject:
+    #       persistence:
+    #         storageClass: longhorn
+    #         size: 20Gi
+    #       hermesIntegration:
+    #         enabled: true
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: full-ai-cluster/k8s/applications/hindsight
+    directory:
+      include: 'namespace.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hindsight
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

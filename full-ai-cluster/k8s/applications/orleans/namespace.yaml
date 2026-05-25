@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: orleans
+  labels:
+    app.kubernetes.io/part-of: zeta
+    zeta.io/distributed-cron: "true"

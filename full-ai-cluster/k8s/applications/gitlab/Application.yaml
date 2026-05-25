@@ -1,0 +1,39 @@
+# GitLab CE — self-hosted Git. Heavier than Forgejo; pick one.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitlab
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.gitlab.io/
+    chart: gitlab
+    targetRevision: 8.7.0
+    helm:
+      releaseName: gitlab
+      valuesObject:
+        global:
+          edition: ce
+          hosts:
+            domain: gitlab.zeta.local
+          ingress: { tls: { enabled: false } }   # turn on after cert-manager
+          initialRootPassword:
+            secret: gitlab-initial-root-password
+            key: password
+        # Disable bundled components — cluster has its own.
+        certmanager:    { install: false }
+        nginx-ingress:  { enabled: false }
+        prometheus:     { install: false }
+        gitlab-runner:
+          install: true
+          runners: { privileged: false, tags: "kubernetes,zeta-cluster" }
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitlab
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true, SkipDryRunOnMissingResource=true ]
+    retry: { limit: 5, backoff: { duration: 30s, factor: 2, maxDuration: 5m } }
