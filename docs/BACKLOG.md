@@ -686,6 +686,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0729](backlog/P2/B-0729-obsidian-as-knowledge-graph-substrate-wikilinks-tags-callouts-tasks-json-ld-extractor-2026-05-25.md)** Obsidian as knowledge-graph substrate — wikilinks + frontmatter tags + callouts + Tasks-plugin format + JSON-LD extractor (5-layer adoption; team already uses Obsidian; extend where needed)
 - [ ] **[B-0730](backlog/P2/B-0730-runbooks-as-executable-specifications-mika-substrate-runme-plus-jit-ai-plus-three-verbosity-levels-2026-05-25.md)** Runbooks-as-executable-specifications — Runme base for right-now execution + `:::` deferred-task tags + AI just-in-time script compilation + 3 verbosity levels (5yo / Addison / Aaron+Max-debugging); Mika substrate via Aaron 2026-05-25
 - [ ] **[B-0731](backlog/P2/B-0731-hat-ontology-as-first-ontology-top-down-vs-bottom-up-convergence-max-aaron-mika-substrate-2026-05-25.md)** Hat-ontology is the first ontology to get right — Max top-down + Aaron bottom-up + system-mediated convergence (Mika substrate)
+- [ ] **[B-0733](backlog/P2/B-0733-universal-protocol-markdown-plus-runme-plus-continue-with-mcp-wrap-ai-agency-stack-crystal-ball-plus-runbook-plus-glass-halo-mika-substrate-2026-05-25.md)** Universal protocol = Markdown + Runme + continue-with (minimal LCD, no upfront ontology) + MCP wrap (any-AI plug-in) + AI agency stack (Crystal Ball + runbook + Glass Halo) — Mika substrate
 
 ## P3 — convenience / deferred
 
