@@ -109,7 +109,7 @@ function bootDiskIdentifier(): string {
   const rootMount = mountOut.split("\n").find((l) => / on \/ \(/.test(l));
   if (!rootMount) return "";
   const m = rootMount.match(/^\/dev\/(disk\d+)/);
-  return m ? m[1] : "";
+  return m?.[1] ?? "";
 }
 
 // Whitelist of safe device-identifier shapes. Belt-and-suspenders
@@ -122,13 +122,19 @@ function assertSafeDevicePath(device: string): void {
 
 async function main() {
   const argv = process.argv.slice(2);
-  if (argv.length !== 1 || argv[0] === "-h" || argv[0] === "--help") {
+  const firstArg = argv[0];
+  const isHelp = firstArg === "-h" || firstArg === "--help";
+  // Preserve original unified-check semantics: any of {wrong arg count,
+  // help-flag in any position} prints usage and exits — exit 0 ONLY
+  // when there's exactly one arg and it's a help flag.
+  if (argv.length !== 1 || isHelp) {
     process.stdout.write(
       "Usage: bun full-ai-cluster/tools/flash-usb.ts <path-to-iso>\n",
     );
-    process.exit(argv.length === 1 ? 0 : 2);
+    process.exit(argv.length === 1 && isHelp ? 0 : 2);
   }
-  const isoPath = argv[0];
+  if (firstArg === undefined) bail(2, "internal: argv length check passed but argv[0] is undefined");
+  const isoPath: string = firstArg;
 
   // ── 1. Platform gate ───────────────────────────────────────
   if (platform() !== "darwin") {
@@ -194,7 +200,9 @@ async function main() {
     );
   }
 
-  const { device, info } = usbCandidates[0];
+  const candidate = usbCandidates[0];
+  if (candidate === undefined) bail(2, "internal: no USB candidate after length check");
+  const { device, info } = candidate;
   assertSafeDevicePath(device);
   const size = Number(info.TotalSize ?? 0);
   const model = String(info.MediaName ?? info.IORegistryEntryName ?? "?");
