@@ -141,6 +141,7 @@ No implementation should silently move long-running state from Orleans to NestJS
 | Work Management Service | Owns projects, initiatives, tasks, defects, service requests, blockers, queues, lifecycle state | TPMs, Product, BA, Engineering, QA, Delivery |
 | Gate and Review Service | Owns readiness, BRD, architecture, code, QA, security, delivery, memory, and outcome gates | Review hats and managers |
 | Department Runtime Service | Maintains department rules, queues, schedules, standing meetings, director reports, escalation paths | Directors and department managers |
+| Work Schedule Service | Creates hat-bound schedule templates, concrete schedule blocks, free-time windows, reflection windows, and manager-approved adjustments | Directors, Engineering Managers, TPMs, all active hats |
 | Meeting and Communication Service | Provides inboxes, reports, broadcasts, one-on-one chats, team rooms, meeting modes, decisions, and mandatory work anchors for every discussion | All hats, especially TPMs, directors, executives |
 | Documentation Context Service | Organizes BRDs, CAs, ADRs, design docs, project docs, repo docs, and required context by scope | Product, BA, Architecture, Engineering, QA, Reviewers |
 | Project Skill Service | Stores project/repo skills with frontmatter, graph links, review state, deprecation, and ingestion | Engineering Managers, Documentation hats, Memory hats |
@@ -148,6 +149,7 @@ No implementation should silently move long-running state from Orleans to NestJS
 | Tool and Credential Gateway | Authorizes MCP tools and credential proxy use using actor context, hat policy, OPA, and audit | Security, all tool-using hats |
 | Oz/Hermes Run Service | Creates and binds Hermes/Oz runs to tasks, teams, hats, pods, sessions, logs, artifacts | TPMs, Engineering Managers, Operations |
 | Automation Runtime Service | Runs triggers, rules, reaction plans, schedules, leases, timers, and replay-safe workers | Operations, Scheduler Steward, Trigger Steward |
+| Prompt Flow Registry Service | Stores reusable phases, prompt-flow definitions, hat bindings, phase gates, flow runs, and effectiveness reviews | Engineering Managers, Directors, Capability teams, Reviewers |
 | Capability Expansion Service | Accepts requests for tools, workflows, actors, hats, docs, skills, and credentials; routes approvals | Engineering Managers, Directors, Security, Architecture |
 | Observability and Evidence Service | Captures traces, logs, metrics, screenshots, artifacts, timelines, SLOs, audit events | Operations, QA, Reviewers, UI |
 | Performance and Learning Service | Runs team reviews, hat effectiveness reviews, outcome reviews, memory adaptation, process improvements | Engineering Managers, Directors, Memory, Executives |
@@ -160,10 +162,12 @@ Every active hat should open into a role-specific workspace. A workspace is the 
 ### Common Workspace Elements
 
 - Role brief: current hat, department, scope, reporting chain, active policies, token TTL, and current assignment.
+- Work rhythm: current schedule block, next scheduled work/review/reflection/free-time block, and manager-approved adjustments.
 - Work queue: tasks, reports, gates, reviews, meetings, incidents, or capability requests relevant to the hat.
 - Discussion anchor: the current project, initiative, task, defect, review, incident, release, policy, capability request, or context gap that justifies a meeting/thread/broadcast.
 - Required context: documents, memories, project skills, artifacts, traces, and prior decisions the hat must consider.
 - Allowed tools: MCP tools available under the current hat and why each is available.
+- Available prompt flows: deterministic MCP-driven flows the current hat can execute, including required inputs, phases, gates, reviewers, and expected artifacts.
 - Blocked tools: MCP tools denied under the current hat with escalation path.
 - Inbox: direct messages, reports, meeting invites, escalations, and broadcasts.
 - Decision log: votes, approvals, rejections, gate outcomes, and rationale.
@@ -202,6 +206,8 @@ The Organization DB must capture the full operating reality. The first schema ne
 - `agent_sessions`: active runtime sessions, Oz run IDs, pod bindings, heartbeat, current context.
 - `departments`: department records, reporting line, active rules, owner hats.
 - `hat_definitions`: role authority, tool bundles, approval scopes, memory scopes, credential scopes, voting scopes.
+- `hat_schedule_templates`: default work/review/reflection/free-time rhythm attached to hats and departments.
+- `hat_prompt_flow_bindings`: prompt flows and reusable phases available to a hat by scope.
 - `hat_assignments`: agent, hat, project/team/task scope, token TTL, status, assigned by, released by.
 - `hat_supply_policies`: max concurrent assignments, scarcity rules, reserve pools, budget class.
 - `hat_tokens`: issued JWT metadata, refresh state, revocation state, actor binding.
@@ -216,6 +222,8 @@ The Organization DB must capture the full operating reality. The first schema ne
 - `dependencies`: work-to-work, initiative-to-initiative, project-to-project dependencies.
 - `gates`: BRD, architecture, code review, QA, security, delivery, memory, outcome gates.
 - `gate_decisions`: approval/rejection, rationale, evidence links, reviewer hat assignment.
+- `work_schedules`: concrete schedules for active agents and hat assignments.
+- `work_schedule_blocks`: prioritized work, prompt-flow execution, review/red-team, reflection, memory maintenance, free-time, office-hours, and reporting blocks.
 
 ### Communication and Decisions
 
@@ -242,6 +250,13 @@ The Organization DB must capture the full operating reality. The first schema ne
 - `credential_requests`: requested scope, business need, reviewer, approval state.
 - `oz_runs`: bound Hermes/Oz sessions, parent/child runs, pod, status, budget, artifacts.
 - `automation_rules`: organization, department, project, initiative, team, hat, and task rules.
+- `prompt_flow_definitions`: reusable deterministic pipelines that hats can execute.
+- `prompt_flow_phases`: reusable phases with input/output, MCP tools, evidence, and memory behavior.
+- `prompt_flow_runs`: concrete executions bound to work, hat assignment, schedule block, artifacts, gates, and traces.
+- `prompt_flow_gate_decisions`: reviewer decisions between phases.
+- `universal_action_definitions`: typed action grammar entries available to prompt-flow phases.
+- `universal_action_records`: concrete action attempts with actor, hat, mode, preconditions, reversibility, observations, evidence, and policy.
+- `universal_action_observations`: execution feedback, tool outputs, errors, corrections, and follow-up actions.
 - `durable_triggers`: event, state, timeout, schedule, threshold, and external triggers.
 - `reaction_plans`: deterministic rule output before side effects execute.
 - `runtime_leases`: lease owner, fencing token, heartbeat, expiration, release reason.
@@ -452,6 +467,11 @@ type HatActivationPacket = {
   responsibilities: string[];
   allowedToolIds: string[];
   blockedToolIds: string[];
+  currentScheduleBlockId?: string;
+  scheduleTemplateId?: string;
+  allowedPromptFlowIds: string[];
+  requiredReviewBlocks: string[];
+  requiredReflectionBlocks: string[];
   memoryScopes: string[];
   credentialScopes: string[];
   requiredDocuments: string[];
@@ -642,6 +662,8 @@ Build:
 - capability request flow;
 - credential request flow;
 - workflow registry;
+- prompt-flow registry;
+- reusable phase registry;
 - actor registry;
 - MCP registry;
 - post-activation monitoring.
@@ -653,22 +675,27 @@ Proof:
 - Security and Architecture review it;
 - implementation work is created;
 - registry activation makes the new capability available to scoped hats.
+- a manager can request a new prompt flow when repeated slowdowns appear;
+- approved prompt flows become available only to scoped hats.
 
 ### Phase 8: Performance and Self-Improvement
 
 Build:
 
+- schedule templates and schedule blocks;
 - outcome reviews;
 - performance reviews;
 - hat effectiveness reviews;
 - department reviews;
 - memory adaptation;
+- reflection and memory-maintenance blocks;
 - process improvement backlog.
 
 Proof:
 
 - repeated QA bounce-backs create improvement work;
 - bad memory/context outcomes produce memory adaptation requests;
+- reflection blocks produce memory updates, memory adaptation requests, or explicit no-action decisions;
 - ineffective hat definitions produce hat redesign proposals;
 - department reviews become prioritized backlog.
 

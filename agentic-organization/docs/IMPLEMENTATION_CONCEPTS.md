@@ -119,6 +119,39 @@ Primary services:
 - `DefectTriageService`
 - `ServiceRequestService`
 
+### Work Rhythm and Prompt Flows
+
+Owns hat-bound schedule templates, concrete schedule blocks, deterministic prompt flows, reusable phases, phase gates, flow runs, universal action records, reflection blocks, and memory-maintenance work.
+
+Core entities:
+
+- `HatScheduleTemplate`
+- `WorkSchedule`
+- `WorkScheduleBlock`
+- `PromptFlowDefinition`
+- `PromptFlowVersion`
+- `PromptFlowPhase`
+- `PromptFlowRun`
+- `PromptFlowPhaseRun`
+- `PromptFlowGateDecision`
+- `UniversalActionDefinition`
+- `UniversalActionRecord`
+- `UniversalActionObservation`
+- `ReflectionBlock`
+- `MemoryMaintenanceAction`
+
+Primary services:
+
+- `WorkScheduleService`
+- `ScheduleTemplateService`
+- `PromptFlowRegistryService`
+- `PromptFlowExecutionService`
+- `PromptFlowGateService`
+- `UniversalActionGrammarService`
+- `ActionObservationService`
+- `ReflectionService`
+- `MemoryMaintenanceService`
+
 ### Meetings and Communication
 
 Owns messages, reports, inboxes, meetings, conversation modes, broadcasts, escalations, and discussion anchor enforcement.
@@ -1131,6 +1164,67 @@ First MVP can support:
 
 Add pass-the-stick and reviewer-panel later.
 
+## Work Schedules and Prompt Flows
+
+Work schedules should be first-class runtime records. A schedule template belongs to a hat or department; a concrete schedule belongs to an active hat assignment.
+
+Schedule block states:
+
+```text
+planned
+  -> active
+  -> paused
+  -> completed
+  -> missed
+  -> rescheduled
+  -> cancelled
+```
+
+Schedule block types:
+
+- prioritized work;
+- prompt-flow execution;
+- review/red-team;
+- reflection;
+- memory maintenance;
+- free time;
+- office-hours/questions;
+- reporting.
+
+Prompt-flow state:
+
+```text
+draft
+  -> review
+  -> active
+  -> deprecated
+  -> superseded
+```
+
+Prompt-flow run state:
+
+```text
+created
+  -> context_validated
+  -> phase_running
+  -> phase_gate_pending
+  -> revision_required
+  -> completed
+  -> failed
+  -> escalated
+```
+
+Prompt-flow execution preflight:
+
+1. Validate active hat assignment, work anchor, and schedule block.
+2. Validate the prompt flow is bound to the hat and scope.
+3. Build the required context pack.
+4. Resolve allowed MCP tools for the current phase.
+5. Persist phase outputs, evidence, traces, and memory events.
+6. Route gate decisions to the required reviewer hats.
+
+Free-time blocks should still run through the MCP gateway and discussion-anchor policy. If free time discovers a useful improvement, it should create a report, memory, skill proposal, prompt-flow improvement request, or capability request.
+
 ## Workflow State Machines
 
 Every workflow state change should be implemented as a permissioned command.
@@ -1963,6 +2057,8 @@ Capability request types:
 - credential proxy endpoint;
 - external API integration;
 - Temporal workflow;
+- prompt flow;
+- reusable prompt-flow phase;
 - Dapr actor;
 - durable trigger or scheduled job;
 - observability/tooling improvement;
@@ -1986,7 +2082,20 @@ submitted
   -> active
 ```
 
-Engineering Managers review team-level need and evidence. Department Directors decide whether the capability belongs in the department backlog or becomes an initiative. Security approves new credential proxy endpoints, credential scopes, external APIs, and dangerous automations. Architecture approves new Temporal workflows, Dapr actors, runtime workers, or cross-service integrations.
+Engineering Managers review team-level need and evidence. Department Directors decide whether the capability belongs in the department backlog or becomes an initiative. Security approves new credential proxy endpoints, credential scopes, external APIs, and dangerous automations. Architecture approves new Temporal workflows, Dapr actors, prompt-flow execution semantics, runtime workers, or cross-service integrations.
+
+Prompt-flow capability requests must define:
+
+- target hats;
+- repeated slowdown or quality gap being solved;
+- reusable phases;
+- phase MCP tools;
+- gate reviewers;
+- required artifacts and evidence;
+- memory read/write behavior;
+- schedule block type;
+- graph ingestion requirements;
+- effectiveness metrics.
 
 Temporal workflow capability requests must define:
 

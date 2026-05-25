@@ -76,6 +76,8 @@ The lifecycle for turning vague requirements into curated features lives in [Amb
 
 The hat-owned movement, blocker, queue SLO, and reprioritization model lives in [Anti-Stall Prioritization Runtime](./ANTI_STALL_PRIORITY_RUNTIME.md).
 
+The hat-bound schedule, free-time, review/red-team, memory reflection, and deterministic prompt-flow model lives in [Agent Work Rhythm and Prompt Flows](./AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md).
+
 The pre-implementation decision checklist lives in [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md).
 
 The Kubernetes-native hat enforcement/projection model lives in [Cluster-Native Hat System](./CLUSTER_NATIVE_HAT_SYSTEM.md).
@@ -234,6 +236,7 @@ The hat graph describes:
 - which hats exist;
 - which hats depend on other hats;
 - which hats can supervise or review other hats;
+- which schedule templates, review obligations, free-time blocks, and prompt flows each hat carries;
 - which hats belong to departments;
 - which hats can vote on which decisions;
 - which hats can spawn or assign which other hats;
@@ -241,6 +244,35 @@ The hat graph describes:
 - which tools and credentials each hat can use.
 
 The hat graph is similar to a skill graph, but it includes role authority and policy.
+
+## Work Rhythm and Prompt Flows
+
+Hats should carry both authority and rhythm. When an agent receives a hat, it should also receive a schedule template, allowed prompt flows, review duties, reflection expectations, and memory maintenance expectations.
+
+Agent time should be divided into explicit blocks:
+
+- prioritized work time for assigned tasks, defects, reviews, QA, architecture, discovery, or operations;
+- deterministic prompt-flow execution time for reusable MCP-driven pipelines;
+- review/red-team time where the agent reviews work from lower, peer, or adjacent hats;
+- reflection and memory maintenance time for reviewing outcomes, stabilizing useful memories, challenging stale memories, and creating adaptation requests;
+- free time for catching up, learning scoped context, inspecting repos, asking anchored questions, and discovering improvements.
+
+Supervising hats should define or adjust schedules based on department policy, performance reviews, queue pressure, budget, and current initiative needs. Agents should be able to report when a schedule causes slowdowns, missing context, poor quality, or insufficient reflection time.
+
+Prompt flows should be registered Organization artifacts. A hat can execute only the prompt flows available to that hat and scope. Each flow is composed of reusable phases, MCP tool limits, required outputs, evidence, memory behavior, and reviewer gates.
+
+```text
+hat assignment
+  -> schedule block opens
+  -> allowed prompt flow selected
+  -> work anchor and context pack validated
+  -> phase executes with scoped MCP tools
+  -> evidence persisted
+  -> reviewer gate decides continue / revise / fail / escalate
+  -> transcript, decisions, artifacts, and memories are ingested
+```
+
+Internal capability teams should create or improve prompt flows through the same lifecycle as other Organization capabilities: capability request, business clarification, architecture design, security review, implementation, reviewer approval, registry activation, and outcome review.
 
 ## Departments
 

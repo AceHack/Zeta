@@ -218,6 +218,7 @@ Scheduled jobs need explicit execution behavior.
 `scheduled_jobs` should include:
 
 - owner hat assignment;
+- target schedule block or prompt-flow run when applicable;
 - department/project/initiative/team scope;
 - cadence;
 - timezone;
@@ -249,7 +250,9 @@ Concurrency policies:
 - replace running job;
 - queue behind running job.
 
-Scheduled jobs should create work, reports, meetings, reviews, or Oz run requests. They should not bypass work management. If a job opens a meeting, review, broadcast, or report, it must provide a discussion anchor such as project, initiative, task, defect, incident, release, gate, policy, capability request, or context gap.
+Scheduled jobs should create work, schedule blocks, prompt-flow runs, reports, meetings, reviews, or Oz run requests. They should not bypass work management. If a job opens a meeting, review, broadcast, or report, it must provide a discussion anchor such as project, initiative, task, defect, incident, release, gate, policy, capability request, or context gap.
+
+Schedule-driven jobs should activate the right block at the right time: prioritized work, prompt-flow execution, review/red-team, reflection, memory maintenance, free time, office-hours/questions, or reporting. Reflection and memory-maintenance jobs should create memory events, memory adaptation requests, or explicit no-action decisions.
 
 ## Durable Timers
 

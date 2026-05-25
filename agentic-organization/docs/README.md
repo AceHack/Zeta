@@ -17,6 +17,7 @@ Current documents:
 - [Organization Layer Build Plan](./ORGANIZATION_LAYER_BUILD_PLAN.md) - the service layer, role workspaces, automation loops, state model, UI surfaces, and MVP sequence needed to make each department and hat operational.
 - [Work and Release Management OS](./WORK_AND_RELEASE_MANAGEMENT_OS.md) - the custom backlog, project, task, assignment, signal, board, and release workflow product that keeps agent work reliable and visible.
 - [Agent-Native Knowledge Graph and Retrieval](./AGENT_NATIVE_KNOWLEDGE_GRAPH.md) - the graph and retrieval layer linking tasks, discussions, decisions, meetings, docs, artifacts, runs, memories, and evidence into agent-readable context.
+- [Agent Work Rhythm and Prompt Flows](./AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md) - the hat-bound schedule, free-time, review/red-team, reflection, memory maintenance, and deterministic prompt-flow model for agents.
 - [Ambiguous Requirement Lifecycle](./AMBIGUOUS_REQUIREMENT_LIFECYCLE.md) - the discovery, customer interview, BRD, workflow modeling, architecture, decomposition, readiness, and learning path from vague request to curated feature.
 - [Anti-Stall Prioritization Runtime](./ANTI_STALL_PRIORITY_RUNTIME.md) - the hat-owned schedules, blocker triage, queue SLO, reassignment, alternate-work, dependency reconciliation, and priority routines that keep the Organization moving.
 - [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md) - the decisions and contracts that should be defined before scaffolding the first implementation slice.

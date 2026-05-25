@@ -259,6 +259,36 @@ For each agent:
 - current Oz runs;
 - session history.
 
+### Work Rhythm View
+
+Shows how agent time is being used across hats, departments, teams, and initiatives.
+
+Core data:
+
+- active schedule block;
+- next prioritized work block;
+- next prompt-flow execution block;
+- review/red-team obligations;
+- reflection and memory-maintenance blocks;
+- free-time blocks and outputs;
+- missed or rescheduled blocks;
+- supervising hat and adjustment history.
+
+### Prompt Flow Registry View
+
+Shows deterministic flows available to hats and the outcomes they produce.
+
+Core data:
+
+- flow name, version, owner department, and status;
+- allowed hats and scopes;
+- reusable phases;
+- phase gates and reviewer hats;
+- MCP tools allowed per phase;
+- artifacts and evidence required;
+- run success/failure/revision rates;
+- repeated gate rejections and improvement requests.
+
 ### Run and Cluster Observatory
 
 Shows execution across all pods and clusters.
@@ -564,6 +594,8 @@ Nodes:
 - tasks;
 - agents;
 - hats;
+- schedule blocks;
+- prompt flows;
 - skills;
 - meetings;
 - decisions;

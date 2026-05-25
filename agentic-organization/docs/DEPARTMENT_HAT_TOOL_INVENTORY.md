@@ -66,6 +66,9 @@ Hat records should store concrete tool IDs, but the design is easier to reason a
 | Agent Insight | `rank_agents_for_hat`, `read_agent_specialties`, `read_agent_memory_profile`, `read_hat_performance_history`, `recommend_hat_assignment` |
 | Voting | `open_vote`, `submit_vote`, `close_vote`, `read_vote_result` |
 | Team Runtime | `create_team`, `spawn_agent`, `spawn_team`, `assign_task`, `stop_agent`, `stop_team` |
+| Work Rhythm | `read_schedule`, `propose_schedule_adjustment`, `approve_schedule_adjustment`, `start_schedule_block`, `complete_schedule_block`, `request_reflection_block`, `record_free_time_output` |
+| Prompt Flow | `list_available_prompt_flows`, `start_prompt_flow`, `submit_prompt_flow_phase`, `request_prompt_flow_gate`, `approve_prompt_flow_gate`, `reject_prompt_flow_gate`, `propose_prompt_flow`, `deprecate_prompt_flow` |
+| Universal Action Grammar | `list_universal_actions`, `validate_universal_action`, `record_action_observation`, `request_action_correction`, `record_action_reversal`, `promote_action_to_phase` |
 | Task | `create_task`, `claim_task`, `update_task`, `block_task`, `groom_task`, `mark_ready`, `submit_red_tests`, `submit_green_tests`, `complete_task` |
 | Backlog and Defect | `create_backlog_item`, `prioritize_backlog_item`, `link_backlog_item`, `convert_backlog_item`, `create_backlog_item_from_review`, `create_defect_from_report` |
 | Messaging | `send_message`, `read_inbox`, `send_report`, `open_thread`, `reply_thread`, `request_one_on_one_chat`, `open_team_chat`, `send_team_broadcast`, `validate_discussion_anchor`, `escalate` |
@@ -74,7 +77,7 @@ Hat records should store concrete tool IDs, but the design is easier to reason a
 | Business | `start_customer_interview`, `record_customer_answer`, `create_brd`, `approve_brd`, `reject_brd` |
 | Architecture | `create_ca`, `request_architecture_review`, `approve_architecture`, `reject_architecture` |
 | Review and Gates | `request_review`, `submit_review`, `approve_gate`, `reject_gate`, `assign_reviewer`, `create_outcome_review`, `create_performance_review` |
-| Memory | `query_memory`, `write_memory`, `explain_memory_scope` |
+| Memory | `query_memory`, `write_memory`, `explain_memory_scope`, `reflect_on_memory`, `propose_memory_update`, `deprecate_memory`, `create_memory_adaptation_request` |
 | Credential Proxy | `request_credential_scope`, `review_credential_scope`, `approve_credential_scope`, `use_credential_proxy` |
 | QA | `create_test_case`, `run_browser_check`, `run_scheduled_qa_suite`, `record_qa_result`, `create_reproducibility_report`, `create_regression_report`, `qa_signoff`, `qa_bounce_back` |
 | DevOps | `submit_pipeline_failure_report`, `classify_pipeline_failure`, `attach_pipeline_log`, `recommend_dev_owner` |
