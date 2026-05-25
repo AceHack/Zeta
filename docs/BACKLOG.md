@@ -680,6 +680,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0717](backlog/P2/B-0717-soraya-round57-lsm-spine-registry-and-bp16-cross-check-pair-2026-05-24.md)** Soraya round-57 hand-off — LSM Spine cluster registry-rows + BP-16 cross-check pair (SpineAsyncProtocol candidate-P0 TLA+/code-drift gap)
 - [ ] **[B-0721](backlog/P2/B-0721-backlog-md-generated-index-on-schedule-not-per-pr-2026-05-24.md)** Move docs/BACKLOG.md generated-index drift check off per-PR gate onto scheduled cadence
 - [ ] **[B-0724](backlog/P2/B-0724-ts-hat-operator-polyglot-k8s-operator-pattern-for-max-2026-05-25.md)** TS hat-system operator — second polyglot implementation alongside the Go scaffold; proves the polyglot-operator pattern for the cluster
+- [ ] **[B-0726](backlog/P2/B-0726-reticulum-throughout-cluster-and-edge-composing-substrate-alongside-k8s-2026-05-25.md)** Reticulum throughout — cluster nodes AND edge devices on the same mesh; K8s and Reticulum compose as layers rather than partition by network tier
 
 ## P3 — convenience / deferred
 
