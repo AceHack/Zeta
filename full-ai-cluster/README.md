@@ -52,7 +52,7 @@ full-ai-cluster/
         ├── argo-rollouts/      ← progressive delivery
         ├── longhorn/           ← distributed block storage
         ├── cockroachdb/        ← distributed SQL
-        ├── hindsight/          ← agent persistent memory for Hermes (chart URL TBD)
+        ├── hindsight/          ← agent persistent memory for Hermes (vectorize-io OCI chart)
         ├── oz/                 ← OpenZiti zero-trust overlay
         ├── hermes/             ← custom AI agent (cloud LLMs via SOPS-baked keys, OZ transport, Hindsight memory)
         ├── ollama/             ← LLM serving (option A — local — DEFERRED, manual-sync)
@@ -204,10 +204,11 @@ Add new `nixosConfigurations.<host>` entries to `flake.nix` as needed.
     in the tree at `replicas: 0` so the topology is preserved.
     Bump replicas + rebuild Hermes against local endpoints when
     the local-models phase comes back online.
-- ❓ Awaiting maintainer input:
-  - **Hindsight** — confirmed as standalone helm chart for agent
-    persistent memory for Hermes. `Application.yaml` has TODO
-    awaiting `repoURL` + chart name + version.
+- ✅ **Hindsight** wired: vectorize-io OCI Helm chart at
+  `ghcr.io/vectorize-io/charts/hindsight` v0.3.0. Bundled
+  PostgreSQL by default (longhorn-backed); swap to external
+  CockroachDB once that Application is healthy. LLM key sourced
+  from a Vault-backed ExternalSecret (`hindsight-llm-api-key`).
 
 ## Secrets
 
