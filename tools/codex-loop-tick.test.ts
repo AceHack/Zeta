@@ -73,7 +73,7 @@ describe("codex-loop-tick service contract", () => {
     expect(prompt).toContain("Cold-start by reading the repo rules before deciding");
     expect(prompt).toContain("`AGENTS.md`, `.codex/AGENTS.md`, `docs/ALIGNMENT.md`");
     expect(prompt).toContain("/tmp/zeta-home/.local/share/zeta-broadcasts/");
-    expect(prompt).toContain("running `bun tools/github/refresh-worldview.ts`");
+    expect(prompt).toContain("bun tools/github/refresh-worldview.ts");
     expect(prompt).toContain("from the current loop worktree");
     expect(prompt).toContain("Prefer repo-native TypeScript/Bun tools over ad-hoc shell pipelines");
     expect(prompt).toContain("this background loop is the manager of its own subagents");

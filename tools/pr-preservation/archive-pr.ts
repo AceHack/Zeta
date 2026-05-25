@@ -30,7 +30,7 @@
 //      pullRequest: null / formatter errors)
 
 import { spawnSync } from "node:child_process";
-import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
@@ -787,12 +787,27 @@ export function main(argv: readonly string[]): number {
   }
 
   const archivedAt = nowIsoUtcSecs();
-  const content = formatArchive({ fetched, archivedAt });
+  const content = formatArchive({ fetched, archivedAt }).replace(/\r\n/g, "\n");
 
   const existing = findExistingArchive(outDir, args.pr);
   const path =
     existing ??
     join(outDir, `PR-${String(args.pr).padStart(4, "0")}-${makeSlug(fetched.pr.title ?? "untitled")}.md`);
+
+  if (existing) {
+    try {
+      const existingContent = readFileSync(existing, "utf8").replace(/\r\n/g, "\n");
+      const normalize = (s: string) => s.replace(/^archived_at: .*/m, 'archived_at: "PLACEHOLDER"');
+      if (normalize(content) === normalize(existingContent)) {
+        process.stdout.write(
+          `skipped writing ${path} (only archived_at timestamp changed)\n`,
+        );
+        return 0;
+      }
+    } catch {
+      // If reading fails, proceed to write the new archive
+    }
+  }
 
   writeFileSync(path, content);
   process.stdout.write(
