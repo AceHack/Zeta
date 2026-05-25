@@ -55,7 +55,7 @@ matters.
 |---|---|
 | `projects` | top-level work containers |
 | `initiatives` | project-scoped bodies of work |
-| `work_items` | capability requests, tasks, defects, reviews, and follow-ups |
+| `work_items` | supervisor-chain signals, capability requests, tasks, defects, reviews, and follow-ups |
 | `work_item_state_history` | append-only state transitions |
 | `work_item_dependencies` | blocking or informational dependencies |
 | `blockers` | active impediments with owner, severity, and resolution path |
@@ -86,6 +86,7 @@ matters.
 
 | Table | V0 responsibility |
 |---|---|
+| `supervisor_signals` | supervisor-chain and capability-request intake records before or during work-item routing |
 | `discussion_anchors` | required work/project/initiative/task anchor for any discussion |
 | `conversation_threads` | one-on-one, team, department, executive, or broadcast thread |
 | `messages` | immutable message log with actor and hat attribution |
@@ -217,6 +218,7 @@ gate
 release
 incident
 memory_review
+supervisor_signal
 capability_request
 ```
 
@@ -267,8 +269,8 @@ Every command handler must:
 
 | Command | Actor scope | Writes | Emits |
 |---|---|---|---|
-| `submit_capability_request` | human, agent, director, manager | `work_items`, `discussion_anchors`, `graph_nodes`, `audit_events`, `outbox_events` | `work_item_changed` |
-| `triage_capability_request` | director or engineering manager | `work_items`, `assignments`, `gates`, `context_packs` | `work_item_changed`, `gate_requested` |
+| `send_supervisor_signal` | any authorized hat with supervisor line; capability request inputs enter through this path | `supervisor_signals`, `work_items`, `discussion_anchors`, `graph_nodes`, `audit_events`, `outbox_events` | `supervisor_signal_sent`, `work_item_changed` |
+| `triage_supervisor_signal` | target supervisor hat, director, or engineering manager | `supervisor_signals`, `work_items`, `assignments`, `gates`, `context_packs` | `supervisor_signal_triaged`, `work_item_changed`, `gate_requested` |
 | `create_discussion_anchor` | any authorized hat | `discussion_anchors`, `graph_edges` | `work_item_changed` |
 | `create_context_pack` | manager, reviewer, implementer for assigned work | `context_packs`, `graph_edges`, `audit_events` | `work_item_changed` |
 | `mark_work_ready` | manager or reviewer | `work_items`, `work_item_state_history`, `gates` | `work_item_changed`, `gate_requested` |

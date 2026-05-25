@@ -29,7 +29,7 @@ Define the first end-to-end workflow we will build.
 Recommended first slice:
 
 ```text
-ambiguous internal capability request
+ambiguous internal supervisor signal
   -> requirement maturity / discovery
   -> BRD/product signoff
   -> CA/design review
@@ -46,7 +46,7 @@ ambiguous internal capability request
 For v0, reduce this to the smallest useful three-step vertical:
 
 ```text
-capability request
+supervisor-chain signal
   -> one readiness/gate decision
   -> one hat-assigned Hermes run with evidence
 ```

@@ -4,6 +4,12 @@
 
 Proposal for review.
 
+The first implementation slice starts as a NodeNext TypeScript package
+island under `agentic-organization/packages`. NestJS remains the planned
+composition host, but the first executable contracts intentionally run
+without a Nest process so command, event, state, telemetry, and runtime
+automation rules can be tested before adapters are introduced.
+
 ## Purpose
 
 This CA proposes the first implementation architecture for Agentic
@@ -68,6 +74,7 @@ None of those cluster runtimes should become a parallel business model.
 Runtime host
   API controller / worker / MCP handler / Temporal activity / Dapr actor
     -> application command service
+      -> command handler registry
       -> policy check
       -> domain state transition
       -> CockroachDB transaction
@@ -113,40 +120,40 @@ Rules:
 
 ### Layer 0: Domain Kernel
 
-| Package | Owns |
-|---|---|
-| `@agentic-org/domain` | entity IDs, value objects, typed enums, state machines, domain events, command names, event names, aggregate contracts |
-| `@agentic-org/contracts` | shared DTOs, public schemas, versioned API/event contracts, generated clients when needed |
+| Package                  | Owns                                                                                                                   |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `@agentic-org/domain`    | entity IDs, value objects, typed enums, state machines, domain events, command names, event names, aggregate contracts |
+| `@agentic-org/contracts` | shared DTOs, public schemas, versioned API/event contracts, generated clients when needed                              |
 
 The domain kernel should be small and strict. It defines language and
 legal transitions. It does not execute side effects.
 
 ### Layer 1: Application and Policy
 
-| Package | Owns |
-|---|---|
-| `@agentic-org/application` | command handlers, use cases, transaction orchestration, ports, command result contracts |
-| `@agentic-org/policy` | RBAC, hat authority checks, OPA/Rego adapter boundary, policy decisions, denial reasons |
-| `@agentic-org/observability` | correlation envelope, OpenTelemetry helpers, required span attributes, trace propagation |
+| Package                      | Owns                                                                                                      |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `@agentic-org/application`   | command handlers, handler registry, use cases, transaction orchestration, ports, command result contracts |
+| `@agentic-org/policy`        | RBAC, hat authority checks, OPA/Rego adapter boundary, policy decisions, denial reasons                   |
+| `@agentic-org/observability` | correlation envelope, OpenTelemetry helpers, required span attributes, trace propagation                  |
 
 The application layer is the Organization OS command layer. It is where
 the runtime asks the Organization to do something.
 
 ### Layer 2: Capability Packages
 
-| Package | Owns |
-|---|---|
-| `@agentic-org/work-os` | projects, initiatives, work items, dependencies, blockers, assignments, releases, work signals |
-| `@agentic-org/requirements` | ambiguous requirement intake, clarification, BRD lifecycle, maturity state |
-| `@agentic-org/documents` | BRDs, CAs, ADRs, design docs, reports, document scope, document approval state |
-| `@agentic-org/gates` | readiness, code, QA, security, architecture, memory, release, and outcome gates |
-| `@agentic-org/hats` | hat graph, supply, assignment, JWT issuance/refresh/revocation, succession, cooldown, warmup |
-| `@agentic-org/assignments` | staffing, agent-to-hat fit, work assignment, reassignment, capacity checks |
-| `@agentic-org/prompt-flows` | deterministic prompt-flow definitions, phases, phase gates, reusable procedures |
-| `@agentic-org/action-grammar` | universal action grammar, reversibility, observation contracts, action-mode classification |
-| `@agentic-org/knowledge-graph` | graph nodes, edges, context packs, retrieval envelopes, provenance and access envelopes |
-| `@agentic-org/runtime` | triggers, rules, reaction plans, leases, schedulers, reconcilers, self-healing loops |
-| `@agentic-org/ui-projections` | read models for boards, timelines, run views, evidence, reviews, observability, org map |
+| Package                        | Owns                                                                                           |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `@agentic-org/work-os`         | projects, initiatives, work items, dependencies, blockers, assignments, releases, work signals |
+| `@agentic-org/requirements`    | ambiguous requirement intake, clarification, BRD lifecycle, maturity state                     |
+| `@agentic-org/documents`       | BRDs, CAs, ADRs, design docs, reports, document scope, document approval state                 |
+| `@agentic-org/gates`           | readiness, code, QA, security, architecture, memory, release, and outcome gates                |
+| `@agentic-org/hats`            | hat graph, supply, assignment, JWT issuance/refresh/revocation, succession, cooldown, warmup   |
+| `@agentic-org/assignments`     | staffing, agent-to-hat fit, work assignment, reassignment, capacity checks                     |
+| `@agentic-org/prompt-flows`    | deterministic prompt-flow definitions, phases, phase gates, reusable procedures                |
+| `@agentic-org/action-grammar`  | universal action grammar, reversibility, observation contracts, action-mode classification     |
+| `@agentic-org/knowledge-graph` | graph nodes, edges, context packs, retrieval envelopes, provenance and access envelopes        |
+| `@agentic-org/runtime`         | triggers, rules, reaction plans, leases, schedulers, reconcilers, self-healing loops           |
+| `@agentic-org/ui-projections`  | read models for boards, timelines, run views, evidence, reviews, observability, org map        |
 
 Capability packages should be independently testable. They can expose
 interfaces and services, but they should not know which process is
@@ -154,19 +161,20 @@ calling them.
 
 ### Layer 3: State, Messaging, and Runtime Adapters
 
-| Package | Owns |
-|---|---|
-| `@agentic-org/state` | Drizzle schema, migrations, repositories, transactions, outbox, inbox, idempotency, leases |
-| `@agentic-org/messaging` | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts |
-| `@agentic-org/workflows-temporal` | Temporal workflow and activity contracts, task queues, workflow clients |
-| `@agentic-org/actors-dapr` | Dapr actor interfaces, actor implementations, reminders, actor state projection |
-| `@agentic-org/mcp` | MCP schemas, tool registry, preflight checks, policy-checked tool handlers |
-| `@agentic-org/hermes` | Hermes session adapter, run adapter, callback contract, run context builder |
-| `@agentic-org/memory` | Hindsight adapter, hat-scoped recall/retain/reflect, memory attribution, memory health |
-| `@agentic-org/k8s-hats` | generated or checked Hat, HatBinding, HatSwap, HatPolicy types, informers, projection decoding |
-| `@agentic-org/openziti` | OpenZiti transport adapter, identity/config access, connectivity checks |
-| `@agentic-org/credential-proxy` | credential request adapter, scoped credential use, audit hooks |
-| `@agentic-org/adapters-agentic-services` | temporary wrappers around reused `agentic-services` primitives |
+| Package                                  | Owns                                                                                            |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `@agentic-org/state`                     | Drizzle schema, migrations, repositories, transactions, outbox, inbox, idempotency, leases      |
+| `@agentic-org/state-cockroach`           | CockroachDB implementation of state-store ports, SQL statement catalog, and migration contracts |
+| `@agentic-org/messaging`                 | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts    |
+| `@agentic-org/workflows-temporal`        | Temporal workflow and activity contracts, task queues, workflow clients                         |
+| `@agentic-org/actors-dapr`               | Dapr actor interfaces, actor implementations, reminders, actor state projection                 |
+| `@agentic-org/mcp`                       | MCP schemas, tool registry, preflight checks, policy-checked tool handlers                      |
+| `@agentic-org/hermes`                    | Hermes session adapter, run adapter, callback contract, run context builder                     |
+| `@agentic-org/memory`                    | Hindsight adapter, hat-scoped recall/retain/reflect, memory attribution, memory health          |
+| `@agentic-org/k8s-hats`                  | generated or checked Hat, HatBinding, HatSwap, HatPolicy types, informers, projection decoding  |
+| `@agentic-org/openziti`                  | OpenZiti transport adapter, identity/config access, connectivity checks                         |
+| `@agentic-org/credential-proxy`          | credential request adapter, scoped credential use, audit hooks                                  |
+| `@agentic-org/adapters-agentic-services` | temporary wrappers around reused `agentic-services` primitives                                  |
 
 Adapters are replaceable. The Organization should be able to run a V0
 slice with in-process fakes, then swap in Temporal, Dapr, Hermes,
@@ -174,14 +182,14 @@ Hindsight, Kubernetes, and NATS adapters behind the same ports.
 
 ### Layer 4: Runtime Hosts
 
-| Runtime host | Responsibility |
-|---|---|
-| `apps/api` | REST/OpenAPI, internal APIs, command dispatch, read queries, auth guards |
-| `apps/web` | human operations console, boards, timelines, org map, observability, review center |
-| `apps/workers` | outbox publisher, schedulers, NATS consumers, reconcilers, projection builders |
-| `apps/temporal-worker` | Temporal workers and activities that call Organization commands |
-| `apps/dapr-actors` | Dapr actor host for hot state and reminders |
-| `apps/mcp-gateway` | MCP gateway, agent context resolution, preflight checks, tool execution |
+| Runtime host           | Responsibility                                                                     |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `apps/api`             | REST/OpenAPI, internal APIs, command dispatch, read queries, auth guards           |
+| `apps/web`             | human operations console, boards, timelines, org map, observability, review center |
+| `apps/workers`         | outbox publisher, schedulers, NATS consumers, reconcilers, projection builders     |
+| `apps/temporal-worker` | Temporal workers and activities that call Organization commands                    |
+| `apps/dapr-actors`     | Dapr actor host for hot state and reminders                                        |
+| `apps/mcp-gateway`     | MCP gateway, agent context resolution, preflight checks, tool execution            |
 
 Runtime hosts are allowed to be deployed separately. They are not
 separate business services yet.
@@ -224,6 +232,17 @@ HatSystemPort -> KubernetesHatSystemAdapter or ReadOnlyFakeHatSystemAdapter
 ```
 
 Business services should depend on ports, not concrete adapters.
+
+The command pipeline must also depend on a handler registry and a
+state-store factory supplied by the composition layer. It must not
+instantiate the in-memory store or branch on every command type. New
+commands should register a handler; new persistence backends should
+implement the same store-factory port.
+
+State-store ports are async at the application boundary. In-memory
+adapters may resolve immediately, but CockroachDB, transactional
+outbox, inbox, and lease adapters must be able to perform real I/O
+without changing command-handler contracts.
 
 ## SOLID Rules
 
@@ -286,6 +305,7 @@ type AgenticEventEnvelope<TPayload> = {
     organizationId: string;
     projectId?: string;
     initiativeId?: string;
+    workItemId: string;
     workItemId?: string;
     runId?: string;
   };
@@ -350,18 +370,18 @@ human or agent actions.
 
 Minimum event automations:
 
-| Event | Rule result | Follow-up command examples |
-|---|---|---|
-| `work_item.ready` | work needs execution or review assignment | `reserve_hat`, `assign_work`, `start_schedule_block` |
-| `work_item.review_requested` | reviewer hat must be staffed | `reserve_hat`, `request_gate_review`, `send_inbox_signal` |
-| `gate.code.approved` | work can move to QA if QA is required | `create_qa_work_item`, `reserve_hat`, `request_gate_review` |
-| `gate.qa.approved` | work can move toward delivery/release | `create_release_task`, `request_delivery_review` |
-| `gate.changes_requested` | implementer needs a bounded rework loop | `assign_rework`, `start_prompt_flow`, `send_inbox_signal` |
-| `work_item.blocked` | blocker owner and escalation path required | `create_blocker`, `notify_manager`, `schedule_blocker_review` |
-| `hermes_run.heartbeat_late` | runtime health needs reconciliation | `create_platform_incident`, `reconcile_run`, `notify_platform_operator` |
-| `memory.gap_detected` | memory/process improvement enters backlog | `submit_capability_request`, `request_memory_review` |
-| `credential_request.submitted` | security review is mandatory | `request_security_gate`, `send_inbox_signal` |
-| `release.ready` | delivery gate and evidence check required | `request_delivery_review`, `verify_release_evidence` |
+| Event                          | Rule result                                | Follow-up command examples                                              |
+| ------------------------------ | ------------------------------------------ | ----------------------------------------------------------------------- |
+| `work_item.ready`              | work needs execution or review assignment  | `reserve_hat`, `assign_work`, `start_schedule_block`                    |
+| `work_item.review_requested`   | reviewer hat must be staffed               | `reserve_hat`, `request_gate_review`, `send_inbox_signal`               |
+| `gate.code.approved`           | work can move to QA if QA is required      | `create_qa_work_item`, `reserve_hat`, `request_gate_review`             |
+| `gate.qa.approved`             | work can move toward delivery/release      | `create_release_task`, `request_delivery_review`                        |
+| `gate.changes_requested`       | implementer needs a bounded rework loop    | `assign_rework`, `start_prompt_flow`, `send_inbox_signal`               |
+| `work_item.blocked`            | blocker owner and escalation path required | `create_blocker`, `notify_manager`, `schedule_blocker_review`           |
+| `hermes_run.heartbeat_late`    | runtime health needs reconciliation        | `create_platform_incident`, `reconcile_run`, `notify_platform_operator` |
+| `memory.gap_detected`          | memory/process improvement enters backlog  | `send_supervisor_signal`, `request_memory_review`                       |
+| `credential_request.submitted` | security review is mandatory               | `request_security_gate`, `send_inbox_signal`                            |
+| `release.ready`                | delivery gate and evidence check required  | `request_delivery_review`, `verify_release_evidence`                    |
 
 The first V0 rule catalog should include:
 
@@ -557,18 +577,18 @@ environment. Local fakes are useful for tests, but the real adapter
 contracts should point at the services that already exist in the cluster
 tree.
 
-| Adapter package | Cluster dependency | Expected in-cluster target |
-|---|---|---|
-| `@agentic-org/state` | CockroachDB ArgoCD app | `cockroachdb-public.cockroachdb.svc.cluster.local:26257` |
-| `@agentic-org/messaging` | NATS ArgoCD app with JetStream enabled | `nats.nats.svc.cluster.local:4222` |
-| `@agentic-org/workflows-temporal` | Temporal ArgoCD app | `temporal-frontend.temporal.svc.cluster.local:7233` |
-| `@agentic-org/actors-dapr` | Dapr control plane | Dapr sidecar plus `dapr-system` placement service |
-| `@agentic-org/memory` | Hindsight OCI Helm chart | `http://hindsight.hindsight.svc.cluster.local` |
-| `@agentic-org/hermes` | Hermes deployment/service | `http://hermes.hermes.svc.cluster.local` once replicas are enabled |
-| `@agentic-org/openziti` | OZ/OpenZiti controller app | `https://ziti-controller.openziti.svc.cluster.local:443` |
-| `@agentic-org/k8s-hats` | hat-system CRDs and operator | Kubernetes API watches plus `zeta.society.hats.>` bridge input |
-| `@agentic-org/observability` | Alloy, Tempo, Loki, Mimir, kube-prometheus-stack | OTLP traces to Alloy/Tempo, logs to Loki, metrics to Prometheus/Mimir |
-| `@agentic-org/policy` | OPA Gatekeeper and Organization policy package | in-process policy first, OPA bundle/constraint adapters later |
+| Adapter package                   | Cluster dependency                               | Expected in-cluster target                                            |
+| --------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------- |
+| `@agentic-org/state`              | CockroachDB ArgoCD app                           | `cockroachdb-public.cockroachdb.svc.cluster.local:26257`              |
+| `@agentic-org/messaging`          | NATS ArgoCD app with JetStream enabled           | `nats.nats.svc.cluster.local:4222`                                    |
+| `@agentic-org/workflows-temporal` | Temporal ArgoCD app                              | `temporal-frontend.temporal.svc.cluster.local:7233`                   |
+| `@agentic-org/actors-dapr`        | Dapr control plane                               | Dapr sidecar plus `dapr-system` placement service                     |
+| `@agentic-org/memory`             | Hindsight OCI Helm chart                         | `http://hindsight.hindsight.svc.cluster.local`                        |
+| `@agentic-org/hermes`             | Hermes deployment/service                        | `http://hermes.hermes.svc.cluster.local` once replicas are enabled    |
+| `@agentic-org/openziti`           | OZ/OpenZiti controller app                       | `https://ziti-controller.openziti.svc.cluster.local:443`              |
+| `@agentic-org/k8s-hats`           | hat-system CRDs and operator                     | Kubernetes API watches plus `zeta.society.hats.>` bridge input        |
+| `@agentic-org/observability`      | Alloy, Tempo, Loki, Mimir, kube-prometheus-stack | OTLP traces to Alloy/Tempo, logs to Loki, metrics to Prometheus/Mimir |
+| `@agentic-org/policy`             | OPA Gatekeeper and Organization policy package   | in-process policy first, OPA bundle/constraint adapters later         |
 
 Adapter configuration should use environment variables and Kubernetes
 Secrets/ExternalSecrets, but the domain package should never see those
@@ -605,10 +625,10 @@ at wave `0`, Hindsight and Temporal at wave `10`, and Hermes at wave
 
 Recommended deployment split:
 
-| Application | Wave | Purpose |
-|---|---:|---|
+| Application                      |        Wave | Purpose                                                                                            |
+| -------------------------------- | ----------: | -------------------------------------------------------------------------------------------------- |
 | `agentic-organization-contracts` | `-5` or `0` | optional future CRDs, NATS stream definitions, schema/config resources that other apps may consume |
-| `agentic-organization` | `30` | API, web, workers, Temporal worker, Dapr actor host, MCP gateway |
+| `agentic-organization`           |        `30` | API, web, workers, Temporal worker, Dapr actor host, MCP gateway                                   |
 
 If V0 ships no CRDs and only consumes existing services, one
 `agentic-organization` app at wave `30` is enough. If it later adds CRDs
@@ -621,14 +641,14 @@ early.
 The first ArgoCD app should deploy one namespace and several workloads
 from the same image or image family:
 
-| Workload | Kubernetes shape | Notes |
-|---|---|---|
-| API | Deployment + ClusterIP Service | REST/OpenAPI, internal command API, read API |
-| Web | Deployment + ClusterIP Service/Gateway route | operations console |
-| Workers | Deployment | outbox publisher, reconcilers, schedulers, NATS consumers |
-| Temporal worker | Deployment | workflow and activity workers only |
-| Dapr actor host | Deployment with Dapr annotations | actor endpoints and reminders |
-| MCP gateway | Deployment + ClusterIP Service | Hermes-facing governed tool surface |
+| Workload        | Kubernetes shape                             | Notes                                                     |
+| --------------- | -------------------------------------------- | --------------------------------------------------------- |
+| API             | Deployment + ClusterIP Service               | REST/OpenAPI, internal command API, read API              |
+| Web             | Deployment + ClusterIP Service/Gateway route | operations console                                        |
+| Workers         | Deployment                                   | outbox publisher, reconcilers, schedulers, NATS consumers |
+| Temporal worker | Deployment                                   | workflow and activity workers only                        |
+| Dapr actor host | Deployment with Dapr annotations             | actor endpoints and reminders                             |
+| MCP gateway     | Deployment + ClusterIP Service               | Hermes-facing governed tool surface                       |
 
 All workloads need:
 
@@ -670,11 +690,11 @@ each substrate becomes live.
 
 The same package architecture should run in three modes:
 
-| Mode | Purpose | Runtime adapters |
-|---|---|---|
-| unit/test | package and command tests | in-memory/fake adapters |
-| local dev cluster | k3d/K3S parity with `full-ai-cluster` apps | real NATS/Cockroach when available, fake Hermes/hat-system if needed |
-| full cluster | production-like AI cluster | real CockroachDB, NATS, Hindsight, Hermes, OpenZiti, hat-system, Temporal, Dapr |
+| Mode              | Purpose                                    | Runtime adapters                                                                |
+| ----------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
+| unit/test         | package and command tests                  | in-memory/fake adapters                                                         |
+| local dev cluster | k3d/K3S parity with `full-ai-cluster` apps | real NATS/Cockroach when available, fake Hermes/hat-system if needed            |
+| full cluster      | production-like AI cluster                 | real CockroachDB, NATS, Hindsight, Hermes, OpenZiti, hat-system, Temporal, Dapr |
 
 Do not create a Docker Compose architecture that diverges from
 `full-ai-cluster`. Local development can use fakes or a dev cluster, but
@@ -711,6 +731,26 @@ package should standardize:
   staleness;
 - links from UI evidence records to trace IDs, log queries, run IDs,
   event IDs, and artifacts.
+- workflow visibility records that project command/event context into
+  UI- and agent-readable health, stage, trace, scope, aggregate, and
+  weak-point indicator fields.
+
+Every runtime host should be inspectable from either direction:
+
+```text
+work item or initiative
+  -> event timeline
+  -> visibility record
+  -> trace/log/metric links
+  -> weak-point indicators
+  -> supervisor-chain signal or follow-up work item
+```
+
+This is the foundation for agent self-monitoring. Agents should be able
+to discover slow triage, repeated failures, missing evidence, missing
+tools, policy denials, harness failures, and telemetry gaps, then route
+fixes through the same command, review, and security lifecycle as any
+other work.
 
 ## V0 Build Sequence
 
@@ -718,6 +758,7 @@ package should standardize:
    - `@agentic-org/domain`;
    - `@agentic-org/application`;
    - `@agentic-org/state`;
+   - `@agentic-org/state-cockroach`;
    - `@agentic-org/policy`;
    - `@agentic-org/messaging`;
    - `@agentic-org/observability`;
@@ -732,8 +773,9 @@ package should standardize:
 3. Implement the first CockroachDB schema and Drizzle migrations for the
    V0 executable contract.
 4. Implement command handlers for:
-   - submit capability request;
-   - triage capability request;
+   - send supervisor signal;
+   - triage supervisor signal;
+   - capability request input through the supervisor signal path;
    - reserve hat;
    - issue hat token;
    - start prompt flow;

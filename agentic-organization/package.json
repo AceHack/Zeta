@@ -1,0 +1,12 @@
+{
+  "name": "@agentic-org/root",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --experimental-strip-types --test packages/**/*.test.ts",
+    "typecheck": "npx --yes -p typescript@6.0.3 tsc -p tsconfig.json"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

@@ -54,16 +54,17 @@ V0 does not need:
 - autonomous creation of new tools, workflows, or credential proxy
   endpoints.
 
-V0 should still model those future paths as capability requests, so the
-Organization can later build them through its own lifecycle.
+V0 should still model those future paths as supervisor-chain signals and
+capability requests, so the Organization can later route them through
+its own lifecycle.
 
 ## First Vertical Slice
 
 The first executable slice is:
 
 ```text
-capability request
-  -> discussion anchor and context pack
+supervisor-chain signal or capability request
+  -> anchored work item, discussion anchor, and context pack
   -> one readiness or review gate
   -> hat assignment
   -> scheduled prompt-flow run
@@ -90,7 +91,7 @@ Keep the first hat set small:
 
 | Hat | V0 reason |
 |---|---|
-| Director | accepts or rejects the capability request for V0 scope |
+| Director | accepts or rejects escalated supervisor signals or capability requests for V0 scope |
 | Engineering Manager | grooms the work item, selects schedule, assigns implementer and reviewer hats |
 | Implementer | executes the prompt flow and submits evidence |
 | Code Reviewer | reviews the evidence and blocks self-approval |
@@ -136,10 +137,12 @@ without it.
 
 ## Required V0 Flow
 
-1. `submit_capability_request` creates the work item, discussion anchor,
-   and first audit/outbox events.
-2. `triage_capability_request` selects the responsible project,
-   initiative, owner hat, and required gate.
+1. `send_supervisor_signal` creates the chain communication record and
+   first audit/outbox events against an anchored work item and
+   discussion anchor. Capability request inputs enter through the same
+   V0 command path.
+2. `triage_supervisor_signal` selects the responsible project,
+   initiative, owner hat, lifecycle, and required gate.
 3. `create_context_pack` links relevant docs, prior decisions, task
    graph nodes, memory references, and acceptance criteria.
 4. `decide_gate` moves the request into ready state or asks for more
