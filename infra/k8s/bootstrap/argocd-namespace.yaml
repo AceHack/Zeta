@@ -1,0 +1,13 @@
+# infra/k8s/bootstrap/argocd-namespace.yaml
+#
+# Namespace for ArgoCD. Applied by K3S on first boot via
+# services.k3s.manifests in infra/nixos/modules/k3s-server.nix.
+# Must apply before argocd-install.yaml.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+  labels:
+    app.kubernetes.io/name: argocd
+    app.kubernetes.io/part-of: argocd

@@ -1,0 +1,71 @@
+# infra/k8s/applications/gitlab/Application.yaml
+#
+# Self-hosted GitLab. Per Addison's spec, GitLab is the post-bootstrap
+# Git host — everything after GitLab is installed lives there rather
+# than on GitHub. The repoURL stays on GitHub for THIS Application
+# definition because GitLab can't reference itself before it exists;
+# once GitLab is healthy, future apps can point at the self-hosted URL.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitlab
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://charts.gitlab.io/
+    chart: gitlab
+    targetRevision: 8.7.0   # GitLab 17.7 family; bump in lockstep with upstream
+    helm:
+      releaseName: gitlab
+      valuesObject:
+        global:
+          edition: ce
+          hosts:
+            domain: gitlab.zeta.local
+            externalIP: ""   # set to LoadBalancer IP once MetalLB is in
+          ingress:
+            configureCertmanager: false  # cert-manager comes in a later app
+            tls:
+              enabled: false   # turn on after cert-manager + DNS
+          # Initial root password — must be reset on first login.
+          # In production, source from sops-nix decrypted Secret.
+          initialRootPassword:
+            secret: gitlab-initial-root-password
+            key: password
+
+        # Disable bundled components that overlap with cluster services
+        # we install separately:
+        certmanager:
+          install: false       # use cluster-wide cert-manager
+        nginx-ingress:
+          enabled: false       # use ingress-nginx App
+        prometheus:
+          install: false       # use cluster-wide observability stack
+
+        gitlab-runner:
+          install: true        # ship runners alongside GitLab
+          runners:
+            privileged: false  # explicit denial; safer default
+            tags: "kubernetes,zeta-cluster"
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitlab
+  syncPolicy:
+    automated:
+      prune: false             # GitLab data is precious — manual prune only
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - SkipDryRunOnMissingResource=true   # GitLab CRDs apply in waves
+    retry:
+      limit: 5
+      backoff:
+        duration: 30s
+        factor: 2
+        maxDuration: 5m

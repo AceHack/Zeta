@@ -1,0 +1,35 @@
+# infra/k8s/applications/orleans/Application.yaml
+#
+# ArgoCD-managed Orleans Application. Supersedes the bootstrap
+# manifest at infra/k8s/bootstrap/initial-orleans.yaml once the
+# control-plane has finished initial reconcile.
+#
+# Source path points at the same directory this file lives in;
+# ArgoCD applies every YAML in the directory EXCEPT files matching
+# the App-of-Apps pattern (Application.yaml).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: orleans
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: infra/k8s/applications/orleans
+    directory:
+      include: '{deployment,service,rbac,configmap}.yaml'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: orleans
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

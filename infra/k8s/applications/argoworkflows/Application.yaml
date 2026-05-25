@@ -1,0 +1,58 @@
+# infra/k8s/applications/argoworkflows/Application.yaml
+#
+# Argo Workflows — DAG-based job scheduler for the cluster. Drives
+# AI pipelines, batch model-training, data preprocessing, anything
+# that wants reified workflow state with retries + parallelism.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-workflows
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-workflows
+    targetRevision: 0.42.5    # Argo Workflows 3.6 family
+    helm:
+      releaseName: argo-workflows
+      valuesObject:
+        controller:
+          # Workflow archive persists completed workflows; useful
+          # for audit trails on AI training runs.
+          workflowDefaults:
+            spec:
+              activeDeadlineSeconds: 86400   # 24h cap on any workflow
+              ttlStrategy:
+                secondsAfterCompletion: 604800   # 7 days retention
+              podGC:
+                strategy: OnPodCompletion
+
+          # Allow the cluster to schedule workflows onto GPU nodes
+          # by tolerating the zeta.io/gpu node label / taint.
+          parallelism: 50
+
+        server:
+          # Disable auth at the server level for in-cluster use;
+          # external access goes through cluster-wide SSO once
+          # cert-manager + ingress land.
+          authModes:
+            - server
+
+        # Workflow Executor — emissary is the modern default.
+        executor:
+          image:
+            tag: ""    # use chart default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-workflows
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

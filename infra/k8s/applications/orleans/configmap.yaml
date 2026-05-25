@@ -1,0 +1,31 @@
+# infra/k8s/applications/orleans/configmap.yaml
+#
+# Orleans cluster configuration. Mounted into the silo pods at
+# /etc/orleans/cluster.json. Values map to OrleansHostBuilder
+# .UseKubernetesHosting() conventions.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orleans-config
+  namespace: orleans
+data:
+  cluster.json: |
+    {
+      "serviceId": "zeta",
+      "clusterId": "zeta-prod",
+      "silo": {
+        "siloPort": 11111,
+        "gatewayPort": 30000
+      },
+      "clustering": {
+        "provider": "kubernetes",
+        "namespace": "orleans"
+      },
+      "telemetry": {
+        "dashboard": {
+          "enabled": true,
+          "port": 8080
+        }
+      }
+    }

@@ -1,0 +1,38 @@
+# infra/k8s/applications/orleans/rbac.yaml
+#
+# RBAC for Orleans silos to discover peers via the Kubernetes API.
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: orleans-silo
+  namespace: orleans
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: orleans-silo
+  namespace: orleans
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "endpoints"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: orleans-silo
+  namespace: orleans
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: orleans-silo
+subjects:
+  - kind: ServiceAccount
+    name: orleans-silo
+    namespace: orleans

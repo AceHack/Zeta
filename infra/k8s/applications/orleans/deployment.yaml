@@ -1,0 +1,96 @@
+# infra/k8s/applications/orleans/deployment.yaml
+#
+# Orleans Silo StatefulSet. Once ArgoCD takes over this supersedes
+# the bootstrap StatefulSet at infra/k8s/bootstrap/initial-orleans.yaml
+# (same name + namespace, so it reconciles in place).
+#
+# Replicas start at 0 until a real Orleans Silo image is published.
+# Bump to >= 1 and update `image:` once `ghcr.io/lucent-financial-group/...`
+# exists.
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orleans-silo
+  namespace: orleans
+  labels:
+    app.kubernetes.io/name: orleans-silo
+    app.kubernetes.io/part-of: zeta
+    zeta.io/distributed-chron: "true"
+spec:
+  serviceName: orleans-silo
+  replicas: 0  # bump after publishing a real silo image
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: orleans-silo
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: orleans-silo
+        orleans.io/serviceId: zeta
+        orleans.io/clusterId: zeta-prod
+    spec:
+      serviceAccountName: orleans-silo
+      # Spread silos across nodes; ArgoCD applications can override
+      # via patch if specific affinity rules are needed.
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: orleans-silo
+      containers:
+        - name: silo
+          image: ghcr.io/lucent-financial-group/zeta-orleans-silo:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: silo
+              containerPort: 11111
+            - name: gateway
+              containerPort: 30000
+            - name: dashboard
+              containerPort: 8080
+          env:
+            - name: ORLEANS_SERVICE_ID
+              value: zeta
+            - name: ORLEANS_CLUSTER_ID
+              value: zeta-prod
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          volumeMounts:
+            - name: config
+              mountPath: /etc/orleans
+              readOnly: true
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+          livenessProbe:
+            tcpSocket:
+              port: silo
+            initialDelaySeconds: 30
+            periodSeconds: 15
+          readinessProbe:
+            tcpSocket:
+              port: gateway
+            initialDelaySeconds: 10
+            periodSeconds: 5
+      volumes:
+        - name: config
+          configMap:
+            name: orleans-config

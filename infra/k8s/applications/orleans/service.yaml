@@ -1,0 +1,60 @@
+# infra/k8s/applications/orleans/service.yaml
+#
+# Two services: headless silo-to-silo discovery + ClusterIP
+# client gateway.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: orleans-silo
+  namespace: orleans
+  labels:
+    app.kubernetes.io/name: orleans-silo
+    app.kubernetes.io/part-of: zeta
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: orleans-silo
+  ports:
+    - name: silo
+      port: 11111
+      targetPort: silo
+    - name: gateway
+      port: 30000
+      targetPort: gateway
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orleans-gateway
+  namespace: orleans
+  labels:
+    app.kubernetes.io/name: orleans-gateway
+    app.kubernetes.io/part-of: zeta
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: orleans-silo
+  ports:
+    - name: gateway
+      port: 30000
+      targetPort: gateway
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: orleans-dashboard
+  namespace: orleans
+  labels:
+    app.kubernetes.io/name: orleans-dashboard
+    app.kubernetes.io/part-of: zeta
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: orleans-silo
+  ports:
+    - name: http
+      port: 8080
+      targetPort: dashboard

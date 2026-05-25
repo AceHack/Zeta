@@ -1,0 +1,164 @@
+# infra/k8s/bootstrap/initial-orleans.yaml
+#
+# Minimal Orleans Silo skeleton applied at K3S first-boot, before
+# ArgoCD takes over reconciliation.
+#
+# This is the BOOTSTRAP version — sized for a single-control-plane
+# zero-worker initial install. The ArgoCD-managed version lives at
+# infra/k8s/applications/orleans/ and supersedes this once the
+# control-plane finishes reconciling root-application.
+#
+# Once ArgoCD's Orleans Application is healthy, this bootstrap
+# Deployment can be deleted (or left in place — it'll be reconciled
+# to match the ArgoCD-managed spec).
+#
+# Replace IMAGE placeholder with your published Orleans Silo image.
+# Until a real image is published, this stays as a placeholder so
+# K3S has the manifest schema validated but doesn't actually run
+# anything (replicas: 0).
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: orleans
+  labels:
+    app.kubernetes.io/part-of: zeta
+    zeta.io/distributed-chron: "true"
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: orleans-silo
+  namespace: orleans
+
+---
+# RBAC — Orleans needs to discover other silos via the Kubernetes API
+# (Orleans Kubernetes clustering provider).
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: orleans-silo
+  namespace: orleans
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "endpoints"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "list", "watch"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: orleans-silo
+  namespace: orleans
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: orleans-silo
+subjects:
+  - kind: ServiceAccount
+    name: orleans-silo
+    namespace: orleans
+
+---
+# Bootstrap StatefulSet, scaled to 0 until a real image is published.
+# The ArgoCD-managed Application at infra/k8s/applications/orleans/
+# will scale this up once it takes over.
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orleans-silo
+  namespace: orleans
+  labels:
+    app.kubernetes.io/name: orleans-silo
+    app.kubernetes.io/part-of: zeta
+spec:
+  serviceName: orleans-silo
+  replicas: 0  # scaled up by ArgoCD-managed app once an image is published
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: orleans-silo
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: orleans-silo
+        # Orleans clustering ID labels — silos with the same
+        # serviceId + clusterId form a cluster.
+        orleans.io/serviceId: zeta
+        orleans.io/clusterId: zeta-prod
+    spec:
+      serviceAccountName: orleans-silo
+      containers:
+        - name: silo
+          image: ghcr.io/lucent-financial-group/zeta-orleans-silo:bootstrap
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: silo
+              containerPort: 11111   # Orleans silo-to-silo
+            - name: gateway
+              containerPort: 30000   # Orleans client gateway
+            - name: dashboard
+              containerPort: 8080    # Optional Orleans dashboard
+          env:
+            - name: ORLEANS_SERVICE_ID
+              value: zeta
+            - name: ORLEANS_CLUSTER_ID
+              value: zeta-prod
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+
+---
+# Headless service for silo-to-silo discovery.
+apiVersion: v1
+kind: Service
+metadata:
+  name: orleans-silo
+  namespace: orleans
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: orleans-silo
+  ports:
+    - name: silo
+      port: 11111
+      targetPort: silo
+    - name: gateway
+      port: 30000
+      targetPort: gateway
+
+---
+# Client-facing service for Orleans gateway access.
+apiVersion: v1
+kind: Service
+metadata:
+  name: orleans-gateway
+  namespace: orleans
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: orleans-silo
+  ports:
+    - name: gateway
+      port: 30000
+      targetPort: gateway

@@ -1,0 +1,38 @@
+# infra/k8s/bootstrap/argocd-install.yaml
+#
+# ArgoCD installation. K3S auto-applies this on first boot via
+# services.k3s.manifests so the cluster becomes self-managing
+# immediately — ArgoCD then reconciles everything else from this
+# same Git repo via the root-application.
+#
+# This file uses kustomize-style remote reference rather than
+# inlining the full ~30k-line upstream manifest. K3S supports
+# kustomize natively for manifests it auto-applies.
+#
+# Pin to a specific ArgoCD release for reproducibility. Bump the
+# tag below to upgrade; ArgoCD itself is then managed declaratively
+# through the same flake-and-merge workflow as the rest of the
+# cluster.
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+  # ArgoCD v2.13.2 stable manifest. To upgrade ArgoCD itself:
+  #   1. Bump the version in this URL.
+  #   2. Verify the manifest still applies cleanly (k8s apply --dry-run).
+  #   3. Commit + push; K3S re-applies on next boot.
+  #
+  # The `targetRevision: main` in
+  # infra/k8s/applications/root-application.yaml controls which Git ref
+  # ArgoCD tracks for cluster reconciliation, NOT which ArgoCD version
+  # is installed. Those two are independent — keep both pinned.
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.13.2/manifests/install.yaml
+
+# Site-specific patches go here once we know more about the cluster:
+#   - cmd-params for service-type LoadBalancer
+#   - resource limits for the argocd-server pod on small control-plane
+#   - SSO config (Dex, GitHub OAuth, Okta, etc)
+patches: []

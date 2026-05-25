@@ -1,0 +1,49 @@
+# infra/k8s/applications/argorollouts/Application.yaml
+#
+# Argo Rollouts — progressive-delivery controller. Replaces
+# kubectl rollout for the apps that need canaries / blue-green
+# / experiment-driven traffic splits. Especially relevant for
+# Orleans Silo upgrades where session affinity matters.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-rollouts
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-rollouts
+    targetRevision: 2.39.5   # Argo Rollouts 1.8 family
+    helm:
+      releaseName: argo-rollouts
+      valuesObject:
+        controller:
+          # Pin replica count to 2 for HA once the cluster has
+          # multiple nodes (PodDisruptionBudget kicks in here too).
+          replicas: 1   # bump to 2 when 2nd control-plane or worker arrives
+
+        # Argo Rollouts dashboard for UI-driven rollout inspection.
+        dashboard:
+          enabled: true
+          serviceType: ClusterIP
+          # Expose via ingress once cert-manager + ingress-nginx are in.
+
+        # Notifications go through the same Argo notifications
+        # engine ArgoCD uses; configure receivers in a separate
+        # ConfigMap App once Slack/email webhooks are wired.
+        notifications:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-rollouts
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

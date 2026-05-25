@@ -1,0 +1,38 @@
+# infra/k8s/applications/root-application.yaml
+#
+# App-of-Apps root. ArgoCD reads this on first boot (auto-applied
+# by K3S via services.k3s.manifests) and starts watching the
+# infra/k8s/applications/ directory for ArgoCD Application CRs.
+#
+# Adding a new workload to the cluster: drop an Application.yaml
+# under infra/k8s/applications/<name>/ and commit. ArgoCD picks
+# it up on the next sync cycle (~3 minutes).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: zeta-root
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Lucent-Financial-Group/Zeta
+    targetRevision: main
+    path: infra/k8s/applications
+    directory:
+      recurse: true
+      # Only pick up Application CRs at any depth, not the workload
+      # manifests sitting next to them.
+      include: '{*/Application.yaml,Application.yaml}'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
