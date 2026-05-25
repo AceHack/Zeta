@@ -815,5 +815,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0719](backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md)** Soraya round-67 forced-decomposition — audit-of-audit: ratify the recognition-without-row-filing precedent (when trigger fires + 'not my lane,' where does the routing-decision substrate land?)
 - [ ] **[B-0725](backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md)** Polyglot-accelerator hardware-shape extension — Coral / NCS / Jetson / FPGA beyond NVIDIA-only; activates as gadgets come out of drawer
 - [ ] **[B-0727](backlog/P3/B-0727-federated-4-tier-cluster-topology-cloud-community-home-business-edge-with-routing-for-weaker-leaves-2026-05-25.md)** Federated peer mesh — 5 resource profiles (cloud/hub, community, home/business, edge, leaf), weight-free routing, NO hierarchy; cloud/hub doesn't hog net neutrality
+- [ ] **[B-0756](backlog/P3/B-0756-ha-control-plane-multi-master-embedded-etcd-quorum-and-stable-api-endpoint-aaron-2026-05-25.md)** HA control-plane — multi-master k3s embedded etcd quorum + stable API endpoint (DNS round-robin or kube-vip virtual IP)
 
 <!-- END AUTO-GENERATED -->
