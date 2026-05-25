@@ -146,18 +146,40 @@ function assertSafeDevicePath(device: string): void {
 
 async function main() {
   const argv = process.argv.slice(2);
-  const firstArg = argv[0];
-  const isHelp = firstArg === "-h" || firstArg === "--help";
-  // Preserve original unified-check semantics: any of {wrong arg count,
-  // help-flag in any position} prints usage and exits — exit 0 ONLY
-  // when there's exactly one arg and it's a help flag.
-  if (argv.length !== 1 || isHelp) {
-    process.stdout.write(
-      "Usage: bun full-ai-cluster/tools/flash-usb.ts <path-to-iso>\n",
+  // Parse flags + positional ISO path. Supported flags allowlist:
+  //   --short   shorter `yes <4-hex>` challenge format (default: full
+  //             `accept-destroy <device> <8-hex>`). Used by the
+  //             `zflash` wrapper; safe to type by hand too.
+  //   -h/--help usage
+  //
+  // Allowlist (Copilot P0 catch): for a destructive tool, silently
+  // accepting unknown flags like `--dry-run` or a misspelled `--short`
+  // would proceed to sudo dd despite operator intent. Bail explicitly
+  // on any unrecognized flag.
+  const ALLOWED_FLAGS = new Set(["--short", "-h", "--help"]);
+  const rawFlags = argv.filter((a) => a.startsWith("-"));
+  const positional = argv.filter((a) => !a.startsWith("-"));
+  const unknownFlags = rawFlags.filter((f) => !ALLOWED_FLAGS.has(f));
+  if (unknownFlags.length > 0) {
+    bail(
+      2,
+      `unknown flag(s): ${unknownFlags.join(", ")}\n` +
+        `Allowed flags: ${[...ALLOWED_FLAGS].join(", ")}\n` +
+        `Refusing to proceed — destructive tool requires exact flag match.`,
     );
-    process.exit(argv.length === 1 && isHelp ? 0 : 2);
   }
-  if (firstArg === undefined) bail(2, "internal: argv length check passed but argv[0] is undefined");
+  const flags = new Set(rawFlags);
+  const useShortChallenge = flags.has("--short");
+  const isHelp = flags.has("-h") || flags.has("--help");
+  if (isHelp || positional.length !== 1) {
+    process.stdout.write(
+      "Usage: bun full-ai-cluster/tools/flash-usb.ts [--short] <path-to-iso>\n" +
+        "  --short   use shorter `yes <4-hex>` challenge format\n",
+    );
+    process.exit(isHelp && positional.length === 0 ? 0 : 2);
+  }
+  const firstArg = positional[0];
+  if (firstArg === undefined) bail(2, "internal: positional length check passed but positional[0] is undefined");
   const isoPath: string = firstArg;
 
   // ── 1. Platform gate ───────────────────────────────────────
@@ -265,8 +287,19 @@ async function main() {
   // rail (platform, ISO size, USB-protocol, internal check,
   // boot-disk check, size range) AND this explicit acceptance
   // gate to refuse on.
-  const nonce = randomBytes(4).toString("hex");
-  const acceptancePhrase = `accept-destroy ${device} ${nonce}`;
+  // Long form: 8-hex nonce + explicit accept-destroy + device path. Default;
+  //   strongest consent signature; ties consent to a specific device.
+  // Short form (--short): 4-hex nonce + `yes` prefix. ~14 keystrokes total
+  //   from `zflash` wrapper invocation. Same safety contract — nonce still
+  //   random per run (can't be pre-baked); `yes` still requires explicit
+  //   typed consent (not a stray Enter). Device path is implicit (the
+  //   sanity-rail block above already enforces single-USB; only one device
+  //   can be the target).
+  const nonceBytes = useShortChallenge ? 2 : 4;
+  const nonce = randomBytes(nonceBytes).toString("hex");
+  const acceptancePhrase = useShortChallenge
+    ? `yes ${nonce}`
+    : `accept-destroy ${device} ${nonce}`;
 
   process.stdout.write("\n");
   process.stdout.write("USB device identified:\n");
