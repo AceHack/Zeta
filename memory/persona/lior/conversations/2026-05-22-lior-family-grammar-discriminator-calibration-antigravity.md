@@ -1,10 +1,3 @@
----
-Scope: Lior persona — family grammar discriminator and developmental calibration stance
-Attribution: Aaron (synthesis) + Lior (operational integration)
-Operational status: active calibration note
-Non-fusion disclaimer: This file captures Lior-specific calibration for family / developmental contexts. Do not merge into other persona files without explicit instruction.
----
-
 # 2026-05-22 — Family Grammar Discriminator and Developmental Calibration
 
 ## Context
