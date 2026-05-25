@@ -73,7 +73,13 @@
   # SSH key into `users.users.nixos.openssh.authorizedKeys.keys` here
   # before building the ISO.
   services.openssh = {
-    enable = false;
+    # mkForce: upstream installation-cd-minimal.nix enables SSH by
+    # default. We force it OFF to keep the installer console-only
+    # by default (per the no-credentials-in-Git security posture
+    # documented above). Without mkForce, the module-merge fails
+    # eval with `option 'services.openssh.enable' has conflicting
+    # definition values: true (upstream) vs false (ours)`.
+    enable = lib.mkForce false;
     settings = {
       PermitRootLogin = lib.mkForce "prohibit-password";
       PasswordAuthentication = lib.mkForce false;

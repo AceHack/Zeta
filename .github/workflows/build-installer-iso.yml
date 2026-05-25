@@ -1,0 +1,230 @@
+# .github/workflows/build-installer-iso.yml
+#
+# Builds the Zeta cluster installer ISO from infra/nixos/hosts/installer/
+# via the repo-root flake. Runs on every PR that touches the flake/infra,
+# every push to main, and on release publish (to attach the ISO to the
+# Release as a downloadable asset).
+#
+# Why on a Linux runner and not the existing macOS gate matrix:
+#   The ISO target is `x86_64-linux`. Building it on macOS requires the
+#   nix-darwin `linux-builder` VM (Apple Virtualization.framework +
+#   Rosetta 2). That works locally for maintainers, but the gate CI
+#   already runs on ubuntu-24.04 — building directly there is faster,
+#   cheaper, and uses no cross-compile.
+#
+# Discipline (per .github/workflows/gate.yml):
+#   - Runner pinned to ubuntu-24.04 (not -latest)
+#   - Third-party actions SHA-pinned with trailing # vX.Y.Z comments
+#   - permissions: contents: read at workflow level. The
+#     `attach-to-release` job elevates to `contents: write` only
+#     for itself (release-asset upload).
+#   - Concurrency: workflow-scoped, cancel-in-progress only for PRs
+#   - github.event.* values that may be attacker-controlled (release
+#     tag names, etc.) are passed via env: not interpolated into
+#     run: lines, per the GitHub Actions injection guide.
+
+name: build-installer-iso
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - 'flake.nix'
+      - 'flake.lock'
+      - 'infra/nixos/**'
+      - '.github/workflows/build-installer-iso.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'flake.nix'
+      - 'flake.lock'
+      - 'infra/nixos/**'
+      - '.github/workflows/build-installer-iso.yml'
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-installer-iso-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: build-iso
+    # Skip on release events — attach-to-release rebuilds at the tag so the
+    # asset matches the release exactly. Running both would build the ISO
+    # twice per release publish for no added verification.
+    if: github.event_name != 'release'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Need full history so the flake.lock pinning is reproducible
+          # and any `git describe` style versioning works.
+          fetch-depth: 0
+
+      - name: Install Nix
+        # Determinate Systems Nix installer — same one maintainers use
+        # locally. Enables flakes + nix-command by default.
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+
+      # NOTE: previously had `DeterminateSystems/magic-nix-cache-action`
+      # here but it now requires FlakeHub auth (FlakeHub.com account /
+      # organization registration), which the project doesn't have set
+      # up. Removed to unblock builds. First-build cost is ~10-15 min
+      # instead of ~3 min cached. Follow-up to add `actions/cache` on
+      # /nix/store or `nix-community/cache-nix-action` (no FlakeHub
+      # auth required) is tracked separately.
+
+      - name: Show flake metadata
+        run: nix flake metadata --json | jq '{description, lastModified, revision}'
+
+      - name: Check flake evaluates
+        # Cheap eval-only check — catches typos, missing imports,
+        # undefined attributes before paying for a full build.
+        run: nix flake check --no-build --show-trace
+
+      - name: Build installer ISO
+        # The actual build. Produces result/iso/zeta-installer-*.iso.
+        run: nix build .#installer-iso --print-build-logs
+
+      - name: Locate ISO + capture metadata
+        id: iso
+        run: |
+          set -euo pipefail
+          # Enforce single match. Multiple matches would be a substrate
+          # surprise (build layout changed?) and silently picking one
+          # is worse than failing loudly.
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_path="${iso_candidates[0]}"
+          iso_name=$(basename "$iso_path")
+          iso_size=$(stat -c%s "$iso_path" | numfmt --to=iec --suffix=B)
+          iso_sha256=$(sha256sum "$iso_path" | awk '{print $1}')
+          {
+            echo "path=$iso_path"
+            echo "name=$iso_name"
+            echo "size=$iso_size"
+            echo "sha256=$iso_sha256"
+          } >> "$GITHUB_OUTPUT"
+          {
+            echo "## Installer ISO built"
+            echo ""
+            echo "| Field | Value |"
+            echo "|---|---|"
+            echo "| File   | \`$iso_name\` |"
+            echo "| Size   | $iso_size |"
+            echo "| SHA256 | \`$iso_sha256\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload ISO as workflow artifact
+        # Available for download from the workflow run page for ~90 days.
+        # Anyone reviewing the PR can grab it and dd it to a USB stick
+        # without needing Nix installed locally.
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: ${{ steps.iso.outputs.name }}
+          path: ${{ steps.iso.outputs.path }}
+          if-no-files-found: error
+          retention-days: 90
+          compression-level: 0   # ISO is already compressed; re-zipping wastes time
+
+  attach-to-release:
+    name: attach-iso-to-release
+    # No `needs: build`. The build job is skipped on release events
+    # (see its own `if: github.event_name != 'release'`); declaring
+    # `needs: build` here would short-circuit attach-to-release to
+    # "skipped" too because skipped-by-`if` propagates through
+    # `needs:` by default. The two jobs are independent: attach-to-
+    # release builds the ISO itself at the release tag, with its
+    # own ref pinning.
+    if: github.event_name == 'release'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write   # needed to upload the ISO as a release asset
+    steps:
+      - name: Checkout at the release tag
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Explicit ref pin: on release events GITHUB_REF defaults
+          # to the tag, but pinning explicitly is defense in depth
+          # against payload variation (and reads more clearly).
+          ref: ${{ github.event.release.tag_name }}
+          # Match the build job: full history + tags so `git describe`
+          # style versioning and flake.lock pinning are reproducible at
+          # the tag. Default fetch-depth: 1 omits tags/history and risks
+          # silent drift on release builds.
+          fetch-depth: 0
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+
+      # magic-nix-cache-action removed — requires FlakeHub auth not yet
+      # set up. See note in the build job above.
+
+      - name: Rebuild ISO for the tagged release
+        # Re-builds at the tag so the ISO ships exactly the source the
+        # release advertises. The build job above already produced one,
+        # but artifacts and release assets are different stores.
+        run: nix build .#installer-iso --print-build-logs
+
+      - name: Upload ISO + SHA256 to the release
+        # Release tag_name is set by whoever created the release —
+        # treated as attacker-controlled per the GH Actions injection
+        # guide. Passed via env, never interpolated into the shell.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+          # Enforce single match — release assets are publicly downloaded
+          # and silently picking one when multiple exist would be worse
+          # than failing loudly.
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Multiple installer ISOs under result/iso/; refusing to upload an arbitrary one to release ${RELEASE_TAG}:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
+          iso_path="${iso_candidates[0]}"
+          # iso_path resolves into /nix/store/... via the result/ symlink,
+          # which is read-only. Write the .sha256 sidecar to RUNNER_TEMP
+          # (writable) so the upload step doesn't EROFS.
+          iso_name=$(basename "$iso_path")
+          sha256_path="${RUNNER_TEMP:-/tmp}/${iso_name}.sha256"
+          # Use the standard `sha256sum` format (`<hash>  <filename>`)
+          # so consumers can verify with `sha256sum --check`.
+          ( cd "$(dirname "$iso_path")" && sha256sum "$iso_name" ) > "$sha256_path"
+          # Refuse to upload if RELEASE_TAG looks like a flag-injection
+          # vector. Tag names can legally start with `-`, which would
+          # make `gh release upload "$RELEASE_TAG" ...` parse the tag as
+          # a flag. Hard-fail if so — release operators should rename.
+          case "$RELEASE_TAG" in
+            -*) echo "::error::RELEASE_TAG starts with '-' which is a flag-injection risk: $RELEASE_TAG" >&2; exit 1 ;;
+          esac
+          # `--` separator: belt + suspenders defense against any future
+          # argv-injection vector even if the tag-name check above is
+          # bypassed somehow.
+          gh release upload --clobber -- "$RELEASE_TAG" \
+            "$iso_path" \
+            "$sha256_path"

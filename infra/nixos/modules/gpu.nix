@@ -14,16 +14,31 @@
   # Permit unfree packages (NVIDIA driver, cuda)
   # ---------------------------------------------------------------------------
   nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
+    let
+      name = lib.getName pkg;
+    in
+    # Explicit nvidia driver components
+    builtins.elem name [
       "nvidia-x11"
       "nvidia-settings"
       "nvidia-persistenced"
-      "cuda_cudart"
-      "cuda_nvcc"
-      "cuda-merged"
-      "libcublas"
-      "libcudnn"
-    ];
+      "nvidia-docker"
+      "nvidia-container-toolkit"
+    ]
+    # CUDA toolchain — `cuda`-prefixed packages: covers cuda_cudart,
+    # cuda_nvcc, cuda_cuobjdump, cuda_nvprune, cuda_cccl, cuda_nvtx,
+    # cuda_profiler_api, AND the underscore-less variants like
+    # cudatoolkit + cudaPackages.* aliases. The predicate is
+    # intentionally broader than the underscore-only set because
+    # nixpkgs uses both spellings depending on the package generation.
+    || lib.hasPrefix "cuda" name
+    # CUDA support libraries — libcublas, libcurand, libcusolver, libcusparse,
+    # libcufft, libcudnn, libnpp, libnvjpeg, libnvjitlink, ...
+    || lib.hasPrefix "libcu" name
+    || lib.hasPrefix "libnv" name
+    || lib.hasPrefix "libnp" name
+    # The umbrella package that pulls everything together
+    || name == "cuda-merged";
 
   # ---------------------------------------------------------------------------
   # Kernel modules + driver
