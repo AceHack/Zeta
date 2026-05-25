@@ -4,6 +4,8 @@ import {
   activeClaimsFromOpenPrs,
   activeClaimsFromRemoteClaimDiffs,
   capacityGate,
+  capacityPrCount,
+  parseOpenPrListOutput,
 } from "../../.codex/bin/codex-backlog-runner";
 
 describe("capacityGate", () => {
@@ -16,6 +18,47 @@ describe("capacityGate", () => {
   test("waits only when the bounded parallel PR capacity is full", () => {
     expect(capacityGate(3, 3)).toEqual({ status: "wait-pr-capacity", availablePrSlots: 0 });
     expect(capacityGate(4, 3)).toEqual({ status: "wait-pr-capacity", availablePrSlots: 0 });
+  });
+});
+
+describe("capacityPrCount", () => {
+  const openPrs = [
+    { headRefName: "codex/lane-aware-pr-capacity" },
+    { headRefName: "archive/pr-preservation" },
+    { headRefName: "backlog/b0751-per-agent-isolated-clones" },
+    { headRefName: "codex/agent-work-rhythm" },
+  ];
+
+  test("counts only PRs in the configured capacity lane", () => {
+    expect(capacityPrCount(openPrs, ["codex/"])).toBe(2);
+  });
+
+  test("supports global counting when no head prefixes are configured", () => {
+    expect(capacityPrCount(openPrs, [])).toBe(4);
+  });
+
+  test("matches capacity prefixes case-insensitively", () => {
+    expect(capacityPrCount([{ headRefName: "Codex/Lane-Aware-Pr-Capacity" }], ["CODEX/"])).toBe(1);
+  });
+});
+
+describe("parseOpenPrListOutput", () => {
+  test("parses paginated gh api base64 rows without a fixed item cap", () => {
+    const rows = [
+      { number: 5026, headRefName: "codex/lane-aware-pr-capacity", title: "fix(codex): scope backlog PR capacity by lane" },
+      { number: 5027, headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25", title: "feat(zflash): show USB detail" },
+    ].map((row) => Buffer.from(JSON.stringify(row), "utf8").toString("base64"));
+
+    expect(parseOpenPrListOutput(`${rows.join("\n")}\n`)).toEqual([
+      { number: 5026, headRefName: "codex/lane-aware-pr-capacity", title: "fix(codex): scope backlog PR capacity by lane" },
+      { number: 5027, headRefName: "otto-cli/zflash-detail-richer-display-skill-2026-05-25", title: "feat(zflash): show USB detail" },
+    ]);
+  });
+
+  test("rejects decoded rows with non-object shapes", () => {
+    const row = Buffer.from(JSON.stringify(["not", "a", "pr"]), "utf8").toString("base64");
+
+    expect(() => parseOpenPrListOutput(`${row}\n`)).toThrow("non-object open PR row");
   });
 });
 

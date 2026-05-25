@@ -13,6 +13,8 @@ import { isAbsolute, join, resolve } from "node:path";
 interface GateResult {
   status: "wait-pr-capacity" | "ready";
   openPrCount: number;
+  totalOpenPrCount: number;
+  capacityHeadPrefixes: string[];
   maxOpenPrs: number;
   availablePrSlots: number;
   activeClaims: string[];
@@ -48,16 +50,19 @@ interface CapacityGate {
 }
 
 const DEFAULT_MAX_OPEN_PRS = 3;
+const DEFAULT_CAPACITY_HEAD_PREFIXES = ["codex/"];
 const HEARTBEAT_STALE_MS = 30 * 60 * 1000;
 
 function usage(): string {
   return [
     "Usage:",
-    "  bun .codex/bin/codex-backlog-runner.ts [--json] [--repo-root DIR] [--max-open-prs N]",
+    "  bun .codex/bin/codex-backlog-runner.ts [--json] [--repo-root DIR] [--max-open-prs N] [--capacity-head-prefixes PREFIX[,PREFIX...]]",
     "",
-    "Runs while open PR count is below the bounded parallel PR capacity.",
+    "Runs while capacity-scoped open PR count is below the bounded parallel PR capacity.",
     "Emits a trajectory-first pickup prompt, then falls back to backlog",
     "pickup when no trajectory action is available.",
+    "By default, capacity is scoped to Codex PR branches (codex/).",
+    "Use --capacity-head-prefixes all to restore global open-PR counting.",
   ].join("\n");
 }
 
@@ -73,8 +78,33 @@ function parseMaxOpenPrsFromEnv(): number {
   return raw === undefined || raw.trim().length === 0 ? DEFAULT_MAX_OPEN_PRS : positiveInteger("CODEX_BACKLOG_RUNNER_MAX_OPEN_PRS", raw.trim());
 }
 
-function parseArgs(argv: string[]): { json: boolean; repoRoot: string; maxOpenPrs: number } {
-  const out = { json: false, repoRoot: process.cwd(), maxOpenPrs: parseMaxOpenPrsFromEnv() };
+function parseCapacityHeadPrefixes(value: string | undefined): string[] {
+  if (value === undefined || value.trim().length === 0) {
+    return DEFAULT_CAPACITY_HEAD_PREFIXES;
+  }
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "all" || normalized === "*") {
+    return [];
+  }
+  return uniqueSorted(
+    value
+      .split(",")
+      .map((prefix) => normalizeHeadPrefix(prefix))
+      .filter(Boolean),
+  );
+}
+
+function parseCapacityHeadPrefixesFromEnv(): string[] {
+  return parseCapacityHeadPrefixes(process.env.CODEX_BACKLOG_RUNNER_CAPACITY_HEAD_PREFIXES);
+}
+
+function parseArgs(argv: string[]): { json: boolean; repoRoot: string; maxOpenPrs: number; capacityHeadPrefixes: string[] } {
+  const out = {
+    json: false,
+    repoRoot: process.cwd(),
+    maxOpenPrs: parseMaxOpenPrsFromEnv(),
+    capacityHeadPrefixes: parseCapacityHeadPrefixesFromEnv(),
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === "--json") {
@@ -91,6 +121,12 @@ function parseArgs(argv: string[]): { json: boolean; repoRoot: string; maxOpenPr
         throw new Error("--max-open-prs requires a value");
       }
       out.maxOpenPrs = positiveInteger("--max-open-prs", value);
+    } else if (arg === "--capacity-head-prefixes") {
+      const value = argv[++i];
+      if (value === undefined || value.startsWith("--")) {
+        throw new Error("--capacity-head-prefixes requires a value");
+      }
+      out.capacityHeadPrefixes = parseCapacityHeadPrefixes(value);
     } else if (arg === "--help" || arg === "-h") {
       process.stdout.write(`${usage()}\n`);
       process.exit(0);
@@ -119,13 +155,65 @@ function run(repoRoot: string, command: string, args: string[]): { status: numbe
   };
 }
 
-function openPrCount(repoRoot: string): number {
-  const result = run(repoRoot, "bun", ["tools/github/poll-pr-gate-batch.ts", "--all-open"]);
-  if (result.status !== 0) {
-    throw new Error(`poll-pr-gate-batch failed: ${result.stderr || result.stdout}`);
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+export function parseOpenPrListOutput(stdout: string): OpenPrListItem[] {
+  const prs: OpenPrListItem[] = [];
+  for (const line of stdout.split(/\r?\n/)) {
+    const encoded = line.trim();
+    if (encoded.length === 0) {
+      continue;
+    }
+    const decoded = Buffer.from(encoded, "base64").toString("utf8");
+    const parsed = JSON.parse(decoded) as unknown;
+    if (!isRecord(parsed)) {
+      throw new Error(`gh api returned a non-object open PR row: ${decoded}`);
+    }
+
+    const pr: OpenPrListItem = {};
+    if (typeof parsed.number === "number") {
+      pr.number = parsed.number;
+    }
+    if (typeof parsed.headRefName === "string") {
+      pr.headRefName = parsed.headRefName;
+    }
+    if (typeof parsed.title === "string") {
+      pr.title = parsed.title;
+    }
+    prs.push(pr);
   }
-  const parsed = JSON.parse(result.stdout) as { count?: number };
-  return Number(parsed.count ?? 0);
+  return prs;
+}
+
+function openPrList(repoRoot: string): OpenPrListItem[] {
+  const result = run(repoRoot, "gh", [
+    "api",
+    "--paginate",
+    "repos/{owner}/{repo}/pulls?state=open&per_page=100",
+    "--jq",
+    ".[] | {number: .number, headRefName: .head.ref, title: .title} | @base64",
+  ]);
+  if (result.status !== 0) {
+    throw new Error(`gh api --paginate failed while reading capacity signals: ${result.stderr || result.stdout}`);
+  }
+  return parseOpenPrListOutput(result.stdout);
+}
+
+function normalizeHeadPrefix(prefix: string): string {
+  return prefix.trim().toLowerCase();
+}
+
+export function capacityPrCount(openPrs: readonly OpenPrListItem[], headPrefixes: readonly string[]): number {
+  if (headPrefixes.length === 0) {
+    return openPrs.length;
+  }
+  const normalizedPrefixes = headPrefixes.map(normalizeHeadPrefix).filter(Boolean);
+  return openPrs.filter((pr) => {
+    const headRefName = (pr.headRefName ?? "").toLowerCase();
+    return normalizedPrefixes.some((prefix) => headRefName.startsWith(prefix));
+  }).length;
 }
 
 export function activeClaimsFromOpenPrs(openPrs: readonly OpenPrListItem[]): string[] {
@@ -141,13 +229,8 @@ export function activeClaimsFromOpenPrs(openPrs: readonly OpenPrListItem[]): str
   return [...new Set(claims)].sort((a, b) => a.localeCompare(b));
 }
 
-function openPrActiveClaims(repoRoot: string): string[] {
-  const result = run(repoRoot, "gh", ["pr", "list", "--state", "open", "--limit", "100", "--json", "number,headRefName,title"]);
-  if (result.status !== 0) {
-    throw new Error(`gh pr list failed while reading rotation signals: ${result.stderr || result.stdout}`);
-  }
-  const parsed = JSON.parse(result.stdout) as OpenPrListItem[];
-  return activeClaimsFromOpenPrs(parsed);
+function openPrActiveClaims(repoRoot: string, openPrs?: readonly OpenPrListItem[]): string[] {
+  return activeClaimsFromOpenPrs(openPrs ?? openPrList(repoRoot));
 }
 
 function uniqueSorted(values: readonly string[]): string[] {
@@ -285,9 +368,9 @@ function heartbeatSignals(repoRoot: string): HeartbeatSignal[] {
   return signals;
 }
 
-function activeClaims(repoRoot: string): string[] {
+function activeClaims(repoRoot: string, openPrs?: readonly OpenPrListItem[]): string[] {
   return uniqueSorted([
-    ...openPrActiveClaims(repoRoot),
+    ...openPrActiveClaims(repoRoot, openPrs),
     ...activeClaimsFromRemoteClaimDiffs(remoteClaimDiffs(repoRoot)),
     ...activeClaimsFromHeartbeatSignals(heartbeatSignals(repoRoot)),
   ]);
@@ -325,26 +408,35 @@ function pickup(repoRoot: string, activeClaims: readonly string[]): { source: "t
 }
 
 function printText(result: GateResult): void {
+  const scope =
+    result.capacityHeadPrefixes.length === 0 ? "all" : result.capacityHeadPrefixes.join(",");
   if (result.status === "wait-pr-capacity") {
-    process.stdout.write(`wait-pr-capacity: ${result.openPrCount}/${result.maxOpenPrs} open PR slot(s) used\n`);
+    process.stdout.write(
+      `wait-pr-capacity: ${result.openPrCount}/${result.maxOpenPrs} capacity PR slot(s) used (scope=${scope}; total_open=${result.totalOpenPrCount})\n`,
+    );
     return;
   }
-  process.stdout.write(`pr-capacity: ${result.openPrCount}/${result.maxOpenPrs} open, ${result.availablePrSlots} slot(s) available\n`);
+  process.stdout.write(
+    `pr-capacity: ${result.openPrCount}/${result.maxOpenPrs} capacity-scoped open, ${result.availablePrSlots} slot(s) available (scope=${scope}; total_open=${result.totalOpenPrCount})\n`,
+  );
   process.stdout.write(`pickup-source: ${result.pickupSource ?? "none"}\n`);
   process.stdout.write(`${JSON.stringify(result.pickup, null, 2)}\n`);
 }
 
 export function main(argv: string[]): number {
-  let args: { json: boolean; repoRoot: string; maxOpenPrs: number };
+  let args: { json: boolean; repoRoot: string; maxOpenPrs: number; capacityHeadPrefixes: string[] };
   try {
     args = parseArgs(argv);
-    const count = openPrCount(args.repoRoot);
+    const openPrs = openPrList(args.repoRoot);
+    const count = capacityPrCount(openPrs, args.capacityHeadPrefixes);
     const gate = capacityGate(count, args.maxOpenPrs);
-    const claims = gate.status === "ready" ? activeClaims(args.repoRoot) : [];
+    const claims = gate.status === "ready" ? activeClaims(args.repoRoot, openPrs) : [];
     const selected = gate.status === "ready" ? pickup(args.repoRoot, claims) : { source: null, value: null };
     const result: GateResult = {
       status: gate.status,
       openPrCount: count,
+      totalOpenPrCount: openPrs.length,
+      capacityHeadPrefixes: args.capacityHeadPrefixes,
       maxOpenPrs: args.maxOpenPrs,
       availablePrSlots: gate.availablePrSlots,
       activeClaims: claims,
