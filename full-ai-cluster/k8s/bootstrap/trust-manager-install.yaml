@@ -1,0 +1,21 @@
+# Trust Manager bootstrap install. K3S HelmChart CR — runs AFTER
+# cert-manager + Vault. Distributes CA bundles to every namespace.
+
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: trust-manager
+  namespace: kube-system
+spec:
+  chart: trust-manager
+  repo: https://charts.jetstack.io
+  version: v0.15.0
+  targetNamespace: cert-manager   # trust-manager lives in cert-manager ns
+  createNamespace: false   # cert-manager-install.yaml already created it
+  valuesContent: |-
+    crds: { enabled: true }
+    replicaCount: 1
+    defaultPackage: { enabled: false }
+    app:
+      trust:
+        namespace: cert-manager

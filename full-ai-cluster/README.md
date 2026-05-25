@@ -24,19 +24,30 @@ full-ai-cluster/
 │       ├── control-plane/      ← configuration.nix + hardware + README
 │       └── worker-gpu/         ← configuration.nix + hardware + README
 └── k8s/
-    ├── bootstrap/              ← K3S auto-applies on first boot (in this order)
+    ├── bootstrap/              ← K3S auto-applies on first boot (dependency order)
     │   ├── cilium-namespace.yaml
-    │   ├── cilium-install.yaml ← CNI must exist before any pods (incl. ArgoCD)
+    │   ├── cilium-install.yaml      ← 1. Cilium (CNI + Hubble + Service Mesh + BPF MASQUERADE)
+    │   ├── cert-manager-install.yaml ← 2. cert-manager (TLS for Vault)
+    │   ├── vault-install.yaml       ← 3. Vault (secrets backend)
+    │   ├── spire-install.yaml       ← 4. SPIRE (workload identity)
+    │   ├── trust-manager-install.yaml ← 5. Trust Manager (CA bundle dist)
+    │   ├── external-secrets-install.yaml ← 6. ESO (Vault → K8s Secret sync)
     │   ├── argocd-namespace.yaml
-    │   ├── argocd-install.yaml
-    │   └── root-application.yaml ← App-of-Apps root
+    │   ├── argocd-install.yaml      ← 7. ArgoCD
+    │   └── root-application.yaml    ← App-of-Apps root
     └── applications/           ← ArgoCD watches recursively
-        ├── cilium/             ← CNI + Hubble + KPR + BPF MASQUERADE
+        ├── cilium/             ← CNI + Hubble + Cilium Service Mesh + BPF MASQUERADE
+        ├── cert-manager/       ← TLS cert issuance
+        ├── vault/              ← runtime secrets engine
+        ├── spire/              ← SPIFFE workload identity
+        ├── trust-manager/      ← CA bundle distribution
+        ├── external-secrets/   ← Vault → K8s Secret sync
+        ├── sealed-secrets/     ← encrypted secrets at rest in git
         ├── orleans/            ← distributed cron #1
         ├── temporal/           ← distributed cron #2 (TS)
         ├── dapr/               ← distributed cron #3 (actors)
-        ├── gitlab/             ← self-hosted Git host (option A)
-        ├── forgejo/            ← self-hosted Git host (option B, lighter)
+        ├── gitlab/             ← self-hosted Git host (default-on)
+        ├── forgejo/            ← self-hosted Git host (manual-sync alt)
         ├── argo-workflows/     ← DAG job scheduler
         ├── argo-rollouts/      ← progressive delivery
         ├── longhorn/           ← distributed block storage
@@ -44,8 +55,8 @@ full-ai-cluster/
         ├── hindsight/          ← agent persistent memory for Hermes (chart URL TBD)
         ├── oz/                 ← OpenZiti zero-trust overlay
         ├── hermes/             ← custom AI agent (cloud LLMs via SOPS-baked keys, OZ transport, Hindsight memory)
-        ├── ollama/             ← LLM serving (option A — local — DEFERRED)
-        ├── vllm/               ← LLM serving (option B — high-throughput — DEFERRED)
+        ├── ollama/             ← LLM serving (option A — local — DEFERRED, manual-sync)
+        ├── vllm/               ← LLM serving (option B — high-throughput — DEFERRED, manual-sync)
         ├── deepseek-coder/     ← model deploy → Ollama or vLLM (DEFERRED with local)
         ├── qwen-coder/         ← model deploy → Ollama or vLLM (DEFERRED with local)
         ├── kube-prometheus-stack/ ← Prometheus + Grafana + Alertmanager
@@ -56,10 +67,12 @@ full-ai-cluster/
         ├── tempo/              ← traces
         ├── alloy/              ← OpenTelemetry collector
         ├── mimir/              ← long-term metrics storage
-        ├── istio/              ← service mesh
-        ├── open-policy-agent/  ← admission policy
-        ├── sealed-secrets/     ← secrets at rest in git (option A)
-        └── vault/              ← runtime secrets (option B)
+        └── open-policy-agent/  ← admission policy
+
+# Istio REMOVED — Cilium Service Mesh (in the cilium/ Application
+# above) provides the same L7 capabilities (mTLS, traffic shifting,
+# Gateway API, ingress controller, observability) natively atop
+# the CNI without a sidecar.
 ```
 
 ## Two layers, two reconcilers

@@ -39,20 +39,50 @@
       "--service-cidr=10.43.0.0/16"
     ];
 
-    # K3S applies these manifests on first boot. We seed only what's
-    # required to get Cilium + ArgoCD running. ArgoCD takes over and
-    # reconciles every other workload from k8s/applications/.
+    # K3S applies these manifests on first boot in dependency order.
+    # Each layer depends on the one(s) above it; ArgoCD comes LAST
+    # so its own pods can use cert-manager TLS + Vault secrets +
+    # SPIRE identities on bring-up.
+    #
+    # Order (per Aaron 2026-05-25):
+    #   1. Cilium  (CNI + KPR + Hubble + Cilium Service Mesh + BPF MASQUERADE)
+    #   2. cert-manager  (TLS certs; Vault depends on these)
+    #   3. Vault   (most other tools depend on it)
+    #   4. SPIRE   (chains to Vault as upstream CA)
+    #   5. Trust Manager  (distributes SPIRE + cert-manager bundles)
+    #   6. External Secrets Operator  (syncs Vault secrets into K8s)
+    #   7. ArgoCD  (reconciles everything else from k8s/applications/)
+    #
+    # K3S applies manifests in alphabetical filename order, so
+    # `00-`/`10-`/`20-`/.../`70-` prefixes are NOT needed —
+    # `cert-manager-install.yaml` < `cilium-install.yaml` <
+    # `external-secrets-install.yaml` ... etc. is fine because the
+    # Helm Controller waits for each chart's pods to be Ready before
+    # the next chart's pods start contending. But Helm Controller
+    # runs the install jobs in parallel by default — the dependency
+    # ordering above is enforced by setting `spec.timeout` +
+    # `spec.repo` in a way that lets later charts retry while their
+    # dependencies finish. For deterministic ordering during
+    # bootstrap, the `bootstrapAfter` annotation pattern (TBD) would
+    # be added in a follow-up.
     manifests = {
-      # CNI MUST come first — without it no pods can schedule,
-      # including ArgoCD's own pods. Cilium installs here; ArgoCD's
-      # cilium Application (k8s/applications/cilium/) takes over
-      # reconciliation once it's healthy.
+      # Cilium (CNI must exist before any pod can schedule).
       cilium-namespace.source = ../../k8s/bootstrap/cilium-namespace.yaml;
       cilium-install.source = ../../k8s/bootstrap/cilium-install.yaml;
-      # Then ArgoCD itself.
+      # cert-manager (Vault TLS source).
+      cert-manager-install.source = ../../k8s/bootstrap/cert-manager-install.yaml;
+      # Vault (secrets backend).
+      vault-install.source = ../../k8s/bootstrap/vault-install.yaml;
+      # SPIRE (workload identity, chains to Vault).
+      spire-install.source = ../../k8s/bootstrap/spire-install.yaml;
+      # Trust Manager (CA bundle distribution).
+      trust-manager-install.source = ../../k8s/bootstrap/trust-manager-install.yaml;
+      # External Secrets Operator (Vault → K8s Secret sync).
+      external-secrets-install.source = ../../k8s/bootstrap/external-secrets-install.yaml;
+      # ArgoCD (reconciler for everything else).
       argocd-namespace.source = ../../k8s/bootstrap/argocd-namespace.yaml;
       argocd-install.source = ../../k8s/bootstrap/argocd-install.yaml;
-      # Finally the App-of-Apps that hands off to ArgoCD.
+      # Root App-of-Apps — hands off to ArgoCD.
       root-application.source = ../../k8s/bootstrap/root-application.yaml;
     };
   };

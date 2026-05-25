@@ -1,0 +1,37 @@
+# SPIRE bootstrap install. K3S HelmChart CR — runs AFTER Vault
+# (SPIRE chains to Vault as upstream CA), BEFORE Trust Manager
+# (Trust Manager distributes SPIRE's CA bundle).
+
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: spire
+  namespace: kube-system
+spec:
+  chart: spire
+  repo: https://spiffe.github.io/helm-charts-hardened/
+  version: 0.24.2
+  targetNamespace: spire
+  createNamespace: true
+  valuesContent: |-
+    global:
+      spire:
+        clusterName: zeta
+        trustDomain: zeta.local
+        recommendations:
+          enabled: true
+    spire-server:
+      ca_subject:
+        country: US
+        common_name: zeta-spire-ca
+        organization: Zeta
+      persistence:
+        type: pvc
+        size: 5Gi
+        storageClass: longhorn
+    spire-agent:
+      workloadAttestors:
+        k8s: { enabled: true, skipKubeletVerification: false }
+        unix: { enabled: true }
+    spiffe-csi-driver:
+      enabled: true

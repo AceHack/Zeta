@@ -1,0 +1,53 @@
+# External Secrets Operator (ESO) — sync secrets from Vault (and
+# other external stores) into Kubernetes Secrets for consumption
+# by workloads that can't natively talk to Vault.
+#
+# Pairs with Vault: ESO's ClusterSecretStore points at the Vault
+# service, and workloads declare ExternalSecret CRs that ESO
+# materializes as Kubernetes Secret objects.
+#
+# Installed AFTER Vault is healthy (ESO needs a working Vault to
+# sync from).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: external-secrets
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.external-secrets.io
+    chart: external-secrets
+    targetRevision: 0.10.7
+    helm:
+      releaseName: external-secrets
+      valuesObject:
+        installCRDs: true
+        replicaCount: 1
+        webhook:
+          replicaCount: 1
+        certController:
+          replicaCount: 1
+        # ClusterSecretStore for Vault (lands as a separate manifest
+        # after vault + ESO are both healthy):
+        #   apiVersion: external-secrets.io/v1beta1
+        #   kind: ClusterSecretStore
+        #   metadata: { name: vault-backend }
+        #   spec:
+        #     provider:
+        #       vault:
+        #         server: "https://vault.vault.svc.cluster.local:8200"
+        #         path: "secret"
+        #         version: "v2"
+        #         auth:
+        #           kubernetes:
+        #             mountPath: "kubernetes"
+        #             role: "external-secrets"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: external-secrets
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

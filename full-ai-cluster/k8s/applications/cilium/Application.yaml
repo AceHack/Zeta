@@ -1,5 +1,7 @@
-# Cilium — CNI + KPR + Hubble + BPF MASQUERADE.
+# Cilium — CNI + KPR + Hubble + Cilium Service Mesh + BPF MASQUERADE.
 # Replaces K3S's default flannel + kube-proxy (disabled in k3s-server.nix).
+# Istio removed — Cilium Service Mesh provides the same L7 capabilities
+# (mTLS, traffic shifting, observability) natively atop the CNI.
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -56,6 +58,34 @@ spec:
 
         operator:
           replicas: 1   # bump to 2 once a second control-plane exists
+
+        # Cilium Service Mesh — L7-aware policy + mTLS + traffic
+        # management without a sidecar (Envoy embedded in the
+        # Cilium agent).
+        l7Proxy: true
+        envoy:
+          enabled: true
+        encryption:
+          enabled: true
+          type: wireguard      # node-to-node encryption
+          nodeEncryption: true
+        # Authentication via SPIRE workload identities (configured
+        # after spire/Application.yaml is healthy).
+        authentication:
+          mutual:
+            spire:
+              enabled: false   # flip to true once SPIRE is up
+
+        # Gateway API support — replaces the Istio Gateway role.
+        gatewayAPI:
+          enabled: true
+
+        # Ingress controller — Cilium can serve as ingress directly,
+        # removing the need for ingress-nginx as a separate workload.
+        ingressController:
+          enabled: true
+          loadbalancerMode: shared
+          default: true
 
   destination:
     server: https://kubernetes.default.svc

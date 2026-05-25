@@ -1,0 +1,36 @@
+# cert-manager — TLS cert provisioning for the cluster.
+# Installed by K3S at bootstrap (BEFORE Vault — Vault needs TLS
+# certs for its API). ArgoCD then adopts and reconciles ongoing.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: cert-manager
+    targetRevision: v1.16.2
+    helm:
+      releaseName: cert-manager
+      valuesObject:
+        crds:
+          enabled: true
+        replicaCount: 1
+        webhook:
+          replicaCount: 1
+        cainjector:
+          replicaCount: 1
+        prometheus:
+          enabled: true
+          servicemonitor:
+            enabled: false   # enabled once kube-prometheus-stack lands
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }   # CRDs precious — no prune
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

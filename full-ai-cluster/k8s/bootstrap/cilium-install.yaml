@@ -40,3 +40,18 @@ spec:
         enableOpenMetrics: true
     operator:
       replicas: 1
+    # Cilium Service Mesh — L7 routing/mTLS/observability without
+    # a sidecar (replaces Istio in this stack).
+    l7Proxy: true
+    envoy:
+      enabled: true
+    encryption:
+      enabled: true
+      type: wireguard
+      nodeEncryption: true
+    gatewayAPI:
+      enabled: true
+    ingressController:
+      enabled: true
+      loadbalancerMode: shared
+      default: true

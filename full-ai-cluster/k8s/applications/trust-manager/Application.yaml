@@ -1,0 +1,41 @@
+# Trust Manager — distributes CA bundles to every namespace so
+# workloads can verify mTLS connections without manually copying
+# certs into ConfigMaps. Pairs with cert-manager (which issues
+# certs) and SPIRE (which provides workload identity).
+#
+# Installed AFTER cert-manager + Vault (cert-manager provides
+# the CRDs Trust Manager extends; Vault is the trust root upstream
+# in many configurations).
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: trust-manager
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://charts.jetstack.io
+    chart: trust-manager
+    targetRevision: v0.15.0
+    helm:
+      releaseName: trust-manager
+      valuesObject:
+        crds:
+          enabled: true
+        replicaCount: 1
+        # Default-trust-bundle: pull from the cluster's own CA
+        # (cert-manager-issued) once both cert-manager + Vault are
+        # healthy. Configure via a Bundle CR in a follow-up.
+        defaultPackage:
+          enabled: false
+        app:
+          trust:
+            namespace: cert-manager
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cert-manager   # trust-manager runs in the cert-manager namespace
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]

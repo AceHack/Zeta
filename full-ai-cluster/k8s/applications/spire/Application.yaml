@@ -1,0 +1,65 @@
+# SPIRE — SPIFFE workload identity. Issues short-lived SVIDs to
+# every workload so pod-to-pod auth doesn't depend on long-lived
+# Kubernetes ServiceAccount tokens.
+#
+# Installed AFTER Vault (Vault is the upstream key material source
+# for SPIRE's UpstreamAuthority — SPIRE can chain to Vault as its
+# CA backend rather than self-signing). Trust Manager (next app)
+# then distributes SPIRE's CA bundle to other workloads.
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spire
+  namespace: argocd
+  finalizers: [ resources-finalizer.argocd.argoproj.io ]
+spec:
+  project: default
+  source:
+    repoURL: https://spiffe.github.io/helm-charts-hardened/
+    chart: spire
+    targetRevision: 0.24.2
+    helm:
+      releaseName: spire
+      valuesObject:
+        global:
+          spire:
+            clusterName: zeta
+            trustDomain: zeta.local
+            recommendations:
+              enabled: true
+        spire-server:
+          ca_subject:
+            country: US
+            common_name: zeta-spire-ca
+            organization: Zeta
+          persistence:
+            type: pvc
+            size: 5Gi
+            storageClass: longhorn
+          # Chain to Vault as the upstream CA. Uncomment + configure
+          # after vault/Application.yaml is healthy:
+          # upstreamAuthority:
+          #   vault:
+          #     enabled: true
+          #     vaultAddr: https://vault.vault.svc.cluster.local:8200
+          #     pkiMountPoint: pki
+          #     caCertSecret: vault-ca
+          #     authMethod: k8s
+        spire-agent:
+          # K3S uses containerd, not Docker — wire the agent at the
+          # containerd socket so SVIDs attach to the right workload.
+          workloadAttestors:
+            k8s:
+              enabled: true
+              skipKubeletVerification: false
+            unix:
+              enabled: true
+        spiffe-csi-driver:
+          enabled: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: spire
+  syncPolicy:
+    automated: { prune: false, selfHeal: true }
+    syncOptions: [ CreateNamespace=true, ServerSideApply=true ]
