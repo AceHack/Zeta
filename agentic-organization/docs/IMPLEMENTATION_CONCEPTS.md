@@ -1,4 +1,4 @@
-# Hermes Organization Runtime - Implementation Concepts
+# Agentic Organization Runtime - Implementation Concepts
 
 ## Purpose
 

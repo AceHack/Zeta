@@ -1,4 +1,4 @@
-# Hermes Organization Runtime - Current Design
+# Agentic Organization Runtime - Current Design
 
 ## Purpose
 
@@ -170,7 +170,7 @@ Hats activate and constrain memory. Memories created while wearing a hat must be
 A hat is a role and policy bundle.
 
 The starter department, hat, and tool inventory is maintained in
-`docs/agentic-organization/DEPARTMENT_HAT_TOOL_INVENTORY.md`.
+`agentic-organization/docs/DEPARTMENT_HAT_TOOL_INVENTORY.md`.
 
 It should define:
 

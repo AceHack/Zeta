@@ -37,6 +37,16 @@ ambiguous internal capability request
   -> outcome review
 ```
 
+For v0, reduce this to the smallest useful three-step vertical:
+
+```text
+capability request
+  -> one readiness/gate decision
+  -> one hat-assigned Hermes run with evidence
+```
+
+After that works, add BRD/CA, QA, release, outcome review, and self-improvement loops incrementally. The full lifecycle is reference material until a slice proves it.
+
 Need to decide:
 
 - exact example feature;
@@ -56,13 +66,15 @@ Need to decide:
 - whether this is a new app under `agentic-team/packages` or a separate top-level workspace;
 - whether frontend and backend live together at first;
 - whether initial deployment target is local Docker Compose, k3s, or both.
+- whether runtime code belongs under `full-ai-cluster/` as a cluster subsystem or as a parallel top-level product tree.
 
 Recommendation:
 
-- start as a new Hermes Organization app, separate from dev-portal;
+- start as a new Agentic Organization app, separate from dev-portal;
 - use dev-portal/TPM only as reference and selective extraction source;
 - build modular monolith first, with clear boundaries for later service extraction.
 - use a TypeScript monorepo with `apps/api`, `apps/web`, `apps/workers`, `apps/temporal-worker`, `apps/dapr-actors`, and shared `packages/*` as defined in the build plan.
+- decide placement before code lands. Docs can live at `agentic-organization/docs/`; runtime implementation should not create a second parallel substrate by accident.
 
 ## 3. Source of Truth
 
@@ -272,17 +284,28 @@ Need to decide:
 
 - whether `Hat`, `HatBinding`, `HatPolicy`, and `HatSwap` are part of v0 or v1;
 - which hat fields are source-authored in Organization DB versus CRDs;
+- where the TypeScript CRD contract package lives and how it is generated or checked against the YAML schema;
 - which OPA constraints are required before live cluster assignment;
 - whether hat graph rendering is built early for debugging/policy authors;
 - how `HatSwap` maps to Organization signals and audit events;
 - how warmup, cooldown, sticky attribution, succession, and reputation map into the assignment state machine;
 - whether the hat operator is enforcement-only or can create Organization work requests.
+- whether a future `operator-ts` shares the Go operator's leader-election Lease or uses an explicit disjoint ownership partition.
 
 Recommendation:
 
 - model the boundary now;
 - implement Organization DB assignment first;
-- project to CRD/OPA enforcement once the first assignment state machine is stable.
+- add read-only TypeScript CRD consumption next: list hats, watch bindings, decode HatSwap, and project status into Organization signals;
+- project to CRD/OPA enforcement once the first assignment state machine is stable;
+- treat TypeScript operator reconciliation as a later parity milestone, not as the first blocking requirement.
+
+Readiness tests before any TypeScript operator writes lifecycle status:
+
+- CRD schema parity: TypeScript interfaces are generated from, or mechanically checked against, the CRD YAML;
+- HatSwap parity: TypeScript and Go use the same event enum, payload fields, durable identity, and NATS/log/Event projection rules;
+- controller ownership: Go and TypeScript share one leader-election Lease or have an ADR-backed disjoint ownership partition;
+- projection idempotency: read-only TypeScript consumers can replay HatSwap CRs and NATS messages without double-counting a transition.
 
 ## 11. Scheduling and Hat-Owned Cadences
 

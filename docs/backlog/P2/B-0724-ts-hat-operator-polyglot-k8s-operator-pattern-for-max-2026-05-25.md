@@ -14,7 +14,7 @@ composes_with:
   - full-ai-cluster/k8s/applications/hat-system/
   - full-ai-cluster/k8s/applications/hat-system/crds/
   - full-ai-cluster/k8s/applications/hat-system/operator/
-  - docs/agentic-organization/CLUSTER_NATIVE_HAT_SYSTEM.md
+  - agentic-organization/docs/CLUSTER_NATIVE_HAT_SYSTEM.md
   # B-0722 ref pending PR #4954 merge
 ---
 
@@ -80,14 +80,14 @@ So: Go stays where the ecosystem truly forces it (some CRD tooling, kubebuilder 
 - [ ] Reconciles `HatBinding` lifecycle: `Pending → Warmup → Active → Probation → Revoked`
 - [ ] Emits the same 4 sinks per state transition: HatSwap CR + k8s Event + JSON log (Loki) + NATS publish
 - [ ] Validating webhook enforces the 7 OPA throttle constraints at admission time (alternative to or composing with Gatekeeper)
-- [ ] Container image builds + deploys via the existing Application.yaml pattern (separate Deployment from the Go operator; leader election ensures only one is active)
+- [ ] Container image builds + deploys via the existing Application.yaml pattern (separate Deployment from the Go operator; shared Lease identity or explicit disjoint ownership partition ensures only one lifecycle reconciler writes a given `HatBinding`)
 - [ ] Tests written in `vitest` or `jest`; the same envtest-style harness pattern Go uses
 - [ ] Both operators verifiable side-by-side in a local k3d / kind dev cluster (PR #4953 was the dev-cluster substrate attempt; closed pending redesign — once the redesign lands, verify there)
 
 ## Composition with shipped substrate
 
 - **PR #4930** (hat-system Go operator) — TS operator runs ALONGSIDE; both use the same CRDs at `full-ai-cluster/k8s/applications/hat-system/crds/`. The Go scaffold becomes the reference / reliability baseline; the TS operator is Max's primary surface
-- **PR #4958** (agentic-organization docs) — `CLUSTER_NATIVE_HAT_SYSTEM.md` describes the CRD shape Max envisions; this row makes it concrete
+- **PR #4961** (agentic-organization docs) — `agentic-organization/docs/CLUSTER_NATIVE_HAT_SYSTEM.md` describes the Organization-facing CRD/operator contract; this row makes the TypeScript implementation path concrete
 - **B-0722** (CI ephemeral cluster smoke; PR #4954 pending merge) — smoke test will eventually assert BOTH operators reconcile the same CRDs identically (polyglot validation gate)
 - **B-0723** (multi-kubelet per machine; PR #4955 pending merge) — polyglot operators × multi-cluster-per-machine = high redundancy; a bug in Go-operator on cluster-A is isolated from TS-operator on cluster-B
 
@@ -161,9 +161,9 @@ This row owns the substrate-engineering arc; specific PRs land each step.
 
 ## Naming question
 
-`agentic-organization` substrate uses the term `Hermes Organization` interchangeably (per the inconsistencies flagged in PR #4958). Naming TBD per Aaron's *"call out the inconsistence for now and let us figure it out in real time."*
+The subsystem name is **Agentic Organization**. Use `hat-system` as the Kubernetes operator/CRD name, and use Hermes only for the agent runtime/component.
 
-For this row: use `hat-system` as the operator name (matches the YAML directory + PR #4930). Subsystem naming can converge later without renaming the operator itself.
+For this row: use `hat-system` as the operator name (matches the YAML directory + PR #4930). The operator name does not need to mirror the broader subsystem name.
 
 ## Estimated scope
 

@@ -36,6 +36,10 @@ Important concrete directories:
 | `full-ai-cluster/nixos/hosts/worker-gpu/` | GPU worker host config |
 | `full-ai-cluster/k8s/bootstrap/` | K3S first-boot manifests, applied in dependency order |
 | `full-ai-cluster/k8s/applications/` | ArgoCD-recognized platform applications |
+| `full-ai-cluster/k8s/applications/hat-system/` | Cluster-native hat CRDs, OPA policies, seed hats, graph tooling, and operator implementations |
+| `full-ai-cluster/k8s/applications/hat-system/crds/` | Canonical Hat, HatBinding, HatSwap, and HatPolicy schemas |
+| `full-ai-cluster/k8s/applications/hat-system/operator/` | Go reference operator scaffold and reliability baseline |
+| `full-ai-cluster/k8s/applications/hat-system/operator-ts/` | Future TypeScript operator implementation, if/when parity work starts |
 
 ## OS and Cluster Responsibilities
 
@@ -58,6 +62,8 @@ The scaffold deliberately has two reconciliation domains:
 | ArgoCD | Cluster workloads and platform applications under `k8s/applications/` | Git commit and push, then ArgoCD reconciliation |
 
 The Organization runtime should be a consumer of this substrate. It should create Organization records, request workload launches, watch health, and surface drift, but it should not become the host bootstrap system.
+
+Kubernetes operators are ArgoCD-managed workload controllers inside the cluster layer. They are not a third source of truth beside Nix and ArgoCD. The hat-system operator reconciles hat CRDs; the Organization records why hats exist and when assignments are approved.
 
 ## Cilium Bootstrap Constraint
 
@@ -115,7 +121,7 @@ The concrete bootstrap directory currently represents this order with:
 | CockroachDB | Distributed SQL source of truth for Organization-owned critical state |
 | Temporal TS | Durable workflow/process rail |
 | Dapr Actors | Entity-local actor/concurrency rail |
-| Orleans | Present as a custom silo application; not the preferred TypeScript-first Organization primitive unless a .NET grain use case is explicit |
+| Orleans | Cluster-resident .NET virtual actor/silo capability; NestJS composes with it through adapters when .NET grain semantics are needed |
 | Argo Workflows / Rollouts | DAG jobs and progressive delivery |
 | Hindsight | Hermes persistent memory |
 | OpenZiti / Ziti | Secure transport/connectivity layer |

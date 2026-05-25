@@ -1,4 +1,4 @@
-# Hermes Organization UI and Observability Concepts
+# Agentic Organization UI and Observability Concepts
 
 ## Purpose
 

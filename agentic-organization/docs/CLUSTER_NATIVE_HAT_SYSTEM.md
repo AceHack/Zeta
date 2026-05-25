@@ -1,8 +1,53 @@
 # Cluster-Native Hat System
 
-This document captures the theoretical design for a Kubernetes-native hat system. It focuses on CRDs, OPA policies, graph enforcement, time-bounded hat bindings, succession, reputation, events, and observability. It intentionally avoids deployment YAML details.
+This document captures the theoretical design for a Kubernetes-native hat system. It focuses on CRDs, OPA policies, graph enforcement, time-bounded hat bindings, succession, reputation, events, and observability.
+
+The deployment substrate already exists at [`../../full-ai-cluster/k8s/applications/hat-system/`](../../full-ai-cluster/k8s/applications/hat-system/). That operator is the concrete cluster implementation direction for the CRD/OPA/runtime projection layer. This document should extend and explain that implementation, not parallel-design a second hat system.
 
 The goal is not to replace the Organization Work OS. The goal is to give hats a cluster-native control-plane representation so runtime workloads, policies, and observability can reason about roles consistently across distributed Hermes sessions.
+
+## Existing Operator Composition
+
+The shipped hat-system operator provides:
+
+- four CRDs: `Hat`, `HatBinding`, `HatSwap`, and `HatPolicy`;
+- OPA Gatekeeper constraints, including supervisor-cycle prevention;
+- seed hats and default policy resources;
+- a Go operator scaffold as the first reference implementation;
+- structured tick fan-out through HatSwap records, Kubernetes Events, structured logs, and NATS;
+- graph rendering and Loki/Hubble query support.
+
+TypeScript should be a first-class consumer of this substrate. That means Organization services, NestJS workers, MCP Gateway, and any future `operator-ts` implementation should consume the same CRDs and event contracts instead of inventing a second hat API.
+
+The Agentic Organization layer adds the missing business and product surface above that operator:
+
+- CockroachDB-backed source of truth for projects, initiatives, tasks, gates, assignments, and outcomes;
+- projection from Organization hat definitions and assignments into the CRDs;
+- reconciliation from CRD status and HatSwap ticks back into Organization signals;
+- MCP Gateway and Credential Proxy checks against active hat assignments;
+- Hindsight memory attribution by agent, hat, project, team, task, and meeting;
+- UI projections for hat supply, succession, reputation, and policy decisions.
+
+If future implementation finds a mismatch, prefer extending the shipped operator or documenting a replacement decision through an ADR before creating another hat runtime.
+
+## Polyglot Operator Contract
+
+The CRDs are the contract. Go, TypeScript, Rust, Python, or any later implementation may reconcile the contract, but no language implementation may redefine it.
+
+TypeScript has two first-class roles:
+
+- consumer: Organization API, workers, MCP Gateway, UI projections, and tests read/write `Hat`, `HatBinding`, `HatSwap`, and `HatPolicy` through typed clients;
+- implementation: a future `operator-ts` can reconcile the same resources when we want a TypeScript-native operator surface.
+
+Rules for a TypeScript operator:
+
+- reuse the same CRD YAML and generated or hand-checked TypeScript interfaces;
+- emit the same `HatSwap`, Kubernetes Event, structured log, and NATS payload shape as the Go implementation;
+- use the same leader-election lease identity as the Go operator when both watch the same resources;
+- never let two independent reconcilers mutate the same `HatBinding` lifecycle unless ownership is explicitly partitioned by CRD kind, label selector, namespace, or ADR-backed controller ownership;
+- prove parity against the Go scaffold with a side-by-side dev-cluster test before it becomes operator-of-record.
+
+The first safe TypeScript milestone is read-only consumption: list hats, watch bindings, decode status, and consume HatSwap events into Organization signals. Mutation and reconciliation come after the projection path is observable and idempotent.
 
 ## Core Idea
 
@@ -50,6 +95,8 @@ The cluster-native hat system is an enforcement and runtime projection layer.
 The CRDs should not become a second business database. They should mirror and enforce the runtime-relevant parts of hats.
 
 ## CRD Concepts
+
+Implementation note: the CRD YAML under [`../../full-ai-cluster/k8s/applications/hat-system/crds/`](../../full-ai-cluster/k8s/applications/hat-system/crds/) is the source of truth. The TypeScript shapes below are orientation sketches for Organization developers and must be generated from, or checked against, the CRD YAML before implementation.
 
 ### Hat
 
@@ -110,21 +157,20 @@ Important fields:
 
 ```ts
 type HatBindingSpec = {
-  hatRef: string;
-  wearerRef: string;
-  assignmentRef: string;
-  scope: {
-    projectId?: string;
-    initiativeId?: string;
-    workItemId?: string;
-    teamId?: string;
-    ozRunId?: string;
-    namespace?: string;
-    serviceAccount?: string;
+  hat: string;
+  wearer: {
+    spiffeID: string;
+    serviceAccountRef?: {
+      name: string;
+      namespace: string;
+    };
   };
-  requestedBy: string;
-  expiresAt: string;
-  reason: string;
+  cosignedBy?: Array<{
+    spiffeID: string;
+    signedAt: string;
+    attestation?: string;
+  }>;
+  requestedAt?: string;
 };
 ```
 
@@ -132,13 +178,16 @@ Important status:
 
 ```ts
 type HatBindingStatus = {
-  phase: "Pending" | "WarmingUp" | "Active" | "CoolingDown" | "Released" | "Expired" | "Revoked" | "Denied";
-  tokenIssuedAt?: string;
-  tokenExpiresAt?: string;
-  lastRefreshAt?: string;
-  lastActivityAt?: string;
-  swapId?: string;
-  denialReason?: string;
+  phase: "Pending" | "Warmup" | "Active" | "Probation" | "Revoked";
+  boundAt?: string;
+  warmupEndsAt?: string;
+  stickyAttributionEndsAt?: string;
+  conditions?: Array<{
+    type: string;
+    status: string;
+    reason?: string;
+    message?: string;
+  }>;
 };
 ```
 
@@ -167,14 +216,24 @@ Important fields:
 
 ```ts
 type HatSwapSpec = {
-  hatRef: string;
-  previousWearerRef?: string;
-  nextWearerRef?: string;
-  bindingRef: string;
-  transition: "bind" | "activate" | "refresh" | "cooldown" | "release" | "expire" | "revoke" | "deny";
-  reason: string;
-  organizationCorrelationId: string;
-  traceId: string;
+  hat: string;
+  wearer: {
+    spiffeID: string;
+  };
+  event: "SwapOn" | "SwapOff" | "WarmupBegin" | "WarmupEnd" | "Probation" | "QuorumGrant" | "Throttled";
+  occurredAt: string;
+  reason?: string;
+  message?: string;
+  bindingRef?: {
+    name?: string;
+    namespace?: string;
+    uid?: string;
+  };
+  throttleName?: string;
+  previousWearer?: {
+    spiffeID?: string;
+    revokedAt?: string;
+  };
 };
 ```
 
@@ -324,16 +383,18 @@ Operator responsibilities:
 
 The operator should not decide business priority, assign hats because it feels useful, or bypass Organization gates. Those decisions come from Organization services and authorized hats.
 
+When more than one operator implementation exists, operator responsibility also includes controller ownership discipline. If Go and TypeScript are both deployed against the same CRDs, they must either share the same Kubernetes `Lease` for leader election or use an explicit partitioning rule that makes their write sets disjoint. Running two active writers against the same binding lifecycle is a correctness bug, not redundancy.
+
 ## Event Flow
 
 ```text
 Organization approves hat assignment
   -> Organization writes HatAssignment
   -> Organization projects/updates HatBinding CRD
-  -> OPA validates graph, scope, conflicts, quorum, TTL, cooldown
+  -> Gatekeeper/OPA blocks invalid cluster state; Organization policy explains business denials
   -> Cilium/SPIRE enforce workload-level access identity and network policy
   -> operator observes HatBinding
-  -> status moves Pending/WarmingUp/Active/etc.
+  -> status moves Pending/Warmup/Active/Probation/Revoked
   -> exactly one HatSwap emitted per transition
   -> Kubernetes Event + structured log + NATS event + Organization signal
   -> MCP Gateway and Credential Proxy can verify active binding
@@ -412,5 +473,6 @@ For now, the important implementation contract is the shape of the hat lifecycle
 - Which binding phases should block MCP tools?
 - How much reputation should appear in CRD status versus Organization UI only?
 - Does `HatSwap` live as a CRD, an event stream, or both?
+- Should the NATS subject in `HatPolicy.spec.tickEmit` be a single subject, a base prefix, or a template such as `zeta.society.hats.<hat>.<event>`?
 - How should Graphviz rendering map OPA throttles and graph constraints to human-readable policy explanations?
 - What is the minimum set of OPA constraints required before the first live cluster run?

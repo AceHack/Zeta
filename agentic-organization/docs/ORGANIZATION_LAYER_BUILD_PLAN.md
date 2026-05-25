@@ -33,6 +33,7 @@ Recommended stack:
 | Messaging | NATS JetStream | Organization signals, inbox/outbox, live projection updates, DLQ/replay |
 | Durable workflows | Temporal TypeScript | Initiative, approval, release, incident, scheduled review, and long-running process lifecycles |
 | Hot entity state | Dapr Actors | Hat supply, agent session context, team rooms, mailboxes, meeting state, run heartbeat coordination |
+| Kubernetes hat contracts | `@kubernetes/client-node`, generated or hand-checked CRD types | TypeScript-first access to `Hat`, `HatBinding`, `HatSwap`, and `HatPolicy` without redefining the hat API |
 | Testing | Vitest, Playwright, Testcontainers | Domain/unit tests, browser QA automation, real CockroachDB/NATS integration tests |
 | Observability | OpenTelemetry JS, Pino, Prometheus metrics | End-to-end traces across API, workflows, actors, MCP tools, NATS, pods, and UI evidence |
 | Delivery | Docker images, Helm or Kustomize, ArgoCD, GitLab CI | Initiative branch builds, preview/QA deployments, GitOps promotion into the cluster |
@@ -56,6 +57,7 @@ packages/
   hats/                hat graph, assignment, JWT issuance/refresh, supply policies
   workflows/           Temporal workflow and activity definitions
   actors/              Dapr actor interfaces and shared actor contracts
+  k8s-hats/            CRD types, watch helpers, HatSwap codecs, projection clients
   mcp/                 tool registry, tool schemas, policy-checked handlers
   memory/              Hindsight adapter, attribution, scoped recall/write contracts
   hermes/              Hermes session adapter, run adapter, context builder
@@ -68,7 +70,9 @@ packages/
 
 Start as one repository and one deployable product made of multiple processes. Do not split into many microservices until the domain boundaries have proven themselves through real Organization workflows.
 
-Initial implementation should not start with GraphQL, Orleans, Dapr Workflow, or a broad service mesh abstraction inside the app. Use REST/OpenAPI, Temporal for durable workflows, Dapr Actors for narrow hot-state actors, NATS for events, and OpenZiti/Cilium at the cluster layer.
+Initial implementation should not start with GraphQL, Dapr Workflow, or a broad service mesh abstraction inside the app. Use REST/OpenAPI, Temporal for durable workflows, Dapr Actors for narrow hot-state actors, Orleans for .NET grain/silo workloads where those semantics are required, NATS for events, and OpenZiti/Cilium at the cluster layer.
+
+NestJS does not replace Orleans. NestJS is the TypeScript composition shell for APIs, workers, policy checks, and adapters. Orleans remains a cluster-resident distributed-cron/virtual-actor primitive that the TypeScript app can call through an explicit adapter when a workflow needs Orleans grain semantics.
 
 ### Nest Orchestrator Composition
 
@@ -82,6 +86,7 @@ Shared packages own reusable capability logic:
 - NATS event contracts and consumers;
 - Temporal workflow/activity definitions;
 - Dapr actor contracts;
+- Kubernetes hat CRD clients, informers, and event codecs;
 - MCP tool schemas and handlers;
 - Hindsight, Hermes, OpenZiti, Credential Proxy, and observability adapters.
 
@@ -93,7 +98,37 @@ NestJS apps compose those packages into runnable orchestrators:
 - `apps/dapr-actors` hosts actor implementations and binds actor state to package contracts;
 - `apps/mcp-gateway` exposes MCP tools and resolves actor/session/hat context before delegating to package handlers.
 
+Cluster-owned operator code may live under `full-ai-cluster/k8s/applications/hat-system/operator-ts/` rather than inside the app monorepo. It should still consume the same TypeScript contracts from the Organization package layer when that dependency boundary is available, or mirror generated CRD types with a parity test until package sharing is stable.
+
 The rule: packages should contain the reusable business and infrastructure capability; Nest orchestrators should wire lifecycle, dependency injection, transport adapters, health checks, and process concerns. Do not bury Organization rules directly inside controllers or worker entrypoints.
+
+### Orleans Composition
+
+Orleans should be treated as an existing cluster primitive, not an accidental duplicate of NestJS.
+
+Use Orleans when:
+
+- a .NET grain model is already the best fit;
+- the work benefits from Orleans silo locality or grain identity;
+- the cluster-level distributed-cron design explicitly routes through Orleans.
+
+Use NestJS when:
+
+- the Organization needs HTTP/OpenAPI, MCP, worker, or UI-facing process orchestration;
+- the logic belongs in shared TypeScript packages;
+- the flow coordinates CockroachDB, NATS, Temporal, Dapr, Hermes, Hindsight, and Credential Proxy adapters.
+
+Integration shape:
+
+```text
+NestJS orchestrator
+  -> shared npm package contract
+  -> Orleans adapter
+  -> Orleans grain/silo
+  -> Organization signal/audit projection
+```
+
+No implementation should silently move long-running state from Orleans to NestJS or from NestJS to Orleans. That boundary needs an explicit design note or ADR.
 
 ## Organization Layer Services
 

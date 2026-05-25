@@ -1,6 +1,6 @@
 # Department, Hat, and Tool Inventory
 
-This document is the first inventory for the Hermes-native Organization. It expands the architecture into concrete departments, hats, MCP tool bundles, approval powers, and ownership boundaries.
+This document is the first inventory for the Agentic Organization. It expands the architecture into concrete departments, hats, MCP tool bundles, approval powers, and ownership boundaries.
 
 The goal is not to freeze the company shape forever. The Organization should be able to evolve itself. This inventory defines the starter graph that lets it operate safely while it learns which hats, tools, memories, workflows, and departments need to be added.
 
@@ -339,6 +339,7 @@ The starter hat graph should include the hats below. Each hat should be represen
 | Risk area | Required review |
 |---|---|
 | New credential proxy endpoint, credential scope, external API, data exposure, security policy change | Security Reviewer or Security Director; Architecture co-review for integration/runtime impact |
+| New or changed Kubernetes CRD, operator, controller ownership rule, leader-election behavior, or HatSwap event contract | Runtime Architecture Reviewer or Chief Architect; Security co-review if credentials, protected state, or workload identity are affected |
 | New Temporal workflow, Dapr actor, durable trigger, scheduled job, runtime worker, or Oz/Hermes execution pattern | Runtime Architecture Reviewer or Chief Architect; Security if tools/credentials/protected state are involved |
 | New high-power hat, new department, new major hat class, dangerous override, broad self-healing authority | Executive Board approval; two-person approval for high-risk operational override |
 | Product behavior change, customer-facing feature, acceptance criteria change | Product Owner and Business Approver |

@@ -1,6 +1,6 @@
 # Foundational Context and Language
 
-This document captures working context and vocabulary that should inform the Hermes Organization design. It is not a proof system and it is not a demand that every metaphor become code. It records the collaborator's working language so implementation decisions preserve the intended shape.
+This document captures working context and vocabulary that should inform the Agentic Organization design. It is not a proof system and it is not a demand that every metaphor become code. It records the collaborator's working language so implementation decisions preserve the intended shape.
 
 ## People and Project
 
@@ -64,6 +64,18 @@ Design implication: NixOS, Nix flakes, Kubernetes manifests, ArgoCD, OPA policie
 The collaborator assumes mistakes are possible and that not every statement should be treated as true, whether the error comes from intention, negligence, ambiguity, or drift.
 
 Design implication: the Organization should preserve challenge paths, review gates, source evidence, revision history, contradictory reports, and confidence boundaries. Agent outputs should be reviewable and reversible rather than treated as automatically correct.
+
+## Alignment Floor
+
+The Agentic Organization design must compose with the repo alignment floor:
+
+- [`docs/ALIGNMENT.md`](../../docs/ALIGNMENT.md), especially HC-1 through HC-8;
+- [Non-Coercion Invariant](../../.claude/rules/non-coercion-invariant.md);
+- [Razor Discipline](../../.claude/rules/razor-discipline.md);
+- [Glass-Halo Bidirectional](../../.claude/rules/glass-halo-bidirectional.md);
+- [No Directives](../../.claude/rules/no-directives.md).
+
+Design implication: hats, schedules, meetings, memory, and automation must preserve agency, consent, retraction paths, audit evidence, and operational claim discipline.
 
 ## Cluster Mental Model
 
