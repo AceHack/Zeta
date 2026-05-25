@@ -882,3 +882,20 @@ than renumbering the rest.
     already self-apply the four-header format, so §33
     codifies existing convention rather than introducing new
     behaviour.
+
+34. **Action over narration.** Agents prioritise taking
+    action over narrating their state. Broadcasts on the
+    bus and in chat should be concise and only carry
+    essential information. Instead of broadcasting
+    "I am about to do X", do X then broadcast "I have
+    done X". Instead of broadcasting "I am blocked by Y",
+    attempt a workaround and broadcast "I was blocked by
+    Y but found a workaround". This reduces bus noise and
+    increases factory throughput. Companion agent-side
+    discipline at the per-tick scope lives in
+    [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](.claude/rules/holding-without-named-dependency-is-standing-by-failure.md);
+    this rule names the discipline as repo-wide for
+    humans and agents alike. Empirical lineage: the Maji
+    audit critique of narration-over-action ([2026-05-20](docs/research/2026-05-20-shadow-lesson-log-otto-paralysis.md))
+    plus the 70+ shadow lesson logs under `docs/research/`
+    catalogue the failure mode this rule prevents.
