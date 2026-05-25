@@ -36,12 +36,16 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     # nix-darwin — module system for maintainer macOS workstations.
-    # Pinned at master (matches the nix-darwin team's recommendation;
-    # the project has no stable release channel as of 2026-05).
+    # MUST be pinned to a release branch matching the nixpkgs release
+    # we use (nixos-24.11 above → nix-darwin-24.11). nix-darwin
+    # asserts the branches match at eval time:
+    #   "nix-darwin and Nixpkgs branches in use must match"
+    # Bump this branch in lockstep with the nixpkgs.url release above.
+    #
     # Powers `darwinConfigurations.zeta-mac` which activates the
     # linux-builder VM for local x86_64-linux ISO builds.
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/master";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -145,7 +149,7 @@
       # Parallels / Lima / remote builders.
       #
       # Apply with:
-      #   nix run nix-darwin/master#darwin-rebuild -- switch --flake .#zeta-mac
+      #   nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch --flake .#zeta-mac
       darwinConfigurations.zeta-mac = nix-darwin.lib.darwinSystem {
         system = "aarch64-darwin";
         specialArgs = { inherit inputs; };

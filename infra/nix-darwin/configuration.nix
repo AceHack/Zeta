@@ -10,7 +10,7 @@
 # walkthrough including prerequisites in
 # infra/nix-darwin/README.md (this directory).
 #
-#   nix run nix-darwin/master#darwin-rebuild -- switch \
+#   nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch \
 #     --flake /path/to/Zeta#zeta-mac
 #
 # After the first switch, `nix build .#installer-iso` from the Zeta

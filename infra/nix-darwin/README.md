@@ -21,7 +21,7 @@ remote builder.
 ## One-command setup
 
 ```bash
-nix run nix-darwin/master#darwin-rebuild -- switch \
+nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch \
   --flake /path/to/Zeta#zeta-mac
 ```
 
@@ -55,7 +55,7 @@ reuse the warm VM and the /nix/store cache — typically 1-3 min.
 Bump `nix-darwin` master periodically:
 
 ```bash
-nix run nix-darwin/master#darwin-rebuild -- switch \
+nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch \
   --flake /path/to/Zeta#zeta-mac --recreate-lock-file
 ```
 
