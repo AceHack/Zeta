@@ -21,7 +21,7 @@
 #   │    ssh zeta@<hostname>.local                       │
 #   │  Console login:                                    │
 #   │    user:     zeta                                  │
-#   │    password: zeta-change-me (rotate after first)   │
+#   │    password: (documented at install-time only)     │
 #   ╰────────────────────────────────────────────────────╯
 #   <hostname> login:
 #
@@ -55,7 +55,8 @@ in
       │                                                         │
       │  Console login (if needed for diagnostics):             │
       │    user:     zeta                                       │
-      │    password: zeta-change-me  (rotate after first login) │
+      │    password: (documented at install-time only;          │
+      │               not shown here — security + UX)           │
       ╰─────────────────────────────────────────────────────────╯
 
   '';
