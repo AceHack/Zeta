@@ -6,7 +6,7 @@ title: Feature flags substrate — OpenFeature as operator contract; Flipt as si
 effort: M
 ask: aaron-mika-grok 2026-05-25
 created: 2026-05-25
-last_updated: 2026-05-25
+last_updated: 2026-05-26
 depends_on:
   - B-0776
   - B-0777
@@ -60,6 +60,12 @@ Per Aaron's "simplest first" — ship Flipt-backed only in v1;
 add Unleash / Flagd / etc. backends as v2 sub-rows when the
 simple shape demonstrably doesn't fit.
 
+Decision substrate:
+`docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md`
+records OpenFeature as the operator contract and Flipt as the
+first backend. This keeps B-0786 implementation work anchored to a
+reviewable ADR before any project or provider code lands.
+
 ## OpenFeature is the load-bearing operator contract
 
 [OpenFeature](https://openfeature.dev/) is the **CNCF Sandbox
@@ -100,6 +106,9 @@ will never need beyond Flipt.
 
 ## Acceptance
 
+- [x] Decision substrate:
+      `docs/DECISIONS/2026-05-26-feature-flags-substrate-openfeature-flipt.md`
+      records OpenFeature-as-contract and Flipt-first backend choice.
 - [ ] `Zeta.Feature.Flags` F# project per B-0776 plugin pattern:
       - `IFeatureFlagProvider` interface (mirrors OpenFeature
         Provider contract; F# native)
