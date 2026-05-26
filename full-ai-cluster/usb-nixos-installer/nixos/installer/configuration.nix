@@ -151,7 +151,7 @@
                 # assignments are informed by the real topology.
 
     # GPU detection (drivers come in per-host on installed system)
-    glxinfo
+    mesa-demos
     vulkan-tools
     clinfo
 
