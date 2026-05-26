@@ -45,11 +45,12 @@ import { fileURLToPath } from "node:url";
 
 const PEER_CALL_DIR = dirname(fileURLToPath(import.meta.url));
 
-// The 8 canonical wrappers (per .claude/rules/peer-call-infrastructure.md).
+// The 9 canonical wrappers (per .claude/rules/peer-call-infrastructure.md).
 // Each tuple is [filename, expectedSelfReferenceInHelp].
 const WRAPPERS: ReadonlyArray<readonly [string, string]> = [
   ["claude.ts", "claude.ts"],
   ["grok.ts", "grok.ts"],
+  ["grok-build.ts", "grok-build.ts"],
   ["gemini.ts", "gemini.ts"],
   ["codex.ts", "codex.ts"],
   ["kiro.ts", "kiro.ts"],
