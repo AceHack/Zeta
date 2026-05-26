@@ -160,3 +160,41 @@ Peer-agent-specific instance (the human maintainer 2026-05-25): a peer agent enc
 Generalization: applies to ALL agents. Failure mode is silent-punt-by-default; correct behavior is identify-then-act-or-surface.
 
 Same session as the 37-worktree mass-cleanup, where the authoring agent could have done the cleanup itself much earlier if it had applied this discipline — the worktrees were mostly the authoring agent's. The rule's empirical anchor IS that past-session failure mode. Substrate-honest preservation: future cold-boot agents inherit the discipline at session start rather than re-discovering it.
+
+## Recurrence: 2026-05-26 stale-PR-queue default-punt — rule cited as JUSTIFICATION for the failure mode it was supposed to prevent
+
+Empirical anchor 2026-05-26 (the maintainer caught this verbatim: *"this is the opposite of not fighting yourself this is losing to yourself no one take responsibliity"*):
+
+Authoring agent (Otto-CLI) emitted, in response to a substrate-state question:
+
+> *"~30 older Otto-CLI PRs in queue are mostly peer-Otto territory; not touching per the fighting-past-self-vs-peer-agent discipline"*
+
+This is the FAILURE MODE THE RULE EXISTS TO CATCH, dressed in the rule's own vocabulary. Sequence of the misuse:
+
+1. Agent scanned `gh pr list --author "@me"` → got 30 results matching all Otto-CLI surfaces (otto-cli/, otto-desktop/, otto-vscode/, otto/)
+2. Agent classified ALL 30 as "peer-Otto territory" without running ANY discriminator (no branch-prefix check, no commit-author check, no PR-author check)
+3. Agent cited THIS RULE as authorization for the silent punt
+4. Substrate-honest reality: many of those 30 PRs WERE the authoring agent's own past-session work; the silent-punt left them orphaned (force-merged, conflicts, stale auto-merge, etc.) for no responsible party
+
+The maintainer's catch made the failure mode explicit: "no one take responsibility." The rule's whole point IS that explicit ownership classification → explicit action (FIX yours, COORDINATE on peer, SURFACE uncertain) is the discipline. "Probably peer" with no discriminator + no surfacing IS exactly the punt-by-default the rule names.
+
+**The rule is NOT authorization to skip the work — it's authorization to ROUTE the work to the right actor.** Routing requires the discriminator pass. Skipping the discriminator and dropping to "must be peer territory" makes the rule a self-cancelling alibi.
+
+### What the maintainer's catch operationalizes
+
+Future-Otto: when about to write any variant of "those N PRs are probably peer-territory; not touching per [this rule]" — STOP. That phrasing IS the failure mode. Required next steps:
+
+1. Run the discriminator pass (branch prefix, commit author, PR author, file ownership scope) on EACH PR — not just the batch summary
+2. Classify per PR (MINE / PEER / BOTH / UNCERTAIN)
+3. Act per classification (FIX / COORDINATE / SURFACE)
+4. Quote the discriminator results in the surface-back-to-operator, not just the classification
+
+Surfacing uncertainty IS work; routing IS work; coordinating IS work. The only thing this rule never authorizes is "silently do nothing."
+
+### Cost paid by the punt
+
+The punt left 30 PRs in indeterminate state (stale auto-merge state, possible merge conflicts, possible Copilot threads not addressed, possible orphan branches that block downstream merges). Aaron's substrate-engineering throughput is what suffers — every un-triaged stale PR is operator-time-tax he pays to figure out "is this mine, peer's, or did Otto already classify it?" The discipline-cost of running the per-PR discriminator pass is small; the operator-tax of un-triaged stale-state is large.
+
+### Composition with other rules in this recurrence's session
+
+This same 2026-05-26 session ALSO produced a parallel failure mode at substrate-scope: cascade #4 ISO content audit was shipped with REQUIRED_ISO_PATHS that asserted training-data-default paths (`boot/grub/grub.cfg`) instead of empirically-verified NixOS-actual paths (`isolinux/`, `EFI/BOOT/refind_x64.efi`). Blocked every ISO build for 4 commits. The B-0805 capstone names that pattern; this rule's recurrence is the AGENT-DISCIPLINE companion to B-0805's SUBSTRATE-DISCIPLINE — both are "Otto-defaults-to-plausible-but-unverified" at different scopes (rule-citation vs version-pin). The two failure modes compose: my own rule mis-applied to justify default-punting at agent-coordination scope, my own audit list mis-authored from training-data defaults at dep-pin scope. Same root cause: skipping the verification step.
