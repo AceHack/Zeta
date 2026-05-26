@@ -1,12 +1,11 @@
 # Trajectory — TypeScript / Bun migration
 
-**Status**: Soak + bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); bash-retirement inventory guard landed — [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764); **Bucket B is empty**; retained non-Lean bash surface is setup/bootstrap, launchd-bootstrap, and the Kiro loop wrapper only)
+**Status**: Closed-maintained bash-retirement phase (Lane B slice 21 merged — [#908](https://github.com/Lucent-Financial-Group/Zeta/pull/908); bash-retirement inventory guard landed — [#2764](https://github.com/Lucent-Financial-Group/Zeta/pull/2764); **Bucket B is empty**; retained non-Lean bash surface is setup/bootstrap, launchd-bootstrap, and the Kiro loop wrapper only)
 **Milestone**: 42 ported. All clusters complete: budget (14/18/19), peer-call (15/16/17), git (13/20), pr-preservation (21). Bucket B is empty as of 2026-04-30T08:07:32Z. The remaining non-Lean `.sh` inventory is guarded by `tools/hygiene/check-bash-retirement-inventory.ts` and wired through package script `hygiene:check-bash-retirement-inventory` plus the `gate.yml` bash-retirement inventory lint job.
 **Current blocker**: None.
-**Next concrete action**: Shepherd the bash-retirement inventory wire-in PR
-through review and CI; after merge, decide whether the bash-retirement phase can
-move from soak to closed-maintained. Do not revive the old Cluster G/H/I or
-budget-cluster port queues.
+**Next concrete action**: Maintain the bash-retirement inventory guard and treat
+any newly tracked non-Lean `.sh` outside the allowlist as drift. Do not revive
+the old Cluster G/H/I or budget-cluster port queues.
 **Last updated**: 2026-05-26
 
 ## Why this trajectory exists
