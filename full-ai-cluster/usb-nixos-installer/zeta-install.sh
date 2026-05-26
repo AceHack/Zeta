@@ -26,6 +26,27 @@
 
 set -euo pipefail
 
+# ── B-0834 install log preservation ─────────────────────────────────
+# Tee all output to a log file so operator can review post-failure
+# (failures + warnings scroll past faster than human read speed under
+# load — empirical from 2026-05-26 physical hardware-support test).
+# Two destinations:
+#   1. /tmp/zeta-install-<timestamp>.log on the live ISO — available
+#      for `cat | less` AFTER the script exits (success OR failure),
+#      until reboot
+#   2. /mnt/var/log/zeta-install.log on the install target — copied
+#      from #1 at end of script IF /mnt is mounted; preserved on the
+#      installed system for post-boot inspection via journalctl OR
+#      `cat /var/log/zeta-install.log`
+# Operators can also `tail -f /tmp/zeta-install-*.log | less` from
+# another tty (Ctrl-Alt-F2) to scrollback in real-time.
+ZETA_INSTALL_LOG="${ZETA_INSTALL_LOG:-/tmp/zeta-install-$(date -u +%Y%m%dT%H%M%SZ).log}"
+exec > >(tee -a "$ZETA_INSTALL_LOG") 2>&1
+echo "[B-0834] install log → $ZETA_INSTALL_LOG"
+echo "[B-0834] tail -f $ZETA_INSTALL_LOG | less   # from another tty for scrollback"
+echo "[B-0834] cat $ZETA_INSTALL_LOG | less       # after script exits"
+echo
+
 REPO_URL="${REPO_URL:-https://github.com/Lucent-Financial-Group/Zeta}"
 HOST="${1:-}"
 STORAGE_BACKEND="${STORAGE_BACKEND:-longhorn}"
@@ -709,3 +730,20 @@ fi
 echo
 echo "================================================================"
 echo
+
+# ── B-0834 install log preservation — copy to install target ────────
+# At end-of-script (success path), copy the live-ISO log to the
+# installed system at /mnt/var/log/zeta-install.log so it survives
+# the reboot. After first boot of the installed system, operator can
+# inspect via `cat /var/log/zeta-install.log | less`. If /mnt is not
+# mounted (e.g., script exited before disk setup), the copy is a
+# no-op + the live-ISO log at $ZETA_INSTALL_LOG remains available
+# until reboot.
+if [ -d "/mnt/var" ]; then
+  sudo mkdir -p /mnt/var/log
+  sudo cp "$ZETA_INSTALL_LOG" /mnt/var/log/zeta-install.log
+  sudo chmod 0644 /mnt/var/log/zeta-install.log
+  echo "[B-0834] install log copied to /mnt/var/log/zeta-install.log"
+  echo "[B-0834] post-reboot: \`cat /var/log/zeta-install.log | less\`"
+fi
+echo "[B-0834] live-ISO copy still available at $ZETA_INSTALL_LOG until reboot"
