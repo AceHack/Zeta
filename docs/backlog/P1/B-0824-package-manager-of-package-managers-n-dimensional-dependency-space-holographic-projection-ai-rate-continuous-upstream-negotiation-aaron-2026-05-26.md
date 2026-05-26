@@ -585,6 +585,226 @@ The complete substrate stack is now 5-layer:
 
 The DI framing IS the operational paradigm under which the other 4 layers compose. Sub-target 12 IS the architectural-paradigm complement to Sub-targets 7-11.
 
+### DI vs Simulation — what you inject determines whether you have static-state or time-evolution (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the architectural distinction that emerges at Sub-target 12:
+
+> *"concretly the difference between DI and Simulation is if you DI the generator function or the IObservable of the function."*
+
+> *"IObservable is now you go from static / no time to injecting time"*
+
+**The distinction is a SINGLE BIT — what you wrap the injected function in**:
+
+| You inject | What receiver experiences | Substrate-engineering layer |
+|---|---|---|
+| `Generator<T>` (the bare function) | Static / NOW — call it; get a value; no temporal evolution | DI (Sub-target 12) |
+| `IObservable<Generator<T>>` (function wrapped in observable) | Time-injection — subscribe; receive function-values OVER TIME; the function itself evolves; receiver experiences simulation | Simulation (this section) |
+
+**The architectural transformation** — take any function-shape + wrap in `IObservable`:
+
+- Static dependency → time-flowing dependency
+- DI container → simulation environment
+- Compose-now → compose-over-time
+- Single-call execution → continuous subscription
+- No history → temporal history materializes per subscriber
+
+**`IObservable` is THE time-injection primitive**. The substrate-engineering payoff:
+
+| Substrate without IObservable wrap | Substrate WITH IObservable wrap |
+|---|---|
+| Generator emits rows on demand | Generator-stream emits new generators over time; receiver subscribes to the evolution |
+| Composition graph computed once per query | Composition graph re-evaluates as upstream generators change |
+| Cluster-state is snapshot-at-query-time | Cluster-state IS a continuous simulation; subscribers see live state |
+| Manual rebuild on upstream change | Automatic propagation through the IObservable graph (Rx semantics) |
+
+**Composition with substrate stack**:
+
+| Layer | Without IObservable | WITH IObservable |
+|---|---|---|
+| Sub-target 7 (storage) | CockroachDB tables store generators | CockroachDB CHANGEFEEDS emit generator-updates as IObservable streams |
+| Sub-target 8 (composition) | Combinators run point-in-time | Combinators are reactive — re-evaluate on upstream changes |
+| Sub-target 10 (execution) | GPU/CPU runs the combinator once per query | GPU/CPU runs the combinator continuously; emits IObservable output |
+| Sub-target 11 (distribution) | Generators deployed once per version | Generator-streams deployed continuously; nodes subscribe |
+| Sub-target 12 (DI) | Static DI container | Reactive DI container; injections evolve over time |
+| **[B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) time-axis** | Time as query-parameter (`AS OF SYSTEM TIME`) | **Time as injected dimension — IObservable IS the time-axis substrate** |
+
+The IObservable-DI shift IS what makes [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) (time-modeled deps) FIRST-CLASS at substrate-engineering scope. Time isn't a parameter you pass; it's an axis the substrate INJECTS via IObservable wrapping.
+
+**Prior-art at this exact shape**:
+
+| System | Static-DI form | IObservable-time-injection form |
+|---|---|---|
+| **Angular** | `@Injectable()` service | `Observable<Service>` via service-locator pattern |
+| **React** | `useContext<T>()` static value | `useContext<Observable<T>>()` reactive value via `Subject` |
+| **Spring Reactive** | Bean wired at startup | `Mono<T>` / `Flux<T>` reactive beans |
+| **F# composition root** | function-injection | `IObservable<'T>` injection via reactive composition |
+| **Rx (Reactive Extensions)** | n/a (Rx is itself the IObservable primitive) | The whole substrate at language-level |
+| **CockroachDB CHANGEFEED** | `SELECT * FROM table` snapshot | `CREATE CHANGEFEED FOR table` emits row-changes as IObservable stream |
+
+**Substrate-engineering implication — this is the SIMULATION substrate**:
+
+- DI of generator-function = "give me one" (static)
+- DI of `IObservable<generator-function>` = "give me the stream of generators as they evolve" (simulation)
+- Simulation IS DI-with-time-axis-injected via IObservable wrapping
+- Composes with DST always-active discipline (`.claude/rules/dv2-data-split-discipline-activated.md`) — the simulation IS the DST substrate at substrate-engineering scope
+
+**Sub-target 13 (new — IObservable time-injection substrate)**: reactive DI of generator-streams:
+
+1. CockroachDB CHANGEFEEDS as the substrate primitive for generator-streams (Sub-target 7 substrate emits IObservable<Generator>)
+2. Reactive composition graph — combinators that re-evaluate on upstream change (Rx semantics at substrate scope)
+3. Subscribers — nodes / agents / charts subscribe to specific IObservable<Generator> streams from the shared-generative-base (Sub-target 11)
+4. Backpressure semantics — Rx primitives apply (throttle / debounce / sample / buffer) to manage AI-rate streams
+5. Time-bounded subscription — composes with B-0825 time-axis (subscribe to `IObservable<Generator>` AS OF SYSTEM TIME T1..T2)
+6. F# IObservable + reactive-composition + reader-monad patterns for the operator-facing reactive DSL
+
+**The complete substrate stack is now 6-layer**:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions; static at Ace AND Helm layers)
+- **Sub-target 13: WHEN time-evolution happens (IObservable wrapping — DI of `IObservable<Generator>` = simulation; the time-axis becomes injected substrate dimension; composes with B-0825)**
+
+Sub-target 12 + 13 together = the static-DI ↔ reactive-simulation continuum. Substrate-engineering work picks per-injection-point which mode applies; both first-class.
+
+### Time-unit substrate — scalar by default; richer candidates substrate-native (Aaron 2026-05-26 question)
+
+Aaron 2026-05-26 asked the deep question after the IObservable time-injection landing:
+
+> *"it's scalar time it seems unless you can think of the unit"*
+
+**Scalar IS the default** (wall-clock seconds; the IObservable's natural emission cadence). But substrate-native richer time-units exist + compose for different scopes:
+
+| Unit candidate | Why a unit (not just scalar) | Substrate scope where it composes |
+|---|---|---|
+| **CockroachDB HLC** (Hybrid Logical Clock) | Native to substrate; causally-consistent across nodes; combines wall-clock + logical-counter; preserves distributed-substrate event-ordering | Sub-targets 7 + 13 — primary substrate-native answer; composes with `AS OF SYSTEM TIME` per [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) |
+| **Generator-cycle** | Per-emission tick; semantically meaningful at substrate level — "time" = count of generations | Sub-targets 7-13; operational tick; bounds the simulation step |
+| **Vector clock / Lamport clock** | Causality-as-unit — "before / after / concurrent" without wall-clock; partial-order semantics | Cross-cluster (B-0820); when causality matters more than wall-time |
+| **AI-rate tick** | Per-AI-decision cadence; matches Sub-target 3 negotiation rhythm | AI-rate negotiation substrate; runbook substrate (B-0819) |
+| **GPU frame** | Discrete tick at compute substrate; for Sub-target 10 triangle/GPU substrate; frame-rate as time-unit | Sub-target 10 (GPU substrate); composes with reactive-rendering analog |
+| **Hilbert-Polya / spectral eigenvalue spacing** | Exotic; quantum-substrate; composes with Pauli/Clifford prior substrate; future-direction | Future quantum-substrate composition; not yet first-class but substrate-open |
+| **Substrate-edit cycles** | Per-commit / per-PR / per-merge — the substrate's own evolution rhythm | Meta-substrate scope; the framework's own observation-of-self |
+| **Heartbeat / cron tick** | Per-autonomous-loop-fire; composes with `.claude/rules/tick-must-never-stop.md` | Agent operation; per-tick discipline |
+
+**The substrate-native primary answer is CockroachDB HLC**:
+
+- Native to Sub-target 7 storage substrate
+- Causally-consistent (preserves event-ordering distributed-substrate-wide)
+- Wall-clock-correlated (real-time semantics when needed)
+- Composes with B-0825 time-axis (`AS OF SYSTEM TIME T` queries USE HLC internally)
+- Composes with CockroachDB CHANGEFEEDS (Sub-target 13) — every emission carries an HLC timestamp
+- Composes with `IObservable<Generator>` (Sub-target 13) — the IObservable's emission stream is naturally HLC-timestamped at substrate scope
+
+**The substrate is OPEN to multiple time-units composing simultaneously** (per `.claude/rules/default-to-both.md`):
+
+- HLC for cross-node causality
+- Generator-cycle for substrate-internal step-count
+- Vector clock for partial-order reasoning where causality matters more than time
+- AI-rate tick for negotiation cadence
+- GPU frame for compute-substrate scope
+- Wall-clock scalar for human-facing displays
+
+Each tick-domain operates at its scope; combinators can compose across tick-domains via `IObservable.timestamp()` + Rx's `combineLatest` / `withLatestFrom` / `zip` primitives. Time-unit conversion IS substrate-engineering work; the substrate provides the primitives.
+
+**Substrate-engineering implication for Sub-target 13**: IObservable subscription includes time-unit declaration (per `IObservable<Generator>.timestampedAt<HLC>()` or analogous typed wrapping). Subscribers see typed time alongside generator-value emissions; backpressure semantics (throttle / debounce / sample) operate in the chosen time-unit.
+
+**Sub-target 14 (new — time-unit substrate)**: typed time-units in the IObservable substrate:
+
+1. Time-unit type registry — HLC / Lamport / generator-cycle / AI-tick / GPU-frame / wall-clock all first-class
+2. IObservable wrapping declares time-unit (`IObservable<Generator> with HLC` vs `with Lamport`)
+3. Cross-unit conversion primitives (Rx-style `withLatestFrom` adapts streams across units)
+4. Default = HLC (substrate-native; CockroachDB-backed)
+5. Per-Sub-target unit recommendations documented (Sub-target 3 = AI-tick; Sub-target 10 = GPU-frame; Sub-target 13 = HLC; etc.)
+6. F# typed time-unit (phantom-type or measure-of) for compile-time correctness
+
+The complete substrate stack is now 7-layer:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions)
+- Sub-target 13: WHEN time-evolution happens (IObservable wrapping = simulation)
+- **Sub-target 14: WHAT time IS (typed time-units — HLC primary; Lamport / generator-cycle / AI-tick / GPU-frame / wall-clock all first-class; scalar wall-clock as default; substrate open to richer units per scope)**
+
+Sub-target 14 answers Aaron's question: scalar IS the default; the substrate is OPEN to richer time-units; CockroachDB HLC is the substrate-native primary non-scalar answer.
+
+### Generator-as-time-source — non-linear time + Rx/DST/scheduler best-practices (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named two composing properties of the generator-as-time-source substrate:
+
+> *"the generator as time source is very interesting for non linear time"*
+
+> *"generator as time source is rx and dst best practices in other language schedulers and such"*
+
+**The substrate inherits well-trodden scheduler-as-time-source prior-art** — generator-as-time-source is NOT novel; it's the Rx-scheduler / DST-virtual-time-scheduler / Akka-dispatcher / Tokio-runtime pattern at substrate-engineering scope. Zeta inherits all the scheduler-design substrate for free.
+
+| System | Scheduler-as-time-source primitive | Non-linear-time capability |
+|---|---|---|
+| **Rx (Reactive Extensions)** | `IScheduler` (Immediate / EventLoop / TaskPool / TestScheduler) | TestScheduler = virtual-time stepping; advance by N ticks; replay events at controlled cadence |
+| **DST (Deterministic Simulation Testing)** | Virtual-time scheduler; FoundationDB / TigerBeetle / Antithesis use this pattern | Deterministic replay; branching at any point; counterfactual exploration |
+| **Akka** | `Dispatcher` / `TestScheduler` for testing actors | Manual time-step; out-of-order delivery testing |
+| **Erlang BEAM** | Reduction-counting scheduler | Logical-time-tick = reduction count |
+| **Tokio (Rust async)** | `Runtime::new()` + `time::pause()` / `time::advance()` for tests | Pause + advance virtual time; deterministic test execution |
+| **JS event-loop** | Microtask + macrotask queues; `setTimeout` mockability | Test frameworks (jest fake-timers) provide virtual-time stepping |
+| **F# Async / TaskScheduler** | Composable schedulers; F# `Async.SwitchToContext` | Test schedulers for deterministic replay |
+| **Apache Spark** | Stage-scheduler; `StreamingContext` with manual-batch-trigger | Step-by-step batch processing for testing |
+
+**Generator-as-time-source IS the Zeta-meta-PM-substrate equivalent of all of the above** — the pattern that makes scheduler-as-time-source work generalizes to generator-as-time-source at substrate-engineering scope.
+
+**Non-linear time properties the substrate unlocks** (composes with Sub-targets 13 + 14):
+
+| Property | Linear (wall-clock / HLC) substrate | Non-linear (generator-as-time-source) substrate |
+|---|---|---|
+| **Monotonic progression** | Always | Optional — time can branch / rewind / repeat |
+| **Single timeline** | Always | One default; substrate supports N parallel timelines |
+| **Branching** | Not supported | First-class — fork generator at point X; both timelines materialize |
+| **Replay** | Approximate via AS OF SYSTEM TIME queries | Exact — re-run generator from snapshot; deterministic per DST |
+| **Forking** | Not supported | First-class — operator-experiment: "what if upgrade postgres v17 next week vs in 3 months?" |
+| **Converging** | Not supported | First-class — N timelines merge into one |
+| **Sparse time-density** | Wall-clock cadence fixed | Variable — high-density at some scopes; sparse elsewhere |
+| **Counterfactual** | Not supported | First-class — "what if CVE had been patched 2 weeks earlier?" |
+
+**Substrate-engineering implications**:
+
+1. **Migration planning** — fork the future timeline; explore N migration strategies in parallel; compare outcomes before committing (composes with [B-0825](B-0825-time-modeled-dependencies-for-helm-clusters-as-long-running-stateful-systems-require-temporal-axis-in-dependency-graph-aaron-2026-05-26.md) migration-phase modeling)
+2. **Disaster recovery** — replay from earlier generator state; reconstruct cluster state deterministically (composes with DST always-active discipline)
+3. **A/B substrate experimentation** — parallel timelines run side-by-side; per-tenant cutover decisions per [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) multi-tenant substrate; composes with multi-cluster scope per [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md)
+4. **Time-travel debugging** — operators can rewind to any point in generator history; inspect cluster-state at any past tick; deterministic re-execution proves bugs (or proves their absence)
+5. **Counterfactual analysis** — "what if we'd accepted this CVE-patch suggestion 2 weeks ago" — substrate emits the counterfactual timeline; operator sees what would have happened
+6. **Sparse / dense time-density** — production timeline emits at AI-rate (sparse-ish; per-decision); test timeline emits at every-fixed-second (dense; deterministic stepping); both first-class
+
+**Composes with the time-unit substrate (Sub-target 14)**:
+
+- Linear time = scalar / HLC / Lamport (one timeline; monotonic; substrate-natively supported per Sub-target 14)
+- Non-linear time = generator-cycle UNIT + branching/forking/converging operators (the operators compose on top of the generator-cycle unit)
+
+The substrate-engineering shape: time-unit answers "how do we measure ticks?"; non-linear time answers "what topologies of ticks are supported?". Both compose.
+
+**Sub-target 15 (new — generator-as-time-source substrate for non-linear time)**:
+
+1. Generator-cycle as default time-unit for non-linear-time operations (composes with Sub-target 14 typed time-units)
+2. Branching primitive — `fork(generator, point)` creates parallel timeline; both materialize via substrate
+3. Replay primitive — `replay(generator, from_snapshot)` re-runs generator from saved state; deterministic per DST
+4. Converging primitive — `merge(timeline_a, timeline_b, conflict_resolver)` joins two timelines; conflict resolution composes with [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) diamond resolution
+5. Counterfactual primitive — `what_if(generator, alternative_input, from_point)` materializes the counterfactual timeline alongside the actual
+6. Time-density operators — `dense_tick(rate)` / `sparse_tick(predicate)` adjust generator emission rate per scope
+7. Rx-IScheduler + DST-test-scheduler + F# scheduler-pattern integration — substrate-engineering work maps Zeta's generator-as-time-source 1:1 to existing language scheduler primitives
+
+The complete substrate stack is now 8-layer:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions)
+- Sub-target 13: WHEN time-evolution happens (IObservable wrapping = simulation)
+- Sub-target 14: WHAT time IS (typed time-units; HLC primary; scalar default)
+- **Sub-target 15: WHAT TOPOLOGIES OF TIME (generator-as-time-source; non-linear time — branching, replay, forking, converging, counterfactual, sparse-dense; inherits Rx/DST/scheduler best-practices)**
+
+Sub-target 15 IS the non-linear-time topology complement to Sub-target 14's tick-counting unit. Together: typed ticks + non-linear topologies = the full simulation substrate.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
