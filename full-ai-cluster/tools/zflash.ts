@@ -261,13 +261,19 @@ async function injectPubkeyToUsb(pubkeyPath: string): Promise<void> {
   // Read pubkey content
   const pubkey = readFileSync(pubkeyPath, "utf8").trim();
   const firstLine = pubkey.split("\n")[0] ?? "";
-  if (!/^ssh-(ed25519|rsa|ecdsa|dss)\s+/.test(firstLine)) {
+  // Per #5083 Copilot P1: broaden to all OpenSSH pubkey type tokens
+  // per sshd(8) AuthorizedKeysFile. Validates structurally: type token
+  // (one of ssh-*, ecdsa-sha2-*, sk-ssh-*, sk-ecdsa-sha2-*) + space +
+  // base64-shaped material (allow any non-whitespace; the actual base64
+  // decode happens on the cluster side).
+  const VALID_PUBKEY = /^(ssh-(ed25519|rsa|dss)|ecdsa-sha2-\S+|sk-ssh-ed25519@\S+|sk-ecdsa-sha2-\S+)\s+\S+/;
+  if (!VALID_PUBKEY.test(firstLine)) {
     try {
       execFileSync("diskutil", ["unmount", espPart], { stdio: "ignore" });
     } catch {
       /* ignore */
     }
-    dumpDiagnostics(`${pubkeyPath} first line is not a valid ssh-* pubkey`);
+    dumpDiagnostics(`${pubkeyPath} first line is not a recognized OpenSSH pubkey (expected ssh-ed25519 / ssh-rsa / ssh-dss / ecdsa-sha2-* / sk-ssh-ed25519@* / sk-ecdsa-sha2-*)`);
     bail(3, `iter-4.2 inject failed: ${pubkeyPath} is not a recognized SSH pubkey format.`);
   }
 
@@ -332,7 +338,14 @@ async function main() {
       if (!next || next.startsWith("-")) {
         bail(2, "--ssh-key requires a path argument (e.g., --ssh-key ~/.ssh/id_ed25519.pub)");
       }
-      sshKeyOverride = resolve(next);
+      // Per #5083 Copilot P1: Node's path.resolve doesn't expand `~/` to
+      // homedir; raw `--ssh-key ~/.ssh/id_ed25519.pub` would resolve to
+      // a literal `~/.ssh/...` path under cwd and fail existence checks.
+      // Expand leading `~/` (and bare `~`) to homedir() before resolve.
+      const expanded = next === "~" || next.startsWith("~/")
+        ? join(homedir(), next.slice(next === "~" ? 1 : 2))
+        : next;
+      sshKeyOverride = resolve(expanded);
       i++;
       continue;
     }

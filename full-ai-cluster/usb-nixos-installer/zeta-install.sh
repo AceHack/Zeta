@@ -243,9 +243,18 @@ sudo mkdir -p "$PROBE_MOUNT"
 PUBKEY_FILE=""
 INJECT_OK=0
 
-# Try 1: scan already-mounted filesystems
-PUBKEY_FILE=$(sudo find /iso /run /mnt /boot \
-  -maxdepth 5 -name "zeta-authorized-keys.pub" -type f 2>/dev/null | head -1)
+# Try 1: scan already-mounted filesystems.
+# Per #5083 Copilot P0: under `set -euo pipefail`, `find` exits non-zero
+# if any start-path doesn't exist (e.g., `/iso` on some installers),
+# aborting the whole install. Filter to existing dirs first.
+SEARCH_DIRS=()
+for d in /iso /run /mnt /boot; do
+  [ -d "$d" ] && SEARCH_DIRS+=("$d")
+done
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  PUBKEY_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-authorized-keys.pub" -type f 2>/dev/null | head -1 || true)
+fi
 
 # Try 2: probe likely-USB block devices for a FAT partition with the pubkey.
 # Skip BOOT_DISK + DATA_DISKS (install targets).
@@ -281,14 +290,26 @@ fi
 if [ -n "$PUBKEY_FILE" ]; then
   echo "[iter-4.2]   found: $PUBKEY_FILE"
 
+  # Per #5083 Copilot P0: read via `sudo cat` since the pubkey file may be
+  # on a root-owned mount (/mnt/* or /tmp/zeta-boot-esp); plain shell redirect
+  # would fail as the unprivileged user and `set -e` aborts the install.
+  # OpenSSH pubkey type prefixes (per `sshd(8)` AuthorizedKeysFile):
+  # ssh-ed25519, ssh-rsa, ssh-dss, ecdsa-sha2-nistp{256,384,521},
+  # sk-ecdsa-sha2-nistp256@openssh.com, sk-ssh-ed25519@openssh.com.
   KEY_LINES=()
   while IFS= read -r line; do
     case "$line" in
-      ssh-ed25519\ *|ssh-rsa\ *|ssh-ecdsa\ *|ssh-dss\ *|ecdsa-*) KEY_LINES+=("$line") ;;
+      ssh-ed25519\ *|ssh-rsa\ *|ssh-dss\ *|ecdsa-sha2-*\ *|sk-ssh-ed25519@*\ *|sk-ecdsa-sha2-*\ *) KEY_LINES+=("$line") ;;
     esac
-  done < "$PUBKEY_FILE"
+  done < <(sudo cat "$PUBKEY_FILE")
 
   if [ ${#KEY_LINES[@]} -gt 0 ]; then
+    # Per #5083 Copilot P0/security: Nix string-escape the pubkey content
+    # before interpolating into the Nix file. Without this, a key comment
+    # containing `"` or `\` produces invalid Nix; a maliciously-crafted
+    # line on the USB could inject Nix code at install time. Nix double-
+    # quoted strings escape via `\\` → `\\\\` and `"` → `\"`. We apply
+    # both transformations with sed; ordering matters (backslash first).
     {
       echo '# operator-ssh-keys.nix — populated by iter-4.2 zeta-install.sh probe.'
       echo "# Source: $PUBKEY_FILE (boot USB ESP)"
@@ -299,7 +320,8 @@ if [ -n "$PUBKEY_FILE" ]; then
       echo '{'
       echo '  users.users.zeta.openssh.authorizedKeys.keys = ['
       for line in "${KEY_LINES[@]}"; do
-        printf '    "%s"\n' "$line"
+        escaped=$(printf '%s' "$line" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')
+        printf '    "%s"\n' "$escaped"
       done
       echo '  ];'
       echo '}'
