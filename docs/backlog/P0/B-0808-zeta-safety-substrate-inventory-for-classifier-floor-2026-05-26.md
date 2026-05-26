@@ -5,6 +5,7 @@ status: open
 title: "Zeta safety substrate inventory for the classifier-floor replacement gate"
 created: 2026-05-26
 last_updated: 2026-05-26
+renumbered_from: B-0801
 parent: B-0720
 depends_on: [B-0798]
 composes_with: [B-0628, B-0664, B-0703, B-0720]

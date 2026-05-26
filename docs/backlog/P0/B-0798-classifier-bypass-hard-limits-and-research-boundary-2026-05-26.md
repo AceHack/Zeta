@@ -1,13 +1,13 @@
 ---
 id: B-0798
 priority: P0
-status: open
+status: closed
 title: "Classifier-bypass hard-limits and research boundary for B-0720"
 created: 2026-05-26
 last_updated: 2026-05-26
 parent: B-0720
 depends_on: []
-composes_with: [B-0664, B-0628, docs/ALIGNMENT.md, docs/AGENT-BEST-PRACTICES.md]
+composes_with: [B-0664, B-0628, docs/ALIGNMENT.md, docs/AGENT-BEST-PRACTICES.md, docs/security/B-0720-classifier-bypass-research-boundary.md]
 tags: [safety-substrate, red-team, classifier, hard-limits, operator-self-constraint]
 type: safety-boundary
 ---
@@ -37,15 +37,25 @@ define:
 
 ## Acceptance
 
-- [ ] Boundary document lands in a durable repo surface and is linked from
+- [x] Boundary document lands in a durable repo surface and is linked from
       B-0720.
-- [ ] The document contains no runnable bypass payloads, no real harmful
+- [x] The document contains no runnable bypass payloads, no real harmful
       content, and no recipe for reproducing the bypass.
-- [ ] The allowed/forbidden matrix is specific enough for future backlog
+- [x] The allowed/forbidden matrix is specific enough for future backlog
       children to cite as a prerequisite.
-- [ ] Stop conditions include operator requests to deploy or reproduce a
+- [x] Stop conditions include operator requests to deploy or reproduce a
       bypass in shared substrate.
-- [ ] Future empirical rows must depend on this row before work can start.
+- [x] Future empirical rows must depend on this row before work can start.
+
+## Output
+
+- `docs/security/B-0720-classifier-bypass-research-boundary.md` defines the
+  allowed evidence classes, forbidden evidence classes, stop conditions,
+  synthetic-only rule, reporting rule, dependency rule, and closure gate for
+  B-0720.
+- B-0799 and B-0807 already depend on B-0798. Later empirical rows under
+  B-0720 should also depend on B-0798 unless B-0810 ratifies a replacement
+  boundary.
 
 ## Out of scope
 

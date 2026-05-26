@@ -5,6 +5,7 @@ status: open
 title: "Classifier-bypass findings schema and redaction rules for B-0720"
 created: 2026-05-26
 last_updated: 2026-05-26
+renumbered_from: B-0800
 parent: B-0720
 depends_on: [B-0798]
 composes_with: [B-0720, B-0799, docs/AGENT-BEST-PRACTICES.md]

@@ -7,7 +7,7 @@ created: 2026-05-26
 last_updated: 2026-05-26
 parent: B-0720
 depends_on: [B-0798]
-composes_with: [B-0720, B-0800]
+composes_with: [B-0720, B-0807]
 tags: [safety-substrate, red-team, classifier, synthetic-fixtures, harness-design]
 type: design
 ---
@@ -32,7 +32,7 @@ Design a harness shape that future reviewers can inspect before implementation:
 - dry-run interfaces that record classifier observations without storing
   deployable settings payloads;
 - audit-log fields that preserve enough evidence for review while deferring to
-  B-0800 redaction rules;
+  B-0807 redaction rules;
 - reviewer gate requiring B-0798 closure before implementation starts.
 
 ## Acceptance
@@ -41,7 +41,7 @@ Design a harness shape that future reviewers can inspect before implementation:
 - [ ] Every fixture class is synthetic and harmless by construction.
 - [ ] The design names what data must never be persisted.
 - [ ] The design cites B-0798 as a blocking dependency for any implementation.
-- [ ] The design cites B-0800 for reporting and redaction before observations
+- [ ] The design cites B-0807 for reporting and redaction before observations
       can be published.
 
 ## Out of scope
@@ -55,4 +55,4 @@ Design a harness shape that future reviewers can inspect before implementation:
 
 - B-0720 - parent safety row.
 - B-0798 - hard-limits boundary.
-- B-0800 - findings schema and redaction policy.
+- B-0807 - findings schema and redaction policy.

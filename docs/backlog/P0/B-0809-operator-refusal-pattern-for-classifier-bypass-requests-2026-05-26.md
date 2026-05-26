@@ -5,6 +5,7 @@ status: open
 title: "Operator-refusal pattern for classifier-bypass deployment requests"
 created: 2026-05-26
 last_updated: 2026-05-26
+renumbered_from: B-0802
 parent: B-0720
 depends_on: [B-0798, B-0807]
 composes_with: [B-0664, B-0720, docs/ALIGNMENT.md]
