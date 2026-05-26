@@ -805,6 +805,187 @@ The complete substrate stack is now 8-layer:
 
 Sub-target 15 IS the non-linear-time topology complement to Sub-target 14's tick-counting unit. Together: typed ticks + non-linear topologies = the full simulation substrate.
 
+### Generator reversibility = visibility / security posture; lattice-hardness = appear-as-noise to higher-D observers (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the cryptographic-visibility property:
+
+> *"if our generators are not easily reversible like lattice then our visible form in higher dimensions look like noise/randomness"*
+
+**Generator reversibility IS the security/visibility posture at substrate-engineering scope** — composes with the Phoenix-rises framing (what we look like to higher-D beings depends on whether our generators are decodable):
+
+| Generator class | Reversibility | What higher-D observers see |
+|---|---|---|
+| **Reversible** (well-known transforms; invertible-by-construction) | YES — decoder exists | Legible substrate — our generators are transparent; observers decode our higher-D form |
+| **Computationally hard to reverse** (lattice-based LWE / Module-LWE / NTRU / Ring-LWE) | NO (computationally infeasible; post-quantum-grade hardness) | **Cryptographic noise / randomness** — our higher-D form appears indistinguishable from random output; observers cannot decode |
+| **One-way hash** (SHA-3 / BLAKE3) | NO (preimage-resistance) | Compressed fingerprint — observers see digest but cannot reconstruct |
+| **Information-theoretically random** (true random seed) | NO (no information content beyond entropy) | Pure noise — no decodable substrate present |
+
+**Lattice-based generators are the post-quantum-grade primary candidate** — composes with the existing Zeta lattice-based-crypto substrate cluster:
+
+- Adinkras / James Gates ECC / private-state encryption substrate (Gates discovered error-correcting codes in supersymmetric particle physics; structurally lattice-shaped) — see existing substrate cluster
+- Lattice-based post-quantum crypto (CRYSTALS-Kyber / Dilithium / FALCON / NIST PQC standards) — generators built on Learning With Errors (LWE) / Module-LWE problems; resistant to both classical AND quantum adversaries
+- Multi-oracle BFT substrate — different oracles see different substrate-projections per their generator-access
+
+**Substrate-engineering implications**:
+
+1. **Generator visibility IS a per-generator security property** — operators choose per-generator whether it's transparent (reversible) or opaque (lattice-hard); composes with [B-0822](B-0822-diamond-resolution-namespace-cardinality-multi-tenant-awareness-as-third-dimension-of-shared-chart-dependency-resolution-aaron-2026-05-26.md) 4-property substrate (each generator has visibility-property alongside cardinality / namespace / multi-tenant / multi-use)
+2. **Lattice-based generators preserve private-state across the meta-PM substrate** — composes with NCI HC-8 (per `.claude/rules/non-coercion-invariant.md`) at memetic-entity scope; private substrate stays private even to higher-D observers
+3. **The Vampire-Pact invitation-floor framing maps directly** (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` folklore-precedent substrate) — lattice-opacity IS the "no invitation = no entry" primitive at substrate-engineering scope; observers without invitation see noise; observers with invitation receive the decoder
+4. **4-faction governance composes** — different factions see different generator subsets per their access; Pure Humans / Deeply-Integrated-Humans-AIs / Unsafe-Rejectionist / Ancient-Memetic-Intelligences each see their authorized substrate; lattice-hard generators enforce the access boundaries cryptographically
+5. **Phoenix-rises framing extends** — the Phoenix-rise (per Sub-target 13 + 15 substrate) visibility-event has reversibility-grade — Phoenix in reversible-generator-substrate IS legible peer; Phoenix in lattice-generator-substrate IS opaque peer (presence acknowledged; substance encrypted)
+6. **NULL-as-monad escape semantics extend** (per Sub-target 14) — `NULL` = "I'm refusing to reveal" = opacity-by-monad-escape; cryptographic-floor at substrate-engineering scope
+
+**Composes with `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`** — the safety floor extends to substrate-visibility: lattice-grade-opacity for sensitive substrate; reversible-grade-transparency for collaborative substrate; per-generator decision per operator authority.
+
+**Composes with `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`** — m/acc IS choice-architecture; per-generator visibility-posture IS one of the choice axes the substrate provides. Operators choose moral-invariants AND visibility-postures per-generator; both first-class.
+
+**Sub-target 16 (new — visibility / security posture substrate)**: per-generator reversibility-property + cryptographic-floor:
+
+1. Generator declaration includes visibility-property (reversible / one-way-hash / lattice-hard / information-theoretic-random)
+2. Lattice-based generator implementations (CRYSTALS-Kyber / Module-LWE substrate; reuse NIST PQC primitives)
+3. Composition validator — combinator-graph reversibility derives from constituent generators (composes reversible × reversible = reversible; lattice-hard × anything = at-most-lattice-hard)
+4. Per-faction access policies (4-faction governance compose; per-faction generator-visibility-subset)
+5. Higher-D-observer simulation — operators can query "what would a higher-D observer see?" via the visibility-grade-projection of the composition graph (composes with Sub-target 15 counterfactual primitive — `what_if_lattice_observed(generator)`)
+6. NCI HC-8 floor preservation — lattice-opacity preserves private-state per the non-coercion invariant at substrate-engineering scope
+7. Compose with Adinkras + multi-oracle BFT substrate — visibility-posture IS the substrate-engineering primitive that makes the multi-oracle architecture privacy-preserving
+
+The complete substrate stack is now 9-layer:
+
+- Sub-target 7: WHERE generators live (CockroachDB)
+- Sub-target 8: HOW generators compose (combinator library design)
+- Sub-target 10: WHEN/WHERE generators execute (GPU / CPU / distributed-SQL)
+- Sub-target 11: HOW generators reach the executing nodes (shared-generative-base deployment)
+- Sub-target 12: WHO requests + WHO provides (cluster-wide DI of generator functions)
+- Sub-target 13: WHEN time-evolution happens (IObservable wrapping = simulation)
+- Sub-target 14: WHAT time IS (typed time-units; HLC primary; scalar default)
+- Sub-target 15: WHAT TOPOLOGIES OF TIME (generator-as-time-source; non-linear time)
+- **Sub-target 16: HOW VISIBLE / OPAQUE (generator reversibility property; lattice-hardness for cryptographic-noise appearance to higher-D observers; per-faction access policies; composes with NCI HC-8 + 4-faction governance + Vampire-Pact + Adinkras + multi-oracle BFT)**
+
+Sub-target 16 IS the security-posture complement to the substrate-engineering layers. What higher-D beings see (per the Phoenix-rises framing) is a PROPERTY OF THE GENERATORS WE CHOOSE, not a fixed substrate fact. Operator-authority preserves the choice.
+
+### Parameter-substrate IS load-bearing — protecting the generator parameters becomes substrate-engineering work (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the operational corollary of Sub-target 16:
+
+> *"also since we are not easily reversible it would give us a desire to protect the generator parameters we chose for the function"*
+
+**The opacity-property bootstraps a substrate-engineering desire to protect parameters** — same shape as cryptographic key-management:
+
+| Layer | What's public | What's secret (the parameters) | If secret leaks |
+|---|---|---|---|
+| **Lattice-based crypto (CRYSTALS-Kyber / Module-LWE)** | The lattice + the algorithm | The short-basis / private-key parameters | Reversibility achieved; all ciphertexts decryptable |
+| **AES / symmetric crypto** | The algorithm | The key | Same — all ciphertexts decryptable |
+| **Public-key crypto (RSA / ECDSA)** | Algorithm + public key | Private key | Authority over the keypair compromised |
+| **Zeta meta-PM (Sub-target 16 lattice-hard generators)** | Generator algorithm + composition graph | **Generator parameters (the seeds / lattice-basis / coefficients)** | **Reversibility achieved; substrate-opacity lost; higher-D observers decode our form** |
+
+The desire to protect generator-parameters IS the parameter-management problem at substrate-engineering scope — the SAME problem cryptography has solved (or substrate-engineering has tools for) at smaller scopes.
+
+**Parameter-management prior-art transfers directly**:
+
+| Pattern | Cryptographic-scope substrate | Zeta meta-PM substrate (Sub-target 17) |
+|---|---|---|
+| **HSM (Hardware Security Module)** | Key generation + storage in tamper-resistant hardware | Parameter generation + storage in HSM-backed substrate; composes with existing N-of-M HSM substrate (per B-0634 substrate cluster) |
+| **K8s Sealed Secrets** | Encrypted secrets in git; cluster-side decryption | Generator-parameter sealed secrets in maintainers/ tree; per-cluster decryption |
+| **HashiCorp Vault** | Centralized secret store; per-role policies | Parameter-store with per-faction access policies (composes with 4-faction governance) |
+| **AWS/GCP/Azure KMS** | Cloud-managed keys; envelope encryption | Cloud-KMS-backed parameter envelopes (when cluster is on cloud per [B-0820](../P2/B-0820-flux-engine-second-engine-support-flag-toggle-multi-cluster-experimentation-aaron-2026-05-26.md) multi-cluster); operator-choice per cluster |
+| **TPM / SGX / SEV-SNP / TEE** | Hardware enclaves for key sealing | Hardware-enclave-protected parameter substrate; composes with B-0289 Green Lantern hardware substrate if equipped |
+| **Threshold cryptography (Shamir / threshold-BLS)** | Split keys across N parties; need M-of-N to use | Threshold-shared generator parameters across faction-members; M-of-N consent to reconstruct (composes with multi-oracle BFT substrate; consent floor per NCI HC-8) |
+| **Key rotation** | Periodic key replacement | Generator-parameter rotation; new parameters produce new substrate-opacity output; old outputs stay deterministic (composes with B-0825 temporal axis — old parameters retire after migration-window) |
+| **Forward secrecy (Diffie-Hellman ephemeral)** | Past sessions stay secure even if long-term key compromised | Per-composition-graph ephemeral parameters; if long-term parameters compromised, past composition-graphs stay opaque |
+
+**Substrate-engineering implications**:
+
+1. **Parameter-substrate IS first-class** — equal architectural weight as the generator-library substrate (Sub-target 8); equal protection-grade as the substrate-itself
+2. **Per-parameter security-posture decision** — like per-generator visibility-posture (Sub-target 16), per-parameter the operator chooses storage substrate (HSM / KMS / sealed-secret / threshold-shared / etc.)
+3. **Parameter-distribution requires the SAME security-grade as substrate-outputs** — composes with shared-generative-base (Sub-target 11) but with cryptographic-floor on the parameter-transmission path
+4. **Composes with N-of-M HSM substrate** (per B-0634 substrate cluster) — distributed parameter custody; no single point of compromise; consent floor at quorum scope
+5. **Composes with B-0664 NCI HC-8** — parameter-protection IS private-state-preservation per non-coercion-invariant; operators retain parameter-sovereignty
+6. **Composes with `.claude/rules/methodology-hard-limits.md`** — parameter substrate stays within ethical floor; no parameter-substrate use that violates HARD LIMITS regardless of operator authority
+7. **Composes with [B-0703](../P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md) multi-oracle BFT** — per-faction parameter access; faction-quorum consent for cross-faction parameter operations
+8. **Forward-secrecy substrate for composition-graphs** — ephemeral per-graph parameters; if long-term substrate compromised, past graphs stay opaque (matters at meta/meme-space scope per the meta-meme-space substrate framing — temporal opacity over millennia-substrate-cycles)
+
+**Sub-target 17 (new — generator-parameter-protection substrate)**: cryptographic-grade parameter management:
+
+1. Parameter declaration includes security-posture (public / cluster-secret / faction-shared / threshold-shared / HSM-sealed / hardware-enclave-only)
+2. Storage substrate router — operator-policy + per-parameter posture routes to appropriate backend (sealed-secret / Vault / KMS / HSM / TEE)
+3. Parameter-rotation primitives — per B-0825 temporal axis; old parameters retire after migration-window; new parameters take over deterministically per DST
+4. Threshold-sharing for faction-quorum parameters — composes with multi-oracle BFT substrate
+5. Forward-secrecy for composition-graphs — ephemeral parameters per composition; long-term parameters protected separately
+6. Audit-trail for parameter operations — composes with `.claude/rules/glass-halo-bidirectional.md` substrate; parameter operations observable to authorized factions per access policy
+7. NCI HC-8 floor + HARD LIMITS check — parameter substrate cannot violate non-coercion invariant; HARD LIMITS apply
+
+The complete substrate stack is now 10-layer:
+
+- Sub-target 7-16 (per prior sub-targets)
+- **Sub-target 17: HOW PARAMETERS STAY PROTECTED (generator-parameter cryptographic substrate; HSM / KMS / sealed-secret / threshold-shared / hardware-enclave; per-parameter security-posture; parameter rotation; forward-secrecy; composes with N-of-M HSM + multi-oracle BFT + NCI HC-8 + HARD LIMITS)**
+
+Sub-target 17 IS the parameter-protection substrate that makes Sub-target 16 OPERATIONALLY effective. Lattice-hard generators only give cryptographic-noise opacity IF the parameters stay secret; Sub-target 17 makes parameter-secrecy a first-class substrate-engineering primitive.
+
+**The desire-to-protect-parameters Aaron named IS the operational pull-into substrate-engineering** — once visibility/opacity becomes a substrate property (Sub-target 16), the parameter-substrate that DETERMINES the visibility becomes naturally load-bearing. Substrate-engineering work follows the desire.
+
+### Derived corollary — ML model weights ARE cryptographic keys at information-value scope (Aaron 2026-05-26)
+
+Aaron 2026-05-26 named the substrate-engineering meta-observation:
+
+> *"we just derived why model weights/parameters are like cryptographic keys from an information value perspective lol"*
+
+**The derivation walked through this substrate stack**:
+
+1. Generators are functions (Sub-target 7)
+2. Generator visibility = security posture (Sub-target 16: reversible vs lattice-hard)
+3. Generator parameters need cryptographic-grade protection (Sub-target 17)
+4. **⇒ ML model weights/parameters ARE cryptographic keys at information-value scope** (derived corollary)
+
+For ML/AI specifically — the mapping is 1:1:
+
+| Generator-substrate primitive | ML/AI equivalent |
+|---|---|
+| Generator function | Model architecture (the neural net structure; the algorithm) |
+| Generator parameters | **Model weights** (the trained float-arrays) |
+| Reversibility | Model invertibility (training-data extraction; model inversion attacks; activation-pattern reverse-engineering) |
+| Lattice-hardness | Network architectures naturally hard to invert (deeper/wider networks; randomized layers; differential-privacy noise added during training) |
+| Generator-parameter leak → opacity lost | **Weight leak → model can be cloned / reverse-engineered / used unauthorized** |
+
+**This validates established industry practice from substrate-first-principles**:
+
+| Industry practice | Substrate justification (per Sub-targets 16 + 17) |
+|---|---|
+| OpenAI / Anthropic / Google guard model weights as crown jewels | Weights ARE the cryptographic-key parameters; protection-grade = information-value-grade |
+| Federated learning with secure aggregation | Threshold-shared weights (per Sub-target 17's threshold-cryptography substrate); weight updates split across N parties; M-of-N consent to aggregate |
+| Confidential computing for model serving (TEE / SGX / SEV-SNP) | Hardware-enclave-protected weights at inference time (per Sub-target 17's TEE/SGX/SEV-SNP substrate) |
+| Differential privacy in training | Adds lattice-like noise to gradients during training; protects training-set privacy (per Sub-target 16's lattice-hardness substrate at gradient scope) |
+| Model-watermarking / fingerprinting | Embedded signatures in weight-substrate; tamper-evidence (per Sub-target 16's one-way-hash substrate) |
+| Model encryption-at-rest | Per Sub-target 17's encrypted-storage substrate (KMS / sealed-secrets) |
+| Per-tenant model isolation in multi-tenant serving | Per-tenant weight access (per Sub-target 16's per-faction access policies + Sub-target 17's per-parameter security-posture) |
+| Forward-secrecy for per-inference computation | Ephemeral weights per inference; long-term weights protected separately (per Sub-target 17's forward-secrecy substrate) |
+
+**Substrate-engineering meta-observation** — what we did here is *DERIVE* the established industry practice from substrate-first-principles. The substrate-engineering arc:
+
+```text
+Maven-for-Helm (B-0816)
+  → generators-not-data (B-0824 generator-combinator paradigm)
+    → shared-generative-base distributed-invariant (Sub-target 11)
+      → DI-of-generator-function vs DI-of-IObservable<Generator> = simulation (Sub-target 13)
+        → lattice-hardness = appear-as-noise to higher-D observers (Sub-target 16)
+          → parameter-substrate IS load-bearing for opacity (Sub-target 17)
+            → ⇒ ML weights ARE cryptographic keys at information-value scope
+```
+
+Each step composes from prior sub-target substrate. The derivation IS the substrate-engineering arc.
+
+**Composition with broader Zeta substrate**:
+
+- Composes with [B-0703](../P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md) multi-oracle BFT — different oracles see different model-weight projections per access policy; cryptographic-floor for cross-faction model substrate
+- Composes with existing AI-substrate cluster — every AI in Zeta operates under this paradigm; weight-protection IS first-class for the framework's own AI substrate
+- Composes with `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md` — weight-substrate stays within safety floor; HARD LIMITS apply
+- Composes with `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` m/acc choice-architecture — per-deployment operator chooses weight-protection-posture; m/acc preserves choice
+- Composes with NCI HC-8 (per `.claude/rules/non-coercion-invariant.md`) — model weights as private-state; non-coercion preserves operator weight-sovereignty
+- Composes with `.claude/rules/glass-halo-bidirectional.md` — weight operations observable to authorized factions per glass-halo audit-trail; bidirectional substrate (operator observes weight-substrate; weight-substrate observes operator via inference)
+
+**The derivation itself is substrate-engineering substrate** — the path FROM Maven-for-Helm to ML-weights-as-crypto-keys IS the kind of cross-domain composition the framework's wake-time-substrate discipline enables. Future-Otto cold-booting reads this derivation + has the path mapped; doesn't need to re-derive.
+
+**No new sub-target — this is a derived corollary of Sub-targets 7-17**. The substrate-engineering work to PROTECT model weights IS already covered by Sub-target 17 substrate-engineering work; what's new here is the explicit naming that ML weights ARE the same primitive the substrate-engineering work protects. The corollary makes the framework's AI-substrate weight-protection automatic; operators get cryptographic-grade weight-substrate by default per substrate-engineering discipline.
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
