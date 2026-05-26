@@ -36,7 +36,11 @@ ROLE_PROMPT_SECS="${ROLE_PROMPT_SECS:-10}"
 # Defaults to whatever the ISO's /etc/zeta-firstboot.conf shipped with
 # (typically control-plane). Press 'c' or 'w' within ${ROLE_PROMPT_SECS}s
 # to choose; any other key (or timeout) keeps the default.
-clear || true
+# ANSI 'reset terminal' escape — no external `clear` dependency,
+# works on bare tty without requiring `ncurses` + a TERM that
+# tput recognises. Fixes B-0754 iteration-1 'clear: command not
+# found' from the systemd unit's minimal PATH.
+printf '\033c' || true
 cat <<EOF
 
   Zeta cluster installer — first boot
@@ -73,7 +77,11 @@ has_internet() {
   ping -c 1 -W 2 -q github.com >/dev/null 2>&1
 }
 
-clear || true
+# ANSI 'reset terminal' escape — no external `clear` dependency,
+# works on bare tty without requiring `ncurses` + a TERM that
+# tput recognises. Fixes B-0754 iteration-1 'clear: command not
+# found' from the systemd unit's minimal PATH.
+printf '\033c' || true
 cat <<EOF
 
   ╭──────────────────────────────────────────────────────╮
@@ -105,8 +113,14 @@ else
   read -n 1 -s -t 5 -p "  Press any key to launch nmtui (or wait 5s) ..." || true
   echo
   echo
-  # nmtui returns 0 on quit regardless of whether connection succeeded
-  if ! nmtui; then
+  # nmtui returns 0 on quit regardless of whether connection succeeded.
+  # Absolute path: defense-in-depth alongside the systemd unit's
+  # environment.PATH override (set in configuration.nix on
+  # systemd.services.zeta-first-boot.environment.PATH via lib.mkForce).
+  # Both defenses together fix B-0754 iteration-1 'nmtui: command not
+  # found' (nmtui IS installed in the ISO via networkmanager in
+  # systemPackages; the issue was PATH inheritance into the unit).
+  if ! /run/current-system/sw/bin/nmtui; then
     echo "[zeta-first-boot] nmtui failed."
     drop_to_shell
   fi

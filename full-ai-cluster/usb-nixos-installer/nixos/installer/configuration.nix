@@ -226,6 +226,21 @@
     wantedBy = [ "multi-user.target" ];
     after = [ "systemd-user-sessions.service" "NetworkManager.service" ];
     conflicts = [ "getty@tty1.service" ];
+    # B-0754 iteration-2 PATH fix: systemd services on NixOS get a
+    # minimal PATH by default (coreutils + findutils + grep + sed +
+    # systemd); bare commands (clear, nmtui, ping, etc.) outside that
+    # set failed with 'command not found' on first real-hardware run.
+    # NixOS systemd module already defines a default PATH at
+    # mkOptionDefault priority; use lib.mkForce to replace with the
+    # union that includes /run/current-system/sw/bin and
+    # /run/wrappers/bin so every tool in environment.systemPackages
+    # is reachable + setuid wrappers work. TERM=linux so any tput-
+    # based tools (curses TUIs like nmtui) get a sane terminal
+    # capability database without per-invocation setup.
+    environment = {
+      PATH = lib.mkForce "/run/current-system/sw/bin:/run/current-system/sw/sbin:/run/wrappers/bin";
+      TERM = "linux";
+    };
     serviceConfig = {
       Type = "idle";
       ExecStart = "/run/current-system/sw/bin/zeta-first-boot";
