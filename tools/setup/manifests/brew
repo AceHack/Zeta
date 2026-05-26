@@ -6,7 +6,10 @@
 # Homebrew's release lag per round-29 discipline. Round 34
 # migrated OpenJDK off brew onto mise.
 
-# (no system-level brew packages needed right now; language
-# runtimes come via mise. Brew itself is still installed by
-# macos.sh as a dependency of mise and for future system-level
-# packages that don't fit mise's model.)
+# CI test substrate (the maintainer 2026-05-26 — "7z is another tools
+# we need to declarative manage somewhere" + "it does not have to
+# be exact version but just declarative managed like other thinks
+# we manage at that level in install.sh"):
+p7zip       # cascade #4 ISO content audit (7z list); also useful
+            # for maintainers doing any iso/zip inspection locally
+            # (`7z l ...`). Idempotent: brew install skips if present.

@@ -34,11 +34,11 @@
 //
 // Exit codes:
 //   0 — all assertions pass
-//   1 — ISO file not found / invocation error
+//   1 — ISO file not found / not-a-regular-file / invocation error
 //   2 — 7z listing failed (corrupt ISO / not an ISO)
-//   3 — expected file missing from ISO content listing
+//   3 — required-path assertion(s) failed (missing path OR present-but-empty)
 
-import { existsSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { spawnSync } from "node:child_process";
 
 interface Args {
@@ -97,50 +97,155 @@ const REQUIRED_ISO_PATHS: readonly { path: string; rationale: string }[] = [
   },
 ];
 
-function lsIso(isoPath: string): { ok: boolean; lines: string[]; stderr: string } {
-  // `7z l <iso>` lists the contents. Parse format:
-  // ----------
-  //    Date      Time    Attr         Size   Compressed  Name
-  // ----------
-  // 2026-05-26 06:44:32 ....A    1875193856              nix-store.squashfs
-  // 2026-05-26 06:44:32 ....A      12345678              boot/bzImage
-  // ...
+interface IsoEntry {
+  readonly path: string;
+  readonly size: number;
+}
+
+interface LsIsoResult {
+  readonly ok: boolean;
+  readonly entries: readonly IsoEntry[];
+  readonly stderr: string;
+}
+
+function lsIso(isoPath: string): LsIsoResult {
+  // `7z l -slt <iso>` lists the contents in "single-line technical"
+  // format, one attribute per line per entry, separated by blank lines.
+  // Example:
+  //   Path = nix-store.squashfs
+  //   Size = 1875193856
+  //   ...
+  //   (blank line)
+  //   Path = boot/bzImage
+  //   Size = 12345678
+  //
+  // Parse into entries with {path, size} so we can assert non-empty
+  // (fix-fwd P? on #5119 — header comment claimed "non-empty" but
+  // implementation only checked presence; now both).
+  //
+  // sonarjs/no-os-command-from-path suppression rationale: this tool
+  // intentionally spawns the `7z` binary that comes from the
+  // ubuntu-24.04 runner's default PATH; the CI workflow doesn't have
+  // a stable absolute path for it across runner-image versions, and
+  // the input (isoPath) is already validated as an existing local
+  // file before spawn (no shell metachar concerns).
+  //
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
   const r = spawnSync("7z", ["l", "-slt", isoPath], {
     encoding: "utf8",
     maxBuffer: 64 * 1024 * 1024,
   });
-  if (r.status !== 0) {
-    return { ok: false, lines: [], stderr: r.stderr ?? "" };
+  if (r.error) {
+    // r.status is null when spawn itself failed (e.g., 7z not on PATH).
+    // Include r.error.message + r.signal in returned stderr so local
+    // runs clearly see WHY (fix-fwd P? on #5119).
+    return {
+      ok: false,
+      entries: [],
+      stderr: `spawn-error: ${r.error.message}${r.signal ? ` (signal: ${r.signal})` : ""}`,
+    };
   }
-  // 7z -slt format puts Path= lines for each entry; extract those.
-  const lines = (r.stdout ?? "")
-    .split("\n")
-    .filter((l) => l.startsWith("Path = "))
-    .map((l) => l.slice("Path = ".length).trim());
-  return { ok: true, lines, stderr: "" };
+  if (r.status !== 0) {
+    return { ok: false, entries: [], stderr: r.stderr ?? "" };
+  }
+  // Parse Path=...+Size=... blocks. Walk the lines, tracking the
+  // current entry; emit when we hit a blank line or a new Path=.
+  const entries: IsoEntry[] = [];
+  let curPath: string | null = null;
+  let curSize: number | null = null;
+  const flush = (): void => {
+    if (curPath !== null) {
+      entries.push({ path: curPath, size: curSize ?? 0 });
+    }
+    curPath = null;
+    curSize = null;
+  };
+  for (const line of (r.stdout ?? "").split("\n")) {
+    if (line.startsWith("Path = ")) {
+      flush();
+      curPath = line.slice("Path = ".length).trim();
+    } else if (line.startsWith("Size = ") && curPath !== null) {
+      const n = Number.parseInt(line.slice("Size = ".length).trim(), 10);
+      if (Number.isFinite(n)) curSize = n;
+    } else if (line.trim() === "" && curPath !== null) {
+      flush();
+    }
+  }
+  flush();
+  return { ok: true, entries, stderr: "" };
 }
 
 interface AuditFailure {
-  readonly kind: "missing-path";
+  readonly kind: "missing-path" | "empty-required-path";
   readonly path: string;
   readonly rationale: string;
+  readonly detail?: string;
 }
 
-function auditIsoContent(isoPath: string): readonly AuditFailure[] | string {
+interface AuditError {
+  readonly kind: "missing-file" | "list-failed";
+  readonly detail: string;
+}
+
+function isAuditError(r: readonly AuditFailure[] | AuditError): r is AuditError {
+  return !Array.isArray(r);
+}
+
+function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError {
   if (!existsSync(isoPath)) {
-    return `ISO file does not exist: ${isoPath}`;
+    // Distinct error class so main() can map to a distinct exit code
+    // (fix-fwd P? on #5119 — was returning bare string + main treated
+    // as "7z list failed" exit 2; now uses kind to map to correct
+    // exit 1 "ISO file not found / invocation error" per the contract
+    // in the header comment).
+    return { kind: "missing-file", detail: `ISO file does not exist: ${isoPath}` };
+  }
+  // Path exists but may be a directory, symlink-to-nothing-readable, or
+  // device file. Treat any non-regular-file under the same exit-1
+  // "invocation error" class as the missing-file case (Copilot P1 on
+  // #5120 — without this, a directory or unreadable path falls through
+  // to the 7z spawn path and produces exit 2 "list-failed" which the
+  // header contract reserves for corrupt-ISO / not-an-ISO cases).
+  try {
+    const st = statSync(isoPath);
+    if (!st.isFile()) {
+      return {
+        kind: "missing-file",
+        detail: `ISO path exists but is not a regular file: ${isoPath} (mode=${st.mode.toString(8)})`,
+      };
+    }
+  } catch (e) {
+    return {
+      kind: "missing-file",
+      detail: `cannot stat ISO path ${isoPath}: ${(e as Error).message}`,
+    };
   }
   const ls = lsIso(isoPath);
   if (!ls.ok) {
-    return `7z list failed (not a readable ISO?): ${ls.stderr}`;
+    return { kind: "list-failed", detail: `7z list failed (not a readable ISO?): ${ls.stderr}` };
   }
   // 7z paths are stored relative to ISO root; normalize by removing
   // leading "/" if present (varies by 7z version).
-  const presentPaths = new Set(ls.lines.map((p) => p.replace(/^\/+/, "")));
+  const entryByPath = new Map<string, IsoEntry>();
+  for (const e of ls.entries) {
+    entryByPath.set(e.path.replace(/^\/+/, ""), e);
+  }
   const failures: AuditFailure[] = [];
   for (const { path, rationale } of REQUIRED_ISO_PATHS) {
-    if (!presentPaths.has(path)) {
+    const entry = entryByPath.get(path);
+    if (entry === undefined) {
       failures.push({ kind: "missing-path", path, rationale });
+      continue;
+    }
+    // Non-empty assertion for nix-store.squashfs specifically
+    // (header comment promises this; fix-fwd P? on #5119).
+    if (path === "nix-store.squashfs" && entry.size <= 0) {
+      failures.push({
+        kind: "empty-required-path",
+        path,
+        rationale,
+        detail: `entry present but size=${entry.size} (header comment promises non-empty)`,
+      });
     }
   }
   return failures;
@@ -153,21 +258,32 @@ function main(): number {
     return 1;
   }
   const result = auditIsoContent(parsed.isoPath);
-  if (typeof result === "string") {
-    process.stderr.write(`audit-installer-iso-content: ${result}\n`);
-    return 2;
+  // Distinct error kinds map to distinct exit codes per the header
+  // contract. The `isAuditError` typeguard narrows the union without
+  // requiring `as` casts (Copilot P2 on #5120 — earlier draft used
+  // a redundant `"kind" in result` check + cast; the typeguard
+  // pattern is the canonical TS form for this shape, and works
+  // around TS's `Array.isArray` not narrowing `readonly T[]` unions
+  // directly via the lib.es5 signature).
+  if (isAuditError(result)) {
+    process.stderr.write(`audit-installer-iso-content: ${result.detail}\n`);
+    return result.kind === "missing-file" ? 1 : 2;
   }
-  if (result.length === 0) {
+  const failures = result;
+  if (failures.length === 0) {
     process.stdout.write(
       `audit-installer-iso-content: PASS — ${parsed.isoPath} contains all ${REQUIRED_ISO_PATHS.length} expected top-level files\n`,
     );
     return 0;
   }
   process.stderr.write(
-    `audit-installer-iso-content: FAIL — ${result.length} missing path(s) in ISO ${parsed.isoPath}\n\n`,
+    `audit-installer-iso-content: FAIL — ${failures.length} assertion(s) failed for ISO ${parsed.isoPath}\n\n`,
   );
-  for (const f of result) {
+  for (const f of failures) {
     process.stderr.write(`  [${f.kind}] ${f.path}\n    ${f.rationale}\n`);
+    if (f.detail) {
+      process.stderr.write(`    detail: ${f.detail}\n`);
+    }
   }
   process.stderr.write("\n");
   return 3;

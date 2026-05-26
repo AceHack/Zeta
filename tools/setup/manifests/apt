@@ -9,3 +9,9 @@ build-essential
 curl
 ca-certificates
 git
+
+# CI test substrate (the maintainer 2026-05-26 — declaratively
+# managed at install.sh manifest level, not implicit-from-runner-image):
+p7zip-full  # cascade #4 ISO content audit (7z list); ubuntu-24.04
+            # default-installs but Linux maintainers running setup
+            # locally need explicit declaration

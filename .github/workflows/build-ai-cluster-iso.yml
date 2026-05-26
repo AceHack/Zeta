@@ -117,9 +117,31 @@ jobs:
         working-directory: full-ai-cluster
         run: |
           set -euo pipefail
+          # Mirror the explicit 0/1+ candidate count check from the
+          # later "Locate ISO + capture metadata" step (fix-fwd
+          # Copilot finding on #5119). Under `set -u`, unbound
+          # iso_candidates[0] would give an opaque "unbound variable"
+          # error; explicit count check gives a clear workflow error.
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            ls -la result/iso/ >&2 || true
+            exit 1
+          fi
+          if [ "${#iso_candidates[@]}" -gt 1 ]; then
+            echo "::error::Audit step: Multiple installer ISOs under result/iso/; expected exactly one:" >&2
+            printf '  %s\n' "${iso_candidates[@]}" >&2
+            exit 1
+          fi
           iso_abs="$(pwd)/${iso_candidates[0]}"
           cd ..
+          # Declarative 7z management (the maintainer 2026-05-26 — "it
+          # does not have to be exact version but just declarative
+          # managed like other thinks we manage at that level in
+          # install.sh"). p7zip-full is in tools/setup/manifests/apt;
+          # ubuntu-24.04 runners default-install 7z so this is a
+          # belt-and-suspenders: manifest declares the dep + runner
+          # ships it. Call bun directly (no nix-shell wrap needed).
           bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
 
       - name: Locate ISO + capture metadata

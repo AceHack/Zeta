@@ -46,7 +46,15 @@ if [ -f "$APT_MANIFEST" ]; then
   # Extract non-comment non-empty lines via awk (doesn't fail
   # under pipefail when manifest is all comments — unlike
   # `grep -vE` which exits 1 on no-match).
-  PKGS="$(awk '!/^[[:space:]]*#/ && NF > 0 { print }' "$APT_MANIFEST" | tr '\n' ' ')"
+  #
+  # Strip inline `# ...` comments + trim whitespace (same parser fix
+  # as macos.sh BREW_MANIFEST per the maintainer 2026-05-26 bug
+  # surface: `p7zip-full  # comment` was passed to apt-get install
+  # verbatim, producing "Unable to locate package").
+  PKGS="$(awk '
+    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+    NF > 0 { print }
+  ' "$APT_MANIFEST" | tr '\n' ' ')"
   if [ -n "$PKGS" ]; then
     echo "↓ installing apt packages from $(basename "$APT_MANIFEST")..."
     # Use sudo only when not already root (CI containers often run as root).

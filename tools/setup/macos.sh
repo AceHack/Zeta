@@ -76,7 +76,16 @@ if [ -f "$BREW_MANIFEST" ]; then
   # pipefail when the manifest is all comments — unlike `grep -vE`
   # which exits 1 on no-match). Round-34 brew has no packages
   # after the JDK migration to mise.
-  PKGS="$(awk '!/^[[:space:]]*#/ && NF > 0 { print }' "$BREW_MANIFEST")"
+  #
+  # the maintainer 2026-05-26 surfaced a parser bug where a manifest
+  # line like `p7zip  # cascade #4 audit (7z list)` was passed to
+  # brew install verbatim (formula name became the whole line including
+  # the inline comment), producing "No available formula". Fix: strip
+  # inline `# ...` AND trim surrounding whitespace before emitting.
+  PKGS="$(awk '
+    { sub(/#.*$/, ""); gsub(/^[[:space:]]+|[[:space:]]+$/, "") }
+    NF > 0 { print }
+  ' "$BREW_MANIFEST")"
   if [ -n "$PKGS" ]; then
     echo "↓ installing brew packages from $(basename "$BREW_MANIFEST")..."
     # `brew install` is idempotent on already-installed formulae.
