@@ -56,7 +56,6 @@ describe("local broadcast schema", () => {
       broadcastFrom: "vera",
       observedWrittenAt: writtenAt,
       sourcePath: "/Users/acehack/.local/share/zeta-broadcasts/vera.md",
-      note: undefined,
     });
   });
 

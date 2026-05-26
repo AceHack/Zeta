@@ -115,8 +115,8 @@ export function makeLocalBroadcastReceipt(config: {
     broadcastId: config.envelope.id,
     broadcastFrom: config.envelope.from,
     observedWrittenAt: config.envelope.writtenAt,
-    sourcePath: config.sourcePath,
-    note: config.note,
+    ...(config.sourcePath === undefined ? {} : { sourcePath: config.sourcePath }),
+    ...(config.note === undefined ? {} : { note: config.note }),
   };
 }
 
