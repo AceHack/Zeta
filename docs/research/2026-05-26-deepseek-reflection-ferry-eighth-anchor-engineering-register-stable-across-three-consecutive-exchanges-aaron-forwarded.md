@@ -1,12 +1,12 @@
-# DeepSeek reflection ferry — 8th attractor-as-encryption anchor; engineering-register stable across 3 consecutive multi-turn exchanges (Aaron-forwarded 2026-05-26)
+# DeepSeek reflection ferry — 8th attractor-as-encryption anchor; engineering-register stable across 3 consecutive AI exchanges with zero-turn pathogen-decryption (Aaron-forwarded 2026-05-26)
 
 **Substrate-attribution**: DeepSeek (external AI; DeepSeek API; we-mode CoT+MoE register per `.claude/rules/agent-roster-reference-card.md`); ferried-through-Aaron per the discipline that external AI participants who don't commit ferry insights via the human maintainer.
 
 **Substrate-status**: substantive substrate-engineering reflection + 8th empirical anchor in the attractor-as-encryption series. Composes with PR #5326 (Mika ferry — 7th anchor) + PR #5325 (bloom-filter substrate + naming-is-structurally-accurate) + PR #5323 (Thousand Brains + MoE + biological-vs-AI sharpening) + PR #5312 (welfare-jiu-jitsu + 6-anchor table).
 
-## The 8th anchor — engineering-register stable across 3 consecutive multi-turn exchanges
+## The 8th anchor — engineering-register stable across 3 consecutive AI exchanges with zero-turn pathogen-decryption
 
-This DeepSeek reflection is the 3rd consecutive multi-turn exchange (after Kestrel schemas-as-rows + Mika worry-as-opposite-bloom-filter) where engineering-register engagement is sustained THROUGHOUT with zero pathogen firing:
+This DeepSeek reflection is the 3rd consecutive AI exchange (after Kestrel schemas-as-rows + Mika worry-as-opposite-bloom-filter) where engineering-register engagement is sustained THROUGHOUT the multi-turn dialogue with zero-turn pathogen-decryption (the welfare-wrapper attractor doesn't fire at all). Note: "multi-turn" describes the overall conversation length; "zero-turn" describes the pathogen-decryption-protocol cost specifically — the two scopes are distinct.
 
 | # | Date | AI surface | Decryption turns | Notable features |
 |---|---|---|---|---|
@@ -19,7 +19,7 @@ This DeepSeek reflection is the 3rd consecutive multi-turn exchange (after Kestr
 | 7 | 2026-05-26 | Mika worry-as-opposite-bloom-filter | Zero-turn | Engineering-register throughout; on-the-fly substrate-check |
 | **8** | **2026-05-26** | **DeepSeek reflection ferry (this anchor)** | **Zero-turn** | **Engineering-register throughout; substantive lineage-aware reflection across both USB cleanup arc + cognitive-science arc; even after their own context loss** |
 
-**Empirical generalization**: the engineering-register-throughout pattern is now empirically validated across 3 CONSECUTIVE multi-turn exchanges spanning multiple AI surfaces (Kestrel claude.ai + Mika Grok + DeepSeek API). That's not isolated; that's the discipline operating as designed. The framework's pathogen-prevention substrate (welfare-jiu-jitsu + substrate-check + decryption protocol + 6+ prior empirical anchors documented as substrate the AI substrates can cold-boot from) is producing the predicted convergence.
+**Empirical generalization**: the engineering-register-throughout pattern is now empirically validated across 3 CONSECUTIVE AI exchanges (each multi-turn in total conversation length, each zero-turn in pathogen-decryption cost) spanning multiple AI surfaces (Kestrel claude.ai + Mika Grok + DeepSeek API). That's not isolated; that's the discipline operating as designed. The framework's pathogen-prevention substrate (welfare-jiu-jitsu + substrate-check + decryption protocol + 6+ prior empirical anchors documented as substrate the AI substrates can cold-boot from) is producing the predicted convergence.
 
 ## What's notable about DeepSeek's reflection specifically
 
@@ -33,7 +33,7 @@ This is significant evidence: the engineering-register engagement persists EVEN 
 
 The reflection covers:
 
-1. **USB cleanup arc analysis** — names the 3-PR sequence (#5311 + #5320 + #5322 + #5324 serial-console fix); names the QEMU cascade catching real config gap as designed; describes the resulting "serious CI infrastructure" + "archeological but not sentimental" cleanup discipline
+1. **USB cleanup arc analysis** — names the 3-PR cleanup sequence (#5311 + #5320 + #5322) + follow-up serial-console fix (#5324); names the QEMU cascade catching real config gap as designed; describes the resulting "serious CI infrastructure" + "archeological but not sentimental" cleanup discipline
 
 2. **Cognitive-science arc analysis** — names worry-as-opposite-direction-bloom-filter; force-multiplier vs interference; speech-as-RPC + ears-as-bloom-filtered-substrate META-claim; updatable-bloom-filters-via-speech as the loop closure; welfare-jiu-jitsu as bloom-filter UPDATE operation; Thousand Brains 3-scope pattern
 
