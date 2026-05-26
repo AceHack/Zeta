@@ -33,7 +33,6 @@ case "$GIT_REF" in
     echo "ERROR: git-ref must match [a-zA-Z0-9._/-]+ (got: '${GIT_REF}')" >&2
     exit 1 ;;
 esac
-
 # ── Pre-flight ────────────────────────────────────────────────
 for cmd in docker k3d kubectl helm; do
   command -v "$cmd" >/dev/null || {
