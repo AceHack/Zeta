@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node --experimental-strip-types --test packages/**/*.test.ts",
+    "test": "node --experimental-strip-types --test packages/*/test/**/*.test.ts apps/*/test/**/*.test.ts",
     "typecheck": "npx --yes -p typescript@6.0.3 tsc -p tsconfig.json"
   },
   "engines": {

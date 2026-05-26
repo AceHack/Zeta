@@ -14,6 +14,13 @@ export {
 } from "./event-envelope.ts";
 export { WorkItemState, assertWorkItemTransition, createInitialWorkItemState } from "./work-item-state-machine.ts";
 export {
+  ReactionPlanActionType,
+  ReactionPlanReason,
+  ReactionPlanStatus,
+  RequiredHat,
+  type ReactionPlanAction,
+} from "./reaction-plan.ts";
+export {
   SupervisorChainLevel,
   SupervisorSignalStatus,
   SupervisorSignalToolType,

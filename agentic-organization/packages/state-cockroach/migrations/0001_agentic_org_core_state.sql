@@ -52,6 +52,28 @@ CREATE TABLE IF NOT EXISTS agentic_org_outbox_events (
   published_at TIMESTAMPTZ
 );
 
+CREATE TABLE IF NOT EXISTS agentic_org_inbox_receipts (
+  event_id STRING NOT NULL,
+  consumer_name STRING NOT NULL,
+  first_seen_at TIMESTAMPTZ NOT NULL,
+  processed_at TIMESTAMPTZ,
+  payload_hash STRING NOT NULL,
+  result STRING,
+  PRIMARY KEY (event_id, consumer_name)
+);
+
+CREATE TABLE IF NOT EXISTS agentic_org_reaction_plans (
+  reaction_plan_id STRING PRIMARY KEY,
+  consumer_name STRING NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  status STRING NOT NULL,
+  trigger_event_id STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  action_json JSONB NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS agentic_org_idempotency_records (
   idempotency_key STRING PRIMARY KEY,
   request_hash STRING NOT NULL,

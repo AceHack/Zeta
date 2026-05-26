@@ -2,7 +2,7 @@ import { equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { AgenticEventType } from "../../domain/src/index.ts";
-import { buildAgenticEventSubject } from "./subject-builder.ts";
+import { buildAgenticEventSubject } from "../src/subject-builder.ts";
 
 describe("agentic event NATS subjects", () => {
   test("uses a stable organization-scoped subject shape", () => {

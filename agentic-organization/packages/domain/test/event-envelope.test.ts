@@ -6,7 +6,7 @@ import {
   AgenticEventType,
   createAgenticEventEnvelope,
   type CommandTrace,
-} from "./event-envelope.ts";
+} from "../src/event-envelope.ts";
 
 const commandTrace: CommandTrace = {
   commandId: "cmd-capability-001",

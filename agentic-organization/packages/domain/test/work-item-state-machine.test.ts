@@ -1,7 +1,7 @@
 import { equal, throws } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { WorkItemState, assertWorkItemTransition, createInitialWorkItemState } from "./work-item-state-machine.ts";
+import { WorkItemState, assertWorkItemTransition, createInitialWorkItemState } from "../src/work-item-state-machine.ts";
 
 describe("work item state machine", () => {
   test("new work starts in the typed new state", () => {

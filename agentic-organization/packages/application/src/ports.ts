@@ -8,27 +8,44 @@ export type IdGenerator = {
   createId: (prefix: string) => string;
 };
 
-export type IdempotencyRecordStore<Result = unknown> = {
+export type CommandEffects = {
+  supervisorSignals: readonly SupervisorSignal[];
+  auditEvents: readonly AuditEvent[];
+  outboxEvents: readonly OutboxEvent[];
+};
+
+export type RecordCommandOutcomeInput<Result = unknown> = {
+  idempotencyRecord: IdempotencyRecord<Result>;
+  effects: CommandEffects;
+};
+
+export const CommandOutcomePersistenceStatus = {
+  Committed: "committed",
+  IdempotencyConflict: "idempotency_conflict",
+  Replayed: "replayed",
+} as const;
+
+export type CommandOutcomePersistenceStatus =
+  (typeof CommandOutcomePersistenceStatus)[keyof typeof CommandOutcomePersistenceStatus];
+
+export type RecordCommandOutcomeResult<Result = unknown> =
+  | {
+      status: typeof CommandOutcomePersistenceStatus.Committed;
+      result: Result;
+    }
+  | {
+      status: typeof CommandOutcomePersistenceStatus.Replayed;
+      result: Result;
+    }
+  | {
+      status: typeof CommandOutcomePersistenceStatus.IdempotencyConflict;
+      existingRequestHash?: string;
+    };
+
+export type CommandStateStore<Result = unknown> = {
   findIdempotencyRecord: (idempotencyKey: string) => Promise<IdempotencyRecord<Result> | undefined>;
-  saveIdempotencyRecord: (record: IdempotencyRecord<Result>) => Promise<void>;
+  recordCommandOutcome: (input: RecordCommandOutcomeInput<Result>) => Promise<RecordCommandOutcomeResult<Result>>;
 };
-
-export type SupervisorSignalStore = {
-  appendSupervisorSignal: (supervisorSignal: SupervisorSignal) => Promise<void>;
-};
-
-export type AuditEventStore = {
-  appendAuditEvent: (auditEvent: AuditEvent) => Promise<void>;
-};
-
-export type OutboxEventStore = {
-  appendOutboxEvent: (outboxEvent: OutboxEvent) => Promise<void>;
-};
-
-export type CommandStateStore<Result = unknown> = IdempotencyRecordStore<Result> &
-  SupervisorSignalStore &
-  AuditEventStore &
-  OutboxEventStore;
 
 export type CommandStateStoreFactory<Result = unknown> = {
   createCommandStateStore: () => CommandStateStore<Result>;

@@ -2,6 +2,7 @@ export {
   createCommandHandlerRegistry,
   type CommandExecutionContext,
   type CommandHandler,
+  type CommandHandlerOutcome,
   type CommandHandlerRegistry,
   type TypedCommand,
 } from "./command-handler-registry.ts";
@@ -19,13 +20,13 @@ export {
   type SendSupervisorSignalCommand,
   type SendSupervisorSignalDependencies,
 } from "./handlers/send-supervisor-signal.ts";
+export { CommandOutcomePersistenceStatus } from "./ports.ts";
 export type {
-  AuditEventStore,
   Clock,
+  CommandEffects,
   CommandStateStore,
   CommandStateStoreFactory,
-  IdempotencyRecordStore,
   IdGenerator,
-  OutboxEventStore,
-  SupervisorSignalStore,
+  RecordCommandOutcomeInput,
+  RecordCommandOutcomeResult,
 } from "./ports.ts";

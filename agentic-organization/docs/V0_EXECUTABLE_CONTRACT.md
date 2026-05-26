@@ -54,16 +54,16 @@ V0 does not need:
 - autonomous creation of new tools, workflows, or credential proxy
   endpoints.
 
-V0 should still model those future paths as supervisor-chain signals and
-capability requests, so the Organization can later route them through
-its own lifecycle.
+V0 should still model those future paths as supervisor-chain signals.
+Capability request inputs enter through that signal path and become
+specialized work only after supervisor triage.
 
 ## First Vertical Slice
 
 The first executable slice is:
 
 ```text
-supervisor-chain signal or capability request
+supervisor-chain signal
   -> anchored work item, discussion anchor, and context pack
   -> one readiness or review gate
   -> hat assignment
@@ -89,15 +89,15 @@ This is the smallest useful loop because it proves:
 
 Keep the first hat set small:
 
-| Hat                 | V0 reason                                                                           |
-| ------------------- | ----------------------------------------------------------------------------------- |
-| Director            | accepts or rejects escalated supervisor signals or capability requests for V0 scope |
-| Engineering Manager | grooms the work item, selects schedule, assigns implementer and reviewer hats       |
-| Implementer         | executes the prompt flow and submits evidence                                       |
-| Code Reviewer       | reviews the evidence and blocks self-approval                                       |
-| Memory Curator      | reviews memory writes or flags memory gaps when the run ends                        |
-| Platform Operator   | handles runtime failure, pod/session issues, and integration health                 |
-| Security Reviewer   | required only when the request needs a new credential or external tool scope        |
+| Hat                 | V0 reason                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------- |
+| Director            | accepts or rejects escalated supervisor signals, including capability-request inputs for V0 scope |
+| Engineering Manager | grooms the work item, selects schedule, assigns implementer and reviewer hats                     |
+| Implementer         | executes the prompt flow and submits evidence                                                     |
+| Code Reviewer       | reviews the evidence and blocks self-approval                                                     |
+| Memory Curator      | reviews memory writes or flags memory gaps when the run ends                                      |
+| Platform Operator   | handles runtime failure, pod/session issues, and integration health                               |
+| Security Reviewer   | required only when the request needs a new credential or external tool scope                      |
 
 The Executive Board, TPM, Product Owner, Architect, QA Reviewer, Hat
 Designer, and department directors remain first-class in the reference

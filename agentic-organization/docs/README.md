@@ -26,6 +26,7 @@ Current documents:
 - [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md) - the decisions and contracts that should be defined before scaffolding the first implementation slice.
 - [Implementation Governance](./IMPLEMENTATION_GOVERNANCE.md) - the current-state, OpenSpec, authority, idempotency, telemetry, security, and quality rules for implementation work.
 - [First Implementation Slice](./FIRST_IMPLEMENTATION_SLICE.md) - the NodeNext TypeScript package slice proving command, state, audit, outbox, NATS subject, telemetry, and reaction-plan contracts.
+- [North Star Alignment Checkpoint](./NORTH_STAR_ALIGNMENT_CHECKPOINT.md) - current alignment verdict, drift list, and next priorities against the Agentic Organization north star.
 - [V0 Executable Contract](./V0_EXECUTABLE_CONTRACT.md) - the smallest end-to-end runtime slice, grounded against the current `full-ai-cluster` substrate.
 - [V0 Schema and Commands](./V0_SCHEMA_AND_COMMANDS.md) - the CockroachDB-backed state groups, enums, command contract, outbox model, and TypeScript-facing runtime events for the first implementation.
 - [V0 Policy and Runtime Boundaries](./V0_POLICY_AND_RUNTIME_BOUNDARIES.md) - the hat policy matrix, MCP preflight checks, cluster runtime boundaries, failure rules, and ArgoCD integration shape.
@@ -39,6 +40,27 @@ The intent is to keep the architecture document focused on what the Organization
 ## Scope Discipline
 
 These documents are reference substrate, not a mandate to implement every concept at once. The first implementation should choose the smallest end-to-end slice from [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md), ship it, and prune or revise the reference docs as the concrete system teaches us.
+
+The current V0 product contract is:
+
+```text
+hat communication brief
+  -> send_supervisor_signal
+  -> supervisor triage plan
+  -> anchored work item and context
+  -> gate decision
+  -> hat assignment and scoped runtime authority
+  -> scheduled prompt-flow run
+  -> Hermes run binding
+  -> evidence submission
+  -> reviewer decision
+  -> outcome review
+```
+
+Capability requests, credential requests, workflow gaps, memory gaps,
+questions, and blockers enter through supervisor-chain communication
+first. They become specialized work only after the responsible hat
+triages them.
 
 ## Placement
 

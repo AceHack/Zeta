@@ -1,17 +1,19 @@
-import type { Clock, CommandStateStore, IdGenerator } from "./ports.ts";
+import type { Clock, CommandEffects, IdGenerator } from "./ports.ts";
 
 export type TypedCommand = {
   type: string;
 };
 
-export type CommandExecutionContext<Result = unknown> = Clock &
-  IdGenerator & {
-    store: CommandStateStore<Result>;
-  };
+export type CommandHandlerOutcome<Result = unknown> = {
+  result: Result;
+  effects: CommandEffects;
+};
+
+export type CommandExecutionContext = Clock & IdGenerator;
 
 export type CommandHandler<Command extends TypedCommand = TypedCommand, Result = unknown> = {
   commandType: Command["type"];
-  execute: (command: Command, context: CommandExecutionContext<Result>) => Promise<Result>;
+  execute: (command: Command, context: CommandExecutionContext) => Promise<CommandHandlerOutcome<Result>>;
 };
 
 export type CommandHandlerRegistry<Command extends TypedCommand = TypedCommand, Result = unknown> = {

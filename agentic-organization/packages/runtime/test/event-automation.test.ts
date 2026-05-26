@@ -9,7 +9,12 @@ import {
   SupervisorSignalToolType,
   createAgenticEventEnvelope,
 } from "../../domain/src/index.ts";
-import { ReactionPlanActionType, ReactionPlanReason, RequiredHat, evaluateV0AutomationRules } from "./reaction-plan.ts";
+import {
+  ReactionPlanActionType,
+  ReactionPlanReason,
+  RequiredHat,
+  evaluateV0AutomationRules,
+} from "../src/reaction-plan.ts";
 
 describe("v0 event automation rules", () => {
   test("plans target-supervisor triage when a hat sends an upward signal", () => {

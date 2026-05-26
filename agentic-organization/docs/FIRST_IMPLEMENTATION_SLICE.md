@@ -29,12 +29,32 @@ send_supervisor_signal
   -> chain-of-command signal
   -> audit event
   -> outbox event with canonical event envelope
+  -> command outcome persisted through one state-store operation
   -> outbox publisher
   -> NATS JetStream event publisher adapter
+  -> NATS JetStream event consumer adapter
   -> NATS subject contract
+  -> event ingestion processor
+  -> inbox receipt / consumer dedupe
+  -> event-processing outcome persisted through one store operation
+  -> persisted reaction plans
+  -> worker host cycle summary
+  -> apps/workers runtime summary
   -> LGTM span attributes
   -> supervisor triage reaction plan
 ```
+
+## Checkpoint Boundary
+
+The implemented slice does not yet create discussion anchors, graph
+nodes, hat assignments, hat tokens, policy decisions, prompt-flow runs,
+Hermes runs, or reviewer gates. Those remain V0 follow-on commands.
+
+Capability-request-shaped inputs should continue to enter through
+`send_supervisor_signal`. The target supervisor triage step decides
+whether to create a `CapabilityRequest` work item, route to security,
+open a discussion, assign implementation work, answer directly, or
+escalate.
 
 ## Packages
 
@@ -45,10 +65,17 @@ send_supervisor_signal
 | `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
 | `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of the state-store/outbox-source ports, backed by CockroachDB                                                            |
 | `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder, outbox publisher, event publisher port, and typed domain resolver                                  |
-| `@agentic-org/messaging-nats`  | NATS JetStream event publisher adapter contract with canonical JSON payloads, headers, and message IDs                                                                |
-| `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection                                                                                                                          |
+| `@agentic-org/messaging-nats`  | NATS JetStream publisher and consumer adapter contracts with canonical JSON payloads, headers, message IDs, ack/nack, termination, and DLQ policy                     |
+| `@agentic-org/observability`   | OpenTelemetry/LGTM span attribute projection for event envelopes and NATS consumer batch summaries                                                                    |
 | `@agentic-org/runtime`         | first rule that plans triage for the target supervisor when a chain signal is sent                                                                                    |
+| `@agentic-org/workers`         | process-boundary run-once worker host that composes outbox publishing and inbound event ingestion through ports                                                       |
 | `@agentic-org/governance`      | package dependency-boundary checks that prevent application code from importing concrete state/runtime adapters                                                       |
+
+## Apps
+
+| App            | Implemented first                                                                                                                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/workers` | NodeNext runtime-host shell that parses process config, composes worker ports, runs the package worker cycle, runs the NATS consumer cycle, emits telemetry records, and reports healthy/degraded state |
 
 ## NodeNext Runtime Decision
 
@@ -99,6 +126,14 @@ Hermes runs, MCP calls, and UI evidence.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
+- Command handlers return typed effects; the command pipeline persists
+  the supervisor signal, audit events, outbox events, and idempotency
+  record through one `recordCommandOutcome` port. Handlers do not write
+  piecemeal state.
+- Command outcome persistence returns generic committed, replayed, or
+  idempotency-conflict results. Durable adapters own idempotency race
+  handling and return those generic outcomes without exposing duplicate
+  key or vendor errors to application code.
 - State-store and outbox-source ports are async from the beginning so
   durable SQL, NATS-backed workers, and other real adapters do not
   inherit a fake synchronous shape.
@@ -108,11 +143,70 @@ Hermes runs, MCP calls, and UI evidence.
 - A governance test enforces that the Cockroach state adapter does not
   import messaging, NATS, or JetStream. Durable state can be swapped
   without dragging transport concerns into the repository layer.
+- A governance test enforces package source layout: production code
+  lives under `packages/<name>/src`, tests live under
+  `packages/<name>/test`, and `*.test.ts` files are rejected from
+  production source trees.
 - The outbox publisher claims unpublished events, publishes each event
   through an `EventPublisher` port, and marks rows published only after
   the publish succeeds.
 - The NATS adapter publishes canonical JSON envelopes with typed headers
   and event IDs as message IDs for idempotent JetStream publication.
+- The NATS consumer adapter decodes canonical JSON envelopes, preserves
+  the traceable event boundary into the runtime ingestion processor,
+  acknowledges processed and duplicate messages, terminates and
+  dead-letters invalid envelopes or payload conflicts, and
+  negative-acknowledges transient ingestion failures. If dead-letter
+  publication or source-message termination fails, it records the
+  failure, negative-acknowledges the source message, and continues the
+  batch.
+- The event ingestion processor accepts decoded canonical envelopes,
+  dedupes them by event ID plus consumer name, evaluates automation
+  rules once, rejects same-event payload hash conflicts, and persists
+  reaction plans through a store boundary that durable adapters can make
+  transactional.
+- Event ingestion treats only completed receipts as duplicates. If a
+  same-payload receipt exists without `processedAt` and `result`, the
+  processor re-evaluates the event and records the full outcome so old
+  orphan receipts do not suppress automation.
+- The Cockroach adapter now declares inbox receipt and reaction plan
+  tables plus a SQL-backed event-ingestion store. This is still behind a
+  generic state port; live NATS consumers are not hardcoded into the
+  adapter.
+- The Cockroach command and event-ingestion adapters expose
+  adapter-local transaction batch seams. Application and runtime code
+  still see generic outcome ports; Cockroach-specific transaction
+  mechanics stay in `@agentic-org/state-cockroach`.
+- The Cockroach command adapter records the idempotency row before
+  effect rows inside the command transaction batch, so a duplicate key
+  aborts before supervisor signal, audit, or outbox rows are submitted.
+- The Cockroach command adapter claims the idempotency key before
+  inserting effects. If it loses the race, it returns replay or
+  idempotency conflict through the generic `CommandStateStore` result
+  and does not insert command effects.
+- The Cockroach event-ingestion adapter normalizes SQL `NULL`
+  completion fields to pending receipts and claims the pending receipt
+  before inserting reaction plans. If the claim reports duplicate or
+  payload conflict, the adapter returns that generic outcome without
+  inserting reaction plans.
+- The Cockroach event-ingestion adapter also requires the final
+  processed-receipt update to return the claimed receipt. If that
+  completion check fails after reaction plans were prepared, the
+  transaction rolls back and the adapter returns a generic duplicate
+  outcome.
+- Governance now checks that runtime code, like application code, cannot
+  import vendor adapters or vendor clients directly. Vendor packages must
+  implement generic Organization ports consumed by application/runtime
+  packages.
+- The worker host now runs one bounded outbox cycle plus one bounded
+  inbound-ingestion cycle through explicit ports, then returns an
+  idle/worked/degraded summary suitable for future logs, metrics, and UI
+  workflow visibility. If one lane fails, the other lane still runs and
+  the failure is returned as typed cycle data.
+- A governance test enforces that worker source does not import the
+  Cockroach adapter, NATS adapter, NestJS, NATS, Dapr, Temporal,
+  Drizzle, or Postgres clients. Worker code remains a process boundary,
+  not a concrete infrastructure host.
 - Duplicate commands with the same idempotency key and request hash
   replay the stored result.
 - Duplicate commands with the same idempotency key and a different
@@ -121,14 +215,47 @@ Hermes runs, MCP calls, and UI evidence.
 - Event envelopes reject missing command trace fields.
 - The first automation rule produces a supervisor triage plan, not an
   unreviewed side effect.
+- Observability now exposes NATS consumer batch attributes for received,
+  processed, duplicate, payload-conflict, invalid, failed,
+  acknowledged, negative-acknowledged, terminated, and dead-lettered
+  counts.
+- `apps/workers` now composes the package worker cycle and NATS consumer
+  cycle behind process configuration and telemetry ports. If one cycle
+  throws, the other still runs and the runtime result is degraded with a
+  typed failure stage.
+- `apps/workers` keeps successful worker/NATS cycle results visible even
+  when telemetry recording fails. Telemetry sink failures degrade the
+  runtime through a dedicated failure stage instead of erasing completed
+  work.
+- `apps/workers` validates required process config before any loop can
+  start: environment, Organization ID, NATS stream, durable consumer,
+  and positive NATS inbound batch size.
+- `apps/workers` parses required runtime values from typed environment
+  names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
+  `NATS_DURABLE`, and `NATS_INBOUND_BATCH_SIZE`. String values are
+  trimmed, and NATS inbound batch size must be a safe positive decimal
+  integer.
+- `apps/workers` treats any non-happy NATS consumer counter as degraded:
+  failed, dead-lettered, invalid, payload-conflict,
+  negative-acknowledged, or terminated messages.
+- `apps/workers` exposes an app-level composition factory that receives
+  typed config plus already-constructed ports. Future real CockroachDB,
+  NATS, and telemetry adapters bind at this app seam instead of leaking
+  process or secret concerns into reusable packages.
 
 ## Next Slice
 
-The next slice should add inbox/consumer dedupe before automation starts
-performing side effects from NATS events. After that, wire the outbox
-publisher into a worker host and add a transactional durable-state
-adapter integration test using CockroachDB as the first cluster-backed
-implementation once a local/dev connection is available.
+The next slice should add policy and hat-authority checks before real
+API, MCP, Hermes, or worker command entrypoints can call the command
+pipeline. After that, add the first real process adapter factories below
+`apps/workers`: concrete NATS pull/publish client construction, durable
+CockroachDB outbox/inbox adapter construction, and a telemetry sink that
+can later send structured logs and metrics into the full-ai-cluster LGTM
+stack. Keep URLs, credentials, and connection pools in app adapter config
+fed by Kubernetes Secret or ExternalSecret values, never in domain
+packages. Add a durable-state integration test using CockroachDB as the
+first cluster-backed implementation once a local/dev connection is
+available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

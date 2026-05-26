@@ -7,7 +7,7 @@ import {
   createCockroachOutboxEventSource,
   type CockroachOutboxSqlExecutor,
   type CockroachOutboxSqlStatement,
-} from "./cockroach-outbox-event-source.ts";
+} from "../src/cockroach-outbox-event-source.ts";
 
 describe("cockroach outbox event source", () => {
   test("claims unpublished outbox events and marks them published", async () => {

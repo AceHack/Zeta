@@ -8,10 +8,9 @@ import {
   SupervisorChainLevel,
   SupervisorSignalStatus,
   SupervisorSignalToolType,
-} from "../../../domain/src/index.ts";
-import { createInMemoryOrganizationStoreFactory } from "../../../state/src/index.ts";
-import { CommandResultStatus, type CommandResult } from "../command-result.ts";
-import { sendSupervisorSignal, type SendSupervisorSignalCommand } from "./send-supervisor-signal.ts";
+} from "../../domain/src/index.ts";
+import { CommandResultStatus, type CommandResult } from "../src/command-result.ts";
+import { sendSupervisorSignal, type SendSupervisorSignalCommand } from "../src/handlers/send-supervisor-signal.ts";
 
 const command: SendSupervisorSignalCommand = {
   commandId: "cmd-supervisor-signal-001",
@@ -38,24 +37,20 @@ const command: SendSupervisorSignalCommand = {
 };
 
 describe("send supervisor signal handler", () => {
-  test("persists chain communication, audit event, and outbox event atomically", async () => {
-    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
-    const store = stateStoreFactory.createCommandStateStore();
-
-    const result = await sendSupervisorSignal(command, {
-      store,
+  test("returns chain communication, audit event, and outbox event effects", async () => {
+    const outcome = await sendSupervisorSignal(command, {
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
     });
+    const result = outcome.result as CommandResult;
 
     equal(result.status, CommandResultStatus.Accepted);
     ok(result.supervisorSignal);
     equal(result.supervisorSignal.status, SupervisorSignalStatus.Sent);
-    equal(stateStoreFactory.snapshot.supervisorSignals.length, 1);
-    equal(stateStoreFactory.snapshot.workItems.length, 0);
-    equal(stateStoreFactory.snapshot.auditEvents.length, 1);
-    equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
-    deepEqual(stateStoreFactory.snapshot.outboxEvents[0]?.envelope, {
+    deepEqual(outcome.effects.supervisorSignals, [result.supervisorSignal]);
+    equal(outcome.effects.auditEvents.length, 1);
+    equal(outcome.effects.outboxEvents.length, 1);
+    deepEqual(outcome.effects.outboxEvents[0]?.envelope, {
       eventId: "evt-001",
       eventType: AgenticEventType.SupervisorSignalSent,
       schemaVersion: "agentic.org.event.v1",

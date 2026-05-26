@@ -116,6 +116,10 @@ Rules:
 - Cross-package imports use public exports only.
 - No controller, worker entrypoint, Temporal workflow, Dapr actor, or MCP
   route contains business rules.
+- Production source and test source are separated. Package
+  implementation code lives in `packages/<name>/src`; package tests live
+  in `packages/<name>/test`. Governance checks should reject `*.test.ts`
+  files inside production source trees.
 
 ## Package Layers
 
@@ -162,21 +166,22 @@ calling them.
 
 ### Layer 3: State, Messaging, and Runtime Adapters
 
-| Package                                  | Owns                                                                                            |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `@agentic-org/state`                     | generic state-store, outbox-source, inbox, idempotency, transaction, and lease ports            |
-| `@agentic-org/state-cockroach`           | first replaceable durable SQL implementation of state-store and outbox-source ports             |
-| `@agentic-org/messaging`                 | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts    |
-| `@agentic-org/messaging-nats`            | NATS JetStream implementation of the event publisher port, canonical JSON, headers, message IDs |
-| `@agentic-org/workflows-temporal`        | Temporal workflow and activity contracts, task queues, workflow clients                         |
-| `@agentic-org/actors-dapr`               | Dapr actor interfaces, actor implementations, reminders, actor state projection                 |
-| `@agentic-org/mcp`                       | MCP schemas, tool registry, preflight checks, policy-checked tool handlers                      |
-| `@agentic-org/hermes`                    | Hermes session adapter, run adapter, callback contract, run context builder                     |
-| `@agentic-org/memory`                    | Hindsight adapter, hat-scoped recall/retain/reflect, memory attribution, memory health          |
-| `@agentic-org/k8s-hats`                  | generated or checked Hat, HatBinding, HatSwap, HatPolicy types, informers, projection decoding  |
-| `@agentic-org/openziti`                  | OpenZiti transport adapter, identity/config access, connectivity checks                         |
-| `@agentic-org/credential-proxy`          | credential request adapter, scoped credential use, audit hooks                                  |
-| `@agentic-org/adapters-agentic-services` | temporary wrappers around reused `agentic-services` primitives                                  |
+| Package                                  | Owns                                                                                                           |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `@agentic-org/state`                     | generic state-store, outbox-source, inbox, idempotency, transaction, and lease ports                           |
+| `@agentic-org/state-cockroach`           | first replaceable durable SQL implementation of state-store and outbox-source ports                            |
+| `@agentic-org/messaging`                 | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts                   |
+| `@agentic-org/messaging-nats`            | NATS JetStream implementation of publisher and consumer ports, canonical JSON, headers, ack/nack, and DLQ      |
+| `@agentic-org/workers`                   | small worker process boundary that composes outbox publishing, inbound ingestion, and schedulers through ports |
+| `@agentic-org/workflows-temporal`        | Temporal workflow and activity contracts, task queues, workflow clients                                        |
+| `@agentic-org/actors-dapr`               | Dapr actor interfaces, actor implementations, reminders, actor state projection                                |
+| `@agentic-org/mcp`                       | MCP schemas, tool registry, preflight checks, policy-checked tool handlers                                     |
+| `@agentic-org/hermes`                    | Hermes session adapter, run adapter, callback contract, run context builder                                    |
+| `@agentic-org/memory`                    | Hindsight adapter, hat-scoped recall/retain/reflect, memory attribution, memory health                         |
+| `@agentic-org/k8s-hats`                  | generated or checked Hat, HatBinding, HatSwap, HatPolicy types, informers, projection decoding                 |
+| `@agentic-org/openziti`                  | OpenZiti transport adapter, identity/config access, connectivity checks                                        |
+| `@agentic-org/credential-proxy`          | credential request adapter, scoped credential use, audit hooks                                                 |
+| `@agentic-org/adapters-agentic-services` | temporary wrappers around reused `agentic-services` primitives                                                 |
 
 Adapters are replaceable. The Organization should be able to run a V0
 slice with in-process fakes, then swap in Temporal, Dapr, Hermes,
@@ -234,6 +239,14 @@ HatSystemPort -> KubernetesHatSystemAdapter or ReadOnlyFakeHatSystemAdapter
 ```
 
 Business services should depend on ports, not concrete adapters.
+Every vendor-specific implementation must sit behind a generic
+Organization interface exported by a non-vendor package. For example,
+application code sees `CommandStateStore`, runtime code sees
+`EventIngestionStore`, and messaging code sees `EventPublisher`; it
+must not see CockroachDB, NATS, OpenZiti, Hindsight, Hermes, Temporal,
+Dapr, Kubernetes, or provider-specific clients directly. Vendor
+packages may define private executor seams for their own composition,
+but those seams are not application contracts.
 
 The command pipeline must also depend on a handler registry and a
 state-store factory supplied by the composition layer. It must not
@@ -246,6 +259,47 @@ adapters may resolve immediately, but durable SQL, transactional outbox,
 inbox, and lease adapters must be able to perform real I/O without
 changing command-handler contracts. CockroachDB is the first durable SQL
 adapter in the cluster, not an application-layer dependency.
+
+Command handlers must return typed effects, not write state directly.
+The command pipeline owns idempotency lookup and calls one command
+outcome port that records the business state, audit events, outbox
+events, and idempotency record together. This keeps the application
+layer closed to concrete database transactions while still giving
+durable adapters one atomic commit boundary for a command result.
+Durable command adapters should reserve the idempotency record before
+effect rows inside that transaction so an idempotency race aborts before
+supervisor signal, audit, or outbox state becomes visible.
+The command outcome port returns generic committed, replayed, or
+idempotency-conflict results. A vendor adapter may use SQL constraints,
+transaction callbacks, CTEs, or other local mechanics to detect races,
+but application code only receives the generic outcome.
+
+The first worker boundary follows the same rule. `@agentic-org/workers`
+does not create NATS clients, Cockroach clients, Nest modules, Temporal
+workers, or Dapr actors. It receives an outbox publisher, an inbound
+event source, and an event-ingestion processor through ports, runs one
+bounded cycle, and returns an idle/worked/degraded summary. A failure in
+one lane is captured as typed cycle data while the other lane still gets
+a chance to run. `apps/workers` will later bind those ports to real
+cluster adapters and attach process concerns such as health checks,
+metrics, structured logs, readiness, and graceful shutdown.
+
+`apps/workers` now exists as the first NodeNext runtime-host shell. It
+does not introduce NestJS yet. It composes the package-level worker host
+and the NATS consumer adapter, parses typed process environment values
+into runtime config, records telemetry through a sink port, and reports
+healthy/degraded status. Its current required environment contract is
+`AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`, `NATS_DURABLE`, and
+`NATS_INBOUND_BATCH_SIZE`. Concrete NATS clients, CockroachDB pools,
+readiness endpoints, structured logging, and shutdown hooks still belong
+to later process-adapter wiring.
+
+The `apps/workers` composition root receives typed config plus
+already-constructed ports. This is the only place the worker process
+should know which concrete adapter implementation is being used. Domain,
+application, runtime, worker, and observability packages must stay free
+of process environment, Kubernetes Secret, ExternalSecret, connection
+pool, and client-construction details.
 
 ## SOLID Rules
 
@@ -471,6 +525,66 @@ deterministic `idempotencyKey`. External side effects must either be
 natively idempotent or wrapped by a command that stores the external
 request/result.
 
+The first executable runtime slice implements this as an event ingestion
+processor before a live NATS consumer exists. A transport adapter decodes
+the canonical envelope, calls the processor, and the processor checks
+the inbox receipt, evaluates rules, and persists the receipt plus
+reaction plans through one store operation. Durable adapters should
+implement that operation transactionally so a saved receipt cannot
+silently suppress a reaction plan that failed to persist. The processor
+also compares payload hashes for repeated `eventId + consumerName`
+pairs; conflicting payloads are not treated as normal duplicates.
+
+The processor treats only completed inbox receipts as duplicates. A
+receipt with a matching payload hash but without completion fields is a
+recoverable pending/orphan state: the rule processor may re-evaluate the
+event and call the same outcome store operation to complete the receipt
+and persist reaction plans. Durable adapters should still make this rare
+by committing receipt, reaction plans, and processed marker in one
+transaction.
+
+Cockroach-specific transaction mechanics stay inside
+`@agentic-org/state-cockroach`. Application and runtime packages see
+outcome ports. The Cockroach adapter receives transaction-batch SQL
+executor seams for command outcomes and event-ingestion outcomes, and a
+real process adapter must bind those seams to an actual CockroachDB
+transaction before production traffic uses the adapter.
+The event-ingestion Cockroach adapter must normalize SQL `NULL`
+completion fields to omitted receipt fields and claim the pending
+receipt at the start of the transaction. Reaction-plan inserts and the
+processed marker must be conditional on that claim. If another consumer
+already completed the receipt, the adapter returns a duplicate outcome
+through the generic `EventIngestionStore` result without inserting
+reaction plans.
+
+The processed marker must also prove the claim was still held by
+returning the marked receipt. If the final mark no longer matches a
+pending receipt after reaction plans were prepared, the adapter must
+abort the transaction so those reaction plans roll back, then return a
+generic duplicate outcome. Runtime code must not receive Cockroach
+update-count details or transaction objects.
+
+A worker host composes that ingestion processor with the outbox
+publisher but stays below the NestJS process layer. This creates a
+testable boundary where replayable inbound sources and live transport
+consumers can both feed the same rule processor without changing rule
+evaluation or reaction-plan persistence. The worker-host source port is
+replayable pull only; live NATS ack, nack, checkpoint, backoff, and DLQ
+behavior remains owned by the transport adapter and `apps/workers`
+process host.
+
+The first NATS consumer adapter is now the transport-policy boundary. It
+decodes canonical JSON envelopes and calls the runtime ingestion
+processor, but it owns JetStream-style decisions: ack processed and
+duplicate messages, terminate plus dead-letter invalid envelopes and
+payload conflicts, and negative-acknowledge transient ingestion
+failures. If dead-letter publishing or source-message termination
+fails, it records the failure, negative-acknowledges the source message
+for retry, and continues the fetched batch so one broken DLQ path cannot
+starve unrelated messages. This keeps runtime rules deterministic and
+transport-neutral while still making live NATS behavior testable before
+a Nest worker process exists.
+
 ### Stream and Consumer Manifests
 
 Every stream and durable consumer should declare:
@@ -608,13 +722,19 @@ Secrets/ExternalSecrets, but the domain package should never see those
 values. The Nest composition layer binds configuration into adapter
 ports.
 
+The current `apps/workers` NodeNext host applies this rule before NestJS
+is introduced: non-secret operational values are parsed from typed env
+names, while URLs, credentials, and client construction remain reserved
+for process adapter factories supplied by the composition root.
+
 Minimum runtime environment contract:
 
 ```text
 AGENTIC_ORG_ENV
 AGENTIC_ORG_ID
-COCKROACH_URL
-NATS_URL
+NATS_STREAM
+NATS_DURABLE
+NATS_INBOUND_BATCH_SIZE
 TEMPORAL_ADDRESS
 HINDSIGHT_URL
 HERMES_URL
@@ -623,11 +743,12 @@ OTEL_EXPORTER_OTLP_ENDPOINT
 HAT_SYSTEM_NAMESPACE
 ```
 
-Secrets such as database credentials, NATS credentials, OpenZiti
-credentials, LLM provider keys, and credential-proxy tokens must come
-from Vault through External Secrets or another approved cluster secret
-path. They should not live in plain Kubernetes manifests and should not
-be baked into the Agentic Organization image.
+Adapter-specific URLs and secrets such as CockroachDB URLs, NATS URLs,
+database credentials, NATS credentials, OpenZiti credentials, LLM
+provider keys, and credential-proxy tokens must come from Vault through
+External Secrets or another approved cluster secret path. They should
+not live in plain Kubernetes manifests and should not be baked into the
+Agentic Organization image.
 
 ### ArgoCD Sync Wave
 
@@ -748,6 +869,10 @@ package should standardize:
 - workflow visibility records that project command/event context into
   UI- and agent-readable health, stage, trace, scope, aggregate, and
   weak-point indicator fields.
+- NATS consumer batch attributes for stream, durable consumer, received,
+  processed, duplicate, payload-conflict, invalid, failed,
+  acknowledged, negative-acknowledged, terminated, and dead-lettered
+  counts.
 
 Every runtime host should be inspectable from either direction:
 
@@ -765,6 +890,20 @@ to discover slow triage, repeated failures, missing evidence, missing
 tools, policy denials, harness failures, and telemetry gaps, then route
 fixes through the same command, review, and security lifecycle as any
 other work.
+
+The first `apps/workers` runtime projects both package worker-cycle
+counts and NATS consumer batch counts through telemetry sink ports. The
+runtime treats package degraded status, thrown loop failures, telemetry
+sink failures, dead-lettered NATS messages, invalid NATS messages,
+payload-conflict NATS messages, negative acknowledgements, terminated
+messages, and failed NATS messages as degraded state so weak points can
+surface before the process is connected to real cluster telemetry.
+Telemetry failures must not erase successful worker or NATS cycle
+results; they are captured as their own typed failure stage. The
+composition root is therefore the future bridge from these records into
+the full-ai-cluster LGTM stack: structured logs to Loki, traces to Tempo
+through Alloy, metrics to Prometheus/Mimir, and dashboard projections in
+Grafana.
 
 ## V0 Build Sequence
 
@@ -802,11 +941,17 @@ other work.
    hat-system.
 6. Add NATS outbox publisher and one consumer after command tests pass.
 7. Add inbox/consumer dedupe before any NATS-driven automation performs
-   side effects.
+   side effects. The first package-level processor and Cockroach adapter
+   now exist; the first package-level worker host composes the outbox and
+   inbound-ingestion loops through ports, and the NATS consumer adapter
+   owns live ack/nack/DLQ policy.
 8. Add the first rule catalog and reaction executor for ready work,
    review staffing, QA staffing, blocker escalation, and late run
    incidents.
-9. Add the NestJS API and worker hosts.
+9. Add runtime hosts. The first NodeNext `apps/workers` host now parses
+   typed process config and composes the worker and NATS consumer loops
+   through ports; NestJS API and richer worker process wiring are still
+   pending.
 10. Add UI projections for work board, review center, and evidence
     timeline.
 11. Add real cluster adapters one at a time.

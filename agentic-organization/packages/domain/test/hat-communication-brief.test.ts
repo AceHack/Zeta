@@ -1,8 +1,8 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { DefaultTeamMemberSupervisorTools, buildHatCommunicationBrief } from "./hat-communication-brief.ts";
-import { SupervisorChainLevel, SupervisorSignalToolType } from "./supervisor-communication.ts";
+import { DefaultTeamMemberSupervisorTools, buildHatCommunicationBrief } from "../src/hat-communication-brief.ts";
+import { SupervisorChainLevel, SupervisorSignalToolType } from "../src/supervisor-communication.ts";
 
 describe("hat communication brief", () => {
   test("explains duty, supervisor line, and efficient upward tools", () => {

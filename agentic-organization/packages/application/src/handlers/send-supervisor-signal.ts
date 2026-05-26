@@ -11,9 +11,9 @@ import {
   type SupervisorSignalToolType,
 } from "../../../domain/src/index.ts";
 import { createAgenticEventEnvelope } from "../../../domain/src/index.ts";
-import type { CommandHandler } from "../command-handler-registry.ts";
+import type { CommandHandler, CommandHandlerOutcome } from "../command-handler-registry.ts";
 import { CommandResultStatus, type CommandResult } from "../command-result.ts";
-import type { Clock, CommandStateStore, IdGenerator } from "../ports.ts";
+import type { Clock, IdGenerator } from "../ports.ts";
 
 export const IdPrefix = {
   SupervisorSignal: "supervisor-signal",
@@ -45,10 +45,7 @@ export type SendSupervisorSignalCommand = {
   relatedWorkItemId: string;
 };
 
-export type SendSupervisorSignalDependencies = Clock &
-  IdGenerator & {
-    store: CommandStateStore<CommandResult>;
-  };
+export type SendSupervisorSignalDependencies = Clock & IdGenerator;
 
 export function createSendSupervisorSignalHandler(): CommandHandler<SendSupervisorSignalCommand, CommandResult> {
   return {
@@ -60,7 +57,7 @@ export function createSendSupervisorSignalHandler(): CommandHandler<SendSupervis
 export async function sendSupervisorSignal(
   command: SendSupervisorSignalCommand,
   dependencies: SendSupervisorSignalDependencies,
-): Promise<CommandResult> {
+): Promise<CommandHandlerOutcome<CommandResult>> {
   const occurredAt = dependencies.now();
   const supervisorSignal: SupervisorSignal = {
     supervisorSignalId: dependencies.createId(IdPrefix.SupervisorSignal),
@@ -123,15 +120,18 @@ export async function sendSupervisorSignal(
     }),
   };
 
-  await dependencies.store.appendSupervisorSignal(supervisorSignal);
-  await dependencies.store.appendAuditEvent(auditEvent);
-  await dependencies.store.appendOutboxEvent(outboxEvent);
-
   return {
-    status: CommandResultStatus.Accepted,
-    supervisorSignal,
-    idempotency: {
-      replayed: false,
+    result: {
+      status: CommandResultStatus.Accepted,
+      supervisorSignal,
+      idempotency: {
+        replayed: false,
+      },
+    },
+    effects: {
+      supervisorSignals: [supervisorSignal],
+      auditEvents: [auditEvent],
+      outboxEvents: [outboxEvent],
     },
   };
 }

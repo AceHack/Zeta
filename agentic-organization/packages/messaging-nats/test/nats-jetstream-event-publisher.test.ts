@@ -11,7 +11,7 @@ import {
   createNatsJetStreamEventPublisher,
   NatsHeaderName,
   type NatsJetStreamClient,
-} from "./nats-jetstream-event-publisher.ts";
+} from "../src/nats-jetstream-event-publisher.ts";
 
 describe("NATS JetStream event publisher", () => {
   test("publishes canonical JSON with idempotent headers and message ID", async () => {
@@ -22,13 +22,13 @@ describe("NATS JetStream event publisher", () => {
     const outboxEvent = createOutboxEvent();
 
     await publisher.publish({
-      subject: "agentic-org.local.org-lfg.work.supervisor_signal.sent",
+      subject: "agentic-org.local.org-lfg.supervisor_signal.supervisor_signal.sent",
       outboxEvent,
     });
 
     equal(client.messages.length, 1);
     deepEqual(client.messages[0], {
-      subject: "agentic-org.local.org-lfg.work.supervisor_signal.sent",
+      subject: "agentic-org.local.org-lfg.supervisor_signal.supervisor_signal.sent",
       payload: JSON.stringify(outboxEvent.envelope),
       messageId: "evt-001",
       headers: {

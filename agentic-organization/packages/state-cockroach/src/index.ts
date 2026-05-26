@@ -15,6 +15,14 @@ export {
   type CreateCockroachOutboxEventSourceInput,
 } from "./cockroach-outbox-event-source.ts";
 export {
+  CockroachEventIngestionStoreStatement,
+  createCockroachEventIngestionStore,
+  type CockroachEventIngestionSqlExecutor,
+  type CockroachEventIngestionSqlResult,
+  type CockroachEventIngestionSqlStatement,
+  type CreateCockroachEventIngestionStoreInput,
+} from "./cockroach-event-ingestion-store.ts";
+export {
   CockroachCoreStateMigrationName,
   CockroachTableName,
   createCockroachCoreStateMigration,

@@ -4,8 +4,13 @@ import { fileURLToPath } from "node:url";
 
 export const PackageBoundaryRule = {
   Application: "application",
+  ApplicationHost: "application_host",
   Messaging: "messaging",
+  Packages: "packages",
+  ProductionSource: "production_source",
+  Runtime: "runtime",
   StateAdapter: "state_adapter",
+  Workers: "workers",
 } as const;
 
 export type PackageBoundaryRule = (typeof PackageBoundaryRule)[keyof typeof PackageBoundaryRule];
@@ -23,9 +28,35 @@ export type PackageDependencyBoundaryViolation = {
   message: string;
 };
 
+export const PackageSourceLayoutViolationReason = {
+  TestFileInProductionSource: "test_file_in_production_source",
+} as const;
+
+export type PackageSourceLayoutViolationReason =
+  (typeof PackageSourceLayoutViolationReason)[keyof typeof PackageSourceLayoutViolationReason];
+
+export type PackageSourceLayoutRule = {
+  packageName: PackageBoundaryRule;
+  sourceGlob: string;
+  forbiddenFileSuffix: string;
+  reason: PackageSourceLayoutViolationReason;
+};
+
+export type PackageSourceLayoutViolation = {
+  packageName: PackageBoundaryRule;
+  filePath: string;
+  reason: PackageSourceLayoutViolationReason;
+  message: string;
+};
+
 export type ValidatePackageDependencyBoundariesInput = {
   rootDirectory: URL;
   rules: readonly PackageDependencyBoundaryRule[];
+};
+
+export type ValidatePackageSourceLayoutInput = {
+  rootDirectory: URL;
+  rules: readonly PackageSourceLayoutRule[];
 };
 
 const TypeScriptSourceExtension = ".ts";
@@ -65,14 +96,46 @@ export async function validatePackageDependencyBoundaries(
   return violations;
 }
 
+export async function validatePackageSourceLayout(
+  input: ValidatePackageSourceLayoutInput,
+): Promise<PackageSourceLayoutViolation[]> {
+  const rootDirectoryPath = fileURLToPath(input.rootDirectory);
+  const violations: PackageSourceLayoutViolation[] = [];
+
+  for (const rule of input.rules) {
+    const sourceFiles = await findFiles(rootDirectoryPath, rule.sourceGlob);
+
+    for (const sourceFile of sourceFiles) {
+      if (!sourceFile.endsWith(rule.forbiddenFileSuffix)) {
+        continue;
+      }
+
+      violations.push({
+        packageName: rule.packageName,
+        filePath: normalizePath(relative(rootDirectoryPath, sourceFile)),
+        reason: rule.reason,
+        message: `${rule.packageName} has forbidden source-layout file ${normalizePath(
+          relative(rootDirectoryPath, sourceFile),
+        )}`,
+      });
+    }
+  }
+
+  return violations;
+}
+
 async function findSourceFiles(rootDirectoryPath: string, sourceGlob: string): Promise<string[]> {
+  const sourceFiles = await findFiles(rootDirectoryPath, sourceGlob);
+  return sourceFiles.filter((sourceFile) => !sourceFile.endsWith(TestSourceExtension));
+}
+
+async function findFiles(rootDirectoryPath: string, sourceGlob: string): Promise<string[]> {
   if (!sourceGlob.endsWith(RecursiveTypeScriptGlobSuffix)) {
     throw new Error(`unsupported source glob: ${sourceGlob}`);
   }
 
   const sourceRoot = join(rootDirectoryPath, sourceGlob.slice(0, -RecursiveTypeScriptGlobSuffix.length));
-  const sourceFiles = await collectTypeScriptSourceFiles(sourceRoot);
-  return sourceFiles.filter((sourceFile) => !sourceFile.endsWith(TestSourceExtension));
+  return collectTypeScriptSourceFiles(sourceRoot);
 }
 
 async function collectTypeScriptSourceFiles(directoryPath: string): Promise<string[]> {

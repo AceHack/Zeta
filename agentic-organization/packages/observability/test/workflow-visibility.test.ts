@@ -14,7 +14,7 @@ import {
   WeakPointIndicatorType,
   WorkflowObservationKind,
   buildWorkflowVisibilityRecord,
-} from "./workflow-visibility.ts";
+} from "../src/workflow-visibility.ts";
 
 describe("workflow visibility records", () => {
   test("builds a plug-in visibility record for agent self-monitoring", () => {

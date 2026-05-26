@@ -9,7 +9,9 @@ export const CockroachTableName = {
   WorkItems: "agentic_org_work_items",
   SupervisorSignals: "agentic_org_supervisor_signals",
   AuditEvents: "agentic_org_audit_events",
+  InboxReceipts: "agentic_org_inbox_receipts",
   OutboxEvents: "agentic_org_outbox_events",
+  ReactionPlans: "agentic_org_reaction_plans",
   IdempotencyRecords: "agentic_org_idempotency_records",
 } as const;
 
@@ -28,6 +30,8 @@ export function createCockroachCoreStateMigration(): CockroachSchemaMigration {
       createSupervisorSignalsTableSql(),
       createAuditEventsTableSql(),
       createOutboxEventsTableSql(),
+      createInboxReceiptsTableSql(),
+      createReactionPlansTableSql(),
       createIdempotencyRecordsTableSql(),
     ].join("\n\n"),
   };
@@ -105,5 +109,33 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.IdempotencyRecords} (
   idempotency_key STRING PRIMARY KEY,
   request_hash STRING NOT NULL,
   result_json JSONB NOT NULL
+);`.trim();
+}
+
+function createInboxReceiptsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.InboxReceipts} (
+  event_id STRING NOT NULL,
+  consumer_name STRING NOT NULL,
+  first_seen_at TIMESTAMPTZ NOT NULL,
+  processed_at TIMESTAMPTZ,
+  payload_hash STRING NOT NULL,
+  result STRING,
+  PRIMARY KEY (event_id, consumer_name)
+);`.trim();
+}
+
+function createReactionPlansTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ReactionPlans} (
+  reaction_plan_id STRING PRIMARY KEY,
+  consumer_name STRING NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  status STRING NOT NULL,
+  trigger_event_id STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  action_json JSONB NOT NULL
 );`.trim();
 }

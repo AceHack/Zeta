@@ -7,7 +7,7 @@ import {
   WorkItemState,
   createAgenticEventEnvelope,
 } from "../../domain/src/index.ts";
-import { MessagingSystemName, buildAgenticSpanAttributes } from "./span-attributes.ts";
+import { MessagingSystemName, buildAgenticSpanAttributes } from "../src/span-attributes.ts";
 
 describe("agentic observability span attributes", () => {
   test("projects event context into LGTM-friendly OpenTelemetry attributes", () => {

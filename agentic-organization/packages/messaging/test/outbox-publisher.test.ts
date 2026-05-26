@@ -15,7 +15,7 @@ import {
   resolveAgenticMessagingDomain,
   type EventPublication,
   type EventPublisher,
-} from "./outbox-publisher.ts";
+} from "../src/outbox-publisher.ts";
 
 describe("outbox publisher", () => {
   test("resolves event domains through typed mappings", () => {
@@ -23,14 +23,8 @@ describe("outbox publisher", () => {
       resolveAgenticMessagingDomain(AgenticEventType.SupervisorSignalSent),
       AgenticMessagingDomain.SupervisorSignal,
     );
-    deepEqual(
-      resolveAgenticMessagingDomain(AgenticEventType.WorkItemChanged),
-      AgenticMessagingDomain.WorkItem,
-    );
-    deepEqual(
-      resolveAgenticMessagingDomain(AgenticEventType.WorkItemStateChanged),
-      AgenticMessagingDomain.WorkItem,
-    );
+    deepEqual(resolveAgenticMessagingDomain(AgenticEventType.WorkItemChanged), AgenticMessagingDomain.WorkItem);
+    deepEqual(resolveAgenticMessagingDomain(AgenticEventType.WorkItemStateChanged), AgenticMessagingDomain.WorkItem);
   });
 
   test("publishes unpublished outbox events and marks them published", async () => {
