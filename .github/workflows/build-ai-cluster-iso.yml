@@ -136,17 +136,22 @@ jobs:
           iso_abs="$(pwd)/${iso_candidates[0]}"
           cd ..
           # 7z source-of-truth:
-          #   - CI (this workflow): relies on ubuntu-24.04 runners'
-          #     default 7z install (verified present on the standard
-          #     runner image).
-          #   - Local dev laptops: tools/setup/manifests/{brew,apt}
-          #     declare p7zip / p7zip-full so install.sh's macos.sh /
-          #     linux.sh paths install it during host-setup refresh.
-          # The CI runner-image pre-install is the load-bearing source
-          # here (this workflow does NOT run install.sh). Manifests
-          # cover local-dev parity only. If we ever switch off
-          # ubuntu-24.04, add an explicit "apt-get install -y
-          # p7zip-full" step before this line.
+          # (a) tools/setup/manifests/{brew,apt} declare p7zip /
+          #     p7zip-full as the canonical dependency for ALL
+          #     install.sh consumers per GOVERNANCE.md §24 (dev
+          #     laptops, CI runners, devcontainer images).
+          # (b) This SPECIFIC workflow does NOT invoke install.sh
+          #     today; it relies on ubuntu-24.04 runner-image's
+          #     default 7z pre-install (verified present on the
+          #     standard image) as a shortcut so we skip the
+          #     install.sh cost per workflow run.
+          # If we drop the ubuntu-24.04 pin OR the runner-image
+          # pre-install, the apt manifest already declares the dep
+          # — either invoke install.sh here OR add an explicit
+          # `sudo apt-get update && sudo apt-get install -y
+          # p7zip-full` step before this line (the `-y` matters in
+          # CI: without it apt-get prompts interactively and the
+          # workflow run hangs).
           bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
 
       - name: Locate ISO + capture metadata

@@ -192,7 +192,17 @@
           ];
           shellHook = ''
             echo "zeta-ai-cluster admin shell."
-            echo "  Host setup (rare):    bash tools/setup/install.sh"
+            # install.sh hint: only show on hosts where it actually works
+            # (macOS = brew path, Debian/Ubuntu = apt path). On NixOS it
+            # would error on apt-get, so we say nothing rather than point
+            # the operator at a broken path (Copilot post-merge on #5121).
+            if [ "$(uname -s)" = "Darwin" ]; then
+              echo "  Host setup (rare):    bash tools/setup/install.sh"
+            elif [ -r /etc/os-release ] && grep -qE '^ID(_LIKE)?=.*(debian|ubuntu)' /etc/os-release; then
+              echo "  Host setup (rare):    bash tools/setup/install.sh"
+            fi
+            # NixOS users: tooling comes via this devShell's nix-managed
+            # packages above; no install.sh equivalent needed.
             echo "  Build USB ISO:        nix build .#installer-iso"
             echo "  Build host system:    nixos-rebuild build --flake .#<host>"
             echo "  Talk to cluster:      kubectl / k9s / argocd / cilium / hubble"
