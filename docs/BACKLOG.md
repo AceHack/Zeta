@@ -828,7 +828,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0719](backlog/P3/B-0719-soraya-round67-audit-of-audit-recognition-without-row-filing-precedent-2026-05-24.md)** Soraya round-67 forced-decomposition — audit-of-audit: ratify the recognition-without-row-filing precedent (when trigger fires + 'not my lane,' where does the routing-decision substrate land?)
 - [ ] **[B-0725](backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md)** Polyglot-accelerator hardware-shape extension — Coral / NCS / Jetson / FPGA beyond NVIDIA-only; activates as gadgets come out of drawer
 - [ ] **[B-0727](backlog/P3/B-0727-federated-4-tier-cluster-topology-cloud-community-home-business-edge-with-routing-for-weaker-leaves-2026-05-25.md)** Federated peer mesh — 5 resource profiles (cloud/hub, community, home/business, edge, leaf), weight-free routing, NO hierarchy; cloud/hub doesn't hog net neutrality
+- [ ] **[B-0753](backlog/P3/B-0753-noether-decomposition-land-via-pr-2026-05-25.md)** Noether decomposition land via PR — track integration of lior-decompose-4781-shadow-log onto main
 - [ ] **[B-0756](backlog/P3/B-0756-ha-control-plane-multi-master-embedded-etcd-quorum-and-stable-api-endpoint-aaron-2026-05-25.md)** HA control-plane — multi-master k3s embedded etcd quorum + stable API endpoint (DNS round-robin or kube-vip virtual IP)
 - [ ] **[B-0757](backlog/P3/B-0757-cluster-auto-discovery-mdns-bootstrap-or-join-unattended-growth-aaron-2026-05-25.md)** Cluster auto-discovery — mDNS bootstrap-or-join so 1st/2nd/3rd/Nth USB self-organizes into a growing cluster unattended
+- [ ] **[B-0788](backlog/P3/B-0788-agent-on-agent-claude-code-session-recovery-lift-operator-runs-gate-once-zeta-safety-substrate-stronger-than-classifier-2026-05-25.md)** Agent-on-agent Claude Code session recovery — lift operator-runs gate for `--apply` once Zeta safety substrate stronger than classifier
 
 <!-- END AUTO-GENERATED -->
