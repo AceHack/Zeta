@@ -5,6 +5,9 @@ import {
   PolicyDecisionStatus,
   type CommandAuthorizationPort,
   type CommandAuthorizationRequest,
+  type PolicyDecision,
+  type PolicyDecisionObservation,
+  type PolicyDecisionObservationPort,
 } from "../../policy/src/index.ts";
 import {
   CommandOutcomePersistenceStatus,
@@ -25,6 +28,7 @@ export type CommandPipelineDependencies = Clock &
   IdGenerator & {
     stateStoreFactory: CommandStateStoreFactory<CommandResult>;
     commandAuthorizationPort: CommandAuthorizationPort;
+    policyDecisionObservationPort: PolicyDecisionObservationPort;
     handlerRegistry: CommandHandlerRegistry<PipelineCommand, CommandResult>;
   };
 
@@ -46,6 +50,27 @@ async function executeCommand(
   );
 
   if (authorizationDecision.status === PolicyDecisionStatus.Denied) {
+    try {
+      await dependencies.policyDecisionObservationPort.observePolicyDecision(
+        createPolicyDecisionObservation(command, authorizationDecision, dependencies.now()),
+      );
+    } catch {
+      return {
+        status: CommandResultStatus.Rejected,
+        idempotency: {
+          replayed: false,
+        },
+        error: {
+          code: CommandErrorCode.PolicyObservationFailed,
+          message: "command denied but policy decision observation failed",
+          policyDecisionId: authorizationDecision.decisionId,
+          policyVersion: authorizationDecision.policyVersion,
+          reason: authorizationDecision.reason,
+          observationFailureReason: "policy_decision_observation_unavailable",
+        },
+      };
+    }
+
     return {
       status: CommandResultStatus.Rejected,
       idempotency: {
@@ -77,6 +102,10 @@ async function executeCommand(
   }
 
   const outcome = await dispatchCommand(command, dependencies);
+  const effects =
+    outcome.result.status === CommandResultStatus.Accepted
+      ? attachPolicyDecisionEvidence(outcome.effects, authorizationDecision)
+      : createEmptyCommandEffects();
 
   const persistenceResult = await store.recordCommandOutcome({
     idempotencyRecord: {
@@ -84,7 +113,7 @@ async function executeCommand(
       requestHash: command.requestHash,
       result: outcome.result,
     },
-    effects: outcome.result.status === CommandResultStatus.Accepted ? outcome.effects : createEmptyCommandEffects(),
+    effects,
   });
 
   if (persistenceResult.status === CommandOutcomePersistenceStatus.Replayed) {
@@ -124,6 +153,58 @@ function createCommandAuthorizationRequest(command: PipelineCommand): CommandAut
       causationId: command.causationId,
       traceId: command.traceId,
     },
+  };
+}
+
+function createPolicyDecisionObservation(
+  command: PipelineCommand,
+  decision: PolicyDecision,
+  observedAt: string,
+): PolicyDecisionObservation {
+  return {
+    commandId: command.commandId,
+    commandType: command.type,
+    actor: command.actor,
+    scope: {
+      organizationId: command.organizationId,
+      projectId: command.projectId,
+      teamId: command.teamId,
+      workItemId: command.relatedWorkItemId,
+    },
+    toolType: command.toolType,
+    supervisorChain: {
+      sourceLevel: command.sourceLevel,
+      targetLevel: command.targetLevel,
+    },
+    trace: {
+      correlationId: command.correlationId,
+      causationId: command.causationId,
+      traceId: command.traceId,
+    },
+    decision,
+    observedAt,
+  };
+}
+
+function attachPolicyDecisionEvidence(effects: CommandEffects, decision: PolicyDecision): CommandEffects {
+  const policy = {
+    decisionId: decision.decisionId,
+    policyVersion: decision.policyVersion,
+  };
+
+  return {
+    supervisorSignals: effects.supervisorSignals,
+    auditEvents: effects.auditEvents.map((auditEvent) => ({
+      ...auditEvent,
+      policy,
+    })),
+    outboxEvents: effects.outboxEvents.map((outboxEvent) => ({
+      ...outboxEvent,
+      envelope: {
+        ...outboxEvent.envelope,
+        policy,
+      },
+    })),
   };
 }
 

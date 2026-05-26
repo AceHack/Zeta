@@ -44,6 +44,10 @@ describe("workflow visibility records", () => {
         traceId: "trace-supervisor-signal-001",
         idempotencyKey: "idem-supervisor-signal-001",
       },
+      policy: {
+        decisionId: "policy-decision-allow-001",
+        policyVersion: "policy-v1",
+      },
       payload: {
         sourceLevel: SupervisorChainLevel.TeamMember,
         targetLevel: SupervisorChainLevel.Manager,
@@ -93,6 +97,8 @@ describe("workflow visibility records", () => {
         aggregateId: "supervisor-signal-001",
         aggregateType: AgenticAggregateType.SupervisorSignal,
         aggregateVersion: 1,
+        policyDecisionId: "policy-decision-allow-001",
+        policyVersion: "policy-v1",
         links: {
           traceUrl: "https://grafana.example/explore?trace=trace-supervisor-signal-001",
           logsUrl: "https://grafana.example/explore?logs=work-outbox-001",

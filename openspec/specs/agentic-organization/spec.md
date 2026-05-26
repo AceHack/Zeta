@@ -68,8 +68,28 @@ Organization state only by calling Organization commands.
 - **AND** active hat authority allows the command to continue
 - **AND** expired, missing, revoked, scope-denied, or tool-denied hat
   authority rejects the command with a typed policy-denied error
-- **AND** no supervisor-signal, audit, outbox, or idempotency state is
-  recorded for the denied command
+- **AND** the denied decision is observed through a policy decision
+  observation port
+- **AND** no supervisor-signal, business audit, outbox, or idempotency
+  state is recorded for the denied command
+
+#### Scenario: Allowed policy decisions are attached to command effects
+
+- **WHEN** a command is allowed and produces audit and outbox effects
+- **THEN** the command pipeline attaches the policy decision ID and
+  policy version to audit events and outbox event envelopes before
+  command outcome persistence
+- **AND** durable state adapters persist policy decision evidence without
+  exposing database-specific fields to application code
+
+#### Scenario: Denial observation failure stays rejected
+
+- **WHEN** a command is denied by policy
+- **AND** the policy decision observation port fails
+- **THEN** the command is rejected with a typed policy-observation-failed
+  error
+- **AND** the command handler is not executed
+- **AND** idempotency lookup and command outcome persistence are not run
 
 #### Scenario: Package boundaries are checked
 
@@ -487,7 +507,8 @@ for the full trace chain before live LGTM ingestion is wired.
 - **WHEN** an event envelope is projected to telemetry
 - **THEN** the attributes include event, command, correlation,
   causation, trace, idempotency, actor, hat assignment, organization,
-  project, work item, aggregate, and NATS destination fields
+  project, work item, aggregate, policy decision ID, policy version,
+  and NATS destination fields
 
 #### Scenario: NATS consumer batch is projected to telemetry
 
@@ -509,7 +530,8 @@ UI- and agent-readable visibility record.
 - **THEN** the record includes observation kind, health state, workflow
   stage, occurred-at timestamp, event, command, correlation, causation,
   trace, idempotency, actor, hat assignment, organization, project,
-  work item, aggregate, and evidence-link fields
+  work item, aggregate, policy decision ID, policy version, and
+  evidence-link fields
 - **AND** the record can include typed weak-point indicators such as
   blocked work, slow triage, repeated failure, missing evidence, missing
   tool, policy denial, harness failure, and telemetry gap

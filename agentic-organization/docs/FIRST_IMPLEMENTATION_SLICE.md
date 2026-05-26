@@ -27,6 +27,7 @@ flows, and routing patterns as the Organization learns.
 send_supervisor_signal
   -> command authorization policy
   -> active hat-authority check
+  -> denied policy decision observation, when denied
   -> idempotency record check
   -> chain-of-command signal
   -> audit event
@@ -64,7 +65,7 @@ escalate.
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
 | `@agentic-org/application`     | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
-| `@agentic-org/policy`          | command authorization port, hat-authority port, active/expired/revoked/scope/tool denial decisions, typed policy denial reasons                                       |
+| `@agentic-org/policy`          | command authorization port, hat-authority port, policy-decision observation port, active/expired/revoked/scope/tool denial decisions, typed policy denial reasons     |
 | `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
 | `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of the state-store/outbox-source ports, backed by CockroachDB                                                            |
 | `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder, outbox publisher, event publisher port, and typed domain resolver                                  |
@@ -133,9 +134,16 @@ Hermes runs, MCP calls, and UI evidence.
   `HatAuthorityPort`, so active hats allow commands and expired, missing,
   revoked, scope-denied, or tool-denied hats return a typed
   `policy_denied` result.
-- Policy denial does not create supervisor-signal, audit, outbox, or
-  idempotency state. Denial telemetry/audit is a follow-on effect once a
-  denial-observation port exists.
+- Policy denial does not create supervisor-signal, business audit,
+  outbox, or idempotency state. It records a policy decision observation
+  through a dedicated generic port so denied attempts are visible without
+  pretending a business state transition succeeded.
+- If policy decision observation fails for a denied command, the command
+  still rejects before handler dispatch, idempotency lookup, or business
+  persistence with a typed `policy_observation_failed` error.
+- Allowed policy decisions are projected onto audit events and outbox
+  envelopes before command outcome persistence, so every accepted
+  business transition carries the policy decision that allowed it.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
@@ -258,6 +266,9 @@ Hermes runs, MCP calls, and UI evidence.
   typed config plus already-constructed ports. Future real CockroachDB,
   NATS, and telemetry adapters bind at this app seam instead of leaking
   process or secret concerns into reusable packages.
+- Observability projections now include policy decision ID and policy
+  version in event span attributes and workflow visibility records when
+  an accepted command emits a policy-backed event envelope.
 
 ## Next Slice
 
@@ -269,9 +280,9 @@ stack. Keep URLs, credentials, and connection pools in app adapter config
 fed by Kubernetes Secret or ExternalSecret values, never in domain
 packages. Add a durable-state integration test using CockroachDB as the
 first cluster-backed implementation once a local/dev connection is
-available. After that, add denial-observation/audit effects for policy
-denials without making denied commands look like successful business
-state transitions.
+available. After that, add a durable policy-decision observation adapter
+behind `PolicyDecisionObservationPort` and project policy decision
+observations into UI/agent-readable workflow visibility.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

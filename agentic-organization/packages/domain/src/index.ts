@@ -11,6 +11,7 @@ export {
   type AgenticScope,
   type CommandTrace,
   type CreateAgenticEventEnvelopeInput,
+  type PolicyDecisionEvidence,
 } from "./event-envelope.ts";
 export { WorkItemState, assertWorkItemTransition, createInitialWorkItemState } from "./work-item-state-machine.ts";
 export {

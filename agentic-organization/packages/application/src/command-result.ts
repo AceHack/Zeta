@@ -11,6 +11,7 @@ export type CommandResultStatus = (typeof CommandResultStatus)[keyof typeof Comm
 export const CommandErrorCode = {
   IdempotencyConflict: "idempotency_conflict",
   PolicyDenied: "policy_denied",
+  PolicyObservationFailed: "policy_observation_failed",
   UnsupportedCommand: "unsupported_command",
 } as const;
 
@@ -29,5 +30,6 @@ export type CommandResult = {
     policyDecisionId?: string;
     policyVersion?: string;
     reason?: PolicyDenialReason;
+    observationFailureReason?: string;
   };
 };

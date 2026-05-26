@@ -69,6 +69,8 @@ export type WorkflowVisibilityRecord = {
   aggregateId: string;
   aggregateType: AgenticAggregateType;
   aggregateVersion: number;
+  policyDecisionId?: string;
+  policyVersion?: string;
   links: VisibilityLinks;
   weakPointIndicators: WeakPointIndicator[];
 };
@@ -115,6 +117,11 @@ export function buildWorkflowVisibilityRecord(
 
   if (envelope.scope.teamId !== undefined) {
     record.teamId = envelope.scope.teamId;
+  }
+
+  if (envelope.policy !== undefined) {
+    record.policyDecisionId = envelope.policy.decisionId;
+    record.policyVersion = envelope.policy.policyVersion;
   }
 
   return record;

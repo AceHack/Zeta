@@ -88,12 +88,28 @@ export type PolicyDecision =
       reason: PolicyDenialReason;
     };
 
+export type PolicyDecisionObservation = {
+  commandId: string;
+  commandType: CommandType;
+  actor: AgenticActor;
+  scope: CommandAuthorizationScope;
+  toolType?: SupervisorSignalToolType;
+  supervisorChain?: CommandAuthorizationSupervisorChain;
+  trace: CommandAuthorizationTrace;
+  decision: PolicyDecision;
+  observedAt: string;
+};
+
 export type HatAuthorityPort = {
   evaluateHatAuthority: (request: HatAuthorityRequest) => Promise<HatAuthorityDecision>;
 };
 
 export type CommandAuthorizationPort = {
   authorizeCommand: (request: CommandAuthorizationRequest) => Promise<PolicyDecision>;
+};
+
+export type PolicyDecisionObservationPort = {
+  observePolicyDecision: (observation: PolicyDecisionObservation) => Promise<void>;
 };
 
 export type CreateCommandAuthorizationPortInput = {

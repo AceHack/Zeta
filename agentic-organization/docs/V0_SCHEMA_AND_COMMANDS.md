@@ -103,17 +103,18 @@ matters.
 
 ### Runtime, Memory, Security, and Audit
 
-| Table                 | V0 responsibility                                               |
-| --------------------- | --------------------------------------------------------------- |
-| `hermes_runs`         | Organization binding to a Hermes execution session              |
-| `mcp_tool_calls`      | governed tool call attempts and results                         |
-| `memory_events`       | Hindsight recall, retain, reflect, and review attribution       |
-| `credential_requests` | requests to expand credential proxy or external tool scope      |
-| `signals`             | durable internal signals consumed by workers and UI read models |
-| `audit_events`        | append-only policy and state-change audit trail                 |
-| `outbox_events`       | transactional event publication source for NATS                 |
-| `runtime_leases`      | scheduler, reconciler, and worker leases                        |
-| `idempotency_keys`    | command deduplication records                                   |
+| Table                 | V0 responsibility                                                                                                                     |
+| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `hermes_runs`         | Organization binding to a Hermes execution session                                                                                    |
+| `mcp_tool_calls`      | governed tool call attempts and results                                                                                               |
+| `memory_events`       | Hindsight recall, retain, reflect, and review attribution                                                                             |
+| `credential_requests` | requests to expand credential proxy or external tool scope                                                                            |
+| `signals`             | durable internal signals consumed by workers and UI read models                                                                       |
+| `audit_events`        | append-only policy and state-change audit trail with policy decision evidence when allowed                                            |
+| `outbox_events`       | transactional event publication source for NATS                                                                                       |
+| `policy_observations` | denied policy decision observations for UI, agents, and audit projections; allowed decisions are projected onto audit/outbox evidence |
+| `runtime_leases`      | scheduler, reconciler, and worker leases                                                                                              |
+| `idempotency_keys`    | command deduplication records                                                                                                         |
 
 ## V0 Enums
 
@@ -270,6 +271,12 @@ Every command handler must:
 4. write state, audit event, and outbox event in one transaction;
 5. return the authoritative post-state;
 6. be idempotent under retry.
+
+Accepted command audit and outbox effects should carry the policy
+decision that allowed the command. Denied commands should not create
+business audit, outbox, or idempotency state; they should be observed
+through the policy decision observation port and later persisted by a
+dedicated durable adapter.
 
 ## V0 Commands
 

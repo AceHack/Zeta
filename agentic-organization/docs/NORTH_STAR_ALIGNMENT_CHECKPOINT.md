@@ -165,11 +165,16 @@ authorization request to a generic `HatAuthorityPort`; active authority
 allows the command, while expired, missing, revoked, scope-denied, or
 tool-denied authority returns a typed `policy_denied` result.
 
+The pipeline now records denied decisions through a generic policy
+decision observation port, rejects cleanly if that observation fails, and
+projects allowed policy decisions onto audit and outbox effects before
+command persistence.
+
 The remaining gaps are richer authority semantics and durable
-visibility: tests still need unauthorized source hats, invalid target
-supervisors, missing assignments, and all denial reasons, and the system
-still needs a denial-observation/audit path plus allowed policy-decision
-projection into command effects and event envelopes.
+visibility adapters: tests still need unauthorized source hats, invalid
+target supervisors, and missing assignments, and the system still needs a
+durable policy-decision observation adapter plus UI/agent projections for
+policy decision observations.
 
 ### Command Surface Closure
 

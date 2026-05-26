@@ -262,9 +262,13 @@ maps a `CommandAuthorizationRequest` to a `HatAuthorityPort` decision:
 active hat authority allows the command, while expired, missing,
 revoked, scope-denied, or tool-denied authority rejects the command with
 a typed policy decision before idempotency lookup, handler dispatch, or
-state persistence. OPA bundles, Kubernetes hat CRD watches, JWT
-validation, Organization DB assignment lookups, and credential-proxy
-checks are later adapter implementations behind that policy boundary.
+state persistence. Denied decisions are sent to a generic
+`PolicyDecisionObservationPort`; allowed decisions are projected onto
+audit and outbox effects before command outcome persistence. OPA
+bundles, Kubernetes hat CRD watches, JWT validation, Organization DB
+assignment lookups, credential-proxy checks, and durable policy
+observation stores are later adapter implementations behind that policy
+boundary.
 
 State-store ports are async at the application boundary. In-memory
 adapters may resolve immediately, but durable SQL, transactional outbox,
@@ -411,13 +415,11 @@ type AgenticEventEnvelope<TPayload> = {
 };
 ```
 
-The current command-authorization slice returns policy metadata on a
-typed denial result but does not yet write denial observations or attach
-allowed policy decisions to audit/outbox envelopes. That is intentional
-for the first gate and should be closed before real API, MCP, Hermes,
-Temporal, or Dapr entrypoints are exposed: allowed decisions should flow
-into the optional `policy` envelope block, and denied decisions should
-be observable without pretending a business state transition succeeded.
+The current command-authorization slice records denied decisions through
+a generic policy observation port and attaches allowed policy decisions
+to audit/outbox effects. A durable policy-observation adapter and
+UI/agent-readable projection should be added before real API, MCP,
+Hermes, Temporal, or Dapr entrypoints are exposed.
 
 No app should publish raw NATS payloads directly. Publishing should go
 through `@agentic-org/messaging`.
@@ -884,11 +886,15 @@ package should standardize:
 - Prometheus metrics for outbox lag, NATS consumer lag, DLQ count,
   command latency, policy denial count, adapter health, and projection
   staleness;
+- policy decision span attributes for allowed events, including decision
+  ID and policy version, so agents and humans can trace why a state
+  transition was permitted;
 - links from UI evidence records to trace IDs, log queries, run IDs,
   event IDs, and artifacts.
 - workflow visibility records that project command/event context into
   UI- and agent-readable health, stage, trace, scope, aggregate, and
-  weak-point indicator fields.
+  weak-point indicator fields, including policy decision ID and policy
+  version when present.
 - NATS consumer batch attributes for stream, durable consumer, received,
   processed, duplicate, payload-conflict, invalid, failed,
   acknowledged, negative-acknowledged, terminated, and dead-lettered

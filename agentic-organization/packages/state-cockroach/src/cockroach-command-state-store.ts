@@ -165,6 +165,8 @@ function createInsertAuditEventStatement(
       auditEvent.actor.agentId,
       auditEvent.actor.hatAssignmentId,
       auditEvent.occurredAt,
+      auditEvent.policy?.decisionId ?? null,
+      auditEvent.policy?.policyVersion ?? null,
     ],
   };
 }
@@ -257,8 +259,10 @@ const CockroachCommandStateStoreSql = {
       aggregate_id,
       actor_agent_id,
       actor_hat_assignment_id,
-      occurred_at
-    ) VALUES ($1, $2, $3, $4, $5, $6)
+      occurred_at,
+      policy_decision_id,
+      policy_version
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
   `,
   InsertOutboxEvent: `
     INSERT INTO ${CockroachTableName.OutboxEvents} (

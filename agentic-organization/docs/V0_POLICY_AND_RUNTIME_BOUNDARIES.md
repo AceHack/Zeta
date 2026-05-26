@@ -65,8 +65,11 @@ V0 must enforce:
 - every credential expansion request goes through security review;
 - every runtime callback is idempotent;
 - every denial returns a structured reason agents can learn from;
-- durable denial observation/audit is added before real API, MCP,
-  Hermes, Temporal, or Dapr entrypoints are exposed.
+- every denied command is observed through a policy decision observation
+  port without creating successful business state;
+- durable policy decision observation storage and UI projection are added
+  before real API, MCP, Hermes, Temporal, or Dapr entrypoints are
+  exposed.
 
 ## MCP Preflight
 

@@ -56,6 +56,11 @@ export type AgenticReplayState = {
   isReplay: boolean;
 };
 
+export type PolicyDecisionEvidence = {
+  decisionId: string;
+  policyVersion: string;
+};
+
 export type AgenticEventEnvelope<Payload = Record<string, unknown>> = {
   eventId: string;
   eventType: AgenticEventType;
@@ -65,6 +70,7 @@ export type AgenticEventEnvelope<Payload = Record<string, unknown>> = {
   scope: AgenticScope;
   aggregate: AgenticAggregate;
   trace: CommandTrace;
+  policy?: PolicyDecisionEvidence;
   replay: AgenticReplayState;
   payload: Payload;
 };

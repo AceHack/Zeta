@@ -17,6 +17,8 @@ export const AgenticSpanAttributeKey = {
   AggregateId: "agentic.aggregate.id",
   AggregateType: "agentic.aggregate.type",
   AggregateVersion: "agentic.aggregate.version",
+  PolicyDecisionId: "agentic.policy.decision_id",
+  PolicyVersion: "agentic.policy.version",
   MessagingSystem: "messaging.system",
   MessagingDestinationName: "messaging.destination.name",
 } as const;
@@ -64,6 +66,11 @@ export function buildAgenticSpanAttributes(
 
   if (envelope.scope.workItemId !== undefined) {
     attributes[AgenticSpanAttributeKey.WorkItemId] = envelope.scope.workItemId;
+  }
+
+  if (envelope.policy !== undefined) {
+    attributes[AgenticSpanAttributeKey.PolicyDecisionId] = envelope.policy.decisionId;
+    attributes[AgenticSpanAttributeKey.PolicyVersion] = envelope.policy.policyVersion;
   }
 
   return attributes;

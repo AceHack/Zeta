@@ -1,4 +1,4 @@
-import type { AgenticActor, AgenticEventEnvelope } from "./event-envelope.ts";
+import type { AgenticActor, AgenticEventEnvelope, PolicyDecisionEvidence } from "./event-envelope.ts";
 import type {
   SupervisorChainLevel,
   SupervisorSignalStatus,
@@ -47,6 +47,7 @@ export type AuditEvent = {
   eventName: string;
   aggregateId: string;
   actor: AgenticActor;
+  policy?: PolicyDecisionEvidence;
   occurredAt: string;
 };
 

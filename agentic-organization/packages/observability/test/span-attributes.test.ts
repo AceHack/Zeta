@@ -36,6 +36,10 @@ describe("agentic observability span attributes", () => {
         traceId: "trace-capability-001",
         idempotencyKey: "idem-capability-001",
       },
+      policy: {
+        decisionId: "policy-decision-allow-001",
+        policyVersion: "policy-v1",
+      },
       payload: {
         state: WorkItemState.New,
       },
@@ -61,6 +65,8 @@ describe("agentic observability span attributes", () => {
         "agentic.aggregate.id": "work-capability-001",
         "agentic.aggregate.type": AgenticAggregateType.WorkItem,
         "agentic.aggregate.version": 1,
+        "agentic.policy.decision_id": "policy-decision-allow-001",
+        "agentic.policy.version": "policy-v1",
         "messaging.system": MessagingSystemName.Nats,
         "messaging.destination.name": "agentic-org.dev.org-lfg.work.work_item.changed",
       },

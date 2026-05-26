@@ -54,6 +54,7 @@ describe("cockroach command state store", () => {
     );
     equal(executor.transactionStatements[0]?.sql.includes("INSERT INTO"), true);
     equal(executor.transactionStatements[0]?.sql.includes("UPSERT"), false);
+    deepEqual(executor.transactionStatements[2]?.parameters.slice(6), ["policy-decision-allow-001", "policy-v1"]);
   });
 
   test("does not insert effects when idempotency claim replays or conflicts", async () => {
@@ -86,6 +87,17 @@ describe("cockroach command state store", () => {
       conflictExecutor.transactionStatements.map((statement) => statement.name),
       [CockroachCommandStateStoreStatement.ClaimIdempotencyRecord],
     );
+  });
+
+  test("normalizes missing optional audit policy evidence to SQL nulls", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    await store.recordCommandOutcome(createCommandOutcome({ includeAuditPolicyEvidence: false }));
+
+    deepEqual(executor.transactionStatements[2]?.parameters.slice(6), [null, null]);
   });
 });
 
@@ -148,7 +160,11 @@ function createRecordingExecutor(
   };
 }
 
-function createCommandOutcome(): RecordCommandOutcomeInput<CommandResult> {
+function createCommandOutcome(
+  input: { includeAuditPolicyEvidence?: boolean } = {},
+): RecordCommandOutcomeInput<CommandResult> {
+  const includeAuditPolicyEvidence = input.includeAuditPolicyEvidence ?? true;
+
   return {
     idempotencyRecord: {
       idempotencyKey: "idem-001",
@@ -191,6 +207,14 @@ function createCommandOutcome(): RecordCommandOutcomeInput<CommandResult> {
             agentId: "agent-developer-001",
             hatAssignmentId: "hat-assignment-dev-001",
           },
+          ...(includeAuditPolicyEvidence
+            ? {
+                policy: {
+                  decisionId: "policy-decision-allow-001",
+                  policyVersion: "policy-v1",
+                },
+              }
+            : {}),
           occurredAt: "2026-05-25T20:00:00.000Z",
         },
       ],
@@ -223,6 +247,10 @@ function createCommandOutcome(): RecordCommandOutcomeInput<CommandResult> {
               causationId: "cause-001",
               traceId: "trace-001",
               idempotencyKey: "idem-001",
+            },
+            policy: {
+              decisionId: "policy-decision-allow-001",
+              policyVersion: "policy-v1",
             },
             replay: {
               isReplay: false,

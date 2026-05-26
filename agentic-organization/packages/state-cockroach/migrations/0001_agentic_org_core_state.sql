@@ -34,7 +34,9 @@ CREATE TABLE IF NOT EXISTS agentic_org_audit_events (
   aggregate_id STRING NOT NULL,
   actor_agent_id STRING NOT NULL,
   actor_hat_assignment_id STRING NOT NULL,
-  occurred_at TIMESTAMPTZ NOT NULL
+  occurred_at TIMESTAMPTZ NOT NULL,
+  policy_decision_id STRING,
+  policy_version STRING
 );
 
 CREATE TABLE IF NOT EXISTS agentic_org_outbox_events (
