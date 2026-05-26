@@ -92,25 +92,30 @@ The maintainer 2026-05-26: *"i can wait for 4.2 or whatever version before we tr
 
 ### iter-4.2 acceptance (target the maintainer will actually test against)
 
-- [ ] `full-ai-cluster/tools/zflash.ts` extended (or new sibling `zflash-creds.ts`) with post-flash macOS-side ESP-mount-and-write step:
+Note: the maintainer 2026-05-26 *"--no-creds is basically useless right?"* signal removed the opt-out flag from the original design. The default behavior IS the new behavior; opt-out (renamed `--no-inject`) exists only as an escape hatch for the operator who explicitly wants the old flash-only flow without the pubkey-write step.
+
+- [x] `full-ai-cluster/tools/flash-usb.ts` extended with `--no-eject` flag so zflash can do the ESP-mount-and-write before the USB ejects (4-line change; allowlist + skip-eject branch)
+- [x] `full-ai-cluster/tools/zflash.ts` extended with post-flash macOS-side ESP-mount-and-write step:
   - Default reads `~/.ssh/id_ed25519.pub`
   - `--ssh-key <path>` overrides
-  - `--no-creds` opts out (preserves current zflash behavior)
-  - Mounts the FAT / ESP partition of the flashed USB via `diskutil mount`
-  - Writes `/Volumes/<label>/zeta-authorized-keys.pub` with the pubkey content
-  - Unmounts via `diskutil unmount`
-  - Substrate-honest about the macOS ESP-mount substrate (diskutil idempotency, label discovery, eject timing — verify before shipping)
-- [ ] `usb-nixos-installer/zeta-install.sh` extended with pre-install pubkey-inject step:
-  - Probes the boot USB's ESP for `zeta-authorized-keys.pub` after step 6 (clone)
-  - If found: rewrites `/mnt/etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix` with the pubkey injection BEFORE `nixos-install`
-  - If not found: leaves the stub unchanged (v1 fallback path; manual edit + rebuild after login)
-  - Post-install credentials echo updated to reflect "SSH works immediately" when pubkey was injected vs "edit-and-rebuild required" when stub stayed empty
+  - `--no-inject` opt-out (escape hatch only; not the recommended path)
+  - Re-scans external disks post-flash; finds the (single) freshly-flashed USB
+  - Identifies the FAT / EFI partition via `diskutil list` regex match (DOS_FAT / EFI / MS-DOS / FAT16 / FAT32 / Windows_FAT)
+  - Mounts via `diskutil mount <part>`; gets mount point from `diskutil info`
+  - Writes `<mount>/zeta-authorized-keys.pub` via `sudo tee` (stdin avoids shell-quoting hazards)
+  - Unmounts via `diskutil unmount`; ejects whole disk via `diskutil eject`
+  - Diagnostics auto-fire on any failure (photo-friendly: external-disk list, mounted USB volumes, "what to do next" suggestions)
+- [x] `usb-nixos-installer/zeta-install.sh` extended with pre-install pubkey-inject step:
+  - Step 6.5 probe: scans `/iso /run /mnt /boot` for `zeta-authorized-keys.pub`; if not found, probes USB partitions (`/dev/sd? /dev/nvme?n? /dev/vd? /dev/mmcblk?` minus install targets) via vfat-readonly mount + file existence check
+  - If found: writes `operator-ssh-keys.nix` with valid `ssh-*` lines from the file BEFORE `nixos-install`
+  - If not found: diagnostics auto-fire (external block devices, install targets, full lsblk, "what to do next") + falls back to v1 stub
+  - Post-install credentials echo branches on `INJECT_OK`: success path says "SSH works immediately"; fallback path keeps the v1 manual-edit + nixos-rebuild instructions
 - [ ] Maintainer flashes iter-4.2 USB once (single `zflash` invocation; no extra flags needed for default-key case)
   - Plugs into PC 1 (or PC 2 / PC 3)
   - Install runs zero-typing
   - PC X reboots; tty1 login as `zeta` / `zeta-change-me` works (initial-password substrate from v1)
   - `ssh zeta@<hostname>` from the maintainer's Mac works immediately — this is the iter-4.2 end-to-end success criterion
-- [ ] Documentation in the post-install echo block reflects the iter-4.2 zero-typing flow; v1's manual-edit fallback paragraph stays as the explicit-opt-out path
+- [ ] If failure: the auto-diagnostics output gets photographed + sent back; AI fixes-forward against the actual substrate the photo reveals (this is the photo-driven-diagnostics workflow the maintainer explicitly chose per 2026-05-26 *"i'm going to avoid it like the plague and try to get like pictures and auto run and short commands pre built in"*)
 
 ### Why ship v1 separately if 4.2 is the maintainer-usable target
 

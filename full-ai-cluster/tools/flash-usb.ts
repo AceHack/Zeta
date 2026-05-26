@@ -156,7 +156,7 @@ async function main() {
   // accepting unknown flags like `--dry-run` or a misspelled `--short`
   // would proceed to sudo dd despite operator intent. Bail explicitly
   // on any unrecognized flag.
-  const ALLOWED_FLAGS = new Set(["--short", "-h", "--help"]);
+  const ALLOWED_FLAGS = new Set(["--short", "--no-eject", "-h", "--help"]);
   const rawFlags = argv.filter((a) => a.startsWith("-"));
   const positional = argv.filter((a) => !a.startsWith("-"));
   const unknownFlags = rawFlags.filter((f) => !ALLOWED_FLAGS.has(f));
@@ -170,11 +170,15 @@ async function main() {
   }
   const flags = new Set(rawFlags);
   const useShortChallenge = flags.has("--short");
+  const noEject = flags.has("--no-eject");
   const isHelp = flags.has("-h") || flags.has("--help");
   if (isHelp || positional.length !== 1) {
     process.stdout.write(
-      "Usage: bun full-ai-cluster/tools/flash-usb.ts [--short] <path-to-iso>\n" +
-        "  --short   use shorter `yes <4-hex>` challenge format\n",
+      "Usage: bun full-ai-cluster/tools/flash-usb.ts [--short] [--no-eject] <path-to-iso>\n" +
+        "  --short      use shorter `yes <4-hex>` challenge format\n" +
+        "  --no-eject   leave the USB attached after dd (for downstream tooling\n" +
+        "               like zflash's iter-4.2 ESP-mount + pubkey-inject step;\n" +
+        "               downstream MUST eject itself when done)\n",
     );
     process.exit(isHelp && positional.length === 0 ? 0 : 2);
   }
@@ -437,14 +441,20 @@ async function main() {
     bail(code, `dd exited ${code}; partial flash may be on device.`);
   }
 
-  process.stdout.write(`\nEjecting ${device} ...\n`);
-  try {
-    execFileSync("diskutil", ["eject", device], { stdio: "inherit" });
-  } catch {
+  if (noEject) {
     process.stdout.write(
-      "(eject failed; that is fine — the flash succeeded. " +
-        "Unplug + replug to verify.)\n",
+      `\n(--no-eject passed; ${device} remains attached for downstream tooling)\n`,
     );
+  } else {
+    process.stdout.write(`\nEjecting ${device} ...\n`);
+    try {
+      execFileSync("diskutil", ["eject", device], { stdio: "inherit" });
+    } catch {
+      process.stdout.write(
+        "(eject failed; that is fine — the flash succeeded. " +
+          "Unplug + replug to verify.)\n",
+      );
+    }
   }
 
   process.stdout.write("\nFlash complete.\n");

@@ -226,6 +226,116 @@ sudo git clone "$REPO_URL" /mnt/etc/zeta
 echo "Generating hardware-configuration.nix ..."
 sudo nixos-generate-config --root /mnt --force
 
+# ── Step 6.5: iter-4.2 probe boot USB for operator SSH pubkey ────
+# Per B-0789: zflash on macOS writes ~/.ssh/id_ed25519.pub to the
+# boot USB's FAT ESP as `zeta-authorized-keys.pub`. Find it + inject
+# into operator-ssh-keys.nix before nixos-install so the freshly-
+# installed system has SSH access on first boot. Diagnostics auto-run
+# on failure (photo-friendly per the maintainer's 2026-05-26
+# discipline); fallback path = iter-4 v1 manual edit + nixos-rebuild
+# after first login.
+echo
+echo "[iter-4.2] probing boot USB for operator SSH pubkey ..."
+PUBKEY_DST="/mnt/etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix"
+PROBE_MOUNT="/tmp/zeta-boot-esp"
+sudo mkdir -p "$PROBE_MOUNT"
+
+PUBKEY_FILE=""
+INJECT_OK=0
+
+# Try 1: scan already-mounted filesystems
+PUBKEY_FILE=$(sudo find /iso /run /mnt /boot \
+  -maxdepth 5 -name "zeta-authorized-keys.pub" -type f 2>/dev/null | head -1)
+
+# Try 2: probe likely-USB block devices for a FAT partition with the pubkey.
+# Skip BOOT_DISK + DATA_DISKS (install targets).
+if [ -z "$PUBKEY_FILE" ]; then
+  echo "[iter-4.2]   not in mounted FS; probing USB partitions ..."
+  for dev in /dev/sd? /dev/nvme?n? /dev/vd? /dev/mmcblk?; do
+    [ -b "$dev" ] || continue
+    [ "$dev" = "$BOOT_DISK" ] && continue
+    skip=0
+    for data in "${DATA_DISKS[@]}"; do
+      [ "$dev" = "$data" ] && { skip=1; break; }
+    done
+    [ "$skip" = 1 ] && continue
+
+    # Partition suffix is 1/2 on sd/vd; p1/p2 on nvme/mmcblk
+    for partsfx in 2 1; do
+      case "$dev" in
+        /dev/nvme*|/dev/mmcblk*) part="${dev}p${partsfx}" ;;
+        *) part="${dev}${partsfx}" ;;
+      esac
+      [ -b "$part" ] || continue
+      if sudo mount -t vfat -o ro "$part" "$PROBE_MOUNT" 2>/dev/null; then
+        if [ -f "$PROBE_MOUNT/zeta-authorized-keys.pub" ]; then
+          PUBKEY_FILE="$PROBE_MOUNT/zeta-authorized-keys.pub"
+          break 2
+        fi
+        sudo umount "$PROBE_MOUNT" 2>/dev/null || true
+      fi
+    done
+  done
+fi
+
+if [ -n "$PUBKEY_FILE" ]; then
+  echo "[iter-4.2]   found: $PUBKEY_FILE"
+
+  KEY_LINES=()
+  while IFS= read -r line; do
+    case "$line" in
+      ssh-ed25519\ *|ssh-rsa\ *|ssh-ecdsa\ *|ssh-dss\ *|ecdsa-*) KEY_LINES+=("$line") ;;
+    esac
+  done < "$PUBKEY_FILE"
+
+  if [ ${#KEY_LINES[@]} -gt 0 ]; then
+    {
+      echo '# operator-ssh-keys.nix — populated by iter-4.2 zeta-install.sh probe.'
+      echo "# Source: $PUBKEY_FILE (boot USB ESP)"
+      echo "# Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+      echo
+      echo '{ config, pkgs, lib, ... }:'
+      echo
+      echo '{'
+      echo '  users.users.zeta.openssh.authorizedKeys.keys = ['
+      for line in "${KEY_LINES[@]}"; do
+        printf '    "%s"\n' "$line"
+      done
+      echo '  ];'
+      echo '}'
+    } | sudo tee "$PUBKEY_DST" > /dev/null
+    echo "[iter-4.2]   injected ${#KEY_LINES[@]} pubkey(s) into operator-ssh-keys.nix"
+    sudo umount "$PROBE_MOUNT" 2>/dev/null || true
+    INJECT_OK=1
+  else
+    echo "[iter-4.2]   WARN: $PUBKEY_FILE contained no valid ssh-* lines"
+    echo "[iter-4.2]          operator-ssh-keys.nix stub stays empty"
+    sudo umount "$PROBE_MOUNT" 2>/dev/null || true
+  fi
+else
+  echo
+  echo "=== [iter-4.2] DIAGNOSTICS ==="
+  echo "reason: no operator SSH pubkey found on boot USB ESP"
+  echo
+  echo "--- external block devices ---"
+  ls /dev/sd? /dev/nvme?n? /dev/vd? /dev/mmcblk? 2>/dev/null || echo "(none)"
+  echo
+  echo "--- install targets (skipped during probe) ---"
+  echo "  boot disk:  $BOOT_DISK"
+  echo "  data disks: ${DATA_DISKS[*]:-(none)}"
+  echo
+  echo "--- lsblk (full topology) ---"
+  lsblk 2>&1 || true
+  echo
+  echo "--- what to do next ---"
+  echo "  - photograph this diagnostic block + send to your AI collaborator"
+  echo "  - install will continue with EMPTY operator-ssh-keys.nix"
+  echo "  - fallback (iter-4 v1): on first boot, login as zeta/zeta-change-me,"
+  echo "    passwd zeta, edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix,"
+  echo "    sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#$HOST"
+  echo "=============================="
+fi
+
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 sudo nixos-install --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
 
@@ -240,17 +350,25 @@ echo
 echo "    user:     zeta"
 echo "    password: zeta-change-me"
 echo
-echo "  AFTER FIRST LOGIN:"
-echo "    1. passwd zeta            # rotate the initial password"
-echo "    2. Edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix"
-echo "       and add your ssh-ed25519 pubkey, then:"
-echo "    3. sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#$HOST"
-echo "    4. Verify SSH from your workstation:"
-echo "       ssh zeta@\$(hostname)"
-echo
-echo "  (Per docs/backlog/P1/B-0789 iter-4: SSH-key auto-inject from"
-echo "   the boot USB is a follow-up — for v1, the SSH key flow is"
-echo "   manual edit + nixos-rebuild as above.)"
+if [ "$INJECT_OK" = 1 ]; then
+  echo "  iter-4.2 SSH-KEY INJECTION: SUCCESS"
+  echo "    SSH access works on first boot from the workstation that flashed this USB:"
+  echo "      ssh zeta@\$(hostname)"
+  echo
+  echo "  AFTER FIRST LOGIN:"
+  echo "    1. passwd zeta            # rotate the initial password"
+  echo "    2. (SSH already works — no manual edit + rebuild required)"
+else
+  echo "  iter-4.2 SSH-KEY INJECTION: SKIPPED (see diagnostics above)"
+  echo
+  echo "  AFTER FIRST LOGIN (fallback to iter-4 v1 manual flow):"
+  echo "    1. passwd zeta            # rotate the initial password"
+  echo "    2. Edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix"
+  echo "       and add your ssh-ed25519 pubkey, then:"
+  echo "    3. sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#$HOST"
+  echo "    4. Verify SSH from your workstation:"
+  echo "       ssh zeta@\$(hostname)"
+fi
 echo
 echo "================================================================"
 echo
