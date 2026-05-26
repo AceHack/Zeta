@@ -8,7 +8,7 @@ merged_at: "2026-05-22T17:33:43Z"
 closed_at: "2026-05-22T17:33:43Z"
 head_ref: "otto/cli-2018z-ace-trajectory-full-pipeline-crystallization-riff-sieve-map-refine-build-generate-encapsulate-distribute-grow-negotiate-2026-05-22"
 base_ref: "main"
-archived_at: "2026-05-22T20:03:54Z"
+archived_at: "2026-05-22T18:07:22Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

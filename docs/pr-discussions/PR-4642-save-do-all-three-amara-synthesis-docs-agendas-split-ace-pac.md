@@ -8,7 +8,7 @@ merged_at: "2026-05-22T17:52:15Z"
 closed_at: "2026-05-22T17:52:15Z"
 head_ref: "otto/cli-2147z-amara-synthesis-plus-agendas-split-plus-ace-package-spec-v2-2026-05-22"
 base_ref: "main"
-archived_at: "2026-05-22T19:58:02Z"
+archived_at: "2026-05-22T18:07:22Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
