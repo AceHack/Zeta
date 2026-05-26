@@ -108,6 +108,189 @@ function autoDiscoverIso(): string {
   return chosen;
 }
 
+// ── iter-4.3 freshness checks (B-0789 follow-on) ──────────────────
+//
+// Two gaps surfaced by the 2026-05-26 empirical iter-4.2 test run:
+//
+//   1. The operator's checkout was stale (HEAD = 89a39ea55 → pre-iter-4.2
+//      zflash.ts). Flash ran the OLD zflash that didn't pass --no-eject
+//      and didn't do the iter-4.2 inject step. USB came out bootable
+//      but WITHOUT operator-ssh-keys.txt populated. Silent failure of
+//      the iter-4.2 zero-typing target. Per maintainer 2026-05-26
+//      *"any fixes lets make sure they make it in main"*.
+//
+//   2. The May 25 ISO in ~/Downloads was iter-3-era (no iter-4.2 install
+//      script). Had to manually `gh run download` the fresh CI artifact.
+//      Per maintainer 2026-05-26 *"does the script not auto download the
+//      latest?"*.
+//
+// iter-4.3 closes both gaps:
+//   - checkLocalCheckoutFreshness(): bails if any install-substrate file
+//     differs HEAD..origin/main → forces operator to git-pull before
+//     flashing → eliminates the silent-stale-code class
+//   - autoDownloadFreshIsoIfNeeded(): pulls latest CI ISO if newer than
+//     local newest → contributor never has to remember `gh run download`
+
+const INSTALL_SUBSTRATE_FILES = [
+  "full-ai-cluster/tools/zflash.ts",
+  "full-ai-cluster/tools/flash-usb.ts",
+  "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+  "full-ai-cluster/usb-nixos-installer/flake.nix",
+  "full-ai-cluster/nixos/modules/initial-password.nix",
+  "full-ai-cluster/nixos/modules/operator-ssh-keys.nix",
+  "full-ai-cluster/nixos/modules/operator-ssh-keys.txt",
+];
+
+const ZETA_REPO_GH = "Lucent-Financial-Group/Zeta";
+const ISO_BUILD_WORKFLOW = "build-ai-cluster-iso.yml";
+
+function findRepoRoot(): string | null {
+  // Walk up from zflash.ts's directory to find `.git`. Returns the repo
+  // root path or null if not in a git checkout (e.g., script copied out).
+  let dir = dirname(fileURLToPath(import.meta.url));
+  for (let i = 0; i < 20; i++) {
+    if (existsSync(join(dir, ".git"))) return dir;
+    const parent = dirname(dir);
+    if (parent === dir) break;
+    dir = parent;
+  }
+  return null;
+}
+
+function checkLocalCheckoutFreshness(repoRoot: string): void {
+  // Fetch origin/main (best-effort; offline mode is OK — the staleness
+  // check skips gracefully). If any install-substrate file differs
+  // HEAD..origin/main, bail loud with a clear remediation message.
+  process.stdout.write("zflash: checking local checkout freshness (iter-4.3) ...\n");
+  try {
+    execFileSync("git", ["-C", repoRoot, "fetch", "origin", "main", "--quiet"], {
+      stdio: ["ignore", "ignore", "pipe"],
+    });
+  } catch {
+    process.stderr.write(
+      "zflash: (offline; skipping iter-4.3 freshness check — proceed at own risk)\n",
+    );
+    return;
+  }
+
+  const stale: string[] = [];
+  for (const file of INSTALL_SUBSTRATE_FILES) {
+    try {
+      execFileSync(
+        "git",
+        ["-C", repoRoot, "diff", "--quiet", "HEAD", "origin/main", "--", file],
+        { stdio: ["ignore", "ignore", "pipe"] },
+      );
+      // exit 0 = no diff — fall through
+    } catch (e: unknown) {
+      const status =
+        e && typeof e === "object" && "status" in e
+          ? Number((e as { status: number }).status)
+          : -1;
+      if (status === 1) stale.push(file);
+      // status !== 0 && !== 1 = git error (file missing, etc); skip silently
+    }
+  }
+
+  if (stale.length > 0) {
+    bail(
+      2,
+      `iter-4.3 freshness check FAILED — local checkout is behind origin/main on ${stale.length} install-substrate file(s):\n` +
+        stale.map((f) => `    ${f}`).join("\n") +
+        `\n\n  Refusing to flash with stale code (silent flash-without-inject hazard).\n\n` +
+        `  Remediation (pick one):\n` +
+        `    1. git -C ${repoRoot} pull --rebase origin main\n` +
+        `       (then re-run zflash; this is the recommended path)\n` +
+        `    2. zflash --skip-freshness-check  (only for known-safe situations)\n`,
+    );
+  }
+  process.stdout.write("zflash: local checkout is up-to-date with origin/main ✓\n");
+}
+
+function autoDownloadFreshIsoIfNeeded(localIso: string): string {
+  // Check the latest successful build-ai-cluster-iso workflow run on main.
+  // If its updated_at > localIso.mtime, download via gh run download +
+  // return the new path. Offline / no-gh → falls back to local silently.
+  const localMtime = statSync(localIso).mtimeMs;
+  try {
+    const runsJson = execFileSync(
+      "gh",
+      [
+        "api",
+        `repos/${ZETA_REPO_GH}/actions/workflows/${ISO_BUILD_WORKFLOW}/runs?branch=main&status=success&per_page=1`,
+      ],
+      { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+    );
+    const runs = (JSON.parse(runsJson) as { workflow_runs?: Array<{ id: number; updated_at: string; head_sha: string }> }).workflow_runs ?? [];
+    if (runs.length === 0) {
+      process.stdout.write("zflash: no successful ISO builds found on origin/main (iter-4.3 skipped)\n");
+      return localIso;
+    }
+    const latest = runs[0]!;
+    const ciMtime = new Date(latest.updated_at).getTime();
+    if (ciMtime <= localMtime) {
+      process.stdout.write(
+        `zflash: local ISO is current with latest CI build (run ${latest.id}, ${latest.updated_at}) ✓\n`,
+      );
+      return localIso;
+    }
+    process.stdout.write(
+      `zflash: CI has fresher ISO — run ${latest.id} updated ${latest.updated_at}, ` +
+        `local newest ${new Date(localMtime).toISOString()}\n`,
+    );
+    process.stdout.write(`zflash: pulling fresh ISO from CI (iter-4.3) ...\n`);
+    const dlDir = `/tmp/zflash-ci-iso-${latest.id}`;
+    execFileSync(
+      "gh",
+      ["run", "download", String(latest.id), "--dir", dlDir, "-R", ZETA_REPO_GH],
+      { stdio: "inherit" },
+    );
+    // gh run download puts artifact into a directory NAMED after the artifact.
+    // Walk dlDir to find the .iso file.
+    const findIsoUnder = (d: string): string | null => {
+      if (!existsSync(d)) return null;
+      const entries = readdirSync(d);
+      for (const e of entries) {
+        const p = join(d, e);
+        try {
+          const s = statSync(p);
+          if (s.isFile() && e.endsWith(".iso")) return p;
+          if (s.isDirectory()) {
+            const inner = findIsoUnder(p);
+            if (inner) return inner;
+          }
+        } catch {
+          /* skip */
+        }
+      }
+      return null;
+    };
+    const ciIsoSrc = findIsoUnder(dlDir);
+    if (!ciIsoSrc) {
+      process.stderr.write(`zflash: (CI artifact downloaded to ${dlDir} but no .iso found; falling back to local)\n`);
+      return localIso;
+    }
+    // Copy to ~/Downloads with a date+run-stamped name so future runs
+    // pick the right one. Don't overwrite the original (operator's
+    // download history is preserved).
+    const dlDest = join(
+      homedir(),
+      "Downloads",
+      `zeta-installer-24.11-ci${latest.id}-${latest.updated_at.slice(0, 10)}.iso`,
+    );
+    if (!existsSync(dlDest)) {
+      execFileSync("cp", [ciIsoSrc, dlDest], { stdio: "inherit" });
+    }
+    process.stdout.write(`zflash: fresh ISO at ${dlDest}\n`);
+    return dlDest;
+  } catch (e) {
+    process.stderr.write(
+      `zflash: (iter-4.3 CI ISO pull failed: ${e instanceof Error ? e.message : String(e)}; falling back to local)\n`,
+    );
+    return localIso;
+  }
+}
+
 function findFlashUsbPath(): string {
   // Sibling file lookup. import.meta.url is a file:// URL — use
   // fileURLToPath() to get a decoded filesystem path (handles spaces +
@@ -323,12 +506,21 @@ async function main() {
   // (`zflash --dry-run`) or extra arg (`zflash a.iso b.iso`) would still
   // proceed to sudo dd. Allowlist flags + bail on unrecognized or
   // duplicate-positional.
-  const ALLOWED_FLAGS = new Set(["-h", "--help", "--ssh-key", "--no-inject"]);
+  const ALLOWED_FLAGS = new Set([
+    "-h",
+    "--help",
+    "--ssh-key",
+    "--no-inject",
+    "--skip-freshness-check",
+    "--skip-iso-pull",
+  ]);
   const argv = process.argv.slice(2);
 
   // Two-arg flag parsing for --ssh-key <path>
   let sshKeyOverride: string | null = null;
   let noInject = false;
+  let skipFreshnessCheck = false;
+  let skipIsoPull = false;
   const rawFlags: string[] = [];
   const positional: string[] = [];
   for (let i = 0; i < argv.length; i++) {
@@ -351,6 +543,14 @@ async function main() {
     }
     if (a === "--no-inject") {
       noInject = true;
+      continue;
+    }
+    if (a === "--skip-freshness-check") {
+      skipFreshnessCheck = true;
+      continue;
+    }
+    if (a === "--skip-iso-pull") {
+      skipIsoPull = true;
       continue;
     }
     if (a.startsWith("-")) {
@@ -380,20 +580,45 @@ async function main() {
   const isHelp = rawFlags.includes("-h") || rawFlags.includes("--help");
   if (isHelp) {
     process.stdout.write(
-      "Usage: bun full-ai-cluster/tools/zflash.ts [--ssh-key <path>] [--no-inject] [iso-path]\n" +
-        "  --ssh-key <path>  override default ~/.ssh/id_ed25519.pub for iter-4.2 inject\n" +
-        "  --no-inject       skip the iter-4.2 ESP pubkey write (USB will boot but\n" +
-        "                    cluster node won't have SSH access until manual edit +\n" +
-        "                    nixos-rebuild on first login per iter-4 v1 fallback)\n" +
-        "  iso-path          (optional) explicit ISO; default = newest\n" +
-        "                    ~/Downloads/zeta-installer-*.iso\n" +
+      "Usage: bun full-ai-cluster/tools/zflash.ts [flags] [iso-path]\n" +
+        "  --ssh-key <path>          override default ~/.ssh/id_ed25519.pub for iter-4.2 inject\n" +
+        "  --no-inject               skip the iter-4.2 ESP pubkey write (v1 manual-edit fallback)\n" +
+        "  --skip-freshness-check    bypass iter-4.3 stale-checkout detection (NOT recommended)\n" +
+        "  --skip-iso-pull           bypass iter-4.3 CI-ISO auto-download (use local newest)\n" +
+        "  iso-path                  (optional) explicit ISO; default = newest under ~/Downloads,\n" +
+        "                            auto-pulled from CI if origin/main has fresher build\n" +
         "  Run zflash-setup once first to install Touch ID for sudo.\n",
     );
     process.exit(0);
   }
 
+  // iter-4.3 freshness check: bail if local install-substrate is behind
+  // origin/main. Skip if explicitly opted out OR if not in a git checkout
+  // (zflash run from a copied-out location). Skip in destructive path
+  // ONLY when operator explicitly asked via --skip-freshness-check.
+  if (!skipFreshnessCheck) {
+    const repoRoot = findRepoRoot();
+    if (repoRoot) {
+      checkLocalCheckoutFreshness(repoRoot);
+    } else {
+      process.stderr.write(
+        "zflash: (iter-4.3 freshness check skipped — not running from a git checkout)\n",
+      );
+    }
+  } else {
+    process.stderr.write("zflash: WARN — iter-4.3 freshness check bypassed via --skip-freshness-check\n");
+  }
+
   const explicit = positional[0];
-  const isoPath = explicit ? resolve(explicit) : autoDiscoverIso();
+  let isoPath = explicit ? resolve(explicit) : autoDiscoverIso();
+
+  // iter-4.3 CI-ISO auto-download: if local newest is older than the latest
+  // successful CI build on main, pull the fresh artifact. Skip when explicit
+  // ISO path passed (operator overrides), when opted out, or on failure.
+  if (!explicit && !skipIsoPull) {
+    isoPath = autoDownloadFreshIsoIfNeeded(isoPath);
+  }
+
   const flashUsb = findFlashUsbPath();
 
   // Pre-flight: determine if iter-4.2 inject will run + which key
