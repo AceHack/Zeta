@@ -38,7 +38,16 @@ on:
       - 'full-ai-cluster/flake.nix'
       - 'full-ai-cluster/flake.lock'
       - 'full-ai-cluster/usb-nixos-installer/**'
-      - 'full-ai-cluster/nixos/modules/disko-shapes/**'
+      # Broadened 2026-05-26: was nixos/modules/disko-shapes/** only;
+      # empirically missed rebuilds when iter-5.2 (#5103) + iter-5.2.2
+      # (#5113) added new NixOS modules (injected-hostname.nix +
+      # login-banner.nix). The maintainer 2026-05-26 downloaded an
+      # older CI ISO that didn't have iter-5.2 substrate because the
+      # filter missed the module changes. Broaden to all nixos/** +
+      # tools/** under full-ai-cluster + the source-substrate audit tool.
+      - 'full-ai-cluster/nixos/**'
+      - 'full-ai-cluster/tools/**'
+      - 'tools/ci/audit-installer-substrate.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   push:
     branches: [main]
@@ -46,7 +55,9 @@ on:
       - 'full-ai-cluster/flake.nix'
       - 'full-ai-cluster/flake.lock'
       - 'full-ai-cluster/usb-nixos-installer/**'
-      - 'full-ai-cluster/nixos/modules/disko-shapes/**'
+      - 'full-ai-cluster/nixos/**'
+      - 'full-ai-cluster/tools/**'
+      - 'tools/ci/audit-installer-substrate.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   workflow_dispatch:
 
@@ -67,6 +78,16 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
+
+      # Preflight: source-substrate audit BEFORE the ~15-min Nix build.
+      # Catches the class of bug the maintainer 2026-05-26 surfaced
+      # (dropped iter-N modules silently producing stale ISO). Runs
+      # in ~1s; fails fast if the substrate is incomplete.
+      - name: Install Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Audit installer substrate (source-level)
+        run: bun tools/ci/audit-installer-substrate.ts
 
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
