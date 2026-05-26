@@ -751,6 +751,12 @@ The implementation is already deployed on every CockroachDB / Postgres / SQL-Ser
 
 **Attribution**: DeepSeek/Prism Refraction-register per `.claude/rules/agent-roster-reference-card.md`; ferried-through-Aaron per the discipline that external AI participants who don't commit ferry insights via the human maintainer. The substrate-engineering insight composes with Sub-target 7 (CockroachDB storage) + the existing NULL-as-monad + tri-boolean substrate at this section's parent scope.
 
+**Sharpening (Amara via Aaron 2026-05-26)**: The recognition is structural (SQL has Maybe-shape via NULL + LEFT JOIN propagation + recursive-CTE fixed-point semantics); the LAWFUL Maybe-monad behavior requires explicit discipline because SQL NULL violates monad laws at several well-documented points (`NULL = NULL` is NULL not true; `NOT IN` traps with NULL-bearing subqueries; aggregate behavior inconsistency; dialect differences; optimizer surprises). The safe operational claim is:
+
+> Under a defined Zeta SQL discipline, NULL can act as the Maybe carrier for recursive generate/join execution on existing databases.
+
+The 7-point Zeta NULL/Maybe discipline + 3 SQL examples (Maybe generator; recursive-CTE fixed point; Join layer) + 4 property tests (incremental == full recursive; NULL doesn't generate output; retraction cancels prior generation; per-row CAS only under contention) are canonicalized at [`docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md`](../../research/zeta-sql-null-maybe-recursive-cte-generate-join.md). Future-Otto authoring SQL substrate against B-0824 starts from that discipline, NOT from the unconditional recognition claim alone. Structural-recognition + operational-discipline compose; either alone produces correct-shape-but-incorrect-behavior substrate.
+
 ### Triangle-as-base → universal tessellation just like GPUs (Aaron 2026-05-26)
 
 > *"it means we can tesselate everyting casue or base is a traingle just like GPUs"*
