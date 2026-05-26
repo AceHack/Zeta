@@ -615,8 +615,11 @@ function dumpDiagnostics(context: string): void {
   );
 }
 
-async function injectPubkeyToUsb(pubkeyPath: string): Promise<void> {
+async function injectPubkeyToUsb(pubkeyPath: string, hostOverride: string | null): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
+  if (hostOverride !== null) {
+    process.stdout.write(`iter-5.2: ALSO injecting hostname '${hostOverride}' into ESP ...\n`);
+  }
 
   // Brief settle so macOS re-reads partition table after dd
   await new Promise((r) => setTimeout(r, 2000));
@@ -693,6 +696,41 @@ async function injectPubkeyToUsb(pubkeyPath: string): Promise<void> {
   }
   process.stdout.write(`iter-4.2: wrote pubkey to ${target}\n`);
 
+  // iter-5.2 (B-0792): if --host was passed, write zeta-hostname.txt
+  // to ESP in the same mount session (covered by the same sudo
+  // timestamp window; no additional Touch ID). zeta-install.sh reads
+  // this file at install time + writes to /etc/zeta/cluster-node-id;
+  // injected-hostname.nix module reads that file at NixOS evaluation
+  // time + overrides networking.hostName.
+  //
+  // Hostname validation already happened at flag-parse time (RFC1123
+  // check); re-verify shape here as defense-in-depth before writing.
+  if (hostOverride !== null) {
+    if (!/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/.test(hostOverride)) {
+      unmountEsp(espPart, mountResult);
+      bail(
+        3,
+        `iter-5.2 inject failed: hostname '${hostOverride}' fails RFC1123 validation at write time (should have caught at flag-parse; internal bug)`,
+      );
+    }
+    const hostnameTarget = join(mountPoint, "zeta-hostname.txt");
+    try {
+      execFileSync("sudo", ["tee", hostnameTarget], {
+        input: hostOverride + "\n",
+        stdio: ["pipe", "ignore", "inherit"],
+      });
+    } catch (e) {
+      dumpDiagnostics(`sudo tee ${hostnameTarget} failed`);
+      unmountEsp(espPart, mountResult);
+      bail(
+        3,
+        `iter-5.2 inject failed: sudo tee ${hostnameTarget} failed: ${e instanceof Error ? e.message : String(e)}`,
+      );
+    }
+    process.stdout.write(`iter-5.2: wrote hostname '${hostOverride}' to ${hostnameTarget}\n`);
+    process.stdout.write(`iter-5.2: installed node will be reachable as ssh zeta@${hostOverride}.local\n`);
+  }
+
   // Unmount via the matching method (diskutil-mounted → diskutil
   // unmount; mount_msdos-mounted → sudo umount + rmSync tmpdir).
   unmountEsp(espPart, mountResult);
@@ -725,14 +763,16 @@ async function main() {
     "--no-inject",
     "--skip-freshness-check",
     "--skip-iso-pull",
+    "--host",
   ]);
   const argv = process.argv.slice(2);
 
-  // Two-arg flag parsing for --ssh-key <path>
+  // Two-arg flag parsing for --ssh-key <path> and --host <name>
   let sshKeyOverride: string | null = null;
   let noInject = false;
   let skipFreshnessCheck = false;
   let skipIsoPull = false;
+  let hostOverride: string | null = null;
   const rawFlags: string[] = [];
   const positional: string[] = [];
   for (let i = 0; i < argv.length; i++) {
@@ -763,6 +803,27 @@ async function main() {
     }
     if (a === "--skip-iso-pull") {
       skipIsoPull = true;
+      continue;
+    }
+    if (a === "--host") {
+      const next = argv[i + 1];
+      if (!next || next.startsWith("-")) {
+        bail(2, "--host requires a name argument (e.g., --host pikachu)");
+      }
+      // iter-5.2 (B-0792): hostname per RFC1123 — alphanumeric + hyphens,
+      // no leading/trailing hyphen, 1-63 chars. Reject empty + invalid
+      // shapes BEFORE writing to USB so cluster-side substrate doesn't
+      // have to handle garbage. Aaron 2026-05-26 architectural framing:
+      // hostname is a unique identity, NOT a role label — operator picks
+      // any short memorable name (pikachu, charizard, sapphire, etc.).
+      if (!/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/.test(next)) {
+        bail(
+          2,
+          `--host '${next}' is not a valid RFC1123 hostname (alphanumeric + hyphens, 1-63 chars, no leading/trailing hyphen)`,
+        );
+      }
+      hostOverride = next;
+      i++;
       continue;
     }
     if (a.startsWith("-")) {
@@ -797,6 +858,10 @@ async function main() {
         "  --no-inject               skip the iter-4.2 ESP pubkey write (v1 manual-edit fallback)\n" +
         "  --skip-freshness-check    bypass iter-4.3 stale-checkout detection (NOT recommended)\n" +
         "  --skip-iso-pull           bypass iter-4.3 CI-ISO auto-download (use local newest)\n" +
+        "  --host <name>             iter-5.2 inject node hostname (RFC1123); decoupled from\n" +
+        "                            role-stack — e.g., --host pikachu installs as pikachu\n" +
+        "                            regardless of flake role config. Default: flake config name\n" +
+        "                            (control-plane for the zero-typing single-node path)\n" +
         "  iso-path                  (optional) explicit ISO; default = newest under ~/Downloads,\n" +
         "                            auto-pulled from CI if origin/main has fresher build\n" +
         "  Run zflash-setup once first to install Touch ID for sudo.\n",
@@ -864,9 +929,15 @@ async function main() {
   }
 
   if (willInject) {
-    await injectPubkeyToUsb(pubkeyPath);
+    await injectPubkeyToUsb(pubkeyPath, hostOverride);
   } else {
     process.stdout.write("\n(iter-4.2 inject skipped per --no-inject or missing pubkey)\n");
+    if (hostOverride !== null) {
+      process.stdout.write(
+        `(iter-5.2 hostname inject ALSO skipped — --host ${hostOverride} requires --no-inject NOT set;\n` +
+          ` re-run without --no-inject if you want the hostname to land on the USB ESP)\n`,
+      );
+    }
   }
 }
 

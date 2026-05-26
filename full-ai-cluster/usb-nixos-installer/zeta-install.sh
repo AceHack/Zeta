@@ -348,6 +348,126 @@ else
   echo "=============================="
 fi
 
+# ── Step 6.6: iter-5.2 hostname injection (B-0792) ──────────────
+#
+# Per the maintainer 2026-05-26: "since our different roles are
+# multi install you can be control plane AND gpu node AND cpu
+# node these distinctions are not very elegant and host names
+# tied to them are not great either" — hostname should be just
+# a unique identity, decoupled from role-stack selection.
+#
+# zflash on macOS writes the operator's chosen hostname to
+# `zeta-hostname.txt` on the USB ESP if --host <name> was passed
+# (e.g., zflash --host pikachu). This step writes that to
+# /mnt/etc/zeta/cluster-node-id where the NixOS module
+# `injected-hostname.nix` reads it via builtins.readFile at
+# evaluation time + overrides networking.hostName.
+#
+# If no zeta-hostname.txt on ESP: skip; the flake's per-host
+# config default (e.g., "control-plane") stays in effect.
+# Backward-compatible with single-node zero-typing path.
+echo
+echo "[iter-5.2] ── probing boot USB for injected hostname ──"
+HOSTNAME_DST="/mnt/etc/zeta/cluster-node-id"
+HOSTNAME_FILE=""
+# Reuse the SEARCH_DIRS pattern from the iter-4.2 pubkey probe;
+# zflash writes zeta-hostname.txt alongside zeta-authorized-keys.pub
+# in the same ESP mount session.
+if [ ${#SEARCH_DIRS[@]} -gt 0 ]; then
+  HOSTNAME_FILE=$(sudo find "${SEARCH_DIRS[@]}" \
+    -maxdepth 5 -name "zeta-hostname.txt" -type f 2>/dev/null | head -1 || true)
+fi
+# Also check the PROBE_MOUNT in case the USB ESP was mounted there
+# during iter-4.2 probe (don't re-mount; it's already there).
+if [ -z "$HOSTNAME_FILE" ] && [ -f "$PROBE_MOUNT/zeta-hostname.txt" ]; then
+  HOSTNAME_FILE="$PROBE_MOUNT/zeta-hostname.txt"
+fi
+if [ -n "$HOSTNAME_FILE" ]; then
+  # Validate: hostname per RFC1123 (alphanumeric + hyphens, no
+  # leading/trailing hyphen, 1-63 chars). Strip whitespace + newlines.
+  INJECTED_HOSTNAME=$(sudo cat "$HOSTNAME_FILE" | tr -d '[:space:]' | head -c 63)
+  if [ -n "$INJECTED_HOSTNAME" ] \
+     && echo "$INJECTED_HOSTNAME" \
+        | grep -Eq '^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$'; then
+    echo "[iter-5.2]   found injected hostname: $INJECTED_HOSTNAME (source: $HOSTNAME_FILE)"
+    sudo mkdir -p "$(dirname "$HOSTNAME_DST")"
+    echo "$INJECTED_HOSTNAME" | sudo tee "$HOSTNAME_DST" >/dev/null
+    sudo chmod 0644 "$HOSTNAME_DST"
+    echo "[iter-5.2]   wrote $HOSTNAME_DST"
+    echo "[iter-5.2]   networking.hostName will be '$INJECTED_HOSTNAME' on first boot"
+    echo "[iter-5.2]   ssh access: ssh zeta@${INJECTED_HOSTNAME}.local"
+  else
+    echo "[iter-5.2]   WARN: $HOSTNAME_FILE contains invalid hostname '$INJECTED_HOSTNAME'"
+    echo "[iter-5.2]          (must match RFC1123: alphanumeric + hyphens, 1-63 chars)"
+    echo "[iter-5.2]          falling back to flake default ($HOST)"
+  fi
+else
+  echo "[iter-5.2]   no zeta-hostname.txt on USB ESP"
+  echo "[iter-5.2]   using flake default hostname for #$HOST"
+fi
+echo
+
+# ── Step 6.7: iter-5.1 wifi persistence (B-0792) ────────────────
+#
+# By the time this step runs, the live installer is already on the
+# network — either via ethernet auto-DHCP (no profile to copy; this
+# is a no-op) or via nmtui setup at first boot (`zeta-first-boot.sh`
+# Step 2 launches nmtui when ethernet is absent; operator entered
+# wifi creds once via TUI; NetworkManager wrote a .nmconnection
+# profile to /etc/NetworkManager/system-connections/).
+#
+# Without this step, the freshly-installed system inherits the
+# NixOS NetworkManager service but NOT the operator's connection
+# profile. Result: wifi-only mini-PCs boot installed system,
+# NetworkManager comes up with empty profile dir, no wifi, no SSH.
+# The maintainer 2026-05-26: "we won't have ethernet for most
+# machines it needs to remember the wifi on setup."
+#
+# Fix: copy *.nmconnection files from the live installer to /mnt.
+# NetworkManager requires chmod 0600 + chown root:root on these
+# files. sudo handles both during the cp.
+echo
+echo "[iter-5.1] ── checking for NetworkManager connection profiles to persist ──"
+NM_SRC="/etc/NetworkManager/system-connections"
+NM_DST="/mnt/etc/NetworkManager/system-connections"
+NM_PROFILE_COUNT=0
+if [ -d "$NM_SRC" ]; then
+  # Enumerate .nmconnection files via find (NOT glob; bash globs
+  # would need nullglob to handle the empty-dir case, but find +
+  # filtered-output handles it naturally with no shell-option deps)
+  NM_PROFILES=$(sudo find "$NM_SRC" -maxdepth 1 -name "*.nmconnection" -type f 2>/dev/null || true)
+  if [ -n "$NM_PROFILES" ]; then
+    NM_PROFILE_COUNT=$(echo "$NM_PROFILES" | wc -l | tr -d ' ')
+    sudo mkdir -p "$NM_DST"
+    sudo chmod 0700 "$NM_DST"
+    # Copy preserving permissions; NM requires 0600 root:root on each
+    # .nmconnection file (else it ignores them at startup with a
+    # "permissions not strict enough" warning in journalctl)
+    echo "$NM_PROFILES" | while read -r src; do
+      [ -n "$src" ] || continue
+      name=$(basename "$src")
+      dst="$NM_DST/$name"
+      sudo cp -p "$src" "$dst"
+      sudo chown root:root "$dst"
+      sudo chmod 0600 "$dst"
+      # Print SSID (parsed from [wifi] ssid=...) without printing the psk.
+      # Per 802.11 spec, SSIDs MAY contain '=' (and arbitrary bytes
+      # including spaces). awk -F= '...; print $2' would truncate after
+      # the first '='. sed-after-first-'ssid=' preserves the full SSID.
+      ssid=$(sudo sed -n 's/^ssid=//p' "$dst" 2>/dev/null | head -1)
+      [ -z "$ssid" ] && ssid="(unknown)"
+      echo "[iter-5.1]   persisted: $name (ssid=$ssid)"
+    done
+    echo "[iter-5.1]   $NM_PROFILE_COUNT NetworkManager profile(s) persisted to installed system"
+    echo "[iter-5.1]   installed system will reconnect to wifi automatically on reboot"
+  else
+    echo "[iter-5.1]   no .nmconnection profiles in $NM_SRC (ethernet-DHCP path; nothing to persist)"
+  fi
+else
+  echo "[iter-5.1]   $NM_SRC does not exist; skipping wifi persistence (no harm; ethernet-DHCP works)"
+fi
+echo
+
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 sudo nixos-install --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
 

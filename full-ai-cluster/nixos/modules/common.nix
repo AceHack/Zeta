@@ -5,6 +5,11 @@
 { config, pkgs, lib, stateVersion ? "24.11", ... }:
 
 {
+  # iter-5.2 (B-0792): per-node hostname injection lives in its own
+  # module so every host (control-plane, worker-gpu, worker-template,
+  # future configs) inherits the override capability automatically.
+  imports = [ ./injected-hostname.nix ];
+
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;
@@ -30,6 +35,24 @@
 
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
+
+  # iter-5.1 (B-0792): Avahi mDNS publishing so cluster nodes resolve
+  # via `<hostname>.local` from operator Mac (Bonjour) + Linux peers
+  # (nss-mdns) on the LAN without IP-discovery step. Without this,
+  # `ssh zeta@control-plane.local` fails to resolve even though the
+  # node is up. Empirical anchor: 2026-05-26 iter-4.2 PC1 test
+  # surfaced the gap.
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;  # firewall hole for mDNS (5353/udp)
+    publish = {
+      enable = true;
+      addresses = true;
+      workstation = true;
+      domain = true;
+    };
+  };
 
   services.openssh = {
     enable = true;
