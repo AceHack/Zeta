@@ -69,6 +69,12 @@
     git-lfs
     gnupg
     openssh
+    # iter-5.4.0 (B-0794 homelab-mode): operator authenticates at
+    # install time via `gh auth login`; `gh ssh-key list` extracts
+    # operator's SSH pubkeys for injection into authorized_keys per
+    # the Mika 2026-05-26 homelab-first substrate ("USB ships with NO
+    # embedded credentials; first boot prompts gh auth login").
+    gh
 
     # Editors
     vim

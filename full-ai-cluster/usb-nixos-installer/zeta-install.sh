@@ -564,6 +564,88 @@ else
 fi
 echo
 
+# ── Step 6.8: iter-5.4.0 homelab gh-auth + operator pubkey copy ──
+# B-0794 sub-target homelab-mode. The maintainer 2026-05-26: "i'll
+# wait till we have the install.sh and git native device registration
+# into github is ready before i run again". Per Mika 2026-05-26
+# homelab-first substrate: USB ships with NO embedded credentials;
+# operator authenticates interactively at install time via `gh auth
+# login`; auto-fetch operator's GitHub SSH pubkeys + write to
+# /mnt/etc/zeta/operator-authorized-keys for the
+# operator-authorized-keys.nix module to inject at activation.
+#
+# Outputs:
+#   /mnt/etc/zeta/operator-authorized-keys (one pubkey per line)
+#
+# Skippable: operator can press Enter to skip if they prefer fallback
+# to iter-4.2 statically-baked maintainer keys. NOT skippable if iter-
+# 4.2 injection also failed (logged so operator knows the gap).
+#
+# Composes with iter-4.2 (static keys; additive) + iter-5.3 password
+# prompt (console-login fallback) + iter-5.2 hostname (which.local
+# the operator SSHs to).
+GH_AUTH_OK=0
+GH_KEY_COUNT=0
+echo
+echo "[iter-5.4.0] ── homelab gh-auth + operator SSH-pubkey copy ──"
+echo "[iter-5.4.0] Authenticate to GitHub to auto-copy your SSH pubkeys"
+echo "[iter-5.4.0] to the installed node's authorized_keys. This makes"
+echo "[iter-5.4.0] ssh-from-your-Mac work without manual config-edit + rebuild."
+echo "[iter-5.4.0] Press Enter to skip (fallback to iter-4.2 static keys"
+echo "[iter-5.4.0] if injected, OR manual config-edit per the iter-4 v1 flow)."
+echo
+read -r -p "[iter-5.4.0] Run gh auth login now? [Y/n]: " GH_AUTH_REPLY
+GH_AUTH_REPLY="${GH_AUTH_REPLY:-Y}"
+if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
+  if ! command -v gh >/dev/null 2>&1; then
+    echo "[iter-5.4.0]   WARN: gh binary not on PATH; skipping (likely"
+    echo "[iter-5.4.0]         installer ISO bug — gh should be in"
+    echo "[iter-5.4.0]         environment.systemPackages of"
+    echo "[iter-5.4.0]         usb-nixos-installer/nixos/installer/configuration.nix)"
+  else
+    echo "[iter-5.4.0]   running 'gh auth login' (interactive)..."
+    echo
+    # `gh auth login` is interactive (browser code OR device-flow OR
+    # paste-token). Operator picks. Authenticates as their GitHub user.
+    if gh auth login; then
+      GH_AUTH_OK=1
+      echo
+      echo "[iter-5.4.0]   gh auth login: SUCCESS"
+      echo "[iter-5.4.0]   fetching operator's SSH pubkeys via 'gh ssh-key list'..."
+      KEY_DST_DIR=/mnt/etc/zeta
+      sudo mkdir -p "$KEY_DST_DIR"
+      KEY_DST="$KEY_DST_DIR/operator-authorized-keys"
+      # gh ssh-key list outputs the key BODY per row in JSON; jq extracts
+      # the `key` field which contains the standard authorized_keys line
+      # (algo + base64-pubkey; no comment). Each gets a comment appended
+      # so the operator can identify it later: "gh-key-<id>".
+      if gh ssh-key list --json id,key,title 2>/dev/null \
+          | jq -r '.[] | "\(.key) gh-key-\(.id)-\(.title // "")"' \
+          | sudo tee "$KEY_DST" >/dev/null; then
+        sudo chmod 0644 "$KEY_DST"
+        GH_KEY_COUNT="$(wc -l < "$KEY_DST" | tr -d ' ')"
+        echo "[iter-5.4.0]   wrote $GH_KEY_COUNT key(s) to $KEY_DST"
+        echo "[iter-5.4.0]   the operator-authorized-keys.nix module will pick"
+        echo "[iter-5.4.0]   them up during nixos-install (next step)"
+      else
+        echo "[iter-5.4.0]   WARN: 'gh ssh-key list' failed; no keys written"
+        echo "[iter-5.4.0]   (gh auth succeeded but the user has no SSH keys"
+        echo "[iter-5.4.0]   registered with GitHub, OR the jq/tee pipe broke)"
+        GH_KEY_COUNT=0
+      fi
+    else
+      echo
+      echo "[iter-5.4.0]   gh auth login FAILED or was cancelled; skipping"
+    fi
+  fi
+else
+  echo "[iter-5.4.0]   skipped at operator request; iter-4.2 static keys (if"
+  echo "[iter-5.4.0]   injected) remain the SSH path. If iter-4.2 also failed,"
+  echo "[iter-5.4.0]   manual config-edit per the iter-4 v1 flow is required"
+  echo "[iter-5.4.0]   post-install."
+fi
+echo
+
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 sudo nixos-install --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
 
@@ -578,19 +660,31 @@ echo
 echo "    user:     zeta"
 echo "    password: zeta-change-me"
 echo
-if [ "$INJECT_OK" = 1 ]; then
-  echo "  iter-4.2 SSH-KEY INJECTION: SUCCESS"
+if [ "$GH_AUTH_OK" = 1 ] && [ "$GH_KEY_COUNT" != "0" ]; then
+  echo "  iter-5.4.0 GH-AUTH + OPERATOR-PUBKEY INJECTION: SUCCESS ($GH_KEY_COUNT keys)"
+  echo "    SSH access works on first boot from any machine using"
+  echo "    your registered-with-GitHub SSH keys:"
+  echo "      ssh zeta@\$(hostname).local"
+  echo
+  echo "  AFTER FIRST LOGIN:"
+  echo "    1. (password already set per iter-5.3 prompt — or unchanged"
+  echo "        if iter-5.3 was skipped; rotate via 'passwd zeta' anytime)"
+  echo "    2. (SSH already works — operator keys auto-injected)"
+elif [ "$INJECT_OK" = 1 ]; then
+  echo "  iter-4.2 SSH-KEY INJECTION: SUCCESS (iter-5.4.0 gh-auth skipped)"
   echo "    SSH access works on first boot from the workstation that flashed this USB:"
   echo "      ssh zeta@\$(hostname)"
   echo
   echo "  AFTER FIRST LOGIN:"
-  echo "    1. passwd zeta            # rotate the initial password"
+  echo "    1. passwd zeta            # rotate the initial password (if iter-5.3 skipped)"
   echo "    2. (SSH already works — no manual edit + rebuild required)"
 else
-  echo "  iter-4.2 SSH-KEY INJECTION: SKIPPED (see diagnostics above)"
+  echo "  iter-4.2 SSH-KEY INJECTION: SKIPPED"
+  echo "  iter-5.4.0 GH-AUTH SSH-PUBKEY INJECTION: SKIPPED"
+  echo "  (see diagnostics above)"
   echo
   echo "  AFTER FIRST LOGIN (fallback to iter-4 v1 manual flow):"
-  echo "    1. passwd zeta            # rotate the initial password"
+  echo "    1. passwd zeta            # rotate the initial password (if iter-5.3 skipped)"
   echo "    2. Edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix"
   echo "       and add your ssh-ed25519 pubkey, then:"
   echo "    3. sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#$HOST"

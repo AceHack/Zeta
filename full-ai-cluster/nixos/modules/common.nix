@@ -14,6 +14,10 @@
   imports = [
     ./injected-hostname.nix
     ./login-banner.nix
+    # iter-5.4.0 (B-0794 homelab-mode): operator SSH pubkeys captured
+    # via `gh ssh-key list` during zeta-install.sh Step 6.8. Composes
+    # additively with iter-4.2 static maintainer keys.
+    ./operator-authorized-keys.nix
   ];
 
   nix.settings = {
