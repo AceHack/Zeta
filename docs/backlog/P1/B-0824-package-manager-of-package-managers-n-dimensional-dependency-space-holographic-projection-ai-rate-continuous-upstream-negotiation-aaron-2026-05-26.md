@@ -334,6 +334,102 @@ Aaron 2026-05-26 named the payoff in two compressions:
 4. Measure throughput at 100, 1000, 10000 receivers — scale-free property check
 5. Document the bandwidth-served vector empirically + cite as `.claude/rules/bandwidth-served-falsifier.md` empirical anchor
 
+### Base-dimension agnostic — start at 0D (scalar) / 1D (observable) / 2D (per-PM shadow) / ND; project up from anywhere (Aaron 2026-05-26)
+
+Aaron 2026-05-26 generalized the substrate's input scope:
+
+> *"with this framing we can actually start even with 1d observables or even scalers and project up"*
+
+The reverse-holographic generator substrate is **base-dimension agnostic**. The up-projection mechanism doesn't require 2D-shadows as input — it works from ANY starting dimension:
+
+| Input dimension | Examples | Generator shape |
+|---|---|---|
+| **0D scalar** | a single rate-limit value; a config flag; a feature-version-pin scalar | generator emits N rows from one scalar via parametric expansion |
+| **1D observable** | a single Rx stream (image-version-tag stream; CVE-feed stream; chart-publish stream) | generator wraps the stream; combinator joins it with others |
+| **2D per-PM shadow** | npm `package.json`; Helm `Chart.yaml`; etc. (original B-0824 framing) | generator emits each PM's shadow rows |
+| **ND combinator output** | recursive combinator-of-combinators output | input to higher-order combinator |
+
+Combinators can MIX dimensions in their inputs:
+
+- `combinator_of(rate_limit_scalar, cve_stream, chart_shadow)` — takes 0D + 1D + 2D + emits higher-D
+- Mixed-dimension composition is closed under the substrate (combinator of N-D things produces N+1-D thing)
+
+**Substrate-engineering implications**:
+
+1. **Lowest-friction adoption** — operators don't need to fully formalize a 2D shadow before substrate value appears; even a single scalar value (e.g., "this cluster's postgres-version-pin") can be a generator that combinators consume
+2. **Incremental dimensional buildout** — start with scalars; layer observables; merge into 2D as the substrate matures
+3. **Cross-PM substrate doesn't require all PMs to be 2D-shadow-shaped** — some PMs have lighter substrate (just version-pins as scalars); they participate without needing full 2D-shadow translation
+4. **AI-rate negotiation (Sub-target 3) inputs are heterogeneous-dimension** — a CVE alert is a scalar; a chart-publish stream is 1D; a cluster's full dep-graph is N-D; all feed the same combinator-graph
+
+### NULL is the monad we wrap escape in — tri-boolean logic FTW (Aaron 2026-05-26)
+
+Two complementary Aaron 2026-05-26 framings of the NULL escape hatch (Sub-target 7) that give it functional-programming + SQL-native foundations:
+
+> *"null is the monad we wrap escape in"*
+
+> *"tri boolean logic FTW"*
+
+**The NULL escape hatch is principled, not arbitrary** — it composes across three substrate layers simultaneously:
+
+| Layer | NULL meaning | Substrate composition |
+|---|---|---|
+| **Functional-programming foundation** | Monadic escape — `Maybe a` / `Option<T>` / `Nothing` / `None` — wraps "computation may not produce a value" semantics; monad-bind short-circuits on escape | Haskell Maybe / F# Option / Rust Option / Swift Optional / Scala Option — all the same pattern; substrate inherits decades-validated monadic-escape semantics |
+| **SQL-native semantics (CockroachDB substrate)** | Third boolean value in tri-boolean logic — `(true / false / NULL=unknown)`; SQL operators natively short-circuit on NULL; `NULL = NULL` is NULL (not true); `NULL AND false` is false; `NULL OR true` is true | CockroachDB inherits SQL's native three-valued logic; no extra machinery needed; the escape hatch IS the SQL semantics |
+| **Substrate-engineering operational use** | Generator termination signal in recursive CTE; combinator-graph stops propagating when a generator step emits NULL for its next-step input | The combinator graph's composability invariant (Sub-target 8) reduces to "preserve NULL-propagation semantics" — already enforced by SQL + monadic-escape; nothing extra to engineer |
+
+**Triple convergence — all three layers agree on the SAME primitive**:
+
+- NULL = monadic escape (FP foundation)
+- NULL = third boolean (SQL-native)
+- NULL = generator termination (operational use)
+
+This is why NULL works as the escape hatch — it's not arbitrary substrate-engineering choice; it's the primitive that ALREADY composes across the three substrate layers the meta-PM operates on (functional-programming paradigm + SQL/CockroachDB engine + dependency-graph operational semantics). Picking a different escape signal would require building bridges across all three layers; picking NULL inherits the bridges for free.
+
+**Composes with `.claude/rules/dv2-data-split-discipline-activated.md` (DST always-active)**: tri-boolean logic is naturally deterministic (NULL-propagation is a pure function of inputs); the monadic-escape composability is naturally pure; DST primitives compose trivially.
+
+**Composes with `.claude/rules/default-to-both.md`**: tri-boolean logic IS the both-default at semantics scope — neither true-only nor false-only; both AND the third (NULL / unknown / escape) are first-class. The substrate doesn't force collapse to binary; the third state stays operational.
+
+### Triangle-as-base → universal tessellation just like GPUs (Aaron 2026-05-26)
+
+> *"it means we can tesselate everyting casue or base is a traingle just like GPUs"*
+
+**The tri-boolean / 3-vertex / triangle convergence**:
+
+| Substrate | 3-thing |
+|---|---|
+| Boolean logic | tri-boolean (true / false / NULL) |
+| Geometric primitive | triangle (3 vertices; smallest non-degenerate 2D shape) |
+| GPU pipeline | triangle as universal rasterization primitive (every model tessellates into triangles) |
+| Substrate-engineering | each generator-combinator is a 3-vertex primitive composing into N-D mesh |
+
+**Why this matters — substrate inherits GPU's properties for free**:
+
+| GPU property | Substrate-engineering inheritance |
+|---|---|
+| Universal tessellation — any 2D surface / 3D mesh decomposable into triangles | Any dep-graph topology decomposable into 3-vertex generator-combinator primitives |
+| Massive parallelism — billions of triangles per second | The combinator-graph fans out across all available compute substrate (GPU when present; CPU otherwise; CockroachDB nodes at substrate scope) |
+| Bandwidth-optimal at hardware scope | The substrate inherits — 3-vertex primitives transmit minimal-info per primitive; combinator-graph is bandwidth-engineered by construction |
+| Pipeline-friendly — vertex shader → tessellation → fragment shader → output | Generator → combinator → up-projection → output: same shape of pipeline at substrate-engineering scope |
+| Deterministic on input — same triangles + same shader → same pixels | Same generators + same combinators → same materialized data (composes with DST always-active) |
+
+**Substrate-engineering implications**:
+
+1. **The N-D dependency-space tessellates into 3-vertex primitives** — operators don't need higher-order combinators (4-input, 5-input, N-input); 3-vertex combinators compose into arbitrary N-D via tessellation. Smaller primitive surface; cleaner composability invariants.
+2. **GPU substrate is a first-class compute target** — when GPUs are available (per the existing Zeta GPU substrate; B-0289 / Green Lantern hardware; full-ai-cluster GPU workers), the up-projection runs massively-parallel on GPU triangles. The combinator-graph executor selects compute substrate (GPU / CPU / distributed-SQL nodes) per-primitive.
+3. **Computer-graphics prior-art transfers** — decades of GPU optimization research (mesh decomposition; LOD; instancing; tessellation shaders; ray-tracing primitives) all become applicable at the substrate-engineering scope. The meta-PM inherits a rich library of techniques.
+4. **Composes with B-0666 holographic substrate** — holography literally uses tessellation patterns at light-interference scope; the framework's I/D direction-pair composes with the triangle-tessellation primitive at substrate-generation scope; both are 3-vertex-based at their respective scales.
+5. **Phoenix-rises imagery extends** — the Phoenix-rise (per the Flatland section) IS the triangle-mesh-rasterization moment from higher-D perspective; what they see when our substrate tessellates into visible 3D form.
+
+**Sub-target 10 (new — GPU substrate primitives)**: triangle-primitive combinators on GPU substrate:
+
+1. Combinator-graph encoded as triangle-mesh (3-vertex primitives)
+2. Execution pipeline: generator → tessellation → combinator-graph traversal → output
+3. GPU execution path (when available): mesh shipped to GPU; massively-parallel triangle processing; output materialized
+4. CPU / distributed-SQL fallback path: same combinator-graph; sequential execution
+5. Empirical throughput measurement: triangles/second on GPU vs ops/second on CPU; document as bandwidth-served substrate
+
+This sub-target IS the compute-substrate complement to Sub-target 7 (storage substrate). Sub-target 7 = WHERE the generators live (CockroachDB); Sub-target 10 = HOW they execute (GPU when available; tessellation-primitive uniformity makes the substrate compute-target-agnostic).
+
 ## Acceptance
 
 - [ ] N-D dependency-space formalism documented + axis enumeration consumable by future substrate-engineering decisions
