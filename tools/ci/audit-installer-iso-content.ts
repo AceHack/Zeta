@@ -102,18 +102,35 @@ const REQUIRED_ISO_PATHS: readonly { path: string; rationale: string }[] = [
 // locations 24.11 used. Same fix-fwd pattern as B-0818 (isoName) — relax to
 // any-of with multiple candidate paths to survive nixpkgs-channel bumps,
 // AND dump full entry list on failure for self-debugging future regressions.
-const REQUIRED_KERNEL_ANY: readonly { path: string; rationale: string }[] = [
-  { path: "boot/bzImage", rationale: "Linux kernel (24.11 legacy top-level path)" },
-  { path: "boot/x86_64-linux/bzImage", rationale: "Linux kernel (per-arch path)" },
-  { path: "boot/kernel", rationale: "Linux kernel (generic-named)" },
-  { path: "boot/vmlinuz", rationale: "Linux kernel (vmlinuz convention)" },
-  { path: "boot/vmlinuz-linux", rationale: "Linux kernel (alt vmlinuz convention)" },
+// Suffix-pattern matching (per B-0823 follow-up; empirical 25.11 paths
+// confirmed via diagnostic dump on build run 26465084701):
+//
+//   kernel: boot/nix/store/<hash>-linux-<version>/bzImage
+//   initrd: boot/nix/store/<hash>-initrd-linux-<version>/initrd
+//
+// The store-hash in the path varies per build, so exact-path lookup IS
+// impossible by construction. Match by directory-prefix + filename-suffix
+// to handle both legacy (24.11 top-level) AND store-hashed (25.11+)
+// layouts uniformly. Each entry's suffix-match against ANY entry in the
+// ISO satisfies the assertion.
+const REQUIRED_KERNEL_ANY: readonly { prefix: string; suffix: string; rationale: string }[] = [
+  // boot/...path.../bzImage covers BOTH legacy 24.11 (boot/bzImage — startsWith("boot/")
+  // + endsWith("/bzImage") since the path's last 8 chars are "/bzImage") AND
+  // 25.11 store-hashed (boot/nix/store/<hash>-linux-<ver>/bzImage). No separate
+  // legacy entry needed (fix-fwd Copilot finding on #5263 — earlier draft had
+  // {prefix:"", suffix:"boot/bzImage"} which wasn't actually exact-match + was
+  // redundant with the entry above).
+  { prefix: "boot/", suffix: "/bzImage", rationale: "Linux kernel — any boot/...path.../bzImage (covers 24.11 boot/bzImage + 25.11 boot/nix/store/<hash>-linux-<ver>/bzImage + per-arch paths)" },
+  { prefix: "boot/", suffix: "/kernel", rationale: "Linux kernel (generic-named convention)" },
+  { prefix: "boot/", suffix: "/vmlinuz", rationale: "Linux kernel (vmlinuz convention)" },
+  { prefix: "boot/", suffix: "/vmlinuz-linux", rationale: "Linux kernel (alt vmlinuz convention)" },
 ];
 
-const REQUIRED_INITRD_ANY: readonly { path: string; rationale: string }[] = [
-  { path: "boot/initrd", rationale: "initramfs (24.11 legacy top-level path)" },
-  { path: "boot/x86_64-linux/initrd", rationale: "initramfs (per-arch path)" },
-  { path: "boot/initrd.img", rationale: "initramfs (.img convention)" },
+const REQUIRED_INITRD_ANY: readonly { prefix: string; suffix: string; rationale: string }[] = [
+  // Same legacy-via-prefix-suffix coverage as kernel above; no separate legacy
+  // entry needed (fix-fwd Copilot finding on #5263).
+  { prefix: "boot/", suffix: "/initrd", rationale: "initramfs — any boot/...path.../initrd (covers 24.11 boot/initrd + 25.11 boot/nix/store/<hash>-initrd-linux-<ver>/initrd + per-arch paths)" },
+  { prefix: "boot/", suffix: "/initrd.img", rationale: "initramfs (.img convention)" },
 ];
 
 // At least ONE of these bootloader-config paths must exist for the ISO
@@ -305,24 +322,36 @@ function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError 
       rationale: `none of the known bootloader configs found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_BOOTLOADER_ANY.map((b) => `${b.path} (${b.rationale})`).join("; ")}`,
     });
   }
-  // Kernel any-of check (B-0823): nixpkgs 25.11 placed kernel at
-  // variant paths instead of the legacy boot/bzImage top-level location
-  // — same fix-fwd pattern as bootloader-any-of above. If none match,
-  // the diagnostic-dump on failure (see main()) shows what's actually
-  // there so the candidate list can be extended.
-  if (!REQUIRED_KERNEL_ANY.some((k) => entryByPath.has(k.path))) {
+  // Suffix-pattern match helper (B-0823 follow-up): an entry satisfies a
+  // candidate when its key starts with the candidate's prefix AND ends with
+  // the candidate's suffix. Either field empty means "no constraint at that
+  // end". This handles 25.11's store-hashed paths like
+  // boot/nix/store/<hash>-linux-<ver>/bzImage where the hash varies per build.
+  const allEntryPaths = Array.from(entryByPath.keys());
+  const matchesAny = (
+    candidates: readonly { prefix: string; suffix: string }[],
+  ): boolean => candidates.some((c) =>
+    allEntryPaths.some((p) => p.startsWith(c.prefix) && p.endsWith(c.suffix)),
+  );
+  // Kernel any-of check (B-0823 + 25.11 store-hashed-path follow-up):
+  // nixpkgs 25.11 places kernel at boot/nix/store/<hash>-linux-<ver>/bzImage
+  // — exact-path lookup impossible by construction (hash varies per build).
+  // Suffix-match handles both legacy (24.11 boot/bzImage) AND new (25.11
+  // store-hashed) layouts uniformly.
+  if (!matchesAny(REQUIRED_KERNEL_ANY)) {
     failures.push({
       kind: "missing-path",
-      path: REQUIRED_KERNEL_ANY.map((k) => k.path).join(" | "),
-      rationale: `none of the known kernel paths found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_KERNEL_ANY.map((k) => `${k.path} (${k.rationale})`).join("; ")}`,
+      path: REQUIRED_KERNEL_ANY.map((k) => `${k.prefix}*${k.suffix}`).join(" | "),
+      rationale: `none of the known kernel suffix-patterns found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_KERNEL_ANY.map((k) => `${k.prefix}*${k.suffix} (${k.rationale})`).join("; ")}`,
     });
   }
-  // Initrd any-of check (B-0823): same shape as kernel-any-of above.
-  if (!REQUIRED_INITRD_ANY.some((i) => entryByPath.has(i.path))) {
+  // Initrd any-of check (B-0823 + 25.11 store-hashed-path follow-up):
+  // same shape as kernel-any-of above.
+  if (!matchesAny(REQUIRED_INITRD_ANY)) {
     failures.push({
       kind: "missing-path",
-      path: REQUIRED_INITRD_ANY.map((i) => i.path).join(" | "),
-      rationale: `none of the known initrd paths found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_INITRD_ANY.map((i) => `${i.path} (${i.rationale})`).join("; ")}`,
+      path: REQUIRED_INITRD_ANY.map((i) => `${i.prefix}*${i.suffix}`).join(" | "),
+      rationale: `none of the known initrd suffix-patterns found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_INITRD_ANY.map((i) => `${i.prefix}*${i.suffix} (${i.rationale})`).join("; ")}`,
     });
   }
   return failures;
