@@ -25,6 +25,7 @@ Current documents:
 - [Anti-Stall Prioritization Runtime](./ANTI_STALL_PRIORITY_RUNTIME.md) - the hat-owned schedules, blocker triage, queue SLO, reassignment, alternate-work, dependency reconciliation, and priority routines that keep the Organization moving.
 - [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md) - the decisions and contracts that should be defined before scaffolding the first implementation slice.
 - [Implementation Governance](./IMPLEMENTATION_GOVERNANCE.md) - the current-state, OpenSpec, authority, idempotency, telemetry, security, and quality rules for implementation work.
+- [Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md) - the canonical phase-by-phase roadmap, immediate PR sequence, tests, docs, review gates, and exit criteria for building Agentic Organization.
 - [First Implementation Slice](./FIRST_IMPLEMENTATION_SLICE.md) - the NodeNext TypeScript package slice proving command, state, audit, outbox, NATS subject, telemetry, and reaction-plan contracts.
 - [North Star Alignment Checkpoint](./NORTH_STAR_ALIGNMENT_CHECKPOINT.md) - current alignment verdict, drift list, and next priorities against the Agentic Organization north star.
 - [V0 Executable Contract](./V0_EXECUTABLE_CONTRACT.md) - the smallest end-to-end runtime slice, grounded against the current `full-ai-cluster` substrate.

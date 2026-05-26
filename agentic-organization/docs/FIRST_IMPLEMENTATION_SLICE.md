@@ -288,15 +288,16 @@ Hermes runs, MCP calls, and UI evidence.
 
 ## Next Slice
 
-The next slice should add concrete process client construction below
-`apps/workers`: real CockroachDB pool binding for the generic SQL
-executor, concrete NATS pull/publish client construction, and a
-telemetry sink that can later send structured logs and metrics into the
-full-ai-cluster LGTM stack. Keep URLs, credentials, and connection pools
-in app adapter config fed by Kubernetes Secret or ExternalSecret values,
-never in domain packages. Add a durable-state integration test using
-CockroachDB as the first cluster-backed implementation once a local/dev
-connection is available.
+The next slice is tracked in the canonical
+[Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). It should add
+concrete process client construction below `apps/workers`: real
+CockroachDB pool binding for the generic SQL executor, concrete NATS
+pull/publish client construction, and a telemetry sink that can later
+send structured logs and metrics into the full-ai-cluster LGTM stack.
+Keep URLs, credentials, and connection pools in app adapter config fed
+by Kubernetes Secret or ExternalSecret values, never in domain packages.
+Add a durable-state integration test using CockroachDB as the first
+cluster-backed implementation once a local/dev connection is available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized
