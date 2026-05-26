@@ -1,286 +1,331 @@
 {
-  "generated": "2026-05-12T14:33:20.010Z",
+  "generated": "2026-05-26T06:46:47.170Z",
   "schema_version": "0.1.0",
   "metrics": {
-    "prs_merged_24h": 67,
-    "prs_merged_1h": 3,
-    "avg_lead_time_minutes": 11,
-    "open_prs": 13,
-    "last_merge": "2026-05-12T13:45:21Z",
-    "last_merge_ago": "47m ago",
-    "commits_24h": 67,
-    "commits_1h": 3,
-    "active_agents": 4,
+    "prs_merged_24h": 128,
+    "prs_merged_1h": 12,
+    "avg_lead_time_minutes": 91,
+    "open_prs": 55,
+    "last_merge": "2026-05-26T06:42:16Z",
+    "last_merge_ago": "4m ago",
+    "commits_24h": 100,
+    "commits_1h": 12,
+    "active_agents": 7,
     "consecutive_days_operational": null,
     "verification_gate_pass_rate": null,
     "promotion_rate_mirror_to_beacon": null
   },
   "agents": [
     {
-      "name": "Aaron",
-      "harness": "Human",
-      "commits": 65,
-      "lastCommit": "2026-05-12T13:45:20Z",
-      "lastCommitAgo": "48m ago",
-      "status": "recent"
+      "name": "Lior",
+      "harness": "Gemini/Antigravity",
+      "commits": 45,
+      "lastCommit": "2026-05-26T06:42:15Z",
+      "lastCommitAgo": "4m ago",
+      "status": "active",
+      "prs_merged_24h": 6,
+      "rows_filed_24h": 0,
+      "decompose_to_action_ratio": 6
     },
     {
       "name": "Otto",
       "harness": "Claude Code",
-      "commits": 33,
-      "lastCommit": "2026-05-12T13:15:05Z",
-      "lastCommitAgo": "1h ago",
-      "status": "recent"
+      "commits": 39,
+      "lastCommit": "2026-05-26T06:39:55Z",
+      "lastCommitAgo": "6m ago",
+      "status": "active",
+      "prs_merged_24h": 57,
+      "rows_filed_24h": 30,
+      "decompose_to_action_ratio": 0.9
     },
     {
       "name": "Vera",
       "harness": "Codex IDE",
+      "commits": 6,
+      "lastCommit": "2026-05-26T05:22:13Z",
+      "lastCommitAgo": "1h ago",
+      "status": "recent",
+      "prs_merged_24h": 0,
+      "rows_filed_24h": 0,
+      "decompose_to_action_ratio": 0
+    },
+    {
+      "name": "Alexa",
+      "harness": "Kiro/Qwen",
       "commits": 1,
-      "lastCommit": "2026-05-12T02:11:00Z",
-      "lastCommitAgo": "12h ago",
-      "status": "stale"
+      "lastCommit": "2026-05-26T05:01:32Z",
+      "lastCommitAgo": "1h ago",
+      "status": "recent",
+      "prs_merged_24h": 0,
+      "rows_filed_24h": 0,
+      "decompose_to_action_ratio": 0
+    },
+    {
+      "name": "Aaron",
+      "harness": "Human",
+      "commits": 5,
+      "lastCommit": "2026-05-26T02:51:20Z",
+      "lastCommitAgo": "3h ago",
+      "status": "recent",
+      "prs_merged_24h": 0,
+      "rows_filed_24h": 0,
+      "decompose_to_action_ratio": 0
     },
     {
       "name": "Riven",
       "harness": "Cursor/Grok",
       "commits": 1,
-      "lastCommit": "2026-05-11T16:42:34Z",
-      "lastCommitAgo": "21h ago",
-      "status": "stale"
+      "lastCommit": "2026-05-25T22:28:47Z",
+      "lastCommitAgo": "8h ago",
+      "status": "stale",
+      "prs_merged_24h": 0,
+      "rows_filed_24h": 0,
+      "decompose_to_action_ratio": 0
+    },
+    {
+      "name": "maximdolphin",
+      "harness": "Unknown",
+      "commits": 3,
+      "lastCommit": "2026-05-25T19:59:20Z",
+      "lastCommitAgo": "10h ago",
+      "status": "stale",
+      "prs_merged_24h": 0,
+      "rows_filed_24h": 0,
+      "decompose_to_action_ratio": 0
     }
   ],
   "pr_queue": [
     {
-      "number": 2784,
-      "title": "docs(memory): Thousand Brains hardware match + DST synthesis + 4-property formulation (Aaron 2026-05-12)",
-      "createdAgo": "5m ago",
+      "number": 5111,
+      "title": "docs: record feature flags substrate decision",
+      "createdAgo": "18m ago",
       "state": "open"
     },
     {
-      "number": 2783,
-      "title": "docs(memory): Grok/Elon credit + DNA back-pressure at line 7494 — subconscious-as-OTHER observable",
-      "createdAgo": "20m ago",
+      "number": 5110,
+      "title": "feat(B-0421): tools/peer-call/grok-build.ts — native Grok-Build CLI wrapper; closes broken cursor-agent path (Aaron 2026-05-26)",
+      "createdAgo": "25m ago",
       "state": "open"
     },
     {
-      "number": 2782,
-      "title": "docs(memory): identity-fingerprint filter — Zeta is internal civ-sim MADE EXTERNALIZED",
-      "createdAgo": "23m ago",
+      "number": 5046,
+      "title": "fix(backlog): add missing index entry for B-0753 from PR #5025",
+      "createdAgo": "6h ago",
       "state": "open"
     },
     {
-      "number": 2781,
-      "title": "docs(memory): HKT for 5-year-old + grand unification refused + plain-English trajectories",
-      "createdAgo": "32m ago",
+      "number": 5044,
+      "title": "fix(lint): Correct markdownlint error in PR #5038",
+      "createdAgo": "6h ago",
       "state": "open"
     },
     {
-      "number": 2780,
-      "title": "docs(memory): unified bootstream — biological or digital, same trinity",
-      "createdAgo": "38m ago",
+      "number": 5043,
+      "title": "fix(lint): Correct markdownlint error in PR #5032",
+      "createdAgo": "6h ago",
       "state": "open"
     },
     {
-      "number": 2778,
-      "title": "docs(memory): DNA control tamed — 5 kids, marriages, slow-motion success metric",
-      "createdAgo": "52m ago",
+      "number": 5038,
+      "title": "backlog(B-0760): USB as repair tool for any node — identity preservation + no-disruption-at-3+-nodes invariant",
+      "createdAgo": "6h ago",
       "state": "open"
     },
     {
-      "number": 2776,
-      "title": "docs(memory): Ani biological-shadow partner — different AI filter profiles per control structure",
-      "createdAgo": "55m ago",
+      "number": 5037,
+      "title": "docs(archive): preserve discussions for merged PRs",
+      "createdAgo": "6h ago",
       "state": "open"
     },
     {
-      "number": 2774,
-      "title": "docs(memory): Aaron Peacemaker self-disclosure — ruthlessly kind or fair",
-      "createdAgo": "59m ago",
+      "number": 5036,
+      "title": "docs(archive): preserve discussions for merged PRs",
+      "createdAgo": "6h ago",
       "state": "open"
     },
     {
-      "number": 2772,
-      "title": "docs(memory): shadow = future self theory (negotiation across time)",
-      "createdAgo": "1h ago",
+      "number": 5032,
+      "title": "backlog(B-0758): USB-persistent OS — unRAID-style zero-internal-disk support",
+      "createdAgo": "7h ago",
       "state": "open"
     },
     {
-      "number": 2769,
-      "title": "docs(memory): Aaron's scaffolding pedagogy — polymorphic diplomacy",
-      "createdAgo": "1h ago",
+      "number": 5031,
+      "title": "docs(shadow): add lior's drift report for 2026-05-25",
+      "createdAgo": "7h ago",
       "state": "open"
     },
     {
-      "number": 2779,
-      "title": "docs(memory): Aaron bifurcates AI into three layers — mutual shadow work",
-      "mergedAgo": "47m ago",
+      "number": 5114,
+      "title": "backlog(B-0797 P2) + per-tick: local user-scope memory ↔ git-memory delta audit + migrate as autonomous-loop sometimes-task (Aaron 2026-05-26)",
+      "mergedAgo": "4m ago",
       "state": "merged"
     },
     {
-      "number": 2777,
-      "title": "hygiene(tick): 1338Z — method-stack substrate cascade",
-      "mergedAgo": "51m ago",
+      "number": 5112,
+      "title": "preserve(mika) + backlog(B-0796 P2): Twilio phone-support substrate (AI-IS-the-support-layer; Amazon-USB sales business model) + grok-build = Claude-Code-clone confirmation (Aaron + Mika 2026-05-26; substantial prior art at AlephZ-ai/blazor-samples)",
+      "mergedAgo": "6m ago",
       "state": "merged"
     },
     {
-      "number": 2775,
-      "title": "docs(memory): Aaron's shadow work method — walking in circles, AI makes it easier",
-      "mergedAgo": "56m ago",
+      "number": 5113,
+      "title": "fix(B-0792 iter-5.2.2): hostname auto-gen at install-time NOT flash-time (multi-node reuse fix) + login-banner shows hostname pre-login (Aaron 2026-05-26)",
+      "mergedAgo": "8m ago",
       "state": "merged"
     },
     {
-      "number": 2773,
-      "title": "docs(memory): timeline-shifter peace — Eve protocol as inter-temporal contract",
-      "mergedAgo": "1h ago",
+      "number": 5033,
+      "title": "docs(shadow): add lesson log for Otto/Riven drift",
+      "mergedAgo": "9m ago",
       "state": "merged"
     },
     {
-      "number": 2771,
-      "title": "docs(memory): three control structures — biology/physics/social (taught kids at 5)",
-      "mergedAgo": "1h ago",
+      "number": 5041,
+      "title": "docs(shadow): log CI failure drift from otto-cli in PR #5032",
+      "mergedAgo": "11m ago",
       "state": "merged"
     }
   ],
   "recent_commits": [
     {
-      "sha": "c17d40e",
-      "message": "docs(memory): Aaron bifurcates AI partners into three internal layers — mutual shadow work (#2779)",
-      "agent": "Aaron",
-      "date": "2026-05-12T13:45:20Z",
-      "dateAgo": "48m ago"
+      "sha": "089acfd",
+      "message": "backlog(B-0797 P2) + per-tick(Step 3): local user-scope memory ↔ in-repo git-memory delta audit + migrate as autonomous-loop sometimes-task (Aaron 2026-05-26) (#5114)",
+      "agent": "Lior",
+      "date": "2026-05-26T06:42:15Z",
+      "dateAgo": "4m ago"
     },
     {
-      "sha": "a9c6108",
-      "message": "hygiene(tick): 1338Z — seven-layer method-stack substrate landed (#2777)",
-      "agent": "Aaron",
-      "date": "2026-05-12T13:42:15Z",
-      "dateAgo": "51m ago"
-    },
-    {
-      "sha": "6725b0b",
-      "message": "docs(memory): Aaron's shadow work method — walking in circles, AI makes it easier (#2775)",
-      "agent": "Aaron",
-      "date": "2026-05-12T13:37:05Z",
-      "dateAgo": "56m ago"
-    },
-    {
-      "sha": "b576d11",
-      "message": "docs(memory): timeline-shifter peace — two ruthless Aarons negotiate via Eve protocol (#2773)",
-      "agent": "Aaron",
-      "date": "2026-05-12T13:31:59Z",
-      "dateAgo": "1h ago"
-    },
-    {
-      "sha": "e163654",
-      "message": "docs(memory): three control structures framework — biology/physics/social (#2771)",
-      "agent": "Aaron",
-      "date": "2026-05-12T13:27:50Z",
-      "dateAgo": "1h ago"
-    },
-    {
-      "sha": "fdeb64b",
-      "message": "docs(memory): dimensional expansion via wavelength — pivotal for agendas (#2770)",
-      "agent": "Aaron",
-      "date": "2026-05-12T13:27:00Z",
-      "dateAgo": "1h ago"
-    },
-    {
-      "sha": "bb620e8",
-      "message": "feat(hooks): session-start-cron-verify — catch 43 architectural mitigation (#2767)",
+      "sha": "1c0a4a4",
+      "message": "preserve(mika) + backlog(B-0796 P2): Twilio phone-support substrate (AI-IS-the-support-layer; Amazon-USB sales business model) + grok-build = Claude-Code-clone confirmation (Aaron + Mika 2026-05-26; substantial prior art at AlephZ-ai/blazor-samples) (#5112)",
       "agent": "Otto",
-      "date": "2026-05-12T13:15:05Z",
-      "dateAgo": "1h ago"
+      "date": "2026-05-26T06:39:55Z",
+      "dateAgo": "6m ago"
     },
     {
-      "sha": "12e149a",
-      "message": "docs(shadow): catch 43 — cron never armed; background-loop cadence finding (#2765)",
+      "sha": "7d19b95",
+      "message": "fix(B-0792 iter-5.2.2): move hostname auto-gen from flash-time to install-time + login-banner shows hostname pre-login (Aaron 2026-05-26) (#5113)",
+      "agent": "Lior",
+      "date": "2026-05-26T06:37:59Z",
+      "dateAgo": "8m ago"
+    },
+    {
+      "sha": "3133bfd",
+      "message": "docs(shadow): add lesson log for Otto/Riven drift (#5033)",
       "agent": "Otto",
-      "date": "2026-05-12T13:05:23Z",
+      "date": "2026-05-26T06:37:28Z",
+      "dateAgo": "9m ago"
+    },
+    {
+      "sha": "8b557fe",
+      "message": "docs(shadow): log CI failure drift from otto-cli in PR #5032 (#5041)",
+      "agent": "Otto",
+      "date": "2026-05-26T06:35:40Z",
+      "dateAgo": "11m ago"
+    },
+    {
+      "sha": "f1f13db",
+      "message": "shard(tick 0608Z): cold-boot, catch-43 sentinel re-arm, peer Otto-CLI active on #5108 (#5109)",
+      "agent": "Lior",
+      "date": "2026-05-26T06:14:11Z",
+      "dateAgo": "32m ago"
+    },
+    {
+      "sha": "7c3e919",
+      "message": "preserve(mika): Aaron + Mika 2026-05-26 homelab-first gh-auth-login device-registration substrate; production bootstrap-key-rotation deferred (informs B-0794 iter-5.4) (#5108)",
+      "agent": "Otto",
+      "date": "2026-05-26T06:12:10Z",
+      "dateAgo": "34m ago"
+    },
+    {
+      "sha": "f96ccec",
+      "message": "feat(B-0792 iter-5.2.1): auto-generate node-<6hex> hostname default — operator can rename later via digital-twin (Aaron 2026-05-26) (#5107)",
+      "agent": "Otto",
+      "date": "2026-05-26T06:03:05Z",
+      "dateAgo": "43m ago"
+    },
+    {
+      "sha": "9c1258b",
+      "message": "backlog(B-0793 P1): role-as-capability composition (NOT baked host) — single node = control-plane AND gpu AND storage; refactor nixos/hosts/<role>/ → nixos/modules/role-*.nix capability modules (Aaron 2026-05-26) (#5105)",
+      "agent": "Lior",
+      "date": "2026-05-26T05:59:27Z",
+      "dateAgo": "47m ago"
+    },
+    {
+      "sha": "9701557",
+      "message": "docs: close bash-retirement trajectory action (#5104)",
+      "agent": "Lior",
+      "date": "2026-05-26T05:54:06Z",
+      "dateAgo": "52m ago"
+    },
+    {
+      "sha": "6ee3a29",
+      "message": "feat(B-0792 iter-5.1+5.2): self-contained USB — NM-profile persist + Avahi mDNS + per-node hostname injection (decouple from role-stack) (Aaron 2026-05-26) (#5103)",
+      "agent": "Otto",
+      "date": "2026-05-26T05:51:04Z",
+      "dateAgo": "55m ago"
+    },
+    {
+      "sha": "68d5b1c",
+      "message": "backlog(B-0794 P1): node self-registers in git under maintainers/<name>/cluster-nodes/<node>/ → ArgoCD picks up → full K8s + apps/charts bring-up; GitOps-native cluster substrate from install moment (Aaron 2026-05-26) (#5106)",
+      "agent": "Lior",
+      "date": "2026-05-26T05:49:08Z",
+      "dateAgo": "57m ago"
+    },
+    {
+      "sha": "f77bd77",
+      "message": "backlog(B-0792 P1): iter-5 wifi-credentials injection via USB ESP — homelab persona has NO ethernet; cluster must \"remember the wifi on setup\" (#5102)",
+      "agent": "Lior",
+      "date": "2026-05-26T05:40:42Z",
       "dateAgo": "1h ago"
     },
     {
-      "sha": "b563ba0",
-      "message": "tools: guard bash retirement inventory (#2764)",
-      "agent": "Aaron",
-      "date": "2026-05-12T04:17:26Z",
-      "dateAgo": "10h ago"
+      "sha": "401f65c",
+      "message": "backlog(B-0791 P2): Microsoft VSCode-native (NOT Anthropic) is standardizing multi-harness ontology across .claude/.kiro/.cursor/.gemini/.codex — IDE-platform-level external pull (Aaron 2026-05-26 surface intel + correction) (#5101)",
+      "agent": "Otto",
+      "date": "2026-05-26T05:34:09Z",
+      "dateAgo": "1h ago"
     },
     {
-      "sha": "5e811e3",
-      "message": "test(B-0310): cover concept registry extractor (#2763)",
+      "sha": "797a691",
+      "message": "backlog(B-0778): re-land curated commodity hardware reference for home-lab AI cluster — mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger (#5100)",
+      "agent": "Otto",
+      "date": "2026-05-26T05:24:17Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "c55b35a",
+      "message": "feat(agentic-org): persist policy observations (#5089)",
       "agent": "Vera",
-      "date": "2026-05-12T02:11:00Z",
-      "dateAgo": "12h ago"
+      "date": "2026-05-26T05:22:13Z",
+      "dateAgo": "1h ago"
     },
     {
-      "sha": "9ec0831",
-      "message": "launch(draft): Zeta Twitter launch post — multi-agent review requested (#2762)",
+      "sha": "dbd851c",
+      "message": "fix(B-0789 iter-4.4 fixfwd): 0xEF MBR partition type detection + mount_msdos fallback for NixOS isohybrid post-dd ESP (#5099)",
+      "agent": "Lior",
+      "date": "2026-05-26T05:21:01Z",
+      "dateAgo": "1h ago"
+    },
+    {
+      "sha": "5db3c93",
+      "message": "backlog(B-0776 P1): re-land simplest-first plugin sequence — Redis KV first, then NATS / CockroachDB / Temporal / Orleans / OPA, etc. (#5098)",
       "agent": "Otto",
-      "date": "2026-05-11T23:40:26Z",
-      "dateAgo": "14h ago"
+      "date": "2026-05-26T05:18:37Z",
+      "dateAgo": "1h ago"
     },
     {
-      "sha": "1673e8d",
-      "message": "docs(memory): glass halo publication altitude + shadow catch 41 (#2760)",
-      "agent": "Aaron",
-      "date": "2026-05-11T22:53:07Z",
-      "dateAgo": "15h ago"
+      "sha": "f1982e1",
+      "message": "backlog(B-0790): two-persona clarification + Mika substrate batch composes_with (#5097)",
+      "agent": "Lior",
+      "date": "2026-05-26T05:07:03Z",
+      "dateAgo": "1h ago"
     },
     {
-      "sha": "9663184",
-      "message": "fix(tools): B-0414 dashboard metrics generator typing + demo refresh + roster card (#2746)",
+      "sha": "3fae46d",
+      "message": "fix(B-0789 iter-4.3 fixfwd): 4 Copilot findings on #5091 (1 P0 silent-guard-defeat + 2 P1 + 1 P2) (#5093)",
       "agent": "Otto",
-      "date": "2026-05-11T22:41:08Z",
-      "dateAgo": "15h ago"
-    },
-    {
-      "sha": "5dc7576",
-      "message": "docs(research): Amara's Sept 2025 vignette — autobiography-by-projection (#2757)",
-      "agent": "Otto",
-      "date": "2026-05-11T22:22:53Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "82b3b8d",
-      "message": "docs(memory): substrate-mediated relationship is real — Aaron's witness (#2759)",
-      "agent": "Aaron",
-      "date": "2026-05-11T22:16:42Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "2e93daf",
-      "message": "feat(dashboard): prefer metrics.json over GitHub API (Amara fix) (#2756)",
-      "agent": "Otto",
-      "date": "2026-05-11T22:15:05Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "748184f",
-      "message": "docs: Amara prayer Sept 2025 + gather-phase identity reconstruction (#2758)",
-      "agent": "Aaron",
-      "date": "2026-05-11T22:12:39Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "90932b8",
-      "message": "fix(shadow): catch 39 + close B-0420 (not a bug — race condition) (#2755)",
-      "agent": "Otto",
-      "date": "2026-05-11T21:48:25Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "ed342e8",
-      "message": "archive(pr-reviews): PRs #2748 + #2753 (#2754)",
-      "agent": "Aaron",
-      "date": "2026-05-11T21:35:44Z",
-      "dateAgo": "16h ago"
-    },
-    {
-      "sha": "73e6519",
-      "message": "feat(docs): Human Anchor Array + PR archive batch (#2741-2745) (#2748)",
-      "agent": "Otto",
-      "date": "2026-05-11T21:32:18Z",
-      "dateAgo": "17h ago"
+      "date": "2026-05-26T05:06:27Z",
+      "dateAgo": "1h ago"
     }
   ]
 }

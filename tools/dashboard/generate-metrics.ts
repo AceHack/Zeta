@@ -33,6 +33,10 @@ type GitHubPullRequest = {
   title: string;
   created_at: string;
   merged_at: string | null;
+  // iter-5+ per-agent attribution: PRs land from branches with agent-prefixed
+  // names per `.claude/rules/agent-roster-reference-card.md` lane discipline
+  // (otto-cli/, otto-desktop/, otto-vscode/, lior/, alexa/, riven/, vera/).
+  head?: { ref?: string };
 };
 
 type MergedPullRequest = GitHubPullRequest & { merged_at: string };
@@ -45,6 +49,46 @@ const AGENT_MAP: Record<string, { harness: string; patterns: string[] }> = {
   Riven: { harness: "Cursor/Grok", patterns: ["riven", "grok"] },
   Aaron: { harness: "Human", patterns: ["Aaron Stainback", "AceHack"] },
 };
+
+// Per-agent branch prefix → agent name (Aaron 2026-05-26 framing:
+// "i want that per agent so we can see helath like per trajectory").
+// Maps PR branch refs to attributed agent. Surface-tagged prefixes
+// (otto-cli/, otto-desktop/, otto-vscode/) all attribute to Otto agent
+// identity per agent-roster-reference-card.md.
+const BRANCH_PREFIX_TO_AGENT: Array<{ prefix: string; agent: string }> = [
+  { prefix: "otto-cli/", agent: "Otto" },
+  { prefix: "otto-desktop/", agent: "Otto" },
+  { prefix: "otto-vscode/", agent: "Otto" },
+  { prefix: "otto/", agent: "Otto" },
+  { prefix: "alexa-kiro/", agent: "Alexa" },
+  { prefix: "alexa/", agent: "Alexa" },
+  { prefix: "riven-cursor/", agent: "Riven" },
+  { prefix: "riven/", agent: "Riven" },
+  { prefix: "vera-codex/", agent: "Vera" },
+  { prefix: "vera/", agent: "Vera" },
+  { prefix: "lior-antigravity/", agent: "Lior" },
+  { prefix: "lior-gemini/", agent: "Lior" },
+  { prefix: "lior/", agent: "Lior" },
+];
+
+function detectAgentFromPR(pr: GitHubPullRequest): string {
+  const ref = pr.head?.ref ?? "";
+  for (const { prefix, agent } of BRANCH_PREFIX_TO_AGENT) {
+    if (ref.startsWith(prefix)) return agent;
+  }
+  return "Unknown";
+}
+
+// Identify a PR as "row-filing" work for the decompose-to-action ratio.
+// A PR is row-filing if its title matches `backlog(B-NNNN`. The
+// decompose-to-action ratio per agent surfaces the
+// "infinite backlog = infinite debt" failure mode the maintainer
+// 2026-05-26 surfaced: filing rows without shipping them produces
+// debt. High ratio (many impl-PRs per row-filing-PR) = strong
+// decompose-to-action discipline; low ratio = debt accumulation.
+function isRowFilingPR(pr: GitHubPullRequest): boolean {
+  return /^backlog\(B-\d+/i.test(pr.title);
+}
 
 async function apiFetch<T>(url: string): Promise<T> {
   const token = process.env.GITHUB_TOKEN;
@@ -152,23 +196,61 @@ async function main() {
     agentActivity[agent].count++;
   }
 
+  // Per-agent PR shipping rate (Aaron 2026-05-26: per-agent health
+  // visibility for decompose-to-action discipline). Attribution via
+  // branch prefix per BRANCH_PREFIX_TO_AGENT. Two counts per agent:
+  // - prs_merged_24h: total PRs this agent merged in window (shipping rate)
+  // - rows_filed_24h: PRs whose title matches `backlog(B-NNNN` (decompose rate)
+  // - decompose_to_action_ratio: (prs_merged - rows_filed) / max(rows_filed, 1)
+  //   → impl-PRs per row-filing-PR; >=1 = action-on-rows >= filing-rate
+  //   → <1 = filing rows faster than shipping them = debt-accumulation signal
+  const agentPRStats: Record<string, { prs_merged_24h: number; rows_filed_24h: number }> = {};
+  for (const pr of mergedToday) {
+    const agent = detectAgentFromPR(pr);
+    if (!agentPRStats[agent]) {
+      agentPRStats[agent] = { prs_merged_24h: 0, rows_filed_24h: 0 };
+    }
+    agentPRStats[agent].prs_merged_24h++;
+    if (isRowFilingPR(pr)) {
+      agentPRStats[agent].rows_filed_24h++;
+    }
+  }
+  function decomposeToActionRatio(prsM: number, rowsF: number): number {
+    // Action-PRs = PRs minus row-filing PRs (everything that's NOT just
+    // adding a B-NNNN row). Ratio = action / rows. When rowsF == 0,
+    // return prsM directly (all PRs were action; no debt accumulated).
+    const actionPRs = prsM - rowsF;
+    if (rowsF === 0) return prsM;
+    return Math.round((actionPRs / rowsF) * 100) / 100;
+  }
+
   const activeAgents = Object.values(agentActivity).filter((a) => now - new Date(a.lastCommit).getTime() < h24).length;
 
   const agents = Object.entries(agentActivity)
     .sort((a, b) => new Date(b[1].lastCommit).getTime() - new Date(a[1].lastCommit).getTime())
-    .map(([name, info]) => ({
-      name,
-      harness: info.harness,
-      commits: info.count,
-      lastCommit: info.lastCommit,
-      lastCommitAgo: timeAgo(info.lastCommit),
-      status:
-        now - new Date(info.lastCommit).getTime() < 30 * 60000
-          ? "active"
-          : now - new Date(info.lastCommit).getTime() < 6 * 60 * 60000
-            ? "recent"
-            : "stale",
-    }));
+    .map(([name, info]) => {
+      const prStats = agentPRStats[name] ?? { prs_merged_24h: 0, rows_filed_24h: 0 };
+      return {
+        name,
+        harness: info.harness,
+        commits: info.count,
+        lastCommit: info.lastCommit,
+        lastCommitAgo: timeAgo(info.lastCommit),
+        status:
+          now - new Date(info.lastCommit).getTime() < 30 * 60000
+            ? "active"
+            : now - new Date(info.lastCommit).getTime() < 6 * 60 * 60000
+              ? "recent"
+              : "stale",
+        // Aaron 2026-05-26 per-agent decompose-to-action stats:
+        prs_merged_24h: prStats.prs_merged_24h,
+        rows_filed_24h: prStats.rows_filed_24h,
+        decompose_to_action_ratio: decomposeToActionRatio(
+          prStats.prs_merged_24h,
+          prStats.rows_filed_24h,
+        ),
+      };
+    });
 
   const prQueue = openPRs.slice(0, 10).map((pr) => ({
     number: pr.number,
