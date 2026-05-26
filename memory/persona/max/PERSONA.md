@@ -46,6 +46,49 @@ Operationally:
 - The home-tier substrate that the federated peer mesh (B-0727) operates at; Max's org-design assumes the home/business profile as primary
 - The C# / F# operator collaboration substrate (B-0724) — once landed, the polyglot pattern proves CRD-as-canonical-contract with two implementations in different languages
 
+## Current focus — tier-2 Docker Desktop dev-experience workstream (added 2026-05-25)
+
+Aaron 2026-05-25 added Max's primary near-term workstream: **own the tier-2 Docker Desktop + Kubernetes dev-experience** for the Zeta cluster substrate. This is the middle tier in the three-tier testing story from [B-0780](../../../docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md):
+
+| Tier | Owner | Substrate |
+|---|---|---|
+| 1 — pure-code (no Docker, no K8s) | Aaron + Otto | F# Local Loop tests |
+| **2 — Docker-observable (Docker Desktop + native multi-node kind)** | **Max** | This workstream |
+| 3 — full CI in real cluster | Aaron + Otto + the iter-3 NixOS cluster | Already shipping per B-0754 |
+
+Max's contract: **touch the Docker Desktop GUI only where the API/CLI demonstrably can't do it.** Everything else (clusters, app deploys, port-forwards, kubectl, helm, argo, observability stacks) gets scripted or skill-encoded. If Max finds himself clicking a button twice, that's a signal to encode the next click as a skill or script.
+
+### Sub-scopes Max owns within tier-2
+
+- **Argo CD sync-wave debugging** — the App-of-Apps composition pattern (B-0780 Component 3) makes sync-wave ordering the primary failure surface during tier-2 bring-up. Max becomes the human who can read an Argo CD sync-wave failure trace and pin the root cause in minutes; pattern encoded at `.claude/skills/argocd-sync-wave-debug/SKILL.md`.
+- **Observability — OTel auto-instrumentation matching the CNI mesh shape** — production cluster will use Cilium + Hubble + OTel; Docker Desktop tier doesn't ship Cilium by default. Substrate-design choice between full Cilium (Shape A), thinner eBPF + OTel-collector (Shape B), or both-gated (Shape C); default to Shape B per simplest-first, promote when Shape B demonstrably misses prod bugs.
+- **30+ chart coverage matrix** — production cluster runs 30+ charts (cockroachdb, redis, nats, temporal, orleans, dapr, opa, longhorn, vllm, argo-{cd,rollouts,workflows}, loki / mimir / tempo, spire, etc.). Max maintains a three-column matrix (single-node DD kind / multi-node DD kind / cluster-only) at `docs/dev-environments/docker-desktop-chart-matrix.md` so future operators (and `zeta dev up` profile defaults) know which charts run where.
+- **CI testing on kind / k3d + GitHub workflows** — Max owns `.github/workflows/tier-2-*.yml` (per-PR on kind + nightly full profile + separate multi-cluster federation workflow). Tier-2-in-CI is the substrate that catches "works on my laptop, breaks in CI" before tier-3 (real cluster) bothers running.
+- **`zeta dev up` developer-facing surface** — single command brings cluster substrate to ready state on his laptop in time comparable to `docker-compose up` (target: under 5min cold for 3-node DD kind + `data` profile; under 1min warm). Flags: `--single-node` for fast iteration; `--nodes N` to drive DD's settings API; `--profile minimal | data | observability | full | <custom>` for chart subset selection.
+
+### Topology substrate (corrected 2026-05-25 — Docker Desktop ships native multi-node kind)
+
+Docker Desktop's native cluster-provisioning UI exposes **kind** as a first-class provisioner with a 1–10 node slider + version picker (current: K8s 1.34.3). Tier-2 = **kind via DD's native provisioner** (NOT bare kind / k3d running on top of DD's Docker engine — that earlier framing was outdated). Max picks node count via DD UI slider OR programmatically via DD's settings API / CLI. **Default = 3-node kind** because consensus-quorum testing is the highest-value tier-2 capability that tier-1 can't deliver.
+
+Multi-node ≠ multi-cluster. Multi-node (3 nodes in one DD-managed kind cluster) covers ~95% of consensus-quorum testing (CockroachDB Raft, etcd quorum, Longhorn 3-replica, NATS R3, Argo CD HA, anti-affinity, pod-disruption budgets). **Multi-cluster federation / Cilium clustermesh / multi-region** is the remaining ~5%, lives in CI by default plus locally-runnable script for debugging only — NOT always-on in DD. Skill: `.claude/skills/tier-2-federation-debug/SKILL.md`.
+
+### Touch ID / biometrics integration Max gets to use
+
+Zeta has a Touch ID + PAM integration for sudo and admin operations, canonical pattern at [`full-ai-cluster/tools/zflash-setup.ts`](../../../full-ai-cluster/tools/zflash-setup.ts). When AI agents need to do anything privileged on Max's macOS workstation (installing Docker Desktop, enabling Kubernetes, mounting disks, etc.), the pattern is: AI announces → invokes via expect wrapper → Max taps fingerprint sensor → command runs with elevated privilege. **Max does not type passwords for admin operations**; if an AI agent reaches for a password prompt, that's a signal to extend the Touch ID pattern instead. Skill candidate: `tools/dev/zfingerprint.ts` — thin wrapper generalizing the zflash pattern for any Max-side privileged operation.
+
+### Skills-and-scripts encoding contract (load-bearing)
+
+Every Docker Desktop / Kubernetes / dev-experience interaction Max performs ends as one of: a TypeScript script under `tools/dev/` (per Rule 0 — TS not bash; Bun runtime); a Claude Code skill under `.claude/skills/<name>/SKILL.md`; or a backlog row under `docs/backlog/P*/B-NNNN-*.md` for substantive new substrate. Rule of thumb: if Max teaches the AI something about Docker Desktop UX twice, that's a skill or script. Nothing gets lost in chat.
+
+### Composes with the tier-2 workstream
+
+- [B-0780](../../../docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md) — tier-2's parent substrate; Max's workstream IS tier-2
+- B-0759 — first-time-CLI-user persona Max's `zeta dev up` UX serves
+- B-0770 — Comet Pro IP-KVM substrate that makes local tty1 access load-bearing (which is why iter-4 needs password + SSH key, not just SSH key)
+- B-0776 — simplest-first plugin sequence the chart matrix backs
+- [B-0786](../../../docs/backlog/P2/B-0786-feature-flags-substrate-openfeature-as-operator-contract-flipt-as-simplest-first-backend-aaron-mika-2026-05-25.md) — "simplest first; add complexity only when simple shape demonstrably doesn't fit" discipline Max applies at every backend / topology / profile decision
+- B-0789 (forthcoming) — iter-4 forge-integrated cluster bring-up; provides the password + SSH substrate Max uses to bring up his own dev cluster nodes
+
 ## How agents work with Max
 
 - **Welcoming-but-honest review** — Max is new to K8s + the operator pattern; he'll be resistant at first to the ceremony (per Aaron: *"he will be resistant probably like most devs at first until he internlizes is worth"*). Frame feedback constructively + name the WHY (declarative state convergence, idempotent reconcile, CRD-as-typed-API) without selling

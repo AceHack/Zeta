@@ -66,6 +66,52 @@ Glass-halo discipline (`.claude/rules/glass-halo-bidirectional.md`) is the frame
 4. **Frame K8s + operator-pattern feedback as learning paths, not finished answers** — Max is new to this; B-0724 demonstrates the right shape (Go scaffold as teaching tool + 7-step suggested sequence + resource list)
 5. **Don't pace him** — Aaron's parallel-tracks framing is real; Max sets his own velocity
 
+## Current focus — tier-2 Docker Desktop dev-experience (added 2026-05-25)
+
+Beyond the agentic-organization design + hat-system substrate, Max's near-term workstream (added by Aaron 2026-05-25) is **owning the tier-2 Docker Desktop + Kubernetes dev-experience** for the Zeta cluster substrate. Full scope + sub-scopes are documented in [`PERSONA.md`](PERSONA.md) under "Current focus — tier-2 Docker Desktop dev-experience workstream"; this section names the cold-boot reading list for an AI collaborating with Max on this workstream.
+
+### Cold-boot reading list (in order)
+
+1. [`CLAUDE.md`](../../../CLAUDE.md) — repo bootstream, conventions, governance pointers
+2. [`AGENTS.md`](../../../AGENTS.md) — cross-cutting governance
+3. [`.claude/rules/`](../../../.claude/rules/) — auto-loaded behavioral rules. Especially: [`rule-0-no-sh-files.md`](../../../.claude/rules/rule-0-no-sh-files.md), [`dont-ask-permission.md`](../../../.claude/rules/dont-ask-permission.md), [`claim-acquire-before-worktree-work.md`](../../../.claude/rules/claim-acquire-before-worktree-work.md), [`zeta-expected-branch.md`](../../../.claude/rules/zeta-expected-branch.md)
+4. [`docs/backlog/P1/B-0780-*.md`](../../../docs/backlog/P1/B-0780-local-loop-deterministic-simulation-testing-of-kubernetes-deployments-lexisnexis-lineage-three-tier-testing-argocd-apps-as-packages-aaron-mika-2026-05-25.md) — tier-2's parent substrate; Max's workstream IS tier-2
+5. `docs/backlog/P1/B-0759-*.md` — first-time-CLI-user persona Max's `zeta dev up` UX serves
+6. [`full-ai-cluster/tools/zflash-setup.ts`](../../../full-ai-cluster/tools/zflash-setup.ts) — canonical Touch ID + PAM + sudo-elevation pattern Max gets to use for all privileged macOS operations
+7. [`full-ai-cluster/usb-nixos-installer/zeta-install.sh`](../../../full-ai-cluster/usb-nixos-installer/zeta-install.sh) — zero-typing install pattern Max should emulate at Docker-Desktop scope
+8. The "simplest first; add complexity only when simple shape demonstrably doesn't fit" feedback memory at `~/.claude/projects/.../memory/feedback_simplest_first_*` (Aaron-Mika 2026-05-25) — the substrate-engineering discipline Max applies at every backend / topology / profile decision
+
+### Disciplines that apply to the tier-2 workstream
+
+- **Substrate-or-it-didn't-happen** — chat doesn't count; commit + push
+- **Simplest first** — pick the simplest tool / shape that fits known requirements; promote only when simple shape demonstrably fails
+- **No directives** — Aaron's only directive is that there are no directives; Max's input is framing, not orders
+- **Glass halo** — log substrate-honestly; surface gaps; don't hide failures
+- **Verify before deferring** — if something looks broken, check it before classifying it as "someone else's problem"
+- **Skills-and-scripts encoding contract** — every Docker Desktop interaction Max performs ends as a TS script (per Rule 0), a Claude Code skill, or a backlog row. Nothing gets lost in chat
+- **Touch ID over passwords** — for any privileged macOS operation, use the zflash Touch ID pattern; never reach for a password prompt
+
+### Concrete first deliverables for the tier-2 workstream (in order of value-per-effort)
+
+1. **Read the cold-boot list above** + write a short observation note to Max on what's already-substrate vs gap
+2. **Author `.claude/skills/docker-desktop-tier-2/SKILL.md`** — initial skill covering: install Docker Desktop, enable Kubernetes via the native kind provisioner, set node count via DD settings API, verify `kubectl` works
+3. **Author `tools/dev/docker-desktop-k8s-enable.ts`** — TS script that programmatically configures DD's native kind provisioner (settings API; edits `~/Library/Group Containers/group.com.docker/settings.json` where API doesn't cover). Documents any GUI-only steps as sibling `.md` with screenshots
+4. **Author `tools/dev/zfingerprint.ts`** — thin wrapper around the zflash Touch ID + expect pattern, generalized for any Max-side privileged operation (not just USB flashing)
+5. **File backlog row B-NNNN** — Docker Desktop tier-2 dev-experience substrate (composes with B-0780). Use the agent-roster ID allocation discipline (`git ls-tree origin/main -- docs/backlog/` to find current top + `gh pr list --search "B-NNNN"` to check in-flight). Row's acceptance criteria are the skills + scripts to ship over the coming ticks
+
+### Updated success metrics (first 30 days of the tier-2 workstream)
+
+- `zeta dev up` defaults to DD-managed 3-node kind via DD's settings API; cold under 5 min, warm under 1 min
+- `--single-node` and `--nodes N` flags drive DD settings programmatically
+- Chart coverage matrix with three columns (single-node / multi-node-DD / cluster-only) for every chart
+- Profiles (`minimal` / `data` / `observability` / `full` / custom) wired with documented resource requirements
+- CockroachDB 3-node consensus + Argo CD HA leader-election + Longhorn 3-replica all green in tier-2
+- OTel Shape B traces matching prod shape
+- GitHub workflows: per-PR `data` profile on kind; nightly `full` profile; separate `federation` workflow runs multi-cluster kind matrix
+- Skills shipped: `tier-2-dd-kind/`, `tier-2-profiles/`, `argocd-sync-wave-debug/`, `tier-2-observability/`, `tier-2-ci-kind-k3d/`, `tier-2-federation-debug/`
+- Zero passwords typed by Max for admin operations on his Mac (everything via Touch ID)
+- Every Docker Desktop GUI click Max made at least twice has been encoded as either a script or a documented "GUI-only — here's why" comment
+
 ## Composes with
 
 - [`PERSONA.md`](PERSONA.md) — fuller persona context
