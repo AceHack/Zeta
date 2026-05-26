@@ -8,7 +8,7 @@ merged_at: "2026-05-26T10:17:10Z"
 closed_at: "2026-05-26T10:17:10Z"
 head_ref: "otto-cli/refresh-extends-working-tree-reads-1008z-2026-05-26"
 base_ref: "main"
-archived_at: "2026-05-26T12:13:12Z"
+archived_at: "2026-05-26T13:29:29Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
@@ -41,19 +41,19 @@ Searched `.claude/rules/` + `memory/` for: `git fetch`, `FETCH_HEAD`, `local HEA
 
 - [x] Substrate-inventory step performed per verify-existing-substrate-before-authoring rule (PR #5131) — citations in rule body + tick shard
 - [x] Verify-before-defer composition: `git worktree add --detach /private/tmp/zeta-otto-cli-refresh-extend-1008z origin/main` → exit=0, HEAD=`1641da6d2`, ls-tree=61, status=0, no `index.lock`
-- [x] Branch-guard fired pre-commit per [`zeta-expected-branch.md`](/.claude/rules/zeta-expected-branch.md) (`git branch --show-current` matched `ZETA_EXPECTED_BRANCH`)
-- [x] Post-commit canary per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](/.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md): `ls-tree HEAD~1 = HEAD = 61`
+- [x] Branch-guard fired pre-commit per [`zeta-expected-branch.md`](../../.claude/rules/zeta-expected-branch.md) (`git branch --show-current` matched `ZETA_EXPECTED_BRANCH`)
+- [x] Post-commit canary per [`codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md`](../../.claude/rules/codeql-no-source-on-docs-only-pr-is-broken-commit-canary.md): `ls-tree HEAD~1 = HEAD = 61`
 - [x] Push wrapped in `timeout --kill-after=5s 90s` per B-0615 discipline
 - [x] Stays additive — no existing content removed; existing 28-line rule preserved verbatim
 
 ## Composes with
 
-- [`.claude/rules/refresh-before-decide.md`](/.claude/rules/refresh-before-decide.md) — the rule this PR extends
-- [`.claude/rules/verify-existing-substrate-before-authoring.md`](/.claude/rules/verify-existing-substrate-before-authoring.md) — PR #5131; the substrate-inventory rule used here
-- [`.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`](/.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md) — `--detach origin/main` discipline
-- [`.claude/rules/refresh-world-model-poll-pr-gate.md`](/.claude/rules/refresh-world-model-poll-pr-gate.md) — "Prefer `origin/main` over `FETCH_HEAD`" + saturation tiers
-- [`.claude/rules/otto-channels-reference-card.md`](/.claude/rules/otto-channels-reference-card.md) — ID-allocation narrow-scope precedent
-- [`.claude/rules/dep-pin-search-first-authority.md`](/.claude/rules/dep-pin-search-first-authority.md) — sibling rule at version-pin scope; same "Otto-defaults-to-plausible-but-unverified" root cause class
+- [`.claude/rules/refresh-before-decide.md`](../../.claude/rules/refresh-before-decide.md) — the rule this PR extends
+- [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../.claude/rules/verify-existing-substrate-before-authoring.md) — PR #5131; the substrate-inventory rule used here
+- [`.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md`](../../.claude/rules/agent-worktree-hygiene-never-hold-main-never-step-on-operator-cleanup-on-pr-merge.md) — `--detach origin/main` discipline
+- [`.claude/rules/refresh-world-model-poll-pr-gate.md`](../../.claude/rules/refresh-world-model-poll-pr-gate.md) — "Prefer `origin/main` over `FETCH_HEAD`" + saturation tiers
+- [`.claude/rules/otto-channels-reference-card.md`](../../.claude/rules/otto-channels-reference-card.md) — ID-allocation narrow-scope precedent
+- [`.claude/rules/dep-pin-search-first-authority.md`](../../.claude/rules/dep-pin-search-first-authority.md) — sibling rule at version-pin scope; same "Otto-defaults-to-plausible-but-unverified" root cause class
 - [PR #5128](https://github.com/Lucent-Financial-Group/Zeta/pull/5128) — the fix whose phantom-drift catch this tick prevented
 
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
