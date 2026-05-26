@@ -229,5 +229,28 @@ sudo nixos-generate-config --root /mnt --force
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 sudo nixos-install --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
 
+# ── Step 7: print initial credentials (iter-4 — per B-0789) ──────
 echo
-echo "Install complete. \`reboot\` when ready."
+echo "================================================================"
+echo "  ZETA CLUSTER NODE INSTALL COMPLETE"
+echo "================================================================"
+echo
+echo "  Initial login credentials (rotate immediately after first login):"
+echo
+echo "    user:     zeta"
+echo "    password: zeta-change-me"
+echo
+echo "  AFTER FIRST LOGIN:"
+echo "    1. passwd zeta            # rotate the initial password"
+echo "    2. Edit /etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix"
+echo "       and add your ssh-ed25519 pubkey, then:"
+echo "    3. sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#$HOST"
+echo "    4. Verify SSH from your workstation:"
+echo "       ssh zeta@\$(hostname)"
+echo
+echo "  (Per docs/backlog/P1/B-0789 iter-4: SSH-key auto-inject from"
+echo "   the boot USB is a follow-up — for v1, the SSH key flow is"
+echo "   manual edit + nixos-rebuild as above.)"
+echo
+echo "================================================================"
+echo

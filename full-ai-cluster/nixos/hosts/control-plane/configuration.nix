@@ -12,6 +12,9 @@
     ../../modules/k3s-server.nix
     ../../modules/docker.nix
     ../../modules/local-storage.nix
+    # Iter-4 credential substrate (per B-0789):
+    ../../modules/initial-password.nix      # zeta user has known initial password (rotate on first login)
+    ../../modules/operator-ssh-keys.nix     # operator pubkey(s) injected by zeta-install.sh from USB
   ];
 
   networking.hostName = "control-plane";
@@ -24,9 +27,4 @@
   #   }];
   #   networking.defaultGateway = "192.168.1.1";
   #   networking.nameservers = [ "1.1.1.1" "9.9.9.9" ];
-
-  # Add maintainer SSH keys for the `zeta` admin user:
-  users.users.zeta.openssh.authorizedKeys.keys = [
-    # "ssh-ed25519 AAAAC3Nz... aaron@zeta"
-  ];
 }
