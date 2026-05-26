@@ -348,6 +348,74 @@ else
   echo "=============================="
 fi
 
+# ── Step 6.55: iter-5.3 prompt-for-initial-password (B-0792) ────
+#
+# Per the maintainer 2026-05-26: "also on startup can it ask for
+# me to type a password instead of having a default" — replaces
+# the iter-4.x hardcoded `zeta-change-me` default with an
+# operator-chosen password set at install time.
+#
+# Operator types password ONCE on cluster console (read -s; hidden);
+# script hashes via mkpasswd ($6$ = sha512crypt); writes hash to
+# /mnt/etc/zeta/initial-hashedpassword. The
+# nixos/modules/initial-password.nix module reads that file via
+# builtins.readFile at NixOS evaluation time + sets
+# users.users.zeta.hashedPassword.
+#
+# Fallback: if operator presses Enter to skip (no password typed),
+# the module's BACKWARD-COMPAT fallback hash (= sha512crypt of
+# "zeta-change-me") stays in effect so the system still boots
+# with a known credential.
+#
+# Why type-on-console (one exception to typing-avoidance discipline):
+# secrets shouldn't transit non-operator surfaces (USB ESP, Aaron's
+# Mac keychain, etc.); operator-typed at install time is the
+# safest path. This composes with the wifi nmtui exception in
+# zeta-first-boot.sh — both are operator-typed-once-on-cluster.
+echo
+echo "[iter-5.3] ── prompt for initial password (instead of default) ──"
+echo "[iter-5.3] Set initial password for the 'zeta' user (used for"
+echo "[iter-5.3] console login; SSH uses the iter-4.2-injected pubkey)."
+echo "[iter-5.3] Operator can rotate later via 'passwd zeta' on the"
+echo "[iter-5.3] installed system. Press Enter to skip + keep the"
+echo "[iter-5.3] iter-4.x default ('zeta-change-me')."
+echo
+INJECTED_PW=""
+INJECTED_PW_CONFIRM=""
+# -s = silent (hidden); -p = inline prompt
+read -r -s -p "[iter-5.3] Password (or Enter to skip): " INJECTED_PW
+echo
+if [ -n "$INJECTED_PW" ]; then
+  read -r -s -p "[iter-5.3] Confirm:                       " INJECTED_PW_CONFIRM
+  echo
+  if [ "$INJECTED_PW" != "$INJECTED_PW_CONFIRM" ]; then
+    echo "[iter-5.3]   WARN: passwords don't match; skipping (keeps default)"
+    INJECTED_PW=""
+  fi
+fi
+if [ -n "$INJECTED_PW" ]; then
+  # mkpasswd from nixpkgs `mkpasswd` package. -m sha-512 selects
+  # sha512crypt; -s reads password from stdin (avoids exposing it
+  # in argv via ps).
+  INJECTED_HASH=$(echo "$INJECTED_PW" | mkpasswd -m sha-512 -s 2>/dev/null || echo "")
+  unset INJECTED_PW
+  unset INJECTED_PW_CONFIRM
+  if [ -n "$INJECTED_HASH" ] && echo "$INJECTED_HASH" | grep -Eq '^\$6\$'; then
+    sudo mkdir -p /mnt/etc/zeta
+    echo "$INJECTED_HASH" | sudo tee /mnt/etc/zeta/initial-hashedpassword >/dev/null
+    sudo chmod 0600 /mnt/etc/zeta/initial-hashedpassword
+    sudo chown root:root /mnt/etc/zeta/initial-hashedpassword
+    echo "[iter-5.3]   operator-chosen password hash written + chmod 0600"
+    unset INJECTED_HASH
+  else
+    echo "[iter-5.3]   WARN: mkpasswd produced invalid hash; falling back to default"
+  fi
+else
+  echo "[iter-5.3]   no password entered; iter-4.x default 'zeta-change-me' stays"
+  echo "[iter-5.3]   in effect (rotate via 'passwd zeta' after first SSH login)"
+fi
+echo
+
 # ── Step 6.6: iter-5.2 hostname injection (B-0792) ──────────────
 #
 # Per the maintainer 2026-05-26: "since our different roles are

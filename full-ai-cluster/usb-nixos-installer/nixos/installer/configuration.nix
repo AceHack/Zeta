@@ -153,6 +153,12 @@
     nixos-install-tools
     nix-output-monitor
     nvd
+
+    # iter-5.3 prompt-password substrate (zeta-install.sh Step 6.55):
+    # mkpasswd is provided by the `mkpasswd` nixpkgs package; needed
+    # at install-time to hash the operator-typed password before
+    # writing to /mnt/etc/zeta/initial-hashedpassword.
+    mkpasswd
     nh
     # Declarative disk partitioning — used by the cookie-cutter
     # disko-shapes/ modules. Pre-staged on the ISO so installs
