@@ -2,35 +2,44 @@
 #
 # Initial password substrate for the `zeta` user on fresh installs.
 #
-# iter-5.3 (B-0792 follow-on; the maintainer 2026-05-26 "also on
+# iter-5.3 (B-0792 follow-on; the operator 2026-05-26 "also on
 # startup can it ask for me to type a password instead of having a
 # default"): the operator-chosen password set at install-time via
 # zeta-install.sh's prompt-password step (read -s + mkpasswd → hash
-# → /mnt/etc/zeta/initial-hashedpassword). This module reads that
-# file via builtins.readFile at NixOS evaluation time + uses it
-# for users.users.zeta.hashedPassword.
+# → /mnt/etc/zeta/initial-hashedpassword).
 #
-# Operator UX (one TYPED prompt at install time; can't avoid for
-# password since secrets shouldn't transit non-operator surfaces):
+# B-0835 Bug 3b FIX (2026-05-26): the prior implementation read the
+# file via `builtins.readFile` at NixOS EVALUATION TIME (build-time).
+# That fails operationally because:
 #
-#   zeta-install.sh:
-#     [iter-5.3] Set initial password for the `zeta` user:
-#                (will be required for console login; not for SSH
-#                if iter-4.2 pubkey was injected)
-#     Password: ********
-#     Confirm:  ********
-#     [iter-5.3]   wrote hash to /mnt/etc/zeta/initial-hashedpassword
+#   1. During `nixos-install` from live ISO: the build evaluation
+#      happens BEFORE the chroot pivot; the path `/etc/zeta/initial-
+#      hashedpassword` refers to the LIVE ISO (file not there), NOT
+#      the install target's `/mnt/etc/zeta/initial-hashedpassword`
+#   2. Flake pure-mode (default for `nixos-install --flake`) refuses
+#      to read non-store absolute paths via `builtins.readFile`
 #
-# Operator can still rotate later via `passwd zeta` if they want
-# to change it again.
+# Result: build silently fell back to the default-hash, custom
+# password was IGNORED on the installed system. Operator's empirical
+# anchor 2026-05-26: "the password i set it still says password:
+# zeta-change-me" + "the password error is not just display issue
+# it's operational bug the password i set earlier in install is
+# ignored".
 #
-# BACKWARD-COMPAT FALLBACK: if /etc/zeta/initial-hashedpassword
-# does NOT exist (e.g., during nixos-rebuild on an already-installed
-# system where the file was never written, OR during `nix flake
-# check` in CI where the file path is meaningless), fall back to
-# the documented iter-4.x default hash of `zeta-change-me` so the
-# module still evaluates + the system still has a known-default
-# credential. Operator should rotate immediately in that case.
+# FIX: use a NixOS activation script that reads the file at
+# ACTIVATION TIME (runtime on the installed system, when /etc/zeta/
+# IS the actual path with the operator's hash). The build-time
+# config uses the default-hash; the activation script overrides it
+# via `usermod -p $hash zeta` if the operator-chosen hash file
+# exists. This works for:
+#
+#   - Fresh installs from live ISO (activation runs on installed
+#     system after pivot; /etc/zeta/initial-hashedpassword present)
+#   - Subsequent nixos-rebuilds (file persists; activation re-applies)
+#   - CI eval (file absent; activation skips; default-hash stays)
+#
+# BACKWARD-COMPAT: same fallback hash applies when the file is
+# absent. Operator can rotate via `passwd zeta` post-install.
 #
 # Hash format: sha512crypt ($6$...). zeta-install.sh generates via
 # mkpasswd from the nixpkgs `mkpasswd` package.
@@ -38,23 +47,36 @@
 { config, pkgs, lib, ... }:
 
 let
-  hashFile = "/etc/zeta/initial-hashedpassword";
-  injectedHash =
-    if builtins.pathExists hashFile
-    then
-      let
-        raw = builtins.readFile hashFile;
-        trimmed = lib.removeSuffix "\n" raw;
-      in
-      if lib.hasPrefix "$6$" trimmed then trimmed else null
-    else null;
   # iter-4 v1 backward-compat fallback hash (= sha512crypt of
-  # "zeta-change-me"). Used when the operator-chosen hash isn't
-  # present (e.g., CI eval, nixos-rebuild without prior install).
+  # "zeta-change-me"). Build-time default; activation overrides
+  # if /etc/zeta/initial-hashedpassword exists at activation time.
   fallbackHash =
     "$6$wMTsqITU4II043Y8$DBR58Hhh.d975YkA40kwYNxQAunevJ9Cu9rYYigi9YjBYVEjlNrs.rk4hu.332sh6GkQuCb7yyLYr7lPTxySD1";
+
+  hashFile = "/etc/zeta/initial-hashedpassword";
 in
 {
-  users.users.zeta.hashedPassword =
-    if injectedHash != null then injectedHash else fallbackHash;
+  # Build-time default; will be overridden at activation if the
+  # operator-chosen hash file is present on the installed system.
+  users.users.zeta.hashedPassword = fallbackHash;
+
+  # B-0835 Bug 3b fix — runtime password injection via activation
+  # script. Runs after users.users.* but before login services; the
+  # `usermod -p` call directly updates /etc/shadow.
+  system.activationScripts.zetaInitialPassword = {
+    deps = [ "users" ];
+    text = ''
+      if [ -f "${hashFile}" ]; then
+        hash=$(${pkgs.coreutils}/bin/cat "${hashFile}" | ${pkgs.coreutils}/bin/tr -d '\n')
+        if [ -n "$hash" ] && [ "''${hash:0:3}" = '$6$' ]; then
+          ${pkgs.shadow}/bin/usermod -p "$hash" zeta
+          echo "[iter-5.3 / B-0835 Bug 3b fix] applied operator-chosen password hash from ${hashFile}"
+        else
+          echo "[iter-5.3 / B-0835 Bug 3b fix] WARN: ${hashFile} present but content is not a sha512crypt hash; default stays"
+        fi
+      else
+        echo "[iter-5.3 / B-0835 Bug 3b fix] ${hashFile} absent; default fallback hash stays in effect (rotate via 'passwd zeta')"
+      fi
+    '';
+  };
 }
