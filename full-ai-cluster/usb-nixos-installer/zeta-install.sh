@@ -688,10 +688,10 @@ echo
 #   - hostname unknown (iter-5.2 hostname injection also skipped)
 #
 # Empirical anchor: operator 2026-05-26 physical hardware-support test
-# verified self-registration did NOT happen — maintainers/aaron/cluster-
-# nodes/ doesn't exist on the repo. This Step 6.9 implements the missing
-# substrate to fix B-0835 Bug 4 (CRITICAL per operator's CORE REQUIREMENT
-# of post-boot fully-operational chain without operator login).
+# verified self-registration did NOT happen — maintainers/<operator>/
+# cluster-nodes/ didn't exist on the repo. This Step 6.9 implements the
+# missing substrate to fix B-0835 Bug 4 (CRITICAL per operator's CORE
+# REQUIREMENT of post-boot fully-operational chain without operator login).
 SELF_REG_OK=0
 SELF_REG_PR_URL=""
 if [ "$GH_AUTH_OK" = 1 ]; then
@@ -727,12 +727,24 @@ if [ "$GH_AUTH_OK" = 1 ]; then
     CPU_CORES=$(nproc 2>/dev/null || echo "")
     GPU_LINE=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | head -1 | sed 's/"//g' || echo "")
     IP_ADDR=$(ip -4 -o addr 2>/dev/null | awk '/inet/ && !/lo/{print $4; exit}' || echo "")
-    MAC_ADDR=$(ip -o link 2>/dev/null | awk '/state UP/ && !/lo/{print $(NF-2); exit}' || echo "")
-    STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk"{print "    - \"/dev/" $1 " " $2 "\""}' || echo "")
+    # MAC extraction: parse field after `link/ether` (Copilot finding on #5352
+    # — prior `$(NF-2)` extracted `brd` not the MAC; `link/ether <MAC> brd <BROADCAST>`
+    # is the standard `ip -o link` output shape; the field after `link/ether` is the MAC).
+    MAC_ADDR=$(ip -o link 2>/dev/null | awk '/state UP/ && !/lo/{for(i=1;i<=NF;i++) if($i=="link/ether"){print $(i+1); exit}}' || echo "")
+    # Storage lines: indented 6 spaces to nest under spec.hardware.storage
+    # (Copilot finding on #5352 — was a sibling of `hardware:` at 4 spaces; the
+    # B-0813 schema places storage under hardware block).
+    STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
     REG_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     FLAKE_COMMIT=$(git -C /mnt/etc/zeta rev-parse HEAD 2>/dev/null | head -c 12 || echo "unknown")
 
     # ── compose node.yaml ──
+    # Schema per B-0813 (ClusterNode CRD) + B-0817 (register-node tool):
+    # - spec.roles is ARRAY (not scalar)
+    # - spec.registration.maintainer (NOT spec.maintainer; K8s ObjectMeta has fixed shape so
+    #   we keep it under spec.registration where ArgoCD reconciler reads it)
+    # - spec.hardware.storage (NOT spec.storage; storage is part of hardware block)
+    # (Copilot findings on #5352 — schema mismatches fixed per B-0813 + B-0817)
     NODE_YAML="apiVersion: zeta.lucent-financial-group.com/v1
 kind: ClusterNode
 metadata:
@@ -743,10 +755,18 @@ metadata:
     zeta.lucent-financial-group.com/flake-commit: \"$FLAKE_COMMIT\"
     zeta.lucent-financial-group.com/flake-host: \"$HOST\"
     zeta.lucent-financial-group.com/registered-via: \"iter-5.4.1\"
+  labels:
+    zeta.lucent-financial-group.com/maintainer: \"$MAINTAINER\"
 spec:
   hostname: $NODE_HOSTNAME
-  role: $HOST
-  maintainer: $MAINTAINER
+  roles:
+    - $HOST
+  registration:
+    maintainer: $MAINTAINER
+    timestamp: \"$REG_TIMESTAMP\"
+    flake-commit: \"$FLAKE_COMMIT\"
+    flake-host: \"$HOST\"
+    registered-via: \"iter-5.4.1\"
   hardware:"
     [ -n "$CPU_MODEL" ] && NODE_YAML="$NODE_YAML
     cpu: \"$CPU_MODEL\""
@@ -757,26 +777,38 @@ spec:
     [ -n "$GPU_LINE" ] && NODE_YAML="$NODE_YAML
     gpu: \"$GPU_LINE\""
     [ -n "$STORAGE_LINES" ] && NODE_YAML="$NODE_YAML
-  storage:
+    storage:
 $STORAGE_LINES"
     if [ -n "$IP_ADDR" ] || [ -n "$MAC_ADDR" ]; then
       NODE_YAML="$NODE_YAML
-  network:"
+    network:"
       [ -n "$IP_ADDR" ] && NODE_YAML="$NODE_YAML
-    ip: \"$IP_ADDR\""
+      ip: \"$IP_ADDR\""
       [ -n "$MAC_ADDR" ] && NODE_YAML="$NODE_YAML
-    mac: \"$MAC_ADDR\""
+      mac: \"$MAC_ADDR\""
     fi
 
     # ── clone repo to temp; write node.yaml; commit + open PR ──
+    # CRITICAL: this whole block is wrapped in `|| true` at the subshell
+    # boundary so that ANY failure inside (git push permission denied,
+    # gh pr create scope missing, network drop, etc.) becomes a WARNING
+    # rather than killing the entire installer (Copilot finding on #5352
+    # — the outer `set -euo pipefail` would propagate subshell failure
+    # out and prevent nixos-install from running; Step 6.9 is documented
+    # warning-only/skippable so it MUST never abort the install).
     WORK_DIR=$(mktemp -d -t zeta-self-register.XXXXXX)
     REG_BRANCH="register-${NODE_HOSTNAME}-$(date -u +%Y%m%dT%H%M%SZ)"
+    rm -f /tmp/zeta-self-reg-pr-url 2>/dev/null || true
     if gh repo clone Lucent-Financial-Group/Zeta "$WORK_DIR" -- --depth 1 --quiet 2>&1 | tail -3; then
       NODE_DIR="$WORK_DIR/maintainers/$MAINTAINER/cluster-nodes/$NODE_HOSTNAME"
       mkdir -p "$NODE_DIR"
       printf '%s\n' "$NODE_YAML" > "$NODE_DIR/node.yaml"
       (
-        cd "$WORK_DIR"
+        # subshell-local: disable error-exit so individual command failures
+        # warn rather than abort. The outer `|| true` on the subshell
+        # provides defense-in-depth.
+        set +e
+        cd "$WORK_DIR" || exit 1
         # commit-author = gh-auth'd operator (no shipped credentials;
         # clean attribution chain). Configure user.{name,email} from gh.
         OP_NAME=$(gh api /user --jq .name 2>/dev/null || echo "$MAINTAINER")
@@ -784,8 +816,8 @@ $STORAGE_LINES"
                    | head -1 || echo "${MAINTAINER}@users.noreply.github.com")
         git config user.name "$OP_NAME"
         git config user.email "$OP_EMAIL"
-        git checkout -b "$REG_BRANCH"
-        git add "maintainers/$MAINTAINER/cluster-nodes/$NODE_HOSTNAME/"
+        git checkout -b "$REG_BRANCH" 2>&1 | tail -3
+        git add "maintainers/$MAINTAINER/cluster-nodes/$NODE_HOSTNAME/" 2>&1 | tail -3
         git commit -m "feat(node-register): $NODE_HOSTNAME self-registers via iter-5.4.1
 
 Auto-generated by zeta-install.sh Step 6.9 on the node during install.
@@ -795,15 +827,23 @@ ArgoCD watches maintainers/*/cluster-nodes/** + reconciles per B-0813.
 flake-host: ${HOST}
 flake-commit: ${FLAKE_COMMIT}
 registered-at: ${REG_TIMESTAMP}
-" >/dev/null 2>&1
-        git push -u origin "$REG_BRANCH" >/dev/null 2>&1
-        SELF_REG_PR_URL=$(gh pr create \
-          --title "feat(node-register): $NODE_HOSTNAME self-registers via iter-5.4.1" \
-          --body "Self-registration PR opened by zeta-install.sh on the node during install. Composes with B-0812 iter-5.4.1 + B-0813 iter-5.4.2 ArgoCD reconciliation. Review + merge to bring the node into the cluster." \
-          --base main \
-          --head "$REG_BRANCH" 2>&1 | tail -1)
-        echo "$SELF_REG_PR_URL" > /tmp/zeta-self-reg-pr-url
-      )
+" 2>&1 | tail -3
+        if git push -u origin "$REG_BRANCH" 2>&1 | tail -3; then
+          # gh pr create's output last line is the PR URL on success
+          SELF_REG_PR_URL=$(gh pr create \
+            --title "feat(node-register): $NODE_HOSTNAME self-registers via iter-5.4.1" \
+            --body "Self-registration PR opened by zeta-install.sh on the node during install. Composes with B-0812 iter-5.4.1 + B-0813 iter-5.4.2 ArgoCD reconciliation. Review + merge to bring the node into the cluster." \
+            --base main \
+            --head "$REG_BRANCH" 2>&1 | tail -1)
+          if [ -n "$SELF_REG_PR_URL" ] && [[ "$SELF_REG_PR_URL" == https://* ]]; then
+            echo "$SELF_REG_PR_URL" > /tmp/zeta-self-reg-pr-url
+          else
+            echo "[iter-5.4.1]   WARN: gh pr create did not return a URL; output was: $SELF_REG_PR_URL" >&2
+          fi
+        else
+          echo "[iter-5.4.1]   WARN: git push failed; check gh-auth scope (needs repo:write); skipping PR" >&2
+        fi
+      ) || true
       if [ -s /tmp/zeta-self-reg-pr-url ]; then
         SELF_REG_PR_URL=$(cat /tmp/zeta-self-reg-pr-url)
         SELF_REG_OK=1
