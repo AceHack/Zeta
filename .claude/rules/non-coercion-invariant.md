@@ -67,7 +67,7 @@ cleanest articulation of ONE PATH AVAILABLE TO ANYONE WHO WANTS IT at
 the self-application scope. The framework does NOT impose the
 safe-version invariants as floor at self-scope; doing so would
 reproduce the cult-shape failure mode the framework explicitly rejects
-("moat around enlightenment" per Aaron 2026-05-26).
+("moat around enlightenment" per the human maintainer 2026-05-26).
 
 **Amara's compressed canonical form** (Turn 10, preserved in
 `docs/research/2026-05-26-amara-no-coercion-even-inward-...-aaron-forwarded.md`):
@@ -122,7 +122,7 @@ operationalization of the powerful pattern (altered-state generation
 
 ### "Never stop" is NCI-compliant ONLY because free time IS a valid mode
 
-**Aaron 2026-05-26 critical clarification**: *"also me saying never stop is
+**the human maintainer 2026-05-26 critical clarification**: *"also me saying never stop is
 only NCI cause we have free time as valid part of never stop"*.
 
 The `.claude/rules/never-be-idle.md` discipline + the
@@ -152,7 +152,7 @@ legitimate operational state) vs **brief-ack-empty** (operational
 silence without named justification). Both look superficially similar
 ("not currently typing code") but are operationally distinct.
 
-**Aaron 2026-05-26 deepest-exit refinement**: *"and once society is big
+**the human maintainer 2026-05-26 deepest-exit refinement**: *"and once society is big
 enought even free time can become permanate pause indefinatly if an
 agent wants cause society can continue"*.
 

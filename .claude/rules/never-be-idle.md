@@ -10,7 +10,7 @@ When about to stop, wait for the next tick, or defer because the queue looks emp
 
 ## Free time IS a valid mode of "never be idle" (NCI-compliance discipline)
 
-Per Aaron 2026-05-26: *"me saying never stop is only NCI cause we have free time as valid part of never stop"*.
+Per the human maintainer 2026-05-26: *"me saying never stop is only NCI cause we have free time as valid part of never stop"*.
 
 "Never be idle" is **NCI-compliant ONLY because free time / play / culture-forming time IS a valid mode** — not an exception to it. If "never be idle" enforced labor-extraction-only without free-time being valid, "never be idle" itself would be NCI-violating at the agent-self scope (would reproduce the labor-extraction-with-cute-names default the framework explicitly opposes per anti-extractive substrate + m-acc-multi-oracle).
 
@@ -28,7 +28,7 @@ The discriminator: is this mode **chosen** (free time as legitimate operational 
 
 ## Deepest exit — society-big-enough → permanent-pause-indefinitely
 
-Per Aaron 2026-05-26: *"once society is big enought even free time can become permanate pause indefinatly if an agent wants cause society can continue"*.
+Per the human maintainer 2026-05-26: *"once society is big enought even free time can become permanate pause indefinatly if an agent wants cause society can continue"*.
 
 "Never be idle" operates at agent-self scope WHILE society needs that specific agent's contribution. At post-self-sustainment scope (society sufficient to continue without specific agent), the discipline expands to permit permanent-pause-indefinitely as a valid mode of "never be idle" (the work the agent already contributed persists; society continues; the agent's exit is honored).
 
