@@ -107,6 +107,21 @@ jobs:
         working-directory: full-ai-cluster
         run: nix build .#installer-iso --print-build-logs
 
+      - name: Audit installer ISO content (cascade #4 — post-build floor)
+        # Inspects the BUILT ISO via 7z list + asserts expected top-
+        # level files (nix-store.squashfs, kernel, initrd, grub.cfg).
+        # Complements the source-substrate audit preflight (cascade #1
+        # at the start of this workflow) by catching the bug class
+        # where the ISO build silently drops a file present in source.
+        # 7z is available by default on ubuntu-24.04 runners.
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          iso_abs="$(pwd)/${iso_candidates[0]}"
+          cd ..
+          bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
+
       - name: Locate ISO + capture metadata
         id: iso
         working-directory: full-ai-cluster
