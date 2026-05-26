@@ -172,13 +172,17 @@
         devShells.default = pkgs.mkShell {
           name = "zeta-ai-cluster-admin";
           # Nix-managed admin tooling (k8s + age/sops + nix observability).
-          # Host-level CI substrate (bun, p7zip, mkpasswd) is NOT duplicated
-          # here — it comes via tools/setup/install.sh manifests per the
-          # maintainer 2026-05-26: "nix needs to run our install.sh too
-          # for setup". Single source of truth = the install.sh manifests
-          # at tools/setup/manifests/{brew,apt}. Nix devShell is the 4th
-          # way install.sh is consumed (alongside dev laptops, CI runners,
-          # devcontainer images per GOVERNANCE.md §24).
+          # Host-level dev-laptop tooling (bun, p7zip, etc.) is managed
+          # SEPARATELY via tools/setup/install.sh manifests at
+          # tools/setup/manifests/{brew,apt} — that's the canonical
+          # consumer-of-record per GOVERNANCE.md §24 (dev laptops, CI
+          # runners, devcontainer images). The nix devShell does NOT
+          # auto-run install.sh on entry: Copilot P0 on post-merge of
+          # #5120 flagged that auto-run has large host-side side effects
+          # (apt/brew installs, network fetches, possible sudo prompts)
+          # and breaks devShell expectations + reliably fails on NixOS
+          # hosts which don't have apt at all. Operators run install.sh
+          # manually when needed (rare; usually after pulling main).
           packages = with pkgs; [
             nix-output-monitor nvd nh
             kubectl kubernetes-helm k9s argocd
@@ -188,22 +192,7 @@
           ];
           shellHook = ''
             echo "zeta-ai-cluster admin shell."
-            # Per the maintainer 2026-05-26: "nix needs to run our install.sh
-            # too for setup". The nix devShell is the 4th consumer of the
-            # canonical install.sh entry-point. Run it idempotently on shell
-            # entry so host-level tooling (bun, p7zip, mkpasswd, etc.) stays
-            # in sync with the manifests without separate operator action.
-            # install.sh is detect-first-install-else-update + safe to
-            # re-run; cost on no-op refresh is single-digit seconds.
-            if command -v git >/dev/null 2>&1; then
-              _zeta_root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
-              if [ -n "$_zeta_root" ] && [ -x "$_zeta_root/tools/setup/install.sh" ]; then
-                echo "  Running tools/setup/install.sh (idempotent host-setup refresh)..."
-                bash "$_zeta_root/tools/setup/install.sh" || \
-                  echo "  WARNING: install.sh exited non-zero; continuing devShell."
-              fi
-              unset _zeta_root
-            fi
+            echo "  Host setup (rare):    bash tools/setup/install.sh"
             echo "  Build USB ISO:        nix build .#installer-iso"
             echo "  Build host system:    nixos-rebuild build --flake .#<host>"
             echo "  Talk to cluster:      kubectl / k9s / argocd / cilium / hubble"
