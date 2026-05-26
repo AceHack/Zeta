@@ -236,7 +236,11 @@ sudo nixos-generate-config --root /mnt --force
 # after first login.
 echo
 echo "[iter-4.2] probing boot USB for operator SSH pubkey ..."
-PUBKEY_DST="/mnt/etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.nix"
+# Per #5086 readFile redesign: write the pubkey content directly to
+# operator-ssh-keys.txt; the sibling operator-ssh-keys.nix reads via
+# builtins.readFile. NO Nix string parsing of USB-supplied content
+# → zero injection surface, zero escaping complexity.
+PUBKEY_DST="/mnt/etc/zeta/full-ai-cluster/nixos/modules/operator-ssh-keys.txt"
 PROBE_MOUNT="/tmp/zeta-boot-esp"
 sudo mkdir -p "$PROBE_MOUNT"
 
@@ -290,49 +294,35 @@ fi
 if [ -n "$PUBKEY_FILE" ]; then
   echo "[iter-4.2]   found: $PUBKEY_FILE"
 
-  # Per #5083 Copilot P0: read via `sudo cat` since the pubkey file may be
-  # on a root-owned mount (/mnt/* or /tmp/zeta-boot-esp); plain shell redirect
-  # would fail as the unprivileged user and `set -e` aborts the install.
-  # OpenSSH pubkey type prefixes (per `sshd(8)` AuthorizedKeysFile):
-  # ssh-ed25519, ssh-rsa, ssh-dss, ecdsa-sha2-nistp{256,384,521},
-  # sk-ecdsa-sha2-nistp256@openssh.com, sk-ssh-ed25519@openssh.com.
-  KEY_LINES=()
-  while IFS= read -r line; do
-    case "$line" in
-      ssh-ed25519\ *|ssh-rsa\ *|ssh-dss\ *|ecdsa-sha2-*\ *|sk-ssh-ed25519@*\ *|sk-ecdsa-sha2-*\ *) KEY_LINES+=("$line") ;;
-    esac
-  done < <(sudo cat "$PUBKEY_FILE")
-
-  if [ ${#KEY_LINES[@]} -gt 0 ]; then
-    # Per #5083 Copilot P0/security: Nix string-escape the pubkey content
-    # before interpolating into the Nix file. Without this, a key comment
-    # containing `"` or `\` produces invalid Nix; a maliciously-crafted
-    # line on the USB could inject Nix code at install time. Nix double-
-    # quoted strings escape via `\\` → `\\\\` and `"` → `\"`. We apply
-    # both transformations with sed; ordering matters (backslash first).
-    {
-      echo '# operator-ssh-keys.nix — populated by iter-4.2 zeta-install.sh probe.'
-      echo "# Source: $PUBKEY_FILE (boot USB ESP)"
-      echo "# Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-      echo
-      echo '{ config, pkgs, lib, ... }:'
-      echo
-      echo '{'
-      echo '  users.users.zeta.openssh.authorizedKeys.keys = ['
-      for line in "${KEY_LINES[@]}"; do
-        escaped=$(printf '%s' "$line" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')
-        printf '    "%s"\n' "$escaped"
-      done
-      echo '  ];'
-      echo '}'
-    } | sudo tee "$PUBKEY_DST" > /dev/null
-    echo "[iter-4.2]   injected ${#KEY_LINES[@]} pubkey(s) into operator-ssh-keys.nix"
-    sudo umount "$PROBE_MOUNT" 2>/dev/null || true
+  # Per #5086 readFile redesign: write the USB pubkey content directly
+  # to operator-ssh-keys.txt. The sibling operator-ssh-keys.nix reads
+  # via builtins.readFile + splits on newlines + filters blank/comment
+  # lines. NO Nix string parsing of USB content → no escaping needed
+  # (eliminates the entire Nix-injection class, not just current vectors).
+  #
+  # Per #5083 Copilot P0 (still applies): read via `sudo cat` since the
+  # pubkey file may live on a root-owned mount (/mnt/* or /tmp/zeta-boot-
+  # esp); plain shell redirect would fail as the unprivileged user and
+  # `set -e` would abort the install.
+  PUBKEY_LINE_COUNT=$(sudo cat "$PUBKEY_FILE" | grep -c '^ssh-\|^ecdsa-sha2-\|^sk-ssh-\|^sk-ecdsa-sha2-' || true)
+  {
+    echo "# operator-ssh-keys.txt — populated by iter-4.2 zeta-install.sh"
+    echo "# Source: $PUBKEY_FILE (boot USB ESP)"
+    echo "# Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    echo "#"
+    echo "# Read by sibling operator-ssh-keys.nix via builtins.readFile."
+    echo "# Edit + sudo nixos-rebuild switch --flake /etc/zeta/full-ai-cluster#<host>"
+    echo "# to update without re-flashing the USB."
+    echo
+    sudo cat "$PUBKEY_FILE"
+  } | sudo tee "$PUBKEY_DST" > /dev/null
+  echo "[iter-4.2]   wrote $PUBKEY_LINE_COUNT pubkey line(s) to operator-ssh-keys.txt"
+  sudo umount "$PROBE_MOUNT" 2>/dev/null || true
+  if [ "$PUBKEY_LINE_COUNT" -gt 0 ]; then
     INJECT_OK=1
   else
-    echo "[iter-4.2]   WARN: $PUBKEY_FILE contained no valid ssh-* lines"
-    echo "[iter-4.2]          operator-ssh-keys.nix stub stays empty"
-    sudo umount "$PROBE_MOUNT" 2>/dev/null || true
+    echo "[iter-4.2]   WARN: 0 valid ssh-*/ecdsa-*/sk-* lines in source file"
+    echo "[iter-4.2]          (operator-ssh-keys.nix will produce empty keys list)"
   fi
 else
   echo
