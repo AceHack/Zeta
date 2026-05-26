@@ -16,6 +16,19 @@
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
 
+  # B-0754 iter-3 hardware-firmware cleanup: enable redistributable
+  # firmware on the installer (Intel SoF / linux-firmware). Without
+  # this, modern Intel chipsets (Meteor Lake / Lunar Lake / Arrow
+  # Lake) print scary `ASoC: failed to instantiate card -2` /
+  # `snd_soc_register_card failed -2` errors during boot because
+  # their HD Audio Controller probes a SoundWire codec topology that
+  # needs SoF firmware blobs. Cosmetic — audio is not load-bearing
+  # for cluster substrate — but per B-0759 first-time-CLI-user
+  # persona, scary 'ERROR' lines in dmesg are UX noise we don't
+  # need. Redistributable-only (no allowUnfree needed); ~80MB
+  # added to ISO; covers WiFi/BT/NIC firmware too as a side benefit.
+  hardware.enableRedistributableFirmware = true;
+
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
     auto-optimise-store = true;

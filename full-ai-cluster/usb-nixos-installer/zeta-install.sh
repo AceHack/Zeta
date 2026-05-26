@@ -162,7 +162,23 @@ for d in "${DATA_DISKS[@]}"; do
   i=$((i + 1))
 done
 
-sudo partprobe
+# Per-device partprobe: bare `partprobe` (no args) probes EVERY
+# block device the kernel knows about, including the USB stick we
+# booted from (kernel typically exposes USB mass-storage as
+# /dev/sdX — commonly /dev/sda on boards with no SATA disks; the
+# specific letter isn't guaranteed across hardware/boot order, but
+# the failure mode is the same regardless of letter). The booted
+# ISO has mounted partitions on that sdX device; partprobe rightfully
+# refuses to refresh those + returns non-zero; `set -euo pipefail`
+# then bails the whole install. Fix per B-0754 iter-3 empirical
+# anchor: pass only the disks WE just partitioned, with an explicit
+# per-disk failure handler so the abort message names the offending
+# disk + suggests next steps (vs silent set -euo pipefail bail).
+echo "Refreshing kernel partition table for installed disks ..."
+sudo partprobe "$BOOT_DISK" || bail "partprobe failed for BOOT disk $BOOT_DISK — check 'dmesg | tail' for kernel detail; manual recovery: 'sudo partprobe $BOOT_DISK' then 'lsblk' to verify partition table"
+for d in "${DATA_DISKS[@]}"; do
+  sudo partprobe "$d" || bail "partprobe failed for DATA disk $d — check 'dmesg | tail'; manual recovery: 'sudo partprobe $d' then 'lsblk' to verify partition table"
+done
 sleep 2
 
 # ── Step 5: format + mount ────────────────────────────────────────
