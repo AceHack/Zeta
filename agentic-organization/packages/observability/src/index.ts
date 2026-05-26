@@ -20,10 +20,14 @@ export {
 } from "./worker-cycle-attributes.ts";
 export {
   VisibilityHealth,
+  PolicyDecisionVisibilityStage,
   WeakPointIndicatorType,
   WorkflowObservationKind,
+  buildPolicyDecisionObservationVisibilityRecord,
   buildWorkflowVisibilityRecord,
+  type BuildPolicyDecisionObservationVisibilityRecordInput,
   type BuildWorkflowVisibilityRecordInput,
+  type PolicyDecisionObservationVisibilityRecord,
   type VisibilityLinks,
   type WeakPointIndicator,
   type WorkflowVisibilityRecord,

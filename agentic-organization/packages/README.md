@@ -7,19 +7,19 @@ host, or Kubernetes deployment is introduced.
 
 ## Package Boundary
 
-| Package           | Current responsibility                                                                                                     |
-| ----------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `domain`          | typed command names, event names, aggregate names, work item state machine, event envelope, shared records                 |
-| `application`     | command pipeline, handler registry, idempotency handling, state-store ports, first supervisor-chain signal command handler |
-| `policy`          | generic command authorization port, hat-authority port, decision observation port, and typed denial reasons                |
-| `state`           | generic state-store and outbox-source ports plus the in-memory Organization state-store factory fake                       |
-| `state-cockroach` | first replaceable durable SQL adapter for the state-store/outbox-source ports, backed by CockroachDB                       |
-| `messaging`       | NATS subject contract, outbox publisher port, event publisher port, and domain resolver without a live NATS dependency     |
-| `messaging-nats`  | NATS JetStream publisher and consumer adapter contracts with canonical JSON, headers, ack/nack, and DLQ policy             |
-| `observability`   | LGTM/OpenTelemetry attribute projection from Agentic event envelopes and NATS consumer batch summaries                     |
-| `runtime`         | first event-to-automation reaction rule                                                                                    |
-| `workers`         | process-boundary worker host that composes outbox publishing and inbound ingestion through ports only                      |
-| `governance`      | package dependency-boundary checks that keep core packages SOLID and adapter-free                                          |
+| Package           | Current responsibility                                                                                                                                              |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `domain`          | typed command names, event names, aggregate names, work item state machine, event envelope, shared records                                                          |
+| `application`     | command pipeline, handler registry, idempotency handling, state-store ports, first supervisor-chain signal command handler                                          |
+| `policy`          | generic command authorization port, hat-authority port, decision observation/store/reader ports, and typed denial reasons                                           |
+| `state`           | generic state-store and outbox-source ports plus the in-memory Organization state-store factory fake                                                                |
+| `state-cockroach` | first replaceable durable SQL adapter, generic SQL executor, migration runner, and adapter factory for state, outbox, event-ingestion, and policy-observation ports |
+| `messaging`       | NATS subject contract, outbox publisher port, event publisher port, and domain resolver without a live NATS dependency                                              |
+| `messaging-nats`  | NATS JetStream publisher and consumer adapter contracts with canonical JSON, headers, ack/nack, and DLQ policy                                                      |
+| `observability`   | LGTM/OpenTelemetry and workflow-visibility projection from events, NATS batches, worker cycles, and policy observations                                             |
+| `runtime`         | first event-to-automation reaction rule                                                                                                                             |
+| `workers`         | process-boundary worker host that composes outbox publishing and inbound ingestion through ports only                                                               |
+| `governance`      | package dependency-boundary checks that keep core packages SOLID and adapter-free                                                                                   |
 
 ## Slice Rule
 
@@ -45,9 +45,14 @@ supervisor-chain signal command
   -> automation reaction plan
 ```
 
-CockroachDB, JetStream publishing, Temporal, Dapr, Hermes, Hindsight,
-and the hat-system CRDs come next as adapters behind these contracts.
-They should not redefine command names, event names, state names,
+CockroachDB and NATS package adapters now exist behind these contracts.
+`state-cockroach` exposes one generic SQL executor seam, a migration
+runner, and a durable adapter factory so app hosts can bind Cockroach
+once and receive the command state, outbox, event-ingestion, and policy
+observation ports together. Live client construction for CockroachDB,
+JetStream publishing, Temporal, Dapr, Hermes, Hindsight, and the
+hat-system CRDs still belongs in process or cluster bindings. Those
+bindings must not redefine command names, event names, state names,
 correlation fields, or policy authority. CockroachDB is the first
 durable state adapter because it exists in `full-ai-cluster`; application
 and messaging code must remain database-agnostic so a later durable
@@ -71,6 +76,16 @@ outbox effects before durable command persistence. Future OPA,
 hat-system, JWT, Organization DB, or policy-observation adapters must
 implement these ports instead of leaking vendor clients into command
 code.
+
+The policy package separates observation from durability:
+`PolicyDecisionObservationPort` is the command-pipeline dependency,
+`PolicyDecisionObservationStore` records idempotent durable observations,
+and `PolicyDecisionObservationReader` exposes queryable governance
+evidence for UI and agents. Observation stores must distinguish matching
+replay from conflicting evidence; the Cockroach adapter does that with a
+canonical observation hash while keeping the hash behind the generic
+policy contracts. CockroachDB is only the first implementation of those
+generic contracts.
 
 Production source and test source are separated by package. Application
 code lives under `packages/<name>/src`; tests live under

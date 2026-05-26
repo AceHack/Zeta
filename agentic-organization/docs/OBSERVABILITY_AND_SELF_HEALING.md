@@ -25,6 +25,7 @@ visibility record.
 Required movements include:
 
 - command accepted or rejected;
+- denied policy decision observed;
 - domain event written;
 - outbox publication;
 - NATS consumer handling;
@@ -44,8 +45,8 @@ queryable evidence and diagnosis surfaces.
 
 ## Workflow Visibility Record
 
-`@agentic-org/observability` owns the first typed record builder. The
-record projects a canonical event envelope into the fields a UI,
+`@agentic-org/observability` owns the first typed record builders. Event
+visibility projects a canonical event envelope into the fields a UI,
 monitor, or agent reviewer needs:
 
 - observation kind;
@@ -63,6 +64,24 @@ monitor, or agent reviewer needs:
 This is intentionally generic. It is not a QA-only, capability-request,
 or platform-incident-only tool. It is the common visibility shape that
 all packages can extend and all runtime hosts can emit.
+
+Policy-denial visibility is a sibling projection. It does not synthesize
+a fake event for a denied command. Instead it projects the durable policy
+decision observation directly into:
+
+- command, correlation, causation, trace, and idempotency IDs;
+- organization, project, optional team, and optional work item scope;
+- agent and hat assignment;
+- attempted tool type;
+- supervisor-chain source and target levels;
+- policy decision ID, policy version, and denial reason;
+- Grafana links for traces, logs, and metrics;
+- a `policy_denied` weak-point indicator.
+
+Agents should use those records to understand whether a denial points to
+a missing grant, wrong scope, stale hat assignment, or training gap, then
+route follow-up through supervisor-chain communication and normal work
+commands.
 
 ## Weak-Point Indicators
 
@@ -143,11 +162,19 @@ The operations UI should make weak points visible at every hierarchy:
 - work item timelines;
 - agent schedules and runs;
 - review, QA, security, architecture, delivery, and outcome gates;
+- Cockroach durable adapter health;
 - NATS, Temporal, Dapr, Hermes, Hindsight, MCP, and k8s adapter health.
 
 Every view should support drilling from summary to evidence. A red or
-degraded status without a trace, log query, metric panel, event ID,
-work item, and suggested action is not good enough for this platform.
+degraded status without a trace, log query, metric panel, event ID or
+policy decision/command ID, work item, and suggested action is not good
+enough for this platform.
+
+Startup and composition failures count as observable runtime failures.
+If the worker process cannot construct or validate its Cockroach, NATS,
+or telemetry adapters, the failure should produce explicit startup
+evidence and a degraded/readiness signal rather than disappearing before
+agents and operators can inspect it.
 
 ## Implementation Rule
 

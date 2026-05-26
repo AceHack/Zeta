@@ -31,6 +31,9 @@ export const WorkerRuntimeFailureStage = {
 export type WorkerRuntimeFailureStage = (typeof WorkerRuntimeFailureStage)[keyof typeof WorkerRuntimeFailureStage];
 
 export const WorkerRuntimeConfigErrorCode = {
+  InvalidWorkerInboundBatchSize: "invalid_worker_inbound_batch_size",
+  InvalidWorkerOutboxBatchSize: "invalid_worker_outbox_batch_size",
+  MissingCockroachDatabaseUrl: "missing_cockroach_database_url",
   InvalidNatsInboundBatchSize: "invalid_nats_inbound_batch_size",
   MissingEnvironment: "missing_environment",
   MissingNatsDurableName: "missing_nats_durable_name",

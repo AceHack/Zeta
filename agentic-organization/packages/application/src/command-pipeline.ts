@@ -2,6 +2,7 @@ import type { CommandHandlerRegistry } from "./command-handler-registry.ts";
 import { CommandErrorCode, CommandResultStatus, type CommandResult } from "./command-result.ts";
 import type { SendSupervisorSignalCommand } from "./handlers/send-supervisor-signal.ts";
 import {
+  PolicyDecisionObservationPersistenceStatus,
   PolicyDecisionStatus,
   type CommandAuthorizationPort,
   type CommandAuthorizationRequest,
@@ -51,9 +52,12 @@ async function executeCommand(
 
   if (authorizationDecision.status === PolicyDecisionStatus.Denied) {
     try {
-      await dependencies.policyDecisionObservationPort.observePolicyDecision(
+      const observationResult = await dependencies.policyDecisionObservationPort.observePolicyDecision(
         createPolicyDecisionObservation(command, authorizationDecision, dependencies.now()),
       );
+      if (observationResult.status === PolicyDecisionObservationPersistenceStatus.Conflict) {
+        return createPolicyObservationConflictResult(authorizationDecision);
+      }
     } catch {
       return {
         status: CommandResultStatus.Rejected,
@@ -152,6 +156,7 @@ function createCommandAuthorizationRequest(command: PipelineCommand): CommandAut
       correlationId: command.correlationId,
       causationId: command.causationId,
       traceId: command.traceId,
+      idempotencyKey: command.idempotencyKey,
     },
   };
 }
@@ -180,6 +185,7 @@ function createPolicyDecisionObservation(
       correlationId: command.correlationId,
       causationId: command.causationId,
       traceId: command.traceId,
+      idempotencyKey: command.idempotencyKey,
     },
     decision,
     observedAt,
@@ -242,6 +248,23 @@ function createIdempotencyConflictResult(): CommandResult {
     error: {
       code: CommandErrorCode.IdempotencyConflict,
       message: "idempotency key was reused with a different request hash",
+    },
+  };
+}
+
+function createPolicyObservationConflictResult(decision: Extract<PolicyDecision, { status: "denied" }>): CommandResult {
+  return {
+    status: CommandResultStatus.Rejected,
+    idempotency: {
+      replayed: false,
+    },
+    error: {
+      code: CommandErrorCode.PolicyObservationConflict,
+      message: "command denied but policy decision observation conflicts with existing governance evidence",
+      policyDecisionId: decision.decisionId,
+      policyVersion: decision.policyVersion,
+      reason: decision.reason,
+      observationFailureReason: "policy_decision_observation_conflict",
     },
   };
 }

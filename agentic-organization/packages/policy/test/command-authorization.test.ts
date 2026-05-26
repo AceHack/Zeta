@@ -106,6 +106,7 @@ function createCommandAuthorizationRequest() {
       correlationId: "corr-supervisor-signal-001",
       causationId: "cause-team-work-001",
       traceId: "trace-supervisor-signal-001",
+      idempotencyKey: "idem-supervisor-signal-001",
     },
   };
 }

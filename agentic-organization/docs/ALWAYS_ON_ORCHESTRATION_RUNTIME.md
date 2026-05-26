@@ -55,6 +55,14 @@ Initial workers:
 
 These are boring system processes. Hermes agents may reason about their outputs, but the workers keep the runtime awake.
 
+V0 starts with the smallest durable worker slice: the NodeNext
+`apps/workers` host composes the `OutboxPublisherWorker` lane and the
+first inbound event-ingestion lane against Cockroach-backed ports. It is
+not the whole always-on worker taxonomy yet. Scheduler, trigger,
+reaction execution, leases, dead letters, reconcilers, budget, anomaly,
+and observability coverage workers should be added as separate lanes or
+hosts after the durable composition seam is proven.
+
 ## Durable Triggers
 
 Triggers are first-class runtime objects.

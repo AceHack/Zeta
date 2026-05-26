@@ -81,3 +81,28 @@ CREATE TABLE IF NOT EXISTS agentic_org_idempotency_records (
   request_hash STRING NOT NULL,
   result_json JSONB NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS agentic_org_policy_observations (
+  policy_decision_id STRING PRIMARY KEY,
+  policy_version STRING NOT NULL,
+  decision_status STRING NOT NULL,
+  denial_reason STRING,
+  command_id STRING NOT NULL,
+  command_type STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING,
+  work_item_id STRING,
+  actor_agent_id STRING NOT NULL,
+  actor_hat_assignment_id STRING NOT NULL,
+  tool_type STRING,
+  source_level STRING,
+  target_level STRING,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL,
+  idempotency_key STRING NOT NULL,
+  observation_hash STRING NOT NULL,
+  observation_json JSONB NOT NULL,
+  observed_at TIMESTAMPTZ NOT NULL
+);

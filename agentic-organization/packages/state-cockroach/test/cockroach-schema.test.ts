@@ -19,7 +19,13 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.InboxReceipts}`));
     ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ReactionPlans}`));
     ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.IdempotencyRecords}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.PolicyObservations}`));
+    ok(migration.sql.includes("decision_status STRING NOT NULL"));
+    ok(migration.sql.includes("denial_reason STRING"));
+    ok(migration.sql.includes("observation_json JSONB NOT NULL"));
+    ok(migration.sql.includes("observation_hash STRING NOT NULL"));
     ok(migration.sql.includes("trace_id STRING NOT NULL"));
+    ok(migration.sql.includes("idempotency_key STRING NOT NULL"));
     ok(migration.sql.includes("correlation_id STRING NOT NULL"));
     ok(migration.sql.includes("policy_decision_id STRING"));
     ok(migration.sql.includes("policy_version STRING"));

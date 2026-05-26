@@ -135,11 +135,11 @@ legal transitions. It does not execute side effects.
 
 ### Layer 1: Application and Policy
 
-| Package                      | Owns                                                                                                      |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `@agentic-org/application`   | command handlers, handler registry, use cases, transaction orchestration, ports, command result contracts |
-| `@agentic-org/policy`        | RBAC, hat authority checks, OPA/Rego adapter boundary, policy decisions, denial reasons                   |
-| `@agentic-org/observability` | correlation envelope, OpenTelemetry helpers, required span attributes, trace propagation                  |
+| Package                      | Owns                                                                                                                        |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `@agentic-org/application`   | command handlers, handler registry, use cases, transaction orchestration, ports, command result contracts                   |
+| `@agentic-org/policy`        | RBAC, hat authority checks, OPA/Rego adapter boundary, policy decisions, denial reasons, observation store and reader ports |
+| `@agentic-org/observability` | correlation envelope, OpenTelemetry helpers, workflow visibility, required span attributes, trace propagation               |
 
 The application layer is the Organization OS command layer. It is where
 the runtime asks the Organization to do something.
@@ -166,22 +166,22 @@ calling them.
 
 ### Layer 3: State, Messaging, and Runtime Adapters
 
-| Package                                  | Owns                                                                                                           |
-| ---------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `@agentic-org/state`                     | generic state-store, outbox-source, inbox, idempotency, transaction, and lease ports                           |
-| `@agentic-org/state-cockroach`           | first replaceable durable SQL implementation of state-store and outbox-source ports                            |
-| `@agentic-org/messaging`                 | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts                   |
-| `@agentic-org/messaging-nats`            | NATS JetStream implementation of publisher and consumer ports, canonical JSON, headers, ack/nack, and DLQ      |
-| `@agentic-org/workers`                   | small worker process boundary that composes outbox publishing, inbound ingestion, and schedulers through ports |
-| `@agentic-org/workflows-temporal`        | Temporal workflow and activity contracts, task queues, workflow clients                                        |
-| `@agentic-org/actors-dapr`               | Dapr actor interfaces, actor implementations, reminders, actor state projection                                |
-| `@agentic-org/mcp`                       | MCP schemas, tool registry, preflight checks, policy-checked tool handlers                                     |
-| `@agentic-org/hermes`                    | Hermes session adapter, run adapter, callback contract, run context builder                                    |
-| `@agentic-org/memory`                    | Hindsight adapter, hat-scoped recall/retain/reflect, memory attribution, memory health                         |
-| `@agentic-org/k8s-hats`                  | generated or checked Hat, HatBinding, HatSwap, HatPolicy types, informers, projection decoding                 |
-| `@agentic-org/openziti`                  | OpenZiti transport adapter, identity/config access, connectivity checks                                        |
-| `@agentic-org/credential-proxy`          | credential request adapter, scoped credential use, audit hooks                                                 |
-| `@agentic-org/adapters-agentic-services` | temporary wrappers around reused `agentic-services` primitives                                                 |
+| Package                                  | Owns                                                                                                                      |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `@agentic-org/state`                     | generic state-store, outbox-source, inbox, idempotency, transaction, and lease ports                                      |
+| `@agentic-org/state-cockroach`           | first replaceable durable SQL implementation of state-store, outbox-source, event-ingestion, and policy-observation ports |
+| `@agentic-org/messaging`                 | NATS envelope builder, subject builder, JetStream publisher, consumer, DLQ, replay contracts                              |
+| `@agentic-org/messaging-nats`            | NATS JetStream implementation of publisher and consumer ports, canonical JSON, headers, ack/nack, and DLQ                 |
+| `@agentic-org/workers`                   | small worker process boundary that composes outbox publishing, inbound ingestion, and schedulers through ports            |
+| `@agentic-org/workflows-temporal`        | Temporal workflow and activity contracts, task queues, workflow clients                                                   |
+| `@agentic-org/actors-dapr`               | Dapr actor interfaces, actor implementations, reminders, actor state projection                                           |
+| `@agentic-org/mcp`                       | MCP schemas, tool registry, preflight checks, policy-checked tool handlers                                                |
+| `@agentic-org/hermes`                    | Hermes session adapter, run adapter, callback contract, run context builder                                               |
+| `@agentic-org/memory`                    | Hindsight adapter, hat-scoped recall/retain/reflect, memory attribution, memory health                                    |
+| `@agentic-org/k8s-hats`                  | generated or checked Hat, HatBinding, HatSwap, HatPolicy types, informers, projection decoding                            |
+| `@agentic-org/openziti`                  | OpenZiti transport adapter, identity/config access, connectivity checks                                                   |
+| `@agentic-org/credential-proxy`          | credential request adapter, scoped credential use, audit hooks                                                            |
+| `@agentic-org/adapters-agentic-services` | temporary wrappers around reused `agentic-services` primitives                                                            |
 
 Adapters are replaceable. The Organization should be able to run a V0
 slice with in-process fakes, then swap in Temporal, Dapr, Hermes,
@@ -267,8 +267,10 @@ state persistence. Denied decisions are sent to a generic
 audit and outbox effects before command outcome persistence. OPA
 bundles, Kubernetes hat CRD watches, JWT validation, Organization DB
 assignment lookups, credential-proxy checks, and durable policy
-observation stores are later adapter implementations behind that policy
-boundary.
+observation stores are adapter implementations behind that policy
+boundary. The first durable observation implementation is the Cockroach
+adapter, but the command pipeline still depends only on the generic
+`PolicyDecisionObservationPort`.
 
 State-store ports are async at the application boundary. In-memory
 adapters may resolve immediately, but durable SQL, transactional outbox,
@@ -304,9 +306,14 @@ metrics, structured logs, readiness, and graceful shutdown.
 does not introduce NestJS yet. It composes the package-level worker host
 and the NATS consumer adapter, parses typed process environment values
 into runtime config, records telemetry through a sink port, and reports
-healthy/degraded status. Its current required environment contract is
-`AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`, `NATS_DURABLE`, and
-`NATS_INBOUND_BATCH_SIZE`. Concrete NATS clients, CockroachDB pools,
+healthy/degraded status. Its durable composition seam receives a generic
+Cockroach SQL executor, creates the Cockroach-backed command state,
+outbox, event-ingestion, and policy-observation adapter set, and wires
+the outbox/event-ingestion ports into the worker host. Its current
+required environment contract is `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`,
+`COCKROACH_DATABASE_URL`, `NATS_STREAM`, `NATS_DURABLE`,
+`NATS_INBOUND_BATCH_SIZE`, `WORKER_INBOUND_BATCH_SIZE`, and
+`WORKER_OUTBOX_BATCH_SIZE`. Concrete NATS clients, CockroachDB pools,
 readiness endpoints, structured logging, and shutdown hooks still belong
 to later process-adapter wiring.
 
@@ -316,6 +323,13 @@ should know which concrete adapter implementation is being used. Domain,
 application, runtime, worker, and observability packages must stay free
 of process environment, Kubernetes Secret, ExternalSecret, connection
 pool, and client-construction details.
+
+The `state-cockroach` package now owns a generic SQL executor adapter and
+migration runner. The executor adapts a process-provided Cockroach client
+interface to the narrower statement executor contracts used by command
+state, outbox, event ingestion, and policy observations. This keeps the
+real database client and connection pool outside package code while
+still giving `apps/workers` one durable factory to compose.
 
 ## SOLID Rules
 
@@ -416,10 +430,13 @@ type AgenticEventEnvelope<TPayload> = {
 ```
 
 The current command-authorization slice records denied decisions through
-a generic policy observation port and attaches allowed policy decisions
-to audit/outbox effects. A durable policy-observation adapter and
-UI/agent-readable projection should be added before real API, MCP,
-Hermes, Temporal, or Dapr entrypoints are exposed.
+a generic policy observation port, persists those observations through a
+replaceable `PolicyDecisionObservationStore`, and attaches allowed policy
+decisions to audit/outbox effects. The first Cockroach policy-observation
+adapter stores a canonical observation hash so matching replays are
+idempotent while conflicting governance evidence is rejected. Its
+UI/agent-readable weak-point projection is now in place before real API,
+MCP, Hermes, Temporal, or Dapr entrypoints are exposed.
 
 No app should publish raw NATS payloads directly. Publishing should go
 through `@agentic-org/messaging`.
@@ -749,14 +766,28 @@ is introduced: non-secret operational values are parsed from typed env
 names, while URLs, credentials, and client construction remain reserved
 for process adapter factories supplied by the composition root.
 
-Minimum runtime environment contract:
+Current `apps/workers` process environment contract:
 
 ```text
 AGENTIC_ORG_ENV
 AGENTIC_ORG_ID
+COCKROACH_DATABASE_URL
 NATS_STREAM
 NATS_DURABLE
 NATS_INBOUND_BATCH_SIZE
+WORKER_INBOUND_BATCH_SIZE
+WORKER_OUTBOX_BATCH_SIZE
+```
+
+`COCKROACH_DATABASE_URL` is a secret-backed process adapter input. In
+the cluster it must be sourced from a Kubernetes Secret populated by
+External Secrets from Vault, not from a plain manifest or reusable
+package default.
+
+Future full deployment adapter environment will add service-specific
+values as their process adapters become real:
+
+```text
 TEMPORAL_ADDRESS
 HINDSIGHT_URL
 HERMES_URL
@@ -895,6 +926,10 @@ package should standardize:
   UI- and agent-readable health, stage, trace, scope, aggregate, and
   weak-point indicator fields, including policy decision ID and policy
   version when present.
+- policy-decision observation visibility records that project denied
+  command, tool, supervisor-chain, actor, scope, decision ID/version, and
+  denial reason into `policy_denied` weak-point indicators agents can
+  use to find authority, scope, and tool-grant gaps.
 - NATS consumer batch attributes for stream, durable consumer, received,
   processed, duplicate, payload-conflict, invalid, failed,
   acknowledged, negative-acknowledged, terminated, and dead-lettered
@@ -978,9 +1013,10 @@ Grafana.
    review staffing, QA staffing, blocker escalation, and late run
    incidents.
 10. Add runtime hosts. The first NodeNext `apps/workers` host now parses
-    typed process config and composes the worker and NATS consumer loops
-    through ports; NestJS API and richer worker process wiring are still
-    pending.
+    typed process config, composes the worker and NATS consumer loops
+    through ports, and has a durable Cockroach composition seam for
+    outbox/event-ingestion-backed worker execution; NestJS API and real
+    process client wiring are still pending.
 11. Add UI projections for work board, review center, and evidence
     timeline.
 12. Add real cluster adapters one at a time.

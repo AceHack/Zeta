@@ -91,6 +91,25 @@ Organization state only by calling Organization commands.
 - **AND** the command handler is not executed
 - **AND** idempotency lookup and command outcome persistence are not run
 
+#### Scenario: Denied policy observations are durable and queryable
+
+- **WHEN** a denied policy decision is observed
+- **THEN** a generic policy observation store can persist the command,
+  actor, hat assignment, scope, tool type, supervisor-chain context,
+  trace IDs, idempotency key, decision ID, policy version, denial reason,
+  canonical observation hash, and canonical observation payload
+- **AND** duplicate observations with the same policy decision ID are
+  treated as already durable only when the canonical observation hash
+  matches
+- **AND** duplicate observations with the same policy decision ID and
+  different evidence are rejected as conflicts rather than hidden as safe
+  replays
+- **AND** readers can query observations by organization, project, team,
+  work item, actor, hat assignment, and decision status without exposing
+  CockroachDB-specific types to application code
+- **AND** CockroachDB is only the first replaceable adapter behind those
+  generic policy contracts
+
 #### Scenario: Package boundaries are checked
 
 - **WHEN** package dependency-boundary tests run
@@ -454,7 +473,9 @@ live infrastructure adapters are bound by a runtime host.
 - **WHEN** the `apps/workers` runtime host parses process environment
   values
 - **THEN** it reads `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
-  `NATS_DURABLE`, and `NATS_INBOUND_BATCH_SIZE` through typed env names
+  `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`, `COCKROACH_DATABASE_URL`,
+  `WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE` through
+  typed env names
 - **AND** it returns typed runtime configuration for the composition root
 - **AND** packages do not read process environment values directly
 - **AND** URLs, credentials, and connection pools remain process adapter
@@ -469,11 +490,28 @@ live infrastructure adapters are bound by a runtime host.
 - **AND** the composition root returns a runnable worker runtime without
   leaking concrete adapter construction into package code
 
+#### Scenario: Workers app composes durable Cockroach worker ports
+
+- **WHEN** the `apps/workers` durable composition root is created
+- **THEN** it receives typed runtime config, a generic Cockroach SQL
+  executor, an event publisher port, an inbound event source port, a NATS
+  consumer port, telemetry sink, and runtime utilities
+- **AND** it builds Cockroach-backed command state, outbox,
+  event-ingestion, and policy-observation adapters through the
+  `state-cockroach` factory
+- **AND** it wires Cockroach-backed outbox and event-ingestion ports into
+  the package-level worker host
+- **AND** runtime, application, worker, policy, messaging, and
+  observability packages do not receive Cockroach connection pools or
+  vendor client objects
+
 #### Scenario: Workers app rejects invalid process config
 
 - **WHEN** the `apps/workers` runtime host is created with missing
-  environment, missing Organization ID, missing NATS stream, missing
-  durable consumer, or non-positive NATS inbound batch size
+  environment, missing Organization ID, missing Cockroach database URL,
+  missing NATS stream, missing durable consumer, non-positive NATS
+  inbound batch size, non-positive worker inbound batch size, or
+  non-positive worker outbox batch size
 - **THEN** runtime creation fails with a typed configuration error before
   any worker loop can start
 
@@ -496,6 +534,15 @@ live infrastructure adapters are bound by a runtime host.
   batch counts
 - **AND** invalid, payload-conflict, negative-acknowledged, or
   terminated NATS messages also make the runtime result degraded
+
+#### Scenario: Worker adapter startup failures are visible
+
+- **WHEN** Cockroach, NATS, or telemetry adapter construction or
+  readiness validation fails at the worker process boundary
+- **THEN** the worker startup path records explicit failure evidence with
+  stage, message, and configuration source
+- **AND** the process reports degraded or not-ready status instead of
+  hiding the failure before the Organization UI and agents can inspect it
 
 ### Requirement: Telemetry is complete at the event boundary
 
@@ -537,6 +584,18 @@ UI- and agent-readable visibility record.
   tool, policy denial, harness failure, and telemetry gap
 - **AND** the weak-point indicators route follow-up work through normal
   Organization commands and supervisor-chain communication
+
+#### Scenario: Policy denial is projected to workflow visibility
+
+- **WHEN** a denied policy decision observation is projected into
+  workflow visibility
+- **THEN** the record includes command, actor, hat assignment, scope,
+  tool type, supervisor-chain source and target levels, trace IDs,
+  idempotency key, policy decision ID, policy version, denial reason, and
+  evidence-link fields
+- **AND** the record contains a typed policy-denied weak-point indicator
+  so agents can review authority, scope, and tool-grant gaps through the
+  normal Organization improvement lifecycle
 
 ### Requirement: Automation rules create plans before side effects
 

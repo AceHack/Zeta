@@ -1,5 +1,18 @@
-export { WorkerProcessEnvName, parseWorkerRuntimeConfigFromEnv, type WorkerProcessEnvironment } from "./config.ts";
+export {
+  WorkerProcessEnvName,
+  parseWorkerRuntimeConfigFromEnv,
+  type WorkerDurableRuntimeConfig,
+  type WorkerProcessConfig,
+  type WorkerProcessEnvironment,
+} from "./config.ts";
 export { composeWorkerRuntime, type ComposeWorkerRuntimeInput, type WorkerRuntimePorts } from "./composition.ts";
+export {
+  composeDurableWorkerRuntimePorts,
+  type ComposeDurableWorkerRuntimePortsInput,
+  type DurableWorkerRuntimeAdapters,
+  type DurableWorkerRuntimePorts,
+  type DurableWorkerRuntimeUtilities,
+} from "./durable-composition.ts";
 export {
   WorkerRuntimeConfigError,
   WorkerRuntimeConfigErrorCode,

@@ -4,15 +4,19 @@ import { describe, test } from "node:test";
 import {
   AgenticAggregateType,
   AgenticEventType,
+  CommandType,
   SupervisorChainLevel,
   SupervisorSignalStatus,
   SupervisorSignalToolType,
   createAgenticEventEnvelope,
 } from "../../domain/src/index.ts";
+import { HatAuthorityDecisionStatus, PolicyDecisionStatus } from "../../policy/src/index.ts";
 import {
+  PolicyDecisionVisibilityStage,
   VisibilityHealth,
   WeakPointIndicatorType,
   WorkflowObservationKind,
+  buildPolicyDecisionObservationVisibilityRecord,
   buildWorkflowVisibilityRecord,
 } from "../src/workflow-visibility.ts";
 
@@ -109,6 +113,89 @@ describe("workflow visibility records", () => {
             indicatorType: WeakPointIndicatorType.BlockedWork,
             summary: "Work is waiting on supervisor triage",
             suggestedAction: "Engineering manager should triage the signal",
+          },
+        ],
+      },
+    );
+  });
+
+  test("builds policy-denial visibility for agent and UI weak-point review", () => {
+    deepEqual(
+      buildPolicyDecisionObservationVisibilityRecord(
+        {
+          commandId: "cmd-supervisor-signal-001",
+          commandType: CommandType.SendSupervisorSignal,
+          actor: {
+            agentId: "agent-developer-001",
+            hatAssignmentId: "hat-assignment-dev-001",
+          },
+          scope: {
+            organizationId: "org-lfg",
+            projectId: "project-agentic-org",
+            teamId: "team-runtime",
+            workItemId: "work-outbox-001",
+          },
+          toolType: SupervisorSignalToolType.ReportBlocker,
+          supervisorChain: {
+            sourceLevel: SupervisorChainLevel.TeamMember,
+            targetLevel: SupervisorChainLevel.Manager,
+          },
+          trace: {
+            correlationId: "corr-supervisor-signal-001",
+            causationId: "cause-team-work-001",
+            traceId: "trace-supervisor-signal-001",
+            idempotencyKey: "idem-supervisor-signal-001",
+          },
+          decision: {
+            status: PolicyDecisionStatus.Denied,
+            decisionId: "policy-decision-denied-001",
+            policyVersion: "policy-v1",
+            reason: HatAuthorityDecisionStatus.ToolDenied,
+          },
+          observedAt: "2026-05-25T20:00:00.000Z",
+        },
+        {
+          links: {
+            traceUrl: "https://grafana.example/explore?trace=trace-supervisor-signal-001",
+            logsUrl: "https://grafana.example/explore?logs=work-outbox-001",
+            metricsUrl: "https://grafana.example/d/agentic-org",
+          },
+        },
+      ),
+      {
+        observationKind: WorkflowObservationKind.PolicyDecision,
+        health: VisibilityHealth.Blocked,
+        stage: PolicyDecisionVisibilityStage.Denied,
+        occurredAt: "2026-05-25T20:00:00.000Z",
+        commandId: "cmd-supervisor-signal-001",
+        commandType: CommandType.SendSupervisorSignal,
+        correlationId: "corr-supervisor-signal-001",
+        causationId: "cause-team-work-001",
+        traceId: "trace-supervisor-signal-001",
+        idempotencyKey: "idem-supervisor-signal-001",
+        organizationId: "org-lfg",
+        projectId: "project-agentic-org",
+        teamId: "team-runtime",
+        workItemId: "work-outbox-001",
+        agentId: "agent-developer-001",
+        hatAssignmentId: "hat-assignment-dev-001",
+        toolType: SupervisorSignalToolType.ReportBlocker,
+        sourceLevel: SupervisorChainLevel.TeamMember,
+        targetLevel: SupervisorChainLevel.Manager,
+        policyDecisionId: "policy-decision-denied-001",
+        policyVersion: "policy-v1",
+        policyDecisionStatus: PolicyDecisionStatus.Denied,
+        policyDenialReason: HatAuthorityDecisionStatus.ToolDenied,
+        links: {
+          traceUrl: "https://grafana.example/explore?trace=trace-supervisor-signal-001",
+          logsUrl: "https://grafana.example/explore?logs=work-outbox-001",
+          metricsUrl: "https://grafana.example/d/agentic-org",
+        },
+        weakPointIndicators: [
+          {
+            indicatorType: WeakPointIndicatorType.PolicyDenied,
+            summary: "Policy denied send_supervisor_signal for report_blocker",
+            suggestedAction: "Review hat authority, scope, and tool grant before retrying the command",
           },
         ],
       },
