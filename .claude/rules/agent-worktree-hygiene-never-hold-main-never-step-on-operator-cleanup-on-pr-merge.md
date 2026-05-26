@@ -169,18 +169,18 @@ operator MAY have `main` checked out in their own primary, but agents
 must not.
 
 ```bash
-# Should print no lines. If any line prints, an agent worktree is
-# holding [main] and is the blocker for operator git operations.
+# Prints OK on success. If a worktree line prints, an agent worktree
+# is holding [main] and is the blocker for operator git operations.
 git worktree list | awk '/\[main\]/ { path=$1 } END { exit 0 }' \
   && git worktree list | grep -E "\[main\]" \
   | grep -E "/private/tmp/zeta-|/tmp/zeta-" || echo "OK: no agent holds [main]"
 ```
 
-Expected result: no agent worktree holds `[main]`. No output is OK when the
-operator's primary checkout is not currently on `main`; a single operator
-primary line is also OK when the operator intentionally has `main` checked out.
-Any `/private/tmp/zeta-*`, `/tmp/zeta-*`, or per-agent worktree line holding
-`[main]` is a violation to fix.
+Expected result: `OK: no agent holds [main]`, or equivalently no
+agent-worktree match if the final echo is omitted. A single operator
+primary line is OK when the operator intentionally has `main` checked
+out. Any `/private/tmp/zeta-*`, `/tmp/zeta-*`, or per-agent worktree
+line holding `[main]` is a violation to fix.
 
 ## Substrate-honest framing
 
@@ -206,11 +206,10 @@ worktrees in the operator's primary checkout subdir (peer-agent
 prefix; from past work), and 1 stale `/private/tmp/zeta-<peer-loop>-2`
 worktree holding `[main]` at stale SHA.
 
-The `[main]`-holding worktree was THE blocker for operator's
-`git checkout main` in primary checkout. Operator explicit: *"i'm
-stuck (max)... fatal: 'main' is already used by worktree at
-'/private/tmp/zeta-<peer-loop>-2'... nope we need to fix this mess
-yall always stepping on each other and me constantly"*.
+The `[main]`-holding worktree was THE blocker for the operator's
+`git checkout main` in the primary checkout. The exact operator quote
+is preserved on the B-0750 backlog/history surface; this current-state
+rule keeps the operational lesson in role-reference form.
 
 Mass-cleanup (37 worktrees removed) plus this rule landing prevents
 recurrence. Future agent surfaces inherit the discipline at cold-boot.
