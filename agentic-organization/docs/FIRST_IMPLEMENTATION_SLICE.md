@@ -25,6 +25,8 @@ flows, and routing patterns as the Organization learns.
 
 ```text
 send_supervisor_signal
+  -> command authorization policy
+  -> active hat-authority check
   -> idempotency record check
   -> chain-of-command signal
   -> audit event
@@ -62,6 +64,7 @@ escalate.
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
 | `@agentic-org/application`     | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
+| `@agentic-org/policy`          | command authorization port, hat-authority port, active/expired/revoked/scope/tool denial decisions, typed policy denial reasons                                       |
 | `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
 | `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of the state-store/outbox-source ports, backed by CockroachDB                                                            |
 | `@agentic-org/messaging`       | stable `agentic-org.<env>.<org>.<domain>.<event>` subject builder, outbox publisher, event publisher port, and typed domain resolver                                  |
@@ -123,6 +126,16 @@ Hermes runs, MCP calls, and UI evidence.
 
 - Hats can expose a communication brief that tells the wearer their duty,
   supervisor line, and efficient upward tools.
+- Every command entering the pipeline is authorized through a generic
+  `CommandAuthorizationPort` before idempotency lookup, handler dispatch,
+  or persistence.
+- The first policy adapter shape delegates to a generic
+  `HatAuthorityPort`, so active hats allow commands and expired, missing,
+  revoked, scope-denied, or tool-denied hats return a typed
+  `policy_denied` result.
+- Policy denial does not create supervisor-signal, audit, outbox, or
+  idempotency state. Denial telemetry/audit is a follow-on effect once a
+  denial-observation port exists.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
@@ -140,6 +153,9 @@ Hermes runs, MCP calls, and UI evidence.
 - A governance test enforces that application code does not import the
   state adapter, Cockroach adapter, NestJS, NATS, Dapr, Temporal,
   Drizzle, or Postgres clients.
+- A governance test enforces that policy code does not import
+  application, runtime, state adapters, messaging adapters, NestJS, NATS,
+  Dapr, Temporal, Drizzle, Postgres, or vendor clients.
 - A governance test enforces that the Cockroach state adapter does not
   import messaging, NATS, or JetStream. Durable state can be swapped
   without dragging transport concerns into the repository layer.
@@ -245,9 +261,7 @@ Hermes runs, MCP calls, and UI evidence.
 
 ## Next Slice
 
-The next slice should add policy and hat-authority checks before real
-API, MCP, Hermes, or worker command entrypoints can call the command
-pipeline. After that, add the first real process adapter factories below
+The next slice should add the first real process adapter factories below
 `apps/workers`: concrete NATS pull/publish client construction, durable
 CockroachDB outbox/inbox adapter construction, and a telemetry sink that
 can later send structured logs and metrics into the full-ai-cluster LGTM
@@ -255,7 +269,9 @@ stack. Keep URLs, credentials, and connection pools in app adapter config
 fed by Kubernetes Secret or ExternalSecret values, never in domain
 packages. Add a durable-state integration test using CockroachDB as the
 first cluster-backed implementation once a local/dev connection is
-available.
+available. After that, add denial-observation/audit effects for policy
+denials without making denied commands look like successful business
+state transitions.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

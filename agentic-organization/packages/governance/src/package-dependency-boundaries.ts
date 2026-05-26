@@ -7,6 +7,7 @@ export const PackageBoundaryRule = {
   ApplicationHost: "application_host",
   Messaging: "messaging",
   Packages: "packages",
+  Policy: "policy",
   ProductionSource: "production_source",
   Runtime: "runtime",
   StateAdapter: "state_adapter",

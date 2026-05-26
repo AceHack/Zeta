@@ -1,4 +1,5 @@
 import type { SupervisorSignal, WorkItem } from "../../domain/src/index.ts";
+import type { PolicyDenialReason } from "../../policy/src/index.ts";
 
 export const CommandResultStatus = {
   Accepted: "accepted",
@@ -9,6 +10,7 @@ export type CommandResultStatus = (typeof CommandResultStatus)[keyof typeof Comm
 
 export const CommandErrorCode = {
   IdempotencyConflict: "idempotency_conflict",
+  PolicyDenied: "policy_denied",
   UnsupportedCommand: "unsupported_command",
 } as const;
 
@@ -24,5 +26,8 @@ export type CommandResult = {
   error?: {
     code: CommandErrorCode;
     message: string;
+    policyDecisionId?: string;
+    policyVersion?: string;
+    reason?: PolicyDenialReason;
   };
 };

@@ -242,17 +242,29 @@ Business services should depend on ports, not concrete adapters.
 Every vendor-specific implementation must sit behind a generic
 Organization interface exported by a non-vendor package. For example,
 application code sees `CommandStateStore`, runtime code sees
-`EventIngestionStore`, and messaging code sees `EventPublisher`; it
-must not see CockroachDB, NATS, OpenZiti, Hindsight, Hermes, Temporal,
-Dapr, Kubernetes, or provider-specific clients directly. Vendor
-packages may define private executor seams for their own composition,
-but those seams are not application contracts.
+`EventIngestionStore`, messaging code sees `EventPublisher`, and command
+code sees `CommandAuthorizationPort`; it must not see CockroachDB,
+NATS, OpenZiti, Hindsight, Hermes, Temporal, Dapr, Kubernetes, OPA, or
+provider-specific clients directly. Vendor packages may define private
+executor seams for their own composition, but those seams are not
+application contracts.
 
 The command pipeline must also depend on a handler registry and a
-state-store factory supplied by the composition layer. It must not
-instantiate the in-memory store or branch on every command type. New
-commands should register a handler; new persistence backends should
-implement the same store-factory port.
+state-store factory supplied by the composition layer. It must also
+receive a command authorization port before any API, MCP, Hermes,
+worker, Temporal, or Dapr entrypoint can execute Organization commands.
+It must not instantiate the in-memory store or branch on every command
+type. New commands should register a handler; new persistence backends
+should implement the same store-factory port.
+
+Policy remains a generic Organization package. The first implementation
+maps a `CommandAuthorizationRequest` to a `HatAuthorityPort` decision:
+active hat authority allows the command, while expired, missing,
+revoked, scope-denied, or tool-denied authority rejects the command with
+a typed policy decision before idempotency lookup, handler dispatch, or
+state persistence. OPA bundles, Kubernetes hat CRD watches, JWT
+validation, Organization DB assignment lookups, and credential-proxy
+checks are later adapter implementations behind that policy boundary.
 
 State-store ports are async at the application boundary. In-memory
 adapters may resolve immediately, but durable SQL, transactional outbox,
@@ -398,6 +410,14 @@ type AgenticEventEnvelope<TPayload> = {
   payload: TPayload;
 };
 ```
+
+The current command-authorization slice returns policy metadata on a
+typed denial result but does not yet write denial observations or attach
+allowed policy decisions to audit/outbox envelopes. That is intentional
+for the first gate and should be closed before real API, MCP, Hermes,
+Temporal, or Dapr entrypoints are exposed: allowed decisions should flow
+into the optional `policy` envelope block, and denied decisions should
+be observable without pretending a business state transition succeeded.
 
 No app should publish raw NATS payloads directly. Publishing should go
 through `@agentic-org/messaging`.
@@ -924,9 +944,12 @@ Grafana.
    - `@agentic-org/ui-projections`.
 2. Implement the canonical command context, event envelope, typed enums,
    and idempotency key builder.
-3. Implement the first durable SQL schema and migrations for the V0
+3. Add command authorization and hat-authority ports so the command
+   pipeline rejects expired, missing, revoked, scope-denied, or
+   tool-denied hats before handler dispatch or state persistence.
+4. Implement the first durable SQL schema and migrations for the V0
    executable contract, using CockroachDB as the initial adapter.
-4. Implement command handlers for:
+5. Implement command handlers for:
    - send supervisor signal;
    - triage supervisor signal;
    - capability request input through the supervisor signal path;
@@ -937,24 +960,24 @@ Grafana.
    - submit evidence;
    - decide gate;
    - complete outcome review.
-5. Use fake adapters for Hermes, Hindsight, Dapr, Temporal, and
+6. Use fake adapters for Hermes, Hindsight, Dapr, Temporal, and
    hat-system.
-6. Add NATS outbox publisher and one consumer after command tests pass.
-7. Add inbox/consumer dedupe before any NATS-driven automation performs
+7. Add NATS outbox publisher and one consumer after command tests pass.
+8. Add inbox/consumer dedupe before any NATS-driven automation performs
    side effects. The first package-level processor and Cockroach adapter
    now exist; the first package-level worker host composes the outbox and
    inbound-ingestion loops through ports, and the NATS consumer adapter
    owns live ack/nack/DLQ policy.
-8. Add the first rule catalog and reaction executor for ready work,
+9. Add the first rule catalog and reaction executor for ready work,
    review staffing, QA staffing, blocker escalation, and late run
    incidents.
-9. Add runtime hosts. The first NodeNext `apps/workers` host now parses
-   typed process config and composes the worker and NATS consumer loops
-   through ports; NestJS API and richer worker process wiring are still
-   pending.
-10. Add UI projections for work board, review center, and evidence
+10. Add runtime hosts. The first NodeNext `apps/workers` host now parses
+    typed process config and composes the worker and NATS consumer loops
+    through ports; NestJS API and richer worker process wiring are still
+    pending.
+11. Add UI projections for work board, review center, and evidence
     timeline.
-11. Add real cluster adapters one at a time.
+12. Add real cluster adapters one at a time.
 
 ## Extraction Path
 
@@ -991,6 +1014,8 @@ Before a package can be consumed by the OS, it needs:
 - dependency-boundary check;
 - typed enum/state-machine tests;
 - policy allow/deny tests where relevant;
+- command pipeline tests proving policy authorization runs before
+  idempotency lookup, handler dispatch, and state persistence;
 - event envelope tests;
 - idempotency tests for side-effecting commands;
 - rule evaluation tests that prove a state event creates the expected

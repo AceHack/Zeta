@@ -50,12 +50,26 @@ Organization state only by calling Organization commands.
 - **WHEN** a runtime host creates a command pipeline
 - **THEN** it supplies a command-state-store factory and command-handler
   registry through ports
+- **AND** it supplies a command-authorization port through ports
 - **AND** the pipeline does not construct a concrete in-memory store
   directly
 - **AND** the pipeline does not use a central command-type switch for
   extensible command dispatch
 - **AND** command-state-store operations are async so real persistence
   adapters can perform I/O without changing command contracts
+
+#### Scenario: Command policy runs before command effects
+
+- **WHEN** any API, MCP, Hermes, worker, Temporal, or Dapr entrypoint
+  submits an Organization command
+- **THEN** the command pipeline authorizes the command through a generic
+  command-authorization port before idempotency lookup, handler dispatch,
+  or state persistence
+- **AND** active hat authority allows the command to continue
+- **AND** expired, missing, revoked, scope-denied, or tool-denied hat
+  authority rejects the command with a typed policy-denied error
+- **AND** no supervisor-signal, audit, outbox, or idempotency state is
+  recorded for the denied command
 
 #### Scenario: Package boundaries are checked
 
@@ -67,6 +81,9 @@ Organization state only by calling Organization commands.
 - **AND** state adapter source files are checked for forbidden imports
   of runtime implementation packages, messaging, NATS, JetStream, or
   other event transport clients
+- **AND** policy source files are checked for forbidden imports of
+  application, runtime, state adapter, messaging adapter, NestJS, NATS,
+  Dapr, Temporal, Drizzle, Postgres, OPA, or other vendor clients
 
 #### Scenario: Tests are kept out of production source trees
 

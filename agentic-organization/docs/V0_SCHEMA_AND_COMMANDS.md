@@ -249,20 +249,23 @@ Every side-effecting command must include:
 
 - `commandId`;
 - `idempotencyKey`;
-- `actorAgentId`;
-- `actorHatAssignmentId`, when the actor is wearing a hat;
+- `actor.agentId`;
+- `actor.hatAssignmentId`, when the actor is wearing a hat;
 - `organizationId`;
 - `projectId` or explicit reason none is available;
 - `correlationId`;
 - `causationId`;
 - `traceId`;
 - `expectedVersion`, when mutating an existing aggregate;
-- `policyContext`.
+- enough authorization context to derive a policy request, currently
+  `actor: { agentId, hatAssignmentId }`, scope, tool type,
+  supervisor-chain target, and trace fields.
 
 Every command handler must:
 
 1. load authoritative state through the state-store port;
-2. validate actor context and hat authority;
+2. receive commands only after the command pipeline validates actor
+   context and hat authority through the policy port;
 3. validate lifecycle transition;
 4. write state, audit event, and outbox event in one transaction;
 5. return the authoritative post-state;

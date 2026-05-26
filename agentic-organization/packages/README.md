@@ -11,6 +11,7 @@ host, or Kubernetes deployment is introduced.
 | ----------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | `domain`          | typed command names, event names, aggregate names, work item state machine, event envelope, shared records                 |
 | `application`     | command pipeline, handler registry, idempotency handling, state-store ports, first supervisor-chain signal command handler |
+| `policy`          | generic command authorization port, hat-authority port, policy decisions, and typed denial reasons                         |
 | `state`           | generic state-store and outbox-source ports plus the in-memory Organization state-store factory fake                       |
 | `state-cockroach` | first replaceable durable SQL adapter for the state-store/outbox-source ports, backed by CockroachDB                       |
 | `messaging`       | NATS subject contract, outbox publisher port, event publisher port, and domain resolver without a live NATS dependency     |
@@ -26,6 +27,8 @@ The first slice proves this path:
 
 ```text
 supervisor-chain signal command
+  -> command authorization policy
+  -> active hat-authority check
   -> idempotency check
   -> chain communication record
   -> audit event
@@ -54,6 +57,15 @@ Runtime hosts and tests provide a `CommandStateStoreFactory`; the state
 package implements the current in-memory factory. Command routing uses a
 handler registry so new commands add handlers instead of editing a
 central `switch` or `if` dispatcher.
+
+The application package also receives a `CommandAuthorizationPort`.
+Every command is authorized before idempotency lookup or handler
+dispatch. The first policy implementation delegates to a generic
+`HatAuthorityPort`; active authority allows the command, while expired,
+missing, revoked, scope-denied, or tool-denied authority returns a typed
+`policy_denied` result without writing command state. Future OPA,
+hat-system, JWT, or Organization DB adapters must implement these ports
+instead of leaking vendor clients into command code.
 
 Production source and test source are separated by package. Application
 code lives under `packages/<name>/src`; tests live under

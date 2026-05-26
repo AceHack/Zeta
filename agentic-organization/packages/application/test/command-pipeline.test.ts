@@ -2,6 +2,12 @@ import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import { CommandType, SupervisorChainLevel, SupervisorSignalToolType } from "../../domain/src/index.ts";
+import {
+  HatAuthorityDecisionStatus,
+  PolicyDecisionStatus,
+  type CommandAuthorizationPort,
+  type CommandAuthorizationRequest,
+} from "../../policy/src/index.ts";
 import { createInMemoryOrganizationStoreFactory } from "../../state/src/index.ts";
 import { createCommandHandlerRegistry } from "../src/command-handler-registry.ts";
 import { CommandErrorCode, CommandResultStatus, type CommandResult } from "../src/command-result.ts";
@@ -44,6 +50,7 @@ describe("command pipeline idempotency", () => {
     const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
     const pipeline = createCommandPipeline({
       stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
       handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
@@ -70,6 +77,7 @@ describe("command pipeline idempotency", () => {
     const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
     const pipeline = createCommandPipeline({
       stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
       handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
@@ -93,6 +101,7 @@ describe("command pipeline idempotency", () => {
     const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
     const pipeline = createCommandPipeline({
       stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
       handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
@@ -120,6 +129,7 @@ describe("command pipeline idempotency", () => {
     });
     const pipeline = createCommandPipeline({
       stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
       handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
@@ -141,6 +151,7 @@ describe("command pipeline idempotency", () => {
     });
     const pipeline = createCommandPipeline({
       stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
       handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
@@ -157,6 +168,7 @@ describe("command pipeline idempotency", () => {
     const stateStoreFactory = createFailingOutcomeCommandStateStoreFactory<CommandResult>("transaction unavailable");
     const pipeline = createCommandPipeline({
       stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
       handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
       now: () => "2026-05-25T20:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
@@ -173,19 +185,73 @@ describe("command pipeline idempotency", () => {
     equal(stateStoreFactory.appendCallCount, 0);
     equal(stateStoreFactory.recordCallCount, 1);
   });
+
+  test("rejects commands before idempotency lookup when hat policy denies authority", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const commandAuthorizationPort = createDenyingCommandAuthorizationPort("policy-decision-denied-001");
+    const deniedHandler = createRecordingCommandHandler();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort,
+      handlerRegistry: createCommandHandlerRegistry([deniedHandler]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PolicyDenied);
+    equal(result.error?.policyDecisionId, "policy-decision-denied-001");
+    equal(result.error?.policyVersion, "policy-v1");
+    equal(result.error?.reason, HatAuthorityDecisionStatus.Expired);
+    equal(commandAuthorizationPort.requests.length, 1);
+    deepEqual(commandAuthorizationPort.requests[0], {
+      commandId: command.commandId,
+      commandType: command.type,
+      actor: command.actor,
+      scope: {
+        organizationId: command.organizationId,
+        projectId: command.projectId,
+        teamId: command.teamId,
+        workItemId: command.relatedWorkItemId,
+      },
+      toolType: command.toolType,
+      supervisorChain: {
+        sourceLevel: command.sourceLevel,
+        targetLevel: command.targetLevel,
+      },
+      trace: {
+        correlationId: command.correlationId,
+        causationId: command.causationId,
+        traceId: command.traceId,
+      },
+    });
+    equal(deniedHandler.executeCallCount, 0);
+    equal(stateStoreFactory.findCallCount, 0);
+    equal(stateStoreFactory.recordedOutcomes.length, 0);
+  });
 });
 
 type RecordingCommandStateStoreFactory<Result> = CommandStateStoreFactory<Result> & {
+  readonly findCallCount: number;
   recordedOutcomes: RecordCommandOutcomeInput<Result>[];
 };
 
 function createRecordingCommandStateStoreFactory<Result>(): RecordingCommandStateStoreFactory<Result> {
   const recordedOutcomes: RecordCommandOutcomeInput<Result>[] = [];
+  let findCallCount = 0;
 
   return {
+    get findCallCount() {
+      return findCallCount;
+    },
     recordedOutcomes,
     createCommandStateStore: () => ({
-      findIdempotencyRecord: async () => undefined,
+      findIdempotencyRecord: async () => {
+        findCallCount += 1;
+        return undefined;
+      },
       recordCommandOutcome: async (input) => {
         recordedOutcomes.push(input);
 
@@ -198,15 +264,80 @@ function createRecordingCommandStateStoreFactory<Result>(): RecordingCommandStat
   };
 }
 
+function createAllowingCommandAuthorizationPort(): CommandAuthorizationPort {
+  return {
+    authorizeCommand: async () => ({
+      status: PolicyDecisionStatus.Allowed,
+      decisionId: "policy-decision-allow-001",
+      policyVersion: "policy-v1",
+    }),
+  };
+}
+
+function createDenyingCommandAuthorizationPort(decisionId: string): CommandAuthorizationPort & {
+  requests: CommandAuthorizationRequest[];
+} {
+  const requests: CommandAuthorizationRequest[] = [];
+
+  return {
+    requests,
+    authorizeCommand: async (request) => {
+      requests.push(request);
+
+      return {
+        status: PolicyDecisionStatus.Denied,
+        decisionId,
+        policyVersion: "policy-v1",
+        reason: HatAuthorityDecisionStatus.Expired,
+      };
+    },
+  };
+}
+
+function createRecordingCommandHandler() {
+  let executeCallCount = 0;
+
+  return {
+    commandType: CommandType.SendSupervisorSignal,
+    get executeCallCount() {
+      return executeCallCount;
+    },
+    execute: async () => {
+      executeCallCount += 1;
+
+      return {
+        result: {
+          status: CommandResultStatus.Accepted,
+          idempotency: {
+            replayed: false,
+          },
+        },
+        effects: {
+          supervisorSignals: [],
+          auditEvents: [],
+          outboxEvents: [],
+        },
+      };
+    },
+  };
+}
+
 function createOutcomeResultCommandStateStoreFactory<Result>(
   outcomeResult: RecordCommandOutcomeResult<Result>,
 ): RecordingCommandStateStoreFactory<Result> {
   const recordedOutcomes: RecordCommandOutcomeInput<Result>[] = [];
+  let findCallCount = 0;
 
   return {
+    get findCallCount() {
+      return findCallCount;
+    },
     recordedOutcomes,
     createCommandStateStore: () => ({
-      findIdempotencyRecord: async () => undefined,
+      findIdempotencyRecord: async () => {
+        findCallCount += 1;
+        return undefined;
+      },
       recordCommandOutcome: async (input) => {
         recordedOutcomes.push(input);
         return outcomeResult;

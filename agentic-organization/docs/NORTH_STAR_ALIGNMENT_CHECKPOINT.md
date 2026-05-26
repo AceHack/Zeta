@@ -156,14 +156,20 @@ transaction. The current tests prove the batch boundary and runtime
 recovery behavior; a future local/dev-cluster integration test should
 prove actual rollback behavior with the real adapter binding.
 
-### Policy And Hat Authority Gap
+### Policy And Hat Authority Checkpoint
 
-`send_supervisor_signal` does not yet validate actor hat authority,
-source level, target supervisor, or active hat assignment. Before API,
-MCP, Hermes, or worker hosts accept real agent commands, the application
-boundary needs a policy/hat-authority port and tests for unauthorized
-source hats, invalid target supervisors, expired/revoked hats, and
-missing assignments.
+`send_supervisor_signal` now enters through a command pipeline that
+requires a `CommandAuthorizationPort` before idempotency lookup, handler
+dispatch, or persistence. The first policy package maps that command
+authorization request to a generic `HatAuthorityPort`; active authority
+allows the command, while expired, missing, revoked, scope-denied, or
+tool-denied authority returns a typed `policy_denied` result.
+
+The remaining gaps are richer authority semantics and durable
+visibility: tests still need unauthorized source hats, invalid target
+supervisors, missing assignments, and all denial reasons, and the system
+still needs a denial-observation/audit path plus allowed policy-decision
+projection into command effects and event envelopes.
 
 ### Command Surface Closure
 
