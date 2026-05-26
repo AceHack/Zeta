@@ -16,6 +16,23 @@
   time.timeZone = "America/New_York";
   i18n.defaultLocale = "en_US.UTF-8";
 
+  # Enable serial console output alongside VGA tty1.
+  # Two use cases:
+  #   1. CI QEMU boot smoke-test (USB cleanup PR 3 cascade #5 per PR
+  #      #5322) captures serial output to verify the installer boots
+  #      to login. Without console=ttyS0, the cascade test times out
+  #      because all systemd/getty output goes to VGA only (which
+  #      QEMU's -display none hides).
+  #   2. Real hardware with serial headers (some Beelinks; most
+  #      server-class boards; debugging scenarios where the only
+  #      output is RS-232) can capture installer output too.
+  # tty1 stays primary (VGA console for the keyboard-attached install
+  # flow); ttyS0 is mirrored secondary at 115200 8N1 (standard).
+  boot.kernelParams = [
+    "console=ttyS0,115200n8"
+    "console=tty1"
+  ];
+
   # B-0754 iter-3 hardware-firmware cleanup: enable redistributable
   # firmware on the installer (Intel SoF / linux-firmware). Without
   # this, modern Intel chipsets (Meteor Lake / Lunar Lake / Arrow
