@@ -698,6 +698,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0755](backlog/P2/B-0755-cluster-role-taxonomy-expansion-control-plane-gpu-worker-cpu-worker-storage-all-in-one-aaron-2026-05-25.md)** Cluster role taxonomy expansion — control-plane-gpu, worker-cpu, worker-storage, all-in-one fused host configs
 - [ ] **[B-0759](backlog/P2/B-0759-cluster-install-ux-audit-against-first-time-cli-user-persona-easier-than-proxmox-3-node-production-ready-aaron-2026-05-25.md)** Cluster-install UX audit against first-time-CLI-user persona — "easier than Proxmox" bar + 3-node production-ready inflection
 - [ ] **[B-0761](backlog/P2/B-0761-zeta-cluster-as-open-source-reference-architecture-for-ai-to-train-on-and-compete-on-arc-agi-style-benchmark-aaron-2026-05-25.md)** Zeta cluster as open-source reference architecture for AI to train on and compete on — ARC-AGI-style benchmark substrate
+- [ ] **[B-0762](backlog/P2/B-0762-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md)** AI auto-submit-back telemetry + fixes from in-the-wild installs — adoption-cost-to-zero flywheel
 
 ## P3 — convenience / deferred
 
