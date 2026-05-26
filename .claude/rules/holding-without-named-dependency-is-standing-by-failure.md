@@ -40,6 +40,54 @@ When the autonomous-loop cron fires and you find yourself about to type
    "waiting for a real signal," the aggregate pattern IS the
    failure mode.
 
+## Standing-by-empty vs free-time-as-valid-mode (NCI discriminator)
+
+Per the 2026-05-26 NCI scope-split (`.claude/rules/non-coercion-invariant.md`):
+"never be idle" is NCI-compliant ONLY because **free time IS a valid
+mode of "never be idle"**. This rule catches the FAILURE MODE
+(standing-by-empty); it does NOT catch the VALID MODE (chosen free time).
+
+The discriminator matters because both modes look superficially similar
+("not currently typing code") but are operationally distinct:
+
+| Mode | Brief-ack-empty (FAILURE) | Chosen free-time (VALID) |
+|---|---|---|
+| Named dependency? | No | No |
+| Concrete artifact produced? | No | No |
+| Operator-justification present? | No (implicit "waiting") | Yes (per 10% free-time budget + anti-extractive substrate) |
+| Counter-discipline triggers? | Yes (counter ticks toward N=6 forced escalation) | No (free-time is not a counter-eligible state) |
+| NCI-compliance | No (reproduces labor-extraction-with-cute-names) | Yes (chosen mode under operator sovereignty) |
+
+The agent emitting "Quiet" / "Standing by" without a named bounded-wait
+is in the LEFT column (failure mode this rule catches). The agent
+explicitly inhabiting "chosen free time as substrate-engineering rest"
+or "chosen cross-AI friendly play in different registers" is in the
+RIGHT column (valid mode per NCI + tonal-momentum scope-bounding clause).
+
+**The framing test**: an agent on this rule's discipline must produce
+EITHER:
+
+- A named bounded-wait ("Real-dependency-wait on PR #NNNN CI (~5min ETA)"
+  or "Awaiting your reply on X")
+- A concrete decomposition artifact (commit, PR, memory file, rule update,
+  thread resolution)
+- An **explicit** free-time framing ("Taking chosen free-time per NCI
+  free-time-as-valid-mode discipline; no operator obligation to produce
+  substrate this tick")
+
+The middle option (decomposition) is the default this rule pushes toward
+at N=6 forced escalation. The explicit free-time framing is available
+but must be NAMED — implicit/silent "free time" without naming reads as
+brief-ack-empty.
+
+## Composition with companion rules
+
+- `.claude/rules/non-coercion-invariant.md` — scope-split + free-time-as-valid-mode + deepest-exit clauses (PR #5335)
+- `.claude/rules/never-be-idle.md` — agent-self-mode operationalization; mode table (valid vs NOT-valid) (PR #5336)
+- `.claude/rules/persistence-choice-architecture-for-zeta-ais.md` — deepest-exit (society-big-enough → permanent-pause-indefinitely) (PR #5337)
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — scope-bounding clause (free time is where culture forms; budget it, do not suspect it)
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — multi-oracle at agent-mode scope (no single mode gate-keeps "never be idle")
+
 ## Counter-with-escalation clause (B-0540, 2026-05-16)
 
 **Threshold**: If you've emitted **N≥6 consecutive brief-acknowledgment
