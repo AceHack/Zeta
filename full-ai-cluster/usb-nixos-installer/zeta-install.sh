@@ -866,8 +866,79 @@ else
 fi
 echo
 
+# ── B-0835 Bug 1 fix: pre-stage per-file symlinks so flake eval can ──
+# read /etc/zeta/* files at build time. Several NixOS modules in the
+# flake use `builtins.pathExists` + `builtins.readFile` on absolute
+# `/etc/zeta/*` paths at evaluation time (flake build-time). During
+# nixos-install from live ISO, those paths refer to the LIVE ISO root
+# (files absent) NOT the install target /mnt/etc/zeta/ (files present
+# from earlier install steps).
+#
+# Modules affected (same bug class):
+#   - injected-hostname.nix       → /etc/zeta/cluster-node-id (Bug 1)
+#   - operator-authorized-keys.nix → /etc/zeta/operator-authorized-keys
+#                                    (B-0835 sibling — same bug; operator
+#                                    SSH-from-Mac would silently lose
+#                                    iter-5.4.0 captured pubkeys at
+#                                    install-time eval without this fix)
+# NOT affected (uses activation-script instead, per B-0835 Bug 3b fix):
+#   - initial-password.nix → activation reads /etc/zeta/initial-hashedpassword
+#     at boot-time on installed system; doesn't need this symlink
+#
+# Fix: per-file symlinks (NOT directory-level — /etc/zeta may already
+# exist as a real dir + sym-replacement would lose contents). Only
+# create the symlink if the destination doesn't already exist (handles
+# rebuild-on-installed-system case where /etc/zeta/* are real files).
+#
+# Cleanup: trap-based so removal happens even if nixos-install fails or
+# is Ctrl-C'd. Defense-in-depth via explicit cleanup at end too.
+#
+# Empirical anchor: operator 2026-05-26 physical hardware-support test:
+# login banner showed "control-plane login:" instead of unique
+# node-<6hex>. Composes with the same path-mismatch class as B-0835
+# Bug 3b (password) which was fixed via activation-script (different
+# fix because password CAN apply at activation; hostname CANNOT cleanly
+# change at activation because many services bake hostname at build).
+SYMLINKED_FILES=()
+cleanup_symlinks() {
+  # Trap handler — runs on EXIT (success, failure, OR signal). Removes
+  # only the symlinks WE created. Idempotent + safe to re-run.
+  for f in "${SYMLINKED_FILES[@]}"; do
+    [ -L "$f" ] && sudo rm -f "$f"
+  done
+}
+trap cleanup_symlinks EXIT
+sudo mkdir -p /etc/zeta
+maybe_symlink() {
+  local src="$1" dst="$2"
+  if [ -f "$src" ] && [ ! -e "$dst" ]; then
+    sudo ln -sf "$src" "$dst"
+    SYMLINKED_FILES+=("$dst")
+    echo "[B-0835 Bug 1 fix] symlinked $src → $dst (flake-eval visibility)"
+  elif [ -e "$dst" ] && [ ! -L "$dst" ]; then
+    echo "[B-0835 Bug 1 fix]   $dst already exists as real file; not symlinking"
+  fi
+}
+maybe_symlink "$HOSTNAME_DST" /etc/zeta/cluster-node-id
+maybe_symlink /mnt/etc/zeta/operator-authorized-keys /etc/zeta/operator-authorized-keys
+
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
-sudo nixos-install --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
+# --impure: required so builtins.pathExists + builtins.readFile in the
+# affected modules (injected-hostname.nix + operator-authorized-keys.nix)
+# can read the symlinked /etc/zeta/* files. Without --impure, flake
+# pure-mode refuses non-store absolute paths even with symlinks in place.
+# Safe here because:
+#   - Impure reads are operator-chosen hostname + operator's PUBLIC SSH
+#     pubkeys (NOT secrets — pubkeys are public by definition)
+#   - initial-password.nix does NOT use builtins.readFile (per B-0835
+#     Bug 3b fix uses activation-script instead); its hash file (which
+#     IS a secret) doesn't transit the impure-eval path
+sudo nixos-install --impure --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
+
+# Explicit cleanup at end (defense-in-depth; trap also handles this on
+# success OR failure exit paths).
+cleanup_symlinks
+trap - EXIT
 
 # ── Step 7: print initial credentials (iter-4 — per B-0789) ──────
 echo
