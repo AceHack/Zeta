@@ -1,6 +1,9 @@
 import { describe, expect, test } from "bun:test";
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import type { TrajectoryPacket } from "./autonomous-pickup";
-import { selectNextTrajectory } from "./autonomous-pickup";
+import { readTrajectoryPackets, selectNextTrajectory } from "./autonomous-pickup";
 
 function packet(partial: Partial<TrajectoryPacket> & Pick<TrajectoryPacket, "slug" | "title">): TrajectoryPacket {
   return {
@@ -122,5 +125,40 @@ describe("selectNextTrajectory", () => {
     expect(selection.status).toBe("selected");
     expect(selection.selected?.slug).toBe("typescript-bun-migration");
     expect(selection.blocked[0]?.reason).toContain("claim/factory-trajectory-surface");
+  });
+});
+
+describe("readTrajectoryPackets", () => {
+  test("keeps wrapped top-level next-action fields together", () => {
+    const repoRoot = mkdtempSync(join(tmpdir(), "zeta-trajectory-pickup-"));
+    try {
+      const packetDir = join(repoRoot, "docs", "trajectories", "typescript-bun-migration");
+      mkdirSync(packetDir, { recursive: true });
+      writeFileSync(
+        join(packetDir, "RESUME.md"),
+        [
+          "# TypeScript / Bun migration",
+          "",
+          "**Status:** active",
+          "**Next concrete action:** Claim the smallest TypeScript/Bun migration slice and",
+          "preserve the wrapped continuation text in the generated prompt.",
+          "**Current blocker:** none",
+          "",
+          "## Next Child Packets",
+          "",
+          "- none currently selected",
+        ].join("\n"),
+      );
+
+      const packets = readTrajectoryPackets(repoRoot);
+
+      expect(packets).toHaveLength(1);
+      expect(packets[0]?.nextAction).toBe(
+        "Claim the smallest TypeScript/Bun migration slice and preserve the wrapped continuation text in the generated prompt",
+      );
+      expect(packets[0]?.blocker).toBe("none");
+    } finally {
+      rmSync(repoRoot, { recursive: true, force: true });
+    }
   });
 });

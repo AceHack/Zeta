@@ -157,10 +157,42 @@ function fieldValue(line: string, label: string): string | null {
   return stripMarkdown(stripped.slice(prefix.length));
 }
 
+function isFieldLikeLine(line: string): boolean {
+  const stripped = line.trim().replaceAll("**", "");
+  const colonIndex = stripped.indexOf(":");
+  if (colonIndex <= 0 || colonIndex > 80) {
+    return false;
+  }
+  const label = stripped.slice(0, colonIndex).trim();
+  return /^[A-Za-z][A-Za-z0-9 /_-]*$/.test(label);
+}
+
+function fieldWithContinuations(lines: readonly string[], index: number, label: string): string | null {
+  const value = fieldValue(lines[index] ?? "", label);
+  if (value === null) {
+    return null;
+  }
+  const parts = [value];
+  for (let nextIndex = index + 1; nextIndex < lines.length; nextIndex++) {
+    const trimmed = lines[nextIndex]?.trim() ?? "";
+    if (
+      trimmed === "" ||
+      trimmed.startsWith("#") ||
+      trimmed.startsWith("- ") ||
+      trimmed.startsWith("|") ||
+      isFieldLikeLine(trimmed)
+    ) {
+      break;
+    }
+    parts.push(stripMarkdown(trimmed));
+  }
+  return stripMarkdown(parts.join(" "));
+}
+
 function firstField(lines: readonly string[], labels: readonly string[]): string | null {
-  for (const line of lines) {
+  for (let index = 0; index < lines.length; index++) {
     for (const label of labels) {
-      const value = fieldValue(line, label);
+      const value = fieldWithContinuations(lines, index, label);
       if (value !== null && value.length > 0) {
         return value;
       }
