@@ -336,24 +336,30 @@ function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError 
 // the actual directory layout. Sized small enough to fit in CI log
 // scroll-back without overwhelming.
 function dumpIsoEntriesForDiagnostic(isoPath: string, limit: number = 80): string {
-  try {
-    const proc = spawnSync("7z", ["l", "-slt", isoPath], { encoding: "utf8" });
-    if (proc.status !== 0) {
-      return `  (could not dump entries: 7z l failed with status ${proc.status})`;
-    }
-    const paths = proc.stdout
-      .split("\n")
-      .filter((l) => l.startsWith("Path = "))
-      .map((l) => l.slice("Path = ".length))
-      .filter((p) => p !== "" && p !== isoPath)
-      .sort();
-    if (paths.length === 0) return "  (no entries found)";
-    const sample = paths.slice(0, limit);
-    const tail = paths.length > limit ? `\n  ... and ${paths.length - limit} more entries` : "";
-    return sample.map((p) => `  ${p}`).join("\n") + tail;
-  } catch (err) {
-    return `  (diagnostic dump failed: ${err instanceof Error ? err.message : String(err)})`;
+  // Reuses lsIso() (fix-fwd Copilot P0 on #5235): single source of truth
+  // for the 7z invocation + already carries the sonarjs/no-os-command-from-path
+  // suppression + maxBuffer (64 MiB) + r.error handling that the diagnostic
+  // dump needs to be safe on large ISOs. 7z is PATH-resolved (the suppression
+  // in lsIso explicitly accepts this); diagnostic dump inherits that resolution.
+  // Earlier draft open-coded a separate spawnSync that would fail the CI lint pass.
+  const ls = lsIso(isoPath);
+  if (!ls.ok) {
+    return `  (could not dump entries: ${ls.stderr})`;
   }
+  // entries are parsed by lsIso to {path, size}; we just want paths here.
+  // Normalize leading slashes (fix-fwd Copilot finding on #5251): auditIsoContent
+  // strips leading "/" via .replace(/^\/+/, "") at line ~274 so failure messages
+  // report "boot/..." paths; this dump must use the same normalization or
+  // operators see "/boot/..." in the dump vs "boot/..." in the failure list,
+  // making cross-reference harder. Same regex used here for consistency.
+  const paths = ls.entries
+    .map((e) => e.path.replace(/^\/+/, ""))
+    .filter((p) => p !== "" && p !== isoPath)
+    .sort();
+  if (paths.length === 0) return "  (no entries found)";
+  const sample = paths.slice(0, limit);
+  const tail = paths.length > limit ? `\n  ... and ${paths.length - limit} more entries` : "";
+  return sample.map((p) => `  ${p}`).join("\n") + tail;
 }
 
 function main(): number {
@@ -393,8 +399,11 @@ function main(): number {
   process.stderr.write("\n");
   // Diagnostic dump (B-0823) — show what's actually in the ISO so the
   // candidate any-of paths can be extended next time nixpkgs shifts.
-  process.stderr.write(`ISO entries (first 80 sorted) for diagnostic:\n`);
-  process.stderr.write(dumpIsoEntriesForDiagnostic(parsed.isoPath));
+  // Derive the limit from a single constant so the header text + the
+  // function call never drift apart (fix-fwd Copilot finding on #5235).
+  const DIAG_DUMP_LIMIT = 80;
+  process.stderr.write(`ISO entries (first ${DIAG_DUMP_LIMIT} sorted) for diagnostic:\n`);
+  process.stderr.write(dumpIsoEntriesForDiagnostic(parsed.isoPath, DIAG_DUMP_LIMIT));
   process.stderr.write("\n\n");
   return 3;
 }

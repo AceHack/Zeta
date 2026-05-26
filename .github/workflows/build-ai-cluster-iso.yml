@@ -48,6 +48,7 @@ on:
       - 'full-ai-cluster/nixos/**'
       - 'full-ai-cluster/tools/**'
       - 'tools/ci/audit-installer-substrate.ts'
+      - 'tools/ci/audit-installer-iso-content.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   push:
     branches: [main]
@@ -58,6 +59,7 @@ on:
       - 'full-ai-cluster/nixos/**'
       - 'full-ai-cluster/tools/**'
       - 'tools/ci/audit-installer-substrate.ts'
+      - 'tools/ci/audit-installer-iso-content.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   workflow_dispatch:
 

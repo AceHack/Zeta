@@ -31,7 +31,7 @@ Empirical evidence: build-iso run [26463680640](https://github.com/Lucent-Financ
 
 ## Probable root cause
 
-Same class as [B-0818](B-0818-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md): nixpkgs 25.11's image/images refactor changed where kernel + initrd land in the ISO. Per the [iso-image module source](https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/installer/cd-dvd/iso-image.nix) the path includes `cfg.boot.kernelPackages.kernel` + `cfg.system.boot.loader.kernelFile` — historically resolved to `boot/bzImage` at top-level but may now include per-arch / store-hash variations.
+Same class as [B-0818](B-0818-investigate-isoname-mkforce-not-sticking-on-nixpkgs-25-11-aaron-2026-05-26.md): nixpkgs 25.11's image/images refactor changed where kernel + initrd land in the ISO. Per the [iso-image module source on the nixos-25.11 branch](https://github.com/NixOS/nixpkgs/blob/nixos-25.11/nixos/modules/installer/cd-dvd/iso-image.nix) (branch-pinned per Copilot finding on #5235 — `master` drifts; `nixos-25.11` matches the channel this row investigates) the path includes `cfg.boot.kernelPackages.kernel` + `cfg.system.boot.loader.kernelFile` — historically resolved to `boot/bzImage` at top-level but may now include per-arch / store-hash variations.
 
 WebSearch 2026-05-26 surfaced the legacy `/boot/bzImage` + `/boot/initrd` paths via [NixOS wiki](https://wiki.nixos.org/wiki/NixOS_Installation_Guide/Manual_USB_Creation) docs but these are 24.11-era. The 25.11 ISO at top-level shows the bootloader configs (isolinux + refind) which reference paths internally — the actual kernel + initrd files may now be at variant locations not at `boot/` directly.
 
