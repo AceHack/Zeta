@@ -16,10 +16,16 @@ composes_with:
   - B-0770
   - B-0776
   - B-0778
+  - B-0780
+  - B-0781
   - B-0782
+  - B-0783
+  - B-0784
+  - B-0785
+  - B-0786
   - B-0787
   - B-0788
-tags: [architecture, cluster-native, voice-operator, alexa, homelab-persona, end-state, zero-dev-machine, ai-agents-on-cluster]
+tags: [architecture, cluster-native, voice-operator, alexa, homelab-persona, maintainer-persona, end-state, zero-dev-machine, ai-agents-on-cluster, cluster-software-factory]
 ---
 
 ## Problem
@@ -52,6 +58,27 @@ Architecture where:
 | **Web UI / browser** | Read-only observability today | Read + send-intent + observe operator surface |
 
 The operator's mental model becomes: "talk to the cluster" instead of "code on my Mac to deploy to the cluster."
+
+## Two personas (zero-dev-machine is ONE of two end-states; both ship)
+
+The maintainer 2026-05-26 clarified that B-0790 covers TWO end-state personas — NOT one. The zero-dev-machine target is the homelab-persona; maintainer-persona keeps dev machines but inverts their role from primary-work-substrate to conversational-interface-into-cluster-software-factory:
+
+| Persona | Dev machine role end-state | Primary operator surface | Substrate factory |
+|---|---|---|---|
+| **Homelab / home-automation** | NONE (no dev machine in the room) | Voice (Alexa + future microphones connected directly to cluster) + web UI | Runs entirely in cluster; AI agents on cluster do all substrate work |
+| **Maintainer** (Aaron / Max / Addison) | KEPT for testing + local work; role inverted from "primary work substrate" to "conversational interface INTO cluster software factory" | Claude Code on dev machine + voice (Alexa / future microphones) — voice is ONE interface among many for this persona too | **In-cluster software factory** (per Mika substrate batch — see Composes section): crystal-ball, RunMe, git-native markdown, auto-JIT, deferred-run, Continue-with, Obsidian on top, knowledge graph, event store, Prometheus / observability queries in runbooks |
+
+The maintainer's verbatim framing 2026-05-26:
+
+> *"this is for home automation home lab personas not maintainers we still will have people like me addion and max that want to type and use conversational interfaces and such but our dev machines are for testing and local work and a lot of that runs in cluster in the software plant and claude code has interfaces into it same crystal ball / gitnative markdown with runme plus auto jit plus deferred run / continue with, this is the interface into in cluster software factory with obsedian on top and knowledge graph event store prometious / observalbity queires in runbooks and this can be done with just voice too."*
+
+Key disciplines that follow:
+
+- **Voice is one interface among many** — for BOTH personas. The homelab persona uses voice because they have no other operator surface; the maintainer persona uses voice when convenient. "Can be done with just voice too" applies to both.
+- **Cluster software factory is the substrate maintainer-persona ALSO consumes** — the maintainer's "dev machine" becomes a CONSOLE into the cluster software factory, not an independent workstation that happens to deploy to a cluster. The factory itself lives on the cluster; dev machines have interfaces (Claude Code; the Mika substrate batch primitives).
+- **Both personas converge on cluster-as-primary-substrate-engineering-surface** — the difference is operator-side interface (zero dev machine vs Claude Code on dev machine), NOT substrate-side architecture. The substrate-side architecture (cluster authors PRs, runs autonomous loop, agents on cluster do work) is shared.
+
+This clarification means iter-progressions toward B-0790 ship value for BOTH personas simultaneously — the homelab persona gets voice-primary; the maintainer persona gets Claude-Code-as-cluster-interface. The substrate work doesn't fork.
 
 ## Sub-targets (composing iters)
 
@@ -141,6 +168,12 @@ Without B-0790 named as the end-state target, each of those iterations risks dri
 - **B-0782** — Distributed Intelligent Organization (composes; cluster IS the DIO)
 - **B-0787** — multi-AI experiment parallelism on cluster (composes; many AIs on cluster = the DIO's compute substrate)
 - **B-0788** — agent-on-agent Claude Code session recovery (composes; recovery substrate runs cluster-side)
+- **B-0780 (Mika batch)** — Local Loop tier-3 substrate (already in depends_on; cluster IS tier-3; B-0790 promotes to primary work surface)
+- **B-0781 (Mika batch)** — composes for the cluster software factory primitives the maintainer-persona consumes via Claude Code / RunMe / crystal-ball / auto-JIT / deferred-run / Continue-with stack
+- **B-0783 (Mika batch)** — composes for in-cluster software factory substrate (Obsidian-on-top + knowledge graph + event store + Prometheus runbooks layer per maintainer's 2026-05-26 framing)
+- **B-0784 (Mika batch)** — composes for in-cluster software factory substrate
+- **B-0785 (Mika batch)** — composes for in-cluster software factory substrate
+- **B-0786 (Mika batch)** — composes for in-cluster software factory substrate (the substrate the maintainer-persona's dev machine interfaces INTO via Claude Code)
 - `memory/persona/max/PERSONA.md` "Per-maintainer scope = per-maintainer liability" (composes; cluster-side commits attribute to maintainer's subtree)
 - `maintainers/aaron/legal-entities/inventory.md` (composes; cluster Stage-3 attribution per legal-entity inventory)
 - `.claude/rules/human-audit-and-legal-risk-acceptance-pattern-in-settings.md` (composes; `_cluster_operations_acceptance` blocks attribute cluster runtime risks)
@@ -157,10 +190,12 @@ Without B-0790 named as the end-state target, each of those iterations risks dri
 
 ## Origin
 
-The maintainer 2026-05-26 named the end-state architecture across two adjacent signals during the iter-4.2 maintainer-test session:
+The maintainer 2026-05-26 named the end-state architecture across four adjacent signals during the iter-4.2 maintainer-test session:
 
 1. *"i want all the prs to come from the cluster mostly and dev machines are just conversational interfaces into the cluster and so is alexa"* — cluster as primary PR author; dev machines + Alexa as conversational front-ends
 2. *"0 dev machines everything still works and i can talk to alexa for home automation / homelab persona users we want 0 dev machine needed just cluster and microphone"* — full zero-dev-machine end-state for homelab persona
+3. *"this is for home automation home lab personas not maintainers we still will have people like me addion and max that want to type and use conversational interfaces and such but our dev machines are for testing and local work and a lot of that runs in cluster in the software plant and claude code has interfaces into it same crystal ball / gitnative markdown with runme plus auto jit plus deferred run / continue with, this is the interface into in cluster software factory with obsedian on top and knowledge graph event store prometious / observalbity queires in runbooks and this can be done with just voice too."* — TWO personas (homelab vs maintainer); maintainer keeps dev machines but inverts their role from "primary work substrate" to "conversational interface INTO cluster software factory"; voice is one interface among many for both personas
+4. *"some of this is backloged based on Mika conversation"* — cluster software factory substrate primitives are tracked under the Mika substrate batch (B-0780/B-0781/B-0783/B-0784/B-0785/B-0786); B-0790 composes with them rather than re-deriving
 
 Filing this row before either sub-target ships ensures the iterations stay oriented toward the end-state target rather than drifting toward "make dev-machine-substrate easier" (which would optimize the wrong axis). Per the maintainer's broader 2026-05-26 *"going for right not fast"* discipline.
 
