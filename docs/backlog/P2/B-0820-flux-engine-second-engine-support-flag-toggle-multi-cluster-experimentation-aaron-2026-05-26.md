@@ -80,12 +80,46 @@ Test both; pick the one with the cleanest declarative-from-git story (Flux's who
 
 ### Sub-target 4 — `dependsOn` ↔ sync-wave equivalence layer
 
-Aaron 2026-05-26 explicit endorsement of Flux's `dependsOn` ("clean as fuck"). When the same Helm-chart-first directory layout supports both engines, the dependency-graph spec needs translation between models:
+Aaron 2026-05-26 explicit endorsement of Flux's `dependsOn` ("clean as fuck") + the sharper architectural framing:
 
-- **Flux**: per-Kustomization / per-HelmRelease `dependsOn: [name1, name2]` named-reference primitive
-- **ArgoCD**: numeric `argocd.argoproj.io/sync-wave: "1"` annotation
+> *"but depends on is the only reason i'm giving flux a chance cause they sync waves are derivable"*
 
-A small TS substrate (`tools/cluster/deps-to-engine-config.ts`) takes a canonical dependency-graph spec (operator-authored once) and emits BOTH the Flux `dependsOn` field AND the ArgoCD sync-wave annotation. Single source of truth for dependency ordering; engine-specific output.
+**Derivability asymmetry — load-bearing architectural finding (Aaron 2026-05-26)**:
+
+| Direction | Possible? | Why |
+|---|---|---|
+| `dependsOn` graph → sync-wave numbers | YES | Topological sort + assign wave per topo-level → numeric wave annotations |
+| sync-wave numbers → `dependsOn` graph | NO (trivially) | Numbers don't carry the WHY of ordering; can't recover named-dependency semantics |
+
+This means the SOURCE-OF-TRUTH SHOULD BE `dependsOn`-shaped; sync-waves are a DERIVED PROJECTION. The substrate-engineering pattern:
+
+1. **Operator authors** named-dependency graph (regardless of target engine)
+2. **For Flux**: emit `dependsOn: [name1, name2]` directly (1:1 mapping)
+3. **For ArgoCD**: topo-sort the graph + emit `argocd.argoproj.io/sync-wave: "N"` annotations (derived)
+
+Aaron's "shit" insight (2026-05-26): *"oh shit maybe we should calculate this for our argo too eventually somehow with some helm chart tricks"* — the derivation can live IN the Helm chart itself, so ArgoCD users get `dependsOn`-shaped UX without thinking about wave numbers. Two candidate derivation surfaces:
+
+**Approach A — Helm template-level derivation (Helm tricks)**:
+
+- Convention: charts declare dependencies via `values.yaml` field (e.g., `zeta.dependsOn: [name1, name2]`)
+- Helm helper template (`_helpers.tpl`) implements topo-sort + emits the matching `argocd.argoproj.io/sync-wave` annotation on rendered manifests
+- Pros: derivation happens at chart-render time; no out-of-band tooling needed; ArgoCD sees pre-computed annotations
+- Cons: Helm's templating language is not great for graph algorithms; topo-sort in Sprig/Helm-template-functions is awkward (possible via `range` + lookups, but verbose)
+
+**Approach B — Build-time TS tool (`tools/cluster/deps-to-engine-config.ts`)**:
+
+- Operator authors a canonical dependency-graph spec (TS / YAML / Helm values)
+- TS tool consumes the spec at chart-build time + emits BOTH:
+  - Flux: `dependsOn` arrays
+  - ArgoCD: sync-wave annotations (after topo-sort)
+- Pros: graph algorithms in TS are trivial; testable; F# crystallization-candidate later per `.claude/rules/zeta-ships-with-skills-immediate-value.md`
+- Cons: build-time step; operators must remember to run it
+
+Recommended: **start with Approach B (TS tool)** for the substrate-engineering simplicity; evaluate Approach A (Helm-template derivation) as a follow-on when the substrate is settled. Either way, the SOURCE-OF-TRUTH is `dependsOn`-shaped; sync-waves are DERIVED.
+
+This is the same pattern as B-0816's Helm-as-convergence-point: push to the convergence point (here: named-dependency graph); wrap thinly per environment (here: Flux gets `dependsOn` directly; ArgoCD gets derived sync-waves). The architectural privilege of `dependsOn`-as-source-of-truth IS the load-bearing reason giving Flux a chance — derivability is asymmetric, and the asymmetric direction picks the source-of-truth shape regardless of which engine ends up shipping.
+
+Side benefit: this makes the Helm-charts-first directory layout (Sub-target 2) even cleaner — the `chart/` directory can carry the named-dependency declaration; both `argocd/` and `flux/` wrappers consume it.
 
 ### Sub-target 5 — UI considerations (Aaron 2026-05-26 question)
 
