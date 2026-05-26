@@ -468,17 +468,28 @@ function listExternalDisks(): ExternalDiskBrief[] {
 
 function findFatPartition(device: string): string | null {
   // diskutil list <device> output includes lines per partition with
-  // type-info like "DOS_FAT_32" / "EFI" / "Microsoft Basic Data".
-  // Returns the partition device path (e.g., /dev/disk6s2) or null.
+  // type-info that varies by scheme:
+  //   GPT:       "2: EFI EFI                  209.7 MB   disk6s1"
+  //              "2: DOS_FAT_32 NIXOS_ISO     65.5 MB    disk6s2"
+  //   MBR:       "1:           0xEF           3.1 MB     disk6s2"
+  //              (FDisk numeric type codes: 0xEF=EFI System Partition,
+  //               0x0C=FAT32-LBA, 0x0E=FAT16-LBA, 0x06=FAT16, 0x0B=FAT32,
+  //               0x0F=Extended-LBA)
+  // NixOS isohybrid + dd produces the MBR form on macOS. Be lenient —
+  // accept any FAT/EFI-shaped string OR any of the MBR FAT/ESP type
+  // codes. Returns the partition device path (e.g., /dev/disk6s2) or
+  // null. iter-4.4 fix-forward (B-0789): added 0xEF MBR matching after
+  // 2026-05-26 empirical test surfaced the bug.
   try {
     const out = execFileSync("diskutil", ["list", device], { encoding: "utf8" });
     const lines = out.split("\n");
     for (const line of lines) {
-      // FAT/EFI partitions show up with types like:
-      //   2: EFI EFI                  209.7 MB   disk6s1
-      //   2: DOS_FAT_32 NIXOS_ISO     65.5 MB    disk6s2
-      // Be lenient — accept anything FAT/EFI/MS-DOS-shaped.
-      if (/\b(DOS_FAT|EFI|MS-DOS|FAT16|FAT32|Windows_FAT)\b/i.test(line)) {
+      const matchesGpt = /\b(DOS_FAT|EFI|MS-DOS|FAT16|FAT32|Windows_FAT)\b/i.test(line);
+      // MBR partition type codes that indicate FAT or ESP. Bounded with
+      // \b on both sides so we don't accidentally match "0xEF" inside
+      // a longer hex string. Case-insensitive (0xEF / 0xef both ok).
+      const matchesMbr = /\b0x(EF|0C|0E|06|0B|0F)\b/i.test(line);
+      if (matchesGpt || matchesMbr) {
         const m = line.match(/\b(disk\d+s\d+)\s*$/);
         if (m) return `/dev/${m[1]}`;
       }
@@ -487,6 +498,80 @@ function findFatPartition(device: string): string | null {
     /* fall through to null */
   }
   return null;
+}
+
+// iter-4.4 fix-forward: track which mount method was used so unmount
+// matches. macOS's `diskutil mount` works for GPT-formatted ESPs
+// (where diskutil's auto-probe recognizes the EFI/FAT inside), but
+// fails for MBR 0xEF partitions whose FAT12/FAT16 filesystem is real
+// but not auto-probed. The fallback uses `mount_msdos` against a
+// mkdtemp mount point, which DOES read the FAT directly.
+type EspMountResult = {
+  mountPoint: string;
+  method: "diskutil" | "mount_msdos";
+  /** Only set for mount_msdos; the tmp dir we created + must rmSync */
+  tmpdir?: string;
+};
+
+function mountEsp(espPart: string): EspMountResult {
+  // Path 1: try diskutil mount (works for GPT-formatted EFI ESPs).
+  // Don't dump diagnostics if this fails — fallback is expected for
+  // MBR 0xEF cases.
+  try {
+    execFileSync("diskutil", ["mount", espPart], { stdio: ["ignore", "ignore", "pipe"] });
+    const mp = getMountPoint(espPart);
+    if (mp) {
+      return { mountPoint: mp, method: "diskutil" };
+    }
+    // diskutil mount succeeded but no mount point reported — try to
+    // unmount + fall through to mount_msdos path.
+    try {
+      execFileSync("diskutil", ["unmount", espPart], { stdio: "ignore" });
+    } catch {
+      /* ignore */
+    }
+  } catch {
+    /* expected for MBR 0xEF; fall through */
+  }
+  // Path 2: explicit mount_msdos against tmp mount point. Requires
+  // sudo; PAM gates via Touch ID like the dd step did.
+  const tmp = mkdtempSync(join(tmpdir(), "zeta-esp-mount-"));
+  try {
+    execFileSync("sudo", ["mount_msdos", "-o", "nodev,nosuid", espPart, tmp], {
+      stdio: ["inherit", "inherit", "inherit"],
+    });
+    return { mountPoint: tmp, method: "mount_msdos", tmpdir: tmp };
+  } catch (e) {
+    try {
+      rmSync(tmp, { recursive: true, force: true });
+    } catch {
+      /* ignore tmp cleanup; not load-bearing */
+    }
+    throw e;
+  }
+}
+
+function unmountEsp(espPart: string, result: EspMountResult): void {
+  if (result.method === "diskutil") {
+    try {
+      execFileSync("diskutil", ["unmount", espPart], { stdio: "inherit" });
+    } catch {
+      /* unmount errors are usually safe to ignore */
+    }
+  } else {
+    try {
+      execFileSync("sudo", ["umount", result.mountPoint], { stdio: "inherit" });
+    } catch {
+      /* unmount errors are usually safe to ignore */
+    }
+    if (result.tmpdir) {
+      try {
+        rmSync(result.tmpdir, { recursive: true, force: true });
+      } catch {
+        /* ignore tmp cleanup; not load-bearing */
+      }
+    }
+  }
 }
 
 function getMountPoint(partition: string): string | null {
@@ -561,29 +646,21 @@ async function injectPubkeyToUsb(pubkeyPath: string): Promise<void> {
   }
   process.stdout.write(`iter-4.2: ESP partition ${espPart}\n`);
 
-  // Mount it (diskutil mount may not need sudo if the ESP auto-mounts)
+  // Mount it via iter-4.4 helper: tries `diskutil mount` first (GPT
+  // EFI case), falls back to `mount_msdos` against mkdtemp mount
+  // point for MBR 0xEF FAT case (NixOS isohybrid post-dd on macOS).
+  let mountResult: EspMountResult;
   try {
-    execFileSync("diskutil", ["mount", espPart], { stdio: "inherit" });
+    mountResult = mountEsp(espPart);
   } catch (e) {
-    dumpDiagnostics(`diskutil mount ${espPart} failed`);
+    dumpDiagnostics(`mountEsp ${espPart} failed (both diskutil + mount_msdos paths)`);
     bail(
       3,
-      `iter-4.2 inject failed: diskutil mount ${espPart} failed: ${e instanceof Error ? e.message : String(e)}`,
+      `iter-4.2 inject failed: could not mount ${espPart}: ${e instanceof Error ? e.message : String(e)}`,
     );
   }
-
-  // Get mount point
-  const mountPoint = getMountPoint(espPart);
-  if (!mountPoint) {
-    dumpDiagnostics(`no Mount Point in diskutil info ${espPart}`);
-    try {
-      execFileSync("diskutil", ["unmount", espPart], { stdio: "ignore" });
-    } catch {
-      /* ignore */
-    }
-    bail(3, `iter-4.2 inject failed: mounted ${espPart} but couldn't determine mount point.`);
-  }
-  process.stdout.write(`iter-4.2: mounted at ${mountPoint}\n`);
+  const mountPoint = mountResult.mountPoint;
+  process.stdout.write(`iter-4.2: mounted at ${mountPoint} (via ${mountResult.method})\n`);
 
   // Read pubkey content
   const pubkey = readFileSync(pubkeyPath, "utf8").trim();
@@ -595,16 +672,14 @@ async function injectPubkeyToUsb(pubkeyPath: string): Promise<void> {
   // decode happens on the cluster side).
   const VALID_PUBKEY = /^(ssh-(ed25519|rsa|dss)|ecdsa-sha2-\S+|sk-ssh-ed25519@\S+|sk-ecdsa-sha2-\S+)\s+\S+/;
   if (!VALID_PUBKEY.test(firstLine)) {
-    try {
-      execFileSync("diskutil", ["unmount", espPart], { stdio: "ignore" });
-    } catch {
-      /* ignore */
-    }
+    unmountEsp(espPart, mountResult);
     dumpDiagnostics(`${pubkeyPath} first line is not a recognized OpenSSH pubkey (expected ssh-ed25519 / ssh-rsa / ssh-dss / ecdsa-sha2-* / sk-ssh-ed25519@* / sk-ecdsa-sha2-*)`);
     bail(3, `iter-4.2 inject failed: ${pubkeyPath} is not a recognized SSH pubkey format.`);
   }
 
-  // Write via sudo tee (stdin avoids shell-quoting hazards)
+  // Write via sudo tee (stdin avoids shell-quoting hazards). sudo is
+  // required for the mount_msdos path (mount is root-owned); harmless
+  // for the diskutil path (target is operator-writable anyway).
   const target = join(mountPoint, "zeta-authorized-keys.pub");
   try {
     execFileSync("sudo", ["tee", target], {
@@ -613,21 +688,14 @@ async function injectPubkeyToUsb(pubkeyPath: string): Promise<void> {
     });
   } catch (e) {
     dumpDiagnostics(`sudo tee ${target} failed`);
-    try {
-      execFileSync("diskutil", ["unmount", espPart], { stdio: "ignore" });
-    } catch {
-      /* ignore */
-    }
+    unmountEsp(espPart, mountResult);
     bail(3, `iter-4.2 inject failed: sudo tee ${target} failed: ${e instanceof Error ? e.message : String(e)}`);
   }
   process.stdout.write(`iter-4.2: wrote pubkey to ${target}\n`);
 
-  // Unmount
-  try {
-    execFileSync("diskutil", ["unmount", espPart], { stdio: "inherit" });
-  } catch {
-    process.stdout.write(`(unmount of ${espPart} reported error; that is usually safe to ignore.)\n`);
-  }
+  // Unmount via the matching method (diskutil-mounted → diskutil
+  // unmount; mount_msdos-mounted → sudo umount + rmSync tmpdir).
+  unmountEsp(espPart, mountResult);
 
   // Eject the whole disk so operator can safely remove
   try {
