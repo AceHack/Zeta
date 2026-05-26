@@ -577,9 +577,12 @@ echo
 # Outputs:
 #   /mnt/etc/zeta/operator-authorized-keys (one pubkey per line)
 #
-# Skippable: operator can press Enter to skip if they prefer fallback
-# to iter-4.2 statically-baked maintainer keys. NOT skippable if iter-
-# 4.2 injection also failed (logged so operator knows the gap).
+# Skippable (warning-only when iter-4.2 also failed): operator can type
+# 'n' to skip if they prefer fallback to iter-4.2 statically-baked
+# maintainer keys (or manual config-edit per iter-4 v1 if iter-4.2
+# also was skipped/failed). The Copilot-P1-corrected behavior matches
+# the implementation: always allow skip, log loudly when neither path
+# succeeded.
 #
 # Composes with iter-4.2 (static keys; additive) + iter-5.3 password
 # prompt (console-login fallback) + iter-5.2 hostname (which.local
@@ -591,7 +594,8 @@ echo "[iter-5.4.0] ── homelab gh-auth + operator SSH-pubkey copy ──"
 echo "[iter-5.4.0] Authenticate to GitHub to auto-copy your SSH pubkeys"
 echo "[iter-5.4.0] to the installed node's authorized_keys. This makes"
 echo "[iter-5.4.0] ssh-from-your-Mac work without manual config-edit + rebuild."
-echo "[iter-5.4.0] Press Enter to skip (fallback to iter-4.2 static keys"
+echo "[iter-5.4.0] Default is YES (recommended); press Enter to proceed"
+echo "[iter-5.4.0] OR type 'n' to skip (fallback to iter-4.2 static keys"
 echo "[iter-5.4.0] if injected, OR manual config-edit per the iter-4 v1 flow)."
 echo
 read -r -p "[iter-5.4.0] Run gh auth login now? [Y/n]: " GH_AUTH_REPLY
@@ -601,7 +605,7 @@ if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
     echo "[iter-5.4.0]   WARN: gh binary not on PATH; skipping (likely"
     echo "[iter-5.4.0]         installer ISO bug — gh should be in"
     echo "[iter-5.4.0]         environment.systemPackages of"
-    echo "[iter-5.4.0]         usb-nixos-installer/nixos/installer/configuration.nix)"
+    echo "[iter-5.4.0]         full-ai-cluster/usb-nixos-installer/nixos/installer/configuration.nix)"
   else
     echo "[iter-5.4.0]   running 'gh auth login' (interactive)..."
     echo
@@ -655,10 +659,21 @@ echo "================================================================"
 echo "  ZETA CLUSTER NODE INSTALL COMPLETE"
 echo "================================================================"
 echo
-echo "  Initial login credentials (rotate immediately after first login):"
+echo "  Initial login credentials:"
 echo
 echo "    user:     zeta"
-echo "    password: zeta-change-me"
+# Banner must reflect iter-5.3's actual outcome (Copilot P1 finding on
+# #5210 fix-fwd): if operator set a custom password via Step 6.55, the
+# old hard-coded "password: zeta-change-me" line lied to them. Print
+# the truth per the captured state.
+if [ -f /mnt/etc/zeta/initial-hashedpassword ]; then
+  echo "    password: (the value you set during iter-5.3 prompt;"
+  echo "               iter-4.x default 'zeta-change-me' is NOT in effect)"
+else
+  echo "    password: zeta-change-me   (iter-4.x default; iter-5.3 prompt"
+  echo "                                was skipped or unavailable)"
+  echo "                rotate via 'passwd zeta' after first login"
+fi
 echo
 if [ "$GH_AUTH_OK" = 1 ] && [ "$GH_KEY_COUNT" != "0" ]; then
   echo "  iter-5.4.0 GH-AUTH + OPERATOR-PUBKEY INJECTION: SUCCESS ($GH_KEY_COUNT keys)"

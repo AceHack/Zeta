@@ -29,9 +29,15 @@
 # apply.
 #
 # Format: standard authorized_keys file. One pubkey per line. Comments
-# starting with `#` allowed; blank lines allowed. Filtered to only
-# lines starting with `ssh-` (ssh-rsa/ssh-ed25519/ssh-dss/etc.) +
-# `ecdsa-sha2-...` (for ECDSA pubkeys).
+# starting with `#` allowed; blank lines allowed. Filtered to lines
+# starting with any supported pubkey-algorithm prefix:
+#   - `ssh-`     — ssh-rsa, ssh-ed25519, ssh-dss
+#   - `ecdsa-`   — ecdsa-sha2-nistp256/384/521
+#   - `sk-ssh-`  — FIDO/U2F security-key-backed Ed25519 (RFC8709)
+#   - `sk-ecdsa-` — FIDO/U2F security-key-backed ECDSA
+# GitHub stores all of the above when operators register them; the
+# existing operator-ssh-keys.nix substrate documents sk-* support so
+# this module keeps parity (Copilot P1 finding on PR #5210 fix-fwd).
 
 { config, pkgs, lib, ... }:
 
@@ -44,13 +50,17 @@ let
     else "";
 
   # Split on newlines + filter out comments + blank lines + only keep
-  # lines that look like SSH pubkeys (start with ssh- or ecdsa-).
+  # lines that look like SSH pubkeys. Supported prefixes per the
+  # comment block above include FIDO/U2F sk-* types so operators with
+  # security-key-only GitHub setups aren't silently dropped.
   splitLines = lib.strings.splitString "\n" rawContents;
+  validPrefixes = [ "ssh-" "ecdsa-" "sk-ssh-" "sk-ecdsa-" ];
+  hasValidPrefix = s: lib.lists.any (p: lib.hasPrefix p s) validPrefixes;
   isKeyLine = line:
     let trimmed = lib.strings.trim line;
     in trimmed != ""
        && !(lib.hasPrefix "#" trimmed)
-       && (lib.hasPrefix "ssh-" trimmed || lib.hasPrefix "ecdsa-" trimmed);
+       && hasValidPrefix trimmed;
   operatorKeys = lib.lists.filter isKeyLine splitLines;
 in
 {
