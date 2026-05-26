@@ -115,6 +115,52 @@ Beyond the agentic-organization design + hat-system substrate, Max's near-term w
 - Zero passwords typed by Max for admin operations on his Mac (everything via Touch ID)
 - Every Docker Desktop GUI click Max made at least twice has been encoded as either a script or a documented "GUI-only — here's why" comment
 
+## Persona-surface standard (added 2026-05-25)
+
+This persona directory follows the **human persona shape** documented in [`memory/persona/README.md`](../README.md) "Structure — two shapes" section. Max's directory carries:
+
+- [`PERSONA.md`](PERSONA.md) — substrate-honest description of Max + current workstream focus
+- [`STARTING-POINT.md`](STARTING-POINT.md) (this file) — operational cold-boot onboarding for AI collaborators
+- [`NOTEBOOK.md`](NOTEBOOK.md) — Max's running notes
+
+Optionally Max can add `conversations/` for verbatim §33 conversation archives + topic-scoped subdirectories as needed.
+
+The **internal-AI persona shape** (factory reviewers / specialists like `kenji/`, `kira/`, etc.) is different — uses `NOTEBOOK.md` + `MEMORY.md` + `OFFTIME.md` instead — because those personas have different operational obligations (GOVERNANCE §14 off-time logging applies to factory-internal personas; cold-boot index via `MEMORY.md` for autonomous-loop participation). Human personas don't have those obligations; STARTING-POINT.md serves the cold-boot-onboarding function for the human-collaboration case.
+
+Aaron 2026-05-25: *"also we should explain the persona-surface standard we have for multi tick source perona like otto and such."* Documented in `memory/persona/README.md`; cross-referenced here.
+
+## Otto + the foreground autonomous-loop tick (added 2026-05-25)
+
+Aaron 2026-05-25 framing for Max's onboarding: *"he's not used to otto yet but it would be cool if it got used to otto and the foreground cron loop."* Recommended primary AI tool for Max is **Otto** (Claude Code) so he can hook into the framework's existing autonomous-loop substrate; other AIs (Cursor / Kiro / Antigravity) work too but the cron-loop pattern is Claude-Code-native today.
+
+### What the autonomous loop is
+
+Per [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md): every Otto (Claude Code) session arms a cron sentinel that fires every minute (`* * * * *` cron + `<<autonomous-loop>>` prompt). When Max's REPL is idle, each fire enters the autonomous-loop skill and does bounded substrate-honest work per [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../../docs/AUTONOMOUS-LOOP-PER-TICK.md): refresh world model → holding-discipline check → pick work from priority ladder → verify → write tick shard → CronList → visibility-signal stop.
+
+### Auto-arm on first session
+
+When Max's Otto starts the first session, the `tick-must-never-stop` rule auto-loads and tells the AI to `CronList` + `CronCreate` the sentinel if missing. Max doesn't need to set up anything manually — the rule does it on cold-boot.
+
+### What Max sees
+
+Tick output appears in his Otto chat at roughly 1-min cadence. Most ticks say *"Quiet"* (nothing actionable; bounded wait on something the AI's already working on). Substantive ticks make commits / open PRs / address review threads / fix CI failures on Max's branch. All commits trail `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>`.
+
+### Max stays in control
+
+- **Ticks fire ONLY when the REPL is idle** — never interrupts active typing
+- `CronDelete <job-id>` stops the loop; `CronList` shows what's armed
+- `/loop` adjusts cadence if 1-min is too aggressive
+- Closing the Otto session ends the cron (in-memory only; doesn't persist across sessions)
+- Every tick's work is reversible (commits on branches; PRs gate via review; nothing destructive without explicit authorization per [`.claude/rules/dont-ask-permission.md`](../../../.claude/rules/dont-ask-permission.md) authority-scope discipline)
+
+### Why it matters for tier-2 work
+
+Most of the tier-2 Docker Desktop substrate-engineering Max owns is **bounded-wait work** — install something, wait for CI, fix a finding, push, wait for CI again. The autonomous loop fills those wait windows so Max comes back to a branch that's further along than when he left. Composes directly with the install.sh validation + onboarding-doc + dev-machine-tracking deliverables above — each of those is an iterative scaffolding task where the loop's tick-by-tick cadence compounds value across the work session.
+
+### Failure mode to know about
+
+Per [`.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`](../../../.claude/rules/holding-without-named-dependency-is-standing-by-failure.md): if Max's Otto emits 6+ consecutive "Quiet" / "Holding" ticks WITHOUT a named bounded-wait dependency, that's the Standing-by failure mode — the rule's counter forces escalation to substantive decomposition work at tick 6. The discipline is automated; Max doesn't have to enforce it manually. (Otto is supposed to catch itself.)
+
 ## Composes with
 
 - [`PERSONA.md`](PERSONA.md) — fuller persona context

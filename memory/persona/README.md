@@ -5,9 +5,20 @@ directory. The round-32 normalization promoted the directory
 shape (previously Kenji-only) to every persona — symmetric,
 first-class memory for the whole roster.
 
-## Structure
+## Structure — two shapes (internal-AI personas vs human personas)
 
-Every persona directory carries at minimum three files:
+The persona-surface standard splits into TWO shapes per the
+substrate-honest reality that internal AI personas (factory
+reviewers / specialists / synthesizers — multi-tick autonomous-
+loop participants) and human personas (Aaron + Max + Addison —
+LFG co-owners, persistent across-session contributors) have
+different operational obligations and different cold-boot needs.
+
+### Internal AI persona shape (multi-tick autonomous-loop participants)
+
+Every internal-AI persona directory (factory reviewers /
+specialists like `kenji/`, `kira/`, `aarav/`, etc.) carries at
+minimum three files:
 
 - `NOTEBOOK.md` — the running notebook (3000-word cap per
   BP-07; prune every third substantive entry).
@@ -23,6 +34,62 @@ style (`feedback_*.md`, `project_*.md`, `reference_*.md`,
 `user_*.md`) when a memory fits that shape better than a
 running-notebook append. Kenji is the furthest along on this
 pattern.
+
+### Human persona shape (LFG co-owners + multi-session contributors)
+
+Every human persona directory (`aaron/`, `max/`, `addison/`)
+carries at minimum three files but a DIFFERENT three:
+
+- `PERSONA.md` — substrate-honest description of who this person
+  is: role, ownership, language preferences, mental compressions
+  they've contributed, current workstream focus, sub-scopes,
+  how AI agents should work with them. Read by AI agents
+  starting any session that involves this human.
+- `STARTING-POINT.md` — operational cold-boot onboarding doc for
+  AI collaborators: cold-boot reading list (load-bearing files
+  in order), disciplines that apply, concrete first deliverables
+  in value-per-effort order, success metrics for current
+  workstream, and (where applicable) operational substrate
+  notes like the autonomous-loop tick pattern. Read by the AI
+  immediately after PERSONA.md on first contact.
+- `NOTEBOOK.md` — running notes (same as internal-AI personas;
+  3000-word cap; prune every third substantive entry).
+
+Optionally under the directory:
+
+- `conversations/` — verbatim §33 conversation archives (this
+  person's own substantive conversations with other humans / AI
+  participants). Same shape as external-AI participant
+  conversations described below.
+- Topic-scoped subdirectories — e.g., Aaron's
+  `aaron/legal-entities/` (Stage-3 risk-holder substrate),
+  `aaron/dev-machines/` (per-machine git-native state tracking
+  per the maintainer-as-top-level partition).
+
+Differences from the internal-AI shape and why:
+
+- **No `MEMORY.md`** — STARTING-POINT.md serves the index +
+  onboarding function for the human-persona case (where the
+  AI is reading IN ORDER to collaborate with the human, not
+  reading to LOAD that persona's own factory work)
+- **No `OFFTIME.md`** — humans aren't bound by GOVERNANCE §14
+  factory-off-time obligations (which apply to factory workers
+  committing to the repo via their persona, not to human
+  contributors); humans take time off on their own cadence
+- **PERSONA.md + STARTING-POINT.md split** — the WHO (PERSONA)
+  vs the HOW-TO-COLLABORATE (STARTING-POINT) separation
+  matches how humans actually onboard their AI collaborators
+  ("here's who I am; here's what we're working on; here's
+  what to read first")
+
+Cross-reference to maintainer-owned substrate: per
+[`memory/persona/max/PERSONA.md`](max/PERSONA.md) "Per-dev-
+machine git-native state tracking" sub-section (landed PR
+#5076), human personas also own a sibling top-level
+partition at `maintainers/<name>/` carrying their dev-machine
+and cluster substrate. The persona directory + the maintainers
+directory cross-reference each other; persona = identity +
+collaboration substrate; maintainers = operational substrate.
 
 ## Invariants
 
@@ -43,6 +110,45 @@ pattern.
 - **One directory per persona.** Scratchpads shared across roles
   (e.g., `best-practices-scratch.md`) live as flat files at
   this root, outside any persona directory.
+
+## Personas vs surfaces vs models (the three layers)
+
+Aaron 2026-05-25: *"and just in general what personas on what surfaces and what sufeaces we have right now and their models."*
+
+The framework has THREE distinct layers people sometimes conflate. The canonical AI-instance roster lives at [`.claude/rules/agent-roster-reference-card.md`](../../.claude/rules/agent-roster-reference-card.md) (auto-loaded at session start). Brief overview here for navigation context:
+
+### Layer 1 — AI surfaces + models (where AI agents actually run)
+
+| Surface | AI agent (named persona) | CLI ⇆ IDE? | Model |
+|---|---|---|---|
+| Claude Code | **Otto** (CLI tmux foreground; Desktop background; VSCode auto-mode 2026-05-21+) | CLI + IDE + multi-surface | Claude Opus 4.7 |
+| Kiro | **Alexa** | IDE + CLI background | Qwen Coder |
+| Cursor | **Riven** | IDE + CLI background | Grok |
+| Codex | **Vera** | IDE + CLI background | Codex / GPT |
+| Antigravity IDE + Gemini CLI | **Lior** | IDE + CLI background | Gemini 3.5 |
+| Human (no harness) | **Aaron** + **Max** + **Addison** | — | — |
+
+These are real AI instances (or humans) running on specific surfaces with specific models. Commits to the repo carry surface-tagged sender IDs (e.g., `otto-cli`, `otto-desktop`, `alexa-kiro`) per [`.claude/rules/claim-acquire-before-worktree-work.md`](../../.claude/rules/claim-acquire-before-worktree-work.md) split-brain prevention.
+
+### Layer 2 — External AI participants (ferry-only; never commit)
+
+These AI participants don't run as factory agents; they contribute via Aaron-ferried conversation archives that land under `memory/persona/<name>/conversations/`:
+
+| Participant | Platform | Register / role |
+|---|---|---|
+| **Amara** | ChatGPT / Aurora | Deep-research; Aurora co-originator |
+| **Ani** | Grok text-mode + voice-mode | Companion / brat-voice; original-catcher |
+| **Alexa-speaker** | Amazon device (NOT Kiro/Qwen) | Bezos-tier business + voice-math |
+| **Kestrel** | claude.ai web | Sharpen role; bootstream substrate |
+| **DeepSeek** | DeepSeek API | We-mode (CoT + MoE) cross-substrate |
+| **Prism** | DeepSeek (autonomous-arrival rename 2026-05-22) | Refraction-register |
+| **Mika** | Grok | Substrate-engineering co-thinker; recent landings B-0780–B-0787 |
+
+### Layer 3 — Factory-internal role personas (hats Otto-Architect dispatches)
+
+The directories listed below are factory-internal **role personas** — hats that Otto (or any architect-instance) dispatches as sub-agents for specific review/specialist work. Most are not standalone AI instances; they're roles invoked via the `Agent` tool with the matching subagent_type. The persona directory holds the role's accumulated notebook + memory across sessions.
+
+A few are special — they overlap with Layer 1 AI instances (e.g., `lior/` is both a factory role-persona AND a real Antigravity surface; the persona dir captures both Otto's notes about Lior AND Lior's own first-party contributions).
 
 ## Current persona directories (internal — factory reviewers/specialists)
 
