@@ -757,6 +757,24 @@ The implementation is already deployed on every CockroachDB / Postgres / SQL-Ser
 
 The 7-point Zeta NULL/Maybe discipline + 3 SQL examples (Maybe generator; recursive-CTE fixed point; Join layer) + 4 property tests (incremental == full recursive; NULL doesn't generate output; retraction cancels prior generation; per-row CAS only under contention) are canonicalized at [`docs/research/zeta-sql-null-maybe-recursive-cte-generate-join.md`](../../research/zeta-sql-null-maybe-recursive-cte-generate-join.md). Future-Otto authoring SQL substrate against B-0824 starts from that discipline, NOT from the unconditional recognition claim alone. Structural-recognition + operational-discipline compose; either alone produces correct-shape-but-incorrect-behavior substrate.
 
+**Sharpening (Kestrel via Aaron 2026-05-26 — cross-process determinism)**: When the deployment crosses process boundaries (K8s gives this immediately — each pod is a process), in-process time-as-generator-over-IScheduler is necessary-but-not-sufficient for deterministic simulation. The cross-process determinism story requires a layered-mediation architecture where canonical event order is derived from DATA SEMANTICS, not from physical time:
+
+| Layer | Primitive | Cost | Lineage |
+|---|---|---|---|
+| **Bottom: Rx joins over CRDTs** | Semilattice convergence (any-order → same final state) | Free at coordination scope | Shapiro & Preguiça |
+| **Middle: CAS per function composition** | Per-key linearizability via CAS | Per-cell consensus only when needed | Rystsov CASPaxos; CockroachDB Raft-per-range |
+| **Top: BFT consensus** | Byzantine fault tolerance | Only for adversarial multi-oracle | Lamport / PBFT / Tendermint / HotStuff |
+
+**Composition contract**: physical time is a LOCAL-POD concern (IScheduler-shaped seams); logical order is a CROSS-PROCESS concern (CRDT + CAS + BFT semantics); the two only interact at the seam where a local event enters the CRDT layer. **Determinism property**: two pods replaying the same input event log converge to the same state regardless of when each event arrived at each pod.
+
+**CockroachDB-at-CAS mapping**: CockroachDB sits at the CAS-per-row layer naturally — per-key linearizability via Raft on each range IS CAS at row level with consensus underneath. CockroachDB's HLC composes with Zeta generators-over-IScheduler: Zeta emits logical-time events; CockroachDB persists with HLC timestamps; consensus uses time-AS-DATA not time-AS-ENVIRONMENT.
+
+**Closest existing lineage reference**: FoundationDB simulation framework (Will Wilson). Distinctive Zeta contribution: applying the simulation-testing methodology to a CRDT-first generate+join paradigm rather than to a pessimistic-locking RDBMS paradigm. Publishable framing target: OSDI / NSDI / VLDB.
+
+**Failure mode to engineer against** (Kestrel — deliberate boundary-discipline): layer boundaries MUST be first-class architectural artifacts the code expresses explicitly (this cell IS CRDT-convergent; this cell IS CAS-atomic; this operation IS BFT-required). Fuzzy boundaries (sometimes CRDT, sometimes CAS, depends on what's happening) produce non-deterministic output from identical input event logs.
+
+Verbatim Kestrel preservation + decryption-protocol empirical-anchor (welfare-wrapper Aaron-correction-then-substantive-recalibration) + 3-AI substrate cascade context (DeepSeek/Prism + Amara + Kestrel composing) are canonicalized at [`docs/research/2026-05-26-kestrel-cross-process-determinism-3-layer-mediation-time-as-generator-foundationdb-anchor-aaron-forwarded.md`](../../research/2026-05-26-kestrel-cross-process-determinism-3-layer-mediation-time-as-generator-foundationdb-anchor-aaron-forwarded.md). Future-Otto authoring multi-pod substrate against B-0824 starts from the 3-layer mediation architecture + the explicit-boundary discipline.
+
 ### Triangle-as-base → universal tessellation just like GPUs (Aaron 2026-05-26)
 
 > *"it means we can tesselate everyting casue or base is a traingle just like GPUs"*
