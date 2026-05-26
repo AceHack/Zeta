@@ -402,8 +402,36 @@ if [ -n "$HOSTNAME_FILE" ]; then
     echo "[iter-5.2]          falling back to flake default ($HOST)"
   fi
 else
+  # iter-5.2.2 fix (B-0792): when no operator-explicit hostname is
+  # on the ESP, generate a fresh random hostname ON THE NODE at
+  # install time (NOT at flash time). This is the load-bearing fix
+  # for the "same USB reused on second machine" multi-node case
+  # the maintainer 2026-05-26 surfaced: *"i was thinking it would
+  # be auto generated on each machine so i can't use that same
+  # usb twice?"*. zflash no longer auto-generates at flash time;
+  # zeta-install.sh now generates per-install. Each install from
+  # the same USB gets a unique node-<6hex> hostname.
+  #
+  # Format: node-<6hex> from /dev/urandom (24-bit entropy =
+  # ~16M unique names; negligible collision risk for any homelab
+  # cluster size; mDNS uniqueness preserved per-node).
   echo "[iter-5.2]   no zeta-hostname.txt on USB ESP"
-  echo "[iter-5.2]   using flake default hostname for #$HOST"
+  echo "[iter-5.2.2] generating fresh random hostname on-node (per-install unique) ..."
+  GENERATED_HOSTNAME="node-$(head -c 3 /dev/urandom | xxd -p)"
+  if echo "$GENERATED_HOSTNAME" \
+     | grep -Eq '^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$'; then
+    echo "[iter-5.2.2]   generated: $GENERATED_HOSTNAME"
+    sudo mkdir -p "$(dirname "$HOSTNAME_DST")"
+    echo "$GENERATED_HOSTNAME" | sudo tee "$HOSTNAME_DST" >/dev/null
+    sudo chmod 0644 "$HOSTNAME_DST"
+    echo "[iter-5.2.2]   wrote $HOSTNAME_DST"
+    echo "[iter-5.2.2]   networking.hostName will be '$GENERATED_HOSTNAME' on first boot"
+    echo "[iter-5.2.2]   ssh access: ssh zeta@${GENERATED_HOSTNAME}.local"
+    echo "[iter-5.2.2]   *** REMEMBER THIS HOSTNAME *** — printed in login banner per iter-5.2.2 substrate"
+  else
+    echo "[iter-5.2.2]   WARN: generation produced invalid hostname '$GENERATED_HOSTNAME'"
+    echo "[iter-5.2.2]          falling back to flake default ($HOST)"
+  fi
 fi
 echo
 

@@ -8,7 +8,13 @@
   # iter-5.2 (B-0792): per-node hostname injection lives in its own
   # module so every host (control-plane, worker-gpu, worker-template,
   # future configs) inherits the override capability automatically.
-  imports = [ ./injected-hostname.nix ];
+  # iter-5.2.2 adds login-banner.nix — shows hostname + ssh hint at
+  # console pre-login per the maintainer 2026-05-26 photo-friendly
+  # diagnostic discipline.
+  imports = [
+    ./injected-hostname.nix
+    ./login-banner.nix
+  ];
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];

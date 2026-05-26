@@ -910,35 +910,39 @@ async function main() {
     willInject = false;
   }
 
-  // iter-5.2.1 (B-0792): if operator didn't pass --host, auto-generate
-  // a random unique hostname `node-<6hex>` (24-bit entropy = ~16M
-  // possible names, negligible collision risk for any homelab cluster
-  // size; node-by-node mDNS uniqueness preserved). Operator can rename
-  // later via the digital-twin substrate planned under B-0794 (node
-  // self-registration; not yet shipped — see B-0794 row for the
-  // target node-config substrate that will host the rename mechanism).
+  // iter-5.2.2 (B-0792) — REVERTS iter-5.2.1 flash-time auto-generation:
   //
-  // The maintainer 2026-05-26: "can we have it auto generate the host
-  // name we can change later via digital twin after it self registers."
+  // The maintainer 2026-05-26 surfaced the design flaw with flash-time
+  // auto-generation: *"wait zflash has a hard coded name? i was
+  // thinking it would be auto generated on each machine so i can't
+  // use that same usb twice?"* — baking a name into the ESP at flash
+  // time meant every install from the same USB inherits the SAME
+  // hostname, causing mDNS collision when reused across machines.
   //
-  // Auto-gen happens only when --host was NOT passed (preserves
-  // operator intent when they did pick a name) AND when iter-4.2
-  // inject will actually run (gated on `willInject` so we never
-  // promise an ssh target for a hostname that won't be written to
-  // the USB ESP — finalized AFTER the pubkey existence check so
-  // missing-pubkey path doesn't print a misleading ssh promise).
+  // Fix: when --host is NOT passed, DON'T write zeta-hostname.txt
+  // to the ESP. zeta-install.sh now generates a fresh random
+  // node-<6hex> ON THE NODE at install time (per-install unique).
+  // Each install from the same USB gets a different hostname.
+  //
+  // Operator paths:
+  //   - `zflash --host pikachu` → ESP carries 'pikachu'; install honors
+  //   - `zflash` (no --host) → ESP has no hostname; install auto-gens
+  //                            on-node + prints in install banner +
+  //                            displays in pre-login banner per
+  //                            iter-5.2.2 NixOS login-banner module.
+  //
+  // The previous iter-5.2.1 "log the auto-name pre-flash so operator
+  // knows what to ssh to" UX is lost in trade — operator now reads
+  // the auto-name from the cluster console's login banner (printed
+  // pre-login per iter-5.2.2 login-banner module) OR from mDNS scan.
+  // Right trade for multi-node correctness.
   if (hostOverride === null && willInject) {
-    // Web Crypto: 3 random bytes → 6 hex chars; node-XXXXXX. Prefix
-    // `node-` keeps the namespace clean (operator-named hosts can
-    // avoid the `node-` prefix to distinguish from auto-named).
-    const rand = new Uint8Array(3);
-    crypto.getRandomValues(rand);
-    const hex = Array.from(rand, (b) => b.toString(16).padStart(2, "0")).join("");
-    hostOverride = `node-${hex}`;
     process.stdout.write(
-      `\niter-5.2.1: --host not specified; auto-generated hostname: ${hostOverride}\n` +
-        `             (rename later via B-0794 digital-twin substrate when shipped)\n` +
-        `             cluster will be reachable as: ssh zeta@${hostOverride}.local\n\n`,
+      `\niter-5.2.2: --host not specified; zeta-install.sh on-node will\n` +
+        `             auto-generate a unique node-<6hex> hostname per-install.\n` +
+        `             Pre-login banner on first boot displays the chosen hostname\n` +
+        `             + IP (per iter-5.2.2 NixOS login-banner module).\n` +
+        `             For memorable names, re-flash with: zflash --host <name>\n\n`,
     );
   }
 
