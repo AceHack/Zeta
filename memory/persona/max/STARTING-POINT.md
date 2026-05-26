@@ -135,7 +135,7 @@ Aaron 2026-05-25 framing for Max's onboarding: *"he's not used to otto yet but i
 
 ### What the autonomous loop is
 
-Per [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md): every Otto (Claude Code) session arms a cron sentinel that fires every minute (`* * * * *` cron + `<<autonomous-loop>>` prompt). When Max's REPL is idle, each fire enters the autonomous-loop skill and does bounded substrate-honest work per [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../../docs/AUTONOMOUS-LOOP-PER-TICK.md): refresh world model → holding-discipline check → pick work from priority ladder → verify → write tick shard → CronList → visibility-signal stop.
+Per [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md): every Otto (Claude Code) session arms a cron sentinel that fires every minute (`* * * * *` cron + `<<autonomous-loop>>` prompt). When Max's REPL is idle, each fire of the sentinel applies the per-tick discipline at [`docs/AUTONOMOUS-LOOP-PER-TICK.md`](../../../docs/AUTONOMOUS-LOOP-PER-TICK.md). (There is no `.claude/skills/autonomous-loop` artifact; the mechanism is the sentinel prompt + the per-tick discipline doc.) The canonical end-of-tick checklist is six steps: speculative work (per never-be-idle priority ladder) → verify → **commit** → write tick shard at `docs/hygiene-history/ticks/YYYY/MM/DD/HHMMZ.md` → CronList → visibility-signal stop.
 
 ### Auto-arm on first session
 
@@ -143,13 +143,13 @@ When Max's Otto starts the first session, the `tick-must-never-stop` rule auto-l
 
 ### What Max sees
 
-Tick output appears in his Otto chat at roughly 1-min cadence. Most ticks say *"Quiet"* (nothing actionable; bounded wait on something the AI's already working on). Substantive ticks make commits / open PRs / address review threads / fix CI failures on Max's branch. All commits trail `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>`.
+Tick output appears in his Otto chat at roughly 1-min cadence. Most ticks say *"Quiet"* (nothing actionable; bounded wait on something the AI's already working on). Substantive ticks make commits / open PRs / address review threads / fix CI failures on Max's branch. Commits include the required `Co-Authored-By: Claude <noreply@anthropic.com>` trailer per [`AGENTS.md`](../../../AGENTS.md) "Commit attribution — harness-specific trailers" (model / version suffix optional but the baseline is mandatory; multi-loop coordination depends on the trailer being parseable).
 
 ### Max stays in control
 
 - **Ticks fire ONLY when the REPL is idle** — never interrupts active typing
 - `CronDelete <job-id>` stops the loop; `CronList` shows what's armed
-- `/loop` adjusts cadence if 1-min is too aggressive
+- Cadence adjustment is via `CronDelete` + `CronCreate` with a new cron expression — the factory's actual tick arming is via `CronCreate` (per [`docs/AUTONOMOUS-LOOP.md`](../../../docs/AUTONOMOUS-LOOP.md)); `/loop` appears as historical / user-facing naming in some rules (e.g., [`.claude/rules/tick-must-never-stop.md`](../../../.claude/rules/tick-must-never-stop.md) opens with *"When running under `/loop` autonomous mode"*) but the canonical invocation path Max's Otto will use is `CronCreate`-direct
 - Closing the Otto session ends the cron (in-memory only; doesn't persist across sessions)
 - Every tick's work is reversible (commits on branches; PRs gate via review; nothing destructive without explicit authorization per [`.claude/rules/dont-ask-permission.md`](../../../.claude/rules/dont-ask-permission.md) authority-scope discipline)
 
