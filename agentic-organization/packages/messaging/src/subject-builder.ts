@@ -14,13 +14,29 @@ export type AgenticEventSubjectInput = {
 };
 
 export function buildAgenticEventSubject(input: AgenticEventSubjectInput): string {
-  const segments = [AgenticSubjectPrefix.Root, input.environment, input.organizationId, input.domain, input.eventType];
+  const segments = [
+    AgenticSubjectPrefix.Root,
+    input.environment,
+    input.organizationId,
+    input.domain,
+    buildDomainRelativeEventName(input.domain, input.eventType),
+  ];
 
   for (const segment of segments) {
     assertSubjectSegment(segment);
   }
 
   return segments.join(".");
+}
+
+function buildDomainRelativeEventName(domain: string, eventType: AgenticEventType): string {
+  const domainPrefix = `${domain}.`;
+
+  if (eventType.startsWith(domainPrefix)) {
+    return eventType.slice(domainPrefix.length);
+  }
+
+  return eventType;
 }
 
 function assertSubjectSegment(segment: string): void {

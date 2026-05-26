@@ -16,4 +16,16 @@ describe("agentic event NATS subjects", () => {
       "agentic-org.dev.org-lfg.work.work_item.changed",
     );
   });
+
+  test("uses a domain-relative event suffix when the event type already carries the domain", () => {
+    equal(
+      buildAgenticEventSubject({
+        environment: "dev",
+        organizationId: "org-lfg",
+        domain: "work_item",
+        eventType: AgenticEventType.WorkItemChanged,
+      }),
+      "agentic-org.dev.org-lfg.work_item.changed",
+    );
+  });
 });
