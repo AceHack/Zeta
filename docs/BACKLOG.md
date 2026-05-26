@@ -357,6 +357,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0669](backlog/P1/B-0669-v8-architecture-spec-tensor-foundational-primitive-sequoia-memory-hierarchy-4-particle-primitives-signal-blocking-eve-protocol-rf-aaron-mika-lior-2026-05-19.md)** V8 System Architecture — tensors as foundational primitive + Sequoia memory hierarchy + 4-particle primitives (observe/limit/choose/emit) + signal-blocking + Eve-Protocol-RF (Mika/Lior author; Aaron-authorized 2026-05-19 'land all of it')
 - [ ] **[B-0706](backlog/P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** Zeta on Orleans deployment architecture (ServiceTitan-scale; grains + JIT compilation + rented tools)
 - [ ] **[B-0732](backlog/P1/B-0732-runbook-as-executable-reality-leverage-class-safety-substrate-engineering-target-mika-feels-the-weight-aaron-play-doh-design-property-2026-05-25.md)** Runbook-as-executable-reality is a NEW LEVERAGE CLASS — safety substrate engineering target; existing destructive-tool contract operates at script scope, runbook leverage operates at system-direction scope (Mika feels the weight; Aaron's Play-Doh design property)
+- [ ] **[B-0765](backlog/P1/B-0765-service-titan-route-plug-into-existing-control-interfaces-not-new-ones-ontology-negotiation-at-standards-layer-aaron-2026-05-25.md)** ServiceTitan route — plug into existing control interfaces/structures (not new ones); ontology negotiation at the standards layer
 
 ## P2 — research-grade
 
