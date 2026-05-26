@@ -142,6 +142,18 @@ Priority order:
    tool ports, infrastructure
 3. **Gap-of-gap audits** — meta-improvements (substrate-discovery,
    index regeneration)
+4. **Sometimes-task: local-memory ↔ git-memory delta audit + migrate**
+   (B-0797; per the maintainer 2026-05-26 *"can you direct your
+   background service on the local only memories as part of its
+   natural loop sometimes as an option?"*). NOT every tick — invoke
+   when the higher-priority queue is empty AND the operator is offline
+   or unengaged. Audits the delta between user-scope
+   `~/.claude/projects/<slug>/memory/` (per-Mac, per-Otto-CLI surface
+   only) and in-repo `memory/` (git-canonical, visible to all
+   maintainers + agents + clones). Migrates substantive substrate
+   from local-only to in-repo via PR. Token-bounded: pick 1-3
+   candidate files per tick maximum; substrate-honest classification
+   per file (keep-local, migrate, or supersede).
 
 If `claim acquire` blocks on a row, pick a different row in the same
 priority tier — do NOT go idle.
