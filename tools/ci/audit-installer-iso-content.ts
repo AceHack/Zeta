@@ -78,6 +78,17 @@ function parseArgs(argv: readonly string[]): Args | ArgError {
 // `nixos-generators -f iso` / `nixosConfigurations.installer.config
 // .system.build.isoImage`. If the structure changes upstream, add
 // the new expected files here.
+//
+// IMPORTANT — empirically learned 2026-05-26: NixOS installer ISOs do
+// NOT put bootloader configs at the legacy `boot/grub/grub.cfg` path.
+// BIOS boot uses isolinux (`isolinux/isolinux.cfg`); UEFI boot uses
+// refind (`EFI/BOOT/refind_x64.efi`). Earlier draft asserted
+// `boot/grub/grub.cfg` and blocked every ISO build from PR #5119 →
+// #5125 because the audit's REQUIRED list didn't match NixOS-actual
+// layout. The 3 must-exist paths below ARE sufficient to assert
+// "this is a bootable NixOS installer ISO" — without nix-store.squashfs
+// + kernel + initrd, nothing boots. Bootloader presence is asserted
+// separately via REQUIRED_BOOTLOADER_ANY (one-of family) below.
 const REQUIRED_ISO_PATHS: readonly { path: string; rationale: string }[] = [
   {
     path: "nix-store.squashfs",
@@ -91,9 +102,29 @@ const REQUIRED_ISO_PATHS: readonly { path: string; rationale: string }[] = [
     path: "boot/initrd",
     rationale: "initramfs; bootable ISO must include it",
   },
+];
+
+// At least ONE of these bootloader-config paths must exist for the ISO
+// to be bootable. NixOS installer ISOs as of nixos-24.11 use isolinux
+// for BIOS + refind for UEFI; future channels may change. The "any-of"
+// assertion keeps the audit useful across NixOS-version bootloader
+// shifts without re-breaking when the channel bumps.
+const REQUIRED_BOOTLOADER_ANY: readonly { path: string; rationale: string }[] = [
+  {
+    path: "isolinux/isolinux.cfg",
+    rationale: "BIOS boot config (isolinux) — present on standard NixOS installer ISOs",
+  },
+  {
+    path: "EFI/BOOT/refind_x64.efi",
+    rationale: "UEFI boot loader (refind) — present on standard NixOS installer ISOs",
+  },
+  {
+    path: "EFI/BOOT/BOOTX64.EFI",
+    rationale: "UEFI boot loader (generic) — alternative naming",
+  },
   {
     path: "boot/grub/grub.cfg",
-    rationale: "Grub bootloader config; UEFI + BIOS boot paths use this",
+    rationale: "GRUB config (legacy) — kept for forward-compatibility if NixOS switches",
   },
 ];
 
@@ -247,6 +278,20 @@ function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError 
         detail: `entry present but size=${entry.size} (header comment promises non-empty)`,
       });
     }
+  }
+  // Bootloader any-of check: at least one of the known bootloader paths
+  // must exist. NixOS installer ISOs vary in which bootloader they ship
+  // by channel (isolinux/refind today; could change in future channels);
+  // any-of keeps the audit forward-compatible. Use `.some()` (boolean)
+  // rather than `.find()` (Copilot P0 on #5125: under noUnusedLocals
+  // the unused `bootloaderHit` const would fail tsc; .some avoids the
+  // unused-variable shape entirely).
+  if (!REQUIRED_BOOTLOADER_ANY.some((b) => entryByPath.has(b.path))) {
+    failures.push({
+      kind: "missing-path",
+      path: REQUIRED_BOOTLOADER_ANY.map((b) => b.path).join(" | "),
+      rationale: `none of the known bootloader configs found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_BOOTLOADER_ANY.map((b) => `${b.path} (${b.rationale})`).join("; ")}`,
+    });
   }
   return failures;
 }
