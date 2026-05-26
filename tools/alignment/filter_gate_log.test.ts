@@ -6,7 +6,9 @@
 // Run: bun test tools/alignment/filter_gate_log.test.ts
 
 import { describe, expect, test } from "bun:test";
-import { rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   computeSummary,
   type FilterGateEntry,
@@ -299,14 +301,31 @@ describe("main() CLI", () => {
     ])).toBe(1);
   });
 
-  test("returns 0 for valid --record", () => {
-    const code = main([
-      "--record",
-      "--candidate", "skill:test-entry",
-      "--source", "B-0056",
-      "--decision", "pass",
-      "--rationale", "Integration test entry",
-    ]);
-    expect(code).toBe(0);
+  test("returns 0 for valid --record (writes to tempdir, not production log)", () => {
+    const tmpDir = mkdtempSync(join(tmpdir(), "filter-gate-test-"));
+    const tmpLog = join(tmpDir, "filter-gate-log.jsonl");
+    const priorOverride = process.env.FILTER_GATE_LOG_PATH;
+    process.env.FILTER_GATE_LOG_PATH = tmpLog;
+    try {
+      const code = main([
+        "--record",
+        "--candidate", "skill:test-entry",
+        "--source", "B-0056",
+        "--decision", "pass",
+        "--rationale", "Integration test entry",
+      ]);
+      expect(code).toBe(0);
+      expect(existsSync(tmpLog)).toBe(true);
+      const entries = readLog(tmpLog);
+      expect(entries.length).toBe(1);
+      expect(entries[0]?.candidate).toBe("skill:test-entry");
+    } finally {
+      if (priorOverride === undefined) {
+        delete process.env.FILTER_GATE_LOG_PATH;
+      } else {
+        process.env.FILTER_GATE_LOG_PATH = priorOverride;
+      }
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
   });
 });
