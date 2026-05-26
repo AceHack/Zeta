@@ -156,6 +156,41 @@ jobs:
           # workflow run hangs).
           bun tools/ci/audit-installer-iso-content.ts --iso "$iso_abs"
 
+      # QEMU boot smoke-test (USB cleanup PR 3 — 2026-05-26):
+      # Boots the built ISO in QEMU/KVM with serial console capture +
+      # asserts the installer's expected login prompt appears within
+      # 5min. Catches the bug class where the ISO builds + audits pass
+      # but the kernel/initrd combination fails to actually boot
+      # (firmware mismatch; missing module; broken init; etc.). The
+      # source-substrate audit (cascade #1) + ISO-content audit
+      # (cascade #4) catch static issues; this catches dynamic
+      # boot-time issues. Prior art: nixos/tests/installer.nix
+      # (per Kestrel 2026-05-26 ferry pointer).
+      #
+      # ubuntu-24.04 runners support nested KVM (/dev/kvm); helper
+      # falls back to TCG emulation when KVM unavailable.
+      #
+      # Security: this step uses no `github.event.*` interpolation in
+      # `run:` lines; all inputs are filesystem paths from prior steps
+      # of THIS workflow. The TS helper at tools/ci/qemu-boot-test.ts
+      # takes the ISO path as a positional CLI arg (no shell expansion
+      # of attacker-controllable strings).
+      - name: Install QEMU (apt)
+        run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86
+
+      - name: QEMU boot smoke-test (cascade #5 — dynamic boot floor)
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::QEMU boot test: No installer ISO under result/iso/" >&2
+            exit 1
+          fi
+          iso_abs=$(readlink -f "${iso_candidates[0]}")
+          echo "Booting ISO: $iso_abs"
+          bun ../tools/ci/qemu-boot-test.ts "$iso_abs"
+
       - name: Locate ISO + capture metadata
         id: iso
         working-directory: full-ai-cluster
