@@ -30,15 +30,26 @@ interface InventoryDrift {
   readonly missingRetained: readonly string[];
 }
 
+interface AllowlistOrderViolation {
+  readonly index: number;
+  readonly previous: string;
+  readonly current: string;
+}
+
+interface AllowlistIntegrity {
+  readonly duplicateEntries: readonly string[];
+  readonly orderViolations: readonly AllowlistOrderViolation[];
+}
+
 export interface InventoryReport {
   readonly retained: readonly string[];
   readonly expectedRetained: readonly string[];
+  readonly allowlistIntegrity: AllowlistIntegrity;
   readonly drift: InventoryDrift;
 }
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
-export const RETAINED_SHELL_SCOPE =
-  "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
+export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -119,15 +130,56 @@ export function trackedNonLeanShellFilesFromGit(): readonly string[] {
 
 export const trackedNonLeanBashFilesFromGit = trackedNonLeanShellFilesFromGit;
 
+function inspectAllowlistIntegrity(expectedRetained: readonly string[]): AllowlistIntegrity {
+  const counts = new Map<string, number>();
+  const orderViolations: AllowlistOrderViolation[] = [];
+
+  for (let index = 0; index < expectedRetained.length; index += 1) {
+    const current = expectedRetained[index];
+    if (current === undefined) continue;
+    counts.set(current, (counts.get(current) ?? 0) + 1);
+
+    const previous = expectedRetained[index - 1];
+    if (previous !== undefined && previous.localeCompare(current) > 0) {
+      orderViolations.push({ index, previous, current });
+    }
+  }
+
+  const duplicateEntries = [...counts.entries()]
+    .filter(([, count]) => count > 1)
+    .map(([file]) => file)
+    .sort((a, b) => a.localeCompare(b));
+
+  return { duplicateEntries, orderViolations };
+}
+
+function hasAllowlistIntegrityDrift(integrity: AllowlistIntegrity): boolean {
+  return integrity.duplicateEntries.length > 0 || integrity.orderViolations.length > 0;
+}
+
 export function buildInventoryReport(
   retained: readonly string[],
   expectedRetained: readonly string[] = EXPECTED_RETAINED_SHELL,
 ): InventoryReport {
+  const allowlistIntegrity = inspectAllowlistIntegrity(expectedRetained);
+  if (hasAllowlistIntegrityDrift(allowlistIntegrity)) {
+    return {
+      retained: [...retained].sort((a, b) => a.localeCompare(b)),
+      expectedRetained: [...expectedRetained],
+      allowlistIntegrity,
+      drift: {
+        unexpected: [],
+        missingRetained: [],
+      },
+    };
+  }
+
   const retainedSet = new Set(retained);
   const expectedSet = new Set(expectedRetained);
   return {
     retained: [...retained].sort((a, b) => a.localeCompare(b)),
-    expectedRetained: [...expectedRetained].sort((a, b) => a.localeCompare(b)),
+    expectedRetained: [...expectedRetained],
+    allowlistIntegrity,
     drift: {
       unexpected: retained.filter((file) => !expectedSet.has(file)).sort((a, b) => a.localeCompare(b)),
       missingRetained: expectedRetained.filter((file) => !retainedSet.has(file)).sort((a, b) => a.localeCompare(b)),
@@ -136,7 +188,11 @@ export function buildInventoryReport(
 }
 
 export function hasDrift(report: InventoryReport): boolean {
-  return report.drift.unexpected.length > 0 || report.drift.missingRetained.length > 0;
+  return (
+    hasAllowlistIntegrityDrift(report.allowlistIntegrity) ||
+    report.drift.unexpected.length > 0 ||
+    report.drift.missingRetained.length > 0
+  );
 }
 
 export function renderReport(report: InventoryReport): string {
@@ -145,11 +201,34 @@ export function renderReport(report: InventoryReport): string {
   lines.push("");
   lines.push(`retained_non_lean_shell: ${String(report.retained.length)}`);
   lines.push(`expected_retained: ${String(report.expectedRetained.length)}`);
+  lines.push(`allowlist_duplicates: ${String(report.allowlistIntegrity.duplicateEntries.length)}`);
+  lines.push(`allowlist_order_violations: ${String(report.allowlistIntegrity.orderViolations.length)}`);
   lines.push(`unexpected: ${String(report.drift.unexpected.length)}`);
   lines.push(`missing_retained: ${String(report.drift.missingRetained.length)}`);
   lines.push("");
   if (!hasDrift(report)) {
     lines.push(`OK: retained non-Lean shell surface matches ${RETAINED_SHELL_SCOPE}.`);
+    return `${lines.join("\n")}\n`;
+  }
+  if (hasAllowlistIntegrityDrift(report.allowlistIntegrity)) {
+    lines.push("## Retained shell allowlist integrity errors");
+    lines.push("");
+    lines.push("The retained shell allowlist must be unique and sorted before repo shell drift is classified.");
+    lines.push("");
+    if (report.allowlistIntegrity.duplicateEntries.length > 0) {
+      lines.push("### Duplicate entries");
+      lines.push("");
+      for (const file of report.allowlistIntegrity.duplicateEntries) lines.push(`- ${file}`);
+      lines.push("");
+    }
+    if (report.allowlistIntegrity.orderViolations.length > 0) {
+      lines.push("### Out-of-order entries");
+      lines.push("");
+      for (const violation of report.allowlistIntegrity.orderViolations) {
+        lines.push(`- index ${String(violation.index)}: ${violation.previous} > ${violation.current}`);
+      }
+      lines.push("");
+    }
     return `${lines.join("\n")}\n`;
   }
   if (report.drift.unexpected.length > 0) {

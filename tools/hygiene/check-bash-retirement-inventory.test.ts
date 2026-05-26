@@ -15,11 +15,21 @@ function splitExpectedRetained(): readonly [string, readonly string[]] {
   return [missing, rest];
 }
 
+function firstTwoExpectedRetained(): readonly [string, string, readonly string[]] {
+  const [first, second, ...rest] = EXPECTED_RETAINED_SHELL;
+  if (first === undefined || second === undefined) {
+    throw new Error("expected retained shell allowlist must contain at least two entries");
+  }
+  return [first, second, rest];
+}
+
 describe("buildInventoryReport", () => {
   test("accepts the retained shell allowlist", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_SHELL);
 
     expect(hasDrift(report)).toBe(false);
+    expect(report.allowlistIntegrity.duplicateEntries).toEqual([]);
+    expect(report.allowlistIntegrity.orderViolations).toEqual([]);
     expect(report.retained).toHaveLength(EXPECTED_RETAINED_SHELL.length);
     expect(report.drift.unexpected).toEqual([]);
     expect(report.drift.missingRetained).toEqual([]);
@@ -53,6 +63,28 @@ describe("buildInventoryReport", () => {
     expect(report.drift.missingRetained).toEqual([missing]);
   });
 
+  test("flags duplicate allowlist entries before classifying repo shell drift", () => {
+    const [duplicate, rest] = splitExpectedRetained();
+    const report = buildInventoryReport(EXPECTED_RETAINED_SHELL, [duplicate, duplicate, ...rest]);
+
+    expect(hasDrift(report)).toBe(true);
+    expect(report.allowlistIntegrity.duplicateEntries).toEqual([duplicate]);
+    expect(report.allowlistIntegrity.orderViolations).toEqual([]);
+    expect(report.drift.unexpected).toEqual([]);
+    expect(report.drift.missingRetained).toEqual([]);
+  });
+
+  test("flags unsorted allowlist entries before classifying repo shell drift", () => {
+    const [first, second, rest] = firstTwoExpectedRetained();
+    const report = buildInventoryReport(EXPECTED_RETAINED_SHELL, [second, first, ...rest]);
+
+    expect(hasDrift(report)).toBe(true);
+    expect(report.allowlistIntegrity.duplicateEntries).toEqual([]);
+    expect(report.allowlistIntegrity.orderViolations).toEqual([{ index: 1, previous: second, current: first }]);
+    expect(report.drift.unexpected).toEqual([]);
+    expect(report.drift.missingRetained).toEqual([]);
+  });
+
   test("matches the current tracked repo shell inventory", () => {
     const report = buildInventoryReport(trackedNonLeanShellFilesFromGit());
 
@@ -77,5 +109,15 @@ describe("renderReport", () => {
     expect(rendered).toContain("tools/hygiene/new-post-install-wrapper.sh");
     expect(rendered).toContain(`## Missing retained ${RETAINED_SHELL_SCOPE} files`);
     expect(rendered).toContain(missing);
+  });
+
+  test("renders allowlist integrity errors before drift sections", () => {
+    const [duplicate, rest] = splitExpectedRetained();
+    const rendered = renderReport(buildInventoryReport(EXPECTED_RETAINED_SHELL, [duplicate, duplicate, ...rest]));
+
+    expect(rendered).toContain("## Retained shell allowlist integrity errors");
+    expect(rendered).toContain("### Duplicate entries");
+    expect(rendered).toContain(duplicate);
+    expect(rendered).not.toContain("## Unexpected non-Lean shell files");
   });
 });
