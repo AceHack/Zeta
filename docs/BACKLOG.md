@@ -369,6 +369,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0785](backlog/P1/B-0785-unified-namespace-across-fsharp-kubernetes-ontology-plus-experiment-id-routing-via-argo-rollouts-cilium-service-mesh-aaron-mika-2026-05-25.md)** Unified namespace across F# / Kubernetes / Ontology + experiment-ID routing via Argo Rollouts + Cilium service mesh (existing standards)
 - [ ] **[B-0787](backlog/P1/B-0787-multi-ai-experiment-parallelism-without-stepping-on-each-others-feet-namespace-plus-experiment-id-plus-event-store-as-projections-not-separate-dbs-aaron-2026-05-25.md)** Multi-AI experiment parallelism without stepping on each other's feet — per-AI namespace + experiment-ID routing + event-store-native twin (experiments are projections, not separate DBs)
 - [ ] **[B-0789](backlog/P1/B-0789-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md)** Iter-4 cluster credential substrate — hashedPassword (zeta-change-me default) + operator-ssh-keys.nix module + manual edit workflow (v1) with zflash auto-inject as iter-4.2 follow-up
+- [ ] **[B-0790](backlog/P1/B-0790-zero-dev-machines-cluster-native-architecture-voice-as-primary-operator-surface-aaron-2026-05-26.md)** Zero-dev-machines cluster-native architecture — all PRs from cluster; voice (Alexa + future microphones) as primary operator interface; dev machines and Alexa surfaces are conversational entry points into the cluster, not work substrate
 
 ## P2 — research-grade
 
