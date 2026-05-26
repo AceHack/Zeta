@@ -889,5 +889,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0756](backlog/P3/B-0756-ha-control-plane-multi-master-embedded-etcd-quorum-and-stable-api-endpoint-aaron-2026-05-25.md)** HA control-plane — multi-master k3s embedded etcd quorum + stable API endpoint (DNS round-robin or kube-vip virtual IP)
 - [ ] **[B-0757](backlog/P3/B-0757-cluster-auto-discovery-mdns-bootstrap-or-join-unattended-growth-aaron-2026-05-25.md)** Cluster auto-discovery — mDNS bootstrap-or-join so 1st/2nd/3rd/Nth USB self-organizes into a growing cluster unattended
 - [ ] **[B-0788](backlog/P3/B-0788-agent-on-agent-claude-code-session-recovery-lift-operator-runs-gate-once-zeta-safety-substrate-stronger-than-classifier-2026-05-25.md)** Agent-on-agent Claude Code session recovery — lift operator-runs gate for `--apply` once Zeta safety substrate stronger than classifier
+- [ ] **[B-0830](backlog/P3/B-0830-add-iso-release-attach-to-build-ai-cluster-iso-workflow-when-zeta-starts-tagging-releases-aaron-2026-05-26.md)** Add ISO release-attach to build-ai-cluster-iso.yml workflow when Zeta starts tagging releases
 
 <!-- END AUTO-GENERATED -->

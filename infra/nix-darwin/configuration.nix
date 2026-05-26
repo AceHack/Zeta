@@ -1,8 +1,9 @@
 # infra/nix-darwin/configuration.nix
 #
 # nix-darwin host configuration for maintainer Macs (Apple Silicon).
-# Activates the Linux builder VM so `nix build .#installer-iso` works
-# locally on Apple Silicon without manual cross-compile gymnastics.
+# Activates the Linux builder VM so the canonical AI-cluster installer
+# ISO build (`cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso`)
+# works locally on Apple Silicon without manual cross-compile gymnastics.
 #
 # Apply on a Mac that already has Nix installed. Recommended installer:
 # the Determinate Nix macOS package at <https://dtr.mn/determinate-nix>
@@ -13,9 +14,10 @@
 #   nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch \
 #     --flake /path/to/Zeta#zeta-mac
 #
-# After the first switch, `nix build .#installer-iso` from the Zeta
-# repo root builds the x86_64-linux ISO via Apple Virtualization.framework
+# After the first switch, the canonical AI-cluster ISO builds from
+# full-ai-cluster/usb-nixos-installer/ via Apple Virtualization.framework
 # + Rosetta 2 — no Parallels, no Lima, no remote builder.
+# (Root-flake installer-iso package retired 2026-05-26 in USB cleanup PR 2.)
 
 { config, pkgs, lib, ... }:
 

@@ -35,14 +35,20 @@ infra/
 ### 1. Build the installer ISO
 
 ```bash
-# From any machine with Nix installed:
-nix build .#installer-iso
+# From any machine with Nix installed (canonical AI-cluster installer
+# substrate at full-ai-cluster/usb-nixos-installer/ — root-flake
+# installer-iso package retired 2026-05-26 in USB cleanup PR 2):
+cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
 # Output at result/iso/zeta-installer-*.iso
 ```
 
 ### 2. Write it to a USB stick
 
 ```bash
+# macOS (recommended): zflash — Touch ID + random nonce + SSH key auto-inject
+bun full-ai-cluster/tools/zflash.ts
+
+# Linux / Windows fallback:
 sudo dd if=result/iso/zeta-installer-*.iso of=/dev/sdX bs=4M status=progress conv=fsync
 ```
 

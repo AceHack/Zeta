@@ -6,25 +6,28 @@
 #
 # Bootstrap flow:
 #   1. Clone Zeta onto a workstation:    git clone https://github.com/Lucent-Financial-Group/Zeta
-#   2. Build the USB installer ISO:      nix build .#installer-iso
-#   3. dd the ISO to a USB stick:        sudo dd if=result/iso/zeta-installer-*.iso of=/dev/sdX bs=4M status=progress
+#   2. Build the USB installer ISO:      cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
+#   3. Flash to USB (macOS):             bun full-ai-cluster/tools/zflash.ts
+#      (Linux/Windows fallback:          sudo dd if=result/iso/zeta-installer-*.iso of=/dev/sdX bs=4M status=progress)
 #   4. Boot a target machine on the stick.
 #   5. From the live system:             nixos-install --flake /mnt/etc/zeta#<host>
 #   6. Reboot.  K3S + ArgoCD + Orleans land automatically from this flake.
 #
 # Companion files:
-#   infra/nixos/hosts/installer/configuration.nix  — packages on the USB
-#   infra/nixos/hosts/<host>/configuration.nix     — per-machine config
-#   infra/nixos/modules/*.nix                       — shared modules
-#   infra/k8s/applications/*/Application.yaml       — ArgoCD App-of-Apps
+#   full-ai-cluster/usb-nixos-installer/             — canonical AI-cluster installer ISO substrate
+#   infra/nixos/hosts/<host>/configuration.nix       — per-machine config
+#   infra/nixos/modules/*.nix                         — shared modules
+#   infra/k8s/applications/*/Application.yaml         — ArgoCD App-of-Apps
 
 {
   description = "Zeta — declarative desired state for the AI cluster (NixOS + K3S + ArgoCD + Orleans)";
 
   inputs = {
-    # Pin nixpkgs to the stable channel that the installer's
-    # system.stateVersion targets (24.11). Bump in lockstep with
-    # infra/nixos/hosts/installer/configuration.nix `system.stateVersion`.
+    # Pin nixpkgs to the stable channel.
+    # (Canonical AI-cluster installer at full-ai-cluster/usb-nixos-installer/
+    # uses nixos-25.11 independently; this root flake stays on 24.11 for
+    # the per-host nixosConfigurations until those are bumped as a
+    # separate substrate landing.)
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     # Hardware-specific NixOS modules (e.g. common-cpu-amd, common-gpu-nvidia)
@@ -67,19 +70,10 @@
       # x86_64-darwin (Intel Macs) intentionally excluded: Rosetta 2 is
       # Apple-Silicon-only, and we don't ship a darwinConfiguration for
       # Intel Macs. Maintainers on Intel Macs use the CI workflow
-      # (.github/workflows/build-installer-iso.yml) to build the ISO.
+      # (.github/workflows/build-ai-cluster-iso.yml) to build the ISO.
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
-        "aarch64-darwin"
-      ];
-
-      # Systems that can produce the installer-iso package.
-      #   x86_64-linux   — native build (CI runners, Linux maintainers)
-      #   aarch64-darwin — dispatched via nix-darwin linux-builder VM
-      #                    (configured at infra/nix-darwin/configuration.nix)
-      isoBuildSystems = [
-        "x86_64-linux"
         "aarch64-darwin"
       ];
 
@@ -101,16 +95,12 @@
       # Install on a fresh machine:         nixos-install --flake /mnt/etc/zeta#<host>
       # Switch a running machine:           sudo nixos-rebuild switch --flake .#<host>
       #
-      # The `installer` config builds a bootable ISO image rather than a
-      # target-machine system. Use the `.#installer-iso` packages alias
-      # declared in flake-utils.eachSystem below.
+      # Installer ISO retired from root flake 2026-05-26 (USB cleanup PR 2):
+      # canonical AI-cluster installer now lives at
+      # full-ai-cluster/usb-nixos-installer/ and is built via the dedicated
+      # build-ai-cluster-iso.yml workflow. Per the human maintainer's
+      # "get rid of the old" cleanup direction.
       nixosConfigurations = {
-        installer = mkSystem {
-          modules = [
-            ./infra/nixos/hosts/installer/configuration.nix
-          ];
-        };
-
         control-plane = mkSystem {
           modules = [
             ./infra/nixos/hosts/control-plane/configuration.nix
@@ -166,23 +156,12 @@
         pkgs = import nixpkgs { inherit system; };
       in
       {
-        # The installer ISO is built from an x86_64-linux NixOS config.
-        # Published on:
-        #   - x86_64-linux        — native build (CI runners)
-        #   - aarch64-darwin      — Apple Silicon maintainers; dispatches
-        #                            via nix-darwin's linux-builder VM
-        #   - x86_64-darwin       — Intel Mac maintainers (same path)
-        # NOT published on aarch64-linux (would attempt a cross-build
-        # that fails at evaluation; no use case yet).
-        packages = nixpkgs.lib.optionalAttrs (builtins.elem system isoBuildSystems) {
-          # Convenience alias for the installer ISO.
-          # Build with:  nix build .#installer-iso
-          # Result at:   ./result/iso/zeta-installer-*.iso
-          installer-iso =
-            self.nixosConfigurations.installer.config.system.build.isoImage;
-
-          default = self.packages.${system}.installer-iso;
-        };
+        # installer-iso package retired from root flake 2026-05-26
+        # (USB cleanup PR 2). Canonical AI-cluster ISO now lives at
+        # full-ai-cluster/usb-nixos-installer/ and is built via:
+        #   cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso
+        # CI workflow: .github/workflows/build-ai-cluster-iso.yml
+        packages = { };
 
         # ---------------------------------------------------------------------
         # devShells — `nix develop` to get a shell with cluster admin tools
@@ -219,7 +198,7 @@
 
           shellHook = ''
             echo "zeta-admin devShell ready."
-            echo "  Build installer ISO:    nix build .#installer-iso"
+            echo "  Build installer ISO:    cd full-ai-cluster/usb-nixos-installer && nix build .#installer-iso"
             echo "  Build host system:      nixos-rebuild build --flake .#<host>"
             echo "  Talk to cluster:        kubectl / k9s / argocd / helm"
           '';
