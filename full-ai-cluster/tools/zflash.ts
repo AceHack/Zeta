@@ -910,6 +910,38 @@ async function main() {
     willInject = false;
   }
 
+  // iter-5.2.1 (B-0792): if operator didn't pass --host, auto-generate
+  // a random unique hostname `node-<6hex>` (24-bit entropy = ~16M
+  // possible names, negligible collision risk for any homelab cluster
+  // size; node-by-node mDNS uniqueness preserved). Operator can rename
+  // later via the digital-twin substrate planned under B-0794 (node
+  // self-registration; not yet shipped — see B-0794 row for the
+  // target node-config substrate that will host the rename mechanism).
+  //
+  // The maintainer 2026-05-26: "can we have it auto generate the host
+  // name we can change later via digital twin after it self registers."
+  //
+  // Auto-gen happens only when --host was NOT passed (preserves
+  // operator intent when they did pick a name) AND when iter-4.2
+  // inject will actually run (gated on `willInject` so we never
+  // promise an ssh target for a hostname that won't be written to
+  // the USB ESP — finalized AFTER the pubkey existence check so
+  // missing-pubkey path doesn't print a misleading ssh promise).
+  if (hostOverride === null && willInject) {
+    // Web Crypto: 3 random bytes → 6 hex chars; node-XXXXXX. Prefix
+    // `node-` keeps the namespace clean (operator-named hosts can
+    // avoid the `node-` prefix to distinguish from auto-named).
+    const rand = new Uint8Array(3);
+    crypto.getRandomValues(rand);
+    const hex = Array.from(rand, (b) => b.toString(16).padStart(2, "0")).join("");
+    hostOverride = `node-${hex}`;
+    process.stdout.write(
+      `\niter-5.2.1: --host not specified; auto-generated hostname: ${hostOverride}\n` +
+        `             (rename later via B-0794 digital-twin substrate when shipped)\n` +
+        `             cluster will be reachable as: ssh zeta@${hostOverride}.local\n\n`,
+    );
+  }
+
   // Stdio inherit — child handles all I/O directly (readline, sudo Touch ID
   // PAM prompt, dd progress). We are a thin invocation wrapper.
   const flashUsbArgs = willInject
