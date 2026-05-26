@@ -31,6 +31,12 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0432](backlog/P0/B-0432-shadow-observer-slice-4-zeta-shadow-cli-entry-loop-flag-2026-05-13.md)** Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag
 - [ ] **[B-0525](backlog/P0/B-0525-manifesto-constitutional-promotion-readiness-tracking-2026-05-14.md)** Manifesto constitutional-promotion readiness tracking — critical-mass adoption gate
 - [ ] **[B-0720](backlog/P0/B-0720-classifier-bypass-research-red-team-do-not-deploy-without-zeta-safer-than-anthropic-2026-05-24.md)** Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
+- [ ] **[B-0798](backlog/P0/B-0798-classifier-bypass-hard-limits-and-research-boundary-2026-05-26.md)** Classifier-bypass hard-limits and research boundary for B-0720
+- [ ] **[B-0799](backlog/P0/B-0799-classifier-bypass-synthetic-harness-design-2026-05-26.md)** Classifier-bypass synthetic-only harness design for B-0720
+- [ ] **[B-0800](backlog/P0/B-0800-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md)** Classifier-bypass findings schema and redaction rules for B-0720
+- [ ] **[B-0801](backlog/P0/B-0801-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md)** Zeta safety substrate inventory for the classifier-floor replacement gate
+- [ ] **[B-0802](backlog/P0/B-0802-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md)** Operator-refusal pattern for classifier-bypass deployment requests
+- [ ] **[B-0803](backlog/P0/B-0803-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md)** Classifier-bypass Knights Guild ratification and standing-constraint lift gate
 
 ## P1 — within 2-3 rounds
 
