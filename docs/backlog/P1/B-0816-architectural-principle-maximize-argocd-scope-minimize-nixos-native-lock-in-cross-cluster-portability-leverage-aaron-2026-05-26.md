@@ -137,9 +137,9 @@ The maintainer 2026-05-26 immediately after the iter-6.0 nixpkgs bump landed:
 The principle ISN'T speculative — the maintainer 2026-05-26 named the empirical lineage + use-cases:
 
 > *"ArgoCD becomes universal convergence engine. exactly its perfect for this it's been used at GitHub and LexisNexis for very similar reasons. Me and my friend built this at LexisNexis and he carried it to GitHub."*
-
+>
 > *"At LexisNexis we used it for a Legal Search Data Pipeline for GitHub they use it for CoPilot training pipeline."*
-
+>
 > *"both places we could run in any cloud with 0 external vendor dependencies that were not open source"*
 
 The pattern was built + validated at **3 contexts** by the same operator-lineage now building Zeta:
@@ -156,7 +156,91 @@ Three load-bearing properties carried across all three contexts:
 2. **0 external vendor dependencies** — no commercial control planes, no proprietary orchestrators, no closed-source schedulers. Anything required is open-source + can be replaced with another open-source equivalent
 3. **ArgoCD as the convergence engine** — same shape; same git-as-source-of-truth pattern; same CR reconciliation model
 
-Composes directly with B-0288 (Ace) and B-0742 (Ace's distributable POC). Zeta inherits all 3 properties: Ace bootstraps the substrate without vendor lock-in; ArgoCD converges it across any K8s distro; the entire stack is open-source.
+Composes directly with [B-0288](B-0288-ace-dlc-package-manager-cli-2026-05-08.md) (Ace) and [B-0742](../P2/B-0742-reference-k8s-local-stack-as-aces-distributable-poc-hats-as-negotiated-fork-structure-on-top-deterministic-declarative-gitops-ai-native-human-native-aaron-2026-05-25.md) (Ace's distributable POC). Zeta inherits all 3 properties: Ace bootstraps the substrate without vendor lock-in; ArgoCD converges it across any K8s distro; the entire stack is open-source.
+
+### Why ArgoCD specifically (not Flux) — historical decision lineage (Aaron 2026-05-26)
+
+The ArgoCD-vs-Flux decision was made empirically at LexisNexis (and carried to GitHub) based on the maintainer's load-bearing-feature evaluation at the time:
+
+> *"We tried to use Flux too i just didn't have the featues we need at the time it had no sync waves, i think they have something now and it had poor self healing and not equal to rollouts"*
+
+Three feature gaps in Flux at decision time that ArgoCD covered:
+
+1. **Sync waves** — ArgoCD supports phased deployment ordering via `argocd.argoproj.io/sync-wave` annotations (e.g., CRDs in wave 0, controllers in wave 1, workloads in wave 2). Flux at the time had no equivalent; deployments arrived without ordering guarantees. Load-bearing for cluster bring-up substrate where ordering matters (CRDs MUST exist before CR consumers).
+
+2. **Self-healing quality** — ArgoCD's `selfHeal: true` (per `syncPolicy.automated`) is mature + battle-tested at LN + GH scale. Flux's self-healing was weaker at decision time.
+
+3. **Rollouts (blue-green / canary)** — Argo Rollouts (the sibling project) provides progressive-delivery patterns (blue-green deployments, canary analysis, automated rollback on health-check failure). Flux had no equivalent at decision time.
+
+The maintainer's note: *"i think they have something now"* — Flux MAY have caught up on some/all of these since the decision was made. But the substrate decision is rooted in proven LN+GH operational evidence; switching engines is itself a substantive substrate-engineering cost. Re-evaluation possible if Flux now demonstrably exceeds ArgoCD on Zeta's specific needs; default remains ArgoCD per the empirical lineage.
+
+**2026-state Flux gap is narrower** (clarifying nuance Aaron 2026-05-26 surfaced via the ServiceTitan-uses-Flux observation): Flux + Argo Rollouts compose cleanly. Argo Rollouts is a Kubernetes controller (CRDs: `Rollout`, `AnalysisTemplate`, `Experiment`, `AnalysisRun`) under the Argoproj umbrella but with **zero hard dependency on ArgoCD**. Flux can install the rollouts controller via `HelmRelease` against `https://argoproj.github.io/argo-helm` and reconcile `Rollout` CRs from git via `Kustomization`, with `dependsOn:` handling install-before-consume ordering. Flux's own native progressive-delivery answer is **Flagger** (sibling CNCF project; integrates with Linkerd / Istio / Contour / Gloo / NGINX). So a Flux shop in 2026 has two viable paths: Flux + Flagger (all-Flux-native) OR Flux + Argo Rollouts (best-of-breed PD with GitOps). Both ship in production. ServiceTitan-on-Flux specifically could pull in Argo Rollouts tomorrow via one `HelmRelease` if they don't already.
+
+Zeta's ArgoCD choice still holds per the empirical LN+GH lineage + ArgoCD's tighter sync-wave + selfHeal integration with the same engine; the maintainer's "i think they have something now" caveat is partially correct (Flux + Flagger + dependsOn-graph + improved self-healing all exist now), but the substrate-switching cost dominates re-evaluation absent specific Flux-superior need.
+
+Observation for Zeta substrate: when adopting any iter-N CR / app / chart, ArgoCD's sync-wave + selfHeal + (where progressive-delivery matters) Argo Rollouts are the empirically-validated default. Designing for engine-independence-as-primary-concern adds substrate cost; per the LN+GH+Zeta lineage the engine choice is settled enough that operator-default is "use the validated stack" rather than "abstract over the engine"; per `.claude/rules/no-directives.md` operators remain free to deviate when specific evidence supports doing so. **Cross-cluster portability principle still holds even when other teams use Flux**: the K8s manifests (CRDs + Deployments + Services + Rollout CRs) are engine-agnostic; only the sync-engine-specific glue (`Application` for ArgoCD; `Kustomization`/`HelmRelease` for Flux) differs. A Flux-shop adopting Zeta substrate would wrap the same K8s manifests in Flux primitives — substantively the same portability win.
+
+### Helm-as-convergence-point + multi-engine-experimentation substrate (Aaron 2026-05-26)
+
+The maintainer's sharper architectural framing surfaced during the ServiceTitan-uses-Flux conversation:
+
+> *"Yes really helm is the convergence point between flux and argocd with different config wrappers for each system i don't mind supporting both long term but i'm famliar with argocd more than flux but i've heard flux is simpler so this is only reason i want multi cluster to experienment with huge things like this, also i like the depend_on that's clean as fuck."*
+
+Four operational substrate refinements:
+
+**1. Helm IS the convergence point.** Both Flux (`HelmRelease`) and ArgoCD (`Application` with `source.chart` / `source.repoURL` pointing at a Helm repo) consume the SAME Helm charts — they just wrap them in engine-specific config. Authoring substrate as Helm charts maximizes engine-portability automatically; the wrapper-per-engine cost is small (~30 lines of YAML per app per engine).
+
+**2. Supporting BOTH long-term is OK.** The original "ArgoCD locked-in per LN+GH+Zeta lineage" framing is correct as the DEFAULT, but multi-engine support is explicitly within scope per the maintainer's "i don't mind supporting both long term." The substrate architecture supports this when authored as: (a) Helm charts as the source of truth, (b) ArgoCD `Application` wrappers shipped by default, (c) Flux `HelmRelease` wrappers as additive overlay when a multi-cluster experiment justifies them.
+
+**3. Multi-cluster IS the experimentation substrate.** The reason multi-cluster matters extends beyond cross-cloud-portability — it's the substrate for direct A/B engine-comparison on production-shape workloads. Aaron's framing: *"i've heard flux is simpler so this is only reason i want multi cluster to experienment with huge things like this."* Empirical comparison (cluster-A on ArgoCD; cluster-B on Flux; same Helm charts; same workloads) gives substrate-honest evidence about which engine's tradeoffs fit Zeta's specific shape. This is bandwidth-served work (per `.claude/rules/bandwidth-served-falsifier.md`): bandwidth served = operator's engine-evaluation needs comparable production-shape data to override the LN+GH-era decision; multi-cluster experimentation provides exactly that.
+
+**4. Flux's `dependsOn` is explicitly endorsed.** Aaron's framing: *"i like the depend_on that's clean as fuck."* This is a cross-engine learning opportunity:
+
+- **In Flux**: `dependsOn` is the per-Kustomization / per-HelmRelease declarative dependency primitive (one resource declares dependency on another by name; Flux reconciler waits before applying).
+- **In ArgoCD**: the equivalent is `argocd.argoproj.io/sync-wave` annotations (numeric ordering — wave 0 before wave 1 before wave 2). Less explicit than Flux's named-dependency model; relies on operators picking wave numbers thoughtfully.
+- **Operational implication for Zeta substrate**: when authoring ArgoCD `Application` manifests, prefer EXPLICIT sync-wave numbers + comments documenting WHAT each wave provides — closes the legibility gap vs Flux's `dependsOn` even if the syntax is less ergonomic. Future possibility: a small TS substrate (`tools/cluster/argocd-deps-to-waves.ts`) that takes a dependency graph and emits the correct sync-wave annotations could land if the manual approach becomes painful.
+
+### Substrate architecture implication: Helm-charts-first design
+
+Combining all four refinements yields a clean substrate architecture:
+
+```
+maintainers/<op>/cluster-apps/<app>/
+├── chart/                 # Helm chart (source of truth; engine-agnostic)
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── templates/
+├── argocd/
+│   └── application.yaml   # ArgoCD wrapper (default)
+└── flux/                  # OPTIONAL — only when multi-engine substrate is in scope
+    └── helmrelease.yaml   # Flux wrapper
+```
+
+For workloads where only ArgoCD ships, the `flux/` directory is absent (no maintenance burden). For workloads in multi-engine experimentation scope, the `flux/` directory ships alongside. The Helm chart itself never changes between engines — that's the convergence point.
+
+This composes with the cross-distro portability principle (the top of this row): just as the K8s manifests are distro-agnostic, the Helm charts are engine-agnostic. Two orthogonal portability axes (distro + engine); same substrate-engineering discipline (push to the convergence point; wrap thinly per environment).
+
+### Developer force-multiplier ladder — Helm + Kustomize + Dockerfile is today's top tier (Aaron 2026-05-26)
+
+The maintainer's framing on why this whole substrate matters at human-developer scope:
+
+> *"helm + kustomze + dockerfile as a developer before our AI runbooks we are going to create with run, deffered run/continue with, and auto jit those tools offer the higest force multiler to any human i think today to levderge technology of others."*
+
+The framing names two layers:
+
+**Today's top force-multiplier tier (Helm + Kustomize + Dockerfile)**: small declarative configs → leverage massive infrastructure others built. A single human can stand up production-shape K8s workloads on any cloud, packaged with arbitrary OS/runtime/dep substrate, via three declarative-config tools. This IS why this row's "Helm-as-convergence-point" framing is load-bearing — Helm sits on the highest-force-multiplier rung available to developers today; standardizing on it maximizes the leverage Zeta inherits from the entire CNCF ecosystem.
+
+| Tool | What it leverages | Force-multiplier vector |
+|---|---|---|
+| **Dockerfile** | Linux container runtime + 10M+ public images | Runtime/dep packaging |
+| **Helm** | Charts ecosystem (Bitnami, Argo, Prometheus, etc.) + Helm operator pattern | App-level configuration + lifecycle |
+| **Kustomize** | K8s native + GitOps-friendly overlay-without-templating | Environment/cluster customization |
+
+The discipline composes: Dockerfile packages the runtime; Helm wraps it as a chart; Kustomize overlays per-environment; ArgoCD or Flux syncs from git. Four declarative layers; each leverages a different OSS substrate; combined leverage is multiplicative.
+
+**Tomorrow's top force-multiplier tier (AI runbooks — separate row [B-0819](../P1/B-0819-ai-runbook-substrate-run-deferred-run-continue-with-auto-jit-as-next-force-multiplier-layer-above-helm-kustomize-dockerfile-aaron-2026-05-26.md))**: the next layer Zeta is building extends the force-multiplier ladder above Helm+Kustomize+Dockerfile. The three new primitives Aaron named — `run` / `deferred run / continue with` / `auto JIT` — are what AI runbooks add. That substrate is filed separately as B-0819; this row's scope stays on the developer-today layer.
+
+**Substrate-engineering implication for B-0816**: maximizing ArgoCD scope (this row's top-line principle) is essentially "ride the Helm+Kustomize+Dockerfile + GitOps-engine force-multiplier ladder to the top rung". Push every operational decision toward the highest-leverage substrate; resist NixOS-native lock-in for things ArgoCD can do per the cross-distro principle; resist engine lock-in for things Helm can do per the Helm-as-convergence-point principle. Both are instances of "ride the highest force-multiplier substrate available today; don't reinvent."
 
 This anchor changes the P1 classification's basis: not "architectural reasoning that might apply"; rather "pattern validated at LexisNexis-scale + GitHub-scale + now Zeta-scale; the same constraints (cloud-agnostic + 0-vendor-lock-in + ArgoCD-convergence) hold across all three". Future-Otto cold-booting reads: this principle has 3 scale-evidenced anchors; treat it as load-bearing for every cluster-substrate decision.
 
