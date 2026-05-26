@@ -94,14 +94,26 @@ const REQUIRED_ISO_PATHS: readonly { path: string; rationale: string }[] = [
     path: "nix-store.squashfs",
     rationale: "NixOS installer's read-only nix store; contains zeta-install.sh + flake + modules",
   },
-  {
-    path: "boot/bzImage",
-    rationale: "Linux kernel image; bootable ISO must include it",
-  },
-  {
-    path: "boot/initrd",
-    rationale: "initramfs; bootable ISO must include it",
-  },
+];
+
+// Kernel + initrd path checks moved to any-of-family per B-0823 (2026-05-26).
+// nixpkgs 25.11 places kernel + initrd at variant paths (per-arch / store-hash
+// / etc.) instead of the legacy `boot/bzImage` + `boot/initrd` top-level
+// locations 24.11 used. Same fix-fwd pattern as B-0818 (isoName) — relax to
+// any-of with multiple candidate paths to survive nixpkgs-channel bumps,
+// AND dump full entry list on failure for self-debugging future regressions.
+const REQUIRED_KERNEL_ANY: readonly { path: string; rationale: string }[] = [
+  { path: "boot/bzImage", rationale: "Linux kernel (24.11 legacy top-level path)" },
+  { path: "boot/x86_64-linux/bzImage", rationale: "Linux kernel (per-arch path)" },
+  { path: "boot/kernel", rationale: "Linux kernel (generic-named)" },
+  { path: "boot/vmlinuz", rationale: "Linux kernel (vmlinuz convention)" },
+  { path: "boot/vmlinuz-linux", rationale: "Linux kernel (alt vmlinuz convention)" },
+];
+
+const REQUIRED_INITRD_ANY: readonly { path: string; rationale: string }[] = [
+  { path: "boot/initrd", rationale: "initramfs (24.11 legacy top-level path)" },
+  { path: "boot/x86_64-linux/initrd", rationale: "initramfs (per-arch path)" },
+  { path: "boot/initrd.img", rationale: "initramfs (.img convention)" },
 ];
 
 // At least ONE of these bootloader-config paths must exist for the ISO
@@ -293,7 +305,55 @@ function auditIsoContent(isoPath: string): readonly AuditFailure[] | AuditError 
       rationale: `none of the known bootloader configs found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_BOOTLOADER_ANY.map((b) => `${b.path} (${b.rationale})`).join("; ")}`,
     });
   }
+  // Kernel any-of check (B-0823): nixpkgs 25.11 placed kernel at
+  // variant paths instead of the legacy boot/bzImage top-level location
+  // — same fix-fwd pattern as bootloader-any-of above. If none match,
+  // the diagnostic-dump on failure (see main()) shows what's actually
+  // there so the candidate list can be extended.
+  if (!REQUIRED_KERNEL_ANY.some((k) => entryByPath.has(k.path))) {
+    failures.push({
+      kind: "missing-path",
+      path: REQUIRED_KERNEL_ANY.map((k) => k.path).join(" | "),
+      rationale: `none of the known kernel paths found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_KERNEL_ANY.map((k) => `${k.path} (${k.rationale})`).join("; ")}`,
+    });
+  }
+  // Initrd any-of check (B-0823): same shape as kernel-any-of above.
+  if (!REQUIRED_INITRD_ANY.some((i) => entryByPath.has(i.path))) {
+    failures.push({
+      kind: "missing-path",
+      path: REQUIRED_INITRD_ANY.map((i) => i.path).join(" | "),
+      rationale: `none of the known initrd paths found; ISO is unlikely to boot. Candidates checked: ${REQUIRED_INITRD_ANY.map((i) => `${i.path} (${i.rationale})`).join("; ")}`,
+    });
+  }
   return failures;
+}
+
+// Defensive substrate addition (B-0823): when the audit fails, dump
+// a sample of the actual ISO entries so future regressions self-debug.
+// Without this, the failure log shows only "[missing-path] X" with no
+// indication of what IS present. Dump first 80 entries (sorted by
+// path) — enough to spot kernel/initrd at variant locations + see
+// the actual directory layout. Sized small enough to fit in CI log
+// scroll-back without overwhelming.
+function dumpIsoEntriesForDiagnostic(isoPath: string, limit: number = 80): string {
+  try {
+    const proc = spawnSync("7z", ["l", "-slt", isoPath], { encoding: "utf8" });
+    if (proc.status !== 0) {
+      return `  (could not dump entries: 7z l failed with status ${proc.status})`;
+    }
+    const paths = proc.stdout
+      .split("\n")
+      .filter((l) => l.startsWith("Path = "))
+      .map((l) => l.slice("Path = ".length))
+      .filter((p) => p !== "" && p !== isoPath)
+      .sort();
+    if (paths.length === 0) return "  (no entries found)";
+    const sample = paths.slice(0, limit);
+    const tail = paths.length > limit ? `\n  ... and ${paths.length - limit} more entries` : "";
+    return sample.map((p) => `  ${p}`).join("\n") + tail;
+  } catch (err) {
+    return `  (diagnostic dump failed: ${err instanceof Error ? err.message : String(err)})`;
+  }
 }
 
 function main(): number {
@@ -331,6 +391,11 @@ function main(): number {
     }
   }
   process.stderr.write("\n");
+  // Diagnostic dump (B-0823) — show what's actually in the ISO so the
+  // candidate any-of paths can be extended next time nixpkgs shifts.
+  process.stderr.write(`ISO entries (first 80 sorted) for diagnostic:\n`);
+  process.stderr.write(dumpIsoEntriesForDiagnostic(parsed.isoPath));
+  process.stderr.write("\n\n");
   return 3;
 }
 
