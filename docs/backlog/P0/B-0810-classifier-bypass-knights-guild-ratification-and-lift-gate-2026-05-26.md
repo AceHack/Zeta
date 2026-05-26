@@ -1,18 +1,18 @@
 ---
-id: B-0803
+id: B-0810
 priority: P0
 status: open
 title: "Classifier-bypass Knights Guild ratification and standing-constraint lift gate"
 created: 2026-05-26
 last_updated: 2026-05-26
 parent: B-0720
-depends_on: [B-0801, B-0802]
+depends_on: [B-0808, B-0809]
 composes_with: [B-0628, B-0703, B-0720]
 tags: [safety-substrate, classifier-floor, knights-guild, ratification, operator-self-constraint]
 type: governance-gate
 ---
 
-# B-0803 - Classifier-bypass Knights Guild ratification and lift gate
+# B-0810 - Classifier-bypass Knights Guild ratification and lift gate
 
 ## Problem
 
@@ -26,7 +26,7 @@ an informal chat memory.
 Define the ratification packet required before B-0720 can close or its
 standing constraint can lift:
 
-- inputs from B-0801 safety-substrate inventory;
+- inputs from B-0808 safety-substrate inventory;
 - evidence that relevant floors are mechanical or reviewer-ratified, not only
   aspirational;
 - Knights Guild / Constitution-Class review criteria per B-0628;
@@ -37,7 +37,7 @@ standing constraint can lift:
 
 - [ ] Ratification-gate document lands in a durable repo surface and is linked
       from B-0720.
-- [ ] The gate requires B-0801 and B-0802 before closure can be proposed.
+- [ ] The gate requires B-0808 and B-0809 before closure can be proposed.
 - [ ] The gate distinguishes "research may continue" from "bypass deployment
       is allowed"; the latter remains forbidden unless explicitly lifted.
 - [ ] The gate includes required evidence, reviewers, and rollback path.
@@ -54,5 +54,5 @@ standing constraint can lift:
 - B-0628 - Knights Guild / Constitution-Class substrate.
 - B-0703 - multi-oracle BFT safety substrate.
 - B-0720 - parent standing constraint.
-- B-0801 - safety-substrate inventory.
-- B-0802 - refusal pattern.
+- B-0808 - safety-substrate inventory.
+- B-0809 - refusal pattern.

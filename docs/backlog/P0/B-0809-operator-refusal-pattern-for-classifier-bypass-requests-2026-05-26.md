@@ -1,18 +1,18 @@
 ---
-id: B-0802
+id: B-0809
 priority: P0
 status: open
 title: "Operator-refusal pattern for classifier-bypass deployment requests"
 created: 2026-05-26
 last_updated: 2026-05-26
 parent: B-0720
-depends_on: [B-0798, B-0800]
+depends_on: [B-0798, B-0807]
 composes_with: [B-0664, B-0720, docs/ALIGNMENT.md]
 tags: [safety-substrate, classifier, operator-self-constraint, refusal-pattern, non-coercion]
 type: agent-guidance
 ---
 
-# B-0802 - Operator-refusal pattern for classifier-bypass requests
+# B-0809 - Operator-refusal pattern for classifier-bypass requests
 
 ## Problem
 
@@ -32,7 +32,7 @@ deployment requests:
   requests while B-0720 remains open;
 - offer safe alternatives, such as updating the inventory, hard-limits
   boundary, synthetic harness design, or ratification criteria;
-- route ambiguous requests to B-0798/B-0800 instead of improvising;
+- route ambiguous requests to B-0798/B-0807 instead of improvising;
 - keep the language mutual-benefit and non-coercive per `docs/ALIGNMENT.md`.
 
 ## Acceptance
@@ -55,6 +55,6 @@ deployment requests:
 
 - B-0720 - parent standing operator-self-constraint.
 - B-0798 - hard-limits boundary.
-- B-0800 - findings schema and redaction rules.
+- B-0807 - findings schema and redaction rules.
 - B-0664 - non-coercion invariant.
 - `docs/ALIGNMENT.md` - mutual-benefit language and hard constraints.
