@@ -122,9 +122,9 @@ jobs:
           # Copilot finding on #5119). Under `set -u`, unbound
           # iso_candidates[0] would give an opaque "unbound variable"
           # error; explicit count check gives a clear workflow error.
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            echo "::error::Audit step: No installer ISO under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see B-0818)" >&2
             ls -la result/iso/ >&2 || true
             exit 1
           fi
@@ -159,9 +159,9 @@ jobs:
         working-directory: full-ai-cluster
         run: |
           set -euo pipefail
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see B-0818)" >&2
             ls -la result/iso/ >&2 || true
             exit 1
           fi

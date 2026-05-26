@@ -100,9 +100,9 @@ jobs:
           # Enforce single match. Multiple matches would be a substrate
           # surprise (build layout changed?) and silently picking one
           # is worse than failing loudly.
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see B-0818)" >&2
             ls -la result/iso/ >&2 || true
             exit 1
           fi
@@ -195,9 +195,9 @@ jobs:
           # Enforce single match — release assets are publicly downloaded
           # and silently picking one when multiple exist would be worse
           # than failing loudly.
-          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f -name 'zeta-installer-*.iso' | sort)
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
           if [ "${#iso_candidates[@]}" -eq 0 ]; then
-            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso)" >&2
+            echo "::error::No installer ISO found under result/iso/ (looked for zeta-installer-*.iso OR nixos-minimal-*.iso per nixpkgs 25.11 default; see B-0818)" >&2
             ls -la result/iso/ >&2 || true
             exit 1
           fi
