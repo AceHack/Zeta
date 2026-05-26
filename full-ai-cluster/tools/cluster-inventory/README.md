@@ -7,7 +7,7 @@ inventory:
 |-----------|---------------|---------|
 | Node Feature Discovery (NFD) | every node, DaemonSet | `kubectl get nodes --show-labels` |
 | `hwloc` / `lstopo` | every node, baked into `common.nix` | XML / SVG diagrams |
-| `capture.sh` | maintainer laptop, on demand | `docs/cluster-hardware/<node>/` |
+| `capture.ts` | maintainer laptop, on demand | `docs/cluster-hardware/<node>/` |
 
 ## What you get from NFD (zero effort, automatic)
 
@@ -52,9 +52,9 @@ Run from the maintainer machine when you want a point-in-time
 snapshot of every node:
 
 ```bash
-full-ai-cluster/tools/cluster-inventory/capture.sh
+bun full-ai-cluster/tools/cluster-inventory/capture.ts
 # or specific nodes:
-full-ai-cluster/tools/cluster-inventory/capture.sh worker-gpu-01 worker-gpu-02
+bun full-ai-cluster/tools/cluster-inventory/capture.ts worker-gpu-01 worker-gpu-02
 ```
 
 Produces `full-ai-cluster/docs/cluster-hardware/<node>/`:

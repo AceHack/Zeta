@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 // check-bash-retirement-inventory.ts — verify the retained shell surface.
 //
-// The TypeScript/Bun migration is in bash-retirement mode: repo tools should
-// not grow new post-install `.sh` entrypoints. The only non-Lean shell scripts
-// still allowed are setup/bootstrap scripts that run before Bun is available,
-// launchd bootstrap scripts that establish the pinned Bun environment, and
-// the Kiro loop wrapper that is itself launched by launchd.
+// The TypeScript/Bun migration is in bash-retirement mode: repo-owned scripts
+// should not grow new `.sh` entrypoints outside the explicit repo-wide
+// retained-shell allowlist. Retained shell exists only where the script runs
+// before Bun is available, bootstraps a host service environment, or belongs
+// to a low-level installer/dev-cluster surface that is still shell-native.
 //
 // Usage:
 //   bun tools/hygiene/check-bash-retirement-inventory.ts
@@ -13,6 +13,8 @@
 //   bun tools/hygiene/check-bash-retirement-inventory.ts --json
 
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 
 type ExitCode = 0 | 1 | 2;
 type Mode = "report" | "enforce" | "json";
@@ -35,9 +37,16 @@ export interface InventoryReport {
 }
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
-export const RETAINED_BASH_SCOPE = "setup/bootstrap/launchd-bootstrap/Kiro-wrapper";
+export const RETAINED_SHELL_SCOPE =
+  "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
 
-export const EXPECTED_RETAINED_BASH: readonly string[] = [
+export const EXPECTED_RETAINED_SHELL: readonly string[] = [
+  ".gemini/service/install-lior-service.sh",
+  ".gemini/service/lior-loop.sh",
+  "full-ai-cluster/dev-cluster/down.sh",
+  "full-ai-cluster/dev-cluster/up.sh",
+  "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
+  "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
   "tools/kiro/kiro-loop-wrapper.sh",
   "tools/kiro/launchd/install.sh",
   "tools/setup/common/curl-fetch.sh",
@@ -54,6 +63,9 @@ export const EXPECTED_RETAINED_BASH: readonly string[] = [
   "tools/setup/linux.sh",
   "tools/setup/macos.sh",
 ];
+
+export const RETAINED_BASH_SCOPE = RETAINED_SHELL_SCOPE;
+export const EXPECTED_RETAINED_BASH = EXPECTED_RETAINED_SHELL;
 
 function parseArgs(argv: readonly string[]): ParseResult {
   let mode: Mode = "report";
@@ -94,19 +106,22 @@ function runGit(args: readonly string[], cwd?: string): string {
   return result.stdout;
 }
 
-export function trackedNonLeanBashFilesFromGit(): readonly string[] {
+export function trackedNonLeanShellFilesFromGit(): readonly string[] {
   const repoRoot = runGit(["rev-parse", "--show-toplevel"]).trim();
-  const raw = runGit(["ls-files", "-z", "tools/*.sh", "tools/**/*.sh"], repoRoot);
+  const raw = runGit(["ls-files", "-z", "*.sh"], repoRoot);
   return raw
     .split("\0")
     .filter((file): file is string => file.length > 0)
+    .filter((file) => existsSync(join(repoRoot, file)))
     .filter((file) => !file.startsWith("tools/lean4/"))
     .sort((a, b) => a.localeCompare(b));
 }
 
+export const trackedNonLeanBashFilesFromGit = trackedNonLeanShellFilesFromGit;
+
 export function buildInventoryReport(
   retained: readonly string[],
-  expectedRetained: readonly string[] = EXPECTED_RETAINED_BASH,
+  expectedRetained: readonly string[] = EXPECTED_RETAINED_SHELL,
 ): InventoryReport {
   const retainedSet = new Set(retained);
   const expectedSet = new Set(expectedRetained);
@@ -128,23 +143,23 @@ export function renderReport(report: InventoryReport): string {
   const lines: string[] = [];
   lines.push("# Bash Retirement Inventory");
   lines.push("");
-  lines.push(`retained_non_lean_bash: ${String(report.retained.length)}`);
+  lines.push(`retained_non_lean_shell: ${String(report.retained.length)}`);
   lines.push(`expected_retained: ${String(report.expectedRetained.length)}`);
   lines.push(`unexpected: ${String(report.drift.unexpected.length)}`);
   lines.push(`missing_retained: ${String(report.drift.missingRetained.length)}`);
   lines.push("");
   if (!hasDrift(report)) {
-    lines.push(`OK: retained non-Lean bash surface matches ${RETAINED_BASH_SCOPE} allowlist.`);
+    lines.push(`OK: retained non-Lean shell surface matches ${RETAINED_SHELL_SCOPE}.`);
     return `${lines.join("\n")}\n`;
   }
   if (report.drift.unexpected.length > 0) {
-    lines.push("## Unexpected non-Lean bash files");
+    lines.push("## Unexpected non-Lean shell files");
     lines.push("");
     for (const file of report.drift.unexpected) lines.push(`- ${file}`);
     lines.push("");
   }
   if (report.drift.missingRetained.length > 0) {
-    lines.push(`## Missing retained ${RETAINED_BASH_SCOPE} files`);
+    lines.push(`## Missing retained ${RETAINED_SHELL_SCOPE} files`);
     lines.push("");
     for (const file of report.drift.missingRetained) lines.push(`- ${file}`);
     lines.push("");
@@ -159,7 +174,7 @@ function usage(): string {
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --enforce",
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --json",
     "",
-    `Checks that non-Lean tracked .sh files are limited to ${RETAINED_BASH_SCOPE} scripts.`,
+    `Checks that non-Lean tracked .sh files match ${RETAINED_SHELL_SCOPE}.`,
   ].join("\n");
 }
 
@@ -176,7 +191,7 @@ export function main(argv: readonly string[] = process.argv.slice(2)): ExitCode 
 
   let report: InventoryReport;
   try {
-    report = buildInventoryReport(trackedNonLeanBashFilesFromGit());
+    report = buildInventoryReport(trackedNonLeanShellFilesFromGit());
   } catch (err) {
     process.stderr.write(`ERROR: ${(err as Error).message}\n`);
     return 2;
