@@ -704,6 +704,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0761](backlog/P2/B-0761-zeta-cluster-as-open-source-reference-architecture-for-ai-to-train-on-and-compete-on-arc-agi-style-benchmark-aaron-2026-05-25.md)** Zeta cluster as open-source reference architecture for AI to train on and compete on — ARC-AGI-style benchmark substrate
 - [ ] **[B-0762](backlog/P2/B-0762-ai-auto-submit-back-telemetry-fixes-from-in-the-wild-installs-adoption-cost-to-zero-flywheel-aaron-2026-05-25.md)** AI auto-submit-back telemetry + fixes from in-the-wild installs — adoption-cost-to-zero flywheel
 - [ ] **[B-0764](backlog/P2/B-0764-cncf-ecosystem-as-force-multipliers-behind-zeta-interfaces-keda-dapr-opa-oam-kubevela-plus-ace-and-ontology-negotiation-aaron-2026-05-25.md)** CNCF ecosystem as force multipliers behind Zeta interfaces — KEDA, DAPR, OPA, OAM/KubeVela + Ace + ontology negotiation
+- [ ] **[B-0772](backlog/P2/B-0772-observable-cluster-fabric-universal-device-plugins-plus-reticulum-mesh-plus-polyglot-rx-streams-aaron-2026-05-25.md)** Observable cluster fabric — universal device plugins (NPU/GPU/audio/etc.) + Reticulum mesh (AllJoyn-successor) + polyglot Rx streams in every language
 
 ## P3 — convenience / deferred
 
