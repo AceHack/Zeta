@@ -56,7 +56,8 @@ function run(command: string, args: string[], timeoutMs: number): { status: numb
 }
 
 function lines(text: string): string[] {
-    return text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+    return text.split(/?
+/).map(l => l.trim()).filter(l => l.length > 0);
 }
 
 function acquireLock(): boolean {
