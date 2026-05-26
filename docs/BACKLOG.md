@@ -372,6 +372,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0787](backlog/P1/B-0787-multi-ai-experiment-parallelism-without-stepping-on-each-others-feet-namespace-plus-experiment-id-plus-event-store-as-projections-not-separate-dbs-aaron-2026-05-25.md)** Multi-AI experiment parallelism without stepping on each other's feet — per-AI namespace + experiment-ID routing + event-store-native twin (experiments are projections, not separate DBs)
 - [ ] **[B-0789](backlog/P1/B-0789-iter4-ssh-key-and-hashedpassword-substrate-for-cluster-bringup-2026-05-26.md)** Iter-4 cluster credential substrate — hashedPassword (zeta-change-me default) + operator-ssh-keys.nix module + manual edit workflow (v1) with zflash auto-inject as iter-4.2 follow-up
 - [ ] **[B-0790](backlog/P1/B-0790-zero-dev-machines-cluster-native-architecture-voice-as-primary-operator-surface-aaron-2026-05-26.md)** Zero-dev-machines cluster-native architecture — all PRs from cluster; voice (Alexa + future microphones) as primary operator interface; dev machines and Alexa surfaces are conversational entry points into the cluster, not work substrate
+- [ ] **[B-0792](backlog/P1/B-0792-iter5-wifi-credentials-injection-via-usb-esp-for-zero-typing-cluster-bringup-without-ethernet-load-bearing-for-homelab-persona-aaron-2026-05-26.md)** iter-5 wifi-credentials injection via USB ESP — homelab persona MOSTLY HAS NO ETHERNET; cluster must "remember the wifi on setup"; analogous to iter-4.x pubkey injection but for NetworkManager profile (Aaron 2026-05-26)
 
 ## P2 — research-grade
 
