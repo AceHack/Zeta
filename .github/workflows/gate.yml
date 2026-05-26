@@ -569,6 +569,64 @@ jobs:
           printf '  %s\n' "${files[@]}"
           shellcheck --format=gcc --severity=style "${files[@]}"
 
+  lint-bash-retirement-inventory:
+    # Bash-retirement guard for the TypeScript/Bun migration trajectory:
+    # Zeta-owned post-install repo scripts should not grow new `.sh`
+    # entrypoints after Bucket B reached zero. The retained shell surface is
+    # setup/bootstrap, launchd-bootstrap, and the Kiro loop wrapper only.
+    name: lint (bash retirement inventory)
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        # Comprehensive cache — see lint-shell job above for the
+        # rationale (maintainer dev-CI parity input +
+        # transient 502 prevention). Same cache key shape so all
+        # lint jobs share the cache when toolchain unchanged.
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise's pin in .mise.toml. The inventory guard is
+        # intentionally separate from shellcheck: shellcheck validates the
+        # retained setup scripts, while this job fails any new non-allowlisted
+        # tracked `.sh` surface before it reaches main.
+        # See lint-shell job above for retry rationale.
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            # Backoff: 10s, 30s, 60s, 120s — covers transient CDN
+            # blips from short-burst-and-recover up to multi-minute
+            # outages. The retry budget is five attempts because prior
+            # bun CDN 502s exhausted mise-internal retries plus a
+            # three-attempt wrapper.
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: Run bash-retirement inventory guard
+        run: bun run hygiene:check-bash-retirement-inventory
+
   lint-workflows:
     # actionlint catches .github/workflows/*.yml bugs: unknown
     # context refs, invalid runner labels, shellcheck-style warnings

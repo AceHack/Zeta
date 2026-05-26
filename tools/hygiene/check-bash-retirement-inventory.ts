@@ -3,7 +3,9 @@
 //
 // The TypeScript/Bun migration is in bash-retirement mode: repo tools should
 // not grow new post-install `.sh` entrypoints. The only non-Lean shell scripts
-// still allowed are setup/bootstrap scripts that run before Bun is available.
+// still allowed are setup/bootstrap scripts that run before Bun is available,
+// launchd bootstrap scripts that establish the pinned Bun environment, and
+// the Kiro loop wrapper that is itself launched by launchd.
 //
 // Usage:
 //   bun tools/hygiene/check-bash-retirement-inventory.ts
@@ -33,8 +35,11 @@ export interface InventoryReport {
 }
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
+export const RETAINED_BASH_SCOPE = "setup/bootstrap/launchd-bootstrap/Kiro-wrapper";
 
 export const EXPECTED_RETAINED_BASH: readonly string[] = [
+  "tools/kiro/kiro-loop-wrapper.sh",
+  "tools/kiro/launchd/install.sh",
   "tools/setup/common/curl-fetch.sh",
   "tools/setup/common/dotnet-tools.sh",
   "tools/setup/common/elan.sh",
@@ -129,7 +134,7 @@ export function renderReport(report: InventoryReport): string {
   lines.push(`missing_retained: ${String(report.drift.missingRetained.length)}`);
   lines.push("");
   if (!hasDrift(report)) {
-    lines.push("OK: retained non-Lean bash surface matches setup/bootstrap allowlist.");
+    lines.push(`OK: retained non-Lean bash surface matches ${RETAINED_BASH_SCOPE} allowlist.`);
     return `${lines.join("\n")}\n`;
   }
   if (report.drift.unexpected.length > 0) {
@@ -139,7 +144,7 @@ export function renderReport(report: InventoryReport): string {
     lines.push("");
   }
   if (report.drift.missingRetained.length > 0) {
-    lines.push("## Missing retained setup/bootstrap files");
+    lines.push(`## Missing retained ${RETAINED_BASH_SCOPE} files`);
     lines.push("");
     for (const file of report.drift.missingRetained) lines.push(`- ${file}`);
     lines.push("");
@@ -154,7 +159,7 @@ function usage(): string {
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --enforce",
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --json",
     "",
-    "Checks that non-Lean tracked .sh files are limited to setup/bootstrap scripts.",
+    `Checks that non-Lean tracked .sh files are limited to ${RETAINED_BASH_SCOPE} scripts.`,
   ].join("\n");
 }
 
