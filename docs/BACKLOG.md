@@ -707,6 +707,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0772](backlog/P2/B-0772-observable-cluster-fabric-universal-device-plugins-plus-reticulum-mesh-plus-polyglot-rx-streams-aaron-2026-05-25.md)** Observable cluster fabric — universal device plugins (NPU/GPU/audio/etc.) + Reticulum mesh (AllJoyn-successor) + polyglot Rx streams in every language
 - [ ] **[B-0774](backlog/P2/B-0774-etcdless-options-kine-adapter-dqlite-postgres-nats-zeta-native-dbsp-aaron-2026-05-25.md)** Etcd-less k8s options — kine adapter family (SQLite/Postgres/MySQL/NATS/Dqlite) + Zeta-native DBSP+Raft endgame
 - [ ] **[B-0775](backlog/P2/B-0775-ha-kubernetes-that-scales-beyond-etcd-cockroach-nats-supercluster-karmada-cluster-api-cell-based-aaron-2026-05-25.md)** HA Kubernetes that scales beyond etcd — CockroachDB / NATS super-cluster / Karmada / KubeStellar / Cluster API / cell-based architecture
+- [ ] **[B-0779](backlog/P2/B-0779-ai-nas-convergence-tight-integration-of-shared-memory-ai-cpu-and-nas-storage-on-one-device-aaron-2026-05-25.md)** AI NAS convergence — tight integration of shared-memory AI CPU + NAS storage on one device (NAS-as-cluster-node)
 
 ## P3 — convenience / deferred
 
