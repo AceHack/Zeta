@@ -2,7 +2,7 @@
 #
 # Shared baseline every cluster host imports.
 
-{ config, pkgs, lib, stateVersion ? "24.11", ... }:
+{ config, pkgs, lib, stateVersion ? "25.11", ... }:
 
 {
   # iter-5.2 (B-0792): per-node hostname injection lives in its own

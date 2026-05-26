@@ -19,15 +19,22 @@
   description = "Zeta full AI cluster — declarative from USB to running workloads";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    # iter-6.0 (B-0800; the maintainer 2026-05-26 "24.11 is a 2 year old
+    # version you found a 25.11 when you searched latest we need to make
+    # sure we are on latest too"): bumped from nixos-24.11 (EOL'd
+    # 2025-06-30) to nixos-25.11 "Xantusia" (current stable; EOL
+    # 2026-06-30). Per WebSearch
+    # https://nixos.org/blog/announcements/2025/nixos-2511/
+    # validated per `.claude/rules/dep-pin-search-first-authority.md`.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     flake-utils.url = "github:numtide/flake-utils";
 
     # nix-darwin pinned to matching release branch so Apple Silicon
     # maintainers can build the x86_64-linux ISO via the linux-builder
-    # VM (Virtualization.framework + Rosetta 2).
+    # VM (Virtualization.framework + Rosetta 2). Same bump as nixpkgs.
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/nix-darwin-24.11";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -44,7 +51,13 @@
 
   outputs = { self, nixpkgs, nixos-hardware, flake-utils, nix-darwin, disko, ... }@inputs:
     let
-      stateVersion = "24.11";
+      # iter-6.0 stateVersion bump (B-0800; PC1 + future cluster nodes
+      # are fresh-install scope per the maintainer 2026-05-26; no
+      # persistent K8s workloads yet → safe to bump for new hosts.
+      # Already-installed hosts should NOT bump stateVersion in their
+      # per-host nixos/hosts/<name>/configuration.nix without explicit
+      # migration handling per the NixOS upgrade guidance).
+      stateVersion = "25.11";
 
       supportedSystems = [
         "x86_64-linux"

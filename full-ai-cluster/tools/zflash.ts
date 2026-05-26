@@ -19,7 +19,7 @@
 // End-to-end keystrokes after first-time setup:
 //
 //   $ bun full-ai-cluster/tools/zflash.ts
-//   ISO: ~/Downloads/zeta-installer-24.11.iso (1.70 GiB)
+//   ISO: ~/Downloads/zeta-installer-25.11.iso (1.70 GiB)
 //   USB: /dev/disk6 (115 GiB, USB 3.2.1 FD)
 //   *** ALL DATA ON /dev/disk6 WILL BE DESTROYED ***
 //   type: yes a3f9
@@ -408,7 +408,7 @@ function autoDownloadFreshIsoIfNeeded(localIso: string): string {
       dlDest = join(
         homedir(),
         "Downloads",
-        `zeta-installer-24.11-ci${latest.id}-${latest.updated_at.slice(0, 10)}.iso`,
+        `zeta-installer-25.11-ci${latest.id}-${latest.updated_at.slice(0, 10)}.iso`,
       );
       if (!existsSync(dlDest)) {
         execFileSync("cp", [ciIsoSrc, dlDest], { stdio: "inherit" });

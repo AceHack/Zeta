@@ -9,13 +9,16 @@
   description = "Zeta USB installer — NixOS bootable image for AI-cluster bootstrap";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    # iter-6.0 (B-0800): nixos-25.11 "Xantusia" current stable (bumped
+    # 2026-05-26 from EOL'd 24.11; matches sibling full-ai-cluster/
+    # flake.nix).
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs = { self, nixpkgs, flake-utils, ... }@inputs:
     let
-      stateVersion = "24.11";
+      stateVersion = "25.11";
     in
     {
       nixosConfigurations.installer = nixpkgs.lib.nixosSystem {

@@ -107,7 +107,7 @@ If you're on Apple Silicon and don't yet have the linux-builder
 running, apply the nix-darwin config first:
 
 ```bash
-nix run nix-darwin/nix-darwin-24.11#darwin-rebuild -- switch --flake .#zeta-mac
+nix run nix-darwin/nix-darwin-25.11#darwin-rebuild -- switch --flake .#zeta-mac
 ```
 
 ### 2. Write to USB stick
