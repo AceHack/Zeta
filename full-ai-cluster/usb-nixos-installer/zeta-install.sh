@@ -671,6 +671,161 @@ else
 fi
 echo
 
+# ── Step 6.9: iter-5.4.1 self-registration commit+push (B-0812) ──
+# B-0794 sub-target 3 full implementation. After iter-5.4.0 captures
+# operator's gh-auth foothold + ssh pubkeys, this step:
+#   1. Probes hardware (CPU/RAM/cores/GPU/storage/network/MAC)
+#   2. Composes a ClusterNode YAML matching the provisional schema
+#   3. Opens a PR on the Zeta repo registering this node under
+#      maintainers/<operator-gh-user>/cluster-nodes/<hostname>/node.yaml
+#
+# Operator (or peer agent) merges the PR from anywhere (phone-merge OK).
+# ArgoCD then watches maintainers/*/cluster-nodes/** and reconciles
+# the node into the cluster (B-0813 iter-5.4.2; tracked separately).
+#
+# Skip conditions (cascade with iter-5.4.0):
+#   - GH_AUTH_OK != 1 (gh auth login was skipped or failed)
+#   - hostname unknown (iter-5.2 hostname injection also skipped)
+#
+# Empirical anchor: operator 2026-05-26 physical hardware-support test
+# verified self-registration did NOT happen — maintainers/aaron/cluster-
+# nodes/ doesn't exist on the repo. This Step 6.9 implements the missing
+# substrate to fix B-0835 Bug 4 (CRITICAL per operator's CORE REQUIREMENT
+# of post-boot fully-operational chain without operator login).
+SELF_REG_OK=0
+SELF_REG_PR_URL=""
+if [ "$GH_AUTH_OK" = 1 ]; then
+  echo "[iter-5.4.1] ── self-registration commit+push (B-0812) ──"
+  echo "[iter-5.4.1] Composing ClusterNode YAML + opening registration PR..."
+
+  # Resolve operator GH user (used for the per-maintainer subtree path).
+  MAINTAINER=$(gh api /user --jq .login 2>/dev/null || echo "")
+  if [ -z "$MAINTAINER" ]; then
+    echo "[iter-5.4.1]   WARN: gh api /user failed; cannot resolve operator GH login; skipping"
+  else
+    # Resolve installed hostname (iter-5.2 substrate writes to
+    # /mnt/etc/zeta/cluster-node-id). Fallback to flake-default $HOST
+    # if the iter-5.2 file is absent (means iter-5.2.2 generation was
+    # skipped or failed — graceful degradation; warn loudly).
+    if [ -f "$HOSTNAME_DST" ]; then
+      NODE_HOSTNAME=$(cat "$HOSTNAME_DST" | tr -d '[:space:]')
+    else
+      NODE_HOSTNAME="$HOST"
+      echo "[iter-5.4.1]   WARN: $HOSTNAME_DST absent; using flake-host '$HOST' as node-name"
+      echo "[iter-5.4.1]          (may produce naming collision if multiple nodes use this flake-host)"
+    fi
+    echo "[iter-5.4.1]   maintainer:  $MAINTAINER"
+    echo "[iter-5.4.1]   node-name:   $NODE_HOSTNAME"
+
+    # ── hardware probe ──
+    # Emits the inner fields of the ClusterNode `hardware:` block.
+    # Each field is best-effort; absent fields are omitted from YAML
+    # rather than emitting empty-string values (ArgoCD/k8s consumers
+    # prefer absent over empty).
+    CPU_MODEL=$(grep 'model name' /proc/cpuinfo 2>/dev/null | head -1 | cut -d: -f2- | sed 's/^[[:space:]]*//' | sed 's/"//g' || echo "")
+    MEM_TOTAL=$(free -h --si 2>/dev/null | awk '/Mem:/{print $2}' || echo "")
+    CPU_CORES=$(nproc 2>/dev/null || echo "")
+    GPU_LINE=$(lspci -nn 2>/dev/null | grep -iE 'vga|3d|display' | head -1 | sed 's/"//g' || echo "")
+    IP_ADDR=$(ip -4 -o addr 2>/dev/null | awk '/inet/ && !/lo/{print $4; exit}' || echo "")
+    MAC_ADDR=$(ip -o link 2>/dev/null | awk '/state UP/ && !/lo/{print $(NF-2); exit}' || echo "")
+    STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk"{print "    - \"/dev/" $1 " " $2 "\""}' || echo "")
+    REG_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+    FLAKE_COMMIT=$(git -C /mnt/etc/zeta rev-parse HEAD 2>/dev/null | head -c 12 || echo "unknown")
+
+    # ── compose node.yaml ──
+    NODE_YAML="apiVersion: zeta.lucent-financial-group.com/v1
+kind: ClusterNode
+metadata:
+  name: $NODE_HOSTNAME
+  namespace: zeta-cluster
+  annotations:
+    zeta.lucent-financial-group.com/registered-at: \"$REG_TIMESTAMP\"
+    zeta.lucent-financial-group.com/flake-commit: \"$FLAKE_COMMIT\"
+    zeta.lucent-financial-group.com/flake-host: \"$HOST\"
+    zeta.lucent-financial-group.com/registered-via: \"iter-5.4.1\"
+spec:
+  hostname: $NODE_HOSTNAME
+  role: $HOST
+  maintainer: $MAINTAINER
+  hardware:"
+    [ -n "$CPU_MODEL" ] && NODE_YAML="$NODE_YAML
+    cpu: \"$CPU_MODEL\""
+    [ -n "$MEM_TOTAL" ] && NODE_YAML="$NODE_YAML
+    memory: \"$MEM_TOTAL\""
+    [ -n "$CPU_CORES" ] && NODE_YAML="$NODE_YAML
+    cores: $CPU_CORES"
+    [ -n "$GPU_LINE" ] && NODE_YAML="$NODE_YAML
+    gpu: \"$GPU_LINE\""
+    [ -n "$STORAGE_LINES" ] && NODE_YAML="$NODE_YAML
+  storage:
+$STORAGE_LINES"
+    if [ -n "$IP_ADDR" ] || [ -n "$MAC_ADDR" ]; then
+      NODE_YAML="$NODE_YAML
+  network:"
+      [ -n "$IP_ADDR" ] && NODE_YAML="$NODE_YAML
+    ip: \"$IP_ADDR\""
+      [ -n "$MAC_ADDR" ] && NODE_YAML="$NODE_YAML
+    mac: \"$MAC_ADDR\""
+    fi
+
+    # ── clone repo to temp; write node.yaml; commit + open PR ──
+    WORK_DIR=$(mktemp -d -t zeta-self-register.XXXXXX)
+    REG_BRANCH="register-${NODE_HOSTNAME}-$(date -u +%Y%m%dT%H%M%SZ)"
+    if gh repo clone Lucent-Financial-Group/Zeta "$WORK_DIR" -- --depth 1 --quiet 2>&1 | tail -3; then
+      NODE_DIR="$WORK_DIR/maintainers/$MAINTAINER/cluster-nodes/$NODE_HOSTNAME"
+      mkdir -p "$NODE_DIR"
+      printf '%s\n' "$NODE_YAML" > "$NODE_DIR/node.yaml"
+      (
+        cd "$WORK_DIR"
+        # commit-author = gh-auth'd operator (no shipped credentials;
+        # clean attribution chain). Configure user.{name,email} from gh.
+        OP_NAME=$(gh api /user --jq .name 2>/dev/null || echo "$MAINTAINER")
+        OP_EMAIL=$(gh api /user/emails --jq '.[] | select(.primary == true) | .email' 2>/dev/null \
+                   | head -1 || echo "${MAINTAINER}@users.noreply.github.com")
+        git config user.name "$OP_NAME"
+        git config user.email "$OP_EMAIL"
+        git checkout -b "$REG_BRANCH"
+        git add "maintainers/$MAINTAINER/cluster-nodes/$NODE_HOSTNAME/"
+        git commit -m "feat(node-register): $NODE_HOSTNAME self-registers via iter-5.4.1
+
+Auto-generated by zeta-install.sh Step 6.9 on the node during install.
+Registers ${NODE_HOSTNAME} under maintainers/${MAINTAINER}/cluster-nodes/.
+ArgoCD watches maintainers/*/cluster-nodes/** + reconciles per B-0813.
+
+flake-host: ${HOST}
+flake-commit: ${FLAKE_COMMIT}
+registered-at: ${REG_TIMESTAMP}
+" >/dev/null 2>&1
+        git push -u origin "$REG_BRANCH" >/dev/null 2>&1
+        SELF_REG_PR_URL=$(gh pr create \
+          --title "feat(node-register): $NODE_HOSTNAME self-registers via iter-5.4.1" \
+          --body "Self-registration PR opened by zeta-install.sh on the node during install. Composes with B-0812 iter-5.4.1 + B-0813 iter-5.4.2 ArgoCD reconciliation. Review + merge to bring the node into the cluster." \
+          --base main \
+          --head "$REG_BRANCH" 2>&1 | tail -1)
+        echo "$SELF_REG_PR_URL" > /tmp/zeta-self-reg-pr-url
+      )
+      if [ -s /tmp/zeta-self-reg-pr-url ]; then
+        SELF_REG_PR_URL=$(cat /tmp/zeta-self-reg-pr-url)
+        SELF_REG_OK=1
+        echo "[iter-5.4.1]   SUCCESS — registration PR opened: $SELF_REG_PR_URL"
+        echo "[iter-5.4.1]   Operator merges from anywhere (phone-merge OK)."
+        echo "[iter-5.4.1]   ArgoCD reconciles after merge per B-0813 iter-5.4.2."
+      else
+        echo "[iter-5.4.1]   WARN: gh pr create did not return a URL; check $WORK_DIR for state"
+      fi
+    else
+      echo "[iter-5.4.1]   WARN: gh repo clone failed; skipping self-registration"
+      echo "[iter-5.4.1]          (operator can re-run manually post-install)"
+    fi
+    # Cleanup: temp dir is operator-owned + safe to remove
+    rm -rf "$WORK_DIR" /tmp/zeta-self-reg-pr-url 2>/dev/null || true
+  fi
+else
+  echo "[iter-5.4.1] skipped — iter-5.4.0 gh-auth was skipped or failed; no auth foothold for commit+push"
+  echo "[iter-5.4.1] (operator can re-run manually post-install via tools/cluster/register-node.ts when that ships)"
+fi
+echo
+
 echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 sudo nixos-install --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
 
@@ -702,6 +857,25 @@ if [ "$GH_AUTH_OK" = 1 ] && [ "$GH_KEY_COUNT" != "0" ]; then
   echo "    your registered-with-GitHub SSH keys:"
   echo "      ssh zeta@\$(hostname).local"
   echo
+
+  # B-0812 iter-5.4.1: surface the self-registration PR URL if Step 6.9
+  # opened one. This is the operator's call-to-action — merge the PR
+  # from anywhere (phone OK) to bring the node into the cluster via
+  # ArgoCD reconciliation (B-0813 iter-5.4.2).
+  if [ "$SELF_REG_OK" = 1 ] && [ -n "$SELF_REG_PR_URL" ]; then
+    echo "  iter-5.4.1 SELF-REGISTRATION: SUCCESS"
+    echo "    Node-registration PR opened:"
+    echo "      $SELF_REG_PR_URL"
+    echo "    Review + merge → ArgoCD reconciles → node joins cluster"
+    echo "    (phone-merge OK — no laptop kubectl required)"
+    echo
+  else
+    echo "  iter-5.4.1 SELF-REGISTRATION: SKIPPED (see diagnostics above)"
+    echo "    Manual fallback: tools/cluster/register-node.ts (when shipped)"
+    echo "    OR push commit to maintainers/<your-gh-user>/cluster-nodes/<hostname>/node.yaml"
+    echo
+  fi
+
   echo "  AFTER FIRST LOGIN:"
   echo "    1. (password already set per iter-5.3 prompt — or unchanged"
   echo "        if iter-5.3 was skipped; rotate via 'passwd zeta' anytime)"
