@@ -236,9 +236,80 @@ for d in "${DATA_DISKS[@]}"; do
 done
 
 # ── Step 6: clone + install ───────────────────────────────────────
+#
+# B-0857.X (cluster-type menu extension, 2026-05-27): replace the
+# bare free-text prompt with a numbered menu + hardware-detection
+# suggested default. Existing free-text override preserved as
+# "other" option for advanced cases (custom flake host attribute
+# added to nixos/hosts/<name>/ but not yet in the menu).
+#
+# Hardware-detection heuristic (suggested default):
+#   - lspci shows NVIDIA / AMD / Intel GPU       -> worker-gpu
+#   - default                                    -> control-plane
+#
+# Multi-role-on-single-host support (operator 2026-05-27: "letting
+# you select multiple or detecting based on hardware etc..."):
+# the current flake assigns one host attribute per node; multi-role
+# compose-on-single-host is a future B-0792-extension sub-row
+# (requires flake-shape refactor to support role-tagging). This
+# iteration ships the single-attribute menu; the multi-role
+# composition follows when the flake substrate supports it.
 if [[ -z "$HOST" ]]; then
-  read -rp "Flake host attribute to install [control-plane]: " HOST
-  HOST="${HOST:-control-plane}"
+  # Hardware-detection suggested default.
+  SUGGESTED_HOST="control-plane"
+  if command -v lspci >/dev/null 2>&1; then
+    if lspci 2>/dev/null | grep -qiE "(nvidia|vga.*amd|3d.*amd|vga.*intel.*arc|3d.*intel.*arc)"; then
+      SUGGESTED_HOST="worker-gpu"
+    fi
+  fi
+  echo
+  echo "Cluster node type — select host attribute from the flake:"
+  echo
+  echo "  1) control-plane    K3S server + Cilium + ArgoCD bootstrap"
+  echo "                      (Longhorn storage + cpu workloads also run here)"
+  echo "  2) worker-gpu       GPU worker (NVIDIA passthrough + device-plugin"
+  echo "                      + Longhorn storage)"
+  echo "  3) worker-template  Cookie-cutter worker (multi-disk Longhorn;"
+  echo "                      use after copying to nixos/hosts/worker-NN/"
+  echo "                      per PROVISIONING.md)"
+  echo "  4) other            type a custom flake host attribute (advanced;"
+  echo "                      for hosts added under nixos/hosts/ + wired"
+  echo "                      into flake.nix nixosConfigurations)"
+  echo
+  echo "Hardware detection suggests: $SUGGESTED_HOST"
+  if [ "$SUGGESTED_HOST" = "worker-gpu" ]; then
+    echo "  (GPU detected via lspci — likely worker node, not control-plane)"
+  else
+    echo "  (no GPU detected — defaulting to control-plane;"
+    echo "   override below if this is a dedicated CPU-only worker)"
+  fi
+  echo
+  # Default menu choice maps to suggested host.
+  DEFAULT_CHOICE="1"
+  case "$SUGGESTED_HOST" in
+    control-plane)   DEFAULT_CHOICE="1" ;;
+    worker-gpu)      DEFAULT_CHOICE="2" ;;
+    worker-template) DEFAULT_CHOICE="3" ;;
+  esac
+  read -rp "Choice [1-4, default=$DEFAULT_CHOICE]: " MENU_CHOICE
+  MENU_CHOICE="${MENU_CHOICE:-$DEFAULT_CHOICE}"
+  case "$MENU_CHOICE" in
+    1) HOST="control-plane" ;;
+    2) HOST="worker-gpu" ;;
+    3) HOST="worker-template" ;;
+    4)
+      read -rp "Custom flake host attribute: " HOST
+      if [ -z "$HOST" ]; then
+        echo "[ERROR] custom host attribute cannot be empty; aborting" >&2
+        exit 1
+      fi
+      ;;
+    *)
+      echo "[ERROR] invalid choice '$MENU_CHOICE' (expected 1-4); aborting" >&2
+      exit 1
+      ;;
+  esac
+  echo "Selected: $HOST"
 fi
 
 echo "Cloning $REPO_URL ..."
