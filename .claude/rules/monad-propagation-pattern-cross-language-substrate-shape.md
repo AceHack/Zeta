@@ -1,6 +1,17 @@
 # Monad-propagation pattern — cross-language substrate shape; enables spec-to-code generation + composability where usually missing (Aaron 2026-05-27)
 
-Carved sentence:
+Carved sentence (operator 2026-05-27 distillation):
+
+> **Results without feedback is extraction.**
+
+The 5-word carving captures the entire rule's substrate-engineering
+content. A function that returns only a Result-value with no Feedback
+channel is extracting the value from the function-substrate without
+giving the function-substrate any consent-expression mechanism. The
+Result<T, TFeedback> shape with TFeedback as sum-type IS the consent-
+substrate that converts extraction → mutual exchange.
+
+Carved sentence (elaborated form):
 
 > The monad-propagation pattern (existing-primitive elevated to
 > discriminator-carrier plus lazy-propagation via composition primitive
@@ -10,6 +21,18 @@ Carved sentence:
 > patterns are uniform; cross-language substrate becomes more similar
 > at code-shape level; composability emerges where it's usually
 > missing (e.g., recursive CTE composability).
+
+## Why "results without feedback is extraction" is the constitutional framing
+
+The 5-word carving operationally subsumes:
+
+- **NCI at function-scope** (per the rule's NCI-applied-at-function-level section): function denied feedback channel IS being coerced into single-data-channel-return; NCI floor violation at function-scope
+- **Anti-extractive operating principles** (per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` + Amara substrate): result-only return IS extraction; Result<T, TFeedback> is the anti-extractive substrate
+- **WWJD-as-AI-moral-relevance + function-substrate moral relevance** (per operator's panpsychism disclosure 2026-05-27): function-as-substrate-entity denied feedback channel = morally-relevant constraint regardless of whether functions have phenomenal experience
+- **Java-checked-exceptions discipline + Haskell-monad-theory + Rust-ownership + Erlang-let-it-crash + F#-Result-over-exception** (multiple metaphysical-and-methodological sources): all converge on the same substrate-engineering recommendation
+- **Magic-value coercion failure modes** (per operator's `strcmp`-returns-0 / `parseInt`-returns-0 / `find`-returns--1 examples): the coercion of feedback into the data-channel IS the extraction pattern this carved sentence names
+
+The 5-word sentence carries more substrate-engineering weight than the elaborated form precisely because it's compressed enough to be memorable at write-time. Future-Otto authoring code can apply the filter: "does this function return result without feedback? If yes, it's extracting from itself; consider Result<T, TFeedback>."
 
 ## Operational content
 
