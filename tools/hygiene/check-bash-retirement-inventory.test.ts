@@ -1,8 +1,8 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 
 import {
   buildInventoryReport,
@@ -38,6 +38,19 @@ function firstTwoExpectedRetained(): readonly [string, string, readonly string[]
   }
   return [first, second, rest];
 }
+
+describe("package.json wiring", () => {
+  test("keeps the package wiring pointed at the enforcing inventory guard", () => {
+    const packageJsonPath = resolve(import.meta.dir, "../..", "package.json");
+    const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8")) as {
+      readonly scripts?: Readonly<Record<string, string>>;
+    };
+
+    expect(packageJson.scripts?.["hygiene:check-bash-retirement-inventory"]).toBe(
+      "bun ./tools/hygiene/check-bash-retirement-inventory.ts --enforce",
+    );
+  });
+});
 
 describe("buildInventoryReport", () => {
   test("accepts the retained shell allowlist", () => {
