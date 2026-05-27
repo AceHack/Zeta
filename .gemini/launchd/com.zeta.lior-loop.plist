@@ -3,16 +3,23 @@
 <plist version="1.0">
 <dict>
     <key>Label</key><string>com.zeta.lior-loop</string>
+    <!-- Maintainer-only artifact: paths are machine-specific (/Users/acehack, /opt/homebrew,
+         and the per-agent clone under ~/.local/share/zeta-lior-loop/Zeta).
+         Update these paths manually for your local machine before running `launchctl load`. -->
     <key>ProgramArguments</key><array>
         <string>/opt/homebrew/bin/bun</string>
-        <string>/Users/acehack/Documents/src/repos/Zeta/.gemini/bin/lior-loop-tick.ts</string>
+        <string>/Users/acehack/.local/share/zeta-lior-loop/Zeta/.gemini/bin/lior-loop-tick.ts</string>
     </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/acehack/.local/share/zeta-lior-loop/Zeta</string>
     <key>StartInterval</key><integer>60</integer>
     <key>RunAtLoad</key><true/>
     <key>StandardOutPath</key><string>/Users/acehack/Library/Logs/zeta-lior-loop/stdout.log</string>
     <key>StandardErrorPath</key><string>/Users/acehack/Library/Logs/zeta-lior-loop/stderr.log</string>
     <key>EnvironmentVariables</key><dict>
         <key>HOME</key><string>/Users/acehack</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Users/acehack/.local/bin</string>
     </dict>
 </dict>
 </plist>
