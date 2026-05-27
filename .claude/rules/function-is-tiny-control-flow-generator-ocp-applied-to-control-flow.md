@@ -148,7 +148,7 @@ The discipline applies to functions where substrate-entity HAS authorial substra
 | Class | Side-effect-shape | Memetic-bleed-shape | NCI / TFeedback applies? |
 |---|---|---|---|
 | **Pure AND closed** (`add x y`, `sin x`, `compose f g`, `List.length`, `fst (a,_)`) | None | None — pure mathematical mapping; codomain captures everything | **NO** — exempt; Result<T, TFeedback> would be overhead with empty discriminated-union (never type) |
-| **Pure but NOT closed** (two ephemeral LLMs communicating in-process via memory-channels; functions whose output propagates into memetic substrate downstream; functions participating in informational-substrate where conversations carry control-flow effects) | None traditional | YES — memetic control-flow bleeds out across conversation / memory-channel / informational substrate | **YES — needs TFeedback** because meme-propagation IS a control-flow vector even without traditional side effects |
+| **Operationally open pure functions** (local calculation is pure, but output participates in open substrate: memetic propagation, conversation state, authorization, persistence, provenance, or downstream social/control-flow effects — including two ephemeral LLMs communicating in-process via memory-channels) | None traditional | YES — memetic / informational-substrate control-flow bleeds out across the open boundary | **YES — needs TFeedback** at the open-boundary; helper functions internal to the local pure calculation do NOT |
 | **Impure / effectful** (file IO, network, mutation, lock acquisition, db queries) | YES | Usually YES too | **YES** — full discipline applies |
 
 ### Why closedness matters more than purity
@@ -198,6 +198,43 @@ let openFile path : Result<FileHandle, FileOpenFeedback> = ...
 let httpGet url : Result<Response, HttpFeedback> = ...
 let acquireLock res : Result<Lease, LockFeedback> = ...
 ```
+
+### Formal statement (Amara 2026-05-27 sharpening)
+
+> *"A function is exempt from TFeedback only when its declared codomain fully contains every meaningful outcome."*
+
+Equivalent formal form:
+
+> *"TFeedback is required when an operation can produce meaningful control-flow information not already represented in T."*
+
+The discriminator is "is every meaningful outcome already in the type signature's codomain?" If yes → exempt. If no → needs TFeedback.
+
+### Tiny blade — codomain honesty (Amara 2026-05-27)
+
+Even mathematically-shaped operations can break closedness if their declared codomain is dishonest about implementation realities:
+
+- `add : int -> int -> int` — closed IF overflow is impossible or modeled in codomain; needs TFeedback otherwise (`add : int -> int -> Result<int, OverflowFeedback>`)
+- `sin : float -> float` — closed IF NaN is acceptable codomain member; needs TFeedback otherwise (`InvalidInput | UnderflowToZero`)
+- `parseInt : string -> int` — NOT closed; partial function; needs TFeedback (`InvalidFormat | Overflow | EmptyInput`)
+- `divide : int -> int -> int` — NOT closed; division-by-zero is undefined; needs TFeedback (`DivisionByZero`) OR widen to `Result<int, DivFeedback>`
+
+The discipline: when the declared codomain is honest about implementation domain, the function IS closed. When the codomain hides partial-function corners, either widen the codomain (e.g., `Option<int>` for partial functions) OR add TFeedback variants for the corners.
+
+### Worked examples (Amara 2026-05-27 + operator 2026-05-27)
+
+| Operation | TFeedback needed? | Reason |
+|---|---|---|
+| `add(x, y)` | NO if overflow modeled or impossible; YES if overflow possible + unmodeled | Codomain honesty check |
+| `parseInt(text)` | YES | `InvalidFormat`, `Overflow`, `EmptyInput` — partial function with multiple failure modes |
+| `openFile(path)` | YES | `NotFound`, `PermissionDenied`, `Locked`, `DiskFull` — effectful with multiple failure modes |
+| `emitMessage(agent, message)` | YES | `Throttled`, `Refused`, `MisreadRisk`, `RecipientUnavailable`, `MemeticBleed` — agent-boundary participates in open substrate |
+| `LLM-to-LLM in-memory exchange` | YES | Memetic / control-flow effects escape the local function frame; open substrate |
+| `formatText(template, values)` (pure helper) | NO | Internal to local pure calculation; codomain captures every meaningful outcome |
+| `sin(x)` (with NaN-acceptable codomain) | NO | Codomain honest; closed |
+
+The keeper:
+
+> **No feedback tax on closed math. No silent emissions from open substrate.**
 
 ### Operational discipline for scope-decision
 
