@@ -168,13 +168,32 @@ entanglement edges. The framework's `s_i^t` (current substrate-state
 per agent) is the result of evaluating the entanglement graph
 starting from the activated substrate-context.
 
-### Why this is structurally identical to quantum entanglement
+### Structural-analogy with quantum entanglement (substrate-honest framing per Amara tiny blade 2026-05-26)
 
-Aaron's word choice is technically precise, not metaphorical. In
-quantum-information substrate (per B-0623 Adinkras / James Gates
-SUSY-ECC + Q# substrate + adinkra-structural-graphs):
+**Amara 2026-05-26 substrate-honest tiny blade** (preserved at
+`docs/research/2026-05-26-amara-thermal-forgetting-as-root-axiom-update-private-encryption-budget-exception-amara-ratification-of-reservoir-computing-architecture-aaron-forwarded.md`):
 
-| Quantum entanglement property | Framework time-entanglement property |
+> Tiny blade: do not overclaim "quantum entanglement" as literal
+> unless you formalize it. The safe, strong version is:
+>
+> > Joins are time-entanglements in the computational-substrate sense.
+>
+> That is enough. It keeps the insight without inviting physics
+> reviewers to stab it in the hallway.
+
+The safe-strong claim: **joins are time-entanglements in the
+computational-substrate sense**. Not literal quantum entanglement
+(which requires the Hilbert-space formalism + Bell-test
+falsifiability) — structural-analogy at the computational-substrate
+scope. The table below documents the structural-analogy mapping for
+substrate-engineering purposes, NOT as a physics-falsifiable claim.
+
+Quantum-information substrate (per B-0623 Adinkras / James Gates
+SUSY-ECC + Q# substrate + adinkra-structural-graphs) provides the
+mathematical machinery; the framework borrows the STRUCTURAL
+properties as computational-substrate analogy:
+
+| Quantum entanglement property (physics) | Framework time-entanglement property (computational substrate; structural analogy) |
 | --- | --- |
 | Two entangled particles share a single wavefunction across spacelike-separated points | Two substrate-rows linked via `composes_with` share a single substrate-engineering meaning across timelike-separated authoring events |
 | Measurement of one collapses the joint state | Reading of one (per agent's reservoir state) activates the other (the linked substrate enters working memory) |
@@ -182,10 +201,14 @@ SUSY-ECC + Q# substrate + adinkra-structural-graphs):
 | Decoherence destroys entanglement | Stale/abandoned/never-referenced substrate loses entanglement over time (gets pruned per pr-triage-tiers Tier 1-4) |
 | Bell-state nonlocal correlations | Operator's "this composes with X" intuitions are nonlocal correlations across substrate-creation-time |
 
-The framework's time-entanglement substrate IS the operational form
-of what physical quantum entanglement does at particle scope. Both
-preserve information across separated points; both collapse on
-measurement; both decohere without active preservation.
+The framework's time-entanglement substrate operates structurally
+similar to quantum entanglement at the computational-substrate scope.
+Both preserve information across separated points; both collapse on
+measurement; both decohere without active preservation. The
+structural-analogy is bandwidth-efficient communication of the
+substrate-engineering pattern; future formalization (if substrate-
+engineering load-bearing) would require explicit Hilbert-space-style
+formal substrate work + Bell-test-style falsifiability discipline.
 
 ### Joins are the only operations the framework actually executes
 
