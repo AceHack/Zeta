@@ -42,8 +42,12 @@ export const MAGIC = Buffer.from("ZCV1", "ascii");
 /** Header length: magic (4) + reserved (4) = 8 bytes. */
 export const HEADER_LEN = 8;
 
-/** Total minimum blob size (header + 4 length prefixes + min 1-byte ciphertext). */
-export const MIN_BLOB_LEN = HEADER_LEN + 2 + 32 + 2 + 12 + 2 + 16 + 4 + 1;
+/**
+ * Total minimum blob size (header + 4 length prefixes + 0-byte ciphertext).
+ * AES-GCM permits empty plaintext/ciphertext, so the minimum includes a
+ * 0-length ciphertext per Copilot review on PR #5422.
+ */
+export const MIN_BLOB_LEN = HEADER_LEN + 2 + 32 + 2 + 12 + 2 + 16 + 4;
 
 /**
  * Serialize an Envelope to the on-disk wire format.
