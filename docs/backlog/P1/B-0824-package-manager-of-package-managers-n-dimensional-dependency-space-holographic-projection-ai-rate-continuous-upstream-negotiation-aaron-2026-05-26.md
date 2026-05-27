@@ -6,7 +6,9 @@ title: Ace as "package manager of package managers" — N-dimensional dependency
 effort: L
 ask: aaron 2026-05-26
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-05-27
+decomposition: decomposed
+children: [B-0824.1]
 depends_on:
   - B-0247
   - B-0288
