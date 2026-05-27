@@ -185,7 +185,9 @@ jobs:
       # takes the ISO path as a positional CLI arg (no shell expansion
       # of attacker-controllable strings).
       - name: Install QEMU (apt)
-        run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86
+        # qemu-system-x86 for cascade #5 boot smoke-test
+        # qemu-utils for qemu-img (cascade #6 Slice 1 virtual hard disk)
+        run: sudo apt-get update -y && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils
 
       - name: QEMU boot smoke-test (cascade #5 — dynamic boot floor)
         working-directory: full-ai-cluster
@@ -199,6 +201,36 @@ jobs:
           iso_abs=$(readlink -f "${iso_candidates[0]}")
           echo "Booting ISO: $iso_abs"
           bun ../tools/ci/qemu-boot-test.ts "$iso_abs"
+
+      # QEMU full-install test (cascade #6 Slice 1 — B-0831 starter):
+      # Extends boot-test by attaching virtual hard disk + NAT internet,
+      # waits for `[iter-5.3]` marker in serial log to verify nixos-install
+      # + iter-4.2 + iter-5.2 substrate completed.
+      #
+      # Gated to push-to-main + workflow_dispatch for STARTER (longer
+      # runtime; TCG fallback may exceed PR-build expectations). Once
+      # B-0831 Slice 1 proves reliable + runs <10min consistently, can
+      # be enabled on every PR per B-0831 acceptance criteria.
+      #
+      # continue-on-error: true for STARTER so initial flakiness doesn't
+      # block merges while we tune the test. Remove once stable.
+      #
+      # Security: no github.event.* interpolation; ISO path comes from
+      # prior workflow step's filesystem find.
+      - name: QEMU full-install test (cascade #6 Slice 1 — STARTER)
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        working-directory: full-ai-cluster
+        run: |
+          set -euo pipefail
+          mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
+          if [ "${#iso_candidates[@]}" -eq 0 ]; then
+            echo "::error::QEMU full-install test: No installer ISO under result/iso/" >&2
+            exit 1
+          fi
+          iso_abs=$(readlink -f "${iso_candidates[0]}")
+          echo "Full-install testing ISO: $iso_abs"
+          bun ../tools/ci/qemu-full-install-test.ts "$iso_abs"
 
       - name: Locate ISO + capture metadata
         id: iso
