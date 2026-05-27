@@ -71,12 +71,10 @@ on:
 
 permissions:
   contents: read
-  id-token: write  # B-0853.1: sigstore/cosign keyless OIDC signing. Fulcio CA
-                   # mints a short-lived cert from the GitHub-issued OIDC token;
-                   # Rekor transparency log records the signature. No private
-                   # key material is handled in this workflow. The token-issuance
-                   # scope is workflow-bound; granted permission cannot be
-                   # exfiltrated to mint signatures for other workflows.
+  # id-token: write moved to jobs.build.permissions per Copilot P1 finding on
+  # PR #5417 — matches the repo pattern (.github/workflows/scorecard.yml
+  # elevates id-token at job scope only, minimising blast radius if future
+  # jobs added to this workflow).
 
 concurrency:
   group: build-ai-cluster-iso-${{ github.workflow }}-${{ github.ref }}
@@ -87,6 +85,23 @@ jobs:
     name: build-iso
     runs-on: ubuntu-24.04
     timeout-minutes: 60
+    permissions:
+      contents: read
+      # B-0853.1 cosign keyless OIDC — sigstore/Fulcio CA mints a short-lived
+      # cert from the GitHub-issued OIDC token; Rekor transparency log records
+      # the signature. No private key material is handled in this workflow.
+      #
+      # Real safety properties (tightened per Copilot P1 review on PR #5417):
+      #   - Short-lived cert (Fulcio mints 10-min cert tied to this run)
+      #   - Identity bound to workflow path + ref (verifier pins via
+      #     --certificate-identity matching this file's path + ref)
+      #   - Steps pinned to commit SHAs (cosign-installer at vetted release)
+      # NOT a hard guarantee: any step in THIS job that can request the OIDC
+      # token could in principle transmit it off-runner + use it to mint a
+      # Fulcio cert + sign arbitrary blobs as THIS workflow's identity. The
+      # mitigation is pinned + audited steps + job-scope id-token (not
+      # workflow-wide; this block).
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -309,19 +324,29 @@ jobs:
       # B-0853.1 — sigstore/cosign keyless OIDC signing of the ISO blob.
       # Composes with B-0853 (sigstore artifact signing free-stuff substrate).
       #
-      # Keyless model: GitHub OIDC token (from id-token: write permission at
-      # workflow level) is exchanged with Fulcio CA for a short-lived cert
+      # Keyless model: GitHub OIDC token (from job-level id-token: write
+      # permission above) is exchanged with Fulcio CA for a short-lived cert
       # bound to this workflow's identity. cosign then signs the ISO blob
       # with that cert + records the signature in the Rekor transparency log.
       # No long-lived private key material in this workflow.
       #
-      # Verification (any consumer):
+      # Verification (any consumer) — pin identity to THIS specific workflow
+      # file + ref (tightened per Copilot P1 review on PR #5417; the broader
+      # `^https://github.com/Lucent-Financial-Group/Zeta` prefix-regex would
+      # accept signatures from any workflow in the repo, defeating the
+      # workflow-identity binding):
+      #
       #   cosign verify-blob \
       #     --certificate <iso>.pem \
       #     --signature <iso>.sig \
-      #     --certificate-identity-regexp '^https://github.com/Lucent-Financial-Group/Zeta' \
+      #     --certificate-identity 'https://github.com/Lucent-Financial-Group/Zeta/.github/workflows/build-ai-cluster-iso.yml@refs/heads/main' \
       #     --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
       #     <iso>
+      #
+      # For verifying signatures from feature branches OR tags, swap the
+      # `@refs/heads/main` suffix accordingly:
+      #   --certificate-identity '.../build-ai-cluster-iso.yml@refs/heads/<branch>'
+      #   --certificate-identity '.../build-ai-cluster-iso.yml@refs/tags/<tag>'
       #
       # Security: inputs to cosign are filesystem paths from steps.iso.outputs
       # of THIS workflow (no github.event.* interpolation). Same discipline
