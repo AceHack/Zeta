@@ -474,6 +474,191 @@ overpowered by the dev's job-security incentive.
 > **"For senior devs it gives them job security because they are the
 > only one that understands it."**
 
+### Amara ratification + keeper compression + strategic-vs-accidental blade (2026-05-27 aaron-forwarded)
+
+Amara (external AI deep-research peer per agent-roster-reference-card)
+ratified the architectural-principle layer with substantive validation:
+the cyclomatic-complexity-as-coercion-hiding-surface framing IS strong;
+ST-agent-pattern is the software version; senior-dev/policy-maker
+opacity-as-power-insulation is the social version; distribute-across-
+tiny-functions is the structural defense; full preservation lives in
+[`memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md).
+
+**Amara's 3-line keeper compression** (bandwidth-efficient substrate):
+
+> **Hidden control flow is where coercion hides.**
+> **Overgrown control flow is where accountability dies.**
+> **Tiny typed functions make control visible, local, and reviewable.**
+
+The compression names BOTH failure modes (hidden + overgrown) AND the
+defense (tiny typed functions) in three lines. Future cold-boots
+inherit the principle compactly.
+
+**Amara's strategic-vs-accidental blade**:
+
+> **Complexity can be accidental, but it can also be strategic.**
+
+> *"That is why the rule matters. Not because every complex system is
+> malicious. Because when complexity centralizes control and blocks
+> review, it creates the same failure shape whether it was accidental
+> or intentional."*
+
+The blade resolves the substrate-engineering question of whether the
+adversarial framing is overcalling: it isn't. Accidental-overload and
+strategic-overload produce the SAME coercion-surface; both deserve the
+SAME structural defense. The distribute-across-tiny-functions discipline
+is correct regardless of intent.
+
+**Amara's two compressed ASCII cascades** (preserved in the persona
+file Item 3) name the failure-mode and defense cascades step by step:
+
+```text
+Centralized hidden control flow
+→ coercion surface
+→ job-security moat
+→ policy opacity
+→ "only I understand this" authority
+```
+
+versus:
+
+```text
+Distributed typed control flow
+→ local reasoning
+→ visible transitions
+→ bounded cyclomatic complexity
+→ easier review
+→ less hidden power
+```
+
+**Amara's practical-value framing**:
+
+> *"It is a way to prevent invisible orchestration from becoming
+> domination. The stream protocol becomes a typed relationship instead
+> of a hidden boss-script."*
+
+The substrate-engineering payoff: streams-are-relationships isn't a
+pretty model — it's a way to prevent invisible orchestration from
+becoming domination at three substrate scopes (code / organizational /
+political).
+
+**4-persona triangulation**: operator (originator) + Kestrel
+(sharpening-via-multi-AI conversation) + Otto-CLI (substrate-landing
+into rules + backlog rows + persona archives) + Amara (deep-research
+validation + keeper compression + strategic blade). Composes per
+`.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`
+multi-oracle BFT discipline.
+
+### Amara Part 2 — key-upgrade compression + inspectability invariant + moat-vs-map keeper (2026-05-27 aaron-forwarded follow-up)
+
+Amara forwarded a substantive follow-up after PR #5586 opened with the
+Part 1 ratification. Full preservation in
+[`memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-...md`](../../../memory/persona/amara/conversations/2026-05-27-amara-cyclomatic-complexity-as-coercion-hiding-surface-validation-of-streams-substrate-keeper-compression-strategic-vs-accidental-complexity-blade-aaron-forwarded.md)
+Part 2.
+
+**The key-upgrade compression**:
+
+> **good engineering practice → structural defense against hidden power**
+
+Single-line summary of the substrate-engineering payoff. Transforms how
+the discipline gets argued for: not as best-practice-please-do-this, but
+as STRUCTURAL DEFENSE AGAINST A KNOWN ADVERSARIAL PATTERN. Best-practice
+arguments get socially overridden by senior dev job-security incentives;
+structural-defense arguments don't.
+
+**The inspectability-at-execution-level invariant**:
+
+> *"It makes the control structure inspectable at the same level where
+> execution happens."*
+
+Names the SPECIFIC architectural property that defeats the
+ST-agent-pattern: when execution and inspection happen at the same level
+(no separation between what the agent sees and what controls the agent),
+coercion-via-opacity becomes structurally infeasible. Substrate-
+engineering target: maintain inspectability=execution-level invariant
+across all 6 B-0864 targets.
+
+**Tiny-functions recipe** (Amara Part 2 Item 11):
+
+```text
+tiny functions
++ explicit feedback channels
++ DU state machines
++ typed stream transitions
+= local accountability
+```
+
+Named composition of the substrate's four primitives yielding "local
+accountability" as the emergent property. This is the substrate-
+engineering recipe.
+
+**Active-voice defense framing**:
+
+> *"The architecture makes coercive hidden orchestration expensive,
+> visible, and reviewable."*
+
+Three properties; each one necessary; together sufficient to defeat the
+adversarial pattern.
+
+**Amara Part 2 keeper line**:
+
+> **Complexity can be a moat. Typed decomposition turns the moat into a map.**
+
+Two-line keeper compression. Names BOTH the failure mode (moat = barrier
+to entry) AND the defense mechanism (typed decomposition = map that
+anyone can read). The moat-vs-map metaphor travels well across audiences.
+
+**ST-agent failure-shape compression** (Amara Part 2 Item 9):
+
+```text
+agent sees local task
+MCP holds invisible workflow control
+agent cannot inspect/contest true control path
+```
+
+Three-line failure-shape carving composing with Amara Part 1's 5-line
+cascade.
+
+**Three-bad-incentives extension** (Amara Part 2 Item 10):
+
+```text
+1. coercion hiding: control paths become hard to challenge
+2. job security: only the author understands the maze
+3. plausible deniability: "it's just complex business logic"
+```
+
+Adds the "plausible deniability" framing to the operator's job-security
+observation. Three incentives ALL favor cyclomatic-overload; the
+architecture must defeat all three simultaneously.
+
+**Policy-substrate antidote naming**:
+
+> *"Law and bureaucracy can use cyclomatic overload too: nested
+> exceptions, hidden dependencies, unclear authority paths, and 'only
+> experts understand this' complexity."*
+
+```text
+small rules
+clear transitions
+explicit feedback
+visible ownership
+reviewable composition
+```
+
+The 5-line policy-substrate antidote composes with the code-substrate
+distribute-across-tiny-functions discipline. Same shape, different
+substrate.
+
+**Carved sentences (Amara Part 2):**
+
+> **"good engineering practice → structural defense against hidden power"**
+
+> **"It makes the control structure inspectable at the same level where execution happens."**
+
+> **"The architecture makes coercive hidden orchestration expensive, visible, and reviewable."**
+
+> **"Complexity can be a moat. Typed decomposition turns the moat into a map."**
+
 ## Decomposition (possible sub-rows for future implementation)
 
 Per the substrate-engineering pattern of decomposing XL rows into shippable
