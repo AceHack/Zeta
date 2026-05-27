@@ -37,6 +37,56 @@ install.sh is therefore the universal Unix-like-OS install + self-update entry �
 
 Composes with iter-6.x distro-upgrade substrate (B-0800-B-0805) — those auto-upgrade rows are the SAME entry path; install.sh handles both "first install" + "stay current" via the routing it does today + the work this row tracks.
 
+### Turn 4 (install.sh ≈ Ace — they're entangled)
+
+> *"yes install.sh is ace basically we've not really seperated it all out ace and zeta are pretty intertangled"*
+
+**The substrate-honest reading**: install.sh and Ace are NOT separate things in current substrate — install.sh IS the install-side of what Ace would be at the imperative-bash scope; Ace is the declarative evolution of the SAME substrate at package-manager scope. They've been operationally entangled since the project's earliest install-graph work; the framework hasn't separated them out explicitly.
+
+Implication for B-0857 ↔ B-0854 relationship: these aren't sibling rows on adjacent tracks — they're the SAME work at different naming scopes. B-0857 ships the operator-facing unification ("install.sh is THE entry") at imperative-bash scope; B-0854 ships the declarative substrate-engineering that Ace package management enables. The Ace migration (B-0854) is the long-horizon trajectory; install.sh-as-universal-entry (B-0857) is the short-horizon precursor that the trajectory builds toward.
+
+Same substrate. Different operational windows. Same entanglement Zeta has with everything else in the substrate-engineering surface.
+
+### Turn 5 (homelab-edge to enterprise-restrictive spectrum; start unified, scale back later)
+
+> *"basically we are going to push the build is prod conept all the way to the edge for homelab / open claw like setups and thing scale it back for enterprise like setup to be more restrictive but i don't want to start in the more restretive mode until we see what the new shape feels like where the difference between build and dev vanish"*
+
+**The substrate-honest reading**: the build-is-prod unification (Turn 3) operates on a SPECTRUM, not as a single mode:
+
+| Operational scope | Build-is-prod posture | install.sh routing |
+|---|---|---|
+| **Homelab / open-claw / single-operator clusters** | MAXIMALLY UNIFIED — every machine is build + prod + dev simultaneously; same install.sh; same self-update; no separation | Single routing path; minimal flags; self-update on every boot |
+| **Small team / co-op / friendly multi-operator** | UNIFIED with minimal separation — most machines build + prod + dev; some specialization possible via flags but defaults to unified | Same routing path; opt-in specialization flags available |
+| **Enterprise / institutional / compliance-bound** | RESTRICTIVE — build machines separated from prod; staged rollout; signed-artifact-only deploy; restricted self-update windows; audit-gated upgrades | Multiple routing paths; explicit flags required; restrictions enforced by the routing layer |
+
+**Operator's explicit sequencing direction**: START in the MAXIMALLY UNIFIED mode (homelab/open-claw end of the spectrum) FIRST. Live in that shape. Discover what "build/dev/prod vanish" actually feels like in practice. Build operator-experience around the unified mode. THEN scale BACK toward more restrictive modes for enterprise scope.
+
+DO NOT start in restrictive mode. The restrictive mode is the LATER evolution; the unified mode is the FIRST evolution. Substrate-engineering decisions through B-0857 implementation defer enterprise-restrictive considerations until the unified mode has empirical operator-experience under it.
+
+This is substrate-honest sequencing per `.claude/rules/edge-defining-work-not-speculation.md`: the edge-defining work IS living in the unified mode first; enterprise-restrictive design is downstream of that empirical work, not parallel to it.
+
+### Turn 6 (attack-surface concern tempered by internal-access prerequisite)
+
+> *"the biggest issue i see is larger attack surface becasue more deps but this one is not as bad as it seems cause it requires internal access to network and box so you are already kind of fucked if they are this deep."*
+
+**The substrate-honest reading**: the operator's named primary concern with the unified mode is **larger attack surface** — every machine carries build-tooling + dev-tooling + prod-runtime + self-update capability, which means more dependencies present on every node = more CVE surface = more supply-chain risk.
+
+BUT the threat-model is bounded by precondition: exploiting this expanded attack surface **requires internal access to network + box**. An attacker has to already be inside the perimeter (network access to the cluster) AND have shell-level access to a node (box access). Once an attacker is that deep, they've already bypassed the perimeter defenses + node-level isolation; the additional surface from build-tooling-on-prod is a marginal escalation path, not a primary entry vector.
+
+The substrate-honest framing: *"you are already kind of fucked if they are this deep."* The unified-mode attack surface is real but operates in the post-perimeter-breach scope, not the perimeter-breach scope. Perimeter defenses (firewall + VPN + Reticulum/AllJoyn-style mesh + OIDC + cosign artifact-signing per B-0853 + signed-update enforcement) carry the primary security load; the expanded build-on-prod surface is downstream of those.
+
+**Implications for B-0857 implementation**:
+
+| Threat scope | Mitigation owner | Status for unified mode |
+|---|---|---|
+| Perimeter breach (external attacker gets network access) | Network architecture (firewall + VPN + mesh + auth) | Primary defense; carries the security load |
+| Node-level intrusion (attacker on the box) | OS-level isolation + signed-binary enforcement + Touch-ID-gated privileged ops | Primary defense; carries the security load |
+| Post-intrusion privilege escalation via build-tooling surface | Reduced surface (B-0853 signed-artifacts; cosign keyless OIDC; signed self-update) | Secondary defense; accepted reduced posture for homelab/open-claw scope; tightened for enterprise scope |
+
+Composes with B-0853 (cosign keyless OIDC artifact signing) + B-0852 (declarative cred-persistence with operator authority over creds) + B-0857.5 (operator-facing CLI conventions) + the enterprise-restrictive spectrum end (Turn 5 above) — the enterprise mode IS where the additional surface gets tightened back down via attestation + signed-update enforcement + restricted self-update windows.
+
+The operator's threat-model acknowledgement is itself substrate-engineering: naming the concern explicitly + naming the precondition that bounds it + accepting the bounded risk for homelab/open-claw scope + deferring enterprise-restrictive tightening to Turn 5 spectrum's enterprise end.
+
 ## Current state (verified 2026-05-27 origin/main `18e6a095b`)
 
 | Script | Location | Scope | Lines |
