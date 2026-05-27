@@ -250,6 +250,151 @@ Composes value:
 
 Sub-target shift in implementation: B-0852.3 picker substrate becomes Steps 6.75 (detection) + 6.76 (5-second escape-hatch banner) + 6.77 (4-option picker if Esc OR no detected source) + Step 6.8 conditional gating + Step 6.85 persist. The crypto module + cred schema map (B-0852.1 + 5) are unchanged; only the picker UX shifts to detect-recover-default + gates the existing Step 6.8.
 
+## Phase-split: PAT at zflash time + interactive at setup time (Aaron 2026-05-27)
+
+Operator refinement to the auth-method placement:
+
+> *"i think if we do token we should do at zflash time and human interactive at setup time what do you think?"*
+
+The right placement matches each auth method to the operator-UX phase that fits it best:
+
+### zflash time (operator's Mac; full UI + clipboard + browser)
+
+`bun full-ai-cluster/tools/zflash.ts --agent` prompts BEFORE the dd-flash:
+
+- *(optional)* Inject GitHub PAT into ESP at flash time
+  - Operator pastes PAT from `github.com/settings/tokens` (clipboard available)
+  - Operator types encryption passphrase (used by B-0852.1 crypto module via scrypt+HKDF+AES-GCM)
+  - PAT + other available creds → encrypted blob written to USB ESP alongside SSH pubkey (iter-4.2 channel reuse)
+  - Skip option: ship USB without baked PAT; boot-time will prompt
+
+### Boot time (target machine; console; operator phone for device-flow)
+
+`zeta-install.sh` Steps 6.75 → 6.77 (per Sub-target 2 above) present:
+
+| Option | When to choose | Source |
+|---|---|---|
+| 1) Restore from encrypted USB blob | Blob present (typed passphrase decrypts; contains zflash-baked PAT) | iter-4.2 + zflash-time write |
+| 2) Fresh device-flow login | Blob absent OR operator wants fresh auth | Console + operator phone at `github.com/login/device` |
+| 3) Operator-provided PAT (paste at console) | RARE — operator forgot to inject at zflash + doesn't want device-flow | Operator types/pastes at target console |
+| 4) Skip | Cluster operates degraded; no GitHub-side substrate | (intentional ephemerality) |
+
+Default: option (1) when blob present (per auto-recover-by-default escape-hatch semantics above).
+
+### Why this phase-split is better than picker-only-at-install-time
+
+| Property | All-at-install-time (prior framing) | Phase-split (this refinement) |
+|---|---|---|
+| PAT UX | Type long PAT at target console (painful) | Paste PAT at Mac with clipboard (easy) |
+| Device-flow UX | Operator at target console (same as before) | Operator at target console (unchanged) |
+| Substrate-engineering compose | Picker-only invention | Composes with existing iter-4.2 ESP-write channel + zflash --agent flow |
+| First-boot-no-interaction path | Requires blob from prior boot OR operator at console | Available immediately if PAT injected at zflash time |
+| Operator-test-loop friction | Re-boot USB = re-auth at console | Re-boot USB = restore blob; no re-auth |
+
+### Edge case: "same USB → multiple machines = same PAT"
+
+Operator-substrate-honest behavior to surface:
+
+- One USB flashed with one PAT-blob → boots on N machines → SAME PAT goes to all N (USB-UUID-bound; per the binding Aaron named 2026-05-27 *"we can put a key on the usb too if wnated tied to the uuid"*)
+- This is a FEATURE for fleet-USB workflows (one flash → N nodes share one identity per the agent-roster registration)
+- It's a FOOTGUN for per-machine-isolation workflows (operator should flash one USB per machine in that case)
+- Phase-split makes the trade-off explicit; operator picks at flash time which model fits
+
+Documentation discipline: zflash --agent prompt explicitly states this behavior so operator picks model deliberately. Sub-row B-0852.X (TBD when implementing) names the documentation surface.
+
+### Composition with B-0852.1 + B-0852.5
+
+The phase-split changes WHERE encrypt fires (zflash time AND/OR install time AND/OR post-install), NOT the crypto primitive itself:
+
+- B-0852.1 crypto module (PR #5411 landed): `encrypt(plaintext, usbUuid, passphrase)` — same regardless of phase
+- B-0852.5 cred-manifest schema (in flight): same declarative entries; zflash-time write populates the `gh-cli` entry; boot-time can populate the rest if device-flow chosen
+
+### Per-cred operator choice at zflash time — CLI override (Aaron 2026-05-27 sharpening)
+
+Aaron 2026-05-27 named the design space first as a prompt loop, then sharpened to CLI override (better for AI-callable + scriptable):
+
+> *"then zflash script and/or skill can make sure it asks what declared creds you want to bake in vs go through device flow."*
+
+> *"maybe instead of loop in zflash you just allow command line override of any declared cred as token well at least the ones we support that way, might need custom code per cred type for this idk. the would probably be easier for the ai to call."*
+
+CLI shape (canonical):
+
+```bash
+# Bake gh-cli token + ssh pubkey at flash time; other creds defer to boot device-flow
+bun full-ai-cluster/tools/zflash.ts --agent /dev/disk6 \
+  --bake-cred gh-cli=ghp_xxxxxxxx \
+  --bake-cred ssh-operator-pubkey=@~/.ssh/operator.pub \
+  --bake-passphrase-file ~/.config/zeta/zflash-passphrase
+
+# Bake all 4 vendor CLIs from operator's existing setup
+bun full-ai-cluster/tools/zflash.ts --agent /dev/disk6 \
+  --bake-cred gh-cli=env:GH_TOKEN \
+  --bake-cred claude=@~/.config/claude/credentials.json \
+  --bake-cred gemini=@~/.gemini/oauth_creds.json \
+  --bake-cred codex=@~/.codex/auth.json \
+  --bake-cred ssh-operator-pubkey=@~/.ssh/operator.pub
+```
+
+Value-source syntax (per-cred type handler):
+
+| Syntax | Semantics | Use case |
+|---|---|---|
+| `--bake-cred <id>=<literal>` | Literal string value | PATs / tokens / short strings |
+| `--bake-cred <id>=@<path>` | Read file contents | JSON cred files / SSH pubkeys (curl/git `@file` convention) |
+| `--bake-cred <id>=env:<VAR>` | Read from env var | Avoid PAT in shell history; CI-friendly |
+
+### Per-cred type handler discipline
+
+Each declared cred-type in B-0852.5 manifest has a per-type handler that knows:
+
+- What VALUE SHAPE this cred expects (literal token / JSON blob / pubkey text / etc.)
+- What VALIDATION to apply at parse time (e.g., gh PAT format check; JSON parse for vendor creds)
+- Whether `@file` / `env:` sources are supported for this type
+
+| Cred id | Expected value shape | Validation | Sources |
+|---|---|---|---|
+| `gh-cli` | PAT string | non-empty; optional `ghp_/gho_/ghu_` prefix check | literal / env: (recommended) / `@file` |
+| `claude` | credentials.json contents | JSON parse + required fields | `@file` (canonical) / literal JSON |
+| `gemini` | oauth_creds.json contents | JSON parse + required fields | `@file` (canonical) |
+| `codex` | auth.json contents | JSON parse + required fields | `@file` (canonical) |
+| `ssh-operator-pubkey` | OpenSSH pubkey text | starts with `ssh-rsa` / `ssh-ed25519` / etc. | `@file` (canonical) / literal |
+| `ssh-host-keys` | (deferred; multi-file) | TBD | TBD |
+
+If `--bake-cred` arg references an `<id>` not in manifest → hard error at parse time. If value-source syntax unsupported for that cred type → hard error with usage hint.
+
+### Encryption passphrase sourcing
+
+Passphrase never echoed to shell history:
+
+- `--bake-passphrase-file <path>` — read from file (file should be `chmod 600`; operator-managed)
+- `--bake-passphrase-env <VAR>` — read from env var
+- (default) interactive prompt via `systemd-ask-password` equivalent on macOS (no echo)
+
+### Why CLI override > prompt loop
+
+| Property | Prompt loop (prior framing) | CLI override (refined) |
+|---|---|---|
+| AI-callable | hard (stdin interactive) | yes (pure args) |
+| Scriptable | hard (expect/spawn dance) | yes (composable in CI / shell scripts) |
+| Composable | one big interactive session | one flag per cred; combine as needed |
+| Per-cred customization | uniform loop UX | per-cred handler validates shape + parses source |
+| Operator UX | slower (per-cred prompt round-trip) | faster (one command, multiple flags) |
+| Documentation | UI screen layout | `--help` text + manifest-driven |
+
+The prompt loop framing was Otto's earlier intermediate. CLI override per Aaron's sharpening is the operationally-better fit; prompt loop deferred unless operator-UX-test reveals need.
+
+### Composition with B-0844 (zflash --agent) + skill surface
+
+- `zflash --agent` flag (B-0844 landed) gets extended with repeatable `--bake-cred <id>=<value>` + `--bake-passphrase-file <path>` / `--bake-passphrase-env <VAR>`
+- Optional skill `/zflash-creds` (in `.claude/skills/zflash-creds/SKILL.md`) generates the canonical `zflash --bake-cred ...` command for the operator's current declared creds; operator runs the generated command; skill IS Claude-Code-side coordination, NOT a wrapper around the runtime
+- Per-cred handler validates value-source syntax + matches manifest declarations
+
+### Sub-row addition for this composition
+
+B-0852.9 (new): zflash-time `--bake-cred` CLI override reading B-0852.5 manifest + per-cred handlers + writing encrypted blob via B-0852.1. Owner: zflash side (extends `full-ai-cluster/tools/zflash.ts`). Composes with B-0844 (zflash --agent flag).
+
+B-0852.10 (new): per-cred type handlers module (`tools/installer/zeta-cred-handlers.ts`) — one handler per cred type in manifest; each defines value-shape + validation + supported value-sources. Pure functions; unit-tested independently of zflash.
+
 ## Why P1
 
 - Operator explicitly authorized + named the scope ("lets get that going")
