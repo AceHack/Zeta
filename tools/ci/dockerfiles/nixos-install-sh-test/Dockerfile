@@ -73,7 +73,7 @@ RUN set -eu; \
     nixpkgs.glibc; \
     mkdir -p /usr/local/bin; \
     cc_path="$(command -v gcc)"; \
-    test -n "$cc_path"; \
+    test -x "$cc_path"; \
     ln -sf "$cc_path" /usr/local/bin/cc; \
     mkdir -p /usr/local/nix-compat-lib; \
     for lib in \
