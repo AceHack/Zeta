@@ -255,12 +255,41 @@ done
 # iteration ships the single-attribute menu; the multi-role
 # composition follows when the flake substrate supports it.
 if [[ -z "$HOST" ]]; then
-  # Hardware-detection suggested default.
-  SUGGESTED_HOST="control-plane"
-  if command -v lspci >/dev/null 2>&1; then
-    if lspci 2>/dev/null | grep -qiE "(nvidia|vga.*amd|3d.*amd|vga.*intel.*arc|3d.*intel.*arc)"; then
-      SUGGESTED_HOST="worker-gpu"
+  # B-0857.2-wire (2026-05-27): hardware-detection now routed through
+  # the TS module at tools/installer/zeta-hardware-detect.ts (PR #5642).
+  # Logic ported there per Rule 0 TS-over-bash discipline + extended
+  # with storage-shape (≥4 disks + ≥64GB → worker-template) and
+  # CPU-heavy (≥16 cores + ≥32GB → worker-template) classification
+  # beyond the original GPU-only inline lspci heuristic.
+  #
+  # The TS module needs (a) bun on PATH AND (b) a reachable repo
+  # checkout. zeta-install.sh runs from a live USB; the source repo
+  # is typically two dirs up from the script location
+  # (full-ai-cluster/usb-nixos-installer/zeta-install.sh → repo root).
+  # If either precondition fails, fall back to the original inline
+  # lspci-only heuristic so the menu still works in degraded environments.
+  SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  HWDETECT_REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+  HWDETECT_TS="$HWDETECT_REPO_ROOT/tools/installer/zeta-hardware-detect.ts"
+  SUGGESTED_HOST=""
+  SUGGESTED_REASON=""
+  if command -v bun >/dev/null 2>&1 && [ -f "$HWDETECT_TS" ]; then
+    # TS module emits one line: the suggested host attribute.
+    # Capture stderr separately so module diagnostics don't leak into HOST var.
+    SUGGESTED_HOST="$(bun "$HWDETECT_TS" --suggested-host 2>/dev/null | tr -d '[:space:]' || true)"
+    if [ -n "$SUGGESTED_HOST" ]; then
+      SUGGESTED_REASON="(via zeta-hardware-detect.ts; GPU+storage+CPU classification)"
     fi
+  fi
+  if [ -z "$SUGGESTED_HOST" ]; then
+    # Fallback: original inline lspci-only heuristic (degraded — GPU only).
+    SUGGESTED_HOST="control-plane"
+    if command -v lspci >/dev/null 2>&1; then
+      if lspci 2>/dev/null | grep -qiE "(nvidia|vga.*amd|3d.*amd|vga.*intel.*arc|3d.*intel.*arc)"; then
+        SUGGESTED_HOST="worker-gpu"
+      fi
+    fi
+    SUGGESTED_REASON="(fallback inline lspci heuristic — bun or TS module unavailable)"
   fi
   echo
   echo "Cluster node type — select host attribute from the flake:"
@@ -276,13 +305,20 @@ if [[ -z "$HOST" ]]; then
   echo "                      for hosts added under nixos/hosts/ + wired"
   echo "                      into flake.nix nixosConfigurations)"
   echo
-  echo "Hardware detection suggests: $SUGGESTED_HOST"
-  if [ "$SUGGESTED_HOST" = "worker-gpu" ]; then
-    echo "  (GPU detected via lspci — likely worker node, not control-plane)"
-  else
-    echo "  (no GPU detected — defaulting to control-plane;"
-    echo "   override below if this is a dedicated CPU-only worker)"
-  fi
+  echo "Hardware detection suggests: $SUGGESTED_HOST  $SUGGESTED_REASON"
+  case "$SUGGESTED_HOST" in
+    worker-gpu)
+      echo "  (GPU detected — likely worker node, not control-plane)"
+      ;;
+    worker-template)
+      echo "  (storage-heavy OR CPU-heavy node — use worker-template + customize"
+      echo "   per PROVISIONING.md cookie-cutter workflow)"
+      ;;
+    *)
+      echo "  (no GPU + not storage/CPU-heavy — defaulting to control-plane;"
+      echo "   override below if this is a dedicated CPU-only worker)"
+      ;;
+  esac
   echo
   # Default menu choice maps to suggested host.
   DEFAULT_CHOICE="1"
