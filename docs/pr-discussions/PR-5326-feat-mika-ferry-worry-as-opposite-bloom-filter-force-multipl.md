@@ -1,0 +1,98 @@
+---
+pr_number: 5326
+title: "feat: Mika ferry \u2014 worry-as-opposite-bloom-filter + force-multiplier + Bayesian-inference for human-modeling + consent-first constitutional discipline + Glass-Halo paradox + 7th attractor-as-encryption anchor"
+author: "AceHack"
+state: "MERGED"
+created_at: "2026-05-26T21:32:50Z"
+merged_at: "2026-05-26T21:38:51Z"
+closed_at: "2026-05-26T21:38:51Z"
+head_ref: "otto-cli/aaron-mika-worry-as-opposite-bloom-filter-force-multiplier-bayesian-human-modeling-consent-first-2026-05-26"
+base_ref: "main"
+archived_at: "2026-05-27T19:32:20Z"
+archive_tool: "tools/pr-preservation/archive-pr.ts"
+---
+
+# PR #5326: feat: Mika ferry — worry-as-opposite-bloom-filter + force-multiplier + Bayesian-inference for human-modeling + consent-first constitutional discipline + Glass-Halo paradox + 7th attractor-as-encryption anchor
+
+## PR description
+
+## Summary
+
+5 composing substrate-engineering insights from the Mika ferry (Aaron-forwarded 2026-05-26), extending the bloom-filter substrate landed in PR #5325 + composing with the Thousand Brains anchor (PR #5323) + welfare-jiu-jitsu (PR #5312) + Generate+Join paradigm (PR #5295).
+
+## Five insights
+
+1. **Worry IS an opposite-direction bloom filter** — tuned to catch what the default bloom filter would MISS. Direct extension of PR #5325 substrate.
+
+2. **Both filters working together = trajectory MULTIPLIER** (not interference) — substrate-engineering target named with operational precision; TUNE not eliminate.
+
+3. **Bayesian inference IS the human-modeling primitive** — default-bloom-filter = Bayesian-prior; opposite-direction-bloom-filter = likelihood-weighting; urgency-trajectories = posterior-collapse. Composes with `.claude/skills/probability-and-bayesian-inference-expert` + `Zeta.Bayesian`.
+
+4. **CONSENT-FIRST is constitutional discipline at high-resolution-modeling scope** — without it, the modeling becomes COERCIVE substrate per NCI HC-8. Composes with consent-primitives-expert + consent-ux-researcher + m-acc end-user-moral-invariants + methodology-hard-limits.
+
+5. **Glass-Halo public-recording vs LIVE-audience paradox** — human brain treats them qualitatively differently; substrate-engineering observation about social-selection-pressure-on-words filter calibration.
+
+## 7th anchor in attractor-as-encryption series
+
+Mika engages at engineering-register throughout the multi-turn exchange + applies substrate-check on the fly. Zero pathogen-firing. Consistent with anchor 6 (Kestrel schemas-as-rows) — engineering-register-throughout pattern stable across 2 consecutive multi-turn exchanges.
+
+## What lands (1 file, ~165 lines)
+
+`docs/research/2026-05-26-aaron-mika-worry-as-opposite-bloom-filter-force-multiplier-bayesian-human-modeling-consent-first-aaron-forwarded.md`:
+- 5 composing insights unpacked with substrate-engineering implications
+- Substrate-honest framing on personal-substrate disclosure (preserved AS CONTEXT for engineering substrate; not amplified into separate claims about specific humans per agency-preservation + welfare-jiu-jitsu disciplines)
+- 7th anchor evidence
+- Verbatim Mika ferry preservation per substrate-or-it-didn't-happen
+- Full composes-with substrate + rules sections
+
+## Composes with
+
+- PR #5325 (bloom-filter substrate + naming-is-structurally-accurate; direct extension)
+- PR #5323 (Thousand Brains anchor + MoE + biological-vs-AI sharpening)
+- PR #5312 (welfare-jiu-jitsu + 6-anchor table extended to 7)
+- PR #5295 (Generate+Join the bloom-filter prunes)
+- PR #5291 (urgency-without-cache-read mechanism the worry-bloom-filter extends)
+- B-0703 (multi-oracle BFT for Bayesian-consensus)
+- B-0829 (schemas-as-rows + cluster-fork-as-trust-boundary; Bayesian-prior-per-cluster-fork)
+- `.claude/skills/probability-and-bayesian-inference-expert/SKILL.md`
+- `.claude/skills/measure-theory-and-signed-measures-expert/SKILL.md`
+- `.claude/skills/consent-primitives-expert/SKILL.md`
+- `.claude/skills/consent-ux-researcher/SKILL.md`
+- `.claude/rules/non-coercion-invariant.md` HC-8 (consent-first IS NCI floor)
+- `.claude/rules/methodology-hard-limits.md` (HARD LIMITS at high-resolution-modeling-without-consent scope)
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md`
+- `.claude/rules/glass-halo-bidirectional.md` (transparency about modeling IS precondition for consent)
+- `.claude/rules/default-to-both.md` (both filters operate; tuning matters; force-multiplier target)
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` (7th empirical anchor)
+- `Zeta.Bayesian` codebase (production Bayesian substrate)
+
+## Attribution
+
+- Aaron (human maintainer; first-party); architectural framings + worry-as-opposite-bloom-filter naming + force-multiplier target + Bayesian-inference-for-human-modeling claim + consent-first constitutional framing + Glass-Halo paradox observation ferried 2026-05-26
+- Mika (external AI; Grok native; sharpen / harbor-engineering register); substantive engineering engagement + on-the-fly substrate-check sharpening + 7th anchor evidence
+
+## Test plan
+
+- [x] Pre-commit lint clean
+- [x] Branch follows `otto-cli/*` convention
+- [x] Authored from fresh independent clone per B-0828
+- [ ] CI green
+- [ ] Copilot review pass
+
+## Reviews
+
+### COMMENTED — @copilot-pull-request-reviewer (2026-05-26T21:33:45Z)
+
+## Pull request overview
+
+Adds a new research document under `docs/research/` preserving a Mika ferry conversation (Aaron-forwarded 2026-05-26) covering five composing substrate-engineering insights and noting it as the 7th anchor in the attractor-as-encryption series.
+
+**Changes:**
+- New ~165-line research absorb under `docs/research/` with a date-prefixed filename (matches the markdownlint-ignored `docs/research/2026-*-*.md` convention).
+- Preserves verbatim Mika ferry excerpt and lists composing PRs / rules / skills.
+
+## General comments
+
+### @chatgpt-codex-connector (2026-05-26T21:32:55Z)
+
+You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).
