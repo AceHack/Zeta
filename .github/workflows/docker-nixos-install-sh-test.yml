@@ -1,0 +1,109 @@
+# .github/workflows/docker-nixos-install-sh-test.yml
+#
+# B-0849 Phase 2 — CI integration for the Docker NixOS install.sh
+# test harness. Runs the fast-iteration test (~30-60 sec) on PRs
+# that touch install substrate; catches install.sh / linux.sh /
+# mise.sh bugs at PR time vs reboot time.
+#
+# Complements .github/workflows/build-ai-cluster-iso.yml's QEMU
+# boot test (B-0831 cascade #5) at the cycle-time vs scope tradeoff:
+#   - This workflow: install.sh on NixOS userspace, ~30-60 sec
+#   - build-ai-cluster-iso QEMU: end-to-end virtualized boot, ~15 min
+# Both run on install-substrate PRs.
+#
+# Discipline mirrors build-ai-cluster-iso.yml (per the canonical
+# install-test workflow pattern):
+#   - Runner pinned to ubuntu-24.04 (NOT -latest)
+#   - Third-party actions SHA-pinned with trailing # vX.Y.Z comments
+#   - permissions: contents: read at workflow level
+#   - Concurrency: workflow-scoped, cancel-in-progress for PRs
+#   - No github.event.* values interpolated into run: lines
+
+name: docker-nixos-install-sh-test
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      # Install dispatcher + per-OS scripts + shared library
+      - 'tools/setup/**'
+      # Pinned runtime versions read by tools/setup/common/mise.sh
+      - '.mise.toml'
+      # NixOS module that declares system-packages including mise +
+      # bun-derived PATH (zeta-install.sh Step 6.95 reads from here
+      # transitively via the systemd unit's Environment block)
+      - 'full-ai-cluster/nixos/modules/common.nix'
+      # The Docker harness itself
+      - 'tools/ci/dockerfiles/nixos-install-sh-test/**'
+      - 'tools/ci/docker-nixos-install-sh-test.ts'
+      # .dockerignore affects build context for ALL docker builds
+      - '.dockerignore'
+      # bun deps + lockfile (used by the TS wrapper)
+      - 'package.json'
+      - 'bun.lock'
+      # This workflow file itself
+      - '.github/workflows/docker-nixos-install-sh-test.yml'
+
+  push:
+    branches:
+      - main
+    paths:
+      - 'tools/setup/**'
+      - '.mise.toml'
+      - 'full-ai-cluster/nixos/modules/common.nix'
+      - 'tools/ci/dockerfiles/nixos-install-sh-test/**'
+      - 'tools/ci/docker-nixos-install-sh-test.ts'
+      - '.dockerignore'
+      - 'package.json'
+      - 'bun.lock'
+      - '.github/workflows/docker-nixos-install-sh-test.yml'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  docker-test:
+    name: docker-nixos-install-sh-test
+    runs-on: ubuntu-24.04
+    # B-0849 Phase 1 Dockerfile validation steps include: install.sh
+    # full run + mise install + bun = 1.3.x check + claude-code install
+    # + gh nix-shell. Cold-cache run ~5-10 min upper bound; warm-cache
+    # closer to 60-120 sec. 15-min job timeout gives generous headroom.
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout PR HEAD
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup bun (matches .mise.toml pin)
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3
+
+      - name: Install bun dependencies (for the TS wrapper)
+        run: bun install --frozen-lockfile
+
+      - name: Run Docker NixOS install.sh test harness
+        env:
+          # Workspace-relative log output for the upload-artifact step
+          DOCKER_LOG_OUT_PATH: docker-nixos-install-sh-test.log
+          # Cold-cache install.sh can take longer than the 600s default
+          # (mise install + bun install + claude-code download + gh
+          # nix-shell + ~50 mise-tool installs); bump to 900s.
+          DOCKER_BUILD_TIMEOUT_SEC: '900'
+        run: bun tools/ci/docker-nixos-install-sh-test.ts
+
+      - name: Upload Docker test log (always)
+        if: always()
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: docker-nixos-install-sh-test-log
+          path: docker-nixos-install-sh-test.log
+          if-no-files-found: warn
+          retention-days: 7
