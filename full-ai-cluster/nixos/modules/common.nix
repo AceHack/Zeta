@@ -168,7 +168,51 @@
     # for ongoing operator workflows (re-auth, ssh-key sync, future
     # node-register tooling).
     gh
+
+    # iter-5.5.0 (B-0848 Phase 2, Aaron 2026-05-27): bun for the
+    # node-local Claude Code agent (per .claude/rules/rule-0-no-sh-files.md
+    # — bun is Zeta's canonical TS/JS runtime, NOT nodejs). claude-code
+    # is published as an npm package but bun has high Node-compat AND
+    # bun's `bun install --global` + `bun x` work as npm/npx replacements.
+    # bun installs to /home/zeta/.bun/bin/ (per-user writable; NixOS
+    # /nix/store is RO). zeta-install.sh Step 6.95 does the bun install
+    # + interactive `claude login` + credential persistence + repo pre-clone.
+    bun
+
+    # iter-5.5 NetBIOS client tools — `samba` package brings
+    # nmblookup/smbclient binaries so operator can query NetBIOS name
+    # service from any node. The CORRESPONDING SERVER-SIDE config
+    # (services.samba with nmbd-only) lands in PR #5387 (multi-protocol
+    # name resolution); the two PRs compose at merge time. Until #5387
+    # merges this package provides client-side tooling only — useful
+    # for diagnosing OTHER nodes (or the operator's own Mac if it runs
+    # nmbd) by NetBIOS name when mDNS multicast is filtered.
+    # P2 fix (PR #5388 Copilot review): comment now correctly notes
+    # services.samba is NOT configured in this PR; lives in #5387.
+    samba
   ];
+
+  # iter-5.5.0 (B-0848 Phase 2, Aaron 2026-05-27): user-local bun prefix
+  # on PATH for all login shells so `claude` (installed via
+  # `bun install --global` to /home/zeta/.bun/bin in zeta-install.sh
+  # Step 6.95) is reachable without manual PATH munging on first login.
+  # Per .claude/rules/rule-0-no-sh-files.md: bun is canonical TS/JS
+  # runtime in Zeta (NOT nodejs).
+  environment.sessionVariables = {
+    BUN_INSTALL = "$HOME/.bun";
+  };
+
+  # /etc/profile.d/ snippet so $HOME-relative PATH extension happens
+  # at shell-init time (NixOS sessionVariables stores literal `$HOME`
+  # which wouldn't expand correctly without per-shell init).
+  environment.etc."profile.d/zeta-user-paths.sh".text = ''
+    # iter-5.5.0 (B-0848): include user's bun-global bin on PATH so
+    # claude-code (and any other `bun install --global` user-scope
+    # binaries) are reachable without manual setup.
+    if [ -d "$HOME/.bun/bin" ]; then
+      export PATH="$HOME/.bun/bin:$PATH"
+    fi
+  '';
 
   boot.loader = {
     systemd-boot.enable = lib.mkDefault true;

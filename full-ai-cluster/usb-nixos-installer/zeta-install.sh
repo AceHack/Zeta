@@ -1012,6 +1012,139 @@ sudo nixos-install \
 cleanup_symlinks
 trap - EXIT
 
+# ── Step 6.95: iter-5.5.0 — claude-code install + credential persistence (B-0848 Phase 2) ──
+# Aaron 2026-05-27 ask: "wanna make this automatic on boot before i even
+# login and have it save my claude code device login like gh, also make
+# sure they are all on path for me to play with when i log in?"
+#
+# This step mirrors iter-5.4.0's gh-auth pattern at install-time for the
+# node-local Claude Code agent (B-0848). Three parts:
+#
+#   1. INSTALL Claude Code via npm globally into a writable prefix
+#      under /mnt/home/zeta (so it survives reboot AND is in the zeta
+#      user's PATH via .npm-global/bin from /etc/profile.d).
+#
+#   2. PERSIST credentials to /mnt/home/zeta/.config/{gh,claude}/ with
+#      zeta-user ownership. This closes the iter-5.4.0 gap empirically
+#      observed 2026-05-27: gh auth login wrote /root/.config/gh/ in the
+#      INSTALLER environment but the installed system's zeta user had no
+#      credentials post-reboot. iter-5.5.0 fixes both `gh` and `claude`
+#      auth persistence in one step.
+#
+#   3. PRE-CLONE the Zeta repo to /mnt/home/zeta/Zeta so first-login
+#      operator workflow is "cd ~/Zeta && claude" with no extra setup.
+#
+# Skip conditions (P2 fix per PR #5388 Copilot review — comment
+# updated to match ACTUAL control-flow, which doesn't gate on
+# GH_AUTH_OK):
+#   - /mnt/home/zeta doesn't exist (means nixos-install hasn't created
+#     the user yet — possible if Step 6.x ordering changes)
+# iter-5.5.0 runs REGARDLESS of GH_AUTH_OK because: (a) claude install
+# only needs network, not gh auth; (b) claude login is operator-
+# interactive and independent of gh; (c) gh credential persistence
+# step 6.95c is itself conditional on /root/.config/gh existing
+# (which iter-5.4.0 only creates if gh auth succeeded). Net behavior:
+# install + claude login always attempted; gh credentials persisted
+# ONLY when they exist.
+
+ZETA_HOME=/mnt/home/zeta
+
+# P0 fix (PR #5388 Copilot review): resolve zeta UID/GID from the
+# INSTALLED system rather than hardcoding 1000:100 — if another user
+# is created first or NixOS module config changes, hardcoded IDs would
+# chown files to the wrong owner. chroot reads /mnt/etc/passwd via the
+# installed system's id binary which is authoritative.
+ZETA_UID=$(sudo chroot /mnt id -u zeta 2>/dev/null || echo "")
+ZETA_GID=$(sudo chroot /mnt id -g zeta 2>/dev/null || echo "")
+if [ -z "$ZETA_UID" ] || [ -z "$ZETA_GID" ]; then
+  echo "[iter-5.5.0]   WARN: could not resolve zeta UID/GID from /mnt via chroot;"
+  echo "[iter-5.5.0]   falling back to NixOS defaults (1000:100). If the installed"
+  echo "[iter-5.5.0]   system uses different IDs, post-reboot file ownership may"
+  echo "[iter-5.5.0]   need correction via 'sudo chown -R zeta:users ~/.{config,bun,Zeta}'"
+  ZETA_UID=1000
+  ZETA_GID=100
+else
+  echo "[iter-5.5.0]   resolved zeta UID:GID = $ZETA_UID:$ZETA_GID (via chroot id zeta)"
+fi
+
+if [ -d "$ZETA_HOME" ]; then
+  echo "[iter-5.5.0] ── claude-code install + credential persistence (B-0848) ──"
+
+  # 6.95a — install claude-code globally for the zeta user via bun
+  # (per .claude/rules/rule-0-no-sh-files.md: bun is Zeta's canonical
+  # TS/JS runtime, NOT nodejs). bun is npm-compat: `bun install --global`
+  # installs npm packages; binaries land in $BUN_INSTALL/bin (~/.bun/bin
+  # by default).
+  echo "[iter-5.5.0] installing @anthropic-ai/claude-code via bun (writable prefix in zeta home)..."
+  sudo mkdir -p "$ZETA_HOME/.bun/bin"
+  sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
+  if command -v bun >/dev/null 2>&1; then
+    # BUN_INSTALL sets the writable per-user prefix. Run as zeta user
+    # via sudo -u so ownership starts correct.
+    sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
+      bun install --global @anthropic-ai/claude-code 2>&1 | tail -5 || \
+        echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot"
+  else
+    echo "[iter-5.5.0]   WARN: bun not on installer PATH; skipping (post-reboot has bun from common.nix)"
+  fi
+
+  # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
+  CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"
+  if [ -x "$CLAUDE_BIN" ]; then
+    echo
+    echo "[iter-5.5.0] Trigger Claude Code interactive device-flow login NOW (mirror of gh auth login)?"
+    echo "[iter-5.5.0]   - Opens a code prompt; visit URL on this Mac browser; approve."
+    echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.config/claude/ and survive reboot."
+    echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
+    read -r -p "[iter-5.5.0] Run claude login now? [Y/n]: " CLAUDE_AUTH_REPLY
+    case "${CLAUDE_AUTH_REPLY:-y}" in
+      [Yy]*|"")
+        echo "[iter-5.5.0]   running 'claude login' (interactive)..."
+        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$CLAUDE_BIN" login || \
+          echo "[iter-5.5.0]   WARN: claude login failed; can re-run post-reboot"
+        # P0 security fix (PR #5388 Copilot review): restrict perms on
+        # ~/.config/claude AFTER login completes — claude CLI may write
+        # tokens with default umask which could leave them group/world-
+        # readable. Parallel to the gh credential restriction below.
+        if [ -d "$ZETA_HOME/.config/claude" ]; then
+          sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.config/claude"
+          sudo chmod -R go-rwx "$ZETA_HOME/.config/claude"
+        fi
+        ;;
+      *)
+        echo "[iter-5.5.0]   SKIPPED claude login; run 'claude login' on first login"
+        ;;
+    esac
+  else
+    echo "[iter-5.5.0] claude binary not found at $CLAUDE_BIN; skipping interactive login"
+  fi
+
+  # 6.95c — persist gh credentials from installer-root to installed-zeta
+  # Closes the iter-5.4.0 credential-persistence gap (Bug 8).
+  if [ -d /root/.config/gh ]; then
+    echo "[iter-5.5.0] persisting /root/.config/gh → $ZETA_HOME/.config/gh (Bug 8 fix)"
+    sudo mkdir -p "$ZETA_HOME/.config"
+    sudo cp -r /root/.config/gh "$ZETA_HOME/.config/"
+    sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.config/gh"
+    # Restrict perms — gh tokens are secrets
+    sudo chmod -R go-rwx "$ZETA_HOME/.config/gh"
+  else
+    echo "[iter-5.5.0] /root/.config/gh absent; nothing to persist (gh auth login was skipped?)"
+  fi
+
+  # 6.95d — pre-clone Zeta repo for first-login operator convenience
+  if [ ! -d "$ZETA_HOME/Zeta" ]; then
+    echo "[iter-5.5.0] pre-cloning Zeta repo to $ZETA_HOME/Zeta (operator convenience)"
+    sudo -u "#$ZETA_UID" git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
+      echo "[iter-5.5.0]   WARN: clone failed — operator can clone manually post-reboot"
+  fi
+
+  echo "[iter-5.5.0] ── DONE — first login will have: gh + claude + bun + kubectl + helm + k9s + argocd on PATH; ~/Zeta cloned; ~/.config/{gh,claude} populated; ~/.bun/bin on PATH ──"
+else
+  echo "[iter-5.5.0] $ZETA_HOME absent; skipping (nixos-install ordering changed?)"
+fi
+echo
+
 # ── Step 7: print initial credentials (iter-4 — per B-0789) ──────
 echo
 echo "================================================================"
