@@ -779,6 +779,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0841](backlog/P2/B-0841-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md)** Zeta could offer Shortform.com-like features (in-depth book/article/YouTube guides with cross-substrate-engineering composition map) — productize what the framework already does internally for itself (Aaron 2026-05-26)
 - [ ] **[B-0842](backlog/P2/B-0842-universal-basis-decomposition-pattern-fft-shazam-itron-disaggregation-reservoir-readout-zeta-substrate-aaron-2026-05-26.md)** universal basis-decomposition pattern — FFT + Picard/Shazam-style fingerprinting + Itron energy-disaggregation + reservoir-computing readout + Zeta substrate are all instances of `Σ ωᵢ sᵢ(t) ≈ y(t)` (Aaron 2026-05-26)
 - [ ] **[B-0843](backlog/P2/B-0843-source-honor-ledger-basis-royalty-pool-creator-paid-by-design-rights-lanes-discipline-for-b0841-b0842-amara-aaron-2026-05-26.md)** Source Honor Ledger / Basis Royalty Pool — creator-paid-by-design operational implementation + 5-rights-lane discipline + "Don't sell compression. Sell readout." product positioning (extends B-0841 + B-0842 per Amara 3rd ferry 2026-05-26)
+- [ ] **[B-0845](backlog/P2/B-0845-ts-cli-arg-parser-library-evaluation-citty-vs-commander-vs-clipanion-vs-manual-aaron-2026-05-26.md)** TS CLI arg-parser library evaluation — citty vs commander vs clipanion vs manual; choose canonical for Zeta's many shell-script-like TS tools (Aaron 2026-05-26)
 
 ## P3 — convenience / deferred
 
