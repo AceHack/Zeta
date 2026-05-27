@@ -409,6 +409,66 @@ if [ -n "$PUBKEY_FILE" ]; then
     sudo cat "$PUBKEY_FILE"
   } | sudo tee "$PUBKEY_DST" > /dev/null
   echo "[iter-4.2]   wrote $PUBKEY_LINE_COUNT pubkey line(s) to operator-ssh-keys.txt"
+
+  # ── B-0852.3a-prep: capture USB UUID for cred-blob binding ────
+  # The B-0852 cred-blob encryption derives its key from
+  # HKDF(USB-UUID || stretched-passphrase, salt, info) per
+  # tools/installer/zeta-creds-crypto.ts deriveKey. The picker at
+  # Step 6.95-picker reads /etc/zeta/usb-uuid to know which UUID to
+  # bind the blob to. Without this file, the picker SKIPS (per its
+  # current gate condition), and the operator has to enter
+  # credentials over and over on every reboot (operator pain point
+  # named 2026-05-27: "i'm witing on the tool to be resable so i
+  # don't have to enter credentals over and over everytime").
+  #
+  # We're already at the ESP we just read the pubkey from. Capture
+  # its UUID via blkid + write to /etc/zeta/usb-uuid (and to
+  # /mnt/etc/zeta/usb-uuid so it survives the install). This closes
+  # one of the three preconditions blocking the picker; the other
+  # two (ZETA_CREDS_PICKER=1 + ZETA_CREDS_PASSPHRASE) follow in
+  # subsequent sub-rows.
+  USB_UUID_DEV=""
+  # Derive the partition device that hosts PUBKEY_FILE.
+  if [ -n "${part:-}" ] && [ -b "${part:-}" ]; then
+    # Try 2 case: we mounted ESP ourselves; $part is the partition.
+    USB_UUID_DEV="$part"
+  else
+    # Try 1 case: PUBKEY_FILE was on an already-mounted FS.
+    # findmnt -no SOURCE <dir> returns the source device.
+    PUBKEY_DIR="$(dirname "$PUBKEY_FILE")"
+    if command -v findmnt >/dev/null 2>&1; then
+      # Walk up the path until findmnt finds a mount point.
+      probe_dir="$PUBKEY_DIR"
+      while [ "$probe_dir" != "/" ]; do
+        src=$(findmnt -no SOURCE "$probe_dir" 2>/dev/null || true)
+        if [ -n "$src" ] && [ -b "$src" ]; then
+          USB_UUID_DEV="$src"
+          break
+        fi
+        probe_dir="$(dirname "$probe_dir")"
+      done
+    fi
+  fi
+
+  if [ -n "$USB_UUID_DEV" ] && command -v blkid >/dev/null 2>&1; then
+    USB_UUID_VAL=$(sudo blkid -o value -s UUID "$USB_UUID_DEV" 2>/dev/null || true)
+    if [ -n "$USB_UUID_VAL" ]; then
+      sudo mkdir -p /etc/zeta /mnt/etc/zeta
+      echo "$USB_UUID_VAL" | sudo tee /etc/zeta/usb-uuid >/dev/null
+      echo "$USB_UUID_VAL" | sudo tee /mnt/etc/zeta/usb-uuid >/dev/null
+      sudo chmod 0644 /etc/zeta/usb-uuid /mnt/etc/zeta/usb-uuid
+      echo "[B-0852.3a-prep]   captured USB UUID: $USB_UUID_VAL (device: $USB_UUID_DEV)"
+      echo "[B-0852.3a-prep]   wrote /etc/zeta/usb-uuid + /mnt/etc/zeta/usb-uuid"
+      echo "[B-0852.3a-prep]   precondition #3 satisfied for Step 6.95-picker"
+    else
+      echo "[B-0852.3a-prep]   WARN: blkid returned empty UUID for $USB_UUID_DEV;"
+      echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+    fi
+  else
+    echo "[B-0852.3a-prep]   WARN: could not derive USB partition device OR blkid unavailable;"
+    echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+  fi
+
   sudo umount "$PROBE_MOUNT" 2>/dev/null || true
   if [ "$PUBKEY_LINE_COUNT" -gt 0 ]; then
     INJECT_OK=1
