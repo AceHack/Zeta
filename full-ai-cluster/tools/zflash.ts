@@ -62,7 +62,7 @@
 //   bypassed by an agent; Touch ID requires the operator's actual
 //   finger on the actual trackpad.
 
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
 import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { homedir, platform, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
@@ -764,6 +764,7 @@ async function main() {
     "--skip-freshness-check",
     "--skip-iso-pull",
     "--host",
+    "--agent",
   ]);
   const argv = process.argv.slice(2);
 
@@ -773,6 +774,7 @@ async function main() {
   let skipFreshnessCheck = false;
   let skipIsoPull = false;
   let hostOverride: string | null = null;
+  let agentMode = false;
   const rawFlags: string[] = [];
   const positional: string[] = [];
   for (let i = 0; i < argv.length; i++) {
@@ -803,6 +805,10 @@ async function main() {
     }
     if (a === "--skip-iso-pull") {
       skipIsoPull = true;
+      continue;
+    }
+    if (a === "--agent") {
+      agentMode = true;
       continue;
     }
     if (a === "--host") {
@@ -862,6 +868,12 @@ async function main() {
         "                            role-stack — e.g., --host pikachu installs as pikachu\n" +
         "                            regardless of flake role config. Default: flake config name\n" +
         "                            (control-plane for the zero-typing single-node path)\n" +
+        "  --agent                   (B-0844) agent-driven mode — spawn flash-usb with piped stdin\n" +
+        "                            so the agent auto-types the 'yes <nonce>' challenge by reading\n" +
+        "                            the nonce from stdout. Touch ID PAM gate STILL fires on the\n" +
+        "                            operator's Mac (cannot be agent-bypassed). Use when running\n" +
+        "                            zflash through a pipe ('| tail', '2>&1 >log', etc.) which\n" +
+        "                            breaks the default readline.question stdin-from-terminal flow.\n" +
         "  iso-path                  (optional) explicit ISO; default = newest under ~/Downloads,\n" +
         "                            auto-pulled from CI if origin/main has fresher build\n" +
         "  Run zflash-setup once first to install Touch ID for sudo.\n",
@@ -946,22 +958,86 @@ async function main() {
     );
   }
 
-  // Stdio inherit — child handles all I/O directly (readline, sudo Touch ID
-  // PAM prompt, dd progress). We are a thin invocation wrapper.
+  // Stdio inherit (default) — child handles all I/O directly (readline,
+  // sudo Touch ID PAM prompt, dd progress). We are a thin invocation
+  // wrapper.
+  //
+  // Agent mode (--agent flag, B-0844): switch from execFileSync({stdio:
+  // "inherit"}) to spawn({stdio: ["pipe", "pipe", "inherit"]}) — stdin
+  // is piped so we can auto-type the challenge response; stdout is
+  // piped so we can SCAN for the "yes <nonce>" challenge line then
+  // mirror everything back to our stdout; stderr remains inherited so
+  // the Touch ID PAM prompt visibility is preserved.
+  //
+  // Why this exists: zflash docstring promised "agent auto-types the
+  // yes <nonce> challenge" but the execFileSync({stdio: "inherit"})
+  // implementation broke under any non-interactive stdin (e.g.,
+  // `bun zflash.ts | tail`). The 2026-05-26 3rd USB-test session
+  // surfaced this empirically — operator saw "safe to remove USB"
+  // but USB wasn't actually formatted. This agent-mode closes the
+  // docstring-vs-implementation gap.
+  //
+  // Touch ID PAM gate is PRESERVED — agent cannot bypass biometric
+  // physical-presence proof on the operator's Mac.
   const flashUsbArgs = willInject
     ? [flashUsb, "--short", "--no-eject", isoPath]
     : [flashUsb, "--short", isoPath];
-  try {
-    execFileSync("bun", flashUsbArgs, { stdio: "inherit" });
-  } catch (e: unknown) {
-    // execFileSync throws on non-zero exit; child has already printed its
-    // own error message + exited with its own code via flash-usb's bail().
-    // We propagate the exit code.
-    const status =
-      e && typeof e === "object" && "status" in e
-        ? Number((e as { status: number }).status) || 1
-        : 1;
-    process.exit(status);
+  if (agentMode) {
+    process.stdout.write(
+      "\nzflash: --agent mode active — will auto-type challenge response\n" +
+        "         (Touch ID PAM gate still fires on operator's Mac;\n" +
+        "          biometric physical-presence proof cannot be agent-bypassed)\n\n",
+    );
+    await new Promise<void>((res, rej) => {
+      const child = spawn("bun", flashUsbArgs, {
+        stdio: ["pipe", "pipe", "inherit"],
+      });
+      let stdoutBuf = "";
+      let challengeAnswered = false;
+      child.stdout.on("data", (chunk: Buffer) => {
+        const text = chunk.toString();
+        process.stdout.write(text); // mirror to operator's view
+        if (!challengeAnswered) {
+          stdoutBuf += text;
+          // Match the "  yes <4hex>" line emitted by flash-usb.ts at
+          // the runtime-acceptance prompt. The challenge is indented
+          // by 2 spaces in flash-usb.ts; the nonce is exactly 4 hex
+          // chars (16-bit entropy; per-run random; can't be pre-baked).
+          const m = stdoutBuf.match(/^\s+yes ([0-9a-f]{4})\s*$/m);
+          if (m) {
+            const nonce = m[1];
+            const answer = `yes ${nonce}\n`;
+            process.stdout.write(
+              `\n[agent-mode: auto-typing '${answer.trim()}' — operator visibility per glass-halo-bidirectional rule]\n`,
+            );
+            child.stdin.write(answer);
+            child.stdin.end();
+            challengeAnswered = true;
+          }
+        }
+      });
+      child.on("close", (code) => {
+        if (code === 0) {
+          res();
+        } else {
+          process.exit(code ?? 1);
+        }
+      });
+      child.on("error", (err) => rej(err));
+    });
+  } else {
+    try {
+      execFileSync("bun", flashUsbArgs, { stdio: "inherit" });
+    } catch (e: unknown) {
+      // execFileSync throws on non-zero exit; child has already printed
+      // its own error message + exited with its own code via flash-usb's
+      // bail(). We propagate the exit code.
+      const status =
+        e && typeof e === "object" && "status" in e
+          ? Number((e as { status: number }).status) || 1
+          : 1;
+      process.exit(status);
+    }
   }
 
   if (willInject) {
