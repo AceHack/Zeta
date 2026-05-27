@@ -72,8 +72,27 @@ in
 
     blobPath = lib.mkOption {
       type = lib.types.str;
-      default = "/esp/zeta-creds.enc";
-      description = "Path to encrypted cred-blob written by picker (B-0852.3a) at install time.";
+      default = "/boot/zeta-creds.enc";
+      description = ''
+        Path to encrypted cred-blob on the installed system.
+
+        Contract: the file is the encrypted cred-blob produced by
+        the installer's Step 6.95-picker and consumed by this
+        service at boot. Default reflects the installed-system ESP
+        mount path established by `disko-shapes/2nvme.nix`
+        (`mountpoint = "/boot"`). If a host config uses a
+        non-default ESP mount, override `blobPath` to match.
+
+        Mount-path note (for operators copying this option to
+        non-default ESP layouts): the installer writes the same
+        physical file to `/mnt/boot/zeta-creds.enc` during install
+        because the target ESP is mounted at `/mnt/boot` by
+        Step 5. After reboot, disko mounts the same partition at
+        `/boot`, so the producer and consumer share one physical
+        ESP file at two mount paths — install-time vs
+        installed-time. Override both sides if the ESP mount
+        deviates from this convention.
+      '';
     };
 
     usbUuidPath = lib.mkOption {

@@ -1360,9 +1360,19 @@ if [ -d "$ZETA_HOME" ]; then
     # patterns at lines 1119-1141; without it, bun is not on the PATH the
     # subshell sees (mise installs bun via shims; activate sets PATH).
     # BUN_INSTALL pin matches sibling pattern too.
+    #
+    # Output path: write the cred-blob to the TARGET ESP mount during
+    # install. The target ESP is mounted at /mnt/boot by Step 5
+    # ('sudo mount "$ESP_PART" /mnt/boot'). After reboot into the
+    # installed system, disko re-mounts the SAME ESP partition at
+    # /boot — so the file persists across the install-vs-installed
+    # boundary as the same physical file at two mount paths
+    # (/mnt/boot during install → /boot post-reboot). The restore
+    # service (zeta-creds-restore.nix) reads from /boot/zeta-creds.enc
+    # at boot-time.
     sudo --preserve-env=ZETA_CREDS_PASSPHRASE -u "#$ZETA_UID" \
       HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" \
-      bash -c "set -o pipefail; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /esp/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
+      bash -c "set -o pipefail; eval \"\$(mise activate bash 2>/dev/null || true)\"; cd '$ZETA_HOME/Zeta' && bun tools/installer/zeta-creds-picker.ts --usb-uuid '$USB_UUID' --output /mnt/boot/zeta-creds.enc --passphrase-env ZETA_CREDS_PASSPHRASE" || \
         echo "[iter-5.5.0]   WARN: picker exited non-zero; cred-blob may be partial"
     # B-0852.3b discipline: unset passphrase from installer-script env
     # IMMEDIATELY after picker completes to minimize env-exposure window.
