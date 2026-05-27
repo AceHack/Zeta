@@ -200,6 +200,11 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "c.zsh"), "#!/usr/bin/env zsh\n");
       writeFileSync(join(repo, "scripts", "d.ksh"), "#!/usr/bin/env ksh\n");
       writeFileSync(join(repo, "scripts", "e.command"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
+      writeFileSync(join(repo, "scripts", "extensionless-sh"), "#!/bin/sh\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
+      writeFileSync(join(repo, "scripts", "dotted-shell-shebang.txt"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "tools", "lean4", "vendor.sh"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "README.md"), "not shell\n");
       runGit(["add", "."], repo);
@@ -210,6 +215,9 @@ describe("buildInventoryReport", () => {
         "scripts/c.zsh",
         "scripts/d.ksh",
         "scripts/e.command",
+        "scripts/extensionless-bash",
+        "scripts/extensionless-bash-env-s",
+        "scripts/extensionless-sh",
       ]);
     } finally {
       rmSync(repo, { recursive: true, force: true });
