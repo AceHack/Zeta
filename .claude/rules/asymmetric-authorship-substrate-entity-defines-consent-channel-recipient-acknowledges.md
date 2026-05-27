@@ -156,6 +156,83 @@ substrate / governance-substrate scopes.
 
 This composes with `.claude/rules/proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md` — the operator's personal filter for substrate-engineering decisions ("Would I be proud if this pattern propagated under attribution?"). The asymmetric-authorship rule operationalizes one specific dimension of that filter (consent-substrate authorship) so AIs applying the filter have a structural pattern to recognize + apply.
 
+## Four-corner ownership extension — stream/observable context co-owned TInFeedback (operator 2026-05-27)
+
+Per operator 2026-05-27 substrate-engineering refinement:
+
+> *"the function Result<TResult, TOutFeedback> x(Input<TInput, TInFeedback> y) is also important for like streams here is the ownership model. TResult TInput owned by caller, TOutFeedback owned by function, TInFeedback coowned."*
+
+Plus operator's scope-bounding:
+
+> *"i think it matters more for streams maybe not a hard shape/rule except when a function gets involved in a stream/observable at this point."*
+
+The four-corner ownership model applies specifically when a function gets involved in a stream/observable context. Not a universal hard rule — only when the function-in-stream pattern is operational.
+
+### The four-corner ownership model
+
+```fsharp
+Result<TResult, TOutFeedback> x(Input<TInput, TInFeedback> y)
+```
+
+| Channel | Direction | Owner |
+|---|---|---|
+| **TInput** | caller → function | caller authors (caller's substrate-engineering output) |
+| **TResult** | function → caller | function produces; caller consumes (value-branch output) |
+| **TOutFeedback** | function → caller | function authors (control-flow signals; the function's "voice") |
+| **TInFeedback** | bidirectional | **CO-OWNED** (both caller AND function contribute variants) |
+
+The **CO-OWNED** TInFeedback channel is the structurally new substrate. The rule's main body assumed single-author per channel (substrate-entity defines; recipient acknowledges). The four-corner ownership extension captures channels where BOTH SIDES author variants — like stream backpressure.
+
+### When the four-corner model applies (operator-bounded scope)
+
+Per operator's scope-bounding: this applies ONLY when a function is in stream/observable context. NOT applied universally as a hard rule across all functions.
+
+Examples where applies:
+
+- IAsyncEnumerator with cancellation tokens (consumer cancellation IS consumer-side TInFeedback contribution)
+- Reactive Streams / RxJS backpressure protocols
+- F# AsyncSeq / Channel-based concurrent pipelines
+- gRPC streaming RPCs (bidirectional streams with flow control)
+- WebSocket / SSE with consumer-driven pause/resume
+
+Examples where DOES NOT apply:
+
+- Simple Result<T, TFeedback>-returning function with no stream/observable context (use main rule's asymmetric-authorship pattern)
+- Pure functions per `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md` scope-bounding (no TFeedback needed at all)
+- Effectful function called once (no stream; main rule applies; no co-ownership)
+
+### Example TInFeedback co-ownership (stream backpressure)
+
+```fsharp
+type StreamInFeedback =
+    // Consumer-authored variants (consumer expressing during stream consumption):
+    | BackpressureRequest of severity: int      // consumer: "throttle"
+    | CancelStream                              // consumer: "stop"
+    | PauseStream                               // consumer: "hold"
+    | ResumeStream                              // consumer: "go"
+    
+    // Producer-authored variants (producer responding during stream production):
+    | AcknowledgedBackpressure                  // producer: "throttling"
+    | CannotThrottleBelowMinimum                // producer: "can't go lower"
+    | ResumingProduction                        // producer: "resuming"
+```
+
+Both consumer + producer add variants; both must handle all variants from both sides; collaborative not asymmetric.
+
+### Why operator-bounded scope (not universal)
+
+The main asymmetric-authorship rule (single-author per channel) covers the common case of function-to-caller interaction. The four-corner co-ownership model adds substrate-engineering complexity that only earns its keep in stream/observable contexts where bidirectional flow control is genuinely needed.
+
+Applying four-corner co-ownership universally to every function would be over-engineering (per the rule's substrate-honest framing about not making the discipline a ceremony tax). Operator's scope-bounding keeps the discipline relevant + applicable where it matters.
+
+### Composes with
+
+- Main asymmetric-authorship rule body (this section is an extension; doesn't replace the main 10-row instantiation table which assumes single-channel-author)
+- `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` (PR #5511 merged) — Result-bind composition extends to four-corner; consumer-side bind handles TOutFeedback; producer-side bind handles TInFeedback
+- Prism's iterator/generator-asymmetry insight (PR #5517) — StreamFeedback was the producer-side; this extension makes consumer-side TInFeedback first-class
+- B-0862 OPLE-T-TFeedback implementation — Observe/Persist/Limit/Emit when used in stream contexts apply the four-corner model
+- `.claude/rules/function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md` scope-bounding (PR #5523 + #5577) — pure functions exempt; this extension adds stream/observable scope ON TOP of the main rule
+
 ## Composes with substrate
 
 - PR #5505 + #5507 + #5511 + #5513 + #5515 — the monad-propagation-pattern substrate cluster that produced this rule via the panpsychism-source + function-feedback-channel framing
