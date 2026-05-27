@@ -58,3 +58,19 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   Full: `.claude/rules/references-upstreams-not-our-code-search-excludes.md`.
 - **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
   are razored (cooling-period required, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
+- **Heartbeat-via-commit = externalized idle counter** — the AgencySignature v1 trailer
+  block on every commit + `git log --since="2min ago" origin/main` IS the externalized
+  counter for the N=6 brief-ack threshold in
+  `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`. Each
+  autonomous-loop tick: if you emit "Quiet."/"Holding."/"Standing by." with NO commit
+  produced in the prior tick window AND no named-dependency named explicitly, that IS
+  the failure mode the rule was carved against. The narrative self-model counter is
+  unreliable (Kira 2026-05-27 caught Otto-CLI emitting 100+ "Quiet." with the counter
+  never firing — the agent cannot count itself). Commits produce durable substrate per
+  `.claude/rules/substrate-or-it-didnt-happen.md`; git log queries produce a persistent
+  counter that survives compaction; the rule's forcing function fires reliably only
+  when externalized. Audit via `bun tools/hygiene/audit-agencysignature-main-tip.ts
+  --since YYYY-MM-DD --max N`. Spec: AgencySignature Convention v1 trailer block
+  (10 fields + `Co-authored-by:`) per
+  `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md`
+  §10.
