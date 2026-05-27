@@ -796,6 +796,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0856](backlog/P2/B-0856-path-a-tmp-zeta-cluster-state-coordination-standard-per-node-marker-files-for-multi-agent-coordination-aaron-2026-05-27.md)** Path A — /tmp/zeta-cluster-state/ coordination standard for multi-agent per-node state advertisement (self-registered.marker / register-pr-in-flight.lock / last-seen.iso); composes with bus envelope substrate at cross-node scope (Aaron 2026-05-27)
 - [ ] **[B-0857](backlog/P2/B-0857-install-sh-universal-unix-entry-consolidation-route-by-environment-replaces-zeta-install-sh-on-the-short-path-before-b-0854-ace-aaron-2026-05-27.md)** tools/setup/install.sh becomes the universal Unix-like-OS install entry — routes by environment (macOS / Linux-non-NixOS / NixOS-live-USB / installed-NixOS); replaces zeta-install.sh on the short-path BEFORE B-0854 Ace migration completes (Aaron 2026-05-27)
 - [x] **[B-0857.1](backlog/P2/B-0857.1-audit-pr-5389-step-6-95a-invocation-of-tools-setup-install-sh-verified-present-aaron-2026-05-27.md)** Audit PR #5389's claim that zeta-install.sh Step 6.95a invokes tools/setup/install.sh — VERIFIED PRESENT (corrects B-0857 row body authoring error)
+- [ ] **[B-0858.5](backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md)** Heartbeat auto-state-gathering — writer gathers observable current state before pushing; heartbeats become debug logs once attached (Aaron 2026-05-27)
 
 ## P3 — convenience / deferred
 
