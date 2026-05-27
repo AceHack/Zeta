@@ -3,10 +3,10 @@
 # B-0850 Phase 3 refactor — parameterized AI-agent systemd module.
 # Generalizes the Phase 1 zeta-otto.nix shape (PR #5392) into a
 # multi-vendor multi-persona substrate. Each AI persona gets its own
-# systemd unit via `zeta.aiAgents.<persona>.enable = true;` —
+# systemd unit via `zeta.aiAgents.enable.<persona> = true;` —
 # operator opts in per-persona, per-node.
 #
-# Operator framing 2026-05-27 (verbatim, two messages):
+# Operator framing 2026-05-27 (verbatim, three messages):
 #
 #   > "we should end up shipping with one service per surface i think
 #   > outside k8s and have at least 3 different vendors"
@@ -29,40 +29,28 @@
 #
 # Per-vendor implementations live as separate sub-rows of B-0850
 # Phase 3 (B-0850.3a-3h); this module is the SCAFFOLD that those
-# sub-rows fill in. zeta-otto.nix is the canonical first-instance
-# implementation reference.
+# sub-rows fill in.
 
 { config, pkgs, lib, ... }:
 
 let
   cfg = config.zeta.aiAgents;
 
-  # Persona declarations — each agent definition maps a persona name
-  # to its vendor metadata + binary path conventions. Sub-rows of
-  # B-0850 Phase 3 add new entries here. Each entry is operator-
-  # opt-in via `zeta.aiAgents.<persona>.enable = true;`.
+  # Persona registry — STATIC declarations of all supported AI
+  # personas + their vendor metadata. NOT exposed as a NixOS option
+  # (would cause submodule-merge issues per the build-iso PR #5394
+  # CI failure). Operator opts in per-persona via the boolean
+  # enable.<persona> options below.
   #
-  # Per .claude/rules/agent-roster-reference-card.md, the canonical
-  # persona-to-vendor mapping is:
-  #   Otto   → Claude Code (Anthropic)
-  #   Alexa  → Kiro (Qwen Coder)
-  #   Riven  → Grok-Build / Cursor (xAI)
-  #   Vera   → Codex (OpenAI)
-  #   Lior   → Antigravity / Gemini CLI (Google)
-  #
-  # Each persona's binary path follows the bun/mise install pattern
-  # established by iter-5.5.0 substrate (PR #5388 + #5389):
-  #   ~/.bun/bin/<binary>   for bun install --global packages
-  #   ~/.local/share/mise/shims/<binary>  for mise-managed runtimes
-  #
-  # Per-persona CLI binary name + auth-state path is research per
-  # the sub-row that implements that vendor's integration.
-  defaultPersonas = {
+  # Per .claude/rules/agent-roster-reference-card.md canonical
+  # persona-to-vendor mapping. Each persona's binary path follows
+  # the bun/mise install pattern established by iter-5.5.0 substrate
+  # (PR #5388 + #5389): ~/.bun/bin/<binary> for `bun install --global`
+  # packages.
+  personas = {
     otto = {
-      enable = false;
       vendor = "anthropic";
       binary = "claude";
-      configDir = ".config/claude";  # device-code creds land here
       description = "Otto AI agent — Claude Code (Anthropic)";
     };
 
@@ -70,44 +58,36 @@ let
     # Module skeleton; implementation pending per sub-row research
     # of kiro install path + auth mechanism.
     alexa = {
-      enable = false;
       vendor = "alibaba-qwen";
       binary = "kiro";  # placeholder; verify per sub-row
-      configDir = ".config/kiro";  # placeholder; verify per sub-row
       description = "Alexa AI agent — Kiro (Qwen Coder)";
     };
 
     # Sub-row B-0850.3b target — Grok integration
     riven = {
-      enable = false;
       vendor = "xai-grok";
       binary = "grok";  # placeholder; grok-build CLI per peer-call
-      configDir = ".config/grok";  # placeholder; verify per sub-row
       description = "Riven AI agent — Grok / Grok-Build (xAI)";
     };
 
     # Sub-row B-0850.3c target — Codex/OpenAI integration
     vera = {
-      enable = false;
       vendor = "openai";
       binary = "codex";  # placeholder; verify per sub-row
-      configDir = ".config/codex";  # placeholder; verify per sub-row
       description = "Vera AI agent — Codex (OpenAI)";
     };
 
     # Sub-row B-0850.3d target — Gemini CLI integration
     lior = {
-      enable = false;
       vendor = "google-gemini";
       binary = "gemini";  # placeholder; gemini-cli per peer-call
-      configDir = ".config/gemini";  # placeholder; verify per sub-row
       description = "Lior AI agent — Gemini CLI (Google)";
     };
   };
 
   # Helper to build a systemd unit for a persona. Mirrors the
   # Phase 1 zeta-otto.nix shape (PR #5392) but parameterized over
-  # persona/binary/configDir/vendor.
+  # the static persona registry.
   makeAgentService = personaName: persona: {
     description = "${persona.description} (B-0850 Phase 3; ${persona.vendor})";
 
@@ -155,8 +135,8 @@ let
     };
   };
 
-  # Filter to only enabled personas
-  enabledPersonas = lib.filterAttrs (n: p: p.enable) cfg.personas;
+  # Filter to only enabled personas from the static registry
+  enabledPersonas = lib.filterAttrs (n: p: cfg.enable.${n} or false) personas;
 in
 {
   options.zeta.aiAgents = {
@@ -202,51 +182,67 @@ in
       description = "Seconds systemd waits before restarting after failure.";
     };
 
-    personas = lib.mkOption {
-      type = lib.types.attrsOf (lib.types.submodule {
-        options = {
-          enable = lib.mkEnableOption "this AI persona's systemd service";
-          vendor = lib.mkOption {
-            type = lib.types.str;
-            description = "Vendor name for the persona (anthropic / openai / google-gemini / etc.).";
-          };
-          binary = lib.mkOption {
-            type = lib.types.str;
-            description = "CLI binary name under ~/.bun/bin/ that runs the agent.";
-          };
-          configDir = lib.mkOption {
-            type = lib.types.str;
-            description = "Path under \\$HOME where the persona stores device-code/auth credentials.";
-          };
-          description = lib.mkOption {
-            type = lib.types.str;
-            description = "Human-readable description of the persona + vendor.";
-          };
-        };
-      });
-      default = defaultPersonas;
-      description = ''
-        Per-persona AI agent declarations. Each persona is opt-in via
-        `zeta.aiAgents.personas.<name>.enable = true;`. Operator can
-        override binary/configDir paths per persona via standard
-        NixOS module merge semantics.
-
-        Defaults match the canonical Zeta persona-roster per
-        .claude/rules/agent-roster-reference-card.md:
-          otto    → Claude Code (Anthropic)
-          alexa   → Kiro (Qwen Coder)
-          riven   → Grok / Grok-Build (xAI)
-          vera    → Codex (OpenAI)
-          lior    → Gemini CLI (Google)
-
-        Per-vendor implementations land via B-0850 Phase 3 sub-rows
-        (3a-3h) which add the install + login flow for each vendor
-        to zeta-install.sh.
-      '';
+    # Per-persona enable booleans — opt-in for each AI agent
+    # persona. Persona registry is static (in `let` above); operator
+    # picks which ones to deploy on each node via these options.
+    enable = {
+      otto = lib.mkEnableOption "Otto (Anthropic Claude Code) systemd service";
+      alexa = lib.mkEnableOption "Alexa (Kiro / Qwen Coder) systemd service [B-0850.3a pending implementation]";
+      riven = lib.mkEnableOption "Riven (xAI Grok / Grok-Build) systemd service [B-0850.3b pending implementation]";
+      vera = lib.mkEnableOption "Vera (OpenAI Codex) systemd service [B-0850.3c pending implementation]";
+      lior = lib.mkEnableOption "Lior (Google Gemini CLI) systemd service [B-0850.3d pending implementation]";
     };
   };
 
   config = lib.mkIf (enabledPersonas != { }) {
+    # Pre-evaluation assertions — fail flake evaluation with clear
+    # message if operator enables a persona whose implementation
+    # substrate has NOT yet shipped (per Copilot review on PR #5395:
+    # placeholder binaries would cause restart-looping services at
+    # boot; better to fail at flake-eval time with actionable error).
+    #
+    # Each pending persona's install + login flow lands via the
+    # corresponding B-0850 Phase 3 sub-row. Until that sub-row ships,
+    # the persona's enable boolean is reserved-but-blocked.
+    assertions = [
+      {
+        assertion = !cfg.enable.alexa;
+        message = ''
+          zeta.aiAgents.enable.alexa = true requires B-0850.3a
+          (Alexa/Kiro install + login substrate) which has not shipped.
+          Enabling now would create a zeta-alexa.service that fails
+          ExecStart (binary kiro doesn't exist at ~/.bun/bin/kiro).
+        '';
+      }
+      {
+        assertion = !cfg.enable.riven;
+        message = ''
+          zeta.aiAgents.enable.riven = true requires B-0850.3b
+          (Riven/Grok install + login substrate) which has not shipped.
+          Enabling now would create a zeta-riven.service that fails
+          ExecStart (binary grok doesn't exist at ~/.bun/bin/grok).
+        '';
+      }
+      {
+        assertion = !cfg.enable.vera;
+        message = ''
+          zeta.aiAgents.enable.vera = true requires B-0850.3c
+          (Vera/Codex install + login substrate) which has not shipped.
+          Enabling now would create a zeta-vera.service that fails
+          ExecStart (binary codex doesn't exist at ~/.bun/bin/codex).
+        '';
+      }
+      {
+        assertion = !cfg.enable.lior;
+        message = ''
+          zeta.aiAgents.enable.lior = true requires B-0850.3d
+          (Lior/Gemini install + login substrate) which has not shipped.
+          Enabling now would create a zeta-lior.service that fails
+          ExecStart (binary gemini doesn't exist at ~/.bun/bin/gemini).
+        '';
+      }
+    ];
+
     # Generate one systemd service per enabled persona.
     # Naming: zeta-otto.service, zeta-alexa.service, zeta-riven.service,
     # zeta-vera.service, zeta-lior.service.

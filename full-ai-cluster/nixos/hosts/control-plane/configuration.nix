@@ -39,11 +39,11 @@
   # failure domain ("control plane outside the control plane"
   # architectural pattern). Operator can disable any persona via
   # `systemctl disable zeta-<persona>` per NCI HC-8 revocable consent.
-  zeta.aiAgents.personas.otto.enable = true;
-  # zeta.aiAgents.personas.alexa.enable = true;  # B-0850.3a pending
-  # zeta.aiAgents.personas.lior.enable = true;   # B-0850.3d pending
-  # zeta.aiAgents.personas.vera.enable = true;   # B-0850.3c pending
-  # zeta.aiAgents.personas.riven.enable = true;  # B-0850.3b pending
+  zeta.aiAgents.enable.otto = true;
+  # zeta.aiAgents.enable.alexa = true;  # B-0850.3a pending
+  # zeta.aiAgents.enable.lior = true;   # B-0850.3d pending
+  # zeta.aiAgents.enable.vera = true;   # B-0850.3c pending
+  # zeta.aiAgents.enable.riven = true;  # B-0850.3b pending
 
   # Static IP recommended so worker nodes have a stable serverAddr.
   # Per-site override here:
