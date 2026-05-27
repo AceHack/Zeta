@@ -18,6 +18,14 @@
     # via `gh ssh-key list` during zeta-install.sh Step 6.8. Composes
     # additively with iter-4.2 static maintainer keys.
     ./operator-authorized-keys.nix
+    # B-0850 Phase 1: Otto as systemd service for out-of-band cluster
+    # repair ("control plane outside the control plane" architectural
+    # pattern). Disabled by default at module level; enable per-node
+    # via `zeta.otto.enable = true;` in the node's configuration.nix.
+    # Composes with iter-5.5.0 install-time substrate (PR #5388 + #5389)
+    # which persists claude+gh credentials + pre-clones repo + installs
+    # claude via mise-managed bun.
+    ./zeta-otto.nix
   ];
 
   nix.settings = {
