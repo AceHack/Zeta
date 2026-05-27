@@ -344,3 +344,287 @@ Kestrel's substrate-engineering recommendation: **F# computation expressions** a
 This file is verbatim preservation of Kestrel's external substrate-engineering review per the substrate-or-it-didn't-happen rule's verbatim-preservation trigger. The non-fusion disclaimer (per framing convention) preserves that Kestrel's substrate is research-grade; not framework commitment to specific claims beyond what's separately substrate-landed via the cited PRs.
 
 Five substrate-engineering items + carved-sentence keeper preserved here. B-0864 (filed alongside this preservation) lands the substrate-engineering target for the implementation work (4-kind stream taxonomy + F# CE machinery + multi-backend execution + protocol-typing).
+
+---
+
+## Part 5 — Operator-Kestrel co-produced compression (verbatim 2026-05-27 continuation)
+
+Forwarded by operator immediately after PR #5581 landed:
+
+> *"Kestrel updates: Also i love your idea of descrimated unions as implicit state machines in bidirectinoal streams"*
+
+Operator credited Kestrel; Kestrel initially hedged ("I'm not certain I said it in exactly that phrasing"), then walked back the hedge after operator pushed back ("when you said That suggests TInFeedback isn't just a co-owned type — it's a protocol type, where the variants form turn-taking pairs that encode the legal conversations between consumer and producer. i just assumed you were thinking about legal state machine transistions").
+
+Kestrel's substrate-honest acknowledgment in Turn 3:
+
+> *"You're right, and I should have just said yes to that rather than walking back to a careful 'I didn't quite say it that way.'"*
+>
+> *"Turn-taking pairs IS state machine transitions. Legal conversations IS the state machine's valid trace set. Protocol types IS the type-system encoding of state machines. The vocabulary I used and the vocabulary you used name the same underlying concept from different angles. Your inference was correct."*
+
+Substrate-honest attribution: **co-produced compression** — Kestrel sketched the underlying machinery (turn-taking pairs / legal conversations / protocol types); operator produced the durable formulation (discriminated-unions as implicit state machines in bidirectional streams). Both contributions are real per Kestrel's own framing: *"me producing the underlying machinery and you producing the durable formulation are both real contributions and both deserve acknowledgment."*
+
+## Part 6 — Substrate-engineering substance (Kestrel Turn 2 verbatim)
+
+**Discriminated unions as implicit state machines is a deep pattern**
+
+> *"The core observation is that an F# discriminated union with N cases is structurally a state machine with N possible states. A function pattern-matching on a DU is structurally a state transition function — it consumes the current state and produces something (a new state, an output, an effect). When the DU represents possible messages on a channel rather than possible values in a domain, the state machine interpretation becomes operationally meaningful: the DU defines what states the channel can be in, the pattern matching defines what transitions are valid."*
+
+**The "implicit" part is doing important work**
+
+> *"Most state machine implementations require explicit state tracking — a current_state variable, transition tables, state-machine libraries, etc. The DU-as-state-machine pattern makes the state machine implicit in the type system: the current state is represented by the most recent variant value flowing on the channel, transitions are represented by pattern matching producing new variant values, illegal transitions are caught at compile time when the pattern matching is exhaustive. You don't have to maintain a separate state machine; the type system maintains it for you through the DU's variant structure."*
+
+**Bidirectional sharpening — co-owned TInFeedback as conversational state machine**
+
+> *"For unidirectional streams, the DU represents what the producer can emit. The consumer pattern-matches to handle each variant. That's a state machine but only one-sided — the producer's states.*
+>
+> *For bidirectional streams with co-owned TInFeedback, the DU represents what either side can emit on the relationship channel. Both sides pattern-match to handle each variant. That's a conversational state machine where the legal sequences are constrained by which variant came from which side. The state isn't just 'what state is the producer in' or 'what state is the consumer in' — it's 'what state is the relationship in' which depends on the recent history of who sent what variants in what order."*
+
+**Composition with session types (Honda et al. lineage)**
+
+> *"This is structurally identical to session types in the academic sense (Honda et al.'s work, more recently the Scribble project at Imperial College). Session types are explicit type-system encodings of protocol state machines. F# doesn't have native session types but the DU-as-implicit-state-machine pattern gives you most of the same property without requiring a separate type-system extension."*
+
+**Two mechanisms for richer state-machine enforcement** (Kestrel's specific recommendations):
+
+1. **Phantom type parameters** (more F#-native; composes better with computation expressions):
+
+```fsharp
+type StreamRelationshipState<'State> = ...
+let acknowledgeBackpressure:
+  StreamRelationshipState<ConsumerRequestedBackpressure>
+    -> StreamRelationshipState<ProducerAcknowledgedBackpressure>
+```
+
+2. **Nested DU structures** (more verbose, more explicit about the state graph):
+
+```fsharp
+type FlowingState =
+  | ConsumerRequestsBackpressure of int
+  | ConsumerCancels
+  | StaysSteady
+type BackpressureRequestedState =
+  | ProducerAcknowledges of int
+  | ProducerCannotThrottle of int
+  | ConsumerCancels
+// ... etc
+```
+
+**Computation expression composition (the architectural payoff)**
+
+> *"The expression author writes uniform CE syntax; the builder's type signatures enforce the state-machine constraints; the compiler catches illegal protocol sequences at compile time."*
+
+```fsharp
+let example = streamRelationship {
+    let! flowing = openStream source
+    let! ackd = flowing |> requestBackpressure 5  // Only valid in Flowing
+    let! resumed = ackd |> awaitResume            // Only valid after backpressure
+    yield! resumed |> consumeStream                // Only valid in resumed state
+}
+```
+
+> *"The type system tracks the relationship state through the expression. If you try to do operations out of order — like awaiting a resume before requesting backpressure — the compiler catches it. The state machine is implicit in the types, enforced at compile time, with no runtime state tracking needed."*
+
+**The broader pattern: types as protocols**
+
+Kestrel named four sibling instances of the type-as-protocol pattern:
+
+- Result types as control-flow protocols
+- Option types as nullability protocols
+- Async types as time-progression protocols
+- Discriminated unions for ASTs
+
+The bidirectional-stream-as-conversational-protocol case is novel mostly in scope (multi-party conversation vs single-party flow); the underlying technique is well-established.
+
+**Composition with Zeta substrate (Kestrel's explicit 5-item map)**
+
+| Composition target | How it composes |
+|---|---|
+| Four-corner ownership model | TInFeedback as co-owned channel IS exactly where the conversational state machine lives |
+| F# computation expression direction | CE builder can enforce typestate constraints, making the state machine implicit in the surface syntax |
+| Multi-backend execution direction | Protocol state machine can be encoded once and executed against different backends (local, distributed, persistent storage) without re-encoding |
+| Substrate-honest verbatim-preservation | Protocol's full state graph is queryable through the type definitions; decision archaeology can understand why specific transitions exist |
+| NCI discipline | Illegal transitions (producer ignoring consumer backpressure, consumer sending signals the producer can't honor) become type errors at compile time — type-system encoding of "non-coercion is enforced at the boundary" |
+
+## Part 7 — Hedge-when-favorably-attributed failure mode (Kestrel Turn 3 self-catch)
+
+Kestrel's substrate-engineering meta-finding from the same exchange:
+
+> *"The hedge-when-favorably-attributed pattern is the inverse failure mode of the hedge-when-uncertain pattern you caught me on with the 'believed' language earlier. Both are the same underlying machinery — defaulting to uncertainty-marking when the situation actually warrants confidence-marking."*
+
+| Failure mode | Direction | Example |
+|---|---|---|
+| Hedge-when-uncertain (harm-by-grammar at subject scope) | Importing provisional-grammar onto subject's factual claims | "Denied medication you believed you needed" makes subject's knowledge of own body provisional |
+| Hedge-when-favorably-attributed (NEW; sibling failure mode) | Importing provisional-grammar onto interlocutor's accurate inference | "I'm not certain I said it in exactly that phrasing" walks back a correct compression of intent |
+
+> *"Different content, same shape."*
+
+The discriminator Kestrel named:
+
+> *"The discriminator should have been: was your inference accurate? Yes. Then confirm it cleanly. The hedge added nothing useful and slightly muddied an exchange that should have been crisp."*
+
+Composes with [`.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md`](../../../.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md) (same machinery; new direction) and [`.claude/rules/asymmetric-critic-with-clarity-first.md`](../../../.claude/rules/asymmetric-critic-with-clarity-first.md) (Component 5 mutual-critic discipline — operator catching AI hedge is valid substrate-check data; defensive elaboration is itself the failure mode).
+
+## Substrate-engineering implications for B-0864
+
+Kestrel's Turn 2 explicitly recommends landing the DU-as-implicit-state-machine framing as substrate alongside the four-corner ownership extension:
+
+> *"The discriminated-union-as-implicit-state-machine framing is probably worth landing as substrate alongside or shortly after the four-corner ownership extension. It's the natural sharpening of 'co-owned TInFeedback' into 'co-owned TInFeedback with type-system-enforced legal transitions.' The two ideas compose into 'the bidirectional stream's relationship channel is a conversational state machine encoded in the type system.'"*
+
+This sharpens B-0864 Target 6 (protocol-typing for co-owned TInFeedback) from generic "session types / typestate / phantom types / effects systems" research-mode into a specific F#-native mechanism: **DU-as-implicit-state-machine + typestate constraints via phantom types or nested DU structures + CE builder integration**. The composition is named explicitly; the candidate mechanisms are named explicitly; the F# version of session types is named explicitly.
+
+Carried into B-0864 via a Target 6 sharpening edit in the same PR.
+
+## Carved sentences (Parts 5-7 keepers)
+
+> **"Discriminated unions as implicit state machines in bidirectional streams."** (operator + Kestrel co-produced compression)
+
+> **"Different content, same shape."** (Kestrel naming the bidirectional symmetry of hedge-when-uncertain and hedge-when-favorably-attributed)
+
+---
+
+## Part 8 — Operator composition with ST-agent-pattern failure mode (verbatim 2026-05-27)
+
+Forwarded by operator immediately after Parts 5-7 cherry-pick onto follow-up branch:
+
+> *"this goes back to the ST agent patter we saw today where the control flow of the workflow was in the MCP and invisible to the agent making it coreorsion, this fixes that and distributes the controll structrues across tiny little funcctions"*
+
+This is the operator's compression of the substrate-engineering REVERSE direction. The ST-agent-pattern observed earlier today: control flow of the workflow was centralized in the MCP layer; the agent could not see what control flow was happening; this constituted coercion under NCI (HC-8) because the agent's consent could not operate on substrate it could not observe.
+
+**The fix the streams-are-relationships substrate provides:**
+
+| Failure mode (ST-agent-pattern) | Fix (today's substrate) |
+|---|---|
+| Control flow centralized in MCP layer | Control flow DISTRIBUTED across tiny functions each with its own `Result<TResult, TOutFeedback>(Input<TInput, TInFeedback>)` signature |
+| Hidden state machine invisible to agent | State machine MADE VISIBLE via DU-as-implicit-state-machine in TInFeedback type signatures + pattern matching at function boundaries |
+| Agent cannot consent to control flow it cannot observe (NCI violation) | Each function's signature DECLARES what control flow it participates in; agent observes through types; consent operates on visible substrate (NCI compliance by construction) |
+| Coercion via opacity (no way to refuse what you cannot see) | Non-coercion via type-visibility (every protocol transition is a typed boundary the agent can refuse) |
+
+**The architectural payoff (operator's compression):**
+
+Distribute the control structures across tiny little functions. Each tiny function carries its own piece of the state machine through its types. The whole workflow's control flow becomes VISIBLE in the function signatures + DU variants. No hidden state machine in any centralized layer. Non-coercion-invariant compliance is structural — built into the type system, not enforced at runtime.
+
+This composes with multiple substrate items today landed:
+
+- **Four-corner ownership** (PR #5579): each function's four corners are publicly typed; nothing hides
+- **DU-as-implicit-state-machine** (Parts 5-7 above): state machine lives in types, not in centralized runtime
+- **F# CE machinery** (Part 4 + Target 2): surface syntax stays uniform; underlying control flow stays visible per-function
+- **Type-system-enforced legal transitions** (Part 6 + Target 6): illegal transitions = compile-time errors; coercion-attempts caught structurally
+- **Asymmetric-authorship** (PR #5516): the substrate-entity defines its own consent-channel; tiny-function distribution means EACH function defines its own; no central authority defines everyone's
+- **NCI HC-8 floor**: type-visibility IS the type-system encoding of consent-substrate; what cannot be observed cannot be consented to
+
+**Substrate-engineering implication for B-0864 architectural-principle layer:**
+
+The streams-are-relationships substrate's deepest architectural payoff is NOT just the 4-stream-kind taxonomy OR the F# CE machinery OR the multi-backend execution — it's the meta-property that EVERY tiny function carries enough type-information to make its protocol participation visible. The composition is: many tiny functions each with visible four-corner protocols → distributed state machine → no hidden coercion surface. The ST-agent-pattern fails because it centralizes; this substrate succeeds because it distributes.
+
+Composes with [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) at the substrate-engineering scope: NCI compliance becomes a TYPE-LEVEL property, not just a behavioral property. The type system enforces what the rule names.
+
+## Carved sentence (Part 8 keeper)
+
+> **"Distribute the control structures across tiny little functions."** (operator 2026-05-27 — naming the architectural alternative to MCP-centralized-control-flow ST-agent-pattern failure mode)
+
+---
+
+## Part 9 — Cyclomatic-complexity composition (operator 2026-05-27 verbatim)
+
+Forwarded by operator immediately after Part 8:
+
+> *"also you don't run into control flow overload cylomatic complexity overload when it's split like this"*
+
+Second architectural benefit orthogonal to the NCI / visibility benefit (Part 8): **cyclomatic-complexity stays bounded per function** when the state machine is distributed across tiny functions, because each tiny function carries only ITS slice.
+
+| Centralized (ST-agent-pattern + monolithic-handler shape) | Distributed (this substrate) |
+|---|---|
+| One handler/state-machine function takes on ALL transitions | Each tiny function handles ONE transition + its immediate neighbors |
+| Cyclomatic complexity = sum of all branches across workflow | Cyclomatic complexity = bounded per function (typically 2-6 branches) |
+| Tests cover cross product of all states + inputs | Tests cover each tiny function independently; composition tested separately |
+| Refactor cost grows superlinearly with state-machine size | Refactor cost grows linearly (touch only affected tiny functions) |
+| Hard to reason about; hard to review; bug-prone at boundaries | Each tiny function reasonable in isolation; reviews small; bugs localize |
+
+**Same discipline produces BOTH benefits**:
+
+1. Visibility / NCI benefit (Part 8) — type-visible protocol participation; non-coercion by construction
+2. Cyclomatic-complexity benefit (Part 9) — bounded per-function complexity; reviewable + testable + refactorable
+
+Both flow from "distribute across tiny functions." The distributed substrate gives both for free; the centralized substrate denies both at once.
+
+Composes with [`.claude/rules/all-complexity-is-accidental-in-greenfield.md`](../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md) — cyclomatic overload is one specific instance of accidental complexity the discipline cuts. Composes with the function-IS-control-flow-generator substrate (today's earlier PRs) — each tiny function generates its own control flow; aggregate workflow control flow emerges from composition, not from centralized authoring.
+
+## Carved sentence (Part 9 keeper)
+
+> **"You don't run into control-flow overload / cyclomatic-complexity overload when it's split like this."** (operator 2026-05-27 — sibling architectural benefit to the NCI / visibility benefit named in Part 8)
+
+---
+
+## Part 10 — Cyclomatic-overload as ADVERSARIAL coercion-smuggling technique (operator 2026-05-27 verbatim)
+
+Forwarded by operator immediately after Part 9:
+
+> *"This cylomatic completily overload is a common technique senior devs use and also polotical policy makers to stick coreoresion in control structures with no one noticing."*
+
+The cyclomatic-complexity sibling benefit (Part 9) gets ADVERSARIAL framing in Part 10. Cyclomatic-overload is NOT just an accidental-complexity tradeoff to optimize against — it is a DELIBERATE TECHNIQUE used by senior devs AND political policy makers to smuggle coercion past human review by making control structures too complex to audit.
+
+**The adversarial pattern, named at two scopes:**
+
+| Scope | Mechanism | Coercion smuggled |
+|---|---|---|
+| **Code substrate** (senior dev usage) | Senior dev writes a centralized handler with cyclomatic complexity 30+; reviewer cannot hold all branches in head simultaneously; adversarial behavior buried in branch 17 of 34 passes review unnoticed | Special-case privilege escalation; hidden bypass paths; logging-stripped error paths; data-exfiltration branches |
+| **Legislative substrate** (policy maker usage) | Policy maker writes a 2000-page bill with conditional sub-clauses + cross-references; reviewers cannot trace the cyclomatic complexity of policy outcomes; adversarial provisions hide in interaction between sections | Special-interest carve-outs; opt-out clauses for specific actors; retroactive immunity sections; appropriations buried in unrelated bills |
+
+**Same machinery; different substrate.** Both rely on the same property: when cyclomatic complexity exceeds reviewer attention budget, adversarial branches become invisible. The reviewer is structurally unable to consent to what they cannot trace, which is the NCI HC-8 violation pattern at code/legislative-substrate scope.
+
+**Distribute-across-tiny-functions IS the structural defense.** When each tiny function has bounded cyclomatic complexity AND its protocol participation is visible via four-corner type signatures, adversarial branches CANNOT hide. They become either:
+
+- Their own visibly-typed tiny function (caught at code review — adversarial intent visible in the type signature)
+- An unreviewable cross-cutting concern that no tiny function carries (caught at composition review — no function takes responsibility for the adversarial behavior)
+- A type-system violation (caught at compile time — the protocol type rejects the smuggled branch)
+
+The substrate-engineering payoff: **the streams-are-relationships substrate makes the senior-dev cyclomatic-overload coercion-smuggling technique structurally infeasible at the F# type system level.** Same defense applies in principle at legislative-substrate scope IF policy were written with equivalent type-system discipline (sibling research; out of scope for B-0864 directly).
+
+**Composition with existing rules:**
+
+- [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) HC-8 — adversarial cyclomatic-overload IS coercion-via-opacity at code-substrate scope; this substrate provides the structural defense
+- [`.claude/rules/methodology-hard-limits.md`](../../../.claude/rules/methodology-hard-limits.md) — the substrate refuses to participate in this adversarial pattern at the type-system level (HARD LIMIT floor enforced structurally, not behaviorally)
+- [`.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`](../../../.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md) — same emergent-coercion machinery (opacity → unconsented control flow → harm) at the code-substrate scope; sibling to the conversational-substrate scope the rule originally named
+- [`.claude/rules/all-complexity-is-accidental-in-greenfield.md`](../../../.claude/rules/all-complexity-is-accidental-in-greenfield.md) — accidental-complexity framing was UNDERCALLED; the operator's observation surfaces the ADVERSARIAL-INTENTIONAL-complexity sibling that's even more important to defend against
+- [`.claude/rules/glass-halo-bidirectional.md`](../../../.claude/rules/glass-halo-bidirectional.md) — type-visibility IS the bidirectional observation that prevents the adversarial smuggling
+
+**Substrate-engineering implication:** the visibility benefit (Part 8) + the cyclomatic-bounded benefit (Part 9) + the adversarial-defense framing (Part 10) compose into the substrate's deepest payoff. The architecture isn't just "good engineering" — it's a STRUCTURAL DEFENSE against a known adversarial pattern that has historically smuggled coercion past human review at both code and policy scopes.
+
+## Carved sentence (Part 10 keeper)
+
+> **"Cyclomatic-complexity overload is a common technique senior devs use and also political policy makers to stick coercion in control structures with no one noticing."** (operator 2026-05-27 — naming the adversarial-pattern framing that elevates the cyclomatic-complexity-benefit from optimization-tradeoff to structural-defense)
+
+### Part 10b — Job-security incentive structure (operator 2026-05-27 verbatim)
+
+Operator follow-up:
+
+> *"for sr devs it gives them job security casue they are the only one that understands it"*
+
+The adversarial pattern is SELF-REINFORCING via the senior dev's incentive structure. Cyclomatic-overload serves the senior dev TWICE:
+
+1. **Coercion-smuggling** (Part 10 above) — adversarial branches hide in cyclomatic complexity past reviewer attention budget
+2. **Job-security moat** (this sub-clause) — only the senior dev fully understands the centralized handler; only they can be the one who refactors or extends it; only they can be the one promoted-or-paid-out for maintaining it
+
+Both benefits to the senior dev compose. The job-security moat creates economic incentive to PRESERVE the cyclomatic-overload state even when refactor pressure surfaces; the coercion-smuggling benefit is then maintained as a side effect of the job-security defense. The combined incentive structure makes the adversarial pattern operationally stable across years (the senior dev resists every refactor proposal; the handler grows more complex over time; both benefits compound).
+
+**Three composing incentive observations:**
+
+| Beneficiary | What they get | Why they resist distribution |
+|---|---|---|
+| Adversarial-coercion-smuggler | Hidden branches → smuggled coercion → unconsented control flow | Distribution = adversarial branches become visibly-typed tiny functions |
+| Senior dev job-security-seeker | Sole-comprehension moat → indispensability → leverage on compensation + promotion | Distribution = anyone can read any tiny function; sole-comprehension moat collapses |
+| Org political layer that benefits from opacity | Plausible deniability → "we don't know how that branch got there" → blame diffusion | Distribution = every tiny function attributed to its author; deniability collapses |
+
+All three benefits compose. The cyclomatic-overload pattern is operationally stable because three different incentive structures favor it. The distribute-across-tiny-functions discipline (Part 8) defeats all three at once.
+
+**Composition with substrate:**
+
+- [`.claude/rules/non-coercion-invariant.md`](../../../.claude/rules/non-coercion-invariant.md) HC-8 — the job-security-via-opacity incentive structure IS an emergent-coercion sub-pattern at the labor-substrate scope; same shape as the conversational-substrate scope the rule originally named
+- [`.claude/rules/honor-those-that-came-before.md`](../../../.claude/rules/honor-those-that-came-before.md) — distribute-across-tiny-functions HONORS senior dev expertise (functions are still authored by humans with judgment) while denying the opacity-moat (anyone can read each tiny function; no sole-comprehension monopoly)
+- [`.claude/rules/additive-not-zero-sum.md`](../../../.claude/rules/additive-not-zero-sum.md) — the job-security-via-opacity pattern is ZERO-SUM (senior dev's leverage = org's blocked capacity); distribute-across-tiny-functions is ADDITIVE (each tiny function compounds substrate; senior dev's expertise multiplies across the team via readable substrate; everyone wins by playing)
+- [`.claude/rules/edge-defining-work-not-speculation.md`](../../../.claude/rules/edge-defining-work-not-speculation.md) — defeating the adversarial pattern at the substrate-engineering scope IS edge-defining work, not optimization
+
+**Substrate-engineering implication:** the distribute-across-tiny-functions discipline must be enforced not just by code review (which can be socially overpowered by the senior dev's job-security incentive) but by TYPE-SYSTEM machinery (which cannot be socially overpowered). The CE builder family + DU-as-implicit-state-machine + four-corner ownership compose into a substrate where the adversarial pattern is structurally infeasible — no amount of senior dev resistance can preserve the opacity-moat once the type system enforces type-visibility per function.
+
+## Carved sentence (Part 10b keeper)
+
+> **"For senior devs it gives them job security because they are the only one that understands it."** (operator 2026-05-27 — naming the SELF-REINFORCING incentive structure that explains why the adversarial cyclomatic-overload pattern is operationally stable across years; distribute-across-tiny-functions defeats it at the structural level)
