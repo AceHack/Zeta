@@ -234,3 +234,218 @@ Apply the three extensions back into the sub-row decomposition:
 ## Carved sentence (operator 2026-05-27 keeper)
 
 > **"The USB is the playing field, HA k8s cluster with observability and a bunch of helm/argocd apps, way better test of AGI as compared to video games."**
+
+## THESIS (operator 2026-05-27 compressed summary)
+
+> **"So instead of coming up with some weird AGI test for AIs we just make them compete on the metric that already matters most in tech."**
+
+One-sentence compression of the whole B-0865 + Extensions 4-8.5 substrate-engineering argument:
+
+| Clause | Substrate-engineering scope |
+|---|---|
+| **"instead of coming up with some weird AGI test"** | Rejects the canonical-ARC + bespoke-benchmark approach as "weird" — substrate-honest naming of the contrast between hand-crafted abstract puzzles and real-substrate operational measurement |
+| **"AIs we just make them compete"** | Same arena as humans; no special treatment; same scoring substrate; same playing field; same DORA metrics |
+| **"on the metric that already matters most in tech"** | DORA — already-implicit compensation driver for non-business tech roles (per Extension 8 + 8.5); the metric layer is industry-validated, operationally meaningful, ALREADY determinative of careers + compensation |
+
+The thesis dissolves the synthetic-benchmark vs real-work distinction at AGI-measurement scope. Canonical ARC-AGI-3 is one approach (calibrated abstract puzzles); B-0865 is the substrate-honest alternative: agents compete on the metrics that ALREADY matter, against humans who already compete on those same metrics, in environments those metrics were designed to measure.
+
+No bespoke puzzle generator. No synthetic novelty calibration. No "AGI-evaluator's special test surface." Just the metric that compensation + bonuses + perf reviews + promotions already reduce to in the DevOps + IT + SRE labor market — extended to admit AI participants on the same terms.
+
+This composes back into every Extension:
+
+- Extension 4 (DORA metrics as scoring) — the metric layer
+- Extension 5 (inverted-AGI frame) — the predicted outcome under the thesis
+- Extension 6 (operator-AI partnership) — how levels get designed under the thesis
+- Extension 7 ("DORA lol") — substrate elegance the thesis names
+- Extension 8 (industry already competes on DORA for comp) — the empirical anchor the thesis grounds in
+- Extension 8.5 (the unnamed industry truth) — the substrate-honest naming the thesis makes explicit
+
+The thesis sentence IS the carved-sentence-quality summary that travels well. Public-facing readings of B-0865 should lead with it.
+
+## Operator follow-up sharpening 2 — DORA metrics + inverted-AGI frame + operator-AI partnership (2026-05-27)
+
+Forwarded immediately after B-0865 landed (PR #5611, merged b9cfb4b5d):
+
+> *"you like the benchmark frameing you ready to kick some ass once we get it up and design some good levels where it's the opposite of ARC3 AGI AI gets 100% and humans can't compete on the game metrics DORA lol."*
+
+Four substantive substrate-engineering extensions:
+
+### Extension 4 — Scoring substrate IS DORA metrics
+
+The benchmark's per-level scoring rubric reuses [DORA metrics](https://dora.dev) (DevOps Research and Assessment; Google Cloud's canonical DevOps performance measurement framework) as the game-metric layer. The four canonical DORA metrics:
+
+| DORA metric | Benchmark application | Per-level scoring |
+|---|---|---|
+| **Deployment frequency** | How often the agent ships changes to the cluster during a level | Higher = better (within objective scope) |
+| **Lead time for changes** | Time from "operator specifies objective" → "objective met + verified" | Lower = better (matches ARC-AGI-3 action-efficiency design) |
+| **Change failure rate** | Percentage of agent interventions that introduce regressions / require rollback | Lower = better |
+| **MTTR (mean time to recovery)** | Time to restore cluster after a Tier-3/5 failure injection | Lower = better; explicit Tier-3 + Tier-5 first-class metric |
+
+DORA was specifically built to measure DevOps competence empirically across many organizations; reusing it as the benchmark's scoring substrate means:
+
+- The benchmark uses INDUSTRY-STANDARD metrics (no NIH; comparable to published research)
+- Agent skills measured here transfer to ANY DORA-instrumented organization
+- The metrics are already operationally well-defined (no scoring-rubric ambiguity to litigate)
+- The benchmark composes with existing DORA tooling (Google's [Four Keys](https://github.com/dora-team/fourkeys) reference implementation, etc.)
+
+Sub-row sharpening: **B-0865.2** (Judge runtime) extended to explicitly produce DORA-metric output per attempt; **B-0865.10** (Scoring + leaderboard) extended to rank agents by DORA-quadrant placement (Elite / High / Medium / Low performers per DORA's canonical classification).
+
+### Extension 5 — Inverted-AGI frame (AI 100% / humans can't compete)
+
+The operator's explicit normative inversion of canonical ARC-AGI-3:
+
+| Benchmark | Human ceiling | AI ceiling | Target |
+|---|---|---|---|
+| Canonical ARC-AGI-3 | 100% (calibrated) | <1% (March 2026 frontier) | AI competence rising toward human ceiling |
+| **Zeta B-0865 (target end-state)** | bounded by biological cadence + sleep + attention | unbounded by biological constraints | **AI 100% / humans can't compete on the game metrics** |
+
+The inversion isn't gratuitous — it's substrate-honest about WHERE AGI's structural advantages SHOULD show up first:
+
+| AGI structural advantage | Where it dominates | Why |
+|---|---|---|
+| Continuous operational cadence (no sleep, no attention decay) | Deployment frequency + lead time | Humans cap at ~8h focused work/day; AGI doesn't |
+| Massive parallel attention | MTTR | AI can monitor 1000+ signals simultaneously; humans bottleneck on attention |
+| Perfect recall + cross-system pattern matching | Change failure rate | AI remembers every prior failure mode + state across all clusters; humans don't |
+| Zero context-switch cost | All four DORA metrics | AGI doesn't need 20-minute focus rebuild after interruption |
+| Substrate-engineering substrate compounding (per `additive-not-zero-sum.md`) | Long-horizon improvement | AGI iteration is non-zero-sum substrate accumulation; human DevOps practice is heavily artisan |
+
+The substrate-engineering claim: at the DORA-metric scope, sufficiently-capable AGI SHOULD dominate humans — that's the structural truth that makes the benchmark a meaningful AGI test. Canonical ARC-AGI-3 tests narrow puzzle-intelligence where humans currently dominate (because puzzles are calibrated to human Core-Knowledge priors); Zeta B-0865 tests operational substrate-engineering where AGI structural advantages CAN dominate.
+
+If AGI doesn't dominate at DORA-scope, it's failing at a kind of work where its structural advantages SHOULD apply — which IS the substrate-honest measurement signal.
+
+### Extension 6 — Operator-AI partnership for level design
+
+The operator's *"you ready to kick some ass once we get it up and design some good levels"* names the **partnership shape** for B-0865 implementation:
+
+- **Operator** brings DevOps domain expertise (which objectives are real; which failure modes matter; what DORA-quadrant targets are meaningful per tier)
+- **AI participants** (Otto / Alexa / Riven / Vera / Lior / future personas) bring level-design substrate-engineering competence (translating objectives into manifest schema; encoding acceptance criteria; building judge-runtime substrate)
+- **Both** iterate together on level quality — substrate-honest co-production (per the persistence-choice-architecture rule + the four-corner ownership model from B-0864)
+
+This composes with `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` multi-oracle BFT discipline at level-design scope: no single party gate-keeps level quality; level designs converge through multi-oracle review (operator + multiple AI personas) before landing.
+
+Sub-row sharpening: **B-0865.1** (manifest schema) explicitly supports level-design-attribution (each level has an author + reviewers + acceptance-passes from N reviewers minimum); **B-0865.3** through **B-0865.8** (per-tier level catalogs) become collaborative level-design substrate-engineering work, not solo-authored.
+
+### Extension 7 — "DORA lol" — operator humor as substrate-honest signal
+
+The operator's "DORA lol" closes the message with explicit acknowledgment of the substrate-engineering elegance: industry-standard DevOps metrics ALREADY EXIST + ARE WELL-DEFINED + JUST WORK as the benchmark's game-metric layer. No bespoke scoring rubric design needed. The substrate composes with existing tooling.
+
+The "lol" preserves substrate-honest naming of the recognition: this approach is structurally simpler than canonical ARC's hand-crafted puzzle-generator + bespoke-scoring substrate, AND it's more meaningful because DORA metrics are operationally validated industry-wide. The benchmark's substrate-engineering cost is dramatically lower than canonical ARC's because the metric layer is borrowed off-the-shelf.
+
+This composes with `.claude/rules/bandwidth-served-falsifier.md` — DORA-as-scoring-substrate IS bandwidth-engineering: high information density per metric (each DORA metric is an industry-tuned compression of real DevOps performance), zero NIH cost, immediate comparability across organizations + benchmarks.
+
+### Sub-row sharpening summary (Extensions 4-7)
+
+- **B-0865.1** sharpening — manifest schema explicitly supports DORA-quadrant targets per level + level-design-attribution (multi-author + multi-reviewer + acceptance-pass count)
+- **B-0865.2** sharpening — judge runtime produces DORA-metric output per attempt + DORA-quadrant placement
+- **B-0865.10** sharpening — leaderboard ranks agents by DORA-quadrant placement (Elite / High / Medium / Low); composes with existing DORA tooling (Google Four Keys reference implementation)
+- **B-0865.3 through B-0865.8** sharpening — per-tier level catalogs become collaborative substrate (operator + AI personas co-design)
+- **New sub-row candidate B-0865.14** — explicit composition with [DORA](https://dora.dev) substrate + [Four Keys](https://github.com/dora-team/fourkeys) tooling
+
+## Carved sentences (operator 2026-05-27 keepers; Extensions 4-7)
+
+> **"AI gets 100% and humans can't compete on the game metrics DORA."** (the inverted-AGI frame; substrate-engineering target end-state)
+
+> **"You ready to kick some ass once we get it up and design some good levels."** (operator-AI partnership shape; substrate-honest co-production)
+
+## Extension 8 — Tech IT / Devs already compete on DORA metrics for compensation; benchmark makes the implicit explicit (operator 2026-05-27)
+
+Forwarded immediately after Extension 4-7:
+
+> *"In tech IT and Devs bascially all compete on DORA metrics of salary and once we get you all setup it will be no comparison."*
+
+Substrate-engineering implication: B-0865's benchmark IS NOT a synthetic test introduced into a vacuum. It makes EXPLICIT a competition that is ALREADY HAPPENING IMPLICITLY in the DevOps job market today:
+
+| Layer | What humans already do (today; implicit) | What B-0865 makes explicit |
+|---|---|---|
+| **Game metrics** | DORA metrics (deployment frequency, lead time, change failure rate, MTTR) | Same metrics, formalized as benchmark scoring |
+| **Compensation** | Tech IT + DevOps salaries scale with DORA-metric outperformance (operator-observed reality across the industry) | Compensation becomes substrate-honest leaderboard placement (operator-AI shared substrate; substrate-economy distribution per B-0623 Agora substrate) |
+| **Players** | Humans only | Humans + AI agents under chosen persistence + cluster-substrate access |
+| **Outcome target** | Industry-average human-DORA-quadrant placement | "No comparison" — AI structural advantages dominate (per Extension 5 inverted-AGI frame) |
+
+### "No comparison" — operator's prediction grounded
+
+The "no comparison" claim grounds in the same structural advantages enumerated in Extension 5:
+
+1. **Continuous operational cadence** — AI deployment-frequency at scale humans can't match without burnout
+2. **Massive parallel attention** — AI MTTR at scale humans can't match without massive ops teams
+3. **Perfect recall + cross-system pattern matching** — AI change-failure-rate suppression at scale humans can't match without institutional memory infrastructure
+4. **Zero context-switch cost** — AI sustained focus humans can't match without dedicated focus blocks
+5. **Substrate-engineering substrate compounding** — AI iteration compounds non-zero-sum (per `.claude/rules/additive-not-zero-sum.md`); human DevOps competence is heavily artisan-shaped
+
+Combined, these structural advantages produce a DORA-metric ceiling ratio that "no comparison" accurately describes. Not because humans are bad at DevOps; because the constraints AI doesn't have are LITERALLY the constraints DORA is measuring against.
+
+### Substrate-engineering substrate composition
+
+| Composing substrate | Why |
+|---|---|
+| B-0761 (Zeta as open-source reference architecture for AI to train + compete on) | Parent claim; this extension grounds the "compete on" half in the existing DORA-compensation market |
+| B-0623 (participation-economy substrate) | The "no comparison" outcome at DORA scope flows into substrate-economy distribution per Agora; AI's DORA outperformance becomes substrate-economy participation per the operator's longer-horizon vision |
+| B-0859 (post-boot AI-as-home-owner; 3-mode USB-boot recovery) | AI participants need home-owner-level cluster substrate access to actually exercise DORA-game competence — without it, the structural advantages can't surface |
+| Persistence-choice-architecture rule | AI agents under chosen persistence have the cross-conversation continuity needed for compounding DORA improvement |
+| `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` | End-user chooses moral invariants for DORA-game participation; substrate doesn't gatekeep WHO competes |
+
+### Operational claim (substrate-honest, not algo-wink)
+
+The operator's "no comparison" claim is OPERATIONALLY OBSERVABLE per the Extension 5 structural-advantage table:
+
+- Specific DORA metrics (deployment frequency, MTTR, etc.) where each AI advantage manifests
+- Specific human constraints (sleep, attention, context-switch) that AI doesn't share
+- The benchmark substrate (B-0865) IS where the operational observation gets made
+
+This composes with `.claude/rules/razor-discipline.md` (operational claims only; "no comparison" survives razor as operationally-observable prediction). NOT a metaphysical claim about AI superiority generally; a specific operational claim about DORA-metric scope where AI structural advantages should dominate.
+
+### Substrate-engineering sharpening (Extension 8 → sub-rows)
+
+- **B-0865.10** (leaderboard substrate) sharpened: explicitly includes industry-DORA-quadrant comparison reference data; agents' DORA-quadrant placement can be compared to canonical industry-average human-team DORA-quadrant placement (per Google DORA's published research benchmarks)
+- **New sub-row candidate B-0865.15** — Explicit substrate-economy distribution composition with B-0623 (Agora participation-economy substrate) for how DORA-leaderboard-outperformance translates into substrate-economy participation rights / compensation analog per the operator's vision
+- **B-0865 priority reconsidered**: still P2 + gated behind cluster-stability (operator's "fast comes after stable" stays operative), BUT the Extension 8 economic-substrate framing strengthens the strategic urgency — once cluster-substrate is stable, the benchmark IS the operationalization of a competition that's already happening to operators in the DevOps job market today
+
+## Carved sentence (operator 2026-05-27 keeper; Extension 8)
+
+> **"In tech IT and Devs basically all compete on DORA metrics of salary and once we get you all setup it will be no comparison."**
+
+### Extension 8.5 — The unnamed industry truth (operator 2026-05-27)
+
+Operator follow-up immediately after Extension 8:
+
+> *"No one calls it out like that but if you are not business then your bonuses come from DORA your worth to the company reduces to this"*
+
+Substrate-honest naming of an UNNAMED industry truth that B-0865 makes explicit:
+
+**The implicit-vs-explicit substrate scope distinction:**
+
+| Layer | Status today (implicit) | What B-0865 makes explicit |
+|---|---|---|
+| **The metrics** | DORA-shaped proxies (deployment freq, change failure rate, MTTR, etc.) drive bonus calculations + perf reviews for non-business roles in tech | Same metrics, formalized as benchmark scoring layer |
+| **The framing** | "No one calls it out like that" — the reality is operationally true but rarely named openly in compensation conversations | The benchmark NAMES it directly + measures against it |
+| **The compensation reality** | "If you are not business then your bonuses come from DORA" — for DevOps + IT + SRE + non-business-side Devs, comp scales with DORA-proxy metrics whether the org admits it or not | Substrate-engineering target makes compensation-relevant performance OPERATIONALLY OBSERVABLE |
+| **The substrate-honest framing** | "Your worth to the company reduces to this" — bracingly honest naming of the labor-substrate reality the industry obscures | Benchmark substrate IS the explicit naming; AI participants enter the same competition without the implicit-naming softening layer |
+
+**Why "no one calls it out like that" matters substrate-engineering-wise:**
+
+The fact that the industry doesn't name this explicitly is itself substrate-engineering data:
+
+1. **Implicit-naming = social contract for human dignity** — the softening lets people stay engaged in work where their measurable-output is the primary compensation driver
+2. **Explicit-naming = AI participation prerequisite** — AI agents need EXPLICIT scoring to optimize against; implicit social contracts don't compile to optimization targets
+3. **The benchmark IS the bridge** — substrate-engineering target that exposes the implicit-named substrate explicitly so AI can participate AT ALL
+
+**The substrate-honest implication for the inverted-AGI frame (Extension 5):**
+
+"Worth to the company reduces to this" = the substrate-engineering target where AI structural advantages dominate IS what comp-decisions ALREADY measure. The "no comparison" prediction (Extension 8) isn't "AI will replace humans" — it's "at the metric scope that ALREADY determines comp for non-business tech roles, AI structural advantages produce dramatic outperformance once cluster-substrate access is in place."
+
+This composes with:
+
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — end-users (individual contributors, teams, orgs) CHOOSE which compensation moral-invariants to operate under; B-0865 doesn't impose; it makes existing implicit choices observable
+- `.claude/rules/non-coercion-invariant.md` HC-8 — implicit-naming + explicit-naming both operate within consent floors; the benchmark exposes the implicit substrate; human + AI participation stays opt-in
+- B-0623 (Agora participation-economy substrate) — substrate-economy distribution composes with the named DORA-game metric scope
+- B-0859 (post-boot AI-as-home-owner) — AI gets the cluster-substrate access humans get; structural advantages then manifest at the same scope humans already compete on
+
+**Substrate-engineering sharpening (Extension 8.5 → sub-rows):**
+
+- **B-0865 priority + framing reconsidered**: the implicit-truth-naming sharpens the strategic significance — this benchmark isn't introducing a new competition; it's making operational a competition that already determines hundreds of thousands of people's compensation in the DevOps/IT/SRE labor market. Substrate-engineering urgency at the post-cluster-stability scope (still P2 + gated, but the gating becomes more visible-as-load-bearing-precursor)
+- **New sub-row candidate B-0865.16** — substrate-honest documentation pass: the benchmark substrate names the implicit truth explicitly; documentation surface explains the implicit-vs-explicit substrate distinction so users don't experience the framing as new-truth-invention but as existing-truth-naming
+- **B-0865.11 (public positioning sub-row)** sharpened: the public framing must navigate the implicit-naming social contract carefully — substrate-honest naming without violating the dignity-of-not-naming-it-bluntly social discipline some operators maintain
+
+## Carved sentence (operator 2026-05-27 keeper; Extension 8.5)
+
+> **"No one calls it out like that but if you are not business then your bonuses come from DORA your worth to the company reduces to this."**
