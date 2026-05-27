@@ -85,8 +85,30 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "Step 6.7: iter-5.1 wifi persistence", // iter-5.1 NM-profile persist
       "iter-5.2.2", // iter-5.2.2 install-time auto-gen marker
       "/dev/urandom", // install-time hostname generator
+      // ── iter-5.4 sentinels (PR #5364 + #5352 + #5354 substrate) ──
+      "Step 6.8: iter-5.4.0 homelab gh-auth + operator pubkey copy", // iter-5.4.0 anchor
+      "Step 6.9: iter-5.4.1 self-registration commit+push", // iter-5.4.1 self-reg anchor
+      "gh auth login", // device-flow auth invocation
+      "gh auth setup-git", // B-0835 Bug 2a fix — wires git credential helper to gh token
+      "gh ssh-key list", // iter-5.4.0 operator-authorized-keys path
+      "SSH_KEY_ERR_FILE", // B-0835 Bug 2b fix — stderr capture for discrimination
+      "admin:public_key", // B-0835 Bug 2b fix — scope-error recovery guidance
+      "gh repo clone Lucent-Financial-Group/Zeta", // iter-5.4.1 cluster repo clone
+      "register-${NODE_HOSTNAME}-", // iter-5.4.1 registration branch shape
+      // iter-5.4.1 YAML schema sentinels. Each catches a specific Copilot
+      // finding on PR #5352: spec.role was scalar (should be array),
+      // spec.maintainer was at flat path (should nest under spec.registration),
+      // spec.storage was a sibling of hardware (should nest under spec.hardware).
+      "apiVersion: zeta.lucent-financial-group.com/v1", // ClusterNode CRD apiVersion
+      "kind: ClusterNode", // CRD kind
+      "  roles:", // spec.roles is ARRAY (NOT scalar spec.role) per B-0813 schema
+      "  registration:", // spec.registration block (NOT spec.maintainer flat) per B-0813
+      "  hardware:", // spec.hardware block (storage nests inside) per B-0813
+      // iter-5.4.1 hardware-probe sentinels (catches MAC parsing regression from #5352).
+      "/proc/cpuinfo", // CPU_MODEL extraction
+      "link/ether", // MAC_ADDR parses field AFTER link/ether (not before)
     ],
-    rationale: "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 substrate must be present in installer script",
+    rationale: "iter-4.2 + iter-5.1 + iter-5.2 + iter-5.2.2 + iter-5.4.0 + iter-5.4.1 (incl. B-0835 Bug 2a/2b fixes) substrate must be present in installer script",
   },
   {
     path: "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
