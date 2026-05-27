@@ -396,6 +396,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0833](backlog/P1/B-0833-installer-interactive-login-vs-baked-in-keys-ci-test-tension-resolve-without-shipping-credentials-aaron-2026-05-26.md)** installer interactive-login vs baked-in-keys CI-test tension — resolve without shipping credentials on ISO (operator 2026-05-26 from physical hardware-support test)
 - [ ] **[B-0835](backlog/P1/B-0835-installer-config-bugs-cluster-hostname-not-unique-gh-auth-not-respected-banner-password-disclosure-empirical-aaron-2026-05-26.md)** installer config-bugs cluster — hostname not unique (shows control-plane); gh login not respected; login banner shows password text (default OR custom) (empirical from 2026-05-26 physical hardware-support test) (Aaron 2026-05-26)
 - [ ] **[B-0836](backlog/P1/B-0836-hardware-inventory-vs-cluster-reconciliation-gap-analysis-buying-decisions-aaron-2026-05-26.md)** hardware-inventory-vs-cluster reconciliation + gap-analysis → buying decisions (no more buying willy nilly) (Aaron 2026-05-26)
+- [ ] **[B-0839](backlog/P1/B-0839-artem-kirsanov-channel-substrate-capture-computational-neuroscience-1000-brains-composition-aaron-2026-05-26.md)** Artem Kirsanov computational-neuroscience YouTube channel — substrate capture (videos → code + research substrate) — composes with 1000 Brains (Hawkins) + Adinkras (Gates) + caustic bloom filters + Boltzmann machines as energy-based substrate (Aaron 2026-05-26)
 
 ## P2 — research-grade
 
