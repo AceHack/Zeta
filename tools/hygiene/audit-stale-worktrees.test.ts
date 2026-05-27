@@ -2,7 +2,63 @@
 // worktree-staleness auditor.
 
 import { describe, expect, test } from "bun:test";
-import { parseWorktreePorcelain, renderReport } from "./audit-stale-worktrees.ts";
+import { parseArgs, parseWorktreePorcelain, renderReport } from "./audit-stale-worktrees.ts";
+
+describe("parseArgs", () => {
+  test("parses a root override with report and prune", () => {
+    const parsed = parseArgs(["--root", "/repo/control", "--report", "out.md", "--prune"]);
+    expect(parsed).toEqual({
+      kind: "args",
+      args: {
+        root: "/repo/control",
+        report: "out.md",
+        prune: true,
+      },
+    });
+  });
+
+  test("rejects missing root path", () => {
+    expect(parseArgs(["--root"])).toEqual({
+      kind: "error",
+      message: "--root requires a path",
+    });
+  });
+
+  test("rejects another known flag where root expects a path", () => {
+    expect(parseArgs(["--root", "--prune"])).toEqual({
+      kind: "error",
+      message: "--root requires a path",
+    });
+  });
+
+  test("rejects another known flag where report expects a path", () => {
+    expect(parseArgs(["--report", "--root"])).toEqual({
+      kind: "error",
+      message: "--report requires a path",
+    });
+  });
+
+  test("rejects an empty root path", () => {
+    expect(parseArgs(["--root", ""])).toEqual({
+      kind: "error",
+      message: "--root requires a path",
+    });
+  });
+
+  test("rejects an empty report path", () => {
+    expect(parseArgs(["--report", ""])).toEqual({
+      kind: "error",
+      message: "--report requires a path",
+    });
+  });
+
+  test("rejects an unknown dash-prefixed token where report expects a path", () => {
+    expect(parseArgs(["--report", "--verbose"])).toEqual({
+      kind: "error",
+      message: "--report requires a path",
+    });
+  });
+});
 
 describe("parseWorktreePorcelain", () => {
   test("parses a single live worktree block", () => {

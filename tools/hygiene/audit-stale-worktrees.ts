@@ -27,12 +27,14 @@
 //   bun tools/hygiene/audit-stale-worktrees.ts                # detect-only
 //   bun tools/hygiene/audit-stale-worktrees.ts --prune        # also run `git worktree prune --expire=now`
 //   bun tools/hygiene/audit-stale-worktrees.ts --report PATH  # write markdown report
+//   bun tools/hygiene/audit-stale-worktrees.ts --root PATH    # audit PATH instead of cwd
 //
 // Exit codes:
 //
 //   0   detect-only mode, or prune ran successfully
 //   64  argument error
-//   128 not inside a git worktree
+//   128 git worktree list failed (not inside a worktree, --root points at a
+//       non-repo or missing directory, git not on PATH, or other launch error)
 //
 // DST-friendliness:
 //
@@ -45,6 +47,7 @@ import { spawnSync } from "node:child_process";
 type AuditExitCode = 0 | 64 | 128;
 
 interface Args {
+  readonly root: string | null;
   readonly report: string | null;
   readonly prune: boolean;
 }
@@ -63,15 +66,28 @@ interface AuditResult {
   readonly healthy: number;
 }
 
+function hasFlagValue(value: string | undefined): value is string {
+  // Reject any dash-prefixed token (known flag or typo'd unknown flag) so a
+  // bad invocation like `--report --verbose` is reported as a missing path
+  // rather than silently treating `--verbose` as a filename.
+  return value !== undefined && value.length > 0 && !value.startsWith("-");
+}
+
 function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "error"; message: string } {
+  let root: string | null = null;
   let report: string | null = null;
   let prune = false;
   let i = 0;
   while (i < argv.length) {
     const a = argv[i]!;
-    if (a === "--report") {
+    if (a === "--root") {
       const next = argv[i + 1];
-      if (!next) return { kind: "error", message: "--report requires a path" };
+      if (!hasFlagValue(next)) return { kind: "error", message: "--root requires a path" };
+      root = next;
+      i += 2;
+    } else if (a === "--report") {
+      const next = argv[i + 1];
+      if (!hasFlagValue(next)) return { kind: "error", message: "--report requires a path" };
       report = next;
       i += 2;
     } else if (a === "--prune") {
@@ -81,7 +97,11 @@ function parseArgs(argv: string[]): { kind: "args"; args: Args } | { kind: "erro
       return { kind: "error", message: `Unknown argument: ${a}` };
     }
   }
-  return { kind: "args", args: { report, prune } };
+  return { kind: "args", args: { root, report, prune } };
+}
+
+function gitArgs(root: string | null, args: string[]): string[] {
+  return root === null ? args : ["-C", root, ...args];
 }
 
 function parseWorktreePorcelain(stdout: string): WorktreeEntry[] {
@@ -105,10 +125,15 @@ function parseWorktreePorcelain(stdout: string): WorktreeEntry[] {
   return entries;
 }
 
-function audit(): AuditResult | { error: string; code: AuditExitCode } {
-  const list = spawnSync("git", ["worktree", "list", "--porcelain"], { encoding: "utf8" });
+function audit(root: string | null): AuditResult | { error: string; code: AuditExitCode } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const list = spawnSync("git", gitArgs(root, ["worktree", "list", "--porcelain"]), { encoding: "utf8" });
+  if (list.error) {
+    return { error: `git worktree list failed to launch: ${list.error.message}`, code: 128 };
+  }
   if (list.status !== 0) {
-    return { error: `git worktree list failed: ${list.stderr}`, code: 128 };
+    const stderr = (list.stderr || "").trim() || `(no stderr; exit ${list.status ?? "null"})`;
+    return { error: `git worktree list failed: ${stderr}`, code: 128 };
   }
 
   const entries = parseWorktreePorcelain(list.stdout);
@@ -134,8 +159,12 @@ function audit(): AuditResult | { error: string; code: AuditExitCode } {
   };
 }
 
-function runPrune(): { ok: boolean; output: string } {
-  const r = spawnSync("git", ["worktree", "prune", "--expire=now", "-v"], { encoding: "utf8" });
+function runPrune(root: string | null): { ok: boolean; output: string } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const r = spawnSync("git", gitArgs(root, ["worktree", "prune", "--expire=now", "-v"]), { encoding: "utf8" });
+  if (r.error) {
+    return { ok: false, output: `git worktree prune failed to launch: ${r.error.message}` };
+  }
   return { ok: r.status === 0 || r.status === 1, output: (r.stdout || "") + (r.stderr || "") };
 }
 
@@ -190,7 +219,7 @@ function main(argv: string[]): AuditExitCode {
     return 64;
   }
 
-  const r = audit();
+  const r = audit(parsed.args.root);
   if ("error" in r) {
     console.error(r.error);
     return r.code;
@@ -198,7 +227,7 @@ function main(argv: string[]): AuditExitCode {
 
   let pruneOutput: string | null = null;
   if (parsed.args.prune && r.stalePathMissing.length > 0) {
-    const p = runPrune();
+    const p = runPrune(parsed.args.root);
     pruneOutput = p.output;
     if (!p.ok) console.error("git worktree prune exited non-zero (continuing — some entries may have pruned)");
   }
@@ -219,4 +248,4 @@ if (import.meta.main) {
   process.exit(main(process.argv.slice(2)));
 }
 
-export { audit, parseWorktreePorcelain, renderReport };
+export { audit, parseArgs, parseWorktreePorcelain, renderReport };
