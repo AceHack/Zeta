@@ -8,7 +8,7 @@ merged_at: "2026-05-26T10:17:10Z"
 closed_at: "2026-05-26T10:17:10Z"
 head_ref: "otto-cli/refresh-extends-working-tree-reads-1008z-2026-05-26"
 base_ref: "main"
-archived_at: "2026-05-26T16:05:01Z"
+archived_at: "2026-05-27T19:41:06Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
