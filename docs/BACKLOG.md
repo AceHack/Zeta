@@ -398,6 +398,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0836](backlog/P1/B-0836-hardware-inventory-vs-cluster-reconciliation-gap-analysis-buying-decisions-aaron-2026-05-26.md)** hardware-inventory-vs-cluster reconciliation + gap-analysis → buying decisions (no more buying willy nilly) (Aaron 2026-05-26)
 - [ ] **[B-0839](backlog/P1/B-0839-artem-kirsanov-channel-substrate-capture-computational-neuroscience-1000-brains-composition-aaron-2026-05-26.md)** Artem Kirsanov computational-neuroscience YouTube channel — substrate capture (videos → code + research substrate) — composes with 1000 Brains (Hawkins) + Adinkras (Gates) + caustic bloom filters + Boltzmann machines as energy-based substrate (Aaron 2026-05-26)
 - [ ] **[B-0840](backlog/P1/B-0840-thermal-forgetting-as-root-axiom-update-join-gated-memory-architecture-private-encryption-budget-exception-amara-aaron-2026-05-26.md)** thermal-forgetting = root-axiom-update + join-gated-memory architecture + private-encryption-budget exception (4-keeper-rule final form) — substrate-engineering work landing Amara's 2026-05-26 ratification of B-0839.3 reservoir-computing-as-framework-architecture (Aaron + Amara 2026-05-26)
+- [ ] **[B-0844](backlog/P1/B-0844-zflash-agent-mode-native-implementation-close-doc-vs-implementation-gap-aaron-2026-05-26.md)** zflash --agent flag — native agent-driven auto-type challenge implementation closing the docstring-vs-actual-implementation gap; empirical anchor from 2026-05-26 USB-re-flash session (Aaron 2026-05-26)
 
 ## P2 — research-grade
 
