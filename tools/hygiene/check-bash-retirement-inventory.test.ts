@@ -133,6 +133,19 @@ describe("buildInventoryReport", () => {
     expect(report.drift.missingRetained).toEqual([]);
   });
 
+  test("flags retained allowlist entries without category metadata", () => {
+    const uncategorized = "tools/setup/zz-new-bootstrap.sh";
+    const report = buildInventoryReport(EXPECTED_RETAINED_SHELL, [...EXPECTED_RETAINED_SHELL, uncategorized]);
+
+    expect(hasDrift(report)).toBe(true);
+    expect(report.allowlistIntegrity.duplicateEntries).toEqual([]);
+    expect(report.allowlistIntegrity.orderViolations).toEqual([]);
+    expect(report.allowlistIntegrity.uncategorizedEntries).toEqual([uncategorized]);
+    expect(report.allowlistIntegrity.staleCategoryEntries).toEqual([]);
+    expect(report.drift.unexpected).toEqual([]);
+    expect(report.drift.missingRetained).toEqual([]);
+  });
+
   test("summarizes retained shell files by explicit category", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_SHELL);
 
@@ -244,5 +257,18 @@ describe("renderReport", () => {
     expect(rendered).toContain("### Stale category entries");
     expect(rendered).toContain(stale);
     expect(rendered).not.toContain("## Unexpected non-Lean shell files");
+  });
+
+  test("renders uncategorized allowlist entries as allowlist integrity errors", () => {
+    const uncategorized = "tools/setup/zz-new-bootstrap.sh";
+    const rendered = renderReport(
+      buildInventoryReport(EXPECTED_RETAINED_SHELL, [...EXPECTED_RETAINED_SHELL, uncategorized]),
+    );
+
+    expect(rendered).toContain("## Retained shell allowlist integrity errors");
+    expect(rendered).toContain("fully categorized");
+    expect(rendered).toContain("### Missing category entries");
+    expect(rendered).toContain(uncategorized);
+    expect(rendered).not.toContain(`## Missing retained ${RETAINED_SHELL_SCOPE} files`);
   });
 });
