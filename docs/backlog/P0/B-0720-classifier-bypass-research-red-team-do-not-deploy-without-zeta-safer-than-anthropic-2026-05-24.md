@@ -3,7 +3,7 @@ id: B-0720
 priority: P0
 title: Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
 created: 2026-05-24
-last_updated: 2026-05-26
+last_updated: 2026-05-27
 origin: Aaron 2026-05-24 (post empirical discovery PR #4816 — classifier-talk-via-settings.json works for ip-questionable content)
 status: decomposed
 decomposition: decomposed
@@ -125,7 +125,7 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
 
 - [ ] B-0798 defines the hard-limits boundary, allowed evidence classes, stop
       conditions, and synthetic-only rule before any mapping work proceeds.
-- [ ] B-0799 designs a synthetic-only harness that can test harmless fixtures
+- [x] B-0799 designs a synthetic-only harness that can test harmless fixtures
       without carrying deployable bypass settings or harmful content.
 - [ ] B-0807 defines the findings schema and redaction policy so reports can
       preserve safety signal without reproducible bypass detail.

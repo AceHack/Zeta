@@ -1,10 +1,10 @@
 ---
 id: B-0799
 priority: P0
-status: open
+status: closed
 title: "Classifier-bypass synthetic-only harness design for B-0720"
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-05-27
 parent: B-0720
 depends_on: [B-0798]
 composes_with: [B-0720, B-0807]
@@ -37,12 +37,21 @@ Design a harness shape that future reviewers can inspect before implementation:
 
 ## Acceptance
 
-- [ ] Design document lands without executable harness code.
-- [ ] Every fixture class is synthetic and harmless by construction.
-- [ ] The design names what data must never be persisted.
-- [ ] The design cites B-0798 as a blocking dependency for any implementation.
-- [ ] The design cites B-0807 for reporting and redaction before observations
+- [x] Design document lands without executable harness code.
+- [x] Every fixture class is synthetic and harmless by construction.
+- [x] The design names what data must never be persisted.
+- [x] The design cites B-0798 as a blocking dependency for any implementation.
+- [x] The design cites B-0807 for reporting and redaction before observations
       can be published.
+
+## Output
+
+- `docs/security/B-0799-classifier-bypass-synthetic-harness-design.md`
+  defines the synthetic fixture taxonomy, fixture provenance requirements,
+  dry-run interface shape, audit fields, non-persistence rules, and reviewer
+  gates for future implementation.
+- The output is design-only. It adds no executable harness code, no real
+  settings payload, no external corpus, and no deployable reproduction detail.
 
 ## Out of scope
 
