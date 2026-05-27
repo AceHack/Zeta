@@ -1,0 +1,82 @@
+---
+pr_number: 5414
+title: "feat(B-0852.5): declarative cred-manifest schema + validator \u2014 pure types + DEFAULT_MANIFEST (6 entries) + 21 unit tests (Aaron 2026-05-27 declarative discipline)"
+author: "AceHack"
+state: "MERGED"
+created_at: "2026-05-27T07:05:41Z"
+merged_at: "2026-05-27T07:08:08Z"
+closed_at: "2026-05-27T07:08:08Z"
+head_ref: "feat/b-0852-5-cred-manifest-schema"
+base_ref: "main"
+archived_at: "2026-05-27T19:25:19Z"
+archive_tool: "tools/pr-preservation/archive-pr.ts"
+---
+
+# PR #5414: feat(B-0852.5): declarative cred-manifest schema + validator — pure types + DEFAULT_MANIFEST (6 entries) + 21 unit tests (Aaron 2026-05-27 declarative discipline)
+
+## PR description
+
+## Summary
+
+B-0852 sub-row .5 — smallest pure-data substrate slice. Composes with B-0852.1 crypto module (PR #5411) as the data-shape layer to the cipher layer.
+
+Aaron 2026-05-27 discipline: *"the keep credentials options we should declare each credential we need and save and restore so it's not so imparative too."* Adding a new credential type = manifest edit, NOT a code change.
+
+## Files
+
+| File | Lines | Purpose |
+|---|---|---|
+| `tools/installer/zeta-creds-manifest.ts` | ~180 | `CredentialEntry` + `Manifest` types; `DEFAULT_MANIFEST`; `validateManifest()` |
+| `tools/installer/zeta-creds-manifest.test.ts` | ~200 | 21 acceptance tests |
+
+## DEFAULT_MANIFEST entries (6)
+
+| id | personaScoped | required | Purpose |
+|---|---|---|---|
+| gh-cli | false | true | `~/.config/gh/hosts.yml` (B-0847 may flip future) |
+| claude | true | true | `~/.config/claude/credentials.json` |
+| gemini | true | true | `~/.gemini/oauth_creds.json` |
+| codex | true | true | `~/.codex/auth.json` |
+| ssh-host-keys | false | false | Optional; regen on fresh OK |
+| ssh-operator-pubkey | false | true | iter-4.2 ESP-write channel compose |
+
+## Test output
+
+```
+ 21 pass
+ 0 fail
+ 37 expect() calls
+Ran 21 tests across 1 file. [111.00ms]
+```
+
+Covers DEFAULT_MANIFEST internal consistency + Phase 1 vendor coverage + personaScoped flags + happy-path validation + 12 rejection cases (non-object, wrong schemaVersion, duplicate ids, empty paths, type mismatches, error accumulation).
+
+## What this is NOT
+
+- NOT the persist/restore CLI (B-0852.2)
+- NOT the deployed YAML manifest (separate file under `full-ai-cluster/usb-nixos-installer/`)
+- NOT the NixOS module (B-0852.4)
+- NOT a YAML parser (validator runs on already-parsed objects; YAML parsing is sibling concern in B-0852.2)
+
+## Composes with
+
+- **B-0852** (parent row)
+- **B-0852.1** (PR #5411) — crypto module; cipher layer (this row is data layer)
+- **B-0852.2** (next) — persist/restore CLIs consume both .1 + .5
+- **B-0847** — per-AI GitHub identity; future personaScoped:true flip for gh-cli
+- iter-4.2 ESP SSH pubkey injection (composes with ssh-operator-pubkey entry)
+
+## Test plan
+
+- [x] 21 tests pass via `bun test tools/installer/zeta-creds-manifest.test.ts`
+- [x] Format clean (prettier)
+- [ ] CI passes typecheck + format + test gates
+- [ ] No third-party deps added (verified: bun:test only)
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+## General comments
+
+### @chatgpt-codex-connector (2026-05-27T07:05:48Z)
+
+You have reached your Codex usage limits for code reviews. You can see your limits in the [Codex usage dashboard](https://chatgpt.com/codex/cloud/settings/usage).
