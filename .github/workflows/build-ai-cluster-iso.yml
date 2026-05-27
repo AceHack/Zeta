@@ -91,6 +91,15 @@ jobs:
       - name: Audit installer substrate (source-level)
         run: bun tools/ci/audit-installer-substrate.ts
 
+      # Layer 2a (structural-behavioral) — asserts logical relationships
+      # between iter-5.4 substrate elements (gh auth setup-git is INSIDE
+      # the auth-success branch; SSH_KEY_ERR_FILE is wired AS stderr to
+      # gh ssh-key list; iter-5.4.1 is gated on GH_AUTH_OK=1; etc.).
+      # Stronger than the source-substrate audit (which just checks for
+      # substring presence). Runs in ~150ms.
+      - name: Iter-5.4 install-flow structural-behavioral test
+        run: bun test tools/ci/test-iter-54-install-flow.test.ts
+
       - name: Install Nix
         uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
 
