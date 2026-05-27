@@ -1,4 +1,8 @@
 import { describe, expect, test } from "bun:test";
+import { spawnSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 import {
   buildInventoryReport,
@@ -8,6 +12,18 @@ import {
   RETAINED_SHELL_SCOPE,
   trackedNonLeanShellFilesFromGit,
 } from "./check-bash-retirement-inventory";
+
+function runGit(args: readonly string[], cwd: string): void {
+  // Test helper uses repo-pinned git with explicit argv; no shell expansion.
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync("git", args, { cwd, encoding: "utf8" });
+  if (result.error) {
+    throw new Error(`failed to start git ${args.join(" ")}: ${result.error.message}`);
+  }
+  if (result.status !== 0) {
+    throw new Error(result.stderr.trim() || `git ${args.join(" ")} failed`);
+  }
+}
 
 function splitExpectedRetained(): readonly [string, readonly string[]] {
   const [missing, ...rest] = EXPECTED_RETAINED_SHELL;
@@ -144,6 +160,34 @@ describe("buildInventoryReport", () => {
 
     expect(report.drift.unexpected).toEqual([]);
     expect(report.drift.missingRetained).toEqual([]);
+  });
+
+  test("enumerates tracked shell-family files while excluding Lean vendor scripts", () => {
+    const repo = mkdtempSync(join(tmpdir(), "zeta-bash-retirement-"));
+    try {
+      runGit(["init"], repo);
+
+      mkdirSync(join(repo, "scripts"), { recursive: true });
+      mkdirSync(join(repo, "tools", "lean4"), { recursive: true });
+      writeFileSync(join(repo, "scripts", "a.sh"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "b.bash"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "c.zsh"), "#!/usr/bin/env zsh\n");
+      writeFileSync(join(repo, "scripts", "d.ksh"), "#!/usr/bin/env ksh\n");
+      writeFileSync(join(repo, "scripts", "e.command"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "tools", "lean4", "vendor.sh"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "README.md"), "not shell\n");
+      runGit(["add", "."], repo);
+
+      expect(trackedNonLeanShellFilesFromGit(repo)).toEqual([
+        "scripts/a.sh",
+        "scripts/b.bash",
+        "scripts/c.zsh",
+        "scripts/d.ksh",
+        "scripts/e.command",
+      ]);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
   });
 });
 

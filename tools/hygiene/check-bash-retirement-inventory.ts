@@ -2,7 +2,7 @@
 // check-bash-retirement-inventory.ts — verify the retained shell surface.
 //
 // The TypeScript/Bun migration is in bash-retirement mode: repo-owned scripts
-// should not grow new `.sh` entrypoints outside the explicit repo-wide
+// should not grow new shell-family entrypoints outside the explicit repo-wide
 // retained-shell allowlist. Retained shell exists only where the script runs
 // before Bun is available, bootstraps a host service environment, or belongs
 // to a low-level installer/dev-cluster surface that is still shell-native.
@@ -66,6 +66,7 @@ export interface InventoryReport {
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
+export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = ["*.sh", "*.bash", "*.zsh", "*.ksh", "*.command"];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -166,9 +167,9 @@ function runGit(args: readonly string[], cwd?: string): string {
   return result.stdout;
 }
 
-export function trackedNonLeanShellFilesFromGit(): readonly string[] {
-  const repoRoot = runGit(["rev-parse", "--show-toplevel"]).trim();
-  const raw = runGit(["ls-files", "-z", "*.sh"], repoRoot);
+export function trackedNonLeanShellFilesFromGit(cwd?: string): readonly string[] {
+  const repoRoot = runGit(["rev-parse", "--show-toplevel"], cwd).trim();
+  const raw = runGit(["ls-files", "-z", ...TRACKED_SHELL_FILE_GLOBS], repoRoot);
   return raw
     .split("\0")
     .filter((file): file is string => file.length > 0)
@@ -361,7 +362,7 @@ function usage(): string {
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --enforce",
     "  bun tools/hygiene/check-bash-retirement-inventory.ts --json",
     "",
-    `Checks that non-Lean tracked .sh files match ${RETAINED_SHELL_SCOPE}.`,
+    `Checks that non-Lean tracked shell-family files match ${RETAINED_SHELL_SCOPE}.`,
   ].join("\n");
 }
 
