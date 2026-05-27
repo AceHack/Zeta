@@ -801,6 +801,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0857.1](backlog/P2/B-0857.1-audit-pr-5389-step-6-95a-invocation-of-tools-setup-install-sh-verified-present-aaron-2026-05-27.md)** Audit PR #5389's claim that zeta-install.sh Step 6.95a invokes tools/setup/install.sh — VERIFIED PRESENT (corrects B-0857 row body authoring error)
 - [ ] **[B-0858.5](backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md)** Heartbeat auto-state-gathering — writer gathers observable current state before pushing; heartbeats become debug logs once attached (Aaron 2026-05-27)
 - [ ] **[B-0861](backlog/P2/B-0861-make-conversation-interface-result-t-convfeedback-first-class-operator-otto-nci-enforcement-aaron-2026-05-27.md)** Make conversation-interface Result<T, ConvFeedback> first-class — ConvFeedback variant taxonomy + Otto emission discipline + operator acknowledgment substrate for NCI enforcement at conversation scope (Aaron 2026-05-27)
+- [ ] **[B-0863](backlog/P2/B-0863-ace-package-manager-one-liner-curl-install-repository-for-fast-moving-tools-hermes-agent-as-canonical-example-aaron-2026-05-27.md)** Ace package manager — one-liner `curl ... | bash` install repository for fast-moving tools that update faster than Homebrew can keep up; hermes-agent as canonical example (operator 2026-05-27)
 
 ## P3 — convenience / deferred
 
