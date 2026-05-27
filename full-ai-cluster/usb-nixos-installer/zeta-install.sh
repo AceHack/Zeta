@@ -1105,8 +1105,18 @@ if [ -d "$ZETA_HOME" ]; then
   sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
   # Source mise activation so the subshell finds bun via mise shims.
   sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
-    bash -c 'eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @anthropic-ai/claude-code' 2>&1 | tail -5 || \
+    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @anthropic-ai/claude-code' 2>&1 | tail -5 || \
       echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot via 'bun install --global @anthropic-ai/claude-code'"
+
+  # 6.95a-gemini — install @google/gemini-cli via bun (B-0850 Phase 3d).
+  # Mirrors the claude install pattern; 2nd vendor for the ≥3 systemd
+  # agents target. Binary lands at ~/.bun/bin/gemini. WebSearch
+  # verified install path per dep-pin-search-first-authority discipline
+  # at implementation time (npm @google/gemini-cli is bun-compat).
+  echo "[iter-5.5.0] installing @google/gemini-cli via mise-managed bun (B-0850 Phase 3d Lior 2nd vendor)..."
+  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
+    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @google/gemini-cli' 2>&1 | tail -5 || \
+      echo "[iter-5.5.0]   WARN: bun install gemini-cli FAILED — can retry post-reboot via 'bun install --global @google/gemini-cli'"
 
   # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
   CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"
@@ -1137,6 +1147,38 @@ if [ -d "$ZETA_HOME" ]; then
     esac
   else
     echo "[iter-5.5.0] claude binary not found at $CLAUDE_BIN; skipping interactive login"
+  fi
+
+  # 6.95b-gemini — interactive gemini auth login (mirror claude login).
+  # B-0850 Phase 3d 2nd vendor login flow. gemini-cli supports OAuth
+  # via local HTTP server OR API-key paste. The interactive prompt
+  # lets operator choose. Credentials persist to ~/.config/gemini/.
+  GEMINI_BIN="$ZETA_HOME/.bun/bin/gemini"
+  if [ -x "$GEMINI_BIN" ]; then
+    echo
+    echo "[iter-5.5.0] Trigger Gemini CLI interactive login NOW (B-0850 Phase 3d Lior)?"
+    echo "[iter-5.5.0]   - Mirrors claude login pattern (operator-interactive auth)."
+    echo "[iter-5.5.0]   - Options: OAuth via browser OR Gemini API key from AI Studio."
+    echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.config/gemini/ and survive reboot."
+    echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
+    read -r -p "[iter-5.5.0] Run gemini auth login now? [Y/n]: " GEMINI_AUTH_REPLY
+    case "${GEMINI_AUTH_REPLY:-y}" in
+      [Yy]*|"")
+        echo "[iter-5.5.0]   running 'gemini auth login' (interactive)..."
+        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$GEMINI_BIN" auth login || \
+          echo "[iter-5.5.0]   WARN: gemini auth login failed; can re-run post-reboot"
+        # Parallel security restriction to claude credentials.
+        if [ -d "$ZETA_HOME/.config/gemini" ]; then
+          sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.config/gemini"
+          sudo chmod -R go-rwx "$ZETA_HOME/.config/gemini"
+        fi
+        ;;
+      *)
+        echo "[iter-5.5.0]   SKIPPED gemini auth login; run 'gemini auth login' on first login"
+        ;;
+    esac
+  else
+    echo "[iter-5.5.0] gemini binary not found at $GEMINI_BIN; skipping interactive login"
   fi
 
   # 6.95c — persist gh credentials from installer-root to installed-zeta

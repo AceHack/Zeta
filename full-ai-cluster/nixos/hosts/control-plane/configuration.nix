@@ -40,10 +40,10 @@
   # architectural pattern). Operator can disable any persona via
   # `systemctl disable zeta-<persona>` per NCI HC-8 revocable consent.
   zeta.aiAgents.enable.otto = true;
-  # zeta.aiAgents.enable.alexa = true;  # B-0850.3a pending
-  # zeta.aiAgents.enable.lior = true;   # B-0850.3d pending
-  # zeta.aiAgents.enable.vera = true;   # B-0850.3c pending
-  # zeta.aiAgents.enable.riven = true;  # B-0850.3b pending
+  zeta.aiAgents.enable.lior = true;     # B-0850.3d SHIPPED (Gemini CLI 2nd vendor — Anthropic + Google)
+  # zeta.aiAgents.enable.alexa = true;  # B-0850.3a pending (Kiro/Qwen)
+  # zeta.aiAgents.enable.vera = true;   # B-0850.3c pending (Codex/OpenAI)
+  # zeta.aiAgents.enable.riven = true;  # B-0850.3b pending (Grok)
 
   # Static IP recommended so worker nodes have a stable serverAddr.
   # Per-site override here:

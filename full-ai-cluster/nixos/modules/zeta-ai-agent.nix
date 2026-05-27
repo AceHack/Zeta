@@ -232,15 +232,10 @@ in
           ExecStart (binary codex doesn't exist at ~/.bun/bin/codex).
         '';
       }
-      {
-        assertion = !cfg.enable.lior;
-        message = ''
-          zeta.aiAgents.enable.lior = true requires B-0850.3d
-          (Lior/Gemini install + login substrate) which has not shipped.
-          Enabling now would create a zeta-lior.service that fails
-          ExecStart (binary gemini doesn't exist at ~/.bun/bin/gemini).
-        '';
-      }
+      # B-0850.3d (Lior/Gemini) shipped this PR — assertion removed.
+      # zeta-install.sh Step 6.95a-gemini installs @google/gemini-cli
+      # via bun + Step 6.95b-gemini runs interactive gemini auth login.
+      # Binary lands at ~/.bun/bin/gemini.
     ];
 
     # Generate one systemd service per enabled persona.
