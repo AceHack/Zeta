@@ -30,6 +30,11 @@
     # Per-vendor implementation lands via B-0850 Phase 3 sub-rows
     # (3a-3h) that add install + login flows for each vendor's CLI.
     ./zeta-ai-agent.nix
+    # B-0855.1: post-install first-boot self-registration service.
+    # Disabled by default until host configs opt in after B-0855.2
+    # ships the TS implementation; imported here so every node type
+    # has the same module surface.
+    ./zeta-self-register.nix
   ];
 
   nix.settings = {

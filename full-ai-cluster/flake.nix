@@ -129,6 +129,7 @@
         docker = ./nixos/modules/docker.nix;
         local-storage = ./nixos/modules/local-storage.nix;
         longhorn-disks = ./nixos/modules/longhorn-disks.nix;
+        zeta-self-register = ./nixos/modules/zeta-self-register.nix;
         disko-shape-2nvme = ./nixos/modules/disko-shapes/2nvme.nix;
       };
 

@@ -69,6 +69,8 @@ const REQUIRED_FILES: readonly FileAssertion[] = [
   { path: "full-ai-cluster/nixos/modules/common.nix", minBytes: 500 },
   { path: "full-ai-cluster/nixos/modules/injected-hostname.nix" },
   { path: "full-ai-cluster/nixos/modules/login-banner.nix" },
+  // B-0855.1 post-install first-boot self-registration service surface
+  { path: "full-ai-cluster/nixos/modules/zeta-self-register.nix", minBytes: 500 },
   // operator-side flash tool (B-0789 + iter-5.x)
   { path: "full-ai-cluster/tools/zflash.ts", minBytes: 1000 },
 ];
@@ -126,8 +128,31 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
       "./login-banner.nix", // iter-5.2.2 pre-login banner module
       "services.avahi", // iter-5.1 mDNS publishing
       "nssmdns4", // Avahi mDNS via nss
+      "./zeta-self-register.nix", // B-0855.1 first-boot self-registration module
     ],
     rationale: "common.nix must import the iter-5.x modules so every host inherits them",
+  },
+  {
+    path: "full-ai-cluster/nixos/modules/zeta-self-register.nix",
+    mustContain: [
+      "systemd.services.zeta-self-register", // service unit exists
+      "Type = \"oneshot\"", // fires once, not a loop
+      "ConditionPathExists", // marker gate permits retries across failed first-boot attempts
+      "Restart = \"on-failure\"", // transient failures retry instead of losing first-boot opportunity
+      "RestartSec = \"30s\"", // bounded backoff before retrying registration intent
+      "network-online.target", // waits for network before registration intent
+      "zeta-creds-restore.service", // ordered after restored creds when that service exists
+      'default = "${cfg.home}/Zeta";', // repoRoot derives from home override
+      'default = "${cfg.repoRoot}/tools/installer/zeta-self-register.ts";', // scriptPath derives from repoRoot override
+      'default = "${cfg.home}/.config/zeta/self-registered.marker";', // markerPath derives from home override
+      'default = "${cfg.home}/.config/zeta/self-registration-intent";', // intentDir derives from home override
+      "tools/installer/zeta-self-register.ts", // delegates implementation to B-0855.2
+      ".local/share/mise/shims/bun", // runtime follows the repo-wide mise-managed Bun substrate
+      "BUN_INSTALL", // keeps Bun global CLI state anchored under cfg.home
+      "ZETA_SELF_REGISTER_MARKER", // marker path exported to implementation
+      "ZETA_SELF_REGISTER_INTENT_DIR", // intent handoff dir exported to implementation
+    ],
+    rationale: "B-0855.1 service must be a post-install marker-gated oneshot ordered after network and credential restore surfaces",
   },
   {
     path: "full-ai-cluster/nixos/modules/injected-hostname.nix",

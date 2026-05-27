@@ -337,8 +337,7 @@ jobs:
       # workflow-identity binding):
       #
       #   cosign verify-blob \
-      #     --certificate <iso>.pem \
-      #     --signature <iso>.sig \
+      #     --bundle <iso>.bundle \
       #     --certificate-identity 'https://github.com/Lucent-Financial-Group/Zeta/.github/workflows/build-ai-cluster-iso.yml@refs/heads/main' \
       #     --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \
       #     <iso>
@@ -359,6 +358,7 @@ jobs:
         # Per .claude/rules/dep-pin-search-first-authority.md
 
       - name: Sign ISO with cosign (keyless OIDC + Fulcio + Rekor)
+        id: sign
         env:
           # Pass ISO path via env (not direct ${{ }} interpolation in run:)
           # per the workflow's existing security discipline.
@@ -367,25 +367,32 @@ jobs:
         run: |
           set -euo pipefail
           # --yes: skip interactive Fulcio confirmation (CI is non-interactive)
-          # Output files emitted alongside the ISO:
-          #   <iso>.sig — signature (base64; small)
-          #   <iso>.pem — short-lived Fulcio cert (the verifier's anchor)
+          # Output emitted to runner temp and uploaded alongside the ISO artifact:
+          #   <runner-temp>/<iso>.bundle - cosign bundle containing signature,
+          #                                certificate, and transparency-log material.
+          COSIGN_BUNDLE="${RUNNER_TEMP}/${ISO_NAME}.bundle"
           cosign sign-blob --yes \
-            --output-signature "${ISO_PATH}.sig" \
-            --output-certificate "${ISO_PATH}.pem" \
+            --bundle "${COSIGN_BUNDLE}" \
             "${ISO_PATH}"
-          # Sanity: both artifacts present and non-empty.
-          test -s "${ISO_PATH}.sig" || { echo "::error::Empty signature"; exit 1; }
-          test -s "${ISO_PATH}.pem" || { echo "::error::Empty certificate"; exit 1; }
+          # Sanity: the verifier artifact must be present and non-empty.
+          test -s "${COSIGN_BUNDLE}" || { echo "::error::Empty cosign bundle"; exit 1; }
+          echo "bundle-path=${COSIGN_BUNDLE}" >> "$GITHUB_OUTPUT"
           {
             echo "## ISO signed via sigstore (cosign keyless OIDC)"
             echo ""
             echo "| Artifact | Path |"
             echo "|---|---|"
-            echo "| Signature | \`${ISO_NAME}.sig\` |"
-            echo "| Certificate | \`${ISO_NAME}.pem\` |"
+            echo "| Bundle | \`${ISO_NAME}.bundle\` |"
             echo ""
-            echo "Verification: see workflow run logs for the canonical \`cosign verify-blob\` command."
+            echo "Verification command after downloading the ISO artifact and cosign bundle artifact:"
+            echo ""
+            echo "\`\`\`bash"
+            echo "cosign verify-blob \\"
+            echo "  --bundle '${ISO_NAME}.bundle' \\"
+            echo "  --certificate-identity 'https://github.com/${GITHUB_WORKFLOW_REF}' \\"
+            echo "  --certificate-oidc-issuer 'https://token.actions.githubusercontent.com' \\"
+            echo "  '${ISO_NAME}'"
+            echo "\`\`\`"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload ISO as workflow artifact
@@ -398,15 +405,13 @@ jobs:
           retention-days: 90
           compression-level: 0   # ISO is already compressed; re-zipping wastes time
 
-      - name: Upload cosign signature + certificate as workflow artifact
-        # B-0853.1 sibling upload — sig + pem alongside the ISO for consumers.
+      - name: Upload cosign bundle as workflow artifact
+        # B-0853.1 sibling upload — bundle alongside the ISO for consumers.
         # Separate artifact (not bundled with ISO) so consumers downloading
-        # just the ISO don't pay the (small) cost; verifiers can grab both.
+        # just the ISO do not pay the small extra cost; verifiers can grab it.
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: ${{ steps.iso.outputs.name }}.cosign
-          path: |
-            ${{ steps.iso.outputs.path }}.sig
-            ${{ steps.iso.outputs.path }}.pem
+          path: ${{ steps.sign.outputs.bundle-path }}
           if-no-files-found: error
           retention-days: 90
