@@ -19,19 +19,31 @@
 
   networking.hostName = "control-plane";
 
-  # B-0850 Phase 1: enable Otto systemd service on control-plane.
-  # Operator framing 2026-05-27: "so our usb after gh and claude device
-  # code login it should reboot with a claude service using my gh login".
-  # iter-5.5.0 install-time substrate (PR #5388 + #5389) persists the
-  # device-code credentials + pre-clones the Zeta repo + installs claude
-  # via mise-managed bun; this enable wires the systemd unit so claude
-  # auto-starts on first boot AS A SERVICE. Operator can disable via
-  # `systemctl disable zeta-otto` (NCI HC-8 revocable consent).
+  # B-0850 Phase 3 refactor: enable AI agent systemd services on
+  # control-plane. Operator framing 2026-05-27:
+  #   "we should have three systemd agents and the cluster running on
+  #   bootup"
+  #   "the mutual repair is critical too because of you can see your
+  #   own future self boot script failures"
   #
-  # Service deliberately runs OUTSIDE k8s as systemd unit (not as a k8s
-  # pod) so it can repair cluster issues from outside the failure domain
-  # ("control plane outside the control plane" architectural pattern).
-  zeta.otto.enable = true;
+  # The parameterized zeta-ai-agent.nix module supports ≥3 vendor-
+  # diverse personas (otto/alexa/riven/vera/lior); each opt-in
+  # independently. Currently only otto enabled — alexa/riven/vera/
+  # lior enable as B-0850 Phase 3 sub-rows (3a-3d) ship per-vendor
+  # install + login flows for each. Target state at pc-two is ≥3
+  # personas enabled for mutual-repair + self-modification-safety
+  # BFT margin.
+  #
+  # Services deliberately run OUTSIDE k8s as systemd units (not as
+  # k8s pods) so they can repair cluster issues from outside the
+  # failure domain ("control plane outside the control plane"
+  # architectural pattern). Operator can disable any persona via
+  # `systemctl disable zeta-<persona>` per NCI HC-8 revocable consent.
+  zeta.aiAgents.personas.otto.enable = true;
+  # zeta.aiAgents.personas.alexa.enable = true;  # B-0850.3a pending
+  # zeta.aiAgents.personas.lior.enable = true;   # B-0850.3d pending
+  # zeta.aiAgents.personas.vera.enable = true;   # B-0850.3c pending
+  # zeta.aiAgents.personas.riven.enable = true;  # B-0850.3b pending
 
   # Static IP recommended so worker nodes have a stable serverAddr.
   # Per-site override here:

@@ -18,14 +18,18 @@
     # via `gh ssh-key list` during zeta-install.sh Step 6.8. Composes
     # additively with iter-4.2 static maintainer keys.
     ./operator-authorized-keys.nix
-    # B-0850 Phase 1: Otto as systemd service for out-of-band cluster
-    # repair ("control plane outside the control plane" architectural
-    # pattern). Disabled by default at module level; enable per-node
-    # via `zeta.otto.enable = true;` in the node's configuration.nix.
-    # Composes with iter-5.5.0 install-time substrate (PR #5388 + #5389)
-    # which persists claude+gh credentials + pre-clones repo + installs
-    # claude via mise-managed bun.
-    ./zeta-otto.nix
+    # B-0850 Phase 3 refactor: parameterized multi-vendor AI agent
+    # systemd module. Replaces the Phase 1 zeta-otto.nix module with
+    # a generalization that supports ≥3 vendor-diverse AI personas
+    # (otto/alexa/riven/vera/lior) as independent systemd services.
+    # Operator opt-in per-persona via
+    # `zeta.aiAgents.personas.<persona>.enable = true;`. Disabled by
+    # default at module level. Composes with iter-5.5.0 install-time
+    # substrate (PR #5388 + #5389) which persists credentials + pre-
+    # clones repo + installs CLI binaries via mise-managed bun.
+    # Per-vendor implementation lands via B-0850 Phase 3 sub-rows
+    # (3a-3h) that add install + login flows for each vendor's CLI.
+    ./zeta-ai-agent.nix
   ];
 
   nix.settings = {
