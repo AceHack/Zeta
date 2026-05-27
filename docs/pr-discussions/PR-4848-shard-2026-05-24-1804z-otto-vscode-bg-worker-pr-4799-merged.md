@@ -8,7 +8,7 @@ merged_at: "2026-05-24T18:36:24Z"
 closed_at: "2026-05-24T18:36:24Z"
 head_ref: "otto-vscode/bg-worker-shard-1758z-2026-05-24"
 base_ref: "main"
-archived_at: "2026-05-24T21:25:33Z"
+archived_at: "2026-05-27T19:54:07Z"
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
@@ -18,10 +18,10 @@ archive_tool: "tools/pr-preservation/archive-pr.ts"
 
 ## Summary
 
-- **PR #4799 merged at `7676e207`** — 8 outdated Copilot U+200B FP-class threads resolved no-op per [`blocked-green-ci-investigate-threads.md`](/.claude/rules/blocked-green-ci-investigate-threads.md) worked-example pattern. Direct verification: 0 U+200B chars in both files.
-- **Lior-lane bulk audit**: 38/38 open PRs are Lior-lane (100%). Most `lior-pr-preservation-*` PRs touch `.cursor/bin/riven-loop-tick.ts` (Riven runtime) and match the runtime-script special-case guard in [`backlog-item-start-gate.md`](/.claude/rules/backlog-item-start-gate.md). Reviewer findings are **substantively real**, not FP-class.
-- **PR #4801/#4802/#4803** are operator-authored (AceHack) with operator-armed auto-merge; PII threads are operator self-disclosure. Bg-worker correct action: leave for operator review per [`no-directives.md`](/.claude/rules/no-directives.md) + [`mechanical-authorization-check.md`](/.claude/rules/mechanical-authorization-check.md).
-- Extends peer otto-cli's [1607Z](/docs/hygiene-history/ticks/2026/05/24/1607Z.md) + [1608Z](/docs/hygiene-history/ticks/2026/05/24/1608Z.md) lane-scope finding from 31→38 PRs.
+- **PR #4799 merged at `7676e207`** — 8 outdated Copilot U+200B FP-class threads resolved no-op per [`blocked-green-ci-investigate-threads.md`](../../.claude/rules/blocked-green-ci-investigate-threads.md) worked-example pattern. Direct verification: 0 U+200B chars in both files.
+- **Lior-lane bulk audit**: 38/38 open PRs are Lior-lane (100%). Most `lior-pr-preservation-*` PRs touch `.cursor/bin/riven-loop-tick.ts` (Riven runtime) and match the runtime-script special-case guard in [`backlog-item-start-gate.md`](../../.claude/rules/backlog-item-start-gate.md). Reviewer findings are **substantively real**, not FP-class.
+- **PR #4801/#4802/#4803** are operator-authored (AceHack) with operator-armed auto-merge; PII threads are operator self-disclosure. Bg-worker correct action: leave for operator review per [`no-directives.md`](../../.claude/rules/no-directives.md) + [`mechanical-authorization-check.md`](../../.claude/rules/mechanical-authorization-check.md).
+- Extends peer otto-cli's [1607Z](../../docs/hygiene-history/ticks/2026/05/24/1607Z.md) + [1608Z](../../docs/hygiene-history/ticks/2026/05/24/1608Z.md) lane-scope finding from 31→38 PRs.
 
 ## Test plan
 
