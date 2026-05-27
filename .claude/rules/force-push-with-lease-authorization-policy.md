@@ -364,6 +364,91 @@ When authoring new framework code:
 
 This pattern IS the operator's default substrate-engineering discipline. Future-Otto authoring new code: use the signal-based pattern by default; document the cost-asymmetry justification when reaching for pre-checks.
 
+### Type-signature-enforced exhaustive TFeedback handling — Java-checked-exceptions-as-sum-type (operator 2026-05-27)
+
+> *"it also give a nice kind of monad like if the function could declar every tfeedback type like java exceptions in the type signature then you can make sure consumer handle every case or pass it up"*
+
+The deeper substrate-engineering insight: when TFeedback is a sum type (F# discriminated union / Rust enum / TypeScript union), the function signature `T -> Result<T, MyTFeedback>` IS the declared "throws" list, and F#'s exhaustive pattern-matching enforces the same discipline Java checked exceptions enforced — but as monadic data-flow rather than control-flow.
+
+Java's checked exceptions encoded the right discipline (declare every exception class your function can throw; consumer MUST catch each or declare to propagate) but was criticized for verbosity and coarse-grain exception classes. The Result<T, TFeedback>-with-sum-type pattern preserves the discipline AND addresses the criticism:
+
+| Java checked exceptions | Result<T, TFeedback> with sum-type |
+|---|---|
+| Exception class declared via `throws X, Y, Z` clause | TFeedback variants declared via discriminated-union: `type MyTFeedback = X \| Y \| Z` |
+| Consumer must `catch (X e)` and `catch (Y e)` separately OR re-declare `throws` | Consumer must pattern-match exhaustively on each variant OR propagate via `Result.bind` / `match!` |
+| Compiler error if uncaught + undeclared | Compiler error (F#) on non-exhaustive match warning OR enforces `_ ->` catch-all |
+| Verbose try/catch ceremony | Concise pattern-match expression |
+| Exceptions cross stack boundaries via runtime mechanism | Result values flow through return values; no runtime overhead |
+| Coarse exception classes (often single `IOException` lumping many cases) | Fine-grained variants per substrate-engineering decision |
+| Hard to compose | Monadic composition via `bind` / `>>=` / computation expressions |
+
+The composition: every function in the call-chain declares its TFeedback variants in the type signature; consumer must handle each or propagate. The TYPE SYSTEM enforces exhaustive substrate-engineering at every decision point.
+
+### F# canonical instantiation
+
+```fsharp
+// Declare the TFeedback variants for file-IO substrate-engineering:
+type FileOpenFeedback =
+    | NotFound of path: string
+    | PermissionDenied of path: string * required: FileAccess
+    | DiskFull of path: string * available: int64
+    | PathTooLong of path: string * limit: int
+
+// Function signature DECLARES every possible TFeedback:
+let openOrCreate (path: string) : Result<Stream, FileOpenFeedback> =
+    // Implementation that returns Ok stream OR Error variant
+    ...
+
+// Consumer MUST handle exhaustively OR propagate:
+let consumer (path: string) : Result<int, AppFeedback> = result {
+    let! stream =
+        openOrCreate path
+        |> Result.mapError (fun feedback ->
+            // Type-system FORCES handling EVERY variant here OR catch-all:
+            match feedback with
+            | NotFound p -> AppFileNotFound p
+            | PermissionDenied (p, access) -> AppPermissionIssue (p, access)
+            | DiskFull (p, avail) -> AppStorageIssue (p, avail)
+            | PathTooLong (p, lim) -> AppConfigIssue (sprintf "Path %s exceeds %d" p lim))
+    return! readBytes stream
+}
+```
+
+The substrate-engineering value: at compile time, F# warns / errors if the consumer's match expression doesn't cover every TFeedback variant. Adding a new variant to `FileOpenFeedback` (e.g., `NetworkUnavailable` for cloud-mounted paths) breaks the build at every consumer until each explicitly handles or propagates. This is the discipline Java checked exceptions encoded, with F#'s sum-types + monadic composition making it ergonomic instead of verbose.
+
+### Why this is monadic-like (operator's "monad like" framing)
+
+The Result monad has:
+
+- **return** (Ok x): inject value into Result-context
+- **bind** (`>>=` or `Result.bind`): chain operations that may fail
+- **mapError**: transform TFeedback variant during propagation
+- **match** (consumer): unwrap the Result-shape with exhaustive handling
+
+The "monad-like" framing captures that Result-with-sum-type-TFeedback provides the same composition algebra as exception-throwing code but preserves type-system enforcement of the failure-path discipline.
+
+This composes with the framework's broader monad substrate:
+
+- F# Result monad (CLAUDE.md `Result<_, DbspError>` convention)
+- F# Option monad (sibling at presence/absence scope)
+- F# Async + AsyncResult monads (composition with effect-systems)
+- The framework's planned BP/EP message-passing substrate (per the factory's broader category-theory substrate)
+
+### Operational discipline for substrate-engineering
+
+When authoring new framework functions:
+
+1. **Identify every plausible TFeedback variant** at the call site
+2. **Declare them as a discriminated-union type** named for the substrate-engineering scope (e.g., `GitPushFeedback`, `FileOpenFeedback`, `BusEnvelopeFeedback`)
+3. **Return Result<T, MyTFeedback>** from the function
+4. **Document each variant** with the substrate-engineering scenario it represents (what assumption mismatched; what the consumer should typically do)
+5. **Compose via Result.bind / computation expressions** rather than throw-and-catch
+6. **Trust F#'s exhaustive-match enforcement** at consumer site — if the consumer doesn't handle every variant explicitly, the compiler will surface the gap
+
+The discipline operationalizes the operator's framing: every function's TFeedback type IS the substrate-engineering contract about what assumption-mismatches the function surfaces; consumers compose by handling-explicitly or propagating-via-mapError; new substrate-engineering variants surface at compile-time across every consumer.
+
+This IS the framework's load-bearing pattern for substrate-engineering across the codebase. The force-push-with-lease canonical instance is ONE specific application; the broader pattern applies to all substrate that involves potentially-drifting state.
+
 ## Composes with
 
 - `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` —
