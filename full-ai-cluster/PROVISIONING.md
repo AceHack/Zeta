@@ -66,6 +66,88 @@ nmtui form** (wifi). Switch to `Ctrl-Alt-F2` for a normal login
 shell if you need to override the auto-flow (e.g., debug, non-
 2-NVMe shape, recovery).
 
+### Interactive `zeta-install.sh` flow (when first-boot auto-flow is overridden OR `HOST` not pre-set)
+
+When the installer runs interactively, the operator sees these
+prompts in order:
+
+1. **iter-5.3 — initial password prompt** (Step 6.55)
+   Set the `zeta` user's initial console password. Press Enter to
+   skip + keep the iter-4.x default `zeta-change-me` (rotate later
+   via `passwd zeta`).
+
+2. **B-0852.3b — cred-blob passphrase prompt** (Step 6.56;
+   default-on per B-0852.3c since 2026-05-27)
+   Set a passphrase to encrypt your credentials onto the USB.
+   Future boots restore creds via the same passphrase — no more
+   re-entering `gh login` / `claude` / `gemini` / `codex` on every
+   reboot. Press Enter to skip (no cred-blob persistence; keeps
+   per-reboot re-entry behavior).
+   Encryption: AES-256-GCM with key derived via scrypt → HKDF
+   chain bound to the USB's filesystem UUID (per
+   `tools/installer/zeta-creds-crypto.ts`).
+
+3. **iter-5.2 — hostname injection** (Step 6.6)
+   If `zeta-hostname.txt` was written to the USB ESP at flash time
+   via `zflash --host <name>`, the hostname is auto-injected;
+   otherwise the flake's per-host default applies.
+
+4. **iter-5.1 — WiFi persistence** (Step 6.7) — non-interactive;
+   persists any NetworkManager profiles to the installed system.
+
+5. **iter-5.4.0 — homelab gh-auth** (Step 6.8)
+   Triggers `gh auth login` device-flow if `gh` is available.
+   Captures operator's GitHub SSH pubkeys via `gh ssh-key list`.
+
+6. **Cluster-type menu** (Step 6 host-attribute selection; B-0857.2
+   menu per PR #5635 since 2026-05-27)
+   Numbered menu with `lspci`-based hardware detection suggesting
+   the default:
+   ```
+   1) control-plane    K3S server + Cilium + ArgoCD bootstrap
+   2) worker-gpu       NVIDIA passthrough + device-plugin + Longhorn
+   3) worker-template  Cookie-cutter worker; per PROVISIONING.md
+   4) other            Custom flake host attribute (advanced)
+   ```
+   Hardware detection (NVIDIA / AMD VGA / AMD 3D / Intel Arc GPU
+   present → suggests `worker-gpu`; default → `control-plane`).
+   Operator hits Enter to accept the suggestion or types a different
+   number.
+
+7. **Step 6.95-picker — cred-blob picker** (B-0852.3c default-on
+   since 2026-05-27)
+   Auto-fires when all 3 preconditions are met:
+   - `ZETA_CREDS_PICKER` is unset OR set to `1` (default-on; opt out
+     via `ZETA_CREDS_PICKER=0` OR `touch /etc/zeta/no-picker`)
+   - `ZETA_CREDS_PASSPHRASE` is set (auto-populated by Step 6.56)
+   - `/etc/zeta/usb-uuid` is present (auto-captured by B-0852.3a-prep
+     during iter-4.2 ESP probe)
+   On opt-out, the SPECIFIC reason is echoed (no generic
+   `set ZETA_CREDS_*=1 to enable` message anymore).
+
+### Subsequent-boot credential restore (B-0852.4 since 2026-05-27)
+
+Every boot of the installed system AFTER the first install
+(assuming the operator entered a passphrase at Step 6.56) fires
+the `zeta-creds-restore.service`:
+
+1. `ConditionPathExists` check: blob + uuid + script + bun shim
+   all present → unit fires (otherwise clean no-op)
+2. `systemd-ask-password` prompts on tty1: operator types the
+   SAME passphrase they used at Step 6.56
+3. `tools/installer/zeta-creds-restore.ts` decrypts the blob +
+   writes `/home/zeta/.config/{gh,claude,gemini,codex}` per the
+   declarative manifest at `tools/installer/zeta-creds-manifest.ts`
+4. Subsequent services (`zeta-self-register.service` etc.) see
+   the restored creds + don't re-prompt for device-flow login
+
+Per-host opt-out: `zeta.credsRestore.enable = false;` in that
+host's `configuration.nix`. Per-host passphrase mode override:
+`zeta.credsRestore.passphraseMode = "file";` for headless cluster
+scenarios where tty1 prompting is inappropriate (operator pre-
+stages passphrase at `/run/zeta-creds-passphrase` via separate
+mechanism).
+
 ## Step 5 (manual override only — first-boot service handles this automatically)
 
 These commands run automatically in the zero-typing flow. Use
