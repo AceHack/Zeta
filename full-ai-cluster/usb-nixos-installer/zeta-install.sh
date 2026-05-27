@@ -1104,8 +1104,12 @@ if [ -d "$ZETA_HOME" ]; then
   sudo mkdir -p "$ZETA_HOME/.bun/bin"
   sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
   # Source mise activation so the subshell finds bun via mise shims.
+  # tail -5 INSIDE the bash -c so pipefail covers the WHOLE pipeline
+  # (per Copilot review on PR #5398: outer pipe to tail -5 was masking
+  # bun install exit status; tail outside bash -c isn't covered by
+  # the inner shell's pipefail setting).
   sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
-    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @anthropic-ai/claude-code' 2>&1 | tail -5 || \
+    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @anthropic-ai/claude-code 2>&1 | tail -5' || \
       echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot via 'bun install --global @anthropic-ai/claude-code'"
 
   # 6.95a-gemini — install @google/gemini-cli via bun (B-0850 Phase 3d).
@@ -1115,8 +1119,18 @@ if [ -d "$ZETA_HOME" ]; then
   # at implementation time (npm @google/gemini-cli is bun-compat).
   echo "[iter-5.5.0] installing @google/gemini-cli via mise-managed bun (B-0850 Phase 3d Lior 2nd vendor)..."
   sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
-    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @google/gemini-cli' 2>&1 | tail -5 || \
+    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @google/gemini-cli 2>&1 | tail -5' || \
       echo "[iter-5.5.0]   WARN: bun install gemini-cli FAILED — can retry post-reboot via 'bun install --global @google/gemini-cli'"
+
+  # 6.95a-codex — install @openai/codex via bun (B-0850 Phase 3c).
+  # 3rd vendor — hits the ≥3 BFT floor (Anthropic + Google + OpenAI).
+  # WebSearch verified per dep-pin-search-first-authority at
+  # implementation time: npm @openai/codex is bun-compat; binary
+  # lands at ~/.bun/bin/codex.
+  echo "[iter-5.5.0] installing @openai/codex via mise-managed bun (B-0850 Phase 3c Vera 3rd vendor — hits ≥3 BFT floor)..."
+  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
+    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @openai/codex 2>&1 | tail -5' || \
+      echo "[iter-5.5.0]   WARN: bun install codex FAILED — can retry post-reboot via 'bun install --global @openai/codex'"
 
   # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
   CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"
@@ -1179,6 +1193,43 @@ if [ -d "$ZETA_HOME" ]; then
     esac
   else
     echo "[iter-5.5.0] gemini binary not found at $GEMINI_BIN; skipping interactive login"
+  fi
+
+  # 6.95b-codex — interactive codex login (B-0850 Phase 3c Vera).
+  # 3rd vendor login — codex CLI has the most explicit device-flow
+  # via `codex login --device-auth` (Anthropic claude device-flow
+  # analog; works on headless / no-local-browser systems by
+  # printing URL+code for paste into ANY browser). Credentials
+  # cache at ~/.codex/auth.json (NOT ~/.config/codex/ — codex
+  # uses its own dotdir convention per the codex docs).
+  CODEX_BIN="$ZETA_HOME/.bun/bin/codex"
+  if [ -x "$CODEX_BIN" ]; then
+    echo
+    echo "[iter-5.5.0] Trigger Codex CLI interactive device-flow login NOW (B-0850 Phase 3c Vera)?"
+    echo "[iter-5.5.0]   - Uses 'codex login --device-auth' (clean device-flow shape)."
+    echo "[iter-5.5.0]   - Prints URL + one-time code; visit on ANY browser on ANY device; paste code."
+    echo "[iter-5.5.0]   - ChatGPT Plus/Pro/Business/Edu/Enterprise plans include Codex access."
+    echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.codex/auth.json (NOT ~/.config/codex)."
+    echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
+    read -r -p "[iter-5.5.0] Run codex login --device-auth now? [Y/n]: " CODEX_AUTH_REPLY
+    case "${CODEX_AUTH_REPLY:-y}" in
+      [Yy]*|"")
+        echo "[iter-5.5.0]   running 'codex login --device-auth' (interactive)..."
+        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$CODEX_BIN" login --device-auth || \
+          echo "[iter-5.5.0]   WARN: codex login failed; can re-run post-reboot"
+        # Codex stores at ~/.codex/auth.json (not ~/.config/codex);
+        # restrict perms accordingly.
+        if [ -d "$ZETA_HOME/.codex" ]; then
+          sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.codex"
+          sudo chmod -R go-rwx "$ZETA_HOME/.codex"
+        fi
+        ;;
+      *)
+        echo "[iter-5.5.0]   SKIPPED codex login; run 'codex login --device-auth' on first login"
+        ;;
+    esac
+  else
+    echo "[iter-5.5.0] codex binary not found at $CODEX_BIN; skipping interactive login"
   fi
 
   # 6.95c — persist gh credentials from installer-root to installed-zeta

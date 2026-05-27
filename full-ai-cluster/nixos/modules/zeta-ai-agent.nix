@@ -51,6 +51,10 @@ let
     otto = {
       vendor = "anthropic";
       binary = "claude";
+      # Claude Code uses --print for non-interactive one-shot mode
+      # with the <<autonomous-loop>> sentinel triggering the
+      # autonomous-loop skill (per `.claude/rules/tick-must-never-stop.md`).
+      invocationArgs = [ "--print" "<<autonomous-loop>>" ];
       description = "Otto AI agent — Claude Code (Anthropic)";
     };
 
@@ -60,6 +64,7 @@ let
     alexa = {
       vendor = "alibaba-qwen";
       binary = "kiro";  # placeholder; verify per sub-row
+      invocationArgs = [ ];  # placeholder per sub-row
       description = "Alexa AI agent — Kiro (Qwen Coder)";
     };
 
@@ -67,20 +72,31 @@ let
     riven = {
       vendor = "xai-grok";
       binary = "grok";  # placeholder; grok-build CLI per peer-call
+      invocationArgs = [ ];  # placeholder per sub-row
       description = "Riven AI agent — Grok / Grok-Build (xAI)";
     };
 
-    # Sub-row B-0850.3c target — Codex/OpenAI integration
+    # Sub-row B-0850.3c — Codex/OpenAI integration (shipped this PR).
+    # Codex uses `exec` SUBCOMMAND (not a --print flag) for non-
+    # interactive mode per the codex CLI docs. The <<autonomous-loop>>
+    # string is a Claude Code sentinel; codex sees it as a literal
+    # prompt and responds conversationally (acceptable for first ship;
+    # B-0850 Phase 3.x can introduce per-vendor prompt mapping).
     vera = {
       vendor = "openai";
-      binary = "codex";  # placeholder; verify per sub-row
+      binary = "codex";
+      invocationArgs = [ "exec" "<<autonomous-loop>>" ];
       description = "Vera AI agent — Codex (OpenAI)";
     };
 
-    # Sub-row B-0850.3d target — Gemini CLI integration
+    # Sub-row B-0850.3d — Gemini CLI integration (shipped via PR #5397).
+    # Gemini uses -p flag (NOT --print) for non-interactive prompts.
+    # Like codex, the <<autonomous-loop>> sentinel is a Claude Code
+    # convention; gemini sees it as a literal prompt.
     lior = {
       vendor = "google-gemini";
-      binary = "gemini";  # placeholder; gemini-cli per peer-call
+      binary = "gemini";
+      invocationArgs = [ "-p" "<<autonomous-loop>>" ];
       description = "Lior AI agent — Gemini CLI (Google)";
     };
   };
@@ -118,8 +134,11 @@ let
         sleep 10
         # Autonomous-loop ticks — fresh persona invocation per tick;
         # substrate continuity via repo memory + git + bus envelopes.
+        # Per-persona invocationArgs (P0 fix per Copilot review on
+        # PR #5398: each CLI has different non-interactive flags —
+        # claude --print, gemini -p, codex exec — NOT all --print).
         while true; do
-          ${cfg.home}/.bun/bin/${persona.binary} --print "<<autonomous-loop>>" 2>&1 || true
+          ${cfg.home}/.bun/bin/${persona.binary} ${lib.concatStringsSep " " (map (a: "\"${a}\"") persona.invocationArgs)} 2>&1 || true
           sleep ${toString cfg.tickIntervalSec}
         done
       '';
@@ -223,15 +242,10 @@ in
           ExecStart (binary grok doesn't exist at ~/.bun/bin/grok).
         '';
       }
-      {
-        assertion = !cfg.enable.vera;
-        message = ''
-          zeta.aiAgents.enable.vera = true requires B-0850.3c
-          (Vera/Codex install + login substrate) which has not shipped.
-          Enabling now would create a zeta-vera.service that fails
-          ExecStart (binary codex doesn't exist at ~/.bun/bin/codex).
-        '';
-      }
+      # B-0850.3c (Vera/Codex) shipped this PR — assertion removed.
+      # zeta-install.sh Step 6.95a-codex installs @openai/codex via
+      # bun + Step 6.95b-codex runs `codex login --device-auth`.
+      # Binary lands at ~/.bun/bin/codex; creds at ~/.codex/auth.json.
       # B-0850.3d (Lior/Gemini) shipped this PR — assertion removed.
       # zeta-install.sh Step 6.95a-gemini installs @google/gemini-cli
       # via bun + Step 6.95b-gemini runs interactive gemini auth login.
