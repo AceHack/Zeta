@@ -1070,23 +1070,43 @@ fi
 if [ -d "$ZETA_HOME" ]; then
   echo "[iter-5.5.0] ── claude-code install + credential persistence (B-0848) ──"
 
-  # 6.95a — install claude-code globally for the zeta user via bun
-  # (per .claude/rules/rule-0-no-sh-files.md: bun is Zeta's canonical
-  # TS/JS runtime, NOT nodejs). bun is npm-compat: `bun install --global`
-  # installs npm packages; binaries land in $BUN_INSTALL/bin (~/.bun/bin
-  # by default).
-  echo "[iter-5.5.0] installing @anthropic-ai/claude-code via bun (writable prefix in zeta home)..."
+  # 6.95a — bootstrap runtimes via mise (.mise.toml single source of
+  # truth; operator 2026-05-27 ALIGNMENT catch). Then install claude-code
+  # via bun. We pre-clone the Zeta repo at Step 6.95d-equivalent BEFORE
+  # this step so .mise.toml is available; reorder vs the original PR.
+  #
+  # Pre-clone the repo NOW (was Step 6.95d; moved up so 6.95a can read
+  # .mise.toml). Subsequent 6.95d block is a no-op if directory exists.
+  if [ ! -d "$ZETA_HOME/Zeta" ]; then
+    echo "[iter-5.5.0] pre-cloning Zeta repo to $ZETA_HOME/Zeta..."
+    sudo -u "#$ZETA_UID" git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
+      echo "[iter-5.5.0]   WARN: clone failed — claude-code install will also fail; can retry post-reboot"
+  fi
+
+  # 6.95a-bootstrap — invoke the canonical install entry from the
+  # pre-cloned repo. tools/setup/install.sh dispatches to linux.sh which
+  # detects NixOS via /etc/NIXOS, skips apt, and routes to
+  # common/mise.sh — which reads .mise.toml and installs bun =
+  # "1.3" + other pinned runtimes for the zeta user. Same single source
+  # of truth dev laptops + CI runners + devcontainers use (GOVERNANCE
+  # §24 three-way-parity extended to NixOS cluster nodes).
+  if [ -d "$ZETA_HOME/Zeta" ]; then
+    echo "[iter-5.5.0] running tools/setup/install.sh (mise-based runtime bootstrap)..."
+    sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" \
+      bash -c "cd $ZETA_HOME/Zeta && tools/setup/install.sh" 2>&1 | tail -10 || \
+        echo "[iter-5.5.0]   WARN: install.sh FAILED — runtimes may be partial; can retry post-reboot via 'cd ~/Zeta && tools/setup/install.sh'"
+  fi
+
+  # 6.95a-claude — install claude-code via the mise-managed bun.
+  # bun is now on the zeta user's PATH via mise activation; --global
+  # binaries land in ~/.bun/bin/ regardless of bun version.
+  echo "[iter-5.5.0] installing @anthropic-ai/claude-code via mise-managed bun..."
   sudo mkdir -p "$ZETA_HOME/.bun/bin"
   sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
-  if command -v bun >/dev/null 2>&1; then
-    # BUN_INSTALL sets the writable per-user prefix. Run as zeta user
-    # via sudo -u so ownership starts correct.
-    sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
-      bun install --global @anthropic-ai/claude-code 2>&1 | tail -5 || \
-        echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot"
-  else
-    echo "[iter-5.5.0]   WARN: bun not on installer PATH; skipping (post-reboot has bun from common.nix)"
-  fi
+  # Source mise activation so the subshell finds bun via mise shims.
+  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
+    bash -c 'eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @anthropic-ai/claude-code' 2>&1 | tail -5 || \
+      echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot via 'bun install --global @anthropic-ai/claude-code'"
 
   # 6.95b — interactive claude login (mirror iter-5.4.0 gh auth login)
   CLAUDE_BIN="$ZETA_HOME/.bun/bin/claude"
@@ -1132,14 +1152,11 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0] /root/.config/gh absent; nothing to persist (gh auth login was skipped?)"
   fi
 
-  # 6.95d — pre-clone Zeta repo for first-login operator convenience
-  if [ ! -d "$ZETA_HOME/Zeta" ]; then
-    echo "[iter-5.5.0] pre-cloning Zeta repo to $ZETA_HOME/Zeta (operator convenience)"
-    sudo -u "#$ZETA_UID" git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
-      echo "[iter-5.5.0]   WARN: clone failed — operator can clone manually post-reboot"
-  fi
+  # 6.95d — pre-clone now happens up in 6.95a-bootstrap (before mise
+  # install needs .mise.toml). This sub-step is intentionally empty
+  # since the clone moved up.
 
-  echo "[iter-5.5.0] ── DONE — first login will have: gh + claude + bun + kubectl + helm + k9s + argocd on PATH; ~/Zeta cloned; ~/.config/{gh,claude} populated; ~/.bun/bin on PATH ──"
+  echo "[iter-5.5.0] ── DONE — first login will have: mise-managed runtimes (bun/node/python/dotnet/java/uv/etc) + gh + claude + kubectl + helm + k9s + argocd on PATH; ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated; ~/.bun/bin on PATH ──"
 else
   echo "[iter-5.5.0] $ZETA_HOME absent; skipping (nixos-install ordering changed?)"
 fi

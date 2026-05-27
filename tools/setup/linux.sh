@@ -32,17 +32,38 @@ SETUP_DIR="$REPO_ROOT/tools/setup"
 # shellcheck source=tools/setup/common/curl-fetch.sh
 source "$SETUP_DIR/common/curl-fetch.sh"
 
-# ── Detect apt availability (Debian/Ubuntu) ─────────────────────────
-if ! command -v apt-get >/dev/null 2>&1; then
-  echo "error: this script currently supports Debian/Ubuntu only"
-  echo "  RHEL/Fedora/Arch/Alpine support is backlogged — see"
-  echo "  docs/research/build-machine-setup.md"
-  exit 1
+# ── Detect NixOS — skip apt step entirely, use systemPackages instead ──
+# iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
+# NixOS provides system packages declaratively via common.nix
+# environment.systemPackages, NOT apt. The same install.sh entry-point
+# can still bootstrap a NixOS cluster node by skipping the apt step and
+# going directly to mise.sh for runtime version management. Operator
+# framing: "our install.sh for mac and linux this is our default" —
+# extending NixOS support keeps that default operational on cluster
+# nodes invoked from zeta-install.sh Step 6.95a.
+if [ -f /etc/NIXOS ]; then
+  echo "✓ NixOS detected — skipping apt (system packages declared in common.nix);"
+  echo "  proceeding directly to mise + downstream runtime setup"
+  IS_NIXOS=1
+else
+  IS_NIXOS=0
+  # ── Detect apt availability (Debian/Ubuntu) ─────────────────────────
+  if ! command -v apt-get >/dev/null 2>&1; then
+    echo "error: this script currently supports Debian/Ubuntu + NixOS"
+    echo "  (NixOS detected via /etc/NIXOS marker file)"
+    echo "  RHEL/Fedora/Arch/Alpine support is backlogged — see"
+    echo "  docs/research/build-machine-setup.md"
+    exit 1
+  fi
 fi
 
 # ── 1. apt packages (from manifest) ─────────────────────────────────
+# NixOS handles system packages via common.nix systemPackages declarative;
+# skip the entire apt step. mise + downstream still run.
 APT_MANIFEST="$SETUP_DIR/manifests/apt"
-if [ -f "$APT_MANIFEST" ]; then
+if [ "$IS_NIXOS" = 1 ]; then
+  echo "✓ skipping apt (NixOS — see common.nix environment.systemPackages)"
+elif [ -f "$APT_MANIFEST" ]; then
   # Extract non-comment non-empty lines via awk (doesn't fail
   # under pipefail when manifest is all comments — unlike
   # `grep -vE` which exits 1 on no-match).

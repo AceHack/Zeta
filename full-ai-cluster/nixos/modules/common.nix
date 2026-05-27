@@ -169,15 +169,28 @@
     # node-register tooling).
     gh
 
-    # iter-5.5.0 (B-0848 Phase 2, Aaron 2026-05-27): bun for the
-    # node-local Claude Code agent (per .claude/rules/rule-0-no-sh-files.md
-    # — bun is Zeta's canonical TS/JS runtime, NOT nodejs). claude-code
-    # is published as an npm package but bun has high Node-compat AND
-    # bun's `bun install --global` + `bun x` work as npm/npx replacements.
-    # bun installs to /home/zeta/.bun/bin/ (per-user writable; NixOS
-    # /nix/store is RO). zeta-install.sh Step 6.95 does the bun install
-    # + interactive `claude login` + credential persistence + repo pre-clone.
-    bun
+    # iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
+    # `mise` is Zeta's canonical runtime version manager — the .mise.toml
+    # at repo root pins bun = "1.3" + dotnet + python = "3.14" + java +
+    # uv + actionlint + shellcheck + node + markdownlint-cli2 for ALL
+    # contexts (dev laptops + CI runners + devcontainers per GOVERNANCE
+    # §24 three-way parity). Cluster nodes inherit the SAME runtime
+    # pins via mise reading the same .mise.toml — single source of truth.
+    #
+    # Earlier draft of this PR added `bun` directly via nixpkgs which
+    # DRIFTED from the .mise.toml-pinned bun = "1.3" (would have run
+    # whatever bun version nixpkgs ships — could mismatch dev). Operator
+    # caught: "we already do this we've drifted for nixos for some
+    # reason for bun".
+    #
+    # zeta-install.sh Step 6.95a now invokes the canonical entry
+    # `tools/setup/install.sh` from the pre-cloned Zeta repo (which
+    # detects Linux, dispatches to linux.sh, which detects NixOS via
+    # /etc/NIXOS marker file and routes directly to common/mise.sh).
+    # Mise then installs bun + all other .mise.toml runtimes for the
+    # zeta user. Subsequent `bun install --global @anthropic-ai/claude-code`
+    # uses the mise-managed bun.
+    mise
 
     # iter-5.5 NetBIOS client tools — `samba` package brings
     # nmblookup/smbclient binaries so operator can query NetBIOS name
@@ -192,23 +205,29 @@
     samba
   ];
 
-  # iter-5.5.0 (B-0848 Phase 2, Aaron 2026-05-27): user-local bun prefix
-  # on PATH for all login shells so `claude` (installed via
-  # `bun install --global` to /home/zeta/.bun/bin in zeta-install.sh
-  # Step 6.95) is reachable without manual PATH munging on first login.
-  # Per .claude/rules/rule-0-no-sh-files.md: bun is canonical TS/JS
-  # runtime in Zeta (NOT nodejs).
+  # iter-5.5.0 (B-0848 Phase 2, operator 2026-05-27 ALIGNMENT catch):
+  # PATH setup for both mise-managed runtimes AND bun's --global prefix.
+  # mise puts shims at ~/.local/share/mise/shims/ (which mise activation
+  # auto-prepends), AND bun's `bun install --global` lands binaries at
+  # ~/.bun/bin/ (where claude-code ends up). Both need to be on PATH.
   environment.sessionVariables = {
     BUN_INSTALL = "$HOME/.bun";
   };
 
-  # /etc/profile.d/ snippet so $HOME-relative PATH extension happens
-  # at shell-init time (NixOS sessionVariables stores literal `$HOME`
-  # which wouldn't expand correctly without per-shell init).
+  # /etc/profile.d/ snippet: mise activation + bun global bin.
+  # mise activate writes shims to ~/.local/share/mise/shims/ and adds
+  # them to PATH automatically; bun --global writes binaries to
+  # ~/.bun/bin/ which we add explicitly. $HOME expansion happens at
+  # shell-init time when this file sources.
   environment.etc."profile.d/zeta-user-paths.sh".text = ''
-    # iter-5.5.0 (B-0848): include user's bun-global bin on PATH so
-    # claude-code (and any other `bun install --global` user-scope
-    # binaries) are reachable without manual setup.
+    # iter-5.5.0 (B-0848): mise + bun PATH setup for the zeta user.
+    # mise activate sets up shims for all .mise.toml runtimes (bun,
+    # node, dotnet, python, java, uv, actionlint, shellcheck, etc.)
+    if command -v mise >/dev/null 2>&1; then
+      eval "$(mise activate bash)"
+    fi
+    # bun's `bun install --global` writes binaries here (claude-code
+    # lands at $HOME/.bun/bin/claude).
     if [ -d "$HOME/.bun/bin" ]; then
       export PATH="$HOME/.bun/bin:$PATH"
     fi
