@@ -44,7 +44,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0006](backlog/P1/B-0006-memory-md-compression-pass-prune-distill-entries-to-one-line-cap-200-lines.md)** MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap
 - [ ] **[B-0058](backlog/P1/B-0058-ai-ethics-and-safety-research-track.md)** AI ethics + safety research track — filter-gate for resonance adoptions + alignment-clause consistency audit
 - [ ] **[B-0058.1](backlog/P1/B-0058.1-retractibility-gate.md)** AI ethics + safety research track — retractibility-and-log check
-- [ ] **[B-0058.3](backlog/P1/B-0058.3-candidate-failure-honesty-log.md)** Candidate-failure honesty log
+- [x] **[B-0058.3](backlog/P1/B-0058.3-candidate-failure-honesty-log.md)** Candidate-failure honesty log
 - [ ] **[B-0058.4](backlog/P1/B-0058.4-alignment-clause-drift-detector.md)** Alignment-clause drift detector tool and workflow
 - [ ] **[B-0060](backlog/P1/B-0060-human-lineage-external-anchor-backfill-all-substrate-beacon-safe.md)** Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept
 - [x] **[B-0061](backlog/P1/B-0061-finish-monolith-to-per-row-migration-no-residue-aaron-2026-04-28.md)** Finish docs/BACKLOG.md monolith → per-row migration — "don't miss anything, no residue for next-Otto" (Aaron 2026-04-28)
