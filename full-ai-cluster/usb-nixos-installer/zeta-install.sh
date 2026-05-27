@@ -985,8 +985,11 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 #
 # WiFi-reproducibility (empirical 2026-05-26: cache.nixos.org timeouts
 # on same 5 derivations twice in a row over WiFi):
-#   --fallback: build from source if substitute download fails (don't bail
-#               — keeps the install moving even when cache is flaky)
+#   --option fallback true: build from source if substitute download fails
+#               (don't bail — keeps the install moving even when cache is flaky)
+#               (NOTE: this is the Nix-option pass-through form; nixos-install
+#               does NOT accept top-level --fallback flag — empirical 2026-05-27
+#               Aaron USB boot failure: `unknown option '--fallback'`)
 #   --option connect-timeout 10: drop dead substituter connections fast
 #               instead of waiting the default 0 (=no timeout)
 #   --option stalled-download-timeout 60: cut the 300s default by 5×; a
@@ -1000,7 +1003,7 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 # tracked at B-0846.
 sudo nixos-install \
   --impure \
-  --fallback \
+  --option fallback true \
   --option connect-timeout 10 \
   --option stalled-download-timeout 60 \
   --option download-attempts 3 \
