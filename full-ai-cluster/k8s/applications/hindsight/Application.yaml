@@ -1,9 +1,10 @@
-# Hindsight (vectorize-io) — agent persistent memory system for Hermes.
+# Hindsight (vectorize-io) — agent persistent memory system for any
+# in-cluster agent runtime that needs memory persistence.
 # Real chart wired: OCI Helm chart at ghcr.io/vectorize-io/charts/hindsight.
 #
-# Pairs with hermes/Application.yaml — Hermes' deployment.yaml
-# sets `HINDSIGHT_URL=http://hindsight.hindsight.svc.cluster.local`
-# which matches this Application's namespace + chart-default service name.
+# Consumer agents reach Hindsight via:
+#   HINDSIGHT_URL=http://hindsight.hindsight.svc.cluster.local
+# (matches this Application's namespace + chart-default service name).
 
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -35,8 +36,9 @@ spec:
 
         api:
           # LLM provider Hindsight uses for its own entity/relation
-          # extraction (separate from Hermes' LLM choice). Sourced
-          # from a Vault-backed ExternalSecret rather than hardcoded.
+          # extraction (separate from consumer-agent's LLM choice).
+          # Sourced from a Vault-backed ExternalSecret rather than
+          # hardcoded.
           llm:
             provider: groq   # change per maintainer preference
             existingSecret:

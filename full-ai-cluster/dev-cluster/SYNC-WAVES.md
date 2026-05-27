@@ -38,7 +38,6 @@ ArgoCD App-of-Apps (after ArgoCD is up):
   Wave  10  hindsight                 needs PostgreSQL (bundled) + Vault secret for LLM key
   Wave  10  orleans                   needs CockroachDB + NATS up
   Wave  10  temporal                  needs CockroachDB up
-  Wave  20  hermes                    needs Vault secret for LLM key + Hindsight + OZ + Orleans
   Wave  30  gitlab / forgejo          source-of-truth services; come up last so all dependent
                                        observability + storage is ready
   Wave  50  ollama / vllm / deepseek-coder / qwen-coder   GPU model servers; manual-sync-only
@@ -61,10 +60,10 @@ ArgoCD App-of-Apps (after ArgoCD is up):
   exist when the workload reconciles.
 - **Data planes before consumers**: CockroachDB / NATS / Redis /
   Weaviate / PostgreSQL must be Ready before apps that connect.
-- **Apps with secret dependencies late**: Hermes pulls the LLM API
-  key from Vault via ESO. ESO must have synced the secret to a
-  k8s Secret object before Hermes pods start. Sync wave gives ESO
-  a head start.
+- **Apps with secret dependencies late**: agent-runtime workloads
+  pull LLM API keys from Vault via ESO. ESO must have synced the
+  secret to a k8s Secret object before pods start. Sync wave gives
+  ESO a head start.
 - **Source-of-truth services last**: GitLab + Forgejo (mutually
   exclusive, only one default-on) should come up after everything
   observability / storage / runtime is ready, so first-boot
