@@ -31,6 +31,7 @@ describe("buildInventoryReport", () => {
     expect(report.allowlistIntegrity.duplicateEntries).toEqual([]);
     expect(report.allowlistIntegrity.orderViolations).toEqual([]);
     expect(report.allowlistIntegrity.uncategorizedEntries).toEqual([]);
+    expect(report.allowlistIntegrity.staleCategoryEntries).toEqual([]);
     expect(report.retained).toHaveLength(EXPECTED_RETAINED_SHELL.length);
     expect(report.drift.unexpected).toEqual([]);
     expect(report.drift.missingRetained).toEqual([]);
@@ -72,6 +73,7 @@ describe("buildInventoryReport", () => {
     expect(report.allowlistIntegrity.duplicateEntries).toEqual([duplicate]);
     expect(report.allowlistIntegrity.orderViolations).toEqual([]);
     expect(report.allowlistIntegrity.uncategorizedEntries).toEqual([]);
+    expect(report.allowlistIntegrity.staleCategoryEntries).toEqual([]);
     expect(report.drift.unexpected).toEqual([]);
     expect(report.drift.missingRetained).toEqual([]);
   });
@@ -84,6 +86,20 @@ describe("buildInventoryReport", () => {
     expect(report.allowlistIntegrity.duplicateEntries).toEqual([]);
     expect(report.allowlistIntegrity.orderViolations).toEqual([{ index: 1, previous: second, current: first }]);
     expect(report.allowlistIntegrity.uncategorizedEntries).toEqual([]);
+    expect(report.allowlistIntegrity.staleCategoryEntries).toEqual([]);
+    expect(report.drift.unexpected).toEqual([]);
+    expect(report.drift.missingRetained).toEqual([]);
+  });
+
+  test("flags category metadata entries that are no longer retained", () => {
+    const [stale, rest] = splitExpectedRetained();
+    const report = buildInventoryReport(rest, rest);
+
+    expect(hasDrift(report)).toBe(true);
+    expect(report.allowlistIntegrity.duplicateEntries).toEqual([]);
+    expect(report.allowlistIntegrity.orderViolations).toEqual([]);
+    expect(report.allowlistIntegrity.uncategorizedEntries).toEqual([]);
+    expect(report.allowlistIntegrity.staleCategoryEntries).toEqual([stale]);
     expect(report.drift.unexpected).toEqual([]);
     expect(report.drift.missingRetained).toEqual([]);
   });
@@ -159,6 +175,17 @@ describe("renderReport", () => {
     expect(rendered).toContain("## Retained shell allowlist integrity errors");
     expect(rendered).toContain("### Duplicate entries");
     expect(rendered).toContain(duplicate);
+    expect(rendered).not.toContain("## Unexpected non-Lean shell files");
+  });
+
+  test("renders stale category map entries as allowlist integrity errors", () => {
+    const [stale, rest] = splitExpectedRetained();
+    const rendered = renderReport(buildInventoryReport(rest, rest));
+
+    expect(rendered).toContain("## Retained shell allowlist integrity errors");
+    expect(rendered).toContain("free of stale category metadata");
+    expect(rendered).toContain("### Stale category entries");
+    expect(rendered).toContain(stale);
     expect(rendered).not.toContain("## Unexpected non-Lean shell files");
   });
 });

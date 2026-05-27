@@ -40,6 +40,7 @@ interface AllowlistIntegrity {
   readonly duplicateEntries: readonly string[];
   readonly orderViolations: readonly AllowlistOrderViolation[];
   readonly uncategorizedEntries: readonly string[];
+  readonly staleCategoryEntries: readonly string[];
 }
 
 export type RetainedShellCategory =
@@ -180,6 +181,7 @@ export const trackedNonLeanBashFilesFromGit = trackedNonLeanShellFilesFromGit;
 
 function inspectAllowlistIntegrity(expectedRetained: readonly string[]): AllowlistIntegrity {
   const counts = new Map<string, number>();
+  const expectedSet = new Set(expectedRetained);
   const orderViolations: AllowlistOrderViolation[] = [];
   const uncategorizedEntries = new Set<string>();
 
@@ -200,10 +202,15 @@ function inspectAllowlistIntegrity(expectedRetained: readonly string[]): Allowli
     .map(([file]) => file)
     .sort((a, b) => a.localeCompare(b));
 
+  const staleCategoryEntries = Object.keys(RETAINED_SHELL_CATEGORY_BY_FILE)
+    .filter((file) => !expectedSet.has(file))
+    .sort((a, b) => a.localeCompare(b));
+
   return {
     duplicateEntries,
     orderViolations,
     uncategorizedEntries: [...uncategorizedEntries].sort((a, b) => a.localeCompare(b)),
+    staleCategoryEntries,
   };
 }
 
@@ -211,7 +218,8 @@ function hasAllowlistIntegrityDrift(integrity: AllowlistIntegrity): boolean {
   return (
     integrity.duplicateEntries.length > 0 ||
     integrity.orderViolations.length > 0 ||
-    integrity.uncategorizedEntries.length > 0
+    integrity.uncategorizedEntries.length > 0 ||
+    integrity.staleCategoryEntries.length > 0
   );
 }
 
@@ -282,6 +290,7 @@ export function renderReport(report: InventoryReport): string {
   lines.push(`allowlist_duplicates: ${String(report.allowlistIntegrity.duplicateEntries.length)}`);
   lines.push(`allowlist_order_violations: ${String(report.allowlistIntegrity.orderViolations.length)}`);
   lines.push(`allowlist_uncategorized: ${String(report.allowlistIntegrity.uncategorizedEntries.length)}`);
+  lines.push(`allowlist_stale_category_entries: ${String(report.allowlistIntegrity.staleCategoryEntries.length)}`);
   lines.push(`unexpected: ${String(report.drift.unexpected.length)}`);
   lines.push(`missing_retained: ${String(report.drift.missingRetained.length)}`);
   lines.push("");
@@ -298,7 +307,9 @@ export function renderReport(report: InventoryReport): string {
   if (hasAllowlistIntegrityDrift(report.allowlistIntegrity)) {
     lines.push("## Retained shell allowlist integrity errors");
     lines.push("");
-    lines.push("The retained shell allowlist must be unique and sorted before repo shell drift is classified.");
+    lines.push(
+      "The retained shell allowlist must be unique, sorted, fully categorized, and free of stale category metadata before repo shell drift is classified.",
+    );
     lines.push("");
     if (report.allowlistIntegrity.duplicateEntries.length > 0) {
       lines.push("### Duplicate entries");
@@ -318,6 +329,12 @@ export function renderReport(report: InventoryReport): string {
       lines.push("### Missing category entries");
       lines.push("");
       for (const file of report.allowlistIntegrity.uncategorizedEntries) lines.push(`- ${file}`);
+      lines.push("");
+    }
+    if (report.allowlistIntegrity.staleCategoryEntries.length > 0) {
+      lines.push("### Stale category entries");
+      lines.push("");
+      for (const file of report.allowlistIntegrity.staleCategoryEntries) lines.push(`- ${file}`);
       lines.push("");
     }
     return `${lines.join("\n")}\n`;
