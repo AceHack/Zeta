@@ -49,6 +49,9 @@ on:
       - 'full-ai-cluster/tools/**'
       - 'tools/ci/audit-installer-substrate.ts'
       - 'tools/ci/audit-installer-iso-content.ts'
+      - 'tools/ci/qemu-boot-test.ts'
+      - 'tools/ci/qemu-full-install-test.ts'
+      - 'tools/ci/test-iter-54-install-flow.test.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   push:
     branches: [main]
@@ -60,6 +63,9 @@ on:
       - 'full-ai-cluster/tools/**'
       - 'tools/ci/audit-installer-substrate.ts'
       - 'tools/ci/audit-installer-iso-content.ts'
+      - 'tools/ci/qemu-boot-test.ts'
+      - 'tools/ci/qemu-full-install-test.ts'
+      - 'tools/ci/test-iter-54-install-flow.test.ts'
       - '.github/workflows/build-ai-cluster-iso.yml'
   workflow_dispatch:
 
@@ -221,6 +227,13 @@ jobs:
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         continue-on-error: true
         working-directory: full-ai-cluster
+        # SERIAL_LOG_OUT_PATH points to a workspace-relative path so the
+        # serial log survives the test step + can be uploaded as artifact
+        # in the subsequent step (per Copilot post-merge finding on PR
+        # #5379: prior tmpdir path was outside workspace + lost on runner
+        # exit).
+        env:
+          SERIAL_LOG_OUT_PATH: ${{ github.workspace }}/qemu-full-install-serial.log
         run: |
           set -euo pipefail
           mapfile -t iso_candidates < <(find result/iso -maxdepth 1 -type f \( -name 'zeta-installer-*.iso' -o -name 'nixos-minimal-*.iso' \) | sort)
@@ -230,7 +243,21 @@ jobs:
           fi
           iso_abs=$(readlink -f "${iso_candidates[0]}")
           echo "Full-install testing ISO: $iso_abs"
+          echo "Serial log out path: $SERIAL_LOG_OUT_PATH"
           bun ../tools/ci/qemu-full-install-test.ts "$iso_abs"
+
+      # Upload serial log as workflow artifact regardless of test outcome
+      # so debug post-mortem is always possible. `if: always()` because
+      # failure case is the most interesting — successful runs have
+      # nothing to debug. Per Copilot post-merge finding on PR #5379.
+      - name: Upload QEMU full-install serial log
+        if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: qemu-full-install-serial-log
+          path: qemu-full-install-serial.log
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Locate ISO + capture metadata
         id: iso

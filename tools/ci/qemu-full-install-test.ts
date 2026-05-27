@@ -64,13 +64,26 @@ import { existsSync, mkdtempSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-// Success marker: the `[iter-5.3]` prefix appears at the password-prompt
-// line in zeta-install.sh. Reaching this point PROVES the install
-// completed: partition + format + nixos-install + iter-4.2 SSH pubkey
-// probe + iter-5.2 hostname injection. The next phase (iter-5.3 password
-// prompt) requires operator-stdin which we don't provide in this starter
-// — that's deferred to follow-up PR work.
-const SUCCESS_MARKER = "[iter-5.3]";
+// Success marker: the `[iter-5.1]` prefix appears at the wifi-persistence
+// step in zeta-install.sh (Step 6.7; line 527). This is the correct
+// post-nixos-install marker because it fires AFTER:
+//   - Steps 1-5 (partition + format + mount)
+//   - Step 6 (clone + install) including the nixos-install invocation
+//   - Step 6.5 iter-4.2 SSH pubkey probe
+//   - Step 6.55 iter-5.3 password prompt (gracefully skipped in CI when
+//     stdin returns empty — INJECTED_PW="" → default-keep path)
+//   - Step 6.6 iter-5.2 hostname injection
+// And BEFORE:
+//   - Step 6.8 iter-5.4.0 gh auth prompt (which hangs in CI without
+//     operator stdin to type 'n' OR mock GH device-code endpoint per
+//     B-0833 Approach A)
+//
+// Per Copilot post-merge finding on PR #5379: the prior `[iter-5.3]`
+// marker fired BEFORE the actual `nixos-install` invocation (Step 6.55
+// is at line 372 of zeta-install.sh; the `sudo nixos-install` call is
+// at line 980), so the test could pass without proving the install
+// actually completed. `[iter-5.1]` correctly comes AFTER nixos-install.
+const SUCCESS_MARKER = "[iter-5.1]";
 
 // Hard-fail markers — if any of these appear, fail fast instead of
 // waiting for timeout. Add more as empirical failure modes are observed.
@@ -245,7 +258,11 @@ async function main(): Promise<never> {
 
   const tmpDir = mkdtempSync(join(tmpdir(), "zeta-qemu-full-install-test-"));
   const diskPath = join(tmpDir, "install-target.qcow2");
-  const serialLogPath = join(tmpDir, "serial.log");
+  // Env-overridable serial log path so CI workflow can write to a
+  // known workspace-relative path for artifact upload (per Copilot
+  // post-merge finding on PR #5379: prior tmpdir path was outside
+  // workspace + lost on runner exit).
+  const serialLogPath = process.env.SERIAL_LOG_OUT_PATH ?? join(tmpDir, "serial.log");
 
   console.log(`[qemu-full-install-test] ISO: ${isoPath}`);
   console.log(`[qemu-full-install-test] Virtual disk: ${diskPath} (${DISK_SIZE_GB}GB qcow2 sparse)`);
@@ -264,12 +281,34 @@ async function main(): Promise<never> {
   });
 
   let qemuExited = false;
-  qemu.on("exit", (code) => {
-    qemuExited = true;
-    console.log(`[qemu-full-install-test] QEMU exited with code ${code}`);
+  let qemuExitCode: number | null = null;
+  const qemuExitPromise = new Promise<InstallResult>((res) => {
+    qemu.on("exit", (code) => {
+      qemuExited = true;
+      qemuExitCode = code;
+      console.log(`[qemu-full-install-test] QEMU exited with code ${code}`);
+      // Per Copilot post-merge finding on PR #5379: if QEMU exits early
+      // (bad args, KVM/device failure, disk attach error), the marker-
+      // wait would otherwise sit through the full 30-min timeout
+      // pointlessly. Race the marker wait against this exit so we fail
+      // immediately when QEMU dies before the marker can appear.
+      const tail = existsSync(serialLogPath)
+        ? readFileSync(serialLogPath, "utf8").slice(-2000)
+        : "(serial log empty or never created)";
+      res({
+        exitCode: 1,
+        reason: `FAILURE — QEMU exited prematurely with code ${code} before "${SUCCESS_MARKER}" was observed (bad args / KVM unavailable / disk error / device-init failure)`,
+        serialLogTail: tail,
+      });
+    });
   });
 
-  const result = await waitForInstallProgress(serialLogPath);
+  // Race the marker-wait against QEMU early-exit. Whichever resolves
+  // first wins; both check the serial log + report consistently.
+  const result = await Promise.race([
+    waitForInstallProgress(serialLogPath),
+    qemuExitPromise,
+  ]);
 
   if (!qemuExited) {
     console.log(`[qemu-full-install-test] Killing QEMU (PID ${qemu.pid})`);
@@ -278,6 +317,9 @@ async function main(): Promise<never> {
       if (!qemuExited) qemu.kill("SIGKILL");
     }, 5000);
   }
+  // Suppress unused-var warning — qemuExitCode is read in the exit
+  // handler above; this acknowledges the captured value to lint.
+  void qemuExitCode;
 
   console.log("");
   console.log("=== Result ===");
