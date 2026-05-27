@@ -68,13 +68,13 @@ describe("parseBakeCredArg", () => {
 describe("resolveValueSource — literal", () => {
   it("returns utf8 bytes of literal string", () => {
     const result = resolveValueSource("hello world");
-    if (!(result instanceof Buffer)) throw new Error(result.error);
+    if ("error" in result) throw new Error(result.error);
     expect(result.toString("utf8")).toBe("hello world");
   });
 
   it("preserves multi-line literals", () => {
     const result = resolveValueSource("line1\nline2");
-    if (!(result instanceof Buffer)) throw new Error(result.error);
+    if ("error" in result) throw new Error(result.error);
     expect(result.toString("utf8")).toBe("line1\nline2");
   });
 });
@@ -82,7 +82,7 @@ describe("resolveValueSource — literal", () => {
 describe("resolveValueSource — env: source", () => {
   it("returns env var contents", () => {
     const result = resolveValueSource("env:TEST_VAR", { TEST_VAR: "value-from-env" });
-    if (!(result instanceof Buffer)) throw new Error(result.error);
+    if ("error" in result) throw new Error(result.error);
     expect(result.toString("utf8")).toBe("value-from-env");
   });
 
@@ -121,7 +121,7 @@ describe("resolveValueSource — @file source", () => {
 
   it("reads file contents at absolute path", () => {
     const result = resolveValueSource(`@${testFile}`);
-    if (!(result instanceof Buffer)) throw new Error(result.error);
+    if ("error" in result) throw new Error(result.error);
     expect(result.toString("utf8")).toBe("file contents from disk");
   });
 

@@ -99,7 +99,7 @@ The operator's threat-model acknowledgement is itself substrate-engineering: nam
 - `zeta-install.sh` = "turn this hardware into a NixOS-booting build machine"
 - `install.sh` = "configure runtime on this build machine" (works the same whether the build machine is a dev laptop or a cluster node)
 
-PR #5389 commit message (a9fca1e52f, 2026-05-27) said zeta-install.sh Step 6.95a invokes tools/setup/install.sh as "THE default entry," but grep of current zeta-install.sh finds NO actual invocation. Either drifted out or the integration is at a higher abstraction layer. **Audit task** (sub-row B-0857.1): verify integration state + repair if drifted.
+PR #5389 commit message (a9fca1e52f, 2026-05-27) said zeta-install.sh Step 6.95a invokes tools/setup/install.sh as "THE default entry." **Audit verified (B-0857.1, 2026-05-27)**: integration IS present at `full-ai-cluster/usb-nixos-installer/zeta-install.sh:1097-1099` inside Step 6.95a-bootstrap; no drift; no repair needed. The prior row-body authoring claim that "grep finds NO actual invocation" was an authoring error caught by the B-0857.1 audit sub-row (substrate-drift catch per `.claude/rules/verify-existing-substrate-before-authoring.md`).
 
 ## Migration target (this row's substrate-engineering scope)
 

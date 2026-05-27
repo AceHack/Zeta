@@ -126,16 +126,16 @@ export function parseEnvelope(blob: Buffer): Envelope | { readonly error: string
   }
 
   const salt = readLenPrefixed(2, "salt");
-  if (!(salt instanceof Buffer)) return salt;
+  if ("error" in salt) return salt;
 
   const iv = readLenPrefixed(2, "iv");
-  if (!(iv instanceof Buffer)) return iv;
+  if ("error" in iv) return iv;
 
   const tag = readLenPrefixed(2, "tag");
-  if (!(tag instanceof Buffer)) return tag;
+  if ("error" in tag) return tag;
 
   const ciphertext = readLenPrefixed(4, "ciphertext");
-  if (!(ciphertext instanceof Buffer)) return ciphertext;
+  if ("error" in ciphertext) return ciphertext;
 
   // v1: extra trailing bytes are an error (future versions may relax)
   if (offset !== blob.length) {

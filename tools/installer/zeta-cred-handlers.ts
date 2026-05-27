@@ -245,7 +245,7 @@ export function resolveBakeCred(
   }
 
   const value = resolveValueSource(parsed.source, env);
-  if (!(value instanceof Buffer)) {
+  if ("error" in value) {
     return { error: `${parsed.id}: ${value.error}` };
   }
 
