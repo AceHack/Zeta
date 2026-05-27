@@ -90,6 +90,16 @@
     skopeo
     kubectl kubernetes-helm k9s argocd
     cilium-cli hubble
+
+    # B-0835 fix (Aaron 2026-05-27 control-plane install): gh CLI was
+    # available in the installer ISO's PATH (iter-5.4.0 used it for
+    # `gh auth login` during install) but NOT in the installed system's
+    # PATH after reboot. Operator empirically hit "gh: command not found"
+    # on first login. The gh-auth tokens stored in ~/.config/gh during
+    # install are useless without the binary. gh stays in systemPackages
+    # for ongoing operator workflows (re-auth, ssh-key sync, future
+    # node-register tooling).
+    gh
   ];
 
   boot.loader = {

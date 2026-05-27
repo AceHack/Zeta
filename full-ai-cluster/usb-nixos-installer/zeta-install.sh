@@ -778,7 +778,12 @@ if [ "$GH_AUTH_OK" = 1 ]; then
     # Storage lines: indented 6 spaces to nest under spec.hardware.storage
     # (Copilot finding on #5352 — was a sibling of `hardware:` at 4 spaces; the
     # B-0813 schema places storage under hardware block).
-    STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
+    # Filter zero-size devices ($2 != "0B"): empty SD card readers, optical
+    # bays, and other placeholder block devices show up in `lsblk -ndo`
+    # output with SIZE=0B and confuse any reconciler that interprets the
+    # storage list as usable. Copilot finding on PR #5380 (Aaron's
+    # 2026-05-27 control-plane registration surfaced `/dev/sda 0B`).
+    STORAGE_LINES=$(lsblk -ndo NAME,SIZE,TYPE -e7 2>/dev/null | awk '$3=="disk" && $2!="0B"{print "      - \"/dev/" $1 " " $2 "\""}' || echo "")
     REG_TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     FLAKE_COMMIT=$(git -C /mnt/etc/zeta rev-parse HEAD 2>/dev/null | head -c 12 || echo "unknown")
 
