@@ -8,6 +8,7 @@ export const WorkerProcessEnvName = {
   CockroachDatabaseUrl: "COCKROACH_DATABASE_URL",
   NatsDurable: "NATS_DURABLE",
   NatsInboundBatchSize: "NATS_INBOUND_BATCH_SIZE",
+  NatsServers: "NATS_SERVERS",
   NatsStream: "NATS_STREAM",
   WorkerInboundBatchSize: "WORKER_INBOUND_BATCH_SIZE",
   WorkerOutboxBatchSize: "WORKER_OUTBOX_BATCH_SIZE",
@@ -19,6 +20,7 @@ export type WorkerProcessEnvironment = Partial<Record<WorkerProcessEnvName, stri
 
 export type WorkerDurableRuntimeConfig = {
   cockroachDatabaseUrl: string;
+  natsServers: readonly string[];
   workerInboundBatchSize: number;
   workerOutboxBatchSize: number;
 };
@@ -32,6 +34,7 @@ export function parseWorkerRuntimeConfigFromEnv(env: WorkerProcessEnvironment): 
       WorkerProcessEnvName.CockroachDatabaseUrl,
       WorkerRuntimeConfigErrorCode.MissingCockroachDatabaseUrl,
     ),
+    natsServers: parseNatsServers(env[WorkerProcessEnvName.NatsServers]),
     environment: readRequiredEnvValue(
       env,
       WorkerProcessEnvName.AgenticOrgEnv,
@@ -74,6 +77,22 @@ function readRequiredEnvValue(
 
 function parseNatsInboundBatchSize(value: string | undefined): number {
   return parsePositiveDecimalInteger(value, WorkerRuntimeConfigErrorCode.InvalidNatsInboundBatchSize);
+}
+
+function parseNatsServers(value: string | undefined): readonly string[] {
+  const trimmedValue = value?.trim();
+
+  if (trimmedValue === undefined || trimmedValue.length === 0) {
+    throw new WorkerRuntimeConfigError(WorkerRuntimeConfigErrorCode.MissingNatsServers);
+  }
+
+  const servers = trimmedValue.split(",").map((server) => server.trim());
+
+  if (servers.length === 0 || servers.some((server) => server.length === 0)) {
+    throw new WorkerRuntimeConfigError(WorkerRuntimeConfigErrorCode.InvalidNatsServers);
+  }
+
+  return servers;
 }
 
 function parseWorkerInboundBatchSize(value: string | undefined): number {

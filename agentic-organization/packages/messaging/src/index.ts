@@ -1,4 +1,10 @@
-export { AgenticSubjectPrefix, buildAgenticEventSubject, type AgenticEventSubjectInput } from "./subject-builder.ts";
+export {
+  AgenticSubjectPrefix,
+  buildAgenticDeadLetterSubject,
+  buildAgenticEventSubject,
+  type AgenticDeadLetterSubjectInput,
+  type AgenticEventSubjectInput,
+} from "./subject-builder.ts";
 export {
   AgenticMessagingDomain,
   OutboxPublishOutcomeStatus,

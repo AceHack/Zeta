@@ -176,6 +176,38 @@ or telemetry adapters, the failure should produce explicit startup
 evidence and a degraded/readiness signal rather than disappearing before
 agents and operators can inspect it.
 
+The worker process now has the first executable readiness boundary:
+dependency probes return typed ready/not-ready checks and the aggregate
+readiness result degrades when any dependency is not ready or when a
+probe throws. The first NATS process adapter contributes a NATS
+readiness probe alongside its publisher, pull-consumer, dead-letter, and
+shutdown ports. Later entrypoints should expose this result through
+Kubernetes readiness probes and structured startup telemetry, then link
+failures to the same trace and weak-point vocabulary used by
+worker-cycle telemetry.
+
+Durable transaction and publication ambiguity also counts as observable
+runtime evidence. A Cockroach ambiguous commit, stale outbox claim,
+missing outbox claim, or duplicate publish mark should surface as a
+weak-point trail with the command ID, event ID, claim ID when present,
+trace ID, and worker runtime stage so agents can distinguish harmless
+replay pressure from a real harness or consistency problem.
+
+The first worker telemetry adapter is deliberately simple: an app-local
+JSON sink that records timestamp, event name, and stable worker/NATS
+attributes. This gives local runs and cluster logs the same field shape
+before an OTLP exporter is introduced. Later Alloy/Loki/Tempo/Mimir
+binding should ingest or translate this shape rather than inventing a
+parallel telemetry vocabulary.
+
+Worker failure evidence is intentionally contract-bound. Runtime hosts
+may attach only domain-defined evidence keys to worker-cycle failures;
+unknown keys are dropped at the worker boundary instead of entering
+telemetry as ad hoc fields. The first recorded worker failure is
+projected under the stable `agentic.worker.failure.first_*` attribute
+namespace so later multiple-failure reporting can add additional
+families without changing the meaning of existing dashboards.
+
 ## Implementation Rule
 
 When adding a package, command, adapter, workflow, gate, or runtime host,

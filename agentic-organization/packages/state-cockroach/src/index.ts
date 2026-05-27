@@ -19,6 +19,8 @@ export {
   type CreateCockroachMigrationRunnerInput,
 } from "./cockroach-migration-runner.ts";
 export {
+  CockroachOutboxEventPublishMarkError,
+  CockroachOutboxEventPublishMarkErrorCode,
   CockroachOutboxEventSourceStatement,
   createCockroachOutboxEventSource,
   type CockroachOutboxSqlExecutor,
@@ -46,7 +48,9 @@ export {
 export {
   CockroachCoreStateMigrationName,
   CockroachTableName,
+  createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
+  createCockroachOutboxClaimFenceMigration,
   type CockroachSchemaMigration,
 } from "./cockroach-schema.ts";
 export {

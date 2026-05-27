@@ -5,6 +5,7 @@ import {
   AgenticAggregateType,
   AgenticEventType,
   SupervisorChainLevel,
+  createOutboxPublishFailureEvidence,
   createAgenticEventEnvelope,
   type AgenticEventEnvelope,
   type OutboxEvent,
@@ -25,6 +26,8 @@ import {
   type ReactionPlanRecord,
 } from "../../state/src/index.ts";
 import { WorkerCycleStatus, WorkerLane, createOrganizationWorkerHost, type InboundEventSource } from "../src/index.ts";
+
+const UnknownWorkerFailureEvidenceKey = "unexpectedDiagnostic";
 
 describe("organization worker host", () => {
   test("runs one bounded outbox and inbound ingestion cycle", async () => {
@@ -82,6 +85,7 @@ describe("organization worker host", () => {
         },
         environment: "test",
         resolveDomain: resolveAgenticMessagingDomain,
+        createId: () => "outbox-claim-001",
         now: () => "2026-05-25T20:05:00.000Z",
       }),
       inboundEventSource: {
@@ -239,6 +243,100 @@ describe("organization worker host", () => {
       },
     ]);
   });
+
+  test("preserves structured outbox failure evidence for runtime telemetry and diagnosis", async () => {
+    const workerHost = createOrganizationWorkerHost({
+      outboxPublisher: createFailingOutboxPublisher("outbox claim stale", {
+        ...createOutboxPublishFailureEvidence({
+          claimId: "outbox-claim-stale",
+          commandId: "cmd-001",
+          currentClaimId: "outbox-claim-001",
+          eventId: "evt-001",
+          outboxEventId: "outbox-001",
+          publishedAt: "2026-05-25T20:59:00.000Z",
+          traceId: "trace-001",
+        }),
+      }),
+      inboundEventSource: createRecordingInboundEventSource([]),
+      eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      outboxBatchSize: 25,
+      inboundBatchSize: 10,
+    });
+
+    const result = await workerHost.runOnce();
+
+    equal(result.status, WorkerCycleStatus.Degraded);
+    deepEqual(result.failures, [
+      {
+        lane: WorkerLane.Outbox,
+        message: "outbox claim stale",
+        evidence: {
+          claimId: "outbox-claim-stale",
+          commandId: "cmd-001",
+          currentClaimId: "outbox-claim-001",
+          eventId: "evt-001",
+          outboxEventId: "outbox-001",
+          publishedAt: "2026-05-25T20:59:00.000Z",
+          traceId: "trace-001",
+        },
+      },
+    ]);
+  });
+
+  test("drops structured failure evidence keys outside the domain contract", async () => {
+    const workerHost = createOrganizationWorkerHost({
+      outboxPublisher: createFailingOutboxPublisher("outbox failed with unknown evidence", {
+        ...createOutboxPublishFailureEvidence({
+          claimId: "outbox-claim-unknown",
+          outboxEventId: "outbox-unknown-001",
+        }),
+        [UnknownWorkerFailureEvidenceKey]: "must not enter telemetry",
+      }),
+      inboundEventSource: createRecordingInboundEventSource([]),
+      eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      outboxBatchSize: 25,
+      inboundBatchSize: 10,
+    });
+
+    const result = await workerHost.runOnce();
+
+    deepEqual(result.failures, [
+      {
+        lane: WorkerLane.Outbox,
+        message: "outbox failed with unknown evidence",
+        evidence: {
+          claimId: "outbox-claim-unknown",
+          commandId: null,
+          currentClaimId: null,
+          eventId: null,
+          outboxEventId: "outbox-unknown-001",
+          publishedAt: null,
+          traceId: null,
+        },
+      },
+    ]);
+  });
+
+  test("omits structured failure evidence when no domain evidence keys are present", async () => {
+    const workerHost = createOrganizationWorkerHost({
+      outboxPublisher: createFailingOutboxPublisher("outbox failed with only unknown evidence", {
+        [UnknownWorkerFailureEvidenceKey]: "must not enter telemetry",
+      }),
+      inboundEventSource: createRecordingInboundEventSource([]),
+      eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      outboxBatchSize: 25,
+      inboundBatchSize: 10,
+    });
+
+    const result = await workerHost.runOnce();
+
+    deepEqual(result.failures, [
+      {
+        lane: WorkerLane.Outbox,
+        message: "outbox failed with only unknown evidence",
+      },
+    ]);
+  });
 });
 
 type RecordingOutboxPublisher = OutboxPublisher & {
@@ -257,10 +355,19 @@ function createRecordingOutboxPublisher(result: OutboxPublishBatchResult): Recor
   };
 }
 
-function createFailingOutboxPublisher(message: string): OutboxPublisher {
+function createFailingOutboxPublisher(
+  message: string,
+  evidence?: unknown,
+): OutboxPublisher {
   return {
     publishNextBatch: async () => {
-      throw new Error(message);
+      const error = new Error(message) as Error & {
+        evidence?: unknown;
+      };
+      if (evidence !== undefined) {
+        error.evidence = evidence;
+      }
+      throw error;
     },
   };
 }
@@ -317,19 +424,24 @@ function createRecordingEventIngestionProcessor(
 }
 
 function createSingleEventOutboxSource(outboxEvent: OutboxEvent): {
-  claimUnpublishedOutboxEvents: () => Promise<readonly OutboxEvent[]>;
+  claimUnpublishedOutboxEvents: (input: { claimId: string }) => Promise<readonly (OutboxEvent & { claimId: string })[]>;
   markOutboxEventPublished: () => Promise<void>;
 } {
   let claimed = false;
 
   return {
-    claimUnpublishedOutboxEvents: async () => {
+    claimUnpublishedOutboxEvents: async (input) => {
       if (claimed) {
         return [];
       }
 
       claimed = true;
-      return [outboxEvent];
+      return [
+        {
+          ...outboxEvent,
+          claimId: input.claimId,
+        },
+      ];
     },
     markOutboxEventPublished: async () => {
       outboxEvent.publishedAt = "2026-05-25T20:05:00.000Z";

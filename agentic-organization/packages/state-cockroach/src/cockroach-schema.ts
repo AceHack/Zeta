@@ -1,5 +1,6 @@
 export const CockroachCoreStateMigrationName = {
   CoreStateV1: "0001_agentic_org_core_state",
+  OutboxClaimFenceV2: "0002_agentic_org_outbox_claim_fence",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -37,6 +38,17 @@ export function createCockroachCoreStateMigration(): CockroachSchemaMigration {
       createPolicyObservationsTableSql(),
     ].join("\n\n"),
   };
+}
+
+export function createCockroachOutboxClaimFenceMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.OutboxClaimFenceV2,
+    sql: createOutboxClaimFenceMigrationSql(),
+  };
+}
+
+export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMigration[] {
+  return [createCockroachCoreStateMigration(), createCockroachOutboxClaimFenceMigration()];
 }
 
 function createWorkItemsTableSql(): string {
@@ -101,10 +113,17 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.OutboxEvents} (
   trace_id STRING NOT NULL,
   correlation_id STRING NOT NULL,
   envelope_json JSONB NOT NULL,
+  claim_id STRING,
   claimed_at TIMESTAMPTZ,
   claim_expires_at TIMESTAMPTZ,
   published_at TIMESTAMPTZ
 );`.trim();
+}
+
+function createOutboxClaimFenceMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.OutboxEvents}
+  ADD COLUMN IF NOT EXISTS claim_id STRING;`.trim();
 }
 
 function createIdempotencyRecordsTableSql(): string {

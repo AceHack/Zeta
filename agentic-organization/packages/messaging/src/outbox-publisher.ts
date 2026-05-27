@@ -1,5 +1,5 @@
 import { AgenticEventType, type OutboxEvent } from "../../domain/src/index.ts";
-import type { ClaimUnpublishedOutboxEventsInput, OutboxEventSource } from "../../state/src/index.ts";
+import type { OutboxEventSource } from "../../state/src/index.ts";
 import { buildAgenticEventSubject } from "./subject-builder.ts";
 
 export const AgenticMessagingDomain = {
@@ -28,7 +28,11 @@ export type EventPublisher = {
 export type ResolveAgenticMessagingDomain = (eventType: AgenticEventType) => AgenticMessagingDomain;
 
 export type OutboxPublisher = {
-  publishNextBatch: (input: ClaimUnpublishedOutboxEventsInput) => Promise<OutboxPublishBatchResult>;
+  publishNextBatch: (input: PublishNextOutboxBatchInput) => Promise<OutboxPublishBatchResult>;
+};
+
+export type PublishNextOutboxBatchInput = {
+  batchSize: number;
 };
 
 export type OutboxPublishBatchResult = {
@@ -42,13 +46,18 @@ export type CreateOutboxPublisherInput = {
   eventPublisher: EventPublisher;
   environment: string;
   resolveDomain: ResolveAgenticMessagingDomain;
+  createId: (prefix: string) => string;
   now: () => string;
 };
 
 export function createOutboxPublisher(input: CreateOutboxPublisherInput): OutboxPublisher {
   return {
     publishNextBatch: async (publishInput) => {
-      const outboxEvents = await input.outboxSource.claimUnpublishedOutboxEvents(publishInput);
+      const claimId = input.createId(OutboxPublisherIdPrefix.Claim);
+      const outboxEvents = await input.outboxSource.claimUnpublishedOutboxEvents({
+        batchSize: publishInput.batchSize,
+        claimId,
+      });
 
       if (outboxEvents.length === 0) {
         return {
@@ -73,6 +82,7 @@ export function createOutboxPublisher(input: CreateOutboxPublisherInput): Outbox
           outboxEvent,
         });
         await input.outboxSource.markOutboxEventPublished({
+          claimId: outboxEvent.claimId,
           outboxEventId: outboxEvent.outboxEventId,
           publishedAt: input.now(),
         });
@@ -87,6 +97,12 @@ export function createOutboxPublisher(input: CreateOutboxPublisherInput): Outbox
     },
   };
 }
+
+export const OutboxPublisherIdPrefix = {
+  Claim: "outbox-claim",
+} as const;
+
+export type OutboxPublisherIdPrefix = (typeof OutboxPublisherIdPrefix)[keyof typeof OutboxPublisherIdPrefix];
 
 export function resolveAgenticMessagingDomain(eventType: AgenticEventType): AgenticMessagingDomain {
   if (eventType === AgenticEventType.SupervisorSignalSent) {

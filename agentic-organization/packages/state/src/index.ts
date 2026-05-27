@@ -16,6 +16,7 @@ export {
   type RecordEventProcessingOutcomeInput,
 } from "./event-ingestion-store.ts";
 export type {
+  ClaimedOutboxEvent,
   ClaimUnpublishedOutboxEventsInput,
   MarkOutboxEventPublishedInput,
   OutboxEventSource,

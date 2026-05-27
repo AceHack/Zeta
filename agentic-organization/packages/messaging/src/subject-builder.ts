@@ -13,6 +13,12 @@ export type AgenticEventSubjectInput = {
   eventType: AgenticEventType;
 };
 
+export type AgenticDeadLetterSubjectInput = {
+  environment: string;
+  organizationId: string;
+  reason: string;
+};
+
 export function buildAgenticEventSubject(input: AgenticEventSubjectInput): string {
   const segments = [
     AgenticSubjectPrefix.Root,
@@ -21,6 +27,16 @@ export function buildAgenticEventSubject(input: AgenticEventSubjectInput): strin
     input.domain,
     buildDomainRelativeEventName(input.domain, input.eventType),
   ];
+
+  for (const segment of segments) {
+    assertSubjectSegment(segment);
+  }
+
+  return segments.join(".");
+}
+
+export function buildAgenticDeadLetterSubject(input: AgenticDeadLetterSubjectInput): string {
+  const segments = [AgenticSubjectPrefix.Root, input.environment, input.organizationId, "dead_letter", input.reason];
 
   for (const segment of segments) {
     assertSubjectSegment(segment);

@@ -17,6 +17,7 @@ export {
   buildWorkerCycleAttributes,
   type BuildWorkerCycleAttributesInput,
   type WorkerCycleAttributes,
+  type WorkerCycleFailureAttributeInput,
 } from "./worker-cycle-attributes.ts";
 export {
   VisibilityHealth,

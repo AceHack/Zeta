@@ -180,6 +180,14 @@ Hermes runs, MCP calls, and UI evidence.
 - The outbox publisher claims unpublished events, publishes each event
   through an `EventPublisher` port, and marks rows published only after
   the publish succeeds.
+- The outbox claim path is fenced with a generated `claimId`. Durable
+  adapters must return the claim with each event and reject publish
+  marks whose claim is stale, missing, or already cleared, so a slow
+  publisher cannot mark another worker's claimed event as complete.
+- The Cockroach adapter includes an additive
+  `0002_agentic_org_outbox_claim_fence` migration so databases that
+  already ran the original core migration still receive the `claim_id`
+  column required by fenced publishing.
 - The NATS adapter publishes canonical JSON envelopes with typed headers
   and event IDs as message IDs for idempotent JetStream publication.
 - The NATS consumer adapter decodes canonical JSON envelopes, preserves
@@ -262,11 +270,12 @@ Hermes runs, MCP calls, and UI evidence.
   CockroachDB URL, positive NATS inbound batch size, positive worker
   inbound batch size, and positive worker outbox batch size.
 - `apps/workers` parses required runtime values from typed environment
-  names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_STREAM`,
+  names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_SERVERS`, `NATS_STREAM`,
   `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`, `COCKROACH_DATABASE_URL`,
   `WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE`. String
-  values are trimmed, and all batch sizes must be safe positive decimal
-  integers.
+  values are trimmed, `NATS_SERVERS` is parsed as a comma-separated
+  server list with no empty entries, and all batch sizes must be safe
+  positive decimal integers.
 - `apps/workers` treats any non-happy NATS consumer counter as degraded:
   failed, dead-lettered, invalid, payload-conflict,
   negative-acknowledged, or terminated messages.
@@ -274,10 +283,52 @@ Hermes runs, MCP calls, and UI evidence.
   typed config plus already-constructed ports. The durable worker
   composition seam now binds a generic Cockroach executor into the
   `state-cockroach` adapter factory, then wires Cockroach-backed outbox
-  and event-ingestion stores into the worker host. Future real
-  CockroachDB client construction, NATS, and telemetry adapters bind at
-  this app seam instead of leaking process or secret concerns into
-  reusable packages.
+  and event-ingestion stores into the worker host. The first app-local
+  Cockroach worker client now adapts a pooled process client to the
+  generic `CockroachSqlClient` contract and proves direct query,
+  transaction commit, rollback, rollback-after-commit-failure,
+  SQLSTATE-based retry, ambiguous-commit preservation, and release
+  semantics without importing a database driver into reusable packages.
+- `apps/workers` has a first structured JSON telemetry sink. It writes
+  stable runtime telemetry records with timestamp, event name, and the
+  canonical worker/NATS attributes that the LGTM stack can later ingest
+  through Alloy/Loki/Tempo/Mimir. The sink is app-local and still
+  injected through the existing `WorkerRuntimeTelemetrySink` port.
+- `apps/workers` has a first NATS process-connection seam. A
+  process-provided NATS transport factory is adapted to generic
+  publisher, pull-consumer, dead-letter publisher, readiness, and
+  shutdown ports. The factory receives validated servers, stream,
+  durable consumer, environment, and organization scope. Dead-letter
+  subjects use the shared Organization subject builder, and dead-letter
+  message IDs come from an injected factory so separate poison messages
+  are not merged by transport dedupe. The durable composition root now
+  builds the package-level NATS consumer from pull and dead-letter ports,
+  so callers do not need to construct a consumer outside the app
+  boundary.
+- `apps/workers` has a first concrete NATS client-library factory behind
+  that seam. `createNatsJsTransportConnectionFactory` uses
+  `@nats-io/transport-node` and `@nats-io/jetstream` to connect, bind the
+  configured stream and durable consumer, publish with message IDs and
+  headers, fetch batches, adapt ack/nack/term operations, check durable
+  consumer readiness, and close the process connection. The tests are
+  fake-driven; live JetStream behavior remains a later integration proof.
+- `apps/workers` has a first process readiness aggregate. Dependency
+  probes return typed ready/not-ready checks, and the process readiness
+  result becomes degraded when any dependency check is not ready or
+  throws during readiness evaluation.
+- Worker-cycle failures can carry structured evidence. Stale outbox
+  claim failures now preserve claim ID, current claim ID, outbox event
+  ID, event ID, trace ID, and published-at evidence when the durable row
+  can be found, and the worker runtime projects the first failure's
+  evidence into telemetry attributes for diagnosis.
+- The structured worker failure evidence keys live in the domain package
+  as a neutral contract, so Cockroach adapters, worker hosts,
+  observability projection, and tests share the same typed field names
+  instead of re-declaring string keys package by package. Worker hosts
+  only accept evidence bags whose keys are inside that domain contract,
+  and worker-cycle telemetry uses a consistent
+  `agentic.worker.failure.first_*` namespace for the first-failure
+  projection.
 - Observability projections now include policy decision ID and policy
   version in event span attributes and workflow visibility records when
   an accepted command emits a policy-backed event envelope.
@@ -290,14 +341,13 @@ Hermes runs, MCP calls, and UI evidence.
 
 The next slice is tracked in the canonical
 [Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). It should add
-concrete process client construction below `apps/workers`: real
-CockroachDB pool binding for the generic SQL executor, concrete NATS
-pull/publish client construction, and a telemetry sink that can later
-send structured logs and metrics into the full-ai-cluster LGTM stack.
-Keep URLs, credentials, and connection pools in app adapter config fed
-by Kubernetes Secret or ExternalSecret values, never in domain packages.
-Add a durable-state integration test using CockroachDB as the first
-cluster-backed implementation once a local/dev connection is available.
+the next concrete process binding below `apps/workers`: migration
+bootstrap/readiness handling and entrypoint-level graceful shutdown
+around the app-local Cockroach/NATS/telemetry adapters. Keep URLs,
+credentials, and connection pools in app adapter config fed by
+Kubernetes Secret or ExternalSecret values, never in domain packages.
+Add durable-state and NATS integration tests once local/dev connections
+are available.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

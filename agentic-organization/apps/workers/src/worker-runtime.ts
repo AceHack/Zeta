@@ -2,6 +2,7 @@ import {
   buildNatsConsumerBatchAttributes,
   buildWorkerCycleAttributes,
   type NatsConsumerBatchAttributes,
+  type WorkerCycleFailureAttributeInput,
   type WorkerCycleAttributes,
 } from "../../../packages/observability/src/index.ts";
 import { OutboxPublishOutcomeStatus } from "../../../packages/messaging/src/index.ts";
@@ -33,10 +34,12 @@ export type WorkerRuntimeFailureStage = (typeof WorkerRuntimeFailureStage)[keyof
 export const WorkerRuntimeConfigErrorCode = {
   InvalidWorkerInboundBatchSize: "invalid_worker_inbound_batch_size",
   InvalidWorkerOutboxBatchSize: "invalid_worker_outbox_batch_size",
+  InvalidNatsServers: "invalid_nats_servers",
   MissingCockroachDatabaseUrl: "missing_cockroach_database_url",
   InvalidNatsInboundBatchSize: "invalid_nats_inbound_batch_size",
   MissingEnvironment: "missing_environment",
   MissingNatsDurableName: "missing_nats_durable_name",
+  MissingNatsServers: "missing_nats_servers",
   MissingNatsStreamName: "missing_nats_stream_name",
   MissingOrganizationId: "missing_organization_id",
 } as const;
@@ -176,6 +179,7 @@ async function runOrganizationWorker(input: RunOrganizationWorkerInput): Promise
           inboundFailedCount: workerCycle.inbound.failedCount,
           inboundReactionPlanCount: workerCycle.inbound.reactionPlanCount,
           failureCount: workerCycle.failures.length,
+          firstFailure: buildFirstWorkerCycleFailureTelemetryInput(workerCycle),
         }),
       },
     });
@@ -187,6 +191,21 @@ async function runOrganizationWorker(input: RunOrganizationWorkerInput): Promise
     });
     return undefined;
   }
+}
+
+function buildFirstWorkerCycleFailureTelemetryInput(
+  workerCycle: WorkerCycleResult,
+): WorkerCycleFailureAttributeInput | undefined {
+  const firstFailure = workerCycle.failures[0];
+
+  if (firstFailure === undefined) {
+    return undefined;
+  }
+
+  return {
+    ...firstFailure,
+    stage: WorkerRuntimeFailureStage.OrganizationWorker,
+  };
 }
 
 type RunNatsConsumerInput = {

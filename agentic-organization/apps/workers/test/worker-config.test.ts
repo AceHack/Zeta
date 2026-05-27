@@ -15,6 +15,8 @@ describe("worker runtime config parsing", () => {
         [WorkerProcessEnvName.AgenticOrgEnv]: " dev ",
         [WorkerProcessEnvName.AgenticOrgId]: " org-lfg ",
         [WorkerProcessEnvName.CockroachDatabaseUrl]: " postgresql://agentic-org@cockroachdb-public:26257/agentic_org ",
+        [WorkerProcessEnvName.NatsServers]:
+          " nats://nats.nats.svc.cluster.local:4222, nats://nats-backup.nats.svc.cluster.local:4222 ",
         [WorkerProcessEnvName.NatsStream]: " agentic-org-events ",
         [WorkerProcessEnvName.NatsDurable]: " agentic-org-v0-automation-planner ",
         [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
@@ -25,6 +27,7 @@ describe("worker runtime config parsing", () => {
         cockroachDatabaseUrl: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
         environment: "dev",
         organizationId: "org-lfg",
+        natsServers: ["nats://nats.nats.svc.cluster.local:4222", "nats://nats-backup.nats.svc.cluster.local:4222"],
         natsStreamName: "agentic-org-events",
         natsDurableName: "agentic-org-v0-automation-planner",
         natsInboundBatchSize: 25,
@@ -39,6 +42,7 @@ describe("worker runtime config parsing", () => {
       {
         [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
         [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+        [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
         [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
         [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
         [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
@@ -51,6 +55,7 @@ describe("worker runtime config parsing", () => {
       {
         [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
         [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
+        [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
         [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
         [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
         [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
@@ -58,6 +63,19 @@ describe("worker runtime config parsing", () => {
         [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
       },
       WorkerRuntimeConfigErrorCode.MissingCockroachDatabaseUrl,
+    );
+    assertConfigError(
+      {
+        [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
+        [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
+        [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+        [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
+        [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
+        [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
+        [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
+        [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+      },
+      WorkerRuntimeConfigErrorCode.MissingNatsServers,
     );
   });
 
@@ -67,6 +85,7 @@ describe("worker runtime config parsing", () => {
         [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
         [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
         [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+        [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
         [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
         [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
         [WorkerProcessEnvName.NatsInboundBatchSize]: "not-a-number",
@@ -87,6 +106,7 @@ describe("worker runtime config parsing", () => {
           [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
           [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
           [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+          [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
           [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
           [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
           [WorkerProcessEnvName.NatsInboundBatchSize]: batchSize,
@@ -100,6 +120,7 @@ describe("worker runtime config parsing", () => {
           [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
           [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
           [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+          [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
           [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
           [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
           [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
@@ -113,6 +134,7 @@ describe("worker runtime config parsing", () => {
           [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
           [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
           [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+          [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
           [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
           [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
           [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
@@ -122,6 +144,24 @@ describe("worker runtime config parsing", () => {
         WorkerRuntimeConfigErrorCode.InvalidWorkerOutboxBatchSize,
       );
     }
+  });
+
+  test("rejects empty NATS server entries with a typed error", () => {
+    assertConfigError(
+      {
+        [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
+        [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
+        [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+        [WorkerProcessEnvName.NatsServers]:
+          "nats://nats.nats.svc.cluster.local:4222, , nats://nats-backup.nats.svc.cluster.local:4222",
+        [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
+        [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
+        [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
+        [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
+        [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+      },
+      WorkerRuntimeConfigErrorCode.InvalidNatsServers,
+    );
   });
 });
 

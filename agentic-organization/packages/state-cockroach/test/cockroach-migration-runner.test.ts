@@ -3,6 +3,7 @@ import { describe, test } from "node:test";
 
 import {
   CockroachMigrationStatement,
+  createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
   createCockroachMigrationRunner,
   type CockroachAnySqlStatement,
@@ -27,6 +28,22 @@ describe("cockroach migration runner", () => {
         parameters: [],
       },
     ]);
+  });
+
+  test("applies ordered core migrations including additive outbox claim fencing", async () => {
+    const executor = createRecordingSqlExecutor();
+    const migrations = createCockroachCoreStateMigrations();
+    const runner = createCockroachMigrationRunner({
+      executor,
+      migrations,
+    });
+
+    await runner.applyMigrations();
+
+    deepEqual(
+      executor.statements.map((statement) => statement.sql),
+      migrations.map((migration) => migration.sql),
+    );
   });
 });
 

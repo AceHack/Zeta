@@ -5,9 +5,8 @@ import {
   AgenticAggregateType,
   AgenticEventType,
   createAgenticEventEnvelope,
-  type OutboxEvent,
 } from "../../domain/src/index.ts";
-import type { OutboxEventSource } from "../../state/src/index.ts";
+import type { ClaimedOutboxEvent, OutboxEventSource } from "../../state/src/index.ts";
 import {
   AgenticMessagingDomain,
   OutboxPublishOutcomeStatus,
@@ -37,6 +36,7 @@ describe("outbox publisher", () => {
       eventPublisher,
       environment: "local",
       resolveDomain: resolveAgenticMessagingDomain,
+      createId: () => "outbox-claim-001",
       now: () => "2026-05-25T21:00:00.000Z",
     });
 
@@ -49,12 +49,20 @@ describe("outbox publisher", () => {
       attemptedCount: 2,
       publishedOutboxEventIds: ["outbox-001", "outbox-002"],
     });
+    deepEqual(outboxSource.claims, [
+      {
+        batchSize: 10,
+        claimId: "outbox-claim-001",
+      },
+    ]);
     deepEqual(outboxSource.markedPublished, [
       {
+        claimId: "outbox-claim-001",
         outboxEventId: "outbox-001",
         publishedAt: "2026-05-25T21:00:00.000Z",
       },
       {
+        claimId: "outbox-claim-001",
         outboxEventId: "outbox-002",
         publishedAt: "2026-05-25T21:00:00.000Z",
       },
@@ -79,6 +87,7 @@ describe("outbox publisher", () => {
       eventPublisher,
       environment: "local",
       resolveDomain: resolveAgenticMessagingDomain,
+      createId: () => "outbox-claim-001",
       now: () => "2026-05-25T21:00:00.000Z",
     });
 
@@ -88,18 +97,30 @@ describe("outbox publisher", () => {
 
     equal(result.status, OutboxPublishOutcomeStatus.Empty);
     equal(eventPublisher.publications.length, 0);
+    deepEqual(outboxSource.claims, [
+      {
+        batchSize: 10,
+        claimId: "outbox-claim-001",
+      },
+    ]);
     equal(outboxSource.markedPublished.length, 0);
   });
 });
 
-function createRecordingOutboxSource(outboxEvents: OutboxEvent[]): OutboxEventSource & {
-  markedPublished: { outboxEventId: string; publishedAt: string }[];
+function createRecordingOutboxSource(outboxEvents: ClaimedOutboxEvent[]): OutboxEventSource & {
+  claims: { batchSize: number; claimId: string }[];
+  markedPublished: { claimId: string; outboxEventId: string; publishedAt: string }[];
 } {
-  const markedPublished: { outboxEventId: string; publishedAt: string }[] = [];
+  const claims: { batchSize: number; claimId: string }[] = [];
+  const markedPublished: { claimId: string; outboxEventId: string; publishedAt: string }[] = [];
 
   return {
+    claims,
     markedPublished,
-    claimUnpublishedOutboxEvents: async () => outboxEvents,
+    claimUnpublishedOutboxEvents: async (input) => {
+      claims.push(input);
+      return outboxEvents;
+    },
     markOutboxEventPublished: async (input) => {
       markedPublished.push(input);
     },
@@ -119,8 +140,9 @@ function createRecordingEventPublisher(): EventPublisher & {
   };
 }
 
-function createSupervisorSignalOutboxEvent(): OutboxEvent {
+function createSupervisorSignalOutboxEvent(): ClaimedOutboxEvent {
   return {
+    claimId: "outbox-claim-001",
     outboxEventId: "outbox-001",
     envelope: createAgenticEventEnvelope({
       eventId: "evt-001",
@@ -155,8 +177,9 @@ function createSupervisorSignalOutboxEvent(): OutboxEvent {
   };
 }
 
-function createWorkItemOutboxEvent(): OutboxEvent {
+function createWorkItemOutboxEvent(): ClaimedOutboxEvent {
   return {
+    claimId: "outbox-claim-001",
     outboxEventId: "outbox-002",
     envelope: createAgenticEventEnvelope({
       eventId: "evt-002",

@@ -5,6 +5,53 @@ export {
   type WorkerProcessConfig,
   type WorkerProcessEnvironment,
 } from "./config.ts";
+export {
+  CockroachWorkerTransactionError,
+  CockroachWorkerTransactionErrorClassification,
+  CockroachWorkerTransactionErrorCode,
+  CockroachWorkerTransactionStatement,
+  createCockroachWorkerSqlClient,
+  type CockroachWorkerTransactionRetryDelayInput,
+  type CockroachWorkerPool,
+  type CockroachWorkerPoolClient,
+  type CreateCockroachWorkerSqlClientInput,
+} from "./adapters/cockroach-worker-client.ts";
+export {
+  createJsonWorkerTelemetrySink,
+  type CreateJsonWorkerTelemetrySinkInput,
+  type JsonLineWriter,
+  type JsonWorkerTelemetryRecord,
+} from "./adapters/json-worker-telemetry-sink.ts";
+export {
+  NatsWorkerConnectionState,
+  NatsWorkerDeadLetterHeaderName,
+  NatsWorkerMessageIdPrefix,
+  connectNatsWorkerAdapters,
+  type ConnectNatsWorkerAdaptersInput,
+  type NatsWorkerAdapters,
+  type NatsWorkerConnectionConfig,
+  type NatsWorkerDeadLetterMessageIdFactory,
+  type NatsWorkerShutdownPort,
+  type NatsWorkerTransportConnectInput,
+  type NatsWorkerTransportConnection,
+  type NatsWorkerTransportConnectionFactory,
+} from "./adapters/nats-worker-connection.ts";
+export {
+  NatsJsDefaultFetchExpiresMs,
+  createNatsJsTransportConnectionFactory,
+  type CreateNatsJsTransportConnectionFactoryInput,
+  type NatsJsConnection,
+  type NatsJsConnectionInput,
+  type NatsJsConsumer,
+  type NatsJsConsumerFetchInput,
+  type NatsJsConsumerMessages,
+  type NatsJsHeaderBag,
+  type NatsJsJetStreamClient,
+  type NatsJsJetStreamManager,
+  type NatsJsLibraryFacade,
+  type NatsJsMessage,
+  type NatsJsPublishOptions,
+} from "./adapters/nats-js-transport-connection.ts";
 export { composeWorkerRuntime, type ComposeWorkerRuntimeInput, type WorkerRuntimePorts } from "./composition.ts";
 export {
   composeDurableWorkerRuntimePorts,
@@ -29,3 +76,13 @@ export {
   type WorkerRuntimeTelemetryRecord,
   type WorkerRuntimeTelemetrySink,
 } from "./worker-runtime.ts";
+export {
+  WorkerDependencyName,
+  WorkerDependencyReadinessStatus,
+  WorkerReadinessStatus,
+  checkWorkerProcessReadiness,
+  type CheckWorkerProcessReadinessInput,
+  type WorkerDependencyReadinessCheck,
+  type WorkerDependencyReadinessProbe,
+  type WorkerProcessReadiness,
+} from "./worker-readiness.ts";

@@ -55,12 +55,12 @@ The current executable spine includes:
 - `apps/workers` process shell that parses typed process config,
   composes worker/NATS cycles through ports, records telemetry through a
   sink, reports healthy/degraded runtime state, and has a durable
-  Cockroach composition seam.
+  Cockroach composition seam plus an app-local NATS connection seam.
 
 The next implementation slice is real process adapter binding below
-`apps/workers`: Cockroach client pool, concrete NATS pull/publish
-client construction, and a telemetry sink that can feed the
-full-ai-cluster LGTM stack.
+`apps/workers`: concrete NATS client-library construction behind the
+existing transport factory, migration bootstrap/readiness handling, and
+an executable entrypoint that can feed the full-ai-cluster LGTM stack.
 
 ## Work Rules For Every Phase
 
@@ -100,6 +100,7 @@ Do not let reusable packages import:
 - Hindsight clients;
 - OpenZiti clients;
 - OPA clients;
+- OpenTelemetry exporter/client implementations;
 - NestJS framework types.
 
 ### Event Rule
@@ -171,6 +172,562 @@ Later phases may add:
 - k3d/K3S cluster smoke tests;
 - OpenTelemetry trace/log/metric assertions.
 
+## AI Lifecycle Operating Model
+
+This section defines how agents actually work inside the Organization.
+The key rule is that work is not merely assigned. It is scheduled,
+allocated, authorized, observed, paused, resumed, reviewed, and released.
+
+Agent time is an Organization resource. Meetings, reviews, verification
+work, coding, architecture, discovery, free time, reflection, memory
+maintenance, incident response, and executive planning all compete for
+scarce hat capacity and runtime capacity. QA is not a special work
+mode; it is work performed by QA Reviewer hats with specific gate
+authority. The Organization therefore treats time, worktrees, sessions,
+credentials, prompt-flow slots, and reviewer attention as schedulable
+resources.
+
+### Lifecycle Spine
+
+Every meaningful AI lifecycle follows this spine:
+
+```text
+work exists or signal arrives
+  -> work anchor and discussion anchor are created or selected
+  -> responsible hat triages the next lifecycle need
+  -> required hats are identified
+  -> schedule windows are proposed
+  -> resource manager checks hat supply, budget, runtime, worktree,
+     credential, and meeting constraints
+  -> schedule blocks are reserved
+  -> agents receive hat-scoped briefs and context packs
+  -> work runs during allotted blocks
+  -> unfinished work pauses with resumable state
+  -> next schedule block resumes from the saved state
+  -> required reviewer, QA Reviewer, or signoff hats are scheduled into
+     work blocks
+  -> gated state transition is performed only by an authorized hat
+  -> outcome and weak points are recorded
+```
+
+No agent should assume that because a work item is assigned, it may
+execute immediately. Execution requires an active hat assignment, an
+allowed schedule block, the required context pack, and any required
+runtime resources.
+
+### Schedule Objects
+
+The schedule model needs these records:
+
+| Record | Purpose |
+| --- | --- |
+| Schedule Template | Default rhythm for a hat, department, or project. |
+| Agent Work Schedule | Concrete calendar-like plan for an agent wearing a hat. |
+| Schedule Block | A reserved time window for a specific work mode. |
+| Allocation Hold | Temporary hold while the Organization finds a valid time/resource slot. |
+| Meeting Slot | Multi-agent schedule block with participants, mode, agenda, anchor, and quorum. |
+| Review Slot | Time reserved for code review, architecture review, verification review, security review, or outcome review. |
+| Inbox Queue | Hat-scoped and agent-scoped queue of messages, mentions, requests, blockers, review asks, and manager signals. |
+| Prioritized Inbox View | SLA/priority-ranked inbox view for the active hat, current team, current initiative, and escalation chain. |
+| Runtime Slot | Container/session/pod allocation for Hermes or supporting tools. |
+| Worktree Slot | Repo branch/worktree allocation tied to an initiative, task, or review. |
+| Credential Slot | Time-bounded credential/tool grant needed for a scheduled block. |
+| Pause Checkpoint | Resumable state when a block ends before the work completes. |
+
+Schedule blocks must be explicit about:
+
+- block ID;
+- organization, project, initiative, work item, and discussion anchor;
+- agent ID and active hat assignment;
+- scheduled start and end;
+- work mode;
+- required context pack version;
+- required runtime resources;
+- required worktree or branch;
+- required credential/tool grants;
+- allowed inbox access policy;
+- expected activity profile;
+- expected outputs;
+- pause/resume policy;
+- reviewer or manager responsible for validating completion.
+
+### Work Modes
+
+The first work modes are:
+
+| Mode | Meaning | Typical owner |
+| --- | --- | --- |
+| Prioritized Work | Main execution time for assigned work. | Implementer, BA, Architect, TPM, Manager |
+| Review | Formal review of work, code, docs, plans, evidence, or gates. | Reviewer hats |
+| Meeting | Synchronous or structured asynchronous discussion. | Inviting hat plus participants |
+| Free Time | Exploration, learning, repo reading, culture building, and low-risk memory creation. | Any active hat if schedule allows |
+| Reflection | Work review, self-evaluation, manager discussion, and improvement proposals. | Agent plus manager |
+| Memory Maintenance | Stabilize, mark stale, or request review of memories. | Agent, Memory Curator, Manager |
+| Incident Response | Runtime, pipeline, security, or production issue response. | Owning department hats |
+| Prompt Flow | Deterministic phase execution with gates and reviewer checkpoints. | Hat with approved flow |
+| Executive Planning | Project/standard/priority/budget decisions. | Executive and director hats |
+
+Free time is not unbounded authority. It can produce notes, questions,
+proposed memories, proposed work, or supervisor signals, but any
+consequential decision still needs a work anchor and the proper command
+path.
+
+### Inboxes And Scheduled Attention
+
+Agents need robust information access, but inboxes are still part of the
+work system. Each active hat should have access to:
+
+- personal inbox;
+- active-hat inbox;
+- team inbox;
+- department inbox when the hat has that scope;
+- work-item inbox for assigned or watched work;
+- prioritized inbox view ranked by urgency, SLA, authority chain,
+  blocker status, and current schedule relevance.
+
+Agents should have dedicated inbox/review windows in their schedule, but
+they are also encouraged to glance at prioritized inbox context during
+other work when the block policy allows it. That does not mean random
+interruption. The scheduler should decide whether an inbox item is:
+
+- immediately interruptible;
+- visible but deferred;
+- routed to the next inbox window;
+- delegated;
+- escalated to a manager or director;
+- converted into a schedule request, meeting request, blocker, or normal
+  work item.
+
+Every inbox item must be anchored to work, a policy, an incident, a
+gate, or an organizational review. The inbox is not a free-floating chat
+feed; it is a prioritized access layer over work the agent may need to
+act on.
+
+### Schedule Enforcement And Compliance
+
+Schedule blocks should be enforced by intelligent automation. The goal is
+not to micromanage an agent's internal reasoning; it is to ensure scarce
+hat, runtime, worktree, and credential capacity is used for the block's
+intended purpose.
+
+Each block should declare:
+
+- expected work mode;
+- allowed tools and MCP actions;
+- allowed inbox access level;
+- required context pack;
+- required artifacts or evidence;
+- expected heartbeat/checkpoint cadence;
+- permitted side quests;
+- interruptibility policy;
+- completion validator.
+
+The runtime should observe block execution through events, traces,
+tool-call telemetry, worktree activity, inbox activity, artifact writes,
+prompt-flow phase progress, and checkpoint updates. If observed activity
+drifts away from the scheduled block, the system should create a typed
+schedule-compliance event. Examples:
+
+- agent is scheduled for implementation but only browses unrelated
+  inboxes;
+- agent is scheduled for review but never opens the relevant diff,
+  evidence, or acceptance criteria;
+- agent is scheduled for memory maintenance but creates unrelated
+  implementation work;
+- agent is in a non-interruptible block but accepts lower-priority
+  meeting traffic;
+- agent does no observable work during an active runtime/credential
+  allocation.
+
+Compliance events should first help the agent recover: refresh context,
+surface the expected task, ask whether the block should be paused, or
+create a blocker signal. Repeated or severe drift escalates to the
+owning manager, then director if needed. This gives agents freedom to
+work intelligently while still keeping the Organization honest about
+time, cost, and focus.
+
+### Scheduling Authority
+
+Different hats have different scheduling powers:
+
+| Hat family | Scheduling authority |
+| --- | --- |
+| Executive Board | Calls executive meetings, approves succession/election routines, sets global priority windows. |
+| C-suite | Schedules director planning, standards reviews, budget/capacity reviews, and cross-department escalations. |
+| Director | Schedules department initiatives, manager reviews, TPM planning, and department-level priority meetings. |
+| TPM | Schedules initiative planning, requirement syncs, task grooming, dependency meetings, and delivery reviews. |
+| Engineering Manager | Schedules team work blocks, review rotations, reflection, memory maintenance, verification follow-up, and blocker triage. |
+| Product Owner / BA | Schedules customer interviews, BRD reviews, workflow clarification, and product signoff. |
+| Architect | Schedules architecture review, CA/design review, ADR review, and technical decision meetings. |
+| Implementer | Requests work blocks, clarification meetings, review slots, and blocker escalation through supervisor signal. |
+| Code Reviewer | Schedules or accepts code review blocks and can request rework. |
+| QA Reviewer | Schedules verification work, regression blocks, reproducibility checks, and evidence-backed bounce-back. |
+| Security Reviewer | Schedules security review, credential/tool-grant review, and risk acceptance. |
+| Memory Curator | Schedules memory review, memory cleanup, and context-pack quality audits. |
+| Platform Operator | Schedules runtime repair, deployment checks, incident work, and infrastructure maintenance. |
+
+An agent can request time, but the owning manager/director/TPM role
+allocates scarce schedule and runtime capacity according to priority,
+hat supply, deadlines, and resource constraints.
+
+### Meetings
+
+Meetings are not chat rooms. A meeting is scheduled work.
+
+A meeting requires:
+
+- work anchor;
+- discussion anchor;
+- purpose;
+- agenda;
+- participant hats;
+- required quorum or attendance rule;
+- conversation mode;
+- scheduled time window;
+- expected outputs;
+- decision/evidence recording rule.
+
+Meeting modes include:
+
+- one-on-one;
+- team discussion;
+- broadcast review;
+- round-robin;
+- pass-the-stick;
+- chair-led;
+- vote;
+- executive decision;
+- clarification interview;
+- incident bridge.
+
+Meeting scheduling lifecycle:
+
+```text
+meeting need detected
+  -> authorized hat requests meeting against work/discussion anchor
+  -> scheduler finds participant availability and required hat supply
+  -> allocation holds reserve candidate windows
+  -> required participants accept, delegate, or decline with reason
+  -> meeting block is committed
+  -> context packs are generated for participants
+  -> agents enter meeting mode during the block
+  -> decisions, action items, unresolved questions, and dissent are recorded
+  -> follow-up work items or signals are created
+  -> meeting block completes or reschedules
+```
+
+If a meeting is called while an agent is busy, the Organization does not
+blindly interrupt. It evaluates:
+
+- urgency;
+- caller authority;
+- participant necessity;
+- current block interruptibility;
+- work item priority;
+- deadline risk;
+- runtime/session cost;
+- whether an asynchronous comment or decision request is sufficient.
+
+The result is one of:
+
+- schedule at next common available time;
+- interrupt current block and checkpoint work;
+- delegate to another eligible hat wearer;
+- ask for asynchronous input by deadline;
+- reject or escalate the meeting request.
+
+### Reviews And Verification Work
+
+Reviews are schedule blocks with gate authority. QA is not a schedule
+mode; QA is a hat family that performs verification work and owns
+specific gate transitions. A QA Reviewer may receive a prioritized work
+block for verification, a review block for signoff, or a regression
+work block, depending on the lifecycle need.
+
+Review lifecycle:
+
+```text
+work submitted for review
+  -> required reviewer hats are identified
+  -> review slot is scheduled
+  -> reviewer receives context pack and evidence
+  -> reviewer approves, requests rework, escalates, or blocks
+  -> state transition occurs only if reviewer hat has authority
+```
+
+Verification lifecycle for QA Reviewer hats:
+
+```text
+verification or signoff requested
+  -> work/review block is scheduled for a QA Reviewer hat
+  -> QA Reviewer receives build/preview/test environment context
+  -> QA Reviewer runs expected test cases and exploratory checks
+  -> QA Reviewer records screenshots, traces, logs, reproduction steps,
+     and result
+  -> if issue is still reproducible, QA Reviewer bounces work back with
+     evidence
+  -> if issue is not reproducible and criteria pass, QA Reviewer signs
+     off
+```
+
+QA failure wording matters: the Organization does not say "QA failed"
+as if QA were a mode. A QA Reviewer reports whether the issue was
+sufficiently fixed or remains reproducible, with evidence.
+
+### Work Item Participants
+
+A work item must show role ownership explicitly. At minimum:
+
+- requester;
+- current owner;
+- implementer;
+- reviewer;
+- QA Reviewer;
+- architect;
+- product owner or BA when needed;
+- TPM;
+- engineering manager;
+- director;
+- security reviewer when needed;
+- release owner when needed;
+- watcher/subscriber list;
+- mentioned agents/hats.
+
+Work item comments are first-class records. They need:
+
+- author agent ID;
+- active hat assignment;
+- timestamp;
+- work anchor;
+- optional parent comment;
+- mentioned agents/hats;
+- requested response type;
+- required response by time;
+- linked artifact/evidence;
+- visibility scope;
+- trace ID if created by an automated flow.
+
+Tagging another agent or hat creates an inbox item or schedule request.
+It does not automatically interrupt the target. The target's manager,
+schedule policy, urgency, and current block determine when it is handled.
+
+### Gated State Transition Authority
+
+Work item transitions are commands. They are not arbitrary field edits.
+The generic state machine is only the outer rail. Each work item type
+can add stricter readiness rules, required roles, required evidence, and
+allowed transition paths.
+
+The first authority matrix should be:
+
+| Transition | Authorized hats |
+| --- | --- |
+| intake -> triage | TPM, Engineering Manager, Product Owner, Director |
+| triage -> ready | TPM after required context/gates exist |
+| ready -> in_progress | TPM or Engineering Manager after assignment/schedule allocation |
+| in_progress -> review | Implementer assigned to the work |
+| review -> in_progress | Code Reviewer or Architecture Reviewer requesting rework |
+| review -> verification | Code Reviewer or Architecture Reviewer approving the review |
+| verification -> in_progress | QA Reviewer when issue remains reproducible or acceptance criteria fail |
+| verification -> done | QA Reviewer after verification/signoff |
+| any -> blocked | Current owner, TPM, Engineering Manager, QA Reviewer, or Reviewer with evidence |
+| blocked -> triage | TPM or Engineering Manager after blocker classification |
+| blocked -> in_progress | TPM or Engineering Manager after dependency is cleared |
+| any -> cancelled | QA Reviewer for invalid/reproducibility-based closure, Product Owner for business cancellation, Director for priority cancellation, Security Reviewer for unsafe work |
+| done -> outcome_review | TPM, Engineering Manager, QA Reviewer, or Release Manager |
+| outcome_review -> done | Engineering Manager or TPM after outcome evidence is recorded |
+
+Every transition requires:
+
+- active hat assignment;
+- authority check;
+- valid source state;
+- valid target state;
+- reason;
+- evidence when required;
+- idempotency key;
+- audit event;
+- outbox event;
+- graph projection.
+
+### Work Item Type Rules
+
+Work item type matters. A defect, feature, capability expansion,
+internal platform improvement, incident, and documentation task can all
+use the same command pipeline, but they must not share a single loose
+definition of "ready" or "done." The Organization should model
+type-specific lifecycle policy as data: required gates, required role
+assignments, required evidence, and allowed transitions.
+
+Defect work should start with this minimum lifecycle:
+
+```text
+defect opened
+  -> created/intake record exists with reporter, reproduction context,
+     observed behavior, expected behavior, affected project/repo, and
+     severity
+  -> triage classifies validity, priority, owner area, and whether more
+     reproduction evidence is required
+  -> ready only after required triage fields, acceptance criteria, and
+     assignment constraints exist
+  -> engineer assignment is required before in_progress
+  -> in_progress produces a fix, tests, trace links, and evidence
+  -> review validates code, tests, and scope
+  -> verification work is scheduled for a QA Reviewer hat
+  -> done only after verification/signoff evidence is recorded
+```
+
+Defect rules:
+
+- a defect cannot be created directly in `ready`;
+- `created/intake -> ready` is illegal unless triage gates are satisfied;
+- `ready -> in_progress` requires an assigned engineer/implementer and a
+  schedule allocation;
+- `in_progress -> review` requires fix evidence, test evidence, and
+  affected artifact links;
+- `review -> verification` requires reviewer approval;
+- `verification -> done` requires QA Reviewer signoff evidence;
+- if verification finds the issue still reproducible, the work returns
+  to `in_progress` with reproduction evidence attached;
+- cancellation requires an authorized reason such as invalid defect,
+  duplicate, business cancellation, unsafe work, or replaced-by link.
+
+Other work item types should get the same policy shape rather than
+special-case commands. For example, an ambiguous feature requires
+business discovery and architecture context before ready; a credential
+or tool-expansion request requires security review before implementation;
+an incident requires severity, blast-radius, mitigation, and
+post-incident review evidence. The invariant is the same: the type owns
+the rules, the command pipeline enforces them, and every decision emits
+durable events.
+
+### Worktrees And Runtime Allocation
+
+Development work is organized by initiative branch and task worktree.
+
+Allocation model:
+
+```text
+initiative branch
+  -> task worktree
+  -> scheduled implementer block
+  -> Hermes/container/session allocation
+  -> credential/tool grants
+  -> checkpoint on block end
+  -> reviewer block on same worktree or review snapshot
+  -> verification work block for QA Reviewer hat against preview/build
+     environment
+  -> merge/release gate
+```
+
+Rules:
+
+- an implementer cannot start coding without an allocated worktree or
+  equivalent sandbox;
+- a reviewer must know exactly which worktree/commit/artifact is being
+  reviewed;
+- QA Reviewer must know which build/preview environment maps to the
+  worktree;
+- concurrent agents on the same worktree need explicit ownership or
+  file/module boundaries;
+- if a schedule block ends, the agent checkpoints branch state, open
+  tasks, failing tests, next actions, and confidence level;
+- the next scheduled block resumes from that checkpoint instead of
+  rediscovering context from scratch.
+
+### Pause, Resume, And Missed Slots
+
+Agents do not run forever inside one unbounded prompt.
+
+If work is unfinished when a block ends:
+
+1. The agent records a pause checkpoint.
+2. The runtime stores current command/run IDs, worktree state, logs,
+   tests, open questions, and next recommended action.
+3. The work item moves to waiting-for-next-block or remains in progress
+   with a next scheduled block.
+4. The scheduler chooses whether to resume the same agent/hat, another
+   eligible wearer, or escalate to the manager.
+
+If an agent misses a scheduled block:
+
+- first miss creates a manager-visible schedule variance;
+- repeated misses create an anti-stall signal;
+- critical misses can reassign work;
+- missed meetings can request async response or delegation;
+- missed review or verification blocks assigned to QA Reviewer hats can
+  escalate to manager or director depending on SLA.
+
+### Resource Management Office Function
+
+The Organization needs an RMO-like function even if it is not called
+that in product UI. Its responsibility is to manage scarce resources:
+
+- hat supply;
+- agent schedules;
+- inbox queues and priority views;
+- runtime sessions;
+- pods/containers;
+- worktrees;
+- credential grants;
+- review queues;
+- verification environments;
+- budget;
+- model/API spend;
+- GPU or local model capacity later.
+
+The RMO function can be implemented as a service plus manager/director
+tools. It should expose:
+
+- availability queries;
+- schedule proposal generation;
+- prioritized inbox queries;
+- inbox routing and defer/escalate decisions;
+- allocation holds;
+- conflict detection;
+- schedule-compliance observation;
+- priority-aware rescheduling;
+- overbooking prevention;
+- utilization metrics;
+- cost/budget signals;
+- queue-lag signals.
+- focus/compliance variance signals.
+
+This is how the Organization avoids stale moments: if one item is
+waiting on a future block, the scheduler and managers route available
+agents to the next best work instead of leaving them idle.
+
+### Edge Cases
+
+The lifecycle must handle:
+
+- no eligible hat wearer available;
+- required reviewer unavailable;
+- meeting quorum cannot be reached;
+- participant declines or times out;
+- agent is already in a non-interruptible block;
+- high-priority inbox item arrives during a lower-priority block;
+- agent spends scheduled work time on deferred inbox traffic;
+- worktree lock conflict;
+- branch drift or merge conflict;
+- credential grant expires mid-block;
+- runtime container fails;
+- NATS event is duplicated;
+- scheduled block misses its start;
+- scheduled block exceeds budget;
+- scheduled block has no observable progress;
+- observed activity does not match the scheduled block's expected
+  activity profile;
+- verification environment unavailable;
+- reviewer requests rework after verification work was scheduled;
+- executive priority preempts a lower-priority schedule;
+- agent memory/context appears stale;
+- agent changes hats between scheduling and execution;
+- authority is revoked before the block starts.
+
+Each edge case should become a typed event and, where useful, a
+supervisor signal or work item.
+
 ## Phase 0: Keep The Roadmap Current
 
 ### Goal
@@ -184,6 +741,10 @@ Make this document the canonical next-step source.
 3. When implementation teaches us a better order, change the plan.
 4. Do not preserve stale roadmap items for sentiment. Mark them done,
    split them, or delete them.
+5. Keep current-state docs honest. If a doc still describes a future
+   adapter choice such as Drizzle, Temporal, Dapr, MCP, Hermes, or
+   Hindsight as if it already exists, either reframe it as target state
+   or update it to the current generic-port implementation.
 
 ### Exit Criteria
 
@@ -191,13 +752,24 @@ Make this document the canonical next-step source.
 - The "Immediate Next PR Sequence" section reflects the next realistic
   work.
 
-## Phase 1: Real Worker Process Adapters
+## Phase 1: Real Worker Process Adapter Umbrella
 
 ### Goal
 
 Turn the current `apps/workers` durable composition seam into a runnable
 process boundary with real CockroachDB, real NATS JetStream, and a first
 structured telemetry sink, while keeping reusable packages vendor-free.
+
+This is an umbrella phase completed by the first three near-term PRs:
+
+```text
+process adapter interfaces
+  -> Cockroach integration proof
+  -> NATS integration proof
+```
+
+Do not hide all of that behind one giant PR. The phase is complete only
+after all three pieces are proven.
 
 ### Why This Is Next
 
@@ -226,6 +798,14 @@ infrastructure.
 9. Add readiness result objects for Cockroach, NATS, and telemetry sink
    health.
 10. Add a process entrypoint only after factories are contract-tested.
+11. Add an early full-ai-cluster contract checkpoint without deployment
+    YAML:
+    - required env names;
+    - Secret/ExternalSecret names;
+    - service account expectations;
+    - Cilium egress targets;
+    - readiness dependencies;
+    - OTEL/LGTM destination shape.
 
 ### Tests First
 
@@ -235,12 +815,17 @@ Write tests before implementation for:
 - Cockroach transaction rollback on operation failure;
 - Cockroach connection release on success and failure;
 - migration runner invoked before cycles when enabled;
+- migration failure blocks worker cycles and is reported as not-ready or
+  degraded startup state;
 - NATS connection factory passes publish and consumer dependencies into
   existing adapters;
 - telemetry sink records runtime status without swallowing worker
   results;
 - invalid adapter config fails before clients are created;
-- app composition still accepts fake adapters for unit tests.
+- app composition still accepts fake adapters for unit tests;
+- cluster contract checkpoint contains no plaintext secrets and maps
+  every required runtime value to a Secret, ExternalSecret, ConfigMap, or
+  service discovery source.
 
 ### Docs
 
@@ -330,13 +915,94 @@ Update:
 - Command outcomes are UI/MCP/agent-readable.
 - Existing `send_supervisor_signal` behavior is unchanged.
 
-## Phase 3: Discussion Anchors And Work-Scoped Communication
+## Phase 3: Work Anchor Kernel V0
 
 ### Goal
 
-Implement the first durable communication graph primitive: no meaningful
-discussion, meeting, one-on-one, broadcast, vote, or decision can affect
-state unless anchored to work.
+Create the smallest authoritative work anchor that discussion, triage,
+graph retrieval, gates, runs, and UI projections can all depend on.
+
+This phase exists because supervisor signals and discussions cannot be
+truly work-anchored if the Organization has no minimal project,
+initiative, work item, or anchor-target persistence yet.
+
+### Code Steps
+
+1. Reconcile the V0 work item states across docs and implementation,
+   including how `created` maps to the current `intake` concept.
+2. Add the minimal domain records for:
+   - project;
+   - initiative;
+   - work item;
+   - work anchor target;
+   - work state transition.
+3. Add Cockroach schema for minimal projects, initiatives, work items,
+   and work anchor targets.
+4. Add commands:
+   - `create_project`;
+   - `create_initiative`;
+   - `create_work_item`;
+   - `link_work_anchor`;
+   - `transition_work_item`.
+5. Keep the first state machine narrow:
+   - created;
+   - intake;
+   - triage;
+   - ready;
+   - in_progress;
+   - blocked;
+   - review;
+   - done.
+6. Add the first type-specific lifecycle policy records for defects.
+7. Emit audit and outbox events for every work state transition.
+8. Add a minimal work-status query/read model for workers, agents, and
+   future UI/API hosts.
+
+### Tests First
+
+Write tests for:
+
+- work item state reconciliation uses one typed enum;
+- legal and illegal transitions;
+- defect cannot start in ready;
+- defect cannot move to ready until triage fields and required evidence
+  exist;
+- defect cannot move from ready to in_progress until an engineer is
+  assigned and scheduled;
+- anchor target existence before linking;
+- `send_supervisor_signal` can reference a valid work anchor;
+- no orphan discussion or decision can be created without a valid anchor
+  once Phase 4 consumes this kernel;
+- duplicate create/transition requests replay or conflict through
+  idempotency;
+- work transition emits audit, outbox, and visibility records.
+
+### Docs
+
+Update:
+
+- `WORK_AND_RELEASE_MANAGEMENT_OS.md`;
+- `V0_SCHEMA_AND_COMMANDS.md`;
+- `NORTH_STAR_ALIGNMENT_CHECKPOINT.md`;
+- OpenSpec work-anchor scenarios.
+
+### Exit Criteria
+
+- Discussion and triage phases have a real work anchor to reference.
+- The Organization has a minimal task/work substrate without pretending
+  the full Work OS exists.
+
+## Phase 4: Discussion Anchors And Work-Scoped Communication
+
+### Goal
+
+Implement the first durable communication graph primitive after the work
+anchor kernel exists: no meaningful discussion, meeting, one-on-one,
+broadcast, vote, or decision can affect state unless anchored to work.
+
+Keep this phase intentionally narrow. Full meeting modes, voting, and
+executive decision procedures can expand after the core anchor contract
+is proven.
 
 ### Code Steps
 
@@ -344,37 +1010,25 @@ state unless anchored to work.
    - discussion anchor;
    - discussion participant;
    - discussion mode;
-   - decision record;
-   - meeting request;
-   - meeting state;
-   - vote state.
+   - decision record.
 2. Add legal anchor targets:
    - project;
    - initiative;
    - work item;
-   - gate;
-   - incident;
-   - release;
    - policy decision;
-   - memory review;
    - runtime health issue.
 3. Add commands:
    - `create_discussion_anchor`;
-   - `request_meeting`;
-   - `record_decision`;
-   - `open_vote`;
-   - `cast_vote`;
-   - `close_vote`.
+   - `record_decision`.
 4. Keep `send_supervisor_signal` able to create or reference a
    discussion anchor through normal command effects.
 5. Add events:
    - `discussion_anchor.created`;
-   - `meeting.requested`;
-   - `meeting.started`;
-   - `decision.recorded`;
-   - `vote.opened`;
-   - `vote.closed`.
+   - `decision.recorded`.
 6. Add first graph projection records tying discussions to work.
+7. Stage meeting requests, meeting states, votes, and rich discussion
+   modes for a later expansion after Work OS gates and hat authority are
+   active.
 
 ### Tests First
 
@@ -384,7 +1038,6 @@ Write tests for:
 - anchor target must exist or be created through a valid command path;
 - supervisor signal creates/references anchor;
 - decision must include participants, evidence, and scope;
-- vote mode enforces eligible hat scopes;
 - replay of a decision command is idempotent;
 - graph projection includes work item, participants, decision, and
   trace ID.
@@ -405,7 +1058,7 @@ Update:
   discussion, decision, evidence, and trace.
 - No raw chat primitive bypasses work anchoring.
 
-## Phase 4: Supervisor Triage Lifecycle
+## Phase 5: Supervisor Triage Lifecycle
 
 ### Goal
 
@@ -465,71 +1118,131 @@ Update:
 - Managers can turn signals into normal work without bespoke tools.
 - The lifecycle remains generic and expandable.
 
-## Phase 5: Work OS V0 State Model
+## Phase 6: Thin Command And Query Host
 
 ### Goal
 
-Build the first real Organization-owned task and release management core.
+Expose the first usable vertical slice without waiting for the full
+NestJS API, web UI, or MCP gateway.
+
+The host should be tiny: one command path, one status/query path, one
+policy context adapter, one traceable response shape. It exists so
+humans and agents can drive and observe the early loop before the full
+platform surface is built.
 
 ### Code Steps
 
-1. Reconcile work item states across docs and implementation.
-2. Add domain state machines for:
-   - project;
-   - initiative;
-   - work item;
-   - gate;
-   - assignment;
-   - release.
-3. Add Cockroach schema for those state groups.
-4. Add commands:
-   - `create_project`;
-   - `create_initiative`;
-   - `create_work_item`;
-   - `transition_work_item`;
-   - `add_acceptance_criteria`;
-   - `open_gate`;
-   - `decide_gate`;
-   - `link_artifact`;
-   - `create_release`;
-   - `mark_release_ready`.
-5. Add read models for boards and queues.
-6. Emit durable events for every transition.
-7. Ensure every command can carry discussion-anchor and evidence
-   context.
+1. Add a minimal app host or process-local command/query facade.
+2. Expose `send_supervisor_signal` through the generic command registry.
+3. Expose read-only status for:
+   - command result;
+   - supervisor signal;
+   - anchored work item;
+   - reaction plan;
+   - policy denial.
+4. Require idempotency input for side-effecting commands.
+5. Return trace ID, command ID, event IDs, work anchor, and next
+   suggested action.
+6. Keep this host framework-thin. Full NestJS API remains a later phase.
 
 ### Tests First
 
 Write tests for:
 
-- legal and illegal state transitions;
-- gate requirements block readiness;
-- QA reproducible defect bounces work correctly;
-- release cannot merge without required gates;
-- initiative branch state gates merge to main;
-- all transitions emit expected events;
-- board projections update from events, not direct writes.
+- missing idempotency input fails before command execution;
+- allowed command returns traceable command result;
+- policy denial returns structured reason and policy observation ID;
+- query returns work/signal/reaction status from read models;
+- host code calls application ports and does not import repositories;
+- duplicate command input replays the stored result.
 
 ### Docs
 
 Update:
 
-- `WORK_AND_RELEASE_MANAGEMENT_OS.md`;
-- `V0_SCHEMA_AND_COMMANDS.md`;
+- `TECHNICAL_CA_PACKAGE_ARCHITECTURE.md`;
+- `V0_EXECUTABLE_CONTRACT.md`;
 - `UI_AND_OBSERVABILITY_CONCEPTS.md`;
-- OpenSpec work lifecycle scenarios.
+- OpenSpec command/query host scenarios.
 
 ### Exit Criteria
 
-- The Organization has its own minimal Linear-like core for agents.
-- Every task, gate, release, and discussion is traceable.
+- A human or agent can submit a supervisor signal and read the resulting
+  status without directly calling package internals.
+- The host is still a composition boundary, not a business-logic home.
 
-## Phase 6: Hat Assignment, Authority, And Schedule Core
+## Phase 7: Graph Projection And Context Pack V0
 
 ### Goal
 
-Make hats operational as scoped, time-bounded authority with supply,
-assignment, JWT/token lifecycle, work schedules, and prompt-flow access.
+Make the early system agent-native by projecting work, signals,
+decisions, policy observations, traces, and artifacts into retrievable
+context packs before Hermes and MCP depend on them.
+
+### Code Steps
+
+1. Add graph node and edge projection contracts for:
+   - work item;
+   - supervisor signal;
+   - discussion anchor;
+   - decision;
+   - artifact;
+   - policy observation;
+   - trace/run pointer.
+2. Add provenance envelope:
+   - source event ID;
+   - source command ID;
+   - source artifact ID;
+   - actor/hat;
+   - timestamp;
+   - confidence/source type.
+3. Add access envelope:
+   - organization;
+   - project;
+   - initiative;
+   - work item;
+   - hat scope;
+   - policy visibility.
+4. Add `get_context_pack` query for a work anchor.
+5. Add read-only context pack contract for later MCP/Hermes use.
+6. Keep memory references optional. Hindsight-backed recall arrives in a
+   later phase, but graph context must work without it.
+
+### Tests First
+
+Write tests for:
+
+- event-fed graph projection creates nodes/edges idempotently;
+- duplicate event replay does not duplicate graph edges;
+- context pack includes work, signal, decision, policy observation, and
+  trace references;
+- access filtering hides out-of-scope nodes;
+- provenance identifies source event and command;
+- missing context pack returns a typed not-found result.
+
+### Docs
+
+Update:
+
+- `AGENT_NATIVE_KNOWLEDGE_GRAPH.md`;
+- `OBSERVABILITY_AND_SELF_HEALING.md`;
+- `UI_AND_OBSERVABILITY_CONCEPTS.md`;
+- OpenSpec graph/context-pack scenarios.
+
+### Exit Criteria
+
+- Agents can retrieve why a work item exists, what was decided, what
+  evidence exists, which policy decisions applied, and where to inspect
+  traces.
+- MCP and Hermes phases can depend on this context pack instead of
+  inventing their own retrieval path.
+
+## Phase 8: Hat Authority Minimum
+
+### Goal
+
+Make hats operational as scoped, time-bounded command authority before
+building schedules, prompt-flow access, and rich rhythm management.
 
 ### Code Steps
 
@@ -537,38 +1250,21 @@ assignment, JWT/token lifecycle, work schedules, and prompt-flow access.
    - hat definitions;
    - hat supply policy;
    - hat assignment;
-   - hat token;
-   - hat schedule template;
-   - agent work schedule;
-   - schedule blocks.
+   - hat token.
 2. Add commands:
    - `reserve_hat_assignment`;
    - `issue_hat_token`;
    - `refresh_hat_token`;
    - `release_hat_assignment`;
-   - `revoke_hat_assignment`;
-   - `create_schedule_template`;
-   - `assign_work_schedule`;
-   - `start_schedule_block`;
-   - `complete_schedule_block`.
+   - `revoke_hat_assignment`.
 3. Add authority checks for:
    - active assignment;
    - supervisor graph;
    - tool scope;
    - project/work scope;
-   - token TTL;
-   - schedule allowance where needed.
+   - token TTL.
 4. Add first hat communication briefs from hat definitions.
-5. Add schedule block types:
-   - prioritized work;
-   - review;
-   - reflection;
-   - memory maintenance;
-   - free time;
-   - meeting;
-   - prompt-flow run;
-   - incident response.
-6. Add events for assignment and schedule transitions.
+5. Add events for assignment and token transitions.
 
 ### Tests First
 
@@ -579,9 +1275,8 @@ Write tests for:
 - revoked assignment denies command;
 - supervisor can assign hats under their scope;
 - director can assign TPM and manager hats under their department;
-- schedule block emits visible start/complete events;
-- free-time block can create memories/questions but must still anchor
-  consequential decisions to work.
+- issued token carries scope, TTL, and hat assignment;
+- command authorization uses real assignment state.
 
 ### Docs
 
@@ -589,17 +1284,208 @@ Update:
 
 - `CLUSTER_NATIVE_HAT_SYSTEM.md`;
 - `DEPARTMENT_HAT_TOOL_INVENTORY.md`;
-- `AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`;
 - `V0_POLICY_AND_RUNTIME_BOUNDARIES.md`;
-- OpenSpec hat assignment scenarios.
+- OpenSpec hat authority scenarios.
 
 ### Exit Criteria
 
 - Commands can be authorized by real Organization hat assignments.
 - The system can explain what hat an agent is wearing, what tools it has,
-  who supervises it, when it expires, and what it should be doing now.
+  who supervises it, and when authority expires.
 
-## Phase 7: Hat-System CRD Bridge
+## Phase 9: Hat Schedule And Work Rhythm Core
+
+### Goal
+
+Add hat-bound schedules, work rhythm, free time, reflection, and memory
+maintenance after minimum authority exists.
+
+This phase turns time into an explicit Organization resource. Agents do
+not just receive work; they receive work in scheduled, resumable,
+resource-checked blocks.
+
+### Code Steps
+
+1. Add Organization DB state for:
+   - hat schedule template;
+   - agent work schedule;
+   - schedule block;
+   - allocation hold;
+   - inbox item;
+   - prioritized inbox view;
+   - inbox attention policy;
+   - pause checkpoint;
+   - runtime slot;
+   - worktree slot;
+   - credential slot.
+2. Add commands:
+   - `create_schedule_template`;
+   - `assign_work_schedule`;
+   - `start_schedule_block`;
+   - `complete_schedule_block`.
+3. Add schedule block types:
+   - prioritized work;
+   - review;
+   - reflection;
+   - memory maintenance;
+   - free time;
+   - meeting;
+   - prompt-flow run;
+   - incident response.
+4. Add manager-controlled schedule assignment and review.
+5. Add commands for:
+   - request schedule block;
+   - propose schedule window;
+   - reserve allocation hold;
+   - commit schedule block;
+   - request meeting slot;
+   - accept, decline, or delegate meeting attendance;
+   - prioritize inbox;
+   - acknowledge inbox item;
+   - defer inbox item;
+   - escalate inbox item;
+   - report schedule compliance variance;
+   - pause work block;
+   - resume work block;
+   - report missed block.
+6. Add priority-aware scheduling rules that account for hat supply,
+   current work mode, interruptibility, required participants, worktree
+   availability, credential TTL, runtime capacity, budget, and SLA.
+7. Add schedule-block compliance observation using expected activity
+   profile, allowed inbox access, required artifacts, telemetry,
+   heartbeat cadence, and completion validator.
+8. Emit events for schedule transitions, allocation changes, inbox
+   routing, compliance variance, missed blocks, pause checkpoints, and
+   resumption.
+
+### Tests First
+
+Write tests for:
+
+- manager can assign schedule under their scope;
+- same hat cannot be double-booked for overlapping schedule blocks;
+- same worktree cannot be allocated to conflicting implementation
+  blocks unless ownership boundaries are explicit;
+- same runtime slot cannot be double-booked;
+- credential slot must exist and remain valid for blocks that require
+  credentials;
+- schedule block exposes the correct prioritized inbox for the active
+  hat and work context;
+- high-priority inbox item can interrupt only when policy allows;
+- deferred inbox item is routed to the next attention window instead of
+  interrupting blindly;
+- idempotent retry of allocation-hold and schedule-block commit replays
+  instead of double-booking resources;
+- expired allocation hold cannot be committed;
+- schedule block emits visible start/complete events;
+- meeting request creates scheduled blocks for required participants
+  instead of interrupting them blindly;
+- non-interruptible block rejects or reschedules lower-priority meeting
+  requests;
+- review request creates a scheduled reviewer slot, not ambient work;
+- verification request creates a scheduled work or review block for a QA
+  Reviewer hat, not ambient work;
+- unfinished work creates a pause checkpoint and resumes in the next
+  allotted block;
+- worktree slot is required before implementation work starts;
+- credential expiration during a block creates a typed schedule/runtime
+  issue;
+- reflection block can create supervisor signal or memory review work;
+- free-time block can create memories/questions but must still anchor
+  consequential decisions to work;
+- implementation block with unrelated inbox-only activity creates a
+  compliance variance;
+- review block with no relevant diff/evidence/context access creates a
+  compliance variance;
+- compliance variance first creates recovery guidance and only escalates
+  after policy thresholds are met;
+- stale schedule block creates anti-stall reaction input.
+
+### Docs
+
+Update:
+
+- `AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`;
+- `DEPARTMENT_HAT_TOOL_INVENTORY.md`;
+- `ANTI_STALL_PRIORITY_RUNTIME.md`;
+- OpenSpec schedule scenarios.
+
+### Exit Criteria
+
+- The Organization can explain not only what authority an agent has, but
+  what that hat is scheduled to do and how managers adjust that rhythm.
+- Meetings, reviews, verification work performed by QA Reviewer hats,
+  implementation, free time, reflection, and memory maintenance are all
+  scheduled and resumable.
+- Agents have prioritized, hat-aware inboxes with dedicated attention
+  windows and policy-controlled interruption.
+- Schedule blocks are actively observed for focus, progress, and
+  expected behavior so managers can see and correct inefficiency without
+  relying on guesswork.
+- RMO-style resource checks prevent double-booked hats, unavailable
+  worktrees, missing credentials, and unscheduled runtime work.
+
+## Phase 10: Reaction Executor And Anti-Stall Runtime
+
+### Goal
+
+Move from planning reactions to executing safe Organization commands
+from reaction plans after the Schedule/RMO core exists.
+
+Reaction execution may create work, request schedule blocks, escalate
+missed slots, and route weak points, but it must not bypass schedule,
+hat, worktree, runtime, credential, or gate authority.
+
+### Code Steps
+
+1. Define reaction executor port.
+2. Add reaction lease/claim model to prevent duplicate execution.
+3. Add reaction handlers for:
+   - supervisor signal triage task creation;
+   - stale blocker escalation;
+   - review queue saturation;
+   - missing evidence reminder;
+   - assignment silence;
+   - missed schedule block escalation;
+   - NATS DLQ incident creation;
+   - policy denial weak-point review.
+4. Ensure reaction handlers call normal commands.
+5. Add retry and backoff rules.
+6. Add dead-letter or failed-reaction state.
+7. Add events and visibility records for reaction execution.
+
+### Tests First
+
+Write tests for:
+
+- reaction claim prevents duplicate workers from executing the same plan;
+- reaction executor emits normal command events;
+- failed reaction records retryable state;
+- max retry creates incident or supervisor signal;
+- stale blocker escalation respects hierarchy;
+- reaction that needs human/agent time creates schedule requests instead
+  of ambient work;
+- missed review or verification block assigned to a QA Reviewer hat
+  creates an escalation or reschedule command;
+- no reaction directly mutates business state.
+
+### Docs
+
+Update:
+
+- `ALWAYS_ON_ORCHESTRATION_RUNTIME.md`;
+- `ANTI_STALL_PRIORITY_RUNTIME.md`;
+- `OBSERVABILITY_AND_SELF_HEALING.md`;
+- OpenSpec reaction execution scenarios.
+
+### Exit Criteria
+
+- The Organization can safely perform its first autonomous follow-up
+  actions.
+- Every automated action is traceable, scheduled when time is required,
+  and reviewable.
+
+## Phase 11: Hat-System CRD Bridge
 
 ### Goal
 
@@ -651,57 +1537,7 @@ Update:
 - Cluster hat enforcement and Organization business state are connected
   but not collapsed into one layer.
 
-## Phase 8: Reaction Executor And Anti-Stall Runtime
-
-### Goal
-
-Move from planning reactions to executing safe Organization commands
-from reaction plans.
-
-### Code Steps
-
-1. Define reaction executor port.
-2. Add reaction lease/claim model to prevent duplicate execution.
-3. Add reaction handlers for:
-   - supervisor signal triage task creation;
-   - stale blocker escalation;
-   - review queue saturation;
-   - missing evidence reminder;
-   - assignment silence;
-   - NATS DLQ incident creation;
-   - policy denial weak-point review.
-4. Ensure reaction handlers call normal commands.
-5. Add retry and backoff rules.
-6. Add dead-letter or failed-reaction state.
-7. Add events and visibility records for reaction execution.
-
-### Tests First
-
-Write tests for:
-
-- reaction claim prevents duplicate workers from executing the same plan;
-- reaction executor emits normal command events;
-- failed reaction records retryable state;
-- max retry creates incident or supervisor signal;
-- stale blocker escalation respects hierarchy;
-- no reaction directly mutates business state.
-
-### Docs
-
-Update:
-
-- `ALWAYS_ON_ORCHESTRATION_RUNTIME.md`;
-- `ANTI_STALL_PRIORITY_RUNTIME.md`;
-- `OBSERVABILITY_AND_SELF_HEALING.md`;
-- OpenSpec reaction execution scenarios.
-
-### Exit Criteria
-
-- The Organization can safely perform its first autonomous follow-up
-  actions.
-- Every automated action is traceable and reviewable.
-
-## Phase 9: MCP Gateway And Agent Context
+## Phase 12: MCP Gateway And Agent Context
 
 ### Goal
 
@@ -724,14 +1560,15 @@ hat-aware context, policy checks, and traceability.
    - send supervisor signal;
    - read my hat brief;
    - read my assigned work;
-   - read anchored context pack;
-   - submit evidence;
-   - request meeting through anchor;
+   - read anchored context pack from Phase 7;
    - record decision through anchor.
 5. Run policy checks before command execution.
 6. Emit MCP call telemetry.
 7. Add credential-proxy preflight hook but keep credential access
    disabled until security lifecycle is implemented.
+8. Defer `submit_evidence`, `request_meeting`, and richer meeting/vote
+   tools until the evidence/artifact, gate, and meeting lifecycle
+   commands exist.
 
 ### Tests First
 
@@ -741,6 +1578,7 @@ Write tests for:
 - expired token denies tool;
 - allowed hat can send supervisor signal;
 - MCP tool maps to command without bypassing command pipeline;
+- duplicate MCP command input replays by idempotency key;
 - tool response includes command result, trace ID, and next suggested
   action;
 - failed policy decision creates observation.
@@ -759,7 +1597,113 @@ Update:
 - Hermes agents can use Organization tools through MCP.
 - The system knows which agent and hat performed each action.
 
-## Phase 10: Hermes Run Binding
+## Phase 13: Work OS Expansion And Gate Core
+
+### Goal
+
+Expand the minimal work anchor into the first practical
+Organization-owned task, gate, release, and board model.
+
+### Code Steps
+
+1. Add domain state machines for:
+   - gate;
+   - assignment link;
+   - artifact link;
+   - work item comment;
+   - mention/inbox item;
+   - release skeleton;
+   - initiative branch skeleton.
+2. Add commands:
+   - `add_acceptance_criteria`;
+   - `open_gate`;
+   - `decide_gate`;
+   - `link_artifact`;
+   - `add_work_item_comment`;
+   - `mention_agent_or_hat`;
+   - `create_release`;
+   - `mark_release_ready`.
+3. Add read models for:
+   - work boards;
+   - review queues;
+   - gate queues;
+   - release readiness.
+4. Emit durable events for every transition.
+5. Ensure every command can carry discussion-anchor and evidence
+   context.
+6. Add type-specific lifecycle policies for:
+   - defect;
+   - ambiguous feature;
+   - internal platform improvement;
+   - credential/tool expansion;
+   - incident.
+7. Add the first gated transition authority matrix:
+   - implementer moves assigned work from in progress to review;
+   - reviewer moves review to rework or verification;
+   - QA Reviewer moves verification work to in progress when
+     reproducible issues remain;
+   - QA Reviewer moves verification work to done after verification;
+   - cancellation requires QA Reviewer, Product Owner, Director, or Security
+     authority depending on reason.
+8. Work item read models must show requester, owner, implementer,
+   reviewer, QA Reviewer, architect, product owner/BA, TPM, engineering
+   manager, director, security reviewer, release owner, watchers, and
+   mentioned agents/hats when present.
+9. Comments and mentions create inbox items or schedule requests rather
+   than direct interruption.
+10. Keep feature-branch and verification lifecycle minimal here; the
+   full release and branch management phase expands it later.
+
+### Tests First
+
+Write tests for:
+
+- gate requirements block readiness;
+- defect readiness requires triage, evidence, acceptance criteria, and
+  owner-area classification;
+- defect in-progress requires assigned engineer and schedule allocation;
+- reviewer authority policy allows and denies gate decisions;
+- implementer can submit in-progress work for review but cannot sign it
+  off;
+- reviewer can request rework or approve to verification but cannot
+  mark verification done;
+- QA Reviewer can bounce reproducible issues back or sign off done;
+- unauthorized transition attempts are denied before state changes;
+- QA Reviewer reproducibility finding bounces work correctly;
+- release cannot move forward without required gates;
+- initiative branch state gates merge readiness;
+- comments retain author agent, active hat, mention targets, evidence,
+  and visibility scope;
+- mention command creates a traceable inbox item or schedule request
+  instead of interrupting the mentioned agent directly;
+- mention respects visibility scope and cannot leak restricted work
+  context;
+- duplicate mention command replays or conflicts by idempotency key;
+- mentioning an agent in a non-interruptible block does not interrupt
+  that block unless an authorized urgent escalation path says so;
+- all transitions emit expected events;
+- board projections update from events, not direct writes;
+- duplicate gate decisions replay or conflict by idempotency key.
+
+### Docs
+
+Update:
+
+- `WORK_AND_RELEASE_MANAGEMENT_OS.md`;
+- `V0_SCHEMA_AND_COMMANDS.md`;
+- `UI_AND_OBSERVABILITY_CONCEPTS.md`;
+- OpenSpec work/gate lifecycle scenarios.
+
+### Exit Criteria
+
+- The Organization has its own minimal Linear-like core for agents.
+- Readiness, review, and QA Reviewer signoff approvals can block
+  transitions.
+- Every task, gate, release, and discussion is traceable.
+- Work items expose the full role hierarchy and comment/mention history
+  agents need to coordinate without side channels.
+
+## Phase 14: Hermes Run Binding
 
 ### Goal
 
@@ -793,10 +1737,16 @@ sandboxed cluster workloads.
    - project docs;
    - acceptance criteria;
    - discussion decisions;
-   - memory scope.
+   - optional memory scope placeholder.
 5. Ensure all Hermes interactions emit traceable events.
 6. Keep OpenZiti/OZ transport details behind adapter ports.
 7. Add sandbox/session health observations.
+8. Do not make Hermes depend on Hindsight before Phase 15. Until then,
+   Hermes context packs use graph/work/document context plus an explicit
+   "memory unavailable" or "memory not yet wired" field.
+9. Require a committed schedule block and RMO allocation before starting
+   any Hermes run. Development work also requires an applicable worktree
+   slot; privileged tool use requires a valid credential slot.
 
 ### Tests First
 
@@ -804,10 +1754,17 @@ Write tests for:
 
 - work assignment launches run with correct hat context;
 - missing assignment blocks run;
+- missing committed schedule block blocks run launch;
+- missing runtime slot blocks run launch;
+- development work without required worktree slot blocks run launch;
+- cancelled or expired allocation hold prevents session allocation;
+- run start references the RMO allocation ID and schedule block ID;
 - run event maps to evidence or status update;
 - failed run creates visible incident/supervisor signal;
 - cancel path releases or suspends hat assignment correctly;
-- context pack includes only scoped docs/memory.
+- context pack includes only scoped docs and graph context before memory
+  is wired;
+- duplicate run callbacks replay or conflict by run event ID.
 
 ### Docs
 
@@ -823,7 +1780,7 @@ Update:
 - A hat-assigned Hermes agent can receive work, run in a session, use
   MCP tools, and report evidence.
 
-## Phase 11: Hindsight Memory Integration
+## Phase 15: Hindsight Memory Integration
 
 ### Goal
 
@@ -883,7 +1840,7 @@ Update:
 - Agents can grow into hats through scoped memory without confusing
   agent identity, role authority, and project context.
 
-## Phase 12: Prompt Flows And Universal Action Grammar
+## Phase 16: Prompt Flows And Universal Action Grammar
 
 ### Goal
 
@@ -945,7 +1902,7 @@ Update:
 - Hats can execute deterministic MCP-driven procedures.
 - New procedures are created through the Organization lifecycle.
 
-## Phase 13: Ambiguous Requirement Lifecycle
+## Phase 17: Ambiguous Requirement Lifecycle
 
 ### Goal
 
@@ -1001,7 +1958,7 @@ Update:
 - The Organization can receive an ambiguous goal and create a curated,
   evidence-backed implementation plan.
 
-## Phase 14: Security And Credential Expansion Lifecycle
+## Phase 18: Security And Credential Expansion Lifecycle
 
 ### Goal
 
@@ -1053,7 +2010,7 @@ Update:
 
 - Tool and credential expansion is generic, governed, and traceable.
 
-## Phase 15: Temporal Workflows
+## Phase 19: Temporal Workflows
 
 ### Goal
 
@@ -1070,7 +2027,7 @@ need timers, retries, compensation, and human/agent gates.
 - prompt-flow activation;
 - long-running Hermes run orchestration;
 - scheduled department review;
-- scheduled QA regression;
+- scheduled regression verification;
 - incident remediation.
 
 ### Code Steps
@@ -1105,7 +2062,7 @@ Update:
 - Temporal owns durable timers and long-running orchestration, but
   Organization commands still own business state.
 
-## Phase 16: Dapr Actors For Hot Entity Coordination
+## Phase 20: Dapr Actors For Hot Entity Coordination
 
 ### Goal
 
@@ -1152,12 +2109,16 @@ Update:
 - Dapr is used where it helps hot coordination, not as a second business
   database.
 
-## Phase 17: UI Operations Console
+## Phase 21: UI Operations Console
 
 ### Goal
 
 Build the human and agent-visible console for seeing the Organization in
 motion.
+
+This is the rich operations console phase. Earlier phases already
+provide thin command/query status and graph context packs so agents and
+humans are not blind while the full UI waits.
 
 ### First Surfaces
 
@@ -1205,7 +2166,7 @@ Update:
 - A human can open the console and understand what the Organization is
   doing, where work is stuck, who owns it, and why decisions were made.
 
-## Phase 18: NestJS API Host
+## Phase 22: NestJS API Host
 
 ### Goal
 
@@ -1253,7 +2214,7 @@ Update:
 - API is a replaceable host over the Organization command/query
   contracts, not the place business logic lives.
 
-## Phase 19: Full Observability And Self-Healing Loop
+## Phase 23: Full Observability And Self-Healing Loop
 
 ### Goal
 
@@ -1312,7 +2273,7 @@ Update:
 - Agents can inspect their own harness and propose improvements through
   normal Organization work.
 
-## Phase 20: Cluster Deployment On full-ai-cluster
+## Phase 24: Cluster Deployment On full-ai-cluster
 
 ### Goal
 
@@ -1364,7 +2325,7 @@ Update:
 - Agentic Organization runs as a consumer workload on full-ai-cluster.
 - It does not create a parallel substrate.
 
-## Phase 21: Department Reviews And Performance Improvement
+## Phase 25: Department Reviews And Performance Improvement
 
 ### Goal
 
@@ -1406,7 +2367,7 @@ Update:
 - The Organization can improve its teams, tools, memories, and workflows
   through scheduled self-review.
 
-## Phase 22: Internal Feature Factory
+## Phase 26: Internal Feature Factory
 
 ### Goal
 
@@ -1434,7 +2395,8 @@ through the same lifecycle it uses for product work.
 
 Write tests for:
 
-- internal feature follows BRD/CA/review/QA/release path when required;
+- internal feature follows BRD/CA/review/verification/release path when
+  required;
 - new workflow cannot activate without approval;
 - new MCP tool cannot activate without security review;
 - new prompt flow cannot activate without prompt-flow approval.
@@ -1453,19 +2415,19 @@ Update:
 - Agents can improve the Organization OS through governed work, not
   side-channel changes.
 
-## Phase 23: Release And Branch Management
+## Phase 27: Release And Branch Management
 
 ### Goal
 
-Implement feature-branch driven development and QA gates for every
-initiative before merge to the system build branch.
+Implement feature-branch driven development and QA Reviewer signoff
+gates for every initiative before merge to the system build branch.
 
 ### Code Steps
 
 1. Add initiative branch state machine.
 2. Add branch creation command.
 3. Add CI/CD automation plan record.
-4. Add QA environment readiness record.
+4. Add verification environment readiness record.
 5. Add merge readiness gate.
 6. Add release verification record.
 7. Add branch close/archive path.
@@ -1475,7 +2437,7 @@ initiative before merge to the system build branch.
 
 Write tests for:
 
-- initiative cannot merge until QA signed off;
+- initiative cannot merge until QA Reviewer signoff is recorded;
 - missing automation plan blocks development-ready state;
 - failed system build creates defect or release blocker;
 - branch events update release board;
@@ -1491,10 +2453,10 @@ Update:
 
 ### Exit Criteria
 
-- Feature work is isolated, QA-approved, and traceable before it reaches
-  main.
+- Feature work is isolated, verification-approved, and traceable before
+  it reaches main.
 
-## Phase 24: Advanced Organization Intelligence
+## Phase 28: Advanced Organization Intelligence
 
 ### Goal
 
@@ -1539,7 +2501,7 @@ Update:
 - The Organization can reason about capacity, priority, standards, and
   improvement using its own trace data.
 
-## Phase 25: Hardening, Scale, And Extraction
+## Phase 29: Hardening, Scale, And Extraction
 
 ### Goal
 
@@ -1596,12 +2558,25 @@ review finding changes the dependency graph.
 
 ### PR 1: Worker Process Adapter Interfaces
 
+Status: partially implemented. The app-local Cockroach pooled-client
+adapter, app-local NATS connection seam, concrete `@nats-io` transport
+factory, JSON telemetry sink, outbox claim fencing, additive Cockroach
+claim-fence migration, and basic readiness aggregate now exist. The
+remaining PR 1 scope is migration bootstrap/readiness hardening around
+all process adapters and the first executable worker entrypoint.
+
 Build:
 
-- app-local Cockroach client interface implementation;
-- app-local NATS connection factory interface;
-- telemetry sink interface and JSON sink fake;
-- config validation for adapter-specific connection settings.
+- app-local Cockroach client interface implementation; done;
+- app-local NATS connection factory interface; done;
+- concrete `@nats-io/transport-node` and `@nats-io/jetstream` factory
+  behind the NATS connection seam; done with fake-driven tests, no live
+  server required;
+- telemetry sink interface and JSON sink fake; done;
+- config validation for adapter-specific connection settings; partially
+  done for `NATS_SERVERS`, batch sizes, and Cockroach URL presence;
+- early full-ai-cluster contract checkpoint for env, secrets, egress,
+  readiness, and OTEL destinations; partially done in docs.
 
 Do not:
 
@@ -1612,7 +2587,9 @@ Do not:
 Done when:
 
 - tests prove process adapter construction and failure behavior;
-- reusable packages still do not import vendor clients.
+- reusable packages still do not import vendor clients;
+- no plaintext secret or cluster-only assumption leaks into reusable
+  packages.
 
 ### PR 2: Cockroach Integration Proof
 
@@ -1655,20 +2632,36 @@ Done when:
 
 - a second command can be added without changing pipeline internals.
 
-### PR 5: Discussion Anchor V0
+### PR 5: Work Anchor Kernel V0
+
+Build:
+
+- reconciled work item state enum;
+- minimal project/initiative/work item schema;
+- create/link/transition work commands;
+- work status read model;
+- audit/outbox events for transitions.
+
+Done when:
+
+- supervisor signals and discussions have a real work anchor to
+  reference.
+
+### PR 6: Discussion Anchor V0
 
 Build:
 
 - discussion anchor schema;
 - create anchor command;
 - supervisor signal link to anchor;
+- decision record command;
 - graph projection for work-discussion-decision.
 
 Done when:
 
 - unanchored consequential discussion is rejected.
 
-### PR 6: Supervisor Triage Command
+### PR 7: Supervisor Triage Command
 
 Build:
 
@@ -1682,20 +2675,79 @@ Done when:
 - agents can tell their manager anything and managers can turn it into
   normal work.
 
-### PR 7: Work Item Core
+### PR 8: Thin Command/Query Host
 
 Build:
 
-- reconciled work item state enum;
-- work item schema;
-- create/transition commands;
-- board projection events.
+- one command host path for `send_supervisor_signal`;
+- one read/query path for signal/work/reaction status;
+- idempotency input handling;
+- traceable response shape.
 
 Done when:
 
-- Organization has its first real task board data model.
+- a human or agent can submit and inspect the first vertical loop
+  without calling package internals.
 
-### PR 8: Gate Core
+### PR 9: Graph Context Pack V0
+
+Build:
+
+- graph node/edge projection contract;
+- provenance envelope;
+- access envelope;
+- `get_context_pack` query;
+- context pack scenarios for work, signal, decision, policy, and trace.
+
+Done when:
+
+- agents can retrieve anchored context before MCP/Hermes depend on it.
+
+### PR 10: Hat Authority Minimum
+
+Build:
+
+- hat definition, supply, assignment, and token state;
+- reserve/issue/refresh/release/revoke commands;
+- policy authority backed by assignment state;
+- first hat communication brief.
+
+Done when:
+
+- command authorization can use real Organization assignment records.
+
+### PR 11: Schedule/RMO Core
+
+Build:
+
+- schedule block, allocation hold, pause checkpoint, runtime slot,
+  worktree slot, and credential slot state;
+- request/propose/commit schedule block commands;
+- meeting slot scheduling with accept/decline/delegate;
+- pause/resume lifecycle;
+- missed-block escalation events.
+
+Done when:
+
+- meetings, reviews, verification work performed by QA Reviewer hats,
+  implementation, free time, and memory work are allocated into explicit
+  time/resource blocks instead of ambient execution.
+
+### PR 12: Reaction Executor Minimum
+
+Build:
+
+- reaction claim/lease model;
+- executor for supervisor-signal triage work;
+- retry/failure visibility;
+- reaction execution events.
+
+Done when:
+
+- a planned supervisor-signal reaction can create normal work through a
+  command and cannot execute twice.
+
+### PR 13: Gate Core
 
 Build:
 
@@ -1703,36 +2755,46 @@ Build:
 - open/decide gate commands;
 - evidence requirement checks;
 - reviewer authority policy.
+- transition authority matrix for implementer, reviewer, QA Reviewer,
+  manager, TPM, product, director, and security hats.
 
 Done when:
 
-- readiness, review, and QA-style approvals can block transitions.
+- readiness, review, and QA Reviewer signoff approvals can block
+  transitions.
 
-### PR 9: Hat Assignment Core
-
-Build:
-
-- hat assignment state;
-- supply reservation;
-- token issue/refresh/revoke;
-- policy authority backed by assignment state.
-
-Done when:
-
-- command authorization can use real Organization assignment records.
-
-### PR 10: MCP Gateway First Tool
+### PR 14: MCP Gateway First Tool
 
 Build:
 
 - MCP gateway shell;
 - agent context resolver;
 - `send_supervisor_signal` MCP tool;
+- `get_context_pack` read tool;
 - policy-checked command execution.
 
 Done when:
 
-- Hermes can call one Organization tool with hat-aware context.
+- Hermes can call one Organization tool with hat-aware context and read
+  the context pack it needs to act.
+
+### PR 15: Work OS Expansion
+
+Build:
+
+- richer Work OS state;
+- acceptance criteria;
+- artifact links;
+- work item comments and mentions;
+- explicit role fields for implementer, reviewer, QA Reviewer, architect,
+  manager, TPM, product/BA, security, director, watchers, and release
+  owner;
+- board projections;
+- release/branch skeleton.
+
+Done when:
+
+- Organization has the first practical agent-native task board model.
 
 ## Phase Completion Checklist
 
@@ -1756,17 +2818,19 @@ Use this checklist before marking any phase complete.
 
 Use these questions when we talk through the plan:
 
-1. Should PR 1 bind only Cockroach first, or Cockroach plus NATS plus
-   telemetry in one process-adapter PR?
+1. Should PR 1 finish with only the real NATS process adapter next, or
+   should readiness endpoints and migration bootstrap be pulled into the
+   same PR?
 2. Do we want integration tests to use a local Cockroach service, a k3d
    profile, or only env-gated tests against the real cluster?
 3. Should `apps/workers` get the first executable entrypoint before
    `apps/api`, or should the API host appear once process adapters exist?
-4. Should discussion anchors land before supervisor triage, or should
-   triage create the first anchor implicitly?
+4. Should supervisor triage create discussion anchors implicitly when a
+   signal has no anchor, or should it always require an explicit anchor
+   created by the prior phase?
 5. Should the first Work OS board be read-model-only, or should it ship
    with command actions in the UI?
 6. Should the hat-system bridge consume CRDs read-only first, or should
    it create HatBinding proposals as soon as assignment core exists?
 7. Which first Hermes flow should be the proof run: supervisor triage,
-   implementation task, QA review, or memory reflection?
+   implementation task, verification work, or memory reflection?

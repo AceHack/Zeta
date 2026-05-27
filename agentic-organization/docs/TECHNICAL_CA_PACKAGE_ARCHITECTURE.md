@@ -311,11 +311,44 @@ Cockroach SQL executor, creates the Cockroach-backed command state,
 outbox, event-ingestion, and policy-observation adapter set, and wires
 the outbox/event-ingestion ports into the worker host. Its current
 required environment contract is `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`,
-`COCKROACH_DATABASE_URL`, `NATS_STREAM`, `NATS_DURABLE`,
+`COCKROACH_DATABASE_URL`, `NATS_SERVERS`, `NATS_STREAM`, `NATS_DURABLE`,
 `NATS_INBOUND_BATCH_SIZE`, `WORKER_INBOUND_BATCH_SIZE`, and
-`WORKER_OUTBOX_BATCH_SIZE`. Concrete NATS clients, CockroachDB pools,
-readiness endpoints, structured logging, and shutdown hooks still belong
-to later process-adapter wiring.
+`WORKER_OUTBOX_BATCH_SIZE`. The first app-local process adapters now
+cover the Cockroach worker client, NATS worker connection seam, and JSON
+telemetry sink:
+
+- `apps/workers/src/adapters/cockroach-worker-client.ts` adapts a
+  process-provided pool/client to `CockroachSqlClient`, including
+  explicit `BEGIN`, `COMMIT`, `ROLLBACK`, connection release,
+  SQLSTATE-based retry, and ambiguous-commit preservation semantics;
+- `apps/workers/src/adapters/nats-worker-connection.ts` adapts a
+  process-provided NATS transport connection factory to generic
+  `EventPublisher`, `NatsJetStreamPullConsumer`,
+  `NatsDeadLetterPublisher`, readiness, and shutdown ports. The
+  transport factory receives the validated server list, stream, durable
+  consumer, environment, and organization scope so it does not need
+  out-of-band process config. Dead-letter subjects use the shared
+  Organization subject builder and remain environment/organization
+  scoped. Distinct dead-letter message IDs are supplied by an injected
+  factory so poison messages do not collapse behind one transport dedupe
+  key. The reusable messaging packages still see only the generic
+  JetStream contracts, not a concrete NATS client library;
+- `apps/workers/src/adapters/nats-js-transport-connection.ts` is the
+  first concrete NATS client-library binding behind the transport
+  factory seam. It uses `@nats-io/transport-node` for the process
+  connection and `@nats-io/jetstream` for publishing, durable
+  pull-consumer fetch, consumer readiness, and shutdown. The adapter is
+  fake-tested through a library facade, so reusable packages still do
+  not import vendor clients and live JetStream behavior remains a later
+  integration proof;
+- `apps/workers/src/adapters/json-worker-telemetry-sink.ts` implements
+  `WorkerRuntimeTelemetrySink` with stable structured JSON records that
+  preserve the worker/NATS attribute contract.
+
+Readiness endpoints and migration bootstrap still belong to later
+process-adapter wiring. The shutdown and readiness ports now exist so
+those future hosts can expose dependency state without changing package
+contracts.
 
 The `apps/workers` composition root receives typed config plus
 already-constructed ports. This is the only place the worker process
@@ -330,6 +363,15 @@ interface to the narrower statement executor contracts used by command
 state, outbox, event ingestion, and policy observations. This keeps the
 real database client and connection pool outside package code while
 still giving `apps/workers` one durable factory to compose.
+
+The app-local Cockroach worker client is intentionally not a new durable
+state abstraction. It is the outer process adapter that can later be
+backed by `pg`, another PostgreSQL-compatible client, or a test pool
+without changing `@agentic-org/state-cockroach` or application code.
+Ambiguous transaction outcomes must stay visible to the worker host and
+operators; the process adapter may attempt rollback cleanup after an
+ambiguous commit, but it must preserve the original ambiguity instead of
+masking it as a rollback failure.
 
 ## SOLID Rules
 
@@ -449,6 +491,23 @@ implementation of that port; it owns transport-specific concerns such as
 headers, message IDs, and JSON serialization. This keeps the
 Organization event loop extensible and testable without coupling the
 publisher to the NATS client.
+
+Outbox claims must be fenced. The publisher creates a claim ID for each
+batch; the source returns claimed events carrying that same claim ID; the
+publish mark must include the claim ID and durable adapters must reject
+stale, missing, already-published, or differently claimed rows. This is
+the minimum protection before multiple worker replicas publish from the
+same outbox table.
+The first Cockroach implementation ships both the updated core table
+shape and an additive `0002_agentic_org_outbox_claim_fence` migration so
+existing dev or cluster databases that already created the outbox table
+receive the `claim_id` column. Stale publish-mark failures are typed
+errors with claim/outbox/event/trace evidence, which the worker host can
+carry into telemetry without importing the Cockroach adapter.
+The cross-package failure evidence keys are defined in the domain kernel
+as a neutral contract. Adapter packages may populate those keys, worker
+packages may carry them, and observability packages may project them,
+but no package should invent parallel string keys for the same evidence.
 
 ### Event-to-Automation Contract
 
@@ -772,6 +831,7 @@ Current `apps/workers` process environment contract:
 AGENTIC_ORG_ENV
 AGENTIC_ORG_ID
 COCKROACH_DATABASE_URL
+NATS_SERVERS
 NATS_STREAM
 NATS_DURABLE
 NATS_INBOUND_BATCH_SIZE
@@ -782,7 +842,13 @@ WORKER_OUTBOX_BATCH_SIZE
 `COCKROACH_DATABASE_URL` is a secret-backed process adapter input. In
 the cluster it must be sourced from a Kubernetes Secret populated by
 External Secrets from Vault, not from a plain manifest or reusable
-package default.
+package default. `NATS_SERVERS` is the service-discovery input for the
+NATS adapter and can be non-secret when it contains only cluster service
+addresses such as `nats.nats.svc.cluster.local:4222`; NATS credentials,
+tokens, or certificates remain secret-backed process inputs.
+`NATS_STREAM` and `NATS_DURABLE` are non-secret operational bindings
+that the process factory must pass into the real pull-consumer
+construction path.
 
 Future full deployment adapter environment will add service-specific
 values as their process adapters become real:
@@ -960,7 +1026,10 @@ payload-conflict NATS messages, negative acknowledgements, terminated
 messages, and failed NATS messages as degraded state so weak points can
 surface before the process is connected to real cluster telemetry.
 Telemetry failures must not erase successful worker or NATS cycle
-results; they are captured as their own typed failure stage. The
+results; they are captured as their own typed failure stage. Worker
+failure evidence is validated against the domain-owned evidence-key set
+before it reaches observability, and the first failure projection uses
+the consistent `agentic.worker.failure.first_*` key family. The
 composition root is therefore the future bridge from these records into
 the full-ai-cluster LGTM stack: structured logs to Loki, traces to Tempo
 through Alloy, metrics to Prometheus/Mimir, and dashboard projections in

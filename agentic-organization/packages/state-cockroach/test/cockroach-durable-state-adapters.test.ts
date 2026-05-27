@@ -17,7 +17,10 @@ describe("cockroach durable state adapters", () => {
     });
 
     await adapters.commandStateStoreFactory.createCommandStateStore().findIdempotencyRecord("idem-001");
-    await adapters.outboxEventSource.claimUnpublishedOutboxEvents({ batchSize: 10 });
+    await adapters.outboxEventSource.claimUnpublishedOutboxEvents({
+      batchSize: 10,
+      claimId: "outbox-claim-001",
+    });
     await adapters.eventIngestionStore.findInboxReceipt({
       eventId: "evt-001",
       consumerName: "v0_automation_planner",

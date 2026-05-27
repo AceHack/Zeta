@@ -22,6 +22,13 @@ export {
   type ReactionPlanAction,
 } from "./reaction-plan.ts";
 export {
+  WorkerFailureEvidenceKey,
+  createOutboxPublishFailureEvidence,
+  type CreateOutboxPublishFailureEvidenceInput,
+  type WorkerFailureEvidence,
+  type WorkerFailureEvidenceValue,
+} from "./runtime-failure-evidence.ts";
+export {
   SupervisorChainLevel,
   SupervisorSignalStatus,
   SupervisorSignalToolType,

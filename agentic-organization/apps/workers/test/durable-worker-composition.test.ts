@@ -8,7 +8,10 @@ import {
   createAgenticEventEnvelope,
 } from "../../../packages/domain/src/index.ts";
 import type { EventPublication } from "../../../packages/messaging/src/index.ts";
-import type { NatsJetStreamConsumeBatchResult } from "../../../packages/messaging-nats/src/index.ts";
+import type {
+  NatsDeadLetterMessage,
+  NatsJetStreamInboundMessage,
+} from "../../../packages/messaging-nats/src/index.ts";
 import type { CockroachOrganizationSqlExecutor } from "../../../packages/state-cockroach/src/index.ts";
 import { WorkerCycleStatus } from "../../../packages/workers/src/index.ts";
 import { composeDurableWorkerRuntimePorts, type WorkerRuntimeTelemetrySink } from "../src/index.ts";
@@ -24,6 +27,7 @@ describe("durable worker runtime composition", () => {
         environment: "dev",
         organizationId: "org-lfg",
         natsStreamName: "agentic-org-events",
+        natsServers: ["nats://nats.nats.svc.cluster.local:4222"],
         natsDurableName: "agentic-org-v0-automation-planner",
         natsInboundBatchSize: 25,
         workerInboundBatchSize: 10,
@@ -35,9 +39,8 @@ describe("durable worker runtime composition", () => {
         inboundEventSource: {
           pullNextBatch: async () => [createSupervisorSignalEnvelope()],
         },
-        natsEventConsumer: {
-          processNextBatch: async () => createEmptyNatsBatch(),
-        },
+        natsPullConsumer: createRecordingNatsPullConsumer([]),
+        natsDeadLetterPublisher: createRecordingNatsDeadLetterPublisher(),
         telemetrySink,
       },
       runtimeUtilities: {
@@ -62,6 +65,91 @@ describe("durable worker runtime composition", () => {
       eventPublisher.publications.map((publication) => publication.subject),
       ["agentic-org.dev.org-lfg.supervisor_signal.sent"],
     );
+  });
+
+  test("builds the NATS consumer from pull and dead-letter ports", async () => {
+    const natsPullConsumer = createRecordingNatsPullConsumer([createNatsMessage(createSupervisorSignalEnvelope())]);
+    const natsDeadLetterPublisher = createRecordingNatsDeadLetterPublisher();
+    const ports = composeDurableWorkerRuntimePorts({
+      config: {
+        cockroachDatabaseUrl: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+        environment: "dev",
+        organizationId: "org-lfg",
+        natsServers: ["nats://nats.nats.svc.cluster.local:4222"],
+        natsStreamName: "agentic-org-events",
+        natsDurableName: "agentic-org-v0-automation-planner",
+        natsInboundBatchSize: 25,
+        workerInboundBatchSize: 10,
+        workerOutboxBatchSize: 5,
+      },
+      durableAdapters: {
+        cockroachExecutor: createRecordingCockroachExecutor(),
+        eventPublisher: createRecordingEventPublisher(),
+        inboundEventSource: {
+          pullNextBatch: async () => [],
+        },
+        natsPullConsumer,
+        natsDeadLetterPublisher,
+        telemetrySink: createNoopTelemetrySink(),
+      },
+      runtimeUtilities: {
+        calculatePayloadHash: () => "sha256:event-payload-001",
+        createId: (prefix) => `${prefix}-001`,
+        now: () => "2026-05-26T00:00:00.000Z",
+      },
+    });
+
+    const batch = await ports.natsEventConsumer.processNextBatch({ batchSize: 25 });
+
+    deepEqual(natsPullConsumer.batchSizes, [25]);
+    equal(batch.processedCount, 1);
+    equal(batch.acknowledgedCount, 1);
+    deepEqual(natsDeadLetterPublisher.messages, []);
+  });
+
+  test("wires invalid NATS messages to the composed dead-letter publisher", async () => {
+    const natsDeadLetterPublisher = createRecordingNatsDeadLetterPublisher();
+    const ports = composeDurableWorkerRuntimePorts({
+      config: {
+        cockroachDatabaseUrl: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+        environment: "dev",
+        organizationId: "org-lfg",
+        natsServers: ["nats://nats.nats.svc.cluster.local:4222"],
+        natsStreamName: "agentic-org-events",
+        natsDurableName: "agentic-org-v0-automation-planner",
+        natsInboundBatchSize: 25,
+        workerInboundBatchSize: 10,
+        workerOutboxBatchSize: 5,
+      },
+      durableAdapters: {
+        cockroachExecutor: createRecordingCockroachExecutor(),
+        eventPublisher: createRecordingEventPublisher(),
+        inboundEventSource: {
+          pullNextBatch: async () => [],
+        },
+        natsPullConsumer: createRecordingNatsPullConsumer([createInvalidNatsMessage()]),
+        natsDeadLetterPublisher,
+        telemetrySink: createNoopTelemetrySink(),
+      },
+      runtimeUtilities: {
+        calculatePayloadHash: () => "sha256:event-payload-001",
+        createId: (prefix) => `${prefix}-001`,
+        now: () => "2026-05-26T00:00:00.000Z",
+      },
+    });
+
+    const batch = await ports.natsEventConsumer.processNextBatch({ batchSize: 25 });
+
+    equal(batch.invalidCount, 1);
+    equal(batch.deadLetteredCount, 1);
+    deepEqual(natsDeadLetterPublisher.messages, [
+      {
+        sourceSubject: "agentic-org.dev.org-lfg.invalid",
+        payload: "{",
+        headers: {},
+        reason: "invalid_envelope",
+      },
+    ]);
   });
 });
 
@@ -179,17 +267,58 @@ function createNoopTelemetrySink(): WorkerRuntimeTelemetrySink {
   };
 }
 
-function createEmptyNatsBatch(): NatsJetStreamConsumeBatchResult {
+function createRecordingNatsPullConsumer(messages: readonly NatsJetStreamInboundMessage[]): {
+  batchSizes: number[];
+  fetchNextBatch: (input: { batchSize: number }) => Promise<readonly NatsJetStreamInboundMessage[]>;
+} {
+  const batchSizes: number[] = [];
+
   return {
-    receivedCount: 0,
-    processedCount: 0,
-    duplicateCount: 0,
-    payloadConflictCount: 0,
-    invalidCount: 0,
-    failedCount: 0,
+    batchSizes,
+    fetchNextBatch: async (input) => {
+      batchSizes.push(input.batchSize);
+      return messages;
+    },
+  };
+}
+
+function createRecordingNatsDeadLetterPublisher(): {
+  messages: NatsDeadLetterMessage[];
+  publish: (message: NatsDeadLetterMessage) => Promise<void>;
+} {
+  const messages: NatsDeadLetterMessage[] = [];
+
+  return {
+    messages,
+    publish: async (message) => {
+      messages.push(message);
+    },
+  };
+}
+
+function createNatsMessage(envelope: ReturnType<typeof createSupervisorSignalEnvelope>): NatsJetStreamInboundMessage & {
+  acknowledgedCount: number;
+} {
+  return {
     acknowledgedCount: 0,
-    negativeAcknowledgedCount: 0,
-    terminatedCount: 0,
-    deadLetteredCount: 0,
+    subject: "agentic-org.dev.org-lfg.supervisor_signal.sent",
+    payload: JSON.stringify(envelope),
+    headers: {},
+    acknowledge: async function acknowledge() {
+      this.acknowledgedCount += 1;
+    },
+    negativeAcknowledge: async () => undefined,
+    terminate: async () => undefined,
+  };
+}
+
+function createInvalidNatsMessage(): NatsJetStreamInboundMessage {
+  return {
+    subject: "agentic-org.dev.org-lfg.invalid",
+    payload: "{",
+    headers: {},
+    acknowledge: async () => undefined,
+    negativeAcknowledge: async () => undefined,
+    terminate: async () => undefined,
   };
 }

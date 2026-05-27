@@ -4,7 +4,9 @@ import { describe, test } from "node:test";
 import {
   CockroachCoreStateMigrationName,
   CockroachTableName,
+  createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
+  createCockroachOutboxClaimFenceMigration,
 } from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
@@ -36,5 +38,20 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("status STRING NOT NULL"));
     ok(migration.sql.includes("action_json JSONB NOT NULL"));
     ok(migration.sql.includes("result_json JSONB NOT NULL"));
+  });
+
+  test("declares an additive outbox claim fence migration for existing databases", () => {
+    const migration = createCockroachOutboxClaimFenceMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.OutboxClaimFenceV2);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.OutboxEvents}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS claim_id STRING"));
+  });
+
+  test("orders core migrations so existing databases receive additive fixes", () => {
+    const migrations = createCockroachCoreStateMigrations();
+
+    equal(migrations[0]?.name, CockroachCoreStateMigrationName.CoreStateV1);
+    equal(migrations[1]?.name, CockroachCoreStateMigrationName.OutboxClaimFenceV2);
   });
 });

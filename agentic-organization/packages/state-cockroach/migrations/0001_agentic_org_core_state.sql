@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS agentic_org_outbox_events (
   trace_id STRING NOT NULL,
   correlation_id STRING NOT NULL,
   envelope_json JSONB NOT NULL,
+  claim_id STRING,
   claimed_at TIMESTAMPTZ,
   claim_expires_at TIMESTAMPTZ,
   published_at TIMESTAMPTZ
