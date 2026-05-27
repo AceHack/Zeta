@@ -130,7 +130,11 @@ export function classifyStorage(lsblkOutput: string): StorageShape {
     const cols = line.trim().split(/\s+/);
     if (cols.length < 3 || cols[2] !== "disk") continue;
     diskCount++;
-    const [name, rotaStr] = cols;
+    // Explicit-narrow per tsc strict noUncheckedIndexedAccess: array
+    // destructure types as `string | undefined` even after length check.
+    const name = cols[0];
+    const rotaStr = cols[1];
+    if (name === undefined || rotaStr === undefined) continue;
     if (name.startsWith("nvme")) {
       hasNvme = true;
     } else if (rotaStr === "0") {
@@ -155,8 +159,11 @@ export function parseCpuVendor(procCpuinfo: string): string {
  */
 export function parseMemoryGb(procMeminfo: string): number {
   const m = procMeminfo.match(/^MemTotal:\s+(\d+)\s+kB/m);
-  if (!m) return 0;
-  const kb = parseInt(m[1], 10);
+  // Capture group 1 typed as `string | undefined` per tsc strict
+  // noUncheckedIndexedAccess; explicit-narrow before parseInt.
+  const kbStr = m?.[1];
+  if (kbStr === undefined) return 0;
+  const kb = parseInt(kbStr, 10);
   return Math.round(kb / 1024 / 1024);
 }
 
