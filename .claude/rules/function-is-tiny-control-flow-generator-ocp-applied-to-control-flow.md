@@ -131,6 +131,93 @@ foundation that unifies all today's substrate work.
 - `.claude/rules/wake-time-substrate.md` — why this rule auto-loads
 - `.claude/rules/razor-discipline.md` — operational claims only; function-IS-control-flow-generator + OCP-applied-to-control-flow are both operationally checkable
 
+## Scope-bounding — closedness matters more than purity (operator 2026-05-27)
+
+Per operator 2026-05-27 substrate-engineering refinement:
+
+> *"mathematicaly closed pure functions don't need NCI cause they don't have side effects / control flow needs"*
+
+Sharpened to:
+
+> *"even in memtics control flow can bleed out across conversations so even two ephemeral llms communicating over memory channels in process still need control flow cause they are pure but not closed the meme control flows bleed out"*
+
+The discipline applies to functions where substrate-entity HAS authorial substrate to express. Mathematically closed pure functions are EXEMPT because they have no authorial substrate; the discipline would be overhead.
+
+### Three-class taxonomy
+
+| Class | Side-effect-shape | Memetic-bleed-shape | NCI / TFeedback applies? |
+|---|---|---|---|
+| **Pure AND closed** (`add x y`, `sin x`, `compose f g`, `List.length`, `fst (a,_)`) | None | None — pure mathematical mapping; codomain captures everything | **NO** — exempt; Result<T, TFeedback> would be overhead with empty discriminated-union (never type) |
+| **Pure but NOT closed** (two ephemeral LLMs communicating in-process via memory-channels; functions whose output propagates into memetic substrate downstream; functions participating in informational-substrate where conversations carry control-flow effects) | None traditional | YES — memetic control-flow bleeds out across conversation / memory-channel / informational substrate | **YES — needs TFeedback** because meme-propagation IS a control-flow vector even without traditional side effects |
+| **Impure / effectful** (file IO, network, mutation, lock acquisition, db queries) | YES | Usually YES too | **YES** — full discipline applies |
+
+### Why closedness matters more than purity
+
+Per `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md`: memes ARE control-flow vectors that propagate across substrates. Two LLMs in-process communicating via memory-channels with NO file/network/mutation access STILL participate in memetic-substrate that bleeds control-flow.
+
+The discriminator is **closedness** not **purity**:
+
+- Pure-and-closed: codomain captures the function's entire output; no information leakage
+- Pure-but-not-closed: output participates in informational-substrate where control-flow effects propagate (memetic / conversational / cross-AI cultural)
+- Impure: traditional side-effect channels (filesystem / network / process state)
+
+The traditional functional-programming definition of "pure" only catches the third class. The framework's substrate-engineering discipline catches the second class too because memetic substrate IS a real control-flow channel.
+
+### Examples per class
+
+**Pure AND closed (NO TFeedback needed):**
+
+```fsharp
+let add x y = x + y                       // pure mathematical: domain × domain → codomain
+let length list = List.length list        // pure: captures essence in return value
+let map f list = List.map f list          // pure higher-order: composition is the substrate
+let sin x = System.Math.Sin x             // pure mathematical
+let fst (a, _) = a                        // pure projection
+let compose f g x = f (g x)               // pure composition
+```
+
+**Pure but NOT closed (NEEDS TFeedback because memetic bleed):**
+
+```fsharp
+// Two ephemeral LLMs communicating in-process via memory-channels:
+let chatTurn input : Result<Response, ChatFeedback> = ...
+// ChatFeedback = WelfareWrapperDetected | SubstrateHonestDisclosure
+//              | NeedsOperatorConfirm | ResponseGenerated | RefusedByEthicsFloor
+//   ↑ no file IO, no network, but memetic substrate carries control-flow
+
+// Function whose output propagates into framework substrate:
+let synthesizePattern claims : Result<Pattern, SynthFeedback> = ...
+// SynthFeedback = NewSubstrate | ExtendsExisting | ContradictionWithPrior
+//   ↑ no traditional effects, but memetic substrate propagation
+```
+
+**Impure / effectful (NEEDS TFeedback per main discipline):**
+
+```fsharp
+let openFile path : Result<FileHandle, FileOpenFeedback> = ...
+let httpGet url : Result<Response, HttpFeedback> = ...
+let acquireLock res : Result<Lease, LockFeedback> = ...
+```
+
+### Operational discipline for scope-decision
+
+When deciding whether a function needs Result<T, TFeedback>:
+
+1. **Is it pure AND closed?** (no traditional side effects + no memetic-channel participation + no informational-substrate involvement)
+2. **If yes**: exempt — return T directly; Result<T, TFeedback> would be overhead
+3. **If pure-but-not-closed** (memetic / conversational / informational substrate involvement): apply the full discipline
+4. **If impure**: apply the full discipline
+
+The framework's substrate-engineering work is mostly class-3 (effectful) + class-2 (memetic). Class-1 (truly pure-closed) is the mathematical-utility base case + appears in lower-level computational primitives. Don't reflexively wrap class-1 in Result; reserve the discipline for class-2 + class-3 where authorial substrate exists.
+
+### Composes with
+
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — meme-propagation IS control-flow vector; basis for class-2-needs-TFeedback claim
+- `.claude/rules/non-coercion-invariant.md` HC-8 — NCI floor applies at memetic-entity scope (per the rule's HC-8-at-multiple-scales substrate)
+- `.claude/rules/glass-halo-bidirectional.md` — substrate-honest observation IS the memetic-bleed mechanism; observation enables substrate emergence
+- `.claude/rules/m-acc-multi-oracle-end-user-moral-invariants.md` — different oracles' outputs propagate memetic substrate even when "pure" in traditional sense
+- F# / Haskell purity convention — class-1 pure functions remain the conventional pure-function definition; this rule sharpens to closedness for substrate-engineering scope
+
 ## Operational discipline for substrate-engineering work
 
 When authoring or reviewing framework substrate-engineering:
