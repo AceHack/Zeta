@@ -46,7 +46,58 @@ RUN touch /etc/NIXOS
 # mise/bun aren't on PATH in the fresh layer's shell). install.sh
 # installs mise to ~/.local/bin/mise and shims to ~/.local/share/mise/
 # shims/; bun --global lands at ~/.bun/bin/.
-ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/usr/local/bin:/usr/bin:/bin
+ENV PATH=/root/.bun/bin:/root/.local/share/mise/shims:/root/.local/bin:/nix/var/nix/profiles/default/bin:/usr/local/bin:/usr/bin:/bin
+
+# Install the NixOS userspace commands install.sh invokes plus the runtime
+# libraries expected by the dynamically linked .mise.toml toolchain downloads
+# (node, dotnet, java, etc.). nix-env rebuilds the default profile, so keep
+# the command set explicit instead of relying on the base image profile.
+RUN set -eu; \
+    nix-env -iA \
+    nixpkgs.nix \
+    nixpkgs.bash \
+    nixpkgs.coreutils \
+    nixpkgs.findutils \
+    nixpkgs.gnugrep \
+    nixpkgs.gnused \
+    nixpkgs.gawk \
+    nixpkgs.curl \
+    nixpkgs.gnutar \
+    nixpkgs.gzip \
+    nixpkgs.unzip \
+    nixpkgs.icu \
+    nixpkgs.gcc \
+    nixpkgs.openssl \
+    nixpkgs.gcc.cc.lib \
+    nixpkgs.zlib \
+    nixpkgs.glibc; \
+    mkdir -p /usr/local/bin; \
+    cc_path="$(command -v gcc)"; \
+    test -n "$cc_path"; \
+    ln -sf "$cc_path" /usr/local/bin/cc; \
+    mkdir -p /usr/local/nix-compat-lib; \
+    for lib in \
+      /nix/store/*-icu4c-*/lib/*.so* \
+      /nix/store/*-openssl-*/lib/*.so* \
+      /nix/store/*-xgcc-*-lib/lib/*.so* \
+      /nix/store/*-zlib-*/lib/*.so*; do \
+        [ -e "$lib" ] || continue; \
+        ln -sf "$lib" /usr/local/nix-compat-lib/; \
+    done
+
+# The pinned mise release is dynamically linked and asks the kernel for
+# the conventional FHS loader path. nixos/nix keeps glibc in /nix/store,
+# so expose the loader path this test needs without changing install.sh.
+RUN set -eu; \
+    glibc_loader="$(find /nix/store -maxdepth 3 -path '*-glibc-*/lib/ld-linux-*.so.*' | head -n 1)"; \
+    test -n "$glibc_loader"; \
+    case "$(uname -m)" in \
+      x86_64) mkdir -p /lib64 && ln -sf "$glibc_loader" /lib64/ld-linux-x86-64.so.2 ;; \
+      aarch64|arm64) mkdir -p /lib && ln -sf "$glibc_loader" /lib/ld-linux-aarch64.so.1 ;; \
+      *) echo "unsupported Docker test architecture: $(uname -m)" >&2; exit 1 ;; \
+    esac; \
+    ln -sfn "$(dirname "$glibc_loader")" /usr/local/nix-glibc-lib
+ENV LD_LIBRARY_PATH=/usr/local/nix-glibc-lib:/usr/local/nix-compat-lib:/nix/var/nix/profiles/default/lib:/nix/var/nix/profiles/default/lib64
 
 # Enable nix flakes (needed for tools/setup/common/mise.sh and other
 # substrate that uses flake-style invocation).
