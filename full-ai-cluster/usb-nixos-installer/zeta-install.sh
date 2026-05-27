@@ -977,7 +977,30 @@ echo "Running nixos-install --flake /mnt/etc/zeta/full-ai-cluster#$HOST ..."
 #   - initial-password.nix does NOT use builtins.readFile (per B-0835
 #     Bug 3b fix uses activation-script instead); its hash file (which
 #     IS a secret) doesn't transit the impure-eval path
-sudo nixos-install --impure --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" --no-root-password
+#
+# WiFi-reproducibility (empirical 2026-05-26: cache.nixos.org timeouts
+# on same 5 derivations twice in a row over WiFi):
+#   --fallback: build from source if substitute download fails (don't bail
+#               — keeps the install moving even when cache is flaky)
+#   --option connect-timeout 10: drop dead substituter connections fast
+#               instead of waiting the default 0 (=no timeout)
+#   --option stalled-download-timeout 60: cut the 300s default by 5×; a
+#               stalled download is detected sooner so retry or fallback
+#               fires faster
+#   --option download-attempts 3: cap retries (default 5) so the loop
+#               bounded-progresses to fallback
+# Slower for the few stalled derivations (local build vs cache download)
+# but UNBLOCKS the install instead of looping on the same 5 files.
+# Full reproducibility work (closure-baking, Cachix mirror, extra-substituters)
+# tracked at B-0846.
+sudo nixos-install \
+  --impure \
+  --fallback \
+  --option connect-timeout 10 \
+  --option stalled-download-timeout 60 \
+  --option download-attempts 3 \
+  --flake "/mnt/etc/zeta/full-ai-cluster#$HOST" \
+  --no-root-password
 
 # Explicit cleanup at end (defense-in-depth; trap also handles this on
 # success OR failure exit paths).
