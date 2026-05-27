@@ -35,15 +35,45 @@
     # ships the TS implementation; imported here so every node type
     # has the same module surface.
     ./zeta-self-register.nix
-    # B-0852.4a/d: boot-time credential restore from ESP. Disabled by
-    # default until host configs opt in via `zeta.credsRestore.enable = true;`
-    # AND operator pre-stages a passphrase source. Composes with B-0855.1
-    # zeta-self-register (which already declares
-    # `after = "zeta-creds-restore.service"`) so cred-restore fires before
-    # self-register on first boot. Imported here so every node type has
-    # the same module surface.
+    # B-0852.4a/d: boot-time credential restore from ESP.
+    #
+    # 2026-05-27 (B-0852.4 default-on flip): now enabled by default
+    # across all hosts with passphraseMode = "interactive". The unit's
+    # ConditionPathExists guard (blob + uuid + script + bun shim) means
+    # first boot before any cred-blob exists is a clean no-op; on
+    # subsequent boots the unit fires + systemd-ask-password prompts
+    # the operator ONCE for the passphrase + the restore CLI populates
+    # /home/zeta/.config/{gh,claude,gemini,codex} from the encrypted
+    # blob on the USB ESP. This closes the operator pain point named
+    # 2026-05-27: "i'm witing on the tool to be resable so i don't
+    # have to enter credentals over and over everytime."
+    #
+    # Composes with the install-side substrate cascade (PRs #5637 +
+    # #5638 + #5639) that wires Step 6.56 passphrase prompt +
+    # iter-4.2 USB-UUID capture + default-on picker. Once all those
+    # install-side preconditions are met + first install completes
+    # with cred-blob written to /esp/zeta-creds.enc, every subsequent
+    # boot of the installed system fires the restore service.
+    #
+    # Composes with B-0855.1 zeta-self-register (which already
+    # declares `after = "zeta-creds-restore.service"`) so cred-restore
+    # fires BEFORE self-register on each boot.
+    #
+    # Per-host opt-out: set `zeta.credsRestore.enable = false;` in
+    # that host's configuration.nix. Per-host passphraseMode override:
+    # `zeta.credsRestore.passphraseMode = "file";` for nodes where
+    # tty1 interactive prompt is inappropriate (e.g., headless +
+    # pre-staged `/run/zeta-creds-passphrase`).
     ./zeta-creds-restore.nix
   ];
+
+  # B-0852.4 default-on flip (operator pain point closure 2026-05-27).
+  # Both options use lib.mkDefault so per-host configs may override
+  # without conflict warnings.
+  zeta.credsRestore = {
+    enable = lib.mkDefault true;
+    passphraseMode = lib.mkDefault "interactive";
+  };
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
