@@ -20,6 +20,8 @@ export interface TrajectoryPacket {
   nextAction: string | null;
   childCandidates: string[];
   backlogRefs: string[];
+  actionBacklogRefs: string[];
+  closedActionBacklogRefs: string[];
   bodyLineCount: number;
 }
 
@@ -262,6 +264,78 @@ function backlogRefs(content: string): string[] {
   return uniqueSorted(refs);
 }
 
+function backlogRowPath(repoRoot: string, ref: string): string | null {
+  const backlogDir = join(repoRoot, "docs", "backlog");
+  if (!isDirectory(backlogDir)) {
+    return null;
+  }
+
+  for (const priority of readdirSync(backlogDir, { withFileTypes: true })) {
+    if (!priority.isDirectory()) {
+      continue;
+    }
+    const priorityDir = join(backlogDir, priority.name);
+    for (const entry of readdirSync(priorityDir, { withFileTypes: true })) {
+      const isBacklogRow =
+        entry.isFile() &&
+        entry.name.endsWith(".md") &&
+        (entry.name === `${ref}.md` || entry.name.startsWith(`${ref}-`));
+      if (isBacklogRow) {
+        return join(priorityDir, entry.name);
+      }
+    }
+  }
+  return null;
+}
+
+function frontmatterStatus(content: string): string | null {
+  const lines = content.split(/\r?\n/);
+  if ((lines[0] ?? "").trim() !== "---") {
+    return null;
+  }
+
+  for (let index = 1; index < lines.length; index++) {
+    const line = lines[index]?.trim() ?? "";
+    if (line === "---") {
+      return null;
+    }
+    const match = /^status:\s*["']?([^"']+)["']?\s*$/i.exec(line);
+    if (match !== null) {
+      return stripMarkdown(match[1] ?? "");
+    }
+  }
+  return null;
+}
+
+function isClosedBacklogRef(repoRoot: string, ref: string): boolean {
+  const rowPath = backlogRowPath(repoRoot, ref);
+  if (rowPath === null) {
+    return false;
+  }
+  try {
+    const status = frontmatterStatus(readFileSync(rowPath, "utf8"));
+    const normalized = status?.toLowerCase();
+    return normalized === "closed" || normalized?.startsWith("superseded-by-") === true;
+  } catch {
+    return false;
+  }
+}
+
+function refsAreResolved(refs: readonly string[], closedRefs: ReadonlySet<string>): boolean {
+  return refs.length > 0 && refs.every((ref) => closedRefs.has(ref));
+}
+
+function textRefsAreResolved(value: string, closedRefs: ReadonlySet<string>): boolean {
+  return refsAreResolved(backlogRefs(value), closedRefs);
+}
+
+function firstSelectableChildCandidate(packet: TrajectoryPacket): string | undefined {
+  const closedRefs = new Set(packet.closedActionBacklogRefs);
+  return packet.childCandidates.find(
+    (candidate) => !isPlaceholderAction(candidate) && !textRefsAreResolved(candidate, closedRefs),
+  );
+}
+
 function trajectoryNumber(slug: string): number {
   if (slug === "factory-trajectory-surface") {
     return 0;
@@ -278,9 +352,15 @@ function readPacket(repoRoot: string, slug: string): TrajectoryPacket | null {
     const content = readFileSync(absolutePath, "utf8");
     const lines = content.split(/\r?\n/);
     const childCandidates = bulletsFromSection(lines, "Next Child Packets");
-    const nextAction =
+    const explicitNextAction =
       actionableText(firstField(lines, ["Next concrete action", "Recommended next action"])) ??
-      actionableText(paragraphFromSection(lines, "Recommended next action")) ??
+      actionableText(paragraphFromSection(lines, "Recommended next action"));
+    const actionBacklogRefs = backlogRefs([explicitNextAction ?? "", ...childCandidates].join("\n"));
+    const closedActionBacklogRefs = actionBacklogRefs.filter((ref) => isClosedBacklogRef(repoRoot, ref));
+    const closedRefs = new Set(closedActionBacklogRefs);
+    const nextAction =
+      explicitNextAction ??
+      childCandidates.find((candidate) => !isPlaceholderAction(candidate) && !textRefsAreResolved(candidate, closedRefs)) ??
       (childCandidates.length > 0 ? (childCandidates[0] ?? null) : null);
 
     return {
@@ -292,6 +372,8 @@ function readPacket(repoRoot: string, slug: string): TrajectoryPacket | null {
       nextAction,
       childCandidates,
       backlogRefs: backlogRefs(content),
+      actionBacklogRefs,
+      closedActionBacklogRefs,
       bodyLineCount: lines.length,
     };
   } catch {
@@ -342,9 +424,21 @@ function claimBlocker(packet: TrajectoryPacket, activeClaims: readonly string[])
   return claim ? `active claim ${claim}` : null;
 }
 
+function closedActionBacklogBlocker(packet: TrajectoryPacket): string | null {
+  const selectedActionRefs = backlogRefs(
+    [packet.nextAction ?? "", firstSelectableChildCandidate(packet) ?? ""].join("\n"),
+  );
+  if (selectedActionRefs.length === 0) {
+    return null;
+  }
+  const closedRefs = new Set(packet.closedActionBacklogRefs);
+  const allActionRefsClosed = refsAreResolved(selectedActionRefs, closedRefs);
+  return allActionRefsClosed ? `action backlog refs already closed: ${selectedActionRefs.join(", ")}` : null;
+}
+
 function actionFor(packet: TrajectoryPacket): TrajectoryAction {
   const next = packet.nextAction?.toLowerCase() ?? "";
-  if (packet.childCandidates.some((candidate) => !isPlaceholderAction(candidate))) {
+  if (firstSelectableChildCandidate(packet) !== undefined) {
     return "create-child-packet";
   }
   if (
@@ -366,7 +460,7 @@ function promptFor(packet: TrajectoryPacket, action: TrajectoryAction): string {
   } else if (action === "decompose") {
     lead = `Decompose ${packet.slug} into one atomic, claimable next trajectory action.`;
   }
-  const firstChild = packet.childCandidates.find((candidate) => !isPlaceholderAction(candidate));
+  const firstChild = firstSelectableChildCandidate(packet);
   const childLine = firstChild === undefined ? [] : [`First child candidate: ${firstChild}`, ""];
   return [
     lead,
@@ -401,6 +495,12 @@ export function selectNextTrajectory(
     const blockedByClaim = claimBlocker(packet, activeClaims);
     if (blockedByClaim !== null) {
       blocked.push({ packet, reason: blockedByClaim });
+      continue;
+    }
+
+    const blockedByClosedBacklog = closedActionBacklogBlocker(packet);
+    if (blockedByClosedBacklog !== null) {
+      blocked.push({ packet, reason: blockedByClosedBacklog });
       continue;
     }
 
