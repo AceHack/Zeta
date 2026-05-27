@@ -21,6 +21,14 @@
 //   - Specific iter-N sentinel strings present in zeta-install.sh +
 //     zeta-first-boot.sh (catches "merge dropped the iter-N substrate"
 //     fix-fwd regressions before they ship)
+//   - Cross-file consistency: producer/consumer contract pairs that
+//     MUST agree (e.g., cred-blob path: zeta-install.sh picker
+//     --output must be on /mnt/boot/, zeta-creds-restore.nix
+//     blobPath default must be the equivalent /boot/ path).
+//     Catches the bug class surfaced by Copilot review on PR #5640
+//     + #5644 where producer writes one path + consumer reads
+//     another → ConditionPathExists silently fails → creds never
+//     restore.
 //
 // Why source-level + not ISO-mount-level:
 //   - 7z/xorriso/unsquashfs are heavier dependencies in CI
@@ -32,9 +40,10 @@
 //
 // Exit codes:
 //   0 — all assertions pass
-//   1 — one or more files missing
+//   1 — one or more files missing (or mixed failure classes)
 //   2 — one or more required sentinel strings missing from files
 //   3 — invocation error (bad args, etc.)
+//   4 — one or more cross-file consistency assertions failed
 
 import { existsSync, readFileSync, statSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -176,10 +185,72 @@ const REQUIRED_SENTINELS: readonly SentinelAssertion[] = [
 ];
 
 interface AuditFailure {
-  readonly kind: "missing-file" | "empty-file" | "missing-sentinel" | "read-error";
+  readonly kind: "missing-file" | "empty-file" | "missing-sentinel" | "read-error" | "cross-file-mismatch";
   readonly path: string;
   readonly detail: string;
 }
+
+// Cross-file consistency assertions. Each names a pair of files that
+// MUST agree on a shared contract (e.g., producer/consumer paths,
+// shared filenames, shared env var names). The producerExtract +
+// consumerExtract functions pull the value out of each file's content;
+// the assertion is that consumerEquivalence(producerValue) ===
+// consumerValue, where consumerEquivalence is a transform that maps
+// producer state to expected consumer state (e.g., /mnt/boot → /boot
+// for the install-vs-installed ESP-mount-path translation).
+//
+// Catches the specific bug class surfaced by Copilot review on PR
+// #5640 + #5644: producer writes to one path, consumer reads from
+// another, ConditionPathExists always evaluates false, restore
+// service silently never fires. Class is recurring because the
+// install-vs-installed mount-path difference is invisible in code
+// review unless someone cross-references both files.
+interface CrossFileAssertion {
+  readonly name: string;
+  readonly producerPath: string;
+  readonly consumerPath: string;
+  readonly producerExtract: (content: string) => string | null;
+  readonly consumerExtract: (content: string) => string | null;
+  readonly consumerEquivalence: (producerValue: string) => string;
+  readonly rationale: string;
+}
+
+const CROSS_FILE_ASSERTIONS: readonly CrossFileAssertion[] = [
+  {
+    name: "cred-blob-path-producer-vs-consumer",
+    producerPath: "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
+    consumerPath: "full-ai-cluster/nixos/modules/zeta-creds-restore.nix",
+    // Producer: extract --output path from picker invocation
+    producerExtract: (content) => {
+      const m = content.match(/--output\s+(\S+\/zeta-creds\.enc)/);
+      return m?.[1] ?? null;
+    },
+    // Consumer: extract blobPath default literal
+    consumerExtract: (content) => {
+      // matches: default = "/some/path/zeta-creds.enc";
+      const m = content.match(/blobPath\s*=\s*lib\.mkOption\s*\{[\s\S]*?default\s*=\s*"(\S+\/zeta-creds\.enc)"/);
+      return m?.[1] ?? null;
+    },
+    // Producer writes during install when ESP is at /mnt/boot
+    // (zeta-install.sh Step 5 mount); consumer reads post-reboot
+    // when disko remounts the same ESP at /boot. Translation:
+    // /mnt/boot/<file> → /boot/<file>.
+    //
+    // For any producer path NOT under /mnt/boot/, the audit FAILS
+    // because the blob would land on the live-USB rootfs (lost at
+    // reboot) rather than the persistent ESP partition.
+    consumerEquivalence: (producer) => {
+      if (producer.startsWith("/mnt/boot/")) {
+        return producer.replace(/^\/mnt\/boot\//, "/boot/");
+      }
+      // Producer not on /mnt/boot → return a sentinel that will
+      // never match consumer, surfacing the bad producer-path
+      // failure via the cross-file-mismatch path.
+      return `INVALID-producer-must-be-on-mnt-boot-got:${producer}`;
+    },
+    rationale: "PR #5640 + #5644 surfaced producer/consumer path mismatch (picker --output / restore-service blobPath defaults). ESP partition is mounted at /mnt/boot during install (zeta-install.sh Step 5), /boot post-reboot (disko `mountpoint = \"/boot\"`). Same physical file across the install-vs-installed boundary. Producer MUST write to /mnt/boot/; consumer MUST read from /boot/. Drift = restore service ConditionPathExists always evaluates false = creds silently never restore.",
+  },
+];
 
 function auditFiles(): readonly AuditFailure[] {
   const failures: AuditFailure[] = [];
@@ -245,14 +316,79 @@ function auditSentinels(): readonly AuditFailure[] {
   return failures;
 }
 
+function auditCrossFile(): readonly AuditFailure[] {
+  const failures: AuditFailure[] = [];
+  for (const a of CROSS_FILE_ASSERTIONS) {
+    const producerAbs = join(ROOT, a.producerPath);
+    const consumerAbs = join(ROOT, a.consumerPath);
+    if (!existsSync(producerAbs)) {
+      failures.push({
+        kind: "missing-file",
+        path: a.producerPath,
+        detail: `cross-file assertion ${a.name}: producer file missing`,
+      });
+      continue;
+    }
+    if (!existsSync(consumerAbs)) {
+      failures.push({
+        kind: "missing-file",
+        path: a.consumerPath,
+        detail: `cross-file assertion ${a.name}: consumer file missing`,
+      });
+      continue;
+    }
+    let producerContent: string;
+    let consumerContent: string;
+    try {
+      producerContent = readFileSync(producerAbs, "utf8");
+      consumerContent = readFileSync(consumerAbs, "utf8");
+    } catch (e) {
+      failures.push({
+        kind: "read-error",
+        path: `${a.producerPath} ⨯ ${a.consumerPath}`,
+        detail: `cross-file assertion ${a.name}: ${e instanceof Error ? e.message : String(e)}`,
+      });
+      continue;
+    }
+    const producerVal = a.producerExtract(producerContent);
+    const consumerVal = a.consumerExtract(consumerContent);
+    if (producerVal === null) {
+      failures.push({
+        kind: "cross-file-mismatch",
+        path: a.producerPath,
+        detail: `cross-file assertion ${a.name}: producer pattern not found in ${a.producerPath} (extract returned null); rationale: ${a.rationale}`,
+      });
+      continue;
+    }
+    if (consumerVal === null) {
+      failures.push({
+        kind: "cross-file-mismatch",
+        path: a.consumerPath,
+        detail: `cross-file assertion ${a.name}: consumer pattern not found in ${a.consumerPath} (extract returned null); rationale: ${a.rationale}`,
+      });
+      continue;
+    }
+    const expectedConsumer = a.consumerEquivalence(producerVal);
+    if (consumerVal !== expectedConsumer) {
+      failures.push({
+        kind: "cross-file-mismatch",
+        path: `${a.producerPath} ⨯ ${a.consumerPath}`,
+        detail: `cross-file assertion ${a.name}: producer="${producerVal}" → expected consumer="${expectedConsumer}" but got consumer="${consumerVal}". Rationale: ${a.rationale}`,
+      });
+    }
+  }
+  return failures;
+}
+
 function main(): number {
   const fileFailures = auditFiles();
   const sentinelFailures = auditSentinels();
-  const total = fileFailures.length + sentinelFailures.length;
+  const crossFileFailures = auditCrossFile();
+  const total = fileFailures.length + sentinelFailures.length + crossFileFailures.length;
 
   if (total === 0) {
     process.stdout.write(
-      `audit-installer-substrate: PASS — ${REQUIRED_FILES.length} required files + ${REQUIRED_SENTINELS.length} sentinel-file assertions OK\n`,
+      `audit-installer-substrate: PASS — ${REQUIRED_FILES.length} required files + ${REQUIRED_SENTINELS.length} sentinel-file assertions + ${CROSS_FILE_ASSERTIONS.length} cross-file consistency assertions OK\n`,
     );
     return 0;
   }
@@ -260,19 +396,21 @@ function main(): number {
   process.stderr.write(
     `audit-installer-substrate: FAIL — ${total} assertion(s) failed\n\n`,
   );
-  for (const f of [...fileFailures, ...sentinelFailures]) {
+  for (const f of [...fileFailures, ...sentinelFailures, ...crossFileFailures]) {
     process.stderr.write(`  [${f.kind}] ${f.path}\n    ${f.detail}\n`);
   }
   process.stderr.write("\n");
   process.stderr.write(
     `  To investigate locally: bun tools/ci/audit-installer-substrate.ts\n` +
       `  To add a new iter-N module: add its path to REQUIRED_FILES + (if applicable)\n` +
-      `  add its sentinels to REQUIRED_SENTINELS in this file.\n`,
+      `  add its sentinels to REQUIRED_SENTINELS in this file.\n` +
+      `  To add a new cross-file consistency assertion: add to CROSS_FILE_ASSERTIONS.\n`,
   );
   // Distinct exit codes per failure class for CI introspection
-  if (fileFailures.length > 0 && sentinelFailures.length === 0) return 1;
-  if (sentinelFailures.length > 0 && fileFailures.length === 0) return 2;
-  return 1; // both kinds present; exit 1 prioritized
+  if (fileFailures.length > 0 && sentinelFailures.length === 0 && crossFileFailures.length === 0) return 1;
+  if (sentinelFailures.length > 0 && fileFailures.length === 0 && crossFileFailures.length === 0) return 2;
+  if (crossFileFailures.length > 0 && fileFailures.length === 0 && sentinelFailures.length === 0) return 4;
+  return 1; // multiple kinds present; exit 1 prioritized
 }
 
 process.exit(main());
