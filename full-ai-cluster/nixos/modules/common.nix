@@ -46,23 +46,91 @@
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
 
-  # iter-5.1 (B-0792): Avahi mDNS publishing so cluster nodes resolve
-  # via `<hostname>.local` from operator Mac (Bonjour) + Linux peers
-  # (nss-mdns) on the LAN without IP-discovery step. Without this,
-  # `ssh zeta@control-plane.local` fails to resolve even though the
-  # node is up. Empirical anchor: 2026-05-26 iter-4.2 PC1 test
-  # surfaced the gap.
+  # iter-5.1 (B-0792): Avahi mDNS publishing — `<hostname>.local`
+  # resolution via Bonjour (macOS) + nss-mdns (Linux peers).
+  # Empirical 2026-05-27 (control-plane physical-hardware-support test):
+  # mDNS alone proved unreliable — operator's Mac (en0 ethernet, also on
+  # WiFi) could ping by IP + SSH but Bonjour resolution timed out;
+  # unicast mDNS query to port 5353/udp also timed out from the Mac
+  # even though the install completed. Multi-protocol additive
+  # belt-and-suspenders below addresses the reliability gap without
+  # removing the operator's preferred Bonjour-style mechanism.
   services.avahi = {
     enable = true;
     nssmdns4 = true;
-    openFirewall = true;  # firewall hole for mDNS (5353/udp)
+    nssmdns6 = true;       # IPv6 nss-mdns alongside IPv4 (some operator
+                           # macOS configs prefer AAAA queries first)
+    openFirewall = true;   # firewall hole for mDNS (5353/udp)
+    ipv4 = true;
+    ipv6 = true;
+    reflector = true;      # forward mDNS across multiple subnets (operator
+                           # mac on one segment + node on another via router)
     publish = {
       enable = true;
       addresses = true;
       workstation = true;
       domain = true;
+      hinfo = true;        # host info record — additional discoverability
+      userServices = true; # advertise user services so dns-sd browses see node
     };
   };
+
+  # iter-5.5 (B-0835 Bug 7 — operator 2026-05-27 reliability ask):
+  # NetBIOS name resolution via Samba's nmbd as additive belt-and-
+  # suspenders alongside Avahi mDNS. NetBIOS uses UDP broadcast on
+  # 137 (vs mDNS multicast on 5353) — different failure modes; if
+  # the network drops IGMP/multicast but allows broadcast,
+  # `node-e5a176` resolves via NetBIOS where `node-e5a176.local`
+  # fails via mDNS. Windows + macOS + Linux all speak NetBIOS via
+  # nmblookup / smbutil / nss-winbind.
+  #
+  # Operator usage (from any host on the LAN):
+  #   nmblookup node-e5a176          # Linux/macOS NetBIOS lookup
+  #   smbutil lookup node-e5a176     # macOS native NetBIOS
+  #   ping node-e5a176               # may work if nsswitch has wins
+  #
+  # SECURITY DISCIPLINE (P0+P1 fixes from PR #5387 Copilot review):
+  # We run ONLY nmbd (NetBIOS name daemon on 137/udp + 138/udp), NOT
+  # smbd (SMB file-sharing daemon on 139/tcp + 445/tcp). This is
+  # genuinely "NetBIOS-only" — zero SMB attack surface:
+  #   - services.samba.smbd.enable = false  (no smbd process)
+  #   - services.samba.nmbd.enable = true   (nmbd ONLY)
+  #   - services.samba.openFirewall = false (we control firewall manually)
+  #   - networking.firewall.allowedUDPPorts = [ 137 138 ] (NetBIOS only)
+  # Reviewer caught the prior `openFirewall = true` + `smb ports = "445"`
+  # config that opened 139/tcp + 445/tcp despite the "name resolution
+  # only" claim. Now genuinely true.
+  services.samba = {
+    enable = true;
+    openFirewall = false;  # we open ONLY 137/138 UDP below; no SMB ports
+    smbd.enable = false;   # NO SMB file-sharing daemon
+    nmbd.enable = true;    # NetBIOS name daemon ONLY
+    settings = {
+      global = {
+        "workgroup" = "ZETA";
+        "server string" = "Zeta cluster node %h";
+        "netbios name" = config.networking.hostName;
+        "disable netbios" = "no";
+        "name resolve order" = "bcast host";
+      };
+    };
+  };
+
+  # Explicit NetBIOS-only firewall holes (P0 fix per PR #5387 review):
+  # 137/udp = NetBIOS-NS (name service queries)
+  # 138/udp = NetBIOS-DGM (datagram service for browse-list announcements)
+  # We do NOT open 139/tcp (NetBIOS-SSN) or 445/tcp (SMB) since smbd is
+  # disabled. This is genuinely "NetBIOS name resolution only" — no SMB
+  # file-share surface exposed even if smbd accidentally got re-enabled.
+  networking.firewall.allowedUDPPorts = [ 137 138 ];
+
+  # DHCP-hostname registration: NetworkManager already advertises the
+  # hostname via DHCP option 12 by default. Many home routers register
+  # DHCP client hostnames as DNS names (e.g., `node-e5a176.lan` from
+  # Asus/Netgear/Eero). This is the 3rd reliability layer — operator's
+  # router becomes a fallback name resolver for `<hostname>` and
+  # `<hostname>.lan` (or `.home`/`.localdomain` depending on router).
+  # No additional NixOS config needed beyond NetworkManager being on.
 
   services.openssh = {
     enable = true;
