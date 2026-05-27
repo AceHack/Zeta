@@ -29,6 +29,17 @@
     // (deferred to a separate PR per Otto-275 log-but-don't-
     // implement-yet discipline; tracked at task #267-adjacent).
     "memory/**",
+    // Agent heartbeat records (B-0858.3) are mechanically generated
+    // by `tools/agent-heartbeats/write-heartbeat.ts` with consistent
+    // YAML frontmatter + one-line body. Not authored prose; not
+    // load-bearing factory logic; ZetaID-named per
+    // `registry/categories.yaml` Heartbeat=3. Per operator 2026-05-27
+    // ("bots should know nothing to review here these are just
+    // heartbeats because of the folder") + .github/copilot-instructions.md
+    // hard-rule #0. The README at docs/agent-heartbeats/README.md is
+    // authored prose and not ignored (only the per-tick records under
+    // <persona>/ are ignored).
+    "docs/agent-heartbeats/*/**",
     // Lean proof dir has its own idioms.
     "tools/lean4/**",
     // Aaron+Amara verbatim conversation archive (PR #301/#302/
