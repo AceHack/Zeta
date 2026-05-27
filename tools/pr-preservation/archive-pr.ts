@@ -31,7 +31,7 @@
 
 import { spawnSync } from "node:child_process";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
 
@@ -705,6 +705,22 @@ function postprocessContent(content: string): string {
   return collapsed.join("\n").replace(/\n+$/, "") + "\n";
 }
 
+function gitAddArchive(repoRoot: string, archivePath: string): string | ArgError {
+  const repoRelPath = relative(repoRoot, archivePath);
+  // eslint-disable-next-line sonarjs/no-os-command-from-path
+  const result = spawnSync("git", ["-C", repoRoot, "add", "--", repoRelPath], {
+    encoding: "utf8",
+    maxBuffer: SPAWN_MAX_BUFFER,
+  });
+  if (result.status !== 0) {
+    return {
+      error: `git add failed for ${repoRelPath} (exit ${String(result.status ?? "null")}):\n${result.stderr}`,
+      exitCode: 1,
+    };
+  }
+  return repoRelPath;
+}
+
 function formatArchive(args: {
   readonly fetched: FetchedPr;
   readonly archivedAt: string;
@@ -799,8 +815,13 @@ export function main(argv: readonly string[]): number {
       const existingContent = readFileSync(existing, "utf8").replace(/\r\n/g, "\n");
       const normalize = (s: string) => s.replace(/^archived_at: .*/m, 'archived_at: "PLACEHOLDER"');
       if (normalize(content) === normalize(existingContent)) {
+        const staged = gitAddArchive(setup.repoRoot, existing);
+        if (typeof staged !== "string") {
+          process.stderr.write(`${staged.error}\n`);
+          return staged.exitCode;
+        }
         process.stdout.write(
-          `skipped writing ${path} (only archived_at timestamp changed)\n`,
+          `skipped writing ${path} (only archived_at timestamp changed); staged ${staged}\n`,
         );
         return 0;
       }
@@ -810,8 +831,13 @@ export function main(argv: readonly string[]): number {
   }
 
   writeFileSync(path, content);
+  const staged = gitAddArchive(setup.repoRoot, path);
+  if (typeof staged !== "string") {
+    process.stderr.write(`${staged.error}\n`);
+    return staged.exitCode;
+  }
   process.stdout.write(
-    `wrote ${path} (${String(content.length)} bytes, ${String(fetched.threads.length)} threads, ${String(fetched.reviews.length)} reviews, ${String(fetched.comments.length)} comments)\n`,
+    `wrote ${path} (${String(content.length)} bytes, ${String(fetched.threads.length)} threads, ${String(fetched.reviews.length)} reviews, ${String(fetched.comments.length)} comments); staged ${staged}\n`,
   );
   return 0;
 }
