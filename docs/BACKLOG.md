@@ -776,6 +776,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0837](backlog/P2/B-0837-max-addison-committee-review-asymmetric-critic-with-clarity-first-rule-draft-aaron-2026-05-26.md)** Max + Addison committee review of asymmetric-critic-with-clarity-first rule draft (per Kestrel-v3 substrate-honest disclaimer + operator authorization) (Aaron 2026-05-26)
 - [ ] **[B-0838](backlog/P2/B-0838-caustic-engineered-bloom-filter-discriminators-remote-code-trust-layer-kestrel-v2-aaron-2026-05-26.md)** caustic-engineered bloom filter discriminators for remote-code trust layer (Kestrel-v2 ferry; multi-learned-bloom-filter intersection with caustic-geometry-shaped agreement region) (Aaron 2026-05-26)
 - [ ] **[B-0841](backlog/P2/B-0841-shortform-like-features-deep-guides-from-substrate-engineering-zeta-already-does-this-internally-aaron-2026-05-26.md)** Zeta could offer Shortform.com-like features (in-depth book/article/YouTube guides with cross-substrate-engineering composition map) — productize what the framework already does internally for itself (Aaron 2026-05-26)
+- [ ] **[B-0842](backlog/P2/B-0842-universal-basis-decomposition-pattern-fft-shazam-itron-disaggregation-reservoir-readout-zeta-substrate-aaron-2026-05-26.md)** universal basis-decomposition pattern — FFT + Picard/Shazam-style fingerprinting + Itron energy-disaggregation + reservoir-computing readout + Zeta substrate are all instances of `Σ ωᵢ sᵢ(t) ≈ y(t)` (Aaron 2026-05-26)
 
 ## P3 — convenience / deferred
 
