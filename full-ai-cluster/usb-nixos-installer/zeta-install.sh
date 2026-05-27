@@ -636,6 +636,25 @@ if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
       GH_AUTH_OK=1
       echo
       echo "[iter-5.4.0]   gh auth login: SUCCESS"
+
+      # ── B-0835 Bug 2a fix: wire git to use gh token for HTTPS pushes ──
+      # `gh auth login` stores the token but does NOT configure git's
+      # credential helper. Without this step, subsequent `git push` to
+      # https://github.com/... prompts for HTTPS basic-auth (username +
+      # password) — empirically observed 2026-05-26 physical hardware-
+      # support test where iter-5.4.1 self-registration `git push -u
+      # origin <branch>` prompted operator for "Password for
+      # 'https://acehack@github.com':" despite gh auth login succeeding
+      # as AceHack moments earlier. `gh auth setup-git` writes a
+      # credential.helper entry that delegates to `gh auth git-credential`
+      # so git push picks up the gh token automatically.
+      echo "[iter-5.4.0]   wiring git credential helper to use gh token..."
+      if gh auth setup-git 2>&1 | tail -3; then
+        echo "[iter-5.4.0]   git credential helper: configured"
+      else
+        echo "[iter-5.4.0]   WARN: 'gh auth setup-git' failed; subsequent git push may prompt for password"
+      fi
+
       echo "[iter-5.4.0]   fetching operator's SSH pubkeys via 'gh ssh-key list'..."
       KEY_DST_DIR=/mnt/etc/zeta
       sudo mkdir -p "$KEY_DST_DIR"
@@ -644,20 +663,45 @@ if [[ "$GH_AUTH_REPLY" =~ ^[Yy]$ ]]; then
       # the `key` field which contains the standard authorized_keys line
       # (algo + base64-pubkey; no comment). Each gets a comment appended
       # so the operator can identify it later: "gh-key-<id>".
-      if gh ssh-key list --json id,key,title 2>/dev/null \
+      #
+      # B-0835 Bug 2b fix: substrate-honest discrimination of failure modes.
+      # Capture stderr so we can distinguish (a) auth-scope error from
+      # (b) empty key list from (c) jq/tee pipe break. Empirically 2026-05-26:
+      # device-flow `gh auth login` only requests default scopes
+      # (`repo, read:org, workflow, gist`); `gh ssh-key list` requires
+      # `admin:public_key` OR `read:public_key` which are NOT in defaults.
+      # If scope is the issue, the WARN tells operator how to refresh.
+      SSH_KEY_ERR_FILE=$(mktemp -t zeta-ghkey-err.XXXXXX)
+      if gh ssh-key list --json id,key,title 2>"$SSH_KEY_ERR_FILE" \
           | jq -r '.[] | "\(.key) gh-key-\(.id)-\(.title // "")"' \
           | sudo tee "$KEY_DST" >/dev/null; then
         sudo chmod 0644 "$KEY_DST"
         GH_KEY_COUNT="$(wc -l < "$KEY_DST" | tr -d ' ')"
-        echo "[iter-5.4.0]   wrote $GH_KEY_COUNT key(s) to $KEY_DST"
-        echo "[iter-5.4.0]   the operator-authorized-keys.nix module will pick"
-        echo "[iter-5.4.0]   them up during nixos-install (next step)"
+        if [ "$GH_KEY_COUNT" -gt 0 ]; then
+          echo "[iter-5.4.0]   wrote $GH_KEY_COUNT key(s) to $KEY_DST"
+          echo "[iter-5.4.0]   the operator-authorized-keys.nix module will pick"
+          echo "[iter-5.4.0]   them up during nixos-install (next step)"
+        else
+          # Empty key list — either no keys at GitHub OR scope missing.
+          # Check stderr for scope error to discriminate.
+          if grep -qE "(scope|insufficient|admin:public_key|read:public_key)" "$SSH_KEY_ERR_FILE" 2>/dev/null; then
+            echo "[iter-5.4.0]   WARN: 'gh ssh-key list' returned no keys — gh token lacks SSH-key scope"
+            echo "[iter-5.4.0]   To enable SSH-from-Mac path, run on the installed system:"
+            echo "[iter-5.4.0]     gh auth refresh -s admin:public_key"
+            echo "[iter-5.4.0]     gh ssh-key list --json key | jq -r '.[].key' | sudo tee -a /etc/zeta/operator-authorized-keys"
+            echo "[iter-5.4.0]     sudo nixos-rebuild switch  # picks up operator-authorized-keys.nix"
+          else
+            echo "[iter-5.4.0]   WARN: 'gh ssh-key list' returned no keys — operator has no SSH keys registered at GitHub"
+            echo "[iter-5.4.0]   SSH-from-Mac fallback: add keys at https://github.com/settings/keys"
+            echo "[iter-5.4.0]   then on the installed system, re-run the gh ssh-key list step (see B-0835 Bug 2b)"
+          fi
+        fi
       else
         echo "[iter-5.4.0]   WARN: 'gh ssh-key list' failed; no keys written"
-        echo "[iter-5.4.0]   (gh auth succeeded but the user has no SSH keys"
-        echo "[iter-5.4.0]   registered with GitHub, OR the jq/tee pipe broke)"
+        echo "[iter-5.4.0]   stderr: $(head -3 "$SSH_KEY_ERR_FILE" 2>/dev/null | tr '\n' ' ')"
         GH_KEY_COUNT=0
       fi
+      rm -f "$SSH_KEY_ERR_FILE" 2>/dev/null || true
     else
       echo
       echo "[iter-5.4.0]   gh auth login FAILED or was cancelled; skipping"

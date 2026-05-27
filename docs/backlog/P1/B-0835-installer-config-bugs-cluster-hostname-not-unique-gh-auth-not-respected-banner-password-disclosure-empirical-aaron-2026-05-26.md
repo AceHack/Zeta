@@ -71,6 +71,96 @@ operator's GH user; check `/etc/zeta/operator-ssh-keys.nix` for
 populated pubkey array; check `git -C /etc/zeta remote -v` for the
 clone URL + verify it pulls without credentials prompt.
 
+### Bug 2a — git push prompts HTTPS basic-auth despite gh auth login (CRITICAL — blocks self-registration; empirical 2026-05-26)
+
+Empirical anchor 2026-05-26 (2nd physical hardware-support test on
+same hardware, post-Bug-1-fix re-flash):
+
+```
+[iter-5.4.0] Run gh auth login now? [Y/n]: Y
+[iter-5.4.0]   running 'gh auth login' (interactive)...
+! First copy your one-time code: D30B-468F
+Open this URL to continue in your web browser: https://github.com/login/device
+■ Authentication complete.
+! Authentication credentials saved in plain text
+■ Logged in as AceHack
+[iter-5.4.0]   gh auth login: SUCCESS
+...
+[iter-5.4.1] ── self-registration commit+push (B-0812) ──
+[iter-5.4.1]   maintainer:  AceHack
+[iter-5.4.1]   node-name:   node-efe404
+Switched to a new branch 'register-node-efe404-20260527T0005332'
+Username for 'https://github.com': acehack
+Password for 'https://acehack@github.com':
+```
+
+`gh auth login` SUCCEEDED as AceHack via device flow, but the
+subsequent `git push -u origin <branch>` at iter-5.4.1 prompted for
+HTTPS basic-auth. Root cause: `gh auth login` stores the token in
+its own config but does NOT configure git's credential helper. Git
+push goes through the default credential-store chain which doesn't
+know about gh's token.
+
+**Standard fix**: `gh auth setup-git` writes a `credential.helper`
+config that delegates to `gh auth git-credential`. Once configured,
+all git operations against github.com automatically use the gh token.
+
+**Implementation**: insert `gh auth setup-git` immediately after a
+successful `gh auth login` in `zeta-install.sh` Step 6.8. Failure of
+setup-git is non-fatal (warning only); the prompt-for-password
+behavior is the symptom indicating it didn't run.
+
+**Acceptance**: 3rd physical test (Bug 2a fix re-flash) shows
+iter-5.4.1 `git push` completes silently without basic-auth prompt;
+self-registration PR URL is printed; PR is browseable on github.com.
+
+### Bug 2b — gh ssh-key list returns empty / fails (degraded; substrate-honest WARN insufficient; empirical 2026-05-26)
+
+Same empirical anchor 2026-05-26:
+
+```
+[iter-5.4.0]   fetching operator's SSH pubkeys via 'gh ssh-key list'...
+[iter-5.4.0]   WARN: 'gh ssh-key list' failed; no keys written
+[iter-5.4.0]   (gh auth succeeded but the user has no SSH keys
+[iter-5.4.0]   registered with GitHub, OR the jq/tee pipe broke)
+```
+
+The WARN already covers both candidate causes but doesn't help the
+operator recover. Two candidate root causes need discrimination:
+
+1. **Auth scope missing** (most likely): `gh auth login` default
+   scopes are `repo, read:org, workflow, gist`. `gh ssh-key list`
+   requires `admin:public_key` OR `read:public_key`. Device-flow
+   without explicit `--scopes` will NOT request these.
+2. **Operator has no SSH keys at GitHub**: returns empty list (no
+   error). Operator uses gh CLI auth + signed commits via gh, never
+   added SSH keys to their account.
+
+**Fix path**: capture stderr from `gh ssh-key list`; discriminate
+between scope-error and empty-list cases; for scope errors,
+substrate-honest guidance:
+
+```
+  WARN: 'gh ssh-key list' returned no keys — gh token lacks SSH-key scope
+  To enable SSH-from-Mac path, run on the installed system:
+    gh auth refresh -s admin:public_key
+    gh ssh-key list --json key | jq -r '.[].key' | sudo tee -a /etc/zeta/operator-authorized-keys
+    sudo nixos-rebuild switch  # picks up operator-authorized-keys.nix
+```
+
+For empty-list (no keys at GH): substrate-honest WARN names
+https://github.com/settings/keys as fix surface.
+
+**Acceptance**: 3rd physical test shows substrate-honest WARN with
+specific recovery commands; OR (if scope-mode pursued separately)
+default install captures pubkeys without operator intervention.
+
+**Scope-prompt deferred**: rather than ask for elevated
+`admin:public_key` scope by default (security tradeoff), the install
+shows substrate-honest fallback. Future B-NNNN candidate:
+opt-in flag `--with-ssh-key-scope` for operators who want one-shot
+auto-population.
+
 ### CORE REQUIREMENT (operator 2026-05-26 reframing)
 
 > "also i should not have to log in for any of this to start that
