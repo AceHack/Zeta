@@ -35,6 +35,14 @@
     # ships the TS implementation; imported here so every node type
     # has the same module surface.
     ./zeta-self-register.nix
+    # B-0852.4a/d: boot-time credential restore from ESP. Disabled by
+    # default until host configs opt in via `zeta.credsRestore.enable = true;`
+    # AND operator pre-stages a passphrase source. Composes with B-0855.1
+    # zeta-self-register (which already declares
+    # `after = "zeta-creds-restore.service"`) so cred-restore fires before
+    # self-register on first boot. Imported here so every node type has
+    # the same module surface.
+    ./zeta-creds-restore.nix
   ];
 
   nix.settings = {
