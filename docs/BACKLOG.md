@@ -799,6 +799,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0857](backlog/P2/B-0857-install-sh-universal-unix-entry-consolidation-route-by-environment-replaces-zeta-install-sh-on-the-short-path-before-b-0854-ace-aaron-2026-05-27.md)** tools/setup/install.sh becomes the universal Unix-like-OS install entry — routes by environment (macOS / Linux-non-NixOS / NixOS-live-USB / installed-NixOS); replaces zeta-install.sh on the short-path BEFORE B-0854 Ace migration completes (Aaron 2026-05-27)
 - [x] **[B-0857.1](backlog/P2/B-0857.1-audit-pr-5389-step-6-95a-invocation-of-tools-setup-install-sh-verified-present-aaron-2026-05-27.md)** Audit PR #5389's claim that zeta-install.sh Step 6.95a invokes tools/setup/install.sh — VERIFIED PRESENT (corrects B-0857 row body authoring error)
 - [ ] **[B-0858.5](backlog/P2/B-0858.5-heartbeat-auto-state-gathering-equals-debug-logs-aaron-2026-05-27.md)** Heartbeat auto-state-gathering — writer gathers observable current state before pushing; heartbeats become debug logs once attached (Aaron 2026-05-27)
+- [ ] **[B-0861](backlog/P2/B-0861-make-conversation-interface-result-t-convfeedback-first-class-operator-otto-nci-enforcement-aaron-2026-05-27.md)** Make conversation-interface Result<T, ConvFeedback> first-class — ConvFeedback variant taxonomy + Otto emission discipline + operator acknowledgment substrate for NCI enforcement at conversation scope (Aaron 2026-05-27)
 
 ## P3 — convenience / deferred
 
@@ -924,5 +925,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0757](backlog/P3/B-0757-cluster-auto-discovery-mdns-bootstrap-or-join-unattended-growth-aaron-2026-05-25.md)** Cluster auto-discovery — mDNS bootstrap-or-join so 1st/2nd/3rd/Nth USB self-organizes into a growing cluster unattended
 - [ ] **[B-0788](backlog/P3/B-0788-agent-on-agent-claude-code-session-recovery-lift-operator-runs-gate-once-zeta-safety-substrate-stronger-than-classifier-2026-05-25.md)** Agent-on-agent Claude Code session recovery — lift operator-runs gate for `--apply` once Zeta safety substrate stronger than classifier
 - [ ] **[B-0830](backlog/P3/B-0830-add-iso-release-attach-to-build-ai-cluster-iso-workflow-when-zeta-starts-tagging-releases-aaron-2026-05-26.md)** Add ISO release-attach to build-ai-cluster-iso.yml workflow when Zeta starts tagging releases
+- [ ] **[B-0860](backlog/P3/B-0860-nemerle-dotnet-support-macro-metaprogramming-complement-fsharp-type-providers-relationship-type-inference-substrate-aaron-2026-05-27.md)** Nemerle support for dotnet substrate — compile-time macro metaprogramming complementing F# type providers; enables language-native relationship-type-inference substrate (Aaron 2026-05-27)
 
 <!-- END AUTO-GENERATED -->
