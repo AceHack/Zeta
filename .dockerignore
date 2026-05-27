@@ -1,0 +1,51 @@
+# .dockerignore — exclude large/irrelevant paths from docker build
+# context to avoid sending gigabytes to the docker daemon per
+# Copilot review on PR #5393 + per
+# .claude/rules/references-upstreams-not-our-code-search-excludes.md
+# (references/upstreams/ is gigabytes-of-OTHER-people's-code we
+# mirror for prior-art research; NEVER ship into docker images).
+#
+# Build-context discipline: even though tools/ci/dockerfiles/*/Dockerfile
+# only COPY's specific subtrees (tools/setup/ + .mise.toml + etc), the
+# build context itself is sent to the daemon BEFORE COPY filtering
+# happens. Without this .dockerignore, every docker build from repo
+# root sends gigabytes of references/upstreams/ even if the Dockerfile
+# only needs MB of tools/setup/.
+
+# Curated prior-art / mirrors (per references-upstreams-* rule)
+references/upstreams/
+
+# Node deps (npm + bun caches)
+node_modules/
+.npm-cache/
+
+# Git history (large; not needed in image)
+.git/
+
+# .NET build outputs
+bin/
+obj/
+
+# macOS metadata
+.DS_Store
+**/.DS_Store
+
+# Common build / cache dirs
+target/
+dist/
+build/
+
+# IDE / editor scratch
+.vscode/
+.idea/
+*.swp
+
+# Logs that should never enter images
+*.log
+.docker-test-log
+
+# Pre-build artifacts
+*.iso
+*.qcow2
+*.img
+*.vmdk
