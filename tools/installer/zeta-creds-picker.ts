@@ -18,9 +18,13 @@
 // Usage (called from zeta-install.sh Step 6.95-picker or operator terminal):
 //   bun tools/installer/zeta-creds-picker.ts \
 //     --usb-uuid <uuid> \
-//     --output /esp/zeta-creds.enc \
+//     --output /mnt/boot/zeta-creds.enc \
 //     ( --passphrase-file <path> | --passphrase-env <VAR> ) \
 //     [--persona <name>] \
+//     [--verify]   (post-persist: re-decrypt the blob with the same
+//                   passphrase + dry-run-restore to verify it's
+//                   actually usable BEFORE the operator reboots and
+//                   discovers a bad blob at first boot)
 //     [--dry-run]  (print persist invocation; don't exec)
 //
 // Per .claude/rules/non-coercion-invariant.md HC-8: operator authority over
@@ -32,8 +36,14 @@
 //   2 arg parse error
 //   3 picker abort (operator Ctrl+C)
 //   4 persist invocation failure
+//   5 verify failure (--verify ran post-persist + reported a problem with
+//     the just-written blob; the install-time recovery is to re-run the
+//     picker; the first-reboot recovery would otherwise be a full reflash)
 
 import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
 import { DEFAULT_MANIFEST } from "./zeta-creds-manifest";
@@ -46,6 +56,7 @@ interface PickerArgs {
   readonly passphraseEnv: string | null;
   readonly persona: string | null;
   readonly dryRun: boolean;
+  readonly verify: boolean;
 }
 
 export function parseArgs(argv: readonly string[]): PickerArgs | { readonly error: string } {
@@ -55,6 +66,7 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
   let passphraseEnv: string | null = null;
   let persona: string | null = null;
   let dryRun = false;
+  let verify = false;
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
     const next = (): string => {
@@ -68,6 +80,7 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
       else if (arg === "--passphrase-env") passphraseEnv = next();
       else if (arg === "--persona") persona = next();
       else if (arg === "--dry-run") dryRun = true;
+      else if (arg === "--verify") verify = true;
       else return { error: `unknown flag: ${arg}` };
     } catch (err) {
       return { error: err instanceof Error ? err.message : String(err) };
@@ -78,7 +91,40 @@ export function parseArgs(argv: readonly string[]): PickerArgs | { readonly erro
   if (!passphraseFile && !passphraseEnv) {
     return { error: "passphrase source required: --passphrase-file <path> or --passphrase-env <VAR>" };
   }
-  return { usbUuid, output, passphraseFile, passphraseEnv, persona, dryRun };
+  return { usbUuid, output, passphraseFile, passphraseEnv, persona, dryRun, verify };
+}
+
+/**
+ * Build the argv list for the verify-mode invocation of
+ * zeta-creds-restore.ts. Pure function for testability.
+ *
+ * The verify step decrypts the just-written blob using the same
+ * passphrase source the picker used + invokes the restore CLI in
+ * --dry-run mode against a tmpdir target-root. Success = blob is
+ * cryptographically valid + manifest parses + at least one cred
+ * entry round-tripped. Failure = exit non-zero; operator sees an
+ * actionable error BEFORE rebooting into an unrecoverable state.
+ *
+ * Tmpdir use: --dry-run guarantees restore writes nothing, but
+ * --target-root must be set to something to avoid the default `/`
+ * (which would surface as suggested-write-target in dry-run output
+ * + confuse operators reading the verify log).
+ */
+export function buildVerifyArgs(
+  parsed: PickerArgs,
+  tmpTargetRoot: string,
+): readonly string[] {
+  const args = [
+    "tools/installer/zeta-creds-restore.ts",
+    "--usb-uuid", parsed.usbUuid,
+    "--input", parsed.output,
+    "--target-root", tmpTargetRoot,
+    "--dry-run",
+  ];
+  if (parsed.passphraseFile) args.push("--passphrase-file", parsed.passphraseFile);
+  if (parsed.passphraseEnv) args.push("--passphrase-env", parsed.passphraseEnv);
+  if (parsed.persona) args.push("--persona", parsed.persona);
+  return args;
 }
 
 /**
@@ -224,6 +270,30 @@ async function main(): Promise<number> {
   if (result.status !== 0) {
     console.error(`zeta-creds-picker: persist failed (exit ${result.status})`);
     return 4;
+  }
+  if (parsed.verify) {
+    console.log(`\n=== Verifying just-written blob (--verify) ===`);
+    console.log(`  Re-decrypting ${parsed.output} with the same passphrase + dry-run-restoring to`);
+    console.log(`  a tmpdir to confirm the blob is cryptographically valid + manifest-parseable.`);
+    console.log(`  Any failure here is recoverable AT INSTALL TIME by re-running the picker;`);
+    console.log(`  if discovered post-reboot, recovery would require full reflash.`);
+    const tmpTargetRoot = mkdtempSync(join(tmpdir(), "zeta-picker-verify-"));
+    const verifyArgs = buildVerifyArgs(parsed, tmpTargetRoot);
+    // eslint-disable-next-line sonarjs/no-os-command-from-path
+    const verifyResult = spawnSync("bun", [...verifyArgs], { stdio: "inherit" });
+    // Best-effort cleanup of tmpdir (dry-run wrote nothing, so it's empty).
+    try {
+      rmSync(tmpTargetRoot, { recursive: true, force: true });
+    } catch {
+      // ignore — empty dir cleanup failure shouldn't affect verify verdict
+    }
+    if (verifyResult.status !== 0) {
+      console.error(`zeta-creds-picker: verify FAILED (restore --dry-run exit ${verifyResult.status})`);
+      console.error(`  The blob at ${parsed.output} was written but cannot be decrypted/parsed.`);
+      console.error(`  Re-run the picker with the same passphrase to overwrite + retry.`);
+      return 5;
+    }
+    console.log(`=== Verify PASS: blob decrypts cleanly + manifest parses ===`);
   }
   return 0;
 }

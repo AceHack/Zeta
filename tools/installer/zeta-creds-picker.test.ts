@@ -3,7 +3,7 @@
 // Tests parseArgs (pure) + runPicker (against a mock readline-like interface).
 
 import { describe, expect, it } from "bun:test";
-import { parseArgs, runPicker } from "./zeta-creds-picker";
+import { parseArgs, runPicker, buildVerifyArgs } from "./zeta-creds-picker";
 
 describe("parseArgs", () => {
   it("accepts well-formed args with --passphrase-env", () => {
@@ -45,6 +45,49 @@ describe("parseArgs", () => {
   it("rejects unknown flag", () => {
     const r = parseArgs(["--bogus"]);
     expect("error" in r).toBe(true);
+  });
+
+  it("--verify flag is opt-in (default false)", () => {
+    const r = parseArgs(["--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P"]);
+    if ("error" in r) throw new Error(r.error);
+    expect(r.verify).toBe(false);
+  });
+
+  it("--verify flag parsed when passed", () => {
+    const r = parseArgs(["--usb-uuid", "u1", "--output", "/o", "--passphrase-env", "P", "--verify"]);
+    if ("error" in r) throw new Error(r.error);
+    expect(r.verify).toBe(true);
+  });
+});
+
+describe("buildVerifyArgs", () => {
+  it("composes restore CLI args with --dry-run + provided tmpdir", () => {
+    const parsed = parseArgs(["--usb-uuid", "u1", "--output", "/mnt/boot/zeta-creds.enc", "--passphrase-env", "ZETA_PP", "--verify"]);
+    if ("error" in parsed) throw new Error(parsed.error);
+    const args = buildVerifyArgs(parsed, "/tmp/verify-x");
+    expect(args).toContain("tools/installer/zeta-creds-restore.ts");
+    expect(args).toContain("--usb-uuid"); expect(args).toContain("u1");
+    expect(args).toContain("--input"); expect(args).toContain("/mnt/boot/zeta-creds.enc");
+    expect(args).toContain("--target-root"); expect(args).toContain("/tmp/verify-x");
+    expect(args).toContain("--dry-run");
+    expect(args).toContain("--passphrase-env"); expect(args).toContain("ZETA_PP");
+  });
+
+  it("propagates --passphrase-file when picker used file source", () => {
+    const parsed = parseArgs(["--usb-uuid", "u2", "--output", "/o", "--passphrase-file", "/pp"]);
+    if ("error" in parsed) throw new Error(parsed.error);
+    const args = buildVerifyArgs(parsed, "/tmp/t");
+    expect(args).toContain("--passphrase-file");
+    expect(args).toContain("/pp");
+    expect(args).not.toContain("--passphrase-env");
+  });
+
+  it("propagates --persona when set", () => {
+    const parsed = parseArgs(["--usb-uuid", "u3", "--output", "/o", "--passphrase-env", "P", "--persona", "otto"]);
+    if ("error" in parsed) throw new Error(parsed.error);
+    const args = buildVerifyArgs(parsed, "/tmp/t");
+    expect(args).toContain("--persona");
+    expect(args).toContain("otto");
   });
 });
 
