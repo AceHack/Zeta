@@ -772,6 +772,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0832](backlog/P2/B-0832-installer-nmtui-wifi-rescan-refresh-button-overlapping-networks-empirical-aaron-2026-05-26-physical-hardware-support-test.md)** installer nmtui WiFi step needs visible rescan/refresh path — empirical from operator's physical hardware-support test 2026-05-26 (20+ overlapping networks; target SSID not initially in scan list) (Aaron 2026-05-26)
 - [ ] **[B-0834](backlog/P2/B-0834-installer-preserve-install-log-to-file-failures-warnings-scrollback-empirical-aaron-2026-05-26.md)** installer must preserve install log to file — failures + warnings scroll past faster than operator can read (empirical from 2026-05-26 physical hardware-support test; gh login not reached) (Aaron 2026-05-26)
 - [ ] **[B-0837](backlog/P2/B-0837-max-addison-committee-review-asymmetric-critic-with-clarity-first-rule-draft-aaron-2026-05-26.md)** Max + Addison committee review of asymmetric-critic-with-clarity-first rule draft (per Kestrel-v3 substrate-honest disclaimer + operator authorization) (Aaron 2026-05-26)
+- [ ] **[B-0838](backlog/P2/B-0838-caustic-engineered-bloom-filter-discriminators-remote-code-trust-layer-kestrel-v2-aaron-2026-05-26.md)** caustic-engineered bloom filter discriminators for remote-code trust layer (Kestrel-v2 ferry; multi-learned-bloom-filter intersection with caustic-geometry-shaped agreement region) (Aaron 2026-05-26)
 
 ## P3 — convenience / deferred
 
