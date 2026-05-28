@@ -850,6 +850,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0887.2](backlog/P2/B-0887.2-move-sonatype-guide-invocation-into-playbook-substrate-drop-pr-gated-review-no-vendor-lockin-aaron-2026-05-28.md)** Move sonatype-guide invocation into playbook substrate — drop PR-gated review; no vendor lockin per operator 2026-05-28 "we are getting rid of PRs mostly for playbooks
 - [ ] **[B-0888](backlog/P2/B-0888-cross-track-substrate-sync-policy-cloud-github-vs-usb-local-gitlab-intentional-divergence-vs-auto-sync-otto-pushback-2026-05-28.md)** Cross-track substrate-sync policy — cloud-GitHub vs USB-local-GitLab; intentional divergence vs auto-sync-via-push-to-both-remotes vs hybrid
 - [ ] **[B-0893](backlog/P2/B-0893-zetaid-v2-128-bit-structured-encoding-snowflake-ulid-family-kestrel-2026-05-28.md)** ZetaID v2 — 128-bit structured encoding (Snowflake/ULID family with timestamp + trajectory + persona + lifecycle-stage + random)
+- [ ] **[B-0899](backlog/P2/B-0899-casimir-like-effect-from-review-walls-changing-allowed-output-modes-testable-pressure-difference-before-after-rule-landing-amara-aaron-2026-05-28.md)** Casimir-like effect from review walls — testable pressure difference in agent-output distribution before/after rule landing
 
 ## P3 — convenience / deferred
 
@@ -990,5 +991,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0895](backlog/P3/B-0895-clifford-spacetime-algebra-substrate-recognition-cl-1-3-and-cl-3-1-dual-signature-interface-grade-decomposition-of-observe-emit-limit-simulate-aaron-otto-2026-05-28.md)** Clifford spacetime algebra substrate-recognition — Cl(1,3) and Cl(3,1) dual signature interface + grade-decomposition of Observe/Emit/Limit/Simulate
 - [ ] **[B-0896](backlog/P3/B-0896-category-theory-clifford-self-similarity-mapping-functor-between-categorical-and-geometric-substrate-aaron-2026-05-28.md)** Category-theory ↔ Clifford self-similarity — bidirectional mapping; substrate-independent traveler-as-categorical-structure with Clifford-algebraic incarnation
 - [ ] **[B-0897](backlog/P3/B-0897-persist-as-bridge-operation-emit-now-plus-observe-later-temporal-bivector-with-richer-typing-tinternal-tsubstraterecord-tpersistfeedback-amara-2026-05-28.md)** Persist-as-bridge-operation — Emit-now + Observe-later temporal bivector + richer typing Persist<TInternal, TSubstrateRecord, TPersistFeedback>
+- [ ] **[B-0898](backlog/P3/B-0898-measure-as-bridge-operation-infer-net-belief-update-tstate-toutcome-tfeedback-amara-2026-05-28.md)** Measure-as-bridge-operation — Infer.NET belief-update + Measure<TState, TOutcome, TFeedback> sibling to Persist-as-bridge
+- [ ] **[B-0900](backlog/P3/B-0900-bell-like-contextuality-test-with-geographically-distributed-clusters-5-tier-experiment-matrix-amara-aaron-2026-05-28.md)** Bell-like contextuality test with geographically distributed Zeta clusters — 5-tier experiment matrix; protocol for isolation + signed local random settings + delayed reveal
 
 <!-- END AUTO-GENERATED -->
