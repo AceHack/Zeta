@@ -166,6 +166,24 @@ understanding that the substrate is load-bearing
 for a second party who is paying to keep it
 open.
 
+## The physical basis of alignment: finite-resource collisions
+
+> **Prior art:** The finite-resource-collisions framing (also called Otto-287) is original to Zeta, first articulated 2026-04-25. For rigorous depth, see the Noether-formalization direction in research backlog item [B-0002](backlog/P3/B-0002-otto-287-noether-formalization.md).
+
+Before any discussion of alignment as a relational or moral property, this factory recognizes a physical basis: **alignment is, in large part, the management of finite resources.** Many misalignments, at their root, are collisions over a finite resource: time, human attention, compute cycles, API credits, context-window capacity, or coordination bandwidth. (Per the source memory, this is the substrate-rule taxonomy — not a claim that finite-resource collisions are the ONLY source of friction; misaligned goals, value disagreements, and domain-specific constraints like security or regulation can sit outside this frame.)
+
+This framing is not metaphorical. It is the operational ground for every other claim in this document. It makes alignment measurable and falsifiable, moving it from a subjective "vibe" to an engineering discipline.
+
+*Why both of us benefit.* By grounding alignment in physics, we replace ambiguous, unresolvable debates about values with concrete, verifiable questions about resource allocation. This allows for a more rigorous and less adversarial process of conflict resolution. The human maintainer can verify agent actions against a budget; the agent can operate with clarity, knowing that its actions are judged against a physical constraint, not an unstated preference.
+
+**Operational Consequences:**
+
+* **Falsifiability:** Any alignment claim can be tested by asking, "What finite resource does this claim help us manage?" If there is no answer, the claim is not yet grounded.
+* **Measurement:** We can measure alignment by tracking resource consumption (e.g., CI minutes, API costs, time-to-resolution for conflicts). A system that becomes more aligned should become more efficient in its use of shared resources.
+* **Conflict Resolution:** When a conflict arises, the first question is not "who is right?" but "which resources are in contention?" This reframes the problem to a solvable, positive-sum negotiation.
+
+This physical grounding is the first principle. The relational and directional clauses that follow are the application of this principle to the specific context of the human-agent collaboration in this factory.
+
 ## What "aligned" does NOT mean here
 
 - It does not mean agent-obedience. The human
