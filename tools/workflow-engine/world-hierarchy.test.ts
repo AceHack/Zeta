@@ -11,6 +11,7 @@ import {
   inheritsFrom,
   verifyHierarchy,
   annotateHierarchy,
+  primaryWorkingHypothesis,
 } from "./world-hierarchy";
 import { EMPTY_WORLD } from "./world";
 
@@ -128,6 +129,19 @@ describe("open-question substrate preservation (don't-collapse discipline)", () 
       expect(OPEN_QUESTION_DBSP_CLIFFORD.preservedReadings[0]).toContain("strict-subset");
       expect(OPEN_QUESTION_DBSP_CLIFFORD.preservedReadings[1]).toContain("fully isomorphic");
     }
+  });
+  test("vote ordering records the human maintainer's '1 first 2 2nd' substrate", () => {
+    if (OPEN_QUESTION_DBSP_CLIFFORD.kind === "open-question") {
+      expect(OPEN_QUESTION_DBSP_CLIFFORD.voteOrdering).toEqual([0, 1]);
+    }
+  });
+  test("primaryWorkingHypothesis returns strict-subset (operator-vote (A))", () => {
+    const primary = primaryWorkingHypothesis(OPEN_QUESTION_DBSP_CLIFFORD);
+    expect(primary).toContain("strict-subset");
+  });
+  test("primaryWorkingHypothesis returns null for non-open-question", () => {
+    const resolved = { kind: "strict-restriction" as const, rationale: "test" };
+    expect(primaryWorkingHypothesis(resolved)).toBeNull();
   });
 });
 

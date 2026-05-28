@@ -96,7 +96,20 @@ export interface HierarchicalWorld extends World {
 export type DBSPCliffordRelationship =
   | { kind: "strict-restriction"; rationale: string }
   | { kind: "fully-isomorphic"; rationale: string }
-  | { kind: "open-question"; preservedReadings: ReadonlyArray<string> };
+  | {
+      kind: "open-question";
+      preservedReadings: ReadonlyArray<string>;
+      /**
+       * the human maintainer (2026-05-28) vote ordering ("1 first 2 2nd would be great"):
+       * indices into preservedReadings; primary working hypothesis is
+       * voteOrdering[0]; secondary fallback is voteOrdering[1].
+       *
+       * Substrate-engineering substrate-engineering work starts with the
+       * primary; falls to the secondary if/when algebraic substrate proves
+       * them equivalent. See B-0915 for impl substrate that resolves this.
+       */
+      voteOrdering?: ReadonlyArray<number>;
+    };
 
 export const OPEN_QUESTION_DBSP_CLIFFORD: DBSPCliffordRelationship = {
   kind: "open-question",
@@ -104,16 +117,35 @@ export const OPEN_QUESTION_DBSP_CLIFFORD: DBSPCliffordRelationship = {
     "(A) Git ⊂ DBSP ⊂ Clifford strict-subset chain; each restricts upward substrate",
     "(B) DBSP ↔ Clifford fully isomorphic; both algebraic substrates supporting increments + retractions; Git ⊂ both equivalently",
   ],
+  // the human maintainer (2026-05-28): "1 first 2 2nd would be great" — (A) primary, (B) secondary fallback.
+  //
+  // SUBSTRATE-ENGINEERING UPDATE (the human maintainer (2026-05-28), same session, post-vote):
+  // "What i think we might have found a paper or something about retraction in
+  // clifford so the isomorphic might be easy"
+  //
+  // If a retraction-in-Clifford paper exists + maps to DBSP's Z-set retraction
+  // substrate, the (B) fully-isomorphic reading becomes constructive and the
+  // vote ordering may flip. Preserved as substrate-engineering input without
+  // collapsing — paper-existence verification + reading is B-0915 substrate-
+  // engineering work. See B-0915 Slice D acceptance criterion.
+  voteOrdering: [0, 1],
 };
+
+/**
+ * Helper to extract the operator's primary working hypothesis from the
+ * open question. Returns the highest-vote reading (voteOrdering[0]) or
+ * the first preservedReading if no vote ordering present.
+ */
+export function primaryWorkingHypothesis(rel: DBSPCliffordRelationship): string | null {
+  if (rel.kind !== "open-question") return null;
+  const idx = rel.voteOrdering?.[0] ?? 0;
+  return rel.preservedReadings[idx] ?? null;
+}
 
 // ───────────────────────────────────────────────────────────────────────
 // Inheritance verification — substrate-engineering composition guard
 // ───────────────────────────────────────────────────────────────────────
 
-/**
- * Substrate-engineering feedback (asymmetric-authorship per
- * .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md).
- */
 /**
  * Hierarchy-validation feedback per asymmetric-authorship + monad-propagation.
  *
