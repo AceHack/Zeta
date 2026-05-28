@@ -1,0 +1,216 @@
+#!/usr/bin/env bun
+/**
+ * tools/workflow-engine/cli.ts
+ *
+ * B-0867.5 — workflow engine agent-loop CLI (PoC scaffold; foreground)
+ *
+ * Usage:
+ *   bun tools/workflow-engine/cli.ts --list-actions
+ *   bun tools/workflow-engine/cli.ts --list-states
+ *   bun tools/workflow-engine/cli.ts --dry-run [--state <id>]
+ *   bun tools/workflow-engine/cli.ts --validate
+ *
+ * Modes:
+ *   --list-actions  Print SEED_ACTION_CATALOG as structured JSON
+ *   --list-states   Print SEED_STATES + per-state available action list
+ *   --dry-run       Validate catalog + simulate one tick at given state
+ *                   (default: initial) without executing any side effects
+ *   --validate      Run catalog + state Otto-5-mods invariants; exit
+ *                   non-zero on violation
+ *
+ * Exit codes:
+ *   0 — operation successful
+ *   1 — runtime validation failed (Mod 1 / 2 / 5 violation OR catalog invariant)
+ *   2 — usage error
+ *
+ * Per .claude/rules/rule-0-no-sh-files.md (TS-first for cross-platform DST)
+ * + zeta-ships-with-skills-immediate-value.md (TS PoC ships first; F#
+ * crystallization later)
+ *
+ * PoC scope: declarative dispatcher + invariant validation + dry-run
+ * scaffold. State persistence (B-0867.2), real action grammar parser
+ * (B-0867.3), F# 4-corner monad runtime (B-0867.4), full agent-loop
+ * Phase 2 (B-0867.5 phase 2 — Mika-spec integration) all deferred to
+ * operator-authorized follow-up work.
+ */
+
+import {
+  SEED_ACTION_CATALOG,
+  SEED_STATES,
+  validateCatalog,
+  type Action,
+} from "./types";
+
+type Mode = "list-actions" | "list-states" | "dry-run" | "validate";
+
+interface ParsedArgs {
+  readonly mode: Mode;
+  readonly stateId?: string;
+}
+
+function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
+  const args = argv.slice(2);
+  if (args.length === 0) {
+    return {
+      error:
+        "no mode specified — use --list-actions, --list-states, --dry-run, or --validate",
+    };
+  }
+  if (args.includes("--list-actions")) return { mode: "list-actions" };
+  if (args.includes("--list-states")) return { mode: "list-states" };
+  if (args.includes("--validate")) return { mode: "validate" };
+  if (args.includes("--dry-run")) {
+    const stateIdx = args.indexOf("--state");
+    if (stateIdx >= 0 && stateIdx + 1 < args.length) {
+      const id = args[stateIdx + 1];
+      if (id !== undefined) {
+        return { mode: "dry-run", stateId: id };
+      }
+    }
+    return { mode: "dry-run" };
+  }
+  return { error: `unrecognized arguments: ${args.join(" ")}` };
+}
+
+function emitJson(value: unknown): void {
+  console.log(JSON.stringify(value, null, 2));
+}
+
+function modeListActions(): number {
+  emitJson({
+    rowId: "B-0867",
+    subRow: "B-0867.5",
+    catalogSize: SEED_ACTION_CATALOG.length,
+    actions: SEED_ACTION_CATALOG.map((a) => ({
+      id: a.id,
+      class: a.class,
+      gate: a.gate,
+      label: a.label,
+      feedbackVariants: a.feedbackVariants,
+    })),
+  });
+  return 0;
+}
+
+function modeListStates(): number {
+  emitJson({
+    rowId: "B-0867",
+    subRow: "B-0867.5",
+    stateCount: SEED_STATES.length,
+    states: SEED_STATES.map((s) => ({
+      id: s.id,
+      label: s.label,
+      tickCyclePattern: s.tickCyclePattern,
+      availableActions: s.availableActions,
+    })),
+  });
+  return 0;
+}
+
+function modeValidate(): number {
+  try {
+    validateCatalog(SEED_ACTION_CATALOG, SEED_STATES);
+    emitJson({
+      rowId: "B-0867",
+      subRow: "B-0867.5",
+      mode: "validate",
+      result: "passed",
+      catalogSize: SEED_ACTION_CATALOG.length,
+      stateCount: SEED_STATES.length,
+      modsChecked: ["Mod 1 (escape-hatch in every state)", "Mod 2 (grammar-extension in catalog)"],
+    });
+    return 0;
+  } catch (e) {
+    emitJson({
+      rowId: "B-0867",
+      subRow: "B-0867.5",
+      mode: "validate",
+      result: "failed",
+      error: (e as Error).message,
+    });
+    return 1;
+  }
+}
+
+function modeDryRun(stateId: string | undefined): number {
+  try {
+    validateCatalog(SEED_ACTION_CATALOG, SEED_STATES);
+  } catch (e) {
+    emitJson({
+      rowId: "B-0867",
+      subRow: "B-0867.5",
+      mode: "dry-run",
+      result: "failed",
+      stage: "catalog-validation",
+      error: (e as Error).message,
+    });
+    return 1;
+  }
+  const targetState =
+    stateId !== undefined
+      ? SEED_STATES.find((s) => s.id === stateId)
+      : SEED_STATES[0];
+  if (!targetState) {
+    emitJson({
+      rowId: "B-0867",
+      subRow: "B-0867.5",
+      mode: "dry-run",
+      result: "failed",
+      stage: "state-lookup",
+      error: `state not found: ${stateId ?? "(default)"}`,
+    });
+    return 1;
+  }
+  const offered: ReadonlyArray<Action> = targetState.availableActions
+    .map((id) => SEED_ACTION_CATALOG.find((a) => a.id === id))
+    .filter((a): a is Action => a !== undefined);
+  emitJson({
+    rowId: "B-0867",
+    subRow: "B-0867.5",
+    mode: "dry-run",
+    state: {
+      id: targetState.id,
+      label: targetState.label,
+      tickCyclePattern: targetState.tickCyclePattern,
+    },
+    offeredActions: offered.map((a) => ({
+      id: a.id,
+      class: a.class,
+      gate: a.gate,
+      label: a.label,
+    })),
+    integrationPending: {
+      mikaTickSpec:
+        "Mika's clean minimal tick spec — when forwarded, integrates as TickCyclePattern variant + cycle-step implementation; no commit until spec lands",
+      stateAppendImpl: "B-0867.2 — TS state-persist (git append-only writer)",
+      grammarParserImpl: "B-0867.3 — universal action grammar parser/composer",
+      fourCornerMonadImpl: "B-0867.4 — F# CE builder (hot/cold/push/pull dispatch)",
+      fullAgentLoopImpl:
+        "B-0867.5 phase 2 — full agent-loop runtime (execute → move-next → CYOA OR Mika's integration)",
+    },
+  });
+  return 0;
+}
+
+function main(argv: ReadonlyArray<string>): number {
+  const parsed = parseArgs(argv);
+  if ("error" in parsed) {
+    console.error(`usage error: ${parsed.error}`);
+    console.error("see file header for usage examples");
+    return 2;
+  }
+  switch (parsed.mode) {
+    case "list-actions":
+      return modeListActions();
+    case "list-states":
+      return modeListStates();
+    case "validate":
+      return modeValidate();
+    case "dry-run":
+      return modeDryRun(parsed.stateId);
+  }
+}
+
+if (import.meta.main) {
+  process.exit(main(process.argv));
+}
