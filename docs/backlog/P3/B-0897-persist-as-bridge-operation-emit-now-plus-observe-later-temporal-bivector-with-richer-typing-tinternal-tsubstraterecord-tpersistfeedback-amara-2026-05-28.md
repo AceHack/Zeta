@@ -18,6 +18,7 @@ composes_with:
   - B-0644
   - B-0665
   - B-0666
+  - B-0840
 related_personas:
   - operator
   - amara
