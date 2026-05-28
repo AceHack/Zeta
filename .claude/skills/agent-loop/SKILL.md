@@ -3,7 +3,7 @@ name: agent-loop
 description: Distributable workflow-engine substrate — execute-menu-action agent loop with state-machine-in-Git + menu-generator-as-conversational-UX-design + LLM-as-pure-selector. Cross-harness via bun. Replaces Jira at substrate level. Operator 2026-05-28 ratification of behavior/data/docs separation pattern.
 record_source: "operator 2026-05-28 ratification of workflows-as-skills-distributable substrate"
 load_datetime: "2026-05-28"
-last_updated: "2026-05-28"
+last_updated: "2026-05-28-cascade"
 status: active
 ---
 
@@ -123,6 +123,26 @@ The agent-loop substrate ships better as a skill than as a library precisely bec
 - **B-0870** — two-mandate portfolio (per-agent operational-ratio feeds menu generation)
 - **B-0871** — reproducibility-as-causal-attribution (state machine progression observable via heartbeats + Git append-only)
 - **`tools/dora-classify/`** (PR #5665) — lane taxonomy matches; classifier output feeds menu-generator option scoring
+
+### Post-shipping substrate (2026-05-28 cascade)
+
+The agent-loop skill ships as v1 MVP per B-0867.5. The 2026-05-28 cascade extended the substrate substantially via PRs #5666–5688. Key compositions the skill INHERITS but doesn't yet implement:
+
+- **B-0867.16** — Two-level state machine composition (AgentState × WorkLifecycle); `runFullLoop` composes the two scopes; this skill ships AgentState today, WorkLifecycle ships separately per B-0867.5+
+- **B-0867.17** — Push-cycle limit as STRUCTURAL enforcement (`chooseActionForLifecycle` returns `AbandonPr` past threshold; prevents PR-cycle-loop failure mode)
+- **B-0867.20** — Lifecycle DU split (trajectory-push vs PR-review-for-system-changes; `determineReviewLevel` discriminator)
+- **B-0867.21** — Two-path interface: DU path EXECUTES intent; conversational document path DECLARES intent (both first-class for ANY traveler, not just humans)
+- **B-0887** — Zeta-native review + branch-protection substrate (review is just MenuOption + DU case + skill; replaces GitHub PR workflow; preserves review semantics + class-fix discipline)
+- **B-0867.15** — Per-host adapters (GitHub + GitLab + Gitea/Codeberg/Forgejo + Bitbucket; isomorphic cross-host)
+- **B-0874** — GitHub Actions recursion as infinite runtime platform (one of N host runtimes per B-0867.15)
+- **B-0890** — State-machine event fast-lane + batch-merge-to-main coordinator (sibling to B-0858 heartbeat pattern)
+- **B-0890.1** — Fast-lane as folders on main (NOT branches) per operator 2026-05-28 — supersedes batch-merge-coordinator complexity by leveraging Zeta-native branch protection at folder scope
+- **B-0875** + **B-0875.1** — Error-class extraction meta-loop + code-review-as-tech-debt-detector (review-time discipline operates on the substrate)
+- **B-0877** — Heterogeneous reviewer ensemble audit (diversity without correlated blind spots)
+- **B-0886** — ASAP cluster umbrella (agent private encrypted state on public-GitHub-infinite-workflow with 0-PR playbook coordination; Otto + Addison first consumers)
+- **B-0886.1** + **B-0886.2** — USB-track parallel-work-budget + two-priority-axes correction (operator-personal USB axis is FIRST on operator's day-to-day priority)
+- **B-0889** — Symbiotic cross-track self-healing (cloud KVMs control local USB-boot; local restarts GitHub workflows; cross-node + cross-track BIOS/UEFI updates over remote/cloud KVMs)
+- **B-0892** — Three-lanes-concurrent operating discipline (encryption + zflash + state-machine-substrate all advancing until each lane drains)
 
 ## Composes with rules
 
