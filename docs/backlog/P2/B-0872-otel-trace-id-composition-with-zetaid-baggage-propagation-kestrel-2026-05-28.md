@@ -8,11 +8,11 @@ ask: kestrel via aaron 2026-05-28
 created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
-  - B-0871
+  - B-0892
   - B-0867
 composes_with:
   - B-0867
-  - B-0871
+  - B-0892
   - B-0869
 tags:
   - opentelemetry
@@ -50,7 +50,7 @@ Wire OpenTelemetry trace-IDs through the agent-loop substrate so every state-mac
 
 ## Scope
 
-This row is the OTEL WIRING ONLY. ZetaID generation lives in B-0871; event-sourcing in B-0867.2; observability backend selection is operator-decision.
+This row is the OTEL WIRING ONLY. ZetaID generation lives in B-0892; event-sourcing in B-0867.2; observability backend selection is operator-decision.
 
 ## Substrate-honest framing
 

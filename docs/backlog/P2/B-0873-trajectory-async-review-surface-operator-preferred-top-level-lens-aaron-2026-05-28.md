@@ -12,7 +12,7 @@ depends_on:
 composes_with:
   - B-0867
   - B-0869
-  - B-0871
+  - B-0892
   - B-0872
 tags:
   - trajectory-async-review
