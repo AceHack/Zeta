@@ -43,6 +43,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { SCENARIOS, validateScenarios, findScenario, type Scenario, type ScenarioId } from "./scenarios";
+import { SCENARIO_IMPL_DESIGN, computeImplDesignProgress } from "./extensions";
 
 type Mode = "list" | "dry-run" | "scenario" | "all";
 
@@ -105,13 +106,23 @@ function emitListing(): void {
       {
         rowId: "B-0891",
         scenarioCount: SCENARIOS.length,
-        scenarios: SCENARIOS.map((s) => ({
-          orderIndex: s.orderIndex,
-          id: s.id,
-          title: s.title,
-          status: s.status,
-          gates: s.gates,
-        })),
+        implDesignProgress: computeImplDesignProgress(),
+        scenarios: SCENARIOS.map((s) => {
+          const implDesign =
+            s.id === "reformat-with-retention" ||
+            s.id === "reformat-from-scratch" ||
+            s.id === "cluster-joining"
+              ? SCENARIO_IMPL_DESIGN[s.id]
+              : undefined;
+          return {
+            orderIndex: s.orderIndex,
+            id: s.id,
+            title: s.title,
+            status: s.status,
+            gates: s.gates,
+            implDesign,
+          };
+        }),
       },
       null,
       2,
