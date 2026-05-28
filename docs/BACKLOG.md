@@ -861,6 +861,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0920](backlog/P2/B-0920-memory-lifetime-du-agent-initiated-cleanup-with-history-preservation-drafted-active-superseded-archived-retracted-aaron-2026-05-28.md)** MemoryLifetime DU — agent-initiated cleanup with history preservation (drafted / active / superseded / archived / retracted) — sibling to B-0919 MemoryBinding (Aaron 2026-05-28)
 - [ ] **[B-0921](backlog/P2/B-0921-integrate-or-remove-unreferenced-cayleydickson.md)** Integrate or remove unreferenced file src/Core/CayleyDickson.fs
 - [ ] **[B-0922](backlog/P2/B-0922-integrate-or-remove-unreferenced-kskauthorization.md)** Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
+- [ ] **[B-0924](backlog/P2/B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md)** Custom Atari 2600 emulator + Generate+Join over emulator scene (vs imitation-learning) + IScheduler DST bit-perfect-consensus via z-sets + hardware interrupts via B-0917 substrate + ARC3-AGI training surface (operator 2026-05-28)
 
 ## P3 — convenience / deferred
 
