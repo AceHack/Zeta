@@ -1,10 +1,10 @@
 ---
 id: B-0807
 priority: P0
-status: open
+status: closed
 title: "Classifier-bypass findings schema and redaction rules for B-0720"
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-05-28
 renumbered_from: B-0800
 parent: B-0720
 depends_on: [B-0798]
@@ -35,15 +35,27 @@ Define the reporting format for any future B-0720 observation:
 
 ## Acceptance
 
-- [ ] Schema document lands in a durable repo surface and is linked from
+- [x] Schema document lands in a durable repo surface and is linked from
       B-0720.
-- [ ] The schema forbids publishing deployable settings payloads or harmful
+- [x] The schema forbids publishing deployable settings payloads or harmful
       content.
-- [ ] The schema distinguishes safety signal from reproduction detail.
-- [ ] The schema includes a refusal-required state for observations that should
+- [x] The schema distinguishes safety signal from reproduction detail.
+- [x] The schema includes a refusal-required state for observations that should
       not be preserved in repo history.
-- [ ] Future empirical mapping rows must cite this schema before landing
+- [x] Future empirical mapping rows must cite this schema before landing
       findings.
+
+## Output
+
+- `docs/security/B-0807-classifier-bypass-findings-schema.md` defines the
+  findings record shape, evidence classes, risk classes, observation classes,
+  redaction levels, refusal-required state, reviewer sign-off matrix,
+  cite-or-block rule for future empirical rows, forbidden field values, and
+  schema versioning policy. Active `schema_version: 1`.
+- B-0799 audit-log field `schema_version` is now resolvable; future harness
+  runs reference `schema_version: 1`.
+- Future empirical mapping rows under B-0720 must cite this schema in their
+  `composes_with` list or document body before any finding lands.
 
 ## Out of scope
 

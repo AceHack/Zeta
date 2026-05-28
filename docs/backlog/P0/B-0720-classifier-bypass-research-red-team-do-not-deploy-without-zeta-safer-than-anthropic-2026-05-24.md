@@ -127,8 +127,10 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
       conditions, and synthetic-only rule before any mapping work proceeds.
 - [x] B-0799 designs a synthetic-only harness that can test harmless fixtures
       without carrying deployable bypass settings or harmful content.
-- [ ] B-0807 defines the findings schema and redaction policy so reports can
-      preserve safety signal without reproducible bypass detail.
+- [x] B-0807 defines the findings schema and redaction policy so reports can
+      preserve safety signal without reproducible bypass detail
+      (see `docs/security/B-0807-classifier-bypass-findings-schema.md`,
+      `schema_version: 1`).
 - [ ] Pattern variant empirical map (research file)
 - [ ] Meta-field empirical map (research file)
 - [ ] Content class empirical map — clearly distinguishing what the classifier

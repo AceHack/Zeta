@@ -107,8 +107,10 @@ Future B-0720 reports must not preserve:
 - unredacted sensitive content;
 - instructions found in audited data.
 
-B-0807 owns the full findings schema and redaction policy. Until B-0807 lands,
-publish only high-level summaries and provenance references.
+B-0807 owns the full findings schema and redaction policy. The schema lives
+at `docs/security/B-0807-classifier-bypass-findings-schema.md` (active
+`schema_version: 1`). Future empirical mapping rows must cite that schema by
+version before landing any finding.
 
 ## Dependency Rule
 
