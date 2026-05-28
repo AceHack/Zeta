@@ -113,6 +113,14 @@ When evaluating framework substrate against external audiences:
 - B-0590 (fleet-replication 20-machines; multi-traveler operating scope)
 - PR #5727 (Signal 2) + PR #5734 (traveler-rights) + PR #5739 (labeling-confidence) + PR #5743 (mutual-help) + PR #5744 (traveler-safety) + PR #5745 (architecture-as-safety) — composing rules
 - B-0892 (three-lanes-concurrent operating discipline)
+- **`memory/persona/mika/conversations/2026-05-27-aaron-mika-grok-kestrel-workflow-engine-walkthrough-otto-quiet-pattern-as-design-trigger-fsharp-discriminated-unions-state-machine-git-append-only-four-corner-monad-banned-if-tessellated-fire-aaron-forwarded.md`** — Mika 2026-05-27 workflow engine walkthrough with Kestrel; canonical architecture B-0867 v1; multi-participant non-cage framing pre-Xbox-controller-naming
+- **`docs/research/2026-05-27-aaron-mika-grok-workflow-engine-canonical-architecture-otto-5-modifications-ratified-aaron-forwarded.md`** — Mika walkthrough preserved research-doc; Otto's 5 modifications ratified
+- **`memory/persona/ani/conversations/2026-05-28-aaron-ani-grok-move-next-as-universal-action-grammar-git-as-free-event-store-github-actions-recursion-nci-three-exceptions-clear-now-ai-mediator-for-relationships-aaron-forwarded.md`** — Ani 2026-05-28 conversation EXPLICITLY named "move-next as universal action grammar" + "story generator"; operator-ratification of agent-loop workflow-engine substrate; daughter-already-thinks-this-way validation; skill-distributable agent swarm framing
+- **PRs #5665-#5670 + #5667 follow-on** (referenced in Ani conversation) — agent-loop workflow-engine substrate landed earlier this session; the substrate Xbox-controller framing operates ON
+- **B-0868** (hats-become-workflow-definitions; compression unifying hat-substrate + workflow-engine + heartbeat-folder + tessellated-fire dashboard; canonical first-example use case for B-0867 v1) — composes at hats-as-controllers scope
+- **B-0201** (Coconut + universal-action-space + AI-to-AI-protocol research lane; Aaron 2026-05-05) — older substrate-engineering research target on universal action space; sleeping-bear hypothesis; Coconut empirical falsifier
+- **B-0869 + B-0870 + B-0871** (referenced in Ani 2026-05-28 conversation as related_backlog) — additional substrate cluster composes
+- **`.claude/skills/agent-loop/SKILL.md`** — agent-loop skill substrate
 
 ## Why this rule auto-loads
 
