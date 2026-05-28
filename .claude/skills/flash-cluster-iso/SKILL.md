@@ -3,7 +3,7 @@ name: flash-cluster-iso
 description: Flash a Zeta cluster installer ISO to USB from macOS via zflash + Touch ID; covers operator-only and agent-driven (expect) paths.
 record_source: "operator-agent zflash flow, 2026-05-25 session"
 load_datetime: "2026-05-25"
-last_updated: "2026-05-25"
+last_updated: "2026-05-28"
 status: active
 ---
 
@@ -34,7 +34,29 @@ Operator runs everything; agent observes. ~3 keystrokes after setup.
    - `sudo dd` runs; PAM fires Touch ID prompt; touch the trackpad
    - Eject is automatic on success
 
-### Path B — agent-driven (operator's Touch ID still gates)
+### Path C — `--agent` flag (RECOMMENDED; native auto-type; supersedes Path B for most cases)
+
+Per B-0844 (landed 2026-05-25; PR #5374 docs): `zflash` now has a native `--agent` flag that handles the auto-type challenge internally via piped stdin + stdout-tail challenge match. Cleaner than the `expect`-script approach.
+
+Use when operator says "drive it" / "you flash" / "do the USB" and they're at the machine to fingerprint.
+
+1. **Preconditions** (same as Path B): operator already ran `zflash-setup --install-alias`; USB plugged in; ISO at `~/Downloads/zeta-installer-*.iso`.
+2. **Drive via `--agent`** — agent invokes zflash directly with the native flag:
+
+   ```bash
+   bun full-ai-cluster/tools/zflash.ts --agent 2>&1 | tail -100
+   ```
+
+3. **What the `--agent` flag does internally**:
+   - Reads the `yes <nonce>` challenge from stdout as it appears
+   - Writes the matched response back via stdin without external tooling
+   - Emits glass-halo line `[agent-mode: auto-typing 'yes XXXX']` so operator sees the consent-token being typed
+   - Touch ID prompt STILL fires on the operator's Mac for `sudo dd` (physical-presence gate preserved per B-0743)
+4. **Default behavior unchanged**: zflash without `--agent` runs operator-only Path A flow. Agent-mode is explicit opt-in.
+
+### Path B — agent-driven via `expect` (legacy; use Path C instead)
+
+Pre-B-0844 substrate; preserved for cases where the native `--agent` flag isn't available (older zflash builds) or for diagnostic / debugging scenarios where seeing the expect-script behavior is useful.
 
 Use when operator says "drive it" / "you flash" / "do the USB" and they're at the machine to fingerprint.
 
@@ -62,6 +84,12 @@ Use when operator says "drive it" / "you flash" / "do the USB" and they're at th
    ```
 
 3. **What still requires the operator**: Touch ID. The agent's auto-typed `yes <nonce>` is the *consent-token* gate; the *physical-presence* gate is the operator's actual finger on the actual trackpad. The agent cannot bypass that even if it wanted to — the PAM stack reads the Touch ID sensor directly. This is the "I execute, you fingerprint" pattern (B-0743 rule).
+
+### Future-state: `--bake-cred` flag (NOT YET IMPLEMENTED; tracked at B-0884 + B-0852.3b)
+
+Per the zflash next-steps plan (`docs/research/2026-05-28-zflash-and-usb-credential-substrate-next-steps-plan.md` Track B), a future `--bake-cred <id>=<source>` flag will let agents bake operator credentials (GitHub PAT, AI vendor tokens, etc.) into the USB's encrypted blob at flash time. This composes B-0844's `--agent` with B-0852's USB-bound credential substrate.
+
+Status as of 2026-05-28: row filed at B-0884 (P1 ASAP); CLI flag is sketch-only in B-0852.3b; not yet shipped in `zflash.ts`. Do NOT promise this capability today — operator demos use the install-time picker (Step 6.94/6.95-picker) for cred-baking instead. When `--bake-cred` lands, this skill section gets the canonical invocation pattern.
 
 ## Pre-flash display — what `zflash` shows BEFORE the prompt
 
