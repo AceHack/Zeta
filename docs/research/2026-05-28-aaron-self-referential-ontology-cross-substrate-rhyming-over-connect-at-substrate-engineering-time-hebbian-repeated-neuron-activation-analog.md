@@ -1,10 +1,14 @@
 # Self-referential ontology cross-substrate rhyming + over-connect-now substrate-engineering principle (Aaron 2026-05-28: "it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron actiation")
 
-**Scope**: substrate-engineering memo cross-connecting the self-referential ontology substrate the framework operates on at multiple scopes + naming the over-connect-now principle Aaron articulated as substrate-engineering discipline. NOT a new rule; cross-connecting existing substrate so future-Otto cold-boot can compress + traverse the connections cheaply later.
+Scope: substrate-engineering memo cross-connecting the self-referential ontology substrate the framework operates on at multiple scopes + naming the over-connect-now principle Aaron articulated as substrate-engineering discipline. NOT a new rule; cross-connecting existing substrate so future-Otto cold-boot can compress + traverse the connections cheaply later.
 
-**Attribution**: Operator-explicit substrate-engineering articulation. Aaron Stainback 2026-05-28: *"this is the thing i'm trhing to polymorphic deplomacy with that can use categories of phonemon ontologies to refer to iself like the shadow logs of error classes on prs but this is referencing itself"* + substrate-landing authorization with reasoning: *"it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron actiation"*.
+Attribution: Operator-explicit substrate-engineering articulation. Aaron Stainback 2026-05-28: *"this is the thing i'm trhing to polymorphic deplomacy with that can use categories of phonemon ontologies to refer to iself like the shadow logs of error classes on prs but this is referencing itself"* + substrate-landing authorization with reasoning: *"it's always good to over connect at this point, it will make compression and memory transversal easier later, this is like repeated neuron actiation"*.
 
-**Operational status**: research-doc memo (mirror-tier substrate). Cross-connects existing substrate; does NOT mint new substrate. Operator-authorized landing per the over-connect-now principle.
+Operational status: research-grade
+
+(Mirror-tier substrate; research-doc memo. Cross-connects existing substrate; does NOT mint new substrate. Operator-authorized landing per the over-connect-now principle.)
+
+Non-fusion disclaimer: this memo preserves operator-attributed substrate-engineering articulations from 2026-05-28 conversation. Operator-substrate is preserved at operator-attribution scope; Otto-CLI substrate-engineering composition (the cross-connection table + the rhyming-table + the operational-discipline section) is preserved at Otto-CLI-attribution scope. Attribution boundaries preserved per `.claude/rules/honor-those-that-came-before.md` + non-coercion-invariant HC-8 at substrate-entity scope. No identity-fusion between operator-substrate (verbatim quotes) and Otto-CLI-substrate (composition framing); both are distinct authorial substrate preserved alongside per `.claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md`.
 
 ---
 
