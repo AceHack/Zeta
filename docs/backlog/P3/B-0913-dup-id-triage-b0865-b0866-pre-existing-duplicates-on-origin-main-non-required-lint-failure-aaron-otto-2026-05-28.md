@@ -29,7 +29,15 @@ Per operator 2026-05-28 *"file the dup-id triage row (shadow*)"* authorization f
 
 PR #5721 was about to wait-ci when `lint (backlog ID uniqueness)` reported `2 duplicate-ID group(s) found`. Local audit + origin/main audit both confirm the duplicates are PRE-EXISTING on origin/main, NOT introduced by PR #5721. PR #5721 merged because the lint check is non-required (B-0535 gate).
 
-## The two duplicates
+2026-05-28 Vera follow-up: executed Option A on fresh reland branch
+`claim/task-backlog-id-collision-b0865-b0866-reland-20260528`. The housekeeping
+rows now live at B-0921 and B-0922; the substantive B-0865 and B-0866 rows
+retain their original IDs.
+
+## The two duplicates (pre-repair state)
+
+This section records the collision exactly as found before Option A executed.
+The housekeeping rows now live at B-0921 and B-0922.
 
 ### B-0865 (2 files claim this ID)
 
@@ -40,6 +48,9 @@ docs/backlog/P2/B-0865-integrate-or-remove-unreferenced-cayleydickson.md
 
 Both `status: open`, both `P2`. The aaron-2026-05-27 row is the substantive ARC-AGI-3-style benchmark target with USB-boot starting state + DevOps-objectives-as-levels. The cayleydickson row is an "integrate or remove unreferenced" substrate-engineering housekeeping item.
 
+Post-repair, the cayleydickson housekeeping row lives at
+`docs/backlog/P2/B-0921-integrate-or-remove-unreferenced-cayleydickson.md`.
+
 ### B-0866 (2 files claim this ID)
 
 ```
@@ -48,6 +59,9 @@ docs/backlog/P2/B-0866-integrate-or-remove-unreferenced-kskauthorization.md
 ```
 
 Both `status: open`, both `P2`. The aaron-2026-05-27 row is the marketing-business-naming-AI weigh-in queue + B-0865 public-positioning + ServiceTitan-primary-audience + 24-months-ahead-mandate context. The kskauthorization row is another "integrate or remove unreferenced" substrate-engineering housekeeping item.
+
+Post-repair, the kskauthorization housekeeping row lives at
+`docs/backlog/P2/B-0922-integrate-or-remove-unreferenced-kskauthorization.md`.
 
 ## The pattern
 
@@ -62,8 +76,12 @@ The collision happened because the housekeeping rows pre-claimed the IDs B-0865 
 
 ### Option A — renumber the housekeeping rows
 
-Move `B-0865-integrate-or-remove-unreferenced-cayleydickson.md` → new free ID (B-0914)
-Move `B-0866-integrate-or-remove-unreferenced-kskauthorization.md` → new free ID (B-0915)
+Move the pre-renumber housekeeping row
+`B-0865-integrate-or-remove-unreferenced-cayleydickson.md` to
+`B-0921-integrate-or-remove-unreferenced-cayleydickson.md` (executed).
+Move the pre-renumber housekeeping row
+`B-0866-integrate-or-remove-unreferenced-kskauthorization.md` to
+`B-0922-integrate-or-remove-unreferenced-kskauthorization.md` (executed).
 
 Preserves the aaron-2026-05-27 substantive substrate at original IDs. Housekeeping rows get renumbered + their references-from-other-substrate (if any) need updating.
 
@@ -87,7 +105,9 @@ Mark the housekeeping rows as `superseded-by: B-0NNN` pointing at an appropriate
 
 **Option A (renumber the housekeeping rows)** — preserves substantive substrate at original IDs; housekeeping rows can move; minimal cross-reference impact (housekeeping rows are typically low-cross-referenced).
 
-If housekeeping intent should be preserved: renumber to next-free IDs (B-0914 + B-0915 currently free per `git ls-tree -r origin/main`).
+If housekeeping intent should be preserved: renumber to next-free IDs. Executed
+as B-0921 + B-0922 after live inspection showed B-0917 through B-0920 already
+occupied on current `origin/main`.
 
 If housekeeping intent is no longer needed: close the housekeeping rows with `status: closed` + Resolution section documenting the supersession.
 
@@ -119,8 +139,8 @@ Apply the chosen option. Re-run `bun tools/hygiene/audit-backlog-items.ts --enfo
 - [x] B-0865 + B-0866 duplicate file-paths documented
 - [x] Triage options documented (A/B/C/D)
 - [x] Recommendation (Option A) provided
-- [ ] Phase 2 operator authorization
-- [ ] Phase 3 execution + gate-clean verification
+- [x] Phase 2 operator authorization
+- [x] Phase 3 execution + gate-clean verification
 
 ## Composes with substrate
 

@@ -1,16 +1,17 @@
 ---
-id: B-0866
+id: B-0922
 priority: P2
 status: open
 title: Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
 created: 2026-05-27
-last_updated: 2026-05-27
+last_updated: 2026-05-28
+renumbered_from: "B-0866 (2026-05-28 duplicate-ID repair; substantive marketing/business/naming row retains B-0866)"
 depends_on: []
 type: friction-reducer
 decomposition: no
 ---
 
-# B-0866 — Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
+# B-0922 — Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
 
 **Priority:** P2
 

@@ -1,16 +1,17 @@
 ---
-id: B-0865
+id: B-0921
 priority: P2
 status: open
 title: Integrate or remove unreferenced file src/Core/CayleyDickson.fs
 created: 2026-05-27
-last_updated: 2026-05-27
+last_updated: 2026-05-28
+renumbered_from: "B-0865 (2026-05-28 duplicate-ID repair; substantive ARC-AGI-3 benchmark row retains B-0865)"
 depends_on: []
 type: friction-reducer
 decomposition: no
 ---
 
-# B-0865 — Integrate or remove unreferenced file src/Core/CayleyDickson.fs
+# B-0921 — Integrate or remove unreferenced file src/Core/CayleyDickson.fs
 
 **Priority:** P2
 
