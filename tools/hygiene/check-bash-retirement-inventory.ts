@@ -75,6 +75,13 @@ const SHELL_FILE_EXTENSIONS: readonly string[] = [".sh", ".bash", ".zsh", ".ksh"
 export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
 export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS.map((extension) => `*${extension}`);
 const SHELL_INTERPRETERS = new Set(["bash", "dash", "sh", "zsh", "ksh"]);
+const ENV_OPTIONS_WITH_SEPARATE_OPERAND = new Set(["-a", "-P", "-u", "--argv0", "--chdir", "--path", "--unset"]);
+const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = [
+  "--argv0=",
+  "--chdir=",
+  "--path=",
+  "--unset=",
+];
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
@@ -250,6 +257,11 @@ function parseEnvCommand(args: readonly string[]): string | undefined {
       return splitShebangFields(splitArg)[0];
     }
     if (arg === "--") return args[index + 1];
+    if (ENV_OPTIONS_WITH_SEPARATE_OPERAND.has(arg)) {
+      index += 1;
+      continue;
+    }
+    if (ENV_OPTIONS_WITH_INLINE_OPERAND.some((prefix) => arg.startsWith(prefix))) continue;
     if (arg.startsWith("-")) continue;
     if (/^[A-Za-z_][A-Za-z0-9_]*=/.test(arg)) continue;
     return arg;

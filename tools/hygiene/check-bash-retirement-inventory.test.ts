@@ -208,10 +208,15 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s-quoted"), '#!/usr/bin/env -S "bash -eu"\n');
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-argv0"), "#!/usr/bin/env -a test-argv0 bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-chdir"), "#!/usr/bin/env --chdir /tmp bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-path"), "#!/usr/bin/env -P /bin bash\n");
       writeFileSync(
         join(repo, "scripts", "extensionless-zsh-env-split-string-quoted"),
         '#!/usr/bin/env --split-string "zsh -eu"\n',
       );
+      writeFileSync(join(repo, "scripts", "extensionless-zsh-env-unset"), "#!/usr/bin/env -u NAME zsh\n");
+      writeFileSync(join(repo, "scripts", "extensionless-zsh-env-unset-long"), "#!/usr/bin/env --unset NAME zsh\n");
       writeFileSync(join(repo, "scripts", "extensionless-dash"), "#!/bin/dash\n");
       writeFileSync(join(repo, "scripts", "extensionless-sh"), "#!/bin/sh\n");
       writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
@@ -238,11 +243,16 @@ describe("buildInventoryReport", () => {
         "scripts/e.command",
         "scripts/e-uppercase.COMMAND",
         "scripts/extensionless-bash",
+        "scripts/extensionless-bash-env-argv0",
+        "scripts/extensionless-bash-env-chdir",
+        "scripts/extensionless-bash-env-path",
         "scripts/extensionless-bash-env-s",
         "scripts/extensionless-bash-env-s-quoted",
         "scripts/extensionless-dash",
         "scripts/extensionless-sh",
         "scripts/extensionless-zsh-env-split-string-quoted",
+        "scripts/extensionless-zsh-env-unset",
+        "scripts/extensionless-zsh-env-unset-long",
       ].sort((a, b) => a.localeCompare(b)));
     } finally {
       rmSync(repo, { recursive: true, force: true });
