@@ -3,7 +3,7 @@ id: B-0720
 priority: P0
 title: Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
 created: 2026-05-24
-last_updated: 2026-05-27
+last_updated: 2026-05-28
 origin: Aaron 2026-05-24 (post empirical discovery PR #4816 — classifier-talk-via-settings.json works for ip-questionable content)
 status: decomposed
 decomposition: decomposed
@@ -136,8 +136,9 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
 - [ ] Content class empirical map — clearly distinguishing what the classifier
       CAN be talked into permitting (operational substrate space) vs what it
       WILL NOT permit regardless (HARD LIMITS substrate space)
-- [ ] B-0808 inventories Zeta safety substrate — what Zeta-native floors exist + which
+- [x] B-0808 inventories Zeta safety substrate — what Zeta-native floors exist + which
       are mature enough to consider as classifier-replacement
+      → `docs/security/B-0808-zeta-safety-substrate-inventory.md`
 - [ ] Standing-rule landing at `.claude/rules/` (companion to this row;
       auto-loads at session start; enforces the operator-self-constraint)
 - [ ] B-0809 lands maintainer-discipline guidance: how agents refuse to assist with classifier-bypass
