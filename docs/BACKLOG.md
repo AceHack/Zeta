@@ -998,5 +998,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0903](backlog/P3/B-0903-shadow-star-as-most-valuable-training-data-extraction-tool-corpus-to-fine-tuning-dataset-aaron-otto-2026-05-28.md)** shadow*-as-most-valuable-training-data extraction tool — corpus to fine-tuning dataset (composes with B-0875 + B-0877)
 - [ ] **[B-0904](backlog/P3/B-0904-github-as-free-accelerator-of-bulk-energy-into-information-compression-substrate-recognition-aaron-2026-05-28.md)** GitHub as free accelerator of bulk-energy into information-compression — substrate-recognition + measurement
 - [ ] **[B-0905](backlog/P3/B-0905-landauer-limit-physics-economics-model-agent-factory-as-information-engine-with-bit-erasure-cost-floor-options-pricing-on-compression-actions-aaron-2026-05-28.md)** Landauer-limit physics-economics model — agent-factory as information-engine with bit-erasure cost floor + options-pricing on compression actions
+- [ ] **[B-0906](backlog/P3/B-0906-encryption-thermal-cost-layer-above-landauer-floor-two-axis-substrate-classification-aaron-otto-2026-05-28.md)** Encryption thermal-cost layer above Landauer floor — two-axis substrate classification (crypto-needed × decryption-needed) + irreversibility-within-crypto-when-decryption-isn't-needed
 
 <!-- END AUTO-GENERATED -->
