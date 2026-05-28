@@ -207,6 +207,11 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "e-uppercase.COMMAND"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-s-assignment"), "#!/usr/bin/env -S NAME=value bash -eu\n");
+      writeFileSync(
+        join(repo, "scripts", "extensionless-bash-env-s-quoted-assignment"),
+        "#!/usr/bin/env -S 'NAME=two words' bash -eu\n",
+      );
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s-quoted"), '#!/usr/bin/env -S "bash -eu"\n');
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-argv0"), "#!/usr/bin/env -a test-argv0 bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-chdir"), "#!/usr/bin/env --chdir /tmp bash\n");
@@ -247,6 +252,8 @@ describe("buildInventoryReport", () => {
         "scripts/extensionless-bash-env-chdir",
         "scripts/extensionless-bash-env-path",
         "scripts/extensionless-bash-env-s",
+        "scripts/extensionless-bash-env-s-assignment",
+        "scripts/extensionless-bash-env-s-quoted-assignment",
         "scripts/extensionless-bash-env-s-quoted",
         "scripts/extensionless-dash",
         "scripts/extensionless-sh",

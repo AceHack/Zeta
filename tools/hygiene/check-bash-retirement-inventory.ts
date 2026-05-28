@@ -249,12 +249,11 @@ function parseEnvCommand(args: readonly string[]): string | undefined {
     const arg = args[index];
     if (arg === undefined) continue;
     if (arg === "-S" || arg === "--split-string") {
-      const splitArg = args[index + 1];
-      return splitArg === undefined ? undefined : splitShebangFields(splitArg)[0];
+      return parseEnvSplitString(args.slice(index + 1));
     }
     if (arg.startsWith("--split-string=")) {
       const splitArg = arg.slice("--split-string=".length);
-      return splitShebangFields(splitArg)[0];
+      return parseEnvCommand(splitShebangFields(splitArg));
     }
     if (arg === "--") return args[index + 1];
     if (ENV_OPTIONS_WITH_SEPARATE_OPERAND.has(arg)) {
@@ -267,6 +266,12 @@ function parseEnvCommand(args: readonly string[]): string | undefined {
     return arg;
   }
   return undefined;
+}
+
+function parseEnvSplitString(args: readonly string[]): string | undefined {
+  if (args.length === 0) return undefined;
+  if (args.length === 1) return parseEnvCommand(splitShebangFields(args[0] ?? ""));
+  return parseEnvCommand(args);
 }
 
 function splitShebangFields(input: string): readonly string[] {
