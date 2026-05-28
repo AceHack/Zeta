@@ -1,6 +1,6 @@
 ---
 id: B-0874
-priority: P2
+priority: P1
 status: open
 title: GitHub Actions recursion as infinite runtime platform — no-PR swarm-mode for agent-loop substrate (Microsoft-subsidizes-OSS hack)
 effort: L
