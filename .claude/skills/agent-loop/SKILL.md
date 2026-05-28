@@ -143,6 +143,10 @@ The agent-loop skill ships as v1 MVP per B-0867.5. The 2026-05-28 cascade extend
 - **B-0886.1** + **B-0886.2** — USB-track parallel-work-budget + two-priority-axes correction (operator-personal USB axis is FIRST on operator's day-to-day priority)
 - **B-0889** — Symbiotic cross-track self-healing (cloud KVMs control local USB-boot; local restarts GitHub workflows; cross-node + cross-track BIOS/UEFI updates over remote/cloud KVMs)
 - **B-0892** — Three-lanes-concurrent operating discipline (encryption + zflash + state-machine-substrate all advancing until each lane drains)
+- **B-0892.1** — Interface-for-async-scatterbrains operator-experience design property (multi-thread + drop+resume + context-switch native UX shape every substrate decision serves)
+- **B-0867.22** — Playbook directory convention (personal in `memory/persona/<name>/playbooks/`; system in `docs/playbooks/`); agents author playbooks too; index landed at [`docs/playbooks/README.md`](../../../docs/playbooks/README.md)
+- **B-0883.16** — Glass-halo-open-by-default; encryption is EARNED via Agora V6 budget; menu-generator (when it ships) should NOT default to encryption-everything; encrypted scope is the deliberate exception
+- **B-0883.17** — Plaintext-readable ciphertext format research (base64-CBOR envelope recommended for v1; git-friendly diff/review; addresses B-0883.16 transparency property)
 
 ## Composes with rules
 
