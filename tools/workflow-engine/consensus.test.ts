@@ -208,10 +208,10 @@ describe("B-0914.3 n-parallel + consensus substrate", () => {
     const b: Hypothesis = { mechanism: "ER-stress", evidence: 0.9 };
     const c: Hypothesis = { mechanism: "kinase", evidence: 0.7 };
     // Group by mechanism only (ignore evidence)
-    const result = await runConsensus({
+    const result = await runConsensus<Hypothesis>({
       analyzers: [constantAnalyzer(a), constantAnalyzer(b), constantAnalyzer(c)],
       mechanism: { kind: "majority" },
-      verdictKey: (h) => h.mechanism,
+      verdictKey: (h: Hypothesis) => h.mechanism,
     });
     expect(result.ok).toBe(true);
     if (!result.ok) return;

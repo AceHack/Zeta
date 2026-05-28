@@ -58,8 +58,11 @@ export type ConsensusResult<T> =
 
 /**
  * Agreement metrics — captures the consensus distribution for
- * substrate-honest dashboards.
+ * substrate-honest dashboards. Type parameter `T` is reserved for
+ * future extensions that surface verdict-typed substrate (e.g., topVerdict
+ * field) without breaking the public-API shape.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface AgreementMetrics<T> {
   readonly totalAnalyzers: number;
   readonly successfulAnalyzers: number;
@@ -67,6 +70,7 @@ export interface AgreementMetrics<T> {
   readonly verdictCounts: ReadonlyMap<string, number>;  // keyed by verdict-id
   readonly winnerCount: number;
   readonly winnerFraction: number;  // winnerCount / successfulAnalyzers
+  readonly _typeHint?: T;  // type-anchor; never set at runtime
 }
 
 /**

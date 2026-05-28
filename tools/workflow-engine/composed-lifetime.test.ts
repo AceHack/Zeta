@@ -221,7 +221,8 @@ describe("composed-lifetime double-dispatch substrate", () => {
   it("type-level: ComposedKey is template literal type of A['kind'] : B['kind']", () => {
     const _check1: ComposedKey<WorkflowLifetime, ReviewLifetime> = "draft:pending";
     const _check2: ComposedKey<WorkflowLifetime, ReviewLifetime> = "approved:merged";
-    // Compile-only check; no runtime expectation
-    expect(true).toBe(true);
+    // Compile-only check; reference the bindings to satisfy noUnusedLocals
+    expect(_check1).toBe("draft:pending");
+    expect(_check2).toBe("approved:merged");
   });
 });

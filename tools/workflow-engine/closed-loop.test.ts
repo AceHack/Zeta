@@ -12,6 +12,7 @@ import {
   type CiVerdict,
   type Hypothesis,
   type LoopCallbacks,
+  type LoopFeedback,
 } from "./closed-loop";
 
 interface SubstrateT extends Record<string, unknown> {
@@ -235,7 +236,7 @@ describe("B-0914.2 closed-loop orchestrator", () => {
   });
 
   it("LoopFeedback exhaustive switch (compile-time check)", () => {
-    type Feedback = NonNullable<Awaited<ReturnType<typeof runCycle<SubstrateT>>>> extends { ok: false; feedback: infer F } ? F : never;
+    type Feedback = LoopFeedback;
     const assertNever = (x: never): never => { throw new Error(`unhandled LoopFeedback: ${JSON.stringify(x)}`); };
     const acknowledge = (f: Feedback): string => {
       switch (f.kind) {
