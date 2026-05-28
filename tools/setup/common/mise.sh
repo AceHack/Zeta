@@ -21,7 +21,19 @@ fi
 mise trust "$REPO_ROOT/.mise.toml" >/dev/null
 
 echo "↓ mise install (reading $REPO_ROOT/.mise.toml)..."
-(cd "$REPO_ROOT" && mise install)
+if [ "${GITHUB_ACTIONS:-}" = "true" ] &&
+   [ -n "${GITHUB_TOKEN:-}" ] &&
+   [ -z "${MISE_GITHUB_TOKEN:-}" ] &&
+   [ -z "${GITHUB_API_TOKEN:-}" ]; then
+  # GitHub Actions' default GITHUB_TOKEN is scoped to this repository.
+  # mise/aqua may reuse it for release metadata in other repositories
+  # (uv, shellcheck, actionlint), where GitHub returns 404. Prefer a
+  # dedicated mise token if supplied; otherwise fall back to anonymous
+  # public release lookups rather than poisoning them with the repo token.
+  (cd "$REPO_ROOT" && env -u GITHUB_TOKEN mise install)
+else
+  (cd "$REPO_ROOT" && mise install)
+fi
 echo "✓ mise runtimes installed"
 
 # Put mise shims on PATH for the remainder of this install.sh run
