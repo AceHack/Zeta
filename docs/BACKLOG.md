@@ -1007,5 +1007,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0910](backlog/P3/B-0910-multi-chain-csam-substrate-irreversibility-historical-pattern-n6-empirical-anchors-with-political-economy-and-state-capture-vector-framing-aaron-otto-2026-05-28.md)** Multi-chain CSAM substrate-irreversibility historical pattern — N=6+ web-verified empirical anchors + political-economy + state-capture-vector framing
 - [ ] **[B-0911](backlog/P3/B-0911-risk-distribution-asymmetry-pricing-extension-to-b0908-with-state-capture-multi-layer-attack-timeline-pricing-aaron-otto-2026-05-28.md)** Risk-distribution-asymmetry pricing extension to B-0908 + state-capture multi-layer-attack-timeline pricing dimension
 - [ ] **[B-0912](backlog/P3/B-0912-bridge-attention-risk-pricing-arc-with-aurora-immune-veridicality-detector-pouwcc-maji-substrate-aaron-otto-2026-05-28.md)** Bridge today's B-0908-B-0911 attention-risk-pricing arc with pre-existing Aurora immune-system + Veridicality-detector + PoUW-CC + Maji + Veridicality.fs substrate
+- [ ] **[B-0913](backlog/P3/B-0913-dup-id-triage-b0865-b0866-pre-existing-duplicates-on-origin-main-non-required-lint-failure-aaron-otto-2026-05-28.md)** Dup-ID triage — B-0865 + B-0866 pre-existing duplicates on origin/main (non-required lint failure but real substrate-engineering item)
 
 <!-- END AUTO-GENERATED -->
