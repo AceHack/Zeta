@@ -258,6 +258,17 @@ describe("renderReport", () => {
     expect(rendered).not.toContain("## Unexpected non-Lean shell files");
   });
 
+  test("renders out-of-order allowlist entries as allowlist integrity errors", () => {
+    const [first, second, rest] = firstTwoExpectedRetained();
+    const rendered = renderReport(buildInventoryReport(EXPECTED_RETAINED_SHELL, [second, first, ...rest]));
+
+    expect(rendered).toContain("## Retained shell allowlist integrity errors");
+    expect(rendered).toContain("unique, sorted, fully categorized");
+    expect(rendered).toContain("### Out-of-order entries");
+    expect(rendered).toContain(`- index 1: ${second} > ${first}`);
+    expect(rendered).not.toContain("## Unexpected non-Lean shell files");
+  });
+
   test("renders stale category map entries as allowlist integrity errors", () => {
     const [stale, rest] = splitExpectedRetained();
     const rendered = renderReport(buildInventoryReport(rest, rest));
