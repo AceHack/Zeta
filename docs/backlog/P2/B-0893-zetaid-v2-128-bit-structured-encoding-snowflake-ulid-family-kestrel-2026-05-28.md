@@ -1,6 +1,7 @@
 ---
-id: B-0892
-renumbered_from: B-0871
+id: B-0893
+renumbered_from: B-0892
+renumbered_from_original: B-0871
 priority: P2
 status: open
 title: ZetaID v2 — 128-bit structured encoding (Snowflake/ULID family with timestamp + trajectory + persona + lifecycle-stage + random)

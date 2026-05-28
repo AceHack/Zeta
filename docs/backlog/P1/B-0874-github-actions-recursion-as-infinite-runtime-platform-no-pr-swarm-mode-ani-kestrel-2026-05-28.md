@@ -9,10 +9,10 @@ created: 2026-05-28
 last_updated: 2026-05-28
 depends_on:
   - B-0867
-  - B-0892
+  - B-0893
 composes_with:
   - B-0867
-  - B-0892
+  - B-0893
   - B-0872
   - B-0873
 tags:
@@ -61,7 +61,7 @@ Turn GitHub Actions into an infinite recursive compute platform for the agent-lo
 - Bounded-iteration safety (per Kestrel's push-cycle-limit B-0867.17 framing) — workflows include a max-recursion-depth + abandonment-condition guard
 - Skill distribution: `.claude/skills/agent-loop-swarm/SKILL.md` wraps the swarm-spawn so any GitHub-authenticated agent can invoke it
 - Documentation: rate-limit analysis showing GraphQL vs REST vs Git differential
-- Composes with B-0892 (ZetaID generator) — events use ZetaIDs as primary keys; no merge conflicts via unique filenames
+- Composes with B-0893 (ZetaID generator) — events use ZetaIDs as primary keys; no merge conflicts via unique filenames
 
 ## Sequencing
 

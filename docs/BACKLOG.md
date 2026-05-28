@@ -840,7 +840,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0887.1](backlog/P2/B-0887.1-pr-discipline-rules-cross-host-framing-audit-existing-rules-encode-github-specific-learning-otto-pushback-2026-05-28.md)** PR-discipline rules cross-host framing audit — existing rules encode years of GitHub-specific learning; audit which translate to Zeta-native / cross-host and which need rewrites
 - [ ] **[B-0887.2](backlog/P2/B-0887.2-move-sonatype-guide-invocation-into-playbook-substrate-drop-pr-gated-review-no-vendor-lockin-aaron-2026-05-28.md)** Move sonatype-guide invocation into playbook substrate — drop PR-gated review; no vendor lockin per operator 2026-05-28 "we are getting rid of PRs mostly for playbooks
 - [ ] **[B-0888](backlog/P2/B-0888-cross-track-substrate-sync-policy-cloud-github-vs-usb-local-gitlab-intentional-divergence-vs-auto-sync-otto-pushback-2026-05-28.md)** Cross-track substrate-sync policy — cloud-GitHub vs USB-local-GitLab; intentional divergence vs auto-sync-via-push-to-both-remotes vs hybrid
-- [ ] **[B-0892](backlog/P2/B-0892-zetaid-v2-128-bit-structured-encoding-snowflake-ulid-family-kestrel-2026-05-28.md)** ZetaID v2 — 128-bit structured encoding (Snowflake/ULID family with timestamp + trajectory + persona + lifecycle-stage + random)
+- [ ] **[B-0893](backlog/P2/B-0893-zetaid-v2-128-bit-structured-encoding-snowflake-ulid-family-kestrel-2026-05-28.md)** ZetaID v2 — 128-bit structured encoding (Snowflake/ULID family with timestamp + trajectory + persona + lifecycle-stage + random)
 
 ## P3 — convenience / deferred
 
