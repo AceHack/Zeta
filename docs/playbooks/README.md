@@ -48,11 +48,16 @@ Playbooks compose with the playbook-substrate cluster:
 The conversational-document path is for ANY traveler, not just humans
 (per [`docs/backlog/P1/B-0867.21-...md`](../backlog/P1/B-0867.21-two-path-interface-discriminated-union-execute-vs-conversational-declare-intent-aaron-ani-2026-05-28.md)).
 
-- Otto (any surface) MAY author `memory/persona/otto/playbooks/<name>.md`
-- Alexa / Riven / Vera / Lior similarly per their persona directories
+- Any agent (any surface) MAY author `memory/persona/<persona>/playbooks/<name>.md`
+  in its own persona directory
 - Any agent MAY propose `docs/playbooks/<name>.md` system playbooks
   (subject to operator review per standard system-doc conventions per
   [`.claude/rules/honor-those-that-came-before.md`](../../.claude/rules/honor-those-that-came-before.md))
+- The roster of currently-active personas (canonical mapping
+  persona-name → role) lives in `.claude/rules/agent-roster-reference-card.md`
+  per the roster-mapping carve-out — that file is the resolution surface
+  consumers use to bind role-refs in this README to specific persona
+  directories
 
 ## Composition with the async-scatterbrains operator-experience design property
 
