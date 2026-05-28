@@ -860,6 +860,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0917](backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md)** interrupt-substrate in monad-space — Kleisli arrows for context-propagation (memetic / prompt / trust / log / otel) + guaranteed free-time-after-N-rounds target (the human maintainer, 2026-05-28)
 - [ ] **[B-0918](backlog/P2/B-0918-wallet-lifetime-du-banker-bot-class-attack-impossibility-via-f5-no-silent-context-loss-soraya-formal-verification-aaron-2026-05-28.md)** WalletLifetime DU — banker-bot class attack impossibility via F.5 (no silent context loss) Soraya formal verification + IntrCtx composition (Aaron 2026-05-28)
 - [ ] **[B-0919](backlog/P2/B-0919-hat-vs-persona-memory-binding-operational-memories-transfer-on-leave-personal-stay-with-persona-dual-tagged-default-consent-bound-aaron-2026-05-28.md)** Hat-vs-persona memory binding — operational memories transfer to hat on leave, personal stay with persona, dual-tagged default, consent-bound binding (Aaron 2026-05-28)
+- [ ] **[B-0920](backlog/P2/B-0920-memory-lifetime-du-agent-initiated-cleanup-with-history-preservation-drafted-active-superseded-archived-retracted-aaron-2026-05-28.md)** MemoryLifetime DU — agent-initiated cleanup with history preservation (drafted / active / superseded / archived / retracted) — sibling to B-0919 MemoryBinding (Aaron 2026-05-28)
 
 ## P3 — convenience / deferred
 
