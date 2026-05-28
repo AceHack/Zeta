@@ -205,22 +205,25 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "extensionless-dash"), "#!/bin/dash\n");
       writeFileSync(join(repo, "scripts", "extensionless-sh"), "#!/bin/sh\n");
       writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
+      writeFileSync(join(repo, "scripts", "dotted-shell-entry.env"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "dotted-shell-shebang.txt"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "tools", "lean4", "vendor.sh"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "README.md"), "not shell\n");
       runGit(["add", "."], repo);
+      runGit(["update-index", "--chmod=+x", "scripts/dotted-shell-entry.env"], repo);
 
       expect(trackedNonLeanShellFilesFromGit(repo)).toEqual([
         "scripts/a.sh",
         "scripts/b.bash",
         "scripts/c.zsh",
         "scripts/d.ksh",
+        "scripts/dotted-shell-entry.env",
         "scripts/e.command",
         "scripts/extensionless-bash",
         "scripts/extensionless-bash-env-s",
         "scripts/extensionless-dash",
         "scripts/extensionless-sh",
-      ]);
+      ].sort((a, b) => a.localeCompare(b)));
     } finally {
       rmSync(repo, { recursive: true, force: true });
     }

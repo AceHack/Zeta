@@ -30,6 +30,11 @@ interface InventoryDrift {
   readonly missingRetained: readonly string[];
 }
 
+interface TrackedGitFile {
+  readonly path: string;
+  readonly executable: boolean;
+}
+
 interface AllowlistOrderViolation {
   readonly index: number;
   readonly previous: string;
@@ -172,21 +177,41 @@ function runGit(args: readonly string[], cwd?: string): string {
 
 export function trackedNonLeanShellFilesFromGit(cwd?: string): readonly string[] {
   const repoRoot = runGit(["rev-parse", "--show-toplevel"], cwd).trim();
-  const raw = runGit(["ls-files", "-z"], repoRoot);
-  return raw
-    .split("\0")
-    .filter((file): file is string => file.length > 0)
-    .filter((file) => existsSync(join(repoRoot, file)))
-    .filter((file) => !file.startsWith("tools/lean4/"))
-    .filter((file) => isTrackedShellFamilyFile(repoRoot, file))
+  return trackedGitFiles(repoRoot)
+    .filter(({ path }) => existsSync(join(repoRoot, path)))
+    .filter(({ path }) => !path.startsWith("tools/lean4/"))
+    .filter(({ path, executable }) => isTrackedShellFamilyFile(repoRoot, path, executable))
+    .map(({ path }) => path)
     .sort((a, b) => a.localeCompare(b));
 }
 
 export const trackedNonLeanBashFilesFromGit = trackedNonLeanShellFilesFromGit;
 
-function isTrackedShellFamilyFile(repoRoot: string, file: string): boolean {
+function trackedGitFiles(repoRoot: string): readonly TrackedGitFile[] {
+  const raw = runGit(["ls-files", "-s", "-z"], repoRoot);
+  return raw
+    .split("\0")
+    .filter((entry) => entry.length > 0)
+    .map(parseTrackedGitFile)
+    .filter((entry): entry is TrackedGitFile => entry !== undefined);
+}
+
+function parseTrackedGitFile(entry: string): TrackedGitFile | undefined {
+  const pathStart = entry.indexOf("\t");
+  if (pathStart === -1) return undefined;
+
+  const [mode] = entry.slice(0, pathStart).split(/\s+/, 1);
+  if (mode === undefined) return undefined;
+
+  return {
+    path: entry.slice(pathStart + 1),
+    executable: mode === "100755",
+  };
+}
+
+function isTrackedShellFamilyFile(repoRoot: string, file: string, executable: boolean): boolean {
   if (SHELL_FILE_EXTENSIONS.some((extension) => file.endsWith(extension))) return true;
-  if (basename(file).includes(".")) return false;
+  if (basename(file).includes(".") && !executable) return false;
 
   const firstLine = readFirstLine(join(repoRoot, file));
   return SHELL_FAMILY_SHEBANG_RE.test(firstLine);

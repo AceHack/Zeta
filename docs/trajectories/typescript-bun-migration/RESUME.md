@@ -53,7 +53,10 @@ The expected retained surface is the explicit repo-wide allowlist: setup and
 bootstrap scripts, host-service wrappers, NixOS installer scripts,
 dev-cluster wrappers, launchd-bootstrap, and the Kiro loop wrapper. Any new
 non-Lean shell-family file (`.sh`, `.bash`, `.zsh`, `.ksh`, or `.command`)
-outside the allowlist is bash-retirement drift.
+outside the allowlist is bash-retirement drift. Executable dotted-name files
+with shell-family shebangs are also entrypoints and are classified as drift;
+non-executable dotted documentation fixtures with shell-looking first lines stay
+outside the retained-shell inventory.
 
 ### Bucket A — Should stay Shell (21 files)
 
