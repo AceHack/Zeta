@@ -50,6 +50,7 @@ import {
   type ComposedKey,
   type ComposedLifetimeContext,
   type LifetimeState,
+  type TransitionFeedback,
   type TransitionResult,
 } from "./composed-lifetime";
 
@@ -63,6 +64,7 @@ export {
   type ComposedKey,
   type ComposedLifetimeContext,
   type LifetimeState,
+  type TransitionFeedback,
   type TransitionResult,
 };
 
@@ -78,6 +80,26 @@ export {
  * world holds a registry of composed-lifetime matrices keyed by
  * lifetime-pair name. Caller registers matrices when introducing new
  * lifetime pairs; dispatch lookups go through the world's registry.
+ *
+ * Type-safety scope-disclosure (substrate-honest): `registry` stores
+ * matrices erased to `ReadonlyMap<string, unknown>` keyed by pair-name
+ * string. `lookupLifetimePair<A, B, T>` + `dispatchInWorld<A, B, T>`
+ * cast at the lookup boundary using the generic arguments the caller
+ * supplies — TypeScript accepts the cast regardless of what the
+ * registered matrix actually holds. This means a caller can register
+ * one verdict type under `"pair-a"` and later look it up with a
+ * different `T` without a compile error; the runtime shape will not
+ * match the type the caller expects.
+ *
+ * Substrate-engineering target (not PoC scope): a typed-token API
+ * (`PairToken<A, B, T>` carrying phantom-type witnesses; `definePair`
+ * + `registerPair` + `lookupPair` taking tokens; `dispatchByToken`)
+ * would preserve types end-to-end. The existing string-keyed surface
+ * stays as escape-hatch for substrate-engineering work that needs
+ * the string-key shape (e.g., dynamic registration from config /
+ * external substrate). Production callers should reach for the typed
+ * substrate when it lands; the string-keyed surface earns its keep
+ * during PoC + as an explicit-cast escape-hatch only.
  */
 export interface World {
   readonly registry: ReadonlyMap<string, ReadonlyMap<string, unknown>>;
@@ -246,6 +268,33 @@ export function predicateMatrix<
 }
 
 /**
+ * World-level dispatch feedback — extends base TransitionFeedback with
+ * the unregistered-pair failure mode unique to world-scope dispatch.
+ *
+ * Per asymmetric-authorship: substrate-entity (the world) authors the
+ * complete TFeedback channel its callers must handle. Exporting this
+ * union lets downstream consumers do exhaustive `switch` on the full
+ * world-dispatch feedback shape instead of ad-hoc narrowing on an
+ * inline return-type extension. Composes with base TransitionFeedback
+ * (per composed-lifetime.ts) which covers the lower-level
+ * undefined-transition / invalid-state-A / invalid-state-B classes.
+ */
+export type WorldTransitionFeedback =
+  | TransitionFeedback
+  | { kind: "UnregisteredPair"; pairName: string };
+
+/**
+ * World-level dispatch result-shape per monad-propagation rule.
+ *
+ * Wraps the verdict-or-feedback discriminated union so callers can
+ * pattern-match exhaustively on a single named type instead of
+ * stitching together base TransitionResult + the world-extension.
+ */
+export type WorldTransitionResult<T> =
+  | { ok: true; verdict: T; fromKey: string }
+  | { ok: false; feedback: WorldTransitionFeedback };
+
+/**
  * World-level dispatch: look up the matrix by pair name + dispatch
  * the composed transition.
  *
@@ -262,7 +311,7 @@ export function dispatchInWorld<
   pairName: string,
   a: A,
   b: B,
-): TransitionResult<T> | { ok: false; feedback: { kind: "UnregisteredPair"; pairName: string } } {
+): WorldTransitionResult<T> {
   const matrix = lookupLifetimePair<A, B, T>(world, pairName);
   if (matrix === undefined) {
     return { ok: false, feedback: { kind: "UnregisteredPair", pairName } };

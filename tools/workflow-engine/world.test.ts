@@ -16,6 +16,9 @@ import {
   type ComposedKey,
   type LifetimeState,
   type StandardVerdict,
+  type World,
+  type WorldTransitionFeedback,
+  type WorldTransitionResult,
 } from "./world";
 
 interface WorkflowLifetime extends LifetimeState {
@@ -253,5 +256,52 @@ describe("world substrate + reusable lifetime composition helpers", () => {
     expect(world.registry.size).toBe(2);
     expect(world.registry.has("workflow-review")).toBe(true);
     expect(world.registry.has("workflow-encryption")).toBe(true);
+  });
+
+  it("registerLifetimePair preserves subclass fields under structural typing", () => {
+    // Regression test for spread-replace pattern: returning bare
+    // { registry: newRegistry } would silently drop subclass fields.
+    // Generic-over-W signature + spread preserves them.
+    interface SpecializedWorld extends World {
+      readonly tag: "specialized";
+      readonly contextId: string;
+    }
+    const specialized: SpecializedWorld = {
+      ...EMPTY_WORLD,
+      tag: "specialized",
+      contextId: "ctx-1",
+    };
+    const matrix = defaultAdvanceMatrix(workflowUniverse, reviewUniverse);
+    const after = registerLifetimePair(specialized, "pair", matrix);
+    // Registry updated
+    expect(after.registry.size).toBe(1);
+    // Subclass fields survive (compile-time: TS allows .tag + .contextId
+    // access because return type is SpecializedWorld, not bare World)
+    expect(after.tag).toBe("specialized");
+    expect(after.contextId).toBe("ctx-1");
+  });
+
+  it("dispatchInWorld returns WorldTransitionResult exhaustively switchable", () => {
+    // Regression test for Thread 7: exported feedback union lets
+    // callers switch exhaustively on the complete world-dispatch
+    // failure modes (TransitionFeedback variants + UnregisteredPair).
+    const result: WorldTransitionResult<StandardVerdict> = dispatchInWorld(
+      EMPTY_WORLD,
+      "nonexistent-pair",
+      { kind: "draft" } as WorkflowLifetime,
+      { kind: "pending" } as ReviewLifetime,
+    );
+    expect(result.ok).toBe(false);
+    if (result.ok) throw new Error("expected ok=false");
+    // Exhaustive switch over WorldTransitionFeedback variants
+    const summarize = (fb: WorldTransitionFeedback): string => {
+      switch (fb.kind) {
+        case "UnregisteredPair": return `unregistered:${fb.pairName}`;
+        case "UndefinedComposedTransition": return `undefined-composed:${fb.composedKey}`;
+        case "InvalidStateA": return `invalid-a:${fb.reason}`;
+        case "InvalidStateB": return `invalid-b:${fb.reason}`;
+      }
+    };
+    expect(summarize(result.feedback)).toBe("unregistered:nonexistent-pair");
   });
 });
