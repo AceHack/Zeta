@@ -233,6 +233,7 @@ function attachPolicyDecisionEvidence(effects: CommandEffects, decision: PolicyD
 
   return {
     supervisorSignals: effects.supervisorSignals,
+    workAnchors: effects.workAnchors,
     auditEvents: effects.auditEvents.map((auditEvent) => ({
       ...auditEvent,
       policy,

@@ -16,10 +16,12 @@ export type CommandResultStatus = (typeof CommandResultStatus)[keyof typeof Comm
 
 export const CommandErrorCode = {
   IdempotencyConflict: "idempotency_conflict",
+  PreconditionFailed: "precondition_failed",
   PolicyDenied: "policy_denied",
   PolicyObservationConflict: "policy_observation_conflict",
   PolicyObservationFailed: "policy_observation_failed",
   UnsupportedCommand: "unsupported_command",
+  ValidationFailed: "validation_failed",
 } as const;
 
 export type CommandErrorCode = (typeof CommandErrorCode)[keyof typeof CommandErrorCode];

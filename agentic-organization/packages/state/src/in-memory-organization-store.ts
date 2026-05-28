@@ -82,6 +82,7 @@ function createCommandStateStore<Result>(
       }
 
       snapshot.idempotencyRecords.set(input.idempotencyRecord.idempotencyKey, input.idempotencyRecord);
+      snapshot.workItems.push(...(input.effects.workAnchors?.workItems ?? []));
       snapshot.supervisorSignals.push(...input.effects.supervisorSignals);
       snapshot.auditEvents.push(...input.effects.auditEvents);
       snapshot.outboxEvents.push(...input.effects.outboxEvents);

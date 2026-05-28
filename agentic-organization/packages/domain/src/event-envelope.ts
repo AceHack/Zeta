@@ -5,6 +5,7 @@ export const EventSchemaVersion = {
 export type EventSchemaVersion = (typeof EventSchemaVersion)[keyof typeof EventSchemaVersion];
 
 export const CommandType = {
+  CreateWorkItem: "create_work_item",
   SendSupervisorSignal: "send_supervisor_signal",
 } as const;
 

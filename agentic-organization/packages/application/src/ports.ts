@@ -1,4 +1,14 @@
-import type { AuditEvent, IdempotencyRecord, OutboxEvent, SupervisorSignal } from "../../domain/src/index.ts";
+import type {
+  AuditEvent,
+  IdempotencyRecord,
+  Initiative,
+  OutboxEvent,
+  Project,
+  SupervisorSignal,
+  WorkAnchorTarget,
+  WorkItem,
+  WorkStateTransition,
+} from "../../domain/src/index.ts";
 
 export type Clock = {
   now: () => string;
@@ -12,6 +22,59 @@ export type CommandEffects = {
   supervisorSignals: readonly SupervisorSignal[];
   auditEvents: readonly AuditEvent[];
   outboxEvents: readonly OutboxEvent[];
+  workAnchors?: WorkAnchorCommandEffects | undefined;
+};
+
+export type WorkAnchorCommandEffects = {
+  projects: readonly CommandWorkAnchorProject[];
+  initiatives: readonly CommandWorkAnchorInitiative[];
+  workItems: readonly CommandWorkAnchorWorkItem[];
+  workAnchorTargets: readonly CommandWorkAnchorTarget[];
+  workItemTransitions: readonly CommandWorkAnchorTransitionInput[];
+};
+
+export type CommandWorkAnchorRecordMetadata = {
+  updatedAt: string;
+  version: number;
+  correlationId: string;
+  causationId: string;
+  traceId: string;
+};
+
+export type CommandWorkAnchorProject = Project & {
+  metadata: CommandWorkAnchorRecordMetadata;
+};
+
+export type CommandWorkAnchorInitiative = Initiative & {
+  metadata: CommandWorkAnchorRecordMetadata;
+};
+
+export type CommandWorkAnchorWorkItem = WorkItem & {
+  metadata: CommandWorkAnchorRecordMetadata;
+};
+
+export type CommandWorkAnchorTarget = WorkAnchorTarget & {
+  metadata: CommandWorkAnchorRecordMetadata;
+};
+
+export type CommandWorkStateTransition = WorkStateTransition & {
+  sequence: number;
+  metadata: CommandWorkAnchorRecordMetadata;
+};
+
+export type CommandWorkAnchorTransitionInput = {
+  expectedVersion: number;
+  nextWorkItem: CommandWorkAnchorWorkItem;
+  transition: CommandWorkStateTransition;
+  transitionContext?: {
+    hasTriageFields?: boolean;
+  };
+};
+
+export type WorkAnchorStateReaderPort = {
+  findProject: (projectId: string) => Promise<CommandWorkAnchorProject | undefined>;
+  findInitiative: (initiativeId: string) => Promise<CommandWorkAnchorInitiative | undefined>;
+  findWorkItem: (workItemId: string) => Promise<CommandWorkAnchorWorkItem | undefined>;
 };
 
 export type RecordCommandOutcomeInput<Result = unknown> = {
