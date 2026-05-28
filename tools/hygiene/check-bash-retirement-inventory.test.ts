@@ -207,9 +207,17 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "e-uppercase.COMMAND"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
+      writeFileSync(join(repo, "scripts", "extensionless-bash-env-s-quoted"), '#!/usr/bin/env -S "bash -eu"\n');
+      writeFileSync(
+        join(repo, "scripts", "extensionless-zsh-env-split-string-quoted"),
+        '#!/usr/bin/env --split-string "zsh -eu"\n',
+      );
       writeFileSync(join(repo, "scripts", "extensionless-dash"), "#!/bin/dash\n");
       writeFileSync(join(repo, "scripts", "extensionless-sh"), "#!/bin/sh\n");
       writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
+      writeFileSync(join(repo, "scripts", "extensionless-node-with-bash-arg"), "#!/usr/bin/env node --loader bash\n");
+      writeFileSync(join(repo, "scripts", "extensionless-node-with-sh-arg"), "#!/usr/bin/env node sh\n");
+      writeFileSync(join(repo, "scripts", "extensionless-node-env-s-bash-arg"), "#!/usr/bin/env -S node --loader bash\n");
       writeFileSync(join(repo, "scripts", "dotted-shell-entry.env"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "dotted-shell-shebang.txt"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "tools", "lean4", "vendor.sh"), "#!/usr/bin/env bash\n");
@@ -231,8 +239,10 @@ describe("buildInventoryReport", () => {
         "scripts/e-uppercase.COMMAND",
         "scripts/extensionless-bash",
         "scripts/extensionless-bash-env-s",
+        "scripts/extensionless-bash-env-s-quoted",
         "scripts/extensionless-dash",
         "scripts/extensionless-sh",
+        "scripts/extensionless-zsh-env-split-string-quoted",
       ].sort((a, b) => a.localeCompare(b)));
     } finally {
       rmSync(repo, { recursive: true, force: true });
