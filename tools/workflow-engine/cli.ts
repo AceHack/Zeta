@@ -7,16 +7,20 @@
  * Usage:
  *   bun tools/workflow-engine/cli.ts --list-actions
  *   bun tools/workflow-engine/cli.ts --list-states
+ *   bun tools/workflow-engine/cli.ts --list-du-cluster
  *   bun tools/workflow-engine/cli.ts --dry-run [--state <id>]
  *   bun tools/workflow-engine/cli.ts --validate
  *
  * Modes:
- *   --list-actions  Print SEED_ACTION_CATALOG as structured JSON
- *   --list-states   Print SEED_STATES + per-state available action list
- *   --dry-run       Validate catalog + simulate one tick at given state
- *                   (default: initial) without executing any side effects
- *   --validate      Run catalog + state Otto-5-mods invariants; exit
- *                   non-zero on violation
+ *   --list-actions     Print SEED_ACTION_CATALOG as structured JSON
+ *   --list-states      Print SEED_STATES + per-state available action list
+ *   --list-du-cluster  Print today's DU cluster (B-0917 + B-0918 + B-0919
+ *                      + B-0920) as structured JSON with variants +
+ *                      composes-with + substrate-anchors
+ *   --dry-run          Validate catalog + simulate one tick at given state
+ *                      (default: initial) without executing any side effects
+ *   --validate         Run catalog + state Otto-5-mods invariants; exit
+ *                      non-zero on violation
  *
  * Exit codes:
  *   0 — operation successful
@@ -40,8 +44,9 @@ import {
   validateCatalog,
   type Action,
 } from "./types";
+import { DU_CLUSTER_CATALOG, computeDuClusterStats } from "./du-cluster";
 
-type Mode = "list-actions" | "list-states" | "dry-run" | "validate";
+type Mode = "list-actions" | "list-states" | "list-du-cluster" | "dry-run" | "validate";
 
 interface ParsedArgs {
   readonly mode: Mode;
@@ -53,11 +58,12 @@ function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } 
   if (args.length === 0) {
     return {
       error:
-        "no mode specified — use --list-actions, --list-states, --dry-run, or --validate",
+        "no mode specified — use --list-actions, --list-states, --list-du-cluster, --dry-run, or --validate",
     };
   }
   if (args.includes("--list-actions")) return { mode: "list-actions" };
   if (args.includes("--list-states")) return { mode: "list-states" };
+  if (args.includes("--list-du-cluster")) return { mode: "list-du-cluster" };
   if (args.includes("--validate")) return { mode: "validate" };
   if (args.includes("--dry-run")) {
     const stateIdx = args.indexOf("--state");
@@ -102,6 +108,26 @@ function modeListStates(): number {
       label: s.label,
       tickCyclePattern: s.tickCyclePattern,
       availableActions: s.availableActions,
+    })),
+  });
+  return 0;
+}
+
+function modeListDuCluster(): number {
+  const stats = computeDuClusterStats();
+  emitJson({
+    rowId: "B-0867",
+    subRow: "B-0867.5",
+    duClusterDate: "2026-05-28",
+    entryCount: stats.entryCount,
+    totalVariantCount: stats.totalVariantCount,
+    entries: DU_CLUSTER_CATALOG.map((e) => ({
+      id: e.id,
+      name: e.name,
+      variantCount: e.variantCount,
+      variants: e.variants,
+      composesWith: e.composesWith,
+      substrateAnchor: e.substrateAnchor,
     })),
   });
   return 0;
@@ -204,6 +230,8 @@ function main(argv: ReadonlyArray<string>): number {
       return modeListActions();
     case "list-states":
       return modeListStates();
+    case "list-du-cluster":
+      return modeListDuCluster();
     case "validate":
       return modeValidate();
     case "dry-run":
