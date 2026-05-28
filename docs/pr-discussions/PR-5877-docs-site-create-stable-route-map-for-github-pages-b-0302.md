@@ -8,11 +8,7 @@ merged_at: "2026-05-28T17:08:06Z"
 closed_at: "2026-05-28T17:08:06Z"
 head_ref: "lior/B-0302-pages-routes"
 base_ref: "main"
-<<<<<<< HEAD
 archived_at: "2026-05-28T17:40:42Z"
-=======
-archived_at: "2026-05-28T17:29:47Z"
->>>>>>> origin/main
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 

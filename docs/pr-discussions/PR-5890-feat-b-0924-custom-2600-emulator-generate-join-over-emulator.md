@@ -8,11 +8,7 @@ merged_at: "2026-05-28T17:20:56Z"
 closed_at: "2026-05-28T17:20:56Z"
 head_ref: "otto-cli/b0924-emulator-generate-join-2600-arc3-2026-05-28"
 base_ref: "main"
-<<<<<<< HEAD
 archived_at: "2026-05-28T17:40:40Z"
-=======
-archived_at: "2026-05-28T17:22:00Z"
->>>>>>> origin/main
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
