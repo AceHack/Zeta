@@ -11,7 +11,7 @@ export interface CommandResult {
 }
 
 export interface CommandRunner {
-  run(command: string, args: readonly string[], options: { cwd?: string }): CommandResult;
+  run(command: string, args: readonly string[], options: { cwd?: string; timeoutMs?: number }): CommandResult;
 }
 
 export interface RemoteClaimRef {
@@ -41,15 +41,17 @@ interface Args {
   remote: string;
   fetch: boolean;
   json: boolean;
+  gitTimeoutMs: number;
 }
 
 const GIT_BIN = "/usr/bin/git";
 const CLAIM_REF_PREFIX = "refs/heads/claim/";
+const DEFAULT_GIT_NETWORK_TIMEOUT_MS = 30_000;
 
 function usage(): string {
   return [
     "Usage:",
-    "  bun tools/claims/remote-only-state.ts [--repo-root DIR] [--remote origin] [--no-fetch] [--json]",
+    "  bun tools/claims/remote-only-state.ts [--repo-root DIR] [--remote origin] [--git-timeout-ms MS] [--no-fetch] [--json]",
     "",
     "Reads remote git claim branches as the coordination source of truth.",
     "Does not inspect local broadcasts, heartbeats, terminal logs, or worktree names.",
@@ -63,12 +65,25 @@ function requireValue(flag: string, value: string | undefined): string {
   return value;
 }
 
+function requirePositiveInteger(flag: string, value: string | undefined): number {
+  const raw = requireValue(flag, value);
+  if (!/^\d+$/.test(raw)) {
+    throw new Error(`${flag} must be a positive integer`);
+  }
+  const parsed = Number(raw);
+  if (!Number.isSafeInteger(parsed) || parsed <= 0) {
+    throw new Error(`${flag} must be a positive integer`);
+  }
+  return parsed;
+}
+
 function parseArgs(argv: readonly string[]): Args {
   const args: Args = {
     repoRoot: process.cwd(),
     remote: "origin",
     fetch: true,
     json: false,
+    gitTimeoutMs: DEFAULT_GIT_NETWORK_TIMEOUT_MS,
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -77,6 +92,8 @@ function parseArgs(argv: readonly string[]): Args {
       args.repoRoot = requireValue(arg, argv[++i]);
     } else if (arg === "--remote") {
       args.remote = requireValue(arg, argv[++i]);
+    } else if (arg === "--git-timeout-ms") {
+      args.gitTimeoutMs = requirePositiveInteger(arg, argv[++i]);
     } else if (arg === "--no-fetch") {
       args.fetch = false;
     } else if (arg === "--json") {
@@ -94,27 +111,39 @@ function parseArgs(argv: readonly string[]): Args {
 
 function spawnRunner(): CommandRunner {
   return {
-    run(command: string, args: readonly string[], options: { cwd?: string }): CommandResult {
+    run(command: string, args: readonly string[], options: { cwd?: string; timeoutMs?: number }): CommandResult {
       const result = spawnSync(command, [...args], {
         cwd: options.cwd,
         encoding: "utf8",
         maxBuffer: 32 * 1024 * 1024,
+        timeout: options.timeoutMs,
       });
+      const errorText = result.error ? String(result.error) : result.signal ? `terminated by ${result.signal}` : "";
       return {
         status: result.status ?? 1,
         stdout: result.stdout ?? "",
-        stderr: result.stderr ?? String(result.error ?? ""),
+        stderr: result.stderr || errorText,
       };
     },
   };
 }
 
-function git(runner: CommandRunner, repoRoot: string, args: readonly string[]): CommandResult {
-  return runner.run(GIT_BIN, ["-C", repoRoot, ...args], {});
+function git(
+  runner: CommandRunner,
+  repoRoot: string,
+  args: readonly string[],
+  options: { timeoutMs?: number } = {},
+): CommandResult {
+  return runner.run(GIT_BIN, ["-C", repoRoot, ...args], options);
 }
 
-function mustGit(runner: CommandRunner, repoRoot: string, args: readonly string[]): string {
-  const result = git(runner, repoRoot, args);
+function mustGit(
+  runner: CommandRunner,
+  repoRoot: string,
+  args: readonly string[],
+  options: { timeoutMs?: number } = {},
+): string {
+  const result = git(runner, repoRoot, args, options);
   if (result.status !== 0) {
     throw new Error(`git ${args.join(" ")} failed: ${result.stderr || result.stdout}`);
   }
@@ -233,17 +262,20 @@ export function collectRemoteClaimState(
   repoRoot: string,
   remoteName = "origin",
   fetch = true,
+  gitNetworkTimeoutMs = DEFAULT_GIT_NETWORK_TIMEOUT_MS,
 ): RemoteClaimState {
   const remote = normalizeRemote(remoteName);
   const errors: string[] = [];
   if (fetch) {
-    const fetched = git(runner, repoRoot, ["fetch", "--prune", remote]);
+    const fetched = git(runner, repoRoot, ["fetch", "--prune", remote], { timeoutMs: gitNetworkTimeoutMs });
     if (fetched.status !== 0) {
       errors.push(fetched.stderr || fetched.stdout || `git fetch --prune ${remote} failed`);
     }
   }
 
-  const refs = parseRemoteClaimRefs(mustGit(runner, repoRoot, ["ls-remote", "--heads", remote, "claim/*"]));
+  const refs = parseRemoteClaimRefs(
+    mustGit(runner, repoRoot, ["ls-remote", "--heads", remote, "claim/*"], { timeoutMs: gitNetworkTimeoutMs }),
+  );
   const claims = refs.map((ref) => readRemoteClaim(runner, repoRoot, remote, ref));
   for (const claim of claims) {
     if (claim.error) {
@@ -280,7 +312,7 @@ function printState(state: RemoteClaimState, json: boolean): void {
 export function main(argv: readonly string[]): number {
   try {
     const args = parseArgs(argv);
-    const state = collectRemoteClaimState(spawnRunner(), args.repoRoot, args.remote, args.fetch);
+    const state = collectRemoteClaimState(spawnRunner(), args.repoRoot, args.remote, args.fetch, args.gitTimeoutMs);
     printState(state, args.json);
     return state.errors.length === 0 ? 0 : 2;
   } catch (error) {

@@ -10,15 +10,21 @@ import {
 
 class FakeRunner implements CommandRunner {
   readonly calls: string[] = [];
+  readonly callOptions: Array<{ timeoutMs?: number }> = [];
   private readonly responses: ReadonlyMap<string, CommandResult>;
 
   constructor(responses: ReadonlyMap<string, CommandResult>) {
     this.responses = responses;
   }
 
-  run(command: string, args: readonly string[], _options: { cwd?: string }): CommandResult {
+  run(command: string, args: readonly string[], options: { cwd?: string; timeoutMs?: number }): CommandResult {
     const key = [command, ...args].join("\0");
     this.calls.push(key);
+    const callOptions: { timeoutMs?: number } = {};
+    if (options.timeoutMs !== undefined) {
+      callOptions.timeoutMs = options.timeoutMs;
+    }
+    this.callOptions.push(callOptions);
     return this.responses.get(key) ?? { status: 1, stdout: "", stderr: `missing fake response: ${key}` };
   }
 }
@@ -102,6 +108,24 @@ describe("collectRemoteClaimState", () => {
     expect(state.claims[0]?.paths).toContain("tools/claims/remote-only-state.ts");
     expect(runner.calls.join("\n")).not.toContain("broadcast");
     expect(runner.calls.join("\n")).not.toContain("agent-heartbeats");
+  });
+
+  test("bounds remote network git calls with a timeout", () => {
+    const responses = new Map<string, CommandResult>([
+      [gitKey(["fetch", "--prune", "origin"]), ok("")],
+      [
+        gitKey(["ls-remote", "--heads", "origin", "claim/*"]),
+        ok("abc123\trefs/heads/claim/task-remote-only\n"),
+      ],
+      [gitKey(["show", "origin/claim/task-remote-only:docs/claims/task-remote-only.md"]), ok(claimBody)],
+    ]);
+    const runner = new FakeRunner(responses);
+
+    collectRemoteClaimState(runner, "/repo/Zeta", "origin", true, 1234);
+
+    expect(runner.callOptions[0]?.timeoutMs).toBe(1234);
+    expect(runner.callOptions[1]?.timeoutMs).toBe(1234);
+    expect(runner.callOptions[2]?.timeoutMs).toBeUndefined();
   });
 
   test("records per-claim read failures without dropping the ref", () => {
