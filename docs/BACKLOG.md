@@ -424,6 +424,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0886.2](backlog/P1/B-0886.2-two-priority-axes-clarification-usb-not-2nd-on-operator-personal-axis-cloud-2nd-on-operator-personal-axis-aaron-2026-05-28.md)** Two priority axes clarification — USB is NOT 2nd on operator-personal axis (in-front-of-eyes word-of-mouth + DevOps iteration); cloud is 2nd on that axis; both first-class per their respective axis
 - [ ] **[B-0887](backlog/P1/B-0887-zeta-native-review-and-branch-protection-substrate-replaces-github-pr-workflow-preserves-review-and-class-fix-discipline-aaron-2026-05-28.md)** Zeta-native review + branch-protection substrate — replaces GitHub PR workflow but PRESERVES review semantics + class-fix discipline (sharpens / supersedes B-0874 "no-PR" framing)
 - [ ] **[B-0889](backlog/P1/B-0889-symbiotic-cross-track-self-healing-cloud-kvm-controls-local-usb-boot-local-restarts-github-workflows-aaron-2026-05-28.md)** Symbiotic cross-track self-healing — cloud KVMs power on + control + USB-boot local machines; local machines restart GitHub workflows; tracks reinforce each other (operator 2026-05-28 extension)
+- [ ] **[B-0890](backlog/P1/B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md)** State-machine event fast-lane + batch-merge-to-main coordinator — composes with B-0858 heartbeat pattern; reduces per-event ceremony at scale
 
 ## P2 — research-grade
 
