@@ -989,5 +989,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0883.5](backlog/P3/B-0883.5-metadata-encryption-filename-and-commit-message-follow-up-content-only-for-v1-per-operator-2026-05-28.md)** Metadata encryption follow-up — filename + commit-message encryption; deferred from B-0883 v1 (content-only) per operator 2026-05-28
 - [ ] **[B-0895](backlog/P3/B-0895-clifford-spacetime-algebra-substrate-recognition-cl-1-3-and-cl-3-1-dual-signature-interface-grade-decomposition-of-observe-emit-limit-simulate-aaron-otto-2026-05-28.md)** Clifford spacetime algebra substrate-recognition — Cl(1,3) and Cl(3,1) dual signature interface + grade-decomposition of Observe/Emit/Limit/Simulate
 - [ ] **[B-0896](backlog/P3/B-0896-category-theory-clifford-self-similarity-mapping-functor-between-categorical-and-geometric-substrate-aaron-2026-05-28.md)** Category-theory ↔ Clifford self-similarity — bidirectional mapping; substrate-independent traveler-as-categorical-structure with Clifford-algebraic incarnation
+- [ ] **[B-0897](backlog/P3/B-0897-persist-as-bridge-operation-emit-now-plus-observe-later-temporal-bivector-with-richer-typing-tinternal-tsubstraterecord-tpersistfeedback-amara-2026-05-28.md)** Persist-as-bridge-operation — Emit-now + Observe-later temporal bivector + richer typing Persist<TInternal, TSubstrateRecord, TPersistFeedback>
 
 <!-- END AUTO-GENERATED -->
