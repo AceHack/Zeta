@@ -38,7 +38,18 @@ bun = "1.3"
 # powers mise's `pipx:` backend below (mise auto-routes `pipx:`
 # tools through `uv tool install` when uv is available — no
 # pipx package needed, faster + already in our toolchain).
-uv = "0.11.8"
+#
+# Bumped 0.11.8 → 0.11.16 (2026-05-28) — 0.11.8 was empirically
+# failing in `mise install` with `aqua:astral-sh/uv@0.11.8: HTTP
+# status client error (404 Not Found)`, cascading all 11 lint
+# jobs into FAILURE on every open PR (the install step exits 1
+# before lint runs). Per `.claude/rules/dep-pin-search-first-
+# authority.md`: bumped to current upstream latest stable per
+# WebSearch 2026-05-28 + `gh api repos/astral-sh/uv/releases/
+# latest` (both authoritative; tag_name = "0.11.16",
+# published_at = 2026-05-21T22:11:32Z). Source:
+# https://github.com/astral-sh/uv/releases/tag/0.11.16
+uv = "0.11.16"
 # actionlint: GitHub Actions workflow linter. Declarative install
 # (GOVERNANCE §24 three-way-parity) so dev laptops + CI runners
 # (including ubuntu-slim which doesn't ship with it) have identical
