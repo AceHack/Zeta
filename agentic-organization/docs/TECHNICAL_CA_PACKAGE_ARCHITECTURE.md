@@ -372,6 +372,16 @@ long-running executable host. Future loops, Kubernetes probes, and
 process supervisors can wrap this contract without changing domain,
 application, runtime, or worker packages.
 
+The first continuous-run wrapper now exists in
+`apps/workers/src/worker-process-loop.ts`. It receives a `WorkerProcess`,
+delay port, observer port, and stop signal, then repeatedly invokes the
+process lifecycle without owning infrastructure clients. The loop
+captures thrown iteration failures, observer failures, delay failures,
+degraded process results, and shutdown failures as typed loop evidence
+while preserving completed iteration results. This gives the future
+worker binary a small, testable always-on control loop without turning
+the app host into business logic.
+
 The `apps/workers` composition root receives typed config plus
 already-constructed ports. This is the only place the worker process
 should know which concrete adapter implementation is being used. Domain,
@@ -417,6 +427,20 @@ invalid-envelope consumer DLQ path, and closes the connection through
 the generic NATS shutdown port. The reusable packages continue to see
 only publisher, pull-consumer, dead-letter, readiness, and shutdown
 interfaces.
+
+The combined durable worker proof is also env-gated and runs only when
+both live substrate variables are present. It applies Cockroach
+migrations through the app bootstrapper, writes a real
+`send_supervisor_signal` command outcome through the generic command
+pipeline and Cockroach state-store factory, connects a per-run NATS
+stream/durable consumer through the app-local NATS seam, runs one worker
+process cycle, publishes the outbox event, consumes it back through the
+NATS consumer, records the inbox receipt and supervisor-triage reaction
+plan in Cockroach, emits worker/NATS telemetry records through the sink
+port, and shuts down both process adapters through generic shutdown
+ports. This is the first live proof that the durable command, outbox,
+NATS, inbox, reaction-plan, readiness, telemetry, and shutdown seams
+compose without letting vendor clients leak into reusable packages.
 
 ## SOLID Rules
 

@@ -60,11 +60,21 @@ The current executable spine includes:
   steps once per process, gates runtime execution on readiness, and
   aggregates graceful shutdown results without hiding partial adapter
   failures.
+- `apps/workers` process loop contract that repeatedly invokes the
+  process lifecycle through injected delay, observer, and stop-signal
+  ports, captures loop weak points, and always attempts shutdown.
+- env-gated live substrate proofs for Cockroach, NATS, and the combined
+  durable worker path that writes a command outcome to Cockroach,
+  publishes the outbox through NATS, consumes it back, records durable
+  inbox/reaction-plan state, emits telemetry, and shuts down generic
+  process adapters.
 
-The next implementation slice is integration proof below
-`apps/workers`: real Cockroach and NATS checks gated by environment so
-the app-local ports can be proven against live substrates without
-turning reusable packages into vendor-specific code.
+The next implementation slice after the loop wrapper is to add the
+concrete executable entrypoint that binds process signals and delay
+policy to the loop, then continue with the next generic
+command/work-anchor surfaces. Keep the live substrate checks gated by
+environment until the team decides whether CI should provide Cockroach
+and NATS services.
 
 ## Work Rules For Every Phase
 
@@ -2670,10 +2680,68 @@ Done when:
 - one outbox event publishes to NATS; done when a live JetStream server
   is supplied;
 - one inbound NATS event is consumed, deduped, and acknowledged; the
-  live proof covers consume and acknowledge, while durable
-  event-ingestion dedupe remains proven by fake-driven state tests and
-  will move into a full Cockroach plus NATS integration once both live
-  URLs are supplied together.
+  live proof covers consume and acknowledge. Durable event-ingestion
+  dedupe remains proven by fake-driven state tests and is now exercised
+  in the combined proof when both live URLs are supplied together.
+
+### PR 3.5: Combined Durable Worker Proof
+
+Status: implemented as an env-gated live proof harness. The normal suite
+still skips this proof unless both
+`AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` and
+`AGENTIC_ORG_NATS_INTEGRATION_SERVERS` are present.
+
+Build:
+
+- apply Cockroach migrations through the app-local bootstrapper; done;
+- write a real `send_supervisor_signal` command outcome through the
+  generic command pipeline and Cockroach state-store factory; done;
+- recreate a per-run NATS stream and durable consumer; done;
+- compose the durable worker runtime from Cockroach executor, NATS
+  publisher, NATS pull consumer, DLQ publisher, and telemetry sink ports;
+  done;
+- run one worker process cycle through bootstrap, readiness, runtime,
+  and shutdown; done;
+- prove outbox publication to NATS and durable `published_at` marking;
+  done when both live substrates are supplied;
+- prove NATS consumption, ack, Cockroach inbox receipt, and
+  supervisor-triage reaction-plan persistence; done when both live
+  substrates are supplied;
+- clean up per-run Cockroach rows and NATS resources; done.
+
+Done when:
+
+- one Organization command can cross the real durable path from command
+  state to outbox, NATS, inbox, reaction plan, telemetry, readiness, and
+  shutdown without reusable packages importing vendor clients;
+- local runs stay green without live services.
+
+### PR 3.6: Worker Process Loop Wrapper
+
+Status: implemented as a fake-driven app-local contract. It does not
+construct Cockroach, NATS, NestJS, Kubernetes, or telemetry exporters.
+
+Build:
+
+- add `createWorkerProcessLoop` over the existing `WorkerProcess`; done;
+- inject delay, observer, and stop-signal ports instead of using
+  process globals directly; done;
+- continue after thrown iteration failures so one bad cycle does not
+  kill always-on work; done;
+- stop cleanly when the stop signal is raised before the next cycle;
+  done;
+- avoid busy spinning when the delay port fails; done;
+- preserve completed iteration results when observer recording fails;
+  done;
+- always attempt process shutdown and surface degraded shutdown evidence;
+  done.
+
+Done when:
+
+- the future executable worker host can use one small loop contract for
+  continuous operation;
+- tests prove the loop remains observable, stoppable, and safe to
+  shut down even when dependencies fail.
 
 ### PR 4: Generic Command Registry
 

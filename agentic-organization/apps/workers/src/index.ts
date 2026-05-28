@@ -124,6 +124,22 @@ export {
   type WorkerProcessShutdownResult,
 } from "./worker-process.ts";
 export {
+  WorkerProcessLoopEventName,
+  WorkerProcessLoopFailureStage,
+  WorkerProcessLoopStatus,
+  createWorkerProcessLoop,
+  type CreateWorkerProcessLoopInput,
+  type WorkerProcessLoop,
+  type WorkerProcessLoopDelay,
+  type WorkerProcessLoopDelayInput,
+  type WorkerProcessLoopFailure,
+  type WorkerProcessLoopIteration,
+  type WorkerProcessLoopObserver,
+  type WorkerProcessLoopRecord,
+  type WorkerProcessLoopRunResult,
+  type WorkerProcessLoopStopSignal,
+} from "./worker-process-loop.ts";
+export {
   CockroachMigrationStatement,
   createCockroachSqlExecutor,
   type CockroachAnySqlStatement,

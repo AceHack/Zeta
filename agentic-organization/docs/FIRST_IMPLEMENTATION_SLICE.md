@@ -322,6 +322,13 @@ Hermes runs, MCP calls, and UI evidence.
   execution, skips runtime work on bootstrap/readiness failure, reuses
   the bootstrapped state across later cycles, and aggregates graceful
   shutdown results across process adapter ports.
+- `apps/workers` has a first continuous-run loop wrapper for that
+  process lifecycle. `createWorkerProcessLoop` repeatedly invokes the
+  process through an injected delay port, observer port, and stop
+  signal; captures iteration, observer, delay, degraded-result, and
+  shutdown failures as loop evidence; and always attempts process
+  shutdown. It is still a port-first app boundary, not a NestJS host or
+  concrete binary.
 - `apps/workers` has an app-local Cockroach migration bootstrapper and
   Cockroach readiness probe. The bootstrapper reuses the generic
   Cockroach migration runner and ordered core migrations; the readiness
@@ -339,6 +346,15 @@ Hermes runs, MCP calls, and UI evidence.
   generic ingestion port, acknowledges it, smoke-tests DLQ publishing,
   proves the invalid-envelope consumer DLQ path, checks readiness, and
   closes the generic NATS shutdown port.
+- `apps/workers` has the first env-gated combined durable worker proof.
+  When both `AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` and
+  `AGENTIC_ORG_NATS_INTEGRATION_SERVERS` are present, the test writes a
+  real `send_supervisor_signal` command outcome to Cockroach, runs the
+  process worker cycle, publishes the durable outbox event to NATS,
+  consumes it through the NATS consumer, records the inbox receipt and
+  supervisor-triage reaction plan in Cockroach, captures worker/NATS
+  telemetry records, and shuts down both adapters through generic
+  process shutdown ports.
 - Worker-cycle failures can carry structured evidence. Stale outbox
   claim failures now preserve claim ID, current claim ID, outbox event
   ID, event ID, trace ID, and published-at evidence when the durable row
@@ -366,16 +382,19 @@ The next slice is tracked in the canonical
 [Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). The fake-driven
 process lifecycle contract now covers migration bootstrap, readiness
 gating, and graceful shutdown at the port boundary. The Cockroach live
-proof is now env-gated: when a compatible URL and driver are present,
-the same test command proves migrations, readiness, commit, rollback,
-and shutdown against a real substrate. The NATS live proof is also
+proof is env-gated: when a compatible URL and driver are present, the
+same test command proves migrations, readiness, commit, rollback, and
+shutdown against a real substrate. The NATS live proof is also
 env-gated: when a JetStream server is supplied, the same test command
 proves publish, consume, ack, invalid-envelope DLQ handling, readiness,
-and shutdown through the app-local NATS seam. Next, combine Cockroach
-plus NATS into a single end-to-end durable worker proof and then wrap
-the lifecycle contract in a real long-running worker host. Keep URLs,
-credentials, and connection pools in app adapter config fed by
-Kubernetes Secret or ExternalSecret values, never in domain packages.
+and shutdown through the app-local NATS seam. The combined durable
+worker proof now ties both together when both env vars are present. The
+first long-running worker loop wrapper now exists as a port-first
+contract. Next is the concrete executable entrypoint that binds process
+signals and delay policy to that loop, then the next command surface
+slice. Keep URLs, credentials, and connection pools in app adapter
+config fed by Kubernetes Secret or ExternalSecret values, never in
+domain packages.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized
