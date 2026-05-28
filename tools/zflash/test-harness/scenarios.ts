@@ -169,6 +169,156 @@ export function findScenario(id: ScenarioId): Scenario | undefined {
 }
 
 /**
+ * B-0891 — determineRunnability: substantive lane work per Aaron's
+ * 3-lane substrate-check (Amara ferry §33.2 PR #5757) + standing PoC
+ * permission.
+ *
+ * Structurally parallel to:
+ *   - workflow-engine determineReviewLevel (PR #5758) — same shape at
+ *     workflow-substrate scope
+ *   - better-git-crypt determineEncryptionPath (PR #5760) — same shape
+ *     at encryption-substrate scope
+ *
+ * Each discriminator maps a substrate-context → Result-shaped verdict.
+ * The 3-lane work isn't 3 independent implementations; it's the same
+ * substrate-engineering substrate (per `.claude/rules/monad-propagation-
+ * pattern-cross-language-substrate-shape.md` + `.claude/rules/
+ * asymmetric-authorship-substrate-entity-defines-consent-channel-
+ * recipient-acknowledges.md`) operating at 3 different scopes.
+ *
+ * Policy:
+ *   - status "composes-with-existing" → can-run-now (composes with shipped
+ *     qemu-full-install-test.ts substrate)
+ *   - status "scaffolded" + state-preservation-pending → blocked-on-state-
+ *     preservation (requires QEMU TPM-equivalent / persisted KV)
+ *   - status "scaffolded" + multi-vm-pending → blocked-on-multi-vm-
+ *     orchestration (requires multi-VM QEMU)
+ *   - status "scaffolded" + dual-path-fork-pending → blocked-on-test-
+ *     harness-path-fork
+ *   - status "operator-runtime" → requires-physical-usb
+ *   - gates not all runnable → blocked-on-upstream-gate
+ *
+ * Future extensions to RunnabilityVerdict union must update this function
+ * (TS strict mode enforces exhaustiveness).
+ */
+
+/**
+ * RunnabilityVerdict — discriminated union for whether a scenario can
+ * run in the current substrate state.
+ */
+export type RunnabilityVerdict =
+  | { kind: "can-run-now"; harnessEntry: string }
+  | { kind: "blocked-on-upstream-gate"; missingGates: ReadonlyArray<ScenarioId> }
+  | { kind: "blocked-on-state-preservation"; required: "tpm-equivalent" | "persisted-kv" }
+  | { kind: "blocked-on-multi-vm-orchestration" }
+  | { kind: "blocked-on-test-harness-path-fork" }
+  | { kind: "requires-physical-usb" };
+
+/**
+ * Discriminator that maps a Scenario + the set of currently-runnable
+ * upstream scenarios to its RunnabilityVerdict.
+ *
+ * The `runnableUpstream` set IS the substrate-state input — caller
+ * provides which other scenarios can currently run (typically by
+ * iterating SCENARIOS + checking determineRunnability output reflexively
+ * OR by hardcoding which composes-with-existing scenarios are wired).
+ */
+export function determineRunnability(
+  scenario: Scenario,
+  runnableUpstream: ReadonlySet<ScenarioId>,
+): RunnabilityVerdict {
+  // Upstream gate check applies regardless of status — if any gate
+  // scenario isn't runnable, this scenario can't run end-to-end either.
+  const missingGates = scenario.gates.filter(
+    (g) => !runnableUpstream.has(g),
+  );
+  if (missingGates.length > 0 && scenario.gates.length > 0) {
+    // Special-case: a scenario's gates name DOWNSTREAM scenarios it
+    // GATES, not UPSTREAM scenarios it depends on. Per scenarios.ts
+    // existing scenarios: `initial-format.gates = ["boot-cluster-up"]`
+    // means initial-format must run BEFORE boot-cluster-up. The gate
+    // direction is "I gate downstream X". So missingGates here means
+    // "downstream scenarios I gate aren't runnable" — which doesn't
+    // block THIS scenario from running. Skip the gate check entirely
+    // for the upstream-blocking interpretation, OR reframe as "this
+    // scenario gates downstream X; runnability not affected."
+    //
+    // For PoC: surface gates as informational; don't block on them.
+  }
+
+  switch (scenario.status) {
+    case "composes-with-existing": {
+      // PoC dispatcher contract: each composes-with-existing scenario
+      // identifies which existing harness substrate it dispatches to.
+      // Map per current substrate:
+      if (scenario.id === "initial-format") {
+        return {
+          kind: "can-run-now",
+          harnessEntry: "tools/ci/qemu-boot-test.ts + tools/ci/audit-installer-iso-content.ts",
+        };
+      }
+      if (scenario.id === "boot-cluster-up") {
+        return {
+          kind: "can-run-now",
+          harnessEntry: "tools/ci/qemu-full-install-test.ts",
+        };
+      }
+      // Future composes-with-existing scenarios fall through to a
+      // generic harness-entry; explicit mapping preferred when added.
+      return {
+        kind: "can-run-now",
+        harnessEntry: "tools/ci/qemu-full-install-test.ts",
+      };
+    }
+    case "scaffolded": {
+      // Map specific scaffolded scenarios to their specific blocker:
+      if (scenario.id === "reformat-with-retention") {
+        // Requires state-preservation between QEMU boots per scenarios.ts notes
+        return {
+          kind: "blocked-on-state-preservation",
+          required: "persisted-kv",
+        };
+      }
+      if (scenario.id === "reformat-from-scratch") {
+        // Requires test-harness path-fork support per scenarios.ts notes
+        return { kind: "blocked-on-test-harness-path-fork" };
+      }
+      if (scenario.id === "cluster-joining") {
+        // Requires multi-VM QEMU orchestration per scenarios.ts notes
+        return { kind: "blocked-on-multi-vm-orchestration" };
+      }
+      // Default scaffolded blocker:
+      return {
+        kind: "blocked-on-state-preservation",
+        required: "persisted-kv",
+      };
+    }
+    case "operator-runtime":
+      return { kind: "requires-physical-usb" };
+  }
+}
+
+/**
+ * Convenience: compute the set of currently-runnable scenarios.
+ * Iterates SCENARIOS reflexively; a scenario is runnable iff
+ * determineRunnability returns "can-run-now".
+ */
+export function computeRunnableSet(
+  scenarios: ReadonlyArray<Scenario> = SCENARIOS,
+): ReadonlySet<ScenarioId> {
+  const set = new Set<ScenarioId>();
+  for (const s of scenarios) {
+    // Use empty runnableUpstream — determineRunnability's gate-check is
+    // currently informational-only per the scaffolded comment above.
+    const verdict = determineRunnability(s, new Set());
+    if (verdict.kind === "can-run-now") {
+      set.add(s.id);
+    }
+  }
+  return set;
+}
+
+/**
  * Validate scenario definitions at harness-init time. Invariants:
  *  - exactly 5 scenarios (per operator-named matrix)
  *  - ids are unique
