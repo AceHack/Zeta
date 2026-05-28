@@ -200,10 +200,15 @@ event-ingestion adapters now expose transaction-batch executor seams so
 the app/runtime layers remain database-generic while durable adapters
 can commit outcome batches atomically.
 
-The remaining gap is integration-level proof against a real CockroachDB
-transaction. The current tests prove the batch boundary and runtime
-recovery behavior; a future local/dev-cluster integration test should
-prove actual rollback behavior with the real adapter binding.
+The remaining gap is making the live substrate proofs routine in CI or a
+dev cluster. The current tests prove the batch boundary and runtime
+recovery behavior. The env-gated Cockroach live test proves migrations,
+readiness, per-run probe table cleanup, commit, rollback, and shutdown when
+`AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` plus a `pg`-compatible
+driver are available. The env-gated NATS live test proves JetStream
+stream/durable setup, readiness, canonical event publish, generic
+ingestion-port consume, ack, invalid-envelope DLQ handling, and
+shutdown when `AGENTIC_ORG_NATS_INTEGRATION_SERVERS` is available.
 
 ### Policy And Hat Authority Checkpoint
 
@@ -231,9 +236,13 @@ durable worker composition seam below `apps/workers`, an app-local
 Cockroach pooled-client adapter, Cockroach migration bootstrapper,
 Cockroach readiness probe, NATS process-client construction, process
 lifecycle entrypoint contract, generic shutdown ports, and JSON
-telemetry sink. It still needs a real Cockroach-backed integration run,
-real NATS integration run, a long-running executable worker host, and
-cluster OTEL export wiring.
+telemetry sink. It now has an env-gated Cockroach integration harness
+for real migrations, readiness, transactions, rollback, and shutdown,
+plus an env-gated NATS integration harness for real JetStream publish,
+consume, ack, invalid-envelope DLQ handling, readiness, and shutdown. It
+still needs those live proofs wired into CI/dev-cluster execution, a
+combined Cockroach plus NATS durable worker proof, a long-running
+executable worker host, and cluster OTEL export wiring.
 
 ### Command Surface Closure
 
@@ -316,9 +325,9 @@ labels, dashboard ownership, and alertable degraded-worker signals.
 4. Add `triage_supervisor_signal` as the next real command slice.
 5. Add discussion-anchor enforcement and graph retrieval OpenSpec
    scenarios, then implement the minimal anchor command.
-6. Add real CockroachDB transaction integration coverage for command
-   outcomes and event-ingestion outcomes once a dev connection is
-   available.
+6. Decide whether the env-gated Cockroach integration proof should run
+   in CI through a local service, a k3d profile, or an operator-triggered
+   real-cluster job.
 7. Define UAG v0 as a typed package contract before adding prompt-flow
    execution.
 8. Build one substrate integration at a time, starting with hat-system

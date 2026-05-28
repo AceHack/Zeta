@@ -19,6 +19,20 @@ export {
   type CreateCockroachWorkerSqlClientInput,
 } from "./adapters/cockroach-worker-client.ts";
 export {
+  PgCockroachDriverModuleName,
+  PgCockroachWorkerPoolError,
+  PgCockroachWorkerPoolErrorCode,
+  createPgCockroachWorkerPool,
+  type CreatePgCockroachWorkerPoolInput,
+  type PgCockroachDriverLoader,
+  type PgCockroachDriverModule,
+  type PgCockroachPool,
+  type PgCockroachPoolClient,
+  type PgCockroachPoolConstructor,
+  type PgCockroachQueryResult,
+  type PgCockroachWorkerPool,
+} from "./adapters/pg-cockroach-worker-pool.ts";
+export {
   createJsonWorkerTelemetrySink,
   type CreateJsonWorkerTelemetrySinkInput,
   type JsonLineWriter,
@@ -109,3 +123,8 @@ export {
   type WorkerProcessShutdownPort,
   type WorkerProcessShutdownResult,
 } from "./worker-process.ts";
+export {
+  CockroachMigrationStatement,
+  createCockroachSqlExecutor,
+  type CockroachAnySqlStatement,
+} from "../../../packages/state-cockroach/src/index.ts";

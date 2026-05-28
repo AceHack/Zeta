@@ -2617,31 +2617,63 @@ slice.
 
 ### PR 2: Cockroach Integration Proof
 
+Status: implemented as an env-gated live proof harness. The normal suite
+still runs fake-driven, but when
+`AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` is present and a
+`pg`-compatible driver is available from the root dependency graph, the
+integration test exercises the live Cockroach/Postgres-compatible path
+through the same app-local ports used by the worker lifecycle.
+
 Build:
 
+- app-local `pg`-compatible pool adapter behind
+  `CockroachWorkerPool`/`CockroachWorkerShutdownPool`; done;
 - real Cockroach transaction adapter using the generic SQL executor;
-- integration test harness gated by env;
-- migration apply test;
-- rollback test.
+  done through the app-local pool adapter;
+- integration test harness gated by env; done;
+- migration apply test; done;
+- readiness test; done;
+- commit and rollback test; done;
+- per-run probe table cleanup; done;
+- graceful shutdown proof through the generic process shutdown port;
+  done.
 
 Done when:
 
-- real transaction rollback is proven;
-- migration runner is proven against Cockroach.
+- real transaction rollback is proven against a provided live
+  Cockroach/Postgres-compatible URL;
+- migration runner is proven against the same URL;
+- integration execution is safe to skip when local/dev cluster
+  dependencies are absent.
 
 ### PR 3: NATS Integration Proof
 
+Status: implemented as an env-gated live proof harness. The normal
+suite remains fake-driven, but when
+`AGENTIC_ORG_NATS_INTEGRATION_SERVERS` is present, the integration test
+recreates a small JetStream stream and durable consumer, then exercises
+the same app-local NATS adapter used by the worker lifecycle.
+
 Build:
 
-- real JetStream publisher construction;
-- real pull consumer construction;
-- local/dev integration tests gated by env;
-- DLQ publish smoke test.
+- real JetStream publisher construction; done;
+- real pull consumer construction; done;
+- local/dev integration tests gated by env; done;
+- readiness check through the durable consumer; done;
+- canonical event publish and generic ingestion-port consume; done;
+- ack proof through the inbound consumer; done;
+- invalid-envelope consumer DLQ path proof; done;
+- generic NATS shutdown port proof; done.
 
 Done when:
 
-- one outbox event publishes to NATS;
-- one inbound NATS event is consumed, deduped, and acknowledged.
+- one outbox event publishes to NATS; done when a live JetStream server
+  is supplied;
+- one inbound NATS event is consumed, deduped, and acknowledged; the
+  live proof covers consume and acknowledge, while durable
+  event-ingestion dedupe remains proven by fake-driven state tests and
+  will move into a full Cockroach plus NATS integration once both live
+  URLs are supplied together.
 
 ### PR 4: Generic Command Registry
 
@@ -2842,13 +2874,14 @@ Use this checklist before marking any phase complete.
 
 Use these questions when we talk through the plan:
 
-1. Should PR 2 use env-gated local Cockroach, a k3d
-   profile, or only env-gated tests against the real cluster?
+1. Should the env-gated Cockroach and NATS live proofs become CI-backed
+   through local services, a k3d profile, or remain operator-triggered
+   against the real cluster for now?
 2. Should the real long-running `apps/workers` executable host land
    before `apps/api`, or should both wrap the same lifecycle/policy
    contracts in parallel?
-3. Should the NATS integration proof use a local JetStream container,
-   k3d, or only env-gated tests against the real cluster?
+3. Should the combined Cockroach plus NATS durable worker proof use local
+   containers, k3d, or only env-gated tests against the real cluster?
 4. Should supervisor triage create discussion anchors implicitly when a
    signal has no anchor, or should it always require an explicit anchor
    created by the prior phase?

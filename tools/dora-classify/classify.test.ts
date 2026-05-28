@@ -109,7 +109,10 @@ describe("classifyCommit", () => {
       "docs/backlog/P1/B-0867-x.md",
     ]));
     expect(r.lane).toBe("mixed");
-    expect(r.distinctLanes.sort()).toEqual(["backlog-row", "operational"]);
+    expect([...r.distinctLanes].sort()).toEqual([
+      "backlog-row",
+      "operational",
+    ]);
   });
 
   test("empty changedFiles → substrate-cascade", () => {

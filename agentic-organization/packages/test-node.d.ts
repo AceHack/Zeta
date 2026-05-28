@@ -16,8 +16,21 @@ declare module "node:crypto" {
 }
 
 declare module "node:test" {
+  export type TestOptions = {
+    skip?: boolean | string;
+  };
+
   export function describe(name: string, fn: () => void): void;
   export function test(name: string, fn: () => void): void;
+  export function test(name: string, options: TestOptions, fn: () => void | Promise<void>): void;
+}
+
+declare module "node:process" {
+  export const env: Record<string, string | undefined>;
+}
+
+declare module "node:crypto" {
+  export function randomUUID(): string;
 }
 
 declare module "node:fs/promises" {

@@ -72,7 +72,12 @@ function parseArgs(argv: readonly string[]): CliArgs | { readonly error: string 
   if (provided > 1) {
     return { error: "specify exactly one of --sha / --since / --range" };
   }
-  return { sha, since, range, aggregate };
+  return {
+    aggregate,
+    ...(sha === undefined ? {} : { sha }),
+    ...(since === undefined ? {} : { since }),
+    ...(range === undefined ? {} : { range }),
+  };
 }
 
 function gitLogShasInRange(args: CliArgs): readonly string[] {

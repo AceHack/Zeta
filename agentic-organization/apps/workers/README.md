@@ -106,6 +106,12 @@ migration runner as a process bootstrapper, and
 through the generic SQL client before the runtime runs. The Cockroach
 worker client also exposes a pool shutdown adapter when the
 process-provided pool supports `end()`.
+`createPgCockroachWorkerPool` is the first optional live-driver binding
+for that pool contract. It dynamically loads a `pg`-compatible driver at
+the app boundary, adapts `Pool.connect()`, `client.query()`,
+`client.release()`, and `Pool.end()` to the generic worker pool
+interfaces, and keeps the reusable state packages free of driver
+imports.
 `connectNatsWorkerAdapters` is the app-level seam where a process
 transport factory becomes the generic NATS publisher, pull-consumer,
 dead-letter publisher, readiness probe, and shutdown port. Dead-letter
@@ -116,6 +122,43 @@ transport dedupe key. `createNatsJsTransportConnectionFactory` is the
 first concrete NATS client-library binding behind that seam. It uses
 `@nats-io/transport-node` for the Node connection and
 `@nats-io/jetstream` for publish, durable pull-consumer fetch,
-readiness, and shutdown. Today tests still use fake clients; the later
-NATS integration proof must exercise a real server, stream, durable
-consumer, credentials/TLS if enabled, and ack timing.
+readiness, and shutdown. The normal tests still use fake clients, while
+the env-gated NATS integration proof exercises a real server, stream,
+durable consumer, publish path, pull path, ack, invalid-envelope DLQ
+handling, readiness, and shutdown.
+
+## Integration Tests
+
+The normal test suite is fake-driven and does not require live cluster
+services. Live proofs are skipped unless their environment variables are
+present.
+
+The Cockroach integration proof is env-gated:
+
+- set `AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` to a
+  CockroachDB/PostgreSQL-compatible connection URL;
+- use the root dependency graph, which declares the `pg` driver used by
+  the default app-local pool adapter;
+- run the regular `npm test` command from `agentic-organization/`.
+
+The NATS integration proof is env-gated:
+
+- set `AGENTIC_ORG_NATS_INTEGRATION_SERVERS` to one or more comma-
+  separated NATS server URLs with JetStream enabled;
+- ensure the test process can create and delete per-run streams and
+  durable consumers prefixed by `AGENTIC_ORG_INTEGRATION_EVENTS` and
+  `agentic-org-integration-worker`;
+- run the regular `npm test` command from `agentic-organization/`.
+
+When the Cockroach env var is present, the test applies Organization
+migrations, checks readiness, proves commit and rollback behavior
+through the generic SQL executor, and verifies graceful pool shutdown
+through the generic process shutdown port. When the NATS env var is
+present, the test recreates a small per-run integration stream and
+durable consumer, publishes a canonical event through the worker
+adapter, consumes it through the generic ingestion port, acknowledges
+it, smoke-tests invalid-envelope DLQ handling, and closes the generic
+NATS shutdown port.
+The Cockroach proof also uses a per-run probe table prefixed by
+`agentic_org_integration_probe` and drops it before pool shutdown so a
+shared dev database is not polluted by successful runs.

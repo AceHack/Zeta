@@ -279,7 +279,7 @@ export function transition(
         tag: "RecordingHeartbeat",
         context: ctx,
         lane: option.lane,
-        note: option.note,
+        ...(option.note === undefined ? {} : { note: option.note }),
       };
     case "EscapeHatch":
       // Escape-hatch routes to operator-attention so operator sees the
@@ -296,7 +296,9 @@ export function transition(
         tag: "NamedBoundedWait",
         context: ctx,
         namedDep: option.namedDep,
-        expectedResolutionIso: option.eta,
+        ...(option.eta === undefined
+          ? {}
+          : { expectedResolutionIso: option.eta }),
       };
     case "RequestOperatorAttention":
       return {
@@ -321,7 +323,9 @@ export function transition(
         tag: "Paused",
         context: ctx,
         reason: option.reason,
-        expectedResumeIso: option.expectedResumeIso,
+        ...(option.expectedResumeIso === undefined
+          ? {}
+          : { expectedResumeIso: option.expectedResumeIso }),
       };
     case "EnterOpenEndedExploration":
       // Per operator 2026-05-28: "there's a menu button for that lol" —

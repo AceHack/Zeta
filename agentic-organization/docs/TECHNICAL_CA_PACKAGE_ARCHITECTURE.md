@@ -323,6 +323,14 @@ worker connection seam, and JSON telemetry sink:
   explicit `BEGIN`, `COMMIT`, `ROLLBACK`, connection release,
   SQLSTATE-based retry, ambiguous-commit preservation semantics, and a
   generic shutdown adapter for process pools that expose `end()`;
+- `apps/workers/src/adapters/pg-cockroach-worker-pool.ts` is the first
+  optional live-driver binding for the Cockroach worker pool contract.
+  It dynamically loads a `pg`-compatible module at the app boundary,
+  validates that it exports `Pool`, and adapts `Pool.connect()`,
+  `client.query()`, `client.release()`, and `Pool.end()` to
+  `CockroachWorkerPool` plus `CockroachWorkerShutdownPool`. This keeps
+  the driver out of reusable packages while giving the worker app a real
+  Cockroach/Postgres-compatible path for integration proof;
 - `apps/workers/src/adapters/nats-worker-connection.ts` adapts a
   process-provided NATS transport connection factory to generic
   `EventPublisher`, `NatsJetStreamPullConsumer`,
@@ -386,6 +394,29 @@ Ambiguous transaction outcomes must stay visible to the worker host and
 operators; the process adapter may attempt rollback cleanup after an
 ambiguous commit, but it must preserve the original ambiguity instead of
 masking it as a rollback failure.
+
+The live Cockroach proof is env-gated rather than always-on. When
+`AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` is absent, the normal
+test suite skips the live check. When it is present and a
+`pg`-compatible driver is available from the root dependency graph, the
+test applies the Organization migrations, checks readiness through
+`SELECT 1`, creates a per-run probe table, commits a probe row, rolls
+back a failed probe transaction, drops the per-run table, and closes the
+pool through the generic process shutdown port. This gives us real
+substrate evidence without making local development or reusable package
+tests depend on a cluster.
+
+The live NATS proof follows the same rule. When
+`AGENTIC_ORG_NATS_INTEGRATION_SERVERS` is absent, the normal suite skips
+the live check. When it is present, the test creates a small per-run
+JetStream stream plus durable consumer, binds the app-local `@nats-io`
+transport factory through `connectNatsWorkerAdapters`, checks durable
+readiness, publishes one canonical event, consumes it through the
+generic event-ingestion port, acknowledges it, proves the
+invalid-envelope consumer DLQ path, and closes the connection through
+the generic NATS shutdown port. The reusable packages continue to see
+only publisher, pull-consumer, dead-letter, readiness, and shutdown
+interfaces.
 
 ## SOLID Rules
 
