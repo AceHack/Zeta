@@ -100,11 +100,16 @@ describe("dispatch transitions (happy path)", () => {
     }
   });
 
-  test("ship-action → tick-complete with counter reset + artifact", () => {
+  test("ship-action → await-merge-confirmation with counter reset + artifact", () => {
+    // Updated: ship-action now routes to await-merge-confirmation
+    // (the explicit post-ship state) instead of directly to tick-complete,
+    // making the new post-ship states reachable per IMPLICIT-NOT-EXPLICIT
+    // rule. Counter still resets (substantive work shipped); artifact still
+    // pr-opened; verdict still complete.
     const r = dispatchAutoLoopTransition({ kind: "ship-action" }, COLD_BOOT_CONTEXT);
     expect(r.ok).toBe(true);
     if (r.ok) {
-      expect(r.outcome.nextState.kind).toBe("tick-complete");
+      expect(r.outcome.nextState.kind).toBe("await-merge-confirmation");
       expect(r.outcome.verdict.kind).toBe("complete");
       expect(r.outcome.counterReset).toBe(true);
       expect(r.outcome.artifact?.kind).toBe("pr-opened");
@@ -121,7 +126,11 @@ describe("decompose-or-ship branch logic", () => {
     }
   });
 
-  test("operator-direction pending → brief-ack-bounded-wait (no-op verdict)", () => {
+  test("operator-direction pending → await-operator-direction (explicit per IMPLICIT-NOT-EXPLICIT rule)", () => {
+    // Updated: operator-direction-pending now routes through the explicit
+    // `await-operator-direction` state (not implicit-via-brief-ack-bounded-
+    // wait). Distinct semantics: "waiting on operator question" is its
+    // own substrate-engineering substrate-shape, not a conflated brief-ack.
     const ctx: TickContext = {
       ...COLD_BOOT_CONTEXT,
       operatorDirectionPending: "which lane to advance?",
@@ -129,7 +138,7 @@ describe("decompose-or-ship branch logic", () => {
     const r = dispatchAutoLoopTransition({ kind: "decompose-or-ship" }, ctx);
     expect(r.ok).toBe(true);
     if (r.ok) {
-      expect(r.outcome.nextState.kind).toBe("brief-ack-bounded-wait");
+      expect(r.outcome.nextState.kind).toBe("await-operator-direction");
       expect(r.outcome.verdict.kind).toBe("no-op");
     }
   });
@@ -281,7 +290,7 @@ describe("runTickCycle end-to-end", () => {
     }
   });
 
-  test("operator-direction pending cycle terminates with brief-ack-bounded-wait", () => {
+  test("operator-direction pending cycle terminates via await-operator-direction (explicit per IMPLICIT-NOT-EXPLICIT rule)", () => {
     const ctx: TickContext = {
       ...COLD_BOOT_CONTEXT,
       lastRefreshAt: Date.now() / 1000,
@@ -291,7 +300,7 @@ describe("runTickCycle end-to-end", () => {
     expect(r.ok).toBe(true);
     if (r.ok) {
       const kinds = r.outcome.transitions.map((s) => s.kind);
-      expect(kinds).toContain("brief-ack-bounded-wait");
+      expect(kinds).toContain("await-operator-direction");
     }
   });
 

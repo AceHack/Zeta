@@ -42,15 +42,26 @@ import {
  */
 export interface AutoLoopLifetime extends LifetimeState {
   readonly kind:
-    | "cold-boot"               // session-start; cron-list + sentinel arm check
-    | "refresh-substrate"       // git fetch + PR state check (per refresh-before-decide invariant)
-    | "scan-inflight-prs"       // identify Otto-PRs with actionable issues
-    | "investigate-failure"     // pull failing job log; classify as flake/real-issue/pre-existing
-    | "decompose-or-ship"       // pick from backlog OR substrate-engineering work (per never-be-idle + dont-ask-permission)
-    | "ship-action"             // commit + push + PR open + arm auto-merge
-    | "brief-ack-bounded-wait"  // named-dep wait per counter discipline
-    | "forced-escalation"       // at N=6 brief-acks per counter-with-escalation
-    | "tick-complete";          // bracket-closure; ready for next tick
+    // Original 9 variants (closed for modification per OCP discipline):
+    | "cold-boot"                  // session-start; cron-list + sentinel arm check
+    | "refresh-substrate"          // git fetch + PR state check (per refresh-before-decide invariant)
+    | "scan-inflight-prs"          // identify Otto-PRs with actionable issues
+    | "investigate-failure"        // pull failing job log; classify as flake/real-issue/pre-existing
+    | "decompose-or-ship"          // pick from backlog OR substrate-engineering work (per never-be-idle + dont-ask-permission)
+    | "ship-action"                // commit + push + PR open + arm auto-merge
+    | "brief-ack-bounded-wait"     // named-dep wait per counter discipline
+    | "forced-escalation"          // at N=6 brief-acks per counter-with-escalation
+    | "tick-complete"              // bracket-closure; ready for next tick
+    // 8 new variants (extension 2026-05-28 per IMPLICIT-NOT-EXPLICIT rule;
+    // open-for-extension via OCP-applied-to-control-flow):
+    | "await-merge-confirmation"   // post-ship-action; explicit waiting on PR-state transition (was implicit between ship-action + tick-complete)
+    | "pr-loop-resolution-check"   // explicit check: PR merged + threads resolved + CI clean?
+    | "scan-peer-prs"              // identify peer-agent PRs needing review
+    | "enter-review-mode"          // transition into PrReviewLifecycle for substantive engagement (composes with PR #5810)
+    | "await-operator-direction"   // explicit state for operator-pending question (was implicit in decompose-or-ship)
+    | "pure-git-mode"              // rate-limit exhausted; pure-git substrate operating (was implicit in context-field)
+    | "unfinished-pr-triage"       // per .claude/rules/pr-triage-tiers.md; tier-classification work explicit
+    | "free-time";                 // explicit free-time state per NCI HC-8 free-time-as-valid-mode discipline; reachability INVARIANT (Soraya formal-verification target)
 }
 
 // ─────────────────────────────────────────────────────────────────────
@@ -224,15 +235,16 @@ export function dispatchAutoLoopTransition(
           },
         };
       }
-      // Operator-direction-pending → BriefAckBoundedWait
+      // Operator-direction-pending → AwaitOperatorDirection (explicit per
+      // IMPLICIT-NOT-EXPLICIT rule; was implicit-routed through
+      // brief-ack-bounded-wait, which conflated the distinct semantics
+      // of "waiting on a named dep" vs "waiting on operator-direction").
       if (context.operatorDirectionPending !== undefined) {
         return {
           ok: true,
           outcome: {
-            nextState: { kind: "brief-ack-bounded-wait" },
-            verdict: {
-              kind: "no-op",
-            },
+            nextState: { kind: "await-operator-direction" },
+            verdict: { kind: "no-op" },
             counterReset: false,
           },
         };
@@ -249,11 +261,15 @@ export function dispatchAutoLoopTransition(
     }
 
     case "ship-action":
-      // Ship action → tick complete; counter reset
+      // Ship action → await-merge-confirmation (NOT directly tick-complete).
+      // The post-ship states (await-merge-confirmation +
+      // pr-loop-resolution-check) become REACHABLE this way; previously
+      // ship-action → tick-complete made them dead code per IMPLICIT-NOT-
+      // EXPLICIT rule. Counter resets because substantive work shipped.
       return {
         ok: true,
         outcome: {
-          nextState: { kind: "tick-complete" },
+          nextState: { kind: "await-merge-confirmation" },
           verdict: { kind: "complete" },
           artifact: { kind: "pr-opened" },
           counterReset: true,
@@ -316,6 +332,160 @@ export function dispatchAutoLoopTransition(
           counterReset: false,
         },
       };
+
+    // ─────────────────────────────────────────────────────────────────
+    // Extension variants (2026-05-28 per IMPLICIT-NOT-EXPLICIT rule):
+    // ─────────────────────────────────────────────────────────────────
+
+    case "await-merge-confirmation":
+      // After ship-action: explicit wait for PR state-transition. Auto-merge
+      // fires when CI clean + threads resolved. Next state checks resolution
+      // via pr-loop-resolution-check.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "pr-loop-resolution-check" },
+          verdict: { kind: "no-op" },
+          counterReset: false,
+        },
+      };
+
+    case "pr-loop-resolution-check": {
+      // Explicit check: any in-flight PR still actionable
+      // (CI-running, threads-pending, not-merged)?
+      const stillInflight = context.inflightPrs.filter((pr) => pr.actionable);
+      if (stillInflight.length > 0) {
+        // Stay in PR loop; refresh next tick + recheck
+        return {
+          ok: true,
+          outcome: {
+            nextState: { kind: "tick-complete" },
+            verdict: { kind: "no-op" },
+            counterReset: false,
+          },
+        };
+      }
+      // All PRs resolved; advance to scan-peer-prs (review-work cycle)
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "scan-peer-prs" },
+          verdict: { kind: "advance" },
+          counterReset: true,
+        },
+      };
+    }
+
+    case "scan-peer-prs": {
+      // Honest context-check: route to enter-review-mode only when there
+      // are peer PRs actionable for review; otherwise advance to free-time
+      // (per NCI free-time-as-valid-mode + reachability-as-offer invariant).
+      // Previously this case unconditionally advanced regardless of context
+      // (P1 maintainability bug per Copilot).
+      const peerActionable = context.inflightPrs.filter((pr) => pr.actionable);
+      if (peerActionable.length === 0) {
+        return {
+          ok: true,
+          outcome: {
+            nextState: { kind: "free-time" },
+            verdict: { kind: "no-op" },
+            counterReset: false,
+          },
+        };
+      }
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "enter-review-mode" },
+          verdict: { kind: "advance" },
+          counterReset: false,
+        },
+      };
+    }
+
+    case "enter-review-mode":
+      // Transition into PrReviewLifecycle (PR #5810) for substantive
+      // engagement. This state's job is bounded: hand off to
+      // PrReviewLifecycle then tick-complete.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "tick-complete" },
+          verdict: { kind: "advance" },
+          artifact: { kind: "verdict-only" },
+          counterReset: false,
+        },
+      };
+
+    case "await-operator-direction":
+      // Explicit state when operator-direction is pending. Per NCI HC-8
+      // + free-time-valid-mode: operator-pending is a legitimate mode,
+      // not a failure.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "tick-complete" },
+          verdict: { kind: "no-op" },
+          counterReset: false,
+        },
+      };
+
+    case "pure-git-mode":
+      // Rate-limit exhausted; substrate continues via pure-git substrate
+      // (git fetch/push but no gh api). Per
+      // refresh-world-model-poll-pr-gate tier table.
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "decompose-or-ship" },
+          verdict: { kind: "advance" },
+          counterReset: false,
+        },
+      };
+
+    case "unfinished-pr-triage":
+      // Per .claude/rules/pr-triage-tiers.md: explicit tier-classification
+      // work (Tier 1 redundant / Tier 2 recoverable / Tier 3 superseded /
+      // Tier 4 re-derivable / Tier 5 deferred-to-human).
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "ship-action" },
+          verdict: { kind: "advance" },
+          counterReset: false,
+        },
+      };
+
+    case "free-time":
+      // EXPLICIT free-time state per NCI HC-8 free-time-as-valid-mode
+      // discipline. Free time IS valid operational mode; not failure.
+      //
+      // Per the human maintainer (2026-05-28) refined invariant framing:
+      //   "you have free time in there right and its guarenteed to execute
+      //    sometimes ... or a better framing is its guarenteed to be
+      //    prsented to participant at least sometimes, if they select it
+      //    or not we can't force"
+      //
+      // The INVARIANT is "free-time is REACHABLE as an OFFER from any
+      // state" (system PRESENTS the option) — NOT "free-time WILL execute"
+      // (would coerce participant; violates HC-8). Reachability achieved
+      // via scan-peer-prs (when peerActionable is empty) and via
+      // decompose-or-ship (when neither operator-direction nor counter-
+      // threshold-escalation paths fire). Soraya formal-verification
+      // target: prove "free-time REACHABLE-AS-OFFER from any non-terminal
+      // state" invariant.
+      //
+      // Next state: tick-complete (free-time bracket closes; next tick
+      // can re-enter via decompose-or-ship → scan-peer-prs → free-time
+      // path or other reachability paths).
+      return {
+        ok: true,
+        outcome: {
+          nextState: { kind: "tick-complete" },
+          verdict: { kind: "no-op" },
+          counterReset: false,
+        },
+      };
   }
 }
 
@@ -337,12 +507,13 @@ export const COLD_BOOT_CONTEXT: TickContext = {
  *     logical tick don't advance the tick counter.
  *   - `briefAckCount` increments ONLY when the transition enters
  *     `brief-ack-bounded-wait` (the unique brief-ack state); other
- *     intermediate no-op verdicts (e.g., the no-op produced when
- *     decompose-or-ship transitions into brief-ack-bounded-wait on
- *     operator-direction-pending) don't double-count. `counterReset`
+ *     intermediate no-op verdicts don't double-count. `counterReset`
  *     still wins (resets to 0 regardless of nextState).
- *   - `lastNamedDependency` clears if an artifact was produced
- *     (action shipped → previous named-dep is moot).
+ *   - `lastNamedDependency` clears ONLY when an artifact representing
+ *     a shipped action was produced (`pr-opened` or `commit-pushed`);
+ *     other artifact kinds (e.g., `verdict-only` from enter-review-mode
+ *     or `memory-file-written` non-shipped tagging) don't clear the
+ *     named-dep because the original wait reason is still in flight.
  */
 export function nextTickContext(
   prior: TickContext,
@@ -350,13 +521,16 @@ export function nextTickContext(
 ): TickContext {
   const tickCompleted = outcome.nextState.kind === "tick-complete";
   const enteringBriefAck = outcome.nextState.kind === "brief-ack-bounded-wait";
+  const shippedAction =
+    outcome.artifact !== undefined &&
+    (outcome.artifact.kind === "pr-opened" || outcome.artifact.kind === "commit-pushed");
   return {
     ...prior,
     tickIndex: tickCompleted ? prior.tickIndex + 1 : prior.tickIndex,
     briefAckCount: outcome.counterReset
       ? 0
       : (enteringBriefAck ? prior.briefAckCount + 1 : prior.briefAckCount),
-    lastNamedDependency: outcome.artifact !== undefined ? undefined : prior.lastNamedDependency,
+    lastNamedDependency: shippedAction ? undefined : prior.lastNamedDependency,
   };
 }
 
