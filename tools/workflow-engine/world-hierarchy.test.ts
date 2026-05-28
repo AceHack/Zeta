@@ -11,8 +11,8 @@ import {
   inheritsFrom,
   verifyHierarchy,
   annotateHierarchy,
-} from "./world-hierarchy.js";
-import { EMPTY_WORLD } from "./world.js";
+} from "./world-hierarchy";
+import { EMPTY_WORLD } from "./world";
 
 describe("substrate-algebra parentOf chain", () => {
   test("clifford has no parent (root)", () => {

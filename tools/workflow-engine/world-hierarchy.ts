@@ -3,8 +3,9 @@
 //
 // Per the human maintainer (2026-05-28): "Git inherits from restricted
 // clifford, or maybe it's fully isomorphic but it's basically DBSP and so
-// we have DBSP and Clifford worlds with one be connonical i'm voting for
-// clifford once we have it"
+// we have DBSP and Clifford worlds with one be connonical [sic — operator's
+// verbatim spelling preserved; reads "canonical"] i'm voting for clifford
+// once we have it"
 //
 // Inheritance hierarchy (operator-vote: Clifford canonical once shipped):
 //
@@ -32,7 +33,7 @@
 // (B-NNNN follow-up rows). GitWorld + GitHubWorld already shipped (see
 // tools/workflow-engine/git-world.ts).
 
-import type { World } from "./world.js";
+import type { World } from "./world";
 
 // ───────────────────────────────────────────────────────────────────────
 // Substrate-naming substrate — inheritance hierarchy markers
