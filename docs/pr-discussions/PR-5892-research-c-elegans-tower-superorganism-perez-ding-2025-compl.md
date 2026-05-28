@@ -8,7 +8,11 @@ merged_at: "2026-05-28T17:29:09Z"
 closed_at: "2026-05-28T17:29:09Z"
 head_ref: "otto-cli/b0926-tower-superorganism-celegans-2026-05-28"
 base_ref: "main"
+<<<<<<< HEAD
+archived_at: "2026-05-28T17:40:37Z"
+=======
 archived_at: "2026-05-28T17:33:58Z"
+>>>>>>> origin/main
 archive_tool: "tools/pr-preservation/archive-pr.ts"
 ---
 
