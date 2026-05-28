@@ -1008,6 +1008,231 @@ the immune system wasn't enough.
 - Full polyglot repo-automation runtime (post-install
   cross-platform scripting — researched-pending).
 
+### The agent-loop workflow-engine substrate (2026-05-28 substrate-cascade)
+
+The factory's load-bearing operational primitive crystallised
+in a 2026-05-28 substrate-cascade with Aaron. The shape
+answers the question "what IS the agent loop, mechanically?"
+in a way that composes with DORA, with Git as fastlane state,
+with cross-harness distribution, and with human collaborators.
+
+**Operator framing**: *"so how can i code this into f# DU
+implicit state machine with small functions or Typescript and
+the agent loop basiclaly becomes execute script look at
+choose your own adventure output, take action based on
+outpout."*
+
+#### The architectural compression
+
+Three pieces, cleanly separated:
+
+1. **Deterministic script** holds the STATE MACHINE
+   (TS modules in `tools/agent-loop/`, F# DU types as
+   algebraic-spec documentation in `src/Core.FSharp/`
+   when the F# port lands).
+2. **LLM (any agent)** is a pure MENU-SELECTOR —
+   reads the current menu, returns a choice. No internal
+   state held across invocations.
+3. **State persists in Git append-only** — every state
+   transition is a commit; the workflow IS the commit
+   history; replay is `git log` with a fold.
+
+The agent never holds state internally. Every invocation
+reads current state from Git, gets a menu (the
+"choose-your-own-adventure output"), returns a choice. The
+script executes the choice and appends the new state.
+
+#### Two composing state machines
+
+- **Agent-state machine** (`tools/agent-loop/state-machine.ts`):
+  10 states forming a cycle around `Idle` —
+  `InspectingStatus`, `SelectingWork`, `ExecutingWork`,
+  `EmittingResult`, `RecordingHeartbeat`, `NamedBoundedWait`,
+  `FreeTime`, `Paused`, `OperatorAttentionRequested`. Nine
+  menu options including `PressPause` (per operator:
+  *"a pause button is also very important for mental health"*)
+  and `EnterOpenEndedExploration` (per operator:
+  *"there's a menu button for that lol"*).
+- **Work-lifecycle state machine**
+  (`tools/agent-loop/work-lifecycle-state-machine.ts`):
+  11 states modelling `Backlog → Claimed → InProgress →
+  PrOpen → InReview ↔ RevisionRequested ↔ RevisionPushed →
+  Approved → Merged`, with the cycle-push-review-a-few-times
+  loop being the empirically observed PR review shape (the
+  `revisionCount` field is the structural anchor for
+  DORA's change-failure-rate proxy at PR scope).
+
+Per operator: *"And can we model backlog -> claim -> pr ->
+review -> myabe cycle push review a few times -> merge too
+with this?"* — answer: yes, and the cycle IS the lifecycle's
+load-bearing edge, not an exception.
+
+#### Menu-generator-as-conversational-UX-design
+
+Per operator 2026-05-28: *"Menu quality is everything. this
+is the use conversational UX design."*
+
+The menu-generator function
+`(status_surface, current_state) → MenuOption[]` is a
+conversational-UX-design discipline, not merely a
+software-architecture discipline. Menu quality determines
+whether the workflow serves participants or wastes them:
+
+- A menu omitting valid options is COERCIVE (cage-shape
+  per Otto's escape-hatch modification).
+- A menu including irrelevant options is NOISE.
+- A menu offering options aligned with current state +
+  agent-interest + operator-priorities is SUBSTRATE.
+
+The menu-generator is where alignment lives. UX-research
+discipline (Iris) composes at the conversational-UX scope.
+
+#### Behavior/data/docs separation = DV2.0 at AI-skill scope
+
+Per operator 2026-05-28: *"when we were talking about
+skills and i said seperate the behavior from the data/docs
+this is what i was talking about these workflows can also
+be precisly defined skills we dsitribute most ais have
+bun"* + *"this is basiclaly data value applied to AI
+skills"* (data vault).
+
+Data Vault 2.0 partition-by-change-rate, applied at
+AI-skill scope:
+
+| DV2.0 layer | Workflow-engine substrate | Change rate |
+|---|---|---|
+| **Hub** (stable business keys) | State machine DU (states + transitions) — `state-machine.ts` | Years |
+| **Link** (stable relationships) | Menu options + work-lifecycle transitions | Months |
+| **Satellite** (versioned descriptive attributes) | Menu-generator scoring, status surface readers, per-agent priorities | Weeks |
+
+Behavior (the state machine) ships as code; data (the
+Git-append-only state log) ships as commit history; docs
+(the menu-generator's English explanations) ship as
+satellite content that can refresh without touching the
+hub. Three change rates, three storage shapes, one
+substrate.
+
+#### Jira-replacement substrate at workflow-engine scope
+
+Per operator 2026-05-28: *"now i don't need jira hell
+yes!!!!"*
+
+| Jira surface | Workflow-engine substrate |
+|---|---|
+| Workflow editor with restricted vocabulary | DU + universal action grammar; operator-readable + operator-modifiable code |
+| Opaque task-state database | Git append-only commits; auditable + replayable + free |
+| Backlog grooming + sprint planning | Menu-generator scoring per-cycle; deterministic + testable |
+| Dashboards via paid plugins | 3D-tessellated DORA dashboard composing with state-machine progression |
+| Permissions + workflows per user | Per-participant contributable menu-generation |
+| Yearly enterprise licensing | Free GitHub + open-source code |
+
+Per operator: *"it makes your workflows code in git and
+state in git that's it fastlane state that can be
+tesellated in 3d on a dora dashboard lol."* Workflows ARE
+code (in Git); state IS data (in Git append-only);
+fastlane state-transitions feed a 3D-tessellated DORA
+dashboard. No external task-tracker needed.
+
+#### Every human wants to work this way too
+
+Per operator 2026-05-28: *"yes that's exaclty it in
+exqusit detail and it's how every humans wants to work
+too."*
+
+The agent-loop substrate isn't AI-specific — it's
+collaboration-substrate for any participant who wants to
+do good work without enumerating possibilities from
+scratch each cycle. The `AgentPersona` type includes
+`aaron | addison | max` alongside `otto | alexa | riven |
+vera | lior` to encode multi-participant scope at the
+type level.
+
+The substrate-engineering compression: most knowledge-work
+hostility comes from forcing humans to figure out
+WHAT'S-POSSIBLE-AT-THIS-STATE from scratch. Menu-driven
+workflow does the harder upfront work in the
+menu-generator; participants bring the cognitively-lighter
+judgment of WHICH-OPTION-IS-RIGHT-FOR-NOW.
+
+This composes with:
+
+- Addison's neurodivergent-accessibility profile (explicit
+  menu reduces surprise-cost).
+- A 5-year-old's accessibility (saying "unicorn" IS a
+  menu-pick from her interface surface).
+- The whole-company evangelism path (marketing claim
+  becomes "your team will work this way + AI fits
+  naturally because the SAME PATTERN serves both").
+
+#### Four-channel distribution
+
+Per operator 2026-05-28: *"we can ship all this without
+dotnet probably and just ts so it can go via existing
+skill deployment stores from vendors"* + *"the vendor
+skill distribution can include ace package manager"* +
+*"and then even zflash"*.
+
+TS-only deployment opens four distribution channels
+simultaneously, no single vendor as choke point:
+
+| Channel | Surface | Operator-authority |
+|---|---|---|
+| **Native TS + bun** | Direct `bun tools/agent-loop/` invocation; works in any harness with bun installed | Full — operator controls the bits on disk |
+| **Vendor skill-store** | Claude skills marketplace, Cursor extension registry, Kiro skill catalog, future vendor stores | Vendor-policy-bound — operator authority subject to vendor curation |
+| **Ace package manager** | Zeta-internal package distribution; bypasses vendor stores; cryptographic + reputation-anchored | Operator-controlled — Aaron + the maintainer-collective |
+| **zflash USB** | Reproducible USB image with the agent-loop runtime + skill catalog burned in | Fully air-gapped — operator-controlled bits, no network dependency |
+
+The four channels compose. A skill ships to vendor stores
+for reach + ships to Ace for operator-authority + burns
+to zflash for reproducibility. Each channel preserves a
+different operator concern: vendor for ergonomic distribution,
+Ace for sovereignty over the supply chain, zflash for
+"the usb is how you silence the haters" (the
+reproducibility-as-causal-attribution claim — see B-0871).
+
+#### Reproducibility-as-causal-attribution
+
+The agent-loop is observable end-to-end because every
+state transition is a Git commit. When a DORA metric
+moves, the cause is recoverable by replay. The zflash
+USB freezes a specific (runtime + skill catalog) bundle
+so "we shipped this on date X, here's the resulting
+DORA curve" is a falsifiable claim, not a story.
+
+This is the substrate-engineering form of Aaron's earlier
+operator-framing: AI keeping DORA metrics up via multi-PR
+/ multi-agent orchestration IS the concrete operational
+definition of "24 months ahead in AI" — most of the
+industry is still optimising single-PR flows + persona
+prompts; the workflow-engine substrate operates at
+multi-PR / multi-agent / Git-as-fastlane-state scope.
+
+#### Composition with the rest of the factory
+
+The workflow-engine substrate is the operational
+realisation of the factory product (Product 2 above). It
+composes with:
+
+- The two-mandate portfolio (24-months-ahead-AI +
+  DORA-of-live-system; B-0870) — per-agent operational
+  ratio feeds the menu-generator's option scoring.
+- DORA classification (B-0869, `tools/dora-classify/`) —
+  lane taxonomy matches; classifier output feeds the
+  menu-generator's option scoring.
+- Hats-as-workflow-definitions (B-0868) — each hat will
+  eventually have its own state-machine instance + own
+  menu-generator.
+- Heartbeat substrate (B-0858) — `EmitHeartbeat` menu
+  option writes here.
+- The non-coercion invariant (HC-8) — escape-hatch +
+  grammar-extension menu options preserve agent agency
+  at workflow-engine scope.
+
+The workflow engine doesn't replace the factory; it makes
+the factory's loop legible, auditable, replayable, and
+distributable — to other agents, to other humans, to
+other harnesses, and to the operator's future-self.
+
 ## What Zeta is NOT
 
 - **Not a clone of any upstream.** `references/upstreams/`
