@@ -1,13 +1,20 @@
+import { InitiativeStatus, ProjectStatus, WorkItemState, WorkItemType } from "../../domain/src/index.ts";
+
 export const CockroachCoreStateMigrationName = {
   CoreStateV1: "0001_agentic_org_core_state",
   OutboxClaimFenceV2: "0002_agentic_org_outbox_claim_fence",
+  WorkAnchorKernelV3: "0003_agentic_org_work_anchor_kernel",
 } as const;
 
 export type CockroachCoreStateMigrationName =
   (typeof CockroachCoreStateMigrationName)[keyof typeof CockroachCoreStateMigrationName];
 
 export const CockroachTableName = {
+  Projects: "agentic_org_projects",
+  Initiatives: "agentic_org_initiatives",
   WorkItems: "agentic_org_work_items",
+  WorkAnchorTargets: "agentic_org_work_anchor_targets",
+  WorkItemStateHistory: "agentic_org_work_item_state_history",
   SupervisorSignals: "agentic_org_supervisor_signals",
   AuditEvents: "agentic_org_audit_events",
   InboxReceipts: "agentic_org_inbox_receipts",
@@ -19,6 +26,28 @@ export const CockroachTableName = {
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
 
+export const CockroachCheckConstraintName = {
+  ProjectStatus: "agentic_org_projects_status_check",
+  InitiativeStatus: "agentic_org_initiatives_status_check",
+  WorkItemType: "agentic_org_work_items_work_item_type_check",
+  WorkItemState: "agentic_org_work_items_state_check",
+  WorkItemStateHistoryFromState: "agentic_org_work_item_state_history_from_state_check",
+  WorkItemStateHistorySequencePositive: "agentic_org_work_item_state_history_sequence_positive_check",
+  WorkItemStateHistoryToState: "agentic_org_work_item_state_history_to_state_check",
+} as const;
+
+export type CockroachCheckConstraintName =
+  (typeof CockroachCheckConstraintName)[keyof typeof CockroachCheckConstraintName];
+
+export const CockroachSchemaBackfillValue = {
+  WorkItemTypeTask: WorkItemType.Task,
+  Version: "1",
+  Trace: "migration-backfill",
+} as const;
+
+export type CockroachSchemaBackfillValue =
+  (typeof CockroachSchemaBackfillValue)[keyof typeof CockroachSchemaBackfillValue];
+
 export type CockroachSchemaMigration = {
   name: CockroachCoreStateMigrationName;
   sql: string;
@@ -28,7 +57,7 @@ export function createCockroachCoreStateMigration(): CockroachSchemaMigration {
   return {
     name: CockroachCoreStateMigrationName.CoreStateV1,
     sql: [
-      createWorkItemsTableSql(),
+      createLegacyWorkItemsTableSql(),
       createSupervisorSignalsTableSql(),
       createAuditEventsTableSql(),
       createOutboxEventsTableSql(),
@@ -47,11 +76,59 @@ export function createCockroachOutboxClaimFenceMigration(): CockroachSchemaMigra
   };
 }
 
-export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMigration[] {
-  return [createCockroachCoreStateMigration(), createCockroachOutboxClaimFenceMigration()];
+export function createCockroachWorkAnchorKernelMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.WorkAnchorKernelV3,
+    sql: createWorkAnchorKernelMigrationSql(),
+  };
 }
 
-function createWorkItemsTableSql(): string {
+export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMigration[] {
+  return [
+    createCockroachCoreStateMigration(),
+    createCockroachOutboxClaimFenceMigration(),
+    createCockroachWorkAnchorKernelMigration(),
+  ];
+}
+
+function createProjectsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.Projects} (
+  project_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  name STRING NOT NULL,
+  status STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.ProjectStatus} CHECK (status IN (${createSqlStringList(Object.values(ProjectStatus))})),
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  created_by_agent_id STRING NOT NULL,
+  created_by_hat_assignment_id STRING NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);`.trim();
+}
+
+function createInitiativesTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.Initiatives} (
+  initiative_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  title STRING NOT NULL,
+  status STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.InitiativeStatus} CHECK (status IN (${createSqlStringList(Object.values(InitiativeStatus))})),
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  created_by_agent_id STRING NOT NULL,
+  created_by_hat_assignment_id STRING NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);`.trim();
+}
+
+function createLegacyWorkItemsTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkItems} (
   work_item_id STRING PRIMARY KEY,
@@ -63,6 +140,48 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkItems} (
   created_at TIMESTAMPTZ NOT NULL,
   created_by_agent_id STRING NOT NULL,
   created_by_hat_assignment_id STRING NOT NULL
+);`.trim();
+}
+
+function createWorkAnchorTargetsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkAnchorTargets} (
+  work_anchor_target_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  initiative_id STRING,
+  work_item_id STRING NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  created_by_agent_id STRING NOT NULL,
+  created_by_hat_assignment_id STRING NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);`.trim();
+}
+
+function createWorkItemStateHistoryTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkItemStateHistory} (
+  work_state_transition_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  sequence INT8 NOT NULL CONSTRAINT ${CockroachCheckConstraintName.WorkItemStateHistorySequencePositive} CHECK (sequence > 0),
+  from_state STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.WorkItemStateHistoryFromState} CHECK (from_state IN (${createSqlStringList(Object.values(WorkItemState))})),
+  to_state STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.WorkItemStateHistoryToState} CHECK (to_state IN (${createSqlStringList(Object.values(WorkItemState))})),
+  evidence_artifact_ids JSONB NOT NULL,
+  assigned_engineer_hat_assignment_id STRING,
+  scheduled_work_block_id STRING,
+  transitioned_at TIMESTAMPTZ NOT NULL,
+  transitioned_by_agent_id STRING NOT NULL,
+  transitioned_by_hat_assignment_id STRING NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL,
+  UNIQUE (work_item_id, sequence)
 );`.trim();
 }
 
@@ -124,6 +243,67 @@ function createOutboxClaimFenceMigrationSql(): string {
   return `
 ALTER TABLE IF EXISTS ${CockroachTableName.OutboxEvents}
   ADD COLUMN IF NOT EXISTS claim_id STRING;`.trim();
+}
+
+function createWorkAnchorKernelMigrationSql(): string {
+  return [
+    createProjectsTableSql(),
+    createInitiativesTableSql(),
+    createWorkAnchorTargetsTableSql(),
+    createWorkItemStateHistoryTableSql(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ADD COLUMN IF NOT EXISTS initiative_id STRING;`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ADD COLUMN IF NOT EXISTS work_item_type STRING DEFAULT '${CockroachSchemaBackfillValue.WorkItemTypeTask}';`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ;`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ADD COLUMN IF NOT EXISTS version INT8 DEFAULT ${CockroachSchemaBackfillValue.Version};`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ADD COLUMN IF NOT EXISTS correlation_id STRING DEFAULT '${CockroachSchemaBackfillValue.Trace}';`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ADD COLUMN IF NOT EXISTS causation_id STRING DEFAULT '${CockroachSchemaBackfillValue.Trace}';`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ADD COLUMN IF NOT EXISTS trace_id STRING DEFAULT '${CockroachSchemaBackfillValue.Trace}';`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ALTER COLUMN work_item_type DROP DEFAULT,
+  ALTER COLUMN version DROP DEFAULT,
+  ALTER COLUMN correlation_id DROP DEFAULT,
+  ALTER COLUMN causation_id DROP DEFAULT,
+  ALTER COLUMN trace_id DROP DEFAULT;`.trim(),
+    `
+UPDATE ${CockroachTableName.WorkItems}
+  SET work_item_type = COALESCE(work_item_type, '${CockroachSchemaBackfillValue.WorkItemTypeTask}'),
+      updated_at = COALESCE(updated_at, created_at),
+      version = COALESCE(version, ${CockroachSchemaBackfillValue.Version}),
+      correlation_id = COALESCE(correlation_id, '${CockroachSchemaBackfillValue.Trace}'),
+      causation_id = COALESCE(causation_id, '${CockroachSchemaBackfillValue.Trace}'),
+      trace_id = COALESCE(trace_id, '${CockroachSchemaBackfillValue.Trace}');`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ALTER COLUMN work_item_type SET NOT NULL,
+  ALTER COLUMN updated_at SET NOT NULL,
+  ALTER COLUMN version SET NOT NULL,
+  ALTER COLUMN correlation_id SET NOT NULL,
+  ALTER COLUMN causation_id SET NOT NULL,
+  ALTER COLUMN trace_id SET NOT NULL;`.trim(),
+    `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
+  ADD CONSTRAINT IF NOT EXISTS ${CockroachCheckConstraintName.WorkItemType} CHECK (work_item_type IN (${createSqlStringList(Object.values(WorkItemType))})),
+  ADD CONSTRAINT IF NOT EXISTS ${CockroachCheckConstraintName.WorkItemState} CHECK (state IN (${createSqlStringList(Object.values(WorkItemState))}));`.trim(),
+  ].join("\n\n");
+}
+
+function createSqlStringList(values: readonly string[]): string {
+  return values.map((value) => `'${value}'`).join(", ");
 }
 
 function createIdempotencyRecordsTableSql(): string {

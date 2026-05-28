@@ -46,11 +46,14 @@ export {
   type CreateCockroachPolicyDecisionObservationStoreInput,
 } from "./cockroach-policy-decision-observation-store.ts";
 export {
+  CockroachCheckConstraintName,
   CockroachCoreStateMigrationName,
+  CockroachSchemaBackfillValue,
   CockroachTableName,
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
   createCockroachOutboxClaimFenceMigration,
+  createCockroachWorkAnchorKernelMigration,
   type CockroachSchemaMigration,
 } from "./cockroach-schema.ts";
 export {

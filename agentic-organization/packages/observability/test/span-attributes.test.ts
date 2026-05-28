@@ -41,7 +41,7 @@ describe("agentic observability span attributes", () => {
         policyVersion: "policy-v1",
       },
       payload: {
-        state: WorkItemState.New,
+        state: WorkItemState.Created,
       },
     });
 

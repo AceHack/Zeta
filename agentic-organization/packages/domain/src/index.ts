@@ -13,7 +13,14 @@ export {
   type CreateAgenticEventEnvelopeInput,
   type PolicyDecisionEvidence,
 } from "./event-envelope.ts";
-export { WorkItemState, assertWorkItemTransition, createInitialWorkItemState } from "./work-item-state-machine.ts";
+export {
+  WorkItemState,
+  WorkItemType,
+  assertInitialWorkItemState,
+  assertWorkItemTransition,
+  createInitialWorkItemState,
+  type WorkItemTransitionContext,
+} from "./work-item-state-machine.ts";
 export {
   ReactionPlanActionType,
   ReactionPlanReason,
@@ -45,7 +52,12 @@ export type {
   AuditEvent,
   DiscussionAnchor,
   IdempotencyRecord,
+  Initiative,
   OutboxEvent,
+  Project,
   SupervisorSignal,
+  WorkAnchorTarget,
   WorkItem,
+  WorkStateTransition,
 } from "./records.ts";
+export { InitiativeStatus, ProjectStatus } from "./records.ts";

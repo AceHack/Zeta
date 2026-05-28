@@ -154,7 +154,9 @@ export {
   type WorkerProcessEntrypointResult,
 } from "./worker-process-entrypoint.ts";
 export {
+  CockroachTableName,
   CockroachMigrationStatement,
   createCockroachSqlExecutor,
+  createCockroachWorkAnchorKernelMigration,
   type CockroachAnySqlStatement,
 } from "../../../packages/state-cockroach/src/index.ts";

@@ -4,17 +4,78 @@ import type {
   SupervisorSignalStatus,
   SupervisorSignalToolType,
 } from "./supervisor-communication.ts";
-import type { WorkItemState } from "./work-item-state-machine.ts";
+import type { WorkItemState, WorkItemType } from "./work-item-state-machine.ts";
+
+export const ProjectStatus = {
+  Active: "active",
+  Archived: "archived",
+} as const;
+
+export type ProjectStatus = (typeof ProjectStatus)[keyof typeof ProjectStatus];
+
+export const InitiativeStatus = {
+  Proposed: "proposed",
+  Active: "active",
+  Completed: "completed",
+  Archived: "archived",
+} as const;
+
+export type InitiativeStatus = (typeof InitiativeStatus)[keyof typeof InitiativeStatus];
+
+export type Project = {
+  projectId: string;
+  organizationId: string;
+  name: string;
+  status: ProjectStatus;
+  createdAt: string;
+  createdBy: AgenticActor;
+};
+
+export type Initiative = {
+  initiativeId: string;
+  organizationId: string;
+  projectId: string;
+  title: string;
+  status: InitiativeStatus;
+  createdAt: string;
+  createdBy: AgenticActor;
+};
 
 export type WorkItem = {
   workItemId: string;
   organizationId: string;
   projectId: string;
+  initiativeId?: string;
+  workItemType: WorkItemType;
   title: string;
   description: string;
   state: WorkItemState;
   createdAt: string;
   createdBy: AgenticActor;
+};
+
+export type WorkAnchorTarget = {
+  workAnchorTargetId: string;
+  organizationId: string;
+  projectId: string;
+  initiativeId?: string;
+  workItemId: string;
+  createdAt: string;
+  createdBy: AgenticActor;
+};
+
+export type WorkStateTransition = {
+  workStateTransitionId: string;
+  organizationId: string;
+  projectId: string;
+  workItemId: string;
+  fromState: WorkItemState;
+  toState: WorkItemState;
+  evidenceArtifactIds: readonly string[];
+  assignedEngineerHatAssignmentId?: string;
+  scheduledWorkBlockId?: string;
+  transitionedAt: string;
+  transitionedBy: AgenticActor;
 };
 
 export type SupervisorSignal = {

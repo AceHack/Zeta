@@ -973,15 +973,26 @@ initiative, work item, or anchor-target persistence yet.
 ### Code Steps
 
 1. Reconcile the V0 work item states across docs and implementation,
-   including how `created` maps to the current `intake` concept.
+   including how `created` maps to the current `intake` concept. First
+   domain slice done with `created`, `intake`, `triage`, `ready`,
+   `in_progress`, `blocked`, `review`, and `done`.
 2. Add the minimal domain records for:
    - project;
    - initiative;
    - work item;
    - work anchor target;
-   - work state transition.
+   - work state transition. First domain record types added; durable
+     persistence and commands are still pending.
 3. Add Cockroach schema for minimal projects, initiatives, work items,
-   and work anchor targets.
+   and work anchor targets. First durable schema slice done with
+   `0003_agentic_org_work_anchor_kernel`: V1 remains the legacy core
+   migration, V3 additively creates project, initiative, work anchor
+   target, and work item state-history tables, upgrades existing
+   `work_items` with work type, trace, version, and update columns,
+   drops migration-only defaults after backfill so future writes require
+   real command provenance, preserves legacy `updated_at` from
+   `created_at`, constrains replay sequence and enum columns from domain
+   constants, and tests generated SQL against checked-in migration files.
 4. Add commands:
    - `create_project`;
    - `create_initiative`;
@@ -998,6 +1009,9 @@ initiative, work item, or anchor-target persistence yet.
    - review;
    - done.
 6. Add the first type-specific lifecycle policy records for defects.
+   First domain guards added: defects must start in `created`, require
+   triage fields and evidence before `ready`, and require engineer
+   assignment plus a scheduled work block before `in_progress`.
 7. Emit audit and outbox events for every work state transition.
 8. Add a minimal work-status query/read model for workers, agents, and
    future UI/API hosts.

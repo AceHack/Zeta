@@ -69,29 +69,27 @@ This structure should be flexible enough for internal platform work and product/
 ### Work Item States
 
 ```text
-intake
-  -> classified
-  -> discovery
-  -> needs_business_approval
-  -> needs_architecture
-  -> ready
-  -> planned
-  -> assigned
-  -> in_progress
-  -> blocked
-  -> review
-  -> needs_rework
-  -> qa_review
-  -> qa_reproducible
-  -> delivery_review
-  -> approved
-  -> merged
-  -> released
-  -> outcome_review
-  -> done
+created -> intake -> triage -> ready -> in_progress
+in_progress -> blocked -> in_progress
+in_progress -> review
+review -> in_progress
+review -> done
 ```
 
-The state machine should allow workflow-specific subsets. For example, a credential request does not need code review, but it does need security review. A documentation task may not need QA, but it may need architecture or product approval.
+The V0 shared state machine is intentionally small. Workflow-specific
+states such as discovery, business approval, architecture approval, QA
+review, merge, release, and outcome review should first appear as gates,
+state history, and type-specific lifecycle policy records. Once those
+records prove stable, the Organization can promote any truly universal
+state into the shared enum.
+
+Defects use the first type-specific lifecycle policy: they start in
+`created`, cannot enter `ready` until triage fields and evidence exist,
+and cannot enter `in_progress` until an engineer hat assignment and
+scheduled work block exist. Work item type is required on the domain
+record so defect policy cannot be skipped by omitting the type. State
+transition records must preserve the evidence artifact IDs and the
+assignment/schedule references that made the transition legal.
 
 ### Requirement Maturity States
 

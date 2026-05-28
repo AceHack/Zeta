@@ -67,6 +67,23 @@ matters.
 | `gate_decisions`          | approve, reject, needs-changes, or defer decisions                                     |
 | `releases`                | release groupings once release management enters the slice                             |
 
+The first Cockroach-backed Work Anchor Kernel migration is
+`0003_agentic_org_work_anchor_kernel`. It is additive over the legacy
+`0001_agentic_org_core_state` table shape: V1 remains the historical
+bootstrap migration, while V3 creates projects, initiatives, work anchor
+targets, and state history, then upgrades `work_items` with
+`initiative_id`, required `work_item_type`, `updated_at`, `version`,
+`correlation_id`, `causation_id`, and `trace_id`. The V3 migration
+keeps a visible `migration-backfill` value for legacy trace columns so
+old rows remain queryable without pretending they came from a real
+agent command. Those migration defaults are dropped before the migration
+sets the columns `NOT NULL`, so new command handlers must still provide
+real trace fields through the command contract. `updated_at` is added
+without a default and backfilled from `created_at` so legacy work items
+preserve their original timestamp. `work_item_state_history` is
+append-only with positive per-work-item sequence numbers so replay order
+cannot be duplicated or zero-filled.
+
 ### Schedules, Prompt Flows, and Actions
 
 | Table                           | V0 responsibility                                                  |
@@ -124,19 +141,39 @@ magic strings in command handlers.
 ### `work_item_state`
 
 ```text
-new
+created
+intake
 triage
-needs_clarification
 ready
-assigned
 in_progress
-review_requested
-changes_requested
-approved
 blocked
+review
 done
-canceled
 ```
+
+The first implemented TypeScript enum is intentionally narrower than the
+full future workflow matrix. `created` is the mechanical creation state;
+`intake` is where the Organization classifies the work before triage;
+`triage` is where required fields and evidence are gathered; `ready`
+means the item can be scheduled/assigned; `in_progress`, `blocked`,
+`review`, and `done` cover the first execution loop. Richer states such
+as business approval, architecture approval, QA signoff, merge, release,
+and outcome review should be layered as gates or type-specific lifecycle
+records before they are promoted into the shared base enum.
+
+Defect work items have V0 lifecycle guards:
+
+- defects must start in `created`;
+- defects cannot move from `triage` to `ready` until triage fields and
+  required evidence exist;
+- defects cannot move from `ready` to `in_progress` until an engineer hat
+  assignment and scheduled work block exist.
+
+`work_item_type` is required on the domain record so type-specific
+lifecycle policy cannot be bypassed by omission. Work state transition
+records must keep the evidence artifact IDs, assigned engineer hat
+assignment, and scheduled work block references that justified the
+transition.
 
 ### `hat_assignment_state`
 
@@ -352,10 +389,13 @@ rows to NATS JetStream and marks them published.
 The first Cockroach adapter set is composed through a generic SQL
 executor and durable adapter factory. The same executor shape backs
 command state, outbox publishing, event ingestion, policy observations,
-and the core migration runner. App hosts may bind that executor to a
-real Cockroach client, but domain, application, runtime, policy,
-messaging, and worker packages must not depend on the concrete client or
-connection pool.
+and the core migration runner. Generated migration SQL and checked-in
+`packages/state-cockroach/migrations/*.sql` files are tested for exact
+synchronization so app bootstrappers and file-based migration consumers
+observe the same schema. App hosts may bind that executor to a real
+Cockroach client, but domain, application, runtime, policy, messaging,
+and worker packages must not depend on the concrete client or connection
+pool.
 
 Subject shape:
 
@@ -392,6 +432,19 @@ double-counting. Organization DB assignments remain authoritative until
 an ADR explicitly promotes CRD writeback to live enforcement.
 
 ## Migration and Test Expectations
+
+Current executable migration contract:
+
+- `0001_agentic_org_core_state` is the legacy core schema and should not
+  be rewritten to include later work-anchor concepts;
+- `0002_agentic_org_outbox_claim_fence` is the additive outbox claim ID
+  migration;
+- `0003_agentic_org_work_anchor_kernel` is the additive Work Anchor
+  Kernel migration;
+- generated SQL must match the checked-in migration files exactly;
+- database constraints for work item state, work item type, project
+  status, and initiative status must be generated from TypeScript domain
+  enums rather than repeated as hand-typed magic strings.
 
 Before the first implementation PR lands, define tests for:
 

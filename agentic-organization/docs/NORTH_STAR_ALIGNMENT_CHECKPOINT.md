@@ -79,6 +79,25 @@ and `UI_AND_OBSERVABILITY_CONCEPTS.md` reject unanchored discussions.
 Meetings, one-on-ones, broadcasts, votes, review comments, reports, and
 team threads must reference work before they can affect state.
 
+First implementation progress: the domain now has a minimal typed work
+item lifecycle (`created`, `intake`, `triage`, `ready`, `in_progress`,
+`blocked`, `review`, `done`) plus V0 defect guards for creation,
+readiness, assignment, and scheduling. Work item type is required on the
+domain record, and transition records carry evidence, assignment, and
+schedule references so later UI/graph/agent review can explain why a
+transition was legal. The Cockroach schema now has an additive
+`0003_agentic_org_work_anchor_kernel` migration for projects,
+initiatives, work anchor targets, work item state history, and upgraded
+work item trace/type/version columns. V1 remains legacy instead of being
+rewritten, generated SQL is checked against migration files, and DB
+constraints derive from domain enum values. Migration backfill defaults
+are dropped after legacy rows are patched so future writes still require
+real command provenance, legacy `updated_at` is preserved from
+`created_at`, and state-history sequence constraints protect replay
+order. The remaining gap is command handlers and generic state ports
+that validate anchor existence before supervisor signals, discussions,
+and meetings can mutate state.
+
 ### Scheduled Agent Time
 
 `AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`,

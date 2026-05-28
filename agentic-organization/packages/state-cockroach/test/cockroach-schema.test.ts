@@ -1,12 +1,17 @@
 import { equal, ok } from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { describe, test } from "node:test";
+import { fileURLToPath } from "node:url";
 
+import { InitiativeStatus, ProjectStatus, WorkItemState, WorkItemType } from "../../domain/src/index.ts";
 import {
   CockroachCoreStateMigrationName,
+  CockroachSchemaBackfillValue,
   CockroachTableName,
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
   createCockroachOutboxClaimFenceMigration,
+  createCockroachWorkAnchorKernelMigration,
 } from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
@@ -53,5 +58,74 @@ describe("cockroach core state schema", () => {
 
     equal(migrations[0]?.name, CockroachCoreStateMigrationName.CoreStateV1);
     equal(migrations[1]?.name, CockroachCoreStateMigrationName.OutboxClaimFenceV2);
+    equal(migrations[2]?.name, CockroachCoreStateMigrationName.WorkAnchorKernelV3);
+  });
+
+  test("declares an additive work-anchor kernel migration for existing databases", () => {
+    const migration = createCockroachWorkAnchorKernelMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.WorkAnchorKernelV3);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.Projects}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.Initiatives}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkAnchorTargets}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkItemStateHistory}`));
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS initiative_id STRING"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS work_item_type STRING DEFAULT"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS version INT8 DEFAULT"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS correlation_id STRING DEFAULT"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS causation_id STRING DEFAULT"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS trace_id STRING DEFAULT"));
+    ok(migration.sql.includes("ALTER COLUMN work_item_type DROP DEFAULT"));
+    ok(!migration.sql.includes("ALTER COLUMN updated_at DROP DEFAULT"));
+    ok(migration.sql.includes("ALTER COLUMN version DROP DEFAULT"));
+    ok(migration.sql.includes("ALTER COLUMN correlation_id DROP DEFAULT"));
+    ok(migration.sql.includes("ALTER COLUMN causation_id DROP DEFAULT"));
+    ok(migration.sql.includes("ALTER COLUMN trace_id DROP DEFAULT"));
+    ok(migration.sql.includes("UPDATE"));
+    ok(migration.sql.includes("SET work_item_type = COALESCE"));
+    ok(migration.sql.includes(`'${CockroachSchemaBackfillValue.WorkItemTypeTask}'`));
+    ok(migration.sql.includes("ALTER COLUMN work_item_type SET NOT NULL"));
+    ok(migration.sql.includes("ALTER COLUMN updated_at SET NOT NULL"));
+    ok(migration.sql.includes("ALTER COLUMN version SET NOT NULL"));
+    ok(migration.sql.includes("ALTER COLUMN correlation_id SET NOT NULL"));
+    ok(migration.sql.includes("ALTER COLUMN causation_id SET NOT NULL"));
+    ok(migration.sql.includes("ALTER COLUMN trace_id SET NOT NULL"));
+    ok(migration.sql.includes("ADD CONSTRAINT IF NOT EXISTS"));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(WorkItemState))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(WorkItemType))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(ProjectStatus))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(InitiativeStatus))));
+    ok(migration.sql.includes("CONSTRAINT agentic_org_work_item_state_history_sequence_positive_check CHECK (sequence > 0)"));
+    ok(migration.sql.includes("UNIQUE (work_item_id, sequence)"));
+    equal(CockroachSchemaBackfillValue.WorkItemTypeTask, WorkItemType.Task);
+    ok(migration.sql.includes("updated_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("version INT8 NOT NULL"));
+    ok(migration.sql.includes("correlation_id STRING NOT NULL"));
+    ok(migration.sql.includes("causation_id STRING NOT NULL"));
+    ok(migration.sql.includes("trace_id STRING NOT NULL"));
+    ok(migration.sql.includes("sequence INT8 NOT NULL"));
+    ok(migration.sql.includes("evidence_artifact_ids JSONB NOT NULL"));
+    ok(migration.sql.includes("assigned_engineer_hat_assignment_id STRING"));
+    ok(migration.sql.includes("scheduled_work_block_id STRING"));
+  });
+
+  test("keeps generated migrations synchronized with checked-in SQL files", async () => {
+    for (const migration of createCockroachCoreStateMigrations()) {
+      equal(normalizeSql(migration.sql), normalizeSql(await readMigrationSqlFile(migration.name)));
+    }
   });
 });
+
+function createCheckConstraintValues(values: readonly string[]): string {
+  return values.map((value) => `'${value}'`).join(", ");
+}
+
+async function readMigrationSqlFile(migrationName: CockroachCoreStateMigrationName): Promise<string> {
+  return readFile(fileURLToPath(new URL(`../migrations/${migrationName}.sql`, import.meta.url)), "utf8");
+}
+
+function normalizeSql(sql: string): string {
+  return sql.replace(/\r\n/g, "\n").trim();
+}

@@ -5,6 +5,7 @@ import { describe, test } from "node:test";
 
 import {
   CockroachMigrationStatement,
+  CockroachTableName,
   WorkerDependencyName,
   WorkerDependencyReadinessStatus,
   WorkerProcessShutdownStatus,
@@ -12,6 +13,7 @@ import {
   WorkerRuntimeStatus,
   createCockroachMigrationBootstrapper,
   createCockroachReadinessProbe,
+  createCockroachWorkAnchorKernelMigration,
   createCockroachSqlExecutor,
   createCockroachWorkerShutdownPort,
   createCockroachWorkerSqlClient,
@@ -47,6 +49,15 @@ const CockroachIntegrationStatementName = {
   InsertProbeBeforeRollback: "integration_insert_probe_before_rollback",
   SelectProbe: "integration_select_probe",
   SelectRolledBackProbe: "integration_select_rolled_back_probe",
+  ApplyWorkAnchorMigration: "integration_apply_work_anchor_migration",
+  CreateLegacyWorkItemsTable: "integration_create_legacy_work_items_table",
+  DropLegacyWorkItemsTable: "integration_drop_legacy_work_items_table",
+  InsertDuplicateSequence: "integration_insert_duplicate_sequence",
+  InsertInvalidSequence: "integration_insert_invalid_sequence",
+  InsertLegacyWorkItem: "integration_insert_legacy_work_item",
+  InsertWorkItemStateHistory: "integration_insert_work_item_state_history",
+  InsertWorkItemWithoutTrace: "integration_insert_work_item_without_trace",
+  SelectLegacyWorkItem: "integration_select_legacy_work_item",
 } as const;
 
 const CockroachIntegrationRuntimeErrorMessage = {
@@ -64,6 +75,31 @@ type CockroachIntegrationSql = {
   DropProbeTable: string;
   InsertProbe: string;
   SelectProbe: string;
+};
+
+type WorkAnchorMigrationRun = {
+  sql: {
+    CreateLegacyWorkItemsTable: string;
+    DropLegacyWorkItemsTable: string;
+    InsertDuplicateSequence: string;
+    InsertInvalidSequence: string;
+    InsertLegacyWorkItem: string;
+    InsertWorkItemStateHistory: string;
+    InsertWorkItemWithoutTrace: string;
+    SelectLegacyWorkItem: string;
+    WorkAnchorMigration: string;
+  };
+  workItemsTableName: string;
+  workItemStateHistoryTableName: string;
+};
+
+type LegacyWorkItemRow = {
+  causation_id: string;
+  correlation_id: string;
+  trace_id: string;
+  updated_at: Date;
+  version: string;
+  work_item_type: string;
 };
 
 describe("Cockroach worker live integration", () => {
@@ -173,6 +209,94 @@ describe("Cockroach worker live integration", () => {
       }
     },
   );
+
+  test(
+    "upgrades a legacy work-items table through the work-anchor kernel migration",
+    {
+      skip:
+        env[CockroachIntegrationEnvName.DatabaseUrl] === undefined
+          ? `${CockroachIntegrationEnvName.DatabaseUrl} is not set`
+          : false,
+    },
+    async () => {
+      const databaseUrl = readIntegrationDatabaseUrl();
+      const run = createWorkAnchorMigrationRun();
+      const pool = await createPgCockroachWorkerPool({
+        databaseUrl,
+      });
+      const sqlClient = createCockroachWorkerSqlClient({
+        pool,
+        maxTransactionAttempts: 2,
+      });
+      const executor = createCockroachSqlExecutor({
+        client: sqlClient,
+      });
+
+      try {
+        await executor.execute({
+          name: CockroachIntegrationStatementName.CreateLegacyWorkItemsTable,
+          sql: run.sql.CreateLegacyWorkItemsTable,
+          parameters: [],
+        });
+        await executor.execute({
+          name: CockroachIntegrationStatementName.InsertLegacyWorkItem,
+          sql: run.sql.InsertLegacyWorkItem,
+          parameters: [],
+        });
+        await executor.execute({
+          name: CockroachIntegrationStatementName.ApplyWorkAnchorMigration,
+          sql: run.sql.WorkAnchorMigration,
+          parameters: [],
+        });
+
+        const rows = await executor.execute<LegacyWorkItemRow>({
+          name: CockroachIntegrationStatementName.SelectLegacyWorkItem,
+          sql: run.sql.SelectLegacyWorkItem,
+          parameters: [],
+        });
+
+        equal(rows.rows.length, 1);
+        equal(rows.rows[0]?.work_item_type, "task");
+        equal(rows.rows[0]?.version, "1");
+        equal(rows.rows[0]?.correlation_id, "migration-backfill");
+        equal(rows.rows[0]?.causation_id, "migration-backfill");
+        equal(rows.rows[0]?.trace_id, "migration-backfill");
+        equal(rows.rows[0]?.updated_at.toISOString(), "2026-05-01T12:00:00.000Z");
+
+        await assertInsertFails(executor, {
+          name: CockroachIntegrationStatementName.InsertWorkItemWithoutTrace,
+          sql: run.sql.InsertWorkItemWithoutTrace,
+          parameters: [],
+        });
+
+        await executor.execute({
+          name: CockroachIntegrationStatementName.InsertWorkItemStateHistory,
+          sql: run.sql.InsertWorkItemStateHistory,
+          parameters: [],
+        });
+
+        await assertInsertFails(executor, {
+          name: CockroachIntegrationStatementName.InsertDuplicateSequence,
+          sql: run.sql.InsertDuplicateSequence,
+          parameters: [],
+        });
+        await assertInsertFails(executor, {
+          name: CockroachIntegrationStatementName.InsertInvalidSequence,
+          sql: run.sql.InsertInvalidSequence,
+          parameters: [],
+        });
+      } finally {
+        await executor.execute({
+          name: CockroachIntegrationStatementName.DropLegacyWorkItemsTable,
+          sql: run.sql.DropLegacyWorkItemsTable,
+          parameters: [],
+        }).catch(() => undefined);
+        await createCockroachWorkerShutdownPort({
+          pool,
+        }).shutdown();
+      }
+    },
+  );
 });
 
 async function dropProbeTable(
@@ -241,6 +365,211 @@ function createCockroachIntegrationSql(tableName: string): CockroachIntegrationS
     InsertProbe: `INSERT INTO ${tableName} (id, value) VALUES ($1, $2)`,
     SelectProbe: `SELECT value FROM ${tableName} WHERE id = $1`,
   };
+}
+
+function createWorkAnchorMigrationRun(): WorkAnchorMigrationRun {
+  const suffix = randomUUID().replaceAll("-", "_");
+  const workItemsTableName = `${CockroachTableName.WorkItems}_${suffix}`;
+  const workItemStateHistoryTableName = `${CockroachTableName.WorkItemStateHistory}_${suffix}`;
+  assertSafeCockroachIdentifier(workItemsTableName);
+  assertSafeCockroachIdentifier(workItemStateHistoryTableName);
+
+  return {
+    sql: createWorkAnchorMigrationSql(workItemsTableName, workItemStateHistoryTableName),
+    workItemsTableName,
+    workItemStateHistoryTableName,
+  };
+}
+
+function createWorkAnchorMigrationSql(
+  workItemsTableName: string,
+  workItemStateHistoryTableName: string,
+): WorkAnchorMigrationRun["sql"] {
+  const workAnchorMigration = createCockroachWorkAnchorKernelMigration().sql
+    .replaceAll(CockroachTableName.WorkItems, workItemsTableName)
+    .replaceAll(CockroachTableName.WorkItemStateHistory, workItemStateHistoryTableName);
+
+  return {
+    CreateLegacyWorkItemsTable: `
+CREATE TABLE IF NOT EXISTS ${workItemsTableName} (
+  work_item_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  title STRING NOT NULL,
+  description STRING NOT NULL,
+  state STRING NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  created_by_agent_id STRING NOT NULL,
+  created_by_hat_assignment_id STRING NOT NULL
+);`.trim(),
+    DropLegacyWorkItemsTable: `
+DROP TABLE IF EXISTS ${workItemStateHistoryTableName};
+DROP TABLE IF EXISTS ${workItemsTableName};`.trim(),
+    InsertLegacyWorkItem: `
+INSERT INTO ${workItemsTableName} (
+  work_item_id,
+  organization_id,
+  project_id,
+  title,
+  description,
+  state,
+  created_at,
+  created_by_agent_id,
+  created_by_hat_assignment_id
+) VALUES (
+  'legacy-work-item',
+  'org-live-migration',
+  'project-live-migration',
+  'Legacy work item',
+  'Legacy row before V3 migration',
+  'created',
+  '2026-05-01T12:00:00.000Z',
+  'agent-live-migration',
+  'hat-live-migration'
+);`.trim(),
+    InsertWorkItemWithoutTrace: `
+INSERT INTO ${workItemsTableName} (
+  work_item_id,
+  organization_id,
+  project_id,
+  title,
+  description,
+  state,
+  created_at,
+  created_by_agent_id,
+  created_by_hat_assignment_id,
+  work_item_type,
+  updated_at,
+  version
+) VALUES (
+  'missing-trace-work-item',
+  'org-live-migration',
+  'project-live-migration',
+  'Missing trace item',
+  'Should fail because trace columns have no durable defaults',
+  'created',
+  '2026-05-01T12:00:00.000Z',
+  'agent-live-migration',
+  'hat-live-migration',
+  'task',
+  '2026-05-01T12:00:00.000Z',
+  1
+);`.trim(),
+    InsertWorkItemStateHistory: `
+INSERT INTO ${workItemStateHistoryTableName} (
+  work_state_transition_id,
+  organization_id,
+  project_id,
+  work_item_id,
+  sequence,
+  from_state,
+  to_state,
+  evidence_artifact_ids,
+  transitioned_at,
+  transitioned_by_agent_id,
+  transitioned_by_hat_assignment_id,
+  correlation_id,
+  causation_id,
+  trace_id
+) VALUES (
+  'transition-1',
+  'org-live-migration',
+  'project-live-migration',
+  'legacy-work-item',
+  1,
+  'created',
+  'intake',
+  '[]':::JSONB,
+  '2026-05-01T12:10:00.000Z',
+  'agent-live-migration',
+  'hat-live-migration',
+  'correlation-live-migration',
+  'causation-live-migration',
+  'trace-live-migration'
+);`.trim(),
+    InsertDuplicateSequence: `
+INSERT INTO ${workItemStateHistoryTableName} (
+  work_state_transition_id,
+  organization_id,
+  project_id,
+  work_item_id,
+  sequence,
+  from_state,
+  to_state,
+  evidence_artifact_ids,
+  transitioned_at,
+  transitioned_by_agent_id,
+  transitioned_by_hat_assignment_id,
+  correlation_id,
+  causation_id,
+  trace_id
+) VALUES (
+  'transition-duplicate',
+  'org-live-migration',
+  'project-live-migration',
+  'legacy-work-item',
+  1,
+  'intake',
+  'triage',
+  '[]':::JSONB,
+  '2026-05-01T12:20:00.000Z',
+  'agent-live-migration',
+  'hat-live-migration',
+  'correlation-live-migration',
+  'causation-live-migration',
+  'trace-live-migration'
+);`.trim(),
+    InsertInvalidSequence: `
+INSERT INTO ${workItemStateHistoryTableName} (
+  work_state_transition_id,
+  organization_id,
+  project_id,
+  work_item_id,
+  sequence,
+  from_state,
+  to_state,
+  evidence_artifact_ids,
+  transitioned_at,
+  transitioned_by_agent_id,
+  transitioned_by_hat_assignment_id,
+  correlation_id,
+  causation_id,
+  trace_id
+) VALUES (
+  'transition-invalid',
+  'org-live-migration',
+  'project-live-migration',
+  'other-work-item',
+  0,
+  'created',
+  'intake',
+  '[]':::JSONB,
+  '2026-05-01T12:30:00.000Z',
+  'agent-live-migration',
+  'hat-live-migration',
+  'correlation-live-migration',
+  'causation-live-migration',
+  'trace-live-migration'
+);`.trim(),
+    SelectLegacyWorkItem: `
+SELECT work_item_type, updated_at, version, correlation_id, causation_id, trace_id
+FROM ${workItemsTableName}
+WHERE work_item_id = 'legacy-work-item';`.trim(),
+    WorkAnchorMigration: workAnchorMigration,
+  };
+}
+
+async function assertInsertFails(
+  executor: ReturnType<typeof createCockroachSqlExecutor>,
+  statement: CockroachAnySqlStatement,
+): Promise<void> {
+  let didFail = false;
+  try {
+    await executor.execute(statement);
+  } catch {
+    didFail = true;
+  }
+  ok(didFail);
 }
 
 function assertSafeCockroachIdentifier(identifier: string): void {
