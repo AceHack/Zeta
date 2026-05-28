@@ -115,6 +115,25 @@ describe("selectNextTrajectory", () => {
     expect(selection.blocked[0]?.reason).toContain("waiting for maintainer decision");
   });
 
+  test("blocks closed-maintained trajectory packets", () => {
+    const selection = selectNextTrajectory(
+      [
+        packet({
+          slug: "typescript-bun-migration",
+          title: "closed maintained lane",
+          status: "Closed-maintained bash-retirement phase; Bucket B is empty",
+          nextAction: "Maintain the bash-retirement inventory guard",
+        }),
+        packet({ slug: "ready-lane", title: "Ready lane" }),
+      ],
+      [],
+    );
+
+    expect(selection.status).toBe("selected");
+    expect(selection.selected?.slug).toBe("ready-lane");
+    expect(selection.blocked[0]?.reason).toContain("closed-maintained trajectory");
+  });
+
   test("skips matching active claims", () => {
     const selection = selectNextTrajectory(
       [

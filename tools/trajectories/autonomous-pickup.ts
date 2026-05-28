@@ -408,6 +408,10 @@ function blockerReason(packet: TrajectoryPacket): string | null {
   if (packet.blocker !== null && packet.blocker.toLowerCase() !== "none") {
     return `active blocker: ${packet.blocker}`;
   }
+  const normalizedStatus = packet.status?.toLowerCase() ?? "";
+  if (normalizedStatus.includes("closed-maintained") || normalizedStatus.includes("closed maintained")) {
+    return `closed-maintained trajectory: ${packet.status}`;
+  }
   if (packet.nextAction === null || isPlaceholderAction(packet.nextAction)) {
     return "no next action found";
   }
