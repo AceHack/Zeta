@@ -862,6 +862,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0921](backlog/P2/B-0921-integrate-or-remove-unreferenced-cayleydickson.md)** Integrate or remove unreferenced file src/Core/CayleyDickson.fs
 - [ ] **[B-0922](backlog/P2/B-0922-integrate-or-remove-unreferenced-kskauthorization.md)** Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs
 - [ ] **[B-0924](backlog/P2/B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md)** Custom Atari 2600 emulator + Generate+Join over emulator scene (vs imitation-learning) + IScheduler DST bit-perfect-consensus via z-sets + hardware interrupts via B-0917 substrate + ARC3-AGI training surface (operator 2026-05-28)
+- [ ] **[B-0925](backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)** C. elegans-substrate as controller variant for B-0924 — OpenWorm 302-neuron full-connectome + generate+join over emulator-scene-AND-worm-scene under DST-omniscience (operator 2026-05-28)
 
 ## P3 — convenience / deferred
 
