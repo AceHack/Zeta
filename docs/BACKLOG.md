@@ -1006,5 +1006,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0909](backlog/P3/B-0909-bankerbot-empirical-anchor-for-b0908-phase-3-attention-risk-backtesting-blockchain-substrate-irreversibility-domain-aaron-otto-2026-05-28.md)** BankerBot 2026-05-11 empirical anchor for B-0908 Phase 3 attention-risk backtesting (substrate-irreversibility specific-form domain on blockchain)
 - [ ] **[B-0910](backlog/P3/B-0910-multi-chain-csam-substrate-irreversibility-historical-pattern-n6-empirical-anchors-with-political-economy-and-state-capture-vector-framing-aaron-otto-2026-05-28.md)** Multi-chain CSAM substrate-irreversibility historical pattern — N=6+ web-verified empirical anchors + political-economy + state-capture-vector framing
 - [ ] **[B-0911](backlog/P3/B-0911-risk-distribution-asymmetry-pricing-extension-to-b0908-with-state-capture-multi-layer-attack-timeline-pricing-aaron-otto-2026-05-28.md)** Risk-distribution-asymmetry pricing extension to B-0908 + state-capture multi-layer-attack-timeline pricing dimension
+- [ ] **[B-0912](backlog/P3/B-0912-bridge-attention-risk-pricing-arc-with-aurora-immune-veridicality-detector-pouwcc-maji-substrate-aaron-otto-2026-05-28.md)** Bridge today's B-0908-B-0911 attention-risk-pricing arc with pre-existing Aurora immune-system + Veridicality-detector + PoUW-CC + Maji + Veridicality.fs substrate
 
 <!-- END AUTO-GENERATED -->
