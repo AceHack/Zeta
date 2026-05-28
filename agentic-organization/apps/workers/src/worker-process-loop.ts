@@ -29,6 +29,7 @@ export const WorkerProcessLoopFailureStage = {
   Iteration: "iteration",
   Observer: "observer",
   Shutdown: "shutdown",
+  StopSignal: "stop_signal",
 } as const;
 
 export type WorkerProcessLoopFailureStage =
@@ -122,7 +123,11 @@ function validateWorkerProcessLoopInput(input: CreateWorkerProcessLoopInput): vo
 async function runWorkerProcessLoop(input: CreateWorkerProcessLoopInput): Promise<WorkerProcessLoopRunResult> {
   const iterations: WorkerProcessLoopIteration[] = [];
   const failures: WorkerProcessLoopFailure[] = [];
-  let stoppedBySignal = input.stopSignal.isStopRequested();
+  let stoppedBySignal = readStopSignal({
+    failures,
+    iteration: undefined,
+    stopSignal: input.stopSignal,
+  });
 
   while (!stoppedBySignal && !hasReachedMaxCycles(iterations.length, input.maxCycles)) {
     const iteration = iterations.length + 1;
@@ -133,7 +138,11 @@ async function runWorkerProcessLoop(input: CreateWorkerProcessLoopInput): Promis
     });
     iterations.push(iterationResult);
 
-    stoppedBySignal = input.stopSignal.isStopRequested();
+    stoppedBySignal = readStopSignal({
+      failures,
+      iteration,
+      stopSignal: input.stopSignal,
+    });
 
     if (stoppedBySignal || hasReachedMaxCycles(iterations.length, input.maxCycles)) {
       break;
@@ -145,7 +154,11 @@ async function runWorkerProcessLoop(input: CreateWorkerProcessLoopInput): Promis
       failures,
     });
 
-    stoppedBySignal = input.stopSignal.isStopRequested();
+    stoppedBySignal = readStopSignal({
+      failures,
+      iteration,
+      stopSignal: input.stopSignal,
+    });
 
     if (!delaySucceeded) {
       break;
@@ -169,6 +182,25 @@ async function runWorkerProcessLoop(input: CreateWorkerProcessLoopInput): Promis
     shutdown,
     failures,
   };
+}
+
+type ReadStopSignalInput = {
+  failures: WorkerProcessLoopFailure[];
+  iteration: number | undefined;
+  stopSignal: WorkerProcessLoopStopSignal;
+};
+
+function readStopSignal(input: ReadStopSignalInput): boolean {
+  try {
+    return input.stopSignal.isStopRequested();
+  } catch (error) {
+    input.failures.push({
+      stage: WorkerProcessLoopFailureStage.StopSignal,
+      iteration: input.iteration,
+      message: extractLoopErrorMessage(error),
+    });
+    return true;
+  }
 }
 
 type RunWorkerProcessIterationInput = {

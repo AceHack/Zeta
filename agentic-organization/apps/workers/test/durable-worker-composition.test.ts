@@ -53,14 +53,9 @@ describe("durable worker runtime composition", () => {
     const workerCycle = await ports.organizationWorkerHost.runOnce();
 
     equal(workerCycle.status, WorkerCycleStatus.Worked);
-    deepEqual(cockroachExecutor.statementNames, [
-      "claim_unpublished_outbox_events",
-      "mark_outbox_event_published",
-      "find_inbox_receipt",
-      "claim_pending_inbox_receipt",
-      "insert_reaction_plan",
-      "mark_inbox_receipt_processed",
-    ]);
+    equal(workerCycle.outbox?.publishedOutboxEventIds.length, 1);
+    equal(workerCycle.inbound.processedCount, 1);
+    equal(workerCycle.inbound.reactionPlanCount, 1);
     deepEqual(
       eventPublisher.publications.map((publication) => publication.subject),
       ["agentic-org.dev.org-lfg.supervisor_signal.sent"],

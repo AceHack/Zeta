@@ -140,6 +140,20 @@ export {
   type WorkerProcessLoopStopSignal,
 } from "./worker-process-loop.ts";
 export {
+  WorkerEntrypointConfigErrorMessage,
+  WorkerEntrypointExitCode,
+  WorkerEntrypointSignalName,
+  createWorkerProcessEntrypoint,
+  type CreateWorkerProcessEntrypointInput,
+  type WorkerEntrypointSignalListener,
+  type WorkerEntrypointSignalSource,
+  type WorkerEntrypointSignalSubscription,
+  type WorkerEntrypointSleepInput,
+  type WorkerEntrypointSleeper,
+  type WorkerProcessEntrypoint,
+  type WorkerProcessEntrypointResult,
+} from "./worker-process-entrypoint.ts";
+export {
   CockroachMigrationStatement,
   createCockroachSqlExecutor,
   type CockroachAnySqlStatement,

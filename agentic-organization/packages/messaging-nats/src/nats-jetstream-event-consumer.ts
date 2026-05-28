@@ -167,6 +167,8 @@ type TerminateWithDeadLetterInput = {
 };
 
 async function terminateWithDeadLetter(input: TerminateWithDeadLetterInput): Promise<void> {
+  let deadLetterPublished = false;
+
   try {
     await input.deadLetterPublisher.publish({
       sourceSubject: input.message.subject,
@@ -174,15 +176,39 @@ async function terminateWithDeadLetter(input: TerminateWithDeadLetterInput): Pro
       headers: input.message.headers,
       reason: input.reason,
     });
+    deadLetterPublished = true;
     input.result.deadLetteredCount += 1;
     await input.message.terminate();
     input.result.terminatedCount += 1;
   } catch {
     input.result.failedCount += 1;
+
+    if (deadLetterPublished) {
+      await acknowledgeDeadLetteredMessage({
+        message: input.message,
+        result: input.result,
+      });
+      return;
+    }
+
     await negativeAcknowledgeFailedMessage({
       message: input.message,
       result: input.result,
     });
+  }
+}
+
+type AcknowledgeDeadLetteredMessageInput = {
+  message: NatsJetStreamInboundMessage;
+  result: NatsJetStreamConsumeBatchResult;
+};
+
+async function acknowledgeDeadLetteredMessage(input: AcknowledgeDeadLetteredMessageInput): Promise<void> {
+  try {
+    await input.message.acknowledge();
+    input.result.acknowledgedCount += 1;
+  } catch {
+    input.result.failedCount += 1;
   }
 }
 

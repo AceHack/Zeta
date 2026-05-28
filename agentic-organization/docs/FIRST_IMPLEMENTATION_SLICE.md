@@ -79,7 +79,7 @@ escalate.
 
 | App            | Implemented first                                                                                                                                                                                       |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/workers` | NodeNext runtime-host contract shell that parses process config, composes worker ports, exposes the bootstrap/readiness/shutdown lifecycle contract, runs worker/NATS cycles, emits telemetry, and reports status/shutdown evidence |
+| `apps/workers` | NodeNext runtime-host contract shell that parses process config, composes worker ports, exposes the bootstrap/readiness/shutdown lifecycle contract, runs worker/NATS cycles, emits telemetry, binds the loop to signal/delay ports, and reports status/shutdown evidence |
 
 ## NodeNext Runtime Decision
 
@@ -195,9 +195,11 @@ Hermes runs, MCP calls, and UI evidence.
   acknowledges processed and duplicate messages, terminates and
   dead-letters invalid envelopes or payload conflicts, and
   negative-acknowledges transient ingestion failures. If dead-letter
-  publication or source-message termination fails, it records the
-  failure, negative-acknowledges the source message, and continues the
-  batch.
+  publication fails, it records the failure, negative-acknowledges the
+  source message, and continues the batch. If dead-letter publication
+  succeeds but source-message termination fails, it records the failure
+  and acknowledges the already-dead-lettered source message so a poison
+  message is not redelivered after the DLQ side effect.
 - The event ingestion processor accepts decoded canonical envelopes,
   dedupes them by event ID plus consumer name, evaluates automation
   rules once, rejects same-event payload hash conflicts, and persists
@@ -329,6 +331,13 @@ Hermes runs, MCP calls, and UI evidence.
   shutdown failures as loop evidence; and always attempts process
   shutdown. It is still a port-first app boundary, not a NestJS host or
   concrete binary.
+- `apps/workers` has a first executable-boundary entrypoint contract
+  above that loop. `createWorkerProcessEntrypoint` subscribes to typed
+  stop signals through an injected signal source, delegates waiting to an
+  injected sleeper, disposes signal subscriptions after shutdown, returns
+  success or degraded exit intent instead of calling `process.exit`, and
+  preserves the full loop result for telemetry, supervisor diagnosis, and
+  future Kubernetes/NestJS process wrappers.
 - `apps/workers` has an app-local Cockroach migration bootstrapper and
   Cockroach readiness probe. The bootstrapper reuses the generic
   Cockroach migration runner and ordered core migrations; the readiness
@@ -350,11 +359,12 @@ Hermes runs, MCP calls, and UI evidence.
   When both `AGENTIC_ORG_COCKROACH_INTEGRATION_DATABASE_URL` and
   `AGENTIC_ORG_NATS_INTEGRATION_SERVERS` are present, the test writes a
   real `send_supervisor_signal` command outcome to Cockroach, runs the
-  process worker cycle, publishes the durable outbox event to NATS,
-  consumes it through the NATS consumer, records the inbox receipt and
-  supervisor-triage reaction plan in Cockroach, captures worker/NATS
-  telemetry records, and shuts down both adapters through generic
-  process shutdown ports.
+  process worker loop for two cycles, publishes the durable outbox event
+  to NATS, consumes it through the NATS consumer, records the inbox
+  receipt and supervisor-triage reaction plan in Cockroach, captures
+  worker/NATS telemetry records, proves the second cycle has no duplicate
+  side effects, and shuts down both adapters through generic process
+  shutdown ports or guarded cleanup.
 - Worker-cycle failures can carry structured evidence. Stale outbox
   claim failures now preserve claim ID, current claim ID, outbox event
   ID, event ID, trace ID, and published-at evidence when the durable row
@@ -389,12 +399,12 @@ env-gated: when a JetStream server is supplied, the same test command
 proves publish, consume, ack, invalid-envelope DLQ handling, readiness,
 and shutdown through the app-local NATS seam. The combined durable
 worker proof now ties both together when both env vars are present. The
-first long-running worker loop wrapper now exists as a port-first
-contract. Next is the concrete executable entrypoint that binds process
-signals and delay policy to that loop, then the next command surface
-slice. Keep URLs, credentials, and connection pools in app adapter
-config fed by Kubernetes Secret or ExternalSecret values, never in
-domain packages.
+first long-running worker loop wrapper and executable-boundary
+entrypoint now exist as port-first contracts. Next is the next command
+surface slice, then the concrete Node/NestJS host can wrap the same
+entrypoint with real process globals. Keep URLs, credentials, and
+connection pools in app adapter config fed by Kubernetes Secret or
+ExternalSecret values, never in domain packages.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

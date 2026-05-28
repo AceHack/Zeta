@@ -63,16 +63,22 @@ The current executable spine includes:
 - `apps/workers` process loop contract that repeatedly invokes the
   process lifecycle through injected delay, observer, and stop-signal
   ports, captures loop weak points, and always attempts shutdown.
+- `apps/workers` executable-boundary entrypoint contract that subscribes
+  to typed stop signals through an injected signal source, delegates wait
+  policy to an injected sleeper, returns success/degraded exit intent,
+  and disposes signal listeners after shutdown without using process
+  globals in reusable packages.
 - env-gated live substrate proofs for Cockroach, NATS, and the combined
   durable worker path that writes a command outcome to Cockroach,
   publishes the outbox through NATS, consumes it back, records durable
   inbox/reaction-plan state, emits telemetry, and shuts down generic
   process adapters.
 
-The next implementation slice after the loop wrapper is to add the
-concrete executable entrypoint that binds process signals and delay
-policy to the loop, then continue with the next generic
-command/work-anchor surfaces. Keep the live substrate checks gated by
+The next implementation slice after the entrypoint contract is to
+continue with the next generic command/work-anchor surfaces, then wrap
+the same entrypoint with a concrete Node/NestJS host when process
+globals and Kubernetes deployment concerns are ready. Keep the live
+substrate checks gated by
 environment until the team decides whether CI should provide Cockroach
 and NATS services.
 
@@ -820,9 +826,12 @@ infrastructure.
    health; Cockroach and NATS done. Telemetry readiness remains deferred
    until the sink has an external destination.
 10. Add a process lifecycle entrypoint contract only after factories are
-    contract-tested; done as `createWorkerProcess`. A real long-running
-    executable worker host remains a later adapter step.
-11. Add an early full-ai-cluster contract checkpoint without deployment
+    contract-tested; done as `createWorkerProcess`.
+11. Add a loop-bound executable entrypoint contract that binds signal,
+    delay, observer, and exit-intent concerns through ports; done as
+    `createWorkerProcessEntrypoint`. A concrete Node/NestJS process host
+    remains a later adapter step.
+12. Add an early full-ai-cluster contract checkpoint without deployment
     YAML:
     - required env names;
     - Secret/ExternalSecret names;
@@ -2700,20 +2709,23 @@ Build:
 - compose the durable worker runtime from Cockroach executor, NATS
   publisher, NATS pull consumer, DLQ publisher, and telemetry sink ports;
   done;
-- run one worker process cycle through bootstrap, readiness, runtime,
-  and shutdown; done;
+- run the worker process through the process loop for two cycles,
+  including bootstrap, readiness, runtime, loop summary, and shutdown
+  evidence; done;
 - prove outbox publication to NATS and durable `published_at` marking;
   done when both live substrates are supplied;
 - prove NATS consumption, ack, Cockroach inbox receipt, and
   supervisor-triage reaction-plan persistence; done when both live
   substrates are supplied;
-- clean up per-run Cockroach rows and NATS resources; done.
+- clean up per-run Cockroach rows and NATS resources through guarded
+  cleanup that still removes NATS resources if Cockroach setup fails;
+  done.
 
 Done when:
 
 - one Organization command can cross the real durable path from command
   state to outbox, NATS, inbox, reaction plan, telemetry, readiness, and
-  shutdown without reusable packages importing vendor clients;
+  loop evidence without reusable packages importing vendor clients;
 - local runs stay green without live services.
 
 ### PR 3.6: Worker Process Loop Wrapper
@@ -2742,6 +2754,33 @@ Done when:
   continuous operation;
 - tests prove the loop remains observable, stoppable, and safe to
   shut down even when dependencies fail.
+
+### PR 3.7: Worker Process Entrypoint Contract
+
+Status: implemented as a fake-driven app-local contract. It still does
+not construct Cockroach, NATS, NestJS, Kubernetes, or telemetry
+exporters.
+
+Build:
+
+- add `createWorkerProcessEntrypoint` above `createWorkerProcessLoop`;
+  done;
+- subscribe to typed stop signals through an injected signal source;
+  done for `SIGINT` and `SIGTERM`;
+- delegate wait policy to an injected sleeper instead of using timers
+  directly; done;
+- map completed or stopped loop results to success exit intent and
+  degraded loop results to degraded exit intent; done;
+- always dispose signal subscriptions after loop shutdown; done;
+- preserve received signals and the full loop result for telemetry,
+  supervisor diagnosis, and future Kubernetes/NestJS wrappers; done.
+
+Done when:
+
+- a concrete Node or NestJS host can wrap the entrypoint without
+  changing worker lifecycle, loop, or runtime packages;
+- tests prove signal-driven stop, degraded exit mapping, delay failure
+  evidence, and listener disposal.
 
 ### PR 4: Generic Command Registry
 

@@ -156,7 +156,7 @@ describe("NATS JetStream event consumer", () => {
     equal(result.acknowledgedCount, 1);
   });
 
-  test("negative-acknowledges payload conflicts when message termination fails", async () => {
+  test("acknowledges payload conflicts when termination fails after dead-letter publication", async () => {
     const envelope = createEnvelope();
     const message = createRecordingInboundMessage({
       payload: JSON.stringify(envelope),
@@ -173,15 +173,13 @@ describe("NATS JetStream event consumer", () => {
       batchSize: 10,
     });
 
-    deepEqual(message.ackActions, [
-      NatsInboundMessageAckAction.Terminate,
-      NatsInboundMessageAckAction.NegativeAcknowledge,
-    ]);
+    deepEqual(message.ackActions, [NatsInboundMessageAckAction.Terminate, NatsInboundMessageAckAction.Acknowledge]);
     equal(result.payloadConflictCount, 1);
     equal(result.failedCount, 1);
     equal(result.deadLetteredCount, 1);
     equal(result.terminatedCount, 0);
-    equal(result.negativeAcknowledgedCount, 1);
+    equal(result.negativeAcknowledgedCount, 0);
+    equal(result.acknowledgedCount, 1);
     equal(deadLetterPublisher.messages.length, 1);
   });
 

@@ -22,6 +22,7 @@ const WorkerProcessLoopTestValue = {
   ObserverFailureMessage: "observer unavailable",
   ShutdownFailureMessage: "shutdown unavailable",
   ShutdownPortName: "test-shutdown",
+  StopSignalFailureMessage: "stop signal unavailable",
 } as const;
 
 describe("worker process loop", () => {
@@ -205,6 +206,30 @@ describe("worker process loop", () => {
       },
     ]);
   });
+
+  test("captures stop-signal failures, stops the loop, and still shuts down", async () => {
+    const process = createRecordingProcess([createRunResult(WorkerRuntimeStatus.Healthy)]);
+    const loop = createWorkerProcessLoop({
+      process,
+      delay: createRecordingDelay(),
+      observer: createRecordingLoopObserver(),
+      maxCycles: 1,
+      stopSignal: createFailingStopSignal(WorkerProcessLoopTestValue.StopSignalFailureMessage),
+    });
+
+    const result = await loop.run();
+
+    equal(result.status, WorkerProcessLoopStatus.Degraded);
+    equal(process.runCount, 0);
+    equal(process.shutdownCount, 1);
+    deepEqual(result.failures, [
+      {
+        stage: WorkerProcessLoopFailureStage.StopSignal,
+        iteration: undefined,
+        message: WorkerProcessLoopTestValue.StopSignalFailureMessage,
+      },
+    ]);
+  });
 });
 
 type RecordingProcessStep = WorkerProcessRunResult | Error;
@@ -314,6 +339,16 @@ function createManualStopSignal(): {
     isStopRequested: () => stopped,
     stop: () => {
       stopped = true;
+    },
+  };
+}
+
+function createFailingStopSignal(message: string): {
+  isStopRequested: () => boolean;
+} {
+  return {
+    isStopRequested: () => {
+      throw new Error(message);
     },
   };
 }

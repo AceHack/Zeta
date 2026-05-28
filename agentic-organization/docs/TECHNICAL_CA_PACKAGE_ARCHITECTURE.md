@@ -382,6 +382,17 @@ while preserving completed iteration results. This gives the future
 worker binary a small, testable always-on control loop without turning
 the app host into business logic.
 
+The first executable-boundary entrypoint contract now exists in
+`apps/workers/src/worker-process-entrypoint.ts`. It sits above the
+continuous loop and owns only executable concerns: subscribing to typed
+stop signals, delegating wait policy to a sleeper port, returning
+success/degraded exit intent, preserving received signal evidence, and
+disposing subscriptions after shutdown. It deliberately does not call
+`process.exit`, construct timers directly, or reach into Node process
+globals; a future Node or NestJS host can adapt real `process.on`,
+`setTimeout`, Kubernetes lifecycle hooks, and pod termination behavior
+behind the same ports.
+
 The `apps/workers` composition root receives typed config plus
 already-constructed ports. This is the only place the worker process
 should know which concrete adapter implementation is being used. Domain,
@@ -433,14 +444,16 @@ both live substrate variables are present. It applies Cockroach
 migrations through the app bootstrapper, writes a real
 `send_supervisor_signal` command outcome through the generic command
 pipeline and Cockroach state-store factory, connects a per-run NATS
-stream/durable consumer through the app-local NATS seam, runs one worker
-process cycle, publishes the outbox event, consumes it back through the
-NATS consumer, records the inbox receipt and supervisor-triage reaction
-plan in Cockroach, emits worker/NATS telemetry records through the sink
-port, and shuts down both process adapters through generic shutdown
-ports. This is the first live proof that the durable command, outbox,
-NATS, inbox, reaction-plan, readiness, telemetry, and shutdown seams
-compose without letting vendor clients leak into reusable packages.
+stream/durable consumer through the app-local NATS seam, runs the worker
+process through the loop for two cycles, publishes the outbox event,
+consumes it back through the NATS consumer, records the inbox receipt
+and supervisor-triage reaction plan in Cockroach, proves the second
+cycle does not duplicate durable side effects, emits worker/NATS
+telemetry records through the sink port, and guards both Cockroach and
+NATS cleanup when setup fails. This is the first live proof that the
+durable command, outbox, NATS, inbox, reaction-plan, readiness,
+telemetry, loop, and cleanup seams compose without letting vendor
+clients leak into reusable packages.
 
 ## SOLID Rules
 
@@ -745,12 +758,14 @@ decodes canonical JSON envelopes and calls the runtime ingestion
 processor, but it owns JetStream-style decisions: ack processed and
 duplicate messages, terminate plus dead-letter invalid envelopes and
 payload conflicts, and negative-acknowledge transient ingestion
-failures. If dead-letter publishing or source-message termination
-fails, it records the failure, negative-acknowledges the source message
-for retry, and continues the fetched batch so one broken DLQ path cannot
-starve unrelated messages. This keeps runtime rules deterministic and
-transport-neutral while still making live NATS behavior testable before
-a Nest worker process exists.
+failures. If dead-letter publishing fails, it records the failure,
+negative-acknowledges the source message for retry, and continues the
+fetched batch. If dead-letter publishing succeeds but source-message
+termination fails, it records the failure and acknowledges the
+already-dead-lettered source message so a poison message is not
+redelivered after the DLQ side effect. This keeps runtime rules
+deterministic and transport-neutral while still making live NATS behavior
+testable before a Nest worker process exists.
 
 ### Stream and Consumer Manifests
 

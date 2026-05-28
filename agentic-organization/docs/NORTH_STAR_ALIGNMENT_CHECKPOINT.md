@@ -240,9 +240,15 @@ telemetry sink. It now has an env-gated Cockroach integration harness
 for real migrations, readiness, transactions, rollback, and shutdown,
 plus an env-gated NATS integration harness for real JetStream publish,
 consume, ack, invalid-envelope DLQ handling, readiness, and shutdown. It
-still needs those live proofs wired into CI/dev-cluster execution, a
-combined Cockroach plus NATS durable worker proof, a long-running
-executable worker host, and cluster OTEL export wiring.
+now also has an env-gated combined Cockroach plus NATS durable worker
+proof: the test writes a real command outcome to Cockroach, runs the
+process through the worker loop for two cycles, publishes the outbox to
+NATS, consumes it back, records inbox and reaction-plan state, verifies
+the second cycle does not duplicate durable side effects, and guards
+NATS cleanup even when Cockroach setup fails. It still needs those live
+proofs wired into CI/dev-cluster execution, a concrete Node/NestJS
+process host around the existing entrypoint contract, and cluster OTEL
+export wiring.
 
 ### Command Surface Closure
 

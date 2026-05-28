@@ -39,6 +39,8 @@ Current duties:
 - run the NATS JetStream consumer adapter cycle;
 - run the process lifecycle repeatedly through a port-first loop wrapper
   when the future executable host needs continuous operation;
+- bind the process lifecycle loop to app-local signal, delay, observer,
+  and exit-intent ports without calling process globals directly;
 - pass configured NATS batch size, stream name, and durable consumer
   name into the adapter boundary;
 - emit worker-cycle and NATS-consumer batch telemetry records;
@@ -79,6 +81,12 @@ iteration, observer, delay, and shutdown failures as loop evidence, and
 always attempts process shutdown. It is still not a concrete binary or
 NestJS host; it is the testable continuous-run contract the binary will
 use.
+`createWorkerProcessEntrypoint` is the app-local executable-boundary
+contract above the loop. It subscribes to injected stop signals such as
+`SIGINT` and `SIGTERM`, delegates waiting to an injected sleeper, returns
+success/degraded exit intent, disposes signal subscriptions after the
+loop shuts down, and keeps the real Node process, NestJS host, or
+Kubernetes supervisor outside the reusable worker packages.
 
 ## Environment
 

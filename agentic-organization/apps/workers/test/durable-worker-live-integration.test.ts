@@ -51,6 +51,7 @@ import {
   WorkerDependencyName,
   WorkerDependencyReadinessStatus,
   WorkerProcessShutdownStatus,
+  WorkerProcessLoopStatus,
   WorkerReadinessStatus,
   WorkerRuntimeStatus,
   composeDurableWorkerRuntimePorts,
@@ -62,9 +63,11 @@ import {
   createNatsJsTransportConnectionFactory,
   createPgCockroachWorkerPool,
   createWorkerProcess,
+  createWorkerProcessLoop,
   createWorkerRuntime,
   connectNatsWorkerAdapters,
   type CockroachAnySqlStatement,
+  type WorkerProcessLoopRecord,
   type WorkerRuntimeTelemetryRecord,
 } from "../src/index.ts";
 
@@ -141,23 +144,25 @@ describe("durable worker live integration", () => {
       const databaseUrl = readIntegrationDatabaseUrl();
       const natsServers = readIntegrationNatsServers();
       const run = createDurableLiveIntegrationRun();
-      await recreateNatsIntegrationSubstrate(natsServers, run);
-
-      const pool = await createPgCockroachWorkerPool({
-        databaseUrl,
-      });
-      const sqlClient = createCockroachWorkerSqlClient({
-        pool,
-        maxTransactionAttempts: 2,
-      });
-      const executor = createCockroachSqlExecutor({
-        client: sqlClient,
-      });
       const telemetrySink = createRecordingTelemetrySink();
+      let executor: ReturnType<typeof createCockroachSqlExecutor> | undefined;
       let natsAdapters: Awaited<ReturnType<typeof connectNatsWorkerAdapters>> | undefined;
-      let process: ReturnType<typeof createWorkerProcess> | undefined;
+      let pool: Awaited<ReturnType<typeof createPgCockroachWorkerPool>> | undefined;
 
       try {
+        await recreateNatsIntegrationSubstrate(natsServers, run);
+
+        pool = await createPgCockroachWorkerPool({
+          databaseUrl,
+        });
+        const sqlClient = createCockroachWorkerSqlClient({
+          pool,
+          maxTransactionAttempts: 2,
+        });
+        executor = createCockroachSqlExecutor({
+          client: sqlClient,
+        });
+
         await createCockroachMigrationBootstrapper({
           executor,
         }).bootstrap();
@@ -221,7 +226,7 @@ describe("durable worker live integration", () => {
             now: () => DurableLiveIntegrationTime.OccurredAt,
           },
         });
-        process = createWorkerProcess({
+        const process = createWorkerProcess({
           bootstrappers: [
             createCockroachMigrationBootstrapper({
               executor,
@@ -245,16 +250,26 @@ describe("durable worker live integration", () => {
             natsEventConsumer: runtimePorts.natsEventConsumer,
             telemetrySink,
           }),
-          shutdownPorts: [
-            natsAdapters.shutdown,
-            createCockroachWorkerShutdownPort({
-              pool,
-            }),
-          ],
+          shutdownPorts: [],
         });
 
-        const processResult = await process.runOnce();
+        const loopObserver = createRecordingLoopObserver();
+        const loopResult = await createWorkerProcessLoop({
+          process,
+          delay: {
+            waitAfterIteration: async () => undefined,
+          },
+          observer: loopObserver,
+          stopSignal: createManualStopSignal(),
+          maxCycles: 2,
+        }).run();
 
+        const processResult = loopResult.iterations[0]?.processResult;
+
+        equal(loopResult.iterations.length, 2);
+        equal(loopResult.status, WorkerProcessLoopStatus.Completed);
+        equal(loopResult.shutdown.status, WorkerProcessShutdownStatus.Completed);
+        ok(processResult);
         equal(processResult.status, WorkerRuntimeStatus.Healthy);
         equal(processResult.readiness?.status, WorkerReadinessStatus.Ready);
         deepEqual(
@@ -295,23 +310,28 @@ describe("durable worker live integration", () => {
         ok(reactionPlanRow?.reaction_plan_id.startsWith(`reaction-plan-${run.runId}`));
         equal(reactionPlanRow?.trigger_event_id, run.eventId);
         equal(reactionPlanRow?.status, ReactionPlanStatus.Planned);
-        equal(telemetrySink.records.length, 2);
+        equal(telemetrySink.records.length, 4);
+        equal(loopObserver.records.length, 3);
       } finally {
-        await cleanupCockroachRowsBestEffort(executor, run);
-
-        if (process !== undefined) {
-          const shutdownResult = await process.shutdown();
-
-          equal(shutdownResult.status, WorkerProcessShutdownStatus.Completed);
-        } else {
-          if (natsAdapters !== undefined) {
-            await natsAdapters.shutdown.shutdown();
+        try {
+          if (executor !== undefined) {
+            await cleanupCockroachRowsBestEffort(executor, run);
           }
+        } finally {
+          try {
+            if (natsAdapters !== undefined) {
+              await natsAdapters.shutdown.shutdown();
+            }
 
-          await pool.end();
+            if (pool !== undefined) {
+              await createCockroachWorkerShutdownPort({
+                pool,
+              }).shutdown();
+            }
+          } finally {
+            await cleanupNatsIntegrationSubstrate(natsServers, run);
+          }
         }
-
-        await cleanupNatsIntegrationSubstrate(natsServers, run);
       }
     },
   );
@@ -631,6 +651,28 @@ function createRecordingTelemetrySink(): {
     record: async (record) => {
       records.push(record);
     },
+  };
+}
+
+function createRecordingLoopObserver(): {
+  records: WorkerProcessLoopRecord[];
+  record: (record: WorkerProcessLoopRecord) => Promise<void>;
+} {
+  const records: WorkerProcessLoopRecord[] = [];
+
+  return {
+    records,
+    record: async (record) => {
+      records.push(record);
+    },
+  };
+}
+
+function createManualStopSignal(): {
+  isStopRequested: () => boolean;
+} {
+  return {
+    isStopRequested: () => false,
   };
 }
 
