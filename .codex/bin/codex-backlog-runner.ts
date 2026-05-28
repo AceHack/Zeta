@@ -262,6 +262,7 @@ function isTerminalHeartbeat(status: string | undefined): boolean {
   return (
     normalized === "merged-cleaned" ||
     normalized === "merged-cleanup-complete" ||
+    normalized === "stale-cleanup-complete" ||
     normalized === "cleanup-complete" ||
     normalized === "complete" ||
     normalized === "released" ||
