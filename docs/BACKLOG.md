@@ -812,10 +812,13 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0867.16](backlog/P2/B-0867.16-two-level-state-machine-composition-agentstate-x-worklifecycle-kestrel-2026-05-28.md)** Two-level state machine composition — AgentState × WorkLifecycle (situation-scope × lifecycle-scope)
 - [ ] **[B-0867.17](backlog/P2/B-0867.17-push-cycle-limit-as-structural-enforcement-not-discipline-kestrel-2026-05-28.md)** Push-cycle limit AS STRUCTURAL enforcement — chooseActionForLifecycle returns AbandonPr when revisionCount > N (tunable threshold)
 - [ ] **[B-0867.2](backlog/P2/B-0867.2-git-append-only-state-persist-typescript-tool-event-sourcing-layer-kestrel-2026-05-28.md)** Git append-only state-persist TypeScript tool — event-sourcing layer for agent-loop substrate (per parent B-0867 allocation)
+- [ ] **[B-0867.20](backlog/P2/B-0867.20-lifecycle-du-split-trajectory-push-vs-pr-review-determinereviewlevel-discriminator-kestrel-2026-05-28.md)** Lifecycle DU split — trajectory-push vs pr-review-for-system-changes (determineReviewLevel discriminator)
 - [ ] **[B-0871](backlog/P2/B-0871-zetaid-v2-128-bit-structured-encoding-snowflake-ulid-family-kestrel-2026-05-28.md)** ZetaID v2 — 128-bit structured encoding (Snowflake/ULID family with timestamp + trajectory + persona + lifecycle-stage + random)
 - [ ] **[B-0872](backlog/P2/B-0872-otel-trace-id-composition-with-zetaid-baggage-propagation-kestrel-2026-05-28.md)** OTel trace-ID composition with ZetaID — baggage propagation alongside W3C Trace Context for agent-loop events
 - [ ] **[B-0873](backlog/P2/B-0873-trajectory-async-review-surface-operator-preferred-top-level-lens-aaron-2026-05-28.md)** Trajectory-async-review surface — operator's preferred top-level lens for own-Zeta deployment (not PR-per-deploy)
 - [ ] **[B-0874](backlog/P2/B-0874-github-actions-recursion-as-infinite-runtime-platform-no-pr-swarm-mode-ani-kestrel-2026-05-28.md)** GitHub Actions recursion as infinite runtime platform — no-PR swarm-mode for agent-loop substrate (Microsoft-subsidizes-OSS hack)
+- [ ] **[B-0875](backlog/P2/B-0875-error-class-extraction-meta-loop-reviewer-findings-to-named-classes-to-machine-checkable-rules-kestrel-2026-05-28.md)** Error-class extraction meta-loop — turn auto-reviewer findings into named classes into machine-checkable rules with before/after effectiveness measurement
+- [ ] **[B-0877](backlog/P2/B-0877-heterogeneous-auto-reviewer-ensemble-audit-diversity-without-correlated-blind-spots-kestrel-2026-05-28.md)** Heterogeneous auto-reviewer ensemble audit — diversity without correlated blind spots (multi-model + static analysis + formal tools + specialized prompts)
 
 ## P3 — convenience / deferred
 
@@ -944,5 +947,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0860](backlog/P3/B-0860-nemerle-dotnet-support-macro-metaprogramming-complement-fsharp-type-providers-relationship-type-inference-substrate-aaron-2026-05-27.md)** Nemerle support for dotnet substrate — compile-time macro metaprogramming complementing F# type providers; enables language-native relationship-type-inference substrate (Aaron 2026-05-27)
 - [ ] **[B-0867.18](backlog/P3/B-0867.18-event-sourced-trajectory-phase-classification-derived-from-events-kestrel-2026-05-28.md)** Event-sourced trajectory phase classification — setup/execution/maturation/sunset derived from event log (no separate state tracking)
 - [ ] **[B-0867.19](backlog/P3/B-0867.19-rest-file-create-auto-fast-forward-on-stale-base-empirical-verification-spike-aaron-2026-05-28.md)** REST file-create auto-fast-forward on stale base — empirical verification spike (operator hypothesis 2026-05-28)
+- [ ] **[B-0876](backlog/P3/B-0876-clifford-space-embedding-for-error-patterns-uniqueness-proof-three-phase-pragmatic-decomposition-aaron-kestrel-2026-05-28.md)** Clifford-space embedding for error patterns + uniqueness proof — three-phase pragmatic decomposition (research)
+- [ ] **[B-0878](backlog/P3/B-0878-time-generator-ischeduler-abstraction-for-clifford-space-agent-dynamics-aaron-2026-05-28.md)** Time-generator IScheduler abstraction for Clifford-space agent dynamics — temporal substrate for memes / commitments / tonal trajectories through time
+- [ ] **[B-0879](backlog/P3/B-0879-observe-emit-limit-simulate-in-clifford-space-unified-algebra-for-three-primitive-substrate-aaron-2026-05-28.md)** Observe / Emit / Limit / Simulate in Clifford space — unified geometric algebra for the 3-primitive + Simulate substrate
 
 <!-- END AUTO-GENERATED -->
