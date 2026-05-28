@@ -82,17 +82,19 @@ function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } 
     }
     const id = args[scenarioIdx + 1] as ScenarioId;
     const positional = args.filter((a, i) => i !== scenarioIdx && i !== scenarioIdx + 1 && !a.startsWith("--"));
-    if (positional.length === 0) {
+    const isoPath = positional[0];
+    if (positional.length === 0 || isoPath === undefined) {
       return { error: "--scenario requires an ISO path positional argument" };
     }
-    return { mode: "scenario", scenarioId: id, isoPath: positional[0] };
+    return { mode: "scenario", scenarioId: id, isoPath };
   }
   if (args.includes("--all")) {
     const positional = args.filter((a) => !a.startsWith("--"));
-    if (positional.length === 0) {
+    const isoPath = positional[0];
+    if (positional.length === 0 || isoPath === undefined) {
       return { error: "--all requires an ISO path positional argument" };
     }
-    return { mode: "all", isoPath: positional[0] };
+    return { mode: "all", isoPath };
   }
   return { error: `unrecognized arguments: ${args.join(" ")}` };
 }
@@ -171,12 +173,15 @@ function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResu
     stdio: "inherit",
   });
   const durationMs = Date.now() - start;
-  return {
-    id: scenario.id,
-    status: result.status === 0 ? "passed" : "failed",
-    durationMs,
-    message: result.status === 0 ? undefined : `delegated harness exited ${result.status}`,
-  };
+  const passed = result.status === 0;
+  return passed
+    ? { id: scenario.id, status: "passed", durationMs }
+    : {
+        id: scenario.id,
+        status: "failed",
+        durationMs,
+        message: `delegated harness exited ${result.status}`,
+      };
 }
 
 function reportScaffolded(scenario: Scenario): ScenarioResult {

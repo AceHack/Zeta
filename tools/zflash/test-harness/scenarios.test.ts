@@ -65,7 +65,9 @@ describe("B-0891 scenarios.ts invariants", () => {
   });
 
   it("validateScenarios catches duplicate id", () => {
-    const dup = [...SCENARIOS, { ...SCENARIOS[0] }];
+    const first = SCENARIOS[0];
+    if (!first) throw new Error("SCENARIOS unexpectedly empty");
+    const dup = [...SCENARIOS, { ...first }];
     expect(() => validateScenarios(dup)).toThrow();
   });
 
