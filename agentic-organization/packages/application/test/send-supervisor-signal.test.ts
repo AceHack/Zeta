@@ -22,18 +22,24 @@ const command: SendSupervisorSignalCommand = {
   traceId: "trace-supervisor-signal-001",
   organizationId: "org-lfg",
   projectId: "project-agentic-org",
-  teamId: "team-runtime",
-  sourceLevel: SupervisorChainLevel.TeamMember,
-  targetLevel: SupervisorChainLevel.Manager,
   targetHatAssignmentId: "hat-assignment-em-001",
   actor: {
     agentId: "agent-developer-001",
     hatAssignmentId: "hat-assignment-dev-001",
   },
-  toolType: SupervisorSignalToolType.ReportBlocker,
   title: "Blocked on scoped NATS publisher",
   message: "The team cannot validate the outbox worker until a supervisor routes a scoped NATS publisher decision.",
-  relatedWorkItemId: "work-outbox-001",
+  policyContext: {
+    scope: {
+      teamId: "team-runtime",
+      workItemId: "work-outbox-001",
+    },
+    toolType: SupervisorSignalToolType.ReportBlocker,
+    supervisorChain: {
+      sourceLevel: SupervisorChainLevel.TeamMember,
+      targetLevel: SupervisorChainLevel.Manager,
+    },
+  },
 };
 
 describe("send supervisor signal handler", () => {
@@ -58,8 +64,8 @@ describe("send supervisor signal handler", () => {
       scope: {
         organizationId: command.organizationId,
         projectId: command.projectId,
-        teamId: command.teamId,
-        workItemId: command.relatedWorkItemId,
+        teamId: command.policyContext.scope.teamId,
+        workItemId: command.policyContext.scope.workItemId,
       },
       actor: command.actor,
       aggregate: {

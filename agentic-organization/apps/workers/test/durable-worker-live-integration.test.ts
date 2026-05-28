@@ -28,7 +28,7 @@ import {
   createSendSupervisorSignalHandler,
   CommandResultStatus,
   type CommandResult,
-  type PipelineCommand,
+  type SendSupervisorSignalCommand,
 } from "../../../packages/application/src/index.ts";
 import {
   AgenticMessagingDomain,
@@ -381,7 +381,7 @@ function shouldSkipDurableLiveIntegration(): string | false {
   return false;
 }
 
-function createSupervisorSignalCommand(run: DurableLiveIntegrationRun): PipelineCommand {
+function createSupervisorSignalCommand(run: DurableLiveIntegrationRun): SendSupervisorSignalCommand {
   return {
     commandId: run.commandId,
     type: CommandType.SendSupervisorSignal,
@@ -392,18 +392,24 @@ function createSupervisorSignalCommand(run: DurableLiveIntegrationRun): Pipeline
     traceId: `${DurableLiveIntegrationIdPrefix.Trace}-${run.runId}`,
     organizationId: run.organizationId,
     projectId: `${DurableLiveIntegrationIdPrefix.Project}-${run.runId}`,
-    teamId: `${DurableLiveIntegrationIdPrefix.Team}-${run.runId}`,
-    sourceLevel: SupervisorChainLevel.TeamMember,
-    targetLevel: SupervisorChainLevel.Manager,
     targetHatAssignmentId: `${DurableLiveIntegrationIdPrefix.ManagerHatAssignment}-${run.runId}`,
     actor: {
       agentId: `${DurableLiveIntegrationIdPrefix.Agent}-${run.runId}`,
       hatAssignmentId: `${DurableLiveIntegrationIdPrefix.HatAssignment}-${run.runId}`,
     },
-    toolType: SupervisorSignalToolType.ReportBlocker,
     title: DurableLiveIntegrationStaticName.RequestTitle,
     message: DurableLiveIntegrationStaticName.RequestMessage,
-    relatedWorkItemId: `${DurableLiveIntegrationIdPrefix.WorkItem}-${run.runId}`,
+    policyContext: {
+      scope: {
+        teamId: `${DurableLiveIntegrationIdPrefix.Team}-${run.runId}`,
+        workItemId: `${DurableLiveIntegrationIdPrefix.WorkItem}-${run.runId}`,
+      },
+      toolType: SupervisorSignalToolType.ReportBlocker,
+      supervisorChain: {
+        sourceLevel: SupervisorChainLevel.TeamMember,
+        targetLevel: SupervisorChainLevel.Manager,
+      },
+    },
   };
 }
 

@@ -257,6 +257,17 @@ It must not instantiate the in-memory store or branch on every command
 type. New commands should register a handler; new persistence backends
 should implement the same store-factory port.
 
+The command pipeline is now generic over Organization command contracts.
+The shared command base owns only the policy/idempotency/trace fields:
+command ID, command type, request hash, idempotency key, actor,
+organization/project scope, correlation, causation, trace ID, and an
+optional generic `policyContext`. Command-specific payload stays with
+the handler. Supervisor-chain details, work-item scope, and tool scope
+are policy context, not pipeline payload assumptions. A second
+registered command type can execute through the same pipeline without
+adding a pipeline switch, which keeps future work-anchor, discussion,
+schedule, meeting, review, and Hermes-run commands open for extension.
+
 Policy remains a generic Organization package. The first implementation
 maps a `CommandAuthorizationRequest` to a `HatAuthorityPort` decision:
 active hat authority allows the command, while expired, missing,
@@ -281,9 +292,12 @@ adapter in the cluster, not an application-layer dependency.
 Command handlers must return typed effects, not write state directly.
 The command pipeline owns idempotency lookup and calls one command
 outcome port that records the business state, audit events, outbox
-events, and idempotency record together. This keeps the application
-layer closed to concrete database transactions while still giving
-durable adapters one atomic commit boundary for a command result.
+events, and idempotency record together. In V0, the only concrete
+business-effect category is the supervisor signal; the work-anchor
+kernel must add the next category without changing command dispatch or
+policy flow. This keeps the application layer closed to concrete
+database transactions while still giving durable adapters one atomic
+commit boundary for a command result.
 Durable command adapters should reserve the idempotency record before
 effect rows inside that transaction so an idempotency race aborts before
 supervisor signal, audit, or outbox state becomes visible.
@@ -291,6 +305,18 @@ The command outcome port returns generic committed, replayed, or
 idempotency-conflict results. A vendor adapter may use SQL constraints,
 transaction callbacks, CTEs, or other local mechanics to detect races,
 but application code only receives the generic outcome.
+
+Command outcomes are also generic enough for UI, MCP, and agents to
+consume without knowing every command-specific record. The common result
+surface carries status, command ID, idempotency state, policy evidence,
+artifact summaries, committed emitted-event summaries, committed audit
+event IDs, and typed failure information. The pipeline derives committed
+event/audit metadata from the effects it sends to the outcome port, so
+the result cannot describe different effects than the command attempted
+to persist. Compatibility fields such as `supervisorSignal` can remain
+while the first V0 screens and tests migrate, but new commands should
+expose their durable effects through the artifact and event metadata
+first.
 
 The first worker boundary follows the same rule. `@agentic-org/workers`
 does not create NATS clients, Cockroach clients, Nest modules, Temporal

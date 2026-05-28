@@ -3,7 +3,6 @@ import {
   AgenticEventType,
   CommandType,
   SupervisorSignalStatus,
-  type AgenticActor,
   type AuditEvent,
   type OutboxEvent,
   type SupervisorChainLevel,
@@ -12,7 +11,12 @@ import {
 } from "../../../domain/src/index.ts";
 import { createAgenticEventEnvelope } from "../../../domain/src/index.ts";
 import type { CommandHandler, CommandHandlerOutcome } from "../command-handler-registry.ts";
-import { CommandResultStatus, type CommandResult } from "../command-result.ts";
+import type { PipelineCommand } from "../command-contract.ts";
+import {
+  CommandResultArtifactType,
+  CommandResultStatus,
+  type CommandResult,
+} from "../command-result.ts";
 import type { Clock, IdGenerator } from "../ports.ts";
 
 export const IdPrefix = {
@@ -24,25 +28,24 @@ export const IdPrefix = {
 
 export type IdPrefix = (typeof IdPrefix)[keyof typeof IdPrefix];
 
-export type SendSupervisorSignalCommand = {
-  commandId: string;
-  type: typeof CommandType.SendSupervisorSignal;
-  idempotencyKey: string;
-  requestHash: string;
-  correlationId: string;
-  causationId: string;
-  traceId: string;
-  organizationId: string;
-  projectId: string;
-  teamId: string;
-  sourceLevel: SupervisorChainLevel;
-  targetLevel: SupervisorChainLevel;
-  targetHatAssignmentId: string;
-  actor: AgenticActor;
+export type SendSupervisorSignalPolicyContext = {
+  scope: {
+    teamId: string;
+    workItemId: string;
+  };
   toolType: SupervisorSignalToolType;
+  supervisorChain: {
+    sourceLevel: SupervisorChainLevel;
+    targetLevel: SupervisorChainLevel;
+  };
+};
+
+export type SendSupervisorSignalCommand = PipelineCommand & {
+  type: typeof CommandType.SendSupervisorSignal;
+  targetHatAssignmentId: string;
   title: string;
   message: string;
-  relatedWorkItemId: string;
+  policyContext: SendSupervisorSignalPolicyContext;
 };
 
 export type SendSupervisorSignalDependencies = Clock & IdGenerator;
@@ -59,20 +62,21 @@ export async function sendSupervisorSignal(
   dependencies: SendSupervisorSignalDependencies,
 ): Promise<CommandHandlerOutcome<CommandResult>> {
   const occurredAt = dependencies.now();
+  const signalContext = command.policyContext;
   const supervisorSignal: SupervisorSignal = {
     supervisorSignalId: dependencies.createId(IdPrefix.SupervisorSignal),
     organizationId: command.organizationId,
     projectId: command.projectId,
-    teamId: command.teamId,
-    sourceLevel: command.sourceLevel,
-    targetLevel: command.targetLevel,
+    teamId: signalContext.scope.teamId,
+    sourceLevel: signalContext.supervisorChain.sourceLevel,
+    targetLevel: signalContext.supervisorChain.targetLevel,
     targetHatAssignmentId: command.targetHatAssignmentId,
     sender: command.actor,
-    toolType: command.toolType,
+    toolType: signalContext.toolType,
     status: SupervisorSignalStatus.Sent,
     title: command.title,
     message: command.message,
-    relatedWorkItemId: command.relatedWorkItemId,
+    relatedWorkItemId: signalContext.scope.workItemId,
     createdAt: occurredAt,
   };
 
@@ -94,8 +98,8 @@ export async function sendSupervisorSignal(
       scope: {
         organizationId: command.organizationId,
         projectId: command.projectId,
-        teamId: command.teamId,
-        workItemId: command.relatedWorkItemId,
+        teamId: signalContext.scope.teamId,
+        workItemId: signalContext.scope.workItemId,
       },
       aggregate: {
         aggregateId: supervisorSignal.supervisorSignalId,
@@ -110,10 +114,10 @@ export async function sendSupervisorSignal(
         idempotencyKey: command.idempotencyKey,
       },
       payload: {
-        sourceLevel: command.sourceLevel,
-        targetLevel: command.targetLevel,
+        sourceLevel: signalContext.supervisorChain.sourceLevel,
+        targetLevel: signalContext.supervisorChain.targetLevel,
         targetHatAssignmentId: command.targetHatAssignmentId,
-        toolType: command.toolType,
+        toolType: signalContext.toolType,
         status: SupervisorSignalStatus.Sent,
         title: command.title,
       },
@@ -122,7 +126,24 @@ export async function sendSupervisorSignal(
 
   return {
     result: {
+      commandId: command.commandId,
       status: CommandResultStatus.Accepted,
+      artifacts: [
+        {
+          artifactType: CommandResultArtifactType.SupervisorSignal,
+          artifactId: supervisorSignal.supervisorSignalId,
+          label: supervisorSignal.title,
+        },
+      ],
+      emittedEvents: [
+        {
+          eventId: outboxEvent.envelope.eventId,
+          eventType: outboxEvent.envelope.eventType,
+          aggregateId: outboxEvent.envelope.aggregate.aggregateId,
+          aggregateType: outboxEvent.envelope.aggregate.aggregateType,
+        },
+      ],
+      auditEventIds: [auditEvent.auditEventId],
       supervisorSignal,
       idempotency: {
         replayed: false,

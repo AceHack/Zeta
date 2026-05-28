@@ -20,10 +20,14 @@ export type CommandHandlerRegistry<Command extends TypedCommand = TypedCommand, 
   resolveHandler: (commandType: Command["type"]) => CommandHandler<Command, Result> | undefined;
 };
 
+export type AnyCommandHandler<Command extends TypedCommand = TypedCommand, Result = unknown> = {
+  [CommandType in Command["type"]]: CommandHandler<Extract<Command, { type: CommandType }>, Result>;
+}[Command["type"]];
+
 export function createCommandHandlerRegistry<Command extends TypedCommand, Result>(
-  handlers: readonly CommandHandler<Command, Result>[],
+  handlers: readonly AnyCommandHandler<Command, Result>[],
 ): CommandHandlerRegistry<Command, Result> {
-  const handlersByCommandType = new Map<Command["type"], CommandHandler<Command, Result>>();
+  const handlersByCommandType = new Map<Command["type"], AnyCommandHandler<Command, Result>>();
 
   for (const handler of handlers) {
     if (handlersByCommandType.has(handler.commandType)) {
@@ -34,6 +38,6 @@ export function createCommandHandlerRegistry<Command extends TypedCommand, Resul
   }
 
   return {
-    resolveHandler: (commandType) => handlersByCommandType.get(commandType),
+    resolveHandler: (commandType) => handlersByCommandType.get(commandType) as CommandHandler<Command, Result> | undefined,
   };
 }

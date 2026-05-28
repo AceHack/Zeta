@@ -1,8 +1,6 @@
 import type {
   AgenticActor,
-  CommandType,
   SupervisorChainLevel,
-  SupervisorSignalToolType,
 } from "../../domain/src/index.ts";
 
 export const PolicyDecisionStatus = {
@@ -51,10 +49,10 @@ export type CommandAuthorizationSupervisorChain = {
 
 export type CommandAuthorizationRequest = {
   commandId: string;
-  commandType: CommandType;
+  commandType: string;
   actor: AgenticActor;
   scope: CommandAuthorizationScope;
-  toolType?: SupervisorSignalToolType;
+  toolType?: string;
   supervisorChain?: CommandAuthorizationSupervisorChain;
   trace: CommandAuthorizationTrace;
 };
@@ -91,10 +89,10 @@ export type PolicyDecision =
 
 export type PolicyDecisionObservation = {
   commandId: string;
-  commandType: CommandType;
+  commandType: string;
   actor: AgenticActor;
   scope: CommandAuthorizationScope;
-  toolType?: SupervisorSignalToolType;
+  toolType?: string;
   supervisorChain?: CommandAuthorizationSupervisorChain;
   trace: CommandAuthorizationTrace;
   decision: PolicyDecision;

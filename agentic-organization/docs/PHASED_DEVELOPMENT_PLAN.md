@@ -899,23 +899,33 @@ pile of bespoke result types.
    - result artifact schema;
    - emitted event types;
    - required authority/tool;
-   - handler.
+   - handler. First code slice started for command type, generic handler
+     registration, explicit `policyContext`, result artifacts, emitted
+     events, and policy/idempotency flow; explicit schema metadata is
+     still pending, and durable business-effect categories remain
+     intentionally narrow until the work-anchor kernel lands.
 2. Refactor the existing `send_supervisor_signal` registration into the
-   generic registry.
+   generic registry. Done for handler registration and generic pipeline
+   execution.
 3. Normalize command outcome into:
    - status;
    - command ID;
    - idempotency status;
    - policy decision;
-   - emitted events;
-   - audit records;
+   - emitted events derived from committed outbox effects;
+   - audit records derived from committed audit effects;
    - domain artifacts;
-   - failure reason.
+   - failure reason. First code slice done with command ID, policy,
+     emitted event summaries, audit event IDs, artifacts, idempotency,
+     and typed error metadata.
 4. Keep command handlers returning effects, not writing concrete state.
-5. Add typed command error codes for validation, policy denial,
+5. Generalize durable command effects beyond supervisor signals once
+   the work-anchor kernel defines the next persistent business effect
+   category.
+6. Add typed command error codes for validation, policy denial,
    idempotency conflict, persistence conflict, and transient adapter
    failure.
-6. Add command metadata that can feed MCP tools, UI forms, and prompt
+7. Add command metadata that can feed MCP tools, UI forms, and prompt
    flow phase definitions later.
 
 ### Tests First
@@ -923,6 +933,7 @@ pile of bespoke result types.
 Write tests for:
 
 - registering multiple commands without changing pipeline code;
+  first executable test done;
 - unknown command rejection;
 - handler validation failure;
 - allowed policy path;
@@ -2786,14 +2797,18 @@ Done when:
 
 Build:
 
-- command contract registry;
-- generic command outcome;
-- refactor `send_supervisor_signal` into registry;
+- command contract registry; started with generic command base plus
+  handler registration, schema metadata pending;
+- generic command outcome; started with artifacts, emitted event
+  summaries, audit IDs, command ID, policy, idempotency, and errors;
+- refactor `send_supervisor_signal` into registry; done for execution
+  path while preserving compatibility fields;
 - OpenSpec command registry scenarios.
 
 Done when:
 
-- a second command can be added without changing pipeline internals.
+- a second command can be added without changing pipeline internals;
+  satisfied by the first generic pipeline test.
 
 ### PR 5: Work Anchor Kernel V0
 

@@ -1,4 +1,10 @@
-import type { SupervisorSignal, WorkItem } from "../../domain/src/index.ts";
+import type {
+  AgenticAggregateType,
+  AgenticEventType,
+  PolicyDecisionEvidence,
+  SupervisorSignal,
+  WorkItem,
+} from "../../domain/src/index.ts";
 import type { PolicyDenialReason } from "../../policy/src/index.ts";
 
 export const CommandResultStatus = {
@@ -18,8 +24,35 @@ export const CommandErrorCode = {
 
 export type CommandErrorCode = (typeof CommandErrorCode)[keyof typeof CommandErrorCode];
 
+export const CommandResultArtifactType = {
+  Generic: "generic",
+  SupervisorSignal: "supervisor_signal",
+  WorkItem: "work_item",
+} as const;
+
+export type CommandResultArtifactType =
+  (typeof CommandResultArtifactType)[keyof typeof CommandResultArtifactType];
+
+export type CommandResultArtifact = {
+  artifactType: CommandResultArtifactType | string;
+  artifactId: string;
+  label?: string;
+};
+
+export type CommandResultEmittedEvent = {
+  eventId: string;
+  eventType: AgenticEventType | string;
+  aggregateId: string;
+  aggregateType: AgenticAggregateType | string;
+};
+
 export type CommandResult = {
+  commandId?: string;
   status: CommandResultStatus;
+  artifacts?: readonly CommandResultArtifact[];
+  emittedEvents?: readonly CommandResultEmittedEvent[];
+  auditEventIds?: readonly string[];
+  policy?: PolicyDecisionEvidence;
   workItem?: WorkItem;
   supervisorSignal?: SupervisorSignal;
   idempotency: {

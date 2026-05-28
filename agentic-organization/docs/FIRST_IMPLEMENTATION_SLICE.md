@@ -64,7 +64,7 @@ escalate.
 | Package                        | Implemented first                                                                                                                                                     |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
-| `@agentic-org/application`     | command pipeline, command-handler registry, state-store ports, idempotency conflict handling, supervisor signal handler                                               |
+| `@agentic-org/application`     | generic command pipeline, command-handler registry, state-store ports, idempotency conflict handling, generic command outcome artifacts/events, supervisor signal handler |
 | `@agentic-org/policy`          | command authorization port, hat-authority port, policy-decision observation/store/reader ports, active/expired/revoked/scope/tool denial decisions, typed reasons     |
 | `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
 | `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of state-store, outbox-source, event-ingestion, and policy-observation ports, backed by CockroachDB                      |
@@ -153,14 +153,31 @@ Hermes runs, MCP calls, and UI evidence.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
+- The command pipeline is now generic over Organization command
+  contracts. A second registered command type can pass through policy,
+  idempotency, handler dispatch, and outcome persistence without
+  changing pipeline internals. `send_supervisor_signal` remains the
+  first production command, not the command system's type boundary.
+- The generic command base carries a `policyContext` for optional
+  work-item scope, team scope, tool scope, and supervisor-chain context.
+  Domain payload fields such as signal title/message or future meeting
+  details stay with their command handlers.
 - Command handlers return typed effects; the command pipeline persists
-  the supervisor signal, audit events, outbox events, and idempotency
-  record through one `recordCommandOutcome` port. Handlers do not write
-  piecemeal state.
+  supervisor-signal effects, audit events, outbox events, and
+  idempotency record through one `recordCommandOutcome` port. Handlers
+  do not write piecemeal state. The durable effect vocabulary is still
+  deliberately narrow; the work-anchor kernel is the next slice that
+  will add the next business-effect category without changing the
+  command dispatch contract.
 - Command outcome persistence returns generic committed, replayed, or
   idempotency-conflict results. Durable adapters own idempotency race
   handling and return those generic outcomes without exposing duplicate
   key or vendor errors to application code.
+- Command results now expose generic, UI/MCP/agent-readable metadata:
+  command ID, domain artifacts, committed emitted-event summaries,
+  committed audit event IDs, policy decision evidence, idempotency
+  state, and optional typed compatibility records such as the first
+  supervisor signal artifact.
 - State-store and outbox-source ports are async from the beginning so
   durable SQL, NATS-backed workers, and other real adapters do not
   inherit a fake synchronous shape.
