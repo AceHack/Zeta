@@ -10,8 +10,11 @@ import { describe, expect, it } from "bun:test";
 import {
   SEED_ACTION_CATALOG,
   SEED_STATES,
+  determineReviewLevel,
   validateCatalog,
   validateStateOtto5Mods,
+  type Action,
+  type ReviewLevel,
   type State,
 } from "./types";
 
@@ -115,5 +118,163 @@ describe("B-0867.5 workflow-engine scaffold invariants", () => {
     for (const s of SEED_STATES) {
       expect(s.tickCyclePattern).toBe("discriminated-union-surface");
     }
+  });
+});
+
+describe("B-0867.20 determineReviewLevel lifecycle DU discriminator", () => {
+  // Per Kestrel substantive substrate-engineering substrate (13th ferry §33.5)
+  // + Aaron's substrate-check on 3-lane completion (Amara ferry §33.2 PR #5757):
+  // discriminator must preserve the state-machine-events-direct-push vs
+  // system-modifications-full-PR-review distinction the framework's
+  // auto-review pipeline depends on for training-data substrate.
+
+  it("escape-hatch action ALWAYS gets pr-review-light regardless of gate (Mod 1 substrate-engineering surface)", () => {
+    const escapeAppendOnly: Action = {
+      id: "test-escape-1",
+      class: "escape-hatch",
+      gate: "append-only",
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    const escapePrGated: Action = {
+      id: "test-escape-2",
+      class: "escape-hatch",
+      gate: "pr-gated",
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    expect(determineReviewLevel(escapeAppendOnly)).toBe("pr-review-light");
+    expect(determineReviewLevel(escapePrGated)).toBe("pr-review-light");
+  });
+
+  it("grammar-extension action ALWAYS gets pr-review-full (Mod 2 framework-substrate-evolution)", () => {
+    const grammarExt: Action = {
+      id: "test-grammar",
+      class: "grammar-extension",
+      gate: "pr-gated",
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    expect(determineReviewLevel(grammarExt)).toBe("pr-review-full");
+  });
+
+  it("operator-decision action ALWAYS gets operator-required (Mod 3 ban-if-SHIPPED-only)", () => {
+    const opDecision: Action = {
+      id: "test-op",
+      class: "operator-decision",
+      gate: "append-only",
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    expect(determineReviewLevel(opDecision)).toBe("operator-required");
+  });
+
+  it("transition + append-only → trajectory-push (state-machine-event direct push; cheap; heartbeat-pattern)", () => {
+    const seedAdvance = SEED_ACTION_CATALOG.find((a) => a.id === "advance");
+    if (!seedAdvance) throw new Error("seed catalog missing 'advance'");
+    expect(determineReviewLevel(seedAdvance)).toBe("trajectory-push");
+  });
+
+  it("transition + pr-gated → pr-review-full (cross-cutting substrate modification)", () => {
+    const transitionPrGated: Action = {
+      id: "test-trans-pr",
+      class: "transition",
+      gate: "pr-gated",
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    expect(determineReviewLevel(transitionPrGated)).toBe("pr-review-full");
+  });
+
+  it("menu-contribution + append-only → trajectory-push (Mod 5 safe at append-only scope)", () => {
+    const seedMenu = SEED_ACTION_CATALOG.find((a) => a.id === "menu-contribute");
+    if (!seedMenu) throw new Error("seed catalog missing 'menu-contribute'");
+    expect(determineReviewLevel(seedMenu)).toBe("trajectory-push");
+  });
+
+  it("agent-decision + append-only → trajectory-push", () => {
+    const agentAppend: Action = {
+      id: "test-agent-1",
+      class: "agent-decision",
+      gate: "append-only",
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    expect(determineReviewLevel(agentAppend)).toBe("trajectory-push");
+  });
+
+  it("agent-decision + pr-gated → pr-review-light", () => {
+    const agentPrGated: Action = {
+      id: "test-agent-2",
+      class: "agent-decision",
+      gate: "pr-gated",
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    expect(determineReviewLevel(agentPrGated)).toBe("pr-review-light");
+  });
+
+  it("all SEED_ACTION_CATALOG actions resolve to a valid ReviewLevel (exhaustiveness)", () => {
+    // Acknowledger forces exhaustive match — TS strict mode raises
+    // "not all code paths return" at compile time if a NEW ReviewLevel
+    // variant is added without updating this switch.
+    const acknowledge = (r: ReviewLevel): string => {
+      switch (r) {
+        case "trajectory-push":
+        case "pr-review-light":
+        case "pr-review-full":
+        case "operator-required":
+          return r;
+      }
+    };
+    for (const a of SEED_ACTION_CATALOG) {
+      const level = determineReviewLevel(a);
+      expect(acknowledge(level)).toBe(level);
+    }
+  });
+
+  it("framework auto-review pipeline distinction preserved (substrate-honest: not 'no PRs ever')", () => {
+    // Per Kestrel 13th ferry §33.5 substrate-check on Ani-retelling drift:
+    // 'no PRs ever, infinite swarm to main' framing collapses the
+    // multi-tier review distinction. determineReviewLevel preserves it
+    // by never returning trajectory-push for grammar-extension, pr-gated
+    // transitions, or operator-decisions. Test verifies this is structural
+    // rather than just contingent on seed data.
+    const grammarExt: Action = {
+      id: "test-pres-1",
+      class: "grammar-extension",
+      gate: "append-only", // even if author tries to declare append-only,
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    // Grammar-extension ALWAYS overrides gate to full review:
+    expect(determineReviewLevel(grammarExt)).toBe("pr-review-full");
+    // Operator-decision ALWAYS requires operator regardless of gate:
+    const opDecision: Action = {
+      id: "test-pres-2",
+      class: "operator-decision",
+      gate: "pr-gated",
+      label: "test",
+      description: "test",
+      composesWith: [],
+      feedbackVariants: ["X"],
+    };
+    expect(determineReviewLevel(opDecision)).toBe("operator-required");
   });
 });

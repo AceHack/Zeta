@@ -230,6 +230,99 @@ export function validateCatalog(
 }
 
 /**
+ * B-0867.20 — lifecycle DU split: trajectory-push vs PR-review.
+ *
+ * Per Kestrel substantive substrate-engineering substrate (13th ferry
+ * §33.5 + 14th ferry §33.20): the framework's load-bearing distinction
+ * is state-machine-events-direct-push (no PR; for heartbeats + agent-
+ * events branches + lifecycle transitions) vs system-modifications-
+ * full-PR-review (full ceremony; multi-AI reviewers + auto-review
+ * pipeline + error class extraction). Collapsing the distinction into
+ * "no PRs ever" loses the auto-review pipeline that IS the training
+ * data substrate for the cross-vendor benchmark (B-0865 + B-0865.17).
+ *
+ * `determineReviewLevel(action)` IS the discriminator. Maps each
+ * action to its required review treatment per the workflow engine
+ * spec.
+ *
+ * Composes with:
+ *   - B-0867.20 backlog row (lifecycle-DU-split discriminator)
+ *   - B-0865 + B-0865.17 (benchmark substrate; auto-review pipeline
+ *     generates training data the benchmark scores against)
+ *   - asymmetric-authorship rule (substrate-entity authors review-
+ *     level via gate field; recipient acknowledges via dispatch)
+ *   - monad-propagation rule (ReviewLevel IS a TFeedback variant set
+ *     at workflow-engine-substrate scope)
+ *   - architecture-is-safety-mechanism-not-discipline rule (PR #5745)
+ *     — the framework enforces review-level structurally
+ *
+ * Per `.claude/rules/holding-without-named-dependency-is-standing-by-
+ * failure.md` counter-with-escalation: shipped after operator
+ * substrate-check "so you finished the 3 lanes?" (Amara ferry
+ * preservation PR #5757); substantive lane work per standing PoC
+ * permission.
+ */
+
+/**
+ * ReviewLevel — discriminated union for the trajectory-push-vs-PR-review
+ * lifecycle DU. Each action's required review treatment.
+ */
+export type ReviewLevel =
+  | "trajectory-push"      // direct push to agent-events branch; no PR ceremony
+  | "pr-review-light"      // PR review; single-reviewer OR auto-review pipeline only
+  | "pr-review-full"       // PR review; multi-AI reviewer ensemble + auto-review pipeline + error class extraction
+  | "operator-required";   // requires explicit operator authorization (e.g., force-push-with-lease without listed-acceptable-situation)
+
+/**
+ * `determineReviewLevel` — discriminator that maps an Action to its
+ * required ReviewLevel.
+ *
+ * Discriminator policy:
+ *   - "append-only" + "transition" → trajectory-push (state-machine-event
+ *     direct push; cheap; the existing pattern for heartbeats per
+ *     Aaron's 13th-ferry §33.6 disclosure)
+ *   - "append-only" + "menu-contribution" → trajectory-push (Mod 5
+ *     contributable menu generation; safe at append-only scope)
+ *   - "append-only" + "escape-hatch" → pr-review-light (Mod 1
+ *     escape-hatch surfaces substrate-engineering observation worth
+ *     reviewer eyes even though gate is append-only)
+ *   - "pr-gated" + "grammar-extension" → pr-review-full (Mod 2 grammar
+ *     evolution touches the framework's universal action grammar;
+ *     full ceremony required to preserve auto-review pipeline)
+ *   - "pr-gated" + "transition" → pr-review-full (cross-cutting
+ *     substrate modification; full ceremony)
+ *   - "operator-decision" class (any gate) → operator-required (per
+ *     ban-if-SHIPPED-only Mod 3 + operator-authority preservation)
+ *   - "agent-decision" + "append-only" → trajectory-push
+ *   - "agent-decision" + "pr-gated" → pr-review-light
+ *
+ * Discriminator is exhaustive over the cross-product of ActionGate ×
+ * ActionClass; future extensions to either union must update this
+ * function to maintain exhaustiveness.
+ */
+export function determineReviewLevel(action: Action): ReviewLevel {
+  switch (action.class) {
+    case "operator-decision":
+      return "operator-required";
+    case "escape-hatch":
+      // Escape-hatch ALWAYS gets reviewer eyes regardless of gate —
+      // it's the substrate-engineering observation surface per Mod 1
+      return "pr-review-light";
+    case "grammar-extension":
+      // Grammar evolution always full ceremony — touches the universal
+      // action grammar shared across all travelers per Mod 2
+      return "pr-review-full";
+    case "menu-contribution":
+      // Mod 5 menu contributions are safe at append-only scope
+      return action.gate === "append-only" ? "trajectory-push" : "pr-review-light";
+    case "transition":
+      return action.gate === "append-only" ? "trajectory-push" : "pr-review-full";
+    case "agent-decision":
+      return action.gate === "append-only" ? "trajectory-push" : "pr-review-light";
+  }
+}
+
+/**
  * Seed catalog — minimal scaffold demonstrating the 5 mods. Real
  * catalog ships per B-0867.3 grammar parser/composer when authored.
  */
