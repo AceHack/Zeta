@@ -119,6 +119,35 @@ citation.
 - **OpenAI Agents SDK + *A Practical Guide to Building
   Agents*** — cross-vendor comparison for agent loop design.
 
+### Multi-agent scientific discovery (added 2026-05-28 per Aaron YouTube ferry PR #5762)
+
+- **Google DeepMind co-scientist** ⭐ (Nature 2026) — multi-agent
+  ecosystem (supervisor/generation/reflection/proximity/evolution/
+  ranking) with ELO tournament hypothesis ranking. Closed-source
+  upstream; community implementations available:
+  - **jataware/open-coscientist** — best-available LangGraph
+    adaptation; mirrors the full agent ecosystem
+  - **llnl/open-ai-co-scientist** — LLNL government-lab
+    implementation; trust-substrate distinct from community ports
+  - **The-Swarm-Corporation/AI-CoScientist** — minimal Swarms
+    framework implementation; smaller surface for substrate-
+    engineering composition study
+- **Sakana AI Robin** ⭐ (Nature 2026; `s41586-026-10652-y`;
+  arXiv:2505.13400) — closed-loop multi-agent system (Crow + Falcon
+  + Finch) with 8-parallel-Finch consensus mechanism for data
+  analysis. Validated novel therapeutic candidates including
+  ripasudil for AMD via lab-in-the-loop iteration.
+  - **SakanaAI/AI-Scientist** — original v1 framework
+  - **SakanaAI/AI-Scientist-v2** — workshop-level via agentic
+    tree search; Robin architecture descendant
+- **Microsoft Research Infer.NET + TrueSkill** ⭐ — probabilistic
+  programming for Bayesian inference + canonical TrueSkill (Herbrich
+  + Minka + Graepel 2007) for ranking. Per Aaron 2026-05-28:
+  *"they are doing this for their idea ranking with Infra.net
+  basically"* — the co-scientist ELO tournament composes with
+  Infer.NET TrueSkill substrate. Composes with Zeta.Bayesian
+  published library + framework's BP/EP references.
+
 ### Probabilistic programming / Bayesian inference (added 2026-05-28 per Aaron Infer.NET substrate-engineering question)
 
 - **WebPPL** ⭐ (`probmods/webppl`; Goodman + Mansinghka et al,

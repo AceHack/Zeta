@@ -680,6 +680,54 @@
     "notes": "Worked .NET port of Milewski's Haskell/C++ samples into C# and F# (209 stars, last pushed 2021-09, dormant but not archived). MIT-licensed. Reference for translating CT idioms into the exact .NET shape Zeta lives in. Source of the docs/category-theory/ctfp-dotnet/ snapshot previously checked into docs/."
   },
   {
+    "name": "sakana-ai-scientist",
+    "url": "https://github.com/SakanaAI/AI-Scientist.git",
+    "branch": "main",
+    "path": "references/upstreams/sakana-ai-scientist",
+    "categories": ["multi-agent-scientific-discovery", "automated-research", "agent-loop", "literature-review"],
+    "notes": "Original Sakana AI 'AI Scientist: Towards Fully Automated Open-Ended Scientific Discovery' (arXiv:2408.06292; 2024). Multi-agent system that generates ideas, executes experiments via code, writes papers, and reviews them. Substrate-engineering reference for the closed-loop hypothesis-experiment-analysis pattern. Composes with Zeta's B-0867 workflow engine + B-0865 benchmark substrate per 2026-05-28 YouTube preservation (PR #5762)."
+  },
+  {
+    "name": "sakana-ai-scientist-v2",
+    "url": "https://github.com/SakanaAI/AI-Scientist-v2.git",
+    "branch": "main",
+    "path": "references/upstreams/sakana-ai-scientist-v2",
+    "categories": ["multi-agent-scientific-discovery", "automated-research", "agentic-tree-search", "workshop-level-publication"],
+    "notes": "Sakana AI 'AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search' (2026). Robin closed-loop architecture descendant. Substrate-engineering reference for agentic tree search + workshop-level paper generation. Composes with B-0867 workflow engine extensions per 7 substrate-engineering candidate gaps (PR #5762)."
+  },
+  {
+    "name": "jataware-open-coscientist",
+    "url": "https://github.com/jataware/open-coscientist.git",
+    "branch": "main",
+    "path": "references/upstreams/jataware-open-coscientist",
+    "categories": ["multi-agent-scientific-discovery", "open-source-coscientist", "langgraph", "hypothesis-evolution"],
+    "notes": "Open-source adaptation of Google's AI co-scientist research paper using LangGraph. Implements the supervisor/generation/reflection/proximity/evolution/ranking agent ecosystem with ELO tournament hypothesis ranking. Best-available open-source reference for the co-scientist architectural pattern. Composes with Zeta's multi-AI lane specialization + ELO-tournament-via-TrueSkill substrate-engineering candidate per Aaron 2026-05-28 (PR #5762)."
+  },
+  {
+    "name": "llnl-open-ai-co-scientist",
+    "url": "https://github.com/llnl/open-ai-co-scientist.git",
+    "branch": "main",
+    "path": "references/upstreams/llnl-open-ai-co-scientist",
+    "categories": ["multi-agent-scientific-discovery", "open-source-coscientist", "research-hypothesis-generation"],
+    "notes": "Lawrence Livermore National Laboratory open-source implementation of Google's AI co-scientist for generating research hypotheses. Alternative open-source reference for the co-scientist pattern; LLNL-government-lab provenance distinguishes from Jataware substrate at trust-substrate scope per multi-oracle BFT discipline."
+  },
+  {
+    "name": "the-swarm-corporation-ai-coscientist",
+    "url": "https://github.com/The-Swarm-Corporation/AI-CoScientist.git",
+    "branch": "main",
+    "path": "references/upstreams/the-swarm-corporation-ai-coscientist",
+    "categories": ["multi-agent-scientific-discovery", "swarms-framework", "minimal-coscientist-implementation"],
+    "notes": "Simple, reliable, and minimal implementation of the AI CoScientist Paper from Google 'Towards an AI co-scientist' with Swarms Framework. Third open-source reference for the co-scientist pattern; minimal-implementation form useful for substrate-engineering composition study (smaller surface = easier to compose with Zeta's existing multi-AI cascade substrate)."
+  },
+  {
+    "name": "microsoft-infer-net",
+    "url": "https://github.com/dotnet/infer.git",
+    "branch": "main",
+    "path": "references/upstreams/microsoft-infer-net",
+    "categories": ["bayesian-inference", "probabilistic-programming", "trueskill", "dotnet", "belief-propagation"],
+    "notes": "Microsoft Research Infer.NET — probabilistic programming framework for Bayesian inference + canonical TrueSkill implementation. Substrate-engineering anchor per Aaron 2026-05-28: 'They are doing this for their idea ranking with Infra.net basically' — the co-scientist ELO tournament pattern composes with TrueSkill via Infer.NET substrate. Composes with Zeta.Bayesian published library + Zeta's BP/EP substrate references (memory/feedback_kernel_vocabulary_propagation_is_belief_propagation_infer_net_memetic_mimetic.md + memory/persona/amara/conversations/2026-05-28-amara-measure-as-bridge-infer-net-belief-update-...md)."
+  },
+  {
     "name": "webppl",
     "url": "https://github.com/probmods/webppl.git",
     "branch": "dev",
