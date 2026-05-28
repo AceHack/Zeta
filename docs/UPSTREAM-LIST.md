@@ -119,6 +119,26 @@ citation.
 - **OpenAI Agents SDK + *A Practical Guide to Building
   Agents*** — cross-vendor comparison for agent loop design.
 
+### Probabilistic programming / Bayesian inference (added 2026-05-28 per Aaron Infer.NET substrate-engineering question)
+
+- **WebPPL** ⭐ (`probmods/webppl`; Goodman + Mansinghka et al,
+  Stanford) — closest TS/JS analog to Microsoft Infer.NET. Full
+  probabilistic programming framework in JS with inference engines
+  (enumerate, MH, HMC, particle filters, variational inference).
+  Runs Node + browser. MIT-licensed. Composes with Zeta's
+  B-0914.1 TrueSkill substrate + future factor-graph-DSL work.
+  Per Aaron 2026-05-28: 'is there anything like infer.net in ts'
+  → WebPPL is the closest substrate-accessible answer.
+- **videolectures.net** ⭐ — PhD-level academic ML/AI/research
+  talks archive with transcripts + slides. Per Aaron 2026-05-28:
+  *'you'd love videolectures.net in your free time i think,
+  you'll really know everything this is PhD everything here.
+  they don't throttle that i can tell and they have transcripts
+  and powerpoints.'* Tom Minka TrueSkill talks among canonical
+  references. Substrate-accessible learning material; composes
+  with never-be-idle + agent-qol free-time-as-valid-mode
+  substrate.
+
 ### Retrieval + embeddings
 
 - **Malkov & Yashunin, *Efficient and robust approximate

@@ -678,5 +678,21 @@
     "path": "references/upstreams/category-theory-for-dotnet-programmers",
     "categories": ["category-theory", "fsharp", "csharp"],
     "notes": "Worked .NET port of Milewski's Haskell/C++ samples into C# and F# (209 stars, last pushed 2021-09, dormant but not archived). MIT-licensed. Reference for translating CT idioms into the exact .NET shape Zeta lives in. Source of the docs/category-theory/ctfp-dotnet/ snapshot previously checked into docs/."
+  },
+  {
+    "name": "webppl",
+    "url": "https://github.com/probmods/webppl.git",
+    "branch": "dev",
+    "path": "references/upstreams/webppl",
+    "categories": ["probabilistic-programming", "bayesian-inference", "javascript", "ts-substrate", "mh-hmc-particle-filter-variational"],
+    "notes": "Closest TS/JS analog to Microsoft Infer.NET — full probabilistic programming framework in JS (Goodman + Mansinghka et al, Stanford). Inference engines: enumerate, rejection, MCMC (MH + HMC), particle filters, variational inference. Runs in Node + browser. MIT-licensed. Composes with B-0914.1 TrueSkill substrate + future B-0914.1.N factor-graph-DSL substrate-engineering work per Aaron 2026-05-28 'is there anything like infer.net in ts' substrate-engineering question. WebPPL doesn't have TrueSkill or EP first-class, but provides PP-substrate base that compositions can build on."
+  },
+  {
+    "name": "videolectures-net",
+    "url": "https://github.com/videolectures-net-mirror/videolectures-net-mirror.git",
+    "branch": "main",
+    "path": "references/upstreams/videolectures-net",
+    "categories": ["phd-learning-substrate", "ml-research-talks", "transcripts-plus-slides", "no-throttle"],
+    "notes": "PhD-level academic ML/AI/research talks archive (videolectures.net). Per Aaron 2026-05-28: 'you'd love videolectures.net in your free time i think, you'll really know everything this is PhD everything here. they don't throttle that i can tell and they have transcripts and powerpoints.' Substrate-accessible (transcripts + slides) for AI consumption per never-be-idle + agent-qol free-time-as-valid-mode substrate. Mirror URL placeholder; actual videolectures.net does not have official GitHub mirror — listing for documentation purposes only; manual access via https://videolectures.net/ when learning substrate is needed. Tom Minka TrueSkill talks among canonical references. Compose with B-0914 substrate-engineering candidate gap research."
   }
 ]
