@@ -2,19 +2,22 @@
 
 Carved sentence:
 
-> Agent worktrees are scratch space, but scratch space MUST survive
-> reboots when in-flight work lives in it. Agents place worktrees
-> under `~/Documents/src/repos/Zeta/worktrees/<surface>-<task-tag>-<hhmmz>/`
-> (persistent storage), NEVER under `/tmp/` or `/private/tmp/`
-> (macOS-cleared on reboot AND on `com.apple.periodic-daily` cleanup
-> of files >3 days old). Agents NEVER hold the `main` branch in any
-> worktree (use detached HEAD off `origin/main` instead). Agents
-> NEVER create worktrees under paths the operator uses for their own
-> work, with one exception: the repo's own `worktrees/` subdirectory
-> is git-aware and operator-safe. Agents REMOVE their own worktrees
+> Agent worktrees are scratch space, but scratch space MUST (1) live
+> OUTSIDE the operator's primary repo (operator-primary stays agent-
+> free by construction so operator can `git checkout main` unblocked),
+> AND (2) survive reboots when in-flight work lives in it. Agents
+> place worktrees under `~/.zeta/agents/<persona>/<stream-id>/`
+> (per-persona base + per-stream isolation; outside operator's repo;
+> persistent storage). NEVER under `/tmp/` or `/private/tmp/`
+> (macOS-cleared on reboot) AND NEVER under `~/Documents/src/repos/Zeta/`
+> (operator's primary; blocks operator's `git checkout main` whenever
+> an agent worktree there holds a branch operator wants to switch to).
+> Agents NEVER hold the `main` branch in any worktree (use detached
+> HEAD off `origin/main` instead). Agents REMOVE their own worktrees
 > after the work's PR merges (or substrate-honestly abandon).
 > Substrate-engineering target B-0750 mechanizes the cleanup;
-> B-0894 mechanizes the reboot-survival default-location.
+> B-0894 mechanized reboot-survival; B-0894.3 mechanizes the
+> per-persona-outside-operator-repo discipline.
 
 ## Operational content
 
@@ -25,11 +28,11 @@ Agent worktrees that need to BASE OFF main use `--detach`:
 ```bash
 # WRONG (locks main branch in the worktree; blocks operator's
 # `git checkout main` in primary checkout):
-git worktree add ~/Documents/src/repos/Zeta/worktrees/zeta-feat-xyz main
+git worktree add ~/.zeta/agents/otto-cli/feat-xyz main
 
 # RIGHT (detached HEAD at main's current SHA; doesn't hold the
 # branch ref; operator can still checkout main in primary):
-git worktree add --detach ~/Documents/src/repos/Zeta/worktrees/zeta-feat-xyz origin/main
+git worktree add --detach ~/.zeta/agents/otto-cli/feat-xyz origin/main
 ```
 
 The substrate-honest reason: in a multi-checkout repo, `main` can
@@ -42,43 +45,81 @@ When the agent needs main's current STATE (the file contents at
 main's tip), `--detach origin/main` gives exactly that without
 holding the branch reference.
 
-### Rule 2 — Agent worktrees go in `<repo>/worktrees/<surface>-<task-tag>-<hhmmz>/`
+### Rule 2 — Agent worktrees go in `~/.zeta/agents/<persona>/<stream-id>/`
 
-**Updated 2026-05-28 per B-0894 reboot-survival discipline.** Previously
-this rule recommended `/private/tmp/zeta-<task-tag>-<hhmmz>/` which is
-macOS-cleared on reboot AND on `com.apple.periodic-daily` cleanup of
-files >3 days old. **Persistent location is the new default**:
+**Updated 2026-05-28 per B-0894.3 per-persona-outside-operator-repo
+discipline.** B-0894 (PR #5696) moved off `/private/tmp/` (reboot-
+survival) but placed the new default under `~/Documents/src/repos/Zeta/worktrees/`
+which is UNDER the operator's primary repo and STILL blocks operator's
+`git checkout <branch>` whenever an agent worktree holds that branch.
+B-0894.3 corrects the location to **outside the operator's primary
+repo entirely**:
 
 ```bash
-# RIGHT (persistent; survives reboot; outside operator's git status):
+# RIGHT (persistent + outside operator's primary + per-persona-isolated):
 git worktree add --detach \
-  ~/Documents/src/repos/Zeta/worktrees/<surface>-<task-tag>-<hhmmz> \
+  ~/.zeta/agents/<persona>/<stream-id> \
+  origin/main
+
+# Concrete example (this rule was authored from a worktree at the new
+# canonical location):
+git worktree add --detach \
+  ~/.zeta/agents/otto-cli/b0894-3-per-persona-outside-repo-2026-05-28 \
   origin/main
 
 # WRONG (macOS-cleared on reboot; in-flight work lost):
 git worktree add --detach /private/tmp/zeta-<task-tag>-<hhmmz> origin/main
 git worktree add --detach /tmp/zeta-<task-tag>-<hhmmz> origin/main
+
+# WRONG (under operator's primary repo; blocks operator's git checkout
+# when worktree holds a branch operator wants to switch to):
+git worktree add --detach \
+  ~/Documents/src/repos/Zeta/worktrees/<surface>-<task-tag>-<hhmmz> origin/main
 ```
 
-The repo's `worktrees/` subdirectory at top-level is the canonical
-persistent location. Git's worktree mechanism auto-excludes worktree
-paths from the parent's `git status`, so worktrees under `<repo>/worktrees/`
-don't pollute the operator's `git status` even though they live under
-the operator's repo root. Lior already uses this pattern (e.g.,
-`~/Documents/src/repos/Zeta/worktrees/lior-fix-4772-archive-ts/`) and
-Lior's worktrees consistently survive operator restarts.
+The `~/.zeta/` namespace is the dotfile root for ALL Zeta agent-related
+persistent state (parallel to `~/.claude/` for Anthropic vendor state).
+`~/.zeta/agents/<persona>/` is one dir per AI persona (otto-cli,
+otto-desktop, otto-vscode, lior, alexa-kiro, riven-cursor, vera-codex,
+lior-antigravity — see [`agent-roster-reference-card`](agent-roster-reference-card.md)).
+Multiple worktrees per persona for parallel work-streams provide full
+isolation per stream:
 
-Specifically forbidden agent worktree paths (UPDATED):
+```text
+~/.zeta/
+  agents/
+    otto-cli/
+      b0894-3-per-persona-outside-repo-2026-05-28/   # this rule's authoring worktree
+      tick-0512z/                                    # parallel stream
+      shard-XYZ/                                     # another parallel stream
+    otto-desktop/
+      tick-NNNNz/
+    lior/
+      preserve-prs-20260527/
+      ...
+  bus/                                       # future per B-0894.1
+  config/                                    # future
+```
 
-- `/tmp/zeta-*` or `/private/tmp/zeta-*` — **NEW**: macOS-cleared on reboot; in-flight work loss + orphaned branch refs (per B-0894 empirical anchor 2026-05-28: 95 worktrees pruned in one restart)
-- `<OPERATOR_PRIMARY_CHECKOUT>/main` (or any subdir of the operator's primary checkout EXCEPT `worktrees/`)
-- `<OPERATOR_PRIMARY_CHECKOUT>/<peer-agent-surface>-*` at the top-level (this pollutes operator's `git status`; place under `worktrees/<surface>-*` instead)
+Operator's primary checkout (`~/Documents/src/repos/Zeta/`) is now
+agent-free by construction — operator can `git checkout main`
+unblocked.
+
+Specifically forbidden agent worktree paths (UPDATED per B-0894.3):
+
+- `/tmp/zeta-*` or `/private/tmp/zeta-*` — macOS-cleared on reboot; in-flight work loss + orphaned branch refs (per B-0894 empirical anchor 2026-05-28: 95 worktrees pruned in one restart)
+- **NEW per B-0894.3**: `~/Documents/src/repos/Zeta/**` — operator's primary repo; ANY agent worktree there can hold a branch ref and block operator's `git checkout`. The previously-recommended `~/Documents/src/repos/Zeta/worktrees/<surface>-*` location is now FORBIDDEN (was added in B-0894, removed in B-0894.3 after operator surfaced the residual blocking failure mode)
 - Any path the operator might `cd` into for their own work
 
-The substrate-honest reasons:
+The substrate-honest reasons (UPDATED):
 
-1. **Reboot survival** — agent in-flight commits, edits, and backgrounded `git push` operations MUST survive macOS reboots and periodic-cleanup. `/tmp/` and `/private/tmp/` violate this invariant.
-2. **Operator-status cleanliness** — operator workflows depend on the primary checkout's `git status` being clean + predictable. Worktrees under `<repo>/worktrees/` are git-aware (auto-excluded from operator's status); top-level subdirs are NOT (would pollute status).
+1. **Reboot survival** — `~/.zeta/` is under user home; survives macOS reboot + `com.apple.periodic-daily` cleanup. `/tmp/` and `/private/tmp/` do not.
+2. **Operator-primary-stays-agent-free** — `~/.zeta/agents/<persona>/<stream>/` is outside `~/Documents/src/repos/Zeta/` entirely; operator's `git status` AND `git checkout` operations are structurally unaffected by agent worktree state.
+3. **Per-persona + per-stream isolation** — `~/.zeta/agents/<persona>/<stream-id>/` makes ownership unambiguous (path contains persona identity tag, per [`fighting-past-self-vs-peer-agent-distinguisher`](fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md) discriminator) AND supports parallel work-threads per persona.
+
+### Lior migration — non-blocking
+
+Lior currently has 10 worktrees under operator's primary repo (5 at top-level `~/Documents/src/repos/Zeta/decompose-4847-*` + `lior-4847-original` + `lior-preserve-prs-20260527`, 5 under `worktrees/lior-*`). Migration of Lior's pattern to `~/.zeta/agents/lior/<stream>/` is filed as future-state work coordinated with Lior's loop substrate (`.gemini/bin/lior-loop-tick.ts` and similar); not gating for this rule landing.
 
 ### Rule 3 — REMOVE agent worktrees after the work's PR merges (or abandon)
 
@@ -103,9 +144,10 @@ Before starting a substrate-cascade (multiple-PRs-in-one-session)
 work pattern, agents audit their worktree state:
 
 ```bash
-# Inventory agent's own worktrees (UPDATED 2026-05-28 — also check
-# legacy /tmp paths to catch + migrate any remaining transient worktrees):
-git worktree list | grep -E "$HOME/Documents/src/repos/Zeta/worktrees/|/private/tmp/zeta-|/tmp/zeta-"
+# Inventory agent's own worktrees (UPDATED 2026-05-28 per B-0894.3 —
+# new canonical surface is ~/.zeta/agents/; legacy surfaces checked
+# too to catch + migrate any worktrees still at deprecated locations):
+git worktree list | grep -E "$HOME/.zeta/agents/|$HOME/Documents/src/repos/Zeta/worktrees/|/private/tmp/zeta-|/tmp/zeta-"
 
 # Per-worktree status check (for each one):
 git -C <path> status --short
@@ -115,8 +157,10 @@ git -C <path> log --oneline -1
 # - SAFE + work done → git worktree remove <path>
 # - DIRTY (uncommitted) → preserve OR substrate-honestly commit/abandon
 # - active iteration ongoing → keep
-# - in /tmp or /private/tmp → MIGRATE to persistent location OR commit/push immediately
-#   (per Rule 5; transient location violates reboot-survival)
+# - in /tmp or /private/tmp → MIGRATE to ~/.zeta/agents/<persona>/<stream>/
+#   OR commit/push immediately (per Rule 5; transient location violates reboot-survival)
+# - in ~/Documents/src/repos/Zeta/ (anywhere) → MIGRATE to ~/.zeta/agents/<persona>/<stream>/
+#   (per B-0894.3; blocks operator's git checkout main when branch is held)
 ```
 
 Empirical anchor: 2026-05-25 session accumulated 37 stale agent
@@ -126,21 +170,34 @@ intervention ("we need to fix this mess yall always stepping on each
 other and me constantly"). The discipline this rule encodes would
 have prevented the accumulation.
 
-### Rule 5 — Reboot-survival is a hard invariant (B-0894)
+### Rule 5 — Reboot-survival + operator-primary-stays-agent-free are hard invariants (B-0894 + B-0894.3)
 
-**NEVER use `/tmp/` or `/private/tmp/` for git worktrees.** macOS
+**TWO compounding invariants** (refined 2026-05-28 per B-0894.3):
+
+**(A) NEVER use `/tmp/` or `/private/tmp/` for git worktrees.** macOS
 clears these on reboot AND via `com.apple.periodic-daily` cleanup
 (files >3 days old). Agent in-flight work — uncommitted edits,
 backgrounded `git push` operations, partially-extracted worktrees,
 captured background-task output files — all evaporate.
 
-Empirical anchor 2026-05-28T04:09Z–04:35Z (operator restart):
+**(B) NEVER use `~/Documents/src/repos/Zeta/**` for agent worktrees.**
+Operator's primary repo MUST stay agent-free so operator's
+`git checkout <branch>` operations are unblocked. ANY agent worktree
+there can hold a branch ref and block operator. Lior's empirical
+pattern (10 worktrees under operator's primary) demonstrates both
+the reboot-survival success AND the operator-blocking failure modes
+simultaneously.
 
-| Worktree location pattern | Outcome on restart |
-|---|---|
-| `/private/tmp/zeta-<task>-<hhmmz>/` (95 instances) | **All 95 pruned** (`git worktree list` returned them as `prunable`; on-disk dirs cleared) |
-| `~/Documents/src/repos/Zeta/worktrees/<surface>-*` (multiple) | **All survived intact** |
-| `~/.gemini/tmp/project/lior-*` (multiple) | **All survived intact** (`~/.gemini/` is persistent user-home) |
+Empirical anchor 2026-05-28T04:09Z–04:35Z (operator restart) +
+2026-05-28T~04:50Z (operator surfaced residual blocking):
+
+| Worktree location pattern | Outcome on restart | Operator-`main`-blocking? |
+|---|---|---|
+| `/private/tmp/zeta-<task>-<hhmmz>/` (95 instances) | **All 95 pruned** | N/A (didn't survive to block) |
+| `~/Documents/src/repos/Zeta/worktrees/<surface>-*` (multiple, Lior + PR #5696's worktree) | **All survived intact** | **YES — operator surfaced "sometimes locks up where i can't switch to main"** |
+| `~/Documents/src/repos/Zeta/<top-level>-*` (Lior 5 worktrees) | **All survived intact** | **YES — same blocking class** |
+| `~/.gemini/tmp/project/lior-*` (multiple) | **All survived intact** | NO (outside operator's primary) |
+| `~/.zeta/agents/<persona>/<stream>/` (this rule's authoring location) | **Survived intact** (born 2026-05-28T~04:55Z; restart-survivable by inheritance from user-home pattern) | NO (outside operator's primary) — **canonical post-B-0894.3** |
 
 The 04:09Z autonomous-loop tick had a substantive tick-shard commit
 (`4f89af885`) sitting on branch
@@ -155,15 +212,23 @@ backgrounded-task output file at
 also cleared, so we couldn't even read whether the push had completed
 before restart.
 
-The persistent-location worktree authoring B-0894 (this row's substrate
-landing) survived the same restart cleanly — empirical dogfooding-proof.
+PR #5696 (B-0894) was authored from a persistent-location worktree at
+`~/Documents/src/repos/Zeta/worktrees/otto-cli-reboot-survival-fix-0434z/`
+— survived the same restart cleanly (reboot-survival dogfooding-proof).
+**But** that location triggered operator's "sometimes locks up" critique
+because it lives under the primary repo. B-0894.3 (this row) corrects
+the location to `~/.zeta/agents/<persona>/<stream-id>/` — authored from
+`~/.zeta/agents/otto-cli/b0894-3-per-persona-outside-repo-2026-05-28/`,
+the first instance of the new canonical pattern (both reboot-survivable
+AND operator-non-blocking).
 
 **Operational discipline**:
 
-1. Default to `~/Documents/src/repos/Zeta/worktrees/<surface>-<task-tag>-<hhmmz>/` for ALL new agent worktrees
-2. When migrating existing `/tmp/`-based work: commit immediately to capture state in `.git/objects/`, then if in-flight work is critical, create a fresh persistent worktree off the same branch
-3. For backgrounded `git push` operations: ALWAYS verify outcome via `git ls-remote origin <branch>` post-completion (ground-truth) — never rely on captured output files from background-task harness storage
-4. Cron sentinel is harness-level non-persistence (separate root cause; covered by `tick-must-never-stop.md` catch-43); restart any session MUST `CronList` + re-arm if missing
+1. Default to `~/.zeta/agents/<persona>/<stream-id>/` for ALL new agent worktrees
+2. When migrating existing `/tmp/`-based work: commit immediately to capture state in `.git/objects/`, then create a fresh persistent worktree at the new canonical location off the same branch
+3. When migrating existing `~/Documents/src/repos/Zeta/**`-based work: same migration — commit + push, then create fresh worktree at `~/.zeta/agents/<persona>/<stream-id>/`
+4. For backgrounded `git push` operations: ALWAYS verify outcome via `git ls-remote origin <branch>` post-completion (ground-truth) — never rely on captured output files from background-task harness storage
+5. Cron sentinel is harness-level non-persistence (separate root cause; covered by `tick-must-never-stop.md` catch-43); restart any session MUST `CronList` + re-arm if missing
 
 ## Composes with other rules
 
@@ -194,11 +259,11 @@ landing) survived the same restart cleanly — empirical dogfooding-proof.
 ### Audit own agent worktrees
 
 ```bash
-# UPDATED 2026-05-28 per B-0894: persistent-location is now the
-# primary surface; legacy /tmp paths checked too to catch + migrate
-# any remaining transient worktrees that need cleanup.
+# UPDATED 2026-05-28 per B-0894.3: ~/.zeta/agents/ is now the
+# canonical surface; legacy paths checked too to catch + migrate
+# any remaining worktrees at deprecated locations.
 git worktree list --porcelain | awk '/^worktree /{print $2}' | \
-  grep -E "$HOME/Documents/src/repos/Zeta/worktrees/|/private/tmp/zeta-|/tmp/zeta-"
+  grep -E "$HOME/.zeta/agents/|$HOME/Documents/src/repos/Zeta/worktrees/|$HOME/Documents/src/repos/Zeta/[a-z]+-[0-9]|/private/tmp/zeta-|/tmp/zeta-"
 ```
 
 ### Per-worktree clean check
@@ -228,26 +293,26 @@ worktree changes.
 
 The operator's primary worktree often sits on a feature branch rather
 than `main`, so checking for "primary on main" produces false negatives.
-The correct invariant: **no agent worktree (under `<repo>/worktrees/`,
-`/private/tmp/zeta-*`, or `/tmp/zeta-*`) holds `[main]`**. Zero matches
-is the happy path; the operator MAY have `main` checked out in their
-own primary, but agents must not.
+The correct invariant: **no agent worktree holds `[main]`**, regardless
+of location. Zero matches is the happy path; the operator MAY have
+`main` checked out in their own primary, but agents must not.
 
 ```bash
 # Prints OK on success. If a worktree line prints, an agent worktree
 # is holding [main] and is the blocker for operator git operations.
-# UPDATED 2026-05-28: also catches persistent-location worktrees per
-# B-0894 new default (~/Documents/src/repos/Zeta/worktrees/).
+# UPDATED 2026-05-28 per B-0894.3: scans new canonical ~/.zeta/agents/
+# surface + legacy paths (operator primary subdirs + /private/tmp + /tmp).
 git worktree list | grep -E "\[main\]" \
-  | grep -E "$HOME/Documents/src/repos/Zeta/worktrees/|/private/tmp/zeta-|/tmp/zeta-" \
+  | grep -E "$HOME/.zeta/agents/|$HOME/Documents/src/repos/Zeta/worktrees/|$HOME/Documents/src/repos/Zeta/[a-z]+-[0-9]|/private/tmp/zeta-|/tmp/zeta-" \
   || echo "OK: no agent holds [main]"
 ```
 
 Expected result: `OK: no agent holds [main]`, or equivalently no
 agent-worktree match if the final echo is omitted. A single operator
-primary line is OK when the operator intentionally has `main` checked
-out. Any `<repo>/worktrees/*`, `/private/tmp/zeta-*`, `/tmp/zeta-*`,
-or per-agent worktree line holding `[main]` is a violation to fix.
+primary line at `$HOME/Documents/src/repos/Zeta` (the bare repo root)
+is OK when the operator intentionally has `main` checked out. ANY
+agent worktree at any of the scanned surfaces holding `[main]` is a
+violation to fix (per B-0894.3 + Rule 1).
 
 ## Substrate-honest framing
 
