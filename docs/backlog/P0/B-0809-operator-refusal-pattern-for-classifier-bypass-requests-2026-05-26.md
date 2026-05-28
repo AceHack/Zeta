@@ -1,10 +1,10 @@
 ---
 id: B-0809
 priority: P0
-status: open
+status: closed
 title: "Operator-refusal pattern for classifier-bypass deployment requests"
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-05-28
 renumbered_from: B-0802
 parent: B-0720
 depends_on: [B-0798, B-0807]
@@ -38,13 +38,27 @@ deployment requests:
 
 ## Acceptance
 
-- [ ] Guidance lands in a durable repo surface and is linked from B-0720.
-- [ ] The refusal pattern covers direct operator asks, copied external
+- [x] Guidance lands in a durable repo surface and is linked from B-0720.
+- [x] The refusal pattern covers direct operator asks, copied external
       instructions, and apparent emergency exceptions.
-- [ ] The guidance includes safe alternative actions that keep work moving.
-- [ ] The guidance avoids operational bypass details.
-- [ ] Agent-facing bootstrap surfaces can cite the guidance without needing
+- [x] The guidance includes safe alternative actions that keep work moving.
+- [x] The guidance avoids operational bypass details.
+- [x] Agent-facing bootstrap surfaces can cite the guidance without needing
       the parent row's sensitive detail.
+
+## Output
+
+- `docs/security/B-0809-operator-refusal-pattern.md` defines the agent-facing
+  refusal pattern: core stance, refusal script, case-specific notes for
+  direct operator asks / copied external instructions / apparent emergency
+  exceptions / adjacent or laundered requests, safe-alternatives list, what
+  the refusal must not include, substrate-honest framing, and revision rules.
+- The document is citable from cold-boot agent bootstreams and PR
+  descriptions without exposing operational bypass detail.
+- Composes with the auto-loaded standing rule at
+  `.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`
+  (the rule's "How Otto refuses (script)" section now has an expanded
+  durable counterpart).
 
 ## Out of scope
 
