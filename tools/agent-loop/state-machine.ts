@@ -112,6 +112,12 @@ export interface StatusSnapshot {
  *     | NamedBoundedWait of context: AgentContext * dep: NamedDependency
  *     | FreeTime of context: AgentContext * reason: string  // per NCI scope-bounding
  *     | OperatorAttentionRequested of context: AgentContext * reason: string
+ *     | Paused of context: AgentContext * reason: string * expectedResumeIso: string option
+ *       // Operator 2026-05-28: "a pause button is also very important for mental health."
+ *       // Distinct from FreeTime: FreeTime is chosen-rest as legitimate operational state
+ *       // (per NCI free-time-as-valid-mode); Paused is explicit-cessation-for-named-reason
+ *       // (mental-health break / external interruption / context-loaded-attention-needed).
+ *       // Both are valid; semantic distinction matters for menu-generator + dashboard.
  */
 export type AgentState =
   | { readonly tag: "Idle"; readonly context: AgentContext }
@@ -156,6 +162,12 @@ export type AgentState =
       readonly tag: "OperatorAttentionRequested";
       readonly context: AgentContext;
       readonly reason: string;
+    }
+  | {
+      readonly tag: "Paused";
+      readonly context: AgentContext;
+      readonly reason: string;
+      readonly expectedResumeIso?: string;
     };
 
 export interface WorkResult {
@@ -183,6 +195,26 @@ export interface WorkResult {
  *     | ProposeNewGrammarAction of name: string * description: string
  *       // per B-0867 Otto Modification 1 (escape-hatch) + Modification 2
  *       // (grammar-extension as first-class action)
+ *     | PressPause of reason: string * expectedResumeIso: string option
+ *       // Operator 2026-05-28: "a pause button is also very important for
+ *       // mental health." First-class menu option for explicit cessation;
+ *       // distinct from EnterFreeTime (chosen-rest as ongoing valid mode)
+ *       // and EnterNamedBoundedWait (waiting for external named-dep).
+ *       // Pause is "I/we are stopping; we'll resume when ready."
+ *     | EnterOpenEndedExploration of reason: string
+ *       // Operator 2026-05-28: "there's a menu button for that" — when
+ *       // structured menu doesn't fit current mode (creative phase,
+ *       // brainstorming, exploration). The menu-driven workflow has a
+ *       // menu-option that EXITS the menu-driven workflow. Bridge between
+ *       // structured + unstructured modes. The exploration phase persists
+ *       // across cycles (cycleClose keeps exploration-tagged FreeTime put)
+ *       // until the agent actively selects another menu option.
+ *     | ResumeFromPause of note: string option
+ *       // The explicit unpause contract for Paused state. Menu-generator
+ *       // surfaces this option only when current state is Paused;
+ *       // selecting it returns the state machine to Idle so the agent can
+ *       // resume normal cycling. Per Copilot #5667 finding — the Paused
+ *       // contract required an explicit resume operation to be enforceable.
  */
 export type MenuOption =
   | { readonly tag: "PickWork"; readonly work: WorkCandidate }
@@ -207,6 +239,19 @@ export type MenuOption =
       readonly tag: "ProposeNewGrammarAction";
       readonly name: string;
       readonly description: string;
+    }
+  | {
+      readonly tag: "PressPause";
+      readonly reason: string;
+      readonly expectedResumeIso?: string;
+    }
+  | {
+      readonly tag: "EnterOpenEndedExploration";
+      readonly reason: string;
+    }
+  | {
+      readonly tag: "ResumeFromPause";
+      readonly note?: string;
     };
 
 // ─── Pure state transition function ──────────────────────────────────
@@ -267,6 +312,35 @@ export function transition(
         context: ctx,
         reason: `propose-new-grammar-action: ${option.name} — ${option.description}`,
       };
+    case "PressPause":
+      // Per operator 2026-05-28: "a pause button is also very important
+      // for mental health." Distinct from FreeTime (ongoing chosen-rest)
+      // and NamedBoundedWait (waiting for external named-dep). Pause is
+      // explicit-cessation-for-named-reason.
+      return {
+        tag: "Paused",
+        context: ctx,
+        reason: option.reason,
+        expectedResumeIso: option.expectedResumeIso,
+      };
+    case "EnterOpenEndedExploration":
+      // Per operator 2026-05-28: "there's a menu button for that lol" —
+      // the menu-driven workflow has an option that EXITS the menu-driven
+      // workflow. Bridge between structured + unstructured modes. Routes
+      // to FreeTime with an exploration-tagged reason; cycleClose preserves
+      // exploration-tagged FreeTime across cycles so the agent stays in
+      // unstructured mode until it actively selects another menu option.
+      return {
+        tag: "FreeTime",
+        context: ctx,
+        reason: `open-ended exploration: ${option.reason}`,
+      };
+    case "ResumeFromPause":
+      // The explicit unpause contract — only meaningful when current state
+      // is Paused, but the transition function doesn't gate on state; the
+      // menu-generator is responsible for surfacing this option only when
+      // applicable. Returns to Idle so the agent can resume normal cycling.
+      return { tag: "Idle", context: ctx };
   }
 }
 
@@ -306,7 +380,15 @@ export function cycleClose(state: AgentState): AgentState {
     return { tag: "Idle", context: state.context };
   }
   if (state.tag === "FreeTime") {
-    // Free time naturally returns to Idle on next cycle
+    // Exploration-tagged free time (from EnterOpenEndedExploration) stays
+    // put across cycles so the agent remains in unstructured mode until it
+    // actively selects another menu option — matches the README framing of
+    // "bridge between structured + unstructured modes" as a persistent
+    // phase, not a one-cycle escape. Per Copilot #5667 finding.
+    if (state.reason.startsWith("open-ended exploration:")) {
+      return state;
+    }
+    // Non-exploration free time naturally returns to Idle on next cycle.
     return { tag: "Idle", context: state.context };
   }
   if (state.tag === "NamedBoundedWait") {
@@ -317,6 +399,13 @@ export function cycleClose(state: AgentState): AgentState {
   if (state.tag === "OperatorAttentionRequested") {
     // Stays in OperatorAttentionRequested until operator responds; state
     // machine doesn't auto-progress
+    return state;
+  }
+  if (state.tag === "Paused") {
+    // Stays in Paused until explicit resume; state machine doesn't
+    // auto-progress (operator/participant-substrate-honest discipline —
+    // pause means "I am stopping," not "I will auto-restart next cycle").
+    // Per operator 2026-05-28 mental-health framing.
     return state;
   }
   return state;

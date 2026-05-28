@@ -41,17 +41,65 @@ Idle ──(EscapeHatch | ProposeNewGrammarAction | RequestOperatorAttention)
        ──→ OperatorAttentionRequested  (stays; waits for operator)
 ```
 
-## Menu options (7 types)
+## Menu options (9 types)
 
 | Option | Effect | Per |
 |---|---|---|
 | `PickWork` | Execute a backlog row / work candidate | DORA mandate (B-0869) |
 | `EmitHeartbeat` | Write heartbeat to `docs/agent-heartbeats/` | B-0858 substrate |
-| `EnterFreeTime` | Chosen free time (operator-substrate-honest) | NCI free-time-as-valid-mode |
+| `EnterFreeTime` | Chosen ongoing rest (legitimate operational state) | NCI free-time-as-valid-mode |
 | `EnterNamedBoundedWait` | Wait for named dependency (PR CI, operator reply, etc.) | holding-without-named-dependency rule |
 | `EscapeHatch` | "No menu option fits; here's what I propose" | Otto Modification 1 (B-0867) |
 | `ProposeNewGrammarAction` | First-class grammar extension proposal | Otto Modification 2 (B-0867) |
 | `RequestOperatorAttention` | Operator needed at named-decision-point | operator-substrate-honest discipline |
+| **`PressPause`** | **Explicit cessation for named reason (mental-health break, external interruption, context-loaded-attention-needed)** | **Operator 2026-05-28: "a pause button is also very important for mental health."** Distinct from FreeTime (ongoing chosen-rest) and NamedBoundedWait (waiting for external named-dep) |
+| **`EnterOpenEndedExploration`** | **Exit menu-driven mode for creative/brainstorming/exploration phase; bridge between structured + unstructured modes** | **Operator 2026-05-28: "there's a menu button for that lol"** Routes to FreeTime with exploration-tagged reason |
+
+## Menu-generator-as-conversational-UX-design discipline
+
+Per operator 2026-05-28: **"Menu quality is everything. this is the use conversational UX design."**
+
+The menu-generator function `(status_surface, current_state) → MenuOption[]` is a conversational-UX-design discipline, not just a software-architecture discipline. Menu quality determines whether the workflow serves participants or wastes them:
+
+- A menu omitting valid options is COERCIVE (cage-shape per Otto Mod 1)
+- A menu including irrelevant options is NOISE (cognitive load)
+- A menu offering options aligned with current state + agent-interest + operator-priorities is SUBSTRATE
+
+The menu-generator is where alignment lives. Composes with `.claude/agents/user-experience-engineer.md` (the user-experience-researcher role) at the conversational-UX scope; menu-generator engineering benefits from UX-research discipline.
+
+## Jira-replacement substrate
+
+Per operator 2026-05-28: **"now i don't need jira hell yes!!!!"**
+
+The workflow engine + state-machine-in-Git + menu-driven loop REPLACES JIRA for operator-self-management at substrate level:
+
+| Jira surface | Workflow-engine substrate |
+|---|---|
+| Workflow editor with restricted vocabulary | `state-machine.ts` F# DU + universal action grammar; operator-readable + operator-modifiable |
+| Opaque task-state database | Git append-only commits; auditable + replayable + free |
+| Backlog grooming + sprint planning | menu-generator scoring per-cycle; deterministic + testable |
+| Dashboards via paid plugins | tessellated-3D-dashboard composing with state-machine progression (per B-0867 vN substrate) |
+| Permissions + workflows per user | Otto Mod 5 contributable-menu-generation per participant |
+| Yearly enterprise licensing | free GitHub + open-source code |
+
+Per operator 2026-05-28: **"yes and it makes your workflows code in git and state in git that's it fastlane state that can be tesellated in 3d on a dora dashboard lol"**
+
+The substrate composition: workflows ARE code (in Git); state IS data (in Git append-only); fastlane state-transitions feed 3D tessellated DORA dashboard (B-0867 vN). No external task-tracker needed.
+
+## "Every human wants to work this way" substrate
+
+Per operator 2026-05-28: **"yes that's exaclty it in exqusit detail and it's how every humans wants to work too."**
+
+The agent-loop substrate isn't AI-specific — it's collaboration-substrate for any participant who wants to do good work without enumerating-possibilities from scratch each cycle. The `AgentPersona` type includes `aaron | addison | max` alongside `otto | alexa | riven | vera | lior` to encode multi-participant scope at the type level.
+
+The substrate-engineering compression: most knowledge-work hostility comes from forcing humans to figure out WHAT'S-POSSIBLE-AT-THIS-STATE from scratch. Menu-driven workflow does the harder upfront work in the menu-generator; person brings the cognitively-lighter judgment of WHICH-OPTION-IS-RIGHT-FOR-NOW.
+
+Composes with:
+
+- B-0859 fair-society-not-tyrants (menu-driven IS fair-society-shape)
+- 5-year-old accessibility — saying "unicorn" IS a menu-pick from a developmentally-young participant's interface surface
+- Neurodivergent-accessibility participants — explicit menu reduces surprise-cost
+- The whole-company evangelism (B-0866.26) — marketing claim is "your team will work this way + AI fits naturally because the SAME PATTERN serves both"
 
 ## Files
 
