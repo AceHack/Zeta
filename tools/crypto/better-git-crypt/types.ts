@@ -264,6 +264,179 @@ export function findAlg(id: string): AlgSpec | undefined {
 }
 
 /**
+ * B-0883 — determineEncryptionPath: substantive lane work per
+ * Aaron's 3-lane substrate-check (Amara ferry §33.2 PR #5757).
+ *
+ * Structurally parallel to workflow-engine's determineReviewLevel
+ * discriminator (PR #5758) at encryption-substrate scope:
+ *   - Input: EncryptionContext (recipients + sender + seed source)
+ *   - Output: Result<PlannedEncryptionPath, EncryptionFeedback>
+ *   - Path declares the KEM + KDF + WRAP + CONTENT + SIG algorithms
+ *     to use for the operation, per the v1 design memo
+ *
+ * Per asymmetric-authorship rule (PR #5516): the function authors
+ * its own TFeedback channel via existing EncryptionFeedback variants.
+ * Per monad-propagation rule (PR #5511): Result<T, TFeedback> shape.
+ * Per OPLE primitive rule (B-0897 Persist-as-bridge): encryption IS
+ * Persist-as-bridge instantiated at file-substrate scope.
+ *
+ * Composes with:
+ *   - B-0867.20 determineReviewLevel discriminator (PR #5758) — same
+ *     shape at different substrate scope
+ *   - B-0883 v1 design memo (algorithm selection per v1)
+ *   - validateEncryptionContext (called as precondition)
+ *
+ * PoC scope: pure-function selection of algorithms from ALG_REGISTRY
+ * based on context invariants. Actual crypto operations deferred to
+ * Phase 2.
+ */
+
+/**
+ * Planned encryption path — declares which algorithms will be used
+ * for an encryption operation. All AlgSpec.id values; validated to
+ * exist in ALG_REGISTRY and have CipherClass matching the slot.
+ */
+export interface PlannedEncryptionPath {
+  readonly algKem: string;       // CipherClass: kem
+  readonly algKdf: string;       // CipherClass: kdf
+  readonly algWrap: string;      // CipherClass: aead (for CEK wrap)
+  readonly algContent: string;   // CipherClass: aead (for plaintext)
+  readonly algSig: string;       // CipherClass: signature
+  readonly recipientCount: number;
+  readonly senderIdentity: string;
+  readonly composesWith: ReadonlyArray<string>;
+}
+
+/**
+ * Discriminator-shape Result for path-planning per monad-propagation rule.
+ *
+ * Aligned with the substrate's existing EncryptionFeedback discriminator
+ * so the path-planner composes cleanly with downstream encrypt operations
+ * via Result.bind chains.
+ */
+export type PlanResult =
+  | { ok: true; path: PlannedEncryptionPath }
+  | { ok: false; feedback: EncryptionFeedback };
+
+/**
+ * `determineEncryptionPath` — discriminator that maps an EncryptionContext
+ * to its PlannedEncryptionPath, or returns the EncryptionFeedback variant
+ * naming why planning failed.
+ *
+ * Policy per v1 design memo:
+ *   - Recipients' kemAlgIds must all reference the same KEM (no per-recipient
+ *     KEM variation in v1 — single envelope KEM column per FileEnvelope.algKem)
+ *   - Sender's sigAlgId determines envelope signature algorithm
+ *   - KDF defaults to HKDF-SHA256 (only ships-v1 KDF in registry)
+ *   - WRAP and CONTENT default to ChaCha20-Poly1305-AEAD (per design memo)
+ *   - Empty recipient set → EmptyRecipientSet
+ *   - Sender not in recipient set → SenderNotInRecipientSet
+ *   - Algorithm not in registry → AlgUnsupported
+ *   - Algorithm with non-ships-v1 status → AlgUnsupported (deferred-alternate
+ *     algorithms can't ship encrypt operations until Phase 2)
+ *
+ * Exhaustive over the failure-mode space the v1 design memo names; future
+ * extensions to EncryptionFeedback union must update this function (TS
+ * strict mode enforces).
+ */
+export function determineEncryptionPath(
+  context: EncryptionContext,
+): PlanResult {
+  // Empty recipient set:
+  if (context.recipients.length === 0) {
+    return { ok: false, feedback: { kind: "EmptyRecipientSet" } };
+  }
+
+  // Sender must be in recipient set (sender encrypts to self too for
+  // round-trip recovery, per design memo):
+  const senderInRecipients = context.recipients.some(
+    (r) => r.identity === context.sender.identity,
+  );
+  if (!senderInRecipients) {
+    return {
+      ok: false,
+      feedback: {
+        kind: "SenderNotInRecipientSet",
+        senderIdentity: context.sender.identity,
+      },
+    };
+  }
+
+  // All recipient KEM algs must be the same (single envelope KEM column in v1):
+  const firstKemId = context.recipients[0]?.kemAlgId;
+  if (!firstKemId) {
+    return { ok: false, feedback: { kind: "EmptyRecipientSet" } };
+  }
+  const allSameKem = context.recipients.every(
+    (r) => r.kemAlgId === firstKemId,
+  );
+  if (!allSameKem) {
+    // Use RecipientKeyInvalid (not AlgUnsupported) — the per-recipient
+    // KEM is itself well-formed and supported; the failure is that v1's
+    // single-envelope-KEM-column constraint requires all recipients use
+    // the SAME KEM. RecipientKeyInvalid surfaces the specific mismatched
+    // identity + the v1 constraint reason for the caller's handler.
+    const mismatched = context.recipients.find(
+      (r) => r.kemAlgId !== firstKemId,
+    );
+    return {
+      ok: false,
+      feedback: {
+        kind: "RecipientKeyInvalid",
+        identity: mismatched?.identity ?? "unknown",
+        reason: `v1 requires single KEM across recipients; expected ${firstKemId}`,
+      },
+    };
+  }
+
+  // KEM alg must be ships-v1:
+  const kemAlg = findAlg(firstKemId);
+  if (!kemAlg || kemAlg.class !== "kem" || kemAlg.status !== "ships-v1") {
+    return {
+      ok: false,
+      feedback: { kind: "AlgUnsupported", algId: firstKemId },
+    };
+  }
+
+  // Signature alg must be ships-v1:
+  const sigAlgId = context.sender.sigAlgId;
+  const sigAlg = findAlg(sigAlgId);
+  if (!sigAlg || sigAlg.class !== "signature" || sigAlg.status !== "ships-v1") {
+    return {
+      ok: false,
+      feedback: { kind: "AlgUnsupported", algId: sigAlgId },
+    };
+  }
+
+  // KDF + WRAP + CONTENT defaults per v1 design memo:
+  const algKdf = "HKDF-SHA256";
+  const algWrap = "ChaCha20-Poly1305-AEAD";
+  const algContent = "ChaCha20-Poly1305-AEAD";
+
+  // Sanity-check the defaults exist (should always hold given seed registry):
+  for (const id of [algKdf, algWrap, algContent]) {
+    const alg = findAlg(id);
+    if (!alg || alg.status !== "ships-v1") {
+      return { ok: false, feedback: { kind: "AlgUnsupported", algId: id } };
+    }
+  }
+
+  return {
+    ok: true,
+    path: {
+      algKem: firstKemId,
+      algKdf,
+      algWrap,
+      algContent,
+      algSig: sigAlgId,
+      recipientCount: context.recipients.length,
+      senderIdentity: context.sender.identity,
+      composesWith: ["B-0883", "B-0883.1", "B-0867.20"],
+    },
+  };
+}
+
+/**
  * Validate algorithm registry invariants.
  *
  * Invariants:

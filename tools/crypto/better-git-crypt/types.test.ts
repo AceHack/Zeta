@@ -9,6 +9,7 @@
 import { describe, expect, it } from "bun:test";
 import {
   ALG_REGISTRY,
+  determineEncryptionPath,
   findAlg,
   validateAlgRegistry,
   validateEnvelopeStructure,
@@ -204,5 +205,183 @@ describe("B-0883 v1 encryption context validation", () => {
     };
     const fb = validateEncryptionContext(ctx, ALG_REGISTRY);
     expect(fb?.kind).toBe("RecipientKeyInvalid");
+  });
+});
+
+describe("B-0883 determineEncryptionPath discriminator", () => {
+  // Substantive workflow-engine-parallel substrate-engineering work per
+  // Aaron 3-lane substrate-check (Amara ferry §33.2 PR #5757) + standing
+  // PoC permission. Structurally parallel to PR #5758 determineReviewLevel
+  // at encryption-substrate scope.
+  const makeKey = (identity: string): RecipientKey => ({
+    identity,
+    kemAlgId: "ML-KEM-768+X25519",
+    sigAlgId: "ML-DSA-65",
+    publicKemKey: new Uint8Array([1, 2, 3]),
+    publicSigKey: new Uint8Array([4, 5, 6]),
+    seedSource: "random-bytes",
+    composesWith: [],
+  });
+
+  it("plans v1 path for single-recipient self-encrypt scenario", () => {
+    const key = makeKey("solo@zeta");
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array([0, 1, 2]),
+      recipients: [key],
+      sender: key,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.path.algKem).toBe("ML-KEM-768+X25519");
+      expect(result.path.algSig).toBe("ML-DSA-65");
+      expect(result.path.algKdf).toBe("HKDF-SHA256");
+      expect(result.path.algWrap).toBe("ChaCha20-Poly1305-AEAD");
+      expect(result.path.algContent).toBe("ChaCha20-Poly1305-AEAD");
+      expect(result.path.recipientCount).toBe(1);
+      expect(result.path.senderIdentity).toBe("solo@zeta");
+    }
+  });
+
+  it("plans v1 path for multi-recipient with sender included", () => {
+    const sender = makeKey("sender@zeta");
+    const r2 = makeKey("recipient2@zeta");
+    const r3 = makeKey("recipient3@zeta");
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array([1, 2, 3, 4]),
+      recipients: [sender, r2, r3],
+      sender,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.path.recipientCount).toBe(3);
+    }
+  });
+
+  it("returns EmptyRecipientSet for empty recipients", () => {
+    const sender = makeKey("sender@zeta");
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array(0),
+      recipients: [],
+      sender,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.feedback.kind).toBe("EmptyRecipientSet");
+    }
+  });
+
+  it("returns SenderNotInRecipientSet when sender absent from recipients", () => {
+    const sender = makeKey("absent@zeta");
+    const other = makeKey("other@zeta");
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array(0),
+      recipients: [other],
+      sender,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.feedback.kind).toBe("SenderNotInRecipientSet");
+      if (result.feedback.kind === "SenderNotInRecipientSet") {
+        expect(result.feedback.senderIdentity).toBe("absent@zeta");
+      }
+    }
+  });
+
+  it("returns RecipientKeyInvalid when KEM algs differ across recipients (v1 single-KEM constraint)", () => {
+    const sender = makeKey("sender@zeta");
+    const mixedKem: RecipientKey = {
+      ...makeKey("mixed@zeta"),
+      kemAlgId: "Saber", // different from the sender's ML-KEM-768+X25519
+    };
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array(0),
+      recipients: [sender, mixedKem],
+      sender,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.feedback.kind).toBe("RecipientKeyInvalid");
+      if (result.feedback.kind === "RecipientKeyInvalid") {
+        expect(result.feedback.identity).toBe("mixed@zeta");
+        expect(result.feedback.reason).toMatch(/v1 requires single KEM/);
+      }
+    }
+  });
+
+  it("returns AlgUnsupported for deferred-alternate KEM (e.g. Saber)", () => {
+    const sender = { ...makeKey("sender@zeta"), kemAlgId: "Saber" };
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array(0),
+      recipients: [sender],
+      sender,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.feedback.kind).toBe("AlgUnsupported");
+      if (result.feedback.kind === "AlgUnsupported") {
+        expect(result.feedback.algId).toBe("Saber");
+      }
+    }
+  });
+
+  it("returns AlgUnsupported for unknown KEM alg id", () => {
+    const sender = { ...makeKey("sender@zeta"), kemAlgId: "NONEXISTENT-KEM" };
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array(0),
+      recipients: [sender],
+      sender,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.feedback.kind).toBe("AlgUnsupported");
+    }
+  });
+
+  it("returns AlgUnsupported for unknown signature alg id", () => {
+    const sender = { ...makeKey("sender@zeta"), sigAlgId: "NONEXISTENT-SIG" };
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array(0),
+      recipients: [sender],
+      sender,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.feedback.kind).toBe("AlgUnsupported");
+      if (result.feedback.kind === "AlgUnsupported") {
+        expect(result.feedback.algId).toBe("NONEXISTENT-SIG");
+      }
+    }
+  });
+
+  it("planned path composesWith B-0867.20 (structurally parallel substrate-engineering)", () => {
+    const sender = makeKey("sender@zeta");
+    const ctx: EncryptionContext = {
+      plaintext: new Uint8Array(0),
+      recipients: [sender],
+      sender,
+      seedSource: "random-bytes",
+    };
+    const result = determineEncryptionPath(ctx);
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.path.composesWith).toContain("B-0867.20");
+      expect(result.path.composesWith).toContain("B-0883");
+    }
   });
 });
