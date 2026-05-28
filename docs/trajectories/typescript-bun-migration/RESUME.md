@@ -6,7 +6,7 @@
 **Next concrete action**: Maintain the bash-retirement inventory guard and treat
 any newly tracked non-Lean shell-family file outside the allowlist as drift. Do
 not revive the old Cluster G/H/I or budget-cluster port queues.
-**Last updated**: 2026-05-27T17:48Z
+**Last updated**: 2026-05-28T12:35Z
 
 ## Why this trajectory exists
 
@@ -52,11 +52,12 @@ bun run hygiene:check-bash-retirement-inventory
 The expected retained surface is the explicit repo-wide allowlist: setup and
 bootstrap scripts, host-service wrappers, NixOS installer scripts,
 dev-cluster wrappers, launchd-bootstrap, and the Kiro loop wrapper. Any new
-non-Lean shell-family file (`.sh`, `.bash`, `.zsh`, `.ksh`, or `.command`)
-outside the allowlist is bash-retirement drift. Executable dotted-name files
-with shell-family shebangs are also entrypoints and are classified as drift;
-non-executable dotted documentation fixtures with shell-looking first lines stay
-outside the retained-shell inventory.
+non-Lean shell-family file (`.sh`, `.bash`, `.zsh`, `.ksh`, or `.command`,
+including uppercase extension variants) outside the allowlist is
+bash-retirement drift. Executable dotted-name files with shell-family shebangs
+are also entrypoints and are classified as drift; non-executable dotted
+documentation fixtures with shell-looking first lines stay outside the
+retained-shell inventory.
 
 ### Bucket A — Should stay Shell (21 files)
 

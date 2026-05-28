@@ -210,7 +210,8 @@ function parseTrackedGitFile(entry: string): TrackedGitFile | undefined {
 }
 
 function isTrackedShellFamilyFile(repoRoot: string, file: string, executable: boolean): boolean {
-  if (SHELL_FILE_EXTENSIONS.some((extension) => file.endsWith(extension))) return true;
+  const lowerFile = file.toLowerCase();
+  if (SHELL_FILE_EXTENSIONS.some((extension) => lowerFile.endsWith(extension))) return true;
   if (basename(file).includes(".") && !executable) return false;
 
   const firstLine = readFirstLine(join(repoRoot, file));

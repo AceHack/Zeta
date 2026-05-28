@@ -196,10 +196,15 @@ describe("buildInventoryReport", () => {
       mkdirSync(join(repo, "scripts"), { recursive: true });
       mkdirSync(join(repo, "tools", "lean4"), { recursive: true });
       writeFileSync(join(repo, "scripts", "a.sh"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "a-uppercase.SH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "b.bash"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "b-uppercase.BASH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "c.zsh"), "#!/usr/bin/env zsh\n");
+      writeFileSync(join(repo, "scripts", "c-uppercase.ZSH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "d.ksh"), "#!/usr/bin/env ksh\n");
+      writeFileSync(join(repo, "scripts", "d-uppercase.KSH"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "e.command"), "#!/usr/bin/env bash\n");
+      writeFileSync(join(repo, "scripts", "e-uppercase.COMMAND"), "echo uppercase extension drift\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
       writeFileSync(join(repo, "scripts", "extensionless-dash"), "#!/bin/dash\n");
@@ -214,11 +219,16 @@ describe("buildInventoryReport", () => {
 
       expect(trackedNonLeanShellFilesFromGit(repo)).toEqual([
         "scripts/a.sh",
+        "scripts/a-uppercase.SH",
         "scripts/b.bash",
+        "scripts/b-uppercase.BASH",
         "scripts/c.zsh",
+        "scripts/c-uppercase.ZSH",
         "scripts/d.ksh",
+        "scripts/d-uppercase.KSH",
         "scripts/dotted-shell-entry.env",
         "scripts/e.command",
+        "scripts/e-uppercase.COMMAND",
         "scripts/extensionless-bash",
         "scripts/extensionless-bash-env-s",
         "scripts/extensionless-dash",
