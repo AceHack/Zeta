@@ -55,12 +55,16 @@ The current executable spine includes:
 - `apps/workers` process shell that parses typed process config,
   composes worker/NATS cycles through ports, records telemetry through a
   sink, reports healthy/degraded runtime state, and has a durable
-  Cockroach composition seam plus an app-local NATS connection seam.
+  Cockroach composition seam plus an app-local NATS connection seam;
+- `apps/workers` process lifecycle contract that applies bootstrap
+  steps once per process, gates runtime execution on readiness, and
+  aggregates graceful shutdown results without hiding partial adapter
+  failures.
 
-The next implementation slice is real process adapter binding below
-`apps/workers`: concrete NATS client-library construction behind the
-existing transport factory, migration bootstrap/readiness handling, and
-an executable entrypoint that can feed the full-ai-cluster LGTM stack.
+The next implementation slice is integration proof below
+`apps/workers`: real Cockroach and NATS checks gated by environment so
+the app-local ports can be proven against live substrates without
+turning reusable packages into vendor-specific code.
 
 ## Work Rules For Every Phase
 
@@ -781,23 +785,33 @@ infrastructure.
 ### Code Steps
 
 1. Add a process-local Cockroach client package or app adapter under
-   `apps/workers/src/adapters` or an adapter package if reuse is clear.
+   `apps/workers/src/adapters` or an adapter package if reuse is clear;
+   done.
 2. Implement a Cockroach client that satisfies
-   `CockroachSqlClient`.
+   `CockroachSqlClient`; done.
 3. Prove `transaction()` uses real `BEGIN`, `COMMIT`, `ROLLBACK`, and
-   connection release semantics.
+   connection release semantics; done with fake-driven client tests,
+   live proof remains PR 2.
 4. Add a migration bootstrap path that runs the existing core migration
-   runner before worker cycles when enabled.
+   runner before worker cycles when enabled; done.
 5. Add a NATS JetStream connection factory that builds the publisher and
-   pull-consumer ports required by the existing adapters.
+   pull-consumer ports required by the existing adapters; done with
+   fake-driven client tests, live proof remains PR 3.
 6. Add a telemetry sink that emits structured JSON logs first, with
-   stable fields matching `@agentic-org/observability`.
+   stable fields matching `@agentic-org/observability`; done.
 7. Keep process env parsing typed and app-local. Packages should receive
-   already-created ports.
-8. Add graceful shutdown boundaries for database and NATS clients.
+   already-created ports; done.
+8. Add graceful shutdown boundaries for database and NATS clients; done
+   as a process lifecycle contract plus NATS shutdown port and a
+   Cockroach pool shutdown adapter for process-provided pools that
+   expose `end()`. Live pool construction remains a concrete
+   outer-adapter responsibility.
 9. Add readiness result objects for Cockroach, NATS, and telemetry sink
-   health.
-10. Add a process entrypoint only after factories are contract-tested.
+   health; Cockroach and NATS done. Telemetry readiness remains deferred
+   until the sink has an external destination.
+10. Add a process lifecycle entrypoint contract only after factories are
+    contract-tested; done as `createWorkerProcess`. A real long-running
+    executable worker host remains a later adapter step.
 11. Add an early full-ai-cluster contract checkpoint without deployment
     YAML:
     - required env names;
@@ -2558,12 +2572,13 @@ review finding changes the dependency graph.
 
 ### PR 1: Worker Process Adapter Interfaces
 
-Status: partially implemented. The app-local Cockroach pooled-client
-adapter, app-local NATS connection seam, concrete `@nats-io` transport
-factory, JSON telemetry sink, outbox claim fencing, additive Cockroach
-claim-fence migration, and basic readiness aggregate now exist. The
-remaining PR 1 scope is migration bootstrap/readiness hardening around
-all process adapters and the first executable worker entrypoint.
+Status: implemented for fake-driven process contracts. The app-local
+Cockroach pooled-client adapter, Cockroach migration bootstrapper,
+Cockroach readiness probe, app-local NATS connection seam, concrete
+`@nats-io` transport factory, JSON telemetry sink, process lifecycle
+entrypoint contract, generic NATS/Cockroach shutdown ports, outbox claim
+fencing, additive Cockroach claim-fence migration, and readiness
+aggregate now exist.
 
 Build:
 
@@ -2573,6 +2588,11 @@ Build:
   behind the NATS connection seam; done with fake-driven tests, no live
   server required;
 - telemetry sink interface and JSON sink fake; done;
+- Cockroach migration bootstrapper over the generic migration runner;
+  done;
+- Cockroach readiness probe over the generic SQL client; done;
+- process lifecycle entrypoint contract for bootstrap-once -> readiness
+  -> one runtime cycle -> graceful shutdown; done;
 - config validation for adapter-specific connection settings; partially
   done for `NATS_SERVERS`, batch sizes, and Cockroach URL presence;
 - early full-ai-cluster contract checkpoint for env, secrets, egress,
@@ -2590,6 +2610,10 @@ Done when:
 - reusable packages still do not import vendor clients;
 - no plaintext secret or cluster-only assumption leaks into reusable
   packages.
+
+The remaining hardening for PR 1 is live-environment proof, now tracked
+by PR 2 and PR 3 instead of expanding the fake-driven process-contract
+slice.
 
 ### PR 2: Cockroach Integration Proof
 
@@ -2818,13 +2842,13 @@ Use this checklist before marking any phase complete.
 
 Use these questions when we talk through the plan:
 
-1. Should PR 1 finish with only the real NATS process adapter next, or
-   should readiness endpoints and migration bootstrap be pulled into the
-   same PR?
-2. Do we want integration tests to use a local Cockroach service, a k3d
+1. Should PR 2 use env-gated local Cockroach, a k3d
    profile, or only env-gated tests against the real cluster?
-3. Should `apps/workers` get the first executable entrypoint before
-   `apps/api`, or should the API host appear once process adapters exist?
+2. Should the real long-running `apps/workers` executable host land
+   before `apps/api`, or should both wrap the same lifecycle/policy
+   contracts in parallel?
+3. Should the NATS integration proof use a local JetStream container,
+   k3d, or only env-gated tests against the real cluster?
 4. Should supervisor triage create discussion anchors implicitly when a
    signal has no anchor, or should it always require an explicit anchor
    created by the prior phase?

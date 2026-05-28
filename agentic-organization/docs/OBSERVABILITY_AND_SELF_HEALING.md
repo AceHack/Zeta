@@ -181,10 +181,16 @@ dependency probes return typed ready/not-ready checks and the aggregate
 readiness result degrades when any dependency is not ready or when a
 probe throws. The first NATS process adapter contributes a NATS
 readiness probe alongside its publisher, pull-consumer, dead-letter, and
-shutdown ports. Later entrypoints should expose this result through
-Kubernetes readiness probes and structured startup telemetry, then link
-failures to the same trace and weak-point vocabulary used by
-worker-cycle telemetry.
+shutdown ports. The Cockroach process boundary now contributes a
+migration bootstrapper and SQL readiness probe. The process lifecycle
+contract reports bootstrap failures, readiness failures, thrown
+runtime-cycle failures, and shutdown failures with explicit lifecycle
+stage and dependency names. Normal degraded runtime cycle results keep
+their detailed lane failures inside the runtime result so successful
+partial work remains visible. Later entrypoints should expose these
+results through Kubernetes readiness probes and structured startup
+telemetry, then link failures to the same trace and weak-point
+vocabulary used by worker-cycle telemetry.
 
 Durable transaction and publication ambiguity also counts as observable
 runtime evidence. A Cockroach ambiguous commit, stale outbox claim,

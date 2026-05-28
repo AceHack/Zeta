@@ -12,6 +12,7 @@ import {
   type WorkerDependencyReadinessCheck,
   type WorkerDependencyReadinessProbe,
 } from "../worker-readiness.ts";
+import type { WorkerProcessShutdownPort } from "../worker-process.ts";
 
 export const NatsWorkerConnectionState = {
   Closed: "closed",
@@ -58,9 +59,7 @@ export type NatsWorkerDeadLetterMessageIdFactory = {
   createId: (message: NatsDeadLetterMessage) => string;
 };
 
-export type NatsWorkerShutdownPort = {
-  close: () => Promise<void>;
-};
+export type NatsWorkerShutdownPort = WorkerProcessShutdownPort;
 
 export type NatsWorkerAdapters = {
   deadLetterPublisher: NatsDeadLetterPublisher;
@@ -107,7 +106,8 @@ export async function connectNatsWorkerAdapters(input: ConnectNatsWorkerAdapters
       },
     },
     shutdown: {
-      close: async () => {
+      name: WorkerDependencyName.Nats,
+      shutdown: async () => {
         await connection.close();
       },
     },

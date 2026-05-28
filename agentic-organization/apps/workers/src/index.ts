@@ -10,10 +10,12 @@ export {
   CockroachWorkerTransactionErrorClassification,
   CockroachWorkerTransactionErrorCode,
   CockroachWorkerTransactionStatement,
+  createCockroachWorkerShutdownPort,
   createCockroachWorkerSqlClient,
   type CockroachWorkerTransactionRetryDelayInput,
   type CockroachWorkerPool,
   type CockroachWorkerPoolClient,
+  type CockroachWorkerShutdownPool,
   type CreateCockroachWorkerSqlClientInput,
 } from "./adapters/cockroach-worker-client.ts";
 export {
@@ -22,6 +24,15 @@ export {
   type JsonLineWriter,
   type JsonWorkerTelemetryRecord,
 } from "./adapters/json-worker-telemetry-sink.ts";
+export {
+  WorkerProcessBootstrapperName,
+  createCockroachMigrationBootstrapper,
+  type CreateCockroachMigrationBootstrapperInput,
+} from "./adapters/cockroach-migration-bootstrapper.ts";
+export {
+  createCockroachReadinessProbe,
+  type CreateCockroachReadinessProbeInput,
+} from "./adapters/cockroach-readiness.ts";
 export {
   NatsWorkerConnectionState,
   NatsWorkerDeadLetterHeaderName,
@@ -86,3 +97,15 @@ export {
   type WorkerDependencyReadinessProbe,
   type WorkerProcessReadiness,
 } from "./worker-readiness.ts";
+export {
+  WorkerProcessLifecycleStage,
+  WorkerProcessShutdownStatus,
+  createWorkerProcess,
+  type CreateWorkerProcessInput,
+  type WorkerProcess,
+  type WorkerProcessBootstrapper,
+  type WorkerProcessFailure,
+  type WorkerProcessRunResult,
+  type WorkerProcessShutdownPort,
+  type WorkerProcessShutdownResult,
+} from "./worker-process.ts";

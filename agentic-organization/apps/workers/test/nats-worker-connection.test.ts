@@ -19,9 +19,12 @@ import {
   NatsWorkerMessageIdPrefix,
   WorkerDependencyName,
   WorkerDependencyReadinessStatus,
+  WorkerProcessShutdownStatus,
   WorkerReadinessStatus,
+  WorkerRuntimeStatus,
   checkWorkerProcessReadiness,
   connectNatsWorkerAdapters,
+  createWorkerProcess,
   type NatsWorkerTransportConnection,
   type NatsWorkerTransportConnectionFactory,
 } from "../src/index.ts";
@@ -56,7 +59,12 @@ describe("NATS worker process adapter", () => {
       reason: NatsDeadLetterReason.InvalidEnvelope,
     });
     const readiness = await adapters.readinessProbe.check();
-    await adapters.shutdown.close();
+    const shutdownResult = await createWorkerProcess({
+      bootstrappers: [],
+      readinessProbes: [],
+      runtime: createNoopRuntime(),
+      shutdownPorts: [adapters.shutdown],
+    }).shutdown();
 
     deepEqual(transportFactory.connectInputs, [
       {
@@ -106,6 +114,11 @@ describe("NATS worker process adapter", () => {
     deepEqual(readiness, {
       name: WorkerDependencyName.Nats,
       status: WorkerDependencyReadinessStatus.Ready,
+    });
+    deepEqual(shutdownResult, {
+      status: WorkerProcessShutdownStatus.Completed,
+      closedPortNames: [WorkerDependencyName.Nats],
+      failures: [],
     });
     equal(transportFactory.connection.state, NatsWorkerConnectionState.Closed);
   });
@@ -326,5 +339,16 @@ function createInboundMessage(): NatsJetStreamInboundMessage {
     acknowledge: async () => undefined,
     negativeAcknowledge: async () => undefined,
     terminate: async () => undefined,
+  };
+}
+
+function createNoopRuntime() {
+  return {
+    runOnce: async () => ({
+      status: WorkerRuntimeStatus.Healthy,
+      workerCycle: undefined,
+      natsConsumerBatch: undefined,
+      failures: [],
+    }),
   };
 }

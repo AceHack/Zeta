@@ -79,7 +79,7 @@ escalate.
 
 | App            | Implemented first                                                                                                                                                                                       |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/workers` | NodeNext runtime-host shell that parses process config, composes worker ports, runs the package worker cycle, runs the NATS consumer cycle, emits telemetry records, and reports healthy/degraded state |
+| `apps/workers` | NodeNext runtime-host contract shell that parses process config, composes worker ports, exposes the bootstrap/readiness/shutdown lifecycle contract, runs worker/NATS cycles, emits telemetry, and reports status/shutdown evidence |
 
 ## NodeNext Runtime Decision
 
@@ -316,6 +316,17 @@ Hermes runs, MCP calls, and UI evidence.
   probes return typed ready/not-ready checks, and the process readiness
   result becomes degraded when any dependency check is not ready or
   throws during readiness evaluation.
+- `apps/workers` has a first process lifecycle entrypoint contract,
+  not a long-running executable host yet. `createWorkerProcess` applies
+  bootstrap steps once per process, checks readiness before runtime
+  execution, skips runtime work on bootstrap/readiness failure, reuses
+  the bootstrapped state across later cycles, and aggregates graceful
+  shutdown results across process adapter ports.
+- `apps/workers` has an app-local Cockroach migration bootstrapper and
+  Cockroach readiness probe. The bootstrapper reuses the generic
+  Cockroach migration runner and ordered core migrations; the readiness
+  probe checks durable-state availability through the generic SQL client
+  without importing a database driver into reusable packages.
 - Worker-cycle failures can carry structured evidence. Stale outbox
   claim failures now preserve claim ID, current claim ID, outbox event
   ID, event ID, trace ID, and published-at evidence when the durable row
@@ -340,14 +351,14 @@ Hermes runs, MCP calls, and UI evidence.
 ## Next Slice
 
 The next slice is tracked in the canonical
-[Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). It should add
-the next concrete process binding below `apps/workers`: migration
-bootstrap/readiness handling and entrypoint-level graceful shutdown
-around the app-local Cockroach/NATS/telemetry adapters. Keep URLs,
-credentials, and connection pools in app adapter config fed by
-Kubernetes Secret or ExternalSecret values, never in domain packages.
-Add durable-state and NATS integration tests once local/dev connections
-are available.
+[Phased Development Plan](./PHASED_DEVELOPMENT_PLAN.md). The fake-driven
+process lifecycle contract now covers migration bootstrap, readiness
+gating, and graceful shutdown at the port boundary. Next, add
+durable-state and NATS integration tests once local/dev connections are
+available, then wrap the lifecycle contract in a real long-running
+worker host. Keep URLs, credentials, and connection pools in app adapter
+config fed by Kubernetes Secret or ExternalSecret values, never in
+domain packages.
 
 Do not make the next slice a pile of bespoke request commands. Build the
 generic supervisor triage lifecycle first, then let specialized

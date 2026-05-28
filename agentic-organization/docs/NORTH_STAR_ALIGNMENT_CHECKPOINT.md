@@ -228,10 +228,12 @@ The remaining gaps are richer authority semantics and cluster-backed
 integration proof: tests still need unauthorized source hats, invalid
 target supervisors, and missing assignments. The system now has a
 durable worker composition seam below `apps/workers`, an app-local
-Cockroach pooled-client adapter, and a JSON telemetry sink, but it still
-needs a real Cockroach-backed integration run, real NATS process-client
-construction, migration bootstrap/readiness behavior, and cluster OTEL
-export wiring.
+Cockroach pooled-client adapter, Cockroach migration bootstrapper,
+Cockroach readiness probe, NATS process-client construction, process
+lifecycle entrypoint contract, generic shutdown ports, and JSON
+telemetry sink. It still needs a real Cockroach-backed integration run,
+real NATS integration run, a long-running executable worker host, and
+cluster OTEL export wiring.
 
 ### Command Surface Closure
 

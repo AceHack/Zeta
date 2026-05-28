@@ -302,25 +302,27 @@ a chance to run. `apps/workers` will later bind those ports to real
 cluster adapters and attach process concerns such as health checks,
 metrics, structured logs, readiness, and graceful shutdown.
 
-`apps/workers` now exists as the first NodeNext runtime-host shell. It
-does not introduce NestJS yet. It composes the package-level worker host
-and the NATS consumer adapter, parses typed process environment values
-into runtime config, records telemetry through a sink port, and reports
-healthy/degraded status. Its durable composition seam receives a generic
-Cockroach SQL executor, creates the Cockroach-backed command state,
-outbox, event-ingestion, and policy-observation adapter set, and wires
-the outbox/event-ingestion ports into the worker host. Its current
-required environment contract is `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`,
-`COCKROACH_DATABASE_URL`, `NATS_SERVERS`, `NATS_STREAM`, `NATS_DURABLE`,
-`NATS_INBOUND_BATCH_SIZE`, `WORKER_INBOUND_BATCH_SIZE`, and
-`WORKER_OUTBOX_BATCH_SIZE`. The first app-local process adapters now
-cover the Cockroach worker client, NATS worker connection seam, and JSON
-telemetry sink:
+`apps/workers` now exists as the first NodeNext runtime-host contract
+shell. It does not introduce NestJS yet, and it is not the final
+long-running executable worker host. It composes the package-level
+worker host and the NATS consumer adapter, parses typed process
+environment values into runtime config, records telemetry through a sink
+port, and reports healthy/degraded status. Its durable composition seam
+receives a generic Cockroach SQL executor, creates the Cockroach-backed
+command state, outbox, event-ingestion, and policy-observation adapter
+set, and wires the outbox/event-ingestion ports into the worker host.
+Its current required environment contract is `AGENTIC_ORG_ENV`,
+`AGENTIC_ORG_ID`, `COCKROACH_DATABASE_URL`, `NATS_SERVERS`,
+`NATS_STREAM`, `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`,
+`WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE`. The first
+app-local process adapters now cover the Cockroach worker client, NATS
+worker connection seam, and JSON telemetry sink:
 
 - `apps/workers/src/adapters/cockroach-worker-client.ts` adapts a
   process-provided pool/client to `CockroachSqlClient`, including
   explicit `BEGIN`, `COMMIT`, `ROLLBACK`, connection release,
-  SQLSTATE-based retry, and ambiguous-commit preservation semantics;
+  SQLSTATE-based retry, ambiguous-commit preservation semantics, and a
+  generic shutdown adapter for process pools that expose `end()`;
 - `apps/workers/src/adapters/nats-worker-connection.ts` adapts a
   process-provided NATS transport connection factory to generic
   `EventPublisher`, `NatsJetStreamPullConsumer`,
@@ -344,11 +346,23 @@ telemetry sink:
 - `apps/workers/src/adapters/json-worker-telemetry-sink.ts` implements
   `WorkerRuntimeTelemetrySink` with stable structured JSON records that
   preserve the worker/NATS attribute contract.
+- `apps/workers/src/adapters/cockroach-migration-bootstrapper.ts` wraps
+  the generic Cockroach migration runner as a process bootstrapper,
+  applying the ordered core migrations before the worker runtime is
+  allowed to start.
+- `apps/workers/src/adapters/cockroach-readiness.ts` provides a
+  Cockroach readiness probe over the generic SQL client. It keeps the
+  dependency check app-local and driver-free for reusable packages.
 
-Readiness endpoints and migration bootstrap still belong to later
-process-adapter wiring. The shutdown and readiness ports now exist so
-those future hosts can expose dependency state without changing package
-contracts.
+The first process lifecycle entrypoint contract now exists in
+`apps/workers/src/worker-process.ts`. It applies bootstrappers once per
+process, checks typed dependency readiness before runtime execution,
+skips runtime execution when bootstrap or readiness fails, runs one
+runtime cycle when dependencies are ready, and aggregates shutdown
+across adapter ports. It is a lifecycle contract, not a complete
+long-running executable host. Future loops, Kubernetes probes, and
+process supervisors can wrap this contract without changing domain,
+application, runtime, or worker packages.
 
 The `apps/workers` composition root receives typed config plus
 already-constructed ports. This is the only place the worker process

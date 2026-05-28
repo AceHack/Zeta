@@ -1,4 +1,6 @@
 import type { CockroachAnySqlResult, CockroachSqlClient } from "../../../../packages/state-cockroach/src/index.ts";
+import { WorkerDependencyName } from "../worker-readiness.ts";
+import type { WorkerProcessShutdownPort } from "../worker-process.ts";
 
 export const CockroachWorkerTransactionErrorClassification = {
   AmbiguousCommit: "ambiguous_commit",
@@ -38,6 +40,10 @@ export type CockroachWorkerPool = {
   connect: () => Promise<CockroachWorkerPoolClient>;
 };
 
+export type CockroachWorkerShutdownPool = {
+  end: () => Promise<void>;
+};
+
 export type CreateCockroachWorkerSqlClientInput = {
   pool: CockroachWorkerPool;
   maxTransactionAttempts?: number;
@@ -72,6 +78,17 @@ export function createCockroachWorkerSqlClient(input: CreateCockroachWorkerSqlCl
   return {
     query: async (sql, parameters) => await runWithPooledClient(input.pool, (client) => client.query(sql, parameters)),
     transaction: async (operation) => await runTransaction(input, operation),
+  };
+}
+
+export function createCockroachWorkerShutdownPort(input: {
+  pool: CockroachWorkerShutdownPool;
+}): WorkerProcessShutdownPort {
+  return {
+    name: WorkerDependencyName.Cockroach,
+    shutdown: async () => {
+      await input.pool.end();
+    },
   };
 }
 

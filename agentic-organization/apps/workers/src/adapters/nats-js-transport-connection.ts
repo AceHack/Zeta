@@ -256,7 +256,7 @@ function createNodeConnectionOptions(input: NatsJsConnectionInput): NodeConnecti
 function adaptJetStreamClient(client: JetStreamClient): NatsJsJetStreamClient {
   return {
     consumers: {
-      get: async (streamName, durableName) => await client.consumers.get(streamName, durableName),
+      get: async (streamName, durableName) => adaptJetStreamConsumer(await client.consumers.get(streamName, durableName)),
     },
     publish: async (subject, payload, options) => {
       await client.publish(subject, payload, {
@@ -264,6 +264,12 @@ function adaptJetStreamClient(client: JetStreamClient): NatsJsJetStreamClient {
         headers: options.headers as MsgHdrs,
       });
     },
+  };
+}
+
+function adaptJetStreamConsumer(consumer: NatsJsConsumer): NatsJsConsumer {
+  return {
+    fetch: async (input) => await consumer.fetch(input),
   };
 }
 

@@ -6,9 +6,16 @@ import {
   CockroachWorkerTransactionErrorCode,
   CockroachWorkerTransactionErrorClassification,
   CockroachWorkerTransactionStatement,
+  createCockroachWorkerShutdownPort,
   createCockroachWorkerSqlClient,
   type CockroachWorkerPoolClient,
 } from "../src/adapters/cockroach-worker-client.ts";
+import {
+  WorkerDependencyName,
+  WorkerProcessShutdownStatus,
+  WorkerRuntimeStatus,
+  createWorkerProcess,
+} from "../src/index.ts";
 
 const TestSqlStatement = {
   SelectProbeValue: "select $1::string as value",
@@ -275,6 +282,27 @@ describe("Cockroach worker SQL client", () => {
 
     equal(pool.clients[0]?.releaseCount, 1);
   });
+
+  test("exposes Cockroach pool shutdown through the generic worker process shutdown port", async () => {
+    const pool = createRecordingShutdownPool();
+    const shutdownPort = createCockroachWorkerShutdownPort({
+      pool,
+    });
+
+    const result = await createWorkerProcess({
+      bootstrappers: [],
+      readinessProbes: [],
+      runtime: createNoopRuntime(),
+      shutdownPorts: [shutdownPort],
+    }).shutdown();
+
+    deepEqual(result, {
+      status: WorkerProcessShutdownStatus.Completed,
+      closedPortNames: [WorkerDependencyName.Cockroach],
+      failures: [],
+    });
+    equal(pool.endCallCount, 1);
+  });
 });
 
 type RecordingPoolOptions = {
@@ -374,4 +402,27 @@ function resolveRows<Row>(sql: string, parameters: readonly unknown[]): Row[] {
   }
 
   return [];
+}
+
+function createRecordingShutdownPool(): {
+  endCallCount: number;
+  end: () => Promise<void>;
+} {
+  return {
+    endCallCount: 0,
+    end: async function end() {
+      this.endCallCount += 1;
+    },
+  };
+}
+
+function createNoopRuntime() {
+  return {
+    runOnce: async () => ({
+      status: WorkerRuntimeStatus.Healthy,
+      workerCycle: undefined,
+      natsConsumerBatch: undefined,
+      failures: [],
+    }),
+  };
 }
