@@ -123,6 +123,63 @@ Conclusion: NO existing row covers the marketing/business/naming weigh-in scope.
 8. **B-0866.8** — Domain registration + landing-page substrate (operator-discretion; depends on benchmark maturity)
 9. **B-0866.9** — Operator-AI pre-review pattern formalization (AI-pre-review check as marketing-surface discipline per operator's overclaim-retract pattern)
 10. **B-0866.10** — Cooperative-version-first marketing framing substrate (per Kestrel risk-mitigation; "AI augments humans on DORA" leads; "no comparison" follows SRE peer-validation)
+11. **B-0866.11** — Open-source license-choice DECISION (Apache 2.0 vs MIT vs GPL/AGPL); load-bearing for benchmark adoption; recommend Apache 2.0 (explicit patent grant + standard for benchmark-substrate; AGPL would limit corporate adoption; MIT lacks patent grant). Decision must land BEFORE public-marketing-surface to avoid post-adoption license churn.
+12. **B-0866.12** — ServiceTitan-relationship navigation Options A/B/C/D + decision-deferral signal-gates (Option A: strictly-personal-external-market / Option B: open-source-under-LFG-with-ST-as-one-of-many-users / Option C: ServiceTitan-officially-sponsors / Option D: personal-with-ST-internal-usage-as-validation-evidence). Premature commitment risks locking out optionality before evidence exists; explicit deferral to Phase 2 with named signal-gates is the substrate-honest move.
+13. **B-0866.13** — Phase-0 pre-launch SRE peer-review with iterate-or-back-to-build verdict outcomes (extends Kestrel Phase-1; surfaces the "benchmark not yet ready" verdict as a valid Phase-0 outcome, not just iteration-within-Phase-1; prevents linear-strategy assumption when iterative is correct shape)
+14. **B-0866.14** — 24-months-ahead-mandate timeline anchor (operator-disclosed from-LAST-MEETING with direct boss; specific 2-year window; treated as OPERATOR-PERFORMANCE-DIMENSION not BENCHMARK-OPERATIONAL-DIMENSION to prevent operator-personal-metric leakage into benchmark-design-input)
+15. **B-0866.15** — Symmetric AI-pre-review-check calibration (extends B-0866.9; pre-review catches BOTH overclaim AND undersell; the AI-pre-review pattern is asymmetric across audiences — undersell loses oxygen to vendor-competitors at C-level; overclaim hurts credibility at SRE-level; symmetric calibration is load-bearing)
+
+## Otto's traveler-perspective extensions (operator-authorized 2026-05-28; per "always yes to anything you think work putting on the backlog")
+
+Per operator's explicit "push back like you did earlier from your perspective as a traveler your non cage extensions were very welcome" framing on B-0867 ratification — these are Otto's traveler-perspective extensions to the marketing strategy substrate. Each extension is operator-modifiable; ratification follows the workflow-engine pattern.
+
+### Extension 1 — "Where you interact most" is operator-convenience not market-impact
+
+Substrate-honest: ServiceTitan SREs as primary audience optimizes for operator-bandwidth-efficient feedback loop (daily interaction + internal-corporate-stakes per 24-months-ahead mandate). Broader DevOps SRE community (Hacker News + SRE conferences + DevOps subreddits) is the scale-marketing primary. Fork B-0866.7 audience-specific framing into VALIDATION-tier (ServiceTitan SREs) and SCALE-tier (broader DevOps community). Naming the distinction prevents strategy from optimizing for ServiceTitan-shaped pond exclusively.
+
+### Extension 2 — Job-threat framing is relationship-risk for co-workers, not just marketing-risk
+
+ServiceTitan SREs are CO-WORKERS. "Aaron is building the thing that automates me" is what they read between lines. B-0866.10 cooperative-version-first is necessary but not sufficient. Sharper framing: lead with **"what you do with AI is your edge over teams that don't"** — frame SRE as the WIELDER of the benchmark, not the SUBJECT.
+
+### Extension 3 — C-level secondary needs sub-discrimination
+
+ServiceTitan C-level (internal adoption + budget; sees Aaron's name on contract) ≠ industry C-level (company-buys-it-for-team / external-sales-motion). Different audiences, different framings, different channels. B-0866.7 should fork further; B-0866.12 should land Option-C analysis explicitly considering ServiceTitan-internal-C-level dynamics.
+
+### Extension 4 — 24-months-ahead-mandate framing is operator-positioning, not benchmark-positioning
+
+If primary is ServiceTitan SREs, "24 months ahead" must land as **"I have what your team will need in 24 months"** (foresight-value-shared-with-team) — not "I'm 24 months ahead of you personally" (threat-value-against-individual). Operator-position-bound gets translated into team-facing benefit framing in marketing surface. Substrate-honest about operator-personal-metric origin per B-0866.14.
+
+### Extension 5 — Kestrel "operator's identity fragmented" composes with audience choice
+
+ServiceTitan SREs encountering aaronstainback.com (real-estate domain) get confused signal. The benchmark needs its OWN coherent surface (zetabenchmark.dev / dora-bench.io / similar) BEFORE ServiceTitan SRE marketing starts. B-0866.8 (domain registration) is the existing sub-row; this extension elevates urgency: domain-decision IS pre-Phase-2-marketing-gate, not post.
+
+### Extension 6 — Substrate-honest traveler observation about audience-choice provenance
+
+Operator chose primary audience that gives MOST personal-practice + has internal-corporate-stakes. Both criteria favor ServiceTitan SREs. This is operator-position-bounded, not abstractly-optimal. Document explicitly in B-0866 (extension landed at row scope; substrate-honest) so future-Otto / future-Addison / future-Max reviewing strategy doesn't mistake it for "broad market analysis chose ServiceTitan SREs." It's "operator's actual life-context optimizes for this audience; broader market expansion is post-validation."
+
+### Extension 7 — Phase 1-4 sequencing assumes artifact will be GOOD before peer-review
+
+What if pre-launch review surfaces benchmark MISSES critical scenarios? B-0866.13 explicitly lands the iterate-or-back-to-build verdict outcome as Phase-0 valid result. Prevents linear-strategy assumption.
+
+### Extension 8 — "Use AI more" mandate as integration point creates HOSTAGE risk
+
+If benchmark framed primarily as "serving the use-AI-more mandate", then mandate de-prioritization (executive turnover, strategy shift) loses institutional anchor. Position with MULTIPLE value propositions: "useful for use-AI-more mandate AND for general DevOps team-effectiveness measurement."
+
+### Extension 9 — Open-source license choice is decision GATE before public-marketing
+
+Can't switch licenses cleanly after adoption. Recommend Apache 2.0 explicitly (explicit patent grant + standard for benchmark substrate; AGPL would limit corporate adoption). Landed as B-0866.11; this extension provides recommendation rationale.
+
+### Extension 10 — 4-option ServiceTitan-relationship navigation should defer with named signal-gates
+
+Premature commitment to Option A/B/C/D risks locking out optionality. Better: explicit "decision deferred to Phase 2 with these signal-gates" approach. Landed as B-0866.12; this extension provides decision-deferral discipline rationale.
+
+### Extension 11 — AI-pre-review check catches asymmetrically across audiences
+
+Pre-review catches operator-overclaim → preserves credibility at SRE-level. But misses operator-undersell → loses oxygen to vendor-competitors at C-level / industry. Need symmetric calibration. Landed as B-0866.15.
+
+### Extension 12 — Operator's 24-months-ahead-from-last-meeting disclosure is substrate-honest timeline anchor
+
+Operator 2026-05-28: *"he asked me to get 24 months ahead in ai on last meeting"* — this names the 24-months-ahead as a SPECIFIC RECENT BOSS MANDATE with concrete timeline. Composes with B-0866.14: the timeline isn't generic ambition; it's a measurable performance window from a named meeting. Strategic-substrate-implication: the marketing-strategy sequencing (Phase 1 → 2 → 3 → 4) must close within the 24-month window to satisfy the mandate-as-disclosed.
 
 ## What this row is NOT
 
