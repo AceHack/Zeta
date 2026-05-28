@@ -69,7 +69,7 @@ const SHEBANG_READ_BYTES = 512;
 const SHELL_FILE_EXTENSIONS: readonly string[] = [".sh", ".bash", ".zsh", ".ksh", ".command"];
 export const RETAINED_SHELL_SCOPE = "repo-wide setup/bootstrap/service-wrapper/installer/dev-cluster allowlist";
 export const TRACKED_SHELL_FILE_GLOBS: readonly string[] = SHELL_FILE_EXTENSIONS.map((extension) => `*${extension}`);
-const SHELL_FAMILY_SHEBANG_RE = /^#!.*[/\s](bash|sh|zsh|ksh)(?:\s|$)/;
+const SHELL_FAMILY_SHEBANG_RE = /^#!.*[/\s](bash|dash|sh|zsh|ksh)(?:\s|$)/;
 
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",

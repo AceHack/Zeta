@@ -202,6 +202,7 @@ describe("buildInventoryReport", () => {
       writeFileSync(join(repo, "scripts", "e.command"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash"), "#!/usr/bin/env bash\n");
       writeFileSync(join(repo, "scripts", "extensionless-bash-env-s"), "#!/usr/bin/env -S bash -eu\n");
+      writeFileSync(join(repo, "scripts", "extensionless-dash"), "#!/bin/dash\n");
       writeFileSync(join(repo, "scripts", "extensionless-sh"), "#!/bin/sh\n");
       writeFileSync(join(repo, "scripts", "extensionless-bun"), "#!/usr/bin/env bun\n");
       writeFileSync(join(repo, "scripts", "dotted-shell-shebang.txt"), "#!/usr/bin/env bash\n");
@@ -217,6 +218,7 @@ describe("buildInventoryReport", () => {
         "scripts/e.command",
         "scripts/extensionless-bash",
         "scripts/extensionless-bash-env-s",
+        "scripts/extensionless-dash",
         "scripts/extensionless-sh",
       ]);
     } finally {
