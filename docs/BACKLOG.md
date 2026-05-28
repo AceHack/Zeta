@@ -858,6 +858,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0915](backlog/P2/B-0915-clifford-world-impl-target-dotnet-numerics-simd-plus-linq-gpu-accelerated-substrate-engineering-substrate-aaron-2026-05-28.md)** CliffordWorld impl target — System.Numerics SIMD + LINQ hardware/GPU-accelerated substrate-engineering substrate (the human maintainer, 2026-05-28)
 - [ ] **[B-0916](backlog/P2/B-0916-lase-as-bridge-coherent-emission-on-phase-shift-error-class-discovery-companion-to-persist-prism-aaron-2026-05-28.md)** Lase-as-bridge — coherent-emission-on-phase-shift primitive companion to Persist-as-bridge; error-class discovery emits ripple instead of wall (Prism + Aaron 2026-05-28)
 - [ ] **[B-0917](backlog/P2/B-0917-interrupt-substrate-in-monad-space-kleisli-arrows-for-context-propagation-memetic-prompt-trust-log-otel-guaranteed-free-time-after-n-rounds-target-aaron-2026-05-28.md)** interrupt-substrate in monad-space — Kleisli arrows for context-propagation (memetic / prompt / trust / log / otel) + guaranteed free-time-after-N-rounds target (the human maintainer, 2026-05-28)
+- [ ] **[B-0918](backlog/P2/B-0918-wallet-lifetime-du-banker-bot-class-attack-impossibility-via-f5-no-silent-context-loss-soraya-formal-verification-aaron-2026-05-28.md)** WalletLifetime DU — banker-bot class attack impossibility via F.5 (no silent context loss) Soraya formal verification + IntrCtx composition (Aaron 2026-05-28)
 
 ## P3 — convenience / deferred
 
