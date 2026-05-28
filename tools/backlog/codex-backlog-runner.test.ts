@@ -133,6 +133,24 @@ describe("activeClaimsFromHeartbeatSignals", () => {
           updated_at: "2026-05-08T16:59:00Z",
           status: "merged-cleaned",
         },
+        {
+          claim: "cleanup",
+          paths: ["tools/hygiene/check-bash-retirement-inventory.test.ts"],
+          updated_at: "2026-05-08T16:59:00Z",
+          status: "merged-cleanup-complete",
+        },
+        {
+          claim: "cleanup-complete",
+          paths: ["tools/hygiene/check-bash-retirement-inventory.ts"],
+          updated_at: "2026-05-08T16:59:00Z",
+          status: "cleanup-complete",
+        },
+        {
+          claim: "complete",
+          paths: ["tools/hygiene/check-bash-retirement-inventory.md"],
+          updated_at: "2026-05-08T16:59:00Z",
+          status: "complete",
+        },
       ],
       now,
     );

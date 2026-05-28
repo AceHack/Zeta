@@ -261,6 +261,9 @@ function isTerminalHeartbeat(status: string | undefined): boolean {
   const normalized = status?.trim().toLowerCase() ?? "";
   return (
     normalized === "merged-cleaned" ||
+    normalized === "merged-cleanup-complete" ||
+    normalized === "cleanup-complete" ||
+    normalized === "complete" ||
     normalized === "released" ||
     normalized === "abandoned" ||
     normalized === "done"
