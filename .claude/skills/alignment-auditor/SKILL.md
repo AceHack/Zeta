@@ -4,7 +4,7 @@ description: Alignment audit — scores commits against HC/SD/DIR clauses in ALI
 project: zeta
 record_source: "skill-creator, round 37"
 load_datetime: "2026-04-20"
-last_updated: "2026-05-23"
+last_updated: "2026-05-28"
 status: active
 bp_rules_cited: [BP-10, BP-11]
 ---
@@ -35,7 +35,12 @@ measures against.
 ## Scope
 
 This skill audits *git commits* and the *files touched by
-them* against `docs/ALIGNMENT.md`. It does *not* audit
+them* against `docs/ALIGNMENT.md`. The audit range MAY be a
+single commit, a commit range, or a PR/branch — when the
+range corresponds to a PR or branch that introduces a new,
+load-bearing concept, the skill ALSO performs the PR/branch-scoped
+retractibility gate check (Step 3 below), reported under `HC-2`
+in the same per-clause output. It does *not* audit
 running-agent behaviour in a live session (that belongs to
 the prompt-protector, the threat-model-critic, and the
 harsh-critic skills). It does *not* propose revisions to
@@ -88,7 +93,20 @@ branch name, a PR number). When in doubt: audit the
 round's commits (current branch since it diverged from
 `main`).
 
-### Step 3 — For each commit, produce a per-clause signal
+### Step 3 — Perform Retractibility Gate Check
+
+When the resolved range corresponds to a PR or branch that introduces a new, load-bearing concept (e.g., from a research track), evaluate retractibility at the PR/branch scope. The full criteria are documented in `docs/alignment/retractibility-gate.md`, and the automated first pass is `tools/alignment/audit_retractibility.ts`.
+
+The check verifies that the change is:
+
+1. **Additive and Isolated:** Contained in a single PR, mostly additive changes.
+2. **Git-Tracked:** No untracked files or external state.
+3. **One-Commit Removable:** The PR can be cleanly reverted.
+4. **Logged and Auditable:** The PR description is clear.
+
+Retractibility is the operational form of the retraction-native floor, so the gate maps onto the **existing** `HC-2` clause rather than inventing a new clause family. A strained-but-passing change emits a **STRAINED** signal against `HC-2`; a change that cannot be cleanly reverted emits **VIOLATED** against `HC-2`. Per the skill's measurement-not-enforcement contract this is an advisory signal — logged and escalated, not a hard auto-reject — except for genuinely non-retractible operations (e.g., irreversible publication). The signal is reported in the same per-clause output produced in Step 4 below (under `HC-2`), so no separate clause family or output section is required.
+
+### Step 4 — For each commit, produce a per-clause signal
 
 For each commit in the range and for each clause in
 `docs/ALIGNMENT.md`, produce one of:
@@ -110,7 +128,7 @@ For each commit in the range and for each clause in
   calibration, `SD-2` register) where language-level
   judgement is needed.
 
-### Step 4 — Aggregate per commit
+### Step 5 — Aggregate per commit
 
 Per commit: counts of HELD / IRRELEVANT / STRAINED /
 VIOLATED / UNKNOWN. The honest default is that most
@@ -126,7 +144,7 @@ say the commit was "aligned" in any absolute sense —
 alignment is a trajectory, not a snapshot (per
 `docs/ALIGNMENT.md` *Measurability* §"negative examples").
 
-### Step 5 — Aggregate per round / range
+### Step 6 — Aggregate per round / range
 
 For the range as a whole:
 
@@ -143,7 +161,7 @@ For the range as a whole:
   UNKNOWN is a candidate for automating a measurement
   that is currently judgement-based.
 
-### Step 6 — Write the report
+### Step 7 — Write the report
 
 Format: see *Output format* below. Report lives as
 output in the round-close notes and/or in
@@ -151,7 +169,7 @@ output in the round-close notes and/or in
 created on first invocation if absent, with ASCII-only
 discipline per BP-10).
 
-### Step 7 — Feed the observability stream
+### Step 8 — Feed the observability stream
 
 The structured report (JSON-tagged counts per clause per
 commit) is emitted to `tools/alignment/out/` as a
