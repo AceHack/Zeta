@@ -1,7 +1,7 @@
 # Trajectory - Autonomous Loop Coordination
 
 Status: active child packet
-Last refreshed: 2026-05-07
+Last refreshed: 2026-05-28
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
 `docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
@@ -39,15 +39,23 @@ signals, and includes the slow background-only participant example from
 B-0209. The implementation harness comes after the dry run can be executed
 from remote refs alone.
 
+Current dry-run receipt:
+`docs/trajectories/autonomous-loop-coordination/remote-only-two-participant-dry-run-2026-05-28.md`
+
+It records the current Participant A remote claim, the stale predecessor
+force-release, and the remaining blocker: a genuinely separate Participant B
+has not yet published a disjoint remote-only claim.
+
 ## Recommended Next Action
 
-Run the minimum remote-only dry run from the matrix: two participants, two
-pushed `origin/claim/*` refs, no local broadcast reads, and release state
-recoverable from git history alone.
+Add the missing Participant B leg for the minimum remote-only dry run:
+Participant B must start from remote refs only, publish a disjoint
+`origin/claim/*` ref, and let Participant A record a progress receipt before
+both claims release through git history.
 
 ## Next Child Packets
 
-- remote-only dry-run execution report, grounded in B-0209
+- remote-only Participant B progress receipt, grounded in B-0209
 - local/remote cluster composition protocol sketch, grounded in B-0211
 - stale-claim cleanup rule for completed PRs, grounded in the claim protocol
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250
