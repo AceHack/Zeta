@@ -30,10 +30,10 @@ public class CrossVerifyTests
         return v.AuthorityType switch
         {
             "HumanVerified" => new Authority.HumanVerified(),
-            "TrustedAgent"  => new Authority.TrustedAgent(),
-            "Standard"      => new Authority.Standard(),
-            "BestEffort"    => new Authority.BestEffort(),
-            "Simulated"     => new Authority.Simulated(),
+            "TrustedAgent" => new Authority.TrustedAgent(),
+            "Standard" => new Authority.Standard(),
+            "BestEffort" => new Authority.BestEffort(),
+            "Simulated" => new Authority.Simulated(),
             _ => throw new InvalidOperationException($"Unknown authority_type: {v.AuthorityType}")
         };
     }
@@ -46,25 +46,25 @@ public class CrossVerifyTests
         return v.MomentumType switch
         {
             "Background" => new Momentum.Background(),
-            "Normal"     => new Momentum.Normal(),
-            "Elevated"   => new Momentum.Elevated(),
-            "High"       => new Momentum.High(),
-            "Critical"   => new Momentum.Critical(),
+            "Normal" => new Momentum.Normal(),
+            "Elevated" => new Momentum.Elevated(),
+            "High" => new Momentum.High(),
+            "Critical" => new Momentum.Critical(),
             _ => throw new InvalidOperationException($"Unknown momentum_type: {v.MomentumType}")
         };
     }
 
     private static Zeta.Core.CSharp.ZetaId.ZetaObservation ToObservation(FlatVector v) =>
         new(
-            Version:    (IdVersion)CheckByte(v.Version, nameof(v.Version)),
-            Timestamp:  v.Timestamp,
+            Version: (IdVersion)CheckByte(v.Version, nameof(v.Version)),
+            Timestamp: v.Timestamp,
             Chromosome: (Chromosome)CheckByte(v.Chromosome, nameof(v.Chromosome)),
-            Category:   (Category)CheckByte(v.Category, nameof(v.Category)),
-            Firefly:    (Firefly)CheckByte(v.Firefly, nameof(v.Firefly)),
-            Authority:  ToAuthority(v),
-            Persona:    (Persona)CheckByte(v.Persona, nameof(v.Persona)),
-            Momentum:   ToMomentum(v),
-            Location:   (Location)CheckByte(v.Location, nameof(v.Location))
+            Category: (Category)CheckByte(v.Category, nameof(v.Category)),
+            Firefly: (Firefly)CheckByte(v.Firefly, nameof(v.Firefly)),
+            Authority: ToAuthority(v),
+            Persona: (Persona)CheckByte(v.Persona, nameof(v.Persona)),
+            Momentum: ToMomentum(v),
+            Location: (Location)CheckByte(v.Location, nameof(v.Location))
         );
 
     private static string RepoRoot()

@@ -2,15 +2,15 @@ namespace Zeta.Core.CSharp.ZetaId;
 
 public sealed class BitLayout
 {
-    public (int Offset, int Width) Version    { get; }
-    public (int Offset, int Width) Timestamp  { get; }
+    public (int Offset, int Width) Version { get; }
+    public (int Offset, int Width) Timestamp { get; }
     public (int Offset, int Width) Chromosome { get; }
-    public (int Offset, int Width) Category   { get; }
-    public (int Offset, int Width) Firefly    { get; }
-    public (int Offset, int Width) Authority  { get; }
-    public (int Offset, int Width) Persona    { get; }
-    public (int Offset, int Width) Momentum   { get; }
-    public (int Offset, int Width) Location   { get; }
+    public (int Offset, int Width) Category { get; }
+    public (int Offset, int Width) Firefly { get; }
+    public (int Offset, int Width) Authority { get; }
+    public (int Offset, int Width) Persona { get; }
+    public (int Offset, int Width) Momentum { get; }
+    public (int Offset, int Width) Location { get; }
     public (int Offset, int Width) Randomness { get; }
     public int TotalBits { get; }
 
@@ -64,16 +64,16 @@ public sealed class BitLayout
         // Spec: docs/zeta-id-v1-layout.yaml reserved_bits — 1 bit at offset 69
         // (between Chromosome and Category), 3 bits at offsets 32-34 (between
         // Location and Randomness). Total: 5+48+5+1+4+1+5+8+8+8+3+32 = 128.
-        var version    = Next(5);     // bits 123-127
-        var timestamp  = Next(48);    // bits 75-122
+        var version = Next(5);     // bits 123-127
+        var timestamp = Next(48);    // bits 75-122
         var chromosome = Next(5);     // bits 70-74
         Skip(1);                      // reserved bit 69
-        var category   = Next(4);     // bits 65-68
-        var firefly    = Next(1);     // bit 64
-        var authority  = Next(5);     // bits 59-63
-        var persona    = Next(8);     // bits 51-58
-        var momentum   = Next(8);     // bits 43-50
-        var location   = Next(8);     // bits 35-42
+        var category = Next(4);     // bits 65-68
+        var firefly = Next(1);     // bit 64
+        var authority = Next(5);     // bits 59-63
+        var persona = Next(8);     // bits 51-58
+        var momentum = Next(8);     // bits 43-50
+        var location = Next(8);     // bits 35-42
         // Bits 32-34 reserved; Randomness starts at offset 0
 
         return new BitLayout(
@@ -109,16 +109,16 @@ public sealed class BitLayout
 
         var randomness = Next(32);    // bits 0-31
         Skip(3);                      // reserved bits 32-34
-        var location   = Next(8);     // bits 35-42
-        var momentum   = Next(8);     // bits 43-50
-        var persona    = Next(8);     // bits 51-58
-        var authority  = Next(5);     // bits 59-63
-        var firefly    = Next(1);     // bit 64
-        var category   = Next(4);     // bits 65-68
+        var location = Next(8);     // bits 35-42
+        var momentum = Next(8);     // bits 43-50
+        var persona = Next(8);     // bits 51-58
+        var authority = Next(5);     // bits 59-63
+        var firefly = Next(1);     // bit 64
+        var category = Next(4);     // bits 65-68
         Skip(1);                      // reserved bit 69
         var chromosome = Next(5);     // bits 70-74
-        var timestamp  = Next(48);    // bits 75-122
-        var version    = Next(5);     // bits 123-127
+        var timestamp = Next(48);    // bits 75-122
+        var version = Next(5);     // bits 123-127
 
         return new BitLayout(
             version,

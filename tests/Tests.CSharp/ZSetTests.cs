@@ -1,5 +1,5 @@
-using Zeta.Core;
 using Xunit;
+using Zeta.Core;
 
 namespace Zeta.Tests.CSharp;
 

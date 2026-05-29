@@ -38,7 +38,7 @@ namespace Zeta.Core.CSharp;
 public interface ICovariantSink<out T> where T : IComparable<T>
 {
     /// <summary>Mode the sink was configured for.</summary>
-    DeliveryMode Mode { get; }
+    public DeliveryMode Mode { get; }
 }
 
 /// <summary>
@@ -50,7 +50,7 @@ public interface ICovariantSink<out T> where T : IComparable<T>
 public interface IContravariantHashStrategy<in TKey>
 {
     /// <summary>Compute a 32-bit hash of <paramref name="key"/>.</summary>
-    uint Hash(TKey key);
+    public uint Hash(TKey key);
 }
 
 /// <summary>
@@ -63,7 +63,7 @@ public interface IContravariantHashStrategy<in TKey>
 public interface ICovariantBackingStore<out TKey> where TKey : IComparable<TKey>
 {
     /// <summary>Number of batches currently stored.</summary>
-    int Count { get; }
+    public int Count { get; }
 }
 
 /// <summary>

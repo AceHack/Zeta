@@ -30,22 +30,22 @@ public static class ZetaIdCodec
         // compile; without bounds checks the high bits silently truncate and
         // collide. Persona/Location are byte-backed (8-bit) so they max at
         // 255 = their field width; no check needed.
-        ValidateEnumField((byte)obs.Version,    5, nameof(obs.Version));
+        ValidateEnumField((byte)obs.Version, 5, nameof(obs.Version));
         ValidateEnumField((byte)obs.Chromosome, 5, nameof(obs.Chromosome));
-        ValidateEnumField((byte)obs.Category,   4, nameof(obs.Category));
-        ValidateEnumField((byte)obs.Firefly,    1, nameof(obs.Firefly));
+        ValidateEnumField((byte)obs.Category, 4, nameof(obs.Category));
+        ValidateEnumField((byte)obs.Firefly, 1, nameof(obs.Firefly));
 
         UInt128 id = 0;
 
-        id = SetBits(id, Layout.Version,    (ulong)(byte)obs.Version);
-        id = SetBits(id, Layout.Timestamp,  (ulong)obs.Timestamp);
+        id = SetBits(id, Layout.Version, (ulong)(byte)obs.Version);
+        id = SetBits(id, Layout.Timestamp, (ulong)obs.Timestamp);
         id = SetBits(id, Layout.Chromosome, (ulong)(byte)obs.Chromosome);
-        id = SetBits(id, Layout.Category,   (ulong)(byte)obs.Category);
-        id = SetBits(id, Layout.Firefly,    (ulong)(byte)obs.Firefly);
-        id = SetBits(id, Layout.Authority,  Authority.ToByte(obs.Authority));
-        id = SetBits(id, Layout.Persona,    (ulong)(byte)obs.Persona);
-        id = SetBits(id, Layout.Momentum,   Momentum.ToByte(obs.Momentum));
-        id = SetBits(id, Layout.Location,   (ulong)(byte)obs.Location);
+        id = SetBits(id, Layout.Category, (ulong)(byte)obs.Category);
+        id = SetBits(id, Layout.Firefly, (ulong)(byte)obs.Firefly);
+        id = SetBits(id, Layout.Authority, Authority.ToByte(obs.Authority));
+        id = SetBits(id, Layout.Persona, (ulong)(byte)obs.Persona);
+        id = SetBits(id, Layout.Momentum, Momentum.ToByte(obs.Momentum));
+        id = SetBits(id, Layout.Location, (ulong)(byte)obs.Location);
 
         ulong rand32 = (ulong)env.NextInt64() & 0xFFFFFFFFUL;
         id = SetBits(id, Layout.Randomness, rand32);
@@ -56,15 +56,15 @@ public static class ZetaIdCodec
     public static ZetaObservation Unpack(UInt128 id)
     {
         return new ZetaObservation(
-            Version:    (IdVersion)GetBits(id, Layout.Version),
-            Timestamp:  (long)GetBits(id, Layout.Timestamp),
+            Version: (IdVersion)GetBits(id, Layout.Version),
+            Timestamp: (long)GetBits(id, Layout.Timestamp),
             Chromosome: (Chromosome)GetBits(id, Layout.Chromosome),
-            Category:   (Category)GetBits(id, Layout.Category),
-            Firefly:    (Firefly)GetBits(id, Layout.Firefly),
-            Authority:  Authority.FromByte((byte)GetBits(id, Layout.Authority)),
-            Persona:    (Persona)GetBits(id, Layout.Persona),
-            Momentum:   Momentum.FromByte((byte)GetBits(id, Layout.Momentum)),
-            Location:   (Location)GetBits(id, Layout.Location)
+            Category: (Category)GetBits(id, Layout.Category),
+            Firefly: (Firefly)GetBits(id, Layout.Firefly),
+            Authority: Authority.FromByte((byte)GetBits(id, Layout.Authority)),
+            Persona: (Persona)GetBits(id, Layout.Persona),
+            Momentum: Momentum.FromByte((byte)GetBits(id, Layout.Momentum)),
+            Location: (Location)GetBits(id, Layout.Location)
         );
     }
 

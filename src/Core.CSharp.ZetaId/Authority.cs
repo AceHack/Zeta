@@ -3,10 +3,10 @@ namespace Zeta.Core.CSharp.ZetaId;
 public abstract record Authority
 {
     public sealed record HumanVerified() : Authority;
-    public sealed record TrustedAgent()  : Authority;
-    public sealed record Standard()      : Authority;
-    public sealed record BestEffort()    : Authority;
-    public sealed record Simulated()     : Authority;
+    public sealed record TrustedAgent() : Authority;
+    public sealed record Standard() : Authority;
+    public sealed record BestEffort() : Authority;
+    public sealed record Simulated() : Authority;
 
     /// <summary>
     /// Raw escape for values not in the named set. Authority is packed
@@ -39,13 +39,13 @@ public abstract record Authority
 
     internal static byte ToByte(Authority authority) => authority switch
     {
-        Raw r           => r.Value,
-        HumanVerified   => (byte)AuthorityValue.HumanVerified,
-        TrustedAgent    => (byte)AuthorityValue.TrustedAgent,
-        Standard        => (byte)AuthorityValue.Standard,
-        BestEffort      => (byte)AuthorityValue.BestEffort,
-        Simulated       => (byte)AuthorityValue.Simulated,
-        _               => throw new InvalidOperationException(
+        Raw r => r.Value,
+        HumanVerified => (byte)AuthorityValue.HumanVerified,
+        TrustedAgent => (byte)AuthorityValue.TrustedAgent,
+        Standard => (byte)AuthorityValue.Standard,
+        BestEffort => (byte)AuthorityValue.BestEffort,
+        Simulated => (byte)AuthorityValue.Simulated,
+        _ => throw new InvalidOperationException(
             $"Unknown Authority subtype '{authority.GetType().FullName}'. " +
             "External subtyping of the public abstract Authority record is not " +
             "supported by ZetaIdCodec; use Authority.Raw(byte) for any value " +
@@ -57,11 +57,11 @@ public abstract record Authority
         return value switch
         {
             (byte)AuthorityValue.HumanVerified => new HumanVerified(),
-            (byte)AuthorityValue.TrustedAgent  => new TrustedAgent(),
-            (byte)AuthorityValue.Standard      => new Standard(),
-            (byte)AuthorityValue.BestEffort    => new BestEffort(),
-            (byte)AuthorityValue.Simulated     => new Simulated(),
-            _                                  => new Raw(value)
+            (byte)AuthorityValue.TrustedAgent => new TrustedAgent(),
+            (byte)AuthorityValue.Standard => new Standard(),
+            (byte)AuthorityValue.BestEffort => new BestEffort(),
+            (byte)AuthorityValue.Simulated => new Simulated(),
+            _ => new Raw(value)
         };
     }
 }
