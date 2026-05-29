@@ -617,10 +617,13 @@ truth for any rule that applies across harnesses.
 - **`GEMINI.md`** — Gemini CLI equivalent. Present
   at repo root; bootstrap pointer tree for fresh
   Gemini instances (per B-0538).
-- **`CODEX.md`** or **`.codex/AGENTS.md`** —
-  OpenAI Codex equivalent. Present at
-  `.codex/AGENTS.md`; it is additive and may not
-  contradict this file or `GOVERNANCE.md`.
+- **`CODEX.md`** — OpenAI Codex (Vera) session-bootstrap
+  pointer tree. Present at repo root; instantiates the
+  cross-harness bootstrap template (B-0355.4). It points
+  into the Codex-owned deep addendum at `.codex/AGENTS.md`
+  (host-loop mechanics, origin trailers, background-agent
+  discipline). Both are additive and may not contradict
+  this file or `GOVERNANCE.md`.
 - **`.github/copilot-instructions.md`** — GitHub
   Copilot Workspace / Chat instructions. Present
   and factory-managed; audited on the same cadence

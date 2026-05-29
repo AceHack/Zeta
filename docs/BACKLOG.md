@@ -218,6 +218,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0354.4](backlog/P1/B-0354.4-clean-prompt-live-model-fresh-instance-run.md)** Clean-prompt live-model fresh-instance run for bootstrap CLAUDE.md
 - [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [x] **[B-0355.3](backlog/P1/B-0355.3-kiro-md-harness-bootstrap.md)** KIRO.md — Amazon Kiro (Alexa) harness bootstrap file
+- [x] **[B-0355.4](backlog/P1/B-0355.4-codex-md-harness-bootstrap.md)** CODEX.md — OpenAI Codex (Vera) harness bootstrap file
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)
 - [x] **[B-0357](backlog/P1/B-0357-replace-tautology-z3-agenda-proofs-with-real-verification.md)** Replace tautology Z3 agenda/trajectory proofs with non-trivial verification
 - [x] **[B-0358](backlog/P1/B-0358-bool-as-degenerate-distribution-confidence-typed-apis.md)** Bool as degenerate distribution — replace binary API returns with confidence scores

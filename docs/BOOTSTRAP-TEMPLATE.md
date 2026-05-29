@@ -106,7 +106,8 @@ process-ification). New harness files should match their shape.
 |------|---------|--------|
 | [`CLAUDE.md`](../CLAUDE.md) | Claude Code | Canonical six-step process + Conventions pointer tree (B-0353). |
 | [`GEMINI.md`](../GEMINI.md) | Gemini CLI / Antigravity (Lior) | Boot sequence pointing into shared factory physics + persona file (B-0538). |
-| [`.codex/AGENTS.md`](../.codex/AGENTS.md) | OpenAI Codex (Vera) | Additive addendum: read-order, worktree discipline, commit trailers. |
+| [`CODEX.md`](../CODEX.md) | OpenAI Codex (Vera) | Six-step pointer tree at repo root (B-0355.4); points into `.codex/AGENTS.md` for deep host-loop mechanics. |
+| [`.codex/AGENTS.md`](../.codex/AGENTS.md) | OpenAI Codex (Vera) | Codex-owned deep addendum: read-order, worktree discipline, commit/origin trailers, background-agent discipline. |
 | [`.github/copilot-instructions.md`](../.github/copilot-instructions.md) | GitHub Copilot | Factory-managed instructions, audited on the skill-file cadence (GOVERNANCE.md §31). |
 | [`CURSOR.md`](../CURSOR.md) | Cursor IDE (Riven) | Six-step pointer tree at repo root (B-0355.2). Native `.cursor/rules/` still absent. |
 | [`KIRO.md`](../KIRO.md) | Amazon Kiro (Alexa) | Six-step pointer tree at repo root (B-0355.3, per B-0325). Native `.kiro/steering/` still absent. |
