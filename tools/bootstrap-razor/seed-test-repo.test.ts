@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
+  buildSeedTreeRequest,
   computeSeedTree,
   diffSeedTree,
   gitBlobSha,
@@ -243,5 +244,48 @@ describe("parseGitTreeResponse", () => {
       tree: [{ path: "a.txt", type: "blob" }], // no sha
     });
     expect(typeof result).toBe("string");
+  });
+});
+
+describe("buildSeedTreeRequest", () => {
+  const a = { path: "a.txt", sha: "aaa" };
+  const b = { path: "b.txt", sha: "bbb" };
+
+  test("create + update become 100644 blob entries carrying the DESIRED sha", () => {
+    // desired: a (matches → unchanged, dropped), b (differs → update), c (absent → create)
+    const diff = diffSeedTree(
+      [a, b, { path: "c.txt", sha: "ccc" }],
+      [a, { path: "b.txt", sha: "OLD" }],
+    );
+    expect(buildSeedTreeRequest(diff)).toEqual([
+      // b.txt update carries desiredSha "bbb", NOT the existing "OLD"
+      { path: "b.txt", mode: "100644", type: "blob", sha: "bbb" },
+      { path: "c.txt", mode: "100644", type: "blob", sha: "ccc" },
+    ]);
+  });
+
+  test("idempotent diff → empty write plan (no tree to submit)", () => {
+    expect(buildSeedTreeRequest(diffSeedTree([a, b], [a, b]))).toEqual([]);
+  });
+
+  test("fresh (empty) repo → every desired path is a create entry", () => {
+    expect(buildSeedTreeRequest(diffSeedTree([b, a], []))).toEqual([
+      { path: "a.txt", mode: "100644", type: "blob", sha: "aaa" },
+      { path: "b.txt", mode: "100644", type: "blob", sha: "bbb" },
+    ]);
+  });
+
+  test("output stays path-sorted (inherits diffSeedTree's canonical order)", () => {
+    const plan = buildSeedTreeRequest(
+      diffSeedTree([{ path: "z.txt", sha: "zzz" }, { path: "a.txt", sha: "aaa" }], []),
+    );
+    expect(plan.map((e) => e.path)).toEqual(["a.txt", "z.txt"]);
+  });
+
+  test("extraneous target files never enter the write plan (seed is add/update only)", () => {
+    // Target has the desired file (matching) plus an extra auto-README.
+    const diff = diffSeedTree([a], [a, { path: "README.md", sha: "readme" }]);
+    expect(diff.extraneous).toEqual([{ path: "README.md", sha: "readme" }]);
+    expect(buildSeedTreeRequest(diff)).toEqual([]); // a.txt unchanged, README extraneous → nothing to write
   });
 });

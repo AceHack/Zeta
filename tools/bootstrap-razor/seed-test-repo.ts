@@ -83,6 +83,22 @@ interface SeedTreeDiff {
   readonly idempotent: boolean;
 }
 
+/**
+ * One entry in the `tree` array of GitHub's `POST /repos/{owner}/{repo}/git/trees`
+ * request body. `mode` is always `100644` (a regular non-executable file blob) for
+ * seed content; `type` is always `"blob"`; `sha` references a blob the seeding flow
+ * uploaded just before (a prior `POST /git/blobs` of the file's bytes returns this
+ * same content-addressable SHA). The seed never writes directory rows or executable
+ * bits, so the broader git-tree shape (`040000` sub-trees, `100755` exec, `120000`
+ * symlinks, `160000` submodule gitlinks) is intentionally unrepresented.
+ */
+export interface GitTreeRequestEntry {
+  readonly path: string;
+  readonly mode: "100644";
+  readonly type: "blob";
+  readonly sha: string;
+}
+
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
 const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
 // Repo root = two levels up from tools/bootstrap-razor/.
@@ -292,6 +308,31 @@ export function parseGitTreeResponse(response: unknown): readonly SeedTreeEntry[
 }
 
 /**
+ * Pure write-side bridge — the mirror of `parseGitTreeResponse`. Where the parser
+ * turns the target repo's git tree INTO the diff's `existing` input, this turns the
+ * diff's verdict INTO the `tree` array a `POST /git/trees` call submits to write the
+ * seed. Only paths whose action is "create" or "update" appear: "unchanged" paths are
+ * carried implicitly by the request's `base_tree` (the target's current tree), so
+ * re-listing them would be wasted bytes and a needless tree-object churn. Each entry
+ * carries the DESIRED blob SHA (`desiredSha`), which is the same content-addressable
+ * identity a prior `POST /git/blobs` of that file's bytes returns — so the network
+ * slice that follows is: upload each create/update blob → submit this tree (with
+ * base_tree = current ref tree) → create a commit → fast-forward the ref.
+ *
+ * Pure: operates only on the diff; no gh, no network, no filesystem. When the diff
+ * is idempotent (`diff.idempotent === true`) the result is the empty array — the
+ * repo already holds exactly these bytes, so there is no tree to write at all, and
+ * the seeding flow can skip the blob/tree/commit/ref steps entirely (AC 3). Input
+ * order is preserved: `diffSeedTree` already returns `entries` path-sorted, matching
+ * git's own path-sorted tree representation, so the output stays canonically sorted.
+ */
+export function buildSeedTreeRequest(diff: SeedTreeDiff): readonly GitTreeRequestEntry[] {
+  return diff.entries
+    .filter((entry) => entry.action !== "unchanged")
+    .map((entry) => ({ path: entry.path, mode: "100644", type: "blob", sha: entry.desiredSha }));
+}
+
+/**
  * Read-only filesystem scan: collect the concrete files under each rooted
  * include pattern. Scans include patterns directly (never a recursive glob
  * from root) to avoid walking gitignored mirror trees. No mutation, no
@@ -322,6 +363,18 @@ function emitDryRun(manifest: SeedManifest, root: string): void {
 
   console.log("These blob SHAs are the idempotency comparison basis (AC 3):");
   console.log("a follow-up slice diffs them against the target repo's git tree.");
+
+  // Against a FRESH (empty) repo every desired path is a create, so the diff's
+  // write plan equals the full seed. This shows the exact `POST /git/trees` tree
+  // array the seeding flow would submit for a brand-new repo (AC 1). For an
+  // already-seeded repo the network slice fetches the real tree, and an idempotent
+  // diff collapses this to the empty array (no writes).
+  const freshRepoPlan = buildSeedTreeRequest(diffSeedTree(tree, []));
+  console.log(`POST /git/trees write plan for a fresh repo (${freshRepoPlan.length} entries):`);
+  for (const { mode, type, sha, path } of freshRepoPlan) {
+    console.log(`  ${mode} ${type} ${sha}  ${path}`);
+  }
+
   console.log("Provenance commit would link to B-0193 / B-0343.");
   console.log("gh create + real seeding + commit: follow-up slice.");
 }
