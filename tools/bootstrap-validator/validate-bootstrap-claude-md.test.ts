@@ -5,9 +5,11 @@ import { fileURLToPath } from "node:url";
 import {
   checkClaudeMdExists,
   checkConciseness,
+  checkReferencedPointers,
   checkRulesAutoLoad,
   checkSixStepProcess,
   DEFAULT_MAX_LINES,
+  extractReferencedPointers,
   REQUIRED_STEP_NUMBERS,
   runValidation,
 } from "./validate-bootstrap-claude-md";
@@ -99,6 +101,97 @@ describe("checkConciseness", () => {
   });
 });
 
+describe("extractReferencedPointers", () => {
+  test("extracts concrete .claude/rules/<name>.md references", () => {
+    const md = "See `.claude/rules/backlog-item-start-gate.md` and .claude/rules/never-be-idle.md.";
+    const refs = extractReferencedPointers(md);
+    expect(refs).toContain(".claude/rules/backlog-item-start-gate.md");
+    expect(refs).toContain(".claude/rules/never-be-idle.md");
+  });
+
+  test("extracts repo-relative markdown-link targets", () => {
+    const md = "Read [`AGENTS.md`](AGENTS.md) then [GLOSSARY](docs/GLOSSARY.md).";
+    const refs = extractReferencedPointers(md);
+    expect(refs).toContain("AGENTS.md");
+    expect(refs).toContain("docs/GLOSSARY.md");
+  });
+
+  test("strips a trailing #anchor from link targets", () => {
+    const refs = extractReferencedPointers("See [§11](GOVERNANCE.md#section-11).");
+    expect(refs).toContain("GOVERNANCE.md");
+    expect(refs).not.toContain("GOVERNANCE.md#section-11");
+  });
+
+  test("skips URLs, pure anchors, globs/templates, and home/absolute paths", () => {
+    const md = [
+      "[site](https://example.com)", // URL
+      "[top](#orient)", // pure anchor
+      "`memory/CURRENT-*.md`", // glob (inline, not a link anyway)
+      "[resume](docs/trajectories/*/RESUME.md)", // glob in a link target
+      "[slug](~/.claude/projects/<slug>/memory/x.md)", // home + template
+      "[abs](/etc/passwd)", // absolute
+      "[mail](mailto:x@y.z)", // mailto scheme
+    ].join("\n");
+    const refs = extractReferencedPointers(md);
+    expect(refs).toEqual([]); // nothing concrete + repo-relative survives
+  });
+
+  test("de-duplicates a pointer that appears in both rule-path and link form", () => {
+    const md = "`.claude/rules/x.md` then [x](.claude/rules/x.md)";
+    const refs = extractReferencedPointers(md);
+    expect(refs.filter((r) => r === ".claude/rules/x.md").length).toBe(1);
+  });
+
+  test("extracts bare inline-code repo paths not in a link or rules dir", () => {
+    const md = "Spec: `docs/research/foo.md` §10. Refresh: `tools/setup/common/sync.sh`.";
+    const refs = extractReferencedPointers(md);
+    expect(refs).toContain("docs/research/foo.md");
+    expect(refs).toContain("tools/setup/common/sync.sh");
+  });
+
+  test("inline-code skips bare identifiers and extension-less tokens", () => {
+    const md = "`Result<_, DbspError>` and `git log` and `BACKLOG` are not pointers.";
+    const refs = extractReferencedPointers(md);
+    expect(refs).toEqual([]);
+  });
+
+  test("a multi-line backtick command span does not mis-pair into a false path", () => {
+    // The open backtick on line 1 closes on line 2 (a wrapped command). Single-line
+    // span matching must skip it AND must not let backtick-parity drift swallow the
+    // genuine path on line 3.
+    const md = [
+      "Audit via `bun tools/x.ts",
+      "  --since DATE`. Spec: per",
+      "`docs/research/bar.md` §10.",
+    ].join("\n");
+    const refs = extractReferencedPointers(md);
+    expect(refs).toContain("docs/research/bar.md");
+    expect(refs).not.toContain("bun tools/x.ts");
+  });
+});
+
+describe("checkReferencedPointers", () => {
+  test("pass when every concrete pointer resolves", () => {
+    const refs = ["AGENTS.md", ".claude/rules/x.md"];
+    const r = checkReferencedPointers(refs, () => true);
+    expect(r.status).toBe("pass");
+    expect(r.detail).toContain("2");
+  });
+
+  test("fail (not warn) when any pointer dangles — a critical rule lost in extraction", () => {
+    const refs = ["AGENTS.md", ".claude/rules/gone.md"];
+    const present = new Set(["AGENTS.md"]);
+    const r = checkReferencedPointers(refs, (p) => present.has(p));
+    expect(r.status).toBe("fail");
+    expect(r.detail).toContain(".claude/rules/gone.md");
+    expect(r.detail).not.toContain("AGENTS.md,"); // only the dangling one is listed
+  });
+
+  test("vacuous pass when there are no concrete pointers", () => {
+    expect(checkReferencedPointers([], () => false).status).toBe("pass");
+  });
+});
+
 describe("runValidation against the live repo root", () => {
   // Resolve repo root from this test file's location:
   // tools/bootstrap-validator/<file> -> repo root is two dirs up.
@@ -113,6 +206,9 @@ describe("runValidation against the live repo root", () => {
     expect(report.checks.find((c) => c.id === "claude-md-exists")?.status).toBe("pass");
     expect(report.checks.find((c) => c.id === "six-step-process")?.status).toBe("pass");
     expect(report.checks.find((c) => c.id === "rules-auto-load")?.status).toBe("pass");
+    // B-0354.2 — every concrete pointer the live CLAUDE.md hands a fresh
+    // instance must resolve (no critical rule/doc lost in the extraction).
+    expect(report.checks.find((c) => c.id === "referenced-pointers-resolve")?.status).toBe("pass");
   });
 
   test("fixture sanity: CLAUDE.md and .claude/rules/ are where we expect", () => {

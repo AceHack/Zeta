@@ -79,5 +79,25 @@ present (`## 1.`..`## 6.`); `.claude/rules/` auto-load surface non-empty; concis
 file. Load-bearing invariant is structural (6-step process + rules auto-load surface),
 so conciseness is a SOFT `--max-lines` warn (default 150), not a hard fail.
 
-Remaining: **B-0354.2** (execute minimal validation), **B-0354.3** (document findings
-and file gap children, update parent B-0329).
+**B-0354.2 landed (2026-05-29, otto-cli bg-worker):** executed the validation
+against the live repo + added structural check #4 — **referenced-pointer
+resolution**. `extractReferencedPointers` + `checkReferencedPointers` in
+`tools/bootstrap-validator/validate-bootstrap-claude-md.ts` (+ 8 new tests,
+23 pass). The check resolves every CONCRETE pointer the live CLAUDE.md hands a
+fresh instance (4 named `.claude/rules/<name>.md` rules + 7 orient/ship doc
+links = 11) against the repo root; a dangling pointer is a hard fail (exit 3).
+Globs/templates (`memory/CURRENT-*.md`, `docs/trajectories/*/RESUME.md`,
+`~/.claude/projects/<slug>/...`) are deliberately skipped — flagging them would
+be a false dangling-pointer. Live run: all 11 resolve, exit 0.
+
+**Recalibration finding (assume-decomposition-has-mistakes):** the .2 sketch
+("execute minimal validation in isolated TS context") was already over-delivered
+by .1 — .1's test file ships a `runValidation against the live repo root` block.
+So .2's genuine remaining value was the deeper gate for
+**acceptance criterion #2** ("no critical rules lost in the extraction"): check #3 (rules-auto-load)
+only proves the rule DIRECTORY is non-empty; it passes even when the SPECIFIC
+file CLAUDE.md points at is gone. Check #4 closes that gap — it proves the
+specific pointers survive, which is what "no critical rules lost" actually means.
+
+Remaining: **B-0354.3** (live model-in-the-loop run if desired; document findings;
+file gap children; update parent B-0329).

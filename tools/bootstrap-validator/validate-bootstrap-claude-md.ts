@@ -10,13 +10,20 @@
 //     2. The 6-step bootstrap process is present (## 1. Orient ... ## 6.).
 //     3. The .claude/rules/ auto-load surface exists and is non-empty
 //        (the behavioral-rule discovery channel a fresh instance relies on).
-//     4. CLAUDE.md stays concise (a SOFT length bound; warn, not fail).
+//     4. Every CONCRETE pointer CLAUDE.md hands a fresh instance resolves to
+//        an existing file (named .claude/rules/<name>.md rules + orient/ship
+//        doc links). A dangling pointer IS "a critical rule lost in the
+//        extraction" (B-0354 acceptance criterion #2) — #3 proves the rule
+//        DIRECTORY is non-empty, but #4 proves the SPECIFIC files survive.
+//     5. CLAUDE.md stays concise (a SOFT length bound; warn, not fail).
 //
 //   It does NOT spawn a real Claude session or run the representative-task
-//   protocol from B-0354 — that live execution is B-0354.2 (execute minimal
-//   validation) and B-0354.3 (document findings + file gap children). This
-//   slice ships only the static structural gate, runnable in CI without a
-//   model in the loop.
+//   protocol from B-0354 — the live model-in-the-loop run is left to
+//   B-0354.3 (document findings + file gap children). B-0354.1 shipped the
+//   harness skeleton + checks #1-#3 + #5; B-0354.2 (this slice) adds check
+//   #4 (referenced-pointer resolution — the "no critical rule lost" gate)
+//   and executes the validation against the live repo. The whole harness
+//   stays static and CI-runnable without a model in the loop.
 //
 // RECALIBRATION NOTE (per "assume decomposition has mistakes"):
 //   The B-0354 re-decomposition row sketched check #4 as "CLAUDE.md length
@@ -127,7 +134,103 @@ export function checkRulesAutoLoad(ruleFileNames: string[]): CheckResult {
 }
 
 /**
- * #4 — Conciseness is a SOFT bound (warn, not fail). See RECALIBRATION NOTE.
+ * #4 — Every CONCRETE pointer CLAUDE.md hands a fresh instance must resolve.
+ *
+ * B-0354 acceptance criterion #2 is "no critical rules lost in the extraction
+ * (all behavioral rules accessible via .claude/rules/ auto-load)". Check #3
+ * (rules-auto-load) only proves the rule DIRECTORY is non-empty — it can pass
+ * while the SPECIFIC rule file CLAUDE.md points at is gone. That dangling
+ * pointer IS a critical rule lost in extraction: a fresh instance follows the
+ * pointer (a `.claude/rules/<name>.md` it is told to read, or an orient/ship
+ * markdown link) and hits a 404. This check is the deeper structural gate
+ * #3 cannot give (B-0354.2 — execute minimal validation, no Claude spawn).
+ *
+ * Only CONCRETE references are checked. CLAUDE.md legitimately contains globs
+ * and templates (`memory/CURRENT-*.md`, `docs/trajectories/*\/RESUME.md`,
+ * `~/.claude/projects/<slug>/...`) — those are NOT resolvable exact paths, so
+ * extraction deliberately skips anything with `*`, `<`, `>`, a space, a URL
+ * scheme, or a home/absolute prefix. Flagging a glob would be a false
+ * dangling-pointer; the check stays conservative on purpose.
+ *
+ * Filesystem-free: takes the extracted refs plus a `fileExists` predicate so
+ * the resolution logic is unit-testable without a real repo (the runner
+ * supplies `(rel) => existsSync(join(root, rel))`).
+ */
+export function checkReferencedPointers(
+  refs: string[],
+  fileExists: (relPath: string) => boolean,
+): CheckResult {
+  const dangling = refs.filter((r) => !fileExists(r));
+  return dangling.length === 0
+    ? {
+        id: "referenced-pointers-resolve",
+        status: "pass",
+        detail: `All ${refs.length} concrete CLAUDE.md pointer(s) resolve to existing files`,
+      }
+    : {
+        id: "referenced-pointers-resolve",
+        status: "fail",
+        detail: `Dangling CLAUDE.md pointer(s) (critical rule/doc lost in extraction): ${dangling.join(", ")}`,
+      };
+}
+
+/**
+ * Extract the concrete repo-relative pointers a fresh instance would follow
+ * from CLAUDE.md. Two reference classes:
+ *   (a) `.claude/rules/<kebab>.md` — named behavioral rules (inline-code or
+ *       path form). Kebab-case (`[a-z0-9][a-z0-9-]*`) cannot match a glob or
+ *       template, so `.claude/rules/*` style references never leak in.
+ *   (b) markdown-link targets `](target)` that are repo-relative file paths —
+ *       the orient/ship doc links (AGENTS.md, GOVERNANCE.md, docs/*.md). A
+ *       trailing `#anchor` is stripped; URLs, pure anchors, globs/templates,
+ *       and home/absolute paths are skipped.
+ *   (c) bare inline-code repo paths — a backticked token that contains a `/`
+ *       and a file extension (`docs/research/foo.md`, `tools/setup/x.sh`).
+ *       Spans are single-line only (no embedded newline) so a multi-line
+ *       command span never mis-pairs backticks and leaks document-global
+ *       parity drift into the result. Same URL / glob / template /
+ *       home / absolute skips as (b).
+ * De-duplicated, so a pointer appearing in more than one form is checked once.
+ */
+export function extractReferencedPointers(claudeMd: string): string[] {
+  const refs = new Set<string>();
+
+  // (a) Concrete .claude/rules/<kebab>.md references.
+  for (const m of claudeMd.matchAll(/\.claude\/rules\/[a-z0-9][a-z0-9-]*\.md/g)) {
+    refs.add(m[0]);
+  }
+
+  // (b) Markdown-link targets that look like repo-relative file paths.
+  for (const m of claudeMd.matchAll(/\]\(([^)]+)\)/g)) {
+    let target = (m[1] ?? "").trim();
+    const hash = target.indexOf("#");
+    if (hash >= 0) target = target.slice(0, hash); // strip #anchor; keep path
+    if (target === "") continue; // pure-anchor link (#section)
+    if (/^[a-z][a-z0-9+.-]*:/i.test(target)) continue; // URL scheme (http:, mailto:)
+    if (/[*<>\s]/.test(target)) continue; // glob / template / not a clean token
+    if (target.startsWith("~") || target.startsWith("/")) continue; // home/absolute
+    refs.add(target);
+  }
+
+  // (c) Bare inline-code repo paths: single-line backtick spans only.
+  for (const m of claudeMd.matchAll(/`([^`\n]+)`/g)) {
+    let target = (m[1] ?? "").trim();
+    const hash = target.indexOf("#");
+    if (hash >= 0) target = target.slice(0, hash); // strip #anchor; keep path
+    if (target === "") continue;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(target)) continue; // URL scheme
+    if (/[*<>\s]/.test(target)) continue; // glob / template / command (has spaces)
+    if (target.startsWith("~") || target.startsWith("/")) continue; // home/absolute
+    if (!target.includes("/")) continue; // must be a path, not a bare identifier
+    if (!/\.[a-z0-9]+$/i.test(target)) continue; // must end in a file extension
+    refs.add(target);
+  }
+
+  return [...refs];
+}
+
+/**
+ * #5 — Conciseness is a SOFT bound (warn, not fail). See RECALIBRATION NOTE.
  * Empty / whitespace-only CLAUDE.md is a separate hard concern handled by
  * #1/#2; here we only flag bloat past the soft ceiling.
  */
@@ -173,9 +276,12 @@ export function runValidation(root: string, maxLines: number): ValidationReport 
   const ruleFileNames = existsSync(rulesDir) ? readdirSync(rulesDir) : [];
 
   const checks: CheckResult[] = [checkClaudeMdExists(claudeMdPresent)];
-  // Section + conciseness checks only meaningful when the file exists.
+  // Content-derived checks only meaningful when the file exists.
   if (claudeMdPresent) {
     checks.push(checkSixStepProcess(claudeMd));
+    // #4 — referenced pointers must resolve against the repo root.
+    const refs = extractReferencedPointers(claudeMd);
+    checks.push(checkReferencedPointers(refs, (rel) => existsSync(join(root, rel))));
     checks.push(checkConciseness(claudeMd, maxLines));
   }
   checks.push(checkRulesAutoLoad(ruleFileNames));
