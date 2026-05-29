@@ -169,6 +169,12 @@ interface ClaimOutput {
   worktreePath?: string;
 }
 
+function claimSlugForBacklogId(backlogId: string): string {
+  const numeric = backlogId.replace(/^B-/i, "").toLowerCase();
+  const normalized = numeric.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+  return `backlog-${normalized}`;
+}
+
 function runClaimBootstrap(
   runner: CommandRunner,
   repoRoot: string,
@@ -178,8 +184,7 @@ function runClaimBootstrap(
   dryRun: boolean,
 ): { exitCode: number; output: ClaimOutput; stderr: string } {
   const backlogId = selected.id ?? "";
-  const numeric = backlogId.replace(/^B-/, "");
-  const slug = `backlog-${numeric}`;
+  const slug = claimSlugForBacklogId(backlogId);
   const args = [
     "tools/backlog/claim-worktree-bootstrap.ts",
     "--slug", slug,

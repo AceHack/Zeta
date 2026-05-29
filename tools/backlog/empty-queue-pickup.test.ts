@@ -42,10 +42,24 @@ const PICKUP_DECOMPOSE = JSON.stringify({
   blocked: [],
   activeClaims: [],
 });
+const PICKUP_DOTTED_ID = JSON.stringify({
+  status: "selected",
+  selected: { id: "B-0164.1", priority: "P1", title: "Dotted item", relativePath: "docs/backlog/P1/B-0164.1-dotted.md" },
+  action: "claim-and-implement",
+  reason: "highest-priority open unclaimed item",
+  executionPrompt: "Claim and implement the smallest safe slice of B-0164.1.",
+  blocked: [],
+  activeClaims: [],
+});
 const CLAIM_OK = JSON.stringify({
   branch: "claim/backlog-0300",
   worktreePath: "/tmp/test-worktrees/backlog-0300",
   claimRelativePath: "docs/claims/backlog-0300.md",
+});
+const CLAIM_DOTTED_OK = JSON.stringify({
+  branch: "claim/backlog-0164-1",
+  worktreePath: "/tmp/test-worktrees/backlog-0164-1",
+  claimRelativePath: "docs/claims/backlog-0164-1.md",
 });
 
 describe("orchestrate", () => {
@@ -72,6 +86,19 @@ describe("orchestrate", () => {
     expect(result.worktreePath).toBe("/tmp/test-worktrees/backlog-0300");
     expect(result.decisions).toHaveLength(3);
     expect(result.executionPrompt).toContain("B-0300");
+  });
+
+  test("normalizes dotted backlog IDs into claim-safe slugs", () => {
+    const runner = fakeRunner(new Map([
+      ["gh", { status: 0, stdout: PR_LIST_EMPTY, stderr: "" }],
+      ["autonomous-pickup", { status: 0, stdout: PICKUP_DOTTED_ID, stderr: "" }],
+      ["--slug backlog-0164-1", { status: 0, stdout: CLAIM_DOTTED_OK, stderr: "" }],
+    ]));
+    const result = orchestrate({ repoRoot: "/tmp/repo", maxOpenPrs: 3, worktreeRoot: null, json: true, dryRun: false }, runner);
+    expect(result.status).toBe("claimed");
+    expect(result.backlogId).toBe("B-0164.1");
+    expect(result.branch).toBe("claim/backlog-0164-1");
+    expect(result.worktreePath).toBe("/tmp/test-worktrees/backlog-0164-1");
   });
 
   test("returns no-selection when picker finds nothing", () => {

@@ -170,7 +170,7 @@ function parseArgs(argv: readonly string[], now = new Date()): CliArgs {
 }
 
 function validateSlug(slug: string): void {
-  if (!/^(backlog-[0-9]+|bug-[0-9]+|issue-[A-Za-z0-9._-]+|task-[a-z0-9][a-z0-9-]*)$/.test(slug)) {
+  if (!/^(backlog-[0-9]+(?:-[0-9]+)*|bug-[0-9]+|issue-[A-Za-z0-9._-]+|task-[a-z0-9][a-z0-9-]*)$/.test(slug)) {
     throw new Error(`invalid claim slug: ${slug}`);
   }
 }

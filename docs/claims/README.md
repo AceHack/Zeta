@@ -6,7 +6,7 @@ git-native claim protocol specified in
 
 Each live claim is one file at `docs/claims/<slug>.md`,
 where `<slug>` follows the slug rules in the protocol
-(`backlog-<N>`, `bug-<N>`, `issue-<N>`, or
+(`backlog-<N>[-<child>...]`, `bug-<N>`, `issue-<N>`, or
 `task-<kebab-slug>`).
 
 ## How to use
