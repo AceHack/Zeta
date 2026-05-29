@@ -18,7 +18,9 @@
  */
 
 import { parseArgs } from "node:util";
+import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 type ExitCode = 0 | 1;
@@ -27,6 +29,18 @@ type ManifestSection = "include" | "exclude";
 interface SeedManifest {
   readonly include: readonly string[];
   readonly exclude: readonly string[];
+}
+
+/**
+ * One resolved seed file paired with its git blob SHA — the content-addressable
+ * identity GitHub's git-data/contents API returns verbatim for the same bytes.
+ * A future idempotency slice (AC 3) compares this `{path, sha}` set against the
+ * target repo's tree, so "is the repo already seeded with exactly these files?"
+ * becomes a pure set comparison with no remote-content download.
+ */
+interface SeedTreeEntry {
+  readonly path: string;
+  readonly sha: string;
 }
 
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
@@ -119,6 +133,35 @@ export function resolveSeedFiles(
 }
 
 /**
+ * Git's content-addressable blob identity: `sha1("blob " + byteLength + "\0" + content)`.
+ * Byte-identical to `git hash-object` and to the `sha` GitHub returns in git-tree
+ * and contents API responses. Pure — operates on the given bytes only. Uses the
+ * raw byte length (NOT character count) so multi-byte content hashes correctly.
+ */
+export function gitBlobSha(content: Uint8Array): string {
+  const header = Buffer.from(`blob ${content.length}\0`, "ascii");
+  return createHash("sha1").update(header).update(content).digest("hex");
+}
+
+/**
+ * Read each resolved seed file and pair it with its git blob SHA, sorted by path.
+ * Read-only (one `readFileSync` per resolved file); no mutation, no network, no gh.
+ * The resulting set is the "desired state" an idempotency slice diffs against the
+ * target repo's tree. Output is canonically sorted by path REGARDLESS of input
+ * order — this matches git's own path-sorted tree representation and makes the
+ * idempotency comparison basis stable even if a caller passes an unsorted set
+ * (`resolveSeedFiles` already sorts, but the contract does not depend on it).
+ */
+export function computeSeedTree(resolved: readonly string[], root: string): readonly SeedTreeEntry[] {
+  return resolved
+    .map((path) => ({
+      path,
+      sha: gitBlobSha(readFileSync(join(root, path))),
+    }))
+    .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+}
+
+/**
  * Read-only filesystem scan: collect the concrete files under each rooted
  * include pattern. Scans include patterns directly (never a recursive glob
  * from root) to avoid walking gitignored mirror trees. No mutation, no
@@ -143,11 +186,14 @@ function emitDryRun(manifest: SeedManifest, root: string): void {
 
   const candidates = collectSeedCandidates(root, manifest);
   const resolved = resolveSeedFiles(candidates, manifest);
-  console.log(`Resolved concrete seed files (${resolved.length}):`);
-  for (const file of resolved) console.log(`  • ${file}`);
+  const tree = computeSeedTree(resolved, root);
+  console.log(`Resolved concrete seed files with git blob SHAs (${tree.length}):`);
+  for (const { path, sha } of tree) console.log(`  • ${sha}  ${path}`);
 
+  console.log("These blob SHAs are the idempotency comparison basis (AC 3):");
+  console.log("a follow-up slice diffs them against the target repo's git tree.");
   console.log("Provenance commit would link to B-0193 / B-0343.");
-  console.log("Idempotency + gh create + real seeding: follow-up slice.");
+  console.log("gh create + real seeding + commit: follow-up slice.");
 }
 
 export function main(argv: readonly string[]): ExitCode {
