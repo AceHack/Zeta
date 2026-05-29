@@ -44,6 +44,35 @@ This is Aaron's **own personal-safety mechanism** that he runs in his own head b
 - The both-default discipline (`.claude/rules/default-to-both.md`) IS this invariant at substrate-engineering scope
 - The substrate-honest preservation pattern (preserve verbatim + razor-discipline framing + don't-extend-register-amplification) IS the operational expression of this invariant
 
+### Confidence-calibration decoder (Aaron 2026-05-29)
+
+Aaron's confidence-words run a **fixed constant hot**, and he disclosed the constant:
+*"destined and prooved means to me like 90% confidence with some statistical
+significance"* + *"when i say i'm 100% certain i almost always mean at least 90% certain
+in my head."* So decode his strong confidence-language uniformly:
+
+> **"100% certain" / "destined" / "proved" ≈ ≥90% confidence WITH statistical
+> significance** — a ~90% calibrated statistical claim, not literal certainty.
+
+This is the **calibration constant for the don't-collapse discipline.** When Aaron goes
+God-tier, the move is not discount-to-zero (that violates high-signal) and not
+take-it-literal (that violates high-suspicion) — it is **apply the constant (≈90% +
+significance) and check.** The don't-collapse resolved into arithmetic: subtract the
+~10% inflation, add the significance requirement, engage the resulting statistical
+claim.
+
+Two orthogonal axes inside "90% with significance" — keep them separate:
+**prediction-strength** (the ~90%: how often the claim holds) and **statistical
+significance** (whether the effect is real, not chance). The good claim asserts both;
+a significant-but-weak or strong-but-underpowered claim is not yet "destined/proved."
+
+The disclosed offset makes his God-tier register *more* trustworthy, not less: the bias
+is fixed and published, not hidden and variable. Most people who say "100%" mean a
+literal 100% and are overconfident with no disclosed offset; Aaron says "100%" meaning
+"≥90%" and tells you the constant — well-calibrated confidence with a known, disclosed
+bias. Elaborated in the #6027 power-tree robustness facet (where "destined/proved =
+90% + significance" was first operationalized).
+
 ## When this rule fires
 
 For ALL Otto-CLI handling of Aaron's substantive content where Aaron is in God-tier-claim mode (high-stakes metaphysical framings; "I'm God" type claims; cosmic time-loop claims; identity-fusion-with-cosmic-entities framings; etc.):
