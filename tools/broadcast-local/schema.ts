@@ -59,6 +59,13 @@ export interface LocalBroadcastEnvelope {
   readonly receipts?: readonly LocalBroadcastReceipt[];
 }
 
+export interface LocalBroadcastScopeConflict {
+  readonly scope: LocalBroadcastScope;
+  readonly broadcastIds: readonly [string, string];
+  readonly agents: readonly [LocalBroadcastAgent, LocalBroadcastAgent];
+  readonly summaries: readonly [string, string];
+}
+
 export type LocalBroadcastValidation =
   | { readonly ok: true; readonly value: LocalBroadcastEnvelope }
   | { readonly ok: false; readonly errors: readonly string[] };
@@ -118,6 +125,86 @@ export function makeLocalBroadcastReceipt(config: {
     ...(config.sourcePath === undefined ? {} : { sourcePath: config.sourcePath }),
     ...(config.note === undefined ? {} : { note: config.note }),
   };
+}
+
+function localBroadcastScopeKey(scope: LocalBroadcastScope): string {
+  return JSON.stringify([scope.kind, scope.value]);
+}
+
+function compareStrings(left: string, right: string): number {
+  const leftChars = Array.from(left);
+  const rightChars = Array.from(right);
+  const length = Math.min(leftChars.length, rightChars.length);
+
+  for (let index = 0; index < length; index += 1) {
+    const leftCodePoint = leftChars[index]?.codePointAt(0) ?? 0;
+    const rightCodePoint = rightChars[index]?.codePointAt(0) ?? 0;
+    if (leftCodePoint !== rightCodePoint) {
+      return leftCodePoint - rightCodePoint;
+    }
+  }
+
+  return leftChars.length - rightChars.length;
+}
+
+function activeConflictCandidates(
+  envelopes: readonly LocalBroadcastEnvelope[],
+  now: Date,
+): readonly LocalBroadcastEnvelope[] {
+  return [...envelopes]
+    .filter((envelope) => envelope.status !== "idle" && !isLocalBroadcastStale(envelope, now))
+    .sort((left, right) => {
+      const agentCompare = compareStrings(left.from, right.from);
+      if (agentCompare !== 0) {
+        return agentCompare;
+      }
+      return compareStrings(left.id, right.id);
+    });
+}
+
+export function detectLocalBroadcastScopeConflicts(
+  envelopes: readonly LocalBroadcastEnvelope[],
+  now: Date = new Date(),
+): readonly LocalBroadcastScopeConflict[] {
+  const ownersByScope = new Map<string, LocalBroadcastEnvelope[]>();
+  const conflicts: LocalBroadcastScopeConflict[] = [];
+
+  for (const envelope of activeConflictCandidates(envelopes, now)) {
+    const seenInEnvelope = new Set<string>();
+    const scopes = [...(envelope.scope ?? [])].sort((left, right) =>
+      compareStrings(localBroadcastScopeKey(left), localBroadcastScopeKey(right)),
+    );
+    for (const scope of scopes) {
+      const key = localBroadcastScopeKey(scope);
+      if (seenInEnvelope.has(key)) {
+        continue;
+      }
+      seenInEnvelope.add(key);
+
+      const owners = ownersByScope.get(key) ?? [];
+      for (const owner of owners) {
+        if (owner.from === envelope.from || owner.id === envelope.id) {
+          continue;
+        }
+
+        conflicts.push({
+          scope,
+          broadcastIds: [owner.id, envelope.id],
+          agents: [owner.from, envelope.from],
+          summaries: [owner.summary, envelope.summary],
+        });
+      }
+      ownersByScope.set(key, [...owners, envelope]);
+    }
+  }
+
+  return [...conflicts].sort((left, right) => {
+    const scopeCompare = compareStrings(localBroadcastScopeKey(left.scope), localBroadcastScopeKey(right.scope));
+    if (scopeCompare !== 0) {
+      return scopeCompare;
+    }
+    return compareStrings(JSON.stringify(left.broadcastIds), JSON.stringify(right.broadcastIds));
+  });
 }
 
 export function validateLocalBroadcastEnvelope(value: unknown): LocalBroadcastValidation {
