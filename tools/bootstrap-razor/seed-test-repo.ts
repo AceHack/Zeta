@@ -117,6 +117,34 @@ export interface GitCommitRequest {
   readonly parents: readonly string[];
 }
 
+/**
+ * The git-refs API call that points the seed branch at the new commit — the last
+ * git-data write step after `buildSeedCommitRequest`, named by that builder's doc
+ * comment ("→ `PATCH /git/refs/heads/<branch>` to fast-forward the ref"). GitHub
+ * splits this across two endpoints with DIFFERENT shapes (verified against
+ * docs.github.com/en/rest/git/refs, API version 2022-11-28):
+ *   - branch does NOT exist yet → `POST /repos/{owner}/{repo}/git/refs` with a body
+ *     naming the FULL ref `refs/heads/<branch>` plus the commit `sha`.
+ *   - branch already exists      → `PATCH /repos/{owner}/{repo}/git/refs/heads/<branch>`
+ *     with `{ sha, force }`. The `git/refs/` path already carries the `refs/` prefix,
+ *     so the path suffix is the SHORT `heads/<branch>` form, NOT `refs/heads/<branch>`.
+ * The two `path` values therefore encode the FULL-vs-SHORT distinction GitHub's two
+ * endpoints require; getting it wrong yields a 404 (PATCH `refs/heads/heads/...`) or a
+ * 422 (POST with a short ref). A discriminated union on `method` lets the network slice
+ * dispatch with no further branching: POST the create body, or PATCH the update body.
+ */
+export type GitRefUpdateRequest =
+  | {
+      readonly method: "POST";
+      readonly path: string;
+      readonly body: { readonly ref: string; readonly sha: string };
+    }
+  | {
+      readonly method: "PATCH";
+      readonly path: string;
+      readonly body: { readonly sha: string; readonly force: boolean };
+    };
+
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
 const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
 // Repo root = two levels up from tools/bootstrap-razor/.
@@ -394,6 +422,38 @@ export function buildSeedCommitRequest(
     tree: treeSha,
     parents: parentSha === null ? [] : [parentSha],
   };
+}
+
+/**
+ * Pure builder for the seed's git-refs API call — the final write-chain link, taking
+ * the commit SHA `buildSeedCommitRequest`'s body produced once `POST /git/commits`
+ * returns it, and pointing the seed branch at it. `refExists` selects the endpoint:
+ * a brand-new repo whose seed branch does not exist yet CREATES it (`POST`); an
+ * existing branch is fast-forwarded (`PATCH`). This is the same fresh-vs-existing fork
+ * `buildSeedCommitRequest` makes on `parentSha === null` — kept pure so both paths are
+ * unit-tested before any repo mutation exists.
+ *
+ * `force` is always false: the seed only ever fast-forwards. A non-fast-forward means
+ * the branch diverged from the tree the diff was computed against, so the PATCH must
+ * fail loudly (HTTP 422) rather than clobber peer commits — the same non-coercion
+ * discipline as `git push --force-with-lease`. Pure: operates on its arguments only;
+ * no gh, no network, no filesystem. The network slice that follows is the whole flow
+ * end-to-end: `POST /git/blobs` (each create/update file) → `POST /git/trees`
+ * (`buildSeedTreeRequest` with `base_tree`) → `POST /git/commits`
+ * (`buildSeedCommitRequest`) → this request → done.
+ */
+export function buildSeedRefUpdateRequest(
+  owner: string,
+  repo: string,
+  branch: string,
+  commitSha: string,
+  refExists: boolean,
+): GitRefUpdateRequest {
+  const base = `repos/${owner}/${repo}/git/refs`;
+  if (!refExists) {
+    return { method: "POST", path: base, body: { ref: `refs/heads/${branch}`, sha: commitSha } };
+  }
+  return { method: "PATCH", path: `${base}/heads/${branch}`, body: { sha: commitSha, force: false } };
 }
 
 /**

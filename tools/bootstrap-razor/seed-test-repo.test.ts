@@ -5,6 +5,7 @@ import { join } from "node:path";
 
 import {
   buildSeedCommitRequest,
+  buildSeedRefUpdateRequest,
   buildSeedTreeRequest,
   computeSeedTree,
   diffSeedTree,
@@ -332,5 +333,55 @@ describe("buildSeedCommitRequest", () => {
 
   test("carries the provenance message for the given file count", () => {
     expect(buildSeedCommitRequest("t", "p", 1).message).toBe(seedCommitMessage(1));
+  });
+});
+
+describe("buildSeedRefUpdateRequest", () => {
+  test("new ref → POST /git/refs with FULL refs/heads/<branch> body", () => {
+    expect(
+      buildSeedRefUpdateRequest("LFG", "seed-repo", "main", "deadbeef", false),
+    ).toEqual({
+      method: "POST",
+      path: "repos/LFG/seed-repo/git/refs",
+      body: { ref: "refs/heads/main", sha: "deadbeef" },
+    });
+  });
+
+  test("existing ref → PATCH with SHORT heads/<branch> suffix and force:false", () => {
+    expect(
+      buildSeedRefUpdateRequest("LFG", "seed-repo", "main", "deadbeef", true),
+    ).toEqual({
+      method: "PATCH",
+      path: "repos/LFG/seed-repo/git/refs/heads/main",
+      body: { sha: "deadbeef", force: false },
+    });
+  });
+
+  test("PATCH path uses SHORT heads/ form, never the double refs/heads/heads/ 404 trap", () => {
+    // The git/refs/ path already carries the refs/ prefix; the suffix must be the
+    // short `heads/<branch>` form. A `refs/heads/<branch>` suffix yields a 404.
+    const patch = buildSeedRefUpdateRequest("LFG", "r", "feat/x", "sha", true);
+    expect(patch.path).toBe("repos/LFG/r/git/refs/heads/feat/x");
+    expect(patch.path).not.toContain("refs/heads/heads/");
+  });
+
+  test("POST body uses FULL refs/heads/ form (short form yields a 422)", () => {
+    const post = buildSeedRefUpdateRequest("LFG", "r", "feat/x", "sha", false);
+    if (post.method !== "POST") throw new Error("expected POST for a new ref");
+    expect(post.body.ref).toBe("refs/heads/feat/x");
+  });
+
+  test("force is always false — seed only fast-forwards, never clobbers", () => {
+    const patch = buildSeedRefUpdateRequest("o", "r", "main", "s", true);
+    if (patch.method !== "PATCH") throw new Error("expected PATCH for an existing ref");
+    expect(patch.body.force).toBe(false);
+  });
+
+  test("commit SHA flows verbatim into both endpoint shapes", () => {
+    const sha = "aa218f56b14c9653891f9e74264a383fa43fefbd";
+    const created = buildSeedRefUpdateRequest("o", "r", "main", sha, false);
+    const updated = buildSeedRefUpdateRequest("o", "r", "main", sha, true);
+    expect(created.body.sha).toBe(sha);
+    expect(updated.body.sha).toBe(sha);
   });
 });
