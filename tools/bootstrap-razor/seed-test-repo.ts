@@ -1,8 +1,20 @@
 #!/usr/bin/env bun
 /**
- * B-0343 smallest safe slice (re-decomposed per "assume decomposition mistakes" rule).
- * Bounded step: manifest reader + --dry-run only. No gh, no create, no repo mutation.
- * Follow-up slices will add gh api + idempotency + commit logic.
+ * B-0343 bounded slice 2 (re-decomposed per "assume decomposition mistakes" rule).
+ * Builds on the merged manifest-reader + --dry-run stub (PRs #2716/#2722/#2723).
+ *
+ * This slice adds glob RESOLUTION: turning the manifest's include/exclude
+ * patterns into the concrete file set that would be seeded. Still no gh,
+ * no create, no repo mutation — only a read-only filesystem scan of the
+ * include-pattern subtrees. This is the prerequisite computation for
+ * AC 1 ("seed exactly the files listed") and AC 3 (idempotency = compare
+ * the resolved set against the target repo). Follow-up slices will add
+ * gh api + idempotency + commit logic.
+ *
+ * Scan discipline: candidate collection scans each ROOTED include pattern
+ * directly (e.g. `tools/tla/specs/*.tla`), never a recursive glob from the
+ * repo root, so the gitignored `references/upstreams/` mirror is never
+ * walked (.claude/rules/references-upstreams-not-our-code-search-excludes.md).
  */
 
 import { parseArgs } from "node:util";
@@ -19,6 +31,8 @@ interface SeedManifest {
 
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
 const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
+// Repo root = two levels up from tools/bootstrap-razor/.
+const REPO_ROOT = fileURLToPath(new URL("../..", import.meta.url));
 
 function usage(): string {
   return [
@@ -78,12 +92,60 @@ function readManifest(path: string): SeedManifest | string {
   return manifest;
 }
 
-function emitDryRun(manifest: SeedManifest): void {
+/**
+ * True when `path` matches any of `patterns`. Uses the same Bun.Glob engine
+ * as candidate collection (`scanSync`) so resolution and scanning agree on
+ * `**`/`*` semantics. Pure — operates on strings only, touches no filesystem.
+ */
+function matchesAny(path: string, patterns: readonly string[]): boolean {
+  return patterns.some((pattern) => new Bun.Glob(pattern).match(path));
+}
+
+/**
+ * Pure resolver: from a candidate file list, keep paths that match an include
+ * pattern AND match no exclude pattern (exclude wins). Independently testable
+ * without a filesystem. The honest manifest semantics are include ∧ ¬exclude;
+ * the "except bootstrap-razor/ itself" prose note in the manifest is NOT
+ * encoded here (the include list does not name those files, so they are
+ * neither included nor a false-exclude here).
+ */
+export function resolveSeedFiles(
+  candidates: readonly string[],
+  manifest: SeedManifest,
+): readonly string[] {
+  return candidates
+    .filter((path) => matchesAny(path, manifest.include) && !matchesAny(path, manifest.exclude))
+    .sort();
+}
+
+/**
+ * Read-only filesystem scan: collect the concrete files under each rooted
+ * include pattern. Scans include patterns directly (never a recursive glob
+ * from root) to avoid walking gitignored mirror trees. No mutation, no
+ * network, no gh.
+ */
+function collectSeedCandidates(root: string, manifest: SeedManifest): readonly string[] {
+  const found = new Set<string>();
+  for (const pattern of manifest.include) {
+    for (const file of new Bun.Glob(pattern).scanSync({ cwd: root, onlyFiles: true, dot: true })) {
+      found.add(file);
+    }
+  }
+  return [...found];
+}
+
+function emitDryRun(manifest: SeedManifest, root: string): void {
   console.log(`[B-0343] DRY-RUN: read ${MANIFEST_DISPLAY_PATH}`);
-  console.log(`Would seed exactly these manifest include entries (${manifest.include.length}):`);
-  for (const item of manifest.include) console.log(`  - ${item}`);
-  console.log(`Would exclude these manifest entries (${manifest.exclude.length}):`);
+  console.log(`Manifest include patterns (${manifest.include.length}):`);
+  for (const item of manifest.include) console.log(`  + ${item}`);
+  console.log(`Manifest exclude patterns (${manifest.exclude.length}):`);
   for (const item of manifest.exclude) console.log(`  - ${item}`);
+
+  const candidates = collectSeedCandidates(root, manifest);
+  const resolved = resolveSeedFiles(candidates, manifest);
+  console.log(`Resolved concrete seed files (${resolved.length}):`);
+  for (const file of resolved) console.log(`  • ${file}`);
+
   console.log("Provenance commit would link to B-0193 / B-0343.");
   console.log("Idempotency + gh create + real seeding: follow-up slice.");
 }
@@ -109,7 +171,7 @@ export function main(argv: readonly string[]): ExitCode {
       process.stderr.write(`${manifest}\n`);
       return 1;
     }
-    emitDryRun(manifest);
+    emitDryRun(manifest, REPO_ROOT);
     return 0;
   }
 
