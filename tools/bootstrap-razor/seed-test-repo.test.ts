@@ -3,7 +3,7 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { computeSeedTree, gitBlobSha, parseSeedManifest, resolveSeedFiles } from "./seed-test-repo.ts";
+import { computeSeedTree, diffSeedTree, gitBlobSha, parseSeedManifest, resolveSeedFiles } from "./seed-test-repo.ts";
 
 describe("parseSeedManifest", () => {
   test("extracts include and exclude entries from fenced yaml", () => {
@@ -115,5 +115,66 @@ describe("computeSeedTree", () => {
 
   test("empty resolved set produces empty tree", () => {
     expect(computeSeedTree([], tmpdir())).toEqual([]);
+  });
+});
+
+describe("diffSeedTree", () => {
+  const a = { path: "a.txt", sha: "aaa" };
+  const b = { path: "b.txt", sha: "bbb" };
+  const c = { path: "c.txt", sha: "ccc" };
+
+  test("empty target → every desired path is a create, not idempotent", () => {
+    expect(diffSeedTree([b, a], [])).toEqual({
+      entries: [
+        { path: "a.txt", action: "create", desiredSha: "aaa", existingSha: null },
+        { path: "b.txt", action: "create", desiredSha: "bbb", existingSha: null },
+      ],
+      extraneous: [],
+      idempotent: false,
+    });
+  });
+
+  test("identical target → all unchanged and idempotent", () => {
+    expect(diffSeedTree([a, b], [a, b])).toEqual({
+      entries: [
+        { path: "a.txt", action: "unchanged", desiredSha: "aaa", existingSha: "aaa" },
+        { path: "b.txt", action: "unchanged", desiredSha: "bbb", existingSha: "bbb" },
+      ],
+      extraneous: [],
+      idempotent: true,
+    });
+  });
+
+  test("differing blob SHA → update, not idempotent", () => {
+    const diff = diffSeedTree([a], [{ path: "a.txt", sha: "OLD" }]);
+    expect(diff.entries).toEqual([
+      { path: "a.txt", action: "update", desiredSha: "aaa", existingSha: "OLD" },
+    ]);
+    expect(diff.idempotent).toBe(false);
+  });
+
+  test("extraneous target file is reported but does NOT break idempotency", () => {
+    // Target has the desired file (matching) plus an extra file (e.g. auto-README).
+    const diff = diffSeedTree([a], [a, c]);
+    expect(diff.entries).toEqual([
+      { path: "a.txt", action: "unchanged", desiredSha: "aaa", existingSha: "aaa" },
+    ]);
+    expect(diff.extraneous).toEqual([c]);
+    expect(diff.idempotent).toBe(true);
+  });
+
+  test("mixed create/update/unchanged → not idempotent, entries path-sorted", () => {
+    // desired: a (matches), b (differs → update), c (absent → create); given unsorted.
+    const diff = diffSeedTree([c, b, a], [a, { path: "b.txt", sha: "OLD" }]);
+    expect(diff.entries).toEqual([
+      { path: "a.txt", action: "unchanged", desiredSha: "aaa", existingSha: "aaa" },
+      { path: "b.txt", action: "update", desiredSha: "bbb", existingSha: "OLD" },
+      { path: "c.txt", action: "create", desiredSha: "ccc", existingSha: null },
+    ]);
+    expect(diff.idempotent).toBe(false);
+  });
+
+  test("empty desired and empty target → vacuously idempotent", () => {
+    expect(diffSeedTree([], [])).toEqual({ entries: [], extraneous: [], idempotent: true });
   });
 });

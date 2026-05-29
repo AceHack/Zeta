@@ -38,9 +38,34 @@ interface SeedManifest {
  * target repo's tree, so "is the repo already seeded with exactly these files?"
  * becomes a pure set comparison with no remote-content download.
  */
-interface SeedTreeEntry {
+export interface SeedTreeEntry {
   readonly path: string;
   readonly sha: string;
+}
+
+/** One desired seed path classified against the target repo's current tree. */
+type SeedFileAction = "unchanged" | "create" | "update";
+
+interface SeedDiffEntry {
+  readonly path: string;
+  readonly action: SeedFileAction;
+  readonly desiredSha: string;
+  /** The target's current blob SHA; null only when `action === "create"`. */
+  readonly existingSha: string | null;
+}
+
+/**
+ * Idempotency comparison result (AC 3). `entries` classifies every DESIRED path;
+ * `extraneous` lists files present in the target tree but absent from the desired
+ * set. Extraneous files do NOT break idempotency: seeding only creates/updates the
+ * manifest's files and never deletes (a freshly-created repo's auto-README is
+ * reported, not clobbered). `idempotent` is therefore true exactly when no path
+ * needs a create or an update.
+ */
+interface SeedTreeDiff {
+  readonly entries: readonly SeedDiffEntry[];
+  readonly extraneous: readonly SeedTreeEntry[];
+  readonly idempotent: boolean;
 }
 
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
@@ -159,6 +184,49 @@ export function computeSeedTree(resolved: readonly string[], root: string): read
       sha: gitBlobSha(readFileSync(join(root, path))),
     }))
     .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+}
+
+/**
+ * Pure idempotency diff (AC 3): classify each DESIRED `{path, sha}` against the
+ * target repo's EXISTING `{path, sha}` tree. Per desired path:
+ *   - absent from existing            → "create"
+ *   - present, same blob SHA          → "unchanged"
+ *   - present, different blob SHA     → "update"
+ * Files present in `existing` but absent from `desired` are reported as
+ * `extraneous` (never deleted — seeding is add/update only). The repo is
+ * idempotent (already seeded with exactly these bytes) when no path needs a
+ * create or update. Pure — operates on the two SHA sets only; no filesystem,
+ * no network, no gh. This is the comparison `computeSeedTree`'s slice named as
+ * its handoff; a follow-up slice fetches the target tree via gh and feeds it in.
+ */
+export function diffSeedTree(
+  desired: readonly SeedTreeEntry[],
+  existing: readonly SeedTreeEntry[],
+): SeedTreeDiff {
+  const byPath = new Map(existing.map((entry) => [entry.path, entry.sha]));
+  const desiredPaths = new Set(desired.map((entry) => entry.path));
+  const byPathSort = (a: { path: string }, b: { path: string }): number =>
+    a.path < b.path ? -1 : a.path > b.path ? 1 : 0;
+
+  const entries = desired
+    .map((entry): SeedDiffEntry => {
+      const existingSha = byPath.get(entry.path);
+      if (existingSha === undefined) {
+        return { path: entry.path, action: "create", desiredSha: entry.sha, existingSha: null };
+      }
+      return {
+        path: entry.path,
+        action: existingSha === entry.sha ? "unchanged" : "update",
+        desiredSha: entry.sha,
+        existingSha,
+      };
+    })
+    .sort(byPathSort);
+
+  const extraneous = existing.filter((entry) => !desiredPaths.has(entry.path)).sort(byPathSort);
+  const idempotent = entries.every((entry) => entry.action === "unchanged");
+
+  return { entries, extraneous, idempotent };
 }
 
 /**
