@@ -231,7 +231,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0366](backlog/P1/B-0366-fpga-toffoli-zset-reversible-heat-measurement.md)** FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation
 - [x] **[B-0366.1](backlog/P1/B-0366.1-toffoli-gate-fsharp-type-model-zset-encoding.md)** F# Toffoli gate type model — Z-set assert/retract encoding with reversibility properties
 - [ ] **[B-0366.2](backlog/P1/B-0366.2-toffoli-circuit-zset-join-formal-model.md)** Toffoli circuit for Z-set join — formal gate-network model
-- [ ] **[B-0366.2.1](backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map-formal-model.md)** ToffoliCircuit type + wire-map formal model (smallest slice of B-0366.2)
+- [x] **[B-0366.2.1](backlog/P1/B-0366.2.1-toffoli-circuit-type-wire-map-formal-model.md)** ToffoliCircuit type + wire-map formal model (smallest slice of B-0366.2)
 - [ ] **[B-0366.2.2](backlog/P1/B-0366.2.2-join-weight-multiplication-encoding.md)** Z-set join weight multiplication as reversible Toffoli encoding (slice of B-0366.2)
 - [ ] **[B-0366.2.3](backlog/P1/B-0366.2.3-reversibility-laws-fscheck-properties.md)** Reversibility laws + FsCheck properties for Toffoli Z-set join model (final slice of B-0366.2)
 - [ ] **[B-0366.3](backlog/P1/B-0366.3-fpga-vhdl-toffoli-synthesis-design.md)** FPGA synthesis design — VHDL/Verilog Toffoli gate network for Z-set join

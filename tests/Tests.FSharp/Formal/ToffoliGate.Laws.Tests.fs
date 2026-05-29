@@ -110,3 +110,34 @@ let ``Landauer claim: A and B wires are always preserved unchanged`` () =
         let out = ToffoliGate.apply w
         out.A |> should equal w.A
         out.B |> should equal w.B
+
+
+// ── ToffoliCircuit wire-map model laws (B-0366.2.1) ─────────────────────
+
+[<Fact>]
+let ``Empty Toffoli circuit satisfies wire-map invariants`` () =
+    ToffoliGate.emptyCircuit.Gates |> List.isEmpty |> should equal true
+    ToffoliGate.emptyCircuit.Wires |> Map.isEmpty |> should equal true
+    ToffoliGate.emptyCircuit.Ancilla |> should equal 0
+
+
+[<Fact>]
+let ``Toffoli circuit records gate steps by wire id without erasing wire state`` () =
+    let step = { ControlA = 0; ControlB = 1; Target = 2 }
+    let wires =
+        [ 0, One
+          1, One
+          2, Zero ]
+        |> Map.ofList
+
+    let circuit = {
+        Gates = [ step ]
+        Wires = wires
+        Ancilla = 1
+    }
+
+    circuit.Gates |> should equal [ step ]
+    circuit.Wires.[step.ControlA] |> should equal One
+    circuit.Wires.[step.ControlB] |> should equal One
+    circuit.Wires.[step.Target] |> should equal Zero
+    circuit.Ancilla |> should equal 1
