@@ -143,6 +143,7 @@ export async function createWorkItem(
       supervisorSignals: [],
       discussionAnchors: [],
       decisionRecords: [],
+      qualityGateEvaluations: [],
       workScheduleBlocks: [],
       auditEvents: [
         {
@@ -310,6 +311,7 @@ function createEmptyCommandEffects(): CommandEffects {
     supervisorSignals: [],
     discussionAnchors: [],
     decisionRecords: [],
+    qualityGateEvaluations: [],
     workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],

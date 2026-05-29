@@ -8,6 +8,7 @@ import type {
   Initiative,
   OutboxEvent,
   Project,
+  QualityGateEvaluation,
   SupervisorSignal,
   WorkAnchorTarget,
   WorkItem,
@@ -28,6 +29,7 @@ export type CommandEffects = {
   supervisorSignals: readonly SupervisorSignal[];
   discussionAnchors: readonly DiscussionAnchor[];
   decisionRecords: readonly DecisionRecord[];
+  qualityGateEvaluations: readonly QualityGateEvaluation[];
   workScheduleBlocks: readonly WorkScheduleBlock[];
   auditEvents: readonly AuditEvent[];
   outboxEvents: readonly OutboxEvent[];

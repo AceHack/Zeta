@@ -2,6 +2,8 @@ import {
   DiscussionAnchorType,
   InitiativeStatus,
   ProjectStatus,
+  QualityGateKind,
+  QualityGateOutcome,
   ScheduleBlockState,
   ScheduleBlockType,
   HatAssignmentAuthorityState,
@@ -19,6 +21,7 @@ export const CockroachCoreStateMigrationName = {
   WorkScheduleBlockKernelV7: "0007_agentic_org_work_schedule_block_kernel",
   HatAssignmentAuthorityProjectionV8: "0008_agentic_org_hat_assignment_authority_projection",
   ReactionPlanExecutionLifecycleV9: "0009_agentic_org_reaction_plan_execution_lifecycle",
+  QualityGateEvaluationKernelV10: "0010_agentic_org_quality_gate_evaluation_kernel",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -32,6 +35,7 @@ export const CockroachTableName = {
   WorkItemStateHistory: "agentic_org_work_item_state_history",
   DiscussionAnchors: "agentic_org_discussion_anchors",
   DecisionRecords: "agentic_org_decision_records",
+  QualityGateEvaluations: "agentic_org_quality_gate_evaluations",
   WorkScheduleBlocks: "agentic_org_work_schedule_blocks",
   HatAssignmentAuthorities: "agentic_org_hat_assignment_authorities",
   SupervisorSignals: "agentic_org_supervisor_signals",
@@ -54,6 +58,8 @@ export const CockroachCheckConstraintName = {
   WorkItemStateHistorySequencePositive: "agentic_org_work_item_state_history_sequence_positive_check",
   WorkItemStateHistoryToState: "agentic_org_work_item_state_history_to_state_check",
   DiscussionAnchorType: "agentic_org_discussion_anchors_type_check",
+  QualityGateKind: "agentic_org_quality_gate_evaluations_kind_check",
+  QualityGateOutcome: "agentic_org_quality_gate_evaluations_outcome_check",
   ScheduleBlockType: "agentic_org_work_schedule_blocks_type_check",
   ScheduleBlockState: "agentic_org_work_schedule_blocks_state_check",
   HatAssignmentAuthorityState: "agentic_org_hat_assignment_authorities_state_check",
@@ -117,6 +123,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachWorkScheduleBlockKernelMigration(),
     createCockroachHatAssignmentAuthorityProjectionMigration(),
     createCockroachReactionPlanExecutionLifecycleMigration(),
+    createCockroachQualityGateEvaluationKernelMigration(),
   ];
 }
 
@@ -159,6 +166,13 @@ export function createCockroachReactionPlanExecutionLifecycleMigration(): Cockro
   return {
     name: CockroachCoreStateMigrationName.ReactionPlanExecutionLifecycleV9,
     sql: createReactionPlanExecutionLifecycleMigrationSql(),
+  };
+}
+
+export function createCockroachQualityGateEvaluationKernelMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.QualityGateEvaluationKernelV10,
+    sql: createQualityGateEvaluationsTableSql(),
   };
 }
 
@@ -347,6 +361,31 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkScheduleBlocks} (
   scheduled_by_agent_id STRING NOT NULL,
   scheduled_by_hat_assignment_id STRING NOT NULL,
   scheduled_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);`.trim();
+}
+
+function createQualityGateEvaluationsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.QualityGateEvaluations} (
+  quality_gate_evaluation_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING,
+  work_item_id STRING NOT NULL,
+  discussion_anchor_id STRING NOT NULL,
+  gate_kind STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.QualityGateKind} CHECK (gate_kind IN (${createSqlStringList(Object.values(QualityGateKind))})),
+  outcome STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.QualityGateOutcome} CHECK (outcome IN (${createSqlStringList(Object.values(QualityGateOutcome))})),
+  summary STRING NOT NULL,
+  evaluated_artifact_ids JSONB NOT NULL,
+  business_rule_results JSONB NOT NULL,
+  evaluated_by_agent_id STRING NOT NULL,
+  evaluated_by_hat_assignment_id STRING NOT NULL,
+  evaluated_at TIMESTAMPTZ NOT NULL,
   updated_at TIMESTAMPTZ NOT NULL,
   version INT8 NOT NULL,
   correlation_id STRING NOT NULL,

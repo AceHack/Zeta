@@ -150,6 +150,7 @@ export async function createDiscussionAnchor(
       supervisorSignals: [],
       discussionAnchors: [discussionAnchor],
       decisionRecords: [],
+      qualityGateEvaluations: [],
       workScheduleBlocks: [],
       auditEvents: [
         {
@@ -301,6 +302,7 @@ function createEmptyCommandEffects(): CommandEffects {
     supervisorSignals: [],
     discussionAnchors: [],
     decisionRecords: [],
+    qualityGateEvaluations: [],
     workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],

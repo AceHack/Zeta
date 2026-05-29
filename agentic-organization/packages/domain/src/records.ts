@@ -217,6 +217,83 @@ export type DecisionRecord = {
   };
 };
 
+export const QualityGateKind = {
+  ArchitectureApproval: "architecture_approval",
+  BrdApproval: "brd_approval",
+  CustomerRfpReview: "customer_rfp_review",
+  FinalBusinessValidation: "final_business_validation",
+  ImplementationReview: "implementation_review",
+  ReleaseReadiness: "release_readiness",
+  RuntimeValidation: "runtime_validation",
+} as const;
+
+export type QualityGateKind = (typeof QualityGateKind)[keyof typeof QualityGateKind];
+
+export const QualityGateOutcome = {
+  Approved: "approved",
+  ChangesRequested: "changes_requested",
+  Rejected: "rejected",
+  Waived: "waived",
+} as const;
+
+export type QualityGateOutcome = (typeof QualityGateOutcome)[keyof typeof QualityGateOutcome];
+
+export const BusinessRuleEvaluationStatus = {
+  ChangedByDecision: "changed_by_decision",
+  NotApplicable: "not_applicable",
+  NotSatisfied: "not_satisfied",
+  PartiallySatisfied: "partially_satisfied",
+  Satisfied: "satisfied",
+} as const;
+
+export type BusinessRuleEvaluationStatus =
+  (typeof BusinessRuleEvaluationStatus)[keyof typeof BusinessRuleEvaluationStatus];
+
+export type BusinessRuleEvaluation = {
+  ruleId: string;
+  status: BusinessRuleEvaluationStatus;
+  evidenceArtifactIds: readonly string[];
+  notes: string;
+};
+
+export type QualityGateEvaluation = {
+  qualityGateEvaluationId: string;
+  organizationId: string;
+  projectId: string;
+  teamId?: string;
+  workItemId: string;
+  discussionAnchorId: string;
+  gateKind: QualityGateKind;
+  outcome: QualityGateOutcome;
+  summary: string;
+  evaluatedArtifactIds: readonly string[];
+  businessRuleResults: readonly BusinessRuleEvaluation[];
+  evaluatedAt: string;
+  evaluatedBy: AgenticActor;
+  metadata: {
+    updatedAt: string;
+    version: number;
+    correlationId: string;
+    causationId: string;
+    traceId: string;
+  };
+};
+
+export function isQualityGateKind(value: unknown): value is QualityGateKind {
+  return typeof value === "string" && Object.values(QualityGateKind).includes(value as QualityGateKind);
+}
+
+export function isQualityGateOutcome(value: unknown): value is QualityGateOutcome {
+  return typeof value === "string" && Object.values(QualityGateOutcome).includes(value as QualityGateOutcome);
+}
+
+export function isBusinessRuleEvaluationStatus(value: unknown): value is BusinessRuleEvaluationStatus {
+  return (
+    typeof value === "string" &&
+    Object.values(BusinessRuleEvaluationStatus).includes(value as BusinessRuleEvaluationStatus)
+  );
+}
+
 export const ScheduleBlockType = {
   FreeTime: "free_time",
   Meeting: "meeting",

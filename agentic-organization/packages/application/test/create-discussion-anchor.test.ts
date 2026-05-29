@@ -127,6 +127,7 @@ describe("create discussion anchor handler", () => {
       supervisorSignals: [],
       discussionAnchors: [],
       decisionRecords: [],
+      qualityGateEvaluations: [],
       workScheduleBlocks: [],
       auditEvents: [],
       outboxEvents: [],

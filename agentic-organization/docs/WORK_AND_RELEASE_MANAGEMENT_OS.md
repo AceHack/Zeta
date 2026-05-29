@@ -151,6 +151,32 @@ raw_intake
 
 Requirement maturity gates implementation. A customer-facing or ambiguous feature cannot move to `ready` until it reaches `implementation_ready` or receives an approved no-discovery/no-BRD exception.
 
+### Business Quality Gate States
+
+Business quality gates are the approval records that connect requirement
+maturity, implementation, runtime validation, and release.
+
+```text
+customer_rfp_review
+  -> brd_approval
+  -> architecture_approval
+  -> implementation_review
+  -> runtime_validation
+  -> final_business_validation
+  -> release_readiness
+```
+
+These are represented by typed `quality_gate_evaluations` in V0. Later release
+and work-transition policy should reject:
+
+- `ready` for ambiguous/customer-facing work without `implementation_ready` or
+  an approved no-discovery/no-BRD decision;
+- `final_business_validation` approval before required runtime validation
+  evidence exists;
+- `release_readiness` approval before final business validation is approved;
+- merge from an initiative branch into `main` before release readiness is
+  approved.
+
 ### Initiative Branch States
 
 ```text
@@ -219,7 +245,7 @@ Signals are durable, typed events. They are not chat messages. They drive boards
 | Automation state | `AutomationPlanCreated`, `CiPipelineUpdated`, `PreviewEnvironmentReady`, `DeploymentAutomationReady`, `RollbackAutomationReady`, `ObservabilityAutomationReady` | Engineering Managers, DevOps, QA, Delivery, Operations |
 | Requirement maturity | `RequirementReceived`, `AmbiguityDetected`, `DiscoveryRequired`, `RequirementsDrafted`, `WorkflowModeled`, `ImplementationReady` | Product, BA, Architecture, TPMs, UI |
 | Interview | `InterviewRequested`, `InterviewStarted`, `CustomerAnswerRecorded`, `ClarificationQuestionOpened`, `InterviewCompleted` | Customer Interviewer, Product Owner, Business Analyst |
-| Gate state | `BrdApproved`, `ArchitectureRejected`, `CodeReviewApproved`, `QaBounceBack`, `DeliveryApproved` | Reviewers, managers, Delivery |
+| Gate state | `QualityGateEvaluated`, `BrdApproved`, `ArchitectureRejected`, `CodeReviewApproved`, `QaBounceBack`, `DeliveryApproved` | Reviewers, managers, Delivery |
 | Assignment | `HatRequested`, `HatSupplyReserved`, `HatTokenIssued`, `HatRefreshFailed`, `HatReleased`, `HatRevoked` | Assignment service, managers, agents |
 | Schedule | `ScheduleBlockPlanned`, `ScheduleBlockStarted`, `ScheduleBlockCompleted`, `ReflectionDue`, `FreeTimeStarted`, `MemoryMaintenanceDue` | Agents, managers, Memory, UI |
 | Prompt flow | `PromptFlowRequested`, `PromptFlowActivated`, `PromptFlowRunStarted`, `PromptFlowPhaseCompleted`, `PromptFlowGateRejected`, `PromptFlowRunCompleted` | Agents, reviewers, managers, Capability teams |

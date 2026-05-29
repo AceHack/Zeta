@@ -169,6 +169,7 @@ export async function recordDecision(
       supervisorSignals: [],
       discussionAnchors: [],
       decisionRecords: [decisionRecord],
+      qualityGateEvaluations: [],
       workScheduleBlocks: [],
       auditEvents: [
         {
@@ -411,6 +412,7 @@ function createEmptyCommandEffects(): CommandEffects {
     supervisorSignals: [],
     discussionAnchors: [],
     decisionRecords: [],
+    qualityGateEvaluations: [],
     workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],

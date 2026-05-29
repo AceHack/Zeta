@@ -11,6 +11,7 @@ import type {
   IdempotencyRecord,
   OutboxEvent,
   SupervisorSignal,
+  QualityGateEvaluation,
   WorkScheduleBlock,
 } from "../../domain/src/index.ts";
 import { DiscussionAnchorType, ScheduleBlockState } from "../../domain/src/index.ts";
@@ -36,6 +37,7 @@ export type InMemoryOrganizationStoreSnapshot<Result = unknown> = {
   readonly supervisorSignals: readonly SupervisorSignal[];
   readonly discussionAnchors: readonly DiscussionAnchor[];
   readonly decisionRecords: readonly DecisionRecord[];
+  readonly qualityGateEvaluations: readonly QualityGateEvaluation[];
   readonly workScheduleBlocks: readonly WorkScheduleBlock[];
   readonly auditEvents: readonly AuditEvent[];
   readonly outboxEvents: readonly OutboxEvent[];
@@ -69,6 +71,7 @@ type MutableInMemoryOrganizationStoreSnapshot<Result> = {
   supervisorSignals: SupervisorSignal[];
   discussionAnchors: DiscussionAnchor[];
   decisionRecords: DecisionRecord[];
+  qualityGateEvaluations: QualityGateEvaluation[];
   workScheduleBlocks: WorkScheduleBlock[];
   auditEvents: AuditEvent[];
   outboxEvents: OutboxEvent[];
@@ -85,6 +88,7 @@ function createEmptySnapshot<Result>(): MutableInMemoryOrganizationStoreSnapshot
     supervisorSignals: [],
     discussionAnchors: [],
     decisionRecords: [],
+    qualityGateEvaluations: [],
     workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],
@@ -145,6 +149,7 @@ function createCommandStateStore<Result>(
       nextSnapshot.supervisorSignals.push(...input.effects.supervisorSignals.map(cloneRecord));
       applyDiscussionAnchorCreates(nextSnapshot, input.effects.discussionAnchors);
       applyDecisionRecordCreates(nextSnapshot, input.effects.decisionRecords);
+      applyQualityGateEvaluationCreates(nextSnapshot, input.effects.qualityGateEvaluations);
       applyWorkScheduleBlockCreates(nextSnapshot, input.effects.workScheduleBlocks);
       nextSnapshot.auditEvents.push(...input.effects.auditEvents.map(cloneRecord));
       nextSnapshot.outboxEvents.push(...input.effects.outboxEvents.map(cloneRecord));
@@ -170,6 +175,7 @@ function cloneMutableSnapshot<Result>(
     supervisorSignals: snapshot.supervisorSignals.map(cloneRecord),
     discussionAnchors: snapshot.discussionAnchors.map(cloneRecord),
     decisionRecords: snapshot.decisionRecords.map(cloneRecord),
+    qualityGateEvaluations: snapshot.qualityGateEvaluations.map(cloneRecord),
     workScheduleBlocks: snapshot.workScheduleBlocks.map(cloneRecord),
     auditEvents: snapshot.auditEvents.map(cloneRecord),
     outboxEvents: snapshot.outboxEvents.map(cloneRecord),
@@ -189,6 +195,7 @@ function replaceSnapshot<Result>(
   target.supervisorSignals = source.supervisorSignals;
   target.discussionAnchors = source.discussionAnchors;
   target.decisionRecords = source.decisionRecords;
+  target.qualityGateEvaluations = source.qualityGateEvaluations;
   target.workScheduleBlocks = source.workScheduleBlocks;
   target.auditEvents = source.auditEvents;
   target.outboxEvents = source.outboxEvents;
@@ -318,6 +325,19 @@ function applyDecisionRecordCreates(
       (record) => record.decisionRecordId === decisionRecord.decisionRecordId,
     );
     snapshot.decisionRecords.push(cloneRecord(decisionRecord));
+  }
+}
+
+function applyQualityGateEvaluationCreates(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<unknown>,
+  qualityGateEvaluations: readonly QualityGateEvaluation[],
+): void {
+  for (const qualityGateEvaluation of qualityGateEvaluations) {
+    assertUniqueRecord(
+      snapshot.qualityGateEvaluations,
+      (record) => record.qualityGateEvaluationId === qualityGateEvaluation.qualityGateEvaluationId,
+    );
+    snapshot.qualityGateEvaluations.push(cloneRecord(qualityGateEvaluation));
   }
 }
 

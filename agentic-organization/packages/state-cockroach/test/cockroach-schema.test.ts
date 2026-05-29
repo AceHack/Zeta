@@ -7,6 +7,8 @@ import {
   InitiativeStatus,
   ProjectStatus,
   HatAssignmentAuthorityState,
+  QualityGateKind,
+  QualityGateOutcome,
   ScheduleBlockState,
   ScheduleBlockType,
   WorkItemState,
@@ -23,6 +25,7 @@ import {
   createCockroachHatAssignmentAuthorityProjectionMigration,
   createCockroachOutboxClaimFenceMigration,
   createCockroachReactionPlanExecutionLifecycleMigration,
+  createCockroachQualityGateEvaluationKernelMigration,
   createCockroachWorkScheduleBlockKernelMigration,
   createCockroachWorkAnchorKernelMigration,
   createCockroachWorkItemStateHistoryMetadataMigration,
@@ -81,6 +84,7 @@ describe("cockroach core state schema", () => {
     equal(migrations[6]?.name, CockroachCoreStateMigrationName.WorkScheduleBlockKernelV7);
     equal(migrations[7]?.name, CockroachCoreStateMigrationName.HatAssignmentAuthorityProjectionV8);
     equal(migrations[8]?.name, CockroachCoreStateMigrationName.ReactionPlanExecutionLifecycleV9);
+    equal(migrations[9]?.name, CockroachCoreStateMigrationName.QualityGateEvaluationKernelV10);
   });
 
   test("declares an additive work-anchor kernel migration for existing databases", () => {
@@ -238,6 +242,26 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS failure_json JSONB"));
     ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS attempt_count INT8 NOT NULL DEFAULT 0"));
     ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS next_attempt_at TIMESTAMPTZ"));
+  });
+
+  test("declares an additive quality gate evaluation kernel migration for existing databases", () => {
+    const migration = createCockroachQualityGateEvaluationKernelMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.QualityGateEvaluationKernelV10);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.QualityGateEvaluations}`));
+    ok(migration.sql.includes("quality_gate_evaluation_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("discussion_anchor_id STRING NOT NULL"));
+    ok(migration.sql.includes("gate_kind STRING NOT NULL"));
+    ok(migration.sql.includes("outcome STRING NOT NULL"));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(QualityGateKind))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(QualityGateOutcome))));
+    ok(migration.sql.includes("evaluated_artifact_ids JSONB NOT NULL"));
+    ok(migration.sql.includes("business_rule_results JSONB NOT NULL"));
+    ok(migration.sql.includes("evaluated_by_agent_id STRING NOT NULL"));
+    ok(migration.sql.includes("evaluated_by_hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("correlation_id STRING NOT NULL"));
+    ok(migration.sql.includes("causation_id STRING NOT NULL"));
+    ok(migration.sql.includes("trace_id STRING NOT NULL"));
   });
 
   test("keeps generated migrations synchronized with checked-in SQL files", async () => {

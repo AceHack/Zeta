@@ -193,6 +193,7 @@ export async function scheduleWorkBlock(
       supervisorSignals: [],
       discussionAnchors: [],
       decisionRecords: [],
+      qualityGateEvaluations: [],
       workScheduleBlocks: [workScheduleBlock],
       auditEvents: [
         {
@@ -438,6 +439,7 @@ function createEmptyCommandEffects(): CommandEffects {
     supervisorSignals: [],
     discussionAnchors: [],
     decisionRecords: [],
+    qualityGateEvaluations: [],
     workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],

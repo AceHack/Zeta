@@ -115,6 +115,7 @@ describe("create work item handler", () => {
       supervisorSignals: [],
       discussionAnchors: [],
       decisionRecords: [],
+      qualityGateEvaluations: [],
       workScheduleBlocks: [],
       auditEvents: [],
       outboxEvents: [],

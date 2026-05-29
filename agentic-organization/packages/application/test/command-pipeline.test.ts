@@ -10,6 +10,9 @@ import {
   EventSchemaVersion,
   InitiativeStatus,
   ProjectStatus,
+  QualityGateKind,
+  QualityGateOutcome,
+  BusinessRuleEvaluationStatus,
   SupervisorChainLevel,
   SupervisorSignalToolType,
   WorkItemState,
@@ -41,6 +44,10 @@ import {
   createCreateDiscussionAnchorHandler,
   type CreateDiscussionAnchorCommand,
 } from "../src/handlers/create-discussion-anchor.ts";
+import {
+  createRecordQualityGateEvaluationHandler,
+  type RecordQualityGateEvaluationCommand,
+} from "../src/handlers/record-quality-gate-evaluation.ts";
 import type { PipelineCommand } from "../src/command-contract.ts";
 import {
   CommandOutcomeEffectConflictReason,
@@ -113,6 +120,37 @@ const createWorkItemCommand: CreateWorkItemCommand = {
   description: "The Organization needs the first concrete work-anchor command.",
 };
 
+const qualityGateCommand: RecordQualityGateEvaluationCommand = {
+  commandId: "cmd-quality-gate-pipeline-001",
+  type: CommandType.RecordQualityGateEvaluation,
+  idempotencyKey: "idem-quality-gate-pipeline-001",
+  requestHash: "hash-quality-gate-pipeline-001",
+  correlationId: "corr-quality-gate-pipeline-001",
+  causationId: "cause-quality-gate-pipeline-001",
+  traceId: "trace-quality-gate-pipeline-001",
+  organizationId: "org-lfg",
+  projectId: "project-agentic-org",
+  actor: {
+    agentId: "agent-business-reviewer-001",
+    hatAssignmentId: "hat-assignment-business-reviewer-001",
+  },
+  teamId: "team-runtime",
+  workItemId: "work-quality-gate-001",
+  discussionAnchorId: "discussion-anchor-quality-gate-001",
+  gateKind: QualityGateKind.FinalBusinessValidation,
+  outcome: QualityGateOutcome.Approved,
+  summary: "The delivered behavior satisfies the BRD and can proceed to release readiness.",
+  evaluatedArtifactIds: ["brd-001", "qa-report-001", "trace-report-001"],
+  businessRuleResults: [
+    {
+      ruleId: "BRD-001",
+      status: BusinessRuleEvaluationStatus.Satisfied,
+      evidenceArtifactIds: ["qa-report-001"],
+      notes: "The delivered behavior matches the accepted business rule.",
+    },
+  ],
+};
+
 const ApplicationTestCommandType = {
   RecordGenericArtifact: "test.record_generic_artifact",
 } as const;
@@ -126,6 +164,7 @@ type OrganizationTestCommand =
   | SendSupervisorSignalCommand
   | CreateWorkItemCommand
   | CreateDiscussionAnchorCommand
+  | RecordQualityGateEvaluationCommand
   | RecordGenericArtifactCommand;
 
 describe("command pipeline idempotency", () => {
@@ -389,6 +428,77 @@ describe("command pipeline idempotency", () => {
       teamId: "team-runtime",
       workItemId: "work-discussion-anchor-001",
     });
+  });
+
+  test("persists quality gate evaluations with policy evidence through the command pipeline", async () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const scheduleAuthorityPort = createAllowingScheduleAuthorityPort();
+    const pipeline = createCommandPipeline<RecordQualityGateEvaluationCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      commandScheduleAuthorityPort: scheduleAuthorityPort,
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createRecordQualityGateEvaluationHandler()]),
+      discussionAnchorStateReader: createDiscussionAnchorStateReaderWithGateResult(qualityGateCommand),
+      workAnchorStateReader: createWorkAnchorStateReaderWithWorkItem({
+        workItemId: qualityGateCommand.workItemId,
+        organizationId: qualityGateCommand.organizationId,
+        projectId: qualityGateCommand.projectId,
+      }),
+      now: () => "2026-05-29T17:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(qualityGateCommand);
+    const replayResult = await pipeline.execute(qualityGateCommand);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    equal(result.qualityGateEvaluation?.qualityGateEvaluationId, "quality-gate-evaluation-001");
+    equal(replayResult.idempotency.replayed, true);
+    equal(stateStoreFactory.snapshot.qualityGateEvaluations.length, 1);
+    equal(stateStoreFactory.snapshot.auditEvents.length, 1);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
+    deepEqual(stateStoreFactory.snapshot.auditEvents[0]?.policy, {
+      decisionId: "policy-decision-allow-001",
+      policyVersion: "policy-v1",
+    });
+    deepEqual(stateStoreFactory.snapshot.outboxEvents[0]?.envelope.policy, {
+      decisionId: "policy-decision-allow-001",
+      policyVersion: "policy-v1",
+    });
+    deepEqual(scheduleAuthorityPort.requests[0]?.scope, {
+      organizationId: qualityGateCommand.organizationId,
+      projectId: qualityGateCommand.projectId,
+      teamId: qualityGateCommand.teamId,
+      workItemId: qualityGateCommand.workItemId,
+    });
+  });
+
+  test("rejects quality gate evaluations through schedule authority before handler execution", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const scheduleAuthorityPort = createDenyingScheduleAuthorityPort();
+    const pipeline = createCommandPipeline<RecordQualityGateEvaluationCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      commandScheduleAuthorityPort: scheduleAuthorityPort,
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createRecordQualityGateEvaluationHandler()]),
+      discussionAnchorStateReader: createDiscussionAnchorStateReaderWithGateResult(qualityGateCommand),
+      workAnchorStateReader: createWorkAnchorStateReaderWithWorkItem({
+        workItemId: qualityGateCommand.workItemId,
+        organizationId: qualityGateCommand.organizationId,
+        projectId: qualityGateCommand.projectId,
+      }),
+      now: () => "2026-05-29T17:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(qualityGateCommand);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.ScheduleAuthorityDenied);
+    equal(stateStoreFactory.recordedOutcomes.length, 0);
+    equal(scheduleAuthorityPort.requests.length, 1);
   });
 
   test("passes direct schedule resource context to command authorization", async () => {
@@ -1119,6 +1229,24 @@ function createDenyingScheduleAuthorityPort(): CommandScheduleAuthorityPort & {
   };
 }
 
+function createAllowingScheduleAuthorityPort(): CommandScheduleAuthorityPort & {
+  requests: CommandScheduleAuthorityRequest[];
+} {
+  const requests: CommandScheduleAuthorityRequest[] = [];
+
+  return {
+    requests,
+    authorizeCommandSchedule: async (request) => {
+      requests.push(request);
+
+      return {
+        status: CommandScheduleAuthorityDecisionStatus.Allowed,
+        scheduleBlockId: "work-schedule-block-review-001",
+      };
+    },
+  };
+}
+
 function createFailingPolicyDecisionObservationPort(message: string): PolicyDecisionObservationPort {
   return {
     observePolicyDecision: async () => {
@@ -1169,6 +1297,7 @@ function createRecordingCommandHandler() {
           supervisorSignals: [],
           discussionAnchors: [],
           decisionRecords: [],
+          qualityGateEvaluations: [],
           workScheduleBlocks: [],
           auditEvents: [],
           outboxEvents: [],
@@ -1202,6 +1331,7 @@ function createGenericArtifactHandler() {
         supervisorSignals: [],
         discussionAnchors: [],
         decisionRecords: [],
+        qualityGateEvaluations: [],
         workScheduleBlocks: [],
         auditEvents: [],
         outboxEvents: [],
@@ -1234,6 +1364,7 @@ function createGenericArtifactHandlerWithEffects() {
         supervisorSignals: [],
         discussionAnchors: [],
         decisionRecords: [],
+        qualityGateEvaluations: [],
         workScheduleBlocks: [],
         auditEvents: [
           {
@@ -1306,6 +1437,7 @@ function createGenericArtifactHandlerWithWorkAnchorEffects() {
         supervisorSignals: [],
         discussionAnchors: [],
         decisionRecords: [],
+        qualityGateEvaluations: [],
         workScheduleBlocks: [],
         auditEvents: [],
         outboxEvents: [],
@@ -1335,6 +1467,7 @@ function createGenericArtifactHandlerWithInvalidWorkAnchorEffects() {
           supervisorSignals: [],
           discussionAnchors: [],
           decisionRecords: [],
+          qualityGateEvaluations: [],
           workScheduleBlocks: [],
           auditEvents: [
             {
@@ -1377,6 +1510,7 @@ function createGenericArtifactHandlerWithCapturedWorkAnchorEffects(workAnchors: 
         supervisorSignals: [],
         discussionAnchors: [],
         decisionRecords: [],
+        qualityGateEvaluations: [],
         workScheduleBlocks: [],
         auditEvents: [],
         outboxEvents: [],
@@ -1404,6 +1538,31 @@ function createMutableWorkAnchorStateReader(): WorkAnchorStateReaderPort & {
     findWorkItem: async function findWorkItem() {
       return this.workItem;
     },
+  };
+}
+
+function createDiscussionAnchorStateReaderWithGateResult(commandInput: RecordQualityGateEvaluationCommand) {
+  return {
+    findDiscussionAnchor: async () => ({
+      discussionAnchorId: commandInput.discussionAnchorId,
+      organizationId: commandInput.organizationId,
+      projectId: commandInput.projectId,
+      ...(commandInput.teamId === undefined ? {} : { teamId: commandInput.teamId }),
+      workItemId: commandInput.workItemId,
+      discussionAnchorType: DiscussionAnchorType.WorkItem,
+      title: "Final business validation",
+      purpose: "Evaluate whether delivered behavior satisfies the BRD before release readiness.",
+      expectedOutputs: [DiscussionExpectedOutput.GateResult],
+      createdAt: "2026-05-29T16:30:00.000Z",
+      createdBy: commandInput.actor,
+      metadata: {
+        updatedAt: "2026-05-29T16:30:00.000Z",
+        version: 1,
+        correlationId: commandInput.correlationId,
+        causationId: commandInput.causationId,
+        traceId: commandInput.traceId,
+      },
+    }),
   };
 }
 

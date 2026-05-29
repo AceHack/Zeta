@@ -23,6 +23,7 @@ export const CockroachCommandStateStoreStatement = {
   InsertSupervisorSignal: "insert_supervisor_signal",
   InsertDiscussionAnchor: "insert_discussion_anchor",
   InsertDecisionRecord: "insert_decision_record",
+  InsertQualityGateEvaluation: "insert_quality_gate_evaluation",
   FindOverlappingWorkScheduleBlock: "find_overlapping_work_schedule_block",
   InsertWorkScheduleBlock: "insert_work_schedule_block",
   InsertAuditEvent: "insert_audit_event",
@@ -136,6 +137,10 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
 
         for (const decisionRecord of outcome.effects.decisionRecords) {
           await transaction.execute(createInsertDecisionRecordStatement(decisionRecord));
+        }
+
+        for (const qualityGateEvaluation of outcome.effects.qualityGateEvaluations) {
+          await transaction.execute(createInsertQualityGateEvaluationStatement(qualityGateEvaluation));
         }
 
         for (const workScheduleBlock of outcome.effects.workScheduleBlocks) {
@@ -342,6 +347,36 @@ function createInsertDecisionRecordStatement(
   };
 }
 
+function createInsertQualityGateEvaluationStatement(
+  qualityGateEvaluation: CommandStateStoreResult<unknown>["effects"]["qualityGateEvaluations"][number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
+    sql: CockroachCommandStateStoreSql.InsertQualityGateEvaluation,
+    parameters: [
+      qualityGateEvaluation.qualityGateEvaluationId,
+      qualityGateEvaluation.organizationId,
+      qualityGateEvaluation.projectId,
+      qualityGateEvaluation.teamId ?? null,
+      qualityGateEvaluation.workItemId,
+      qualityGateEvaluation.discussionAnchorId,
+      qualityGateEvaluation.gateKind,
+      qualityGateEvaluation.outcome,
+      qualityGateEvaluation.summary,
+      JSON.stringify(qualityGateEvaluation.evaluatedArtifactIds),
+      JSON.stringify(qualityGateEvaluation.businessRuleResults),
+      qualityGateEvaluation.evaluatedBy.agentId,
+      qualityGateEvaluation.evaluatedBy.hatAssignmentId,
+      qualityGateEvaluation.evaluatedAt,
+      qualityGateEvaluation.metadata.updatedAt,
+      qualityGateEvaluation.metadata.version,
+      qualityGateEvaluation.metadata.correlationId,
+      qualityGateEvaluation.metadata.causationId,
+      qualityGateEvaluation.metadata.traceId,
+    ],
+  };
+}
+
 function createInsertWorkScheduleBlockStatement(
   workScheduleBlock: CommandStateStoreResult<unknown>["effects"]["workScheduleBlocks"][number],
 ): CockroachSqlStatement {
@@ -512,6 +547,29 @@ const CockroachCommandStateStoreSql = {
       decided_by_agent_id,
       decided_by_hat_assignment_id,
       decided_at,
+      updated_at,
+      version,
+      correlation_id,
+      causation_id,
+      trace_id
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::JSONB, $11::JSONB, $12, $13, $14, $15, $16, $17, $18, $19)
+  `,
+  InsertQualityGateEvaluation: `
+    INSERT INTO ${CockroachTableName.QualityGateEvaluations} (
+      quality_gate_evaluation_id,
+      organization_id,
+      project_id,
+      team_id,
+      work_item_id,
+      discussion_anchor_id,
+      gate_kind,
+      outcome,
+      summary,
+      evaluated_artifact_ids,
+      business_rule_results,
+      evaluated_by_agent_id,
+      evaluated_by_hat_assignment_id,
+      evaluated_at,
       updated_at,
       version,
       correlation_id,

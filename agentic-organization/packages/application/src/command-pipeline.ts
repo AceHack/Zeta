@@ -370,6 +370,7 @@ function attachPolicyDecisionEvidence(effects: CommandEffects, decision: PolicyD
     supervisorSignals: effects.supervisorSignals,
     discussionAnchors: effects.discussionAnchors,
     decisionRecords: effects.decisionRecords,
+    qualityGateEvaluations: effects.qualityGateEvaluations,
     workScheduleBlocks: effects.workScheduleBlocks,
     workAnchors: effects.workAnchors,
     auditEvents: effects.auditEvents.map((auditEvent) => ({
@@ -493,6 +494,7 @@ function createEmptyCommandEffects(): CommandEffects {
     supervisorSignals: [],
     discussionAnchors: [],
     decisionRecords: [],
+    qualityGateEvaluations: [],
     workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],

@@ -83,6 +83,41 @@ describe("schedule block command authority", () => {
     });
   });
 
+  test("requires current schedule authority for quality gate evaluations", async () => {
+    const authority = createScheduleBlockCommandAuthority({
+      scheduleBlockReader: createScheduleBlockReader([]),
+    });
+
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(CommandType.RecordQualityGateEvaluation),
+    );
+
+    deepEqual(decision, {
+      status: CommandScheduleAuthorityDecisionStatus.Denied,
+      reason: CommandScheduleAuthorityDenialReason.ScheduleBlockRequired,
+      message: ScheduleAuthorityMessage.BlockRequired,
+    });
+  });
+
+  test("allows quality gate evaluations during review schedule blocks", async () => {
+    const authority = createScheduleBlockCommandAuthority({
+      scheduleBlockReader: createScheduleBlockReader([
+        createScheduleBlock({
+          blockType: ScheduleBlockType.Review,
+        }),
+      ]),
+    });
+
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(CommandType.RecordQualityGateEvaluation),
+    );
+
+    deepEqual(decision, {
+      status: CommandScheduleAuthorityDecisionStatus.Allowed,
+      scheduleBlockId: "work-schedule-block-001",
+    });
+  });
+
   test("denies runtime commands when active schedule scope does not match the command", async () => {
     const authority = createScheduleBlockCommandAuthority({
       scheduleBlockReader: createScheduleBlockReader([

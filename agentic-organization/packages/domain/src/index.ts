@@ -55,6 +55,7 @@ export {
 } from "./hat-communication-brief.ts";
 export type {
   AuditEvent,
+  BusinessRuleEvaluation,
   DecisionRecord,
   DiscussionAnchor,
   HatAssignmentAuthoritySnapshot,
@@ -62,6 +63,7 @@ export type {
   Initiative,
   OutboxEvent,
   Project,
+  QualityGateEvaluation,
   SupervisorSignal,
   WorkAnchorTarget,
   WorkItem,
@@ -70,15 +72,21 @@ export type {
   WorkStateTransition,
 } from "./records.ts";
 export {
+  BusinessRuleEvaluationStatus,
   DiscussionAnchorType,
   DiscussionExpectedOutput,
   HatAssignmentAuthorityState,
   InitiativeStatus,
   ProjectStatus,
+  QualityGateKind,
+  QualityGateOutcome,
   ScheduleBlockState,
   ScheduleBlockType,
+  isBusinessRuleEvaluationStatus,
   isDiscussionAnchorType,
   isDiscussionExpectedOutput,
+  isQualityGateKind,
+  isQualityGateOutcome,
   isScheduleBlockState,
   isScheduleBlockType,
   isWorkItemStateChangedPayload,

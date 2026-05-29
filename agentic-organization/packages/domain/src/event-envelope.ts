@@ -7,6 +7,7 @@ export type EventSchemaVersion = (typeof EventSchemaVersion)[keyof typeof EventS
 export const CommandType = {
   CreateWorkItem: "create_work_item",
   CreateDiscussionAnchor: "create_discussion_anchor",
+  RecordQualityGateEvaluation: "record_quality_gate_evaluation",
   RecordDecision: "record_decision",
   ScheduleWorkBlock: "schedule_work_block",
   SendSupervisorSignal: "send_supervisor_signal",
@@ -18,6 +19,7 @@ export type CommandType = (typeof CommandType)[keyof typeof CommandType];
 export const AgenticEventType = {
   DecisionRecorded: "decision.recorded",
   DiscussionAnchorCreated: "discussion_anchor.created",
+  QualityGateEvaluated: "quality_gate.evaluated",
   SupervisorSignalSent: "supervisor_signal.sent",
   WorkScheduleBlockScheduled: "work_schedule_block.scheduled",
   WorkItemChanged: "work_item.changed",
@@ -29,6 +31,7 @@ export type AgenticEventType = (typeof AgenticEventType)[keyof typeof AgenticEve
 export const AgenticAggregateType = {
   DecisionRecord: "decision_record",
   DiscussionAnchor: "discussion_anchor",
+  QualityGateEvaluation: "quality_gate_evaluation",
   SupervisorSignal: "supervisor_signal",
   WorkScheduleBlock: "work_schedule_block",
   WorkItem: "work_item",

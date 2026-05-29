@@ -4,6 +4,7 @@ import type {
   DecisionRecord,
   DiscussionAnchor,
   PolicyDecisionEvidence,
+  QualityGateEvaluation,
   SupervisorSignal,
   WorkScheduleBlock,
   WorkItem,
@@ -34,6 +35,7 @@ export const CommandResultArtifactType = {
   DecisionRecord: "decision_record",
   DiscussionAnchor: "discussion_anchor",
   Generic: "generic",
+  QualityGateEvaluation: "quality_gate_evaluation",
   SupervisorSignal: "supervisor_signal",
   WorkScheduleBlock: "work_schedule_block",
   WorkItem: "work_item",
@@ -64,6 +66,7 @@ export type CommandResult = {
   policy?: PolicyDecisionEvidence;
   decisionRecord?: DecisionRecord;
   discussionAnchor?: DiscussionAnchor;
+  qualityGateEvaluation?: QualityGateEvaluation;
   workScheduleBlock?: WorkScheduleBlock;
   workItem?: WorkItem;
   supervisorSignal?: SupervisorSignal;

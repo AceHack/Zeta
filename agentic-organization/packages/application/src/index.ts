@@ -60,6 +60,14 @@ export {
   type RecordDecisionDependencies,
 } from "./handlers/record-decision.ts";
 export {
+  QualityGateEvaluationValidationErrorMessage,
+  RecordQualityGateEvaluationIdPrefix,
+  createRecordQualityGateEvaluationHandler,
+  recordQualityGateEvaluation,
+  type RecordQualityGateEvaluationCommand,
+  type RecordQualityGateEvaluationDependencies,
+} from "./handlers/record-quality-gate-evaluation.ts";
+export {
   createScheduleWorkBlockHandler,
   scheduleWorkBlock,
   type ScheduleWorkBlockCommand,

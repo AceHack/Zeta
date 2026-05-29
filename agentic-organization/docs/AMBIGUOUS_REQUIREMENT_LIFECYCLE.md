@@ -39,6 +39,32 @@ raw_intake
 
 The requirement maturity state should gate the normal work item state. A customer-facing or ambiguous feature should not move to `ready` unless it has reached `implementation_ready` or has an explicit approved no-discovery/no-BRD decision.
 
+## Business Quality Gate Chain
+
+Ambiguous/customer-facing work must pass business gates before it becomes
+engineering work and again before it is merged into `main`.
+
+| Phase | Artifact | Gate kind | Required before |
+|---|---|---|---|
+| RFP / discovery brief | what exists, what is missing, what needs extension, risks, unknowns | `customer_rfp_review` | BRD drafting |
+| Business requirements | BRD, business rules, acceptance criteria, non-goals | `brd_approval` | architecture |
+| Architecture | CA, ADRs, design docs, workflow and data model | `architecture_approval` | implementation |
+| Implementation | code, tests, branch evidence | `implementation_review` | runtime validation |
+| Runtime validation | QA/browser evidence, screenshots, logs, traces | `runtime_validation` | final business validation |
+| Outcome validation | rule-by-rule BRD outcome report | `final_business_validation` | release readiness |
+| Release readiness | gate summary and branch evidence package | `release_readiness` | merge to `main` |
+
+The RFP / discovery brief is the first customer gate. It tells the customer or
+user what the Organization believes already exists, what is missing, and what
+must be extended or developed. If the customer rejects that framing, the work
+returns to discovery instead of moving to BRD.
+
+Final business validation is separate from QA. QA proves the behavior is
+working; final business validation proves the working behavior satisfies the
+BRD and any changed-by-decision business rules. An approved final business gate
+requires every business rule to be `satisfied`, `not_applicable`, or
+`changed_by_decision`.
+
 ## Phase 1: Intake and Ambiguity Detection
 
 When a goal, report, or service request enters the Work OS, the first job is to preserve the request and classify it.

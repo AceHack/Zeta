@@ -23,6 +23,7 @@ Current documents:
 - [Agent Work Rhythm and Prompt Flows](./AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md) - the hat-bound schedule, free-time, review/red-team, reflection, memory maintenance, and deterministic prompt-flow model for agents.
 - [Supervisor-Chain Communication](./SUPERVISOR_CHAIN_COMMUNICATION.md) - the typed upward communication line from each hat to its supervisor chain, including tool families, evidence, and triage semantics.
 - [Ambiguous Requirement Lifecycle](./AMBIGUOUS_REQUIREMENT_LIFECYCLE.md) - the discovery, customer interview, BRD, workflow modeling, architecture, decomposition, readiness, and learning path from vague request to curated feature.
+- [Business Quality Gate System](./BUSINESS_QUALITY_GATE_SYSTEM.md) - the RFP/customer review, BRD, architecture, runtime validation, final business validation, release-readiness gate chain, and V0 quality-gate command model.
 - [Anti-Stall Prioritization Runtime](./ANTI_STALL_PRIORITY_RUNTIME.md) - the hat-owned schedules, blocker triage, queue SLO, reassignment, alternate-work, dependency reconciliation, and priority routines that keep the Organization moving.
 - [Implementation Readiness Checklist](./IMPLEMENTATION_READINESS_CHECKLIST.md) - the decisions and contracts that should be defined before scaffolding the first implementation slice.
 - [Implementation Governance](./IMPLEMENTATION_GOVERNANCE.md) - the current-state, OpenSpec, authority, idempotency, telemetry, security, and quality rules for implementation work.

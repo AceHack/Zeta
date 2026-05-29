@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS agentic_org_quality_gate_evaluations (
+  quality_gate_evaluation_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING,
+  work_item_id STRING NOT NULL,
+  discussion_anchor_id STRING NOT NULL,
+  gate_kind STRING NOT NULL CONSTRAINT agentic_org_quality_gate_evaluations_kind_check CHECK (gate_kind IN ('architecture_approval', 'brd_approval', 'customer_rfp_review', 'final_business_validation', 'implementation_review', 'release_readiness', 'runtime_validation')),
+  outcome STRING NOT NULL CONSTRAINT agentic_org_quality_gate_evaluations_outcome_check CHECK (outcome IN ('approved', 'changes_requested', 'rejected', 'waived')),
+  summary STRING NOT NULL,
+  evaluated_artifact_ids JSONB NOT NULL,
+  business_rule_results JSONB NOT NULL,
+  evaluated_by_agent_id STRING NOT NULL,
+  evaluated_by_hat_assignment_id STRING NOT NULL,
+  evaluated_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);

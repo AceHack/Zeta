@@ -11,9 +11,12 @@ import {
 import {
   AgenticAggregateType,
   AgenticEventType,
+  BusinessRuleEvaluationStatus,
   DiscussionAnchorType,
   DiscussionExpectedOutput,
   ProjectStatus,
+  QualityGateKind,
+  QualityGateOutcome,
   ScheduleBlockState,
   ScheduleBlockType,
   SupervisorChainLevel,
@@ -50,6 +53,7 @@ describe("cockroach command state store", () => {
         CockroachCommandStateStoreStatement.InsertSupervisorSignal,
         CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
         CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
         CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
         CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
         CockroachCommandStateStoreStatement.InsertAuditEvent,
@@ -63,6 +67,7 @@ describe("cockroach command state store", () => {
         CockroachCommandStateStoreStatement.InsertSupervisorSignal,
         CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
         CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
         CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
         CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
         CockroachCommandStateStoreStatement.InsertAuditEvent,
@@ -71,7 +76,7 @@ describe("cockroach command state store", () => {
     );
     equal(executor.transactionStatements[0]?.sql.includes("INSERT INTO"), true);
     equal(executor.transactionStatements[0]?.sql.includes("UPSERT"), false);
-    deepEqual(executor.transactionStatements[6]?.parameters.slice(6), ["policy-decision-allow-001", "policy-v1"]);
+    deepEqual(executor.transactionStatements[7]?.parameters.slice(6), ["policy-decision-allow-001", "policy-v1"]);
   });
 
   test("does not insert effects when idempotency claim replays or conflicts", async () => {
@@ -181,7 +186,11 @@ describe("cockroach command state store", () => {
 
     await store.recordCommandOutcome(createCommandOutcome({ includeAuditPolicyEvidence: false }));
 
-    deepEqual(executor.transactionStatements[6]?.parameters.slice(6), [null, null]);
+    const insertAuditEvent = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.InsertAuditEvent,
+    );
+
+    deepEqual(insertAuditEvent?.parameters.slice(6), [null, null]);
   });
 
   test("records work-anchor effects in the command outcome transaction", async () => {
@@ -200,6 +209,7 @@ describe("cockroach command state store", () => {
         CockroachCommandStateStoreStatement.InsertSupervisorSignal,
         CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
         CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
         CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
         CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
         CockroachWorkAnchorStateStoreStatement.InsertProject,
@@ -324,6 +334,50 @@ describe("cockroach command state store", () => {
     ]);
   });
 
+  test("records quality gate evaluation effects with full traceability", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    await store.recordCommandOutcome(createCommandOutcome());
+
+    const insertQualityGateEvaluation = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
+    );
+
+    equal(insertQualityGateEvaluation?.sql.includes("$10::JSONB"), true);
+    equal(insertQualityGateEvaluation?.sql.includes("$11::JSONB"), true);
+    deepEqual(insertQualityGateEvaluation?.parameters, [
+      "quality-gate-evaluation-001",
+      "org-lfg",
+      "project-agentic-org",
+      "team-runtime",
+      "work-outbox-001",
+      "discussion-anchor-001",
+      QualityGateKind.FinalBusinessValidation,
+      QualityGateOutcome.Approved,
+      "Business rules are satisfied for release.",
+      JSON.stringify(["brd-001", "qa-report-001"]),
+      JSON.stringify([
+        {
+          ruleId: "BRD-001",
+          status: BusinessRuleEvaluationStatus.Satisfied,
+          evidenceArtifactIds: ["qa-report-001"],
+          notes: "Validated against the business rule.",
+        },
+      ]),
+      "agent-developer-001",
+      "hat-assignment-dev-001",
+      "2026-05-25T20:11:00.000Z",
+      "2026-05-25T20:11:00.000Z",
+      1,
+      "corr-001",
+      "cause-001",
+      "trace-001",
+    ]);
+  });
+
   test("rejects overlapping work schedule blocks before inserting later effects", async () => {
     const executor = createRecordingExecutor({
       hasOverlappingScheduleBlock: true,
@@ -346,6 +400,7 @@ describe("cockroach command state store", () => {
         CockroachCommandStateStoreStatement.InsertSupervisorSignal,
         CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
         CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
         CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
       ],
     );
@@ -373,6 +428,7 @@ describe("cockroach command state store", () => {
         CockroachCommandStateStoreStatement.InsertSupervisorSignal,
         CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
         CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
         CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
         CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
         CockroachWorkAnchorStateStoreStatement.InsertProject,
@@ -605,6 +661,40 @@ function createCommandOutcome(
           },
           metadata: {
             updatedAt: "2026-05-25T20:10:00.000Z",
+            version: 1,
+            correlationId: "corr-001",
+            causationId: "cause-001",
+            traceId: "trace-001",
+          },
+        },
+      ],
+      qualityGateEvaluations: [
+        {
+          qualityGateEvaluationId: "quality-gate-evaluation-001",
+          organizationId: "org-lfg",
+          projectId: "project-agentic-org",
+          teamId: "team-runtime",
+          workItemId: "work-outbox-001",
+          discussionAnchorId: "discussion-anchor-001",
+          gateKind: QualityGateKind.FinalBusinessValidation,
+          outcome: QualityGateOutcome.Approved,
+          summary: "Business rules are satisfied for release.",
+          evaluatedArtifactIds: ["brd-001", "qa-report-001"],
+          businessRuleResults: [
+            {
+              ruleId: "BRD-001",
+              status: BusinessRuleEvaluationStatus.Satisfied,
+              evidenceArtifactIds: ["qa-report-001"],
+              notes: "Validated against the business rule.",
+            },
+          ],
+          evaluatedAt: "2026-05-25T20:11:00.000Z",
+          evaluatedBy: {
+            agentId: "agent-developer-001",
+            hatAssignmentId: "hat-assignment-dev-001",
+          },
+          metadata: {
+            updatedAt: "2026-05-25T20:11:00.000Z",
             version: 1,
             correlationId: "corr-001",
             causationId: "cause-001",

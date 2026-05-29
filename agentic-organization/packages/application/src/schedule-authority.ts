@@ -58,6 +58,16 @@ export const DefaultScheduleAuthorityCommandRules: readonly ScheduleAuthorityCom
     scheduleRequired: true,
   },
   {
+    commandType: CommandType.RecordQualityGateEvaluation,
+    allowedBlockTypes: [
+      ScheduleBlockType.Meeting,
+      ScheduleBlockType.PrioritizedWork,
+      ScheduleBlockType.Reporting,
+      ScheduleBlockType.Review,
+    ],
+    scheduleRequired: true,
+  },
+  {
     commandType: CommandType.CreateWorkItem,
     allowedBlockTypes: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Reporting],
     scheduleRequired: true,

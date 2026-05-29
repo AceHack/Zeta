@@ -11,10 +11,14 @@ import {
 import {
   DiscussionAnchorType,
   DiscussionExpectedOutput,
+  BusinessRuleEvaluationStatus,
+  QualityGateKind,
+  QualityGateOutcome,
   ScheduleBlockState,
   ScheduleBlockType,
   type DecisionRecord,
   type DiscussionAnchor,
+  type QualityGateEvaluation,
   type WorkScheduleBlock,
 } from "../../domain/src/index.ts";
 import { createInMemoryOrganizationStoreFactory } from "../src/index.ts";
@@ -30,6 +34,7 @@ describe("in-memory organization command effects", () => {
     equal(result.status, CommandOutcomePersistenceStatus.Committed);
     deepEqual(factory.snapshot.discussionAnchors, outcome.effects.discussionAnchors);
     deepEqual(factory.snapshot.decisionRecords, outcome.effects.decisionRecords);
+    deepEqual(factory.snapshot.qualityGateEvaluations, outcome.effects.qualityGateEvaluations);
     deepEqual(factory.snapshot.workScheduleBlocks, outcome.effects.workScheduleBlocks);
 
     const replay = await store.recordCommandOutcome(outcome);
@@ -37,6 +42,7 @@ describe("in-memory organization command effects", () => {
     equal(replay.status, CommandOutcomePersistenceStatus.Replayed);
     equal(factory.snapshot.discussionAnchors.length, 1);
     equal(factory.snapshot.decisionRecords.length, 1);
+    equal(factory.snapshot.qualityGateEvaluations.length, 1);
     equal(factory.snapshot.workScheduleBlocks.length, 1);
   });
 
@@ -190,6 +196,38 @@ function createDiscussionAnchorCommandOutcome(): RecordCommandOutcomeInput {
       traceId: "trace-001",
     },
   };
+  const qualityGateEvaluation: QualityGateEvaluation = {
+    qualityGateEvaluationId: "quality-gate-evaluation-001",
+    organizationId: "org-lfg",
+    projectId: "project-agentic-org",
+    teamId: "team-runtime",
+    workItemId: "work-runtime-001",
+    discussionAnchorId: discussionAnchor.discussionAnchorId,
+    gateKind: QualityGateKind.FinalBusinessValidation,
+    outcome: QualityGateOutcome.Approved,
+    summary: "Business rules are satisfied for release.",
+    evaluatedArtifactIds: ["brd-001", "qa-report-001"],
+    businessRuleResults: [
+      {
+        ruleId: "BRD-001",
+        status: BusinessRuleEvaluationStatus.Satisfied,
+        evidenceArtifactIds: ["qa-report-001"],
+        notes: "Validated against the business rule.",
+      },
+    ],
+    evaluatedAt: "2026-05-28T22:06:00.000Z",
+    evaluatedBy: {
+      agentId: "agent-em-001",
+      hatAssignmentId: "hat-assignment-em-001",
+    },
+    metadata: {
+      updatedAt: "2026-05-28T22:06:00.000Z",
+      version: 1,
+      correlationId: "corr-001",
+      causationId: "cause-001",
+      traceId: "trace-001",
+    },
+  };
 
   return {
     idempotencyRecord: {
@@ -212,6 +250,7 @@ function createDiscussionAnchorCommandOutcome(): RecordCommandOutcomeInput {
       supervisorSignals: [],
       discussionAnchors: [discussionAnchor],
       decisionRecords: [decisionRecord],
+      qualityGateEvaluations: [qualityGateEvaluation],
       workScheduleBlocks: [workScheduleBlock],
       auditEvents: [],
       outboxEvents: [],

@@ -163,6 +163,7 @@ export async function triageSupervisorSignal(
       supervisorSignals: [],
       discussionAnchors: [],
       decisionRecords: [],
+      qualityGateEvaluations: [],
       workScheduleBlocks: [],
       auditEvents: [
         {
@@ -356,6 +357,7 @@ function createEmptyCommandEffects(): CommandEffects {
     supervisorSignals: [],
     discussionAnchors: [],
     decisionRecords: [],
+    qualityGateEvaluations: [],
     workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],

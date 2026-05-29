@@ -65,6 +65,7 @@ matters.
 | `assignments`             | work item to agent/hat/session assignment records                                      |
 | `gates`                   | required review points for readiness, code, QA, memory, or security                    |
 | `gate_decisions`          | approve, reject, needs-changes, or defer decisions                                     |
+| `quality_gate_evaluations` | typed V0 business, architecture, runtime, final business, and release readiness gate evaluations with BRD business-rule evidence |
 | `releases`                | release groupings once release management enters the slice                             |
 
 The first Cockroach-backed Work Anchor Kernel migration is
@@ -113,6 +114,7 @@ cannot be duplicated or zero-filled.
 | `messages`             | immutable message log with actor and hat attribution                                      |
 | `meetings`             | structured meeting sessions with mode and anchor                                          |
 | `decision_records`     | explicit decisions linked to work, discussion anchors, rationale, alternatives, and follow-up work |
+| `quality_gate_evaluations` | business quality gate outcomes linked to work, discussion anchors, artifacts, business-rule results, and release readiness |
 | `documents`            | BRDs, CAs, ADRs, reports, test cases, runbooks, and memory reviews                        |
 | `artifact_links`       | logs, screenshots, traces, code refs, PRs, builds, and uploads                            |
 | `graph_nodes`          | agent-readable graph node registry                                                        |
@@ -283,6 +285,19 @@ item -> discussion anchor -> decision record -> follow-up work.
 Any follow-up work IDs named by a decision must also resolve to existing work
 items in the same organization and project before the decision is accepted.
 
+`record_quality_gate_evaluation` is implemented on the same V0 work-item scope.
+A quality gate evaluation must reference an existing discussion anchor in the
+same organization, project, optional team, and work item, and that anchor must
+have been opened with `gate_result` in `expectedOutputs`. This makes RFP review,
+BRD approval, architecture approval, implementation review, runtime validation,
+final business validation, and release readiness a generic gate lifecycle
+instead of one-off tooling. Every gate evaluation must carry at least one
+evaluated artifact ID so an approval cannot exist as a summary-only assertion.
+An approved `final_business_validation` gate requires every business rule result
+to be `satisfied`, `not_applicable`, or `changed_by_decision`;
+`partially_satisfied` and `not_satisfied` force a non-approval outcome so the
+Organization can route corrective work.
+
 `schedule_work_block` is implemented as the first V0 schedule/RMO primitive.
 It creates a `scheduled` `work_schedule_block` for one assigned agent and hat
 against an existing work item. The command validates the work item, strict ISO
@@ -321,6 +336,7 @@ can decide whether the scheduler may reserve that exact allocation.
 ```text
 work_item.changed
 decision.recorded
+quality_gate.evaluated
 gate_requested
 gate_decided
 hat_assignment_changed
@@ -389,6 +405,7 @@ review without exposing CockroachDB types to application code.
 | `triage_supervisor_signal`  | target supervisor hat, director, or engineering manager                                    | V0 `open_work_item` path validates the supervisor signal and emits a follow-up `work_item.changed`; later triage actions add signal status, assignments, gates, and context packs | `work_item.changed` |
 | `create_discussion_anchor`  | any authorized hat with validated work anchor                                              | `discussion_anchors`, `audit_events`, `outbox_events`; graph edge projection follows                     | `discussion_anchor.created`                                       |
 | `record_decision`           | any authorized hat with a validated decision-capable discussion anchor                     | `decision_records`, `audit_events`, `outbox_events`; graph edge projection follows                       | `decision.recorded`                                               |
+| `record_quality_gate_evaluation` | authorized reviewer/business/product/architecture/delivery hat with a validated gate-result discussion anchor | `quality_gate_evaluations`, `audit_events`, `outbox_events`; graph edge projection follows | `quality_gate.evaluated` |
 | `create_context_pack`       | manager, reviewer, implementer for assigned work                                           | `context_packs`, `graph_edges`, `audit_events`                                                           | `work_item.changed`                                                |
 | `mark_work_ready`           | manager or reviewer                                                                        | `work_items`, `work_item_state_history`, `gates`                                                         | `work_item.changed`, `gate_requested`                              |
 | `reserve_hat`               | manager, director, platform operator                                                       | `hat_assignments`, `hat_tokens`, `audit_events`                                                          | `hat_assignment_changed`                                           |
@@ -546,9 +563,24 @@ Current executable migration contract:
 - `0004_agentic_org_work_item_state_history_metadata` is the additive
   state-history provenance migration for databases that already applied
   the V3 kernel;
+- `0005_agentic_org_discussion_anchor_kernel` is the additive discussion
+  anchor kernel for work-item anchored conversations, meetings, and gates;
+- `0006_agentic_org_decision_record_kernel` is the additive decision record
+  kernel for explicit decisions linked to discussion anchors and work;
+- `0007_agentic_org_work_schedule_block_kernel` is the additive schedule
+  block kernel that lets command authority enforce allocated agent time;
+- `0008_agentic_org_hat_assignment_authority_projection` is the additive
+  hat assignment authority projection used by scheduling and policy readers;
+- `0009_agentic_org_reaction_plan_execution_lifecycle` is the additive
+  durable reaction-plan execution lifecycle for autonomous worker actions;
+- `0010_agentic_org_quality_gate_evaluation_kernel` is the additive business
+  quality gate evaluation kernel for RFP, BRD, architecture, runtime,
+  final business validation, and release readiness gates;
 - generated SQL must match the checked-in migration files exactly;
 - database constraints for work item state, work item type, project
-  status, and initiative status must be generated from TypeScript domain
+  status, initiative status, discussion anchor type, schedule block state,
+  schedule block type, hat authority state, supervisor signal state, quality
+  gate kind, and quality gate outcome must be generated from TypeScript domain
   enums rather than repeated as hand-typed magic strings.
 
 Before the first implementation PR lands, define tests for:
