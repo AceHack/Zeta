@@ -53,6 +53,9 @@ tests/Tests.FSharp/
   leading underscore sorts it first and signals "not a test file"
   at a glance. Helper modules use the namespace
   `Zeta.Tests.Support.*`.
+- Filesystem tests that need unique temp directories use
+  `DeterministicTestPath.nextDir` rather than `Guid.NewGuid()`.
+  The helper uses a process-local counter so rerun paths diff cleanly.
 
 ## Compile order in `Tests.FSharp.fsproj`
 

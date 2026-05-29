@@ -6,6 +6,7 @@ open System.IO
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open Zeta.Tests.Support
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -25,7 +26,7 @@ let ``InMemoryBackingStore roundtrips`` () =
 
 [<Fact>]
 let ``DiskBackingStore keeps small batches in memory`` () =
-    let tmp = Path.Combine(Path.GetTempPath(), $"dbsp-disk-test-{Guid.NewGuid()}")
+    let tmp = DeterministicTestPath.nextDir "dbsp-disk-test"
     try
         let store = DiskBackingStore<int>(tmp, inMemoryQuotaBytes = 10_000L) :> IBackingStore<int>
         let batch = ZSet.ofKeys [ 1 ; 2 ; 3 ]
@@ -38,7 +39,7 @@ let ``DiskBackingStore keeps small batches in memory`` () =
 
 [<Fact>]
 let ``DiskBackingStore spills when over quota`` () =
-    let tmp = Path.Combine(Path.GetTempPath(), $"dbsp-spill-test-{Guid.NewGuid()}")
+    let tmp = DeterministicTestPath.nextDir "dbsp-spill-test"
     try
         // Very small quota forces immediate spilling to disk.
         let store = DiskBackingStore<int>(tmp, inMemoryQuotaBytes = 100L) :> IBackingStore<int>
@@ -89,7 +90,7 @@ let ``BackedSpine Clear removes all storage`` () =
 
 [<Fact>]
 let ``DiskBackingStore instances sharing a dir don't clobber each other`` () =
-    let dir = Path.Combine(Path.GetTempPath(), $"dbsp-share-{Guid.NewGuid():N}")
+    let dir = DeterministicTestPath.nextDir "dbsp-share"
     try
         Directory.CreateDirectory dir |> ignore
         // Tiny quota forces immediate spill.
@@ -113,7 +114,7 @@ let ``DiskBackingStore instances sharing a dir don't clobber each other`` () =
 
 [<Fact>]
 let ``DiskBackingStore canonicalises workDir`` () =
-    let dir = Path.Combine(Path.GetTempPath(), $"dbsp-test-{Guid.NewGuid():N}")
+    let dir = DeterministicTestPath.nextDir "dbsp-test"
     try
         let store = DiskBackingStore<int>(dir, inMemoryQuotaBytes = 1024L) :> IBackingStore<int>
         let batch = ZSet.ofKeys [ 1; 2; 3 ]
@@ -127,7 +128,7 @@ let ``DiskBackingStore canonicalises workDir`` () =
 
 [<Fact>]
 let ``DiskBackingStore spill path lives under root`` () =
-    let dir = Path.Combine(Path.GetTempPath(), $"dbsp-test-{Guid.NewGuid():N}")
+    let dir = DeterministicTestPath.nextDir "dbsp-test"
     try
         Directory.CreateDirectory dir |> ignore
         // Small quota forces spill.

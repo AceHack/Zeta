@@ -5,6 +5,7 @@ open System.IO
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open Zeta.Tests.Support
 
 
 [<Fact>]
@@ -129,12 +130,7 @@ let ``InMemoryCheckpointStore overwrites on second save`` () =
 // ═══════════════════════════════════════════════════════════════════
 
 let private makeTempDir () =
-    let dir =
-        Path.Combine(
-            Path.GetTempPath(),
-            "zeta-checkpoint-test-" + Guid.NewGuid().ToString("N"))
-    Directory.CreateDirectory dir |> ignore
-    dir
+    DeterministicTestPath.nextDir "zeta-checkpoint-test"
 
 let private cleanupDir (dir: string) =
     if Directory.Exists dir then

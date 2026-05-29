@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <!-- _Support/ helpers first (they're consumed by subject files below). -->
+    <Compile Include="_Support/DeterministicTestPath.fs" />
     <Compile Include="_Support/ConcurrencyHarness.fs" />
     <Compile Include="_Support/CartelInjector.fs" />
 

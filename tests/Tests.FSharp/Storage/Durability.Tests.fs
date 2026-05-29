@@ -7,6 +7,7 @@ open System.Threading
 open FsUnit.Xunit
 open global.Xunit
 open Zeta.Core
+open Zeta.Tests.Support
 
 
 // ═══════════════════════════════════════════════════════════════════
@@ -28,8 +29,7 @@ let private sibling (root: string) (name: string) : string =
 
 [<Fact>]
 let ``WitnessDurableBackingStore WorkDir matches the directory actually created`` () =
-    let root = Path.Combine(Path.GetTempPath(), "dbsp-wd-" + Guid.NewGuid().ToString("N"))
-    Directory.CreateDirectory root |> ignore
+    let root = DeterministicTestPath.nextDir "dbsp-wd"
     try
         let workDir = Path.Combine(root, "work")
         let witnessDir = Path.Combine(root, "witness")
@@ -52,8 +52,7 @@ let ``WitnessDurableBackingStore canonicalises workDir under CWD churn`` () =
     // the CWD between them. After the fix, `GetFullPath` runs exactly
     // once, so the stored path and the created directory always
     // agree — even if CWD is swapped every instant.
-    let root = Path.Combine(Path.GetTempPath(), "dbsp-cwd-" + Guid.NewGuid().ToString("N"))
-    Directory.CreateDirectory root |> ignore
+    let root = DeterministicTestPath.nextDir "dbsp-cwd"
     let originalCwd = Environment.CurrentDirectory
     try
         let cwdA = sibling root "cwd-a"
