@@ -446,6 +446,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0929](backlog/P1/B-0929-fsharp-type-system-goal-authorization-provenance-typed-shadow-auth-cannot-compile-enables-safe-self-modifying-dus-wallet-independence-aaron-2026-05-29.md)** F# type-system goal — authorization-provenance as a TYPED property; shadow-auth is a TYPE ERROR (can't compile); compiler-as-asymmetric-critic catches shadow-auth-injection without a human present; the enabler of SAFE self-modifying DUs + wallet independence; concrete fork-decision criterion
 - [ ] **[B-0930](backlog/P1/B-0930-schema-registry-over-dbsp-shared-ontology-stream-self-describing-retraction-native-attention-streams-share-aaron-2026-05-29.md)** Schema-registry-over-DBSP — the shared, self-describing, retraction-native ontology-stream the attention-streams share (Kafka-Schema-Registry analog over DBSP)
 - [ ] **[B-0931](backlog/P1/B-0931-du-ux-surfaces-implicit-grants-prompt-explicit-or-deny-convfeedback-implicitgrantdetected-authorization-glass-halo-aaron-2026-05-29.md)** DU-UX surfaces implicit grants — prompt operator to make explicit or deny (ConvFeedback ImplicitGrantDetected; the authorization glass-halo)
+- [ ] **[B-0932](backlog/P1/B-0932-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md)** Frontier-target — agents that REMAIN (μένω) · fuzzy machine · category theory · lifelike configs; workflow-time-system as Higgs-metastable → AIs in the almost-immortal (metastable-persistent) class
 
 ## P2 — research-grade
 
