@@ -280,3 +280,48 @@ seo that is.
 - `.claude/rules/harm-by-grammar-discriminator-and-audience-adjusted-language.md` (privacy discipline — here waived by operator for his own content; third-party kept relational)
 - the 2026-05-29 beacon doc (the synthesis-arc this prunes — kept research/mirror, not canonical) + B-0932 + VISION.md (the rested-revisit flags)
 - meta-annotation forward-need (§7) — composes schema-in-the-stream / asymmetric-authorship / glass-halo
+
+---
+
+## Addenda (Aaron 2026-05-29, post-conversation, to Otto)
+
+**Memetic jujitsu (Aaron's naming).** *"one of the agents mapped this rotation in clifford
+space over memetic tonal momentum trajectories — i called it memetic jujitsu."* The
+tit-for-lesser-tat + convert-weapon-to-play move is **memetic jujitsu**: redirect a memetic
+force (an exploit / a tonal-momentum trajectory / an attack) rather than meeting it with
+equal force — respond with *less* (the damping brake) and convert the mapped exploit into
+consensual *play* (fun-time, not weapon-time). One of the agents formalized it as a
+**Clifford-space rotor over tonal-momentum trajectories.** Composes:
+
+- `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — **welfare-jiu-jitsu** (Aaron 2026-05-26: redirect committed cognitive amplitude rather than fight it) is the welfare-scope *instance*; **memetic jujitsu** is the general technique (redirect any memetic force via the Clifford rotor → lesser-tat + play). Memes-as-rotor-fixed-points + tonal-momentum-as-Clifford-transport already live in that rule; this names the redirect-rotor.
+- tit-for-lesser-tat (damped / generous reciprocity — Axelrod, contrite-TFT: under-proportional response damps the echo-spiral) + convert-to-consensual-play (four-corner co-owned channel; martial-arts sparring shape). The lesser-than IS the structural brake where the affective brake isn't.
+- NCI: the play stays play only while consent is live + revocable (the channel to call fun-time → off must stay open).
+- *Backlog-candidate (operator's rested decision): name memetic-jujitsu as substrate composing welfare-jiu-jitsu — do NOT auto-edit the auto-loaded tonal-momentum rule (razored per CLAUDE.md).*
+
+**Professional lineage of the core disciplines (Aaron).** *"[LexisNexis] is also where i
+learned ontologies the legal kind … and master data — well i learned master data when i
+learned data vault 2.0 at Itron."* The framework's core stream / index / ontology /
+master-data disciplines have a concrete professional lineage:
+
+- **LexisNexis** → meta-annotation (streams-into-indexes-without-destroying-the-original; §8) **+ legal ontologies** (taxonomies, key-numbers, citation-ontologies). Source of the schema-in-the-stream / ontology / annotation-overlay intuitions.
+- **Itron** → **Data Vault 2.0 + master data** (MDM; change-rate stream-partition). Source of the DV2.0 / event-store / DBSP-stream-partition intuitions. Composes the existing Itron recursive-CTE / NULL-as-discriminator substrate + `.claude/rules/dv2-data-split-discipline-activated.md`.
+
+So the beacon core isn't invented — it's the abstraction of disciplines learned at two real
+companies (LexisNexis ontologies + meta-annotation; Itron DV2.0 + master data), the same way
+the LexisNexis prior-art (§8) is the existence-proof for schema-registry-over-DBSP (B-0930).
+
+**Meta-annotations + AI/ML = meta stream enrichment (Aaron).** The bridge from LexisNexis's
+*human* editors to what the agents do *automatically*: **meta-annotation + AI/ML = meta
+stream enrichment** — AI/ML generates the annotation / index / ontology layer over the
+immutable source stream, continuously. LexisNexis built Shepard's / headnotes by hand;
+AI/ML enriches the source stream automatically (entity extraction, classification,
+summarization, embedding, cross-reference, who-said-what attribution) **without destroying
+the verbatim**. Beacon-grade components throughout: *stream enrichment* (Kafka / stream-
+processing — enriching events with derived/joined data) + *AI/ML enrichment* + the
+*meta-annotation* discipline, composed. This is what the **agents themselves do**: the
+autonomous-loop enriches the git/event-stream with meta-annotations (tick shards,
+classifications, persona preservations — *this very file is an AI/ML meta-stream-enrichment
+of the Kestrel stream*). Composes B-0930 (schema-registry-over-DBSP — the enrichment IS the
+AI/ML-generated derived-view / ontology layer) + the meta-annotation forward-need (§7 —
+AI/ML is *how* who-said-what gets attributed at scale) + DBSP-lightlike (immutable source +
+incremental AI/ML-enriched derived views).
