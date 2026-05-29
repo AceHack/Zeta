@@ -225,6 +225,17 @@ export type GitRefUpdateRequest =
       readonly body: { readonly sha: string; readonly force: boolean };
     };
 
+/**
+ * The fields the seeding flow reads back from either git-refs endpoint after
+ * `buildSeedRefUpdateRequest` runs. GitHub's create/update-ref responses share the
+ * same shape: top-level `ref` names the full ref that now exists, while nested
+ * `object.sha` is the commit the ref points at.
+ */
+export interface GitRefUpdateInfo {
+  readonly ref: string;
+  readonly sha: string;
+}
+
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
 const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
 // Repo root = two levels up from tools/bootstrap-razor/.
@@ -770,6 +781,45 @@ export function buildSeedRefUpdateRequest(
     return { method: "POST", path: base, body: { ref: `refs/heads/${branch}`, sha: commitSha } };
   }
   return { method: "PATCH", path: `${base}/heads/${branch}`, body: { sha: commitSha, force: false } };
+}
+
+/**
+ * Pure parser: the read-side pair of `buildSeedRefUpdateRequest`, the final response
+ * parser in the git-data write chain. Turns GitHub's shared `POST /git/refs` and
+ * `PATCH /git/refs/heads/<branch>` response shape — `{ "ref": "refs/heads/main",
+ * "object": { "type": "commit", "sha": "..." }, ... }` (verified against
+ * docs.github.com/en/rest/git/refs, API version 2022-11-28) — into the two fields the
+ * seeding flow needs to report and verify: the full `ref` and the pointed-at commit
+ * `sha`. The `sha` is intentionally read from `object.sha`, NOT a top-level field:
+ * refs responses do not make the target object's SHA top-level, and a parser that did
+ * so would silently lose the final commit identity.
+ *
+ * Returns `{ ref, sha }` on success, or an error string (same `T | string` convention
+ * as the other response parsers) when the response is unusable. Type-check only, no
+ * SHA-format or `object.type` validation: the preceding commit-create/ref-update calls
+ * already enforce object existence and commit-ness server-side, and a malformed target
+ * would surface as a GitHub API error before this parser runs.
+ *
+ * Refusals:
+ *   - not an object (null, array, scalar)  -> malformed
+ *   - `ref` missing or non-string          -> malformed (no branch to report)
+ *   - `object` missing or non-object       -> malformed (no target object)
+ *   - `object.sha` missing or non-string   -> malformed (no final commit to report)
+ *
+ * Pure: no network, no gh, no filesystem; operates only on the already-parsed JSON value.
+ */
+export function parseSeedRefUpdateResponse(response: unknown): GitRefUpdateInfo | string {
+  if (typeof response !== "object" || response === null || Array.isArray(response)) {
+    return "ref-update response is not an object";
+  }
+  const { ref, object } = response as Record<string, unknown>;
+  if (typeof ref !== "string") return "ref-update response missing string `ref`";
+  if (typeof object !== "object" || object === null || Array.isArray(object)) {
+    return "ref-update response missing object `object`";
+  }
+  const { sha } = object as Record<string, unknown>;
+  if (typeof sha !== "string") return "ref-update response missing string `object.sha`";
+  return { ref, sha };
 }
 
 /**

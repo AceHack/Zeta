@@ -17,6 +17,7 @@ import {
   parseGitTreeResponse,
   parseSeedBlobResponse,
   parseSeedCommitResponse,
+  parseSeedRefUpdateResponse,
   parseSeedManifest,
   parseSeedTreeResponse,
   resolveSeedFiles,
@@ -769,5 +770,73 @@ describe("buildSeedRefUpdateRequest", () => {
     const updated = buildSeedRefUpdateRequest("o", "r", "main", sha, true);
     expect(created.body.sha).toBe(sha);
     expect(updated.body.sha).toBe(sha);
+  });
+});
+
+describe("parseSeedRefUpdateResponse", () => {
+  // A trimmed-but-realistic create/update ref response: the full ref plus the nested
+  // target object GitHub returns for both POST /git/refs and PATCH /git/refs/heads/<branch>.
+  const updated = {
+    ref: "refs/heads/main",
+    node_id: "REF_kwDO",
+    url: "https://api.github.com/repos/Lucent-Financial-Group/zeta-recreation-experiment/git/refs/heads/main",
+    object: {
+      type: "commit",
+      sha: "7638417db6d59f3c431d3e1f261cc637155684cd",
+      url: "https://api.github.com/repos/Lucent-Financial-Group/zeta-recreation-experiment/git/commits/7638417db6d59f3c431d3e1f261cc637155684cd",
+    },
+  };
+
+  test("extracts full ref and nested object.sha, ignoring url/node_id/type", () => {
+    expect(parseSeedRefUpdateResponse(updated)).toEqual({
+      ref: "refs/heads/main",
+      sha: "7638417db6d59f3c431d3e1f261cc637155684cd",
+    });
+  });
+
+  test("reads nested object.sha, not a top-level sha field", () => {
+    const response = { ...updated, sha: "top-level-sha-is-not-the-ref-target" };
+    expect(parseSeedRefUpdateResponse(response)).toEqual({
+      ref: "refs/heads/main",
+      sha: "7638417db6d59f3c431d3e1f261cc637155684cd",
+    });
+  });
+
+  test("success is an object, not a bare string (disambiguates the error channel)", () => {
+    expect(typeof parseSeedRefUpdateResponse(updated)).toBe("object");
+  });
+
+  test("non-object responses are refused (null, array, scalar)", () => {
+    expect(typeof parseSeedRefUpdateResponse(null)).toBe("string");
+    expect(typeof parseSeedRefUpdateResponse([updated])).toBe("string");
+    expect(typeof parseSeedRefUpdateResponse("refs/heads/main")).toBe("string");
+    expect(typeof parseSeedRefUpdateResponse(42)).toBe("string");
+  });
+
+  test("missing string ref is refused (final report would not know the branch)", () => {
+    const { ref, ...rest } = updated;
+    expect(parseSeedRefUpdateResponse(rest)).toContain("ref");
+  });
+
+  test("missing object is refused (target object carries the commit SHA)", () => {
+    const { object, ...rest } = updated;
+    expect(parseSeedRefUpdateResponse(rest)).toContain("object");
+    expect(parseSeedRefUpdateResponse({ ...updated, object: null })).toContain("object");
+    expect(parseSeedRefUpdateResponse({ ...updated, object: [] })).toContain("object");
+  });
+
+  test("missing string object.sha is refused", () => {
+    const { sha, ...objectWithoutSha } = updated.object;
+    expect(parseSeedRefUpdateResponse({ ...updated, object: objectWithoutSha })).toContain("object.sha");
+    expect(parseSeedRefUpdateResponse({ ...updated, object: { ...updated.object, sha: 12345 } })).toContain(
+      "object.sha",
+    );
+  });
+
+  test("type-checks only — object.type and SHA format are not validated here", () => {
+    expect(parseSeedRefUpdateResponse({ ...updated, object: { type: "tag", sha: "not-a-real-sha" } })).toEqual({
+      ref: "refs/heads/main",
+      sha: "not-a-real-sha",
+    });
   });
 });
