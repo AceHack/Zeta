@@ -815,7 +815,7 @@ export function parseSeedRefUpdateResponse(response: unknown): GitRefUpdateInfo 
   const { ref, object } = response as Record<string, unknown>;
   if (typeof ref !== "string") return "ref-update response missing string `ref`";
   if (typeof object !== "object" || object === null || Array.isArray(object)) {
-    return "ref-update response missing object `object`";
+    return "ref-update response missing object field `object`";
   }
   const { sha } = object as Record<string, unknown>;
   if (typeof sha !== "string") return "ref-update response missing string `object.sha`";
