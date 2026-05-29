@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; release pending
+Status: active child packet; release reconciled
 Last refreshed: 2026-05-29
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -45,14 +45,15 @@ Current dry-run receipt:
 It records the current Participant A remote claim, the stale predecessor
 force-release, the separate Participant B remote-only claim, and the
 Participant A acknowledgement that compares the path sets as disjoint. The
-remaining blocker is release, not another Participant B dry run.
+release refs have now landed or been retired, so this receipt is evidence for
+the next child packet rather than pending work.
 
 ## Recommended Next Action
 
-Release the clean Participant A acknowledgement claim, then release the
-Participant B claim. The release commits or PRs should preserve the receipt as
-durable evidence and delete the corresponding `docs/claims/*.md` files on the
-claim branches.
+Start the remote-only claim-release receipt packet. It should cite the merged
+dry-run receipt, confirm the Participant A and Participant B claim refs are no
+longer active, and record the release path before the lane moves to cluster
+composition.
 
 ## Next Child Packets
 
