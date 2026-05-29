@@ -1255,6 +1255,7 @@ Before a package can be consumed by the OS, it needs:
 - dependency-boundary check;
 - typed enum/state-machine tests;
 - policy allow/deny tests where relevant;
+- company Work OS policy tests where lifecycle order matters;
 - command pipeline tests proving policy authorization runs before
   idempotency lookup, handler dispatch, and state persistence;
 - event envelope tests;

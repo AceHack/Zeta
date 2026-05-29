@@ -10,6 +10,7 @@ import {
   CockroachHatAssignmentAuthorityReaderStatement,
   CockroachOutboxEventSourceStatement,
   CockroachPolicyDecisionObservationStoreStatement,
+  CockroachQualityGateEvaluationStateReaderStatement,
   CockroachReactionPlanWorkQueueStatement,
   CockroachWorkAnchorStateStoreStatement,
   CockroachWorkScheduleBlockAuthorityReaderStatement,
@@ -66,6 +67,12 @@ describe("cockroach durable state adapters", () => {
     });
     await adapters.discussionAnchorStateReader.findDiscussionAnchor("discussion-anchor-001");
     await adapters.hatAssignmentAuthorityReader.findHatAssignmentAuthority("hat-assignment-dev-001");
+    await adapters.qualityGateEvaluationStateReader.listQualityGateEvaluationsForWorkItem({
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      teamId: "team-runtime",
+      workItemId: "work-runtime-001",
+    });
     await adapters.reactionPlanWorkQueue.claimPlannedReactionPlans({
       claimId: "reaction-claim-001",
       limit: 1,
@@ -87,6 +94,7 @@ describe("cockroach durable state adapters", () => {
       CockroachPolicyDecisionObservationStoreStatement.RecordPolicyDecisionObservation,
       CockroachDiscussionAnchorStateStoreStatement.FindDiscussionAnchor,
       CockroachHatAssignmentAuthorityReaderStatement.FindHatAssignmentAuthority,
+      CockroachQualityGateEvaluationStateReaderStatement.ListQualityGateEvaluationsForWorkItem,
       CockroachReactionPlanWorkQueueStatement.ClaimPlannedReactionPlans,
       CockroachWorkScheduleBlockAuthorityReaderStatement.FindAuthorizingScheduleBlocks,
       CockroachWorkAnchorStateStoreStatement.FindProject,

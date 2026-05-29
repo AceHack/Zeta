@@ -20,11 +20,17 @@ merge from an initiative feature branch into `main`:
 | Final business validation | outcome report mapped rule-by-rule to the BRD and decisions | `final_business_validation` | Product Owner or Business Analyst reviewer | `quality_gate.evaluated` | release readiness may begin |
 | Release readiness | branch evidence package, gate summary, rollout notes | `release_readiness` | Delivery/TPM/release authority | `quality_gate.evaluated` | feature branch may merge to `main` |
 
-V0 implements the generic `record_quality_gate_evaluation` command. Later
-gate-chain policy should read these records to reject out-of-order gates, reject
-release readiness without final business validation, and reject `ready` for
-ambiguous work without requirement maturity or an approved no-discovery/no-BRD
-exception.
+V0 implements the generic `record_quality_gate_evaluation` command and the
+first company-level Work OS policy for this chain. Approved later gates read
+prior `quality_gate_evaluations` through a generic policy-evidence port and are
+rejected unless every required earlier gate is already `approved` or `waived`.
+This makes the company process enforceable while still allowing the internal
+team to evolve the chain by changing policy data and adding reviewed
+implementation slices.
+
+Requirement-maturity policy is still separate: work-transition policy must reject
+`ready` for ambiguous work without `implementation_ready` or an approved
+no-discovery/no-BRD exception.
 
 ## RFP / Discovery Brief
 
@@ -90,6 +96,9 @@ The current executable slice adds:
 - `record_quality_gate_evaluation`;
 - typed `QualityGateKind`, `QualityGateOutcome`, and
   `BusinessRuleEvaluationStatus`;
+- company Work OS gate-chain policy in the domain package;
+- generic `QualityGateEvaluationStateReaderPort` policy evidence readers;
+- in-memory and Cockroach quality-gate reader adapters behind that port;
 - transactional command effects in the in-memory and Cockroach command outcome
   stores;
 - `quality_gate.evaluated` outbox events for NATS projections;

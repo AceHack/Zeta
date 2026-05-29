@@ -1,4 +1,14 @@
 export {
+  CompanyWorkPolicyDecisionStatus,
+  CompanyWorkPolicyDenialReason,
+  CompanyWorkPolicyVersion,
+  DefaultCompanyQualityGateSequencePolicy,
+  evaluateQualityGateSequencePolicy,
+  type CompanyWorkPolicyDecision,
+  type EvaluateQualityGateSequencePolicyInput,
+  type QualityGateSequencePolicy,
+} from "./company-work-policy.ts";
+export {
   AgenticAggregateType,
   AgenticEventType,
   CommandType,

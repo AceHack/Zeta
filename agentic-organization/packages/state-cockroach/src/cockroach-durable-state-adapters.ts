@@ -1,6 +1,7 @@
 import type {
   CommandStateStoreFactory,
   HatAssignmentAuthorityReaderPort,
+  QualityGateEvaluationStateReaderPort,
   WorkScheduleBlockAuthorityReaderPort,
 } from "../../application/src/ports.ts";
 import type { DiscussionAnchorStateReaderPort } from "../../application/src/ports.ts";
@@ -28,6 +29,10 @@ import {
   type CockroachPolicyDecisionObservationStore,
 } from "./cockroach-policy-decision-observation-store.ts";
 import {
+  createCockroachQualityGateEvaluationStateReader,
+  type CockroachQualityGateEvaluationSqlExecutor,
+} from "./cockroach-quality-gate-evaluation-state-reader.ts";
+import {
   createCockroachReactionPlanWorkQueue,
   type CockroachReactionPlanWorkQueueSqlExecutor,
 } from "./cockroach-reaction-plan-work-queue.ts";
@@ -48,6 +53,7 @@ export type CockroachOrganizationSqlExecutor = CockroachGenericSqlExecutor &
   CockroachEventIngestionSqlExecutor &
   CockroachHatAssignmentAuthoritySqlExecutor &
   CockroachPolicyDecisionObservationSqlExecutor &
+  CockroachQualityGateEvaluationSqlExecutor &
   CockroachReactionPlanWorkQueueSqlExecutor &
   CockroachWorkScheduleBlockAuthoritySqlExecutor &
   CockroachWorkAnchorSqlExecutor;
@@ -57,6 +63,7 @@ export type CockroachDurableStateAdapters<Result> = {
   outboxEventSource: OutboxEventSource;
   eventIngestionStore: EventIngestionStore;
   policyDecisionObservationStore: CockroachPolicyDecisionObservationStore;
+  qualityGateEvaluationStateReader: QualityGateEvaluationStateReaderPort;
   discussionAnchorStateReader: DiscussionAnchorStateReaderPort;
   hatAssignmentAuthorityReader: HatAssignmentAuthorityReaderPort;
   reactionPlanWorkQueue: ReactionPlanWorkQueue;
@@ -82,6 +89,9 @@ export function createCockroachDurableStateAdapters<Result>(
       executor: input.executor,
     }),
     policyDecisionObservationStore: createCockroachPolicyDecisionObservationStore({
+      executor: input.executor,
+    }),
+    qualityGateEvaluationStateReader: createCockroachQualityGateEvaluationStateReader({
       executor: input.executor,
     }),
     discussionAnchorStateReader: createCockroachDiscussionAnchorStateStore({

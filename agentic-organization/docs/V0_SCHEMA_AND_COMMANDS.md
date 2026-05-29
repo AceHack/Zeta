@@ -297,6 +297,12 @@ An approved `final_business_validation` gate requires every business rule result
 to be `satisfied`, `not_applicable`, or `changed_by_decision`;
 `partially_satisfied` and `not_satisfied` force a non-approval outcome so the
 Organization can route corrective work.
+Approved later gates also pass the company Work OS gate-chain policy before any
+effects are emitted. The application reads prior quality gate evidence through a
+generic `QualityGateEvaluationStateReaderPort`; in-memory and Cockroach adapters
+implement that port. A later gate approval is rejected unless every required
+earlier gate is already `approved` or `waived`, so release readiness cannot be
+recorded before final business validation.
 
 `schedule_work_block` is implemented as the first V0 schedule/RMO primitive.
 It creates a `scheduled` `work_schedule_block` for one assigned agent and hat

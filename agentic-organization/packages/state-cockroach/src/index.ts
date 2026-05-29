@@ -62,6 +62,14 @@ export {
   type CreateCockroachPolicyDecisionObservationStoreInput,
 } from "./cockroach-policy-decision-observation-store.ts";
 export {
+  CockroachQualityGateEvaluationStateReaderStatement,
+  createCockroachQualityGateEvaluationStateReader,
+  type CockroachQualityGateEvaluationSqlExecutor,
+  type CockroachQualityGateEvaluationSqlResult,
+  type CockroachQualityGateEvaluationSqlStatement,
+  type CreateCockroachQualityGateEvaluationStateReaderInput,
+} from "./cockroach-quality-gate-evaluation-state-reader.ts";
+export {
   CockroachReactionPlanWorkQueueStatement,
   createCockroachReactionPlanWorkQueue,
   type CockroachReactionPlanWorkQueueSqlExecutor,

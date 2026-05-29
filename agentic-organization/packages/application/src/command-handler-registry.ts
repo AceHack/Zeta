@@ -4,6 +4,7 @@ import type {
   DiscussionAnchorStateReaderPort,
   HatAssignmentAuthorityReaderPort,
   IdGenerator,
+  QualityGateEvaluationStateReaderPort,
   SupervisorSignalStateReaderPort,
   WorkAnchorStateReaderPort,
 } from "./ports.ts";
@@ -21,6 +22,7 @@ export type CommandExecutionContext = Clock &
   IdGenerator & {
     discussionAnchorStateReader?: DiscussionAnchorStateReaderPort | undefined;
     hatAssignmentAuthorityReader?: HatAssignmentAuthorityReaderPort | undefined;
+    qualityGateEvaluationStateReader?: QualityGateEvaluationStateReaderPort | undefined;
     supervisorSignalStateReader?: SupervisorSignalStateReaderPort | undefined;
     workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
   };

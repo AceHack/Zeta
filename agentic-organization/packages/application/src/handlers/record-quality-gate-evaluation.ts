@@ -3,11 +3,13 @@ import {
   AgenticEventType,
   BusinessRuleEvaluationStatus,
   CommandType,
+  CompanyWorkPolicyDecisionStatus,
   DiscussionAnchorType,
   DiscussionExpectedOutput,
   QualityGateKind,
   QualityGateOutcome,
   createAgenticEventEnvelope,
+  evaluateQualityGateSequencePolicy,
   isBusinessRuleEvaluationStatus,
   isQualityGateKind,
   isQualityGateOutcome,
@@ -29,6 +31,7 @@ import type {
   CommandWorkAnchorWorkItem,
   DiscussionAnchorStateReaderPort,
   IdGenerator,
+  QualityGateEvaluationStateReaderPort,
   WorkAnchorStateReaderPort,
 } from "../ports.ts";
 
@@ -56,9 +59,11 @@ export const QualityGateEvaluationValidationErrorMessage = {
   GateKindInvalid: "quality gate kind is invalid",
   MissingAnchor: "quality gate requires an existing discussion anchor",
   MissingAnchorReader: "quality gate requires discussion anchor validation",
+  MissingQualityGatePolicyEvidenceReader: "quality gate company policy requires quality gate history validation",
   MissingRelatedWorkItem: "quality gate requires an existing related work item",
   MissingWorkAnchorReader: "quality gate requires work anchor validation",
   OutcomeInvalid: "quality gate outcome is invalid",
+  PriorQualityGateIncomplete: "quality gate company policy requires prior gates to be approved or waived",
   ScopeMismatch: "quality gate scope does not match the command scope",
   SummaryRequired: "quality gate summary is required",
   UnsupportedAnchorType: "quality gate V0 only supports work-item discussion anchors",
@@ -83,6 +88,7 @@ export type RecordQualityGateEvaluationCommand = PipelineCommand & {
 export type RecordQualityGateEvaluationDependencies = Clock &
   IdGenerator & {
     discussionAnchorStateReader?: DiscussionAnchorStateReaderPort | undefined;
+    qualityGateEvaluationStateReader?: QualityGateEvaluationStateReaderPort | undefined;
     workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
   };
 
@@ -116,6 +122,12 @@ export async function recordQualityGateEvaluation(
 
   if (workItemValidationError !== undefined) {
     return createRejectedPreconditionOutcome(command, workItemValidationError);
+  }
+
+  const companyPolicyValidationError = await validateCompanyQualityGatePolicy(command, dependencies);
+
+  if (companyPolicyValidationError !== undefined) {
+    return createRejectedPreconditionOutcome(command, companyPolicyValidationError);
   }
 
   const occurredAt = dependencies.now();
@@ -207,6 +219,41 @@ export async function recordQualityGateEvaluation(
       workAnchors: createEmptyWorkAnchorCommandEffects(),
     },
   };
+}
+
+async function validateCompanyQualityGatePolicy(
+  command: RecordQualityGateEvaluationCommand,
+  dependencies: RecordQualityGateEvaluationDependencies,
+): Promise<QualityGateEvaluationValidationErrorMessage | undefined> {
+  const preliminaryPolicyDecision = evaluateQualityGateSequencePolicy({
+    gateKind: command.gateKind,
+    outcome: command.outcome,
+  });
+
+  if (preliminaryPolicyDecision.status === CompanyWorkPolicyDecisionStatus.Allowed) {
+    return undefined;
+  }
+
+  if (dependencies.qualityGateEvaluationStateReader === undefined) {
+    return QualityGateEvaluationValidationErrorMessage.MissingQualityGatePolicyEvidenceReader;
+  }
+
+  const priorEvaluations = await dependencies.qualityGateEvaluationStateReader.listQualityGateEvaluationsForWorkItem({
+    organizationId: command.organizationId,
+    projectId: command.projectId,
+    teamId: command.teamId,
+    workItemId: command.workItemId,
+  });
+
+  const policyDecision = evaluateQualityGateSequencePolicy({
+    gateKind: command.gateKind,
+    outcome: command.outcome,
+    priorEvaluations,
+  });
+
+  return policyDecision.status === CompanyWorkPolicyDecisionStatus.Allowed
+    ? undefined
+    : QualityGateEvaluationValidationErrorMessage.PriorQualityGateIncomplete;
 }
 
 async function validateDiscussionAnchor(

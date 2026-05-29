@@ -13,6 +13,7 @@ import {
   QualityGateKind,
   QualityGateOutcome,
   BusinessRuleEvaluationStatus,
+  type QualityGateEvaluation,
   SupervisorChainLevel,
   SupervisorSignalToolType,
   WorkItemState,
@@ -61,6 +62,7 @@ import {
   type CommandWorkAnchorInitiative,
   type CommandWorkAnchorProject,
   type CommandWorkAnchorWorkItem,
+  type QualityGateEvaluationStateReaderPort,
   type RecordCommandOutcomeInput,
   type RecordCommandOutcomeResult,
   type WorkAnchorCommandEffects,
@@ -440,6 +442,9 @@ describe("command pipeline idempotency", () => {
       policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
       handlerRegistry: createCommandHandlerRegistry([createRecordQualityGateEvaluationHandler()]),
       discussionAnchorStateReader: createDiscussionAnchorStateReaderWithGateResult(qualityGateCommand),
+      qualityGateEvaluationStateReader: createQualityGateEvaluationStateReaderWithSatisfiedPriorChain(
+        qualityGateCommand,
+      ),
       workAnchorStateReader: createWorkAnchorStateReaderWithWorkItem({
         workItemId: qualityGateCommand.workItemId,
         organizationId: qualityGateCommand.organizationId,
@@ -1563,6 +1568,58 @@ function createDiscussionAnchorStateReaderWithGateResult(commandInput: RecordQua
         traceId: commandInput.traceId,
       },
     }),
+  };
+}
+
+function createQualityGateEvaluationStateReaderWithSatisfiedPriorChain(
+  commandInput: RecordQualityGateEvaluationCommand,
+): QualityGateEvaluationStateReaderPort {
+  return {
+    listQualityGateEvaluationsForWorkItem: async () =>
+      createSatisfiedQualityGateChain(commandInput).filter(
+        (evaluation) => evaluation.gateKind !== commandInput.gateKind,
+      ),
+  };
+}
+
+function createSatisfiedQualityGateChain(
+  commandInput: RecordQualityGateEvaluationCommand,
+): readonly QualityGateEvaluation[] {
+  return [
+    QualityGateKind.CustomerRfpReview,
+    QualityGateKind.BrdApproval,
+    QualityGateKind.ArchitectureApproval,
+    QualityGateKind.ImplementationReview,
+    QualityGateKind.RuntimeValidation,
+    QualityGateKind.FinalBusinessValidation,
+  ].map((gateKind) => createSatisfiedQualityGateEvaluation(commandInput, gateKind));
+}
+
+function createSatisfiedQualityGateEvaluation(
+  commandInput: RecordQualityGateEvaluationCommand,
+  gateKind: QualityGateKind,
+): QualityGateEvaluation {
+  return {
+    qualityGateEvaluationId: `quality-gate-evaluation-${gateKind}`,
+    organizationId: commandInput.organizationId,
+    projectId: commandInput.projectId,
+    ...(commandInput.teamId === undefined ? {} : { teamId: commandInput.teamId }),
+    workItemId: commandInput.workItemId,
+    discussionAnchorId: commandInput.discussionAnchorId,
+    gateKind,
+    outcome: QualityGateOutcome.Approved,
+    summary: `${gateKind} approved.`,
+    evaluatedArtifactIds: [`artifact-${gateKind}`],
+    businessRuleResults: [],
+    evaluatedAt: "2026-05-29T16:45:00.000Z",
+    evaluatedBy: commandInput.actor,
+    metadata: {
+      updatedAt: "2026-05-29T16:45:00.000Z",
+      version: 1,
+      correlationId: commandInput.correlationId,
+      causationId: commandInput.causationId,
+      traceId: commandInput.traceId,
+    },
   };
 }
 

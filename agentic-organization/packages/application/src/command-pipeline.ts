@@ -23,6 +23,7 @@ import {
   type DiscussionAnchorStateReaderPort,
   type HatAssignmentAuthorityReaderPort,
   type IdGenerator,
+  type QualityGateEvaluationStateReaderPort,
   type SupervisorSignalStateReaderPort,
   type WorkAnchorStateReaderPort,
 } from "./ports.ts";
@@ -40,6 +41,7 @@ export type CommandPipelineDependencies<Command extends PipelineCommand = Pipeli
     handlerRegistry: CommandHandlerRegistry<Command, CommandResult>;
     discussionAnchorStateReader?: DiscussionAnchorStateReaderPort | undefined;
     hatAssignmentAuthorityReader?: HatAssignmentAuthorityReaderPort | undefined;
+    qualityGateEvaluationStateReader?: QualityGateEvaluationStateReaderPort | undefined;
     supervisorSignalStateReader?: SupervisorSignalStateReaderPort | undefined;
     workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
   };

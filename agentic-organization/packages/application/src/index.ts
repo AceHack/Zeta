@@ -97,6 +97,8 @@ export type {
   DiscussionAnchorStateReaderPort,
   HatAssignmentAuthorityReaderPort,
   IdGenerator,
+  QualityGateEvaluationStateReaderPort,
+  QualityGateEvaluationWorkItemLookup,
   RecordCommandOutcomeInput,
   RecordCommandOutcomeResult,
   SupervisorSignalStateReaderPort,

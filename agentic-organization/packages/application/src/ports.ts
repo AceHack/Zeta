@@ -114,6 +114,19 @@ export type WorkScheduleBlockAuthorityReaderPort = {
   ) => Promise<readonly WorkScheduleBlock[]>;
 };
 
+export type QualityGateEvaluationWorkItemLookup = {
+  organizationId: string;
+  projectId: string;
+  teamId?: string | undefined;
+  workItemId: string;
+};
+
+export type QualityGateEvaluationStateReaderPort = {
+  listQualityGateEvaluationsForWorkItem: (
+    lookup: QualityGateEvaluationWorkItemLookup,
+  ) => Promise<readonly QualityGateEvaluation[]>;
+};
+
 export const CommandScheduleAuthorityDecisionStatus = {
   Allowed: "allowed",
   Denied: "denied",

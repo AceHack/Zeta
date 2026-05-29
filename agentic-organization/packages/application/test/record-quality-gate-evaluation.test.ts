@@ -10,6 +10,7 @@ import {
   DiscussionExpectedOutput,
   QualityGateKind,
   QualityGateOutcome,
+  type QualityGateEvaluation,
   type DiscussionAnchor,
   WorkItemState,
   WorkItemType,
@@ -22,6 +23,7 @@ import {
 import type {
   CommandWorkAnchorWorkItem,
   DiscussionAnchorStateReaderPort,
+  QualityGateEvaluationStateReaderPort,
   WorkAnchorStateReaderPort,
 } from "../src/ports.ts";
 
@@ -68,6 +70,9 @@ describe("record quality gate evaluation handler", () => {
       now: () => "2026-05-29T15:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
       discussionAnchorStateReader: createDiscussionAnchorStateReader(createDiscussionAnchor()),
+      qualityGateEvaluationStateReader: createQualityGateEvaluationStateReader(
+        createSatisfiedPriorQualityGateChain(QualityGateKind.FinalBusinessValidation),
+      ),
       workAnchorStateReader: createWorkAnchorStateReader([createWorkItem(command.workItemId)]),
     });
     const result = outcome.result as CommandResult;
@@ -148,6 +153,72 @@ describe("record quality gate evaluation handler", () => {
     equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
     equal(outcome.result.error?.message, "approved final business validation requires all business rules satisfied, not applicable, or changed by decision");
     equal(outcome.effects.qualityGateEvaluations.length, 0);
+  });
+
+  test("rejects final business approval before prior company quality gates are satisfied", async () => {
+    const outcome = await recordQualityGateEvaluation(command, {
+      ...createDependencies(),
+      qualityGateEvaluationStateReader: createQualityGateEvaluationStateReader([
+        createQualityGateEvaluation(QualityGateKind.CustomerRfpReview),
+        createQualityGateEvaluation(QualityGateKind.BrdApproval),
+        createQualityGateEvaluation(QualityGateKind.ArchitectureApproval),
+        createQualityGateEvaluation(QualityGateKind.ImplementationReview),
+      ]),
+    });
+
+    equal(outcome.result.status, CommandResultStatus.Rejected);
+    equal(outcome.result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(outcome.result.error?.message, "quality gate company policy requires prior gates to be approved or waived");
+    equal(outcome.effects.qualityGateEvaluations.length, 0);
+  });
+
+  test("rejects release readiness approval before final business validation is satisfied", async () => {
+    const outcome = await recordQualityGateEvaluation(
+      {
+        ...command,
+        gateKind: QualityGateKind.ReleaseReadiness,
+        businessRuleResults: undefined,
+      },
+      {
+        ...createDependencies(),
+        qualityGateEvaluationStateReader: createQualityGateEvaluationStateReader([
+          createQualityGateEvaluation(QualityGateKind.CustomerRfpReview),
+          createQualityGateEvaluation(QualityGateKind.BrdApproval),
+          createQualityGateEvaluation(QualityGateKind.ArchitectureApproval),
+          createQualityGateEvaluation(QualityGateKind.ImplementationReview),
+          createQualityGateEvaluation(QualityGateKind.RuntimeValidation),
+        ]),
+      },
+    );
+
+    equal(outcome.result.status, CommandResultStatus.Rejected);
+    equal(outcome.result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(outcome.result.error?.message, "quality gate company policy requires prior gates to be approved or waived");
+    equal(outcome.effects.qualityGateEvaluations.length, 0);
+  });
+
+  test("records release readiness when the company quality gate chain is satisfied", async () => {
+    const outcome = await recordQualityGateEvaluation(
+      {
+        ...command,
+        gateKind: QualityGateKind.ReleaseReadiness,
+        businessRuleResults: undefined,
+      },
+      {
+        ...createDependencies(),
+        qualityGateEvaluationStateReader: createQualityGateEvaluationStateReader([
+          createQualityGateEvaluation(QualityGateKind.CustomerRfpReview),
+          createQualityGateEvaluation(QualityGateKind.BrdApproval),
+          createQualityGateEvaluation(QualityGateKind.ArchitectureApproval),
+          createQualityGateEvaluation(QualityGateKind.ImplementationReview),
+          createQualityGateEvaluation(QualityGateKind.RuntimeValidation),
+          createQualityGateEvaluation(QualityGateKind.FinalBusinessValidation),
+        ]),
+      },
+    );
+
+    equal(outcome.result.status, CommandResultStatus.Accepted);
+    equal(outcome.effects.qualityGateEvaluations[0]?.gateKind, QualityGateKind.ReleaseReadiness);
   });
 
   test("rejects quality gates without evaluated artifact evidence", async () => {
@@ -265,6 +336,14 @@ function createWorkAnchorStateReader(workItems: readonly CommandWorkAnchorWorkIt
   };
 }
 
+function createQualityGateEvaluationStateReader(
+  qualityGateEvaluations: readonly QualityGateEvaluation[],
+): QualityGateEvaluationStateReaderPort {
+  return {
+    listQualityGateEvaluationsForWorkItem: async () => qualityGateEvaluations,
+  };
+}
+
 function createDiscussionAnchor(): DiscussionAnchor {
   return {
     discussionAnchorId: command.discussionAnchorId,
@@ -293,6 +372,9 @@ function createDependencies() {
     now: () => "2026-05-29T15:00:00.000Z",
     createId: (prefix: string) => `${prefix}-001`,
     discussionAnchorStateReader: createDiscussionAnchorStateReader(createDiscussionAnchor()),
+    qualityGateEvaluationStateReader: createQualityGateEvaluationStateReader(
+      createSatisfiedPriorQualityGateChain(command.gateKind),
+    ),
     workAnchorStateReader: createWorkAnchorStateReader([createWorkItem(command.workItemId)]),
   };
 }
@@ -325,4 +407,44 @@ function createWorkItem(workItemId: string): CommandWorkAnchorWorkItem {
       traceId: command.traceId,
     },
   } as CommandWorkAnchorWorkItem;
+}
+
+function createQualityGateEvaluation(gateKind: QualityGateKind): QualityGateEvaluation {
+  return {
+    qualityGateEvaluationId: `quality-gate-evaluation-${gateKind}`,
+    organizationId: command.organizationId,
+    projectId: command.projectId,
+    ...(command.teamId === undefined ? {} : { teamId: command.teamId }),
+    workItemId: command.workItemId,
+    discussionAnchorId: command.discussionAnchorId,
+    gateKind,
+    outcome: QualityGateOutcome.Approved,
+    summary: `${gateKind} approved.`,
+    evaluatedArtifactIds: [`artifact-${gateKind}`],
+    businessRuleResults: [],
+    evaluatedAt: "2026-05-29T14:45:00.000Z",
+    evaluatedBy: command.actor,
+    metadata: {
+      updatedAt: "2026-05-29T14:45:00.000Z",
+      version: 1,
+      correlationId: command.correlationId,
+      causationId: command.causationId,
+      traceId: command.traceId,
+    },
+  };
+}
+
+function createSatisfiedPriorQualityGateChain(gateKind: QualityGateKind): readonly QualityGateEvaluation[] {
+  const orderedGateKinds = [
+    QualityGateKind.CustomerRfpReview,
+    QualityGateKind.BrdApproval,
+    QualityGateKind.ArchitectureApproval,
+    QualityGateKind.ImplementationReview,
+    QualityGateKind.RuntimeValidation,
+    QualityGateKind.FinalBusinessValidation,
+    QualityGateKind.ReleaseReadiness,
+  ];
+  const gateIndex = orderedGateKinds.indexOf(gateKind);
+
+  return gateIndex <= 0 ? [] : orderedGateKinds.slice(0, gateIndex).map(createQualityGateEvaluation);
 }

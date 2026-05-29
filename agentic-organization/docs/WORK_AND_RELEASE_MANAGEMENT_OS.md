@@ -166,14 +166,19 @@ customer_rfp_review
   -> release_readiness
 ```
 
-These are represented by typed `quality_gate_evaluations` in V0. Later release
-and work-transition policy should reject:
+These are represented by typed `quality_gate_evaluations` in V0. The first
+company-level Work OS policy is active for gate approvals: approved later gates
+must have every required earlier gate already `approved` or `waived`, read
+through the generic quality-gate evaluation state reader. This currently rejects:
+
+- `final_business_validation` approval before required runtime validation
+  evidence exists;
+- `release_readiness` approval before final business validation is approved.
+
+Next work-transition policy should reject:
 
 - `ready` for ambiguous/customer-facing work without `implementation_ready` or
   an approved no-discovery/no-BRD decision;
-- `final_business_validation` approval before required runtime validation
-  evidence exists;
-- `release_readiness` approval before final business validation is approved;
 - merge from an initiative branch into `main` before release readiness is
   approved.
 
