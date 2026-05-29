@@ -3,14 +3,27 @@ import { readFile } from "node:fs/promises";
 import { describe, test } from "node:test";
 import { fileURLToPath } from "node:url";
 
-import { InitiativeStatus, ProjectStatus, WorkItemState, WorkItemType } from "../../domain/src/index.ts";
+import {
+  InitiativeStatus,
+  ProjectStatus,
+  HatAssignmentAuthorityState,
+  ScheduleBlockState,
+  ScheduleBlockType,
+  WorkItemState,
+  WorkItemType,
+} from "../../domain/src/index.ts";
 import {
   CockroachCoreStateMigrationName,
   CockroachSchemaBackfillValue,
   CockroachTableName,
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
+  createCockroachDecisionRecordKernelMigration,
+  createCockroachDiscussionAnchorKernelMigration,
+  createCockroachHatAssignmentAuthorityProjectionMigration,
   createCockroachOutboxClaimFenceMigration,
+  createCockroachReactionPlanExecutionLifecycleMigration,
+  createCockroachWorkScheduleBlockKernelMigration,
   createCockroachWorkAnchorKernelMigration,
   createCockroachWorkItemStateHistoryMetadataMigration,
 } from "../src/cockroach-schema.ts";
@@ -43,6 +56,8 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("PRIMARY KEY (event_id, consumer_name)"));
     ok(migration.sql.includes("status STRING NOT NULL"));
     ok(migration.sql.includes("action_json JSONB NOT NULL"));
+    ok(migration.sql.includes("attempt_count INT8 NOT NULL DEFAULT 0"));
+    ok(migration.sql.includes("next_attempt_at TIMESTAMPTZ"));
     ok(migration.sql.includes("result_json JSONB NOT NULL"));
   });
 
@@ -61,6 +76,11 @@ describe("cockroach core state schema", () => {
     equal(migrations[1]?.name, CockroachCoreStateMigrationName.OutboxClaimFenceV2);
     equal(migrations[2]?.name, CockroachCoreStateMigrationName.WorkAnchorKernelV3);
     equal(migrations[3]?.name, CockroachCoreStateMigrationName.WorkItemStateHistoryMetadataV4);
+    equal(migrations[4]?.name, CockroachCoreStateMigrationName.DiscussionAnchorKernelV5);
+    equal(migrations[5]?.name, CockroachCoreStateMigrationName.DecisionRecordKernelV6);
+    equal(migrations[6]?.name, CockroachCoreStateMigrationName.WorkScheduleBlockKernelV7);
+    equal(migrations[7]?.name, CockroachCoreStateMigrationName.HatAssignmentAuthorityProjectionV8);
+    equal(migrations[8]?.name, CockroachCoreStateMigrationName.ReactionPlanExecutionLifecycleV9);
   });
 
   test("declares an additive work-anchor kernel migration for existing databases", () => {
@@ -124,6 +144,100 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("version = COALESCE(version, 1)"));
     ok(migration.sql.includes("ALTER COLUMN updated_at SET NOT NULL"));
     ok(migration.sql.includes("ALTER COLUMN version SET NOT NULL"));
+  });
+
+  test("declares an additive discussion anchor kernel migration for existing databases", () => {
+    const migration = createCockroachDiscussionAnchorKernelMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.DiscussionAnchorKernelV5);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DiscussionAnchors}`));
+    ok(migration.sql.includes("discussion_anchor_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("team_id STRING"));
+    ok(migration.sql.includes("work_item_id STRING NOT NULL"));
+    ok(migration.sql.includes("discussion_anchor_type STRING NOT NULL"));
+    ok(migration.sql.includes("CHECK (discussion_anchor_type IN ('work_item'))"));
+    ok(migration.sql.includes("expected_outputs JSONB NOT NULL"));
+    ok(migration.sql.includes("created_by_agent_id STRING NOT NULL"));
+    ok(migration.sql.includes("created_by_hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("correlation_id STRING NOT NULL"));
+    ok(migration.sql.includes("causation_id STRING NOT NULL"));
+    ok(migration.sql.includes("trace_id STRING NOT NULL"));
+  });
+
+  test("declares an additive decision record kernel migration for existing databases", () => {
+    const migration = createCockroachDecisionRecordKernelMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.DecisionRecordKernelV6);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DecisionRecords}`));
+    ok(migration.sql.includes("decision_record_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("discussion_anchor_id STRING NOT NULL"));
+    ok(migration.sql.includes("work_item_id STRING NOT NULL"));
+    ok(migration.sql.includes("decision STRING NOT NULL"));
+    ok(migration.sql.includes("rationale STRING NOT NULL"));
+    ok(migration.sql.includes("alternatives_considered JSONB NOT NULL"));
+    ok(migration.sql.includes("follow_up_work_item_ids JSONB NOT NULL"));
+    ok(migration.sql.includes("decided_by_agent_id STRING NOT NULL"));
+    ok(migration.sql.includes("decided_by_hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("correlation_id STRING NOT NULL"));
+    ok(migration.sql.includes("causation_id STRING NOT NULL"));
+    ok(migration.sql.includes("trace_id STRING NOT NULL"));
+  });
+
+  test("declares an additive work schedule block kernel migration for existing databases", () => {
+    const migration = createCockroachWorkScheduleBlockKernelMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.WorkScheduleBlockKernelV7);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkScheduleBlocks}`));
+    ok(migration.sql.includes("work_schedule_block_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("work_item_id STRING NOT NULL"));
+    ok(migration.sql.includes("discussion_anchor_id STRING"));
+    ok(migration.sql.includes("assigned_agent_id STRING NOT NULL"));
+    ok(migration.sql.includes("assigned_hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("block_type STRING NOT NULL"));
+    ok(migration.sql.includes("state STRING NOT NULL"));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(ScheduleBlockType))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(ScheduleBlockState))));
+    ok(migration.sql.includes("starts_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("ends_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("scheduled_by_agent_id STRING NOT NULL"));
+    ok(migration.sql.includes("scheduled_by_hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("correlation_id STRING NOT NULL"));
+    ok(migration.sql.includes("causation_id STRING NOT NULL"));
+    ok(migration.sql.includes("trace_id STRING NOT NULL"));
+  });
+
+  test("declares an additive hat assignment authority projection migration for existing databases", () => {
+    const migration = createCockroachHatAssignmentAuthorityProjectionMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.HatAssignmentAuthorityProjectionV8);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.HatAssignmentAuthorities}`));
+    ok(migration.sql.includes("hat_assignment_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("organization_id STRING NOT NULL"));
+    ok(migration.sql.includes("project_id STRING NOT NULL"));
+    ok(migration.sql.includes("team_id STRING"));
+    ok(migration.sql.includes("assigned_agent_id STRING NOT NULL"));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(HatAssignmentAuthorityState))));
+    ok(migration.sql.includes("updated_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("version INT8 NOT NULL"));
+    ok(migration.sql.includes("correlation_id STRING NOT NULL"));
+    ok(migration.sql.includes("causation_id STRING NOT NULL"));
+    ok(migration.sql.includes("trace_id STRING NOT NULL"));
+  });
+
+  test("declares an additive reaction plan execution lifecycle migration for existing databases", () => {
+    const migration = createCockroachReactionPlanExecutionLifecycleMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ReactionPlanExecutionLifecycleV9);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.ReactionPlans}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS claim_id STRING"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS claimed_at TIMESTAMPTZ"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS claim_expires_at TIMESTAMPTZ"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS failed_at TIMESTAMPTZ"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS result_json JSONB"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS failure_json JSONB"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS attempt_count INT8 NOT NULL DEFAULT 0"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS next_attempt_at TIMESTAMPTZ"));
   });
 
   test("keeps generated migrations synchronized with checked-in SQL files", async () => {

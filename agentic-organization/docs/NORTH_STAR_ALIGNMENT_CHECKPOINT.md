@@ -215,19 +215,29 @@ state machine, but it cannot skip the created/intake record, cannot move
 to ready until triage evidence exists, and cannot move to in-progress
 until an engineer is assigned and scheduled.
 
-### Discussion Anchor Gap
+### Discussion Anchor Progress
 
-The docs say V0 work should include discussion anchors and graph nodes.
-The current implementation writes supervisor signal, work-anchor command
-effects, audit event, outbox event, idempotency record, inbox receipts,
-and reaction plans. The next V0 command slice must either implement
-discussion-anchor creation or explicitly stage it as the next command
-after `send_supervisor_signal`.
+The implementation now includes the first durable
+`create_discussion_anchor` and `record_decision` command slices. V0
+intentionally supports only work-item-scoped anchors and decisions because the
+current event envelope and NATS outbox require `workItemId`. The anchor handler
+validates the referenced work item, rejects wrong-scope work items, rejects
+non-work-item anchor targets until the scope contract is widened, writes
+discussion-anchor command effects through the same idempotent
+`recordCommandOutcome` port as supervisor and work effects, and emits
+`discussion_anchor.created` through the Cockroach-backed outbox.
+
+The decision handler validates the referenced discussion anchor, requires that
+the anchor expected a decision output, records rationale, alternatives, and
+follow-up work IDs, and emits `decision.recorded` through the Cockroach-backed
+outbox. Remaining follow-on work: graph-node/edge projection, conversation
+threads, meetings, votes, and wider project/initiative anchors after the event
+scope and policy model explicitly support those targets.
 
 ### Transaction Boundary Progress
 
-The command pipeline now persists supervisor signal state, work-anchor
-effects, audit events, outbox events, and idempotency records through one
+The command pipeline now persists supervisor signal state, discussion anchors,
+decision records, work-anchor effects, audit events, outbox events, and idempotency records through one
 `recordCommandOutcome` port. Command handlers return typed effects
 instead of writing piecemeal state. Work-anchor effects are application
 contracts rather than `state` or `state-cockroach` imports, and the
@@ -291,13 +301,16 @@ proofs wired into CI/dev-cluster execution, a concrete Node/NestJS
 process host around the existing entrypoint contract, and cluster OTEL
 export wiring.
 
-### Command Surface Closure
+### Command Surface Progress
 
-The command pipeline and command result are still shaped around the
-first command. Before adding `triage_supervisor_signal`,
-`reserve_hat`, or `decide_gate`, make the pipeline generic over
-registered command/result contracts or return a generic command outcome
-with typed artifacts and events.
+The command pipeline and command result are now generic over registered
+command/result contracts and typed artifacts. `triage_supervisor_signal`
+has started as a narrow V0 command: the target supervisor hat can turn a
+validated supervisor signal into follow-up work through the same
+work-anchor, audit, outbox, policy, and idempotency boundary. The
+remaining command-surface gap is no longer the registry shape; it is the
+next authority-heavy commands such as `reserve_hat`, `decide_gate`,
+schedule start/complete, and richer triage actions.
 
 ### Raw Chat Tool Names
 
@@ -369,9 +382,11 @@ labels, dashboard ownership, and alertable degraded-worker signals.
    UI boards.
 3. Add policy/hat-authority checks before exposing command handlers to
    API, MCP, Hermes, or workers.
-4. Add `triage_supervisor_signal` as the next real command slice.
-5. Add discussion-anchor enforcement and graph retrieval OpenSpec
-   scenarios, then implement the minimal anchor command.
+4. Expand `triage_supervisor_signal` beyond the V0 `open_work_item`
+   path into signal status updates, escalation, security review,
+   discussion scheduling, and internal-platform routing.
+5. Add graph retrieval OpenSpec scenarios and implement graph projection over
+   the new discussion-anchor records.
 6. Decide whether the env-gated Cockroach integration proof should run
    in CI through a local service, a k3d profile, or an operator-triggered
    real-cluster job.
@@ -380,7 +395,10 @@ labels, dashboard ownership, and alertable degraded-worker signals.
 8. Build one substrate integration at a time, starting with hat-system
    projection because identity, authority, CRDs, NATS subjects, and
    policy meet there.
-9. Implement the schedule/RMO lifecycle before real meeting-heavy,
-   review-heavy, or verification-heavy autonomous work so agents
-   consume time, worktrees, credentials, and runtime capacity through
-   explicit allocation rather than ambient availability.
+9. Continue the schedule/RMO lifecycle after the first
+   `schedule_work_block` slice. V0 now persists a work-item-scoped,
+   anti-overlap `scheduled` block for an assigned agent/hat and publishes
+   `work_schedule_block.scheduled`, but meetings, start/complete,
+   pause/resume, worktree/runtime/credential allocation, and compliance
+   observation still need to land before meeting-heavy, review-heavy, or
+   verification-heavy autonomous work consumes capacity.

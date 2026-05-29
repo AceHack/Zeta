@@ -1,0 +1,93 @@
+import type { HatAssignmentAuthorityReaderPort } from "../../application/src/index.ts";
+import {
+  HatAssignmentAuthorityState,
+  type HatAssignmentAuthoritySnapshot,
+} from "../../domain/src/index.ts";
+import { CockroachTableName } from "./cockroach-schema.ts";
+
+export const CockroachHatAssignmentAuthorityReaderStatement = {
+  FindHatAssignmentAuthority: "find_hat_assignment_authority",
+} as const;
+
+export type CockroachHatAssignmentAuthorityReaderStatement =
+  (typeof CockroachHatAssignmentAuthorityReaderStatement)[keyof typeof CockroachHatAssignmentAuthorityReaderStatement];
+
+export type CockroachHatAssignmentAuthoritySqlStatement = {
+  name: CockroachHatAssignmentAuthorityReaderStatement;
+  sql: string;
+  parameters: readonly unknown[];
+};
+
+export type CockroachHatAssignmentAuthoritySqlResult<Row = Record<string, unknown>> = {
+  rows: readonly Row[];
+};
+
+export type CockroachHatAssignmentAuthoritySqlExecutor = {
+  execute: <Row = Record<string, unknown>>(
+    statement: CockroachHatAssignmentAuthoritySqlStatement,
+  ) => Promise<CockroachHatAssignmentAuthoritySqlResult<Row>>;
+};
+
+export type CreateCockroachHatAssignmentAuthorityReaderInput = {
+  executor: CockroachHatAssignmentAuthoritySqlExecutor;
+};
+
+export function createCockroachHatAssignmentAuthorityReader(
+  input: CreateCockroachHatAssignmentAuthorityReaderInput,
+): HatAssignmentAuthorityReaderPort {
+  return {
+    findHatAssignmentAuthority: async (hatAssignmentId) =>
+      mapHatAssignmentAuthorityRow((await input.executor.execute<HatAssignmentAuthorityRow>({
+        name: CockroachHatAssignmentAuthorityReaderStatement.FindHatAssignmentAuthority,
+        sql: CockroachHatAssignmentAuthoritySql.FindHatAssignmentAuthority,
+        parameters: [hatAssignmentId],
+      })).rows[0]),
+  };
+}
+
+function mapHatAssignmentAuthorityRow(
+  row: HatAssignmentAuthorityRow | undefined,
+): HatAssignmentAuthoritySnapshot | undefined {
+  if (row === undefined || !isHatAssignmentAuthorityState(row.state)) {
+    return undefined;
+  }
+
+  return {
+    hatAssignmentId: row.hat_assignment_id,
+    organizationId: row.organization_id,
+    projectId: row.project_id,
+    ...(row.team_id == null ? {} : { teamId: row.team_id }),
+    assignedAgentId: row.assigned_agent_id,
+    state: row.state,
+  };
+}
+
+function isHatAssignmentAuthorityState(value: unknown): value is HatAssignmentAuthorityState {
+  return (
+    typeof value === "string" &&
+    Object.values(HatAssignmentAuthorityState).includes(value as HatAssignmentAuthorityState)
+  );
+}
+
+type HatAssignmentAuthorityRow = {
+  hat_assignment_id: string;
+  organization_id: string;
+  project_id: string;
+  team_id?: string | null;
+  assigned_agent_id: string;
+  state: unknown;
+};
+
+const CockroachHatAssignmentAuthoritySql = {
+  FindHatAssignmentAuthority: `
+    SELECT
+      hat_assignment_id,
+      organization_id,
+      project_id,
+      team_id,
+      assigned_agent_id,
+      state
+    FROM ${CockroachTableName.HatAssignmentAuthorities}
+    WHERE hat_assignment_id = $1
+  `,
+} as const;

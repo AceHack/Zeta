@@ -164,6 +164,10 @@ function createHashableObservation(observation: PolicyDecisionObservation): Omit
     hashableObservation.supervisorChain = observation.supervisorChain;
   }
 
+  if (observation.resource !== undefined) {
+    hashableObservation.resource = observation.resource;
+  }
+
   return hashableObservation;
 }
 

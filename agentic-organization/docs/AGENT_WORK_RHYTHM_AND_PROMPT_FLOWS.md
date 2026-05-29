@@ -72,6 +72,13 @@ Schedules should follow the hierarchy:
 
 Schedule changes should be auditable. A supervising hat can adjust a schedule, but the agent should be able to report that the schedule is causing slowdowns, context gaps, poor quality, or excessive review lag.
 
+The first executable schedule primitive is `schedule_work_block`. It creates a
+work-item-scoped, `scheduled` block for an assigned agent and hat, optionally
+linked to a discussion anchor. Persistence rejects overlapping scheduled or
+active blocks for the same hat assignment, so the schedule can become runtime
+authority for future meetings, prompt-flow starts, review slots, free time,
+reflection, and memory maintenance.
+
 ## Hierarchical Review and Red-Team Rhythm
 
 Each hierarchical layer should review the layer below it and also receive structured feedback from below.

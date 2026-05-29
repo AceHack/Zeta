@@ -1,13 +1,26 @@
-import type { CommandStateStoreFactory } from "../../application/src/ports.ts";
+import type {
+  CommandStateStoreFactory,
+  HatAssignmentAuthorityReaderPort,
+  WorkScheduleBlockAuthorityReaderPort,
+} from "../../application/src/ports.ts";
+import type { DiscussionAnchorStateReaderPort } from "../../application/src/ports.ts";
 import type { OutboxEventSource } from "../../state/src/index.ts";
 import type { EventIngestionStore } from "../../state/src/index.ts";
 import type { WorkAnchorStateStore } from "../../state/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "./cockroach-sql-executor.ts";
 import { createCockroachCommandStateStoreFactory, type CockroachSqlExecutor } from "./cockroach-command-state-store.ts";
 import {
+  createCockroachDiscussionAnchorStateStore,
+  type CockroachDiscussionAnchorSqlExecutor,
+} from "./cockroach-discussion-anchor-state-store.ts";
+import {
   createCockroachEventIngestionStore,
   type CockroachEventIngestionSqlExecutor,
 } from "./cockroach-event-ingestion-store.ts";
+import {
+  createCockroachHatAssignmentAuthorityReader,
+  type CockroachHatAssignmentAuthoritySqlExecutor,
+} from "./cockroach-hat-assignment-authority-reader.ts";
 import { createCockroachOutboxEventSource, type CockroachOutboxSqlExecutor } from "./cockroach-outbox-event-source.ts";
 import {
   createCockroachPolicyDecisionObservationStore,
@@ -15,15 +28,28 @@ import {
   type CockroachPolicyDecisionObservationStore,
 } from "./cockroach-policy-decision-observation-store.ts";
 import {
+  createCockroachReactionPlanWorkQueue,
+  type CockroachReactionPlanWorkQueueSqlExecutor,
+} from "./cockroach-reaction-plan-work-queue.ts";
+import {
   createCockroachWorkAnchorStateStore,
   type CockroachWorkAnchorSqlExecutor,
 } from "./cockroach-work-anchor-state-store.ts";
+import {
+  createCockroachWorkScheduleBlockAuthorityReader,
+  type CockroachWorkScheduleBlockAuthoritySqlExecutor,
+} from "./cockroach-work-schedule-block-authority-reader.ts";
+import type { ReactionPlanWorkQueue } from "../../state/src/index.ts";
 
 export type CockroachOrganizationSqlExecutor = CockroachGenericSqlExecutor &
   CockroachSqlExecutor &
+  CockroachDiscussionAnchorSqlExecutor &
   CockroachOutboxSqlExecutor &
   CockroachEventIngestionSqlExecutor &
+  CockroachHatAssignmentAuthoritySqlExecutor &
   CockroachPolicyDecisionObservationSqlExecutor &
+  CockroachReactionPlanWorkQueueSqlExecutor &
+  CockroachWorkScheduleBlockAuthoritySqlExecutor &
   CockroachWorkAnchorSqlExecutor;
 
 export type CockroachDurableStateAdapters<Result> = {
@@ -31,6 +57,10 @@ export type CockroachDurableStateAdapters<Result> = {
   outboxEventSource: OutboxEventSource;
   eventIngestionStore: EventIngestionStore;
   policyDecisionObservationStore: CockroachPolicyDecisionObservationStore;
+  discussionAnchorStateReader: DiscussionAnchorStateReaderPort;
+  hatAssignmentAuthorityReader: HatAssignmentAuthorityReaderPort;
+  reactionPlanWorkQueue: ReactionPlanWorkQueue;
+  workScheduleBlockAuthorityReader: WorkScheduleBlockAuthorityReaderPort;
   workAnchorStateStore: WorkAnchorStateStore;
 };
 
@@ -52,6 +82,18 @@ export function createCockroachDurableStateAdapters<Result>(
       executor: input.executor,
     }),
     policyDecisionObservationStore: createCockroachPolicyDecisionObservationStore({
+      executor: input.executor,
+    }),
+    discussionAnchorStateReader: createCockroachDiscussionAnchorStateStore({
+      executor: input.executor,
+    }),
+    hatAssignmentAuthorityReader: createCockroachHatAssignmentAuthorityReader({
+      executor: input.executor,
+    }),
+    reactionPlanWorkQueue: createCockroachReactionPlanWorkQueue({
+      executor: input.executor,
+    }),
+    workScheduleBlockAuthorityReader: createCockroachWorkScheduleBlockAuthorityReader({
       executor: input.executor,
     }),
     workAnchorStateStore: createCockroachWorkAnchorStateStore({

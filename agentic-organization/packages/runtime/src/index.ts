@@ -14,3 +14,14 @@ export {
   evaluateV0AutomationRules,
   type ReactionPlanAction,
 } from "./reaction-plan.ts";
+export {
+  ReactionPlanExecutionStatus,
+  ReactionPlanExecutorIdPrefix,
+  createReactionPlanExecutor,
+  type CreateReactionPlanExecutorInput,
+  type ExecuteReactionPlansResult,
+  type ReactionPlanActionExecutionContext,
+  type ReactionPlanActionExecutionResult,
+  type ReactionPlanActionExecutorPort,
+  type ReactionPlanExecutor,
+} from "./reaction-plan-executor.ts";

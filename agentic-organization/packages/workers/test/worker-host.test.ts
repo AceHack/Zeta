@@ -18,7 +18,13 @@ import {
   type OutboxPublishBatchResult,
   type OutboxPublisher,
 } from "../../messaging/src/index.ts";
-import { createEventIngestionProcessor, evaluateV0AutomationRules } from "../../runtime/src/index.ts";
+import {
+  ReactionPlanExecutionStatus,
+  createEventIngestionProcessor,
+  evaluateV0AutomationRules,
+  type ExecuteReactionPlansResult,
+  type ReactionPlanExecutor,
+} from "../../runtime/src/index.ts";
 import {
   EventIngestionOutcomeStatus,
   InboundEventConsumerName,
@@ -43,6 +49,7 @@ describe("organization worker host", () => {
       outboxPublisher,
       inboundEventSource,
       eventIngestionProcessor,
+      reactionPlanExecutor: createReactionPlanExecutor(),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -67,6 +74,7 @@ describe("organization worker host", () => {
         failedCount: 0,
         reactionPlanCount: 0,
       },
+      reactionPlans: createReactionPlanExecutionResult(),
       failures: [],
     });
   });
@@ -99,6 +107,13 @@ describe("organization worker host", () => {
         now: () => "2026-05-25T20:06:00.000Z",
         createId: (prefix) => `${prefix}-001`,
       }),
+      reactionPlanExecutor: createReactionPlanExecutor({
+        status: ReactionPlanExecutionStatus.Succeeded,
+        claimedCount: 1,
+        succeededCount: 1,
+        failedCount: 0,
+        claimLostCount: 0,
+      }),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -110,8 +125,43 @@ describe("organization worker host", () => {
     equal(result.outbox?.status, OutboxPublishOutcomeStatus.Published);
     equal(result.inbound.processedCount, 1);
     equal(result.inbound.reactionPlanCount, 1);
+    equal(result.reactionPlans.succeededCount, 1);
     equal(eventIngestionStore.snapshot.inboxReceipts.length, 1);
     equal(eventIngestionStore.snapshot.reactionPlans.length, 1);
+  });
+
+  test("runs reaction-plan execution as a first-class worker lane", async () => {
+    const reactionPlanExecutor = createReactionPlanExecutor({
+      status: ReactionPlanExecutionStatus.Succeeded,
+      claimedCount: 2,
+      succeededCount: 2,
+      failedCount: 0,
+      claimLostCount: 0,
+    });
+    const workerHost = createOrganizationWorkerHost({
+      outboxPublisher: createRecordingOutboxPublisher({
+        status: OutboxPublishOutcomeStatus.Empty,
+        attemptedCount: 0,
+        publishedOutboxEventIds: [],
+      }),
+      inboundEventSource: createRecordingInboundEventSource([]),
+      eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      reactionPlanExecutor,
+      outboxBatchSize: 25,
+      inboundBatchSize: 10,
+    });
+
+    const result = await workerHost.runOnce();
+
+    equal(result.status, WorkerCycleStatus.Worked);
+    equal(reactionPlanExecutor.runCount, 1);
+    deepEqual(result.reactionPlans, {
+      status: ReactionPlanExecutionStatus.Succeeded,
+      claimedCount: 2,
+      succeededCount: 2,
+      failedCount: 0,
+      claimLostCount: 0,
+    });
   });
 
   test("reports idle when no outbox or inbound work is available", async () => {
@@ -123,6 +173,7 @@ describe("organization worker host", () => {
       }),
       inboundEventSource: createRecordingInboundEventSource([]),
       eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      reactionPlanExecutor: createReactionPlanExecutor(),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -150,6 +201,7 @@ describe("organization worker host", () => {
         createInboundEnvelope("evt-conflict-001"),
       ]),
       eventIngestionProcessor,
+      reactionPlanExecutor: createReactionPlanExecutor(),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -175,6 +227,7 @@ describe("organization worker host", () => {
       outboxPublisher: createFailingOutboxPublisher("outbox unavailable"),
       inboundEventSource: createRecordingInboundEventSource([inboundEnvelope]),
       eventIngestionProcessor,
+      reactionPlanExecutor: createReactionPlanExecutor(),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -216,6 +269,7 @@ describe("organization worker host", () => {
         createInboundEnvelope("evt-ingest-ok-002"),
       ]),
       eventIngestionProcessor,
+      reactionPlanExecutor: createReactionPlanExecutor(),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -259,6 +313,7 @@ describe("organization worker host", () => {
       }),
       inboundEventSource: createRecordingInboundEventSource([]),
       eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      reactionPlanExecutor: createReactionPlanExecutor(),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -294,6 +349,7 @@ describe("organization worker host", () => {
       }),
       inboundEventSource: createRecordingInboundEventSource([]),
       eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      reactionPlanExecutor: createReactionPlanExecutor(),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -324,6 +380,7 @@ describe("organization worker host", () => {
       }),
       inboundEventSource: createRecordingInboundEventSource([]),
       eventIngestionProcessor: createRecordingEventIngestionProcessor(),
+      reactionPlanExecutor: createReactionPlanExecutor(),
       outboxBatchSize: 25,
       inboundBatchSize: 10,
     });
@@ -342,6 +399,36 @@ describe("organization worker host", () => {
 type RecordingOutboxPublisher = OutboxPublisher & {
   batchSizes: number[];
 };
+
+type RecordingReactionPlanExecutor = ReactionPlanExecutor & {
+  readonly runCount: number;
+};
+
+function createReactionPlanExecutor(
+  result: ExecuteReactionPlansResult = createReactionPlanExecutionResult(),
+): RecordingReactionPlanExecutor {
+  let runCount = 0;
+
+  return {
+    get runCount() {
+      return runCount;
+    },
+    executeNextBatch: async () => {
+      runCount += 1;
+      return result;
+    },
+  };
+}
+
+function createReactionPlanExecutionResult(): ExecuteReactionPlansResult {
+  return {
+    status: ReactionPlanExecutionStatus.Idle,
+    claimedCount: 0,
+    succeededCount: 0,
+    failedCount: 0,
+    claimLostCount: 0,
+  };
+}
 
 function createRecordingOutboxPublisher(result: OutboxPublishBatchResult): RecordingOutboxPublisher {
   const batchSizes: number[] = [];

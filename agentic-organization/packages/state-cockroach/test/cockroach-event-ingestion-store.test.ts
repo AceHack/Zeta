@@ -1,7 +1,13 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
-import { ReactionPlanActionType, ReactionPlanReason, ReactionPlanStatus, RequiredHat } from "../../domain/src/index.ts";
+import {
+  ReactionPlanActionType,
+  ReactionPlanReason,
+  ReactionPlanStatus,
+  RequiredHat,
+  SupervisorChainLevel,
+} from "../../domain/src/index.ts";
 import {
   EventIngestionOutcomeStatus,
   InboundEventConsumerName,
@@ -239,6 +245,7 @@ function createReactionPlanRecord(): ReactionPlanRecord {
       teamId: "team-runtime",
       workItemId: "work-outbox-001",
       supervisorSignalId: "supervisor-signal-001",
+      targetLevel: SupervisorChainLevel.Manager,
       requiredHat: RequiredHat.EngineeringManager,
       reason: ReactionPlanReason.SupervisorSignalNeedsTriage,
     },

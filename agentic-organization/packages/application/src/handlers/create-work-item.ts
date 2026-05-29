@@ -141,6 +141,9 @@ export async function createWorkItem(
     },
     effects: {
       supervisorSignals: [],
+      discussionAnchors: [],
+      decisionRecords: [],
+      workScheduleBlocks: [],
       auditEvents: [
         {
           auditEventId,
@@ -305,6 +308,9 @@ function createRejectedValidationOutcome(
 function createEmptyCommandEffects(): CommandEffects {
   return {
     supervisorSignals: [],
+    discussionAnchors: [],
+    decisionRecords: [],
+    workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],
     workAnchors: {
@@ -317,6 +323,6 @@ function createEmptyCommandEffects(): CommandEffects {
   };
 }
 
-function isBlank(value: string): boolean {
-  return value.trim().length === 0;
+function isBlank(value: unknown): boolean {
+  return typeof value !== "string" || value.trim().length === 0;
 }

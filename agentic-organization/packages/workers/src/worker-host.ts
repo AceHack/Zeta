@@ -9,7 +9,12 @@ import {
   type OutboxPublishBatchResult,
   type OutboxPublisher,
 } from "../../messaging/src/index.ts";
-import type { EventIngestionProcessor } from "../../runtime/src/index.ts";
+import {
+  ReactionPlanExecutionStatus,
+  type EventIngestionProcessor,
+  type ExecuteReactionPlansResult,
+  type ReactionPlanExecutor,
+} from "../../runtime/src/index.ts";
 import { EventIngestionOutcomeStatus } from "../../state/src/index.ts";
 
 export const WorkerCycleStatus = {
@@ -23,6 +28,7 @@ export type WorkerCycleStatus = (typeof WorkerCycleStatus)[keyof typeof WorkerCy
 export const WorkerLane = {
   Inbound: "inbound",
   Outbox: "outbox",
+  ReactionPlan: "reaction_plan",
 } as const;
 
 export type WorkerLane = (typeof WorkerLane)[keyof typeof WorkerLane];
@@ -58,6 +64,7 @@ export type WorkerCycleResult = {
   status: WorkerCycleStatus;
   outbox: OutboxPublishBatchResult | undefined;
   inbound: WorkerInboundCycleSummary;
+  reactionPlans: ExecuteReactionPlansResult;
   failures: readonly WorkerPortFailure[];
 };
 
@@ -69,6 +76,7 @@ export type CreateOrganizationWorkerHostInput = {
   outboxPublisher: OutboxPublisher;
   inboundEventSource: InboundEventSource;
   eventIngestionProcessor: EventIngestionProcessor;
+  reactionPlanExecutor: ReactionPlanExecutor;
   outboxBatchSize: number;
   inboundBatchSize: number;
 };
@@ -88,18 +96,50 @@ export function createOrganizationWorkerHost(input: CreateOrganizationWorkerHost
         eventIngestionProcessor: input.eventIngestionProcessor,
         failures,
       });
+      const reactionPlans = await executeReactionPlanBatch({
+        reactionPlanExecutor: input.reactionPlanExecutor,
+        failures,
+      });
 
       return {
         status: resolveWorkerCycleStatus({
           outbox,
           inbound,
+          reactionPlans,
           failures,
         }),
         outbox,
         inbound,
+        reactionPlans,
         failures,
       };
     },
+  };
+}
+
+type ExecuteReactionPlanBatchInput = {
+  reactionPlanExecutor: ReactionPlanExecutor;
+  failures: WorkerPortFailure[];
+};
+
+async function executeReactionPlanBatch(
+  input: ExecuteReactionPlanBatchInput,
+): Promise<ExecuteReactionPlansResult> {
+  try {
+    return await input.reactionPlanExecutor.executeNextBatch();
+  } catch (error) {
+    input.failures.push(createWorkerPortFailure(WorkerLane.ReactionPlan, error));
+    return createEmptyReactionPlanExecutionSummary();
+  }
+}
+
+function createEmptyReactionPlanExecutionSummary(): ExecuteReactionPlansResult {
+  return {
+    status: ReactionPlanExecutionStatus.Idle,
+    claimedCount: 0,
+    succeededCount: 0,
+    failedCount: 0,
+    claimLostCount: 0,
   };
 }
 
@@ -195,6 +235,7 @@ function createEmptyInboundCycleSummary(pulledCount: number): WorkerInboundCycle
 type ResolveWorkerCycleStatusInput = {
   outbox: OutboxPublishBatchResult | undefined;
   inbound: WorkerInboundCycleSummary;
+  reactionPlans: ExecuteReactionPlansResult;
   failures: readonly WorkerPortFailure[];
 };
 
@@ -203,7 +244,18 @@ function resolveWorkerCycleStatus(input: ResolveWorkerCycleStatusInput): WorkerC
     return WorkerCycleStatus.Degraded;
   }
 
-  if (input.outbox?.status === OutboxPublishOutcomeStatus.Published || input.inbound.pulledCount > 0) {
+  if (
+    input.reactionPlans.status === ReactionPlanExecutionStatus.Failed ||
+    input.reactionPlans.status === ReactionPlanExecutionStatus.ClaimLost
+  ) {
+    return WorkerCycleStatus.Degraded;
+  }
+
+  if (
+    input.outbox?.status === OutboxPublishOutcomeStatus.Published ||
+    input.inbound.pulledCount > 0 ||
+    input.reactionPlans.claimedCount > 0
+  ) {
     return WorkerCycleStatus.Worked;
   }
 

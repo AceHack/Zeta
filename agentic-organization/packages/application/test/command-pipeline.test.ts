@@ -5,6 +5,8 @@ import {
   AgenticAggregateType,
   AgenticEventType,
   CommandType,
+  DiscussionAnchorType,
+  DiscussionExpectedOutput,
   EventSchemaVersion,
   InitiativeStatus,
   ProjectStatus,
@@ -35,9 +37,18 @@ import {
   createSendSupervisorSignalHandler,
   type SendSupervisorSignalCommand,
 } from "../src/handlers/send-supervisor-signal.ts";
+import {
+  createCreateDiscussionAnchorHandler,
+  type CreateDiscussionAnchorCommand,
+} from "../src/handlers/create-discussion-anchor.ts";
 import type { PipelineCommand } from "../src/command-contract.ts";
 import {
+  CommandOutcomeEffectConflictReason,
   CommandOutcomePersistenceStatus,
+  CommandScheduleAuthorityDecisionStatus,
+  CommandScheduleAuthorityDenialReason,
+  type CommandScheduleAuthorityPort,
+  type CommandScheduleAuthorityRequest,
   type CommandStateStore,
   type CommandStateStoreFactory,
   type CommandWorkAnchorInitiative,
@@ -111,7 +122,11 @@ type RecordGenericArtifactCommand = PipelineCommand & {
   relatedWorkItemId?: string;
 };
 
-type OrganizationTestCommand = SendSupervisorSignalCommand | CreateWorkItemCommand | RecordGenericArtifactCommand;
+type OrganizationTestCommand =
+  | SendSupervisorSignalCommand
+  | CreateWorkItemCommand
+  | CreateDiscussionAnchorCommand
+  | RecordGenericArtifactCommand;
 
 describe("command pipeline idempotency", () => {
   test("executes heterogeneous command handlers from one runtime registry", async () => {
@@ -328,6 +343,201 @@ describe("command pipeline idempotency", () => {
     equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
   });
 
+  test("authorizes discussion anchors against the direct command work item scope", async () => {
+    const discussionAnchorCommand: CreateDiscussionAnchorCommand = {
+      commandId: "cmd-discussion-anchor-pipeline-001",
+      type: CommandType.CreateDiscussionAnchor,
+      idempotencyKey: "idem-discussion-anchor-pipeline-001",
+      requestHash: "hash-discussion-anchor-pipeline-001",
+      correlationId: "corr-discussion-anchor-pipeline-001",
+      causationId: "cause-discussion-anchor-pipeline-001",
+      traceId: "trace-discussion-anchor-pipeline-001",
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      actor: {
+        agentId: "agent-em-001",
+        hatAssignmentId: "hat-assignment-em-001",
+      },
+      teamId: "team-runtime",
+      workItemId: "work-discussion-anchor-001",
+      discussionAnchorType: DiscussionAnchorType.WorkItem,
+      title: "Review evidence readiness",
+      purpose: "Decide whether the work item has enough evidence for review.",
+      expectedOutputs: [DiscussionExpectedOutput.Decision],
+    };
+    const commandAuthorizationPort = createAllowingCommandAuthorizationPort();
+    const pipeline = createCommandPipeline<CreateDiscussionAnchorCommand>({
+      stateStoreFactory: createInMemoryOrganizationStoreFactory<CommandResult>(),
+      commandAuthorizationPort,
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createCreateDiscussionAnchorHandler()]),
+      workAnchorStateReader: createWorkAnchorStateReaderWithWorkItem({
+        workItemId: "work-discussion-anchor-001",
+        organizationId: "org-lfg",
+        projectId: "project-agentic-org",
+      }),
+      now: () => "2026-05-28T22:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(discussionAnchorCommand);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    deepEqual(commandAuthorizationPort.requests[0]?.scope, {
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      teamId: "team-runtime",
+      workItemId: "work-discussion-anchor-001",
+    });
+  });
+
+  test("passes direct schedule resource context to command authorization", async () => {
+    const genericCommand = {
+      commandId: "cmd-generic-schedule-resource-001",
+      type: ApplicationTestCommandType.RecordGenericArtifact,
+      idempotencyKey: "idem-generic-schedule-resource-001",
+      requestHash: "hash-generic-schedule-resource-001",
+      correlationId: "corr-generic-schedule-resource-001",
+      causationId: "cause-generic-schedule-resource-001",
+      traceId: "trace-generic-schedule-resource-001",
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      actor: {
+        agentId: "agent-em-001",
+        hatAssignmentId: "hat-assignment-em-001",
+      },
+      assignedAgentId: "agent-dev-001",
+      assignedHatAssignmentId: "hat-assignment-dev-001",
+      blockType: "prioritized_work",
+      startsAt: "2026-05-29T16:00:00.000Z",
+      endsAt: "2026-05-29T17:00:00.000Z",
+    } as RecordGenericArtifactCommand;
+    const commandAuthorizationPort = createAllowingCommandAuthorizationPort();
+    const pipeline = createCommandPipeline<RecordGenericArtifactCommand>({
+      stateStoreFactory: createRecordingCommandStateStoreFactory<CommandResult>(),
+      commandAuthorizationPort,
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createGenericArtifactHandler()]),
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    await pipeline.execute(genericCommand);
+
+    deepEqual(commandAuthorizationPort.requests[0]?.resource, {
+      assignedAgentId: "agent-dev-001",
+      assignedHatAssignmentId: "hat-assignment-dev-001",
+      blockType: "prioritized_work",
+      startsAt: "2026-05-29T16:00:00.000Z",
+      endsAt: "2026-05-29T17:00:00.000Z",
+    });
+  });
+
+  test("rejects new commands after idempotency lookup when schedule authority denies runtime execution", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const scheduleAuthorityPort = createDenyingScheduleAuthorityPort();
+    const pipeline = createCommandPipeline<RecordGenericArtifactCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      commandScheduleAuthorityPort: scheduleAuthorityPort,
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createGenericArtifactHandler()]),
+      now: () => "2026-05-29T16:30:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute({
+      commandId: "cmd-schedule-authority-denied-001",
+      type: ApplicationTestCommandType.RecordGenericArtifact,
+      idempotencyKey: "idem-schedule-authority-denied-001",
+      requestHash: "hash-schedule-authority-denied-001",
+      correlationId: "corr-schedule-authority-denied-001",
+      causationId: "cause-schedule-authority-denied-001",
+      traceId: "trace-schedule-authority-denied-001",
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      actor: {
+        agentId: "agent-dev-001",
+        hatAssignmentId: "hat-assignment-dev-001",
+      },
+      relatedWorkItemId: "work-runtime-001",
+    });
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.ScheduleAuthorityDenied);
+    equal(result.error?.reason, CommandScheduleAuthorityDenialReason.ScheduleBlockRequired);
+    equal(stateStoreFactory.findCallCount, 1);
+    equal(stateStoreFactory.recordedOutcomes.length, 0);
+    deepEqual(scheduleAuthorityPort.requests[0], {
+      commandId: "cmd-schedule-authority-denied-001",
+      commandType: ApplicationTestCommandType.RecordGenericArtifact,
+      actor: {
+        agentId: "agent-dev-001",
+        hatAssignmentId: "hat-assignment-dev-001",
+      },
+      scope: {
+        organizationId: "org-lfg",
+        projectId: "project-agentic-org",
+      },
+      evaluatedAt: "2026-05-29T16:30:00.000Z",
+    });
+  });
+
+  test("replays accepted command results before volatile schedule authority is evaluated", async () => {
+    const storedResult: CommandResult = {
+      commandId: "cmd-schedule-replay-001",
+      status: CommandResultStatus.Accepted,
+      artifacts: [
+        {
+          artifactType: CommandResultArtifactType.Generic,
+          artifactId: "generic-artifact-replay-001",
+        },
+      ],
+      idempotency: {
+        replayed: false,
+      },
+    };
+    const stateStoreFactory = createReplayCommandStateStoreFactory<CommandResult>({
+      idempotencyKey: "idem-schedule-replay-001",
+      requestHash: "hash-schedule-replay-001",
+      result: storedResult,
+    });
+    const scheduleAuthorityPort = createDenyingScheduleAuthorityPort();
+    const pipeline = createCommandPipeline<RecordGenericArtifactCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      commandScheduleAuthorityPort: scheduleAuthorityPort,
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createGenericArtifactHandler()]),
+      now: () => "2026-05-29T18:30:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute({
+      commandId: "cmd-schedule-replay-001",
+      type: ApplicationTestCommandType.RecordGenericArtifact,
+      idempotencyKey: "idem-schedule-replay-001",
+      requestHash: "hash-schedule-replay-001",
+      correlationId: "corr-schedule-replay-001",
+      causationId: "cause-schedule-replay-001",
+      traceId: "trace-schedule-replay-001",
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      actor: {
+        agentId: "agent-dev-001",
+        hatAssignmentId: "hat-assignment-dev-001",
+      },
+    });
+
+    deepEqual(result, {
+      ...storedResult,
+      idempotency: {
+        replayed: true,
+      },
+    });
+    equal(scheduleAuthorityPort.requests.length, 0);
+  });
+
   test("rejects supervisor signals for missing work anchors through the command pipeline", async () => {
     const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
     const pipeline = createCommandPipeline<SendSupervisorSignalCommand>({
@@ -432,14 +642,11 @@ describe("command pipeline idempotency", () => {
       createId: (prefix) => `${prefix}-001`,
     });
 
-    try {
-      await pipeline.execute(genericCommand);
-      throw new Error("expected invalid work-anchor effects to fail");
-    } catch (error) {
-      equal(error instanceof Error, true);
-      equal((error as Error).message, "conflict:version_mismatch");
-    }
+    const result = await pipeline.execute(genericCommand);
 
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "work anchor command effect conflict");
     equal(stateStoreFactory.snapshot.projects.length, 0);
     equal(stateStoreFactory.snapshot.workItems.length, 0);
     equal(stateStoreFactory.snapshot.workStateTransitions.length, 0);
@@ -612,6 +819,32 @@ describe("command pipeline idempotency", () => {
     equal(result.status, CommandResultStatus.Rejected);
     equal(result.commandId, command.commandId);
     equal(result.error?.code, CommandErrorCode.IdempotencyConflict);
+    equal(stateStoreFactory.recordedOutcomes.length, 1);
+  });
+
+  test("returns typed precondition rejection when outcome persistence detects an effect conflict", async () => {
+    const stateStoreFactory = createOutcomeResultCommandStateStoreFactory<CommandResult>({
+      status: CommandOutcomePersistenceStatus.EffectConflict,
+      reason: CommandOutcomeEffectConflictReason.WorkScheduleBlockOverlap,
+    });
+    const pipeline = createCommandPipeline({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.commandId, command.commandId);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(
+      result.error?.message,
+      "schedule block overlaps an existing active or scheduled block for the same hat assignment",
+    );
     equal(stateStoreFactory.recordedOutcomes.length, 1);
   });
 
@@ -813,6 +1046,25 @@ function createRecordingCommandStateStoreFactory<Result>(): RecordingCommandStat
   };
 }
 
+function createReplayCommandStateStoreFactory<Result>(
+  record: {
+    idempotencyKey: string;
+    requestHash: string;
+    result: Result;
+  },
+): CommandStateStoreFactory<Result> {
+  return {
+    createCommandStateStore: () => ({
+      findIdempotencyRecord: async (idempotencyKey) =>
+        idempotencyKey === record.idempotencyKey ? record : undefined,
+      recordCommandOutcome: async (input) => ({
+        status: CommandOutcomePersistenceStatus.Committed,
+        result: input.idempotencyRecord.result,
+      }),
+    }),
+  };
+}
+
 function createAllowingCommandAuthorizationPort(): CommandAuthorizationPort & {
   requests: CommandAuthorizationRequest[];
 } {
@@ -844,6 +1096,25 @@ function createRecordingPolicyDecisionObservationPort(
     observePolicyDecision: async (observation) => {
       observations.push(observation);
       return { status };
+    },
+  };
+}
+
+function createDenyingScheduleAuthorityPort(): CommandScheduleAuthorityPort & {
+  requests: CommandScheduleAuthorityRequest[];
+} {
+  const requests: CommandScheduleAuthorityRequest[] = [];
+
+  return {
+    requests,
+    authorizeCommandSchedule: async (request) => {
+      requests.push(request);
+
+      return {
+        status: CommandScheduleAuthorityDecisionStatus.Denied,
+        reason: CommandScheduleAuthorityDenialReason.ScheduleBlockRequired,
+        message: "command requires a current schedule block for this hat assignment",
+      };
     },
   };
 }
@@ -896,6 +1167,9 @@ function createRecordingCommandHandler() {
         },
         effects: {
           supervisorSignals: [],
+          discussionAnchors: [],
+          decisionRecords: [],
+          workScheduleBlocks: [],
           auditEvents: [],
           outboxEvents: [],
         },
@@ -926,6 +1200,9 @@ function createGenericArtifactHandler() {
       },
       effects: {
         supervisorSignals: [],
+        discussionAnchors: [],
+        decisionRecords: [],
+        workScheduleBlocks: [],
         auditEvents: [],
         outboxEvents: [],
       },
@@ -955,6 +1232,9 @@ function createGenericArtifactHandlerWithEffects() {
       },
       effects: {
         supervisorSignals: [],
+        discussionAnchors: [],
+        decisionRecords: [],
+        workScheduleBlocks: [],
         auditEvents: [
           {
             auditEventId: "audit-committed-001",
@@ -1024,6 +1304,9 @@ function createGenericArtifactHandlerWithWorkAnchorEffects() {
       },
       effects: {
         supervisorSignals: [],
+        discussionAnchors: [],
+        decisionRecords: [],
+        workScheduleBlocks: [],
         auditEvents: [],
         outboxEvents: [],
         workAnchors: createValidWorkAnchorCommandEffects(recordCommand),
@@ -1050,6 +1333,9 @@ function createGenericArtifactHandlerWithInvalidWorkAnchorEffects() {
         },
         effects: {
           supervisorSignals: [],
+          discussionAnchors: [],
+          decisionRecords: [],
+          workScheduleBlocks: [],
           auditEvents: [
             {
               auditEventId: "audit-invalid-work-anchor-001",
@@ -1089,6 +1375,9 @@ function createGenericArtifactHandlerWithCapturedWorkAnchorEffects(workAnchors: 
       },
       effects: {
         supervisorSignals: [],
+        discussionAnchors: [],
+        decisionRecords: [],
+        workScheduleBlocks: [],
         auditEvents: [],
         outboxEvents: [],
         workAnchors,
@@ -1132,6 +1421,38 @@ function createMutableWorkAnchorReferenceReader(): WorkAnchorStateReaderPort & {
       return this.initiative;
     },
     findWorkItem: async () => undefined,
+  };
+}
+
+function createWorkAnchorStateReaderWithWorkItem(input: {
+  workItemId: string;
+  organizationId: string;
+  projectId: string;
+}): WorkAnchorStateReaderPort {
+  return {
+    findProject: async () => undefined,
+    findInitiative: async () => undefined,
+    findWorkItem: async () => ({
+      workItemId: input.workItemId,
+      organizationId: input.organizationId,
+      projectId: input.projectId,
+      workItemType: WorkItemType.Task,
+      title: "Discussion anchor work item",
+      description: "Work item used to authorize and validate discussion-anchor commands.",
+      state: WorkItemState.InProgress,
+      createdAt: "2026-05-28T21:00:00.000Z",
+      createdBy: {
+        agentId: "agent-em-001",
+        hatAssignmentId: "hat-assignment-em-001",
+      },
+      metadata: {
+        updatedAt: "2026-05-28T21:00:00.000Z",
+        version: 1,
+        correlationId: "corr-discussion-anchor-pipeline-001",
+        causationId: "cause-discussion-anchor-pipeline-001",
+        traceId: "trace-discussion-anchor-pipeline-001",
+      },
+    }),
   };
 }
 

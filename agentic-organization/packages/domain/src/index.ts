@@ -26,7 +26,10 @@ export {
   ReactionPlanReason,
   ReactionPlanStatus,
   RequiredHat,
+  type CreateSupervisorTriageReactionPlanAction,
   type ReactionPlanAction,
+  type RequestImplementationAssignmentReactionPlanAction,
+  type RequestReviewGateReactionPlanAction,
 } from "./reaction-plan.ts";
 export {
   WorkerFailureEvidenceKey,
@@ -40,6 +43,8 @@ export {
   SupervisorSignalStatus,
   SupervisorSignalToolType,
   SupervisorTriageActionType,
+  isSupervisorChainLevel,
+  isSupervisorSignalToolType,
 } from "./supervisor-communication.ts";
 export {
   DefaultTeamMemberSupervisorTools,
@@ -50,7 +55,9 @@ export {
 } from "./hat-communication-brief.ts";
 export type {
   AuditEvent,
+  DecisionRecord,
   DiscussionAnchor,
+  HatAssignmentAuthoritySnapshot,
   IdempotencyRecord,
   Initiative,
   OutboxEvent,
@@ -58,6 +65,21 @@ export type {
   SupervisorSignal,
   WorkAnchorTarget,
   WorkItem,
+  WorkItemStateChangedPayload,
+  WorkScheduleBlock,
   WorkStateTransition,
 } from "./records.ts";
-export { InitiativeStatus, ProjectStatus } from "./records.ts";
+export {
+  DiscussionAnchorType,
+  DiscussionExpectedOutput,
+  HatAssignmentAuthorityState,
+  InitiativeStatus,
+  ProjectStatus,
+  ScheduleBlockState,
+  ScheduleBlockType,
+  isDiscussionAnchorType,
+  isDiscussionExpectedOutput,
+  isScheduleBlockState,
+  isScheduleBlockType,
+  isWorkItemStateChangedPayload,
+} from "./records.ts";

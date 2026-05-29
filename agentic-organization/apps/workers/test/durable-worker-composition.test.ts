@@ -12,6 +12,11 @@ import type {
   NatsDeadLetterMessage,
   NatsJetStreamInboundMessage,
 } from "../../../packages/messaging-nats/src/index.ts";
+import {
+  ReactionPlanExecutionStatus,
+  type ReactionPlanActionExecutionResult,
+  type ReactionPlanActionExecutorPort,
+} from "../../../packages/runtime/src/index.ts";
 import type { CockroachOrganizationSqlExecutor } from "../../../packages/state-cockroach/src/index.ts";
 import { WorkerCycleStatus } from "../../../packages/workers/src/index.ts";
 import { composeDurableWorkerRuntimePorts, type WorkerRuntimeTelemetrySink } from "../src/index.ts";
@@ -32,6 +37,8 @@ describe("durable worker runtime composition", () => {
         natsInboundBatchSize: 25,
         workerInboundBatchSize: 10,
         workerOutboxBatchSize: 5,
+        workerReactionPlanBatchSize: 3,
+        workerReactionPlanLeaseMs: 300_000,
       },
       durableAdapters: {
         cockroachExecutor,
@@ -41,6 +48,7 @@ describe("durable worker runtime composition", () => {
         },
         natsPullConsumer: createRecordingNatsPullConsumer([]),
         natsDeadLetterPublisher: createRecordingNatsDeadLetterPublisher(),
+        reactionPlanActionExecutor: createNoopReactionPlanActionExecutor(),
         telemetrySink,
       },
       runtimeUtilities: {
@@ -76,6 +84,8 @@ describe("durable worker runtime composition", () => {
         natsInboundBatchSize: 25,
         workerInboundBatchSize: 10,
         workerOutboxBatchSize: 5,
+        workerReactionPlanBatchSize: 3,
+        workerReactionPlanLeaseMs: 300_000,
       },
       durableAdapters: {
         cockroachExecutor: createRecordingCockroachExecutor(),
@@ -85,6 +95,7 @@ describe("durable worker runtime composition", () => {
         },
         natsPullConsumer,
         natsDeadLetterPublisher,
+        reactionPlanActionExecutor: createNoopReactionPlanActionExecutor(),
         telemetrySink: createNoopTelemetrySink(),
       },
       runtimeUtilities: {
@@ -115,6 +126,8 @@ describe("durable worker runtime composition", () => {
         natsInboundBatchSize: 25,
         workerInboundBatchSize: 10,
         workerOutboxBatchSize: 5,
+        workerReactionPlanBatchSize: 3,
+        workerReactionPlanLeaseMs: 300_000,
       },
       durableAdapters: {
         cockroachExecutor: createRecordingCockroachExecutor(),
@@ -124,6 +137,7 @@ describe("durable worker runtime composition", () => {
         },
         natsPullConsumer: createRecordingNatsPullConsumer([createInvalidNatsMessage()]),
         natsDeadLetterPublisher,
+        reactionPlanActionExecutor: createNoopReactionPlanActionExecutor(),
         telemetrySink: createNoopTelemetrySink(),
       },
       runtimeUtilities: {
@@ -259,6 +273,19 @@ function createRecordingEventPublisher(): {
 function createNoopTelemetrySink(): WorkerRuntimeTelemetrySink {
   return {
     record: async () => undefined,
+  };
+}
+
+function createNoopReactionPlanActionExecutor(): ReactionPlanActionExecutorPort {
+  return {
+    executeReactionPlanAction: async (): Promise<ReactionPlanActionExecutionResult> => ({
+      status: ReactionPlanExecutionStatus.Succeeded,
+      result: {
+        message: "noop test reaction action",
+        createdWorkItemIds: [],
+        createdDiscussionAnchorIds: [],
+      },
+    }),
   };
 }
 

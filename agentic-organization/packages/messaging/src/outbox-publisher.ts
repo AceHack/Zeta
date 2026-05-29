@@ -3,7 +3,10 @@ import type { OutboxEventSource } from "../../state/src/index.ts";
 import { buildAgenticEventSubject } from "./subject-builder.ts";
 
 export const AgenticMessagingDomain = {
+  Decision: "decision",
+  DiscussionAnchor: "discussion_anchor",
   SupervisorSignal: "supervisor_signal",
+  WorkScheduleBlock: "work_schedule_block",
   WorkItem: "work_item",
 } as const;
 
@@ -105,8 +108,20 @@ export const OutboxPublisherIdPrefix = {
 export type OutboxPublisherIdPrefix = (typeof OutboxPublisherIdPrefix)[keyof typeof OutboxPublisherIdPrefix];
 
 export function resolveAgenticMessagingDomain(eventType: AgenticEventType): AgenticMessagingDomain {
+  if (eventType === AgenticEventType.DecisionRecorded) {
+    return AgenticMessagingDomain.Decision;
+  }
+
+  if (eventType === AgenticEventType.DiscussionAnchorCreated) {
+    return AgenticMessagingDomain.DiscussionAnchor;
+  }
+
   if (eventType === AgenticEventType.SupervisorSignalSent) {
     return AgenticMessagingDomain.SupervisorSignal;
+  }
+
+  if (eventType === AgenticEventType.WorkScheduleBlockScheduled) {
+    return AgenticMessagingDomain.WorkScheduleBlock;
   }
 
   if (eventType === AgenticEventType.WorkItemChanged || eventType === AgenticEventType.WorkItemStateChanged) {

@@ -41,6 +41,9 @@ send_supervisor_signal
   -> inbox receipt / consumer dedupe
   -> event-processing outcome persisted through one store operation
   -> persisted reaction plans
+  -> leased reaction-plan claim with retry/backoff fencing
+  -> supervisor-triage action executor calls normal command pipeline
+  -> work-item discussion anchor command
   -> worker host cycle summary
   -> apps/workers runtime summary
   -> LGTM span attributes
@@ -49,9 +52,27 @@ send_supervisor_signal
 
 ## Checkpoint Boundary
 
-The implemented slice does not yet create discussion anchors, graph
-nodes, hat assignments, hat tokens, prompt-flow runs, Hermes runs, or
-reviewer gates. Those remain V0 follow-on commands.
+The implemented slice now includes minimal work-item-scoped discussion
+anchors, durable decision records, and the first work-item-scoped schedule
+block primitive. It still does not yet create graph nodes, hat assignments,
+hat tokens, prompt-flow runs, Hermes runs, conversation threads, meetings,
+votes, or reviewer gates. Those remain V0 follow-on commands.
+
+Discussion Anchor V0 is deliberately narrow: `create_discussion_anchor`
+requires an existing work item in the same organization/project scope,
+rejects non-work-item anchor targets until the event envelope is widened, and
+records audit/outbox evidence through the generic command outcome boundary.
+Decision Record V0 is equally narrow: `record_decision` requires an existing
+work-item discussion anchor in the same org/project/team/work scope, and the
+anchor must list `decision` as an expected output before the command can emit
+`decision.recorded`.
+
+Schedule Block V0 is also intentionally narrow: `schedule_work_block` creates
+a `scheduled` `work_schedule_block` for one assigned agent/hat on an existing
+work item, optionally tied to an existing work-item discussion anchor. The
+state stores reject overlapping `scheduled` or `active` blocks for the same hat
+assignment, which makes agent time an enforceable capacity resource rather
+than an informal calendar note.
 
 Capability-request-shaped inputs should continue to enter through
 `send_supervisor_signal`. The target supervisor triage step decides
@@ -63,8 +84,8 @@ escalate.
 
 | Package                        | Implemented first                                                                                                                                                     |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, shared records |
-| `@agentic-org/application`     | generic command pipeline, command-handler registry, state-store ports, idempotency conflict handling, generic command outcome artifacts/events, supervisor signal handler |
+| `@agentic-org/domain`          | event envelope, command/event constants, aggregate constants, supervisor-chain communication types, hat communication briefs, work item state machine, discussion anchor enums, decision records, schedule block records, shared records |
+| `@agentic-org/application`     | generic command pipeline, command-handler registry, state-store ports, idempotency conflict handling, generic command outcome artifacts/events, supervisor signal handler, work item handler, discussion anchor handler, decision record handler, schedule work block handler |
 | `@agentic-org/policy`          | command authorization port, hat-authority port, policy-decision observation/store/reader ports, active/expired/revoked/scope/tool denial decisions, typed reasons     |
 | `@agentic-org/state`           | generic state-store/outbox-source ports plus the in-memory Organization state-store factory fake                                                                      |
 | `@agentic-org/state-cockroach` | first replaceable durable SQL implementation of state-store, outbox-source, event-ingestion, and policy-observation ports, backed by CockroachDB                      |
@@ -153,6 +174,19 @@ Hermes runs, MCP calls, and UI evidence.
 - The command pipeline receives state-store factories and command
   handlers through ports instead of constructing in-memory adapters or
   branching on command types.
+- The command pipeline also has a generic schedule-authority preflight
+  port. The first application adapter reads current authorizing work
+  schedule blocks through a generic reader port and denies runtime
+  commands when the actor/hat has no current block, when the block scope
+  does not match the command, or when the block type does not allow that
+  command. Scheduling commands remain schedule-exempt so managers can
+  create the future time allocation that later work must obey.
+  Discussion-anchor creation is also schedule-exempt in V0 because it is
+  routing metadata used to create anchored work before meetings or work
+  blocks exist; decisions, work creation, supervisor signals, and actual
+  execution remain schedule-gated. The in-memory and Cockroach state
+  packages now provide authority readers that filter scheduled/active
+  blocks by actor, hat, and evaluated time.
 - The command pipeline is now generic over Organization command
   contracts. A second registered command type can pass through policy,
   idempotency, handler dispatch, and outcome persistence without
@@ -251,14 +285,37 @@ Hermes runs, MCP calls, and UI evidence.
   completion check fails after reaction plans were prepared, the
   transaction rolls back and the adapter returns a generic duplicate
   outcome.
+- The reaction-plan work queue now tracks attempt count and next
+  attempt time. Retryable failures return to `planned` only after a
+  backoff window; max-attempt exhaustion records terminal failure
+  instead of hot-looping.
+- Cockroach reaction-plan claims use database time for durable lease
+  ownership, reclaim at the exact expiry boundary, and reject malformed
+  durable action JSON before invalid rows can reach runtime executors.
+  Malformed claimed rows are terminally failed as nonretryable during
+  claim processing so a bad durable row cannot poison the always-on
+  reaction lane forever.
+- The runtime reaction-plan executor checks the lease before starting an
+  action, passes a stable action idempotency key to action executors, and
+  fences completion/failure by the active claim.
+- The first application-level reaction action executor converts
+  supervisor-triage, ready-work implementation-assignment, and
+  review-gate reactions into normal `create_discussion_anchor` commands
+  through the command pipeline. It requires the accepted command result
+  to include a discussion-anchor artifact before the reaction can
+  complete. This proves reactions can become self-fulfilling
+  Organization routing work without bypassing command policy,
+  idempotency, audit, or outbox behavior. Schedule-gated execution still
+  starts at the later work/decision/supervisor-signal commands rather
+  than at anchor creation.
 - Governance now checks that runtime code, like application code, cannot
   import vendor adapters or vendor clients directly. Vendor packages must
   implement generic Organization ports consumed by application/runtime
   packages.
-- The worker host now runs one bounded outbox cycle plus one bounded
-  inbound-ingestion cycle through explicit ports, then returns an
+- The worker host now runs bounded outbox, inbound-ingestion, and
+  reaction-plan execution lanes through explicit ports, then returns an
   idle/worked/degraded summary suitable for future logs, metrics, and UI
-  workflow visibility. If one lane fails, the other lane still runs and
+  workflow visibility. If one lane fails, the other lanes still run and
   the failure is returned as typed cycle data.
 - A governance test enforces that worker source does not import the
   Cockroach adapter, NATS adapter, NestJS, NATS, Dapr, Temporal,
@@ -287,22 +344,29 @@ Hermes runs, MCP calls, and UI evidence.
 - `apps/workers` validates required process config before any loop can
   start: environment, Organization ID, NATS stream, durable consumer,
   CockroachDB URL, positive NATS inbound batch size, positive worker
-  inbound batch size, and positive worker outbox batch size.
+  inbound batch size, positive worker outbox batch size, positive
+  reaction-plan batch size, and positive reaction-plan lease duration.
 - `apps/workers` parses required runtime values from typed environment
   names: `AGENTIC_ORG_ENV`, `AGENTIC_ORG_ID`, `NATS_SERVERS`, `NATS_STREAM`,
   `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`, `COCKROACH_DATABASE_URL`,
-  `WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE`. String
-  values are trimmed, `NATS_SERVERS` is parsed as a comma-separated
-  server list with no empty entries, and all batch sizes must be safe
-  positive decimal integers.
+  `WORKER_INBOUND_BATCH_SIZE`, `WORKER_OUTBOX_BATCH_SIZE`,
+  `WORKER_REACTION_PLAN_BATCH_SIZE`, and
+  `WORKER_REACTION_PLAN_LEASE_MS`. String values are trimmed,
+  `NATS_SERVERS` is parsed as a comma-separated server list with no
+  empty entries, and all batch/lease values must be safe positive
+  decimal integers.
 - `apps/workers` treats any non-happy NATS consumer counter as degraded:
   failed, dead-lettered, invalid, payload-conflict,
   negative-acknowledged, or terminated messages.
 - `apps/workers` exposes app-level composition factories that receive
   typed config plus already-constructed ports. The durable worker
   composition seam now binds a generic Cockroach executor into the
-  `state-cockroach` adapter factory, then wires Cockroach-backed outbox
-  and event-ingestion stores into the worker host. The first app-local
+  `state-cockroach` adapter factory, then wires Cockroach-backed outbox,
+  event-ingestion, and reaction-plan work-queue stores into the worker
+  host. The reaction-plan lane executes through a generic action
+  executor port, so concrete supervisor-triage, assignment, review-gate,
+  and future Organization actions can evolve without coupling the worker
+  host to a bespoke tool. The first app-local
   Cockroach worker client now adapts a pooled process client to the
   generic `CockroachSqlClient` contract and proves direct query,
   transaction commit, rollback, rollback-after-commit-failure,
@@ -378,9 +442,10 @@ Hermes runs, MCP calls, and UI evidence.
   real `send_supervisor_signal` command outcome to Cockroach, runs the
   process worker loop for two cycles, publishes the durable outbox event
   to NATS, consumes it through the NATS consumer, records the inbox
-  receipt and supervisor-triage reaction plan in Cockroach, captures
-  worker/NATS telemetry records, proves the second cycle has no duplicate
-  side effects, and shuts down both adapters through generic process
+  receipt and supervisor-triage reaction plan in Cockroach, claims and
+  completes that reaction plan through the reaction executor lane,
+  captures worker/NATS telemetry records, proves the second cycle has no
+  duplicate side effects, and shuts down both adapters through generic process
   shutdown ports or guarded cleanup.
 - Worker-cycle failures can carry structured evidence. Stale outbox
   claim failures now preserve claim ID, current claim ID, outbox event

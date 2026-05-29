@@ -43,6 +43,8 @@ Current duties:
   and exit-intent ports without calling process globals directly;
 - pass configured NATS batch size, stream name, and durable consumer
   name into the adapter boundary;
+- run the reaction-plan executor lane through a generic action executor
+  port so durable reaction plans become self-fulfilling work attempts;
 - emit worker-cycle and NATS-consumer batch telemetry records;
 - return a healthy/degraded runtime result that makes failures visible
   without starving the other loop.
@@ -62,11 +64,15 @@ The app currently receives ports that tests can fake:
 
 `composeDurableWorkerRuntimePorts` is the first durable app seam. It
 binds a generic Cockroach executor into the reusable
-`state-cockroach` adapter factory, then wires Cockroach-backed outbox and
-event-ingestion stores into the package-level worker host. Future
-concrete process wiring can bind the same ports to a real Cockroach
-connection pool, NATS, OTLP/logging, health checks, readiness checks,
-and graceful shutdown without changing runtime rule evaluation.
+`state-cockroach` adapter factory, then wires Cockroach-backed outbox,
+event-ingestion, and reaction-plan work-queue stores into the
+package-level worker host. The reaction action executor is injected as a
+port so concrete supervisor-triage, assignment, review-gate, and future
+Organization actions can evolve without making Cockroach or NATS types
+visible to application packages. Future concrete process wiring can bind
+the same ports to a real Cockroach connection pool, NATS, OTLP/logging,
+health checks, readiness checks, and graceful shutdown without changing
+runtime rule evaluation.
 `createWorkerProcess` is the first process lifecycle entrypoint
 contract, not a long-running executable host yet. It applies
 bootstrappers such as Cockroach migrations once per process, checks
@@ -103,7 +109,9 @@ Required runtime values:
 - `NATS_DURABLE`;
 - `NATS_INBOUND_BATCH_SIZE`;
 - `WORKER_INBOUND_BATCH_SIZE`;
-- `WORKER_OUTBOX_BATCH_SIZE`.
+- `WORKER_OUTBOX_BATCH_SIZE`;
+- `WORKER_REACTION_PLAN_BATCH_SIZE`;
+- `WORKER_REACTION_PLAN_LEASE_MS`.
 
 URLs, credentials, and other sensitive adapter settings are process
 configuration owned by this app boundary. In the full AI cluster,

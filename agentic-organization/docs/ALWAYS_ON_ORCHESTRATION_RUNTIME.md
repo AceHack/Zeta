@@ -33,6 +33,47 @@ state changes
 
 The Organization database remains authoritative. NATS, the run orchestrator, k3s, Hindsight, and telemetry systems are synchronized through workers and reconcilers.
 
+## External Reference Lesson: Event First, Recovery Second
+
+The Gastown reference review reinforced a concrete runtime rule:
+polling-only orchestration stalls. Their stronger convoy pattern uses
+event-driven completion detection first and a stranded scan as the
+recovery net. Agentic Organization should use the same shape on our
+own substrate:
+
+```text
+domain event
+  -> inbox receipt and payload hash
+  -> deterministic reaction plan
+  -> executor claims the plan
+  -> policy, lease, schedule, budget, and hat supply checks
+  -> action attempt
+  -> outcome event and telemetry
+  -> recovery scanner catches stale, missed, or stranded plans
+```
+
+The V0 code now applies this principle for three small reactions:
+supervisor signals create a supervisor-triage reaction plan, work items
+entering `ready` request implementation assignment by an Engineering
+Manager, and work items entering `review` request a reviewer gate. The
+worker host now has a first-class reaction-plan execution lane: it
+claims planned work through a leased queue, executes the action through
+a generic action executor port, fences completion/failure by the active
+lease, and emits cycle telemetry for claimed, succeeded, failed, and
+claim-lost counts. Reaction actions receive stable action idempotency
+keys, expired leases are rejected before side effects start, retryable
+failures back off before becoming claimable again, and max-attempt
+exhaustion leaves terminal failure evidence instead of an invisible
+loop. The first concrete application action executor calls the normal
+command pipeline to create a work-item discussion anchor for supervisor
+triage; it does not mutate business state directly. The command
+pipeline now has a schedule-authority preflight, and the first
+application adapter proves the generic rule: runtime commands require
+an active matching schedule block whose block type allows the command.
+Future workers should add the recovery side: stale reaction-plan scans,
+stranded schedule scans, abandoned run-binding scans, and dead-letter
+replay/quarantine scans.
+
 ## Always-On Workers
 
 The control plane needs persistent background workers independent of Hermes agent sessions.
@@ -56,12 +97,13 @@ Initial workers:
 These are boring system processes. Hermes agents may reason about their outputs, but the workers keep the runtime awake.
 
 V0 starts with the smallest durable worker slice: the NodeNext
-`apps/workers` host composes the `OutboxPublisherWorker` lane and the
-first inbound event-ingestion lane against Cockroach-backed ports. It is
-not the whole always-on worker taxonomy yet. Scheduler, trigger,
-reaction execution, leases, dead letters, reconcilers, budget, anomaly,
-and observability coverage workers should be added as separate lanes or
-hosts after the durable composition seam is proven.
+`apps/workers` host composes the `OutboxPublisherWorker` lane, the first
+inbound event-ingestion lane, and a `ReactionExecutorWorker` lane
+against Cockroach-backed ports. It is not the whole always-on worker
+taxonomy yet. Scheduler, trigger, recovery leases, dead letters,
+reconcilers, budget, anomaly, and observability coverage workers should
+be added as separate lanes or hosts after the durable composition seam
+is proven.
 
 ## Durable Triggers
 

@@ -1,4 +1,12 @@
-import type { Clock, CommandEffects, IdGenerator, WorkAnchorStateReaderPort } from "./ports.ts";
+import type {
+  Clock,
+  CommandEffects,
+  DiscussionAnchorStateReaderPort,
+  HatAssignmentAuthorityReaderPort,
+  IdGenerator,
+  SupervisorSignalStateReaderPort,
+  WorkAnchorStateReaderPort,
+} from "./ports.ts";
 
 export type TypedCommand = {
   type: string;
@@ -11,6 +19,9 @@ export type CommandHandlerOutcome<Result = unknown> = {
 
 export type CommandExecutionContext = Clock &
   IdGenerator & {
+    discussionAnchorStateReader?: DiscussionAnchorStateReaderPort | undefined;
+    hatAssignmentAuthorityReader?: HatAssignmentAuthorityReaderPort | undefined;
+    supervisorSignalStateReader?: SupervisorSignalStateReaderPort | undefined;
     workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
   };
 

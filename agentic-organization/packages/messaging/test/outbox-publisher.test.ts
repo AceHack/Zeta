@@ -19,17 +19,38 @@ import {
 describe("outbox publisher", () => {
   test("resolves event domains through typed mappings", () => {
     deepEqual(
+      resolveAgenticMessagingDomain(AgenticEventType.DecisionRecorded),
+      AgenticMessagingDomain.Decision,
+    );
+    deepEqual(
+      resolveAgenticMessagingDomain(AgenticEventType.DiscussionAnchorCreated),
+      AgenticMessagingDomain.DiscussionAnchor,
+    );
+    deepEqual(
       resolveAgenticMessagingDomain(AgenticEventType.SupervisorSignalSent),
       AgenticMessagingDomain.SupervisorSignal,
+    );
+    deepEqual(
+      resolveAgenticMessagingDomain(AgenticEventType.WorkScheduleBlockScheduled),
+      AgenticMessagingDomain.WorkScheduleBlock,
     );
     deepEqual(resolveAgenticMessagingDomain(AgenticEventType.WorkItemChanged), AgenticMessagingDomain.WorkItem);
     deepEqual(resolveAgenticMessagingDomain(AgenticEventType.WorkItemStateChanged), AgenticMessagingDomain.WorkItem);
   });
 
   test("publishes unpublished outbox events and marks them published", async () => {
+    const discussionAnchorOutboxEvent = createDiscussionAnchorOutboxEvent();
+    const decisionOutboxEvent = createDecisionOutboxEvent();
     const supervisorSignalOutboxEvent = createSupervisorSignalOutboxEvent();
+    const workScheduleBlockOutboxEvent = createWorkScheduleBlockOutboxEvent();
     const workItemOutboxEvent = createWorkItemOutboxEvent();
-    const outboxSource = createRecordingOutboxSource([supervisorSignalOutboxEvent, workItemOutboxEvent]);
+    const outboxSource = createRecordingOutboxSource([
+      discussionAnchorOutboxEvent,
+      decisionOutboxEvent,
+      supervisorSignalOutboxEvent,
+      workScheduleBlockOutboxEvent,
+      workItemOutboxEvent,
+    ]);
     const eventPublisher = createRecordingEventPublisher();
     const publisher = createOutboxPublisher({
       outboxSource,
@@ -46,8 +67,14 @@ describe("outbox publisher", () => {
 
     deepEqual(result, {
       status: OutboxPublishOutcomeStatus.Published,
-      attemptedCount: 2,
-      publishedOutboxEventIds: ["outbox-001", "outbox-002"],
+      attemptedCount: 5,
+      publishedOutboxEventIds: [
+        "outbox-000",
+        "outbox-decision-001",
+        "outbox-001",
+        "outbox-schedule-001",
+        "outbox-002",
+      ],
     });
     deepEqual(outboxSource.claims, [
       {
@@ -58,7 +85,22 @@ describe("outbox publisher", () => {
     deepEqual(outboxSource.markedPublished, [
       {
         claimId: "outbox-claim-001",
+        outboxEventId: "outbox-000",
+        publishedAt: "2026-05-25T21:00:00.000Z",
+      },
+      {
+        claimId: "outbox-claim-001",
+        outboxEventId: "outbox-decision-001",
+        publishedAt: "2026-05-25T21:00:00.000Z",
+      },
+      {
+        claimId: "outbox-claim-001",
         outboxEventId: "outbox-001",
+        publishedAt: "2026-05-25T21:00:00.000Z",
+      },
+      {
+        claimId: "outbox-claim-001",
+        outboxEventId: "outbox-schedule-001",
         publishedAt: "2026-05-25T21:00:00.000Z",
       },
       {
@@ -69,8 +111,20 @@ describe("outbox publisher", () => {
     ]);
     deepEqual(eventPublisher.publications, [
       {
+        subject: "agentic-org.local.org-lfg.discussion_anchor.created",
+        outboxEvent: discussionAnchorOutboxEvent,
+      },
+      {
+        subject: "agentic-org.local.org-lfg.decision.recorded",
+        outboxEvent: decisionOutboxEvent,
+      },
+      {
         subject: "agentic-org.local.org-lfg.supervisor_signal.sent",
         outboxEvent: supervisorSignalOutboxEvent,
+      },
+      {
+        subject: "agentic-org.local.org-lfg.work_schedule_block.scheduled",
+        outboxEvent: workScheduleBlockOutboxEvent,
       },
       {
         subject: "agentic-org.local.org-lfg.work_item.changed",
@@ -140,6 +194,80 @@ function createRecordingEventPublisher(): EventPublisher & {
   };
 }
 
+function createDiscussionAnchorOutboxEvent(): ClaimedOutboxEvent {
+  return {
+    claimId: "outbox-claim-001",
+    outboxEventId: "outbox-000",
+    envelope: createAgenticEventEnvelope({
+      eventId: "evt-000",
+      eventType: AgenticEventType.DiscussionAnchorCreated,
+      occurredAt: "2026-05-25T19:59:00.000Z",
+      actor: {
+        agentId: "agent-em-001",
+        hatAssignmentId: "hat-assignment-em-001",
+      },
+      scope: {
+        organizationId: "org-lfg",
+        projectId: "project-agentic-org",
+        teamId: "team-runtime",
+        workItemId: "work-outbox-000",
+      },
+      aggregate: {
+        aggregateId: "discussion-anchor-001",
+        aggregateType: AgenticAggregateType.DiscussionAnchor,
+        aggregateVersion: 1,
+      },
+      trace: {
+        commandId: "cmd-000",
+        correlationId: "corr-000",
+        causationId: "cause-000",
+        traceId: "trace-000",
+        idempotencyKey: "idem-000",
+      },
+      payload: {
+        title: "Coordinate review evidence",
+      },
+    }),
+  };
+}
+
+function createDecisionOutboxEvent(): ClaimedOutboxEvent {
+  return {
+    claimId: "outbox-claim-001",
+    outboxEventId: "outbox-decision-001",
+    envelope: createAgenticEventEnvelope({
+      eventId: "evt-decision-001",
+      eventType: AgenticEventType.DecisionRecorded,
+      occurredAt: "2026-05-25T20:00:30.000Z",
+      actor: {
+        agentId: "agent-em-001",
+        hatAssignmentId: "hat-assignment-em-001",
+      },
+      scope: {
+        organizationId: "org-lfg",
+        projectId: "project-agentic-org",
+        teamId: "team-runtime",
+        workItemId: "work-outbox-000",
+      },
+      aggregate: {
+        aggregateId: "decision-record-001",
+        aggregateType: AgenticAggregateType.DecisionRecord,
+        aggregateVersion: 1,
+      },
+      trace: {
+        commandId: "cmd-decision-001",
+        correlationId: "corr-decision-001",
+        causationId: "cause-decision-001",
+        traceId: "trace-decision-001",
+        idempotencyKey: "idem-decision-001",
+      },
+      payload: {
+        title: "Review evidence decision",
+      },
+    }),
+  };
+}
+
 function createSupervisorSignalOutboxEvent(): ClaimedOutboxEvent {
   return {
     claimId: "outbox-claim-001",
@@ -172,6 +300,43 @@ function createSupervisorSignalOutboxEvent(): ClaimedOutboxEvent {
       },
       payload: {
         title: "Blocked on scoped NATS publisher",
+      },
+    }),
+  };
+}
+
+function createWorkScheduleBlockOutboxEvent(): ClaimedOutboxEvent {
+  return {
+    claimId: "outbox-claim-001",
+    outboxEventId: "outbox-schedule-001",
+    envelope: createAgenticEventEnvelope({
+      eventId: "evt-schedule-001",
+      eventType: AgenticEventType.WorkScheduleBlockScheduled,
+      occurredAt: "2026-05-25T20:00:45.000Z",
+      actor: {
+        agentId: "agent-em-001",
+        hatAssignmentId: "hat-assignment-em-001",
+      },
+      scope: {
+        organizationId: "org-lfg",
+        projectId: "project-agentic-org",
+        teamId: "team-runtime",
+        workItemId: "work-outbox-001",
+      },
+      aggregate: {
+        aggregateId: "work-schedule-block-001",
+        aggregateType: AgenticAggregateType.WorkScheduleBlock,
+        aggregateVersion: 1,
+      },
+      trace: {
+        commandId: "cmd-schedule-001",
+        correlationId: "corr-schedule-001",
+        causationId: "cause-schedule-001",
+        traceId: "trace-schedule-001",
+        idempotencyKey: "idem-schedule-001",
+      },
+      payload: {
+        title: "Focused implementation block",
       },
     }),
   };

@@ -33,6 +33,8 @@ export type ReactionPlanRecord = {
   createdAt: string;
   status: ReactionPlanStatus;
   action: ReactionPlanAction;
+  attemptCount?: number;
+  nextAttemptAt?: string;
 };
 
 export type RecordEventProcessingOutcomeInput = {

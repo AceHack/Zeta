@@ -111,6 +111,35 @@ The brief includes:
 Hermes should see this brief before executing work so it can choose the
 lowest-friction communication path instead of inventing one.
 
+### Brief Template
+
+The Gastown role templates are useful because they make each role's
+protocol explicit. Agentic Organization should use the same clarity,
+but generate it from hats, policy, and work scope instead of static
+role files.
+
+Every hat communication brief should answer:
+
+| Field | Meaning |
+|---|---|
+| Duty | What this hat is responsible for in the current scope |
+| Work source | Which queues, work items, meetings, or schedules this hat should watch |
+| Authority | What the hat may decide, transition, approve, spawn, or request |
+| Prohibited actions | What the hat must not do even if it has general tool access |
+| Upward tools | Which supervisor-signal tool families are available |
+| Evidence | What must be attached for each tool family |
+| Completion protocol | How the hat reports done, blocked, deferred, or handed off |
+| Escalation examples | Concrete examples of when to route to manager, director, C-suite, or executive board |
+| Schedule behavior | When to answer inbox items immediately and when to reserve a work block |
+| Expansion path | How to suggest a new prompt flow, tool, memory policy, or lifecycle rule |
+
+This keeps agent communication efficient without hardcoding one-off
+tools. If a developer hat needs a new MCP tool, it should know how to
+tell its manager what is missing, with evidence and a work anchor. The
+manager then decides whether to answer, route to a director, schedule a
+meeting, open internal platform work, or ask security to review the
+need.
+
 ## Routing Semantics
 
 The target supervisor decides what happens next:

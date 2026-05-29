@@ -1,10 +1,12 @@
 import {
+  CommandOutcomeEffectConflictReason,
   CommandOutcomePersistenceStatus,
   type CommandStateStore,
   type CommandStateStoreFactory,
   type WorkAnchorCommandEffects,
 } from "../../application/src/ports.ts";
 import { CockroachTableName } from "./cockroach-schema.ts";
+import { DiscussionAnchorType, ScheduleBlockState } from "../../domain/src/index.ts";
 import {
   WorkAnchorPersistenceStatus,
   type WorkAnchorPersistenceResult,
@@ -19,6 +21,10 @@ export const CockroachCommandStateStoreStatement = {
   FindIdempotencyRecord: "find_idempotency_record",
   ClaimIdempotencyRecord: "claim_idempotency_record",
   InsertSupervisorSignal: "insert_supervisor_signal",
+  InsertDiscussionAnchor: "insert_discussion_anchor",
+  InsertDecisionRecord: "insert_decision_record",
+  FindOverlappingWorkScheduleBlock: "find_overlapping_work_schedule_block",
+  InsertWorkScheduleBlock: "insert_work_schedule_block",
   InsertAuditEvent: "insert_audit_event",
   InsertOutboxEvent: "insert_outbox_event",
 } as const;
@@ -35,10 +41,6 @@ export type CockroachSqlStatement = {
 export type CockroachSqlResult<Row = Record<string, unknown>> = {
   rows: readonly Row[];
 };
-
-export const CockroachCommandStateStoreErrorMessage = {
-  WorkAnchorEffectConflict: "work anchor command effect conflict",
-} as const;
 
 export type CockroachSqlTransactionExecutor = {
   execute: <Row = Record<string, unknown>>(statement: CockroachSqlStatement) => Promise<CockroachSqlResult<Row>>;
@@ -84,7 +86,8 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
       };
     },
     recordCommandOutcome: async (outcome) => {
-      return await executor.executeTransaction(async (transaction) => {
+      try {
+        return await executor.executeTransaction(async (transaction) => {
         const claimResult = await transaction.execute<CockroachIdempotencyClaimRow<Result>>({
           name: CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
           sql: CockroachCommandStateStoreSql.ClaimIdempotencyRecord,
@@ -117,8 +120,27 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
           };
         }
 
+        const unsupportedEffectConflict = findUnsupportedCommandEffectConflict(outcome.effects);
+
+        if (unsupportedEffectConflict !== undefined) {
+          throw new CockroachCommandEffectConflictError(unsupportedEffectConflict);
+        }
+
         for (const supervisorSignal of outcome.effects.supervisorSignals) {
           await transaction.execute(createInsertSupervisorSignalStatement(supervisorSignal));
+        }
+
+        for (const discussionAnchor of outcome.effects.discussionAnchors) {
+          await transaction.execute(createInsertDiscussionAnchorStatement(discussionAnchor));
+        }
+
+        for (const decisionRecord of outcome.effects.decisionRecords) {
+          await transaction.execute(createInsertDecisionRecordStatement(decisionRecord));
+        }
+
+        for (const workScheduleBlock of outcome.effects.workScheduleBlocks) {
+          await assertNoOverlappingWorkScheduleBlock(transaction, workScheduleBlock);
+          await transaction.execute(createInsertWorkScheduleBlockStatement(workScheduleBlock));
         }
 
         const workAnchorStateStore = createCockroachWorkAnchorStateStore({
@@ -142,9 +164,31 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
           status: CommandOutcomePersistenceStatus.Committed,
           result: outcome.idempotencyRecord.result,
         };
-      });
+        });
+      } catch (error) {
+        if (error instanceof CockroachCommandEffectConflictError) {
+          return {
+            status: CommandOutcomePersistenceStatus.EffectConflict,
+            reason: error.reason,
+          };
+        }
+
+        throw error;
+      }
     },
   };
+}
+
+function findUnsupportedCommandEffectConflict(
+  effects: CommandStateStoreResult<unknown>["effects"],
+): CommandOutcomeEffectConflictReason | undefined {
+  for (const discussionAnchor of effects.discussionAnchors) {
+    if (discussionAnchor.discussionAnchorType !== DiscussionAnchorType.WorkItem) {
+      return CommandOutcomeEffectConflictReason.UnsupportedDiscussionAnchorEffectType;
+    }
+  }
+
+  return undefined;
 }
 
 async function recordWorkAnchorEffects(
@@ -178,7 +222,37 @@ async function recordWorkAnchorEffects(
 
 function assertWorkAnchorEffectCommitted(result: WorkAnchorPersistenceResult): void {
   if (result.status !== WorkAnchorPersistenceStatus.Committed) {
-    throw new Error(CockroachCommandStateStoreErrorMessage.WorkAnchorEffectConflict);
+    throw new CockroachCommandEffectConflictError(CommandOutcomeEffectConflictReason.WorkAnchorEffectConflict);
+  }
+}
+
+async function assertNoOverlappingWorkScheduleBlock(
+  transaction: CockroachSqlTransactionExecutor,
+  workScheduleBlock: CommandStateStoreResult<unknown>["effects"]["workScheduleBlocks"][number],
+): Promise<void> {
+  const overlapResult = await transaction.execute({
+    name: CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+    sql: CockroachCommandStateStoreSql.FindOverlappingWorkScheduleBlock,
+    parameters: [
+      workScheduleBlock.assignedHatAssignmentId,
+      workScheduleBlock.startsAt,
+      workScheduleBlock.endsAt,
+      ScheduleBlockState.Scheduled,
+      ScheduleBlockState.Active,
+    ],
+  });
+
+  if (overlapResult.rows.length > 0) {
+    throw new CockroachCommandEffectConflictError(CommandOutcomeEffectConflictReason.WorkScheduleBlockOverlap);
+  }
+}
+
+class CockroachCommandEffectConflictError extends Error {
+  readonly reason: CommandOutcomeEffectConflictReason;
+
+  constructor(reason: CommandOutcomeEffectConflictReason) {
+    super(reason);
+    this.reason = reason;
   }
 }
 
@@ -206,6 +280,97 @@ function createInsertSupervisorSignalStatement(
       supervisorSignal.message,
       supervisorSignal.relatedWorkItemId,
       supervisorSignal.createdAt,
+    ],
+  };
+}
+
+function createInsertDiscussionAnchorStatement(
+  discussionAnchor: CommandStateStoreResult<unknown>["effects"]["discussionAnchors"][number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+    sql: CockroachCommandStateStoreSql.InsertDiscussionAnchor,
+    parameters: [
+      discussionAnchor.discussionAnchorId,
+      discussionAnchor.organizationId,
+      discussionAnchor.projectId,
+      discussionAnchor.teamId ?? null,
+      discussionAnchor.workItemId,
+      discussionAnchor.discussionAnchorType,
+      discussionAnchor.title,
+      discussionAnchor.purpose,
+      JSON.stringify(discussionAnchor.expectedOutputs),
+      discussionAnchor.createdBy.agentId,
+      discussionAnchor.createdBy.hatAssignmentId,
+      discussionAnchor.createdAt,
+      discussionAnchor.metadata.updatedAt,
+      discussionAnchor.metadata.version,
+      discussionAnchor.metadata.correlationId,
+      discussionAnchor.metadata.causationId,
+      discussionAnchor.metadata.traceId,
+    ],
+  };
+}
+
+function createInsertDecisionRecordStatement(
+  decisionRecord: CommandStateStoreResult<unknown>["effects"]["decisionRecords"][number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertDecisionRecord,
+    sql: CockroachCommandStateStoreSql.InsertDecisionRecord,
+    parameters: [
+      decisionRecord.decisionRecordId,
+      decisionRecord.organizationId,
+      decisionRecord.projectId,
+      decisionRecord.teamId ?? null,
+      decisionRecord.workItemId,
+      decisionRecord.discussionAnchorId,
+      decisionRecord.title,
+      decisionRecord.decision,
+      decisionRecord.rationale,
+      JSON.stringify(decisionRecord.alternativesConsidered),
+      JSON.stringify(decisionRecord.followUpWorkItemIds),
+      decisionRecord.decidedBy.agentId,
+      decisionRecord.decidedBy.hatAssignmentId,
+      decisionRecord.decidedAt,
+      decisionRecord.metadata.updatedAt,
+      decisionRecord.metadata.version,
+      decisionRecord.metadata.correlationId,
+      decisionRecord.metadata.causationId,
+      decisionRecord.metadata.traceId,
+    ],
+  };
+}
+
+function createInsertWorkScheduleBlockStatement(
+  workScheduleBlock: CommandStateStoreResult<unknown>["effects"]["workScheduleBlocks"][number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
+    sql: CockroachCommandStateStoreSql.InsertWorkScheduleBlock,
+    parameters: [
+      workScheduleBlock.workScheduleBlockId,
+      workScheduleBlock.organizationId,
+      workScheduleBlock.projectId,
+      workScheduleBlock.teamId ?? null,
+      workScheduleBlock.workItemId,
+      workScheduleBlock.discussionAnchorId ?? null,
+      workScheduleBlock.assignedAgentId,
+      workScheduleBlock.assignedHatAssignmentId,
+      workScheduleBlock.blockType,
+      workScheduleBlock.state,
+      workScheduleBlock.title,
+      workScheduleBlock.purpose,
+      workScheduleBlock.startsAt,
+      workScheduleBlock.endsAt,
+      workScheduleBlock.scheduledBy.agentId,
+      workScheduleBlock.scheduledBy.hatAssignmentId,
+      workScheduleBlock.scheduledAt,
+      workScheduleBlock.metadata.updatedAt,
+      workScheduleBlock.metadata.version,
+      workScheduleBlock.metadata.correlationId,
+      workScheduleBlock.metadata.causationId,
+      workScheduleBlock.metadata.traceId,
     ],
   };
 }
@@ -309,6 +474,86 @@ const CockroachCommandStateStoreSql = {
       related_work_item_id,
       created_at
     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+  `,
+  InsertDiscussionAnchor: `
+    INSERT INTO ${CockroachTableName.DiscussionAnchors} (
+      discussion_anchor_id,
+      organization_id,
+      project_id,
+      team_id,
+      work_item_id,
+      discussion_anchor_type,
+      title,
+      purpose,
+      expected_outputs,
+      created_by_agent_id,
+      created_by_hat_assignment_id,
+      created_at,
+      updated_at,
+      version,
+      correlation_id,
+      causation_id,
+      trace_id
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::JSONB, $10, $11, $12, $13, $14, $15, $16, $17)
+  `,
+  InsertDecisionRecord: `
+    INSERT INTO ${CockroachTableName.DecisionRecords} (
+      decision_record_id,
+      organization_id,
+      project_id,
+      team_id,
+      work_item_id,
+      discussion_anchor_id,
+      title,
+      decision,
+      rationale,
+      alternatives_considered,
+      follow_up_work_item_ids,
+      decided_by_agent_id,
+      decided_by_hat_assignment_id,
+      decided_at,
+      updated_at,
+      version,
+      correlation_id,
+      causation_id,
+      trace_id
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10::JSONB, $11::JSONB, $12, $13, $14, $15, $16, $17, $18, $19)
+  `,
+  FindOverlappingWorkScheduleBlock: `
+    SELECT work_schedule_block_id
+    FROM ${CockroachTableName.WorkScheduleBlocks}
+    WHERE assigned_hat_assignment_id = $1
+      AND state IN ($4, $5)
+      AND starts_at < $3
+      AND ends_at > $2
+    LIMIT 1
+    FOR UPDATE
+  `,
+  InsertWorkScheduleBlock: `
+    INSERT INTO ${CockroachTableName.WorkScheduleBlocks} (
+      work_schedule_block_id,
+      organization_id,
+      project_id,
+      team_id,
+      work_item_id,
+      discussion_anchor_id,
+      assigned_agent_id,
+      assigned_hat_assignment_id,
+      block_type,
+      state,
+      title,
+      purpose,
+      starts_at,
+      ends_at,
+      scheduled_by_agent_id,
+      scheduled_by_hat_assignment_id,
+      scheduled_at,
+      updated_at,
+      version,
+      correlation_id,
+      causation_id,
+      trace_id
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
   `,
   InsertAuditEvent: `
     INSERT INTO ${CockroachTableName.AuditEvents} (

@@ -347,11 +347,17 @@ environment values into runtime config, records telemetry through a sink
 port, and reports healthy/degraded status. Its durable composition seam
 receives a generic Cockroach SQL executor, creates the Cockroach-backed
 command state, outbox, event-ingestion, and policy-observation adapter
-set, and wires the outbox/event-ingestion ports into the worker host.
+set, and wires the outbox/event-ingestion/reaction-plan work-queue
+ports into the worker host. Reaction-plan execution is still port-first:
+the worker lane receives a generic action executor instead of knowing
+about supervisor-triage, assignment, or review-gate implementation
+details directly.
 Its current required environment contract is `AGENTIC_ORG_ENV`,
 `AGENTIC_ORG_ID`, `COCKROACH_DATABASE_URL`, `NATS_SERVERS`,
 `NATS_STREAM`, `NATS_DURABLE`, `NATS_INBOUND_BATCH_SIZE`,
-`WORKER_INBOUND_BATCH_SIZE`, and `WORKER_OUTBOX_BATCH_SIZE`. The first
+`WORKER_INBOUND_BATCH_SIZE`, `WORKER_OUTBOX_BATCH_SIZE`,
+`WORKER_REACTION_PLAN_BATCH_SIZE`, and
+`WORKER_REACTION_PLAN_LEASE_MS`. The first
 app-local process adapters now cover the Cockroach worker client, NATS
 worker connection seam, and JSON telemetry sink:
 
@@ -484,13 +490,14 @@ pipeline and Cockroach state-store factory, connects a per-run NATS
 stream/durable consumer through the app-local NATS seam, runs the worker
 process through the loop for two cycles, publishes the outbox event,
 consumes it back through the NATS consumer, records the inbox receipt
-and supervisor-triage reaction plan in Cockroach, proves the second
+and supervisor-triage reaction plan in Cockroach, claims and completes
+that reaction plan through the reaction executor lane, proves the second
 cycle does not duplicate durable side effects, emits worker/NATS
 telemetry records through the sink port, and guards both Cockroach and
 NATS cleanup when setup fails. This is the first live proof that the
-durable command, outbox, NATS, inbox, reaction-plan, readiness,
-telemetry, loop, and cleanup seams compose without letting vendor
-clients leak into reusable packages.
+durable command, outbox, NATS, inbox, reaction-plan execution,
+readiness, telemetry, loop, and cleanup seams compose without letting
+vendor clients leak into reusable packages.
 
 ## SOLID Rules
 
@@ -958,6 +965,8 @@ NATS_DURABLE
 NATS_INBOUND_BATCH_SIZE
 WORKER_INBOUND_BATCH_SIZE
 WORKER_OUTBOX_BATCH_SIZE
+WORKER_REACTION_PLAN_BATCH_SIZE
+WORKER_REACTION_PLAN_LEASE_MS
 ```
 
 `COCKROACH_DATABASE_URL` is a secret-backed process adapter input. In

@@ -9,6 +9,11 @@ export const WorkerCycleAttributeKey = {
   InboundPayloadConflictCount: "agentic.worker.inbound.payload_conflict_count",
   InboundFailedCount: "agentic.worker.inbound.failed_count",
   InboundReactionPlanCount: "agentic.worker.inbound.reaction_plan_count",
+  ReactionPlanStatus: "agentic.worker.reaction_plan.status",
+  ReactionPlanClaimedCount: "agentic.worker.reaction_plan.claimed_count",
+  ReactionPlanSucceededCount: "agentic.worker.reaction_plan.succeeded_count",
+  ReactionPlanFailedCount: "agentic.worker.reaction_plan.failed_count",
+  ReactionPlanClaimLostCount: "agentic.worker.reaction_plan.claim_lost_count",
   FailureCount: "agentic.worker.failure_count",
   FirstFailureClaimId: "agentic.worker.failure.first_claim_id",
   FirstFailureCommandId: "agentic.worker.failure.first_command_id",
@@ -33,6 +38,11 @@ export type WorkerCycleCoreAttributeKey =
   | typeof WorkerCycleAttributeKey.InboundPayloadConflictCount
   | typeof WorkerCycleAttributeKey.InboundFailedCount
   | typeof WorkerCycleAttributeKey.InboundReactionPlanCount
+  | typeof WorkerCycleAttributeKey.ReactionPlanStatus
+  | typeof WorkerCycleAttributeKey.ReactionPlanClaimedCount
+  | typeof WorkerCycleAttributeKey.ReactionPlanSucceededCount
+  | typeof WorkerCycleAttributeKey.ReactionPlanFailedCount
+  | typeof WorkerCycleAttributeKey.ReactionPlanClaimLostCount
   | typeof WorkerCycleAttributeKey.FailureCount;
 export type WorkerCycleFailureAttributeKey = Exclude<WorkerCycleAttributeKey, WorkerCycleCoreAttributeKey>;
 
@@ -45,6 +55,11 @@ export type BuildWorkerCycleAttributesInput = {
   inboundPayloadConflictCount: number;
   inboundFailedCount: number;
   inboundReactionPlanCount: number;
+  reactionPlanStatus: string;
+  reactionPlanClaimedCount: number;
+  reactionPlanSucceededCount: number;
+  reactionPlanFailedCount: number;
+  reactionPlanClaimLostCount: number;
   failureCount: number;
   firstFailure?: WorkerCycleFailureAttributeInput | undefined;
 };
@@ -69,6 +84,11 @@ export function buildWorkerCycleAttributes(input: BuildWorkerCycleAttributesInpu
     [WorkerCycleAttributeKey.InboundPayloadConflictCount]: input.inboundPayloadConflictCount,
     [WorkerCycleAttributeKey.InboundFailedCount]: input.inboundFailedCount,
     [WorkerCycleAttributeKey.InboundReactionPlanCount]: input.inboundReactionPlanCount,
+    [WorkerCycleAttributeKey.ReactionPlanStatus]: input.reactionPlanStatus,
+    [WorkerCycleAttributeKey.ReactionPlanClaimedCount]: input.reactionPlanClaimedCount,
+    [WorkerCycleAttributeKey.ReactionPlanSucceededCount]: input.reactionPlanSucceededCount,
+    [WorkerCycleAttributeKey.ReactionPlanFailedCount]: input.reactionPlanFailedCount,
+    [WorkerCycleAttributeKey.ReactionPlanClaimLostCount]: input.reactionPlanClaimLostCount,
     [WorkerCycleAttributeKey.FailureCount]: input.failureCount,
   };
 

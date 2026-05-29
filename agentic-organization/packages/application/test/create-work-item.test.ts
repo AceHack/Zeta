@@ -113,6 +113,9 @@ describe("create work item handler", () => {
     ok(result.error?.message.includes("title"));
     deepEqual(outcome.effects, {
       supervisorSignals: [],
+      discussionAnchors: [],
+      decisionRecords: [],
+      workScheduleBlocks: [],
       auditEvents: [],
       outboxEvents: [],
       workAnchors: {

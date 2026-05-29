@@ -48,8 +48,10 @@ import {
   EventIngestionOutcomeStatus,
   InboundEventConsumerName,
   WorkAnchorPersistenceStatus,
+  type ReactionPlanExecutionRecord,
   type WorkAnchorStateStore,
 } from "../../../packages/state/src/index.ts";
+import { ReactionPlanExecutionStatus } from "../../../packages/runtime/src/index.ts";
 import {
   CockroachTableName,
   createCockroachDurableStateAdapters,
@@ -102,8 +104,13 @@ const DurableLiveIntegrationResourcePrefix = {
 
 const DurableLiveIntegrationBatch = {
   NatsInbound: 1,
+  ReactionPlan: 1,
   WorkerInbound: 1,
   WorkerOutbox: 1,
+} as const;
+
+const DurableLiveIntegrationLease = {
+  ReactionPlanMs: 300_000,
 } as const;
 
 const DurableLiveIntegrationFetch = {
@@ -222,6 +229,8 @@ describe("durable worker live integration", () => {
             natsInboundBatchSize: DurableLiveIntegrationBatch.NatsInbound,
             workerInboundBatchSize: DurableLiveIntegrationBatch.WorkerInbound,
             workerOutboxBatchSize: DurableLiveIntegrationBatch.WorkerOutbox,
+            workerReactionPlanBatchSize: DurableLiveIntegrationBatch.ReactionPlan,
+            workerReactionPlanLeaseMs: DurableLiveIntegrationLease.ReactionPlanMs,
           },
           durableAdapters: {
             cockroachExecutor: executor,
@@ -231,6 +240,7 @@ describe("durable worker live integration", () => {
             },
             natsDeadLetterPublisher: natsAdapters.deadLetterPublisher,
             natsPullConsumer: natsAdapters.pullConsumer,
+            reactionPlanActionExecutor: createDurableLiveReactionPlanActionExecutor(),
             telemetrySink,
           },
           runtimeUtilities: {
@@ -322,7 +332,7 @@ describe("durable worker live integration", () => {
         });
         ok(reactionPlanRow?.reaction_plan_id.startsWith(`reaction-plan-${run.runId}`));
         equal(reactionPlanRow?.trigger_event_id, run.eventId);
-        equal(reactionPlanRow?.status, ReactionPlanStatus.Planned);
+        equal(reactionPlanRow?.status, ReactionPlanStatus.Completed);
         equal(telemetrySink.records.length, 4);
         equal(loopObserver.records.length, 3);
       } finally {
@@ -392,6 +402,24 @@ function shouldSkipDurableLiveIntegration(): string | false {
   }
 
   return false;
+}
+
+function createDurableLiveReactionPlanActionExecutor(): {
+  executeReactionPlanAction: () => Promise<{
+    status: typeof ReactionPlanExecutionStatus.Succeeded;
+    result: ReactionPlanExecutionRecord;
+  }>;
+} {
+  return {
+    executeReactionPlanAction: async () => ({
+      status: ReactionPlanExecutionStatus.Succeeded,
+      result: {
+        message: "durable live reaction action recorded",
+        createdWorkItemIds: [],
+        createdDiscussionAnchorIds: [],
+      },
+    }),
+  };
 }
 
 function createSupervisorSignalCommand(run: DurableLiveIntegrationRun): SendSupervisorSignalCommand {

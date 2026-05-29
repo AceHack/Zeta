@@ -49,7 +49,10 @@ The current executable spine includes:
 - `@agentic-org/messaging-nats` NATS JetStream publisher/consumer
   adapter contracts with fake-driven tests;
 - `@agentic-org/runtime` event-ingestion processor, inbox dedupe,
-  orphan-receipt recovery, and first V0 automation rule;
+  orphan-receipt recovery, supervisor-triage reaction planning, and
+  the first work-state reaction rules that request implementation
+  assignment when a work item enters `ready` and a reviewer gate when a
+  work item enters `review`;
 - `@agentic-org/workers` package-level worker host that runs one
   bounded outbox lane and one bounded inbound-ingestion lane;
 - `apps/workers` process shell that parses typed process config,
@@ -73,6 +76,11 @@ The current executable spine includes:
   publishes the outbox through NATS, consumes it back, records durable
   inbox/reaction-plan state, emits telemetry, and shuts down generic
   process adapters.
+- `schedule_work_block` V0 command, `work_schedule_block.scheduled`
+  event, `work_schedule_blocks` Cockroach migration, in-memory/Cockroach
+  command-effect persistence, schedule messaging domain, strict instant
+  validation, and anti-overlap guard for scheduled/active blocks on the
+  same hat assignment.
 
 The next implementation slice after the entrypoint contract is to
 continue with the next generic command/work-anchor surfaces, then wrap
@@ -81,6 +89,46 @@ globals and Kubernetes deployment concerns are ready. Keep the live
 substrate checks gated by
 environment until the team decides whether CI should provide Cockroach
 and NATS services.
+
+## Gastown Reference Checkpoint
+
+The Gastown reference review is captured in
+[Gastown Reference Analysis](./GASTOWN_REFERENCE_ANALYSIS.md). It does
+not change the north star, but it sharpens the implementation sequence.
+
+Keep from Gastown:
+
+- persistent identity with ephemeral sessions;
+- durable role/hat briefs that explain duty, authority, completion, and
+  escalation;
+- separate runtime context records instead of mutating work items with
+  dispatch metadata;
+- capacity-aware schedule/dispatch planning;
+- event-driven completion and recovery scans;
+- typed operational verdicts with evidence;
+- explicit communication receipts;
+- merge/release gates as first-class runtime work.
+
+Do not copy:
+
+- singleton "Mayor" orchestration as the control plane;
+- tmux, pane scraping, local JSONL, Dolt, or beads as our substrate;
+- freeform subject lines as command contracts;
+- prompt checklist text as sufficient workflow enforcement;
+- polling-only loops.
+
+Concrete planning impact:
+
+- PR 6 discussion anchors stay important because communication must be
+  durable, typed, receipt-aware, and work-anchored.
+- PR 11 Schedule/RMO should include a pure admission planner with typed
+  skip reasons, retry/quarantine policy, and context records separate
+  from work items.
+- PR 12 Reaction Executor becomes the highest-value propulsion slice
+  after anchors: planned reactions must be claimable, executable,
+  retryable, and impossible to double-run.
+- Worker telemetry needs stable worker/process/run identity so humans
+  and agents can follow the execution chain without scraping sessions.
 
 ## Work Rules For Every Phase
 
@@ -1091,6 +1139,11 @@ is proven.
    - discussion participant;
    - discussion mode;
    - decision record.
+   The first executable V0 narrows this to the durable discussion anchor
+   record, typed anchor type, typed expected outputs, created-by attribution,
+   trace metadata, audit event, outbox event, and Cockroach persistence.
+   Participants, modes, and decisions follow after the anchor contract is
+   stable.
 2. Add legal anchor targets:
    - project;
    - initiative;
@@ -1100,8 +1153,10 @@ is proven.
 3. Add commands:
    - `create_discussion_anchor`;
    - `record_decision`.
-4. Keep `send_supervisor_signal` able to create or reference a
-   discussion anchor through normal command effects.
+4. Keep `send_supervisor_signal` as the generic supervisor-chain ingress.
+   In V0 it remains work-anchored and does not create meetings directly.
+   Later supervisor triage can request `create_discussion_anchor` or schedule
+   discussion work through reaction plans.
 5. Add events:
    - `discussion_anchor.created`;
    - `decision.recorded`.
@@ -2764,6 +2819,9 @@ Build:
 - prove NATS consumption, ack, Cockroach inbox receipt, and
   supervisor-triage reaction-plan persistence; done when both live
   substrates are supplied;
+- prove the persisted reaction plan can be claimed and completed by the
+  reaction executor lane through a leased Cockroach queue and generic
+  action executor port; done when both live substrates are supplied;
 - clean up per-run Cockroach rows and NATS resources through guarded
   cleanup that still removes NATS resources if Cockroach setup fails;
   done.
@@ -2771,8 +2829,9 @@ Build:
 Done when:
 
 - one Organization command can cross the real durable path from command
-  state to outbox, NATS, inbox, reaction plan, telemetry, readiness, and
-  loop evidence without reusable packages importing vendor clients;
+  state to outbox, NATS, inbox, reaction-plan execution, telemetry,
+  readiness, and loop evidence without reusable packages importing
+  vendor clients;
 - local runs stay green without live services.
 
 ### PR 3.6: Worker Process Loop Wrapper
@@ -2870,13 +2929,24 @@ Done when:
 
 Build:
 
-- discussion anchor schema;
-- create anchor command;
-- supervisor signal link to anchor;
-- decision record command;
+- discussion anchor schema and `0005_agentic_org_discussion_anchor_kernel`;
+- decision record schema and `0006_agentic_org_decision_record_kernel`;
+- create anchor command with work-item validation;
+- `record_decision` command with discussion-anchor validation;
 - graph projection for work-discussion-decision.
 
 Done when:
+
+- `create_discussion_anchor` rejects missing or wrong-scope work items;
+- `record_decision` rejects missing anchors, wrong-scope anchors, and anchors
+  that did not expect a decision output;
+- accepted anchors persist through the same idempotent command outcome port as
+  work and supervisor effects;
+- Cockroach and in-memory stores both record anchor and decision effects atomically with
+  audit/outbox evidence;
+- `discussion_anchor.created` publishes under the typed discussion-anchor NATS
+  domain.
+- `decision.recorded` publishes under the typed decision NATS domain.
 
 - unanchored consequential discussion is rejected.
 
@@ -2939,9 +3009,16 @@ Done when:
 
 Build:
 
-- schedule block, allocation hold, pause checkpoint, runtime slot,
+- schedule block follow-up after the V0 `schedule_work_block` command:
+  start/complete/cancel/miss transitions, allocation hold, pause checkpoint, runtime slot,
   worktree slot, and credential slot state;
-- request/propose/commit schedule block commands;
+- schedule context records that carry runtime dispatch metadata without
+  mutating work item descriptions;
+- pure admission planner that takes queued work, hat supply, budget,
+  priority, blocked state, schedule windows, and retry/circuit-breaker
+  state and returns typed dispatch or skip reasons;
+- request/propose/commit schedule block commands, building on the implemented
+  direct `schedule_work_block` primitive;
 - meeting slot scheduling with accept/decline/delegate;
 - pause/resume lifecycle;
 - missed-block escalation events.
@@ -2952,19 +3029,82 @@ Done when:
   implementation, free time, and memory work are allocated into explicit
   time/resource blocks instead of ambient execution.
 
+Current implemented seed:
+
+- `schedule_work_block` accepts a validated work item, optional work-item
+  discussion anchor, assigned agent/hat, block type, strict ISO start/end
+  window, and creates a `scheduled` block.
+- The assigned hat is validated through a generic hat-assignment authority
+  reader before scheduling: it must exist, be active, belong to the assigned
+  agent, and match the command scope. This keeps the schedule primitive aligned
+  with time-bounded hat authority without tying application code to the future
+  Cockroach/Hat CRD projection adapter.
+- Cockroach now provides the first durable hat-assignment authority projection
+  reader behind that same application port. This is deliberately a projection:
+  the future hat-system operator and Organization assignment lifecycle can feed
+  it without changing command handlers.
+- Command authorization receives schedule resource context for direct allocation
+  commands, including assigned agent, assigned hat, block type, and time window,
+  so policy can check not only who is acting but what resource they are trying
+  to reserve.
+- In-memory and Cockroach command outcome stores reject overlapping
+  `scheduled` or `active` blocks for the same hat assignment through a typed
+  `effect_conflict` result, which the command pipeline maps to a normal
+  precondition rejection.
+- Cockroach command outcome persistence resolves idempotency first, then
+  validates command effects. Effect conflicts throw within the durable
+  transaction and roll back the idempotency claim before being mapped to typed
+  command results, so retries cannot replay effects that never committed.
+- The outbox publisher routes `work_schedule_block.scheduled` to the
+  `work_schedule_block` NATS domain.
+
 ### PR 12: Reaction Executor Minimum
 
 Build:
 
 - reaction claim/lease model;
+- additive Cockroach reaction-plan lifecycle fields for claim id,
+  claim expiry, attempts, last error, execution result, and typed
+  failure evidence;
 - executor for supervisor-signal triage work;
+- executor for work-item ready implementation-assignment work;
+- executor for work-item review reviewer-gate work;
+
+Current implemented seed:
+
+- `ReactionPlanStatus` now has `planned`, `claimed`, `completed`, and `failed`
+  states.
+- The generic reaction-plan work queue can claim planned work, reclaim expired
+  claims, complete by claim, reject stale completions, back off retryable
+  failures, and stop retrying after max attempts.
+- The runtime reaction-plan executor claims a batch, delegates action execution
+  through a generic action-executor port, and records success/failure/claim-lost
+  outcomes. It now checks lease freshness before action execution and passes a
+  stable action idempotency key to prevent duplicate command side effects.
+- The Cockroach reaction-plan queue is durable, DB-clock-fenced, and validates
+  durable action JSON by action type. Malformed claimed rows are terminally
+  failed as nonretryable during claim processing so they do not poison the
+  always-on reaction lane.
+- The first concrete application action executor creates supervisor-triage,
+  implementation-assignment, and review-gate discussion-anchor commands
+  through the normal command pipeline instead of returning synthetic test
+  outcomes. These are routing anchors, not final assignment or reviewer-gate
+  commands yet, and completion requires the command result to include a
+  discussion-anchor artifact.
+- The first schedule-authority adapter gates runtime commands against current
+  scheduled or active schedule blocks by actor, hat assignment, work scope, and
+  block type. `create_discussion_anchor` is schedule-exempt in V0 because
+  reaction routing often needs to create the anchor before a meeting/work block
+  exists; later consequential commands remain schedule-gated.
 - retry/failure visibility;
 - reaction execution events.
 
 Done when:
 
 - a planned supervisor-signal reaction can create normal work through a
-  command and cannot execute twice.
+  command, a ready-work reaction can request implementation assignment,
+  a review-work reaction can request the next reviewer gate, and none
+  can execute twice.
 
 ### PR 13: Gate Core
 

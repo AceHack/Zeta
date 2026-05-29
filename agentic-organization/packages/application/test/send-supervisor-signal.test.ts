@@ -114,6 +114,9 @@ describe("send supervisor signal handler", () => {
     equal(result.error?.message, "supervisor signal requires an existing related work item");
     deepEqual(outcome.effects, {
       supervisorSignals: [],
+      discussionAnchors: [],
+      decisionRecords: [],
+      workScheduleBlocks: [],
       auditEvents: [],
       outboxEvents: [],
       workAnchors: {
@@ -124,6 +127,75 @@ describe("send supervisor signal handler", () => {
         workItemTransitions: [],
       },
     });
+  });
+
+  test("rejects malformed supervisor signal JSON inputs before emitting effects", async () => {
+    const outcome = await sendSupervisorSignal(
+      {
+        ...command,
+        targetHatAssignmentId: 42,
+      } as unknown as SendSupervisorSignalCommand,
+      {
+        now: () => "2026-05-25T20:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+      },
+    );
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "supervisor signal target hat assignment is required");
+    equal(outcome.effects.supervisorSignals.length, 0);
+  });
+
+  test("rejects invalid supervisor chain levels before emitting effects", async () => {
+    const outcome = await sendSupervisorSignal(
+      {
+        ...command,
+        policyContext: {
+          ...command.policyContext,
+          supervisorChain: {
+            ...command.policyContext.supervisorChain,
+            targetLevel: "floating_manager",
+          },
+        },
+      } as unknown as SendSupervisorSignalCommand,
+      {
+        now: () => "2026-05-25T20:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+      },
+    );
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "supervisor signal target level is invalid");
+    equal(outcome.effects.supervisorSignals.length, 0);
+  });
+
+  test("rejects supervisor signals that do not move up the chain", async () => {
+    const outcome = await sendSupervisorSignal(
+      {
+        ...command,
+        policyContext: {
+          ...command.policyContext,
+          supervisorChain: {
+            sourceLevel: SupervisorChainLevel.Manager,
+            targetLevel: SupervisorChainLevel.TeamMember,
+          },
+        },
+      },
+      {
+        now: () => "2026-05-25T20:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+      },
+    );
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "supervisor signal must target a higher supervisor chain level");
+    equal(outcome.effects.supervisorSignals.length, 0);
   });
 
   test("rejects supervisor signals when the work anchor scope does not match the command", async () => {
@@ -146,6 +218,9 @@ describe("send supervisor signal handler", () => {
     equal(result.error?.message, "supervisor signal work item scope does not match the command scope");
     deepEqual(outcome.effects, {
       supervisorSignals: [],
+      discussionAnchors: [],
+      decisionRecords: [],
+      workScheduleBlocks: [],
       auditEvents: [],
       outboxEvents: [],
       workAnchors: {

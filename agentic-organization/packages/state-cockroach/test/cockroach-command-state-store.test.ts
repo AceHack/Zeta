@@ -2,6 +2,7 @@ import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import {
+  CommandOutcomeEffectConflictReason,
   CommandOutcomePersistenceStatus,
   CommandResultStatus,
   type CommandResult,
@@ -10,7 +11,11 @@ import {
 import {
   AgenticAggregateType,
   AgenticEventType,
+  DiscussionAnchorType,
+  DiscussionExpectedOutput,
   ProjectStatus,
+  ScheduleBlockState,
+  ScheduleBlockType,
   SupervisorChainLevel,
   SupervisorSignalStatus,
   SupervisorSignalToolType,
@@ -43,6 +48,10 @@ describe("cockroach command state store", () => {
         CockroachCommandStateStoreStatement.FindIdempotencyRecord,
         CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
         CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
         CockroachCommandStateStoreStatement.InsertAuditEvent,
         CockroachCommandStateStoreStatement.InsertOutboxEvent,
       ],
@@ -52,13 +61,17 @@ describe("cockroach command state store", () => {
       [
         CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
         CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
         CockroachCommandStateStoreStatement.InsertAuditEvent,
         CockroachCommandStateStoreStatement.InsertOutboxEvent,
       ],
     );
     equal(executor.transactionStatements[0]?.sql.includes("INSERT INTO"), true);
     equal(executor.transactionStatements[0]?.sql.includes("UPSERT"), false);
-    deepEqual(executor.transactionStatements[2]?.parameters.slice(6), ["policy-decision-allow-001", "policy-v1"]);
+    deepEqual(executor.transactionStatements[6]?.parameters.slice(6), ["policy-decision-allow-001", "policy-v1"]);
   });
 
   test("does not insert effects when idempotency claim replays or conflicts", async () => {
@@ -93,6 +106,73 @@ describe("cockroach command state store", () => {
     );
   });
 
+  test("rejects unsupported V0 discussion anchor effect types after claiming idempotency", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+    const outcome = createCommandOutcome();
+
+    const result = await store.recordCommandOutcome({
+      ...outcome,
+      effects: {
+        ...outcome.effects,
+        discussionAnchors: [
+          {
+            ...outcome.effects.discussionAnchors[0]!,
+            discussionAnchorType: DiscussionAnchorType.Project,
+          },
+        ],
+      },
+    });
+
+    equal(result.status, CommandOutcomePersistenceStatus.EffectConflict);
+    if (result.status !== CommandOutcomePersistenceStatus.EffectConflict) {
+      throw new Error("expected effect conflict");
+    }
+    equal(result.reason, CommandOutcomeEffectConflictReason.UnsupportedDiscussionAnchorEffectType);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [CockroachCommandStateStoreStatement.ClaimIdempotencyRecord],
+    );
+  });
+
+  test("lets idempotency replay win over unsupported effect validation", async () => {
+    const executor = createRecordingExecutor({
+      claimStatus: CommandOutcomePersistenceStatus.Replayed,
+    });
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+    const outcome = createUnsupportedDiscussionAnchorOutcome();
+
+    const result = await store.recordCommandOutcome(outcome);
+
+    equal(result.status, CommandOutcomePersistenceStatus.Replayed);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [CockroachCommandStateStoreStatement.ClaimIdempotencyRecord],
+    );
+  });
+
+  test("lets idempotency conflict win over unsupported effect validation", async () => {
+    const executor = createRecordingExecutor({
+      claimStatus: CommandOutcomePersistenceStatus.IdempotencyConflict,
+    });
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+    const outcome = createUnsupportedDiscussionAnchorOutcome();
+
+    const result = await store.recordCommandOutcome(outcome);
+
+    equal(result.status, CommandOutcomePersistenceStatus.IdempotencyConflict);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [CockroachCommandStateStoreStatement.ClaimIdempotencyRecord],
+    );
+  });
+
   test("normalizes missing optional audit policy evidence to SQL nulls", async () => {
     const executor = createRecordingExecutor();
     const store = createCockroachCommandStateStoreFactory<CommandResult>({
@@ -101,7 +181,7 @@ describe("cockroach command state store", () => {
 
     await store.recordCommandOutcome(createCommandOutcome({ includeAuditPolicyEvidence: false }));
 
-    deepEqual(executor.transactionStatements[2]?.parameters.slice(6), [null, null]);
+    deepEqual(executor.transactionStatements[6]?.parameters.slice(6), [null, null]);
   });
 
   test("records work-anchor effects in the command outcome transaction", async () => {
@@ -118,6 +198,10 @@ describe("cockroach command state store", () => {
       [
         CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
         CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
         CockroachWorkAnchorStateStoreStatement.InsertProject,
         CockroachWorkAnchorStateStoreStatement.InsertWorkItem,
         CockroachWorkAnchorStateStoreStatement.FindWorkItemForTransition,
@@ -130,6 +214,171 @@ describe("cockroach command state store", () => {
       ],
     );
   });
+
+  test("records discussion anchor effects with full traceability", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    await store.recordCommandOutcome(createCommandOutcome());
+
+    const insertDiscussionAnchor = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+    );
+
+    equal(insertDiscussionAnchor?.sql.includes("$9::JSONB"), true);
+    deepEqual(insertDiscussionAnchor?.parameters, [
+      "discussion-anchor-001",
+      "org-lfg",
+      "project-agentic-org",
+      "team-runtime",
+      "work-outbox-001",
+      DiscussionAnchorType.WorkItem,
+      "Review scoped NATS publisher",
+      "Coordinate the evidence needed before review starts.",
+      JSON.stringify([DiscussionExpectedOutput.Decision]),
+      "agent-developer-001",
+      "hat-assignment-dev-001",
+      "2026-05-25T20:00:00.000Z",
+      "2026-05-25T20:00:00.000Z",
+      1,
+      "corr-001",
+      "cause-001",
+      "trace-001",
+    ]);
+  });
+
+  test("records decision record effects with full traceability", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    await store.recordCommandOutcome(createCommandOutcome());
+
+    const insertDecisionRecord = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.InsertDecisionRecord,
+    );
+
+    equal(insertDecisionRecord?.sql.includes("$10::JSONB"), true);
+    equal(insertDecisionRecord?.sql.includes("$11::JSONB"), true);
+    deepEqual(insertDecisionRecord?.parameters, [
+      "decision-record-001",
+      "org-lfg",
+      "project-agentic-org",
+      "team-runtime",
+      "work-outbox-001",
+      "discussion-anchor-001",
+      "Review scoped NATS publisher decision",
+      "Proceed with review once evidence is attached.",
+      "The command outcome path is deterministic and auditable.",
+      JSON.stringify(["Delay review until live NATS is available"]),
+      JSON.stringify(["work-evidence-001"]),
+      "agent-developer-001",
+      "hat-assignment-dev-001",
+      "2026-05-25T20:10:00.000Z",
+      "2026-05-25T20:10:00.000Z",
+      1,
+      "corr-001",
+      "cause-001",
+      "trace-001",
+    ]);
+  });
+
+  test("records work schedule block effects with full traceability", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    await store.recordCommandOutcome(createCommandOutcome());
+
+    const insertScheduleBlock = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
+    );
+
+    deepEqual(insertScheduleBlock?.parameters, [
+      "work-schedule-block-001",
+      "org-lfg",
+      "project-agentic-org",
+      "team-runtime",
+      "work-outbox-001",
+      "discussion-anchor-001",
+      "agent-developer-001",
+      "hat-assignment-dev-001",
+      ScheduleBlockType.PrioritizedWork,
+      ScheduleBlockState.Scheduled,
+      "Focused implementation block",
+      "Allocate focused implementation time.",
+      "2026-05-25T20:15:00.000Z",
+      "2026-05-25T21:00:00.000Z",
+      "agent-developer-001",
+      "hat-assignment-dev-001",
+      "2026-05-25T20:10:00.000Z",
+      "2026-05-25T20:10:00.000Z",
+      1,
+      "corr-001",
+      "cause-001",
+      "trace-001",
+    ]);
+  });
+
+  test("rejects overlapping work schedule blocks before inserting later effects", async () => {
+    const executor = createRecordingExecutor({
+      hasOverlappingScheduleBlock: true,
+    });
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome());
+
+    equal(result.status, CommandOutcomePersistenceStatus.EffectConflict);
+    if (result.status !== CommandOutcomePersistenceStatus.EffectConflict) {
+      throw new Error("expected effect conflict");
+    }
+    equal(result.reason, CommandOutcomeEffectConflictReason.WorkScheduleBlockOverlap);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [
+        CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+        CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+      ],
+    );
+  });
+
+  test("returns typed effect conflict when work-anchor command effects conflict", async () => {
+    const executor = createRecordingExecutor({
+      failWorkAnchorProjectInsert: true,
+    });
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({ includeWorkAnchorEffects: true }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.EffectConflict);
+    if (result.status !== CommandOutcomePersistenceStatus.EffectConflict) {
+      throw new Error("expected effect conflict");
+    }
+    equal(result.reason, CommandOutcomeEffectConflictReason.WorkAnchorEffectConflict);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [
+        CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+        CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
+        CockroachWorkAnchorStateStoreStatement.InsertProject,
+      ],
+    );
+  });
 });
 
 type RecordingCockroachSqlExecutor = CockroachSqlExecutor & {
@@ -138,7 +387,11 @@ type RecordingCockroachSqlExecutor = CockroachSqlExecutor & {
 };
 
 function createRecordingExecutor(
-  input: { claimStatus?: CommandOutcomePersistenceStatus } = {},
+  input: {
+    claimStatus?: CommandOutcomePersistenceStatus;
+    failWorkAnchorProjectInsert?: boolean;
+    hasOverlappingScheduleBlock?: boolean;
+  } = {},
 ): RecordingCockroachSqlExecutor {
   const statements: { name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement; sql: string; parameters: readonly unknown[] }[] = [];
   const transactionStatements: {
@@ -183,9 +436,21 @@ function createRecordingExecutor(
             };
           }
 
+          if (statement.name === CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock) {
+            return {
+              rows:
+                input.hasOverlappingScheduleBlock === true
+                  ? ([{ work_schedule_block_id: "work-schedule-block-existing-001" }] as readonly unknown[] as readonly Row[])
+                  : [],
+            };
+          }
+
           if (statement.name === CockroachWorkAnchorStateStoreStatement.InsertProject) {
             return {
-              rows: [{ id: statement.parameters[0] }] as readonly unknown[] as readonly Row[],
+              rows:
+                input.failWorkAnchorProjectInsert === true
+                  ? []
+                  : ([{ id: statement.parameters[0] }] as readonly unknown[] as readonly Row[]),
             };
           }
 
@@ -240,6 +505,23 @@ function createRecordingExecutor(
   };
 }
 
+function createUnsupportedDiscussionAnchorOutcome(): RecordCommandOutcomeInput<CommandResult> {
+  const outcome = createCommandOutcome();
+
+  return {
+    ...outcome,
+    effects: {
+      ...outcome.effects,
+      discussionAnchors: [
+        {
+          ...outcome.effects.discussionAnchors[0]!,
+          discussionAnchorType: DiscussionAnchorType.Project,
+        },
+      ],
+    },
+  };
+}
+
 function createCommandOutcome(
   input: { includeAuditPolicyEvidence?: boolean; includeWorkAnchorEffects?: boolean } = {},
 ): RecordCommandOutcomeInput<CommandResult> {
@@ -276,6 +558,88 @@ function createCommandOutcome(
           message: "Need a scoped publisher decision.",
           relatedWorkItemId: "work-outbox-001",
           createdAt: "2026-05-25T20:00:00.000Z",
+        },
+      ],
+      discussionAnchors: [
+        {
+          discussionAnchorId: "discussion-anchor-001",
+          organizationId: "org-lfg",
+          projectId: "project-agentic-org",
+          teamId: "team-runtime",
+          workItemId: "work-outbox-001",
+          discussionAnchorType: DiscussionAnchorType.WorkItem,
+          title: "Review scoped NATS publisher",
+          purpose: "Coordinate the evidence needed before review starts.",
+          expectedOutputs: [DiscussionExpectedOutput.Decision],
+          createdAt: "2026-05-25T20:00:00.000Z",
+          createdBy: {
+            agentId: "agent-developer-001",
+            hatAssignmentId: "hat-assignment-dev-001",
+          },
+          metadata: {
+            updatedAt: "2026-05-25T20:00:00.000Z",
+            version: 1,
+            correlationId: "corr-001",
+            causationId: "cause-001",
+            traceId: "trace-001",
+          },
+        },
+      ],
+      decisionRecords: [
+        {
+          decisionRecordId: "decision-record-001",
+          organizationId: "org-lfg",
+          projectId: "project-agentic-org",
+          teamId: "team-runtime",
+          workItemId: "work-outbox-001",
+          discussionAnchorId: "discussion-anchor-001",
+          title: "Review scoped NATS publisher decision",
+          decision: "Proceed with review once evidence is attached.",
+          rationale: "The command outcome path is deterministic and auditable.",
+          alternativesConsidered: ["Delay review until live NATS is available"],
+          followUpWorkItemIds: ["work-evidence-001"],
+          decidedAt: "2026-05-25T20:10:00.000Z",
+          decidedBy: {
+            agentId: "agent-developer-001",
+            hatAssignmentId: "hat-assignment-dev-001",
+          },
+          metadata: {
+            updatedAt: "2026-05-25T20:10:00.000Z",
+            version: 1,
+            correlationId: "corr-001",
+            causationId: "cause-001",
+            traceId: "trace-001",
+          },
+        },
+      ],
+      workScheduleBlocks: [
+        {
+          workScheduleBlockId: "work-schedule-block-001",
+          organizationId: "org-lfg",
+          projectId: "project-agentic-org",
+          teamId: "team-runtime",
+          workItemId: "work-outbox-001",
+          discussionAnchorId: "discussion-anchor-001",
+          assignedAgentId: "agent-developer-001",
+          assignedHatAssignmentId: "hat-assignment-dev-001",
+          blockType: ScheduleBlockType.PrioritizedWork,
+          state: ScheduleBlockState.Scheduled,
+          title: "Focused implementation block",
+          purpose: "Allocate focused implementation time.",
+          startsAt: "2026-05-25T20:15:00.000Z",
+          endsAt: "2026-05-25T21:00:00.000Z",
+          scheduledAt: "2026-05-25T20:10:00.000Z",
+          scheduledBy: {
+            agentId: "agent-developer-001",
+            hatAssignmentId: "hat-assignment-dev-001",
+          },
+          metadata: {
+            updatedAt: "2026-05-25T20:10:00.000Z",
+            version: 1,
+            correlationId: "corr-001",
+            causationId: "cause-001",
+            traceId: "trace-001",
+          },
         },
       ],
       auditEvents: [

@@ -3,6 +3,7 @@ import { describe, test } from "node:test";
 
 import { WorkerRuntimeTelemetryEventName } from "../src/index.ts";
 import { OutboxPublishOutcomeStatus } from "../../../packages/messaging/src/index.ts";
+import { ReactionPlanExecutionStatus } from "../../../packages/runtime/src/index.ts";
 import { WorkerCycleStatus } from "../../../packages/workers/src/index.ts";
 import { createJsonWorkerTelemetrySink } from "../src/adapters/json-worker-telemetry-sink.ts";
 
@@ -25,6 +26,11 @@ describe("JSON worker telemetry sink", () => {
         "agentic.worker.inbound.payload_conflict_count": 0,
         "agentic.worker.inbound.failed_count": 0,
         "agentic.worker.inbound.reaction_plan_count": 0,
+        "agentic.worker.reaction_plan.status": ReactionPlanExecutionStatus.Idle,
+        "agentic.worker.reaction_plan.claimed_count": 0,
+        "agentic.worker.reaction_plan.succeeded_count": 0,
+        "agentic.worker.reaction_plan.failed_count": 0,
+        "agentic.worker.reaction_plan.claim_lost_count": 0,
         "agentic.worker.failure_count": 0,
       },
     });
@@ -42,6 +48,11 @@ describe("JSON worker telemetry sink", () => {
           "agentic.worker.inbound.payload_conflict_count": 0,
           "agentic.worker.inbound.failed_count": 0,
           "agentic.worker.inbound.reaction_plan_count": 0,
+          "agentic.worker.reaction_plan.status": ReactionPlanExecutionStatus.Idle,
+          "agentic.worker.reaction_plan.claimed_count": 0,
+          "agentic.worker.reaction_plan.succeeded_count": 0,
+          "agentic.worker.reaction_plan.failed_count": 0,
+          "agentic.worker.reaction_plan.claim_lost_count": 0,
           "agentic.worker.failure_count": 0,
         },
       },

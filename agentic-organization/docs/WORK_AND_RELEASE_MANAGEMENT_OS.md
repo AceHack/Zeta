@@ -51,6 +51,7 @@ This structure should be flexible enough for internal platform work and product/
 | Initiative | Prioritized body of work with owner, scope, budget, required gates, and expected outcomes |
 | Initiative Branch | Feature branch or branch family where all development and QA for an initiative happens before promotion to the system build branch |
 | Work Item | Common superclass for task, defect, capability request, review task, incident task, release task |
+| Work Batch / Mission Run | A durable grouping of related work items for an initiative, release, incident, or department push, with its own status, capacity plan, schedule context, and completion/recovery rules |
 | Task | Concrete unit of execution with acceptance criteria, required hats, dependencies, and evidence |
 | Defect | Reproducible problem with severity, reproduction evidence, affected project/release, and fix flow |
 | Capability Request | Request for a new tool, credential, workflow, actor, skill, memory adaptation, or runtime feature |
@@ -59,6 +60,7 @@ This structure should be flexible enough for internal platform work and product/
 | Release | Merge/promotion/deployment unit with gate evidence, risk, rollback, notes, and verification |
 | Automation Package | CI, test, deployment, preview environment, rollback, observability, and operational automation created or updated with the feature |
 | Work Schedule | Hat-bound schedule of prioritized work, prompt-flow execution, review, reflection, memory maintenance, free time, and reporting blocks |
+| Schedule Context | Runtime dispatch metadata linked to work, such as target hat, run template, branch, budget, retry count, circuit-breaker state, and dispatch failure evidence. This is separate from the work item itself |
 | Prompt Flow | Reusable deterministic MCP-driven pipeline composed of phases, gates, reviewers, artifacts, and memory behavior |
 | Universal Action | Typed action atom inside a prompt-flow phase, with actor, target, preconditions, observation contract, reversibility, and evidence |
 | Signal | Durable event that informs boards, rules, agents, meetings, triggers, and UI read models |
@@ -90,6 +92,43 @@ scheduled work block exist. Work item type is required on the domain
 record so defect policy cannot be skipped by omitting the type. State
 transition records must preserve the evidence artifact IDs and the
 assignment/schedule references that made the transition legal.
+
+When a work item enters `ready`, the V0 runtime now creates an
+implementation-assignment reaction plan for an Engineering Manager.
+When a work item enters `review`, it creates a reviewer-gate reaction
+plan. This keeps the next orchestration move event-driven: the system
+asks for the next responsible hat instead of relying on a human or
+agent to remember to poll a board.
+
+### Work Batch / Mission Run States
+
+Gastown's convoy model is useful because it gives a durable attention
+object for related work. Agentic Organization should use a similar
+concept, but scoped to our hierarchy and policy model.
+
+```text
+created
+  -> scoped
+  -> capacity_planned
+  -> scheduled
+  -> active
+  -> partially_blocked
+  -> completion_check
+  -> done
+```
+
+Work batches should never replace initiatives or work items. They are
+runtime grouping objects that answer:
+
+- which work items are being moved together;
+- which hats and schedule blocks are reserved;
+- which blockers are holding the batch;
+- which review and release gates are still open;
+- whether all tracked work is complete;
+- whether stranded work needs redispatch or escalation.
+
+As with schedule contexts, batch state should be linked to work items
+rather than embedded into work item descriptions.
 
 ### Requirement Maturity States
 
@@ -191,7 +230,7 @@ Signals are durable, typed events. They are not chat messages. They drive boards
 | Anti-stall | `QueueSloViolated`, `BlockedWorkStale`, `BlockerOwnerMissing`, `AssignmentSilent`, `AlternateWorkAssigned`, `DependencyCleared`, `WorkReactivated` | TPMs, Engineering Managers, Directors, Operations |
 | Quality | `RepeatedQaBounceBack`, `MemoryGapDetected`, `FlakyTestDetected`, `AcceptanceCriteriaMissing` | Engineering Managers, QA Engineering, Memory |
 | Capability | `CapabilityRequested`, `SecurityReviewRequired`, `WorkflowRegistered`, `ToolActivated` | Directors, Architecture, Security |
-| Meeting | `DiscussionAnchorValidated`, `MeetingRequested`, `DecisionRecorded`, `VoteOpened`, `VoteClosed` | Participants, governance hats |
+| Meeting | `DiscussionAnchorCreated`, `MeetingRequested`, `DecisionRecorded`, `VoteOpened`, `VoteClosed` | Participants, governance hats |
 
 Every signal should include:
 
@@ -465,11 +504,35 @@ This slice proves:
 - No work should be invisible. If an agent is doing work, it must be tied to a work item, hat assignment, run, and trace.
 - No assignment should be implied by chat. Assignment requires hat supply reservation and active token.
 - No discussion may be unanchored. Meetings, threads, broadcasts, one-on-ones, votes, reports, and review comments must reference project, initiative, task, defect, review, gate, incident, release, policy, capability request, or context-gap work.
+- V0 enforces that rule through durable work-item-scoped `discussion_anchors`
+  before any meeting/thread/vote lifecycle exists. Later communication tools
+  consume anchors; they do not bypass them.
+- Consequential choices must be recorded as `decision_records` through
+  `record_decision`, tied back to an existing decision-capable discussion
+  anchor, so agents can retrieve why a task, gate, or follow-up exists.
 - No release should happen without an evidence chain.
 - No workflow should bypass the Work OS. Schedulers and agents create work or signals, then the Work OS drives state.
 - No prompt flow should bypass gates. Each phase must persist evidence and route required reviewer decisions before protected completion.
 - No action should be opaque. Universal actions must record preconditions, observations, reversibility, evidence, and action mode.
 - No schedule should be invisible. Active hat assignments need schedule blocks for work, review, reflection, memory maintenance, and free time.
+- The first executable schedule guard is `schedule_work_block`: it persists a
+  work-item-scoped `scheduled` block, publishes
+  `work_schedule_block.scheduled`, and rejects overlapping scheduled/active
+  blocks for the same hat assignment in state persistence through a typed
+  command outcome conflict.
+- Scheduling is not just calendar data. The assigned hat assignment must be
+  active, scoped to the same organization/project/team, and held by the
+  assigned agent at the command boundary before the block can be accepted.
+  This keeps RMO allocation tied to revocable hat authority instead of trusting
+  owner fields.
+- Scheduler authority also needs policy-visible resource context. Allocation
+  commands expose the assigned agent, assigned hat assignment, block type, and
+  time window to policy before effects are emitted, so managers and automation
+  cannot reserve arbitrary capacity just by knowing an ID.
 - No role should rely on polling chat. Each role needs a queue, board, and signal-driven inbox.
+- Supervisor-chain signals are strict lifecycle inputs, not loose messages.
+  Sender tools must provide a nonblank target hat, nonblank title/message,
+  valid tool type, valid source/target chain levels, and an upward chain
+  movement. Malformed inbound events do not default to a manager task.
 - No stale authority. Expired or revoked hats lose MCP tools, credential scopes, memory scopes, approval powers, and active assignment.
 - No silent lag. Stuck states, missing assignments, missing reviewers, silent runs, and saturated queues must produce signals and escalation.

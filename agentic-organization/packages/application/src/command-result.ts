@@ -1,8 +1,11 @@
 import type {
   AgenticAggregateType,
   AgenticEventType,
+  DecisionRecord,
+  DiscussionAnchor,
   PolicyDecisionEvidence,
   SupervisorSignal,
+  WorkScheduleBlock,
   WorkItem,
 } from "../../domain/src/index.ts";
 import type { PolicyDenialReason } from "../../policy/src/index.ts";
@@ -20,6 +23,7 @@ export const CommandErrorCode = {
   PolicyDenied: "policy_denied",
   PolicyObservationConflict: "policy_observation_conflict",
   PolicyObservationFailed: "policy_observation_failed",
+  ScheduleAuthorityDenied: "schedule_authority_denied",
   UnsupportedCommand: "unsupported_command",
   ValidationFailed: "validation_failed",
 } as const;
@@ -27,8 +31,11 @@ export const CommandErrorCode = {
 export type CommandErrorCode = (typeof CommandErrorCode)[keyof typeof CommandErrorCode];
 
 export const CommandResultArtifactType = {
+  DecisionRecord: "decision_record",
+  DiscussionAnchor: "discussion_anchor",
   Generic: "generic",
   SupervisorSignal: "supervisor_signal",
+  WorkScheduleBlock: "work_schedule_block",
   WorkItem: "work_item",
 } as const;
 
@@ -55,6 +62,9 @@ export type CommandResult = {
   emittedEvents?: readonly CommandResultEmittedEvent[];
   auditEventIds?: readonly string[];
   policy?: PolicyDecisionEvidence;
+  decisionRecord?: DecisionRecord;
+  discussionAnchor?: DiscussionAnchor;
+  workScheduleBlock?: WorkScheduleBlock;
   workItem?: WorkItem;
   supervisorSignal?: SupervisorSignal;
   idempotency: {
@@ -65,7 +75,7 @@ export type CommandResult = {
     message: string;
     policyDecisionId?: string;
     policyVersion?: string;
-    reason?: PolicyDenialReason;
+    reason?: PolicyDenialReason | string;
     observationFailureReason?: string;
   };
 };

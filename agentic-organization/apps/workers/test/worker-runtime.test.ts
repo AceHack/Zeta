@@ -5,6 +5,7 @@ import { OutboxPublishOutcomeStatus } from "../../../packages/messaging/src/inde
 import { createOutboxPublishFailureEvidence } from "../../../packages/domain/src/index.ts";
 import type { NatsJetStreamConsumeBatchResult } from "../../../packages/messaging-nats/src/index.ts";
 import { WorkerCycleStatus, type WorkerCycleResult } from "../../../packages/workers/src/index.ts";
+import { ReactionPlanExecutionStatus } from "../../../packages/runtime/src/index.ts";
 import {
   WorkerRuntimeFailureStage,
   WorkerRuntimeConfigError,
@@ -44,6 +45,11 @@ describe("worker runtime composition host", () => {
           "agentic.worker.inbound.payload_conflict_count": 0,
           "agentic.worker.inbound.failed_count": 0,
           "agentic.worker.inbound.reaction_plan_count": 0,
+          "agentic.worker.reaction_plan.status": ReactionPlanExecutionStatus.Idle,
+          "agentic.worker.reaction_plan.claimed_count": 0,
+          "agentic.worker.reaction_plan.succeeded_count": 0,
+          "agentic.worker.reaction_plan.failed_count": 0,
+          "agentic.worker.reaction_plan.claim_lost_count": 0,
           "agentic.worker.failure_count": 0,
         },
       },
@@ -128,6 +134,11 @@ describe("worker runtime composition host", () => {
       "agentic.worker.inbound.payload_conflict_count": 0,
       "agentic.worker.inbound.failed_count": 0,
       "agentic.worker.inbound.reaction_plan_count": 0,
+      "agentic.worker.reaction_plan.status": ReactionPlanExecutionStatus.Idle,
+      "agentic.worker.reaction_plan.claimed_count": 0,
+      "agentic.worker.reaction_plan.succeeded_count": 0,
+      "agentic.worker.reaction_plan.failed_count": 0,
+      "agentic.worker.reaction_plan.claim_lost_count": 0,
       "agentic.worker.failure_count": 1,
       "agentic.worker.failure.first_lane": "outbox",
       "agentic.worker.failure.first_message": "outbox claim stale",
@@ -250,6 +261,13 @@ function createWorkedWorkerCycle(): WorkerCycleResult {
       payloadConflictCount: 0,
       failedCount: 0,
       reactionPlanCount: 0,
+    },
+    reactionPlans: {
+      status: ReactionPlanExecutionStatus.Idle,
+      claimedCount: 0,
+      succeededCount: 0,
+      failedCount: 0,
+      claimLostCount: 0,
     },
     failures: [],
   };

@@ -1,10 +1,24 @@
-import { InitiativeStatus, ProjectStatus, WorkItemState, WorkItemType } from "../../domain/src/index.ts";
+import {
+  DiscussionAnchorType,
+  InitiativeStatus,
+  ProjectStatus,
+  ScheduleBlockState,
+  ScheduleBlockType,
+  HatAssignmentAuthorityState,
+  WorkItemState,
+  WorkItemType,
+} from "../../domain/src/index.ts";
 
 export const CockroachCoreStateMigrationName = {
   CoreStateV1: "0001_agentic_org_core_state",
   OutboxClaimFenceV2: "0002_agentic_org_outbox_claim_fence",
   WorkAnchorKernelV3: "0003_agentic_org_work_anchor_kernel",
   WorkItemStateHistoryMetadataV4: "0004_agentic_org_work_item_state_history_metadata",
+  DiscussionAnchorKernelV5: "0005_agentic_org_discussion_anchor_kernel",
+  DecisionRecordKernelV6: "0006_agentic_org_decision_record_kernel",
+  WorkScheduleBlockKernelV7: "0007_agentic_org_work_schedule_block_kernel",
+  HatAssignmentAuthorityProjectionV8: "0008_agentic_org_hat_assignment_authority_projection",
+  ReactionPlanExecutionLifecycleV9: "0009_agentic_org_reaction_plan_execution_lifecycle",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -16,6 +30,10 @@ export const CockroachTableName = {
   WorkItems: "agentic_org_work_items",
   WorkAnchorTargets: "agentic_org_work_anchor_targets",
   WorkItemStateHistory: "agentic_org_work_item_state_history",
+  DiscussionAnchors: "agentic_org_discussion_anchors",
+  DecisionRecords: "agentic_org_decision_records",
+  WorkScheduleBlocks: "agentic_org_work_schedule_blocks",
+  HatAssignmentAuthorities: "agentic_org_hat_assignment_authorities",
   SupervisorSignals: "agentic_org_supervisor_signals",
   AuditEvents: "agentic_org_audit_events",
   InboxReceipts: "agentic_org_inbox_receipts",
@@ -35,6 +53,10 @@ export const CockroachCheckConstraintName = {
   WorkItemStateHistoryFromState: "agentic_org_work_item_state_history_from_state_check",
   WorkItemStateHistorySequencePositive: "agentic_org_work_item_state_history_sequence_positive_check",
   WorkItemStateHistoryToState: "agentic_org_work_item_state_history_to_state_check",
+  DiscussionAnchorType: "agentic_org_discussion_anchors_type_check",
+  ScheduleBlockType: "agentic_org_work_schedule_blocks_type_check",
+  ScheduleBlockState: "agentic_org_work_schedule_blocks_state_check",
+  HatAssignmentAuthorityState: "agentic_org_hat_assignment_authorities_state_check",
 } as const;
 
 export type CockroachCheckConstraintName =
@@ -90,6 +112,11 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachOutboxClaimFenceMigration(),
     createCockroachWorkAnchorKernelMigration(),
     createCockroachWorkItemStateHistoryMetadataMigration(),
+    createCockroachDiscussionAnchorKernelMigration(),
+    createCockroachDecisionRecordKernelMigration(),
+    createCockroachWorkScheduleBlockKernelMigration(),
+    createCockroachHatAssignmentAuthorityProjectionMigration(),
+    createCockroachReactionPlanExecutionLifecycleMigration(),
   ];
 }
 
@@ -97,6 +124,41 @@ export function createCockroachWorkItemStateHistoryMetadataMigration(): Cockroac
   return {
     name: CockroachCoreStateMigrationName.WorkItemStateHistoryMetadataV4,
     sql: createWorkItemStateHistoryMetadataMigrationSql(),
+  };
+}
+
+export function createCockroachDiscussionAnchorKernelMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.DiscussionAnchorKernelV5,
+    sql: createDiscussionAnchorsTableSql(),
+  };
+}
+
+export function createCockroachDecisionRecordKernelMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.DecisionRecordKernelV6,
+    sql: createDecisionRecordsTableSql(),
+  };
+}
+
+export function createCockroachWorkScheduleBlockKernelMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.WorkScheduleBlockKernelV7,
+    sql: createWorkScheduleBlocksTableSql(),
+  };
+}
+
+export function createCockroachHatAssignmentAuthorityProjectionMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.HatAssignmentAuthorityProjectionV8,
+    sql: createHatAssignmentAuthorityProjectionTableSql(),
+  };
+}
+
+export function createCockroachReactionPlanExecutionLifecycleMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ReactionPlanExecutionLifecycleV9,
+    sql: createReactionPlanExecutionLifecycleMigrationSql(),
   };
 }
 
@@ -217,6 +279,82 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.SupervisorSignals} (
 );`.trim();
 }
 
+function createDiscussionAnchorsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.DiscussionAnchors} (
+  discussion_anchor_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING,
+  work_item_id STRING NOT NULL,
+  discussion_anchor_type STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.DiscussionAnchorType} CHECK (discussion_anchor_type IN (${createSqlStringList(SupportedDiscussionAnchorTypes)})),
+  title STRING NOT NULL,
+  purpose STRING NOT NULL,
+  expected_outputs JSONB NOT NULL,
+  created_by_agent_id STRING NOT NULL,
+  created_by_hat_assignment_id STRING NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);`.trim();
+}
+
+function createDecisionRecordsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.DecisionRecords} (
+  decision_record_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING,
+  work_item_id STRING NOT NULL,
+  discussion_anchor_id STRING NOT NULL,
+  title STRING NOT NULL,
+  decision STRING NOT NULL,
+  rationale STRING NOT NULL,
+  alternatives_considered JSONB NOT NULL,
+  follow_up_work_item_ids JSONB NOT NULL,
+  decided_by_agent_id STRING NOT NULL,
+  decided_by_hat_assignment_id STRING NOT NULL,
+  decided_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);`.trim();
+}
+
+function createWorkScheduleBlocksTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkScheduleBlocks} (
+  work_schedule_block_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING,
+  work_item_id STRING NOT NULL,
+  discussion_anchor_id STRING,
+  assigned_agent_id STRING NOT NULL,
+  assigned_hat_assignment_id STRING NOT NULL,
+  block_type STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.ScheduleBlockType} CHECK (block_type IN (${createSqlStringList(Object.values(ScheduleBlockType))})),
+  state STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.ScheduleBlockState} CHECK (state IN (${createSqlStringList(Object.values(ScheduleBlockState))})),
+  title STRING NOT NULL,
+  purpose STRING NOT NULL,
+  starts_at TIMESTAMPTZ NOT NULL,
+  ends_at TIMESTAMPTZ NOT NULL,
+  scheduled_by_agent_id STRING NOT NULL,
+  scheduled_by_hat_assignment_id STRING NOT NULL,
+  scheduled_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);`.trim();
+}
+
 function createAuditEventsTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.AuditEvents} (
@@ -331,6 +469,8 @@ ALTER TABLE IF EXISTS ${CockroachTableName.WorkItemStateHistory}
 `.trim();
 }
 
+const SupportedDiscussionAnchorTypes = [DiscussionAnchorType.WorkItem] as const;
+
 function createSqlStringList(values: readonly string[]): string {
   return values.map((value) => `'${value}'`).join(", ");
 }
@@ -368,7 +508,9 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.ReactionPlans} (
   organization_id STRING NOT NULL,
   project_id STRING NOT NULL,
   work_item_id STRING NOT NULL,
-  action_json JSONB NOT NULL
+  action_json JSONB NOT NULL,
+  attempt_count INT8 NOT NULL DEFAULT 0,
+  next_attempt_at TIMESTAMPTZ
 );`.trim();
 }
 
@@ -398,4 +540,35 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.PolicyObservations} (
   observation_json JSONB NOT NULL,
   observed_at TIMESTAMPTZ NOT NULL
 );`.trim();
+}
+
+function createHatAssignmentAuthorityProjectionTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.HatAssignmentAuthorities} (
+  hat_assignment_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING,
+  assigned_agent_id STRING NOT NULL,
+  state STRING NOT NULL CONSTRAINT ${CockroachCheckConstraintName.HatAssignmentAuthorityState} CHECK (state IN (${createSqlStringList(Object.values(HatAssignmentAuthorityState))})),
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);`.trim();
+}
+
+function createReactionPlanExecutionLifecycleMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.ReactionPlans}
+  ADD COLUMN IF NOT EXISTS claim_id STRING,
+  ADD COLUMN IF NOT EXISTS claimed_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS claim_expires_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS completed_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS failed_at TIMESTAMPTZ,
+  ADD COLUMN IF NOT EXISTS result_json JSONB,
+  ADD COLUMN IF NOT EXISTS failure_json JSONB,
+  ADD COLUMN IF NOT EXISTS attempt_count INT8 NOT NULL DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS next_attempt_at TIMESTAMPTZ;`.trim();
 }

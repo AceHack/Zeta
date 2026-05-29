@@ -47,6 +47,14 @@ export type CommandAuthorizationSupervisorChain = {
   targetLevel?: SupervisorChainLevel;
 };
 
+export type CommandAuthorizationResource = {
+  assignedAgentId?: string;
+  assignedHatAssignmentId?: string;
+  blockType?: string;
+  startsAt?: string;
+  endsAt?: string;
+};
+
 export type CommandAuthorizationRequest = {
   commandId: string;
   commandType: string;
@@ -54,6 +62,7 @@ export type CommandAuthorizationRequest = {
   scope: CommandAuthorizationScope;
   toolType?: string;
   supervisorChain?: CommandAuthorizationSupervisorChain;
+  resource?: CommandAuthorizationResource;
   trace: CommandAuthorizationTrace;
 };
 
@@ -94,6 +103,7 @@ export type PolicyDecisionObservation = {
   scope: CommandAuthorizationScope;
   toolType?: string;
   supervisorChain?: CommandAuthorizationSupervisorChain;
+  resource?: CommandAuthorizationResource;
   trace: CommandAuthorizationTrace;
   decision: PolicyDecision;
   observedAt: string;

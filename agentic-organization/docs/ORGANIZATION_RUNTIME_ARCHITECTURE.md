@@ -86,6 +86,53 @@ The k3s execution, sandbox, Credential Proxy, Cilium, SPIRE, Vault, External Sec
 
 The NixOS/k3s/ArgoCD scaffold assumptions and component clarifications are captured in [AI Cluster Scaffold Context](./AI_CLUSTER_SCAFFOLD_CONTEXT.md).
 
+The external Gastown comparison and what we should reuse or avoid is
+captured in [Gastown Reference Analysis](./GASTOWN_REFERENCE_ANALYSIS.md).
+
+## Gastown-Inspired Runtime Mapping
+
+Gastown is useful as a local multi-agent workspace reference, but the
+Agentic Organization mapping must stay cluster-native and hierarchy
+aware.
+
+| Gastown concept | Useful lesson | Agentic Organization version |
+|---|---|---|
+| Mayor | A visible coordinator helps agents start work | Supervisor chain, TPM/director/C-suite hats, and executive-board authority rather than one singleton brain |
+| Rig | Project-local scope matters | Project/repo scope with initiative, team, docs, memory, and policy boundaries |
+| Convoy | Related work needs a durable attention object | Work Batch / Mission Run linked to initiatives, work items, schedules, gates, and recovery scans |
+| Molecule | Reusable workflows help agents execute consistently | Executable prompt-flow phases with typed preconditions, tools, evidence, gates, and telemetry |
+| Witness | Team-local health observation is necessary | Engineering-manager/team observer duties plus runtime watchdog workers |
+| Refinery | Completion needs merge/release gates | Initiative-aware review, QA, release, and promotion workflows with policy-owned authority |
+| Deacon/Dogs | Always-on maintenance keeps agents moving | Worker lanes, reconcilers, anomaly classifiers, dead-letter handlers, and self-healing work |
+| Mail | Communication needs durable routing | Work-anchored inboxes, supervisor signals, meetings, direct messages, team broadcasts, and receipts over NATS/Cockroach |
+| Scheduler | Capacity-aware dispatch prevents overload | Hat supply, budget, work schedule, Oz/Hermes run binding, and schedule-block admission |
+
+The biggest design rule from this mapping is that Gastown-style
+workflow text should become enforceable Organization state. A prompt
+flow can describe the work, but CockroachDB state, policy checks, NATS
+events, reaction plans, leases, schedules, and review gates must decide
+what actually moves forward.
+
+The primary executable communication ingress remains `send_supervisor_signal`:
+agents tell their manager or supervisor-chain target what they need, and normal
+Organization routing turns that into work, triage, escalation, or discussion.
+`create_discussion_anchor` is the first executable support primitive for
+work-anchored discussion. It is deliberately smaller than meetings or chat: the
+command validates an existing work item, records the typed anchor in Cockroach
+through the generic command outcome port, emits `discussion_anchor.created`
+through the outbox, and leaves meeting/session/vote behavior to later lifecycle
+commands. This keeps communication agent-native without creating a parallel
+freeform chat substrate.
+
+The first executable decision primitive is `record_decision`. It must point to
+an existing work-item-scoped discussion anchor in the same org/project/team/work
+scope, and the anchor must have expected a decision. The command writes
+`decision_records`, audit evidence, and `decision.recorded` outbox events in the
+same command outcome transaction. This gives agents a durable path from a work
+item to the discussion that justified a choice and then to the recorded
+decision, without pretending that full meetings, votes, or graph projections are
+implemented yet.
+
 ## Technology Stack
 
 Initial stack:
@@ -1768,6 +1815,13 @@ Required anchors:
 - broadcasts and reports anchor to the team, department, project, initiative, task, incident, release, or signal they are about.
 
 If an agent wants to talk but cannot identify the anchor, the system should create a context-gap or service-request work item first. The resulting discussion is then tied to that work item. This keeps the Organization from accumulating unanchored chat while still allowing agents to resolve ambiguity.
+
+V0 enforcement is work-item scoped because the runtime event envelope and NATS
+outbox require `workItemId`. Wider project-only or initiative-only discussion
+anchors should be added by explicitly widening the scope contract and schema,
+not by inventing placeholder work items. Until then, ambiguous project or
+initiative discussions create or select a concrete context-gap, intake,
+service-request, or planning work item first.
 
 ## One-on-One Chats
 

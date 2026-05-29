@@ -4,6 +4,10 @@ export {
   type InMemoryOrganizationStoreSnapshot,
 } from "./in-memory-organization-store.ts";
 export {
+  createInMemoryWorkScheduleBlockAuthorityReader,
+  type CreateInMemoryWorkScheduleBlockAuthorityReaderInput,
+} from "./in-memory-work-schedule-block-authority-reader.ts";
+export {
   EventIngestionOutcomeStatus,
   InboundEventConsumerName,
   createInMemoryEventIngestionStore,
@@ -15,6 +19,21 @@ export {
   type ReactionPlanRecord,
   type RecordEventProcessingOutcomeInput,
 } from "./event-ingestion-store.ts";
+export {
+  ReactionPlanClaimStatus,
+  ReactionPlanCompletionStatus,
+  createInMemoryReactionPlanWorkQueue,
+  type ClaimedReactionPlanRecord,
+  type ClaimReactionPlansInput,
+  type ClaimReactionPlansResult,
+  type CompleteReactionPlanInput,
+  type CompleteReactionPlanResult,
+  type FailReactionPlanInput,
+  type InMemoryReactionPlanWorkQueue,
+  type ReactionPlanExecutionFailureRecord,
+  type ReactionPlanExecutionRecord,
+  type ReactionPlanWorkQueue,
+} from "./reaction-plan-work-queue.ts";
 export type {
   ClaimedOutboxEvent,
   ClaimUnpublishedOutboxEventsInput,

@@ -137,33 +137,38 @@ without it.
 
 ## Required V0 Flow
 
-1. `send_supervisor_signal` creates the chain communication record and
-   first audit/outbox events against an anchored work item and
-   discussion anchor. Capability request inputs enter through the same
-   V0 command path.
-2. `triage_supervisor_signal` selects the responsible project,
+1. `send_supervisor_signal` creates only the durable chain
+   communication record plus its audit/outbox events against an anchored
+   work item. Capability request inputs enter through the same V0
+   command path, but this command does not create a discussion or work
+   item as a side effect.
+2. Event ingestion creates a supervisor-triage reaction plan. The
+   reaction executor claims that plan through a lease and then drives
+   explicit follow-up commands such as `triage_supervisor_signal` or
+   `create_discussion_anchor`.
+3. `triage_supervisor_signal` selects the responsible project,
    initiative, owner hat, lifecycle, and required gate.
-3. `create_context_pack` links relevant docs, prior decisions, task
+4. `create_context_pack` links relevant docs, prior decisions, task
    graph nodes, memory references, and acceptance criteria.
-4. `decide_gate` moves the request into ready state or asks for more
+5. `decide_gate` moves the request into ready state or asks for more
    information.
-5. `reserve_hat` creates a hat assignment and maps it to the hat-system
+6. `reserve_hat` creates a hat assignment and maps it to the hat-system
    projection boundary.
-6. `issue_hat_token` creates the time-bounded runtime authority for the
+7. `issue_hat_token` creates the time-bounded runtime authority for the
    selected Hermes agent/session.
-7. `start_schedule_block` enters prioritized work time for the active
+8. `start_schedule_block` enters prioritized work time for the active
    hat.
-8. `start_prompt_flow` locks the agent into the selected deterministic
+9. `start_prompt_flow` locks the agent into the selected deterministic
    work protocol.
-9. `launch_hermes_run` binds the Organization work item, agent, session,
+10. `launch_hermes_run` binds the Organization work item, agent, session,
    hat assignment, and prompt-flow run to the Hermes/OZ runtime adapter.
-10. `record_universal_action` and `record_action_observation` capture
+11. `record_universal_action` and `record_action_observation` capture
     what the agent did and what the system observed.
-11. `submit_evidence` attaches logs, screenshots, code refs, traces, or
+12. `submit_evidence` attaches logs, screenshots, code refs, traces, or
     documents to the work item.
-12. `request_gate_review` moves the work to reviewer attention.
-13. `decide_gate` approves, rejects, or requests changes.
-14. `complete_outcome_review` records what was learned and creates
+13. `request_gate_review` moves the work to reviewer attention.
+14. `decide_gate` approves, rejects, or requests changes.
+15. `complete_outcome_review` records what was learned and creates
     follow-up work if the run exposed a capability, memory, test, or
     process gap.
 

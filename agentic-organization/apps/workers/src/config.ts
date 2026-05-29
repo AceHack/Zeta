@@ -12,6 +12,8 @@ export const WorkerProcessEnvName = {
   NatsStream: "NATS_STREAM",
   WorkerInboundBatchSize: "WORKER_INBOUND_BATCH_SIZE",
   WorkerOutboxBatchSize: "WORKER_OUTBOX_BATCH_SIZE",
+  WorkerReactionPlanBatchSize: "WORKER_REACTION_PLAN_BATCH_SIZE",
+  WorkerReactionPlanLeaseMs: "WORKER_REACTION_PLAN_LEASE_MS",
 } as const;
 
 export type WorkerProcessEnvName = (typeof WorkerProcessEnvName)[keyof typeof WorkerProcessEnvName];
@@ -23,6 +25,8 @@ export type WorkerDurableRuntimeConfig = {
   natsServers: readonly string[];
   workerInboundBatchSize: number;
   workerOutboxBatchSize: number;
+  workerReactionPlanBatchSize: number;
+  workerReactionPlanLeaseMs: number;
 };
 
 export type WorkerProcessConfig = WorkerRuntimeConfig & WorkerDurableRuntimeConfig;
@@ -58,6 +62,10 @@ export function parseWorkerRuntimeConfigFromEnv(env: WorkerProcessEnvironment): 
     natsInboundBatchSize: parseNatsInboundBatchSize(env[WorkerProcessEnvName.NatsInboundBatchSize]),
     workerInboundBatchSize: parseWorkerInboundBatchSize(env[WorkerProcessEnvName.WorkerInboundBatchSize]),
     workerOutboxBatchSize: parseWorkerOutboxBatchSize(env[WorkerProcessEnvName.WorkerOutboxBatchSize]),
+    workerReactionPlanBatchSize: parseWorkerReactionPlanBatchSize(
+      env[WorkerProcessEnvName.WorkerReactionPlanBatchSize],
+    ),
+    workerReactionPlanLeaseMs: parseWorkerReactionPlanLeaseMs(env[WorkerProcessEnvName.WorkerReactionPlanLeaseMs]),
   };
 }
 
@@ -101,6 +109,14 @@ function parseWorkerInboundBatchSize(value: string | undefined): number {
 
 function parseWorkerOutboxBatchSize(value: string | undefined): number {
   return parsePositiveDecimalInteger(value, WorkerRuntimeConfigErrorCode.InvalidWorkerOutboxBatchSize);
+}
+
+function parseWorkerReactionPlanBatchSize(value: string | undefined): number {
+  return parsePositiveDecimalInteger(value, WorkerRuntimeConfigErrorCode.InvalidWorkerReactionPlanBatchSize);
+}
+
+function parseWorkerReactionPlanLeaseMs(value: string | undefined): number {
+  return parsePositiveDecimalInteger(value, WorkerRuntimeConfigErrorCode.InvalidWorkerReactionPlanLeaseMs);
 }
 
 function parsePositiveDecimalInteger(value: string | undefined, errorCode: WorkerRuntimeConfigErrorCode): number {

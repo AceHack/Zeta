@@ -2,10 +2,12 @@ import {
   AgenticAggregateType,
   AgenticEventType,
   CommandType,
+  SupervisorChainLevel,
   SupervisorSignalStatus,
+  isSupervisorChainLevel,
+  isSupervisorSignalToolType,
   type AuditEvent,
   type OutboxEvent,
-  type SupervisorChainLevel,
   type SupervisorSignal,
   type SupervisorSignalToolType,
 } from "../../../domain/src/index.ts";
@@ -31,8 +33,15 @@ export const IdPrefix = {
 export type IdPrefix = (typeof IdPrefix)[keyof typeof IdPrefix];
 
 export const SupervisorSignalValidationErrorMessage = {
+  MessageRequired: "supervisor signal message is required",
   MissingRelatedWorkItem: "supervisor signal requires an existing related work item",
   ScopeMismatch: "supervisor signal work item scope does not match the command scope",
+  SourceLevelInvalid: "supervisor signal source level is invalid",
+  TargetHatRequired: "supervisor signal target hat assignment is required",
+  TargetLevelInvalid: "supervisor signal target level is invalid",
+  TitleRequired: "supervisor signal title is required",
+  ToolTypeInvalid: "supervisor signal tool type is invalid",
+  UpwardChainRequired: "supervisor signal must target a higher supervisor chain level",
 } as const;
 
 export type SupervisorSignalValidationErrorMessage =
@@ -74,6 +83,12 @@ export async function sendSupervisorSignal(
   command: SendSupervisorSignalCommand,
   dependencies: SendSupervisorSignalDependencies,
 ): Promise<CommandHandlerOutcome<CommandResult>> {
+  const commandValidationError = validateSupervisorSignalCommand(command);
+
+  if (commandValidationError !== undefined) {
+    return createRejectedValidationOutcome(command, commandValidationError);
+  }
+
   const anchorValidationResult = await validateRelatedWorkItem(command, dependencies);
 
   if (anchorValidationResult !== undefined) {
@@ -170,10 +185,47 @@ export async function sendSupervisorSignal(
     },
     effects: {
       supervisorSignals: [supervisorSignal],
+      discussionAnchors: [],
+      decisionRecords: [],
+      workScheduleBlocks: [],
       auditEvents: [auditEvent],
       outboxEvents: [outboxEvent],
     },
   };
+}
+
+function validateSupervisorSignalCommand(
+  command: SendSupervisorSignalCommand,
+): SupervisorSignalValidationErrorMessage | undefined {
+  if (isBlank(command.targetHatAssignmentId)) {
+    return SupervisorSignalValidationErrorMessage.TargetHatRequired;
+  }
+
+  if (isBlank(command.title)) {
+    return SupervisorSignalValidationErrorMessage.TitleRequired;
+  }
+
+  if (isBlank(command.message)) {
+    return SupervisorSignalValidationErrorMessage.MessageRequired;
+  }
+
+  if (!isSupervisorSignalToolType(command.policyContext.toolType)) {
+    return SupervisorSignalValidationErrorMessage.ToolTypeInvalid;
+  }
+
+  if (!isSupervisorChainLevel(command.policyContext.supervisorChain.sourceLevel)) {
+    return SupervisorSignalValidationErrorMessage.SourceLevelInvalid;
+  }
+
+  if (!isSupervisorChainLevel(command.policyContext.supervisorChain.targetLevel)) {
+    return SupervisorSignalValidationErrorMessage.TargetLevelInvalid;
+  }
+
+  if (!isUpwardSupervisorChain(command.policyContext.supervisorChain.sourceLevel, command.policyContext.supervisorChain.targetLevel)) {
+    return SupervisorSignalValidationErrorMessage.UpwardChainRequired;
+  }
+
+  return undefined;
 }
 
 async function validateRelatedWorkItem(
@@ -228,6 +280,9 @@ function createRejectedValidationOutcome(
 function createEmptyCommandEffects(): CommandEffects {
   return {
     supervisorSignals: [],
+    discussionAnchors: [],
+    decisionRecords: [],
+    workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],
     workAnchors: {
@@ -238,4 +293,32 @@ function createEmptyCommandEffects(): CommandEffects {
       workItemTransitions: [],
     },
   };
+}
+
+function isBlank(value: unknown): boolean {
+  return typeof value !== "string" || value.trim().length === 0;
+}
+
+function isUpwardSupervisorChain(sourceLevel: SupervisorChainLevel, targetLevel: SupervisorChainLevel): boolean {
+  return getSupervisorChainRank(targetLevel) > getSupervisorChainRank(sourceLevel);
+}
+
+function getSupervisorChainRank(level: SupervisorChainLevel): number {
+  if (level === SupervisorChainLevel.TeamMember) {
+    return 0;
+  }
+
+  if (level === SupervisorChainLevel.Manager) {
+    return 1;
+  }
+
+  if (level === SupervisorChainLevel.Director) {
+    return 2;
+  }
+
+  if (level === SupervisorChainLevel.CSuite) {
+    return 3;
+  }
+
+  return 4;
 }

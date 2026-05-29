@@ -43,6 +43,18 @@ The Organization DB, audit rows, outbox rows, and domain events remain
 the source of truth. Logs, traces, metrics, and visibility records are
 queryable evidence and diagnosis surfaces.
 
+The Gastown reference review adds two visibility requirements to keep
+front of mind:
+
+- runtime verdicts should be machine-readable, not just log prose. A
+  schedule scan, reaction executor, dead-letter classifier, memory
+  review, and manager review should all produce a typed verdict with
+  evidence and recommended next action.
+- worker, process, run, reaction-plan, outbox-event, inbox-receipt, and
+  work-item IDs should be carried together whenever possible. Humans
+  and agents should not have to infer a run chain by scraping terminal
+  transcripts or local session files.
+
 ## Workflow Visibility Record
 
 `@agentic-org/observability` owns the first typed record builders. Event
@@ -205,6 +217,21 @@ attributes. This gives local runs and cluster logs the same field shape
 before an OTLP exporter is introduced. Later Alloy/Loki/Tempo/Mimir
 binding should ingest or translate this shape rather than inventing a
 parallel telemetry vocabulary.
+
+Worker-cycle telemetry now includes reaction-plan execution counters:
+status, claimed count, succeeded count, failed count, and claim-lost
+count. Those fields make the self-fulfilling loop visible without
+requiring a human to query Cockroach directly. A healthy loop should show
+planned reactions being claimed and completed; a weak loop should show
+failed or claim-lost counts that agents can use to open follow-up work
+against the harness.
+
+The next telemetry hardening step is stable runtime identity:
+`workerRunId`, `processInstanceId`, and the relevant durable object ID
+such as `reactionPlanId`, `outboxEventId`, or `workItemId`. These IDs
+should stay consistent across worker-cycle records, NATS-batch records,
+reaction execution records, and degraded evidence so UI timelines and
+agent self-reviews can follow one chain end to end.
 
 Worker failure evidence is intentionally contract-bound. Runtime hosts
 may attach only domain-defined evidence keys to worker-cycle failures;

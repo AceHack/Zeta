@@ -8,6 +8,10 @@ export const SupervisorChainLevel = {
 
 export type SupervisorChainLevel = (typeof SupervisorChainLevel)[keyof typeof SupervisorChainLevel];
 
+export function isSupervisorChainLevel(value: unknown): value is SupervisorChainLevel {
+  return typeof value === "string" && Object.values(SupervisorChainLevel).includes(value as SupervisorChainLevel);
+}
+
 export const SupervisorSignalToolType = {
   AskQuestion: "ask_question",
   ReportBlocker: "report_blocker",
@@ -20,6 +24,13 @@ export const SupervisorSignalToolType = {
 } as const;
 
 export type SupervisorSignalToolType = (typeof SupervisorSignalToolType)[keyof typeof SupervisorSignalToolType];
+
+export function isSupervisorSignalToolType(value: unknown): value is SupervisorSignalToolType {
+  return (
+    typeof value === "string" &&
+    Object.values(SupervisorSignalToolType).includes(value as SupervisorSignalToolType)
+  );
+}
 
 export const SupervisorSignalStatus = {
   Sent: "sent",

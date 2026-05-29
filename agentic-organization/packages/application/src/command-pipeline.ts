@@ -11,12 +11,19 @@ import {
   type PolicyDecisionObservationPort,
 } from "../../policy/src/index.ts";
 import {
+  CommandOutcomeEffectConflictReason,
   CommandOutcomePersistenceStatus,
   type Clock,
   type CommandEffects,
+  CommandScheduleAuthorityDecisionStatus,
+  type CommandScheduleAuthorityPort,
+  type CommandScheduleAuthorityRequest,
   type CommandStateStore,
   type CommandStateStoreFactory,
+  type DiscussionAnchorStateReaderPort,
+  type HatAssignmentAuthorityReaderPort,
   type IdGenerator,
+  type SupervisorSignalStateReaderPort,
   type WorkAnchorStateReaderPort,
 } from "./ports.ts";
 
@@ -29,7 +36,11 @@ export type CommandPipelineDependencies<Command extends PipelineCommand = Pipeli
     stateStoreFactory: CommandStateStoreFactory<CommandResult>;
     commandAuthorizationPort: CommandAuthorizationPort;
     policyDecisionObservationPort: PolicyDecisionObservationPort;
+    commandScheduleAuthorityPort?: CommandScheduleAuthorityPort | undefined;
     handlerRegistry: CommandHandlerRegistry<Command, CommandResult>;
+    discussionAnchorStateReader?: DiscussionAnchorStateReaderPort | undefined;
+    hatAssignmentAuthorityReader?: HatAssignmentAuthorityReaderPort | undefined;
+    supervisorSignalStateReader?: SupervisorSignalStateReaderPort | undefined;
     workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
   };
 
@@ -111,6 +122,12 @@ async function executeCommand<Command extends PipelineCommand>(
     return createIdempotencyConflictResult(command);
   }
 
+  const scheduleAuthorityResult = await authorizeCommandSchedule(command, dependencies);
+
+  if (scheduleAuthorityResult !== undefined) {
+    return scheduleAuthorityResult;
+  }
+
   const outcome = await dispatchCommand(command, dependencies);
   const result =
     outcome.result.status === CommandResultStatus.Accepted
@@ -148,7 +165,57 @@ async function executeCommand<Command extends PipelineCommand>(
     return createIdempotencyConflictResult(command);
   }
 
+  if (persistenceResult.status === CommandOutcomePersistenceStatus.EffectConflict) {
+    return createEffectConflictResult(command, persistenceResult.reason);
+  }
+
   return result;
+}
+
+async function authorizeCommandSchedule<Command extends PipelineCommand>(
+  command: Command,
+  dependencies: CommandPipelineDependencies<Command>,
+): Promise<CommandResult | undefined> {
+  if (dependencies.commandScheduleAuthorityPort === undefined) {
+    return undefined;
+  }
+
+  const decision = await dependencies.commandScheduleAuthorityPort.authorizeCommandSchedule(
+    createCommandScheduleAuthorityRequest(command, dependencies.now()),
+  );
+
+  if (decision.status !== CommandScheduleAuthorityDecisionStatus.Denied) {
+    return undefined;
+  }
+
+  return {
+    commandId: command.commandId,
+    status: CommandResultStatus.Rejected,
+    idempotency: {
+      replayed: false,
+    },
+    error: {
+      code: CommandErrorCode.ScheduleAuthorityDenied,
+      message: decision.message,
+      reason: decision.reason,
+    },
+  };
+}
+
+function createCommandScheduleAuthorityRequest(
+  command: PipelineCommand,
+  evaluatedAt: string,
+): CommandScheduleAuthorityRequest {
+  return {
+    commandId: command.commandId,
+    commandType: command.type,
+    actor: command.actor,
+    scope: {
+      ...createCommandAuthorizationScope(command),
+    },
+    ...createOptionalCommandResource(command),
+    evaluatedAt,
+  };
 }
 
 function isRetryablePreconditionFailure(result: CommandResult): boolean {
@@ -199,24 +266,81 @@ function createPolicyDecisionObservation(
 
 function createOptionalCommandPolicyContext(
   command: PipelineCommand,
-): Pick<CommandAuthorizationRequest, "toolType" | "supervisorChain"> {
+): Pick<CommandAuthorizationRequest, "resource" | "supervisorChain" | "toolType"> {
   return {
     ...(command.policyContext?.toolType === undefined ? {} : { toolType: command.policyContext.toolType }),
     ...(command.policyContext?.supervisorChain === undefined
       ? {}
       : { supervisorChain: command.policyContext.supervisorChain }),
+    ...createOptionalCommandResource(command),
   };
+}
+
+function createOptionalCommandResource(
+  command: PipelineCommand,
+): Pick<CommandAuthorizationRequest, "resource"> {
+  const resource = {
+    ...createOptionalDirectCommandResourceValue(DirectCommandResourceProperty.AssignedAgentId, command),
+    ...createOptionalDirectCommandResourceValue(DirectCommandResourceProperty.AssignedHatAssignmentId, command),
+    ...createOptionalDirectCommandResourceValue(DirectCommandResourceProperty.BlockType, command),
+    ...createOptionalDirectCommandResourceValue(DirectCommandResourceProperty.StartsAt, command),
+    ...createOptionalDirectCommandResourceValue(DirectCommandResourceProperty.EndsAt, command),
+  };
+
+  return Object.keys(resource).length === 0 ? {} : { resource };
+}
+
+const DirectCommandResourceProperty = {
+  AssignedAgentId: "assignedAgentId",
+  AssignedHatAssignmentId: "assignedHatAssignmentId",
+  BlockType: "blockType",
+  EndsAt: "endsAt",
+  StartsAt: "startsAt",
+} as const;
+
+type DirectCommandResourceProperty =
+  (typeof DirectCommandResourceProperty)[keyof typeof DirectCommandResourceProperty];
+
+function createOptionalDirectCommandResourceValue(
+  property: DirectCommandResourceProperty,
+  command: PipelineCommand,
+): Partial<NonNullable<CommandAuthorizationRequest["resource"]>> {
+  const value = getDirectCommandScopeValue(command, property);
+
+  return value === undefined ? {} : { [property]: value };
 }
 
 function createCommandAuthorizationScope(command: PipelineCommand): CommandAuthorizationRequest["scope"] {
   return {
     organizationId: command.organizationId,
     projectId: command.projectId,
-    ...(command.policyContext?.scope?.teamId === undefined ? {} : { teamId: command.policyContext.scope.teamId }),
-    ...(command.policyContext?.scope?.workItemId === undefined
-      ? {}
-      : { workItemId: command.policyContext.scope.workItemId }),
+    ...createOptionalAuthorizationScopeValue(DirectCommandScopeProperty.TeamId, command),
+    ...createOptionalAuthorizationScopeValue(DirectCommandScopeProperty.WorkItemId, command),
   };
+}
+
+const DirectCommandScopeProperty = {
+  TeamId: "teamId",
+  WorkItemId: "workItemId",
+} as const;
+
+type DirectCommandScopeProperty = (typeof DirectCommandScopeProperty)[keyof typeof DirectCommandScopeProperty];
+
+function createOptionalAuthorizationScopeValue(
+  property: DirectCommandScopeProperty,
+  command: PipelineCommand,
+): Partial<CommandAuthorizationRequest["scope"]> {
+  const directValue = getDirectCommandScopeValue(command, property);
+  const policyContextValue = command.policyContext?.scope?.[property];
+  const value = directValue ?? policyContextValue;
+
+  return value === undefined ? {} : { [property]: value };
+}
+
+function getDirectCommandScopeValue(command: PipelineCommand, property: string): string | undefined {
+  const value = (command as Record<string, unknown>)[property];
+
+  return typeof value === "string" && value.trim().length > 0 ? value : undefined;
 }
 
 function attachPolicyDecisionToResult(
@@ -244,6 +368,9 @@ function attachPolicyDecisionEvidence(effects: CommandEffects, decision: PolicyD
 
   return {
     supervisorSignals: effects.supervisorSignals,
+    discussionAnchors: effects.discussionAnchors,
+    decisionRecords: effects.decisionRecords,
+    workScheduleBlocks: effects.workScheduleBlocks,
     workAnchors: effects.workAnchors,
     auditEvents: effects.auditEvents.map((auditEvent) => ({
       ...auditEvent,
@@ -299,6 +426,39 @@ function createIdempotencyConflictResult(command: PipelineCommand): CommandResul
   };
 }
 
+function createEffectConflictResult(
+  command: PipelineCommand,
+  reason: CommandOutcomeEffectConflictReason,
+): CommandResult {
+  return {
+    commandId: command.commandId,
+    status: CommandResultStatus.Rejected,
+    idempotency: {
+      replayed: false,
+    },
+    error: {
+      code: CommandErrorCode.PreconditionFailed,
+      message: createEffectConflictMessage(reason),
+    },
+  };
+}
+
+function createEffectConflictMessage(reason: CommandOutcomeEffectConflictReason): string {
+  if (reason === CommandOutcomeEffectConflictReason.WorkScheduleBlockOverlap) {
+    return "schedule block overlaps an existing active or scheduled block for the same hat assignment";
+  }
+
+  if (reason === CommandOutcomeEffectConflictReason.UnsupportedDiscussionAnchorEffectType) {
+    return "unsupported discussion anchor effect type";
+  }
+
+  if (reason === CommandOutcomeEffectConflictReason.WorkAnchorEffectConflict) {
+    return "work anchor command effect conflict";
+  }
+
+  return "command effects conflict with current state";
+}
+
 function createPolicyObservationConflictResult(
   command: PipelineCommand,
   decision: Extract<PolicyDecision, { status: "denied" }>,
@@ -331,6 +491,9 @@ function createPolicyEvidence(decision: PolicyDecision): NonNullable<CommandResu
 function createEmptyCommandEffects(): CommandEffects {
   return {
     supervisorSignals: [],
+    discussionAnchors: [],
+    decisionRecords: [],
+    workScheduleBlocks: [],
     auditEvents: [],
     outboxEvents: [],
     workAnchors: createEmptyWorkAnchorCommandEffects(),

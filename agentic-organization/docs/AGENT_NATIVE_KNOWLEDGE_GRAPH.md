@@ -514,8 +514,8 @@ send_work_broadcast
   effect: publishes a broadcast linked to the anchored graph node
 
 record_decision
-  input: decision fields, source meeting/thread/vote, affected nodes
-  effect: creates decision node and edges
+  input: decision fields, existing discussion anchor, rationale, alternatives, follow-up work
+  effect: records a durable decision fact; graph node and edge projection follows
 
 find_related_work
   input: workId, relationship types, depth

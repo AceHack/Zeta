@@ -3,6 +3,7 @@ import { describe, test } from "node:test";
 
 import { OutboxPublishOutcomeStatus } from "../../../packages/messaging/src/index.ts";
 import type { NatsJetStreamConsumeBatchResult } from "../../../packages/messaging-nats/src/index.ts";
+import { ReactionPlanExecutionStatus } from "../../../packages/runtime/src/index.ts";
 import { WorkerCycleStatus, type WorkerCycleResult } from "../../../packages/workers/src/index.ts";
 import { WorkerRuntimeStatus, composeWorkerRuntime, type WorkerRuntimeTelemetrySink } from "../src/index.ts";
 
@@ -48,6 +49,13 @@ function createWorkedWorkerCycle(): WorkerCycleResult {
       payloadConflictCount: 0,
       failedCount: 0,
       reactionPlanCount: 0,
+    },
+    reactionPlans: {
+      status: ReactionPlanExecutionStatus.Idle,
+      claimedCount: 0,
+      succeededCount: 0,
+      failedCount: 0,
+      claimLostCount: 0,
     },
     failures: [],
   };

@@ -5,10 +5,14 @@ import { CommandType, SupervisorChainLevel, SupervisorSignalToolType } from "../
 import { HatAuthorityDecisionStatus, PolicyDecisionStatus } from "../../policy/src/index.ts";
 import {
   CockroachCommandStateStoreStatement,
+  CockroachDiscussionAnchorStateStoreStatement,
   CockroachEventIngestionStoreStatement,
+  CockroachHatAssignmentAuthorityReaderStatement,
   CockroachOutboxEventSourceStatement,
   CockroachPolicyDecisionObservationStoreStatement,
+  CockroachReactionPlanWorkQueueStatement,
   CockroachWorkAnchorStateStoreStatement,
+  CockroachWorkScheduleBlockAuthorityReaderStatement,
   createCockroachDurableStateAdapters,
   type CockroachAnySqlStatement,
   type CockroachOrganizationSqlExecutor,
@@ -60,6 +64,20 @@ describe("cockroach durable state adapters", () => {
       },
       observedAt: "2026-05-26T00:00:00.000Z",
     });
+    await adapters.discussionAnchorStateReader.findDiscussionAnchor("discussion-anchor-001");
+    await adapters.hatAssignmentAuthorityReader.findHatAssignmentAuthority("hat-assignment-dev-001");
+    await adapters.reactionPlanWorkQueue.claimPlannedReactionPlans({
+      claimId: "reaction-claim-001",
+      limit: 1,
+      claimedAt: "2026-05-29T16:00:00.000Z",
+      claimExpiresAt: "2026-05-29T16:05:00.000Z",
+      leaseDurationMs: 300_000,
+    });
+    await adapters.workScheduleBlockAuthorityReader.findAuthorizingScheduleBlocks({
+      agentId: "agent-dev-001",
+      hatAssignmentId: "hat-assignment-dev-001",
+      evaluatedAt: "2026-05-29T16:00:00.000Z",
+    });
     await adapters.workAnchorStateStore.findProject("project-agentic-org");
 
     deepEqual(executor.statementNames, [
@@ -67,6 +85,10 @@ describe("cockroach durable state adapters", () => {
       CockroachOutboxEventSourceStatement.ClaimUnpublishedOutboxEvents,
       CockroachEventIngestionStoreStatement.FindInboxReceipt,
       CockroachPolicyDecisionObservationStoreStatement.RecordPolicyDecisionObservation,
+      CockroachDiscussionAnchorStateStoreStatement.FindDiscussionAnchor,
+      CockroachHatAssignmentAuthorityReaderStatement.FindHatAssignmentAuthority,
+      CockroachReactionPlanWorkQueueStatement.ClaimPlannedReactionPlans,
+      CockroachWorkScheduleBlockAuthorityReaderStatement.FindAuthorizingScheduleBlocks,
       CockroachWorkAnchorStateStoreStatement.FindProject,
     ]);
   });

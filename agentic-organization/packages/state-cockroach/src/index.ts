@@ -13,6 +13,14 @@ export {
   type CreateCockroachDurableStateAdaptersInput,
 } from "./cockroach-durable-state-adapters.ts";
 export {
+  CockroachDiscussionAnchorStateStoreStatement,
+  createCockroachDiscussionAnchorStateStore,
+  type CockroachDiscussionAnchorSqlExecutor,
+  type CockroachDiscussionAnchorSqlResult,
+  type CockroachDiscussionAnchorSqlStatement,
+  type CreateCockroachDiscussionAnchorStateStoreInput,
+} from "./cockroach-discussion-anchor-state-store.ts";
+export {
   CockroachMigrationStatement,
   createCockroachMigrationRunner,
   type CockroachMigrationRunner,
@@ -37,6 +45,14 @@ export {
   type CreateCockroachEventIngestionStoreInput,
 } from "./cockroach-event-ingestion-store.ts";
 export {
+  CockroachHatAssignmentAuthorityReaderStatement,
+  createCockroachHatAssignmentAuthorityReader,
+  type CockroachHatAssignmentAuthoritySqlExecutor,
+  type CockroachHatAssignmentAuthoritySqlResult,
+  type CockroachHatAssignmentAuthoritySqlStatement,
+  type CreateCockroachHatAssignmentAuthorityReaderInput,
+} from "./cockroach-hat-assignment-authority-reader.ts";
+export {
   CockroachPolicyDecisionObservationStoreStatement,
   createCockroachPolicyDecisionObservationStore,
   type CockroachPolicyDecisionObservationSqlExecutor,
@@ -45,6 +61,22 @@ export {
   type CockroachPolicyDecisionObservationStore,
   type CreateCockroachPolicyDecisionObservationStoreInput,
 } from "./cockroach-policy-decision-observation-store.ts";
+export {
+  CockroachReactionPlanWorkQueueStatement,
+  createCockroachReactionPlanWorkQueue,
+  type CockroachReactionPlanWorkQueueSqlExecutor,
+  type CockroachReactionPlanWorkQueueSqlResult,
+  type CockroachReactionPlanWorkQueueSqlStatement,
+  type CreateCockroachReactionPlanWorkQueueInput,
+} from "./cockroach-reaction-plan-work-queue.ts";
+export {
+  CockroachWorkScheduleBlockAuthorityReaderStatement,
+  createCockroachWorkScheduleBlockAuthorityReader,
+  type CockroachWorkScheduleBlockAuthoritySqlExecutor,
+  type CockroachWorkScheduleBlockAuthoritySqlResult,
+  type CockroachWorkScheduleBlockAuthoritySqlStatement,
+  type CreateCockroachWorkScheduleBlockAuthorityReaderInput,
+} from "./cockroach-work-schedule-block-authority-reader.ts";
 export {
   CockroachWorkAnchorStateStoreStatement,
   createCockroachWorkAnchorStateStore,
@@ -61,7 +93,12 @@ export {
   CockroachTableName,
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
+  createCockroachDecisionRecordKernelMigration,
+  createCockroachDiscussionAnchorKernelMigration,
+  createCockroachHatAssignmentAuthorityProjectionMigration,
   createCockroachOutboxClaimFenceMigration,
+  createCockroachReactionPlanExecutionLifecycleMigration,
+  createCockroachWorkScheduleBlockKernelMigration,
   createCockroachWorkAnchorKernelMigration,
   createCockroachWorkItemStateHistoryMetadataMigration,
   type CockroachSchemaMigration,

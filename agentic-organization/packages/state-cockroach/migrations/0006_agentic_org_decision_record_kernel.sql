@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS agentic_org_decision_records (
+  decision_record_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING,
+  work_item_id STRING NOT NULL,
+  discussion_anchor_id STRING NOT NULL,
+  title STRING NOT NULL,
+  decision STRING NOT NULL,
+  rationale STRING NOT NULL,
+  alternatives_considered JSONB NOT NULL,
+  follow_up_work_item_ids JSONB NOT NULL,
+  decided_by_agent_id STRING NOT NULL,
+  decided_by_hat_assignment_id STRING NOT NULL,
+  decided_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL
+);

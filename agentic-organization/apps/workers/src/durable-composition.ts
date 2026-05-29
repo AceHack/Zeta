@@ -12,7 +12,9 @@ import {
 import {
   evaluateV0AutomationRules,
   createEventIngestionProcessor,
+  createReactionPlanExecutor,
   type EventPayloadHashCalculator,
+  type ReactionPlanActionExecutorPort,
 } from "../../../packages/runtime/src/index.ts";
 import { InboundEventConsumerName } from "../../../packages/state/src/index.ts";
 import {
@@ -33,6 +35,7 @@ export type DurableWorkerRuntimeAdapters = {
   inboundEventSource: InboundEventSource;
   natsDeadLetterPublisher: NatsDeadLetterPublisher;
   natsPullConsumer: NatsJetStreamPullConsumer;
+  reactionPlanActionExecutor: ReactionPlanActionExecutorPort;
   telemetrySink: WorkerRuntimeTelemetrySink;
 };
 
@@ -76,6 +79,14 @@ export function composeDurableWorkerRuntimePorts(
     createId: input.runtimeUtilities.createId,
     now: input.runtimeUtilities.now,
   });
+  const reactionPlanExecutor = createReactionPlanExecutor({
+    queue: stateAdapters.reactionPlanWorkQueue,
+    actionExecutor: input.durableAdapters.reactionPlanActionExecutor,
+    batchSize: input.config.workerReactionPlanBatchSize,
+    leaseDurationMs: input.config.workerReactionPlanLeaseMs,
+    now: input.runtimeUtilities.now,
+    createId: input.runtimeUtilities.createId,
+  });
   const natsEventConsumer = createNatsJetStreamEventConsumer({
     pullConsumer: input.durableAdapters.natsPullConsumer,
     eventIngestionProcessor,
@@ -87,6 +98,7 @@ export function composeDurableWorkerRuntimePorts(
       outboxPublisher,
       inboundEventSource: input.durableAdapters.inboundEventSource,
       eventIngestionProcessor,
+      reactionPlanExecutor,
       outboxBatchSize: input.config.workerOutboxBatchSize,
       inboundBatchSize: input.config.workerInboundBatchSize,
     }),

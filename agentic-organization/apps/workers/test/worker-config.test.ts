@@ -22,6 +22,8 @@ describe("worker runtime config parsing", () => {
         [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
         [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
         [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+        [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+        [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
       }),
       {
         cockroachDatabaseUrl: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
@@ -33,6 +35,8 @@ describe("worker runtime config parsing", () => {
         natsInboundBatchSize: 25,
         workerInboundBatchSize: 15,
         workerOutboxBatchSize: 10,
+        workerReactionPlanBatchSize: 8,
+        workerReactionPlanLeaseMs: 300000,
       },
     );
   });
@@ -48,6 +52,8 @@ describe("worker runtime config parsing", () => {
         [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
         [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
         [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+        [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+        [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
       },
       WorkerRuntimeConfigErrorCode.MissingEnvironment,
     );
@@ -61,6 +67,8 @@ describe("worker runtime config parsing", () => {
         [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
         [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
         [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+        [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+        [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
       },
       WorkerRuntimeConfigErrorCode.MissingCockroachDatabaseUrl,
     );
@@ -91,6 +99,8 @@ describe("worker runtime config parsing", () => {
         [WorkerProcessEnvName.NatsInboundBatchSize]: "not-a-number",
         [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
         [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+        [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+        [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
       });
       throw new Error("expected config parsing to fail");
     } catch (error) {
@@ -112,6 +122,8 @@ describe("worker runtime config parsing", () => {
           [WorkerProcessEnvName.NatsInboundBatchSize]: batchSize,
           [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
           [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+          [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+          [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
         },
         WorkerRuntimeConfigErrorCode.InvalidNatsInboundBatchSize,
       );
@@ -126,6 +138,8 @@ describe("worker runtime config parsing", () => {
           [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
           [WorkerProcessEnvName.WorkerInboundBatchSize]: batchSize,
           [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+          [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+          [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
         },
         WorkerRuntimeConfigErrorCode.InvalidWorkerInboundBatchSize,
       );
@@ -140,8 +154,42 @@ describe("worker runtime config parsing", () => {
           [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
           [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
           [WorkerProcessEnvName.WorkerOutboxBatchSize]: batchSize,
+          [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+          [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
         },
         WorkerRuntimeConfigErrorCode.InvalidWorkerOutboxBatchSize,
+      );
+      assertConfigError(
+        {
+          [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
+          [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
+          [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+          [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
+          [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
+          [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
+          [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
+          [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
+          [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+          [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: batchSize,
+          [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
+        },
+        WorkerRuntimeConfigErrorCode.InvalidWorkerReactionPlanBatchSize,
+      );
+      assertConfigError(
+        {
+          [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
+          [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
+          [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+          [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
+          [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
+          [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
+          [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
+          [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
+          [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+          [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+          [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: batchSize,
+        },
+        WorkerRuntimeConfigErrorCode.InvalidWorkerReactionPlanLeaseMs,
       );
     }
   });
@@ -159,6 +207,8 @@ describe("worker runtime config parsing", () => {
         [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
         [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
         [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+        [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+        [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
       },
       WorkerRuntimeConfigErrorCode.InvalidNatsServers,
     );
