@@ -190,7 +190,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0326](backlog/P1/B-0326-peer-call-kiro-ts-wrapper.md)** Author kiro.ts peer-call wrapper
 - [x] **[B-0327](backlog/P1/B-0327-peer-call-claude-ts-self-call-cold-boot.md)** Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing
 - [x] **[B-0328](backlog/P1/B-0328-peer-call-readme-kiro-claude-entries.md)** Update peer-call/README.md with kiro.ts + claude.ts entries
-- [ ] **[B-0329](backlog/P1/B-0329-claude-md-as-process-not-doctrine.md)** Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing
+- [x] **[B-0329](backlog/P1/B-0329-claude-md-as-process-not-doctrine.md)** Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing
 - [x] **[B-0330](backlog/P1/B-0330-memory-format-standardization-step2-b0190.md)** Memory-format standardization — define frontmatter shape, filename conventions, section headers
 - [x] **[B-0331](backlog/P1/B-0331-memory-ontology-classification-audit-step3-b0190.md)** Memory ontology/classification audit — reclassify mistyped feedback/project/user/reference files
 - [x] **[B-0332](backlog/P1/B-0332-memory-load-bearing-vs-decorative-classifier-step7-b0190.md)** Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces

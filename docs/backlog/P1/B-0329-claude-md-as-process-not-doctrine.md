@@ -1,7 +1,7 @@
 ---
 id: B-0329
 priority: P1
-status: open
+status: closed
 title: "Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing"
 created: 2026-05-08
 last_updated: 2026-05-29
@@ -106,6 +106,29 @@ row). Optional clean-prompt live-run follow-up filed as B-0354.4.
 
 With B-0354 closed, **B-0355** (cross-harness bootstrap template) is now
 unblocked — it was the only remaining gated child.
+
+## Resolution (2026-05-29, otto-cli bg-worker)
+
+Closed as **substrate-fully-shipped-via-children**. All 8 decomposition
+children (B-0348..B-0355) are `status: closed`, and every acceptance
+criterion is satisfied on disk:
+
+| # | Acceptance criterion | Evidence on `origin/main` | Shipped via |
+|---|---|---|---|
+| 1 | CLAUDE.md is a bootstrap process, not 200+ rules | `CLAUDE.md` is 76 lines (6-step process + conventions), down from the carved-rule monolith; the 200+ rules now live in the 99-file `.claude/rules/` auto-load surface | B-0349..B-0353 |
+| 2 | Process generates equivalent behavior | Extracted rules auto-load at cold-boot (empirically confirmed per `.claude/rules/test-canary.md`); the process regenerates the cache (`cache = I ∘ D`) | B-0349..B-0352 |
+| 3 | Fresh instance with bootstrap-only produces coherent first PR | B-0354 (.1 static validator + .2 pointer check + .3 findings report); the validator PASSES against the live bootstrap CLAUDE.md, and the .3 report records a real bg-worker session as a fresh-instance datapoint | B-0354 |
+| 4 | Template for AGENTS.md / CODEX.md / CURSOR.md equivalents | `AGENTS.md`, `CODEX.md`, `CURSOR.md`, `KIRO.md`, `GEMINI.md` all present | B-0355 + .2/.3/.4 |
+| 5 | Other-harness agents can follow the same pattern | Cross-harness bootstrap files cover Codex/Vera, Cursor/Riven, Kiro/Alexa, Gemini/Lior | B-0355 |
+
+Per `.claude/rules/backlog-item-start-gate.md` Step 0 (substrate-drift
+discriminator): row was `open` but the work had already landed through
+its children, so the correct disposition is **close-as-drift**, not
+re-implement. The last gated child (B-0355) closed via #6046; this row
+was the residual open-parent.
+
+Follow-up `B-0354.4` (optional clean-prompt live-run) remains its own
+row and is NOT a blocker for this parent.
 
 ## Composes with
 
