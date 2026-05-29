@@ -31,12 +31,28 @@ export interface HealthReport {
   recommendedAction: string | null;
 }
 
+export type LaneRunwayLane =
+  | "codex"
+  | "otto"
+  | "lior"
+  | "alexa"
+  | "riven"
+  | "other";
+
+export interface LaneRunwaySnapshot {
+  openPrBranches: string[];
+  activeClaimBranches: string[];
+  healthyServices?: Partial<Record<Exclude<LaneRunwayLane, "other">, boolean>>;
+}
+
 type ToolCommand = "bun" | "gh" | "git";
+type ToolResult = { ok: boolean; stdout: string };
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
+const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 
-function run(cmd: ToolCommand, args: string[]): { ok: boolean; stdout: string } {
+function run(cmd: ToolCommand, args: string[]): ToolResult {
   const r = spawnSync(cmd, args, {
     cwd: ROOT,
     encoding: "utf-8",
@@ -45,9 +61,8 @@ function run(cmd: ToolCommand, args: string[]): { ok: boolean; stdout: string } 
   return { ok: r.status === 0, stdout: (r.stdout ?? "").trim() };
 }
 
-function checkPRQueue(): HealthSignal[] {
-  const signals: HealthSignal[] = [];
-  const r = run("gh", [
+function fetchOpenPRs(): ToolResult {
+  return run("gh", [
     "pr",
     "list",
     "--repo",
@@ -55,10 +70,168 @@ function checkPRQueue(): HealthSignal[] {
     "--state",
     "open",
     "--json",
-    "number,title,createdAt,autoMergeRequest",
+    "number,title,createdAt,autoMergeRequest,headRefName",
     "--limit",
-    "50",
+    "200",
   ]);
+}
+
+export function classifyBranchLane(branchName: string): LaneRunwayLane {
+  const branch = branchName.trim().replace(/^origin\//, "");
+
+  if (/^(codex\/|claim\/codex-)/.test(branch)) return "codex";
+  if (
+    /^(otto\/|otto-cli\/|otto-bg-worker\/|otto-desktop\/|otto-vscode\/|claim\/otto-)/.test(
+      branch,
+    )
+  ) {
+    return "otto";
+  }
+  if (/^(lior\/|lior-|claim\/lior-)/.test(branch)) return "lior";
+  if (/^(alexa\/|kiro\/|claim\/alexa-|claim\/kiro-)/.test(branch)) {
+    return "alexa";
+  }
+  if (/^(riven\/|riven-|claim\/riven-)/.test(branch)) return "riven";
+
+  return "other";
+}
+
+export function classifyLaneRunway(
+  snapshot: LaneRunwaySnapshot,
+): HealthSignal[] {
+  const openPrCounts = new Map<LaneRunwayLane, number>();
+  const claimCounts = new Map<LaneRunwayLane, number>();
+
+  for (const lane of [...PRIMARY_LANES, "other"] as LaneRunwayLane[]) {
+    openPrCounts.set(lane, 0);
+    claimCounts.set(lane, 0);
+  }
+
+  for (const branch of snapshot.openPrBranches) {
+    const lane = classifyBranchLane(branch);
+    openPrCounts.set(lane, (openPrCounts.get(lane) ?? 0) + 1);
+  }
+
+  for (const branch of snapshot.activeClaimBranches) {
+    const lane = classifyBranchLane(branch);
+    claimCounts.set(lane, (claimCounts.get(lane) ?? 0) + 1);
+  }
+
+  const signals = PRIMARY_LANES.map((lane): HealthSignal => {
+    const openPrs = openPrCounts.get(lane) ?? 0;
+    const claims = claimCounts.get(lane) ?? 0;
+    const serviceHealthy = snapshot.healthyServices?.[lane];
+
+    if (openPrs > 0 || claims > 0) {
+      return {
+        surface: "lane-runway",
+        level: "ok",
+        message: `${lane}: active (${openPrs} open PR(s), ${claims} active claim(s))`,
+      };
+    }
+
+    if (serviceHealthy === false) {
+      return {
+        surface: "lane-runway",
+        level: "warning",
+        message: `${lane}: no open PRs or claims and service unhealthy`,
+        action: `inspect ${lane} background service before treating lane as quiet`,
+      };
+    }
+
+    return {
+      surface: "lane-runway",
+      level: "ok",
+      message: `${lane}: quiet runway (0 open PRs, 0 active claims)`,
+    };
+  });
+
+  const otherOpenPrs = openPrCounts.get("other") ?? 0;
+  const otherClaims = claimCounts.get("other") ?? 0;
+  if (otherOpenPrs > 0 || otherClaims > 0) {
+    signals.push({
+      surface: "lane-runway",
+      level: "warning",
+      message: `other: ${otherOpenPrs} open PR(s), ${otherClaims} active claim(s) outside named lanes`,
+      action:
+        "classify owner or assign an explicit lane before treating as runway",
+    });
+  }
+
+  return signals;
+}
+
+export function laneRunwaySnapshotFromObservations(
+  openPrJson: string,
+  remoteClaimBranches: string,
+  healthyServices?: LaneRunwaySnapshot["healthyServices"],
+): LaneRunwaySnapshot {
+  const prs = JSON.parse(openPrJson) as Array<{
+    headRefName?: string | null;
+  }>;
+  const openPrBranches = prs
+    .map((pr) => pr.headRefName?.trim())
+    .filter((branch): branch is string => Boolean(branch));
+  const activeClaimBranches = remoteClaimBranches
+    .split("\n")
+    .map((branch) => branch.trim().replace(/^origin\//, ""))
+    .filter(Boolean);
+
+  return {
+    openPrBranches,
+    activeClaimBranches,
+    ...(healthyServices ? { healthyServices } : {}),
+  };
+}
+
+function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
+  if (!openPRs.ok) {
+    return [
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "Could not query PR branches for lane-runway signals",
+        action: "inspect gh CLI state before trusting lane runway",
+      },
+    ];
+  }
+
+  const claims = run("git", [
+    "branch",
+    "-r",
+    "--list",
+    "origin/claim/*",
+  ]);
+
+  if (!claims.ok) {
+    return [
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "Could not query claim branches for lane-runway signals",
+        action: "inspect git remote state before trusting lane runway",
+      },
+    ];
+  }
+
+  try {
+    return classifyLaneRunway(
+      laneRunwaySnapshotFromObservations(openPRs.stdout, claims.stdout),
+    );
+  } catch {
+    return [
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "Could not parse lane-runway observations",
+      },
+    ];
+  }
+}
+
+function checkPRQueue(openPRs: ToolResult): HealthSignal[] {
+  const signals: HealthSignal[] = [];
+  const r = openPRs;
 
   if (!r.ok) {
     signals.push({
@@ -585,8 +758,11 @@ export function buildHealthReport(
 }
 
 export function runHealthCheck(): HealthReport {
+  const openPRs = fetchOpenPRs();
+
   return buildHealthReport([
-    ...checkPRQueue(),
+    ...checkLaneRunway(openPRs),
+    ...checkPRQueue(openPRs),
     ...checkBacklogHealth(),
     ...checkClaimFreshness(),
     ...checkWorkingTreeCleanliness(),
