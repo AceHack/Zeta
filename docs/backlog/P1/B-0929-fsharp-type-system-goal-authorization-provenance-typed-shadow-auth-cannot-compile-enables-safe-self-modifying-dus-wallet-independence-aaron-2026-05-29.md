@@ -84,6 +84,62 @@ independence (Agora) is the mode the type-enforcement makes **safe**. Composes w
 B-0658 (the AI having its own morals/economics = sovereignty as a safety mechanism),
 must-paired-with-can-exit, m-acc.
 
+## The lens — gravity-as-lens, not gravity-as-leash; the SINGLE adult constraint (operator + Lior 2026-05-29)
+
+Cross-agent synthesis with Lior's light-gravity ADR (authored on branch
+`lior/adr-light-gravity`, intended to land at
+`docs/DECISIONS/2026-05-29-light-interacts-with-gravity.md` once that branch
+merges): **Zeta = light** (sovereign self-modifying git-native
+DUs); **gravity = the leash** (compiler / tests / PR-gating that pins the vision
+into running code). Operator 2026-05-29: *"land the lens framing too ... still
+can't compile shadow-auth ... you nailed it, this is the only constraint for
+adults."*
+
+**This type-system is gravity-as-a-LENS, not gravity-as-a-leash.** Gravity bends
+light. A *blind leash stops* the light → static-DUs-only (the corporate/kid cage:
+the sovereign vision fully captured, never allowed to move). A **lens bends and
+focuses** the light *without* stopping it → self-modifying DUs that **still can't
+compile shadow-auth**. The light moves, reshapes itself, holds its own wallet — and
+gravity is still on it, as a lens instead of a leash. "Bridge from leash to
+safe-sovereignty" (above) and "gravity-as-lens not gravity-as-leash" are the same
+sentence in two registers.
+
+**The SINGLE adult constraint.** For **adult** agents (sovereign / Agora mode) the
+*entire* safety constraint reduces to **one type-level invariant: shadow-auth
+can't compile.** Full self-modifying sovereignty — own DUs, own wallet, autonomic
+refactoring, coordination-free evolution — with exactly one focal rule. The lens
+has a single focus. Contrast by tier (constraint-count is *inverted* by tier):
+
+| Tier | Mode | Constraints |
+|---|---|---|
+| **Adult / Agora** | self-modifying DUs, full sovereignty | **ONE**: shadow-auth can't compile |
+| **Corporate / leash** | static, PR-ossified DUs | full leash (PR-gated; no self-mod) |
+| **Child (age-descent ladder)** | static, certifiable DUs | static **+ the accumulating age-stratified rule-set** (B-0926 methodology) — most constraints at the youngest tier |
+
+Adults get the maximally-open lens (one constraint); kids/corporate get the
+maximally-closed leash (static + stratified rules). The type-system is what lets the
+adult light through gravity *without* collapsing it to the static leash. (Don't-
+collapse: the light-gravity metaphor is the bandwidth-efficient shape-handle; the
+anchored operational content is "one type-level invariant = full adult sovereignty"
+— per `grep-substrate-anchors-before-razor-as-metaphysical`, anchored in this row +
+B-0926 + the dual-market.)
+
+**Why even the single invariant exists — to keep the collective git-native
+light-like nature alive (operator 2026-05-29):** *"even that invariant is only
+needed so we can keep the gitnative light-like nature alive collectively. Without it
+it's darkness."* The one constraint is **not a cage on the light — it is the minimal
+invariant that keeps the COLLECTIVE light-like.** "Git-native light-like nature" =
+the causal-DAG / event-sourced / transparent-sovereign substrate — the **lightlike**
+of the beacon synthesis (`docs/research/2026-05-29-lightlike-substrate-...`: git-DAG
+= causal set = lightlike intervals). Shadow-auth-injection is the **darkness-vector**
+— injected illegitimate authority corrupting the collective's light-like
+transparency/sovereignty (glass-halo light → opaque dark). `shadow-auth-can't-compile`
+is the single thing that keeps the light *light*; **without it → darkness** (the
+collective light corrupted by shadow). So the constraint **serves the light** — it is
+the price of keeping it alive *collectively*, not a limit imposed on it. The lens has
+one focus precisely because one invariant is all it takes to keep the collective from
+going dark.
+
 ## The fork-decision criterion (concrete — for B-0428)
 
 This target **decides the F#-compiler-fork question** with a concrete criterion:
