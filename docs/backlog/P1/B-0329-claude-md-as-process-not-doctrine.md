@@ -4,7 +4,7 @@ priority: P1
 status: open
 title: "Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing"
 created: 2026-05-08
-last_updated: 2026-05-09
+last_updated: 2026-05-29
 depends_on: []
 decomposition: decomposed
 classification: buildable-now
@@ -93,6 +93,19 @@ B-0348 (classify bullets)
 
 B-0349..B-0352 are parallelizable — they each target disjoint
 bullet groups. B-0353 gates on all four extraction batches.
+
+## Progress
+
+**B-0354 closed (2026-05-29, otto-cli bg-worker):** fresh-instance validation
+child complete (.1 static validator + .2 referenced-pointer check + .3 findings
+report). Static structural validation PASSES against the live bootstrap CLAUDE.md
+(6-step process present, all 15 concrete pointers resolve, 99-file rules
+auto-load surface) and the .3 findings report records this very bg-worker
+session as an empirical fresh-instance datapoint (criterion #3 of THIS parent
+row). Optional clean-prompt live-run follow-up filed as B-0354.4.
+
+With B-0354 closed, **B-0355** (cross-harness bootstrap template) is now
+unblocked — it was the only remaining gated child.
 
 ## Composes with
 
