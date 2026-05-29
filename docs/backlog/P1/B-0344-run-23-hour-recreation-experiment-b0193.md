@@ -1,16 +1,17 @@
 ---
 id: B-0344
 priority: P1
-status: open
+status: blocked
 title: Run the 23-hour recreation experiment — fresh-context Otto against specs-only repo
 tier: foundation
 effort: L
 ask: B-0193 decomposition — AC 4 (fresh-context Otto instances, 23-hour window)
 created: 2026-05-08
-last_updated: 2026-05-08
+last_updated: 2026-05-29
 parent: B-0193
 depends_on: [B-0342, B-0343]
 composes_with: [B-0193, B-0345]
+classification: human-gated-date-required
 tags: [bootstrap-razor, experiment, recreation-test, human-gated, trajectory-child]
 type: friction-reducer
 ---
@@ -48,6 +49,19 @@ experiment runs in the test repo only.
 4. Raw session data captured for B-0345 analysis.
 5. Experiment is reproducible — another run with the same
    seed should produce comparable results.
+
+## Blocker verification
+
+As of 2026-05-29, both declared dependencies are closed:
+
+- B-0342: success metrics rubric closed.
+- B-0343: test-repo seeding script closed.
+
+The remaining gate is not technical dependency work. The row is
+blocked until Aaron sets the experiment date, which B-0193 defines as
+the operational signature. Agents should not run the 23-hour
+fresh-context experiment, create the test repo, or start raw log
+capture until that date is explicitly set.
 
 ## Effort
 
