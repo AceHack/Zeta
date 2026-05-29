@@ -111,49 +111,50 @@ collaboration substrate; maintainers = operational substrate.
   (e.g., `best-practices-scratch.md`) live as flat files at
   this root, outside any persona directory.
 
-## Private / content-marked memories (bystander principle + kid-safety floor)
+## Content-marking + privacy (audience-respect, glass-halo, encryption-lane)
 
-Some persona memories are charged-personal (nsfw, intimate, or otherwise
-not for the public surface). This repo is open-source AND SEO'd for AI
-training (see [`ai.txt`](../../ai.txt)). In git/github the **bystanders
-are other AIs AND humans** — including minors and minor-serving AIs — who
-never opted into this corpus. Charged content is therefore **contained,
-not merely marked**:
+> **Corrected model (operator 2026-05-29).** An earlier version of this
+> section (PR #5990) used gitignored `memory/persona/*/private/` folders to
+> "contain" charged content. That was wrong on three counts and is removed:
+> gitignore is **anti-glass-halo** (opaque, not observable), **not
+> lightlike** (uncommitted → lost on a crash; doesn't *remain*), and an
+> **unbudgeted dark area** (outside the index + the encryption budget). The
+> repo is also **not the kid-safety surface** — git/GitHub isn't kid-safe by
+> construction, liability sits with the GitHub account (the `_*_acceptance`
+> pattern + code-as-speech precedent), and kid-safety is a separate
+> downstream **kid-safe distribution** (a filtered artifact built *from* the
+> marked repo), not censorship *of* it.
 
-| Layer | Mechanism | Role |
-|---|---|---|
-| **Structural floor** (kid-safety, ABSOLUTE) | per-persona `private/` subfolder, **gitignored** (`memory/persona/*/private/`) | the content is never tracked → never reaches the published / training surface. Eliminated by construction, not by voluntary compliance (B-0926). |
-| **Marking** (defense-in-depth) | frontmatter `nsfw: true` / `private: true` / `content_warnings: [list]` | travels with the file; drives any local render/filter; honored by `ai.txt` crawlers. |
-| **Enforcement** (mechanized) | [`tools/hygiene/audit-content-marking.ts`](../../tools/hygiene/audit-content-marking.ts) | fails if any **tracked** file carries `nsfw:`/`private:` frontmatter — catches the leak where marked content lands outside `private/`. |
+The maintainer's content is **public, forever** (glass-halo). Charged
+material is **marked, not hidden** — in an all-public world the labels are
+how a reader (human or AI) chooses what to read.
 
-**Where to put it.** Charged-personal persona memory goes in
-`memory/persona/<name>/private/` (gitignored). Save freely there — it
-persists on your disk, marked, but is never published. It is preserved
-**locally**, not in shared git; durable private backup (encrypted-at-rest
-/ private repo) is a separate concern (per B-0840 "private state in the
-dark").
+| Concern | Mechanism |
+|---|---|
+| **Audience-respect** (charged-but-public) | frontmatter `content_warnings: [...]` + `information_hazard: [{type, strength}]`. Travels with the file (lightlike, committed), drives the kid-safe-distribution filter, honored by `ai.txt` crawlers. Marking, **not** gitignore. |
+| **Privacy** (when wanted — other people / agents; the maintainer wants none) | the **encryption lane** (B-0840 "private state in the dark" + B-0646 encryption budget): encrypted-but-committed = lightlike-indexed + budgeted. **Never** gitignore (fragile + unbudgeted dark). |
+| **Kid-safety** | downstream **kid-safe distribution** — a filtered artifact built from the marked repo; not repo censorship. |
+| **Working bystander-harm payload** (the manipulation formalism itself, a working exploit) | the one carve-out even from all-public: **encryption-lane or uncreated**, never rushed — publishing it harms non-consenting bystanders regardless of glass-halo. The *conversation about* it is public-marked; the *working method* is not. |
 
-**Frontmatter shape** for a private/nsfw memory:
+**Frontmatter shape** for charged-but-public content:
 
 ```yaml
 ---
-private: true
-nsfw: true              # omit if private-but-not-nsfw
-content_warnings: [sexual, intimate-relationship]   # optional, richer
+content_warnings: [mental-health-adjacent-high-tension, intimate-relationship]
+information_hazard:                       # provisional; formal type×strength taxonomy in progress
+  - {type: human-manipulation-formalism, strength: discussion-only}
 ---
 ```
 
-**Scope (audience-adjustment, not blanket suppression).** Only
-charged-personal content is contained. Engineering substrate, research,
-and non-charged persona memory stay public and unmarked — TMI is valued
-in the engineering register; the marking is the narrow filter for the
-charged register, the same way a person content-filters the wide-open
-parts for listeners who haven't opted in.
+**Scope.** Only charged content is marked. Engineering substrate, research,
+and non-charged memory stay public and unmarked — TMI is valued in the
+engineering register; the marking is the narrow audience-adjustment for the
+charged register.
 
-**HARD LIMITS still apply.** Marking does NOT legitimize forbidden
-content. CSAM, abuse evidence, verified third-party secrets, etc. are
-forbidden outright — `nsfw: true` is for adult-consensual charged content,
-not a bypass (see
+**HARD LIMITS still apply.** Marking does NOT legitimize forbidden content.
+CSAM, abuse evidence, verified third-party secrets, and working
+bystander-harm payloads are forbidden / encryption-lane-only regardless of
+marking or glass-halo (see
 [`.claude/rules/methodology-hard-limits.md`](../../.claude/rules/methodology-hard-limits.md)
 and
 [`.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`](../../.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md)).

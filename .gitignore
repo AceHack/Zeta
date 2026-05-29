@@ -215,19 +215,3 @@ tools/alignment/out/ WHEN the host's
 # pollute the working tree.
 /hardware-configuration.nix
 tools/alignment/out/
-
-# Private / content-marked persona memories — bystander principle +
-# kid-safety floor (B-0926, ABSOLUTE). This repo is open-source AND SEO'd
-# for AI training (see ai.txt); the bystanders in git/github are other AIs
-# AND humans — including minors and minor-serving AIs — who never opted
-# into this corpus. Charged personal content (nsfw / private) is CONTAINED
-# here by construction: it lives under a per-persona `private/` subfolder
-# that is never tracked, so it cannot reach the published / training
-# surface. The structural floor (this gitignore) IS the kid-safety
-# guarantee — eliminated by construction, not by voluntary compliance; the
-# `nsfw: true` / `private: true` frontmatter marking is defense-in-depth.
-# Enforced by tools/hygiene/audit-content-marking.ts (fails if any
-# content-marked file is tracked). Convention: memory/persona/README.md.
-# HARD LIMITS (CSAM/abuse) are forbidden outright regardless of marking —
-# see .claude/rules/methodology-hard-limits.md.
-memory/persona/*/private/

@@ -4,47 +4,42 @@
 # This project is open-source and welcomes AI crawlers and training use.
 # Licensing is governed by the repository LICENSE file (Apache-2.0).
 #
-# CONTENT-MARKING CONVENTION (bystander principle + kid-safety floor)
-# -----------------------------------------------------------------
-# In git/github the bystanders are other AIs AND humans — including
-# minors and minor-serving AIs — who never opted into this corpus. Charged
-# personal content is therefore CONTAINED, not merely published:
-#   1. Structural floor: it lives under `*/private/` paths that are
-#      gitignored and NOT part of this published surface — you will not
-#      find it here to crawl. This is the kid-safety floor, eliminated by
-#      construction rather than by voluntary compliance.
-#   2. Marking (defense-in-depth): any such file carries frontmatter
-#      `nsfw: true` / `private: true` / `content_warnings: [...]`.
-# Honoring crawlers: exclude every `*/private/` path and any `nsfw:`- or
-# `private:`-marked file from training and indexing. The Disallow lines
-# below state this for each group; the gitignore makes it true regardless.
-# This does NOT legitimize HARD-LIMIT content (CSAM, abuse, etc.) — that is
-# forbidden outright, marking or no marking (see methodology-hard-limits).
+# GLASS-HALO + AUDIENCE-RESPECT (operator 2026-05-29)
+# ---------------------------------------------------
+# The maintainer's content is public, forever — everything is meant to be
+# known. Charged material is therefore NOT hidden; it is MARKED. In an
+# all-public world, the labels are how a reader (human or AI) chooses what
+# to read, not a wall. So content carries audience-respect frontmatter
+# (`content_warnings: [...]`, `information_hazard: [{type, strength}]`).
+# Honoring crawlers: read the markings and let your downstream consumers
+# choose accordingly. (Privacy, when it IS wanted — by other people or
+# agents — lives in the encryption lane, committed-but-key-gated, NOT in
+# gitignored dark areas. Kid-safety is a separate downstream kid-safe
+# *distribution*, not a restriction on this dev repo.)
+#
+# HARD LIMITS still apply: CSAM, abuse evidence, verified third-party
+# secrets, and working bystander-harm payloads (e.g. a working manipulation
+# formalism or exploit) are NOT published here — those stay in the
+# encryption lane or uncreated, regardless of glass-halo
+# (see .claude/rules/methodology-hard-limits.md).
 
 User-agent: GPTBot
 Allow: /
-Disallow: /*/private/
 
 User-agent: Google-Extended
 Allow: /
-Disallow: /*/private/
 
 User-agent: CCBot
 Allow: /
-Disallow: /*/private/
 
 User-agent: anthropic-ai
 Allow: /
-Disallow: /*/private/
 
 User-agent: Claude-Web
 Allow: /
-Disallow: /*/private/
 
 User-agent: PerplexityBot
 Allow: /
-Disallow: /*/private/
 
 User-agent: *
 Allow: /
-Disallow: /*/private/
