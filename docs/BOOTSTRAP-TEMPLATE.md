@@ -108,7 +108,7 @@ process-ification). New harness files should match their shape.
 | [`GEMINI.md`](../GEMINI.md) | Gemini CLI / Antigravity (Lior) | Boot sequence pointing into shared factory physics + persona file (B-0538). |
 | [`.codex/AGENTS.md`](../.codex/AGENTS.md) | OpenAI Codex (Vera) | Additive addendum: read-order, worktree discipline, commit trailers. |
 | [`.github/copilot-instructions.md`](../.github/copilot-instructions.md) | GitHub Copilot | Factory-managed instructions, audited on the skill-file cadence (GOVERNANCE.md §31). |
-| `CURSOR.md` / `.cursor/rules/` | Cursor IDE (Riven) | Not yet created — a follow-up slice of B-0355. |
+| [`CURSOR.md`](../CURSOR.md) | Cursor IDE (Riven) | Six-step pointer tree at repo root (B-0355.2). Native `.cursor/rules/` still absent. |
 | `KIRO.md` | Amazon Kiro (Alexa) | Not yet created — a follow-up slice of B-0355 (per B-0325). |
 
 ## How to add a new harness

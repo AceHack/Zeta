@@ -625,8 +625,12 @@ truth for any rule that applies across harnesses.
   Copilot Workspace / Chat instructions. Present
   and factory-managed; audited on the same cadence
   as skill files (GOVERNANCE.md §31).
-- **`.cursor/rules/` or `.cursorrules`** — Cursor
-  IDE instructions. Currently absent.
+- **`CURSOR.md`** — Cursor (Riven) session-bootstrap
+  pointer tree. Present at repo root; instantiates the
+  cross-harness bootstrap template (B-0355). Cursor's
+  native per-repo instruction files
+  (`.cursor/rules/` / `.cursorrules`) remain absent; the
+  root `CURSOR.md` is the bootstrap pointer.
 
 Harness-specific files **may not** contradict
 `AGENTS.md` or `GOVERNANCE.md`. If a contradiction
