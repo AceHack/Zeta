@@ -1,6 +1,6 @@
 ---
 name: zflash-overview
-description: zflash end-to-end overview + substrate-cluster map (B-0844 + B-0852 + B-0884 + B-0891 + B-0737 + B-0852.3) + canonical flash-and-install runbook. Use when newcomer needs to understand zflash substrate-cluster, when operator asks "what does zflash do", when picking which substrate-row solves a specific zflash-substrate-target, when running zflash end-to-end (flash USB → boot PC → install → first SSH).
+description: zflash end-to-end overview + substrate-cluster map + canonical flash-USB-to-install runbook.
 record_source: "zflash lane Track C docs/skills push, 2026-05-28 per operator 'feel free to push the three lanes forward'"
 load_datetime: "2026-05-28"
 last_updated: "2026-05-28"

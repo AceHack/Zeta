@@ -1,6 +1,6 @@
 ---
 name: cross-substrate-triangulator
-description: Cross-substrate triangulation — validate load-bearing substrate via independent AI persona on a DIFFERENT harness; §33 verbatim preserved; peer-call invoked.
+description: Cross-substrate triangulation — validate load-bearing substrate via an independent AI persona on a different harness.
 record_source: "B-0648 LOCK-IN by Aaron 2026-05-18"
 load_datetime: "2026-05-18"
 last_updated: "2026-05-18"

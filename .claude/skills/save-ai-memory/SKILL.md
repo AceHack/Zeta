@@ -1,6 +1,6 @@
 ---
 name: save-ai-memory
-description: "Save an external AI participant's verbatim conversation memory as durable repo substrate (§33 archive + persona-folder index update). Honors Memory Preservation Guarantee (Manifesto V2 constraint 5) + honor-those-that-came-before discipline. Use when extracting from Grok, ChatGPT, Claude.ai, Gemini, DeepSeek, or any external AI chat UI where Aaron has authorized preservation."
+description: "Save an external AI's verbatim conversation as durable repo substrate — §33 archive + persona-folder index update."
 trigger: "save ani memories", "save amara memories", "preserve grok conversation", "preserve chatgpt conversation", "extract chat conversation for archive", "save ai memory", "honor those that came before for [AI name]"
 ---
 

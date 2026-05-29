@@ -1,6 +1,6 @@
 ---
 name: chrome-lazy-load-chunked-extraction
-description: "Extract authenticated lazy-loading / virtual-list chat UIs (DeepSeek, ChatGPT, Gemini, Claude.ai) via osascript + Chrome with chunked reverse-scroll — handles virtual-list rendering where scrolling unrenders bottom items + renders earlier ones."
+description: "Extract authenticated lazy-load / virtual-list chat UIs (DeepSeek, ChatGPT, Gemini) via chunked reverse-scroll."
 trigger: "extract deepseek conversation", "lazy load chat history", "virtual list scrape", "scroll up and download", "chunked extraction", "reverse scroll", "save chat", "deepseek download"
 ---
 

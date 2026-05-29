@@ -1,6 +1,6 @@
 ---
 name: agent-loop
-description: Distributable workflow-engine substrate — execute-menu-action agent loop with state-machine-in-Git + menu-generator-as-conversational-UX-design + LLM-as-pure-selector. Cross-harness via bun. Replaces Jira at substrate level. Operator 2026-05-28 ratification of behavior/data/docs separation pattern.
+description: Distributable workflow-engine substrate — execute-menu-action agent loop, state-machine-in-Git, LLM-as-pure-selector.
 record_source: "operator 2026-05-28 ratification of workflows-as-skills-distributable substrate"
 load_datetime: "2026-05-28"
 last_updated: "2026-05-28-cascade"

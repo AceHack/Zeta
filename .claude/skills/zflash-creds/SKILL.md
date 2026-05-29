@@ -1,6 +1,6 @@
 ---
 name: zflash-creds
-description: Bake operator credentials into the USB-bound encrypted blob at flash time via zflash --bake-cred flag (PLACEHOLDER — flag not yet implemented; tracked at B-0884 + B-0852.3b). Documents the canonical invocation pattern so the skill is ready when the flag lands.
+description: Bake operator creds into the USB-bound encrypted blob via zflash --bake-cred (PLACEHOLDER — flag not yet implemented).
 record_source: "encryption + zflash lane composition, 2026-05-28 cascade"
 load_datetime: "2026-05-28"
 last_updated: "2026-05-28"

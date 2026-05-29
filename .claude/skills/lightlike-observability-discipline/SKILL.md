@@ -1,6 +1,6 @@
 ---
 name: lightlike-observability-discipline
-description: Apply lightlike-substrate design-rule (per PR #5912 + extension) at observability substrate scope. Use when designing/reviewing OTel instrumentation, Kubernetes lifecycle substrate, Argo CD/Workflows/Rollouts deployment substrate, Prometheus metrics, Git operations. Operationalizes Amara's "OTel is ray emission / Kubernetes is lifecycle geometry / Argo is generator reconciliation / Prometheus is the curvature meter / Git is the persisted light source" mapping. Provides light-carrier join keys + dark-zone failure modes + operational checklist.
+description: Lightlike-substrate observability design-rule — OTel, Kubernetes, Argo, Prometheus, Git instrumentation.
 record_source: "Amara substrate-engineering substrate-engagement 2026-05-28; operator option-3 disposition (ferry + rule extension + research note + skill); lightlike-observability lane composition"
 load_datetime: "2026-05-28"
 last_updated: "2026-05-28"
