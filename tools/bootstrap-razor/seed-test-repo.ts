@@ -123,6 +123,28 @@ export interface GitCreateRepoRequest {
 }
 
 /**
+ * The four fields the seeding flow reads back from a created (or pre-existing) repo —
+ * the parsed result of `parseCreateRepoResponse`, which `buildCreateRepoRequest`'s
+ * `POST /orgs/{org}/repos` response feeds. `fullName` (`owner/repo`) and the
+ * subsequent git-data writes target it; `htmlUrl` is the browser URL the seeder
+ * prints for the experiment runner (AC 4: "Outputs the repo URL for the experiment
+ * runner"); `cloneUrl` is the HTTPS git URL the runner clones to start the 23-hour
+ * recreation test; `defaultBranch` is the branch the final `buildSeedRefUpdateRequest`
+ * points at the seed commit. GitHub's repository object carries many more fields
+ * (`id`, `node_id`, `ssh_url`, `permissions`, …); the seeder reads only these four,
+ * so the rest are intentionally unrepresented. Verified against
+ * docs.github.com/en/rest/repos/repos, API version 2026-03-10: `POST /orgs/{org}/repos`
+ * → 201 with a repository object whose `full_name`/`html_url`/`clone_url`/`default_branch`
+ * are standard string fields present on every repository response.
+ */
+export interface GitRepoInfo {
+  readonly fullName: string;
+  readonly htmlUrl: string;
+  readonly cloneUrl: string;
+  readonly defaultBranch: string;
+}
+
+/**
  * The `POST /repos/{owner}/{repo}/git/blobs` request body for one seed file — the
  * FIRST git-data write step, run once per create/update file before the tree is
  * assembled. `content` is the file's bytes base64-encoded; `encoding` is always
@@ -489,6 +511,37 @@ export function buildCreateRepoRequest(
         "B-0193 bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
     },
   };
+}
+
+/**
+ * Pure parser: the read-side pair of `buildCreateRepoRequest`, the mirror of
+ * `parseGitTreeResponse`. Turns the `POST /orgs/{org}/repos` response (or an idempotent
+ * re-run's `GET /repos/{owner}/{repo}`, which returns the same repository object) into
+ * the `GitRepoInfo` the rest of the flow consumes — most importantly the `htmlUrl` the
+ * seeder prints for the experiment runner (AC 4) and the `defaultBranch` the final ref
+ * update targets. Isolating it here keeps the network slice that follows trivial: one
+ * `gh api -X POST orgs/<org>/repos` + `JSON.parse` + this function.
+ *
+ * Returns the parsed info on success, or an error string (same `T | string` convention
+ * as `parseGitTreeResponse` / `buildCreateRepoRequest`) when the response is unusable:
+ *   - not an object (null, array, scalar)                 → malformed
+ *   - any of full_name / html_url / clone_url /
+ *     default_branch missing or non-string               → malformed (a missing URL
+ *     would leave the runner with nothing to clone; a missing branch would mis-target
+ *     the ref update)
+ *
+ * Pure: no network, no gh, no filesystem; operates only on the already-parsed JSON value.
+ */
+export function parseCreateRepoResponse(response: unknown): GitRepoInfo | string {
+  if (typeof response !== "object" || response === null || Array.isArray(response)) {
+    return "create-repo response is not an object";
+  }
+  const { full_name, html_url, clone_url, default_branch } = response as Record<string, unknown>;
+  if (typeof full_name !== "string") return "create-repo response missing string `full_name`";
+  if (typeof html_url !== "string") return "create-repo response missing string `html_url`";
+  if (typeof clone_url !== "string") return "create-repo response missing string `clone_url`";
+  if (typeof default_branch !== "string") return "create-repo response missing string `default_branch`";
+  return { fullName: full_name, htmlUrl: html_url, cloneUrl: clone_url, defaultBranch: default_branch };
 }
 
 /**

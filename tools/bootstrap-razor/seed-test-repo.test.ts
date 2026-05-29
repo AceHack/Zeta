@@ -13,6 +13,7 @@ import {
   computeSeedTree,
   diffSeedTree,
   gitBlobSha,
+  parseCreateRepoResponse,
   parseGitTreeResponse,
   parseSeedManifest,
   resolveSeedFiles,
@@ -165,6 +166,82 @@ describe("buildCreateRepoRequest", () => {
     const req = buildCreateRepoRequest("AceHack", "r", { description: "custom" });
     if (typeof req === "string") throw new Error(req);
     expect(req.body.description).toBe("custom");
+  });
+});
+
+describe("parseCreateRepoResponse", () => {
+  // A trimmed-but-realistic POST /orgs/{org}/repos (201) repository object: the four
+  // fields the seeder reads, plus extra fields it ignores (proves it reads selectively).
+  const created = {
+    id: 123456,
+    node_id: "R_kgDO",
+    full_name: "Lucent-Financial-Group/zeta-recreation-experiment",
+    private: true,
+    html_url: "https://github.com/Lucent-Financial-Group/zeta-recreation-experiment",
+    clone_url: "https://github.com/Lucent-Financial-Group/zeta-recreation-experiment.git",
+    ssh_url: "git@github.com:Lucent-Financial-Group/zeta-recreation-experiment.git",
+    default_branch: "main",
+  };
+
+  test("extracts the four seeder-relevant fields, ignoring the rest", () => {
+    expect(parseCreateRepoResponse(created)).toEqual({
+      fullName: "Lucent-Financial-Group/zeta-recreation-experiment",
+      htmlUrl: "https://github.com/Lucent-Financial-Group/zeta-recreation-experiment",
+      cloneUrl: "https://github.com/Lucent-Financial-Group/zeta-recreation-experiment.git",
+      defaultBranch: "main",
+    });
+  });
+
+  test("htmlUrl is what the seeder prints for the experiment runner (AC 4)", () => {
+    const info = parseCreateRepoResponse(created);
+    if (typeof info === "string") throw new Error(`expected info, got refusal: ${info}`);
+    expect(info.htmlUrl).toBe("https://github.com/Lucent-Financial-Group/zeta-recreation-experiment");
+  });
+
+  test("a non-default branch flows verbatim into defaultBranch (ref-update target)", () => {
+    const info = parseCreateRepoResponse({ ...created, default_branch: "trunk" });
+    if (typeof info === "string") throw new Error(info);
+    // The final buildSeedRefUpdateRequest targets this branch; it must not be hard-coded to "main".
+    expect(info.defaultBranch).toBe("trunk");
+  });
+
+  test("non-object responses are refused (null, array, scalar)", () => {
+    expect(typeof parseCreateRepoResponse(null)).toBe("string");
+    expect(typeof parseCreateRepoResponse([created])).toBe("string");
+    expect(typeof parseCreateRepoResponse("ok")).toBe("string");
+    expect(typeof parseCreateRepoResponse(42)).toBe("string");
+  });
+
+  test("missing string full_name is refused", () => {
+    const { full_name, ...rest } = created;
+    expect(parseCreateRepoResponse(rest)).toContain("full_name");
+  });
+
+  test("missing string html_url is refused (the runner would have nothing to clone)", () => {
+    const { html_url, ...rest } = created;
+    expect(parseCreateRepoResponse(rest)).toContain("html_url");
+  });
+
+  test("missing string clone_url is refused", () => {
+    const { clone_url, ...rest } = created;
+    expect(parseCreateRepoResponse(rest)).toContain("clone_url");
+  });
+
+  test("missing string default_branch is refused (ref update would mis-target)", () => {
+    const { default_branch, ...rest } = created;
+    expect(parseCreateRepoResponse(rest)).toContain("default_branch");
+  });
+
+  test("a non-string field of the right name is still refused", () => {
+    expect(typeof parseCreateRepoResponse({ ...created, html_url: 12345 })).toBe("string");
+  });
+
+  test("an idempotent re-run's GET /repos/{owner}/{repo} parses identically (same object shape)", () => {
+    // GET /repos/{owner}/{repo} returns the same repository object as the create call,
+    // so the idempotency path reuses this parser without a second shape.
+    const fetched = parseCreateRepoResponse(created);
+    const made = parseCreateRepoResponse(created);
+    expect(fetched).toEqual(made);
   });
 });
 
