@@ -4,8 +4,10 @@ import { describe, expect, test } from "bun:test";
 import {
   PR_REVIEW_LIFECYCLE_UNIVERSE,
   dispatchPrReviewTransition,
-  isPeerAgentTerritory,
+  isHumanOperator,
+  isPeerAgent,
   newReviewContext,
+  requiresCoordinationLane,
   type PrReviewLifecycle,
   type ReviewFinding,
 } from "./pr-review-lifecycle.js";
@@ -137,23 +139,38 @@ describe("ReviewFindingKind taxonomy", () => {
   });
 });
 
-describe("isPeerAgentTerritory discriminator", () => {
-  test("self → false (my own work)", () => {
-    expect(isPeerAgentTerritory("self")).toBe(false);
+describe("requiresCoordinationLane discriminator", () => {
+  test("self → false (my own work; no coordination needed)", () => {
+    expect(requiresCoordinationLane("self")).toBe(false);
   });
-  test("peer-otto → true", () => {
-    expect(isPeerAgentTerritory("peer-otto")).toBe(true);
+  test("peer-otto → true (peer-agent territory)", () => {
+    expect(requiresCoordinationLane("peer-otto")).toBe(true);
   });
-  test("peer-codex / peer-lior / peer-alexa → true", () => {
-    expect(isPeerAgentTerritory("peer-codex")).toBe(true);
-    expect(isPeerAgentTerritory("peer-lior")).toBe(true);
-    expect(isPeerAgentTerritory("peer-alexa")).toBe(true);
+  test("peer-codex / peer-lior / peer-alexa → true (peer-agent territory)", () => {
+    expect(requiresCoordinationLane("peer-codex")).toBe(true);
+    expect(requiresCoordinationLane("peer-lior")).toBe(true);
+    expect(requiresCoordinationLane("peer-alexa")).toBe(true);
   });
-  test("human-aaron → true (substantive engagement; don't touch substrate)", () => {
-    expect(isPeerAgentTerritory("human-operator")).toBe(true);
+  test("human-operator → true (distinct lane; coordination required)", () => {
+    expect(requiresCoordinationLane("human-operator")).toBe(true);
   });
   test("unknown → false (default; treat as substrate-honest mine)", () => {
-    expect(isPeerAgentTerritory("unknown")).toBe(false);
+    expect(requiresCoordinationLane("unknown")).toBe(false);
+  });
+});
+
+describe("isPeerAgent / isHumanOperator distinguish lanes", () => {
+  test("peer-otto is peer-agent, not human-operator", () => {
+    expect(isPeerAgent("peer-otto")).toBe(true);
+    expect(isHumanOperator("peer-otto")).toBe(false);
+  });
+  test("human-operator is human-operator, not peer-agent", () => {
+    expect(isPeerAgent("human-operator")).toBe(false);
+    expect(isHumanOperator("human-operator")).toBe(true);
+  });
+  test("self is neither peer-agent nor human-operator", () => {
+    expect(isPeerAgent("self")).toBe(false);
+    expect(isHumanOperator("self")).toBe(false);
   });
 });
 

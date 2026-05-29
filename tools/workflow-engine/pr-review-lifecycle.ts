@@ -5,9 +5,9 @@
 // reviewer-feedback gate-state).
 //
 // Per the human maintainer (2026-05-28): "also does it give you time to look at prs and
-// put comments?" — substrate-engineering substrate-engineering substrate
-// gap: AutoLoopLifetime (PR #5805) only models SHIP work, not REVIEW
-// work. This DU makes producing-side review-substrate explicit.
+// put comments?" — substrate-engineering gap: AutoLoopLifetime (PR #5805)
+// only models SHIP work, not REVIEW work. This DU makes producing-side
+// review-substrate explicit.
 //
 // Composes with:
 // - .claude/rules/fighting-past-self-vs-peer-agent-distinguisher-fix-your-own-coordinate-on-peers-dont-punt-by-default.md
@@ -21,7 +21,14 @@
 // - AutoLoopLifetime (PR #5805) — will compose; producing-side review
 //   work becomes additional state-transition in loop substrate
 
-import { type LifetimeState } from "./world";
+// LifetimeState — minimal base marker for substrate-engineering lifetime DUs.
+// Inlined here (rather than imported from a non-existent "./world" module) so
+// this PoC compiles standalone and doesn't break repo-wide `tsc --noEmit` or
+// `bun test`. Sibling lifecycle DUs (e.g. B-0867.20 ReviewLifetime) carry
+// their own base marker until a shared `world.ts` module lands.
+export interface LifetimeState {
+  readonly kind: string;
+}
 
 // ─────────────────────────────────────────────────────────────────────
 // PrReviewLifecycle — producing-side state machine
@@ -246,11 +253,35 @@ export const PR_REVIEW_LIFECYCLE_UNIVERSE: ReadonlyArray<PrReviewLifecycle> = [
 ];
 
 /**
- * Determines if a PR is in peer-agent territory (don't touch commits but
- * review-allowed per fighting-past-self-vs-peer-agent-distinguisher rule).
+ * Returns true when the author lane requires coordination before touching
+ * commits (peer-agent territory OR human-operator territory). Both lanes
+ * are non-self-authored; both require coordination per
+ * fighting-past-self-vs-peer-agent-distinguisher rule — but the lanes are
+ * substantively DISTINCT and should NOT be conflated for any purpose
+ * beyond "this is not my own commit-substrate." Callers that need to
+ * distinguish should use `isPeerAgent` or `isHumanOperator` directly.
  */
-export function isPeerAgentTerritory(authorLane: ReviewContext["authorLane"]): boolean {
-  return authorLane.startsWith("peer-") || authorLane === "human-operator";
+export function requiresCoordinationLane(authorLane: ReviewContext["authorLane"]): boolean {
+  return isPeerAgent(authorLane) || isHumanOperator(authorLane);
+}
+
+/**
+ * True iff the author lane is a peer-agent surface (otto-* / codex / lior /
+ * alexa / vera / riven / amara / kestrel / prism / mika). Distinct from
+ * human-operator per the fighting-past-self discriminator table.
+ */
+export function isPeerAgent(authorLane: ReviewContext["authorLane"]): boolean {
+  return authorLane.startsWith("peer-");
+}
+
+/**
+ * True iff the author lane is the human operator. Distinct from peer-agent
+ * per the fighting-past-self discriminator table; coordination shape
+ * differs (peer-agents coordinate via bus / peer-call; human operator
+ * coordinates via conversation / explicit authorization).
+ */
+export function isHumanOperator(authorLane: ReviewContext["authorLane"]): boolean {
+  return authorLane === "human-operator";
 }
 
 /**
