@@ -84,6 +84,25 @@ interface SeedTreeDiff {
 }
 
 /**
+ * The `POST /repos/{owner}/{repo}/git/blobs` request body for one seed file — the
+ * FIRST git-data write step, run once per create/update file before the tree is
+ * assembled. `content` is the file's bytes base64-encoded; `encoding` is always
+ * `"base64"`. The blobs API also accepts `encoding: "utf-8"`, but seed files can be
+ * binary (or carry mixed/non-UTF-8 bytes), and a `utf-8` upload would corrupt any
+ * non-UTF-8 content — base64 is lossless for arbitrary bytes, so the seeder always
+ * uses it (verified against docs.github.com/en/rest/git/blobs, API version
+ * 2026-03-10: `content`/`encoding` body, `encoding` ∈ {`utf-8`, `base64`}, blobs up
+ * to 100 MB). GitHub returns this blob's SHA, which is byte-identical to the SHA
+ * `gitBlobSha` already predicts for the same bytes — so the seeding flow never has
+ * to round-trip to learn it: it uploads each blob, then submits `buildSeedTreeRequest`'s
+ * tree referencing those same SHAs.
+ */
+export interface GitBlobRequest {
+  readonly content: string;
+  readonly encoding: "base64";
+}
+
+/**
  * One entry in the `tree` array of GitHub's `POST /repos/{owner}/{repo}/git/trees`
  * request body. `mode` is always `100644` (a regular non-executable file blob) for
  * seed content; `type` is always `"blob"`; `sha` references a blob the seeding flow
@@ -354,6 +373,20 @@ export function parseGitTreeResponse(response: unknown): readonly SeedTreeEntry[
 }
 
 /**
+ * Pure builder for one seed file's `POST /git/blobs` body — the FIRST git-data write
+ * step, the mirror of `gitBlobSha` (which predicts the SHA the same bytes will get).
+ * Base64-encodes the raw bytes and tags `encoding: "base64"` so the upload is lossless
+ * for arbitrary (incl. binary) content. Uses the byte length implicitly via `Buffer`'s
+ * base64 codec, so multi-byte and non-UTF-8 content survive intact. Pure: operates on
+ * the given bytes only; no gh, no network, no filesystem. The network slice runs this
+ * once per create/update entry from `buildSeedTreeRequest`'s plan, collecting the
+ * returned SHAs (each equal to `gitBlobSha` of the same file), then submits the tree.
+ */
+export function buildSeedBlobRequest(content: Uint8Array): GitBlobRequest {
+  return { content: Buffer.from(content).toString("base64"), encoding: "base64" };
+}
+
+/**
  * Pure write-side bridge — the mirror of `parseGitTreeResponse`. Where the parser
  * turns the target repo's git tree INTO the diff's `existing` input, this turns the
  * diff's verdict INTO the `tree` array a `POST /git/trees` call submits to write the
@@ -494,6 +527,17 @@ function emitDryRun(manifest: SeedManifest, root: string): void {
   // already-seeded repo the network slice fetches the real tree, and an idempotent
   // diff collapses this to the empty array (no writes).
   const freshRepoPlan = buildSeedTreeRequest(diffSeedTree(tree, []));
+
+  // Step 1 of the git-data write chain: each create/update file is uploaded as a
+  // base64 blob via `POST /git/blobs` BEFORE the tree references its SHA. For a fresh
+  // repo that is every resolved file; an idempotent re-seed uploads nothing. Showing
+  // the per-blob base64 size makes the upload cost visible without performing it.
+  console.log(`POST /git/blobs uploads for a fresh repo (${freshRepoPlan.length} blobs, base64):`);
+  for (const { path } of freshRepoPlan) {
+    const blob = buildSeedBlobRequest(readFileSync(join(root, path)));
+    console.log(`  ${blob.encoding} ${blob.content.length}b  ${path}`);
+  }
+
   console.log(`POST /git/trees write plan for a fresh repo (${freshRepoPlan.length} entries):`);
   for (const { mode, type, sha, path } of freshRepoPlan) {
     console.log(`  ${mode} ${type} ${sha}  ${path}`);

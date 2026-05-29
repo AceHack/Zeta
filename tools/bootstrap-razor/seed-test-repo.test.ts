@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
+  buildSeedBlobRequest,
   buildSeedCommitRequest,
   buildSeedRefUpdateRequest,
   buildSeedTreeRequest,
@@ -105,6 +106,40 @@ describe("gitBlobSha", () => {
     // "é" is 2 bytes in UTF-8; the header must read `blob 2\0`, not `blob 1\0`.
     // `printf 'é' | git hash-object --stdin` → this SHA.
     expect(gitBlobSha(Buffer.from("é", "utf8"))).toBe("4b04fff51468d8ab5201ab02b725dc477bc7cb45");
+  });
+});
+
+describe("buildSeedBlobRequest", () => {
+  // Canonical base64 values: `printf 'hello\n' | base64` → "aGVsbG8K";
+  // `printf 'é' | base64` → "w6k=". Hardcoding them pins the wire bytes the
+  // `POST /git/blobs` body carries.
+  test("empty content → empty base64 string", () => {
+    expect(buildSeedBlobRequest(new Uint8Array(0))).toEqual({ content: "", encoding: "base64" });
+  });
+
+  test("'hello\\n' matches base64 of its bytes", () => {
+    expect(buildSeedBlobRequest(Buffer.from("hello\n", "utf8"))).toEqual({
+      content: "aGVsbG8K",
+      encoding: "base64",
+    });
+  });
+
+  test("multi-byte UTF-8 content base64-encodes by raw bytes", () => {
+    // "é" is the 2 bytes C3 A9; base64 of those bytes is "w6k=".
+    expect(buildSeedBlobRequest(Buffer.from("é", "utf8")).content).toBe("w6k=");
+  });
+
+  test("non-UTF-8 binary bytes survive losslessly (why base64, not utf-8)", () => {
+    // 0xFF is not valid UTF-8; a `utf-8` upload would corrupt it. base64 round-trips.
+    const bytes = new Uint8Array([0x00, 0xff, 0x10]);
+    const { content, encoding } = buildSeedBlobRequest(bytes);
+    expect(encoding).toBe("base64");
+    expect(content).toBe("AP8Q");
+    expect(new Uint8Array(Buffer.from(content, "base64"))).toEqual(bytes);
+  });
+
+  test("encoding is always the base64 literal", () => {
+    expect(buildSeedBlobRequest(Buffer.from("x", "utf8")).encoding).toBe("base64");
   });
 });
 
