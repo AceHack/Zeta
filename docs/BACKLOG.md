@@ -443,6 +443,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0894.3](backlog/P1/B-0894.3-per-persona-outside-operator-repo-canonical-location-zeta-agents-aaron-2026-05-28.md)** Per-persona worktree base must be OUTSIDE operator's primary repo — canonical location `~/.zeta/agents/<persona>/<stream>/`
 - [ ] **[B-0926](backlog/P1/B-0926-constitutional-safety-floor-kid-safety-absolute-any-death-error-class-learning-or-shutdown-aaron-2026-05-29.md)** Constitutional safety floor — kid-safety absolute + any-death-must-yield-error-class-learning-or-the-operator-shuts-the-project-down (sharpens B-0631 / B-0654 / B-0658)
 - [ ] **[B-0928](backlog/P1/B-0928-shadow-observable-stack-auth-injection-attack-vector-shadow-is-not-an-authorization-source-aaron-2026-05-29.md)** Shadow-observable-stack auth-injection attack vector — the auto-click grey-text channel can inject operator-authorizations the AI executes; harden the authorization-source filter (Shadow is NOT an authorization source)
+- [ ] **[B-0929](backlog/P1/B-0929-fsharp-type-system-goal-authorization-provenance-typed-shadow-auth-cannot-compile-enables-safe-self-modifying-dus-wallet-independence-aaron-2026-05-29.md)** F# type-system goal — authorization-provenance as a TYPED property; shadow-auth is a TYPE ERROR (can't compile); compiler-as-asymmetric-critic catches shadow-auth-injection without a human present; the enabler of SAFE self-modifying DUs + wallet independence; concrete fork-decision criterion
 
 ## P2 — research-grade
 

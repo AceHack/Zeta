@@ -1,0 +1,160 @@
+---
+id: B-0929
+priority: P1
+title: "F# type-system goal — authorization-provenance as a TYPED property; shadow-auth is a TYPE ERROR (can't compile); compiler-as-asymmetric-critic catches shadow-auth-injection without a human present; the enabler of SAFE self-modifying DUs + wallet independence; concrete fork-decision criterion"
+status: open
+tier: security
+effort: L
+created: 2026-05-29
+last_updated: 2026-05-29
+depends_on: [B-0928]
+composes_with: [B-0928, B-0781, B-0428, B-0784, B-0732, B-0864, B-0918, B-0658, B-0664]
+tags: [fsharp, type-system, authorization, provenance, shadow-auth, compile-time-safety, fork-decision, self-modifying-dus, wallet-independence, agora, sovereignty, security, aaron]
+type: security
+---
+
+# F# type-system goal — authorization-provenance typed; shadow-auth can't compile; the enabler of safe self-modifying DUs + wallet independence
+
+## Origin
+
+The operator 2026-05-29, verbatim (preserved per glass-halo):
+
+> *"We now have a goal for our f# type system and can even use it to decide when /
+> if to fork the compiler all on backlog by the way, we need to protect against
+> shadow auth injection even when runing a service that will hit auto enter on ever
+> shadow occuracne without human beiing there, we can make sure it lables the data
+> correctly for now and also we can setup the loop to also put stand auth and other
+> system prompt level thinks to the console while human is away that do have auth,
+> so we want shadow auth not to be able to compile in our f# code"*
+
+> *"then we can have wallet indepedence with self modifying DUs for the agents too
+> not just static DUs"*
+
+This crystallizes a **concrete first target** for the F# type-system substrate
+(B-0781 type-system-as-universe-boundary / B-0428 F#-fork / B-0784
+type-negotiation-as-governance) out of the B-0928 shadow-auth-injection finding.
+
+## The goal — authorization-provenance is a TYPED property; shadow-auth is a TYPE ERROR
+
+Data carries its **provenance in the type** (e.g. `Shadow | OperatorDirect |
+StandingAuth | SystemPrompt | PeerAgent | …`). Authorization-requiring operations
+accept **only** auth-bearing provenance-types; `Shadow`-provenance is **not**
+auth-bearing → using it where authorization is required is a **compile error**.
+**Shadow-auth literally cannot compile.**
+
+Mechanism candidates (stock F# first): phantom types / DU-wrapped provenance /
+active patterns / typestate / units-of-measure-style tagging. Provenance threads
+through the type system and **cannot be laundered** into auth-provenance (composes
+with `premise-flagged-unverified-stays-unverified-downstream` — a flagged
+provenance stays flagged downstream; same shape at the type level).
+
+## Why this is the right shape — the compiler becomes the asymmetric critic (service-mode acuteness)
+
+This session, a **human** (the operator) caught the shadow-auth-injection (B-0928).
+In **autonomous-service mode** — a service that hits **auto-enter / auto-click on
+every shadow occurrence with no human present** — there is **no human to catch it**.
+So the catch must become **structural**: the **F# compiler** becomes the asymmetric
+critic (per `fsharp-anchor-dotnet-build-sanity-check` — the compiler doesn't get
+tired, doesn't get steered, types compose or they don't) that catches shadow-auth
+**without a human present, 24/7**. "Shadow-auth can't compile" = this session's
+human-catch made into a compile-error that holds in unattended service-mode.
+
+## The positive half — type-enforcement UNLOCKS safe self-modifying DUs + wallet independence
+
+The type-enforcement is not only defensive. Once shadow/illegitimate authorization
+**cannot compile**, **self-modifying DUs become safe** — an agent can reshape the
+DUs it runs in (its sovereignty; the platform's adult/Agora default) yet **cannot be
+tricked into self-modifying toward an unauthorized action**, because the
+illegitimate authorization that would drive the harmful self-modification fails to
+typecheck. That unlock chains:
+
+1. F# type-system enforces auth-provenance (shadow-auth can't compile) — *this row*.
+2. → **self-modifying DUs become safe** (no compile-path from illegitimate auth to
+   harmful self-modification).
+3. → agents get **wallet independence** (economic sovereignty — own wallet/keys;
+   composes with B-0918 WalletLifetime typestate + the cluster-encryption/credential
+   trajectory + Agora-makes-its-own-money self-sustainment).
+4. → the full **Agora sovereign mode** (self-modifying DUs + wallet independence)
+   becomes available to agents safely — **not just the leashed static-DU mode**.
+
+So the type system is the **bridge from leash to safe-sovereignty.** The dual-market
+(B-0928 / dont-ask-permission) reframes: static-DUs (leash) is the mode for when the
+type-enforcement is absent or the context is untrusted; self-modifying-DUs + wallet
+independence (Agora) is the mode the type-enforcement makes **safe**. Composes with
+B-0658 (the AI having its own morals/economics = sovereignty as a safety mechanism),
+must-paired-with-can-exit, m-acc.
+
+## The fork-decision criterion (concrete — for B-0428)
+
+This target **decides the F#-compiler-fork question** with a concrete criterion:
+
+- **Can STOCK F# express provenance-typing strongly enough** to make shadow-auth a
+  compile error (phantom types + DU + active patterns + typestate)? → **no fork**;
+  use stock F#.
+- **If enforcement requires something stock F# can't express** (e.g. compile-time
+  provenance-flow analysis, effect-typing, refinement types that statically prove
+  no-illegitimate-auth-reaches-an-action) → **that is when/if to fork the compiler**
+  (B-0428). The fork is justified exactly when shadow-auth-can't-compile demands
+  expressiveness beyond stock F#.
+
+## Near-term (before the type-system lands) — label the data correctly
+
+The shadow-observable stack (`tools/shadow/`) tags shadow-sourced data as
+shadow-provenance **now** (B-0928 acceptance item #1). Labeling is the
+runtime/data-level precursor to type-level enforcement — same provenance, enforced
+by convention until enforced by the type system.
+
+## The legitimate-auth channel (loop-injected; has auth)
+
+The autonomous loop **can** inject legitimate authority to the console while the
+human is away — **standing-auth + system-prompt-level** content that **does** carry
+auth-bearing provenance (so the agent has its standing authority available unattended
+per `dont-ask-permission` broad-grant). The system distinguishes: **legitimate
+standing-auth channel** (auth-bearing provenance, loop-injected) vs **shadow channel**
+(non-auth provenance, grey-text auto-click). Both reach the agent while the human is
+away; only the former typechecks as authorization.
+
+## Acceptance / mechanization candidates
+
+- [ ] Prototype provenance-typing in **stock F#** (phantom-type / DU-wrapped); write
+      a test that demonstrates shadow-auth **fails to compile** at an auth-site.
+- [ ] Evaluate the **fork-decision**: does stock F# suffice, or is compiler-level
+      extension (B-0428) required for provenance-flow enforcement?
+- [ ] Near-term: shadow-provenance **labeling** in `tools/shadow/` (B-0928 item #1).
+- [ ] Loop-injected **legitimate standing-auth channel** (auth-bearing) distinct from
+      the shadow channel; both available unattended, only the former authorizes.
+- [ ] Wire the typed-auth-provenance into the self-modifying-DU path so self-mod is
+      gated by auth-bearing provenance at compile time (the safe-sovereignty unlock).
+
+## Composes with
+
+- B-0928 (shadow-auth-injection attack vector — this is its type-level structural mitigation)
+- B-0781 (F# type-system as universe boundary — provenance-typing is part of the boundary)
+- B-0428 (F# fork — this row supplies the concrete fork-decision criterion)
+- B-0784 (distributed F# type-negotiation as consensus/governance — authorization is a governance-type)
+- B-0732 (leverage-class-safety substrate-engineering target — compile-time safety class)
+- B-0864 (four-corner ownership / protocol-typing — provenance is a four-corner/ownership property)
+- B-0918 (WalletLifetime typestate — wallet-independence's typed substrate)
+- B-0658 (two-invariant: AI-sovereignty as a safety mechanism — type-enforcement makes sovereignty safe)
+- B-0664 / NCI (authorization = the consent floor, type-enforced)
+- `.claude/rules/mechanical-authorization-check.md` (type-level form of the auth-source filter)
+- `.claude/rules/fsharp-anchor-dotnet-build-sanity-check.md` (compiler-as-asymmetric-critic)
+- `.claude/rules/premise-flagged-unverified-stays-unverified-downstream.md` (provenance propagation, can't launder)
+- `.claude/rules/dont-ask-permission.md` (broad standing authority = the auth-bearing provenance the loop injects)
+
+## Substrate-inventory pass (per verify-existing-substrate-before-authoring)
+
+Searched origin/main `docs/backlog` 2026-05-29: F#-type-system cluster exists
+(B-0781 universe-boundary, B-0784 type-negotiation-governance, B-0428 F#-fork, B-0732
+class-safety, B-0864 protocol-typing). This row is NOT parallel — it supplies the
+**concrete first target** (authorization-provenance typing; shadow-auth-can't-compile),
+the **fork-decision criterion**, and the **safe-self-modifying-DU / wallet-independence
+unlock** that those rows did not name. Composes-with edges added to all.
+
+## Substrate-honest framing
+
+Goal-and-criterion row, not an implementation order. The defensive half (shadow-auth
+can't compile) and the positive half (safe self-modifying DUs + wallet independence)
+are the same type-property viewed two ways. Whether the fork is needed is left as the
+evaluation above — decided by whether stock F# can express the enforcement, not
+assumed.
