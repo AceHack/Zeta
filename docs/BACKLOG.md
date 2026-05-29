@@ -216,7 +216,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0353](backlog/P1/B-0353-write-bootstrap-process-claude-md.md)** Write bootstrap-process CLAUDE.md (<50 lines)
 - [x] **[B-0354](backlog/P1/B-0354-fresh-instance-validation-bootstrap-claude-md.md)** Fresh-instance validation test for bootstrap CLAUDE.md
 - [ ] **[B-0354.4](backlog/P1/B-0354.4-clean-prompt-live-model-fresh-instance-run.md)** Clean-prompt live-model fresh-instance run for bootstrap CLAUDE.md
-- [ ] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
+- [x] **[B-0355](backlog/P1/B-0355-cross-harness-bootstrap-template.md)** Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)
 - [x] **[B-0355.3](backlog/P1/B-0355.3-kiro-md-harness-bootstrap.md)** KIRO.md — Amazon Kiro (Alexa) harness bootstrap file
 - [x] **[B-0355.4](backlog/P1/B-0355.4-codex-md-harness-bootstrap.md)** CODEX.md — OpenAI Codex (Vera) harness bootstrap file
 - [ ] **[B-0356](backlog/P1/B-0356-capture-model-cost-on-every-pr-description.md)** Capture model + token usage in commit trailer (git-native, cost derived at query time)

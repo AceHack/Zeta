@@ -1,10 +1,10 @@
 ---
 id: B-0355
 priority: P1
-status: open
+status: closed
 title: "Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)"
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-29
 depends_on:
   - B-0354
 decomposition: atomic
@@ -55,3 +55,49 @@ not from memorizing harness-specific doctrine.
 ## Effort
 
 S — template + one instance, ~2 hours.
+
+## Resolution (2026-05-29 — completed via children + direct landings)
+
+Closed as **completed**. All four acceptance criteria are satisfied
+by substrate already on `main`; the parent row had drifted `open`
+while the work landed through child rows and direct commits:
+
+1. **Template document** — [`docs/BOOTSTRAP-TEMPLATE.md`](../../BOOTSTRAP-TEMPLATE.md)
+   exists with the six-step skeleton, the non-negotiable invariant,
+   the "Existing instances" registry, and the "How to add a new
+   harness" procedure. ✓
+2. **≥1 non-CLAUDE harness file** — multiple landed:
+   [`CODEX.md`](../../../CODEX.md) (B-0355.4, #6045, closed),
+   [`CURSOR.md`](../../../CURSOR.md) (B-0355.2, #6042),
+   [`KIRO.md`](../../../KIRO.md) (B-0355.3, #6043, closed),
+   [`GEMINI.md`](../../../GEMINI.md) (B-0538), plus
+   `.codex/AGENTS.md` and `.github/copilot-instructions.md`. ✓
+3. **Universal vs harness-specific documented** — `docs/BOOTSTRAP-TEMPLATE.md`
+   §"Universal vs harness-specific" carries the per-step table
+   (universal column + harness-specific fill-in column). ✓
+4. **Build gate** — this close-out is docs-only (backlog-row + index
+   regeneration); no `.cs`/`.fs`/`.fsproj` touched, so the Release
+   build + test surface is unaffected. The harness-file landings
+   that satisfied criteria 1–3 each passed CI on their own PRs
+   (#6042/#6043/#6045). ✓
+
+### Child / sibling rows
+
+- **B-0355.2** — CURSOR.md (merged #6042)
+- **B-0355.3** — KIRO.md (closed, #6043)
+- **B-0355.4** — CODEX.md (closed, #6045)
+
+### Dependency + still-open sibling
+
+The named blocker `depends_on: B-0354` ("Fresh-instance validation
+test for bootstrap CLAUDE.md") is itself **closed** — the dependency
+is satisfied.
+
+The still-open row in the cluster is **B-0354.4** ("Clean-prompt
+live-model fresh-instance run for bootstrap CLAUDE.md"). That is the
+**cluster-wide fresh-instance validation** — step 5 of the template's
+"How to add a new harness" procedure — not part of B-0355's own
+acceptance criteria (template + ≥1 harness file + universal/
+harness-specific doc + build), all of which are met independently.
+B-0354.4 stays open to track that validation work for the broader
+bootstrap cluster (parent B-0329); it does not block closing B-0355.
