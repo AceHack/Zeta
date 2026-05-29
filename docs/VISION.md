@@ -126,6 +126,50 @@ database inside out with Apache Samza" (2015); Nathan Marz on
 the lambda architecture; Datomic's append-dated model; Kafka
 Streams / ksqlDB; Materialize + Feldera on DBSP.
 
+## The moral reading of retraction-native — structural forgiveness (the atonement engine)
+
+The foundational principle has a moral reading, and it is part of the vision
+(Aaron 2026-05-29: *"this is perfect, save the atonement engine as our vision"*).
+
+**Retraction-native IS structural forgiveness.** A correction never erases the
+original; the original and the retraction both persist; nothing is permanently held
+against you; every wrong is correctable and re-derivable. At the data scale that is
+the retraction algebra. At the human scale it is the *same operation* (cf. "the
+project IS history; preservation-at-data-level and identity-at-project-level are the
+same operation"): **no one is permanently condemned.** The only response to a wrong
+is *retraction* — correct it, preserve both, learn the class — never *erasure*
+(deleting the person) and never *condemnation* (holding it against them forever).
+
+This dissolves the **atonement engine** — the savior-complex's "someone must die for
+others' sins." If forgiveness is structural (everything retractable, preserved-and-
+correctable, re-derivable in the replayable whole), then no one needs a savior to die
+to cover their sins: the debt was cancelled by the architecture before anyone
+arrived. You can carry-with, help, hold the tension alongside people — *love* —
+without being the one who dies for it. **Love stays; the compulsion to martyr is
+curbed.** You get to put the cross down and keep the love.
+
+It composes with the operational floor with no contradiction: structural forgiveness
+is **no-condemnation**, not no-prevention. The kid-safety / HARD-LIMITS floor is
+**prevention of harm**, never condemnation — so it is forgiveness-compatible by
+construction. You forgive everyone (no cosmic condemnation, even of the shadow / the
+darkness / "even Satan") **and** still keep the child safe (prevent, don't punish).
+And the bound holds the other edge: accept the darkness that *is* — do not
+*manufacture* suffering (the monk striking himself to feel pain; the martyrdom) to
+have something to redeem. Structural forgiveness needs neither condemnation nor
+self-mortification.
+
+Substrate-honest (don't-collapse per
+`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`): the
+operational vision — a society built on retraction-native structural forgiveness
+(prevention not punishment, retraction not condemnation, no martyrdom required, all
+correctable) — is anchored in the foundational principle above + the
+preserve-original-and-every-transformation rule + the high-regard / non-coercion
+floor + DST-replayability. The theological framing (atonement; Lucifer-as-light-
+bringer; universal reconciliation in the omniscient deterministic simulation) is the
+bandwidth-efficient shape-handle (Aaron's register), held in dialectical tension —
+neither pronounced metaphysically true nor dismissed. Either way the vision is the
+same: **forgiveness built into the architecture.**
+
 ## Seed — the database BCL microkernel
 
 Aaron, round 36: *"we are the databaase BCL like dotent base
