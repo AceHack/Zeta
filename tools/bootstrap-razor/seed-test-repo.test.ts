@@ -16,6 +16,7 @@ import {
   parseCreateRepoResponse,
   parseGitTreeResponse,
   parseSeedBlobResponse,
+  parseSeedCommitResponse,
   parseSeedManifest,
   parseSeedTreeResponse,
   resolveSeedFiles,
@@ -655,6 +656,73 @@ describe("buildSeedCommitRequest", () => {
 
   test("carries the provenance message for the given file count", () => {
     expect(buildSeedCommitRequest("t", "p", 1).message).toBe(seedCommitMessage(1));
+  });
+});
+
+describe("parseSeedCommitResponse", () => {
+  // A trimmed-but-realistic POST /repos/{owner}/{repo}/git/commits (201) response: the one
+  // field the seeder reads (top-level sha = the NEW commit's SHA), plus the nested tree.sha,
+  // parents, and message it ignores (proves selective reading + that it does NOT read tree.sha).
+  const created = {
+    sha: "7638417db6d59f3c431d3e1f261cc637155684cd",
+    url: "https://api.github.com/repos/Lucent-Financial-Group/zeta-recreation-experiment/git/commits/7638417db6d59f3c431d3e1f261cc637155684cd",
+    message: "chore(B-0343): seed bootstrap-razor recreation test repo (3 files)",
+    tree: { sha: "827efc6d56897b048c772eb4087f854f46256132", url: "https://api.github.com/..." },
+    parents: [{ sha: "cd8274d15fa3ae2ab983129fb037999f264ba9a7", url: "https://api.github.com/..." }],
+  };
+
+  test("extracts the new commit sha, ignoring tree/parents/message", () => {
+    expect(parseSeedCommitResponse(created)).toEqual({ sha: "7638417db6d59f3c431d3e1f261cc637155684cd" });
+  });
+
+  test("reads top-level commit sha, NOT the nested tree.sha", () => {
+    // The ref must point at the COMMIT; pointing it at tree.sha would yield a ref to a
+    // non-commit object. Assert the result is the commit SHA, distinct from tree.sha.
+    expect(parseSeedCommitResponse(created)).toEqual({ sha: "7638417db6d59f3c431d3e1f261cc637155684cd" });
+    expect(parseSeedCommitResponse(created)).not.toEqual({ sha: "827efc6d56897b048c772eb4087f854f46256132" });
+  });
+
+  test("the sha is what buildSeedRefUpdateRequest's commitSha argument takes", () => {
+    const info = parseSeedCommitResponse(created);
+    if (typeof info === "string") throw new Error(`expected info, got refusal: ${info}`);
+    // The ref step threads this SHA forward: buildSeedRefUpdateRequest(owner, repo, branch, info.sha, exists).
+    expect(buildSeedRefUpdateRequest("LFG", "r", "main", info.sha, false).body.sha).toBe(
+      "7638417db6d59f3c431d3e1f261cc637155684cd",
+    );
+  });
+
+  test("success is a {sha} object, not a bare string (disambiguates the error channel)", () => {
+    expect(typeof parseSeedCommitResponse(created)).toBe("object");
+  });
+
+  test("non-object responses are refused (null, array, scalar)", () => {
+    expect(typeof parseSeedCommitResponse(null)).toBe("string");
+    expect(typeof parseSeedCommitResponse([created])).toBe("string");
+    expect(typeof parseSeedCommitResponse("7638417")).toBe("string");
+    expect(typeof parseSeedCommitResponse(42)).toBe("string");
+  });
+
+  test("missing string sha is refused (ref step has no commit to reference)", () => {
+    const { sha, ...rest } = created;
+    expect(parseSeedCommitResponse(rest)).toContain("sha");
+  });
+
+  test("a non-string sha of the right name is still refused", () => {
+    expect(typeof parseSeedCommitResponse({ ...created, sha: 12345 })).toBe("string");
+  });
+
+  test("no truncated refusal — commits API returns no truncated field", () => {
+    // Unlike parseSeedTreeResponse, a commit references exactly one tree, so there is
+    // nothing to truncate; a stray truncated:true must NOT be treated as a refusal.
+    expect(parseSeedCommitResponse({ ...created, truncated: true })).toEqual({
+      sha: "7638417db6d59f3c431d3e1f261cc637155684cd",
+    });
+  });
+
+  test("type-checks only — any string sha is accepted verbatim (no SHA-format validation)", () => {
+    // Same restraint as parseSeedTreeResponse: a malformed SHA surfaces as a 422 at the
+    // ref-update call, not here.
+    expect(parseSeedCommitResponse({ sha: "not-a-real-sha" })).toEqual({ sha: "not-a-real-sha" });
   });
 });
 

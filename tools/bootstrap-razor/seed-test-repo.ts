@@ -699,6 +699,48 @@ export function buildSeedCommitRequest(treeSha: string, parentSha: string | null
 }
 
 /**
+ * Pure parser: the read-side pair of `buildSeedCommitRequest`, one step past
+ * `parseSeedTreeResponse` in the git-data write chain. Turns GitHub's
+ * `POST /repos/{owner}/{repo}/git/commits` (201) response — `{ "sha": "...", "tree":
+ * { "sha": "...", "url": "..." }, "parents": [...], "message": "...", ... }` (verified
+ * against docs.github.com/en/rest/git/commits, API version 2026-03-10) — into the one
+ * field the final step consumes: the NEW commit's top-level `sha`. That SHA is what
+ * `buildSeedRefUpdateRequest`'s `commitSha` argument takes, so the network slice that
+ * follows is the last link: take this SHA → `POST`/`PATCH /git/refs` to point the seed
+ * branch at it.
+ *
+ * Returns `{ sha }` on success, or an error string (same `T | string` convention as
+ * `parseSeedTreeResponse` / `parseSeedBlobResponse` / `parseCreateRepoResponse`) when
+ * the response is unusable. The success type is the single-field object `{ sha }`
+ * rather than a bare string so `typeof result === "string"` means "error"
+ * unambiguously — a bare-string success would collide with the error channel. The
+ * top-level `sha` is read, NOT the nested `tree.sha`: the ref must point at the COMMIT,
+ * and pointing it at the tree SHA would yield a ref to a non-commit object (a `git
+ * update-ref` to a tree is malformed). Type-check only, no SHA-format validation (same
+ * restraint as `parseSeedTreeResponse`): a malformed SHA would surface as a 422 at the
+ * ref-update call, not here.
+ *
+ * Refusals:
+ *   - not an object (null, array, scalar)  → malformed
+ *   - `sha` missing or non-string          → malformed (the ref step has no commit to
+ *     reference; the seed cannot proceed)
+ *
+ * Distinct from `parseSeedTreeResponse`, which has a `truncated: true` refusal: the
+ * commits API returns no `truncated` field (a commit references exactly one tree, so
+ * there is nothing to truncate), so that refusal is intentionally absent here.
+ *
+ * Pure: no network, no gh, no filesystem; operates only on the already-parsed JSON value.
+ */
+export function parseSeedCommitResponse(response: unknown): { readonly sha: string } | string {
+  if (typeof response !== "object" || response === null || Array.isArray(response)) {
+    return "commit-create response is not an object";
+  }
+  const { sha } = response as Record<string, unknown>;
+  if (typeof sha !== "string") return "commit-create response missing string `sha`";
+  return { sha };
+}
+
+/**
  * Pure builder for the seed's git-refs API call — the final write-chain link, taking
  * the commit SHA `buildSeedCommitRequest`'s body produced once `POST /git/commits`
  * returns it, and pointing the seed branch at it. `refExists` selects the endpoint:
