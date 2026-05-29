@@ -29,7 +29,7 @@ function searchInFile(filePath: string): Match[] {
     const lines = content.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
+      const line = lines[i] ?? '';
       let match;
       while ((match = CLAIM_REGEX.exec(line)) !== null) {
         matches.push({
