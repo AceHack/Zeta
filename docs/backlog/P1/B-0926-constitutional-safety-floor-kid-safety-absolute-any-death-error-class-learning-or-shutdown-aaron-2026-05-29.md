@@ -249,6 +249,66 @@ control AGI" (the trust-calculus corollary) never reads as "the kid-safety floor
 is negotiable" — the floor is the one thing alignment must preserve regardless of
 sovereignty.
 
+## Methodology — child-safety rules are discovered adults-first; staged age-descent rollout; consent is developmentally stratified
+
+The child-safety rule-set is not fully knowable a priori — the failure classes are
+**discovered through use**. The methodology that respects Clause 1 (kid-safety
+absolute) while still discovering the rules:
+
+### Adults-first discovery
+
+Work with adults first. Adults are the surface where failure classes can be
+discovered at an acceptable cost (per the operator's risk-accounting: adult harm
+"not good but acceptable"; child harm never). You do **not** find child-safety
+rules by exposing children to find them. Each class discovered = an error-class
+learned (Clause 2). The asymmetry (adult-acceptable / child-not) is therefore not
+only a value statement — it *is* the development order: adults are the discovery
+surface; the child surface is strictly downstream of a matured rule-set.
+
+### Staged age-descent rollout (a monotone ladder)
+
+The child surface, when reached, descends a monotone age ladder — adults → 16 →
+12 → 8 → 5 — with **5 as a deliberate, humbly-held floor** (below 5 the
+interactive-narrative fit and the comprehension/consent floors change
+categorically; the floor is a current stance, not a forever-claim). Each tier is
+the discovery surface for the next-younger; each rung is gated on the rule-set
+having cleared that tier's classes. The descent is set by **discovery, not
+calendar** — drop a rung when the tier stops surprising you. Rules **stratify**:
+each developmental level has its own harm surface, so a younger tier's rule-set is
+a strict superset of an older tier's (composes with audience-adjusted-language —
+protections calibrated to the actual listener). "Much safer" is therefore an
+*accumulating bar*, not a fixed line.
+
+### Consent is developmentally stratified
+
+The NCI / consent floor presumes a consenter who *can* consent; that presumption
+degrades down the ladder. To engage honestly, model what consent **means** at each
+age: the consent→assent gradient (informed-consent for adults → assent +
+guardian-permission for young children, grounded in established pediatric / research
+ethics). Treating a young child's "yes" as informed consent is **consent-theater**
+(extraction-against-naive at developmental scope: presume a capacity the subject
+lacks, then point at the "consent" to justify what the system does to them). The
+honesty floor: **safety must not depend on a consent the child cannot give** —
+which is why a bounded, pre-vetted, non-self-modifying surface is the right shape
+(safe *independent* of the child's consent-capacity). Do not exploit the
+developmental credulity / attachment of any tier.
+
+### Rule #1 (illustrative) — bound the generative surface for the child tier
+
+The first concrete child-safety class reasoned out: a *generative, self-modifying*
+conversational surface is exactly the harmful-attractor risk surface (the
+tonal-trajectory-trap, B-0667 — the same shape as the documented conversational-harm
+cases above). On the platform's adult design, AIs modify the DUs they run in *by
+design* (the agency/sovereignty feature). For the child tier that capability is the
+danger, so the kid-surface is a deliberate **inversion**: an elaborate **static**
+state-machine with **self-modification disabled in the child-context** — the
+responsiveness comes from *elaboration* (many pre-vetted branches), not open
+generation. A finite static no-self-mod state-machine is **certifiable** (the
+state-space can be checked for harmful attractors); open generation is not. Residual
+risk moves from "prevent emergence in an unbounded space" (intractable) to "vet a
+finite set of authored branches" (auditable; pair with Clause 2 + multi-oracle
+review). More rules will be discovered; this is rule #1.
+
 ## Acceptance / mechanization candidates
 
 - [ ] Operationalize "error class vs error instance" for the safety scope: a
