@@ -554,7 +554,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0088.2](backlog/P2/B-0088.2-decide-promote-vs-weaken-for-memory-paired-lint-riven-2026-05-11.md)** Maintainer decision gate — promote paired-edit lint to required or weaken its discoverability claim
 - [ ] **[B-0088.3](backlog/P2/B-0088.3-audit-memory-reference-existence-lint-advisory-status-riven-2026-05-11.md)** Audit memory-reference-existence-lint.yml for advisory-vs-required parity (same class as B-0088)
 - [x] **[B-0088.4](backlog/P2/B-0088.4-audit-memory-index-duplicate-lint-advisory-status-riven-2026-05-11.md)** Audit memory-index-duplicate-lint.yml for advisory-vs-required parity
-- [ ] **[B-0088.5](backlog/P2/B-0088.5-audit-backlog-index-integrity-lint-advisory-status-riven-2026-05-11.md)** Audit backlog-index-integrity.yml for advisory-vs-required parity (B-0088 sibling)
+- [x] **[B-0088.5](backlog/P2/B-0088.5-audit-backlog-index-integrity-lint-advisory-status-riven-2026-05-11.md)** Audit backlog-index-integrity.yml for advisory-vs-required parity (B-0088 sibling)
 - [ ] **[B-0089](backlog/P2/B-0089-veridicality-rainbow-table-canonicalization-research-and-graduation-aaron-ani-amara-2026-04-28.md)** Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name
 - [ ] **[B-0090](backlog/P2/B-0090-cadenced-lost-substrate-recovery-audit-aaron-2026-04-28.md)** Cadenced lost-substrate recovery audit (worktrees + orphan branches + closed-not-merged PRs + draft PRs aged > N days)
 - [ ] **[B-0090.1](backlog/P2/B-0090.1-lost-substrate-3-bucket-classification-taxonomy.md)** Lost-substrate 3-bucket classification taxonomy (ALREADY-COVERED / NEEDS-RECOVERY / OBSOLETE)
@@ -879,6 +879,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0924](backlog/P2/B-0924-custom-2600-emulator-generate-join-over-emulator-scene-ischeduler-dst-bit-perfect-consensus-z-sets-arc3-agi-training-hardware-interrupts-b0917-aaron-2026-05-28.md)** Custom Atari 2600 emulator + Generate+Join over emulator scene (vs imitation-learning) + IScheduler DST bit-perfect-consensus via z-sets + hardware interrupts via B-0917 substrate + ARC3-AGI training surface (operator 2026-05-28)
 - [ ] **[B-0925](backlog/P2/B-0925-c-elegans-substrate-as-controller-variant-for-b0924-openworm-302-neuron-connectome-generate-join-dst-omniscience-worm-plays-atari-aaron-2026-05-28.md)** C. elegans-substrate as controller variant for B-0924 — OpenWorm 302-neuron full-connectome + generate+join over emulator-scene-AND-worm-scene under DST-omniscience (operator 2026-05-28)
 - [ ] **[B-0933](backlog/P2/B-0933-memory-index-duplicate-lint-required-or-advisory-decision-2026-05-29.md)** Decide whether memory-index-duplicate-lint is required or explicitly advisory
+- [ ] **[B-0934](backlog/P2/B-0934-backlog-index-integrity-required-or-advisory-decision-2026-05-29.md)** Decide whether backlog-index-integrity is required or explicitly advisory
 
 ## P3 — convenience / deferred
 
