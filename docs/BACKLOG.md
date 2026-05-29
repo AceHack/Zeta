@@ -81,8 +81,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0168.1](backlog/P1/B-0168.1-ani-review-on-brat-voice-framework.md)** Ani-review on the brat-voice enterprise translation framework (slice 1 of B-0168)
 - [x] **[B-0169](backlog/P1/B-0169-decision-archaeology-skill-aaron-2026-05-02.md)** Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors
 - [ ] **[B-0170](backlog/P1/B-0170-substrate-claim-checker-ts-tool-aaron-2026-05-03.md)** Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline (Otto 2026-05-03; drift instances (the verify-then-claim memo's body table is canonical) catalogued as empirical eval-set)
+- [ ] **[B-0170.1](backlog/P1/B-0170.1-semantic-equivalence-drift-checker.md)** Substrate-claim-checker - semantic-equivalence-drift checker
 - [ ] **[B-0171](backlog/P1/B-0171-openspec-catch-up-canonical-source-of-truth-aaron-2026-05-03.md)** OpenSpec catch-up — restore OpenSpec capabilities as canonical source-of-truth (Aaron 2026-05-03 architectural-debt naming; "if we deleted everything other than it [OpenSpec]")
 - [ ] **[B-0171.1](backlog/P1/B-0171.1-author-z-set-spec.md)** OpenSpec catch-up - author Z-Set Algebra spec
+- [ ] **[B-0171.2](backlog/P1/B-0171.2-author-tick-history-spec.md)** OpenSpec catch-up - author Tick-History Schema spec
 - [ ] **[B-0173](backlog/P1/B-0173-hook-authoring-for-skill-creation-contracts-aaron-2026-05-03.md)** Hook authoring for skill-creation contracts — pre/post-condition enforcement at skill-creation + commit + PR-creation time (Aaron 2026-05-03 rule 3b from skill-design memo)
 - [x] **[B-0181](backlog/P1/B-0181-fix-spinemergeinvariants-tla-counterexample-blocks-b1-ci-registration-2026-05-03.md)** Fix SpineMergeInvariants.tla counterexample (closed — Cascade downstream-room precondition + state constraint; B1 → A CI registration landed)
 - [x] **[B-0184](backlog/P1/B-0184-fix-spine-als-alloy-6-2-0-type-error-line-35-spec-bug-2026-05-03.md)** Fix Spine.als spec bug — Alloy 6.2.0 type-check failure at line 35 col 25 (sum-vs-all comprehension confusion) + check-vs-run-vs-fact semantic confusion
