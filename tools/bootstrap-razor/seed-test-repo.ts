@@ -58,6 +58,17 @@ interface GitTreeResponse {
   readonly truncated: boolean;
 }
 
+/**
+ * A read-only `GET` request — the seed flow's git-data READS carry no body, so
+ * (unlike the write builders' `{path, body}` shape) a read request is just its
+ * `path`. `gh api <path>` defaults to GET, so the network slice that follows runs
+ * `gh api <path>` and feeds the parsed JSON to the matching parser. This is the
+ * shape `buildGetTreeRequest` returns; future ref/commit read builders return it too.
+ */
+export interface GitReadRequest {
+  readonly path: string;
+}
+
 /** One desired seed path classified against the target repo's current tree. */
 type SeedFileAction = "unchanged" | "create" | "update";
 
@@ -351,6 +362,34 @@ export function diffSeedTree(
   const idempotent = entries.every((entry) => entry.action === "unchanged");
 
   return { entries, extraneous, idempotent };
+}
+
+/**
+ * Pure builder for the `GET /repos/{owner}/{repo}/git/trees/{treeSha}?recursive=1`
+ * read request — the REQUEST half of the read-side pair whose RESPONSE half is
+ * `parseGitTreeResponse` (the parser's own doc comment names this exact endpoint as
+ * its source). The seeding flow reads the target repo's tree this way to build the
+ * idempotency `existing` set: a future ref → commit read chain yields `treeSha` (the
+ * tree a commit points at), this request fetches that tree, and `parseGitTreeResponse`
+ * turns the response into the `{path, sha}` blobs `diffSeedTree` diffs against.
+ *
+ * `recursive=1` is LOAD-BEARING and the whole reason this is a builder, not an inline
+ * string at the call site: WITHOUT it GitHub returns only the tree's TOP-LEVEL entries
+ * (immediate children, with sub-directories as unexpanded `type: "tree"` rows), so a
+ * blob nested under any directory would be absent from the parsed set and mis-diff as a
+ * spurious "create" — exactly the duplicate-write `parseGitTreeResponse`'s `truncated`
+ * guard also protects against. WITH it GitHub walks the whole tree and lists every blob
+ * by full path, which is the only shape the path-keyed diff can consume. (Any truthy
+ * value enables recursion; `1` is the documented idiom.) The recursive tree is capped at
+ * 100,000 entries / 7 MB and sets `truncated: true` past that — the parser rejects a
+ * truncated response, so this request and that guard compose into a safe idempotency
+ * basis. Verified against docs.github.com/en/rest/git/trees, API version 2026-03-10:
+ * `GET /repos/{owner}/{repo}/git/trees/{tree_sha}`, `recursive` query parameter.
+ *
+ * Pure: operates on its three string arguments only; no gh, no network, no filesystem.
+ */
+export function buildGetTreeRequest(owner: string, repo: string, treeSha: string): GitReadRequest {
+  return { path: `repos/${owner}/${repo}/git/trees/${treeSha}?recursive=1` };
 }
 
 /**

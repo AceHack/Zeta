@@ -8,6 +8,7 @@ import {
   buildSeedBlobRequest,
   buildSeedCommitRequest,
   buildSeedRefUpdateRequest,
+  buildGetTreeRequest,
   buildSeedTreeRequest,
   computeSeedTree,
   diffSeedTree,
@@ -280,6 +281,44 @@ describe("diffSeedTree", () => {
 
   test("empty desired and empty target → vacuously idempotent", () => {
     expect(diffSeedTree([], [])).toEqual({ entries: [], extraneous: [], idempotent: true });
+  });
+});
+
+describe("buildGetTreeRequest", () => {
+  test("constructs the recursive git-trees read path", () => {
+    expect(buildGetTreeRequest("Lucent-Financial-Group", "zeta-recreation-experiment", "deadbeef")).toEqual({
+      path: "repos/Lucent-Financial-Group/zeta-recreation-experiment/git/trees/deadbeef?recursive=1",
+    });
+  });
+
+  test("recursive=1 is always present (load-bearing — full-tree blob listing, not top-level only)", () => {
+    // Without recursive=1 GitHub returns only top-level entries, so a nested blob
+    // would be absent and mis-diff as a spurious create. The builder pins it.
+    expect(buildGetTreeRequest("o", "r", "t").path).toContain("?recursive=1");
+  });
+
+  test("owner / repo / tree SHA flow verbatim into the path", () => {
+    const sha = "aa218f56b14c9653891f9e74264a383fa43fefbd";
+    expect(buildGetTreeRequest("o", "r", sha).path).toBe(`repos/o/r/git/trees/${sha}?recursive=1`);
+  });
+
+  test("path has no leading slash (gh api convention, matches the other builders)", () => {
+    // Sibling builders use bare `orgs/...` / `repos/...` paths for `gh api`; a leading
+    // slash would break the relative-path form. Pin it so this read request agrees.
+    expect(buildGetTreeRequest("o", "r", "t").path.startsWith("/")).toBe(false);
+  });
+
+  test("the built read path's response is what parseGitTreeResponse consumes (read-side pair)", () => {
+    // This request fetches the tree; parseGitTreeResponse parses the response. Assert the
+    // pair lines up: a response shaped per this endpoint parses into the diff's basis.
+    const req = buildGetTreeRequest("o", "r", "rootTreeSha");
+    expect(req.path).toContain("git/trees/rootTreeSha");
+    const existing = parseGitTreeResponse({
+      truncated: false,
+      tree: [{ path: "a.txt", type: "blob", sha: "aaa" }],
+    });
+    if (typeof existing === "string") throw new Error(existing);
+    expect(existing).toEqual([{ path: "a.txt", sha: "aaa" }]);
   });
 });
 
