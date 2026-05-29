@@ -89,7 +89,7 @@ describe("findLeakedFiles", () => {
       "c.md": "---\nprivate: true\n---\nalso leaked",
     };
     expect(
-      findLeakedFiles(["a.md", "b.md", "c.md"], (f) => contents[f]),
+      findLeakedFiles(["a.md", "b.md", "c.md"], (f) => contents[f]!),
     ).toEqual(["b.md", "c.md"]);
   });
 
