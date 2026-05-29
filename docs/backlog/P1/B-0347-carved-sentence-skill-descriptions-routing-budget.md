@@ -5,7 +5,7 @@ status: open
 title: "Carved-sentence skill descriptions — fit 200+ skills into routing budget"
 effort: M
 created: 2026-05-09
-last_updated: 2026-05-09
+last_updated: 2026-05-29
 depends_on: []
 classification: buildable-now
 decomposition: multi-child (re-decomp pass 1, smallest safe slice)
@@ -61,11 +61,20 @@ description: Elasticsearch / OpenSearch — shards, ILM,
 
 ## Acceptance criteria
 
-- [ ] All 200+ skills have description under 150 chars
-- [ ] `/doctor` reports 0 descriptions exceeding per-entry cap
-- [ ] `/doctor` reports 0 descriptions dropped
+- [x] All 200+ skills have description under 150 chars
+  — verified 2026-05-29: 257/257 ≤150 chars, single-line,
+  zero `Capability skill`/`Owns the`/`Defers to` boilerplate
+  (audit tool below).
+- [x] `/doctor` reports 0 descriptions exceeding per-entry cap
+  — mechanized by `tools/hygiene/audit-skill-description-length.ts`
+  (deterministic Rule-0 replica of the `/doctor` cap check;
+  CLI exits 1 on any over-cap/multiline/boilerplate description).
+- [x] `/doctor` reports 0 descriptions dropped
+  — follows from 0 over-cap; the structural fix is the durable
+  gate (descriptions can no longer silently regrow past the cap).
 - [ ] Routing quality verified: spot-check 10 skills by
   asking the router and confirming correct match
+  — still open (B-0347.4 router-verification sub-step).
 
 ## Immediate mitigation (done)
 
@@ -90,3 +99,34 @@ Split into 4 atomic children by skill category (re-decomp assumes prior grouping
 - B-0347.4: Carve remaining (governance, ops, math, etc.) + router verification — rest + tests
 
 Each child: one PR, carve only, run focused doctor check, no body changes.
+
+## Status (2026-05-29) — B-0347.4 audit-gate slice landed
+
+Substrate-drift discriminator (per `backlog-item-start-gate.md`
+Step 0): the bulk carving artifacts already shipped in the 20 days
+since this row was filed — all 257 skill descriptions are ≤150
+chars, single-line, boilerplate-free. The row was **in-progress,
+not pure drift**: acceptance #1/#2 had no *durable gate* locking
+the invariant in, so descriptions could silently regrow past the
+routing budget (the original failure mode).
+
+Landed `tools/hygiene/audit-skill-description-length.ts` +
+`.test.ts` — a deterministic Rule-0 gate that fails on any
+over-cap, multiline, or boilerplate description. Mechanizes
+acceptance #1-#3. CLI on live skills: `257 checked, 0 errors`.
+
+Authoring caught a `/m`-regex `$`-trap bug (matched only the first
+line of folded YAML values, blinding the check to multiline
+descriptions); fixed with a line-based parser + a regression test.
+
+Remaining (NOT in this slice):
+
+- **B-0347.4 router-verification** — spot-check 10 skills via the
+  router (acceptance #4); still open.
+- **CI wiring** — add a `.github/workflows/` lint that runs the
+  audit (precedent: `role-ref-current-state-surfaces-lint.yml`);
+  next bounded step.
+- **B-0347.1-.3 ≤120 tightening** — 127 descriptions sit in the
+  120-150 band (rule 1 *preferred* ≤120). Advisory (warnings, not
+  errors); optional carve-tighter pass, low priority since the
+  hard cap is met.
