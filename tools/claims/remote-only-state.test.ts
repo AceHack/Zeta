@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import {
+  classifyRemoteClaimCleanup,
   collectRemoteClaimState,
   parseClaimPaths,
   parseDurableTarget,
@@ -96,6 +97,7 @@ describe("collectRemoteClaimState", () => {
         gitKey(["ls-remote", "--heads", "origin", "claim/*"]),
         ok("abc123\trefs/heads/claim/task-remote-only\n"),
       ],
+      [gitKey(["merge-base", "--is-ancestor", "abc123", "origin/main"]), { status: 1, stdout: "", stderr: "" }],
       [gitKey(["show", "origin/claim/task-remote-only:docs/claims/task-remote-only.md"]), ok(claimBody)],
     ]);
     const runner = new FakeRunner(responses);
@@ -105,6 +107,7 @@ describe("collectRemoteClaimState", () => {
     expect(state.errors).toEqual([]);
     expect(state.claims).toHaveLength(1);
     expect(state.claims[0]?.ref.slug).toBe("task-remote-only");
+    expect(state.claims[0]?.cleanup.disposition).toBe("active");
     expect(state.claims[0]?.paths).toContain("tools/claims/remote-only-state.ts");
     expect(runner.calls.join("\n")).not.toContain("broadcast");
     expect(runner.calls.join("\n")).not.toContain("agent-heartbeats");
@@ -117,6 +120,7 @@ describe("collectRemoteClaimState", () => {
         gitKey(["ls-remote", "--heads", "origin", "claim/*"]),
         ok("abc123\trefs/heads/claim/task-remote-only\n"),
       ],
+      [gitKey(["merge-base", "--is-ancestor", "abc123", "origin/main"]), { status: 1, stdout: "", stderr: "" }],
       [gitKey(["show", "origin/claim/task-remote-only:docs/claims/task-remote-only.md"]), ok(claimBody)],
     ]);
     const runner = new FakeRunner(responses);
@@ -126,11 +130,13 @@ describe("collectRemoteClaimState", () => {
     expect(runner.callOptions[0]?.timeoutMs).toBe(1234);
     expect(runner.callOptions[1]?.timeoutMs).toBe(1234);
     expect(runner.callOptions[2]?.timeoutMs).toBeUndefined();
+    expect(runner.callOptions[3]?.timeoutMs).toBeUndefined();
   });
 
   test("records per-claim read failures without dropping the ref", () => {
     const responses = new Map<string, CommandResult>([
       [gitKey(["ls-remote", "--heads", "origin", "claim/*"]), ok("abc123\trefs/heads/claim/missing-file\n")],
+      [gitKey(["merge-base", "--is-ancestor", "abc123", "origin/main"]), { status: 1, stdout: "", stderr: "" }],
       [
         gitKey(["show", "origin/claim/missing-file:docs/claims/missing-file.md"]),
         { status: 128, stdout: "", stderr: "fatal: path not found" },
@@ -141,6 +147,31 @@ describe("collectRemoteClaimState", () => {
 
     expect(state.claims[0]?.ref.slug).toBe("missing-file");
     expect(state.claims[0]?.body).toBeNull();
+    expect(state.claims[0]?.cleanup.disposition).toBe("missing-claim-file");
     expect(state.errors[0]).toContain("claim/missing-file");
+  });
+
+  test("classifies merged claim heads as cleanup residue", () => {
+    const responses = new Map<string, CommandResult>([
+      [gitKey(["ls-remote", "--heads", "origin", "claim/*"]), ok("abc123\trefs/heads/claim/task-remote-only\n")],
+      [gitKey(["merge-base", "--is-ancestor", "abc123", "origin/main"]), ok("")],
+      [gitKey(["show", "origin/claim/task-remote-only:docs/claims/task-remote-only.md"]), ok(claimBody)],
+    ]);
+
+    const state = collectRemoteClaimState(new FakeRunner(responses), "/repo/Zeta", "origin", false);
+
+    expect(state.errors).toEqual([]);
+    expect(state.claims[0]?.cleanup).toMatchObject({
+      disposition: "merged-claim-residue",
+      mergedToMain: true,
+    });
+    expect(state.claims[0]?.cleanup.nextAction).toContain("release commit");
+  });
+
+  test("classifies unknown merge state without treating the claim as free", () => {
+    expect(classifyRemoteClaimCleanup(true, null)).toMatchObject({
+      disposition: "merge-state-unknown",
+      mergedToMain: null,
+    });
   });
 });

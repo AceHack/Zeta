@@ -70,15 +70,21 @@ It records a fresh-clone replay that fetched `origin/claim/*`, reconstructed
 active path signals from remote claim refs, and verified a late participant can
 choose a disjoint next packet without reading local broadcasts.
 
+Current stale-claim cleanup rule:
+`docs/trajectories/autonomous-loop-coordination/stale-claim-cleanup-rule-2026-05-29.md`
+
+It adds the bounded `active` / `merged-claim-residue` /
+`missing-claim-file` / `merge-state-unknown` classifier to
+`tools/claims/remote-only-state.ts` so quiet queues still check remote claim
+residue before treating paths as free.
+
 ## Recommended Next Action
 
-Draft the stale-claim cleanup rule for completed PRs, grounded in the claim
-protocol and the old active-window claims that still expose broad generated
-backlog-index path signals.
+Run the classifier against current `origin/claim/*` refs and use the output to
+pick the next non-overlapping hygiene cleanup or standing-query trigger packet.
 
 ## Next Child Packets
 
-- stale-claim cleanup rule for completed PRs, grounded in the claim protocol
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250
 - bounded parallel runway health receipt, grounded in B-0249
 

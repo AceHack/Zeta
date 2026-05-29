@@ -27,6 +27,7 @@ export interface RemoteClaim {
   body: string | null;
   paths: string[];
   durableTarget: string | null;
+  cleanup: RemoteClaimCleanup;
   error: string | null;
 }
 
@@ -34,6 +35,19 @@ export interface RemoteClaimState {
   remote: string;
   claims: RemoteClaim[];
   errors: string[];
+}
+
+export type RemoteClaimCleanupDisposition =
+  | "active"
+  | "merged-claim-residue"
+  | "missing-claim-file"
+  | "merge-state-unknown";
+
+export interface RemoteClaimCleanup {
+  disposition: RemoteClaimCleanupDisposition;
+  mergedToMain: boolean | null;
+  reason: string;
+  nextAction: string;
 }
 
 interface Args {
@@ -229,11 +243,70 @@ function claimPath(slug: string): string {
   return `docs/claims/${normalizeSlug(slug)}.md`;
 }
 
+export function classifyRemoteClaimCleanup(
+  claimFileAvailable: boolean,
+  mergedToMain: boolean | null,
+): RemoteClaimCleanup {
+  if (!claimFileAvailable) {
+    return {
+      disposition: "missing-claim-file",
+      mergedToMain,
+      reason: "remote claim branch exists but its expected docs/claims file is absent",
+      nextAction: "inspect branch history; retire the remote claim ref only after recording release evidence",
+    };
+  }
+
+  if (mergedToMain === true) {
+    return {
+      disposition: "merged-claim-residue",
+      mergedToMain,
+      reason: "remote claim branch head is already reachable from main while the claim file remains readable",
+      nextAction: "add a release commit or cleanup receipt before treating the path set as unowned",
+    };
+  }
+
+  if (mergedToMain === null) {
+    return {
+      disposition: "merge-state-unknown",
+      mergedToMain,
+      reason: "local git could not prove whether the remote claim head is reachable from main",
+      nextAction: "refresh remote refs and retry before force-releasing or overlapping this claim",
+    };
+  }
+
+  return {
+    disposition: "active",
+    mergedToMain,
+    reason: "remote claim branch head is not reachable from main",
+    nextAction: "treat the claim path set as owned until release, handoff, or documented stale force-release",
+  };
+}
+
+interface MergeState {
+  mergedToMain: boolean | null;
+  error: string | null;
+}
+
+function readMergeState(runner: CommandRunner, repoRoot: string, remote: string, ref: RemoteClaimRef): MergeState {
+  const result = git(runner, repoRoot, ["merge-base", "--is-ancestor", ref.sha, `${remote}/main`]);
+  if (result.status === 0) {
+    return { mergedToMain: true, error: null };
+  }
+  if (result.status === 1) {
+    return { mergedToMain: false, error: null };
+  }
+  return {
+    mergedToMain: null,
+    error: result.stderr || result.stdout || `could not classify merge state for ${ref.branch}`,
+  };
+}
+
 function readRemoteClaim(
   runner: CommandRunner,
   repoRoot: string,
   remote: string,
   ref: RemoteClaimRef,
+  mergedToMain: boolean | null,
 ): RemoteClaim {
   const path = claimPath(ref.slug);
   const result = git(runner, repoRoot, ["show", `${remote}/${ref.branch}:${path}`]);
@@ -244,6 +317,7 @@ function readRemoteClaim(
       body: null,
       paths: [],
       durableTarget: null,
+      cleanup: classifyRemoteClaimCleanup(false, mergedToMain),
       error: result.stderr || result.stdout || "claim file unavailable",
     };
   }
@@ -253,6 +327,7 @@ function readRemoteClaim(
     body: result.stdout,
     paths: parseClaimPaths(result.stdout),
     durableTarget: parseDurableTarget(result.stdout),
+    cleanup: classifyRemoteClaimCleanup(true, mergedToMain),
     error: null,
   };
 }
@@ -276,7 +351,13 @@ export function collectRemoteClaimState(
   const refs = parseRemoteClaimRefs(
     mustGit(runner, repoRoot, ["ls-remote", "--heads", remote, "claim/*"], { timeoutMs: gitNetworkTimeoutMs }),
   );
-  const claims = refs.map((ref) => readRemoteClaim(runner, repoRoot, remote, ref));
+  const claims = refs.map((ref) => {
+    const mergeState = readMergeState(runner, repoRoot, remote, ref);
+    if (mergeState.error) {
+      errors.push(`${ref.branch}: ${mergeState.error}`);
+    }
+    return readRemoteClaim(runner, repoRoot, remote, ref, mergeState.mergedToMain);
+  });
   for (const claim of claims) {
     if (claim.error) {
       errors.push(`${claim.ref.branch}: ${claim.error}`);
@@ -297,6 +378,8 @@ function printState(state: RemoteClaimState, json: boolean): void {
     if (claim.durableTarget) {
       process.stdout.write(`  target: ${claim.durableTarget}\n`);
     }
+    process.stdout.write(`  cleanup: ${claim.cleanup.disposition}\n`);
+    process.stdout.write(`  next: ${claim.cleanup.nextAction}\n`);
     for (const path of claim.paths) {
       process.stdout.write(`  path: ${path}\n`);
     }
