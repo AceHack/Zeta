@@ -17,6 +17,48 @@ factory shape.
 This packet is the replacement anchor. It keeps the concept, narrows the first
 landing, and makes future trajectory packets recursive and reviewable.
 
+## Trajectory vs Workstream — genus / species + focus capacity
+
+The factory already distinguishes these: `anti-infection/RESUME.md` self-describes
+as "not a workstream with a cadence" and refers to "those workstreams" it
+protects. Made explicit here (the human maintainer 2026-05-29):
+
+- **Trajectory = the genus.** Any tracked path through state-space over time —
+  including emergent arcs, *states* (`autonomous-loop-quiet-state`), *postures*
+  (`anti-infection`), and *disciplines* (`trajectory-drift-reporting`). A
+  trajectory can be unowned and uncadenced; it is descriptive. There can be many.
+- **Workstream = the species, and a current-focus status.** A trajectory the
+  operator is *actively powering* — owned, cadenced, deliverable-bearing.
+  Physics anchor: a workstream is a trajectory under *sustained thrust toward an
+  attractor*. Because thrust budget (operator + agent focus) is finite, only a
+  few trajectories can be workstreams at once — the rest *coast* (still tracked,
+  still moving, no active thrust). "Workstream" is therefore not a permanent
+  tag; it is the active-focus subset, capacity-/WIP-bounded. A coasting
+  trajectory becomes a workstream when thrust is applied; a workstream reverts to
+  a plain trajectory when focus moves on.
+
+Operationally: tag a RESUME.md `Type: workstream (current-focus)` only while it
+is in the active set; drop or mark it coasting when it leaves. The genus surface
+(`docs/trajectories/`) holds both; the workstream designation is a property of
+*now*, not of the trajectory's identity.
+
+Eventual encoding (design-stage): a trajectory's state is trackable as a
+**128-bit genetic-ID seed** (discrete, reversible via parser-combinator ↔
+generator-function; the human maintainer 2026-05-23) → **Clifford-space path** (continuous
+geometric home, eventual). Mirrors the three-lane glossary model's I8
+(discrete hash-lattice) / I9 (continuous embedding-manifold) split applied to
+trajectories.
+
+## Current Workstreams (active-focus set, 2026-05-29)
+
+The operator's three current cluster-bringup workstreams — surfaced as
+trajectories 2026-05-29 (previously head-only, which is how the third was nearly
+forgotten):
+
+- [`cluster-encryption-credential-substrate`](../cluster-encryption-credential-substrate/RESUME.md) — credential/secret security layer (B-0789 / B-0852 / B-0833 / B-0853)
+- [`usb-zflash-installer`](../usb-zflash-installer/RESUME.md) — USB NixOS installer + zflash flashing (zflash.ts / B-0844 / B-0831)
+- [`ts-workflow-engine-du-state-machine`](../ts-workflow-engine-du-state-machine/RESUME.md) — workflow-engine-as-skill, F# DU state-machine + Git append-only (agent-loop skill / B-0867 / B-0868 / B-0862)
+
 ## Current Rule
 
 A trajectory packet is a durable lane state file, not a giant branch.
@@ -111,3 +153,10 @@ atomic next actions.
   `docs/SAFE-AUTONOMOUS-ACTIONS.md`
 - `docs/trajectories/autonomous-backlog-pickup/RESUME.md`, grounded in B-0249
   and children B-0278 through B-0281
+- `docs/trajectories/cluster-encryption-credential-substrate/RESUME.md` —
+  workstream; grounded in B-0789 / B-0852 / B-0833 / B-0853 (2026-05-29)
+- `docs/trajectories/usb-zflash-installer/RESUME.md` — workstream; grounded in
+  `full-ai-cluster/tools/zflash.ts` + B-0844 / B-0831 / B-0792 (2026-05-29)
+- `docs/trajectories/ts-workflow-engine-du-state-machine/RESUME.md` —
+  workstream; grounded in `.claude/skills/agent-loop/` + B-0867 / B-0868 /
+  B-0862 (2026-05-29)
