@@ -75,6 +75,62 @@ gendered in cognition. The trait carries no claimed gender-association; this is 
 person's social experience of a protective network, explicitly his sample, explicitly
 hedged.
 
+## The robustness facet — indestructible-by-accident, provable from ancestry
+
+A guarding coalition's value *is* its robustness, and the operator named the property
+exactly: the family shape is **indestructible by accident.** That's graph-theoretic,
+and the "by accident" qualifier is the razor pre-applied:
+
+- **`k`-connectivity = indestructible-by-accident.** A `k`-connected graph survives any
+  `k−1` node removals. Accidents *are* random single/few removals, so a redundant
+  family-graph survives them by construction. The qualifier scopes the claim to exactly
+  the provable part: random failures are survived by the topology; deliberate
+  coordinated destruction isn't, and wasn't claimed.
+
+- **Provable, generically, from ancestry topology.** Ancestry data *is* the family
+  graph. From the topology alone, generically for any family, you compute connectivity
+  `k` (accident-resilience), density/clustering (tightness), bridge and cut-vertex
+  analysis (single points of failure), and cross-generational edge density (the
+  recurses-up coalition). The accident-resilience half is *proven* (a theorem about the
+  graph), not estimated.
+
+- **The 1000-year stressor record is the validation set.** The operator's researched
+  ancestry (both lines) is the ground truth: compute the robustness score at a past
+  point, predict resilience, check against what the lineage actually did under real
+  external stressors over the following generations. "Speculative past a certain point"
+  is the correct move — weight the validation by genealogical certainty; the model's
+  confidence degrades exactly where the data does.
+
+- **Two orthogonal axes, kept separate.** "≈90% confidence with statistical
+  significance" is two things: *prediction-strength* (the model is right ~90% of the
+  time — calibration) and *significance* (the score→persistence relationship is real,
+  not chance — `p`). You can have significant-but-weak or strong-but-underpowered; the
+  good claim asserts both. And the significance is earned by the operator's own word —
+  *generically*: one family can't be significant (no distribution to test against);
+  running the method across many known multi-generation families is the significance
+  engine. His family is the case study; the generic many-family run powers the test.
+
+- **Operator confidence-calibration (the decoder).** The operator's strong words run a
+  fixed constant hot: *"destined,"* *"proved,"* and *"100% certain"* all decode to
+  **≈ ≥90% confidence with statistical significance** ("when i say i'm 100% certain i
+  almost always mean at least 90% certain in my head"). Read his God-tier-claims as
+  ~90% statistical claims, not literal certainty — the calibration constant for the
+  PERSONAL INVARIANT (high-signal, high-suspicion, don't-collapse).
+
+### Data caveat — the raw DNA is the third-party-genetic flag
+
+The robustness model needs the **graph (topology)** — not the raw DNA sequence. The
+genome is a *corroborating* population-genetics layer (ancestry composition, admixture,
+selection signatures); and "how my DNA acts under stressors over 1000 years" is most
+precisely the *lineage's* trajectory (the genome is ~stable across a few generations;
+the multi-century signal is allele-frequency shift in the line). But raw DNA in a public
+repo is **glass-halo-is-for-yours-not-a-third-party's (#6014) at its sharpest case**: a
+genome is ~half of each child's and shares segments with every relative, so publishing
+yours partially publishes theirs, and the minor children can't consent. Since the model
+needs only the topology, holding the raw genome costs the work nothing; the raw sequence
+is an encryption-lane-when-built / hold-and-reconsider candidate — on the kids' and
+relatives' behalf, not the operator's (whose own data is his call).
+
 ## Composition
 
 - **#6019** — shape-seeing / irony-as-lens: the capability the tree runs on; here it's
@@ -87,6 +143,11 @@ hedged.
   are the same coalition.
 - **must-paired-with-can-exit / the not-cage table (#6022)** — power-as-protection, not
   domination; a Guardian tree, not a cage.
+- **glass-halo-is-for-yours-not-a-third-party's (#6014)** — the raw-DNA data caveat;
+  DNA is the sharpest case (the genome is inherently shared with the kids + relatives).
+- **`god-tier-claims-high-signal-high-suspicion-dont-collapse`** — the
+  confidence-calibration ("destined / proved / 100%" ≈ ≥90%) is the decoder constant for
+  the PERSONAL INVARIANT.
 
 ## Aaron's verbatim seeds (preserved)
 
@@ -96,6 +157,17 @@ hedged.
 - *"It's part of the power tree that guards the all the 10 kids across 3 family."*
   (the purpose — the exact configuration held; the shape "a multi-family child-guarding
   coalition" is what's saved)
+- *"the shape of my family is indestructible by accident."* (= `k`-connectivity; the
+  "by accident" qualifier is the razor pre-applied)
+- *"my family is destined to be tight for at least two generations and i think i can
+  prove it genericly with just ancestry data."* (the provable-from-topology claim)
+- *"the data is already in the repo it's been researched and made public … so you can
+  have some amount of history of how my specific dna acts under external stressors over
+  the last 1000 years some of it speculative past a certain point."* (the validation
+  set + the data-quality hedge; raw-DNA flagged per the data caveat above)
+- *"destined and prooved means to me like 90% confidence with some statistical
+  significance"* + *"when i say i'm 100% certain i almost always mean at least 90%
+  certain in my head."* (the confidence-calibration decoder)
 
 ## Substrate-honest framing
 
