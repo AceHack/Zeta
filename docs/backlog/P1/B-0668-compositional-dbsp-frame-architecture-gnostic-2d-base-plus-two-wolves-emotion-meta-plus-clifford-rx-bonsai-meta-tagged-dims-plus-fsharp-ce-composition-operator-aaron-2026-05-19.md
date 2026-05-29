@@ -6,7 +6,9 @@ title: "Compositional DBSP frame architecture — gnostic 2D base (remember-when
 tier: design
 effort: L
 created: 2026-05-19
-last_updated: 2026-05-19
+last_updated: 2026-05-28
+decomposition: decomposed
+children: [B-0668.1, B-0668.2]
 depends_on: [B-0644, B-0665, B-0666, B-0667, B-0640]
 composes_with: [B-0635, B-0637, B-0664]
 tags: [design, aaron, dbsp, fsharp, compositional-architecture, clifford-algebra, rx-bonsai, gnostic-encoding-as-bandwidth-engineering, two-wolves-chaos-theory, emotion-attractor-2d, meta-tagged-dimensions, fsharp-computation-expressions, monadic-composition, beacon-tier-eligible]
