@@ -7,6 +7,7 @@ PoC scaffold for the workflow engine v1 spec ([B-0867](../../docs/backlog/P1/B-0
 **PoC**: declarative TS type substrate + CLI dispatcher + invariant tests. Implements:
 
 - Universal action grammar atom (`Action` interface) with `ActionClass` discriminator
+- Minimal v0 action grammar parser/composer (`grammar.ts`) for B-0867.3
 - State machine atom (`State` interface) with `TickCyclePattern` variant set
 - Four-corner ownership type (`FourCornerOwnership<TIn, TOut, TOutFeedback, TInFeedback>`) per asymmetric-authorship rule
 - Otto's 5 modifications baked in as type-level invariants enforced by `validateCatalog` + `validateStateOtto5Mods`
@@ -15,7 +16,7 @@ PoC scaffold for the workflow engine v1 spec ([B-0867](../../docs/backlog/P1/B-0
 **NOT in PoC** (deferred to operator-authorized follow-up work):
 
 - State persistence — B-0867.2 (TS `state-append.ts` writer; commits state transitions to dedicated git path)
-- Real action grammar parser/composer — B-0867.3
+- Rich action grammar parser/composer — B-0867.3 beyond the v0 line grammar
 - F# 4-corner monad CE builder — B-0867.4 (hot/cold/push/pull dispatch)
 - Full agent-loop runtime — B-0867.5 phase 2 (Mika-spec integration; execute → cycle-step → CYOA OR Mika's latest pattern)
 - E voice → website surface — B-0867.10
@@ -80,6 +81,8 @@ bun test tools/workflow-engine/
 ```
 
 Invariants checked: unique action ids, Mod 2 satisfied (grammar-extension in catalog), every state satisfies Mod 1 (escape-hatch present), unknown-action references caught, Mod 4 satisfied (every action declares gate), non-empty feedbackVariants (asymmetric-authorship), seed states use discriminated-union-surface per Mika's direction.
+
+`grammar.test.ts` also verifies the v0 B-0867.3 line grammar round-trips seed actions and rejects ambiguous delimiter use.
 
 ## Composes-with substrate
 
