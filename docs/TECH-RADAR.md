@@ -10,6 +10,34 @@ ThoughtWorks-style radar for the technologies / research / papers
 - **Assess** — researched, worth revisiting
 - **Hold** — explicitly declined (with reason)
 
+## The center — the essential core (everything else is scored relative to it)
+
+The radar has a **center**: the irreducible substrate that builds everything (operator
+2026-05-29 minimality cut). Everything else here is **optional** — it earns its ring by
+feature value, ecosystem-interop, or pulling-stuck-humans-along, not by necessity.
+
+**Center — the essential core (3 primitives):**
+
+| Primitive | Why essential |
+|---|---|
+| **gitnative** | git = the immutable, lightlike, ray-traceable event store / persistence-bridge (DBSP-semantics + the shared ontology live here) |
+| **TypeScript** | cross-platform DST (Rule-0); the DUs, the tools, the agent loops |
+| **agent-harness loops** | the autonomous observe→choose loop |
+
+Those three build the whole grand-unification (DBSP semantics over git, the DUs, the
+shared ontology-stream, the lightlike). Grounded in the beacon synthesis
+([`docs/research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md`](research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md)).
+
+**Two scoring axes (everything is scored):**
+
+1. **Ring (maturity)** — Adopt / Trial / Assess / Hold (the existing per-entry status).
+2. **Distance-from-center (essentiality)** — *essential core* (the 3 primitives) vs
+   *optional* (features / ecosystem-interop / human-bridging). Most existing entries
+   (F#, Reaqtor/Bonsai, DBSP libraries, .NET, etc.) are **optional-by-essentiality**
+   even when **Adopt-by-maturity** — interop / feature / human-bridge layers, not the
+   irreducible core. Distance-from-center is the dual-market dial at the tech-stack
+   level: center = sovereign core; outer = leash/interop for the existing world.
+
 ## Rings
 
 ### Techniques
