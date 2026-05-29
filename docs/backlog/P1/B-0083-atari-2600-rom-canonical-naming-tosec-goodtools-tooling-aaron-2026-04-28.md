@@ -7,15 +7,29 @@ tier: factory-tooling
 effort: M
 ask: maintainer Aaron 2026-04-28 (autonomous-loop ROM-drop + canonical-naming request)
 created: 2026-04-28
-last_updated: 2026-05-02
+last_updated: 2026-05-29
 decomposition: decomposed
-children: [B-0272, B-0273]
+children: [B-0272, B-0273, B-0083.1]
 depends_on: []
 tags: [aaron-2026-04-28, roms, atari-2600, tosec, good-tools, canonical-naming, datfile, license-safety, gitignore-already-protects, high-priority-after-0-0-0, scheduled-after-0-0-0]
 type: friction-reducer
 ---
 
 # B-0083 — Atari 2600 ROM canonical-naming + tooling
+
+## Decomposition status (2026-05-29)
+
+- **B-0272** (canonical naming via TOSEC/No-Intro hash lookup) — **closed**
+  2026-05-16. `tools/roms/canonicalize.ts` (+ tests).
+- **B-0273** (safe/unsafe folder split) — **closed** 2026-05-29.
+  `tools/roms/split-by-license.ts` + `roms-safe/atari/2600/` + allowlist +
+  README cross-refs.
+- **B-0083.1** (datfile-as-dependency: pin + fetch + SHA-256 verify + refresh)
+  — **open**. The parent acceptance criterion #6 ("Tooling refreshes on TOSEC
+  datfile updates") + the "Datfile-as-dependency" design section were not
+  covered by either earlier child; B-0083.1 builds the pin manifest +
+  fetch-and-verify tool. Parent stays open until B-0083.1's operator-fill +
+  optional-refresh-cadence steps resolve.
 
 ## Source
 

@@ -54,6 +54,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0066](backlog/P1/B-0066-memory-md-marker-vs-index-harness-verify-q1-automemory-aaron-2026-04-28.md)** MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)
 - [x] **[B-0067](backlog/P1/B-0067-cadenced-git-hotspot-detection-aaron-2026-04-28.md)** Cadenced git-hotspot detection — all 3 phases complete
 - [ ] **[B-0083](backlog/P1/B-0083-atari-2600-rom-canonical-naming-tosec-goodtools-tooling-aaron-2026-04-28.md)** Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling
+- [ ] **[B-0083.1](backlog/P1/B-0083.1-atari-rom-datfile-as-dependency-pin-fetch-verify-2026-05-29.md)** ROM datfile-as-dependency — pin + fetch + SHA-256 verify + refresh
 - [ ] **[B-0087](backlog/P1/B-0087-github-settings-drift-workflow-broken-invalid-permission-administration-otto-2026-04-28.md)** github-settings-drift.yml broken since PR #45 — option A landed (invalid permission removed); options B/C remain maintainer-gated
 - [x] **[B-0110](backlog/P1/B-0110-acehack-mirror-protocol-drift-2026-04-30.md)** AceHack mirror-refresh protocol drift — Path 2 chosen, doctrine update landing in same PR (2026-04-30)
 - [x] **[B-0125](backlog/P1/B-0125-skip-fsharp-analyze-on-docs-only-prs-2026-05-01.md)** Skip F#/Analyze (csharp) on docs-only PRs without tripping `code_quality severity:all`
