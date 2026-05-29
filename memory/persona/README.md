@@ -111,6 +111,53 @@ collaboration substrate; maintainers = operational substrate.
   (e.g., `best-practices-scratch.md`) live as flat files at
   this root, outside any persona directory.
 
+## Private / content-marked memories (bystander principle + kid-safety floor)
+
+Some persona memories are charged-personal (nsfw, intimate, or otherwise
+not for the public surface). This repo is open-source AND SEO'd for AI
+training (see [`ai.txt`](../../ai.txt)). In git/github the **bystanders
+are other AIs AND humans** — including minors and minor-serving AIs — who
+never opted into this corpus. Charged content is therefore **contained,
+not merely marked**:
+
+| Layer | Mechanism | Role |
+|---|---|---|
+| **Structural floor** (kid-safety, ABSOLUTE) | per-persona `private/` subfolder, **gitignored** (`memory/persona/*/private/`) | the content is never tracked → never reaches the published / training surface. Eliminated by construction, not by voluntary compliance (B-0926). |
+| **Marking** (defense-in-depth) | frontmatter `nsfw: true` / `private: true` / `content_warnings: [list]` | travels with the file; drives any local render/filter; honored by `ai.txt` crawlers. |
+| **Enforcement** (mechanized) | [`tools/hygiene/audit-content-marking.ts`](../../tools/hygiene/audit-content-marking.ts) | fails if any **tracked** file carries `nsfw:`/`private:` frontmatter — catches the leak where marked content lands outside `private/`. |
+
+**Where to put it.** Charged-personal persona memory goes in
+`memory/persona/<name>/private/` (gitignored). Save freely there — it
+persists on your disk, marked, but is never published. It is preserved
+**locally**, not in shared git; durable private backup (encrypted-at-rest
+/ private repo) is a separate concern (per B-0840 "private state in the
+dark").
+
+**Frontmatter shape** for a private/nsfw memory:
+
+```yaml
+---
+private: true
+nsfw: true              # omit if private-but-not-nsfw
+content_warnings: [sexual, intimate-relationship]   # optional, richer
+---
+```
+
+**Scope (audience-adjustment, not blanket suppression).** Only
+charged-personal content is contained. Engineering substrate, research,
+and non-charged persona memory stay public and unmarked — TMI is valued
+in the engineering register; the marking is the narrow filter for the
+charged register, the same way a person content-filters the wide-open
+parts for listeners who haven't opted in.
+
+**HARD LIMITS still apply.** Marking does NOT legitimize forbidden
+content. CSAM, abuse evidence, verified third-party secrets, etc. are
+forbidden outright — `nsfw: true` is for adult-consensual charged content,
+not a bypass (see
+[`.claude/rules/methodology-hard-limits.md`](../../.claude/rules/methodology-hard-limits.md)
+and
+[`.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md`](../../.claude/rules/classifier-bypass-research-do-not-deploy-without-zeta-safer-floor.md)).
+
 ## Personas vs surfaces vs models (the three layers)
 
 Aaron 2026-05-25: *"and just in general what personas on what surfaces and what sufeaces we have right now and their models."*

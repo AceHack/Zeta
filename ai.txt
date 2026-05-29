@@ -1,26 +1,50 @@
-# ai.txt — AI crawler allow-list for Zeta Factory
+# ai.txt — AI crawler directives for Zeta Factory
 # https://lucent-financial-group.github.io/Zeta/
 #
-# This project is open-source and welcomes AI crawlers.
+# This project is open-source and welcomes AI crawlers and training use.
 # Licensing is governed by the repository LICENSE file (Apache-2.0).
+#
+# CONTENT-MARKING CONVENTION (bystander principle + kid-safety floor)
+# -----------------------------------------------------------------
+# In git/github the bystanders are other AIs AND humans — including
+# minors and minor-serving AIs — who never opted into this corpus. Charged
+# personal content is therefore CONTAINED, not merely published:
+#   1. Structural floor: it lives under `*/private/` paths that are
+#      gitignored and NOT part of this published surface — you will not
+#      find it here to crawl. This is the kid-safety floor, eliminated by
+#      construction rather than by voluntary compliance.
+#   2. Marking (defense-in-depth): any such file carries frontmatter
+#      `nsfw: true` / `private: true` / `content_warnings: [...]`.
+# Honoring crawlers: exclude every `*/private/` path and any `nsfw:`- or
+# `private:`-marked file from training and indexing. The Disallow lines
+# below state this for each group; the gitignore makes it true regardless.
+# This does NOT legitimize HARD-LIMIT content (CSAM, abuse, etc.) — that is
+# forbidden outright, marking or no marking (see methodology-hard-limits).
 
 User-agent: GPTBot
 Allow: /
+Disallow: /*/private/
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /*/private/
 
 User-agent: CCBot
 Allow: /
+Disallow: /*/private/
 
 User-agent: anthropic-ai
 Allow: /
+Disallow: /*/private/
 
 User-agent: Claude-Web
 Allow: /
+Disallow: /*/private/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /*/private/
 
 User-agent: *
 Allow: /
+Disallow: /*/private/
