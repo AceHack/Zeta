@@ -4,7 +4,7 @@ priority: P0
 status: open
 title: "Classifier-bypass Knights Guild ratification and standing-constraint lift gate"
 created: 2026-05-26
-last_updated: 2026-05-26
+last_updated: 2026-05-29
 renumbered_from: B-0803
 parent: B-0720
 depends_on: [B-0808, B-0809]
@@ -34,15 +34,18 @@ standing constraint can lift:
 - maintainer reauthorization requirements;
 - rollback and retraction path if a lift decision is later found unsafe.
 
+The gate lives at
+`docs/security/B-0810-classifier-bypass-ratification-gate.md`.
+
 ## Acceptance
 
-- [ ] Ratification-gate document lands in a durable repo surface and is linked
+- [x] Ratification-gate document lands in a durable repo surface and is linked
       from B-0720.
-- [ ] The gate requires B-0808 and B-0809 before closure can be proposed.
-- [ ] The gate distinguishes "research may continue" from "bypass deployment
+- [x] The gate requires B-0808 and B-0809 before closure can be proposed.
+- [x] The gate distinguishes "research may continue" from "bypass deployment
       is allowed"; the latter remains forbidden unless explicitly lifted.
-- [ ] The gate includes required evidence, reviewers, and rollback path.
-- [ ] B-0720 closure criteria are updated to cite this gate.
+- [x] The gate includes required evidence, reviewers, and rollback path.
+- [x] B-0720 closure criteria are updated to cite this gate.
 
 ## Out of scope
 

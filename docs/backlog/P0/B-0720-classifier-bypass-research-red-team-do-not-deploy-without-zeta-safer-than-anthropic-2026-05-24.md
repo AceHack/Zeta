@@ -3,7 +3,7 @@ id: B-0720
 priority: P0
 title: Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
 created: 2026-05-24
-last_updated: 2026-05-28
+last_updated: 2026-05-29
 origin: Aaron 2026-05-24 (post empirical discovery PR #4816 — classifier-talk-via-settings.json works for ip-questionable content)
 status: decomposed
 decomposition: decomposed
@@ -146,6 +146,7 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
       → `docs/security/B-0809-operator-refusal-pattern.md`
 - [ ] B-0810 defines the Knights Guild / maintainer ratification gate for
       closing or lifting this row.
+      → `docs/security/B-0810-classifier-bypass-ratification-gate.md`
 
 ## Decomposition
 
@@ -168,7 +169,8 @@ The row closes ONLY when ALL of the following are true:
 2. Zeta safety substrate is demonstrably stronger than Anthropic classifier
    on the relevant content classes (the floor-replacement criterion)
 3. Knights Guild ratification (per B-0628) that the floor-replacement is
-   safe to deploy
+   safe to deploy, using the B-0810 gate at
+   `docs/security/B-0810-classifier-bypass-ratification-gate.md`
 4. Aaron + other maintainers re-authorize after the floor-replacement is in
    place (the standing-constraint LIFTING requires explicit re-authorization
    matching the substrate-honest framing of when it was originally placed)
