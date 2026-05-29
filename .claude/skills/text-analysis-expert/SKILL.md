@@ -1,6 +1,6 @@
 ---
 name: text-analysis-expert
-description: Text analysis lexical pipeline — tokenisation, stemming/lemmatisation, NER, POS tagging, dependency parse, Unicode segmentation, language detection.
+description: Text analysis — tokenisation, stemming/lemmatisation, NER, POS tagging, dependency parse, language detection.
 ---
 
 # Text-Analysis Expert — the Lexical Pipeline

@@ -1,6 +1,6 @@
 ---
 name: time-series-database-expert
-description: Time-series databases — InfluxDB, TimescaleDB, QuestDB, Apache IoTDB; time-ordered storage, downsampling, retention policies, continuous aggregates.
+description: Time-series databases — InfluxDB, TimescaleDB, QuestDB, IoTDB; downsampling, retention, continuous aggregates.
 ---
 
 # Time-Series Database Expert — Timestamped Metrics

@@ -1,6 +1,6 @@
 ---
 name: metrics-expert
-description: Metrics pillar — Prometheus, OpenMetrics, counter/gauge/histogram, cardinality, RED/USE/golden-signals, exemplars, SLI contracts, long-term storage.
+description: Metrics — Prometheus, OpenMetrics, counter/gauge/histogram, cardinality, RED/USE signals, SLI, exemplars.
 ---
 
 # Metrics Expert — The Numeric Time-Series Pillar

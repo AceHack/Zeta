@@ -1,6 +1,6 @@
 ---
 name: text-classification-expert
-description: Text classification / NLP classifiers — feature extraction, TF-IDF/BERT embeddings, fine-tuning, multi-label, zero-shot, eval metrics (F1, AUC-ROC).
+description: Text classification — TF-IDF/BERT embeddings, fine-tuning, multi-label, zero-shot, F1/AUC-ROC eval.
 ---
 
 # Text Classification Expert — Label Assignment at Document Scale

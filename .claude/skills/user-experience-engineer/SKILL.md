@@ -1,6 +1,6 @@
 ---
 name: user-experience-engineer
-description: First-10-minutes DX auditor — NuGet metadata, README onboarding, API discoverability, error messages, samples; library consumer friction reduction.
+description: First-10-min library-consumer UX audit — NuGet metadata, README, API discoverability, error messages, samples.
 ---
 
 # User Experience Engineer — Procedure
