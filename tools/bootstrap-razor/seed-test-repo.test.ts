@@ -15,6 +15,7 @@ import {
   gitBlobSha,
   parseCreateRepoResponse,
   parseGitTreeResponse,
+  parseSeedBlobResponse,
   parseSeedManifest,
   resolveSeedFiles,
   seedCommitMessage,
@@ -276,6 +277,55 @@ describe("buildSeedBlobRequest", () => {
 
   test("encoding is always the base64 literal", () => {
     expect(buildSeedBlobRequest(Buffer.from("x", "utf8")).encoding).toBe("base64");
+  });
+});
+
+describe("parseSeedBlobResponse", () => {
+  // A trimmed-but-realistic POST /repos/{owner}/{repo}/git/blobs (201) response: the one
+  // field the seeder reads (sha), plus the `url` it ignores (proves selective reading).
+  // SHA is the content-addressable identity gitBlobSha predicts for the same bytes.
+  const created = {
+    url: "https://api.github.com/repos/Lucent-Financial-Group/zeta-recreation-experiment/git/blobs/3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15",
+    sha: "3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15",
+  };
+
+  test("extracts the sha, ignoring the url", () => {
+    expect(parseSeedBlobResponse(created)).toEqual({ sha: "3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15" });
+  });
+
+  test("the sha is what buildSeedTreeRequest's entries reference", () => {
+    const info = parseSeedBlobResponse(created);
+    if (typeof info === "string") throw new Error(`expected info, got refusal: ${info}`);
+    // Each tree entry carries the uploaded blob's SHA; this parser is where it comes from.
+    expect(info.sha).toBe("3a0f86fb8db8eea7ccbb9a95f325ddbedfb25e15");
+  });
+
+  test("success is a {sha} object, not a bare string (disambiguates the error channel)", () => {
+    // A bare-string success would collide with the error-string return; the object wrapper
+    // makes `typeof result === "string"` mean "error" unambiguously.
+    expect(typeof parseSeedBlobResponse(created)).toBe("object");
+  });
+
+  test("non-object responses are refused (null, array, scalar)", () => {
+    expect(typeof parseSeedBlobResponse(null)).toBe("string");
+    expect(typeof parseSeedBlobResponse([created])).toBe("string");
+    expect(typeof parseSeedBlobResponse("3a0f86f")).toBe("string");
+    expect(typeof parseSeedBlobResponse(42)).toBe("string");
+  });
+
+  test("missing string sha is refused (tree entry would reference nothing)", () => {
+    const { sha, ...rest } = created;
+    expect(parseSeedBlobResponse(rest)).toContain("sha");
+  });
+
+  test("a non-string sha of the right name is still refused", () => {
+    expect(typeof parseSeedBlobResponse({ ...created, sha: 12345 })).toBe("string");
+  });
+
+  test("type-checks only — any string sha is accepted verbatim (no SHA-format validation)", () => {
+    // Same restraint as parseCreateRepoResponse (which never format-checks its URLs):
+    // a malformed SHA surfaces as a 422 at the tree-create call, not here.
+    expect(parseSeedBlobResponse({ sha: "not-a-real-sha" })).toEqual({ sha: "not-a-real-sha" });
   });
 });
 

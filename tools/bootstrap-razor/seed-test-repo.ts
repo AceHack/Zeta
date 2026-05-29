@@ -559,6 +559,42 @@ export function buildSeedBlobRequest(content: Uint8Array): GitBlobRequest {
 }
 
 /**
+ * Pure parser: the read-side pair of `buildSeedBlobRequest`, the mirror of
+ * `parseCreateRepoResponse` at the FIRST git-data write step. Turns GitHub's
+ * `POST /repos/{owner}/{repo}/git/blobs` (201) response — `{ "url": "...", "sha": "..." }`
+ * (verified against docs.github.com/en/rest/git/blobs, API version 2026-03-10) — into
+ * the one field the seeding flow consumes: the blob `sha`. That SHA is the same
+ * content-addressable identity `gitBlobSha` already predicts for the same bytes
+ * (`buildSeedBlobRequest`'s doc comment), so the flow does not need it to LEARN the
+ * SHA — it needs it to reference each uploaded blob in `buildSeedTreeRequest`'s tree
+ * entries, and (a future verify slice) to confirm the server's SHA matches the
+ * prediction, catching any encoding/corruption bug before the tree is assembled.
+ *
+ * Returns `{ sha }` on success, or an error string (same `T | string` convention as
+ * `parseCreateRepoResponse` / `parseGitTreeResponse`) when the response is unusable.
+ * The success type is the single-field object `{ sha }` rather than a bare string so
+ * the `typeof result === "string"` test means "error" unambiguously — a bare-string
+ * success would collide with the error channel. Type-check only, no SHA-format
+ * validation (same restraint as `parseCreateRepoResponse`, which never format-checks
+ * its URLs): a malformed SHA would surface as a 422 at the tree-create call, not here.
+ *
+ * Refusals:
+ *   - not an object (null, array, scalar)  → malformed
+ *   - `sha` missing or non-string          → malformed (a missing SHA leaves the tree
+ *     entry with nothing to reference; the seed cannot proceed)
+ *
+ * Pure: no network, no gh, no filesystem; operates only on the already-parsed JSON value.
+ */
+export function parseSeedBlobResponse(response: unknown): { readonly sha: string } | string {
+  if (typeof response !== "object" || response === null || Array.isArray(response)) {
+    return "blob-create response is not an object";
+  }
+  const { sha } = response as Record<string, unknown>;
+  if (typeof sha !== "string") return "blob-create response missing string `sha`";
+  return { sha };
+}
+
+/**
  * Pure write-side bridge — the mirror of `parseGitTreeResponse`. Where the parser
  * turns the target repo's git tree INTO the diff's `existing` input, this turns the
  * diff's verdict INTO the `tree` array a `POST /git/trees` call submits to write the
