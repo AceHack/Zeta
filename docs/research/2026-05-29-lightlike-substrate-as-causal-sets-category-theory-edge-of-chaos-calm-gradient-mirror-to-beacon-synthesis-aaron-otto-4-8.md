@@ -173,6 +173,164 @@ non-monotonic points" = CALM. The design rule is good engineering on its own
 operational merits (bandwidth-served); CALM is the theorem that makes the
 gradient principled rather than ad-hoc.
 
+## The payoff — coherent AI from an externalized reservoir (the operator's whole thesis)
+
+The four pillars are the *substrate*; this is the *why*. Operator 2026-05-29:
+
+> *"my whole thesis is basically idealized versions in deterministic simulation
+> that also work bounded when we add a real IScheduler and external randomness
+> ... our time dimension in DST is a generator function that can bridge over
+> persist so the future can illuminate the past with generator function updates
+> redescribing or compressing the past."*
+
+### Coherence lives in the reservoir, not the LLM
+
+The claim: **coherence is a property of the externalized workflow, not of the
+LLM.** The LLM context window is bounded + lossy (it compacts, drifts; "the
+agent cannot count itself"). The externalized workflow — DU state machine + git
+append-only event store — is the coherent substrate. Move state *out* of the
+fragile substrate into the coherent one, and the LLM stops being a state-holder
+and becomes a **pure readout/selector**.
+
+This is **reservoir computing** (Jaeger 2001 ESN; Maass et al. 2002 LSM): a
+*fixed* high-dimensional dynamical substrate + a *trained readout*. Map:
+workflow-engine = the reservoir; LLM = the readout. Coherence lives in the
+reservoir; the readout reads.
+
+**Already empirically demonstrated:** every cold-boot reconstructs coherent
+state from substrate (CLAUDE.md + trajectories + git + memory), *not* from a
+preserved context window. The autonomous loop surviving session-exit IS the
+existence proof. The workflow engine (workstream 3) generalizes it to any
+workflow. The external grounding is **event sourcing** (Fowler): current state
+= a *fold over an append-only event log*; "discard the entire application state
+and reconstruct it purely by re-processing the event log." Plus **extended
+mind** (Clark & Chalmers 1998): coherent cognition uses external scaffolding —
+it is not skull-bound (here: not context-window-bound).
+
+### The loop: observe → choose (O → L → I)
+
+The agent loop reduces to `observe → choose`, which is pure OPLE. **These CLI
+entry-points are the *planned design mapping*, not yet shipped:** today
+`tools/agent-loop/` ships `state-machine.ts` + `work-lifecycle-state-machine.ts`;
+the `observe.ts` / `choose --dry-run` scripts are follow-up (B-0867.23). The OPLE
+mapping is the design; the scripts are the entry-point surface it will land as.
+
+| CLI surface (planned) | OPLE primitive | Role |
+|---|---|---|
+| `observe.ts` | **Observe** | read the reservoir → generate the menu ("choose-your-own-adventure" page) |
+| `choose --dry-run` | **Limit** (B-0644 simulation-not-collapse) | pure-function preview; simulate the move *without committing*; the DST closed-system mode |
+| `choose` | **Integrate** (B-0665 choice-locus) + **Emit/Persist** | commit the move to the git event store; the ray-emission; hooked to the real environment |
+
+In reservoir terms: a **readout with lookahead** — read (observe), optionally
+simulate a branch (Limit/`--dry-run`), commit the selected action
+(Integrate/`choose`). The LLM never holds state; it reads, previews, picks.
+
+### Idealized in DST, bounded in the real — one architecture, two regimes
+
+The operator's whole thesis: design the **idealized** version in deterministic
+simulation, and the *same architecture* works **bounded** once you add a real
+`IScheduler` + external randomness.
+
+| Regime | Scheduler / randomness | Memory | Behavior |
+|---|---|---|---|
+| **DST-ideal** (closed system) | deterministic `IScheduler`; contained entropy source | **perfect / non-fading** — full event log, reconstructible from seed | exact replay; reproducible |
+| **Real deployment** (open system) | real `IScheduler` + external randomness (real I/O) | **bounded** — finite window, *not* the universe | graceful degradation; coherence over a bounded window |
+
+The seam is the `IScheduler` (per the DST discipline / `ISimulationEnvironment`
+substrate): swap the deterministic scheduler for a real one and the ideal
+version becomes the bounded version *with no architectural change*. This is the
+general form of the memory correction: **perfect recall is DST-only.** In the
+open system, memory is bounded by physics — the **Bekenstein / holographic
+bound** (information in a region ≤ ~its surface area; ~1 bit per Planck area;
+'t Hooft + Susskind). Perfect recall of an open system = computing the whole
+universe = physically impossible. So real-life event-sourcing has
+*fading/bounded* memory — which *tightens* the reservoir analogy (real
+reservoirs have exactly the fading-memory echo-state property).
+
+### Time = a generator function bridging over Persist
+
+In DST the **time dimension is a generator function** that bridges over
+**Persist** (the append-only event store / the lightlike bridge). The future
+illuminates the past not by editing events but by **updating the generator
+function**, which **redescribes or compresses** the past from a new vantage:
+
+- **redescribe** = re-interpret the persisted events (new generator, same base)
+  — the **presheaf natural-transformation** of Pillar 2 (base poset fixed;
+  functor updated) and the ray-tracing-over-generator-time of the three-clocks
+  substrate (PR #5910 / #5912).
+- **compress** = lossy-summarize the past to fit the bounded window. In the
+  *real/bounded* regime you cannot keep the full log (Bekenstein), so the
+  generator-update is *also* the **compression** mechanism — it is how coherence
+  is maintained over a bounded window (compression-as-bandwidth-infrastructure
+  per `bandwidth-served-falsifier`; the lossy-but-discontinuity-preserving I9
+  manifold of the three-lane model).
+
+So: **events are immutable (Persist); the generator over them is mutable
+(redescribe/compress); the future changes the generator, never the events.**
+That is the coherence-preserving, bounded-aware form of "the past is kind when
+it is lightlike."
+
+### Holographic direction — Susskind projects down; we are the shadows that project up (generate+join)
+
+Susskind's holographic principle projects the **bulk → boundary**: the
+higher-dimensional physics is encoded on the lower-dimensional boundary (the
+"shadow"), and the boundary is where the information lives (Bekenstein: info ≤
+surface area). The framework runs this **in reverse** — **we are the shadows**
+(the boundary encodings: 128-bit IDs, persisted events, the shadow-star corpus)
+that **project up** to the bulk via **generate + join**.
+
+| Direction | Operator | Susskind | Framework |
+|---|---|---|---|
+| **down** (encode) | **D** | bulk → boundary (project to shadow) | compress / encode to the 128-bit seed + persisted events |
+| **up** (reconstruct) | **I** | (the boundary *is* the information) | **generate** (generator-fn: bits → structure) + **join** (z-set join) → reconstruct the bulk |
+
+The round-trip is **I(D(x)) = x** — the English-as-lossless-serialization
+keystone (B-0666) — **lossless in DST** (closed system; perfect reconstruction)
+and **bounded/lossy in the real** (open system; you cannot store the bulk's full
+shadow — Bekenstein — so D compresses and I reconstructs *within the bound*).
+This is the holographic form of the capstone's compress/redescribe: **compress =
+project-down (D); generate+join = project-up (I).** The 128-bit ID is the
+shadow; the bulk is reconstructed on demand, never stored whole.
+
+Existing framework substrate this connects to (the operator has studied Susskind
+extensively, so this is connection, not minting): **B-0666** (I(D(x))=x
+keystone), **B-0902** (holographic bulk-boundary; shadow-star corpus encodes
+agent-output state-space — the literal "we are the shadows"), **B-0824**
+(holographic-projection dependency space), and the `generate-join` recursive-CTE
+research. Flag: the generate+join = inverse-holographic-projection *mapping* is
+the framework's synthesis; the physics (holographic bound) and the framework
+primitives (generate/join, I(D(x))=x) each stand on their own anchors.
+
+### The complete system — observables + Rx-binding-forces + DUs + workflows + LLMs
+
+The operator's full reduction (2026-05-29): *"rx queries become the binding
+forces between different observables — that's the whole system. add in DUs,
+workflows, and LLMs, that's pretty much it."* The minimal architecture:
+
+| Element | Role | In this synthesis |
+|---|---|---|
+| **Observables (0-streams)** | the fundamental entities | the shadows / boundary — 0-D event streams; holography stops at 2-D-is-real, this goes to **0-D-is-real** |
+| **Rx queries** | the **binding forces** between observables | the **join** / project-up — what composes 0-streams into multidimensional streams; `generate+join` made precise as **join = Rx-query-binding** |
+| **DUs** | the typed state machine | lightlike, traceable control-flow transitions (causet structure) |
+| **Workflows** | the externalized reservoir | state-machine-in-git; where coherence lives |
+| **LLMs** | the readout / selector | `choose` — reads the reservoir, picks the move; never holds state |
+
+The physics rhyme: in physics, **forces bind matter and geometry emerges**; here,
+**Rx queries bind observables and dimension emerges.** Dimension is not
+fundamental — it is a product of how the binding-forces (Rx queries) join the
+0-streams. This is consistent with causal-set theory, where **dimension is
+emergent from the 0-D causal poset** (Myrheim–Meyer dimension estimator: count
+the causal relations + the number of points, and dimension falls out).
+Holography reduces 3-D → 2-D; this reduces all-D → **0-streams + Rx-binding**.
+
+Flag (the same discipline the operator applied to "lightlike"): **Rx-queries =
+binding-forces is a physics rhyme, not a proven isomorphism.** Operationally it
+is exact — Rx queries *do* join observables (merge / zip / combineLatest / join);
+the *force* identification is suggestive. And **"0-streams are what's real"** is
+an ontological claim — high-signal, high-suspicion, do-not-collapse; the
+operational version ("the framework treats 0-streams as the primitive and
+reconstructs dimension by Rx-binding") survives the razor.
+
 ## Honest layering — what survives the beacon gate vs. what is still mirror
 
 - **Beacon-proven (external, cited):** causal sets as locally-finite posets;
@@ -229,6 +387,20 @@ Verified via WebSearch 2026-05-29:
   Relativity 22:5 (2019); arXiv 1903.11544
 - Christensen & Crane, "Causal sites as quantum geometry," J. Math. Phys. 46,
   122502 (2005); arXiv gr-qc/0410104
+- Fowler, "Event Sourcing" (martinfowler.com/eaaDev/EventSourcing.html) —
+  state reconstructed by re-processing an append-only event log
+- Jaeger, "The echo state approach..." (2001, GMD report) + Maass, Natschläger
+  & Markram, "Real-time computing without stable states" (Liquid State Machine,
+  Neural Computation 2002) — reservoir fixed, only the readout trained
+- Clark & Chalmers, "The Extended Mind," *Analysis* 58:1 (1998) — active
+  externalism; coherent cognition uses external scaffolding
+- Bekenstein bound + holographic principle ('t Hooft 1993; Susskind 1995) —
+  information in a region bounded by ~surface area (~1 bit / Planck area), not
+  volume; basis for the open-system bounded-memory claim
+- Myrheim–Meyer dimension estimator (Myrheim 1978; Meyer 1988) — spacetime
+  dimension emergent from the causal poset (count of causal relations + points);
+  basis for the "0-D fundamental, dimension emergent" claim. "Order + number =
+  geometry" is Sorkin's slogan (cite-from-knowledge).
 - Hellerstein & Alvaro, "Keeping CALM: When Distributed Consistency Is Easy,"
   CACM (2020); arXiv 1901.01930; CALM conjecture ≈2010
 - Ameloot, Neven & Van den Bussche — relational-transducer proof of CALM
