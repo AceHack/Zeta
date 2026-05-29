@@ -1,7 +1,7 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet
-Last refreshed: 2026-05-28
+Status: active child packet; release pending
+Last refreshed: 2026-05-29
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
 `docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
@@ -43,19 +43,20 @@ Current dry-run receipt:
 `docs/trajectories/autonomous-loop-coordination/remote-only-two-participant-dry-run-2026-05-28.md`
 
 It records the current Participant A remote claim, the stale predecessor
-force-release, and the remaining blocker: a genuinely separate Participant B
-has not yet published a disjoint remote-only claim.
+force-release, the separate Participant B remote-only claim, and the
+Participant A acknowledgement that compares the path sets as disjoint. The
+remaining blocker is release, not another Participant B dry run.
 
 ## Recommended Next Action
 
-Add the missing Participant B leg for the minimum remote-only dry run:
-Participant B must start from remote refs only, publish a disjoint
-`origin/claim/*` ref, and let Participant A record a progress receipt before
-both claims release through git history.
+Release the clean Participant A acknowledgement claim, then release the
+Participant B claim. The release commits or PRs should preserve the receipt as
+durable evidence and delete the corresponding `docs/claims/*.md` files on the
+claim branches.
 
 ## Next Child Packets
 
-- remote-only Participant B progress receipt, grounded in B-0209
+- remote-only claim-release receipt, grounded in B-0209
 - local/remote cluster composition protocol sketch, grounded in B-0211
 - stale-claim cleanup rule for completed PRs, grounded in the claim protocol
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250
