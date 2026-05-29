@@ -631,6 +631,11 @@ truth for any rule that applies across harnesses.
   native per-repo instruction files
   (`.cursor/rules/` / `.cursorrules`) remain absent; the
   root `CURSOR.md` is the bootstrap pointer.
+- **`KIRO.md`** — Amazon Kiro (Alexa) session-bootstrap
+  pointer tree. Present at repo root; instantiates the
+  cross-harness bootstrap template (B-0355.3, per B-0325).
+  Kiro's native steering files (`.kiro/steering/`) remain
+  absent; the root `KIRO.md` is the bootstrap pointer.
 
 Harness-specific files **may not** contradict
 `AGENTS.md` or `GOVERNANCE.md`. If a contradiction
