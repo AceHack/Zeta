@@ -5,6 +5,8 @@ import { join } from "node:path";
 
 import {
   buildCreateRepoRequest,
+  buildGhApiInvocation,
+  buildGhRunnerEnv,
   buildSeedBlobRequest,
   buildSeedCommitRequest,
   buildSeedRefUpdateRequest,
@@ -12,6 +14,8 @@ import {
   buildSeedTreeRequest,
   computeSeedTree,
   diffSeedTree,
+  executeGhApiRequest,
+  type GhApiRunner,
   gitBlobSha,
   parseCreateRepoResponse,
   parseGitTreeResponse,
@@ -244,6 +248,130 @@ describe("parseCreateRepoResponse", () => {
     const fetched = parseCreateRepoResponse(created);
     const made = parseCreateRepoResponse(created);
     expect(fetched).toEqual(made);
+  });
+});
+
+describe("buildGhApiInvocation", () => {
+  test("GET request uses gh api with no stdin", () => {
+    expect(buildGhApiInvocation(buildGetTreeRequest("o", "r", "treeSha"))).toEqual({
+      command: "gh",
+      args: ["api", "-X", "GET", "repos/o/r/git/trees/treeSha?recursive=1"],
+      stdin: null,
+    });
+  });
+
+  test("POST request serializes the JSON body through stdin", () => {
+    const request = buildCreateRepoRequest("AceHack", "zeta-recreation-experiment", {
+      private: false,
+      description: "seed",
+    });
+    if (typeof request === "string") throw new Error(request);
+
+    expect(buildGhApiInvocation(request)).toEqual({
+      command: "gh",
+      args: ["api", "-X", "POST", "orgs/AceHack/repos", "--input", "-"],
+      stdin: `${JSON.stringify(request.body)}\n`,
+    });
+  });
+
+  test("PATCH ref update preserves method, path, and force:false body", () => {
+    const request = buildSeedRefUpdateRequest("AceHack", "seed", "main", "commitSha", true);
+    expect(buildGhApiInvocation(request)).toEqual({
+      command: "gh",
+      args: ["api", "-X", "PATCH", "repos/AceHack/seed/git/refs/heads/main", "--input", "-"],
+      stdin: `${JSON.stringify({ sha: "commitSha", force: false })}\n`,
+    });
+  });
+});
+
+describe("buildGhRunnerEnv", () => {
+  test("preserves caller PATH and appends HOME bun bin", () => {
+    expect(buildGhRunnerEnv({ PATH: "/custom/bin:/usr/bin", HOME: "/tmp/zeta-home" }).PATH).toBe(
+      "/custom/bin:/usr/bin:/tmp/zeta-home/.bun/bin",
+    );
+  });
+
+  test("does not invent a machine-specific HOME fallback", () => {
+    expect(buildGhRunnerEnv({ PATH: "/usr/bin" }).PATH).toBe("/usr/bin");
+  });
+
+  test("deduplicates the appended bun bin path", () => {
+    expect(buildGhRunnerEnv({ PATH: "/usr/bin:/tmp/zeta-home/.bun/bin", HOME: "/tmp/zeta-home" }).PATH).toBe(
+      "/usr/bin:/tmp/zeta-home/.bun/bin",
+    );
+  });
+});
+
+describe("executeGhApiRequest", () => {
+  function fakeRunner(result: { status: number; stdout: string; stderr?: string }, calls: unknown[]): GhApiRunner {
+    return {
+      run(command, args, stdin) {
+        calls.push({ command, args, stdin });
+        return { status: result.status, stdout: result.stdout, stderr: result.stderr ?? "" };
+      },
+    };
+  }
+
+  test("runs gh api and parses the response with the matching pure parser", () => {
+    const request = buildCreateRepoRequest("AceHack", "zeta-recreation-experiment");
+    if (typeof request === "string") throw new Error(request);
+    const calls: unknown[] = [];
+    const result = executeGhApiRequest(
+      request,
+      parseCreateRepoResponse,
+      fakeRunner(
+        {
+          status: 0,
+          stdout: JSON.stringify({
+            full_name: "AceHack/zeta-recreation-experiment",
+            html_url: "https://github.com/AceHack/zeta-recreation-experiment",
+            clone_url: "https://github.com/AceHack/zeta-recreation-experiment.git",
+            default_branch: "main",
+          }),
+        },
+        calls,
+      ),
+    );
+
+    expect(result).toEqual({
+      fullName: "AceHack/zeta-recreation-experiment",
+      htmlUrl: "https://github.com/AceHack/zeta-recreation-experiment",
+      cloneUrl: "https://github.com/AceHack/zeta-recreation-experiment.git",
+      defaultBranch: "main",
+    });
+    expect(calls).toEqual([
+      {
+        command: "gh",
+        args: ["api", "-X", "POST", "orgs/AceHack/repos", "--input", "-"],
+        stdin: `${JSON.stringify(request.body)}\n`,
+      },
+    ]);
+  });
+
+  test("returns a command failure as an error string, not a parsed response", () => {
+    const request = buildGetTreeRequest("o", "r", "treeSha");
+    const result = executeGhApiRequest(
+      request,
+      parseGitTreeResponse,
+      fakeRunner({ status: 1, stdout: "", stderr: "HTTP 404: Not Found" }, []),
+    );
+
+    expect(typeof result).toBe("string");
+    expect(result).toContain("HTTP 404");
+  });
+
+  test("returns invalid JSON as an error string before calling the parser", () => {
+    const request = buildGetTreeRequest("o", "r", "treeSha");
+    const result = executeGhApiRequest(
+      request,
+      () => {
+        throw new Error("parser should not run");
+      },
+      fakeRunner({ status: 0, stdout: "not json" }, []),
+    );
+
+    expect(typeof result).toBe("string");
+    expect(result).toContain("invalid JSON");
   });
 });
 

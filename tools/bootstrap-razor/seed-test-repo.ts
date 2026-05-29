@@ -18,6 +18,7 @@
  */
 
 import { parseArgs } from "node:util";
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -236,6 +237,38 @@ export interface GitRefUpdateInfo {
   readonly sha: string;
 }
 
+export type GhApiMethod = "GET" | "POST" | "PATCH";
+
+export type GhApiExecutableRequest =
+  | GitReadRequest
+  | GitCreateRepoRequest
+  | GitRefUpdateRequest
+  | {
+      readonly method: "POST";
+      readonly path: string;
+      readonly body: unknown;
+    };
+
+export interface GhApiInvocation {
+  readonly command: "gh";
+  readonly args: readonly string[];
+  readonly stdin: string | null;
+}
+
+export interface GhApiRunnerResult {
+  readonly status: number;
+  readonly stdout: string;
+  readonly stderr: string;
+}
+
+export interface GhApiRunner {
+  run(command: string, args: readonly string[], stdin: string | null): GhApiRunnerResult;
+}
+
+export type GhApiJsonResult =
+  | { readonly ok: true; readonly response: unknown }
+  | { readonly ok: false; readonly error: string };
+
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
 const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
 // Repo root = two levels up from tools/bootstrap-razor/.
@@ -251,6 +284,85 @@ function usage(): string {
 
 function stripYamlComment(value: string): string {
   return value.replace(/\s+#.*$/, "").trim();
+}
+
+function requestMethod(request: GhApiExecutableRequest): GhApiMethod {
+  if ("method" in request) return request.method;
+  if ("body" in request) return "POST";
+  return "GET";
+}
+
+function requestBody(request: GhApiExecutableRequest): unknown | null {
+  return "body" in request ? request.body : null;
+}
+
+export function buildGhApiInvocation(request: GhApiExecutableRequest): GhApiInvocation {
+  const body = requestBody(request);
+  const args = ["api", "-X", requestMethod(request), request.path];
+  if (body !== null) args.push("--input", "-");
+  return {
+    command: "gh",
+    args,
+    stdin: body === null ? null : `${JSON.stringify(body)}\n`,
+  };
+}
+
+export function buildGhRunnerEnv(baseEnv: typeof process.env = process.env): typeof process.env {
+  const pathEntries = [baseEnv.PATH, baseEnv.HOME ? `${baseEnv.HOME}/.bun/bin` : undefined]
+    .flatMap((entry) => (entry ? entry.split(":") : []))
+    .filter((entry, index, entries) => entry.length > 0 && entries.indexOf(entry) === index);
+  return pathEntries.length === 0 ? { ...baseEnv } : { ...baseEnv, PATH: pathEntries.join(":") };
+}
+
+function spawnGhApiRunner(): GhApiRunner {
+  return {
+    run(command: string, args: readonly string[], stdin: string | null): GhApiRunnerResult {
+      // eslint-disable-next-line sonarjs/no-os-command-from-path -- `gh` is intentionally resolved from the caller PATH; arguments are structured and never shell-expanded.
+      const result = spawnSync(command, [...args], {
+        input: stdin ?? undefined,
+        encoding: "utf8",
+        timeout: 60_000,
+        maxBuffer: 32 * 1024 * 1024,
+        env: buildGhRunnerEnv(),
+      });
+      return {
+        status: result.status ?? 1,
+        stdout: result.stdout ?? "",
+        stderr: result.stderr ?? String(result.error ?? ""),
+      };
+    },
+  };
+}
+
+export function runGhApiJson(
+  request: GhApiExecutableRequest,
+  runner: GhApiRunner = spawnGhApiRunner(),
+): GhApiJsonResult {
+  const invocation = buildGhApiInvocation(request);
+  const result = runner.run(invocation.command, invocation.args, invocation.stdin);
+  if (result.status !== 0) {
+    const detail = (result.stderr || result.stdout).trim();
+    return {
+      ok: false,
+      error: `gh api ${requestMethod(request)} ${request.path} failed (exit ${result.status})${detail ? `: ${detail}` : ""}`,
+    };
+  }
+
+  try {
+    return { ok: true, response: JSON.parse(result.stdout) };
+  } catch {
+    return { ok: false, error: `gh api ${requestMethod(request)} ${request.path} returned invalid JSON` };
+  }
+}
+
+export function executeGhApiRequest<T>(
+  request: GhApiExecutableRequest,
+  parseResponse: (response: unknown) => T | string,
+  runner: GhApiRunner = spawnGhApiRunner(),
+): T | string {
+  const result = runGhApiJson(request, runner);
+  if (!result.ok) return result.error;
+  return parseResponse(result.response);
 }
 
 export function parseSeedManifest(content: string): SeedManifest {
