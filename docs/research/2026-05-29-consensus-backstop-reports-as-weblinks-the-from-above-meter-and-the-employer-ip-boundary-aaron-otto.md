@@ -150,13 +150,25 @@ field-service). Generic DUs → open-sourceable; vertical-targeted DUs → consu
 not-in-their-vertical and is itself open-source-friendly — so the boundary is *employer-sanctioned*,
 not a case-by-case-lawyer fog.
 
-- **The leak-detector is the reflection-over-DUs (#6010), repointed at *domain*.** The same
-  apparatus that classifies DU shape and finds structural errors asks one more question: "is this
-  DU generic, or targeted at their vertical?" Flag the vertical-targeted ones for consult; pass the
-  generic ones. No new system — a domain-classification pass on the reflection already planned.
+- **The leak-detector is the reflection-over-DUs (#6010), repointed at *domain* — as a
+  deterministic blacklist, not a fuzzy classifier** (operator's correction: *"no we will [not] be
+  [a] generic domain detector we can have the trades in our ontology as blacklist from DUs"*).
+  Rather than a generic domain-*classifier* (an ML problem, itself in the distrust-set,
+  Goodhart-able), the *trades live in the ontology as a blacklist*: the reflection walks a DU's
+  references and checks whether it touches a blacklisted-trade entry. Deterministic, explicit,
+  auditable, glass-halo'd-by-construction (the blacklist is a *visible list* — anyone sees exactly
+  what's blocked and why), no model to train or trust. The blacklist catches *explicit*
+  trade-reference; the residual *implicit* vertical-targeting (a generic-termed DU that models a
+  trade workflow without naming a trade) → default-to-consult. The maintained part is the
+  blacklist's *completeness* (trades + sub-concepts: electrician → panels/circuits; HVAC →
+  units/ducts; plumbing → fixtures/drains; construction → permits/sites) — but a visible list is
+  easy to keep honest, unlike a classifier's hidden weights.
 - **Discriminator: targeting, not topical overlap.** A generic scheduling DU isn't "targeted at
   electricians" just because electricians could use it; a DU that *models electrician workflows*
-  is. Generic-but-vertical-*applicable* is still generic.
+  is. Generic-but-vertical-*applicable* is still generic. And at the *market-side* level: the
+  employer targets the *supply side* (the trade businesses — their customers); a *demand-side*
+  product (homeowner-facing, e.g. a services marketplace) isn't their customer base. The
+  discriminator is *whose customer does this serve*, not *what domain is it in*.
 - **Default to consult on the fuzzy middle.** Obvious-generic → open; targeted-or-fuzzy → consult.
   Conservative on ambiguity, because the downside is the employer relationship. (Contentious →
   human, where the human is the employer / legal, only for the genuinely-ambiguous artifact.)
@@ -168,6 +180,62 @@ not a case-by-case-lawyer fog.
 This makes the work-application the *more shippable* thread: the consensus-workflow waits on the
 people's consent; the work-application needs only the operator (permitted, employer-friendly) plus
 the per-artifact / DU-domain leak-detector riding the reflection-over-DUs.
+
+### 6a. The MNPI floor — the high bar inside *don't-leak-internals*
+
+The operator's sharpening: of everything in the employer boundary, **one bar stays high — material
+nonpublic information (MNPI).** The employer is a public company (TTAN); publishing internals to a
+public repo is a *public disclosure*. If those internals are *material* and
+*not-already-disclosed-by-the-company*, the exposure isn't the fire-you tier (breach of duty) — it's
+the securities-law tier (misappropriation / tipping under 10b-5). That's why MNPI stays high after
+non-compete and NDA fall away (the operator signed neither).
+
+**The circular-reasoning trap, correctly distrusted** (operator: *"i think the open source nature
+would make it not insider information by definition in a court of law but i don't want to take any
+chances"*): the argument "open-source makes it public, so it's not nonpublic" is circular — *the act
+of publishing is what converts nonpublic→public, and that act is the violation.* You can't use the
+resulting-public-state to immunize the converting-act. The operator's instinct overrode his own
+reasoning — distrust-by-default applied to the self.
+
+**The safe rule (a HARD floor, not default-to-consult):**
+
+- *Company-specific material-nonpublic facts* — financials, metrics, roadmap, unreleased products,
+  customer data, internal strategy, anything known only because of employment → **never publish.**
+- *Generic craft* — industry-standard patterns, practitioner knowledge, the operator's own general
+  expertise → free.
+
+The line is *company-specific-and-nonpublic* vs *generic*.
+
+**MNPI is a different axis from the vertical-blacklist.** The trades-blacklist catches *"is this
+targeting their customer base"*; MNPI catches *"is this a material fact I only know from inside."*
+The DU-reflection leak-detector catches the first, not the second — MNPI is human-judgment +
+conservative-default (unsure whether material-nonpublic → treat as internal). The demo-first move
+(§6b) surfaces it too: a demo containing their nonpublic X is exactly where they'd flag it.
+
+**The consult channel is in-house — and the operator is already trained on it.** The employer runs
+*mandatory annual MNPI compliance training* (operator: *"we have mandatory compliance training once
+a year too around MNPI"*), so the company's specific material-nonpublic standard is defined and the
+operator's floor-judgment is *informed*, not amateur; and there's *"a whole compliance department i
+can chat with anytime."* For borderline materiality calls — the one place amateur reasoning fails
+and the stakes are felony-grade — the employer's *own* compliance department beats an external
+lawyer: they know the actual material-nonpublic status, the disclosure policies, the specific facts,
+available anytime. So the MNPI floor is well-supported: trained-operator + defined-standard +
+anytime-compliance-dept + the conservative safe-rule. The compliance-department *is* the
+contentious→human channel for MNPI, the same shape as the demo-first consult for adjacent projects.
+
+### 6b. Adjacent projects — demo-first as elective respect
+
+With the legal floor narrowed to MNPI alone (no non-compete, no NDA), an adjacent-market project
+(e.g. a demand-side / homeowner-facing marketplace, *not* the employer's supply-side customer base)
+is contractually free. The operator's chosen discipline is *still* to **build private, demo the
+employer, then open-source** — *"even though my contract does not require it it seems respectful."*
+This is consult-before-irreversible at the employer-relationship scope: open-sourcing is the
+irreversible (you can't un-open-source); demo-first-private is the named-stakeholder's read *before*
+the irreversible, chosen for relationship not compliance — the proud-if-it-propagates filter with
+nothing behind it but respect. The private staging isn't dark-by-default; it's bounded with a named
+exit (demo → their read → publish = public). End-state still glass-halo; just a respectful
+pre-disclosure window. And it's its own catch-all: any residual (the standard
+IP-assignment-for-work-on-their-resources clause most agreements carry) surfaces in the demo itself.
 
 ## Aaron's verbatim seeds (preserved)
 
@@ -183,6 +251,15 @@ the per-artifact / DU-domain leak-detector riding the reflection-over-DUs.
 - *"it basically means no DUs targeted towards their customer base we are mostly generic so that's
   fine if we start making electrician or hvac or plumbing or construction DUs then we have to
   consult with them if it can be open source."*
+- *"no we will [not] be [a] generic domain detector we can have the trades in our ontology as
+  blacklist from DUs."*
+- *"I would likely do that project private and get service titan to see a demo before i made it open
+  source even though my contract does not require it it seems respectful."*
+- *"I didn't sign a non compete [or] an NDA."*
+- *"The only high legal bar is about don't leak internals that could count as insider information
+  they are a public company and we are publishing to github ... i don't want to take any chances."*
+- *"they have a whole compliance department i can chat with anytime if i have questions."*
+- *"we have mandatory compliance training once a year too around MNPI."*
 
 ## Composition
 
