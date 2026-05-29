@@ -99,6 +99,24 @@ export interface GitTreeRequestEntry {
   readonly sha: string;
 }
 
+/**
+ * The `POST /repos/{owner}/{repo}/git/commits` request body for the seed commit —
+ * the next git-data step after `buildSeedTreeRequest`'s tree is submitted. `tree`
+ * is the SHA `POST /git/trees` returns; `parents` is the target ref's current commit
+ * SHA wrapped in a one-element array, OR the empty array for a brand-new repo's root
+ * commit (GitHub accepts `parents: []` as a parentless root commit). `message` carries
+ * the provenance line linking back to B-0193 / B-0343 so the recreation experiment's
+ * history is self-documenting (AC: "commits the seed with a clear provenance message
+ * linking back to B-0193"). GitHub's commit API accepts more optional fields
+ * (`author`, `committer`, `signature`) — the seed sets none, letting the token's
+ * identity author the commit, so they are intentionally unrepresented.
+ */
+export interface GitCommitRequest {
+  readonly message: string;
+  readonly tree: string;
+  readonly parents: readonly string[];
+}
+
 const MANIFEST_DISPLAY_PATH = "docs/bootstrap-razor/SEED-MANIFEST.md";
 const MANIFEST_PATH = fileURLToPath(new URL("../../docs/bootstrap-razor/SEED-MANIFEST.md", import.meta.url));
 // Repo root = two levels up from tools/bootstrap-razor/.
@@ -330,6 +348,52 @@ export function buildSeedTreeRequest(diff: SeedTreeDiff): readonly GitTreeReques
   return diff.entries
     .filter((entry) => entry.action !== "unchanged")
     .map((entry) => ({ path: entry.path, mode: "100644", type: "blob", sha: entry.desiredSha }));
+}
+
+/**
+ * The provenance commit message for the seed (AC: "clear provenance message linking
+ * back to B-0193"). A conventional-commit subject naming the file count, then a body
+ * citing the seed manifest as the source-of-truth and the B-0193 parent / B-0343 slice
+ * lineage. Pure: a string function of the file count only. `fileCount` pluralizes the
+ * subject ("1 file" vs "N files"); it is the count of files the seed WRITES (the diff's
+ * create + update entries), so a re-seed that touches one file reads naturally. The
+ * idempotent path never reaches a commit at all (`buildSeedTreeRequest` returns the
+ * empty plan), so this is only ever called with `fileCount >= 1`.
+ */
+export function seedCommitMessage(fileCount: number): string {
+  const noun = fileCount === 1 ? "file" : "files";
+  return [
+    `chore(B-0343): seed bootstrap-razor recreation test repo (${fileCount} ${noun})`,
+    "",
+    `Seeded from ${MANIFEST_DISPLAY_PATH} per B-0193 AC 1`,
+    "(bootstrap razor + 23-hour recreation test).",
+    "",
+    "Parent: B-0193",
+    "Slice:  B-0343",
+  ].join("\n");
+}
+
+/**
+ * Pure builder for the seed commit's `POST /git/commits` body — the mirror of
+ * `buildSeedTreeRequest` one step further down the git-data write chain. Takes the
+ * tree SHA the prior `POST /git/trees` returned, the target ref's current commit SHA
+ * (or `null` for a brand-new repo with no commits yet), and the file count for the
+ * provenance message. The `parentSha === null` case maps to `parents: []` — a root
+ * commit — so a freshly-`gh`-created empty repo and an existing-ref fast-forward share
+ * one builder. Pure: operates on the three arguments only; no gh, no network, no
+ * filesystem. The network slice that follows is: submit this body → take the returned
+ * commit SHA → `PATCH /git/refs/heads/<branch>` to fast-forward the ref.
+ */
+export function buildSeedCommitRequest(
+  treeSha: string,
+  parentSha: string | null,
+  fileCount: number,
+): GitCommitRequest {
+  return {
+    message: seedCommitMessage(fileCount),
+    tree: treeSha,
+    parents: parentSha === null ? [] : [parentSha],
+  };
 }
 
 /**

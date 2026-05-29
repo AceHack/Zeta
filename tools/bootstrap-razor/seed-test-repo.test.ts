@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
+  buildSeedCommitRequest,
   buildSeedTreeRequest,
   computeSeedTree,
   diffSeedTree,
@@ -11,6 +12,7 @@ import {
   parseGitTreeResponse,
   parseSeedManifest,
   resolveSeedFiles,
+  seedCommitMessage,
 } from "./seed-test-repo.ts";
 
 describe("parseSeedManifest", () => {
@@ -287,5 +289,48 @@ describe("buildSeedTreeRequest", () => {
     const diff = diffSeedTree([a], [a, { path: "README.md", sha: "readme" }]);
     expect(diff.extraneous).toEqual([{ path: "README.md", sha: "readme" }]);
     expect(buildSeedTreeRequest(diff)).toEqual([]); // a.txt unchanged, README extraneous → nothing to write
+  });
+});
+
+describe("seedCommitMessage", () => {
+  test("subject names the file count, body cites the manifest + B-0193/B-0343 lineage", () => {
+    const message = seedCommitMessage(7);
+    const [subject, ...rest] = message.split("\n");
+    expect(subject).toBe("chore(B-0343): seed bootstrap-razor recreation test repo (7 files)");
+    const body = rest.join("\n");
+    expect(body).toContain("docs/bootstrap-razor/SEED-MANIFEST.md");
+    expect(body).toContain("B-0193");
+    expect(body).toContain("B-0343");
+  });
+
+  test("pluralizes the count noun (1 file vs N files)", () => {
+    expect(seedCommitMessage(1)).toContain("(1 file)");
+    expect(seedCommitMessage(2)).toContain("(2 files)");
+  });
+
+  test("subject and body are separated by a blank line (git convention)", () => {
+    // git treats the first blank-line-delimited block as the subject; assert the
+    // second line is empty so tools that render subject/body split correctly.
+    expect(seedCommitMessage(3).split("\n")[1]).toBe("");
+  });
+});
+
+describe("buildSeedCommitRequest", () => {
+  test("existing ref → parent SHA wrapped in a one-element array", () => {
+    expect(buildSeedCommitRequest("treeSha", "parentSha", 2)).toEqual({
+      message: seedCommitMessage(2),
+      tree: "treeSha",
+      parents: ["parentSha"],
+    });
+  });
+
+  test("brand-new repo (null parent) → empty parents array (root commit)", () => {
+    const request = buildSeedCommitRequest("treeSha", null, 5);
+    expect(request.parents).toEqual([]);
+    expect(request.tree).toBe("treeSha");
+  });
+
+  test("carries the provenance message for the given file count", () => {
+    expect(buildSeedCommitRequest("t", "p", 1).message).toBe(seedCommitMessage(1));
   });
 });
