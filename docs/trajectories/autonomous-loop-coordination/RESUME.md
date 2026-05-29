@@ -48,16 +48,22 @@ Participant A acknowledgement that compares the path sets as disjoint. The
 release refs have now landed or been retired, so this receipt is evidence for
 the next child packet rather than pending work.
 
+Current release receipt:
+`docs/trajectories/autonomous-loop-coordination/remote-only-claim-release-receipt-2026-05-29.md`
+
+It confirms the known Participant A, Participant B, stale predecessor, and old
+trajectory claim refs are no longer active on `origin`. It also distinguishes
+the canonical Participant A same-PR release from the weaker Participant B
+remote-head retirement evidence.
+
 ## Recommended Next Action
 
-Start the remote-only claim-release receipt packet. It should cite the merged
-dry-run receipt, confirm the Participant A and Participant B claim refs are no
-longer active, and record the release path before the lane moves to cluster
-composition.
+Start the local/remote cluster composition protocol sketch. It should use the
+B-0209 receipt sequence as the remote-only substrate and then define how a
+local odd-node cluster composes with remote claim refs under B-0211.
 
 ## Next Child Packets
 
-- remote-only claim-release receipt, grounded in B-0209
 - local/remote cluster composition protocol sketch, grounded in B-0211
 - stale-claim cleanup rule for completed PRs, grounded in the claim protocol
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250
