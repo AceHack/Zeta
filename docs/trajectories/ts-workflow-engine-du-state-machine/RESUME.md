@@ -45,6 +45,12 @@ The DU / control-flow rule cluster auto-loaded in `.claude/rules/`:
 - `ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md`
 - `function-is-tiny-control-flow-generator-ocp-applied-to-control-flow.md`
 
+**Beacon synthesis (external first-principles grounding for this engine's
+lightlike/ray-tracing model):** [`docs/research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md`](../../research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md)
+— the engine runs ray-tracing over any lightlike (git) surface; this doc
+grounds that in causal-set theory + presheaf semantics + edge-of-chaos + the
+CALM-gradient consensus stack (CRDT → per-row CASPaxos/Raft → BFT).
+
 ## Current Rule
 
 DUs carry the control flow; Git carries the state; the LLM only *selects* the
