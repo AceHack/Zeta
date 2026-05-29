@@ -16,6 +16,18 @@ the sibling of `cluster-encryption-credential-substrate` (which owns *what*
 secrets get injected); this trajectory owns *how the bits get onto the metal
 and boot into a joinable node*.
 
+**Deeper purpose — self-healing hardware (the human maintainer 2026-05-29):**
+the USB is not only first-install; it is the *self-healing repair* mechanism for
+the local accelerator cluster. A human's only job is to plug in the USB — any
+failed node in the K8s / GPU-accelerator cluster re-images, re-joins, and
+re-credentials itself. This gives Zeta **local + free-cloud both**: the
+self-healing local accelerator cluster (owned metal, GPU compute, sovereignty)
+composing with the free GitHub-Actions cloud swarm (B-0874, zero-marginal-cost
+because open-source). The workflow engine
+(`ts-workflow-engine-du-state-machine` trajectory) is portable across both
+substrates; usb/zflash keeps the local one alive with minimal human-in-the-loop
+(physical-only — plug in the USB, everything else automated).
+
 ## Grounding (on `origin/main`)
 
 Shipped artifacts:
