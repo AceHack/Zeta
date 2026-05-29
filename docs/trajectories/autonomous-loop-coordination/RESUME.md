@@ -63,15 +63,21 @@ It defines the first B-0211.1 composition rule: local cluster quorum can choose
 and accelerate work, but the remote-visible claim ref is the cross-cluster
 ownership boundary.
 
+Current local/remote replay receipt:
+`docs/trajectories/autonomous-loop-coordination/local-remote-cluster-replay-receipt-2026-05-29.md`
+
+It records a fresh-clone replay that fetched `origin/claim/*`, reconstructed
+active path signals from remote claim refs, and verified a late participant can
+choose a disjoint next packet without reading local broadcasts.
+
 ## Recommended Next Action
 
-Exercise the local/remote protocol sketch with one replay from a fresh clone:
-fetch `origin/claim/*`, reconstruct the active path set, and verify that a
-late participant can choose a disjoint path without reading local broadcasts.
+Draft the stale-claim cleanup rule for completed PRs, grounded in the claim
+protocol and the old active-window claims that still expose broad generated
+backlog-index path signals.
 
 ## Next Child Packets
 
-- local/remote cluster composition replay receipt, grounded in B-0211
 - stale-claim cleanup rule for completed PRs, grounded in the claim protocol
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250
 - bounded parallel runway health receipt, grounded in B-0249
