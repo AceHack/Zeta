@@ -43,6 +43,21 @@ export interface SeedTreeEntry {
   readonly sha: string;
 }
 
+/**
+ * The subset of GitHub's `GET /repos/{owner}/{repo}/git/trees/{sha}?recursive=1`
+ * response this slice reads. The API returns more fields (`mode`, `size`, `url`)
+ * but idempotency only needs `path`, `type` (to keep blobs, drop sub-trees and
+ * submodule `commit` entries), and `sha` (the same content-addressable blob
+ * identity `gitBlobSha` produces). `truncated` is load-bearing: GitHub caps the
+ * recursive tree at ~100k entries and sets `truncated: true` when it elides some —
+ * an elided tree is NOT a safe idempotency basis (a missing entry would diff as a
+ * spurious "create"), so the parser rejects it rather than silently under-reporting.
+ */
+interface GitTreeResponse {
+  readonly tree: readonly { readonly path: string; readonly type: string; readonly sha: string }[];
+  readonly truncated: boolean;
+}
+
 /** One desired seed path classified against the target repo's current tree. */
 type SeedFileAction = "unchanged" | "create" | "update";
 
@@ -227,6 +242,53 @@ export function diffSeedTree(
   const idempotent = entries.every((entry) => entry.action === "unchanged");
 
   return { entries, extraneous, idempotent };
+}
+
+/**
+ * Pure parser: turn a GitHub git-tree API response into the `{path, sha}` set
+ * `diffSeedTree` consumes as its `existing` (target-repo) argument. This is the
+ * missing bridge between a future `gh api git/trees/<sha>?recursive=1` call and
+ * the already-tested pure diff — isolating it here keeps the network slice that
+ * follows trivial (one fetch + JSON.parse + this function). Pure: no network,
+ * no gh, no filesystem; operates only on the already-parsed JSON value.
+ *
+ * Returns the sorted blob set on success, or an error string (same `T | string`
+ * convention as `readManifest`) when the response is unusable:
+ *   - not an object, or missing a `tree` array            → malformed
+ *   - `truncated: true`                                   → incomplete basis (rejected,
+ *     because a missing entry would mis-diff as a "create" and trigger a duplicate write)
+ *   - a tree entry missing string `path`/`type`/`sha`     → malformed entry
+ *
+ * Non-blob entries (`type === "tree"` directories, `type === "commit"` submodule
+ * gitlinks) are dropped: seeding compares files, and a recursive tree already
+ * lists every blob with its full path, so the directory rows carry no information
+ * the diff needs.
+ */
+export function parseGitTreeResponse(response: unknown): readonly SeedTreeEntry[] | string {
+  if (typeof response !== "object" || response === null) {
+    return "git tree response is not an object";
+  }
+  const candidate = response as Partial<GitTreeResponse>;
+  if (!Array.isArray(candidate.tree)) {
+    return "git tree response missing `tree` array";
+  }
+  if (candidate.truncated === true) {
+    return "git tree response is truncated — cannot use as an idempotency basis";
+  }
+
+  const blobs: SeedTreeEntry[] = [];
+  for (const entry of candidate.tree) {
+    if (typeof entry !== "object" || entry === null) {
+      return "git tree entry is not an object";
+    }
+    const { path, type, sha } = entry as Record<string, unknown>;
+    if (typeof path !== "string" || typeof type !== "string" || typeof sha !== "string") {
+      return "git tree entry missing string path/type/sha";
+    }
+    if (type === "blob") blobs.push({ path, sha });
+  }
+
+  return blobs.sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 }
 
 /**

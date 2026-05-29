@@ -3,7 +3,14 @@ import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { computeSeedTree, diffSeedTree, gitBlobSha, parseSeedManifest, resolveSeedFiles } from "./seed-test-repo.ts";
+import {
+  computeSeedTree,
+  diffSeedTree,
+  gitBlobSha,
+  parseGitTreeResponse,
+  parseSeedManifest,
+  resolveSeedFiles,
+} from "./seed-test-repo.ts";
 
 describe("parseSeedManifest", () => {
   test("extracts include and exclude entries from fenced yaml", () => {
@@ -176,5 +183,65 @@ describe("diffSeedTree", () => {
 
   test("empty desired and empty target → vacuously idempotent", () => {
     expect(diffSeedTree([], [])).toEqual({ entries: [], extraneous: [], idempotent: true });
+  });
+});
+
+describe("parseGitTreeResponse", () => {
+  // Shape mirrors GitHub's GET /repos/{owner}/{repo}/git/trees/{sha}?recursive=1.
+  test("keeps blobs as {path, sha}, drops tree + commit entries, sorts by path", () => {
+    const response = {
+      sha: "root",
+      truncated: false,
+      tree: [
+        { path: "z.txt", mode: "100644", type: "blob", sha: "zzz", size: 3, url: "..." },
+        { path: "sub", mode: "040000", type: "tree", sha: "treeSha", url: "..." },
+        { path: "a.txt", mode: "100644", type: "blob", sha: "aaa", size: 1, url: "..." },
+        { path: "vendored", mode: "160000", type: "commit", sha: "submoduleSha" },
+      ],
+    };
+    expect(parseGitTreeResponse(response)).toEqual([
+      { path: "a.txt", sha: "aaa" },
+      { path: "z.txt", sha: "zzz" },
+    ]);
+  });
+
+  test("the parsed blob set feeds diffSeedTree directly (end-to-end bridge)", () => {
+    const existing = parseGitTreeResponse({
+      truncated: false,
+      tree: [{ path: "a.txt", type: "blob", sha: "aaa" }],
+    });
+    // Narrow off the error branch so the diff call type-checks.
+    if (typeof existing === "string") throw new Error(existing);
+    expect(diffSeedTree([{ path: "a.txt", sha: "aaa" }], existing).idempotent).toBe(true);
+  });
+
+  test("empty tree → empty blob set", () => {
+    expect(parseGitTreeResponse({ truncated: false, tree: [] })).toEqual([]);
+  });
+
+  test("truncated response is rejected (unsafe idempotency basis)", () => {
+    const result = parseGitTreeResponse({
+      truncated: true,
+      tree: [{ path: "a.txt", type: "blob", sha: "aaa" }],
+    });
+    expect(typeof result).toBe("string");
+    expect(result).toContain("truncated");
+  });
+
+  test("non-object response is rejected", () => {
+    expect(typeof parseGitTreeResponse(null)).toBe("string");
+    expect(typeof parseGitTreeResponse("oops")).toBe("string");
+  });
+
+  test("missing tree array is rejected", () => {
+    expect(typeof parseGitTreeResponse({ truncated: false })).toBe("string");
+  });
+
+  test("tree entry missing string path/type/sha is rejected", () => {
+    const result = parseGitTreeResponse({
+      truncated: false,
+      tree: [{ path: "a.txt", type: "blob" }], // no sha
+    });
+    expect(typeof result).toBe("string");
   });
 });
