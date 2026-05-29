@@ -38,8 +38,18 @@ Every file in this folder except this `README.md` is
 gitignored via the root `roms/.gitignore` rule (`*` + `!*/` + `!/README.md` + `!/*/README.md` + `!/*/*/README.md`). Drop ROMs confidently — git will
 not accidentally track them.
 
+## Redistribution-safe split
+
+ROMs confirmed safe to redistribute are moved out of this gitignored
+testbed into the tracked `roms-safe/atari/2600/` tree by
+`tools/roms/split-by-license.ts`, which classifies files against
+`tools/roms/manifests/atari-2600-allowlist`. See
+[`roms-safe/atari/2600/README.md`](../../../roms-safe/atari/2600/README.md)
+for the current safe set with per-ROM license citations.
+
 ## Cross-refs
 
 - `roms/README.md` — top-level protocol + the list of
   platforms removed for BIOS reasons.
 - `roms/atari/README.md` — the branch folder listing this platform alongside siblings.
+- `roms-safe/atari/2600/README.md` — the tracked safe ROMs split out of this folder.

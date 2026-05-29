@@ -1,0 +1,39 @@
+# Atari 2600 ROMs that are safe to redistribute.
+#
+# One canonical ROM filename per non-comment, non-blank line. Consumed by
+# tools/roms/split-by-license.ts (which drops these comments before matching).
+# Names are the canonical TOSEC-style names the sibling tools/roms/canonicalize.ts
+# normalizes on-disk files to, so matching is exact.
+#
+# Every entry MUST carry a license citation above it justifying inclusion
+# (B-0083 acceptance criteria; see tools/lint/no-empty-dirs.allowlist for the
+# in-repo "reason comment per entry" precedent). Each ROM below is a homebrew
+# release whose author explicitly permits free redistribution.
+
+# Halo 2600 -- homebrew demake by Ed Fries (ex-Microsoft); released as a free
+# download by the author. https://atariage.com/software_page.php?SoftwareLabelID=2008
+Halo 2600 (2010) (Ed Fries).bin
+
+# Anguna -- homebrew by Nathan Tolbert; free/open homebrew release.
+# https://www.bytesizedgames.com/anguna2600.html
+Anguna (2012) (Nathan Tolbert).bin
+
+# Thrust -- homebrew port by Thomas Jentzsch; freely distributed by the author.
+# https://atariage.com/software_page.php?SoftwareLabelID=921
+Thrust (2000) (Thomas Jentzsch).bin
+
+# Sheep It Up! -- homebrew by Dr. Ludos; released free by the author.
+# https://drludos.itch.io/sheep-it-up
+Sheep It Up! (2012) (Dr. Ludos).bin
+
+# Duck Attack! -- homebrew by Will Nicholes; free download from the author.
+# https://www.willnicholes.com/duckattack/
+Duck Attack! (2010) (Will Nicholes).bin
+
+# Jammed -- homebrew puzzle game by Chris Read; freely distributed homebrew.
+# https://atariage.com/software_page.php?SoftwareLabelID=2168
+Jammed (2009) (Chris Read).bin
+
+# Star Battle -- homebrew by Scott Williamson; free homebrew release.
+# https://atariage.com/software_page.php?SoftwareLabelID=1486
+Star Battle (2006) (Scott Williamson).bin
