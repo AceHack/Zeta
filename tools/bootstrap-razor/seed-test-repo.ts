@@ -305,13 +305,8 @@ function matchesAny(path: string, patterns: readonly string[]): boolean {
  * encoded here (the include list does not name those files, so they are
  * neither included nor a false-exclude here).
  */
-export function resolveSeedFiles(
-  candidates: readonly string[],
-  manifest: SeedManifest,
-): readonly string[] {
-  return candidates
-    .filter((path) => matchesAny(path, manifest.include) && !matchesAny(path, manifest.exclude))
-    .sort();
+export function resolveSeedFiles(candidates: readonly string[], manifest: SeedManifest): readonly string[] {
+  return candidates.filter((path) => matchesAny(path, manifest.include) && !matchesAny(path, manifest.exclude)).sort();
 }
 
 /**
@@ -356,10 +351,7 @@ export function computeSeedTree(resolved: readonly string[], root: string): read
  * no network, no gh. This is the comparison `computeSeedTree`'s slice named as
  * its handoff; a follow-up slice fetches the target tree via gh and feeds it in.
  */
-export function diffSeedTree(
-  desired: readonly SeedTreeEntry[],
-  existing: readonly SeedTreeEntry[],
-): SeedTreeDiff {
+export function diffSeedTree(desired: readonly SeedTreeEntry[], existing: readonly SeedTreeEntry[]): SeedTreeDiff {
   const byPath = new Map(existing.map((entry) => [entry.path, entry.sha]));
   const desiredPaths = new Set(desired.map((entry) => entry.path));
   const byPathSort = (a: { path: string }, b: { path: string }): number =>
@@ -620,6 +612,51 @@ export function buildSeedTreeRequest(diff: SeedTreeDiff): readonly GitTreeReques
 }
 
 /**
+ * Pure parser: the read-side pair of `buildSeedTreeRequest`, one step past
+ * `parseSeedBlobResponse` in the git-data write chain. Turns GitHub's
+ * `POST /repos/{owner}/{repo}/git/trees` (201) response — `{ "sha": "...", "url": "...",
+ * "tree": [...], "truncated": bool }` (verified against docs.github.com/en/rest/git/trees,
+ * API version 2026-03-10) — into the one field the next step consumes: the NEW tree's
+ * `sha`. That SHA is what `buildSeedCommitRequest`'s `treeSha` argument takes, so the
+ * network slice that follows is: take this SHA → `POST /git/commits` with it → fast-forward
+ * the ref. Distinct from `parseGitTreeResponse`, which parses the *read* (`GET .../git/trees/
+ * <sha>?recursive=1`) into the diff's `existing` entries; this parses the *write* response
+ * into the single SHA the write chain threads forward.
+ *
+ * Returns `{ sha }` on success, or an error string (same `T | string` convention as
+ * `parseSeedBlobResponse` / `parseCreateRepoResponse`) when the response is unusable. The
+ * success type is the single-field object `{ sha }` rather than a bare string so the
+ * `typeof result === "string"` test means "error" unambiguously — a bare-string success
+ * would collide with the error channel. Type-check only, no SHA-format validation (same
+ * restraint as `parseSeedBlobResponse`): a malformed SHA would surface as a 422 at the
+ * commit-create call, not here.
+ *
+ * Refusals:
+ *   - not an object (null, array, scalar)  → malformed
+ *   - `truncated: true`                    → the tree we submitted exceeded GitHub's max
+ *     entry limit, so the CREATED tree object is incomplete — a commit built on it would
+ *     be missing seed files. Rejected loudly rather than committing a partial seed. (Same
+ *     refusal as `parseGitTreeResponse`, opposite rationale: there a truncated READ would
+ *     mis-diff a missing path as a "create"; here a truncated WRITE means the seed itself
+ *     is short.)
+ *   - `sha` missing or non-string          → malformed (the commit step has no tree to
+ *     reference; the seed cannot proceed)
+ *
+ * Pure: no network, no gh, no filesystem; operates only on the already-parsed JSON value.
+ */
+export function parseSeedTreeResponse(response: unknown): { readonly sha: string } | string {
+  if (typeof response !== "object" || response === null || Array.isArray(response)) {
+    return "tree-create response is not an object";
+  }
+  const { sha, truncated } = response as Record<string, unknown>;
+  if (truncated === true) {
+    return "tree-create response is truncated — submitted tree exceeded the entry limit, created tree is incomplete";
+  }
+  if (typeof sha !== "string") return "tree-create response missing string `sha`";
+  return { sha };
+}
+
+/**
  * The provenance commit message for the seed (AC: "clear provenance message linking
  * back to B-0193"). A conventional-commit subject naming the file count, then a body
  * citing the seed manifest as the source-of-truth and the B-0193 parent / B-0343 slice
@@ -653,11 +690,7 @@ export function seedCommitMessage(fileCount: number): string {
  * filesystem. The network slice that follows is: submit this body → take the returned
  * commit SHA → `PATCH /git/refs/heads/<branch>` to fast-forward the ref.
  */
-export function buildSeedCommitRequest(
-  treeSha: string,
-  parentSha: string | null,
-  fileCount: number,
-): GitCommitRequest {
+export function buildSeedCommitRequest(treeSha: string, parentSha: string | null, fileCount: number): GitCommitRequest {
   return {
     message: seedCommitMessage(fileCount),
     tree: treeSha,

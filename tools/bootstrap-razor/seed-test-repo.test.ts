@@ -17,25 +17,28 @@ import {
   parseGitTreeResponse,
   parseSeedBlobResponse,
   parseSeedManifest,
+  parseSeedTreeResponse,
   resolveSeedFiles,
   seedCommitMessage,
 } from "./seed-test-repo.ts";
 
 describe("parseSeedManifest", () => {
   test("extracts include and exclude entries from fenced yaml", () => {
-    const manifest = parseSeedManifest([
-      "intro",
-      "```yaml",
-      "include:",
-      "  - openspec/specs/**/spec.md",
-      "  - src/Core/README.md          # if exists",
-      "",
-      "exclude:",
-      "  - AGENTS.md",
-      "  - docs/**  # except bootstrap-razor/ itself",
-      "```",
-      "outro",
-    ].join("\n"));
+    const manifest = parseSeedManifest(
+      [
+        "intro",
+        "```yaml",
+        "include:",
+        "  - openspec/specs/**/spec.md",
+        "  - src/Core/README.md          # if exists",
+        "",
+        "exclude:",
+        "  - AGENTS.md",
+        "  - docs/**  # except bootstrap-razor/ itself",
+        "```",
+        "outro",
+      ].join("\n"),
+    );
 
     expect(manifest).toEqual({
       include: ["openspec/specs/**/spec.md", "src/Core/README.md"],
@@ -83,10 +86,7 @@ describe("resolveSeedFiles", () => {
 
   test("result is sorted", () => {
     const candidates = ["tools/tla/specs/Z.tla", "tools/tla/specs/A.tla"];
-    expect(resolveSeedFiles(candidates, manifest)).toEqual([
-      "tools/tla/specs/A.tla",
-      "tools/tla/specs/Z.tla",
-    ]);
+    expect(resolveSeedFiles(candidates, manifest)).toEqual(["tools/tla/specs/A.tla", "tools/tla/specs/Z.tla"]);
   });
 
   test("empty candidate list resolves to empty set", () => {
@@ -121,8 +121,7 @@ describe("buildCreateRepoRequest", () => {
         name: "zeta-recreation-experiment",
         private: true,
         auto_init: false,
-        description:
-          "B-0193 bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
+        description: "B-0193 bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
       },
     });
   });
@@ -379,18 +378,14 @@ describe("diffSeedTree", () => {
 
   test("differing blob SHA → update, not idempotent", () => {
     const diff = diffSeedTree([a], [{ path: "a.txt", sha: "OLD" }]);
-    expect(diff.entries).toEqual([
-      { path: "a.txt", action: "update", desiredSha: "aaa", existingSha: "OLD" },
-    ]);
+    expect(diff.entries).toEqual([{ path: "a.txt", action: "update", desiredSha: "aaa", existingSha: "OLD" }]);
     expect(diff.idempotent).toBe(false);
   });
 
   test("extraneous target file is reported but does NOT break idempotency", () => {
     // Target has the desired file (matching) plus an extra file (e.g. auto-README).
     const diff = diffSeedTree([a], [a, c]);
-    expect(diff.entries).toEqual([
-      { path: "a.txt", action: "unchanged", desiredSha: "aaa", existingSha: "aaa" },
-    ]);
+    expect(diff.entries).toEqual([{ path: "a.txt", action: "unchanged", desiredSha: "aaa", existingSha: "aaa" }]);
     expect(diff.extraneous).toEqual([c]);
     expect(diff.idempotent).toBe(true);
   });
@@ -515,10 +510,7 @@ describe("buildSeedTreeRequest", () => {
 
   test("create + update become 100644 blob entries carrying the DESIRED sha", () => {
     // desired: a (matches → unchanged, dropped), b (differs → update), c (absent → create)
-    const diff = diffSeedTree(
-      [a, b, { path: "c.txt", sha: "ccc" }],
-      [a, { path: "b.txt", sha: "OLD" }],
-    );
+    const diff = diffSeedTree([a, b, { path: "c.txt", sha: "ccc" }], [a, { path: "b.txt", sha: "OLD" }]);
     expect(buildSeedTreeRequest(diff)).toEqual([
       // b.txt update carries desiredSha "bbb", NOT the existing "OLD"
       { path: "b.txt", mode: "100644", type: "blob", sha: "bbb" },
@@ -539,7 +531,13 @@ describe("buildSeedTreeRequest", () => {
 
   test("output stays path-sorted (inherits diffSeedTree's canonical order)", () => {
     const plan = buildSeedTreeRequest(
-      diffSeedTree([{ path: "z.txt", sha: "zzz" }, { path: "a.txt", sha: "aaa" }], []),
+      diffSeedTree(
+        [
+          { path: "z.txt", sha: "zzz" },
+          { path: "a.txt", sha: "aaa" },
+        ],
+        [],
+      ),
     );
     expect(plan.map((e) => e.path)).toEqual(["a.txt", "z.txt"]);
   });
@@ -549,6 +547,71 @@ describe("buildSeedTreeRequest", () => {
     const diff = diffSeedTree([a], [a, { path: "README.md", sha: "readme" }]);
     expect(diff.extraneous).toEqual([{ path: "README.md", sha: "readme" }]);
     expect(buildSeedTreeRequest(diff)).toEqual([]); // a.txt unchanged, README extraneous → nothing to write
+  });
+});
+
+describe("parseSeedTreeResponse", () => {
+  // A trimmed-but-realistic POST /repos/{owner}/{repo}/git/trees (201) response: the one
+  // field the seeder reads (sha = the NEW tree's SHA), plus the `url` and `tree` it ignores
+  // (proves selective reading). truncated:false is the normal create path.
+  const created = {
+    url: "https://api.github.com/repos/Lucent-Financial-Group/zeta-recreation-experiment/git/trees/cd8274d15fa3ae2ab983129fb037999f264ba9a7",
+    sha: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
+    tree: [{ path: "a.txt", mode: "100644", type: "blob", sha: "aaa" }],
+    truncated: false,
+  };
+
+  test("extracts the new tree sha, ignoring url + tree", () => {
+    expect(parseSeedTreeResponse(created)).toEqual({ sha: "cd8274d15fa3ae2ab983129fb037999f264ba9a7" });
+  });
+
+  test("the sha is what buildSeedCommitRequest's treeSha argument takes", () => {
+    const info = parseSeedTreeResponse(created);
+    if (typeof info === "string") throw new Error(`expected info, got refusal: ${info}`);
+    // The commit step threads this SHA forward: buildSeedCommitRequest(info.sha, parentSha, n).
+    expect(buildSeedCommitRequest(info.sha, null, 1).tree).toBe("cd8274d15fa3ae2ab983129fb037999f264ba9a7");
+  });
+
+  test("success is a {sha} object, not a bare string (disambiguates the error channel)", () => {
+    expect(typeof parseSeedTreeResponse(created)).toBe("object");
+  });
+
+  test("non-object responses are refused (null, array, scalar)", () => {
+    expect(typeof parseSeedTreeResponse(null)).toBe("string");
+    expect(typeof parseSeedTreeResponse([created])).toBe("string");
+    expect(typeof parseSeedTreeResponse("cd8274d")).toBe("string");
+    expect(typeof parseSeedTreeResponse(42)).toBe("string");
+  });
+
+  test("truncated:true is refused — created tree is incomplete, commit would miss seed files", () => {
+    // Opposite rationale to parseGitTreeResponse's truncated refusal: there a truncated READ
+    // would mis-diff; here a truncated WRITE means the seed itself is short.
+    expect(parseSeedTreeResponse({ ...created, truncated: true })).toContain("truncated");
+  });
+
+  test("truncated:false (and absent truncated) pass — only the literal true refuses", () => {
+    expect(parseSeedTreeResponse({ ...created, truncated: false })).toEqual({
+      sha: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
+    });
+    const { truncated, ...noTruncated } = created;
+    expect(parseSeedTreeResponse(noTruncated)).toEqual({
+      sha: "cd8274d15fa3ae2ab983129fb037999f264ba9a7",
+    });
+  });
+
+  test("missing string sha is refused (commit step has no tree to reference)", () => {
+    const { sha, ...rest } = created;
+    expect(parseSeedTreeResponse(rest)).toContain("sha");
+  });
+
+  test("a non-string sha of the right name is still refused", () => {
+    expect(typeof parseSeedTreeResponse({ ...created, sha: 12345 })).toBe("string");
+  });
+
+  test("type-checks only — any string sha is accepted verbatim (no SHA-format validation)", () => {
+    // Same restraint as parseSeedBlobResponse: a malformed SHA surfaces as a 422 at the
+    // commit-create call, not here.
+    expect(parseSeedTreeResponse({ sha: "not-a-real-sha" })).toEqual({ sha: "not-a-real-sha" });
   });
 });
 
@@ -597,9 +660,7 @@ describe("buildSeedCommitRequest", () => {
 
 describe("buildSeedRefUpdateRequest", () => {
   test("new ref → POST /git/refs with FULL refs/heads/<branch> body", () => {
-    expect(
-      buildSeedRefUpdateRequest("LFG", "seed-repo", "main", "deadbeef", false),
-    ).toEqual({
+    expect(buildSeedRefUpdateRequest("LFG", "seed-repo", "main", "deadbeef", false)).toEqual({
       method: "POST",
       path: "repos/LFG/seed-repo/git/refs",
       body: { ref: "refs/heads/main", sha: "deadbeef" },
@@ -607,9 +668,7 @@ describe("buildSeedRefUpdateRequest", () => {
   });
 
   test("existing ref → PATCH with SHORT heads/<branch> suffix and force:false", () => {
-    expect(
-      buildSeedRefUpdateRequest("LFG", "seed-repo", "main", "deadbeef", true),
-    ).toEqual({
+    expect(buildSeedRefUpdateRequest("LFG", "seed-repo", "main", "deadbeef", true)).toEqual({
       method: "PATCH",
       path: "repos/LFG/seed-repo/git/refs/heads/main",
       body: { sha: "deadbeef", force: false },
