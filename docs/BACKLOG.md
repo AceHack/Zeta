@@ -207,6 +207,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0345](backlog/P1/B-0345-document-recreation-findings-b0193.md)** Document recreation findings — research-grade preservation of experiment results
 - [ ] **[B-0346](backlog/P1/B-0346-backport-spec-gaps-to-openspec-b0193.md)** Back-port spec gaps to OpenSpec — close gaps the recreation experiment reveals
 - [ ] **[B-0347](backlog/P1/B-0347-carved-sentence-skill-descriptions-routing-budget.md)** Carved-sentence skill descriptions — fit 200+ skills into routing budget
+- [ ] **[B-0347.5](backlog/P1/B-0347.5-router-quality-verification-spot-check.md)** Router-quality verification — spot-check 10 carved skill descriptions
 - [x] **[B-0348](backlog/P1/B-0348-classify-claude-md-bullets-for-extraction.md)** Classify all CLAUDE.md bullets into extraction tiers
 - [x] **[B-0349](backlog/P1/B-0349-extract-operational-discipline-bullets-to-rules.md)** Extract operational-discipline bullets to .claude/rules/
 - [x] **[B-0350](backlog/P1/B-0350-extract-autonomy-identity-bullets-to-rules.md)** Extract autonomy/identity bullets to .claude/rules/
@@ -659,6 +660,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0316](backlog/P2/B-0316-long-tail-anchor-sweep-cadence.md)** Long-tail external-anchor cadenced sweep — memory files + research docs
 - [ ] **[B-0337](backlog/P2/B-0337-memory-trust-calculus-calibration-step8-b0190.md)** Memory trust-calculus calibration — measure cross-instance transmission fidelity
 - [ ] **[B-0338](backlog/P2/B-0338-memory-graduation-ladder-step9-b0190.md)** Memory graduation ladder — codify when feedback promotes to CLAUDE.md and when CLAUDE.md promotes to GOVERNANCE.md
+- [ ] **[B-0347.6](backlog/P2/B-0347.6-ci-wire-skill-description-audit-gate.md)** CI-wire the skill-description audit gate so the cap is enforced, not just checkable
 - [ ] **[B-0359](backlog/P2/B-0359-probabilistic-type-system-language-level-confidence-primitives.md)** Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)
 - [ ] **[B-0360](backlog/P2/B-0360-dbsp-identity-continuity-incremental-views-over-agent-state.md)** DBSP identity continuity — incremental views over agent state via D/I operators
 - [ ] **[B-0363](backlog/P2/B-0363-git-native-full-text-inverted-index.md)** Git-native full-text inverted index — Lucene-style search over repo substrate
@@ -944,6 +946,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0204](backlog/P3/B-0204-linguistic-seed-kernel-substrate-ocp-mdl-fsharp-ce-aaron-2026-05-05.md)** Linguistic seed kernel substrate -- OCP + carved-sentences/memes-as-kernels + formal-verification-of-docs + F# Computational Expressions implementation vehicle (Aaron 2026-05-05 4-claim synthesis collapse)
 - [ ] **[B-0205](backlog/P3/B-0205-multi-trajectory-validation-basis-instrumentation-aaron-2026-05-05.md)** Multi-trajectory longitudinal validation basis -- 6 orthogonal axes (DORA + less-each-time + falsifiability-rate + bootstrap-razor-pass + identity-preservation + engagement-gate-compliance) instrumentation (Aaron 2026-05-05)
 - [ ] **[B-0207](backlog/P3/B-0207-bun-segfault-paste-large-message-aaron-2026-05-05.md)** Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue` (upstream-bug capture)
+- [ ] **[B-0347.7](backlog/P3/B-0347.7-tighten-120-150-band-descriptions-to-preferred.md)** Tighten 120-150-char skill descriptions to the ≤120 preferred routing budget
 - [ ] **[B-0388](backlog/P3/B-0388-operational-resonance-naming-lock-expert-review-aaron-signoff-2026-05-09.md)** Lock name for Operational Resonance Dashboard — run naming-expert review, collect candidates, Aaron sign-off
 - [ ] **[B-0389](backlog/P3/B-0389-operational-resonance-ux-psychology-research-scope-doc-2026-05-09.md)** UX + psychology research scope doc — catalog papers/frameworks for dashboard design (Chomsky, pre-attentive, cognitive load, UX methodology)
 - [ ] **[B-0390](backlog/P3/B-0390-operational-resonance-time-to-answer-metric-formalization-2026-05-09.md)** Formalize "time-to-answer" as the primary dashboard metric — baseline, measurement methodology, acceptance criteria

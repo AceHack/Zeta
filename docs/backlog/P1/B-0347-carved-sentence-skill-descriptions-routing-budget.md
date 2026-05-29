@@ -6,9 +6,10 @@ title: "Carved-sentence skill descriptions — fit 200+ skills into routing budg
 effort: M
 created: 2026-05-09
 last_updated: 2026-05-29
-depends_on: []
+depends_on: [B-0347.5]
+children: [B-0347.5, B-0347.6, B-0347.7]
 classification: buildable-now
-decomposition: multi-child (re-decomp pass 1, smallest safe slice)
+decomposition: clean
 owners: [skill-expert]
 type: friction-reducer
 tags: [skill-routing, context-budget, carved-sentence]
@@ -89,16 +90,42 @@ a band-aid — the structural fix is shorter descriptions.
 - `skill-tune-up` and `skill-improver` — they can execute
   the carving pass
 
-## Re-decomposition (smallest safe slice, one bounded step)
+## Re-decomposition (pass 2, 2026-05-29 — substrate-drift-aware)
 
-Split into 4 atomic children by skill category (re-decomp assumes prior grouping mistakes; carve in parallel batches):
+Pass-1 split the row into 4 carve-by-category children (B-0347.1-.4).
+Twenty days later the carving has *shipped* — 257/257 descriptions are
+≤150 chars, single-line, boilerplate-free — so the pass-1 children are
+substrate-drift, not live work. Re-decomposed against the *actual*
+remaining state per `backlog-item-start-gate.md` Step 0:
 
-- B-0347.1: Carve infra/storage skills (Elasticsearch, vector, time-series, columnar, row-store, etc.) — ~40 skills
-- B-0347.2: Carve reviewer/auditor skills (alignment, spec-zealot, harsh-critic, etc.) — ~50 skills
-- B-0347.3: Carve data/AI skills (ML, Bayesian, LLM, retrieval, etc.) — ~60 skills
-- B-0347.4: Carve remaining (governance, ops, math, etc.) + router verification — rest + tests
+### Pass-1 children — disposition
 
-Each child: one PR, carve only, run focused doctor check, no body changes.
+- **B-0347.1-.3 (carve infra / reviewer / data-AI by category)** —
+  SUPERSEDED-as-shipped. The carving completed via batch PRs (#2266,
+  #2298, #6020, #6023, …) rather than separate child files; no child
+  row files were ever created for `.1-.3` and none are needed now.
+- **B-0347.4 (carve remaining + router verification + audit gate)** —
+  SHIPPED for the carve + audit-gate half via PR #6029
+  (`tools/hygiene/audit-skill-description-length.ts` + test). The
+  router-verification sub-step is carried forward as B-0347.5 below.
+
+### Pass-2 children — live remaining work (dependency-ordered)
+
+- **B-0347.5** (P1, buildable-now) — Router-quality verification:
+  spot-check ≥10 carved descriptions via the router. Closes the only
+  open acceptance criterion (#4). **Umbrella `depends_on: [B-0347.5]`
+  — closure blocks here.**
+- **B-0347.6** (P2, buildable-now) — CI-wire the audit gate so the cap
+  is *enforced*, not just checkable (precedent:
+  `role-ref-current-state-surfaces-lint.yml`). Robustness-hardening on
+  the shipped tool; does not block umbrella closure.
+- **B-0347.7** (P3, buildable-now) — Tighten the 127 descriptions in
+  the 120-150 band to the ≤120 *preferred* target (rule 1). Advisory
+  polish; the hard ≤150 cap is already met + gated; does not block
+  umbrella closure and may outlive it.
+
+Each child: one PR, focused check (audit tool run / router spot-check /
+workflow validate), no skill-body changes.
 
 ## Status (2026-05-29) — B-0347.4 audit-gate slice landed
 
