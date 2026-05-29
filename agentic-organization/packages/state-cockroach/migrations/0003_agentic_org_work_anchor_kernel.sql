@@ -59,6 +59,8 @@ CREATE TABLE IF NOT EXISTS agentic_org_work_item_state_history (
   transitioned_at TIMESTAMPTZ NOT NULL,
   transitioned_by_agent_id STRING NOT NULL,
   transitioned_by_hat_assignment_id STRING NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
   correlation_id STRING NOT NULL,
   causation_id STRING NOT NULL,
   trace_id STRING NOT NULL,

@@ -4,6 +4,11 @@ import { describe, test } from "node:test";
 import { CommandType, SupervisorChainLevel, SupervisorSignalToolType } from "../../domain/src/index.ts";
 import { HatAuthorityDecisionStatus, PolicyDecisionStatus } from "../../policy/src/index.ts";
 import {
+  CockroachCommandStateStoreStatement,
+  CockroachEventIngestionStoreStatement,
+  CockroachOutboxEventSourceStatement,
+  CockroachPolicyDecisionObservationStoreStatement,
+  CockroachWorkAnchorStateStoreStatement,
   createCockroachDurableStateAdapters,
   type CockroachAnySqlStatement,
   type CockroachOrganizationSqlExecutor,
@@ -55,12 +60,14 @@ describe("cockroach durable state adapters", () => {
       },
       observedAt: "2026-05-26T00:00:00.000Z",
     });
+    await adapters.workAnchorStateStore.findProject("project-agentic-org");
 
     deepEqual(executor.statementNames, [
-      "find_idempotency_record",
-      "claim_unpublished_outbox_events",
-      "find_inbox_receipt",
-      "record_policy_decision_observation",
+      CockroachCommandStateStoreStatement.FindIdempotencyRecord,
+      CockroachOutboxEventSourceStatement.ClaimUnpublishedOutboxEvents,
+      CockroachEventIngestionStoreStatement.FindInboxReceipt,
+      CockroachPolicyDecisionObservationStoreStatement.RecordPolicyDecisionObservation,
+      CockroachWorkAnchorStateStoreStatement.FindProject,
     ]);
   });
 });
@@ -77,7 +84,7 @@ function createRecordingOrganizationSqlExecutor(): CockroachOrganizationSqlExecu
 
       return {
         rows:
-          statement.name === "record_policy_decision_observation"
+          statement.name === CockroachPolicyDecisionObservationStoreStatement.RecordPolicyDecisionObservation
             ? ([{ policy_decision_id: "policy-decision-001" }] as Row[])
             : ([] as Row[]),
       };

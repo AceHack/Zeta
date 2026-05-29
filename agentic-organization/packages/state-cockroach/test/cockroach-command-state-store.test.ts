@@ -10,15 +10,19 @@ import {
 import {
   AgenticAggregateType,
   AgenticEventType,
+  ProjectStatus,
   SupervisorChainLevel,
   SupervisorSignalStatus,
   SupervisorSignalToolType,
+  WorkItemState,
+  WorkItemType,
 } from "../../domain/src/index.ts";
 import {
   CockroachCommandStateStoreStatement,
   createCockroachCommandStateStoreFactory,
   type CockroachSqlExecutor,
 } from "../src/cockroach-command-state-store.ts";
+import { CockroachWorkAnchorStateStoreStatement } from "../src/cockroach-work-anchor-state-store.ts";
 
 describe("cockroach command state store", () => {
   test("records command outcome in one transaction batch", async () => {
@@ -99,19 +103,46 @@ describe("cockroach command state store", () => {
 
     deepEqual(executor.transactionStatements[2]?.parameters.slice(6), [null, null]);
   });
+
+  test("records work-anchor effects in the command outcome transaction", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({ includeWorkAnchorEffects: true }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.Committed);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [
+        CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+        CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachWorkAnchorStateStoreStatement.InsertProject,
+        CockroachWorkAnchorStateStoreStatement.InsertWorkItem,
+        CockroachWorkAnchorStateStoreStatement.FindWorkItemForTransition,
+        CockroachWorkAnchorStateStoreStatement.FindTransitionId,
+        CockroachWorkAnchorStateStoreStatement.FindTransitionSequence,
+        CockroachWorkAnchorStateStoreStatement.UpdateWorkItemForTransition,
+        CockroachWorkAnchorStateStoreStatement.InsertWorkItemStateHistory,
+        CockroachCommandStateStoreStatement.InsertAuditEvent,
+        CockroachCommandStateStoreStatement.InsertOutboxEvent,
+      ],
+    );
+  });
 });
 
 type RecordingCockroachSqlExecutor = CockroachSqlExecutor & {
-  statements: { name: CockroachCommandStateStoreStatement; sql: string; parameters: readonly unknown[] }[];
-  transactionStatements: { name: CockroachCommandStateStoreStatement; sql: string; parameters: readonly unknown[] }[];
+  statements: { name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement; sql: string; parameters: readonly unknown[] }[];
+  transactionStatements: { name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement; sql: string; parameters: readonly unknown[] }[];
 };
 
 function createRecordingExecutor(
   input: { claimStatus?: CommandOutcomePersistenceStatus } = {},
 ): RecordingCockroachSqlExecutor {
-  const statements: { name: CockroachCommandStateStoreStatement; sql: string; parameters: readonly unknown[] }[] = [];
+  const statements: { name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement; sql: string; parameters: readonly unknown[] }[] = [];
   const transactionStatements: {
-    name: CockroachCommandStateStoreStatement;
+    name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement;
     sql: string;
     parameters: readonly unknown[];
   }[] = [];
@@ -128,7 +159,7 @@ function createRecordingExecutor(
     executeTransaction: async (operation) =>
       await operation({
         execute: async <Row = Record<string, unknown>>(statement: {
-          name: CockroachCommandStateStoreStatement;
+          name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement;
           sql: string;
           parameters: readonly unknown[];
         }) => {
@@ -152,6 +183,55 @@ function createRecordingExecutor(
             };
           }
 
+          if (statement.name === CockroachWorkAnchorStateStoreStatement.InsertProject) {
+            return {
+              rows: [{ id: statement.parameters[0] }] as readonly unknown[] as readonly Row[],
+            };
+          }
+
+          if (statement.name === CockroachWorkAnchorStateStoreStatement.InsertWorkItem) {
+            return {
+              rows: [{ id: statement.parameters[0] }] as readonly unknown[] as readonly Row[],
+            };
+          }
+
+          if (statement.name === CockroachWorkAnchorStateStoreStatement.FindWorkItemForTransition) {
+            return {
+              rows: [
+                {
+                  work_item_id: "work-command-effect-001",
+                  organization_id: "org-lfg",
+                  project_id: "project-agentic-org",
+                  initiative_id: null,
+                  work_item_type: WorkItemType.Task,
+                  title: "Command effect work item",
+                  description: "Created through command effects.",
+                  state: WorkItemState.Created,
+                  created_at: "2026-05-25T20:00:00.000Z",
+                  updated_at: "2026-05-25T20:00:00.000Z",
+                  version: 1,
+                  created_by_agent_id: "agent-developer-001",
+                  created_by_hat_assignment_id: "hat-assignment-dev-001",
+                  correlation_id: "corr-001",
+                  causation_id: "cause-001",
+                  trace_id: "trace-001",
+                },
+              ] as readonly unknown[] as readonly Row[],
+            };
+          }
+
+          if (statement.name === CockroachWorkAnchorStateStoreStatement.UpdateWorkItemForTransition) {
+            return {
+              rows: [{ id: statement.parameters[10] }] as readonly unknown[] as readonly Row[],
+            };
+          }
+
+          if (statement.name === CockroachWorkAnchorStateStoreStatement.InsertWorkItemStateHistory) {
+            return {
+              rows: [{ id: statement.parameters[0] }] as readonly unknown[] as readonly Row[],
+            };
+          }
+
           return {
             rows: [],
           };
@@ -161,7 +241,7 @@ function createRecordingExecutor(
 }
 
 function createCommandOutcome(
-  input: { includeAuditPolicyEvidence?: boolean } = {},
+  input: { includeAuditPolicyEvidence?: boolean; includeWorkAnchorEffects?: boolean } = {},
 ): RecordCommandOutcomeInput<CommandResult> {
   const includeAuditPolicyEvidence = input.includeAuditPolicyEvidence ?? true;
 
@@ -261,6 +341,105 @@ function createCommandOutcome(
           },
         },
       ],
+      ...(input.includeWorkAnchorEffects === true
+        ? {
+            workAnchors: {
+              projects: [
+                {
+                  projectId: "project-agentic-org",
+                  organizationId: "org-lfg",
+                  name: "Agentic Organization",
+                  status: ProjectStatus.Active,
+                  createdAt: "2026-05-25T20:00:00.000Z",
+                  createdBy: {
+                    agentId: "agent-developer-001",
+                    hatAssignmentId: "hat-assignment-dev-001",
+                  },
+                  metadata: {
+                    updatedAt: "2026-05-25T20:00:00.000Z",
+                    version: 1,
+                    correlationId: "corr-001",
+                    causationId: "cause-001",
+                    traceId: "trace-001",
+                  },
+                },
+              ],
+              initiatives: [],
+              workItems: [
+                {
+                  workItemId: "work-command-effect-001",
+                  organizationId: "org-lfg",
+                  projectId: "project-agentic-org",
+                  workItemType: WorkItemType.Task,
+                  title: "Command effect work item",
+                  description: "Created through command effects.",
+                  state: WorkItemState.Created,
+                  createdAt: "2026-05-25T20:00:00.000Z",
+                  createdBy: {
+                    agentId: "agent-developer-001",
+                    hatAssignmentId: "hat-assignment-dev-001",
+                  },
+                  metadata: {
+                    updatedAt: "2026-05-25T20:00:00.000Z",
+                    version: 1,
+                    correlationId: "corr-001",
+                    causationId: "cause-001",
+                    traceId: "trace-001",
+                  },
+                },
+              ],
+              workAnchorTargets: [],
+              workItemTransitions: [
+                {
+                  expectedVersion: 1,
+                  nextWorkItem: {
+                    workItemId: "work-command-effect-001",
+                    organizationId: "org-lfg",
+                    projectId: "project-agentic-org",
+                    workItemType: WorkItemType.Task,
+                    title: "Command effect work item",
+                    description: "Created through command effects.",
+                    state: WorkItemState.Intake,
+                    createdAt: "2026-05-25T20:00:00.000Z",
+                    createdBy: {
+                      agentId: "agent-developer-001",
+                      hatAssignmentId: "hat-assignment-dev-001",
+                    },
+                    metadata: {
+                      updatedAt: "2026-05-25T20:05:00.000Z",
+                      version: 2,
+                      correlationId: "corr-001",
+                      causationId: "cause-001",
+                      traceId: "trace-001",
+                    },
+                  },
+                  transition: {
+                    workStateTransitionId: "transition-command-effect-001",
+                    organizationId: "org-lfg",
+                    projectId: "project-agentic-org",
+                    workItemId: "work-command-effect-001",
+                    sequence: 1,
+                    fromState: WorkItemState.Created,
+                    toState: WorkItemState.Intake,
+                    evidenceArtifactIds: [],
+                    transitionedAt: "2026-05-25T20:05:00.000Z",
+                    transitionedBy: {
+                      agentId: "agent-developer-001",
+                      hatAssignmentId: "hat-assignment-dev-001",
+                    },
+                    metadata: {
+                      updatedAt: "2026-05-25T20:05:00.000Z",
+                      version: 1,
+                      correlationId: "corr-001",
+                      causationId: "cause-001",
+                      traceId: "trace-001",
+                    },
+                  },
+                },
+              ],
+            },
+          }
+        : {}),
     },
   };
 }

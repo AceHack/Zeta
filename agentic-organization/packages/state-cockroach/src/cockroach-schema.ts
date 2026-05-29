@@ -4,6 +4,7 @@ export const CockroachCoreStateMigrationName = {
   CoreStateV1: "0001_agentic_org_core_state",
   OutboxClaimFenceV2: "0002_agentic_org_outbox_claim_fence",
   WorkAnchorKernelV3: "0003_agentic_org_work_anchor_kernel",
+  WorkItemStateHistoryMetadataV4: "0004_agentic_org_work_item_state_history_metadata",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -88,7 +89,15 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachCoreStateMigration(),
     createCockroachOutboxClaimFenceMigration(),
     createCockroachWorkAnchorKernelMigration(),
+    createCockroachWorkItemStateHistoryMetadataMigration(),
   ];
+}
+
+export function createCockroachWorkItemStateHistoryMetadataMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.WorkItemStateHistoryMetadataV4,
+    sql: createWorkItemStateHistoryMetadataMigrationSql(),
+  };
 }
 
 function createProjectsTableSql(): string {
@@ -178,6 +187,8 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.WorkItemStateHistory} (
   transitioned_at TIMESTAMPTZ NOT NULL,
   transitioned_by_agent_id STRING NOT NULL,
   transitioned_by_hat_assignment_id STRING NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
   correlation_id STRING NOT NULL,
   causation_id STRING NOT NULL,
   trace_id STRING NOT NULL,
@@ -300,6 +311,24 @@ ALTER TABLE IF EXISTS ${CockroachTableName.WorkItems}
   ADD CONSTRAINT IF NOT EXISTS ${CockroachCheckConstraintName.WorkItemType} CHECK (work_item_type IN (${createSqlStringList(Object.values(WorkItemType))})),
   ADD CONSTRAINT IF NOT EXISTS ${CockroachCheckConstraintName.WorkItemState} CHECK (state IN (${createSqlStringList(Object.values(WorkItemState))}));`.trim(),
   ].join("\n\n");
+}
+
+function createWorkItemStateHistoryMetadataMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItemStateHistory}
+  ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ;
+
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItemStateHistory}
+  ADD COLUMN IF NOT EXISTS version INT8;
+
+UPDATE ${CockroachTableName.WorkItemStateHistory}
+  SET updated_at = COALESCE(updated_at, transitioned_at),
+      version = COALESCE(version, 1);
+
+ALTER TABLE IF EXISTS ${CockroachTableName.WorkItemStateHistory}
+  ALTER COLUMN updated_at SET NOT NULL,
+  ALTER COLUMN version SET NOT NULL;
+`.trim();
 }
 
 function createSqlStringList(values: readonly string[]): string {

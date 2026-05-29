@@ -6,8 +6,12 @@ import {
   AgenticEventType,
   CommandType,
   EventSchemaVersion,
+  InitiativeStatus,
+  ProjectStatus,
   SupervisorChainLevel,
   SupervisorSignalToolType,
+  WorkItemState,
+  WorkItemType,
 } from "../../domain/src/index.ts";
 import {
   HatAuthorityDecisionStatus,
@@ -36,9 +40,18 @@ import {
   CommandOutcomePersistenceStatus,
   type CommandStateStore,
   type CommandStateStoreFactory,
+  type CommandWorkAnchorInitiative,
+  type CommandWorkAnchorProject,
+  type CommandWorkAnchorWorkItem,
   type RecordCommandOutcomeInput,
   type RecordCommandOutcomeResult,
+  type WorkAnchorCommandEffects,
+  type WorkAnchorStateReaderPort,
 } from "../src/ports.ts";
+import {
+  createCreateWorkItemHandler,
+  type CreateWorkItemCommand,
+} from "../src/handlers/create-work-item.ts";
 
 const command: SendSupervisorSignalCommand = {
   commandId: "cmd-supervisor-signal-001",
@@ -70,6 +83,25 @@ const command: SendSupervisorSignalCommand = {
   },
 };
 
+const createWorkItemCommand: CreateWorkItemCommand = {
+  commandId: "cmd-create-work-item-001",
+  type: CommandType.CreateWorkItem,
+  idempotencyKey: "idem-create-work-item-001",
+  requestHash: "hash-create-work-item-001",
+  correlationId: "corr-create-work-item-001",
+  causationId: "cause-create-work-item-001",
+  traceId: "trace-create-work-item-001",
+  organizationId: "org-lfg",
+  projectId: "project-agentic-org",
+  actor: {
+    agentId: "agent-tpm-001",
+    hatAssignmentId: "hat-assignment-tpm-001",
+  },
+  workItemType: WorkItemType.Task,
+  title: "Create the first generic work item command",
+  description: "The Organization needs the first concrete work-anchor command.",
+};
+
 const ApplicationTestCommandType = {
   RecordGenericArtifact: "test.record_generic_artifact",
 } as const;
@@ -79,7 +111,7 @@ type RecordGenericArtifactCommand = PipelineCommand & {
   relatedWorkItemId?: string;
 };
 
-type OrganizationTestCommand = SendSupervisorSignalCommand | RecordGenericArtifactCommand;
+type OrganizationTestCommand = SendSupervisorSignalCommand | CreateWorkItemCommand | RecordGenericArtifactCommand;
 
 describe("command pipeline idempotency", () => {
   test("executes heterogeneous command handlers from one runtime registry", async () => {
@@ -104,6 +136,7 @@ describe("command pipeline idempotency", () => {
       policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
       handlerRegistry: createCommandHandlerRegistry<OrganizationTestCommand, CommandResult>([
         createSendSupervisorSignalHandler(),
+        createCreateWorkItemHandler(),
         createGenericArtifactHandler(),
       ]),
       now: () => "2026-05-28T21:00:00.000Z",
@@ -111,10 +144,13 @@ describe("command pipeline idempotency", () => {
     });
 
     const supervisorResult = await pipeline.execute(command);
+    const createWorkItemResult = await pipeline.execute(createWorkItemCommand);
     const genericResult = await pipeline.execute(genericCommand);
 
     equal(supervisorResult.status, CommandResultStatus.Accepted);
     equal(supervisorResult.supervisorSignal?.supervisorSignalId, "supervisor-signal-001");
+    equal(createWorkItemResult.status, CommandResultStatus.Accepted);
+    equal(createWorkItemResult.artifacts?.[0]?.artifactId, "work-item-001");
     equal(genericResult.status, CommandResultStatus.Accepted);
     deepEqual(genericResult.artifacts, [
       {
@@ -217,6 +253,233 @@ describe("command pipeline idempotency", () => {
       },
     ]);
     deepEqual(result.auditEventIds, ["audit-committed-001"]);
+  });
+
+  test("persists work-anchor command effects through the command outcome boundary", async () => {
+    const genericCommand: RecordGenericArtifactCommand = {
+      commandId: "cmd-generic-artifact-work-anchor-001",
+      type: ApplicationTestCommandType.RecordGenericArtifact,
+      idempotencyKey: "idem-generic-artifact-work-anchor-001",
+      requestHash: "hash-generic-artifact-work-anchor-001",
+      correlationId: "corr-generic-artifact-work-anchor-001",
+      causationId: "cause-generic-artifact-work-anchor-001",
+      traceId: "trace-generic-artifact-work-anchor-001",
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      actor: {
+        agentId: "agent-developer-001",
+        hatAssignmentId: "hat-assignment-dev-001",
+      },
+    };
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline<RecordGenericArtifactCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createGenericArtifactHandlerWithWorkAnchorEffects()]),
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(genericCommand);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    equal(stateStoreFactory.snapshot.projects.length, 1);
+    equal(stateStoreFactory.snapshot.workItems.length, 1);
+    equal(stateStoreFactory.snapshot.workStateTransitions.length, 1);
+    equal(stateStoreFactory.snapshot.workItems[0]?.workItemId, "work-generic-artifact-anchored-001");
+    equal(stateStoreFactory.snapshot.workStateTransitions[0]?.workItemId, "work-generic-artifact-anchored-001");
+  });
+
+  test("persists create work item through the generic command outcome boundary", async () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline<CreateWorkItemCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createCreateWorkItemHandler()]),
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(createWorkItemCommand);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    deepEqual(result.artifacts, [
+      {
+        artifactType: CommandResultArtifactType.WorkItem,
+        artifactId: "work-item-001",
+        label: "Create the first generic work item command",
+      },
+    ]);
+    deepEqual(result.emittedEvents, [
+      {
+        eventId: "evt-001",
+        eventType: AgenticEventType.WorkItemChanged,
+        aggregateId: "work-item-001",
+        aggregateType: AgenticAggregateType.WorkItem,
+      },
+    ]);
+    deepEqual(result.auditEventIds, ["audit-001"]);
+    equal(stateStoreFactory.snapshot.workItems.length, 1);
+    equal(stateStoreFactory.snapshot.workItems[0]?.state, WorkItemState.Created);
+    equal(stateStoreFactory.snapshot.workItems[0]?.workItemType, WorkItemType.Task);
+    equal(stateStoreFactory.snapshot.auditEvents.length, 1);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 1);
+  });
+
+  test("rejects supervisor signals for missing work anchors through the command pipeline", async () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline<SendSupervisorSignalCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      workAnchorStateReader: createMissingWorkAnchorStateReader(),
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(stateStoreFactory.snapshot.supervisorSignals.length, 0);
+    equal(stateStoreFactory.snapshot.auditEvents.length, 0);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 0);
+  });
+
+  test("does not cache retryable work-anchor precondition failures as idempotent outcomes", async () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const workAnchorStateReader = createMutableWorkAnchorStateReader();
+    const pipeline = createCommandPipeline<SendSupervisorSignalCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+      workAnchorStateReader,
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const firstResult = await pipeline.execute(command);
+    workAnchorStateReader.workItem = createValidSupervisorSignalWorkItem(command);
+    const retryResult = await pipeline.execute(command);
+
+    equal(firstResult.status, CommandResultStatus.Rejected);
+    equal(firstResult.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(retryResult.status, CommandResultStatus.Accepted);
+    equal(retryResult.idempotency.replayed, false);
+    equal(stateStoreFactory.snapshot.supervisorSignals.length, 1);
+    equal(stateStoreFactory.snapshot.idempotencyRecords.size, 1);
+  });
+
+  test("does not cache retryable create work item reference preconditions as idempotent outcomes", async () => {
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const workAnchorStateReader = createMutableWorkAnchorReferenceReader();
+    const pipeline = createCommandPipeline<CreateWorkItemCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createCreateWorkItemHandler()]),
+      workAnchorStateReader,
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const firstResult = await pipeline.execute({
+      ...createWorkItemCommand,
+      initiativeId: "initiative-agentic-org-001",
+    });
+    workAnchorStateReader.project = createValidCommandProject(createWorkItemCommand);
+    workAnchorStateReader.initiative = createValidCommandInitiative(createWorkItemCommand);
+    const retryResult = await pipeline.execute({
+      ...createWorkItemCommand,
+      initiativeId: "initiative-agentic-org-001",
+    });
+
+    equal(firstResult.status, CommandResultStatus.Rejected);
+    equal(firstResult.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(retryResult.status, CommandResultStatus.Accepted);
+    equal(retryResult.idempotency.replayed, false);
+    equal(stateStoreFactory.snapshot.workItems.length, 1);
+    equal(stateStoreFactory.snapshot.idempotencyRecords.size, 1);
+  });
+
+  test("rolls back all in-memory command effects when work-anchor effects are invalid", async () => {
+    const genericCommand: RecordGenericArtifactCommand = {
+      commandId: "cmd-generic-artifact-invalid-work-anchor-001",
+      type: ApplicationTestCommandType.RecordGenericArtifact,
+      idempotencyKey: "idem-generic-artifact-invalid-work-anchor-001",
+      requestHash: "hash-generic-artifact-invalid-work-anchor-001",
+      correlationId: "corr-generic-artifact-invalid-work-anchor-001",
+      causationId: "cause-generic-artifact-invalid-work-anchor-001",
+      traceId: "trace-generic-artifact-invalid-work-anchor-001",
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      actor: {
+        agentId: "agent-developer-001",
+        hatAssignmentId: "hat-assignment-dev-001",
+      },
+    };
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline<RecordGenericArtifactCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createGenericArtifactHandlerWithInvalidWorkAnchorEffects()]),
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    try {
+      await pipeline.execute(genericCommand);
+      throw new Error("expected invalid work-anchor effects to fail");
+    } catch (error) {
+      equal(error instanceof Error, true);
+      equal((error as Error).message, "conflict:version_mismatch");
+    }
+
+    equal(stateStoreFactory.snapshot.projects.length, 0);
+    equal(stateStoreFactory.snapshot.workItems.length, 0);
+    equal(stateStoreFactory.snapshot.workStateTransitions.length, 0);
+    equal(stateStoreFactory.snapshot.auditEvents.length, 0);
+    equal(stateStoreFactory.snapshot.outboxEvents.length, 0);
+  });
+
+  test("isolates in-memory command work-anchor effects from caller and snapshot mutation", async () => {
+    const genericCommand: RecordGenericArtifactCommand = {
+      commandId: "cmd-generic-artifact-isolation-001",
+      type: ApplicationTestCommandType.RecordGenericArtifact,
+      idempotencyKey: "idem-generic-artifact-isolation-001",
+      requestHash: "hash-generic-artifact-isolation-001",
+      correlationId: "corr-generic-artifact-isolation-001",
+      causationId: "cause-generic-artifact-isolation-001",
+      traceId: "trace-generic-artifact-isolation-001",
+      organizationId: "org-lfg",
+      projectId: "project-agentic-org",
+      actor: {
+        agentId: "agent-developer-001",
+        hatAssignmentId: "hat-assignment-dev-001",
+      },
+    };
+    const stateStoreFactory = createInMemoryOrganizationStoreFactory<CommandResult>();
+    const capturedEffects = createValidWorkAnchorCommandEffects(genericCommand);
+    const pipeline = createCommandPipeline<RecordGenericArtifactCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([createGenericArtifactHandlerWithCapturedWorkAnchorEffects(capturedEffects)]),
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(genericCommand);
+    capturedEffects.workItems[0]!.title = "Mutated caller title";
+    stateStoreFactory.snapshot.workItems[0]!.title = "Mutated snapshot title";
+
+    equal(result.status, CommandResultStatus.Accepted);
+    equal(stateStoreFactory.snapshot.workItems[0]?.title, "Anchored work item");
   });
 
   test("replaying the same idempotency key returns the stored result", async () => {
@@ -736,6 +999,277 @@ function createGenericArtifactHandlerWithEffects() {
         ],
       },
     }),
+  };
+}
+
+function createGenericArtifactHandlerWithWorkAnchorEffects() {
+  return {
+    commandType: ApplicationTestCommandType.RecordGenericArtifact,
+    execute: async (recordCommand: RecordGenericArtifactCommand) => ({
+      result: {
+        commandId: recordCommand.commandId,
+        status: CommandResultStatus.Accepted,
+        artifacts: [
+          {
+            artifactType: CommandResultArtifactType.WorkItem,
+            artifactId: "work-generic-artifact-anchored-001",
+            label: "Anchored work item",
+          },
+        ],
+        emittedEvents: [],
+        auditEventIds: [],
+        idempotency: {
+          replayed: false,
+        },
+      },
+      effects: {
+        supervisorSignals: [],
+        auditEvents: [],
+        outboxEvents: [],
+        workAnchors: createValidWorkAnchorCommandEffects(recordCommand),
+      },
+    }),
+  };
+}
+
+function createGenericArtifactHandlerWithInvalidWorkAnchorEffects() {
+  return {
+    commandType: ApplicationTestCommandType.RecordGenericArtifact,
+    execute: async (recordCommand: RecordGenericArtifactCommand) => {
+      const workAnchors = createValidWorkAnchorCommandEffects(recordCommand);
+      return {
+        result: {
+          commandId: recordCommand.commandId,
+          status: CommandResultStatus.Accepted,
+          artifacts: [],
+          emittedEvents: [],
+          auditEventIds: [],
+          idempotency: {
+            replayed: false,
+          },
+        },
+        effects: {
+          supervisorSignals: [],
+          auditEvents: [
+            {
+              auditEventId: "audit-invalid-work-anchor-001",
+              eventName: AgenticEventType.WorkItemChanged,
+              aggregateId: "work-generic-artifact-anchored-001",
+              actor: recordCommand.actor,
+              occurredAt: "2026-05-28T21:00:00.000Z",
+            },
+          ],
+          outboxEvents: [],
+          workAnchors: {
+            ...workAnchors,
+            workItemTransitions: workAnchors.workItemTransitions.map((transitionInput) => ({
+              ...transitionInput,
+              expectedVersion: 99,
+            })),
+          },
+        },
+      };
+    },
+  };
+}
+
+function createGenericArtifactHandlerWithCapturedWorkAnchorEffects(workAnchors: WorkAnchorCommandEffects) {
+  return {
+    commandType: ApplicationTestCommandType.RecordGenericArtifact,
+    execute: async (recordCommand: RecordGenericArtifactCommand) => ({
+      result: {
+        commandId: recordCommand.commandId,
+        status: CommandResultStatus.Accepted,
+        artifacts: [],
+        emittedEvents: [],
+        auditEventIds: [],
+        idempotency: {
+          replayed: false,
+        },
+      },
+      effects: {
+        supervisorSignals: [],
+        auditEvents: [],
+        outboxEvents: [],
+        workAnchors,
+      },
+    }),
+  };
+}
+
+function createMissingWorkAnchorStateReader(): WorkAnchorStateReaderPort {
+  return {
+    findProject: async () => undefined,
+    findInitiative: async () => undefined,
+    findWorkItem: async () => undefined,
+  };
+}
+
+function createMutableWorkAnchorStateReader(): WorkAnchorStateReaderPort & {
+  workItem: CommandWorkAnchorWorkItem | undefined;
+} {
+  return {
+    workItem: undefined,
+    findProject: async () => undefined,
+    findInitiative: async () => undefined,
+    findWorkItem: async function findWorkItem() {
+      return this.workItem;
+    },
+  };
+}
+
+function createMutableWorkAnchorReferenceReader(): WorkAnchorStateReaderPort & {
+  project: CommandWorkAnchorProject | undefined;
+  initiative: CommandWorkAnchorInitiative | undefined;
+} {
+  return {
+    project: undefined,
+    initiative: undefined,
+    findProject: async function findProject() {
+      return this.project;
+    },
+    findInitiative: async function findInitiative() {
+      return this.initiative;
+    },
+    findWorkItem: async () => undefined,
+  };
+}
+
+function createValidCommandProject(commandInput: CreateWorkItemCommand): CommandWorkAnchorProject {
+  return {
+    projectId: commandInput.projectId,
+    organizationId: commandInput.organizationId,
+    name: "Agentic Organization",
+    status: ProjectStatus.Active,
+    createdAt: "2026-05-28T20:00:00.000Z",
+    createdBy: commandInput.actor,
+    metadata: {
+      updatedAt: "2026-05-28T20:00:00.000Z",
+      version: 1,
+      correlationId: commandInput.correlationId,
+      causationId: commandInput.causationId,
+      traceId: commandInput.traceId,
+    },
+  };
+}
+
+function createValidCommandInitiative(commandInput: CreateWorkItemCommand): CommandWorkAnchorInitiative {
+  return {
+    initiativeId: "initiative-agentic-org-001",
+    organizationId: commandInput.organizationId,
+    projectId: commandInput.projectId,
+    title: "Work anchor command handlers",
+    status: InitiativeStatus.Active,
+    createdAt: "2026-05-28T20:10:00.000Z",
+    createdBy: commandInput.actor,
+    metadata: {
+      updatedAt: "2026-05-28T20:10:00.000Z",
+      version: 1,
+      correlationId: commandInput.correlationId,
+      causationId: commandInput.causationId,
+      traceId: commandInput.traceId,
+    },
+  };
+}
+
+function createValidSupervisorSignalWorkItem(commandInput: SendSupervisorSignalCommand): CommandWorkAnchorWorkItem {
+  return {
+    workItemId: commandInput.policyContext.scope.workItemId,
+    organizationId: commandInput.organizationId,
+    projectId: commandInput.projectId,
+    workItemType: WorkItemType.Task,
+    title: "Supervisor signal anchor",
+    description: "Anchor created between retry attempts.",
+    state: WorkItemState.Created,
+    createdAt: "2026-05-28T21:00:00.000Z",
+    createdBy: commandInput.actor,
+    metadata: {
+      updatedAt: "2026-05-28T21:00:00.000Z",
+      version: 1,
+      correlationId: commandInput.correlationId,
+      causationId: commandInput.causationId,
+      traceId: commandInput.traceId,
+    },
+  };
+}
+
+function createValidWorkAnchorCommandEffects(recordCommand: RecordGenericArtifactCommand): WorkAnchorCommandEffects {
+  const workItem = createValidAnchoredWorkItem(recordCommand);
+  return {
+    projects: [
+      {
+        projectId: recordCommand.projectId,
+        organizationId: recordCommand.organizationId,
+        name: "Agentic Organization",
+        status: ProjectStatus.Active,
+        createdAt: "2026-05-28T21:00:00.000Z",
+        createdBy: recordCommand.actor,
+        metadata: {
+          updatedAt: "2026-05-28T21:00:00.000Z",
+          version: 1,
+          correlationId: recordCommand.correlationId,
+          causationId: recordCommand.causationId,
+          traceId: recordCommand.traceId,
+        },
+      },
+    ],
+    initiatives: [],
+    workItems: [workItem],
+    workAnchorTargets: [],
+    workItemTransitions: [
+      {
+        expectedVersion: 1,
+        nextWorkItem: {
+          ...workItem,
+          state: WorkItemState.Intake,
+          metadata: {
+            ...workItem.metadata,
+            updatedAt: "2026-05-28T21:05:00.000Z",
+            version: 2,
+          },
+        },
+        transition: {
+          workStateTransitionId: "transition-generic-artifact-anchored-001",
+          organizationId: recordCommand.organizationId,
+          projectId: recordCommand.projectId,
+          workItemId: "work-generic-artifact-anchored-001",
+          sequence: 1,
+          fromState: WorkItemState.Created,
+          toState: WorkItemState.Intake,
+          evidenceArtifactIds: [],
+          transitionedAt: "2026-05-28T21:05:00.000Z",
+          transitionedBy: recordCommand.actor,
+          metadata: {
+            updatedAt: "2026-05-28T21:05:00.000Z",
+            version: 1,
+            correlationId: recordCommand.correlationId,
+            causationId: recordCommand.causationId,
+            traceId: recordCommand.traceId,
+          },
+        },
+      },
+    ],
+  };
+}
+
+function createValidAnchoredWorkItem(recordCommand: RecordGenericArtifactCommand): CommandWorkAnchorWorkItem {
+  return {
+    workItemId: "work-generic-artifact-anchored-001",
+    organizationId: recordCommand.organizationId,
+    projectId: recordCommand.projectId,
+    workItemType: WorkItemType.Task,
+    title: "Anchored work item",
+    description: "Command effect used to prove atomic work-anchor persistence.",
+    state: WorkItemState.Created,
+    createdAt: "2026-05-28T21:00:00.000Z",
+    createdBy: recordCommand.actor,
+    metadata: {
+      updatedAt: "2026-05-28T21:00:00.000Z",
+      version: 1,
+      correlationId: recordCommand.correlationId,
+      causationId: recordCommand.causationId,
+      traceId: recordCommand.traceId,
+    },
   };
 }
 

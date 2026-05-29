@@ -14,6 +14,7 @@ import {
   createCockroachMigrationBootstrapper,
   createCockroachReadinessProbe,
   createCockroachWorkAnchorKernelMigration,
+  createCockroachWorkItemStateHistoryMetadataMigration,
   createCockroachSqlExecutor,
   createCockroachWorkerShutdownPort,
   createCockroachWorkerSqlClient,
@@ -56,8 +57,12 @@ const CockroachIntegrationStatementName = {
   InsertInvalidSequence: "integration_insert_invalid_sequence",
   InsertLegacyWorkItem: "integration_insert_legacy_work_item",
   InsertWorkItemStateHistory: "integration_insert_work_item_state_history",
+  ApplyWorkItemStateHistoryMetadataMigration: "integration_apply_work_item_state_history_metadata_migration",
+  CreateLegacyWorkItemStateHistoryTable: "integration_create_legacy_work_item_state_history_table",
+  InsertLegacyWorkItemStateHistoryWithoutMetadata: "integration_insert_legacy_work_item_state_history_without_metadata",
   InsertWorkItemWithoutTrace: "integration_insert_work_item_without_trace",
   SelectLegacyWorkItem: "integration_select_legacy_work_item",
+  SelectLegacyWorkItemStateHistoryMetadata: "integration_select_legacy_work_item_state_history_metadata",
 } as const;
 
 const CockroachIntegrationRuntimeErrorMessage = {
@@ -80,17 +85,22 @@ type CockroachIntegrationSql = {
 type WorkAnchorMigrationRun = {
   sql: {
     CreateLegacyWorkItemsTable: string;
+    CreateLegacyWorkItemStateHistoryTable: string;
     DropLegacyWorkItemsTable: string;
+    ApplyWorkItemStateHistoryMetadataMigration: string;
     InsertDuplicateSequence: string;
     InsertInvalidSequence: string;
+    InsertLegacyWorkItemStateHistoryWithoutMetadata: string;
     InsertLegacyWorkItem: string;
     InsertWorkItemStateHistory: string;
     InsertWorkItemWithoutTrace: string;
     SelectLegacyWorkItem: string;
+    SelectLegacyWorkItemStateHistoryMetadata: string;
     WorkAnchorMigration: string;
   };
   workItemsTableName: string;
   workItemStateHistoryTableName: string;
+  workItemStateHistoryMetadataTableName: string;
 };
 
 type LegacyWorkItemRow = {
@@ -100,6 +110,11 @@ type LegacyWorkItemRow = {
   updated_at: Date;
   version: string;
   work_item_type: string;
+};
+
+type LegacyWorkItemStateHistoryMetadataRow = {
+  updated_at: Date;
+  version: string;
 };
 
 describe("Cockroach worker live integration", () => {
@@ -285,6 +300,32 @@ describe("Cockroach worker live integration", () => {
           sql: run.sql.InsertInvalidSequence,
           parameters: [],
         });
+
+        await executor.execute({
+          name: CockroachIntegrationStatementName.CreateLegacyWorkItemStateHistoryTable,
+          sql: run.sql.CreateLegacyWorkItemStateHistoryTable,
+          parameters: [],
+        });
+        await executor.execute({
+          name: CockroachIntegrationStatementName.InsertLegacyWorkItemStateHistoryWithoutMetadata,
+          sql: run.sql.InsertLegacyWorkItemStateHistoryWithoutMetadata,
+          parameters: [],
+        });
+        await executor.execute({
+          name: CockroachIntegrationStatementName.ApplyWorkItemStateHistoryMetadataMigration,
+          sql: run.sql.ApplyWorkItemStateHistoryMetadataMigration,
+          parameters: [],
+        });
+
+        const metadataRows = await executor.execute<LegacyWorkItemStateHistoryMetadataRow>({
+          name: CockroachIntegrationStatementName.SelectLegacyWorkItemStateHistoryMetadata,
+          sql: run.sql.SelectLegacyWorkItemStateHistoryMetadata,
+          parameters: [],
+        });
+
+        equal(metadataRows.rows.length, 1);
+        equal(metadataRows.rows[0]?.updated_at.toISOString(), "2026-05-01T12:40:00.000Z");
+        equal(metadataRows.rows[0]?.version, "1");
       } finally {
         await executor.execute({
           name: CockroachIntegrationStatementName.DropLegacyWorkItemsTable,
@@ -371,23 +412,33 @@ function createWorkAnchorMigrationRun(): WorkAnchorMigrationRun {
   const suffix = randomUUID().replaceAll("-", "_");
   const workItemsTableName = `${CockroachTableName.WorkItems}_${suffix}`;
   const workItemStateHistoryTableName = `${CockroachTableName.WorkItemStateHistory}_${suffix}`;
+  const workItemStateHistoryMetadataTableName = `${CockroachTableName.WorkItemStateHistory}_metadata_${suffix}`;
   assertSafeCockroachIdentifier(workItemsTableName);
   assertSafeCockroachIdentifier(workItemStateHistoryTableName);
+  assertSafeCockroachIdentifier(workItemStateHistoryMetadataTableName);
 
   return {
-    sql: createWorkAnchorMigrationSql(workItemsTableName, workItemStateHistoryTableName),
+    sql: createWorkAnchorMigrationSql(
+      workItemsTableName,
+      workItemStateHistoryTableName,
+      workItemStateHistoryMetadataTableName,
+    ),
     workItemsTableName,
     workItemStateHistoryTableName,
+    workItemStateHistoryMetadataTableName,
   };
 }
 
 function createWorkAnchorMigrationSql(
   workItemsTableName: string,
   workItemStateHistoryTableName: string,
+  workItemStateHistoryMetadataTableName: string,
 ): WorkAnchorMigrationRun["sql"] {
   const workAnchorMigration = createCockroachWorkAnchorKernelMigration().sql
     .replaceAll(CockroachTableName.WorkItems, workItemsTableName)
     .replaceAll(CockroachTableName.WorkItemStateHistory, workItemStateHistoryTableName);
+  const workItemStateHistoryMetadataMigration = createCockroachWorkItemStateHistoryMetadataMigration().sql
+    .replaceAll(CockroachTableName.WorkItemStateHistory, workItemStateHistoryMetadataTableName);
 
   return {
     CreateLegacyWorkItemsTable: `
@@ -403,8 +454,27 @@ CREATE TABLE IF NOT EXISTS ${workItemsTableName} (
   created_by_hat_assignment_id STRING NOT NULL
 );`.trim(),
     DropLegacyWorkItemsTable: `
+DROP TABLE IF EXISTS ${workItemStateHistoryMetadataTableName};
 DROP TABLE IF EXISTS ${workItemStateHistoryTableName};
 DROP TABLE IF EXISTS ${workItemsTableName};`.trim(),
+    CreateLegacyWorkItemStateHistoryTable: `
+CREATE TABLE IF NOT EXISTS ${workItemStateHistoryMetadataTableName} (
+  work_state_transition_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  sequence INT8 NOT NULL CONSTRAINT legacy_metadata_sequence_positive_check CHECK (sequence > 0),
+  from_state STRING NOT NULL,
+  to_state STRING NOT NULL,
+  evidence_artifact_ids JSONB NOT NULL,
+  transitioned_at TIMESTAMPTZ NOT NULL,
+  transitioned_by_agent_id STRING NOT NULL,
+  transitioned_by_hat_assignment_id STRING NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL,
+  UNIQUE (work_item_id, sequence)
+);`.trim(),
     InsertLegacyWorkItem: `
 INSERT INTO ${workItemsTableName} (
   work_item_id,
@@ -468,6 +538,8 @@ INSERT INTO ${workItemStateHistoryTableName} (
   transitioned_at,
   transitioned_by_agent_id,
   transitioned_by_hat_assignment_id,
+  updated_at,
+  version,
   correlation_id,
   causation_id,
   trace_id
@@ -483,6 +555,8 @@ INSERT INTO ${workItemStateHistoryTableName} (
   '2026-05-01T12:10:00.000Z',
   'agent-live-migration',
   'hat-live-migration',
+  '2026-05-01T12:10:00.000Z',
+  1,
   'correlation-live-migration',
   'causation-live-migration',
   'trace-live-migration'
@@ -500,6 +574,8 @@ INSERT INTO ${workItemStateHistoryTableName} (
   transitioned_at,
   transitioned_by_agent_id,
   transitioned_by_hat_assignment_id,
+  updated_at,
+  version,
   correlation_id,
   causation_id,
   trace_id
@@ -515,6 +591,8 @@ INSERT INTO ${workItemStateHistoryTableName} (
   '2026-05-01T12:20:00.000Z',
   'agent-live-migration',
   'hat-live-migration',
+  '2026-05-01T12:20:00.000Z',
+  2,
   'correlation-live-migration',
   'causation-live-migration',
   'trace-live-migration'
@@ -532,6 +610,8 @@ INSERT INTO ${workItemStateHistoryTableName} (
   transitioned_at,
   transitioned_by_agent_id,
   transitioned_by_hat_assignment_id,
+  updated_at,
+  version,
   correlation_id,
   causation_id,
   trace_id
@@ -547,6 +627,8 @@ INSERT INTO ${workItemStateHistoryTableName} (
   '2026-05-01T12:30:00.000Z',
   'agent-live-migration',
   'hat-live-migration',
+  '2026-05-01T12:30:00.000Z',
+  1,
   'correlation-live-migration',
   'causation-live-migration',
   'trace-live-migration'
@@ -555,6 +637,43 @@ INSERT INTO ${workItemStateHistoryTableName} (
 SELECT work_item_type, updated_at, version, correlation_id, causation_id, trace_id
 FROM ${workItemsTableName}
 WHERE work_item_id = 'legacy-work-item';`.trim(),
+    InsertLegacyWorkItemStateHistoryWithoutMetadata: `
+INSERT INTO ${workItemStateHistoryMetadataTableName} (
+  work_state_transition_id,
+  organization_id,
+  project_id,
+  work_item_id,
+  sequence,
+  from_state,
+  to_state,
+  evidence_artifact_ids,
+  transitioned_at,
+  transitioned_by_agent_id,
+  transitioned_by_hat_assignment_id,
+  correlation_id,
+  causation_id,
+  trace_id
+) VALUES (
+  'transition-without-metadata',
+  'org-live-migration',
+  'project-live-migration',
+  'legacy-work-item',
+  2,
+  'intake',
+  'triage',
+  '[]':::JSONB,
+  '2026-05-01T12:40:00.000Z',
+  'agent-live-migration',
+  'hat-live-migration',
+  'correlation-live-migration',
+  'causation-live-migration',
+  'trace-live-migration'
+);`.trim(),
+    SelectLegacyWorkItemStateHistoryMetadata: `
+SELECT updated_at, version
+FROM ${workItemStateHistoryMetadataTableName}
+WHERE work_state_transition_id = 'transition-without-metadata';`.trim(),
+    ApplyWorkItemStateHistoryMetadataMigration: workItemStateHistoryMetadataMigration,
     WorkAnchorMigration: workAnchorMigration,
   };
 }

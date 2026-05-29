@@ -94,9 +94,28 @@ constraints derive from domain enum values. Migration backfill defaults
 are dropped after legacy rows are patched so future writes still require
 real command provenance, legacy `updated_at` is preserved from
 `created_at`, and state-history sequence constraints protect replay
-order. The remaining gap is command handlers and generic state ports
-that validate anchor existence before supervisor signals, discussions,
-and meetings can mutate state.
+order. The first generic `WorkAnchorStateStore` port is now in place for
+project, initiative, work item, anchor target, and state-transition
+tests; it preserves provenance metadata, expected-version advancement,
+scope consistency, lifecycle evidence for domain transition validation,
+and reference isolation so command tests do not depend on Cockroach
+directly. The durable Cockroach adapter now implements that same port and
+is exposed through the durable state adapter composition, with an
+additive V4 migration for transition metadata on existing databases.
+The command outcome port now accepts application-level work-anchor
+effects and commits them through the same atomic outcome boundary as
+idempotency, audit, and outbox effects in both the in-memory and
+Cockroach adapters. `send_supervisor_signal` now accepts a generic
+work-anchor reader through the command pipeline execution context, so
+durable runtime paths can reject missing or wrong-scope work anchors
+before emitting supervisor-signal effects. The first concrete
+work-anchor command, `create_work_item`, now creates a work item in
+`created` state by returning work-anchor, audit, and outbox effects
+through that same command outcome boundary. When the runtime supplies a
+work-anchor reader, it rejects missing projects or wrong-scope
+initiatives before emitting effects, preserving the graph/retrieval
+principle that consequential work stays anchored. The remaining gap is
+concrete project, initiative, anchor, and transition command handlers.
 
 ### Scheduled Agent Time
 
@@ -199,18 +218,21 @@ until an engineer is assigned and scheduled.
 ### Discussion Anchor Gap
 
 The docs say V0 work should include discussion anchors and graph nodes.
-The current implementation only writes the supervisor signal, audit
-event, outbox event, idempotency record, inbox receipts, and reaction
-plans. The next V0 command slice must either implement discussion-anchor
-creation or explicitly stage it as the next command after
-`send_supervisor_signal`.
+The current implementation writes supervisor signal, work-anchor command
+effects, audit event, outbox event, idempotency record, inbox receipts,
+and reaction plans. The next V0 command slice must either implement
+discussion-anchor creation or explicitly stage it as the next command
+after `send_supervisor_signal`.
 
 ### Transaction Boundary Progress
 
-The command pipeline now persists supervisor signal state, audit events,
-outbox events, and idempotency records through one
+The command pipeline now persists supervisor signal state, work-anchor
+effects, audit events, outbox events, and idempotency records through one
 `recordCommandOutcome` port. Command handlers return typed effects
-instead of writing piecemeal state.
+instead of writing piecemeal state. Work-anchor effects are application
+contracts rather than `state` or `state-cockroach` imports, and the
+pipeline can pass a generic work-anchor reader into handlers for
+pre-effect validation.
 
 The event ingestion path already used a single
 `recordEventProcessingOutcome` port and now treats unfinished receipts

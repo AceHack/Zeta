@@ -1,4 +1,4 @@
-import type { Clock, CommandEffects, IdGenerator } from "./ports.ts";
+import type { Clock, CommandEffects, IdGenerator, WorkAnchorStateReaderPort } from "./ports.ts";
 
 export type TypedCommand = {
   type: string;
@@ -9,7 +9,10 @@ export type CommandHandlerOutcome<Result = unknown> = {
   effects: CommandEffects;
 };
 
-export type CommandExecutionContext = Clock & IdGenerator;
+export type CommandExecutionContext = Clock &
+  IdGenerator & {
+    workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
+  };
 
 export type CommandHandler<Command extends TypedCommand = TypedCommand, Result = unknown> = {
   commandType: Command["type"];

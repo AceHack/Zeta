@@ -12,6 +12,7 @@ import {
   createCockroachCoreStateMigration,
   createCockroachOutboxClaimFenceMigration,
   createCockroachWorkAnchorKernelMigration,
+  createCockroachWorkItemStateHistoryMetadataMigration,
 } from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
@@ -59,6 +60,7 @@ describe("cockroach core state schema", () => {
     equal(migrations[0]?.name, CockroachCoreStateMigrationName.CoreStateV1);
     equal(migrations[1]?.name, CockroachCoreStateMigrationName.OutboxClaimFenceV2);
     equal(migrations[2]?.name, CockroachCoreStateMigrationName.WorkAnchorKernelV3);
+    equal(migrations[3]?.name, CockroachCoreStateMigrationName.WorkItemStateHistoryMetadataV4);
   });
 
   test("declares an additive work-anchor kernel migration for existing databases", () => {
@@ -109,6 +111,19 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("evidence_artifact_ids JSONB NOT NULL"));
     ok(migration.sql.includes("assigned_engineer_hat_assignment_id STRING"));
     ok(migration.sql.includes("scheduled_work_block_id STRING"));
+  });
+
+  test("declares an additive work item state history metadata migration for existing databases", () => {
+    const migration = createCockroachWorkItemStateHistoryMetadataMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.WorkItemStateHistoryMetadataV4);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.WorkItemStateHistory}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS version INT8"));
+    ok(migration.sql.includes("SET updated_at = COALESCE(updated_at, transitioned_at)"));
+    ok(migration.sql.includes("version = COALESCE(version, 1)"));
+    ok(migration.sql.includes("ALTER COLUMN updated_at SET NOT NULL"));
+    ok(migration.sql.includes("ALTER COLUMN version SET NOT NULL"));
   });
 
   test("keeps generated migrations synchronized with checked-in SQL files", async () => {

@@ -2,8 +2,18 @@ import {
   CommandOutcomePersistenceStatus,
   type CommandStateStore,
   type CommandStateStoreFactory,
+  type WorkAnchorCommandEffects,
 } from "../../application/src/ports.ts";
 import { CockroachTableName } from "./cockroach-schema.ts";
+import {
+  WorkAnchorPersistenceStatus,
+  type WorkAnchorPersistenceResult,
+  type WorkAnchorStateStore,
+} from "../../state/src/index.ts";
+import {
+  createCockroachWorkAnchorStateStore,
+  type CockroachWorkAnchorSqlStatement,
+} from "./cockroach-work-anchor-state-store.ts";
 
 export const CockroachCommandStateStoreStatement = {
   FindIdempotencyRecord: "find_idempotency_record",
@@ -20,11 +30,15 @@ export type CockroachSqlStatement = {
   name: CockroachCommandStateStoreStatement;
   sql: string;
   parameters: readonly unknown[];
-};
+} | CockroachWorkAnchorSqlStatement;
 
 export type CockroachSqlResult<Row = Record<string, unknown>> = {
   rows: readonly Row[];
 };
+
+export const CockroachCommandStateStoreErrorMessage = {
+  WorkAnchorEffectConflict: "work anchor command effect conflict",
+} as const;
 
 export type CockroachSqlTransactionExecutor = {
   execute: <Row = Record<string, unknown>>(statement: CockroachSqlStatement) => Promise<CockroachSqlResult<Row>>;
@@ -107,6 +121,15 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
           await transaction.execute(createInsertSupervisorSignalStatement(supervisorSignal));
         }
 
+        const workAnchorStateStore = createCockroachWorkAnchorStateStore({
+          executor: {
+            execute: transaction.execute,
+            executeTransaction: async (operation) => await operation(transaction),
+          },
+        });
+
+        await recordWorkAnchorEffects(workAnchorStateStore, outcome.effects.workAnchors);
+
         for (const auditEvent of outcome.effects.auditEvents) {
           await transaction.execute(createInsertAuditEventStatement(auditEvent));
         }
@@ -122,6 +145,41 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
       });
     },
   };
+}
+
+async function recordWorkAnchorEffects(
+  store: WorkAnchorStateStore,
+  effects: WorkAnchorCommandEffects | undefined,
+): Promise<void> {
+  if (effects === undefined) {
+    return;
+  }
+
+  for (const project of effects.projects) {
+    assertWorkAnchorEffectCommitted(await store.createProject(project));
+  }
+
+  for (const initiative of effects.initiatives) {
+    assertWorkAnchorEffectCommitted(await store.createInitiative(initiative));
+  }
+
+  for (const workItem of effects.workItems) {
+    assertWorkAnchorEffectCommitted(await store.createWorkItem(workItem));
+  }
+
+  for (const workAnchorTarget of effects.workAnchorTargets) {
+    assertWorkAnchorEffectCommitted(await store.createWorkAnchorTarget(workAnchorTarget));
+  }
+
+  for (const workItemTransition of effects.workItemTransitions) {
+    assertWorkAnchorEffectCommitted(await store.transitionWorkItem(workItemTransition));
+  }
+}
+
+function assertWorkAnchorEffectCommitted(result: WorkAnchorPersistenceResult): void {
+  if (result.status !== WorkAnchorPersistenceStatus.Committed) {
+    throw new Error(CockroachCommandStateStoreErrorMessage.WorkAnchorEffectConflict);
+  }
 }
 
 type CommandStateStoreResult<Result> = Parameters<CommandStateStore<Result>["recordCommandOutcome"]>[0];

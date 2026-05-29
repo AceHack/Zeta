@@ -17,9 +17,12 @@ import { connect, type NatsConnection } from "@nats-io/transport-node";
 import {
   AgenticEventType,
   CommandType,
+  ProjectStatus,
   ReactionPlanStatus,
   SupervisorChainLevel,
   SupervisorSignalToolType,
+  WorkItemState,
+  WorkItemType,
   type AgenticEventEnvelope,
 } from "../../../packages/domain/src/index.ts";
 import {
@@ -41,7 +44,12 @@ import {
   createPolicyDecisionObservationPort,
   type CommandAuthorizationPort,
 } from "../../../packages/policy/src/index.ts";
-import { EventIngestionOutcomeStatus, InboundEventConsumerName } from "../../../packages/state/src/index.ts";
+import {
+  EventIngestionOutcomeStatus,
+  InboundEventConsumerName,
+  WorkAnchorPersistenceStatus,
+  type WorkAnchorStateStore,
+} from "../../../packages/state/src/index.ts";
 import {
   CockroachTableName,
   createCockroachDurableStateAdapters,
@@ -123,8 +131,10 @@ const DurableLiveIntegrationStatementName = {
   CleanupInboxReceipts: "durable_live_cleanup_inbox_receipts",
   CleanupOutboxEvents: "durable_live_cleanup_outbox_events",
   CleanupPolicyObservations: "durable_live_cleanup_policy_observations",
+  CleanupProjects: "durable_live_cleanup_projects",
   CleanupReactionPlans: "durable_live_cleanup_reaction_plans",
   CleanupSupervisorSignals: "durable_live_cleanup_supervisor_signals",
+  CleanupWorkItems: "durable_live_cleanup_work_items",
   SelectInboxReceipt: "durable_live_select_inbox_receipt",
   SelectOutboxEvent: "durable_live_select_outbox_event",
   SelectReactionPlan: "durable_live_select_reaction_plan",
@@ -170,6 +180,8 @@ describe("durable worker live integration", () => {
         const stateAdapters = createCockroachDurableStateAdapters<CommandResult>({
           executor,
         });
+        const supervisorSignalCommand = createSupervisorSignalCommand(run);
+        await seedDurableLiveWorkAnchor(stateAdapters.workAnchorStateStore, supervisorSignalCommand);
         const commandResult = await createCommandPipeline({
           stateStoreFactory: stateAdapters.commandStateStoreFactory,
           commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
@@ -177,9 +189,10 @@ describe("durable worker live integration", () => {
             store: stateAdapters.policyDecisionObservationStore,
           }),
           handlerRegistry: createCommandHandlerRegistry([createSendSupervisorSignalHandler()]),
+          workAnchorStateReader: stateAdapters.workAnchorStateStore,
           now: () => DurableLiveIntegrationTime.OccurredAt,
           createId: (prefix) => `${prefix}-${run.runId}`,
-        }).execute(createSupervisorSignalCommand(run));
+        }).execute(supervisorSignalCommand);
 
         equal(commandResult.status, CommandResultStatus.Accepted);
 
@@ -413,6 +426,48 @@ function createSupervisorSignalCommand(run: DurableLiveIntegrationRun): SendSupe
   };
 }
 
+async function seedDurableLiveWorkAnchor(
+  store: WorkAnchorStateStore,
+  commandInput: SendSupervisorSignalCommand,
+): Promise<void> {
+  const projectResult = await store.createProject({
+    projectId: commandInput.projectId,
+    organizationId: commandInput.organizationId,
+    name: "Durable live proof",
+    status: ProjectStatus.Active,
+    createdAt: DurableLiveIntegrationTime.OccurredAt,
+    createdBy: commandInput.actor,
+    metadata: {
+      updatedAt: DurableLiveIntegrationTime.OccurredAt,
+      version: 1,
+      correlationId: commandInput.correlationId,
+      causationId: commandInput.causationId,
+      traceId: commandInput.traceId,
+    },
+  });
+  const workItemResult = await store.createWorkItem({
+    workItemId: commandInput.policyContext.scope.workItemId,
+    organizationId: commandInput.organizationId,
+    projectId: commandInput.projectId,
+    workItemType: WorkItemType.Task,
+    title: "Durable live proof anchor",
+    description: "Anchors the supervisor signal to durable work before runtime publication.",
+    state: WorkItemState.Created,
+    createdAt: DurableLiveIntegrationTime.OccurredAt,
+    createdBy: commandInput.actor,
+    metadata: {
+      updatedAt: DurableLiveIntegrationTime.OccurredAt,
+      version: 1,
+      correlationId: commandInput.correlationId,
+      causationId: commandInput.causationId,
+      traceId: commandInput.traceId,
+    },
+  });
+
+  equal(projectResult.status, WorkAnchorPersistenceStatus.Committed);
+  equal(workItemResult.status, WorkAnchorPersistenceStatus.Committed);
+}
+
 function createAllowingCommandAuthorizationPort(): CommandAuthorizationPort {
   return {
     authorizeCommand: async () => ({
@@ -507,6 +562,14 @@ async function cleanupCockroachRowsBestEffort(
     await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupIdempotencyRecords, [
       `DELETE FROM ${CockroachTableName.IdempotencyRecords} WHERE idempotency_key = $1`,
       [run.idempotencyKey],
+    ]));
+    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupWorkItems, [
+      `DELETE FROM ${CockroachTableName.WorkItems} WHERE work_item_id = $1`,
+      [`${DurableLiveIntegrationIdPrefix.WorkItem}-${run.runId}`],
+    ]));
+    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupProjects, [
+      `DELETE FROM ${CockroachTableName.Projects} WHERE project_id = $1`,
+      [`${DurableLiveIntegrationIdPrefix.Project}-${run.runId}`],
     ]));
   } catch {
     // The live proof may fail before migrations or rows exist; preserve the primary failure.

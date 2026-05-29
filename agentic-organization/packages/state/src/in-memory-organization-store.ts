@@ -9,11 +9,26 @@ import type {
   IdempotencyRecord,
   OutboxEvent,
   SupervisorSignal,
-  WorkItem,
 } from "../../domain/src/index.ts";
+import {
+  WorkAnchorConflictReason,
+  WorkAnchorPersistenceStatus,
+  type PersistedInitiative,
+  type PersistedProject,
+  type PersistedWorkAnchorTarget,
+  type PersistedWorkItem,
+  type PersistedWorkStateTransition,
+  type TransitionWorkItemInput,
+  type WorkAnchorPersistenceResult,
+  validateWorkItemTransitionInput,
+} from "./work-anchor-store.ts";
 
 export type InMemoryOrganizationStoreSnapshot<Result = unknown> = {
-  readonly workItems: readonly WorkItem[];
+  readonly workItems: readonly PersistedWorkItem[];
+  readonly projects: readonly PersistedProject[];
+  readonly initiatives: readonly PersistedInitiative[];
+  readonly workAnchorTargets: readonly PersistedWorkAnchorTarget[];
+  readonly workStateTransitions: readonly PersistedWorkStateTransition[];
   readonly supervisorSignals: readonly SupervisorSignal[];
   readonly discussionAnchors: readonly DiscussionAnchor[];
   readonly auditEvents: readonly AuditEvent[];
@@ -30,7 +45,7 @@ export function createInMemoryOrganizationStoreFactory<Result = unknown>(): InMe
 
   return {
     get snapshot() {
-      return currentSnapshot;
+      return cloneMutableSnapshot(currentSnapshot);
     },
     createCommandStateStore: () => {
       currentSnapshot = createEmptySnapshot<Result>();
@@ -40,7 +55,11 @@ export function createInMemoryOrganizationStoreFactory<Result = unknown>(): InMe
 }
 
 type MutableInMemoryOrganizationStoreSnapshot<Result> = {
-  workItems: WorkItem[];
+  workItems: PersistedWorkItem[];
+  projects: PersistedProject[];
+  initiatives: PersistedInitiative[];
+  workAnchorTargets: PersistedWorkAnchorTarget[];
+  workStateTransitions: PersistedWorkStateTransition[];
   supervisorSignals: SupervisorSignal[];
   discussionAnchors: DiscussionAnchor[];
   auditEvents: AuditEvent[];
@@ -51,6 +70,10 @@ type MutableInMemoryOrganizationStoreSnapshot<Result> = {
 function createEmptySnapshot<Result>(): MutableInMemoryOrganizationStoreSnapshot<Result> {
   return {
     workItems: [],
+    projects: [],
+    initiatives: [],
+    workAnchorTargets: [],
+    workStateTransitions: [],
     supervisorSignals: [],
     discussionAnchors: [],
     auditEvents: [],
@@ -81,11 +104,18 @@ function createCommandStateStore<Result>(
         };
       }
 
-      snapshot.idempotencyRecords.set(input.idempotencyRecord.idempotencyKey, input.idempotencyRecord);
-      snapshot.workItems.push(...(input.effects.workAnchors?.workItems ?? []));
-      snapshot.supervisorSignals.push(...input.effects.supervisorSignals);
-      snapshot.auditEvents.push(...input.effects.auditEvents);
-      snapshot.outboxEvents.push(...input.effects.outboxEvents);
+      const nextSnapshot = cloneMutableSnapshot(snapshot);
+
+      nextSnapshot.idempotencyRecords.set(input.idempotencyRecord.idempotencyKey, cloneRecord(input.idempotencyRecord));
+      applyProjectCreates(nextSnapshot, input.effects.workAnchors?.projects ?? []);
+      applyInitiativeCreates(nextSnapshot, input.effects.workAnchors?.initiatives ?? []);
+      applyWorkItemCreates(nextSnapshot, input.effects.workAnchors?.workItems ?? []);
+      applyWorkAnchorTargetCreates(nextSnapshot, input.effects.workAnchors?.workAnchorTargets ?? []);
+      applyWorkItemTransitions(nextSnapshot, input.effects.workAnchors?.workItemTransitions ?? []);
+      nextSnapshot.supervisorSignals.push(...input.effects.supervisorSignals.map(cloneRecord));
+      nextSnapshot.auditEvents.push(...input.effects.auditEvents.map(cloneRecord));
+      nextSnapshot.outboxEvents.push(...input.effects.outboxEvents.map(cloneRecord));
+      replaceSnapshot(snapshot, nextSnapshot);
 
       return {
         status: CommandOutcomePersistenceStatus.Committed,
@@ -93,4 +123,138 @@ function createCommandStateStore<Result>(
       };
     },
   };
+}
+
+function cloneMutableSnapshot<Result>(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<Result>,
+): MutableInMemoryOrganizationStoreSnapshot<Result> {
+  return {
+    workItems: snapshot.workItems.map(cloneRecord),
+    projects: snapshot.projects.map(cloneRecord),
+    initiatives: snapshot.initiatives.map(cloneRecord),
+    workAnchorTargets: snapshot.workAnchorTargets.map(cloneRecord),
+    workStateTransitions: snapshot.workStateTransitions.map(cloneRecord),
+    supervisorSignals: snapshot.supervisorSignals.map(cloneRecord),
+    discussionAnchors: snapshot.discussionAnchors.map(cloneRecord),
+    auditEvents: snapshot.auditEvents.map(cloneRecord),
+    outboxEvents: snapshot.outboxEvents.map(cloneRecord),
+    idempotencyRecords: cloneIdempotencyRecords(snapshot.idempotencyRecords),
+  };
+}
+
+function replaceSnapshot<Result>(
+  target: MutableInMemoryOrganizationStoreSnapshot<Result>,
+  source: MutableInMemoryOrganizationStoreSnapshot<Result>,
+): void {
+  target.workItems = source.workItems;
+  target.projects = source.projects;
+  target.initiatives = source.initiatives;
+  target.workAnchorTargets = source.workAnchorTargets;
+  target.workStateTransitions = source.workStateTransitions;
+  target.supervisorSignals = source.supervisorSignals;
+  target.discussionAnchors = source.discussionAnchors;
+  target.auditEvents = source.auditEvents;
+  target.outboxEvents = source.outboxEvents;
+  target.idempotencyRecords = source.idempotencyRecords;
+}
+
+function applyWorkItemTransitions(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<unknown>,
+  transitions: readonly TransitionWorkItemInput[],
+): void {
+  for (const transitionInput of transitions) {
+    const currentWorkItemIndex = snapshot.workItems.findIndex(
+      (workItem) => workItem.workItemId === transitionInput.nextWorkItem.workItemId,
+    );
+    const currentWorkItem = snapshot.workItems[currentWorkItemIndex];
+
+    if (currentWorkItem === undefined) {
+      throwWorkAnchorConflict(WorkAnchorConflictReason.MissingWorkItem);
+    }
+
+    const validationConflict = validateWorkItemTransitionInput({
+      currentWorkItem,
+      transitionInput,
+      hasTransitionId: (workStateTransitionId) =>
+        snapshot.workStateTransitions.some((transition) => transition.workStateTransitionId === workStateTransitionId),
+      hasTransitionSequence: (workItemId, sequence) =>
+        snapshot.workStateTransitions.some(
+          (transition) => transition.workItemId === workItemId && transition.sequence === sequence,
+        ),
+    });
+
+    if (validationConflict?.status === WorkAnchorPersistenceStatus.Conflict) {
+      throwWorkAnchorPersistenceConflict(validationConflict);
+    }
+
+    snapshot.workItems[currentWorkItemIndex] = cloneRecord(transitionInput.nextWorkItem);
+    snapshot.workStateTransitions.push(cloneRecord(transitionInput.transition));
+  }
+}
+
+function applyProjectCreates(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<unknown>,
+  projects: readonly PersistedProject[],
+): void {
+  for (const project of projects) {
+    assertUniqueRecord(snapshot.projects, (record) => record.projectId === project.projectId);
+    snapshot.projects.push(cloneRecord(project));
+  }
+}
+
+function applyInitiativeCreates(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<unknown>,
+  initiatives: readonly PersistedInitiative[],
+): void {
+  for (const initiative of initiatives) {
+    assertUniqueRecord(snapshot.initiatives, (record) => record.initiativeId === initiative.initiativeId);
+    snapshot.initiatives.push(cloneRecord(initiative));
+  }
+}
+
+function applyWorkItemCreates(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<unknown>,
+  workItems: readonly PersistedWorkItem[],
+): void {
+  for (const workItem of workItems) {
+    assertUniqueRecord(snapshot.workItems, (record) => record.workItemId === workItem.workItemId);
+    snapshot.workItems.push(cloneRecord(workItem));
+  }
+}
+
+function applyWorkAnchorTargetCreates(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<unknown>,
+  workAnchorTargets: readonly PersistedWorkAnchorTarget[],
+): void {
+  for (const workAnchorTarget of workAnchorTargets) {
+    assertUniqueRecord(
+      snapshot.workAnchorTargets,
+      (record) => record.workAnchorTargetId === workAnchorTarget.workAnchorTargetId,
+    );
+    snapshot.workAnchorTargets.push(cloneRecord(workAnchorTarget));
+  }
+}
+
+function assertUniqueRecord<Record>(records: readonly Record[], hasMatchingId: (record: Record) => boolean): void {
+  if (records.some(hasMatchingId)) {
+    throwWorkAnchorConflict(WorkAnchorConflictReason.DuplicateRecord);
+  }
+}
+
+function throwWorkAnchorPersistenceConflict(result: Extract<WorkAnchorPersistenceResult, { status: "conflict" }>): never {
+  throwWorkAnchorConflict(result.reason);
+}
+
+function throwWorkAnchorConflict(reason: WorkAnchorConflictReason): never {
+  throw new Error(`${WorkAnchorPersistenceStatus.Conflict}:${reason}`);
+}
+
+function cloneIdempotencyRecords<Result>(
+  records: ReadonlyMap<string, IdempotencyRecord<Result>>,
+): Map<string, IdempotencyRecord<Result>> {
+  return new Map(Array.from(records.entries()).map(([idempotencyKey, record]) => [idempotencyKey, cloneRecord(record)]));
+}
+
+function cloneRecord<Record>(record: Record): Record {
+  return structuredClone(record);
 }

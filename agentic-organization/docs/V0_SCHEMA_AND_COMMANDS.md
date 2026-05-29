@@ -266,7 +266,7 @@ capability_request
 ### `signal_type`
 
 ```text
-work_item_changed
+work_item.changed
 gate_requested
 gate_decided
 hat_assignment_changed
@@ -329,11 +329,12 @@ review without exposing CockroachDB types to application code.
 
 | Command                     | Actor scope                                                                                | Writes                                                                                                   | Emits                                                              |
 | --------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| `send_supervisor_signal`    | any authorized hat with supervisor line; capability request inputs enter through this path | `supervisor_signals`, `work_items`, `discussion_anchors`, `graph_nodes`, `audit_events`, `outbox_events` | `supervisor_signal_sent`, `work_item_changed`                      |
-| `triage_supervisor_signal`  | target supervisor hat, director, or engineering manager                                    | `supervisor_signals`, `work_items`, `assignments`, `gates`, `context_packs`                              | `supervisor_signal_triaged`, `work_item_changed`, `gate_requested` |
-| `create_discussion_anchor`  | any authorized hat                                                                         | `discussion_anchors`, `graph_edges`                                                                      | `work_item_changed`                                                |
-| `create_context_pack`       | manager, reviewer, implementer for assigned work                                           | `context_packs`, `graph_edges`, `audit_events`                                                           | `work_item_changed`                                                |
-| `mark_work_ready`           | manager or reviewer                                                                        | `work_items`, `work_item_state_history`, `gates`                                                         | `work_item_changed`, `gate_requested`                              |
+| `create_work_item`          | manager, TPM, director, or authorized work-routing automation                              | `work_items`, `audit_events`, `outbox_events`                                                            | `work_item.changed`                                                |
+| `send_supervisor_signal`    | any authorized hat with supervisor line; capability request inputs enter through this path | `supervisor_signals`, `work_items`, `discussion_anchors`, `graph_nodes`, `audit_events`, `outbox_events` | `supervisor_signal_sent`, `work_item.changed`                      |
+| `triage_supervisor_signal`  | target supervisor hat, director, or engineering manager                                    | `supervisor_signals`, `work_items`, `assignments`, `gates`, `context_packs`                              | `supervisor_signal_triaged`, `work_item.changed`, `gate_requested` |
+| `create_discussion_anchor`  | any authorized hat                                                                         | `discussion_anchors`, `graph_edges`                                                                      | `work_item.changed`                                                |
+| `create_context_pack`       | manager, reviewer, implementer for assigned work                                           | `context_packs`, `graph_edges`, `audit_events`                                                           | `work_item.changed`                                                |
+| `mark_work_ready`           | manager or reviewer                                                                        | `work_items`, `work_item_state_history`, `gates`                                                         | `work_item.changed`, `gate_requested`                              |
 | `reserve_hat`               | manager, director, platform operator                                                       | `hat_assignments`, `hat_tokens`, `audit_events`                                                          | `hat_assignment_changed`                                           |
 | `issue_hat_token`           | hat service, after policy allow                                                            | `hat_tokens`, `audit_events`                                                                             | `hat_token_changed`                                                |
 | `refresh_hat_token`         | active assigned agent/session                                                              | `hat_tokens`, `audit_events`                                                                             | `hat_token_changed`                                                |
@@ -344,9 +345,9 @@ review without exposing CockroachDB types to application code.
 | `record_action_observation` | adapter, worker, reviewer, assigned agent                                                  | `universal_action_observations`, `artifact_links`                                                        | `prompt_flow_changed`                                              |
 | `launch_hermes_run`         | runtime service or Temporal activity                                                       | `hermes_runs`, `agent_sessions`, `audit_events`                                                          | `hermes_run_changed`                                               |
 | `record_hermes_run_status`  | Hermes/OZ callback, reconciler, platform operator                                          | `hermes_runs`, `artifact_links`                                                                          | `hermes_run_changed`                                               |
-| `submit_evidence`           | implementer, QA, reviewer, adapter                                                         | `artifact_links`, `graph_edges`, `audit_events`                                                          | `work_item_changed`                                                |
-| `request_gate_review`       | implementer, manager, workflow                                                             | `gates`, `work_items`                                                                                    | `gate_requested`, `work_item_changed`                              |
-| `decide_gate`               | reviewer hat, not same active implementer assignment                                       | `gate_decisions`, `gates`, `work_items`, `audit_events`                                                  | `gate_decided`, `work_item_changed`                                |
+| `submit_evidence`           | implementer, QA, reviewer, adapter                                                         | `artifact_links`, `graph_edges`, `audit_events`                                                          | `work_item.changed`                                                |
+| `request_gate_review`       | implementer, manager, workflow                                                             | `gates`, `work_items`                                                                                    | `gate_requested`, `work_item.changed`                              |
+| `decide_gate`               | reviewer hat, not same active implementer assignment                                       | `gate_decisions`, `gates`, `work_items`, `audit_events`                                                  | `gate_decided`, `work_item.changed`                                |
 | `record_memory_event`       | memory adapter, assigned agent/session, memory curator                                     | `memory_events`, `graph_edges`, `audit_events`                                                           | `memory_event_recorded`                                            |
 | `submit_credential_request` | any authorized hat with anchored work                                                      | `credential_requests`, `work_items`, `discussion_anchors`                                                | `credential_request_changed`                                       |
 | `complete_outcome_review`   | manager, memory curator, reviewer                                                          | `work_items`, `decisions`, optional follow-up `work_items`                                               | `outcome_review_completed`                                         |
@@ -397,6 +398,50 @@ Cockroach client, but domain, application, runtime, policy, messaging,
 and worker packages must not depend on the concrete client or connection
 pool.
 
+Work-anchor commands should return application-level work-anchor command
+effects rather than writing concrete state directly. Those effects cover
+projects, initiatives, work items, work anchor targets, and work-item
+transitions, and the command outcome port persists them atomically with
+idempotency, audit, and outbox effects. The command-facing effect types
+carry the same command provenance metadata required by Cockroach
+(`updated_at`, `version`, `correlation_id`, `causation_id`, `trace_id`)
+so vendor adapters do not invent trace values. The state adapters still
+expose one atomic `transitionWorkItem` operation that checks expected version,
+requires the next work item version to advance exactly once, requires
+the transition work item, organization, project, initiative, type, and
+from/to states to match the updated work item, validates the transition
+against the domain state machine, accepts explicit lifecycle evidence
+such as defect triage-field completion, and enforces positive
+per-work-item sequence numbers before mutating state.
+The in-memory test adapter clones records across its read/write boundary
+so command tests cannot mutate persistence state by object reference in a
+way the Cockroach adapter would not permit.
+Cockroach is implemented as a vendor-specific implementation of that
+same port and is exposed through durable state adapter composition;
+application code must not call `state-cockroach` schema helpers directly.
+Application package code also must not import the `state` package; it
+uses its own structural command effect and reader contracts so concrete
+state packages remain adapters. The command pipeline can provide that
+reader contract to handlers, allowing commands such as
+`send_supervisor_signal` to reject missing or wrong-scope related work
+before they emit state, audit, or outbox effects. The in-memory command
+outcome adapter must apply the same duplicate-record and transition
+validation semantics as the standalone work-anchor store so tests do not
+accept a command effect that Cockroach would reject.
+State-history metadata is protected by an additive V4 migration so
+databases that already applied the V3 work-anchor kernel still receive
+the transition `updated_at` and `version` columns the port requires.
+
+The first concrete work-anchor command is `create_work_item`. It creates
+only the work item record in `created` state, emits `work_item.changed`,
+and records audit/outbox effects through the same command outcome
+boundary. It may run without a reader in pure unit/bootstrap paths, but
+when a work-anchor reader is supplied it must validate that the referenced
+project exists and that any referenced initiative belongs to the same
+organization and project before emitting effects. Reference failures are
+retryable preconditions, so the pipeline does not idempotency-cache them;
+a later retry can succeed after the missing project or initiative exists.
+
 Subject shape:
 
 ```text
@@ -406,7 +451,7 @@ agentic-org.<environment>.<domain>.<event>
 Examples:
 
 ```text
-agentic-org.dev.work.work_item_changed
+agentic-org.dev.work.work_item.changed
 agentic-org.dev.hats.hat_assignment_changed
 agentic-org.dev.runtime.hermes_run_changed
 agentic-org.dev.memory.memory_event_recorded
@@ -441,6 +486,9 @@ Current executable migration contract:
   migration;
 - `0003_agentic_org_work_anchor_kernel` is the additive Work Anchor
   Kernel migration;
+- `0004_agentic_org_work_item_state_history_metadata` is the additive
+  state-history provenance migration for databases that already applied
+  the V3 kernel;
 - generated SQL must match the checked-in migration files exactly;
 - database constraints for work item state, work item type, project
   status, and initiative status must be generated from TypeScript domain

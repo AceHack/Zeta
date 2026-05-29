@@ -5,11 +5,14 @@ import {
   AgenticAggregateType,
   AgenticEventType,
   CommandType,
+  InitiativeStatus,
+  ProjectStatus,
   WorkItemState,
   WorkItemType,
 } from "../../domain/src/index.ts";
-import { CommandErrorCode, CommandResultArtifactType, CommandResultStatus } from "../src/index.ts";
+import { CommandErrorCode, CommandResultArtifactType, CommandResultStatus, type CommandResult } from "../src/index.ts";
 import { createWorkItem, type CreateWorkItemCommand } from "../src/handlers/create-work-item.ts";
+import type { CommandWorkAnchorInitiative, CommandWorkAnchorProject, WorkAnchorStateReaderPort } from "../src/ports.ts";
 
 const command: CreateWorkItemCommand = {
   commandId: "cmd-create-work-item-001",
@@ -27,7 +30,7 @@ const command: CreateWorkItemCommand = {
   },
   workItemType: WorkItemType.Task,
   title: "Create the first generic work item command",
-  description: "The organization needs the first concrete work-anchor command.",
+  description: "The Organization needs the first concrete work-anchor command.",
 };
 
 describe("create work item handler", () => {
@@ -36,16 +39,17 @@ describe("create work item handler", () => {
       now: () => "2026-05-28T21:00:00.000Z",
       createId: (prefix) => `${prefix}-001`,
     });
+    const result = outcome.result as CommandResult;
 
-    equal(outcome.result.status, CommandResultStatus.Accepted);
-    deepEqual(outcome.result.artifacts, [
+    equal(result.status, CommandResultStatus.Accepted);
+    deepEqual(result.artifacts, [
       {
         artifactType: CommandResultArtifactType.WorkItem,
         artifactId: "work-item-001",
         label: command.title,
       },
     ]);
-    deepEqual(outcome.result.emittedEvents, [
+    deepEqual(result.emittedEvents, [
       {
         eventId: "evt-001",
         eventType: AgenticEventType.WorkItemChanged,
@@ -53,6 +57,7 @@ describe("create work item handler", () => {
         aggregateType: AgenticAggregateType.WorkItem,
       },
     ]);
+    deepEqual(result.auditEventIds, ["audit-001"]);
     equal(outcome.effects.workAnchors?.workItems.length, 1);
     deepEqual(outcome.effects.workAnchors?.workItems[0], {
       workItemId: "work-item-001",
@@ -81,8 +86,13 @@ describe("create work item handler", () => {
         occurredAt: "2026-05-28T21:00:00.000Z",
       },
     ]);
-    equal(outcome.effects.outboxEvents[0]?.outboxEventId, "outbox-001");
-    equal(outcome.effects.outboxEvents[0]?.envelope.aggregate.aggregateVersion, 1);
+    equal(outcome.effects.outboxEvents.length, 1);
+    deepEqual(outcome.effects.outboxEvents[0]?.envelope.aggregate, {
+      aggregateId: "work-item-001",
+      aggregateType: AgenticAggregateType.WorkItem,
+      aggregateVersion: 1,
+    });
+    equal(outcome.effects.outboxEvents[0]?.envelope.eventType, AgenticEventType.WorkItemChanged);
   });
 
   test("rejects blank work item titles before emitting effects", async () => {
@@ -96,10 +106,11 @@ describe("create work item handler", () => {
         createId: (prefix) => `${prefix}-001`,
       },
     );
+    const result = outcome.result as CommandResult;
 
-    equal(outcome.result.status, CommandResultStatus.Rejected);
-    equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
-    ok(outcome.result.error?.message.includes("title"));
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.ValidationFailed);
+    ok(result.error?.message.includes("title"));
     deepEqual(outcome.effects, {
       supervisorSignals: [],
       auditEvents: [],
@@ -113,4 +124,138 @@ describe("create work item handler", () => {
       },
     });
   });
+
+  test("rejects work item creation when the referenced project is missing", async () => {
+    const outcome = await createWorkItem(command, {
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+      workAnchorStateReader: createWorkAnchorStateReader({
+        project: undefined,
+      }),
+    });
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "work item project does not exist");
+    equal(outcome.effects.workAnchors?.workItems.length, 0);
+    equal(outcome.effects.auditEvents.length, 0);
+    equal(outcome.effects.outboxEvents.length, 0);
+  });
+
+  test("rejects work item creation when the project scope does not match the command", async () => {
+    const outcome = await createWorkItem(command, {
+      now: () => "2026-05-28T21:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+      workAnchorStateReader: createWorkAnchorStateReader({
+        project: {
+          ...createProject(),
+          organizationId: "org-other",
+        },
+      }),
+    });
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "work item project scope does not match the command scope");
+    equal(outcome.effects.workAnchors?.workItems.length, 0);
+  });
+
+  test("rejects work item creation when the referenced initiative is missing", async () => {
+    const outcome = await createWorkItem(
+      {
+        ...command,
+        initiativeId: "initiative-agentic-org-001",
+      },
+      {
+        now: () => "2026-05-28T21:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+        workAnchorStateReader: createWorkAnchorStateReader({
+          project: createProject(),
+          initiative: undefined,
+        }),
+      },
+    );
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "work item initiative does not exist");
+    equal(outcome.effects.workAnchors?.workItems.length, 0);
+  });
+
+  test("rejects work item creation when the initiative scope does not match the command", async () => {
+    const outcome = await createWorkItem(
+      {
+        ...command,
+        initiativeId: "initiative-agentic-org-001",
+      },
+      {
+        now: () => "2026-05-28T21:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+        workAnchorStateReader: createWorkAnchorStateReader({
+          project: createProject(),
+          initiative: {
+            ...createInitiative(),
+            projectId: "project-other",
+          },
+        }),
+      },
+    );
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "work item initiative scope does not match the command scope");
+    equal(outcome.effects.workAnchors?.workItems.length, 0);
+  });
 });
+
+function createWorkAnchorStateReader(input: {
+  project: CommandWorkAnchorProject | undefined;
+  initiative?: CommandWorkAnchorInitiative | undefined;
+}): WorkAnchorStateReaderPort {
+  return {
+    findProject: async () => input.project,
+    findInitiative: async () => input.initiative,
+    findWorkItem: async () => undefined,
+  };
+}
+
+function createProject(): CommandWorkAnchorProject {
+  return {
+    projectId: command.projectId,
+    organizationId: command.organizationId,
+    name: "Agentic Organization",
+    status: ProjectStatus.Active,
+    createdAt: "2026-05-28T20:00:00.000Z",
+    createdBy: command.actor,
+    metadata: {
+      updatedAt: "2026-05-28T20:00:00.000Z",
+      version: 1,
+      correlationId: command.correlationId,
+      causationId: command.causationId,
+      traceId: command.traceId,
+    },
+  };
+}
+
+function createInitiative(): CommandWorkAnchorInitiative {
+  return {
+    initiativeId: "initiative-agentic-org-001",
+    organizationId: command.organizationId,
+    projectId: command.projectId,
+    title: "Work anchor command handlers",
+    status: InitiativeStatus.Active,
+    createdAt: "2026-05-28T20:10:00.000Z",
+    createdBy: command.actor,
+    metadata: {
+      updatedAt: "2026-05-28T20:10:00.000Z",
+      version: 1,
+      correlationId: command.correlationId,
+      causationId: command.causationId,
+      traceId: command.traceId,
+    },
+  };
+}

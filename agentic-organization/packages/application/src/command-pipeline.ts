@@ -17,6 +17,7 @@ import {
   type CommandStateStore,
   type CommandStateStoreFactory,
   type IdGenerator,
+  type WorkAnchorStateReaderPort,
 } from "./ports.ts";
 
 export type CommandPipeline<Command extends PipelineCommand = PipelineCommand> = {
@@ -29,6 +30,7 @@ export type CommandPipelineDependencies<Command extends PipelineCommand = Pipeli
     commandAuthorizationPort: CommandAuthorizationPort;
     policyDecisionObservationPort: PolicyDecisionObservationPort;
     handlerRegistry: CommandHandlerRegistry<Command, CommandResult>;
+    workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
   };
 
 export function createCommandPipeline<Command extends PipelineCommand = PipelineCommand>(
@@ -114,6 +116,11 @@ async function executeCommand<Command extends PipelineCommand>(
     outcome.result.status === CommandResultStatus.Accepted
       ? attachPolicyDecisionToResult(outcome.result, outcome.effects, authorizationDecision)
       : outcome.result;
+
+  if (isRetryablePreconditionFailure(result)) {
+    return result;
+  }
+
   const effects =
     result.status === CommandResultStatus.Accepted
       ? attachPolicyDecisionEvidence(outcome.effects, authorizationDecision)
@@ -142,6 +149,10 @@ async function executeCommand<Command extends PipelineCommand>(
   }
 
   return result;
+}
+
+function isRetryablePreconditionFailure(result: CommandResult): boolean {
+  return result.status === CommandResultStatus.Rejected && result.error?.code === CommandErrorCode.PreconditionFailed;
 }
 
 function createCommandAuthorizationRequest(command: PipelineCommand): CommandAuthorizationRequest {
@@ -322,5 +333,16 @@ function createEmptyCommandEffects(): CommandEffects {
     supervisorSignals: [],
     auditEvents: [],
     outboxEvents: [],
+    workAnchors: createEmptyWorkAnchorCommandEffects(),
+  };
+}
+
+function createEmptyWorkAnchorCommandEffects(): NonNullable<CommandEffects["workAnchors"]> {
+  return {
+    projects: [],
+    initiatives: [],
+    workItems: [],
+    workAnchorTargets: [],
+    workItemTransitions: [],
   };
 }

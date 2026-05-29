@@ -292,15 +292,26 @@ adapter in the cluster, not an application-layer dependency.
 Command handlers must return typed effects, not write state directly.
 The command pipeline owns idempotency lookup and calls one command
 outcome port that records the business state, audit events, outbox
-events, and idempotency record together. In V0, the only concrete
-business-effect category is the supervisor signal; the work-anchor
-kernel must add the next category without changing command dispatch or
-policy flow. This keeps the application layer closed to concrete
-database transactions while still giving durable adapters one atomic
-commit boundary for a command result.
+events, and idempotency record together. In V0, concrete business
+effects are supervisor signals and work-anchor effects. Work-anchor
+effects are application-level structural contracts for projects,
+initiatives, work items, anchor targets, and work-item transitions; they
+do not import `state` or `state-cockroach`. This keeps the application
+layer closed to concrete database transactions while still giving durable
+adapters one atomic commit boundary for a command result.
+When a command needs to validate existing work before emitting effects,
+the pipeline passes a generic work-anchor reader through the execution
+context. The first use is `send_supervisor_signal`: with a reader
+configured, it rejects missing or wrong-scope related work items before
+it creates supervisor-signal, audit, or outbox effects. The next use is
+`create_work_item`: with a reader configured, it validates the referenced
+project and optional initiative scope before creating work-item, audit,
+and outbox effects. Without a reader, pure unit/bootstrap use stays
+possible for handlers that are not yet bound to the durable work-anchor
+substrate.
 Durable command adapters should reserve the idempotency record before
 effect rows inside that transaction so an idempotency race aborts before
-supervisor signal, audit, or outbox state becomes visible.
+supervisor signal, work-anchor, audit, or outbox state becomes visible.
 The command outcome port returns generic committed, replayed, or
 idempotency-conflict results. A vendor adapter may use SQL constraints,
 transaction callbacks, CTEs, or other local mechanics to detect races,

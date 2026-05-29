@@ -46,6 +46,15 @@ export {
   type CreateCockroachPolicyDecisionObservationStoreInput,
 } from "./cockroach-policy-decision-observation-store.ts";
 export {
+  CockroachWorkAnchorStateStoreStatement,
+  createCockroachWorkAnchorStateStore,
+  type CockroachWorkAnchorSqlExecutor,
+  type CockroachWorkAnchorSqlResult,
+  type CockroachWorkAnchorSqlStatement,
+  type CockroachWorkAnchorSqlTransactionExecutor,
+  type CreateCockroachWorkAnchorStateStoreInput,
+} from "./cockroach-work-anchor-state-store.ts";
+export {
   CockroachCheckConstraintName,
   CockroachCoreStateMigrationName,
   CockroachSchemaBackfillValue,
@@ -54,6 +63,7 @@ export {
   createCockroachCoreStateMigration,
   createCockroachOutboxClaimFenceMigration,
   createCockroachWorkAnchorKernelMigration,
+  createCockroachWorkItemStateHistoryMetadataMigration,
   type CockroachSchemaMigration,
 } from "./cockroach-schema.ts";
 export {

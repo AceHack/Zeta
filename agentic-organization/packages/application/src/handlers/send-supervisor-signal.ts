@@ -13,11 +13,13 @@ import { createAgenticEventEnvelope } from "../../../domain/src/index.ts";
 import type { CommandHandler, CommandHandlerOutcome } from "../command-handler-registry.ts";
 import type { PipelineCommand } from "../command-contract.ts";
 import {
+  CommandErrorCode,
   CommandResultArtifactType,
   CommandResultStatus,
   type CommandResult,
 } from "../command-result.ts";
-import type { Clock, IdGenerator } from "../ports.ts";
+import type { Clock, CommandEffects, IdGenerator } from "../ports.ts";
+import type { CommandWorkAnchorWorkItem, WorkAnchorStateReaderPort } from "../ports.ts";
 
 export const IdPrefix = {
   SupervisorSignal: "supervisor-signal",
@@ -27,6 +29,14 @@ export const IdPrefix = {
 } as const;
 
 export type IdPrefix = (typeof IdPrefix)[keyof typeof IdPrefix];
+
+export const SupervisorSignalValidationErrorMessage = {
+  MissingRelatedWorkItem: "supervisor signal requires an existing related work item",
+  ScopeMismatch: "supervisor signal work item scope does not match the command scope",
+} as const;
+
+export type SupervisorSignalValidationErrorMessage =
+  (typeof SupervisorSignalValidationErrorMessage)[keyof typeof SupervisorSignalValidationErrorMessage];
 
 export type SendSupervisorSignalPolicyContext = {
   scope: {
@@ -48,7 +58,10 @@ export type SendSupervisorSignalCommand = PipelineCommand & {
   policyContext: SendSupervisorSignalPolicyContext;
 };
 
-export type SendSupervisorSignalDependencies = Clock & IdGenerator;
+export type SendSupervisorSignalDependencies = Clock &
+  IdGenerator & {
+    workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
+  };
 
 export function createSendSupervisorSignalHandler(): CommandHandler<SendSupervisorSignalCommand, CommandResult> {
   return {
@@ -61,6 +74,12 @@ export async function sendSupervisorSignal(
   command: SendSupervisorSignalCommand,
   dependencies: SendSupervisorSignalDependencies,
 ): Promise<CommandHandlerOutcome<CommandResult>> {
+  const anchorValidationResult = await validateRelatedWorkItem(command, dependencies);
+
+  if (anchorValidationResult !== undefined) {
+    return anchorValidationResult;
+  }
+
   const occurredAt = dependencies.now();
   const signalContext = command.policyContext;
   const supervisorSignal: SupervisorSignal = {
@@ -153,6 +172,70 @@ export async function sendSupervisorSignal(
       supervisorSignals: [supervisorSignal],
       auditEvents: [auditEvent],
       outboxEvents: [outboxEvent],
+    },
+  };
+}
+
+async function validateRelatedWorkItem(
+  command: SendSupervisorSignalCommand,
+  dependencies: SendSupervisorSignalDependencies,
+): Promise<CommandHandlerOutcome<CommandResult> | undefined> {
+  if (dependencies.workAnchorStateReader === undefined) {
+    return undefined;
+  }
+
+  const relatedWorkItem = await dependencies.workAnchorStateReader.findWorkItem(command.policyContext.scope.workItemId);
+
+  if (relatedWorkItem === undefined) {
+    return createRejectedValidationOutcome(command, SupervisorSignalValidationErrorMessage.MissingRelatedWorkItem);
+  }
+
+  if (!hasMatchingCommandScope(command, relatedWorkItem)) {
+    return createRejectedValidationOutcome(command, SupervisorSignalValidationErrorMessage.ScopeMismatch);
+  }
+
+  return undefined;
+}
+
+function hasMatchingCommandScope(command: SendSupervisorSignalCommand, workItem: CommandWorkAnchorWorkItem): boolean {
+  return (
+    workItem.workItemId === command.policyContext.scope.workItemId &&
+    workItem.organizationId === command.organizationId &&
+    workItem.projectId === command.projectId
+  );
+}
+
+function createRejectedValidationOutcome(
+  command: SendSupervisorSignalCommand,
+  message: SupervisorSignalValidationErrorMessage,
+): CommandHandlerOutcome<CommandResult> {
+  return {
+    result: {
+      commandId: command.commandId,
+      status: CommandResultStatus.Rejected,
+      idempotency: {
+        replayed: false,
+      },
+    error: {
+        code: CommandErrorCode.PreconditionFailed,
+        message,
+      },
+    },
+    effects: createEmptyCommandEffects(),
+  };
+}
+
+function createEmptyCommandEffects(): CommandEffects {
+  return {
+    supervisorSignals: [],
+    auditEvents: [],
+    outboxEvents: [],
+    workAnchors: {
+      projects: [],
+      initiatives: [],
+      workItems: [],
+      workAnchorTargets: [],
+      workItemTransitions: [],
     },
   };
 }

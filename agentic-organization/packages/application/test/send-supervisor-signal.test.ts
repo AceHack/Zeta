@@ -8,8 +8,11 @@ import {
   SupervisorChainLevel,
   SupervisorSignalStatus,
   SupervisorSignalToolType,
+  WorkItemState,
+  WorkItemType,
 } from "../../domain/src/index.ts";
-import { CommandResultStatus, type CommandResult } from "../src/command-result.ts";
+import { CommandErrorCode, CommandResultStatus, type CommandResult } from "../src/command-result.ts";
+import type { CommandWorkAnchorWorkItem } from "../src/ports.ts";
 import { sendSupervisorSignal, type SendSupervisorSignalCommand } from "../src/handlers/send-supervisor-signal.ts";
 
 const command: SendSupervisorSignalCommand = {
@@ -93,4 +96,86 @@ describe("send supervisor signal handler", () => {
       },
     });
   });
+
+  test("rejects supervisor signals for missing work anchors before emitting effects", async () => {
+    const outcome = await sendSupervisorSignal(command, {
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+      workAnchorStateReader: {
+        findProject: async () => undefined,
+        findInitiative: async () => undefined,
+        findWorkItem: async () => undefined,
+      },
+    });
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "supervisor signal requires an existing related work item");
+    deepEqual(outcome.effects, {
+      supervisorSignals: [],
+      auditEvents: [],
+      outboxEvents: [],
+      workAnchors: {
+        projects: [],
+        initiatives: [],
+        workItems: [],
+        workAnchorTargets: [],
+        workItemTransitions: [],
+      },
+    });
+  });
+
+  test("rejects supervisor signals when the work anchor scope does not match the command", async () => {
+    const outcome = await sendSupervisorSignal(command, {
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+      workAnchorStateReader: {
+        findProject: async () => undefined,
+        findInitiative: async () => undefined,
+        findWorkItem: async () => ({
+          ...createWorkItem(),
+          projectId: "project-other",
+        }),
+      },
+    });
+    const result = outcome.result as CommandResult;
+
+    equal(result.status, CommandResultStatus.Rejected);
+    equal(result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(result.error?.message, "supervisor signal work item scope does not match the command scope");
+    deepEqual(outcome.effects, {
+      supervisorSignals: [],
+      auditEvents: [],
+      outboxEvents: [],
+      workAnchors: {
+        projects: [],
+        initiatives: [],
+        workItems: [],
+        workAnchorTargets: [],
+        workItemTransitions: [],
+      },
+    });
+  });
 });
+
+function createWorkItem(): CommandWorkAnchorWorkItem {
+  return {
+    workItemId: command.policyContext.scope.workItemId,
+    organizationId: command.organizationId,
+    projectId: command.projectId,
+    workItemType: WorkItemType.Task,
+    title: "Scoped NATS publisher",
+    description: "Work anchor used by the supervisor signal tests.",
+    state: WorkItemState.InProgress,
+    createdAt: "2026-05-25T19:00:00.000Z",
+    createdBy: command.actor,
+    metadata: {
+      updatedAt: "2026-05-25T19:00:00.000Z",
+      version: 1,
+      correlationId: command.correlationId,
+      causationId: command.causationId,
+      traceId: command.traceId,
+    },
+  };
+}

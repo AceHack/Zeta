@@ -158,5 +158,6 @@ export {
   CockroachMigrationStatement,
   createCockroachSqlExecutor,
   createCockroachWorkAnchorKernelMigration,
+  createCockroachWorkItemStateHistoryMetadataMigration,
   type CockroachAnySqlStatement,
 } from "../../../packages/state-cockroach/src/index.ts";

@@ -1,6 +1,7 @@
 import type { CommandStateStoreFactory } from "../../application/src/ports.ts";
 import type { OutboxEventSource } from "../../state/src/index.ts";
 import type { EventIngestionStore } from "../../state/src/index.ts";
+import type { WorkAnchorStateStore } from "../../state/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "./cockroach-sql-executor.ts";
 import { createCockroachCommandStateStoreFactory, type CockroachSqlExecutor } from "./cockroach-command-state-store.ts";
 import {
@@ -13,18 +14,24 @@ import {
   type CockroachPolicyDecisionObservationSqlExecutor,
   type CockroachPolicyDecisionObservationStore,
 } from "./cockroach-policy-decision-observation-store.ts";
+import {
+  createCockroachWorkAnchorStateStore,
+  type CockroachWorkAnchorSqlExecutor,
+} from "./cockroach-work-anchor-state-store.ts";
 
 export type CockroachOrganizationSqlExecutor = CockroachGenericSqlExecutor &
   CockroachSqlExecutor &
   CockroachOutboxSqlExecutor &
   CockroachEventIngestionSqlExecutor &
-  CockroachPolicyDecisionObservationSqlExecutor;
+  CockroachPolicyDecisionObservationSqlExecutor &
+  CockroachWorkAnchorSqlExecutor;
 
 export type CockroachDurableStateAdapters<Result> = {
   commandStateStoreFactory: CommandStateStoreFactory<Result>;
   outboxEventSource: OutboxEventSource;
   eventIngestionStore: EventIngestionStore;
   policyDecisionObservationStore: CockroachPolicyDecisionObservationStore;
+  workAnchorStateStore: WorkAnchorStateStore;
 };
 
 export type CreateCockroachDurableStateAdaptersInput = {
@@ -45,6 +52,9 @@ export function createCockroachDurableStateAdapters<Result>(
       executor: input.executor,
     }),
     policyDecisionObservationStore: createCockroachPolicyDecisionObservationStore({
+      executor: input.executor,
+    }),
+    workAnchorStateStore: createCockroachWorkAnchorStateStore({
       executor: input.executor,
     }),
   };
