@@ -1,13 +1,14 @@
 ---
 id: B-0343
 priority: P1
-status: open
+status: closed
 title: Test-repo seeding script (TS) — create + seed the recreation experiment repo
 tier: foundation
 effort: M
 ask: B-0193 decomposition — AC 1 (test repo created and seeded)
 created: 2026-05-08
-last_updated: 2026-05-10
+last_updated: 2026-05-29
+closed_at: 2026-05-29
 parent: B-0193
 depends_on: [B-0341]
 composes_with: [B-0193, B-0344]
@@ -66,3 +67,18 @@ M — GitHub API integration + file copying logic.
 **Re-decomposition (assumed original mistake):** Original "create + seed" + 4 ACs = M broad for atomic step. Bounded slice: minimal TS stub (dry-run + manifest reader, no gh, no create). Follow-up: gh api, idempotency, commit logic.
 
 **Proof logged:** start-gate complete before code; see claim commit + this update.
+
+## Resolution
+
+Closed by the merged B-0343 seed-test-repo implementation on
+`origin/main`:
+
+- `96e82b191cfecc966dbfd6c36f8c0b6298563aa0` —
+  `feat(B-0343): add gh api execution bridge`
+- `tools/bootstrap-razor/seed-test-repo.ts`
+- `tools/bootstrap-razor/seed-test-repo.test.ts`
+
+The merged tool now covers the seed manifest read path, dry-run output,
+authorized LFG/AceHack repo creation via `gh api`, idempotent existing-repo
+handling, seed tree/blob/commit/ref request construction, and provenance
+commit text linking B-0193/B-0343.
