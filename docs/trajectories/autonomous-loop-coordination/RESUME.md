@@ -78,10 +78,17 @@ It adds the bounded `active` / `merged-claim-residue` /
 `tools/claims/remote-only-state.ts` so quiet queues still check remote claim
 residue before treating paths as free.
 
+Current standing-query trigger inventory:
+`docs/trajectories/autonomous-loop-coordination/standing-query-trigger-inventory-2026-05-29.md`
+
+It separates trigger sources from observation surfaces, records the current
+`tools/health/factory-health-monitor.ts` coverage, and names the loop-tick
+checks that still need reusable source wiring.
+
 ## Recommended Next Action
 
-Run the classifier against current `origin/claim/*` refs and use the output to
-pick the next non-overlapping hygiene cleanup or standing-query trigger packet.
+Use the trigger inventory to wire the next small monitor signal, starting with
+a pure lane-runway classifier that can be tested without new GitHub calls.
 
 ## Next Child Packets
 
