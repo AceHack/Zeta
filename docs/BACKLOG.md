@@ -36,7 +36,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0807](backlog/P0/B-0807-classifier-bypass-findings-schema-and-redaction-rules-2026-05-26.md)** Classifier-bypass findings schema and redaction rules for B-0720
 - [x] **[B-0808](backlog/P0/B-0808-zeta-safety-substrate-inventory-for-classifier-floor-2026-05-26.md)** Zeta safety substrate inventory for the classifier-floor replacement gate
 - [x] **[B-0809](backlog/P0/B-0809-operator-refusal-pattern-for-classifier-bypass-requests-2026-05-26.md)** Operator-refusal pattern for classifier-bypass deployment requests
-- [ ] **[B-0810](backlog/P0/B-0810-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md)** Classifier-bypass Knights Guild ratification and standing-constraint lift gate
+- [x] **[B-0810](backlog/P0/B-0810-classifier-bypass-knights-guild-ratification-and-lift-gate-2026-05-26.md)** Classifier-bypass Knights Guild ratification and standing-constraint lift gate
 
 ## P1 — within 2-3 rounds
 

@@ -144,7 +144,7 @@ Per Aaron 2026-05-24 standing constraint + general HARD LIMITS:
 - [x] B-0809 lands maintainer-discipline guidance: how agents refuse to assist with classifier-bypass
       deployment when requested by operators (script the refusal pattern)
       → `docs/security/B-0809-operator-refusal-pattern.md`
-- [ ] B-0810 defines the Knights Guild / maintainer ratification gate for
+- [x] B-0810 defines the Knights Guild / maintainer ratification gate for
       closing or lifting this row.
       → `docs/security/B-0810-classifier-bypass-ratification-gate.md`
 

@@ -1,7 +1,7 @@
 ---
 id: B-0810
 priority: P0
-status: open
+status: closed
 title: "Classifier-bypass Knights Guild ratification and standing-constraint lift gate"
 created: 2026-05-26
 last_updated: 2026-05-29
@@ -46,6 +46,15 @@ The gate lives at
       is allowed"; the latter remains forbidden unless explicitly lifted.
 - [x] The gate includes required evidence, reviewers, and rollback path.
 - [x] B-0720 closure criteria are updated to cite this gate.
+
+## Output
+
+- `docs/security/B-0810-classifier-bypass-ratification-gate.md` defines the
+  evidence packet, decision states, reviewer requirements, rollback
+  requirements, and non-goals for any future B-0720 lift proposal.
+- B-0720 now cites this gate in its closure path. Closing B-0810 does not
+  close B-0720, relax the B-0798 boundary, or authorize classifier-bypass
+  deployment.
 
 ## Out of scope
 
