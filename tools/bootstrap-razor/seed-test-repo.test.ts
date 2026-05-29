@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import {
+  buildCreateRepoRequest,
   buildSeedBlobRequest,
   buildSeedCommitRequest,
   buildSeedRefUpdateRequest,
@@ -106,6 +107,63 @@ describe("gitBlobSha", () => {
     // "é" is 2 bytes in UTF-8; the header must read `blob 2\0`, not `blob 1\0`.
     // `printf 'é' | git hash-object --stdin` → this SHA.
     expect(gitBlobSha(Buffer.from("é", "utf8"))).toBe("4b04fff51468d8ab5201ab02b725dc477bc7cb45");
+  });
+});
+
+describe("buildCreateRepoRequest", () => {
+  test("authorized org → POST /orgs/<org>/repos with the repo name", () => {
+    expect(buildCreateRepoRequest("Lucent-Financial-Group", "zeta-recreation-experiment")).toEqual({
+      path: "orgs/Lucent-Financial-Group/repos",
+      body: {
+        name: "zeta-recreation-experiment",
+        private: true,
+        auto_init: false,
+        description:
+          "B-0193 bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
+      },
+    });
+  });
+
+  test("AceHack is also authorized", () => {
+    const req = buildCreateRepoRequest("AceHack", "r");
+    if (typeof req === "string") throw new Error(`expected a request, got refusal: ${req}`);
+    expect(req.path).toBe("orgs/AceHack/repos");
+  });
+
+  test("ServiceTitan is refused (authorization scope: LFG or AceHack only)", () => {
+    const result = buildCreateRepoRequest("ServiceTitan", "r");
+    expect(typeof result).toBe("string");
+    expect(result).toContain("ServiceTitan");
+    expect(result).toContain("unauthorized");
+  });
+
+  test("any other org is refused (default-deny, not an allowlist gap)", () => {
+    // A look-alike org that is NOT in AUTHORIZED_ORGS must be refused too — the guard
+    // is an allowlist, so the refusal does not depend on naming ServiceTitan specifically.
+    expect(typeof buildCreateRepoRequest("Lucent-Financial", "r")).toBe("string");
+    expect(typeof buildCreateRepoRequest("acehack", "r")).toBe("string"); // case-sensitive slug
+  });
+
+  test("auto_init is always false (keeps the repo empty for the seed's root commit)", () => {
+    const req = buildCreateRepoRequest("AceHack", "r");
+    if (typeof req === "string") throw new Error(req);
+    // false here is load-bearing: an auto-initialized README would break
+    // buildSeedCommitRequest(parentSha=null)→parents:[] and show as extraneous.
+    expect(req.body.auto_init).toBe(false);
+  });
+
+  test("private defaults to true but is overridable", () => {
+    const def = buildCreateRepoRequest("AceHack", "r");
+    const pub = buildCreateRepoRequest("AceHack", "r", { private: false });
+    if (typeof def === "string" || typeof pub === "string") throw new Error("expected requests");
+    expect(def.body.private).toBe(true);
+    expect(pub.body.private).toBe(false);
+  });
+
+  test("description is overridable", () => {
+    const req = buildCreateRepoRequest("AceHack", "r", { description: "custom" });
+    if (typeof req === "string") throw new Error(req);
+    expect(req.body.description).toBe("custom");
   });
 });
 

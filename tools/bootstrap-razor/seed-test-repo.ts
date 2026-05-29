@@ -84,6 +84,34 @@ interface SeedTreeDiff {
 }
 
 /**
+ * The `POST /orgs/{org}/repos` request body for the recreation-experiment repo —
+ * STEP 0, run once before any git-data write (the create that the blob → tree →
+ * commit → ref chain below seeds into). `name` is the new repo's name; `private`
+ * is true by default because this is a throwaway experiment repo, not a published
+ * artifact (caller may override); `description` carries provenance back to the
+ * seeding tool. `auto_init` is always FALSE and that is LOAD-BEARING: `auto_init:
+ * true` makes GitHub write an initial README commit, which would (a) break the
+ * seed's root-commit path (`buildSeedCommitRequest(parentSha=null)` → `parents: []`
+ * only works on a repo with no commits) and (b) report that README as `extraneous`
+ * in every idempotency diff. Keeping the repo empty lets the seed flow author the
+ * root commit and create the branch fresh (`buildSeedRefUpdateRequest(refExists=false)`
+ * → POST). Verified against docs.github.com/en/rest/repos/repos, API version
+ * 2026-03-10: `POST /orgs/{org}/repos`, `name` required, `private`/`auto_init`/
+ * `description` optional. GitHub's create-repo API accepts many more optional fields
+ * (`homepage`, `has_issues`, `gitignore_template`, `license_template`, …) — the seed
+ * sets none, so they are intentionally unrepresented.
+ */
+export interface GitCreateRepoRequest {
+  readonly path: string;
+  readonly body: {
+    readonly name: string;
+    readonly private: boolean;
+    readonly auto_init: false;
+    readonly description: string;
+  };
+}
+
+/**
  * The `POST /repos/{owner}/{repo}/git/blobs` request body for one seed file — the
  * FIRST git-data write step, run once per create/update file before the tree is
  * assembled. `content` is the file's bytes base64-encoded; `encoding` is always
@@ -373,6 +401,58 @@ export function parseGitTreeResponse(response: unknown): readonly SeedTreeEntry[
 }
 
 /**
+ * The two GitHub orgs the seeder is authorized to create the recreation-experiment
+ * repo in (operator authorization 2026-05-05, recorded in this row's "Authorization
+ * scope": LFG or AceHack only — NOT ServiceTitan). Names are the literal GitHub org
+ * slugs. This is
+ * the single source of truth for `buildCreateRepoRequest`'s scope guard; widening
+ * the authorization means editing this list (and re-confirming the org is one the
+ * operator authorized), never bypassing the guard at a call site.
+ */
+const AUTHORIZED_ORGS = ["Lucent-Financial-Group", "AceHack"] as const;
+
+/**
+ * Pure builder for the experiment repo's `POST /orgs/{org}/repos` body — STEP 0 of
+ * the whole seeding flow, the create that precedes the blob → tree → commit → ref
+ * write chain. The org is checked against `AUTHORIZED_ORGS` FIRST: an unauthorized
+ * org (anything but LFG / AceHack — most importantly ServiceTitan, named off-limits
+ * in this row's authorization scope) returns an error string rather than a request,
+ * so the guard is enforced at the builder, not left to a call site to remember. The
+ * `T | string` return is the same convention as `readManifest` / `parseGitTreeResponse`:
+ * a `string` result is the refusal reason, a `GitCreateRepoRequest` is the green light.
+ *
+ * `options.private` defaults to true (throwaway experiment repo, not a published
+ * artifact); `options.description` defaults to a provenance line naming the seeding
+ * tool. `auto_init` is hard-wired false — see `GitCreateRepoRequest` for why an
+ * auto-initialized README would break the seed's root-commit + fresh-branch paths.
+ * Pure: operates on its arguments only; no gh, no network, no filesystem. The network
+ * slice that follows is: this request (only if it is a request, not a refusal string)
+ * → `POST /git/blobs` per create file → `POST /git/trees` → `POST /git/commits` →
+ * `POST /git/refs` (the new repo is empty, so the seed always takes the create-branch
+ * `refExists=false` path).
+ */
+export function buildCreateRepoRequest(
+  org: string,
+  repo: string,
+  options?: { readonly private?: boolean; readonly description?: string },
+): GitCreateRepoRequest | string {
+  if (!(AUTHORIZED_ORGS as readonly string[]).includes(org)) {
+    return `unauthorized org "${org}" — seeding is scoped to ${AUTHORIZED_ORGS.join(" or ")} only (NOT ServiceTitan, per B-0343 authorization scope)`;
+  }
+  return {
+    path: `orgs/${org}/repos`,
+    body: {
+      name: repo,
+      private: options?.private ?? true,
+      auto_init: false,
+      description:
+        options?.description ??
+        "B-0193 bootstrap-razor recreation test repo (seeded by tools/bootstrap-razor/seed-test-repo.ts)",
+    },
+  };
+}
+
+/**
  * Pure builder for one seed file's `POST /git/blobs` body — the FIRST git-data write
  * step, the mirror of `gitBlobSha` (which predicts the SHA the same bytes will get).
  * Base64-encodes the raw bytes and tags `encoding: "base64"` so the upload is lossless
@@ -544,7 +624,29 @@ function emitDryRun(manifest: SeedManifest, root: string): void {
   }
 
   console.log("Provenance commit would link to B-0193 / B-0343.");
-  console.log("gh create + real seeding + commit: follow-up slice.");
+
+  // Step 0 of the flow: create the empty experiment repo (AC 1). Shown here for an
+  // EXAMPLE authorized org/repo — `--dry-run` performs no creation (AC 4). The scope
+  // guard refuses any org but LFG / AceHack, so the off-limits ServiceTitan case is
+  // demonstrated alongside the authorized one to make the authorization scope visible.
+  const exampleOrg = AUTHORIZED_ORGS[0];
+  const createReq = buildCreateRepoRequest(exampleOrg, "zeta-recreation-experiment");
+  if (typeof createReq === "string") {
+    console.log(`POST /orgs create plan: REFUSED — ${createReq}`);
+  } else {
+    console.log(`POST /${createReq.path} create plan (example, no creation performed):`);
+    console.log(
+      `  name=${createReq.body.name} private=${createReq.body.private} auto_init=${createReq.body.auto_init}`,
+    );
+  }
+  const refused = buildCreateRepoRequest("ServiceTitan", "zeta-recreation-experiment");
+  console.log(
+    `Authorization scope guard (ServiceTitan): ${
+      typeof refused === "string" ? `REFUSED — ${refused}` : "ALLOWED (BUG — should be refused)"
+    }`,
+  );
+
+  console.log("gh network integration (real create + seed + commit): follow-up slice.");
 }
 
 export function main(argv: readonly string[]): ExitCode {
