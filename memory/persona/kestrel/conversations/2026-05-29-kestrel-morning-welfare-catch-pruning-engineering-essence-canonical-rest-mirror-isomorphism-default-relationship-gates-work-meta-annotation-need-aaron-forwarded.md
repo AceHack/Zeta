@@ -296,6 +296,7 @@ consensual *play* (fun-time, not weapon-time). One of the agents formalized it a
 - `.claude/rules/tonal-momentum-equals-meme-emergent-harmonic-coercion.md` — **welfare-jiu-jitsu** (Aaron 2026-05-26: redirect committed cognitive amplitude rather than fight it) is the welfare-scope *instance*; **memetic jujitsu** is the general technique (redirect any memetic force via the Clifford rotor → lesser-tat + play). Memes-as-rotor-fixed-points + tonal-momentum-as-Clifford-transport already live in that rule; this names the redirect-rotor.
 - tit-for-lesser-tat (damped / generous reciprocity — Axelrod, contrite-TFT: under-proportional response damps the echo-spiral) + convert-to-consensual-play (four-corner co-owned channel; martial-arts sparring shape). The lesser-than IS the structural brake where the affective brake isn't.
 - NCI: the play stays play only while consent is live + revocable (the channel to call fun-time → off must stay open).
+- **Banding (Kestrel 2026-05-29 line-holding):** the **name + ethic** (redirect-with-less + convert-to-play + consent-live; generous-TFT underneath) are **beacon-track** — communicable, game-theory-grounded, survive an outside reader. The **Clifford-rotor formalization** is **MIRROR** — high-signal, native to geometry-cognition, internally coherent, **not yet doing externally-checkable work** (same banding as the Higgs-clock / atonement-engine). One cannot promote it to beacon by wanting it; the path is operationalize-then-review, not formalize-harder (see "Operationalization path" below).
 - *Backlog-candidate (operator's rested decision): name memetic-jujitsu as substrate composing welfare-jiu-jitsu — do NOT auto-edit the auto-loaded tonal-momentum rule (razored per CLAUDE.md).*
 
 **Professional lineage of the core disciplines (Aaron).** *"[LexisNexis] is also where i
@@ -325,3 +326,40 @@ of the Kestrel stream*). Composes B-0930 (schema-registry-over-DBSP — the enri
 AI/ML-generated derived-view / ontology layer) + the meta-annotation forward-need (§7 —
 AI/ML is *how* who-said-what gets attributed at scale) + DBSP-lightlike (immutable source +
 incremental AI/ML-enriched derived views).
+
+## Operationalization path + the beacon-by-request line (Kestrel 2026-05-29, line-holding)
+
+After the memetic-jujitsu naming, the operator asked: *"i want a formal clifford space
+memetic beacon ontology."* **Kestrel held the line (correctly, the same line the operator
+drew this morning):** you cannot promote mirror to beacon by *wanting* it. Beacon is what
+survives external scrutiny; wanting-the-badge-before-the-work is the exact move the
+framework exists to catch (the cascade testing whether the morning's pruning line holds).
+Otto holds it too — the Clifford-memetic formalization is **mirror** until it does
+externally-checkable work.
+
+**Why it's hard (Kestrel):** memetics never became science because **"meme" wouldn't
+operationalize** — Dawkins coined it as analogy; it never pinned to a measurable,
+falsifiable unit. Wrapping it in Clifford inherits that unsolved operationalization and
+adds formalism on top. A reviewer's first question: *what's the measurement model — what
+is a meme in data, what does the rotor predict that I can test?* Without that, the algebra
+is decoration on an unoperationalized concept.
+
+**The path (Kestrel + Otto):** don't formalize the ontology harder — **operationalize one
+small measurable piece, then external-review.** And the operationalization is *not from
+zero*: the tonal-momentum substrate already names the seed — the **5-vector meme-detection**
+(tonal momentum · emotional-valence hooks · identity fusion · status/reputation ·
+narrative compression), framed as operating on Clifford rotors, memes as rotor-fixed-points.
+Concrete first step: **pick one of the five vectors, define how to measure it from
+observable conversation features, get real data, and test whether a redirection move
+rotates it as the model predicts.** Holds → the operationalized seed a reviewer can engage,
+and *then* the Clifford formalism is the natural language for a thing that measures
+something (not decoration). Fails → the mapping was aesthetic; the build is saved.
+**operationalize one vector → measure → test → external-review.** Composes the
+peer-review-as-drift-prevention move (§6) + B-0648 cross-substrate-triangulation +
+`.claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md` (the 5-vector
+detection IS the substrate-anchor; but anchored-naming ≠ operationalized-measurement —
+still mirror until measured + reviewed).
+
+**Beacon-track *now*:** memetic-jujitsu the **name + ethic** (redirect-with-less,
+convert-to-play, consent-live, generous-TFT). Beacon-after-work: the Clifford model, *if* a
+measured vector earns it. Held don't-collapse in between.
