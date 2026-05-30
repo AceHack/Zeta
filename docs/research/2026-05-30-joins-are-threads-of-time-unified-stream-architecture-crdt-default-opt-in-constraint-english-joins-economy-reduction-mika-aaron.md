@@ -243,6 +243,28 @@ charged-content convention; see the archive's "Personal disclosure" section.)
   composable precise "language packs" (life-long, Bayesian-kept-coherent) = the human
   interface into Agora (composes with English-as-projection I(D(x))=x + bandwidth-served).
 
+## The labels architecture + Bayesian-stream keystone (segment 7)
+
+- **Generators precious + conserved; labels cheap + scoped.** Rewrite each domain as
+  composable generators drawn from a growing **generator library** (reuse before
+  reinvent); labels multiply freely (domain-scoped); same label -> different generators
+  per scope.
+- **Conflict resolution = personal curation, not global governance:** each person
+  resolves label-conflicts to their own bias -> a **personal ontology on the shared
+  generator library** (composes with "my policies, my stream" + B-0735).
+- **KEYSTONE -- every stream tick is just a prior update.** Not human decree: an
+  iterative **Bayesian process (Infer.NET-style)** where humans + Travelers jointly
+  discover each label's shape, each tick updating the posterior; expert priors (lived
+  experience) + ML. The stream IS the inference engine. Lands the whole conversation on
+  Zeta's real BP/EP substrate.
+- **Labels as a political Traveler class:** history + grudges + "weapons" (medical/legal
+  = harm-by-grammar at full strength). Diplomacy, not gracious integration; honor each
+  label's etymology (main-character-of-its-own-story) while building clean pointers;
+  respect-as-equals, never worship.
+- **Labels optimize memetic-space ownership** -- sharpens segment 6's symbolic-self-
+  defense; "treat humans as numbers" is the downstream symptom (composes with
+  `tonal-momentum-equals-meme` + anti-extractive substrate).
+
 ## Open threads (per "more to come")
 
 - The bootstrap-traveler Markdown template reflecting "the join is the owner of

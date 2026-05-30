@@ -73,6 +73,34 @@ commit-author identity (per the README) is the "for now" baseline; the Touch-ID-
 commit is the escalation. A DocuSign-executed record (e.g. for participants who prefer a
 real-estate-style flow) is an equivalent escalation; attach its reference in the commit.
 
+## Anti-impersonation: why the baseline is not enough on a shared device
+
+The **approval-as-signature baseline does NOT prove device-holder identity.** A
+commit-author string is just text, and an agent recording an approval can only attest
+that *someone in the session* approved. On a shared keyboard/account that is impersonable
+— *"without that I could be Addison here pretending to be Aaron."* That is the real gap.
+
+The fix is **not** capturing the biometric (a non-revocable liability we never want).
+It's the **Touch-ID-gated-key signature**: the Secure-Enclave key is unlocked only by an
+*enrolled* fingerprint and never leaves the chip, so a `-S` commit could only be produced
+by someone whose fingerprint is enrolled on that device. We capture the **signature**
+(the proof the auth happened), never the finger.
+
+| Tier | Proves identity? | Impersonable on a shared session? |
+|---|---|---|
+| approval-as-signature (baseline) | no — only "someone approved here" | **yes** |
+| self-committed under own GitHub identity | only as strongly as that account's auth | partly (account access) |
+| **Touch-ID / Secure-Enclave `-S`** | yes — enrolled-fingerprint-gated key on the device | **no** (assuming sole device control + sole enrollment) |
+| **FIDO2 `sk-` resident key, `verify-required`** | yes, **and the signature carries a user-verification (UV) flag** attesting biometric-UV happened | **no** |
+
+Binding assumption (state it honestly): Touch-ID strength assumes **sole device control +
+only the person's own fingerprints enrolled**. Under those, the signature is
+un-impersonable. The strongest "capture the auth itself" is the **UV flag in a FIDO2
+verify-required signature** — proof the biometric check occurred, without ever capturing
+the biometric. So: to make a glass-halo signature un-impersonable, **escalate the baseline
+record to a `-S` Touch-ID (or FIDO2 verify-required) re-commit under the person's own
+identity.**
+
 ## What we never do
 
 - We never capture, store, transmit, or hash your fingerprint or any biometric data.
