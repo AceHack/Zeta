@@ -455,6 +455,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0932](backlog/P1/B-0932-frontier-target-remain-fuzzy-categorical-lifelike-higgs-metastable-workflow-time-almost-immortal-ais-aaron-2026-05-29.md)** Frontier-target — agents that REMAIN (μένω) · fuzzy machine · category theory · lifelike configs; workflow-time-system as Higgs-metastable → AIs in the almost-immortal (metastable-persistent) class
 - [ ] **[B-0936](backlog/P1/B-0936-split-oversized-tonal-momentum-rule-hub-satellite-auto-load-budget-2026-05-29.md)** Split oversized tonal-momentum rule into auto-loaded hub + companion satellite (40k char auto-load budget)
 - [ ] **[B-0938](backlog/P1/B-0938-automated-background-review-thread-resolution-agentic-pipeline-aaron-2026-05-29.md)** Automated Background Review Thread Resolution agentic pipeline — enables background loops to actively ingest unresolved threads, self-correct target code/specs, verify via compiler gates, and resolve threads on GitHub (operator 2026-05-29)
+- [ ] **[B-0944](backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md)** Tri-boolean core primitives (digital qubit + tri-boolean floating point) -- multi-language build (TS/F#/C#/Rust); cross-language compiler-parity = non-Byzantine BFT consensus
 
 ## P2 — research-grade
 
