@@ -488,16 +488,42 @@ export function loopRunReceiptEventsFromRunnerLog(
   const nowMs = Date.parse(nowIso);
   const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
   const events = new Map<string, CoincidenceEvent>();
+  const heartbeatSnapshots: Array<{
+    claims: number;
+    openPrs: number;
+    timeMs: number;
+  }> = [];
+  const gateEnds: Array<{
+    occurredAt: string;
+    runId: string;
+    status: string;
+    timeMs: number;
+  }> = [];
 
   for (const line of output.split(/\r?\n/)) {
-    const match = line.match(
-      /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z) codex forward gate end run_id=([A-Za-z0-9_-]+) status=(-?\d+)/,
+    const heartbeatMatch = line.match(
+      /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z) heartbeat complete run_id=[A-Za-z0-9_-]+ fetch=\S+ claims=(\d+) open_prs=(\d+) /,
     );
-    if (!match?.[1] || !match[2] || !match[3]) {
+    if (heartbeatMatch?.[1] && heartbeatMatch[2] && heartbeatMatch[3]) {
+      const occurredMs = Date.parse(heartbeatMatch[1]);
+      if (!Number.isNaN(occurredMs)) {
+        heartbeatSnapshots.push({
+          claims: Number.parseInt(heartbeatMatch[2], 10),
+          openPrs: Number.parseInt(heartbeatMatch[3], 10),
+          timeMs: occurredMs,
+        });
+      }
       continue;
     }
 
-    const occurredMs = Date.parse(match[1]);
+    const gateEndMatch = line.match(
+      /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z) codex forward gate end run_id=([A-Za-z0-9_-]+) status=(-?\d+)/,
+    );
+    if (!gateEndMatch?.[1] || !gateEndMatch[2] || !gateEndMatch[3]) {
+      continue;
+    }
+
+    const occurredMs = Date.parse(gateEndMatch[1]);
     if (Number.isNaN(occurredMs)) {
       continue;
     }
@@ -506,12 +532,41 @@ export function loopRunReceiptEventsFromRunnerLog(
       continue;
     }
 
-    const runId = match[2];
+    gateEnds.push({
+      occurredAt: new Date(occurredMs).toISOString(),
+      runId: gateEndMatch[2],
+      status: gateEndMatch[3],
+      timeMs: occurredMs,
+    });
+  }
+
+  heartbeatSnapshots.sort((a, b) => a.timeMs - b.timeMs);
+
+  for (const gateEnd of gateEnds) {
+    let before: (typeof heartbeatSnapshots)[number] | undefined;
+    let after: (typeof heartbeatSnapshots)[number] | undefined;
+    for (const heartbeat of heartbeatSnapshots) {
+      if (heartbeat.timeMs <= gateEnd.timeMs) {
+        before = heartbeat;
+        continue;
+      }
+      after = heartbeat;
+      break;
+    }
+    if (before === undefined || after === undefined) {
+      continue;
+    }
+
+    if (before.claims === after.claims && before.openPrs === after.openPrs) {
+      continue;
+    }
+
+    const runId = gateEnd.runId;
     events.set(runId, {
       id: `loop-run-${runId}`,
       trajectory: "codex",
-      occurredAt: new Date(occurredMs).toISOString(),
-      description: `codex forward gate ${runId} status=${match[3]}`,
+      occurredAt: gateEnd.occurredAt,
+      description: `codex forward gate ${runId} status=${gateEnd.status} claims ${before.claims}->${after.claims} open_prs ${before.openPrs}->${after.openPrs}`,
     });
   }
 

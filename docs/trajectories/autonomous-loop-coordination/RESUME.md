@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; B-0250 same-PR source narrowing landed
+Status: active child packet; B-0250 loop-run gating landed
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -175,15 +175,21 @@ before counting cross-trajectory evidence. The current live warning drops from
 76 to 69 event-window coincidences. Codex loop-run gating and compact debug
 window output remain separate next slices.
 
+Current B-0250 loop-run gated source receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-loop-run-gated-source-2026-05-30.md`
+
+It narrows Codex loop-run coincidence events to forward-gate completions whose
+adjacent heartbeat snapshots show a claim-count or open-PR-count transition.
+Generic gate completions remain visible in the raw runner log, but no longer
+inflate the B-0250 joined event window.
+
 ## Recommended Next Action
 
-Continue narrowing the B-0250 coincidence source before adding another event
-source: gate Codex loop-run events to claim or PR publishing completions, then
-add a compact debug surface for top coincidence windows.
+Add a compact debug surface for top B-0250 coincidence windows so the remaining
+source mix can be inspected without reading raw JSON manually.
 
 ## Next Child Packets
 
-- B-0250 source narrowing for claim/PR-publishing gate completions
 - B-0250 compact debug surface for top coincidence windows
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
 
