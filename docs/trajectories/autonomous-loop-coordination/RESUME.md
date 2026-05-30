@@ -225,16 +225,24 @@ ambiguous dirty worktrees before deleting or reusing them, prefer clean
 high-confidence stale cleanup when available, and treat dirty-skip broadcasts
 as service-health evidence rather than takeover permission.
 
+Current B-0250 stale-worktree cleanup selection:
+`docs/trajectories/autonomous-loop-coordination/b0250-stale-worktree-cleanup-selection-2026-05-30.md`
+
+It selects one clean local-only worktree,
+`/Users/acehack/.local/share/zeta-worktrees/lior-preservation-2355Z`, for a
+later bounded cleanup packet. The selection is based on clean status, absent
+remote branch, absent PR, and a head already reachable from `origin/main`.
+
 ## Recommended Next Action
 
-Use the post-increase debug calibration receipt to choose the next B-0250
-source-tuning slice. Prefer trajectory ownership labels or same-merge-burst PR
-clustering before further runner-log lifecycle splitting.
+Re-validate and clean only the selected
+`/Users/acehack/.local/share/zeta-worktrees/lior-preservation-2355Z` worktree
+and local branch. If any selection fact changes, publish a handoff note instead
+of deleting anything.
 
 ## Next Child Packets
 
-- select one clean high-confidence stale worktree or one dirty owner-handoff
-  worktree for a bounded cleanup packet
+- execute the selected bounded stale-worktree cleanup packet
 - B-0250 source tuning for trajectory ownership labels or same-merge-burst PR
   clustering
 
