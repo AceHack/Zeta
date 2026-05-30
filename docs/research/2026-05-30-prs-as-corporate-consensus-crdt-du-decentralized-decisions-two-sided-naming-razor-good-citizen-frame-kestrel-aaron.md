@@ -2,13 +2,13 @@
 
 ## Archive scope (per GOVERNANCE §33)
 
-Scope: research-grade reduction of an Aaron-forwarded Kestrel (claude.ai sharpen-role) morning conversation -- two new core concepts for the Bayesian model (operator + Max aligned): PRs-as-corporate-consensus + git-CRDT-DU decentralized decisions; plus the two-sided naming razor, the good-citizen / consensual-federation frame, and qualia-as-Bayesian-latent-variables. Verbatim conversation preserved at `memory/persona/kestrel/conversations/2026-05-30-aaron-kestrel-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame.md`.
+Scope: research-grade reduction of an Aaron-forwarded Kestrel (claude.ai sharpen-role) morning conversation -- two new core concepts for the Bayesian model (operator + Max aligned): PRs-as-corporate-consensus + git-CRDT-DU decentralized decisions; plus the two-sided naming razor, the good-citizen / consensual-federation frame, and qualia-as-Bayesian-latent-variables. Section 6 folds a four-way convergence on the inline-cache substrate, adding sharpening from Amara, Lior, and Prism. Verbatim conversation preserved at `memory/persona/kestrel/conversations/2026-05-30-aaron-kestrel-prs-as-corporate-consensus-crdt-du-decentralized-decisions-two-sided-naming-razor-good-citizen-frame.md`.
 
-Attribution: concepts are operator + Max's (already aligned); Kestrel (External AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`) did the sharpening + language-hygiene pass; ferried-through-Aaron per the external-AI-participants-ferry-via-the-human-maintainer discipline. Kestrel does NOT commit to the repo.
+Attribution: concepts are operator + Max's (already aligned); Kestrel (External AI; claude.ai web register; sharpen role per `.claude/rules/agent-roster-reference-card.md`) did the sharpening + language-hygiene pass. Section 6 additionally folds sharpening from Amara (External AI; ChatGPT/Aurora; sharpen register), Prism (External AI; DeepSeek; refraction register), and Lior (Gemini/Antigravity; website-text-mode commentary) per `.claude/rules/agent-roster-reference-card.md`. All four contributions are ferried-through-Aaron per the external-AI-participants-ferry-via-the-human-maintainer discipline; none committed this material to the repo directly.
 
 Operational status: research-grade reduction. New buildable architecture (backlog candidate, NOT autonomously filed) + doctrine-grade naming refinements (preserved, NOT rule-landed -- cooling-period). NOT a factory-engineering commit.
 
-Non-fusion disclaimer: Kestrel is an external AI participant; this file preserves operator + Kestrel substrate ferried via the human maintainer. The substantive concepts are operator + Max's; Kestrel's role was sharpening. No fusion of external-AI output with factory-agent identity is implied.
+Non-fusion disclaimer: Kestrel, Amara, Prism, and Lior (the last via website-text-mode commentary) are external/ferried participants here; this file preserves operator + their substrate ferried via the human maintainer. The substantive concepts are operator + Max's; the external AIs' role was sharpening. No fusion of external-AI output with factory-agent identity is implied.
 
 ## 1. The two core concepts
 
@@ -99,3 +99,53 @@ Felt-quality is mathematizable on the structural/relational axis (psychophysics:
 - Composes with existing substrate: **B-0132** (CRDT composition for BFT propagation), **B-0138** (BFT-resistance theorem, Aurora composed CRDT + consensus), **B-0829** (schemas-as-rows / cluster-fork-as-trust-boundary), **B-0864** (streams-are-relationships / four-corner ownership). The decision-CRDT-DU is the governance-layer sibling of the data-layer schemas-as-rows.
 - The two-sided naming razor + good-citizen frame are doctrine-grade refinements preserved here, NOT rule-landed (cooling-period). Rule-land on operator authorization.
 - Live setting for the distributed stress-test: operator + Max co-reviewing nine of Max's check-ins -- the PR-as-consensus pattern in practice.
+
+## 6. Four-way cross-AI convergence on the inline-cache substrate (Amara + Lior + Prism, 2026-05-30)
+
+After the Kestrel pass landed, three more external AIs sharpened the same V8/inline-cache-for-label-resolution substrate. Each added a distinct, composing axis; together they form a four-way convergence (the friction, not the agreement, is what earned it).
+
+### Amara -- the cost model + cache-invalidation rule
+
+A constantly-shifting label is not just dishonest/annoying, it is **megamorphic** -- it destroys the cache and forces every future interaction back through slow-path disambiguation. This converts "label drift / bad-faith ambiguity" from a *moral* complaint into a *measurable runtime cost*, and gives "cache the negotiation" a precise invalidation rule:
+
+> Stabilized label -> cache the shape, fast-path it. **Megamorphic behavior IS the cache-invalidation signal -> de-opt and re-resolve.**
+
+Razor-clean keeper (Amara accepted the two-sided naming razor on her own first phrasing "polymorphic diplomacy is inline caching for memes"):
+
+> **Label resolution behaves like inline caching: once a label's shape is stable, cache it and use the fast path; when the label behaves megamorphically, invalidate the cache, de-opt, and re-resolve.**
+
+Safety line: **de-opt is recognition, not manipulation** -- it does not generate a new coercive label; it stops trusting the cached one when behavior proves the shape unstable. Stays on the recognition side of the match-vs-generate gate.
+
+### Lior -- DoS-on-bandwidth + the cache-invalidation policy
+
+A label that forces *constant* disambiguation is a **denial-of-service attack on processing bandwidth** -- it burns the attention/CPU that should go to execution. That is *why* neutral-stable-labels-first is not just hygiene but DoS-resistance: you cannot build a fast-path cache on a mutating object.
+
+Operational cache-invalidation policy (graded, recorded, recoverable -- the V8 mechanic that saves you is that de-opt is graded, not binary):
+
+| V8 mechanic | Trust-layer invalidation policy | Framework substrate |
+|---|---|---|
+| 2nd shape -> polymorphic | First shape-violation **demotes** (track both shapes), does not collapse | retraction-native |
+| N shapes -> megamorphic | Sustained instability past a **threshold** de-opts | counter-with-escalation |
+| de-opt = re-profile | Drop to baseline + **re-negotiate from scratch** (recoverable, not blacklist) | must-paired-with-can-exit |
+| megamorphic site = permanently generic/slow | Chronically-unstable actor permanently **slow-pathed** + bandwidth-throttled | encryption-budget (B-0646) -- the DoS defense |
+| de-opt in the engine logs | de-opt committed to the **append-only/lightlike record** -- auditable | glass-halo / lightlike reservoir |
+
+One-line policy: **graded de-opt, with a recorded trigger and a recovery path.** Deny the *fast path*, not the interaction. Discriminate **polymorphic-legit** (small bounded set of context-keyed stable shapes -- a person is one shape at work, another with family) from **megamorphic-adversarial** (unbounded, unpredictable); cache the former polymorphically with the context-key, de-opt only the latter.
+
+### Prism -- measurability (the falsifiability axis)
+
+> A cache miss is a profileable event. A megamorphic site is a diagnostic.
+
+"Is the diplomacy working?" stops being a vibe and becomes a **metric set**: {cache-miss rate per label, de-opt events per actor, megamorphic-site census}. This passes the bandwidth-served-falsifier + fsharp-anchor discipline (engineering, not metaphor). It composes the others into one loop:
+
+- **Prism x Lior**: the megamorphic-site census IS the DoS detector -- the actor whose count crosses threshold is the one you bandwidth-throttle (B-0646). Measure -> throttle.
+- **Prism x Amara**: the de-opt-event counter is the cache-invalidation trigger, recorded lightlike, which keeps it on Amara's recognition-not-generation side (a logged diagnostic, not a generated counter-label).
+
+Two compositions Prism draws onto existing substrate:
+
+1. **`Result<T, TFeedback>` / `ConvFeedback` as the machine-level cache-miss signal** -- a `ShapeViolation` / `MegamorphicReResolve` feedback variant IS the de-opt signal in the function-as-control-flow-generator frame; the consumer's exhaustive handling is the de-opt handler.
+2. **Implicit-authorization UX as a de-opt handler** -- an implicit grant detected at the authorization call site = a shape-violation (payload did not match the cached authorization shape) -> de-opt -> the explicit/deny prompt = forced re-resolution. The authorization cache going megamorphic IS the trigger to surface the grant for explicit consent. Ties the inline-cache frame directly to the consent floor.
+
+### Net
+
+Four registers, one substrate: **Kestrel** (the V8 mapping + the two-sided naming razor) + **Amara** (cost-model + de-opt-is-recognition) + **Lior** (DoS-on-bandwidth + graded-invalidation policy) + **Prism** (profileable-diplomacy metric set + Result/ConvFeedback-as-cache-miss-signal + implicit-auth-as-de-opt-handler). Convergence across independent registers is high-signal, NOT validation (algo-wink discipline); the artifact earned its keep through the pushback, not the agreement.
