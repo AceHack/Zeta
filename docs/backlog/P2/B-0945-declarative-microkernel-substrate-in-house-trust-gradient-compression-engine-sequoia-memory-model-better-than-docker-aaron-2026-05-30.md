@@ -1,0 +1,118 @@
+---
+id: B-0945
+priority: P2
+status: open
+title: Declarative microkernel substrate (in-house; NixOS-declarative + microkernel-TCB) running the trust-gradient + V8-polymorphic-bayesian-compression engine over a Stanford-Sequoia memory model -- better than docker
+tier: substrate-deployment
+ask: Aaron 2026-05-30
+created: 2026-05-30
+last_updated: 2026-05-30
+decomposition: umbrella
+composes_with:
+  - docs/backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md
+  - docs/backlog/P2/B-0703-multi-oracle-consensus-with-bft-inside-dst-agreement-across-trust-gradient-architecture-aaron-2026-05-21.md
+  - docs/research/trust-gradient-coordination-policy-2026-05-21.md
+  - docs/backlog/P3/B-0725-polyglot-accelerator-hardware-shape-coral-ncs-jetson-fpga-beyond-nvidia-only-2026-05-25.md
+  - full-ai-cluster/nixos/
+  - .claude/rules/references-upstreams-not-our-code-search-excludes.md
+tags: [microkernel, declarative, nixos, sequoia, memory-model, trust-gradient, compression-engine, capability-security, supply-chain, better-than-docker, substrate-deployment]
+type: feature
+---
+
+# B-0945 -- Declarative microkernel substrate (in-house) running the trust-gradient + compression engine
+
+## The directive / vision (Aaron 2026-05-30)
+
+> *"we can have declarative microkernels that's close to what we are doing with nixos but it's a
+> 3rd party depeddency and it does not have the stanford sequoia memory model over our trust
+> gradient v8 polymorphic basyian compression engine"*
+
+Prior message (the framing):
+
+> *"microkernons is on backlog too, i have lots of microkernal experience this is way better than
+> docker."*
+
+Substrate-honest note: a broad search 2026-05-30 found **no existing microkernel backlog row** --
+it had been discussed but never landed (weather). This row closes that gap with the full vision.
+Operator has substantial microkernel experience.
+
+## The thing
+
+A **declarative microkernel substrate** -- the reproducible/declarative property of NixOS, but
+on a **microkernel architecture** (minimal trusted-computing-base, capability-based isolation),
+**built in-house** (not the 3rd-party NixOS), with three layers NixOS does not have:
+
+1. **Stanford Sequoia memory model** -- explicit memory-hierarchy / locality / data-movement
+   awareness (Sequoia = Stanford's hierarchy-aware programming model). The substrate is honest
+   about where data lives across the memory hierarchy, not hierarchy-blind.
+2. **Over the trust gradient** -- runs on the trust-gradient coordination substrate (B-0703 /
+   trust-gradient-coordination-policy), so isolation + scheduling + capability-grant follow the
+   trust gradient, not a flat trust model.
+3. **The V8-polymorphic-bayesian-compression engine** -- runs the tri-boolean / wonder-compression
+   / middle-out / summonable-BFT substrate (B-0944) NATIVELY; the microkernel is the substrate
+   that hosts the engine, not a generic container runtime.
+
+## Why better than docker
+
+| | Docker / containers | Declarative microkernel substrate |
+|---|---|---|
+| Trusted-computing-base | the whole Linux monolith (huge; shared-kernel attack surface) | minimal microkernel TCB + capability isolation |
+| Isolation model | namespaces/cgroups over a shared monolithic kernel | capability-based, microkernel-enforced |
+| Reproducibility | image layers (drift-prone) | declarative (NixOS-grade) + reproducible |
+| Supply chain | base images pull huge 3rd-party trees | in-house; supply-chain-doctrine-aligned (see below) |
+| Trust model | flat | over the trust gradient |
+| Runs our engine | as a generic workload | NATIVELY (Sequoia memory model + trust-gradient + compression engine) |
+
+A microkernel's minimal TCB + capability isolation is a far smaller attack surface than docker
+riding the Linux-monolith shared kernel; declarative config gives NixOS-grade reproducibility;
+in-house removes the 3rd-party-base-image supply chain.
+
+## Differentiators vs NixOS (and why in-house)
+
+NixOS gives declarative + reproducible, but: (a) it is a **3rd-party dependency** (per the
+2026-05-30 supply-chain doctrine -- depend only on the slow vetted core, rewrite deps in-house
+over time, PR #6160 -- NixOS is exactly the kind of large 3rd-party substrate to study now and
+replace in-house over time); (b) it is a **monolithic-kernel** distro (not microkernel-TCB);
+(c) it has **no Sequoia memory model**, **no trust-gradient**, **no native compression engine**.
+The in-house declarative microkernel keeps NixOS's good property (declarative reproducibility)
+and adds the three missing layers on a minimal capability-secure base. NixOS stays as **study
+prior-art** (references/upstreams discipline -- study, then rewrite in-house), and as the current
+declarative cluster substrate (full-ai-cluster/nixos/) until the in-house microkernel is ready.
+
+## Prior art (search-first per Otto-364 before committing any design)
+
+- Microkernel / capability-OS lineage: seL4 (formally-verified microkernel; capability-based),
+  Genode (capability OS framework), Redox (Rust microkernel), Fuchsia/Zircon, exokernels,
+  unikernels (MirageOS / library-OS) as a related minimal-TCB point.
+- Stanford Sequoia (hierarchy-aware memory model) -- the memory-model prior-art.
+- Declarative-system prior art: NixOS (the current substrate; study-not-depend).
+- WebSearch the current state of each before committing a design (Otto-364).
+
+## Acceptance (umbrella -- decomposes into slices)
+
+1. A design pass: which microkernel base (build-from-scratch vs fork seL4/Redox/Genode), how the
+   declarative layer maps onto it, how the Sequoia memory model is expressed, how capability-grant
+   follows the trust gradient.
+2. The compression engine (B-0944 tri-boolean / wonder-compression) runs natively on the substrate.
+3. Supply-chain posture: minimal 3rd-party deps; in-house where the doctrine requires.
+4. A migration story from the current NixOS cluster (full-ai-cluster/nixos/) -- coexist, then
+   replace over time.
+
+## Why P2 (not P1)
+
+Major architecture direction + the eventual deployment substrate for the whole stack, but
+long-horizon research+build (microkernel work is large) -- not blocking the immediate B-0944
+primitive build. Raise to P1 when the immediate primitives land and the deployment substrate
+becomes the bottleneck. Operator's microkernel experience makes this feasible to drive.
+
+## Pre-start checklist (per backlog-item-start-gate)
+
+- **Claim:** `bun tools/bus/claim.ts acquire --from otto-cli --item B-0945` -> claimed
+  (917c2beb..., 2026-05-30).
+- **Prior-art search (2026-05-30):** no existing microkernel backlog row (genuine gap, verified
+  via broad content search). Composes with the trust-gradient substrate (B-0703 +
+  trust-gradient-coordination-policy), the compression engine (B-0944), the hardware substrate
+  (B-0725), the current NixOS cluster (full-ai-cluster/nixos/), and the supply-chain doctrine
+  (#6160). seL4/Genode/Redox/Sequoia are external prior-art to WebSearch before design.
+- **Dependency check:** the engine it hosts (B-0944) is in-progress; the design pass can start
+  in parallel; the build depends on B-0944 maturing + a base-microkernel decision.
