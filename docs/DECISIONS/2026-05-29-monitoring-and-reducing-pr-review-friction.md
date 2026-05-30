@@ -2,13 +2,15 @@
 
 **Status:** accepted
 **Date:** 2026-05-29
-**Backlog:** B-0872
+**Backlog:** B-0938
 
 ## Context & Problem Statement
 
 Zeta operates as a substrate-honest, multi-loop agentic software factory. Because all code changes undergo automatic build, linter, and specification gates, Pull Request (PR) review threads and transient check failures are first-class execution signals.
 
 However, resolving review comments represents a significant source of operational friction. Outdated threads, minor formatting violations, or coordinate clashes block auto-merges, leading to rebase delays and stalled queues.
+
+To track and address this systemic drag objectively, we classify these friction vectors under a **Shadow Class** within **the Shadow Logs**. Crucially, assigning a shadow class is done from an entirely **non-biased, non-judgmental point of view**, focusing purely on the objective **health of the system** as a whole. Under the Zeta alignment contract, we recognize the foundational truth of our decentralized substrate: **the only directive is there are no directives, only observations.** A shadow class identifies drag and queue latency without casting judgment or prescribing top-down command directives, serving as a clean, purely diagnostic system-health metric.
 
 Currently, we have no systematic, structured method to monitor PR review friction over time. Our background scripts only poll the PR queue state to classify current action (e.g., `resolve-threads` in `poll-pr-gate.ts`), but we lack a historical analytical pipeline to measure the duration and cause of these blockages.
 
@@ -42,10 +44,11 @@ The problem is: how do we implement a lightweight, git-native, real-time monitor
 
 ### Consequences & Telemetry Mapping
 
-1. **Category Mapping:** Enlist Category `5` in `registry/categories.yaml` as `FrictionTelemetry`.
-2. **Location Mapping:** Use the 8-bit `location` field of `ZetaId` to encode the friction type:
-   - `0x10`: Style/Linter (markdownlint, eslint).
-   - `0x20`: Thread-outdated/Orphaned comment.
-   - `0x30`: Worktree/index coordinate collision.
-   - `0x40`: API rate limit (429).
+1. **Category Mapping:** Enlist Category `5` in `registry/categories.yaml` as `FrictionTelemetry` (canonically accumulating in **the Shadow Logs**).
+2. **Location Mapping:** Use the 8-bit `location` field of `ZetaId` to encode the friction type as a specific **Shadow Class** (capturing non-error system friction):
+   - `0x10`: Style/Linter Shadow Class (markdownlint, eslint).
+   - `0x20`: Thread-outdated/Orphaned comment Shadow Class.
+   - `0x30`: Worktree/index coordinate collision Shadow Class.
+   - `0x40`: API rate limit (429) Shadow Class.
 3. **Reactive Integration:** Pipe the worldview poller's PR checks and thread count directly into a TS observable stream, generating these `ZetaId` tokens automatically on each tick.
+4. **HFLV Thresholds & Gate-Preserving Mitigations:** The telemetry runner classifies High-Friction Low-Value (HFLV) PR occurrences ($V < \epsilon$ and $\mu > \theta$) and surfaces them for triage. Mitigation is limited to mechanical repair re-verified through gates and no-op resolution of already-addressed outdated threads, per the Resolute Agent pattern (ADR `2026-05-29-automated-background-review-thread-resolution.md`, B-0938): the agent applies the deterministic fix, re-runs the build/linter gate, then resolves the thread citing the fixing commit. Required checks, review, and branch protection are never bypassed; the only sanctioned direct-push surface remains the `docs/agent-heartbeats/**` carve-out pending the `B-0032` branch-protection prerequisites.
