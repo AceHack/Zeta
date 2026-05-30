@@ -121,14 +121,21 @@ It adds a bounded Codex runway signal to the factory health monitor so a
 healthy Codex service with zero owned PRs or claims warns instead of looking
 complete. The hard minimum is one active item; the target is two active items.
 
+Current standing-query source wiring receipt:
+`docs/trajectories/autonomous-loop-coordination/standing-query-trigger-source-wiring-2026-05-30.md`
+
+It wraps the factory health monitor's observation checks as explicit trigger
+sources, preserving current behavior while making source boundaries reusable
+and failure-bounded for later B-0250 coincidence detection work.
+
 ## Recommended Next Action
 
-Land the parallel-runway health PR after review and CI are green, then use the
-new signal to distinguish healthy quiet from insufficient Codex-owned runway.
+Land the standing-query source wiring PR after review and CI are green, then
+add the first event-window source for B-0250 coincidence detection.
 
 ## Next Child Packets
 
-- standing-query trigger inventory for loop/backlog health, grounded in B-0250
+- event-window source for B-0250 coincidence detection
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
 
 ## Evidence Links

@@ -31,6 +31,12 @@ export interface HealthReport {
   recommendedAction: string | null;
 }
 
+export interface StandingQueryTriggerSource {
+  surface: string;
+  collect: () => HealthSignal[];
+  failureAction?: string;
+}
+
 export type LaneRunwayLane = "codex" | "otto" | "lior" | "alexa" | "riven" | "other";
 
 export type LaneRunwayNamedLane = Exclude<LaneRunwayLane, "other">;
@@ -1126,19 +1132,74 @@ export function buildHealthReport(allSignals: HealthSignal[], timestamp = new Da
   };
 }
 
+export function collectStandingQuerySignals(sources: readonly StandingQueryTriggerSource[]): HealthSignal[] {
+  const signals: HealthSignal[] = [];
+
+  for (const source of sources) {
+    try {
+      signals.push(...source.collect());
+    } catch {
+      signals.push({
+        surface: source.surface,
+        level: "warning",
+        message: `${source.surface} standing-query source failed`,
+        action: source.failureAction ?? "inspect factory health source before trusting this signal",
+      });
+    }
+  }
+
+  return signals;
+}
+
+function buildStandingQueryTriggerSources(openPRs: ToolResult): StandingQueryTriggerSource[] {
+  return [
+    {
+      surface: "lane-runway",
+      collect: () => checkLaneRunway(openPRs),
+      failureAction: "inspect lane-runway observations before trusting runway state",
+    },
+    {
+      surface: "pr-queue",
+      collect: () => checkPRQueue(openPRs),
+      failureAction: "inspect gh PR queue state before trusting PR signals",
+    },
+    {
+      surface: "backlog",
+      collect: checkBacklogHealth,
+      failureAction: "inspect backlog files before trusting backlog signals",
+    },
+    {
+      surface: "claims",
+      collect: checkClaimFreshness,
+      failureAction: "inspect remote claim refs before trusting claim signals",
+    },
+    {
+      surface: "working-tree",
+      collect: checkWorkingTreeCleanliness,
+      failureAction: "inspect git status before trusting working-tree signals",
+    },
+    {
+      surface: "trajectories",
+      collect: checkTrajectoryProgress,
+      failureAction: "inspect trajectory resume files before trusting trajectory signals",
+    },
+    {
+      surface: "lost-files",
+      collect: checkLostFiles,
+      failureAction: "inspect lost-file probes before trusting preservation signals",
+    },
+    {
+      surface: "cadence",
+      collect: checkRecentCommitCadence,
+      failureAction: "inspect git log before trusting cadence signals",
+    },
+  ];
+}
+
 export function runHealthCheck(): HealthReport {
   const openPRs = fetchOpenPRs();
 
-  return buildHealthReport([
-    ...checkLaneRunway(openPRs),
-    ...checkPRQueue(openPRs),
-    ...checkBacklogHealth(),
-    ...checkClaimFreshness(),
-    ...checkWorkingTreeCleanliness(),
-    ...checkTrajectoryProgress(),
-    ...checkLostFiles(),
-    ...checkRecentCommitCadence(),
-  ]);
+  return buildHealthReport(collectStandingQuerySignals(buildStandingQueryTriggerSources(openPRs)));
 }
 
 function printHelp(): void {

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
   buildHealthReport,
+  collectStandingQuerySignals,
   classifyClaimPathCollisions,
   classifyBranchLane,
   classifyLaneRunway,
@@ -16,6 +17,7 @@ import {
   parseLocalWorktreeDirtScanLimit,
   runHealthCheck,
   type HealthSignal,
+  type StandingQueryTriggerSource,
 } from "./factory-health-monitor";
 
 const HEALTH_CHECK_TIMEOUT_MS = 20_000;
@@ -367,6 +369,45 @@ describe("factory-health-monitor", () => {
     expect(report.summary).toEqual({ ok: 1, warning: 1, critical: 1 });
     expect(report.recommendedAction).toBe("wake runner");
     expect(report.timestamp).toBe("2026-05-07T15:10:00.000Z");
+  });
+
+  test("collectStandingQuerySignals preserves trigger source order", () => {
+    const sources: StandingQueryTriggerSource[] = [
+      {
+        surface: "lane-runway",
+        collect: () => [{ surface: "lane-runway", level: "ok", message: "codex active" }],
+      },
+      {
+        surface: "backlog",
+        collect: () => [{ surface: "backlog", level: "warning", message: "P1 queue high" }],
+      },
+    ];
+
+    expect(collectStandingQuerySignals(sources)).toEqual([
+      { surface: "lane-runway", level: "ok", message: "codex active" },
+      { surface: "backlog", level: "warning", message: "P1 queue high" },
+    ]);
+  });
+
+  test("collectStandingQuerySignals converts source failures to bounded warnings", () => {
+    const sources: StandingQueryTriggerSource[] = [
+      {
+        surface: "claims",
+        failureAction: "inspect claim refs",
+        collect: () => {
+          throw new Error("boom");
+        },
+      },
+    ];
+
+    expect(collectStandingQuerySignals(sources)).toEqual([
+      {
+        surface: "claims",
+        level: "warning",
+        message: "claims standing-query source failed",
+        action: "inspect claim refs",
+      },
+    ]);
   });
 
   test(
