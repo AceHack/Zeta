@@ -80,6 +80,48 @@ describe("factory-health-monitor", () => {
     expect(findCoincidenceWindows(events, { windowMs: 30_000, minimumEvents: 2 })).toEqual([]);
   });
 
+  test("findCoincidenceWindows deduplicates same-lifecycle events before classifying a window", () => {
+    const mergedPr: CoincidenceEvent = {
+      id: "merged-pr-6097",
+      trajectory: "codex",
+      occurredAt: "2026-05-30T05:00:00.000Z",
+      correlationKey: "pr:6097",
+    };
+    const trajectoryReceipt: CoincidenceEvent = {
+      id: "trajectory-receipt-6097",
+      trajectory: "autonomous-loop-coordination",
+      occurredAt: "2026-05-30T05:00:01.000Z",
+      correlationKey: "pr:6097",
+    };
+
+    expect(
+      findCoincidenceWindows([mergedPr, trajectoryReceipt], {
+        windowMs: 30_000,
+        minimumEvents: 2,
+      }),
+    ).toEqual([]);
+
+    const independentEvent: CoincidenceEvent = {
+      id: "otto-1",
+      trajectory: "otto",
+      occurredAt: "2026-05-30T05:00:02.000Z",
+    };
+
+    expect(
+      findCoincidenceWindows([mergedPr, trajectoryReceipt, independentEvent], {
+        windowMs: 30_000,
+        minimumEvents: 2,
+      }),
+    ).toEqual([
+      {
+        windowStart: "2026-05-30T05:00:00.000Z",
+        windowEnd: "2026-05-30T05:00:30.000Z",
+        trajectories: ["codex", "otto"],
+        events: [mergedPr, independentEvent],
+      },
+    ]);
+  });
+
   test("classifyCoincidenceWindows emits ok and warning signals", () => {
     expect(classifyCoincidenceWindows([], { windowMs: 30_000, minimumEvents: 2 })).toEqual([
       {
@@ -179,12 +221,14 @@ describe("factory-health-monitor", () => {
         trajectory: "codex",
         occurredAt: "2026-05-30T05:00:00.000Z",
         description: "#10 Codex source",
+        correlationKey: "pr:10",
       },
       {
         id: "merged-pr-11",
         trajectory: "otto",
         occurredAt: "2026-05-30T05:01:00.000Z",
         description: "#11 Otto source",
+        correlationKey: "pr:11",
       },
     ]);
   });
@@ -202,10 +246,13 @@ describe("factory-health-monitor", () => {
 
   test("trajectoryReceiptEventsFromGitLog builds bounded factory events from trajectory commits", () => {
     const output = [
-      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\t2026-05-30T05:00:00+00:00\tland two receipts",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\t2026-05-30T05:00:00+00:00\tland two receipts (#6097)",
       "docs/trajectories/autonomous-loop-coordination/RESUME.md",
       "docs/trajectories/factory-trajectory-surface/receipt.md",
       "docs/trajectories/factory-trajectory-surface/RESUME.md",
+      "",
+      "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\t2026-05-30T05:10:00+00:00\tland receipt without PR marker",
+      "docs/trajectories/autonomous-loop-coordination/followup.md",
       "",
       "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\t2026-05-28T05:00:00+00:00\tstale receipt",
       "docs/trajectories/stale/RESUME.md",
@@ -222,13 +269,21 @@ describe("factory-health-monitor", () => {
         id: "trajectory-receipt-aaaaaaaaaaaa-autonomous-loop-coordination",
         trajectory: "autonomous-loop-coordination",
         occurredAt: "2026-05-30T05:00:00.000Z",
-        description: "aaaaaaaaaaaa land two receipts",
+        description: "aaaaaaaaaaaa land two receipts (#6097)",
+        correlationKey: "pr:6097",
       },
       {
         id: "trajectory-receipt-aaaaaaaaaaaa-factory-trajectory-surface",
         trajectory: "factory-trajectory-surface",
         occurredAt: "2026-05-30T05:00:00.000Z",
-        description: "aaaaaaaaaaaa land two receipts",
+        description: "aaaaaaaaaaaa land two receipts (#6097)",
+        correlationKey: "pr:6097",
+      },
+      {
+        id: "trajectory-receipt-eeeeeeeeeeee-autonomous-loop-coordination",
+        trajectory: "autonomous-loop-coordination",
+        occurredAt: "2026-05-30T05:10:00.000Z",
+        description: "eeeeeeeeeeee land receipt without PR marker",
       },
     ]);
   });

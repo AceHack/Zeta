@@ -42,6 +42,7 @@ export interface CoincidenceEvent {
   trajectory: string;
   occurredAt: string;
   description?: string;
+  correlationKey?: string;
 }
 
 export interface CoincidenceWindowOptions {
@@ -141,6 +142,11 @@ function coincidenceEventTimeMs(event: CoincidenceEvent): number | null {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
+function coincidenceEventWindowKey(event: CoincidenceEvent, fallbackIndex: number): string {
+  const key = event.correlationKey?.trim();
+  return key ? key : `${event.id}:${fallbackIndex}`;
+}
+
 export function findCoincidenceWindows(
   events: readonly CoincidenceEvent[],
   options: CoincidenceWindowOptions,
@@ -160,7 +166,17 @@ export function findCoincidenceWindows(
     if (!first) continue;
 
     const windowEndMs = first.timeMs + windowMs;
-    const members = timedEvents.filter((candidate) => candidate.timeMs >= first.timeMs && candidate.timeMs <= windowEndMs);
+    const rawMembers = timedEvents.filter(
+      (candidate) => candidate.timeMs >= first.timeMs && candidate.timeMs <= windowEndMs,
+    );
+    const membersByCorrelation = new Map<string, { event: CoincidenceEvent; index: number; timeMs: number }>();
+    for (const member of rawMembers) {
+      const key = coincidenceEventWindowKey(member.event, member.index);
+      if (!membersByCorrelation.has(key)) {
+        membersByCorrelation.set(key, member);
+      }
+    }
+    const members = [...membersByCorrelation.values()];
     if (members.length < minimumEvents) {
       continue;
     }
@@ -170,7 +186,7 @@ export function findCoincidenceWindows(
       continue;
     }
 
-    const signature = JSON.stringify(members.map((member) => `${member.event.id}:${member.timeMs}:${member.index}`).sort());
+    const signature = JSON.stringify(members.map((member) => coincidenceEventWindowKey(member.event, member.index)).sort());
     if (seen.has(signature)) {
       continue;
     }
@@ -364,10 +380,16 @@ export function mergedPullRequestEventsFromJson(
         trajectory: factoryTrajectoryFromPullRequestBranch(pr.headRefName),
         occurredAt: new Date(mergedMs).toISOString(),
         description: `#${pr.number} ${pr.title?.trim() || "(untitled merged PR)"}`,
+        correlationKey: `pr:${pr.number}`,
       };
     })
     .filter((event): event is CoincidenceEvent => event !== null)
     .sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
+}
+
+function pullRequestCorrelationKeyFromText(text: string): string | undefined {
+  const match = text.match(/(?:^|\s|[[(])#(\d+)(?:\D|$)/);
+  return match?.[1] ? `pr:${match[1]}` : undefined;
 }
 
 export function factoryTrajectoryFromTrajectoryPath(path: string | null | undefined): string | null {
@@ -418,12 +440,17 @@ export function trajectoryReceiptEventsFromGitLog(
     ].sort();
 
     for (const trajectory of trajectories) {
-      events.push({
+      const event: CoincidenceEvent = {
         id: `trajectory-receipt-${current.hash.slice(0, 12)}-${trajectory}`,
         trajectory,
         occurredAt: new Date(committedMs).toISOString(),
         description: `${current.hash.slice(0, 12)} ${current.subject.trim() || "(untitled trajectory receipt commit)"}`,
-      });
+      };
+      const correlationKey = pullRequestCorrelationKeyFromText(current.subject);
+      if (correlationKey !== undefined) {
+        event.correlationKey = correlationKey;
+      }
+      events.push(event);
     }
 
     current = null;

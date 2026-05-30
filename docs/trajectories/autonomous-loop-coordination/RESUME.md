@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; B-0250 loop-run receipt source landed
+Status: active child packet; B-0250 same-PR source narrowing landed
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -166,17 +166,25 @@ It classifies the first live joined-source signal after PR #6096. The current
 `76 event-window coincidence(s)` warning is mostly expected lifecycle/source
 noise from ordinary PR merge, trajectory receipt, and Codex gate completions.
 
+Current B-0250 same-PR source narrowing receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-source-narrowing-same-pr-dedup-2026-05-30.md`
+
+It adds PR lifecycle correlation keys to merged-PR and trajectory-receipt
+observations, then deduplicates same-key members inside coincidence windows
+before counting cross-trajectory evidence. The current live warning drops from
+76 to 69 event-window coincidences. Codex loop-run gating and compact debug
+window output remain separate next slices.
+
 ## Recommended Next Action
 
-Narrow the B-0250 coincidence source before adding another event source:
-deduplicate same-PR lifecycle triples, gate Codex loop-run events to claim or
-PR publishing completions, and add a compact debug surface for top coincidence
-windows.
+Continue narrowing the B-0250 coincidence source before adding another event
+source: gate Codex loop-run events to claim or PR publishing completions, then
+add a compact debug surface for top coincidence windows.
 
 ## Next Child Packets
 
-- B-0250 source narrowing for same-PR lifecycle deduplication and
-  claim/PR-publishing gate completions
+- B-0250 source narrowing for claim/PR-publishing gate completions
+- B-0250 compact debug surface for top coincidence windows
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
 
 ## Evidence Links
