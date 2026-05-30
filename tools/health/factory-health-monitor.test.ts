@@ -17,10 +17,12 @@ import {
   laneRunwayServiceHealthFromObservations,
   laneRunwaySnapshotFromObservations,
   localWorktreeDirtObservationFromStatus,
+  loopRunReceiptEventsFromRunnerLog,
   mergedPullRequestEventsFromJson,
   parseClaimPathSet,
   parseGitWorktreeListPorcelain,
   parseLocalWorktreeDirtScanLimit,
+  resolveCodexLoopRunnerLog,
   runHealthCheck,
   trajectoryReceiptEventsFromGitLog,
   type HealthSignal,
@@ -229,6 +231,53 @@ describe("factory-health-monitor", () => {
         description: "aaaaaaaaaaaa land two receipts",
       },
     ]);
+  });
+
+  test("loopRunReceiptEventsFromRunnerLog builds bounded Codex loop-run events", () => {
+    const output = [
+      "2026-05-30T05:00:00Z heartbeat complete run_id=20260530T050000Z fetch=ok claims=1 open_prs=0 dirty=0 codex=wait due_in=60s",
+      "2026-05-30T05:01:00Z codex forward gate start run_id=20260530T050100Z timeout=180s",
+      "2026-05-30T05:04:00Z codex forward gate end run_id=20260530T050100Z status=0",
+      "2026-05-28T05:04:00Z codex forward gate end run_id=stale status=0",
+      "2026-05-30T08:04:00Z codex forward gate end run_id=future status=0",
+      "not-a-date codex forward gate end run_id=bad status=0",
+    ].join("\n");
+
+    expect(loopRunReceiptEventsFromRunnerLog(output, "2026-05-30T06:00:00Z", 2 * 60 * 60 * 1000)).toEqual([
+      {
+        id: "loop-run-20260530T050100Z",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:04:00.000Z",
+        description: "codex forward gate 20260530T050100Z status=0",
+      },
+    ]);
+  });
+
+  test("resolveCodexLoopRunnerLog honors writer log-dir override and explicit override", () => {
+    // 1. Explicit monitor override wins (even when other vars are set).
+    expect(
+      resolveCodexLoopRunnerLog({
+        FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG: "/custom/runner.log",
+        ZETA_CODEX_LOOP_LOG_DIR: "/elsewhere",
+        HOME: "/Users/acehack",
+      }),
+    ).toBe("/custom/runner.log");
+
+    // 2. Writer log-dir override is mirrored (the bug this test guards).
+    expect(
+      resolveCodexLoopRunnerLog({ ZETA_CODEX_LOOP_LOG_DIR: "/var/log/zeta", HOME: "/Users/acehack" }),
+    ).toBe("/var/log/zeta/runner.log");
+
+    // 3. Default to the writer's HOME-relative location.
+    expect(resolveCodexLoopRunnerLog({ HOME: "/Users/acehack" })).toBe(
+      "/Users/acehack/Library/Logs/zeta-codex-loop/runner.log",
+    );
+
+    // 4. No HOME and no override → source absent ("").
+    expect(resolveCodexLoopRunnerLog({})).toBe("");
+
+    // 5. Explicit empty override stays empty (caller opted the source off).
+    expect(resolveCodexLoopRunnerLog({ FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG: "", HOME: "/Users/acehack" })).toBe("");
   });
 
   test("classifyBranchLane maps known branch prefixes to lanes", () => {

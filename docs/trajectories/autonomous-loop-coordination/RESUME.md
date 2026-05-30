@@ -150,16 +150,22 @@ It converts recent commits touching `docs/trajectories/**` into bounded
 `CoincidenceEvent` values and joins them with merged PR observations in the
 same coincidence standing-query source.
 
+Current B-0250 loop-run receipt source:
+`docs/trajectories/autonomous-loop-coordination/b0250-loop-run-receipt-source-2026-05-30.md`
+
+It converts local Codex forward-gate completion lines from
+`~/Library/Logs/zeta-codex-loop/runner.log` into optional bounded
+`CoincidenceEvent` values and joins them with merged PR and trajectory receipt
+observations.
+
 ## Recommended Next Action
 
-Land the B-0250 trajectory receipt source PR after focused checks and CI are
-green, then inspect whether merged-PR and trajectory-receipt signals produce
-useful cross-source coincidences.
+Land the B-0250 loop-run receipt source PR after focused checks and CI are
+green, then inspect whether merged-PR, trajectory-receipt, and loop-run
+signals produce useful cross-source coincidences without excessive noise.
 
 ## Next Child Packets
 
-- optional loop-run receipt source if merged-PR and trajectory-receipt sources
-  need a third comparison stream
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
 
 ## Evidence Links
