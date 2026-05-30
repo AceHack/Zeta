@@ -34,17 +34,19 @@ function getReport(): ReturnType<typeof runHealthCheck> {
 
 describe("factory-health-monitor", () => {
   test("findCoincidenceWindows detects cross-trajectory events inside a bounded window", () => {
+    const firstEvent: CoincidenceEvent = {
+      id: "a-1",
+      trajectory: "autonomous-loop-coordination",
+      occurredAt: "2026-05-30T05:00:00.000Z",
+    };
+    const secondEvent: CoincidenceEvent = {
+      id: "b-1",
+      trajectory: "factory-health",
+      occurredAt: "2026-05-30T05:00:20.000Z",
+    };
     const events: CoincidenceEvent[] = [
-      {
-        id: "a-1",
-        trajectory: "autonomous-loop-coordination",
-        occurredAt: "2026-05-30T05:00:00.000Z",
-      },
-      {
-        id: "b-1",
-        trajectory: "factory-health",
-        occurredAt: "2026-05-30T05:00:20.000Z",
-      },
+      firstEvent,
+      secondEvent,
       {
         id: "c-1",
         trajectory: "late",
@@ -57,7 +59,7 @@ describe("factory-health-monitor", () => {
         windowStart: "2026-05-30T05:00:00.000Z",
         windowEnd: "2026-05-30T05:00:30.000Z",
         trajectories: ["autonomous-loop-coordination", "factory-health"],
-        events: [events[0], events[1]],
+        events: [firstEvent, secondEvent],
       },
     ]);
   });
