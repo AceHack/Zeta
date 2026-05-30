@@ -27,8 +27,8 @@ setup, which clones to `~/.local/share/zeta-claude-loop-*/Zeta`.)
 | LaunchAgent in `~/Library/LaunchAgents` | per-user task, no admin |
 | `gui/$uid` domain | `<LogonType>InteractiveToken</LogonType>` |
 | (user agent, never elevated) | **omit `<RunLevel>`** → `Limited` (no UAC) |
-| `StartInterval` 60 | `<LogonTrigger>` + `<Repetition><Interval>PT1M</Interval>` |
-| `RunAtLoad` true | logon trigger fires at sign-in |
+| `StartInterval` 60 | `<TimeTrigger>` (past `<StartBoundary>` + `StartWhenAvailable`) + `<Repetition>` `PT1M`/`P3650D` — wall-clock timer, ticks while logged on |
+| `RunAtLoad` true | `TimeTrigger` past-boundary starts immediately on register; `LogonTrigger` also restarts at sign-in |
 | `KeepAlive` + `ThrottleInterval` | `<RestartOnFailure>` + `<MultipleInstancesPolicy>IgnoreNew` |
 | `StandardOutPath`/`ErrorPath` | wrapper redirects to `%LOCALAPPDATA%\zeta-otto-loop\*.log` |
 | plist UTF-8 | task XML **UTF-16** (`schtasks /Create /XML` requirement) |
@@ -89,9 +89,12 @@ Remove-Item -Recurse -Force "$env:LOCALAPPDATA\zeta-otto-loop"   # optional: clo
   ```
 
   The default `--ref main` needs no flip — this only applies when you tracked a feature branch.
-- **Repetition fallback:** if `schtasks /Create /XML` rejects the `<Repetition>` without a
-  `<Duration>`, add `<Duration>P3650D</Duration>` inside `<Repetition>` in
-  `scheduled-task.xml` and re-register.
+- **Triggers (why both `TimeTrigger` and `LogonTrigger`):** the XML uses a `TimeTrigger`
+  with a past `<StartBoundary>` + `StartWhenAvailable` so the loop starts immediately on
+  register and ticks every minute while logged on (true `StartInterval` parity), plus a
+  `LogonTrigger` so it also restarts at sign-in. Both repetitions carry an explicit
+  `<Duration>P3650D</Duration>` — without it, `schtasks /Create /XML` registers a degenerate
+  `<Repetition>` that never fires (symptom: `Next Run Time: N/A`, runs once at logon then stops).
 - **Cross-machine heartbeat (slice-1b — landed):** after each tick the wrapper pushes a
   ZetaID-keyed heartbeat to the shared `agent-heartbeats` branch (append-only, no PR, via the
   REST git-data API) using `tools/agent-heartbeats/write-heartbeat.ts --push --persona-name

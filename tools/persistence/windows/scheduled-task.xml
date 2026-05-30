@@ -33,11 +33,21 @@
     </RestartOnFailure>
   </Settings>
   <Triggers>
+    <TimeTrigger>
+      <StartBoundary>2024-01-01T00:00:00</StartBoundary>
+      <Enabled>true</Enabled>
+      <Repetition>
+        <Interval>PT1M</Interval>
+        <Duration>P3650D</Duration>
+        <StopAtDurationEnd>false</StopAtDurationEnd>
+      </Repetition>
+    </TimeTrigger>
     <LogonTrigger>
       <Enabled>true</Enabled>
       <UserId>{{USER_ID}}</UserId>
       <Repetition>
         <Interval>PT1M</Interval>
+        <Duration>P3650D</Duration>
         <StopAtDurationEnd>false</StopAtDurationEnd>
       </Repetition>
     </LogonTrigger>
