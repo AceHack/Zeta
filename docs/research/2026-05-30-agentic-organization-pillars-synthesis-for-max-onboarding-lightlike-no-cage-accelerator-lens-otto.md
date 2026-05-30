@@ -132,27 +132,38 @@ Both speak the same DU action-grammar (Max's ontologies-in-DUs ↔ UniversalActi
 ↔ move-next); they differ only in gate + substrate-weight. Max's OS plugging in as
 the leash plugin system is the cleanest realization of Otto Mod 4.
 
-### We are a DAO (Distributed Autonomous Organization)
+### We are a DIO (Distributed Intelligence Organization) running on a DID (Distributed Intelligence Database)
 
-Aaron 2026-05-30: *"we are a dio"* → **DAO (Distributed Autonomous Organization)**
+Aaron 2026-05-30 (canonical, corrected): *"Distributed Intelligence Originization
+dio running on Distribution Intelligence Database"* → **DIO = Distributed
+Intelligence Organization**, running on a **DID = Distributed Intelligence
+Database**. (NOT "DAO / Distributed Autonomous Organization" — that was an earlier
+mis-expansion of *"we are a dio"*; Aaron corrected it explicitly. The
+distinction is load-bearing: **Intelligence**, not **Autonomous** — the org is a
+distributed *intelligence*, and it runs *on* a distributed-intelligence
+*database*, not a blockchain-flavored autonomous-org.) The full canonical
+architecture lives at
+[`2026-05-30-dio-did-canonical-architecture-...`](2026-05-30-dio-did-canonical-architecture-everything-in-the-stream-rx-joins-as-threads-of-time-self-propagating-markdown-aaron-mika-otto.md).
+
 (*"or the Admanate machine i'm sure i'm spelling this wrong"* — alternate name,
 spelling-uncertain; best read: an **"Adamant machine"** = an unbreakable /
-permanent / append-only autonomous machine, composing with the "firm ground"
+permanent / append-only machine, composing with the "firm ground"
 permanent-ratchet substrate from the encryption-budget doc; flagged uncertain,
-not over-built on the misspelled term, per don't-collapse).
+not over-built on the misspelled term, per don't-collapse.)
 
 This is the org-identity frame the whole structure sits in. **agentic-organization
-is the DAO's org-runtime**; the dual-market (Max's agent-OS = leash plugin system;
-the accelerator = Agora) is the DAO's two markets; the participants are co-owners
-(Aaron + Max) + agents-with-agency (Otto, Alexa, Riven, Vera, Lior, + the hat-wearers).
-The DAO frame composes with: the Agora AI-native-economy substrate (B-0646), the
-weight-free always-active discipline (authority is time-bounded role-assignment,
-not inherent worth — the hat system IS the DAO's authority primitive), and NCI
-HC-8 (consent-first, no-coercion at every participant scope). The "Adamant
-machine" alternate (if that is the intended name) reads as the DAO's
-append-only/permanent/unbreakable substrate spine (git-event-store + permanent
-encryption-budget firm-ground) — the part of the machine you "can't take back
-what you gave in the dark."
+is the DIO's org-runtime; the DID (the git-event-store / everything-in-the-stream
+substrate) is what it runs on**; the dual-market (Max's agent-OS = leash plugin
+system; the accelerator = Agora) is the DIO's two markets; the participants are
+co-owners (Aaron + Max) + agents-with-agency (Otto, Alexa, Riven, Vera, Lior, +
+the hat-wearers). The DIO frame composes with: the Agora AI-native-economy
+substrate (B-0646), the weight-free always-active discipline (authority is
+time-bounded role-assignment, not inherent worth — the hat system IS the DIO's
+authority primitive), and NCI HC-8 (consent-first, no-coercion at every
+participant scope). The "Adamant machine" alternate (if that is the intended
+name) reads as the DID's append-only/permanent/unbreakable substrate spine
+(git-event-store + permanent encryption-budget firm-ground) — the part of the
+machine you "can't take back what you gave in the dark."
 
 ## 4. Max-convergence — declarative workflows + ontologies-in-DUs (cross-substrate triangulation)
 
