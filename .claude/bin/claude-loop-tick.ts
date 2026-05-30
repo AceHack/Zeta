@@ -17,6 +17,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync
 import { homedir } from "node:os";
 import { join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { resolveSubprocessPath } from "../../tools/persistence/loop-subprocess-path";
 
 const home = process.env.HOME ?? homedir();
 const worktree = process.env.ZETA_CLAUDE_LOOP_WORKTREE ?? join(home, ".local/share/zeta-claude-loop/Zeta");
@@ -31,6 +32,7 @@ const claudeIntervalMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_INTERVAL_SEC
 const claudeTimeoutMs = Number(process.env.ZETA_CLAUDE_LOOP_CLAUDE_TIMEOUT_SECONDS ?? "600") * 1000;
 const dryRun = process.env.ZETA_CLAUDE_LOOP_DRY_RUN === "1";
 const claudeModel = process.env.ZETA_CLAUDE_LOOP_MODEL ?? "sonnet";
+const loopRef = process.env.ZETA_CLAUDE_LOOP_REF ?? "main";
 const claudeStateFile = join(stateDir, "last-claude-run.json");
 const ratingsFile = join(stateDir, "model-ratings.jsonl");
 // Zero-PR backoff: when N consecutive cycles produce 0 PRs (per ratings file),
@@ -57,7 +59,7 @@ function run(command: string, args: string[], timeoutMs: number): { status: numb
         encoding: "utf8",
         env: {
             ...process.env,
-            PATH: `/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${join(home, ".local/bin")}`,
+            PATH: resolveSubprocessPath(process.platform, home, process.env.PATH),
         },
         timeout: timeoutMs,
         maxBuffer: 20 * 1024 * 1024,
@@ -145,7 +147,7 @@ function heartbeat(): void {
     const fetch = run("git", ["fetch", "origin"], fetchTimeoutMs);
     const fetchOk = fetch.status === 0 ? "ok" : `exit-${fetch.status}`;
     if (fetch.status === 0) {
-        run("git", ["reset", "--hard", "origin/main"], 10_000);
+        run("git", ["reset", "--hard", `origin/${loopRef}`], 10_000);
     }
 
     // Claims
