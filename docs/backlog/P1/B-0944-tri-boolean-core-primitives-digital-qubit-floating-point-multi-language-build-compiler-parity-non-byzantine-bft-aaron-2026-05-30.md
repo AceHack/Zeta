@@ -76,6 +76,43 @@ the spec emits the same shape in each language; the compilers verify; agreement 
 Four-of-four parity = the primitive is right. Disagreement = a real spec ambiguity surfaced
 (treat as the cross-check triage signal, not noise).
 
+## Summonable BFT (the name; operator 2026-05-30)
+
+Operator named this consensus variant **summonable BFT** -- and named why it works:
+
+> *"This is a new type of BFT we just created summmonable BFT where agents come togehter to
+> built the conseuss though code"*
+
+> *"that is BFT i agree because the compilers don't lie"*
+
+> *"the compilers can't lie make so many fucking things easy ... i've been trying to figure out
+> how to do BFT for real and i got reliable oracles still right here"*
+
+| | Classical BFT | Summonable BFT |
+|---|---|---|
+| Validators | fixed standing quorum | summoned on demand (Git-Monster-style; spawn when there is consensus-work) |
+| Consensus | VOTE on a pre-existing value | CONSTRUCTED THROUGH CODE -- each summoned agent builds an implementation; agreement-by-construction IS the consensus |
+| Oracles | humans / nodes (can be Byzantine) | COMPILERS (non-Byzantine -- they do not lie) |
+| Cost | standing quorum, 3f+1 protocol | summon a few agents; the compilers do the Byzantine-elimination -- no tons of humans |
+
+**Why it makes BFT easy**: classical BFT is hard ONLY because oracles can be Byzantine (lie) --
+the entire 3f+1, the protocols, the trust assumptions exist to tolerate lying voters. Remove
+lying (compilers cannot) and the Byzantine-fault term collapses to zero; consensus stops being a
+hard distributed-systems problem and becomes "check the parity." The honest oracle was sitting
+right there the whole time.
+
+**The F#-anchor was already this, scaled**: the `fsharp-anchor-dotnet-build-sanity-check`
+discipline (the compiler is the asymmetric critic that does not get tired / pulled / pattern-match
+/ lie) is a SINGLE non-Byzantine oracle. Summonable BFT is that same oracle summoned in N
+languages; 4-of-4 parity = consensus. Not a new trust assumption -- the one the framework already
+ran, multiplied.
+
+**Generalizes beyond tri-boolean**: any spec expressible in multiple languages gets free
+summonable-BFT verification -- Zeta ID, the OPLE primitives (B-0862), the workflow-engine DUs
+(B-0867), etc. The cross-verification harness (slice 6 + the existing `tests/cross-verification/`
+precedent) IS the summonable-BFT ballot. Composes with the Git Monster (summon on demand),
+multi-oracle-BFT (B-0703), and the monad-propagation cross-language-shape discipline.
+
 ## Slices (TS first -- distribution)
 
 - **Slice 1 (TS, distribution):** `TriBool` / digital-qubit type (`True | False | Null`) +
