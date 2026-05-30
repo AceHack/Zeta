@@ -892,6 +892,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0940](backlog/P2/B-0940-evaluate-ubuntu-support-value-nixos-primary-community-reach-aaron-2026-05-30.md)** Evaluate what Ubuntu support brings us — NixOS is primary; Ubuntu's value is community/contributor reach
 - [x] **[B-0941](backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md)** NixOS-native ollama for the local-LLM primitive — close the hole in the shield (NixOS test passes by SKIPPING, not validating)
 - [ ] **[B-0942](backlog/P2/B-0942-co-dominant-git-mirrors-git-native-crdt-coordination-no-host-needed-aaron-2026-05-30.md)** Co-dominant git mirrors + git-native CRDT coordination — no host needed for coordination (local + GitHub + GitLab/Gitea/Forgejo + free-OSS git as co-dominant collaborating mirrors)
+- [ ] **[B-0943](backlog/P2/B-0943-bounded-retries-at-dst-boundary-transient-network-dns-toolchain-install-must-not-fail-ci-aaron-2026-05-30.md)** Bounded retries at the DST boundary — transient network/DNS failures (mise toolchain install) must not fail CI
 
 ## P3 — convenience / deferred
 
