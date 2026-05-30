@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; lane-runway pure classifier landed
+Status: active child packet; lane-runway service-health adapter in review
 Last refreshed: 2026-05-29
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -93,11 +93,18 @@ It adds the first pure `lane-runway` health classifier to
 lane branch prefixes, active vs quiet runway, unhealthy quiet lanes, and
 unclassified `other` warnings.
 
+Current lane-runway service-health adapter receipt:
+`docs/trajectories/autonomous-loop-coordination/lane-runway-service-health-adapter-2026-05-29.md`
+
+It feeds the classifier from the Codex host-loop health probe so a quiet Codex
+lane can be reported as healthy quiet only when the background service probe is
+green.
+
 ## Recommended Next Action
 
-Feed the lane-runway classifier from existing monitor observations: open PR
-branch names, remote claim branch names, and host-loop service health booleans.
-Keep that adapter separate from the pure classifier baseline.
+Open the claim PR after focused TypeScript checks pass, then extend the same
+service-health observation adapter to other named lanes once their host-loop
+health probes have stable JSON surfaces.
 
 ## Next Child Packets
 

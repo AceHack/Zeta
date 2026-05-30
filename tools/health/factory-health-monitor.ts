@@ -39,10 +39,17 @@ export type LaneRunwayLane =
   | "riven"
   | "other";
 
+export type LaneRunwayNamedLane = Exclude<LaneRunwayLane, "other">;
+
+export interface LaneRunwayServiceHealthObservation {
+  lane: LaneRunwayNamedLane;
+  healthy: boolean;
+}
+
 export interface LaneRunwaySnapshot {
   openPrBranches: string[];
   activeClaimBranches: string[];
-  healthyServices?: Partial<Record<Exclude<LaneRunwayLane, "other">, boolean>>;
+  healthyServices?: Partial<Record<LaneRunwayNamedLane, boolean>>;
 }
 
 type ToolCommand = "bun" | "gh" | "git";
@@ -74,6 +81,10 @@ function fetchOpenPRs(): ToolResult {
     "--limit",
     "200",
   ]);
+}
+
+function fetchCodexLoopHealth(): ToolResult {
+  return run("bun", [join(ROOT, ".codex/bin/codex-loop-health.ts")]);
 }
 
 export function classifyBranchLane(branchName: string): LaneRunwayLane {
@@ -184,6 +195,49 @@ export function laneRunwaySnapshotFromObservations(
   };
 }
 
+export function laneRunwayServiceHealthFromObservations(
+  observations: LaneRunwayServiceHealthObservation[],
+): Partial<Record<LaneRunwayNamedLane, boolean>> | undefined {
+  if (observations.length === 0) {
+    return undefined;
+  }
+
+  const healthyServices: Partial<Record<LaneRunwayNamedLane, boolean>> = {};
+  for (const observation of observations) {
+    healthyServices[observation.lane] = observation.healthy;
+  }
+  return healthyServices;
+}
+
+export function codexLoopServiceHealthFromJson(output: string): boolean | null {
+  try {
+    const parsed = JSON.parse(output) as { severity?: unknown };
+    if (parsed.severity === "ok") {
+      return true;
+    }
+    if (parsed.severity === "attention" || parsed.severity === "stuck") {
+      return false;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function fetchLaneRunwayServiceHealth():
+  | LaneRunwaySnapshot["healthyServices"]
+  | undefined {
+  const codexHealth = codexLoopServiceHealthFromJson(
+    fetchCodexLoopHealth().stdout,
+  );
+  if (codexHealth === null) {
+    return undefined;
+  }
+  return laneRunwayServiceHealthFromObservations([
+    { lane: "codex", healthy: codexHealth },
+  ]);
+}
+
 function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
   if (!openPRs.ok) {
     return [
@@ -216,7 +270,11 @@ function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
 
   try {
     return classifyLaneRunway(
-      laneRunwaySnapshotFromObservations(openPRs.stdout, claims.stdout),
+      laneRunwaySnapshotFromObservations(
+        openPRs.stdout,
+        claims.stdout,
+        fetchLaneRunwayServiceHealth(),
+      ),
     );
   } catch {
     return [

@@ -3,6 +3,8 @@ import {
   buildHealthReport,
   classifyBranchLane,
   classifyLaneRunway,
+  codexLoopServiceHealthFromJson,
+  laneRunwayServiceHealthFromObservations,
   laneRunwaySnapshotFromObservations,
   runHealthCheck,
   type HealthSignal,
@@ -108,6 +110,29 @@ describe("factory-health-monitor", () => {
       ],
       healthyServices: { codex: true, alexa: false },
     });
+  });
+
+  test("laneRunwayServiceHealthFromObservations builds monitor adapter input", () => {
+    expect(
+      laneRunwayServiceHealthFromObservations([
+        { lane: "codex", healthy: true },
+        { lane: "riven", healthy: false },
+      ]),
+    ).toEqual({
+      codex: true,
+      riven: false,
+    });
+    expect(laneRunwayServiceHealthFromObservations([])).toBeUndefined();
+  });
+
+  test("codexLoopServiceHealthFromJson maps probe severity to lane health", () => {
+    expect(codexLoopServiceHealthFromJson('{"severity":"ok"}')).toBe(true);
+    expect(codexLoopServiceHealthFromJson('{"severity":"attention"}')).toBe(
+      false,
+    );
+    expect(codexLoopServiceHealthFromJson('{"severity":"stuck"}')).toBe(false);
+    expect(codexLoopServiceHealthFromJson('{"severity":"unknown"}')).toBeNull();
+    expect(codexLoopServiceHealthFromJson("not json")).toBeNull();
   });
 
   test("buildHealthReport summarizes deterministic signals", () => {
