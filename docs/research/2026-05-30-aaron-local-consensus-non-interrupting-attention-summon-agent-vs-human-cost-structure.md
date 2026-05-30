@@ -55,6 +55,46 @@ The local form only exists because the summon is non-interrupting. Humans have
 only ever had the distributed-and-expensive form, so human institutions minimize
 consensus; agent societies can afford it per-action.
 
+### The local-transient form is MULTI-ORACLE but NOT BFT (the human maintainer 2026-05-30)
+
+> *"it's multi oracle but not bft — locally you can lie and not call the consensus;
+> it relies on a good actor, for now."*
+
+Critical trust-model caveat — do not conflate the local-transient form with
+Byzantine-fault-tolerance. The local form has the **multi-oracle** property (it
+convenes multiple independent oracle-perspectives — the summoned LLMs) but it is
+**NOT BFT**: the summoning agent can **lie** (fabricate the quorum / misreport the
+verdicts) or **skip the summon entirely**, so it **relies on a good actor**.
+
+| Property | Local-transient (this form) | Distributed-standing BFT (B-0703) |
+|---|---|---|
+| Multi-oracle (multiple perspectives) | ✓ | ✓ |
+| Byzantine-fault-tolerant (survives lying actors) | ✗ — good-actor-dependent | ✓ — no single actor controls the quorum |
+| Trust model | trust-the-summoner | trust-no-one |
+| Can the convener fake / skip it? | yes | no (independent nodes + attestation) |
+
+DST-determinism (temp 0 + fixed seed) gives the local form
+**replayability-if-honestly-recorded** (audit), **NOT** Byzantine-tolerance — a
+replayable decision is still fakeable by a dishonest convener (it can record a
+fabricated quorum). **Replayable ≠ unfakeable.**
+
+"For now": the path to a local form WITH BFT-grade trust is making the summon
+**un-fakeable and un-skippable** — distributed independent summons + cryptographic
+attestation of the quorum + can't-skip enforcement (converging the local-transient
+form toward B-0703's distributed-standing properties). Until then, **local-summon
+is a good-actor-dependent multi-oracle convenience, not a trust-minimized
+protocol** — use it as a cheap routine quorum/2nd-opinion where the convener is
+trusted (e.g. a single agent checking its own decisions), not as a consensus over
+potentially-adversarial actors.
+
+This sharpens the dual-consensus framing: **CRDT state-convergence is
+trust-minimized** (math — semilattice/DBSP group laws converge regardless of who
+pushed), but **local-summon decision-consensus is good-actor-dependent** (the
+convener can fake/skip). Different layers, different trust properties; only the
+distributed-standing form (B-0703) is BFT. Composes with `razor-discipline.md`
+(the precise claim: multi-oracle ✓, BFT ✗) + `mechanical-authorization-check.md`
+(good-actor-dependence is the gap).
+
 ### Local-consensus-before-acting is the reconciler pattern applied to decisions
 
 Composes straight back into "declarative + self-healing = anti-entropy" (the
