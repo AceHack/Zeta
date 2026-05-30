@@ -107,6 +107,8 @@ const DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT = 60;
 const LOCAL_WORKTREE_DIRT_SCAN_LIMIT = parseLocalWorktreeDirtScanLimit(process.env.FACTORY_HEALTH_WORKTREE_DIRT_LIMIT);
 const CODEX_PARALLEL_RUNWAY_MINIMUM_ACTIVE_ITEMS = 1;
 const CODEX_PARALLEL_RUNWAY_TARGET_ACTIVE_ITEMS = 2;
+const FACTORY_EVENT_COINCIDENCE_WINDOW_MS = 5 * 60 * 1000;
+const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
   ".claude/",
@@ -240,6 +242,21 @@ function fetchOpenPRs(): ToolResult {
   ]);
 }
 
+function fetchMergedPRs(): ToolResult {
+  return run("gh", [
+    "pr",
+    "list",
+    "--repo",
+    REPO,
+    "--state",
+    "merged",
+    "--json",
+    "number,title,mergedAt,headRefName",
+    "--limit",
+    "100",
+  ]);
+}
+
 function fetchCodexLoopHealth(): ToolResult {
   return run("bun", [join(ROOT, ".codex/bin/codex-loop-health.ts")]);
 }
@@ -258,6 +275,52 @@ export function classifyBranchLane(branchName: string): LaneRunwayLane {
   if (/^(riven\/|riven-|claim\/riven-)/.test(branch)) return "riven";
 
   return "other";
+}
+
+export function factoryTrajectoryFromPullRequestBranch(branchName: string | null | undefined): string {
+  const branch = branchName?.trim() ?? "";
+  const lane = classifyBranchLane(branch);
+  return lane === "other" ? `other:${branch.length === 0 ? "unknown" : branch}` : lane;
+}
+
+export function mergedPullRequestEventsFromJson(
+  output: string,
+  nowIso = new Date().toISOString(),
+  lookbackMs = FACTORY_EVENT_LOOKBACK_MS,
+): CoincidenceEvent[] {
+  const nowMs = Date.parse(nowIso);
+  const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
+  const prs = JSON.parse(output) as Array<{
+    number?: number | null;
+    title?: string | null;
+    mergedAt?: string | null;
+    headRefName?: string | null;
+  }>;
+
+  return prs
+    .map((pr): CoincidenceEvent | null => {
+      if (typeof pr.number !== "number" || !pr.mergedAt) {
+        return null;
+      }
+
+      const mergedMs = Date.parse(pr.mergedAt);
+      if (Number.isNaN(mergedMs)) {
+        return null;
+      }
+
+      if (!Number.isNaN(nowMs) && (mergedMs > nowMs || nowMs - mergedMs > maxAgeMs)) {
+        return null;
+      }
+
+      return {
+        id: `merged-pr-${pr.number}`,
+        trajectory: factoryTrajectoryFromPullRequestBranch(pr.headRefName),
+        occurredAt: new Date(mergedMs).toISOString(),
+        description: `#${pr.number} ${pr.title?.trim() || "(untitled merged PR)"}`,
+      };
+    })
+    .filter((event): event is CoincidenceEvent => event !== null)
+    .sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
 }
 
 export function classifyLaneRunway(snapshot: LaneRunwaySnapshot): HealthSignal[] {
@@ -821,6 +884,38 @@ function checkPRQueue(openPRs: ToolResult): HealthSignal[] {
   return signals;
 }
 
+function checkCoincidenceEvents(): HealthSignal[] {
+  const mergedPRs = fetchMergedPRs();
+  if (!mergedPRs.ok) {
+    return [
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "Could not query merged PRs for coincidence event observations",
+        action: "inspect gh CLI state before trusting coincidence signals",
+      },
+    ];
+  }
+
+  try {
+    const events = mergedPullRequestEventsFromJson(mergedPRs.stdout);
+    const source = buildCoincidenceWindowTriggerSource(events, {
+      windowMs: FACTORY_EVENT_COINCIDENCE_WINDOW_MS,
+      minimumEvents: 2,
+    });
+    return collectStandingQuerySignals([source]);
+  } catch {
+    return [
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "Could not parse merged PR observations for coincidence signals",
+        action: "inspect merged PR event adapter before trusting coincidence signals",
+      },
+    ];
+  }
+}
+
 function checkBacklogHealth(): HealthSignal[] {
   const signals: HealthSignal[] = [];
   const backlogDir = join(ROOT, "docs/backlog");
@@ -1268,6 +1363,11 @@ function buildStandingQueryTriggerSources(openPRs: ToolResult): StandingQueryTri
       surface: "pr-queue",
       collect: () => checkPRQueue(openPRs),
       failureAction: "inspect gh PR queue state before trusting PR signals",
+    },
+    {
+      surface: "coincidence",
+      collect: checkCoincidenceEvents,
+      failureAction: "inspect merged PR event observations before trusting coincidence signals",
     },
     {
       surface: "backlog",

@@ -10,11 +10,13 @@ import {
   classifyParallelRunway,
   codexLoopServiceHealthFromJson,
   classifyLocalWorktreeDirt,
+  factoryTrajectoryFromPullRequestBranch,
   findClaimPathCollisions,
   findCoincidenceWindows,
   laneRunwayServiceHealthFromObservations,
   laneRunwaySnapshotFromObservations,
   localWorktreeDirtObservationFromStatus,
+  mergedPullRequestEventsFromJson,
   parseClaimPathSet,
   parseGitWorktreeListPorcelain,
   parseLocalWorktreeDirtScanLimit,
@@ -118,6 +120,67 @@ describe("factory-health-monitor", () => {
         level: "warning",
         message: "1 event-window coincidence(s) detected",
         action: "inspect shared upstream cause for coincident trajectory events",
+      },
+    ]);
+  });
+
+  test("factoryTrajectoryFromPullRequestBranch maps branches to factory trajectories", () => {
+    expect(factoryTrajectoryFromPullRequestBranch("claim/codex-loop-20260530")).toBe("codex");
+    expect(factoryTrajectoryFromPullRequestBranch("otto-cli/event-source")).toBe("otto");
+    expect(factoryTrajectoryFromPullRequestBranch("feat/unowned-draft")).toBe("other:feat/unowned-draft");
+    expect(factoryTrajectoryFromPullRequestBranch(null)).toBe("other:unknown");
+  });
+
+  test("mergedPullRequestEventsFromJson builds bounded factory events from merged PRs", () => {
+    expect(
+      mergedPullRequestEventsFromJson(
+        JSON.stringify([
+          {
+            number: 10,
+            title: "Codex source",
+            mergedAt: "2026-05-30T05:00:00Z",
+            headRefName: "claim/codex-source",
+          },
+          {
+            number: 11,
+            title: "Otto source",
+            mergedAt: "2026-05-30T05:01:00Z",
+            headRefName: "otto-cli/source",
+          },
+          {
+            number: 12,
+            title: "Stale source",
+            mergedAt: "2026-05-28T05:00:00Z",
+            headRefName: "lior-source",
+          },
+          {
+            number: 13,
+            title: "Open source",
+            mergedAt: null,
+            headRefName: "riven-source",
+          },
+          {
+            number: 14,
+            title: "Bad time",
+            mergedAt: "not-a-date",
+            headRefName: "kiro/source",
+          },
+        ]),
+        "2026-05-30T06:00:00Z",
+        2 * 60 * 60 * 1000,
+      ),
+    ).toEqual([
+      {
+        id: "merged-pr-10",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:00:00.000Z",
+        description: "#10 Codex source",
+      },
+      {
+        id: "merged-pr-11",
+        trajectory: "otto",
+        occurredAt: "2026-05-30T05:01:00.000Z",
+        description: "#11 Otto source",
       },
     ]);
   });

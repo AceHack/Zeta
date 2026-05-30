@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; B-0250 event-window source in review
+Status: active child packet; B-0250 event observation adapter in review
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -136,14 +136,21 @@ for bounded cross-trajectory event joins. The first source ignores invalid
 timestamps, requires at least two distinct trajectories, and leaves live event
 reader wiring to the next packet.
 
+Current B-0250 event observation adapter receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-event-observation-adapter-2026-05-30.md`
+
+It converts recent merged PR metadata into bounded `CoincidenceEvent` values
+and wires that source into the factory health monitor's `coincidence`
+standing-query source without adding a new daemon or local-bus dependency.
+
 ## Recommended Next Action
 
-Land the B-0250 event-window source PR after review and CI are green, then
-wire a real factory event observation source into the reusable classifier.
+Land the B-0250 event observation adapter PR after review and CI are green,
+then add a second observation stream for cross-source comparison.
 
 ## Next Child Packets
 
-- factory event observation adapter for B-0250 coincidence detection
+- second B-0250 event source from loop-run receipts or trajectory receipt commits
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
 
 ## Evidence Links
