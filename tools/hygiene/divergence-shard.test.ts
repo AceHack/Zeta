@@ -5,9 +5,11 @@ import { dirname, join } from "node:path";
 
 import {
   type DivergenceInput,
+  type ReviewThreadDisagreementInput,
   detectReviewThreadDisagreement,
   buildDivergenceShard,
   divergenceShardRelPath,
+  fileReviewThreadDisagreement,
   shortContentHash,
   writeDivergenceShard,
   writeShardAtPath,
@@ -239,13 +241,63 @@ describe("detectReviewThreadDisagreement", () => {
         ...base,
         loopA: { ...base.loopA, conclusion: " " },
       }),
-    ).toThrow(/review conclusion/);
+    ).toThrow(/loopA\.conclusion/);
     expect(() =>
       detectReviewThreadDisagreement({
         ...base,
         loopA: { ...base.loopA, body: " " },
       }),
-    ).toThrow(/review body/);
+    ).toThrow(/loopA\.body/);
+  });
+
+  test("rejects blank conclusion/body even on no-disagreement paths (Copilot #6068)", () => {
+    // base is same-thread + same-conclusion (the no-disagreement: same-conclusion
+    // branch). Previously a blank body here was silently accepted as clean
+    // because body was only validated on the disagreement path.
+    const sameConclusion = {
+      tick: TICK,
+      operativeAuthorization: INPUT.operativeAuthorization,
+      loopA: {
+        identity: INPUT.loopA.identity,
+        prNumber: 4147,
+        threadId: "thread-a",
+        conclusion: "resolve",
+        body: "False positive.",
+      },
+      loopB: {
+        identity: INPUT.loopB.identity,
+        prNumber: 4147,
+        threadId: "thread-a",
+        conclusion: "resolve",
+        body: "Also false positive.",
+      },
+    };
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...sameConclusion,
+        loopB: { ...sameConclusion.loopB, body: " " },
+      }),
+    ).toThrow(/loopB\.body/);
+
+    // different-thread branch returns before the conclusion comparison, so a
+    // blank conclusion/body must be rejected by the eager validation, not slip
+    // through as a clean different-thread outcome.
+    const differentThread = {
+      ...sameConclusion,
+      loopB: { ...sameConclusion.loopB, prNumber: 9999 },
+    };
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...differentThread,
+        loopA: { ...differentThread.loopA, conclusion: " " },
+      }),
+    ).toThrow(/loopA\.conclusion/);
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...differentThread,
+        loopB: { ...differentThread.loopB, body: " " },
+      }),
+    ).toThrow(/loopB\.body/);
   });
 });
 
@@ -326,5 +378,100 @@ describe("writeDivergenceShard", () => {
         loopB: { ...INPUT.loopB, body: sameBody },
       }),
     ).toThrow(/no divergence to preserve/);
+  });
+});
+
+describe("fileReviewThreadDisagreement (detect → file glue, AC #2)", () => {
+  const DIVERGENCE_DIR = "docs/hygiene-history/divergences";
+
+  const DETECT_INPUT: ReviewThreadDisagreementInput = {
+    tick: TICK,
+    operativeAuthorization: INPUT.operativeAuthorization,
+    loopA: {
+      identity: INPUT.loopA.identity,
+      prNumber: 4147,
+      threadId: "PRRT_kwExample",
+      conclusion: "resolve",
+      body: "The finding matches the known false-positive table class.",
+    },
+    loopB: {
+      identity: INPUT.loopB.identity,
+      prNumber: 4147,
+      threadId: "PRRT_kwExample",
+      conclusion: "needs-fix",
+      body: "The lint finding reproduces locally and should stay open.",
+    },
+  };
+
+  test("files a shard when conclusions differ on the same thread", () => {
+    withTempRoot((root) => {
+      const outcome = fileReviewThreadDisagreement(root, DETECT_INPUT);
+      expect(outcome.kind).toBe("filed");
+      if (outcome.kind !== "filed") throw new Error("expected filed outcome");
+      expect(outcome.write.status).toBe("written");
+      // The shard exists at the content-addressed path and carries both conclusions.
+      const abs = join(root, outcome.write.relPath);
+      expect(existsSync(abs)).toBe(true);
+      const md = readFileSync(abs, "utf8");
+      expect(md).toContain("Conclusion: resolve");
+      expect(md).toContain("Conclusion: needs-fix");
+      expect(outcome.divergenceInput.topic).toBe("PR #4147 thread PRRT_kwExample");
+    });
+  });
+
+  test("writes no shard when conclusions agree (same-conclusion)", () => {
+    withTempRoot((root) => {
+      const outcome = fileReviewThreadDisagreement(root, {
+        ...DETECT_INPUT,
+        loopB: { ...DETECT_INPUT.loopB, conclusion: " Resolve " },
+      });
+      expect(outcome).toEqual({ kind: "no-disagreement", reason: "same-conclusion" });
+      expect(existsSync(join(root, DIVERGENCE_DIR))).toBe(false);
+    });
+  });
+
+  test("writes no shard when the observations are on different threads", () => {
+    withTempRoot((root) => {
+      const outcome = fileReviewThreadDisagreement(root, {
+        ...DETECT_INPUT,
+        loopB: { ...DETECT_INPUT.loopB, prNumber: 4148 },
+      });
+      expect(outcome).toEqual({ kind: "no-disagreement", reason: "different-thread" });
+      expect(existsSync(join(root, DIVERGENCE_DIR))).toBe(false);
+    });
+  });
+
+  test("re-running the same disagreement is an idempotent-noop filing", () => {
+    withTempRoot((root) => {
+      const first = fileReviewThreadDisagreement(root, DETECT_INPUT);
+      const again = fileReviewThreadDisagreement(root, DETECT_INPUT);
+      expect(first.kind).toBe("filed");
+      expect(again.kind).toBe("filed");
+      if (again.kind !== "filed") throw new Error("expected filed outcome");
+      expect(again.write.status).toBe("idempotent-noop");
+      if (first.kind === "filed") {
+        expect(again.write.relPath).toBe(first.write.relPath);
+      }
+    });
+  });
+
+  test("validation throws before any I/O (no divergence dir created)", () => {
+    withTempRoot((root) => {
+      expect(() =>
+        fileReviewThreadDisagreement(root, {
+          ...DETECT_INPUT,
+          loopA: { ...DETECT_INPUT.loopA, threadId: " " },
+        }),
+      ).toThrow(/loopA\.threadId/);
+      // A blank body on a same-conclusion pair must throw before any I/O too,
+      // not be silently treated as a clean no-disagreement outcome (#6068).
+      expect(() =>
+        fileReviewThreadDisagreement(root, {
+          ...DETECT_INPUT,
+          loopB: { ...DETECT_INPUT.loopB, conclusion: DETECT_INPUT.loopA.conclusion, body: " " },
+        }),
+      ).toThrow(/loopB\.body/);
+      expect(existsSync(join(root, DIVERGENCE_DIR))).toBe(false);
+    });
   });
 });

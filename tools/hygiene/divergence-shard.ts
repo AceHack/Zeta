@@ -100,6 +100,24 @@ export interface WriteResult {
   readonly status: WriteStatus;
 }
 
+/**
+ * Outcome of detecting two loops' review-thread conclusions and, on a genuine
+ * disagreement, filing the divergence shard. "filed" carries the WriteResult
+ * (path + written/idempotent/collision status) plus the DivergenceInput that
+ * produced it; "no-disagreement" carries the reason and means no shard was
+ * written.
+ */
+export type ReviewThreadShardOutcome =
+  | {
+      readonly kind: "no-disagreement";
+      readonly reason: ReviewThreadNoDisagreementReason;
+    }
+  | {
+      readonly kind: "filed";
+      readonly write: WriteResult;
+      readonly divergenceInput: DivergenceInput;
+    };
+
 const TICK_RE = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})Z$/;
 const DIVERGENCE_ROOT = "docs/hygiene-history/divergences";
 
@@ -164,10 +182,23 @@ function perspectiveFromObservation(observation: ReviewThreadObservation): LoopP
  * does not write a shard. Callers can hand the returned divergenceInput to
  * writeDivergenceShard once they have two observations from the same thread
  * whose machine-comparable conclusions differ.
+ *
+ * Validation is EAGER: every required string field (thread id, conclusion,
+ * body) of both observations is checked non-blank up front, before the
+ * no-disagreement branch decision and before any downstream I/O. Lazy
+ * validation (body only on the disagreement path; conclusion only on the
+ * same-thread path) silently accepted malformed observations as clean
+ * no-disagreement outcomes -- e.g. a same-conclusion pair with a blank body,
+ * or a different-thread pair with a blank conclusion (Copilot PR #6068
+ * finding). A malformed observation must be rejected regardless of branch.
  */
 export function detectReviewThreadDisagreement(input: ReviewThreadDisagreementInput): ReviewThreadDisagreementResult {
   const aThreadId = nonBlank(input.loopA.threadId, "loopA.threadId");
   const bThreadId = nonBlank(input.loopB.threadId, "loopB.threadId");
+  nonBlank(input.loopA.conclusion, "loopA.conclusion");
+  nonBlank(input.loopB.conclusion, "loopB.conclusion");
+  nonBlank(input.loopA.body, "loopA.body");
+  nonBlank(input.loopB.body, "loopB.body");
 
   if (input.loopA.prNumber !== input.loopB.prNumber || aThreadId !== bThreadId) {
     return { kind: "no-disagreement", reason: "different-thread" };
@@ -328,4 +359,38 @@ export function writeDivergenceShard(repoRoot: string, input: DivergenceInput): 
   // path.relative handles the separator boundary + cross-platform normalisation
   // correctly, avoiding the prefix-collision edge cases of a manual slice.
   return { relPath: relative(repoRoot, result.absPath), status: result.status };
+}
+
+/**
+ * Operational unit of B-0164.1 AC #2 ("a divergence shard is filed whenever
+ * conclusions differ"): detect whether two loops' observations on the SAME PR
+ * review thread disagree and, only then, file the divergence shard under
+ * `repoRoot`. Composes the pure detector (detectReviewThreadDisagreement) with
+ * the I/O writer (writeDivergenceShard) so a caller fires the protocol step in
+ * one call instead of hand-threading the DivergenceInput between the two.
+ *
+ *   - same thread, differing normalized conclusions → file the shard ("filed",
+ *     carrying the WriteResult so the caller sees written / idempotent-noop /
+ *     collision-resolved).
+ *   - same conclusion OR different thread → no write ("no-disagreement").
+ *
+ * Stays below the blocked end-to-end boundary: it never auto-resolves the
+ * GitHub thread (AC #1) and never overwrites a differing shard (the writer's
+ * fail-closed-OR-idempotent rule). Validation throws from the detector (blank
+ * thread id / conclusion / body) surface BEFORE any I/O. The writer's
+ * byte-identical-bodies guard cannot fire on detector output: a "disagreement"
+ * means normalized conclusions differ, and each perspective body is prefixed
+ * with its trimmed (case-preserving) conclusion, so the two bodies are always
+ * distinct.
+ */
+export function fileReviewThreadDisagreement(repoRoot: string, input: ReviewThreadDisagreementInput): ReviewThreadShardOutcome {
+  const detection = detectReviewThreadDisagreement(input);
+  if (detection.kind === "no-disagreement") {
+    return detection;
+  }
+  return {
+    kind: "filed",
+    write: writeDivergenceShard(repoRoot, detection.divergenceInput),
+    divergenceInput: detection.divergenceInput,
+  };
 }
