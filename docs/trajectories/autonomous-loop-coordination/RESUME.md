@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; claim-path collision health signal in review
+Status: active child packet; local-worktree dirt health signal in review
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -107,10 +107,17 @@ It parses remote claim files for supported path-set headings and emits
 `lane-runway` warnings when active claim branches contain exact or conservative
 directory-glob path overlaps.
 
+Current local worktree dirt health receipt:
+`docs/trajectories/autonomous-loop-coordination/local-worktree-dirt-health-2026-05-30.md`
+
+It adds same-machine dirty-worktree evidence to the factory health monitor so a
+quiet lane still warns when a local non-root worktree has uncommitted modified
+or untracked files.
+
 ## Recommended Next Action
 
-Open the claim-path collision PR after focused TypeScript checks pass, then add
-secondary local-worktree dirt evidence for same-machine collision cases.
+Land the local-worktree dirt health PR after review and CI are green, then use
+the new signal to prioritize stale-worktree cleanup during quiet-lane windows.
 
 ## Next Child Packets
 

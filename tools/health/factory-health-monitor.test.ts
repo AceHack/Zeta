@@ -5,10 +5,14 @@ import {
   classifyBranchLane,
   classifyLaneRunway,
   codexLoopServiceHealthFromJson,
+  classifyLocalWorktreeDirt,
   findClaimPathCollisions,
   laneRunwayServiceHealthFromObservations,
   laneRunwaySnapshotFromObservations,
+  localWorktreeDirtObservationFromStatus,
   parseClaimPathSet,
+  parseGitWorktreeListPorcelain,
+  parseLocalWorktreeDirtScanLimit,
   runHealthCheck,
   type HealthSignal,
 } from "./factory-health-monitor";
@@ -133,6 +137,62 @@ describe("factory-health-monitor", () => {
         action: "inspect remote claim files and release or hand off one owner before writing claimed paths",
       },
     ]);
+  });
+
+  test("parseGitWorktreeListPorcelain extracts local worktree branches", () => {
+    expect(
+      parseGitWorktreeListPorcelain(
+        [
+          "worktree /repo/Zeta",
+          "HEAD abc123",
+          "branch refs/heads/main",
+          "",
+          "worktree /repo/Zeta-worktrees/codex-health",
+          "HEAD def456",
+          "branch refs/heads/claim/codex-health",
+          "",
+          "worktree /repo/detached",
+          "HEAD 789abc",
+          "detached",
+        ].join("\n"),
+      ),
+    ).toEqual([
+      { path: "/repo/Zeta", branch: "main" },
+      { path: "/repo/Zeta-worktrees/codex-health", branch: "claim/codex-health" },
+      { path: "/repo/detached", branch: null },
+    ]);
+  });
+
+  test("classifyLocalWorktreeDirt warns about dirty same-machine worktrees", () => {
+    const observation = localWorktreeDirtObservationFromStatus(
+      { path: "/repo/Zeta-worktrees/codex-health", branch: "claim/codex-health" },
+      [" M tools/health/factory-health-monitor.ts", "?? docs/claims/codex-health.md"].join("\n"),
+    );
+
+    expect(observation).toEqual({
+      path: "/repo/Zeta-worktrees/codex-health",
+      branch: "claim/codex-health",
+      dirtyEntries: 2,
+      modifiedEntries: 1,
+      untrackedEntries: 1,
+    });
+    expect(classifyLocalWorktreeDirt(observation === null ? [] : [observation])).toEqual([
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "local dirty worktree claim/codex-health: 2 dirty file(s) (1 modified, 1 untracked)",
+        action: "inspect local worktree status before treating same-machine lane/path ownership as free",
+      },
+    ]);
+    expect(localWorktreeDirtObservationFromStatus({ path: "/repo/Zeta", branch: "main" }, "")).toBeNull();
+  });
+
+  test("parseLocalWorktreeDirtScanLimit falls back on malformed values", () => {
+    expect(parseLocalWorktreeDirtScanLimit(undefined)).toBe(60);
+    expect(parseLocalWorktreeDirtScanLimit("12")).toBe(12);
+    expect(parseLocalWorktreeDirtScanLimit("0")).toBe(0);
+    expect(parseLocalWorktreeDirtScanLimit("not-a-number")).toBe(60);
+    expect(parseLocalWorktreeDirtScanLimit("-1")).toBe(60);
   });
 
   test("classifyLaneRunway distinguishes active, quiet, and unhealthy lanes", () => {

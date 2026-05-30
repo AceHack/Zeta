@@ -56,11 +56,24 @@ export interface ClaimPathCollision {
   claimBranches: string[];
 }
 
+export interface LocalWorktreeObservation {
+  path: string;
+  branch: string | null;
+}
+
+export interface LocalWorktreeDirtObservation extends LocalWorktreeObservation {
+  dirtyEntries: number;
+  modifiedEntries: number;
+  untrackedEntries: number;
+}
+
 type ToolCommand = "bun" | "gh" | "git";
 type ToolResult = { ok: boolean; stdout: string };
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
+const DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT = 60;
+const LOCAL_WORKTREE_DIRT_SCAN_LIMIT = parseLocalWorktreeDirtScanLimit(process.env.FACTORY_HEALTH_WORKTREE_DIRT_LIMIT);
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
   ".claude/",
@@ -85,6 +98,11 @@ function run(cmd: ToolCommand, args: string[]): ToolResult {
     timeout: 30_000,
   });
   return { ok: r.status === 0, stdout: (r.stdout ?? "").trim() };
+}
+
+export function parseLocalWorktreeDirtScanLimit(value: string | undefined): number {
+  const parsed = Number.parseInt(value ?? `${DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT}`, 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT;
 }
 
 function fetchOpenPRs(): ToolResult {
@@ -416,6 +434,81 @@ export function classifyClaimPathCollisions(claims: ClaimPathSetObservation[]): 
   }));
 }
 
+export function parseGitWorktreeListPorcelain(output: string): LocalWorktreeObservation[] {
+  const worktrees: LocalWorktreeObservation[] = [];
+  let current: LocalWorktreeObservation | null = null;
+
+  for (const line of output.split(/\r?\n/)) {
+    if (line.startsWith("worktree ")) {
+      if (current !== null) {
+        worktrees.push(current);
+      }
+      current = { path: line.slice("worktree ".length).trim(), branch: null };
+      continue;
+    }
+
+    if (current === null) {
+      continue;
+    }
+
+    if (line.startsWith("branch ")) {
+      current.branch = line.slice("branch ".length).trim().replace(/^refs\/heads\//, "");
+    }
+  }
+
+  if (current !== null) {
+    worktrees.push(current);
+  }
+
+  return worktrees.filter((worktree) => worktree.path.length > 0);
+}
+
+export function localWorktreeDirtObservationFromStatus(
+  worktree: LocalWorktreeObservation,
+  statusOutput: string,
+): LocalWorktreeDirtObservation | null {
+  const entries = statusOutput.split(/\r?\n/).filter(Boolean);
+  if (entries.length === 0) {
+    return null;
+  }
+
+  const untrackedEntries = entries.filter((entry) => entry.startsWith("??")).length;
+  return {
+    ...worktree,
+    dirtyEntries: entries.length,
+    modifiedEntries: entries.length - untrackedEntries,
+    untrackedEntries,
+  };
+}
+
+export function classifyLocalWorktreeDirt(observations: LocalWorktreeDirtObservation[]): HealthSignal[] {
+  return observations.map((observation) => {
+    const owner = observation.branch ?? observation.path;
+    return {
+      surface: "lane-runway",
+      level: "warning",
+      message: `local dirty worktree ${owner}: ${observation.dirtyEntries} dirty file(s) (${observation.modifiedEntries} modified, ${observation.untrackedEntries} untracked)`,
+      action: "inspect local worktree status before treating same-machine lane/path ownership as free",
+    };
+  });
+}
+
+function readLocalWorktreeDirtObservations(): LocalWorktreeDirtObservation[] {
+  const worktreeList = run("git", ["worktree", "list", "--porcelain"]);
+  if (!worktreeList.ok) {
+    return [];
+  }
+
+  return parseGitWorktreeListPorcelain(worktreeList.stdout)
+    .filter((worktree) => resolve(worktree.path) !== ROOT)
+    .slice(0, LOCAL_WORKTREE_DIRT_SCAN_LIMIT)
+    .map((worktree) => {
+      const status = run("git", ["-C", worktree.path, "status", "--porcelain"]);
+      return status.ok ? localWorktreeDirtObservationFromStatus(worktree, status.stdout) : null;
+    })
+    .filter((observation): observation is LocalWorktreeDirtObservation => observation !== null);
+}
+
 function readRemoteClaimPathSets(claimBranches: string[]): ClaimPathSetObservation[] {
   return claimBranches
     .map((branch) => {
@@ -472,7 +565,9 @@ function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
       .filter(Boolean);
     return classifyLaneRunway(
       laneRunwaySnapshotFromObservations(openPRs.stdout, claims.stdout, fetchLaneRunwayServiceHealth()),
-    ).concat(classifyClaimPathCollisions(readRemoteClaimPathSets(activeClaimBranches)));
+    )
+      .concat(classifyClaimPathCollisions(readRemoteClaimPathSets(activeClaimBranches)))
+      .concat(classifyLocalWorktreeDirt(readLocalWorktreeDirtObservations()));
   } catch {
     return [
       {
