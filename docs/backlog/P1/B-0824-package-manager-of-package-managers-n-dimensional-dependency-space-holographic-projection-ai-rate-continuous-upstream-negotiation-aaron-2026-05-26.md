@@ -1436,3 +1436,62 @@ Per [`.claude/rules/verify-existing-substrate-before-authoring.md`](../../../.cl
 - `rg "holographic projection\|2D shadow" docs/research/` → existing substrate at B-0666 keystone + Susskind unpacking; this row composes
 - `gh pr list --state all --search "B-0824"` → no in-flight collision
 - ID B-0824 next-free per `git ls-tree origin/main` (B-0822 just merged; B-0823 in flight via #5235)
+
+## Realization + distribution UX (Windows-Otto + Aaron 2026-05-30)
+
+Two concrete decisions land the abstract meta-PM (this row) into a buildable shape.
+
+### mise is the current symmetric-engine realization; the 3-tier layering (Windows Otto 2026-05-30)
+
+Windows Otto, building `install.ps1`, named **mise as "the symmetric engine"** — the
+uniform, OS-independent top of the package-management stack. The concrete layering:
+
+| Tier | What | Per-OS implementation (install-graph) |
+|---|---|---|
+| **Symmetric engine** — `mise` | one uniform `.mise.toml`, OS-independent runtime/tool spec | the cross-OS declarative contract |
+| **npm / JS backend** | mise's npm-ecosystem backend (bun/npm-installed tools) | bun + npm tools |
+| **Platform-specific** — apt · brew · nix · winget | OS-native package managers for system packages | `manifests/apt` · `manifests/brew` · nix · (Windows) winget/scoop |
+
+So `package-management goes mise → npm → platform-specific package managers`. mise is
+what *fills* the Ace meta-layer (this row's concept) **today**; Ace is the meta-layer
+mise concretely realizes. The install-graph already embodies the tiers: `.mise.toml`
+is the symmetric contract; the `manifests/*` are the platform tier. **B-0941** is a
+case study of the bottom tier — ollama is neither a mise-runtime nor an npm package,
+so it falls through to platform-specific (nix on NixOS, brew on mac, binary on
+ubuntu), which is exactly why it diverges per-OS while sharing one declarative
+`manifests/local-llm` pin above it.
+
+### Ace's distribution UX = an npm agent skill (Aaron 2026-05-30)
+
+Aaron 2026-05-30:
+
+> *"ace is just a npm agent skill — or that's the UX of ace: ts + skill + vendor
+> skill marketplace. that's how we distribute ace. or a one-line install eventually."*
+
+Ace's distribution model:
+
+- **Ace is distributed AS an npm agent skill** — TypeScript + (agent) skill + a
+  **vendor-skill marketplace**. The UX is "install the Ace skill" (npm), then the
+  marketplace surfaces vendor skills.
+- **Eventual one-line install** (curl|sh) — see **B-0863** (ace one-liner curl
+  install repository for fast-moving tools).
+- **Recursive elegance**: the package-manager-of-package-managers is itself
+  *distributed through one of its own tiers* — the **npm tier** of the symmetric-engine
+  layering above — as an agent skill. The meta-PM ships via the middle tier it
+  abstracts. Composes with [`zeta-ships-with-skills-immediate-value.md`](../../../.claude/rules/zeta-ships-with-skills-immediate-value.md)
+  (skills are the immediate-value ship surface) + B-0288 (ace CLI) + B-0863
+  (one-liner) + B-0857 (install.sh universal entry → Ace).
+
+### Composes
+
+- **B-0863** (ace one-liner curl install) — the eventual one-line-install half of the UX
+- **B-0288** (ace-dlc-package-manager-cli) — the CLI surface
+- **B-0857** (install.sh universal unix entry → Ace) — the short-path before full Ace
+- **B-0806** (cross-OS declarative for windows/macs/non-nixos linux) — the platform tier
+- **B-0941** (NixOS-native ollama) — bottom-tier case study (off-leash, accelerator branch)
+- `.claude/rules/zeta-ships-with-skills-immediate-value.md` — skill-as-ship-surface
+- `.claude/rules/bandwidth-served-falsifier.md` — symmetric engine serves cross-OS
+  contributor-bandwidth (one `.mise.toml`, N platform implementations underneath)
+
+Attribution: symmetric-engine layering — Windows Otto 2026-05-30; distribution-UX —
+Aaron 2026-05-30 (authorized landing: *"yes land the ace stuff we've decided"*).
