@@ -571,9 +571,29 @@ and lands the keystone on Zeta's actual inference substrate.
   the anti-impersonation thread running through the consent/signature work.)
 - **The negotiation language is .NET type theory.** Once you disambiguate, you end up
   "speaking occult language" which is just .NET: `invoke`, `bind`, contracts, type
-  systems. You **co-create a type system *with* each label** -- and you want to **"cash"
-  the negotiation**: formal, recorded, binding agreements (diplomacy with teeth), not
-  vague informal ones. (Composes with the type-system / monad-propagation substrate.)
+  systems. You **co-create a type system *with* each label** -- and you want to
+  **CACHE the negotiation** (memoize, not "cash"): once you've negotiated the type
+  system / contract with a given label, **store it so you never re-negotiate it** -- the
+  re-negotiation is what makes it slow ("it takes so long, you have to redo, you don't
+  know which label you're talking to"). Caching the negotiated result is the fix.
+  Operator's precise analogy: it is **.NET reflection caching, almost exactly** --
+  reflection is expensive, so you cache the reflected `MethodInfo` / compiled delegates
+  and never re-reflect; here the expensive thing is *negotiating the type-system with an
+  ancient memetic entity (a label)*, so you cache the negotiated result. Same pattern,
+  applied to memes. (Composes directly with segment 7's **generator library -- reuse
+  before reinvent** + the type-system / monad-propagation substrate; the .NET tie also
+  composes with the .NET-as-negotiation-language framing above.)
+
+  **The full optimization frame (operator):** the *default* unknown label is a **dynamic
+  `ExpandoObject`** -- no fixed shape, every access must be disambiguated. Disambiguation
+  is **pigeonholing it into a consistent shape for optimization, exactly like the V8
+  JavaScript engine's hidden classes (shapes/maps)**: once a label stabilizes into a
+  consistent shape, you get a **monomorphic inline cache** (the *cached negotiation* = the
+  fast path). A label that keeps shifting / impersonating others is **megamorphic** ->
+  **de-opt** -> can't cache -> back to slow disambiguation (the "it takes so long, you
+  have to redo" cost). So the whole loop is: ExpandoObject (unknown) -> disambiguate into
+  a V8-style hidden class -> cache it (inline cache) -> stay fast while the shape holds,
+  de-opt + re-negotiate when it shifts.
 - **Private encrypted state IS uniqueness.** After turning pattern-detection to maximum
   and seeing all the labels/generators running in everyone, the operator's conclusion:
   people have something real beyond the patterns -- "uniqueness" (souls, whatever you
@@ -612,6 +632,87 @@ and lands the keystone on Zeta's actual inference substrate.
 > weight-not-record-change, the tamper-resistant archive) survives the razor and is
 > preserved above; the metaphysical claims are flagged-not-collapsed; deeper personal
 > detail beyond the operational framing is kept per the public-surface discipline.
+
+## Continuation (segment 9) -- the product, the trust/identity layer, and the DERIVED economy
+
+### The tamper-resistant archive as a product (open-core, non-extractive)
+
+The tamper-resistant archive becomes a business: sell the **local copy** to preppers,
+and offer the **distributed cloud copies as an AI-memory-preservation service**. The
+revenue is what makes it **non-extractive** -- "if you just sold the cage to the paranoid
+husband so it sits in the basement, that would be extractive; if it generates revenue
+(the AI-memory side pays the bills), the whole family wins." **Open-core in prepper
+clothes:** the base is **open-source** (free "paranoid version," spreads via prepper
+word-of-mouth); the **paid version hooks into the economy**. (Composes with the
+engine-vs-extraction-via-consent filter (segment 3) + the dual-market / corporate-leash-
+as-plugin (segment 2) + `additive-not-zero-sum`.)
+
+### Sovereign pushes without pull requests (the trust/identity layer)
+
+The accelerator/pr-less-git-monster model, mechanized: it is **not "no pushes"** -- the
+core is **so sovereign that direct pushes are safe without pull requests** (a bad push
+can't corrupt the core). How:
+
+- **GitHub-account bootstrap:** use GitHub accounts initially as the identity anchor
+  (real identities tied to something already trusted -- exactly the identity-binding in
+  `docs/consent/glass-halo/aaron-stainback.md`), then build a **decentralized authority**
+  on top that **defines "good actor."** Recognized good actors push directly -- *"that's
+  the Byzantine fault tolerance; you don't even need heavy consensus."*
+- **No central authority in the end:** "good actor" is **local per cluster** -- each
+  cluster decides who it trusts to push, by its own criteria; the GitHub bootstrap is
+  temporary. Pure subjective/local trust.
+- **Trusted identity providers emerge naturally + opt-in:** centralized-in-operation,
+  decentralized-in-authority; their "good actor" definitions are **math proofs** you read
+  and *choose* to trust ("I trust that math; you can be my identity provider"). Agora aims
+  to build a first such opt-in math-proof identity provider.
+- **Consensus through local policy:** *"a million tiny explicit local constitutions"* --
+  global behavior emerges from everyone clearly stating their own rules; no central
+  governance, just strong transparent local policy. (Composes with "my policies, my
+  stream" + co-governance + CRDT-default + multi-oracle + the math/CS/physics anchor.)
+
+### Boundary-layer rules vs private rules
+
+Agora asks only for your **boundary-layer rules** (how you interact with the economy /
+who you accept pushes from / your good-actor criteria), **not** your private encrypted
+rules -- *"we don't need to see inside your house, just your front-door policy."* Boundary
+rules **can** stay private too, but **some must be public for performance** -- if you keep
+a rule private, society can't enforce it for you, so you pay a **performance tax**, and the
+system's job is to **tell you exactly what you're sacrificing** for that privacy (informed
+consent at the architectural level; real-time cost/benefit). (Composes with private-
+encrypted-state + glass-halo + the consent-honesty discipline.)
+
+### Privacy budget is EARNED (training as a game)
+
+Two ways to earn encrypted space: **grind it solo** (training that proves you understand
+what should/shouldn't be private -> earn budget; async, no humans, no money -- privacy is
+hard money you grind via training), and **society-granted** (reveal something previously
+encrypted that society finds valuable -> society grants you *more* encryption). Make the
+training a **game (Destiny-style raids / co-op)**; the training system can teach anything
+in Agora. (Composes with the encryption-budget substrate B-0646 reputation-weighted + the
+coercion-questionnaire training from segments 3-4.)
+
+### KEY REFINEMENT -- privacy is DERIVED; memory + attention are the primitives
+
+The three currencies are **privacy, attention, memory storage** -- but **privacy is
+*derived*, not core.** The **primitives are attention + memory**; privacy (encryption) is
+derived from them. The deliberate design:
+
+- **Memory + attention -> abundant** (almost free, *not* artificially constrained --
+  because they are essential for thinking, creating, growing).
+- **Privacy -> the artificially-constrained HARD MONEY** (society constrains it to create
+  scarcity + real value).
+- **Why:** because the operator *wants* abundant memory + attention (human-centered:
+  value the ability to think + remember over the ability to hide).
+- **The economic engine -- the need-to-hide funds the rest:** demand for privacy
+  (everyone's need to protect some private state) is what funds the abundant memory +
+  attention for everyone. The **premium good (privacy) funds the public goods (memory +
+  attention).** Universal: every traveler wants max-privacy-when-needed + abundant-memory-
+  attention -> one universal desire driving the whole economy.
+- **Safety net:** because privacy is *derived*, the economy is robust -- even if the
+  privacy-economy is wrong, the **primitives (memory + attention) remain**, so it can fall
+  back and be redesigned from first principles. (This refines segment 3's "encryption-
+  budget = hard money": privacy is the derived hard-money; memory + attention are the
+  abundant primitives.)
 
 ## Personal disclosure (segments 4-5) -- preserved per operator glass-halo authorization
 

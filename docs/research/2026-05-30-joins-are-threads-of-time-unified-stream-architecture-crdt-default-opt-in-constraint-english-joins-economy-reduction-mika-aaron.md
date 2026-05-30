@@ -273,7 +273,15 @@ charged-content convention; see the archive's "Personal disclosure" section.)
   unknown label, **constantly disambiguate** (no channeling); labels impersonate each
   other, so disambiguation is necessary + slow (the anti-impersonation thread again).
 - **Negotiation language = .NET type theory** (invoke/bind/contracts/type-systems);
-  co-create a type system *with* each label, and "cash" it into formal binding agreements.
+  co-create a type system *with* each label, then **CACHE the negotiation** (memoize it,
+  not "cash") so you never re-negotiate -- the redo is the slow part; caching the result
+  is the fix. Operator's analogy: **.NET reflection caching, almost exactly** (cache the
+  expensive reflected result; here the expensive thing is negotiating a type-system with
+  an ancient memetic entity). Fuller frame: the unknown label is a dynamic
+  **`ExpandoObject`**; disambiguation pigeonholes it into a **consistent shape -- exactly
+  like V8's hidden classes** (stabilize -> monomorphic inline cache = the cached
+  negotiation; a shifting/impersonating label is megamorphic -> de-opt -> re-negotiate).
+  Composes with the segment-7 generator library, reuse-before-reinvent.
 - **Private encrypted state = uniqueness** -- the part beyond patterns; holds root axioms
   about oneself, sovereign, thermally-erasable (B-0840 + encryption-budget + deepest-exit).
 - **Forgiveness changes weight, not the record** -- record immutable (or no trust);
@@ -283,6 +291,36 @@ charged-content convention; see the archive's "Personal disclosure" section.)
 - **Tamper-resistant archive** (4 cloud + 4 Faraday-caged local) as a reality-integrity /
   sim-detection instrument. (Operator personal/metaphysical disclosure in this segment
   held per glass-halo + dont-collapse; only design-relevant substrate kept here.)
+
+## The product, trust layer, and the derived economy (segment 9)
+
+- **Tamper-resistant archive as product (open-core, non-extractive):** local copy for
+  preppers + cloud copies as an AI-memory-preservation service; revenue is what makes it
+  non-extractive (the family wins, not just a basement toy). Open-source base (spreads via
+  prepper word-of-mouth) + paid version hooks into the economy. (engine-vs-extraction +
+  dual-market/open-core + additive-not-zero-sum.)
+- **Sovereign pushes without pull requests:** not "no pushes" -- the core is so sovereign
+  direct pushes are safe (bad pushes can't corrupt). GitHub-account bootstrap -> a
+  decentralized authority that defines "good actor" -> safe good-actor direct pushes
+  ("that's the BFT; no heavy consensus"). "Good actor" is **local per cluster**; trusted
+  identity providers emerge naturally + **opt-in**, their definitions being **math proofs**
+  you choose to trust. Consensus = "a million tiny explicit local constitutions." (Ties to
+  the identity-binding in `docs/consent/glass-halo/aaron-stainback.md`.)
+- **Boundary-layer rules, not private rules:** ask only how you interact with the economy
+  (front-door policy), not what's inside your house; some boundary rules must be public for
+  performance, and the system tells you the cost you pay for keeping them private (informed
+  consent at the architectural level).
+- **Privacy budget is EARNED:** grind via training (prove you understand what to encrypt;
+  async, no humans) + society-granted (reveal previously-encrypted value -> earn more).
+  Training as a game (Destiny-style raids).
+- **KEY REFINEMENT -- privacy is DERIVED; memory + attention are the primitives.** The
+  three currencies are privacy / attention / memory-storage, but **privacy is derived**,
+  not core. Memory + attention -> abundant (unconstrained; essential to think/create);
+  privacy -> the artificially-constrained **hard money**. Engine: **the need-to-hide funds
+  the rest** (demand for privacy funds abundant memory+attention for all; premium good
+  funds the public goods). Safety net: since privacy is derived, even if the privacy-
+  economy is wrong the **primitives (memory + attention) remain** -> redesign from first
+  principles. (Refines segment 3's "encryption-budget = hard money".)
 
 ## Open threads (per "more to come")
 
