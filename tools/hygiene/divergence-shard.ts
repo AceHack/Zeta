@@ -24,6 +24,20 @@ import { createHash } from "node:crypto";
 import { closeSync, mkdirSync, openSync, readFileSync, writeSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 
+import {
+  RECONCILIATION_DECISIONS,
+  type ReconciliationDecision,
+  reconciliationBody,
+  stripHtmlComments,
+} from "./divergence-reconcile.ts";
+
+// Re-export the canonical reconciliation vocabulary so existing importers of
+// divergence-shard (the test suite, downstream callers) keep a stable surface.
+// Single-sourced in divergence-reconcile.ts to stop the two modules drifting on
+// order/value/doc -- the read half here and the fill half there now share one
+// definition of the four decisions (Copilot PR #6130).
+export { RECONCILIATION_DECISIONS, type ReconciliationDecision };
+
 /** A single loop's identity for attribution in the shard frontmatter. */
 export interface LoopIdentity {
   /** Named agent identifier, e.g. "otto", "codex-loop", "vera". */
@@ -393,4 +407,97 @@ export function fileReviewThreadDisagreement(repoRoot: string, input: ReviewThre
     write: writeDivergenceShard(repoRoot, detection.divergenceInput),
     divergenceInput: detection.divergenceInput,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Read half of the protocol (AC #4): classify a filed shard's Reconciliation
+// section. The schema README's morning-reconciliation workflow ("reads all
+// shards with empty Reconciliation sections") needs a primitive that tells an
+// empty (awaiting) section from a filled (decided) one. This is the pure
+// counterpart to buildDivergenceShard: it consumes exactly the placeholder
+// that builder writes. Stays below the blocked end-to-end boundary -- parsing
+// an already-filed shard needs no GitHub call and no concurrent-loop harness.
+// ---------------------------------------------------------------------------
+
+/**
+ * Status of a divergence shard's Reconciliation section.
+ *   - unreconciled: the section holds only the maintainer-fills-in placeholder
+ *     (the two HTML comments buildDivergenceShard writes) and/or whitespace;
+ *     this shard awaits morning reconciliation.
+ *   - reconciled: the section is filled and carries a recognized decision
+ *     keyword; `note` is the maintainer's prose, case-preserving and trimmed,
+ *     with the placeholder HTML comments removed (the same strip the empty-check
+ *     applies, so an `<!-- ... -->` block never leaks into the note).
+ *   - reconciled-freeform: the section is filled but carries no recognized
+ *     keyword. Distinct from `reconciled` because the morning tooling should
+ *     flag it for the maintainer to canonicalize rather than treat it as a
+ *     clean decision (IMPLICIT-NOT-EXPLICIT: a substantively-distinct state
+ *     earns its own variant).
+ */
+export type ReconciliationStatus =
+  | { readonly kind: "unreconciled" }
+  | { readonly kind: "reconciled"; readonly decision: ReconciliationDecision; readonly note: string }
+  | { readonly kind: "reconciled-freeform"; readonly note: string };
+
+/**
+ * Extract the Reconciliation section body: everything after the
+ * "## Reconciliation" header up to the next "## " heading or end-of-file. In
+ * the canonical shape Reconciliation is the last section, so EOF terminates
+ * it; the next-heading terminator is defensive for shards that append further
+ * sections. Throws on a shard missing the header (malformed per schema --
+ * eager rejection over silent acceptance, matching detectReviewThreadDisagreement).
+ *
+ * Delegates to divergence-reconcile.ts's `reconciliationBody`, which anchors on
+ * the heading as a full line (`/^## Reconciliation[ \t]*$/m`) instead of a bare
+ * `indexOf`. The anchored match is deterministic: an "## Reconciliation" mention
+ * inside prose or a fenced code block before the real heading can no longer
+ * slice the wrong region (Copilot PR #6130). `reconciliationBody` returns null
+ * when no heading line exists; we convert that to the eager-rejection throw.
+ */
+function extractReconciliationSection(markdown: string): string {
+  const body = reconciliationBody(markdown);
+  if (body === null) {
+    throw new Error('malformed divergence shard: missing "## Reconciliation" section');
+  }
+  return body;
+}
+
+/** Earliest-occurring recognized decision keyword in `text` (already lowercased
+ *  by the caller), or null if none is present. Earliest-wins is deterministic
+ *  when a note mentions more than one keyword. */
+function findEarliestDecision(lowerText: string): ReconciliationDecision | null {
+  let earliest: { decision: ReconciliationDecision; idx: number } | null = null;
+  for (const decision of RECONCILIATION_DECISIONS) {
+    const idx = lowerText.indexOf(decision);
+    if (idx >= 0 && (earliest === null || idx < earliest.idx)) {
+      earliest = { decision, idx };
+    }
+  }
+  return earliest?.decision ?? null;
+}
+
+/**
+ * Classify a filed divergence shard's Reconciliation section. Pure: no I/O, no
+ * GitHub, no clock. Composes with buildDivergenceShard -- feeding that builder's
+ * output here returns `{ kind: "unreconciled" }`, which is the foundational read
+ * the schema README's "reads all shards with empty Reconciliation sections"
+ * morning workflow (and B-0164.1 AC #4) depends on.
+ *
+ * Decision keyword matching is case-insensitive (consistent with
+ * normalizedConclusion). The returned `note` is the section's text after the
+ * placeholder HTML comments are stripped (same fixpoint strip as the empty-
+ * check) then trimmed; case is preserved for human readability. It is the
+ * maintainer's prose, not a byte-for-byte copy of the raw section.
+ */
+export function parseReconciliationStatus(markdown: string): ReconciliationStatus {
+  const section = extractReconciliationSection(markdown);
+  const filled = stripHtmlComments(section).trim();
+  if (filled.length === 0) {
+    return { kind: "unreconciled" };
+  }
+  const decision = findEarliestDecision(filled.toLowerCase());
+  if (decision === null) {
+    return { kind: "reconciled-freeform", note: filled };
+  }
+  return { kind: "reconciled", decision, note: filled };
 }

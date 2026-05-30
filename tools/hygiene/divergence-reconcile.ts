@@ -109,8 +109,12 @@ export function isReconciliationPending(markdown: string): boolean {
  * so we re-run until the string stops shrinking. Termination is guaranteed —
  * each changing pass strictly deletes characters. (CodeQL js/incomplete-multi-
  * character-sanitization.)
+ *
+ * Exported as the single source of HTML-comment sanitization for the divergence
+ * protocol: divergence-shard.ts's read half (parseReconciliationStatus) reuses
+ * this exact fixpoint impl rather than carrying its own pass (Copilot PR #6130).
  */
-function stripHtmlComments(text: string): string {
+export function stripHtmlComments(text: string): string {
   let out = text;
   let prev: string;
   do {

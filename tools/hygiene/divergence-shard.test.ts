@@ -6,10 +6,12 @@ import { dirname, join } from "node:path";
 import {
   type DivergenceInput,
   type ReviewThreadDisagreementInput,
+  RECONCILIATION_DECISIONS,
   detectReviewThreadDisagreement,
   buildDivergenceShard,
   divergenceShardRelPath,
   fileReviewThreadDisagreement,
+  parseReconciliationStatus,
   shortContentHash,
   writeDivergenceShard,
   writeShardAtPath,
@@ -472,6 +474,86 @@ describe("fileReviewThreadDisagreement (detect → file glue, AC #2)", () => {
         }),
       ).toThrow(/loopB\.body/);
       expect(existsSync(join(root, DIVERGENCE_DIR))).toBe(false);
+    });
+  });
+
+  describe("parseReconciliationStatus (read half, AC #4)", () => {
+    /** Replace a built shard's Reconciliation section body with `body`. */
+    function withReconciliation(shard: string, body: string): string {
+      const idx = shard.indexOf("## Reconciliation");
+      if (idx < 0) throw new Error("test fixture: built shard had no Reconciliation header");
+      return `${shard.slice(0, idx)}## Reconciliation\n\n${body}\n`;
+    }
+
+    test("a freshly-built shard reads as unreconciled (round-trip with builder)", () => {
+      // The builder writes a placeholder whose HTML comments LIST the four
+      // decision keywords. Reading unreconciled here proves comment-stripping
+      // happens before the empty-check + keyword scan.
+      expect(parseReconciliationStatus(buildDivergenceShard(INPUT))).toEqual({ kind: "unreconciled" });
+    });
+
+    test("whitespace-only Reconciliation (no comments) reads as unreconciled", () => {
+      expect(parseReconciliationStatus(withReconciliation(buildDivergenceShard(INPUT), "   \n\t"))).toEqual({
+        kind: "unreconciled",
+      });
+    });
+
+    for (const decision of RECONCILIATION_DECISIONS) {
+      test(`reads a filled decision: ${decision}`, () => {
+        const md = withReconciliation(buildDivergenceShard(INPUT), `${decision} — maintainer chose this.`);
+        const status = parseReconciliationStatus(md);
+        expect(status.kind).toBe("reconciled");
+        if (status.kind !== "reconciled") throw new Error("expected reconciled");
+        expect(status.decision).toBe(decision);
+        expect(status.note).toContain("maintainer chose this");
+      });
+    }
+
+    test("matches decision keywords case-insensitively, preserving note case", () => {
+      const md = withReconciliation(buildDivergenceShard(INPUT), "Accept-Loop-B: Loop B reproduces it locally.");
+      const status = parseReconciliationStatus(md);
+      expect(status.kind).toBe("reconciled");
+      if (status.kind !== "reconciled") throw new Error("expected reconciled");
+      expect(status.decision).toBe("accept-loop-b");
+      // note preserves original casing
+      expect(status.note).toContain("Accept-Loop-B");
+    });
+
+    test("earliest-occurring keyword wins, not README list order", () => {
+      // "escalate" is LAST in RECONCILIATION_DECISIONS but appears FIRST in the
+      // prose; earliest-by-index must win over list order.
+      const md = withReconciliation(
+        buildDivergenceShard(INPUT),
+        "escalate for now; we considered accept-both but want more evidence.",
+      );
+      const status = parseReconciliationStatus(md);
+      expect(status.kind).toBe("reconciled");
+      if (status.kind !== "reconciled") throw new Error("expected reconciled");
+      expect(status.decision).toBe("escalate");
+    });
+
+    test("filled prose with no recognized keyword reads as reconciled-freeform", () => {
+      const md = withReconciliation(buildDivergenceShard(INPUT), "Talked it over; Loop A is right here.");
+      const status = parseReconciliationStatus(md);
+      expect(status.kind).toBe("reconciled-freeform");
+      if (status.kind !== "reconciled-freeform") throw new Error("expected reconciled-freeform");
+      expect(status.note).toBe("Talked it over; Loop A is right here.");
+    });
+
+    test("throws on a shard missing the Reconciliation section", () => {
+      expect(() => parseReconciliationStatus("---\ntype: divergence\n---\n\n## Loop A perspective\n\nx")).toThrow(
+        /missing "## Reconciliation" section/,
+      );
+    });
+
+    test("terminates the section at a following heading (does not bleed into later content)", () => {
+      const md = `${withReconciliation(buildDivergenceShard(INPUT), "accept-loop-a — done.")}\n## Notes\n\nescalate appears here but must be ignored.`;
+      const status = parseReconciliationStatus(md);
+      expect(status.kind).toBe("reconciled");
+      if (status.kind !== "reconciled") throw new Error("expected reconciled");
+      // "escalate" lives in the later ## Notes section, so it must NOT win.
+      expect(status.decision).toBe("accept-loop-a");
+      expect(status.note).not.toContain("ignored");
     });
   });
 });
