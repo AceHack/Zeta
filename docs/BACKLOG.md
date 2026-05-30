@@ -889,6 +889,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0934](backlog/P2/B-0934-backlog-index-integrity-required-or-advisory-decision-2026-05-29.md)** Decide whether backlog-index-integrity is required or explicitly advisory
 - [ ] **[B-0937](backlog/P2/B-0937-redundancy-checks-across-satellites-and-rules-mirror-beacon-rhyme-retirement-hub-over-budget-detector-2026-05-29.md)** Redundancy-checks across satellites + rules — duplicate-content audit, mirror→beacon rhyme-retirement, hub-over-budget detector
 - [ ] **[B-0939](backlog/P2/B-0939-self-propagating-markdown-compiler-rule-bootstrap-traveler-template-every-md-propagates-or-doesnt-compile-aaron-mika-2026-05-30.md)** Self-propagating-Markdown compiler-rule + bootstrap-traveler template (every .md is a self-propagating pattern through time or it doesn't compile)
+- [ ] **[B-0942](backlog/P2/B-0942-co-dominant-git-mirrors-git-native-crdt-coordination-no-host-needed-aaron-2026-05-30.md)** Co-dominant git mirrors + git-native CRDT coordination — no host needed for coordination (local + GitHub + GitLab/Gitea/Forgejo + free-OSS git as co-dominant collaborating mirrors)
 
 ## P3 — convenience / deferred
 
