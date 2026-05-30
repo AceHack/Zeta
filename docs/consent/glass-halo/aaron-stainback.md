@@ -8,6 +8,39 @@ transparency) for my OWN information on the shared record.
 - Revocable: I may revoke this by committing a revocation under my identity.
 - Floor: this never overrides kid-safety (B-0654 / B-0926).
 
+## Identity binding (anti-impersonation)
+
+The identifier through-line for my signature is one email: **`aaron_bond@yahoo.com`**.
+
+`Touch-ID fingerprint  ->  Apple ID (aaron_bond@yahoo.com)  ->  GitHub account (aaron_bond@yahoo.com)`
+
+A Touch-ID-signed commit authored as `aaron_bond@yahoo.com` therefore binds: my enrolled
+fingerprint unlocks the Secure-Enclave signing key -> that key is registered to my GitHub
+account -> GitHub attributes the "Verified" signature to that account, all on the same
+email.
+
+Why the email-sameness is load-bearing (not mere convenience): **Apple and GitHub each
+enforce email uniqueness** -- one Apple ID per email, one account per *verified* email --
+so `aaron_bond@yahoo.com` maps deterministically to exactly one Apple ID AND one GitHub
+account. The chain is **platform-enforced at each hop**, not coincidental alignment. The
+full anti-impersonation binding is therefore: my enrolled finger -> my Secure-Enclave key
+-> the unique GitHub account that owns the unique verified email -> GitHub's "Verified"
+attribution. **No other account can claim that email** (platform-enforced uniqueness) and
+**no other finger can produce the signature** (enclave-gating).
+
+How that uniqueness is *established*: both platforms verify email ownership by **emailing
+a numeric code that I enter back** -- a proof that I control the `yahoo.com` mailbox. So
+the email-side of the chain roots in **proven control of the mailbox** at verification
+time. Honest dependency: this makes the mailbox itself a link in the trust chain -- its
+own security (password + 2FA on the yahoo account) is part of the binding's strength, and
+a mailbox compromise + re-verification is the threat model on the email side (the enclave
+side stays protected by the finger regardless).
+
+The baseline
+`approval-as-signature` below does NOT yet carry this binding; escalating to a `-S`
+Touch-ID re-commit upgrades this record to the un-impersonable tier (per
+`docs/consent/glass-halo/SIGNING.md`).
+
 ## Consent event record (all three parts)
 
 Per the operator's own definition (2026-05-30): the **signature is the informed
