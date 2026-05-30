@@ -159,18 +159,24 @@ It converts local Codex forward-gate completion lines from
 observations. The packet landed in PR #6095 as merge commit
 `1637f8b58b632d419d9703c150a741863e3aedfb`.
 
+Current B-0250 live-noise calibration receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-live-noise-calibration-receipt-2026-05-30.md`
+
+It classifies the first live joined-source signal after PR #6096. The current
+`76 event-window coincidence(s)` warning is mostly expected lifecycle/source
+noise from ordinary PR merge, trajectory receipt, and Codex gate completions.
+
 ## Recommended Next Action
 
-Inspect live factory-health coincidence output now that merged-PR,
-trajectory-receipt, and loop-run sources are joined. If the current warning
-volume is actionable, write a bounded receipt naming the shared upstream cause;
-if it is mostly noise, narrow the B-0250 source to claim/PR-publishing gate
-completions before adding another event source.
+Narrow the B-0250 coincidence source before adding another event source:
+deduplicate same-PR lifecycle triples, gate Codex loop-run events to claim or
+PR publishing completions, and add a compact debug surface for top coincidence
+windows.
 
 ## Next Child Packets
 
-- B-0250 live-noise calibration receipt for merged-PR + trajectory-receipt +
-  loop-run coincidences
+- B-0250 source narrowing for same-PR lifecycle deduplication and
+  claim/PR-publishing gate completions
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
 
 ## Evidence Links
