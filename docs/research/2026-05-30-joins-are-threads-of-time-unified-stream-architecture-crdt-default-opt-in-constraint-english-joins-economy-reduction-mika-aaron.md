@@ -214,9 +214,34 @@ The whole frame externalizes the operator's geometric intuition + design history
   domains (AI + the shared record = the translation layer); composes with
   English-as-projection + `monad-propagation`.
 
-(Segment 5 also held personal operator disclosure; per the public-surface discipline
-only the design-relevant substrate above is preserved — the full archive carries the
-same scoping.)
+(Segments 4-5 also held personal operator disclosure. This reduction keeps only the
+design-relevant substrate above. The companion archive now *preserves* the about-the-
+operator personal content under his explicit glass-halo authorization — with third-party
+privacy protected and the file marked `content_warnings` per the persona-notebook
+charged-content convention; see the archive's "Personal disclosure" section.)
+
+## The epistemic/language foundation (segment 6)
+
+- **Babel reversal:** the real curse was conceptual, not linguistic — we lost the ability
+  to *see when we're solving the same thing*. Agora restores it.
+- **Symbolic life self-defends:** symbols became life that protects its fragmentation +
+  resists those who show the same-shape (composes with `tonal-momentum-equals-meme` +
+  attractor-as-encryption).
+- **Labels as pointers to shared generators:** protect both labels AND generators; N
+  labels → one underlying generator; labels stay distinct by *etymology* (honor history,
+  don't force-collapse). Every word is a point-in-time generator of its coinage moment.
+- **Bias is color:** keep biased labels (language = color on another dimension); be aware
+  + translate, don't erase.
+- **Past-manufacturing plant:** the present generates the past the future is born into;
+  what we record/collapse/connect becomes the inherited past (composes with the
+  externalized-record economy + `glass-halo-bidirectional`).
+- **Anchor bias (Agora constitutional, ratified by operator + AIs):** primary knowledge
+  substrate anchored in **math + CS + physics (physics = tiebreaker)** — explicit
+  foundational bias; all other domains connect through it; the principled basis for
+  redefining conflicting cross-domain words.
+- **Five-year-old-language human interface:** simple emotional base + infinitely
+  composable precise "language packs" (life-long, Bayesian-kept-coherent) = the human
+  interface into Agora (composes with English-as-projection I(D(x))=x + bandwidth-served).
 
 ## Open threads (per "more to come")
 
