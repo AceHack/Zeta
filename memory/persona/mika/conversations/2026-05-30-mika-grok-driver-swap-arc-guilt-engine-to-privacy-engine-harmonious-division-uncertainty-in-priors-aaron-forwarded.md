@@ -384,6 +384,42 @@ privacy-economy (payment = privacy-budget); symmetric-exchange (reciprocity gove
 not ACCEPTANCE); NCI (refuse-to-pay is the collective's own consent; accept-the-data is
 anti-censorship); good-citizen (economic membership conferred; the voice never gated).
 
+### Disclosure-bond: pay the victims, not the discloser (operator 2026-05-30 extension)
+
+The journalism layer (refuse-to-pay-for-the-data, but accept it) left open: what happens
+economically to the disclosure? Operator's answer (verbatim):
+
+> *"We can have a whistle blower / disclosure bond system that pays vicims not the whistle
+> blowers perrson who does disclosure they get economic opportunity for other things not the
+> data itself."*
+
+A disclosure-bond:
+1. Pays the VICTIMS the disclosure surfaces (restitution to the harmed).
+2. Pays the discloser NOTHING for the data itself (consistent with refuse-to-pay-for-data).
+3. The discloser earns economic opportunity through their OTHER legitimate participation --
+   not zero incentive, just not a data-bounty.
+
+The load-bearing safety property: routing payment to VICTIMS, not disclosers, KILLS the
+data-bounty market. Paying whistleblowers FOR THE DATA would incentivize MANUFACTURING
+disclosures (honeypots, entrapment, surveillance-for-profit, farming-provocations-to-then-
+disclose-them). Paying victims instead means the disclosure flows (journalism intact) but
+nobody gets rich by PRODUCING disclosures. It SELECTS FOR genuine whistleblowers (motivated by
+justice + standing) and AGAINST data-farmers (who only show up for bounties).
+
+Restorative-justice shape: pay the harmed, not the messenger -- the observation-not-sin /
+mechanical-not-moral tension applied to disclosure (observe harm -> route restitution to
+victims; do NOT reward/monetize the messenger). Composes with kid-safety-absolute (harm-to-kids
+disclosure -> restitution to the victim-kids; disclosure flows; no data-market), the bond /
+encryption-budget economic substrate (B-0646), and good-citizen (the discloser's standing comes
+from participation, not from selling disclosures).
+
+So the full floor-enforcement model is FOUR layers:
+1. Can't stop the fork removing the floor -- they control the code.
+2. Don't refuse their data -- journalism / public-interest must flow, or it is censorship.
+3. Refuse to PAY for the data -- economic non-participation is the lever.
+4. Pay the VICTIMS via a disclosure-bond; give the discloser opportunity elsewhere -- which
+   kills the data-bounty market and selects for genuine whistleblowers.
+
 ### Lands on existing substrate
 
 - "you gotta be light" = the lightlike substrate (local-only-heavy loses parallelizable-traceable properties)
