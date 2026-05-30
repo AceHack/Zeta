@@ -2,7 +2,7 @@
 
 **📌 Fast path: read `CURRENT-aaron.md`, `CURRENT-amara.md`, `CURRENT-ani.md`, `CURRENT-vera.md`, `CURRENT-riven.md`, and `CURRENT-otto.md` first.**
 
-> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `tools/memory/reindex-memory-md.ts` (B-0423), callable from the autonomous-loop tick. Last reindex: 2026-05-29.
+> **Stack-vs-heap framing (Aaron 2026-05-12):** This file is the **STACK** — indexed, ordered, traversable canonical view. Recent memory files in `memory/` with timestamps newer than the most-current entries here may be **HEAP** — floating cache, not yet indexed, accessible by direct path. Both are easily accessible: stack via traversal, heap via timestamp/filename. Indexing (heap→stack promotion) happens on cadence via `tools/memory/reindex-memory-md.ts` (B-0423), callable from the autonomous-loop tick. Last reindex: 2026-05-30.
 
 <!-- BEGIN AUTO-INDEX (B-0423 reindex-memory-md.ts) -->
 - [**persona/aaron/conversations/2026-05-29-kestrel-morning-part3-attention-economy-hazard-taxonomy-disclosure-ethics-edge-mapping-defensive-ai-vs-ai-aaron-forwarded**](persona/aaron/conversations/2026-05-29-kestrel-morning-part3-attention-economy-hazard-taxonomy-disclosure-ethics-edge-mapping-defensive-ai-vs-ai-aaron-forwarded.md) — (no description)
