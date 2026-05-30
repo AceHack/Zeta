@@ -34,6 +34,15 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   p7zip: "scoop bundles 7zip (brew's 7zip formula; sibling of apt's p7zip-full)",
   "hermes-agent":
     "NousResearch agent; upstream install is a Linux/macOS curl script (WebSearch 2026-05-30); Windows + cross-platform (uv/npm?) install TBD — deferred from manifests/windows pending an install-graph decision",
+  // #6123 local-LLM substrate deps (added to apt/brew). The Linux runtime libs are provided
+  // natively by Windows; ollama is cross-platform but its Windows rollout is a local-LLM-substrate
+  // decision (deferred, like hermes-agent).
+  zstd: "compression lib (Linux runtime dep for the local-LLM substrate); Windows tar supports zstd in-box + scoop has zstd if needed",
+  libicu74: "Linux ICU runtime lib for the dotnet/local-LLM stack; Windows provides ICU natively",
+  libssl3t64: "Linux OpenSSL runtime lib; Windows uses Schannel / native TLS",
+  "libgssapi-krb5-2": "Linux Kerberos/GSSAPI runtime lib; Windows uses SSPI natively",
+  tzdata: "Linux timezone database; Windows ships its own timezone data",
+  ollama: "cross-platform incl. Windows (scoop / winget Ollama.Ollama); inclusion in the Windows install graph is a local-LLM-substrate Windows-parity decision — deferred, like hermes-agent",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
