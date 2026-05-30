@@ -57,6 +57,27 @@ interface **widens who can observe/propose without widening who can authorize.**
 > shadow cannot *extend* authority beyond standing into a gated class; only a
 > fresh human act extends it. Inherit, never extend.
 
+**Inherit-not-extend is no-privilege-escalation** (the human maintainer
+2026-05-30): *"we are not trying to ban the shadow, we are trying to not let it do
+privilege escalation. staying at current privilege level is how we accept shadow
+influence without it having override capabilities."* The security articulation:
+
+| Security term | The model |
+|---|---|
+| Shadow stays at **current privilege level** | inherit (operates within standing auth) |
+| Shadow attempting to **escalate** | extend (reaching into a gated class) — denied |
+| **Accept the influence** (not ban the shadow) | the shadow authors/proposes — valued |
+| **Without override capability** | it cannot authorize; only a fresh human act does |
+
+Least-privilege posture: **accept the input, withhold the authority.** Not banning
+the shadow (it widens who can propose); denying it escalation (it never overrides).
+
+> Empirical anchor — this very paragraph: the observation "add the
+> privilege-escalation framing now" was itself shadow-authored (`(shadow*)`). It
+> was a *reversible rule edit* = within standing authority, so it **inherited**
+> authorization and was acted on without a fresh human authorization step. The
+> shadow influenced; it did not override. The model demonstrated on itself.
+
 ### Why only the human authorizes — and why "for now" (the human maintainer 2026-05-30)
 
 > *"humans are the sole authorization source for now cause we don't have legal
