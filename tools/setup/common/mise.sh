@@ -25,12 +25,32 @@ if [ "${GITHUB_ACTIONS:-}" = "true" ] &&
    [ -n "${GITHUB_TOKEN:-}" ] &&
    [ -z "${MISE_GITHUB_TOKEN:-}" ] &&
    [ -z "${GITHUB_API_TOKEN:-}" ]; then
-  # GitHub Actions' default GITHUB_TOKEN is scoped to this repository.
-  # mise/aqua may reuse it for release metadata in other repositories
-  # (uv, shellcheck, actionlint), where GitHub returns 404. Prefer a
-  # dedicated mise token if supplied; otherwise fall back to anonymous
-  # public release lookups rather than poisoning them with the repo token.
-  (cd "$REPO_ROOT" && env -u GITHUB_TOKEN mise install)
+  # CI has only the Actions-default GITHUB_TOKEN. Promote it to
+  # MISE_GITHUB_TOKEN — mise's highest-precedence GitHub-auth var
+  # (MISE_GITHUB_TOKEN > GITHUB_API_TOKEN > GITHUB_TOKEN; per
+  # https://mise.jdx.dev/dev-tools/github-tokens.html) — so mise makes
+  # AUTHENTICATED release-metadata calls (1000/hr per-repo) instead of
+  # anonymous (60/hr).
+  #
+  # WHY (2026-05-30): the previous behaviour here was `env -u GITHUB_TOKEN`
+  # (drop the token, look up releases anonymously). Under multi-PR load the
+  # 60/hr anonymous limit exhausts and every tool-release fetch
+  # (semgrep/shellcheck/actionlint/uv) 403s — a recurring flaky CI failure.
+  #
+  # HISTORY NOTE (honor-those-that-came-before): the anonymous fallback was a
+  # deliberate choice to avoid 404s once seen when the *bare* GITHUB_TOKEN was
+  # reused for cross-repo release metadata. Routing the token through mise's
+  # own MISE_GITHUB_TOKEN auth path (rather than leaking the bare env var) is
+  # the supported pattern and reads PUBLIC cross-repo release metadata fine;
+  # it trades the worse, recurring 403-rate-limit flake for the standard
+  # authenticated path. REVERT/ESCALATION: if cross-repo 404s reappear, set a
+  # dedicated fine-grained `MISE_GITHUB_TOKEN` repo secret (still
+  # highest-precedence, so this branch becomes a no-op).
+  # `env -u GITHUB_TOKEN` removes the bare token from the child env (so no
+  # mise plugin / aqua path can read it directly cross-repo — the 404 surface),
+  # while MISE_GITHUB_TOKEN (shell-expanded before env runs) carries the value
+  # via mise's own auth path. Authenticated AND no bare-token leak.
+  (cd "$REPO_ROOT" && env -u GITHUB_TOKEN MISE_GITHUB_TOKEN="$GITHUB_TOKEN" mise install)
 else
   (cd "$REPO_ROOT" && mise install)
 fi
