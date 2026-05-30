@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; local-worktree dirt health signal in review
+Status: active child packet; parallel-runway health signal in review
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -114,15 +114,22 @@ It adds same-machine dirty-worktree evidence to the factory health monitor so a
 quiet lane still warns when a local non-root worktree has uncommitted modified
 or untracked files.
 
+Current parallel-runway health receipt:
+`docs/trajectories/autonomous-loop-coordination/parallel-runway-health-2026-05-30.md`
+
+It adds a bounded Codex runway signal to the factory health monitor so a
+healthy Codex service with zero owned PRs or claims warns instead of looking
+complete. The hard minimum is one active item; the target is two active items.
+
 ## Recommended Next Action
 
-Land the local-worktree dirt health PR after review and CI are green, then use
-the new signal to prioritize stale-worktree cleanup during quiet-lane windows.
+Land the parallel-runway health PR after review and CI are green, then use the
+new signal to distinguish healthy quiet from insufficient Codex-owned runway.
 
 ## Next Child Packets
 
 - standing-query trigger inventory for loop/backlog health, grounded in B-0250
-- bounded parallel runway health receipt, grounded in B-0249
+- use local dirty-worktree signals to prioritize stale-worktree cleanup
 
 ## Evidence Links
 

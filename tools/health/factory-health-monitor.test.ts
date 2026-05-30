@@ -4,6 +4,7 @@ import {
   classifyClaimPathCollisions,
   classifyBranchLane,
   classifyLaneRunway,
+  classifyParallelRunway,
   codexLoopServiceHealthFromJson,
   classifyLocalWorktreeDirt,
   findClaimPathCollisions,
@@ -238,6 +239,59 @@ describe("factory-health-monitor", () => {
       message: "other: 1 open PR(s), 1 active claim(s) outside named lanes",
       action: "classify owner or assign an explicit lane before treating as runway",
     });
+  });
+
+  test("classifyParallelRunway warns when Codex has no active item", () => {
+    expect(
+      classifyParallelRunway(
+        {
+          openPrBranches: ["otto-cli/bootstrap"],
+          activeClaimBranches: ["claim/lior-doc"],
+        },
+        { lane: "codex", minimumActiveItems: 1, targetActiveItems: 2 },
+      ),
+    ).toEqual([
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "codex: parallel runway below minimum (0/1 active item(s), target 2)",
+        action: "open or advance a bounded codex PR before treating the lane as idle",
+      },
+    ]);
+  });
+
+  test("classifyParallelRunway distinguishes under-target and target-met runway", () => {
+    expect(
+      classifyParallelRunway(
+        {
+          openPrBranches: ["claim/codex-doc-packet"],
+          activeClaimBranches: ["origin/claim/codex-doc-packet"],
+        },
+        { lane: "codex", minimumActiveItems: 1, targetActiveItems: 2 },
+      ),
+    ).toEqual([
+      {
+        surface: "lane-runway",
+        level: "ok",
+        message: "codex: parallel runway above minimum but below target (1/2 active item(s))",
+      },
+    ]);
+
+    expect(
+      classifyParallelRunway(
+        {
+          openPrBranches: ["codex/health-signal"],
+          activeClaimBranches: ["claim/codex-doc-packet"],
+        },
+        { lane: "codex", minimumActiveItems: 1, targetActiveItems: 2 },
+      ),
+    ).toEqual([
+      {
+        surface: "lane-runway",
+        level: "ok",
+        message: "codex: parallel runway target met (2/2 active item(s))",
+      },
+    ]);
   });
 
   test("laneRunwaySnapshotFromObservations builds classifier input", () => {

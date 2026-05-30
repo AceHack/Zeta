@@ -46,6 +46,12 @@ export interface LaneRunwaySnapshot {
   healthyServices?: Partial<Record<LaneRunwayNamedLane, boolean>>;
 }
 
+export interface ParallelRunwayOptions {
+  lane: LaneRunwayNamedLane;
+  minimumActiveItems: number;
+  targetActiveItems: number;
+}
+
 export interface ClaimPathSetObservation {
   claimBranch: string;
   paths: string[];
@@ -74,6 +80,8 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
 const DEFAULT_LOCAL_WORKTREE_DIRT_SCAN_LIMIT = 60;
 const LOCAL_WORKTREE_DIRT_SCAN_LIMIT = parseLocalWorktreeDirtScanLimit(process.env.FACTORY_HEALTH_WORKTREE_DIRT_LIMIT);
+const CODEX_PARALLEL_RUNWAY_MINIMUM_ACTIVE_ITEMS = 1;
+const CODEX_PARALLEL_RUNWAY_TARGET_ACTIVE_ITEMS = 2;
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
   ".claude/",
@@ -200,6 +208,50 @@ export function classifyLaneRunway(snapshot: LaneRunwaySnapshot): HealthSignal[]
   }
 
   return signals;
+}
+
+function countLaneActiveItems(snapshot: LaneRunwaySnapshot, lane: LaneRunwayNamedLane): number {
+  const activeBranches = new Set(
+    [...snapshot.openPrBranches, ...snapshot.activeClaimBranches]
+      .map((branch) => branch.trim().replace(/^origin\//, ""))
+      .filter((branch) => classifyBranchLane(branch) === lane),
+  );
+  return activeBranches.size;
+}
+
+export function classifyParallelRunway(snapshot: LaneRunwaySnapshot, options: ParallelRunwayOptions): HealthSignal[] {
+  const minimum = Math.max(0, options.minimumActiveItems);
+  const target = Math.max(minimum, options.targetActiveItems);
+  const activeItems = countLaneActiveItems(snapshot, options.lane);
+
+  if (activeItems < minimum) {
+    return [
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: `${options.lane}: parallel runway below minimum (${activeItems}/${minimum} active item(s), target ${target})`,
+        action: `open or advance a bounded ${options.lane} PR before treating the lane as idle`,
+      },
+    ];
+  }
+
+  if (activeItems < target) {
+    return [
+      {
+        surface: "lane-runway",
+        level: "ok",
+        message: `${options.lane}: parallel runway above minimum but below target (${activeItems}/${target} active item(s))`,
+      },
+    ];
+  }
+
+  return [
+    {
+      surface: "lane-runway",
+      level: "ok",
+      message: `${options.lane}: parallel runway target met (${activeItems}/${target} active item(s))`,
+    },
+  ];
 }
 
 export function laneRunwaySnapshotFromObservations(
@@ -563,9 +615,15 @@ function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
       .split("\n")
       .map((branch) => branch.trim())
       .filter(Boolean);
-    return classifyLaneRunway(
-      laneRunwaySnapshotFromObservations(openPRs.stdout, claims.stdout, fetchLaneRunwayServiceHealth()),
-    )
+    const snapshot = laneRunwaySnapshotFromObservations(openPRs.stdout, claims.stdout, fetchLaneRunwayServiceHealth());
+    return classifyLaneRunway(snapshot)
+      .concat(
+        classifyParallelRunway(snapshot, {
+          lane: "codex",
+          minimumActiveItems: CODEX_PARALLEL_RUNWAY_MINIMUM_ACTIVE_ITEMS,
+          targetActiveItems: CODEX_PARALLEL_RUNWAY_TARGET_ACTIVE_ITEMS,
+        }),
+      )
       .concat(classifyClaimPathCollisions(readRemoteClaimPathSets(activeClaimBranches)))
       .concat(classifyLocalWorktreeDirt(readLocalWorktreeDirtObservations()));
   } catch {
