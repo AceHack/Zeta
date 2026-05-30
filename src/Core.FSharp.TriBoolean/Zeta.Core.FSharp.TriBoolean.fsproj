@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Core.FSharp.TriBoolean</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.TriBoolean</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- Zero external dependencies in the production library (B-0944 supply-chain doctrine). -->
+
+  <ItemGroup>
+    <Compile Include="Types.fs" />
+    <Compile Include="TriBoolean.fs" />
+  </ItemGroup>
+
+</Project>
