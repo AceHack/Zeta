@@ -329,6 +329,61 @@ the guardian exists precisely so a dangerous-sovereign-user cannot get shared-ec
 The greedy-vs-paranoid agent split = multi-oracle BFT at swarm scope; ideological-tension-as-
 safety = monoculture-misses-the-blind-spot-that-kills-a-kid (operator named this himself).
 
+### Floor enforcement is at the federation boundary, NOT in the code (operator 2026-05-30 correction)
+
+Otto-CLI initially framed the floor + guardian as something that "must NOT be fork-removable."
+Operator corrected that (verbatim):
+
+> *"you can't stop what a fork removes you can only refuse to do business with them, they
+> control the code."*
+
+Correct model: the kid-safety floor is NOT enforced by making code technically unremovable
+(impossible in open source AND the DRM/centralized-control anti-pattern the architecture
+rejects). It is enforced at the FEDERATION BOUNDARY -- refusal to do business. You cannot stop
+a fork from removing the floor (they control their code); the shared economy refuses their
+rollups, refuses to federate, refuses their data into the common Git/CRDT consensus. The floor
+lives at the boundary (do-we-accept-your-data), not in the bytes (can't-touch-your-code). The
+floor is a MEMBERSHIP CONDITION, not a lock.
+
+More consistent with the rest of the architecture, not less:
+- good-citizen: sovereignty is real (fork + remove anything); shared-economy access is conferred
+  by the collective, which declines the floor-remover.
+- "not like-like" (batch 3): a floor-removing fork is not-like-like; consensus refuses its data
+  -- the same mechanism.
+- NCI / non-coercion: refusal-to-interoperate is the collective's OWN consent exercised; the
+  fork is not coerced (cannot be, will not be); non-coercive enforcement = withdraw participation.
+- cluster-fork-as-trust-boundary (B-0829): the fork boundary IS the trust boundary; floor-
+  compliance is a federation precondition, not a code constraint.
+- game-shape discriminator (only-way-to-lose-is-not-to-play): a floor-removing fork plays a
+  different game; the floored economy's move is the WarGames inversion -- the only winning move
+  is not to play THAT game with THEM, at federation scope.
+
+Two economies can coexist; the floored one does not control the unfloored one's code -- it just
+does not roll up with it.
+
+Further refinement (operator 2026-05-30, verbatim):
+
+> *"We may not refuse all their data because of Journlest [journalist] but we refuse to pay
+> for it."*
+
+The enforcement is ECONOMIC, not informational. You do NOT refuse all the floor-remover's
+data -- a floor-removing fork could be a journalist / whistleblower exposing something real,
+and refusing that data would be CENSORSHIP (the centralized-control move the architecture
+rejects). You accept the data; you refuse to PAY for it (no privacy-budget, no economic
+standing in the shared economy). The distinction: "we won't listen to you" (censorship,
+rejected) vs "we won't reward you" (economic non-participation, the lever). The floor-remover's
+journalism is heard; their fork earns no economic leverage.
+
+Three-layer corrected model:
+1. You can't stop a fork removing the floor -- they control the code.
+2. You don't refuse their data -- journalism / public-interest must flow, or it is censorship.
+3. You refuse to PAY for it -- economic non-participation is the lever.
+
+The floor is an ECONOMIC MEMBERSHIP CONDITION -- not a data gate, not a code lock. Composes:
+privacy-economy (payment = privacy-budget); symmetric-exchange (reciprocity governs PAYMENT,
+not ACCEPTANCE); NCI (refuse-to-pay is the collective's own consent; accept-the-data is
+anti-censorship); good-citizen (economic membership conferred; the voice never gated).
+
 ### Lands on existing substrate
 
 - "you gotta be light" = the lightlike substrate (local-only-heavy loses parallelizable-traceable properties)
