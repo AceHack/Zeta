@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; B-0250 trajectory receipt source in review
+Status: active child packet; B-0250 loop-run receipt source landed
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -156,16 +156,21 @@ Current B-0250 loop-run receipt source:
 It converts local Codex forward-gate completion lines from
 `~/Library/Logs/zeta-codex-loop/runner.log` into optional bounded
 `CoincidenceEvent` values and joins them with merged PR and trajectory receipt
-observations.
+observations. The packet landed in PR #6095 as merge commit
+`1637f8b58b632d419d9703c150a741863e3aedfb`.
 
 ## Recommended Next Action
 
-Land the B-0250 loop-run receipt source PR after focused checks and CI are
-green, then inspect whether merged-PR, trajectory-receipt, and loop-run
-signals produce useful cross-source coincidences without excessive noise.
+Inspect live factory-health coincidence output now that merged-PR,
+trajectory-receipt, and loop-run sources are joined. If the current warning
+volume is actionable, write a bounded receipt naming the shared upstream cause;
+if it is mostly noise, narrow the B-0250 source to claim/PR-publishing gate
+completions before adding another event source.
 
 ## Next Child Packets
 
+- B-0250 live-noise calibration receipt for merged-PR + trajectory-receipt +
+  loop-run coincidences
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
 
 ## Evidence Links
