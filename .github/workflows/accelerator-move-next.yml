@@ -1,0 +1,138 @@
+# Accelerator — move-next harness, bounded self-re-dispatch (Action Item 3, LIVE).
+#
+# LIVE on the default branch (main) so workflow_dispatch is dispatchable. The
+# workflow runs ON the accelerator branch (it checks out
+# `accelerator/pr-less-git-monster`, runs the harness from there, and commits
+# append-only events back to that branch). main holds the live workflow
+# definition; the accelerator branch holds the harness + the event data.
+#
+# Operator go-live authorization: Aaron 2026-05-30 ("go-live the accelerator
+# self-triggering action"). REVERSIBLE: trip the kill-switch (`events/_HALT` on
+# the accelerator branch), disable the workflow in the Actions UI, or remove this
+# file via a follow-up PR.
+#
+# SAFETY RAILS (be-good-to-our-host, per docs/accelerator/README.md):
+#   - workflow_dispatch ONLY (manual / API). No push/schedule auto-trigger —
+#     adding this file does NOT auto-run anything.
+#   - concurrency group: at most ONE run at a time (no parallel spam).
+#   - iterations_remaining countdown + HARD cap (clamped here AND in the harness
+#     to MAX_ITERATIONS=25). Bounded recursion; it always terminates.
+#   - kill-switch: an `events/_HALT` sentinel on the accelerator branch halts the
+#     loop + stops re-dispatch immediately.
+#   - append-only commits (events/ only); never force-push.
+#   - re-dispatch uses GITHUB_TOKEN (no PAT) → controlled, auditable recursion.
+#     GitHub's GITHUB_TOKEN no-re-trigger default stays the floor: the only
+#     recursion is this explicit, counted self-dispatch.
+#   - INPUT HARDENING: workflow_dispatch inputs are passed via env: (never
+#     inlined into run:) + validated (agent allow-list, iterations numeric).
+#   - Actions SHA-pinned to the repo's trusted versions (per
+#     .claude/rules/dep-pin-search-first-authority.md): checkout v6.0.2,
+#     setup-bun v2.2.0 — the SHAs the rest of the repo already pins.
+
+name: accelerator-move-next
+
+on:
+  workflow_dispatch:
+    inputs:
+      agent:
+        description: "Agent stream to advance (per AgentPersona)"
+        required: false
+        default: "otto"
+      iterations_remaining:
+        description: "Bounded recursion countdown (hard-capped at 25; use 1 for a single cycle)"
+        required: false
+        default: "1"
+
+concurrency:
+  group: accelerator-move-next
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # append-only commit of new events/ to the accelerator branch
+  actions: write    # bounded self-re-dispatch
+
+env:
+  AGENT_INPUT: ${{ inputs.agent }}
+  ITER_INPUT: ${{ inputs.iterations_remaining }}
+
+jobs:
+  move-next:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Validate inputs (allow-list agent, numeric iterations)
+        id: validate
+        run: |
+          case "$AGENT_INPUT" in
+            otto|alexa|riven|vera|lior|aaron|addison|max) ;;
+            *) echo "::error::invalid agent '$AGENT_INPUT'"; exit 1 ;;
+          esac
+          if ! printf '%s' "$ITER_INPUT" | grep -Eq '^[0-9]+$'; then
+            echo "::error::iterations_remaining must be a non-negative integer"; exit 1
+          fi
+          echo "agent=$AGENT_INPUT" >> "$GITHUB_OUTPUT"
+          echo "iter=$ITER_INPUT" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout accelerator branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: accelerator/pr-less-git-monster
+
+      - name: Kill-switch check (events/_HALT)
+        id: halt
+        run: |
+          if [ -f events/_HALT ]; then
+            echo "HALTED: events/_HALT present — stopping (kill-switch)."
+            echo "halted=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "halted=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup bun
+        if: steps.halt.outputs.halted == 'false'
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Run one move-next cycle (append-only)
+        if: steps.halt.outputs.halted == 'false'
+        env:
+          AGENT: ${{ steps.validate.outputs.agent }}
+        run: |
+          bun tools/accelerator/move-next-harness.ts \
+            --agent "$AGENT" --max-iterations 1 --root "$PWD"
+
+      - name: Commit + push new events (append-only, no force)
+        if: steps.halt.outputs.halted == 'false'
+        env:
+          AGENT: ${{ steps.validate.outputs.agent }}
+        run: |
+          git config user.name "otto-accelerator"
+          git config user.email "noreply@anthropic.com"
+          if [ -n "$(git status --porcelain events/)" ]; then
+            git add events/
+            git commit \
+              -m "accelerator(move-next): append cycle event (agent=${AGENT})" \
+              -m "Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
+            git push origin accelerator/pr-less-git-monster
+          else
+            echo "No new events to commit this cycle."
+          fi
+
+      - name: Bounded self-re-dispatch (countdown, hard-capped, kill-switch-gated)
+        if: steps.halt.outputs.halted == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AGENT: ${{ steps.validate.outputs.agent }}
+          REMAINING: ${{ steps.validate.outputs.iter }}
+        run: |
+          if [ "$REMAINING" -gt 25 ]; then REMAINING=25; fi
+          NEXT=$((REMAINING - 1))
+          if [ -f events/_HALT ]; then
+            echo "Kill-switch tripped mid-run — not re-dispatching."
+          elif [ "$NEXT" -ge 1 ]; then
+            echo "Re-dispatching with iterations_remaining=$NEXT"
+            gh workflow run accelerator-move-next.yml \
+              --ref main \
+              -f agent="$AGENT" \
+              -f iterations_remaining="$NEXT"
+          else
+            echo "Recursion complete (countdown reached 0)."
+          fi
