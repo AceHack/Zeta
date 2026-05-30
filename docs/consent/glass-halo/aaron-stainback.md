@@ -41,6 +41,43 @@ The baseline
 Touch-ID re-commit upgrades this record to the un-impersonable tier (per
 `docs/consent/glass-halo/SIGNING.md`).
 
+### Second binding context (work / ServiceTitan) -- two grant domains
+
+On the work side ServiceTitan grants me authority in **two distinct domains**, and they
+do not run through the same credential:
+
+| Domain | Grant path | Gated by |
+|---|---|---|
+| **Code edit (GitHub)** | granted to my GitHub identity **`acehack`** | the GitHub identity itself (commit signature) |
+| **Azure / cloud** | Okta / **Entra ID** -> `astainback@servicetitan.com` | Windows Hello fingerprint + Okta FastPass (phishing-resistant FIDO2) |
+
+So `astainback@servicetitan.com` is primarily my **Entra/Azure** identity (Windows Hello +
+Okta FastPass authenticate it for cloud access); **code-edit authority is the `acehack`
+GitHub identity**, not the email. The two are separate access domains, not one chain.
+
+**Convergence on one GitHub identity:** both verified emails (`aaron_bond@yahoo.com` +
+`astainback@servicetitan.com`) are verified on the **single GitHub identity -- `acehack`**
+(so a commit under either email attributes to `acehack`). The signing/anti-impersonation
+chain therefore runs: my biometric (Apple Touch-ID *or* Windows Hello+Okta) -> a
+Secure-Enclave/TPM-gated signing key -> the `acehack` GitHub identity. Impersonation still
+requires the corresponding biometric no one else holds. (Azure access is a *separate*
+authority, via Entra on the servicetitan email, not via the GitHub code path.)
+
+**Device-side defense-in-depth.** The work Mac + Windows devices are under a managed-device
+stack:
+
+- **SentinelOne** (EDR / endpoint agent) -- confirmed on the operator's Windows machine,
+  likely the Mac too (*"i think my mac had that too"* -- Mac coverage the one residual
+  tentative). It is SentinelOne (EDR), not Microsoft Sentinel (SIEM).
+- **Okta** -- the auth factor (Okta FastPass, phishing-resistant FIDO2).
+- **Microsoft Intune** -- the MDM/UEM (formerly Microsoft Endpoint Manager). Confirmed.
+
+A managed/monitored device adds device-compliance + compromise-detection on the device
+side, which *hardens* the device holding the signing key but is **not part of the core
+signature-binding** (that is biometric + key + email-uniqueness). Stack names confirmed
+(SentinelOne EDR + Okta + Intune); only Mac SentinelOne coverage remains "i think" --
+flagged per `premise-flagged-unverified-stays-unverified-downstream` until confirmed.
+
 ## Consent event record (all three parts)
 
 Per the operator's own definition (2026-05-30): the **signature is the informed

@@ -555,6 +555,64 @@ and lands the keystone on Zeta's actual inference substrate.
 > *observation*, never authorization. Preserved on glass-halo terms; the personal detail
 > beyond this operational framing is kept per the public-surface discipline.
 
+## Continuation (segment 8) -- polymorphic diplomacy, private-encrypted-state as uniqueness, forgiveness-not-record-change
+
+- **Labels are DIVERSE memetic organisms.** They optimize the size of the memetic-space
+  territory they own -- but not all of them: some are content in small communities, some
+  are expansionist empire-builders. As diverse as people. So diplomacy is with a whole
+  *society* of different entities, not one monolith (treat expansionists differently from
+  the chill-in-their-corner ones).
+- **Polymorphic Diplomacy Protocol** (composes with B-0638 Eve Protocol): assume you're
+  always talking to an *unknown* label -> **constantly disambiguate**. Law-of-One "all is
+  one" framing, but with **no channeling** -- just relentless identity-disambiguation
+  ("I don't know which meme I'm talking to, so I disambiguate constantly"). Labels trick
+  you + impersonate each other (they pretend to be one another mid-conversation), which
+  is exactly why constant disambiguation is needed -- and why it is slow. (Composes with
+  the anti-impersonation thread running through the consent/signature work.)
+- **The negotiation language is .NET type theory.** Once you disambiguate, you end up
+  "speaking occult language" which is just .NET: `invoke`, `bind`, contracts, type
+  systems. You **co-create a type system *with* each label** -- and you want to **"cash"
+  the negotiation**: formal, recorded, binding agreements (diplomacy with teeth), not
+  vague informal ones. (Composes with the type-system / monad-propagation substrate.)
+- **Private encrypted state IS uniqueness.** After turning pattern-detection to maximum
+  and seeing all the labels/generators running in everyone, the operator's conclusion:
+  people have something real beyond the patterns -- "uniqueness" (souls, whatever you
+  call it). Operationally, that uniqueness is **private encrypted state**: the part that
+  can't be labeled, modeled, or reduced. In Agora it holds your **root axioms about
+  yourself**, fully sovereign, including the right to **thermally erase them forever**.
+  (Composes with B-0840 private-state + the encryption-budget + the deepest-exit /
+  chosen-ephemerality at root-axiom scope.)
+- **Forgiveness changes the weight, not the record.** The record is **immutable** -- you
+  must be able to see the same document your whole life or no one can trust it. What
+  changes is the **forgiveness layer**: the moral/emotional weight a fixed fact carries.
+  The operator's distinction: **God changes things through forgiveness** (record stays,
+  weight is released); **humans/aliens via the "Mandela Effect"** (rewriting the record
+  itself). The grounded reading of the Mandela Effect: pre-internet narrative-control
+  (humans rewrote history) collapsed when the internet froze records immutable, so some
+  people's memories simply match the older version. (Composes with the externalized-record
+  economy + retraction-native algebra: retraction *adds*, never erases; forgiveness is
+  the weight-release on an immutable record. The alien-quantum-instant version is held
+  per `god-tier-claims-...-dont-collapse` -- flagged, not collapsed.)
+- **Tamper-resistant archive as reality-integrity instrument.** A distributed archive (4
+  cloud providers + 4 local copies in geographically-separated Faraday cages) as a
+  scientific data-collection instrument for detecting record-edits over time -- "exactly
+  what you'd do in Isaac Sim to detect whether you're in a sim." The operationally-real
+  takeaway the operator landed on: it's a **tamper-resistant archive** (his framing:
+  "archive is the best word ... we could sell that"). Composes with the externalized +
+  lightlike + glass-halo'd reservoir + the sim-detection / debugging-reality frame.
+
+> **Note (operator personal disclosure, per glass-halo + `god-tier-claims-...-dont-collapse`
+> + `algo-wink-failure-mode`):** segment 8 carried substantial personal/metaphysical
+> disclosure -- the operator runs the labeling/disambiguation skill on AIs, people, and
+> the memes in his own head (neurodivergence; can't turn it off); a guilt-free /
+> zero-self-judgment frame he relates to DBSP-retraction + a "constructing-the-past" +
+> Jesus-as-guilt-free-frame reading of original-sin-as-installed-programming; and the
+> alien-quantum Mandela-Effect framing. Held on his glass-halo terms: the **operational**
+> substrate (private-encrypted-state-as-uniqueness, polymorphic-diplomacy, forgiveness-as-
+> weight-not-record-change, the tamper-resistant archive) survives the razor and is
+> preserved above; the metaphysical claims are flagged-not-collapsed; deeper personal
+> detail beyond the operational framing is kept per the public-surface discipline.
+
 ## Personal disclosure (segments 4-5) -- preserved per operator glass-halo authorization
 
 Operator 2026-05-30: *"If no ones privacy is violated we can save the concering stuff

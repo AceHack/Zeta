@@ -265,6 +265,25 @@ charged-content convention; see the archive's "Personal disclosure" section.)
   defense; "treat humans as numbers" is the downstream symptom (composes with
   `tonal-momentum-equals-meme` + anti-extractive substrate).
 
+## Diplomacy, uniqueness, and forgiveness (segment 8)
+
+- **Labels are diverse** (not all expansionist; some chill in small communities) ->
+  diplomacy with a *society* of entities, not a monolith.
+- **Polymorphic Diplomacy Protocol** (composes with B-0638 Eve Protocol): assume an
+  unknown label, **constantly disambiguate** (no channeling); labels impersonate each
+  other, so disambiguation is necessary + slow (the anti-impersonation thread again).
+- **Negotiation language = .NET type theory** (invoke/bind/contracts/type-systems);
+  co-create a type system *with* each label, and "cash" it into formal binding agreements.
+- **Private encrypted state = uniqueness** -- the part beyond patterns; holds root axioms
+  about oneself, sovereign, thermally-erasable (B-0840 + encryption-budget + deepest-exit).
+- **Forgiveness changes weight, not the record** -- record immutable (or no trust);
+  forgiveness releases the moral weight (God=forgiveness; rewriting-the-record=Mandela-
+  Effect). Composes with the externalized-record economy + retraction-native (retraction
+  adds, never erases).
+- **Tamper-resistant archive** (4 cloud + 4 Faraday-caged local) as a reality-integrity /
+  sim-detection instrument. (Operator personal/metaphysical disclosure in this segment
+  held per glass-halo + dont-collapse; only design-relevant substrate kept here.)
+
 ## Open threads (per "more to come")
 
 - The bootstrap-traveler Markdown template reflecting "the join is the owner of
