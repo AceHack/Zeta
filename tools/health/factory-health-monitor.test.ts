@@ -1,11 +1,14 @@
 import { describe, expect, test } from "bun:test";
 import {
   buildHealthReport,
+  classifyClaimPathCollisions,
   classifyBranchLane,
   classifyLaneRunway,
   codexLoopServiceHealthFromJson,
+  findClaimPathCollisions,
   laneRunwayServiceHealthFromObservations,
   laneRunwaySnapshotFromObservations,
+  parseClaimPathSet,
   runHealthCheck,
   type HealthSignal,
 } from "./factory-health-monitor";
@@ -21,9 +24,7 @@ function getReport(): ReturnType<typeof runHealthCheck> {
 describe("factory-health-monitor", () => {
   test("classifyBranchLane maps known branch prefixes to lanes", () => {
     expect(classifyBranchLane("codex/health-fix")).toBe("codex");
-    expect(classifyBranchLane("origin/claim/codex-loop-20260529")).toBe(
-      "codex",
-    );
+    expect(classifyBranchLane("origin/claim/codex-loop-20260529")).toBe("codex");
     expect(classifyBranchLane("otto-cli/b0355-bootstrap")).toBe("otto");
     expect(classifyBranchLane("otto-bg-worker/tick-shard")).toBe("otto");
     expect(classifyBranchLane("lior-pr-cleanup")).toBe("lior");
@@ -31,6 +32,107 @@ describe("factory-health-monitor", () => {
     expect(classifyBranchLane("claim/kiro-background-service")).toBe("alexa");
     expect(classifyBranchLane("riven-loop-health")).toBe("riven");
     expect(classifyBranchLane("chore/unowned-work")).toBe("other");
+  });
+
+  test("parseClaimPathSet accepts initial and planned path-set headings", () => {
+    expect(
+      parseClaimPathSet(
+        [
+          "# Claim",
+          "",
+          "Initial intended path set:",
+          "",
+          "- `tools/health/factory-health-monitor.ts`",
+          "- ./docs/trajectory.md",
+        ].join("\n"),
+      ),
+    ).toEqual(["docs/trajectory.md", "tools/health/factory-health-monitor.ts"]);
+
+    expect(
+      parseClaimPathSet(
+        [
+          "# Claim",
+          "",
+          "Planned path set:",
+          "",
+          "- `tools/health/factory-health-monitor.test.ts`",
+          "",
+          "## Notes",
+          "- `ignored-after-heading.md`",
+        ].join("\n"),
+      ),
+    ).toEqual(["tools/health/factory-health-monitor.test.ts"]);
+  });
+
+  test("parseClaimPathSet falls back to durable target paths", () => {
+    expect(
+      parseClaimPathSet(
+        [
+          "# Claim",
+          "",
+          "- **Durable target:** `tools/health/factory-health-monitor.ts`, docs/claims/example.md, https://example.invalid, `claim/not-a-path-branch`",
+        ].join("\n"),
+      ),
+    ).toEqual(["docs/claims/example.md", "tools/health/factory-health-monitor.ts"]);
+
+    expect(
+      parseClaimPathSet(["# Claim", "", "- **Durable target:** PR from `claim/codex-loop-branch-only`"].join("\n")),
+    ).toEqual([]);
+  });
+
+  test("findClaimPathCollisions detects exact and glob ownership overlap", () => {
+    expect(
+      findClaimPathCollisions([
+        { claimBranch: "origin/claim/codex-health", paths: ["tools/health/**"] },
+        {
+          claimBranch: "claim/otto-health-test",
+          paths: ["tools/health/factory-health-monitor.ts"],
+        },
+        { claimBranch: "claim/lior-doc", paths: ["docs/only.md"] },
+      ]),
+    ).toEqual([
+      {
+        path: "tools/health/** overlaps tools/health/factory-health-monitor.ts",
+        claimBranches: ["claim/codex-health", "claim/otto-health-test"],
+      },
+    ]);
+  });
+
+  test("findClaimPathCollisions canonicalizes overlap messages", () => {
+    const forward = findClaimPathCollisions([
+      { claimBranch: "claim/a", paths: ["tools/health/**"] },
+      { claimBranch: "claim/b", paths: ["tools/health/file.ts"] },
+    ]);
+    const reversed = findClaimPathCollisions([
+      { claimBranch: "claim/b", paths: ["tools/health/file.ts"] },
+      { claimBranch: "claim/a", paths: ["tools/health/**"] },
+    ]);
+
+    expect(forward).toEqual(reversed);
+    expect(forward[0]?.path).toBe("tools/health/** overlaps tools/health/file.ts");
+  });
+
+  test("classifyClaimPathCollisions emits lane-runway warnings only for collisions", () => {
+    expect(
+      classifyClaimPathCollisions([
+        { claimBranch: "claim/a", paths: ["docs/a.md"] },
+        { claimBranch: "claim/b", paths: ["docs/b.md"] },
+      ]),
+    ).toEqual([]);
+
+    expect(
+      classifyClaimPathCollisions([
+        { claimBranch: "claim/a", paths: ["docs/shared.md"] },
+        { claimBranch: "claim/b", paths: ["docs/shared.md"] },
+      ]),
+    ).toEqual([
+      {
+        surface: "lane-runway",
+        level: "warning",
+        message: "claim-path collision on docs/shared.md: claim/a, claim/b",
+        action: "inspect remote claim files and release or hand off one owner before writing claimed paths",
+      },
+    ]);
   });
 
   test("classifyLaneRunway distinguishes active, quiet, and unhealthy lanes", () => {
@@ -74,8 +176,7 @@ describe("factory-health-monitor", () => {
       surface: "lane-runway",
       level: "warning",
       message: "other: 1 open PR(s), 1 active claim(s) outside named lanes",
-      action:
-        "classify owner or assign an explicit lane before treating as runway",
+      action: "classify owner or assign an explicit lane before treating as runway",
     });
   });
 
@@ -104,10 +205,7 @@ describe("factory-health-monitor", () => {
 
     expect(snapshot).toEqual({
       openPrBranches: ["codex/source-patch", "otto-cli/bootstrap"],
-      activeClaimBranches: [
-        "claim/codex-loop-20260529",
-        "claim/kiro-background-service",
-      ],
+      activeClaimBranches: ["claim/codex-loop-20260529", "claim/kiro-background-service"],
       healthyServices: { codex: true, alexa: false },
     });
   });
@@ -127,9 +225,7 @@ describe("factory-health-monitor", () => {
 
   test("codexLoopServiceHealthFromJson maps probe severity to lane health", () => {
     expect(codexLoopServiceHealthFromJson('{"severity":"ok"}')).toBe(true);
-    expect(codexLoopServiceHealthFromJson('{"severity":"attention"}')).toBe(
-      false,
-    );
+    expect(codexLoopServiceHealthFromJson('{"severity":"attention"}')).toBe(false);
     expect(codexLoopServiceHealthFromJson('{"severity":"stuck"}')).toBe(false);
     expect(codexLoopServiceHealthFromJson('{"severity":"unknown"}')).toBeNull();
     expect(codexLoopServiceHealthFromJson("not json")).toBeNull();
@@ -152,67 +248,80 @@ describe("factory-health-monitor", () => {
       },
     ];
 
-    const report = buildHealthReport(
-      signals,
-      "2026-05-07T15:10:00.000Z",
-    );
+    const report = buildHealthReport(signals, "2026-05-07T15:10:00.000Z");
 
     expect(report.summary).toEqual({ ok: 1, warning: 1, critical: 1 });
     expect(report.recommendedAction).toBe("wake runner");
     expect(report.timestamp).toBe("2026-05-07T15:10:00.000Z");
   });
 
-  test("runHealthCheck returns a valid HealthReport shape", () => {
-    const report = getReport();
+  test(
+    "runHealthCheck returns a valid HealthReport shape",
+    () => {
+      const report = getReport();
 
-    expect(report).toHaveProperty("timestamp");
-    expect(report).toHaveProperty("signals");
-    expect(report).toHaveProperty("summary");
-    expect(Array.isArray(report.signals)).toBe(true);
-    expect(typeof report.summary.ok).toBe("number");
-    expect(typeof report.summary.warning).toBe("number");
-    expect(typeof report.summary.critical).toBe("number");
-  }, HEALTH_CHECK_TIMEOUT_MS);
+      expect(report).toHaveProperty("timestamp");
+      expect(report).toHaveProperty("signals");
+      expect(report).toHaveProperty("summary");
+      expect(Array.isArray(report.signals)).toBe(true);
+      expect(typeof report.summary.ok).toBe("number");
+      expect(typeof report.summary.warning).toBe("number");
+      expect(typeof report.summary.critical).toBe("number");
+    },
+    HEALTH_CHECK_TIMEOUT_MS,
+  );
 
-  test("summary counts match signal levels", () => {
-    const report = getReport();
+  test(
+    "summary counts match signal levels",
+    () => {
+      const report = getReport();
 
-    const okCount = report.signals.filter((s) => s.level === "ok").length;
-    const warnCount = report.signals.filter(
-      (s) => s.level === "warning",
-    ).length;
-    const critCount = report.signals.filter(
-      (s) => s.level === "critical",
-    ).length;
+      const okCount = report.signals.filter((s) => s.level === "ok").length;
+      const warnCount = report.signals.filter((s) => s.level === "warning").length;
+      const critCount = report.signals.filter((s) => s.level === "critical").length;
 
-    expect(report.summary.ok).toBe(okCount);
-    expect(report.summary.warning).toBe(warnCount);
-    expect(report.summary.critical).toBe(critCount);
-  }, HEALTH_CHECK_TIMEOUT_MS);
+      expect(report.summary.ok).toBe(okCount);
+      expect(report.summary.warning).toBe(warnCount);
+      expect(report.summary.critical).toBe(critCount);
+    },
+    HEALTH_CHECK_TIMEOUT_MS,
+  );
 
-  test("all signals have required fields", () => {
-    const report = getReport();
+  test(
+    "all signals have required fields",
+    () => {
+      const report = getReport();
 
-    for (const signal of report.signals) {
-      expect(typeof signal.surface).toBe("string");
-      expect(["ok", "warning", "critical"]).toContain(signal.level);
-      expect(typeof signal.message).toBe("string");
-      expect(signal.message.length).toBeGreaterThan(0);
-    }
-  }, HEALTH_CHECK_TIMEOUT_MS);
+      for (const signal of report.signals) {
+        expect(typeof signal.surface).toBe("string");
+        expect(["ok", "warning", "critical"]).toContain(signal.level);
+        expect(typeof signal.message).toBe("string");
+        expect(signal.message.length).toBeGreaterThan(0);
+      }
+    },
+    HEALTH_CHECK_TIMEOUT_MS,
+  );
 
-  test("timestamp is valid ISO 8601", () => {
-    const report = getReport();
-    const parsed = new Date(report.timestamp);
-    expect(parsed.getTime()).not.toBeNaN();
-  }, HEALTH_CHECK_TIMEOUT_MS);
+  test(
+    "timestamp is valid ISO 8601",
+    () => {
+      const report = getReport();
+      const parsed = new Date(report.timestamp);
+      expect(parsed.getTime()).not.toBeNaN();
+    },
+    HEALTH_CHECK_TIMEOUT_MS,
+  );
 
-  test("at least one signal covers each expected surface", () => {
-    const report = getReport();
-    const surfaces = new Set(report.signals.map((s) => s.surface));
+  test(
+    "at least one signal covers each expected surface",
+    () => {
+      const report = getReport();
+      const surfaces = new Set(report.signals.map((s) => s.surface));
 
-    expect(surfaces.has("lane-runway")).toBe(true);
-    expect(surfaces.has("pr-queue") || surfaces.has("backlog")).toBe(true);
-    expect(surfaces.has("cadence")).toBe(true);
-  }, HEALTH_CHECK_TIMEOUT_MS);
+      expect(surfaces.has("lane-runway")).toBe(true);
+      expect(surfaces.has("pr-queue") || surfaces.has("backlog")).toBe(true);
+      expect(surfaces.has("cadence")).toBe(true);
+    },
+    HEALTH_CHECK_TIMEOUT_MS,
+  );
 });

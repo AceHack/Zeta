@@ -1,7 +1,7 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; lane-runway service-health adapter in review
-Last refreshed: 2026-05-29
+Status: active child packet; claim-path collision health signal in review
+Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
 `docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
@@ -100,11 +100,17 @@ It feeds the classifier from the Codex host-loop health probe so a quiet Codex
 lane can be reported as healthy quiet only when the background service probe is
 green.
 
+Current claim-path collision health receipt:
+`docs/trajectories/autonomous-loop-coordination/claim-path-collision-health-2026-05-30.md`
+
+It parses remote claim files for supported path-set headings and emits
+`lane-runway` warnings when active claim branches contain exact or conservative
+directory-glob path overlaps.
+
 ## Recommended Next Action
 
-Open the claim PR after focused TypeScript checks pass, then extend the same
-service-health observation adapter to other named lanes once their host-loop
-health probes have stable JSON surfaces.
+Open the claim-path collision PR after focused TypeScript checks pass, then add
+secondary local-worktree dirt evidence for same-machine collision cases.
 
 ## Next Child Packets
 

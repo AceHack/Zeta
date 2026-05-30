@@ -31,13 +31,7 @@ export interface HealthReport {
   recommendedAction: string | null;
 }
 
-export type LaneRunwayLane =
-  | "codex"
-  | "otto"
-  | "lior"
-  | "alexa"
-  | "riven"
-  | "other";
+export type LaneRunwayLane = "codex" | "otto" | "lior" | "alexa" | "riven" | "other";
 
 export type LaneRunwayNamedLane = Exclude<LaneRunwayLane, "other">;
 
@@ -52,12 +46,37 @@ export interface LaneRunwaySnapshot {
   healthyServices?: Partial<Record<LaneRunwayNamedLane, boolean>>;
 }
 
+export interface ClaimPathSetObservation {
+  claimBranch: string;
+  paths: string[];
+}
+
+export interface ClaimPathCollision {
+  path: string;
+  claimBranches: string[];
+}
+
 type ToolCommand = "bun" | "gh" | "git";
 type ToolResult = { ok: boolean; stdout: string };
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const REPO = process.env.REPO ?? "Lucent-Financial-Group/Zeta";
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
+const REPO_PATH_PREFIXES = [
+  ".claude/",
+  ".codex/",
+  ".github/",
+  ".gemini/",
+  "agentic-organization/",
+  "docs/",
+  "memory/",
+  "references/",
+  "registry/",
+  "src/",
+  "test/",
+  "tests/",
+  "tools/",
+] as const;
 
 function run(cmd: ToolCommand, args: string[]): ToolResult {
   const r = spawnSync(cmd, args, {
@@ -91,11 +110,7 @@ export function classifyBranchLane(branchName: string): LaneRunwayLane {
   const branch = branchName.trim().replace(/^origin\//, "");
 
   if (/^(codex\/|claim\/codex-)/.test(branch)) return "codex";
-  if (
-    /^(otto\/|otto-cli\/|otto-bg-worker\/|otto-desktop\/|otto-vscode\/|claim\/otto-)/.test(
-      branch,
-    )
-  ) {
+  if (/^(otto\/|otto-cli\/|otto-bg-worker\/|otto-desktop\/|otto-vscode\/|claim\/otto-)/.test(branch)) {
     return "otto";
   }
   if (/^(lior\/|lior-|claim\/lior-)/.test(branch)) return "lior";
@@ -107,9 +122,7 @@ export function classifyBranchLane(branchName: string): LaneRunwayLane {
   return "other";
 }
 
-export function classifyLaneRunway(
-  snapshot: LaneRunwaySnapshot,
-): HealthSignal[] {
+export function classifyLaneRunway(snapshot: LaneRunwaySnapshot): HealthSignal[] {
   const openPrCounts = new Map<LaneRunwayLane, number>();
   const claimCounts = new Map<LaneRunwayLane, number>();
 
@@ -164,8 +177,7 @@ export function classifyLaneRunway(
       surface: "lane-runway",
       level: "warning",
       message: `other: ${otherOpenPrs} open PR(s), ${otherClaims} active claim(s) outside named lanes`,
-      action:
-        "classify owner or assign an explicit lane before treating as runway",
+      action: "classify owner or assign an explicit lane before treating as runway",
     });
   }
 
@@ -180,9 +192,7 @@ export function laneRunwaySnapshotFromObservations(
   const prs = JSON.parse(openPrJson) as Array<{
     headRefName?: string | null;
   }>;
-  const openPrBranches = prs
-    .map((pr) => pr.headRefName?.trim())
-    .filter((branch): branch is string => Boolean(branch));
+  const openPrBranches = prs.map((pr) => pr.headRefName?.trim()).filter((branch): branch is string => Boolean(branch));
   const activeClaimBranches = remoteClaimBranches
     .split("\n")
     .map((branch) => branch.trim().replace(/^origin\//, ""))
@@ -224,18 +234,210 @@ export function codexLoopServiceHealthFromJson(output: string): boolean | null {
   }
 }
 
-function fetchLaneRunwayServiceHealth():
-  | LaneRunwaySnapshot["healthyServices"]
-  | undefined {
-  const codexHealth = codexLoopServiceHealthFromJson(
-    fetchCodexLoopHealth().stdout,
-  );
+function stripInlineCode(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.startsWith("`") && trimmed.endsWith("`") && trimmed.length >= 2) {
+    return trimmed.slice(1, -1);
+  }
+  return trimmed;
+}
+
+function normalizeClaimPath(value: string): string {
+  return stripInlineCode(value)
+    .trim()
+    .replace(/^[([<]+/, "")
+    .replace(/[)\]>.,;:]+$/, "")
+    .replace(/^\.\//, "");
+}
+
+function isRepoPathLike(value: string): boolean {
+  if (
+    value.length === 0 ||
+    value.includes("://") ||
+    value.startsWith("#") ||
+    value.startsWith("claim/") ||
+    value.startsWith("origin/") ||
+    value.startsWith("refs/")
+  ) {
+    return false;
+  }
+
+  return REPO_PATH_PREFIXES.some((prefix) => value.startsWith(prefix)) || /^[A-Za-z0-9_.-]+\.[A-Za-z0-9]+$/.test(value);
+}
+
+function addPath(paths: Set<string>, value: string): void {
+  const path = normalizeClaimPath(value);
+  if (isRepoPathLike(path)) {
+    paths.add(path);
+  }
+}
+
+function parseDurableTargetPaths(body: string): string[] {
+  const match = body.match(/^- \*\*Durable target:\*\* (.+)$/m);
+  if (!match?.[1]) {
+    return [];
+  }
+
+  const value = match[1];
+  const inlineCodeTokens = [...value.matchAll(/`([^`]+)`/g)].map((token) => token[1] ?? "");
+  const plainTokens = value
+    .replace(/`[^`]+`/g, " ")
+    .split(/[\s,;]+/)
+    .filter(Boolean);
+  const paths = new Set<string>();
+
+  for (const token of [...inlineCodeTokens, ...plainTokens]) {
+    addPath(paths, token);
+  }
+
+  return [...paths].sort();
+}
+
+function parseHeadingPathSet(body: string): string[] {
+  const paths = new Set<string>();
+  let inPathSet = false;
+  for (const line of body.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (trimmed === "Initial intended path set:" || trimmed === "Planned path set:") {
+      inPathSet = true;
+      continue;
+    }
+    if (!inPathSet) {
+      continue;
+    }
+    if (trimmed.startsWith("## ")) {
+      break;
+    }
+    const match = line.match(/^\s*-\s+(.+)$/);
+    if (!match?.[1]) {
+      continue;
+    }
+    addPath(paths, match[1]);
+  }
+
+  return [...paths].sort();
+}
+
+export function parseClaimPathSet(body: string): string[] {
+  return [...new Set([...parseHeadingPathSet(body), ...parseDurableTargetPaths(body)])].sort();
+}
+
+function claimPathGlobBase(path: string): string | null {
+  if (path.endsWith("/**")) {
+    return path.slice(0, -3);
+  }
+  if (path.endsWith("/*")) {
+    return path.slice(0, -2);
+  }
+  return null;
+}
+
+function claimPathCovers(owner: string, candidate: string): boolean {
+  const base = claimPathGlobBase(owner);
+  if (base === null) {
+    return false;
+  }
+  return candidate === base || candidate.startsWith(`${base}/`);
+}
+
+function claimPathsOverlap(left: string, right: string): boolean {
+  return left === right || claimPathCovers(left, right) || claimPathCovers(right, left);
+}
+
+function normalizeClaimBranch(branch: string): string {
+  return branch
+    .trim()
+    .replace(/^remotes\//, "")
+    .replace(/^origin\//, "");
+}
+
+function remoteClaimBranch(branch: string): string {
+  const withoutRemotesPrefix = branch.trim().replace(/^remotes\//, "");
+  if (withoutRemotesPrefix.startsWith("origin/")) {
+    return withoutRemotesPrefix;
+  }
+  return `origin/${normalizeClaimBranch(branch)}`;
+}
+
+function claimSlug(branch: string): string {
+  return normalizeClaimBranch(branch).replace(/^claim\//, "");
+}
+
+function formatCollisionPath(left: string, right: string): string {
+  if (left === right) {
+    return left;
+  }
+  const [first, second] = [left, right].sort((a, b) => a.localeCompare(b));
+  return `${first} overlaps ${second}`;
+}
+
+export function findClaimPathCollisions(claims: ClaimPathSetObservation[]): ClaimPathCollision[] {
+  const normalizedClaims = claims.map((claim) => ({
+    claimBranch: normalizeClaimBranch(claim.claimBranch),
+    paths: [...new Set(claim.paths.map(normalizeClaimPath).filter(Boolean))],
+  }));
+  const collisions = new Map<string, Set<string>>();
+
+  for (let i = 0; i < normalizedClaims.length; i++) {
+    const left = normalizedClaims[i];
+    if (!left) continue;
+    for (let j = i + 1; j < normalizedClaims.length; j++) {
+      const right = normalizedClaims[j];
+      if (!right) continue;
+      for (const leftPath of left.paths) {
+        for (const rightPath of right.paths) {
+          if (!claimPathsOverlap(leftPath, rightPath)) {
+            continue;
+          }
+          const key = formatCollisionPath(leftPath, rightPath);
+          const owners = collisions.get(key) ?? new Set<string>();
+          owners.add(left.claimBranch);
+          owners.add(right.claimBranch);
+          collisions.set(key, owners);
+        }
+      }
+    }
+  }
+
+  return [...collisions.entries()]
+    .map(([path, claimBranches]) => ({
+      path,
+      claimBranches: [...claimBranches].sort(),
+    }))
+    .sort((a, b) => a.path.localeCompare(b.path));
+}
+
+export function classifyClaimPathCollisions(claims: ClaimPathSetObservation[]): HealthSignal[] {
+  return findClaimPathCollisions(claims).map((collision) => ({
+    surface: "lane-runway",
+    level: "warning",
+    message: `claim-path collision on ${collision.path}: ${collision.claimBranches.join(", ")}`,
+    action: "inspect remote claim files and release or hand off one owner before writing claimed paths",
+  }));
+}
+
+function readRemoteClaimPathSets(claimBranches: string[]): ClaimPathSetObservation[] {
+  return claimBranches
+    .map((branch) => {
+      const normalizedBranch = normalizeClaimBranch(branch);
+      const branchRef = remoteClaimBranch(branch);
+      const slug = claimSlug(branch);
+      const claimFile = `docs/claims/${slug}.md`;
+      const body = run("git", ["show", `${branchRef}:${claimFile}`]);
+      return {
+        claimBranch: normalizedBranch,
+        paths: body.ok ? parseClaimPathSet(body.stdout) : [],
+      };
+    })
+    .filter((claim) => claim.paths.length > 0);
+}
+
+function fetchLaneRunwayServiceHealth(): LaneRunwaySnapshot["healthyServices"] | undefined {
+  const codexHealth = codexLoopServiceHealthFromJson(fetchCodexLoopHealth().stdout);
   if (codexHealth === null) {
     return undefined;
   }
-  return laneRunwayServiceHealthFromObservations([
-    { lane: "codex", healthy: codexHealth },
-  ]);
+  return laneRunwayServiceHealthFromObservations([{ lane: "codex", healthy: codexHealth }]);
 }
 
 function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
@@ -250,12 +452,7 @@ function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
     ];
   }
 
-  const claims = run("git", [
-    "branch",
-    "-r",
-    "--list",
-    "origin/claim/*",
-  ]);
+  const claims = run("git", ["branch", "-r", "--list", "origin/claim/*"]);
 
   if (!claims.ok) {
     return [
@@ -269,13 +466,13 @@ function checkLaneRunway(openPRs: ToolResult): HealthSignal[] {
   }
 
   try {
+    const activeClaimBranches = claims.stdout
+      .split("\n")
+      .map((branch) => branch.trim())
+      .filter(Boolean);
     return classifyLaneRunway(
-      laneRunwaySnapshotFromObservations(
-        openPRs.stdout,
-        claims.stdout,
-        fetchLaneRunwayServiceHealth(),
-      ),
-    );
+      laneRunwaySnapshotFromObservations(openPRs.stdout, claims.stdout, fetchLaneRunwayServiceHealth()),
+    ).concat(classifyClaimPathCollisions(readRemoteClaimPathSets(activeClaimBranches)));
   } catch {
     return [
       {
@@ -317,8 +514,7 @@ function checkPRQueue(openPRs: ToolResult): HealthSignal[] {
       });
     } else {
       const stale = prs.filter((pr) => {
-        const age =
-          Date.now() - new Date(pr.createdAt).getTime();
+        const age = Date.now() - new Date(pr.createdAt).getTime();
         return age > 24 * 60 * 60 * 1000;
       });
 
@@ -421,12 +617,7 @@ function checkBacklogHealth(): HealthSignal[] {
 
 function checkClaimFreshness(): HealthSignal[] {
   const signals: HealthSignal[] = [];
-  const r = run("git", [
-    "branch",
-    "-r",
-    "--list",
-    "origin/claim/*",
-  ]);
+  const r = run("git", ["branch", "-r", "--list", "origin/claim/*"]);
 
   if (!r.ok) {
     signals.push({
@@ -552,9 +743,7 @@ function checkTrajectoryProgress(): HealthSignal[] {
       surface: "trajectories",
       level: stalledCount > 0 ? "warning" : "ok",
       message: `${activeCount} active, ${stalledCount} stalled trajectory(ies)`,
-      ...(stalledCount > 0
-        ? { action: "refresh stalled trajectories or mark as paused" }
-        : {}),
+      ...(stalledCount > 0 ? { action: "refresh stalled trajectories or mark as paused" } : {}),
     });
   } catch {
     signals.push({
@@ -581,16 +770,13 @@ function checkLostFiles(): HealthSignal[] {
   ]);
 
   if (deletedRecent.ok) {
-    const deleted = deletedRecent.stdout
-      .split("\n")
-      .filter((l) => l.trim().length > 0);
+    const deleted = deletedRecent.stdout.split("\n").filter((l) => l.trim().length > 0);
     if (deleted.length > 0) {
       signals.push({
         surface: "lost-files",
         level: "warning",
         message: `${deleted.length} file(s) deleted in last 7 days`,
-        action:
-          "audit recent deletions — check if content was captured elsewhere before removal",
+        action: "audit recent deletions — check if content was captured elsewhere before removal",
       });
     }
   }
@@ -640,8 +826,7 @@ function checkLostFiles(): HealthSignal[] {
           surface: "lost-files",
           level: "warning",
           message: `${unmerged.length} closed-not-merged PR(s) in last 30 days: ${unmerged.map((p) => `#${p.number}`).join(", ")}`,
-          action:
-            "check if closed-not-merged PRs contain unrecovered content",
+          action: "check if closed-not-merged PRs contain unrecovered content",
         });
       }
     } catch {
@@ -659,46 +844,31 @@ function checkLostFiles(): HealthSignal[] {
 
   if (orphanBranches.ok && orphanBranches.stdout) {
     const branches = orphanBranches.stdout.split("\n").filter(Boolean);
-    const nonClaim = branches.filter(
-      (b) => !b.includes("claim/") && !b.includes("origin/main"),
-    );
+    const nonClaim = branches.filter((b) => !b.includes("claim/") && !b.includes("origin/main"));
     if (nonClaim.length > 10) {
       signals.push({
         surface: "lost-files",
         level: "warning",
         message: `${nonClaim.length} orphan branch(es) not merged to main`,
-        action:
-          "audit orphan branches for unrecovered content — per LOST-FILES-LOCATIONS.md class 2",
+        action: "audit orphan branches for unrecovered content — per LOST-FILES-LOCATIONS.md class 2",
       });
     }
   }
 
   const worktrees = run("git", ["worktree", "list", "--porcelain"]);
   if (worktrees.ok) {
-    const wtPaths = worktrees.stdout
-      .split("\n")
-      .filter((l) => l.startsWith("worktree "));
+    const wtPaths = worktrees.stdout.split("\n").filter((l) => l.startsWith("worktree "));
     if (wtPaths.length > 1) {
       signals.push({
         surface: "lost-files",
         level: "warning",
         message: `${wtPaths.length - 1} extra worktree(s) — possible subagent remnants`,
-        action:
-          "check worktrees for uncommitted changes — per LOST-FILES-LOCATIONS.md class 7",
+        action: "check worktrees for uncommitted changes — per LOST-FILES-LOCATIONS.md class 7",
       });
     }
   }
 
-  const drafts = run("gh", [
-    "pr",
-    "list",
-    "--repo",
-    REPO,
-    "--state",
-    "open",
-    "--json",
-    "number,isDraft,title",
-  ]);
+  const drafts = run("gh", ["pr", "list", "--repo", REPO, "--state", "open", "--json", "number,isDraft,title"]);
 
   if (drafts.ok) {
     try {
@@ -713,8 +883,7 @@ function checkLostFiles(): HealthSignal[] {
           surface: "lost-files",
           level: "warning",
           message: `${draftPRs.length} draft PR(s): ${draftPRs.map((p) => `#${p.number}`).join(", ")}`,
-          action:
-            "review draft PRs — publish or close — per LOST-FILES-LOCATIONS.md class 8",
+          action: "review draft PRs — publish or close — per LOST-FILES-LOCATIONS.md class 8",
         });
       }
     } catch {
@@ -722,17 +891,14 @@ function checkLostFiles(): HealthSignal[] {
     }
   }
 
-  const memoryRefs = run("bun", [
-    join(ROOT, "tools/hygiene/audit-memory-references.ts"),
-  ]);
+  const memoryRefs = run("bun", [join(ROOT, "tools/hygiene/audit-memory-references.ts")]);
   if (memoryRefs.ok && memoryRefs.stdout.includes("BROKEN")) {
     const brokenCount = (memoryRefs.stdout.match(/BROKEN/g) || []).length;
     signals.push({
       surface: "lost-files",
       level: "warning",
       message: `${brokenCount} broken memory reference(s) — possible deleted memory files`,
-      action:
-        "fix broken memory references — per LOST-FILES-LOCATIONS.md class 15",
+      action: "fix broken memory references — per LOST-FILES-LOCATIONS.md class 15",
     });
   }
 
@@ -749,12 +915,7 @@ function checkLostFiles(): HealthSignal[] {
 
 function checkRecentCommitCadence(): HealthSignal[] {
   const signals: HealthSignal[] = [];
-  const r = run("git", [
-    "log",
-    "--oneline",
-    "--since=24 hours ago",
-    "--format=%H",
-  ]);
+  const r = run("git", ["log", "--oneline", "--since=24 hours ago", "--format=%H"]);
 
   if (!r.ok) {
     signals.push({
@@ -785,10 +946,7 @@ function checkRecentCommitCadence(): HealthSignal[] {
   return signals;
 }
 
-export function buildHealthReport(
-  allSignals: HealthSignal[],
-  timestamp = new Date().toISOString(),
-): HealthReport {
+export function buildHealthReport(allSignals: HealthSignal[], timestamp = new Date().toISOString()): HealthReport {
   const summary = {
     ok: allSignals.filter((s) => s.level === "ok").length,
     warning: allSignals.filter((s) => s.level === "warning").length,
@@ -871,12 +1029,7 @@ if (import.meta.main) {
     console.log("=".repeat(50));
 
     for (const signal of report.signals) {
-      const icon =
-        signal.level === "ok"
-          ? "[OK]"
-          : signal.level === "warning"
-            ? "[!!]"
-            : "[XX]";
+      const icon = signal.level === "ok" ? "[OK]" : signal.level === "warning" ? "[!!]" : "[XX]";
       console.log(`${icon} ${signal.surface}: ${signal.message}`);
       if (signal.action) {
         console.log(`     -> ${signal.action}`);
