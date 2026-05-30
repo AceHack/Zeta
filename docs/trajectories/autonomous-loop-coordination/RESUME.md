@@ -249,16 +249,25 @@ It selects one clean local-only worktree,
 later bounded cleanup packet. The selection is based on clean status, absent
 remote branch, absent PR, and a head already reachable from `origin/main`.
 
+Current B-0250 queue-drain window calibration:
+`docs/trajectories/autonomous-loop-coordination/b0250-queue-drain-window-calibration-2026-05-30.md`
+
+It re-runs the live monitor after the merge-burst clustering and author-label
+patches. The monitor still reports 15 coincidence windows, but the top windows
+are prior-day pure Codex/Otto merged-PR adjacency. The #6113/#6115 burst did
+not become a top current incident window, so pure merged-PR adjacency remains a
+warning/debug signal until joined by a stronger source.
+
 ## Recommended Next Action
 
-Inspect the remaining live B-0250 Codex/Otto adjacency windows and decide
-whether the five-minute event window is too wide for queue-drain bursts, or
-whether the coincidence source needs a stronger source set before escalation.
+Keep the five-minute queue-drain window as a warning/debug surface, but require
+a stronger joined source before treating Codex/Otto merged-PR adjacency as an
+incident-grade signal.
 
 ## Next Child Packets
 
-- B-0250 live calibration after merge-burst clustering
-- B-0250 queue-drain window calibration for remaining Codex/Otto adjacency
+- B-0250 stronger-source escalation gate for Codex/Otto adjacency
+- B-0250 claim/PR blocker source join calibration
 
 ## Evidence Links
 
