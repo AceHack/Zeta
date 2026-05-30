@@ -37,6 +37,25 @@ export interface StandingQueryTriggerSource {
   failureAction?: string;
 }
 
+export interface CoincidenceEvent {
+  id: string;
+  trajectory: string;
+  occurredAt: string;
+  description?: string;
+}
+
+export interface CoincidenceWindowOptions {
+  windowMs: number;
+  minimumEvents: number;
+}
+
+export interface CoincidenceWindow {
+  windowStart: string;
+  windowEnd: string;
+  trajectories: string[];
+  events: CoincidenceEvent[];
+}
+
 export type LaneRunwayLane = "codex" | "otto" | "lior" | "alexa" | "riven" | "other";
 
 export type LaneRunwayNamedLane = Exclude<LaneRunwayLane, "other">;
@@ -112,6 +131,93 @@ function run(cmd: ToolCommand, args: string[]): ToolResult {
     timeout: 30_000,
   });
   return { ok: r.status === 0, stdout: (r.stdout ?? "").trim() };
+}
+
+function coincidenceEventTimeMs(event: CoincidenceEvent): number | null {
+  const parsed = Date.parse(event.occurredAt);
+  return Number.isNaN(parsed) ? null : parsed;
+}
+
+export function findCoincidenceWindows(
+  events: readonly CoincidenceEvent[],
+  options: CoincidenceWindowOptions,
+): CoincidenceWindow[] {
+  const windowMs = Math.max(0, Math.floor(options.windowMs));
+  const minimumEvents = Math.max(2, Math.floor(options.minimumEvents));
+  const timedEvents = events
+    .map((event, index) => ({ event, index, timeMs: coincidenceEventTimeMs(event) }))
+    .filter((timed): timed is { event: CoincidenceEvent; index: number; timeMs: number } => timed.timeMs !== null)
+    .sort((a, b) => a.timeMs - b.timeMs || a.event.id.localeCompare(b.event.id) || a.index - b.index);
+
+  const seen = new Set<string>();
+  const windows: CoincidenceWindow[] = [];
+
+  for (let i = 0; i < timedEvents.length; i++) {
+    const first = timedEvents[i];
+    if (!first) continue;
+
+    const windowEndMs = first.timeMs + windowMs;
+    const members = timedEvents.filter((candidate) => candidate.timeMs >= first.timeMs && candidate.timeMs <= windowEndMs);
+    if (members.length < minimumEvents) {
+      continue;
+    }
+
+    const trajectories = [...new Set(members.map((member) => member.event.trajectory.trim()).filter(Boolean))].sort();
+    if (trajectories.length < 2) {
+      continue;
+    }
+
+    const signature = JSON.stringify(members.map((member) => `${member.event.id}:${member.timeMs}:${member.index}`).sort());
+    if (seen.has(signature)) {
+      continue;
+    }
+    seen.add(signature);
+
+    windows.push({
+      windowStart: new Date(first.timeMs).toISOString(),
+      windowEnd: new Date(windowEndMs).toISOString(),
+      trajectories,
+      events: members.map((member) => member.event),
+    });
+  }
+
+  return windows.sort((a, b) => a.windowStart.localeCompare(b.windowStart) || a.windowEnd.localeCompare(b.windowEnd));
+}
+
+export function classifyCoincidenceWindows(
+  events: readonly CoincidenceEvent[],
+  options: CoincidenceWindowOptions,
+): HealthSignal[] {
+  const windows = findCoincidenceWindows(events, options);
+  if (windows.length === 0) {
+    return [
+      {
+        surface: "coincidence",
+        level: "ok",
+        message: "No event-window coincidences detected",
+      },
+    ];
+  }
+
+  return [
+    {
+      surface: "coincidence",
+      level: "warning",
+      message: `${windows.length} event-window coincidence(s) detected`,
+      action: "inspect shared upstream cause for coincident trajectory events",
+    },
+  ];
+}
+
+export function buildCoincidenceWindowTriggerSource(
+  events: readonly CoincidenceEvent[],
+  options: CoincidenceWindowOptions,
+): StandingQueryTriggerSource {
+  return {
+    surface: "coincidence",
+    collect: () => classifyCoincidenceWindows(events, options),
+    failureAction: "inspect event-window source before trusting coincidence signals",
+  };
 }
 
 export function parseLocalWorktreeDirtScanLimit(value: string | undefined): number {

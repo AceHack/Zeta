@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; parallel-runway health signal in review
+Status: active child packet; B-0250 event-window source in review
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -128,14 +128,22 @@ It wraps the factory health monitor's observation checks as explicit trigger
 sources, preserving current behavior while making source boundaries reusable
 and failure-bounded for later B-0250 coincidence detection work.
 
+Current B-0250 event-window source receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-event-window-source-2026-05-30.md`
+
+It adds a pure coincidence window classifier and standing-query source wrapper
+for bounded cross-trajectory event joins. The first source ignores invalid
+timestamps, requires at least two distinct trajectories, and leaves live event
+reader wiring to the next packet.
+
 ## Recommended Next Action
 
-Land the standing-query source wiring PR after review and CI are green, then
-add the first event-window source for B-0250 coincidence detection.
+Land the B-0250 event-window source PR after review and CI are green, then
+wire a real factory event observation source into the reusable classifier.
 
 ## Next Child Packets
 
-- event-window source for B-0250 coincidence detection
+- factory event observation adapter for B-0250 coincidence detection
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
 
 ## Evidence Links

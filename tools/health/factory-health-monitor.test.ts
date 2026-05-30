@@ -1,14 +1,17 @@
 import { describe, expect, test } from "bun:test";
 import {
+  buildCoincidenceWindowTriggerSource,
   buildHealthReport,
   collectStandingQuerySignals,
   classifyClaimPathCollisions,
   classifyBranchLane,
+  classifyCoincidenceWindows,
   classifyLaneRunway,
   classifyParallelRunway,
   codexLoopServiceHealthFromJson,
   classifyLocalWorktreeDirt,
   findClaimPathCollisions,
+  findCoincidenceWindows,
   laneRunwayServiceHealthFromObservations,
   laneRunwaySnapshotFromObservations,
   localWorktreeDirtObservationFromStatus,
@@ -17,6 +20,7 @@ import {
   parseLocalWorktreeDirtScanLimit,
   runHealthCheck,
   type HealthSignal,
+  type CoincidenceEvent,
   type StandingQueryTriggerSource,
 } from "./factory-health-monitor";
 
@@ -29,6 +33,93 @@ function getReport(): ReturnType<typeof runHealthCheck> {
 }
 
 describe("factory-health-monitor", () => {
+  test("findCoincidenceWindows detects cross-trajectory events inside a bounded window", () => {
+    const events: CoincidenceEvent[] = [
+      {
+        id: "a-1",
+        trajectory: "autonomous-loop-coordination",
+        occurredAt: "2026-05-30T05:00:00.000Z",
+      },
+      {
+        id: "b-1",
+        trajectory: "factory-health",
+        occurredAt: "2026-05-30T05:00:20.000Z",
+      },
+      {
+        id: "c-1",
+        trajectory: "late",
+        occurredAt: "2026-05-30T05:05:00.000Z",
+      },
+    ];
+
+    expect(findCoincidenceWindows(events, { windowMs: 30_000, minimumEvents: 2 })).toEqual([
+      {
+        windowStart: "2026-05-30T05:00:00.000Z",
+        windowEnd: "2026-05-30T05:00:30.000Z",
+        trajectories: ["autonomous-loop-coordination", "factory-health"],
+        events: [events[0], events[1]],
+      },
+    ]);
+  });
+
+  test("findCoincidenceWindows ignores same-trajectory clusters and invalid timestamps", () => {
+    const events: CoincidenceEvent[] = [
+      { id: "same-1", trajectory: "codex", occurredAt: "2026-05-30T05:00:00.000Z" },
+      { id: "same-2", trajectory: "codex", occurredAt: "2026-05-30T05:00:10.000Z" },
+      { id: "bad-1", trajectory: "otto", occurredAt: "not-a-date" },
+    ];
+
+    expect(findCoincidenceWindows(events, { windowMs: 30_000, minimumEvents: 2 })).toEqual([]);
+  });
+
+  test("classifyCoincidenceWindows emits ok and warning signals", () => {
+    expect(classifyCoincidenceWindows([], { windowMs: 30_000, minimumEvents: 2 })).toEqual([
+      {
+        surface: "coincidence",
+        level: "ok",
+        message: "No event-window coincidences detected",
+      },
+    ]);
+
+    expect(
+      classifyCoincidenceWindows(
+        [
+          { id: "codex-1", trajectory: "codex", occurredAt: "2026-05-30T05:00:00.000Z" },
+          { id: "otto-1", trajectory: "otto", occurredAt: "2026-05-30T05:00:05.000Z" },
+        ],
+        { windowMs: 30_000, minimumEvents: 2 },
+      ),
+    ).toEqual([
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "1 event-window coincidence(s) detected",
+        action: "inspect shared upstream cause for coincident trajectory events",
+      },
+    ]);
+  });
+
+  test("buildCoincidenceWindowTriggerSource exposes coincidence as a standing-query source", () => {
+    const source = buildCoincidenceWindowTriggerSource(
+      [
+        { id: "codex-1", trajectory: "codex", occurredAt: "2026-05-30T05:00:00.000Z" },
+        { id: "riven-1", trajectory: "riven", occurredAt: "2026-05-30T05:00:01.000Z" },
+      ],
+      { windowMs: 5_000, minimumEvents: 2 },
+    );
+
+    expect(source.surface).toBe("coincidence");
+    expect(source.failureAction).toBe("inspect event-window source before trusting coincidence signals");
+    expect(source.collect()).toEqual([
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "1 event-window coincidence(s) detected",
+        action: "inspect shared upstream cause for coincident trajectory events",
+      },
+    ]);
+  });
+
   test("classifyBranchLane maps known branch prefixes to lanes", () => {
     expect(classifyBranchLane("codex/health-fix")).toBe("codex");
     expect(classifyBranchLane("origin/claim/codex-loop-20260529")).toBe("codex");
