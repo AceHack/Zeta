@@ -200,6 +200,14 @@ claim-count transition. Open-PR-only churn remains visible in the runner log
 and lane-runway surfaces, but no longer creates B-0250 Codex coincidence
 events.
 
+Current B-0250 Codex loop-run increase gate receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-loop-run-increase-gate-2026-05-30.md`
+
+It narrows the Codex runner-log source from any claim-count transition to only
+claim-count increases. Claim decreases are completion or cleanup lifecycle
+evidence, already visible through merged PR, trajectory receipt, and claim
+retirement surfaces.
+
 Current dirty-worktree priority receipt:
 `docs/trajectories/autonomous-loop-coordination/dirty-worktree-priority-2026-05-30.md`
 

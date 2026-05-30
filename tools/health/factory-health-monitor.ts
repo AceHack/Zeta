@@ -601,7 +601,7 @@ export function loopRunReceiptEventsFromRunnerLog(
       continue;
     }
 
-    if (before.claims === after.claims) {
+    if (after.claims <= before.claims) {
       continue;
     }
 
