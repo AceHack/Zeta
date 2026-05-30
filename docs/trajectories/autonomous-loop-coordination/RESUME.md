@@ -267,15 +267,23 @@ window. The first bounded stronger-source set is loop-run claim increases,
 claim mutations, PR review blockers, failed gates, and explicit broadcast
 blockers.
 
+Current B-0250 claim/PR blocker source join receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-pr-blocker-source-join-2026-05-30.md`
+
+It converts open PR review blockers and failed gate conclusions into bounded
+coincidence events. Review blockers use `pr-review-blocker`; failed checks use
+`failed-gate`; both share `pr:<number>` correlation keys so same-PR blocker
+signals do not count as independent incidents.
+
 ## Recommended Next Action
 
-Add a bounded claim/PR blocker source join so review blockers and failed gates
-can participate in the stronger-source escalation gate without relying on the
-local broadcast bus.
+Calibrate the live monitor output after the PR blocker source joins the
+stronger-source escalation gate, then decide whether explicit broadcast
+blockers need their own bounded adapter.
 
 ## Next Child Packets
 
-- B-0250 claim/PR blocker source join calibration
+- B-0250 PR blocker live-output calibration
 
 ## Evidence Links
 

@@ -19,6 +19,7 @@ import {
   localWorktreeDirtObservationFromStatus,
   loopRunReceiptEventsFromRunnerLog,
   mergedPullRequestEventsFromJson,
+  pullRequestBlockerEventsFromJson,
   parseClaimPathSet,
   parseGitWorktreeListPorcelain,
   parseLocalWorktreeDirtScanLimit,
@@ -636,6 +637,149 @@ describe("factory-health-monitor", () => {
         description: "codex forward gate 20260530T050100Z status=0 claims 1->2 open_prs 0->0",
       },
     ]);
+  });
+
+  test("pullRequestBlockerEventsFromJson builds review and failed-gate stronger-source events", () => {
+    expect(
+      pullRequestBlockerEventsFromJson(
+        JSON.stringify([
+          {
+            number: 31,
+            title: "Review blocked",
+            createdAt: "2026-05-30T04:00:00Z",
+            updatedAt: "2026-05-30T05:00:00Z",
+            headRefName: "otto/review-blocked",
+            reviewDecision: "CHANGES_REQUESTED",
+            statusCheckRollup: [
+              { name: "lint (markdownlint)", workflowName: "gate", status: "COMPLETED", conclusion: "SUCCESS" },
+            ],
+          },
+          {
+            number: 32,
+            title: "Gate blocked",
+            createdAt: "2026-05-30T04:01:00Z",
+            updatedAt: "2026-05-30T05:01:00Z",
+            headRefName: "claim/codex-gate-blocked",
+            reviewDecision: "APPROVED",
+            statusCheckRollup: [
+              { name: "lint (markdownlint)", workflowName: "gate", status: "COMPLETED", conclusion: "FAILURE" },
+              { name: "build", workflowName: "gate", status: "COMPLETED", conclusion: "TIMED_OUT" },
+              { name: "queued", workflowName: "gate", status: "QUEUED", conclusion: "" },
+            ],
+          },
+          {
+            number: 33,
+            title: "Still running",
+            createdAt: "2026-05-30T04:02:00Z",
+            updatedAt: "2026-05-30T05:02:00Z",
+            headRefName: "riven/running",
+            reviewDecision: "",
+            statusCheckRollup: [{ name: "lint", workflowName: "gate", status: "IN_PROGRESS", conclusion: "" }],
+          },
+          {
+            number: 34,
+            title: "Stale blocked",
+            createdAt: "2026-05-28T04:00:00Z",
+            updatedAt: "2026-05-28T05:00:00Z",
+            headRefName: "lior/stale",
+            reviewDecision: "CHANGES_REQUESTED",
+          },
+        ]),
+        "2026-05-30T06:00:00Z",
+        2 * 60 * 60 * 1000,
+      ),
+    ).toEqual([
+      {
+        id: "pr-review-blocker-31",
+        trajectory: "otto",
+        occurredAt: "2026-05-30T05:00:00.000Z",
+        description: "#31 Review blocked has requested changes",
+        correlationKey: "pr:31",
+        source: "pr-review-blocker",
+      },
+      {
+        id: "failed-gate-32",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:01:00.000Z",
+        description: "#32 Gate blocked failed gates: gate/build, gate/lint (markdownlint)",
+        correlationKey: "pr:32",
+        source: "failed-gate",
+      },
+    ]);
+  });
+
+  test("pullRequestBlockerEventsFromJson follows required-check gate semantics", () => {
+    expect(
+      pullRequestBlockerEventsFromJson(
+        JSON.stringify([
+          {
+            number: 35,
+            title: "Diagnostic only failure",
+            createdAt: "2026-05-30T04:00:00Z",
+            updatedAt: "2026-05-30T05:00:00Z",
+            headRefName: "claim/codex-diagnostic-only",
+            requiredCheckNames: ["required-build"],
+            statusCheckRollup: [
+              { name: "diagnostic", workflowName: "gate", status: "COMPLETED", conclusion: "FAILURE" },
+              { name: "required-build", workflowName: "gate", status: "COMPLETED", conclusion: "SUCCESS" },
+            ],
+          },
+          {
+            number: 36,
+            title: "Required failures",
+            createdAt: "2026-05-30T04:01:00Z",
+            updatedAt: "2026-05-30T05:01:00Z",
+            headRefName: "claim/codex-required-failures",
+            requiredCheckNames: ["cancelled", "error-state", "stale", "startup"],
+            statusCheckRollup: [
+              { name: "diagnostic", workflowName: "gate", status: "COMPLETED", conclusion: "FAILURE" },
+              { name: "cancelled", workflowName: "gate", status: "COMPLETED", conclusion: "CANCELLED" },
+              { name: "error-state", workflowName: "gate", state: "ERROR", status: "COMPLETED", conclusion: "" },
+              { name: "stale", workflowName: "gate", status: "COMPLETED", conclusion: "STALE" },
+              { name: "startup", workflowName: "gate", status: "COMPLETED", conclusion: "STARTUP_FAILURE" },
+            ],
+          },
+        ]),
+        "2026-05-30T06:00:00Z",
+        2 * 60 * 60 * 1000,
+      ),
+    ).toEqual([
+      {
+        id: "failed-gate-36",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:01:00.000Z",
+        description: "#36 Required failures failed gates: gate/cancelled, gate/error-state, gate/stale, +1 more",
+        correlationKey: "pr:36",
+        source: "failed-gate",
+      },
+    ]);
+  });
+
+  test("classifyCoincidenceWindows escalates when PR blockers join ordinary merge events", () => {
+    expect(
+      classifyCoincidenceWindows(
+        [
+          {
+            id: "merged-pr-40",
+            trajectory: "otto",
+            occurredAt: "2026-05-30T05:00:00.000Z",
+            source: "merged-pr",
+          },
+          {
+            id: "failed-gate-41",
+            trajectory: "codex",
+            occurredAt: "2026-05-30T05:00:10.000Z",
+            source: "failed-gate",
+          },
+        ],
+        { windowMs: 30_000, minimumEvents: 2 },
+      )[0],
+    ).toEqual({
+      surface: "coincidence-incident",
+      level: "critical",
+      message: "1 incident-grade coincidence window(s) detected",
+      action: "investigate stronger-source coincidence before treating it as queue-drain noise",
+    });
   });
 
   test("resolveCodexLoopRunnerLog honors writer log-dir override and explicit override", () => {

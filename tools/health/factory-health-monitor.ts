@@ -85,6 +85,25 @@ interface MergedPullRequestObservationInput {
   } | null;
 }
 
+interface PullRequestStatusCheckObservationInput {
+  conclusion?: string | null;
+  name?: string | null;
+  state?: string | null;
+  status?: string | null;
+  workflowName?: string | null;
+}
+
+interface PullRequestBlockerObservationInput {
+  number?: number | null;
+  title?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+  headRefName?: string | null;
+  reviewDecision?: string | null;
+  requiredCheckNames?: string[] | null;
+  statusCheckRollup?: PullRequestStatusCheckObservationInput[] | null;
+}
+
 export type LaneRunwayLane = "codex" | "otto" | "lior" | "alexa" | "riven" | "other";
 
 export type LaneRunwayNamedLane = Exclude<LaneRunwayLane, "other">;
@@ -149,6 +168,15 @@ const INCIDENT_GRADE_COINCIDENCE_SOURCES: ReadonlySet<CoincidenceEventSource> = 
   "pr-review-blocker",
   "failed-gate",
   "broadcast-blocker",
+]);
+const FAILED_GATE_CONCLUSIONS: ReadonlySet<string> = new Set([
+  "ACTION_REQUIRED",
+  "CANCELLED",
+  "ERROR",
+  "FAILURE",
+  "STALE",
+  "STARTUP_FAILURE",
+  "TIMED_OUT",
 ]);
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
@@ -272,6 +300,8 @@ function coincidenceEventSource(event: CoincidenceEvent): CoincidenceEventSource
   if (event.id.startsWith("merged-pr-")) return "merged-pr";
   if (event.id.startsWith("trajectory-receipt-")) return "trajectory-receipt";
   if (event.id.startsWith("loop-run-")) return "loop-run";
+  if (event.id.startsWith("pr-review-blocker-")) return "pr-review-blocker";
+  if (event.id.startsWith("failed-gate-")) return "failed-gate";
 
   return "unknown";
 }
@@ -399,7 +429,7 @@ export function resolveCodexLoopRunnerLog(env: NodeJS.ProcessEnv): string {
 }
 
 function fetchOpenPRs(): ToolResult {
-  return run("gh", [
+  const result = run("gh", [
     "pr",
     "list",
     "--repo",
@@ -407,10 +437,55 @@ function fetchOpenPRs(): ToolResult {
     "--state",
     "open",
     "--json",
-    "number,title,createdAt,autoMergeRequest,headRefName",
+    "number,title,createdAt,updatedAt,autoMergeRequest,headRefName,reviewDecision,statusCheckRollup",
     "--limit",
     "200",
   ]);
+  if (!result.ok) {
+    return result;
+  }
+
+  try {
+    const prs = JSON.parse(result.stdout) as PullRequestBlockerObservationInput[];
+    const enriched = prs.map((pr) => {
+      if (typeof pr.number !== "number") {
+        return pr;
+      }
+
+      const requiredCheckNames = fetchRequiredCheckNames(pr.number);
+      if (requiredCheckNames === undefined) {
+        return pr;
+      }
+
+      return { ...pr, requiredCheckNames };
+    });
+    return { ok: true, stdout: JSON.stringify(enriched) };
+  } catch {
+    return result;
+  }
+}
+
+function fetchRequiredCheckNames(prNumber: number): string[] | undefined {
+  const result = spawnSync(
+    "gh",
+    ["pr", "checks", String(prNumber), "--repo", REPO, "--required", "--json", "name"],
+    {
+      cwd: ROOT,
+      encoding: "utf-8",
+      timeout: 30_000,
+    },
+  );
+
+  if (result.status !== 0 && result.status !== 4 && result.status !== 8) {
+    return undefined;
+  }
+
+  try {
+    const checks = JSON.parse(result.stdout ?? "[]") as Array<{ name?: unknown }>;
+    return checks.map((check) => check.name).filter((name): name is string => typeof name === "string");
+  } catch {
+    return undefined;
+  }
 }
 
 function fetchMergedPRs(): ToolResult {
@@ -536,6 +611,104 @@ export function mergedPullRequestEventsFromJson(
     lookbackMs,
     mergeCommitMessagesByOid,
   );
+}
+
+function eventTimeInLookback(occurredMs: number, nowIso: string, lookbackMs: number): boolean {
+  const nowMs = Date.parse(nowIso);
+  return Number.isNaN(nowMs) || (occurredMs <= nowMs && nowMs - occurredMs <= Math.max(0, Math.floor(lookbackMs)));
+}
+
+function failedGateLabels(
+  statusChecks: PullRequestStatusCheckObservationInput[] | null | undefined,
+  requiredCheckNames?: readonly string[] | null,
+): string[] {
+  const requiredNames =
+    requiredCheckNames === undefined || requiredCheckNames === null
+      ? null
+      : new Set(requiredCheckNames.map((name) => name.trim()).filter((name) => name.length > 0));
+
+  return (statusChecks ?? [])
+    .filter((check) => {
+      const name = check.name?.trim() ?? "";
+      if (requiredNames !== null && !requiredNames.has(name)) {
+        return false;
+      }
+
+      const conclusion = check.conclusion?.trim().toUpperCase() ?? "";
+      const state = check.state?.trim().toUpperCase() ?? "";
+      return FAILED_GATE_CONCLUSIONS.has(conclusion) || FAILED_GATE_CONCLUSIONS.has(state);
+    })
+    .map((check) => {
+      const workflowName = check.workflowName?.trim() ?? "";
+      const name = check.name?.trim() ?? "";
+      if (workflowName.length > 0 && name.length > 0) {
+        return `${workflowName}/${name}`;
+      }
+      return workflowName || name || "(unnamed check)";
+    })
+    .sort();
+}
+
+function formatFailedGateDescription(prNumber: number, title: string, labels: readonly string[]): string {
+  const visibleLabels = labels.slice(0, 3);
+  const suffix = labels.length > visibleLabels.length ? `, +${labels.length - visibleLabels.length} more` : "";
+  return `#${prNumber} ${title} failed gates: ${visibleLabels.join(", ")}${suffix}`;
+}
+
+export function pullRequestBlockerEventsFromJson(
+  output: string,
+  nowIso = new Date().toISOString(),
+  lookbackMs = FACTORY_EVENT_LOOKBACK_MS,
+): CoincidenceEvent[] {
+  const prs = JSON.parse(output) as PullRequestBlockerObservationInput[];
+  const events: CoincidenceEvent[] = [];
+
+  for (const pr of prs) {
+    if (typeof pr.number !== "number") {
+      continue;
+    }
+
+    const observedAt = pr.updatedAt ?? pr.createdAt;
+    if (!observedAt) {
+      continue;
+    }
+
+    const observedMs = Date.parse(observedAt);
+    if (Number.isNaN(observedMs) || !eventTimeInLookback(observedMs, nowIso, lookbackMs)) {
+      continue;
+    }
+
+    const occurredAt = new Date(observedMs).toISOString();
+    const title = pr.title?.trim() || "(untitled PR)";
+    const trajectory = factoryTrajectoryFromPullRequestBranch(pr.headRefName);
+    const correlationKey = `pr:${pr.number}`;
+    const reviewDecision = pr.reviewDecision?.trim().toUpperCase() ?? "";
+
+    if (reviewDecision === "CHANGES_REQUESTED") {
+      events.push({
+        id: `pr-review-blocker-${pr.number}`,
+        trajectory,
+        occurredAt,
+        description: `#${pr.number} ${title} has requested changes`,
+        correlationKey,
+        source: "pr-review-blocker",
+      });
+    }
+
+    const failedGates = failedGateLabels(pr.statusCheckRollup, pr.requiredCheckNames);
+    if (failedGates.length > 0) {
+      events.push({
+        id: `failed-gate-${pr.number}`,
+        trajectory,
+        occurredAt,
+        description: formatFailedGateDescription(pr.number, title, failedGates),
+        correlationKey,
+        source: "failed-gate",
+      });
+    }
+  }
+
+  return events.sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
 }
 
 function parseMergedPullRequests(output: string): MergedPullRequestObservationInput[] {
@@ -1380,7 +1553,7 @@ function checkPRQueue(openPRs: ToolResult): HealthSignal[] {
   return signals;
 }
 
-function checkCoincidenceEvents(): HealthSignal[] {
+function checkCoincidenceEvents(openPRs: ToolResult = fetchOpenPRs()): HealthSignal[] {
   const events: CoincidenceEvent[] = [];
   const sourceWarnings: HealthSignal[] = [];
   const mergedPRs = fetchMergedPRs();
@@ -1437,6 +1610,26 @@ function checkCoincidenceEvents(): HealthSignal[] {
         level: "warning",
         message: "Could not parse Codex loop-run observations for coincidence signals",
         action: "inspect Codex runner log before trusting loop-run coincidence signals",
+      });
+    }
+  }
+
+  if (!openPRs.ok) {
+    sourceWarnings.push({
+      surface: "coincidence",
+      level: "warning",
+      message: "Could not query open PR blockers for coincidence event observations",
+      action: "inspect gh CLI state before trusting PR blocker coincidence signals",
+    });
+  } else {
+    try {
+      events.push(...pullRequestBlockerEventsFromJson(openPRs.stdout));
+    } catch {
+      sourceWarnings.push({
+        surface: "coincidence",
+        level: "warning",
+        message: "Could not parse open PR blocker observations for coincidence signals",
+        action: "inspect PR blocker event adapter before trusting coincidence signals",
       });
     }
   }
@@ -1914,7 +2107,7 @@ function buildStandingQueryTriggerSources(openPRs: ToolResult): StandingQueryTri
     },
     {
       surface: "coincidence",
-      collect: checkCoincidenceEvents,
+      collect: () => checkCoincidenceEvents(openPRs),
       failureAction: "inspect merged PR event observations before trusting coincidence signals",
     },
     {
