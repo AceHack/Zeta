@@ -273,7 +273,7 @@ jobs:
       # nothing to debug. Per Copilot post-merge finding on PR #5379.
       - name: Upload QEMU full-install serial log
         if: always() && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: qemu-full-install-serial-log
           path: qemu-full-install-serial.log
@@ -397,7 +397,7 @@ jobs:
 
       - name: Upload ISO as workflow artifact
         # Available for download from the workflow run page for ~90 days.
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ steps.iso.outputs.name }}
           path: ${{ steps.iso.outputs.path }}
@@ -409,7 +409,7 @@ jobs:
         # B-0853.1 sibling upload — bundle alongside the ISO for consumers.
         # Separate artifact (not bundled with ISO) so consumers downloading
         # just the ISO do not pay the small extra cost; verifiers can grab it.
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ steps.iso.outputs.name }}.cosign
           path: ${{ steps.sign.outputs.bundle-path }}
