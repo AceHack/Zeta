@@ -10,7 +10,11 @@ import {
   writeDivergenceShard,
 } from "./divergence-shard";
 import {
+  RECONCILIATION_DECISIONS,
+  type ReconciliationDecision,
+  fillReconciliation,
   findPendingShards,
+  isReconciliationDecision,
   isReconciliationPending,
   parseShardMeta,
   reconciliationBody,
@@ -159,6 +163,88 @@ describe("scanDivergenceDir", () => {
       const pending = scanDivergenceDir(root);
       expect(pending).toHaveLength(1);
       expect(dirname(pending[0]!.relPath)).toBe("docs/hygiene-history/divergences/2026/05/10");
+    });
+  });
+});
+
+const RECONCILIATION_HEADING = "## Reconciliation";
+/** Length of the prefix up to and including the Reconciliation heading. */
+function reconciliationPrefixLen(shard: string): number {
+  return shard.indexOf(RECONCILIATION_HEADING) + RECONCILIATION_HEADING.length;
+}
+
+describe("isReconciliationDecision / RECONCILIATION_DECISIONS", () => {
+  test("the four canonical decisions match the README vocabulary, in order", () => {
+    expect(RECONCILIATION_DECISIONS).toEqual(["accept-loop-a", "accept-loop-b", "accept-both", "escalate"]);
+  });
+  test("accepts a canonical decision and rejects anything else", () => {
+    expect(isReconciliationDecision("accept-both")).toBe(true);
+    expect(isReconciliationDecision("escalate")).toBe(true);
+    expect(isReconciliationDecision("accept-loop-c")).toBe(false);
+    expect(isReconciliationDecision("")).toBe(false);
+    expect(isReconciliationDecision("accept-loop-b — (Aaron)")).toBe(false);
+  });
+});
+
+describe("fillReconciliation", () => {
+  test("fills a pending shard with a decision-only section (no note)", () => {
+    const filled = fillReconciliation(PENDING_SHARD, "accept-loop-a");
+    expect(isReconciliationPending(filled)).toBe(false);
+    expect(reconciliationBody(filled)!.trim()).toBe("accept-loop-a");
+  });
+
+  test("appends an optional note below the decision", () => {
+    const filled = fillReconciliation(PENDING_SHARD, "accept-loop-b", "B reproduces locally. (Aaron)");
+    expect(reconciliationBody(filled)!.trim()).toBe("accept-loop-b\n\nB reproduces locally. (Aaron)");
+    expect(isReconciliationPending(filled)).toBe(false);
+  });
+
+  test("treats a blank/whitespace-only note as no note (note is optional)", () => {
+    expect(reconciliationBody(fillReconciliation(PENDING_SHARD, "escalate", "   \n\t"))!.trim()).toBe("escalate");
+  });
+
+  test("preserves everything up to and including the heading byte-for-byte", () => {
+    const len = reconciliationPrefixLen(PENDING_SHARD);
+    const filled = fillReconciliation(PENDING_SHARD, "accept-both");
+    expect(filled.slice(0, len)).toBe(PENDING_SHARD.slice(0, len));
+  });
+
+  test("preserves a trailing `## ` section after Reconciliation (defensive bounding)", () => {
+    const withTail = `${PENDING_SHARD}\n${"## Provenance"}\n\ntrailing section body\n`;
+    const filled = fillReconciliation(withTail, "accept-both");
+    // The Reconciliation section now carries only the decision...
+    expect(reconciliationBody(filled)!.trim()).toBe("accept-both");
+    // ...and the trailing section survives untouched.
+    expect(filled).toContain("## Provenance");
+    expect(filled).toContain("trailing section body");
+  });
+
+  test("rejects an invalid decision (EAGER, before any work — runtime callers pass raw strings)", () => {
+    expect(() => fillReconciliation(PENDING_SHARD, "accept-loop-c" as ReconciliationDecision)).toThrow(
+      /invalid reconciliation decision/,
+    );
+  });
+
+  test("rejects a shard with no `## Reconciliation` section", () => {
+    expect(() => fillReconciliation("---\ntype: divergence\n---\n\n## Loop A perspective\n\nx", "escalate")).toThrow(
+      /no .## Reconciliation. section/,
+    );
+  });
+
+  test("refuses to overwrite an already-reconciled section (history-preserving)", () => {
+    const reconciled = fillReconciliation(PENDING_SHARD, "accept-loop-a", "first decision");
+    expect(() => fillReconciliation(reconciled, "accept-loop-b")).toThrow(/already reconciled/);
+  });
+
+  test("round-trip: writer files a pending shard, fillReconciliation drops it from the pending scan", () => {
+    withTempRoot((root) => {
+      const input = inputAt("2026-05-10T11:48:00Z", "resolve A", "do not resolve B");
+      const { relPath } = writeDivergenceShard(root, input);
+      expect(scanDivergenceDir(root)).toHaveLength(1);
+      // Reconstruct exactly what the writer wrote (writeDivergenceShard == buildDivergenceShard(input)).
+      const filled = fillReconciliation(buildDivergenceShard(input), "accept-loop-b", "B reproduces locally. (Aaron)");
+      writeFileSync(join(root, relPath), filled);
+      expect(scanDivergenceDir(root)).toHaveLength(0);
     });
   });
 });

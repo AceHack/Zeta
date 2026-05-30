@@ -17,8 +17,15 @@
 // live) remains the blocked impl child pending B-0160.
 //
 // Pure functions (no I/O): reconciliationBody, isReconciliationPending,
-//   parseShardMeta, findPendingShards.
+//   isReconciliationDecision, fillReconciliation, parseShardMeta,
+//   findPendingShards.
 // I/O function: scanDivergenceDir (delegates classification to the pure layer).
+//
+// The reader surfaces the "one read" of AC #4; fillReconciliation produces the
+// shard-side of the "one action" (the in-place `## Reconciliation` edit) so the
+// maintainer's decision is applied deterministically + validated rather than by
+// hand. It stays below the blocked end-to-end boundary: it returns markdown and
+// never writes, never touches GitHub, never resolves the live thread.
 //
 // Schema source of truth: docs/hygiene-history/divergences/README.md
 // Writer companion:        tools/hygiene/divergence-shard.ts
@@ -106,6 +113,79 @@ function stripHtmlComments(text: string): string {
     out = out.replace(/<!--[\s\S]*?-->/g, "");
   } while (out !== prev);
   return out;
+}
+
+/**
+ * The four canonical reconciliation decisions the README fixes
+ * (docs/hygiene-history/divergences/README.md "Reconciliation outcomes").
+ * Machine-comparable values — the gloss "(explicit divergence)" the README
+ * shows beside accept-both is documentation, not part of the value.
+ */
+export const RECONCILIATION_DECISIONS = [
+  "accept-loop-a",
+  "accept-loop-b",
+  "accept-both",
+  "escalate",
+] as const;
+
+/** A morning-reconciliation decision per the README's outcome vocabulary. */
+export type ReconciliationDecision = (typeof RECONCILIATION_DECISIONS)[number];
+
+/** True when `value` is one of the four canonical reconciliation decisions. */
+export function isReconciliationDecision(value: string): value is ReconciliationDecision {
+  return (RECONCILIATION_DECISIONS as readonly string[]).includes(value);
+}
+
+/**
+ * Fill a PENDING shard's `## Reconciliation` section with a decision (and an
+ * optional free-text note), returning the reconciled markdown. This is the
+ * shard-side of AC #4's "one action" ("resolve the thread in one read + one
+ * action"): the reader (scanDivergenceDir) produces the read; this turns the
+ * maintainer's decision into the in-place section edit the README prescribes —
+ * validated and deterministic, instead of a hand-edit.
+ *
+ * Pure: returns the new markdown; never writes, never touches GitHub, never
+ * resolves the live thread (that half stays in the blocked impl child pending
+ * B-0160). Composes with the reader's section logic (reconciliationBody /
+ * isReconciliationPending).
+ *
+ * Fail-closed and history-preserving (per the README "the shard is updated in
+ * place (not deleted) so the divergence history is preserved permanently", and
+ * the writer's never-overwrite-differing-content rule):
+ *   - invalid `decision` → throw, even though the type guards it, because
+ *     runtime callers (CLI args) pass raw strings. EAGER validation matches the
+ *     detector in divergence-shard.ts.
+ *   - no `## Reconciliation` section (malformed shard) → throw.
+ *   - already-reconciled shard (section is not the placeholder) → throw, rather
+ *     than silently overwriting a prior human decision.
+ *
+ * Everything up to and including the `## Reconciliation` heading is preserved
+ * byte-for-byte. A `## ` section after Reconciliation (should the schema ever
+ * grow one) is preserved too, mirroring reconciliationBody's defensive bounding.
+ * A blank/whitespace-only note is treated as no note (the note is optional).
+ */
+export function fillReconciliation(markdown: string, decision: ReconciliationDecision, note?: string): string {
+  if (!isReconciliationDecision(decision)) {
+    throw new Error(
+      `invalid reconciliation decision "${decision}": expected one of ${RECONCILIATION_DECISIONS.join(" | ")}`,
+    );
+  }
+  const heading = /^## Reconciliation[ \t]*$/m.exec(markdown);
+  if (!heading) {
+    throw new Error("cannot fill reconciliation: shard has no `## Reconciliation` section");
+  }
+  if (!isReconciliationPending(markdown)) {
+    throw new Error(
+      "refusing to fill reconciliation: section is already reconciled (overwriting would erase a prior decision)",
+    );
+  }
+  const afterHeading = heading.index + heading[0].length;
+  const rest = markdown.slice(afterHeading);
+  const nextIdx = rest.search(/\n## /);
+  const tail = nextIdx === -1 ? "" : rest.slice(nextIdx);
+  const trimmedNote = note?.trim() ?? "";
+  const body = trimmedNote.length === 0 ? decision : `${decision}\n\n${trimmedNote}`;
+  return `${markdown.slice(0, afterHeading)}\n\n${body}\n${tail}`;
 }
 
 /** Value of an `agent:` line nested under `parentKey:` in a frontmatter block. */
