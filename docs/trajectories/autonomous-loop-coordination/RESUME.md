@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; B-0250 compact debug surface landed
+Status: active child packet; B-0250 Codex loop-run claim gate in progress
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -178,10 +178,10 @@ window output remain separate next slices.
 Current B-0250 loop-run gated source receipt:
 `docs/trajectories/autonomous-loop-coordination/b0250-loop-run-gated-source-2026-05-30.md`
 
-It narrows Codex loop-run coincidence events to forward-gate completions whose
-adjacent heartbeat snapshots show a claim-count or open-PR-count transition.
-Generic gate completions remain visible in the raw runner log, but no longer
-inflate the B-0250 joined event window.
+It was the first narrowing pass for Codex loop-run coincidence events. The
+current claim-gate receipt below supersedes that broader count-transition
+rule; open-PR-only churn now stays in the raw runner log and lane-runway
+surfaces instead of creating B-0250 Codex coincidence events.
 
 Current B-0250 compact debug surface receipt:
 `docs/trajectories/autonomous-loop-coordination/b0250-compact-debug-surface-2026-05-30.md`
@@ -191,15 +191,25 @@ event-window ranges, trajectory sets, and `trajectory:event-id` members. The
 debug line keeps the count signal intact while making the remaining source mix
 inspectable from ordinary monitor JSON.
 
+Current B-0250 Codex loop-run claim gate receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-loop-run-claim-gate-2026-05-30.md`
+
+It narrows Codex loop-run coincidence events again so a forward-gate completion
+only becomes a Codex event when adjacent heartbeat snapshots show a Codex
+claim-count transition. Open-PR-only churn remains visible in the runner log
+and lane-runway surfaces, but no longer creates B-0250 Codex coincidence
+events.
+
 ## Recommended Next Action
 
-Use the compact B-0250 window debug line to choose the next source-narrowing
-slice before adding another event source.
+Run the live factory health monitor after this packet lands and verify whether
+the remaining compact coincidence-debug windows still include Codex loop-run
+noise.
 
 ## Next Child Packets
 
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
-- B-0250 source tuning from compact coincidence-window debug evidence
+- B-0250 source tuning from post-claim-gate compact coincidence-window debug evidence
 
 ## Evidence Links
 

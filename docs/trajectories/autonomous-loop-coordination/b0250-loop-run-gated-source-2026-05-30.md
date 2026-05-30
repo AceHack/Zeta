@@ -3,13 +3,18 @@
 ## Status
 
 Landed in claim branch `claim/codex-b0250-loop-run-gating-20260530`.
+Superseded by
+`docs/trajectories/autonomous-loop-coordination/b0250-loop-run-claim-gate-2026-05-30.md`,
+which requires a claim-count transition and no longer emits on
+open-PR-only churn.
 
 ## Change
 
 The Codex loop-run coincidence source no longer emits an event for every
-`codex forward gate end` line in the local runner log. It now requires adjacent
-`heartbeat complete` snapshots around the gate completion and emits only when
-the surrounding snapshots show a claim-count or open-PR-count transition.
+`codex forward gate end` line in the local runner log. This receipt narrowed
+the source to adjacent `heartbeat complete` snapshots around the gate
+completion whose surrounding snapshots showed a broad count transition. The
+later claim-gate receipt narrows this again to claim-count transitions only.
 
 ## Why
 
