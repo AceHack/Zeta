@@ -208,6 +208,14 @@ claim-count increases. Claim decreases are completion or cleanup lifecycle
 evidence, already visible through merged PR, trajectory receipt, and claim
 retirement surfaces.
 
+Current B-0250 post-increase debug calibration receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-post-increase-debug-calibration-2026-05-30.md`
+
+It records the live compact debug line after the increase gate landed. The
+remaining top windows are merged-PR / trajectory-owner pairings rather than
+Codex loop-run events, so the next B-0250 tuning slice should not further
+split the Codex runner-log source on this evidence.
+
 Current dirty-worktree priority receipt:
 `docs/trajectories/autonomous-loop-coordination/dirty-worktree-priority-2026-05-30.md`
 
@@ -219,15 +227,16 @@ as service-health evidence rather than takeover permission.
 
 ## Recommended Next Action
 
-Run the live factory health monitor after this packet lands and verify whether
-the remaining compact coincidence-debug windows still include Codex loop-run
-noise.
+Use the post-increase debug calibration receipt to choose the next B-0250
+source-tuning slice. Prefer trajectory ownership labels or same-merge-burst PR
+clustering before further runner-log lifecycle splitting.
 
 ## Next Child Packets
 
 - select one clean high-confidence stale worktree or one dirty owner-handoff
   worktree for a bounded cleanup packet
-- B-0250 source tuning from post-claim-gate compact coincidence-window debug evidence
+- B-0250 source tuning for trajectory ownership labels or same-merge-burst PR
+  clustering
 
 ## Evidence Links
 
