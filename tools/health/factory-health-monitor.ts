@@ -257,6 +257,18 @@ function fetchMergedPRs(): ToolResult {
   ]);
 }
 
+function fetchTrajectoryReceiptCommits(): ToolResult {
+  return run("git", [
+    "log",
+    "--since=24.hours",
+    "--date=iso-strict",
+    "--format=%H%x09%cI%x09%s",
+    "--name-only",
+    "--",
+    "docs/trajectories",
+  ]);
+}
+
 function fetchCodexLoopHealth(): ToolResult {
   return run("bun", [join(ROOT, ".codex/bin/codex-loop-health.ts")]);
 }
@@ -321,6 +333,89 @@ export function mergedPullRequestEventsFromJson(
     })
     .filter((event): event is CoincidenceEvent => event !== null)
     .sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
+}
+
+export function factoryTrajectoryFromTrajectoryPath(path: string | null | undefined): string | null {
+  const normalized = path?.trim().replace(/^\.\//, "") ?? "";
+  const match = normalized.match(/^docs\/trajectories\/([^/]+)\//);
+  return match?.[1] ?? null;
+}
+
+export function trajectoryReceiptEventsFromGitLog(
+  output: string,
+  nowIso = new Date().toISOString(),
+  lookbackMs = FACTORY_EVENT_LOOKBACK_MS,
+): CoincidenceEvent[] {
+  const nowMs = Date.parse(nowIso);
+  const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
+  const events: CoincidenceEvent[] = [];
+  let current:
+    | {
+        hash: string;
+        committedAt: string;
+        subject: string;
+        paths: string[];
+      }
+    | null = null;
+
+  const flush = (): void => {
+    if (current === null) {
+      return;
+    }
+
+    const committedMs = Date.parse(current.committedAt);
+    if (Number.isNaN(committedMs)) {
+      current = null;
+      return;
+    }
+
+    if (!Number.isNaN(nowMs) && (committedMs > nowMs || nowMs - committedMs > maxAgeMs)) {
+      current = null;
+      return;
+    }
+
+    const trajectories = [
+      ...new Set(
+        current.paths
+          .map((path) => factoryTrajectoryFromTrajectoryPath(path))
+          .filter((trajectory): trajectory is string => trajectory !== null),
+      ),
+    ].sort();
+
+    for (const trajectory of trajectories) {
+      events.push({
+        id: `trajectory-receipt-${current.hash.slice(0, 12)}-${trajectory}`,
+        trajectory,
+        occurredAt: new Date(committedMs).toISOString(),
+        description: `${current.hash.slice(0, 12)} ${current.subject.trim() || "(untitled trajectory receipt commit)"}`,
+      });
+    }
+
+    current = null;
+  };
+
+  for (const line of output.split(/\r?\n/)) {
+    const headerMatch = line.match(/^([0-9a-f]{7,40})\t([^\t]+)\t(.*)$/);
+    if (headerMatch?.[1] && headerMatch[2] !== undefined && headerMatch[3] !== undefined) {
+      flush();
+      current = {
+        hash: headerMatch[1],
+        committedAt: headerMatch[2],
+        subject: headerMatch[3],
+        paths: [],
+      };
+      continue;
+    }
+
+    const path = line.trim();
+    if (path.length > 0 && current !== null) {
+      current.paths.push(path);
+    }
+  }
+
+  flush();
+
+  return events.sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
 }
 
 export function classifyLaneRunway(snapshot: LaneRunwaySnapshot): HealthSignal[] {
@@ -885,32 +980,68 @@ function checkPRQueue(openPRs: ToolResult): HealthSignal[] {
 }
 
 function checkCoincidenceEvents(): HealthSignal[] {
+  const events: CoincidenceEvent[] = [];
+  const sourceWarnings: HealthSignal[] = [];
   const mergedPRs = fetchMergedPRs();
   if (!mergedPRs.ok) {
-    return [
-      {
-        surface: "coincidence",
-        level: "warning",
-        message: "Could not query merged PRs for coincidence event observations",
-        action: "inspect gh CLI state before trusting coincidence signals",
-      },
-    ];
-  }
-
-  try {
-    const events = mergedPullRequestEventsFromJson(mergedPRs.stdout);
-    const source = buildCoincidenceWindowTriggerSource(events, {
-      windowMs: FACTORY_EVENT_COINCIDENCE_WINDOW_MS,
-      minimumEvents: 2,
+    sourceWarnings.push({
+      surface: "coincidence",
+      level: "warning",
+      message: "Could not query merged PRs for coincidence event observations",
+      action: "inspect gh CLI state before trusting coincidence signals",
     });
-    return collectStandingQuerySignals([source]);
-  } catch {
-    return [
-      {
+  } else {
+    try {
+      events.push(...mergedPullRequestEventsFromJson(mergedPRs.stdout));
+    } catch {
+      sourceWarnings.push({
         surface: "coincidence",
         level: "warning",
         message: "Could not parse merged PR observations for coincidence signals",
         action: "inspect merged PR event adapter before trusting coincidence signals",
+      });
+    }
+  }
+
+  const trajectoryReceipts = fetchTrajectoryReceiptCommits();
+  if (!trajectoryReceipts.ok) {
+    sourceWarnings.push({
+      surface: "coincidence",
+      level: "warning",
+      message: "Could not query trajectory receipt commits for coincidence event observations",
+      action: "inspect git log over docs/trajectories before trusting coincidence signals",
+    });
+  } else {
+    try {
+      events.push(...trajectoryReceiptEventsFromGitLog(trajectoryReceipts.stdout));
+    } catch {
+      sourceWarnings.push({
+        surface: "coincidence",
+        level: "warning",
+        message: "Could not parse trajectory receipt observations for coincidence signals",
+        action: "inspect trajectory receipt event adapter before trusting coincidence signals",
+      });
+    }
+  }
+
+  if (events.length === 0 && sourceWarnings.length > 0) {
+    return sourceWarnings;
+  }
+
+  try {
+    const source = buildCoincidenceWindowTriggerSource(events, {
+      windowMs: FACTORY_EVENT_COINCIDENCE_WINDOW_MS,
+      minimumEvents: 2,
+    });
+    return [...sourceWarnings, ...collectStandingQuerySignals([source])];
+  } catch {
+    return [
+      ...sourceWarnings,
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "Could not classify coincidence event observations",
+        action: "inspect coincidence event adapters before trusting coincidence signals",
       },
     ];
   }

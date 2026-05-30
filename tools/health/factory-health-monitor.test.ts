@@ -11,6 +11,7 @@ import {
   codexLoopServiceHealthFromJson,
   classifyLocalWorktreeDirt,
   factoryTrajectoryFromPullRequestBranch,
+  factoryTrajectoryFromTrajectoryPath,
   findClaimPathCollisions,
   findCoincidenceWindows,
   laneRunwayServiceHealthFromObservations,
@@ -21,6 +22,7 @@ import {
   parseGitWorktreeListPorcelain,
   parseLocalWorktreeDirtScanLimit,
   runHealthCheck,
+  trajectoryReceiptEventsFromGitLog,
   type HealthSignal,
   type CoincidenceEvent,
   type StandingQueryTriggerSource,
@@ -181,6 +183,50 @@ describe("factory-health-monitor", () => {
         trajectory: "otto",
         occurredAt: "2026-05-30T05:01:00.000Z",
         description: "#11 Otto source",
+      },
+    ]);
+  });
+
+  test("factoryTrajectoryFromTrajectoryPath maps trajectory receipt paths", () => {
+    expect(factoryTrajectoryFromTrajectoryPath("docs/trajectories/autonomous-loop-coordination/RESUME.md")).toBe(
+      "autonomous-loop-coordination",
+    );
+    expect(factoryTrajectoryFromTrajectoryPath("./docs/trajectories/factory-trajectory-surface/receipt.md")).toBe(
+      "factory-trajectory-surface",
+    );
+    expect(factoryTrajectoryFromTrajectoryPath("docs/not-trajectories/example.md")).toBeNull();
+    expect(factoryTrajectoryFromTrajectoryPath(null)).toBeNull();
+  });
+
+  test("trajectoryReceiptEventsFromGitLog builds bounded factory events from trajectory commits", () => {
+    const output = [
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\t2026-05-30T05:00:00+00:00\tland two receipts",
+      "docs/trajectories/autonomous-loop-coordination/RESUME.md",
+      "docs/trajectories/factory-trajectory-surface/receipt.md",
+      "docs/trajectories/factory-trajectory-surface/RESUME.md",
+      "",
+      "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\t2026-05-28T05:00:00+00:00\tstale receipt",
+      "docs/trajectories/stale/RESUME.md",
+      "",
+      "cccccccccccccccccccccccccccccccccccccccc\tnot-a-date\tbad receipt",
+      "docs/trajectories/bad/RESUME.md",
+      "",
+      "dddddddddddddddddddddddddddddddddddddddd\t2026-05-30T05:02:00+00:00\toutside path",
+      "docs/not-trajectories/example.md",
+    ].join("\n");
+
+    expect(trajectoryReceiptEventsFromGitLog(output, "2026-05-30T06:00:00Z", 2 * 60 * 60 * 1000)).toEqual([
+      {
+        id: "trajectory-receipt-aaaaaaaaaaaa-autonomous-loop-coordination",
+        trajectory: "autonomous-loop-coordination",
+        occurredAt: "2026-05-30T05:00:00.000Z",
+        description: "aaaaaaaaaaaa land two receipts",
+      },
+      {
+        id: "trajectory-receipt-aaaaaaaaaaaa-factory-trajectory-surface",
+        trajectory: "factory-trajectory-surface",
+        occurredAt: "2026-05-30T05:00:00.000Z",
+        description: "aaaaaaaaaaaa land two receipts",
       },
     ]);
   });
