@@ -47,6 +47,12 @@ on:
   push:
     branches:
       - main
+      # Off-leash validation: install.sh changes are built on the accelerator
+      # branch (incl. the local-LLM step) BEFORE harvesting to main (the operator's
+      # off-leash-first model). This test validates install.sh, so it must
+      # re-run when install.sh changes there too — otherwise the primary OS is
+      # only re-validated at harvest time.
+      - accelerator/pr-less-git-monster
     paths:
       - 'tools/setup/**'
       - '.mise.toml'

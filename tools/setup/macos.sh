@@ -142,5 +142,8 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/verifiers.sh"
+# Local-LLM core primitive — macOS gets the ollama binary via manifests/brew
+# (above); this pulls the pinned tiny model (manifests/local-llm). Graceful.
+"$SETUP_DIR/common/local-llm.sh"
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"

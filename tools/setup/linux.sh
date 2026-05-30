@@ -176,5 +176,8 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/verifiers.sh"
+# Local-LLM core primitive — installs pinned ollama binary + pulls the pinned
+# tiny model (manifests/local-llm). Graceful: warns + continues on failure.
+"$SETUP_DIR/common/local-llm.sh"
 "$SETUP_DIR/common/shellenv.sh"
 "$SETUP_DIR/common/profile-edit.sh"

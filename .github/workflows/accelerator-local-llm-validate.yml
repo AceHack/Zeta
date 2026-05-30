@@ -1,0 +1,81 @@
+# Accelerator — local-LLM entropy-lever validation (off-leash, accelerator branch).
+#
+# Proves the claim: a BARE runner + `install.sh` ⇒ working local-LLM substrate
+# (operator 2026-05-30 "install.sh is our biggest lever against entropy"). Runs the
+# real install graph, asserts the pinned model actually landed + serves, and runs
+# a REAL (not mocked) selection through the local model. This is the gate that
+# graduates the local-LLM core primitive from off-leash (accelerator) to main.
+#
+# Pushing this workflow / any local-LLM file to the accelerator branch triggers it.
+# Heavy (full install + ~400MB model pull); concurrency cancels superseded runs.
+
+name: accelerator-local-llm-validate
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [accelerator/pr-less-git-monster]
+    paths:
+      - "tools/setup/manifests/local-llm"
+      - "tools/setup/common/local-llm.sh"
+      - "tools/setup/linux.sh"
+      - "tools/setup/macos.sh"
+      - "tools/setup/manifests/brew"
+      - "tools/accelerator/local-llm.ts"
+      - "tools/accelerator/validate-local-llm.ts"
+      - ".github/workflows/accelerator-local-llm-validate.yml"
+
+concurrency:
+  group: accelerator-local-llm-validate-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-linux:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Run install.sh (the entropy lever — bare runner → substrate)
+        env:
+          # Authenticated mise (per the mise.sh fix) so the toolchain install
+          # doesn't hit the unauthenticated GitHub rate limit.
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Ensure ollama on PATH + daemon serving
+        run: |
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          export PATH="$HOME/.local/bin:$PATH"
+          command -v ollama
+          if ! curl -fsS http://127.0.0.1:11434/api/version >/dev/null 2>&1; then
+            (ollama serve >/dev/null 2>&1 &)
+            for _ in $(seq 1 30); do
+              curl -fsS http://127.0.0.1:11434/api/version >/dev/null 2>&1 && break
+              sleep 1
+            done
+          fi
+          curl -fsS http://127.0.0.1:11434/api/version
+
+      - name: Assert the pinned model landed (declarative manifest)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          MODEL=$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')
+          echo "expected model: $MODEL"
+          ollama list
+          ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"
+
+      - name: Mock-backed primitive tests (logic; run anywhere)
+        run: bun test tools/accelerator/local-llm.test.ts
+
+      - name: REAL local-LLM validation (entropy-lever end-to-end)
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          bun tools/accelerator/validate-local-llm.ts --root "$PWD"

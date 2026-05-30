@@ -1,0 +1,73 @@
+# .github/workflows/docker-ubuntu-install-sh-test.yml
+#
+# Docker-based install.sh test on Ubuntu — sibling to docker-nixos-install-sh-test
+# (operator 2026-05-30: "center our docker tests around ubuntu and nixos and have
+# tests for both with install.sh"). The Dockerfile IS the test: it runs install.sh
+# on a bare ubuntu image and validates the core local-LLM primitive (ollama +
+# pinned model + real chooseIndex probe). A failing install.sh / assert fails the
+# build, which fails this job.
+#
+# Off-leash on the accelerator branch (operator: "accelerator is for off-leash
+# testing; once we get it right, main becomes off-leash too"). This is the gate
+# that guards graduating the local-LLM install primitive to main.
+#
+# FIRST CUT uses a direct `docker build` (vs the nixos TS driver) for simplicity.
+# FOLLOW-UP (the operator's GHA-cache point): consolidate both OS tests onto a shared TS
+# driver + buildx `cache-from/to: type=gha` so the heavy install (1.2GB ollama +
+# toolchain) bakes once and iteration runs inside the cached image.
+#
+# Security: no github.event.* values interpolated into run: lines.
+
+name: docker-ubuntu-install-sh-test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [accelerator/pr-less-git-monster]
+    paths:
+      - "tools/ci/dockerfiles/ubuntu-install-sh-test/**"
+      - "tools/setup/**"
+      - "tools/accelerator/local-llm.ts"
+      - "tools/accelerator/validate-local-llm.ts"
+      - ".mise.toml"
+      - ".dockerignore"
+      - ".github/workflows/docker-ubuntu-install-sh-test.yml"
+  # Run on PRs to main too — after harvest the install-graph lives on main, so a
+  # PR touching it must be Ubuntu-tested (mirrors docker-nixos-install-sh-test).
+  # The shield must cover main, not just the accelerator branch: a test that only
+  # fires off-leash is a hole that reads as covered.
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - "tools/ci/dockerfiles/ubuntu-install-sh-test/**"
+      - "tools/setup/**"
+      - "tools/accelerator/local-llm.ts"
+      - "tools/accelerator/validate-local-llm.ts"
+      - ".mise.toml"
+      - ".dockerignore"
+      - ".github/workflows/docker-ubuntu-install-sh-test.yml"
+
+concurrency:
+  group: docker-ubuntu-install-sh-test-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  docker-ubuntu-test:
+    name: docker-ubuntu-install-sh-test
+    runs-on: ubuntu-24.04
+    # Cold build: full install.sh (mise toolchain + lean + jars) + ollama 1.2GB +
+    # 398MB model pull. Generous bound for the first uncached run.
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: docker build (the test — install.sh + local-LLM validation inside)
+        run: |
+          docker build \
+            -f tools/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile \
+            -t zeta-ubuntu-install-sh-test \
+            .

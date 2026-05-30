@@ -23,3 +23,10 @@ hermes-agent  # "Self-improving AI agent that creates skills from
               # resolved by brew (see `brew info hermes-agent` for
               # current list). Idempotent: brew install skips if
               # present.
+
+# Local-LLM core primitive (operator 2026-05-30 — "core, not optional"; small
+# CPU model = baseline substrate). macOS installs the ollama binary here; the
+# pinned MODEL is pulled by common/local-llm.sh per manifests/local-llm (the
+# model is the reproducible/pinned artifact; brew tracks latest ollama binary).
+ollama  # CPU-served tiny model for the move-next selector + observe.ts
+        # classifier + DST fixtures. Idempotent: brew install skips if present.

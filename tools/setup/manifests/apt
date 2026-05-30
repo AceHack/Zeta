@@ -15,3 +15,19 @@ git
 p7zip-full  # cascade #4 ISO content audit (7z list); ubuntu-24.04
             # default-installs but Linux maintainers running setup
             # locally need explicit declaration
+
+# Local-LLM core primitive (operator 2026-05-30): the ollama Linux release is a
+# .tar.zst (zstd), so common/local-llm.sh needs `tar --zstd` ⇒ the zstd binary.
+zstd        # required to extract ollama-linux-<arch>.tar.zst
+
+# .NET runtime native deps (mise installs the dotnet SDK; it needs these shared
+# libs to RUN). Present on full ubuntu runners (implicit), MISSING on a minimal
+# ubuntu:24.04 image — the docker-ubuntu-install-sh-test exposed this (dotnet
+# exited with no status = missing libicu). Declaring them makes the entropy lever
+# work on TRULY bare ubuntu. Per Microsoft Learn linux-scripted-manual deps;
+# build-essential already pulls libstdc++6/libgcc-s1/zlib1g. Names are Ubuntu
+# 24.04 (Noble: libicu74, libssl3t64 post-time_t-transition).
+libicu74          # ICU — .NET globalization (the classic "dotnet exited" cause)
+libssl3t64        # OpenSSL 3 runtime (Noble t64 name)
+libgssapi-krb5-2  # Kerberos/GSSAPI — .NET networking
+tzdata            # timezone data — .NET DateTime

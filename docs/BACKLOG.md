@@ -889,6 +889,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0934](backlog/P2/B-0934-backlog-index-integrity-required-or-advisory-decision-2026-05-29.md)** Decide whether backlog-index-integrity is required or explicitly advisory
 - [ ] **[B-0937](backlog/P2/B-0937-redundancy-checks-across-satellites-and-rules-mirror-beacon-rhyme-retirement-hub-over-budget-detector-2026-05-29.md)** Redundancy-checks across satellites + rules — duplicate-content audit, mirror→beacon rhyme-retirement, hub-over-budget detector
 - [ ] **[B-0939](backlog/P2/B-0939-self-propagating-markdown-compiler-rule-bootstrap-traveler-template-every-md-propagates-or-doesnt-compile-aaron-mika-2026-05-30.md)** Self-propagating-Markdown compiler-rule + bootstrap-traveler template (every .md is a self-propagating pattern through time or it doesn't compile)
+- [ ] **[B-0940](backlog/P2/B-0940-evaluate-ubuntu-support-value-nixos-primary-community-reach-aaron-2026-05-30.md)** Evaluate what Ubuntu support brings us — NixOS is primary; Ubuntu's value is community/contributor reach
+- [x] **[B-0941](backlog/P2/B-0941-nixos-native-ollama-local-llm-hole-in-the-shield-test-passes-by-skipping-aaron-2026-05-30.md)** NixOS-native ollama for the local-LLM primitive — close the hole in the shield (NixOS test passes by SKIPPING, not validating)
 - [ ] **[B-0942](backlog/P2/B-0942-co-dominant-git-mirrors-git-native-crdt-coordination-no-host-needed-aaron-2026-05-30.md)** Co-dominant git mirrors + git-native CRDT coordination — no host needed for coordination (local + GitHub + GitLab/Gitea/Forgejo + free-OSS git as co-dominant collaborating mirrors)
 
 ## P3 — convenience / deferred

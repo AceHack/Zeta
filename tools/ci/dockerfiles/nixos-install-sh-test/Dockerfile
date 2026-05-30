@@ -116,6 +116,9 @@ COPY .mise.toml /workspace/.mise.toml
 # package.json + bun.lock pin TS-runtime deps if install.sh references
 # them (e.g., bun --version checks); copy to mirror dev environment
 COPY package.json bun.lock* /workspace/
+# tools/accelerator carries the local-LLM primitive's validator + tests
+# (validate-local-llm.ts + local-llm.test.ts) for validation step 4 below.
+COPY tools/accelerator /workspace/tools/accelerator
 
 # Run install.sh — this exercises:
 #   1. install.sh dispatch (detects Linux → linux.sh)
@@ -155,6 +158,30 @@ RUN bash -lc 'set -o pipefail && eval "$(mise activate bash)" && \
 # the NixOS module evaluating, so we install via nix-shell as a proxy
 # check).
 RUN nix-shell -p gh --run 'gh --version | head -1'
+
+# Validation step 4 (B-0941): the local-LLM primitive ACTUALLY WORKS on NixOS —
+# closes the false-green where the nixos test passed by SKIPPING. install.sh's
+# local-llm.sh nix-branch installed ollama (FHS-safe via nix) + pulled the pinned
+# model during step 130; the model persists on disk, the daemon does not across
+# layers, so start it here and ASSERT (not skip): pinned model present + a REAL
+# chooseIndex probe + the run-anywhere mock tests. A skip-to-green here would
+# reintroduce the exact hole B-0941 names — so this RUN fails the build if the
+# local-LLM is absent. (assert-don't-skip per the shield rule.)
+RUN bash -lc 'set -eu; eval "$(mise activate bash)"; \
+    export PATH="$HOME/.nix-profile/bin:/nix/var/nix/profiles/default/bin:$PATH"; \
+    command -v ollama; \
+    (ollama serve >/tmp/ollama.log 2>&1 &); \
+    for _ in $(seq 1 30); do \
+      curl -fsS http://127.0.0.1:11434/api/version >/dev/null 2>&1 && break; \
+      sleep 1; \
+    done; \
+    curl -fsS http://127.0.0.1:11434/api/version || { echo "=== ollama serve log (/tmp/ollama.log) — daemon not reachable ==="; cat /tmp/ollama.log 2>/dev/null || echo "(no /tmp/ollama.log)"; echo "=== end serve log ==="; exit 7; }; \
+    MODEL="$(grep -E "^model" tools/setup/manifests/local-llm | awk "{print \$2}")"; \
+    echo "asserting model: $MODEL"; \
+    ollama list; \
+    ollama list | awk "NR>1 {print \$1}" | grep -qx "$MODEL"; \
+    bun test tools/accelerator/local-llm.test.ts; \
+    bun tools/accelerator/validate-local-llm.ts --root "$PWD"'
 
 # Final marker — if all steps succeed, this echo lands in the build
 # output as the success signal for CI.
