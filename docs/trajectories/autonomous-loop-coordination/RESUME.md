@@ -258,15 +258,23 @@ are prior-day pure Codex/Otto merged-PR adjacency. The #6113/#6115 burst did
 not become a top current incident window, so pure merged-PR adjacency remains a
 warning/debug signal until joined by a stronger source.
 
+Current B-0250 stronger-source escalation gate:
+`docs/trajectories/autonomous-loop-coordination/b0250-stronger-source-escalation-gate-2026-05-30.md`
+
+It keeps pure merged-PR adjacency warning-grade and emits a
+`coincidence-incident` critical signal only when a stronger source joins the
+window. The first bounded stronger-source set is loop-run claim increases,
+claim mutations, PR review blockers, failed gates, and explicit broadcast
+blockers.
+
 ## Recommended Next Action
 
-Keep the five-minute queue-drain window as a warning/debug surface, but require
-a stronger joined source before treating Codex/Otto merged-PR adjacency as an
-incident-grade signal.
+Add a bounded claim/PR blocker source join so review blockers and failed gates
+can participate in the stronger-source escalation gate without relying on the
+local broadcast bus.
 
 ## Next Child Packets
 
-- B-0250 stronger-source escalation gate for Codex/Otto adjacency
 - B-0250 claim/PR blocker source join calibration
 
 ## Evidence Links

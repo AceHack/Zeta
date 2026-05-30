@@ -243,6 +243,71 @@ describe("factory-health-monitor", () => {
       ]);
   });
 
+  test("classifyCoincidenceWindows keeps pure merged PR adjacency warning-grade", () => {
+    expect(
+      classifyCoincidenceWindows(
+        [
+          { id: "merged-pr-20", trajectory: "codex", occurredAt: "2026-05-30T05:00:00.000Z" },
+          { id: "merged-pr-21", trajectory: "otto", occurredAt: "2026-05-30T05:00:05.000Z" },
+        ],
+        { windowMs: 30_000, minimumEvents: 2 },
+      ),
+    ).toEqual([
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "1 event-window coincidence(s) detected",
+        action: "inspect shared upstream cause for coincident trajectory events",
+      },
+      {
+        surface: "coincidence-debug",
+        level: "warning",
+        message:
+          "Top coincidence windows: 2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto events=codex:merged-pr-20,otto:merged-pr-21",
+        action: "inspect listed coincidence event ids before adding another source",
+      },
+    ]);
+  });
+
+  test("classifyCoincidenceWindows escalates when a stronger source joins", () => {
+    expect(
+      classifyCoincidenceWindows(
+        [
+          { id: "merged-pr-20", trajectory: "otto", occurredAt: "2026-05-30T05:00:00.000Z" },
+          { id: "loop-run-20260530T050100Z", trajectory: "codex", occurredAt: "2026-05-30T05:00:05.000Z" },
+        ],
+        { windowMs: 30_000, minimumEvents: 2 },
+      ),
+    ).toEqual([
+      {
+        surface: "coincidence-incident",
+        level: "critical",
+        message: "1 incident-grade coincidence window(s) detected",
+        action: "investigate stronger-source coincidence before treating it as queue-drain noise",
+      },
+      {
+        surface: "coincidence-incident-debug",
+        level: "warning",
+        message:
+          "Incident-grade windows: 2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto events=otto:merged-pr-20,codex:loop-run-20260530T050100Z",
+        action: "inspect listed stronger-source event ids before escalating response",
+      },
+      {
+        surface: "coincidence",
+        level: "warning",
+        message: "1 event-window coincidence(s) detected",
+        action: "inspect shared upstream cause for coincident trajectory events",
+      },
+      {
+        surface: "coincidence-debug",
+        level: "warning",
+        message:
+          "Top coincidence windows: 2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto events=otto:merged-pr-20,codex:loop-run-20260530T050100Z",
+        action: "inspect listed coincidence event ids before adding another source",
+      },
+    ]);
+  });
+
   test("summarizeCoincidenceWindows emits capped compact debug lines", () => {
     const windows = findCoincidenceWindows(
       [

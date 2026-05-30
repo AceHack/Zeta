@@ -44,7 +44,18 @@ export interface CoincidenceEvent {
   description?: string;
   correlationKey?: string;
   correlationKeys?: string[];
+  source?: CoincidenceEventSource;
 }
+
+export type CoincidenceEventSource =
+  | "merged-pr"
+  | "trajectory-receipt"
+  | "loop-run"
+  | "claim-mutation"
+  | "pr-review-blocker"
+  | "failed-gate"
+  | "broadcast-blocker"
+  | "unknown";
 
 export interface CoincidenceWindowOptions {
   windowMs: number;
@@ -132,6 +143,13 @@ const FACTORY_EVENT_DEBUG_WINDOW_LIMIT = 3;
 const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
 const FACTORY_EVENT_MERGE_BURST_GAP_MS = 2 * 60 * 1000;
 const FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG = resolveCodexLoopRunnerLog(process.env);
+const INCIDENT_GRADE_COINCIDENCE_SOURCES: ReadonlySet<CoincidenceEventSource> = new Set([
+  "loop-run",
+  "claim-mutation",
+  "pr-review-blocker",
+  "failed-gate",
+  "broadcast-blocker",
+]);
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
   ".claude/",
@@ -246,6 +264,22 @@ function coincidenceEventDebugLabel(event: CoincidenceEvent): string {
   return `${event.trajectory}:${event.id}`;
 }
 
+function coincidenceEventSource(event: CoincidenceEvent): CoincidenceEventSource {
+  if (event.source !== undefined) {
+    return event.source;
+  }
+
+  if (event.id.startsWith("merged-pr-")) return "merged-pr";
+  if (event.id.startsWith("trajectory-receipt-")) return "trajectory-receipt";
+  if (event.id.startsWith("loop-run-")) return "loop-run";
+
+  return "unknown";
+}
+
+function coincidenceWindowHasIncidentSource(window: CoincidenceWindow): boolean {
+  return window.events.some((event) => INCIDENT_GRADE_COINCIDENCE_SOURCES.has(coincidenceEventSource(event)));
+}
+
 export function summarizeCoincidenceWindows(
   windows: readonly CoincidenceWindow[],
   options: CoincidenceWindowDebugOptions,
@@ -285,8 +319,30 @@ export function classifyCoincidenceWindows(
     maxTrajectoriesPerWindow: FACTORY_EVENT_DEBUG_TRAJECTORY_LIMIT,
     maxWindows: FACTORY_EVENT_DEBUG_WINDOW_LIMIT,
   });
+  const incidentWindows = windows.filter(coincidenceWindowHasIncidentSource);
 
-  return [
+  const signals: HealthSignal[] = [];
+  if (incidentWindows.length > 0) {
+    const incidentDebugLines = summarizeCoincidenceWindows(incidentWindows, {
+      maxEventsPerWindow: FACTORY_EVENT_DEBUG_EVENT_LIMIT,
+      maxTrajectoriesPerWindow: FACTORY_EVENT_DEBUG_TRAJECTORY_LIMIT,
+      maxWindows: FACTORY_EVENT_DEBUG_WINDOW_LIMIT,
+    });
+    signals.push({
+      surface: "coincidence-incident",
+      level: "critical",
+      message: `${incidentWindows.length} incident-grade coincidence window(s) detected`,
+      action: "investigate stronger-source coincidence before treating it as queue-drain noise",
+    });
+    signals.push({
+      surface: "coincidence-incident-debug",
+      level: "warning",
+      message: `Incident-grade windows: ${incidentDebugLines.join(" | ")}`,
+      action: "inspect listed stronger-source event ids before escalating response",
+    });
+  }
+
+  signals.push(
     {
       surface: "coincidence",
       level: "warning",
@@ -299,7 +355,9 @@ export function classifyCoincidenceWindows(
       message: `Top coincidence windows: ${debugLines.join(" | ")}`,
       action: "inspect listed coincidence event ids before adding another source",
     },
-  ];
+  );
+
+  return signals;
 }
 
 export function buildCoincidenceWindowTriggerSource(
