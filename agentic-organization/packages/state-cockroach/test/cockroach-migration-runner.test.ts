@@ -6,12 +6,13 @@ import {
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
   createCockroachMigrationRunner,
+  splitSqlStatements,
   type CockroachAnySqlStatement,
   type CockroachGenericSqlExecutor,
 } from "../src/index.ts";
 
 describe("cockroach migration runner", () => {
-  test("applies the core state migration through the generic SQL executor", async () => {
+  test("applies each statement of a migration separately (CockroachDB DDL+DML txn rule)", async () => {
     const executor = createRecordingSqlExecutor();
     const migration = createCockroachCoreStateMigration();
     const runner = createCockroachMigrationRunner({
@@ -21,16 +22,19 @@ describe("cockroach migration runner", () => {
 
     await runner.applyMigrations();
 
-    deepEqual(executor.statements, [
-      {
+    // each statement of the migration is executed on its own — never the whole
+    // multi-statement SQL as one query (which Cockroach runs as one implicit txn)
+    deepEqual(
+      executor.statements,
+      splitSqlStatements(migration.sql).map((sql) => ({
         name: CockroachMigrationStatement.ApplyMigration,
-        sql: migration.sql,
+        sql,
         parameters: [],
-      },
-    ]);
+      })),
+    );
   });
 
-  test("applies ordered core migrations including additive outbox claim fencing", async () => {
+  test("applies ordered core migrations as a flat, ordered statement stream", async () => {
     const executor = createRecordingSqlExecutor();
     const migrations = createCockroachCoreStateMigrations();
     const runner = createCockroachMigrationRunner({
@@ -40,9 +44,10 @@ describe("cockroach migration runner", () => {
 
     await runner.applyMigrations();
 
+    // the executed statements equal every migration's statements, in order
     deepEqual(
       executor.statements.map((statement) => statement.sql),
-      migrations.map((migration) => migration.sql),
+      migrations.flatMap((migration) => splitSqlStatements(migration.sql)),
     );
   });
 });

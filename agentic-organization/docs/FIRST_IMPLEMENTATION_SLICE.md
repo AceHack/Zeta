@@ -1,3 +1,9 @@
+---
+title: First Implementation Slice
+canonical_name: Agentic Organization
+status: design
+---
+
 # First Implementation Slice
 
 ## Status

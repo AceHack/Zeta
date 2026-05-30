@@ -231,6 +231,7 @@ describe("durable worker live integration", () => {
             workerOutboxBatchSize: DurableLiveIntegrationBatch.WorkerOutbox,
             workerReactionPlanBatchSize: DurableLiveIntegrationBatch.ReactionPlan,
             workerReactionPlanLeaseMs: DurableLiveIntegrationLease.ReactionPlanMs,
+            workerKeepAliveOrgHeartbeatDeadlineMs: 30_000,
           },
           durableAdapters: {
             cockroachExecutor: executor,

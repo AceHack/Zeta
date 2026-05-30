@@ -346,6 +346,7 @@ function createNoopRuntime() {
   return {
     runOnce: async () => ({
       status: WorkerRuntimeStatus.Healthy,
+      keepAlive: undefined,
       workerCycle: undefined,
       natsConsumerBatch: undefined,
       failures: [],

@@ -1,3 +1,9 @@
+---
+title: Agentic Organization Phased Development Plan
+canonical_name: Agentic Organization
+status: design
+---
+
 # Agentic Organization Phased Development Plan
 
 ## Purpose

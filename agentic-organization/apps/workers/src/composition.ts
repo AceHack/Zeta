@@ -1,3 +1,4 @@
+import type { KeepAliveLane } from "../../../packages/keepalive/src/index.ts";
 import type { NatsJetStreamEventConsumer } from "../../../packages/messaging-nats/src/index.ts";
 import type { OrganizationWorkerHost } from "../../../packages/workers/src/index.ts";
 import {
@@ -11,6 +12,8 @@ export type WorkerRuntimePorts = {
   organizationWorkerHost: OrganizationWorkerHost;
   natsEventConsumer: NatsJetStreamEventConsumer;
   telemetrySink: WorkerRuntimeTelemetrySink;
+  /** optional so in-memory composition paths can omit the durable keep-alive lane */
+  keepAliveLane?: KeepAliveLane;
 };
 
 export type ComposeWorkerRuntimeInput = {
@@ -24,5 +27,6 @@ export function composeWorkerRuntime(input: ComposeWorkerRuntimeInput): WorkerRu
     organizationWorkerHost: input.ports.organizationWorkerHost,
     natsEventConsumer: input.ports.natsEventConsumer,
     telemetrySink: input.ports.telemetrySink,
+    ...(input.ports.keepAliveLane === undefined ? {} : { keepAliveLane: input.ports.keepAliveLane }),
   });
 }

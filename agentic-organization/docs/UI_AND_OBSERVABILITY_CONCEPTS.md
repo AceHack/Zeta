@@ -1,3 +1,9 @@
+---
+title: Agentic Organization UI and Observability Concepts
+canonical_name: Agentic Organization
+status: design
+---
+
 # Agentic Organization UI and Observability Concepts
 
 ## Purpose

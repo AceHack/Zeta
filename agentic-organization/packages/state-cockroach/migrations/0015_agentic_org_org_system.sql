@@ -1,0 +1,36 @@
+CREATE TABLE IF NOT EXISTS agentic_org_org_events (
+  org_event_id STRING PRIMARY KEY,
+  kind STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  actor_hat_id STRING NULL,
+  actor_agent_id STRING NULL,
+  department_id STRING NULL,
+  subject_id STRING NOT NULL,
+  from_state STRING NULL,
+  to_state STRING NULL,
+  decision STRING NOT NULL,
+  supervisor_chain JSONB NOT NULL,
+  evidence_refs JSONB NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL,
+  occurred_at TIMESTAMPTZ NOT NULL,
+  INDEX org_events_by_org_time (organization_id, occurred_at),
+  INDEX org_events_by_subject (subject_id, occurred_at)
+);
+CREATE TABLE IF NOT EXISTS agentic_org_hat_bindings (
+  binding_id STRING PRIMARY KEY,
+  hat_id STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  wearer_agent_id STRING NOT NULL,
+  phase STRING NOT NULL,
+  bound_at TIMESTAMPTZ NOT NULL,
+  warmup_ends_at TIMESTAMPTZ NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  activated_at TIMESTAMPTZ NULL,
+  ended_at TIMESTAMPTZ NULL,
+  cooldown_until TIMESTAMPTZ NULL,
+  reason STRING NULL,
+  INDEX hat_bindings_by_org_phase (organization_id, phase),
+  INDEX hat_bindings_by_hat (hat_id, phase)
+);

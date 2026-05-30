@@ -1,3 +1,9 @@
+---
+title: Agentic Organization Runtime - Current Design
+canonical_name: Agentic Organization
+status: design
+---
+
 # Agentic Organization Runtime - Current Design
 
 ## Purpose

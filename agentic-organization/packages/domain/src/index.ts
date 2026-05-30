@@ -9,6 +9,17 @@ export {
   type QualityGateSequencePolicy,
 } from "./company-work-policy.ts";
 export {
+  GateOwner,
+  RUN_PHASE_FOR_STATE,
+  STATE_RECONCILIATION,
+  TypeSpecificRuleKind,
+  reconcileState,
+  runPhaseForState,
+  typeSpecificRulesFor,
+  type StateReconciliationRow,
+  type TypeSpecificRule,
+} from "./state-reconciliation.ts";
+export {
   AgenticAggregateType,
   AgenticEventType,
   CommandType,
@@ -101,3 +112,19 @@ export {
   isScheduleBlockType,
   isWorkItemStateChangedPayload,
 } from "./records.ts";
+export { DepartmentId, type Department } from "./department.ts";
+export {
+  HatLevel,
+  ReputationScope,
+  RiskLevel,
+  SuccessionPolicy,
+  ToolBundle,
+  type HatDefinition,
+} from "./hat-definition.ts";
+export { OrgEventKind, type OrgEvent } from "./org-event.ts";
+export {
+  HatBindingPhase,
+  TerminalHatBindingPhases,
+  isTerminalHatBinding,
+  type HatBinding,
+} from "./hat-binding.ts";

@@ -1,3 +1,9 @@
+---
+title: Runtime Technology and Package Strategy
+canonical_name: Agentic Organization
+status: design
+---
+
 # Runtime Technology and Package Strategy
 
 ## Purpose

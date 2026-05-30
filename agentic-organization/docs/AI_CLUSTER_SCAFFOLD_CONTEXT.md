@@ -1,3 +1,9 @@
+---
+title: AI Cluster Scaffold Context
+canonical_name: Agentic Organization
+status: design
+---
+
 # AI Cluster Scaffold Context
 
 This document captures repository and bootstrap context from the `ai-cluster-bootstrap` work so Organization implementation aligns with the actual cluster direction. It is not a deployment-manifest spec.

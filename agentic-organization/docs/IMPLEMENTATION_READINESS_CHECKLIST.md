@@ -1,3 +1,9 @@
+---
+title: Implementation Readiness Checklist
+canonical_name: Agentic Organization
+status: design
+---
+
 # Implementation Readiness Checklist
 
 This checklist defines what still needs to be decided before implementation begins. The goal is to avoid designing forever while still defining the contracts that would be painful to change after code exists.

@@ -1,3 +1,9 @@
+---
+title: V0 Schema and Commands
+canonical_name: Agentic Organization
+status: design
+---
+
 # V0 Schema and Commands
 
 ## Purpose

@@ -1,3 +1,9 @@
+---
+title: Department, Hat, and Tool Inventory
+canonical_name: Agentic Organization
+status: design
+---
+
 # Department, Hat, and Tool Inventory
 
 This document is the first inventory for the Agentic Organization. It expands the architecture into concrete departments, hats, MCP tool bundles, approval powers, and ownership boundaries.

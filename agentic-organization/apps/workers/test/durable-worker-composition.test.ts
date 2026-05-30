@@ -39,6 +39,7 @@ describe("durable worker runtime composition", () => {
         workerOutboxBatchSize: 5,
         workerReactionPlanBatchSize: 3,
         workerReactionPlanLeaseMs: 300_000,
+        workerKeepAliveOrgHeartbeatDeadlineMs: 30_000,
       },
       durableAdapters: {
         cockroachExecutor,
@@ -86,6 +87,7 @@ describe("durable worker runtime composition", () => {
         workerOutboxBatchSize: 5,
         workerReactionPlanBatchSize: 3,
         workerReactionPlanLeaseMs: 300_000,
+        workerKeepAliveOrgHeartbeatDeadlineMs: 30_000,
       },
       durableAdapters: {
         cockroachExecutor: createRecordingCockroachExecutor(),
@@ -128,6 +130,7 @@ describe("durable worker runtime composition", () => {
         workerOutboxBatchSize: 5,
         workerReactionPlanBatchSize: 3,
         workerReactionPlanLeaseMs: 300_000,
+        workerKeepAliveOrgHeartbeatDeadlineMs: 30_000,
       },
       durableAdapters: {
         cockroachExecutor: createRecordingCockroachExecutor(),

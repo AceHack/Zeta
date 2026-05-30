@@ -24,6 +24,7 @@ export const WorkerRuntimeStatus = {
 export type WorkerRuntimeStatus = (typeof WorkerRuntimeStatus)[keyof typeof WorkerRuntimeStatus];
 
 export const WorkerRuntimeFailureStage = {
+  KeepAlive: "keep_alive",
   NatsConsumer: "nats_consumer",
   OrganizationWorker: "organization_worker",
   Telemetry: "telemetry",
@@ -36,6 +37,7 @@ export const WorkerRuntimeConfigErrorCode = {
   InvalidWorkerOutboxBatchSize: "invalid_worker_outbox_batch_size",
   InvalidWorkerReactionPlanBatchSize: "invalid_worker_reaction_plan_batch_size",
   InvalidWorkerReactionPlanLeaseMs: "invalid_worker_reaction_plan_lease_ms",
+  InvalidWorkerKeepAliveOrgHeartbeatDeadlineMs: "invalid_worker_keep_alive_org_heartbeat_deadline_ms",
   InvalidNatsServers: "invalid_nats_servers",
   MissingCockroachDatabaseUrl: "missing_cockroach_database_url",
   InvalidNatsInboundBatchSize: "invalid_nats_inbound_batch_size",
@@ -44,6 +46,8 @@ export const WorkerRuntimeConfigErrorCode = {
   MissingNatsServers: "missing_nats_servers",
   MissingNatsStreamName: "missing_nats_stream_name",
   MissingOrganizationId: "missing_organization_id",
+  /** exactly one of LLM_BASE_URL / LLM_MODEL was provided — a misconfiguration */
+  PartialLlmConfig: "partial_llm_config",
 } as const;
 
 export type WorkerRuntimeConfigErrorCode =
@@ -90,8 +94,28 @@ export type WorkerRuntimeFailure = {
   message: string;
 };
 
+/**
+ * Minimal structural port for the deterministic keep-alive lane. Defined here
+ * (not imported from the keepalive package) so the low-level worker runtime
+ * stays ignorant of the high-level control-plane package — dependency inversion.
+ * The concrete `KeepAliveLane` from packages/keepalive satisfies it structurally.
+ */
+export type WorkerKeepAliveLaneResult = {
+  status: string;
+  appliedCount: number;
+  failures: readonly { message: string }[];
+};
+
+export type WorkerKeepAliveLane = {
+  runOnce: () => Promise<WorkerKeepAliveLaneResult>;
+};
+
+/** the status a keep-alive lane reports when it ran cleanly and the org is alive */
+const WorkerKeepAliveTickedStatus = "ticked";
+
 export type WorkerRuntimeRunResult = {
   status: WorkerRuntimeStatus;
+  keepAlive: WorkerKeepAliveLaneResult | undefined;
   workerCycle: WorkerCycleResult | undefined;
   natsConsumerBatch: NatsJetStreamConsumeBatchResult | undefined;
   failures: readonly WorkerRuntimeFailure[];
@@ -106,6 +130,13 @@ export type CreateWorkerRuntimeInput = {
   organizationWorkerHost: OrganizationWorkerHost;
   natsEventConsumer: NatsJetStreamEventConsumer;
   telemetrySink: WorkerRuntimeTelemetrySink;
+  /**
+   * Optional deterministic keep-alive lane. When provided it ticks FIRST every
+   * cycle (liveness is the most safety-critical lane — the org heartbeat must
+   * fire even if work-processing later degrades). Omitted in tests/contexts
+   * that only exercise the work + ingestion lanes.
+   */
+  keepAliveLane?: WorkerKeepAliveLane;
 };
 
 export function createWorkerRuntime(input: CreateWorkerRuntimeInput): WorkerRuntime {
@@ -114,6 +145,12 @@ export function createWorkerRuntime(input: CreateWorkerRuntimeInput): WorkerRunt
   return {
     runOnce: async () => {
       const failures: WorkerRuntimeFailure[] = [];
+      // Keep-alive ticks first: the org heartbeat is the most safety-critical
+      // lane and must fire even if work-processing later degrades.
+      const keepAlive = await runKeepAliveLane({
+        keepAliveLane: input.keepAliveLane,
+        failures,
+      });
       const workerCycle = await runOrganizationWorker({
         organizationWorkerHost: input.organizationWorkerHost,
         telemetrySink: input.telemetrySink,
@@ -128,16 +165,48 @@ export function createWorkerRuntime(input: CreateWorkerRuntimeInput): WorkerRunt
 
       return {
         status: resolveWorkerRuntimeStatus({
+          keepAlive,
           workerCycle,
           natsConsumerBatch,
           failures,
         }),
+        keepAlive,
         workerCycle,
         natsConsumerBatch,
         failures,
       };
     },
   };
+}
+
+type RunKeepAliveLaneInput = {
+  keepAliveLane: WorkerKeepAliveLane | undefined;
+  failures: WorkerRuntimeFailure[];
+};
+
+async function runKeepAliveLane(input: RunKeepAliveLaneInput): Promise<WorkerKeepAliveLaneResult | undefined> {
+  if (input.keepAliveLane === undefined) {
+    return undefined;
+  }
+
+  try {
+    const result = await input.keepAliveLane.runOnce();
+    for (const failure of result.failures) {
+      input.failures.push({
+        stage: WorkerRuntimeFailureStage.KeepAlive,
+        message: failure.message,
+      });
+    }
+    return result;
+  } catch (error) {
+    // the keep-alive lane should never throw, but if it does the loop survives —
+    // driving the org to stay alive must not be killed by one bad tick
+    input.failures.push({
+      stage: WorkerRuntimeFailureStage.KeepAlive,
+      message: extractErrorMessage(error),
+    });
+    return undefined;
+  }
 }
 
 function validateWorkerRuntimeConfig(config: WorkerRuntimeConfig): void {
@@ -267,6 +336,7 @@ async function recordTelemetry(input: RecordTelemetryInput): Promise<void> {
 }
 
 type ResolveWorkerRuntimeStatusInput = {
+  keepAlive: WorkerKeepAliveLaneResult | undefined;
   workerCycle: WorkerCycleResult | undefined;
   natsConsumerBatch: NatsJetStreamConsumeBatchResult | undefined;
   failures: readonly WorkerRuntimeFailure[];
@@ -275,6 +345,7 @@ type ResolveWorkerRuntimeStatusInput = {
 function resolveWorkerRuntimeStatus(input: ResolveWorkerRuntimeStatusInput): WorkerRuntimeStatus {
   if (
     input.failures.length > 0 ||
+    isKeepAliveLaneDegraded(input.keepAlive) ||
     input.workerCycle?.status === WorkerCycleStatus.Degraded ||
     isNatsConsumerBatchDegraded(input.natsConsumerBatch)
   ) {
@@ -282,6 +353,16 @@ function resolveWorkerRuntimeStatus(input: ResolveWorkerRuntimeStatusInput): Wor
   }
 
   return WorkerRuntimeStatus.Healthy;
+}
+
+function isKeepAliveLaneDegraded(keepAlive: WorkerKeepAliveLaneResult | undefined): boolean {
+  if (keepAlive === undefined) {
+    return false;
+  }
+
+  // A keep-alive tick can be degraded with zero apply failures (e.g. the org is
+  // flatlining) — so we check the lane's own status, not just failure count.
+  return keepAlive.status !== WorkerKeepAliveTickedStatus;
 }
 
 function isNatsConsumerBatchDegraded(batch: NatsJetStreamConsumeBatchResult | undefined): boolean {

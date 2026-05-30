@@ -1,3 +1,9 @@
+---
+title: Foundational Context and Language
+canonical_name: Agentic Organization
+status: design
+---
+
 # Foundational Context and Language
 
 This document captures working context and vocabulary that should inform the Agentic Organization design. It is not a proof system and it is not a demand that every metaphor become code. It records the collaborator's working language so implementation decisions preserve the intended shape.

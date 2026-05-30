@@ -1,3 +1,9 @@
+---
+title: Agent-Native Knowledge Graph and Retrieval
+canonical_name: Agentic Organization
+status: design
+---
+
 # Agent-Native Knowledge Graph and Retrieval
 
 ## Purpose

@@ -22,6 +22,11 @@ export const CockroachCoreStateMigrationName = {
   HatAssignmentAuthorityProjectionV8: "0008_agentic_org_hat_assignment_authority_projection",
   ReactionPlanExecutionLifecycleV9: "0009_agentic_org_reaction_plan_execution_lifecycle",
   QualityGateEvaluationKernelV10: "0010_agentic_org_quality_gate_evaluation_kernel",
+  ControlPlaneKeepAliveV11: "0011_agentic_org_control_plane_keep_alive",
+  AgentLivenessV12: "0012_agentic_org_agent_liveness",
+  HindsightMemoryV13: "0013_agentic_org_hindsight_memory",
+  HermesRunV14: "0014_agentic_org_hermes_run",
+  OrgSystemV15: "0015_agentic_org_org_system",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -45,6 +50,13 @@ export const CockroachTableName = {
   ReactionPlans: "agentic_org_reaction_plans",
   IdempotencyRecords: "agentic_org_idempotency_records",
   PolicyObservations: "agentic_org_policy_observations",
+  ControlPlaneHeartbeat: "agentic_org_control_plane_heartbeat",
+  ControlPlaneAlerts: "agentic_org_control_plane_alerts",
+  AgentHeartbeat: "agentic_org_agent_heartbeat",
+  HindsightMemory: "agentic_org_hindsight_memory",
+  HermesRun: "agentic_org_hermes_run",
+  OrgEvents: "agentic_org_org_events",
+  HatBindings: "agentic_org_hat_bindings",
 } as const;
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
@@ -124,6 +136,11 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachHatAssignmentAuthorityProjectionMigration(),
     createCockroachReactionPlanExecutionLifecycleMigration(),
     createCockroachQualityGateEvaluationKernelMigration(),
+    createCockroachControlPlaneKeepAliveMigration(),
+    createCockroachAgentLivenessMigration(),
+    createCockroachHindsightMemoryMigration(),
+    createCockroachHermesRunMigration(),
+    createCockroachOrgSystemMigration(),
   ];
 }
 
@@ -174,6 +191,181 @@ export function createCockroachQualityGateEvaluationKernelMigration(): Cockroach
     name: CockroachCoreStateMigrationName.QualityGateEvaluationKernelV10,
     sql: createQualityGateEvaluationsTableSql(),
   };
+}
+
+/**
+ * Control-plane keep-alive tables — the durable substrate for the operator's
+ * #1 tenet ("drive the organization to stay alive"). Two tables, two change
+ * rates (DV2.0 split):
+ *   - heartbeat: ONE row per org, UPSERTed every keep-alive tick. last_tick_at
+ *     advancing IS the org's observable proof of life ("SELECT last_tick_at").
+ *   - alerts: append-only log of self-heal signals (org stall, stale-work
+ *     reassignment, lease reap) the deterministic engine emitted.
+ */
+export function createCockroachControlPlaneKeepAliveMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ControlPlaneKeepAliveV11,
+    sql: [createControlPlaneHeartbeatTableSql(), createControlPlaneAlertsTableSql()].join("\n\n"),
+  };
+}
+
+/**
+ * Agent liveness — the second half of the keep-alive tenet ("drive the agents
+ * to stay alive"). One row per (org, agent): an agent session UPSERTs its
+ * heartbeat as it works. The keep-alive engine reads these, and a heartbeat
+ * older than its deadline_ms marks the agent stale -> its work is flagged for
+ * reassignment (an agent-decidable follow-up; the control plane only signals).
+ */
+export function createCockroachAgentLivenessMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.AgentLivenessV12,
+    sql: createAgentHeartbeatTableSql(),
+  };
+}
+
+/**
+ * Hindsight memory — the durable substrate for "set up hermes... the memory".
+ * An agent retains what it learned (attributed by hat assignment); recall is
+ * SCOPED by project (Organization memory policy: scoped recall, never global);
+ * attribution is STICKY (a memory keeps its original author even when recalled
+ * by another hat). The Cockroach Memory adapter persists this across restarts.
+ */
+export function createCockroachHindsightMemoryMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.HindsightMemoryV13,
+    sql: createHindsightMemoryTableSql(),
+  };
+}
+
+/**
+ * Hermes runs — the durable, auditable record of every agent run (the autonomous
+ * data plane). One row per run: the Organization binding (work item, agent,
+ * session, hat, prompt-flow run), the run state (running/completed/failed), the
+ * last heartbeat, and the outcome/failure. The Cockroach Hermes runtime adapter
+ * persists this across restarts so the org has a durable history of who ran on
+ * what and how it ended.
+ */
+export function createCockroachHermesRunMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.HermesRunV14,
+    sql: createHermesRunTableSql(),
+  };
+}
+
+export function createCockroachOrgSystemMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.OrgSystemV15,
+    sql: `${createOrgEventsTableSql()}\n${createHatBindingsTableSql()}`,
+  };
+}
+
+function createOrgEventsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.OrgEvents} (
+  org_event_id STRING PRIMARY KEY,
+  kind STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  actor_hat_id STRING NULL,
+  actor_agent_id STRING NULL,
+  department_id STRING NULL,
+  subject_id STRING NOT NULL,
+  from_state STRING NULL,
+  to_state STRING NULL,
+  decision STRING NOT NULL,
+  supervisor_chain JSONB NOT NULL,
+  evidence_refs JSONB NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  trace_id STRING NOT NULL,
+  occurred_at TIMESTAMPTZ NOT NULL,
+  INDEX org_events_by_org_time (organization_id, occurred_at),
+  INDEX org_events_by_subject (subject_id, occurred_at)
+);`.trim();
+}
+
+function createHatBindingsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.HatBindings} (
+  binding_id STRING PRIMARY KEY,
+  hat_id STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  wearer_agent_id STRING NOT NULL,
+  phase STRING NOT NULL,
+  bound_at TIMESTAMPTZ NOT NULL,
+  warmup_ends_at TIMESTAMPTZ NOT NULL,
+  expires_at TIMESTAMPTZ NOT NULL,
+  activated_at TIMESTAMPTZ NULL,
+  ended_at TIMESTAMPTZ NULL,
+  cooldown_until TIMESTAMPTZ NULL,
+  reason STRING NULL,
+  INDEX hat_bindings_by_org_phase (organization_id, phase),
+  INDEX hat_bindings_by_hat (hat_id, phase)
+);`.trim();
+}
+
+function createControlPlaneHeartbeatTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneHeartbeat} (
+  organization_id STRING PRIMARY KEY,
+  last_tick_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL
+);`.trim();
+}
+
+function createControlPlaneAlertsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneAlerts} (
+  control_plane_alert_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  kind STRING NOT NULL,
+  detail_json JSONB NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL
+);`.trim();
+}
+
+function createAgentHeartbeatTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.AgentHeartbeat} (
+  organization_id STRING NOT NULL,
+  agent_id STRING NOT NULL,
+  hat_assignment_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  last_heartbeat_at TIMESTAMPTZ NOT NULL,
+  deadline_ms INT8 NOT NULL,
+  version INT8 NOT NULL,
+  PRIMARY KEY (organization_id, agent_id)
+);`.trim();
+}
+
+function createHindsightMemoryTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.HindsightMemory} (
+  memory_id STRING PRIMARY KEY,
+  agent_id STRING NOT NULL,
+  hat_assignment_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  prompt_flow_run_id STRING NOT NULL,
+  content STRING NOT NULL,
+  retained_at TIMESTAMPTZ NOT NULL
+);`.trim();
+}
+
+function createHermesRunTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.HermesRun} (
+  run_id STRING PRIMARY KEY,
+  work_item_id STRING NOT NULL,
+  agent_id STRING NOT NULL,
+  session_id STRING NOT NULL,
+  hat_assignment_id STRING NOT NULL,
+  prompt_flow_run_id STRING NOT NULL,
+  state STRING NOT NULL,
+  last_heartbeat_at TIMESTAMPTZ NOT NULL,
+  outcome_summary STRING,
+  outcome_evidence_refs JSONB,
+  failure_reason STRING
+);`.trim();
 }
 
 function createProjectsTableSql(): string {

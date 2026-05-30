@@ -1,3 +1,9 @@
+---
+title: Gastown Reference Analysis
+canonical_name: Agentic Organization
+status: design
+---
+
 # Gastown Reference Analysis
 
 ## Purpose

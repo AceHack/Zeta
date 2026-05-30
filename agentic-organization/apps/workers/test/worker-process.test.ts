@@ -264,6 +264,7 @@ function createRecordingRuntime(calls: string[]): WorkerRuntime {
 
       return {
         status: WorkerRuntimeStatus.Healthy,
+        keepAlive: undefined,
         workerCycle: undefined,
         natsConsumerBatch: undefined,
         failures: [],

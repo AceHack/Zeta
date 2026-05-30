@@ -64,7 +64,10 @@ export type ReactionPlanActorResolverPort = {
 };
 
 export type CreateApplicationReactionPlanActionExecutorInput = IdGenerator & {
-  commandPipeline: CommandPipeline;
+  // ISP-minimal: this executor only ever builds + executes a CreateDiscussionAnchorCommand,
+  // so it depends on the narrowest pipeline that can do that. Any wider pipeline
+  // (e.g. CommandPipeline<PipelineCommand>) is assignable here via contravariance.
+  commandPipeline: CommandPipeline<CreateDiscussionAnchorCommand>;
   actorResolver: ReactionPlanActorResolverPort;
 };
 

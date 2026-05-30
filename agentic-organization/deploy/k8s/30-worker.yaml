@@ -1,0 +1,54 @@
+# The agentic-organization worker process. On start it runs the Cockroach
+# migration bootstrapper (incl. 0011 control-plane keep-alive), checks readiness,
+# then loops runOnce(): keep-alive ticks the org heartbeat FIRST every cycle
+# (deterministic "stay alive"), then the org-worker + NATS-consumer lanes.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: agentic-org
+  labels:
+    app: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: agentic-org-worker:keepalive
+          imagePullPolicy: IfNotPresent
+          env:
+            - { name: AGENTIC_ORG_ENV, value: "dev" }
+            - { name: AGENTIC_ORG_ID, value: "org-lfg" }
+            - {
+                name: COCKROACH_DATABASE_URL,
+                value: "postgresql://root@cockroach:26257/defaultdb?sslmode=disable",
+              }
+            - { name: NATS_SERVERS, value: "nats://nats:4222" }
+            - { name: NATS_STREAM, value: "agentic-org-events" }
+            - { name: NATS_DURABLE, value: "agentic-org-v0-automation-planner" }
+            - { name: NATS_INBOUND_BATCH_SIZE, value: "25" }
+            - { name: WORKER_INBOUND_BATCH_SIZE, value: "15" }
+            - { name: WORKER_OUTBOX_BATCH_SIZE, value: "10" }
+            - { name: WORKER_REACTION_PLAN_BATCH_SIZE, value: "8" }
+            - { name: WORKER_REACTION_PLAN_LEASE_MS, value: "300000" }
+            # The keep-alive ticks once per worker cycle, and an idle cycle is
+            # bounded by the NATS pull long-poll (~30s). The deadline must exceed
+            # the max cycle time so a healthy org is not flagged flatlining; 90s
+            # gives comfortable margin over the ~30s idle cycle. (Future hardening:
+            # an independent fast keep-alive loop decoupled from the work cycle.)
+            - { name: WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS, value: "90000" }
+            # the agent's live decision backend: real model calls to the
+            # in-cluster Ollama service (no external credentials). If unset, the
+            # agent uses the deterministic first-legal-option policy.
+            - { name: LLM_BASE_URL, value: "http://ollama:11434" }
+            - { name: LLM_MODEL, value: "qwen2:0.5b" }
+          resources:
+            requests: { cpu: "50m", memory: "128Mi" }
+            limits: { cpu: "500m", memory: "512Mi" }

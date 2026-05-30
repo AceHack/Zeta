@@ -1,3 +1,9 @@
+---
+title: Organization Layer Build Plan
+canonical_name: Agentic Organization
+status: design
+---
+
 # Organization Layer Build Plan
 
 This document describes how to build the Organization layer that makes departments and hats operational. The hat inventory defines who can exist. This build plan defines the environment, automation, runtime state, and feedback loops that let each hat actually perform its role.

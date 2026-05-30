@@ -1,3 +1,9 @@
+---
+title: V0 Policy and Runtime Boundaries
+canonical_name: Agentic Organization
+status: design
+---
+
 # V0 Policy and Runtime Boundaries
 
 ## Purpose

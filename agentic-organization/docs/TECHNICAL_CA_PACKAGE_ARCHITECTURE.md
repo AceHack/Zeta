@@ -1,3 +1,9 @@
+---
+title: Technical CA: Package-First Agentic Organization Architecture
+canonical_name: Agentic Organization
+status: design
+---
+
 # Technical CA: Package-First Agentic Organization Architecture
 
 ## Status

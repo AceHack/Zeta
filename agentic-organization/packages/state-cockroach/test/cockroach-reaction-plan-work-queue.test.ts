@@ -59,7 +59,7 @@ describe("cockroach reaction plan work queue", () => {
     ]);
     equal(executor.statements[0]?.sql.includes("FOR UPDATE SKIP LOCKED"), true);
     equal(executor.statements[0]?.sql.includes("claim_expires_at <= now()"), true);
-    equal(executor.statements[0]?.sql.includes("claim_expires_at = now() + ($3 * INTERVAL '1 millisecond')"), true);
+    equal(executor.statements[0]?.sql.includes("claim_expires_at = now() + ($3::INT8 * INTERVAL '1 millisecond')"), true);
     equal(executor.statements[0]?.sql.includes("$4"), false);
     equal(executor.statements[0]?.sql.includes("next_attempt_at IS NULL OR next_attempt_at <= now()"), true);
     deepEqual(claim.reactionPlans[0], {

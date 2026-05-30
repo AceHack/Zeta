@@ -1,3 +1,9 @@
+---
+title: V0 Executable Contract
+canonical_name: Agentic Organization
+status: design
+---
+
 # V0 Executable Contract
 
 ## Purpose

@@ -2,10 +2,12 @@ import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import {
+  WorkerKeepAliveConfigDefault,
   WorkerProcessEnvName,
   WorkerRuntimeConfigError,
   WorkerRuntimeConfigErrorCode,
   parseWorkerRuntimeConfigFromEnv,
+  type WorkerProcessEnvironment,
 } from "../src/index.ts";
 
 describe("worker runtime config parsing", () => {
@@ -37,8 +39,40 @@ describe("worker runtime config parsing", () => {
         workerOutboxBatchSize: 10,
         workerReactionPlanBatchSize: 8,
         workerReactionPlanLeaseMs: 300000,
+        workerKeepAliveOrgHeartbeatDeadlineMs: WorkerKeepAliveConfigDefault.OrgHeartbeatDeadlineMs,
       },
     );
+  });
+
+  test("defaults the keep-alive org-heartbeat deadline when the env value is omitted", () => {
+    const config = parseWorkerRuntimeConfigFromEnv(createMinimalValidEnv());
+
+    equal(config.workerKeepAliveOrgHeartbeatDeadlineMs, WorkerKeepAliveConfigDefault.OrgHeartbeatDeadlineMs);
+  });
+
+  test("honors an explicit keep-alive org-heartbeat deadline override", () => {
+    const config = parseWorkerRuntimeConfigFromEnv({
+      ...createMinimalValidEnv(),
+      [WorkerProcessEnvName.WorkerKeepAliveOrgHeartbeatDeadlineMs]: "45000",
+    });
+
+    equal(config.workerKeepAliveOrgHeartbeatDeadlineMs, 45000);
+  });
+
+  test("rejects an invalid keep-alive org-heartbeat deadline override", () => {
+    try {
+      parseWorkerRuntimeConfigFromEnv({
+        ...createMinimalValidEnv(),
+        [WorkerProcessEnvName.WorkerKeepAliveOrgHeartbeatDeadlineMs]: "not-a-number",
+      });
+      throw new Error("expected config parsing to fail");
+    } catch (error) {
+      equal(error instanceof WorkerRuntimeConfigError, true);
+      equal(
+        (error as WorkerRuntimeConfigError).code,
+        WorkerRuntimeConfigErrorCode.InvalidWorkerKeepAliveOrgHeartbeatDeadlineMs,
+      );
+    }
   });
 
   test("rejects missing required env values with typed errors", () => {
@@ -213,7 +247,53 @@ describe("worker runtime config parsing", () => {
       WorkerRuntimeConfigErrorCode.InvalidNatsServers,
     );
   });
+
+  test("throws on partial LLM config — only LLM_BASE_URL is set", () => {
+    assertConfigError(
+      { ...createMinimalValidEnv(), [WorkerProcessEnvName.LlmBaseUrl]: "http://ollama:11434" },
+      WorkerRuntimeConfigErrorCode.PartialLlmConfig,
+    );
+  });
+
+  test("throws on partial LLM config — only LLM_MODEL is set", () => {
+    assertConfigError(
+      { ...createMinimalValidEnv(), [WorkerProcessEnvName.LlmModel]: "qwen2:0.5b" },
+      WorkerRuntimeConfigErrorCode.PartialLlmConfig,
+    );
+  });
+
+  test("accepts both LLM env vars together", () => {
+    const config = parseWorkerRuntimeConfigFromEnv({
+      ...createMinimalValidEnv(),
+      [WorkerProcessEnvName.LlmBaseUrl]: " http://ollama:11434 ",
+      [WorkerProcessEnvName.LlmModel]: " qwen2:0.5b ",
+    });
+    equal(config.llmBaseUrl, "http://ollama:11434");
+    equal(config.llmModel, "qwen2:0.5b");
+  });
+
+  test("omits LLM config when neither env var is set (deterministic-composer mode)", () => {
+    const config = parseWorkerRuntimeConfigFromEnv(createMinimalValidEnv());
+    equal(config.llmBaseUrl, undefined);
+    equal(config.llmModel, undefined);
+  });
 });
+
+function createMinimalValidEnv(): WorkerProcessEnvironment {
+  return {
+    [WorkerProcessEnvName.AgenticOrgEnv]: "dev",
+    [WorkerProcessEnvName.AgenticOrgId]: "org-lfg",
+    [WorkerProcessEnvName.CockroachDatabaseUrl]: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
+    [WorkerProcessEnvName.NatsServers]: "nats://nats.nats.svc.cluster.local:4222",
+    [WorkerProcessEnvName.NatsStream]: "agentic-org-events",
+    [WorkerProcessEnvName.NatsDurable]: "agentic-org-v0-automation-planner",
+    [WorkerProcessEnvName.NatsInboundBatchSize]: "25",
+    [WorkerProcessEnvName.WorkerInboundBatchSize]: "15",
+    [WorkerProcessEnvName.WorkerOutboxBatchSize]: "10",
+    [WorkerProcessEnvName.WorkerReactionPlanBatchSize]: "8",
+    [WorkerProcessEnvName.WorkerReactionPlanLeaseMs]: "300000",
+  };
+}
 
 function assertConfigError(
   env: Parameters<typeof parseWorkerRuntimeConfigFromEnv>[0],

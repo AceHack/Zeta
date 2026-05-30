@@ -289,7 +289,7 @@ const CockroachReactionPlanWorkQueueSql = {
       status = '${ReactionPlanStatus.Claimed}',
       claim_id = $2,
       claimed_at = now(),
-      claim_expires_at = now() + ($3 * INTERVAL '1 millisecond')
+      claim_expires_at = now() + ($3::INT8 * INTERVAL '1 millisecond')
     WHERE reaction_plan_id IN (
       SELECT reaction_plan_id
       FROM ${CockroachTableName.ReactionPlans}
@@ -348,7 +348,7 @@ const CockroachReactionPlanWorkQueueSql = {
       claim_expires_at = CASE WHEN ($3->>'retryable')::BOOL AND attempt_count + 1 < $5 THEN NULL ELSE claim_expires_at END,
       attempt_count = attempt_count + 1,
       next_attempt_at = CASE
-        WHEN ($3->>'retryable')::BOOL AND attempt_count + 1 < $5 THEN now() + ($4 * INTERVAL '1 millisecond')
+        WHEN ($3->>'retryable')::BOOL AND attempt_count + 1 < $5 THEN now() + ($4::INT8 * INTERVAL '1 millisecond')
         ELSE NULL
       END,
       failed_at = now(),

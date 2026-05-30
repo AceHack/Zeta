@@ -1,3 +1,9 @@
+---
+title: Agentic Organization Runtime - Implementation Concepts
+canonical_name: Agentic Organization
+status: design
+---
+
 # Agentic Organization Runtime - Implementation Concepts
 
 ## Purpose

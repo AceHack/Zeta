@@ -6,6 +6,11 @@
     "test": "node --experimental-strip-types --test packages/*/test/**/*.test.ts apps/*/test/**/*.test.ts",
     "typecheck": "npx --yes -p typescript@6.0.3 tsc -p tsconfig.json"
   },
+  "dependencies": {
+    "@nats-io/jetstream": "^3.4.0",
+    "@nats-io/transport-node": "^3.4.0",
+    "pg": "^8.13.1"
+  },
   "engines": {
     "node": ">=22.12.0"
   }

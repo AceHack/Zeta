@@ -1,3 +1,9 @@
+---
+title: Observability and Self-Healing
+canonical_name: Agentic Organization
+status: design
+---
+
 # Observability and Self-Healing
 
 ## Status

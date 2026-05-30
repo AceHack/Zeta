@@ -1,3 +1,9 @@
+---
+title: Always-On Orchestration Runtime
+canonical_name: Agentic Organization
+status: design
+---
+
 # Always-On Orchestration Runtime
 
 ## Purpose

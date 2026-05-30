@@ -1,3 +1,9 @@
+---
+title: Work and Release Management OS
+canonical_name: Agentic Organization
+status: design
+---
+
 # Work and Release Management OS
 
 The Organization needs its own task, backlog, project, and release management product. This is not an integration with Linear or Jira. It is the operational backbone that lets Hermes agents understand work, update progress, receive assignments, emit signals, request reviews, manage releases, and keep every level of the Organization aware of health.

@@ -1,3 +1,9 @@
+---
+title: Agent Work Rhythm and Prompt Flows
+canonical_name: Agentic Organization
+status: design
+---
+
 # Agent Work Rhythm and Prompt Flows
 
 ## Purpose

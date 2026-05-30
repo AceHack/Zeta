@@ -1,3 +1,9 @@
+---
+title: Supervisor-Chain Communication
+canonical_name: Agentic Organization
+status: design
+---
+
 # Supervisor-Chain Communication
 
 ## Status

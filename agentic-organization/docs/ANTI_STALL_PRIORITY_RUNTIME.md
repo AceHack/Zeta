@@ -1,3 +1,9 @@
+---
+title: Anti-Stall Prioritization Runtime
+canonical_name: Agentic Organization
+status: design
+---
+
 # Anti-Stall Prioritization Runtime
 
 The Organization should be designed to keep moving. Blockers should not create stale pauses. They should become actively managed work with owners, deadlines, alternate lanes, escalation paths, and reconciliation loops while other useful work continues.

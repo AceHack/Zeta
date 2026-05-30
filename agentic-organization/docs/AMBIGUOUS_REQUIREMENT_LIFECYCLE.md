@@ -1,3 +1,9 @@
+---
+title: Ambiguous Requirement to Curated Feature Lifecycle
+canonical_name: Agentic Organization
+status: design
+---
+
 # Ambiguous Requirement to Curated Feature Lifecycle
 
 The Organization must be able to receive a vague requirement and turn it into a well-considered feature. This lifecycle is the path from unclear intent to delivered, verified, and learned-from work.

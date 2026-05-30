@@ -3,6 +3,8 @@ import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 import { describe, test } from "node:test";
 
+import { splitSqlStatements } from "../../../packages/state-cockroach/src/index.ts";
+
 import {
   CockroachMigrationStatement,
   CockroachTableName,
@@ -155,6 +157,7 @@ describe("Cockroach worker live integration", () => {
         runtime: {
           runOnce: async () => ({
             failures: [],
+            keepAlive: undefined,
             natsConsumerBatch: undefined,
             status: WorkerRuntimeStatus.Healthy,
             workerCycle: undefined,
@@ -258,11 +261,17 @@ describe("Cockroach worker live integration", () => {
           sql: run.sql.InsertLegacyWorkItem,
           parameters: [],
         });
-        await executor.execute({
-          name: CockroachIntegrationStatementName.ApplyWorkAnchorMigration,
-          sql: run.sql.WorkAnchorMigration,
-          parameters: [],
-        });
+        // Apply the migration the way the runner does — one statement per query
+        // — because CockroachDB runs a multi-statement string as a single
+        // implicit transaction and forbids referencing a column added by an
+        // earlier DDL statement in that same txn (SQLSTATE 42703).
+        for (const statement of splitSqlStatements(run.sql.WorkAnchorMigration)) {
+          await executor.execute({
+            name: CockroachIntegrationStatementName.ApplyWorkAnchorMigration,
+            sql: statement,
+            parameters: [],
+          });
+        }
 
         const rows = await executor.execute<LegacyWorkItemRow>({
           name: CockroachIntegrationStatementName.SelectLegacyWorkItem,
@@ -311,11 +320,14 @@ describe("Cockroach worker live integration", () => {
           sql: run.sql.InsertLegacyWorkItemStateHistoryWithoutMetadata,
           parameters: [],
         });
-        await executor.execute({
-          name: CockroachIntegrationStatementName.ApplyWorkItemStateHistoryMetadataMigration,
-          sql: run.sql.ApplyWorkItemStateHistoryMetadataMigration,
-          parameters: [],
-        });
+        // split per statement — same Cockroach DDL+DML-in-one-txn rule as above
+        for (const statement of splitSqlStatements(run.sql.ApplyWorkItemStateHistoryMetadataMigration)) {
+          await executor.execute({
+            name: CockroachIntegrationStatementName.ApplyWorkItemStateHistoryMetadataMigration,
+            sql: statement,
+            parameters: [],
+          });
+        }
 
         const metadataRows = await executor.execute<LegacyWorkItemStateHistoryMetadataRow>({
           name: CockroachIntegrationStatementName.SelectLegacyWorkItemStateHistoryMetadata,

@@ -1,3 +1,9 @@
+---
+title: Agentic Organization Docs
+canonical_name: Agentic Organization
+status: index
+---
+
 # Agentic Organization Docs
 
 This folder is the working design set for the Agentic Organization platform.
@@ -35,8 +41,14 @@ Current documents:
 - [V0 Policy and Runtime Boundaries](./V0_POLICY_AND_RUNTIME_BOUNDARIES.md) - the hat policy matrix, MCP preflight checks, cluster runtime boundaries, failure rules, and ArgoCD integration shape.
 - [Cluster-Native Hat System](./CLUSTER_NATIVE_HAT_SYSTEM.md) - the CRD, OPA, hat binding, succession, reputation, graph rendering, polyglot operator, and event model for enforcing hats on Kubernetes.
 - [Cluster Execution and Memory Substrate](./CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md) - the k3s, sandboxed Hermes container, Cilium Service Mesh, SPIRE identity, Vault-backed secrets, Credential Proxy, NATS, Hindsight, and runtime observability contract.
+- [Dynamic Memory System Design](./DYNAMIC_MEMORY_SYSTEM_DESIGN.md) - hat ⊕ agent ⊕ work memory tiers, the retrieval weight (how likely to surface; zero = never again), KPI/outcome correlation, and the Memory & Knowledge department's daily maintenance cycle as an observe→decide org cycle.
 - [AI Cluster Scaffold Context](./AI_CLUSTER_SCAFFOLD_CONTEXT.md) - the two-directory NixOS/k3s/ArgoCD scaffold assumptions, component clarifications, bootstrap constraints, and deferred/local-model gating.
 - [Architecture Source](./ORGANIZATION_RUNTIME_ARCHITECTURE.md) - the current conceptual architecture and operating model.
+- [Observe, Compose, and Run-State](./OBSERVE_COMPOSER_AND_RUN_STATE.md) - the keystone `observe.ts` entrypoint: the run-lifecycle discriminated union, the readout of current state + legal options at varying scopes, the ephemeral memoryless composer, deterministic-rule visibility, and the >=3-agent constitution ratification gate.
+- [Git as Database and Event Store (Frontmatter + ZetaId CRDT)](./GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md) - the persistence/addressing layer: a markdown file is a row, frontmatter is the SQL-derived typed schema + columns + fk graph edges, events are ZetaId-keyed files that merge conflict-free as a G-Set CRDT, state is a timestamp-ordered fold, and CockroachDB is a rebuildable query index.
+- [Metrics and the 3-Agent Review Board](./METRICS_AND_REVIEW_BOARD.md) - the two metric layers: quantitative code metrics gathered like coverage (longest function/class god-object detection, file length, nesting) and the qualitative >=3-agent review board that must agree on a finding before it is published, plus the MCP tool interface (hosting stubbed).
+- [State Reconciliation Table](./STATE_RECONCILIATION.md) - North Star priority #2: the single authoritative mapping of WorkItemState across Work OS / V0 enum / UI column / event name / gate owner, plus the observe.ts RunLifecyclePhase binding and the generic-vs-type-specific rule split. The gate on adding more commands.
+- [Doc Frontmatter Convention](./DOC_FRONTMATTER_CONVENTION.md) - the YAML frontmatter schema (title/canonical_name/status/ideas/extends/composes_with/code_anchors/supersedes) that turns this doc set into a navigable, derivable graph.
 
 The intent is to keep the architecture document focused on what the Organization is, while implementation documents describe how to build it incrementally.
 

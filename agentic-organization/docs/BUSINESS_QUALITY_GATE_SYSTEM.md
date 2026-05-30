@@ -1,3 +1,9 @@
+---
+title: Business Quality Gate System
+canonical_name: Agentic Organization
+status: design
+---
+
 # Business Quality Gate System
 
 The Organization needs business quality gates in addition to engineering and

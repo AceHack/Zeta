@@ -1,3 +1,34 @@
+export { splitSqlStatements } from "./sql-statement-splitter.ts";
+export {
+  ControlPlaneAlertKind,
+  CockroachControlPlaneStateStoreStatement,
+  createCockroachControlPlaneStateStore,
+  type AgentHeartbeatRecord,
+  type AppendControlPlaneAlertInput,
+  type CockroachControlPlaneStateStore,
+  type CreateCockroachControlPlaneStateStoreInput,
+  type RecordAgentHeartbeatInput,
+} from "./cockroach-control-plane-state-store.ts";
+export {
+  createCockroachKeepAliveSnapshotSource,
+  type CreateCockroachKeepAliveSnapshotSourceInput,
+  type KeepAliveClock,
+} from "./cockroach-keep-alive-snapshot-source.ts";
+export {
+  createCockroachKeepAliveActionSink,
+  type CreateCockroachKeepAliveActionSinkInput,
+  type KeepAliveActionSink as CockroachKeepAliveActionSink,
+} from "./cockroach-keep-alive-action-sink.ts";
+export {
+  CockroachMemoryStatement,
+  createCockroachMemory,
+  type CockroachMemoryDeps,
+} from "./cockroach-memory.ts";
+export {
+  CockroachHermesRuntimeStatement,
+  createCockroachHermesRuntime,
+  type CockroachHermesRuntimeDeps,
+} from "./cockroach-hermes-runtime.ts";
 export {
   CockroachCommandStateStoreStatement,
   createCockroachCommandStateStoreFactory,
@@ -101,6 +132,10 @@ export {
   CockroachTableName,
   createCockroachCoreStateMigrations,
   createCockroachCoreStateMigration,
+  createCockroachAgentLivenessMigration,
+  createCockroachControlPlaneKeepAliveMigration,
+  createCockroachHindsightMemoryMigration,
+  createCockroachHermesRunMigration,
   createCockroachDecisionRecordKernelMigration,
   createCockroachDiscussionAnchorKernelMigration,
   createCockroachHatAssignmentAuthorityProjectionMigration,
@@ -120,3 +155,6 @@ export {
   type CockroachSqlClient,
   type CreateCockroachSqlExecutorInput,
 } from "./cockroach-sql-executor.ts";
+export { createCockroachOrgEventStore, type CreateCockroachOrgEventStoreInput, type OrgEventStore } from "./cockroach-org-event-store.ts";
+export { createCockroachHatBindingStore, type CreateCockroachHatBindingStoreInput, type HatBindingStore } from "./cockroach-hat-binding-store.ts";
+export { createCockroachOrgSystemMigration } from "./cockroach-schema.ts";

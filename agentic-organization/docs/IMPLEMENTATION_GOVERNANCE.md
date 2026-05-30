@@ -1,3 +1,9 @@
+---
+title: Agentic Organization Implementation Governance
+canonical_name: Agentic Organization
+status: design
+---
+
 # Agentic Organization Implementation Governance
 
 ## Status

@@ -1,3 +1,9 @@
+---
+title: Cluster-Native Hat System
+canonical_name: Agentic Organization
+status: design
+---
+
 # Cluster-Native Hat System
 
 This document captures the theoretical design for a Kubernetes-native hat system. It focuses on CRDs, OPA policies, graph enforcement, time-bounded hat bindings, succession, reputation, events, and observability.

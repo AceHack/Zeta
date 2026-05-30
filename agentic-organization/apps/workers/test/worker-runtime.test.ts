@@ -13,6 +13,8 @@ import {
   WorkerRuntimeStatus,
   WorkerRuntimeTelemetryEventName,
   createWorkerRuntime,
+  type WorkerKeepAliveLane,
+  type WorkerKeepAliveLaneResult,
   type WorkerRuntimeTelemetrySink,
 } from "../src/index.ts";
 
@@ -211,6 +213,112 @@ describe("worker runtime composition host", () => {
     equal(result.status, WorkerRuntimeStatus.Degraded);
   });
 
+  test("runs the deterministic keep-alive lane each cycle when one is provided", async () => {
+    const keepAliveLane = createRecordingKeepAliveLane({
+      status: "ticked",
+      appliedCount: 1,
+      failures: [],
+    });
+    const runtime = createWorkerRuntime({
+      config: createRuntimeConfig(),
+      organizationWorkerHost: createRecordingOrganizationWorkerHost(createWorkedWorkerCycle()),
+      natsEventConsumer: createRecordingNatsEventConsumer(createProcessedNatsBatch()),
+      telemetrySink: createRecordingTelemetrySink(),
+      keepAliveLane,
+    });
+
+    const result = await runtime.runOnce();
+
+    equal(result.status, WorkerRuntimeStatus.Healthy);
+    equal(keepAliveLane.runCount, 1);
+    equal(result.keepAlive?.status, "ticked");
+    equal(result.keepAlive?.appliedCount, 1);
+  });
+
+  test("keeps work + NATS lanes running when no keep-alive lane is provided", async () => {
+    const runtime = createWorkerRuntime({
+      config: createRuntimeConfig(),
+      organizationWorkerHost: createRecordingOrganizationWorkerHost(createWorkedWorkerCycle()),
+      natsEventConsumer: createRecordingNatsEventConsumer(createProcessedNatsBatch()),
+      telemetrySink: createRecordingTelemetrySink(),
+    });
+
+    const result = await runtime.runOnce();
+
+    equal(result.status, WorkerRuntimeStatus.Healthy);
+    equal(result.keepAlive, undefined);
+  });
+
+  test("surfaces keep-alive lane failures as runtime failures without dying", async () => {
+    const keepAliveLane = createRecordingKeepAliveLane({
+      status: "degraded",
+      appliedCount: 0,
+      failures: [{ message: "lease reap apply failed" }],
+    });
+    const runtime = createWorkerRuntime({
+      config: createRuntimeConfig(),
+      organizationWorkerHost: createRecordingOrganizationWorkerHost(createWorkedWorkerCycle()),
+      natsEventConsumer: createRecordingNatsEventConsumer(createProcessedNatsBatch()),
+      telemetrySink: createRecordingTelemetrySink(),
+      keepAliveLane,
+    });
+
+    const result = await runtime.runOnce();
+
+    equal(result.status, WorkerRuntimeStatus.Degraded);
+    deepEqual(result.failures, [
+      {
+        stage: WorkerRuntimeFailureStage.KeepAlive,
+        message: "lease reap apply failed",
+      },
+    ]);
+  });
+
+  test("marks the runtime degraded when keep-alive reports degraded even with no apply failures", async () => {
+    const keepAliveLane = createRecordingKeepAliveLane({
+      status: "degraded",
+      appliedCount: 1,
+      failures: [],
+    });
+    const runtime = createWorkerRuntime({
+      config: createRuntimeConfig(),
+      organizationWorkerHost: createRecordingOrganizationWorkerHost(createWorkedWorkerCycle()),
+      natsEventConsumer: createRecordingNatsEventConsumer(createProcessedNatsBatch()),
+      telemetrySink: createRecordingTelemetrySink(),
+      keepAliveLane,
+    });
+
+    const result = await runtime.runOnce();
+
+    equal(result.status, WorkerRuntimeStatus.Degraded);
+    deepEqual(result.failures, []);
+  });
+
+  test("captures a thrown keep-alive lane without crashing the cycle", async () => {
+    const runtime = createWorkerRuntime({
+      config: createRuntimeConfig(),
+      organizationWorkerHost: createRecordingOrganizationWorkerHost(createWorkedWorkerCycle()),
+      natsEventConsumer: createRecordingNatsEventConsumer(createProcessedNatsBatch()),
+      telemetrySink: createRecordingTelemetrySink(),
+      keepAliveLane: {
+        runOnce: async () => {
+          throw new Error("keep-alive lane exploded");
+        },
+      },
+    });
+
+    const result = await runtime.runOnce();
+
+    equal(result.status, WorkerRuntimeStatus.Degraded);
+    equal(result.workerCycle?.status, WorkerCycleStatus.Worked);
+    deepEqual(result.failures, [
+      {
+        stage: WorkerRuntimeFailureStage.KeepAlive,
+        message: "keep-alive lane exploded",
+      },
+    ]);
+  });
+
   test("rejects invalid process config before loops can start", () => {
     try {
       createWorkerRuntime({
@@ -351,4 +459,18 @@ function createFailingTelemetrySink(message: string): WorkerRuntimeTelemetrySink
       throw new Error(message);
     },
   };
+}
+
+function createRecordingKeepAliveLane(result: WorkerKeepAliveLaneResult): WorkerKeepAliveLane & {
+  runCount: number;
+} {
+  const lane = {
+    runCount: 0,
+    runOnce: async (): Promise<WorkerKeepAliveLaneResult> => {
+      lane.runCount += 1;
+      return result;
+    },
+  };
+
+  return lane;
 }

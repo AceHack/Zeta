@@ -1,0 +1,71 @@
+# Single-node CockroachDB for the in-cluster end-to-end test. Ephemeral
+# (emptyDir) — this is a test substrate, not production. The worker's migration
+# bootstrapper applies the schema (incl. 0011 control-plane keep-alive) on start.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cockroach
+  namespace: agentic-org
+  labels:
+    app: cockroach
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cockroach
+  template:
+    metadata:
+      labels:
+        app: cockroach
+    spec:
+      containers:
+        - name: cockroach
+          image: cockroachdb/cockroach:v26.2.1
+          # NB: v26.2.1 start-single-node rejects a non-localhost --listen-addr.
+          # Leave it unset (as docker-compose does) — cockroach binds network-
+          # accessibly by default, reachable cluster-wide via the Service.
+          args:
+            - start-single-node
+            - --insecure
+            - --store=/cockroach/cockroach-data
+          ports:
+            - name: sql
+              containerPort: 26257
+            - name: http
+              containerPort: 8080
+          volumeMounts:
+            - name: data
+              mountPath: /cockroach/cockroach-data
+          readinessProbe:
+            httpGet:
+              path: "/health?ready=1"
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: "/health"
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: data
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cockroach
+  namespace: agentic-org
+  labels:
+    app: cockroach
+spec:
+  selector:
+    app: cockroach
+  ports:
+    - name: sql
+      port: 26257
+      targetPort: 26257
+    - name: http
+      port: 8080
+      targetPort: 8080

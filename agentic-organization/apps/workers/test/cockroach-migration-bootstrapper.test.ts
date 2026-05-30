@@ -5,6 +5,7 @@ import {
   CockroachCoreStateMigrationName,
   CockroachMigrationStatement,
   createCockroachCoreStateMigrations,
+  splitSqlStatements,
   type CockroachAnySqlStatement,
   type CockroachGenericSqlExecutor,
 } from "../../../packages/state-cockroach/src/index.ts";
@@ -30,13 +31,17 @@ describe("Cockroach migration bootstrapper", () => {
 
     await bootstrapper.bootstrap();
 
+    // each migration is applied one statement at a time (Cockroach DDL+DML txn rule)
+    const expectedStatements = createCockroachCoreStateMigrations().flatMap((migration) =>
+      splitSqlStatements(migration.sql),
+    );
     deepEqual(
       executor.statements.map((statement) => statement.name),
-      createCockroachCoreStateMigrations().map(() => CockroachMigrationStatement.ApplyMigration),
+      expectedStatements.map(() => CockroachMigrationStatement.ApplyMigration),
     );
     deepEqual(
       executor.statements.map((statement) => statement.sql),
-      createCockroachCoreStateMigrations().map((migration) => migration.sql),
+      expectedStatements,
     );
   });
 

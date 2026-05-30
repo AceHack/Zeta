@@ -16,9 +16,13 @@ import {
   type EventPayloadHashCalculator,
   type ReactionPlanActionExecutorPort,
 } from "../../../packages/runtime/src/index.ts";
+import { createKeepAliveLane, type KeepAliveLane } from "../../../packages/keepalive/src/index.ts";
 import { InboundEventConsumerName } from "../../../packages/state/src/index.ts";
 import {
+  createCockroachControlPlaneStateStore,
   createCockroachDurableStateAdapters,
+  createCockroachKeepAliveActionSink,
+  createCockroachKeepAliveSnapshotSource,
   type CockroachOrganizationSqlExecutor,
 } from "../../../packages/state-cockroach/src/index.ts";
 import {
@@ -49,6 +53,7 @@ export type DurableWorkerRuntimePorts = {
   organizationWorkerHost: OrganizationWorkerHost;
   natsEventConsumer: NatsJetStreamEventConsumer;
   telemetrySink: WorkerRuntimeTelemetrySink;
+  keepAliveLane: KeepAliveLane;
 };
 
 export type ComposeDurableWorkerRuntimePortsInput = {
@@ -92,6 +97,7 @@ export function composeDurableWorkerRuntimePorts(
     eventIngestionProcessor,
     deadLetterPublisher: input.durableAdapters.natsDeadLetterPublisher,
   });
+  const keepAliveLane = composeDurableKeepAliveLane(input);
 
   return {
     organizationWorkerHost: createOrganizationWorkerHost({
@@ -104,5 +110,34 @@ export function composeDurableWorkerRuntimePorts(
     }),
     natsEventConsumer,
     telemetrySink: input.durableAdapters.telemetrySink,
+    keepAliveLane,
   };
+}
+
+/**
+ * Compose the deterministic keep-alive control plane on durable Cockroach state:
+ * a control-plane store (org proof-of-life + alert log) -> snapshot source ->
+ * action sink -> lane. The lane ticks the org heartbeat every worker cycle and
+ * routes self-heal signals to durable state — the operator's #1 tenet, real.
+ */
+function composeDurableKeepAliveLane(input: ComposeDurableWorkerRuntimePortsInput): KeepAliveLane {
+  const controlPlaneStore = createCockroachControlPlaneStateStore({
+    executor: input.durableAdapters.cockroachExecutor,
+  });
+
+  return createKeepAliveLane({
+    source: createCockroachKeepAliveSnapshotSource({
+      store: controlPlaneStore,
+      organizationId: input.config.organizationId,
+      orgHeartbeatDeadlineMs: input.config.workerKeepAliveOrgHeartbeatDeadlineMs,
+      // the engine measures org age via the DB clock; this clock only feeds the
+      // (v1-empty) lease-expiry branch — derive epoch ms from the injected ISO now
+      clock: { now: () => Date.parse(input.runtimeUtilities.now()) },
+    }),
+    sink: createCockroachKeepAliveActionSink({
+      store: controlPlaneStore,
+      organizationId: input.config.organizationId,
+      generateAlertId: () => input.runtimeUtilities.createId("ctrl-alert"),
+    }),
+  });
 }
