@@ -71,6 +71,16 @@ if ($pushHb) {
     }
 }
 
+# slice-2b — optional desktop install.ps1 smoke (gated, best-effort, never fails the tick).
+# Asserts install.ps1's outcomes on this real Win desktop (scoop/git/mise/bun/claude +
+# ZetaOttoLoop health). Default OFF — opt in by setting ZETA_RUN_DESKTOP_SMOKE on the task.
+if ($env:ZETA_RUN_DESKTOP_SMOKE) {
+    $smoke = Join-Path $Clone 'tools\ci\windows-install-ps1-smoke.ts'
+    if (Test-Path $smoke) {
+        & $bun $smoke --mode desktop *>> (Join-Path $LogDir 'desktop-smoke.log')
+        "$(Get-Date -Format o) exit=$LASTEXITCODE" | Out-File -Encoding utf8 (Join-Path $Base 'desktop-smoke-result.txt')
+    }
+}
 # The conhost --headless launcher (scheduled-task action) swallows this exit code, so the
 # task's Last Result always reads 0. Write the real tick result for health observability.
 "$(Get-Date -Format o) exit=$tickExit" | Out-File -Encoding utf8 (Join-Path $Base 'last-tick-result.txt')
