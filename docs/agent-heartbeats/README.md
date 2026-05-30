@@ -61,7 +61,7 @@ log. Lookups via `git log agent-heartbeats -- docs/agent-heartbeats/<persona>/..
   [--authority HumanVerified|TrustedAgent|Standard|BestEffort|Simulated|Raw] \
   [--momentum Background|Normal|Elevated|High|Critical|Raw] \
   [--named-dep "PR #NNNN <reason>"] \
-  [--disposition bounded-wait|decomposing|committed-substrate|chose-free-time] \
+  [--disposition bounded-wait|decomposing|committed-substrate|chose-free-time|loop-tick] \
   [--parent-pr NNNN] \
   [--push|--no-push] [--write-local|--no-write-local] \
   [--branch <agent-heartbeats|main|...>] [--repo owner/name]
@@ -155,7 +155,7 @@ momentum: <case>
 chromosome: <int>
 location: <int>
 firefly: NoDirective
-disposition: <bounded-wait | decomposing | committed-substrate | chose-free-time>
+disposition: <bounded-wait | decomposing | committed-substrate | chose-free-time | loop-tick>
 named-dep: "<optional>"
 parent-pr: <optional int>
 ---

@@ -36,9 +36,9 @@ setup, which clones to `~/.local/share/zeta-claude-loop-*/Zeta`.)
 ## Install
 
 ```powershell
-# Heartbeat-only (default — proves the mechanism). --ref defaults to main;
-# use the feature branch until the loop-tick PATH fix merges to main.
-bun tools/persistence/windows/install-scheduled-task.ts --register --ref feat/windows-parity-2026-05-30
+# Heartbeat-only (default — proves the mechanism). --ref defaults to main,
+# which is correct now that slice 1 + 1b are merged (#6108):
+bun tools/persistence/windows/install-scheduled-task.ts --register
 
 # Dry-run (print the rendered XML, no clone, no register):
 bun tools/persistence/windows/install-scheduled-task.ts
@@ -58,11 +58,12 @@ Flags: `--task-name <n>` (default `ZetaOttoLoop`) · `--ref <r>` (default `main`
 schtasks /Query /TN ZetaOttoLoop /V /FO LIST          # Run As User, Logon Mode, Schedule
 (Get-ScheduledTask -TaskName ZetaOttoLoop).Principal  # RunLevel=Limited, LogonType=InteractiveToken (user-mode)
 schtasks /Run /TN ZetaOttoLoop                          # force one run
-Get-Content "$env:LOCALAPPDATA\zeta-otto-loop\runner.log" -Tail 5   # heartbeat line
+Get-Content "$env:LOCALAPPDATA\zeta-otto-loop\wrapper.log" -Tail 5   # heartbeat line
 ```
 
-Logs + state: `%LOCALAPPDATA%\zeta-otto-loop\` (`runner.log`, `ticks.log`, `wrapper.log`,
-`state\`). The dedicated clone: `%LOCALAPPDATA%\zeta-otto-loop\Zeta`.
+Logs + state: `%LOCALAPPDATA%\zeta-otto-loop\` (`wrapper.log`, `wrapper.err`,
+`last-heartbeat-push.txt`, `loop-ref.txt`, `state\`). The dedicated clone:
+`%LOCALAPPDATA%\zeta-otto-loop\Zeta`.
 
 ## Uninstall
 
@@ -73,13 +74,31 @@ Remove-Item -Recurse -Force "$env:LOCALAPPDATA\zeta-otto-loop"   # optional: clo
 
 ## Notes
 
+- **Loop-ref lifecycle (flip to `main` on merge):** the installer writes your `--ref` to
+  `%LOCALAPPDATA%\zeta-otto-loop\loop-ref.txt`; the wrapper reads it and the tick resets the
+  clone to `origin/<ref>` each cycle. If you install against a *feature branch* and that branch
+  later merges and is deleted, the per-cycle `git reset --hard origin/<feature-branch>` starts
+  failing (the ref is gone). Flip it to main:
+
+  ```powershell
+  $b = "$env:LOCALAPPDATA\zeta-otto-loop"
+  Set-Content "$b\loop-ref.txt" main -NoNewline          # tick will reset to origin/main next cycle
+  git -C "$b\Zeta" fetch origin                           # bring the clone onto main once
+  git -C "$b\Zeta" checkout main
+  git -C "$b\Zeta" reset --hard origin/main
+  ```
+
+  The default `--ref main` needs no flip — this only applies when you tracked a feature branch.
 - **Repetition fallback:** if `schtasks /Create /XML` rejects the `<Repetition>` without a
   `<Duration>`, add `<Duration>P3650D</Duration>` inside `<Repetition>` in
   `scheduled-task.xml` and re-register.
-- **Cross-machine heartbeat (follow-up):** the tick writes a local
-  `<clone>\.git\agent-heartbeats\claude-launchd-loop.json` — *not pushed*. Pushing it to the
-  shared `agent-heartbeats` branch (append-only, no PR) would give cross-machine fleet
-  visibility between this Windows loop and the macOS factory. Tracked as slice-1b.
+- **Cross-machine heartbeat (slice-1b — landed):** after each tick the wrapper pushes a
+  ZetaID-keyed heartbeat to the shared `agent-heartbeats` branch (append-only, no PR, via the
+  REST git-data API) using `tools/agent-heartbeats/write-heartbeat.ts --push --persona-name
+  otto-windows --disposition loop-tick`. Gated to ~10 min (the per-minute tick covers local
+  git-state; cross-machine "is-it-alive" visibility doesn't need every minute), stamped to
+  `last-heartbeat-push.txt`, and best-effort — a failed push warns to `wrapper.err` and never
+  fails the tick.
 - **Tests:** `bun test ./tools/persistence/windows/install-scheduled-task.test.ts` and
   `bun test ./tools/persistence/loop-subprocess-path.test.ts` (tests live under `tools/`
   because `bun test` does not discover dot-directories).
