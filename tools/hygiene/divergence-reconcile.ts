@@ -19,20 +19,25 @@
 // Pure functions (no I/O): reconciliationBody, isReconciliationPending,
 //   isReconciliationDecision, fillReconciliation, parseShardMeta,
 //   findPendingShards.
-// I/O function: scanDivergenceDir (delegates classification to the pure layer).
+// I/O functions: scanDivergenceDir (reader — delegates classification to the
+//   pure layer) + reconcileDivergenceShard (writer — lands fillReconciliation's
+//   output back in place).
 //
 // The reader surfaces the "one read" of AC #4; fillReconciliation produces the
-// shard-side of the "one action" (the in-place `## Reconciliation` edit) so the
-// maintainer's decision is applied deterministically + validated rather than by
-// hand. It stays below the blocked end-to-end boundary: it returns markdown and
-// never writes, never touches GitHub, never resolves the live thread.
+// shard-side of the "one action" (the in-place `## Reconciliation` edit) and
+// reconcileDivergenceShard is the I/O glue that LANDS that edit — reading the
+// shard, applying fillReconciliation, and writing the reconciled markdown back
+// in place. Together they are the full "one action" of AC #4, mirroring how
+// fileReviewThreadDisagreement (divergence-shard.ts, AC #2) composes the pure
+// detector with the writer. It stays below the blocked end-to-end boundary: it
+// never touches GitHub, never resolves the live PR thread.
 //
 // Schema source of truth: docs/hygiene-history/divergences/README.md
 // Writer companion:        tools/hygiene/divergence-shard.ts
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { join, relative } from "node:path";
+import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { isAbsolute, join, relative, resolve } from "node:path";
 
 // Mirrors DIVERGENCE_ROOT in divergence-shard.ts. Both files reflect the path
 // the README fixes as the source of truth; a comment-cited copy keeps the
@@ -276,6 +281,91 @@ export function scanDivergenceDir(
   };
   walk(root);
   return findPendingShards(files);
+}
+
+/** Outcome of landing a reconciliation decision on a shard file. */
+export interface ReconcileResult {
+  /** Repo-relative path of the shard that was reconciled. */
+  readonly relPath: string;
+  /** The decision that was written into the `## Reconciliation` section. */
+  readonly decision: ReconciliationDecision;
+}
+
+/**
+ * Apply a morning-reconciliation decision to a PENDING divergence shard and
+ * write the reconciled markdown back IN PLACE — the I/O "one action" of AC #4
+ * ("the morning reconciliation can resolve the thread in one read + one
+ * action"). scanDivergenceDir produces the read; this lands the maintainer's
+ * decision, composing the pure shard-side transform (fillReconciliation) with a
+ * single in-place write. It mirrors fileReviewThreadDisagreement
+ * (divergence-shard.ts, AC #2), which composes the pure detector with the writer.
+ *
+ * The in-place overwrite IS the README-prescribed update
+ * (docs/hygiene-history/divergences/README.md "Reconciliation outcomes": "the
+ * shard is updated in place (not deleted) so the divergence history is preserved
+ * permanently"). This is the deliberate OPPOSITE of the divergence WRITER's
+ * never-overwrite-differing-content rule: the writer guards uncommitted
+ * divergence evidence, whereas reconciliation transforms a pending placeholder
+ * into a decided section. fillReconciliation preserves every byte up to and
+ * including the `## Reconciliation` heading — both loop perspectives and the
+ * disagreement summary survive verbatim — and git preserves the
+ * pre-reconciliation revision, so no divergence evidence is erased.
+ *
+ * Fail-closed, all validation surfaced BEFORE the write so a rejected call never
+ * mutates the file:
+ *   - no shard at <repoRoot>/<relPath> → throw (clear message), no write.
+ *   - not a divergence shard (parseShardMeta returns null: missing frontmatter
+ *     or type != divergence) → throw, no write. Guards against a mistyped
+ *     relPath pointing at some other markdown that happens to carry a
+ *     `## Reconciliation` heading.
+ *   - invalid decision / no `## Reconciliation` section / already-reconciled
+ *     shard → fillReconciliation throws, no write (a prior human decision is
+ *     never silently erased; a second reconcile run on the same shard fails
+ *     closed rather than re-deciding).
+ *
+ * Stays below the blocked end-to-end boundary: never touches GitHub, never
+ * resolves the live PR thread (that half remains the blocked impl child pending
+ * B-0160).
+ */
+export function reconcileDivergenceShard(
+  repoRoot: string,
+  relPath: string,
+  decision: ReconciliationDecision,
+  note?: string,
+): ReconcileResult {
+  // Constrain relPath to the divergence root before any I/O. A write-back
+  // helper that does join(repoRoot, relPath) blindly can be steered to clobber
+  // unrelated files via an absolute path or "../" traversal; bound it to
+  // docs/hygiene-history/divergences/ (the only place shards live).
+  const divergenceRoot = resolve(repoRoot, DIVERGENCE_ROOT);
+  const abs = resolve(repoRoot, relPath);
+  const within = relative(divergenceRoot, abs);
+  if (within === "" || within.startsWith("..") || isAbsolute(within)) {
+    throw new Error(
+      `cannot reconcile: ${relPath} is outside the divergence root (${DIVERGENCE_ROOT})`,
+    );
+  }
+  // Read directly and treat a missing file as a signal rather than pre-checking
+  // with existsSync — the check-then-read gap is a TOCTOU race (CWE-367), and
+  // the error path is the same friendly message either way.
+  let original: string;
+  try {
+    original = readFileSync(abs, "utf8");
+  } catch (err) {
+    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+      throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+    }
+    throw err;
+  }
+  if (parseShardMeta(original) === null) {
+    throw new Error(`cannot reconcile: ${relPath} is not a divergence shard (missing frontmatter or type != divergence)`);
+  }
+  // fillReconciliation validates eagerly (decision vocabulary + section present
+  // + still pending) and throws before we touch the file. Compute the
+  // reconciled markdown first; only write once it has succeeded.
+  const reconciled = fillReconciliation(original, decision, note);
+  writeFileSync(abs, reconciled);
+  return { relPath, decision };
 }
 
 function repoRoot(): string {
