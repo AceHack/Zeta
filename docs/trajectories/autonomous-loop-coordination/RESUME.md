@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; B-0250 Codex loop-run claim gate in progress
+Status: active child packet; dirty-worktree priority packet in review
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -200,6 +200,15 @@ claim-count transition. Open-PR-only churn remains visible in the runner log
 and lane-runway surfaces, but no longer creates B-0250 Codex coincidence
 events.
 
+Current dirty-worktree priority receipt:
+`docs/trajectories/autonomous-loop-coordination/dirty-worktree-priority-2026-05-30.md`
+
+It turns local dirty-worktree warnings into a bounded priority rule for
+stale-worktree cleanup: preserve or hand off dirty active work first, inspect
+ambiguous dirty worktrees before deleting or reusing them, prefer clean
+high-confidence stale cleanup when available, and treat dirty-skip broadcasts
+as service-health evidence rather than takeover permission.
+
 ## Recommended Next Action
 
 Run the live factory health monitor after this packet lands and verify whether
@@ -208,7 +217,8 @@ noise.
 
 ## Next Child Packets
 
-- use local dirty-worktree signals to prioritize stale-worktree cleanup
+- select one clean high-confidence stale worktree or one dirty owner-handoff
+  worktree for a bounded cleanup packet
 - B-0250 source tuning from post-claim-gate compact coincidence-window debug evidence
 
 ## Evidence Links
