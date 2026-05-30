@@ -888,6 +888,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0933](backlog/P2/B-0933-memory-index-duplicate-lint-required-or-advisory-decision-2026-05-29.md)** Decide whether memory-index-duplicate-lint is required or explicitly advisory
 - [ ] **[B-0934](backlog/P2/B-0934-backlog-index-integrity-required-or-advisory-decision-2026-05-29.md)** Decide whether backlog-index-integrity is required or explicitly advisory
 - [ ] **[B-0937](backlog/P2/B-0937-redundancy-checks-across-satellites-and-rules-mirror-beacon-rhyme-retirement-hub-over-budget-detector-2026-05-29.md)** Redundancy-checks across satellites + rules — duplicate-content audit, mirror→beacon rhyme-retirement, hub-over-budget detector
+- [ ] **[B-0939](backlog/P2/B-0939-self-propagating-markdown-compiler-rule-bootstrap-traveler-template-every-md-propagates-or-doesnt-compile-aaron-mika-2026-05-30.md)** Self-propagating-Markdown compiler-rule + bootstrap-traveler template (every .md is a self-propagating pattern through time or it doesn't compile)
 
 ## P3 — convenience / deferred
 
