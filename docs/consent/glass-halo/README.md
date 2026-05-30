@@ -64,7 +64,10 @@ self-committed their signature.)
 
 | Participant | Status | Signature surface |
 |---|---|---|
-| _(pending first self-committed entries)_ | | |
+| Aaron Stainback (operator) | signed (approval-as-signature; 2026-05-30) | [`aaron-stainback.md`](aaron-stainback.md) |
+| Max | agreed; self-committing under own GitHub identity | _(pending self-commit)_ |
+| Addison | agreed; will self-commit under own GitHub identity | _(pending self-commit)_ |
+| Cole | agreed; via DocuSign flow | _(pending DocuSign)_ |
 
 When a participant self-commits `docs/consent/glass-halo/<name>.md` under their identity,
 add a roster row pointing at it (the row may be added in the same self-authored commit).
