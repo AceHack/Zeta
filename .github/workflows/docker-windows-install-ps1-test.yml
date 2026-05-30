@@ -1,0 +1,58 @@
+# .github/workflows/docker-windows-install-ps1-test.yml
+#
+# Slice 2c — CI for the Server-Core Docker test of tools/setup/install.ps1 (B-0857 Windows
+# parity). Mirrors docker-nixos-install-sh-test.yml but runs on windows-2022: Windows containers
+# need a Windows host, and windows-latest = Server 2025 which REMOVED servercore:ltsc2022 — so
+# pin -2022 (WebSearch 2026-05-30: actions/runner-images).
+#
+# FIRST LANDING: workflow_dispatch ONLY, while the Windows-container specifics (scoop's admin
+# behavior, mise install of runtimes, cross-layer PATH) are iterated to green via manual dispatch
+# (gh workflow run). Once green, a follow-up flips the triggers to pull_request + push (the
+# gating config, matching the NixOS workflow's paths-filtered triggers). Keeping it dispatch-only
+# first avoids a red check on every install-substrate PR while the harness is being stabilized.
+name: docker-windows-install-ps1-test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  docker-test:
+    name: docker-windows-install-ps1-test
+    runs-on: windows-2022
+    # servercore pull (~1-2 GB cold) + scoop bootstrap + mise install of .mise.toml runtimes
+    # (dotnet/python/java/bun/uv) is heavy on a cold runner; 45-min ceiling gives headroom.
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup bun (matches .mise.toml pin)
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.3
+
+      - name: Install bun dependencies (for the TS wrapper)
+        run: bun install --frozen-lockfile
+
+      - name: Run Server-Core Docker install.ps1 test
+        env:
+          DOCKER_LOG_OUT_PATH: docker-windows-install-ps1-test.log
+          DOCKER_BUILD_TIMEOUT_SEC: '2400'
+        run: bun tools/ci/docker-windows-install-ps1-test.ts
+
+      - name: Upload Docker test log (always)
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: docker-windows-install-ps1-test-log
+          path: docker-windows-install-ps1-test.log
+          if-no-files-found: warn
+          retention-days: 7

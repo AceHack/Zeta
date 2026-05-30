@@ -40,7 +40,11 @@ if (-not (Have scoop)) {
   try {
     Invoke-RestMethod -Uri https://get.scoop.sh -OutFile $scoopTmp
     if (-not (Test-Path $scoopTmp) -or (Get-Item $scoopTmp).Length -eq 0) { throw "scoop installer empty; refusing to run" }
-    & $scoopTmp
+    # scoop refuses admin by default (desktop = non-admin). In an admin context (CI / a Windows
+    # container runs as ContainerAdministrator) pass -RunAsAdmin so the bootstrap proceeds; on a
+    # normal user desktop this branch is skipped.
+    $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if ($isAdmin) { & $scoopTmp -RunAsAdmin } else { & $scoopTmp }
   } finally { Remove-Item $scoopTmp -Force -ErrorAction SilentlyContinue }
 }
 # scoop shims on PATH for the rest of this process (scoop adds them to the user PATH for new
