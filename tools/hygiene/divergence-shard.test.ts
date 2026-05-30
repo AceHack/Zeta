@@ -5,6 +5,7 @@ import { dirname, join } from "node:path";
 
 import {
   type DivergenceInput,
+  detectReviewThreadDisagreement,
   buildDivergenceShard,
   divergenceShardRelPath,
   shortContentHash,
@@ -61,9 +62,7 @@ describe("shortContentHash", () => {
 describe("divergenceShardRelPath", () => {
   test("produces the canonical YYYY/MM/DD/HHMMSSZ-<hash>.md shape", () => {
     const p = divergenceShardRelPath(TICK, "a", "b");
-    expect(p).toBe(
-      `docs/hygiene-history/divergences/2026/05/10/114800Z-${shortContentHash("a", "b")}.md`,
-    );
+    expect(p).toBe(`docs/hygiene-history/divergences/2026/05/10/114800Z-${shortContentHash("a", "b")}.md`);
   });
   test("rejects a tick that is not ISO 8601 UTC seconds precision", () => {
     expect(() => divergenceShardRelPath("2026-05-10T11:48Z", "a", "b")).toThrow(/invalid tick/);
@@ -125,6 +124,131 @@ describe("buildDivergenceShard", () => {
   });
 });
 
+describe("detectReviewThreadDisagreement", () => {
+  test("returns a divergence input for differing conclusions on the same thread", () => {
+    const result = detectReviewThreadDisagreement({
+      tick: TICK,
+      operativeAuthorization: INPUT.operativeAuthorization,
+      loopA: {
+        identity: INPUT.loopA.identity,
+        prNumber: 4147,
+        threadId: "PRRT_kwExample",
+        conclusion: "resolve",
+        body: "The finding matches the known false-positive table class.",
+      },
+      loopB: {
+        identity: INPUT.loopB.identity,
+        prNumber: 4147,
+        threadId: "PRRT_kwExample",
+        conclusion: "needs-fix",
+        body: "The lint finding reproduces locally and should stay open.",
+      },
+    });
+
+    expect(result.kind).toBe("disagreement");
+    if (result.kind !== "disagreement") {
+      throw new Error("expected disagreement result");
+    }
+    expect(result.divergenceInput.topic).toBe("PR #4147 thread PRRT_kwExample");
+    expect(result.divergenceInput.disagreementSummary).toContain("otto concluded resolve");
+    expect(result.divergenceInput.disagreementSummary).toContain("codex-loop concluded needs-fix");
+    expect(result.divergenceInput.loopA.body).toContain("Conclusion: resolve");
+    expect(result.divergenceInput.loopB.body).toContain("Conclusion: needs-fix");
+  });
+
+  test("does not file a divergence for the same normalized conclusion", () => {
+    const result = detectReviewThreadDisagreement({
+      tick: TICK,
+      operativeAuthorization: INPUT.operativeAuthorization,
+      loopA: {
+        identity: INPUT.loopA.identity,
+        prNumber: 4147,
+        threadId: "PRRT_kwExample",
+        conclusion: " Resolve ",
+        body: "False positive.",
+      },
+      loopB: {
+        identity: INPUT.loopB.identity,
+        prNumber: 4147,
+        threadId: "PRRT_kwExample",
+        conclusion: "resolve",
+        body: "Also false positive.",
+      },
+    });
+
+    expect(result).toEqual({
+      kind: "no-disagreement",
+      reason: "same-conclusion",
+    });
+  });
+
+  test("does not compare conclusions from different PR review threads", () => {
+    const result = detectReviewThreadDisagreement({
+      tick: TICK,
+      operativeAuthorization: INPUT.operativeAuthorization,
+      loopA: {
+        identity: INPUT.loopA.identity,
+        prNumber: 4147,
+        threadId: "thread-a",
+        conclusion: "resolve",
+        body: "False positive.",
+      },
+      loopB: {
+        identity: INPUT.loopB.identity,
+        prNumber: 4148,
+        threadId: "thread-a",
+        conclusion: "needs-fix",
+        body: "Different PR, so this is not the same review thread.",
+      },
+    });
+
+    expect(result).toEqual({
+      kind: "no-disagreement",
+      reason: "different-thread",
+    });
+  });
+
+  test("rejects blank thread ids, conclusions, and bodies", () => {
+    const base = {
+      tick: TICK,
+      operativeAuthorization: INPUT.operativeAuthorization,
+      loopA: {
+        identity: INPUT.loopA.identity,
+        prNumber: 4147,
+        threadId: "thread-a",
+        conclusion: "resolve",
+        body: "False positive.",
+      },
+      loopB: {
+        identity: INPUT.loopB.identity,
+        prNumber: 4147,
+        threadId: "thread-a",
+        conclusion: "needs-fix",
+        body: "Reproduces locally.",
+      },
+    };
+
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...base,
+        loopA: { ...base.loopA, threadId: " " },
+      }),
+    ).toThrow(/loopA.threadId/);
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...base,
+        loopA: { ...base.loopA, conclusion: " " },
+      }),
+    ).toThrow(/review conclusion/);
+    expect(() =>
+      detectReviewThreadDisagreement({
+        ...base,
+        loopA: { ...base.loopA, body: " " },
+      }),
+    ).toThrow(/review body/);
+  });
+});
+
 describe("writeShardAtPath (fail-closed-OR-idempotent)", () => {
   test("writes when the path is free", () => {
     withTempRoot((root) => {
@@ -180,9 +304,7 @@ describe("writeDivergenceShard", () => {
     withTempRoot((root) => {
       const r = writeDivergenceShard(root, INPUT);
       expect(r.status).toBe("written");
-      expect(r.relPath).toBe(
-        divergenceShardRelPath(TICK, INPUT.loopA.body, INPUT.loopB.body),
-      );
+      expect(r.relPath).toBe(divergenceShardRelPath(TICK, INPUT.loopA.body, INPUT.loopB.body));
       expect(existsSync(join(root, r.relPath))).toBe(true);
     });
   });

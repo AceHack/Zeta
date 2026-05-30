@@ -55,6 +55,39 @@ export interface DivergenceInput {
   readonly operativeAuthorization: string;
 }
 
+/** One loop's conclusion about a single GitHub PR review thread. */
+export interface ReviewThreadObservation {
+  readonly identity: LoopIdentity;
+  readonly prNumber: number;
+  readonly threadId: string;
+  /** Machine-comparable conclusion, e.g. "resolve" or "needs-fix". */
+  readonly conclusion: string;
+  /** Human-readable evidence/framing for this conclusion. */
+  readonly body: string;
+}
+
+/** Inputs for detecting whether two loop observations require a shard. */
+export interface ReviewThreadDisagreementInput {
+  /** ISO 8601 UTC, seconds precision, forwarded to the divergence shard. */
+  readonly tick: string;
+  readonly loopA: ReviewThreadObservation;
+  readonly loopB: ReviewThreadObservation;
+  /** operative-authorization frontmatter value for filed divergence shards. */
+  readonly operativeAuthorization: string;
+}
+
+export type ReviewThreadNoDisagreementReason = "different-thread" | "same-conclusion";
+
+export type ReviewThreadDisagreementResult =
+  | {
+      readonly kind: "no-disagreement";
+      readonly reason: ReviewThreadNoDisagreementReason;
+    }
+  | {
+      readonly kind: "disagreement";
+      readonly divergenceInput: DivergenceInput;
+    };
+
 /** Outcome of a write attempt. */
 export type WriteStatus =
   | "written" // new file created
@@ -89,16 +122,10 @@ export function shortContentHash(loopABody: string, loopBBody: string): string {
  * Parses `tick` by regex (TZ-free, DST-deterministic — the value is already
  * UTC). Throws on a tick that is not ISO 8601 UTC seconds precision.
  */
-export function divergenceShardRelPath(
-  tick: string,
-  loopABody: string,
-  loopBBody: string,
-): string {
+export function divergenceShardRelPath(tick: string, loopABody: string, loopBBody: string): string {
   const m = TICK_RE.exec(tick);
   if (!m) {
-    throw new Error(
-      `invalid tick "${tick}": expected ISO 8601 UTC seconds precision, e.g. 2026-05-10T11:48:00Z`,
-    );
+    throw new Error(`invalid tick "${tick}": expected ISO 8601 UTC seconds precision, e.g. 2026-05-10T11:48:00Z`);
   }
   const [, yyyy, mm, dd, hh, min, ss] = m;
   const hash = shortContentHash(loopABody, loopBBody);
@@ -110,6 +137,64 @@ function yamlString(value: string): string {
   return JSON.stringify(value);
 }
 
+function nonBlank(value: string, field: string): string {
+  const trimmed = value.trim();
+  if (trimmed.length === 0) {
+    throw new Error(`${field} must be non-blank`);
+  }
+  return trimmed;
+}
+
+function normalizedConclusion(value: string): string {
+  return nonBlank(value, "review conclusion").toLowerCase();
+}
+
+function perspectiveFromObservation(observation: ReviewThreadObservation): LoopPerspective {
+  const conclusion = nonBlank(observation.conclusion, "review conclusion");
+  return {
+    identity: observation.identity,
+    body: `Conclusion: ${conclusion}\n\n${nonBlank(observation.body, "review body")}`,
+  };
+}
+
+/**
+ * Detect whether two loop observations on a PR review thread disagree.
+ *
+ * This is the pure detector slice for B-0164.1: it does not talk to GitHub and
+ * does not write a shard. Callers can hand the returned divergenceInput to
+ * writeDivergenceShard once they have two observations from the same thread
+ * whose machine-comparable conclusions differ.
+ */
+export function detectReviewThreadDisagreement(input: ReviewThreadDisagreementInput): ReviewThreadDisagreementResult {
+  const aThreadId = nonBlank(input.loopA.threadId, "loopA.threadId");
+  const bThreadId = nonBlank(input.loopB.threadId, "loopB.threadId");
+
+  if (input.loopA.prNumber !== input.loopB.prNumber || aThreadId !== bThreadId) {
+    return { kind: "no-disagreement", reason: "different-thread" };
+  }
+
+  const aConclusion = normalizedConclusion(input.loopA.conclusion);
+  const bConclusion = normalizedConclusion(input.loopB.conclusion);
+  if (aConclusion === bConclusion) {
+    return { kind: "no-disagreement", reason: "same-conclusion" };
+  }
+
+  return {
+    kind: "disagreement",
+    divergenceInput: {
+      tick: input.tick,
+      loopA: perspectiveFromObservation(input.loopA),
+      loopB: perspectiveFromObservation(input.loopB),
+      topic: `PR #${input.loopA.prNumber} thread ${aThreadId}`,
+      disagreementSummary:
+        `Both loops reviewed the same PR thread; ` +
+        `${input.loopA.identity.agent} concluded ${aConclusion}, while ` +
+        `${input.loopB.identity.agent} concluded ${bConclusion}.`,
+      operativeAuthorization: input.operativeAuthorization,
+    },
+  };
+}
+
 /**
  * Build the full shard markdown (frontmatter + 4 required body sections) per
  * docs/hygiene-history/divergences/README.md. Pure: no I/O, no clock, no hash
@@ -117,14 +202,11 @@ function yamlString(value: string): string {
  */
 export function buildDivergenceShard(input: DivergenceInput): string {
   if (!TICK_RE.test(input.tick)) {
-    throw new Error(
-      `invalid tick "${input.tick}": expected ISO 8601 UTC seconds precision`,
-    );
+    throw new Error(`invalid tick "${input.tick}": expected ISO 8601 UTC seconds precision`);
   }
   const a = input.loopA;
   const b = input.loopB;
-  const attrib = (p: LoopPerspective) =>
-    `${p.identity.agent} (${p.identity.model}, ${p.identity.harness})`;
+  const attrib = (p: LoopPerspective) => `${p.identity.agent} (${p.identity.model}, ${p.identity.harness})`;
 
   return `---
 tick: ${yamlString(input.tick)}
@@ -171,10 +253,7 @@ ${input.disagreementSummary}
  * Exported for direct testing of the 3-way decision without manufacturing a
  * hash collision.
  */
-export function writeShardAtPath(
-  absPath: string,
-  content: string,
-): { absPath: string; status: WriteStatus } {
+export function writeShardAtPath(absPath: string, content: string): { absPath: string; status: WriteStatus } {
   // Atomic exclusive create ("wx" === O_CREAT | O_EXCL): create-if-absent is a
   // single kernel operation, so there is no existsSync->writeFileSync TOCTOU
   // window for a competing process to win, and it refuses to write through a
@@ -238,20 +317,11 @@ function tryExclusiveWrite(absPath: string, content: string): boolean {
  * a divergence shard records a CONFLICT, so byte-identical loop bodies (no
  * divergence to preserve) are rejected.
  */
-export function writeDivergenceShard(
-  repoRoot: string,
-  input: DivergenceInput,
-): WriteResult {
+export function writeDivergenceShard(repoRoot: string, input: DivergenceInput): WriteResult {
   if (input.loopA.body === input.loopB.body) {
-    throw new Error(
-      "refusing to file a divergence shard: loop bodies are byte-identical (no divergence to preserve)",
-    );
+    throw new Error("refusing to file a divergence shard: loop bodies are byte-identical (no divergence to preserve)");
   }
-  const relPath = divergenceShardRelPath(
-    input.tick,
-    input.loopA.body,
-    input.loopB.body,
-  );
+  const relPath = divergenceShardRelPath(input.tick, input.loopA.body, input.loopB.body);
   const content = buildDivergenceShard(input);
   const result = writeShardAtPath(join(repoRoot, relPath), content);
   // Recompute the repo-relative path in case collision-resolution changed it.
