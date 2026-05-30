@@ -123,6 +123,92 @@ describe("factory-health-monitor", () => {
     ]);
   });
 
+  test("findCoincidenceWindows deduplicates shared secondary correlation keys", () => {
+    const firstBurstPr: CoincidenceEvent = {
+      id: "merged-pr-6101",
+      trajectory: "codex",
+      occurredAt: "2026-05-30T05:00:00.000Z",
+      correlationKey: "pr:6101",
+      correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:6101+6102"],
+    };
+    const secondBurstPr: CoincidenceEvent = {
+      id: "merged-pr-6102",
+      trajectory: "otto",
+      occurredAt: "2026-05-30T05:00:20.000Z",
+      correlationKey: "pr:6102",
+      correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:6101+6102"],
+    };
+
+    expect(
+      findCoincidenceWindows([firstBurstPr, secondBurstPr], {
+        windowMs: 30_000,
+        minimumEvents: 2,
+      }),
+    ).toEqual([]);
+
+    const independentEvent: CoincidenceEvent = {
+      id: "riven-1",
+      trajectory: "riven",
+      occurredAt: "2026-05-30T05:00:25.000Z",
+    };
+
+    expect(
+      findCoincidenceWindows([firstBurstPr, secondBurstPr, independentEvent], {
+        windowMs: 30_000,
+        minimumEvents: 2,
+      }),
+    ).toEqual([
+      {
+        windowStart: "2026-05-30T05:00:00.000Z",
+        windowEnd: "2026-05-30T05:00:30.000Z",
+        trajectories: ["codex", "riven"],
+        events: [firstBurstPr, independentEvent],
+      },
+    ]);
+  });
+
+  test("findCoincidenceWindows keeps signatures overlap-aware across primary and secondary keys", () => {
+    const mergedPr: CoincidenceEvent = {
+      id: "merged-pr-6103",
+      trajectory: "codex",
+      occurredAt: "2026-05-30T05:00:00.000Z",
+      correlationKey: "pr:6103",
+      correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:6103+6104"],
+    };
+    const independentEvent: CoincidenceEvent = {
+      id: "otto-1",
+      trajectory: "otto",
+      occurredAt: "2026-05-30T05:00:01.000Z",
+    };
+    const secondBurstPr: CoincidenceEvent = {
+      id: "merged-pr-6104",
+      trajectory: "riven",
+      occurredAt: "2026-05-30T05:00:20.000Z",
+      correlationKey: "pr:6104",
+      correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:6103+6104", "pr:6103"],
+    };
+    const trajectoryReceipt: CoincidenceEvent = {
+      id: "trajectory-receipt-6103",
+      trajectory: "autonomous-loop-coordination",
+      occurredAt: "2026-05-30T05:00:21.000Z",
+      correlationKey: "pr:6103",
+    };
+
+    expect(
+      findCoincidenceWindows([mergedPr, independentEvent, secondBurstPr, trajectoryReceipt], {
+        windowMs: 30_000,
+        minimumEvents: 2,
+      }),
+    ).toEqual([
+      {
+        windowStart: "2026-05-30T05:00:00.000Z",
+        windowEnd: "2026-05-30T05:00:30.000Z",
+        trajectories: ["codex", "otto"],
+        events: [mergedPr, independentEvent],
+      },
+    ]);
+  });
+
   test("classifyCoincidenceWindows emits ok and warning signals", () => {
     expect(classifyCoincidenceWindows([], { windowMs: 30_000, minimumEvents: 2 })).toEqual([
       {
@@ -226,7 +312,7 @@ describe("factory-health-monitor", () => {
           {
             number: 11,
             title: "Otto source",
-            mergedAt: "2026-05-30T05:01:00Z",
+            mergedAt: "2026-05-30T05:03:00Z",
             headRefName: "otto-cli/source",
           },
           {
@@ -262,9 +348,62 @@ describe("factory-health-monitor", () => {
       {
         id: "merged-pr-11",
         trajectory: "otto",
-        occurredAt: "2026-05-30T05:01:00.000Z",
+        occurredAt: "2026-05-30T05:03:00.000Z",
         description: "#11 Otto source",
         correlationKey: "pr:11",
+      },
+    ]);
+  });
+
+  test("mergedPullRequestEventsFromJson marks tightly clustered merged PRs as one burst", () => {
+    expect(
+      mergedPullRequestEventsFromJson(
+        JSON.stringify([
+          {
+            number: 20,
+            title: "First burst PR",
+            mergedAt: "2026-05-30T05:00:00Z",
+            headRefName: "claim/codex-first",
+          },
+          {
+            number: 21,
+            title: "Second burst PR",
+            mergedAt: "2026-05-30T05:00:20Z",
+            headRefName: "otto-cli/second",
+          },
+          {
+            number: 22,
+            title: "Later PR",
+            mergedAt: "2026-05-30T05:05:00Z",
+            headRefName: "riven-later",
+          },
+        ]),
+        "2026-05-30T06:00:00Z",
+        2 * 60 * 60 * 1000,
+      ),
+    ).toEqual([
+      {
+        id: "merged-pr-20",
+        trajectory: "codex",
+        occurredAt: "2026-05-30T05:00:00.000Z",
+        description: "#20 First burst PR",
+        correlationKey: "pr:20",
+        correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:20+21", "pr:21"],
+      },
+      {
+        id: "merged-pr-21",
+        trajectory: "otto",
+        occurredAt: "2026-05-30T05:00:20.000Z",
+        description: "#21 Second burst PR",
+        correlationKey: "pr:21",
+        correlationKeys: ["merge-burst:2026-05-30T05:00:00.000Z:20+21", "pr:20"],
+      },
+      {
+        id: "merged-pr-22",
+        trajectory: "riven",
+        occurredAt: "2026-05-30T05:05:00.000Z",
+        description: "#22 Later PR",
+        correlationKey: "pr:22",
       },
     ]);
   });

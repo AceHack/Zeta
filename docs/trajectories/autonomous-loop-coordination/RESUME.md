@@ -216,6 +216,14 @@ remaining top windows are merged-PR / trajectory-owner pairings rather than
 Codex loop-run events, so the next B-0250 tuning slice should not further
 split the Codex runner-log source on this evidence.
 
+Current B-0250 merge-burst clustering receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-merge-burst-clustering-2026-05-30.md`
+
+It adds secondary merge-burst correlation keys to tightly adjacent merged PR
+observations and makes coincidence-window deduplication honor any shared
+primary or secondary key. Same-PR lifecycle dedup remains intact, but PRs
+landed in one merge burst now count as one B-0250 observation.
+
 Current dirty-worktree priority receipt:
 `docs/trajectories/autonomous-loop-coordination/dirty-worktree-priority-2026-05-30.md`
 
@@ -235,16 +243,15 @@ remote branch, absent PR, and a head already reachable from `origin/main`.
 
 ## Recommended Next Action
 
-Re-validate and clean only the selected
-`/Users/acehack/.local/share/zeta-worktrees/lior-preservation-2355Z` worktree
-and local branch. If any selection fact changes, publish a handoff note instead
-of deleting anything.
+Run the live factory health monitor after the merge-burst clustering packet
+lands, inspect the compact coincidence debug windows that remain, and only then
+choose the next B-0250 source-tuning slice.
 
 ## Next Child Packets
 
-- execute the selected bounded stale-worktree cleanup packet
-- B-0250 source tuning for trajectory ownership labels or same-merge-burst PR
-  clustering
+- B-0250 live calibration after merge-burst clustering
+- B-0250 source tuning for trajectory ownership labels if merged-PR bursts are
+  no longer dominant
 
 ## Evidence Links
 

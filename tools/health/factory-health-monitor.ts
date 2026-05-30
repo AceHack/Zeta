@@ -43,6 +43,7 @@ export interface CoincidenceEvent {
   occurredAt: string;
   description?: string;
   correlationKey?: string;
+  correlationKeys?: string[];
 }
 
 export interface CoincidenceWindowOptions {
@@ -119,6 +120,7 @@ const FACTORY_EVENT_DEBUG_EVENT_LIMIT = 4;
 const FACTORY_EVENT_DEBUG_TRAJECTORY_LIMIT = 4;
 const FACTORY_EVENT_DEBUG_WINDOW_LIMIT = 3;
 const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
+const FACTORY_EVENT_MERGE_BURST_GAP_MS = 2 * 60 * 1000;
 const FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG = resolveCodexLoopRunnerLog(process.env);
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
 const REPO_PATH_PREFIXES = [
@@ -151,9 +153,24 @@ function coincidenceEventTimeMs(event: CoincidenceEvent): number | null {
   return Number.isNaN(parsed) ? null : parsed;
 }
 
-function coincidenceEventWindowKey(event: CoincidenceEvent, fallbackIndex: number): string {
-  const key = event.correlationKey?.trim();
-  return key ? key : `${event.id}:${fallbackIndex}`;
+function coincidenceEventWindowKeys(event: CoincidenceEvent, fallbackIndex: number): string[] {
+  const keys = [event.correlationKey, ...(event.correlationKeys ?? [])]
+    .map((key) => key?.trim() ?? "")
+    .filter((key) => key.length > 0);
+  const uniqueKeys = [...new Set(keys)];
+  if (uniqueKeys.length > 0) {
+    return uniqueKeys;
+  }
+
+  return [`${event.id}:${fallbackIndex}`];
+}
+
+function coincidenceWindowAlreadySeen(
+  members: readonly { readonly event: CoincidenceEvent; readonly index: number }[],
+  seenWindows: readonly ReadonlySet<string>[],
+): boolean {
+  const memberKeySets = members.map((member) => coincidenceEventWindowKeys(member.event, member.index));
+  return seenWindows.some((seenKeys) => memberKeySets.every((keys) => keys.some((key) => seenKeys.has(key))));
 }
 
 export function findCoincidenceWindows(
@@ -167,7 +184,7 @@ export function findCoincidenceWindows(
     .filter((timed): timed is { event: CoincidenceEvent; index: number; timeMs: number } => timed.timeMs !== null)
     .sort((a, b) => a.timeMs - b.timeMs || a.event.id.localeCompare(b.event.id) || a.index - b.index);
 
-  const seen = new Set<string>();
+  const seenWindows: Array<ReadonlySet<string>> = [];
   const windows: CoincidenceWindow[] = [];
 
   for (let i = 0; i < timedEvents.length; i++) {
@@ -178,14 +195,18 @@ export function findCoincidenceWindows(
     const rawMembers = timedEvents.filter(
       (candidate) => candidate.timeMs >= first.timeMs && candidate.timeMs <= windowEndMs,
     );
-    const membersByCorrelation = new Map<string, { event: CoincidenceEvent; index: number; timeMs: number }>();
+    const members: Array<{ event: CoincidenceEvent; index: number; timeMs: number }> = [];
+    const seenMemberKeys = new Set<string>();
     for (const member of rawMembers) {
-      const key = coincidenceEventWindowKey(member.event, member.index);
-      if (!membersByCorrelation.has(key)) {
-        membersByCorrelation.set(key, member);
+      const keys = coincidenceEventWindowKeys(member.event, member.index);
+      if (keys.some((key) => seenMemberKeys.has(key))) {
+        continue;
+      }
+      members.push(member);
+      for (const key of keys) {
+        seenMemberKeys.add(key);
       }
     }
-    const members = [...membersByCorrelation.values()];
     if (members.length < minimumEvents) {
       continue;
     }
@@ -195,11 +216,10 @@ export function findCoincidenceWindows(
       continue;
     }
 
-    const signature = JSON.stringify(members.map((member) => coincidenceEventWindowKey(member.event, member.index)).sort());
-    if (seen.has(signature)) {
+    if (coincidenceWindowAlreadySeen(members, seenWindows)) {
       continue;
     }
-    seen.add(signature);
+    seenWindows.push(new Set(members.flatMap((member) => coincidenceEventWindowKeys(member.event, member.index))));
 
     windows.push({
       windowStart: new Date(first.timeMs).toISOString(),
@@ -404,7 +424,7 @@ export function mergedPullRequestEventsFromJson(
     headRefName?: string | null;
   }>;
 
-  return prs
+  const observations = prs
     .map((pr): CoincidenceEvent | null => {
       if (typeof pr.number !== "number" || !pr.mergedAt) {
         return null;
@@ -429,6 +449,34 @@ export function mergedPullRequestEventsFromJson(
     })
     .filter((event): event is CoincidenceEvent => event !== null)
     .sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
+
+  let burstStart = 0;
+  while (burstStart < observations.length) {
+    let burstEnd = burstStart + 1;
+    while (burstEnd < observations.length) {
+      const previousMs = Date.parse(observations[burstEnd - 1]?.occurredAt ?? "");
+      const nextMs = Date.parse(observations[burstEnd]?.occurredAt ?? "");
+      if (Number.isNaN(previousMs) || Number.isNaN(nextMs) || nextMs - previousMs > FACTORY_EVENT_MERGE_BURST_GAP_MS) {
+        break;
+      }
+      burstEnd++;
+    }
+
+    const burst = observations.slice(burstStart, burstEnd);
+    if (burst.length > 1) {
+      const burstNumbers = burst.map((event) => event.id.replace(/^merged-pr-/, "")).join("+");
+      const burstKey = `merge-burst:${burst[0]?.occurredAt ?? "unknown"}:${burstNumbers}`;
+      const burstPrimaryKeys = burst.map((event) => event.correlationKey).filter((key): key is string => key !== undefined);
+      for (const event of burst) {
+        const peerPrimaryKeys = burstPrimaryKeys.filter((key) => key !== event.correlationKey);
+        event.correlationKeys = [...new Set([...(event.correlationKeys ?? []), burstKey, ...peerPrimaryKeys])];
+      }
+    }
+
+    burstStart = burstEnd;
+  }
+
+  return observations;
 }
 
 function pullRequestCorrelationKeyFromText(text: string): string | undefined {
