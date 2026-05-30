@@ -37,6 +37,8 @@
     "**/.lake/**",
     "tools/lean4/.lake/**",
     "tools/alloy/**",
-    "tools/tla/**"
+    "tools/tla/**",
+    "agentic-organization",
+    "agentic-organization/**"
   ]
 }
