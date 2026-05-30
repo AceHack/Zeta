@@ -1,0 +1,16 @@
+# tools/setup/manifests/windows — declarative Windows system CLI tools.
+# Resolver priority (operator 2026-05-30): scoop -> winget -> chocolatey. scoop is primary
+# (user-mode, no admin, AI-native). Format per line:  <scoop-id> [winget=<id>] [choco=<id>]
+# winget/choco overrides are optional (default to <scoop-id>). `#` comments + blank lines ignored.
+#
+# KEEP MINIMAL + symmetric with manifests/apt + manifests/brew. Cross-platform tools belong in
+# .mise.toml (mise) or install via bun/dotnet/uv — NOT here. Only tools that no cross-platform
+# source provides on Windows AND that aren't Windows built-ins go here. The manifest-symmetry
+# test (tools/ci/manifest-symmetry.test.ts) enforces this: every apt/brew system tool must be
+# here OR an allowlisted exception (curl/ca-certificates = Windows built-ins; build-essential =
+# prebuilt toolchain; p7zip-full = scoop-bundled 7zip).
+#
+# Pins per dep-pin-search-first-authority (WebSearch 2026-05-30 — https://scoop.sh/ +
+# https://github.com/ScoopInstaller/scoop + https://learn.microsoft.com/windows/package-manager/):
+#   git — scoop: git | winget: Git.Git | choco: git
+git    winget=Git.Git    choco=git

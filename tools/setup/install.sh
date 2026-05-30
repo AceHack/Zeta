@@ -155,8 +155,24 @@ EOF
         ;;
     esac
     ;;
+  MINGW*|MSYS*|CYGWIN*)
+    # Windows under Git Bash / MSYS. install.sh is the Unix-like entry; on Windows the install
+    # graph is PowerShell (user-mode, scoop-primary, no admin). Route to install.ps1. exit 2 =
+    # intentional routing guard (NOT a failure), matching the NixOS-live branch above.
+    cat >&2 <<WINEOF
+OS: Windows ($os)
+
+This is a Windows shell. install.sh is the Unix-like entry; on Windows run the
+PowerShell install graph instead (user-mode, scoop-primary, no admin):
+
+  pwsh "$REPO_ROOT/tools/setup/install.ps1"
+
+Exit 2 is the intentional routing guard (see exit-code documentation in the header).
+WINEOF
+    exit 2
+    ;;
   *)
-    echo "error: unsupported OS '$os' (macOS + Linux only this round; Windows backlogged)"
+    echo "error: unsupported OS '$os' (macOS + Linux + Windows supported; others unsupported)"
     exit 1
     ;;
 esac
