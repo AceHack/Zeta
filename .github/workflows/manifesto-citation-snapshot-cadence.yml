@@ -3,9 +3,10 @@ name: manifesto-citation-snapshot-cadence
 # Daily cadence for B-0707 manifesto-citation time-series. Runs
 # `bun tools/hygiene/audit-manifesto-citations.ts --snapshot`,
 # captures the resulting per-day JSON file under
-# docs/hygiene-history/manifesto-citations/YYYY-MM-DD.json, and
-# opens a PR with the snapshot included. Mechanizes the deferred
-# 5th acceptance criterion from B-0707 (cron-cadence wiring).
+# docs/hygiene-history/manifesto-citations/YYYY-MM-DD.json, and pushes
+# a snapshot branch for the next maintainer/agent pass to land.
+# Mechanizes the deferred 5th acceptance criterion from B-0707
+# (cron-cadence wiring).
 #
 # Composes with:
 #  - .github/workflows/budget-snapshot-cadence.yml (pattern reference)
@@ -25,9 +26,10 @@ name: manifesto-citation-snapshot-cadence
 # permissions but input content is still sanitized via env:+quoted-
 # substitution).
 #
-# Auto-merge limitation: events triggered by secrets.GITHUB_TOKEN
-# do not fire downstream workflow runs. Per budget-snapshot-cadence.yml
-# convention: leave the PR open; next maintainer/agent pass merges it.
+# GitHub Actions permission limitation: this repository does not allow
+# secrets.GITHUB_TOKEN to create pull requests. The workflow therefore
+# publishes a branch and writes a run-summary handoff URL instead of
+# calling `gh pr create`.
 
 on:
   schedule:
@@ -55,7 +57,6 @@ jobs:
 
     permissions:
       contents: write
-      pull-requests: write
 
     steps:
       - name: Checkout
@@ -67,13 +68,9 @@ jobs:
         run: ./tools/setup/install.sh
 
       - name: Verify required tooling
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
           command -v bun >/dev/null
-          command -v gh >/dev/null
-          gh auth status
 
       - name: Run citation snapshot
         env:
@@ -104,10 +101,10 @@ jobs:
           fi
           echo "changed=true" >>"$GITHUB_OUTPUT"
 
-      - name: Open snapshot PR
+      - name: Publish snapshot branch
         if: steps.diff.outputs.changed == 'true'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
           NOTE_INPUT: ${{ github.event.inputs.note || '' }}
         run: |
@@ -115,6 +112,23 @@ jobs:
           today="$(date -u +%Y-%m-%d)"
           ts="$(date -u +%Y-%m-%dT%H-%M-%SZ)"
           branch="ops/manifesto-citation-snapshot-${today}-run-${RUN_ID}"
+          branch_url="https://github.com/${REPOSITORY}/tree/${branch}"
+          compare_url="https://github.com/${REPOSITORY}/compare/main...${branch}?expand=1"
+
+          if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            echo "snapshot branch already exists: $branch"
+            {
+              echo "## Manifesto citation snapshot branch already exists"
+              echo
+              echo "- Branch: \`$branch\`"
+              echo "- Branch URL: $branch_url"
+              echo "- Compare URL: $compare_url"
+              echo
+              echo "No PR was created from this workflow because GitHub Actions"
+              echo "is not permitted to create pull requests in this repository."
+            } >>"$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
 
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -172,12 +186,12 @@ jobs:
           git push -u origin "$branch"
 
           {
-            echo "## Summary"
+            echo "## Manifesto citation snapshot branch"
             echo
             echo "Daily manifesto-citation snapshot via the cadence"
             echo "workflow (run $RUN_ID, $ts)."
             echo
-            echo "## What this PR adds"
+            echo "## What this branch adds"
             echo
             echo "- One JSON snapshot at"
             echo "  \`docs/hygiene-history/manifesto-citations/${today}.json\`"
@@ -193,11 +207,15 @@ jobs:
             echo "trailer fields use Human-Review-Evidence=none per the"
             echo "validator consistency rule."
             echo
-            echo "## Auto-merge limitation"
+            echo "## Branch handoff"
             echo
-            echo "GITHUB_TOKEN-created PRs don't trigger downstream"
-            echo "workflows. PR left open for next maintainer/agent pass"
-            echo "to merge — per budget-snapshot-cadence.yml convention."
+            echo "- Branch: \`$branch\`"
+            echo "- Branch URL: $branch_url"
+            echo "- Compare URL: $compare_url"
+            echo
+            echo "No PR was created from this workflow because GitHub Actions"
+            echo "is not permitted to create pull requests in this repository."
+            echo "Next maintainer/agent pass should open or land the branch."
             if [ -n "${NOTE_INPUT:-}" ]; then
               echo
               echo "## Note (from workflow_dispatch input)"
@@ -220,13 +238,7 @@ jobs:
             echo "Action-Mode: autonomous-fail-open"
             echo "Task: B-0707"
             echo "Co-authored-by: Otto <noreply@anthropic.com>"
-          } > /tmp/manifesto-citation-pr-body.md
-
-          gh pr create \
-            --base main \
-            --head "$branch" \
-            --title "ops(B-0707): manifesto-citation snapshot $today" \
-            --body-file /tmp/manifesto-citation-pr-body.md
+          } >>"$GITHUB_STEP_SUMMARY"
 
       - name: No-change report
         if: steps.diff.outputs.changed == 'false'

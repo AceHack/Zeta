@@ -3,12 +3,12 @@ id: B-0707
 priority: P2
 status: closed
 closed: 2026-05-23
-closed_by: "ALL 5 acceptance criteria met — cron-cadence wiring shipped at .github/workflows/manifesto-citation-snapshot-cadence.yml (daily 06:37 UTC; PR-gated per budget-snapshot-cadence.yml convention); first snapshot landed at docs/hygiene-history/manifesto-citations/2026-05-23.json (2.8KB)"
+closed_by: "ALL 5 acceptance criteria met — cron-cadence wiring shipped at .github/workflows/manifesto-citation-snapshot-cadence.yml (daily 06:37 UTC; branch-handoff per GitHub Actions PR-creation permission limits); first snapshot landed at docs/hygiene-history/manifesto-citations/2026-05-23.json (2.8KB)"
 title: "Manifesto citation time-series tracking — persistent snapshots + delta-over-time"
 tier: governance
 effort: S
 created: 2026-05-23
-last_updated: 2026-05-23
+last_updated: 2026-05-30
 depends_on: [B-0525]
 composes_with: []
 tags: [manifesto, governance, time-series, hygiene-history]
@@ -31,7 +31,17 @@ The 2026-05-23 baseline (88 files / 684 citations) is a single point. The B-0525
 - [x] `--delta` flag reads the most-recent prior snapshot + reports change-since-last per surface + per form — shipped (markdown + `--json` modes)
 - [x] Snapshot file is git-committed (per substrate-or-it-didn't-happen) — `2026-05-23.json` (2.8KB) committed
 - [x] Test coverage for snapshot + delta paths — 14 new tests added (30 total; 100% pass)
-- [x] Composes with a dedicated cron — shipped as `.github/workflows/manifesto-citation-snapshot-cadence.yml` (daily 06:37 UTC; opens snapshot PR per `budget-snapshot-cadence.yml` convention; PR-gated since `GITHUB_TOKEN`-created PRs can't trigger downstream auto-merge)
+- [x] Composes with a dedicated cron — shipped as `.github/workflows/manifesto-citation-snapshot-cadence.yml` (daily 06:37 UTC; pushes a snapshot branch and writes a run-summary handoff because this repository does not permit `GITHUB_TOKEN` to create pull requests)
+
+## Repair note
+
+2026-05-30 audit found the first six scheduled runs pushed
+`ops/manifesto-citation-snapshot-*` branches and then failed at
+`gh pr create` with `GraphQL: GitHub Actions is not permitted to
+create or approve pull requests (createPullRequest)`. The workflow now
+stops after the branch push and records branch/compare URLs in the run
+summary. The branch remains the durable handoff surface for the next
+maintainer/agent pass to open or land.
 
 ## Out of scope
 
