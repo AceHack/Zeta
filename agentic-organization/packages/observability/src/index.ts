@@ -44,3 +44,10 @@ export {
   type PipelineView,
   type RecentEventView,
 } from "./org-snapshot.ts";
+export {
+  rollUpBatchMetrics,
+  aggregateMetrics,
+  type WorkBatchMetrics,
+  type ScopeMetrics,
+  type TestSummary,
+} from "./work-batch-metrics.ts";

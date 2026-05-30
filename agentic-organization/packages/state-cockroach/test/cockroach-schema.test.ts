@@ -13,6 +13,16 @@ import {
   ScheduleBlockType,
   WorkItemState,
   WorkItemType,
+  MemoryTier,
+  MemoryPhase,
+  ChangeSetPhase,
+  DocType,
+  DocScopeKind,
+  DocLifecycleState,
+  DocGraphRelation,
+  GraphNodeKind,
+  GraphEdgeKind,
+  GraphConfidence,
 } from "../../domain/src/index.ts";
 import {
   CockroachCoreStateMigrationName,
@@ -33,6 +43,11 @@ import {
   createCockroachWorkScheduleBlockKernelMigration,
   createCockroachWorkAnchorKernelMigration,
   createCockroachWorkItemStateHistoryMetadataMigration,
+  createCockroachMemorySystemMigration,
+  createCockroachChangeControlMigration,
+  createCockroachDocumentIntelligenceMigration,
+  createCockroachKnowledgeGraphMigration,
+  createCockroachTenantConfigMigration,
 } from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
@@ -93,7 +108,6 @@ describe("cockroach core state schema", () => {
     equal(migrations[11]?.name, CockroachCoreStateMigrationName.AgentLivenessV12);
     equal(migrations[12]?.name, CockroachCoreStateMigrationName.HindsightMemoryV13);
     equal(migrations[13]?.name, CockroachCoreStateMigrationName.HermesRunV14);
-    equal(migrations[14]?.name, CockroachCoreStateMigrationName.OrgSystemV15);
   });
 
   test("declares the hermes run table (durable agent-run history)", () => {
@@ -318,6 +332,116 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("correlation_id STRING NOT NULL"));
     ok(migration.sql.includes("causation_id STRING NOT NULL"));
     ok(migration.sql.includes("trace_id STRING NOT NULL"));
+  });
+
+  test("declares the memory system kernel (state + injection) with tier/phase checks", () => {
+    const migration = createCockroachMemorySystemMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.MemorySystemV16);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.MemoryState}`));
+    ok(migration.sql.includes("memory_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("weight FLOAT8 NOT NULL"));
+    ok(migration.sql.includes("outcome JSONB NOT NULL"));
+    ok(migration.sql.includes("utility JSONB NOT NULL"));
+    ok(migration.sql.includes("cross_scope JSONB NOT NULL"));
+    // CHECK constraints derive from the domain enums (no drift possible).
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(MemoryTier))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(MemoryPhase))));
+    ok(migration.sql.includes("INDEX memory_state_by_org_weight (organization_id, weight DESC)"));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.MemoryInjection}`));
+    ok(migration.sql.includes("injection_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("cited BOOL NOT NULL"));
+    ok(migration.sql.includes("weight_at_injection FLOAT8 NOT NULL"));
+  });
+
+  test("registers the memory system migration as V16 in the ordered migration set", () => {
+    const all = createCockroachCoreStateMigrations();
+    equal(all[all.length - 5]!.name, CockroachCoreStateMigrationName.MemorySystemV16);
+  });
+
+  test("declares the change control kernel (change_sets + review_stage_status) with phase check", () => {
+    const migration = createCockroachChangeControlMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ChangeControlV17);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ChangeSets}`));
+    ok(migration.sql.includes("change_set_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("artifacts JSONB NOT NULL"));
+    ok(migration.sql.includes("projections JSONB NOT NULL"));
+    ok(migration.sql.includes("current_stage_index INT8 NOT NULL"));
+    // CHECK derives from the domain enum (no drift).
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(ChangeSetPhase))));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ReviewStageStatus}`));
+    ok(migration.sql.includes("PRIMARY KEY (change_set_id, stage_id, revision)"));
+  });
+
+  test("registers the change control migration as V17 in the ordered migration set", () => {
+    const all = createCockroachCoreStateMigrations();
+    equal(all[all.length - 4]!.name, CockroachCoreStateMigrationName.ChangeControlV17);
+  });
+
+  test("declares the document intelligence kernel (doc units/sources/entities/graph/consult) with lifecycle + type checks", () => {
+    const migration = createCockroachDocumentIntelligenceMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocSources}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocUnits}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocEntities}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocGraphEdges}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocConsultLedger}`));
+    ok(migration.sql.includes("doc_unit_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("content_hash STRING NOT NULL"));
+    ok(migration.sql.includes("provenance_change_set_id STRING NULL"));
+    ok(migration.sql.includes("bound_hat_ids JSONB NOT NULL"));
+    ok(migration.sql.includes("bound_stage_ids JSONB NOT NULL"));
+    // CHECK constraints derive from the domain enums (no drift possible).
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(DocType))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(DocScopeKind))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(DocLifecycleState))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(DocGraphRelation))));
+    ok(migration.sql.includes("INDEX doc_units_by_content_hash (organization_id, content_hash)"));
+  });
+
+  test("registers the document intelligence migration as V18 in the ordered migration set", () => {
+    const all = createCockroachCoreStateMigrations();
+    equal(all[all.length - 3]!.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
+  });
+
+  test("declares the knowledge graph kernel (graph_nodes + graph_edges) with confidence + kind checks", () => {
+    const migration = createCockroachKnowledgeGraphMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.GraphNodes}`));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.GraphEdges}`));
+    ok(migration.sql.includes("node_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("edge_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("provenance JSONB NOT NULL"));
+    ok(migration.sql.includes("change_set_id STRING NULL"));
+    ok(migration.sql.includes("retraction_reason STRING NULL"));
+    // CHECK constraints derive from the domain enums (no drift possible).
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(GraphNodeKind))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(GraphEdgeKind))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(GraphConfidence))));
+    ok(migration.sql.includes("INDEX graph_edges_by_change_set (change_set_id)"));
+  });
+
+  test("registers the knowledge graph migration as V19 in the ordered migration set", () => {
+    const all = createCockroachCoreStateMigrations();
+    equal(all[all.length - 2]!.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
+  });
+
+  test("declares the tenant config table (the org as a configurable runtime)", () => {
+    const migration = createCockroachTenantConfigMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.TenantConfigV20);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.TenantConfig}`));
+    ok(migration.sql.includes("organization_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("config JSONB NOT NULL"));
+    ok(migration.sql.includes("version INT8 NOT NULL"));
+  });
+
+  test("registers the tenant config migration as V20 last in the ordered migration set", () => {
+    const all = createCockroachCoreStateMigrations();
+    equal(all[all.length - 1]!.name, CockroachCoreStateMigrationName.TenantConfigV20);
   });
 
   test("keeps generated migrations synchronized with checked-in SQL files", async () => {

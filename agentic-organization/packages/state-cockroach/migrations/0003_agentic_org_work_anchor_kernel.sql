@@ -112,5 +112,5 @@ ALTER TABLE IF EXISTS agentic_org_work_items
   ALTER COLUMN trace_id SET NOT NULL;
 
 ALTER TABLE IF EXISTS agentic_org_work_items
-  ADD CONSTRAINT IF NOT EXISTS agentic_org_work_items_work_item_type_check CHECK (work_item_type IN ('defect', 'task')),
+  ADD CONSTRAINT IF NOT EXISTS agentic_org_work_items_work_item_type_check CHECK (work_item_type IN ('goal', 'report', 'service_request', 'task', 'defect', 'capability_request', 'review', 'incident', 'release')),
   ADD CONSTRAINT IF NOT EXISTS agentic_org_work_items_state_check CHECK (state IN ('created', 'intake', 'triage', 'ready', 'in_progress', 'blocked', 'review', 'done'));

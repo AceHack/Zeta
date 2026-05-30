@@ -70,6 +70,8 @@ import {
   type WorkerProcessEnvironment,
 } from "./config.ts";
 import { runKeepAliveLoop } from "./keep-alive-loop.ts";
+import { composeOrgCadenceLoops } from "./org-cadence-composition.ts";
+import { resolveChangeControlExternalPort } from "./work-provider-config.ts";
 import { composeDurableWorkerRuntimePorts } from "./durable-composition.ts";
 import { composeWorkerRuntime } from "./composition.ts";
 import {
@@ -255,6 +257,11 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
     now: deps.clock.now,
   });
 
+  // Hoisted so BOTH the happy path and the catch path tear the always-on loops
+  // down — a failure after the loops start must not leak them. No-op until the
+  // loops exist (a failure before that has nothing to stop).
+  let stopLoops: () => Promise<void> = async () => {};
+
   try {
     const runtimePorts = composeDurableWorkerRuntimePorts({
       config,
@@ -343,10 +350,50 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
       },
     });
 
+    // GEN3: resolve the live external review port from env/secret via the GENERIC work-provider
+    // resolver — WORK_PROVIDER selects github|gitlab|jira|linear (legacy GITHUB_* still works).
+    // A code_review provider (github/gitlab) becomes the live ChangeControlPort; a work_item
+    // provider (jira/linear) leaves change-control internal-only. Absent → internal-only (safe
+    // default). The token is never logged — only the resolved mode is.
+    const externalReview = resolveChangeControlExternalPort(deps.env, { nowMs: () => Date.parse(deps.clock.now()) });
+    const externalReviewPort = externalReview.port;
+    deps.logger.log({
+      stream: WorkerMainLogStream.Stdout,
+      message: JSON.stringify({ eventName: "agentic.worker.change_control.external", mode: externalReview.mode }),
+    });
+
+    // Drive the proven org cycles (Work OS living loop, memory maintenance, change
+    // control) on their own cadences, concurrently with the work + keep-alive loops.
+    // This ACTIVATES them in the always-on worker (Forward Roadmap Track A) — the org
+    // now RUNS them continuously, not only via deploy runners. Stopped with the work loop.
+    const orgCadence = composeOrgCadenceLoops({
+      executor: cockroachExecutor,
+      organizationId: config.organizationId,
+      now: () => Date.parse(deps.clock.now()),
+      createId: deps.durablePorts.createId,
+      // the cadence supplies its own stop check; we just honor it in the sleep
+      sleep: (ms, isStopRequested) => sleepUnlessStopped(deps.clock, ms, isStopRequested),
+      ...(externalReviewPort ? { externalPort: externalReviewPort } : {}),
+      observer: {
+        record: (record) =>
+          deps.logger.log({
+            stream: WorkerMainLogStream.Stdout,
+            message: JSON.stringify({ eventName: "agentic.worker.org_cadence.tick", lane: record.lane, tick: record.tick, status: record.status, failureCount: record.failureCount }),
+          }),
+      },
+    });
+
+    // One teardown for both exit paths: stop both loops, then await them settled
+    // (allSettled — a thrown loop must not mask the other's clean shutdown).
+    stopLoops = async () => {
+      keepAliveStopped.value = true;
+      orgCadence.stop();
+      await Promise.allSettled([keepAliveLoop, orgCadence.done]);
+    };
+
     const result = await entrypoint.run();
 
-    keepAliveStopped.value = true;
-    await keepAliveLoop;
+    await stopLoops();
 
     return result.exitCode;
   } catch (error) {
@@ -354,6 +401,8 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
       stream: WorkerMainLogStream.Stderr,
       message: `worker run failed: ${extractMainErrorMessage(error)}`,
     });
+
+    await stopLoops();
 
     await disposeAfterFailureBestEffort({
       deps,

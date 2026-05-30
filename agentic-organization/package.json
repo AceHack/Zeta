@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "test": "node --experimental-strip-types --test packages/*/test/**/*.test.ts apps/*/test/**/*.test.ts",
+    "test:integration": "node --experimental-strip-types --test apps/workers/test/cockroach-integration.test.ts apps/workers/test/nats-integration.test.ts apps/workers/test/keep-alive-live-integration.test.ts apps/workers/test/hermes-memory-live-integration.test.ts apps/workers/test/durable-worker-live-integration.test.ts",
     "typecheck": "npx --yes -p typescript@6.0.3 tsc -p tsconfig.json"
   },
   "dependencies": {

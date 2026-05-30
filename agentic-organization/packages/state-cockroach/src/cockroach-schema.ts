@@ -9,6 +9,16 @@ import {
   HatAssignmentAuthorityState,
   WorkItemState,
   WorkItemType,
+  MemoryTier,
+  MemoryPhase,
+  ChangeSetPhase,
+  DocType,
+  DocScopeKind,
+  DocLifecycleState,
+  DocGraphRelation,
+  GraphNodeKind,
+  GraphEdgeKind,
+  GraphConfidence,
 } from "../../domain/src/index.ts";
 
 export const CockroachCoreStateMigrationName = {
@@ -27,6 +37,11 @@ export const CockroachCoreStateMigrationName = {
   HindsightMemoryV13: "0013_agentic_org_hindsight_memory",
   HermesRunV14: "0014_agentic_org_hermes_run",
   OrgSystemV15: "0015_agentic_org_org_system",
+  MemorySystemV16: "0016_agentic_org_memory_system",
+  ChangeControlV17: "0017_agentic_org_change_control",
+  DocumentIntelligenceV18: "0018_agentic_org_document_intelligence",
+  KnowledgeGraphV19: "0019_agentic_org_knowledge_graph",
+  TenantConfigV20: "0020_agentic_org_tenant_config",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -57,6 +72,18 @@ export const CockroachTableName = {
   HermesRun: "agentic_org_hermes_run",
   OrgEvents: "agentic_org_org_events",
   HatBindings: "agentic_org_hat_bindings",
+  MemoryState: "agentic_org_memory_state",
+  MemoryInjection: "agentic_org_memory_injection",
+  ChangeSets: "agentic_org_change_sets",
+  ReviewStageStatus: "agentic_org_review_stage_status",
+  DocSources: "agentic_org_doc_sources",
+  DocUnits: "agentic_org_doc_units",
+  DocEntities: "agentic_org_doc_entities",
+  DocGraphEdges: "agentic_org_doc_graph_edges",
+  DocConsultLedger: "agentic_org_doc_consult_ledger",
+  GraphNodes: "agentic_org_graph_nodes",
+  GraphEdges: "agentic_org_graph_edges",
+  TenantConfig: "agentic_org_tenant_config",
 } as const;
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
@@ -75,6 +102,17 @@ export const CockroachCheckConstraintName = {
   ScheduleBlockType: "agentic_org_work_schedule_blocks_type_check",
   ScheduleBlockState: "agentic_org_work_schedule_blocks_state_check",
   HatAssignmentAuthorityState: "agentic_org_hat_assignment_authorities_state_check",
+  MemoryStateTier: "agentic_org_memory_state_tier_check",
+  MemoryStatePhase: "agentic_org_memory_state_phase_check",
+  ChangeSetPhase: "agentic_org_change_sets_phase_check",
+  DocUnitType: "agentic_org_doc_units_type_check",
+  DocUnitScopeKind: "agentic_org_doc_units_scope_kind_check",
+  DocUnitStatus: "agentic_org_doc_units_status_check",
+  DocGraphEdgeRelation: "agentic_org_doc_graph_edges_relation_check",
+  GraphNodeKind: "agentic_org_graph_nodes_kind_check",
+  GraphNodeConfidence: "agentic_org_graph_nodes_confidence_check",
+  GraphEdgeKind: "agentic_org_graph_edges_kind_check",
+  GraphEdgeConfidence: "agentic_org_graph_edges_confidence_check",
 } as const;
 
 export type CockroachCheckConstraintName =
@@ -141,6 +179,11 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachHindsightMemoryMigration(),
     createCockroachHermesRunMigration(),
     createCockroachOrgSystemMigration(),
+    createCockroachMemorySystemMigration(),
+    createCockroachChangeControlMigration(),
+    createCockroachDocumentIntelligenceMigration(),
+    createCockroachKnowledgeGraphMigration(),
+    createCockroachTenantConfigMigration(),
   ];
 }
 
@@ -257,6 +300,304 @@ export function createCockroachOrgSystemMigration(): CockroachSchemaMigration {
     name: CockroachCoreStateMigrationName.OrgSystemV15,
     sql: `${createOrgEventsTableSql()}\n${createHatBindingsTableSql()}`,
   };
+}
+
+/**
+ * Memory system (MEM2) — the STATE satellite of the dynamic-memory loop. CONTENT
+ * (the embedded memory text) lives in Hindsight; this table holds the immutable
+ * content-addressing (tier/scope/key) plus the mutable weight/lifecycle signals
+ * that drive retrieval. memory_state joins back to Hindsight by memory_id. The
+ * injection ledger records every memory surfaced into a turn (citation + utility).
+ */
+export function createCockroachMemorySystemMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.MemorySystemV16,
+    sql: `${createMemoryStateTableSql()}\n${createMemoryInjectionTableSql()}`,
+  };
+}
+
+function createMemoryStateTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.MemoryState} (
+  memory_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  tier STRING NOT NULL,
+  scope STRING NOT NULL,
+  key STRING NOT NULL,
+  phase STRING NOT NULL,
+  confidence FLOAT8 NOT NULL,
+  weight FLOAT8 NOT NULL,
+  freshness_at TIMESTAMPTZ NOT NULL,
+  reinforcement_count INT8 NOT NULL,
+  protected BOOL NOT NULL,
+  written_by STRING NOT NULL,
+  written_at TIMESTAMPTZ NOT NULL,
+  context_hint STRING NULL,
+  outcome JSONB NOT NULL,
+  utility JSONB NOT NULL,
+  cross_scope JSONB NOT NULL,
+  archived_at TIMESTAMPTZ NULL,
+  CONSTRAINT ${CockroachCheckConstraintName.MemoryStateTier} CHECK (tier IN (${createSqlStringList(Object.values(MemoryTier))})),
+  CONSTRAINT ${CockroachCheckConstraintName.MemoryStatePhase} CHECK (phase IN (${createSqlStringList(Object.values(MemoryPhase))})),
+  INDEX memory_state_by_org_scope (organization_id, scope),
+  INDEX memory_state_by_org_phase (organization_id, phase),
+  INDEX memory_state_by_org_weight (organization_id, weight DESC)
+);`.trim();
+}
+
+function createMemoryInjectionTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.MemoryInjection} (
+  injection_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  memory_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  hat_id STRING NOT NULL,
+  agent_id STRING NOT NULL,
+  prompt_flow_run_id STRING NOT NULL,
+  weight_at_injection FLOAT8 NOT NULL,
+  cited BOOL NOT NULL,
+  injected_at TIMESTAMPTZ NOT NULL,
+  INDEX memory_injection_by_memory (memory_id, injected_at),
+  INDEX memory_injection_by_work (work_item_id, injected_at),
+  INDEX memory_injection_by_run (prompt_flow_run_id, injected_at)
+);`.trim();
+}
+
+/**
+ * Change control (CC0) — the internal review fabric. change_sets holds the
+ * canonical reviewable unit (Git-agnostic artifacts + optional external
+ * projections as JSONB); review_stage_status is the per-stage audit ledger
+ * keyed by (change_set, stage, revision) so a revision bounce re-runs cleanly.
+ * The PR/MR/card is a projection in change_sets.projections, never the source
+ * of truth.
+ */
+export function createCockroachChangeControlMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ChangeControlV17,
+    sql: `${createChangeSetsTableSql()}\n${createReviewStageStatusTableSql()}`,
+  };
+}
+
+/**
+ * Document Intelligence (D0) — the typed/scoped/bindable knowledge layer. doc_units are
+ * structural semantic units (not chunks) with a lifecycle + content-addressed hash +
+ * provenance (the ChangeSet that introduced them); doc_sources hold connector cursors;
+ * doc_entities + doc_graph_edges are the entity/knowledge graph RAG lacks; the consult
+ * ledger is the which-unit-helped-which-stage utility join. CHECK constraints derive
+ * from the domain enums (no drift possible).
+ */
+export function createCockroachDocumentIntelligenceMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.DocumentIntelligenceV18,
+    sql: [
+      createDocSourcesTableSql(),
+      createDocUnitsTableSql(),
+      createDocEntitiesTableSql(),
+      createDocGraphEdgesTableSql(),
+      createDocConsultLedgerTableSql(),
+    ].join("\n"),
+  };
+}
+
+/**
+ * Knowledge graph (G0) — the unified node/edge substrate. Every node + edge carries a
+ * confidence tier (extracted/inferred/verified/canonical/retracted) + provenance JSONB, so
+ * "a parser proved it" and "an agent guessed it" are distinguishable. Ids are content-addressed
+ * (re-extraction updates in place). CHECK constraints derive from the domain enums.
+ */
+export function createCockroachKnowledgeGraphMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.KnowledgeGraphV19,
+    sql: [createGraphNodesTableSql(), createGraphEdgesTableSql()].join("\n"),
+  };
+}
+
+/**
+ * Tenant configuration (C0) — the org as a configurable runtime. One row per org; the whole
+ * config (autonomy dial, workflow pipelines, handbook bindings, enabled skills) lives in a JSONB
+ * blob so a tenant reshapes behavior by editing data, not code. Versioned for optimistic writes.
+ */
+export function createCockroachTenantConfigMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.TenantConfigV20,
+    sql: `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.TenantConfig} (
+  organization_id STRING PRIMARY KEY,
+  config JSONB NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL
+);`.trim(),
+  };
+}
+
+function createGraphNodesTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.GraphNodes} (
+  node_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  kind STRING NOT NULL,
+  source_key STRING NOT NULL,
+  label STRING NOT NULL,
+  confidence STRING NOT NULL,
+  provenance JSONB NOT NULL,
+  attributes JSONB NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  CONSTRAINT ${CockroachCheckConstraintName.GraphNodeKind} CHECK (kind IN (${createSqlStringList(Object.values(GraphNodeKind))})),
+  CONSTRAINT ${CockroachCheckConstraintName.GraphNodeConfidence} CHECK (confidence IN (${createSqlStringList(Object.values(GraphConfidence))})),
+  INDEX graph_nodes_by_org_kind (organization_id, kind),
+  INDEX graph_nodes_by_source (organization_id, source_key)
+);`.trim();
+}
+
+function createGraphEdgesTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.GraphEdges} (
+  edge_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  from_node_id STRING NOT NULL,
+  to_node_id STRING NOT NULL,
+  kind STRING NOT NULL,
+  confidence STRING NOT NULL,
+  provenance JSONB NOT NULL,
+  change_set_id STRING NULL,
+  retraction_reason STRING NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  CONSTRAINT ${CockroachCheckConstraintName.GraphEdgeKind} CHECK (kind IN (${createSqlStringList(Object.values(GraphEdgeKind))})),
+  CONSTRAINT ${CockroachCheckConstraintName.GraphEdgeConfidence} CHECK (confidence IN (${createSqlStringList(Object.values(GraphConfidence))})),
+  INDEX graph_edges_by_from (organization_id, from_node_id, kind),
+  INDEX graph_edges_by_to (organization_id, to_node_id, kind),
+  INDEX graph_edges_by_change_set (change_set_id)
+);`.trim();
+}
+
+function createDocSourcesTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocSources} (
+  doc_source_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  connector_kind STRING NOT NULL,
+  label STRING NOT NULL,
+  sync_cursor STRING NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  INDEX doc_sources_by_org (organization_id)
+);`.trim();
+}
+
+function createDocUnitsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocUnits} (
+  doc_unit_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  source_id STRING NOT NULL,
+  type STRING NOT NULL,
+  scope_kind STRING NOT NULL,
+  scope_id STRING NOT NULL,
+  title STRING NOT NULL,
+  summary STRING NOT NULL,
+  content_ref STRING NOT NULL,
+  content_hash STRING NOT NULL,
+  status STRING NOT NULL,
+  freshness_at TIMESTAMPTZ NOT NULL,
+  bound_hat_ids JSONB NOT NULL,
+  bound_stage_ids JSONB NOT NULL,
+  supersedes_id STRING NULL,
+  provenance_change_set_id STRING NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  CONSTRAINT ${CockroachCheckConstraintName.DocUnitType} CHECK (type IN (${createSqlStringList(Object.values(DocType))})),
+  CONSTRAINT ${CockroachCheckConstraintName.DocUnitScopeKind} CHECK (scope_kind IN (${createSqlStringList(Object.values(DocScopeKind))})),
+  CONSTRAINT ${CockroachCheckConstraintName.DocUnitStatus} CHECK (status IN (${createSqlStringList(Object.values(DocLifecycleState))})),
+  INDEX doc_units_by_org_scope (organization_id, scope_kind, scope_id),
+  INDEX doc_units_by_org_status (organization_id, status),
+  INDEX doc_units_by_content_hash (organization_id, content_hash)
+);`.trim();
+}
+
+function createDocEntitiesTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocEntities} (
+  doc_entity_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  canonical_name STRING NOT NULL,
+  kind STRING NOT NULL,
+  aliases JSONB NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  INDEX doc_entities_by_org_kind (organization_id, kind)
+);`.trim();
+}
+
+function createDocGraphEdgesTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocGraphEdges} (
+  doc_graph_edge_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  from_id STRING NOT NULL,
+  to_id STRING NOT NULL,
+  relation STRING NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  CONSTRAINT ${CockroachCheckConstraintName.DocGraphEdgeRelation} CHECK (relation IN (${createSqlStringList(Object.values(DocGraphRelation))})),
+  INDEX doc_graph_edges_by_from (organization_id, from_id),
+  INDEX doc_graph_edges_by_to (organization_id, to_id)
+);`.trim();
+}
+
+function createDocConsultLedgerTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocConsultLedger} (
+  doc_consult_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  doc_unit_id STRING NOT NULL,
+  stage_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  consulted_at TIMESTAMPTZ NOT NULL,
+  outcome STRING NULL,
+  INDEX doc_consult_by_unit (doc_unit_id, consulted_at),
+  INDEX doc_consult_by_work (work_item_id, consulted_at)
+);`.trim();
+}
+
+function createChangeSetsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ChangeSets} (
+  change_set_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  work_item_id STRING NOT NULL,
+  proposer_hat_id STRING NOT NULL,
+  title STRING NOT NULL,
+  target_ref STRING NOT NULL,
+  phase STRING NOT NULL,
+  pipeline_id STRING NOT NULL,
+  current_stage_index INT8 NOT NULL,
+  artifacts JSONB NOT NULL,
+  projections JSONB NOT NULL,
+  revision INT8 NOT NULL,
+  opened_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  CONSTRAINT ${CockroachCheckConstraintName.ChangeSetPhase} CHECK (phase IN (${createSqlStringList(Object.values(ChangeSetPhase))})),
+  INDEX change_sets_by_work (work_item_id),
+  INDEX change_sets_by_org_phase (organization_id, phase)
+);`.trim();
+}
+
+function createReviewStageStatusTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ReviewStageStatus} (
+  change_set_id STRING NOT NULL,
+  stage_id STRING NOT NULL,
+  revision INT8 NOT NULL,
+  outcome STRING NULL,
+  decided_by STRING NULL,
+  decided_at TIMESTAMPTZ NULL,
+  PRIMARY KEY (change_set_id, stage_id, revision)
+);`.trim();
 }
 
 function createOrgEventsTableSql(): string {

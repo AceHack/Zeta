@@ -158,3 +158,49 @@ export {
 export { createCockroachOrgEventStore, type CreateCockroachOrgEventStoreInput, type OrgEventStore } from "./cockroach-org-event-store.ts";
 export { createCockroachHatBindingStore, type CreateCockroachHatBindingStoreInput, type HatBindingStore } from "./cockroach-hat-binding-store.ts";
 export { createCockroachOrgSystemMigration } from "./cockroach-schema.ts";
+export { createCockroachMemorySystemMigration } from "./cockroach-schema.ts";
+export { createCockroachChangeControlMigration } from "./cockroach-schema.ts";
+export { createCockroachDocumentIntelligenceMigration } from "./cockroach-schema.ts";
+export {
+  createCockroachChangeSetStore,
+  type ChangeSetStore,
+  type CreateCockroachChangeSetStoreInput,
+} from "./cockroach-change-set-store.ts";
+export {
+  createCockroachWorkIntakeSource,
+  type ClaimedWorkIntake,
+  type CreateCockroachWorkIntakeSourceInput,
+} from "./cockroach-work-intake-source.ts";
+export {
+  createCockroachReviewStageStatusStore,
+  type ReviewStageStatusStore,
+  type ReviewStageStatusRecord,
+  type CreateCockroachReviewStageStatusStoreInput,
+} from "./cockroach-review-stage-status-store.ts";
+export {
+  createCockroachMemoryStateStore,
+  type MemoryStateStore,
+  type CreateCockroachMemoryStateStoreInput,
+} from "./cockroach-memory-state-store.ts";
+export {
+  createCockroachMemoryInjectionStore,
+  type MemoryInjectionStore,
+  type CreateCockroachMemoryInjectionStoreInput,
+} from "./cockroach-memory-injection-store.ts";
+export {
+  createCockroachDocUnitStore,
+  type DocUnitStore,
+  type CreateCockroachDocUnitStoreInput,
+} from "./cockroach-doc-unit-store.ts";
+export { createCockroachKnowledgeGraphMigration } from "./cockroach-schema.ts";
+export {
+  createCockroachGraphStore,
+  type GraphStore,
+  type CreateCockroachGraphStoreInput,
+} from "./cockroach-graph-store.ts";
+export { createCockroachTenantConfigMigration } from "./cockroach-schema.ts";
+export {
+  createCockroachTenantConfigStore,
+  type TenantConfigStore,
+  type CreateCockroachTenantConfigStoreInput,
+} from "./cockroach-tenant-config-store.ts";

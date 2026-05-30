@@ -23,6 +23,14 @@ spec:
         - name: worker
           image: agentic-org-worker:keepalive
           imagePullPolicy: IfNotPresent
+          # GEN3 live-flip: the work-provider secret is OPTIONAL — absent → the org runs
+          # internal-only (the safe default). Apply deploy/k8s/31-work-provider-secret.example.yaml
+          # (filled with a real token) to turn the GitHub/GitLab/Jira/Linear port live. WORK_PROVIDER
+          # selects; the token never appears in this manifest or the logs — only the resolved mode is.
+          envFrom:
+            - secretRef:
+                name: work-provider-secrets
+                optional: true
           env:
             - { name: AGENTIC_ORG_ENV, value: "dev" }
             - { name: AGENTIC_ORG_ID, value: "org-lfg" }

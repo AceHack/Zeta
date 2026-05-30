@@ -6,6 +6,13 @@ status: design
 
 # Gastown Reference Analysis
 
+> **Follow-up:** this was a **docs-only** read done before our system was built. The
+> **code-level, full-impl-vs-full-impl, maturity-honest** comparison — including the
+> prioritized list of shipped-by-them / design-only-for-us capabilities worth building
+> (merge queue, model-eval harness, persistent agent pool, layered config, escalation
+> ladder, emergency stop, durable/ephemeral comms split) — lives in
+> [`GASTOWN_FULL_IMPL_COMPARISON.md`](GASTOWN_FULL_IMPL_COMPARISON.md).
+
 ## Purpose
 
 This document records the technical lessons from

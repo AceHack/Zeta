@@ -1,0 +1,36 @@
+CREATE TABLE IF NOT EXISTS agentic_org_graph_nodes (
+  node_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  kind STRING NOT NULL,
+  source_key STRING NOT NULL,
+  label STRING NOT NULL,
+  confidence STRING NOT NULL,
+  provenance JSONB NOT NULL,
+  attributes JSONB NOT NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  CONSTRAINT agentic_org_graph_nodes_kind_check CHECK (kind IN ('service', 'module', 'repo', 'endpoint', 'datastore', 'environment', 'test_target', 'doc_unit', 'entity', 'decision', 'release', 'work_item', 'hat')),
+  CONSTRAINT agentic_org_graph_nodes_confidence_check CHECK (confidence IN ('extracted', 'inferred', 'verified', 'canonical', 'retracted')),
+  INDEX graph_nodes_by_org_kind (organization_id, kind),
+  INDEX graph_nodes_by_source (organization_id, source_key)
+);
+CREATE TABLE IF NOT EXISTS agentic_org_graph_edges (
+  edge_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  from_node_id STRING NOT NULL,
+  to_node_id STRING NOT NULL,
+  kind STRING NOT NULL,
+  confidence STRING NOT NULL,
+  provenance JSONB NOT NULL,
+  change_set_id STRING NULL,
+  retraction_reason STRING NULL,
+  created_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  CONSTRAINT agentic_org_graph_edges_kind_check CHECK (kind IN ('depends_on', 'calls', 'exposes', 'persists_to', 'deploys_to', 'tested_by', 'part_of', 'owned_by', 'about', 'references', 'supersedes', 'changed_by')),
+  CONSTRAINT agentic_org_graph_edges_confidence_check CHECK (confidence IN ('extracted', 'inferred', 'verified', 'canonical', 'retracted')),
+  INDEX graph_edges_by_from (organization_id, from_node_id, kind),
+  INDEX graph_edges_by_to (organization_id, to_node_id, kind),
+  INDEX graph_edges_by_change_set (change_set_id)
+);

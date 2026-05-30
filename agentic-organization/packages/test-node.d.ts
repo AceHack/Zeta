@@ -82,3 +82,21 @@ declare module "node:path" {
 declare module "node:url" {
   export function fileURLToPath(url: URL): string;
 }
+
+declare module "node:http" {
+  export type IncomingMessage = {
+    method?: string;
+    url?: string;
+    on: (event: "data" | "end", cb: (chunk?: string) => void) => void;
+  };
+  export type ServerResponse = {
+    writeHead: (status: number, headers?: Record<string, string>) => void;
+    end: (body?: string) => void;
+  };
+  export type Server = {
+    listen: (port: number, host: string, cb: () => void) => void;
+    close: (cb?: () => void) => void;
+    address: () => { port: number } | string | null;
+  };
+  export function createServer(handler: (req: IncomingMessage, res: ServerResponse) => void): Server;
+}

@@ -11,6 +11,113 @@ status: design
 Current checkpoint after the first executable TypeScript slices and
 subagent review.
 
+## Update 2026-05-30 — Org-Native Change Control built end-to-end + proven in kind (CC0–CC6)
+
+The internal review fabric (ORG_NATIVE_CHANGE_CONTROL_DESIGN) is built end-to-end and
+proven in kind. The org reviews a **change** through its own pipeline; GitHub PR /
+GitLab MR / Jira card are optional **projections**, not the engine. Every layer falls
+out of the proven kernel/DU/port patterns:
+
+- **CC0** — 11 change-control `OrgEventKind`s + Cockroach `ChangeControlV17`
+  (`change_sets` + `review_stage_status`), phase CHECK from `Object.values(ChangeSetPhase)`,
+  `.sql` mirror + parity test; applied + round-tripped in kind.
+- **CC1** — domain: `ChangeSet`/`ChangeSetPhase` (House-DU), `ChangeArtifact` (6 kinds,
+  Git-agnostic), `ReviewStage`/`ReviewAuthority` (hat|quorum|human|external)/`ReviewGateKind`/
+  `ReviewPipeline`, `legalChangeSetTransitions` + `legalStageOutcomes` (the clamp). Pure.
+- **CC2** — Cockroach change-set store (JSONB artifacts + projections) + review-stage
+  ledger keyed `(change_set, stage, revision)`; round-tripped in kind.
+- **CC3** — the kernel: a review stage IS an observe→decide cycle. `evaluateStageGate`
+  + `decideByAuthority` (the four authorities handled uniformly) + `runReviewStage` +
+  `advanceChangeSet` + `resumeHumanStage` (HITL) + `applyChangeSet`. THE CLAMP: an
+  unsatisfiable gate can't be approved; an external approval flows IN as a gate
+  satisfaction — never a bypass. Content-addressed `changeSetId`.
+- **CC4** — `ChangeControlPort` + `NullChangeControlPort` (internal-only) + a controllable
+  fake external system + `ChangeControlPolicy`-as-data (internal-only vs github-gated =
+  the same pipeline + 2 appended stages) + reconciliation into the canonical `WorkItemState`.
+- **CC5** — real REST adapters: `createGitHubPrPort` (branch + PR; renders only
+  Git-representable artifacts, schema migrations stay internal; reads PR review state)
+  and `createJiraCardPort` (transition + comment; reads card status). Native fetch,
+  client-injectable; unit-tested with fakes; live credential-gated. **Complete
+  integration capability.**
+- **CC6** — `deploy/run-change-control-cycle.ts` + `observe-change-control.ts`. Two runs
+  proven in kind, both reaching `applied`:
+
+  ```text
+  RUN A internal-only (ZERO projections — the org ships with no external system):
+    open → code-review → internal-qa REQUEST_CHANGES → resubmit (rev2) → qa → security 3/3 → applied
+  RUN B github-gated (same fabric + 2 stages, fake external port):
+    …security → external-code-review PROJECTS a PR (pending) → human approves the PR →
+    approval flows IN to the gate → human QA sign-off (HITL) → applied + PR merged
+  ```
+
+  Externally the github run shows one PR; internally the org ran five stages + a quorum
+  board + a revision bounce + a human gate. 32 persisted `org_event`s (`changes_requested`,
+  `projection_created`, `projection_synced`, `human_signoff_requested`, `change_set_applied`).
+  732 tests / 725 pass / 0 fail; tsc clean. The PR is a leaf, not the trunk.
+
+Roadmap: CC ships **before** Document Intelligence (the review spine the intelligence
+tracks reference). The port layer is the Adaptive Platform's bidirectional Jira/Linear
+sync mechanism, generalized.
+
+## Update 2026-05-30 — dynamic memory system built end-to-end + Hindsight plugged in (MEM0–MEM8)
+
+The full dynamic-memory system (DYNAMIC_MEMORY_SYSTEM_DESIGN) is built and proven
+end-to-end in kind, with the real `vectorize-io/hindsight` container plugged in as
+the recall-engine dependency. Every layer is implemented, unit-tested, and proven
+against live Cockroach + live Hindsight:
+
+- **MEM0 — Hindsight in kind.** `deploy/k8s/35-hindsight.yaml` (embedded pg0, local
+  embeddings, LLM → in-cluster Ollama). retain/recall/reflect proven; our
+  content-addressed `memoryId` round-trips through Hindsight metadata (the STATE↔
+  CONTENT join).
+- **MEM1 — domain.** `MemoryTier`/`MemoryPhase` (House-DU), record/state/envelope/
+  injection, the observe→decide legal-set (`legalMemoryTransitions`, auto vs
+  hat-decided), +11 memory `OrgEventKind`s.
+- **MEM2 — Cockroach `MemorySystemV16`** (`memory_state` + `memory_injection`),
+  tier/phase CHECK from `Object.values(enum)`, stores + parity test; applied +
+  round-tripped in kind.
+- **MEM3 — ranking** `computeMemoryWeight` (semantic × freshness × confidence ×
+  KPI-outcome × utility + scope boosts), per-tier decay, read/archive floors,
+  scope-union retrieval, budget pack (pure, unit-tested).
+- **MEM4 — deterministic injection.** Mandatory pre-turn query (pure, hashable),
+  `## Relevant memory` block, idempotent injection ledger, anti-citation-laundering
+  (a cited id not injected this turn is rejected), must-address, utility `$inc`,
+  content-addressed `memoryId = uuidv5(org:tier:scope:key)`.
+- **MEM5 — KPI correlation** from the org's own trace (merged → success), workItem-
+  deduped outcome bump, Laplace confidence recompute.
+- **MEM6 — `runMemoryMaintenanceCycle`** as an observe→decide org cycle: Stage A
+  auto (decay, archive-at-zero, reinforce-when-KPI-rose), Stage B hat-decided +
+  clamped to the legal set (demote/promote/conflict). Asymmetry: good news
+  auto-applies, bad news asks a hat; protected memories excluded from auto-archive
+  + decay; every action one org_event.
+- **MEM7 — `createHindsightMemory`** behind the existing `Memory` port (REST client,
+  native fetch) + `rerankRecalled` composition (Hindsight recall → our §4 weight
+  re-rank → floor → budget). Proven live against in-cluster Hindsight AND unit-tested.
+- **MEM8 — end-to-end proof in kind** (`deploy/run-memory-cycle.ts` +
+  `deploy/observe-memory.ts`). One run: seed (Hindsight retain + Cockroach state) →
+  inject for a binding (scope-union recall → weight re-rank → ledger; archive seed
+  correctly filtered below the read floor) → the agent cites one (anti-laundering
+  rejects the fabricated id) → the work item reaches merged → KPI correlation → the
+  daily maintenance cycle. The persisted `memory_state` trace shows exactly the
+  designed outcome:
+
+  ```text
+  [hat/release-manager]  review:require-rollback-plan   active    w=0.66 conf=0.91 kpi=9/9  → surfaces
+  [work/…]               rfc-882:redis-sessions-only     promoted  w=0.62 conf=0.88 kpi=6/6  → surfaces (work→hat)
+  [agent/agent-7]        calibration:skip-load-test      demoted   w=0.31 conf=0.30 kpi=2/8  → surfaces (reviewer)
+  [work/…]               work-09:temp-flag-note          archived  w=0.00 conf=0.20 kpi=0/4  → NEVER surfaces again
+  ```
+
+  Each line is a persisted `org_event` ("demoted by memory_reviewer: 6 failures,
+  ratio 0.75"; "promoted work → hat by knowledge_router; source kept"; "weight 0.03
+  ≤ archive floor 0.15 — archived; never surfaces again"). Same proof bar held for
+  the org + Work OS, now for memory. 696 tests / 689 pass / 0 fail; tsc clean.
+
+The division of labor is what the design specified: Hindsight owns content storage,
+embeddings, and recall fusion; we own tier-scoping, the KPI-weighted re-rank +
+decay + archive floor, the daily maintenance cycle, protected memories, and the
+org_event trace. We compose with Hindsight through the `Memory` port — no fork.
+
 ## Update 2026-05-29 — git-as-DB substrate + observe keystone + coherence slices
 
 Landed since the prior checkpoint (all tested; full suite 382 green; tsc clean for
@@ -993,3 +1100,513 @@ fully parameterized with explicit JSONB casts.
 The organizational structure is implemented, hooked up, tested in kind, and
 observed end-to-end — executive board → C-suite → directors → management →
 individual contributors — with full observability + traceability.
+
+## Update 2026-05-30 — the LIVING Work OS runs end-to-end in kubernetes (PROVEN IN-CLUSTER)
+
+The work + observe system was overhauled from a single linear pipeline into a
+**true agentic Work OS**: proper work types, work flowing in and out, a standing
+QA department that evolves the product through testing, and the living feedback /
+churn / escalation loops that keep work moving. Built across W0–W6 (gap doc +
+five implementation phases + the kind proof), each phase tsc-clean + tested, then
+proved end-to-end in the kind cluster.
+
+### Built (W1–W5, all committed)
+
+- **Unified work model** (`work-item.ts` + `work-batch.ts`): 9 work types
+  (goal/report/service_request/task/defect/capability_request/review/incident/
+  release) with type-specific **workflow policy** as data; the three previously-
+  separate work models (WorkItemState / RunLifecyclePhase / PipelineStage) unified
+  onto the canonical `WorkItem`. `WorkBatch` is the durable work group.
+- **Authority-scoped observe** (`observe-for-hat.ts`): `observeForHat(hat,state)`
+  returns a readout scoped to the hat's authority — IC sees its items, Lead its
+  team, Director its department, exec the whole org — so the observe genuinely
+  DIFFERS per hat and prioritization rolls up the hierarchy. `WorkBatchMetrics`
+  (completion %, defects, QA bounce-backs) fold scope → scope.
+- **QA standing department** (`test-management.ts` + `qa.ts`): derive test cases
+  off BRDs → execute through a `TestExecutor` port (computer-use / browser /
+  API / manual) → record runs with evidence → detect **regressions** (a
+  previously-passing case now failing) + failed features → open defects.
+  `runQaCycle` is a continuous loop that evolves the product, not a one-shot gate.
+- **Living feedback + churn + escalation** (`escalation.ts`): `detectChurn`
+  (QA bounce-back count vs threshold) → `decideEscalation` (a manager hat picks
+  from the BOUNDED legal set, clamped) → AddAgents routes to **RMO supply-expand**
+  (bring on more agents), BringInArchitect **changes the approach** (reopen the
+  architecture gate). Churn is broken structurally, not spun.
+- **External / SR intake** (`intake.ts`): customer defects/SRs flow IN over HTTP/
+  NATS → deterministic normalize → idempotent (de-dup on externalRef) → triage
+  into the backlog. Work flows in from outside systems.
+
+### In-cluster proof (agentic-org namespace CockroachDB)
+
+`deploy/run-work-os-cycle.ts` ran one living cycle against in-cluster Cockroach;
+`deploy/observe-work-os.ts` read the persisted trace back. **41 org_events**
+persisted, showing the whole living loop:
+
+- **WORK FLOWED IN**: external defect `customer_portal:TICKET-501`
+  ("checkout returns 500 on coupon") ingested → triaged into the backlog.
+- **QA caught 3 regressions** (a previously-passing case now failing) and opened
+  6 defects from failed test runs.
+- **Churn detected** after 3 QA bounce-backs (`review → in_progress` rework).
+- **Engineering Manager escalated** (deciding within the bounded legal set):
+  `bring_in_architect` + `add_agents`.
+- **RMO brought on more agents**: Code Reviewer and Backend Implementer each
+  expanded 1 → 2 (3/3 approved, quorum met).
+- **Architect re-approach**: architect assigned; architecture gate reopened.
+- **Released**: with the new approach + more agents, QA went green and the item
+  reached `done` ("released to main"). The work-item journey
+  `ready → in_progress → review → (3 bounce-backs) → review → done` is fully
+  traced; the exec scope sees the rolled-up metrics (qaBounceBacks=3).
+
+Every transition is one `org_event` — the living loop is crystal-clear from
+intake to release, from IC to exec.
+
+### Verification
+
+tsc 0; **651 tests, 0 fail** (unified work model; authority-scoped observe +
+metric rollup; regression detection; churn + escalation clamps; idempotent
+intake; the full living-loop integration). The whole overhaul is functional and
+proved in kind.
+
+### Status: a true, living agentic organization
+
+The work + observe system now has work types + in/out flows, a standing QA
+department that evolves the product, and the churn/escalation loops that bring on
+more agents and change approach — all observable end-to-end. Memory setup can now
+begin on top of real work-group KPIs.
+
+---
+
+## Forward Roadmap — Track A (Activate): the proven org now RUNS itself
+
+The MEM and CC tracks built the subsystems; Track A makes the always-on worker
+DRIVE them on their own cadences — the org stops needing manual `deploy/run-*`
+runners and starts living on its own clock.
+
+### A0 — the generic cadence driver + composition
+
+`runCadenceLane` (`apps/workers/src/cadence-lane.ts`) is the SOLID generalization
+of the keep-alive loop: any `Lane { runOnce(): Promise<{status, failures}> }` is
+driven on its own interval with failure isolation (a degraded OR thrown tick is
+captured, never propagated — a throw counts as both thrown and degraded). The
+keep-alive loop was DRY'd down to a thin specialization that supplies its own
+`degradedWhen` predicate (`failures>0 || status!=="ticked"`), so there is exactly
+one driver, no duplicated scheduling logic.
+
+`composeOrgCadenceLoops` (`org-cadence-composition.ts`) wires three lanes from a
+single Cockroach executor and runs them concurrently, each on its own cadence
+(work-os 60s, change-control 30s, memory-maintenance 6h by default), sharing one
+stop flag that the sleep honors. `main.ts` calls it once; a hoisted `stopLoops()`
+closure tears BOTH the keep-alive and org-cadence loops down via
+`Promise.allSettled` from the happy path AND the catch path (no shutdown leak).
+
+### A1 — the Work OS living loop, driven from the worker with REAL intake
+
+`createWorkOsCadenceLane` wraps `runWorkOsCycle` behind a `WorkIntakeSource` port
+(dependency inversion — the lane is a pure consumer of a `WorkIntake`). The real
+adapter `createCockroachWorkIntakeSource` (`packages/state-cockroach`) atomically
+CLAIMS the oldest `proposed` initiative and flips it to `active` in one statement
+— dequeue-once: an initiative is driven exactly once, then the lane idles (no
+synthetic flood, no re-drive). The composition defaults `intake` to this real
+source, so the deployed worker is live while tests/proofs inject a fake.
+
+Proven in kind, **no manual runner**: a `proposed` initiative seeded straight
+into Cockroach was claimed by the deployed worker on its own 60s cadence
+(`status: proposed → active`) and its work-os lane reported `work-os:done` — a
+full living-loop cycle driven entirely from the worker tick.
+
+### A2 — memory maintenance on the worker's schedule
+
+`createMemoryMaintenanceCadenceLane` drives `runMemoryMaintenanceCycle`
+(decay/archive/reinforce auto; demote/promote/conflict hat-decided) on a slow
+cadence. Proven in kind: an aged+useless memory was archived
+(`phase → archived`, weight 0, no longer surfaces) and a `memory_maintenance_cycle`
+event was emitted — the deployed worker logs `memory:Nrecomputed/Marchived` ticks
+on its schedule.
+
+### A3 — change control driven from the worker
+
+`createChangeControlCadenceLane` builds the review kernel FRESH each tick (so
+`now` is the current time, not factory-time), advances every `in_review` ChangeSet
+one observe→decide stage, auto-resumes human/external stages in the worker lane
+(live ports plug in at Track L), resubmits on changes-requested, and applies on
+approval. Proven in kind: a seeded `in_review` ChangeSet was driven all the way to
+`applied` across bounded ticks; the deployed worker logs `change-control:Nadvanced`.
+
+### Verification
+
+tsc 0; **746 tests, 0 fail** (the generic cadence driver, the three lanes, the
+Cockroach intake source, plus the keep-alive DRY refactor preserving its degraded
+semantics). A subagent code review of A0 surfaced 5 findings (2 critical: shutdown
+leak in the catch path + synthetic-work flood; 3 important: stale `now`, sleep
+stop-flag aliasing, keep-alive duplication) — all five fixed and re-verified
+before Track A landed.
+
+### Status: the organization runs on its own clock
+
+The always-on worker now drives keep-alive + Work OS (real initiative intake) +
+memory maintenance + change control concurrently, each on its own decoupled
+cadence, with one teardown for both exit paths. The proven subsystems are no
+longer demonstrated by runners — they are LIVE in the deployed worker. Track L
+(turning the GitHub/Jira ports live) builds on this.
+
+---
+
+## Forward Roadmap — Track L (Live external integration): the GitHub port, proven on the wire
+
+CC5 built the GitHub/Jira ports unit-tested with in-memory fakes. Track L proves the
+GitHub port against a real HTTP contract and plumbs the credentials into the worker —
+without ever fabricating a real PR on github.com (that one step is credential-gated and
+human-gated, so it is surfaced to the operator rather than faked).
+
+### L0 — config / secret plumbing (safe by default)
+
+`resolveGitHubExternalPort` (`apps/workers/src/github-port-config.ts`) reads the GitHub
+token + owner + repo (optional API base + base branch) from env — mounted from a k8s
+Secret in the cluster, never logged. With NO GitHub env it returns null and the org runs
+internal-only (the deployed default). With a PARTIAL config it throws, so a
+misconfiguration fails fast rather than silently dropping the external gate. The worker
+resolves the port at boot, logs `change_control.external mode: github | internal-only`,
+and threads it into the change-control lane.
+
+The lane (`createChangeControlCadenceLane`) gained an optional `externalPort`: for an
+`external` review stage it projects a real PR ONCE (idempotent on the existing
+projection), persists the ref onto the ChangeSet, and PULLS the decision from the port
+instead of auto-approving. `Pending` pauses (no silent approval), `ChangesRequested`
+resubmits, `Approved` advances. Absent a port, external stages auto-approve exactly as
+before — so the live path is dormant in the default deploy and activates only when the
+operator supplies credentials.
+
+Proven in kind: the deployed worker boots and logs `change_control.external
+mode: "internal-only"`, the change-control lane keeps ticking, and the seam is live in
+the image — supplying the GitHub Secret flips the mode to `github` with no code change.
+
+### L1 — live GitHub PR round-trip (deterministic proof on the wire)
+
+`change-control-github-live-roundtrip.test.ts` drives the REAL `createGitHubHttpClient` +
+`createGitHubPrPort` end to end against a mock GitHub REST router injected as `fetchImpl`:
+`project → pull(pending) → (human approves) → pull(approved) → merge → pull(merged)`. It
+asserts the exact wire behavior — every call carries the `Bearer` token, only the
+Git-representable artifact is rendered to a file (the schema_migration stays internal,
+referenced from the PR body), the base ref → branch → contents → PR git-data flow, the
+reviews→decision mapping, the squash merge_method, and that a 5xx surfaces as a throw
+(never a silent pass). Only the socket transport is mocked; 100% of the port + client
+logic runs.
+
+### L1-real (credential-gated) — surfaced to the operator, not faked
+
+The final step — a real PR opened on github.com, approved by a real human, merged via the
+port — requires a GitHub token (k8s Secret), a real test repo, and a human approval. It is
+an outward-facing, irreversible action, so it is left to the operator: mount
+`GITHUB_TOKEN/GITHUB_OWNER/GITHUB_REPO` as a Secret on the worker deployment, file a
+ChangeSet with `pipelineId: "github-gated"`, and the deployed lane will open + poll + merge
+the real PR. The code path is proven (L1) and the plumbing is live (L0); only the
+credentials + human approval remain, and those are the operator's to provide.
+
+### Verification
+
+tsc 0; **752 tests, 0 fail**. A subagent code review of the L0/L1 slice found no
+actionable issues and confirmed the security-sensitive properties: no token leakage,
+fail-fast on partial config, no silent approval (Pending pauses, only human stages
+auto-resume), idempotent projection (no duplicate PRs), and the lane never throws. Worker
+rebuilt + redeployed to kind (logs `change_control.external mode: internal-only`).
+
+---
+
+## Forward Roadmap — Track D (Document Intelligence): a knowledge layer, not a bag of chunks
+
+Naive RAG splits docs into fixed chunks, embeds, top-k cosine, stuffs. Track D builds a
+typed/scoped/graph-linked/provenance-weighted knowledge layer with a lifecycle — and a
+retrieval pipeline that adds back, stage by stage, the structure RAG throws away.
+
+### D0 — schema + lifecycle DU (DocumentIntelligenceV18)
+
+`document-intelligence.ts`: the ontology axes (DocType, DocScopeKind), the doc-lifecycle
+House-DU (draft → in_review → active → stale → superseded / archived) with
+`legalDocTransitions` gated by `isLoadBearing` (load-bearing docs must pass in_review;
+light docs may skip it — the autonomy dial), `isRetrievalEligible` (only active surfaces),
+the graph relations, and the record shapes. DocUnit is content-addressed (sha256) and
+carries `provenanceChangeSetId` — the ChangeSet that introduced it. Cockroach V18:
+doc_sources/doc_units/doc_entities/doc_graph_edges/doc_consult_ledger; CHECK constraints
+derive from the enums; .sql mirror + parity test; DDL applied cleanly in kind.
+
+### D1 — ingestion: structure, not chunks
+
+`document-ingestion.ts`: `decomposeMarkdown` splits by heading and PRESERVES each unit's
+heading PATH — a procedure's step 3 is never retrieved without steps 1–2. `ingestDocument`
+maps each structural unit to a content-addressed DocUnit at `draft` with the source's
+type/scope/binding + provenance, emitting `doc_ingested` per unit; `DocConnectorPort` is the
+source seam. Proven in kind: a handbook → 4 structural units, persisted in the eng scope,
+Step 2 addressed as `…#Onboarding / Step 2`, provenance-linked, sha256-addressed.
+
+### D2 — entity resolution + canonicalization
+
+`document-entity-resolution.ts`: `entityKey` collapses phrasing/stopwords/punctuation so
+"the billing service", "Billing", and "services/billing" all resolve to ONE canonical node
+(the recall RAG can't match); `extractEntities` anchors free text to entities (no embeddings).
+`canonicalizeByTopic` picks one source of truth per topic **within a scope** (active + most
+recent), supersedes the rest, and FLAGS conflicts when two active load-bearing units disagree —
+recorded, never averaged. (A subagent review caught a cross-scope title-collision bug here —
+same-titled docs in different scopes were falsely competing; fixed by scope-partitioning the
+grouping key + a regression test.)
+
+### D3 — the 8-stage smarter-than-RAG pipeline
+
+`document-retrieval.ts`: `runRetrieval` composes 8 pure stages with per-stage diagnostics:
+scope pre-filter (a wrong-team doc is unreachable even if lexically identical) → entity
+resolution (graph-anchored) → hybrid recall over the scoped slice → multi-resolution
+(summary-first + drill pointer, not raw chunks) → graph augmentation (seam stubbed until G) →
+KPI-weighted rerank (consult-ledger usefulness beats raw similarity) → conflict + staleness
+(stale scoped out; disagreements surfaced) → deterministic consultation (stage-bound handbooks
+ALWAYS injected). Recall is deterministic lexical+entity scoring (the Hindsight vector + graph
+traversal are the Stage 3/5 adapter seams) so the whole pipeline is testable without a model.
+
+### D4 — lifecycle maintenance, owned by the Documentation department
+
+`document-maintenance.ts`: `runDocMaintenanceCycle` — the same observe→decide shape as memory
+maintenance. Auto: flags stale, supersedes by recency, archives the long-dead. Human-gated:
+two active load-bearing units that DISAGREE are flagged for `documentation_reviewer`, never
+auto-superseded. `createDocMaintenanceCadenceLane` is the 4th lane in `composeOrgCadenceLoops`.
+
+### D5 — integrated + proven in kind
+
+The deployed always-on worker now drives FOUR concurrent cadence lanes (work-os +
+memory-maintenance + change-control + doc-maintenance), confirmed in-cluster
+(`doc-maintenance tick 1: doc:0stale/0superseded/0archived/0conflicts`). The end-to-end kind
+proof ingested a 4-doc set then ran the pipeline for "the billing service is failing during
+release": scope excluded the sales doc (4→3), the query resolved to the `billing` entity node,
+the top hit was entity-anchored, the stage-bound Release Handbook was consulted deterministically,
+the 200-day-old unit was flagged stale, and 7 doc_org_events were observed.
+
+### Verification
+
+tsc 0; **782 tests, 0 fail**. Subagent review of the D-track logic found one P1 (cross-scope
+canonicalization collision) — fixed + regression-tested — and otherwise clean. Worker rebuilt +
+redeployed to kind with the 4-lane composition.
+
+### Status: the org reads its own docs smarter than RAG
+
+Document Intelligence is live: structural ingestion with provenance, deterministic entity
+resolution, an 8-stage pipeline that beats top-k on scope/structure/usefulness/guarantee, and a
+lifecycle the Documentation department maintains on the worker's own clock. The Knowledge Graph
+track (G) fills the Stage-5 graph-augmentation seam; the Hindsight vector recall plugs into Stage 3.
+
+---
+
+## Forward Roadmap — Track G (Knowledge Graph): the construction engine behind all intelligence
+
+A graph where a parser's facts and an agent's guesses are never confused — every node and edge
+carries a confidence tier + provenance, and the machine pass is kept strictly separate from the
+enrichment pass.
+
+### G0 — schema (KnowledgeGraphV19)
+
+`knowledge-graph.ts`: the GraphConfidence DU (extracted → verified → canonical; inferred →
+verified; anything → retracted; retracted terminal, kept-with-correction) with
+`legalConfidencePromotions` + `isActiveConfidence`; GraphNodeKind / GraphEdgeKind; the
+GraphProvenance envelope; content-addressed `graphNodeId(org,kind,sourceKey)` /
+`graphEdgeId(org,from,kind,to)` so re-extraction updates in place. Cockroach V19:
+graph_nodes + graph_edges with confidence + provenance JSONB + change_set_id + retraction_reason;
+CHECK from the enums; .sql mirror + parity; DDL applied cleanly in kind.
+
+### G1 — the deterministic machine pass
+
+`knowledge-graph-extraction.ts`: `extractServiceManifest` emits a Service node + EXTRACTED
+structural edges (depends_on/exposes/persists_to/tested_by) — a parser proved them, zero model
+calls. `extractCodeowners` emits owned_by as INFERRED even though parsed — the discipline that a
+structural fact differs from an ownership signal. `cockroach-graph-store.ts` is idempotent on the
+content-addressed id and traverses out/in edges excluding retracted.
+
+### G2 — the enrichment pass + confidence lifecycle
+
+`knowledge-graph-enrichment.ts`: `inferEdge` lands a reasoned edge at INFERRED with agent
+provenance; `promoteConfidence` is observe→decide along the legal ladder and REFUSES an illegal
+jump (inferred → canonical without verification); `retractEdge` is retraction-native (kept with
+the correction, terminal, excluded from active reads). (G3 entity resolution shipped in D2.)
+
+### G4 — derived intelligence + Stage-5 lit
+
+`knowledge-graph-intelligence.ts`: `deriveImpact` (transitive blast radius with depth, cycle-safe),
+`deriveOwnership`, `deriveChangeHistory` (the ChangeSets that touched a node), `deriveNeighborhood`,
+and `augmentHitsWithGraph` — which LIGHTS UP D3's Stage-5 seam: a retrieved doc unit traverses to
+the service it describes + the ChangeSet that changed it.
+
+### G5 — integrated + proven in kind
+
+`deploy/run-knowledge-graph.ts` proved the track against live Cockroach: extract web→billing→auth
+into the graph, infer an architectural-role edge + promote it inferred→verified, record a
+changed_by edge to `cs-release-42`, retract a wrong edge — then derive that auth's blast radius is
+{billing (depth 1), web (depth 2)}, the about-edge is verified, the retracted edge is excluded from
+the neighborhood, and the change-history resolves to the ChangeSet.
+
+### Verification
+
+tsc 0; **803 tests, 0 fail**. Subagent review of the G-track found no P0/P1 and one P2 (deriveImpact
+could include the root in its own blast radius under a depends_on cycle) — fixed (seed the root
+visited at depth 0, exclude from dependents) + a cycle regression test. V19 DDL applied in kind.
+
+### Status: facts and guesses, distinguishable; intelligence, derivable
+
+The knowledge graph is live: a deterministic machine pass for what parsers prove, an enrichment
+pass for what agents reason, a confidence lifecycle with retraction-native corrections, and
+traversal-derived intelligence (impact/ownership/change-history) that fills D3's graph-augmentation
+stage. Change-edges reference ChangeSets, so the graph, the doc layer, and the change-control fabric
+are one connected substrate.
+
+---
+
+## Track C — Adaptive Platform (config-not-code; the org reconfigures itself)
+
+North-star claim: the organization is a *platform* a tenant configures, not a program a developer
+edits. WHICH stages need a human, WHAT a hat may touch, HOW the org onboards and heals — all data,
+all flowing through the same observe→decide kernel and the same `org_event` ledger.
+
+### C0 — everything-as-configuration substrate
+
+`tenant-config.ts` makes the org's behavior data: `AutonomyLevel` (Autonomous / Assisted / Manual),
+`AutonomyPolicy` (level + the explicit `humanGatedStageIds` pin set), `defaultTenantConfig`, and the
+pure `stageRequiresHuman(policy, stageId)` decision (explicit pin wins; Manual gates all; Autonomous
+gates nothing extra). The Cockroach config tables (V20) persist it per tenant — the same worker
+image runs a fully-autonomous org and a human-gated one apart only by a row.
+
+### C1 — autonomy as a dial, not a hardcode
+
+`applyAutonomyPolicy(pipeline, policy)` rewrites a pipeline's stages by config: a gated stage's
+agent (hat) authority is promoted to `human`; an ungated `human` stage is downgraded to the hat
+that would otherwise act. The dial moves ONLY the agent↔human axis — a lossless, gate-preserving
+round-trip. `quorum` (a 3-of-3 threshold gate) and `external` (an external-system gate) authorities
+are left intact: Manual *layers* human review on top of those, it never strips their stronger gate.
+The composition applies the tenant policy to every resolved change-control pipeline, so the live
+worker's review fabric is config-driven end to end.
+
+### C4 — deterministic hat guardrails (a TPM cannot write code)
+
+`hat-guardrails.ts`: an `ActionClass` DU mapped (exhaustively, via `Record<ActionClass, ToolBundle>`)
+to the tool bundle it requires; `preflightHatAction(hat, action)` permits an action iff the hat holds
+that bundle; `preflightApproval(proposer, approver)` enforces separation of duties (a proposer cannot
+approve their own change). The guard is a pure structural check before the kernel ever acts — the
+org's "who may do what" is enforced, not merely documented.
+
+### C5 — codebase + org intelligence (consumes D + G)
+
+`org-intelligence.ts::summarizeService` joins the two intelligence layers: it walks the knowledge
+graph (`deriveNeighborhood` → `deriveImpact`/`deriveOwnership`/`deriveChangeHistory`) AND runs D3
+retrieval over the doc layer, returning one answer about a service — its dependents, owners, change
+history, and the smarter-than-RAG doc hits — from the connected substrate, not a flat search.
+
+### C2 / C6 — the org bootstraps and heals itself
+
+`org-adaptation.ts`: `planOnboarding(config)` and `planSelfHealing(signal)` are pure planners that
+turn a config / a health signal into `PlannedWork` + `org_event`s. Onboarding a tenant is itself
+work the Work OS runs; a self-healing response to a degradation signal is work too — the platform
+adapts by *scheduling its own work through its own kernel*, not by an out-of-band script.
+
+### C3 — bidirectional work-item sync (the CC port, reused for the backlog)
+
+`work-item-sync.ts`: `createCardHttpClient` (Jira-shaped REST, Bearer auth, the token only ever in
+the `authorization` header — never a URL, log, or thrown message) + `createCardSyncPort`
+(project / pull / push) mirror a canonical work item to an external card and pull its state back.
+Every non-2xx throws — including a failed `transition` (a 204-on-success path that, left unchecked,
+would let `push()` report a desync as success). Live Jira/Linear creds are genuinely outward-facing;
+the real wire behavior is proven against a deterministic mock round-trip, and the credentialed step
+is surfaced to the operator, never fabricated.
+
+### C7 — integrated + proven in kind
+
+The redeployed adaptive-platform worker boots clean and drives all FOUR cadence lanes concurrently —
+work-os (`idle` when nothing is `proposed`), change-control (`0advanced`, autonomy policy applied),
+doc-maintenance, memory-maintenance (`3recomputed`) — sharing one stop flag, external mode
+`internal-only` (no GitHub env → null port), **0 errors** since boot. The org runs itself: scheduled
+lanes, config-driven review, guardrailed hats, self-derived intelligence.
+
+### Verification
+
+tsc 0; **827 tests, 0 fail** (7 skipped = the credential-gated live integrations). Subagent review of
+the C-track found no P0; three real findings, all fixed with regression tests: (P1) `applyAutonomyPolicy`
+Manual-gating a quorum stage to a single human silently dropped the 3-of-3 gate — fixed by leaving
+quorum/external authorities intact (the dial moves only the agent↔human axis); (P2) the same rewrite
+round-tripped quorum/external into a bogus hat id — same fix; (P2) `work-item-sync` `transition`/`push`
+swallowed non-2xx — fixed to throw. V20 config DDL applied in kind.
+
+### Status: a platform, not a program — the roadmap is complete
+
+Every roadmap track is live and proven in kind: **A** (the org runs itself on scheduled lanes),
+**L** (real external review/sync ports, credential-gated steps surfaced), **D** (smarter-than-RAG
+document intelligence), **G** (a knowledge graph of facts-vs-guesses with derived intelligence), and
+**C** (the org reconfigures, bootstraps, heals, and guards itself by data). One kernel
+(observe→decide), one event ledger, one connected substrate — configured, not coded.
+
+---
+
+## Track GEN — Generic Providers + Live Flip + Integration Runner
+
+North-star claim: the org integrates with the outside through ONE provider-agnostic surface, the
+live wire is real (only the secret is the operator's to drop), and the "skipped" integration tests
+are env-gated twins that run green against real infra. Three deliverables, all proven.
+
+### GEN1 — one surface, a translation table (domain)
+
+`work-provider.ts` (domain) makes the integration generic as data: `WorkProviderKind`
+(github|gitlab|jira|linear) splits into families (`code_review` PR/MR vs `work_item` card) via the
+total `providerFamily`. The translation contract is pure: `actionsForFamily` maps the generic
+outbound action (Comment/Merge/Transition) per family, and `assertProviderSupports` is the structural
+guard — a card provider cannot Merge, a PR provider cannot Transition, surfaced not silent. The org
+calls `project / pull / advance`; the configured provider supplies the action that runs underneath.
+
+### GEN2 — four providers behind two adapters (application)
+
+`work-provider.ts` (application): `createCodeReviewWorkProvider` over a `ReviewClient` (the existing
+GitHubClient shape — GitLab's new REST-v4 client implements the SAME interface, so the adapter is
+shared, not forked) and `createWorkItemWorkProvider` over a `CardClient` (Jira's existing client +
+a new Linear GraphQL client). Adding a provider is a client + a tiny adapter, never a new call site.
+`resolveWorkProvider(config)` builds the live client (native fetch) from a discriminated config; the
+token is only ever a request header — `Bearer` (GitHub), `PRIVATE-TOKEN` (GitLab), raw (Linear) —
+never a URL, log, or thrown message. `asChangeControlPort` adapts a code_review provider to the
+kernel's ChangeControlPort UNCHANGED (open/closed: the kernel never learns providers exist) and
+refuses work_item providers (cards are not PRs). GitLab fails safe (no changes-requested axis →
+stalls at Pending, never mis-advances) and throws on any failed branch/file commit (no silent
+partial MR).
+
+### GEN3 — the live flip, by config (worker)
+
+`work-provider-config.ts`: `resolveWorkProviderFromEnv` reads WORK_PROVIDER + the selected provider's
+token/ids; null when unconfigured (internal-only, the safe default), throws on a partial config
+(fail-fast), back-compat with the legacy GITHUB_* path. `resolveChangeControlExternalPort` routes a
+code_review provider to the live ChangeControlPort (mode `external:<kind>`) and leaves a work_item
+provider's change-control internal-only. The worker mounts an OPTIONAL `work-provider-secrets` Secret
+(absent → internal-only); `31-work-provider-secret.example.yaml` is the fill-and-apply template — the
+token lives only in the Secret, never the manifest or logs. Only the resolved mode is logged.
+
+### GEN4 — real wire proven, no fabricated external calls
+
+`deploy/run-work-provider.ts` stands a REAL node:http loopback server (a controllable endpoint,
+never github.com/jira) and drives the worker's OWN resolver-built port over native fetch with NO
+injected mock: github project→pull(pending→approved)→merge, jira project→pull→transition→closed —
+16 real wire round-trips, PROOF: PASS, the token absent from every call. In-cluster: a test Secret
+(WORK_PROVIDER=gitlab) flipped the DEPLOYED worker to mode `external:gitlab` (token leaked 0 times),
+then removed → restored internal-only. The credential-gated step (a real token + a real
+github.com/jira + a human PR approver) is surfaced to the operator; this proof verifies the wire
+beneath it.
+
+### INT1 — the 7 "skipped" tests run green against real infra
+
+Pointed at a real Cockroach + NATS, all 7 env-gated integration tests EXECUTE green (skipped: 0,
+fail: 0) — host migrations, outbox→NATS, org/agent keep-alive, Hermes memory, the durable worker
+round-trip, NATS publish/consume. Proven against the in-cluster kind Cockroach+NATS (a fresh DB).
+`npm run test:integration` runs them; `.github/workflows/integration.yml` stands real Cockroach+NATS
+containers, wires the two env vars at them, and FAILS the job if any test skips (the whole point is
+they execute, not skip). `.github/workflows/ci.yml` runs the fast hermetic typecheck + unit suite.
+
+### Verification
+
+tsc 0; **845 unit/contract tests, 0 fail** (7 integration tests run green against real infra,
+separately). Subagent review of the GEN track found no P0/P1; two P2 design notes (GitLab has no
+changes-requested axis — documented as fail-safe; unchecked GitLab branch/file commits — tightened
+to throw on a failed commit + tolerate a 409 branch, with a regression test). The deployed worker
+flips provider mode from a Secret with the token leaked 0 times, then restores internal-only.
+
+### Status: generic in, live-ready, green in CI
+
+The org integrates through one provider-agnostic surface where the configured provider translates
+the action; the live flip is a Secret the operator drops (the wire is already verified); and the
+integration suite runs green against real Cockroach+NATS in CI. The whole roadmap — A/L/D/G/C plus
+the generic-provider + live-flip + integration-runner work — is live, proven in kind, and green.

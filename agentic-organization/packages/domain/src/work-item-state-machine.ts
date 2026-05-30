@@ -12,11 +12,38 @@ export const WorkItemState = {
 export type WorkItemState = (typeof WorkItemState)[keyof typeof WorkItemState];
 
 export const WorkItemType = {
-  Defect: "defect",
+  // The shared enum stays small (WORK_AND_RELEASE_MANAGEMENT_OS: "promote a state
+  // only once stable"); the FULL set of types is first-class so each can carry a
+  // type-specific workflow policy (see work-item.ts) without growing the shared
+  // WorkItemState enum.
+  Goal: "goal",
+  Report: "report",
+  ServiceRequest: "service_request",
   Task: "task",
+  Defect: "defect",
+  CapabilityRequest: "capability_request",
+  Review: "review",
+  Incident: "incident",
+  Release: "release",
 } as const;
 
 export type WorkItemType = (typeof WorkItemType)[keyof typeof WorkItemType];
+
+/** Where a work item entered the system from (G3 — work flows in from outside). */
+export const WorkItemSource = {
+  Internal: "internal",
+  External: "external",
+} as const;
+export type WorkItemSource = (typeof WorkItemSource)[keyof typeof WorkItemSource];
+
+/** Defect/incident severity (drives prioritization weight + QA routing). */
+export const WorkItemSeverity = {
+  Sev1: "sev1",
+  Sev2: "sev2",
+  Sev3: "sev3",
+  Sev4: "sev4",
+} as const;
+export type WorkItemSeverity = (typeof WorkItemSeverity)[keyof typeof WorkItemSeverity];
 
 export type WorkItemTransitionContext = {
   workItemType?: WorkItemType | undefined;
@@ -38,6 +65,11 @@ const allowedTransitions = new Map<WorkItemState, ReadonlySet<WorkItemState>>([
 
 export function createInitialWorkItemState(): WorkItemState {
   return WorkItemState.Created;
+}
+
+/** The base (shared) legal next states from a given state, before type-specific policy (work-item.ts). */
+export function baseLegalNextStates(fromState: WorkItemState): readonly WorkItemState[] {
+  return [...(allowedTransitions.get(fromState) ?? new Set<WorkItemState>())];
 }
 
 export function assertInitialWorkItemState(workItemType: WorkItemType, initialState: WorkItemState): void {

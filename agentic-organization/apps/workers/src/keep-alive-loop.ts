@@ -13,6 +13,8 @@
  * captured, never propagated — the heartbeat loop must keep running.
  */
 
+import { runCadenceLane } from "./cadence-lane.ts";
+
 export type KeepAliveLoopLane = {
   runOnce: () => Promise<{ status: string; failures: readonly { message: string }[] }>;
 };
@@ -43,47 +45,25 @@ export type KeepAliveLoopResult = {
   thrownTicks: number;
 };
 
-const KeepAliveLoopTickStatus = {
-  Threw: "threw",
-} as const;
+const KeepAliveLoopTickedStatus = "ticked";
 
+/**
+ * The keep-alive loop is a thin specialization of the generic `runCadenceLane`
+ * driver — one driver, no duplication. It preserves the keep-alive degraded
+ * definition (a reported failure OR a status other than "ticked") and maps the
+ * cadence record back to the keep-alive record shape.
+ */
 export async function runKeepAliveLoop(input: RunKeepAliveLoopInput): Promise<KeepAliveLoopResult> {
-  let ticks = 0;
-  let degradedTicks = 0;
-  let thrownTicks = 0;
-
-  while (!input.isStopRequested() && !hasReachedMaxTicks(ticks, input.maxTicks)) {
-    ticks += 1;
-
-    let status: string;
-    let failureCount: number;
-    try {
-      const result = await input.lane.runOnce();
-      status = result.status;
-      failureCount = result.failures.length;
-    } catch {
-      // the lane should never throw, but the heartbeat loop survives if it does
-      status = KeepAliveLoopTickStatus.Threw;
-      failureCount = 1;
-      thrownTicks += 1;
-    }
-
-    if (failureCount > 0 || status !== "ticked") {
-      degradedTicks += 1;
-    }
-
-    input.observer?.record({ tick: ticks, status, failureCount });
-
-    if (input.isStopRequested() || hasReachedMaxTicks(ticks, input.maxTicks)) {
-      break;
-    }
-
-    await input.sleep(input.intervalMs);
-  }
-
-  return { ticks, degradedTicks, thrownTicks };
-}
-
-function hasReachedMaxTicks(ticks: number, maxTicks: number | undefined): boolean {
-  return maxTicks !== undefined && ticks >= maxTicks;
+  const result = await runCadenceLane({
+    lane: { name: "keep-alive", runOnce: input.lane.runOnce },
+    intervalMs: input.intervalMs,
+    isStopRequested: input.isStopRequested,
+    sleep: input.sleep,
+    degradedWhen: (status, failureCount) => failureCount > 0 || status !== KeepAliveLoopTickedStatus,
+    ...(input.maxTicks !== undefined ? { maxTicks: input.maxTicks } : {}),
+    ...(input.observer
+      ? { observer: { record: (r) => input.observer!.record({ tick: r.tick, status: r.status, failureCount: r.failureCount }) } }
+      : {}),
+  });
+  return { ticks: result.ticks, degradedTicks: result.degradedTicks, thrownTicks: result.thrownTicks };
 }

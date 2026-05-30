@@ -279,3 +279,248 @@ export {
   type PipelineContext,
 } from "./pipeline.ts";
 export { runOrgCycle, type OrgCycleDeps, type OrgCycleReport } from "./org-runtime.ts";
+export {
+  AuthorityScope,
+  authorityScopeOf,
+  authoritySubtree,
+  batchesInAuthorityScope,
+  observeForHat,
+  type HatReadout,
+  type OrgWorkState,
+} from "./observe-for-hat.ts";
+export {
+  deriveTestCasesFromBrd,
+  createDeterministicExecutor,
+  runQaCycle,
+  type BrdInput,
+  type TestExecutor,
+  type QaCycleDeps,
+  type QaCycleReport,
+} from "./qa.ts";
+export {
+  EscalationTrigger,
+  EscalationAction,
+  DEFAULT_CHURN_THRESHOLD,
+  bounceBackCount,
+  detectChurn,
+  legalEscalationActions,
+  decideEscalation,
+  type EscalationDecisionInput,
+  type EscalationDecisionContext,
+  type EscalationDecisionResult,
+  type EscalationOutcomeChange,
+} from "./escalation.ts";
+export {
+  normalizeIntake,
+  createWorkItemFromIntake,
+  triageIntake,
+  type ExternalIntakeEvent,
+  type IntakeFeedback,
+  type NormalizedIntake,
+  type IntakeDeps,
+} from "./intake.ts";
+export { runWorkOsCycle, type WorkOsCycleDeps, type WorkOsCycleReport } from "./work-os-runtime.ts";
+export {
+  clamp01,
+  computeFreshness,
+  outcomeRatio,
+  utilityRatio,
+  computeMemoryWeight,
+  computeRestingWeight,
+  archiveFloorFor,
+  readFloorFor,
+  isBelowArchiveFloor,
+  isAboveReadFloor,
+  scopeUnionFor,
+  retrieveRanked,
+  type RetrievalCtx,
+  type RankedMemory,
+  type RetrievalBudget,
+} from "./memory-ranking.ts";
+export {
+  composeInjectionQuery,
+  injectionQueryHash,
+  buildRelevantMemoryBlock,
+  injectionId,
+  recordInjections,
+  verifyCitations,
+  nextUtility,
+  unaddressedHighWeight,
+  type HydratedMemory,
+  type InjectionQueryInput,
+  type CitationVerification,
+} from "./memory-injection.ts";
+export { contentAddressedMemoryId } from "./memory-id.ts";
+export {
+  OutcomeVerdict,
+  workItemVerdict,
+  bumpOutcome,
+  recomputeConfidence,
+  planOutcomeCorrelation,
+  type OutcomeCorrelationUpdate,
+} from "./memory-kpi.ts";
+export {
+  MemoryDemotionChoice,
+  MemoryConflictChoice,
+  runMemoryMaintenanceCycle,
+  type PromotionTarget,
+  type MemoryStateUpdate,
+  type MemoryMaintenanceDeps,
+  type MemoryMaintenanceReport,
+} from "./memory-maintenance.ts";
+export {
+  rerankRecalled,
+  positionalSemanticScore,
+  type RecalledCandidate,
+} from "./memory-recall.ts";
+export { contentAddressedChangeSetId } from "./change-control-id.ts";
+export {
+  ExternalDecision,
+  evaluateStageGate,
+  decideByAuthority,
+  advanceChangeSet,
+  runReviewStage,
+  resumeHumanStage,
+  applyChangeSet,
+  openChangeSet,
+  resubmitChangeSet,
+  type StageGateEvaluation,
+  type ReviewKernelDeps,
+  type Decision,
+  type StageResult,
+} from "./change-control-kernel.ts";
+export {
+  createNullChangeControlPort,
+  createFakeExternalPort,
+  type ChangeControlPort,
+  type ExternalReviewState,
+  type FakeExternalPort,
+} from "./change-control-port.ts";
+export {
+  ReviewPipelineId,
+  buildInternalOnlyPipeline,
+  buildGitHubGatedPipeline,
+  applyAutonomyPolicy,
+  buildDefaultChangeControlPolicy,
+  pipelineForWorkType,
+  type ChangeControlPolicy,
+} from "./change-control-policy.ts";
+export {
+  workItemStateForChangeSet,
+  externalStateForChangeSet,
+} from "./change-control-reconciliation.ts";
+export {
+  createGitHubHttpClient,
+  createGitHubPrPort,
+  gitHubFilesFor,
+  type GitHubClient,
+  type GitHubFileChange,
+  type GitHubPullRequestState,
+  type CreateGitHubHttpClientInput,
+} from "./change-control-github.ts";
+export {
+  createJiraHttpClient,
+  createJiraCardPort,
+  type JiraClient,
+  type JiraStatusMap,
+  type CreateJiraHttpClientInput,
+} from "./change-control-jira.ts";
+export {
+  decomposeMarkdown,
+  ingestDocument,
+  ingestFromConnector,
+  type RawDocument,
+  type DocConnectorPort,
+  type StructuralUnit,
+  type IngestDocumentDeps,
+  type IngestDocumentResult,
+} from "./document-ingestion.ts";
+export {
+  entityKey,
+  resolveMention,
+  extractEntities,
+  canonicalizeByTopic,
+  type CanonicalGroup,
+} from "./document-entity-resolution.ts";
+export {
+  scopePreFilter,
+  runRetrieval,
+  type RetrievalScope,
+  type RetrievalContext,
+  type ScoredUnit,
+  type RetrievalDiagnostics,
+  type RetrievalResult,
+  type RetrievalDeps,
+} from "./document-retrieval.ts";
+export {
+  runDocMaintenanceCycle,
+  type DocMaintenanceConfig,
+  type DocStatusUpdate,
+  type DocMaintenanceResult,
+} from "./document-maintenance.ts";
+export {
+  extractServiceManifest,
+  extractCodeowners,
+  type ExtractDeps,
+  type ExtractResult,
+  type ServiceManifest,
+  type CodeownersEntry,
+} from "./knowledge-graph-extraction.ts";
+export {
+  inferEdge,
+  promoteConfidence,
+  retractEdge,
+  type EnrichDeps,
+  type PromoteResult,
+} from "./knowledge-graph-enrichment.ts";
+export {
+  deriveImpact,
+  deriveOwnership,
+  deriveChangeHistory,
+  deriveNeighborhood,
+  augmentHitsWithGraph,
+  type GraphStoreReader,
+  type GraphNeighborhood,
+} from "./knowledge-graph-intelligence.ts";
+export {
+  ActionClass,
+  preflightHatAction,
+  preflightApproval,
+  type GuardrailResult,
+  type ApprovalGuardrailResult,
+} from "./hat-guardrails.ts";
+export {
+  summarizeService,
+  type ServiceIntelligence,
+  type OrgIntelligenceDeps,
+} from "./org-intelligence.ts";
+export {
+  planOnboarding,
+  planSelfHealing,
+  type PlannedWork,
+  type AdaptationDeps,
+  type DriftSignal,
+} from "./org-adaptation.ts";
+export {
+  createCardHttpClient,
+  createCardSyncPort,
+  type CardRef,
+  type CardState,
+  type CardClient,
+  type CreateCardHttpClientInput,
+  type WorkItemSyncInput,
+  type WorkItemSyncPort,
+} from "./work-item-sync.ts";
+export {
+  createCodeReviewWorkProvider,
+  createWorkItemWorkProvider,
+  createGitLabHttpClient,
+  createLinearHttpClient,
+  resolveWorkProvider,
+  asChangeControlPort,
+  type WorkProviderPort,
+  type ReviewClient,
+  type WorkProviderConfig,
+  type CreateGitLabHttpClientInput,
+  type CreateLinearHttpClientInput,
+} from "./work-provider.ts";

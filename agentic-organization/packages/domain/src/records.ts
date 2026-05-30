@@ -4,7 +4,7 @@ import type {
   SupervisorSignalStatus,
   SupervisorSignalToolType,
 } from "./supervisor-communication.ts";
-import { WorkItemState, type WorkItemType } from "./work-item-state-machine.ts";
+import { WorkItemState, type WorkItemType, type WorkItemSource, type WorkItemSeverity } from "./work-item-state-machine.ts";
 
 export const ProjectStatus = {
   Active: "active",
@@ -52,6 +52,12 @@ export type WorkItem = {
   state: WorkItemState;
   createdAt: string;
   createdBy: AgenticActor;
+  // Work OS overhaul (W1) — additive optional fields; existing callers unaffected.
+  batchId?: string; // work-batch membership (work-batch.ts)
+  source?: WorkItemSource; // internal | external (G3 intake)
+  externalRef?: string; // upstream id when source === external (de-dup + trace)
+  severity?: WorkItemSeverity; // defect/incident severity
+  updatedAt?: string;
 };
 
 export type WorkAnchorTarget = {
