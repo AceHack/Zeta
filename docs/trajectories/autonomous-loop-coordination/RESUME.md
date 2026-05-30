@@ -224,6 +224,14 @@ observations and makes coincidence-window deduplication honor any shared
 primary or secondary key. Same-PR lifecycle dedup remains intact, but PRs
 landed in one merge burst now count as one B-0250 observation.
 
+Current B-0250 merged PR author-label receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-merged-pr-author-labels-2026-05-30.md`
+
+It makes unknown merged-PR branch prefixes fall back to local merge commit
+author trailers when exactly one known agent lane is present. Known branch
+prefixes remain authoritative, and ambiguous unknown branches stay under their
+`other:<branch>` label.
+
 Current dirty-worktree priority receipt:
 `docs/trajectories/autonomous-loop-coordination/dirty-worktree-priority-2026-05-30.md`
 
@@ -243,15 +251,14 @@ remote branch, absent PR, and a head already reachable from `origin/main`.
 
 ## Recommended Next Action
 
-Run the live factory health monitor after the merge-burst clustering packet
-lands, inspect the compact coincidence debug windows that remain, and only then
-choose the next B-0250 source-tuning slice.
+Inspect the remaining live B-0250 Codex/Otto adjacency windows and decide
+whether the five-minute event window is too wide for queue-drain bursts, or
+whether the coincidence source needs a stronger source set before escalation.
 
 ## Next Child Packets
 
 - B-0250 live calibration after merge-burst clustering
-- B-0250 source tuning for trajectory ownership labels if merged-PR bursts are
-  no longer dominant
+- B-0250 queue-drain window calibration for remaining Codex/Otto adjacency
 
 ## Evidence Links
 
