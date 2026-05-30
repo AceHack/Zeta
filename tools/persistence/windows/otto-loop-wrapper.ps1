@@ -71,4 +71,8 @@ if ($pushHb) {
     }
 }
 
+# The conhost --headless launcher (scheduled-task action) swallows this exit code, so the
+# task's Last Result always reads 0. Write the real tick result for health observability.
+"$(Get-Date -Format o) exit=$tickExit" | Out-File -Encoding utf8 (Join-Path $Base 'last-tick-result.txt')
+
 exit $tickExit

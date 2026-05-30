@@ -34,7 +34,7 @@ export interface Args {
   register: boolean;
 }
 
-export type Placeholders = Record<"TASK_NAME" | "USER_ID" | "PWSH_PATH" | "WRAPPER_PATH" | "REPO_ROOT", string>;
+export type Placeholders = Record<"TASK_NAME" | "USER_ID" | "CONHOST_PATH" | "PWSH_PATH" | "WRAPPER_PATH" | "REPO_ROOT", string>;
 
 /** Escape the five XML predefined entities — substituted values land in element text. */
 export function xmlEscape(s: string): string {
@@ -115,6 +115,14 @@ function detectPwsh(): string {
   throw new Error("Neither pwsh.exe nor powershell.exe found on PATH");
 }
 
+// conhost.exe --headless runs pwsh with a headless pseudoconsole the whole process tree
+// inherits -> NO window for pwsh OR its git/bun children (Task Scheduler interactive tasks
+// otherwise flash a console each fire). Trade-off: conhost swallows the child exit code, so
+// the task's Last Result is always 0 -> the wrapper writes last-tick-result.txt for health.
+function detectConhost(): string {
+  return join(process.env.SystemRoot ?? "C:\\Windows", "System32", "conhost.exe");
+}
+
 export function defaultCloneDir(): string {
   const localAppData = process.env.LOCALAPPDATA ?? join(homedir(), "AppData", "Local");
   return join(localAppData, "zeta-otto-loop", "Zeta");
@@ -141,6 +149,7 @@ export function renderXml(repoRoot: string, args: Args): string {
   return substitutePlaceholders(template, {
     TASK_NAME: args.taskName,
     USER_ID: detectUserSid(),
+    CONHOST_PATH: detectConhost(),
     PWSH_PATH: detectPwsh(),
     WRAPPER_PATH: join(here, "otto-loop-wrapper.ps1"),
     REPO_ROOT: repoRoot,

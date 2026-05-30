@@ -1,5 +1,7 @@
 import { test, expect } from "bun:test";
 import { xmlEscape, substitutePlaceholders, toUtf16WithBom, parseArgs, defaultCloneDir } from "./install-scheduled-task";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 test("xmlEscape escapes the five XML entities", () => {
   expect(xmlEscape(`a & b < c > d " e ' f`)).toBe("a &amp; b &lt; c &gt; d &quot; e &apos; f");
@@ -12,6 +14,7 @@ test("substitutePlaceholders fills all keys and XML-escapes values", () => {
     WRAPPER_PATH: "C:\\w & x.ps1",
     TASK_NAME: "T",
     PWSH_PATH: "p",
+    CONHOST_PATH: "c",
     REPO_ROOT: "r",
   });
   expect(out).toBe("<U>S-1-5-21</U><W>C:\\w &amp; x.ps1</W>");
@@ -19,7 +22,7 @@ test("substitutePlaceholders fills all keys and XML-escapes values", () => {
 
 test("substitutePlaceholders throws on an unknown leftover placeholder", () => {
   expect(() =>
-    substitutePlaceholders("{{NOT_A_KEY}}", { USER_ID: "", WRAPPER_PATH: "", TASK_NAME: "", PWSH_PATH: "", REPO_ROOT: "" }),
+    substitutePlaceholders("{{NOT_A_KEY}}", { USER_ID: "", WRAPPER_PATH: "", TASK_NAME: "", PWSH_PATH: "", CONHOST_PATH: "", REPO_ROOT: "" }),
   ).toThrow(/NOT_A_KEY/);
 });
 
@@ -57,4 +60,19 @@ test("parseArgs throws on an unknown flag", () => {
 
 test("defaultCloneDir lands under a zeta-otto-loop\\Zeta path", () => {
   expect(defaultCloneDir().replace(/\\/g, "/")).toMatch(/zeta-otto-loop\/Zeta$/);
+});
+
+test("scheduled-task.xml: every placeholder substitutes, no leftovers, conhost shape preserved", () => {
+  const xml = readFileSync(join(import.meta.dir, "scheduled-task.xml"), "utf8");
+  const out = substitutePlaceholders(xml, {
+    TASK_NAME: "T",
+    USER_ID: "S-1-5-21",
+    CONHOST_PATH: "conhost.exe",
+    PWSH_PATH: "pwsh.exe",
+    WRAPPER_PATH: "wrap.ps1",
+    REPO_ROOT: "repo",
+  });
+  expect(out).not.toMatch(/\{\{[A-Z_]+\}\}/); // no leftover placeholders
+  expect(out).toContain("--headless");        // windowless launch shape preserved
+  expect(out).toContain("conhost.exe");       // conhost launcher present
 });

@@ -102,6 +102,7 @@ Remove-Item -Recurse -Force "$env:LOCALAPPDATA\zeta-otto-loop"   # optional: clo
   git-state; cross-machine "is-it-alive" visibility doesn't need every minute), stamped to
   `last-heartbeat-push.txt`, and best-effort — a failed push warns to `wrapper.err` and never
   fails the tick.
+- **Windowless launch (`conhost --headless`):** the task action is `conhost.exe --headless pwsh.exe …`, not `pwsh.exe` directly. A Task Scheduler *interactive* task otherwise flashes a console window every fire (and the wrapper's git/bun children pop their own); the headless pseudoconsole is inherited by the whole process tree so nothing shows. Trade-off: `conhost --headless` swallows the child exit code, so the task's **Last Result is always 0** — the wrapper writes the real tick result to `last-tick-result.txt` (and the heartbeat reports health), so schtasks Last Result is *not* the health signal.
 - **Tests:** `bun test ./tools/persistence/windows/install-scheduled-task.test.ts` and
   `bun test ./tools/persistence/loop-subprocess-path.test.ts` (tests live under `tools/`
   because `bun test` does not discover dot-directories).

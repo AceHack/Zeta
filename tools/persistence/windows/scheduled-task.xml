@@ -54,8 +54,8 @@
   </Triggers>
   <Actions Context="Author">
     <Exec>
-      <Command>{{PWSH_PATH}}</Command>
-      <Arguments>-NoProfile -ExecutionPolicy Bypass -File "{{WRAPPER_PATH}}"</Arguments>
+      <Command>{{CONHOST_PATH}}</Command>
+      <Arguments>--headless "{{PWSH_PATH}}" -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "{{WRAPPER_PATH}}"</Arguments>
       <WorkingDirectory>{{REPO_ROOT}}</WorkingDirectory>
     </Exec>
   </Actions>
