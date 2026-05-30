@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; B-0250 loop-run gating landed
+Status: active child packet; B-0250 compact debug surface landed
 Last refreshed: 2026-05-30
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -183,15 +183,23 @@ adjacent heartbeat snapshots show a claim-count or open-PR-count transition.
 Generic gate completions remain visible in the raw runner log, but no longer
 inflate the B-0250 joined event window.
 
+Current B-0250 compact debug surface receipt:
+`docs/trajectories/autonomous-loop-coordination/b0250-compact-debug-surface-2026-05-30.md`
+
+It adds a capped `coincidence-debug` health signal that lists the first few
+event-window ranges, trajectory sets, and `trajectory:event-id` members. The
+debug line keeps the count signal intact while making the remaining source mix
+inspectable from ordinary monitor JSON.
+
 ## Recommended Next Action
 
-Add a compact debug surface for top B-0250 coincidence windows so the remaining
-source mix can be inspected without reading raw JSON manually.
+Use the compact B-0250 window debug line to choose the next source-narrowing
+slice before adding another event source.
 
 ## Next Child Packets
 
-- B-0250 compact debug surface for top coincidence windows
 - use local dirty-worktree signals to prioritize stale-worktree cleanup
+- B-0250 source tuning from compact coincidence-window debug evidence
 
 ## Evidence Links
 

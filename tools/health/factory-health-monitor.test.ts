@@ -24,6 +24,7 @@ import {
   parseLocalWorktreeDirtScanLimit,
   resolveCodexLoopRunnerLog,
   runHealthCheck,
+  summarizeCoincidenceWindows,
   trajectoryReceiptEventsFromGitLog,
   type HealthSignal,
   type CoincidenceEvent,
@@ -139,13 +140,41 @@ describe("factory-health-monitor", () => {
         ],
         { windowMs: 30_000, minimumEvents: 2 },
       ),
+      ).toEqual([
+        {
+          surface: "coincidence",
+          level: "warning",
+          message: "1 event-window coincidence(s) detected",
+          action: "inspect shared upstream cause for coincident trajectory events",
+        },
+        {
+          surface: "coincidence-debug",
+          level: "warning",
+          message:
+            "Top coincidence windows: 2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto events=codex:codex-1,otto:otto-1",
+          action: "inspect listed coincidence event ids before adding another source",
+        },
+      ]);
+  });
+
+  test("summarizeCoincidenceWindows emits capped compact debug lines", () => {
+    const windows = findCoincidenceWindows(
+      [
+        { id: "codex-1", trajectory: "codex", occurredAt: "2026-05-30T05:00:00.000Z" },
+        { id: "otto-1", trajectory: "otto", occurredAt: "2026-05-30T05:00:01.000Z" },
+        { id: "riven-1", trajectory: "riven", occurredAt: "2026-05-30T05:00:02.000Z" },
+      ],
+      { windowMs: 30_000, minimumEvents: 2 },
+    );
+
+    expect(
+      summarizeCoincidenceWindows(windows, {
+        maxEventsPerWindow: 2,
+        maxTrajectoriesPerWindow: 2,
+        maxWindows: 1,
+      }),
     ).toEqual([
-      {
-        surface: "coincidence",
-        level: "warning",
-        message: "1 event-window coincidence(s) detected",
-        action: "inspect shared upstream cause for coincident trajectory events",
-      },
+      "2026-05-30T05:00:00.000Z..2026-05-30T05:00:30.000Z trajectories=codex+otto,+1 more events=codex:codex-1,otto:otto-1,+1 more",
     ]);
   });
 
@@ -166,6 +195,13 @@ describe("factory-health-monitor", () => {
         level: "warning",
         message: "1 event-window coincidence(s) detected",
         action: "inspect shared upstream cause for coincident trajectory events",
+      },
+      {
+        surface: "coincidence-debug",
+        level: "warning",
+        message:
+          "Top coincidence windows: 2026-05-30T05:00:00.000Z..2026-05-30T05:00:05.000Z trajectories=codex+riven events=codex:codex-1,riven:riven-1",
+        action: "inspect listed coincidence event ids before adding another source",
       },
     ]);
   });

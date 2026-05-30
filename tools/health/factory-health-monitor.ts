@@ -50,6 +50,12 @@ export interface CoincidenceWindowOptions {
   minimumEvents: number;
 }
 
+export interface CoincidenceWindowDebugOptions {
+  maxEventsPerWindow: number;
+  maxTrajectoriesPerWindow: number;
+  maxWindows: number;
+}
+
 export interface CoincidenceWindow {
   windowStart: string;
   windowEnd: string;
@@ -109,6 +115,9 @@ const LOCAL_WORKTREE_DIRT_SCAN_LIMIT = parseLocalWorktreeDirtScanLimit(process.e
 const CODEX_PARALLEL_RUNWAY_MINIMUM_ACTIVE_ITEMS = 1;
 const CODEX_PARALLEL_RUNWAY_TARGET_ACTIVE_ITEMS = 2;
 const FACTORY_EVENT_COINCIDENCE_WINDOW_MS = 5 * 60 * 1000;
+const FACTORY_EVENT_DEBUG_EVENT_LIMIT = 4;
+const FACTORY_EVENT_DEBUG_TRAJECTORY_LIMIT = 4;
+const FACTORY_EVENT_DEBUG_WINDOW_LIMIT = 3;
 const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
 const FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG = resolveCodexLoopRunnerLog(process.env);
 const PRIMARY_LANES = ["codex", "otto", "lior", "alexa", "riven"] as const;
@@ -203,6 +212,29 @@ export function findCoincidenceWindows(
   return windows.sort((a, b) => a.windowStart.localeCompare(b.windowStart) || a.windowEnd.localeCompare(b.windowEnd));
 }
 
+function coincidenceEventDebugLabel(event: CoincidenceEvent): string {
+  return `${event.trajectory}:${event.id}`;
+}
+
+export function summarizeCoincidenceWindows(
+  windows: readonly CoincidenceWindow[],
+  options: CoincidenceWindowDebugOptions,
+): string[] {
+  const maxWindows = Math.max(0, Math.floor(options.maxWindows));
+  const maxEventsPerWindow = Math.max(1, Math.floor(options.maxEventsPerWindow));
+  const maxTrajectoriesPerWindow = Math.max(1, Math.floor(options.maxTrajectoriesPerWindow));
+
+  return windows.slice(0, maxWindows).map((window) => {
+    const trajectoryLabels = window.trajectories.slice(0, maxTrajectoriesPerWindow);
+    const remainingTrajectories = Math.max(0, window.trajectories.length - trajectoryLabels.length);
+    const trajectorySuffix = remainingTrajectories > 0 ? `,+${remainingTrajectories} more` : "";
+    const eventLabels = window.events.slice(0, maxEventsPerWindow).map(coincidenceEventDebugLabel);
+    const remainingEvents = Math.max(0, window.events.length - eventLabels.length);
+    const remainingSuffix = remainingEvents > 0 ? `,+${remainingEvents} more` : "";
+    return `${window.windowStart}..${window.windowEnd} trajectories=${trajectoryLabels.join("+")}${trajectorySuffix} events=${eventLabels.join(",")}${remainingSuffix}`;
+  });
+}
+
 export function classifyCoincidenceWindows(
   events: readonly CoincidenceEvent[],
   options: CoincidenceWindowOptions,
@@ -218,12 +250,24 @@ export function classifyCoincidenceWindows(
     ];
   }
 
+  const debugLines = summarizeCoincidenceWindows(windows, {
+    maxEventsPerWindow: FACTORY_EVENT_DEBUG_EVENT_LIMIT,
+    maxTrajectoriesPerWindow: FACTORY_EVENT_DEBUG_TRAJECTORY_LIMIT,
+    maxWindows: FACTORY_EVENT_DEBUG_WINDOW_LIMIT,
+  });
+
   return [
     {
       surface: "coincidence",
       level: "warning",
       message: `${windows.length} event-window coincidence(s) detected`,
       action: "inspect shared upstream cause for coincident trajectory events",
+    },
+    {
+      surface: "coincidence-debug",
+      level: "warning",
+      message: `Top coincidence windows: ${debugLines.join(" | ")}`,
+      action: "inspect listed coincidence event ids before adding another source",
     },
   ];
 }
