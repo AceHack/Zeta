@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Zeta.Core.CSharp.Observe</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.Observe</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Zero external dependencies (B-0944 supply-chain doctrine: a pure event-fold
+       needs nothing beyond the BCL). -->
+
+</Project>
