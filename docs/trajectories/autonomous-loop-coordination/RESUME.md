@@ -1,7 +1,7 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; dirty-worktree priority packet in review
-Last refreshed: 2026-05-30
+Status: active child packet; B-0250 lifecycle age-out calibration landed
+Last refreshed: 2026-05-31
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
 `docs/backlog/P2/B-0209-remote-only-background-agent-test-matrix-and-model-scouting-2026-05-06.md`
@@ -305,15 +305,25 @@ incident-grade window is still the historic `otto:merged-pr-6129` plus
 slice should target old loop-run claim-increase lifecycle handling rather than
 the broadcast-blocker adapter.
 
+Current B-0250 loop-run lifecycle age-out calibration:
+`docs/trajectories/autonomous-loop-coordination/b0250-loop-run-lifecycle-age-out-calibration-2026-05-31.md`
+
+It classifies the remaining historical incident as lifecycle residue: a
+successful Codex loop-run claim-increase event was still joining with nearby
+merged Otto PR #6129 long after the run completed. The calibration keeps fresh
+loop-run claim increases in the stronger-source set, but says old completed
+loop-run events should demote to warning/debug output after the bounded
+freshness window.
+
 ## Recommended Next Action
 
-Decide whether old loop-run claim-increase events should age out or be
-classified separately once their associated PR and claim branch have already
-merged and cleaned up.
+Implement the B-0250 lifecycle-residue freshness classifier so old completed
+loop-run claim-increase events no longer satisfy the incident-grade
+stronger-source escalation gate.
 
 ## Next Child Packets
 
-- B-0250 loop-run lifecycle age-out calibration
+- None currently selected.
 
 ## Evidence Links
 
