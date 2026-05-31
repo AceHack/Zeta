@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Core.FSharp.Observe</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.Observe</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- Zero external dependencies (B-0944 supply-chain doctrine: the algebra is a
+       pure event-fold; it needs nothing but FSharp.Core). Compile order matters in
+       F#: Types.fs before Observe.fs. -->
+  <ItemGroup>
+    <Compile Include="Types.fs" />
+    <Compile Include="Observe.fs" />
+  </ItemGroup>
+
+</Project>
