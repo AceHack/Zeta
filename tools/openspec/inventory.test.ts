@@ -6,14 +6,33 @@ import {
   scanSpecs,
   scanModules,
   buildGapReport,
+  evaluateInventoryGate,
+  parseCliArgs,
   CAPABILITY_MODULE_MAP,
   CAPABILITY_ARTIFACT_MAP,
   EXCLUDED_MODULES,
 } from "./inventory.ts";
-import type { SpecEntry, ModuleEntry } from "./inventory.ts";
+import type { SpecEntry, ModuleEntry, GapReport } from "./inventory.ts";
 
 function makeTempDir(): string {
   return mkdtempSync(join(tmpdir(), "openspec-inventory-test-"));
+}
+
+function makeGateReport(overrides: Partial<GapReport> = {}): GapReport {
+  return {
+    timestamp: "2026-05-31T00:00:00.000Z",
+    specs: [],
+    modules: [],
+    mappings: [],
+    artifactMappings: [],
+    coveredModules: [],
+    uncoveredModules: [],
+    mappedArtifacts: [],
+    missingArtifacts: [],
+    unmappedSpecs: [],
+    coveragePercent: 0,
+    ...overrides,
+  };
 }
 
 describe("scanSpecs", () => {
@@ -263,6 +282,91 @@ describe("buildGapReport", () => {
   test("coverage is 0% with no modules", () => {
     const report = buildGapReport([], []);
     expect(report.coveragePercent).toBe(0);
+  });
+});
+
+describe("evaluateInventoryGate", () => {
+  test("fails by default on missing mapped modules", () => {
+    const report = makeGateReport({
+      mappings: [{ capability: "operator-algebra", modules: [], missingModules: ["Algebra.fs"] }],
+    });
+
+    const gate = evaluateInventoryGate(report);
+
+    expect(gate.passed).toBe(false);
+    expect(gate.failures).toEqual(["mapped modules missing from src/Core/: Algebra.fs"]);
+  });
+
+  test("fails by default on missing mapped artifacts", () => {
+    const report = makeGateReport({
+      missingArtifacts: ["evidence/missing.md"],
+    });
+
+    const gate = evaluateInventoryGate(report);
+
+    expect(gate.passed).toBe(false);
+    expect(gate.failures).toEqual(["mapped artifacts missing: evidence/missing.md"]);
+  });
+
+  test("allows known coverage gaps unless strict options are set", () => {
+    const report = makeGateReport({
+      unmappedSpecs: ["brand-new-spec"],
+      uncoveredModules: ["Sketch.fs"],
+    });
+
+    expect(evaluateInventoryGate(report).passed).toBe(true);
+
+    const strictSpecGate = evaluateInventoryGate(report, { failOnUnmappedSpecs: true });
+    expect(strictSpecGate.passed).toBe(false);
+    expect(strictSpecGate.failures).toEqual(["specs without module or artifact mapping: brand-new-spec"]);
+
+    const strictModuleGate = evaluateInventoryGate(report, { failOnUncoveredModules: true });
+    expect(strictModuleGate.passed).toBe(false);
+    expect(strictModuleGate.failures).toEqual(["uncovered modules: Sketch.fs"]);
+  });
+});
+
+describe("parseCliArgs", () => {
+  test("parses enforce and strict gate modifiers", () => {
+    const parsed = parseCliArgs(["--enforce", "--fail-on-unmapped-specs", "--fail-on-uncovered-modules"]);
+
+    expect(parsed).toEqual({
+      enforce: true,
+      gateOptions: {
+        failOnUnmappedSpecs: true,
+        failOnUncoveredModules: true,
+      },
+      help: false,
+    });
+  });
+
+  test("--fail-on-unmapped-specs alone implies --enforce", () => {
+    const parsed = parseCliArgs(["--fail-on-unmapped-specs"]);
+
+    // Without the implication the gate would never evaluate and the CLI would
+    // exit 0 even with unmapped specs (regression guard for the silent-exit bug).
+    expect(parsed.enforce).toBe(true);
+    expect(parsed.gateOptions).toEqual({ failOnUnmappedSpecs: true });
+  });
+
+  test("--fail-on-uncovered-modules alone implies --enforce", () => {
+    const parsed = parseCliArgs(["--fail-on-uncovered-modules"]);
+
+    expect(parsed.enforce).toBe(true);
+    expect(parsed.gateOptions).toEqual({ failOnUncoveredModules: true });
+  });
+
+  test("bare invocation does not enforce", () => {
+    const parsed = parseCliArgs([]);
+
+    expect(parsed.enforce).toBe(false);
+    expect(parsed.gateOptions).toEqual({});
+  });
+
+  test("surfaces unknown arguments", () => {
+    const parsed = parseCliArgs(["--wat"]);
+
+    expect(parsed.error).toBe("Unknown argument: --wat");
   });
 });
 

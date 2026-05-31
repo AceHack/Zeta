@@ -44,6 +44,16 @@ interface GapReportOptions {
   artifactMap?: Record<string, string[]>;
 }
 
+interface InventoryGateOptions {
+  failOnUnmappedSpecs?: boolean;
+  failOnUncoveredModules?: boolean;
+}
+
+interface InventoryGateEvaluation {
+  passed: boolean;
+  failures: string[];
+}
+
 interface GapReport {
   timestamp: string;
   specs: SpecEntry[];
@@ -251,12 +261,123 @@ function buildGapReport(specs: SpecEntry[], modules: ModuleEntry[], options: Gap
   };
 }
 
+function evaluateInventoryGate(report: GapReport, options: InventoryGateOptions = {}): InventoryGateEvaluation {
+  const failures: string[] = [];
+  const missingModules = report.mappings.flatMap((m) => m.missingModules).sort();
+
+  if (missingModules.length > 0) {
+    failures.push(`mapped modules missing from src/Core/: ${missingModules.join(", ")}`);
+  }
+
+  if (report.missingArtifacts.length > 0) {
+    failures.push(`mapped artifacts missing: ${report.missingArtifacts.join(", ")}`);
+  }
+
+  if (options.failOnUnmappedSpecs === true && report.unmappedSpecs.length > 0) {
+    failures.push(`specs without module or artifact mapping: ${report.unmappedSpecs.join(", ")}`);
+  }
+
+  if (options.failOnUncoveredModules === true && report.uncoveredModules.length > 0) {
+    failures.push(`uncovered modules: ${report.uncoveredModules.join(", ")}`);
+  }
+
+  return {
+    passed: failures.length === 0,
+    failures,
+  };
+}
+
+interface CliOptions {
+  enforce: boolean;
+  gateOptions: InventoryGateOptions;
+  help: boolean;
+  error?: string;
+}
+
+function parseCliArgs(args: string[]): CliOptions {
+  const parsed: CliOptions = {
+    enforce: false,
+    gateOptions: {},
+    help: false,
+  };
+
+  for (const arg of args) {
+    switch (arg) {
+      case "--enforce":
+        parsed.enforce = true;
+        break;
+      case "--fail-on-unmapped-specs":
+        // A --fail-on-* flag is a request to gate on that condition, which is
+        // meaningless unless the gate is actually evaluated — so it implies
+        // --enforce. Without this, passing the flag alone silently exited 0.
+        parsed.gateOptions.failOnUnmappedSpecs = true;
+        parsed.enforce = true;
+        break;
+      case "--fail-on-uncovered-modules":
+        parsed.gateOptions.failOnUncoveredModules = true;
+        parsed.enforce = true;
+        break;
+      case "--help":
+      case "-h":
+        parsed.help = true;
+        break;
+      default:
+        parsed.error = `Unknown argument: ${arg}`;
+        return parsed;
+    }
+  }
+
+  return parsed;
+}
+
+function printUsage(err: (message?: unknown, ...optionalParams: unknown[]) => void): void {
+  err("Usage: bun tools/openspec/inventory.ts [--enforce] [--fail-on-unmapped-specs] [--fail-on-uncovered-modules]");
+  err("");
+  err("Options:");
+  err("  --enforce                    Exit nonzero when the inventory gate fails.");
+  err("  --fail-on-unmapped-specs     Treat specs without mappings as gate failures (implies --enforce).");
+  err("  --fail-on-uncovered-modules  Treat uncovered Core modules as gate failures (implies --enforce).");
+}
+
 // ── CLI ──────────────────────────────────────────────────────────────
 
-export { scanSpecs, scanModules, buildGapReport, CAPABILITY_MODULE_MAP, CAPABILITY_ARTIFACT_MAP, EXCLUDED_MODULES };
-export type { SpecEntry, ModuleEntry, GapReport, GapReportOptions, Mapping, ArtifactMapping };
+export {
+  scanSpecs,
+  scanModules,
+  buildGapReport,
+  evaluateInventoryGate,
+  parseCliArgs,
+  CAPABILITY_MODULE_MAP,
+  CAPABILITY_ARTIFACT_MAP,
+  EXCLUDED_MODULES,
+};
+export type {
+  SpecEntry,
+  ModuleEntry,
+  GapReport,
+  GapReportOptions,
+  InventoryGateOptions,
+  InventoryGateEvaluation,
+  Mapping,
+  ArtifactMapping,
+  CliOptions,
+};
 
 export function main(): number {
+  const cli = parseCliArgs(process.argv.slice(2));
+  const err = console.error.bind(console);
+
+  if (cli.error) {
+    err(cli.error);
+    printUsage(err);
+    return 2;
+  }
+
+  if (cli.help) {
+    printUsage(err);
+    return 0;
+  }
+
   const repoRoot = findRepoRoot();
   const specsDir = join(repoRoot, "openspec", "specs");
   const coreDir = join(repoRoot, "src", "Core");
@@ -277,7 +398,6 @@ export function main(): number {
   console.log(JSON.stringify(report, null, 2));
 
   // Human-readable summary to stderr
-  const err = console.error.bind(console);
   err("");
   err(`── OpenSpec inventory ──────────────────────────`);
   err(`  Specs:             ${report.specs.length}`);
@@ -318,6 +438,21 @@ export function main(): number {
     for (const m of report.uncoveredModules) {
       err(`    - ${m}`);
     }
+    err("");
+  }
+
+  if (cli.enforce) {
+    const gate = evaluateInventoryGate(report, cli.gateOptions);
+    if (!gate.passed) {
+      err(`  Inventory gate: FAIL`);
+      for (const failure of gate.failures) {
+        err(`    - ${failure}`);
+      }
+      err("");
+      return 1;
+    }
+
+    err(`  Inventory gate: PASS`);
     err("");
   }
 
