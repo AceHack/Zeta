@@ -87,6 +87,41 @@ jobs:
       - name: Install bun dependencies (for the TS wrapper)
         run: bun install --frozen-lockfile
 
+      # Option B (2026-05-31 agent huddle): give the Windows-container `docker build` more scratch.
+      # windows-2025 runners have a TIGHT C: (~30GB free) but a roomy D: (~140GB free) — and dockerd's
+      # data-root + the Windows-container build scratch (the C:\Windows\SystemTemp\hcs... layer) default
+      # to C:\ProgramData\docker, which the ~1GB ollama install overflowed (run 86a365916: "not enough
+      # space on disk"). Repoint data-root to D:\docker so the build gets D:'s headroom -> install.ps1
+      # can actually install the ollama binary in CI (option A already made it best-effort so a failure
+      # won't brick install; this lets it SUCCEED + be validated). Documented for the dockerd Windows
+      # SERVICE (which the runner uses): https://learn.microsoft.com/virtualization/windowscontainers/manage-docker/configure-docker-daemon
+      # EMPIRICAL CAVEAT (huddle): the windowsfilter driver has thin/contradictory evidence on whether
+      # it fully honors data-root for the hcs scratch — the diagnostics below (DockerRootDir + the
+      # per-build install.ps1 ollama output) tell us if it worked; --windows-containers-default-data-root
+      # is the backup flag if not. Refs: actions/runner-images #12609, #12744.
+      - name: Relocate Docker data-root to D:\ (Windows-container build scratch headroom)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Write-Host '=== drive free space (before) ==='
+          Get-PSDrive C, D | Format-Table Name, @{ n = 'FreeGB'; e = { [math]::Round($_.Free / 1GB, 1) } }
+          Stop-Service docker
+          $cfgDir = 'C:\ProgramData\Docker\config'
+          New-Item -ItemType Directory -Force $cfgDir | Out-Null
+          New-Item -ItemType Directory -Force 'D:\docker' | Out-Null
+          $cfg = Join-Path $cfgDir 'daemon.json'
+          $o = if (Test-Path $cfg) { Get-Content $cfg -Raw | ConvertFrom-Json } else { [pscustomobject]@{} }
+          $o | Add-Member -Force -NotePropertyName 'data-root' -NotePropertyValue 'D:\docker'
+          $o | ConvertTo-Json -Depth 10 | Set-Content $cfg
+          Write-Host '=== daemon.json ==='
+          Get-Content $cfg
+          Start-Service docker
+          # The daemon may need a moment to accept connections after the restart.
+          $root = $null
+          for ($i = 0; $i -lt 15; $i++) { try { $root = (docker info --format '{{.DockerRootDir}}'); if ($root) { break } } catch {}; Start-Sleep -Seconds 2 }
+          Write-Host "DockerRootDir = $root"
+          if ($root -notlike 'D:*') { Write-Host "::warning::data-root did not relocate to D: (got '$root') — build may still hit C: disk" }
+
       - name: Run Server-Core Docker install.ps1 test
         env:
           DOCKER_LOG_OUT_PATH: docker-windows-install-ps1-test.log
