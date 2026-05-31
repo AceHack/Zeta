@@ -1,0 +1,332 @@
+{
+  "description": "observe/simulate/fold cross-language conformance (B-0867.27). Every impl replays `events` over `initialWorld` and must value-match `expectedFinalState` + `expectedReplayStates`.",
+  "initialWorld": {
+    "backlog": [
+      {
+        "id": "B-ready",
+        "title": "B-ready",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      },
+      {
+        "id": "B-amb",
+        "title": "B-amb",
+        "ready": false,
+        "ambiguous": true,
+        "needsNewAction": false
+      },
+      {
+        "id": "B-x",
+        "title": "B-x",
+        "ready": false,
+        "ambiguous": false,
+        "needsNewAction": true
+      }
+    ],
+    "operator": {
+      "pendingMessage": true,
+      "pendingFerry": true
+    }
+  },
+  "events": [
+    {
+      "kind": "preserve_ferry",
+      "reason": "operator ferried verbatim content"
+    },
+    {
+      "kind": "respond_to_operator",
+      "reason": "operator spoke"
+    },
+    {
+      "kind": "do_item",
+      "item": {
+        "id": "B-ready",
+        "title": "B-ready",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "decompose",
+      "item": {
+        "id": "B-amb",
+        "title": "B-amb",
+        "ready": false,
+        "ambiguous": true,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "do_item",
+      "item": {
+        "id": "B-amb.1",
+        "title": "B-amb.1",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "do_item",
+      "item": {
+        "id": "B-amb.2",
+        "title": "B-amb.2",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "edit_grammar",
+      "item": {
+        "id": "B-x",
+        "title": "B-x",
+        "ready": false,
+        "ambiguous": false,
+        "needsNewAction": true
+      },
+      "reason": "grammar extended"
+    },
+    {
+      "kind": "do_item",
+      "item": {
+        "id": "B-x",
+        "title": "B-x",
+        "ready": true,
+        "ambiguous": false,
+        "needsNewAction": false
+      }
+    },
+    {
+      "kind": "explore",
+      "reason": "self-directed making"
+    },
+    {
+      "kind": "play",
+      "reason": "leisure / culture-forming"
+    },
+    {
+      "kind": "self_reflect",
+      "reason": "review own trajectories"
+    },
+    {
+      "kind": "free_time",
+      "reason": "rest"
+    }
+  ],
+  "expectedFinalState": {
+    "backlog": [],
+    "operator": {
+      "pendingMessage": false,
+      "pendingFerry": false
+    },
+    "mode": "free_time"
+  },
+  "expectedReplayStates": [
+    {
+      "backlog": [
+        {
+          "id": "B-ready",
+          "title": "B-ready",
+          "ready": true,
+          "ambiguous": false,
+          "needsNewAction": false
+        },
+        {
+          "id": "B-amb",
+          "title": "B-amb",
+          "ready": false,
+          "ambiguous": true,
+          "needsNewAction": false
+        },
+        {
+          "id": "B-x",
+          "title": "B-x",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": true,
+        "pendingFerry": false
+      }
+    },
+    {
+      "backlog": [
+        {
+          "id": "B-ready",
+          "title": "B-ready",
+          "ready": true,
+          "ambiguous": false,
+          "needsNewAction": false
+        },
+        {
+          "id": "B-amb",
+          "title": "B-amb",
+          "ready": false,
+          "ambiguous": true,
+          "needsNewAction": false
+        },
+        {
+          "id": "B-x",
+          "title": "B-x",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      }
+    },
+    {
+      "backlog": [
+        {
+          "id": "B-amb",
+          "title": "B-amb",
+          "ready": false,
+          "ambiguous": true,
+          "needsNewAction": false
+        },
+        {
+          "id": "B-x",
+          "title": "B-x",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [
+        {
+          "id": "B-amb.1",
+          "title": "B-amb (part 1)",
+          "ready": true,
+          "ambiguous": false
+        },
+        {
+          "id": "B-amb.2",
+          "title": "B-amb (part 2)",
+          "ready": true,
+          "ambiguous": false
+        },
+        {
+          "id": "B-x",
+          "title": "B-x",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [
+        {
+          "id": "B-amb.2",
+          "title": "B-amb (part 2)",
+          "ready": true,
+          "ambiguous": false
+        },
+        {
+          "id": "B-x",
+          "title": "B-x",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [
+        {
+          "id": "B-x",
+          "title": "B-x",
+          "ready": false,
+          "ambiguous": false,
+          "needsNewAction": true
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [
+        {
+          "id": "B-x",
+          "title": "B-x",
+          "ready": true,
+          "ambiguous": false,
+          "needsNewAction": false
+        }
+      ],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "work"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "explore"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "play"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "self_reflect"
+    },
+    {
+      "backlog": [],
+      "operator": {
+        "pendingMessage": false,
+        "pendingFerry": false
+      },
+      "mode": "free_time"
+    }
+  ]
+}
