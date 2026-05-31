@@ -293,9 +293,17 @@ export interface ReconcileResult {
   readonly decision: ReconciliationDecision;
 }
 
+export type ListOutputFormat = "text" | "json";
+
+/** Stable machine-readable payload for pending divergence reconciliation reads. */
+export interface PendingShardListJson {
+  readonly schemaVersion: 1;
+  readonly pending: readonly PendingShard[];
+}
+
 /** CLI action parsed from argv. */
 export type CliCommand =
-  | { readonly kind: "list" }
+  | { readonly kind: "list"; readonly format: ListOutputFormat }
   | { readonly kind: "help" }
   | {
       readonly kind: "reconcile";
@@ -312,7 +320,8 @@ export function usage(): string {
   return [
     "Usage:",
     "  bun tools/hygiene/divergence-reconcile.ts",
-    "  bun tools/hygiene/divergence-reconcile.ts --list",
+    "  bun tools/hygiene/divergence-reconcile.ts --list [--json]",
+    "  bun tools/hygiene/divergence-reconcile.ts --json",
     "  bun tools/hygiene/divergence-reconcile.ts --reconcile <relPath> --decision <decision> [--note <text>]",
     "",
     `Decisions: ${RECONCILIATION_DECISIONS.join(" | ")}`,
@@ -320,12 +329,13 @@ export function usage(): string {
 }
 
 export function parseArgs(argv: readonly string[]): ParseArgsResult {
-  if (argv.length === 0) return { kind: "ok", command: { kind: "list" } };
+  if (argv.length === 0) return { kind: "ok", command: { kind: "list", format: "text" } };
 
   let relPath: string | undefined;
   let decision: string | undefined;
   let note: string | undefined;
   let sawList = false;
+  let sawJson = false;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -334,6 +344,10 @@ export function parseArgs(argv: readonly string[]): ParseArgsResult {
     }
     if (arg === "--list") {
       sawList = true;
+      continue;
+    }
+    if (arg === "--json") {
+      sawJson = true;
       continue;
     }
     if (arg === "--reconcile") {
@@ -363,7 +377,12 @@ export function parseArgs(argv: readonly string[]): ParseArgsResult {
   if (sawList && (relPath !== undefined || decision !== undefined || note !== undefined)) {
     return { kind: "error", message: "--list cannot be combined with reconciliation arguments" };
   }
-  if (sawList) return { kind: "ok", command: { kind: "list" } };
+  if (sawJson && (relPath !== undefined || decision !== undefined || note !== undefined)) {
+    return { kind: "error", message: "--json can only be used with list mode" };
+  }
+  if (sawList || sawJson) {
+    return { kind: "ok", command: { kind: "list", format: sawJson ? "json" : "text" } };
+  }
   if (relPath === undefined) {
     return { kind: "error", message: "--reconcile is required when passing reconciliation arguments" };
   }
@@ -586,6 +605,14 @@ function renderPendingReport(pending: readonly PendingShard[]): string {
   return report;
 }
 
+export function pendingShardListJson(pending: readonly PendingShard[]): PendingShardListJson {
+  return { schemaVersion: 1, pending };
+}
+
+export function renderPendingJsonReport(pending: readonly PendingShard[]): string {
+  return `${JSON.stringify(pendingShardListJson(pending), null, 2)}\n`;
+}
+
 function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
 }
@@ -615,7 +642,8 @@ export function main(argv: readonly string[] = process.argv.slice(2), options: M
   try {
     const root = (options.repoRoot ?? repoRoot)();
     if (parsed.command.kind === "list") {
-      stdout.write(renderPendingReport(scanDivergenceDir(root)));
+      const pending = scanDivergenceDir(root);
+      stdout.write(parsed.command.format === "json" ? renderPendingJsonReport(pending) : renderPendingReport(pending));
       return 0;
     }
     const result = reconcileDivergenceShard(root, parsed.command.relPath, parsed.command.decision, parsed.command.note);

@@ -222,7 +222,12 @@ describe("isReconciliationDecision / RECONCILIATION_DECISIONS", () => {
 
 describe("parseArgs", () => {
   test("defaults to the pending-shard list action", () => {
-    expect(parseArgs([])).toEqual({ kind: "ok", command: { kind: "list" } });
+    expect(parseArgs([])).toEqual({ kind: "ok", command: { kind: "list", format: "text" } });
+  });
+
+  test("parses machine-readable list mode", () => {
+    expect(parseArgs(["--json"])).toEqual({ kind: "ok", command: { kind: "list", format: "json" } });
+    expect(parseArgs(["--list", "--json"])).toEqual({ kind: "ok", command: { kind: "list", format: "json" } });
   });
 
   test("parses a bounded reconcile action with a decision and optional note", () => {
@@ -262,6 +267,12 @@ describe("parseArgs", () => {
     expect(parseArgs(["--list", "--reconcile", "docs/hygiene-history/divergences/x.md"])).toEqual({
       kind: "error",
       message: "--list cannot be combined with reconciliation arguments",
+    });
+    expect(
+      parseArgs(["--reconcile", "docs/hygiene-history/divergences/x.md", "--decision", "accept-loop-a", "--json"]),
+    ).toEqual({
+      kind: "error",
+      message: "--json can only be used with list mode",
     });
   });
 });
@@ -546,6 +557,35 @@ describe("main CLI write-back action", () => {
       },
     } as Pick<typeof process.stdout, "write">;
   }
+
+  test("prints a stable machine-readable pending-shard list with --json", () => {
+    withTempRoot((root) => {
+      const { relPath } = writeDivergenceShard(root, inputAt("2026-05-10T11:48:00Z", "A", "B"));
+      const out: string[] = [];
+      const err: string[] = [];
+
+      const exit = main(["--json"], {
+        repoRoot: () => root,
+        stdout: writer(out),
+        stderr: writer(err),
+      });
+
+      expect(exit).toBe(0);
+      expect(err).toEqual([]);
+      const payload = JSON.parse(out.join("")) as {
+        schemaVersion: number;
+        pending: Array<{ relPath: string; tick: string; loopAAgent: string; loopBAgent: string }>;
+      };
+      expect(payload.schemaVersion).toBe(1);
+      expect(payload.pending).toHaveLength(1);
+      expect(payload.pending[0]).toMatchObject({
+        relPath,
+        tick: "2026-05-10T11:48:00Z",
+        loopAAgent: "otto",
+        loopBAgent: "codex-loop",
+      });
+    });
+  });
 
   test("lands a reconciliation decision through the repo-native CLI action", () => {
     withTempRoot((root) => {
