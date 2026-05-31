@@ -1,0 +1,108 @@
+# .github/workflows/wsl-install-sh-test.yml
+#
+# WSL install.sh test (B-0857 Windows parity — the WSL lane). Runs tools/setup/install.sh inside a
+# REAL WSL2 Ubuntu on a Windows host, which the Docker-Linux lane cannot exercise (no WSL kernel,
+# no /mnt interop, no systemd-absent quirks). Complements the other three install shields:
+#   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu, Docker)
+#   - docker-nixos-install-sh-test    (install.sh on NixOS userspace, Docker)
+#   - docker-windows-install-ps1-test (install.ps1 on Windows Server Core, Docker)
+#
+# Provisioner: Vampire/setup-wsl (the hosted-WSL pattern proven in the SQLSharp repo) on
+# runs-on: windows-2025 (WSL needs a Windows host). Distribution Ubuntu-24.04.
+#
+# Validated locally first (operator "b then a"): a clean-room Ubuntu-24.04 distro ran the FULL
+# graph end-to-end on 2026-05-31 — routing -> linux.sh -> apt -> mise + dotnet/python/java/bun/uv
+# + node + actionlint/shellcheck/semgrep -> uv tools (ruff) -> elan/Lean -> dotnet-stryker +
+# fsharp-analyzers -> TLA+/Alloy jars -> ollama + qwen2.5:0.5b model pull -> "Install complete".
+#
+# Like docker-ubuntu-install-sh-test this runs the FULL install.sh including the local-LLM primitive
+# (ollama 1.2GB + ~398MB model) — the operator's standing position is that the local-LLM step is a
+# core primitive worth testing, not skipping. Generous timeout for the cold, uncached run.
+#
+# Pins (dep-pin-search-first, GitHub API 2026-05-31): Vampire/setup-wsl v7.0.0 is the current latest
+# (published 2026-04-11); SHA d1da7f2c… verified against the v7.0.0 release tag + matches the
+# SQLSharp pin. actions/checkout v6.0.2.
+#
+# Security: runner pinned (windows-2025, NOT -latest); third-party actions SHA-pinned with trailing
+# # vX.Y.Z; permissions contents: read; concurrency cancel-in-progress for PRs; no github.event.*
+# values interpolated into run: lines.
+
+name: wsl-install-sh-test
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      # Install dispatcher + per-OS scripts + shared library (install.sh -> linux.sh -> common/*)
+      - "tools/setup/**"
+      # Pinned runtime versions read by mise — the IDENTICAL file Unix uses (symmetric)
+      - ".mise.toml"
+      # This workflow file itself
+      - ".github/workflows/wsl-install-sh-test.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/setup/**"
+      - ".mise.toml"
+      - ".github/workflows/wsl-install-sh-test.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: wsl-install-sh-test-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  wsl-test:
+    name: wsl-install-sh-test
+    runs-on: windows-2025
+    # Cold run: full install.sh inside WSL (apt + mise toolchain + lean + jars) + ollama 1.2GB +
+    # ~398MB model pull. Matches docker-ubuntu-install-sh-test's 40-min bound, +5 for WSL setup.
+    timeout-minutes: 45
+
+    steps:
+      # Zeta has >260-char filenames (dense persona/research naming); a fresh runner's git fails
+      # checkout with "Filename too long" without long-path support.
+      - name: Enable git long paths (Windows MAX_PATH)
+        run: git config --global core.longpaths true
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup WSL (Ubuntu-24.04)
+        uses: Vampire/setup-wsl@d1da7f2c0322a5ee4f24975344f67fc0f5baf364 # v7.0.0
+        with:
+          distribution: Ubuntu-24.04
+          wsl-shell-command: bash -lc
+          # Base deps so the clone step works; install.sh's apt manifest installs the rest.
+          additional-packages: git ca-certificates curl
+
+      - name: Run install.sh inside WSL
+        shell: wsl-bash {0}
+        env:
+          # Pass the Windows-host checkout path into WSL, /p = translate to the /mnt form.
+          HOST_WORKSPACE: ${{ github.workspace }}
+          WSLENV: HOST_WORKSPACE/p
+        run: |
+          set -euo pipefail
+          echo "=== WSL install.sh test ==="
+          grep PRETTY_NAME /etc/os-release
+          uname -sr
+          # Native clone into the WSL filesystem (NOT running from the /mnt mount): git restores the
+          # committed +x mode bits so the entrypoint stays executable, and ext4 avoids the 9p perf hit.
+          # This was the reliable path in the local clean-room validation.
+          rm -rf /root/zeta
+          git clone --depth 1 "file://${HOST_WORKSPACE}" /root/zeta
+          cd /root/zeta
+          echo "HEAD=$(git rev-parse --short HEAD)"
+          # Assert the clone preserved +x on the ENTRYPOINT (the whole point of native-clone-not-/mnt),
+          # then invoke it DIRECTLY via its shebang — the real user-invocation path, not `bash …` which
+          # would mask a lost +x bit. install.sh itself execs "$SETUP_DIR/linux.sh" directly, so
+          # linux.sh's +x is validated transitively once install.sh runs it.
+          test -x tools/setup/install.sh || { echo "install.sh not executable after clone (+x not preserved)"; exit 1; }
+          echo "=== running ./tools/setup/install.sh (direct, via shebang) ==="
+          ./tools/setup/install.sh
+          echo "=== install.sh completed (exit 0) ==="
