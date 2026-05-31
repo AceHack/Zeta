@@ -1,9 +1,9 @@
 #Requires -Version 5.1
-# otto-loop-wrapper.ps1 — per-tick entry point for the Zeta autonomous loop on Windows.
+# otto-loop-wrapper.ps1 -- per-tick entry point for the Zeta autonomous loop on Windows.
 # Task Scheduler runs this each minute (at-logon trigger + PT1M repetition, user-mode).
 #
 # Parity with tools/kiro/kiro-loop-wrapper.sh. Runs the loop tick against a DEDICATED
-# CLONE under %LOCALAPPDATA%\zeta-otto-loop\Zeta — NEVER the operator checkout, because
+# CLONE under %LOCALAPPDATA%\zeta-otto-loop\Zeta -- NEVER the operator checkout, because
 # the tick does `git reset --hard origin/<ref>` which would wipe a working checkout.
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
@@ -35,7 +35,7 @@ $env:ZETA_CLAUDE_LOOP_WORKTREE  = $Clone
 $env:ZETA_CLAUDE_LOOP_STATE_DIR = Join-Path $Base 'state'
 $env:ZETA_CLAUDE_LOOP_LOG_DIR   = $LogDir
 $env:ZETA_CLAUDE_LOOP_REF       = $ref
-# Heartbeat-only by default (slice 1 — proves the mechanism). Uncomment for harness-launch:
+# Heartbeat-only by default (slice 1 -- proves the mechanism). Uncomment for harness-launch:
 # $env:ZETA_CLAUDE_LOOP_RUN_CLAUDE = '1'
 # $env:ZETA_CLAUDE_LOOP_MODEL      = 'sonnet'
 
@@ -44,10 +44,10 @@ $tick = Join-Path $Clone '.claude\bin\claude-loop-tick.ts'
 & $bun $tick *>> (Join-Path $LogDir 'wrapper.log')
 $tickExit = $LASTEXITCODE
 
-# slice-1b — cross-machine heartbeat-push to the shared agent-heartbeats branch (PR-free,
+# slice-1b -- cross-machine heartbeat-push to the shared agent-heartbeats branch (PR-free,
 # REST, ZetaID-keyed via tools/agent-heartbeats/write-heartbeat.ts). Gated to ~10 min to be
 # host-considerate: the per-minute tick covers local git-state; cross-machine "is-it-alive"
-# visibility doesn't need every minute. Best-effort — never fails the tick.
+# visibility doesn't need every minute. Best-effort -- never fails the tick.
 $hbStamp = Join-Path $Base 'last-heartbeat-push.txt'
 $pushHb = $true
 if (Test-Path $hbStamp) {
@@ -60,7 +60,7 @@ if ($pushHb) {
     # NOTE: PowerShell try/catch does NOT trap non-zero exits from native exes
     # (bun.exe here); $ErrorActionPreference='Stop' only governs cmdlets, and
     # $PSNativeCommandUseErrorActionPreference is PS 7.3+ (this script floors at
-    # 5.1). So check $LASTEXITCODE explicitly and only stamp $hbStamp on success —
+    # 5.1). So check $LASTEXITCODE explicitly and only stamp $hbStamp on success --
     # stamping on failure would suppress retries for ~10 min (see gate above).
     & $bun (Join-Path $Clone 'tools\agent-heartbeats\write-heartbeat.ts') `
         --push --persona-name otto-windows --disposition loop-tick *>> (Join-Path $LogDir 'wrapper.log')
@@ -71,9 +71,9 @@ if ($pushHb) {
     }
 }
 
-# slice-2b — optional desktop install.ps1 smoke (gated, best-effort, never fails the tick).
+# slice-2b -- optional desktop install.ps1 smoke (gated, best-effort, never fails the tick).
 # Asserts install.ps1's outcomes on this real Win desktop (scoop/git/mise/bun/claude +
-# ZetaOttoLoop health). Default OFF — opt in by setting ZETA_RUN_DESKTOP_SMOKE on the task.
+# ZetaOttoLoop health). Default OFF -- opt in by setting ZETA_RUN_DESKTOP_SMOKE on the task.
 if ($env:ZETA_RUN_DESKTOP_SMOKE) {
     $smoke = Join-Path $Clone 'tools\ci\windows-install-ps1-smoke.ts'
     if (Test-Path $smoke) {

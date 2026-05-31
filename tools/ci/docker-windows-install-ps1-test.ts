@@ -71,7 +71,9 @@ function checkPrereqs(): void {
 
 function runBuild(timeoutSec: number, logPath: string): BuildResult {
   const startMs = Date.now();
-  const buildArgs = ["build", "--file", DOCKERFILE_PATH, "--tag", IMAGE_TAG, "--progress=plain", "."];
+  // NOTE: no --progress=plain — the windows-2022 runner uses the LEGACY docker builder (not
+  // BuildKit/buildx), which rejects --progress. Output still streams to stdout/stderr (captured).
+  const buildArgs = ["build", "--file", DOCKERFILE_PATH, "--tag", IMAGE_TAG, "."];
   console.log(`[Slice 2c] docker build ${buildArgs.join(" ")}`);
   console.log(`[Slice 2c] timeout: ${timeoutSec}s; log: ${logPath}`);
 

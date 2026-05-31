@@ -1,18 +1,58 @@
 # .github/workflows/docker-windows-install-ps1-test.yml
 #
 # Slice 2c — CI for the Server-Core Docker test of tools/setup/install.ps1 (B-0857 Windows
-# parity). Mirrors docker-nixos-install-sh-test.yml but runs on windows-2022: Windows containers
-# need a Windows host, and windows-latest = Server 2025 which REMOVED servercore:ltsc2022 — so
-# pin -2022 (WebSearch 2026-05-30: actions/runner-images).
+# parity). Mirrors docker-nixos-install-sh-test.yml but on a Windows host (Windows containers need
+# one). Base + runner are a MATCHED PAIR: servercore:ltsc2025 on runs-on: windows-2025 (Windows
+# Server 2025, the current LTSC). WebSearch 2026-05-31: actions/runner-images#11742 (windows-2025
+# GA 2025-04-08; windows-latest already migrated to Server 2025) — see the Dockerfile for full pins.
 #
-# FIRST LANDING: workflow_dispatch ONLY, while the Windows-container specifics (scoop's admin
-# behavior, mise install of runtimes, cross-layer PATH) are iterated to green via manual dispatch
-# (gh workflow run). Once green, a follow-up flips the triggers to pull_request + push (the
-# gating config, matching the NixOS workflow's paths-filtered triggers). Keeping it dispatch-only
-# first avoids a red check on every install-substrate PR while the harness is being stabilized.
+# GATED (2026-05-31): harness reached green on windows-2025 (CI run #6, 15 min) + locally (Docker
+# Desktop, Hyper-V isolation) — so triggers flip from dispatch-only to pull_request + push, matching
+# the NixOS sibling's paths-filtered gating (explicit duplicated lists, NO YAML anchors — GitHub
+# Actions is finicky with anchors). Paths mirror the Dockerfile COPY set (tools/setup, the windows
+# smoke + persistence, .mise.toml, package.json) + the harness (orchestrator + Dockerfile dir) +
+# build-context inputs (.dockerignore, bun.lock) + this workflow file. install-substrate PRs that
+# touch none of these skip the heavy (~15-min) Windows-container build entirely. workflow_dispatch
+# stays for manual reruns.
 name: docker-windows-install-ps1-test
 
 on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      # Install dispatcher + per-OS scripts + shared library + the windows package manifest
+      - 'tools/setup/**'
+      # Pinned runtime versions read by mise — the IDENTICAL file Unix uses (symmetric)
+      - '.mise.toml'
+      # bun --frozen-lockfile inputs for the TS wrapper
+      - 'package.json'
+      - 'bun.lock'
+      # Windows background-loop scheduled-task installer (COPYed into the image)
+      - 'tools/persistence/windows/**'
+      # The Docker harness itself (orchestrator + Dockerfile dir + container smoke)
+      - 'tools/ci/docker-windows-install-ps1-test.ts'
+      - 'tools/ci/dockerfiles/windows-install-ps1-test/**'
+      - 'tools/ci/windows-install-ps1-smoke.ts'
+      # .dockerignore affects build context for ALL docker builds
+      - '.dockerignore'
+      # This workflow file itself
+      - '.github/workflows/docker-windows-install-ps1-test.yml'
+
+  push:
+    branches:
+      - main
+    paths:
+      - 'tools/setup/**'
+      - '.mise.toml'
+      - 'package.json'
+      - 'bun.lock'
+      - 'tools/persistence/windows/**'
+      - 'tools/ci/docker-windows-install-ps1-test.ts'
+      - 'tools/ci/dockerfiles/windows-install-ps1-test/**'
+      - 'tools/ci/windows-install-ps1-smoke.ts'
+      - '.dockerignore'
+      - '.github/workflows/docker-windows-install-ps1-test.yml'
+
   workflow_dispatch:
 
 permissions:
@@ -25,12 +65,17 @@ concurrency:
 jobs:
   docker-test:
     name: docker-windows-install-ps1-test
-    runs-on: windows-2022
-    # servercore pull (~1-2 GB cold) + scoop bootstrap + mise install of .mise.toml runtimes
+    runs-on: windows-2025
+    # servercore pull (cold) + scoop bootstrap + mise install of .mise.toml runtimes
     # (dotnet/python/java/bun/uv) is heavy on a cold runner; 45-min ceiling gives headroom.
     timeout-minutes: 45
 
     steps:
+      # Zeta has >260-char filenames (dense persona/research naming); a fresh runner's git fails
+      # checkout with "Filename too long" without long-path support.
+      - name: Enable git long paths (Windows MAX_PATH)
+        run: git config --global core.longpaths true
+
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 

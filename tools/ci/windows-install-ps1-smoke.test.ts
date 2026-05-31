@@ -1,4 +1,6 @@
 import { test, expect } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import {
   taskHasDurationAndNextRun,
   miseProvidesTool,
@@ -34,4 +36,28 @@ test("container mode documents its skip (loop-task) — never silent", () => {
 
 test("shared commands are scoop, git, mise", () => {
   expect([...SHARED_COMMANDS]).toEqual(["scoop", "git", "mise"]);
+});
+
+// Empirical anchor (Server-Core Docker run #3, 2026-05-30): install.ps1 had an em-dash (—) and
+// died with "Missing argument in parameter list" because the container invokes it via Windows
+// PowerShell 5.1 (shipped in-box on Server Core + every Win10/11), which reads a BOM-less .ps1 as
+// the system ANSI codepage — NOT UTF-8. Any non-ASCII char then corrupts and the parser chokes.
+// pwsh 7 (Aaron's laptop) defaults to UTF-8 so it never hit this. The Docker test catches the bug
+// slowly (~15-min build); this assertion catches it fast in the `bun test` lane. Keep the .ps1
+// entrypoints ASCII-clean (decorative em-dashes -> '--') so they run on 5.1 AND 7, BOM or no BOM.
+// Per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md: this asserts the positive.
+test("Windows .ps1 entrypoints are ASCII-only (PS 5.1 reads BOM-less .ps1 as ANSI, not UTF-8)", () => {
+  const repoRoot = join(import.meta.dir, "..", "..");
+  const files = [
+    join(repoRoot, "tools", "setup", "install.ps1"),
+    join(repoRoot, "tools", "persistence", "windows", "otto-loop-wrapper.ps1"),
+  ];
+  for (const f of files) {
+    const text = readFileSync(f, "utf8");
+    const offenders = [...text]
+      .map((ch, i) => ({ ch, i, code: ch.charCodeAt(0) }))
+      .filter((c) => c.code > 0x7f)
+      .map((c) => `${f}@char${c.i}: U+${c.code.toString(16).toUpperCase().padStart(4, "0")} '${c.ch}'`);
+    expect(offenders).toEqual([]);
+  }
 });
