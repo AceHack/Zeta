@@ -387,6 +387,17 @@ describe("mapping table integrity", () => {
     ]);
   });
 
+  test("tick-history has checker and documentation artifact coverage", () => {
+    expect(CAPABILITY_ARTIFACT_MAP["tick-history"]).toEqual([
+      "docs/hygiene-history/loop-tick-history.md",
+      "docs/hygiene-history/ticks/README.md",
+      "tools/hygiene/check-tick-history-order.ts",
+      "tools/hygiene/check-tick-history-order.test.ts",
+      "tools/hygiene/check-tick-history-shard-schema.ts",
+      "tools/hygiene/check-tick-history-shard-schema.test.ts",
+    ]);
+  });
+
   test("EXCLUDED_MODULES is a Set of strings", () => {
     expect(EXCLUDED_MODULES).toBeInstanceOf(Set);
     for (const m of EXCLUDED_MODULES) {
@@ -428,5 +439,18 @@ describe("integration: real repo scan", () => {
     expect(zSetMapping!.artifacts).toContain("tests/Tests.FSharp/Algebra/ZSet.Tests.fs");
     expect(zSetMapping!.missingArtifacts).toEqual([]);
     expect(report.unmappedSpecs).not.toContain("z-set-algebra");
+  });
+
+  test("real tick-history spec is artifact-mapped", () => {
+    const repoRoot = join(import.meta.dir, "..", "..");
+    const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
+    const modules = scanModules(join(repoRoot, "src", "Core"));
+    const report = buildGapReport(specs, modules, { artifactRoot: repoRoot });
+
+    const tickHistoryMapping = report.artifactMappings.find((m) => m.capability === "tick-history");
+    expect(tickHistoryMapping).toBeDefined();
+    expect(tickHistoryMapping!.artifacts).toContain("tools/hygiene/check-tick-history-shard-schema.ts");
+    expect(tickHistoryMapping!.missingArtifacts).toEqual([]);
+    expect(report.unmappedSpecs).not.toContain("tick-history");
   });
 });

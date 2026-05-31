@@ -7,7 +7,7 @@ tier: foundation
 effort: L
 ask: Aaron 2026-05-03 verbatim *"openspec which we are way behind on, that's suppsed to be our source of truth lol, if we were to delete everyting other than it"*
 created: 2026-05-03
-last_updated: 2026-05-03
+last_updated: 2026-05-31
 depends_on: []
 composes_with: [B-0058, B-0169, B-0170, B-0172, B-0173, B-0190]
 tags: [openspec, source-of-truth, foundation, architectural-debt, contract-based-development, spec-based-development, p1-foundation]
@@ -34,11 +34,11 @@ surface is `tools/openspec/inventory.ts`, and the latest focused run reports:
 - `openspec/specs/**`: 9 capability specs.
 - `src/Core/*.fs`: 84 scanned modules, 18 covered modules, 64 uncovered
   modules after exclusions.
-- Artifact coverage: 4 mapped Z-set algebra test artifacts and 0 missing
-  mapped artifacts.
+- Artifact coverage: 10 mapped Z-set algebra and tick-history artifacts and 0
+  missing mapped artifacts.
 - Inventory gate: PASS under the current default gate.
-- Remaining inventory flags: `agentic-organization` and `tick-history` have
-  specs but no module or artifact mapping yet.
+- Remaining inventory flag: `agentic-organization` has a spec but no module or
+  artifact mapping yet.
 
 This means the next B-0171 slice is no longer "prove OpenSpec is empty." The
 work is now reconciliation: map artifact-backed capabilities, decide which
