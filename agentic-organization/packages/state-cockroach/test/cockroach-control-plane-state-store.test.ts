@@ -4,6 +4,7 @@ import { describe, test } from "node:test";
 import {
   ControlPlaneAlertKind,
   ControlPlaneFlagKind,
+  ControlPlaneRateLimitKind,
   ControlPlaneScopeKind,
   createCockroachControlPlaneStateStore,
   type CockroachAnySqlStatement,
@@ -209,6 +210,104 @@ describe("cockroach control-plane state store (the org's durable proof of life)"
       (error: unknown) =>
         equal(error instanceof Error ? error.message : String(error), "unknown control-plane flag scope_kind 'bad_scope'"),
     );
+  });
+
+  test("upserts a control-plane rate limit with windowed scope and usage counts", async () => {
+    const executor = createRecordingSqlExecutor([]);
+    const store = createCockroachControlPlaneStateStore({ executor });
+
+    await store.upsertRateLimit({
+      rateLimitId: "rate-limit-1",
+      organizationId: "org-1",
+      scope: { kind: ControlPlaneScopeKind.Tenant, tenantId: "tenant-1" },
+      kind: ControlPlaneRateLimitKind.ExternalProviderCalls,
+      window: {
+        startedAt: "2026-05-31T20:00:00.000Z",
+        endsAt: "2026-05-31T21:00:00.000Z",
+      },
+      limit: 100,
+      used: 42,
+      requested: 3,
+    });
+
+    const statement = executor.statements[0];
+    equal(statement?.sql.includes("INSERT INTO agentic_org_control_plane_rate_limits"), true);
+    equal(statement?.sql.includes("ON CONFLICT (organization_id, control_plane_rate_limit_id) DO UPDATE"), true);
+    deepEqual(statement?.parameters, [
+      "rate-limit-1",
+      "org-1",
+      ControlPlaneScopeKind.Tenant,
+      "tenant-1",
+      ControlPlaneRateLimitKind.ExternalProviderCalls,
+      "2026-05-31T20:00:00.000Z",
+      "2026-05-31T21:00:00.000Z",
+      100,
+      42,
+      3,
+    ]);
+  });
+
+  test("lists active control-plane rate limits and rehydrates typed windows", async () => {
+    const executor = createRecordingSqlExecutor([
+      {
+        control_plane_rate_limit_id: "rate-limit-tools",
+        organization_id: "org-1",
+        scope_kind: ControlPlaneScopeKind.Organization,
+        scope_id: null,
+        kind: ControlPlaneRateLimitKind.Tools,
+        window_started_at: new Date("2026-05-31T20:00:00.000Z"),
+        window_ends_at: new Date("2026-05-31T21:00:00.000Z"),
+        limit_count: 100,
+        used_count: 10,
+        requested_count: null,
+      },
+      {
+        control_plane_rate_limit_id: "rate-limit-model",
+        organization_id: "org-1",
+        scope_kind: ControlPlaneScopeKind.Tenant,
+        scope_id: "tenant-1",
+        kind: ControlPlaneRateLimitKind.ModelCalls,
+        window_started_at: "2026-05-31T20:15:00.000Z",
+        window_ends_at: "2026-05-31T20:45:00.000Z",
+        limit_count: "20",
+        used_count: "19",
+        requested_count: "2",
+      },
+    ]);
+    const store = createCockroachControlPlaneStateStore({ executor });
+
+    const limits = await store.listActiveRateLimits("org-1", "2026-05-31T20:30:00.000Z");
+
+    equal(executor.statements[0]?.sql.includes("window_started_at <= $2"), true);
+    equal(executor.statements[0]?.sql.includes("window_ends_at > $2"), true);
+    deepEqual(executor.statements[0]?.parameters, ["org-1", "2026-05-31T20:30:00.000Z"]);
+    deepEqual(limits, [
+      {
+        rateLimitId: "rate-limit-tools",
+        organizationId: "org-1",
+        scope: { kind: ControlPlaneScopeKind.Organization },
+        kind: ControlPlaneRateLimitKind.Tools,
+        window: {
+          startedAt: "2026-05-31T20:00:00.000Z",
+          endsAt: "2026-05-31T21:00:00.000Z",
+        },
+        limit: 100,
+        used: 10,
+      },
+      {
+        rateLimitId: "rate-limit-model",
+        organizationId: "org-1",
+        scope: { kind: ControlPlaneScopeKind.Tenant, tenantId: "tenant-1" },
+        kind: ControlPlaneRateLimitKind.ModelCalls,
+        window: {
+          startedAt: "2026-05-31T20:15:00.000Z",
+          endsAt: "2026-05-31T20:45:00.000Z",
+        },
+        limit: 20,
+        used: 19,
+        requested: 2,
+      },
+    ]);
   });
 });
 

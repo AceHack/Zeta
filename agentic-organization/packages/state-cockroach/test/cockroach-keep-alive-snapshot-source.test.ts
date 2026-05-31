@@ -73,5 +73,7 @@ function createStubStore(
     readAgentHeartbeats: async () => agents,
     upsertFlag: async () => {},
     listActiveFlags: async () => [],
+    upsertRateLimit: async () => {},
+    listActiveRateLimits: async () => [],
   };
 }

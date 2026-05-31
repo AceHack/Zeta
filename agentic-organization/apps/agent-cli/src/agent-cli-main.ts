@@ -67,6 +67,10 @@ export type AgentCliMainRuntime = Pick<ActDependencies, "runCommand" | "dispatch
   Partial<Pick<ActDependencies, "authorizeSlot" | "loadPromptFlowContext">> & {
     appendObserveActTick?: ((event: OrgEvent) => Promise<void>) | undefined;
     loadControlPlaneFlags?: ((organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>) | undefined;
+    loadControlPlaneRateLimits?: ((
+      organizationId: string,
+      evaluatedAt: string,
+    ) => Promise<readonly ControlPlaneRateLimit[]>) | undefined;
     rateLimits?: readonly ControlPlaneRateLimit[] | undefined;
     availableSecretScopes?: readonly string[] | undefined;
     shutdown: () => Promise<void>;
@@ -164,6 +168,8 @@ function createAgentCliProductionRuntime(input: {
     dispatchTool: createAgentCliMcpDispatcher(),
     loadControlPlaneFlags: async (organizationId, evaluatedAt) =>
       await controlPlaneState.listActiveFlags(organizationId, evaluatedAt) as readonly ControlPlaneFlag[],
+    loadControlPlaneRateLimits: async (organizationId, evaluatedAt) =>
+      await controlPlaneState.listActiveRateLimits(organizationId, evaluatedAt) as readonly ControlPlaneRateLimit[],
     ...createOptionalAvailableSecretScopes(input.availableSecretScopes),
     appendObserveActTick: async (event) => {
       await createCockroachOrgEventStore({ executor: input.executor }).append(event);
@@ -225,12 +231,21 @@ function createAgentCliControlPlaneSlotAuthorizer(
       boundary: boundaryForSlot(slot),
       evaluatedAt,
       flags: await (runtime.loadControlPlaneFlags?.(args.organizationId, evaluatedAt) ?? []),
-      rateLimits: runtime.rateLimits,
+      rateLimits: await loadControlPlaneRateLimits(runtime, args.organizationId, evaluatedAt),
       availableSecretScopes: runtime.availableSecretScopes,
       usageForSlot: usageForSlot,
     });
     return await authorizer(slot);
   };
+}
+
+async function loadControlPlaneRateLimits(
+  runtime: AgentCliMainRuntime,
+  organizationId: string,
+  evaluatedAt: string,
+): Promise<readonly ControlPlaneRateLimit[]> {
+  const loaded = await (runtime.loadControlPlaneRateLimits?.(organizationId, evaluatedAt) ?? []);
+  return [...loaded, ...(runtime.rateLimits ?? [])];
 }
 
 function boundaryForSlot(slot: Menu16Slot): ControlPlaneBoundary {

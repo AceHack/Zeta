@@ -30,6 +30,8 @@ export const CockroachControlPlaneStateStoreStatement = {
   ReadAgentHeartbeats: "read_agent_heartbeats",
   UpsertControlPlaneFlag: "upsert_control_plane_flag",
   ListActiveControlPlaneFlags: "list_active_control_plane_flags",
+  UpsertControlPlaneRateLimit: "upsert_control_plane_rate_limit",
+  ListActiveControlPlaneRateLimits: "list_active_control_plane_rate_limits",
 } as const;
 export type CockroachControlPlaneStateStoreStatement =
   (typeof CockroachControlPlaneStateStoreStatement)[keyof typeof CockroachControlPlaneStateStoreStatement];
@@ -53,6 +55,17 @@ export const ControlPlaneFlagKind = {
 
 export type ControlPlaneFlagKind = (typeof ControlPlaneFlagKind)[keyof typeof ControlPlaneFlagKind];
 
+export const ControlPlaneRateLimitKind = {
+  Tokens: "tokens",
+  Tools: "tools",
+  ModelCalls: "model_calls",
+  ExternalProviderCalls: "external_provider_calls",
+  ReleaseActions: "release_actions",
+} as const;
+
+export type ControlPlaneRateLimitKind =
+  (typeof ControlPlaneRateLimitKind)[keyof typeof ControlPlaneRateLimitKind];
+
 export type ControlPlaneScope =
   | { kind: typeof ControlPlaneScopeKind.Organization }
   | { kind: typeof ControlPlaneScopeKind.Tenant; tenantId: string }
@@ -68,6 +81,17 @@ export type ControlPlaneFlagRecord = {
   setByHatId: string;
   setAt: string;
   expiresAt?: string | undefined;
+};
+
+export type ControlPlaneRateLimitRecord = {
+  rateLimitId: string;
+  organizationId: string;
+  scope: ControlPlaneScope;
+  kind: ControlPlaneRateLimitKind;
+  window: { startedAt: string; endsAt: string };
+  limit: number;
+  used: number;
+  requested?: number | undefined;
 };
 
 export type AppendControlPlaneAlertInput = {
@@ -113,6 +137,13 @@ export type CockroachControlPlaneStateStore = {
   upsertFlag: (flag: ControlPlaneFlagRecord) => Promise<void>;
   /** Read non-expired flags for an org at an explicit evaluation time. */
   listActiveFlags: (organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlagRecord[]>;
+  /** UPSERT one windowed rate limit. */
+  upsertRateLimit: (rateLimit: ControlPlaneRateLimitRecord) => Promise<void>;
+  /** Read active rate limits for an org at an explicit evaluation time. */
+  listActiveRateLimits: (
+    organizationId: string,
+    evaluatedAt: string,
+  ) => Promise<readonly ControlPlaneRateLimitRecord[]>;
 };
 
 export type CreateCockroachControlPlaneStateStoreInput = {
@@ -141,6 +172,19 @@ type ControlPlaneFlagRow = {
   set_by_hat_id: string;
   set_at: string | Date;
   expires_at: string | Date | null;
+};
+
+type ControlPlaneRateLimitRow = {
+  control_plane_rate_limit_id: string;
+  organization_id: string;
+  scope_kind: string;
+  scope_id: string | null;
+  kind: string;
+  window_started_at: string | Date;
+  window_ends_at: string | Date;
+  limit_count: number | string;
+  used_count: number | string;
+  requested_count: number | string | null;
 };
 
 export function createCockroachControlPlaneStateStore(
@@ -311,6 +355,76 @@ export function createCockroachControlPlaneStateStore(
 
       return result.rows.map(rowToControlPlaneFlagRecord);
     },
+    upsertRateLimit: async (rateLimit: ControlPlaneRateLimitRecord): Promise<void> => {
+      const scope = flattenScope(rateLimit.scope);
+      await input.executor.execute({
+        name: CockroachControlPlaneStateStoreStatement.UpsertControlPlaneRateLimit,
+        sql: `
+          INSERT INTO agentic_org_control_plane_rate_limits (
+            control_plane_rate_limit_id,
+            organization_id,
+            scope_kind,
+            scope_id,
+            kind,
+            window_started_at,
+            window_ends_at,
+            limit_count,
+            used_count,
+            requested_count
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+          ON CONFLICT (organization_id, control_plane_rate_limit_id) DO UPDATE
+          SET scope_kind = excluded.scope_kind,
+              scope_id = excluded.scope_id,
+              kind = excluded.kind,
+              window_started_at = excluded.window_started_at,
+              window_ends_at = excluded.window_ends_at,
+              limit_count = excluded.limit_count,
+              used_count = excluded.used_count,
+              requested_count = excluded.requested_count
+        `,
+        parameters: [
+          rateLimit.rateLimitId,
+          rateLimit.organizationId,
+          scope.kind,
+          scope.id,
+          rateLimit.kind,
+          rateLimit.window.startedAt,
+          rateLimit.window.endsAt,
+          rateLimit.limit,
+          rateLimit.used,
+          rateLimit.requested ?? null,
+        ],
+      });
+    },
+    listActiveRateLimits: async (
+      organizationId: string,
+      evaluatedAt: string,
+    ): Promise<readonly ControlPlaneRateLimitRecord[]> => {
+      const result = await input.executor.execute<ControlPlaneRateLimitRow>({
+        name: CockroachControlPlaneStateStoreStatement.ListActiveControlPlaneRateLimits,
+        sql: `
+          SELECT
+            control_plane_rate_limit_id,
+            organization_id,
+            scope_kind,
+            scope_id,
+            kind,
+            window_started_at,
+            window_ends_at,
+            limit_count,
+            used_count,
+            requested_count
+          FROM agentic_org_control_plane_rate_limits
+          WHERE organization_id = $1
+            AND window_started_at <= $2
+            AND window_ends_at > $2
+          ORDER BY window_started_at, control_plane_rate_limit_id
+        `,
+        parameters: [organizationId, evaluatedAt],
+      });
+
+      return result.rows.map(rowToControlPlaneRateLimitRecord);
+    },
   };
 }
 
@@ -354,12 +468,43 @@ function parseControlPlaneFlagKind(value: string): ControlPlaneFlagKind {
   throw new Error(`unknown control-plane flag '${value}'`);
 }
 
+function rowToControlPlaneRateLimitRecord(row: ControlPlaneRateLimitRow): ControlPlaneRateLimitRecord {
+  return {
+    rateLimitId: row.control_plane_rate_limit_id,
+    organizationId: row.organization_id,
+    scope: inflateScope(row.scope_kind, row.scope_id),
+    kind: parseControlPlaneRateLimitKind(row.kind),
+    window: {
+      startedAt: toIso(row.window_started_at),
+      endsAt: toIso(row.window_ends_at),
+    },
+    limit: Number(row.limit_count),
+    used: Number(row.used_count),
+    ...optionalRequested(row.requested_count),
+  };
+}
+
+function parseControlPlaneRateLimitKind(value: string): ControlPlaneRateLimitKind {
+  if (isControlPlaneRateLimitKind(value)) {
+    return value;
+  }
+  throw new Error(`unknown control-plane rate limit kind '${value}'`);
+}
+
 function isControlPlaneScopeKind(value: string): value is ControlPlaneScopeKind {
   return Object.values(ControlPlaneScopeKind).includes(value as ControlPlaneScopeKind);
 }
 
 function isControlPlaneFlagKind(value: string): value is ControlPlaneFlagKind {
   return Object.values(ControlPlaneFlagKind).includes(value as ControlPlaneFlagKind);
+}
+
+function isControlPlaneRateLimitKind(value: string): value is ControlPlaneRateLimitKind {
+  return Object.values(ControlPlaneRateLimitKind).includes(value as ControlPlaneRateLimitKind);
+}
+
+function optionalRequested(value: number | string | null): { requested?: number } {
+  return value === null ? {} : { requested: Number(value) };
 }
 
 function optionalExpiresAt(value: string | Date | null): { expiresAt?: string } {

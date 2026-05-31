@@ -134,6 +134,8 @@ function createRecordingStore(): {
       readAgentHeartbeats: async () => [],
       upsertFlag: async () => {},
       listActiveFlags: async () => [],
+      upsertRateLimit: async () => {},
+      listActiveRateLimits: async () => [],
     },
   };
 }

@@ -1970,21 +1970,32 @@ freezes and secret/rate-limit controls cannot be bypassed by the foreground loop
   provider calls, and release actions. Exhausted limits produce `rate_limit_exceeded` and expose the
   matched rate-limit ids in the control-plane audit.
 - `runAgentCliMain` now wires production observe-act control-plane authorization by loading active
-  Cockroach flags at act time and passing available secret scopes into observe.
+  Cockroach flags and active Cockroach rate limits at act time and passing available secret scopes
+  into observe.
+- Cockroach migration `0024_agentic_org_control_plane_rate_limits` stores durable windowed rate
+  limits with typed scope/kind constraints, scope-shape constraints, positive limit/non-negative
+  usage constraints, window-order constraints, and a read path for active limits.
 - KIND proof runner: `deploy/run-control-plane-secret-scopes.ts`.
+- Restore-drill checksum source: `createCockroachRestoreDrillSnapshotSource` captures the
+  tenant-scoped `org_events`, `control_plane_flags`, and `control_plane_rate_limits` projections
+  for `verifyRestoreDrill`.
+- KIND proof runner: `deploy/run-restore-drill.ts`.
 
 ### KIND proof
 
-Worker image rebuilt as `agentic-org-worker:keepalive`
-(`sha256:59ff53b16321cf80c047cd97be239b50045d23b82ba2c6d9a591efb4d4b484f7`), loaded into KIND
-cluster `agentic-org`, and deployed to pod `worker-5c9c9c668f-p9k2j`. Fresh boot logs showed the
+Worker image rebuilt as `agentic-org-worker:keepalive`, retagged as the deployment image
+`agentic-org-worker:phase2-telemetry-v3`
+(`sha256:35827fb0141cc0137a696387dd1aa032bb73568c2b2874591f5c88e5dd1ce0d7`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-5f647f64b5-t2shx`. Fresh boot logs showed the
 expected cadence lanes with zero `worker run failed` or structured error matches.
 
 `deploy/run-control-plane-secret-scopes.ts` ran against in-cluster Cockroach for
-`org-control-plane-secrets-a8650bdd` and proved:
+`org-control-plane-secrets-11731bb7` and proved:
 
 - A durable provider-freeze flag was upserted and read back through the Cockroach control-plane
-  state store as `flag-provider-freeze-a8650bdd`.
+  state store as `flag-provider-freeze-11731bb7`.
+- A durable external-provider call rate limit was upserted and read back through the Cockroach
+  control-plane state store as `rate-limit-provider-11731bb7`.
 - MCP dispatch with `providerId = github` was rejected with `provider_freeze`;
   `providerDispatched` remained false.
 - MCP dispatch with required `github:write` but no available secret scope was rejected with
@@ -1998,6 +2009,18 @@ expected cadence lanes with zero `worker run failed` or structured error matches
 
 `PROOF: PASS`.
 
+`deploy/run-restore-drill.ts` ran against in-cluster Cockroach for
+`org-restore-drill-95da3bd6` and proved:
+
+- The proof seeded one durable `ObserveActTick` org event, one provider-freeze flag, and one
+  tenant-scoped external-provider-call rate limit.
+- The Cockroach restore snapshot source captured three tenant-scoped projections:
+  `org_events`, `control_plane_flags`, and `control_plane_rate_limits`.
+- `verifyRestoreDrill` compared before/after checksums over those projections and produced the same
+  SHA-256 checksum, with `projectionCount = 3` and `rowCount = 3`.
+
+`PROOF: PASS`.
+
 ### Verification
 
-`npm run typecheck` passed. `npm test` passed: **1194 tests, 1187 pass, 0 fail, 7 skipped**.
+`npm run typecheck` passed. `npm test` passed: **1199 tests, 1192 pass, 0 fail, 7 skipped**.

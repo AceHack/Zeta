@@ -4,12 +4,14 @@ import { test } from "node:test";
 import {
   ActRejectionReason,
   ControlPlaneFlagKind,
+  ControlPlaneRateLimitKind,
   ControlPlaneScopeKind,
   ObserveCommandType,
   RunLifecyclePhase,
   RunScope,
   TriAvailability,
   type ControlPlaneFlag,
+  type ControlPlaneRateLimit,
   type Menu16Slot,
 } from "../../../packages/application/src/index.ts";
 import { OrgEventKind, type OrgEvent } from "../../../packages/domain/src/index.ts";
@@ -80,6 +82,7 @@ test("runAgentCliMain routes selected command slots through supplied production 
       appendObserveActTick: async (event) => {
         events.push(event);
       },
+      availableSecretScopes: ["github:write"],
       shutdown: async () => undefined,
     } as AgentCliMainRuntime & { appendObserveActTick: (event: OrgEvent) => Promise<void> },
   });
@@ -332,6 +335,103 @@ test("runAgentCliMain wires production control-plane authorization for active fl
   equal(commandDispatched, false);
   equal(events.length, 1);
   ok(events[0]?.evidenceRefs.includes("observe-act:control_bypass_rejected:control_plane_denied:4"));
+});
+
+test("runAgentCliMain loads active production rate limits before selected prompt-flow tool dispatch", async () => {
+  const events: OrgEvent[] = [];
+  let loadedContext = false;
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--run-id",
+      "8",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-rate-limit-prod",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-command-rate-limit",
+      "--gate-approved",
+      "--select-index",
+      "6",
+    ],
+    env: {
+      AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON: JSON.stringify([{
+        taskId: "task-rate-limit-context",
+        workItemId: "work-command-rate-limit",
+        title: "Load release context",
+        promptFlowId: "flow-release-rate-limit",
+        label: "load release context",
+        scope: RunScope.WorkItem,
+        priority: 100,
+        allowedHatIds: ["release_operator"],
+        directions: ["Load scoped release context."],
+        toolInjections: [{ tool: "github.publish_release", requiredSecretScopes: ["github:write"] }],
+        metrics: [],
+        contextArtifactRefs: [],
+      }]),
+    },
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: () => undefined,
+    writeStderr: () => undefined,
+    runtime: {
+      runCommand: async () => ({ status: "unused" }),
+      dispatchTool: async () => ({ status: "unused" }),
+      loadPromptFlowContext: async () => {
+        loadedContext = true;
+        return {
+          taskId: "task-rate-limit-context",
+          promptFlowId: "flow-release-rate-limit",
+          directions: [],
+          toolInjections: [],
+          metrics: [],
+          contextArtifacts: [],
+        };
+      },
+      loadControlPlaneFlags: async () => [],
+      loadControlPlaneRateLimits: async () => [{
+        rateLimitId: "rate-limit-tools",
+        organizationId: "org-rate-limit-prod",
+        scope: { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-rate-limit-prod" },
+        kind: ControlPlaneRateLimitKind.ExternalProviderCalls,
+        window: {
+          startedAt: "2026-05-30T23:59:00.000Z",
+          endsAt: "2026-05-31T00:01:00.000Z",
+        },
+        limit: 1,
+        used: 1,
+      }],
+      availableSecretScopes: ["github:write"],
+      appendObserveActTick: async (event) => {
+        events.push(event);
+      },
+      shutdown: async () => undefined,
+    } as AgentCliMainRuntime & {
+      appendObserveActTick: (event: OrgEvent) => Promise<void>;
+      loadControlPlaneFlags: (organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>;
+      loadControlPlaneRateLimits: (
+        organizationId: string,
+        evaluatedAt: string,
+      ) => Promise<readonly ControlPlaneRateLimit[]>;
+      availableSecretScopes: readonly string[];
+    },
+  });
+
+  equal(exitCode, 1);
+  equal(loadedContext, false);
+  equal(events.length, 1);
+  ok(events[0]?.evidenceRefs.includes("observe-act:control_bypass_rejected:control_plane_denied:6"));
 });
 
 test("runAgentCliMain loads prompt-flow context and persists observe-act tick evidence", async () => {

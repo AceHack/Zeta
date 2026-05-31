@@ -4,7 +4,7 @@
  * invariant (no dedicated top-level free-mode slots) + leadSlot.
  */
 import { describe, expect, it } from "bun:test";
-import type { BacklogItem, OperatorChannel, World } from "./observe";
+import type { BacklogItem, NextAction, OperatorChannel, World } from "./observe";
 import { GRAMMAR_16_V0, SLOT } from "./grammar-16";
 import { renderGrammar16, leadSlot, type RenderedMenuSlot } from "./grammar-16-render";
 
@@ -29,7 +29,7 @@ const OPERATOR_SPOKE: World = { backlog: [], operator: op({ pendingMessage: true
 const FREE_PERSISTED: World = { backlog: [item({ ready: true })], mode: "play" };
 
 const slotOf = (slots: readonly RenderedMenuSlot[], i: number) => slots.find((s) => s.index === i)!;
-const FREE_KINDS = new Set(["explore", "play", "self_reflect", "free_time"]);
+const FREE_KINDS = new Set<NextAction["kind"]>(["explore", "play", "self_reflect", "free_time"]);
 
 describe("renderGrammar16 — shape", () => {
   it("returns exactly the 16 fixed slots in order", () => {
@@ -60,7 +60,7 @@ describe("renderGrammar16 — slot 14 free-mode sub-menu (Option A)", () => {
   });
 
   it("sub-menu order is CANONICAL + STABLE — a persisted mode does not reshuffle it (Copilot #6277)", () => {
-    const CANON = ["explore", "play", "self_reflect", "free_time"];
+    const CANON: NextAction["kind"][] = ["explore", "play", "self_reflect", "free_time"];
     // default + with `play` persisted (which leads buildMenu) must both be canonical order
     for (const w of [EMPTY, READY, FREE_PERSISTED /* mode: "play" */]) {
       const s14 = slotOf(renderGrammar16(w), SLOT.FREE_TIME);

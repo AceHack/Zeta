@@ -2,6 +2,7 @@ export { splitSqlStatements } from "./sql-statement-splitter.ts";
 export {
   ControlPlaneAlertKind,
   ControlPlaneFlagKind,
+  ControlPlaneRateLimitKind,
   ControlPlaneScopeKind,
   CockroachControlPlaneStateStoreStatement,
   createCockroachControlPlaneStateStore,
@@ -9,6 +10,7 @@ export {
   type AppendControlPlaneAlertInput,
   type CockroachControlPlaneStateStore,
   type ControlPlaneFlagRecord,
+  type ControlPlaneRateLimitRecord,
   type ControlPlaneScope,
   type CreateCockroachControlPlaneStateStoreInput,
   type RecordAgentHeartbeatInput,
@@ -18,6 +20,12 @@ export {
   type CreateCockroachKeepAliveSnapshotSourceInput,
   type KeepAliveClock,
 } from "./cockroach-keep-alive-snapshot-source.ts";
+export {
+  CockroachRestoreDrillSnapshotStatement,
+  createCockroachRestoreDrillSnapshotSource,
+  type CockroachRestoreDrillSnapshotSource,
+  type CreateCockroachRestoreDrillSnapshotSourceInput,
+} from "./cockroach-restore-drill-snapshot-source.ts";
 export {
   createCockroachKeepAliveActionSink,
   type CreateCockroachKeepAliveActionSinkInput,
@@ -159,6 +167,7 @@ export {
   createCockroachWorkAnchorKernelMigration,
   createCockroachWorkItemStateHistoryMetadataMigration,
   createCockroachControlPlaneFlagsMigration,
+  createCockroachControlPlaneRateLimitsMigration,
   type CockroachSchemaMigration,
 } from "./cockroach-schema.ts";
 export {

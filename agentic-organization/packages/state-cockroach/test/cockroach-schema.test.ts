@@ -51,6 +51,7 @@ import {
   createCockroachReactionPlanTraceparentMigration,
   createCockroachOrgEventTransitionContextMigration,
   createCockroachControlPlaneFlagsMigration,
+  createCockroachControlPlaneRateLimitsMigration,
 } from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
@@ -115,6 +116,7 @@ describe("cockroach core state schema", () => {
     equal(migrations[20]?.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
     equal(migrations[21]?.name, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
     equal(migrations[22]?.name, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
+    equal(migrations[23]?.name, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24);
   });
 
   test("declares the hermes run table (durable agent-run history)", () => {
@@ -374,7 +376,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the memory system migration as V16 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 8]!.name, CockroachCoreStateMigrationName.MemorySystemV16);
+    equal(all[all.length - 9]!.name, CockroachCoreStateMigrationName.MemorySystemV16);
   });
 
   test("declares the change control kernel (change_sets + review_stage_status) with phase check", () => {
@@ -394,7 +396,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the change control migration as V17 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 7]!.name, CockroachCoreStateMigrationName.ChangeControlV17);
+    equal(all[all.length - 8]!.name, CockroachCoreStateMigrationName.ChangeControlV17);
   });
 
   test("declares the document intelligence kernel (doc units/sources/entities/graph/consult) with lifecycle + type checks", () => {
@@ -421,7 +423,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the document intelligence migration as V18 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 6]!.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
+    equal(all[all.length - 7]!.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
   });
 
   test("declares the knowledge graph kernel (graph_nodes + graph_edges) with confidence + kind checks", () => {
@@ -444,7 +446,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the knowledge graph migration as V19 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 5]!.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
+    equal(all[all.length - 6]!.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
   });
 
   test("declares the tenant config table (the org as a configurable runtime)", () => {
@@ -459,17 +461,17 @@ describe("cockroach core state schema", () => {
 
   test("registers the tenant config migration as V20 before traceparent in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 4]!.name, CockroachCoreStateMigrationName.TenantConfigV20);
+    equal(all[all.length - 5]!.name, CockroachCoreStateMigrationName.TenantConfigV20);
   });
 
   test("registers the reaction plan traceparent migration as V21 before org-event transition context", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 3]!.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
+    equal(all[all.length - 4]!.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
   });
 
   test("registers the org-event transition-context migration as V22 before control-plane flags", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 2]!.name, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
+    equal(all[all.length - 3]!.name, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
   });
 
   test("declares an additive org-event transition-context migration for existing databases", () => {
@@ -480,9 +482,10 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS transition_context JSONB"));
   });
 
-  test("registers control-plane flags as V23 last in the ordered migration set", () => {
+  test("registers control-plane rate limits as V24 after control-plane flags", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 1]!.name, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
+    equal(all[all.length - 2]!.name, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
+    equal(all[all.length - 1]!.name, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24);
   });
 
   test("declares the control-plane flags table for ESTOP, freezes, budgets, providers, and simulator mode", () => {
@@ -501,6 +504,29 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("agentic_org_control_plane_flags_flag_check"));
     ok(migration.sql.includes("control_plane_flags_by_org_flag"));
     ok(migration.sql.includes("control_plane_flags_by_org_scope"));
+  });
+
+  test("declares the control-plane rate limits table for tenant-scoped production throttles", () => {
+    const migration = createCockroachControlPlaneRateLimitsMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneRateLimits}`));
+    ok(migration.sql.includes("control_plane_rate_limit_id STRING NOT NULL"));
+    ok(migration.sql.includes("PRIMARY KEY (organization_id, control_plane_rate_limit_id)"));
+    ok(migration.sql.includes("scope_kind STRING NOT NULL"));
+    ok(migration.sql.includes("scope_id STRING NULL"));
+    ok(migration.sql.includes("kind STRING NOT NULL"));
+    ok(migration.sql.includes("window_started_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("window_ends_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("limit_count INT8 NOT NULL"));
+    ok(migration.sql.includes("used_count INT8 NOT NULL"));
+    ok(migration.sql.includes("agentic_org_control_plane_rate_limits_scope_kind_check"));
+    ok(migration.sql.includes("agentic_org_control_plane_rate_limits_kind_check"));
+    ok(migration.sql.includes("agentic_org_control_plane_rate_limits_scope_shape_check"));
+    ok(migration.sql.includes("agentic_org_control_plane_rate_limits_window_order_check"));
+    ok(migration.sql.includes("agentic_org_control_plane_rate_limits_counts_check"));
+    ok(migration.sql.includes("control_plane_rate_limits_by_org_window"));
+    ok(migration.sql.includes("control_plane_rate_limits_by_org_scope"));
   });
 
   test("keeps generated migrations synchronized with checked-in SQL files", async () => {

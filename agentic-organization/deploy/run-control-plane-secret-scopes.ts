@@ -66,6 +66,19 @@ async function main(): Promise<void> {
       setAt: nowIso,
     });
     const activeFlags = await controlPlane.listActiveFlags(organizationId, nowIso);
+    await controlPlane.upsertRateLimit({
+      rateLimitId: `rate-limit-provider-${proofRunId}`,
+      organizationId,
+      scope: { kind: ControlPlaneScopeKind.Tenant, tenantId: organizationId },
+      kind: ControlPlaneRateLimitKind.ExternalProviderCalls,
+      window: {
+        startedAt: new Date(Date.parse(nowIso) - 60_000).toISOString(),
+        endsAt: new Date(Date.parse(nowIso) + 60_000).toISOString(),
+      },
+      limit: 1,
+      used: 1,
+    });
+    const activeRateLimits = await controlPlane.listActiveRateLimits(organizationId, nowIso);
 
     let providerDispatched = false;
     const providerFreezeDenied = await act(0, mcpMenu(), {
@@ -111,15 +124,7 @@ async function main(): Promise<void> {
         boundary: "mcp_dispatch",
         evaluatedAt: nowIso,
         flags: [],
-        rateLimits: [{
-          rateLimitId: `rate-limit-provider-${proofRunId}`,
-          organizationId,
-          scope: { kind: ControlPlaneScopeKind.Tenant, tenantId: organizationId },
-          kind: ControlPlaneRateLimitKind.ExternalProviderCalls,
-          window: { startedAt: new Date(Date.parse(nowIso) - 60_000).toISOString(), endsAt: new Date(Date.parse(nowIso) + 60_000).toISOString() },
-          limit: 1,
-          used: 1,
-        }],
+        rateLimits: activeRateLimits,
         availableSecretScopes: ["github:write"],
         usageForSlot: () => ({ externalProviderCallCost: 1 }),
       }),
@@ -207,6 +212,7 @@ async function main(): Promise<void> {
 
     const ok =
       activeFlags.length === 1 &&
+      activeRateLimits.length === 1 &&
       providerFreezeDenied.outcome === "rejected" &&
       providerFreezeDenied.message.includes("provider_freeze") &&
       !providerDispatched &&
@@ -230,6 +236,7 @@ async function main(): Promise<void> {
       track: "Phase 2.8 control-plane secret scopes and rate limits",
       organizationId,
       activeFlagIds: activeFlags.map((flag) => flag.controlPlaneFlagId),
+      activeRateLimitIds: activeRateLimits.map((limit) => limit.rateLimitId),
       providerFreezeDenied,
       providerDispatched,
       secretDenied,
