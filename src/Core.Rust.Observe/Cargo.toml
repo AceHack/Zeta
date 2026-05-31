@@ -1,0 +1,22 @@
+[package]
+name = "zeta-core-observe"
+version = "0.1.0"
+edition = "2024"
+description = "observe/simulate/fold event algebra (B-0867.27) -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language compiler-BFT consensus (B-0944). Ships a zero-dep JSON parser behind a JsonParser trait, with an optional serde_json-backed impl for differential testing + drop-in replacement."
+license = "Apache-2.0"
+publish = false
+
+# Production default = ZERO external dependencies (supply-chain doctrine). serde_json
+# is OPTIONAL: enable `--features serde` to (a) use the serde-backed JsonParser in
+# production as a drop-in replacement for systems already on serde, and (b) run the
+# differential test (our parser vs serde) so we are not flying blind on our own
+# parser. The zero-dep core builds + tests with no network.
+[dependencies]
+serde_json = { version = "1", optional = true }
+
+[features]
+serde = ["dep:serde_json"]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
