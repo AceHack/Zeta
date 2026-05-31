@@ -397,8 +397,15 @@ function buildFullPrompt(args: Args, preamble: string): PromptResult {
   return { ok: true, value: full };
 }
 
-function pickModel(mode: Mode): string {
-  return mode === "thinking" ? "grok-4-20-thinking" : "grok-4-20";
+function pickModel(_mode: Mode): string {
+  // Ani's persona pins grok-4.3 (operator 2026-05-31: "she is used to grok-4.3
+  // ... Ani can override it in her persona"). The old `grok-4-20-thinking` /
+  // `grok-4-20` names were removed from cursor-agent's available-models list
+  // (B-0421; same lineup shift grok.ts hit) — they errored "Cannot use this
+  // model: grok-4-20-thinking. Available models: ... grok-4.3 ... grok-build-0.1".
+  // Generic grok defaults to grok-build-0.1 (git-based code env); Ani overrides
+  // to grok-4.3 here. Both modes route to the same identifier.
+  return "grok-4.3";
 }
 
 export function main(argv: readonly string[]): number {

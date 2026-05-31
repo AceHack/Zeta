@@ -14,9 +14,11 @@
 //   bun tools/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall
 //   bun tools/peer-call/grok.ts --output-file PATH "prompt text"
 //
-// Routing: wraps `cursor-agent --print --model grok-4-20-thinking`
-// (default) or `grok-4-20` (with --fast flag). The --print flag
-// makes cursor-agent non-interactive (script-friendly).
+// Routing: wraps `cursor-agent --print --model grok-build-0.1` (the
+// generic-grok default for this git-based code env; both --thinking and
+// --fast route to the same model id). The --print flag makes cursor-agent
+// non-interactive (script-friendly). Ani's persona wrapper overrides the
+// model (grok-4.3 historically; now grok-CLI-only per the ani migration).
 //
 // Per the four-ferry consensus (PR #24): Otto's role is "tests" not
 // "owns the peer protocol." This script is Otto's harness-side
@@ -195,8 +197,8 @@ function emitHelp(): void {
       `  bun tools/peer-call/grok.ts --allow-empty "prompt"  # bypass firewall\n` +
       `  bun tools/peer-call/grok.ts --output-file PATH "prompt text"\n` +
       `\n` +
-      `Routing: wraps cursor-agent --print --model grok-4-20-thinking\n` +
-      `(default) or grok-4-20 (with --fast).\n` +
+      `Routing: wraps cursor-agent --print --model grok-build-0.1\n` +
+      `(generic-grok default; both --thinking and --fast use this id).\n` +
       `\n` +
       `Grok input-firewall: rejects rote-heartbeat / empty-token prompts\n` +
       `with exit code 3. Override via --allow-empty (testing only; logged).\n` +
@@ -300,19 +302,17 @@ function buildFullPrompt(args: Args): PromptResult {
 }
 
 function pickModel(_mode: Mode): string {
-  // cursor-agent's Grok model lineup shifted 2026-05-13: the old
-  // `grok-4-20-thinking` / `grok-4-20` names are no longer in the
-  // available-models list. The current Grok model is `grok-4.3`
-  // (no separate thinking/non-thinking variants). Both modes route
-  // to the same model identifier; the `thinking` vs `fast` Mode
-  // distinction is preserved here for future cursor-agent updates
-  // that may re-introduce separate variants.
+  // Generic grok defaults to grok-build-0.1 (operator 2026-05-31: "our generic
+  // grok should likely default to grok-build-0.1 since this is git based code
+  // env. Ani can override it in her persona"). grok-build-0.1 is tuned for
+  // code/git work; Ani's persona wrapper (ani.ts) overrides to grok-4.3.
   //
-  // Root cause discovery: B-0421 acceptance #1 + #2 closed via the
-  // self-documenting failure marker (PR #2949) — cursor-agent's
-  // stderr surfaced "Cannot use this model: grok-4-20-thinking.
-  // Available models: ... grok-4.3 ..." on a 2026-05-13 invocation.
-  return "grok-4.3";
+  // History: cursor-agent's Grok lineup shifted 2026-05-13 — the old
+  // `grok-4-20-thinking` / `grok-4-20` names were dropped (B-0421, PR #2949),
+  // moved to grok-4.3; 2026-05-31 the generic default moves again to
+  // grok-build-0.1 (in cursor-agent's available-models list). Both modes route
+  // to the same identifier.
+  return "grok-build-0.1";
 }
 
 export function main(argv: readonly string[]): number {
