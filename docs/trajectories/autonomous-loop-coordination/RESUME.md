@@ -294,15 +294,26 @@ envelopes from the configurable bus directory, but only converts fresh
 time fields. Free-form markdown broadcasts remain coordination input, not
 authoritative event evidence.
 
+Current B-0250 broadcast blocker live-output calibration:
+`docs/trajectories/autonomous-loop-coordination/b0250-broadcast-blocker-live-output-calibration-2026-05-31.md`
+
+It re-runs the live monitor after the broadcast-blocker adapter landed. The
+adapter was quiet: no `broadcast-blocker` event appeared in either the
+incident-grade or warning-grade coincidence debug output. The remaining
+incident-grade window is still the historic `otto:merged-pr-6129` plus
+`codex:loop-run-20260530T170632Z` stronger-source pairing, so the next tuning
+slice should target old loop-run claim-increase lifecycle handling rather than
+the broadcast-blocker adapter.
+
 ## Recommended Next Action
 
-Run the live monitor after the broadcast-blocker adapter branch is ready, then
-calibrate whether any current structured local-bus blocker envelopes join the
-B-0250 incident-grade coincidence window.
+Decide whether old loop-run claim-increase events should age out or be
+classified separately once their associated PR and claim branch have already
+merged and cleaned up.
 
 ## Next Child Packets
 
-- B-0250 broadcast-blocker live-output calibration
+- B-0250 loop-run lifecycle age-out calibration
 
 ## Evidence Links
 
