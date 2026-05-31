@@ -1,6 +1,6 @@
 # Trajectory - Autonomous Loop Coordination
 
-Status: active child packet; B-0250 lifecycle age-out calibration landed
+Status: active child packet; B-0250 lifecycle-residue freshness classifier landed
 Last refreshed: 2026-05-31
 Parent trajectory: `docs/trajectories/factory-trajectory-surface/RESUME.md`
 Grounding backlog:
@@ -315,11 +315,18 @@ loop-run claim increases in the stronger-source set, but says old completed
 loop-run events should demote to warning/debug output after the bounded
 freshness window.
 
+Current B-0250 lifecycle-residue freshness classifier:
+`docs/trajectories/autonomous-loop-coordination/b0250-lifecycle-residue-freshness-classifier-2026-05-31.md`
+
+It implements the calibration in `tools/health/factory-health-monitor.ts`:
+fresh Codex loop-run claim increases still count as stronger sources, while
+old completed loop-run claim increases stay in coincidence warning/debug
+output as lifecycle residue and no longer satisfy the incident-grade
+escalation gate.
+
 ## Recommended Next Action
 
-Implement the B-0250 lifecycle-residue freshness classifier so old completed
-loop-run claim-increase events no longer satisfy the incident-grade
-stronger-source escalation gate.
+None currently selected.
 
 ## Next Child Packets
 

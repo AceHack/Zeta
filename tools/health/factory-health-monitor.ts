@@ -181,6 +181,7 @@ const FACTORY_EVENT_DEBUG_TRAJECTORY_LIMIT = 4;
 const FACTORY_EVENT_DEBUG_WINDOW_LIMIT = 3;
 const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
 const FACTORY_EVENT_MERGE_BURST_GAP_MS = 2 * 60 * 1000;
+const FACTORY_EVENT_LOOP_RUN_INCIDENT_FRESHNESS_MS = FACTORY_EVENT_COINCIDENCE_WINDOW_MS;
 const FACTORY_EVENT_BROADCAST_BUS_ENVELOPE_LIMIT = 200;
 const FACTORY_HEALTH_BROADCAST_BUS_DIR =
   process.env.FACTORY_HEALTH_BROADCAST_BUS_DIR ?? process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
@@ -327,6 +328,19 @@ function coincidenceEventSource(event: CoincidenceEvent): CoincidenceEventSource
   if (event.id.startsWith("failed-gate-")) return "failed-gate";
 
   return "unknown";
+}
+
+function loopRunClaimIncreaseSource(occurredMs: number, nowMs: number): CoincidenceEventSource {
+  if (Number.isNaN(occurredMs) || Number.isNaN(nowMs)) {
+    return "unknown";
+  }
+
+  const ageMs = nowMs - occurredMs;
+  if (ageMs < 0) {
+    return "unknown";
+  }
+
+  return ageMs <= FACTORY_EVENT_LOOP_RUN_INCIDENT_FRESHNESS_MS ? "loop-run" : "unknown";
 }
 
 function coincidenceWindowHasIncidentSource(window: CoincidenceWindow): boolean {
@@ -1068,9 +1082,12 @@ export function loopRunReceiptEventsFromRunnerLog(
 ): CoincidenceEvent[] {
   const nowMs = Date.parse(nowIso);
   const maxAgeMs = Math.max(0, Math.floor(lookbackMs));
+  const outsideWindow = (timeMs: number): boolean =>
+    !Number.isNaN(nowMs) && (timeMs > nowMs || nowMs - timeMs > maxAgeMs);
   const events = new Map<string, CoincidenceEvent>();
   const heartbeatSnapshots: Array<{
     claims: number;
+    occurredAt: string;
     openPrs: number;
     timeMs: number;
   }> = [];
@@ -1090,6 +1107,7 @@ export function loopRunReceiptEventsFromRunnerLog(
       if (!Number.isNaN(occurredMs)) {
         heartbeatSnapshots.push({
           claims: Number.parseInt(heartbeatMatch[2], 10),
+          occurredAt: new Date(occurredMs).toISOString(),
           openPrs: Number.parseInt(heartbeatMatch[3], 10),
           timeMs: occurredMs,
         });
@@ -1109,7 +1127,7 @@ export function loopRunReceiptEventsFromRunnerLog(
       continue;
     }
 
-    if (!Number.isNaN(nowMs) && (occurredMs > nowMs || nowMs - occurredMs > maxAgeMs)) {
+    if (outsideWindow(occurredMs)) {
       continue;
     }
 
@@ -1138,16 +1156,23 @@ export function loopRunReceiptEventsFromRunnerLog(
       continue;
     }
 
+    if (outsideWindow(after.timeMs)) {
+      continue;
+    }
+
     if (after.claims <= before.claims) {
       continue;
     }
 
     const runId = gateEnd.runId;
+    const source = loopRunClaimIncreaseSource(after.timeMs, nowMs);
+    const lifecycleSuffix = source === "loop-run" ? "" : " lifecycle-residue";
     events.set(runId, {
       id: `loop-run-${runId}`,
       trajectory: "codex",
-      occurredAt: gateEnd.occurredAt,
-      description: `codex forward gate ${runId} status=${gateEnd.status} claims ${before.claims}->${after.claims} open_prs ${before.openPrs}->${after.openPrs}`,
+      occurredAt: after.occurredAt,
+      description: `codex forward gate ${runId} status=${gateEnd.status} claims ${before.claims}->${after.claims} open_prs ${before.openPrs}->${after.openPrs}${lifecycleSuffix}`,
+      source,
     });
   }
 
