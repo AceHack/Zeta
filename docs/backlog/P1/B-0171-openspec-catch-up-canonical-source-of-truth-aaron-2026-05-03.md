@@ -9,6 +9,7 @@ ask: Aaron 2026-05-03 verbatim *"openspec which we are way behind on, that's sup
 created: 2026-05-03
 last_updated: 2026-05-31
 depends_on: []
+decomposition: decomposed
 composes_with: [B-0058, B-0169, B-0170, B-0172, B-0173, B-0190]
 tags:
   [
@@ -62,6 +63,10 @@ The current child-row sequence is:
 - `B-0171.2` - author the Tick-History Schema spec.
 - `B-0171.3` - author the Retraction-Native Semantics spec.
 - `B-0171.4` - author the Backlog Row Schema spec.
+
+The parent row is marked `decomposition: decomposed` so autonomous pickup can
+descend into the open atomic child rows instead of repeatedly selecting the
+parent for another decomposition pass.
 
 ## Why P1 (foundation)
 
