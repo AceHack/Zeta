@@ -6,7 +6,16 @@ Status: [ ] todo · [~] doing · [x] gate passed (record HOW verified — eviden
 
 - Backend: Supabase, USA region, owner-owned. Connector-first; CLI fallback.
 - Archive over delete. $0 target; anon read-only heartbeat to prevent pause; manual + scheduled export.
-- service_role key: forbidden everywhere. (append decisions as we go)
+- service_role key: forbidden everywhere.
+- Phase 1 schema (2026-05-31, owner-approved): change_log has NO client INSERT policy (SECURITY
+  DEFINER trigger writes only); items.category is a single column; items.status is text+CHECK (not
+  enum); change_log timestamp column renamed changed_at; GIN index on custom_fields deferred to
+  Phase 5; immutability is two-layered (RLS no-UPDATE/DELETE + BEFORE U/D trigger that RAISEs);
+  RLS ENABLE (not FORCE) so SECURITY DEFINER triggers can write.
+- Pre-Phase-3 cleanup (known follow-up): proof runs left throwaway item `__client_proof_item__`
+  (id=2) + its immutable change_log row. Before the Phase 3 seed (explicit ids 1..211) the owner
+  removes them in the SQL editor (disable change_log_immutable trigger -> delete proof change_log
+  row + item -> re-enable) to avoid an id=2 PK collision. (append decisions as we go)
 
 ## Evidence rule
 
@@ -19,20 +28,31 @@ recorded evidence — re-verify instead. Doc changes happen only via an owner-ap
 your environment's planning/effort capabilities; current Supabase free-tier limits; region=USA);
 draft CLAUDE.md + spec.md + PROGRESS.md; give plain Supabase setup steps.
 GATE: owner approves docs + resolved items.
-- [ ] Phase 0b — Supabase live (owner): create project; turn ON "Enable RLS on new tables"; provide
+- [x] Phase 0b — Supabase live (owner): create project; turn ON "Enable RLS on new tables"; provide
 project URL + anon key. GATE: Claude confirms it can reach Supabase with the anon key.
 service_role key NOT shared.
-- [ ] Phase 1 — Schema + RLS + audit trigger.
+  EVIDENCE (2026-05-31): Project URL + publishable (anon) key delivered; admin user created in the
+  dashboard; Claude reached the REST API with the anon key (anon reads return [] — see Phase 1
+  evidence appendix). service_role NOT shared; publishable key is the public low-privilege key.
+- [x] Phase 1 — Schema + RLS + audit trigger.
 GATE: every table RLS-ON, default-deny, NO permissive/`USING(true)` policies, least-privilege;
 change_log immutable; trigger writes who/what/when.
 VERIFY (mix of Claude + OWNER): from a real client session attempt UPDATE/DELETE on change_log →
 refused. OWNER-RUN: unauthenticated anon `curl` on items, field_definitions, change_log, profiles
 → each returns nothing. (Claude provides commands + expected output; owner runs; not self-certified.)
-- [ ] Phase 2 — Auth + roles.
+  EVIDENCE (2026-05-31): proof #3 anon reads all [] (+ RPC 42501); proof A (SQL editor) all PASSED
+  incl. broken-vs-fixed guard toggle; proof B (client editor session via REST) UPDATE+DELETE on
+  change_log -> [] / [] / row unchanged (action=INSERT). Full output in "Phase 1 evidence" appendix.
+- [x] Phase 2 — Auth + roles.
 GATE: trust uses getUser()/verified claims; role single-source read by BOTH UI and RLS and they
 agree; sign-out ends access and clears rendered data.
 VERIFY: log in as Viewer in the browser, attempt an edit → refused BY THE DB (not just UI hidden);
 confirm RLS sees correct role per user; sign out → data gone, session ended.
+  GATE PASSED (2026-05-31): (a)/(b)/(c)+negative-control PROVEN in a real browser (Playwright vs
+  live Supabase) AND owner-run broken-vs-fixed (a) returned the expected results grid:
+  FIXED (least-privilege) viewer UPDATE = 0 rows (refused); BROKEN (added USING(true)) viewer
+  UPDATE = 1 row (the breach); ROLLBACK restored least-privilege (sanity: no _tmp_permissive_update
+  policy persisted). Full output in the "Phase 2 evidence" appendix.
 - [ ] Phase 3 — Read path.
 GATE: 210 items load; search/sort/filter correct; responsive; existing Zeta dashboard still works.
 VERIFY: rendered row count = seed count; run 3 sample searches/sorts; load on a phone viewport;
@@ -52,7 +72,9 @@ VERIFY: generate + scan a label → correct item after login; export then re-imp
 - [ ] Phase 7 — Hardening + heartbeat + AUDITOR (fresh session).
 GATE: independent Auditor sign-off; CSP + sanitize verified; anon read-only heartbeat + scheduled
 export backup live (no secrets in the Action); CI/semgrep green; owner final review; deploy verified
-actually propagated (account for Pages CDN caching).
+actually propagated (account for Pages CDN caching); **all build-time test users deleted or
+password-rotated (burned credentials — see Residual Risk Register); supabase-js SRI + exact-version
+pin landed; CSP 'unsafe-inline' removed.**
 Auditor brief: you did NOT build this. Using spec.md + PROGRESS.md as the contract, independently
 re-verify EVERY gate; probe — any secret in the repo? service_role referenced? RLS permissive or
 bypassable from the client (run the unauthenticated anon checks)? custom-field XSS? change_log
@@ -66,7 +88,14 @@ Stop the phase. Diagnose + fix + re-verify, or escalate. Never mark passed to ad
 ## Residual risk register (verify at Auditor pass / tune post-launch)
 
 auth email deliverability · login rate-limiting · deep a11y · timezone display · CSV encoding edges ·
-password reset · browser compatibility · region latency · large-scale performance · live multi-user sync.
+password reset · browser compatibility · region latency · large-scale performance · live multi-user sync ·
+**BURNED TEST CREDENTIALS (Phase 7 must action)**: test users created during this build had their
+email+password shared in chat — treat as compromised. Phase 7: delete or rotate every test user
+(test@test.com, test2@test.com, and any others) before/at launch · **single-CDN dependency**:
+supabase-js loads from jsdelivr with no SRI/fallback — Phase 7 adds exact-version pin + SRI (and
+consider vendoring) so a blocked/compromised CDN can't break or tamper with the app · **CSP
+'unsafe-inline'**: baseline CSP allows inline script/style for the single-file build — Phase 7 moves
+JS/CSS external + nonces/SRI and drops 'unsafe-inline'.
 
 ## Open items (resolve in Phase 0a)
 
@@ -207,3 +236,75 @@ approval before Phase 0b.
   missing markdown header-separator row (`|---|`). I did not "improve" it (per your instruction not to
   redraft/edit the contract docs). If the repo's markdown lint flags it on this PR, that's your call to
   fix in an owner-approved doc-change step — I won't silently edit it.
+
+## Phase 1 evidence (Claude + owner, 2026-05-31)
+
+All three Phase 1 proofs landed with observed output. **Phase 1 gate = PASSED.**
+
+SQL applied: `inventory/sql/phase1.sql` (owner ran it in the Supabase SQL editor; required one
+follow-up fix — `DROP FUNCTION current_user_role() CASCADE` — because CREATE OR REPLACE cannot
+change a function's return type, Postgres `42P13`).
+
+- **Proof #3 — anon returns nothing** (Claude ran; owner/auditor re-runs as the authority per spec):
+  `items` / `profiles` / `field_definitions` / `change_log` each → `[]` (HTTP 200); anon
+  `POST rpc/current_user_role` → `42501 permission denied for function` (HTTP 401), confirming
+  EXECUTE is granted to `authenticated` only.
+- **Proof A — privileged immutability + broken-vs-fixed** (owner ran `proofs/phase1_proofs.sql`):
+  results table all `PASSED` — `#1a` UPDATE blocked (`change_log is immutable`), `#1b` DELETE blocked,
+  `#2` with the immutability trigger DISABLED the tamper SUCCEEDED (proving the trigger is the guard).
+  Ran inside `BEGIN…ROLLBACK`, so it left no artifacts.
+- **Proof B — client-path immutability** (Claude ran as the disposable editor test user):
+  login OK; `current_user_role` → `"editor"`; `POST items` → HTTP 201 (editor can write; audit trigger
+  wrote `change_log` row `id=2`); `PATCH change_log` → `[]` (HTTP 200); `DELETE change_log` → `[]`
+  (HTTP 200); re-read → `action` still `"INSERT"`.
+
+Follow-ups recorded in the Decisions log:
+
+- Throwaway item `__client_proof_item__` (id=2) + its immutable `change_log` row persist; owner removes
+  them before the Phase 3 seed (id-collision avoidance).
+- A disposable **editor** test user exists for proof B and Phase 2; rotate/delete after Phase 2.
+
+## Phase 2 evidence (Claude, real-browser via Playwright, 2026-05-31)
+
+Build: `inventory/index.html` (standalone; sign-in-only; getUser() trust; role via
+`current_user_role()`; sign-out clears DOM+memory; baseline CSP; publishable anon key only).
+
+Proof harness note: the test browser's egress proxy MITMs the Supabase host with an untrusted
+cert (`ERR_CERT_AUTHORITY_INVALID`), so the proofs ran against a **git-ignored** copy of the page
+(`inventory/_proof_tmp/`) served by a tiny same-origin reverse-proxy that forwards `/auth/*` +
+`/rest/*` to the REAL Supabase project from the container (which has working TLS). Backend, RLS,
+roles, and auth are all REAL and unmodified — only the transport hop was rerouted. The committed
+`index.html` is unchanged (CDN + real Supabase URL).
+
+Observed output (no tokens/passwords logged):
+
+- **Sign-in-only UI** — live DOM: email + password + "Sign in" only; no signup form, no
+  create-account/sign-up link or text (`signupFormPresent:false`, `createAccountText:false`).
+- **(b) role per user** (from the real `current_user_role()` RPC, same source RLS uses):
+  - `test2@test.com` → UI role badge = **viewer**
+  - `test@test.com`  → UI role badge = **editor**
+  (Caught + fixed a data discrepancy first: test2 was mistakenly `editor` in `profiles`; owner
+  corrected the row to `viewer`; the app re-derived the new role with no stale cache.)
+- **(a) edit refused BY THE DB** — Viewer clicked the visible "Attempt edit (UPDATE items)" button:
+  `"DB REFUSED the edit (role=viewer): 0 rows updated — RLS filtered it out."` (button NOT hidden;
+  refusal is RLS, 0 rows).
+  - **Negative control** — same button as Editor: `"DB ALLOWED the edit (role=editor): updated row
+    #2."` Proves the refusal is genuinely role-gated at the DB, not a broken control.
+  - Bonus: the editor UPDATE wrote a Phase-1 audit row (`change_log` id=3: action=UPDATE, field=notes,
+    actor=editor uid, old→new) — audit trigger confirmed under real client edits.
+- **(c) sign-out ends session AND clears data** — before: email/role/sample-item rendered, auth
+  token in localStorage. After Sign out: DOM fields all empty (`who=""`, `role=""`, sample-item=`—`,
+  probe msg cleared), in-memory state nulled, localStorage auth token **gone**, and a server-verified
+  `getUser()` returned **null** (session truly ended, not just locally); view returned to sign-in.
+
+- **broken-vs-fixed (a)** (owner ran `inventory/sql/proofs/phase2_rls_brokenfix.sql` in the SQL
+  editor; results grid): `FIXED (least-privilege items_update): viewer UPDATE affected 0 row(s)`
+  and `BROKEN (added USING(true) policy): viewer UPDATE affected 1 row(s)`. One `BEGIN…ROLLBACK`,
+  so least-privilege was restored and no artifacts persisted (sanity check: no
+  `_tmp_permissive_update` policy remained). Proves the least-privilege items_update policy is what
+  refuses the Viewer's edit — confirmed "fails on broken code (1 row), passes when fixed (0 rows)."
+
+**Phase 2 gate = PASSED.** All gate criteria met with observed evidence: getUser()/verified-claims
+trust; role single-source (`current_user_role()`) read by both UI and RLS, in agreement
+(viewer→viewer, editor→editor); Viewer edit refused BY THE DB (0 rows, RLS) with editor allowed as
+control; sign-out ends the session (verified getUser()→null) and clears rendered + in-memory data.
