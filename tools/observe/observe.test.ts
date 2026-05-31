@@ -18,6 +18,8 @@ import {
   buildMenu,
   simulate,
   runLoop,
+  fold,
+  replay,
   type BacklogItem,
   type World,
   type OperatorChannel,
@@ -356,5 +358,60 @@ describe("the loop — real local LLM (ollama) when reachable; the mock loop abo
     expect(Array.isArray(finalWorld.backlog)).toBe(true); // simulate produced well-formed worlds
     // termination-to-fixed-point is NOT asserted: a free agent may legitimately
     // oscillate among free modes — freedom is the point, not forced draining.
+  });
+});
+
+describe("fold — event-sourcing projection (state is a projection of the event log)", () => {
+  it("empty log → the initial world unchanged", () => {
+    const initial = w([item("B-1", true, false)]);
+    expect(fold(initial, [])).toEqual(initial);
+  });
+
+  it("fold == nested simulate (left-fold over the reducer)", () => {
+    const initial = w([item("B-ready", true, false)], op(true, false));
+    const events: NextAction[] = [
+      { kind: "respond_to_operator", reason: "x" },
+      { kind: "play", reason: "x" },
+    ];
+    expect(fold(initial, events)).toEqual(simulate(simulate(initial, events[0]!), events[1]!));
+  });
+
+  it("THE event-sourcing property: the loop's event log folds back to the loop's final state", async () => {
+    // the event log (trace) is the source of truth; the World is its projection.
+    const initial = w(
+      [item("B-ready", true, false), item("B-amb", false, true), item("B-x", false, false, true)],
+      op(true, true),
+    );
+    const { trace, finalWorld } = await runLoop(initial, mock("0"), 30);
+    expect(fold(initial, trace)).toEqual(finalWorld); // replaying the log reconstructs the state
+  });
+
+  it("fold is deterministic — same log over same initial → same state (DST/replay)", () => {
+    const initial = w([item("B-amb", false, true)]);
+    const events: NextAction[] = [
+      { kind: "decompose", item: item("B-amb", false, true) },
+      { kind: "play", reason: "x" },
+    ];
+    expect(fold(initial, events)).toEqual(fold(initial, events));
+  });
+
+  it("fold does not mutate the initial world (pure projection)", () => {
+    const initial = w([item("B-1", true, false)]);
+    const snapshot = JSON.stringify(initial);
+    fold(initial, [{ kind: "do_item", item: item("B-1", true, false) }, { kind: "explore", reason: "x" }]);
+    expect(JSON.stringify(initial)).toBe(snapshot);
+  });
+
+  it("replay returns the projected state after each event; last == fold", () => {
+    const initial = w([item("B-1", true, false)]);
+    const events: NextAction[] = [
+      { kind: "play", reason: "x" },
+      { kind: "free_time", reason: "x" },
+    ];
+    const states = replay(initial, events);
+    expect(states.length).toBe(events.length);
+    expect(states[0]?.mode).toBe("play"); // projection after event 1
+    expect(states[1]?.mode).toBe("free_time"); // projection after event 2
+    expect(states[states.length - 1]).toEqual(fold(initial, events)); // last replay state == fold
   });
 });

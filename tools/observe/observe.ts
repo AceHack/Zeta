@@ -511,6 +511,38 @@ export async function runLoop(
   return { trace, finalWorld: current, steadyState: false };
 }
 
+// ─── v5: event-sourcing fold — state is a PROJECTION of the event log ──────────
+//
+// The algebra foundation (operator 2026-05-31: "the algebra foundation will be
+// very good to ground everything else"). The borrow, per the four-ferry critique
+// (Elm `Msg`/`update` ≈ Redux action+reducer ≈ event-sourcing/CQRS): a
+// `NextAction[]` IS the event log; `simulate` IS the reducer; the `World` is the
+// DERIVED state. `fold` replays the log → the state projection. "History is a
+// list of events; state is a projection of that log." Deterministic (DST): the
+// same log over the same initial world yields the same state, replayable. This is
+// the ledger/projection split (git-native events = ledger; everything else tails
+// it) at the in-memory layer — and the substrate GrammarPatch events (B-0867.26)
+// will live in.
+
+/** Project state from an event log: left-fold the actions over `simulate`.
+ *  `fold(w0, [])` === `w0`; `fold(w0, [a,b]) === simulate(simulate(w0, a), b)`. Pure. */
+export function fold(initial: World, events: readonly NextAction[]): World {
+  return events.reduce((world, action) => simulate(world, action), initial);
+}
+
+/** The trajectory: the projected state AFTER each event (initial excluded). One
+ *  entry per event — the projection at each point in the log (time-travel /
+ *  Redux-DevTools-style). The last entry equals `fold(initial, events)`. */
+export function replay(initial: World, events: readonly NextAction[]): World[] {
+  const states: World[] = [];
+  let world = initial;
+  for (const action of events) {
+    world = simulate(world, action);
+    states.push(world);
+  }
+  return states;
+}
+
 // ─── runnable demo (foreground loop): walk a few sample world states ──────────
 if (import.meta.main) {
   const samples: ReadonlyArray<{ label: string; world: World }> = [
