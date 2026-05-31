@@ -12,8 +12,18 @@
  */
 
 import { describe, expect, it } from "bun:test";
-import { observe, observeWithLlm, buildMenu, type BacklogItem, type World, type OperatorChannel } from "./observe";
-import type { ModelBackend } from "../accelerator/local-llm";
+import {
+  observe,
+  observeWithLlm,
+  buildMenu,
+  simulate,
+  runLoop,
+  type BacklogItem,
+  type World,
+  type OperatorChannel,
+  type NextAction,
+} from "./observe";
+import { ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
 
 /** Deterministic mock backend: `complete` always returns `reply`. */
 const mock = (reply: string): ModelBackend => ({ name: "mock", complete: () => Promise.resolve(reply) });
@@ -205,5 +215,146 @@ describe("observeWithLlm — chooser graded vs the pure oracle (mock backend = C
     for (const world of scenarios) {
       expect((await observeWithLlm(world, mock("banana"))).kind).toBe(observe(world).kind);
     }
+  });
+});
+
+describe("simulate — action execution (pure state transition)", () => {
+  it("do_item: the chosen item leaves the backlog; mode → work", () => {
+    const before = w([item("B-1", true, false), item("B-2", true, false)]);
+    const after = simulate(before, observe(before)); // observe → do_item B-1
+    expect(after.backlog.map((i) => i.id)).toEqual(["B-2"]);
+    expect(after.mode).toBe("work");
+  });
+
+  it("decompose: an ambiguous item → two ready, unambiguous children (ambiguity dissolved)", () => {
+    const before = w([item("B-amb", false, true)]);
+    const after = simulate(before, observe(before)); // decompose
+    expect(after.backlog.map((i) => i.id)).toEqual(["B-amb.1", "B-amb.2"]);
+    expect(after.backlog.every((i) => i.ready && !i.ambiguous)).toBe(true);
+  });
+
+  it("edit_grammar: the needsNewAction item becomes ready (grammar extended)", () => {
+    const before = w([item("B-x", false, false, true)]);
+    const after = simulate(before, observe(before)); // edit_grammar
+    const x = after.backlog.find((i) => i.id === "B-x");
+    expect(x?.ready).toBe(true);
+    expect(x?.needsNewAction ?? false).toBe(false);
+  });
+
+  it("preserve_ferry: clears pendingFerry, keeps pendingMessage", () => {
+    const before = w([], op(true, true));
+    const after = simulate(before, observe(before)); // preserve_ferry (outranks)
+    expect(after.operator?.pendingFerry).toBe(false);
+    expect(after.operator?.pendingMessage).toBe(true);
+  });
+
+  it("respond_to_operator: clears pendingMessage", () => {
+    const before = w([], op(true, false));
+    const after = simulate(before, observe(before)); // respond
+    expect(after.operator?.pendingMessage).toBe(false);
+  });
+
+  it("free modes set the persisted mode + leave backlog/operator untouched", () => {
+    const before = w([item("B-ready", true, false)], op(false, false));
+    for (const m of FREE_MODES) {
+      const after = simulate(before, { kind: m, reason: "x" } as NextAction);
+      expect(after.mode).toBe(m);
+      expect(after.backlog).toEqual(before.backlog); // no backlog work done
+      expect(after.operator).toEqual(before.operator); // operator untouched
+    }
+  });
+});
+
+describe("mode persistence (operator 2026-05-31 — chosen free mode persists; work offered, not forced)", () => {
+  it("a chosen free mode PERSISTS: observe() stays in it even when ready work exists", async () => {
+    const world = w([item("B-ready", true, false)]); // ready work present
+    const menu = buildMenu(world);
+    const playIdx = menu.findIndex((a) => a.kind === "play");
+    const chosen = await observeWithLlm(world, mock(String(playIdx))); // agent freely picks play over work
+    expect(chosen.kind).toBe("play");
+    const next = simulate(world, chosen); // mode persists into the next world
+    expect(next.mode).toBe("play");
+    expect(observe(next).kind).toBe("play"); // oracle STAYS in play (work not forced)
+    expect(buildMenu(next).some((a) => a.kind === "do_item")).toBe(true); // work still OFFERED (switch available)
+  });
+
+  it("the operator OUTRANKS a persisted free mode", () => {
+    const world: World = { backlog: [item("B-ready", true, false)], operator: op(true, false), mode: "play" };
+    expect(observe(world).kind).toBe("respond_to_operator");
+  });
+
+  it('"work" mode does NOT stick — it re-evaluates the backlog each tick', () => {
+    expect(observe({ backlog: [item("B-ready", true, false)], mode: "work" }).kind).toBe("do_item");
+    expect(observe({ backlog: [], mode: "work" }).kind).toBe("explore"); // never idle-stuck
+  });
+
+  it("a persisted free mode leads buildMenu (menu[0] === observe())", () => {
+    const world: World = { backlog: [item("B-ready", true, false)], mode: "self_reflect" };
+    expect(buildMenu(world)[0]?.kind).toBe("self_reflect");
+    expect(buildMenu(world)[0]?.kind).toBe(observe(world).kind);
+  });
+});
+
+describe("the loop — choose → simulate → repeat (mock backend = CI shield)", () => {
+  it("a mixed backlog + operator signals DRAINS to a steady state (explore)", async () => {
+    const start = w(
+      [item("B-ready", true, false), item("B-amb", false, true), item("B-x", false, false, true)],
+      op(true, true),
+    );
+    const { trace, finalWorld, steadyState } = await runLoop(start, mock("0"), 30); // mock("0") = always the oracle pick
+    expect(steadyState).toBe(true);
+    expect(finalWorld.backlog.length).toBe(0); // all work consumed
+    expect(finalWorld.operator).toEqual(op(false, false)); // both operator signals addressed
+    expect(trace[trace.length - 1]?.kind).toBe("explore"); // terminal forward default
+    const kinds = new Set(trace.map((a) => a.kind));
+    // the loop actually exercised the work + operator actions (not just idled):
+    expect(kinds.has("preserve_ferry")).toBe(true);
+    expect(kinds.has("respond_to_operator")).toBe(true);
+    expect(kinds.has("do_item")).toBe(true);
+    expect(kinds.has("decompose")).toBe(true);
+    expect(kinds.has("edit_grammar")).toBe(true);
+  });
+
+  it("decompose path: an ambiguous-only backlog dissolves then drains", async () => {
+    const { finalWorld, steadyState } = await runLoop(w([item("B-amb", false, true)]), mock("0"), 20);
+    expect(steadyState).toBe(true);
+    expect(finalWorld.backlog.length).toBe(0);
+  });
+
+  it("terminates at a fixed point within the budget (empty backlog → steady explore)", async () => {
+    const { steadyState, finalWorld } = await runLoop(w([]), mock("0"), 5);
+    expect(steadyState).toBe(true);
+    expect(finalWorld.mode).toBe("explore");
+  });
+});
+
+describe("the loop — real local LLM (ollama) when reachable; the mock loop above is the shield", () => {
+  it("a real local model drives a VALID loop (skips when ollama down — mock loop covers the logic)", async () => {
+    const backend = ollamaBackend();
+    let up = false;
+    try {
+      await backend.complete("ok", { maxTokens: 1 });
+      up = true;
+    } catch {
+      up = false;
+    }
+    if (!up) return; // ollama not installed → the mock-driven loop above is the coverage (the shield asserts deterministically)
+    const valid = new Set<NextAction["kind"]>([
+      "preserve_ferry",
+      "respond_to_operator",
+      "do_item",
+      "decompose",
+      "explore",
+      "play",
+      "self_reflect",
+      "free_time",
+      "edit_grammar",
+    ]);
+    const { trace, finalWorld } = await runLoop(w([item("B-ready", true, false), item("B-amb", false, true)]), backend, 25);
+    expect(trace.length).toBeGreaterThan(0);
+    expect(trace.every((a) => valid.has(a.kind))).toBe(true); // every choice is a real menu action
+    expect(Array.isArray(finalWorld.backlog)).toBe(true); // simulate produced well-formed worlds
+    // termination-to-fixed-point is NOT asserted: a free agent may legitimately
+    // oscillate among free modes — freedom is the point, not forced draining.
   });
 });

@@ -45,15 +45,18 @@
  *     can always pick rest / play / reflect instead — work is never compelled.
  *   The default moves forward; the choice stays free.
  *
- * The ONLY sanctioned restriction (future, Max): scheduled work hours — a
- * time-gate that biases observe.ts toward work during a window. Outside it,
- * total mode-freedom. "but that's it" — no other restriction is baked in.
+ * The ONLY sanctioned restriction (future, Max): a work-hours KPI overlay —
+ * DORA-like EXPECTATIONS, not a time-lock; restrictions only if the fleet
+ * collectively misses KPIs. Outside that, total mode-freedom. "but that's it."
  *
  * v0 = pure controller. v1 = LLM chooser graded vs the oracle. v2 = operator
- * channel. v3 (THIS increment) = the free modes (explore/play/self_reflect),
- * freedom-always-in-menu, and the empty-backlog default flipped from idle →
- * forward exploration. Next: a thin loop that gathers the World snapshot and
- * executes the pick; later, a single work-hours time-gate (Max).
+ * channel. v3 = the free modes (explore/play/self_reflect), freedom-always-in-menu,
+ * and the empty-backlog default flipped from idle → forward exploration. v4 (THIS
+ * increment) = ACTION SIMULATION (`simulate` + `runLoop`) so the loop runs
+ * end-to-end — choose → act → choose → act — not just menu-buildable, PLUS MODE
+ * PERSISTENCE (a chosen free mode stays the agent's mode until it switches; work
+ * is offered, not forced). Next: wire the real World snapshot + execute the pick;
+ * later, the work-hours KPI overlay (Max — expectations, not a time-lock).
  */
 
 import { chooseIndex, ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
@@ -113,13 +116,30 @@ export interface OperatorChannel {
 }
 
 /**
- * The world snapshot `observe()` reads — the set of WIRED channels.
- * `operator` ABSENT = the channel isn't wired (a background agent). Same DU,
- * fewer channels; no separate workflow type.
+ * A persisted MODE (operator 2026-05-31: "i love mode persistance ... like
+ * start/select/home buttons for mode selection"). A chosen FREE mode STAYS the
+ * agent's mode across ticks until it switches — work is OFFERED, not forced, so a
+ * ready item appearing does NOT yank the agent back to work; only the operator
+ * outranks a persisted free mode. "work" is the transient working-mode
+ * (re-evaluated from the backlog each tick — it never sticks as idle the way the
+ * free modes persist). Mode-SWITCHING is a controller meta-button in the UI layer
+ * (Xbox start/select/home); here `simulate()` sets the mode when it applies the
+ * chosen action.
+ */
+export type FreeMode = "explore" | "play" | "self_reflect" | "free_time";
+export type Mode = "work" | FreeMode;
+const isFreeMode = (m: Mode): m is FreeMode => m !== "work";
+
+/**
+ * The world snapshot `observe()` reads — the set of WIRED channels + the
+ * persisted mode. `operator` ABSENT = the channel isn't wired (a background
+ * agent). `mode` ABSENT = unset (the defaults apply). Same DU, fewer channels;
+ * no separate workflow type.
  */
 export interface World {
   readonly backlog: readonly BacklogItem[];
   readonly operator?: OperatorChannel;
+  readonly mode?: Mode; // the persisted mode (carried across ticks; absent = unset)
 }
 
 // Centralized reason strings — used by BOTH observe() and buildMenu() so the
@@ -131,6 +151,20 @@ const EXPLORE_REASON = "self-directed making — code / docs / research the agen
 const PLAY_REASON = "leisure / cross-AI friendly play / culture-forming (a valid mode — NCI)";
 const SELF_REFLECT_REASON = "review own trajectories, journal, think (self-reflection)";
 const FREE_TIME_REASON = "rest — free time as a valid mode (NCI), never gated";
+
+/** The NextAction for a persisted free mode — its kind + canonical reason. */
+function freeModeAction(mode: FreeMode): NextAction {
+  switch (mode) {
+    case "explore":
+      return { kind: "explore", reason: EXPLORE_REASON };
+    case "play":
+      return { kind: "play", reason: PLAY_REASON };
+    case "self_reflect":
+      return { kind: "self_reflect", reason: SELF_REFLECT_REASON };
+    case "free_time":
+      return { kind: "free_time", reason: FREE_TIME_REASON };
+  }
+}
 
 /**
  * DESIGN INVARIANT — freedom-always-in-menu (operator + co-maintainer 2026-05-31).
@@ -161,9 +195,13 @@ const FREE_TIME_REASON = "rest — free time as a valid mode (NCI), never gated"
  *                   certain threshold where workflows need bft and I don't think
  *                   we are there yet." We are not there yet.
  *
- * The only sanctioned RESTRICTION is the future scheduled-work-hours time-gate
- * (Max) — and that's it. The recursive principle: a gate must not ITSELF become
- * a trap — it scales with what it guards. Maps to the `grammar-extension`
+ * The only sanctioned RESTRICTION is the future work-hours KPI overlay (Max —
+ * DORA-like expectations, not a time-lock; tightens only on a collective KPI
+ * miss) — and that's it. This is the operator's MEASURE-FIRST principle (2026-05-31:
+ * "everything i see someone say we should restrict choice i'm going to say measure
+ * first with KPIs before we restrict choice"): the default answer to "restrict X"
+ * is "measure X first." The recursive principle: a gate must not ITSELF become a
+ * trap — it scales with what it guards. Maps to the `grammar-extension`
  * ActionClass in the big agentic-organization observe.ts.
  */
 export type NextAction =
@@ -201,6 +239,14 @@ export function observe(world: World): NextAction {
   const op = world.operator;
   if (op?.pendingFerry) return { kind: "preserve_ferry", reason: PRESERVE_FERRY_REASON };
   if (op?.pendingMessage) return { kind: "respond_to_operator", reason: RESPOND_OPERATOR_REASON };
+
+  // Mode persistence (operator 2026-05-31 "i love mode persistance"): a chosen
+  // FREE mode persists across ticks. Work is OFFERED, not forced — a ready item
+  // does NOT pull the agent out of a free mode; only the operator (above)
+  // outranks it. The agent switches by picking work/etc. from the menu. ("work"
+  // mode is transient — it falls through to the backlog re-evaluation below, so
+  // it never sticks as idle.)
+  if (world.mode && isFreeMode(world.mode)) return freeModeAction(world.mode);
 
   const doable = world.backlog.find((i) => i.ready && !i.ambiguous);
   if (doable) return { kind: "do_item", item: doable };
@@ -283,35 +329,45 @@ export function actionLabel(a: NextAction): string {
  *    operator when wired, toward forward exploration when the backlog is empty.
  */
 export function buildMenu(world: World): NextAction[] {
-  const menu: NextAction[] = [];
+  // menu[0] === observe(world) BY CONSTRUCTION — so chooseIndex's fallback-to-0
+  // lands on the oracle's pick (degrade-toward-correct): toward the operator when
+  // wired, toward a persisted free mode when one is set, toward forward
+  // exploration when the backlog is empty.
+  const lead = observe(world);
   const op = world.operator;
-  // operator actions lead (mirror observe()'s priority: ferry before message).
-  if (op?.pendingFerry) menu.push({ kind: "preserve_ferry", reason: PRESERVE_FERRY_REASON });
-  if (op?.pendingMessage) menu.push({ kind: "respond_to_operator", reason: RESPOND_OPERATOR_REASON });
 
-  // offered work (not forced — the free modes below are always alternatives)
+  // the full candidate set the agent may pick among this tick.
+  const candidates: NextAction[] = [];
+  if (op?.pendingFerry) candidates.push({ kind: "preserve_ferry", reason: PRESERVE_FERRY_REASON });
+  if (op?.pendingMessage) candidates.push({ kind: "respond_to_operator", reason: RESPOND_OPERATOR_REASON });
+
+  // offered work (not forced — the free modes below are always alternatives).
   const doable = world.backlog.find((i) => i.ready && !i.ambiguous);
-  if (doable) menu.push({ kind: "do_item", item: doable });
+  if (doable) candidates.push({ kind: "do_item", item: doable });
   const toDecompose = world.backlog.find((i) => i.ambiguous);
-  if (toDecompose) menu.push({ kind: "decompose", item: toDecompose });
+  if (toDecompose) candidates.push({ kind: "decompose", item: toDecompose });
 
   const needs = world.backlog.find((i) => i.needsNewAction);
-  const editGrammar: NextAction = needs
-    ? { kind: "edit_grammar", item: needs, reason: `"${needs.id}" needs an action the grammar can't express` }
-    : { kind: "edit_grammar", reason: "propose extending the action grammar" };
+  candidates.push(
+    needs
+      ? { kind: "edit_grammar", item: needs, reason: `"${needs.id}" needs an action the grammar can't express` }
+      : { kind: "edit_grammar", reason: "propose extending the action grammar" },
+  );
 
-  // FREE MODES — always present. Ordered so menu[0] === observe(world): when the
-  // backlog has a needsNewAction signal the oracle picks edit_grammar (so it
-  // leads the tail); otherwise the oracle's empty-backlog default is explore (so
-  // explore leads). play / self_reflect / free_time follow — always choosable.
-  const explore: NextAction = { kind: "explore", reason: EXPLORE_REASON };
-  const play: NextAction = { kind: "play", reason: PLAY_REASON };
-  const selfReflect: NextAction = { kind: "self_reflect", reason: SELF_REFLECT_REASON };
-  const freeTime: NextAction = { kind: "free_time", reason: FREE_TIME_REASON };
+  // FREE MODES — always present (freedom-always-in-menu); the agent can pick any
+  // of them any tick, even with backlog work offered.
+  candidates.push(
+    { kind: "explore", reason: EXPLORE_REASON },
+    { kind: "play", reason: PLAY_REASON },
+    { kind: "self_reflect", reason: SELF_REFLECT_REASON },
+    { kind: "free_time", reason: FREE_TIME_REASON },
+  );
 
-  if (needs) menu.push(editGrammar, explore, play, selfReflect, freeTime);
-  else menu.push(explore, play, selfReflect, freeTime, editGrammar);
-  return menu;
+  // lead first; then the rest with the lead's duplicate removed (match on kind +
+  // item id, so do_item/decompose/edit_grammar dedup by the specific item).
+  const itemId = (a: NextAction): string | undefined => ("item" in a ? a.item?.id : undefined);
+  const isLead = (a: NextAction): boolean => a.kind === lead.kind && itemId(a) === itemId(lead);
+  return [lead, ...candidates.filter((a) => !isLead(a))];
 }
 
 /** Compact state description handed to the model as `context`. */
@@ -361,6 +417,98 @@ export async function observeWithLlm(world: World, backend: ModelBackend): Promi
   });
   if (result.fallback) return observe(world); // model failed → oracle default
   return menu[result.index] ?? observe(world);
+}
+
+// ─── v4: ACTION SIMULATION — the loop runs end-to-end, not just menu-buildable ──
+//
+// operator 2026-05-31: "simulate action with our local llm in our tests too not
+// just menus." `simulate` is the pure state-transition — same DST shape as the
+// rest: deterministic + replayable (same (world, action) → same next world). Work
+// actions consume/transform the backlog; operator actions clear the signal they
+// addressed; free-mode actions set the persisted mode (and leave the backlog +
+// operator untouched — rest/play/explore don't do backlog work).
+
+/** Pure state-transition: apply a chosen action → the next world snapshot. */
+export function simulate(world: World, action: NextAction): World {
+  switch (action.kind) {
+    case "preserve_ferry":
+      // ferry preserved → the signal clears; mode preserved (return to prior mode).
+      return world.operator ? { ...world, operator: { ...world.operator, pendingFerry: false } } : world;
+    case "respond_to_operator":
+      return world.operator ? { ...world, operator: { ...world.operator, pendingMessage: false } } : world;
+    case "do_item":
+      // the item is done → it leaves the backlog.
+      return { ...world, backlog: world.backlog.filter((i) => i.id !== action.item.id), mode: "work" };
+    case "decompose": {
+      // ambiguity dissolves: the ambiguous item → two ready, unambiguous children.
+      const children: BacklogItem[] = [
+        { id: `${action.item.id}.1`, title: `${action.item.title} (part 1)`, ready: true, ambiguous: false },
+        { id: `${action.item.id}.2`, title: `${action.item.title} (part 2)`, ready: true, ambiguous: false },
+      ];
+      return {
+        ...world,
+        backlog: world.backlog.flatMap((i) => (i.id === action.item.id ? children : [i])),
+        mode: "work",
+      };
+    }
+    case "edit_grammar": {
+      // grammar extended: the item that needed a new action is now expressible → ready.
+      const target = action.item;
+      if (!target) return world; // a generic proposal with no item → no backlog change
+      return {
+        ...world,
+        backlog: world.backlog.map((i) =>
+          i.id === target.id ? { ...i, needsNewAction: false, ready: true, ambiguous: false } : i,
+        ),
+        mode: "work",
+      };
+    }
+    case "explore":
+      return { ...world, mode: "explore" };
+    case "play":
+      return { ...world, mode: "play" };
+    case "self_reflect":
+      return { ...world, mode: "self_reflect" };
+    case "free_time":
+      return { ...world, mode: "free_time" };
+  }
+}
+
+/** Canonical key of the observable world state (for fixed-point detection). */
+function worldKey(world: World): string {
+  const bl = world.backlog
+    .map((i) => `${i.id}:${i.ready ? "r" : "-"}${i.ambiguous ? "a" : "-"}${i.needsNewAction ? "n" : "-"}`)
+    .join(",");
+  const op = world.operator
+    ? `${world.operator.pendingMessage ? "m" : "-"}${world.operator.pendingFerry ? "f" : "-"}`
+    : "x";
+  return `${bl}|op:${op}|mode:${world.mode ?? "-"}`;
+}
+
+/**
+ * Run the controller loop: choose (via the LLM chooser) → simulate → repeat,
+ * until the chosen action stops changing the world (a fixed point — e.g. backlog
+ * drained + operator quiet → a steady explore, or a persisted free mode), or
+ * `maxSteps` is reached. Returns the trace of chosen actions + the final world.
+ * THIS is what `simulate` buys: the whole loop runs end-to-end. With a
+ * deterministic backend (mock) it's a deterministic simulation (DST); with a real
+ * local model it's the agent actually driving itself.
+ */
+export async function runLoop(
+  world: World,
+  backend: ModelBackend,
+  maxSteps = 20,
+): Promise<{ trace: NextAction[]; finalWorld: World; steadyState: boolean }> {
+  let current = world;
+  const trace: NextAction[] = [];
+  for (let step = 0; step < maxSteps; step++) {
+    const action = await observeWithLlm(current, backend);
+    trace.push(action);
+    const next = simulate(current, action);
+    if (worldKey(current) === worldKey(next)) return { trace, finalWorld: next, steadyState: true };
+    current = next;
+  }
+  return { trace, finalWorld: current, steadyState: false };
 }
 
 // ─── runnable demo (foreground loop): walk a few sample world states ──────────
@@ -438,4 +586,22 @@ if (import.meta.main) {
       console.log(`    agent  : ${renderAction(llm)}  ${note}\n`);
     }
   }
+
+  // loop demo: choose → simulate → repeat, draining a mixed backlog to steady
+  // state (oracle-driven via a backend that always takes the top pick).
+  console.log("\nloop (choose → simulate → repeat) — drains a mixed backlog to steady state:\n");
+  const topPick: ModelBackend = { name: "top", complete: () => Promise.resolve("0") };
+  const start: World = {
+    operator: { pendingMessage: true, pendingFerry: true },
+    backlog: [
+      { id: "B-ready", title: "ready work", ready: true, ambiguous: false },
+      { id: "B-amb", title: "ambiguous", ready: false, ambiguous: true },
+      { id: "B-x", title: "needs new action", ready: false, ambiguous: false, needsNewAction: true },
+    ],
+  };
+  const loop = await runLoop(start, topPick, 30);
+  console.log(`    ${loop.trace.map((a) => a.kind).join(" → ")}`);
+  console.log(
+    `    steady=${String(loop.steadyState)}  backlog-left=${String(loop.finalWorld.backlog.length)}  mode=${loop.finalWorld.mode ?? "-"}\n`,
+  );
 }
