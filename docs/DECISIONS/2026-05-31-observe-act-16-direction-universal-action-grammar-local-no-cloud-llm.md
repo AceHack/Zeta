@@ -1,10 +1,25 @@
 # ADR: Choose-your-own-adventure observe->act loop — a 16-direction universal action grammar (Xbox-controller navigation), local-USB no-cloud LLM, git-as-append-only-state
 
-**Date:** 2026-05-31
+**Date:** 2026-05-31 (v2 — integrated with the Agentic Organization `observe.ts` keystone)
 **Status:** *PROPOSED — design-starter.* Codeable basis for the agent foreground loop. To be
 shared with Max (co-maintainer) for review before lock. This ADR firms the architecture enough to
 start coding the first slice; the 16-slot grammar layout + several mechanisms are marked **[OPEN]**
 for operator + Max ratification.
+
+> **v2 integration note (read first).** v1 of this ADR proposed a fresh `observe.ts`. On reviewing
+> `agentic-organization/docs/`, that keystone **already exists and is designed in depth** — see
+> [`OBSERVE_COMPOSER_AND_RUN_STATE.md`](../../agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md)
+> (code anchor `agentic-organization/packages/application/src/observe.ts`), and the
+> **"Universal Action Grammar" is already a named concept** in
+> [`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`](../../agentic-organization/docs/AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md)
+> (*"reuse those ideas instead of inventing another unrelated action language ... the Universal
+> Action Grammar becomes the shared action representation inside phases"*). **This ADR therefore does
+> NOT introduce a parallel observe.ts or action language.** It contributes exactly three things ON
+> TOP of that keystone: (1) the **fixed 16-slot Xbox-controller rendering** of the keystone's
+> per-scope legal options; (2) **tri-boolean (B-0944) per-slot availability** wired to the keystone's
+> `Result<T, TFeedback>`; (3) the **local-USB single-node (no-cloud) deployment** of the keystone,
+> alongside the cluster runtime. See "Integration with the Agentic Organization keystone" below.
+
 **Owner:** operator (shaping-decision owner) + Max (co-review); Otto-CLI synthesis.
 **Decision confidence:** *medium* — the pieces are individually built or ratified (the move-next
 engine `tools/agent-loop/` exists; git-append-only-state is ratified B-0867/B-0858; the
@@ -41,6 +56,79 @@ deployed** for its compute substrate:
 
 This ADR composes those four into one loop and proposes a concrete grammar to code against.
 
+## Integration with the Agentic Organization keystone (v2)
+
+The `agentic-organization/` design set already contains the keystone this ADR was reaching for. The
+job here is to **slot into it**, not rebuild it. The mapping:
+
+| This ADR's concept | Already exists in agentic-organization | Integration |
+|---|---|---|
+| the **observe** step | `observe(snapshot, deps)` — a **pure** function returning the current `RunLifecyclePhase` + the **legal next options at a `RunScope`**, filtered by `DeterministicRule` vetoes (`OBSERVE_COMPOSER_AND_RUN_STATE.md`; `agentic-organization/packages/application/src/observe.ts`) | the ADR does NOT add an observe.ts; it **renders the existing readout** |
+| the **LLM selector** | `EphemeralComposerPort.compose(request) -> ComposerSelection` — **memoryless by contract** ("the agent-loop skill's LLM-as-pure-selector substrate made concrete") + `decide()` which **rejects any selection outside the readout** | the local 16-way selector IS this composer; `decide()` keeps it legal |
+| the **act / append** | `decide()` emits the selection as a command through `command-pipeline.ts` | unchanged; the chosen slot becomes a command |
+| the **universal action grammar** | already a named concept: *"the Universal Action Grammar becomes the shared action representation inside phases"* (`AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`) | the **16-slot Xbox layout is the fixed-slot rendering** of that grammar — NOT a new language |
+| **per-slot availability** | `ObserveResult` = `{readout} \| {feedback}` (`Result<T, TFeedback>`); `DeterministicRule` vetoes; stall = `deterministic_rule_violation` feedback | each slot's availability is a **`Tri` (B-0944)**: a surviving legal option = `T`; a slot with no surviving option = `F`; genuinely-held/uncertain = `N`. **[OPEN/limitation]** today `observe()` returns only the *surviving* `readout.options` + the *names* of `deterministicRulesApplied` (vetoed options + per-option reasons are dropped; zero survivors returns `feedback`, not a per-option readout). So a `Tri[16]` renderer can mark a slot `F` but cannot yet distinguish *vetoed-with-reason* from *unmapped* — surfacing that needs a small keystone enhancement (readout also lists vetoed options + reasons). Until then `F` = 'not currently selectable', without the why |
+| **scope** | `RunScope` = run / work_item / initiative / project / organization | the Scope slots (LB scope-out / RB scope-in) move along `RunScope` |
+| **lifecycle** | `RunLifecyclePhase` = observing / composing / awaiting_gate / executing / awaiting_evidence / awaiting_review / completed / blocked / failed | the loop's phases ARE this DU; Commit-slot A maps to `ComposerSelection.select`, slot B to `.hold` |
+| **escalate / governance** | the **≥3-agent constitution ratification gate** (`evaluateConstitutionRatification`, `ConstitutionRatificationState`; `agentic-organization/packages/governance/src/constitution-gate.ts`; B-0703/B-0652) | Meta-slot R3 (escalate) routes to the supervisor chain + the constitution gate; the LLM never ratifies alone |
+| **state** | **git-as-db**: markdown row + frontmatter schema; events are **ZetaId-keyed files merging conflict-free as a G-Set CRDT**; state = timestamp-ordered fold; **CockroachDB = rebuildable query index** (`GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`; `agentic-organization/packages/frontmatter-db/`; uses `src/Core.TypeScript/zeta-id/`) | **supersedes this ADR's "git-append-only, 128-bit ids" with the precise model**: git-canonical ZetaId-CRDT G-Set + Cockroach as the rebuildable index (the snapshot `observe()` reads is built from this) |
+
+**Net: the ADR's only new substrate is the 16-slot controller rendering + `Tri[16]` availability +
+the local single-node deployment.** Everything else (observe/compose/decide, the action grammar, the
+state model, the governance gate) is the agentic-organization keystone, which this ADR now cites
+rather than re-specifies.
+
+### Two deployment targets of the same keystone
+
+The agentic-organization runtime targets a **cluster** (k3s + Temporal/Dapr/Orleans + NATS +
+CockroachDB + SPIRE/Cilium — `CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md`,
+`RUNTIME_TECH_AND_PACKAGE_STRATEGY.md`). This ADR's **local-USB no-cloud single node** is the
+**sovereign / edge deployment of the same `observe.ts` keystone**: git-as-db works on a single node
+(Cockroach demotes to an optional local index or is skipped), and the **16-way constrained decode is
+exactly what makes a small local model a viable composer without the cluster**. Same keystone, two
+deployments (cluster for the org; USB-single-node for sovereignty/offline). This is additive, not a
+fork — per `AI_CLUSTER_SCAFFOLD_CONTEXT.md` local models are already a gated/deferred concern in the
+cluster context; the single-node deployment is where they become primary.
+
+### observe.ts is self-recursive: composed of summoned local small-LLM sub-observes (operator 2026-05-31)
+
+`observe()` need not be one model call. The readout it returns — the current phase + the legal
+options at a `RunScope` — can itself be **composed by summoning many local small LLMs, each
+assembling one piece of the readout, joined together; and that composition is recursive**. Operator
+2026-05-31: *"observe.ts can be composed of summons of many local small llms to pull together its own
+observe.ts pieces too — it can be self recursive."*
+
+This is **summonable BFT (B-0944) applied to `observe()` itself**, and it composes cleanly with the
+keystone because `observe()` is already a *pure* function over an injected snapshot (so the snapshot
+can be assembled by sub-observes without changing the contract):
+
+- **Recursive scope decomposition.** `observe(scope = organization)` may summon
+  `observe(scope = project)` -> `observe(scope = initiative)` -> ... down the `RunScope` ladder; each
+  level's readout is a piece of the parent's. The fixed grammar is the same at every level (a
+  `RunScope` rung renders to the same 16 slots), so recursion is uniform.
+- **Per-piece summoning.** Each piece of a readout (a candidate option, a deterministic-rule
+  evaluation, a label, a Tri-availability call) can be produced by a *summoned small local LLM*. The
+  16-way constrained decode keeps each summon tiny + local — many cheap summons compose into one
+  readout rather than one large model call.
+- **BFT join (the "summon" half of summonable BFT).** Where a piece is uncertain, summon **>=N small
+  LLMs and join** — agreement = the piece is `T`/`F`; disagreement = `N` (held), surfaced rather than
+  forced. This is the same non-Byzantine-consensus discipline as the four-compiler tri-boolean
+  ballot (B-0944), here over summoned local models instead of compilers, and it is exactly what makes
+  the readout trustworthy without a central oracle (the no-central-Rehoboam invariant: the readout is
+  assembled distributedly, never decreed).
+- **Self-recursive composition.** Because each summon is itself an `observe`-shaped call returning a
+  readout, `observe.ts` can build `observe.ts` — a small set of primitives (summon, render-16, join)
+  composes to arbitrary depth. The `decide()` legality check + the deterministic rules + the
+  >=3-agent constitution gate still bound the WHOLE recursion (a summoned sub-observe cannot escape
+  the rules any more than the top-level composer can).
+
+**[OPEN]** the summon/join protocol (how many small LLMs per piece; quorum; how disagreement maps to
+`N` vs a re-summon), the recursion-depth budget + termination, and caching of stable sub-readouts.
+This composes with B-0944 (summonable BFT), B-0703/B-0652 (multi-oracle BFT), the keystone's
+`DeterministicRule` + constitution gate, and the metabolism-loop generator-function substrate (each
+summoned piece is a generator). It is additive to the keystone — `observe()` stays pure; the snapshot
+it reads can now be *recursively summoned* rather than monolithically loaded.
+
 ## Decision
 
 Adopt, as the agent foreground-loop architecture, a **choose-your-own-adventure observe->act loop**
@@ -60,8 +148,10 @@ with these four properties:
    **zero cloud inference**. The fixed, small, indexed action space (pick 0..15) is exactly what
    makes a small local model viable: it is **constrained decoding** to 16 tokens, not open-ended
    generation.
-4. **Git-as-append-only-state** — no DB; per-agent append-only Git log (128-bit IDs); the LLM never
-   holds state internally; every tick reads state from Git and appends the chosen event.
+4. **Git-as-canonical-state** — per the v2 Integration section's precise model: **git-as-db is the
+   canonical store** (ZetaId-CRDT G-Set events; a ZetaId is the unique id), and **CockroachDB is an
+   optional rebuildable query index** (not a separate source of truth). The LLM never holds state
+   internally; every tick reads the snapshot from this layer and appends the chosen event.
 
 ## The architecture to code around
 
@@ -123,7 +213,7 @@ committing renders slot 4 as `F`; a state with a held/uncertain option renders i
   state machine + `move-next(state) -> 16-slot menu`. No LLM here. Replayable / DST-able.
 - **LLM selector** (local, no cloud): a pure function `menu -> index 0..15` over only-`T` slots.
   Holds no state. Swappable model.
-- **Git** (append-only, 128-bit IDs): the only state store. Each act appends one event.
+- **State**: git-as-db canonical (ZetaId-CRDT G-Set; a ZetaId is the unique id) + Cockroach as a rebuildable index (per the Integration section). Each act appends one event.
 
 ### Local-USB, no-cloud
 
@@ -159,8 +249,9 @@ committing renders slot 4 as `F`; a state with a held/uncertain option renders i
 - **>16 or variable-size menu.** Rejected for v0: a fixed 16-slot grammar is learnable (muscle
   memory), maps to a real controller, and keeps the decode tiny. Overflow options are reachable via
   Navigate (slots 0-3) + Scope (8-9) rather than by growing the grammar.
-- **Non-git state (DB).** Rejected: git-append-only is free, replayable, merge-conflict-free (128-bit
-  ids), and already ratified (B-0867/B-0858).
+- **DB as the canonical store.** Rejected: git-as-db is canonical (free, replayable, merge-conflict-free
+  via ZetaId-CRDT G-Set, ratified B-0867/B-0858). NOTE this rejects DB-as-source-of-truth, NOT the
+  Cockroach **rebuildable index** the Integration section keeps (an index is derived, not canonical).
 
 ## Open design questions [OPEN — for operator + Max]
 
@@ -176,24 +267,46 @@ committing renders slot 4 as `F`; a state with a held/uncertain option renders i
 6. How the human contributor uses the same grammar (the operator's framing: humans + AI both call
    move-next and pick) — same 16-slot UI for people.
 
-## Codeable first slice
+## Codeable first slice (v2 — builds ON the existing keystone)
 
-1. Define the `Menu16` type: `{ slots: { label: string; avail: Tri }[16] }` (TS + the F# DU canon).
-   Reuse the B-0944 `Tri` cell for `avail`.
-2. `move-next(state) -> Menu16`: extend `tools/agent-loop/state-machine.ts` to emit the 16-slot menu
-   (start by mapping its existing menu options onto the proposed slots).
-3. `observe.ts`: read latest git state -> `move-next` -> print the `Menu16`.
-4. A stub local selector: `Menu16 -> index` (start with a deterministic/random pick over `T` slots;
-   swap in the local LLM next).
-5. `act(index, state) -> append event to git` (128-bit id).
-6. Wire 1-5 into a runnable loop behind a flag; keep the hardcoded autonomous-tick as the default
-   until the move-next loop is trusted.
+The first slice is a thin **renderer + local-selector adapter** over the existing
+`agentic-organization` observe.ts keystone — it adds NO new observe/compose/decide logic.
+
+1. Define the `Menu16` type: `{ slots: { label: string; avail: Tri }[16] }` (reuse the B-0944 `Tri`
+   for `avail`). It is a **projection of the keystone's `ObserveResult` readout** (legal options +
+   `deterministicRulesApplied` vetoes), NOT a new state source.
+2. `renderMenu16(readout: ObserveResult) -> Menu16`: pure function mapping the keystone's per-`RunScope`
+   legal options onto the 16 fixed slots; vetoed/illegal -> `F`, held/uncertain -> `N`, legal -> `T`.
+   (Where >16 options exist, the Navigate slots page; Scope slots move `RunScope`.)
+3. `selectMenu16(menu: Menu16) -> index 0..15`: the **local (no-cloud) composer adapter** implementing
+   `EphemeralComposerPort.compose` — memoryless; constrained-decode to the `T` slots; stub first
+   (deterministic/random over `T`), swap in the local LLM next.
+4. Feed the chosen slot back through the keystone's `decide()` -> `command-pipeline.ts` (which already
+   rejects illegal picks + emits the command). **Do not** write a parallel act/append path.
+5. State reads/writes go through `agentic-organization/packages/frontmatter-db/` (git-as-db + ZetaId-CRDT; Cockroach index
+   optional on a single node), not a bespoke git log.
+6. Wire 1-5 behind a flag as the single-node loop; keep the hardcoded autonomous-tick as the default
+   until trusted. (Cluster deployment reuses the same renderer + selector via the cluster runtime.)
 
 ## Composes with
 
-- `tools/agent-loop/` (B-0867.5 — the move-next state machine this ADR puts a 16-slot face + observe
-  loop on)
-- B-0944 (tri-boolean digital qubit — the `Tri` cell IS the per-slot availability)
+- **`agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md`** (the existing observe.ts keystone
+  this ADR renders — `agentic-organization/packages/application/src/observe.ts`; observe/compose/decide, the RunScope /
+  RunLifecyclePhase / ObserveResult / ComposerSelection DUs, the memoryless composer, deterministic
+  rules, the ≥3-agent constitution gate)
+- **`agentic-organization/docs/AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md`** (the already-named "Universal
+  Action Grammar — the shared action representation inside phases"; *"reuse those ideas instead of
+  inventing another unrelated action language"*; free-time = bounded exploration, not idle)
+- **`agentic-organization/docs/GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md`** (the state model:
+  git-as-db + ZetaId-CRDT G-Set events + Cockroach rebuildable index; `agentic-organization/packages/frontmatter-db/`;
+  `src/Core.TypeScript/zeta-id/`)
+- **`agentic-organization/docs/CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md` +
+  `RUNTIME_TECH_AND_PACKAGE_STRATEGY.md` + `AI_CLUSTER_SCAFFOLD_CONTEXT.md`** (the cluster deployment
+  target — k3s/Temporal/Dapr/Orleans/NATS/Cockroach; local-model gating — vs this ADR's single-node)
+- `tools/agent-loop/` (B-0867.5 — the move-next state machine; the local TS form of the keystone's
+  composer that this ADR puts a 16-slot face on)
+- B-0944 (tri-boolean digital qubit — the `Tri` cell IS the per-slot availability; the `Tri[16]`
+  menu is a projection of the keystone's `ObserveResult` readout + deterministic-rule vetoes)
 - B-0862 (OPLE Observe/Persist/Limit/Emit — observe->act is the OPLE Observe+Emit loop)
 - B-0867 / B-0858 (git append-only state; consent-first state)
 - B-0865 (USB-boot starting-state) + `full-ai-cluster/nixos/` (local cluster) + the Ace agenda
@@ -210,3 +323,13 @@ committing renders slot 4 as `F`; a state with a held/uncertain option renders i
 - 2026-05-31 v1 — initial design-starter ADR composing observe->act + 16-direction grammar +
   local-no-cloud + git-state, with a proposed Xbox-controller 16-slot layout. Authored for operator
   + Max review before lock.
+- 2026-05-31 v2 — **integrated with the Agentic Organization `observe.ts` keystone** after reviewing
+  `agentic-organization/docs/`. Reframed from "propose a new observe.ts + action language" to
+  "render the EXISTING keystone": added the Integration section mapping every ADR concept onto the
+  existing `OBSERVE_COMPOSER_AND_RUN_STATE` DUs (RunScope / RunLifecyclePhase / ObserveResult /
+  ComposerSelection / constitution-gate); recognized the **Universal Action Grammar is already named**
+  in `AGENT_WORK_RHYTHM` (16-slot layout = its fixed-slot rendering, not a new language); replaced the
+  git-only state model with the precise **git-as-db ZetaId-CRDT G-Set + Cockroach rebuildable index**
+  (`GIT_COCKROACH_SYNC`); positioned **local-USB single-node as the sovereign deployment of the same
+  keystone** alongside the cluster runtime. Net-new ADR substrate narrowed to: the 16-slot controller
+  rendering + `Tri[16]` availability + the single-node deployment.
