@@ -3,6 +3,7 @@ import { test } from "node:test";
 
 import {
   AgenticEventType,
+  ChangeArtifactKind,
   ChangeSetPhase,
   CommandType,
   ExternalSystem,
@@ -30,6 +31,7 @@ import {
   CommandOutcomePersistenceStatus,
   ActionClass,
   ActRejectionReason,
+  createContentAddressedEvidenceArtifact,
   type CommandResult,
   ExternalDecision,
   RunLifecyclePhase,
@@ -719,6 +721,14 @@ function scheduleBlock(overrides: Partial<WorkScheduleBlock> = {}): WorkSchedule
   };
 }
 
+function createPolicySimulationArtifact(changeSetId: string) {
+  return createContentAddressedEvidenceArtifact("simulation-report", {
+    changeSetId,
+    decision: "accepted",
+    metrics: { delivery: "better", quality: "non_regression", cost: "acceptable", safety: "non_regression" },
+  });
+}
+
 test("memory-maintenance lane recomputes + persists updates + emits the cycle event", async () => {
   const aged = memEnvelope("m-old", MemoryPhase.Active, new Date(NOW - 90 * 86_400_000).toISOString(), 0.2);
   aged.state.outcome = { successCount: 0, failureCount: 6, inconclusiveCount: 0, workItemsObserved: [] };
@@ -815,6 +825,19 @@ function releaseChangeSet(changeSetId: string, phase: ChangeSetPhase = ChangeSet
   };
 }
 
+function releaseConfigChangeSet(changeSetId: string, phase: ChangeSetPhase = ChangeSetPhase.Approved): ChangeSet {
+  return {
+    ...releaseChangeSet(changeSetId, phase),
+    targetRef: `org-policy/${changeSetId}`,
+    artifacts: [{
+      kind: ChangeArtifactKind.ConfigChange,
+      key: "rmo.assignment.explorationRate",
+      before: "0.10",
+      after: "0.20",
+    }],
+  };
+}
+
 test("release-queue lane applies a green approved batch and emits apply events", async () => {
   const approved = [releaseChangeSet("cs-a"), releaseChangeSet("cs-b")];
   const upserts: ChangeSet[] = [];
@@ -835,6 +858,80 @@ test("release-queue lane applies a green approved batch and emits apply events",
   equal(result.status, "release-queue:2applied/0changes_requested/0requeued");
   deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Applied, ChangeSetPhase.Applied]);
   equal(events.filter((event) => event.kind === OrgEventKind.ChangeSetApplied).length, 2);
+});
+
+test("release-queue lane passes simulation evidence into config policy apply", async () => {
+  const approved = [releaseConfigChangeSet("cs-policy")];
+  const simulationEvidence = createPolicySimulationArtifact("cs-policy");
+  const upserts: ChangeSet[] = [];
+  const events: OrgEvent[] = [];
+  const lane = createReleaseQueueCadenceLane({
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
+    writer: { upsert: async (cs) => { upserts.push(cs); } },
+    appendEvent: async (event) => { events.push(event); },
+    evaluateBatch: () => ({ green: true, evidenceRefs: [simulationEvidence.ref], evidenceArtifacts: [simulationEvidence] }),
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "release-queue:1applied/0changes_requested/0requeued");
+  deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Applied]);
+  ok(events.some((event) => event.kind === OrgEventKind.ChangeSetApplied && event.evidenceRefs.includes(simulationEvidence.ref)));
+  equal(events.find((event) => event.kind === OrgEventKind.ChangeSetApplied)?.evidenceRefs.filter((ref) => ref === simulationEvidence.ref).length, 1);
+});
+
+test("release-queue lane holds config policy apply without simulation evidence", async () => {
+  const approved = [releaseConfigChangeSet("cs-policy")];
+  const upserts: ChangeSet[] = [];
+  const events: OrgEvent[] = [];
+  const lane = createReleaseQueueCadenceLane({
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
+    writer: { upsert: async (cs) => { upserts.push(cs); } },
+    appendEvent: async (event) => { events.push(event); },
+    evaluateBatch: () => ({ green: true, evidenceRefs: ["release-proof:green"] }),
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "release-queue:0applied/0changes_requested/1requeued");
+  deepEqual(upserts.map((cs) => cs.phase), [ChangeSetPhase.Approved]);
+  ok(events.some((event) => event.kind === OrgEventKind.ReviewFindingRaised && event.decision.includes("simulation evidence")));
+});
+
+test("release-queue lane does not reuse simulation evidence across config policy changes", async () => {
+  const approved = [releaseConfigChangeSet("cs-policy-a"), releaseConfigChangeSet("cs-policy-b")];
+  const simulationEvidence = createPolicySimulationArtifact("cs-policy-a");
+  const upserts: ChangeSet[] = [];
+  const events: OrgEvent[] = [];
+  const lane = createReleaseQueueCadenceLane({
+    organizationId: "org-lfg",
+    now: () => NOW,
+    createId,
+    reader: { listByOrgPhase: async (_o, phase) => (phase === ChangeSetPhase.Approved ? approved : []) },
+    writer: { upsert: async (cs) => { upserts.push(cs); } },
+    appendEvent: async (event) => { events.push(event); },
+    evaluateBatch: () => ({ green: true, evidenceRefs: [simulationEvidence.ref], evidenceArtifacts: [simulationEvidence] }),
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "release-queue:1applied/0changes_requested/1requeued");
+  deepEqual(upserts.map((cs) => [cs.changeSetId, cs.phase]), [
+    ["cs-policy-a", ChangeSetPhase.Applied],
+    ["cs-policy-b", ChangeSetPhase.Approved],
+  ]);
+  ok(events.some((event) => event.kind === OrgEventKind.ChangeSetApplied && event.subjectId === "cs-policy-a"));
+  ok(events.some((event) => event.kind === OrgEventKind.ReviewFindingRaised && event.subjectId === "cs-policy-b"));
+  ok(!events.some((event) => event.subjectId === "cs-policy-b" && event.evidenceRefs.includes(simulationEvidence.ref)));
 });
 
 test("release-queue lane bisects a red batch and bounces only the culprit", async () => {

@@ -2,6 +2,7 @@ import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import {
+  ChangeArtifactKind,
   ChangeSetPhase,
   OrgEventKind,
   ReviewGateKind,
@@ -11,6 +12,7 @@ import {
   type ReviewStage,
 } from "../../domain/src/index.ts";
 import {
+  createContentAddressedEvidenceArtifact,
   ExternalDecision,
   replayLedger,
   runReviewStage,
@@ -44,6 +46,22 @@ function changeSet(over: Partial<ChangeSet> = {}): ChangeSet {
   };
 }
 
+function configChangeSet(over: Partial<ChangeSet> = {}): ChangeSet {
+  return changeSet({
+    title: "Tune RMO policy",
+    targetRef: "org-policy/rmo",
+    artifacts: [
+      {
+        kind: ChangeArtifactKind.ConfigChange,
+        key: "rmo.assignment.explorationRate",
+        before: "0.10",
+        after: "0.20",
+      },
+    ],
+    ...over,
+  });
+}
+
 test("content-addressed changeSetId is deterministic + revision-keyed", () => {
   const a = contentAddressedChangeSetId("org-lfg", "work-1", "feat/x", 1);
   equal(a, contentAddressedChangeSetId("org-lfg", "work-1", "feat/x", 1));
@@ -55,6 +73,86 @@ test("openChangeSet: drafted → in_review at stage 0, emits ChangeSetOpened", (
   equal(r.changeSet.phase, ChangeSetPhase.InReview);
   equal(r.changeSet.currentStageIndex, 0);
   ok(r.events.some((e) => e.kind === OrgEventKind.ChangeSetOpened));
+});
+
+test("openChangeSet: config policy changes require simulation evidence before review", () => {
+  const r = openChangeSet(configChangeSet({ phase: ChangeSetPhase.Drafted }), deps());
+
+  equal(r.changeSet.phase, ChangeSetPhase.Drafted);
+  equal(r.events[0]?.kind, OrgEventKind.ReviewFindingRaised);
+  ok(r.events[0]?.decision.includes("simulation evidence"));
+});
+
+test("openChangeSet: simulation evidence permits config policy changes to enter review", () => {
+  const simulationEvidence = createPolicySimulationArtifact("cs-1");
+  const r = openChangeSet(configChangeSet({ phase: ChangeSetPhase.Drafted, currentStageIndex: 5 }), deps({
+    changeSetEvidenceArtifacts: () => [simulationEvidence],
+  }));
+
+  equal(r.changeSet.phase, ChangeSetPhase.InReview);
+  equal(r.changeSet.currentStageIndex, 0);
+  ok(r.events.some((e) => e.kind === OrgEventKind.ChangeSetOpened));
+  ok(r.events.some((e) => e.evidenceRefs.includes(simulationEvidence.ref)));
+});
+
+test("openChangeSet: simulation evidence must be verified and bound to the change set", () => {
+  const unboundSimulationEvidence = createPolicySimulationArtifact("other-cs");
+  const r = openChangeSet(configChangeSet({ phase: ChangeSetPhase.Drafted }), deps({
+    changeSetEvidenceArtifacts: () => [unboundSimulationEvidence],
+    changeSetEvidenceRefs: () => [gateEvidenceRef("simulation-report", "unverified-label-only")],
+  }));
+
+  equal(r.changeSet.phase, ChangeSetPhase.Drafted);
+  equal(r.events[0]?.kind, OrgEventKind.ReviewFindingRaised);
+  ok(!r.events[0]!.evidenceRefs.includes(unboundSimulationEvidence.ref));
+});
+
+test("openChangeSet: code artifacts targeting policy surfaces also require simulation evidence", () => {
+  const r = openChangeSet(changeSet({
+    phase: ChangeSetPhase.Drafted,
+    targetRef: "org-policy/rmo",
+    artifacts: [{ kind: ChangeArtifactKind.CodeDiff, path: "config/rmo-policy.ts", diff: "+rate = 0.2", language: "ts" }],
+  }), deps());
+
+  equal(r.changeSet.phase, ChangeSetPhase.Drafted);
+  equal(r.events[0]?.kind, OrgEventKind.ReviewFindingRaised);
+});
+
+test("openChangeSet: plural and underscored policy/config paths require simulation evidence", () => {
+  const promptFlowChange = openChangeSet(changeSet({
+    phase: ChangeSetPhase.Drafted,
+    targetRef: "feat/prompt-flow-loader",
+    artifacts: [{ kind: ChangeArtifactKind.CodeDiff, path: "packages/prompt-flows/director.ts", diff: "+flow", language: "ts" }],
+  }), deps());
+  const tenantConfigChange = openChangeSet(changeSet({
+    phase: ChangeSetPhase.Drafted,
+    targetRef: "feat/tenant-config",
+    artifacts: [{ kind: ChangeArtifactKind.CodeDiff, path: "src/tenant_config.ts", diff: "+policy", language: "ts" }],
+  }), deps());
+
+  equal(promptFlowChange.changeSet.phase, ChangeSetPhase.Drafted);
+  equal(tenantConfigChange.changeSet.phase, ChangeSetPhase.Drafted);
+  equal(promptFlowChange.events[0]?.kind, OrgEventKind.ReviewFindingRaised);
+  equal(tenantConfigChange.events[0]?.kind, OrgEventKind.ReviewFindingRaised);
+});
+
+test("applyChangeSet: approved config policy changes cannot apply without simulation evidence or waiver", () => {
+  const r = applyChangeSet(configChangeSet({ phase: ChangeSetPhase.Approved }), deps());
+
+  equal(r.changeSet.phase, ChangeSetPhase.Approved);
+  equal(r.events[0]?.kind, OrgEventKind.ReviewFindingRaised);
+  ok(r.events[0]?.decision.includes("simulation evidence"));
+});
+
+test("applyChangeSet: emergency waiver can release an approved config policy change", () => {
+  const waiverEvidence = createPolicyWaiverArtifact("cs-1");
+  const r = applyChangeSet(configChangeSet({ phase: ChangeSetPhase.Approved }), deps({
+    changeSetEvidenceArtifacts: () => [waiverEvidence],
+  }));
+
+  equal(r.changeSet.phase, ChangeSetPhase.Applied);
+  ok(r.events.some((e) => e.kind === OrgEventKind.ChangeSetApplied));
+  ok(r.events.some((e) => e.evidenceRefs.includes(waiverEvidence.ref)));
 });
 
 test("hat stage: a satisfiable gate advances the cursor (ReviewStageAdvanced)", () => {
@@ -190,4 +288,20 @@ test("a blocking stage may reject — terminal", () => {
 
 function gateEvidenceRef(kind: string, id: string): string {
   return createContentAddressedEvidenceRef(kind, { id });
+}
+
+function createPolicySimulationArtifact(changeSetId: string) {
+  return createContentAddressedEvidenceArtifact("simulation-report", {
+    changeSetId,
+    decision: "accepted",
+    metrics: { delivery: "better", quality: "non_regression", cost: "acceptable", safety: "non_regression" },
+  });
+}
+
+function createPolicyWaiverArtifact(changeSetId: string) {
+  return createContentAddressedEvidenceArtifact("emergency-waiver", {
+    changeSetId,
+    approvedBy: "coo",
+    reason: "incident mitigation",
+  });
 }

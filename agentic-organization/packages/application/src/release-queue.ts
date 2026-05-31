@@ -1,4 +1,5 @@
 import { type ChangeSet } from "../../domain/src/index.ts";
+import { type ContentAddressedEvidenceArtifact } from "./content-addressed-evidence.ts";
 
 export const ReleaseQueueState = {
   Idle: "idle",
@@ -20,12 +21,14 @@ export type ReleaseQueueActionKind =
 export type ReleaseBatchEvaluation = {
   green: boolean;
   evidenceRefs: readonly string[];
+  evidenceArtifacts?: readonly ContentAddressedEvidenceArtifact[];
 };
 
 export type ReleaseQueueAction = {
   kind: ReleaseQueueActionKind;
   changeSetId: string;
   evidenceRefs: readonly string[];
+  evidenceArtifacts?: readonly ContentAddressedEvidenceArtifact[];
 };
 
 export type ReleaseQueuePlan = {
@@ -56,7 +59,7 @@ export function planReleaseQueue(input: PlanReleaseQueueInput): ReleaseQueuePlan
     return {
       state: ReleaseQueueState.BatchGreen,
       batch,
-      actions: batch.map((cs) => applyAction(cs, evaluation.evidenceRefs)),
+      actions: batch.map((cs) => applyAction(cs, evaluation)),
     };
   }
 
@@ -88,14 +91,14 @@ function bisect(
   const evaluation = knownEvaluation ?? evaluateBatch([...accepted, ...batch]);
   if (evaluation.green) {
     return {
-      actions: batch.map((cs) => applyAction(cs, evaluation.evidenceRefs)),
+      actions: batch.map((cs) => applyAction(cs, evaluation)),
       accepted: [...accepted, ...batch],
     };
   }
 
   if (batch.length === 1) {
     return {
-      actions: [requestChangesAction(batch[0]!, evaluation.evidenceRefs)],
+      actions: [requestChangesAction(batch[0]!, evaluation)],
       accepted,
     };
   }
@@ -128,18 +131,20 @@ function acceptedAll(
   );
 }
 
-function applyAction(cs: ChangeSet, evidenceRefs: readonly string[]): ReleaseQueueAction {
+function applyAction(cs: ChangeSet, evaluation: ReleaseBatchEvaluation): ReleaseQueueAction {
   return {
     kind: ReleaseQueueActionKind.Apply,
     changeSetId: cs.changeSetId,
-    evidenceRefs,
+    evidenceRefs: evaluation.evidenceRefs,
+    ...(evaluation.evidenceArtifacts !== undefined ? { evidenceArtifacts: evaluation.evidenceArtifacts } : {}),
   };
 }
 
-function requestChangesAction(cs: ChangeSet, evidenceRefs: readonly string[]): ReleaseQueueAction {
+function requestChangesAction(cs: ChangeSet, evaluation: ReleaseBatchEvaluation): ReleaseQueueAction {
   return {
     kind: ReleaseQueueActionKind.RequestChanges,
     changeSetId: cs.changeSetId,
-    evidenceRefs,
+    evidenceRefs: evaluation.evidenceRefs,
+    ...(evaluation.evidenceArtifacts !== undefined ? { evidenceArtifacts: evaluation.evidenceArtifacts } : {}),
   };
 }

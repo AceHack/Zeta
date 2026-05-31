@@ -46,6 +46,7 @@ import {
   RunScope,
   ActRejectionReason,
   type ChangeControlPort,
+  type ContentAddressedEvidenceArtifact,
   type DeadLetterRecoveryCandidate,
   type Menu16Slot,
   type HierarchySnapshot,
@@ -60,6 +61,7 @@ import {
   type ScheduleBlockRecoveryCandidate,
   type ScopedMetricAgent,
   type SlotAuthorizationDecision,
+  isContentAddressedEvidenceRef,
 } from "../../../packages/application/src/index.ts";
 import { runAgentCliCycle, type MenuSelector } from "../../agent-cli/src/agent-cli.ts";
 import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
@@ -700,13 +702,17 @@ export function createReleaseQueueCadenceLane(deps: ReleaseQueueCadenceDeps): Ca
               if (cs === undefined) continue;
 
               if (action.kind === ReleaseQueueActionKind.Apply) {
-                const kernel = releaseQueueKernel(deps);
+                const kernel = releaseQueueKernel(deps, action.evidenceRefs, action.evidenceArtifacts ?? []);
                 const applied = applyChangeSet(cs, kernel);
                 await ports.writer.upsert(applied.changeSet);
                 for (const event of applied.events) {
                   await ports.appendEvent(withEvidence(event, action.evidenceRefs));
                 }
-                counts.applied += 1;
+                if (applied.changeSet.phase === ChangeSetPhase.Applied) {
+                  counts.applied += 1;
+                } else {
+                  counts.requeued += 1;
+                }
               } else if (action.kind === ReleaseQueueActionKind.RequestChanges) {
                 const next = {
                   ...cs,
@@ -734,19 +740,32 @@ export function createReleaseQueueCadenceLane(deps: ReleaseQueueCadenceDeps): Ca
   };
 }
 
-function releaseQueueKernel(deps: ReleaseQueueCadenceDeps): ReviewKernelDeps {
+function releaseQueueKernel(deps: ReleaseQueueCadenceDeps, evidenceRefs: readonly string[] = [], evidenceArtifacts: readonly ContentAddressedEvidenceArtifact[] = []): ReviewKernelDeps {
   return {
     organizationId: deps.organizationId,
     now: deps.now(),
     createId: deps.createId,
+    changeSetEvidenceRefs: () => evidenceRefs,
+    changeSetEvidenceArtifacts: () => evidenceArtifacts,
   };
 }
 
 function withEvidence(event: OrgEvent, evidenceRefs: readonly string[]): OrgEvent {
+  const appendableEvidenceRefs = evidenceRefs.filter((ref) =>
+    !isPolicyAuthorizingEvidenceRef(ref) || event.evidenceRefs.includes(ref),
+  );
   return {
     ...event,
-    evidenceRefs: [...event.evidenceRefs, ...evidenceRefs],
+    evidenceRefs: [...new Set([...event.evidenceRefs, ...appendableEvidenceRefs])],
   };
+}
+
+function isPolicyAuthorizingEvidenceRef(ref: string): boolean {
+  return isContentAddressedEvidenceRef(ref)
+    && (
+      ref.startsWith("evidence:simulation-report:sha256:")
+      || ref.startsWith("evidence:emergency-waiver:sha256:")
+    );
 }
 
 function releaseQueueChangesRequestedEvent(

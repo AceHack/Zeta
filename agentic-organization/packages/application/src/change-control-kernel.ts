@@ -16,6 +16,7 @@
  */
 
 import {
+  ChangeArtifactKind,
   ChangeSetPhase,
   OrgEventKind,
   ReviewGateKind,
@@ -32,7 +33,10 @@ import {
 } from "../../domain/src/index.ts";
 import {
   allEvidenceRefsContentAddressed,
+  type ContentAddressedEvidenceArtifact,
   createContentAddressedEvidenceRef,
+  isContentAddressedEvidenceRef,
+  verifiedContentAddressedEvidenceRefs,
 } from "./content-addressed-evidence.ts";
 import { chooseWithinLegal, firstLegalChooser, type OrgChooser } from "./org-decision.ts";
 
@@ -57,6 +61,8 @@ export type ReviewKernelDeps = {
   quorumApprovals?: (cs: ChangeSet, stage: ReviewStage) => number;
   externalDecision?: (cs: ChangeSet, stage: ReviewStage) => ExternalDecision;
   stageEvidenceRefs?: (cs: ChangeSet, stage: ReviewStage) => readonly string[];
+  changeSetEvidenceRefs?: (cs: ChangeSet) => readonly string[];
+  changeSetEvidenceArtifacts?: (cs: ChangeSet) => readonly ContentAddressedEvidenceArtifact[];
   /** the hat chooser for `hat`-authority stages (clamped); default = first legal. */
   hatChooser?: OrgChooser<StageOutcome>;
 };
@@ -71,6 +77,13 @@ export type StageResult = {
   paused: boolean; // a human/external stage is waiting — the ChangeSet did not advance
   decision: Decision;
   gate: StageGateEvaluation;
+};
+
+export type ChangeSetSimulationPolicyEvaluation = {
+  required: boolean;
+  allowed: boolean;
+  detail: string;
+  evidenceRefs: readonly string[];
 };
 
 const MEMORY_CHAIN = ["executive_board", "coo"] as const;
@@ -284,15 +297,25 @@ export function resumeHumanStage(cs: ChangeSet, pipeline: ReviewPipeline, humanO
 /** Apply an approved ChangeSet — the materialize step (runtime does the artifact write + external merge). */
 export function applyChangeSet(cs: ChangeSet, deps: ReviewKernelDeps): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
   if (cs.phase !== ChangeSetPhase.Approved) return { changeSet: cs, events: [] };
+  const policy = evaluateChangeSetSimulationPolicy(cs, deps);
+  if (!policy.allowed) {
+    const ev = event(deps, OrgEventKind.ReviewFindingRaised, cs.changeSetId, cs.phase, undefined, policy.detail, undefined, policy.evidenceRefs);
+    return { changeSet: cs, events: [ev] };
+  }
   const at = new Date(deps.now).toISOString();
-  const ev = event(deps, OrgEventKind.ChangeSetApplied, cs.changeSetId, cs.phase, ChangeSetPhase.Applied, `change set applied — artifacts materialized to ${cs.targetRef}`);
+  const ev = event(deps, OrgEventKind.ChangeSetApplied, cs.changeSetId, cs.phase, ChangeSetPhase.Applied, `change set applied — artifacts materialized to ${cs.targetRef}`, undefined, policy.evidenceRefs);
   return { changeSet: { ...cs, phase: ChangeSetPhase.Applied, updatedAt: at }, events: [ev] };
 }
 
 /** Open a ChangeSet into review (drafted → in_review at stage 0). */
 export function openChangeSet(cs: ChangeSet, deps: ReviewKernelDeps): { changeSet: ChangeSet; events: readonly OrgEvent[] } {
+  const policy = evaluateChangeSetSimulationPolicy(cs, deps);
+  if (!policy.allowed) {
+    const ev = event(deps, OrgEventKind.ReviewFindingRaised, cs.changeSetId, ChangeSetPhase.Drafted, undefined, policy.detail, cs.proposerHatId, policy.evidenceRefs);
+    return { changeSet: cs, events: [ev] };
+  }
   const at = new Date(deps.now).toISOString();
-  const ev = event(deps, OrgEventKind.ChangeSetOpened, cs.changeSetId, ChangeSetPhase.Drafted, ChangeSetPhase.InReview, `change set opened: ${cs.title} (${cs.artifacts.length} artifact(s))`, cs.proposerHatId);
+  const ev = event(deps, OrgEventKind.ChangeSetOpened, cs.changeSetId, ChangeSetPhase.Drafted, ChangeSetPhase.InReview, `change set opened: ${cs.title} (${cs.artifacts.length} artifact(s))`, cs.proposerHatId, policy.evidenceRefs);
   return { changeSet: { ...cs, phase: ChangeSetPhase.InReview, currentStageIndex: 0, updatedAt: at }, events: [ev] };
 }
 
@@ -302,4 +325,145 @@ export function resubmitChangeSet(cs: ChangeSet, deps: ReviewKernelDeps): { chan
   const at = new Date(deps.now).toISOString();
   const ev = event(deps, OrgEventKind.ReviewStageAdvanced, cs.changeSetId, undefined, undefined, `resubmitted at revision ${cs.revision + 1} — re-entering review`, cs.proposerHatId);
   return { changeSet: { ...cs, phase: ChangeSetPhase.InReview, currentStageIndex: 0, revision: cs.revision + 1, updatedAt: at }, events: [ev] };
+}
+
+export function evaluateChangeSetSimulationPolicy(cs: ChangeSet, deps: ReviewKernelDeps): ChangeSetSimulationPolicyEvaluation {
+  if (!requiresSimulationBeforePolicyChange(cs)) {
+    return { required: false, allowed: true, detail: "simulation not required", evidenceRefs: [] };
+  }
+
+  const evidenceArtifacts = deps.changeSetEvidenceArtifacts === undefined ? [] : deps.changeSetEvidenceArtifacts(cs);
+  const verifiedRefs = verifiedContentAddressedEvidenceRefs(evidenceArtifacts);
+  const simulationEvidenceRefs = evidenceArtifacts
+    .filter((artifact) => verifiedRefs.has(artifact.ref) && isAcceptedSimulationForChangeSet(artifact, cs.changeSetId))
+    .map((artifact) => artifact.ref);
+  const waiverEvidenceRefs = evidenceArtifacts
+    .filter((artifact) => verifiedRefs.has(artifact.ref) && isEmergencyWaiverForChangeSet(artifact, cs.changeSetId))
+    .map((artifact) => artifact.ref);
+  const validEvidenceRefs = uniqueEvidenceRefs([...simulationEvidenceRefs, ...waiverEvidenceRefs]);
+  const hasSimulationEvidence = simulationEvidenceRefs.length > 0;
+  const hasEmergencyWaiver = waiverEvidenceRefs.length > 0;
+
+  if (hasSimulationEvidence || hasEmergencyWaiver) {
+    return {
+      required: true,
+      allowed: true,
+      detail: hasSimulationEvidence ? "policy/config change carries simulation evidence" : "policy/config change carries emergency waiver evidence",
+      evidenceRefs: validEvidenceRefs,
+    };
+  }
+
+  return {
+    required: true,
+    allowed: false,
+    detail: "policy/config change requires content-addressed simulation evidence or emergency waiver before review/apply",
+    evidenceRefs: validEvidenceRefs,
+  };
+}
+
+function requiresSimulationBeforePolicyChange(cs: ChangeSet): boolean {
+  if (mentionsPolicySurface(cs.targetRef)) {
+    return true;
+  }
+
+  return cs.artifacts.some((artifact) => {
+    switch (artifact.kind) {
+      case ChangeArtifactKind.CodeDiff:
+        return mentionsPolicySurface(artifact.path);
+      case ChangeArtifactKind.DocChange:
+        return mentionsPolicySurface(artifact.path);
+      case ChangeArtifactKind.ConfigChange:
+        return true;
+      case ChangeArtifactKind.DecisionRecord:
+        return mentionsPolicySurface(`${artifact.decisionId} ${artifact.summary}`);
+      case ChangeArtifactKind.ArtifactRef:
+        return mentionsPolicySurface(artifact.uri);
+      default:
+        return false;
+    }
+  });
+}
+
+function mentionsPolicySurface(value: string): boolean {
+  const normalized = value
+    .toLowerCase()
+    .replace(/[_./\\-]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  const compact = normalized.replace(/\s+/g, "");
+  const policyTokens = [
+    "policy",
+    "policies",
+    "config",
+    "configs",
+    "configuration",
+    "tenant config",
+    "tenantconfig",
+    "model",
+    "models",
+    "prompt flow",
+    "prompt flows",
+    "promptflow",
+    "promptflows",
+    "rmo",
+    "assignment",
+    "assignments",
+    "autonomy",
+    "schedule",
+    "schedules",
+  ];
+
+  return policyTokens.some((token) => normalized.includes(token) || compact.includes(token.replace(/\s+/g, "")));
+}
+
+function isAcceptedSimulationForChangeSet(artifact: ContentAddressedEvidenceArtifact, changeSetId: string): boolean {
+  if (artifact.kind !== "simulation-report" || !evidenceCoversChangeSet(artifact.payload, changeSetId)) {
+    return false;
+  }
+
+  const payload = objectPayload(artifact.payload);
+  return payload !== undefined
+    && (
+      payload.decision === "accepted"
+      || payload.outcome === "accepted"
+      || payload.accepted === true
+    );
+}
+
+function isEmergencyWaiverForChangeSet(artifact: ContentAddressedEvidenceArtifact, changeSetId: string): boolean {
+  if (artifact.kind !== "emergency-waiver" || !evidenceCoversChangeSet(artifact.payload, changeSetId)) {
+    return false;
+  }
+
+  const payload = objectPayload(artifact.payload);
+  return payload !== undefined
+    && typeof payload.approvedBy === "string"
+    && payload.approvedBy.trim().length > 0
+    && typeof payload.reason === "string"
+    && payload.reason.trim().length > 0;
+}
+
+function evidenceCoversChangeSet(payload: unknown, changeSetId: string): boolean {
+  const object = objectPayload(payload);
+  if (object === undefined) {
+    return false;
+  }
+
+  if (object.changeSetId === changeSetId) {
+    return true;
+  }
+
+  return Array.isArray(object.changeSetIds) && object.changeSetIds.includes(changeSetId);
+}
+
+function objectPayload(payload: unknown): Record<string, unknown> | undefined {
+  if (payload === null || typeof payload !== "object" || Array.isArray(payload)) {
+    return undefined;
+  }
+
+  return payload as Record<string, unknown>;
+}
+
+function uniqueEvidenceRefs(evidenceRefs: readonly string[]): readonly string[] {
+  return [...new Set(evidenceRefs.filter(isContentAddressedEvidenceRef))];
 }
