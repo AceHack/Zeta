@@ -1,0 +1,107 @@
+---
+id: B-0951
+priority: P2
+status: open
+title: Git-native eventually-consistent text indexes (sorted/inverted/graph) + the git-native Hindsight storage interface
+tier: memory-substrate
+ask: Aaron 2026-05-31
+created: 2026-05-31
+last_updated: 2026-05-31
+decomposition: umbrella
+composes_with:
+  - .claude/rules/dv2-data-split-discipline-activated.md
+  - .claude/rules/substrate-or-it-didnt-happen.md
+  - .claude/rules/additive-not-zero-sum.md
+  - .claude/rules/honor-those-that-came-before.md
+tags: [memory-substrate, git-native, indexes, eventually-consistent, materialized-view, dbsp, z-set, dv2.0, retrieval, knowledge-graph, hindsight, hermes, o-notation, text-based]
+type: feature
+---
+
+# B-0951 — Git-native eventually-consistent text indexes + the git-native Hindsight storage interface
+
+## The directive (Aaron 2026-05-31)
+
+> *"i basically want our git native to have git native indexes that are kept up to date too and are
+> just text based then we have good o notation lookups for all our native git stuff it's just
+> eventually consistent indexes in git"*
+
+Plus, from the same Hindsight thread:
+
+> *"we will conribute back gitnative versoin of storage interface into hindsight eventually and maxes
+> coackrachdb stuff works already cause it's a postgres interface in coackroach"*
+
+## The bet
+
+Give the **git-native substrate** (memory files, persona conversations, research docs, backlog,
+the `[[name]]` cross-link graph) a **text-based, git-committed index layer** that delivers good
+**O-notation lookups** (O(log n) / O(1) instead of O(n) grep), kept **eventually consistent** with
+the source. The index is a **materialized view over git** — git stays the single source of truth
+(retraction-native, replayable, diffable, "substrate or it didn't happen"); the index is derived.
+
+This **is** the git-native Hindsight storage interface: text indexes in git provide entity + graph +
+full-text lookups with **no Postgres required**, so Hindsight / CockroachDB (Max's Postgres-wire
+interface) become *optional acceleration* over the same git source-of-truth, never a competing one.
+
+## Proto-example already in-repo
+
+`docs/BACKLOG.md`, regenerated from the `docs/backlog/**` rows by `tools/backlog/generate-index.ts`
+(idempotent, `BACKLOG_WRITE_FORCE` regen-on-conflict), is exactly this pattern at one slice. This
+row generalizes it into a first-class retrieval layer.
+
+## Design (proposed; refine at start-gate)
+
+**Index types** (each a git-committed text file):
+
+- **sorted key index** — `<key> <tab> <location>` sorted; O(log n) by-key via byte-offset binary
+  search (the `look(1)` / git `packed-refs` shape).
+- **inverted index** — `<term> <tab> <files…>` for full-text.
+- **graph adjacency index** — built from the `[[name]]` cross-links → adjacency list; the
+  Hindsight-style knowledge graph, traversable as text.
+
+**Three disciplines that make it O-fast + conflict-safe:**
+
+1. **Regenerate, never merge.** Derived indexes are reproducible from source → on a git conflict,
+   rebuild (never hand-merge). This is what lets indexes live in git under multi-agent writes
+   (BACKLOG.md already does this).
+2. **Sorted + byte-offset = real O(log n)** (or a `hash→offset` file for O(1)). A flat text file is
+   still O(n) grep — the *format* is the lookup complexity.
+3. **Eventually-consistent ⇒ stamp + fallback.** Each index header carries the **source commit SHA**
+   it was built from, so readers know freshness and fall back to grep on a miss during the lag
+   window.
+
+**Update mechanism (the "kept up to date" part):**
+
+- **incremental** (Z-set delta on change — the elegant DBSP/differential-dataflow way; this is the
+  factory's own engine pointed at its own memory), OR
+- **full-rebuild-on-cadence** (simple; works today; text rebuild is cheap at current corpus size).
+- Trigger: a harness-hook on memory-write, a razor-cadence-style cron, or CI-on-push (as
+  generate-index.ts does for BACKLOG.md).
+
+## Composition (fits the spine, doesn't fight it)
+
+- **DBSP / Z-sets** — an index IS a materialized view; updates are Z-set deltas (the factory core).
+- **DV2.0 + idempotency** (always-active disciplines) — indexes are change-rate-partitioned
+  satellites; rebuild is idempotent.
+- **retraction-native** — index entries retract with their source; the index is replayable.
+- **substrate-or-it-didn't-happen** — indexes in git = durable substrate, not weather.
+- **Hermes/Hindsight** — local Hindsight daemon bundles with the `hermes` CLI (B-0857 Phase 2);
+  the **shared cluster Hindsight** is a future ArgoCD service backed by Max's CockroachDB
+  (Postgres wire); this row is the **git-native storage interface** to upstream into Hindsight so
+  git remains source-of-truth.
+
+## Acceptance (sketch — firm up at start-gate)
+
+- [ ] One index type shipped end-to-end (start with the **sorted key index** over the memory corpus
+      / `MEMORY.md`) with a TS reader that does byte-offset binary search + grep fallback on miss.
+- [ ] Index file carries a source-commit-SHA stamp; reader reports staleness.
+- [ ] Regenerate-not-merge wired (idempotent rebuild; conflict → rebuild, never hand-merge).
+- [ ] Update trigger chosen (cadence-rebuild first; incremental Z-set delta as the follow-up).
+- [ ] Graph adjacency index over the `[[name]]` links (the git-native Hindsight knowledge graph).
+- [ ] Documented as the git-native Hindsight storage-interface contract (for eventual upstream).
+
+## Notes
+
+Surfaced during the B-0857 cross-OS install + Hermes/Hindsight thread (2026-05-31). Hermes ships a
+local Hindsight memory daemon on first use; the shared cluster Hindsight is deferred to the k8s
+cluster (ArgoCD service). This row captures the git-native index/storage-interface direction so it
+isn't lost. Not blocking the install work.
