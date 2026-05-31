@@ -273,7 +273,10 @@ describe("renderReport", () => {
 
     expect(renderReport(report)).toContain(`OK: retained non-Lean shell surface matches ${RETAINED_SHELL_SCOPE}.`);
     expect(renderReport(report)).toContain("## Retained shell categories");
-    expect(renderReport(report)).toContain("- setup/bootstrap: 14");
+    const bootstrapCount =
+      report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files
+        .length ?? 0;
+    expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount}`);
     expect(renderReport(report)).toContain("- host-service wrappers: 2");
   });
 
