@@ -14,3 +14,10 @@
 # https://github.com/ScoopInstaller/scoop + https://learn.microsoft.com/windows/package-manager/):
 #   git — scoop: git | winget: Git.Git | choco: git
 git    winget=Git.Git    choco=git
+
+# Local-LLM core primitive (operator 2026-05-31 — graduated from deferred to Windows-native parity;
+# symmetric with manifests/brew's `ollama`). Provides the local move-next selector + observe.ts
+# classifier + DST fixtures. The pinned MODEL (manifests/local-llm) is pulled by install.ps1's
+# local-LLM step, mirroring common/local-llm.sh. Pins per dep-pin-search-first (verified
+# 2026-05-31): scoop main bucket `ollama` 0.20.7 | winget `Ollama.Ollama` 0.24.0 | choco `ollama`.
+ollama    winget=Ollama.Ollama    choco=ollama
