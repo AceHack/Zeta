@@ -59,7 +59,7 @@ questions are in
 2. **Spec the `WorkflowDU` contract**: `observe(state, scope) -> ObserveResult` + per-transition
    oracle-class declaration + the summon/join + the constitution-gate escalation, in the F# DU canon
    (and the cross-language ballot per B-0944).
-3. **Implement** against the existing keystone (`packages/application/src/observe.ts` +
+3. **Implement** against the existing keystone (`agentic-organization/packages/application/src/observe.ts` +
    `tools/agent-loop/`) without forking it; wire compiler-summons (B-0944 4-compiler ballot) +
    LLM-summons (self-recursive observe) as first-class.
 4. **DST/replay** the whole summon tree (deterministic-rule + constitution gate bound the recursion).
