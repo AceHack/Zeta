@@ -58,6 +58,9 @@ describe("application reaction plan action executor", () => {
         organizationId: "org-lfg",
         projectId: "project-agentic-org",
         actor: createManagerActor(),
+        policyContext: {
+          toolType: "prioritize",
+        },
         teamId: "team-runtime",
         workItemId: "work-runtime-001",
         discussionAnchorType: DiscussionAnchorType.WorkItem,
@@ -104,6 +107,9 @@ describe("application reaction plan action executor", () => {
         organizationId: "org-lfg",
         projectId: "project-agentic-org",
         actor: createManagerActor(),
+        policyContext: {
+          toolType: "prioritize",
+        },
         teamId: "team-runtime",
         workItemId: "work-runtime-001",
         discussionAnchorType: DiscussionAnchorType.WorkItem,
@@ -143,6 +149,9 @@ describe("application reaction plan action executor", () => {
         organizationId: "org-lfg",
         projectId: "project-agentic-org",
         actor: createManagerActor(),
+        policyContext: {
+          toolType: "write_doc",
+        },
         teamId: "team-runtime",
         workItemId: "work-runtime-001",
         discussionAnchorType: DiscussionAnchorType.WorkItem,

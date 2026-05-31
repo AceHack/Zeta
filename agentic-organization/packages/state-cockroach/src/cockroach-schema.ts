@@ -42,6 +42,7 @@ export const CockroachCoreStateMigrationName = {
   DocumentIntelligenceV18: "0018_agentic_org_document_intelligence",
   KnowledgeGraphV19: "0019_agentic_org_knowledge_graph",
   TenantConfigV20: "0020_agentic_org_tenant_config",
+  ReactionPlanTraceparentV21: "0021_agentic_org_reaction_plan_traceparent",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -184,6 +185,7 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachDocumentIntelligenceMigration(),
     createCockroachKnowledgeGraphMigration(),
     createCockroachTenantConfigMigration(),
+    createCockroachReactionPlanTraceparentMigration(),
   ];
 }
 
@@ -428,6 +430,13 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.TenantConfig} (
   updated_at TIMESTAMPTZ NOT NULL,
   version INT8 NOT NULL
 );`.trim(),
+  };
+}
+
+export function createCockroachReactionPlanTraceparentMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ReactionPlanTraceparentV21,
+    sql: createReactionPlanTraceparentMigrationSql(),
   };
 }
 
@@ -1081,6 +1090,7 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.ReactionPlans} (
   project_id STRING NOT NULL,
   work_item_id STRING NOT NULL,
   action_json JSONB NOT NULL,
+  traceparent STRING,
   attempt_count INT8 NOT NULL DEFAULT 0,
   next_attempt_at TIMESTAMPTZ
 );`.trim();
@@ -1118,6 +1128,7 @@ function createHatAssignmentAuthorityProjectionTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.HatAssignmentAuthorities} (
   hat_assignment_id STRING PRIMARY KEY,
+  hat_id STRING NOT NULL,
   organization_id STRING NOT NULL,
   project_id STRING NOT NULL,
   team_id STRING,
@@ -1128,7 +1139,12 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.HatAssignmentAuthorities} (
   correlation_id STRING NOT NULL,
   causation_id STRING NOT NULL,
   trace_id STRING NOT NULL
-);`.trim();
+);
+
+ALTER TABLE IF EXISTS ${CockroachTableName.HatAssignmentAuthorities}
+  ADD COLUMN IF NOT EXISTS hat_id STRING NOT NULL DEFAULT 'legacy_unknown_hat_assignment';
+
+-- Existing rows without a real hat id fail closed until a current projection backfills them.`.trim();
 }
 
 function createReactionPlanExecutionLifecycleMigrationSql(): string {
@@ -1143,4 +1159,10 @@ ALTER TABLE IF EXISTS ${CockroachTableName.ReactionPlans}
   ADD COLUMN IF NOT EXISTS failure_json JSONB,
   ADD COLUMN IF NOT EXISTS attempt_count INT8 NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS next_attempt_at TIMESTAMPTZ;`.trim();
+}
+
+function createReactionPlanTraceparentMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.ReactionPlans}
+  ADD COLUMN IF NOT EXISTS traceparent STRING;`.trim();
 }

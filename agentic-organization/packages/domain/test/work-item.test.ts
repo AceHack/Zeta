@@ -5,6 +5,7 @@ import {
   WorkItemState,
   WorkItemType,
   WorkItemSource,
+  baseLegalNextStates,
   legalNextTransitions,
   transitionRequiresGates,
   workflowPolicyFor,
@@ -58,4 +59,28 @@ test("review→in_progress (QA bounce-back / rework) is always legal and gate-fr
 test("service requests and reports flow with no heavy gates", () => {
   equal(transitionRequiresGates(item(WorkItemType.ServiceRequest, WorkItemState.Triage), WorkItemState.Ready).length, 0);
   equal(transitionRequiresGates(item(WorkItemType.Report, WorkItemState.Triage), WorkItemState.Ready).length, 0);
+});
+
+test("M4 clamp property: every work-item state is total and closed under the state DU", () => {
+  const states = new Set<string>(Object.values(WorkItemState));
+  for (const state of Object.values(WorkItemState)) {
+    const next = baseLegalNextStates(state);
+    ok(Array.isArray(next));
+    for (const target of next) {
+      ok(states.has(target));
+      ok(target !== state);
+    }
+  }
+  equal(baseLegalNextStates(WorkItemState.Done).length, 0);
+});
+
+test("M4 clamp property: type policies annotate legal transitions without inventing targets", () => {
+  for (const type of Object.values(WorkItemType)) {
+    for (const state of Object.values(WorkItemState)) {
+      const legalBase = new Set(baseLegalNextStates(state));
+      for (const transition of legalNextTransitions(item(type, state))) {
+        ok(legalBase.has(transition.toState));
+      }
+    }
+  }
 });

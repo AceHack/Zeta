@@ -8,7 +8,13 @@
  * Pure + order-independent: same inputs → same metrics.
  */
 
-import { OrgEventKind, WorkItemState, WorkItemType, type OrgEvent, type WorkItem } from "../../domain/src/index.ts";
+import { OrgEventKind, WorkItemState, WorkItemType, type ChangeSet, type OrgEvent, type WorkItem } from "../../domain/src/index.ts";
+import {
+  aggregateDoraMetrics,
+  rollUpDoraMetrics,
+  type DoraMetrics,
+  type DoraTimeWindow,
+} from "./dora-metrics.ts";
 
 export type TestSummary = {
   runs: number;
@@ -32,6 +38,7 @@ export type WorkBatchMetrics = {
   passRate: number; // 0..1 (1 when no runs yet)
   regressionsOpen: number;
   movementScore: number; // 0..1 — fraction of work not stuck (higher = healthier)
+  dora: DoraMetrics;
 };
 
 const ZERO_TESTS: TestSummary = { runs: 0, failures: 0, regressionsOpen: 0, defectsOpenedInTestSetup: 0 };
@@ -41,6 +48,8 @@ export function rollUpBatchMetrics(input: {
   items: readonly WorkItem[];
   events: readonly OrgEvent[];
   tests?: TestSummary;
+  changeSets?: readonly ChangeSet[];
+  doraWindow?: DoraTimeWindow;
 }): WorkBatchMetrics {
   const { batchId, items, events } = input;
   const tests = input.tests ?? ZERO_TESTS;
@@ -64,6 +73,13 @@ export function rollUpBatchMetrics(input: {
   const completionPct = total === 0 ? 1 : done / total;
   const passRate = tests.runs === 0 ? 1 : (tests.runs - tests.failures) / tests.runs;
   const movementScore = total === 0 ? 1 : Math.max(0, 1 - blocked / total);
+  const dora = rollUpDoraMetrics({
+    scope: doraScopeForBatch(batchId, items),
+    workItems: items,
+    changeSets: input.changeSets ?? [],
+    events,
+    ...(input.doraWindow !== undefined ? { window: input.doraWindow } : {}),
+  });
 
   return {
     batchId,
@@ -80,6 +96,7 @@ export function rollUpBatchMetrics(input: {
     passRate,
     regressionsOpen: tests.regressionsOpen,
     movementScore,
+    dora,
   };
 }
 
@@ -93,6 +110,7 @@ export type ScopeMetrics = {
   qaBounceBacks: number;
   regressionsOpen: number;
   movementScore: number;
+  dora: DoraMetrics;
 };
 
 /** Aggregate batch metrics into a scope-level rollup (department / org view). */
@@ -111,5 +129,17 @@ export function aggregateMetrics(list: readonly WorkBatchMetrics[]): ScopeMetric
     qaBounceBacks: sum((m) => m.qaBounceBacks),
     regressionsOpen: sum((m) => m.regressionsOpen),
     movementScore: total === 0 ? 1 : Math.max(0, 1 - blocked / total),
+    dora: aggregateDoraMetrics(list.map((metrics) => metrics.dora)),
+  };
+}
+
+function doraScopeForBatch(batchId: string, items: readonly WorkItem[]): DoraMetrics["scope"] {
+  const first = items[0];
+  return {
+    kind: "batch",
+    organizationId: first?.organizationId ?? "",
+    batchId,
+    ...(first?.projectId !== undefined ? { projectId: first.projectId } : {}),
+    ...(first?.initiativeId !== undefined ? { initiativeId: first.initiativeId } : {}),
   };
 }

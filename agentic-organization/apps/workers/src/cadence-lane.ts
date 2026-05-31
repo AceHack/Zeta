@@ -11,6 +11,13 @@
  * failure isolation; the lane owns the actual work.
  */
 
+import {
+  NoopTelemetry,
+  TelemetryMetricKind,
+  TelemetrySpanStatusCode,
+  type TelemetryPort,
+} from "../../../packages/observability/src/index.ts";
+
 export type CadenceLaneTickResult = {
   status: string;
   failures: readonly { message: string }[];
@@ -38,6 +45,8 @@ export type RunCadenceLaneInput = {
   isStopRequested: () => boolean;
   sleep: (ms: number) => Promise<void>;
   observer?: CadenceLaneObserver;
+  /** optional telemetry port; defaults to no-op so tests and pure callers stay hermetic */
+  telemetry?: TelemetryPort;
   /** bound the loop for tests; unbounded in production */
   maxTicks?: number;
   /** what counts as a degraded tick; defaults to any reported failure */
@@ -63,17 +72,25 @@ export async function runCadenceLane(input: RunCadenceLaneInput): Promise<Cadenc
   let ticks = 0;
   let degradedTicks = 0;
   let thrownTicks = 0;
+  const telemetry = input.telemetry ?? new NoopTelemetry();
 
   while (!input.isStopRequested() && !hasReachedMaxTicks(ticks, input.maxTicks)) {
     ticks += 1;
+    const span = telemetry.startSpan("org.lane.tick", {
+      attributes: {
+        "agentic.lane": input.lane.name,
+        "agentic.tick": ticks,
+      },
+    });
 
     let status: string;
     let failureCount: number;
+    let isDegraded = false;
     try {
       const result = await input.lane.runOnce();
       status = result.status;
       failureCount = result.failures.length;
-      const isDegraded = input.degradedWhen ? input.degradedWhen(status, failureCount) : failureCount > 0;
+      isDegraded = input.degradedWhen ? input.degradedWhen(status, failureCount) : failureCount > 0;
       if (isDegraded) degradedTicks += 1;
     } catch {
       // a lane should never throw, but the cadence loop survives if it does — a
@@ -82,8 +99,18 @@ export async function runCadenceLane(input: RunCadenceLaneInput): Promise<Cadenc
       failureCount = 1;
       thrownTicks += 1;
       degradedTicks += 1;
+      isDegraded = true;
     }
 
+    recordCadenceTickTelemetry({
+      telemetry,
+      span,
+      lane: input.lane.name,
+      tick: ticks,
+      status,
+      failureCount,
+      isDegraded,
+    });
     input.observer?.record({ lane: input.lane.name, tick: ticks, status, failureCount });
 
     if (!input.isStopRequested() && !hasReachedMaxTicks(ticks, input.maxTicks)) {
@@ -92,4 +119,36 @@ export async function runCadenceLane(input: RunCadenceLaneInput): Promise<Cadenc
   }
 
   return { lane: input.lane.name, ticks, degradedTicks, thrownTicks };
+}
+
+type RecordCadenceTickTelemetryInput = {
+  telemetry: TelemetryPort;
+  span: ReturnType<TelemetryPort["startSpan"]>;
+  lane: string;
+  tick: number;
+  status: string;
+  failureCount: number;
+  isDegraded: boolean;
+};
+
+function recordCadenceTickTelemetry(input: RecordCadenceTickTelemetryInput): void {
+  input.span.setAttribute("result.status", input.status);
+  input.span.setAttribute("agentic.failure_count", input.failureCount);
+  input.span.setStatus(
+    input.isDegraded
+      ? { code: TelemetrySpanStatusCode.Error, message: "degraded cadence tick" }
+      : { code: TelemetrySpanStatusCode.Ok },
+  );
+  input.span.end();
+  input.telemetry.recordMetric({
+    kind: TelemetryMetricKind.Counter,
+    name: "org_lane_ticks_total",
+    value: 1,
+    attributes: {
+      "agentic.lane": input.lane,
+      "agentic.tick": input.tick,
+      "result.status": input.status,
+      "agentic.failure_count": input.failureCount,
+    },
+  });
 }

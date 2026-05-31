@@ -272,6 +272,15 @@ describe("worker runtime config parsing", () => {
     equal(config.llmModel, "qwen2:0.5b");
   });
 
+  test("accepts optional OTLP exporter endpoint", () => {
+    const config = parseWorkerRuntimeConfigFromEnv({
+      ...createMinimalValidEnv(),
+      [WorkerProcessEnvName.OtelExporterOtlpEndpoint]: " http://otel-collector:4318/ ",
+    });
+
+    equal(config.otelExporterOtlpEndpoint, "http://otel-collector:4318/");
+  });
+
   test("omits LLM config when neither env var is set (deterministic-composer mode)", () => {
     const config = parseWorkerRuntimeConfigFromEnv(createMinimalValidEnv());
     equal(config.llmBaseUrl, undefined);

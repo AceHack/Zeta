@@ -163,6 +163,33 @@ describe("reaction plan executor", () => {
     deepEqual(actionIdempotencyKeys, ["reaction-plan-001:create_supervisor_triage"]);
   });
 
+  test("passes the persisted traceparent to action executors so delayed work continues the ingress trace", async () => {
+    const queue = createInMemoryReactionPlanWorkQueue([
+      {
+        ...createReactionPlanRecord(),
+        traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+      },
+    ]);
+    const traceparents: Array<string | undefined> = [];
+    const executor = createReactionPlanExecutor({
+      queue,
+      batchSize: 1,
+      leaseDurationMs: 300_000,
+      now: createClock(["2026-05-29T16:00:00.000Z", "2026-05-29T16:01:00.000Z", "2026-05-29T16:02:00.000Z"]),
+      createId: () => "reaction-claim-001",
+      actionExecutor: {
+        executeReactionPlanAction: async (_action, context) => {
+          traceparents.push(context.traceparent);
+          return createSucceededExecutionResult();
+        },
+      },
+    });
+
+    await executor.executeNextBatch();
+
+    deepEqual(traceparents, ["00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01"]);
+  });
+
   test("returns retryable reaction failures to planned work instead of making automation terminal", async () => {
     const queue = createInMemoryReactionPlanWorkQueue([createReactionPlanRecord()]);
     const executor = createReactionPlanExecutor({

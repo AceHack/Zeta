@@ -13,6 +13,7 @@ import {
   type WorkerDependencyReadinessProbe,
 } from "../worker-readiness.ts";
 import type { WorkerProcessShutdownPort } from "../worker-process.ts";
+import type { TelemetryPort } from "../../../../packages/observability/src/index.ts";
 
 export const NatsWorkerConnectionState = {
   Closed: "closed",
@@ -73,6 +74,7 @@ export type ConnectNatsWorkerAdaptersInput = {
   config: NatsWorkerConnectionConfig;
   deadLetterMessageIdFactory: NatsWorkerDeadLetterMessageIdFactory;
   transportFactory: NatsWorkerTransportConnectionFactory;
+  telemetry?: TelemetryPort;
 };
 
 export async function connectNatsWorkerAdapters(input: ConnectNatsWorkerAdaptersInput): Promise<NatsWorkerAdapters> {
@@ -92,6 +94,7 @@ export async function connectNatsWorkerAdapters(input: ConnectNatsWorkerAdapters
     }),
     eventPublisher: createNatsJetStreamEventPublisher({
       client: connection,
+      ...(input.telemetry === undefined ? {} : { telemetry: input.telemetry }),
     }),
     pullConsumer: connection,
     readinessProbe: {

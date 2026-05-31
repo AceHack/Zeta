@@ -25,6 +25,7 @@ export type CreateEventIngestionProcessorInput = {
 
 export type IngestEventInput = {
   envelope: AgenticEventEnvelope;
+  traceparent?: string;
 };
 
 export type EventIngestionResult = {
@@ -38,7 +39,7 @@ export type EventIngestionProcessor = {
 
 export function createEventIngestionProcessor(input: CreateEventIngestionProcessorInput): EventIngestionProcessor {
   return {
-    ingest: async ({ envelope }) => {
+    ingest: async ({ envelope, traceparent }) => {
       const lookup: InboxReceiptLookup = {
         eventId: envelope.eventId,
         consumerName: input.consumerName,
@@ -74,6 +75,7 @@ export function createEventIngestionProcessor(input: CreateEventIngestionProcess
         consumerName: input.consumerName,
         createdAt: observedAt,
         status: ReactionPlanStatus.Planned,
+        ...createOptionalTraceparent(traceparent),
         action,
       }));
 
@@ -90,6 +92,10 @@ export function createEventIngestionProcessor(input: CreateEventIngestionProcess
       };
     },
   };
+}
+
+function createOptionalTraceparent(traceparent: string | undefined): { traceparent?: string } {
+  return traceparent === undefined ? {} : { traceparent };
 }
 
 function isCompletedReceipt(receipt: InboxReceiptRecord): boolean {

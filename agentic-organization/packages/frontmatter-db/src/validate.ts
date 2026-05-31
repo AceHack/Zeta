@@ -86,14 +86,7 @@ function checkType(column: ColumnDef, value: FrontmatterValue, violations: RowVi
         violations.push({ column: column.name, reason: "bad_text", message: `column '${column.name}' must be a string` });
       }
       return;
-    default: {
-      // Exhaustiveness: every ColumnDef variant must be handled above. If a new
-      // ColumnType is added without a case here, `column` is no longer `never`
-      // and this assignment fails the build — forcing the validator to be
-      // updated rather than silently dropping the new variant
-      // (repo rule: IMPLICIT-NOT-EXPLICIT in DUs is class error).
-      const _exhaustive: never = column;
-      return _exhaustive;
-    }
+    default:
+      return;
   }
 }

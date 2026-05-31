@@ -12,6 +12,12 @@ import {
   NatsHeaderName,
   type NatsJetStreamClient,
 } from "../src/nats-jetstream-event-publisher.ts";
+import {
+  RecordingTelemetry,
+  TelemetryMetricKind,
+  TelemetrySpanStatusCode,
+  W3CTraceHeaderName,
+} from "../../observability/src/index.ts";
 
 describe("NATS JetStream event publisher", () => {
   test("publishes canonical JSON with idempotent headers and message ID", async () => {
@@ -41,6 +47,60 @@ describe("NATS JetStream event publisher", () => {
         [NatsHeaderName.OutboxEventId]: "outbox-001",
       },
     });
+  });
+
+  test("injects W3C trace context and records publish telemetry when a telemetry port is provided", async () => {
+    const client = createRecordingNatsClient();
+    const telemetry = new RecordingTelemetry({
+      traceContext: {
+        traceId: "4bf92f3577b34da6a3ce929d0e0e4736",
+        spanId: "00f067aa0ba902b7",
+        traceFlags: "01",
+      },
+    });
+    const publisher = createNatsJetStreamEventPublisher({
+      client,
+      telemetry,
+    });
+
+    await publisher.publish({
+      subject: "agentic-org.local.org-lfg.supervisor_signal.supervisor_signal.sent",
+      outboxEvent: createOutboxEvent(),
+    });
+
+    equal(
+      client.messages[0]?.headers[W3CTraceHeaderName.TraceParent],
+      "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+    );
+    deepEqual(
+      telemetry.spans.map((span) => ({
+        name: span.name,
+        status: span.status,
+        ended: span.ended,
+        subject: span.attributes["messaging.destination.name"],
+        eventId: span.attributes["agentic.event.id"],
+      })),
+      [
+        {
+          name: "org.nats.publish",
+          status: { code: TelemetrySpanStatusCode.Ok },
+          ended: true,
+          subject: "agentic-org.local.org-lfg.supervisor_signal.supervisor_signal.sent",
+          eventId: "evt-001",
+        },
+      ],
+    );
+    deepEqual(telemetry.metrics, [
+      {
+        kind: TelemetryMetricKind.Counter,
+        name: "org_nats_published_total",
+        value: 1,
+        attributes: {
+          "messaging.destination.name": "agentic-org.local.org-lfg.supervisor_signal.supervisor_signal.sent",
+          "result.status": "published",
+        },
+      },
+    ]);
   });
 });
 

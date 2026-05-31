@@ -32,6 +32,7 @@ export type ReactionPlanRecord = {
   consumerName: InboundEventConsumerName;
   createdAt: string;
   status: ReactionPlanStatus;
+  traceparent?: string;
   action: ReactionPlanAction;
   attemptCount?: number;
   nextAttemptAt?: string;

@@ -11,6 +11,67 @@ status: design
 Current checkpoint after the first executable TypeScript slices and
 subagent review.
 
+## Update 2026-05-30 — M1/M4 conformance checker + clamp properties built and proven in kind
+
+The first orchestration-moat phase is shipped: the org can now replay the
+universal `org_events` trace through the legal-transition kernels and report
+whether durable history stayed inside the clamps.
+
+- **M1 conformance checker.** `packages/application/src/conformance.ts` adds
+  pure `replayLedger(events): ConformanceReport`. It classifies replayable
+  transition events by `OrgEventKind`, checks them against the existing legal
+  kernels, and returns conformant / nonconformant / skipped rows as data. It
+  never throws on historical drift; an illegal event becomes explicit evidence
+  with event id, kind, subject id, from/to state, legal target states, and reason.
+  Context-dependent transitions that lack replay context are skipped rather than
+  counted as conformant (for example change-set final approval without pipeline
+  cursor, or document draft→active without load-bearing status).
+- **Live conformance lane.** `apps/workers/src/org-cadence-lanes.ts` now exposes
+  `createConformanceCadenceLane`, wired by `org-cadence-composition.ts` as a
+  fifth always-on lane. A violation degrades the tick with first-violation
+  evidence instead of crashing the worker.
+- **M4 clamp properties.** Domain tests now ratchet totality, closed target
+  sets, terminal-state no-escape, and unsatisfied-gate no-approval across the
+  work-item, change-control, memory, document, and knowledge-graph clamps.
+- **First drift caught and fixed.** Live replay found three historical
+  `active → archived` memory events that maintenance had emitted through the
+  archive-at-floor rule while `legalMemoryTransitions(Active)` did not admit
+  archive. The memory clamp now includes auto archive-at-floor from every
+  non-terminal phase, matching the shipped maintenance cycle.
+- **KIND proof.** `deploy/run-conformance.ts` appends a legal multi-kernel
+  trace to live in-cluster Cockroach, reads it through the real org-event store,
+  replays it, and prints a JSON proof report.
+
+Verification:
+
+```text
+npm run typecheck
+  PASS (tsc 0)
+
+npm test
+  859 tests / 852 pass / 0 fail / 7 skipped
+
+KIND worker rebuild/redeploy
+  rebuilt source-overlaid worker image sha256:cf9be9720910d3128915944bece577de7c0b87c147b5cf9dbabb00d7dcedabe1
+  note: Docker Hub metadata for node:24-slim hung, so the rebuild layered current
+  source over the prior node/dependency image; package dependencies were unchanged.
+
+Fresh worker pod clean boot
+  lanes: work-os, change-control, memory-maintenance, doc-maintenance, conformance
+  error log matches: 0
+  conformance lane: 121 checked / 0 violations / 333 skipped
+
+deploy/run-conformance.ts against in-cluster Cockroach
+  insertedEvents: 6
+  persistedEvents: 6
+  checked: 5
+  conformant: 5
+  nonconformant: 0
+  skipped: 1
+  live org-lfg: 454 events / 121 checked / 0 violations / 333 skipped
+  PROOF: PASS
+```
+
 ## Update 2026-05-30 — Org-Native Change Control built end-to-end + proven in kind (CC0–CC6)
 
 The internal review fabric (ORG_NATIVE_CHANGE_CONTROL_DESIGN) is built end-to-end and
@@ -1610,3 +1671,217 @@ The org integrates through one provider-agnostic surface where the configured pr
 the action; the live flip is a Secret the operator drops (the wire is already verified); and the
 integration suite runs green against real Cockroach+NATS in CI. The whole roadmap — A/L/D/G/C plus
 the generic-provider + live-flip + integration-runner work — is live, proven in kind, and green.
+
+---
+
+## Orchestration Moat G3 — Recovery Scanners
+
+The recovery moat now covers the V9 reaction-plan/runtime lifecycle with four always-on cadence
+lanes: `stale-reaction-plan-scan`, `stranded-schedule-scan`, `abandoned-run-binding-scan`, and
+`dead-letter-classifier`.
+
+### What shipped
+
+- Pure recovery classifiers in `packages/application/src/recovery-scanners.ts`.
+- Bounded Cockroach readers in `packages/state-cockroach/src/cockroach-recovery-scan-reader.ts`.
+- Four worker lanes wired into `composeOrgCadenceLoops`, each event-first and fail-open:
+  transient read/write errors degrade the lane tick instead of stopping the worker.
+- Recovery evidence events: `recovery_incident_detected` and `recovery_scan_completed`.
+- Dead-letter failure text is reduced to a `failure_message_sha256:<hash>` evidence ref before
+  persistence; raw failure messages do not become durable org-event payloads.
+- KIND proof runner: `deploy/run-recovery-scanners.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:g3-recovery-final`
+(`sha256:cdbc1787f764ce7645da8a0013b891402aea9101566849e697d09d5d5de6c0d5`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-7489448c66-bxmnq` with zero restarts. Fresh boot
+logs showed all four scanner lanes present with `failureCount:0`.
+
+`deploy/run-recovery-scanners.ts` seeded one proof candidate per scanner in live Cockroach and ran
+the same lane factories the worker uses:
+
+- stale reaction plan: `stale-reaction-plan-scan:1incidents`
+- stranded schedule block: `stranded-schedule-scan:1incidents`
+- abandoned Hermes run binding: `abandoned-run-binding-scan:1incidents`
+- failed/dead-lettered reaction plan: `dead-letter-classifier:1incidents`
+
+The proof for `org-recovery-02a002d1` observed four `recovery_incident_detected` events and four
+`recovery_scan_completed` events. `PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **871 tests, 0 fail** (7 skipped live-integration
+tests).
+
+---
+
+## Orchestration Moat G1 — Release Queue Batch + Bisect
+
+Approved ChangeSets now flow through a dedicated `release-queue` cadence lane instead of being
+auto-applied by the change-control lane. This makes `approved` a durable queue state: review says
+"ready to release"; the release queue proves the stack and materializes only the green changes.
+
+### What shipped
+
+- Pure release planner in `packages/application/src/release-queue.ts`.
+- `ReleaseQueueState` and `ReleaseQueueActionKind` House-DUs for idle, green, and bisected batches.
+- Priority ordering by retry pressure (`revision`) and age (`updatedAt`).
+- Recursive red-batch bisection against an accumulating accepted stack: green candidates apply;
+  single red culprits move back to `changes_requested`; interaction-red stacks cannot apply both
+  independently-green halves.
+- Worker `release-queue` lane wired into `composeOrgCadenceLoops`, fail-open like the other lanes,
+  with an explicit release-batch evaluator port. If no evaluator is wired, approved work is not
+  applied on metadata alone.
+- Batch persistence uses the Cockroach `executeTransaction` boundary so green batch actions and
+  release-red bounces commit atomically with their org-event evidence.
+- Change-control no longer auto-applies `approved` ChangeSets; the release queue owns
+  `approved -> applied`.
+- The change-set clamp now permits `approved -> changes_requested` so release-red bounces remain
+  replayable/conformant.
+- KIND proof runner: `deploy/run-release-queue.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:g1-release-queue-atomic`
+(`sha256:da47e79507bfc3690eb449c60a9a616916ad060d09a908d9d0a11b289749dc9f`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-695b8dc895-lc8dv` with zero restarts. Fresh boot
+logs showed `release-queue:0applied/0changes_requested/0requeued` with `failureCount:0`.
+
+`deploy/run-release-queue.ts` seeded three approved ChangeSets in live Cockroach and ran the same
+lane factory the worker composes. The deterministic evaluator made the middle ChangeSet red:
+
+- `cs-release-green-a-50fbc139`: `applied`
+- `cs-release-red-50fbc139`: `changes_requested`
+- `cs-release-green-b-50fbc139`: `applied`
+
+The proof for `org-release-a8e06b67` observed two `change_set_applied` events and one
+`changes_requested` event. `PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **882 tests, 0 fail** (7 skipped live-integration
+tests).
+
+## Update 2026-05-30 — E2 real authority + non-forgeable evidence shipped and proven in kind
+
+The two remaining soft spots in the orchestration moat are now closed: command authorization is
+backed by durable hat-assignment authority, and approved / waived evidence must be
+content-addressed instead of plain labels.
+
+### What shipped
+
+- Durable hat authority projection now carries `hat_id`, and the Cockroach V8 migration is
+  additive for existing KIND databases (`ADD COLUMN IF NOT EXISTS`) as well as correct for fresh
+  databases.
+- `createHatAuthorityPort` reads the durable assignment, checks active / revoked / expired state,
+  validates actor and scope identity, resolves the assigned hat definition, maps commands or
+  explicit `toolType` to action classes, and applies the deterministic hat guardrail.
+- The worker composition no longer uses the permissive authorization stub. It wires
+  `createCommandAuthorizationPort` to the durable hat authority reader.
+- Approved / waived quality-gate commands require content-addressed evidence refs for evaluated
+  artifacts and business-rule evidence. Drafty request-changes / rejected gates can still carry
+  informal context.
+- Change-control stage gates now require content-addressed evidence for satisfiable test,
+  no-blocking-finding, quorum, and external signals, and emitted review-stage org_events carry
+  that evidence.
+- Reaction-plan commands now carry policy `toolType`, so autonomous reactions are authorized by
+  their required hat instead of slipping through a generic command default.
+- KIND proof runner: `deploy/run-real-authority-evidence.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:e2-real-authority-evidence`
+(`sha256:33c9b51fca3fcc7538dfa803f26a4026aab7bdcb23929153e27a191b42bf2610`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-7759886cf9-lmtvm` with zero restarts. Fresh boot
+logs showed the worker cadence lanes and keep-alive ticking with `failureCount:0`.
+
+`deploy/run-real-authority-evidence.ts` ran against in-cluster Cockroach for
+`org-authority-evidence-a4f378b2` and proved:
+
+- TPM (`senior_tpm`) + `write_code` was rejected and recorded as one denied policy observation.
+- `release_operator` + `write_code` was accepted and persisted a work item
+  (`work-item-a4f378b2-864ba3a5-5dec-43df-887a-4213314ade7f`).
+- Approved quality-gate evidence using the plain label `plain-qa-report` was rejected.
+- Approved quality-gate evidence using
+  `evidence:qa-report:sha256:83b595a44127b8f16b929aa9f936f473e8de3a3113a4ba73c54fe02e8e986642`
+  was accepted.
+- Review-stage approval for `cs-e2-a4f378b2` persisted
+  `evidence:review-stage:sha256:1c0351451db088d459527e2be42b561c93a0900b2548a1b37d69d3bf60865947`
+  in the emitted org_event.
+- The proof also executed the deployed worker composition path for a supervisor-triage reaction;
+  `workerCompositionProof.status` was `succeeded`.
+
+`PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **897 tests, 0 fail** (7 skipped live-integration
+tests).
+
+---
+
+## Update 2026-05-31 — G2/M3/M5 self-improving org loop shipped and proven in kind
+
+The org now has its first closed self-improvement loop: deterministic model eval produces durable
+decision-quality evidence; the decision optimizer reads that evidence plus KPI signal and proposes
+a tenant-config delta as a ChangeSet; layered tenant config resolves the proposed overlay without
+mutating runtime policy directly.
+
+### What shipped
+
+- `packages/model-eval/` scores Class A neutral-evidence cases and Class B directive-context cases
+  against an allowed action vocabulary and expected action. The eval runner calls a decision port
+  per case before scoring; the deploy proof uses a deterministic port so the proof is hermetic.
+- Model-eval reports now summarize stable overall / per-class accuracy, failed cases, illegal
+  decisions, and can project results into `model_eval_completed` org_events.
+- `packages/application/src/decision-optimizer.ts` proposes safe model downgrades only when Class A
+  clears threshold, KPI is non-negative, eval and KPI evidence refs are content-addressed, the
+  evaluated model equals the candidate model, the candidate is lower-cost than the currently
+  resolved model, and the budget delta is negative. It emits a drafted ChangeSet with a
+  `config_change` artifact instead of mutating tenant config.
+- The optimizer cycle is storage-neutral: it reads one JSON document with `getJson`, writes one
+  JSON document with `putJson`, and appends JSON events with `appendJson`. The KIND proof supplies
+  Cockroach stores behind that generic document/log adapter; a Git or GitHub PR-backed store can
+  satisfy the same contract with files and PR changes without changing optimizer logic.
+- Tenant config now supports versioned layers over organization, department, hat, and work-item
+  scopes. Resolution is deterministic: more-specific non-nil model wins, integer budget deltas
+  stack, same-specificity ties resolve by `updatedAt`, `version`, then `layerId`, and a layer can
+  block inherited directives.
+- New event kind `decision_optimization_proposed` records optimizer proposals as durable ledger
+  evidence.
+- KIND proof runner: `deploy/run-model-eval-optimizer.ts`.
+
+### KIND proof
+
+Worker image rebuilt as `agentic-org-worker:g2-m3-m5-generic-store`
+(`sha256:a1dd61300a85be5f1583ca8d99f0aa1034a93ac1811e88ec24f8feb306a8b612`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-687cc7dbd5-v2snn` with zero restarts. Fresh boot
+logs showed cadence lanes, conformance, memory maintenance, keep-alive, and the worker cycle
+ticking with `failureCount:0`.
+
+`deploy/run-model-eval-optimizer.ts` ran through the generic optimizer store interface with
+in-cluster Cockroach as the adapter for `org-model-eval-optimizer-65f29b32` and proved:
+
+- The seeded model-eval run `eval-65f29b32` scored 2/2 overall, Class A 1/1, Class B 1/1 through
+  the eval runner's decision-port path.
+- The eval summary was bound to content-addressed evidence
+  `evidence:model-eval-report:sha256:327b39c90b8ccc93e5da9768b0765837aaf17aab1d330c31e3f90b86d9a6fb13`.
+- The KPI signal was bound to content-addressed evidence
+  `evidence:decision-kpi:sha256:9156181894765028106932c6e78453723dacae72b372d2ab1b1aa87839468b61`.
+- The optimizer produced drafted ChangeSet `6642c9f1-a96d-57ff-b3ad-fa97e33c1840` with one full
+  `tenant-config/org-model-eval-optimizer-65f29b32.json` `config_change` artifact.
+- Layer resolution before the overlay selected `gpt-5.5` with baseline directive
+  `baseline:use-frontier-model`.
+- Layer resolution after the proposed overlay selected `qwen2:0.5b`, stacked
+  `budgetDeltaTokens = -512`, blocked the inherited baseline directive, and retained only the
+  optimizer directive `optimizer:model-downgrade:eval-65f29b32`.
+- The live ledger contained one `model_eval_completed` event and one
+  `decision_optimization_proposed` event carrying both eval and KPI evidence refs.
+
+`PROOF: PASS`.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **916 tests, 0 fail** (7 skipped live-integration
+tests).

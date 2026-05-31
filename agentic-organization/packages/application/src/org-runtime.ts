@@ -19,9 +19,18 @@ import {
   type OrgEvent,
 } from "../../domain/src/index.ts";
 import { buildHatDefinitions } from "./org-seed.ts";
-import { firstLegalChooser } from "./org-decision.ts";
+import { firstLegalChooser, type OrgChooser } from "./org-decision.ts";
 import { computePriorityRecommendation, decidePriority, type PriorityInputs } from "./prioritization.ts";
-import { computeRequiredHatSupply, decideHatSupply, type HatSupplyVote, type WorkloadItem } from "./rmo.ts";
+import {
+  computeRequiredHatSupply,
+  decideHatSupply,
+  decideRmoHatAssignment,
+  rankRmoHatCandidates,
+  type HatSupplyVote,
+  type RankedRmoHatCandidate,
+  type RmoHatCandidateReputation,
+  type WorkloadItem,
+} from "./rmo.ts";
 import { assignHat, rankEligibleCandidates, type ActiveBindingSummary, type AgentCandidate } from "./assignment-engine.ts";
 import { advanceBinding, beginBinding, planSuccession, successionEvent, type LifecycleContext } from "./hat-lifecycle.ts";
 import { GateOwnerHats, evaluateGate, nextLegalGate, PipelineStage } from "./pipeline.ts";
@@ -34,6 +43,7 @@ export type OrgCycleDeps = {
   appendEvent: (event: OrgEvent) => Promise<void>;
   upsertBinding: (binding: HatBinding) => Promise<void>;
   hats?: readonly HatDefinition[];
+  rmoAssignmentChooser?: OrgChooser<RankedRmoHatCandidate>;
 };
 
 export type OrgCycleReport = {
@@ -134,8 +144,51 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
     const hat = byId.get(hatId)!;
     const candidates: AgentCandidate[] = [0, 1].map((i) => ({ agentId: `agent-${hatId}-${i}`, reputationByHat: { [hatId]: 10 - i } }));
     const ranked = rankEligibleCandidates({ hat, candidates, activeBindings, nowMs: t0 });
+    const rmoRanked = rankRmoHatCandidates({
+      hatId,
+      candidates: ranked.map((candidate, index): RmoHatCandidateReputation => {
+        const reputation = (candidate.reputationByHat[hatId] ?? 0) / 10;
+        return {
+          agentId: candidate.agentId,
+          hatId,
+          agentHatReputation: reputation,
+          recentOutcomeScore: Math.max(0.4, reputation - index * 0.05),
+          scheduleReliability: index === 0 ? 0.85 : 0.75,
+          reviewQuality: 0.75,
+          qaPassRate: 0.75,
+          completionRate: 0.8,
+          contextFit: 0.8,
+          currentLoad: 0,
+          freshness: index === 0 ? 0.45 : 0.8,
+          explorationBonus: index === 0 ? 0 : 0.25,
+          consecutiveAssignmentCount: 0,
+          recentSameHatAssignments: 0,
+        };
+      }),
+    });
+    const rmoAssignment = decideRmoHatAssignment(
+      {
+        hatId,
+        hatName: hat.name,
+        rankedCandidates: rmoRanked,
+        chooser: deps.rmoAssignmentChooser ?? firstLegalChooser(),
+      },
+      { createEventId: () => deps.createId("evt"), nowIso: nextIso, organizationId: deps.organizationId, supervisorChain: chainFor(hatId, byId), correlationId: corr, causationId: corr, traceId: corr },
+    );
+    if (rmoAssignment.outcome === "no_legal_candidate") continue;
+    await emit(rmoAssignment.event);
+    const selectedAgentId = rmoAssignment.selected.agentId;
     const assignment = assignHat(
-      { hat, eligibleRanked: ranked, activeWearerCount: 0, supplyTarget: supplyTargets.get(hatId) ?? 1, chooser: firstLegalChooser() },
+      {
+        hat,
+        eligibleRanked: ranked,
+        activeWearerCount: 0,
+        supplyTarget: supplyTargets.get(hatId) ?? 1,
+        chooser: (legal) => ({
+          index: Math.max(0, legal.findIndex((candidate) => candidate.agentId === selectedAgentId)),
+          reason: `RMO office selected ${selectedAgentId}`,
+        }),
+      },
       { createEventId: () => deps.createId("evt"), nowIso: nextIso, organizationId: deps.organizationId, supervisorChain: chainFor(hatId, byId), correlationId: corr, causationId: corr, traceId: corr },
     );
     if (assignment.outcome === "no_eligible_candidate") continue;

@@ -18,6 +18,7 @@ import {
 } from "../../../packages/runtime/src/index.ts";
 import { createKeepAliveLane, type KeepAliveLane } from "../../../packages/keepalive/src/index.ts";
 import { InboundEventConsumerName } from "../../../packages/state/src/index.ts";
+import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
 import {
   createCockroachControlPlaneStateStore,
   createCockroachDurableStateAdapters,
@@ -41,6 +42,7 @@ export type DurableWorkerRuntimeAdapters = {
   natsPullConsumer: NatsJetStreamPullConsumer;
   reactionPlanActionExecutor: ReactionPlanActionExecutorPort;
   telemetrySink: WorkerRuntimeTelemetrySink;
+  telemetry?: TelemetryPort;
 };
 
 export type DurableWorkerRuntimeUtilities = {
@@ -96,6 +98,7 @@ export function composeDurableWorkerRuntimePorts(
     pullConsumer: input.durableAdapters.natsPullConsumer,
     eventIngestionProcessor,
     deadLetterPublisher: input.durableAdapters.natsDeadLetterPublisher,
+    ...(input.durableAdapters.telemetry === undefined ? {} : { telemetry: input.durableAdapters.telemetry }),
   });
   const keepAliveLane = composeDurableKeepAliveLane(input);
 

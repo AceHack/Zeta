@@ -37,6 +37,7 @@ export type ReactionPlanActionExecutionContext = {
   claimId: string;
   actionIdempotencyKey: string;
   claimExpiresAt: string;
+  traceparent?: string;
 };
 
 export type ReactionPlanActionExecutionResult =
@@ -169,6 +170,7 @@ async function executeReactionPlanAction(
       claimId: reactionPlan.claimId,
       actionIdempotencyKey: createActionIdempotencyKey(reactionPlan),
       claimExpiresAt: reactionPlan.claimExpiresAt,
+      ...createOptionalTraceparent(reactionPlan.traceparent),
     });
   } catch (error) {
     return {
@@ -179,6 +181,10 @@ async function executeReactionPlanAction(
       },
     };
   }
+}
+
+function createOptionalTraceparent(traceparent: string | undefined): { traceparent?: string } {
+  return traceparent === undefined ? {} : { traceparent };
 }
 
 function hasActionTimeRemaining(reactionPlan: ClaimedReactionPlanRecord, now: string): boolean {

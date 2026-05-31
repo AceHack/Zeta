@@ -48,6 +48,7 @@ import {
   createCockroachDocumentIntelligenceMigration,
   createCockroachKnowledgeGraphMigration,
   createCockroachTenantConfigMigration,
+  createCockroachReactionPlanTraceparentMigration,
 } from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
@@ -78,6 +79,7 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("PRIMARY KEY (event_id, consumer_name)"));
     ok(migration.sql.includes("status STRING NOT NULL"));
     ok(migration.sql.includes("action_json JSONB NOT NULL"));
+    ok(migration.sql.includes("traceparent STRING"));
     ok(migration.sql.includes("attempt_count INT8 NOT NULL DEFAULT 0"));
     ok(migration.sql.includes("next_attempt_at TIMESTAMPTZ"));
     ok(migration.sql.includes("result_json JSONB NOT NULL"));
@@ -108,6 +110,7 @@ describe("cockroach core state schema", () => {
     equal(migrations[11]?.name, CockroachCoreStateMigrationName.AgentLivenessV12);
     equal(migrations[12]?.name, CockroachCoreStateMigrationName.HindsightMemoryV13);
     equal(migrations[13]?.name, CockroachCoreStateMigrationName.HermesRunV14);
+    equal(migrations[20]?.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
   });
 
   test("declares the hermes run table (durable agent-run history)", () => {
@@ -286,6 +289,9 @@ describe("cockroach core state schema", () => {
     equal(migration.name, CockroachCoreStateMigrationName.HatAssignmentAuthorityProjectionV8);
     ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.HatAssignmentAuthorities}`));
     ok(migration.sql.includes("hat_assignment_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("hat_id STRING NOT NULL"));
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.HatAssignmentAuthorities}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS hat_id STRING NOT NULL"));
     ok(migration.sql.includes("organization_id STRING NOT NULL"));
     ok(migration.sql.includes("project_id STRING NOT NULL"));
     ok(migration.sql.includes("team_id STRING"));
@@ -312,6 +318,14 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS failure_json JSONB"));
     ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS attempt_count INT8 NOT NULL DEFAULT 0"));
     ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS next_attempt_at TIMESTAMPTZ"));
+  });
+
+  test("declares an additive reaction plan traceparent migration for existing databases", () => {
+    const migration = createCockroachReactionPlanTraceparentMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.ReactionPlans}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS traceparent STRING"));
   });
 
   test("declares an additive quality gate evaluation kernel migration for existing databases", () => {
@@ -356,7 +370,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the memory system migration as V16 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 5]!.name, CockroachCoreStateMigrationName.MemorySystemV16);
+    equal(all[all.length - 6]!.name, CockroachCoreStateMigrationName.MemorySystemV16);
   });
 
   test("declares the change control kernel (change_sets + review_stage_status) with phase check", () => {
@@ -376,7 +390,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the change control migration as V17 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 4]!.name, CockroachCoreStateMigrationName.ChangeControlV17);
+    equal(all[all.length - 5]!.name, CockroachCoreStateMigrationName.ChangeControlV17);
   });
 
   test("declares the document intelligence kernel (doc units/sources/entities/graph/consult) with lifecycle + type checks", () => {
@@ -403,7 +417,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the document intelligence migration as V18 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 3]!.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
+    equal(all[all.length - 4]!.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
   });
 
   test("declares the knowledge graph kernel (graph_nodes + graph_edges) with confidence + kind checks", () => {
@@ -426,7 +440,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the knowledge graph migration as V19 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 2]!.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
+    equal(all[all.length - 3]!.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
   });
 
   test("declares the tenant config table (the org as a configurable runtime)", () => {
@@ -439,9 +453,14 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("version INT8 NOT NULL"));
   });
 
-  test("registers the tenant config migration as V20 last in the ordered migration set", () => {
+  test("registers the tenant config migration as V20 before traceparent in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 1]!.name, CockroachCoreStateMigrationName.TenantConfigV20);
+    equal(all[all.length - 2]!.name, CockroachCoreStateMigrationName.TenantConfigV20);
+  });
+
+  test("registers the reaction plan traceparent migration as V21 last in the ordered migration set", () => {
+    const all = createCockroachCoreStateMigrations();
+    equal(all[all.length - 1]!.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
   });
 
   test("keeps generated migrations synchronized with checked-in SQL files", async () => {

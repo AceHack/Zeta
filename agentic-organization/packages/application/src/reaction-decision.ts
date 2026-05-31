@@ -29,6 +29,7 @@ import {
   type EphemeralComposerPort,
   type ObserveFeedback,
   type RunSnapshot,
+  type ComposerSelectionRequest,
 } from "./observe.ts";
 
 /** The deterministic baseline agent intelligence: take the highest-priority legal move. */
@@ -63,11 +64,12 @@ export type DecideReactionActionAsyncInput = {
   action: ReactionPlanAction;
   composer: AsyncEphemeralComposerPort;
   now: () => string;
+  telemetry?: ComposerSelectionRequest["telemetry"];
 };
 
 /** Async sibling: the agent decides through an async (e.g. model-backed) composer, same guardrail. */
 export async function decideReactionActionAsync(input: DecideReactionActionAsyncInput): Promise<DecideResult> {
-  return decideAsync(snapshotForAction(input.action), input.composer, { clock: { now: input.now } });
+  return decideAsync(snapshotForAction(input.action), input.composer, { clock: { now: input.now } }, input.telemetry);
 }
 
 function snapshotForAction(action: ReactionPlanAction): RunSnapshot {

@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-config
+  namespace: agentic-org
+data:
+  config.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          http:
+            endpoint: 0.0.0.0:4318
+    processors:
+      batch: {}
+    exporters:
+      otlphttp/tempo:
+        endpoint: http://tempo:4318
+      prometheusremotewrite/mimir:
+        endpoint: http://mimir:9009/api/v1/push
+      otlphttp/loki:
+        endpoint: http://loki:3100/otlp
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/tempo]
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [prometheusremotewrite/mimir]
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [otlphttp/loki]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-collector
+  namespace: agentic-org
+  labels: { app: otel-collector }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: otel-collector }
+  template:
+    metadata:
+      labels: { app: otel-collector }
+    spec:
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector-contrib:0.101.0
+          args: ["--config=/etc/otelcol/config.yaml"]
+          ports:
+            - { name: otlp-http, containerPort: 4318 }
+          volumeMounts:
+            - { name: config, mountPath: /etc/otelcol }
+          resources:
+            requests: { cpu: "50m", memory: "128Mi" }
+            limits: { cpu: "500m", memory: "512Mi" }
+      volumes:
+        - name: config
+          configMap:
+            name: otel-collector-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: otel-collector
+  namespace: agentic-org
+spec:
+  selector: { app: otel-collector }
+  ports:
+    - { name: otlp-http, port: 4318, targetPort: otlp-http }

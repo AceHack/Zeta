@@ -15,7 +15,14 @@ import {
   WorkItemState,
   WorkItemType,
 } from "../../domain/src/index.ts";
-import { CommandErrorCode, CommandResultArtifactType, CommandResultStatus, type CommandResult } from "../src/index.ts";
+import {
+  CommandErrorCode,
+  CommandResultArtifactType,
+  CommandResultStatus,
+  createContentAddressedEvidenceArtifact,
+  createContentAddressedEvidenceRef,
+  type CommandResult,
+} from "../src/index.ts";
 import {
   recordQualityGateEvaluation,
   type RecordQualityGateEvaluationCommand,
@@ -47,18 +54,28 @@ const command: RecordQualityGateEvaluationCommand = {
   gateKind: QualityGateKind.FinalBusinessValidation,
   outcome: QualityGateOutcome.Approved,
   summary: "The delivered feature satisfies the BRD and can proceed to release readiness.",
-  evaluatedArtifactIds: ["brd-001", "qa-report-001", "trace-report-001"],
+  evaluatedArtifactIds: [
+    evidenceRef("brd", "brd-001"),
+    evidenceRef("test-run", "qa-report-001"),
+    evidenceRef("trace", "trace-report-001"),
+  ],
+  evidenceArtifacts: [
+    evidenceArtifact("brd", "brd-001"),
+    evidenceArtifact("test-run", "qa-report-001"),
+    evidenceArtifact("trace", "trace-report-001"),
+    evidenceArtifact("decision", "decision-record-001"),
+  ],
   businessRuleResults: [
     {
       ruleId: "BRD-001",
       status: BusinessRuleEvaluationStatus.Satisfied,
-      evidenceArtifactIds: ["qa-report-001"],
+      evidenceArtifactIds: [evidenceRef("test-run", "qa-report-001")],
       notes: "The implemented behavior matches the approved business rule.",
     },
     {
       ruleId: "BRD-002",
       status: BusinessRuleEvaluationStatus.ChangedByDecision,
-      evidenceArtifactIds: ["decision-record-001"],
+      evidenceArtifactIds: [evidenceRef("decision", "decision-record-001")],
       notes: "The Product Owner accepted the changed behavior in a recorded decision.",
     },
   ],
@@ -235,6 +252,60 @@ describe("record quality gate evaluation handler", () => {
     equal(outcome.result.status, CommandResultStatus.Rejected);
     equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
     equal(outcome.result.error?.message, "quality gate evaluated artifact IDs are required");
+    equal(outcome.effects.qualityGateEvaluations.length, 0);
+  });
+
+  test("rejects approved quality gates with forgeable plain evidence labels", async () => {
+    const outcome = await recordQualityGateEvaluation(
+      {
+        ...command,
+        evaluatedArtifactIds: ["brd-001", "qa-report-001", "trace-report-001"],
+        businessRuleResults: [
+          {
+            ruleId: "BRD-001",
+            status: BusinessRuleEvaluationStatus.Satisfied,
+            evidenceArtifactIds: ["qa-report-001"],
+            notes: "The implemented behavior matches the approved business rule.",
+          },
+        ],
+      },
+      createDependencies(),
+    );
+
+    equal(outcome.result.status, CommandResultStatus.Rejected);
+    equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
+    equal(
+      outcome.result.error?.message,
+      "approved or waived quality gates require content-addressed evidence refs",
+    );
+    equal(outcome.effects.qualityGateEvaluations.length, 0);
+  });
+
+  test("rejects approved quality gates with forged content-addressed evidence refs", async () => {
+    const forgedRef = `evidence:test-run:sha256:${"a".repeat(64)}`;
+    const outcome = await recordQualityGateEvaluation(
+      {
+        ...command,
+        evaluatedArtifactIds: [forgedRef],
+        businessRuleResults: [
+          {
+            ruleId: "BRD-001",
+            status: BusinessRuleEvaluationStatus.Satisfied,
+            evidenceArtifactIds: [forgedRef],
+            notes: "The implemented behavior matches the approved business rule.",
+          },
+        ],
+        evidenceArtifacts: [evidenceArtifact("test-run", "qa-report-001")],
+      },
+      createDependencies(),
+    );
+
+    equal(outcome.result.status, CommandResultStatus.Rejected);
+    equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
+    equal(
+      outcome.result.error?.message,
+      "approved or waived quality gates require content-addressed evidence refs",
+    );
     equal(outcome.effects.qualityGateEvaluations.length, 0);
   });
 
@@ -447,4 +518,12 @@ function createSatisfiedPriorQualityGateChain(gateKind: QualityGateKind): readon
   const gateIndex = orderedGateKinds.indexOf(gateKind);
 
   return gateIndex <= 0 ? [] : orderedGateKinds.slice(0, gateIndex).map(createQualityGateEvaluation);
+}
+
+function evidenceRef(kind: string, id: string): string {
+  return createContentAddressedEvidenceRef(kind, { id });
+}
+
+function evidenceArtifact(kind: string, id: string) {
+  return createContentAddressedEvidenceArtifact(kind, { id });
 }

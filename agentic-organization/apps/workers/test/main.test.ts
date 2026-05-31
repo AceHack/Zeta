@@ -110,6 +110,29 @@ describe("worker main composition entrypoint", () => {
       ),
     );
   });
+
+  test("passes OTLP telemetry into durable NATS adapters when endpoint is configured", async () => {
+    const logger = createRecordingLogger();
+    const natsAdapters = createRecordingNatsAdapters();
+
+    const exitCode = await runMain({
+      ...createTestDependencies({
+        logger,
+        signalRegistrar: createRecordingSignalRegistrar(),
+        clock: createDeterministicClock(),
+        shutdownPool: createRecordingShutdownPool(),
+        natsAdapters,
+        bootstrap: createRecordingBootstrap(),
+      }),
+      env: {
+        ...WorkerMainTestEnv,
+        OTEL_EXPORTER_OTLP_ENDPOINT: "http://otel-collector:4318",
+      },
+    });
+
+    equal(exitCode, WorkerMainTestExitCode.Success);
+    equal(natsAdapters.telemetryWasProvided, true);
+  });
 });
 
 type CreateTestDependenciesInput = {
@@ -154,7 +177,10 @@ function createTestConstructors(input: CreateTestConstructorsInput): WorkerMainC
       end: input.shutdownPool.end,
     }),
     createSqlClient: () => createEmptyCockroachSqlClient(),
-    connectNatsAdapters: async () => input.natsAdapters.adapters,
+    connectNatsAdapters: async (connectInput) => {
+      input.natsAdapters.telemetryWasProvided = connectInput.telemetry !== undefined;
+      return input.natsAdapters.adapters;
+    },
     createNatsTransportFactory: () => ({
       connect: async () => {
         throw new Error("transport factory connect must not be called when adapters are injected");
@@ -307,10 +333,11 @@ type RecordingNatsAdapters = {
   adapters: Awaited<ReturnType<WorkerMainConstructors["connectNatsAdapters"]>>;
   readinessCheckCount: number;
   shutdownCount: number;
+  telemetryWasProvided: boolean;
 };
 
 function createRecordingNatsAdapters(): RecordingNatsAdapters {
-  const state = { readinessCheckCount: 0, shutdownCount: 0 };
+  const state = { readinessCheckCount: 0, shutdownCount: 0, telemetryWasProvided: false };
 
   const adapters: Awaited<ReturnType<WorkerMainConstructors["connectNatsAdapters"]>> = {
     deadLetterPublisher: {
@@ -347,6 +374,12 @@ function createRecordingNatsAdapters(): RecordingNatsAdapters {
     },
     get shutdownCount() {
       return state.shutdownCount;
+    },
+    get telemetryWasProvided() {
+      return state.telemetryWasProvided;
+    },
+    set telemetryWasProvided(value) {
+      state.telemetryWasProvided = value;
     },
   };
 }

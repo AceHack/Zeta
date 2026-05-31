@@ -48,6 +48,7 @@ export function legalMemoryTransitions(phase: MemoryPhase): readonly MemoryLegal
       return [
         { to: MemoryPhase.Reinforced, authority: A, reason: "reinforcement crossed threshold" },
         { to: MemoryPhase.Stale, authority: A, reason: "freshness decayed past threshold" },
+        { to: MemoryPhase.Archived, authority: A, reason: "weight fell to the archive floor" },
         { to: MemoryPhase.Promoted, authority: D, reason: "observed across scopes — promote up a tier" },
         { to: MemoryPhase.Demoted, authority: D, reason: "outcome correlation turned negative" },
         { to: MemoryPhase.Conflicted, authority: D, reason: "conflicts with another active memory" },
@@ -56,6 +57,7 @@ export function legalMemoryTransitions(phase: MemoryPhase): readonly MemoryLegal
       return [
         { to: MemoryPhase.Active, authority: A, reason: "reinforcement decayed back to baseline" },
         { to: MemoryPhase.Stale, authority: A, reason: "freshness decayed past threshold" },
+        { to: MemoryPhase.Archived, authority: A, reason: "weight fell to the archive floor" },
         { to: MemoryPhase.Promoted, authority: D, reason: "observed across scopes — promote up a tier" },
         { to: MemoryPhase.Conflicted, authority: D, reason: "conflicts with another active memory" },
       ];
@@ -68,6 +70,7 @@ export function legalMemoryTransitions(phase: MemoryPhase): readonly MemoryLegal
     case MemoryPhase.Promoted:
       return [
         { to: MemoryPhase.Active, authority: A, reason: "promotion settled into a higher tier" },
+        { to: MemoryPhase.Archived, authority: A, reason: "weight fell to the archive floor" },
         { to: MemoryPhase.Conflicted, authority: D, reason: "conflicts with another active memory" },
       ];
     case MemoryPhase.Demoted:

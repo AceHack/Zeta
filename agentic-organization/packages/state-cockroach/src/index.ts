@@ -109,6 +109,15 @@ export {
   type CreateCockroachReactionPlanWorkQueueInput,
 } from "./cockroach-reaction-plan-work-queue.ts";
 export {
+  CockroachRecoveryScanReaderStatement,
+  createCockroachRecoveryScanReader,
+  type CockroachRecoveryScanSqlExecutor,
+  type CockroachRecoveryScanSqlResult,
+  type CockroachRecoveryScanSqlStatement,
+  type CreateCockroachRecoveryScanReaderInput,
+  type RecoveryScanReader,
+} from "./cockroach-recovery-scan-reader.ts";
+export {
   CockroachWorkScheduleBlockAuthorityReaderStatement,
   createCockroachWorkScheduleBlockAuthorityReader,
   type CockroachWorkScheduleBlockAuthoritySqlExecutor,
@@ -141,6 +150,7 @@ export {
   createCockroachHatAssignmentAuthorityProjectionMigration,
   createCockroachOutboxClaimFenceMigration,
   createCockroachReactionPlanExecutionLifecycleMigration,
+  createCockroachReactionPlanTraceparentMigration,
   createCockroachWorkScheduleBlockKernelMigration,
   createCockroachWorkAnchorKernelMigration,
   createCockroachWorkItemStateHistoryMetadataMigration,

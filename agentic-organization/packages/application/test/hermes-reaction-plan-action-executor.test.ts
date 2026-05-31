@@ -9,6 +9,10 @@ import {
 } from "../../domain/src/index.ts";
 import { createInProcessHermesRuntime } from "../../hermes/src/index.ts";
 import { createInProcessMemory } from "../../memory/src/index.ts";
+import {
+  RecordingTelemetry,
+  TelemetrySpanStatusCode,
+} from "../../observability/src/index.ts";
 import { ReactionPlanExecutionStatus } from "../../runtime/src/index.ts";
 import {
   createHermesReactionPlanActionExecutor,
@@ -62,6 +66,44 @@ test("runs a reaction-plan action through a Hermes run and persists agent livene
   equal(writer.records[0]?.organizationId, "org-1");
   equal(writer.records[0]?.workItemId, "wi-1");
   equal(writer.records[0]?.deadlineMs, 60_000);
+});
+
+test("emits a Hermes run span linked to the work item and originating traceparent", async () => {
+  const telemetry = new RecordingTelemetry();
+  const executor = createHermesReactionPlanActionExecutor({
+    createHermesRuntime: () => createInProcessHermesRuntime(),
+    createMemory: () => createInProcessMemory(),
+    agentHeartbeatWriter: recordingWriter(),
+    agentHeartbeatDeadlineMs: 60_000,
+    generateId: (prefix) => `${prefix}-x`,
+    telemetry,
+  });
+
+  await executor.executeReactionPlanAction(triageAction(), {
+    ...context,
+    traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+  });
+
+  deepEqual(
+    telemetry.spans.map((span) => ({
+      name: span.name,
+      status: span.status,
+      ended: span.ended,
+      workItemId: span.attributes["org.work_item_id"],
+      reactionPlanId: span.attributes["agentic.reaction_plan.id"],
+      requiredHat: span.attributes["agentic.required_hat"],
+    })),
+    [
+      {
+        name: "org.hermes.run",
+        status: { code: TelemetrySpanStatusCode.Ok },
+        ended: true,
+        workItemId: "wi-1",
+        reactionPlanId: "rp-1",
+        requiredHat: RequiredHat.EngineeringManager,
+      },
+    ],
+  );
 });
 
 test("a Hermes run that fails to launch surfaces as a retryable failure", async () => {

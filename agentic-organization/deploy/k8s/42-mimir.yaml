@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mimir
+  namespace: agentic-org
+  labels: { app: mimir }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: mimir }
+  template:
+    metadata:
+      labels: { app: mimir }
+    spec:
+      containers:
+        - name: mimir
+          image: grafana/mimir:2.12.0
+          args: ["-target=all", "-server.http-listen-port=9009"]
+          ports:
+            - { name: http, containerPort: 9009 }
+          resources:
+            requests: { cpu: "50m", memory: "256Mi" }
+            limits: { cpu: "500m", memory: "768Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mimir
+  namespace: agentic-org
+spec:
+  selector: { app: mimir }
+  ports:
+    - { name: http, port: 9009, targetPort: http }

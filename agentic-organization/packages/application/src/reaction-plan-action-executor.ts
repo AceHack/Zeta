@@ -3,9 +3,11 @@ import {
   DiscussionAnchorType,
   DiscussionExpectedOutput,
   ReactionPlanActionType,
+  RequiredHat,
   type AgenticActor,
   type ReactionPlanAction,
 } from "../../domain/src/index.ts";
+import { ActionClass } from "./hat-guardrails.ts";
 import {
   ReactionPlanExecutionStatus,
   type ReactionPlanActionExecutionContext,
@@ -146,6 +148,9 @@ function createReactionDiscussionCommand(
     organizationId: action.organizationId,
     projectId: action.projectId,
     actor,
+    policyContext: {
+      toolType: toolTypeForReactionAction(action),
+    },
     ...createOptionalTeamScope(action),
     workItemId: action.workItemId,
     discussionAnchorType: DiscussionAnchorType.WorkItem,
@@ -153,6 +158,19 @@ function createReactionDiscussionCommand(
     purpose: template.purpose,
     expectedOutputs: [DiscussionExpectedOutput.Decision, DiscussionExpectedOutput.FollowUp],
   };
+}
+
+function toolTypeForReactionAction(action: ReactionPlanAction): string {
+  switch (action.requiredHat) {
+    case RequiredHat.EngineeringManager:
+      return ActionClass.Prioritize;
+    case RequiredHat.Reviewer:
+      return ActionClass.WriteDoc;
+    case RequiredHat.CSuite:
+    case RequiredHat.Director:
+    case RequiredHat.ExecutiveBoard:
+      return ActionClass.AssignHat;
+  }
 }
 
 function createReactionDiscussionTemplate(action: ReactionPlanAction): {

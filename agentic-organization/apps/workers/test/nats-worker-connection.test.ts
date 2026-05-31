@@ -14,6 +14,10 @@ import {
   type NatsJetStreamInboundMessage,
 } from "../../../packages/messaging-nats/src/index.ts";
 import {
+  RecordingTelemetry,
+  W3CTraceHeaderName,
+} from "../../../packages/observability/src/index.ts";
+import {
   NatsWorkerConnectionState,
   NatsWorkerDeadLetterHeaderName,
   NatsWorkerMessageIdPrefix,
@@ -186,6 +190,37 @@ describe("NATS worker process adapter", () => {
         },
       ],
     });
+  });
+
+  test("threads telemetry into the NATS publisher", async () => {
+    const transportFactory = createRecordingTransportFactory();
+    const telemetry = new RecordingTelemetry({
+      traceContext: {
+        traceId: "4bf92f3577b34da6a3ce929d0e0e4736",
+        spanId: "00f067aa0ba902b7",
+        traceFlags: "01",
+      },
+    });
+    const adapters = await connectNatsWorkerAdapters({
+      config: {
+        durableName: "agentic-org-v0-automation-planner",
+        environment: "dev",
+        organizationId: "org-lfg",
+        servers: ["nats://nats.nats.svc.cluster.local:4222"],
+        streamName: "agentic-org-events",
+      },
+      deadLetterMessageIdFactory: createSequentialDeadLetterMessageIdFactory(),
+      transportFactory,
+      telemetry,
+    });
+
+    await adapters.eventPublisher.publish(createEventPublication());
+
+    equal(
+      transportFactory.connection.publishedMessages[0]?.headers[W3CTraceHeaderName.TraceParent],
+      "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+    );
+    equal(telemetry.spans[0]?.name, "org.nats.publish");
   });
 });
 

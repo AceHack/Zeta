@@ -1,10 +1,42 @@
 export {
+  proposeDecisionOptimizerChangeSet,
+  runDecisionOptimizerCycle,
+  changeSetDocumentKey,
+  orgEventStreamKey,
+  tenantConfigDocumentKey,
+  type DecisionOptimizerKpiSignal,
+  type DecisionOptimizerCycleResult,
+  type DecisionOptimizerNoProposalReason,
+  type DecisionOptimizerResult,
+  type DecisionOptimizerStore,
+  type DecisionOptimizerThresholds,
+  type ProposeDecisionOptimizerChangeSetInput,
+  type RunDecisionOptimizerCycleInput,
+} from "./decision-optimizer.ts";
+export {
   TriageActionFeedbackReason,
   TriageActionResolution,
   resolveTriageAction,
   type ResolvedTriageAction,
   type TriageActionRequest,
 } from "./triage-action-resolver.ts";
+export {
+  DeadLetterClassification,
+  RecoveryIncidentKind,
+  RecoveryScannerKind,
+  classifyDeadLetters,
+  recoveryIncidentToOrgEvent,
+  recoveryScanCompletedToOrgEvent,
+  scanAbandonedRunBindings,
+  scanStaleReactionPlans,
+  scanStrandedScheduleBlocks,
+  type DeadLetterRecoveryCandidate,
+  type ReactionPlanRecoveryCandidate,
+  type RecoveryIncident,
+  type RecoveryScanReport,
+  type RunBindingRecoveryCandidate,
+  type ScheduleBlockRecoveryCandidate,
+} from "./recovery-scanners.ts";
 export {
   GraphEdgeKind,
   GraphNodeKind,
@@ -56,6 +88,7 @@ export {
   toAsyncComposer,
   type ChatCompletionPort,
   type ChatCompletionRequest,
+  type ChatCompletionResult,
   type CreateModelBackedComposerInput,
 } from "./model-backed-composer.ts";
 export {
@@ -66,6 +99,15 @@ export {
   type SandboxToolRequest,
   type SandboxToolResult,
 } from "./sandbox-tool.ts";
+export {
+  ContentAddressedEvidencePrefix,
+  allEvidenceRefsContentAddressed,
+  createContentAddressedEvidenceArtifact,
+  createContentAddressedEvidenceRef,
+  isContentAddressedEvidenceRef,
+  verifiedContentAddressedEvidenceRefs,
+  type ContentAddressedEvidenceArtifact,
+} from "./content-addressed-evidence.ts";
 export {
   createOrganizationReactionPlanActionExecutor,
   type CreateOrganizationReactionPlanActionExecutorInput,
@@ -115,11 +157,24 @@ export {
   type ScheduleAuthorityCommandRule,
 } from "./schedule-authority.ts";
 export {
+  HatAuthorityPolicyVersion,
+  createHatAuthorityPort,
+  type CreateHatAuthorityPortInput,
+} from "./hat-authority-port.ts";
+export {
   createCreateWorkItemHandler,
   createWorkItem,
   type CreateWorkItemCommand,
   type CreateWorkItemDependencies,
 } from "./handlers/create-work-item.ts";
+export {
+  ObserveLifecycleTransitionIdPrefix,
+  ObserveLifecycleTransitionValidationErrorMessage,
+  createObserveLifecycleTransitionHandler,
+  observeLifecycleTransition,
+  type ObserveLifecycleTransitionCommand,
+  type ObserveLifecycleTransitionDependencies,
+} from "./handlers/observe-lifecycle-transition.ts";
 export {
   createCreateDiscussionAnchorHandler,
   createDiscussionAnchor,
@@ -180,17 +235,26 @@ export type {
   WorkAnchorCommandEffects,
 } from "./ports.ts";
 export {
+  ACTION_CLASS_FOR_ACTION_TYPE,
+  act,
   asZetaIdDecimal,
   ComposerDecision,
   DecideOutcome,
   DefaultDeterministicRules,
+  createTelemetryScopedMetricAgents,
   decide,
   decideAsync,
+  hatAuthorityRule,
   observe,
+  observeAgent,
+  observeAgentSurface,
   ObserveFeedbackReason,
+  ObserveCommandType,
   ObserveOutcome,
+  renderMenu16,
   RunLifecyclePhase,
   RunScope,
+  TriAvailability,
   type AsyncEphemeralComposerPort,
   type AvailableOption,
   type ComposerSelection,
@@ -198,12 +262,53 @@ export {
   type DecideResult,
   type DeterministicRule,
   type EphemeralComposerPort,
+  type AgentObserveSnapshot,
+  type AgentObserveDependencies,
+  type AgentObserveResult,
+  type ActDependencies,
+  type ActResult,
+  type CreateTelemetryScopedMetricAgentsInput,
+  type HierarchyInitiative,
+  type HierarchyMission,
+  type HierarchyMissionLagSignal,
+  type HierarchyMissionMilestone,
+  type HierarchyMissionReadout,
+  type HierarchyMissionStatus,
+  type HierarchyMissionTimeframe,
+  type HierarchyPolicyViolation,
+  type HierarchyPriorityScope,
+  type HierarchyProject,
+  type HierarchyReadout,
+  type HierarchySnapshot,
+  type HierarchyAction,
+  type HierarchyActionKind,
+  type HierarchyWorkBatch,
+  type HierarchyWorkItem,
+  type LifecycleTransitionCommandPayload,
+  type Menu16,
+  type Menu16Slot,
+  type MetricBlock,
   type ObserveDependencies,
   type ObserveFeedback,
   type ObserveResult,
+  type PromptFlowContext,
+  type PromptFlowContextArtifact,
+  type PromptFlowContextRequest,
+  type PromptFlowReadout,
+  type PromptFlowTask,
+  type PromptFlowToolInjection,
+  type PrioritizableHierarchyItem,
+  type QueryContext,
   type RunSnapshot,
   type RunStateReadout,
   type RunTrace,
+  type RenderMenu16Options,
+  type ScopedMetricAgent,
+  type ScopedReadout,
+  type SlotImpl,
+  type VetoedPromptFlowTask,
+  type VetoedHierarchyAction,
+  type VetoedOption,
   type ZetaIdDecimal,
 } from "./observe.ts";
 export {
@@ -250,10 +355,18 @@ export {
   HatSupplyAction,
   computeRequiredHatSupply,
   decideHatSupply,
+  decideRmoHatAssignment,
   recommendSupplyAction,
+  rankRmoHatCandidates,
   type DecideHatSupplyContext,
+  type DecideRmoHatAssignmentContext,
   type HatSupplyDecision,
   type HatSupplyVote,
+  type RankedRmoHatCandidate,
+  type RankRmoHatCandidatesInput,
+  type RmoHatAssignmentDecision,
+  type RmoHatCandidateReputation,
+  type RmoHatCandidateScoreComponents,
   type WorkloadItem,
 } from "./rmo.ts";
 export {
@@ -410,6 +523,15 @@ export {
   externalStateForChangeSet,
 } from "./change-control-reconciliation.ts";
 export {
+  ReleaseQueueActionKind,
+  ReleaseQueueState,
+  planReleaseQueue,
+  type ReleaseBatchEvaluation,
+  type ReleaseQueueAction,
+  type ReleaseQueuePlan,
+  type PlanReleaseQueueInput,
+} from "./release-queue.ts";
+export {
   createGitHubHttpClient,
   createGitHubPrPort,
   gitHubFilesFor,
@@ -524,3 +646,9 @@ export {
   type CreateGitLabHttpClientInput,
   type CreateLinearHttpClientInput,
 } from "./work-provider.ts";
+export {
+  replayLedger,
+  type ConformanceReport,
+  type ConformanceSkip,
+  type ConformanceViolation,
+} from "./conformance.ts";

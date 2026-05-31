@@ -52,6 +52,10 @@ spec:
             # gives comfortable margin over the ~30s idle cycle. (Future hardening:
             # an independent fast keep-alive loop decoupled from the work cycle.)
             - { name: WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS, value: "90000" }
+            # LGTM observability: worker emits OTLP HTTP traces/metrics/logs to
+            # the in-cluster collector. Unit tests and local runs omit this env
+            # and remain no-op.
+            - { name: OTEL_EXPORTER_OTLP_ENDPOINT, value: "http://otel-collector:4318" }
             # the agent's live decision backend: real model calls to the
             # in-cluster Ollama service (no external credentials). If unset, the
             # agent uses the deterministic first-legal-option policy.

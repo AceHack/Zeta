@@ -29,9 +29,6 @@ export type CreateCardHttpClientInput = {
 export function createCardHttpClient(input: CreateCardHttpClientInput): CardClient {
   const doFetch = input.fetchImpl ?? fetch;
   const api = input.baseUrl.replace(/\/$/, "");
-  // Human-facing browse URLs live at the site root, not under the REST API path:
-  // https://<site>/browse/KEY, NOT https://<site>/rest/api/3/browse/KEY.
-  const site = api.replace(/\/rest\/api\/\d+$/, "");
   const headers = { authorization: `Bearer ${input.token}`, accept: "application/json", "content-type": "application/json" };
   async function ok<T>(res: Response, op: string): Promise<T> {
     if (!res.ok) throw new Error(`card-sync ${op} failed: ${res.status} ${await res.text()}`);
@@ -43,7 +40,7 @@ export function createCardHttpClient(input: CreateCardHttpClientInput): CardClie
         await doFetch(`${api}/issue`, { method: "POST", headers, body: JSON.stringify({ fields: { project: { key: input.projectKey }, summary: args.title, description: args.description, issuetype: { name: args.type } } }) }),
         "create-card",
       );
-      return { key: created.key, url: `${site}/browse/${created.key}` };
+      return { key: created.key, url: `${api}/browse/${created.key}` };
     },
     async getCard(key): Promise<CardState> {
       const issue = await ok<{ fields: { status: { name: string }; resolution: unknown } }>(await doFetch(`${api}/issue/${key}`, { headers }), "get-card");

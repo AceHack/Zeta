@@ -151,6 +151,7 @@ async function mapClaimedReactionPlanRow(
     claimedAt: stringifyTimestamp(row.claimed_at),
     claimExpiresAt: stringifyTimestamp(row.claim_expires_at),
     attemptCount: Number(row.attempt_count),
+    ...createOptionalTraceparent(row.traceparent),
     ...createOptionalNextAttempt(row.next_attempt_at),
   };
 }
@@ -266,11 +267,16 @@ function createOptionalNextAttempt(value: string | Date | null): { nextAttemptAt
   return nextAttemptAt === undefined ? {} : { nextAttemptAt };
 }
 
+function createOptionalTraceparent(value: string | null): { traceparent?: string } {
+  return value === null ? {} : { traceparent: value };
+}
+
 type ClaimedReactionPlanRow = {
   reaction_plan_id: string;
   consumer_name: ReactionPlanRecord["consumerName"];
   created_at: string | Date;
   action_json: ReactionPlanAction;
+  traceparent: string | null;
   claim_id: string;
   claimed_at: string | Date;
   claim_expires_at: string | Date;
@@ -304,6 +310,7 @@ const CockroachReactionPlanWorkQueueSql = {
       consumer_name,
       created_at,
       action_json,
+      traceparent,
       claim_id,
       claimed_at,
       claim_expires_at,

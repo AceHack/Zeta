@@ -4,11 +4,6 @@
  * supervisor-triage discussion anchor created through the command pipeline,
  * anchored to a real work item). This is where "the agents doing autonomous
  * work" meets "the entire organizational structure."
- *
- * Authorization is permissive in this composition (a hat-authority-backed port
- * swaps in behind the same CommandAuthorizationPort), and the actor is
- * synthesized from the action's required hat — the seams a real hat-assignment
- * system fills later.
  */
 
 import {
@@ -20,15 +15,17 @@ import {
 } from "../../../packages/domain/src/index.ts";
 import {
   CommandResultStatus,
+  buildHatDefinitions,
   createApplicationReactionPlanActionExecutor,
   createCommandHandlerRegistry,
+  createHatAuthorityPort,
   createCommandPipeline,
   createCreateDiscussionAnchorHandler,
   createOrganizationReactionPlanActionExecutor,
   type CommandResult,
   type EnsureWorkItemPort,
 } from "../../../packages/application/src/index.ts";
-import { PolicyDecisionStatus, createPolicyDecisionObservationPort, type CommandAuthorizationPort } from "../../../packages/policy/src/index.ts";
+import { createCommandAuthorizationPort, createPolicyDecisionObservationPort } from "../../../packages/policy/src/index.ts";
 import {
   createCockroachDurableStateAdapters,
   type CockroachOrganizationSqlExecutor,
@@ -50,7 +47,13 @@ export function composeOrganizationReactionPlanActionExecutor(
 
   const commandPipeline = createCommandPipeline({
     stateStoreFactory: stateAdapters.commandStateStoreFactory,
-    commandAuthorizationPort: createPermissiveCommandAuthorizationPort(input.createId),
+    commandAuthorizationPort: createCommandAuthorizationPort({
+      hatAuthorityPort: createHatAuthorityPort({
+        hatAssignmentAuthorityReader: stateAdapters.hatAssignmentAuthorityReader,
+        hatDefinitions: buildHatDefinitions(),
+        createId: input.createId,
+      }),
+    }),
     policyDecisionObservationPort: createPolicyDecisionObservationPort({
       store: stateAdapters.policyDecisionObservationStore,
     }),
@@ -62,7 +65,7 @@ export function composeOrganizationReactionPlanActionExecutor(
 
   const organizationExecutor = createApplicationReactionPlanActionExecutor({
     commandPipeline,
-    actorResolver: { resolveReactionActor: async (request) => synthesizeActor(request.action, input.createId) },
+    actorResolver: { resolveReactionActor: async (request) => synthesizeActor(request.action) },
     createId: input.createId,
   });
 
@@ -79,21 +82,11 @@ export function composeOrganizationReactionPlanActionExecutor(
   });
 }
 
-/** Allow-all authorization — a hat-authority-backed port swaps in behind this seam. */
-function createPermissiveCommandAuthorizationPort(createId: (prefix: string) => string): CommandAuthorizationPort {
+function synthesizeActor(action: ReactionPlanAction): AgenticActor {
+  const suffix = action.requiredHat;
   return {
-    authorizeCommand: async () => ({
-      status: PolicyDecisionStatus.Allowed,
-      decisionId: createId("decision"),
-      policyVersion: "v0",
-    }),
-  };
-}
-
-function synthesizeActor(action: ReactionPlanAction, createId: (prefix: string) => string): AgenticActor {
-  return {
-    agentId: createId(`agent-${action.requiredHat}`),
-    hatAssignmentId: createId(`hat-${action.requiredHat}`),
+    agentId: `agent-reaction-${suffix}`,
+    hatAssignmentId: `hat-assignment-reaction-${suffix}`,
   };
 }
 
@@ -111,7 +104,7 @@ function createCockroachWorkItemSeeder(input: {
         return;
       }
 
-      const actor = synthesizeActor(action, input.createId);
+      const actor = synthesizeActor(action);
       const ts = input.now();
       const metadata = {
         updatedAt: ts,

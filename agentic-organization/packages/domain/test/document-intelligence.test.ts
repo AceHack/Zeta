@@ -43,3 +43,19 @@ test("only active docs are retrieval-eligible by default", () => {
     equal(isRetrievalEligible(s), false);
   }
 });
+
+test("M4 clamp property: document lifecycle transitions are total and closed", () => {
+  const states = new Set<string>(Object.values(DocLifecycleState));
+  for (const state of Object.values(DocLifecycleState)) {
+    for (const loadBearing of [true, false]) {
+      const next = legalDocTransitions(state, loadBearing);
+      ok(Array.isArray(next));
+      for (const target of next) {
+        ok(states.has(target));
+        ok(target !== state);
+      }
+    }
+  }
+  deepEqual(legalDocTransitions(L.Archived, true), []);
+  deepEqual(legalDocTransitions(L.Archived, false), []);
+});

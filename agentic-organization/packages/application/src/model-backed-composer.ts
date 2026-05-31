@@ -15,6 +15,10 @@
  */
 
 import {
+  TelemetryMetricKind,
+  type TelemetryPort,
+} from "../../observability/src/index.ts";
+import {
   ComposerDecision,
   type AsyncEphemeralComposerPort,
   type ComposerSelection,
@@ -27,15 +31,27 @@ export type ChatCompletionRequest = {
   user: string;
 };
 
+export type ChatCompletionUsage = {
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+  costUsd?: number;
+  model?: string;
+};
+
+export type ChatCompletionResult = string | ({ content: string } & ChatCompletionUsage);
+
 /** Dependency-inverted model port. A real adapter (Ollama, OpenAI, …) implements this. */
 export interface ChatCompletionPort {
-  complete: (request: ChatCompletionRequest) => Promise<string>;
+  complete: (request: ChatCompletionRequest) => Promise<ChatCompletionResult>;
 }
 
 export type CreateModelBackedComposerInput = {
   chat: ChatCompletionPort;
   /** used when the model is unreachable, unparseable, or picks an illegal option */
   fallback: EphemeralComposerPort;
+  telemetry?: TelemetryPort;
+  model?: string;
 };
 
 const SYSTEM_PROMPT =
@@ -52,14 +68,16 @@ export function createModelBackedComposer(input: CreateModelBackedComposerInput)
         return input.fallback.compose(request);
       }
 
-      let raw: string;
+      let completion: ChatCompletionResult;
       try {
-        raw = await input.chat.complete({ system: SYSTEM_PROMPT, user: buildUserPrompt(request) });
+        completion = await input.chat.complete({ system: SYSTEM_PROMPT, user: buildUserPrompt(request) });
       } catch {
         // model unreachable → deterministic fallback keeps the agent alive
         return input.fallback.compose(request);
       }
 
+      recordChatCompletionTelemetry(input, request, completion);
+      const raw = getCompletionContent(completion);
       const chosen = matchOption(raw, options);
       if (chosen === undefined) {
         // unparseable or not a legal token → fall back (kernel would reject it anyway)
@@ -69,6 +87,54 @@ export function createModelBackedComposer(input: CreateModelBackedComposerInput)
       return { decision: ComposerDecision.Select, option: chosen, reason: `model selected '${chosen.actionType}'` };
     },
   };
+}
+
+function getCompletionContent(completion: ChatCompletionResult): string {
+  return typeof completion === "string" ? completion : completion.content;
+}
+
+function recordChatCompletionTelemetry(
+  input: CreateModelBackedComposerInput,
+  request: ComposerSelectionRequest,
+  completion: ChatCompletionResult,
+): void {
+  if (input.telemetry === undefined || typeof completion === "string") {
+    return;
+  }
+
+  const model = completion.model ?? request.telemetry?.model ?? input.model ?? "unknown";
+  const hat = request.telemetry?.hat ?? "unknown";
+  const attributes = {
+    "agentic.hat": hat,
+    "llm.model": model,
+  };
+  const totalTokens = completion.totalTokens ?? createTotalTokens(completion);
+
+  if (totalTokens !== undefined) {
+    input.telemetry.recordMetric({
+      kind: TelemetryMetricKind.Counter,
+      name: "org_agent_tokens_total",
+      value: totalTokens,
+      attributes,
+    });
+  }
+
+  if (completion.costUsd !== undefined) {
+    input.telemetry.recordMetric({
+      kind: TelemetryMetricKind.Counter,
+      name: "org_agent_cost_usd",
+      value: completion.costUsd,
+      attributes,
+    });
+  }
+}
+
+function createTotalTokens(usage: ChatCompletionUsage): number | undefined {
+  if (usage.promptTokens === undefined && usage.completionTokens === undefined) {
+    return undefined;
+  }
+
+  return (usage.promptTokens ?? 0) + (usage.completionTokens ?? 0);
 }
 
 /** Adapt a synchronous composer to the async port (e.g. the deterministic baseline). */

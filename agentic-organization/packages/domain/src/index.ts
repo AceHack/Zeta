@@ -231,9 +231,16 @@ export {
 } from "./knowledge-graph.ts";
 export {
   AutonomyLevel,
+  ConfigLayerScopeKind,
   defaultTenantConfig,
+  resolveLayeredTenantConfig,
   stageRequiresHuman,
   type AutonomyPolicy,
+  type ConfigLayerScope,
+  type ResolveLayeredTenantConfigInput,
+  type ResolvedTenantDecisionConfig,
+  type TenantConfigLayer,
+  type TenantConfigLayerPolicy,
   type WorkflowConfig,
   type HandbookBinding,
   type TenantConfig,

@@ -24,9 +24,17 @@ test("decay/reinforce/archive are AUTO; promote/demote/conflict are HAT-DECIDED"
   const byTo = new Map(legalMemoryTransitions(MemoryPhase.Active).map((t) => [t.to, t.authority]));
   equal(byTo.get(MemoryPhase.Reinforced), MemoryTransitionAuthority.Auto);
   equal(byTo.get(MemoryPhase.Stale), MemoryTransitionAuthority.Auto);
+  equal(byTo.get(MemoryPhase.Archived), MemoryTransitionAuthority.Auto);
   equal(byTo.get(MemoryPhase.Promoted), MemoryTransitionAuthority.HatDecided);
   equal(byTo.get(MemoryPhase.Demoted), MemoryTransitionAuthority.HatDecided);
   equal(byTo.get(MemoryPhase.Conflicted), MemoryTransitionAuthority.HatDecided);
+});
+
+test("archive-at-floor is legal from any non-terminal memory phase", () => {
+  for (const phase of Object.values(MemoryPhase)) {
+    if (isTerminalMemory(phase)) continue;
+    equal(isLegalMemoryTransition(phase, MemoryPhase.Archived), true);
+  }
 });
 
 test("stale can re-confirm to active or fall to archive", () => {

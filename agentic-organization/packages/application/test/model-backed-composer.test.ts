@@ -1,6 +1,7 @@
-import { equal, ok } from "node:assert/strict";
+import { deepEqual, equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
+import { RecordingTelemetry, TelemetryMetricKind } from "../../observability/src/index.ts";
 import {
   ComposerDecision,
   RunLifecyclePhase,
@@ -10,7 +11,7 @@ import {
   type RunStateReadout,
 } from "../src/observe.ts";
 import { createFirstLegalOptionComposer } from "../src/reaction-decision.ts";
-import { createModelBackedComposer, type ChatCompletionPort } from "../src/model-backed-composer.ts";
+import { createModelBackedComposer, type ChatCompletionPort, type ChatCompletionResult } from "../src/model-backed-composer.ts";
 
 function readout(): RunStateReadout {
   return {
@@ -20,6 +21,7 @@ function readout(): RunStateReadout {
     trace: { correlationId: "c", causationId: "c", traceId: "t" },
     observedAt: "2026-05-30T07:00:00.000Z",
     deterministicRulesApplied: ["gate-precondition", "evidence-precondition"],
+    vetoedOptions: [],
     options: [
       { actionType: "complete", toPhase: RunLifecyclePhase.Completed, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: true, rationale: "reviewer approved" },
       { actionType: "rework", toPhase: RunLifecyclePhase.Executing, toScope: RunScope.WorkItem, requiresGate: false, requiresEvidence: false, rationale: "reviewer requested changes" },
@@ -29,8 +31,8 @@ function readout(): RunStateReadout {
 
 const request: ComposerSelectionRequest = { readout: readout() };
 
-function chat(reply: string | (() => Promise<string>)): ChatCompletionPort {
-  return { complete: async () => (typeof reply === "string" ? reply : reply()) };
+function chat(reply: ChatCompletionResult | (() => Promise<ChatCompletionResult>)): ChatCompletionPort {
+  return { complete: async () => (typeof reply === "function" ? reply() : reply) };
 }
 
 test("selects the legal option the model names", async () => {
@@ -88,4 +90,49 @@ test("falls back when the model call throws (model unreachable keeps the agent a
   equal(selection.decision, ComposerDecision.Select);
   if (selection.decision !== ComposerDecision.Select) return;
   equal(selection.option.actionType, "complete");
+});
+
+test("records model token and cost telemetry with hat and model labels", async () => {
+  const telemetry = new RecordingTelemetry();
+  const composer = createModelBackedComposer({
+    chat: chat({
+      content: "rework",
+      model: "llama3.1",
+      promptTokens: 11,
+      completionTokens: 7,
+      costUsd: 0.0025,
+    }),
+    fallback: createFirstLegalOptionComposer(),
+    telemetry,
+    model: "configured-model",
+  });
+
+  const selection = await composer.compose({
+    ...request,
+    telemetry: {
+      hat: "engineering_manager",
+    },
+  });
+
+  equal(selection.decision, ComposerDecision.Select);
+  deepEqual(telemetry.metrics, [
+    {
+      kind: TelemetryMetricKind.Counter,
+      name: "org_agent_tokens_total",
+      value: 18,
+      attributes: {
+        "agentic.hat": "engineering_manager",
+        "llm.model": "llama3.1",
+      },
+    },
+    {
+      kind: TelemetryMetricKind.Counter,
+      name: "org_agent_cost_usd",
+      value: 0.0025,
+      attributes: {
+        "agentic.hat": "engineering_manager",
+        "llm.model": "llama3.1",
+      },
+    },
+  ]);
 });

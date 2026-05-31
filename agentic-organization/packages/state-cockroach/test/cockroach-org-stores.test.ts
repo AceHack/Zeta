@@ -2,6 +2,7 @@ import { equal, ok } from "node:assert/strict";
 import { test } from "node:test";
 
 import { HatBindingPhase, OrgEventKind, type HatBinding, type OrgEvent } from "../../domain/src/index.ts";
+import { RecordingTelemetry } from "../../observability/src/index.ts";
 import { createCockroachOrgEventStore } from "../src/cockroach-org-event-store.ts";
 import { createCockroachHatBindingStore } from "../src/cockroach-hat-binding-store.ts";
 import type { CockroachGenericSqlExecutor } from "../src/cockroach-sql-executor.ts";
@@ -82,6 +83,20 @@ test("the SQL casts the JSONB columns (no string-into-JSONB error)", async () =>
   const insert = statements.find((s) => s.name === "append_org_event")!;
   ok(insert.sql.includes("$11::JSONB"));
   ok(insert.sql.includes("$12::JSONB"));
+});
+
+test("append projects org_event evidence into telemetry", async () => {
+  const { executor } = fakeExecutor();
+  const telemetry = new RecordingTelemetry();
+  const store = createCockroachOrgEventStore({ executor, telemetry });
+
+  await store.append(sampleEvent());
+
+  equal(telemetry.spans.length, 1);
+  equal(telemetry.spans[0]?.name, "org.org_event.append");
+  equal(telemetry.spans[0]?.attributes["agentic.org_event.id"], "evt-1");
+  equal(telemetry.logs[0]?.attributes?.["agentic.org_event.id"], "evt-1");
+  equal(telemetry.metrics[0]?.name, "org_events_total");
 });
 
 test("hat bindings upsert and list-active excludes terminal phases", async () => {

@@ -9,7 +9,11 @@
  * when this throws — the agent stays alive).
  */
 
-import type { ChatCompletionPort, ChatCompletionRequest } from "../../../../packages/application/src/index.ts";
+import type {
+  ChatCompletionPort,
+  ChatCompletionRequest,
+  ChatCompletionResult,
+} from "../../../../packages/application/src/index.ts";
 
 export type CreateOllamaChatPortInput = {
   baseUrl: string;
@@ -21,6 +25,9 @@ export type CreateOllamaChatPortInput = {
 
 type OllamaChatResponse = {
   message?: { content?: string };
+  model?: string;
+  prompt_eval_count?: number;
+  eval_count?: number;
 };
 
 export function createOllamaChatPort(input: CreateOllamaChatPortInput): ChatCompletionPort {
@@ -29,7 +36,7 @@ export function createOllamaChatPort(input: CreateOllamaChatPortInput): ChatComp
   const url = `${input.baseUrl.replace(/\/+$/, "")}/api/chat`;
 
   return {
-    complete: async (request: ChatCompletionRequest): Promise<string> => {
+    complete: async (request: ChatCompletionRequest): Promise<ChatCompletionResult> => {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), timeoutMs);
       try {
@@ -55,10 +62,37 @@ export function createOllamaChatPort(input: CreateOllamaChatPortInput): ChatComp
         if (typeof content !== "string") {
           throw new Error("ollama chat response had no message content");
         }
-        return content;
+        return {
+          content,
+          model: body.model ?? input.model,
+          ...createOptionalTokenUsage(body),
+        };
       } finally {
         clearTimeout(timer);
       }
     },
   };
+}
+
+function createOptionalTokenUsage(body: OllamaChatResponse): {
+  promptTokens?: number;
+  completionTokens?: number;
+  totalTokens?: number;
+} {
+  const promptTokens = isNonNegativeFiniteNumber(body.prompt_eval_count) ? body.prompt_eval_count : undefined;
+  const completionTokens = isNonNegativeFiniteNumber(body.eval_count) ? body.eval_count : undefined;
+
+  if (promptTokens === undefined && completionTokens === undefined) {
+    return {};
+  }
+
+  return {
+    ...(promptTokens === undefined ? {} : { promptTokens }),
+    ...(completionTokens === undefined ? {} : { completionTokens }),
+    totalTokens: (promptTokens ?? 0) + (completionTokens ?? 0),
+  };
+}
+
+function isNonNegativeFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0;
 }

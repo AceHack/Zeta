@@ -8,6 +8,11 @@
 import { randomUUID } from "node:crypto";
 
 import { OrgEventKind, type DepartmentId, type OrgEvent } from "../../domain/src/index.ts";
+import {
+  NoopTelemetry,
+  recordOrgEventTelemetry,
+  type TelemetryPort,
+} from "../../observability/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "./cockroach-sql-executor.ts";
 
 export type OrgEventStore = {
@@ -19,6 +24,7 @@ export type OrgEventStore = {
 export type CreateCockroachOrgEventStoreInput = {
   executor: CockroachGenericSqlExecutor;
   generateId?: () => string;
+  telemetry?: TelemetryPort;
 };
 
 type OrgEventRow = {
@@ -80,6 +86,7 @@ function rowToEvent(row: OrgEventRow): OrgEvent {
 
 export function createCockroachOrgEventStore(input: CreateCockroachOrgEventStoreInput): OrgEventStore {
   const nextId = input.generateId ?? (() => `orgevt-${randomUUID()}`);
+  const telemetry = input.telemetry ?? new NoopTelemetry();
   return {
     async append(eventInput: OrgEvent): Promise<void> {
       const id = eventInput.id !== "" ? eventInput.id : nextId();
@@ -101,6 +108,7 @@ export function createCockroachOrgEventStore(input: CreateCockroachOrgEventStore
           eventInput.correlationId, eventInput.causationId, eventInput.traceId, eventInput.occurredAt,
         ],
       });
+      recordOrgEventTelemetry(telemetry, { ...eventInput, id });
     },
 
     async listByOrganization(organizationId: string, limit: number): Promise<readonly OrgEvent[]> {

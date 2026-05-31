@@ -160,7 +160,6 @@ async function main(): Promise<void> {
   // ── 2. INJECT for the release-manager binding (recall → re-rank → ledger) ───
   const ctx: RetrievalCtx = { now: NOW, organizationId: ORG, hatId: HAT, agentId: AGENT, workItemId: WORK };
   const query = composeInjectionQuery({ roleSentence: "You are the release manager.", taskSummary: "approve the release", recentTurns: [] });
-  report.injectionQuery = query; // persist the composed injection query for run-report observability
 
   // Hindsight recall (semantic), then OUR weight re-rank over the candidates we know.
   console.error(`[inject] recalling from Hindsight…`);

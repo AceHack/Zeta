@@ -26,6 +26,26 @@ import {
 } from "../src/index.ts";
 
 describe("event ingestion processor", () => {
+  test("persists the originating traceparent on planned reaction plans", async () => {
+    const store = createInMemoryEventIngestionStore();
+    const processor = createEventIngestionProcessor({
+      store,
+      evaluateRules: evaluateV0AutomationRules,
+      consumerName: InboundEventConsumerName.V0AutomationPlanner,
+      calculatePayloadHash: (envelope) => `hash-${envelope.eventId}`,
+      now: () => "2026-05-25T22:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await processor.ingest({
+      envelope: createSupervisorSignalEnvelope(),
+      traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+    });
+
+    equal(result.reactionPlans[0]?.traceparent, "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01");
+    equal(store.snapshot.reactionPlans[0]?.traceparent, "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01");
+  });
+
   test("records an inbox receipt and persists reaction plans for a new event", async () => {
     const store = createInMemoryEventIngestionStore();
     const processor = createEventIngestionProcessor({

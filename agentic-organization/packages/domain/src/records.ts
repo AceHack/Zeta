@@ -136,6 +136,7 @@ export type HatAssignmentAuthorityState =
 
 export type HatAssignmentAuthoritySnapshot = {
   hatAssignmentId: string;
+  hatId: string;
   organizationId: string;
   projectId: string;
   teamId?: string;

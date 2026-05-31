@@ -71,9 +71,9 @@ test("changes_requested returns to the proposer (in_review or withdraw)", () => 
   deepEqual([...next].sort(), [ChangeSetPhase.InReview, ChangeSetPhase.Withdrawn].sort());
 });
 
-test("approved can only apply or withdraw", () => {
+test("approved can apply, return for release fixes, or withdraw", () => {
   const next = legalChangeSetTransitions(changeSet({ phase: ChangeSetPhase.Approved }), pipeline([stage({ id: "s" })]));
-  deepEqual([...next].sort(), [ChangeSetPhase.Applied, ChangeSetPhase.Withdrawn].sort());
+  deepEqual([...next].sort(), [ChangeSetPhase.Applied, ChangeSetPhase.ChangesRequested, ChangeSetPhase.Withdrawn].sort());
 });
 
 test("THE CLAMP: an unsatisfiable gate can never be approved — only bounced or rejected", () => {
@@ -96,4 +96,39 @@ test("change payload is Git-agnostic — schema/decision artifacts are NOT git-r
 
 test("the external-system DU enumerates the projection targets including none", () => {
   ok([ExternalSystem.GitHub, ExternalSystem.GitLab, ExternalSystem.Jira, ExternalSystem.None].every((s) => typeof s === "string"));
+});
+
+test("M4 clamp property: every change-set phase returns a closed legal target set", () => {
+  const phases = new Set<string>(Object.values(ChangeSetPhase));
+  const pl = pipeline([stage({ id: "a" }), stage({ id: "b" })]);
+  for (const phase of Object.values(ChangeSetPhase)) {
+    const cursors = phase === ChangeSetPhase.InReview ? [0, 1] : [0];
+    for (const currentStageIndex of cursors) {
+      const next = legalChangeSetTransitions(changeSet({ phase, currentStageIndex }), pl);
+      ok(Array.isArray(next));
+      for (const target of next) {
+        ok(phases.has(target));
+        ok(target !== phase || phase === ChangeSetPhase.InReview);
+      }
+    }
+  }
+});
+
+test("M4 clamp property: terminal change-set phases cannot escape", () => {
+  const pl = pipeline([stage({ id: "s" })]);
+  for (const phase of Object.values(ChangeSetPhase)) {
+    if (!isTerminalChangeSet(phase)) continue;
+    deepEqual(legalChangeSetTransitions(changeSet({ phase }), pl), []);
+  }
+});
+
+test("M4 clamp property: stage outcomes are closed and unsatisfied gates never approve", () => {
+  const outcomes = new Set<string>(Object.values(StageOutcome));
+  for (const blocking of [true, false]) {
+    for (const gateSatisfiable of [true, false]) {
+      const next = legalStageOutcomes(stage({ id: `${blocking}-${gateSatisfiable}`, blocking }), gateSatisfiable);
+      for (const outcome of next) ok(outcomes.has(outcome));
+      if (!gateSatisfiable) ok(!next.includes(StageOutcome.Approve));
+    }
+  }
 });

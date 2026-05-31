@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 
 import type { AgenticEventEnvelope } from "../../../packages/domain/src/index.ts";
 import type { EventPublisher } from "../../../packages/messaging/src/index.ts";
+import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
 import type {
   NatsDeadLetterPublisher,
   NatsJetStreamPullConsumer,
@@ -28,6 +29,7 @@ import {
 } from "../../../packages/application/src/index.ts";
 import { composeOrganizationReactionPlanActionExecutor } from "./organization-executor-composition.ts";
 import { createOllamaChatPort } from "./adapters/ollama-chat-port.ts";
+import { createOtlpTelemetry } from "./adapters/otlp-telemetry.ts";
 import { createSubprocessSandbox } from "./adapters/subprocess-sandbox.ts";
 import type { InboundEventSource } from "../../../packages/workers/src/index.ts";
 import {
@@ -189,6 +191,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
     writer: createLoggerJsonLineWriter(deps.logger),
     now: deps.clock.now,
   });
+  const telemetry = createWorkerTelemetryPort(config);
 
   const pool = await deps.constructors.createPgPool({
     databaseUrl: config.cockroachDatabaseUrl,
@@ -198,6 +201,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
   });
   const cockroachExecutor = createCockroachSqlExecutor({
     client: sqlClient,
+    ...(telemetry === undefined ? {} : { telemetry }),
   });
   const natsAdapters = await deps.constructors.connectNatsAdapters({
     config: {
@@ -211,6 +215,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
       createId: (message) => createSha256Digest(message.payload),
     },
     transportFactory: deps.constructors.createNatsTransportFactory(),
+    ...(telemetry === undefined ? {} : { telemetry }),
   });
 
   // The autonomous data plane: reaction-plan actions run through a Hermes run,
@@ -229,6 +234,8 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
       ? createModelBackedComposer({
           chat: createOllamaChatPort({ baseUrl: config.llmBaseUrl, model: config.llmModel }),
           fallback: createFirstLegalOptionComposer(),
+          model: config.llmModel,
+          ...(telemetry === undefined ? {} : { telemetry }),
         })
       : toAsyncComposer(createFirstLegalOptionComposer());
 
@@ -244,6 +251,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
     composer: agentComposer,
     sandbox: createSubprocessSandbox(),
     nodeBinary: argv[0] ?? "node",
+    ...(telemetry === undefined ? {} : { telemetry }),
   });
 
   // The entire organizational structure: each reaction-plan action runs the
@@ -273,6 +281,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
         natsPullConsumer: natsAdapters.pullConsumer satisfies NatsJetStreamPullConsumer,
         reactionPlanActionExecutor,
         telemetrySink,
+        ...(telemetry === undefined ? {} : { telemetry }),
       },
       runtimeUtilities: {
         calculatePayloadHash: deps.durablePorts.calculatePayloadHash,
@@ -374,6 +383,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
       // the cadence supplies its own stop check; we just honor it in the sleep
       sleep: (ms, isStopRequested) => sleepUnlessStopped(deps.clock, ms, isStopRequested),
       ...(externalReviewPort ? { externalPort: externalReviewPort } : {}),
+      ...(telemetry === undefined ? {} : { telemetry }),
       observer: {
         record: (record) =>
           deps.logger.log({
@@ -412,6 +422,21 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
 
     return WorkerEntrypointExitCode.Degraded;
   }
+}
+
+function createWorkerTelemetryPort(config: WorkerProcessConfig): TelemetryPort | undefined {
+  if (config.otelExporterOtlpEndpoint === undefined) {
+    return undefined;
+  }
+
+  return createOtlpTelemetry({
+    endpoint: config.otelExporterOtlpEndpoint,
+    serviceName: "agentic-org-worker",
+    resourceAttributes: {
+      "deployment.environment": config.environment,
+      "agentic.organization.id": config.organizationId,
+    },
+  });
 }
 
 type CollectShutdownPortsInput = {

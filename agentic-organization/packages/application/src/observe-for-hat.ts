@@ -15,7 +15,7 @@
  * SCOPE of the objects being ordered.
  */
 
-import { HatLevel, type HatDefinition, type OrgEvent, type WorkBatch, type WorkItem } from "../../domain/src/index.ts";
+import { HatLevel, type ChangeSet, type HatDefinition, type OrgEvent, type WorkBatch, type WorkItem } from "../../domain/src/index.ts";
 import { legalPriorityClassesFor, type PriorityClass } from "./prioritization.ts";
 import {
   aggregateMetrics,
@@ -24,6 +24,8 @@ import {
   type TestSummary,
   type WorkBatchMetrics,
 } from "../../observability/src/work-batch-metrics.ts";
+import { recordDoraMetricsTelemetry } from "../../observability/src/dora-metrics.ts";
+import type { TelemetryPort } from "../../observability/src/telemetry-port.ts";
 
 export const AuthorityScope = {
   Individual: "individual",
@@ -99,6 +101,8 @@ export type OrgWorkState = {
   batches: readonly WorkBatch[];
   itemsByBatch: ReadonlyMap<string, readonly WorkItem[]>;
   events: readonly OrgEvent[];
+  changeSets?: readonly ChangeSet[];
+  telemetry?: TelemetryPort;
   /** optional QA test summary per batch (W3 supplies it; absent → zeros) */
   testsByBatch?: ReadonlyMap<string, TestSummary>;
 };
@@ -114,15 +118,23 @@ export function observeForHat(hat: HatDefinition, state: OrgWorkState): HatReado
         items: state.itemsByBatch.get(batch.batchId) ?? [],
         events: state.events,
         ...(tests !== undefined ? { tests } : {}),
+        ...(state.changeSets !== undefined ? { changeSets: state.changeSets } : {}),
       }),
     };
   });
+  const scopeRollup = aggregateMetrics(batchViews.map((b) => b.metrics));
+  if (state.telemetry !== undefined) {
+    for (const batchView of batchViews) {
+      recordDoraMetricsTelemetry(state.telemetry, batchView.metrics.dora);
+    }
+    recordDoraMetricsTelemetry(state.telemetry, scopeRollup.dora);
+  }
   return {
     hatId: hat.id,
     level: hat.level,
     authorityScope: authorityScopeOf(hat.level),
     batches: batchViews,
-    scopeRollup: aggregateMetrics(batchViews.map((b) => b.metrics)),
+    scopeRollup,
     legalPriorityClasses: legalPriorityClassesFor(hat.level),
   };
 }

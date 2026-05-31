@@ -2,6 +2,12 @@ import type { CommandHandlerRegistry } from "./command-handler-registry.ts";
 import type { PipelineCommand } from "./command-contract.ts";
 import { CommandErrorCode, CommandResultStatus, type CommandResult } from "./command-result.ts";
 import {
+  NoopTelemetry,
+  TelemetryMetricKind,
+  TelemetrySpanStatusCode,
+  type TelemetryPort,
+} from "../../observability/src/index.ts";
+import {
   PolicyDecisionObservationPersistenceStatus,
   PolicyDecisionStatus,
   type CommandAuthorizationPort,
@@ -44,16 +50,78 @@ export type CommandPipelineDependencies<Command extends PipelineCommand = Pipeli
     qualityGateEvaluationStateReader?: QualityGateEvaluationStateReaderPort | undefined;
     supervisorSignalStateReader?: SupervisorSignalStateReaderPort | undefined;
     workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
+    telemetry?: TelemetryPort | undefined;
   };
 
 export function createCommandPipeline<Command extends PipelineCommand = PipelineCommand>(
   dependencies: CommandPipelineDependencies<Command>,
 ): CommandPipeline<Command> {
   const store = dependencies.stateStoreFactory.createCommandStateStore();
+  const telemetry = dependencies.telemetry ?? new NoopTelemetry();
 
   return {
-    execute: (command) => executeCommand(command, store, dependencies),
+    execute: (command) => executeCommandWithTelemetry(command, store, dependencies, telemetry),
   };
+}
+
+async function executeCommandWithTelemetry<Command extends PipelineCommand>(
+  command: Command,
+  store: CommandStateStore<CommandResult>,
+  dependencies: CommandPipelineDependencies<Command>,
+  telemetry: TelemetryPort,
+): Promise<CommandResult> {
+  const span = telemetry.startSpan("org.command", {
+    attributes: {
+      "agentic.command.id": command.commandId,
+      "agentic.command.type": command.type,
+      "agentic.organization.id": command.organizationId,
+      "agentic.project.id": command.projectId,
+      "agentic.trace.id": command.traceId,
+      "agentic.correlation.id": command.correlationId,
+      "agentic.causation.id": command.causationId,
+      "agentic.idempotency.key": command.idempotencyKey,
+      "agentic.agent.id": command.actor.agentId,
+      "agentic.hat.assignment.id": command.actor.hatAssignmentId,
+    },
+  });
+
+  try {
+    const result = await executeCommand(command, store, dependencies);
+    span.setAttribute("result.status", result.status);
+    if (result.error?.code !== undefined) {
+      span.setAttribute("error.kind", result.error.code);
+    }
+    span.setStatus(
+      result.status === CommandResultStatus.Accepted
+        ? { code: TelemetrySpanStatusCode.Ok }
+        : { code: TelemetrySpanStatusCode.Error, message: result.error?.message ?? result.status },
+    );
+    recordCommandMetric(telemetry, command, result.status);
+    return result;
+  } catch (error) {
+    span.setAttribute("result.status", "threw");
+    span.setStatus({ code: TelemetrySpanStatusCode.Error, message: extractErrorMessage(error) });
+    recordCommandMetric(telemetry, command, "threw");
+    throw error;
+  } finally {
+    span.end();
+  }
+}
+
+function recordCommandMetric(
+  telemetry: TelemetryPort,
+  command: PipelineCommand,
+  status: CommandResultStatus | "threw",
+): void {
+  telemetry.recordMetric({
+    kind: TelemetryMetricKind.Counter,
+    name: "org_command_total",
+    value: 1,
+    attributes: {
+      "agentic.command.type": command.type,
+      "result.status": status,
+    },
+  });
 }
 
 async function executeCommand<Command extends PipelineCommand>(
@@ -512,4 +580,12 @@ function createEmptyWorkAnchorCommandEffects(): NonNullable<CommandEffects["work
     workAnchorTargets: [],
     workItemTransitions: [],
   };
+}
+
+function extractErrorMessage(error: unknown): string {
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return String(error);
 }

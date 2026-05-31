@@ -25,6 +25,11 @@ import {
   CommandResultStatus,
   type CommandResult,
 } from "../command-result.ts";
+import {
+  allEvidenceRefsContentAddressed,
+  verifiedContentAddressedEvidenceRefs,
+  type ContentAddressedEvidenceArtifact,
+} from "../content-addressed-evidence.ts";
 import type {
   Clock,
   CommandEffects,
@@ -53,6 +58,7 @@ export const QualityGateEvaluationValidationErrorMessage = {
   BusinessRuleResultsInvalid: "quality gate business rule results must be an array",
   BusinessRuleResultsRequired: "final business validation requires business rule evaluations",
   BusinessRuleStatusInvalid: "quality gate business rule status is invalid",
+  ContentAddressedEvidenceRequired: "approved or waived quality gates require content-addressed evidence refs",
   BusinessRuleIdRequired: "quality gate business rule ID is required",
   EvaluatedArtifactsInvalid: "quality gate evaluated artifact IDs must be string arrays",
   EvaluatedArtifactsRequired: "quality gate evaluated artifact IDs are required",
@@ -83,6 +89,7 @@ export type RecordQualityGateEvaluationCommand = PipelineCommand & {
   summary: string;
   evaluatedArtifactIds?: readonly string[] | undefined;
   businessRuleResults?: readonly BusinessRuleEvaluation[] | undefined;
+  evidenceArtifacts?: readonly ContentAddressedEvidenceArtifact[] | undefined;
 };
 
 export type RecordQualityGateEvaluationDependencies = Clock &
@@ -337,6 +344,10 @@ function validateCommand(
     return businessRuleValidationError;
   }
 
+  if (requiresContentAddressedEvidence(command) && !hasOnlyContentAddressedEvidence(command)) {
+    return QualityGateEvaluationValidationErrorMessage.ContentAddressedEvidenceRequired;
+  }
+
   return undefined;
 }
 
@@ -390,6 +401,24 @@ function isUnresolvedBusinessRuleResult(result: BusinessRuleEvaluation): boolean
   return (
     result.status === BusinessRuleEvaluationStatus.NotSatisfied ||
     result.status === BusinessRuleEvaluationStatus.PartiallySatisfied
+  );
+}
+
+function requiresContentAddressedEvidence(command: RecordQualityGateEvaluationCommand): boolean {
+  return command.outcome === QualityGateOutcome.Approved || command.outcome === QualityGateOutcome.Waived;
+}
+
+function hasOnlyContentAddressedEvidence(command: RecordQualityGateEvaluationCommand): boolean {
+  const businessRuleEvidenceRefs = (command.businessRuleResults ?? []).flatMap((result) => [
+    ...result.evidenceArtifactIds,
+  ]);
+  const verifiedRefs = verifiedContentAddressedEvidenceRefs(command.evidenceArtifacts);
+  const requiredRefs = [...createStringList(command.evaluatedArtifactIds), ...businessRuleEvidenceRefs];
+
+  return (
+    allEvidenceRefsContentAddressed(createStringList(command.evaluatedArtifactIds)) &&
+    (businessRuleEvidenceRefs.length === 0 || allEvidenceRefsContentAddressed(businessRuleEvidenceRefs)) &&
+    requiredRefs.every((ref) => verifiedRefs.has(ref))
   );
 }
 

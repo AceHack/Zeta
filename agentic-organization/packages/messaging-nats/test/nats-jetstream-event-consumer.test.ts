@@ -10,6 +10,12 @@ import {
 import type { EventIngestionProcessor } from "../../runtime/src/index.ts";
 import { EventIngestionOutcomeStatus } from "../../state/src/index.ts";
 import {
+  RecordingTelemetry,
+  TelemetryMetricKind,
+  TelemetrySpanStatusCode,
+  W3CTraceHeaderName,
+} from "../../observability/src/index.ts";
+import {
   NatsDeadLetterReason,
   NatsInboundMessageAckAction,
   createNatsJetStreamEventConsumer,
@@ -201,6 +207,81 @@ describe("NATS JetStream event consumer", () => {
     equal(result.failedCount, 1);
     equal(result.negativeAcknowledgedCount, 1);
   });
+
+  test("extracts W3C trace context and records consume telemetry for processed messages", async () => {
+    const telemetry = new RecordingTelemetry();
+    const message = createRecordingInboundMessage({
+      payload: JSON.stringify(createEnvelope()),
+      headers: {
+        [W3CTraceHeaderName.TraceParent]: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
+      },
+    });
+    const consumer = createNatsJetStreamEventConsumer({
+      pullConsumer: createRecordingPullConsumer([message]),
+      eventIngestionProcessor: createRecordingEventIngestionProcessor(EventIngestionOutcomeStatus.Processed),
+      deadLetterPublisher: createRecordingDeadLetterPublisher(),
+      telemetry,
+    });
+
+    await consumer.processNextBatch({
+      batchSize: 10,
+    });
+
+    deepEqual(
+      telemetry.spans.map((span) => ({
+        name: span.name,
+        status: span.status,
+        ended: span.ended,
+        subject: span.attributes["messaging.destination.name"],
+        eventId: span.attributes["agentic.event.id"],
+        resultStatus: span.attributes["result.status"],
+      })),
+      [
+        {
+          name: "org.nats.consume",
+          status: { code: TelemetrySpanStatusCode.Ok },
+          ended: true,
+          subject: "agentic-org.local.org-lfg.supervisor_signal.supervisor_signal.sent",
+          eventId: "evt-nats-001",
+          resultStatus: EventIngestionOutcomeStatus.Processed,
+        },
+      ],
+    );
+    deepEqual(telemetry.metrics, [
+      {
+        kind: TelemetryMetricKind.Counter,
+        name: "org_nats_consumed_total",
+        value: 1,
+        attributes: {
+          "messaging.destination.name": "agentic-org.local.org-lfg.supervisor_signal.supervisor_signal.sent",
+          "result.status": EventIngestionOutcomeStatus.Processed,
+        },
+      },
+    ]);
+  });
+
+  test("passes the inbound W3C traceparent to runtime ingestion for durable reaction-plan continuity", async () => {
+    const traceparent = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
+    const eventIngestionProcessor = createRecordingEventIngestionProcessor(EventIngestionOutcomeStatus.Processed);
+    const consumer = createNatsJetStreamEventConsumer({
+      pullConsumer: createRecordingPullConsumer([
+        createRecordingInboundMessage({
+          payload: JSON.stringify(createEnvelope()),
+          headers: {
+            [W3CTraceHeaderName.TraceParent]: traceparent,
+          },
+        }),
+      ]),
+      eventIngestionProcessor,
+      deadLetterPublisher: createRecordingDeadLetterPublisher(),
+    });
+
+    await consumer.processNextBatch({
+      batchSize: 10,
+    });
+
+    deepEqual(eventIngestionProcessor.traceparents, [traceparent]);
+  });
 });
 
 function createEnvelope(): AgenticEventEnvelope {
@@ -237,6 +318,7 @@ function createEnvelope(): AgenticEventEnvelope {
 
 function createRecordingInboundMessage(input: {
   payload: string;
+  headers?: Record<string, string>;
   failTerminate?: boolean;
 }): NatsJetStreamInboundMessage & {
   ackActions: NatsInboundMessageAckAction[];
@@ -248,6 +330,7 @@ function createRecordingInboundMessage(input: {
     payload: input.payload,
     headers: {
       "Nats-Msg-Event-Id": "evt-nats-001",
+      ...(input.headers ?? {}),
     },
     ackActions,
     acknowledge: async () => {
@@ -282,6 +365,7 @@ function createRecordingPullConsumer(messages: readonly NatsJetStreamInboundMess
 
 function createRecordingEventIngestionProcessor(status: EventIngestionOutcomeStatus): EventIngestionProcessor & {
   eventIds: string[];
+  traceparents: Array<string | undefined>;
   traceFields: {
     eventId: string;
     traceId: string;
@@ -290,6 +374,7 @@ function createRecordingEventIngestionProcessor(status: EventIngestionOutcomeSta
   }[];
 } {
   const eventIds: string[] = [];
+  const traceparents: Array<string | undefined> = [];
   const traceFields: {
     eventId: string;
     traceId: string;
@@ -299,9 +384,11 @@ function createRecordingEventIngestionProcessor(status: EventIngestionOutcomeSta
 
   return {
     eventIds,
+    traceparents,
     traceFields,
     ingest: async (input) => {
       eventIds.push(input.envelope.eventId);
+      traceparents.push(input.traceparent);
       traceFields.push({
         eventId: input.envelope.eventId,
         traceId: input.envelope.trace.traceId,

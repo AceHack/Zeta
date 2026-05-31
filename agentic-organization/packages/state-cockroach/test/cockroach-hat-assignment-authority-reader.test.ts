@@ -22,6 +22,7 @@ describe("cockroach hat assignment authority reader", () => {
     deepEqual(executor.statements[0]?.parameters, ["hat-assignment-dev-001"]);
     deepEqual(authority, {
       hatAssignmentId: "hat-assignment-dev-001",
+      hatId: "backend_implementer",
       organizationId: "org-lfg",
       projectId: "project-agentic-org",
       teamId: "team-runtime",
@@ -36,10 +37,17 @@ describe("cockroach hat assignment authority reader", () => {
 
     equal(await reader.findHatAssignmentAuthority("hat-assignment-dev-001"), undefined);
   });
+
+  test("rejects legacy fail-closed hat placeholders from upgraded durable rows", async () => {
+    const executor = createRecordingExecutor({ hatId: "legacy_unknown_hat_assignment" });
+    const reader = createCockroachHatAssignmentAuthorityReader({ executor });
+
+    equal(await reader.findHatAssignmentAuthority("hat-assignment-dev-001"), undefined);
+  });
 });
 
 function createRecordingExecutor(
-  input: { state?: unknown } = {},
+  input: { hatId?: string; state?: unknown } = {},
 ): CockroachHatAssignmentAuthoritySqlExecutor & {
   statements: CockroachHatAssignmentAuthoritySqlStatement[];
 } {
@@ -54,6 +62,7 @@ function createRecordingExecutor(
         rows: [
           {
             hat_assignment_id: "hat-assignment-dev-001",
+            hat_id: input.hatId ?? "backend_implementer",
             organization_id: "org-lfg",
             project_id: "project-agentic-org",
             team_id: "team-runtime",

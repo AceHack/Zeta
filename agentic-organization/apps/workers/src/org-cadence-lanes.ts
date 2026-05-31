@@ -15,6 +15,7 @@
 
 import {
   ChangeSetPhase,
+  OrgEventKind,
   StageOutcome,
   currentStage,
   type ChangeSet,
@@ -32,9 +33,33 @@ import {
   resubmitChangeSet,
   applyChangeSet,
   ExternalDecision,
+  replayLedger,
+  planReleaseQueue,
+  classifyDeadLetters,
+  recoveryIncidentToOrgEvent,
+  recoveryScanCompletedToOrgEvent,
+  scanAbandonedRunBindings,
+  scanStaleReactionPlans,
+  scanStrandedScheduleBlocks,
+  RunLifecyclePhase,
+  RunScope,
   type ChangeControlPort,
+  type DeadLetterRecoveryCandidate,
+  type Menu16,
+  type Menu16Slot,
+  type HierarchySnapshot,
+  type PromptFlowContext,
+  type PromptFlowContextRequest,
+  type PromptFlowTask,
+  ReleaseQueueActionKind,
+  type ReleaseBatchEvaluation,
+  type ReactionPlanRecoveryCandidate,
   type ReviewKernelDeps,
+  type RunBindingRecoveryCandidate,
+  type ScheduleBlockRecoveryCandidate,
 } from "../../../packages/application/src/index.ts";
+import { runAgentCliCycle } from "../../agent-cli/src/agent-cli.ts";
+import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
 import type { CadenceLane, CadenceLaneTickResult } from "./cadence-lane.ts";
 
 function degraded(message: string): CadenceLaneTickResult {
@@ -80,6 +105,178 @@ export function createWorkOsCadenceLane(deps: WorkOsCadenceDeps): CadenceLane {
       }
     },
   };
+}
+
+// ── A1b: observe-act work-item loop ──────────────────────────────────────────
+
+export type ObserveActWorkItem = {
+  runId: string;
+  projectId: string;
+  workItemId: string;
+  scope: RunScope;
+  phase: RunLifecyclePhase;
+  hasGateApproval: boolean;
+  hasEvidence: boolean;
+  hatId: string;
+  hatAssignmentId: string;
+  agentId: string;
+  promptFlowTasks?: readonly PromptFlowTask[];
+  hierarchy?: HierarchySnapshot;
+};
+
+export type ObserveActWorkItemSource = () => Promise<ObserveActWorkItem | null>;
+export type ObserveActMenuSelector = (menu: Menu16) => Promise<number> | number;
+export type ObserveActCommandRunner = (
+  commandType: string,
+  command: unknown,
+  slot: Menu16Slot,
+) => Promise<unknown>;
+export type ObserveActToolDispatcher = (
+  tool: string,
+  args: unknown,
+  slot: Menu16Slot,
+) => Promise<unknown>;
+export type ObserveActPromptFlowContextLoader = (
+  request: PromptFlowContextRequest,
+  slot: Menu16Slot,
+) => Promise<PromptFlowContext>;
+
+export type ObserveActWorkItemCadenceDeps = {
+  organizationId: string;
+  hats: readonly HatDefinition[];
+  now: () => number;
+  createId: (prefix: string) => string;
+  source: ObserveActWorkItemSource;
+  runCommand: ObserveActCommandRunner;
+  dispatchTool: ObserveActToolDispatcher;
+  loadPromptFlowContext?: ObserveActPromptFlowContextLoader;
+  writeObserveStdout?: (text: string) => void;
+  selectSlot?: ObserveActMenuSelector;
+};
+
+export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCadenceDeps): CadenceLane {
+  return {
+    name: "observe-act-work-item",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const work = await deps.source();
+        if (work === null) return { status: "observe-act:idle", failures: [] };
+
+        const hat = deps.hats.find((candidate) => candidate.id === work.hatId);
+        if (hat === undefined) {
+          return degraded(`observe-act lane: unknown hat '${work.hatId}'`);
+        }
+
+        const stderr: string[] = [];
+        const result = await runAgentCliCycle({
+          argv: observeActArgv(deps.organizationId, work),
+          now: () => new Date(deps.now()).toISOString(),
+          writeStdout: deps.writeObserveStdout ?? (() => undefined),
+          writeStderr: (text) => {
+            stderr.push(text.trim());
+          },
+          runCommand: deps.runCommand,
+          dispatchTool: deps.dispatchTool,
+          ...createOptionalObserveActPromptFlowTasks(work.promptFlowTasks),
+          ...createOptionalObserveActHierarchy(work.hierarchy),
+          ...createOptionalObserveActPromptFlowContextLoader(deps.loadPromptFlowContext),
+          ...(deps.selectSlot === undefined ? {} : { selectSlot: deps.selectSlot }),
+        });
+
+        return {
+          status: formatObserveActStatus(result.actionResult, result.exitCode),
+          failures: observeActFailures(result.actionResult, result.exitCode, stderr),
+        };
+      } catch (error) {
+        return degraded(`observe-act lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+function observeActArgv(organizationId: string, work: ObserveActWorkItem): string[] {
+  return [
+    "observe",
+    "--hat",
+    work.hatId,
+    "--scope",
+    work.scope,
+    "--phase",
+    work.phase,
+    "--run-id",
+    work.runId,
+    "--hat-assignment",
+    work.hatAssignmentId,
+    "--agent",
+    work.agentId,
+    "--organization",
+    organizationId,
+    "--project",
+    work.projectId,
+    "--work-item",
+    work.workItemId,
+    ...observeActBooleanArgs(work),
+  ];
+}
+
+function createOptionalObserveActPromptFlowTasks(
+  promptFlowTasks: readonly PromptFlowTask[] | undefined,
+): { promptFlowTasks?: readonly PromptFlowTask[] } {
+  return promptFlowTasks === undefined ? {} : { promptFlowTasks };
+}
+
+function createOptionalObserveActHierarchy(
+  hierarchy: HierarchySnapshot | undefined,
+): { hierarchy?: HierarchySnapshot } {
+  return hierarchy === undefined ? {} : { hierarchy };
+}
+
+function createOptionalObserveActPromptFlowContextLoader(
+  loadPromptFlowContext: ObserveActPromptFlowContextLoader | undefined,
+): { loadPromptFlowContext?: ObserveActPromptFlowContextLoader } {
+  return loadPromptFlowContext === undefined ? {} : { loadPromptFlowContext };
+}
+
+function observeActBooleanArgs(work: ObserveActWorkItem): string[] {
+  return [
+    ...(work.hasGateApproval ? ["--gate-approved"] : []),
+    ...(work.hasEvidence ? ["--evidence"] : []),
+  ];
+}
+
+function formatObserveActStatus(result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"], exitCode: number): string {
+  if (result?.outcome === "dispatched") {
+    return `observe-act:${result.kind}:${observeActDispatchStatus(result.result)}`;
+  }
+  if (result?.outcome === "reobserve") {
+    return `observe-act:reobserve:${result.scope}`;
+  }
+  if (result?.outcome === "loaded_context") {
+    return `observe-act:context:${result.context.taskId}`;
+  }
+  return exitCode === 0 ? "observe-act:no_action" : "observe-act:rejected";
+}
+
+function observeActDispatchStatus(result: unknown): string {
+  if (typeof result === "object" && result !== null && "status" in result) {
+    const status = (result as { status?: unknown }).status;
+    if (typeof status === "string") return status;
+  }
+  return "dispatched";
+}
+
+function observeActFailures(
+  result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"],
+  exitCode: number,
+  stderr: readonly string[],
+): CadenceLaneTickResult["failures"] {
+  if (result?.outcome === "rejected") {
+    return [{ message: `observe-act lane: ${result.reason}` }];
+  }
+  if (exitCode !== 0) {
+    return [{ message: `observe-act lane: ${stderr.join("; ") || `CLI exited ${exitCode}`}` }];
+  }
+  return [];
 }
 
 // ── A2: memory maintenance ───────────────────────────────────────────────────
@@ -206,11 +403,6 @@ export function createChangeControlCadenceLane(deps: ChangeControlCadenceDeps): 
             await deps.writer.upsert(next);
             for (const e of re.events) await deps.appendEvent(e);
           }
-          if (next.phase === ChangeSetPhase.Approved) {
-            const ap = applyChangeSet(next, kernel);
-            await deps.writer.upsert(ap.changeSet);
-            for (const e of ap.events) await deps.appendEvent(e);
-          }
           advanced += 1;
         }
         return { status: `change-control:${advanced}advanced`, failures: [] };
@@ -218,6 +410,133 @@ export function createChangeControlCadenceLane(deps: ChangeControlCadenceDeps): 
         return degraded(`change-control lane: ${error instanceof Error ? error.message : String(error)}`);
       }
     },
+  };
+}
+
+// ── G1: release queue ───────────────────────────────────────────────────────
+
+export type ReleaseQueueCadenceDeps = {
+  organizationId: string;
+  now: () => number;
+  createId: (prefix: string) => string;
+  reader: ChangeSetReader;
+  writer: ChangeSetWriter;
+  appendEvent: (event: OrgEvent) => Promise<void>;
+  maxBatchSize?: number;
+  evaluateBatch?: (batch: readonly ChangeSet[]) => ReleaseBatchEvaluation;
+  runAtomically?: (operation: (ports: ReleaseQueuePersistencePorts) => Promise<void>) => Promise<void>;
+};
+
+export type ReleaseQueuePersistencePorts = {
+  writer: ChangeSetWriter;
+  appendEvent: (event: OrgEvent) => Promise<void>;
+};
+
+const DEFAULT_RELEASE_QUEUE_BATCH_SIZE = 8;
+
+export function createReleaseQueueCadenceLane(deps: ReleaseQueueCadenceDeps): CadenceLane {
+  return {
+    name: "release-queue",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const approved = await deps.reader.listByOrgPhase(deps.organizationId, ChangeSetPhase.Approved);
+        if (approved.length === 0) {
+          return {
+            status: "release-queue:0applied/0changes_requested/0requeued",
+            failures: [],
+          };
+        }
+        if (deps.evaluateBatch === undefined) {
+          return degraded("release-queue lane: release batch evaluator unavailable");
+        }
+        const plan = planReleaseQueue({
+          approvedChangeSets: approved,
+          maxBatchSize: deps.maxBatchSize ?? DEFAULT_RELEASE_QUEUE_BATCH_SIZE,
+          evaluateBatch: deps.evaluateBatch,
+        });
+        const byId = new Map(approved.map((cs) => [cs.changeSetId, cs]));
+        const counts = { applied: 0, changesRequested: 0, requeued: 0 };
+        const persist = deps.runAtomically ?? (async (operation) => await operation({
+          writer: deps.writer,
+          appendEvent: deps.appendEvent,
+        }));
+
+        if (plan.actions.length > 0) {
+          await persist(async (ports) => {
+            for (const action of plan.actions) {
+              const cs = byId.get(action.changeSetId);
+              if (cs === undefined) continue;
+
+              if (action.kind === ReleaseQueueActionKind.Apply) {
+                const kernel = releaseQueueKernel(deps);
+                const applied = applyChangeSet(cs, kernel);
+                await ports.writer.upsert(applied.changeSet);
+                for (const event of applied.events) {
+                  await ports.appendEvent(withEvidence(event, action.evidenceRefs));
+                }
+                counts.applied += 1;
+              } else if (action.kind === ReleaseQueueActionKind.RequestChanges) {
+                const next = {
+                  ...cs,
+                  phase: ChangeSetPhase.ChangesRequested,
+                  updatedAt: new Date(deps.now()).toISOString(),
+                };
+                await ports.writer.upsert(next);
+                await ports.appendEvent(releaseQueueChangesRequestedEvent(deps, cs, action.evidenceRefs));
+                counts.changesRequested += 1;
+              } else {
+                counts.requeued += 1;
+              }
+            }
+          });
+        }
+
+        return {
+          status: `release-queue:${counts.applied}applied/${counts.changesRequested}changes_requested/${counts.requeued}requeued`,
+          failures: [],
+        };
+      } catch (error) {
+        return degraded(`release-queue lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+function releaseQueueKernel(deps: ReleaseQueueCadenceDeps): ReviewKernelDeps {
+  return {
+    organizationId: deps.organizationId,
+    now: deps.now(),
+    createId: deps.createId,
+  };
+}
+
+function withEvidence(event: OrgEvent, evidenceRefs: readonly string[]): OrgEvent {
+  return {
+    ...event,
+    evidenceRefs: [...event.evidenceRefs, ...evidenceRefs],
+  };
+}
+
+function releaseQueueChangesRequestedEvent(
+  deps: ReleaseQueueCadenceDeps,
+  cs: ChangeSet,
+  evidenceRefs: readonly string[],
+): OrgEvent {
+  const correlationId = deps.createId("releaseq-corr");
+  return {
+    id: deps.createId("releaseq-evt"),
+    kind: OrgEventKind.ChangesRequested,
+    occurredAt: new Date(deps.now()).toISOString(),
+    organizationId: deps.organizationId,
+    subjectId: cs.changeSetId,
+    fromState: ChangeSetPhase.Approved,
+    toState: ChangeSetPhase.ChangesRequested,
+    decision: `release queue isolated red ChangeSet ${cs.changeSetId}`,
+    supervisorChain: ["executive_board", "coo"],
+    evidenceRefs,
+    correlationId,
+    causationId: correlationId,
+    traceId: correlationId,
   };
 }
 
@@ -283,4 +602,252 @@ export function createDocMaintenanceCadenceLane(deps: DocMaintenanceCadenceDeps)
       }
     },
   };
+}
+
+// ── M1: ledger conformance ──────────────────────────────────────────────────
+
+export type ConformanceEventReader = {
+  listByOrganization: (organizationId: string, limit: number) => Promise<readonly OrgEvent[]>;
+};
+
+export type ConformanceCadenceDeps = {
+  organizationId: string;
+  reader: ConformanceEventReader;
+  limit: number;
+  telemetry?: TelemetryPort;
+};
+
+/**
+ * M1 lane: continuously replays the org_event ledger tail through the pure legal
+ * transition clamps. A violation is degraded evidence, not a thrown worker crash.
+ */
+export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): CadenceLane {
+  return {
+    name: "conformance",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const events = await deps.reader.listByOrganization(deps.organizationId, deps.limit);
+        const report = replayLedger(events);
+        recordConformanceMetric(deps, report);
+        if (report.nonconformant > 0) {
+          const first = report.violations[0]!;
+          return degraded(`conformance lane: ${report.nonconformant} violation(s); first=${first.eventId} ${first.fromState}->${first.toState} legal=[${first.legalToStates.join(",")}]`);
+        }
+        return { status: `conformance:${report.checked}checked/${report.nonconformant}violations/${report.skipped}skipped`, failures: [] };
+      } catch (error) {
+        return degraded(`conformance lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+function recordConformanceMetric(deps: ConformanceCadenceDeps, report: ReturnType<typeof replayLedger>): void {
+  deps.telemetry?.recordMetric({
+    kind: "gauge",
+    name: "org_conformance_pass_ratio",
+    value: report.checked === 0 ? 1 : report.conformant / report.checked,
+    attributes: {
+      "agentic.organization.id": deps.organizationId,
+      "agentic.conformance.checked": report.checked,
+      "agentic.conformance.conformant": report.conformant,
+      "agentic.conformance.nonconformant": report.nonconformant,
+      "agentic.conformance.skipped": report.skipped,
+    },
+  });
+}
+
+// ── G3: recovery scanners ───────────────────────────────────────────────────
+
+const DEFAULT_RECOVERY_SCAN_LIMIT = 100;
+const DEFAULT_STALE_REACTION_PLAN_MS = 10 * 60 * 1000;
+const DEFAULT_STRANDED_SCHEDULE_GRACE_MS = 5 * 60 * 1000;
+const DEFAULT_ABANDONED_RUN_HEARTBEAT_MS = 5 * 60 * 1000;
+
+export type StaleReactionPlanScanReader = {
+  listStaleReactionPlanCandidates: (input: {
+    organizationId: string;
+    nowIso: string;
+    staleBeforeIso: string;
+    limit: number;
+  }) => Promise<readonly ReactionPlanRecoveryCandidate[]>;
+};
+
+export type StrandedScheduleScanReader = {
+  listStrandedScheduleCandidates: (input: {
+    organizationId: string;
+    nowIso: string;
+    endedBeforeIso: string;
+    limit: number;
+  }) => Promise<readonly ScheduleBlockRecoveryCandidate[]>;
+};
+
+export type AbandonedRunBindingScanReader = {
+  listAbandonedRunBindingCandidates: (input: {
+    organizationId: string;
+    nowMs: number;
+    heartbeatBeforeIso: string;
+    limit: number;
+  }) => Promise<readonly RunBindingRecoveryCandidate[]>;
+};
+
+export type DeadLetterClassifierReader = {
+  listDeadLetterCandidates: (input: {
+    organizationId: string;
+    limit: number;
+  }) => Promise<readonly DeadLetterRecoveryCandidate[]>;
+};
+
+export type RecoveryScanCadenceDeps = {
+  organizationId: string;
+  now: () => number;
+  createId: (prefix: string) => string;
+  appendEvent: (event: OrgEvent) => Promise<void>;
+  limit?: number;
+};
+
+export type StaleReactionPlanScanCadenceDeps = RecoveryScanCadenceDeps & {
+  staleAfterMs?: number;
+  reader: StaleReactionPlanScanReader;
+};
+
+export type StrandedScheduleScanCadenceDeps = RecoveryScanCadenceDeps & {
+  graceMs?: number;
+  reader: StrandedScheduleScanReader;
+};
+
+export type AbandonedRunBindingScanCadenceDeps = RecoveryScanCadenceDeps & {
+  heartbeatDeadlineMs?: number;
+  reader: AbandonedRunBindingScanReader;
+};
+
+export type DeadLetterClassifierCadenceDeps = RecoveryScanCadenceDeps & {
+  reader: DeadLetterClassifierReader;
+};
+
+export function createStaleReactionPlanScanCadenceLane(deps: StaleReactionPlanScanCadenceDeps): CadenceLane {
+  return {
+    name: "stale-reaction-plan-scan",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const now = deps.now();
+        const candidates = await deps.reader.listStaleReactionPlanCandidates({
+          organizationId: deps.organizationId,
+          nowIso: new Date(now).toISOString(),
+          staleBeforeIso: new Date(now - (deps.staleAfterMs ?? DEFAULT_STALE_REACTION_PLAN_MS)).toISOString(),
+          limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
+        });
+        const report = scanStaleReactionPlans({
+          nowMs: now,
+          staleAfterMs: deps.staleAfterMs ?? DEFAULT_STALE_REACTION_PLAN_MS,
+          reactionPlans: candidates,
+        });
+        await appendRecoveryScanEvents(deps, report);
+        return { status: `stale-reaction-plan-scan:${report.incidents.length}incidents`, failures: [] };
+      } catch (error) {
+        return degraded(`stale-reaction-plan-scan lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+export function createStrandedScheduleScanCadenceLane(deps: StrandedScheduleScanCadenceDeps): CadenceLane {
+  return {
+    name: "stranded-schedule-scan",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const now = deps.now();
+        const candidates = await deps.reader.listStrandedScheduleCandidates({
+          organizationId: deps.organizationId,
+          nowIso: new Date(now).toISOString(),
+          endedBeforeIso: new Date(now - (deps.graceMs ?? DEFAULT_STRANDED_SCHEDULE_GRACE_MS)).toISOString(),
+          limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
+        });
+        const report = scanStrandedScheduleBlocks({
+          nowMs: now,
+          graceMs: deps.graceMs ?? DEFAULT_STRANDED_SCHEDULE_GRACE_MS,
+          scheduleBlocks: candidates,
+        });
+        await appendRecoveryScanEvents(deps, report);
+        return { status: `stranded-schedule-scan:${report.incidents.length}incidents`, failures: [] };
+      } catch (error) {
+        return degraded(`stranded-schedule-scan lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+export function createAbandonedRunBindingScanCadenceLane(deps: AbandonedRunBindingScanCadenceDeps): CadenceLane {
+  return {
+    name: "abandoned-run-binding-scan",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const now = deps.now();
+        const candidates = await deps.reader.listAbandonedRunBindingCandidates({
+          organizationId: deps.organizationId,
+          nowMs: now,
+          heartbeatBeforeIso: new Date(now - (deps.heartbeatDeadlineMs ?? DEFAULT_ABANDONED_RUN_HEARTBEAT_MS)).toISOString(),
+          limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
+        });
+        const report = scanAbandonedRunBindings({
+          nowMs: now,
+          heartbeatDeadlineMs: deps.heartbeatDeadlineMs ?? DEFAULT_ABANDONED_RUN_HEARTBEAT_MS,
+          runs: candidates,
+        });
+        await appendRecoveryScanEvents(deps, report);
+        return { status: `abandoned-run-binding-scan:${report.incidents.length}incidents`, failures: [] };
+      } catch (error) {
+        return degraded(`abandoned-run-binding-scan lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+export function createDeadLetterClassifierCadenceLane(deps: DeadLetterClassifierCadenceDeps): CadenceLane {
+  return {
+    name: "dead-letter-classifier",
+    async runOnce(): Promise<CadenceLaneTickResult> {
+      try {
+        const candidates = await deps.reader.listDeadLetterCandidates({
+          organizationId: deps.organizationId,
+          limit: deps.limit ?? DEFAULT_RECOVERY_SCAN_LIMIT,
+        });
+        const report = classifyDeadLetters({ deadLetters: candidates });
+        await appendRecoveryScanEvents(deps, report);
+        return { status: `dead-letter-classifier:${report.incidents.length}incidents`, failures: [] };
+      } catch (error) {
+        return degraded(`dead-letter-classifier lane: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    },
+  };
+}
+
+async function appendRecoveryScanEvents(
+  deps: RecoveryScanCadenceDeps,
+  report: Parameters<typeof recoveryScanCompletedToOrgEvent>[0]["report"],
+): Promise<void> {
+  const occurredAt = new Date(deps.now()).toISOString();
+  const correlationId = `${deps.organizationId}:${report.scanner}:${occurredAt}`;
+  const traceId = correlationId;
+
+  for (const incident of report.incidents) {
+    const id = deps.createId("recovery-incident");
+    await deps.appendEvent(recoveryIncidentToOrgEvent({
+      incident,
+      id,
+      occurredAt,
+      organizationId: deps.organizationId,
+      correlationId,
+      traceId,
+    }));
+  }
+
+  const id = deps.createId("recovery-scan");
+  await deps.appendEvent(recoveryScanCompletedToOrgEvent({
+    report,
+    id,
+    occurredAt,
+    organizationId: deps.organizationId,
+    correlationId,
+    traceId,
+  }));
 }

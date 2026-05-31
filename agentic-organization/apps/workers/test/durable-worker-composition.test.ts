@@ -12,6 +12,7 @@ import type {
   NatsDeadLetterMessage,
   NatsJetStreamInboundMessage,
 } from "../../../packages/messaging-nats/src/index.ts";
+import { RecordingTelemetry } from "../../../packages/observability/src/index.ts";
 import {
   ReactionPlanExecutionStatus,
   type ReactionPlanActionExecutionResult,
@@ -74,6 +75,7 @@ describe("durable worker runtime composition", () => {
   test("builds the NATS consumer from pull and dead-letter ports", async () => {
     const natsPullConsumer = createRecordingNatsPullConsumer([createNatsMessage(createSupervisorSignalEnvelope())]);
     const natsDeadLetterPublisher = createRecordingNatsDeadLetterPublisher();
+    const telemetry = new RecordingTelemetry();
     const ports = composeDurableWorkerRuntimePorts({
       config: {
         cockroachDatabaseUrl: "postgresql://agentic-org@cockroachdb-public:26257/agentic_org",
@@ -99,6 +101,7 @@ describe("durable worker runtime composition", () => {
         natsDeadLetterPublisher,
         reactionPlanActionExecutor: createNoopReactionPlanActionExecutor(),
         telemetrySink: createNoopTelemetrySink(),
+        telemetry,
       },
       runtimeUtilities: {
         calculatePayloadHash: () => "sha256:event-payload-001",
@@ -112,6 +115,7 @@ describe("durable worker runtime composition", () => {
     deepEqual(natsPullConsumer.batchSizes, [25]);
     equal(batch.processedCount, 1);
     equal(batch.acknowledgedCount, 1);
+    equal(telemetry.spans[0]?.name, "org.nats.consume");
     deepEqual(natsDeadLetterPublisher.messages, []);
   });
 

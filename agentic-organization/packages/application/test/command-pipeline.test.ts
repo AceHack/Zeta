@@ -28,6 +28,11 @@ import {
   type PolicyDecisionObservation,
   type PolicyDecisionObservationPort,
 } from "../../policy/src/index.ts";
+import {
+  RecordingTelemetry,
+  TelemetryMetricKind,
+  TelemetrySpanStatusCode,
+} from "../../observability/src/index.ts";
 import { createInMemoryOrganizationStoreFactory } from "../../state/src/index.ts";
 import { createCommandHandlerRegistry } from "../src/command-handler-registry.ts";
 import {
@@ -36,6 +41,10 @@ import {
   CommandResultStatus,
   type CommandResult,
 } from "../src/command-result.ts";
+import {
+  createContentAddressedEvidenceArtifact,
+  createContentAddressedEvidenceRef,
+} from "../src/content-addressed-evidence.ts";
 import { createCommandPipeline } from "../src/command-pipeline.ts";
 import {
   createSendSupervisorSignalHandler,
@@ -142,12 +151,21 @@ const qualityGateCommand: RecordQualityGateEvaluationCommand = {
   gateKind: QualityGateKind.FinalBusinessValidation,
   outcome: QualityGateOutcome.Approved,
   summary: "The delivered behavior satisfies the BRD and can proceed to release readiness.",
-  evaluatedArtifactIds: ["brd-001", "qa-report-001", "trace-report-001"],
+  evaluatedArtifactIds: [
+    evidenceRef("brd", "brd-001"),
+    evidenceRef("test-run", "qa-report-001"),
+    evidenceRef("trace", "trace-report-001"),
+  ],
+  evidenceArtifacts: [
+    evidenceArtifact("brd", "brd-001"),
+    evidenceArtifact("test-run", "qa-report-001"),
+    evidenceArtifact("trace", "trace-report-001"),
+  ],
   businessRuleResults: [
     {
       ruleId: "BRD-001",
       status: BusinessRuleEvaluationStatus.Satisfied,
-      evidenceArtifactIds: ["qa-report-001"],
+      evidenceArtifactIds: [evidenceRef("test-run", "qa-report-001")],
       notes: "The delivered behavior matches the accepted business rule.",
     },
   ],
@@ -168,6 +186,14 @@ type OrganizationTestCommand =
   | CreateDiscussionAnchorCommand
   | RecordQualityGateEvaluationCommand
   | RecordGenericArtifactCommand;
+
+function evidenceRef(kind: string, id: string): string {
+  return createContentAddressedEvidenceRef(kind, { id });
+}
+
+function evidenceArtifact(kind: string, id: string) {
+  return createContentAddressedEvidenceArtifact(kind, { id });
+}
 
 describe("command pipeline idempotency", () => {
   test("executes heterogeneous command handlers from one runtime registry", async () => {
@@ -1127,6 +1153,59 @@ describe("command pipeline idempotency", () => {
     equal(deniedHandler.executeCallCount, 0);
     equal(stateStoreFactory.findCallCount, 0);
     equal(stateStoreFactory.recordedOutcomes.length, 0);
+  });
+
+  test("records command span and RED metric at the pipeline seam", async () => {
+    const telemetry = new RecordingTelemetry();
+    const handler = createRecordingCommandHandler();
+    const pipeline = createCommandPipeline({
+      stateStoreFactory: createRecordingCommandStateStoreFactory<CommandResult>(),
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry([handler]),
+      now: () => "2026-05-25T20:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+      telemetry,
+    });
+
+    const result = await pipeline.execute(command);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    deepEqual(
+      telemetry.spans.map((span) => ({
+        name: span.name,
+        status: span.status,
+        ended: span.ended,
+        commandId: span.attributes["agentic.command.id"],
+        commandType: span.attributes["agentic.command.type"],
+        organizationId: span.attributes["agentic.organization.id"],
+        traceId: span.attributes["agentic.trace.id"],
+        resultStatus: span.attributes["result.status"],
+      })),
+      [
+        {
+          name: "org.command",
+          status: { code: TelemetrySpanStatusCode.Ok },
+          ended: true,
+          commandId: "cmd-supervisor-signal-001",
+          commandType: CommandType.SendSupervisorSignal,
+          organizationId: "org-lfg",
+          traceId: "trace-supervisor-signal-001",
+          resultStatus: CommandResultStatus.Accepted,
+        },
+      ],
+    );
+    deepEqual(telemetry.metrics, [
+      {
+        kind: TelemetryMetricKind.Counter,
+        name: "org_command_total",
+        value: 1,
+        attributes: {
+          "agentic.command.type": CommandType.SendSupervisorSignal,
+          "result.status": CommandResultStatus.Accepted,
+        },
+      },
+    ]);
   });
 });
 

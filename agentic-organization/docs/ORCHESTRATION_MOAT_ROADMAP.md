@@ -29,37 +29,52 @@ is an additive layer on existing primitives — no substrate change.
 
 *Gap closed: gastown Refinery (`internal/refinery/batch.go`).*
 
+**Status: shipped 2026-05-30.**
+
 - New `ReleaseQueueState` DU + a `release-queue` cadence lane.
-- Collect ChangeSets that reach `approved`; batch up to N; run the gate suite
-  (`evaluateStageGate`) **once on the batched stack**; green → `applyChangeSet` all atomically;
-  red → **bisect O(log N)** to isolate the culprit, requeue the good ones, notify the owner.
-- Reuses the change-control kernel verbatim as the per-ChangeSet authority. The queue + bisect
-  is pure new orchestration. Priority = age + retry-count + initiative-deps.
-- **Build:** `packages/application/src/release-queue.ts` (pure batch/bisect planner, TDD) +
-  `apps/workers/src/org-cadence-lanes.ts` lane + a `deploy/run-release-queue.ts` kind proof.
+- Collect ChangeSets that reach `approved`; batch up to N; require an explicit release-batch
+  evaluator; green → `applyChangeSet` all; red → bisect against an accumulating accepted stack to
+  isolate the culprit and bounce only that ChangeSet to `changes_requested`.
+- Reuses the change-control kernel as the per-ChangeSet authority. The change-control lane now
+  leaves `approved` ChangeSets for the release queue instead of immediately applying them.
+- **Built:** `packages/application/src/release-queue.ts` (pure batch/bisect planner, TDD),
+  `apps/workers/src/org-cadence-lanes.ts` release queue lane, cadence composition wiring with a
+  release gate port, Cockroach transaction-bound batch persistence, and `deploy/run-release-queue.ts`.
+  KIND proof: two seeded green ChangeSets applied, one red culprit changed to
+  `changes_requested`, ledger emitted two `change_set_applied` events and one `changes_requested`
+  event, `PROOF: PASS`.
 
 ### G2. Model-eval harness (Class A/B downgrade)
 
 *Gap closed: gastown gt-model-eval.*
 
-- A corpus of real `observe()` situations (work-item triage, review-gate, memory
-  promote/demote, supervisor-triage), each with an `allowed_actions` vocabulary + expected action.
-- Run our `ChatCompletionPort` (Ollama, gated hosted) in two classes: **Class B** = full hat
-  directive context (instruction-following); **Class A** = neutral, evidence-only (pure reasoning,
-  the safe-downgrade signal). Score decision quality, not syntax.
-- **Build:** `packages/model-eval/` + `deploy/run-model-eval.ts`; results recorded as org_events.
-  This is the input to the self-optimization loop (M3) — not a one-off benchmark.
+**Status: shipped 2026-05-31.**
+
+- `packages/model-eval/` runs Class A neutral-evidence cases and Class B directive-context cases
+  through a decision port, then scores the returned action against an `allowedActions` vocabulary
+  and expected action.
+- Model-eval reports carry stable overall / per-class accuracy, failed case ids, illegal case ids,
+  and a `model_eval_completed` org_event projection.
+- **Built:** `packages/model-eval/` and `deploy/run-model-eval-optimizer.ts`; KIND proof recorded
+  content-addressed eval evidence and one `model_eval_completed` event for
+  `org-model-eval-optimizer-ccc393f8`, `PROOF: PASS`.
 
 ### G3. Recovery scanners (the lanes our NORTH_STAR already names)
 
 *Gap closed: gastown convoy stranded-scan + reaper + witness patrol.*
 
+**Status: shipped 2026-05-30.**
+
 - New cadence lanes over `reaction_plans` (V9 lifecycle): `stale-reaction-plan-scan`,
   `stranded-schedule-scan`, `abandoned-run-binding-scan`, `dead-letter-classifier`.
 - Two rules adopted from gastown: **event-first, recovery-scan-second**, and **fail-open on
   transient errors** (a single Cockroach hiccup must never stall the org).
-- **Build:** cheapest Tier-1 win — the lane framework + leased reaction-plan lifecycle already
-  exist; these are new `runOnce()` lanes.
+- **Built:** `packages/application/src/recovery-scanners.ts` (pure scanners),
+  `packages/state-cockroach/src/cockroach-recovery-scan-reader.ts` (bounded tenant-scoped
+  lifecycle readers), four worker cadence lanes, and `deploy/run-recovery-scanners.ts`.
+  Dead-letter evidence stores failure-message hashes, not raw terminal payload text.
+  KIND proof: all four lanes found exactly one seeded incident, emitted four incident events
+  and four scan-completed events, `PROOF: PASS`.
 
 ---
 
@@ -105,13 +120,41 @@ M5) → memory KPI-correlation measures the realized decision outcome → re-eva
 which model + which policy each hat uses, with evidence from its own outcomes, recorded as
 org_events.
 
-- We already have the two hard halves: memory KPI-correlation (which cited memories preceded a
-  merged outcome) and the model-eval scaffold. M3 is the controller that joins them.
+**Status: shipped 2026-05-31.**
+
+- `packages/application/src/decision-optimizer.ts` reads model-eval summaries and KPI signal,
+  then proposes a safe model downgrade only when Class A clears threshold, KPI is non-negative,
+  eval/KPI evidence is content-addressed, the evaluated model matches the candidate, the candidate
+  is lower-cost than the currently resolved model, and the budget delta is negative.
+- The optimizer cycle depends on a generic document/log store (`getJson`, `putJson`,
+  `appendJson`). Cockroach is one adapter for KIND; a Git/GitHub-backed adapter can persist the
+  same drafted ChangeSet and config artifact through files / PRs without changing optimizer logic.
+- The optimizer does not mutate tenant config. It emits a drafted ChangeSet with a
+  full org-scoped tenant-config document artifact (`tenant-config/<org>.json`), so the org's own
+  policy changes pass through the same review fabric as code/doc changes without cross-org path
+  collisions.
+- KIND proof produced drafted ChangeSet `604120b3-4b7d-59f7-8030-fd28d1258302` and one
+  `decision_optimization_proposed` org_event carrying both eval and KPI evidence refs.
+- After the generic-store correction, the current deploy proof produced drafted ChangeSet
+  `6642c9f1-a96d-57ff-b3ad-fa97e33c1840` through that generic document/log store interface with
+  Cockroach only as the adapter.
 - **Why gastown cannot:** no memory-KPI substrate, no enforced config to tune, no ledger to
   measure against.
-- **Build:** `packages/application/src/decision-optimizer.ts` — reads eval + KPI org_events,
-  proposes a `tenant_config` delta as a *ChangeSet* (so the change to the org's own policy goes
-  through the same enforced change-control kernel — the org governs itself by its own rules).
+
+### M5. Layered tenant config — model/policy overlays as data
+
+**Status: shipped 2026-05-31.**
+
+- `TenantConfig.layers` now supports organization, department, hat, and work-item scopes.
+- Resolution is deterministic: more-specific non-nil model wins; integer budget deltas stack; a
+  layer can block inherited directives before adding its own; same-specificity ties resolve by
+  `updatedAt`, `version`, then `layerId`.
+- The existing Cockroach tenant-config row remains compatible because layers live inside the JSONB
+  config blob; Git/file stores can carry the same `TenantConfig` document because resolution is
+  over the generic domain shape, not a SQL row shape.
+- KIND proof resolved `gpt-5.5` before the optimizer overlay and `qwen2:0.5b` with
+  `budgetDeltaTokens = -512` after the proposed hat layer, with inherited frontier-model
+  directives blocked by the optimizer overlay.
 
 ### M4. Formal verification of the clamp
 
@@ -122,6 +165,23 @@ variant × every actor authority) + a model check that no path reaches a termina
   `legalWorkItemTransitions` / `legalChangeSetTransitions` / `legalMemoryTransitions` /
   `legalConfidencePromotions`; assert totality + the safety invariants (no gate bypass, no
   terminal escape). This is the proof that M1's replay can trust the kernel it replays against.
+
+### M6. Replay-context closure — make every transition event self-describing
+
+M1 exposed a deeper proof ratchet: `org_events` is universal, but some events carry phase
+strings while others carry stage ids, cycle summaries, or same-state flags. The conformance
+checker can prove the transition kinds that are self-contained today; the next leap is to make
+every durable state transition event explicitly name its kernel scope and transition context.
+
+- Add a typed transition-context envelope to future state-changing events: kernel (`work_item`,
+  `change_set`, `memory`, `doc`, `graph`), scope id, prior state, next state, and any replay
+  parameters the pure clamp needs (for example change-control pipeline cursor / stage count, or
+  doc load-bearing status).
+- Turn skipped-event counts into a coverage ratchet: every new lifecycle must either be
+  replayable by construction or explicitly marked non-transition. CI should fail if a new
+  `OrgEventKind` is ambiguous.
+- **Why gastown cannot:** prose workflow logs cannot be upgraded into proof-grade replay context
+  without replacing the substrate. Here it is an additive tightening of the existing ledger.
 
 ---
 
@@ -137,12 +197,22 @@ Enforcement is only as strong as its weakest side-door. Three hardening moves cl
 
 ### E2. Real authority + non-forgeable evidence (kill the two current stubs)
 
+**Status: shipped 2026-05-30.**
+
 - Replace the **permissive command-authorization stub** with a real authority port (hat
-  definition → allowed command types + tool kinds; OPA/JWT-backed). A TPM *structurally* cannot
-  emit an implementation command — today that's a stub, make it real.
+  definition → allowed command types + tool kinds). A TPM *structurally* cannot emit an
+  implementation command.
 - Make **evidence non-forgeable**: gate satisfaction must cite content-addressed evidence
   artifacts (a test-run id, a quorum-vote record, an external-approval id), not a boolean an
   agent can assert. The clamp already requires evidence; make the evidence un-fakeable.
+- **Built:** durable `HatAuthorityPort`, `hat_id` on the Cockroach authority projection with an
+  additive fail-closed upgrade for existing KIND databases, recomputable content-addressed
+  evidence artifacts for approved / waived quality gates, review-stage evidence propagation into
+  `org_events`, and `deploy/run-real-authority-evidence.ts`.
+  KIND proof: TPM + `write_code` denied and observed, `release_operator` + `write_code`
+  accepted, plain approval evidence rejected, content-addressed approval evidence accepted, and
+  a review-stage approval event persisted the content-addressed evidence ref. The proof also
+  executes the worker composition path. `PROOF: PASS`.
 
 ### E3. Continuous proof + emergency stop
 

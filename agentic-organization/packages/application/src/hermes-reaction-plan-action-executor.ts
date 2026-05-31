@@ -19,6 +19,11 @@ import type { ReactionPlanAction } from "../../domain/src/index.ts";
 import type { HermesRuntime } from "../../hermes/src/index.ts";
 import type { Memory } from "../../memory/src/index.ts";
 import {
+  TelemetrySpanStatusCode,
+  type TelemetryPort,
+  type TelemetrySpan,
+} from "../../observability/src/index.ts";
+import {
   ReactionPlanExecutionStatus,
   type ReactionPlanActionExecutionContext,
   type ReactionPlanActionExecutionResult,
@@ -63,6 +68,7 @@ export type HermesReactionPlanActionExecutorDeps = {
   sandbox?: SandboxToolPort;
   /** node binary path for the sandbox verification tool; defaults to the running node. */
   nodeBinary?: string;
+  telemetry?: TelemetryPort;
 };
 
 export function createHermesReactionPlanActionExecutor(
@@ -73,60 +79,121 @@ export function createHermesReactionPlanActionExecutor(
       action: ReactionPlanAction,
       context: ReactionPlanActionExecutionContext,
     ): Promise<ReactionPlanActionExecutionResult> => {
-      // The agent makes a REAL decision: the deterministic kernel computes the
-      // legal options; the (possibly model-backed) composer chooses among them.
-      // A decision the kernel can't legalize fails the run honestly (retryable).
-      const decision = await decideReactionActionAsync({
-        action,
-        composer: deps.composer ?? toAsyncComposer(createFirstLegalOptionComposer()),
-        now: deps.now ?? (() => new Date().toISOString()),
-      });
-      const summary = summarizeReactionDecision(decision);
-      if (summary.kind === "feedback") {
-        return {
-          status: ReactionPlanExecutionStatus.Failed,
-          failure: {
-            message: `agent could not decide a legal move: ${summary.feedback.reason} - ${summary.feedback.message}`,
-            retryable: true,
-          },
-        };
+      const span = startHermesRunSpan(deps.telemetry, action, context);
+      try {
+        const result = await executeHermesReactionPlanAction(action, context, deps);
+        recordHermesRunSpanResult(span, result);
+        return result;
+      } catch (error) {
+        span?.setStatus({ code: TelemetrySpanStatusCode.Error, message: getErrorMessage(error) });
+        span?.end();
+        throw error;
       }
-
-      // The agent actually runs a sandboxed tool (a real bounded subprocess) to
-      // produce verifiable evidence. Tool failure is supplementary, never fatal.
-      const toolEvidenceRef = await runSandboxVerification(action, deps);
-
-      const request = mapActionToRunRequest(action, context, deps.generateId, summary, toolEvidenceRef);
-
-      const result = await runWorkItemThroughHermes(request, {
-        hermes: deps.createHermesRuntime(),
-        memory: deps.createMemory(),
-        agentHeartbeatWriter: deps.agentHeartbeatWriter,
-        agentHeartbeatDeadlineMs: deps.agentHeartbeatDeadlineMs,
-      });
-
-      if (result.outcome === "ok") {
-        return {
-          status: ReactionPlanExecutionStatus.Succeeded,
-          result: {
-            message: `agent run ${result.run.runId} ${summary.actionSummary} for work item ${action.workItemId}`,
-            createdWorkItemIds: [],
-            createdDiscussionAnchorIds: [],
-          },
-        };
-      }
-
-      // the agent run could not complete — retryable so the reaction-plan executor
-      // re-claims it on the next cycle (the keep-alive lease guards against pile-up)
-      return {
-        status: ReactionPlanExecutionStatus.Failed,
-        failure: {
-          message: `hermes run feedback: ${result.feedback.reason} - ${result.feedback.message}`,
-          retryable: true,
-        },
-      };
     },
   };
+}
+
+async function executeHermesReactionPlanAction(
+  action: ReactionPlanAction,
+  context: ReactionPlanActionExecutionContext,
+  deps: HermesReactionPlanActionExecutorDeps,
+): Promise<ReactionPlanActionExecutionResult> {
+  // The agent makes a REAL decision: the deterministic kernel computes the
+  // legal options; the (possibly model-backed) composer chooses among them.
+  // A decision the kernel can't legalize fails the run honestly (retryable).
+  const decision = await decideReactionActionAsync({
+    action,
+    composer: deps.composer ?? toAsyncComposer(createFirstLegalOptionComposer()),
+    now: deps.now ?? (() => new Date().toISOString()),
+    telemetry: {
+      hat: action.requiredHat,
+    },
+  });
+  const summary = summarizeReactionDecision(decision);
+  if (summary.kind === "feedback") {
+    return {
+      status: ReactionPlanExecutionStatus.Failed,
+      failure: {
+        message: `agent could not decide a legal move: ${summary.feedback.reason} - ${summary.feedback.message}`,
+        retryable: true,
+      },
+    };
+  }
+
+  // The agent actually runs a sandboxed tool (a real bounded subprocess) to
+  // produce verifiable evidence. Tool failure is supplementary, never fatal.
+  const toolEvidenceRef = await runSandboxVerification(action, deps);
+
+  const request = mapActionToRunRequest(action, context, deps.generateId, summary, toolEvidenceRef);
+
+  const result = await runWorkItemThroughHermes(request, {
+    hermes: deps.createHermesRuntime(),
+    memory: deps.createMemory(),
+    agentHeartbeatWriter: deps.agentHeartbeatWriter,
+    agentHeartbeatDeadlineMs: deps.agentHeartbeatDeadlineMs,
+  });
+
+  if (result.outcome === "ok") {
+    return {
+      status: ReactionPlanExecutionStatus.Succeeded,
+      result: {
+        message: `agent run ${result.run.runId} ${summary.actionSummary} for work item ${action.workItemId}`,
+        createdWorkItemIds: [],
+        createdDiscussionAnchorIds: [],
+      },
+    };
+  }
+
+  // the agent run could not complete — retryable so the reaction-plan executor
+  // re-claims it on the next cycle (the keep-alive lease guards against pile-up)
+  return {
+    status: ReactionPlanExecutionStatus.Failed,
+    failure: {
+      message: `hermes run feedback: ${result.feedback.reason} - ${result.feedback.message}`,
+      retryable: true,
+    },
+  };
+}
+
+function startHermesRunSpan(
+  telemetry: TelemetryPort | undefined,
+  action: ReactionPlanAction,
+  context: ReactionPlanActionExecutionContext,
+): TelemetrySpan | undefined {
+  return telemetry?.startSpan("org.hermes.run", {
+    attributes: {
+      "agentic.organization.id": action.organizationId,
+      "org.work_item_id": action.workItemId,
+      "agentic.reaction_plan.id": context.reactionPlanId,
+      "agentic.required_hat": action.requiredHat,
+    },
+    ...createOptionalSpanParent(telemetry, context.traceparent),
+  });
+}
+
+function createOptionalSpanParent(
+  telemetry: TelemetryPort,
+  traceparent: string | undefined,
+): { parent?: ReturnType<TelemetryPort["extract"]> } {
+  return traceparent === undefined ? {} : { parent: telemetry.extract({ traceparent }) };
+}
+
+function recordHermesRunSpanResult(
+  span: TelemetrySpan | undefined,
+  result: ReactionPlanActionExecutionResult,
+): void {
+  if (span === undefined) {
+    return;
+  }
+
+  if (result.status === ReactionPlanExecutionStatus.Succeeded) {
+    span.setStatus({ code: TelemetrySpanStatusCode.Ok });
+    span.end();
+    return;
+  }
+
+  span.setStatus({ code: TelemetrySpanStatusCode.Error, message: result.failure.message });
+  span.end();
 }
 
 function mapActionToRunRequest(
@@ -171,4 +238,8 @@ async function runSandboxVerification(
   }
   const result = await deps.sandbox.run(buildVerificationToolRequest(action, deps.nodeBinary));
   return verificationEvidenceRef(result);
+}
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

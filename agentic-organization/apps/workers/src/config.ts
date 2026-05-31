@@ -29,6 +29,7 @@ export const WorkerProcessEnvName = {
   /** when set, the agent's composer makes real model calls to this in-cluster endpoint */
   LlmBaseUrl: "LLM_BASE_URL",
   LlmModel: "LLM_MODEL",
+  OtelExporterOtlpEndpoint: "OTEL_EXPORTER_OTLP_ENDPOINT",
 } as const;
 
 export type WorkerProcessEnvName = (typeof WorkerProcessEnvName)[keyof typeof WorkerProcessEnvName];
@@ -47,6 +48,8 @@ export type WorkerDurableRuntimeConfig = {
   llmBaseUrl?: string;
   /** model name to ask the endpoint for (optional; required when llmBaseUrl is set) */
   llmModel?: string;
+  /** OTLP HTTP endpoint for first-class traces/metrics/logs (optional; no-op when absent) */
+  otelExporterOtlpEndpoint?: string;
 };
 
 export type WorkerProcessConfig = WorkerRuntimeConfig & WorkerDurableRuntimeConfig;
@@ -89,9 +92,20 @@ export function parseWorkerRuntimeConfigFromEnv(env: WorkerProcessEnvironment): 
     workerKeepAliveOrgHeartbeatDeadlineMs: parseWorkerKeepAliveOrgHeartbeatDeadlineMs(
       env[WorkerProcessEnvName.WorkerKeepAliveOrgHeartbeatDeadlineMs],
     ),
+    ...parseOtlpConfig(env),
     // optional model backend — only set when both URL and model are provided
     ...parseLlmConfig(env),
   };
+}
+
+function parseOtlpConfig(env: WorkerProcessEnvironment): { otelExporterOtlpEndpoint?: string } {
+  const endpoint = nonEmpty(env[WorkerProcessEnvName.OtelExporterOtlpEndpoint]);
+
+  if (endpoint === undefined) {
+    return {};
+  }
+
+  return { otelExporterOtlpEndpoint: endpoint };
 }
 
 function parseLlmConfig(env: WorkerProcessEnvironment): { llmBaseUrl?: string; llmModel?: string } {

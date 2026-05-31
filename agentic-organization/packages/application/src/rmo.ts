@@ -10,6 +10,7 @@
  */
 
 import { OrgEventKind, type OrgEvent } from "../../domain/src/org-event.ts";
+import { chooseWithinLegal, type OrgChooser } from "./org-decision.ts";
 import { PriorityClass } from "./prioritization.ts";
 
 /** A prioritized work item's staffing demand. */
@@ -18,6 +19,191 @@ export type WorkloadItem = {
   priorityClass: PriorityClass;
   requiredHats: readonly string[];
 };
+
+export type RmoHatCandidateReputation = {
+  agentId: string;
+  hatId: string;
+  agentHatReputation: number;
+  recentOutcomeScore: number;
+  scheduleReliability: number;
+  reviewQuality: number;
+  qaPassRate: number;
+  completionRate: number;
+  contextFit: number;
+  currentLoad: number;
+  freshness: number;
+  explorationBonus: number;
+  consecutiveAssignmentCount: number;
+  recentSameHatAssignments: number;
+};
+
+export type RmoHatCandidateScoreComponents = {
+  agentHatReputation: number;
+  recentOutcomeScore: number;
+  scheduleReliability: number;
+  reviewQuality: number;
+  qaPassRate: number;
+  completionRate: number;
+  contextFit: number;
+  freshness: number;
+  explorationBonus: number;
+  currentLoadPenalty: number;
+  consecutiveAssignmentPenalty: number;
+  recentSameHatPenalty: number;
+};
+
+export type RankedRmoHatCandidate = {
+  agentId: string;
+  hatId: string;
+  rank: number;
+  score: number;
+  components: RmoHatCandidateScoreComponents;
+  reasonCodes: readonly string[];
+};
+
+export type RankRmoHatCandidatesInput = {
+  hatId: string;
+  candidates: readonly RmoHatCandidateReputation[];
+};
+
+export type RmoHatAssignmentDecision =
+  | {
+      outcome: "assigned";
+      selected: RankedRmoHatCandidate;
+      rankedCandidates: readonly RankedRmoHatCandidate[];
+      event: OrgEvent;
+    }
+  | {
+      outcome: "no_legal_candidate";
+      reason: string;
+    };
+
+export type DecideRmoHatAssignmentContext = {
+  createEventId: () => string;
+  nowIso: () => string;
+  organizationId: string;
+  supervisorChain: readonly string[];
+  correlationId: string;
+  causationId: string;
+  traceId: string;
+};
+
+const RmoOfficeHatId = "rmo_office";
+
+function clamp01(value: number): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(1, value));
+}
+
+function rounded(value: number): number {
+  return Math.round(value * 1000) / 1000;
+}
+
+function scoreCandidate(candidate: RmoHatCandidateReputation): Omit<RankedRmoHatCandidate, "rank"> {
+  const components: RmoHatCandidateScoreComponents = {
+    agentHatReputation: clamp01(candidate.agentHatReputation) * 4,
+    recentOutcomeScore: clamp01(candidate.recentOutcomeScore) * 2,
+    scheduleReliability: clamp01(candidate.scheduleReliability) * 1.25,
+    reviewQuality: clamp01(candidate.reviewQuality),
+    qaPassRate: clamp01(candidate.qaPassRate),
+    completionRate: clamp01(candidate.completionRate),
+    contextFit: clamp01(candidate.contextFit),
+    freshness: clamp01(candidate.freshness) * 0.5,
+    explorationBonus: clamp01(candidate.explorationBonus) * 0.5,
+    currentLoadPenalty: clamp01(candidate.currentLoad) * 2,
+    consecutiveAssignmentPenalty: Math.max(0, candidate.consecutiveAssignmentCount) * 0.75,
+    recentSameHatPenalty: Math.max(0, candidate.recentSameHatAssignments) * 0.4,
+  };
+  const score =
+    components.agentHatReputation +
+    components.recentOutcomeScore +
+    components.scheduleReliability +
+    components.reviewQuality +
+    components.qaPassRate +
+    components.completionRate +
+    components.contextFit +
+    components.freshness +
+    components.explorationBonus -
+    components.currentLoadPenalty -
+    components.consecutiveAssignmentPenalty -
+    components.recentSameHatPenalty;
+  return {
+    agentId: candidate.agentId,
+    hatId: candidate.hatId,
+    score: rounded(score),
+    components,
+    reasonCodes: reasonCodesFor(candidate),
+  };
+}
+
+function reasonCodesFor(candidate: RmoHatCandidateReputation): readonly string[] {
+  const reasons: string[] = [];
+  if (candidate.agentHatReputation >= 0.8) reasons.push("strong_agent_hat_reputation");
+  if (candidate.recentOutcomeScore >= 0.8) reasons.push("strong_recent_outcomes");
+  if (candidate.scheduleReliability >= 0.8) reasons.push("strong_schedule_reliability");
+  if (candidate.reviewQuality >= 0.8) reasons.push("strong_review_quality");
+  if (candidate.qaPassRate >= 0.8) reasons.push("strong_qa_pass_rate");
+  if (candidate.completionRate >= 0.8) reasons.push("strong_completion_rate");
+  if (candidate.contextFit >= 0.8) reasons.push("strong_context_fit");
+  if (candidate.explorationBonus >= 0.5 || candidate.freshness >= 0.8) reasons.push("exploration_candidate");
+  if (candidate.currentLoad >= 0.7) reasons.push("load_penalty");
+  if (candidate.consecutiveAssignmentCount > 0 || candidate.recentSameHatAssignments > 0) reasons.push("lock_in_penalty");
+  if (reasons.length === 0) reasons.push("baseline_reputation_evidence");
+  return reasons;
+}
+
+export function rankRmoHatCandidates(input: RankRmoHatCandidatesInput): readonly RankedRmoHatCandidate[] {
+  return input.candidates
+    .filter((candidate) => candidate.hatId === input.hatId)
+    .map(scoreCandidate)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return a.agentId < b.agentId ? -1 : a.agentId > b.agentId ? 1 : 0;
+    })
+    .map((candidate, index) => ({ ...candidate, rank: index + 1 }));
+}
+
+export function decideRmoHatAssignment(
+  input: {
+    hatId: string;
+    hatName: string;
+    rankedCandidates: readonly RankedRmoHatCandidate[];
+    chooser: OrgChooser<RankedRmoHatCandidate>;
+  },
+  ctx: DecideRmoHatAssignmentContext,
+): RmoHatAssignmentDecision {
+  const legal = input.rankedCandidates.filter((candidate) => candidate.hatId === input.hatId);
+  const choice = chooseWithinLegal(legal, `RMO assignment for ${input.hatName}`, input.chooser);
+  if (choice.outcome === "no_legal_option") {
+    return { outcome: "no_legal_candidate", reason: choice.reason };
+  }
+  const selected = choice.option;
+  const alternatives = legal
+    .filter((candidate) => candidate.agentId !== selected.agentId)
+    .map((candidate) => `#${candidate.rank} ${candidate.agentId} score=${candidate.score}`)
+    .join("; ");
+  return {
+    outcome: "assigned",
+    selected,
+    rankedCandidates: legal,
+    event: {
+      id: ctx.createEventId(),
+      kind: OrgEventKind.HatAssignment,
+      occurredAt: ctx.nowIso(),
+      organizationId: ctx.organizationId,
+      actorHatId: RmoOfficeHatId,
+      actorAgentId: selected.agentId,
+      subjectId: input.hatId,
+      toState: "assigned",
+      decision: `RMO office selected ${selected.agentId} for ${input.hatName} rank #${selected.rank} score=${selected.score} (${choice.reason}); reasons: ${selected.reasonCodes.join(", ")}; alternatives: ${alternatives.length === 0 ? "none" : alternatives}`,
+      supervisorChain: ctx.supervisorChain,
+      evidenceRefs: [],
+      correlationId: ctx.correlationId,
+      causationId: ctx.causationId,
+      traceId: ctx.traceId,
+    },
+  };
+}
 
 /** Priority weight: expedite/high reserve extra headroom; paused contributes nothing. */
 function demandWeight(priorityClass: PriorityClass): number {

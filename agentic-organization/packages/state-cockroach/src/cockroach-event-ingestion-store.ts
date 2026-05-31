@@ -142,6 +142,7 @@ function createInsertReactionPlanStatement(reactionPlan: ReactionPlanRecord): Co
       reactionPlan.action.projectId,
       reactionPlan.action.workItemId,
       reactionPlan.action,
+      reactionPlan.traceparent ?? null,
     ],
   };
 }
@@ -216,8 +217,9 @@ const CockroachEventIngestionStoreSql = {
       organization_id,
       project_id,
       work_item_id,
-      action_json
-    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      action_json,
+      traceparent
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
   `,
   MarkInboxReceiptProcessed: `
     UPDATE ${CockroachTableName.InboxReceipts}

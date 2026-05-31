@@ -69,3 +69,11 @@ test("the cycle emits a rich, attributed trace (every event names its decision)"
   ok(kinds.has("hat_binding_transition"));
   ok(kinds.has("succession_planned"));
 });
+
+test("RMO office chooses hat wearers from ranked reputation alternatives during the org cycle", async () => {
+  const h = harness();
+  await runOrgCycle(h.deps);
+  const rmoAssignments = h.events.filter((e) => e.kind === "hat_assignment" && e.actorHatId === "rmo_office");
+  ok(rmoAssignments.length >= 1);
+  ok(rmoAssignments.every((e) => e.decision.includes("alternatives:")));
+});

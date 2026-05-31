@@ -168,7 +168,7 @@ export function legalChangeSetTransitions(
     case P.ChangesRequested:
       return [P.InReview, P.Withdrawn]; // proposer revises + resubmits
     case P.Approved:
-      return [P.Applied, P.Withdrawn];
+      return [P.Applied, P.ChangesRequested, P.Withdrawn]; // release queue may bounce a red stack
     default:
       return []; // terminal
   }

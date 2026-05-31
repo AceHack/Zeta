@@ -67,6 +67,8 @@ describe("cockroach event ingestion store", () => {
     );
     equal(executor.transactionStatements[0]?.sql.includes("ON CONFLICT"), true);
     equal(executor.transactionStatements[0]?.sql.includes("processed_at IS NULL"), true);
+    equal(executor.transactionStatements[1]?.sql.includes("traceparent"), true);
+    equal(executor.transactionStatements[1]?.parameters[9], "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01");
   });
 
   test("does not insert reaction plans when the inbox receipt claim loses the race", async () => {
@@ -237,6 +239,7 @@ function createReactionPlanRecord(): ReactionPlanRecord {
     consumerName: InboundEventConsumerName.V0AutomationPlanner,
     createdAt: "2026-05-25T22:00:00.000Z",
     status: ReactionPlanStatus.Planned,
+    traceparent: "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01",
     action: {
       actionType: ReactionPlanActionType.CreateSupervisorTriage,
       triggerEventId: "evt-supervisor-signal-001",

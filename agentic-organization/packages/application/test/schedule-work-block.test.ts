@@ -345,6 +345,7 @@ function createHatAssignmentAuthorityReader(
 function createHatAssignmentAuthority(): HatAssignmentAuthoritySnapshot {
   return {
     hatAssignmentId: command.assignedHatAssignmentId,
+    hatId: "backend_implementer",
     organizationId: command.organizationId,
     projectId: command.projectId,
     ...(command.teamId === undefined ? {} : { teamId: command.teamId }),

@@ -45,3 +45,16 @@ test("node + edge ids are content-addressed (idempotent re-extraction)", () => {
   // direction matters: from→to is not the same edge as to→from
   ok(graphEdgeId("org-lfg", c, GraphEdgeKind.DependsOn, a) !== e1);
 });
+
+test("M4 clamp property: graph confidence promotions are total and closed", () => {
+  const confidences = new Set<string>(Object.values(GraphConfidence));
+  for (const confidence of Object.values(GraphConfidence)) {
+    const next = legalConfidencePromotions(confidence);
+    ok(Array.isArray(next));
+    for (const target of next) {
+      ok(confidences.has(target));
+      ok(target !== confidence);
+    }
+  }
+  deepEqual(legalConfidencePromotions(C.Retracted), []);
+});

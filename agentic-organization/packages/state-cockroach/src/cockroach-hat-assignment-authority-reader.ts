@@ -48,12 +48,18 @@ export function createCockroachHatAssignmentAuthorityReader(
 function mapHatAssignmentAuthorityRow(
   row: HatAssignmentAuthorityRow | undefined,
 ): HatAssignmentAuthoritySnapshot | undefined {
-  if (row === undefined || !isHatAssignmentAuthorityState(row.state)) {
+  if (
+    row === undefined ||
+    !isHatAssignmentAuthorityState(row.state) ||
+    isBlank(row.hat_id) ||
+    row.hat_id === "legacy_unknown_hat_assignment"
+  ) {
     return undefined;
   }
 
   return {
     hatAssignmentId: row.hat_assignment_id,
+    hatId: row.hat_id,
     organizationId: row.organization_id,
     projectId: row.project_id,
     ...(row.team_id == null ? {} : { teamId: row.team_id }),
@@ -71,6 +77,7 @@ function isHatAssignmentAuthorityState(value: unknown): value is HatAssignmentAu
 
 type HatAssignmentAuthorityRow = {
   hat_assignment_id: string;
+  hat_id: string;
   organization_id: string;
   project_id: string;
   team_id?: string | null;
@@ -82,6 +89,7 @@ const CockroachHatAssignmentAuthoritySql = {
   FindHatAssignmentAuthority: `
     SELECT
       hat_assignment_id,
+      hat_id,
       organization_id,
       project_id,
       team_id,
@@ -91,3 +99,7 @@ const CockroachHatAssignmentAuthoritySql = {
     WHERE hat_assignment_id = $1
   `,
 } as const;
+
+function isBlank(value: unknown): value is string {
+  return typeof value !== "string" || value.trim().length === 0;
+}

@@ -1,0 +1,224 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-provisioning
+  namespace: agentic-org
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://tempo:3200
+        uid: tempo
+      - name: Mimir
+        type: prometheus
+        access: proxy
+        url: http://mimir:9009/prometheus
+        uid: mimir
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki:3100
+        uid: loki
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+      - name: agentic-org
+        orgId: 1
+        folder: Agentic Organization
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 30
+        options:
+          path: /etc/grafana/dashboards
+  alerting.yaml: |
+    apiVersion: 1
+    groups:
+      - orgId: 1
+        name: agentic-org-conformance
+        folder: Agentic Organization
+        interval: 1m
+        rules:
+          - uid: agentic-org-conformance-pass-ratio
+            title: Conformance pass ratio below 1.0
+            condition: C
+            data:
+              - refId: A
+                datasourceUid: mimir
+                relativeTimeRange: { from: 300, to: 0 }
+                model:
+                  expr: min(org_conformance_pass_ratio)
+                  instant: true
+                  refId: A
+              - refId: C
+                datasourceUid: __expr__
+                relativeTimeRange: { from: 300, to: 0 }
+                model:
+                  type: threshold
+                  expression: A
+                  conditions:
+                    - evaluator: { type: lt, params: [1] }
+                      operator: { type: and }
+                      query: { params: [C] }
+                      reducer: { type: last }
+                  refId: C
+            noDataState: Alerting
+            execErrState: Error
+            for: 1m
+            annotations:
+              summary: Conformance replay found an illegal durable transition.
+            labels:
+              severity: p0
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-agentic-org-dashboard
+  namespace: agentic-org
+data:
+  org-health.json: |
+    {
+      "title": "Agentic Organization Health",
+      "schemaVersion": 39,
+      "uid": "agentic-org-health",
+      "panels": [
+        {
+          "type": "timeseries",
+          "title": "Command Throughput",
+          "targets": [
+            { "datasource": { "uid": "mimir" }, "expr": "sum(rate(org_command_total[5m])) by (result_status)" }
+          ],
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+        },
+        {
+          "type": "timeseries",
+          "title": "Cadence Ticks",
+          "targets": [
+            { "datasource": { "uid": "mimir" }, "expr": "sum(rate(org_lane_ticks_total[5m])) by (agentic_lane,result_status)" }
+          ],
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
+        },
+        {
+          "type": "stat",
+          "title": "Conformance Pass Ratio",
+          "targets": [
+            { "datasource": { "uid": "mimir" }, "expr": "min(org_conformance_pass_ratio)" }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "min": 0,
+              "max": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "red", "value": null },
+                  { "color": "green", "value": 1 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 6, "w": 8, "x": 0, "y": 8 }
+        },
+        {
+          "type": "timeseries",
+          "title": "Agent Cost by Hat",
+          "targets": [
+            { "datasource": { "uid": "mimir" }, "expr": "sum(rate(org_agent_cost_usd[5m])) by (agentic_hat,llm_model)" }
+          ],
+          "gridPos": { "h": 6, "w": 16, "x": 8, "y": 8 }
+        },
+        {
+          "type": "timeseries",
+          "title": "Internal DORA Deployment Frequency",
+          "targets": [
+            { "datasource": { "uid": "mimir" }, "expr": "sum(org_dora_deployment_frequency_per_day) by (agentic_project_id,agentic_initiative_id)" }
+          ],
+          "gridPos": { "h": 6, "w": 12, "x": 0, "y": 14 }
+        },
+        {
+          "type": "timeseries",
+          "title": "Internal DORA Lead Time",
+          "targets": [
+            { "datasource": { "uid": "mimir" }, "expr": "avg(org_dora_lead_time_ms) by (agentic_project_id,agentic_initiative_id)" }
+          ],
+          "gridPos": { "h": 6, "w": 12, "x": 12, "y": 14 }
+        },
+        {
+          "type": "stat",
+          "title": "Internal DORA Change Failure Ratio",
+          "targets": [
+            { "datasource": { "uid": "mimir" }, "expr": "avg(org_dora_change_failure_ratio) by (agentic_project_id,agentic_initiative_id)" }
+          ],
+          "fieldConfig": {
+            "defaults": {
+              "min": 0,
+              "max": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  { "color": "green", "value": null },
+                  { "color": "yellow", "value": 0.2 },
+                  { "color": "red", "value": 0.5 }
+                ]
+              }
+            }
+          },
+          "gridPos": { "h": 6, "w": 12, "x": 0, "y": 20 }
+        },
+        {
+          "type": "timeseries",
+          "title": "Internal DORA MTTR",
+          "targets": [
+            { "datasource": { "uid": "mimir" }, "expr": "avg(org_dora_mttr_ms) by (agentic_project_id,agentic_initiative_id)" }
+          ],
+          "gridPos": { "h": 6, "w": 12, "x": 12, "y": 20 }
+        }
+      ]
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: agentic-org
+  labels: { app: grafana }
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: grafana }
+  template:
+    metadata:
+      labels: { app: grafana }
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:11.0.0
+          ports:
+            - { name: http, containerPort: 3000 }
+          volumeMounts:
+            - { name: provisioning, mountPath: /etc/grafana/provisioning/datasources/datasources.yaml, subPath: datasources.yaml }
+            - { name: provisioning, mountPath: /etc/grafana/provisioning/dashboards/dashboards.yaml, subPath: dashboards.yaml }
+            - { name: provisioning, mountPath: /etc/grafana/provisioning/alerting/alerting.yaml, subPath: alerting.yaml }
+            - { name: dashboard, mountPath: /etc/grafana/dashboards/org-health.json, subPath: org-health.json }
+          resources:
+            requests: { cpu: "50m", memory: "128Mi" }
+            limits: { cpu: "500m", memory: "512Mi" }
+      volumes:
+        - name: provisioning
+          configMap:
+            name: grafana-provisioning
+        - name: dashboard
+          configMap:
+            name: grafana-agentic-org-dashboard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: agentic-org
+spec:
+  selector: { app: grafana }
+  ports:
+    - { name: http, port: 3000, targetPort: http }

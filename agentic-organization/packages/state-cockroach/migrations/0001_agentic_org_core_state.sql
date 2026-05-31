@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS agentic_org_reaction_plans (
   project_id STRING NOT NULL,
   work_item_id STRING NOT NULL,
   action_json JSONB NOT NULL,
+  traceparent STRING,
   attempt_count INT8 NOT NULL DEFAULT 0,
   next_attempt_at TIMESTAMPTZ
 );

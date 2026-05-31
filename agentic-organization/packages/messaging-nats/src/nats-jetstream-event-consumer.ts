@@ -7,6 +7,15 @@ import {
 } from "../../domain/src/index.ts";
 import type { EventIngestionProcessor } from "../../runtime/src/index.ts";
 import { EventIngestionOutcomeStatus } from "../../state/src/index.ts";
+import {
+  buildAgenticSpanAttributes,
+  NoopTelemetry,
+  TelemetryMetricKind,
+  TelemetrySpanStatusCode,
+  W3CTraceHeaderName,
+  type TelemetryPort,
+  type TelemetrySpan,
+} from "../../observability/src/index.ts";
 
 export const NatsInboundMessageAckAction = {
   Acknowledge: "acknowledge",
@@ -77,11 +86,14 @@ export type CreateNatsJetStreamEventConsumerInput = {
   pullConsumer: NatsJetStreamPullConsumer;
   eventIngestionProcessor: EventIngestionProcessor;
   deadLetterPublisher: NatsDeadLetterPublisher;
+  telemetry?: TelemetryPort;
 };
 
 export function createNatsJetStreamEventConsumer(
   input: CreateNatsJetStreamEventConsumerInput,
 ): NatsJetStreamEventConsumer {
+  const telemetry = input.telemetry ?? new NoopTelemetry();
+
   return {
     processNextBatch: async ({ batchSize }) => {
       const messages = await input.pullConsumer.fetchNextBatch({
@@ -94,6 +106,7 @@ export function createNatsJetStreamEventConsumer(
           message,
           eventIngestionProcessor: input.eventIngestionProcessor,
           deadLetterPublisher: input.deadLetterPublisher,
+          telemetry,
           result,
         });
       }
@@ -107,6 +120,7 @@ type ProcessMessageInput = {
   message: NatsJetStreamInboundMessage;
   eventIngestionProcessor: EventIngestionProcessor;
   deadLetterPublisher: NatsDeadLetterPublisher;
+  telemetry: TelemetryPort;
   result: NatsJetStreamConsumeBatchResult;
 };
 
@@ -124,13 +138,26 @@ async function processMessage(input: ProcessMessageInput): Promise<void> {
     return;
   }
 
+  const span = input.telemetry.startSpan("org.nats.consume", {
+    attributes: buildAgenticSpanAttributes(envelope, { natsSubject: input.message.subject }),
+    parent: input.telemetry.extract(input.message.headers),
+  });
+
   try {
     const ingestionResult = await input.eventIngestionProcessor.ingest({
       envelope,
+      ...createOptionalTraceparent(input.message.headers),
     });
 
     if (ingestionResult.status === EventIngestionOutcomeStatus.PayloadConflict) {
       input.result.payloadConflictCount += 1;
+      recordNatsConsumeTelemetry({
+        telemetry: input.telemetry,
+        span,
+        subject: input.message.subject,
+        status: ingestionResult.status,
+        isError: true,
+      });
       await terminateWithDeadLetter({
         message: input.message,
         deadLetterPublisher: input.deadLetterPublisher,
@@ -150,13 +177,60 @@ async function processMessage(input: ProcessMessageInput): Promise<void> {
 
     await input.message.acknowledge();
     input.result.acknowledgedCount += 1;
+    recordNatsConsumeTelemetry({
+      telemetry: input.telemetry,
+      span,
+      subject: input.message.subject,
+      status: ingestionResult.status,
+      isError: false,
+    });
   } catch {
     input.result.failedCount += 1;
+    recordNatsConsumeTelemetry({
+      telemetry: input.telemetry,
+      span,
+      subject: input.message.subject,
+      status: "failed",
+      isError: true,
+    });
     await negativeAcknowledgeFailedMessage({
       message: input.message,
       result: input.result,
     });
   }
+}
+
+function createOptionalTraceparent(headers: Record<string, string>): { traceparent?: string } {
+  const traceparent = headers[W3CTraceHeaderName.TraceParent];
+
+  return traceparent === undefined ? {} : { traceparent };
+}
+
+type RecordNatsConsumeTelemetryInput = {
+  telemetry: TelemetryPort;
+  span: TelemetrySpan;
+  subject: string;
+  status: EventIngestionOutcomeStatus | "failed";
+  isError: boolean;
+};
+
+function recordNatsConsumeTelemetry(input: RecordNatsConsumeTelemetryInput): void {
+  input.span.setAttribute("result.status", input.status);
+  input.span.setStatus(
+    input.isError
+      ? { code: TelemetrySpanStatusCode.Error, message: input.status }
+      : { code: TelemetrySpanStatusCode.Ok },
+  );
+  input.span.end();
+  input.telemetry.recordMetric({
+    kind: TelemetryMetricKind.Counter,
+    name: "org_nats_consumed_total",
+    value: 1,
+    attributes: {
+      "messaging.destination.name": input.subject,
+      "result.status": input.status,
+    },
+  });
 }
 
 type TerminateWithDeadLetterInput = {
