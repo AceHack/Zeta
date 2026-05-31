@@ -3,6 +3,8 @@ import { describe, test } from "node:test";
 
 import {
   ControlPlaneAlertKind,
+  ControlPlaneFlagKind,
+  ControlPlaneScopeKind,
   createCockroachControlPlaneStateStore,
   type CockroachAnySqlStatement,
   type CockroachGenericSqlExecutor,
@@ -99,6 +101,114 @@ describe("cockroach control-plane state store (the org's durable proof of life)"
       { agentId: "agent-7", hatAssignmentId: "hat-3", workItemId: "work-9", heartbeatAgeMs: 1200, deadlineMs: 8000 },
       { agentId: "agent-8", hatAssignmentId: "hat-4", workItemId: "work-10", heartbeatAgeMs: 9999, deadlineMs: 8000 },
     ]);
+  });
+
+  test("upserts a control-plane flag with a flattened scope and optional expiry", async () => {
+    const executor = createRecordingSqlExecutor([]);
+    const store = createCockroachControlPlaneStateStore({ executor });
+
+    await store.upsertFlag({
+      controlPlaneFlagId: "flag-1",
+      organizationId: "org-1",
+      scope: { kind: ControlPlaneScopeKind.Tenant, tenantId: "tenant-1" },
+      flag: ControlPlaneFlagKind.Freeze,
+      reason: "tenant freeze drill",
+      setByHatId: "incident_commander",
+      setAt: "2026-05-31T20:00:00.000Z",
+      expiresAt: "2026-05-31T21:00:00.000Z",
+    });
+
+    const statement = executor.statements[0];
+    equal(statement?.sql.includes("INSERT INTO agentic_org_control_plane_flags"), true);
+    equal(statement?.sql.includes("ON CONFLICT (organization_id, control_plane_flag_id) DO UPDATE"), true);
+    deepEqual(statement?.parameters, [
+      "flag-1",
+      "org-1",
+      ControlPlaneScopeKind.Tenant,
+      "tenant-1",
+      ControlPlaneFlagKind.Freeze,
+      "tenant freeze drill",
+      "incident_commander",
+      "2026-05-31T20:00:00.000Z",
+      "2026-05-31T21:00:00.000Z",
+    ]);
+  });
+
+  test("lists active control-plane flags and rehydrates typed scopes", async () => {
+    const executor = createRecordingSqlExecutor([
+      {
+        control_plane_flag_id: "flag-estop",
+        organization_id: "org-1",
+        scope_kind: ControlPlaneScopeKind.Organization,
+        scope_id: null,
+        flag: ControlPlaneFlagKind.Estop,
+        reason: "operator estop",
+        set_by_hat_id: "incident_commander",
+        set_at: new Date("2026-05-31T20:00:00.000Z"),
+        expires_at: null,
+      },
+      {
+        control_plane_flag_id: "flag-provider",
+        organization_id: "org-1",
+        scope_kind: ControlPlaneScopeKind.Provider,
+        scope_id: "github",
+        flag: ControlPlaneFlagKind.ProviderFreeze,
+        reason: "github incident",
+        set_by_hat_id: "incident_commander",
+        set_at: "2026-05-31T20:01:00.000Z",
+        expires_at: "2026-05-31T21:01:00.000Z",
+      },
+    ]);
+    const store = createCockroachControlPlaneStateStore({ executor });
+
+    const flags = await store.listActiveFlags("org-1", "2026-05-31T20:30:00.000Z");
+
+    equal(executor.statements[0]?.sql.includes("expires_at IS NULL OR expires_at > $2"), true);
+    deepEqual(executor.statements[0]?.parameters, ["org-1", "2026-05-31T20:30:00.000Z"]);
+    deepEqual(flags, [
+      {
+        controlPlaneFlagId: "flag-estop",
+        organizationId: "org-1",
+        scope: { kind: ControlPlaneScopeKind.Organization },
+        flag: ControlPlaneFlagKind.Estop,
+        reason: "operator estop",
+        setByHatId: "incident_commander",
+        setAt: "2026-05-31T20:00:00.000Z",
+      },
+      {
+        controlPlaneFlagId: "flag-provider",
+        organizationId: "org-1",
+        scope: { kind: ControlPlaneScopeKind.Provider, providerId: "github" },
+        flag: ControlPlaneFlagKind.ProviderFreeze,
+        reason: "github incident",
+        setByHatId: "incident_commander",
+        setAt: "2026-05-31T20:01:00.000Z",
+        expiresAt: "2026-05-31T21:01:00.000Z",
+      },
+    ]);
+  });
+
+  test("rejects malformed persisted control-plane flag enums instead of widening them", async () => {
+    const executor = createRecordingSqlExecutor([
+      {
+        control_plane_flag_id: "flag-bad",
+        organization_id: "org-1",
+        scope_kind: "bad_scope",
+        scope_id: "github",
+        flag: ControlPlaneFlagKind.ProviderFreeze,
+        reason: "bad persisted row",
+        set_by_hat_id: "incident_commander",
+        set_at: "2026-05-31T20:00:00.000Z",
+        expires_at: null,
+      },
+    ]);
+    const store = createCockroachControlPlaneStateStore({ executor });
+
+    await store.listActiveFlags("org-1", "2026-05-31T20:30:00.000Z").then(
+      () => { throw new Error("expected malformed persisted flag to reject"); },
+      (error: unknown) =>
+        equal(error instanceof Error ? error.message : String(error), "unknown control-plane flag scope_kind 'bad_scope'"),
+    );
   });
 });
 

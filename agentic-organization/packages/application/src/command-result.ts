@@ -19,6 +19,7 @@ export const CommandResultStatus = {
 export type CommandResultStatus = (typeof CommandResultStatus)[keyof typeof CommandResultStatus];
 
 export const CommandErrorCode = {
+  ControlPlaneDenied: "control_plane_denied",
   IdempotencyConflict: "idempotency_conflict",
   PreconditionFailed: "precondition_failed",
   PolicyDenied: "policy_denied",

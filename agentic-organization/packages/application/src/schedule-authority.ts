@@ -1,5 +1,6 @@
 import {
   CommandType,
+  ScheduleBlockState,
   ScheduleBlockType,
   type WorkScheduleBlock,
 } from "../../domain/src/index.ts";
@@ -23,8 +24,15 @@ export type ScheduleAuthorityMessage = (typeof ScheduleAuthorityMessage)[keyof t
 export type ScheduleAuthorityCommandRule = {
   commandType: CommandType | string;
   allowedBlockTypes: readonly ScheduleBlockType[];
+  allowedBlockStates?: readonly ScheduleBlockState[];
   scheduleRequired: boolean;
 };
+
+const OBSERVE_LIFECYCLE_TRANSITION_COMMAND = "observe.lifecycle_transition";
+const DEFAULT_ALLOWED_BLOCK_STATES: readonly ScheduleBlockState[] = [
+  ScheduleBlockState.Active,
+  ScheduleBlockState.Scheduled,
+];
 
 export type CreateScheduleBlockCommandAuthorityInput = {
   scheduleBlockReader: WorkScheduleBlockAuthorityReaderPort;
@@ -46,6 +54,12 @@ export const DefaultScheduleAuthorityCommandRules: readonly ScheduleAuthorityCom
     commandType: CommandType.ScheduleWorkBlock,
     allowedBlockTypes: [],
     scheduleRequired: false,
+  },
+  {
+    commandType: OBSERVE_LIFECYCLE_TRANSITION_COMMAND,
+    allowedBlockTypes: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+    allowedBlockStates: [ScheduleBlockState.Active],
+    scheduleRequired: true,
   },
   {
     commandType: CommandType.CreateDiscussionAnchor,
@@ -128,7 +142,19 @@ async function authorizeCommandSchedule(
     );
   }
 
-  const allowedBlock = scopeMatchedBlocks.find((block) => rule.allowedBlockTypes.includes(block.blockType));
+  const stateMatchedBlocks = scopeMatchedBlocks.filter((block) =>
+    (rule.allowedBlockStates ?? DEFAULT_ALLOWED_BLOCK_STATES).includes(block.state)
+  );
+
+  if (stateMatchedBlocks.length === 0) {
+    return createDeniedDecision(
+      CommandScheduleAuthorityDenialReason.ScheduleBlockTypeDenied,
+      ScheduleAuthorityMessage.TypeDenied,
+      scopeMatchedBlocks[0]?.workScheduleBlockId,
+    );
+  }
+
+  const allowedBlock = stateMatchedBlocks.find((block) => rule.allowedBlockTypes.includes(block.blockType));
 
   if (allowedBlock === undefined) {
     return createDeniedDecision(

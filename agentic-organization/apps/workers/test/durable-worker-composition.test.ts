@@ -41,6 +41,7 @@ describe("durable worker runtime composition", () => {
         workerReactionPlanBatchSize: 3,
         workerReactionPlanLeaseMs: 300_000,
         workerKeepAliveOrgHeartbeatDeadlineMs: 30_000,
+        agentLoopMode: "legacy",
       },
       durableAdapters: {
         cockroachExecutor,
@@ -90,6 +91,7 @@ describe("durable worker runtime composition", () => {
         workerReactionPlanBatchSize: 3,
         workerReactionPlanLeaseMs: 300_000,
         workerKeepAliveOrgHeartbeatDeadlineMs: 30_000,
+        agentLoopMode: "legacy",
       },
       durableAdapters: {
         cockroachExecutor: createRecordingCockroachExecutor(),
@@ -135,6 +137,7 @@ describe("durable worker runtime composition", () => {
         workerReactionPlanBatchSize: 3,
         workerReactionPlanLeaseMs: 300_000,
         workerKeepAliveOrgHeartbeatDeadlineMs: 30_000,
+        agentLoopMode: "legacy",
       },
       durableAdapters: {
         cockroachExecutor: createRecordingCockroachExecutor(),

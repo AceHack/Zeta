@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS agentic_org_org_events (
   subject_id STRING NOT NULL,
   from_state STRING NULL,
   to_state STRING NULL,
+  transition_context JSONB NULL,
   decision STRING NOT NULL,
   supervisor_chain JSONB NOT NULL,
   evidence_refs JSONB NOT NULL,

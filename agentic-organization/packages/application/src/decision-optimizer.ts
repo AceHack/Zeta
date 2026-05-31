@@ -13,6 +13,12 @@ import { ModelEvalCaseClass, type ModelEvalSummary } from "../../model-eval/src/
 import type { TelemetryQueryPort, TelemetryTimeRange } from "../../observability/src/index.ts";
 import { contentAddressedChangeSetId } from "./change-control-id.ts";
 import { isContentAddressedEvidenceRef } from "./content-addressed-evidence.ts";
+import {
+  evaluateControlPlaneAccess,
+  type ControlPlaneBudgetCeiling,
+  type ControlPlaneFlag,
+  type ControlPlaneUsage,
+} from "./control-plane-guard.ts";
 
 export type DecisionOptimizerKpiSignal = {
   observedWorkItems: number;
@@ -24,6 +30,10 @@ export type DecisionOptimizerKpiSignal = {
 export type DecisionOptimizerThresholds = {
   minClassAAccuracy: number;
 };
+
+export type DecisionOptimizerSimulationDecision =
+  | { status: "accepted"; reason: string }
+  | { status: "rejected"; reason: string };
 
 export type ProposeDecisionOptimizerChangeSetInput = {
   organizationId: string;
@@ -37,6 +47,9 @@ export type ProposeDecisionOptimizerChangeSetInput = {
   evalSummary: ModelEvalSummary;
   evalEvidenceRef?: string | undefined;
   telemetryEvidenceRef?: string | undefined;
+  simulationEvidenceRef?: string | undefined;
+  simulationDecision?: DecisionOptimizerSimulationDecision | undefined;
+  emergencyWaiverEvidenceRef?: string | undefined;
   kpiSignal: DecisionOptimizerKpiSignal;
   kpiEvidenceRef?: string | undefined;
   modelCostRank: Readonly<Record<string, number>>;
@@ -53,10 +66,14 @@ export type DecisionOptimizerResult =
       | "kpi_negative"
       | "missing_eval_evidence"
       | "missing_kpi_evidence"
+      | "missing_simulation_evidence"
+      | "simulation_rejected"
       | "current_model_unknown"
       | "candidate_model_mismatch"
       | "candidate_not_lower_cost"
-      | "budget_delta_not_negative";
+      | "budget_delta_not_negative"
+      | "control_plane_denied"
+      | "telemetry_degraded";
   };
 
 export type DecisionOptimizerNoProposalReason =
@@ -73,7 +90,16 @@ export type RunDecisionOptimizerCycleInput =
     store: DecisionOptimizerStore;
     modelEvalEvent?: OrgEvent | undefined;
     telemetryEvidence?: DecisionOptimizerTelemetryEvidenceInput | undefined;
+    controlPlane?: DecisionOptimizerControlPlane | undefined;
   };
+
+export type DecisionOptimizerControlPlane = {
+  flags?: readonly ControlPlaneFlag[] | undefined;
+  loadFlags?: (() => Promise<readonly ControlPlaneFlag[]>) | undefined;
+  budgets?: readonly ControlPlaneBudgetCeiling[] | undefined;
+  usage?: ControlPlaneUsage | undefined;
+  availableSecretScopes?: readonly string[] | undefined;
+};
 
 export type DecisionOptimizerTelemetryEvidenceInput = {
   queryPort: TelemetryQueryPort;
@@ -88,6 +114,7 @@ export type DecisionOptimizerTelemetryObservations = {
   metricSeriesCount: number;
   traceSummaryCount: number;
   logLineCount: number;
+  degradedQueryCount?: number | undefined;
 };
 
 export type DecisionOptimizerCycleResult =
@@ -121,6 +148,22 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
   }
   if (kpiEvidenceRef === undefined || !isContentAddressedEvidenceRef(kpiEvidenceRef)) {
     return { kind: "no_proposal", reason: "missing_kpi_evidence" };
+  }
+  const simulationEvidenceRef = input.simulationEvidenceRef;
+  const emergencyWaiverEvidenceRef = input.emergencyWaiverEvidenceRef;
+  const simulationAccepted = simulationEvidenceRef !== undefined &&
+    isContentAddressedEvidenceRef(simulationEvidenceRef) &&
+    input.simulationDecision?.status === "accepted";
+  const policyEvidenceRef = simulationAccepted
+    ? simulationEvidenceRef
+    : emergencyWaiverEvidenceRef !== undefined && isContentAddressedEvidenceRef(emergencyWaiverEvidenceRef)
+      ? emergencyWaiverEvidenceRef
+      : undefined;
+  if (policyEvidenceRef === undefined) {
+    if (simulationEvidenceRef !== undefined && isContentAddressedEvidenceRef(simulationEvidenceRef) && input.simulationDecision?.status === "rejected") {
+      return { kind: "no_proposal", reason: "simulation_rejected" };
+    }
+    return { kind: "no_proposal", reason: "missing_simulation_evidence" };
   }
   if (input.candidateModel !== input.evalSummary.model) {
     return { kind: "no_proposal", reason: "candidate_model_mismatch" };
@@ -158,6 +201,7 @@ export function proposeDecisionOptimizerChangeSet(input: ProposeDecisionOptimize
     ...(input.telemetryEvidenceRef !== undefined && isContentAddressedEvidenceRef(input.telemetryEvidenceRef)
       ? [input.telemetryEvidenceRef]
       : []),
+    policyEvidenceRef,
   ];
   const changeSet: ChangeSet = {
     changeSetId,
@@ -195,6 +239,10 @@ export async function runDecisionOptimizerCycle(
   if (currentConfig === null) {
     return { kind: "no_proposal", reason: "missing_current_config" };
   }
+  const controlPlaneDecision = await authorizeOptimizerControlPlane(input);
+  if (controlPlaneDecision !== undefined) {
+    return controlPlaneDecision;
+  }
   const appendedEvents: OrgEvent[] = [];
   const eventStreamKey = orgEventStreamKey(input.organizationId);
   if (input.modelEvalEvent !== undefined) {
@@ -203,7 +251,16 @@ export async function runDecisionOptimizerCycle(
   }
 
   const telemetryObservations = await collectTelemetryEvidence(input.telemetryEvidence);
-  const { store: _store, modelEvalEvent: _modelEvalEvent, telemetryEvidence: _telemetryEvidence, ...proposalInput } = input;
+  if ((telemetryObservations?.degradedQueryCount ?? 0) > 0) {
+    return { kind: "no_proposal", reason: "telemetry_degraded" };
+  }
+  const {
+    store: _store,
+    modelEvalEvent: _modelEvalEvent,
+    telemetryEvidence: _telemetryEvidence,
+    controlPlane: _controlPlane,
+    ...proposalInput
+  } = input;
   const proposal = proposeDecisionOptimizerChangeSet({
     ...proposalInput,
     currentConfig,
@@ -228,6 +285,29 @@ export async function runDecisionOptimizerCycle(
   };
 }
 
+async function authorizeOptimizerControlPlane(
+  input: RunDecisionOptimizerCycleInput,
+): Promise<Extract<DecisionOptimizerCycleResult, { kind: "no_proposal" }> | undefined> {
+  if (input.controlPlane === undefined) {
+    return undefined;
+  }
+  const flags = [...(input.controlPlane.flags ?? []), ...await (input.controlPlane.loadFlags?.() ?? Promise.resolve([]))];
+  const decision = evaluateControlPlaneAccess({
+    organizationId: input.organizationId,
+    actorHatId: input.proposerHatId,
+    tenantId: input.organizationId,
+    boundary: "optimizer_rollout",
+    actionType: "decision_optimizer_cycle",
+    evaluatedAt: input.now,
+    flags,
+    budgets: input.controlPlane.budgets,
+    usage: input.controlPlane.usage,
+    availableSecretScopes: input.controlPlane.availableSecretScopes,
+  });
+
+  return decision.status === "denied" ? { kind: "no_proposal", reason: "control_plane_denied" } : undefined;
+}
+
 async function collectTelemetryEvidence(
   input: DecisionOptimizerTelemetryEvidenceInput | undefined,
 ): Promise<DecisionOptimizerTelemetryObservations | undefined> {
@@ -236,21 +316,42 @@ async function collectTelemetryEvidence(
   }
 
   let metricSeriesCount = 0;
+  let degradedQueryCount = 0;
   for (const query of input.metricQueries ?? []) {
-    metricSeriesCount += (await input.queryPort.queryMetrics(query, input.range)).length;
+    const result = await input.queryPort.queryMetrics(query, input.range);
+    if (result.status === "ok") {
+      metricSeriesCount += result.data.length;
+    } else {
+      degradedQueryCount += 1;
+    }
   }
 
   let traceSummaryCount = 0;
   for (const query of input.traceQueries ?? []) {
-    traceSummaryCount += (await input.queryPort.queryTraces(query, input.range)).length;
+    const result = await input.queryPort.queryTraces(query, input.range);
+    if (result.status === "ok") {
+      traceSummaryCount += result.data.length;
+    } else {
+      degradedQueryCount += 1;
+    }
   }
 
   let logLineCount = 0;
   for (const query of input.logQueries ?? []) {
-    logLineCount += (await input.queryPort.queryLogs(query, input.range)).length;
+    const result = await input.queryPort.queryLogs(query, input.range);
+    if (result.status === "ok") {
+      logLineCount += result.data.length;
+    } else {
+      degradedQueryCount += 1;
+    }
   }
 
-  return { metricSeriesCount, traceSummaryCount, logLineCount };
+  return {
+    metricSeriesCount,
+    traceSummaryCount,
+    logLineCount,
+    ...(degradedQueryCount > 0 ? { degradedQueryCount } : {}),
+  };
 }
 
 export function tenantConfigDocumentKey(organizationId: string): string {

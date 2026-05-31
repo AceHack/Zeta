@@ -1,12 +1,21 @@
+import { createHash } from "node:crypto";
+
 import {
   act,
   ActionClass,
+  ActRejectionReason,
   asZetaIdDecimal,
   buildHatDefinitions,
+  compilePromptFlowTasks,
   createTelemetryScopedMetricAgents,
+  lintPromptFlowDefinition,
+  rejectAct,
+  type DeterministicRule,
   observeAgentSurface,
   ObserveCommandType,
   ObserveOutcome,
+  PromptFlowGateKind,
+  PromptFlowRunState,
   RunLifecyclePhase,
   RunScope,
   TriAvailability,
@@ -27,16 +36,21 @@ import {
   type Menu16,
   type Menu16Slot,
   type MetricBlock,
+  type GlassHaloStatusSignal,
   type PromptFlowContext,
   type PromptFlowContextArtifact,
   type PromptFlowContextRequest,
+  type PromptFlowDefinition,
+  type PromptFlowPhaseDefinition,
+  type PromptFlowPhaseGate,
   type PromptFlowReadout,
+  type PromptFlowRun,
   type PromptFlowTask,
   type PromptFlowToolInjection,
   type ScopedMetricAgent,
   type ScopedReadout,
 } from "../../../packages/application/src/index.ts";
-import { HatLevel, ToolBundle, type ToolBundle as ToolBundleName } from "../../../packages/domain/src/index.ts";
+import { CommandType, HatLevel, ToolBundle, type ToolBundle as ToolBundleName, type WorkScheduleBlock } from "../../../packages/domain/src/index.ts";
 import { createLgtmTelemetryQueryPort } from "../../../packages/observability/src/index.ts";
 import { createOllamaChatPort } from "../../workers/src/adapters/ollama-chat-port.ts";
 
@@ -50,9 +64,12 @@ export type ParsedAgentCliArgs = {
   agentId: string;
   organizationId: string;
   projectId: string;
+  teamId?: string | undefined;
   workItemId: string;
+  supervisorHatAssignmentId?: string | undefined;
   gateApproved: boolean;
   evidence: boolean;
+  promptFlowPage?: number;
   selectIndex?: number;
 };
 
@@ -66,6 +83,7 @@ export type AgentCliScreen = {
   hatId: string;
   metrics: ScopedReadout;
   promptFlows?: PromptFlowReadout;
+  page?: Menu16["page"];
   hierarchy?: HierarchyReadout;
   slots: readonly Pick<Menu16Slot, "index" | "direction" | "label" | "availability" | "reason">[];
 };
@@ -78,7 +96,9 @@ export type AgentCliCycleInput = ActDependencies & {
   metricAgents?: readonly ScopedMetricAgent[];
   promptFlowTasks?: readonly PromptFlowTask[];
   hierarchy?: HierarchySnapshot;
-  selectSlot?: (menu: Menu16) => Promise<number> | number;
+  scheduleBlocks?: readonly WorkScheduleBlock[];
+  deterministicRules?: readonly DeterministicRule[];
+  selectSlot?: MenuSelector;
 };
 
 export type CreateAgentCliMetricAgentsFromEnvInput = {
@@ -95,7 +115,31 @@ export type CreateAgentCliHierarchyFromEnvInput = {
   env: Readonly<Record<string, string | undefined>>;
 };
 
-export type MenuSelector = (menu: Menu16) => Promise<number> | number;
+export const SelectorRejectionReason = {
+  ModelError: "model_error",
+  ParseFailure: "parse_failure",
+  SlotOutOfRange: "slot_out_of_range",
+  NonSelectableSlot: "non_selectable_slot",
+} as const;
+
+export type SelectorRejectionReason = (typeof SelectorRejectionReason)[keyof typeof SelectorRejectionReason];
+
+export type MenuSelectorRejection = {
+  reason: SelectorRejectionReason;
+  fallbackIndex: number;
+  rawOutput?: string | undefined;
+  rejectedIndex?: number | undefined;
+};
+
+export type MenuSelectionResult = {
+  index: number;
+  reason: string;
+  selectorRejection?: MenuSelectorRejection | undefined;
+};
+
+export type MenuSelectorOutput = number | MenuSelectionResult;
+
+export type MenuSelector = (menu: Menu16) => Promise<MenuSelectorOutput> | MenuSelectorOutput;
 
 export type CreateModelBackedMenuSelectorInput = {
   chat: ChatCompletionPort;
@@ -110,6 +154,27 @@ export type CreateAgentCliSelectorFromEnvInput = {
 export type AgentCliCycleResult = {
   exitCode: number;
   actionResult?: ActResult;
+  evidence?: AgentCliCycleEvidence;
+};
+
+export type AgentCliCycleEvidence = {
+  menuHash: string;
+  selectedIndex: number;
+  vetoCount: number;
+  trueSlotCount: number;
+  statusSignalKind?: GlassHaloStatusSignal["kind"] | undefined;
+  statusScope?: RunScope | undefined;
+  statusPhase?: RunLifecyclePhase | undefined;
+  statusHierarchyPriorityScope?: HierarchyReadout["priorityScope"] | undefined;
+  selectedCommandType?: string | undefined;
+  promptFlowPage?: number | undefined;
+  selectedPromptFlowTaskId?: string | undefined;
+  selectedPromptFlowId?: string | undefined;
+  reobservePromptFlowPage?: number | undefined;
+  promptFlowIds: readonly string[];
+  metricBlockIds: readonly string[];
+  selectorRejections: readonly MenuSelectorRejection[];
+  actionRejectionReason?: ActRejectionReason | undefined;
 };
 
 export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsResult {
@@ -140,11 +205,20 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
   const agentId = values.flags.get("agent") ?? "agent-local";
   const organizationId = values.flags.get("organization") ?? "org-local";
   const projectId = values.flags.get("project") ?? "project-local";
+  const teamId = values.flags.get("team");
   const workItemId = values.flags.get("work-item") ?? runId;
+  const supervisorHatAssignmentId = values.flags.get("supervisor-hat-assignment");
   const selectIndexValue = values.flags.get("select-index");
   const selectIndex = selectIndexValue === undefined ? undefined : Number.parseInt(selectIndexValue, 10);
   if (selectIndexValue !== undefined && (!Number.isInteger(selectIndex) || String(selectIndex) !== selectIndexValue)) {
     return { ok: false, message: `--select-index must be an integer, got '${selectIndexValue}'` };
+  }
+  const promptFlowPageValue = values.flags.get("prompt-flow-page");
+  const promptFlowPage = promptFlowPageValue === undefined ? undefined : Number.parseInt(promptFlowPageValue, 10);
+  if (promptFlowPageValue !== undefined) {
+    if (!Number.isInteger(promptFlowPage) || String(promptFlowPage) !== promptFlowPageValue || (promptFlowPage ?? -1) < 0) {
+      return { ok: false, message: `--prompt-flow-page must be a non-negative integer, got '${promptFlowPageValue}'` };
+    }
   }
 
   return {
@@ -159,16 +233,22 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
       agentId,
       organizationId,
       projectId,
+      ...(teamId === undefined ? {} : { teamId }),
       workItemId,
+      ...(supervisorHatAssignmentId === undefined ? {} : { supervisorHatAssignmentId }),
       gateApproved: values.booleans.has("gate-approved"),
       evidence: values.booleans.has("evidence"),
+      ...createOptionalPromptFlowPage(promptFlowPageValue === undefined ? undefined : promptFlowPage),
       ...createOptionalSelectIndex(selectIndexValue === undefined ? undefined : selectIndex),
     },
   };
 }
 
 export function selectFirstTrueSlot(menu: Menu16): number {
-  return menu.slots.find((slot) => slot.availability === TriAvailability.True)?.index ?? -1;
+  const selectable = menu.slots.filter((slot) => slot.availability === TriAvailability.True);
+  return selectable.find((slot) => !slot.direction.startsWith("navigate."))?.index
+    ?? selectable[0]?.index
+    ?? -1;
 }
 
 export function formatAgentCliScreen(screen: AgentCliScreen): string {
@@ -181,6 +261,7 @@ export function formatAgentCliScreen(screen: AgentCliScreen): string {
     ...formatMetricBlocks(screen.metrics.blocks),
     "prompt flows:",
     ...formatPromptFlowTasks(screen.promptFlows),
+    ...formatMenuPage(screen.page),
     ...formatHierarchy(screen.hierarchy),
     "menu:",
     ...screen.slots.map(formatSlot),
@@ -221,15 +302,19 @@ export function createAgentCliMetricAgentsFromEnv(
 export function createAgentCliPromptFlowTasksFromEnv(
   input: CreateAgentCliPromptFlowTasksFromEnvInput,
 ): readonly PromptFlowTask[] {
+  const compiled = compileAgentCliPromptFlowTasksFromEnv(input);
   const raw = input.env.AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON;
   if (raw === undefined || raw.trim().length === 0) {
-    return [];
+    return compiled;
   }
   const parsed: unknown = JSON.parse(raw);
   if (!Array.isArray(parsed)) {
     throw new Error("AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON must be a JSON array");
   }
-  return parsed.map(parsePromptFlowTask);
+  return [
+    ...compiled,
+    ...parsed.map(parsePromptFlowTask),
+  ];
 }
 
 export function createAgentCliHierarchyFromEnv(
@@ -264,15 +349,36 @@ export function createModelBackedMenuSelector(input: CreateModelBackedMenuSelect
     try {
       completion = await input.chat.complete({
         system:
-          "You are selecting from a deterministic 16-slot agent controller. Reply with only one selectable slot index.",
+          "You are selecting from a deterministic 16-slot agent controller. Reply with only one selectable integer slot index and no prose.",
         user: buildMenuSelectorPrompt(selectable),
       });
     } catch {
-      return await input.fallback(menu);
+      const fallback = normalizeMenuSelectionResult(await input.fallback(menu), "fallback_after_model_error");
+      return {
+        index: fallback.index,
+        reason: "fallback_after_selector_rejection",
+        selectorRejection: {
+          reason: SelectorRejectionReason.ModelError,
+          fallbackIndex: fallback.index,
+        },
+      };
     }
 
-    const index = parseModelSelectedIndex(completionContent(completion), selectable);
-    return index ?? (await input.fallback(menu));
+    const rawOutput = completionContent(completion);
+    const parsed = parseModelSelectedIndex(rawOutput, menu);
+    if (parsed.ok) return parsed.index;
+
+    const fallback = normalizeMenuSelectionResult(await input.fallback(menu), "fallback_after_selector_rejection");
+    return {
+      index: fallback.index,
+      reason: "fallback_after_selector_rejection",
+      selectorRejection: {
+        reason: parsed.reason,
+        rawOutput,
+        fallbackIndex: fallback.index,
+        ...createOptionalRejectedIndex(parsed.rejectedIndex),
+      },
+    };
   };
 }
 
@@ -320,13 +426,22 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     hasEvidence: parsed.value.evidence,
     hatAssignmentId: asZetaIdDecimal(parsed.value.hatAssignmentId),
     hat,
+    agentId: parsed.value.agentId,
+    organizationId: parsed.value.organizationId,
+    projectId: parsed.value.projectId,
+    ...(parsed.value.teamId === undefined ? {} : { teamId: parsed.value.teamId }),
+    workItemId: parsed.value.workItemId,
+    ...(parsed.value.supervisorHatAssignmentId === undefined ? {} : { supervisorHatAssignmentId: parsed.value.supervisorHatAssignmentId }),
   };
 
   const observed = await observeAgentSurface(snapshot, {
     clock: { now: input.now },
+    ...createOptionalDeterministicRules(input.deterministicRules),
     ...createOptionalMetricAgents(input.metricAgents),
     ...createOptionalPromptFlowTasks(input.promptFlowTasks),
+    ...createOptionalPromptFlowPage(parsed.value.promptFlowPage),
     ...createOptionalHierarchy(input.hierarchy),
+    ...createOptionalScheduleBlocks(input.scheduleBlocks),
   });
   if (observed.outcome === ObserveOutcome.Feedback) {
     input.writeStderr?.(`${observed.feedback.message}\n`);
@@ -339,23 +454,46 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     hatId: parsed.value.hatId,
     metrics: observed.metrics,
     promptFlows: observed.promptFlows,
+    page: observed.actions.page,
     hierarchy: observed.hierarchy,
     slots: observed.actions.slots,
   })}\n`);
 
-  const selectedIndex =
-    parsed.value.selectIndex ?? (await (input.selectSlot?.(observed.actions) ?? selectFirstTrueSlot(observed.actions)));
+  const selection = parsed.value.selectIndex === undefined
+    ? normalizeMenuSelectionResult(
+      await (input.selectSlot?.(observed.actions) ?? selectFirstTrueSlot(observed.actions)),
+      "selector_selected",
+    )
+    : {
+        index: parsed.value.selectIndex,
+        reason: "cli_select_index",
+      };
+  const selectedIndex = selection.index;
+  if (!observed.actions.slots.some((slot) => slot.availability === TriAvailability.True)) {
+    const actionResult = rejectAct(
+      ActRejectionReason.NoSelectableSlot,
+      "no TriAvailability.True slots in rendered menu",
+    );
+    const evidence = createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics, actionResult);
+    input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
+    return { exitCode: 1, actionResult, evidence };
+  }
   const actionResult = await act(selectedIndex, observed.actions, {
     runCommand: async (commandType, command, slot) =>
       await input.runCommand(commandType, materializeCommand(commandType, command, slot, parsed.value), slot),
     dispatchTool: input.dispatchTool,
     loadPromptFlowContext: input.loadPromptFlowContext ?? loadPromptFlowContextFromRequest,
+    ...createOptionalSlotAuthorizer(input.authorizeSlot),
   });
   input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
   if (actionResult.outcome === "loaded_context") {
     input.writeStdout?.(`${formatPromptFlowContext(actionResult.context)}\n`);
   }
-  return { exitCode: actionResult.outcome === "rejected" ? 1 : 0, actionResult };
+  return {
+    exitCode: actionResult.outcome === "rejected" ? 1 : 0,
+    actionResult,
+    evidence: createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics, actionResult),
+  };
 }
 
 async function loadPromptFlowContextFromRequest(
@@ -372,7 +510,20 @@ async function loadPromptFlowContextFromRequest(
       label: ref,
       value: ref,
     })),
+    ...copyPromptFlowRequestMetadata(request),
   };
+}
+
+function createOptionalScheduleBlocks(
+  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
+): { scheduleBlocks?: readonly WorkScheduleBlock[] } {
+  return scheduleBlocks === undefined ? {} : { scheduleBlocks };
+}
+
+function createOptionalSlotAuthorizer(
+  authorizeSlot: AgentCliCycleInput["authorizeSlot"],
+): Pick<ActDependencies, "authorizeSlot"> {
+  return authorizeSlot === undefined ? {} : { authorizeSlot };
 }
 
 function materializeCommand(
@@ -382,6 +533,32 @@ function materializeCommand(
   args: ParsedAgentCliArgs,
 ): unknown {
   if (commandType !== ObserveCommandType.LifecycleTransition || !isLifecycleTransitionPayload(command)) {
+    if (commandType === CommandType.SendSupervisorSignal && isSupervisorSignalPayload(command)) {
+      return {
+        commandId: `cmd-observe-${args.runId}-${slot.index}`,
+        type: CommandType.SendSupervisorSignal,
+        idempotencyKey: `observe:${args.runId}:${args.hatAssignmentId}:${args.phase}:${slot.index}`,
+        requestHash: [
+          CommandType.SendSupervisorSignal,
+          args.runId,
+          args.hatAssignmentId,
+          args.phase,
+          slot.index,
+          command.targetHatAssignmentId,
+        ].join(":"),
+        correlationId: `observe-cli-${args.runId}`,
+        causationId: `observe-cli-${args.runId}`,
+        traceId: `observe-cli-${args.runId}`,
+        organizationId: args.organizationId,
+        projectId: args.projectId,
+        workItemId: args.workItemId,
+        actor: {
+          agentId: args.agentId,
+          hatAssignmentId: args.hatAssignmentId,
+        },
+        ...command,
+      };
+    }
     return command;
   }
 
@@ -408,8 +585,149 @@ function materializeCommand(
       agentId: args.agentId,
       hatAssignmentId: args.hatAssignmentId,
     },
+    ...createOptionalObserveLifecyclePolicyContext(command.actionType),
     ...command,
   };
+}
+
+function createOptionalObserveLifecyclePolicyContext(actionType: string): { policyContext?: { toolType: ActionClass } } {
+  const toolType = ACTION_CLASS_FOR_OBSERVE_LIFECYCLE[actionType];
+  return toolType === undefined ? {} : { policyContext: { toolType } };
+}
+
+const ACTION_CLASS_FOR_OBSERVE_LIFECYCLE: Readonly<Record<string, ActionClass>> = {
+  execute: ActionClass.WriteCode,
+  request_review: ActionClass.ReviewCode,
+  complete: ActionClass.ApproveReview,
+  rework: ActionClass.WriteCode,
+  resume: ActionClass.WriteCode,
+};
+
+function createAgentCliCycleEvidence(
+  menu: Menu16,
+  selection: MenuSelectionResult,
+  promptFlows: PromptFlowReadout,
+  metrics: ScopedReadout,
+  actionResult?: ActResult | undefined,
+): AgentCliCycleEvidence {
+  return {
+    menuHash: hashMenu(menu),
+    selectedIndex: selection.index,
+    vetoCount: menu.slots.filter((slot) => slot.availability === TriAvailability.False).length,
+    trueSlotCount: menu.slots.filter((slot) => slot.availability === TriAvailability.True).length,
+    ...selectedStatusEvidence(actionResult),
+    ...selectedCommandEvidence(menu, selection.index),
+    ...createOptionalEvidenceNumber("promptFlowPage", menu.page?.promptFlows?.page),
+    ...selectedPromptFlowEvidence(menu, selection.index),
+    ...(actionResult?.outcome === "reobserve" ? createOptionalEvidenceNumber("reobservePromptFlowPage", actionResult.menuPage?.promptFlows) : {}),
+    promptFlowIds: uniqueSorted([
+      ...promptFlows.tasks.map((task) => task.promptFlowId),
+      ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task.promptFlowId),
+    ]),
+    metricBlockIds: uniqueSorted(metrics.blocks.map((block) => block.id)),
+    selectorRejections: selection.selectorRejection === undefined ? [] : [selection.selectorRejection],
+    ...(actionResult?.outcome === "rejected" ? { actionRejectionReason: actionResult.reason } : {}),
+  };
+}
+
+function hashMenu(menu: Menu16): string {
+  const stable = {
+    page: menu.page ?? null,
+    slots: menu.slots.map((slot) => ({
+      index: slot.index,
+      direction: slot.direction,
+      label: slot.label,
+      availability: slot.availability,
+      reason: slot.reason ?? null,
+      impl: stableSlotImpl(slot),
+      actionType: slot.action?.actionType ?? null,
+    })),
+  };
+  return createHash("sha256").update(JSON.stringify(stable)).digest("hex");
+}
+
+function stableSlotImpl(slot: Menu16Slot): unknown {
+  switch (slot.impl?.kind) {
+    case undefined:
+      return null;
+    case "prompt_flow":
+      return {
+        kind: slot.impl.kind,
+        taskId: slot.impl.request.taskId,
+        promptFlowId: slot.impl.request.promptFlowId,
+      };
+    case "observe":
+      return {
+        kind: slot.impl.kind,
+        toScope: slot.impl.toScope,
+        menuPage: slot.impl.menuPage ?? null,
+      };
+    case "status":
+      return {
+        kind: slot.impl.kind,
+        statusKind: slot.impl.status.kind,
+        scope: slot.impl.status.scope,
+        phase: slot.impl.status.phase,
+        metricBlockIds: slot.impl.status.metricBlockIds,
+        promptFlowIds: slot.impl.status.promptFlowIds,
+        hierarchy: slot.impl.status.hierarchy ?? null,
+      };
+    case "command":
+      return {
+        kind: slot.impl.kind,
+        commandType: slot.impl.commandType,
+      };
+    case "mcp":
+      return {
+        kind: slot.impl.kind,
+        tool: slot.impl.tool,
+      };
+  }
+}
+
+function selectedStatusEvidence(
+  actionResult: ActResult | undefined,
+): Pick<AgentCliCycleEvidence, "statusSignalKind" | "statusScope" | "statusPhase" | "statusHierarchyPriorityScope"> {
+  if (actionResult?.outcome !== "status_report") return {};
+  return {
+    statusSignalKind: actionResult.status.kind,
+    statusScope: actionResult.status.scope,
+    statusPhase: actionResult.status.phase,
+    ...(actionResult.status.hierarchy === undefined ? {} : {
+      statusHierarchyPriorityScope: actionResult.status.hierarchy.priorityScope,
+    }),
+  };
+}
+
+function selectedPromptFlowEvidence(
+  menu: Menu16,
+  selectedIndex: number,
+): { selectedPromptFlowTaskId?: string; selectedPromptFlowId?: string } {
+  const selected = menu.slots.find((slot) => slot.index === selectedIndex);
+  if (selected?.impl?.kind !== "prompt_flow") return {};
+  return {
+    selectedPromptFlowTaskId: selected.impl.request.taskId,
+    selectedPromptFlowId: selected.impl.request.promptFlowId,
+  };
+}
+
+function selectedCommandEvidence(
+  menu: Menu16,
+  selectedIndex: number,
+): { selectedCommandType?: string } {
+  const selected = menu.slots.find((slot) => slot.index === selectedIndex);
+  return selected?.impl?.kind === "command" ? { selectedCommandType: selected.impl.commandType } : {};
+}
+
+function createOptionalEvidenceNumber<K extends string>(
+  key: K,
+  value: number | undefined,
+): { [P in K]?: number } {
+  return value === undefined ? {} : { [key]: value } as { [P in K]?: number };
+}
+
+function uniqueSorted(values: readonly string[]): readonly string[] {
+  return [...new Set(values)].sort((left, right) => left.localeCompare(right));
 }
 
 function buildMenuSelectorPrompt(selectable: readonly Menu16Slot[]): string {
@@ -424,14 +742,37 @@ function completionContent(completion: ChatCompletionResult): string {
   return typeof completion === "string" ? completion : completion.content;
 }
 
-function parseModelSelectedIndex(raw: string, selectable: readonly Menu16Slot[]): number | undefined {
+function parseModelSelectedIndex(
+  raw: string,
+  menu: Menu16,
+): { ok: true; index: number } | { ok: false; reason: SelectorRejectionReason; rejectedIndex?: number | undefined } {
   const normalized = raw.trim();
-  const match = /(?:^|\D)(\d{1,2})(?:\D|$)/.exec(normalized);
+  const match = /^(?:\[(\d{1,2})\]|(\d{1,2}))$/.exec(normalized);
   if (match === null) {
-    return undefined;
+    return { ok: false, reason: SelectorRejectionReason.ParseFailure };
   }
-  const index = Number.parseInt(match[1]!, 10);
-  return selectable.some((slot) => slot.index === index) ? index : undefined;
+  const index = Number.parseInt((match[1] ?? match[2])!, 10);
+  if (index < 0 || index >= 16) {
+    return { ok: false, reason: SelectorRejectionReason.SlotOutOfRange, rejectedIndex: index };
+  }
+  const slot = menu.slots.find((candidate) => candidate.index === index);
+  if (slot?.availability !== TriAvailability.True) {
+    return { ok: false, reason: SelectorRejectionReason.NonSelectableSlot, rejectedIndex: index };
+  }
+  return { ok: true, index };
+}
+
+function normalizeMenuSelectionResult(
+  output: MenuSelectorOutput,
+  defaultReason: string,
+): MenuSelectionResult {
+  return typeof output === "number" ? { index: output, reason: defaultReason } : output;
+}
+
+function createOptionalRejectedIndex(
+  rejectedIndex: number | undefined,
+): { rejectedIndex?: number } {
+  return rejectedIndex === undefined ? {} : { rejectedIndex };
 }
 
 function isLifecycleTransitionPayload(value: unknown): value is LifecycleTransitionCommandPayload {
@@ -446,6 +787,27 @@ function isLifecycleTransitionPayload(value: unknown): value is LifecycleTransit
     typeof candidate.actionType === "string" &&
     typeof candidate.toPhase === "string" &&
     typeof candidate.toScope === "string"
+  );
+}
+
+function isSupervisorSignalPayload(
+  value: unknown,
+): value is {
+  targetHatAssignmentId: string;
+  title: string;
+  message: string;
+  policyContext: unknown;
+} {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate.targetHatAssignmentId === "string" &&
+    typeof candidate.title === "string" &&
+    typeof candidate.message === "string" &&
+    typeof candidate.policyContext === "object" &&
+    candidate.policyContext !== null
   );
 }
 
@@ -485,6 +847,10 @@ function createOptionalSelectIndex(selectIndex: number | undefined): { selectInd
   return selectIndex === undefined ? {} : { selectIndex };
 }
 
+function createOptionalPromptFlowPage(promptFlowPage: number | undefined): { promptFlowPage?: number } {
+  return promptFlowPage === undefined ? {} : { promptFlowPage };
+}
+
 function createOptionalMetricAgents(
   metricAgents: readonly ScopedMetricAgent[] | undefined,
 ): { metricAgents?: readonly ScopedMetricAgent[] } {
@@ -501,6 +867,12 @@ function createOptionalHierarchy(
   hierarchy: HierarchySnapshot | undefined,
 ): { hierarchy?: HierarchySnapshot } {
   return hierarchy === undefined ? {} : { hierarchy };
+}
+
+function createOptionalDeterministicRules(
+  deterministicRules: readonly DeterministicRule[] | undefined,
+): { deterministicRules?: readonly DeterministicRule[] } {
+  return deterministicRules === undefined ? {} : { deterministicRules };
 }
 
 function createOptionalFetchImpl(fetchImpl: typeof fetch | undefined): { fetchImpl?: typeof fetch } {
@@ -526,6 +898,11 @@ function formatPromptFlowTasks(promptFlows: PromptFlowReadout | undefined): read
     ...promptFlows.tasks.map((task) => `- ${task.taskId} ${task.promptFlowId} ${task.label}`),
     ...promptFlows.vetoedTasks.map((vetoed) => `- ${vetoed.task.taskId} ${vetoed.task.promptFlowId} ${vetoed.task.label} (${vetoed.reason})`),
   ];
+}
+
+function formatMenuPage(page: Menu16["page"] | undefined): readonly string[] {
+  if (page?.promptFlows === undefined) return [];
+  return [`prompt-flow page: ${page.promptFlows.page + 1}/${page.promptFlows.pageCount}`];
 }
 
 function formatHierarchy(hierarchy: HierarchyReadout | undefined): readonly string[] {
@@ -609,6 +986,7 @@ function formatHierarchyPolicyViolations(violations: HierarchyReadout["policyVio
 
 function formatPromptFlowContext(context: PromptFlowContext): string {
   return [
+    ...formatPromptFlowContextMetadata(context),
     "directions:",
     ...formatStringList(context.directions),
     "tools:",
@@ -618,6 +996,44 @@ function formatPromptFlowContext(context: PromptFlowContext): string {
     "context artifacts:",
     ...formatContextArtifacts(context.contextArtifacts),
   ].join("\n");
+}
+
+function copyPromptFlowRequestMetadata(request: PromptFlowContextRequest): Partial<PromptFlowContext> {
+  return {
+    ...(request.definitionVersion !== undefined ? { definitionVersion: request.definitionVersion } : {}),
+    ...(request.phaseId !== undefined ? { phaseId: request.phaseId } : {}),
+    ...(request.runState !== undefined ? { runState: request.runState } : {}),
+    ...(request.permittedUniversalActions !== undefined ? { permittedUniversalActions: request.permittedUniversalActions } : {}),
+    ...(request.requiredEvidenceRefs !== undefined ? { requiredEvidenceRefs: request.requiredEvidenceRefs } : {}),
+    ...(request.gate !== undefined ? { gate: request.gate } : {}),
+    ...(request.reviewerHatIds !== undefined ? { reviewerHatIds: request.reviewerHatIds } : {}),
+    ...(request.timeoutSeconds !== undefined ? { timeoutSeconds: request.timeoutSeconds } : {}),
+    ...(request.retryLimit !== undefined ? { retryLimit: request.retryLimit } : {}),
+    ...(request.rollbackPolicy !== undefined ? { rollbackPolicy: request.rollbackPolicy } : {}),
+  };
+}
+
+function formatPromptFlowContextMetadata(context: PromptFlowContext): readonly string[] {
+  const rows: string[] = [];
+  if (context.phaseId !== undefined || context.runState !== undefined) {
+    rows.push(`phase: ${context.phaseId ?? "unknown"} ${context.runState ?? "unknown"}`);
+  }
+  if (context.requiredEvidenceRefs !== undefined) {
+    rows.push("required evidence:", ...formatStringList(context.requiredEvidenceRefs));
+  }
+  if (context.gate !== undefined) {
+    rows.push(`gate: ${context.gate.kind}`);
+  }
+  if (context.reviewerHatIds !== undefined) {
+    rows.push("reviewers:", ...formatStringList(context.reviewerHatIds));
+  }
+  if (context.timeoutSeconds !== undefined) {
+    rows.push(`timeout seconds: ${context.timeoutSeconds}`);
+  }
+  if (context.rollbackPolicy !== undefined) {
+    rows.push(`rollback: ${context.rollbackPolicy.kind} ${context.rollbackPolicy.description}`);
+  }
+  return rows;
 }
 
 function formatStringList(values: readonly string[]): readonly string[] {
@@ -647,11 +1063,68 @@ function formatActResult(result: ActResult): string {
       return `dispatched ${result.kind}`;
     case "loaded_context":
       return `loaded context ${result.context.taskId}`;
+    case "status_report":
+      return `status ${result.status.kind} ${result.status.scope} ${result.status.phase}`;
     case "reobserve":
-      return `reobserve ${result.scope}`;
+      return `reobserve ${result.scope}${result.menuPage?.promptFlows === undefined ? "" : ` prompt-flow-page ${result.menuPage.promptFlows + 1}`}`;
     case "rejected":
-      return `rejected ${result.reason}`;
+      return `rejected ${result.reason}: ${result.message}`;
   }
+}
+
+function compileAgentCliPromptFlowTasksFromEnv(
+  input: CreateAgentCliPromptFlowTasksFromEnvInput,
+): readonly PromptFlowTask[] {
+  const definitionsRaw = input.env.AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON;
+  const runsRaw = input.env.AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON;
+  if ((definitionsRaw === undefined || definitionsRaw.trim().length === 0) && (runsRaw === undefined || runsRaw.trim().length === 0)) {
+    return [];
+  }
+  if (definitionsRaw === undefined || definitionsRaw.trim().length === 0 || runsRaw === undefined || runsRaw.trim().length === 0) {
+    throw new Error("AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON and AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON must be provided together");
+  }
+  const definitions = parsePromptFlowDefinitionsJson(definitionsRaw);
+  const lintMessages = definitions.flatMap((definition) =>
+    lintPromptFlowDefinition(definition).map((diagnostic) =>
+      `${definition.promptFlowId}@${definition.version}${diagnostic.phaseId === undefined ? "" : `:${diagnostic.phaseId}`}:${diagnostic.code}`,
+    ),
+  );
+  if (lintMessages.length > 0) {
+    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON failed lint: ${lintMessages.join(", ")}`);
+  }
+  const runs = parsePromptFlowRunsJson(runsRaw);
+  const tasks = compilePromptFlowTasks({
+    definitions,
+    runs,
+  });
+  assertPromptFlowRunCompileCoverage(runs, tasks);
+  return tasks;
+}
+
+function parsePromptFlowDefinitionsJson(raw: string): readonly PromptFlowDefinition[] {
+  const parsed: unknown = JSON.parse(raw);
+  if (!Array.isArray(parsed)) {
+    throw new Error("AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON must be a JSON array");
+  }
+  const definitions = parsed.map(parsePromptFlowDefinition);
+  const duplicateDefinitionKeys = repeatedValues(definitions.map(promptFlowDefinitionKey));
+  if (duplicateDefinitionKeys.length > 0) {
+    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON contains duplicate definition keys: ${duplicateDefinitionKeys.join(", ")}`);
+  }
+  return definitions;
+}
+
+function parsePromptFlowRunsJson(raw: string): readonly PromptFlowRun[] {
+  const parsed: unknown = JSON.parse(raw);
+  if (!Array.isArray(parsed)) {
+    throw new Error("AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON must be a JSON array");
+  }
+  const runs = parsed.map(parsePromptFlowRun);
+  const duplicateRunIds = repeatedValues(runs.map((run) => run.runId));
+  if (duplicateRunIds.length > 0) {
+    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON contains duplicate run ids: ${duplicateRunIds.join(", ")}`);
+  }
+  return runs;
 }
 
 function parsePromptFlowTask(value: unknown): PromptFlowTask {
@@ -667,12 +1140,109 @@ function parsePromptFlowTask(value: unknown): PromptFlowTask {
     label: parseRequiredString(candidate, "label"),
     scope: parsePromptFlowRunScope(candidate.scope),
     priority: parsePromptFlowPriority(candidate.priority),
+    ...parseOptionalStringArray(candidate.allowedHatIds, "allowedHatIds"),
     ...parseOptionalActionClass(candidate.actionClass),
     ...parseOptionalRequiredToolBundles(candidate.requiredToolBundles),
     directions: parseStringArray(candidate.directions, "directions"),
     toolInjections: parseToolInjections(candidate.toolInjections),
     metrics: parseMetricBlocks(candidate.metrics),
     contextArtifactRefs: parseStringArray(candidate.contextArtifactRefs, "contextArtifactRefs"),
+    ...parseOptionalPromptFlowMetadata(candidate),
+  };
+}
+
+function parsePromptFlowDefinition(value: unknown): PromptFlowDefinition {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow definition must be an object");
+  }
+  const candidate = value as Record<string, unknown>;
+  const definition = {
+    promptFlowId: parsePromptFlowDefinitionString(candidate, "promptFlowId"),
+    version: parsePromptFlowDefinitionString(candidate, "version"),
+    name: parsePromptFlowDefinitionString(candidate, "name"),
+    ownerDepartmentId: parsePromptFlowDefinitionString(candidate, "ownerDepartmentId"),
+    allowedHatIds: parseStringArray(candidate.allowedHatIds, "allowedHatIds"),
+    requiredScope: parsePromptFlowRunScope(candidate.requiredScope),
+    phases: parsePromptFlowPhases(candidate.phases),
+    reviewerHatIds: parseStringArray(candidate.reviewerHatIds, "reviewerHatIds"),
+    rollbackPolicy: parsePromptFlowRollbackPolicy(candidate.rollbackPolicy),
+  };
+  const duplicatePhaseIds = repeatedValues(definition.phases.map((phase) => phase.phaseId));
+  if (duplicatePhaseIds.length > 0) {
+    throw new Error(`prompt-flow definition ${promptFlowDefinitionKey(definition)} contains duplicate phase ids: ${duplicatePhaseIds.join(", ")}`);
+  }
+  return definition;
+}
+
+function parsePromptFlowRun(value: unknown): PromptFlowRun {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow run must be an object");
+  }
+  const candidate = value as Record<string, unknown>;
+  return {
+    runId: parseRequiredString(candidate, "runId"),
+    promptFlowId: parseRequiredString(candidate, "promptFlowId"),
+    definitionVersion: parseRequiredString(candidate, "definitionVersion"),
+    workItemId: parseRequiredString(candidate, "workItemId"),
+    scope: parsePromptFlowRunScope(candidate.scope),
+    currentPhaseId: parseRequiredString(candidate, "currentPhaseId"),
+    state: parsePromptFlowRunState(candidate.state),
+    priority: parsePromptFlowPriority(candidate.priority),
+  };
+}
+
+function assertPromptFlowRunCompileCoverage(
+  runs: readonly PromptFlowRun[],
+  tasks: readonly PromptFlowTask[],
+): void {
+  const executableRunIds = new Set(
+    runs
+      .filter((run) => isExecutablePromptFlowRunState(run.state))
+      .map((run) => run.runId),
+  );
+  for (const task of tasks) {
+    executableRunIds.delete(task.taskId);
+  }
+  if (executableRunIds.size > 0) {
+    throw new Error(`AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON failed compile coverage: ${[...executableRunIds].sort().join(", ")}`);
+  }
+}
+
+function isExecutablePromptFlowRunState(state: PromptFlowRunState): boolean {
+  return (
+    state === PromptFlowRunState.Created ||
+    state === PromptFlowRunState.ContextLoaded ||
+    state === PromptFlowRunState.RunningPhase ||
+    state === PromptFlowRunState.AwaitingGate
+  );
+}
+
+function parsePromptFlowPhases(value: unknown): readonly PromptFlowPhaseDefinition[] {
+  if (!Array.isArray(value)) {
+    throw new Error("prompt-flow definition phases must be an array");
+  }
+  return value.map(parsePromptFlowPhaseDefinition);
+}
+
+function parsePromptFlowPhaseDefinition(value: unknown): PromptFlowPhaseDefinition {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow definition phase must be an object");
+  }
+  const phase = value as Record<string, unknown>;
+  return {
+    phaseId: parsePromptFlowDefinitionString(phase, "phaseId"),
+    label: parsePromptFlowDefinitionString(phase, "label"),
+    ...parseOptionalActionClass(phase.actionClass),
+    permittedUniversalActions: parseStringArray(phase.permittedUniversalActions, "permittedUniversalActions"),
+    directions: parseStringArray(phase.directions, "directions"),
+    ...parseOptionalRequiredToolBundles(phase.requiredToolBundles),
+    toolInjections: parseToolInjections(phase.toolInjections),
+    contextArtifactRefs: parseStringArray(phase.contextArtifactRefs, "contextArtifactRefs"),
+    requiredEvidenceRefs: parseStringArray(phase.requiredEvidenceRefs, "requiredEvidenceRefs"),
+    gate: parsePromptFlowGate(phase.gate),
+    timeoutSeconds: parsePositiveInteger(phase.timeoutSeconds, "timeoutSeconds"),
+    retryLimit: parseNonNegativeInteger(phase.retryLimit, "retryLimit"),
+    ...(phase.metrics === undefined ? {} : { metrics: parseMetricBlocks(phase.metrics) }),
   };
 }
 
@@ -925,6 +1495,14 @@ function parseRequiredString(candidate: Record<string, unknown>, property: strin
   return value;
 }
 
+function parsePromptFlowDefinitionString(candidate: Record<string, unknown>, property: string): string {
+  const value = candidate[property];
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(`prompt-flow definition ${property} must be a non-empty string`);
+  }
+  return value;
+}
+
 function parsePromptFlowRunScope(value: unknown): RunScope {
   if (typeof value !== "string" || !Object.values(RunScope).includes(value as RunScope)) {
     throw new Error("prompt-flow task requires valid scope");
@@ -937,6 +1515,13 @@ function parsePromptFlowPriority(value: unknown): number {
     throw new Error("prompt-flow task requires numeric priority");
   }
   return value;
+}
+
+function parsePromptFlowRunState(value: unknown): PromptFlowRunState {
+  if (typeof value !== "string" || !Object.values(PromptFlowRunState).includes(value as PromptFlowRunState)) {
+    throw new Error("prompt-flow run state is invalid");
+  }
+  return value as PromptFlowRunState;
 }
 
 function parseOptionalActionClass(value: unknown): { actionClass?: ActionClass } {
@@ -958,11 +1543,124 @@ function parseOptionalRequiredToolBundles(value: unknown): { requiredToolBundles
   return { requiredToolBundles: bundles as readonly ToolBundleName[] };
 }
 
+function parseOptionalStringArray(value: unknown, property: string): Record<string, readonly string[]> {
+  if (value === undefined) return {};
+  return { [property]: parseStringArray(value, property) };
+}
+
+function parseOptionalPromptFlowMetadata(candidate: Record<string, unknown>): Partial<PromptFlowTask> {
+  return {
+    ...parseOptionalString(candidate.definitionVersion, "definitionVersion"),
+    ...parseOptionalString(candidate.phaseId, "phaseId"),
+    ...parseOptionalPromptFlowRunState(candidate.runState),
+    ...parseOptionalStringArray(candidate.permittedUniversalActions, "permittedUniversalActions"),
+    ...parseOptionalStringArray(candidate.requiredEvidenceRefs, "requiredEvidenceRefs"),
+    ...parseOptionalPromptFlowGate(candidate.gate),
+    ...parseOptionalStringArray(candidate.reviewerHatIds, "reviewerHatIds"),
+    ...parseOptionalPositiveInteger(candidate.timeoutSeconds, "timeoutSeconds"),
+    ...parseOptionalPositiveInteger(candidate.retryLimit, "retryLimit"),
+    ...parseOptionalRollbackPolicy(candidate.rollbackPolicy),
+  };
+}
+
+function parseOptionalString(value: unknown, property: string): Record<string, string> {
+  if (value === undefined) return {};
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error(`prompt-flow task ${property} must be a non-empty string when present`);
+  }
+  return { [property]: value };
+}
+
+function parseOptionalPromptFlowRunState(value: unknown): { runState?: PromptFlowRunState } {
+  if (value === undefined) return {};
+  if (typeof value !== "string" || !Object.values(PromptFlowRunState).includes(value as PromptFlowRunState)) {
+    throw new Error("prompt-flow task runState is invalid");
+  }
+  return { runState: value as PromptFlowRunState };
+}
+
+function parseOptionalPromptFlowGate(value: unknown): Pick<PromptFlowTask, "gate"> {
+  if (value === undefined) return {};
+  return { gate: parsePromptFlowGate(value) };
+}
+
+function parsePromptFlowGate(value: unknown): PromptFlowPhaseGate {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow task gate must be an object when present");
+  }
+  const gate = value as Record<string, unknown>;
+  if (typeof gate.kind !== "string" || !Object.values(PromptFlowGateKind).includes(gate.kind as PromptFlowGateKind)) {
+    throw new Error("prompt-flow task gate kind is invalid");
+  }
+  return {
+    kind: gate.kind as PromptFlowGateKind,
+    requiredEvidenceRefs: parseStringArray(gate.requiredEvidenceRefs, "gate.requiredEvidenceRefs"),
+    ...(gate.reviewerHatIds === undefined ? {} : { reviewerHatIds: parseStringArray(gate.reviewerHatIds, "gate.reviewerHatIds") }),
+  };
+}
+
+function parseOptionalPositiveInteger(value: unknown, property: "timeoutSeconds" | "retryLimit"): Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">> {
+  if (value === undefined) return {};
+  const parsed = property === "timeoutSeconds"
+    ? parsePositiveInteger(value, property)
+    : parseNonNegativeInteger(value, property);
+  return { [property]: parsed } as Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">>;
+}
+
+function parsePositiveInteger(value: unknown, property: "timeoutSeconds"): number {
+  if (!Number.isInteger(value) || (value as number) <= 0) {
+    throw new Error(`prompt-flow task ${property} must be a positive integer when present`);
+  }
+  return value as number;
+}
+
+function parseNonNegativeInteger(value: unknown, property: "retryLimit"): number {
+  if (!Number.isInteger(value) || (value as number) < 0) {
+    throw new Error(`prompt-flow task ${property} must be a positive integer when present`);
+  }
+  return value as number;
+}
+
+function parseOptionalRollbackPolicy(value: unknown): Pick<PromptFlowTask, "rollbackPolicy"> {
+  if (value === undefined) return {};
+  return { rollbackPolicy: parsePromptFlowRollbackPolicy(value) };
+}
+
+function parsePromptFlowRollbackPolicy(value: unknown): PromptFlowDefinition["rollbackPolicy"] {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("prompt-flow task rollbackPolicy must be an object when present");
+  }
+  const rollback = value as Record<string, unknown>;
+  if (rollback.kind !== "compensating_action" && rollback.kind !== "revert_artifact" && rollback.kind !== "cancel_only") {
+    throw new Error("prompt-flow task rollbackPolicy kind is invalid");
+  }
+  if (typeof rollback.description !== "string" || rollback.description.length === 0) {
+    throw new Error("prompt-flow task rollbackPolicy description is required");
+  }
+  return { kind: rollback.kind, description: rollback.description };
+}
+
 function parseStringArray(value: unknown, property: string): readonly string[] {
-  if (!Array.isArray(value) || !value.every((item) => typeof item === "string")) {
-    throw new Error(`prompt-flow task ${property} must be a string array`);
+  if (!Array.isArray(value) || !value.every((item) => typeof item === "string" && item.trim().length > 0)) {
+    throw new Error(`prompt-flow task ${property} must contain only non-empty strings`);
   }
   return value;
+}
+
+function repeatedValues(values: readonly string[]): readonly string[] {
+  const seen = new Set<string>();
+  const repeated = new Set<string>();
+  for (const value of values) {
+    if (seen.has(value)) {
+      repeated.add(value);
+    }
+    seen.add(value);
+  }
+  return [...repeated].sort();
+}
+
+function promptFlowDefinitionKey(definition: Pick<PromptFlowDefinition, "promptFlowId" | "version">): string {
+  return `${definition.promptFlowId}@${definition.version}`;
 }
 
 function parseToolInjections(value: unknown): readonly PromptFlowToolInjection[] {

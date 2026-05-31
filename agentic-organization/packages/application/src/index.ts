@@ -6,13 +6,26 @@ export {
   tenantConfigDocumentKey,
   type DecisionOptimizerKpiSignal,
   type DecisionOptimizerCycleResult,
+  type DecisionOptimizerControlPlane,
   type DecisionOptimizerNoProposalReason,
   type DecisionOptimizerResult,
+  type DecisionOptimizerSimulationDecision,
   type DecisionOptimizerStore,
   type DecisionOptimizerThresholds,
   type ProposeDecisionOptimizerChangeSetInput,
   type RunDecisionOptimizerCycleInput,
 } from "./decision-optimizer.ts";
+export {
+  TelemetryImprovementMetricKind,
+  TelemetryImprovementProposalMode,
+  runTelemetryImprovementOptimizer,
+  type ImprovementHypothesis,
+  type RunTelemetryImprovementOptimizerInput,
+  type TelemetryImprovementExpectedMetricMovement,
+  type TelemetryImprovementOptimizerResult,
+  type TelemetryImprovementProposedChange,
+  type TelemetryImprovementTrigger,
+} from "./telemetry-improvement-optimizer.ts";
 export {
   TriageActionFeedbackReason,
   TriageActionResolution,
@@ -20,6 +33,14 @@ export {
   type ResolvedTriageAction,
   type TriageActionRequest,
 } from "./triage-action-resolver.ts";
+export {
+  computeRestoreDrillChecksum,
+  verifyRestoreDrill,
+  type RestoreDrillChecksum,
+  type RestoreDrillProjection,
+  type RestoreDrillSnapshot,
+  type RestoreDrillVerification,
+} from "./restore-drill.ts";
 export {
   DeadLetterClassification,
   RecoveryIncidentKind,
@@ -112,6 +133,7 @@ export {
   createOrganizationReactionPlanActionExecutor,
   type CreateOrganizationReactionPlanActionExecutorInput,
   type EnsureWorkItemPort,
+  type ReactionPlanControlPlane,
 } from "./organization-reaction-plan-action-executor.ts";
 export {
   createCommandHandlerRegistry,
@@ -129,8 +151,26 @@ export {
 export {
   createCommandPipeline,
   type CommandPipeline,
+  type CommandPipelineControlPlane,
   type CommandPipelineDependencies,
 } from "./command-pipeline.ts";
+export {
+  ControlPlaneFlagKind,
+  ControlPlaneScopeKind,
+  createControlPlaneDeterministicRule,
+  createControlPlaneSlotAuthorizer,
+  evaluateControlPlaneAccess,
+  type ControlPlaneAccessDecision,
+  type ControlPlaneAudit,
+  type ControlPlaneBoundary,
+  type ControlPlaneBudgetCeiling,
+  type ControlPlaneBudgetKind,
+  type ControlPlaneDenialReason,
+  type ControlPlaneFlag,
+  type ControlPlaneScope,
+  type ControlPlaneUsage,
+  type EvaluateControlPlaneAccessInput,
+} from "./control-plane-guard.ts";
 export {
   CommandErrorCode,
   CommandResultArtifactType,
@@ -156,6 +196,24 @@ export {
   type CreateScheduleBlockCommandAuthorityInput,
   type ScheduleAuthorityCommandRule,
 } from "./schedule-authority.ts";
+export {
+  ScheduleCorrectiveActionKind,
+  SchedulePressureLevel,
+  SchedulePressureSignalKind,
+  computeSchedulePressure,
+  schedulePressureReadoutForHat,
+  type ScheduleCorrectiveAction,
+  type SchedulePressure,
+  type SchedulePressureInput,
+  type SchedulePressureReadout,
+  type SchedulePressureReadoutInput,
+  type SchedulePressureSignal,
+} from "./schedule-optimizer.ts";
+export {
+  createReassignAfterExpirySupervisorSignalCommand,
+  type CreateReassignAfterExpirySupervisorSignalCommandInput,
+  type ReassignAfterExpirySupervisorSignalCommandResult,
+} from "./schedule-corrective-command.ts";
 export {
   HatAuthorityPolicyVersion,
   createHatAuthorityPort,
@@ -241,6 +299,7 @@ export {
   ComposerDecision,
   DecideOutcome,
   DefaultDeterministicRules,
+  rejectAct,
   createTelemetryScopedMetricAgents,
   decide,
   decideAsync,
@@ -248,7 +307,9 @@ export {
   observe,
   observeAgent,
   observeAgentSurface,
+  promptFlowReadoutForHat,
   ObserveFeedbackReason,
+  ActRejectionReason,
   ObserveCommandType,
   ObserveOutcome,
   renderMenu16,
@@ -284,6 +345,9 @@ export {
   type HierarchyActionKind,
   type HierarchyWorkBatch,
   type HierarchyWorkItem,
+  type GlassHaloHierarchyStatus,
+  type GlassHaloStatusContext,
+  type GlassHaloStatusSignal,
   type LifecycleTransitionCommandPayload,
   type Menu16,
   type Menu16Slot,
@@ -305,12 +369,29 @@ export {
   type RenderMenu16Options,
   type ScopedMetricAgent,
   type ScopedReadout,
+  type SlotAuthorizationDecision,
   type SlotImpl,
   type VetoedPromptFlowTask,
   type VetoedHierarchyAction,
   type VetoedOption,
   type ZetaIdDecimal,
 } from "./observe.ts";
+export {
+  PromptFlowGateKind,
+  PromptFlowRunState,
+  advancePromptFlowRun,
+  canAdvancePromptFlowRun,
+  compilePromptFlowTasks,
+  lintPromptFlowDefinition,
+  type CompilePromptFlowTasksInput,
+  type PromptFlowAdvanceResult,
+  type PromptFlowDefinition,
+  type PromptFlowLintDiagnostic,
+  type PromptFlowPhaseDefinition,
+  type PromptFlowPhaseGate,
+  type PromptFlowRollbackPolicy,
+  type PromptFlowRun,
+} from "./prompt-flow.ts";
 export {
   DEPARTMENTS,
   OrgGraphValidation,
@@ -370,13 +451,80 @@ export {
   type WorkloadItem,
 } from "./rmo.ts";
 export {
+  ReputationOutcomeClass,
+  ReputationRiskTier,
+  createReputationOutcomeOrgEvent,
+  materializeRmoCandidateReputation,
+  projectReputationReadModelFromOrgEvents,
+  projectReputationReadModel,
+  reputationObservationFromOrgEvent,
+  selectRmoCandidateWithExploration,
+  type BetaBernoulliReputationSummary,
+  type MaterializeRmoCandidateInput,
+  type NormalGammaReputationSummary,
+  type ProjectReputationReadModelFromOrgEventsInput,
+  type ProjectReputationReadModelInput,
+  type ReputationBackedRmoCandidate,
+  type ReputationKey,
+  type ReputationObservation,
+  type ReputationPosteriorSummary,
+  type ReputationReadModel,
+  type ReputationSignal,
+  type RmoExplorationSelection,
+  type SelectRmoCandidateWithExplorationInput,
+} from "./reputation.ts";
+export {
+  RuntimeLeaseState,
+  WorkClaimState,
+  WorkMarketClaimOutcome,
+  WorkMarketCompleteOutcome,
+  WorkMarketMergeOutcome,
+  WorkMarketQuorumOutcome,
+  WorkShardState,
+  claimNextWorkShard,
+  completeWorkClaim,
+  evaluateWorkShardReviewQuorum,
+  mergeReviewedWorkShards,
+  reapStaleWorkClaims,
+  workMarketReadoutForHat,
+  type ClaimNextWorkShardInput,
+  type CompleteWorkClaimInput,
+  type CompleteWorkClaimRejectReason,
+  type CompleteWorkClaimResult,
+  type EvaluateWorkShardReviewQuorumInput,
+  type EvaluateWorkShardReviewQuorumResult,
+  type HatWorkQueue,
+  type MergeReviewedWorkShardsInput,
+  type MergeReviewedWorkShardsResult,
+  type ReapStaleWorkClaimsInput,
+  type ReapStaleWorkClaimsResult,
+  type RuntimeLease,
+  type WorkClaim,
+  type WorkMarketClaimResult,
+  type WorkMarketMergeRejectReason,
+  type WorkMarketPressure,
+  type WorkMarketQueueReadout,
+  type WorkMarketReadout,
+  type WorkMarketReadoutInput,
+  type WorkMarketScope,
+  type WorkShard,
+  type WorkShardMergePolicy,
+  type WorkShardReview,
+  type WorkShardReviewApproval,
+  type WorkShardReviewQuorum,
+  type WorkShardReviewRejectReason,
+} from "./work-market.ts";
+export {
   assignHat,
   rankEligibleCandidates,
+  rankEligibleCandidatesWithReputation,
   type ActiveBindingSummary,
   type AgentCandidate,
   type AssignHatContext,
   type AssignmentResult,
+  type RankEligibleWithReputationInput,
   type RankEligibleInput,
+  type ReputationRankableAgentCandidate,
 } from "./assignment-engine.ts";
 export {
   GateOwnerHats,
@@ -391,7 +539,14 @@ export {
   type GateEvaluationResult,
   type PipelineContext,
 } from "./pipeline.ts";
-export { runOrgCycle, type OrgCycleDeps, type OrgCycleReport } from "./org-runtime.ts";
+export {
+  runOrgCycle,
+  type OrgCycleDeps,
+  type OrgCycleReport,
+  type OrgCycleRmoCandidatesForHat,
+  type OrgCycleRmoCandidateSource,
+  type OrgCycleRmoCandidateSourceInput,
+} from "./org-runtime.ts";
 export {
   AuthorityScope,
   authorityScopeOf,
@@ -648,7 +803,9 @@ export {
 } from "./work-provider.ts";
 export {
   replayLedger,
+  unclassifiedOrgEventKinds,
   type ConformanceReport,
   type ConformanceSkip,
   type ConformanceViolation,
+  type ReplayLedgerOptions,
 } from "./conformance.ts";

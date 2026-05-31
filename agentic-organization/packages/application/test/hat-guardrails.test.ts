@@ -21,6 +21,10 @@ test("a code author (release_operator, Delivery) CAN write code but CANNOT appro
   equal(approve.allowed, false, "no ReviewAndGates bundle → cannot approve");
 });
 
+test("a backend implementer CAN write code for implementation prompt flows", () => {
+  equal(preflightHatAction(hat("backend_implementer"), ActionClass.WriteCode).allowed, true);
+});
+
 test("a reviewer (cto, ReviewAndGates) CAN review but CANNOT write code", () => {
   equal(preflightHatAction(hat("cto"), ActionClass.ReviewCode).allowed, true);
   equal(preflightHatAction(hat("cto"), ActionClass.WriteCode).allowed, false);

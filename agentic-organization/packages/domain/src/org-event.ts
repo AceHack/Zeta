@@ -73,12 +73,51 @@ export const OrgEventKind = {
   // Model eval + optimization (G2/M3) — closed-loop decision quality evidence.
   ModelEvalCompleted: "model_eval_completed",
   DecisionOptimizationProposed: "decision_optimization_proposed",
+  // Reputation learning (Phase 2.4) — append-only outcome observations; projections learn from these.
+  ReputationOutcomeObserved: "reputation_outcome_observed",
   // Recovery scanners (G3) — observability over stale/stranded/abandoned runtime rows.
   RecoveryIncidentDetected: "recovery_incident_detected",
   RecoveryScanCompleted: "recovery_scan_completed",
+  // Observe-act foreground loop (Phase 2.2) — every menu selection is durable.
+  ObserveActTick: "observe_act_tick",
+  // Schedule authority (Phase 2.6) — schedule block lifecycle transitions are replayable.
+  WorkScheduleBlockTransition: "work_schedule_block_transition",
 } as const;
 
 export type OrgEventKind = (typeof OrgEventKind)[keyof typeof OrgEventKind];
+
+export type OrgEventTransitionContext =
+  | {
+      kind: "change_set_review";
+      currentStageIndex: number;
+      stageCount: number;
+    }
+  | {
+      kind: "document_lifecycle";
+      loadBearing: boolean;
+    }
+  | {
+      kind: "reputation_observation";
+      agentId: string;
+      hatId: string;
+      workType: string;
+      outcomeClass: string;
+      observedAt: string;
+      signal:
+        | {
+            kind: "binary";
+            success: boolean;
+            weight?: number | undefined;
+          }
+        | {
+            kind: "continuous";
+            value: number;
+            unit: string;
+            lowerIsBetter: boolean;
+            weight?: number | undefined;
+          };
+      evidenceRef: string;
+    };
 
 export type OrgEvent = {
   id: string;
@@ -93,6 +132,12 @@ export type OrgEvent = {
   subjectId: string;
   fromState?: string;
   toState?: string;
+  /**
+   * Context needed to replay legal transitions whose legality depends on more
+   * than from/to states. Without this envelope, conformance counts the event as
+   * an ambiguous skip instead of pretending it is proven.
+   */
+  transitionContext?: OrgEventTransitionContext;
   /** human-readable decision summary — must be crystal clear about what happened */
   decision: string;
   /** hat-id path from the Executive Board root down to the actor */

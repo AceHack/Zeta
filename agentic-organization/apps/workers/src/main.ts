@@ -66,6 +66,7 @@ import {
   type PgCockroachWorkerPool,
 } from "./adapters/pg-cockroach-worker-pool.ts";
 import {
+  AgentLoopMode,
   WorkerKeepAliveConfigDefault,
   parseWorkerRuntimeConfigFromEnv,
   type WorkerProcessConfig,
@@ -384,6 +385,7 @@ async function runWorkerWithResolvedConfig(input: RunWorkerWithResolvedConfigInp
       sleep: (ms, isStopRequested) => sleepUnlessStopped(deps.clock, ms, isStopRequested),
       ...(externalReviewPort ? { externalPort: externalReviewPort } : {}),
       ...(telemetry === undefined ? {} : { telemetry }),
+      ...observeActDriverFor(config.agentLoopMode),
       observer: {
         record: (record) =>
           deps.logger.log({
@@ -437,6 +439,19 @@ function createWorkerTelemetryPort(config: WorkerProcessConfig): TelemetryPort |
       "agentic.organization.id": config.organizationId,
     },
   });
+}
+
+function observeActDriverFor(
+  mode: AgentLoopMode,
+): { workOsDriver?: "observe-act-shadow" | "observe-act-primary" } {
+  switch (mode) {
+    case AgentLoopMode.Legacy:
+      return {};
+    case AgentLoopMode.ObserveActShadow:
+      return { workOsDriver: "observe-act-shadow" };
+    case AgentLoopMode.ObserveActPrimary:
+      return { workOsDriver: "observe-act-primary" };
+  }
 }
 
 type CollectShutdownPortsInput = {

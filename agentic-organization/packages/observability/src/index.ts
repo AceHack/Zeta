@@ -100,7 +100,11 @@ export {
   type MetricSeries,
   type RecordingTelemetryQueryPortInput,
   type TelemetryQueryCall,
+  type TelemetryQueryDegraded,
+  type TelemetryQueryOk,
   type TelemetryQueryPort,
+  type TelemetryQueryResult,
+  type TelemetryQuerySource,
   type TelemetryTimeRange,
   type TraceSummary,
 } from "./telemetry-query-port.ts";

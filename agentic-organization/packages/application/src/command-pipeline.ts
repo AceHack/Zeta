@@ -2,6 +2,12 @@ import type { CommandHandlerRegistry } from "./command-handler-registry.ts";
 import type { PipelineCommand } from "./command-contract.ts";
 import { CommandErrorCode, CommandResultStatus, type CommandResult } from "./command-result.ts";
 import {
+  evaluateControlPlaneAccess,
+  type ControlPlaneBudgetCeiling,
+  type ControlPlaneFlag,
+  type ControlPlaneUsage,
+} from "./control-plane-guard.ts";
+import {
   NoopTelemetry,
   TelemetryMetricKind,
   TelemetrySpanStatusCode,
@@ -51,7 +57,18 @@ export type CommandPipelineDependencies<Command extends PipelineCommand = Pipeli
     supervisorSignalStateReader?: SupervisorSignalStateReaderPort | undefined;
     workAnchorStateReader?: WorkAnchorStateReaderPort | undefined;
     telemetry?: TelemetryPort | undefined;
+    controlPlane?: CommandPipelineControlPlane | undefined;
   };
+
+export type CommandPipelineControlPlane = {
+  flags?: readonly ControlPlaneFlag[] | undefined;
+  loadFlags?: ((command: PipelineCommand) => Promise<readonly ControlPlaneFlag[]>) | undefined;
+  budgets?: readonly ControlPlaneBudgetCeiling[] | undefined;
+  usageForCommand?: ((command: PipelineCommand) => ControlPlaneUsage | undefined) | undefined;
+  availableSecretScopes?: readonly string[] | undefined;
+  isControlPlaneExempt?: boolean | undefined;
+  now?: (() => string) | undefined;
+};
 
 export function createCommandPipeline<Command extends PipelineCommand = PipelineCommand>(
   dependencies: CommandPipelineDependencies<Command>,
@@ -134,6 +151,11 @@ async function executeCommand<Command extends PipelineCommand>(
   );
 
   if (authorizationDecision.status === PolicyDecisionStatus.Denied) {
+    const controlPlaneResult = await authorizeCommandControlPlane(command, dependencies);
+    if (controlPlaneResult !== undefined) {
+      return controlPlaneResult;
+    }
+
     try {
       const observationResult = await dependencies.policyDecisionObservationPort.observePolicyDecision(
         createPolicyDecisionObservation(command, authorizationDecision, dependencies.now()),
@@ -192,10 +214,20 @@ async function executeCommand<Command extends PipelineCommand>(
     return createIdempotencyConflictResult(command);
   }
 
+  const controlPlaneResult = await authorizeCommandControlPlane(command, dependencies);
+  if (controlPlaneResult !== undefined) {
+    return controlPlaneResult;
+  }
+
   const scheduleAuthorityResult = await authorizeCommandSchedule(command, dependencies);
 
   if (scheduleAuthorityResult !== undefined) {
     return scheduleAuthorityResult;
+  }
+
+  const preDispatchControlPlaneResult = await authorizeCommandControlPlane(command, dependencies);
+  if (preDispatchControlPlaneResult !== undefined) {
+    return preDispatchControlPlaneResult;
   }
 
   const outcome = await dispatchCommand(command, dependencies);
@@ -240,6 +272,53 @@ async function executeCommand<Command extends PipelineCommand>(
   }
 
   return result;
+}
+
+async function authorizeCommandControlPlane<Command extends PipelineCommand>(
+  command: Command,
+  dependencies: CommandPipelineDependencies<Command>,
+): Promise<CommandResult | undefined> {
+  if (dependencies.controlPlane === undefined) {
+    return undefined;
+  }
+
+  const loadedFlags = await (dependencies.controlPlane.loadFlags?.(command) ?? Promise.resolve([]));
+  const flags = [...(dependencies.controlPlane.flags ?? []), ...loadedFlags];
+  const decision = evaluateControlPlaneAccess({
+    organizationId: command.organizationId,
+    actorHatId: command.actor.hatAssignmentId,
+    tenantId: command.organizationId,
+    providerId: command.policyContext?.toolType,
+    boundary: "command_dispatch",
+    actionType: command.type,
+    evaluatedAt: dependencies.controlPlane.now?.() ?? dependencies.now(),
+    flags,
+    budgets: dependencies.controlPlane.budgets,
+    usage: dependencies.controlPlane.usageForCommand?.(command),
+    availableSecretScopes: dependencies.controlPlane.availableSecretScopes,
+    isControlPlaneExempt: dependencies.controlPlane.isControlPlaneExempt,
+  });
+
+  if (decision.status === "allowed") {
+    return undefined;
+  }
+
+  return {
+    commandId: command.commandId,
+    status: CommandResultStatus.Rejected,
+    idempotency: {
+      replayed: false,
+    },
+    error: {
+      code: CommandErrorCode.ControlPlaneDenied,
+      message: decision.message,
+      ...createOptionalControlPlaneReason(decision.reasonCodes[0]),
+    },
+  };
+}
+
+function createOptionalControlPlaneReason(reason: string | undefined): { reason?: string } {
+  return reason === undefined ? {} : { reason };
 }
 
 async function authorizeCommandSchedule<Command extends PipelineCommand>(

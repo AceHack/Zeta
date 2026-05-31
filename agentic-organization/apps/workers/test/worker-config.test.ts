@@ -2,6 +2,7 @@ import { deepEqual, equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import {
+  AgentLoopMode,
   WorkerKeepAliveConfigDefault,
   WorkerProcessEnvName,
   WorkerRuntimeConfigError,
@@ -40,6 +41,7 @@ describe("worker runtime config parsing", () => {
         workerReactionPlanBatchSize: 8,
         workerReactionPlanLeaseMs: 300000,
         workerKeepAliveOrgHeartbeatDeadlineMs: WorkerKeepAliveConfigDefault.OrgHeartbeatDeadlineMs,
+        agentLoopMode: AgentLoopMode.Legacy,
       },
     );
   });
@@ -57,6 +59,27 @@ describe("worker runtime config parsing", () => {
     });
 
     equal(config.workerKeepAliveOrgHeartbeatDeadlineMs, 45000);
+  });
+
+  test("parses observe-act foreground loop mode", () => {
+    const shadow = parseWorkerRuntimeConfigFromEnv({
+      ...createMinimalValidEnv(),
+      [WorkerProcessEnvName.AgentLoopMode]: " observe_act_shadow ",
+    });
+    const primary = parseWorkerRuntimeConfigFromEnv({
+      ...createMinimalValidEnv(),
+      [WorkerProcessEnvName.AgentLoopMode]: "observe_act_primary",
+    });
+
+    equal(shadow.agentLoopMode, AgentLoopMode.ObserveActShadow);
+    equal(primary.agentLoopMode, AgentLoopMode.ObserveActPrimary);
+  });
+
+  test("rejects invalid observe-act foreground loop mode", () => {
+    assertConfigError(
+      { ...createMinimalValidEnv(), [WorkerProcessEnvName.AgentLoopMode]: "observe_act" },
+      WorkerRuntimeConfigErrorCode.InvalidAgentLoopMode,
+    );
   });
 
   test("rejects an invalid keep-alive org-heartbeat deadline override", () => {

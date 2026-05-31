@@ -17,9 +17,7 @@ import { env } from "node:process";
 
 import { InitiativeStatus } from "../packages/domain/src/index.ts";
 import {
-  createCockroachOrgSystemMigration,
-  createCockroachMemorySystemMigration,
-  createCockroachChangeControlMigration,
+  createCockroachCoreStateMigrations,
   createCockroachSqlExecutor,
   splitSqlStatements,
 } from "../packages/state-cockroach/src/index.ts";
@@ -36,9 +34,9 @@ async function main(): Promise<void> {
   const pool = new Pool({ connectionString });
   const client: CockroachSqlClient = { query: async (sql, p) => ({ rows: (await pool.query(sql, p as unknown[])).rows }), transaction: async (op) => op(client) };
   const executor = createCockroachSqlExecutor({ client });
-  for (const s of splitSqlStatements(createCockroachOrgSystemMigration().sql)) await pool.query(s);
-  for (const s of splitSqlStatements(createCockroachMemorySystemMigration().sql)) await pool.query(s);
-  for (const s of splitSqlStatements(createCockroachChangeControlMigration().sql)) await pool.query(s);
+  for (const migration of createCockroachCoreStateMigrations()) {
+    for (const s of splitSqlStatements(migration.sql)) await pool.query(s);
+  }
 
   // seed ONE proposed initiative (and its project) — the worker's intake should claim it
   const projId = id("proj");

@@ -2,7 +2,9 @@ import { equal } from "node:assert/strict";
 import { describe, test } from "node:test";
 
 import {
+  CommandType,
   HatAssignmentAuthorityState,
+  SupervisorSignalToolType,
   type HatAssignmentAuthoritySnapshot,
 } from "../../domain/src/index.ts";
 import {
@@ -40,6 +42,21 @@ describe("real hat authority port", () => {
     const decision = await port.evaluateHatAuthority(request({ toolType: "write_code" }));
 
     equal(decision.status, HatAuthorityDecisionStatus.ToolDenied);
+  });
+
+  test("falls back to command authority when a supervisor-signal tool type is not an action class", async () => {
+    const port = createHatAuthorityPort({
+      hatAssignmentAuthorityReader: readerFor(authority({ hatId: "dependency_manager" })),
+      hatDefinitions: buildHatDefinitions(),
+      createId,
+    });
+
+    const decision = await port.evaluateHatAuthority(request({
+      commandType: CommandType.SendSupervisorSignal,
+      toolType: SupervisorSignalToolType.RequestEscalation,
+    }));
+
+    equal(decision.status, HatAuthorityDecisionStatus.Active);
   });
 
   test("denies missing hat assignments", async () => {
@@ -95,10 +112,10 @@ describe("real hat authority port", () => {
   });
 });
 
-function request(input: { toolType?: string; omitTeamId?: boolean } = {}): HatAuthorityRequest {
+function request(input: { commandType?: string; toolType?: string; omitTeamId?: boolean } = {}): HatAuthorityRequest {
   return {
     commandId: "cmd-1",
-    commandType: "test.command",
+    commandType: input.commandType ?? "test.command",
     actor: {
       agentId: "agent-1",
       hatAssignmentId: "hat-assignment-1",

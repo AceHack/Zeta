@@ -19,11 +19,12 @@ import {
   OrgEventKind,
   WorkItemState,
   type OrgEvent,
+  type OrgEventTransitionContext,
 } from "../packages/domain/src/index.ts";
 import { replayLedger } from "../packages/application/src/index.ts";
 import {
   createCockroachOrgEventStore,
-  createCockroachOrgSystemMigration,
+  createCockroachCoreStateMigrations,
   createCockroachSqlExecutor,
   splitSqlStatements,
 } from "../packages/state-cockroach/src/index.ts";
@@ -34,7 +35,13 @@ const organizationId = `org-conformance-${randomUUID().slice(0, 8)}`;
 const liveOrganizationId = env.AGENTIC_ORG_CONFORMANCE_LIVE_ORG_ID ?? "org-lfg";
 const now = new Date().toISOString();
 
-function orgEvent(kind: OrgEventKind, fromState: string | undefined, toState: string | undefined, subjectId: string): OrgEvent {
+function orgEvent(
+  kind: OrgEventKind,
+  fromState: string | undefined,
+  toState: string | undefined,
+  subjectId: string,
+  transitionContext?: OrgEventTransitionContext,
+): OrgEvent {
   const id = `evt-${randomUUID()}`;
   return {
     id,
@@ -50,6 +57,7 @@ function orgEvent(kind: OrgEventKind, fromState: string | undefined, toState: st
     traceId: organizationId,
     ...(fromState !== undefined ? { fromState } : {}),
     ...(toState !== undefined ? { toState } : {}),
+    ...(transitionContext !== undefined ? { transitionContext } : {}),
   };
 }
 
@@ -61,8 +69,10 @@ async function main(): Promise<void> {
       transaction: async (operation) => operation(client),
     };
     const executor = createCockroachSqlExecutor({ client });
-    for (const statement of splitSqlStatements(createCockroachOrgSystemMigration().sql)) {
-      await pool.query(statement);
+    for (const migration of createCockroachCoreStateMigrations()) {
+      for (const statement of splitSqlStatements(migration.sql)) {
+        await pool.query(statement);
+      }
     }
 
     const store = createCockroachOrgEventStore({ executor });
@@ -70,7 +80,16 @@ async function main(): Promise<void> {
       orgEvent(OrgEventKind.WorkItemTransition, WorkItemState.Created, WorkItemState.Intake, "work-proof"),
       orgEvent(OrgEventKind.MemoryPhaseTransition, MemoryPhase.Active, MemoryPhase.Stale, "memory-proof"),
       orgEvent(OrgEventKind.ChangeSetApplied, ChangeSetPhase.Approved, ChangeSetPhase.Applied, "change-proof"),
+      orgEvent(OrgEventKind.ChangeSetApproved, ChangeSetPhase.InReview, ChangeSetPhase.Approved, "change-approval-proof", {
+        kind: "change_set_review",
+        currentStageIndex: 1,
+        stageCount: 2,
+      }),
       orgEvent(OrgEventKind.DocLifecycleTransition, DocLifecycleState.Draft, DocLifecycleState.InReview, "doc-proof"),
+      orgEvent(OrgEventKind.DocLifecycleTransition, DocLifecycleState.Draft, DocLifecycleState.Active, "doc-lightweight-proof", {
+        kind: "document_lifecycle",
+        loadBearing: false,
+      }),
       orgEvent(OrgEventKind.GraphConfidencePromoted, GraphConfidence.Verified, GraphConfidence.Canonical, "graph-proof"),
       orgEvent(OrgEventKind.IntakeReceived, undefined, undefined, "intake-proof"),
     ];
@@ -80,10 +99,16 @@ async function main(): Promise<void> {
     }
 
     const persisted = await store.listByOrganization(organizationId, 100);
-    const report = replayLedger(persisted);
+    const report = replayLedger(persisted, { maxSkippedAmbiguous: 0 });
     const livePersisted = await store.listByOrganization(liveOrganizationId, 1_000);
-    const liveReport = replayLedger(livePersisted);
-    const ok = report.checked === 5 && report.nonconformant === 0 && report.skipped === 1 && liveReport.nonconformant === 0;
+    const liveReport = replayLedger(livePersisted, { maxSkippedAmbiguous: 0 });
+    const ok = report.checked === 7 &&
+      report.nonconformant === 0 &&
+      report.skipped === 1 &&
+      !report.ratchetViolated &&
+      liveReport.nonconformant === 0 &&
+      !liveReport.ratchetViolated &&
+      liveReport.coverageRatio === 1;
 
     console.log(JSON.stringify({
       track: "M1 conformance checker",
@@ -98,6 +123,9 @@ async function main(): Promise<void> {
         conformant: liveReport.conformant,
         nonconformant: liveReport.nonconformant,
         skipped: liveReport.skipped,
+        skippedAmbiguous: liveReport.skippedAmbiguous,
+        coverageRatio: liveReport.coverageRatio,
+        ratchetViolated: liveReport.ratchetViolated,
         violations: liveReport.violations,
       },
       PROOF: ok ? "PASS" : "FAIL",

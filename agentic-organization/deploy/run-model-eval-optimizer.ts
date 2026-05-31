@@ -47,6 +47,10 @@ import {
   createCockroachTenantConfigStore,
   splitSqlStatements,
 } from "../packages/state-cockroach/src/index.ts";
+import {
+  evaluateSimulationRisk,
+  runOrgPolicySimulation,
+} from "../packages/simulator/src/index.ts";
 import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroach-sql-executor.ts";
 
 const connectionString = env.COCKROACH_DATABASE_URL ?? "postgresql://root@localhost:26257/defaultdb?sslmode=disable";
@@ -100,6 +104,45 @@ async function main(): Promise<void> {
       kpiSignal,
       source: "proof-seeded-realized-outcome-summary",
     });
+    const simulationReport = runOrgPolicySimulation({
+      organizationId,
+      seed: `model-eval-optimizer-${proofRunId}`,
+      stream: [
+        { eventId: `sim-intake-${proofRunId}`, kind: "work_intake", occurredAt: nowIso, workItemId: `work-optimizer-${proofRunId}`, priority: 80 },
+        { eventId: `sim-complete-${proofRunId}`, kind: "work_completed", occurredAt: nowIso, workItemId: `work-optimizer-${proofRunId}`, leadTimeMs: 600_000 },
+        { eventId: `sim-review-${proofRunId}`, kind: "review_lag", occurredAt: nowIso, workItemId: `work-optimizer-${proofRunId}`, lagMs: 120_000 },
+      ],
+      baseline: {
+        overlayId: "current-frontier-reviewer",
+        autonomyLevel: "assisted",
+        modelMapping: { [targetHatId]: "gpt-5.5" },
+        modelCostPerWorkItem: modelCostRank["gpt-5.5"],
+        gateQuorum: 2,
+      },
+      candidate: {
+        overlayId: "candidate-local-reviewer",
+        autonomyLevel: "assisted",
+        modelMapping: { [targetHatId]: candidateModel },
+        modelCostPerWorkItem: modelCostRank[candidateModel],
+        gateQuorum: 2,
+      },
+    });
+    const simulationDecision = evaluateSimulationRisk(simulationReport, {
+      maxEscapedDefectRegression: 0,
+      maxClassBEscapedDefectRegression: 0,
+      maxIncidentRegression: 0,
+      maxConformanceFailureRegression: 0,
+      minThroughputDelta: 0,
+    });
+    if (simulationDecision.status !== "accepted") {
+      console.log(JSON.stringify({ track: "G2/M3/M5 model eval optimizer", organizationId, simulationDecision, PROOF: "FAIL" }, null, 2));
+      process.exitCode = 1;
+      return;
+    }
+    const simulationEvidence = createContentAddressedEvidenceArtifact("simulation-report", {
+      report: simulationReport,
+      decision: simulationDecision,
+    });
     const proposal = await runDecisionOptimizerCycle({
       store: cockroachGenericStore({ tenantConfigs, changeSets, orgEvents }),
       modelEvalEvent: modelEvalReportToOrgEvent({
@@ -120,6 +163,8 @@ async function main(): Promise<void> {
       evalEvidenceRef: evalEvidence.ref,
       kpiSignal,
       kpiEvidenceRef: kpiEvidence.ref,
+      simulationEvidenceRef: simulationEvidence.ref,
+      simulationDecision,
       modelCostRank,
       thresholds: { minClassAAccuracy: 1 },
       now: nowIso,
@@ -158,7 +203,8 @@ async function main(): Promise<void> {
       events.some((event) =>
         event.kind === OrgEventKind.DecisionOptimizationProposed &&
         event.evidenceRefs.includes(evalEvidence.ref) &&
-        event.evidenceRefs.includes(kpiEvidence.ref)
+        event.evidenceRefs.includes(kpiEvidence.ref) &&
+        event.evidenceRefs.includes(simulationEvidence.ref)
       );
 
     console.log(JSON.stringify({
@@ -166,6 +212,8 @@ async function main(): Promise<void> {
       organizationId,
       evalEvidenceRef: evalEvidence.ref,
       kpiEvidenceRef: kpiEvidence.ref,
+      simulationEvidenceRef: simulationEvidence.ref,
+      simulationDecision,
       evalSummary: summary,
       changeSet: {
         changeSetId: proposal.changeSet.changeSetId,

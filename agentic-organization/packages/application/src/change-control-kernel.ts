@@ -26,6 +26,7 @@ import {
   moreStagesRemain,
   type ChangeSet,
   type OrgEvent,
+  type OrgEventTransitionContext,
   type ReviewPipeline,
   type ReviewStage,
 } from "../../domain/src/index.ts";
@@ -83,6 +84,7 @@ function event(
   decision: string,
   actorHatId?: string,
   evidenceRefs: readonly string[] = [],
+  transitionContext?: OrgEventTransitionContext,
 ): OrgEvent {
   const corr = deps.createId("cccorr");
   return {
@@ -100,6 +102,7 @@ function event(
     ...(actorHatId !== undefined ? { actorHatId } : {}),
     ...(from !== undefined ? { fromState: from } : {}),
     ...(to !== undefined ? { toState: to } : {}),
+    ...(transitionContext !== undefined ? { transitionContext } : {}),
   };
 }
 
@@ -193,7 +196,17 @@ export function advanceChangeSet(cs: ChangeSet, pipeline: ReviewPipeline, stage:
     events.push(event(deps, OrgEventKind.ReviewStageAdvanced, cs.changeSetId, stage.id, pipeline.stages[nextIndex]!.id, `advanced ${stage.id} → ${pipeline.stages[nextIndex]!.id}`, actorOf(decidedBy), evidenceRefs));
     return { changeSet: { ...base, currentStageIndex: nextIndex }, events };
   }
-  events.push(event(deps, OrgEventKind.ChangeSetApproved, cs.changeSetId, cs.phase, ChangeSetPhase.Approved, `all blocking stages passed — change set approved`, undefined, evidenceRefs));
+  events.push(event(
+    deps,
+    OrgEventKind.ChangeSetApproved,
+    cs.changeSetId,
+    cs.phase,
+    ChangeSetPhase.Approved,
+    `all blocking stages passed — change set approved`,
+    undefined,
+    evidenceRefs,
+    { kind: "change_set_review", currentStageIndex: cs.currentStageIndex, stageCount: pipeline.stages.length },
+  ));
   return { changeSet: { ...base, phase: ChangeSetPhase.Approved }, events };
 }
 

@@ -4,10 +4,12 @@ import { test } from "node:test";
 import {
   AgenticEventType,
   ChangeSetPhase,
+  CommandType,
   ExternalSystem,
   OrgEventKind,
   ReactionPlanStatus,
   ScheduleBlockState,
+  ScheduleBlockType,
   WorkItemState,
   WorkItemType,
   MemoryPhase,
@@ -16,6 +18,7 @@ import {
   type MemoryEnvelope,
   type OrgEvent,
   type ProjectionRef,
+  type WorkScheduleBlock,
 } from "../../../packages/domain/src/index.ts";
 import {
   buildHatDefinitions,
@@ -26,6 +29,7 @@ import {
   createObserveLifecycleTransitionHandler,
   CommandOutcomePersistenceStatus,
   ActionClass,
+  ActRejectionReason,
   type CommandResult,
   ExternalDecision,
   RunLifecyclePhase,
@@ -74,6 +78,7 @@ test("work-os lane drives one living-loop cycle and reports the final state", as
 
 test("observe-act work-item lane runs one tick through observe -> act -> org event effects with legacy disabled", async () => {
   let capturedEffects: CommandEffects | undefined;
+  const observeEvents: OrgEvent[] = [];
   const pipeline = createCommandPipeline<ObserveLifecycleTransitionCommand>({
     stateStoreFactory: captureObserveActEffectsStoreFactory((effects) => {
       capturedEffects = effects;
@@ -129,6 +134,9 @@ test("observe-act work-item lane runs one tick through observe -> act -> org eve
     dispatchTool: async () => {
       throw new Error("observe-act work-item lane should not dispatch MCP for lifecycle execution");
     },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
   });
 
   const result = await lane.runOnce();
@@ -138,6 +146,315 @@ test("observe-act work-item lane runs one tick through observe -> act -> org eve
   equal(capturedEffects?.outboxEvents[0]?.envelope.eventType, AgenticEventType.WorkItemStateChanged);
   equal(capturedEffects?.workAnchors?.workItemTransitions[0]?.transition.fromState, WorkItemState.Ready);
   equal(capturedEffects?.workAnchors?.workItemTransitions[0]?.transition.toState, WorkItemState.InProgress);
+  equal(observeEvents.length, 1);
+  equal(observeEvents[0]?.kind, OrgEventKind.ObserveActTick);
+  equal(observeEvents[0]?.actorHatId, "release_operator");
+  deepEqual(observeEvents[0]?.supervisorChain, [
+    "executive_board_member",
+    "ceo",
+    "coo",
+    "delivery_director",
+    "release_manager",
+    "release_operator",
+  ]);
+  ok(observeEvents[0]?.evidenceRefs.some((ref) => ref.startsWith("observe-act:menu_hash:")));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
+});
+
+test("observe-act work-item lane persists selector rejection evidence on fallback-selected ticks", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    selectSlot: () => ({
+      index: 4,
+      reason: "fallback_after_selector_rejection",
+      selectorRejection: {
+        reason: "non_selectable_slot",
+        rawOutput: "5",
+        rejectedIndex: 5,
+        fallbackIndex: 4,
+      },
+    }),
+    runCommand: async () => ({ status: "accepted" }),
+    dispatchTool: async () => ({ ok: true }),
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:command:accepted");
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selector_rejected:non_selectable_slot:5"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selector_rejected_fallback_slot:4"));
+});
+
+test("observe-act work-item lane carries supplemental promotion evidence on tick events", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    runCommand: async () => ({ status: "accepted" }),
+    dispatchTool: async () => ({ ok: true }),
+    supplementalEvidenceRefs: [
+      "observe-act-promotion:decision:shadow_window_clean",
+      "observe-act-promotion:mode:primary",
+    ],
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:command:accepted");
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act-promotion:decision:shadow_window_clean"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act-promotion:mode:primary"));
+});
+
+test("observe-act work-item lane persists control-bypass rejection evidence", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+    }),
+    runCommand: async () => ({ status: "accepted" }),
+    dispatchTool: async () => ({ ok: true }),
+    authorizeSlot: async () => ({
+      status: "denied",
+      reason: ActRejectionReason.ControlPlaneDenied,
+      message: "ESTOP active",
+    }),
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "observe-act:rejected:control_plane_denied");
+  equal(result.failures.length, 1);
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:control_bypass_rejected:control_plane_denied:4"));
+});
+
+test("observe-act work-item lane persists glass-halo status evidence", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+      promptFlowTasks: [
+        promptFlowTask({
+          taskId: "task-implement",
+          promptFlowId: "flow-implement",
+          label: "Implement work item",
+          actionClass: ActionClass.WriteCode,
+        }),
+      ],
+    }),
+    metricAgents: [
+      {
+        id: "queue.pressure",
+        scope: RunScope.WorkItem,
+        compute: async () => ({ id: "queue.pressure", label: "queue pressure", value: 4 }),
+      },
+    ],
+    selectSlot: () => 13,
+    runCommand: async () => {
+      throw new Error("status must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("status must not dispatch MCP side effects");
+    },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:status:glass_halo_status");
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status:glass_halo_status"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status_scope:work_item"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status_phase:awaiting_gate"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:metric:queue.pressure"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:prompt_flow:flow-implement"));
+});
+
+test("observe-act work-item lane persists status priority-scope evidence when hierarchy is available", async () => {
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "project-eng",
+      workItemId: "work-1",
+      scope: RunScope.Project,
+      phase: RunLifecyclePhase.Observing,
+      hasGateApproval: false,
+      hasEvidence: false,
+      hatId: "engineering_director",
+      hatAssignmentId: "99",
+      agentId: "agent-director-1",
+      hierarchy: directorHierarchySnapshot(),
+    }),
+    selectSlot: () => 13,
+    runCommand: async () => {
+      throw new Error("status must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("status must not dispatch MCP side effects");
+    },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:status:glass_halo_status");
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:status_priority_scope:department_initiatives"));
+});
+
+test("observe-act work-item lane routes meta.escalate through supervisor-signal command with evidence", async () => {
+  const commands: { commandType: string; command: unknown }[] = [];
+  const observeEvents: OrgEvent[] = [];
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      teamId: "team-runtime",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "dependency_manager",
+      hatAssignmentId: "99",
+      supervisorHatAssignmentId: "hat-manager-1",
+      agentId: "agent-release-1",
+    }),
+    selectSlot: () => 15,
+    runCommand: async (commandType, command) => {
+      commands.push({ commandType, command });
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => {
+      throw new Error("meta.escalate should dispatch a command, not an MCP tool");
+    },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.failures.length, 0);
+  equal(result.status, "observe-act:command:accepted");
+  equal(commands.length, 1);
+  equal(commands[0]?.commandType, CommandType.SendSupervisorSignal);
+  deepEqual(commands[0]?.command, {
+    commandId: "cmd-observe-1-15",
+    type: CommandType.SendSupervisorSignal,
+    idempotencyKey: "observe:1:99:awaiting_gate:15",
+    requestHash: "send_supervisor_signal:1:99:awaiting_gate:15:hat-manager-1",
+    correlationId: "observe-cli-1",
+    causationId: "observe-cli-1",
+    traceId: "observe-cli-1",
+    organizationId: "org-lfg",
+    projectId: "proj-1",
+    workItemId: "work-1",
+    actor: {
+      agentId: "agent-release-1",
+      hatAssignmentId: "99",
+    },
+    targetHatAssignmentId: "hat-manager-1",
+    title: "Observe-act escalation for work_item awaiting_gate",
+    message: "Agent requested supervisor triage for run 1 at work_item/awaiting_gate. Legal options: 1; vetoed options: 1.",
+    policyContext: {
+      scope: {
+        teamId: "team-runtime",
+        workItemId: "work-1",
+      },
+      toolType: "request_escalation",
+      supervisorChain: {
+        sourceLevel: "team_member",
+        targetLevel: "manager",
+      },
+    },
+  });
+  equal(observeEvents.length, 1);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:command_type:send_supervisor_signal"));
 });
 
 test("observe-act work-item lane can load a prompt-flow task context instead of requiring hat-specific agent knowledge", async () => {
@@ -170,7 +487,7 @@ test("observe-act work-item lane can load a prompt-flow task context instead of 
         }),
       ],
     }),
-    selectSlot: () => 8,
+    selectSlot: () => 6,
     runCommand: async () => {
       throw new Error("prompt-flow context loading should not dispatch a command");
     },
@@ -195,6 +512,82 @@ test("observe-act work-item lane can load a prompt-flow task context instead of 
   equal(result.failures.length, 0);
   equal(result.status, "observe-act:context:task-implement");
   deepEqual(loaded, ["task-implement:Load implementation plan:repo.search:work_item.failures"]);
+});
+
+test("observe-act work-item lane carries prompt-flow overflow page navigation into the next tick and evidence", async () => {
+  const stdout: string[] = [];
+  const observeEvents: OrgEvent[] = [];
+  const loaded: string[] = [];
+  let tick = 0;
+  const tasks = Array.from({ length: 3 }, (_, index) => promptFlowTask({
+    taskId: `task-${index + 1}`,
+    promptFlowId: `flow-${index + 1}`,
+    label: `Task ${index + 1}`,
+    actionClass: ActionClass.WriteCode,
+    priority: 100 - index,
+    directions: [`Load task ${index + 1}`],
+  }));
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+      promptFlowTasks: tasks,
+    }),
+    writeObserveStdout: (text) => {
+      stdout.push(text);
+    },
+    selectSlot: () => {
+      tick += 1;
+      return tick === 1 ? 1 : 6;
+    },
+    runCommand: async () => {
+      throw new Error("prompt-flow paging test should not dispatch a command");
+    },
+    dispatchTool: async () => {
+      throw new Error("prompt-flow paging test should not dispatch MCP directly");
+    },
+    loadPromptFlowContext: async (request) => {
+      loaded.push(request.taskId);
+      return {
+        taskId: request.taskId,
+        promptFlowId: request.promptFlowId,
+        directions: request.directions,
+        toolInjections: request.toolInjections,
+        metrics: request.metrics,
+        contextArtifacts: [],
+      };
+    },
+    appendEvent: async (event) => {
+      observeEvents.push(event);
+    },
+  });
+
+  const first = await lane.runOnce();
+  const second = await lane.runOnce();
+
+  equal(first.failures.length, 0);
+  equal(first.status, "observe-act:reobserve:work_item:prompt_flow_page:1");
+  equal(second.failures.length, 0);
+  equal(second.status, "observe-act:context:task-3");
+  ok(stdout.join("\n").includes("prompt-flow page: 2/2"));
+  deepEqual(loaded, ["task-3"]);
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:prompt_flow_page:0"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:reobserve_prompt_flow_page:1"));
+  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:prompt_flow_page:1"));
+  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:selected_prompt_flow_task:task-3"));
+  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:selected_prompt_flow:flow-3"));
 });
 
 test("observe-act work-item lane passes hierarchy readouts through to the agent observe surface", async () => {
@@ -235,6 +628,53 @@ test("observe-act work-item lane passes hierarchy readouts through to the agent 
   ok(stdout.join("\n").includes("- hierarchy action record_priority_decision: Rank department initiatives"));
 });
 
+test("observe-act work-item lane forwards schedule blocks and slot authorization into the foreground loop", async () => {
+  let dispatched = false;
+  let authorizedSlot = -1;
+  const lane = createObserveActWorkItemCadenceLane({
+    organizationId: "org-lfg",
+    hats: buildHatDefinitions(),
+    now: () => NOW,
+    createId,
+    source: async () => ({
+      runId: "1",
+      projectId: "proj-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hasEvidence: false,
+      hatId: "release_operator",
+      hatAssignmentId: "99",
+      agentId: "agent-release-1",
+      scheduleBlocks: [scheduleBlock()],
+    }),
+    authorizeSlot: async ({ slot }) => {
+      authorizedSlot = slot.index;
+      return {
+        status: "denied",
+        reason: "schedule_block_required",
+        message: "schedule block expired before dispatch",
+      };
+    },
+    runCommand: async () => {
+      dispatched = true;
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => {
+      throw new Error("observe-act schedule test should not dispatch MCP");
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "observe-act:rejected:schedule_authority_denied");
+  equal(result.failures.length, 1);
+  equal(result.failures[0]?.message, "observe-act lane: schedule_authority_denied: schedule block expired before dispatch");
+  equal(authorizedSlot, 4);
+  equal(dispatched, false);
+});
+
 test("work-os lane stays IDLE (no cycle, no events) when intake returns null", async () => {
   const events: OrgEvent[] = [];
   const lane = createWorkOsCadenceLane({ organizationId: "org-lfg", hats: buildHatDefinitions(), now: () => NOW, createId, intake: async () => null, appendEvent: async (e) => { events.push(e); } });
@@ -255,6 +695,27 @@ function memEnvelope(memoryId: string, phase: MemoryPhase, freshnessAt: string, 
   return {
     memoryId, organizationId: "org-lfg", tier: MemoryTier.Work, scope: "work-1", key: "k", protected: false, writtenBy: "system", writtenAt: "2026-05-30T00:00:00Z",
     state: { memoryId, organizationId: "org-lfg", phase, confidence, weight: 0.5, freshnessAt, reinforcementCount: 1, outcome: { successCount: 8, failureCount: 0, inconclusiveCount: 0, workItemsObserved: [] }, utility: { injectedCount: 6, citedCount: 5 }, crossScope: { distinctScopes: [], firstObservedAt: "2026-05-30T00:00:00Z", lastObservedAt: "2026-05-30T00:00:00Z" } },
+  };
+}
+
+function scheduleBlock(overrides: Partial<WorkScheduleBlock> = {}): WorkScheduleBlock {
+  return {
+    workScheduleBlockId: "schedule-1",
+    organizationId: "org-lfg",
+    projectId: "proj-1",
+    workItemId: "work-1",
+    assignedAgentId: "agent-release-1",
+    assignedHatAssignmentId: "99",
+    blockType: ScheduleBlockType.PrioritizedWork,
+    state: ScheduleBlockState.Active,
+    title: "Observe-act work",
+    purpose: "Authorize lifecycle execution",
+    startsAt: "2026-05-29T23:30:00.000Z",
+    endsAt: "2026-05-30T00:30:00.000Z",
+    scheduledAt: "2026-05-29T23:00:00.000Z",
+    scheduledBy: { agentId: "agent-manager-1", hatAssignmentId: "hat-manager-1" },
+    metadata: { updatedAt: "2026-05-29T23:00:00.000Z", version: 1, correlationId: "corr", causationId: "cause", traceId: "trace" },
+    ...overrides,
   };
 }
 
@@ -520,6 +981,18 @@ function orgEvent(over: Partial<OrgEvent> = {}): OrgEvent {
   };
 }
 
+function conformanceMetric(name: string, value: number, attributes: Record<string, string | number | boolean>) {
+  return {
+    kind: "gauge",
+    name,
+    value,
+    attributes: {
+      "agentic.organization.id": "org-lfg",
+      ...attributes,
+    },
+  };
+}
+
 test("conformance lane replays org_events and reports a clean theorem tick", async () => {
   const lane = createConformanceCadenceLane({
     organizationId: "org-lfg",
@@ -533,7 +1006,7 @@ test("conformance lane replays org_events and reports a clean theorem tick", asy
   equal(result.status, "conformance:1checked/0violations/0skipped");
 });
 
-test("conformance lane emits the pass-ratio SLI metric for Grafana alerts", async () => {
+test("conformance lane emits pass-ratio and coverage-ratio SLI metrics for Grafana alerts", async () => {
   const telemetry = new RecordingTelemetry();
   const lane = createConformanceCadenceLane({
     organizationId: "org-lfg",
@@ -550,18 +1023,17 @@ test("conformance lane emits the pass-ratio SLI metric for Grafana alerts", asyn
   await lane.runOnce();
 
   deepEqual(telemetry.metrics, [
-    {
-      kind: "gauge",
-      name: "org_conformance_pass_ratio",
-      value: 0.5,
-      attributes: {
-        "agentic.organization.id": "org-lfg",
-        "agentic.conformance.checked": 2,
-        "agentic.conformance.conformant": 1,
-        "agentic.conformance.nonconformant": 1,
-        "agentic.conformance.skipped": 0,
-      },
-    },
+    conformanceMetric("org_conformance_pass_ratio", 0.5, {
+      "agentic.conformance.checked": 2,
+      "agentic.conformance.conformant": 1,
+      "agentic.conformance.nonconformant": 1,
+      "agentic.conformance.skipped": 0,
+      "agentic.conformance.skipped_ambiguous": 0,
+    }),
+    conformanceMetric("org_conformance_coverage_ratio", 1, {
+      "agentic.conformance.checked": 2,
+      "agentic.conformance.skipped_ambiguous": 0,
+    }),
   ]);
 });
 
@@ -577,6 +1049,29 @@ test("conformance lane degrades when replay finds an illegal durable transition"
   equal(result.status, "degraded");
   equal(result.failures.length, 1);
   ok(result.failures[0]!.message.includes("evt-bypass"));
+});
+
+test("conformance lane degrades when ambiguous transition skips exceed the ratchet", async () => {
+  const lane = createConformanceCadenceLane({
+    organizationId: "org-lfg",
+    limit: 100,
+    reader: {
+      listByOrganization: async () => [
+        orgEvent({
+          id: "evt-approved",
+          kind: OrgEventKind.ChangeSetApproved,
+          fromState: ChangeSetPhase.InReview,
+          toState: ChangeSetPhase.Approved,
+        }),
+      ],
+    },
+  });
+
+  const result = await lane.runOnce();
+
+  equal(result.status, "degraded");
+  equal(result.failures.length, 1);
+  ok(result.failures[0]!.message.includes("ambiguous transition skip ratchet"));
 });
 
 test("stale-reaction-plan scan lane emits incident and completion events", async () => {
@@ -805,6 +1300,33 @@ function hierarchySnapshot(): HierarchySnapshot {
         organizationId: "org-lfg",
         title: "Readiness Initiative",
         status: "active",
+        metrics: [],
+      },
+    ],
+  };
+}
+
+function directorHierarchySnapshot(): HierarchySnapshot {
+  return {
+    projects: [
+      {
+        projectId: "project-eng",
+        organizationId: "org-lfg",
+        departmentId: "engineering",
+        name: "Engineering Project",
+        status: "active",
+        trajectory: [{ id: "delivery", label: "delivery trajectory", value: "on_track" }],
+        metrics: [],
+      },
+    ],
+    initiatives: [
+      {
+        initiativeId: "init-eng-a",
+        projectId: "project-eng",
+        organizationId: "org-lfg",
+        title: "Readiness Initiative",
+        status: "active",
+        priorityScore: 75,
         metrics: [],
       },
     ],

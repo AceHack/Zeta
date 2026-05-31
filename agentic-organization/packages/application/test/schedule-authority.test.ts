@@ -16,6 +16,7 @@ import {
   ScheduleAuthorityMessage,
   createScheduleBlockCommandAuthority,
 } from "../src/schedule-authority.ts";
+import { ObserveCommandType } from "../src/observe.ts";
 
 describe("schedule block command authority", () => {
   test("does not require a schedule block for discussion anchor routing metadata", async () => {
@@ -99,6 +100,63 @@ describe("schedule block command authority", () => {
     });
   });
 
+  test("requires current schedule authority for observe lifecycle transitions", async () => {
+    const authority = createScheduleBlockCommandAuthority({
+      scheduleBlockReader: createScheduleBlockReader([]),
+    });
+
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(ObserveCommandType.LifecycleTransition),
+    );
+
+    deepEqual(decision, {
+      status: CommandScheduleAuthorityDecisionStatus.Denied,
+      reason: CommandScheduleAuthorityDenialReason.ScheduleBlockRequired,
+      message: ScheduleAuthorityMessage.BlockRequired,
+    });
+  });
+
+  test("allows observe lifecycle transitions during prioritized work blocks", async () => {
+    const authority = createScheduleBlockCommandAuthority({
+      scheduleBlockReader: createScheduleBlockReader([
+        createScheduleBlock({
+          blockType: ScheduleBlockType.PrioritizedWork,
+        }),
+      ]),
+    });
+
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(ObserveCommandType.LifecycleTransition),
+    );
+
+    deepEqual(decision, {
+      status: CommandScheduleAuthorityDecisionStatus.Allowed,
+      scheduleBlockId: "work-schedule-block-001",
+    });
+  });
+
+  test("denies observe lifecycle transitions during scheduled-but-not-active work blocks", async () => {
+    const authority = createScheduleBlockCommandAuthority({
+      scheduleBlockReader: createScheduleBlockReader([
+        createScheduleBlock({
+          blockType: ScheduleBlockType.PrioritizedWork,
+          state: ScheduleBlockState.Scheduled,
+        }),
+      ]),
+    });
+
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(ObserveCommandType.LifecycleTransition),
+    );
+
+    deepEqual(decision, {
+      status: CommandScheduleAuthorityDecisionStatus.Denied,
+      reason: CommandScheduleAuthorityDenialReason.ScheduleBlockTypeDenied,
+      message: ScheduleAuthorityMessage.TypeDenied,
+      scheduleBlockId: "work-schedule-block-001",
+    });
+  });
+
   test("allows quality gate evaluations during review schedule blocks", async () => {
     const authority = createScheduleBlockCommandAuthority({
       scheduleBlockReader: createScheduleBlockReader([
@@ -163,7 +221,7 @@ function createScheduleBlockReader(blocks: readonly WorkScheduleBlock[]): WorkSc
   };
 }
 
-function createScheduleRequest(commandType: CommandType) {
+function createScheduleRequest(commandType: CommandType | string) {
   return {
     commandId: "cmd-001",
     commandType,

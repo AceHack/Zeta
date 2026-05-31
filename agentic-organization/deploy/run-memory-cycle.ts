@@ -49,8 +49,7 @@ import {
   type RecalledCandidate,
 } from "../packages/application/src/index.ts";
 import {
-  createCockroachMemorySystemMigration,
-  createCockroachOrgSystemMigration,
+  createCockroachCoreStateMigrations,
   createCockroachOrgEventStore,
   createCockroachMemoryStateStore,
   createCockroachMemoryInjectionStore,
@@ -116,8 +115,9 @@ async function main(): Promise<void> {
   const executor = createCockroachSqlExecutor({ client });
 
   // ensure the org_events + memory tables exist (idempotent)
-  for (const stmt of splitSqlStatements(createCockroachOrgSystemMigration().sql)) await pool.query(stmt);
-  for (const stmt of splitSqlStatements(createCockroachMemorySystemMigration().sql)) await pool.query(stmt);
+  for (const migration of createCockroachCoreStateMigrations()) {
+    for (const stmt of splitSqlStatements(migration.sql)) await pool.query(stmt);
+  }
 
   const orgEventStore = createCockroachOrgEventStore({ executor });
   const stateStore = createCockroachMemoryStateStore({ executor });

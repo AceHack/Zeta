@@ -13,13 +13,15 @@
 import { Pool } from "pg";
 import { randomUUID } from "node:crypto";
 import { env } from "node:process";
+import { ok } from "node:assert/strict";
 
 import {
   buildHatDefinitions,
   runOrgCycle,
+  type OrgCycleRmoCandidateSource,
 } from "../packages/application/src/index.ts";
 import {
-  createCockroachOrgSystemMigration,
+  createCockroachCoreStateMigrations,
   createCockroachOrgEventStore,
   createCockroachHatBindingStore,
   createCockroachSqlExecutor,
@@ -28,6 +30,38 @@ import {
 import type { CockroachSqlClient } from "../packages/state-cockroach/src/cockroach-sql-executor.ts";
 
 const connectionString = env.COCKROACH_DATABASE_URL ?? "postgresql://root@localhost:26257/defaultdb?sslmode=disable";
+
+const kindProofCandidateSource: OrgCycleRmoCandidateSource = {
+  sourceName: "kind-proof-production-candidates",
+  candidatesForHat: ({ hatId }) => {
+    const eligibleCandidates = [0, 1].map((index) => ({
+      agentId: `agent-kind-proof-${hatId}-${index}`,
+      reputationByHat: { [hatId]: 10 - index },
+    }));
+    return {
+      eligibleCandidates,
+      rmoCandidates: eligibleCandidates.map((candidate, index) => {
+        const reputation = (candidate.reputationByHat[hatId] ?? 0) / 10;
+        return {
+          agentId: candidate.agentId,
+          hatId,
+          agentHatReputation: reputation,
+          recentOutcomeScore: Math.max(0.4, reputation - index * 0.05),
+          scheduleReliability: index === 0 ? 0.85 : 0.75,
+          reviewQuality: 0.75,
+          qaPassRate: 0.75,
+          completionRate: 0.8,
+          contextFit: 0.8,
+          currentLoad: 0,
+          freshness: index === 0 ? 0.45 : 0.8,
+          explorationBonus: index === 0 ? 0 : 0.25,
+          consecutiveAssignmentCount: 0,
+          recentSameHatAssignments: 0,
+        };
+      }),
+    };
+  },
+};
 
 async function main(): Promise<void> {
   const pool = new Pool({ connectionString });
@@ -41,26 +75,49 @@ async function main(): Promise<void> {
   };
   const executor = createCockroachSqlExecutor({ client });
 
-  // apply the org-system migration (idempotent CREATE TABLE IF NOT EXISTS)
-  for (const statement of splitSqlStatements(createCockroachOrgSystemMigration().sql)) {
-    await pool.query(statement);
+  // Apply the ordered core set so reused DBs have additive org_event columns.
+  for (const migration of createCockroachCoreStateMigrations()) {
+    for (const statement of splitSqlStatements(migration.sql)) {
+      await pool.query(statement);
+    }
   }
 
   const orgEventStore = createCockroachOrgEventStore({ executor });
   const hatBindingStore = createCockroachHatBindingStore({ executor });
 
-  const workItemId = `work-${randomUUID()}`;
+  const proofRunId = randomUUID();
+  const organizationId = `org-kind-proof-${proofRunId}`;
+  const workItemId = `work-${proofRunId}`;
   const report = await runOrgCycle({
-    organizationId: "org-lfg",
+    organizationId,
     workItemId,
     baseTimeMs: Date.now(),
     createId: (prefix) => `${prefix}-${randomUUID()}`,
     appendEvent: (e) => orgEventStore.append(e),
     upsertBinding: (b) => hatBindingStore.upsert(b),
     hats: buildHatDefinitions(),
+    rmoCandidateSource: kindProofCandidateSource,
   });
+  const events = await orgEventStore.listByOrganization(organizationId, 500);
+  const sourceEvidenceRef = `rmo-candidate-source:${kindProofCandidateSource.sourceName}`;
+  const rmoSourceEvidenceEvents = events.filter((event) => event.evidenceRefs.includes(sourceEvidenceRef));
+  ok(rmoSourceEvidenceEvents.length > 0, "expected RMO assignment evidence to name the proof candidate source");
 
-  console.log(JSON.stringify({ orgCycle: report }, null, 2));
+  const bindings = await hatBindingStore.listAll(organizationId);
+  ok(bindings.length > 0, "expected the org cycle to persist hat bindings");
+  ok(
+    bindings.every((binding) => binding.wearerAgentId.startsWith("agent-kind-proof-")),
+    "expected persisted hat bindings to use proof-source agent identities",
+  );
+
+  console.log(JSON.stringify({
+    orgCycle: report,
+    PROOF: "PASS",
+    organizationId,
+    rmoCandidateSource: kindProofCandidateSource.sourceName,
+    rmoSourceEvidenceEvents: rmoSourceEvidenceEvents.length,
+    proofSourceBindings: bindings.length,
+  }, null, 2));
   await pool.end();
 }
 

@@ -7,9 +7,11 @@ import { firstLegalChooser } from "../src/org-decision.ts";
 import {
   assignHat,
   rankEligibleCandidates,
+  rankEligibleCandidatesWithReputation,
   type ActiveBindingSummary,
   type AgentCandidate,
 } from "../src/assignment-engine.ts";
+import { ReputationOutcomeClass, projectReputationReadModel } from "../src/reputation.ts";
 
 const hats = buildHatDefinitions();
 const backend = hats.find((h) => h.id === "backend_implementer")!; // hat_designer conflicts with it (see conflicting-hat test)
@@ -34,6 +36,32 @@ test("ranks eligible candidates by agent-hat reputation, highest first", () => {
     nowMs: 1_000_000,
   });
   equal(ranked.map((c) => c.agentId).join(","), "b,c,a");
+});
+
+test("ranks eligible candidates from the posterior reputation read model when provided", () => {
+  const readModel = projectReputationReadModel({
+    observations: [
+      reputationObservation("a", true),
+      reputationObservation("b", true),
+      reputationObservation("b", true),
+      reputationObservation("c", false),
+    ],
+  });
+  const ranked = rankEligibleCandidatesWithReputation({
+    hat: backend,
+    candidates: [{ agentId: "a" }, { agentId: "b" }, { agentId: "c" }],
+    activeBindings: [],
+    nowMs: 1_000_000,
+    reputation: {
+      readModel,
+      organizationId: "org-1",
+      workType: "code_change",
+    },
+  });
+
+  equal(ranked.map((c) => c.agentId).join(","), "b,a,c");
+  ok((ranked[0]?.reputationByHat.backend_implementer ?? 0) > (ranked[2]?.reputationByHat.backend_implementer ?? 0));
+  ok((ranked[0]?.posteriorReputationByHat?.backend_implementer?.quality.sampleCount ?? 0) > 0);
 });
 
 test("excludes an agent already wearing the hat, in cooldown, or in a conflicting hat", () => {
@@ -84,3 +112,16 @@ test("no eligible candidate is reported distinctly", () => {
   const result = assignHat({ hat: backend, eligibleRanked: [], activeWearerCount: 0, supplyTarget: 2, chooser: firstLegalChooser() }, ctx);
   equal(result.outcome, "no_eligible_candidate");
 });
+
+function reputationObservation(agentId: string, success: boolean) {
+  return {
+    organizationId: "org-1",
+    agentId,
+    hatId: "backend_implementer",
+    workType: "code_change",
+    outcomeClass: ReputationOutcomeClass.Quality,
+    observedAt: "2026-05-31T12:00:00.000Z",
+    signal: { kind: "binary" as const, success },
+    evidenceRef: `evidence:${agentId}:${success ? "pass" : "fail"}`,
+  };
+}

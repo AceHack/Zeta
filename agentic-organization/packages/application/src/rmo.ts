@@ -35,6 +35,30 @@ export type RmoHatCandidateReputation = {
   explorationBonus: number;
   consecutiveAssignmentCount: number;
   recentSameHatAssignments: number;
+  posterior?: {
+    quality: {
+      sampleCount: number;
+      mean: number;
+      lowerConfidenceBound: number;
+      uncertainty: number;
+      evidenceRefs: readonly string[];
+    };
+    latency?: {
+      sampleCount: number;
+      mean: number;
+      lowerConfidenceBound: number;
+      uncertainty: number;
+      evidenceRefs: readonly string[];
+    } | undefined;
+    cost?: {
+      sampleCount: number;
+      mean: number;
+      lowerConfidenceBound: number;
+      uncertainty: number;
+      evidenceRefs: readonly string[];
+    } | undefined;
+    evidenceRefs: readonly string[];
+  } | undefined;
 };
 
 export type RmoHatCandidateScoreComponents = {
@@ -59,6 +83,7 @@ export type RankedRmoHatCandidate = {
   score: number;
   components: RmoHatCandidateScoreComponents;
   reasonCodes: readonly string[];
+  posterior?: RmoHatCandidateReputation["posterior"] | undefined;
 };
 
 export type RankRmoHatCandidatesInput = {
@@ -133,6 +158,7 @@ function scoreCandidate(candidate: RmoHatCandidateReputation): Omit<RankedRmoHat
     score: rounded(score),
     components,
     reasonCodes: reasonCodesFor(candidate),
+    ...(candidate.posterior !== undefined ? { posterior: candidate.posterior } : {}),
   };
 }
 
@@ -148,6 +174,7 @@ function reasonCodesFor(candidate: RmoHatCandidateReputation): readonly string[]
   if (candidate.explorationBonus >= 0.5 || candidate.freshness >= 0.8) reasons.push("exploration_candidate");
   if (candidate.currentLoad >= 0.7) reasons.push("load_penalty");
   if (candidate.consecutiveAssignmentCount > 0 || candidate.recentSameHatAssignments > 0) reasons.push("lock_in_penalty");
+  if (candidate.posterior !== undefined && candidate.posterior.evidenceRefs.length > 0) reasons.push("posterior_reputation_evidence");
   if (reasons.length === 0) reasons.push("baseline_reputation_evidence");
   return reasons;
 }
@@ -197,7 +224,7 @@ export function decideRmoHatAssignment(
       toState: "assigned",
       decision: `RMO office selected ${selected.agentId} for ${input.hatName} rank #${selected.rank} score=${selected.score} (${choice.reason}); reasons: ${selected.reasonCodes.join(", ")}; alternatives: ${alternatives.length === 0 ? "none" : alternatives}`,
       supervisorChain: ctx.supervisorChain,
-      evidenceRefs: [],
+      evidenceRefs: selected.posterior?.evidenceRefs ?? [],
       correlationId: ctx.correlationId,
       causationId: ctx.causationId,
       traceId: ctx.traceId,

@@ -15,11 +15,19 @@ import { HatBindingPhase } from "../../domain/src/hat-binding.ts";
 import { OrgEventKind, type OrgEvent } from "../../domain/src/org-event.ts";
 import type { HatDefinition } from "../../domain/src/hat-definition.ts";
 import { chooseWithinLegal, type OrgChooser } from "./org-decision.ts";
+import { ReputationOutcomeClass, type ReputationPosteriorSummary, type ReputationReadModel } from "./reputation.ts";
 
 export type AgentCandidate = {
   agentId: string;
   /** reputation on the agent-hat pairing (default 0 for unknown pairings) */
   reputationByHat: Readonly<Record<string, number>>;
+  posteriorReputationByHat?: Readonly<Record<string, { quality: ReputationPosteriorSummary }>> | undefined;
+};
+
+export type ReputationRankableAgentCandidate = {
+  agentId: string;
+  reputationByHat?: Readonly<Record<string, number>> | undefined;
+  posteriorReputationByHat?: Readonly<Record<string, { quality: ReputationPosteriorSummary }>> | undefined;
 };
 
 /** A snapshot of an active/recent binding the engine must respect. */
@@ -61,6 +69,15 @@ export type RankEligibleInput = {
   agentMaxActiveHats?: number;
 };
 
+export type RankEligibleWithReputationInput = Omit<RankEligibleInput, "candidates"> & {
+  candidates: readonly ReputationRankableAgentCandidate[];
+  reputation: {
+    readModel: ReputationReadModel;
+    organizationId: string;
+    workType: string;
+  };
+};
+
 /** Filter to eligible candidates and rank them by agent-hat reputation (desc, stable). */
 export function rankEligibleCandidates(input: RankEligibleInput): readonly AgentCandidate[] {
   const cap = input.agentMaxActiveHats ?? 3;
@@ -79,6 +96,32 @@ export function rankEligibleCandidates(input: RankEligibleInput): readonly Agent
     const rb = b.reputationByHat[input.hat.id] ?? 0;
     if (rb !== ra) return rb - ra;
     return a.agentId < b.agentId ? -1 : a.agentId > b.agentId ? 1 : 0;
+  });
+}
+
+export function rankEligibleCandidatesWithReputation(input: RankEligibleWithReputationInput): readonly AgentCandidate[] {
+  return rankEligibleCandidates({
+    ...input,
+    candidates: input.candidates.map((candidate) => {
+      const quality = input.reputation.readModel.summaryFor({
+        organizationId: input.reputation.organizationId,
+        agentId: candidate.agentId,
+        hatId: input.hat.id,
+        workType: input.reputation.workType,
+        outcomeClass: ReputationOutcomeClass.Quality,
+      });
+      return {
+        agentId: candidate.agentId,
+        reputationByHat: {
+          ...(candidate.reputationByHat ?? {}),
+          [input.hat.id]: quality.mean,
+        },
+        posteriorReputationByHat: {
+          ...(candidate.posteriorReputationByHat ?? {}),
+          [input.hat.id]: { quality },
+        },
+      };
+    }),
   });
 }
 

@@ -50,8 +50,7 @@ import {
   type ReviewKernelDeps,
 } from "../packages/application/src/index.ts";
 import {
-  createCockroachChangeControlMigration,
-  createCockroachOrgSystemMigration,
+  createCockroachCoreStateMigrations,
   createCockroachOrgEventStore,
   createCockroachChangeSetStore,
   createCockroachReviewStageStatusStore,
@@ -182,8 +181,9 @@ async function main(): Promise<void> {
   const pool = new Pool({ connectionString });
   const client: CockroachSqlClient = { query: async (sql, p) => ({ rows: (await pool.query(sql, p as unknown[])).rows }), transaction: async (op) => op(client) };
   const executor = createCockroachSqlExecutor({ client });
-  for (const s of splitSqlStatements(createCockroachOrgSystemMigration().sql)) await pool.query(s);
-  for (const s of splitSqlStatements(createCockroachChangeControlMigration().sql)) await pool.query(s);
+  for (const migration of createCockroachCoreStateMigrations()) {
+    for (const s of splitSqlStatements(migration.sql)) await pool.query(s);
+  }
 
   const deps: Deps = {
     changeSetStore: createCockroachChangeSetStore({ executor }),

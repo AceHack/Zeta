@@ -1,7 +1,7 @@
 import { deepEqual, equal } from "node:assert/strict";
 import { test } from "node:test";
 
-import { RecordingTelemetryQueryPort } from "../../observability/src/index.ts";
+import { RecordingTelemetryQueryPort, type TelemetryQueryPort } from "../../observability/src/index.ts";
 import { buildHatDefinitions } from "../src/org-seed.ts";
 import {
   asZetaIdDecimal,
@@ -62,6 +62,43 @@ test("telemetry-backed metric agents query metrics, traces, and logs for the cur
       query: '{app="agentic-org-worker", agentic_scope="work_item", level=~"warn|error"}',
       range,
     },
+  ]);
+});
+
+test("telemetry-backed metric agents surface degraded query evidence instead of fake zeroes", async () => {
+  const telemetry: TelemetryQueryPort = {
+    queryMetrics: async () => ({
+      status: "degraded",
+      source: "mimir",
+      reason: "timeout",
+      message: "mimir telemetry query timed out: operation timed out",
+    }),
+    queryTraces: async () => ({
+      status: "degraded",
+      source: "tempo",
+      reason: "fetch_error",
+      message: "tempo telemetry query fetch failed: connection refused",
+    }),
+    queryLogs: async () => ({
+      status: "degraded",
+      source: "loki",
+      reason: "bad_response",
+      message: "loki telemetry query returned error response: parse failure",
+    }),
+  };
+  const range = { start: "2026-05-31T11:00:00.000Z", end: "2026-05-31T12:00:00.000Z" };
+
+  const surface = await observeAgentSurface(agentSnapshot(), {
+    clock: { now: () => range.end },
+    metricAgents: createTelemetryScopedMetricAgents({ telemetry, range }),
+  });
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  deepEqual(surface.metrics.blocks, [
+    { id: "telemetry.command_total", label: "commands in range", value: "degraded", unit: "mimir:timeout" },
+    { id: "telemetry.trace_count", label: "traces in range", value: "degraded", unit: "tempo:fetch_error" },
+    { id: "telemetry.warning_log_count", label: "warning logs in range", value: "degraded", unit: "loki:bad_response" },
   ]);
 });
 

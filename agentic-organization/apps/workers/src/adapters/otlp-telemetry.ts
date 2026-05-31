@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 
 import {
+  TelemetryMetricKind,
   TelemetrySpanStatusCode,
   formatTraceParent,
   parseTraceParent,
@@ -133,22 +134,7 @@ class OtlpTelemetryAdapter implements OtlpTelemetry {
             scopeMetrics: [
               {
                 scope: { name: "agentic-organization" },
-                metrics: [
-                  {
-                    name: sample.name,
-                    sum: {
-                      dataPoints: [
-                        {
-                          timeUnixNano: nowUnixNano(),
-                          asDouble: sample.value,
-                          attributes: toOtlpAttributes(sample.attributes ?? {}),
-                        },
-                      ],
-                      aggregationTemporality: 2,
-                      isMonotonic: sample.kind === "counter",
-                    },
-                  },
-                ],
+                metrics: [toOtlpMetric(sample)],
               },
             ],
           },
@@ -242,6 +228,89 @@ type OtlpSpanEvent = {
   timeUnixNano: string;
   attributes: OtlpAttribute[];
 };
+
+type OtlpNumberDataPoint = {
+  timeUnixNano: string;
+  asDouble: number;
+  attributes: OtlpAttribute[];
+};
+
+type OtlpHistogramDataPoint = {
+  timeUnixNano: string;
+  count: string;
+  sum: number;
+  attributes: OtlpAttribute[];
+};
+
+type OtlpMetric =
+  | {
+      name: string;
+      sum: {
+        dataPoints: OtlpNumberDataPoint[];
+        aggregationTemporality: 2;
+        isMonotonic: true;
+      };
+    }
+  | {
+      name: string;
+      gauge: {
+        dataPoints: OtlpNumberDataPoint[];
+      };
+    }
+  | {
+      name: string;
+      histogram: {
+        dataPoints: OtlpHistogramDataPoint[];
+        aggregationTemporality: 2;
+      };
+    };
+
+function toOtlpMetric(sample: MetricSample): OtlpMetric {
+  if (sample.kind === TelemetryMetricKind.Counter) {
+    return {
+      name: sample.name,
+      sum: {
+        dataPoints: [toOtlpNumberDataPoint(sample)],
+        aggregationTemporality: 2,
+        isMonotonic: true,
+      },
+    };
+  }
+
+  if (sample.kind === TelemetryMetricKind.Gauge) {
+    return {
+      name: sample.name,
+      gauge: {
+        dataPoints: [toOtlpNumberDataPoint(sample)],
+      },
+    };
+  }
+
+  return {
+    name: sample.name,
+    histogram: {
+      dataPoints: [toOtlpHistogramDataPoint(sample)],
+      aggregationTemporality: 2,
+    },
+  };
+}
+
+function toOtlpNumberDataPoint(sample: MetricSample): OtlpNumberDataPoint {
+  return {
+    timeUnixNano: nowUnixNano(),
+    asDouble: sample.value,
+    attributes: toOtlpAttributes(sample.attributes ?? {}),
+  };
+}
+
+function toOtlpHistogramDataPoint(sample: MetricSample): OtlpHistogramDataPoint {
+  return {
+    timeUnixNano: nowUnixNano(),
+    count: "1",
+    sum: sample.value,
+    attributes: toOtlpAttributes(sample.attributes ?? {}),
+  };
+}
 
 function toOtlpAttributes(attributes: TelemetryAttributes): OtlpAttribute[] {
   return Object.entries(attributes).map(([key, value]) => ({

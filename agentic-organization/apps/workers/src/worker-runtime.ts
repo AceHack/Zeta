@@ -48,6 +48,7 @@ export const WorkerRuntimeConfigErrorCode = {
   MissingOrganizationId: "missing_organization_id",
   /** exactly one of LLM_BASE_URL / LLM_MODEL was provided — a misconfiguration */
   PartialLlmConfig: "partial_llm_config",
+  InvalidAgentLoopMode: "invalid_agent_loop_mode",
 } as const;
 
 export type WorkerRuntimeConfigErrorCode =

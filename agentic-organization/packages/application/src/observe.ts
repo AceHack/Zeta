@@ -25,13 +25,29 @@
  * the next slice. See agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md.
  */
 
-import { HatLevel, ToolBundle, type HatDefinition } from "../../domain/src/index.ts";
+import {
+  CommandType,
+  HatLevel,
+  ScheduleBlockState,
+  ScheduleBlockType,
+  SupervisorChainLevel,
+  SupervisorSignalToolType,
+  ToolBundle,
+  type HatDefinition,
+  type WorkScheduleBlock,
+} from "../../domain/src/index.ts";
 import type {
   MetricSeries,
+  TelemetryQueryDegraded,
   TelemetryQueryPort,
   TelemetryTimeRange,
 } from "../../observability/src/index.ts";
 import { ActionClass, preflightHatAction } from "./hat-guardrails.ts";
+import type {
+  PromptFlowPhaseGate,
+  PromptFlowRollbackPolicy,
+  PromptFlowRunState,
+} from "./prompt-flow.ts";
 
 /**
  * ZetaId rendered as a base-10 string — the canonical index for git-as-db
@@ -109,6 +125,12 @@ export type RunSnapshot = {
 export type AgentObserveSnapshot = RunSnapshot & {
   hatAssignmentId: ZetaIdDecimal;
   hat: HatDefinition;
+  agentId?: string | undefined;
+  organizationId?: string | undefined;
+  projectId?: string | undefined;
+  teamId?: string | undefined;
+  workItemId?: string | undefined;
+  supervisorHatAssignmentId?: string | undefined;
 };
 
 export type VetoedOption = {
@@ -167,6 +189,7 @@ export type DeterministicRule = {
 export type ObserveDependencies = {
   clock: { now: () => string };
   deterministicRules?: readonly DeterministicRule[];
+  scheduleBlocks?: readonly WorkScheduleBlock[];
 };
 
 export const ACTION_CLASS_FOR_ACTION_TYPE: Readonly<Partial<Record<string, ActionClass>>> = {
@@ -249,7 +272,66 @@ export function hatAuthorityRule(hat: HatDefinition): DeterministicRule {
 
 export function observeAgent(snapshot: AgentObserveSnapshot, deps: ObserveDependencies): ObserveResult {
   const rules = deps.deterministicRules ?? DefaultDeterministicRules;
-  return observe(snapshot, { ...deps, deterministicRules: [...rules, hatAuthorityRule(snapshot.hat)] });
+  const agentRules = [...rules, hatAuthorityRule(snapshot.hat), ...createOptionalScheduleRules(deps)];
+  return observe(snapshot, { ...deps, deterministicRules: agentRules });
+}
+
+const SCHEDULE_BLOCK_TYPES_FOR_ACTION: Readonly<Record<string, readonly ScheduleBlockType[]>> = {
+  block: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+  compose: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  execute: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  fail: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  request_gate: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  request_review: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+  resume: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+  rework: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+  submit_evidence: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution],
+  complete: [ScheduleBlockType.PrioritizedWork, ScheduleBlockType.PromptFlowExecution, ScheduleBlockType.Review],
+} as const;
+
+export function scheduleAuthorityRule(
+  scheduleBlocks: readonly WorkScheduleBlock[],
+  evaluatedAt: string,
+): DeterministicRule {
+  return {
+    name: "schedule-authority",
+    veto: (option, snapshot) => {
+      const allowedBlockTypes = SCHEDULE_BLOCK_TYPES_FOR_ACTION[option.actionType];
+      if (allowedBlockTypes === undefined) return undefined;
+      const hatAssignmentId = (snapshot as Partial<AgentObserveSnapshot>).hatAssignmentId;
+      if (hatAssignmentId === undefined) {
+        return `option '${option.actionType}' requires a hat assignment before schedule authorization`;
+      }
+      const activeBlocks = scheduleBlocks.filter((block) =>
+        block.assignedHatAssignmentId === hatAssignmentId &&
+        optionalMatches(block.assignedAgentId, (snapshot as Partial<AgentObserveSnapshot>).agentId) &&
+        optionalMatches(block.organizationId, (snapshot as Partial<AgentObserveSnapshot>).organizationId) &&
+        optionalMatches(block.projectId, (snapshot as Partial<AgentObserveSnapshot>).projectId) &&
+        optionalMatches(block.teamId, (snapshot as Partial<AgentObserveSnapshot>).teamId) &&
+        optionalMatches(block.workItemId, (snapshot as Partial<AgentObserveSnapshot>).workItemId) &&
+        block.state === ScheduleBlockState.Active &&
+        block.startsAt <= evaluatedAt &&
+        evaluatedAt < block.endsAt
+      );
+      if (activeBlocks.length === 0) {
+        return `option '${option.actionType}' requires a current schedule block for hat assignment ${hatAssignmentId}`;
+      }
+      const allowed = activeBlocks.some((block) => allowedBlockTypes.includes(block.blockType));
+      return allowed
+        ? undefined
+        : `current schedule block type '${activeBlocks[0]?.blockType}' does not allow ${option.actionType}`;
+    },
+  };
+}
+
+function optionalMatches(actual: string | undefined, expected: string | undefined): boolean {
+  return expected === undefined || actual === expected;
+}
+
+function createOptionalScheduleRules(deps: ObserveDependencies): readonly DeterministicRule[] {
+  return deps.scheduleBlocks === undefined
+    ? []
+    : [scheduleAuthorityRule(deps.scheduleBlocks, deps.clock.now())];
 }
 
 export const TriAvailability = {
@@ -263,7 +345,8 @@ export type TriAvailability = (typeof TriAvailability)[keyof typeof TriAvailabil
 export type SlotImpl =
   | { kind: "command"; commandType: string; command?: unknown }
   | { kind: "mcp"; tool: string; args?: unknown }
-  | { kind: "observe"; toScope: RunScope }
+  | { kind: "observe"; toScope: RunScope; menuPage?: MenuPageTarget | undefined }
+  | { kind: "status"; status: GlassHaloStatusSignal }
   | { kind: "prompt_flow"; request: PromptFlowContextRequest };
 
 export const ObserveCommandType = {
@@ -293,24 +376,111 @@ export type Menu16Slot = {
 
 export type Menu16 = {
   slots: readonly Menu16Slot[];
+  page?: Menu16PageState | undefined;
 };
 
 export type RenderMenu16Options = {
   hatAssignmentId?: ZetaIdDecimal;
   promptFlows?: PromptFlowReadout;
+  promptFlowPage?: number | undefined;
+  status?: GlassHaloStatusContext | undefined;
+  escalation?: SupervisorEscalationContext | undefined;
+  escalationDisabledReason?: string | undefined;
+};
+
+export type SupervisorEscalationContext = {
+  teamId: string;
+  workItemId: string;
+  targetHatAssignmentId: string;
+  sourceLevel: SupervisorChainLevel;
+  targetLevel: SupervisorChainLevel;
+  toolType?: SupervisorSignalToolType | undefined;
+  title?: string | undefined;
+  message?: string | undefined;
+};
+
+export type GlassHaloStatusSignal = {
+  kind: "glass_halo_status";
+  runId: ZetaIdDecimal;
+  scope: RunScope;
+  phase: RunLifecyclePhase;
+  observedAt: string;
+  trace: RunTrace;
+  legalOptionCount: number;
+  vetoedOptionCount: number;
+  deterministicRulesApplied: readonly string[];
+  metricBlockIds: readonly string[];
+  promptFlowIds: readonly string[];
+  promptFlowTaskCount: number;
+  vetoedPromptFlowTaskCount: number;
+  hierarchy?: GlassHaloHierarchyStatus | undefined;
+};
+
+export type GlassHaloStatusContext = {
+  metricBlockIds?: readonly string[] | undefined;
+  promptFlowIds?: readonly string[] | undefined;
+  promptFlowTaskCount?: number | undefined;
+  vetoedPromptFlowTaskCount?: number | undefined;
+  hierarchy?: GlassHaloHierarchyStatus | undefined;
+};
+
+export type GlassHaloHierarchyStatus = {
+  level: HatLevel;
+  priorityScope: HierarchyPriorityScope;
+  policyViolationCount: number;
+  priorityItemCount: number;
+  actionCount: number;
+  vetoedActionCount: number;
+  missionStatus?: HierarchyMissionStatus | undefined;
+  missionVariancePercent?: number | undefined;
+};
+
+export type PromptFlowPageState = {
+  page: number;
+  pageSize: number;
+  pageCount: number;
+  total: number;
+};
+
+export type Menu16PageState = {
+  promptFlows?: PromptFlowPageState | undefined;
+};
+
+export type MenuPageTarget = {
+  promptFlows?: number | undefined;
 };
 
 export type ActDependencies = {
   runCommand: (commandType: string, command: unknown, slot: Menu16Slot) => Promise<unknown>;
   dispatchTool: (tool: string, args: unknown, slot: Menu16Slot) => Promise<unknown>;
   loadPromptFlowContext?: ((request: PromptFlowContextRequest, slot: Menu16Slot) => Promise<PromptFlowContext>) | undefined;
+  authorizeSlot?: ((slot: Menu16Slot) => Promise<SlotAuthorizationDecision>) | undefined;
 };
+
+export type SlotAuthorizationDecision =
+  | { status: "allowed" }
+  | { status: "denied"; reason?: string | undefined; message: string };
+
+export const ActRejectionReason = {
+  NoSelectableSlot: "no_selectable_slot",
+  SlotOutOfRange: "slot_out_of_range",
+  SlotNotRendered: "slot_not_rendered",
+  SlotNotSelectable: "slot_not_selectable",
+  MissingImplementation: "missing_implementation",
+  MissingPromptFlowContextLoader: "missing_prompt_flow_context_loader",
+  ControlPlaneDenied: "control_plane_denied",
+  ScheduleAuthorityDenied: "schedule_authority_denied",
+  UnsupportedImplementation: "unsupported_implementation",
+} as const;
+
+export type ActRejectionReason = (typeof ActRejectionReason)[keyof typeof ActRejectionReason];
 
 export type ActResult =
   | { outcome: "dispatched"; kind: "command" | "mcp"; result: unknown }
   | { outcome: "loaded_context"; context: PromptFlowContext }
-  | { outcome: "reobserve"; scope: RunScope }
-  | { outcome: "rejected"; reason: string };
+  | { outcome: "status_report"; status: GlassHaloStatusSignal }
+  | { outcome: "reobserve"; scope: RunScope; menuPage?: MenuPageTarget | undefined }
+  | { outcome: "rejected"; reason: ActRejectionReason; message: string };
 
 export type MetricBlock = {
   id: string;
@@ -507,12 +677,23 @@ export type PromptFlowTask = {
   label: string;
   scope: RunScope;
   priority: number;
+  allowedHatIds?: readonly string[] | undefined;
   actionClass?: ActionClass | undefined;
   requiredToolBundles?: readonly ToolBundle[] | undefined;
   directions: readonly string[];
   toolInjections: readonly PromptFlowToolInjection[];
   metrics: readonly MetricBlock[];
   contextArtifactRefs: readonly string[];
+  definitionVersion?: string | undefined;
+  phaseId?: string | undefined;
+  runState?: PromptFlowRunState | undefined;
+  permittedUniversalActions?: readonly string[] | undefined;
+  requiredEvidenceRefs?: readonly string[] | undefined;
+  gate?: PromptFlowPhaseGate | undefined;
+  reviewerHatIds?: readonly string[] | undefined;
+  timeoutSeconds?: number | undefined;
+  retryLimit?: number | undefined;
+  rollbackPolicy?: PromptFlowRollbackPolicy | undefined;
 };
 
 export type VetoedPromptFlowTask = {
@@ -538,6 +719,16 @@ export type PromptFlowContextRequest = {
   toolInjections: readonly PromptFlowToolInjection[];
   metrics: readonly MetricBlock[];
   contextArtifactRefs: readonly string[];
+  definitionVersion?: string | undefined;
+  phaseId?: string | undefined;
+  runState?: PromptFlowRunState | undefined;
+  permittedUniversalActions?: readonly string[] | undefined;
+  requiredEvidenceRefs?: readonly string[] | undefined;
+  gate?: PromptFlowPhaseGate | undefined;
+  reviewerHatIds?: readonly string[] | undefined;
+  timeoutSeconds?: number | undefined;
+  retryLimit?: number | undefined;
+  rollbackPolicy?: PromptFlowRollbackPolicy | undefined;
 };
 
 export type PromptFlowContextArtifact = {
@@ -553,6 +744,16 @@ export type PromptFlowContext = {
   toolInjections: readonly PromptFlowToolInjection[];
   metrics: readonly MetricBlock[];
   contextArtifacts: readonly PromptFlowContextArtifact[];
+  definitionVersion?: string | undefined;
+  phaseId?: string | undefined;
+  runState?: PromptFlowRunState | undefined;
+  permittedUniversalActions?: readonly string[] | undefined;
+  requiredEvidenceRefs?: readonly string[] | undefined;
+  gate?: PromptFlowPhaseGate | undefined;
+  reviewerHatIds?: readonly string[] | undefined;
+  timeoutSeconds?: number | undefined;
+  retryLimit?: number | undefined;
+  rollbackPolicy?: PromptFlowRollbackPolicy | undefined;
 };
 
 export type QueryContext = {
@@ -576,6 +777,7 @@ export type CreateTelemetryScopedMetricAgentsInput = {
 export type AgentObserveDependencies = ObserveDependencies & {
   metricAgents?: readonly ScopedMetricAgent[];
   promptFlowTasks?: readonly PromptFlowTask[];
+  promptFlowPage?: number | undefined;
   hierarchy?: HierarchySnapshot;
 };
 
@@ -593,29 +795,39 @@ export type AgentObserveResult =
 const MENU16_DIRECTIONS: readonly string[] = [
   "navigate.previous",
   "navigate.next",
-  "navigate.up",
-  "navigate.drill",
+  "navigate.context_previous",
+  "navigate.context_next",
   "commit.a",
   "commit.b",
-  "commit.x",
-  "commit.y",
-  "scope.run",
-  "scope.work_item",
-  "scope.initiative",
-  "scope.project",
+  "inspect.more",
+  "branch.fork",
+  "scope.out",
+  "scope.in",
+  "history.retract",
+  "history.redo",
+  "meta.refresh",
   "meta.status",
-  "meta.evidence",
-  "meta.help",
-  "meta.hold",
+  "meta.pause",
+  "meta.escalate",
 ];
-const COMMIT_SLOT_INDICES: readonly number[] = [4, 5, 6, 7];
-const PROMPT_FLOW_SLOT_INDICES: readonly number[] = [8, 9, 10, 11];
+const COMMIT_SLOT_INDICES: readonly number[] = [4, 5];
+const PROMPT_FLOW_SLOT_INDICES: readonly number[] = [6, 7];
+const PROMPT_FLOW_PAGE_SIZE = PROMPT_FLOW_SLOT_INDICES.length;
+const MENU16_SLOT_COUNT = 16;
+const RUN_SCOPE_LADDER: readonly RunScope[] = [
+  RunScope.Run,
+  RunScope.WorkItem,
+  RunScope.Initiative,
+  RunScope.Project,
+  RunScope.Organization,
+];
 
 export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Options = {}): Menu16 {
   const rendered = MENU16_DIRECTIONS.map((direction, index) => createNeutralSlot(index, direction));
   const vetoesByAction = new Map(readout.vetoedOptions.map((vetoed) => [vetoed.option.actionType, vetoed]));
   const survivorsByAction = new Map(readout.options.map((option) => [option.actionType, option]));
   const orderedOptions = PHASE_OPTIONS[readout.phase] ?? [];
+  let page: Menu16PageState | undefined;
 
   for (const [offset, option] of orderedOptions.entries()) {
     const slotIndex = COMMIT_SLOT_INDICES[offset];
@@ -628,8 +840,16 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
       rendered[slotIndex] = createVetoedSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, vetoed);
     }
   }
-  renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId);
-  return { slots: rendered };
+  if (readout.options.length > 0) {
+    renderScopeSlots(rendered, readout.scope);
+    renderMetaSlots(rendered, readout, options.status, options.escalation, options.escalationDisabledReason);
+    const promptFlowPage = renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId, options.promptFlowPage);
+    page = promptFlowPage === undefined ? undefined : { promptFlows: promptFlowPage };
+  }
+  return {
+    slots: rendered,
+    ...createOptionalMenuPage(page),
+  };
 }
 
 function createNeutralSlot(index: number, direction: string): Menu16Slot {
@@ -674,21 +894,217 @@ function createVetoedSlot(index: number, direction: string, vetoed: VetoedOption
   };
 }
 
+function renderScopeSlots(rendered: Menu16Slot[], currentScope: RunScope): void {
+  const currentIndex = RUN_SCOPE_LADDER.indexOf(currentScope);
+  const coarserScope = currentIndex >= 0 ? RUN_SCOPE_LADDER[currentIndex + 1] : undefined;
+  const finerScope = currentIndex > 0 ? RUN_SCOPE_LADDER[currentIndex - 1] : undefined;
+
+  rendered[8] = coarserScope === undefined
+    ? createDisabledGrammarSlot(8, MENU16_DIRECTIONS[8]!, "scope out", "already at organization scope")
+    : createObserveSlot(8, MENU16_DIRECTIONS[8]!, `scope out to ${coarserScope}`, coarserScope);
+  rendered[9] = finerScope === undefined
+    ? createDisabledGrammarSlot(9, MENU16_DIRECTIONS[9]!, "scope in", "already at run scope")
+    : createObserveSlot(9, MENU16_DIRECTIONS[9]!, `scope in to ${finerScope}`, finerScope);
+  rendered[10] = createDisabledGrammarSlot(10, MENU16_DIRECTIONS[10]!, "retract", "retraction is not wired for this run state");
+  rendered[11] = createDisabledGrammarSlot(11, MENU16_DIRECTIONS[11]!, "redo", "redo is not wired for this run state");
+}
+
+function renderMetaSlots(
+  rendered: Menu16Slot[],
+  readout: RunStateReadout,
+  statusContext: GlassHaloStatusContext | undefined,
+  escalationContext: SupervisorEscalationContext | undefined,
+  escalationDisabledReason: string | undefined,
+): void {
+  const currentScope = readout.scope;
+  rendered[12] = createObserveSlot(12, MENU16_DIRECTIONS[12]!, "refresh", currentScope);
+  rendered[13] = createStatusSlot(13, MENU16_DIRECTIONS[13]!, readout, statusContext);
+  rendered[14] = createDisabledGrammarSlot(14, MENU16_DIRECTIONS[14]!, "pause", "pause mode is not wired for this run state");
+  rendered[15] = createEscalationSlot(15, MENU16_DIRECTIONS[15]!, readout, escalationContext, escalationDisabledReason);
+}
+
+function createEscalationSlot(
+  index: number,
+  direction: string,
+  readout: RunStateReadout,
+  context: SupervisorEscalationContext | undefined,
+  disabledReason: string | undefined,
+): Menu16Slot {
+  if (context === undefined) {
+    return createDisabledGrammarSlot(
+      index,
+      direction,
+      "escalate",
+      disabledReason ?? "supervisor escalation requires team, work item, and target supervisor hat assignment",
+    );
+  }
+  return {
+    index,
+    direction,
+    label: `escalate to ${formatSupervisorChainLevel(context.targetLevel)}`,
+    availability: TriAvailability.True,
+    impl: {
+      kind: "command",
+      commandType: CommandType.SendSupervisorSignal,
+      command: createSupervisorSignalCommand(readout, context),
+    },
+  };
+}
+
+function createSupervisorSignalCommand(
+  readout: RunStateReadout,
+  context: SupervisorEscalationContext,
+): {
+  targetHatAssignmentId: string;
+  title: string;
+  message: string;
+  policyContext: {
+    scope: { teamId: string; workItemId: string };
+    toolType: SupervisorSignalToolType;
+    supervisorChain: { sourceLevel: SupervisorChainLevel; targetLevel: SupervisorChainLevel };
+  };
+} {
+  return {
+    targetHatAssignmentId: context.targetHatAssignmentId,
+    title: context.title ?? `Observe-act escalation for ${readout.scope} ${readout.phase}`,
+    message: context.message ?? [
+      `Agent requested supervisor triage for run ${readout.runId} at ${readout.scope}/${readout.phase}.`,
+      `Legal options: ${readout.options.length}; vetoed options: ${readout.vetoedOptions.length}.`,
+    ].join(" "),
+    policyContext: {
+      scope: {
+        teamId: context.teamId,
+        workItemId: context.workItemId,
+      },
+      toolType: context.toolType ?? SupervisorSignalToolType.RequestEscalation,
+      supervisorChain: {
+        sourceLevel: context.sourceLevel,
+        targetLevel: context.targetLevel,
+      },
+    },
+  };
+}
+
+function formatSupervisorChainLevel(level: SupervisorChainLevel): string {
+  switch (level) {
+    case SupervisorChainLevel.TeamMember:
+      return "team member";
+    case SupervisorChainLevel.Manager:
+      return "manager";
+    case SupervisorChainLevel.Director:
+      return "director";
+    case SupervisorChainLevel.CSuite:
+      return "c-suite";
+    case SupervisorChainLevel.ExecutiveBoard:
+      return "executive board";
+  }
+}
+
+function createStatusSlot(
+  index: number,
+  direction: string,
+  readout: RunStateReadout,
+  statusContext: GlassHaloStatusContext | undefined,
+): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: "status / glass-halo",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "status",
+      status: createGlassHaloStatusSignal(readout, statusContext),
+    },
+  };
+}
+
+function createGlassHaloStatusSignal(
+  readout: RunStateReadout,
+  context: GlassHaloStatusContext | undefined,
+): GlassHaloStatusSignal {
+  return {
+    kind: "glass_halo_status",
+    runId: readout.runId,
+    scope: readout.scope,
+    phase: readout.phase,
+    observedAt: readout.observedAt,
+    trace: readout.trace,
+    legalOptionCount: readout.options.length,
+    vetoedOptionCount: readout.vetoedOptions.length,
+    deterministicRulesApplied: readout.deterministicRulesApplied,
+    metricBlockIds: context?.metricBlockIds ?? [],
+    promptFlowIds: context?.promptFlowIds ?? [],
+    promptFlowTaskCount: context?.promptFlowTaskCount ?? 0,
+    vetoedPromptFlowTaskCount: context?.vetoedPromptFlowTaskCount ?? 0,
+    ...createOptionalGlassHaloHierarchyStatus(context?.hierarchy),
+  };
+}
+
+function createOptionalGlassHaloHierarchyStatus(
+  hierarchy: GlassHaloHierarchyStatus | undefined,
+): { hierarchy?: GlassHaloHierarchyStatus } {
+  return hierarchy === undefined ? {} : { hierarchy };
+}
+
+function createObserveSlot(
+  index: number,
+  direction: string,
+  label: string,
+  toScope: RunScope,
+  menuPage?: MenuPageTarget | undefined,
+): Menu16Slot {
+  return {
+    index,
+    direction,
+    label,
+    availability: TriAvailability.True,
+    impl: {
+      kind: "observe",
+      toScope,
+      ...createOptionalMenuPageTarget(menuPage),
+    },
+  };
+}
+
+function createDisabledGrammarSlot(
+  index: number,
+  direction: string,
+  label: string,
+  reason: string,
+): Menu16Slot {
+  return {
+    index,
+    direction,
+    label,
+    availability: TriAvailability.False,
+    reason,
+  };
+}
+
 function renderPromptFlowSlots(
   rendered: Menu16Slot[],
   readout: RunStateReadout,
   promptFlows: PromptFlowReadout | undefined,
   hatAssignmentId: ZetaIdDecimal | undefined,
-): void {
-  if (promptFlows === undefined || hatAssignmentId === undefined) return;
-  const ordered = [...promptFlows.tasks, ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task)]
-    .sort((left, right) => right.priority - left.priority || left.taskId.localeCompare(right.taskId));
+  requestedPage = 0,
+): PromptFlowPageState | undefined {
+  if (promptFlows === undefined || hatAssignmentId === undefined) return undefined;
+  const ordered = [
+    ...[...promptFlows.tasks].sort(comparePromptFlowTasks),
+    ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task).sort(comparePromptFlowTasks),
+  ];
+  if (ordered.length === 0) return undefined;
+  const pageCount = Math.ceil(ordered.length / PROMPT_FLOW_PAGE_SIZE);
+  const page = clampPromptFlowPage(requestedPage, pageCount);
+  const pageStart = page * PROMPT_FLOW_PAGE_SIZE;
+  const pageTasks = ordered.slice(pageStart, pageStart + PROMPT_FLOW_PAGE_SIZE);
   const vetoesByTask = new Map(promptFlows.vetoedTasks.map((vetoed) => [vetoed.task.taskId, vetoed]));
   const allowedTaskIds = new Set(promptFlows.tasks.map((task) => task.taskId));
 
-  for (const [offset, task] of ordered.entries()) {
+  for (const [offset, task] of pageTasks.entries()) {
     const slotIndex = PROMPT_FLOW_SLOT_INDICES[offset];
     if (slotIndex === undefined) break;
+    if (rendered[slotIndex]?.availability !== TriAvailability.Neutral) continue;
     const direction = MENU16_DIRECTIONS[slotIndex]!;
     if (allowedTaskIds.has(task.taskId)) {
       rendered[slotIndex] = createPromptFlowSlot(slotIndex, direction, readout, task, hatAssignmentId);
@@ -697,6 +1113,40 @@ function renderPromptFlowSlots(
       rendered[slotIndex] = createPromptFlowVetoedSlot(slotIndex, direction, task, vetoed?.reason ?? "prompt flow is not executable by this hat");
     }
   }
+  renderPromptFlowNavigationSlots(rendered, readout.scope, page, pageCount);
+  return {
+    page,
+    pageSize: PROMPT_FLOW_PAGE_SIZE,
+    pageCount,
+    total: ordered.length,
+  };
+}
+
+function renderPromptFlowNavigationSlots(
+  rendered: Menu16Slot[],
+  currentScope: RunScope,
+  page: number,
+  pageCount: number,
+): void {
+  rendered[0] = page <= 0
+    ? createDisabledGrammarSlot(0, MENU16_DIRECTIONS[0]!, "previous prompt-flow page", "already at first prompt-flow page")
+    : createObserveSlot(0, MENU16_DIRECTIONS[0]!, "previous prompt-flow page", currentScope, { promptFlows: page - 1 });
+  rendered[1] = page >= pageCount - 1
+    ? createDisabledGrammarSlot(1, MENU16_DIRECTIONS[1]!, "next prompt-flow page", "already at last prompt-flow page")
+    : createObserveSlot(1, MENU16_DIRECTIONS[1]!, "next prompt-flow page", currentScope, { promptFlows: page + 1 });
+}
+
+function clampPromptFlowPage(requestedPage: number, pageCount: number): number {
+  if (!Number.isInteger(requestedPage) || requestedPage < 0) return 0;
+  return Math.min(requestedPage, Math.max(0, pageCount - 1));
+}
+
+function createOptionalMenuPage(page: Menu16PageState | undefined): { page?: Menu16PageState } {
+  return page === undefined ? {} : { page };
+}
+
+function createOptionalMenuPageTarget(menuPage: MenuPageTarget | undefined): { menuPage?: MenuPageTarget } {
+  return menuPage === undefined ? {} : { menuPage };
 }
 
 function createPromptFlowSlot(
@@ -750,6 +1200,7 @@ function createPromptFlowContextRequest(
     toolInjections: task.toolInjections,
     metrics: task.metrics,
     contextArtifactRefs: task.contextArtifactRefs,
+    ...copyOptionalPromptFlowTaskMetadata(task),
   };
 }
 
@@ -775,18 +1226,25 @@ function createOptionalHatAssignment(
 }
 
 export async function act(index: number, menu: Menu16, deps: ActDependencies): Promise<ActResult> {
-  if (!Number.isInteger(index) || index < 0 || index >= menu.slots.length) {
-    return { outcome: "rejected", reason: `slot index ${index} is outside the rendered menu` };
+  if (!Number.isInteger(index) || index < 0 || index >= MENU16_SLOT_COUNT) {
+    return rejectAct(ActRejectionReason.SlotOutOfRange, `slot index ${index} is outside the rendered menu`);
   }
   const slot = menu.slots[index];
   if (slot === undefined) {
-    return { outcome: "rejected", reason: `slot index ${index} is not rendered` };
+    return rejectAct(ActRejectionReason.SlotNotRendered, `slot index ${index} is not rendered`);
   }
   if (slot.availability !== TriAvailability.True) {
-    return { outcome: "rejected", reason: slot.reason ?? `slot ${index} is not selectable` };
+    return rejectAct(ActRejectionReason.SlotNotSelectable, slot.reason ?? `slot ${index} is not selectable`);
   }
   if (slot.impl === undefined) {
-    return { outcome: "rejected", reason: `slot ${index} has no implementation` };
+    return rejectAct(ActRejectionReason.MissingImplementation, `slot ${index} has no implementation`);
+  }
+  const authorization = await deps.authorizeSlot?.(slot);
+  if (authorization?.status === "denied") {
+    const reason = authorization.reason === ActRejectionReason.ControlPlaneDenied
+      ? ActRejectionReason.ControlPlaneDenied
+      : ActRejectionReason.ScheduleAuthorityDenied;
+    return rejectAct(reason, authorization.message);
   }
   switch (slot.impl.kind) {
     case "command":
@@ -802,10 +1260,19 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
         result: await deps.dispatchTool(slot.impl.tool, slot.impl.args, slot),
       };
     case "observe":
-      return { outcome: "reobserve", scope: slot.impl.toScope };
+      return {
+        outcome: "reobserve",
+        scope: slot.impl.toScope,
+        ...createOptionalMenuPageTarget(slot.impl.menuPage),
+      };
+    case "status":
+      return {
+        outcome: "status_report",
+        status: slot.impl.status,
+      };
     case "prompt_flow":
       if (deps.loadPromptFlowContext === undefined) {
-        return { outcome: "rejected", reason: `slot ${index} requires a prompt-flow context loader` };
+        return rejectAct(ActRejectionReason.MissingPromptFlowContextLoader, `slot ${index} requires a prompt-flow context loader`);
       }
       return {
         outcome: "loaded_context",
@@ -813,9 +1280,13 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
       };
     default: {
       const unhandled: never = slot.impl;
-      return { outcome: "rejected", reason: `unsupported slot implementation ${(unhandled as { kind?: string }).kind}` };
+      return rejectAct(ActRejectionReason.UnsupportedImplementation, `unsupported slot implementation ${(unhandled as { kind?: string }).kind}`);
     }
   }
+}
+
+export function rejectAct(reason: ActRejectionReason, message: string): ActResult {
+  return { outcome: "rejected", reason, message };
 }
 
 export async function observeAgentSurface(
@@ -839,7 +1310,13 @@ export async function observeAgentSurface(
   return {
     outcome: ObserveOutcome.Readout,
     readout: observed.readout,
-    actions: renderMenu16(observed.readout, { hatAssignmentId: snapshot.hatAssignmentId, promptFlows }),
+    actions: renderMenu16(observed.readout, {
+      hatAssignmentId: snapshot.hatAssignmentId,
+      promptFlows,
+      promptFlowPage: deps.promptFlowPage,
+      status: createGlassHaloStatusContext(blocks, promptFlows, hierarchy),
+      ...createOptionalSupervisorEscalationContext(snapshot, deps.scheduleBlocks),
+    }),
     metrics: {
       scope: snapshot.scope,
       blocks,
@@ -847,6 +1324,149 @@ export async function observeAgentSurface(
     promptFlows,
     hierarchy,
   };
+}
+
+function createOptionalSupervisorEscalationContext(
+  snapshot: AgentObserveSnapshot,
+  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
+): { escalation?: SupervisorEscalationContext; escalationDisabledReason?: string } {
+  if (
+    snapshot.teamId === undefined ||
+    snapshot.workItemId === undefined ||
+    snapshot.supervisorHatAssignmentId === undefined
+  ) {
+    return {};
+  }
+  const guardrail = preflightHatAction(snapshot.hat, ActionClass.Prioritize);
+  if (!guardrail.allowed) {
+    return { escalationDisabledReason: guardrail.reason };
+  }
+  const scheduleDenial = supervisorEscalationScheduleDenial(snapshot, scheduleBlocks);
+  if (scheduleDenial !== undefined) {
+    return { escalationDisabledReason: scheduleDenial };
+  }
+  const sourceLevel = supervisorChainLevelForHat(snapshot.hat.level);
+  const targetLevel = nextSupervisorLevel(sourceLevel);
+  if (targetLevel === undefined) {
+    return {};
+  }
+  return {
+    escalation: {
+      teamId: snapshot.teamId,
+      workItemId: snapshot.workItemId,
+      targetHatAssignmentId: snapshot.supervisorHatAssignmentId,
+      sourceLevel,
+      targetLevel,
+    },
+  };
+}
+
+function supervisorEscalationScheduleDenial(
+  snapshot: AgentObserveSnapshot,
+  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
+): string | undefined {
+  if (scheduleBlocks === undefined) return undefined;
+  const matchingScopeBlocks = scheduleBlocks.filter((block) =>
+    block.organizationId === snapshot.organizationId &&
+    block.projectId === snapshot.projectId &&
+    block.assignedAgentId === snapshot.agentId &&
+    block.assignedHatAssignmentId === snapshot.hatAssignmentId &&
+    optionalMatches(block.teamId, snapshot.teamId) &&
+    optionalMatches(block.workItemId, snapshot.workItemId)
+  );
+  if (matchingScopeBlocks.length === 0) {
+    return "supervisor escalation requires a current schedule block for this work item";
+  }
+  const stateMatchedBlocks = matchingScopeBlocks.filter((block) =>
+    SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_STATES.includes(block.state)
+  );
+  if (stateMatchedBlocks.length === 0) {
+    return "current schedule block state does not allow supervisor escalation";
+  }
+  const allowedBlock = stateMatchedBlocks.find((block) =>
+    SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_TYPES.includes(block.blockType)
+  );
+  return allowedBlock === undefined
+    ? "current schedule block type does not allow supervisor escalation"
+    : undefined;
+}
+
+const SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_STATES: readonly ScheduleBlockState[] = [
+  ScheduleBlockState.Active,
+  ScheduleBlockState.Scheduled,
+];
+
+const SUPERVISOR_SIGNAL_ALLOWED_SCHEDULE_TYPES: readonly ScheduleBlockType[] = [
+  ScheduleBlockType.FreeTime,
+  ScheduleBlockType.Meeting,
+  ScheduleBlockType.PrioritizedWork,
+  ScheduleBlockType.PromptFlowExecution,
+  ScheduleBlockType.Reflection,
+  ScheduleBlockType.Reporting,
+  ScheduleBlockType.Review,
+];
+
+function supervisorChainLevelForHat(level: HatLevel): SupervisorChainLevel {
+  switch (level) {
+    case HatLevel.ExecutiveBoard:
+      return SupervisorChainLevel.ExecutiveBoard;
+    case HatLevel.CSuite:
+      return SupervisorChainLevel.CSuite;
+    case HatLevel.Director:
+      return SupervisorChainLevel.Director;
+    case HatLevel.Manager:
+      return SupervisorChainLevel.Manager;
+    case HatLevel.Lead:
+    case HatLevel.IndividualContributor:
+      return SupervisorChainLevel.TeamMember;
+  }
+}
+
+function nextSupervisorLevel(level: SupervisorChainLevel): SupervisorChainLevel | undefined {
+  switch (level) {
+    case SupervisorChainLevel.TeamMember:
+      return SupervisorChainLevel.Manager;
+    case SupervisorChainLevel.Manager:
+      return SupervisorChainLevel.Director;
+    case SupervisorChainLevel.Director:
+      return SupervisorChainLevel.CSuite;
+    case SupervisorChainLevel.CSuite:
+      return SupervisorChainLevel.ExecutiveBoard;
+    case SupervisorChainLevel.ExecutiveBoard:
+      return undefined;
+  }
+}
+
+function createGlassHaloStatusContext(
+  blocks: readonly MetricBlock[],
+  promptFlows: PromptFlowReadout,
+  hierarchy: HierarchyReadout,
+): GlassHaloStatusContext {
+  return {
+    metricBlockIds: uniqueStrings(blocks.map((block) => block.id)),
+    promptFlowIds: uniqueStrings([
+      ...promptFlows.tasks.map((task) => task.promptFlowId),
+      ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task.promptFlowId),
+    ]),
+    promptFlowTaskCount: promptFlows.tasks.length,
+    vetoedPromptFlowTaskCount: promptFlows.vetoedTasks.length,
+    hierarchy: {
+      level: hierarchy.level,
+      priorityScope: hierarchy.priorityScope,
+      policyViolationCount: hierarchy.policyViolations.length,
+      priorityItemCount: hierarchy.priorityItems.length,
+      actionCount: hierarchy.actions.length,
+      vetoedActionCount: hierarchy.vetoedActions.length,
+      ...(hierarchy.mission === undefined ? {} : {
+        missionStatus: hierarchy.mission.status,
+        missionVariancePercent: hierarchy.mission.variancePercent,
+      }),
+    },
+  };
+}
+
+function uniqueStrings(values: readonly string[]): readonly string[] {
+  return [...new Set(values)].sort((left, right) => left.localeCompare(right));
 }
 
 export function hierarchyReadoutForHat(
@@ -1470,6 +2090,12 @@ function firstPromptFlowTaskVeto(
   hat: HatDefinition,
   task: PromptFlowTask,
 ): { ruleName: string; reason: string } | undefined {
+  if (task.allowedHatIds !== undefined && !task.allowedHatIds.includes(hat.id)) {
+    return {
+      ruleName: "prompt-flow-allowed-hat",
+      reason: `hat "${hat.id}" is not in allowed hats [${task.allowedHatIds.join(", ")}] for prompt flow "${task.promptFlowId}"`,
+    };
+  }
   if (task.actionClass !== undefined) {
     const result = preflightHatAction(hat, task.actionClass);
     if (!result.allowed) {
@@ -1485,6 +2111,21 @@ function firstPromptFlowTaskVeto(
     }
   }
   return undefined;
+}
+
+function copyOptionalPromptFlowTaskMetadata(task: PromptFlowTask): Partial<PromptFlowContextRequest> {
+  return {
+    ...(task.definitionVersion !== undefined ? { definitionVersion: task.definitionVersion } : {}),
+    ...(task.phaseId !== undefined ? { phaseId: task.phaseId } : {}),
+    ...(task.runState !== undefined ? { runState: task.runState } : {}),
+    ...(task.permittedUniversalActions !== undefined ? { permittedUniversalActions: task.permittedUniversalActions } : {}),
+    ...(task.requiredEvidenceRefs !== undefined ? { requiredEvidenceRefs: task.requiredEvidenceRefs } : {}),
+    ...(task.gate !== undefined ? { gate: task.gate } : {}),
+    ...(task.reviewerHatIds !== undefined ? { reviewerHatIds: task.reviewerHatIds } : {}),
+    ...(task.timeoutSeconds !== undefined ? { timeoutSeconds: task.timeoutSeconds } : {}),
+    ...(task.retryLimit !== undefined ? { retryLimit: task.retryLimit } : {}),
+    ...(task.rollbackPolicy !== undefined ? { rollbackPolicy: task.rollbackPolicy } : {}),
+  };
 }
 
 function comparePromptFlowTasks(left: PromptFlowTask, right: PromptFlowTask): number {
@@ -1508,14 +2149,18 @@ function createTelemetryCommandCountAgent(
   return {
     id: `telemetry.command_total.${scope}`,
     scope,
-    compute: async () => ({
-      id: "telemetry.command_total",
-      label: "commands in range",
-      value: sumLatestMetricValues(
-        await input.telemetry.queryMetrics(`sum(org_command_total{agentic_scope="${scope}"})`, input.range),
-      ),
-      unit: "count",
-    }),
+    compute: async () => {
+      const result = await input.telemetry.queryMetrics(`sum(org_command_total{agentic_scope="${scope}"})`, input.range);
+      if (result.status === "degraded") {
+        return telemetryDegradedMetricBlock("telemetry.command_total", "commands in range", result);
+      }
+      return {
+        id: "telemetry.command_total",
+        label: "commands in range",
+        value: sumLatestMetricValues(result.data),
+        unit: "count",
+      };
+    },
   };
 }
 
@@ -1526,12 +2171,18 @@ function createTelemetryTraceCountAgent(
   return {
     id: `telemetry.trace_count.${scope}`,
     scope,
-    compute: async () => ({
-      id: "telemetry.trace_count",
-      label: "traces in range",
-      value: (await input.telemetry.queryTraces(`{ agentic.scope = "${scope}" }`, input.range)).length,
-      unit: "trace",
-    }),
+    compute: async () => {
+      const result = await input.telemetry.queryTraces(`{ agentic.scope = "${scope}" }`, input.range);
+      if (result.status === "degraded") {
+        return telemetryDegradedMetricBlock("telemetry.trace_count", "traces in range", result);
+      }
+      return {
+        id: "telemetry.trace_count",
+        label: "traces in range",
+        value: result.data.length,
+        unit: "trace",
+      };
+    },
   };
 }
 
@@ -1542,17 +2193,34 @@ function createTelemetryWarningLogCountAgent(
   return {
     id: `telemetry.warning_log_count.${scope}`,
     scope,
-    compute: async () => ({
-      id: "telemetry.warning_log_count",
-      label: "warning logs in range",
-      value: (
-        await input.telemetry.queryLogs(
-          `{app="agentic-org-worker", agentic_scope="${scope}", level=~"warn|error"}`,
-          input.range,
-        )
-      ).length,
-      unit: "log",
-    }),
+    compute: async () => {
+      const result = await input.telemetry.queryLogs(
+        `{app="agentic-org-worker", agentic_scope="${scope}", level=~"warn|error"}`,
+        input.range,
+      );
+      if (result.status === "degraded") {
+        return telemetryDegradedMetricBlock("telemetry.warning_log_count", "warning logs in range", result);
+      }
+      return {
+        id: "telemetry.warning_log_count",
+        label: "warning logs in range",
+        value: result.data.length,
+        unit: "log",
+      };
+    },
+  };
+}
+
+function telemetryDegradedMetricBlock(
+  id: string,
+  label: string,
+  result: TelemetryQueryDegraded,
+): MetricBlock {
+  return {
+    id,
+    label,
+    value: "degraded",
+    unit: `${result.source}:${result.reason}`,
   };
 }
 
@@ -1562,8 +2230,9 @@ function sumLatestMetricValues(series: readonly MetricSeries[]): number {
 
 /**
  * The keystone read. Pure over the snapshot; holds no memory. Returns the
- * current state and the options that survive every deterministic rule, or a
- * feedback variant when there is nothing legal to surface.
+ * current state and the options that survive every deterministic rule. If every
+ * raw option is vetoed, the readout still surfaces the disabled menu and veto
+ * reasons so the agent can see the legal boundary it hit.
  */
 export function observe(snapshot: RunSnapshot, deps: ObserveDependencies): ObserveResult {
   const rawOptions = PHASE_OPTIONS[snapshot.phase];
@@ -1590,16 +2259,6 @@ export function observe(snapshot: RunSnapshot, deps: ObserveDependencies): Obser
     return {
       outcome: ObserveOutcome.Feedback,
       feedback: { reason: ObserveFeedbackReason.TerminalPhase, message: `run ${snapshot.runId} is terminal at '${snapshot.phase}'` },
-    };
-  }
-
-  if (surviving.length === 0) {
-    return {
-      outcome: ObserveOutcome.Feedback,
-      feedback: {
-        reason: ObserveFeedbackReason.DeterministicRuleViolation,
-        message: `no option survives deterministic rules at phase '${snapshot.phase}'`,
-      },
     };
   }
 

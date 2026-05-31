@@ -14,6 +14,8 @@ import {
   type ReactionPlanActionExecutorPort,
 } from "../../runtime/src/index.ts";
 import {
+  ControlPlaneFlagKind,
+  ControlPlaneScopeKind,
   createOrganizationReactionPlanActionExecutor,
   type EnsureWorkItemPort,
 } from "../src/index.ts";
@@ -95,6 +97,39 @@ test("if the agent run fails, it does NOT seed or create org artifacts (short-ci
   const result = await executor.executeReactionPlanAction(action(), context);
 
   equal(result.status, ReactionPlanExecutionStatus.Failed);
+  deepEqual(seeder.seeded, []);
+  equal(organizationExecutor.calls, 0);
+});
+
+test("control-plane ESTOP rejects reaction-plan execution before agent or org artifacts", async () => {
+  const agentExecutor = recordingExecutor(ok("should not run"));
+  const seeder = recordingSeeder();
+  const organizationExecutor = recordingExecutor(ok("should not run"));
+
+  const executor = createOrganizationReactionPlanActionExecutor({
+    agentExecutor,
+    ensureWorkItem: seeder,
+    organizationExecutor,
+    controlPlane: {
+      now: () => "2026-05-31T20:00:00.000Z",
+      flags: [{
+        controlPlaneFlagId: "flag-estop",
+        organizationId: "org-1",
+        scope: { kind: ControlPlaneScopeKind.Organization },
+        flag: ControlPlaneFlagKind.Estop,
+        reason: "operator estop",
+        setByHatId: "incident_commander",
+        setAt: "2026-05-31T19:59:00.000Z",
+      }],
+    },
+  });
+
+  const result = await executor.executeReactionPlanAction(action(), context);
+
+  equal(result.status, ReactionPlanExecutionStatus.Failed);
+  if (result.status !== ReactionPlanExecutionStatus.Failed) return;
+  equal(result.failure.message.includes("operator estop"), true);
+  equal(agentExecutor.calls, 0);
   deepEqual(seeder.seeded, []);
   equal(organizationExecutor.calls, 0);
 });

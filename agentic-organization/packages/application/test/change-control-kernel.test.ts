@@ -12,6 +12,7 @@ import {
 } from "../../domain/src/index.ts";
 import {
   ExternalDecision,
+  replayLedger,
   runReviewStage,
   resumeHumanStage,
   applyChangeSet,
@@ -103,6 +104,11 @@ test("last stage approve → ChangeSetApproved", () => {
   ok(approved);
   equal(approved!.fromState, ChangeSetPhase.InReview);
   equal(approved!.toState, ChangeSetPhase.Approved);
+  const context = approved!.transitionContext;
+  ok(context !== undefined && context.kind === "change_set_review");
+  equal(context.currentStageIndex, 1);
+  equal(context.stageCount, 2);
+  equal(replayLedger(r.events).skippedAmbiguous, 0);
 });
 
 test("quorum stage: the board's agreement IS the gate (≥ threshold → approve)", () => {

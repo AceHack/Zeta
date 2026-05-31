@@ -25,10 +25,28 @@ export type LogLine = {
   labels: Readonly<Record<string, string>>;
 };
 
+export type TelemetryQuerySource = "mimir" | "tempo" | "loki" | "recording";
+
+export type TelemetryQueryOk<T> = {
+  status: "ok";
+  source: TelemetryQuerySource;
+  data: readonly T[];
+};
+
+export type TelemetryQueryDegraded = {
+  status: "degraded";
+  source: TelemetryQuerySource;
+  reason: "http_error" | "fetch_error" | "decode_error" | "bad_response" | "timeout";
+  message: string;
+  httpStatus?: number;
+};
+
+export type TelemetryQueryResult<T> = TelemetryQueryOk<T> | TelemetryQueryDegraded;
+
 export type TelemetryQueryPort = {
-  queryMetrics: (promql: string, range: TelemetryTimeRange) => Promise<readonly MetricSeries[]>;
-  queryTraces: (traceql: string, range: TelemetryTimeRange) => Promise<readonly TraceSummary[]>;
-  queryLogs: (logql: string, range: TelemetryTimeRange) => Promise<readonly LogLine[]>;
+  queryMetrics: (promql: string, range: TelemetryTimeRange) => Promise<TelemetryQueryResult<MetricSeries>>;
+  queryTraces: (traceql: string, range: TelemetryTimeRange) => Promise<TelemetryQueryResult<TraceSummary>>;
+  queryLogs: (logql: string, range: TelemetryTimeRange) => Promise<TelemetryQueryResult<LogLine>>;
 };
 
 export type TelemetryQueryCall =
@@ -44,6 +62,7 @@ export type RecordingTelemetryQueryPortInput = {
 
 export type LgtmTelemetryQueryPortInput = {
   mimirBaseUrl: string;
+  mimirTenantId?: string | undefined;
   tempoBaseUrl: string;
   lokiBaseUrl: string;
   stepSeconds?: number;
@@ -62,19 +81,19 @@ export class RecordingTelemetryQueryPort implements TelemetryQueryPort {
     this.logs = input.logs ?? [];
   }
 
-  async queryMetrics(promql: string, range: TelemetryTimeRange): Promise<readonly MetricSeries[]> {
+  async queryMetrics(promql: string, range: TelemetryTimeRange): Promise<TelemetryQueryResult<MetricSeries>> {
     this.calls.push({ kind: "metrics", query: promql, range });
-    return this.metrics;
+    return { status: "ok", source: "recording", data: this.metrics };
   }
 
-  async queryTraces(traceql: string, range: TelemetryTimeRange): Promise<readonly TraceSummary[]> {
+  async queryTraces(traceql: string, range: TelemetryTimeRange): Promise<TelemetryQueryResult<TraceSummary>> {
     this.calls.push({ kind: "traces", query: traceql, range });
-    return this.traces;
+    return { status: "ok", source: "recording", data: this.traces };
   }
 
-  async queryLogs(logql: string, range: TelemetryTimeRange): Promise<readonly LogLine[]> {
+  async queryLogs(logql: string, range: TelemetryTimeRange): Promise<TelemetryQueryResult<LogLine>> {
     this.calls.push({ kind: "logs", query: logql, range });
-    return this.logs;
+    return { status: "ok", source: "recording", data: this.logs };
   }
 }
 
@@ -84,28 +103,115 @@ export function createLgtmTelemetryQueryPort(input: LgtmTelemetryQueryPortInput)
 
   return {
     queryMetrics: async (promql, range) =>
-      await queryJson(fetchImpl, createPrometheusRangeUrl(input.mimirBaseUrl, promql, range, stepSeconds), mapPrometheusRange),
+      await queryJson(fetchImpl, "mimir", createPrometheusRangeUrl(input.mimirBaseUrl, promql, range, stepSeconds), mapPrometheusRange, mimirHeaders(input.mimirTenantId)),
     queryTraces: async (traceql, range) =>
-      await queryJson(fetchImpl, createTempoSearchUrl(input.tempoBaseUrl, traceql, range), mapTempoSearch),
+      await queryJson(fetchImpl, "tempo", createTempoSearchUrl(input.tempoBaseUrl, traceql, range), mapTempoSearch),
     queryLogs: async (logql, range) =>
-      await queryJson(fetchImpl, createLokiRangeUrl(input.lokiBaseUrl, logql, range), mapLokiRange),
+      await queryJson(fetchImpl, "loki", createLokiRangeUrl(input.lokiBaseUrl, logql, range), mapLokiRange),
   };
 }
 
 async function queryJson<Result>(
   fetchImpl: typeof fetch,
+  source: TelemetryQuerySource,
   url: URL,
   map: (body: unknown) => readonly Result[],
-): Promise<readonly Result[]> {
+  headers?: Record<string, string> | undefined,
+): Promise<TelemetryQueryResult<Result>> {
   try {
-    const response = await fetchImpl(url);
+    const response = await fetchImpl(url, headers === undefined ? undefined : { headers });
     if (!response.ok) {
-      return [];
+      return {
+        status: "degraded",
+        source,
+        reason: "http_error",
+        message: `${source} telemetry query failed with HTTP ${response.status} ${response.statusText}`.trim(),
+        httpStatus: response.status,
+      };
     }
-    return map(await response.json());
-  } catch {
-    return [];
+    let body: unknown;
+    try {
+      body = await response.json();
+    } catch (error) {
+      return {
+        status: "degraded",
+        source,
+        reason: "decode_error",
+        message: `${source} telemetry query decode failed: ${errorMessage(error)}`,
+      };
+    }
+    const badResponse = validateLgtmResponseBody(source, body);
+    if (badResponse !== undefined) {
+      return badResponse;
+    }
+    try {
+      return { status: "ok", source, data: map(body) };
+    } catch (error) {
+      return {
+        status: "degraded",
+        source,
+        reason: "bad_response",
+        message: `${source} telemetry query returned malformed response: ${errorMessage(error)}`,
+      };
+    }
+  } catch (error) {
+    if (isTimeoutError(error)) {
+      return {
+        status: "degraded",
+        source,
+        reason: "timeout",
+        message: `${source} telemetry query timed out: ${errorMessage(error)}`,
+      };
+    }
+    return {
+      status: "degraded",
+      source,
+      reason: "fetch_error",
+      message: `${source} telemetry query fetch failed: ${errorMessage(error)}`,
+    };
   }
+}
+
+function mimirHeaders(tenantId: string | undefined): Record<string, string> | undefined {
+  return tenantId === undefined ? undefined : { "X-Scope-OrgID": tenantId };
+}
+
+function validateLgtmResponseBody(
+  source: TelemetryQuerySource,
+  body: unknown,
+): TelemetryQueryDegraded | undefined {
+  if (source === "recording") {
+    return undefined;
+  }
+  if (!isRecord(body)) {
+    return badTelemetryResponse(source, "top-level body is not an object");
+  }
+  if (source === "mimir" || source === "loki") {
+    const status = readOptionalString(body.status);
+    if (status === "error") {
+      return badTelemetryResponse(source, readOptionalString(body.error) ?? readOptionalString(body.errorType) ?? "unknown error");
+    }
+    if (status !== "success") {
+      return badTelemetryResponse(source, `expected status=success, got ${status ?? "missing"}`);
+    }
+    const data = readPath(body, ["data"]);
+    if (!isRecord(data) || !Array.isArray(data.result)) {
+      return badTelemetryResponse(source, "missing data.result array");
+    }
+  }
+  if (source === "tempo" && !Array.isArray(body.traces)) {
+    return badTelemetryResponse(source, "missing traces array");
+  }
+  return undefined;
+}
+
+function badTelemetryResponse(source: TelemetryQuerySource, detail: string): TelemetryQueryDegraded {
+  return {
+    status: "degraded",
+    source,
+    reason: "bad_response",
+    message: `${source} telemetry query returned error response: ${detail}`,
+  };
 }
 
 function createPrometheusRangeUrl(
@@ -140,33 +246,33 @@ function createLokiRangeUrl(baseUrl: string, query: string, range: TelemetryTime
 }
 
 function mapPrometheusRange(body: unknown): readonly MetricSeries[] {
-  const result = readArray(readPath(body, ["data", "result"]));
+  const result = requireArray(readPath(body, ["data", "result"]), "expected Prometheus data.result array");
   return result.map((series) => ({
     labels: readStringRecord(readPath(series, ["metric"])),
-    points: readArray(readPath(series, ["values"])).map(mapPrometheusPoint).filter(isDefined),
+    points: requireArray(readPath(series, ["values"]), "expected Prometheus series values array").map(mapPrometheusPoint),
   }));
 }
 
-function mapPrometheusPoint(value: unknown): MetricPoint | undefined {
+function mapPrometheusPoint(value: unknown): MetricPoint {
   if (!Array.isArray(value) || value.length < 2) {
-    return undefined;
+    throw new Error("expected Prometheus point tuple");
   }
   const timestamp = Number(value[0]);
   const sample = Number(value[1]);
   if (!Number.isFinite(timestamp) || !Number.isFinite(sample)) {
-    return undefined;
+    throw new Error("expected numeric Prometheus point");
   }
   return { timestamp: new Date(timestamp * 1000).toISOString(), value: sample };
 }
 
 function mapTempoSearch(body: unknown): readonly TraceSummary[] {
-  return readArray(readPath(body, ["traces"])).map(mapTempoTrace).filter(isDefined);
+  return requireArray(readPath(body, ["traces"]), "expected Tempo traces array").map(mapTempoTrace);
 }
 
-function mapTempoTrace(value: unknown): TraceSummary | undefined {
+function mapTempoTrace(value: unknown): TraceSummary {
   const traceId = readOptionalString(readPath(value, ["traceID"])) ?? readOptionalString(readPath(value, ["traceId"]));
   if (traceId === undefined) {
-    return undefined;
+    throw new Error("expected Tempo trace id");
   }
   return {
     traceId,
@@ -191,24 +297,26 @@ function readTempoSpanCount(value: unknown): number {
 }
 
 function mapLokiRange(body: unknown): readonly LogLine[] {
-  return readArray(readPath(body, ["data", "result"])).flatMap((stream) => {
+  return requireArray(readPath(body, ["data", "result"]), "expected Loki data.result array").flatMap((stream) => {
     const labels = readStringRecord(readPath(stream, ["stream"]));
-    return readArray(readPath(stream, ["values"])).map((value) => mapLokiLine(value, labels)).filter(isDefined);
+    return requireArray(readPath(stream, ["values"]), "expected Loki stream values array").map((value) =>
+      mapLokiLine(value, labels)
+    );
   });
 }
 
-function mapLokiLine(value: unknown, labels: Readonly<Record<string, string>>): LogLine | undefined {
+function mapLokiLine(value: unknown, labels: Readonly<Record<string, string>>): LogLine {
   if (!Array.isArray(value) || value.length < 2) {
-    return undefined;
+    throw new Error("expected Loki line tuple");
   }
   const timestampNs = readOptionalString(value[0]);
   const line = readOptionalString(value[1]);
   if (timestampNs === undefined || line === undefined) {
-    return undefined;
+    throw new Error("expected Loki timestamp and line strings");
   }
   const timestampMs = Number(timestampNs) / 1_000_000;
   if (!Number.isFinite(timestampMs)) {
-    return undefined;
+    throw new Error("expected numeric Loki timestamp");
   }
   return { timestamp: new Date(timestampMs).toISOString(), line, labels };
 }
@@ -240,6 +348,13 @@ function readArray(value: unknown): readonly unknown[] {
   return Array.isArray(value) ? value : [];
 }
 
+function requireArray(value: unknown, message: string): readonly unknown[] {
+  if (!Array.isArray(value)) {
+    throw new Error(message);
+  }
+  return value;
+}
+
 function readStringRecord(value: unknown): Readonly<Record<string, string>> {
   if (!isRecord(value)) {
     return {};
@@ -261,6 +376,15 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-function isDefined<T>(value: T | undefined): value is T {
-  return value !== undefined;
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isTimeoutError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  return error.name === "AbortError" ||
+    error.name === "TimeoutError" ||
+    /\btime(?:d)?\s*out\b/i.test(error.message);
 }

@@ -24,6 +24,7 @@ import {
   type MemoryState,
   type OrgEvent,
   type ReviewPipeline,
+  type WorkScheduleBlock,
 } from "../../../packages/domain/src/index.ts";
 import {
   runWorkOsCycle,
@@ -43,9 +44,9 @@ import {
   scanStrandedScheduleBlocks,
   RunLifecyclePhase,
   RunScope,
+  ActRejectionReason,
   type ChangeControlPort,
   type DeadLetterRecoveryCandidate,
-  type Menu16,
   type Menu16Slot,
   type HierarchySnapshot,
   type PromptFlowContext,
@@ -57,8 +58,10 @@ import {
   type ReviewKernelDeps,
   type RunBindingRecoveryCandidate,
   type ScheduleBlockRecoveryCandidate,
+  type ScopedMetricAgent,
+  type SlotAuthorizationDecision,
 } from "../../../packages/application/src/index.ts";
-import { runAgentCliCycle } from "../../agent-cli/src/agent-cli.ts";
+import { runAgentCliCycle, type MenuSelector } from "../../agent-cli/src/agent-cli.ts";
 import type { TelemetryPort } from "../../../packages/observability/src/index.ts";
 import type { CadenceLane, CadenceLaneTickResult } from "./cadence-lane.ts";
 
@@ -112,6 +115,7 @@ export function createWorkOsCadenceLane(deps: WorkOsCadenceDeps): CadenceLane {
 export type ObserveActWorkItem = {
   runId: string;
   projectId: string;
+  teamId?: string | undefined;
   workItemId: string;
   scope: RunScope;
   phase: RunLifecyclePhase;
@@ -119,13 +123,16 @@ export type ObserveActWorkItem = {
   hasEvidence: boolean;
   hatId: string;
   hatAssignmentId: string;
+  supervisorHatAssignmentId?: string | undefined;
   agentId: string;
+  scheduleBlocks?: readonly WorkScheduleBlock[];
   promptFlowTasks?: readonly PromptFlowTask[];
+  promptFlowPage?: number | undefined;
   hierarchy?: HierarchySnapshot;
 };
 
 export type ObserveActWorkItemSource = () => Promise<ObserveActWorkItem | null>;
-export type ObserveActMenuSelector = (menu: Menu16) => Promise<number> | number;
+export type ObserveActMenuSelector = MenuSelector;
 export type ObserveActCommandRunner = (
   commandType: string,
   command: unknown,
@@ -140,6 +147,19 @@ export type ObserveActPromptFlowContextLoader = (
   request: PromptFlowContextRequest,
   slot: Menu16Slot,
 ) => Promise<PromptFlowContext>;
+export type ObserveActSlotAuthorizationInput = {
+  organizationId: string;
+  work: ObserveActWorkItem;
+  slot: Menu16Slot;
+  evaluatedAt: string;
+};
+export type ObserveActSlotAuthorizer = (
+  input: ObserveActSlotAuthorizationInput,
+) => Promise<SlotAuthorizationDecision>;
+export type ObserveActOrgEventAppender = (event: OrgEvent) => Promise<void>;
+export type ObserveActExecutionMode = "primary" | "shadow";
+export type ObserveActExecutionModeSource = ObserveActExecutionMode | (() => Promise<ObserveActExecutionMode>);
+export type ObserveActSupplementalEvidenceSource = readonly string[] | (() => Promise<readonly string[]>);
 
 export type ObserveActWorkItemCadenceDeps = {
   organizationId: string;
@@ -149,12 +169,18 @@ export type ObserveActWorkItemCadenceDeps = {
   source: ObserveActWorkItemSource;
   runCommand: ObserveActCommandRunner;
   dispatchTool: ObserveActToolDispatcher;
+  appendEvent?: ObserveActOrgEventAppender;
+  supplementalEvidenceRefs?: ObserveActSupplementalEvidenceSource | undefined;
+  metricAgents?: readonly ScopedMetricAgent[] | undefined;
   loadPromptFlowContext?: ObserveActPromptFlowContextLoader;
+  authorizeSlot?: ObserveActSlotAuthorizer;
+  executionMode?: ObserveActExecutionModeSource | undefined;
   writeObserveStdout?: (text: string) => void;
   selectSlot?: ObserveActMenuSelector;
 };
 
 export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCadenceDeps): CadenceLane {
+  const promptFlowPageByRunId = new Map<string, number>();
   return {
     name: "observe-act-work-item",
     async runOnce(): Promise<CadenceLaneTickResult> {
@@ -168,23 +194,33 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
         }
 
         const stderr: string[] = [];
+        const executionMode = await resolveObserveActExecutionMode(deps.executionMode);
+        const supplementalEvidenceRefs = await resolveObserveActSupplementalEvidenceRefs(deps.supplementalEvidenceRefs);
+        const promptFlowPage = work.promptFlowPage ?? promptFlowPageByRunId.get(work.runId);
         const result = await runAgentCliCycle({
-          argv: observeActArgv(deps.organizationId, work),
+          argv: observeActArgv(deps.organizationId, work, promptFlowPage),
           now: () => new Date(deps.now()).toISOString(),
           writeStdout: deps.writeObserveStdout ?? (() => undefined),
           writeStderr: (text) => {
             stderr.push(text.trim());
           },
-          runCommand: deps.runCommand,
-          dispatchTool: deps.dispatchTool,
+          runCommand: executionMode === "shadow" ? shadowRunCommand : deps.runCommand,
+          dispatchTool: executionMode === "shadow" ? shadowDispatchTool : deps.dispatchTool,
+          ...(deps.metricAgents === undefined ? {} : { metricAgents: deps.metricAgents }),
+          ...createOptionalObserveActScheduleBlocks(work.scheduleBlocks),
           ...createOptionalObserveActPromptFlowTasks(work.promptFlowTasks),
           ...createOptionalObserveActHierarchy(work.hierarchy),
           ...createOptionalObserveActPromptFlowContextLoader(deps.loadPromptFlowContext),
+          ...(executionMode === "shadow" ? {} : createOptionalObserveActSlotAuthorizer(deps, work)),
           ...(deps.selectSlot === undefined ? {} : { selectSlot: deps.selectSlot }),
         });
+        recordObserveActPageCursor(promptFlowPageByRunId, work.runId, result.actionResult);
+        if (result.evidence !== undefined && deps.appendEvent !== undefined) {
+          await deps.appendEvent(createObserveActTickEvent(deps, work, result.evidence, supplementalEvidenceRefs));
+        }
 
         return {
-          status: formatObserveActStatus(result.actionResult, result.exitCode),
+          status: formatObserveActStatus(result.actionResult, result.exitCode, executionMode),
           failures: observeActFailures(result.actionResult, result.exitCode, stderr),
         };
       } catch (error) {
@@ -194,7 +230,149 @@ export function createObserveActWorkItemCadenceLane(deps: ObserveActWorkItemCade
   };
 }
 
-function observeActArgv(organizationId: string, work: ObserveActWorkItem): string[] {
+async function resolveObserveActExecutionMode(
+  source: ObserveActExecutionModeSource | undefined,
+): Promise<ObserveActExecutionMode> {
+  if (source === undefined) return "primary";
+  return typeof source === "function" ? await source() : source;
+}
+
+async function resolveObserveActSupplementalEvidenceRefs(
+  source: ObserveActSupplementalEvidenceSource | undefined,
+): Promise<readonly string[]> {
+  if (source === undefined) return [];
+  return typeof source === "function" ? await source() : source;
+}
+
+const shadowRunCommand: ObserveActCommandRunner = async (commandType, _command, slot) => ({
+  status: "shadow_selected",
+  kind: "command",
+  commandType,
+  slotIndex: slot.index,
+});
+
+const shadowDispatchTool: ObserveActToolDispatcher = async (tool, _args, slot) => ({
+  status: "shadow_selected",
+  kind: "mcp",
+  tool,
+  slotIndex: slot.index,
+});
+
+function createObserveActTickEvent(
+  deps: Pick<ObserveActWorkItemCadenceDeps, "organizationId" | "now" | "createId" | "hats">,
+  work: ObserveActWorkItem,
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+  supplementalEvidenceRefs: readonly string[],
+): OrgEvent {
+  const eventId = deps.createId("observeactevt");
+  const traceId = `observe-act-${work.runId}`;
+  return {
+    id: eventId,
+    kind: OrgEventKind.ObserveActTick,
+    occurredAt: new Date(deps.now()).toISOString(),
+    organizationId: deps.organizationId,
+    actorHatId: work.hatId,
+    actorAgentId: work.agentId,
+    subjectId: work.workItemId,
+    decision: `observe-act selected slot ${evidence.selectedIndex} for run ${work.runId}`,
+    supervisorChain: supervisorChainFor(work.hatId, deps.hats),
+    evidenceRefs: [
+      ...observeActEvidenceRefs(evidence),
+      ...supplementalEvidenceRefs,
+    ],
+    correlationId: traceId,
+    causationId: eventId,
+    traceId,
+  };
+}
+
+function supervisorChainFor(hatId: string, hats: readonly HatDefinition[]): readonly string[] {
+  const byId = new Map(hats.map((hat) => [hat.id, hat]));
+  const chain: string[] = [];
+  const seen = new Set<string>();
+  let current: string | undefined = hatId;
+  while (current !== undefined && !seen.has(current)) {
+    chain.push(current);
+    seen.add(current);
+    current = byId.get(current)?.reportsToHatIds[0];
+  }
+  return chain.reverse();
+}
+
+function observeActEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  return [
+    `observe-act:menu_hash:${evidence.menuHash}`,
+    `observe-act:selected_slot:${evidence.selectedIndex}`,
+    `observe-act:veto_count:${evidence.vetoCount}`,
+    `observe-act:true_slot_count:${evidence.trueSlotCount}`,
+    ...selectedCommandEvidenceRefs(evidence),
+    ...promptFlowPageEvidenceRefs(evidence),
+    ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
+    ...statusEvidenceRefs(evidence),
+    ...actionRejectionEvidenceRefs(evidence),
+    ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
+    ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function selectedCommandEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  return evidence.selectedCommandType === undefined
+    ? []
+    : [`observe-act:command_type:${evidence.selectedCommandType}`];
+}
+
+function statusEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  if (evidence.statusSignalKind === undefined) return [];
+  return [
+    `observe-act:status:${evidence.statusSignalKind}`,
+    ...(evidence.statusScope === undefined ? [] : [`observe-act:status_scope:${evidence.statusScope}`]),
+    ...(evidence.statusPhase === undefined ? [] : [`observe-act:status_phase:${evidence.statusPhase}`]),
+    ...(evidence.statusHierarchyPriorityScope === undefined ? [] : [`observe-act:status_priority_scope:${evidence.statusHierarchyPriorityScope}`]),
+  ];
+}
+
+function promptFlowPageEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  return [
+    ...(evidence.promptFlowPage === undefined ? [] : [`observe-act:prompt_flow_page:${evidence.promptFlowPage}`]),
+    ...(evidence.selectedPromptFlowTaskId === undefined ? [] : [`observe-act:selected_prompt_flow_task:${evidence.selectedPromptFlowTaskId}`]),
+    ...(evidence.selectedPromptFlowId === undefined ? [] : [`observe-act:selected_prompt_flow:${evidence.selectedPromptFlowId}`]),
+    ...(evidence.reobservePromptFlowPage === undefined ? [] : [`observe-act:reobserve_prompt_flow_page:${evidence.reobservePromptFlowPage}`]),
+  ];
+}
+
+function actionRejectionEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  if (
+    evidence.actionRejectionReason !== ActRejectionReason.ControlPlaneDenied &&
+    evidence.actionRejectionReason !== ActRejectionReason.ScheduleAuthorityDenied
+  ) {
+    return [];
+  }
+  return [
+    `observe-act:control_bypass_rejected:${evidence.actionRejectionReason}:${evidence.selectedIndex}`,
+  ];
+}
+
+function selectorRejectionEvidenceRefs(
+  rejection: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>["selectorRejections"][number],
+): readonly string[] {
+  const rejectedIndex = rejection.rejectedIndex === undefined ? "unknown" : String(rejection.rejectedIndex);
+  return [
+    `observe-act:selector_rejected:${rejection.reason}:${rejectedIndex}`,
+    `observe-act:selector_rejected_fallback_slot:${rejection.fallbackIndex}`,
+  ];
+}
+
+function observeActArgv(organizationId: string, work: ObserveActWorkItem, promptFlowPage: number | undefined): string[] {
   return [
     "observe",
     "--hat",
@@ -215,14 +393,31 @@ function observeActArgv(organizationId: string, work: ObserveActWorkItem): strin
     work.projectId,
     "--work-item",
     work.workItemId,
+    ...observeActOptionalArg("--team", work.teamId),
+    ...observeActOptionalArg("--supervisor-hat-assignment", work.supervisorHatAssignmentId),
+    ...observeActPromptFlowPageArgs(promptFlowPage),
     ...observeActBooleanArgs(work),
   ];
+}
+
+function observeActOptionalArg(flag: string, value: string | undefined): string[] {
+  return value === undefined ? [] : [flag, value];
+}
+
+function observeActPromptFlowPageArgs(promptFlowPage: number | undefined): string[] {
+  return promptFlowPage === undefined ? [] : ["--prompt-flow-page", String(promptFlowPage)];
 }
 
 function createOptionalObserveActPromptFlowTasks(
   promptFlowTasks: readonly PromptFlowTask[] | undefined,
 ): { promptFlowTasks?: readonly PromptFlowTask[] } {
   return promptFlowTasks === undefined ? {} : { promptFlowTasks };
+}
+
+function createOptionalObserveActScheduleBlocks(
+  scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
+): { scheduleBlocks?: readonly WorkScheduleBlock[] } {
+  return scheduleBlocks === undefined ? {} : { scheduleBlocks };
 }
 
 function createOptionalObserveActHierarchy(
@@ -237,6 +432,23 @@ function createOptionalObserveActPromptFlowContextLoader(
   return loadPromptFlowContext === undefined ? {} : { loadPromptFlowContext };
 }
 
+function createOptionalObserveActSlotAuthorizer(
+  deps: ObserveActWorkItemCadenceDeps,
+  work: ObserveActWorkItem,
+): { authorizeSlot?: (slot: Menu16Slot) => Promise<SlotAuthorizationDecision> } {
+  return deps.authorizeSlot === undefined
+    ? {}
+    : {
+        authorizeSlot: async (slot) =>
+          await deps.authorizeSlot!({
+            organizationId: deps.organizationId,
+            work,
+            slot,
+            evaluatedAt: new Date(deps.now()).toISOString(),
+          }),
+      };
+}
+
 function observeActBooleanArgs(work: ObserveActWorkItem): string[] {
   return [
     ...(work.hasGateApproval ? ["--gate-approved"] : []),
@@ -244,17 +456,37 @@ function observeActBooleanArgs(work: ObserveActWorkItem): string[] {
   ];
 }
 
-function formatObserveActStatus(result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"], exitCode: number): string {
+function formatObserveActStatus(
+  result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"],
+  exitCode: number,
+  executionMode: ObserveActExecutionMode = "primary",
+): string {
+  const prefix = executionMode === "shadow" ? "observe-act-shadow" : "observe-act";
   if (result?.outcome === "dispatched") {
-    return `observe-act:${result.kind}:${observeActDispatchStatus(result.result)}`;
+    return `${prefix}:${result.kind}:${observeActDispatchStatus(result.result)}`;
   }
   if (result?.outcome === "reobserve") {
-    return `observe-act:reobserve:${result.scope}`;
+    return `${prefix}:reobserve:${result.scope}${result.menuPage?.promptFlows === undefined ? "" : `:prompt_flow_page:${result.menuPage.promptFlows}`}`;
   }
   if (result?.outcome === "loaded_context") {
-    return `observe-act:context:${result.context.taskId}`;
+    return `${prefix}:context:${result.context.taskId}`;
   }
-  return exitCode === 0 ? "observe-act:no_action" : "observe-act:rejected";
+  if (result?.outcome === "status_report") {
+    return `${prefix}:status:${result.status.kind}`;
+  }
+  if (result?.outcome === "rejected") {
+    return `${prefix}:rejected:${result.reason}`;
+  }
+  return exitCode === 0 ? `${prefix}:no_action` : `${prefix}:rejected`;
+}
+
+function recordObserveActPageCursor(
+  cursor: Map<string, number>,
+  runId: string,
+  result: Awaited<ReturnType<typeof runAgentCliCycle>>["actionResult"],
+): void {
+  if (result?.outcome !== "reobserve" || result.menuPage?.promptFlows === undefined) return;
+  cursor.set(runId, result.menuPage.promptFlows);
 }
 
 function observeActDispatchStatus(result: unknown): string {
@@ -271,7 +503,7 @@ function observeActFailures(
   stderr: readonly string[],
 ): CadenceLaneTickResult["failures"] {
   if (result?.outcome === "rejected") {
-    return [{ message: `observe-act lane: ${result.reason}` }];
+    return [{ message: `observe-act lane: ${result.reason}: ${result.message}` }];
   }
   if (exitCode !== 0) {
     return [{ message: `observe-act lane: ${stderr.join("; ") || `CLI exited ${exitCode}`}` }];
@@ -627,8 +859,13 @@ export function createConformanceCadenceLane(deps: ConformanceCadenceDeps): Cade
     async runOnce(): Promise<CadenceLaneTickResult> {
       try {
         const events = await deps.reader.listByOrganization(deps.organizationId, deps.limit);
-        const report = replayLedger(events);
+        const report = replayLedger(events, { maxSkippedAmbiguous: 0 });
         recordConformanceMetric(deps, report);
+        if (report.ratchetViolated) {
+          return degraded(
+            `conformance lane: ambiguous transition skip ratchet exceeded; skipped=${report.skippedAmbiguous} max=${report.ratchetViolation!.maxSkippedAmbiguous}`,
+          );
+        }
         if (report.nonconformant > 0) {
           const first = report.violations[0]!;
           return degraded(`conformance lane: ${report.nonconformant} violation(s); first=${first.eventId} ${first.fromState}->${first.toState} legal=[${first.legalToStates.join(",")}]`);
@@ -652,6 +889,17 @@ function recordConformanceMetric(deps: ConformanceCadenceDeps, report: ReturnTyp
       "agentic.conformance.conformant": report.conformant,
       "agentic.conformance.nonconformant": report.nonconformant,
       "agentic.conformance.skipped": report.skipped,
+      "agentic.conformance.skipped_ambiguous": report.skippedAmbiguous,
+    },
+  });
+  deps.telemetry?.recordMetric({
+    kind: "gauge",
+    name: "org_conformance_coverage_ratio",
+    value: report.coverageRatio,
+    attributes: {
+      "agentic.organization.id": deps.organizationId,
+      "agentic.conformance.checked": report.checked,
+      "agentic.conformance.skipped_ambiguous": report.skippedAmbiguous,
     },
   });
 }

@@ -49,6 +49,8 @@ import {
   createCockroachKnowledgeGraphMigration,
   createCockroachTenantConfigMigration,
   createCockroachReactionPlanTraceparentMigration,
+  createCockroachOrgEventTransitionContextMigration,
+  createCockroachControlPlaneFlagsMigration,
 } from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
@@ -111,6 +113,8 @@ describe("cockroach core state schema", () => {
     equal(migrations[12]?.name, CockroachCoreStateMigrationName.HindsightMemoryV13);
     equal(migrations[13]?.name, CockroachCoreStateMigrationName.HermesRunV14);
     equal(migrations[20]?.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
+    equal(migrations[21]?.name, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
+    equal(migrations[22]?.name, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
   });
 
   test("declares the hermes run table (durable agent-run history)", () => {
@@ -370,7 +374,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the memory system migration as V16 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 6]!.name, CockroachCoreStateMigrationName.MemorySystemV16);
+    equal(all[all.length - 8]!.name, CockroachCoreStateMigrationName.MemorySystemV16);
   });
 
   test("declares the change control kernel (change_sets + review_stage_status) with phase check", () => {
@@ -390,7 +394,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the change control migration as V17 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 5]!.name, CockroachCoreStateMigrationName.ChangeControlV17);
+    equal(all[all.length - 7]!.name, CockroachCoreStateMigrationName.ChangeControlV17);
   });
 
   test("declares the document intelligence kernel (doc units/sources/entities/graph/consult) with lifecycle + type checks", () => {
@@ -417,7 +421,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the document intelligence migration as V18 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 4]!.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
+    equal(all[all.length - 6]!.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
   });
 
   test("declares the knowledge graph kernel (graph_nodes + graph_edges) with confidence + kind checks", () => {
@@ -440,7 +444,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the knowledge graph migration as V19 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 3]!.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
+    equal(all[all.length - 5]!.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
   });
 
   test("declares the tenant config table (the org as a configurable runtime)", () => {
@@ -455,12 +459,48 @@ describe("cockroach core state schema", () => {
 
   test("registers the tenant config migration as V20 before traceparent in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 2]!.name, CockroachCoreStateMigrationName.TenantConfigV20);
+    equal(all[all.length - 4]!.name, CockroachCoreStateMigrationName.TenantConfigV20);
   });
 
-  test("registers the reaction plan traceparent migration as V21 last in the ordered migration set", () => {
+  test("registers the reaction plan traceparent migration as V21 before org-event transition context", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 1]!.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
+    equal(all[all.length - 3]!.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
+  });
+
+  test("registers the org-event transition-context migration as V22 before control-plane flags", () => {
+    const all = createCockroachCoreStateMigrations();
+    equal(all[all.length - 2]!.name, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
+  });
+
+  test("declares an additive org-event transition-context migration for existing databases", () => {
+    const migration = createCockroachOrgEventTransitionContextMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.OrgEvents}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS transition_context JSONB"));
+  });
+
+  test("registers control-plane flags as V23 last in the ordered migration set", () => {
+    const all = createCockroachCoreStateMigrations();
+    equal(all[all.length - 1]!.name, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
+  });
+
+  test("declares the control-plane flags table for ESTOP, freezes, budgets, providers, and simulator mode", () => {
+    const migration = createCockroachControlPlaneFlagsMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneFlags}`));
+    ok(migration.sql.includes("control_plane_flag_id STRING NOT NULL"));
+    ok(migration.sql.includes("PRIMARY KEY (organization_id, control_plane_flag_id)"));
+    ok(migration.sql.includes("scope_kind STRING NOT NULL"));
+    ok(migration.sql.includes("scope_id STRING NULL"));
+    ok(migration.sql.includes("flag STRING NOT NULL"));
+    ok(migration.sql.includes("set_by_hat_id STRING NOT NULL"));
+    ok(migration.sql.includes("expires_at TIMESTAMPTZ NULL"));
+    ok(migration.sql.includes("agentic_org_control_plane_flags_scope_kind_check"));
+    ok(migration.sql.includes("agentic_org_control_plane_flags_flag_check"));
+    ok(migration.sql.includes("control_plane_flags_by_org_flag"));
+    ok(migration.sql.includes("control_plane_flags_by_org_scope"));
   });
 
   test("keeps generated migrations synchronized with checked-in SQL files", async () => {

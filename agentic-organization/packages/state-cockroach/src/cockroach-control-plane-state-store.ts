@@ -28,9 +28,47 @@ export const CockroachControlPlaneStateStoreStatement = {
   AppendControlPlaneAlert: "append_control_plane_alert",
   RecordAgentHeartbeat: "record_agent_heartbeat",
   ReadAgentHeartbeats: "read_agent_heartbeats",
+  UpsertControlPlaneFlag: "upsert_control_plane_flag",
+  ListActiveControlPlaneFlags: "list_active_control_plane_flags",
 } as const;
 export type CockroachControlPlaneStateStoreStatement =
   (typeof CockroachControlPlaneStateStoreStatement)[keyof typeof CockroachControlPlaneStateStoreStatement];
+
+export const ControlPlaneScopeKind = {
+  Organization: "organization",
+  Tenant: "tenant",
+  Hat: "hat",
+  Provider: "provider",
+} as const;
+
+export type ControlPlaneScopeKind = (typeof ControlPlaneScopeKind)[keyof typeof ControlPlaneScopeKind];
+
+export const ControlPlaneFlagKind = {
+  Estop: "estop",
+  Freeze: "freeze",
+  BudgetFreeze: "budget_freeze",
+  ProviderFreeze: "provider_freeze",
+  SimulatorRequired: "simulator_required",
+} as const;
+
+export type ControlPlaneFlagKind = (typeof ControlPlaneFlagKind)[keyof typeof ControlPlaneFlagKind];
+
+export type ControlPlaneScope =
+  | { kind: typeof ControlPlaneScopeKind.Organization }
+  | { kind: typeof ControlPlaneScopeKind.Tenant; tenantId: string }
+  | { kind: typeof ControlPlaneScopeKind.Hat; hatId: string }
+  | { kind: typeof ControlPlaneScopeKind.Provider; providerId: string };
+
+export type ControlPlaneFlagRecord = {
+  controlPlaneFlagId: string;
+  organizationId: string;
+  scope: ControlPlaneScope;
+  flag: ControlPlaneFlagKind;
+  reason: string;
+  setByHatId: string;
+  setAt: string;
+  expiresAt?: string | undefined;
+};
 
 export type AppendControlPlaneAlertInput = {
   alertId: string;
@@ -71,6 +109,10 @@ export type CockroachControlPlaneStateStore = {
   recordAgentHeartbeat: (input: RecordAgentHeartbeatInput) => Promise<void>;
   /** Read every agent session's liveness for an org, in the engine's shape. */
   readAgentHeartbeats: (organizationId: string) => Promise<readonly AgentHeartbeatRecord[]>;
+  /** UPSERT one active or expiring hard-control flag. */
+  upsertFlag: (flag: ControlPlaneFlagRecord) => Promise<void>;
+  /** Read non-expired flags for an org at an explicit evaluation time. */
+  listActiveFlags: (organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlagRecord[]>;
 };
 
 export type CreateCockroachControlPlaneStateStoreInput = {
@@ -87,6 +129,18 @@ type AgentHeartbeatRow = {
   work_item_id: string;
   age_ms: number | string;
   deadline_ms: number | string;
+};
+
+type ControlPlaneFlagRow = {
+  control_plane_flag_id: string;
+  organization_id: string;
+  scope_kind: string;
+  scope_id: string | null;
+  flag: string;
+  reason: string;
+  set_by_hat_id: string;
+  set_at: string | Date;
+  expires_at: string | Date | null;
 };
 
 export function createCockroachControlPlaneStateStore(
@@ -192,5 +246,126 @@ export function createCockroachControlPlaneStateStore(
         deadlineMs: Number(row.deadline_ms),
       }));
     },
+    upsertFlag: async (flag: ControlPlaneFlagRecord): Promise<void> => {
+      const scope = flattenScope(flag.scope);
+      await input.executor.execute({
+        name: CockroachControlPlaneStateStoreStatement.UpsertControlPlaneFlag,
+        sql: `
+          INSERT INTO agentic_org_control_plane_flags (
+            control_plane_flag_id,
+            organization_id,
+            scope_kind,
+            scope_id,
+            flag,
+            reason,
+            set_by_hat_id,
+            set_at,
+            expires_at
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+          ON CONFLICT (organization_id, control_plane_flag_id) DO UPDATE
+          SET scope_kind = excluded.scope_kind,
+              scope_id = excluded.scope_id,
+              flag = excluded.flag,
+              reason = excluded.reason,
+              set_by_hat_id = excluded.set_by_hat_id,
+              set_at = excluded.set_at,
+              expires_at = excluded.expires_at
+        `,
+        parameters: [
+          flag.controlPlaneFlagId,
+          flag.organizationId,
+          scope.kind,
+          scope.id,
+          flag.flag,
+          flag.reason,
+          flag.setByHatId,
+          flag.setAt,
+          flag.expiresAt ?? null,
+        ],
+      });
+    },
+    listActiveFlags: async (
+      organizationId: string,
+      evaluatedAt: string,
+    ): Promise<readonly ControlPlaneFlagRecord[]> => {
+      const result = await input.executor.execute<ControlPlaneFlagRow>({
+        name: CockroachControlPlaneStateStoreStatement.ListActiveControlPlaneFlags,
+        sql: `
+          SELECT
+            control_plane_flag_id,
+            organization_id,
+            scope_kind,
+            scope_id,
+            flag,
+            reason,
+            set_by_hat_id,
+            set_at,
+            expires_at
+          FROM agentic_org_control_plane_flags
+          WHERE organization_id = $1
+            AND (expires_at IS NULL OR expires_at > $2)
+          ORDER BY set_at, control_plane_flag_id
+        `,
+        parameters: [organizationId, evaluatedAt],
+      });
+
+      return result.rows.map(rowToControlPlaneFlagRecord);
+    },
   };
+}
+
+function flattenScope(scope: ControlPlaneScope): { kind: ControlPlaneScopeKind; id: string | null } {
+  if (scope.kind === ControlPlaneScopeKind.Organization) return { kind: scope.kind, id: null };
+  if (scope.kind === ControlPlaneScopeKind.Tenant) return { kind: scope.kind, id: scope.tenantId };
+  if (scope.kind === ControlPlaneScopeKind.Hat) return { kind: scope.kind, id: scope.hatId };
+  return { kind: scope.kind, id: scope.providerId };
+}
+
+function rowToControlPlaneFlagRecord(row: ControlPlaneFlagRow): ControlPlaneFlagRecord {
+  return {
+    controlPlaneFlagId: row.control_plane_flag_id,
+    organizationId: row.organization_id,
+    scope: inflateScope(row.scope_kind, row.scope_id),
+    flag: parseControlPlaneFlagKind(row.flag),
+    reason: row.reason,
+    setByHatId: row.set_by_hat_id,
+    setAt: toIso(row.set_at),
+    ...optionalExpiresAt(row.expires_at),
+  };
+}
+
+function inflateScope(kind: string, id: string | null): ControlPlaneScope {
+  if (!isControlPlaneScopeKind(kind)) {
+    throw new Error(`unknown control-plane flag scope_kind '${kind}'`);
+  }
+  if (kind === ControlPlaneScopeKind.Organization) return { kind };
+  if (id === null || id.trim().length === 0) {
+    throw new Error(`control-plane flag scope '${kind}' requires a scope_id`);
+  }
+  if (kind === ControlPlaneScopeKind.Tenant) return { kind, tenantId: id };
+  if (kind === ControlPlaneScopeKind.Hat) return { kind, hatId: id };
+  return { kind, providerId: id };
+}
+
+function parseControlPlaneFlagKind(value: string): ControlPlaneFlagKind {
+  if (isControlPlaneFlagKind(value)) {
+    return value;
+  }
+  throw new Error(`unknown control-plane flag '${value}'`);
+}
+
+function isControlPlaneScopeKind(value: string): value is ControlPlaneScopeKind {
+  return Object.values(ControlPlaneScopeKind).includes(value as ControlPlaneScopeKind);
+}
+
+function isControlPlaneFlagKind(value: string): value is ControlPlaneFlagKind {
+  return Object.values(ControlPlaneFlagKind).includes(value as ControlPlaneFlagKind);
+}
+
+function optionalExpiresAt(value: string | Date | null): { expiresAt?: string } {
+  return value === null ? {} : { expiresAt: toIso(value) };
+}
+
+function toIso(value: string | Date): string {
+  return value instanceof Date ? value.toISOString() : new Date(value).toISOString();
 }

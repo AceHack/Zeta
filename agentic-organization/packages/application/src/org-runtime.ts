@@ -42,8 +42,28 @@ export type OrgCycleDeps = {
   createId: (prefix: string) => string;
   appendEvent: (event: OrgEvent) => Promise<void>;
   upsertBinding: (binding: HatBinding) => Promise<void>;
+  rmoCandidateSource: OrgCycleRmoCandidateSource;
   hats?: readonly HatDefinition[];
   rmoAssignmentChooser?: OrgChooser<RankedRmoHatCandidate>;
+};
+
+export type OrgCycleRmoCandidateSourceInput = {
+  hat: HatDefinition;
+  hatId: string;
+  activeBindings: readonly ActiveBindingSummary[];
+  workItemId: string;
+  organizationId: string;
+  priorityClass: string;
+};
+
+export type OrgCycleRmoCandidatesForHat = {
+  eligibleCandidates: readonly AgentCandidate[];
+  rmoCandidates: readonly RmoHatCandidateReputation[];
+};
+
+export type OrgCycleRmoCandidateSource = {
+  sourceName: string;
+  candidatesForHat: (input: OrgCycleRmoCandidateSourceInput) => OrgCycleRmoCandidatesForHat;
 };
 
 export type OrgCycleReport = {
@@ -76,7 +96,14 @@ const HOT: PriorityInputs = {
   blockedDownstreamCount: 3, dependencyFanOut: 2, queueAgeMs: 600_000, hatScarcity: 0.5, budgetBurn: 0.1, estimatedEffort: 0.4,
 };
 
+const RMO_SOURCE_NAME_PATTERN = /^[a-z][a-z0-9._-]{0,63}$/;
+
 export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
+  if (deps.rmoCandidateSource === undefined) {
+    throw new Error("runOrgCycle requires an explicit rmoCandidateSource; pass createDemoOrgCycleRmoCandidateSource() only for demos/tests");
+  }
+  const rmoCandidateSourceName = deps.rmoCandidateSource.sourceName;
+  assertRmoSourceName(rmoCandidateSourceName);
   const hats = deps.hats ?? buildHatDefinitions();
   const byId = new Map(hats.map((h) => [h.id, h]));
   const eventsByLevel: Record<string, number> = Object.fromEntries(Object.values(HatLevel).map((l) => [l, 0]));
@@ -142,29 +169,19 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
   let agentSeq = 0;
   for (const hatId of ownerHatIds) {
     const hat = byId.get(hatId)!;
-    const candidates: AgentCandidate[] = [0, 1].map((i) => ({ agentId: `agent-${hatId}-${i}`, reputationByHat: { [hatId]: 10 - i } }));
-    const ranked = rankEligibleCandidates({ hat, candidates, activeBindings, nowMs: t0 });
+    const sourcedCandidates = deps.rmoCandidateSource.candidatesForHat({
+      hat,
+      hatId,
+      activeBindings,
+      workItemId: deps.workItemId,
+      organizationId: deps.organizationId,
+      priorityClass,
+    });
+    const ranked = rankEligibleCandidates({ hat, candidates: sourcedCandidates.eligibleCandidates, activeBindings, nowMs: t0 });
+    assertRmoCandidatesAreEligible(rmoCandidateSourceName, hatId, ranked, sourcedCandidates.rmoCandidates);
     const rmoRanked = rankRmoHatCandidates({
       hatId,
-      candidates: ranked.map((candidate, index): RmoHatCandidateReputation => {
-        const reputation = (candidate.reputationByHat[hatId] ?? 0) / 10;
-        return {
-          agentId: candidate.agentId,
-          hatId,
-          agentHatReputation: reputation,
-          recentOutcomeScore: Math.max(0.4, reputation - index * 0.05),
-          scheduleReliability: index === 0 ? 0.85 : 0.75,
-          reviewQuality: 0.75,
-          qaPassRate: 0.75,
-          completionRate: 0.8,
-          contextFit: 0.8,
-          currentLoad: 0,
-          freshness: index === 0 ? 0.45 : 0.8,
-          explorationBonus: index === 0 ? 0 : 0.25,
-          consecutiveAssignmentCount: 0,
-          recentSameHatAssignments: 0,
-        };
-      }),
+      candidates: sourcedCandidates.rmoCandidates,
     });
     const rmoAssignment = decideRmoHatAssignment(
       {
@@ -176,6 +193,10 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
       { createEventId: () => deps.createId("evt"), nowIso: nextIso, organizationId: deps.organizationId, supervisorChain: chainFor(hatId, byId), correlationId: corr, causationId: corr, traceId: corr },
     );
     if (rmoAssignment.outcome === "no_legal_candidate") continue;
+    rmoAssignment.event.evidenceRefs = [
+      ...rmoAssignment.event.evidenceRefs,
+      `rmo-candidate-source:${rmoCandidateSourceName}`,
+    ];
     await emit(rmoAssignment.event);
     const selectedAgentId = rmoAssignment.selected.agentId;
     const assignment = assignHat(
@@ -268,4 +289,33 @@ export async function runOrgCycle(deps: OrgCycleDeps): Promise<OrgCycleReport> {
     successionsPlanned,
     hotInputs: HOT,
   };
+}
+
+function assertRmoCandidatesAreEligible(
+  sourceName: string,
+  hatId: string,
+  rankedEligibleCandidates: readonly AgentCandidate[],
+  rmoCandidates: readonly RmoHatCandidateReputation[],
+): void {
+  const eligibleAgentIds = new Set(rankedEligibleCandidates.map((candidate) => candidate.agentId));
+  const wrongHatAgentIds = rmoCandidates
+    .filter((candidate) => candidate.hatId !== hatId)
+    .map((candidate) => candidate.agentId)
+    .sort();
+  if (wrongHatAgentIds.length > 0) {
+    throw new Error(`RMO candidate source ${sourceName} returned candidates for the wrong hat ${hatId}: ${wrongHatAgentIds.join(", ")}`);
+  }
+  const ineligibleAgentIds = rmoCandidates
+    .filter((candidate) => !eligibleAgentIds.has(candidate.agentId))
+    .map((candidate) => candidate.agentId)
+    .sort();
+  if (ineligibleAgentIds.length > 0) {
+    throw new Error(`RMO candidate source ${sourceName} returned ineligible agents for ${hatId}: ${ineligibleAgentIds.join(", ")}`);
+  }
+}
+
+function assertRmoSourceName(sourceName: string): void {
+  if (!RMO_SOURCE_NAME_PATTERN.test(sourceName)) {
+    throw new Error("runOrgCycle requires rmoCandidateSource.sourceName to match /^[a-z][a-z0-9._-]{0,63}$/");
+  }
 }

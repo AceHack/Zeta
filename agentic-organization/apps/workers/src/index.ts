@@ -1,4 +1,5 @@
 export {
+  AgentLoopMode,
   WorkerKeepAliveConfigDefault,
   WorkerProcessEnvName,
   parseWorkerRuntimeConfigFromEnv,

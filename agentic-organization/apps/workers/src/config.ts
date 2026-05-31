@@ -13,6 +13,14 @@ export const WorkerKeepAliveConfigDefault = {
   LoopIntervalMs: 5_000,
 } as const;
 
+export const AgentLoopMode = {
+  Legacy: "legacy",
+  ObserveActShadow: "observe_act_shadow",
+  ObserveActPrimary: "observe_act_primary",
+} as const;
+
+export type AgentLoopMode = (typeof AgentLoopMode)[keyof typeof AgentLoopMode];
+
 export const WorkerProcessEnvName = {
   AgenticOrgEnv: "AGENTIC_ORG_ENV",
   AgenticOrgId: "AGENTIC_ORG_ID",
@@ -26,6 +34,7 @@ export const WorkerProcessEnvName = {
   WorkerReactionPlanBatchSize: "WORKER_REACTION_PLAN_BATCH_SIZE",
   WorkerReactionPlanLeaseMs: "WORKER_REACTION_PLAN_LEASE_MS",
   WorkerKeepAliveOrgHeartbeatDeadlineMs: "WORKER_KEEP_ALIVE_ORG_HEARTBEAT_DEADLINE_MS",
+  AgentLoopMode: "AGENT_LOOP_MODE",
   /** when set, the agent's composer makes real model calls to this in-cluster endpoint */
   LlmBaseUrl: "LLM_BASE_URL",
   LlmModel: "LLM_MODEL",
@@ -50,6 +59,8 @@ export type WorkerDurableRuntimeConfig = {
   llmModel?: string;
   /** OTLP HTTP endpoint for first-class traces/metrics/logs (optional; no-op when absent) */
   otelExporterOtlpEndpoint?: string;
+  /** foreground agent loop mode for the Work OS lane */
+  agentLoopMode: AgentLoopMode;
 };
 
 export type WorkerProcessConfig = WorkerRuntimeConfig & WorkerDurableRuntimeConfig;
@@ -92,10 +103,22 @@ export function parseWorkerRuntimeConfigFromEnv(env: WorkerProcessEnvironment): 
     workerKeepAliveOrgHeartbeatDeadlineMs: parseWorkerKeepAliveOrgHeartbeatDeadlineMs(
       env[WorkerProcessEnvName.WorkerKeepAliveOrgHeartbeatDeadlineMs],
     ),
+    agentLoopMode: parseAgentLoopMode(env[WorkerProcessEnvName.AgentLoopMode]),
     ...parseOtlpConfig(env),
     // optional model backend — only set when both URL and model are provided
     ...parseLlmConfig(env),
   };
+}
+
+function parseAgentLoopMode(value: string | undefined): AgentLoopMode {
+  const trimmed = value?.trim();
+  if (trimmed === undefined || trimmed.length === 0) {
+    return AgentLoopMode.Legacy;
+  }
+  if (Object.values(AgentLoopMode).includes(trimmed as AgentLoopMode)) {
+    return trimmed as AgentLoopMode;
+  }
+  throw new WorkerRuntimeConfigError(WorkerRuntimeConfigErrorCode.InvalidAgentLoopMode);
 }
 
 function parseOtlpConfig(env: WorkerProcessEnvironment): { otelExporterOtlpEndpoint?: string } {

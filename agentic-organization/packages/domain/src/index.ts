@@ -140,7 +140,7 @@ export {
   ToolBundle,
   type HatDefinition,
 } from "./hat-definition.ts";
-export { OrgEventKind, type OrgEvent } from "./org-event.ts";
+export { OrgEventKind, type OrgEvent, type OrgEventTransitionContext } from "./org-event.ts";
 export {
   HatBindingPhase,
   TerminalHatBindingPhases,

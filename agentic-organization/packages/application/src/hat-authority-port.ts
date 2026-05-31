@@ -116,7 +116,8 @@ function decisionForAuthorityState(
 
 function actionClassFor(request: HatAuthorityRequest): ActionClass | undefined {
   if (request.toolType !== undefined) {
-    return ToolActionClass[request.toolType as ActionClass];
+    const toolActionClass = ToolActionClass[request.toolType as ActionClass];
+    if (toolActionClass !== undefined) return toolActionClass;
   }
 
   return CommandActionClass[request.commandType as CommandType];

@@ -17,7 +17,7 @@ import { env } from "node:process";
 
 import { buildHatDefinitions, runWorkOsCycle } from "../packages/application/src/index.ts";
 import {
-  createCockroachOrgSystemMigration,
+  createCockroachCoreStateMigrations,
   createCockroachOrgEventStore,
   createCockroachSqlExecutor,
   splitSqlStatements,
@@ -34,9 +34,12 @@ async function main(): Promise<void> {
   };
   const executor = createCockroachSqlExecutor({ client });
 
-  // the org_events table (OrgSystemV15) is the durable trace for the living loop
-  for (const statement of splitSqlStatements(createCockroachOrgSystemMigration().sql)) {
-    await pool.query(statement);
+  // the org_events table is the durable trace for the living loop; apply the
+  // ordered core set so additive org_event columns are present on reused DBs.
+  for (const migration of createCockroachCoreStateMigrations()) {
+    for (const statement of splitSqlStatements(migration.sql)) {
+      await pool.query(statement);
+    }
   }
   const orgEventStore = createCockroachOrgEventStore({ executor });
 
