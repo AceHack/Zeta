@@ -66,8 +66,13 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: docker build (the test — install.sh + local-LLM validation inside)
+        env:
+          # mise.sh promotes GITHUB_TOKEN -> MISE_GITHUB_TOKEN (authenticated GitHub API,
+          # no 403); passed into the build as a BuildKit secret below (not a build-arg).
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker build \
+          DOCKER_BUILDKIT=1 docker build \
+            --secret id=github_token,env=GITHUB_TOKEN \
             -f tools/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile \
             -t zeta-ubuntu-install-sh-test \
             .

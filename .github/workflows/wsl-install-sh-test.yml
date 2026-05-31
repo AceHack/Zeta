@@ -85,7 +85,11 @@ jobs:
         env:
           # Pass the Windows-host checkout path into WSL, /p = translate to the /mnt form.
           HOST_WORKSPACE: ${{ github.workspace }}
-          WSLENV: HOST_WORKSPACE/p
+          # mise.sh promotes GITHUB_TOKEN -> MISE_GITHUB_TOKEN (authenticated GitHub API,
+          # no 403 rate-limit); ZETA_INSTALL_FULL exercises the one-liner installers.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ZETA_INSTALL_FULL: "1"
+          WSLENV: HOST_WORKSPACE/p:GITHUB_TOKEN:ZETA_INSTALL_FULL
         run: |
           set -euo pipefail
           echo "=== WSL install.sh test ==="

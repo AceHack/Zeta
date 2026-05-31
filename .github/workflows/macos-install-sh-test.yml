@@ -71,6 +71,15 @@ jobs:
     # jars + ~398MB model pull. Matches the other shields' 40-min bound, +5 slack.
     timeout-minutes: 45
 
+    env:
+      # mise.sh auto-promotes GITHUB_TOKEN -> MISE_GITHUB_TOKEN so mise's aqua/pipx GitHub
+      # release lookups are authenticated (5000/hr) instead of the unauthenticated 60/hr
+      # limit this shield was hitting 403s on.
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Exercise the one-liner dev-CLI installers here (they default-skip in non-interactive
+      # CI; the shields are where we test everything).
+      ZETA_INSTALL_FULL: "1"
+
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

@@ -103,6 +103,10 @@ jobs:
           # (mise install + bun install + claude-code download + gh
           # nix-shell + ~50 mise-tool installs); bump to 900s.
           DOCKER_BUILD_TIMEOUT_SEC: '900'
+          # mise.sh promotes GITHUB_TOKEN -> MISE_GITHUB_TOKEN (authenticated GitHub API,
+          # no 403); the driver passes it into the build as a BuildKit secret. BuildKit on.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCKER_BUILDKIT: '1'
         run: bun tools/ci/docker-nixos-install-sh-test.ts
 
       - name: Upload Docker test log (always)

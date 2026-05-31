@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # tools/ci/dockerfiles/ubuntu-install-sh-test/Dockerfile
 #
 # Docker-based install.sh test on Ubuntu userspace — sibling to
@@ -38,7 +40,15 @@ WORKDIR /zeta
 COPY . /zeta
 
 # The entropy lever: bare ubuntu -> working substrate (incl. the local-LLM core).
-RUN ./tools/setup/install.sh
+# Exercise the one-liner dev-CLI installers (default-skip in non-interactive CI; the shields
+# are where we test everything) + authenticate mise GitHub API lookups via a BuildKit secret
+# (no 403 rate-limit). The token is mounted as a file for THIS RUN only — never baked into an
+# image layer (the reason for --mount=type=secret over --build-arg). Both env vars are scoped
+# to this RUN. || true keeps a local build (no --secret) working (empty token = unauth, as before).
+RUN --mount=type=secret,id=github_token \
+    ZETA_INSTALL_FULL=1 \
+    GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)" \
+    ./tools/setup/install.sh
 
 # Validate the local-LLM primitive end-to-end. The MODEL persists on disk
 # (install.sh pulled it into a layer); the DAEMON does not persist across RUN

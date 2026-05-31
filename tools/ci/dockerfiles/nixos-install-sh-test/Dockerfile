@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # tools/ci/dockerfiles/nixos-install-sh-test/Dockerfile
 #
 # B-0849 Phase 1 — fast-iteration test harness for tools/setup/install.sh
@@ -130,7 +132,14 @@ COPY tools/accelerator /workspace/tools/accelerator
 #      verifiers, shellenv)
 # Exits non-zero if any step fails — the docker build itself fails,
 # which CI surfaces as a build failure.
-RUN tools/setup/install.sh
+# Exercise the one-liner dev-CLI installers (default-skip in non-interactive CI; the shields
+# are where we test everything) + authenticate mise GitHub API lookups via a BuildKit secret
+# (no 403). Token mounted as a file for THIS RUN only — never baked into an image layer (vs
+# --build-arg). Both env vars scoped to this RUN. || true keeps local builds (no --secret) ok.
+RUN --mount=type=secret,id=github_token \
+    ZETA_INSTALL_FULL=1 \
+    GITHUB_TOKEN="$(cat /run/secrets/github_token 2>/dev/null || true)" \
+    tools/setup/install.sh
 
 # Validation step 1: bun installed via mise AND matches .mise.toml pin
 # `bun = "1.3"` exactly (per Copilot review on PR #5393 — earlier check

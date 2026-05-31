@@ -127,6 +127,11 @@ function runBuild(timeoutSec: number, logPath: string): BuildResult {
   const startMs = Date.now();
   const buildArgs = [
     "build",
+    // Authenticate mise GitHub API lookups via a BuildKit secret (no 403 rate-limit);
+    // mounted as a file for the install.sh RUN only, never baked into a layer (vs
+    // --build-arg). DOCKER_BUILDKIT=1 (workflow env, inherited by spawnSync) enables it.
+    "--secret",
+    "id=github_token,env=GITHUB_TOKEN",
     "--file",
     DOCKERFILE_PATH,
     "--tag",
