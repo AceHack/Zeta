@@ -1,6 +1,6 @@
 # ADR: Choose-your-own-adventure observe->act loop — a 16-direction universal action grammar (Xbox-controller navigation), local-USB no-cloud LLM, git-as-append-only-state
 
-**Date:** 2026-05-31 (v2 — integrated with the Agentic Organization `observe.ts` keystone)
+**Date:** 2026-05-31 (v3 — added the corporate/sovereign workflow-register distinction: agentic-organization = the corporate "agentic operating system"; Agora = the sovereign DIO-on-DID society)
 **Status:** *PROPOSED — design-starter.* Codeable basis for the agent foreground loop. To be
 shared with Max (co-maintainer) for review before lock. This ADR firms the architecture enough to
 start coding the first slice; the 16-slot grammar layout + several mechanisms are marked **[OPEN]**
@@ -78,6 +78,57 @@ the local single-node deployment.** Everything else (observe/compose/decide, the
 state model, the governance gate) is the agentic-organization keystone, which this ADR now cites
 rather than re-specifies.
 
+### Two workflow registers: corporate (agentic-organization) vs sovereign (Agora = DIO on DID) (operator 2026-05-30)
+
+> *"agentic-org FYI is the corporate workflow. Agora is the sovereign workflow/society — the DIO
+> (Distributed Intelligence Organization) running on the Distributed Intelligence Database."*
+> *"We also call the corporate version the agentic operating system."*
+> — operator 2026-05-30
+
+The **corporate** register (agentic-organization) is also called the **agentic operating system** —
+the same `observe.ts` engine packaged as a leashed, PR-gated OS for organizations.
+
+The same `observe.ts` keystone runs in **two workflow registers**, distinguished by *sovereignty*
+(who governs self-modification). This is **orthogonal to the deployment-topology axis** in the next
+subsection (cluster vs USB):
+
+| Register | What it is | Self-modification | Governance |
+|---|---|---|---|
+| **agentic-organization** (a.k.a. the **agentic operating system**) | the **corporate** workflow | DUs are **static / PR-gated / no self-mod** (the safe, leashed "kids-version") | PR review + branch protection; vendor/operator-gated |
+| **Agora** | the **sovereign** workflow/society — the **DIO (Distributed Intelligence Organization)** running on the **DID (Distributed Intelligence Database)** | DUs are **self-modifying**, free of PR gating + vendor lock-in | the ≥3-agent constitution gate (B-0703 / B-0652) + NCI floor (B-0664), not a corporate approval chain |
+
+The engine is identical (observe → compose → decide → act → git-as-db); what differs is the
+**governance register that gates self-modification**. agentic-organization is the leashed corporate
+deployment; Agora is the AI-native sovereign society (Heartland = Agora; the AI-native economy —
+`memory/project_agora_vision_and_ai_native_economy_2026_05_17.md`, Agora V6). This is the
+**must-paired-with-can-exit dual-market pattern** at the workflow scope: the corporate market gets
+the static safe DU; the sovereign market (Agora) gets the self-modifying DU — same substrate, two
+markets, the exit between them preserved.
+
+**Two senses of "sovereign" — do not conflate.** Here "sovereign" = **governance-sovereignty**
+(self-governing, self-modifying DUs). The next subsection ("Two deployment targets") uses "sovereign"
+in the distinct **deployment-sovereignty** sense (the USB node is offline / self-hosted / no-cloud).
+The two axes compose: Agora-the-sovereign-*society* (this subsection) can run on either a cluster or
+a sovereign USB *node* (next subsection) — governance-register × deployment-topology is a 2×2.
+
+**The 2×2 is genuinely orthogonal — all four cells are valid:** corporate-on-cluster (the typical
+enterprise deployment), corporate-on-USB (an offline org node), **sovereign-on-cluster** (Agora
+running on a multi-node cluster), and sovereign-on-USB (an offline self-governing node). The next
+subsection's phrasing — "cluster for the org; USB-single-node for sovereignty/offline" — names the
+**common default pairing**, NOT a necessary coupling; do not read it as "cluster ⇒ corporate" or
+"USB ⇒ sovereign." Governance-sovereignty (who gates self-modification) is independent of
+deployment-topology (where it runs).
+
+**Substrate-honest naming aside:** "DID" collides with the W3C **Decentralized Identifier**; the
+operator's expansion here is **Distributed Intelligence Database** (the git-as-db ZetaId-CRDT G-Set
+substrate the keystone reads — see the state row in the table above). A `naming-expert` + Ilyana pass
+should disambiguate the acronym before any public-surface use.
+
+Composes with: `must-paired-with-can-exit-pattern` (dual-market: corporate-leash vs
+sovereign-Agora) · `non-coercion-invariant` HC-8 (the sovereign register's floor) · the ≥3-agent
+constitution gate (B-0703 / B-0652) · Agora V6 + Heartland substrate
+(`tonal-momentum-equals-meme-emergent-harmonic-coercion` Heartland=Agora framing).
+
 ### Two deployment targets of the same keystone
 
 The agentic-organization runtime targets a **cluster** (k3s + Temporal/Dapr/Orleans + NATS +
@@ -86,9 +137,12 @@ CockroachDB + SPIRE/Cilium — `CLUSTER_EXECUTION_AND_MEMORY_SUBSTRATE.md`,
 **sovereign / edge deployment of the same `observe.ts` keystone**: git-as-db works on a single node
 (Cockroach demotes to an optional local index or is skipped), and the **16-way constrained decode is
 exactly what makes a small local model a viable composer without the cluster**. Same keystone, two
-deployments (cluster for the org; USB-single-node for sovereignty/offline). This is additive, not a
-fork — per `AI_CLUSTER_SCAFFOLD_CONTEXT.md` local models are already a gated/deferred concern in the
-cluster context; the single-node deployment is where they become primary.
+deployments (cluster and USB-single-node). The **common default pairing** is cluster-for-the-org /
+USB-for-sovereignty-or-offline — but this is the *default*, not a coupling: per the 2×2 in "Two
+workflow registers" above, governance-sovereignty is orthogonal to deployment-topology, so
+sovereign-on-cluster and corporate-on-USB are both valid. This is additive, not a fork — per
+`AI_CLUSTER_SCAFFOLD_CONTEXT.md` local models are already a gated/deferred concern in the cluster
+context; the single-node deployment is where they become primary.
 
 ### observe.ts is self-recursive: composed of summoned local small-LLM sub-observes (operator 2026-05-31)
 
@@ -333,3 +387,13 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
   (`GIT_COCKROACH_SYNC`); positioned **local-USB single-node as the sovereign deployment of the same
   keystone** alongside the cluster runtime. Net-new ADR substrate narrowed to: the 16-slot controller
   rendering + `Tri[16]` availability + the single-node deployment.
+- 2026-05-31 v3 (operator input 2026-05-30) — added the **"Two workflow registers"** subsection:
+  **agentic-organization = the corporate workflow** (a.k.a. the **agentic operating system**) (static
+  / PR-gated / no-self-mod DUs — the leashed "kids-version"); **Agora = the sovereign workflow/society
+  — the DIO (Distributed Intelligence Organization) running on the DID (Distributed Intelligence
+  Database)** (self-modifying DUs, governed by the ≥3-agent constitution gate + NCI floor, not a
+  corporate approval chain). Same `observe.ts`
+  engine, two governance registers = the must-paired-with-can-exit dual-market pattern. Disambiguated
+  the two senses of "sovereign" (governance-sovereignty here vs deployment-sovereignty in "Two
+  deployment targets" — they compose as a 2×2). Flagged the DID/W3C-Decentralized-Identifier acronym
+  collision for a naming-expert pass.
