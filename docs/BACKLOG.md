@@ -896,6 +896,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0943](backlog/P2/B-0943-bounded-retries-at-dst-boundary-transient-network-dns-toolchain-install-must-not-fail-ci-aaron-2026-05-30.md)** Bounded retries at the DST boundary — transient network/DNS failures (mise toolchain install) must not fail CI
 - [ ] **[B-0945](backlog/P2/B-0945-declarative-microkernel-substrate-in-house-trust-gradient-compression-engine-sequoia-memory-model-better-than-docker-aaron-2026-05-30.md)** Declarative microkernel substrate (in-house; NixOS-declarative + microkernel-TCB) running the trust-gradient + V8-polymorphic-bayesian-compression engine over a Stanford-Sequoia memory model -- better than docker
 - [ ] **[B-0946](backlog/P2/B-0946-filesystem-dsl-fsharp-computation-expression-fuse-backend-benchmark-vs-closure-table-dst-millions-nodes-single-machine-summonable-bft-crdts-aaron-2026-05-30.md)** Filesystem DSL as F# computation expression (fs {}) + FUSE backend (benchmark vs closure-table); cross-cutting -- all microkernel/db/fs/cluster work is DST-simulatable at millions-of-nodes on one machine via summonable-BFT + CRDTs
+- [ ] **[B-0948](backlog/P2/B-0948-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md)** Workflow DUs with first-class BFT oracle/compiler summons + observe.ts keystone -- research-to-get-clean then build
 
 ## P3 — convenience / deferred
 
