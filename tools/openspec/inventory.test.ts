@@ -7,6 +7,7 @@ import {
   scanModules,
   buildGapReport,
   CAPABILITY_MODULE_MAP,
+  CAPABILITY_ARTIFACT_MAP,
   EXCLUDED_MODULES,
 } from "./inventory.ts";
 import type { SpecEntry, ModuleEntry } from "./inventory.ts";
@@ -25,10 +26,7 @@ describe("scanSpecs", () => {
     const specDir = join(root, "my-cap");
     const profilesDir = join(specDir, "profiles");
     mkdirSync(profilesDir, { recursive: true });
-    writeFileSync(
-      join(specDir, "spec.md"),
-      "## Purpose\n\nThis defines the foo capability.\n\n## Requirements\n",
-    );
+    writeFileSync(join(specDir, "spec.md"), "## Purpose\n\nThis defines the foo capability.\n\n## Requirements\n");
     writeFileSync(join(profilesDir, "fsharp.md"), "# F# overlay\n");
 
     const specs = scanSpecs(root);
@@ -72,10 +70,7 @@ describe("scanModules", () => {
 
   test("finds .fs files and extracts namespace", () => {
     const root = makeTempDir();
-    writeFileSync(
-      join(root, "Foo.fs"),
-      "namespace Zeta.Core\n\ntype Foo = { X: int }\n",
-    );
+    writeFileSync(join(root, "Foo.fs"), "namespace Zeta.Core\n\ntype Foo = { X: int }\n");
     writeFileSync(join(root, "NotFs.txt"), "ignored");
 
     const modules = scanModules(root);
@@ -164,9 +159,7 @@ describe("buildGapReport", () => {
   });
 
   test("reports missing mapped modules", () => {
-    const modules: ModuleEntry[] = [
-      { name: "ZSet.fs", path: "src/Core/ZSet.fs", namespace: "Zeta.Core" },
-    ];
+    const modules: ModuleEntry[] = [{ name: "ZSet.fs", path: "src/Core/ZSet.fs", namespace: "Zeta.Core" }];
 
     const report = buildGapReport([], modules);
     const algebraMapping = report.mappings.find((m) => m.capability === "operator-algebra");
@@ -189,6 +182,84 @@ describe("buildGapReport", () => {
     expect(report.unmappedSpecs).toContain("brand-new-spec");
   });
 
+  test("artifact-only mappings prevent specs from being marked unmapped", () => {
+    const root = makeTempDir();
+    mkdirSync(join(root, "evidence"), { recursive: true });
+    writeFileSync(join(root, "evidence", "proof.md"), "# Proof\n");
+
+    const specs: SpecEntry[] = [
+      {
+        capability: "artifact-only",
+        specPath: "openspec/specs/artifact-only/spec.md",
+        profiles: [],
+        purposeSnippet: "artifact-backed",
+      },
+    ];
+
+    const report = buildGapReport(specs, [], {
+      artifactRoot: root,
+      artifactMap: {
+        "artifact-only": ["evidence/proof.md"],
+      },
+    });
+
+    expect(report.unmappedSpecs).not.toContain("artifact-only");
+    expect(report.artifactMappings).toEqual([
+      {
+        capability: "artifact-only",
+        artifacts: ["evidence/proof.md"],
+        missingArtifacts: [],
+      },
+    ]);
+    expect(report.mappedArtifacts).toEqual(["evidence/proof.md"]);
+    expect(report.missingArtifacts).toEqual([]);
+
+    rmSync(root, { recursive: true });
+  });
+
+  test("artifact mappings surface missing backing files", () => {
+    const root = makeTempDir();
+    const report = buildGapReport([], [], {
+      artifactRoot: root,
+      artifactMap: {
+        "artifact-only": ["evidence/missing.md"],
+      },
+    });
+
+    expect(report.artifactMappings).toEqual([
+      {
+        capability: "artifact-only",
+        artifacts: [],
+        missingArtifacts: ["evidence/missing.md"],
+      },
+    ]);
+    expect(report.mappedArtifacts).toEqual([]);
+    expect(report.missingArtifacts).toEqual(["evidence/missing.md"]);
+
+    rmSync(root, { recursive: true });
+  });
+
+  test("default artifact root is stable across caller working directories", () => {
+    const originalCwd = process.cwd();
+    const root = makeTempDir();
+    const artifact = "tests/Tests.FSharp/Algebra/ZSet.Tests.fs";
+
+    try {
+      process.chdir(root);
+      const report = buildGapReport([], [], {
+        artifactMap: {
+          "z-set-algebra": [artifact],
+        },
+      });
+
+      expect(report.mappedArtifacts).toEqual([artifact]);
+      expect(report.missingArtifacts).toEqual([]);
+    } finally {
+      process.chdir(originalCwd);
+      rmSync(root, { recursive: true });
+    }
+  });
+
   test("coverage is 0% with no modules", () => {
     const report = buildGapReport([], []);
     expect(report.coveragePercent).toBe(0);
@@ -201,6 +272,15 @@ describe("mapping table integrity", () => {
       expect(typeof cap).toBe("string");
       expect(Array.isArray(modules)).toBe(true);
     }
+  });
+
+  test("z-set-algebra has non-core artifact coverage", () => {
+    expect(CAPABILITY_ARTIFACT_MAP["z-set-algebra"]).toEqual([
+      "tests/Tests.FSharp/Algebra/ZSet.Tests.fs",
+      "tests/Tests.FSharp/Algebra/ZSet.Overflow.Tests.fs",
+      "tests/Tests.FSharp/Algebra/IndexedZSet.Tests.fs",
+      "tests/Tests.CSharp/ZSetTests.cs",
+    ]);
   });
 
   test("EXCLUDED_MODULES is a Set of strings", () => {
@@ -231,5 +311,18 @@ describe("integration: real repo scan", () => {
     const repoRoot = join(import.meta.dir, "..", "..");
     const modules = scanModules(join(repoRoot, "src", "Core"));
     expect(modules.length).toBeGreaterThanOrEqual(50);
+  });
+
+  test("real z-set-algebra spec is artifact-mapped", () => {
+    const repoRoot = join(import.meta.dir, "..", "..");
+    const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
+    const modules = scanModules(join(repoRoot, "src", "Core"));
+    const report = buildGapReport(specs, modules, { artifactRoot: repoRoot });
+
+    const zSetMapping = report.artifactMappings.find((m) => m.capability === "z-set-algebra");
+    expect(zSetMapping).toBeDefined();
+    expect(zSetMapping!.artifacts).toContain("tests/Tests.FSharp/Algebra/ZSet.Tests.fs");
+    expect(zSetMapping!.missingArtifacts).toEqual([]);
+    expect(report.unmappedSpecs).not.toContain("z-set-algebra");
   });
 });
