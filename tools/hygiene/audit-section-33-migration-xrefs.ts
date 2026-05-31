@@ -26,7 +26,7 @@
 //   - docs/pr-discussions/** (frozen PR-discussion archives)
 //   - docs/research/** (sibling migration candidates; internal xrefs are provenance trail)
 //   - memory/persona/**/conversations/** (migrated archives — internal xrefs are provenance trail)
-//   - references/upstreams/** (other people's code; gitignored)
+//   - references/prior-art/** (other people's code; gitignored)
 //
 // Usage:
 //

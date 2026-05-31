@@ -11,8 +11,8 @@
  *   are flagged as "exists-on-disk-not-in-git" findings (substrate
  *   convention: references should point to git-tracked paths or stable
  *   URLs, not to local-mirror sync state). Caught via `git check-ignore`.
- *   Empirical seed: PR #1322 review found `references/upstreams/efcore/...`
- *   reference in a tick shard; references/upstreams/* is gitignored per
+ *   Empirical seed: PR #1322 review found `references/prior-art/efcore/...`
+ *   reference in a tick shard; references/prior-art/* is gitignored per
  *   the upstream-mirror sync convention.
  */
 
@@ -330,7 +330,7 @@ function checkFile(filePath: string): CheckResult {
     } else if (isResolvedClaim && resolvedAbsPath !== null) {
       // v0.6: path exists on disk — but is it git-tracked? Substrate
       // references should point to git-tracked paths or stable URLs,
-      // NOT to local-mirror sync state (e.g., `references/upstreams/*`
+      // NOT to local-mirror sync state (e.g., `references/prior-art/*`
       // which is gitignored per the upstream-mirror sync convention).
       if (isGitIgnored(resolvedAbsPath, repoRoot)) {
         findings.push({

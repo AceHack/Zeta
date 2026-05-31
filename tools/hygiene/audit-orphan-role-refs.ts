@@ -138,7 +138,7 @@ function isHistorySurface(f: string): boolean {
   if (f.startsWith(".git/")) return true;
   if (f.startsWith("node_modules/")) return true;
   if (f.startsWith("third_party/")) return true;
-  if (f.startsWith("references/upstreams/")) return true;
+  if (f.startsWith("references/prior-art/")) return true;
   if (f.startsWith("tools/lean4/.lake/")) return true;
   if (f.startsWith("tools/setup/build/")) return true;
   return false;

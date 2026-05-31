@@ -198,7 +198,7 @@ engine work touches them.
   today is the operator algebra; the SQL layer is the
   planned overlay.
 - **`docs/ROADMAP.md` / `docs/BACKLOG.md`.** Phased rollout.
-- **`docs/UPSTREAM-LIST.md`.** Postgres / DuckDB / Feldera /
+- **`docs/PRIOR-ART-LIST.md`.** Postgres / DuckDB / Feldera /
   Materialize / Hyper / Umbra / Vectorwise / SingleStore /
   ClickHouse as positioning references.
 - **`docs/TECH-RADAR.md`.** SQL-engine rows (parser,
@@ -221,7 +221,7 @@ engine work touches them.
 ## Reference patterns
 
 - `docs/ROADMAP.md`, `docs/BACKLOG.md`, `docs/TECH-RADAR.md`,
-  `docs/UPSTREAM-LIST.md` — engine-level anchors.
+  `docs/PRIOR-ART-LIST.md` — engine-level anchors.
 - `.claude/skills/sql-parser-expert/SKILL.md` — parser narrow.
 - `.claude/skills/sql-expert/SKILL.md` — SQL-language narrow.
 - `.claude/skills/postgresql-expert/SKILL.md` — dialect +

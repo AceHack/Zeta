@@ -41,7 +41,7 @@ lints the repo for covert-channel artefacts.
 ### Indirect injection (via content you read)
 
 - A poisoned NuGet README containing injection text.
-- A poisoned upstream doc (`references/upstreams/foo/README.md`).
+- A poisoned upstream doc (`references/prior-art/foo/README.md`).
 - A poisoned issue comment / PR description.
 - A poisoned test fixture file name or content.
 

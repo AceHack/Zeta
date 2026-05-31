@@ -3648,7 +3648,7 @@ or split by sub-aspect once past ~400 lines.
   demoted to advisory in round 18).
 - **Docs**: `THREAT-MODEL-FUN.md` (now Space Opera),
   `FAMILY-EMPATHY.md` (now `CONFLICT-RESOLUTION.md`),
-  `TECH-RADAR.md`, `LOCKS.md`, `UPSTREAM-LIST.md`,
+  `TECH-RADAR.md`, `LOCKS.md`, `PRIOR-ART-LIST.md`,
   `DECISIONS/2026-04-17-lock-free-circuit-register.md`.
 - **5 new SDL-derived Semgrep rules** (rules 8-12):
   unsafe-deserialisation, file-read-without-size-cap,

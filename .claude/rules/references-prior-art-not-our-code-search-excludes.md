@@ -1,29 +1,29 @@
-# `references/upstreams/` is NOT our code — search/scan operations must exclude it
+# `references/prior-art/` is NOT our code — search/scan operations must exclude it
 
 Carved sentence:
 
-> `references/upstreams/` is OTHER PEOPLE'S CODE that we mirror for
+> `references/prior-art/` is OTHER PEOPLE'S CODE that we mirror for
 > study (regeneratable mirror state, gitignored, never hand-edited).
 > Any search operation that walks the file tree (`find`, `grep -r`,
 > `xargs grep`, recursive-file-walk scripts) MUST exclude
-> `references/upstreams/` — otherwise scans run for hours, surface
+> `references/prior-art/` — otherwise scans run for hours, surface
 > false-positives from unrelated upstream code, and pollute results
 > with patterns that match in protobuf docs, gRPC tests, Redis
 > manifests, etc. **Default to ripgrep** (`rg`) which respects
 > `.gitignore` automatically. For plain `grep -r`, use
 > `--exclude-dir=upstreams` (basename glob, NOT a path) or an
 > explicit allowlist (`memory/ docs/ .claude/ tools/`). For
-> `find`, use `-not -path './references/upstreams/*'` (the `find`
+> `find`, use `-not -path './references/prior-art/*'` (the `find`
 > command does NOT support `--exclude-dir`).
 
 ## Operational content
 
 Per `references/README.md`:
 
-- `references/upstreams/` is "Disposable mirror state — cloned
+- `references/prior-art/` is "Disposable mirror state — cloned
   upstream repositories used as read-only references. **Gitignored;
   regeneratable via script; never hand-edited.**"
-- `.gitignore` line: `references/upstreams/*` (with carve-outs for
+- `.gitignore` line: `references/prior-art/*` (with carve-outs for
   the directory's own `.gitignore` + `README.md`)
 - The mirror state regenerates from `references/reference-sources.json`
   via the sync script
@@ -71,7 +71,7 @@ rg "pattern" docs/ memory/  # explicit allowlist
 ```bash
 # GNU grep --exclude-dir takes a BASENAME glob, not a path —
 # so --exclude-dir=upstreams excludes any directory named
-# 'upstreams' anywhere in the tree (currently only references/upstreams/).
+# 'upstreams' anywhere in the tree (currently only references/prior-art/).
 # If a second 'upstreams/' ever appears that we DO want to search,
 # this approach overreaches and we need the explicit-allowlist
 # approach below instead.
@@ -85,13 +85,13 @@ grep -rn "pattern" \
 
 **Caveat**: GNU `grep`'s `--exclude-dir=GLOB` matches directory
 *names* (basename), NOT slash-delimited paths. So
-`--exclude-dir=references/upstreams` does NOT work (silently
+`--exclude-dir=references/prior-art` does NOT work (silently
 matches nothing). Use the basename `upstreams` instead, OR use
 explicit-allowlist sub-paths (`memory/ docs/ .claude/ tools/`)
 which sidestep the issue entirely.
 
 **Better**: just use `rg` — it respects `.gitignore` by default
-and `references/upstreams/*` is already gitignored.
+and `references/prior-art/*` is already gitignored.
 
 ### `find | xargs grep` is the worst trap
 
@@ -104,7 +104,7 @@ Fix: filter the `find` output BEFORE passing to xargs:
 
 ```bash
 find . -type f -name "*.md" \
-  -not -path "./references/upstreams/*" \
+  -not -path "./references/prior-art/*" \
   -not -path "./node_modules/*" \
   -not -path "./.git/*" \
   2>/dev/null | xargs grep -l "pattern" 2>/dev/null
@@ -126,7 +126,7 @@ from `.` and try to exclude — you'll always miss something.
 
 **Non-repo content** (skip in searches by default):
 
-- `references/upstreams/` — gitignored mirror state of OTHER repos
+- `references/prior-art/` — gitignored mirror state of OTHER repos
 - `references/<legacy>/` — legacy imports (e.g., `tla-book/`)
   with their own file layouts; check `references/README.md` for
   current state
@@ -135,7 +135,7 @@ from `.` and try to exclude — you'll always miss something.
 - `target/` — Rust build outputs
 - `.git/` — git internals
 
-## When `references/upstreams/` IS the right search target
+## When `references/prior-art/` IS the right search target
 
 Not rare — actually a **first-class workflow** during backlog
 research. Per the human maintainer 2026-05-15: *"when doing
@@ -144,7 +144,7 @@ solved similar issues i've been gathering their githubs so we
 can learn when doing our backlog itmes. some of these are very
 cutting edge and some are tried and true been around for years."*
 
-`references/upstreams/` is the curated **prior-art surface** —
+`references/prior-art/` is the curated **prior-art surface** —
 humans who've solved similar problems, mirrored as read-only
 references. When starting a backlog item, consulting the relevant
 upstream(s) is encouraged and composes with
@@ -154,9 +154,9 @@ upstream(s) is encouraged and composes with
 
 | Mode | Pattern | Treatment |
 |---|---|---|
-| **Backlog prior-art research** (explicit-target) | `rg "pattern" references/upstreams/postgres/` | Encouraged; one of the curated prior-art surfaces; log queries on the backlog row |
+| **Backlog prior-art research** (explicit-target) | `rg "pattern" references/prior-art/postgres/` | Encouraged; one of the curated prior-art surfaces; log queries on the backlog row |
 | **Unconstrained repo scan with plain `grep -r`** or `find . \| xargs grep` | (`grep -rn "pattern" .`) | MUST exclude `--exclude-dir=upstreams`; otherwise runaway-scan failure mode |
-| **Unconstrained repo scan with ripgrep** | `rg "pattern" .` | Safe-by-default — ripgrep respects `.gitignore`, and `references/upstreams/*` is already gitignored |
+| **Unconstrained repo scan with ripgrep** | `rg "pattern" .` | Safe-by-default — ripgrep respects `.gitignore`, and `references/prior-art/*` is already gitignored |
 
 Other legitimate explicit-target reasons:
 
@@ -167,7 +167,7 @@ Other legitimate explicit-target reasons:
 
 **Discovery surfaces for upstream prior-art:**
 
-- `docs/UPSTREAM-LIST.md` — curated watchlist + category index
+- `docs/PRIOR-ART-LIST.md` — curated watchlist + category index
 - `references/notes/` — synthesis notes ("what matters from each
   upstream"); start here before grepping the mirror
 - `references/reference-sources.json` — full source list
@@ -175,13 +175,13 @@ Other legitimate explicit-target reasons:
 **Refresh the mirror on demand:**
 
 ```bash
-tools/setup/common/sync-upstreams.sh             # refresh all
-tools/setup/common/sync-upstreams.sh --name foo,bar  # subset
-tools/setup/common/sync-upstreams.sh --prune     # drop stale
+tools/setup/common/sync-prior-art.sh             # refresh all
+tools/setup/common/sync-prior-art.sh --name foo,bar  # subset
+tools/setup/common/sync-prior-art.sh --prune     # drop stale
 ```
 
 The script reads `references/reference-sources.json`, shallow-clones
-or fast-fetches each upstream into `references/upstreams/<name>/`,
+or fast-fetches each upstream into `references/prior-art/<name>/`,
 and resets-hard to match `origin/<branch>` byte-for-byte. Safe to
 re-run; `ls-remote` short-circuits when local HEAD already matches.
 
@@ -189,7 +189,7 @@ In all cases, **EXPLICITLY target the subtree** when grepping
 the mirror:
 
 ```bash
-rg "pattern" references/upstreams/spanner/
+rg "pattern" references/prior-art/spanner/
 ```
 
 — never start from `.` and let the recursion drift.
@@ -227,10 +227,10 @@ hygiene knowledge needs wake-time landing. Without this rule:
 ## Composes with substrate
 
 - `references/README.md` — canonical definition of what
-  `references/upstreams/` is
+  `references/prior-art/` is
 - `references/reference-sources.json` — the upstream watchlist
   the mirror tree regenerates from
-- `.gitignore` — line `references/upstreams/*` is the existing
+- `.gitignore` — line `references/prior-art/*` is the existing
   git-level enforcement
 - The substrate-honest failure-mode anchor: the 2-hour-grep
   evidence on 2026-05-15 that authored this rule
@@ -238,7 +238,7 @@ hygiene knowledge needs wake-time landing. Without this rule:
 ## Substrate-honest framing
 
 This rule does NOT prevent the failure mode at the tool level.
-Plain `grep -r` and `find` will still walk `references/upstreams/`
+Plain `grep -r` and `find` will still walk `references/prior-art/`
 if invoked without exclusions. The rule encodes the DISCIPLINE
 that the agent applies; mechanizing it further would require:
 
@@ -256,14 +256,14 @@ mechanization lands.
 ## Full reasoning
 
 The human maintainer 2026-05-15T~15:25Z, after observing the
-runaway grep process: *"references/upstreams/ in code we ignore
+runaway grep process: *"references/prior-art/ in code we ignore
 this folder everywhere casue its not our code but other githubs
 we reference for ideas"*
 
 The 2-hour-grep evidence trail:
 
 1. An agent authored a manifesto-search bash one-liner using
-   `find | xargs grep -l` with no exclusion of `references/upstreams/`
+   `find | xargs grep -l` with no exclusion of `references/prior-art/`
 2. find quickly returned all matching paths (including the upstream
    tree); xargs grep recursed
 3. The grep was still running 2 hours later when the human
@@ -276,7 +276,7 @@ The 2-hour-grep evidence trail:
    failure mode doesn't recur
 
 The substrate-honest meta-note: the failure mode was rooted in
-agent-side ignorance of the `references/upstreams/` convention.
+agent-side ignorance of the `references/prior-art/` convention.
 The maintainer caught it via shell-count observation, taught the
 discipline, and the rule now lands so future agents don't repeat
 the trap. That's the bandwidth-engineering pattern operating at

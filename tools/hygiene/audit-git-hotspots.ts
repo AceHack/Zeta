@@ -82,7 +82,7 @@ const SPAWN_MAX_BUFFER = 64 * 1024 * 1024; // 64 MiB
 const EXCLUDED_PREFIXES: readonly string[] = [
   "docs/hygiene-history/",
   "openspec/changes/",
-  "references/upstreams/",
+  "references/prior-art/",
 ];
 
 const PR_TRAILER_RE = /\(#\d+\)$/;

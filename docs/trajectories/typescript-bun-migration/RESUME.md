@@ -88,7 +88,7 @@ tools/setup/common/mise.sh
 tools/setup/common/profile-edit.sh
 tools/setup/common/python-tools.sh
 tools/setup/common/shellenv.sh
-tools/setup/common/sync-upstreams.sh
+tools/setup/common/sync-prior-art.sh
 tools/setup/common/verifiers.sh
 ```
 

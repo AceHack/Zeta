@@ -7,7 +7,7 @@ saveTextLockfile = true
 timeout = 20000
 coverageSkipTestFiles = true
 # Exclude heavy folders or bun test will walk 20+ GB of upstream clones
-# (references/upstreams), Lake build artefacts (tools/lean4/.lake),
+# (references/prior-art), Lake build artefacts (tools/lean4/.lake),
 # and solver JAR stores (tools/alloy, tools/tla). Performance regression
 # lesson inherited from SQLSharp scaffold hardening.
 pathIgnorePatterns = [
@@ -15,7 +15,7 @@ pathIgnorePatterns = [
   "**/TestResults/**",
   "**/artifacts/**",
   "**/node_modules/**",
-  "**/references/upstreams/**",
+  "**/references/prior-art/**",
   "**/bin/**",
   "**/obj/**",
   "**/.lake/**",
@@ -29,7 +29,7 @@ coveragePathIgnorePatterns = [
   "**/TestResults/**",
   "**/artifacts/**",
   "**/node_modules/**",
-  "**/references/upstreams/**",
+  "**/references/prior-art/**",
   "**/bin/**",
   "**/obj/**",
   "**/.lake/**",

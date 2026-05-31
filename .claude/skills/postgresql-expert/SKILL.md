@@ -180,7 +180,7 @@ without the text-format roundtrip.
 
 - **Not yet in `src/`.** The Postgres-wire server is a
   planned tier; see `docs/ROADMAP.md` / `docs/BACKLOG.md`.
-- **`docs/UPSTREAM-LIST.md`.** Postgres is cited as the
+- **`docs/PRIOR-ART-LIST.md`.** Postgres is cited as the
   reference dialect + wire target.
 - **`docs/TECH-RADAR.md`.** Postgres-wire frontend row
   (Trial → Adopt pending prototype).
@@ -207,7 +207,7 @@ without the text-format roundtrip.
 - Postgres wire protocol docs — the normative source.
 - `docs/ROADMAP.md` — Postgres-wire frontend timing.
 - `docs/BACKLOG.md` — phased rollout.
-- `docs/UPSTREAM-LIST.md` — Postgres reference citation.
+- `docs/PRIOR-ART-LIST.md` — Postgres reference citation.
 - `docs/TECH-RADAR.md` — Postgres-wire row.
 - `.claude/skills/sql-expert/SKILL.md` — SQL-language
   umbrella.

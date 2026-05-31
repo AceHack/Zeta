@@ -13,8 +13,8 @@
  *
  * Scan discipline: candidate collection scans each ROOTED include pattern
  * directly (e.g. `tools/tla/specs/*.tla`), never a recursive glob from the
- * repo root, so the gitignored `references/upstreams/` mirror is never
- * walked (.claude/rules/references-upstreams-not-our-code-search-excludes.md).
+ * repo root, so the gitignored `references/prior-art/` mirror is never
+ * walked (.claude/rules/references-prior-art-not-our-code-search-excludes.md).
  */
 
 import { parseArgs } from "node:util";

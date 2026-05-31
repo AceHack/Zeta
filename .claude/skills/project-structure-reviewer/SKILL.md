@@ -121,7 +121,7 @@ Out of scope:
 # Fast top-level inventory.
 find . -maxdepth 2 -type d -not -path "*/\.git/*" \
   -not -path "*/bin/*" -not -path "*/obj/*" \
-  -not -path "*/references/upstreams/*" | sort
+  -not -path "*/references/prior-art/*" | sort
 
 # Per-persona pairing check.
 ls .claude/agents/*.md | sed 's|.claude/agents/\(.*\).md|\1|' \
@@ -166,7 +166,7 @@ paired ref sweeps are regression vectors.
 
 - Does NOT rewrite file content — layout only.
 - Does NOT rename public API (Ilyana's lane).
-- Does NOT touch `references/upstreams/**` — read-only
+- Does NOT touch `references/prior-art/**` — read-only
   clones from other projects.
 - Does NOT unilaterally move skill or persona files —
   every skill edit routes through `skill-creator`.

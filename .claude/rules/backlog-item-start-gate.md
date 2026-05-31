@@ -40,17 +40,17 @@ complete a checklist directly on the row body:
    wake-time-substrate + skill-router + orthogonal-axes +
    Otto-364 + PR #1701 + decision-archaeology + lost-files
    canonical at `tools/hygiene/LOST-FILES-LOCATIONS.md` + **the
-   curated external prior-art surface at `references/upstreams/`**
+   curated external prior-art surface at `references/prior-art/`**
    (humans who've solved similar problems; mix of cutting-edge
    and tried-and-true; prefer explicit-target subtree searches
-   like `rg "pattern" references/upstreams/postgres/` for focused
+   like `rg "pattern" references/prior-art/postgres/` for focused
    prior-art research; `rg` from repo root is also safe — it
-   respects `.gitignore` and `references/upstreams/*` is gitignored
+   respects `.gitignore` and `references/prior-art/*` is gitignored
    — but explicit-target is recommended because it documents
    which upstream(s) you actually consulted on the backlog row;
-   see `.claude/rules/references-upstreams-not-our-code-search-excludes.md`
+   see `.claude/rules/references-prior-art-not-our-code-search-excludes.md`
    for the full two-modes table and the plain-grep caveats).
-   The watchlist + category index lives at `docs/UPSTREAM-LIST.md`;
+   The watchlist + category index lives at `docs/PRIOR-ART-LIST.md`;
    the synthesis notes at `references/notes/`.
    Log surfaces searched, queries used, results found on the row.
 

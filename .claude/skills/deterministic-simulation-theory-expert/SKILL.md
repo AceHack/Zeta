@@ -208,7 +208,7 @@ statement of the rule.
 - `tests/ConcurrencyHarness.fs` — `VirtualTimeScheduler`.
 - `docs/TECH-RADAR.md` — "TigerBeetle LSM-forest + DST"
   Assess row.
-- `docs/UPSTREAM-LIST.md` — FoundationDB / TigerBeetle /
+- `docs/PRIOR-ART-LIST.md` — FoundationDB / TigerBeetle /
   Antithesis citations.
 - `docs/BACKLOG.md` §`ISimulationDriver` unification.
 - `.claude/skills/race-hunter/SKILL.md` — concurrency-bug

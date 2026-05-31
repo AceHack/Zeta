@@ -508,7 +508,7 @@ jobs:
           # each growing their own. Tracked via task #306
           # (cadence-fast classifier work) — do not treat the
           # duplicated regex as the permanent design.
-          shared_ignored_paths_regex='^(references/upstreams/|bench/|tools/tla/|tools/lean4/)|(^|.*/)(obj|bin)/'
+          shared_ignored_paths_regex='^(references/prior-art/|bench/|tools/tla/|tools/lean4/)|(^|.*/)(obj|bin)/'
           case "${{ matrix.language }}" in
             python)
               count=$(git ls-files -- '*.py' \

@@ -914,7 +914,7 @@ jobs:
     # detects an empty folder". Script under tools/lint/ respects
     # .gitignore and an explicit allowlist at
     # tools/lint/no-empty-dirs.allowlist. Upstream mirrors under
-    # references/upstreams/** are excluded by the script itself.
+    # references/prior-art/** are excluded by the script itself.
     # No untrusted input used in run: — only a fixed repo path.
     name: lint (no empty dirs)
     timeout-minutes: 3
@@ -936,7 +936,7 @@ jobs:
     # (Aaron 2026-05-01: "any .py" should be ported to TS or
     # excluded). Script under tools/lint/ respects .gitignore and
     # the explicit allowlist at tools/lint/no-python-files.allowlist;
-    # references/upstreams, .venv, __pycache__, site-packages, .lake
+    # references/prior-art, .venv, __pycache__, site-packages, .lake
     # are hard-excluded by the script itself.
     # No untrusted input used in run: — only a fixed repo path.
     name: lint (no python files)

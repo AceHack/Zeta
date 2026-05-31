@@ -22,7 +22,7 @@ across subfields.
   vs Z3 vs TLA+ vs FsCheck vs hand-proof).
 - Mathematical citation hygiene — when a claim needs a
   citation, what counts, where it lives (verification
-  registry, UPSTREAM-LIST, or inline).
+  registry, PRIOR-ART-LIST, or inline).
 - A prompt that crosses multiple subfields (e.g. "how
   does the measure-theoretic semantics of ZSet interact
   with the categorical operator algebra?").
@@ -119,7 +119,7 @@ external source:
    if the claim is about a verification artifact (Lean /
    TLA+ / Z3 / Alloy / FsCheck).
 2. Must cite the canonical entry from
-   `docs/UPSTREAM-LIST.md` if the source is a tool or
+   `docs/PRIOR-ART-LIST.md` if the source is a tool or
    paper we've vendored.
 3. Must include author, year, venue, page/section in the
    first reference; short form after.
@@ -161,7 +161,7 @@ skill; drift in existing citations by
   externally-cited artifacts.
 - `docs/research/refinement-type-feature-catalog.md` —
   24-feature roadmap.
-- `docs/UPSTREAM-LIST.md` — canonical external sources.
+- `docs/PRIOR-ART-LIST.md` — canonical external sources.
 - `.claude/skills/formal-verification-expert/SKILL.md` —
   Soraya, tool-routing authority.
 - `.claude/skills/category-theory-expert/SKILL.md` —

@@ -98,7 +98,7 @@ advocacy, not mathematics. At minimum, state:
 For Zeta's sketches, the bounds follow standard results
 (Count-Min: ε · ‖v‖₁ with probability 1-δ; HLL: ~1.04/√m
 standard error). Cite the original paper each time — see
-`docs/UPSTREAM-LIST.md`.
+`docs/PRIOR-ART-LIST.md`.
 
 ## Interaction with formal-verification-expert
 
@@ -135,7 +135,7 @@ stated error bound?) routes to Soraya for tool choice:
   algebra authority.
 - `src/Core/NovelMath.fs` — tropical semiring.
 - `src/Core/Hierarchy.fs` — tropical LFP closure.
-- `docs/UPSTREAM-LIST.md` — citation anchors for sketches
+- `docs/PRIOR-ART-LIST.md` — citation anchors for sketches
   / tropical / gossip.
 - `docs/research/proof-tool-coverage.md` — per-module
   proof tool map.

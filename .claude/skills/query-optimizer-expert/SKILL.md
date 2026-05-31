@@ -225,7 +225,7 @@ look "right" to the model; it's a quiet failure mode.
 ## Reference patterns
 
 - Graefe *Volcano / Cascades* — canonical cost-based
-  framework (`docs/UPSTREAM-LIST.md`).
+  framework (`docs/PRIOR-ART-LIST.md`).
 - Ibaraki-Kameda (IKKBZ) — linear-time join-order heuristic.
 - Neumann et al. *Hyper / Umbra* — morsel-driven execution +
   adaptive cost models.

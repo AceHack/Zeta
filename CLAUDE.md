@@ -45,17 +45,17 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
 - **Result-over-exception** — errors surface as `Result<_, DbspError>`; no exceptions on hot paths.
 - **Memory fast-path** — read `~/.claude/projects/<slug>/memory/CURRENT-*.md` before raw
   `feedback_*.md` logs; CURRENT files win on conflict with older raw memories.
-- **`references/upstreams/` — explicit-target searches ONLY (curated prior-art surface, NOT our code).**
+- **`references/prior-art/` — explicit-target searches ONLY (curated prior-art surface, NOT our code).**
   Mirror state of OTHER repos (protobuf, gRPC, Redis, etc.); gitignored; gigabytes; the only
   folder where a naive plain `grep -r` or `find | xargs grep` from `.` becomes a 2-hour runaway.
   BUT also the curated prior-art surface for backlog-item research — humans who've solved similar
   problems, cutting-edge + tried-and-true. Two modes: **explicit-target encouraged**
-  (`rg "pattern" references/upstreams/postgres/` during backlog research; check
-  `docs/UPSTREAM-LIST.md` + `references/notes/` first); **unconstrained scan needs the right tool**
+  (`rg "pattern" references/prior-art/postgres/` during backlog research; check
+  `docs/PRIOR-ART-LIST.md` + `references/notes/` first); **unconstrained scan needs the right tool**
   — `rg "pattern" .` is safe-by-default (ripgrep respects gitignore), but plain `grep -r` needs
   `--exclude-dir=upstreams` (basename, NOT a path) or an explicit allowlist
-  (`memory/ docs/ .claude/ tools/`). Refresh the mirror on demand: `tools/setup/common/sync-upstreams.sh`.
-  Full: `.claude/rules/references-upstreams-not-our-code-search-excludes.md`.
+  (`memory/ docs/ .claude/ tools/`). Refresh the mirror on demand: `tools/setup/common/sync-prior-art.sh`.
+  Full: `.claude/rules/references-prior-art-not-our-code-search-excludes.md`.
 - **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
   are razored (cooling-period required, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
 - **Heartbeat-via-commit = externalized idle counter** — the AgencySignature v1 trailer

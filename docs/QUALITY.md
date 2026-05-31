@@ -207,4 +207,4 @@ Generated outputs are never committed:
 - `TestResults/`
 - `BenchmarkDotNet.Artifacts/`
 - `coverage-report/`
-- `references/upstreams/` (if it appears)
+- `references/prior-art/` (if it appears)

@@ -5,7 +5,7 @@
 # --------------------
 # Without paths-ignore, the C# pack happily scans every .cs /
 # .csproj under the repo — including vendored reference
-# implementations (Rust DBSP via references/upstreams/feldera/,
+# implementations (Rust DBSP via references/prior-art/feldera/,
 # which carries incidental C# test scaffolding) and the
 # benchmark harness. Those findings would pollute the triage
 # queue with code Zeta does not own.
@@ -18,7 +18,7 @@ name: "Zeta CodeQL config"
 paths-ignore:
   # Vendored upstream references (Feldera, Materialize docs,
   # FASTER notes, etc.). Not Zeta's code; not Zeta's bugs.
-  - "references/upstreams/**"
+  - "references/prior-art/**"
 
   # Benchmark harness. Perf-critical by definition; uses
   # patterns (unsafe pointers, pinned spans, unchecked

@@ -300,7 +300,7 @@ framing; do not import the token.
   state-commitment roadmap.
 - **Rollup literature (Optimistic / ZK)** — fraud and
   validity proof framings.
-- `docs/UPSTREAM-LIST.md` §"Active reads" — the
+- `docs/PRIOR-ART-LIST.md` §"Active reads" — the
   blockchain-adjacent items we already track.
 - `docs/security/THREAT-MODEL.md` — where a
   permissionless-adversary framing would route.

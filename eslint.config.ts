@@ -80,7 +80,7 @@ const ignorePatterns = [
   "**/TestResults/**",
   "artifacts/**",
   "**/artifacts/**",
-  "references/upstreams/**",
+  "references/prior-art/**",
   ".lake/**",
   "**/.lake/**",
   "tools/lean4/.lake/**",

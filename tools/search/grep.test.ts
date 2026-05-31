@@ -7,7 +7,7 @@ import { grepTree, isExcludedDir, parseArgs, EXCLUDE_BASENAMES } from "./grep.ts
 // Fixture tree:
 //   src/hit.ts                     -> "needle" (MUST be found)
 //   src/nested/also.md             -> "needle" (MUST be found)
-//   references/upstreams/noise.ts  -> "needle" (MUST be excluded — the whole point)
+//   references/prior-art/noise.ts  -> "needle" (MUST be excluded — the whole point)
 //   node_modules/dep/index.ts      -> "needle" (MUST be excluded)
 //   bin/output.ts                  -> "needle" (MUST be excluded)
 //   artifacts/built.ts             -> "needle" (MUST be excluded)
@@ -23,7 +23,7 @@ beforeAll(() => {
   };
   write("src/hit.ts", "const x = 1;\n// needle here\n");
   write("src/nested/also.md", "# doc\nneedle in markdown\n");
-  write("references/upstreams/noise.ts", "// needle in vendored upstream — MUST NOT surface\n");
+  write("references/prior-art/noise.ts", "// needle in vendored upstream — MUST NOT surface\n");
   write("node_modules/dep/index.ts", "// needle in a dep — MUST NOT surface\n");
   write("bin/output.ts", "// needle in build output — MUST NOT surface\n");
   write("artifacts/built.ts", "// needle in artifacts — MUST NOT surface\n");
@@ -41,10 +41,10 @@ test("finds literal substring in normal source files", () => {
   expect(files).toContain("src/nested/also.md");
 });
 
-test("EXCLUDES references/upstreams (the load-bearing guarantee)", () => {
+test("EXCLUDES references/prior-art (the load-bearing guarantee)", () => {
   const m = grepTree({ root, needle: "needle" });
   const files = m.map((x) => x.file);
-  expect(files.some((f) => f.includes("references/upstreams"))).toBe(false);
+  expect(files.some((f) => f.includes("references/prior-art"))).toBe(false);
 });
 
 test("EXCLUDES node_modules + build-output dirs (bin, artifacts)", () => {
@@ -74,13 +74,13 @@ test("--ext filter restricts to given extensions", () => {
   expect(files).toEqual(["src/nested/also.md"]);
 });
 
-test("isExcludedDir: upstreams + node_modules excluded, src kept", () => {
-  expect(isExcludedDir(root, join(root, "references", "upstreams"))).toBe(true);
-  expect(isExcludedDir(root, join(root, "references", "upstreams", "deep"))).toBe(true);
+test("isExcludedDir: prior-art + node_modules excluded, src kept", () => {
+  expect(isExcludedDir(root, join(root, "references", "prior-art"))).toBe(true);
+  expect(isExcludedDir(root, join(root, "references", "prior-art", "deep"))).toBe(true);
   expect(isExcludedDir(root, join(root, "node_modules"))).toBe(true);
   expect(isExcludedDir(root, join(root, "src"))).toBe(false);
-  // a dir literally named "upstreams" but NOT under references/ is kept
-  expect(isExcludedDir(root, join(root, "upstreams"))).toBe(false);
+  // a dir literally named "prior-art" but NOT under references/ is kept
+  expect(isExcludedDir(root, join(root, "prior-art"))).toBe(false);
 });
 
 test("EXCLUDE_BASENAMES carries the known noise dirs (incl. .NET/Lean/bench outputs)", () => {

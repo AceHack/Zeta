@@ -161,7 +161,7 @@ pass** include `docs/REVIEW-AGENTS.md`,
 `docs/research/openai-codex-cli-capability-map.md`,
 `docs/research/github-surface-map-complete-2026-04-22.md`,
 `docs/AGENT-GITHUB-SURFACES.md`, `docs/HARNESS-SURFACES.md`,
-`docs/SOFTWARE-FACTORY.md`, and `docs/UPSTREAM-LIST.md`. These
+`docs/SOFTWARE-FACTORY.md`, and `docs/PRIOR-ART-LIST.md`. These
 are clearly relevant to a fuller second-pass archive, but I am
 keeping the substantive conclusions in this report tied to files
 that were actually pulled and read here.

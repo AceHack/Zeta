@@ -648,7 +648,7 @@ agent's tool use. Every agent is expected to follow them;
 `skill-tune-up` flags violations the same way it flags
 BP drift.
 
-- **Exclude `references/upstreams/` from every file-iteration
+- **Exclude `references/prior-art/` from every file-iteration
   command.** That tree is read-only clones from other
   projects (sibling repos pulled in via GOVERNANCE §23 for
   reference, not consumption). Grep, Glob, `find`, `sed`,
@@ -658,8 +658,8 @@ BP drift.
   Zeta code. Concretely:
   - Grep tool: set `path` narrowly, or filter with `glob`
     — the built-in tool honours `.gitignore`-style skips.
-  - `rg` from Bash: pass `--glob '!references/upstreams/**'`.
-  - `find`: pass `-not -path '*/references/upstreams/*'`
+  - `rg` from Bash: pass `--glob '!references/prior-art/**'`.
+  - `find`: pass `-not -path '*/references/prior-art/*'`
     (also skip `.git`, `bin`, `obj`).
   - Globs: prefer specific roots (`src/**/*.fs`) over `**/*.fs`.
 

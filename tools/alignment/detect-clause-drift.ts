@@ -37,9 +37,9 @@ type ExitCode = 0 | 2;
 const CLAUSE_PATTERN = "\\b(HC-[1-7]|SD-[1-9]|DIR-[1-5])\\b";
 
 // Heavy / non-source trees that would make a full walk take minutes and
-// drown the signal. references/ (and references/upstreams/) is the big
+// drown the signal. references/ (and references/prior-art/) is the big
 // one — gigabytes of mirrored OTHER-repo source per the repo convention
-// (.claude/rules/references-upstreams-not-our-code-search-excludes.md).
+// (.claude/rules/references-prior-art-not-our-code-search-excludes.md).
 const IGNORE_DIRS: readonly string[] = [
   "node_modules", ".git", ".vscode", ".idea", "dist", "build",
   "bin", "obj", "target", "references",

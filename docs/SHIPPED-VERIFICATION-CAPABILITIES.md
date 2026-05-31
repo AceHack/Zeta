@@ -101,7 +101,7 @@ removed at the next sweep.
 
 | Capability | Form in this repo | What we used it for on Zeta | State |
 |---|---|---|---|
-| **CodeQL** | `.github/workflows/codeql.yml`, `.github/codeql/codeql-config.yml` | C# static analysis on the production-surface code only. Config explicitly excludes `references/upstreams/**` (vendored Feldera Rust/C# reference), `bench/**` (perf-critical intentional unsafe patterns), and formal-method tool trees. | Active |
+| **CodeQL** | `.github/workflows/codeql.yml`, `.github/codeql/codeql-config.yml` | C# static analysis on the production-surface code only. Config explicitly excludes `references/prior-art/**` (vendored Feldera Rust/C# reference), `bench/**` (perf-critical intentional unsafe patterns), and formal-method tool trees. | Active |
 | **Semgrep** with Zeta-specific rules | `.semgrep.yml` | Custom Zeta rules targeting exact bug classes past review rounds found. Example rules: `pool-rent-unguarded-multiply` (int32 overflow in join), `plain-tick-increment` (torn-read class on tick mutation). Not the default ruleset — these are rules **we wrote after catching the bugs**. | Active |
 | **cspell** spell-check | `cspell.json` | Spelling discipline across docs and comments. | Active |
 

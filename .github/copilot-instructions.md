@@ -304,7 +304,7 @@ Per [docs/CONFLICT-RESOLUTION.md](../docs/CONFLICT-RESOLUTION.md)
   line. This has bitten round 34 five separate times;
   flag it inline on any PR diff that introduces a
   line-start `+` in prose or a list continuation.
-- **Always exclude `references/upstreams/` from any
+- **Always exclude `references/prior-art/` from any
   file-iteration command you run or suggest.** That directory
   contains 85+ full clones of external projects (CTFP, Milewski,
   scratch, SQLSharp, and more) — `find`, `grep`, `ripgrep`,

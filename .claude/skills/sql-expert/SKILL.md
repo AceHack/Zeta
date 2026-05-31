@@ -146,7 +146,7 @@ table.
 - **`openspec/specs/**`.** The SQL-frontend capability spec
   (when written) will live here and gate the translation-
   rule table.
-- **`docs/UPSTREAM-LIST.md`.** Postgres / DuckDB / Feldera /
+- **`docs/PRIOR-ART-LIST.md`.** Postgres / DuckDB / Feldera /
   Materialize / Hyper / Umbra as prior-art references.
 
 ## What this skill does NOT do
@@ -179,5 +179,5 @@ table.
   laws.
 - `.claude/skills/fscheck-expert/SKILL.md` — translation-
   fidelity property-based tests.
-- `docs/UPSTREAM-LIST.md` — Postgres / DuckDB / Hyper / Umbra
+- `docs/PRIOR-ART-LIST.md` — Postgres / DuckDB / Hyper / Umbra
   references.

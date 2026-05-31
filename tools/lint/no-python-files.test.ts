@@ -92,13 +92,13 @@ describe("no-python-files", () => {
     expect(stdout).toContain("1 allowlisted");
   });
 
-  test("ignores .py files under references/upstreams (hard-excluded prefix)", () => {
+  test("ignores .py files under references/prior-art (hard-excluded prefix)", () => {
     writeAllowlist(repoRoot, "");
-    mkdirSync(join(repoRoot, "references", "upstreams", "project"), {
+    mkdirSync(join(repoRoot, "references", "prior-art", "project"), {
       recursive: true,
     });
     writeFileSync(
-      join(repoRoot, "references", "upstreams", "project", "main.py"),
+      join(repoRoot, "references", "prior-art", "project", "main.py"),
       "x = 1\n",
     );
     const { result } = captureStdout(() => main([]));

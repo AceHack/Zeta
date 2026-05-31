@@ -8,7 +8,7 @@
 # and blank lines are ignored. Trailing whitespace (incl. CR for
 # Windows checkouts) is trimmed.
 #
-# Per B-0156 Phase 6: this file starts empty. references/upstreams,
+# Per B-0156 Phase 6: this file starts empty. references/prior-art,
 # .venv, node_modules, __pycache__, site-packages, .lake are hard-
 # excluded by the script itself (HARD_EXCLUDE_PREFIXES /
 # HARD_EXCLUDE_SEGMENTS) and do NOT need to be listed here.

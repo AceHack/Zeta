@@ -5,7 +5,7 @@ description: docs/TECH-RADAR.md stewardship — Adopt/Trial/Assess/Hold ring dis
 
 # TECH-RADAR Owner
 
-**Scope:** `docs/TECH-RADAR.md`, `docs/UPSTREAM-LIST.md`, and the
+**Scope:** `docs/TECH-RADAR.md`, `docs/PRIOR-ART-LIST.md`, and the
 set of research reports under `docs/research/`.
 
 ## The four rings
@@ -39,7 +39,7 @@ set of research reports under `docs/research/`.
 5. **Audit coherence.** If `src/Zeta.Core/BloomFilter.fs` ships
    but the radar still says "Bloom filters: Assess", that's a
    drift to fix.
-6. **Sync with `docs/UPSTREAM-LIST.md`.** Upstream list is the
+6. **Sync with `docs/PRIOR-ART-LIST.md`.** Upstream list is the
    broader catalogue; the tech radar is our opinion on what's
    worth adopting. A row can live on the upstream list without
    a radar entry (Assess-not-yet), but everything in Trial or
@@ -145,6 +145,6 @@ radar-owner disagrees because there's no test yet:
 ## Reference patterns
 
 - `docs/TECH-RADAR.md` — the artefact they own
-- `docs/UPSTREAM-LIST.md` — the broader catalogue
+- `docs/PRIOR-ART-LIST.md` — the broader catalogue
 - `docs/research/` — the incoming-evidence folder
 - `docs/CONFLICT-RESOLUTION.md` — conflict resolution

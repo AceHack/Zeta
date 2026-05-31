@@ -1038,7 +1038,7 @@ the immune system wasn't enough.
   in progress across rounds 33-35.
 - Declarative-manifest tiered shape — ratchet across
   5-8 rounds.
-- Upstream sync script + `references/upstreams/` — pending.
+- Upstream sync script + `references/prior-art/` — pending.
 
 ### Post-v1 factory work
 
@@ -1279,7 +1279,7 @@ other harnesses, and to the operator's future-self.
 
 ## What Zeta is NOT
 
-- **Not a clone of any upstream.** `references/upstreams/`
+- **Not a clone of any upstream.** `references/prior-art/`
   are read-only inspiration; Zeta hand-crafts every artefact.
 - **Not a compliance product.** Enterprise consumers certify
   at their deployment layer; Zeta provides the evidence

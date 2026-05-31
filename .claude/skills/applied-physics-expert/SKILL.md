@@ -145,7 +145,7 @@ Int64 without wraparound".
 - `src/Core/Sketch.fs`, `src/Core/CountMin.fs`,
   `src/Core/Kll.fs`, `src/Core/HyperLogLog*.fs` — sketches
   with Shannon-entropy claims.
-- `docs/UPSTREAM-LIST.md` — Maslov / Litvinov (tropical);
+- `docs/PRIOR-ART-LIST.md` — Maslov / Litvinov (tropical);
   Almeida / Shoker / Baquero (anti-entropy).
 - `docs/research/verification-registry.md` — externally cited
   applied-physics results.

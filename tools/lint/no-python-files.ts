@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 // no-python-files.ts — Phase 6 of B-0156: fail the build if a .py
-// file exists outside the allowlisted paths (references/upstreams
+// file exists outside the allowlisted paths (references/prior-art
 // mirrors, vendored toolchain dirs). Per Aaron 2026-05-01:
 // "any .py" should be ported to TS; this lint enforces the policy
 // going forward so future contributors can't introduce one by
@@ -31,7 +31,7 @@ const HASH = 0x23;
 
 const HARD_EXCLUDE_PREFIXES: readonly string[] = [
   ".git",
-  "references/upstreams",
+  "references/prior-art",
   "tools/lean4/.lake",
   ".claude/plugins",
   "artifacts",

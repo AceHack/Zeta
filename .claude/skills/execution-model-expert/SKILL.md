@@ -257,4 +257,4 @@ When a hybrid proposal lands, the hat runs this audit:
   DST gate on scheduling.
 - `docs/TECH-RADAR.md` — morsel / codegen / vectorisation
   rows.
-- `docs/UPSTREAM-LIST.md` — engine citations.
+- `docs/PRIOR-ART-LIST.md` — engine citations.

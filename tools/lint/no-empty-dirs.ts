@@ -30,7 +30,7 @@ const HASH = 0x23;
 
 const HARD_EXCLUDE_PREFIXES: readonly string[] = [
   ".git",
-  "references/upstreams",
+  "references/prior-art",
   "tools/lean4/.lake",
   ".claude/plugins",
   "artifacts",

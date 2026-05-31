@@ -1,4 +1,4 @@
-# `references/upstreams/` — gitignored upstream-source mirror
+# `references/prior-art/` — gitignored upstream-source mirror
 
 This directory is the local checkout of every upstream source listed in
 [`references/reference-sources.json`](../reference-sources.json). It is
@@ -25,9 +25,9 @@ the repo itself lean.
 ## How the mirror is regenerated
 
 `references/reference-sources.json` is the canonical list.
-[`tools/setup/common/sync-upstreams.sh`](../../tools/setup/common/sync-upstreams.sh)
+[`tools/setup/common/sync-prior-art.sh`](../../tools/setup/common/sync-prior-art.sh)
 reads it and clones (or pulls) each entry under
-`references/upstreams/<project-name>/`. The sync script is invoked
+`references/prior-art/<project-name>/`. The sync script is invoked
 by `tools/setup/install.sh` and can also be run standalone. See
 [`references/README.md`](../README.md) for the broader references
 layout.
@@ -39,7 +39,7 @@ This `.gitignore` plus `README.md` follow the same pattern as `drop/`
 emulator-test corpus): the sentinel preserves the directory in version
 control so contributors see it on clone, but the bulky contents stay
 local and regeneratable. Without the sentinel, an empty
-`references/upstreams/` directory either disappears at clone time or
+`references/prior-art/` directory either disappears at clone time or
 risks accidental commits of upstream source.
 
 Pattern documented at:
@@ -65,7 +65,7 @@ Pattern documented at:
 1. Add an entry to `references/reference-sources.json` (license,
    canonical URL, intended use).
 2. Run the sync script — your new upstream lands at
-   `references/upstreams/<project-name>/`, gitignored automatically by
+   `references/prior-art/<project-name>/`, gitignored automatically by
    the `*` rule above.
 3. Land the JSON change as a normal PR. The mirror clone happens on
    each contributor's machine on first sync.
@@ -73,6 +73,6 @@ Pattern documented at:
 ## Why this README is committed
 
 Without committed prose explaining the directory's purpose, a
-new contributor seeing an empty `references/upstreams/` (after a fresh
+new contributor seeing an empty `references/prior-art/` (after a fresh
 clone, before running the sync script) would have no signal that this
 is a real working directory. The README is the signal.

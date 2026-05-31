@@ -267,7 +267,7 @@ pipeline-of-`Seq.*` rather than `query { }`.
 - Erik Meijer, *The World According to LINQ* (Comm. ACM
   2011).
 - MSDN "101 LINQ Samples".
-- `docs/UPSTREAM-LIST.md` §"Reactive .NET".
+- `docs/PRIOR-ART-LIST.md` §"Reactive .NET".
 ```
 
 ## Coordination
@@ -308,6 +308,6 @@ pipeline-of-`Seq.*` rather than `query { }`.
   SQL side.
 - `.claude/skills/streaming-incremental-expert/SKILL.md`
   — DBSP side.
-- `docs/UPSTREAM-LIST.md` §"Reactive .NET" + §"ORM /
+- `docs/PRIOR-ART-LIST.md` §"Reactive .NET" + §"ORM /
   data access".
 - `AGENTS.md`, `CLAUDE.md` — factory ground rules.

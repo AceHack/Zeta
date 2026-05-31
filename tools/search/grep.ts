@@ -6,9 +6,9 @@
 // WHY (operator 2026-05-31): agents doing ad-hoc content search via raw
 // recursive file-walks — PowerShell `Get-ChildItem -Recurse | Select-String`,
 // bash `find | xargs grep` — do NOT honor .gitignore, so they walk into
-// `references/upstreams/` (gigabytes of mirrored OTHER-repo code) + node_modules
+// `references/prior-art/` (gigabytes of mirrored OTHER-repo code) + node_modules
 // + build outputs: slow + noisy. Per
-// `.claude/rules/references-upstreams-not-our-code-search-excludes.md` + the rule
+// `.claude/rules/references-prior-art-not-our-code-search-excludes.md` + the rule
 // `architecture-is-safety-mechanism-not-discipline-structural-protections-vs-runtime-virtue-historical-innovation-parallel.md`
 // (full filename, no ellipsis — keep it greppable) the fix is
 // STRUCTURAL not behavioral — bake the excludes into a `.ts` so "call the tool"
@@ -16,7 +16,7 @@
 // .ts files have the excludes built in or they should at least."
 //
 // Cross-repo aware: `--repo ../SQLSharp` searches a sibling repo, still skipping
-// THAT repo's references/upstreams (every repo mirrors the same convention).
+// THAT repo's references/prior-art (every repo mirrors the same convention).
 //
 //   bun tools/search/grep.ts <substring> [--repo <dir>] [--ext ts,md] [-i] [--files]
 //
@@ -31,7 +31,7 @@
 // the common case, faster, and avoids constructing a regex from CLI input (no
 // ReDoS / regex-injection surface). When you genuinely need a regex, the harness
 // Grep tool (ripgrep) serves that AND honors .gitignore (so it also skips
-// references/upstreams). This tool stays literal + zero-dep so the excludes hold
+// references/prior-art). This tool stays literal + zero-dep so the excludes hold
 // EVERYWHERE — including this Windows laptop, which has no `rg` on PATH (2026-05-31).
 
 import { resolve, relative, join, sep } from "node:path";
@@ -54,9 +54,9 @@ export const EXCLUDE_BASENAMES = new Set([
   ".lake",
 ]);
 
-/** Repo-relative POSIX paths to skip wholesale. references/upstreams is the
+/** Repo-relative POSIX paths to skip wholesale. references/prior-art is the
  *  load-bearing one — gigabytes of mirrored upstream repos (NOT our code). */
-export const EXCLUDE_RELPATHS = ["references/upstreams"];
+export const EXCLUDE_RELPATHS = ["references/prior-art"];
 
 /** Files larger than this are skipped (likely data/binary, not source). */
 const MAX_FILE_BYTES = 2 * 1024 * 1024;

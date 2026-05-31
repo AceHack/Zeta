@@ -12,7 +12,7 @@
     "**/obj/**": true,
     "**/node_modules/**": true,
     "**/tools/lean4/.lake/**": true,
-    "**/references/upstreams/**": true
+    "**/references/prior-art/**": true
   },
   "files.watcherExclude": {
     "**/BenchmarkDotNet.Artifacts/**": true,
@@ -22,7 +22,7 @@
     "**/obj/**": true,
     "**/node_modules/**": true,
     "**/tools/lean4/.lake/**": true,
-    "**/references/upstreams/**": true
+    "**/references/prior-art/**": true
   },
   "search.exclude": {
     "**/BenchmarkDotNet.Artifacts/**": true,
@@ -32,7 +32,7 @@
     "**/obj/**": true,
     "**/node_modules/**": true,
     "**/tools/lean4/.lake/**": true,
-    "**/references/upstreams/**": true
+    "**/references/prior-art/**": true
   },
 
   "FSharp.excludeProjectDirectories": [
@@ -41,7 +41,7 @@
     "obj",
     "node_modules",
     "tools/lean4/.lake",
-    "references/upstreams"
+    "references/prior-art"
   ],
 
   "shellcheck.customArgs": ["-x"],
@@ -59,7 +59,7 @@
     "**/obj/**": true,
     "**/node_modules/**": true,
     "**/tools/lean4/.lake/**": true,
-    "**/references/upstreams/**": true,
+    "**/references/prior-art/**": true,
     "**/.vscode/**": true,
     "**/.claude/**": true,
     "**/memory/**": true,

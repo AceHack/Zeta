@@ -15,7 +15,7 @@
     "bin/**",
     "obj/**",
     // Upstream reference repos under `../` are not part of Zeta.
-    "references/upstreams/**",
+    "references/prior-art/**",
     // Memory directory is mostly agent-written append-logs (623+
     // top-level files at the time of writing); treating it as
     // source content would add drift to every OFFTIME entry.

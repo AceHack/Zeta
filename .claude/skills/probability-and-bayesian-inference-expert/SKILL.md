@@ -185,7 +185,7 @@ offline tier.
   `src/Core/Kll.fs` — sketches with quoted (ε, δ) bounds.
 - `src/Core/DeltaCrdt.fs`, `src/Core/Merkle.fs` —
   anti-entropy with probabilistic convergence bounds.
-- `docs/UPSTREAM-LIST.md` — citations for sketches and
+- `docs/PRIOR-ART-LIST.md` — citations for sketches and
   priors.
 - `docs/research/verification-registry.md` — externally
   cited probabilistic results.

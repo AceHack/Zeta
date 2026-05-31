@@ -48,7 +48,7 @@ clean.
 - **Choosing which paper to cite** when several candidates
   exist → the relevant field-of-knowledge expert (algebra,
   physics, probability, category theory).
-- **Adding a new upstream entry** to `docs/UPSTREAM-LIST.md` →
+- **Adding a new upstream entry** to `docs/PRIOR-ART-LIST.md` →
   `tech-radar-owner` / the field-of-knowledge owner.
 
 ## The six claim smells that trigger a flag
@@ -92,9 +92,9 @@ Every flag lands in one of four categories:
   authority phrasing without source. Blocks publication.
   Fix: add the citation *or* rewrite as a self-contained
   statement.
-- **P2 — candidate citation missing from UPSTREAM-LIST.**
+- **P2 — candidate citation missing from PRIOR-ART-LIST.**
   A source *exists* in the draft but is not in
-  `docs/UPSTREAM-LIST.md`. Blocks next release. Fix: add the
+  `docs/PRIOR-ART-LIST.md`. Blocks next release. Fix: add the
   upstream entry.
 - **P3 — suggested cross-reference.** A Zeta document makes a
   claim that another Zeta document has cited; cross-reference
@@ -124,7 +124,7 @@ Every flag lands in one of four categories:
 
 ...
 
-## P2 — candidate citation missing from UPSTREAM-LIST
+## P2 — candidate citation missing from PRIOR-ART-LIST
 
 ...
 
@@ -195,7 +195,7 @@ cadence.
 ## What this skill does NOT do
 
 - Does NOT author the citations — it suggests and escalates.
-- Does NOT add to `docs/UPSTREAM-LIST.md` directly — proposes;
+- Does NOT add to `docs/PRIOR-ART-LIST.md` directly — proposes;
   the field expert or `tech-radar-owner` lands.
 - Does NOT override `paper-peer-reviewer` on overall draft
   quality.
@@ -208,7 +208,7 @@ cadence.
 
 ## Reference patterns
 
-- `docs/UPSTREAM-LIST.md` — canonical source list.
+- `docs/PRIOR-ART-LIST.md` — canonical source list.
 - `docs/research/verification-registry.md` — registry this
   hat cross-references.
 - `.claude/skills/verification-drift-auditor/SKILL.md` —

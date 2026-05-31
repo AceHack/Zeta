@@ -58,7 +58,7 @@ The round-34 tune closed items 1-5. Status per item:
    `security-extended` (fast, high-confidence); scheduled
    weekly sweep adds `security-and-quality` on top.
 4. ✅ **`paths-ignore` shipped** — `.github/codeql/
-   codeql-config.yml` excludes `references/upstreams/**`,
+   codeql-config.yml` excludes `references/prior-art/**`,
    `bench/**`, `tools/tla/**`, `tools/alloy/**`,
    `tools/lean4/**`, `**/*.generated.cs`.
 5. ✅ **Concurrency + timeout** — `cancel-in-progress` on

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# tools/setup/common/sync-upstreams.sh — clones / refreshes upstream
-# reference repos into `references/upstreams/<name>/` per the
+# tools/setup/common/sync-prior-art.sh — clones / refreshes upstream
+# reference repos into `references/prior-art/<name>/` per the
 # manifest at `references/reference-sources.json`.
 #
 # Shape borrowed from `../SQLSharp/scripts/reference/
@@ -18,16 +18,16 @@
 # - Post-fetch `reset --hard` + `clean -fdx` + `checkout -B`
 #   to guarantee the worktree matches `origin/<branch>` byte-
 #   for-byte regardless of prior state.
-# - `references/upstreams/` is gitignored per `references/
+# - `references/prior-art/` is gitignored per `references/
 #   README.md`; nothing committed here.
 # - Deterministic (bash profile §deterministic rule): each
 #   upstream gets exactly one sync attempt; failures exit
 #   non-zero, no retry loops.
 #
 # Usage:
-#   tools/setup/common/sync-upstreams.sh
-#   tools/setup/common/sync-upstreams.sh --name foo,bar
-#   tools/setup/common/sync-upstreams.sh --prune
+#   tools/setup/common/sync-prior-art.sh
+#   tools/setup/common/sync-prior-art.sh --name foo,bar
+#   tools/setup/common/sync-prior-art.sh --prune
 #
 # DEBT: this is a bash script, Unix-only. Per VISION.md "post-
 # install automation runtime choice" backlog item, the eventual
@@ -38,7 +38,7 @@ set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "$0")/../../.." && pwd)"
 MANIFEST="$REPO_ROOT/references/reference-sources.json"
-UPSTREAMS_DIR="$REPO_ROOT/references/upstreams"
+UPSTREAMS_DIR="$REPO_ROOT/references/prior-art"
 
 if [ ! -f "$MANIFEST" ]; then
   echo "error: manifest not found at $MANIFEST" >&2

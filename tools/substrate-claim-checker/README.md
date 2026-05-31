@@ -175,11 +175,11 @@ Exit codes match check-counts.ts: `0` clean, `1` drift detected or input error.
 
 ## v0.6 — gitignore awareness for existence-drift
 
-Extends `check-existence.ts` to flag a new sub-class: paths that exist on disk but are gitignored. Per substrate convention, references should point to git-tracked paths or stable URLs, NOT to local-mirror sync state (e.g., `references/upstreams/*` which is gitignored per the upstream-mirror sync convention).
+Extends `check-existence.ts` to flag a new sub-class: paths that exist on disk but are gitignored. Per substrate convention, references should point to git-tracked paths or stable URLs, NOT to local-mirror sync state (e.g., `references/prior-art/*` which is gitignored per the upstream-mirror sync convention).
 
 ### Empirical seed
 
-PR #1322 review found `references/upstreams/efcore/.github/workflows/copilot-setup-steps.yml` referenced in a tick shard. The path exists on disk (synced from upstream efcore) but is gitignored. Pre-v0.6, `check-existence.ts` reported "no drift" because the path resolved on disk; v0.6 emits a warning.
+PR #1322 review found `references/prior-art/efcore/.github/workflows/copilot-setup-steps.yml` referenced in a tick shard. The path exists on disk (synced from upstream efcore) but is gitignored. Pre-v0.6, `check-existence.ts` reported "no drift" because the path resolved on disk; v0.6 emits a warning.
 
 ### Severity model (new in v0.6)
 

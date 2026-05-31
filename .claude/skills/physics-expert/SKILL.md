@@ -75,7 +75,7 @@ The honest list — not speculative, all in the code:
   has a non-equilibrium-statistical-mechanics pedigree —
   the mixing time / ε-convergence-time analogy to relaxation
   toward equilibrium is load-bearing. Cites Almeida, Shoker,
-  Baquero et al. (see `docs/UPSTREAM-LIST.md`).
+  Baquero et al. (see `docs/PRIOR-ART-LIST.md`).
 - **Shannon entropy** analysis in the sketch layer
   (`src/Core/Sketch.fs`, `src/Core/CountMin.fs`,
   `src/Core/HyperLogLog*.fs`). Hash-quality arguments quote
@@ -167,7 +167,7 @@ metaphor.
   anti-entropy surface.
 - `src/Core/Sketch.fs`, `src/Core/CountMin.fs` — sketches
   with Shannon-entropy analysis of hash quality.
-- `docs/UPSTREAM-LIST.md` — canonical physics citations
+- `docs/PRIOR-ART-LIST.md` — canonical physics citations
   (Maslov / Litvinov for tropical; Almeida / Shoker /
   Baquero for anti-entropy).
 - `docs/research/verification-registry.md` — externally

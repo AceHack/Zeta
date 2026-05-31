@@ -217,7 +217,7 @@ routing:
   implementation; `algebra-owner` owns the laws.
 - **`openspec/specs/operator-algebra/spec.md`** — operator
   laws with their symmetry statements.
-- **`docs/UPSTREAM-LIST.md`** — Green-Karvounarakis-Tannen
+- **`docs/PRIOR-ART-LIST.md`** — Green-Karvounarakis-Tannen
   provenance semirings, DBSP (Budiu et al.), Feldera.
 - **Forward-looking.** The SQL frontend + logical-
   rewrite rule table will live under `openspec/specs/**`

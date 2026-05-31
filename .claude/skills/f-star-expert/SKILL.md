@@ -108,7 +108,7 @@ F* is a poor fit (vs. FsCheck) when:
   not adopted" row with the specific reasons: Zeta is F#-native,
   F* extraction to F# exists but is not the primary path, Lean 4
   covers our current proof obligations.
-- **Upstream anchor:** `docs/UPSTREAM-LIST.md` line 71, F*
+- **Upstream anchor:** `docs/PRIOR-ART-LIST.md` line 71, F*
   family — dependently-typed ML with SMT refinement, effect
   system (Pure / Ghost / Stack / Steel / Pulse), tactic engine
   (Meta-F*), canonical case studies `miTLS` / `HACL*` /
@@ -166,7 +166,7 @@ applies?" — if none, the proposal is speculative.
 
 ## Reference patterns
 
-- `docs/UPSTREAM-LIST.md` — F*/ miTLS / HACL* / EverCrypt /
+- `docs/PRIOR-ART-LIST.md` — F*/ miTLS / HACL* / EverCrypt /
   EverParse citations.
 - `docs/research/refinement-type-feature-catalog.md` — 24-
   feature catalogue across refinement-type systems.

@@ -65,7 +65,7 @@
     "obj/**",
     "node_modules/**",
     "tools/lean4/.lake/**",
-    "references/upstreams/**",
+    "references/prior-art/**",
     "memory/persona/**"
   ]
 }

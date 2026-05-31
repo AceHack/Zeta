@@ -7,9 +7,9 @@ hard — the operator algebra (D, I, z⁻¹, H) literally is a
 category-theoretic abstraction over streaming IVM.
 
 Round 34 moved both CTFP references from in-repo copies to
-upstream clones under `references/upstreams/` per the
+upstream clones under `references/prior-art/` per the
 `references/reference-sources.json` manifest. Run
-`tools/setup/common/sync-upstreams.sh` to populate them.
+`tools/setup/common/sync-prior-art.sh` to populate them.
 
 ## Upstreams to read
 
@@ -19,14 +19,14 @@ upstream clones under `references/upstreams/` per the
   concepts port 1:1 to F# (every `class Functor f` becomes
   an `'F<'A>` with a `map`; every `Monad m` becomes a
   computation expression). After sync, the LaTeX sources
-  live at `references/upstreams/milewski-ctfp-pdf/`; build
+  live at `references/prior-art/milewski-ctfp-pdf/`; build
   the PDF with the repo's LaTeX toolchain or fetch a
   prebuilt PDF from the repo's Releases.
 - **[`cboudereau/category-theory-for-dotnet-programmers`](https://github.com/cboudereau/category-theory-for-dotnet-programmers)**
   — Worked .NET port of Milewski's Haskell/C++ samples into
   C# and F#. MIT-licensed. Reference for translating CT
   idioms into the exact .NET shape Zeta lives in. After
-  sync, lives at `references/upstreams/category-theory-for-dotnet-programmers/`.
+  sync, lives at `references/prior-art/category-theory-for-dotnet-programmers/`.
 
 ## Reading path
 

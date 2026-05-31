@@ -48,9 +48,9 @@ feature + debt budget).
 
 ## Live debt
 
-### `tools/setup/common/sync-upstreams.sh` is bash, not cross-platform
+### `tools/setup/common/sync-prior-art.sh` is bash, not cross-platform
 
-- **Site:** `tools/setup/common/sync-upstreams.sh`
+- **Site:** `tools/setup/common/sync-prior-art.sh`
 - **Found:** round 34 by Aaron
 - **Effort:** M (needs BACKLOG P1 "Post-install repo automation
   runtime choice" decided first)
@@ -60,7 +60,7 @@ feature + debt budget).
   debt." Windows contributors can't run upstream sync; any
   post-install cross-platform automation hits the same pattern.
 - **Fix:** once the post-install runtime research lands
-  (Bun/Deno/Python/.NET-CLI/etc.), port sync-upstreams to that
+  (Bun/Deno/Python/.NET-CLI/etc.), port sync-prior-art to that
   runtime. Install.sh stays bash (pre-bootstrap; can't depend
   on its own output).
 

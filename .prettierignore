@@ -1,6 +1,6 @@
 # Generated / vendored / heavy folders. Prettier walks every file in
 # the repo by default; forgetting an entry here turns a 2-second
-# format-check into a multi-minute crawl over references/upstreams
+# format-check into a multi-minute crawl over references/prior-art
 # (~13 GB) or tools/lean4/.lake (~7 GB). Inherited hard-won lesson
 # from the SQLSharp scaffold.
 BenchmarkDotNet.Artifacts/
@@ -16,7 +16,7 @@ obj/
 node_modules/
 **/node_modules/
 .git/
-references/upstreams/
+references/prior-art/
 .lake/
 **/.lake/
 tools/lean4/.lake/

@@ -186,7 +186,7 @@ GitHub Actions wiring.
 - Does NOT survive session termination — the heartbeat
   itself dies when Claude exits. Recovery is the
   round-open-checklist's job.
-- Does NOT iterate `references/upstreams/**` (standing
+- Does NOT iterate `references/prior-art/**` (standing
   operational rule in `docs/AGENT-BEST-PRACTICES.md`).
 
 ## Coordination

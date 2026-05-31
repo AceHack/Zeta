@@ -171,5 +171,5 @@ bit-for-bit. For Zeta's determinism guarantees:
 - `tools/Z3Verify/Program.fs` — Z3 lemmas over Int / BitVec.
 - `docs/research/proof-tool-coverage.md` — per-module proof
   tool map.
-- `docs/UPSTREAM-LIST.md` — citations for sketches and
+- `docs/PRIOR-ART-LIST.md` — citations for sketches and
   tropical references.

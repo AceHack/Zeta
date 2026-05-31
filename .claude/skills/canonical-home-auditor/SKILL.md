@@ -159,7 +159,7 @@ For any artifact under review:
 | Roadmap | `docs/ROADMAP.md` | Forward-looking |
 | Round history | `docs/ROUND-HISTORY.md` | Append-only history |
 | Tech radar | `docs/TECH-RADAR.md` | Adopt/Trial/Assess/Hold |
-| Upstream list | `docs/UPSTREAM-LIST.md` | External dependencies tracked |
+| Upstream list | `docs/PRIOR-ART-LIST.md` | External dependencies tracked |
 | Verification registry | `docs/research/verification-registry.md` | Proof↔paper mapping |
 | NuGet metadata | `src/**/*.fsproj`, `src/**/*.csproj` | Per-project fields |
 | Changelog | `CHANGELOG.md` (root) | User-visible changes |

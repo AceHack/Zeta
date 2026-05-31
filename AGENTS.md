@@ -596,8 +596,8 @@ coordination, pull-before-push discipline.
 - `docs/category-theory/README.md` — category-theory
   foundations the operator algebra rests on. Upstream
   CTFP sources (Milewski + the .NET port) live under
-  `references/upstreams/` after
-  `tools/setup/common/sync-upstreams.sh` runs.
+  `references/prior-art/` after
+  `tools/setup/common/sync-prior-art.sh` runs.
 - `GOVERNANCE.md` — the numbered repo-wide rules
   themselves.
 

@@ -154,5 +154,5 @@ claim that needs justification. In Zeta's setting:
   tool routing for conservation proofs.
 - `openspec/specs/operator-algebra/spec.md` — operator laws
   with their symmetry statements.
-- `docs/UPSTREAM-LIST.md` — canonical physics citations.
+- `docs/PRIOR-ART-LIST.md` — canonical physics citations.
 - `docs/research/` — paper drafts this hat reviews.

@@ -255,7 +255,7 @@ describe("findPathClaims - angle-bracket link targets", () => {
 describe("checkFile - v0.6 gitignore awareness", () => {
   // Build a self-contained git repo with .gitignore + tracked + ignored
   // files so the tests work on fresh clones / CI without the
-  // developer-local references/upstreams/ mirror.
+  // developer-local references/prior-art/ mirror.
   function setupGitignoreFixture(): { repoRoot: string; mdFile: string; cleanup: () => void } {
     const repoRoot = mkdtempSync(join(tmpdir(), "check-existence-gitignore-"));
     const { spawnSync } = require("node:child_process");

@@ -215,7 +215,7 @@ digraph citations {
   ".claude/skills/applied-mathematics-expert/SKILL.md" -> ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" [label="see-also"];
   ".claude/skills/applied-mathematics-expert/SKILL.md" -> ".claude/skills/theoretical-mathematics-expert/SKILL.md" [label="see-also"];
   ".claude/skills/applied-mathematics-expert/SKILL.md" -> "docs/research/proof-tool-coverage.md" [label="see-also"];
-  ".claude/skills/applied-mathematics-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/applied-mathematics-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/applied-mathematics-expert/SKILL.md" -> "src/Core/CountMin.fs" [label="see-also"];
   ".claude/skills/applied-mathematics-expert/SKILL.md" -> "src/Core/DeltaCrdt.fs" [label="see-also"];
   ".claude/skills/applied-mathematics-expert/SKILL.md" -> "src/Core/Hierarchy.fs" [label="see-also"];
@@ -230,7 +230,7 @@ digraph citations {
   ".claude/skills/applied-physics-expert/SKILL.md" -> ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" [label="see-also"];
   ".claude/skills/applied-physics-expert/SKILL.md" -> ".claude/skills/theoretical-physics-expert/SKILL.md" [label="see-also"];
   ".claude/skills/applied-physics-expert/SKILL.md" -> "docs/research/verification-registry.md" [label="see-also"];
-  ".claude/skills/applied-physics-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/applied-physics-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/applied-physics-expert/SKILL.md" -> "src/Core/CountMin.fs" [label="see-also"];
   ".claude/skills/applied-physics-expert/SKILL.md" -> "src/Core/DeltaCrdt.fs" [label="see-also"];
   ".claude/skills/applied-physics-expert/SKILL.md" -> "src/Core/Hierarchy.fs" [label="see-also"];
@@ -269,7 +269,7 @@ digraph citations {
   ".claude/skills/blockchain-expert/SKILL.md" -> ".claude/skills/paxos-expert/SKILL.md" [label="see-also"];
   ".claude/skills/blockchain-expert/SKILL.md" -> "docs/AGENT-BEST-PRACTICES.md" [label="see-also"];
   ".claude/skills/blockchain-expert/SKILL.md" -> "docs/security/THREAT-MODEL.md" [label="see-also"];
-  ".claude/skills/blockchain-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/blockchain-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/branding-specialist/SKILL.md" -> ".claude/agents/architect.md" [label="see-also"];
   ".claude/skills/branding-specialist/SKILL.md" -> ".claude/skills/backlog-scrum-master/SKILL.md" [label="see-also"];
   ".claude/skills/branding-specialist/SKILL.md" -> ".claude/skills/paper-peer-reviewer/SKILL.md" [label="see-also"];
@@ -311,7 +311,7 @@ digraph citations {
   ".claude/skills/canonical-home-auditor/SKILL.md" -> "docs/ROADMAP.md" [label="see-also"];
   ".claude/skills/canonical-home-auditor/SKILL.md" -> "docs/ROUND-HISTORY.md" [label="see-also"];
   ".claude/skills/canonical-home-auditor/SKILL.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  ".claude/skills/canonical-home-auditor/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/canonical-home-auditor/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/canonical-home-auditor/SKILL.md" -> "docs/VISION.md" [label="see-also"];
   ".claude/skills/canonical-home-auditor/SKILL.md" -> "docs/WONT-DO.md" [label="see-also"];
   ".claude/skills/canonical-home-auditor/SKILL.md" -> "memory/persona/best-practices-scratch.md" [label="see-also"];
@@ -484,7 +484,7 @@ digraph citations {
   ".claude/skills/deterministic-simulation-theory-expert/SKILL.md" -> "docs/CONFLICT-RESOLUTION.md" [label="see-also"];
   ".claude/skills/deterministic-simulation-theory-expert/SKILL.md" -> "docs/FOUNDATIONDB-DST.md" [label="see-also"];
   ".claude/skills/deterministic-simulation-theory-expert/SKILL.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  ".claude/skills/deterministic-simulation-theory-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/deterministic-simulation-theory-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/deterministic-simulation-theory-expert/SKILL.md" -> "src/Core/ChaosEnv.fs" [label="see-also"];
   ".claude/skills/developer-experience-engineer/SKILL.md" -> ".claude/agents/developer-experience-engineer.md" [label="see-also"];
   ".claude/skills/developer-experience-engineer/SKILL.md" -> ".github/PULL_REQUEST_TEMPLATE.md" [label="see-also"];
@@ -606,7 +606,7 @@ digraph citations {
   ".claude/skills/execution-model-expert/SKILL.md" -> ".claude/skills/sql-engine-expert/SKILL.md" [label="see-also"];
   ".claude/skills/execution-model-expert/SKILL.md" -> ".claude/skills/storage-specialist/SKILL.md" [label="see-also"];
   ".claude/skills/execution-model-expert/SKILL.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  ".claude/skills/execution-model-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/execution-model-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/f-star-expert/SKILL.md" -> ".claude/skills/formal-verification-expert/SKILL.md" [label="see-also"];
   ".claude/skills/f-star-expert/SKILL.md" -> ".claude/skills/fscheck-expert/SKILL.md" [label="see-also"];
   ".claude/skills/f-star-expert/SKILL.md" -> ".claude/skills/lean4-expert/SKILL.md" [label="see-also"];
@@ -614,7 +614,7 @@ digraph citations {
   ".claude/skills/f-star-expert/SKILL.md" -> ".claude/skills/z3-expert/SKILL.md" [label="see-also"];
   ".claude/skills/f-star-expert/SKILL.md" -> "docs/research/proof-tool-coverage.md" [label="see-also"];
   ".claude/skills/f-star-expert/SKILL.md" -> "docs/research/refinement-type-feature-catalog.md" [label="see-also"];
-  ".claude/skills/f-star-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/f-star-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/factory-audit/SKILL.md" -> ".claude/agents/architect.md" [label="see-also"];
   ".claude/skills/factory-audit/SKILL.md" -> ".claude/agents/skill-expert.md" [label="see-also"];
   ".claude/skills/factory-audit/SKILL.md" -> ".claude/skills/agent-experience-engineer/SKILL.md" [label="see-also"];
@@ -899,7 +899,7 @@ digraph citations {
   ".claude/skills/linq-expert/SKILL.md" -> ".claude/skills/rx-expert/SKILL.md" [label="see-also"];
   ".claude/skills/linq-expert/SKILL.md" -> ".claude/skills/streaming-incremental-expert/SKILL.md" [label="see-also"];
   ".claude/skills/linq-expert/SKILL.md" -> ".claude/skills/variance-expert/SKILL.md" [label="see-also"];
-  ".claude/skills/linq-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/linq-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/llm-systems-expert/SKILL.md" -> ".claude/skills/ai-evals-expert/SKILL.md" [label="see-also"];
   ".claude/skills/llm-systems-expert/SKILL.md" -> ".claude/skills/long-term-rescheduler/SKILL.md" [label="see-also"];
   ".claude/skills/llm-systems-expert/SKILL.md" -> ".claude/skills/observability-and-tracing-expert/SKILL.md" [label="see-also"];
@@ -940,7 +940,7 @@ digraph citations {
   ".claude/skills/mathematics-expert/SKILL.md" -> "docs/research/proof-tool-coverage.md" [label="see-also"];
   ".claude/skills/mathematics-expert/SKILL.md" -> "docs/research/refinement-type-feature-catalog.md" [label="see-also"];
   ".claude/skills/mathematics-expert/SKILL.md" -> "docs/research/verification-registry.md" [label="see-also"];
-  ".claude/skills/mathematics-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/mathematics-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/measure-theory-and-signed-measures-expert/SKILL.md" -> ".claude/skills/algebra-owner/SKILL.md" [label="see-also"];
   ".claude/skills/measure-theory-and-signed-measures-expert/SKILL.md" -> ".claude/skills/category-theory-expert/SKILL.md" [label="see-also"];
   ".claude/skills/measure-theory-and-signed-measures-expert/SKILL.md" -> ".claude/skills/formal-verification-expert/SKILL.md" [label="see-also"];
@@ -971,7 +971,7 @@ digraph citations {
   ".claude/skills/missing-citations/SKILL.md" -> "docs/research/refinement-type-feature-catalog.md" [label="see-also"];
   ".claude/skills/missing-citations/SKILL.md" -> "docs/research/verification-drift-audit-2026-04-19.md" [label="see-also"];
   ".claude/skills/missing-citations/SKILL.md" -> "docs/research/verification-registry.md" [label="see-also"];
-  ".claude/skills/missing-citations/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/missing-citations/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/ml-engineering-expert/SKILL.md" -> ".claude/skills/ai-evals-expert/SKILL.md" [label="see-also"];
   ".claude/skills/ml-engineering-expert/SKILL.md" -> ".claude/skills/ai-researcher/SKILL.md" [label="see-also"];
   ".claude/skills/ml-engineering-expert/SKILL.md" -> ".claude/skills/llm-systems-expert/SKILL.md" [label="see-also"];
@@ -1044,7 +1044,7 @@ digraph citations {
   ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" -> ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" [label="see-also"];
   ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" -> ".claude/skills/theoretical-mathematics-expert/SKILL.md" [label="see-also"];
   ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" -> "docs/research/proof-tool-coverage.md" [label="see-also"];
-  ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" -> "src/Core/Hierarchy.fs" [label="see-also"];
   ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" -> "src/Core/NovelMath.fs" [label="see-also"];
   ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" -> "tools/Z3Verify/Program.fs" [label="see-also"];
@@ -1134,7 +1134,7 @@ digraph citations {
   ".claude/skills/physics-expert/SKILL.md" -> ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" [label="see-also"];
   ".claude/skills/physics-expert/SKILL.md" -> ".claude/skills/theoretical-physics-expert/SKILL.md" [label="see-also"];
   ".claude/skills/physics-expert/SKILL.md" -> "docs/research/verification-registry.md" [label="see-also"];
-  ".claude/skills/physics-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/physics-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/physics-expert/SKILL.md" -> "src/Core/CountMin.fs" [label="see-also"];
   ".claude/skills/physics-expert/SKILL.md" -> "src/Core/DeltaCrdt.fs" [label="see-also"];
   ".claude/skills/physics-expert/SKILL.md" -> "src/Core/Hierarchy.fs" [label="see-also"];
@@ -1151,7 +1151,7 @@ digraph citations {
   ".claude/skills/postgresql-expert/SKILL.md" -> "docs/BACKLOG.md" [label="see-also"];
   ".claude/skills/postgresql-expert/SKILL.md" -> "docs/ROADMAP.md" [label="see-also"];
   ".claude/skills/postgresql-expert/SKILL.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  ".claude/skills/postgresql-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/postgresql-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/powershell-expert/SKILL.md" -> ".claude/skills/bash-expert/SKILL.md" [label="see-also"];
   ".claude/skills/powershell-expert/SKILL.md" -> ".claude/skills/devops-engineer/SKILL.md" [label="see-also"];
   ".claude/skills/powershell-expert/SKILL.md" -> "docs/BACKLOG.md" [label="see-also"];
@@ -1162,7 +1162,7 @@ digraph citations {
   ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" -> ".claude/skills/measure-theory-and-signed-measures-expert/SKILL.md" [label="see-also"];
   ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" -> ".claude/skills/numerical-analysis-and-floating-point-expert/SKILL.md" [label="see-also"];
   ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" -> "docs/research/verification-registry.md" [label="see-also"];
-  ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" -> "src/Core/CountMin.fs" [label="see-also"];
   ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" -> "src/Core/DeltaCrdt.fs" [label="see-also"];
   ".claude/skills/probability-and-bayesian-inference-expert/SKILL.md" -> "src/Core/Merkle.fs" [label="see-also"];
@@ -1210,7 +1210,7 @@ digraph citations {
   ".claude/skills/query-optimizer-expert/SKILL.md" -> "docs/BACKLOG.md" [label="see-also"];
   ".claude/skills/query-optimizer-expert/SKILL.md" -> "docs/CONFLICT-RESOLUTION.md" [label="see-also"];
   ".claude/skills/query-optimizer-expert/SKILL.md" -> "docs/ROADMAP.md" [label="see-also"];
-  ".claude/skills/query-optimizer-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/query-optimizer-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/query-planner/SKILL.md" -> "docs/BACKLOG.md" [label="see-also"];
   ".claude/skills/query-planner/SKILL.md" -> "docs/CONFLICT-RESOLUTION.md" [label="see-also"];
   ".claude/skills/query-planner/SKILL.md" -> "docs/ROADMAP.md" [label="see-also"];
@@ -1243,7 +1243,7 @@ digraph citations {
   ".claude/skills/relational-algebra-expert/SKILL.md" -> ".claude/skills/query-optimizer-expert/SKILL.md" [label="see-also"];
   ".claude/skills/relational-algebra-expert/SKILL.md" -> ".claude/skills/sql-expert/SKILL.md" [label="see-also"];
   ".claude/skills/relational-algebra-expert/SKILL.md" -> ".claude/skills/theoretical-mathematics-expert/SKILL.md" [label="see-also"];
-  ".claude/skills/relational-algebra-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/relational-algebra-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/relational-algebra-expert/SKILL.md" -> "openspec/specs/operator-algebra/spec.md" [label="see-also"];
   ".claude/skills/relational-algebra-expert/SKILL.md" -> "src/Core/Hierarchy.fs" [label="see-also"];
   ".claude/skills/relational-database-expert/SKILL.md" -> ".claude/skills/database-systems-expert/SKILL.md" [label="see-also"];
@@ -1462,7 +1462,7 @@ digraph citations {
   ".claude/skills/sql-engine-expert/SKILL.md" -> "docs/BACKLOG.md" [label="see-also"];
   ".claude/skills/sql-engine-expert/SKILL.md" -> "docs/ROADMAP.md" [label="see-also"];
   ".claude/skills/sql-engine-expert/SKILL.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  ".claude/skills/sql-engine-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/sql-engine-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/sql-expert/SKILL.md" -> ".claude/skills/algebra-owner/SKILL.md" [label="see-also"];
   ".claude/skills/sql-expert/SKILL.md" -> ".claude/skills/entity-framework-expert/SKILL.md" [label="see-also"];
   ".claude/skills/sql-expert/SKILL.md" -> ".claude/skills/fscheck-expert/SKILL.md" [label="see-also"];
@@ -1472,7 +1472,7 @@ digraph citations {
   ".claude/skills/sql-expert/SKILL.md" -> ".claude/skills/relational-algebra-expert/SKILL.md" [label="see-also"];
   ".claude/skills/sql-expert/SKILL.md" -> "docs/BACKLOG.md" [label="see-also"];
   ".claude/skills/sql-expert/SKILL.md" -> "docs/ROADMAP.md" [label="see-also"];
-  ".claude/skills/sql-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/sql-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/sql-parser-expert/SKILL.md" -> ".claude/skills/deterministic-simulation-theory-expert/SKILL.md" [label="see-also"];
   ".claude/skills/sql-parser-expert/SKILL.md" -> ".claude/skills/fscheck-expert/SKILL.md" [label="see-also"];
   ".claude/skills/sql-parser-expert/SKILL.md" -> ".claude/skills/performance-engineer/SKILL.md" [label="see-also"];
@@ -1546,7 +1546,7 @@ digraph citations {
   ".claude/skills/teaching-skill-pattern/SKILL.md" -> ".claude/skills/taxonomy-expert/SKILL.md" [label="see-also"];
   ".claude/skills/tech-radar-owner/SKILL.md" -> "docs/CONFLICT-RESOLUTION.md" [label="see-also"];
   ".claude/skills/tech-radar-owner/SKILL.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  ".claude/skills/tech-radar-owner/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/tech-radar-owner/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/text-analysis-expert/SKILL.md" -> ".claude/skills/controlled-vocabulary-expert/SKILL.md" [label="see-also"];
   ".claude/skills/text-analysis-expert/SKILL.md" -> ".claude/skills/full-text-search-expert/SKILL.md" [label="see-also"];
   ".claude/skills/text-analysis-expert/SKILL.md" -> ".claude/skills/search-engine-library-expert/SKILL.md" [label="see-also"];
@@ -1574,7 +1574,7 @@ digraph citations {
   ".claude/skills/theoretical-physics-expert/SKILL.md" -> ".claude/skills/formal-verification-expert/SKILL.md" [label="see-also"];
   ".claude/skills/theoretical-physics-expert/SKILL.md" -> ".claude/skills/measure-theory-and-signed-measures-expert/SKILL.md" [label="see-also"];
   ".claude/skills/theoretical-physics-expert/SKILL.md" -> ".claude/skills/physics-expert/SKILL.md" [label="see-also"];
-  ".claude/skills/theoretical-physics-expert/SKILL.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  ".claude/skills/theoretical-physics-expert/SKILL.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   ".claude/skills/theoretical-physics-expert/SKILL.md" -> "openspec/specs/operator-algebra/spec.md" [label="see-also"];
   ".claude/skills/threading-expert/SKILL.md" -> ".claude/skills/concurrency-control-expert/SKILL.md" [label="see-also"];
   ".claude/skills/threading-expert/SKILL.md" -> ".claude/skills/deterministic-simulation-theory-expert/SKILL.md" [label="see-also"];
@@ -1784,7 +1784,7 @@ digraph citations {
   "docs/BACKLOG.md" -> "docs/security/THREAT-MODEL-SPACE-OPERA.md" [label="see-also"];
   "docs/BACKLOG.md" -> "docs/security/THREAT-MODEL.md" [label="see-also"];
   "docs/BACKLOG.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  "docs/BACKLOG.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  "docs/BACKLOG.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   "docs/BACKLOG.md" -> "docs/VISION.md" [label="see-also"];
   "docs/BACKLOG.md" -> "memory/feedback_creator_vs_consumer_tool_scope.md" [label="see-also"];
   "docs/BACKLOG.md" -> "memory/persona/best-practices-scratch.md" [label="see-also"];
@@ -1830,7 +1830,7 @@ digraph citations {
   "docs/BUGS.md" -> "tests/Tests.FSharp/Operators/RecursiveCounting.MultiSeed.Tests.fs" [label="see-also"];
   "docs/category-theory/README.md" -> "references/reference-sources.json" [label="see-also"];
   "docs/category-theory/README.md" -> "src/Core/DSL.fs" [label="see-also"];
-  "docs/category-theory/README.md" -> "tools/setup/common/sync-upstreams.sh" [label="see-also"];
+  "docs/category-theory/README.md" -> "tools/setup/common/sync-prior-art.sh" [label="see-also"];
   "docs/CONFLICT-RESOLUTION.md" -> "docs/ALIGNMENT.md" [label="see-also"];
   "docs/CONFLICT-RESOLUTION.md" -> "docs/EXPERT-REGISTRY.md" [label="see-also"];
   "docs/CONFLICT-RESOLUTION.md" -> "docs/ROADMAP.md" [label="see-also"];
@@ -1866,7 +1866,7 @@ digraph citations {
   "docs/DEBT.md" -> "tools/lean4/Lean4/DbspChainRule.lean" [label="see-also"];
   "docs/DEBT.md" -> "tools/setup/common/mise.sh" [label="see-also"];
   "docs/DEBT.md" -> "tools/setup/common/shellenv.sh" [label="see-also"];
-  "docs/DEBT.md" -> "tools/setup/common/sync-upstreams.sh" [label="see-also"];
+  "docs/DEBT.md" -> "tools/setup/common/sync-prior-art.sh" [label="see-also"];
   "docs/DEBT.md" -> "tools/setup/common/verifiers.sh" [label="see-also"];
   "docs/DEBT.md" -> "tools/setup/install.sh" [label="see-also"];
   "docs/DECISIONS/2026-04-17-lock-free-circuit-register.md" -> "docs/LOCKS.md" [label="see-also"];
@@ -1924,7 +1924,7 @@ digraph citations {
   "docs/INSTALLED.md" -> "docs/security/THREAT-MODEL.md" [label="see-also"];
   "docs/INSTALLED.md" -> "docs/SPEC-CAUGHT-A-BUG.md" [label="see-also"];
   "docs/INSTALLED.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  "docs/INSTALLED.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  "docs/INSTALLED.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   "docs/INSTALLED.md" -> "src/Core/BloomFilter.fs" [label="see-also"];
   "docs/INSTALLED.md" -> "src/Core/Durability.fs" [label="see-also"];
   "docs/INSTALLED.md" -> "tools/audit-packages.sh" [label="see-also"];
@@ -1989,7 +1989,7 @@ digraph citations {
   "docs/research/ci-retractability-inventory.md" -> "docs/research/alignment-observability.md" [label="see-also"];
   "docs/research/ci-retractability-inventory.md" -> "docs/research/zeta-equals-heaven-formal-statement.md" [label="see-also"];
   "docs/research/ci-retractability-inventory.md" -> "docs/security/THREAT-MODEL.md" [label="see-also"];
-  "docs/research/ci-retractability-inventory.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  "docs/research/ci-retractability-inventory.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   "docs/research/ci-retractability-inventory.md" -> "tools/setup/install.sh" [label="see-also"];
   "docs/research/ci-workflow-design.md" -> "docs/BACKLOG.md" [label="see-also"];
   "docs/research/ci-workflow-design.md" -> "docs/research/build-machine-setup.md" [label="see-also"];
@@ -2041,7 +2041,7 @@ digraph citations {
   "docs/research/hacker-conferences.md" -> ".claude/skills/threat-model-critic/SKILL.md" [label="see-also"];
   "docs/research/hacker-conferences.md" -> ".claude/skills/white-hat-hacker/SKILL.md" [label="see-also"];
   "docs/research/hacker-conferences.md" -> "docs/security/THREAT-MODEL.md" [label="see-also"];
-  "docs/research/hacker-conferences.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  "docs/research/hacker-conferences.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   "docs/research/hooks-adr-track.md" -> ".claude/settings.json" [label="see-also"];
   "docs/research/hooks-adr-track.md" -> "docs/AGENT-BEST-PRACTICES.md" [label="see-also"];
   "docs/research/hooks-adr-track.md" -> "docs/ALIGNMENT.md" [label="see-also"];
@@ -2058,7 +2058,7 @@ digraph citations {
   "docs/research/hooks-and-declarative-rbac-2026-04-19.md" -> "docs/EXPERT-REGISTRY.md" [label="see-also"];
   "docs/research/hooks-and-declarative-rbac-2026-04-19.md" -> "docs/GLOSSARY.md" [label="see-also"];
   "docs/research/hooks-and-declarative-rbac-2026-04-19.md" -> "docs/security/V1-SECURITY-GOALS.md" [label="see-also"];
-  "docs/research/hooks-and-declarative-rbac-2026-04-19.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  "docs/research/hooks-and-declarative-rbac-2026-04-19.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   "docs/research/liquidfsharp-evaluation.md" -> ".claude/skills/formal-verification-expert/SKILL.md" [label="see-also"];
   "docs/research/liquidfsharp-evaluation.md" -> ".claude/skills/fsharp-expert/SKILL.md" [label="see-also"];
   "docs/research/liquidfsharp-evaluation.md" -> "docs/research/proof-tool-coverage.md" [label="see-also"];
@@ -2095,7 +2095,7 @@ digraph citations {
   "docs/research/refinement-type-feature-catalog.md" -> "docs/research/proof-tool-coverage.md" [label="see-also"];
   "docs/research/refinement-type-feature-catalog.md" -> "docs/research/verification-registry.md" [label="see-also"];
   "docs/research/refinement-type-feature-catalog.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  "docs/research/refinement-type-feature-catalog.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  "docs/research/refinement-type-feature-catalog.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   "docs/research/retraction-safe-semi-naive.md" -> "src/Core/Recursive.fs" [label="see-also"];
   "docs/research/retraction-safe-semi-naive.md" -> "tools/tla/specs/DbspSpec.tla" [label="see-also"];
   "docs/research/servicetitan-2026-watchlist.md" -> "docs/BACKLOG.md" [label="see-also"];
@@ -2245,13 +2245,13 @@ digraph citations {
   "docs/TECH-RADAR.md" -> "docs/research/retraction-safe-semi-naive.md" [label="see-also"];
   "docs/TECH-RADAR.md" -> "src/Core/BloomFilter.fs" [label="see-also"];
   "docs/TECH-RADAR.md" -> "tools/alloy/specs/Spine.als" [label="see-also"];
-  "docs/UPSTREAM-LIST.md" -> "docs/research/hacker-conferences.md" [label="see-also"];
-  "docs/UPSTREAM-LIST.md" -> "docs/research/liquidfsharp-findings.md" [label="see-also"];
-  "docs/UPSTREAM-LIST.md" -> "docs/research/refinement-type-feature-catalog.md" [label="see-also"];
-  "docs/UPSTREAM-LIST.md" -> "docs/security/SDL-CHECKLIST.md" [label="see-also"];
-  "docs/UPSTREAM-LIST.md" -> "docs/TECH-RADAR.md" [label="see-also"];
-  "docs/UPSTREAM-LIST.md" -> "references/README.md" [label="see-also"];
-  "docs/UPSTREAM-LIST.md" -> "references/reference-sources.json" [label="see-also"];
+  "docs/PRIOR-ART-LIST.md" -> "docs/research/hacker-conferences.md" [label="see-also"];
+  "docs/PRIOR-ART-LIST.md" -> "docs/research/liquidfsharp-findings.md" [label="see-also"];
+  "docs/PRIOR-ART-LIST.md" -> "docs/research/refinement-type-feature-catalog.md" [label="see-also"];
+  "docs/PRIOR-ART-LIST.md" -> "docs/security/SDL-CHECKLIST.md" [label="see-also"];
+  "docs/PRIOR-ART-LIST.md" -> "docs/TECH-RADAR.md" [label="see-also"];
+  "docs/PRIOR-ART-LIST.md" -> "references/README.md" [label="see-also"];
+  "docs/PRIOR-ART-LIST.md" -> "references/reference-sources.json" [label="see-also"];
   "docs/VISION.md" -> "docs/AGENT-BEST-PRACTICES.md" [label="see-also"];
   "docs/VISION.md" -> "docs/BACKLOG.md" [label="see-also"];
   "docs/VISION.md" -> "docs/CONFLICT-RESOLUTION.md" [label="see-also"];
@@ -2341,7 +2341,7 @@ digraph citations {
   "memory/persona/best-practices-scratch.md" -> "docs/AGENT-BEST-PRACTICES.md" [label="see-also"];
   "memory/persona/best-practices-scratch.md" -> "docs/BACKLOG.md" [label="see-also"];
   "memory/persona/best-practices-scratch.md" -> "docs/CONFLICT-RESOLUTION.md" [label="see-also"];
-  "memory/persona/best-practices-scratch.md" -> "docs/UPSTREAM-LIST.md" [label="see-also"];
+  "memory/persona/best-practices-scratch.md" -> "docs/PRIOR-ART-LIST.md" [label="see-also"];
   "memory/persona/best-practices-scratch.md" -> "memory/persona/dejan/NOTEBOOK.md" [label="see-also"];
   "memory/persona/bodhi/JOURNAL.md" -> "src/Core/Core.fsproj" [label="see-also"];
   "memory/persona/bodhi/JOURNAL.md" -> "tools/setup/doctor.sh" [label="see-also"];

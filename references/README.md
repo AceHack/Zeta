@@ -4,7 +4,7 @@ External material we study to keep Zeta.Core honest. Two kinds:
 
 1. **Authored notes** under `references/notes/` — our own
    write-ups synthesising what matters from each upstream.
-2. **Disposable mirror state** under `references/upstreams/` —
+2. **Disposable mirror state** under `references/prior-art/` —
    cloned upstream repositories used as read-only references.
    **Gitignored; regeneratable via script; never hand-edited.**
 3. **Per-upstream package notes** under `references/<name>/` —
@@ -12,7 +12,7 @@ External material we study to keep Zeta.Core honest. Two kinds:
    projects with their own file layouts. These will be rationalised
    into `references/notes/` as we cite them.
 
-See `docs/UPSTREAM-LIST.md` for the curated watchlist + category
+See `docs/PRIOR-ART-LIST.md` for the curated watchlist + category
 index; see `docs/TECH-RADAR.md` for our own Adopt/Trial/Assess/
 Hold rings.
 
@@ -34,7 +34,7 @@ references/
 
 ## Policy
 
-- **Never hand-edit `references/upstreams/<name>/`.** It is
+- **Never hand-edit `references/prior-art/<name>/`.** It is
   disposable. If it's wrong, fix the sync script or the
   upstream URL in `reference-sources.json`, then re-sync.
 - **Authored notes only in `references/notes/`.** One `.md` per
@@ -150,7 +150,7 @@ references/
 ## Sync script (pending)
 
 A `scripts/references/sync.sh` / `sync.ps1` pair is planned to
-populate `references/upstreams/` from `reference-sources.json`.
+populate `references/prior-art/` from `reference-sources.json`.
 Until it lands, an upstream that needs to be cloned is cloned
-manually once under `references/upstreams/` (gitignore already
+manually once under `references/prior-art/` (gitignore already
 excludes it).
