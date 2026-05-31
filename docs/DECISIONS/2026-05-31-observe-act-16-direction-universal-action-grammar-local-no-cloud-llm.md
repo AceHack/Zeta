@@ -307,6 +307,23 @@ committing renders slot 4 as `F`; a state with a held/uncertain option renders i
   via ZetaId-CRDT G-Set, ratified B-0867/B-0858). NOTE this rejects DB-as-source-of-truth, NOT the
   Cockroach **rebuildable index** the Integration section keeps (an index is derived, not canonical).
 
+## Work ontology — trajectories / agendas / projects / work-items (PROPOSED — pending Aaron + Max ratification)
+
+The entities the loop operates on (work-items, projects, initiatives, trajectories, agendas, KPIs,
+owners) span two vocabularies — Aaron's (backlog row / project / trajectory / agenda) and Max's
+agentic-org (work item / project / initiative). Per Aaron 2026-05-31 the clean grounding is **BI /
+Kimball dimensional modeling on a DV2.0 storage backbone**, which resolves the label conflicts and
+supports a **multi-attribution contribution graph** + **attention × quality-of-attention payout** for
+creator-compensation (provenance, not DRM). The full proposal — the reconciliation table, the
+hierarchy-vs-cross-cutting-dimensions split, `agenda = conformed dimension`,
+`trajectory = accumulating-snapshot fact`, the provenance anchor stack (OpenLineage / PROV-O / C2PA / Shepard's),
+and the contribution-graph + attention-weighted payout — lives in:
+
+> [`docs/research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md`](../research/2026-05-31-work-ontology-bi-kimball-grounding-provenance-lineage-anchor-creator-comp-not-drm-aaron-max-ratification.md)
+
+It is **PROPOSED, pending Aaron + Max ratification**; on ratification its reconciliation table
+promotes into this section + a glossary anchor. The buildable creator-comp bet is **B-0950**.
+
 ## Open design questions [OPEN — for operator + Max]
 
 1. The exact 16-slot layout (the table above is v0). Do the four groups + roles match how move-next
