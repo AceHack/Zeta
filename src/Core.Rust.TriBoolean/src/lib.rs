@@ -16,6 +16,10 @@
 //! (src/Core.CSharp.TriBoolean) oracles is the BFT ballot. The three unit variants are `Copy`, so
 //! the cell is allocation-free.
 
+/// Tri-boolean floating point (B-0944 slice 5 pt2): the biased-exponent decoder, built from the
+/// `Tri` cell. See [`float`] for the middle-out, self-describing number.
+pub mod float;
+
 /// The three-valued state. `N` is the held / superposed living-uncertainty case (an explicit
 /// variant, NOT absence -- Rust has no null). `Copy`, so passing a `Tri` never allocates.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
