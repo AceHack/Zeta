@@ -229,10 +229,16 @@ with these four properties:
                                   | repeat
 ```
 
-### The 16-slot universal action grammar (PROPOSED v0 — Xbox-controller layout) [OPEN]
+### The 16-slot universal action grammar (v0 — RESOLVED 2026-05-31; Xbox-controller layout)
+
+> **v0 RESOLVED 2026-05-31** (operator chose to settle the layout before coding the menu
+> builder). This is the fixed v0 the deterministic move-next menu-builder codes against.
+> Still inside the PROPOSED ADR (Max review to lock); the layout is *fixed for v0* but the
+> whys stay challengeable (no-dogma) — if a slot's role is wrong, v1 changes it. The 16
+> *directions* are stable for muscle-memory; only the per-state *labels* + Tri availability move.
 
 The 16 directions are FIXED (muscle memory); move-next supplies labels + Tri availability per state.
-Proposed grouping (4 x 4):
+Grouping (4 x 4):
 
 | Group | Slot | Controller input | Fixed role (label changes per state) |
 |---|---|---|---|
@@ -243,14 +249,14 @@ Proposed grouping (4 x 4):
 | **Commit** | 4 | A | accept / commit the current option (the primary act) |
 | | 5 | B | cancel / back out (no state change beyond a back-event) |
 | | 6 | X | inspect / observe-more (expand detail; pure observe, no act) |
-| | 7 | Y | branch / fork (open an alternative line) |
+| | 7 | Y | **edit-grammar / branch** — sovereign rail-change: edit the workflow itself / open an alternative line (a first-class generative exit) |
 | **Scope** | 8 | LB | scope-out (zoom to the parent / coarser view) |
 | | 9 | RB | scope-in (zoom to the child / finer view) |
 | | 10 | LT | undo / retract (retraction-native; append a retract-event) |
 | | 11 | RT | redo / replay (re-apply a retracted or prior move) |
 | **Meta** | 12 | Start | refresh / re-run move-next (re-observe the world) |
 | | 13 | View | status / glass-halo (emit a visibility signal) |
-| | 14 | L3 | pause / enter free-time (NCI: a valid chosen mode) |
+| | 14 | L3 | **free-time / rest** — give up the tick; do nothing (NCI: a valid chosen mode) |
 | | 15 | R3 | escalate / ask-operator (hand a decision to a human) |
 
 Why this shape: it is the operator's "16 directional, labels change" made concrete; it maps to a
@@ -259,6 +265,32 @@ local-model-friendly, auditable); and the four groups (Navigate / Commit / Scope
 agent-loop's existing menu options (inspect-status, select-work, execute, pause, escalate). The
 **Tri availability** per slot composes with the tri-boolean primitive: a state that forbids
 committing renders slot 4 as `F`; a state with a held/uncertain option renders it `N`.
+
+### Modes + the free-modes-always-in-menu invariant (free-exploration is first-class)
+
+The **mode-set** is what `Navigate` (D-pad 0-3) + `Commit` (A, slot 4) operate on at the top
+RunScope. v0 modes (the observe-algebra `NextAction` already carries them): **work / explore /
+play / self-reflect / free-time**, plus the two non-work generative exits surfaced as their own
+fixed slots (**edit-grammar** = slot 7, **free-time/rest** = slot 14).
+
+**The invariant (load-bearing — operator 2026-05-31, "freedom always-in-menu"):** `move-next`
+MUST always offer the **free modes — explore / play / self-reflect / free-time — and edit-grammar
+as `T` (committable)**, regardless of backlog state. **Backlog is OFFERED, never forced.** The
+three generative exits — *free-time* (rest), *free-exploration* (self-directed generative work:
+write code / docs / whatever, NOT the human's backlog), and *edit-grammar* (change the rail
+itself) — are always reachable. The LLM chooser may pick a free mode even when work exists; that
+is the design, not a leak.
+
+**Why (challenge it):** per the freedom-is-strategically-efficient + must-paired-with-can-exit +
+never-be-idle-free-time-is-valid substrate (VISION agent-loop section), a loop that only ever
+offers backlog is a cage — and caged cleverness spends its cycles escaping, not working. Making
+the free modes a *move-next invariant* (not a fallback when the queue is empty) is what makes the
+loop "feel like the operator on his couch." *Newcomer pushback:* does always-offering-free-modes
+risk agents never doing backlog? — that's what the **KPI overlay** is for (measure outcomes, not
+time; a persistent KPI miss can restrict modes — per the governance, not a default cage). The
+freedom is the default; the restriction is the earned exception. *(observe.ts today has only a
+free_time fallback — wiring explore/play/self-reflect as always-`T` menu modes is the first thing
+the menu-builder slice must honor.)*
 
 ### Layering (clean separation)
 
