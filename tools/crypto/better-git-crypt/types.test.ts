@@ -98,6 +98,7 @@ describe("B-0883 v1 envelope structure invariants", () => {
       },
     ],
     ciphertext: new Uint8Array(0),
+    contentNonce: new Uint8Array(12),
     signerIdentity: "test@zeta",
     signature: new Uint8Array(0),
   });

@@ -40,6 +40,10 @@
   "dependencies": {
     "@nats-io/jetstream": "3.4.0",
     "@nats-io/transport-node": "3.4.0",
+    "@noble/ciphers": "2.2.0",
+    "@noble/hashes": "2.2.0",
+    "@noble/post-quantum": "0.6.1",
+    "cborg": "5.1.1",
     "pg": "8.21.0"
   }
 }

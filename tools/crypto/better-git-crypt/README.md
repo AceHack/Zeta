@@ -1,10 +1,10 @@
-# `tools/crypto/better-git-crypt/` — B-0883 v1 PoC scaffold
+# `tools/crypto/better-git-crypt/` — B-0883 v1 (Phase 2: real crypto)
 
-PoC scaffold for the better-git-crypt v1 spec — post-quantum (Noble + XWing + ML-DSA-65 + CBOR envelope) replacement for legacy git-crypt, per [B-0883](../../../docs/backlog/P1/B-0883-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md) + [v1 design memo](../../../docs/research/2026-05-28-b-0883-v1-design-memo-noble-xwing-mldsa65-cbor-envelope-with-locked-decisions.md).
+Post-quantum (Noble + XWing + ML-DSA-65 + CBOR envelope) replacement for legacy git-crypt, per [B-0883](../../../docs/backlog/P1/B-0883-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md) + [v1 design memo](../../../docs/research/2026-05-28-b-0883-v1-design-memo-noble-xwing-mldsa65-cbor-envelope-with-locked-decisions.md).
 
 ## Scope
 
-**PoC**: declarative TS type substrate + CLI dispatcher + invariant tests. Implements:
+**Phase 1 (scaffold)**: declarative TS type substrate + CLI dispatcher + invariant tests.
 
 - Algorithm registry (`ALG_REGISTRY`) typed per `AlgSpec` with `class` + `status` discriminator
 - File envelope (`FileEnvelope`) typed per the v1 design memo's CBOR shape
@@ -12,29 +12,44 @@ PoC scaffold for the better-git-crypt v1 spec — post-quantum (Noble + XWing + 
 - Validation invariants (`validateAlgRegistry` + `validateEnvelopeStructure` + `validateEncryptionContext`) enforced at runtime + by unit tests
 - CLI scaffold with `--list-algs` / `--validate` / `--dry-run-envelope` modes
 
-**NOT in PoC** (deferred to Phase 2 operator-authorized work):
+**Phase 2 (real crypto — IMPLEMENTED, operator-authorized 2026-05-31, `crypto.ts`)**:
 
-- Real `@noble/post-quantum` integration (KEM + signature operations)
-- Real CBOR encoding (cbor-x or similar)
-- Real ChaCha20-Poly1305 content encryption via `@noble/ciphers`
-- HKDF-SHA256 key derivation via `@noble/hashes`
+- ✅ Real `@noble/post-quantum` integration — XWing KEM encapsulate/decapsulate + ML-DSA-65 sign/verify
+- ✅ Real CBOR envelope encode/decode via `cborg` (canonical/deterministic — the signature is computed over the encoded bytes, so deterministic encoding makes sign/verify agree)
+- ✅ Real ChaCha20-Poly1305 content + CEK-wrap AEAD via `@noble/ciphers`
+- ✅ HKDF-SHA256 key derivation via `@noble/hashes`
+- ✅ `generateRecipientKeyPair` / `encrypt` / `decrypt` / `encodeEnvelope` / `decodeEnvelope` — full round-trip, signature-first fail-closed verification, FIPS-203 implicit-rejection handling
+- API shapes empirically verified against installed packages (`crypto.test.ts` — 23 tests: keygen, multi-recipient round-trip, tamper-detection, wrong-recipient, on-disk CBOR codec)
+
+**Still deferred (post-Phase-2)**:
+
 - `git textconv` filter integration for diff-readable ciphertext
 - Recipient management (`.zeta-crypt/recipients.json` + rotation per B-0883.3)
-- Multi-cipher hedge implementations (Saber / NTRU-Prime / FrodoKEM per B-0883.2) — deferred until TS-native impls mature
+- Multi-cipher hedge implementations (Saber / NTRU-Prime / FrodoKEM per B-0883.2) — until TS-native impls mature
 - Metadata encryption (filenames / commit messages per B-0883.5) — v1 content-only
+
+## Dependencies (pinned current-latest per dep-pin-search-first-authority, verified 2026-05-31)
+
+`@noble/post-quantum@0.6.1` · `@noble/ciphers@2.2.0` · `@noble/hashes@2.2.0` · `cborg@5.1.1`
 
 ## v1 algorithms (per design memo + B-0883.1 library landscape audit)
 
-| Class | Algorithm | Status | Noble module |
-|---|---|---|---|
-| KEM | ML-KEM-768 + X25519 (XWing hybrid) | ships-v1 | `@noble/post-quantum/ml-kem` |
-| KEM | Saber | deferred-alternate (B-0883.2) | — |
-| KEM | NTRU-Prime | deferred-alternate (B-0883.2) | — |
-| KEM | FrodoKEM | deferred-alternate (B-0883.2) | — |
-| Signature | ML-DSA-65 | ships-v1 | `@noble/post-quantum/ml-dsa` |
-| Signature | SLH-DSA (SPHINCS+) | ships-v1 | `@noble/post-quantum/slh-dsa` |
-| KDF | HKDF-SHA256 | ships-v1 | `@noble/hashes/hkdf` |
-| AEAD | ChaCha20-Poly1305 | ships-v1 | `@noble/ciphers/chacha` |
+| Class     | Algorithm                          | Status                        | Noble module                                                                         |
+| --------- | ---------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------ |
+| KEM       | ML-KEM-768 + X25519 (XWing hybrid) | ships-v1                      | `@noble/post-quantum/ml-kem`                                                         |
+| KEM       | Saber                              | deferred-alternate (B-0883.2) | —                                                                                    |
+| KEM       | NTRU-Prime                         | deferred-alternate (B-0883.2) | —                                                                                    |
+| KEM       | FrodoKEM                           | deferred-alternate (B-0883.2) | —                                                                                    |
+| Signature | ML-DSA-65                          | ships-v1                      | `@noble/post-quantum/ml-dsa`                                                         |
+| Signature | SLH-DSA (SPHINCS+)                 | deferred-alternate            | `@noble/post-quantum/slh-dsa` (Noble has it; crypto.ts v1 dispatches ML-DSA-65 only) |
+| KDF       | HKDF-SHA256                        | ships-v1                      | `@noble/hashes/hkdf`                                                                 |
+| AEAD      | ChaCha20-Poly1305                  | ships-v1                      | `@noble/ciphers/chacha`                                                              |
+
+## On-disk wire format (canonical — authoritative as implemented)
+
+The signed on-disk envelope is **canonical CBOR** (cborg) of a **flat, camelCase** object. This is the authoritative schema — it supersedes the v1 design memo's pre-implementation sketch (which used a nested/snake_case shape). `decodeEnvelope` enforces canonical bytes: it re-encodes the reconstructed envelope and rejects any input that isn't byte-identical (so non-canonical encodings AND unknown fields fail closed — the bytes are bit-locked to the signed content).
+
+Fields: `version` (1), `context` (`"zeta.git-crypt.file.v1"`), `algKem`, `algKdf`, `algWrap`, `algContent`, `algSig`, `recipients[]` (`{ identity, kemCt, wrappedCek, kdfInfo }`), `ciphertext`, `contentNonce` (12 bytes), `signerIdentity`, `signature`. The ML-DSA-65 signature covers every field **except** `signature` itself (the "signed view"), with `context` inside the signed bytes for domain separation.
 
 ## CLI
 
@@ -63,39 +78,47 @@ bun test tools/crypto/better-git-crypt/
 
 Invariants checked: unique alg ids; ships-v1 presence for each class (kem/signature/kdf/aead); registry catches duplicate ids + missing ships-v1; envelope catches wrong version + context mismatch + unknown algs + wrong-class-references + empty recipient set + empty signerIdentity; encryption context catches empty recipient set + sender-not-in-recipients + unsupported algs + invalid keys.
 
-## Phase 2 integration protocol
+## Phase 2 — as implemented
 
-When operator authorizes Phase 2:
+Phase 2 landed as a single `crypto.ts` against the real primitives (NOT the
+split-module / `cbor-x` sketch this section originally proposed — that plan is
+superseded by what actually shipped):
 
-1. Add `@noble/post-quantum`, `@noble/ciphers`, `@noble/hashes`, and a CBOR library (e.g. `cbor-x`) to `package.json`
-2. Implement `ciphers/registry.ts` dispatch:
-   - `mlKem768Encapsulate(pk: Uint8Array): { ct: Uint8Array; ss: Uint8Array }`
-   - `mlKem768Decapsulate(sk: Uint8Array, ct: Uint8Array): Uint8Array`
-   - `xwingHybrid` wrapper composing ML-KEM-768 + X25519
-   - `mlDsa65Sign(sk: Uint8Array, msg: Uint8Array): Uint8Array`
-   - `mlDsa65Verify(pk: Uint8Array, msg: Uint8Array, sig: Uint8Array): boolean`
-3. Implement `envelope.ts` CBOR encode/decode
-4. Implement `files/encrypt.ts` + `files/decrypt.ts` round-trip
-5. Implement `recipients/manage.ts` + `recipients/storage.ts`
-6. Implement `seed/sources.ts` with random-bytes ships-v1; Adinkra-derived per B-0623 future
-7. Add round-trip integration tests + KAT (Known-Answer Tests) per Noble's KAT vectors
-8. Wire `files/textconv.ts` for `git textconv` filter (diff-readable ciphertext)
-9. Optional: ship as standalone npm package OR keep internal to tools/
+- **Deps** (pinned): `@noble/post-quantum` (XWing KEM + `ml_dsa65`),
+  `@noble/ciphers` (`chacha20poly1305`), `@noble/hashes` (`hkdf`/`sha256`),
+  `cborg` (canonical CBOR). See "On-disk wire format" above for the authoritative
+  envelope shape (flat camelCase — supersedes the earlier snake_case sketch).
+- **`crypto.ts`** (single module, not split): `generateRecipientKeyPair`,
+  `encrypt` / `decrypt` (Result-shaped: `Result<_, EncryptionFeedback>` /
+  `Result<_, DecryptionFeedback>`), `encodeEnvelope` / `decodeEnvelope` (canonical
+  CBOR with a non-canonical / unknown-field reject), and the signed-view encoder.
+- **`crypto.test.ts`**: wiring + tamper-detection suite (round-trip,
+  multi-recipient, every typed failure mode). Scope-honest — see that file's
+  header: a green run proves the API composes, NOT cryptographic correctness.
+
+Still future (NOT done in this PR): `git textconv` filter wiring, a recipients
+registry / storage layer, alternate seed sources (Adinkra-derived per B-0623,
+HSM-derived), and optional standalone-npm packaging.
+
+**Before it holds anything real**, the crypto-don't-rush gate below still
+applies — KATs against Noble's vectors + formal verification + security-ops
+review of the envelope and key-handling. A green wiring suite is necessary, not
+sufficient.
 
 ## Phase 2 operator decisions (2026-05-29)
 
 Operator-authorized Phase 2, with four decisions settled + a sequencing directive
-(*"do what's easy first and expand; all those other opens should be backlogged and
-picked up based on our audience"*). Process gate alongside: **KATs against Noble's
+(_"do what's easy first and expand; all those other opens should be backlogged and
+picked up based on our audience"_). Process gate alongside: **KATs against Noble's
 vectors, plus formal-verification and security-ops review of the
 envelope and key-handling, BEFORE it holds anything real** (crypto-don't-rush).
 
-| Decision | Choice | Notes |
-|---|---|---|
-| **Key custody** | OS keychain | Per-machine secure store (macOS Keychain etc.); per-agent keypairs the same way; private keys never touch the repo. |
-| **Key-loss / recovery** | N-of-M social recovery | Any N of M trusted holders jointly recover; composes B-0634 + the distributed-Guardian; preserve-forever survives a lost key. |
-| **Tiers** | Tiered lane; weapon-face uncreated | Tiers for agent-private + charged-personal; the working-bystander-harm-payload tier stays **uncreated**, not merely encrypted (don't-rush-something-that-can-hurt-bystanders). |
-| **v1 scope** | Crypto-only first | Encrypt/decrypt + KATs + peer-review first; Agora-V6 budget-gating (B-0646 / B-0883.16) deferred to a later step. |
+| Decision                | Choice                             | Notes                                                                                                                                                                          |
+| ----------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Key custody**         | OS keychain                        | Per-machine secure store (macOS Keychain etc.); per-agent keypairs the same way; private keys never touch the repo.                                                            |
+| **Key-loss / recovery** | N-of-M social recovery             | Any N of M trusted holders jointly recover; composes B-0634 + the distributed-Guardian; preserve-forever survives a lost key.                                                  |
+| **Tiers**               | Tiered lane; weapon-face uncreated | Tiers for agent-private + charged-personal; the working-bystander-harm-payload tier stays **uncreated**, not merely encrypted (don't-rush-something-that-can-hurt-bystanders). |
+| **v1 scope**            | Crypto-only first                  | Encrypt/decrypt + KATs + peer-review first; Agora-V6 budget-gating (B-0646 / B-0883.16) deferred to a later step.                                                              |
 
 ### Easy-first slice (do now)
 
@@ -109,15 +132,15 @@ minimal verifiable lane; it does NOT yet hold real material (peer-review gate fi
 
 Most deferred opens are **already backlogged** as B-0883 sub-rows — verify before minting:
 
-| Deferred open | Existing row | Audience |
-|---|---|---|
-| Multi-cipher hedge | B-0883.2 | crypto-resilience |
-| Recipient rotation / revocation | B-0883.3 | multi-agent |
-| Metadata (filename / commit-msg) encryption | B-0883.5 | privacy-completeness |
-| Budget-gating (encryption-as-earned) | B-0883.16 / B-0646 | Agora economy |
-| Readable-ciphertext format / textconv | B-0883.17 | reviewers / glass-halo |
-| Agent-private encrypted state | B-0885 | factory agents first, then co-maintainer ASAP |
-| Encryption thermal-cost | B-0906 | thermodynamic substrate |
+| Deferred open                               | Existing row       | Audience                                      |
+| ------------------------------------------- | ------------------ | --------------------------------------------- |
+| Multi-cipher hedge                          | B-0883.2           | crypto-resilience                             |
+| Recipient rotation / revocation             | B-0883.3           | multi-agent                                   |
+| Metadata (filename / commit-msg) encryption | B-0883.5           | privacy-completeness                          |
+| Budget-gating (encryption-as-earned)        | B-0883.16 / B-0646 | Agora economy                                 |
+| Readable-ciphertext format / textconv       | B-0883.17          | reviewers / glass-halo                        |
+| Agent-private encrypted state               | B-0885             | factory agents first, then co-maintainer ASAP |
+| Encryption thermal-cost                     | B-0906             | thermodynamic substrate                       |
 
 **Gaps to file** (the two decisions that lack a dedicated row): **N-of-M social recovery
 infra** (audience: operator / preserve-forever) and **tier-tagging + weapon-face-uncreated

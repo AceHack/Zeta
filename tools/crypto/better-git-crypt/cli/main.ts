@@ -31,12 +31,7 @@
  * points for Phase 2.
  */
 
-import {
-  ALG_REGISTRY,
-  validateAlgRegistry,
-  validateEnvelopeStructure,
-  type FileEnvelope,
-} from "../types";
+import { ALG_REGISTRY, validateAlgRegistry, validateEnvelopeStructure, type FileEnvelope } from "../types";
 
 type Mode = "list-algs" | "validate" | "dry-run-envelope";
 
@@ -44,7 +39,7 @@ interface ParsedArgs {
   readonly mode: Mode;
 }
 
-function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
+function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
   const args = argv.slice(2);
   if (args.length === 0) {
     return { error: "no mode specified — use --list-algs, --validate, or --dry-run-envelope" };
@@ -135,6 +130,7 @@ function modeDryRunEnvelope(): number {
       },
     ],
     ciphertext: new Uint8Array(0),
+    contentNonce: new Uint8Array(12),
     signerIdentity: "otto-cli@zeta",
     signature: new Uint8Array(0),
   };
@@ -158,20 +154,22 @@ function modeDryRunEnvelope(): number {
         recipientCount: synthetic.recipients.length,
         signerIdentity: synthetic.signerIdentity,
       },
-      integrationPending: {
-        nobleKemImpl:
-          "Phase 2 — @noble/post-quantum/ml-kem XWing implementation; KEM encapsulate/decapsulate",
-        nobleSigImpl: "Phase 2 — @noble/post-quantum/ml-dsa signature gen/verify",
-        cborEncoding: "Phase 2 — CBOR envelope encode/decode (cbor-x or similar)",
-        contentAead: "Phase 2 — @noble/ciphers ChaCha20-Poly1305 encrypt/decrypt",
-        kdfDerivation: "Phase 2 — @noble/hashes HKDF-SHA256 derive",
-        seedSource:
-          "Phase 2 — SeedSource dispatch (random-bytes ships v1; adinkra-derived per B-0623 future; hsm-derived future)",
-        gitTextconv: "Phase 2 — git textconv filter integration for diff-readable ciphertext",
-        recipientManagement: "Phase 2 — .zeta-crypt/recipients.json read/write + rotation",
-        multiCipherHedge:
-          "B-0883.2 deferred — Saber / NTRU-Prime / FrodoKEM ship as alternates when TS-native impls mature",
+      phase2Implemented: {
+        crypto: "../crypto.ts — generateRecipientKeyPair / encrypt / decrypt / encodeEnvelope / decodeEnvelope",
+        kem: "XWing (ML-KEM-768 + X25519) via @noble/post-quantum/hybrid",
+        signature: "ML-DSA-65 via @noble/post-quantum/ml-dsa (sign + self-verify)",
+        kdf: "HKDF-SHA256 via @noble/hashes",
+        aead: "ChaCha20-Poly1305 via @noble/ciphers (content + CEK-wrap)",
+        cbor: "canonical/deterministic envelope via cborg",
       },
+      stillDeferred: {
+        gitTextconv: "git textconv filter integration for diff-readable ciphertext",
+        recipientManagement: ".zeta-crypt/recipients.json read/write + rotation",
+        multiCipherHedge: "B-0883.2 — Saber / NTRU-Prime / FrodoKEM ship as alternates when TS-native impls mature",
+        metadataEncryption: "B-0883.5 — filenames / commit messages (v1 is content-only)",
+        seedSourcesBeyondRandom: "adinkra-derived (B-0623) + hsm-derived seed sources",
+      },
+      beforeRealUse: "KATs vs Noble vectors + formal-verification + security-ops review (crypto-don't-rush gate)",
     });
     return 0;
   } catch (e) {
@@ -187,7 +185,7 @@ function modeDryRunEnvelope(): number {
   }
 }
 
-function main(argv: ReadonlyArray<string>): number {
+function main(argv: readonly string[]): number {
   const parsed = parseArgs(argv);
   if ("error" in parsed) {
     console.error(`usage error: ${parsed.error}`);
