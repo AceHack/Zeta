@@ -644,7 +644,11 @@ on DBSP foundations, not to carve out a narrow niche.
   language; C# callers get `Zeta.Core.CSharp`. Lean for
   proofs, Java for the Alloy driver, TypeScript (or
   researched alternative) for post-install automation. F#
-  stays load-bearing.
+  stays load-bearing. *(Superseded re: the DB by the
+  [4-language compiler-BFT governance ADR (2026-05-31)](DECISIONS/2026-05-31-four-language-compiler-bft-governance-axes-per-artifact-gate-golden-vectors-oracle-tiebreak.md):
+  F# is correctness-/spec-authoritative, TS is distribution-
+  authoritative — two axes, not "F# primary with polyglot
+  drift.")*
 - **Production-grade security.** Nation-state + supply-chain
   threat model. SLSA ladder L1 → L3 pre-v1.0. OpenSpec is
   first-class for every committed artefact, including CI.
