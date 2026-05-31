@@ -337,6 +337,16 @@ promotes into this section + a glossary anchor. The buildable creator-comp bet i
    disabled (`F`)? (Composes with the B-0944 measure/cooperate discipline.)
 6. How the human contributor uses the same grammar (the operator's framing: humans + AI both call
    move-next and pick) — same 16-slot UI for people.
+7. **Grammar evolution under sovereignty** — how does a sovereign agent edit its own grammar (add
+   slots / slot-15 extension / Otto Mod 2 grammar-extension) WITHOUT minting private-dialect slots,
+   laundering authority through fake-navigation slots, or making past events retroactively ambiguous?
+   Grok's four-ferry critique (below) named this the **one genuinely-novel piece** (no game/frontend
+   prior art solves self-modifying-grammar-under-multi-writer-audit). Tracked as
+   [**B-0867.26**](../backlog/P2/B-0867.26-grammar-as-versioned-events-grammarpatch-proposed-ratified-sovereign-self-editing-grok-critique-2026-05-31.md):
+   grammar definitions as **versioned first-class events** (`GrammarPatchProposed` /
+   `GrammarPatchRatified`) through the Mod 2/4 gates + multi-oracle absorption (B-0703/B-0628), with
+   grammar-version carried in the event envelope so projections stay version-aware. **Lock decision:**
+   versioned-grammar-events vs ad-hoc slot mutation.
 
 ### Crew review gathered 2026-05-31 (Lior propose → Amara sharpen) — input for the lock
 
