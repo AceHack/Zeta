@@ -344,7 +344,7 @@ export type TriAvailability = (typeof TriAvailability)[keyof typeof TriAvailabil
 
 export type SlotImpl =
   | { kind: "command"; commandType: string; command?: unknown }
-  | { kind: "mcp"; tool: string; args?: unknown }
+  | { kind: "mcp"; tool: string; args?: unknown; requiredSecretScopes?: readonly string[] | undefined }
   | { kind: "observe"; toScope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { kind: "status"; status: GlassHaloStatusSignal }
   | { kind: "prompt_flow"; request: PromptFlowContextRequest };
@@ -667,6 +667,7 @@ export type HierarchyReadout = {
 export type PromptFlowToolInjection = {
   tool: string;
   args?: unknown;
+  requiredSecretScopes?: readonly string[] | undefined;
 };
 
 export type PromptFlowTask = {
@@ -779,6 +780,7 @@ export type AgentObserveDependencies = ObserveDependencies & {
   promptFlowTasks?: readonly PromptFlowTask[];
   promptFlowPage?: number | undefined;
   hierarchy?: HierarchySnapshot;
+  availableSecretScopes?: readonly string[] | undefined;
 };
 
 export type AgentObserveResult =
@@ -1305,7 +1307,7 @@ export async function observeAgentSurface(
   };
   const matchingAgents = (deps.metricAgents ?? []).filter((agent) => agent.scope === snapshot.scope);
   const blocks = await Promise.all(matchingAgents.map((agent) => agent.compute(ctx)));
-  const promptFlows = promptFlowReadoutForHat(snapshot.hat, deps.promptFlowTasks ?? []);
+  const promptFlows = promptFlowReadoutForHat(snapshot.hat, deps.promptFlowTasks ?? [], deps.availableSecretScopes);
   const hierarchy = hierarchyReadoutForHat(snapshot.hat, deps.hierarchy, observed.readout.observedAt);
   return {
     outcome: ObserveOutcome.Readout,
@@ -2069,11 +2071,12 @@ function missionCorrectiveActions(
 export function promptFlowReadoutForHat(
   hat: HatDefinition,
   tasks: readonly PromptFlowTask[],
+  availableSecretScopes?: readonly string[] | undefined,
 ): PromptFlowReadout {
   const allowed: PromptFlowTask[] = [];
   const vetoedTasks: VetoedPromptFlowTask[] = [];
   for (const task of tasks) {
-    const veto = firstPromptFlowTaskVeto(hat, task);
+    const veto = firstPromptFlowTaskVeto(hat, task, availableSecretScopes);
     if (veto === undefined) {
       allowed.push(task);
     } else {
@@ -2089,6 +2092,7 @@ export function promptFlowReadoutForHat(
 function firstPromptFlowTaskVeto(
   hat: HatDefinition,
   task: PromptFlowTask,
+  availableSecretScopes: readonly string[] | undefined,
 ): { ruleName: string; reason: string } | undefined {
   if (task.allowedHatIds !== undefined && !task.allowedHatIds.includes(hat.id)) {
     return {
@@ -2110,7 +2114,19 @@ function firstPromptFlowTaskVeto(
       };
     }
   }
+  const missingSecretScopes = requiredSecretScopesForPromptFlowTask(task)
+    .filter((scope) => !(availableSecretScopes ?? []).includes(scope));
+  if (missingSecretScopes.length > 0) {
+    return {
+      ruleName: "prompt-flow-secret-scope",
+      reason: `prompt flow "${task.promptFlowId}" requires unavailable secret scope(s): ${missingSecretScopes.join(", ")}`,
+    };
+  }
   return undefined;
+}
+
+function requiredSecretScopesForPromptFlowTask(task: PromptFlowTask): readonly string[] {
+  return uniqueStrings(task.toolInjections.flatMap((injection) => injection.requiredSecretScopes ?? []));
 }
 
 function copyOptionalPromptFlowTaskMetadata(task: PromptFlowTask): Partial<PromptFlowContextRequest> {

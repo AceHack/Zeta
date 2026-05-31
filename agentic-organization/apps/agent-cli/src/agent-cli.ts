@@ -1671,9 +1671,18 @@ function parseToolInjections(value: unknown): readonly PromptFlowToolInjection[]
     if (typeof item !== "object" || item === null || typeof (item as { tool?: unknown }).tool !== "string") {
       throw new Error("prompt-flow task tool injection requires a tool");
     }
-    const injection = item as { tool: string; args?: unknown };
-    return injection.args === undefined ? { tool: injection.tool } : { tool: injection.tool, args: injection.args };
+    const injection = item as { tool: string; args?: unknown; requiredSecretScopes?: unknown };
+    return {
+      tool: injection.tool,
+      ...(injection.args === undefined ? {} : { args: injection.args }),
+      ...parseOptionalToolInjectionSecretScopes(injection.requiredSecretScopes),
+    };
   });
+}
+
+function parseOptionalToolInjectionSecretScopes(value: unknown): { requiredSecretScopes?: readonly string[] } {
+  if (value === undefined) return {};
+  return { requiredSecretScopes: parseStringArray(value, "toolInjection.requiredSecretScopes") };
 }
 
 function parseMetricBlocks(value: unknown): readonly MetricBlock[] {

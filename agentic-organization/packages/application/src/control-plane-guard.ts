@@ -168,13 +168,44 @@ export function createControlPlaneSlotAuthorizer(
     const decision = evaluateControlPlaneAccess({
       ...input,
       actionType: slot.action?.actionType ?? slot.label,
-      usage: input.usageForSlot?.(slot),
+      usage: mergeControlPlaneUsage(input.usageForSlot?.(slot), controlPlaneUsageForSlot(slot)),
     });
 
     return decision.status === "allowed"
       ? { status: "allowed" }
       : { status: "denied", reason: "control_plane_denied", message: decision.message };
   };
+}
+
+function mergeControlPlaneUsage(
+  callerUsage: ControlPlaneUsage | undefined,
+  slotUsage: ControlPlaneUsage | undefined,
+): ControlPlaneUsage | undefined {
+  if (callerUsage === undefined) return slotUsage;
+  if (slotUsage === undefined) return callerUsage;
+  return {
+    ...slotUsage,
+    ...callerUsage,
+    secretScopes: uniqueStrings([
+      ...(callerUsage.secretScopes ?? []),
+      ...(slotUsage.secretScopes ?? []),
+    ]),
+  };
+}
+
+function controlPlaneUsageForSlot(slot: Menu16Slot): ControlPlaneUsage | undefined {
+  const secretScopes = uniqueStrings(secretScopesForSlot(slot));
+  return secretScopes.length === 0 ? undefined : { secretScopes };
+}
+
+function secretScopesForSlot(slot: Menu16Slot): readonly string[] {
+  if (slot.impl?.kind === "mcp") {
+    return slot.impl.requiredSecretScopes ?? [];
+  }
+  if (slot.impl?.kind === "prompt_flow") {
+    return slot.impl.request.toolInjections.flatMap((injection) => injection.requiredSecretScopes ?? []);
+  }
+  return [];
 }
 
 function activeMatchingFlags(input: EvaluateControlPlaneAccessInput): readonly ControlPlaneFlag[] {
@@ -271,6 +302,10 @@ const DenialPriority: readonly ControlPlaneDenialReason[] = [
 function orderedUniqueReasons(reasons: readonly ControlPlaneDenialReason[]): readonly ControlPlaneDenialReason[] {
   const reasonSet = new Set(reasons);
   return DenialPriority.filter((reason) => reasonSet.has(reason));
+}
+
+function uniqueStrings(values: readonly string[]): readonly string[] {
+  return [...new Set(values)];
 }
 
 function createControlPlaneDenialMessage(

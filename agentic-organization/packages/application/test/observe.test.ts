@@ -36,6 +36,7 @@ import {
   type PromptFlowTask,
   type RunSnapshot,
 } from "../src/observe.ts";
+import { createControlPlaneSlotAuthorizer } from "../src/control-plane-guard.ts";
 
 const deps: ObserveDependencies = {
   clock: { now: () => "2026-05-29T00:00:00.000Z" },
@@ -866,6 +867,147 @@ test("act routes selectable MCP, command, and observe slots through injected imp
     'mcp:metrics.snapshot:{"scope":"work_item"}',
     'command:schedule_work_block:{"workItemId":"work-1"}',
   ]);
+});
+
+test("act-time control plane vetoes MCP slots when required secret scopes are unavailable", async () => {
+  const menu: Menu16 = {
+    slots: [
+      {
+        index: 0,
+        direction: "commit.a",
+        label: "publish provider update",
+        availability: "T",
+        impl: {
+          kind: "mcp",
+          tool: "github.publish",
+          args: { branch: "phase-2-controls" },
+          requiredSecretScopes: ["github:write"],
+        },
+      },
+      ...Array.from({ length: 15 }, (_, offset) => ({
+        index: offset + 1,
+        direction: `empty.${offset}`,
+        label: "empty",
+        availability: "N" as const,
+      })),
+    ],
+  };
+  let dispatched = false;
+
+  const result = await act(0, menu, {
+    authorizeSlot: createControlPlaneSlotAuthorizer({
+      organizationId: "org-lfg",
+      actorHatId: "release_operator",
+      boundary: "mcp_dispatch",
+      evaluatedAt: "2026-05-31T21:00:00.000Z",
+      flags: [],
+      availableSecretScopes: [],
+    }),
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.outcome, "rejected");
+  if (result.outcome !== "rejected") return;
+  equal(result.reason, ActRejectionReason.ControlPlaneDenied);
+  ok(result.message.includes("secret_scope_unavailable"));
+  equal(dispatched, false);
+});
+
+test("observeAgentSurface hides prompt-flow tasks whose tool injections require unavailable secrets", async () => {
+  const releaseOperator = buildHatDefinitions().find((h) => h.id === "release_operator")!;
+  const task: PromptFlowTask = {
+    taskId: "pft-secret",
+    workItemId: "work-secret",
+    title: "Publish release note",
+    promptFlowId: "pf-release-publish",
+    label: "publish release note",
+    scope: RunScope.WorkItem,
+    priority: 80,
+    allowedHatIds: ["release_operator"],
+    directions: ["commit.a"],
+    toolInjections: [{
+      tool: "github.publish_release",
+      args: { draft: false },
+      requiredSecretScopes: ["github:write"],
+    }],
+    metrics: [],
+    contextArtifactRefs: [],
+  };
+
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hat: releaseOperator,
+    }),
+    {
+      ...deps,
+      promptFlowTasks: [task],
+      availableSecretScopes: [],
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.promptFlows.tasks.length, 0);
+  equal(surface.promptFlows.vetoedTasks[0]?.ruleName, "prompt-flow-secret-scope");
+  ok(surface.actions.slots.some((slot) =>
+    slot.label === "publish release note" &&
+    slot.availability === "F" &&
+    slot.reason?.includes("github:write")
+  ));
+});
+
+test("observeAgentSurface renders prompt-flow tasks when required secret scopes are available", async () => {
+  const releaseOperator = buildHatDefinitions().find((h) => h.id === "release_operator")!;
+  const task: PromptFlowTask = {
+    taskId: "pft-secret-allowed",
+    workItemId: "work-secret",
+    title: "Publish release note",
+    promptFlowId: "pf-release-publish",
+    label: "publish release note",
+    scope: RunScope.WorkItem,
+    priority: 80,
+    allowedHatIds: ["release_operator"],
+    directions: ["commit.a"],
+    toolInjections: [{
+      tool: "github.publish_release",
+      args: { draft: false },
+      requiredSecretScopes: ["github:write"],
+    }],
+    metrics: [],
+    contextArtifactRefs: [],
+  };
+
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      scope: RunScope.WorkItem,
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      hat: releaseOperator,
+    }),
+    {
+      ...deps,
+      promptFlowTasks: [task],
+      availableSecretScopes: ["github:write"],
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.promptFlows.tasks.length, 1);
+  equal(surface.promptFlows.vetoedTasks.length, 0);
+  ok(surface.actions.slots.some((slot) =>
+    slot.label === "publish release note" &&
+    slot.availability === "T" &&
+    slot.impl?.kind === "prompt_flow" &&
+    slot.impl.request.toolInjections[0]?.requiredSecretScopes?.includes("github:write")
+  ));
 });
 
 test("observeAgentSurface returns the 16-slot controller plus deterministic scoped dashboard blocks", async () => {

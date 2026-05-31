@@ -22,6 +22,7 @@ import {
   type ControlPlaneFlag,
   type ControlPlaneUsage,
   type CommandHandler,
+  type Menu16,
 } from "../src/index.ts";
 import { type AgenticActor } from "../../domain/src/index.ts";
 import {
@@ -161,6 +162,54 @@ test("control-plane slot authorizer rejects act-time ESTOP that appears after ob
   equal(result.outcome, "rejected");
   if (result.outcome !== "rejected") return;
   equal(result.reason, ActRejectionReason.ControlPlaneDenied);
+  equal(dispatched, false);
+});
+
+test("control-plane slot authorizer merges caller usage with slot-declared secret scopes", async () => {
+  const menu: Menu16 = {
+    slots: [
+      {
+        index: 0,
+        direction: "commit.a",
+        label: "publish provider update",
+        availability: "T",
+        impl: {
+          kind: "mcp",
+          tool: "github.publish",
+          requiredSecretScopes: ["github:write"],
+        },
+      },
+      ...Array.from({ length: 15 }, (_, offset) => ({
+        index: offset + 1,
+        direction: `empty.${offset}`,
+        label: "empty",
+        availability: "N" as const,
+      })),
+    ],
+  };
+  let dispatched = false;
+
+  const result = await act(0, menu, {
+    authorizeSlot: createControlPlaneSlotAuthorizer({
+      flags: [],
+      organizationId: "org-lfg",
+      actorHatId: "release_operator",
+      evaluatedAt: NOW,
+      boundary: "mcp_dispatch",
+      availableSecretScopes: [],
+      usageForSlot: () => ({ tokenCost: 5 }),
+    }),
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.outcome, "rejected");
+  if (result.outcome !== "rejected") return;
+  equal(result.reason, ActRejectionReason.ControlPlaneDenied);
+  ok(result.message.includes("secret_scope_unavailable"));
   equal(dispatched, false);
 });
 

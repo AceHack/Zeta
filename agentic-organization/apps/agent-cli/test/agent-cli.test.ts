@@ -1076,7 +1076,7 @@ test("createAgentCliPromptFlowTasksFromEnv reads current tasks from JSON", () =>
           actionClass: ActionClass.WriteCode,
           allowedHatIds: ["backend_implementer"],
           directions: ["Load plan"],
-          toolInjections: [{ tool: "repo.search", args: { q: "work-1" } }],
+          toolInjections: [{ tool: "repo.search", args: { q: "work-1" }, requiredSecretScopes: ["repo:read"] }],
           metrics: [{ id: "work_item.failures", label: "failing tests", value: 2 }],
           definitionVersion: "1.0.0",
           phaseId: "execute",
@@ -1095,6 +1095,7 @@ test("createAgentCliPromptFlowTasksFromEnv reads current tasks from JSON", () =>
   equal(tasks.length, 1);
   equal(tasks[0]?.taskId, "task-implement");
   equal(tasks[0]?.toolInjections[0]?.tool, "repo.search");
+  deepEqual(tasks[0]?.toolInjections[0]?.requiredSecretScopes, ["repo:read"]);
   deepEqual(tasks[0]?.allowedHatIds, ["backend_implementer"]);
   equal(tasks[0]?.phaseId, "execute");
   equal(tasks[0]?.runState, PromptFlowRunState.RunningPhase);
@@ -1131,7 +1132,7 @@ test("createAgentCliPromptFlowTasksFromEnv compiles durable definitions and runs
   equal(tasks[0]?.definitionVersion, "1.0.0");
   equal(tasks[0]?.phaseId, "execute");
   deepEqual(tasks[0]?.directions, ["Patch the smallest surface", "Run focused tests"]);
-  deepEqual(tasks[0]?.toolInjections, [{ tool: "repo.patch" }]);
+  deepEqual(tasks[0]?.toolInjections, [{ tool: "repo.patch", requiredSecretScopes: ["repo:write"] }]);
   deepEqual(tasks[0]?.requiredEvidenceRefs, ["tests.green", "diff.reviewable"]);
   equal(tasks[0]?.rollbackPolicy?.kind, "compensating_action");
 });
@@ -1339,7 +1340,7 @@ function promptFlowDefinition(overrides: Partial<PromptFlowDefinition> = {}): Pr
         permittedUniversalActions: ["execute", "submit_evidence"],
         directions: ["Patch the smallest surface", "Run focused tests"],
         requiredToolBundles: [ToolBundle.Delivery],
-        toolInjections: [{ tool: "repo.patch" }],
+        toolInjections: [{ tool: "repo.patch", requiredSecretScopes: ["repo:write"] }],
         contextArtifactRefs: ["work:work-compile-1", "decision:observe-act"],
         requiredEvidenceRefs: ["tests.green", "diff.reviewable"],
         gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: ["tests.green", "diff.reviewable"] },
