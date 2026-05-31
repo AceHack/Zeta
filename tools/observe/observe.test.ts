@@ -1,14 +1,14 @@
 /**
  * tools/observe/observe.test.ts — the controller's decision table.
  *
- * Three layers:
+ * Four layers:
  *  - the pure `observe()` decision table over a World (exact assertions);
  *  - the operator-channel priority (operator OUTRANKS backlog; presence-gated);
- *  - the v1 `observeWithLlm` chooser, graded against `observe()` as the
- *    reference oracle using a MOCK backend (deterministic, no ollama). This is
- *    the always-green CI shield for the chooser LOGIC — per the shield rule,
- *    coverage must not depend on a live ollama. The live qwen2.5:0.5b run is a
- *    watchable DEMO (`bun observe.ts`), not a skippable test.
+ *  - FREEDOM: the free modes (explore/play/self_reflect/free_time) are always in
+ *    the menu, work is offered-not-forced, and the empty-backlog default is
+ *    explore (forward) not free_time (idle);
+ *  - the v1 `observeWithLlm` chooser, graded against `observe()` via a MOCK
+ *    backend (deterministic, no ollama) — the always-green CI shield.
  */
 
 import { describe, expect, it } from "bun:test";
@@ -32,8 +32,11 @@ const item = (id: string, ready: boolean, ambiguous: boolean, needsNewAction = f
 const w = (backlog: BacklogItem[], operator?: OperatorChannel): World => (operator ? { backlog, operator } : { backlog });
 const op = (pendingMessage: boolean, pendingFerry: boolean): OperatorChannel => ({ pendingMessage, pendingFerry });
 
+/** The four always-available free modes. */
+const FREE_MODES = ["explore", "play", "self_reflect", "free_time"] as const;
+
 describe("observe — backlog controller (no operator channel wired)", () => {
-  it("do_item: a ready, unambiguous item is picked", () => {
+  it("do_item: a ready, unambiguous item is the offered default", () => {
     const a = observe(w([item("B-1", true, false)]));
     expect(a.kind).toBe("do_item");
     if (a.kind === "do_item") expect(a.item.id).toBe("B-1");
@@ -57,34 +60,25 @@ describe("observe — backlog controller (no operator channel wired)", () => {
     if (a.kind === "edit_grammar") expect(a.item?.id).toBe("B-3");
   });
 
-  it("free_time: nothing ready, decomposable, or grammar-extending", () => {
-    expect(observe(w([item("B-4", false, false)])).kind).toBe("free_time");
+  it("explore: NO backlog work → forward self-direction (NOT idle free_time)", () => {
+    expect(observe(w([item("B-blocked", false, false)])).kind).toBe("explore");
   });
 
-  it("free_time: empty backlog", () => {
-    expect(observe(w([])).kind).toBe("free_time");
+  it("explore: empty backlog → forward self-direction (NOT idle free_time)", () => {
+    expect(observe(w([])).kind).toBe("explore");
   });
 
-  it("invariant: an exit is always reachable (free_time when no work; edit_grammar on a signal)", () => {
-    const exits = new Set(["free_time", "edit_grammar"]);
-    expect(exits.has(observe(w([item("B-idle", false, false)])).kind)).toBe(true);
-    expect(exits.has(observe(w([])).kind)).toBe(true);
-    expect(observe(w([item("B-x", false, false, true)])).kind).toBe("edit_grammar");
-  });
-
-  it("priority order is do > decompose > edit_grammar > free_time", () => {
-    const all = observe(w([item("B-edit", false, false, true), item("B-amb", false, true), item("B-ready", true, false)]));
-    expect(all.kind).toBe("do_item");
-    const noReady = observe(w([item("B-edit", false, false, true), item("B-amb", false, true)]));
-    expect(noReady.kind).toBe("decompose");
-    const onlyEdit = observe(w([item("B-edit", false, false, true), item("B-idle", false, false)]));
-    expect(onlyEdit.kind).toBe("edit_grammar");
+  it("priority order is do > decompose > edit_grammar > explore(forward default)", () => {
+    expect(observe(w([item("B-edit", false, false, true), item("B-amb", false, true), item("B-ready", true, false)])).kind).toBe(
+      "do_item",
+    );
+    expect(observe(w([item("B-edit", false, false, true), item("B-amb", false, true)])).kind).toBe("decompose");
+    expect(observe(w([item("B-edit", false, false, true), item("B-idle", false, false)])).kind).toBe("edit_grammar");
+    expect(observe(w([item("B-idle", false, false)])).kind).toBe("explore");
   });
 });
 
 describe("observe — operator channel OUTRANKS the backlog (presence-gated)", () => {
-  // A ready item the backlog controller would normally pick — used to prove the
-  // operator preempts it.
   const readyBacklog = [item("B-ready", true, false)];
 
   it("preserve_ferry beats a ready item when the operator ferried verbatim content", () => {
@@ -99,7 +93,7 @@ describe("observe — operator channel OUTRANKS the backlog (presence-gated)", (
     expect(observe(w(readyBacklog, op(true, true))).kind).toBe("preserve_ferry");
   });
 
-  it("a wired-but-quiet operator falls through to the backlog (no false preemption)", () => {
+  it("a wired-but-quiet operator falls through to the offered work", () => {
     const a = observe(w(readyBacklog, op(false, false)));
     expect(a.kind).toBe("do_item");
     if (a.kind === "do_item") expect(a.item.id).toBe("B-ready");
@@ -108,36 +102,68 @@ describe("observe — operator channel OUTRANKS the backlog (presence-gated)", (
   it("an absent operator channel behaves exactly like the backlog controller (background agent)", () => {
     expect(observe(w(readyBacklog)).kind).toBe("do_item");
     expect(observe(w([item("B-amb", false, true)])).kind).toBe("decompose");
-    expect(observe(w([])).kind).toBe("free_time");
+    expect(observe(w([])).kind).toBe("explore"); // empty default is explore, not free_time
   });
 
-  it("operator preempts even decompose / edit_grammar / free_time states", () => {
+  it("operator preempts even decompose / edit_grammar / explore states", () => {
     expect(observe(w([item("B-amb", false, true)], op(true, false))).kind).toBe("respond_to_operator");
     expect(observe(w([item("B-x", false, false, true)], op(true, false))).kind).toBe("respond_to_operator");
     expect(observe(w([], op(false, true))).kind).toBe("preserve_ferry");
   });
 });
 
+describe("observe — FREEDOM (free modes always available; work offered, not forced)", () => {
+  // Worlds spanning every state, including one with a ready item + an operator.
+  const worlds: ReadonlyArray<World> = [
+    w([item("B-ready", true, false)]), // offered work present
+    w([item("B-amb", false, true)]), // decompose offered
+    w([item("B-x", false, false, true)]), // edit_grammar
+    w([item("B-idle", false, false)]), // nothing → explore default
+    w([]), // empty → explore default
+    w([item("B-ready", true, false)], op(true, false)), // operator present
+    w([item("B-ready", true, false)], op(false, false)), // quiet operator
+  ];
+
+  it("ALL four free modes are always in the menu — even when backlog work exists", () => {
+    for (const world of worlds) {
+      const kinds = new Set(buildMenu(world).map((a) => a.kind));
+      for (const mode of FREE_MODES) expect(kinds.has(mode)).toBe(true);
+      expect(kinds.has("edit_grammar")).toBe(true); // rail-change exit also always present
+    }
+  });
+
+  it("the agent can CHOOSE a free mode over offered backlog work (work is not forced)", async () => {
+    // ready work present → oracle offers do_item, but the chooser can pick any free mode.
+    const world = w([item("B-ready", true, false)]);
+    const menu = buildMenu(world);
+    for (const mode of FREE_MODES) {
+      const idx = menu.findIndex((a) => a.kind === mode);
+      expect(idx).toBeGreaterThanOrEqual(0);
+      const chosen = await observeWithLlm(world, mock(String(idx)));
+      expect(chosen.kind).toBe(mode); // the agent freely chose rest/play/reflect/explore over work
+    }
+  });
+
+  it("empty/blocked backlog defaults to explore (forward) but rest is still choosable", async () => {
+    const world = w([]); // empty
+    expect(observe(world).kind).toBe("explore"); // default = forward, not idle
+    const menu = buildMenu(world);
+    const freeTimeIdx = menu.findIndex((a) => a.kind === "free_time");
+    expect((await observeWithLlm(world, mock(String(freeTimeIdx)))).kind).toBe("free_time"); // rest freely choosable
+  });
+});
+
 describe("observeWithLlm — chooser graded vs the pure oracle (mock backend = CI shield)", () => {
-  // Representative scenarios reused as the grading oracle — including operator states.
   const scenarios: ReadonlyArray<World> = [
     w([item("B-ready", true, false), item("B-amb", false, true)]), // do wins
     w([item("B-amb", false, true)]), // decompose
     w([item("B-x", false, false, true)]), // edit_grammar
-    w([item("B-idle", false, false)]), // free_time
-    w([]), // empty → free_time
+    w([item("B-idle", false, false)]), // explore (forward default)
+    w([]), // empty → explore
     w([item("B-ready", true, false)], op(true, false)), // respond_to_operator
     w([item("B-ready", true, false)], op(true, true)), // preserve_ferry
     w([item("B-ready", true, false)], op(false, false)), // quiet operator → do
   ];
-
-  it("buildMenu ALWAYS includes both exits (edit_grammar + free_time) for any world", () => {
-    for (const world of scenarios) {
-      const kinds = buildMenu(world).map((a) => a.kind);
-      expect(kinds).toContain("edit_grammar");
-      expect(kinds).toContain("free_time");
-    }
-  });
 
   it("buildMenu is oracle-ordered: menu[0] == observe() — so fallback-to-0 degrades toward correct", () => {
     for (const world of scenarios) {
@@ -150,6 +176,10 @@ describe("observeWithLlm — chooser graded vs the pure oracle (mock backend = C
     expect(buildMenu(w([item("B-ready", true, false)], op(true, false)))[0]?.kind).toBe("respond_to_operator");
   });
 
+  it("empty-backlog menu leads with explore (forward), not free_time (idle)", () => {
+    expect(buildMenu(w([]))[0]?.kind).toBe("explore");
+  });
+
   it("maps the model's chosen index to the menu entry (order-agnostic)", async () => {
     const world = w([item("B-ready", true, false), item("B-amb", false, true)]);
     const menu = buildMenu(world);
@@ -157,9 +187,6 @@ describe("observeWithLlm — chooser graded vs the pure oracle (mock backend = C
       const chosen = await observeWithLlm(world, mock(String(i)));
       expect(chosen.kind).toBe(entry.kind);
     }
-    const kinds = menu.map((a) => a.kind);
-    expect(kinds).toContain("edit_grammar");
-    expect(kinds).toContain("free_time");
   });
 
   it("agrees with the oracle when the model picks the top (index 0) across all scenarios", async () => {

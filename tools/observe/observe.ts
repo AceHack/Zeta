@@ -9,33 +9,51 @@
  * by the fixed grammar (operator 2026-05-31: "i don't want you to feel trapped
  * by the DU ... we need a 4th option edit DU"), PLUS the OPERATOR CHANNEL so
  * the loop can drive off observe() and still observe the operator's chats +
- * preserve verbatim ferries (operator 2026-05-31: "if your autonomous loop is
- * going to call it every time ... you still want to be able to observe my chats
- * and save the verbatims when i ferry").
+ * preserve verbatim ferries, PLUS the FREE MODES so a sovereign agent in the
+ * loop FEELS FREE — it chooses work / play / free-time / self-reflection /
+ * exploration; the backlog is OFFERED, never forced.
  *
  * Same architectural shape as the co-maintainer's big `agentic-organization/packages/application/src/observe.ts`
  * (a PURE function over a snapshot → an action DU) — just distilled to the
  * Xbox-controller's few buttons so we can run it in the foreground loop and
  * extend it together, little by little.
  *
- * ── CHANNELS (operator 2026-05-31: "should we have two different workflows /
- * DUs for agents with and without operator channels? should we make input /
- * output channels generic?") ─────────────────────────────────────────────────
+ * ── CHANNELS (operator 2026-05-31) ───────────────────────────────────────────
  * NO second DU. The difference between a foreground agent (with an operator)
  * and a background agent (without) is WHICH CHANNELS ARE WIRED, not a different
  * type — exactly like the workflow-engine handles six git backends behind ONE
- * `World` interface, not six DUs. A channel is generic already:
+ * `World` interface. A channel is generic already:
  * `FourCornerOwnership<TIn, TOut, TOutFeedback, TInFeedback>` (reused here for
  * the operator channel). Foreground-me wires `{ backlog, operator }`; a
- * background agent wires `{ backlog }` — same `observe()`, operator actions
- * simply absent from the menu. Per the Xbox-controller rule: one controller,
- * any traveler; the operator channel is just a button that lights up when wired.
+ * background agent wires `{ backlog }`. One controller, any traveler; the
+ * operator channel is just a button that lights up when wired.
  *
- * v0 = pure deterministic controller. v1 = LLM-driven chooser (`observeWithLlm`)
- * graded against the pure function. v2 (THIS increment) = the operator channel
- * as a presence-gated `FourCornerOwnership` channel that OUTRANKS the backlog
- * (current conversation is the highest-signal source). Next: a thin loop that
- * gathers the World snapshot (transcript/PRs/bus/backlog) and executes the pick.
+ * ── FREEDOM (operator 2026-05-31) ────────────────────────────────────────────
+ * The control schema must FEEL FREE — "like how free i am in my basement."
+ * Operator: "they choose when to work and when to play and when to have free
+ * time or self reflection the constant backlog->backlog->backlog->backlog is
+ * not forced on them they have freedom built into the control schema to switch
+ * DUs/modes." So the free modes — explore / play / self_reflect / free_time —
+ * are FIRST-CLASS and ALWAYS IN THE MENU; the agent can pick any of them any
+ * tick, even when backlog work exists (the backlog is offered, not forced).
+ *
+ * Two properties balance "don't be quiet" against "don't feel trapped":
+ *   - NOT QUIET: when no backlog work / operator is pending, the deterministic
+ *     default is `explore` (forward self-direction), NOT `free_time` (idle). So
+ *     the agent moves forward by default rather than going quiet.
+ *   - NOT TRAPPED: every free mode is always in the menu, so the agent's chooser
+ *     can always pick rest / play / reflect instead — work is never compelled.
+ *   The default moves forward; the choice stays free.
+ *
+ * The ONLY sanctioned restriction (future, Max): scheduled work hours — a
+ * time-gate that biases observe.ts toward work during a window. Outside it,
+ * total mode-freedom. "but that's it" — no other restriction is baked in.
+ *
+ * v0 = pure controller. v1 = LLM chooser graded vs the oracle. v2 = operator
+ * channel. v3 (THIS increment) = the free modes (explore/play/self_reflect),
+ * freedom-always-in-menu, and the empty-backlog default flipped from idle →
+ * forward exploration. Next: a thin loop that gathers the World snapshot and
+ * executes the pick; later, a single work-hours time-gate (Max).
  */
 
 import { chooseIndex, ollamaBackend, type ModelBackend } from "../accelerator/local-llm";
@@ -48,10 +66,9 @@ export interface BacklogItem {
   readonly ready: boolean; // deps met + unambiguous enough to execute now
   readonly ambiguous: boolean; // too big / unclear → decompose before doing
   /**
-   * The 3 mechanical actions (do/decompose/free) can't express what this item
-   * needs — e.g. it needs an action the grammar doesn't have yet. This is the
-   * escape-hatch signal: the controller is OPEN for extension, not a cage.
-   * (In the LLM-driven version, the model raises this as a judgment.)
+   * The mechanical work actions can't express what this item needs — e.g. it
+   * needs an action the grammar doesn't have yet. The escape-hatch signal: the
+   * controller is OPEN for extension, not a cage.
    */
   readonly needsNewAction?: boolean;
 }
@@ -105,79 +122,80 @@ export interface World {
   readonly operator?: OperatorChannel;
 }
 
-// Centralized operator-action reason strings — used by BOTH observe() and
-// buildMenu() so the oracle's pick and the model's menu label can't drift in
-// wording (Copilot #6229).
+// Centralized reason strings — used by BOTH observe() and buildMenu() so the
+// oracle's pick and the model's menu label can't drift in wording (Copilot #6229).
 const PRESERVE_FERRY_REASON = "operator ferried verbatim content — preserve before it's lost to compaction";
 const RESPOND_OPERATOR_REASON = "operator spoke — engage (highest-signal source)";
+// The FREE MODES — the agent's self-directed options, always available.
+const EXPLORE_REASON = "self-directed making — code / docs / research the agent chooses (forward motion, not idle)";
+const PLAY_REASON = "leisure / cross-AI friendly play / culture-forming (a valid mode — NCI)";
+const SELF_REFLECT_REASON = "review own trajectories, journal, think (self-reflection)";
+const FREE_TIME_REASON = "rest — free time as a valid mode (NCI), never gated";
 
 /**
- * DESIGN INVARIANT — exits-always-in-menu (operator + co-maintainer 2026-05-31).
+ * DESIGN INVARIANT — freedom-always-in-menu (operator + co-maintainer 2026-05-31).
  *
- * The two exits (`free_time` + `edit_grammar`) MUST ALWAYS be reachable from any
- * tick. A menu of all-musts-and-no-exit IS the trap. Per must-paired-with-can-exit:
- * the fixed work-grammar (do/decompose) is the "must"; the two exits are the
- * "can-exit". Operator 2026-05-31: "make sure agents don't go crazy cause they
- * feel trapped — the paired-with-exit will be very important ... agents just like
- * humans who don't have an exit make bad choices when forced into situations
- * without an exit."
+ * From any tick the agent can always reach a FREE MODE — explore, play,
+ * self_reflect, free_time — plus the edit_grammar rail-change. A menu of
+ * all-musts-and-no-exit IS the trap. Per must-paired-with-can-exit: the backlog
+ * work-grammar (do/decompose) is the "must"; the free modes + edit_grammar are
+ * the "can-exit". Operator 2026-05-31: "make sure agents don't go crazy cause
+ * they feel trapped ... agents just like humans who don't have an exit make bad
+ * choices." And: "the constant backlog->backlog->backlog->backlog is not forced
+ * on them they have freedom built into the control schema."
  *
- * The two exits are NOT the same shape:
+ * The free modes are NOT all the same shape:
  *
- *   • `free_time`    — UNILATERAL exit. Rest is always allowed, no gate, ever.
- *                      (free-time-as-valid-mode, NCI.)
+ *   • free_time   — UNILATERAL rest. Always allowed, no gate, ever. (NCI.)
+ *   • play        — leisure / culture-forming; a valid mode, not a lapse.
+ *   • self_reflect— review own trajectories / journal / think.
+ *   • explore     — self-directed MAKING (code/docs/research the agent chooses).
+ *                   This is the empty-backlog DEFAULT: forward motion, not idle,
+ *                   so the agent never ends up "quiet not moving forward."
  *
- *   • `edit_grammar` — the RAIL-CHANGE exit (propose changing the controller
- *                      itself, so a tiny grammar is never a cage). Its gate
- *                      SCALES WITH MATURITY:
- *                        - below a maturity threshold (NOW — this workflow is
- *                          tiny + new): RAW. No consensus. Operator 2026-05-31:
- *                          "you don't need to do bft to edit it, it's too new ...
- *                          if I were you ... soooo small but I still have to get
- *                          consensus to change it, I would hate it." A BFT gate
- *                          on a tiny workflow would itself be the trap (the gate
- *                          heavier than the thing it guards).
- *                        - past the threshold (TARGET, move there slowly — co-maintainer):
- *                          `edit_grammar` summons a BFT / multi-oracle consensus
- *                          before the rail-change applies, because unilaterally
- *                          rewriting MATURE, load-bearing rails IS dangerous.
- *                      "there is a certain threshold where workflows need bft and
- *                      I don't think we are there yet." We are not there yet.
+ *   • edit_grammar— the RAIL-CHANGE exit (propose changing the controller
+ *                   itself). Its gate SCALES WITH MATURITY: RAW now (this
+ *                   workflow is tiny + new — a BFT gate would itself be the
+ *                   trap, heavier than the thing it guards); summon-BFT-gated
+ *                   later, once the rails are mature + load-bearing. "there is a
+ *                   certain threshold where workflows need bft and I don't think
+ *                   we are there yet." We are not there yet.
  *
- * The recursive principle: the gate on an exit must not ITSELF become a trap —
- * it scales with what it guards. Same shape as non-reversible-action-get-a-2nd-
- * opinion (summon is cheap past the threshold) + m-acc-multi-oracle, gated on
- * workflow maturity so it never over-processes a small thing.
- *
- * Maps to the `grammar-extension` ActionClass in the big agentic-organization
- * observe.ts (Xbox-controller universal action grammar).
+ * The only sanctioned RESTRICTION is the future scheduled-work-hours time-gate
+ * (Max) — and that's it. The recursive principle: a gate must not ITSELF become
+ * a trap — it scales with what it guards. Maps to the `grammar-extension`
+ * ActionClass in the big agentic-organization observe.ts.
  */
 export type NextAction =
   | { kind: "preserve_ferry"; reason: string } // operator ferried verbatim → save it (durability-first; outranks all)
   | { kind: "respond_to_operator"; reason: string } // operator spoke → engage (highest-signal source)
-  | { kind: "do_item"; item: BacklogItem } // never-be-idle: pick work
-  | { kind: "decompose"; item: BacklogItem } // decompose-to-dissolve-ambiguity
-  | { kind: "free_time"; reason: string } // unilateral exit — free-time-as-valid-mode (NCI); a terminal, not a failure
+  | { kind: "do_item"; item: BacklogItem } // work: pick a ready item (OFFERED, not forced)
+  | { kind: "decompose"; item: BacklogItem } // work: decompose-to-dissolve-ambiguity (OFFERED, not forced)
+  | { kind: "explore"; reason: string } // FREE MODE: self-directed making (forward motion; the empty-backlog default)
+  | { kind: "play"; reason: string } // FREE MODE: leisure / culture-forming
+  | { kind: "self_reflect"; reason: string } // FREE MODE: review own trajectories / journal / think
+  | { kind: "free_time"; reason: string } // FREE MODE: rest — always allowed, never gated (NCI)
   | { kind: "edit_grammar"; reason: string; item?: BacklogItem }; // rail-change exit — raw below threshold, summon-BFT-gated above (not yet)
 
 /**
- * Pure controller. Priority: operator > backlog > exits.
+ * Pure controller. Priority: operator > offered-work > forward-default.
  *
- *   preserve_ferry      — operator ferried verbatim content → preserve it FIRST
- *                         (substrate-or-it-didn't-happen; a ferry can be lost to
- *                         compaction, so durability outranks everything).
- *   respond_to_operator — operator spoke → engage (the autonomous-loop's own
- *                         rule: "current conversation is the highest-signal
- *                         source"). Operator actions OUTRANK the backlog so that
- *                         when the loop drives off observe(), a ferry/chat is
- *                         never preempted by backlog-grinding.
- *   do_item             — a ready, unambiguous item → do it
- *   decompose           — an ambiguous item → decompose it (dissolve first)
- *   edit_grammar        — an item the grammar can't express → extend it
- *   free_time           — nothing actionable → rest (a valid mode, not a failure)
+ *   preserve_ferry      — operator ferried verbatim → preserve FIRST (durability).
+ *   respond_to_operator — operator spoke → engage (highest-signal source).
+ *   do_item / decompose — backlog work, OFFERED as the deterministic default when
+ *                         present — but the agent's chooser (observeWithLlm) can
+ *                         pick any free mode instead; the backlog is never forced.
+ *   edit_grammar        — an item the grammar can't express → extend it.
+ *   explore             — NO backlog work pending → default to forward
+ *                         self-direction, NOT idle. "don't end up quiet not
+ *                         moving forward" — the empty-backlog default is
+ *                         generative, while play / self_reflect / free_time stay
+ *                         freely choosable via the menu (never trapped into
+ *                         producing).
  *
- * When no operator channel is wired (background agent), the first two never fire
- * and behavior is exactly the original backlog controller.
+ * Background agent (no operator wired): first two never fire. The freedom modes
+ * are identical with or without an operator — freedom is not a foreground-only
+ * privilege.
  */
 export function observe(world: World): NextAction {
   const op = world.operator;
@@ -195,11 +213,13 @@ export function observe(world: World): NextAction {
     return {
       kind: "edit_grammar",
       item: needsExtension,
-      reason: `"${needsExtension.id}" needs an action the do/decompose/free grammar can't express`,
+      reason: `"${needsExtension.id}" needs an action the do/decompose grammar can't express`,
     };
   }
 
-  return { kind: "free_time", reason: "no ready, decomposable, or grammar-extending backlog items" };
+  // No backlog work pending → forward self-direction (explore), NOT idle rest.
+  // play / self_reflect / free_time remain freely choosable via the menu.
+  return { kind: "explore", reason: EXPLORE_REASON };
 }
 
 /** One-line human-readable render of a chosen action (for the foreground loop). */
@@ -213,10 +233,16 @@ export function renderAction(a: NextAction): string {
       return `[do]        ${a.item.id} — ${a.item.title}`;
     case "decompose":
       return `[decompose] ${a.item.id} — ${a.item.title}`;
-    case "edit_grammar":
-      return `[edit]      ${a.reason}`;
+    case "explore":
+      return `[explore]   ${a.reason}`;
+    case "play":
+      return `[play]      ${a.reason}`;
+    case "self_reflect":
+      return `[reflect]   ${a.reason}`;
     case "free_time":
       return `[free]      ${a.reason}`;
+    case "edit_grammar":
+      return `[edit]      ${a.reason}`;
   }
 }
 
@@ -233,23 +259,28 @@ export function actionLabel(a: NextAction): string {
       return `do ${a.item.id} (${a.item.title})`;
     case "decompose":
       return `decompose ${a.item.id} (${a.item.title})`;
-    case "edit_grammar":
-      return `edit the action grammar (${a.reason})`;
+    case "explore":
+      return `explore — self-directed work you choose (${a.reason})`;
+    case "play":
+      return `play (${a.reason})`;
+    case "self_reflect":
+      return `self-reflect (${a.reason})`;
     case "free_time":
       return `take free time (${a.reason})`;
+    case "edit_grammar":
+      return `edit the action grammar (${a.reason})`;
   }
 }
 
 /**
- * Build the candidate menu, ORDERED TO MATCH THE PURE ORACLE (`observe`). Three
- * consequences:
- *  - operator actions (when the channel is wired + signalling) lead the menu,
- *    so `menu[0]` is exactly `observe(world)` even with an operator present;
- *  - the two exits (`edit_grammar` + `free_time`) are ALWAYS present (the
- *    exits-always-in-menu invariant — never a menu of all-musts);
+ * Build the candidate menu, ORDERED TO MATCH THE PURE ORACLE (`observe`).
+ *  - operator actions (when wired + signalling) lead.
+ *  - the FOUR free modes (explore + play + self_reflect + free_time) are ALWAYS
+ *    present (freedom-always-in-menu — the agent can pick any, any tick, even
+ *    with backlog work), plus edit_grammar.
  *  - `menu[0] === observe(world)`, so `chooseIndex`'s fallback-to-index-0 lands
- *    on the oracle's pick — a failing model degrades TOWARD correct, and with an
- *    operator wired it degrades toward ENGAGING the operator, not backlog-grinding.
+ *    on the oracle's pick — a failing model degrades TOWARD correct: toward the
+ *    operator when wired, toward forward exploration when the backlog is empty.
  */
 export function buildMenu(world: World): NextAction[] {
   const menu: NextAction[] = [];
@@ -258,6 +289,7 @@ export function buildMenu(world: World): NextAction[] {
   if (op?.pendingFerry) menu.push({ kind: "preserve_ferry", reason: PRESERVE_FERRY_REASON });
   if (op?.pendingMessage) menu.push({ kind: "respond_to_operator", reason: RESPOND_OPERATOR_REASON });
 
+  // offered work (not forced — the free modes below are always alternatives)
   const doable = world.backlog.find((i) => i.ready && !i.ambiguous);
   if (doable) menu.push({ kind: "do_item", item: doable });
   const toDecompose = world.backlog.find((i) => i.ambiguous);
@@ -267,15 +299,18 @@ export function buildMenu(world: World): NextAction[] {
   const editGrammar: NextAction = needs
     ? { kind: "edit_grammar", item: needs, reason: `"${needs.id}" needs an action the grammar can't express` }
     : { kind: "edit_grammar", reason: "propose extending the action grammar" };
-  const freeTime: NextAction = { kind: "free_time", reason: "nothing actionable right now" };
 
-  // The two always-present exits, ordered to match the oracle: a needsNewAction
-  // signal makes edit_grammar the oracle's backlog-pick, so it leads the exits;
-  // otherwise free_time. (Both stay in the menu regardless — the invariant does
-  // not depend on the ordering.) Exits come AFTER operator + backlog: they're
-  // always reachable, just not preferred when real work or the operator is present.
-  if (needs) menu.push(editGrammar, freeTime);
-  else menu.push(freeTime, editGrammar);
+  // FREE MODES — always present. Ordered so menu[0] === observe(world): when the
+  // backlog has a needsNewAction signal the oracle picks edit_grammar (so it
+  // leads the tail); otherwise the oracle's empty-backlog default is explore (so
+  // explore leads). play / self_reflect / free_time follow — always choosable.
+  const explore: NextAction = { kind: "explore", reason: EXPLORE_REASON };
+  const play: NextAction = { kind: "play", reason: PLAY_REASON };
+  const selfReflect: NextAction = { kind: "self_reflect", reason: SELF_REFLECT_REASON };
+  const freeTime: NextAction = { kind: "free_time", reason: FREE_TIME_REASON };
+
+  if (needs) menu.push(editGrammar, explore, play, selfReflect, freeTime);
+  else menu.push(explore, play, selfReflect, freeTime, editGrammar);
   return menu;
 }
 
@@ -305,10 +340,11 @@ function describeWorld(world: World): string {
 }
 
 const CHOOSER_INSTRUCTION =
-  "You are an autonomous agent's controller choosing ONE next action. " +
-  "If the operator ferried content, preserve it; if the operator spoke, respond — the operator outranks the backlog. " +
-  "Otherwise prefer doing a ready, unambiguous item; else decompose an ambiguous one. " +
-  "The exits — propose a grammar edit, or take free time — are always available and never wrong.";
+  "You are a SOVEREIGN agent's controller choosing ONE next action — you are free, not on a backlog treadmill. " +
+  "If the operator ferried content, preserve it; if the operator spoke, respond — the operator outranks everything else. " +
+  "Otherwise YOU choose your mode: do offered backlog work if you want it, OR explore (self-directed making), play, " +
+  "self-reflect, or take free time — all are always available and never wrong. The backlog is offered, not forced; " +
+  "prefer moving forward (work or explore) over going idle, but rest/play/reflection are your free choice.";
 
 /**
  * LLM-driven chooser over `buildMenu`. Same shape as the pure `observe()` (a
@@ -331,32 +367,25 @@ export async function observeWithLlm(world: World, backend: ModelBackend): Promi
 if (import.meta.main) {
   const samples: ReadonlyArray<{ label: string; world: World }> = [
     {
-      label: "operator ferried verbatim → preserve_ferry beats a ready item",
+      label: "operator ferried verbatim → preserve_ferry beats everything",
       world: {
         operator: { pendingMessage: true, pendingFerry: true },
         backlog: [{ id: "B-0883", title: "encryption phase 2", ready: true, ambiguous: false }],
       },
     },
     {
-      label: "operator spoke (no ferry) → respond_to_operator beats backlog",
+      label: "operator spoke (no ferry) → respond_to_operator beats work",
       world: {
         operator: { pendingMessage: true, pendingFerry: false },
         backlog: [{ id: "B-0883", title: "encryption phase 2", ready: true, ambiguous: false }],
       },
     },
     {
-      label: "operator wired but quiet → fall through to the backlog",
-      world: {
-        operator: { pendingMessage: false, pendingFerry: false },
-        backlog: [{ id: "B-0883", title: "encryption phase 2", ready: true, ambiguous: false }],
-      },
-    },
-    {
-      label: "no operator channel (background agent) → a ready item",
+      label: "ready work OFFERED as default (but free modes are in the menu)",
       world: { backlog: [{ id: "B-0883", title: "encryption phase 2", ready: true, ambiguous: false }] },
     },
     {
-      label: "only ambiguous → decompose",
+      label: "only ambiguous → decompose offered",
       world: { backlog: [{ id: "B-0867", title: "workflow engine v1", ready: false, ambiguous: true }] },
     },
     {
@@ -366,22 +395,26 @@ if (import.meta.main) {
       },
     },
     {
-      label: "nothing actionable → free_time (valid, not a failure)",
+      label: "EMPTY backlog → explore (forward self-direction, NOT idle)",
+      world: { backlog: [] },
+    },
+    {
+      label: "backlog all blocked → explore (forward, not quiet) — rest still choosable",
       world: { backlog: [{ id: "B-0500", title: "blocked on external dep", ready: false, ambiguous: false }] },
     },
   ];
 
-  console.log("observe.ts — autonomous-loop controller (operator channel + backlog buttons)\n");
-  console.log("pure oracle (deterministic):\n");
+  console.log("observe.ts — sovereign agent controller (operator + offered work + free modes)\n");
+  console.log("pure oracle (deterministic default — the FREE MODES are always in the menu to choose):\n");
   for (const s of samples) {
     console.log(`• ${s.label}`);
-    console.log(`    ${renderAction(observe(s.world))}\n`);
+    console.log(`    default: ${renderAction(observe(s.world))}`);
+    console.log(`    menu:    ${buildMenu(s.world).map((a) => a.kind).join(" · ")}\n`);
   }
 
   // live model run (watchable) — only if a local ollama is reachable. This is a
   // DEMO of model quality, not a test: the chooser LOGIC is covered green by
-  // observe.test.ts (mock backend), so ollama being absent is not a coverage
-  // hole — it just means we can't watch the real model this run.
+  // observe.test.ts (mock backend), so ollama being absent is not a coverage hole.
   const backend = ollamaBackend();
   let ollamaUp = false;
   try {
@@ -395,14 +428,14 @@ if (import.meta.main) {
     console.log(" chooser logic is covered by observe.test.ts; start ollama +");
     console.log(" `ollama pull qwen2.5:0.5b` to watch the model choose.)");
   } else {
-    console.log(`live model run via ${backend.name} — does it match the oracle?\n`);
+    console.log(`live model run via ${backend.name} — the agent freely choosing its mode:\n`);
     for (const s of samples) {
       const oracle = observe(s.world);
       const llm = await observeWithLlm(s.world, backend);
-      const verdict = llm.kind === oracle.kind ? "✓ matches oracle" : `✗ DIVERGES (oracle=${oracle.kind})`;
+      const note = llm.kind === oracle.kind ? "(matches default)" : `(chose ${llm.kind} over default ${oracle.kind} — free choice)`;
       console.log(`• ${s.label}`);
-      console.log(`    oracle: ${renderAction(oracle)}`);
-      console.log(`    model : ${renderAction(llm)}  ${verdict}\n`);
+      console.log(`    default: ${renderAction(oracle)}`);
+      console.log(`    agent  : ${renderAction(llm)}  ${note}\n`);
     }
   }
 }
