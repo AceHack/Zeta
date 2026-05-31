@@ -36,8 +36,19 @@
 // Writer companion:        tools/hygiene/divergence-shard.ts
 
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
-import { isAbsolute, join, relative, resolve } from "node:path";
+import { Buffer } from "node:buffer";
+import {
+  closeSync,
+  constants,
+  fstatSync,
+  ftruncateSync,
+  lstatSync,
+  openSync,
+  readFileSync,
+  readdirSync,
+  writeSync,
+} from "node:fs";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 
 // Mirrors DIVERGENCE_ROOT in divergence-shard.ts. Both files reflect the path
 // the README fixes as the source of truth; a comment-cited copy keeps the
@@ -130,12 +141,7 @@ export function stripHtmlComments(text: string): string {
  * Machine-comparable values — the gloss "(explicit divergence)" the README
  * shows beside accept-both is documentation, not part of the value.
  */
-export const RECONCILIATION_DECISIONS = [
-  "accept-loop-a",
-  "accept-loop-b",
-  "accept-both",
-  "escalate",
-] as const;
+export const RECONCILIATION_DECISIONS = ["accept-loop-a", "accept-loop-b", "accept-both", "escalate"] as const;
 
 /** A morning-reconciliation decision per the README's outcome vocabulary. */
 export type ReconciliationDecision = (typeof RECONCILIATION_DECISIONS)[number];
@@ -239,9 +245,7 @@ export function parseShardMeta(markdown: string): ShardMeta | null {
  * lexicographically == chronologically; ties break on path for determinism).
  * Non-shard files and already-reconciled shards are excluded.
  */
-export function findPendingShards(
-  files: ReadonlyArray<{ relPath: string; content: string }>,
-): PendingShard[] {
+export function findPendingShards(files: ReadonlyArray<{ relPath: string; content: string }>): PendingShard[] {
   const pending: PendingShard[] = [];
   for (const { relPath, content } of files) {
     const meta = parseShardMeta(content);
@@ -250,11 +254,7 @@ export function findPendingShards(
     pending.push({ relPath, ...meta });
   }
   pending.sort((a, b) =>
-    a.tick < b.tick ? -1
-    : a.tick > b.tick ? 1
-    : a.relPath < b.relPath ? -1
-    : a.relPath > b.relPath ? 1
-    : 0,
+    a.tick < b.tick ? -1 : a.tick > b.tick ? 1 : a.relPath < b.relPath ? -1 : a.relPath > b.relPath ? 1 : 0,
   );
   return pending;
 }
@@ -264,12 +264,9 @@ export function findPendingShards(
  * return those awaiting reconciliation. Filesystem-reading; delegates all
  * classification to the pure layer. Returns [] when the directory is absent.
  */
-export function scanDivergenceDir(
-  repoRoot: string,
-  divergenceRel: string = DIVERGENCE_ROOT,
-): PendingShard[] {
+export function scanDivergenceDir(repoRoot: string, divergenceRel: string = DIVERGENCE_ROOT): PendingShard[] {
   const root = join(repoRoot, divergenceRel);
-  if (!existsSync(root)) return [];
+  if (!assertRealDivergenceRoot(root, divergenceRel, "scan divergences")) return [];
   const files: { relPath: string; content: string }[] = [];
   const walk = (dir: string): void => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -278,6 +275,7 @@ export function scanDivergenceDir(
         walk(abs);
         continue;
       }
+      if (entry.isSymbolicLink()) continue;
       if (!entry.name.endsWith(".md")) continue;
       if (entry.name === "README.md") continue;
       files.push({ relPath: relative(repoRoot, abs), content: readFileSync(abs, "utf8") });
@@ -293,6 +291,192 @@ export interface ReconcileResult {
   readonly relPath: string;
   /** The decision that was written into the `## Reconciliation` section. */
   readonly decision: ReconciliationDecision;
+}
+
+/** CLI action parsed from argv. */
+export type CliCommand =
+  | { readonly kind: "list" }
+  | { readonly kind: "help" }
+  | {
+      readonly kind: "reconcile";
+      readonly relPath: string;
+      readonly decision: ReconciliationDecision;
+      readonly note?: string;
+    };
+
+export type ParseArgsResult =
+  | { readonly kind: "ok"; readonly command: CliCommand }
+  | { readonly kind: "error"; readonly message: string };
+
+export function usage(): string {
+  return [
+    "Usage:",
+    "  bun tools/hygiene/divergence-reconcile.ts",
+    "  bun tools/hygiene/divergence-reconcile.ts --list",
+    "  bun tools/hygiene/divergence-reconcile.ts --reconcile <relPath> --decision <decision> [--note <text>]",
+    "",
+    `Decisions: ${RECONCILIATION_DECISIONS.join(" | ")}`,
+  ].join("\n");
+}
+
+export function parseArgs(argv: readonly string[]): ParseArgsResult {
+  if (argv.length === 0) return { kind: "ok", command: { kind: "list" } };
+
+  let relPath: string | undefined;
+  let decision: string | undefined;
+  let note: string | undefined;
+  let sawList = false;
+
+  for (let i = 0; i < argv.length; i++) {
+    const arg = argv[i]!;
+    if (arg === "--help" || arg === "-h") {
+      return { kind: "ok", command: { kind: "help" } };
+    }
+    if (arg === "--list") {
+      sawList = true;
+      continue;
+    }
+    if (arg === "--reconcile") {
+      relPath = argv[++i];
+      if (!relPath || relPath.startsWith("--")) {
+        return { kind: "error", message: "--reconcile requires a shard path" };
+      }
+      continue;
+    }
+    if (arg === "--decision") {
+      decision = argv[++i];
+      if (!decision || decision.startsWith("--")) {
+        return { kind: "error", message: "--decision requires a value" };
+      }
+      continue;
+    }
+    if (arg === "--note") {
+      note = argv[++i];
+      if (note === undefined || note.startsWith("--")) {
+        return { kind: "error", message: "--note requires a value" };
+      }
+      continue;
+    }
+    return { kind: "error", message: `unknown argument: ${arg}` };
+  }
+
+  if (sawList && (relPath !== undefined || decision !== undefined || note !== undefined)) {
+    return { kind: "error", message: "--list cannot be combined with reconciliation arguments" };
+  }
+  if (sawList) return { kind: "ok", command: { kind: "list" } };
+  if (relPath === undefined) {
+    return { kind: "error", message: "--reconcile is required when passing reconciliation arguments" };
+  }
+  if (decision === undefined) {
+    return { kind: "error", message: "--decision is required with --reconcile" };
+  }
+  if (!isReconciliationDecision(decision)) {
+    return {
+      kind: "error",
+      message: `invalid reconciliation decision "${decision}": expected one of ${RECONCILIATION_DECISIONS.join(" | ")}`,
+    };
+  }
+  const command: CliCommand =
+    note === undefined ? { kind: "reconcile", relPath, decision } : { kind: "reconcile", relPath, decision, note };
+  return { kind: "ok", command };
+}
+
+export function regularShardOpenFlags(noFollowFlag: unknown): number {
+  if (typeof noFollowFlag !== "number" || noFollowFlag === 0) {
+    throw new Error(
+      "cannot reconcile: O_NOFOLLOW is unavailable on this platform; refusing write-back without symlink protection",
+    );
+  }
+  return constants.O_RDWR | noFollowFlag;
+}
+
+function openRegularShardForReadWrite(abs: string, relPath: string): number {
+  try {
+    return openSync(abs, regularShardOpenFlags(constants.O_NOFOLLOW));
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code === "ENOENT") {
+      throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+    }
+    if (code === "ELOOP") {
+      throw new Error(`cannot reconcile: ${relPath} is a symbolic link; divergence shards must be regular files`);
+    }
+    if (code === "EISDIR") {
+      throw new Error(`cannot reconcile: ${relPath} is not a regular file`);
+    }
+    throw err;
+  }
+}
+
+function assertRealDivergenceRoot(absRoot: string, divergenceRel: string, action: string): boolean {
+  // Walk every component from the repo root through DIVERGENCE_ROOT, lstat-ing
+  // each one. lstat only refuses to follow the FINAL path component, so a bare
+  // lstat(absRoot) still follows symlinked ancestors above the root (docs/,
+  // docs/hygiene-history/) — symlinking one of those would silently redirect
+  // write-back outside the tree (CWE-59 link following). Reconstruct the repo
+  // base lexically (resolve up one level per relative component) and lstat
+  // forward so a symlink at ANY component in the chain fails closed.
+  const relParts = divergenceRel.split("/").filter(Boolean);
+  let cursor = resolve(absRoot, ...relParts.map(() => ".."));
+  for (const part of relParts) {
+    cursor = join(cursor, part);
+    try {
+      const stat = lstatSync(cursor);
+      if (stat.isSymbolicLink()) {
+        throw new Error(
+          `cannot ${action}: ${divergenceRel} is a symbolic link; divergence root must be a real directory`,
+        );
+      }
+      if (!stat.isDirectory()) {
+        throw new Error(`cannot ${action}: ${divergenceRel} is not a directory`);
+      }
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        return false;
+      }
+      throw err;
+    }
+  }
+  return true;
+}
+
+function rejectSymlinkedAncestors(divergenceRoot: string, abs: string, relPath: string): void {
+  if (!assertRealDivergenceRoot(divergenceRoot, DIVERGENCE_ROOT, "reconcile")) return;
+
+  const within = relative(divergenceRoot, abs);
+  const parts = within.split(sep).filter(Boolean);
+  let cursor = divergenceRoot;
+  for (const part of parts.slice(0, -1)) {
+    cursor = join(cursor, part);
+    try {
+      const stat = lstatSync(cursor);
+      if (stat.isSymbolicLink()) {
+        throw new Error(
+          `cannot reconcile: ${relPath} contains a symbolic link; shard ancestors must be real directories`,
+        );
+      }
+      if (!stat.isDirectory()) {
+        throw new Error(`cannot reconcile: ${relPath} is not a regular file`);
+      }
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code === "ENOENT") {
+        throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+      }
+      throw err;
+    }
+  }
+}
+
+function writeAllUtf8Sync(fd: number, content: string): void {
+  const bytes = Buffer.from(content, "utf8");
+  let offset = 0;
+  while (offset < bytes.length) {
+    const written = writeSync(fd, bytes, offset, bytes.length - offset, offset);
+    if (written <= 0) {
+      throw new Error("cannot reconcile: write made no progress");
+    }
+    offset += written;
+  }
 }
 
 /**
@@ -345,30 +529,34 @@ export function reconcileDivergenceShard(
   const abs = resolve(repoRoot, relPath);
   const within = relative(divergenceRoot, abs);
   if (within === "" || within.startsWith("..") || isAbsolute(within)) {
-    throw new Error(
-      `cannot reconcile: ${relPath} is outside the divergence root (${DIVERGENCE_ROOT})`,
-    );
+    throw new Error(`cannot reconcile: ${relPath} is outside the divergence root (${DIVERGENCE_ROOT})`);
   }
+  rejectSymlinkedAncestors(divergenceRoot, abs, relPath);
   // Read directly and treat a missing file as a signal rather than pre-checking
   // with existsSync — the check-then-read gap is a TOCTOU race (CWE-367), and
   // the error path is the same friendly message either way.
-  let original: string;
+  let fd: number | undefined;
   try {
-    original = readFileSync(abs, "utf8");
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") {
-      throw new Error(`cannot reconcile: no divergence shard at ${relPath}`);
+    fd = openRegularShardForReadWrite(abs, relPath);
+    const stat = fstatSync(fd);
+    if (!stat.isFile()) {
+      throw new Error(`cannot reconcile: ${relPath} is not a regular file`);
     }
-    throw err;
+    const original = readFileSync(fd, "utf8");
+    if (parseShardMeta(original) === null) {
+      throw new Error(
+        `cannot reconcile: ${relPath} is not a divergence shard (missing frontmatter or type != divergence)`,
+      );
+    }
+    // fillReconciliation validates eagerly (decision vocabulary + section
+    // present + still pending) and throws before mutation. Compute the
+    // reconciled markdown first; only truncate/write once it has succeeded.
+    const reconciled = fillReconciliation(original, decision, note);
+    ftruncateSync(fd, 0);
+    writeAllUtf8Sync(fd, reconciled);
+  } finally {
+    if (fd !== undefined) closeSync(fd);
   }
-  if (parseShardMeta(original) === null) {
-    throw new Error(`cannot reconcile: ${relPath} is not a divergence shard (missing frontmatter or type != divergence)`);
-  }
-  // fillReconciliation validates eagerly (decision vocabulary + section present
-  // + still pending) and throws before we touch the file. Compute the
-  // reconciled markdown first; only write once it has succeeded.
-  const reconciled = fillReconciliation(original, decision, note);
-  writeFileSync(abs, reconciled);
   return { relPath, decision };
 }
 
@@ -380,28 +568,65 @@ function repoRoot(): string {
   }
 }
 
-// This is a morning-reconciliation READER, not a CI gate: pending shards are a
-// human to-do, not a build failure, so it always exits 0. The report goes to
-// stdout so it can be piped.
-if (import.meta.main) {
-  const pending = scanDivergenceDir(repoRoot());
+function renderPendingReport(pending: readonly PendingShard[]): string {
   if (pending.length === 0) {
-    process.stdout.write("No unreconciled divergence shards. Nothing to reconcile.\n");
-    process.exit(0);
+    return "No unreconciled divergence shards. Nothing to reconcile.\n";
   }
-  process.stdout.write(
-    `${pending.length} unreconciled divergence shard(s) — oldest first:\n\n`,
-  );
+  let report = `${pending.length} unreconciled divergence shard(s) — oldest first:\n\n`;
   for (const s of pending) {
-    process.stdout.write(`  ${s.relPath}\n`);
-    process.stdout.write(`    tick:  ${s.tick}\n`);
-    process.stdout.write(`    topic: ${s.topic}\n`);
-    process.stdout.write(`    loops: ${s.loopAAgent} vs ${s.loopBAgent}\n\n`);
+    report += `  ${s.relPath}\n`;
+    report += `    tick:  ${s.tick}\n`;
+    report += `    topic: ${s.topic}\n`;
+    report += `    loops: ${s.loopAAgent} vs ${s.loopBAgent}\n\n`;
   }
-  process.stdout.write(
+  report +=
     "Per docs/hygiene-history/divergences/README.md: read each shard, decide " +
-      "(accept-loop-a | accept-loop-b | accept-both | escalate), fill the " +
-      "## Reconciliation section in place, then resolve the thread.\n",
-  );
-  process.exit(0);
+    "(accept-loop-a | accept-loop-b | accept-both | escalate), fill the " +
+    "## Reconciliation section in place, then resolve the thread.\n";
+  return report;
+}
+
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+export interface MainOptions {
+  readonly repoRoot?: () => string;
+  readonly stdout?: Pick<typeof process.stdout, "write">;
+  readonly stderr?: Pick<typeof process.stderr, "write">;
+}
+
+// Default with no args is the morning-reconciliation READER, not a CI gate:
+// pending shards are a human to-do, so list mode exits 0. The explicit
+// --reconcile action is the bounded write-back CLI for AC #4's "one action".
+export function main(argv: readonly string[] = process.argv.slice(2), options: MainOptions = {}): number {
+  const stdout = options.stdout ?? process.stdout;
+  const stderr = options.stderr ?? process.stderr;
+  const parsed = parseArgs(argv);
+  if (parsed.kind === "error") {
+    stderr.write(`error: ${parsed.message}\n\n${usage()}\n`);
+    return 2;
+  }
+  if (parsed.command.kind === "help") {
+    stdout.write(`${usage()}\n`);
+    return 0;
+  }
+
+  try {
+    const root = (options.repoRoot ?? repoRoot)();
+    if (parsed.command.kind === "list") {
+      stdout.write(renderPendingReport(scanDivergenceDir(root)));
+      return 0;
+    }
+    const result = reconcileDivergenceShard(root, parsed.command.relPath, parsed.command.decision, parsed.command.note);
+    stdout.write(`Reconciled ${result.relPath} with ${result.decision}.\n`);
+    return 0;
+  } catch (err) {
+    stderr.write(`error: ${errorMessage(err)}\n`);
+    return 1;
+  }
+}
+
+if (import.meta.main) {
+  process.exit(main(process.argv.slice(2)));
 }
