@@ -40,6 +40,9 @@
 #     /run/initramfs canonical installer-       (B-0857.3 will factor that body into
 #     ISO markers)                              a callable nixos-install-from-usb.sh;
 #                                                this routing stub lands first)
+#   - Windows (Git Bash MINGW/MSYS/CYGWIN)   -> exec tools/setup/install.ps1 via PowerShell
+#                                                (b2; the PowerShell graph is the
+#                                                Windows install path)
 #
 # Per B-0857 operator framing (2026-05-27): install.sh is the universal
 # Unix-like-OS install + self-update entry — "there is no distinction
@@ -157,19 +160,36 @@ EOF
     ;;
   MINGW*|MSYS*|CYGWIN*)
     # Windows under Git Bash / MSYS. install.sh is the Unix-like entry; on Windows the install
-    # graph is PowerShell (user-mode, scoop-primary, no admin). Route to install.ps1. exit 2 =
-    # intentional routing guard (NOT a failure), matching the NixOS-live branch above.
-    cat >&2 <<WINEOF
+    # graph is PowerShell (user-mode, scoop-primary, no admin). b2 (operator 2026-05-31): rather
+    # than just print instructions, DRIVE the Windows install directly — exec install.ps1 via pwsh
+    # (PowerShell 7+) or fall back to Windows PowerShell (powershell.exe). `bash install.sh` from
+    # Git Bash then installs Zeta on Windows in one shot — parity with the Unix one-liner. exec
+    # replaces this shell so install.ps1's exit code propagates. Only if NO PowerShell is found do
+    # we emit the routing message + exit 2 (the intentional guard, matching the NixOS-live branch).
+    echo "OS: Windows ($os) — dispatching to the PowerShell install graph (install.ps1)"
+    ps1_path="$REPO_ROOT/tools/setup/install.ps1"
+    # Git Bash paths are MSYS-style (/c/Users/...); convert to a native Windows path so PowerShell
+    # -File resolves it. cygpath ships with Git Bash/MSYS; fall back to the raw path if absent.
+    if command -v cygpath >/dev/null 2>&1; then
+      ps1_path="$(cygpath -w "$ps1_path")"
+    fi
+    if command -v pwsh >/dev/null 2>&1; then
+      exec pwsh -NoProfile -ExecutionPolicy Bypass -File "$ps1_path" "$@"
+    elif command -v powershell.exe >/dev/null 2>&1; then
+      exec powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$ps1_path" "$@"
+    else
+      cat >&2 <<WINEOF
 OS: Windows ($os)
 
-This is a Windows shell. install.sh is the Unix-like entry; on Windows run the
-PowerShell install graph instead (user-mode, scoop-primary, no admin):
+No PowerShell found on PATH (looked for pwsh + powershell.exe). Install
+PowerShell 7+ (https://aka.ms/powershell), then run:
 
   pwsh "$REPO_ROOT/tools/setup/install.ps1"
 
 Exit 2 is the intentional routing guard (see exit-code documentation in the header).
 WINEOF
-    exit 2
+      exit 2
+    fi
     ;;
   *)
     echo "error: unsupported OS '$os' (macOS + Linux + Windows supported; others unsupported)"
