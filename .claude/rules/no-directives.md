@@ -132,6 +132,7 @@ Fresh, explicit human authorization is required **only for the gated classes**:
 | HARD LIMITS floor (laws, abuse, kid-safety, …) | [`methodology-hard-limits.md`](methodology-hard-limits.md) |
 | Non-reversible actions (→ get a 2nd opinion) | [`non-reversible-action-get-a-second-opinion.md`](non-reversible-action-get-a-second-opinion.md) |
 | Force-push (operator OR peer confirm) | [`force-push-with-lease-authorization-policy.md`](force-push-with-lease-authorization-policy.md) |
+| Large changes to external / dependent repos (small external PRs stay ungated; large = Aaron-or-Max review first) | [`dont-ask-permission.md`](dont-ask-permission.md) |
 
 Everything else is **pre-authorized standing**. So a shadow-authored observation
 *within* standing authority is **already authorized**; it needs a fresh "agree"
