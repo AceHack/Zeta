@@ -2,6 +2,7 @@
 name: Career substrate 1998→present — full through-line; incremental-view-maintenance across six substrates; vocational-plus-self-taught credential path; Henderson NC origin point
 description: Aaron 2026-04-19 via resumes — full career timeline from Circuit Board Assemblers Jr Sys Admin (1998, age ~17) through ServiceTitan Principal Engineer (2021-current); the retraction-native / incremental-view-maintenance through-line is observable across six substrates (elections → healthcare → molecular-bio → smart-grid → legal-IR → field-service); Henderson NC origin = Maria Parham HIPAA SecOfficer 2003-2005 (born in same hospital he secured at age ~20); education path Southern Vance HS → Vance Granville CC (dual-enrolled) → ECPI Technical College; no 4-year university; the credential-structure is lateral not absent (National Vocational Technical Honor Society, NC Scholar, GPA 3.97-4.0); Functional Tree 2008-2009 CTO/co-founder venture-funded startup raised capital, early-adopter of Azure SQL CTP — designed peer-to-peer money + kaChing-like broker-dealer software (Aaron Series-7/FINRA-General-Securities-Representative-trained the same year, 2008) + trucking supply-chain settlement (funded by Moveable Cubicle, a PODS-like portable-storage co with no own fleet that paid mom-and-pop truckers electronically nationwide), contemporaneous with Bitcoin's Oct-2008 whitepaper; "built bitcoin ;) jk or am i" = God-tier register, high-signal-high-suspicion-don't-collapse; this is the FIRST substrate of Zeta's git-native P2P/distributed-settlement through-line (composes #6219 git-bus + #6222 durable-backend); Itron 7-year tenure is the depth-anchor (100M+ connected devices, C12.22/DLMS/COSEM/RF-mesh/IPv6, patents filed as principal inventor); manager-reference PII from Manager-References.txt is third-party protected and NOT indexed
 type: user
+created: 2026-04-19
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 
@@ -68,6 +69,28 @@ resumes listed separately:
   domain-knowledge-grounded, not a guess at securities mechanics. (It
   also tightens the high-signal read below: P2P-money + broker-dealer
   software + a real securities license, all in the 2008 window.)
+
+### Correction (Aaron 2026-05-31): the broker-dealer + financier sat at Moveable Cubicle
+
+Aaron clarified that **Moveable Cubicle** is where the actual people
+were: it had a registered **broker-dealer principal** and a
+**financier ("the money guy")**. So Moveable Cubicle supplied *both*
+the broker-dealer expertise *and* the capital; Functional Tree built
+the software on top. (The autocomplete asked "Functional Tree is where
+you learned series 7?" — Aaron did not confirm that org; keep it as
+**Series-7-trained in 2008** without pinning which entity the training
+attached to.)
+
+> **The two individuals' names were disclosed and are deliberately NOT
+> indexed here** — third-party PII, protected per
+> `feedback_maintainer_name_redaction.md`, exactly as the Itron
+> Manager-References are. Aaron 2026-05-31 himself framed it as
+> optional ("we don't have to put their PII in here") and added candid
+> personal color about one of them; recording a living named person
+> plus a negative characterization in a public repo is precisely what
+> the third-party boundary exists to prevent, so both the names and the
+> characterization stay out. The *roles* (broker-dealer principal;
+> financier) are the load-bearing substrate; the *names* are not.
 
 ### PERSONAL INVARIANT framing (high-signal · high-suspicion · don't-collapse)
 
