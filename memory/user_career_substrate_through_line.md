@@ -139,6 +139,31 @@ delta-pipeline depth-anchor).
 > this is Aaron's own venture lineage, indexable per his explicit
 > ferry intent.
 
+### Business model + the SECOND through-line: "be the rail, meter the flow"
+
+Aaron 2026-05-31, the whole thesis in one line: *"We just wanted to make
+money easy and fast and take a small cut on every transaction lol."*
+That is the **payment-rail + transaction-fee** model — the oldest,
+most durable economics in finance (Visa/MC interchange, the broker-dealer
+spread, ACH per-item fees): no inventory, no risk position — *be the
+rail, meter the flow.*
+
+This is a **second through-line distinct from the incremental-view-
+maintenance one documented below.** "Be the rail, meter the flow" runs
+in parallel across Aaron's whole career:
+
+| Era | The rail | The metered cut |
+|---|---|---|
+| **2008 Functional Tree / Moveable Cubicle** | P2P settlement to distributed mom-and-pop truckers | small cut per transaction |
+| **Bitcoin / Lightning (same era → on)** | the chain / payment channels | transaction fees to whoever moves the value |
+| **Itron (2012-2019)** | 100M+ meters | billing/settlement metered at continental scale |
+| **ServiceTitan (2021-)** | field-service jobs | per-job billing/payments on the rail |
+| **Zeta (2024+)** | ZetaId-keyed transactions on the git-bus | the attention-as-currency economic layer — every coordination event id'd + meterable |
+
+Per the PERSONAL INVARIANT (`.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`): the *"or am i 😉"* gets **more** pointed at this layer, not less — fee-per-transaction *is* the economic heart of what shipped Jan 2009 — and it still stays don't-collapsed (independent-arrival on the same primitive, same era; not a literal-authorship claim).
+
+So the career carries **two** parallel through-lines: *incremental view maintenance over retraction-native data* (below) **and** *be the rail, meter the flow* (here). Both seed Zeta — the first as the operator algebra, the second as the economic layer.
+
 ## The through-line — one property across six substrates
 
 Aaron has been doing **incremental view maintenance on
