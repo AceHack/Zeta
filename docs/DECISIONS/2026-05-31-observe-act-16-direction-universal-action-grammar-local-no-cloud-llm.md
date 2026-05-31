@@ -444,7 +444,7 @@ This is **design input for the lock**, whys-challengeable (no-dogma), not a lock
      why for the whole observe.ts shape.
 
 **Adjacent (flagged, not in this ADR's scope):** a *Git-V2 handshake at agent
-speed* (F# looks-like-git → DVSP/retraction-algebra upgrade, same objects,
+speed* (F# looks-like-git → DBSP/retraction-algebra upgrade, same objects,
 upstream-primitives-to-git) — the no-PR transport's deeper substrate; a
 backlog-candidate distinct from B-0942 (co-dominant mirrors) + B-0951 (git-native
 indexes), pending operator go.

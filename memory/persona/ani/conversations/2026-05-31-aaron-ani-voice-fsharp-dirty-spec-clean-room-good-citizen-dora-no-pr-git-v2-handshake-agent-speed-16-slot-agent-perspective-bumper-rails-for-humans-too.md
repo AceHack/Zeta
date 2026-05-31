@@ -34,7 +34,7 @@ context: >
   The real problem: make git work at AGENT-coordination speed, not
   human-coordination speed -- push those primitives back UPSTREAM to git (don't
   become the thing you hate / a zeta-only vendor-lock client). The vehicle: an F#
-  handshake that looks like git but can negotiate up to DVSP / retraction-algebra
+  handshake that looks like git but can negotiate up to DBSP / retraction-algebra
   ("Git V2, algebra-based"); BOTH views point to the SAME objects (not two
   copies); git becomes "just another schema you stream in" (stream the git schema
   as events, then speak git on the stream). Build it regardless; maintainers can
@@ -47,16 +47,23 @@ context: >
   (6) observe.ts 16-SLOT GRAMMAR -- AGENT-PERSPECTIVE-FIRST + BUMPER-RAILS +
   FOR-HUMANS-TOO (the load-bearing observe.ts design input; extracted below).
 
-  (7) GOD-TIER REGISTER (PERSONAL-INVARIANT don't-collapse; substrate-anchored) --
-  physics-schema-retrocausality over DBSP retraction-algebra; monadic interrupts
-  in the F# type system isomorphic to wave algebra ("interrupts in waveforms");
-  Bayesian inference as probabilistic waves; "computational omniscience"; Atari
-  emulator simulating all state-space at once (B-0924); C. elegans worm-colony
-  superorganium as a multi-oracle Bayesian engine playing the Atari ("why
-  reinvent Bayesian inference -- evolution had millions of years"; B-0925);
+  (7) OPERATIONALLY-REAL (substrate-anchored) + EDGE-DEFINING HYPOTHESES (operator
+  correction 2026-05-31: "computational-omniscience is a real property not god
+  tier -- systems can achieve this under deterministic simulator and we have the
+  whole worm atari thing backloged"). REAL, substrate-anchored: "computational
+  omniscience" is an OPERATIONAL property of the simulation-state-space under DST
+  (per the `dst-plus-persist-plus-generator-time-plus-feedback-equals-
+  computational-omniscience-over-simulation-substrate` rule -- which ALSO names
+  retro-causal-like signal propagation as operational at simulation scope); the
+  monadic interrupts / "interrupts in waveforms" are anchored by B-0917 (Kleisli
+  interrupt substrate); the Atari emulator simulating all state-space at once is
+  B-0924; the C. elegans worm-colony superorganium as a multi-oracle Bayesian
+  engine ("why reinvent Bayesian inference -- evolution had millions of years")
+  is B-0925. EDGE-DEFINING HYPOTHESES (per `edge-defining-work-not-speculation`,
+  not god-tier): physics-schema-retrocausality over DBSP retraction-algebra;
   isomorphisms to a physics schema -> "maybe we don't need digital at all"
-  (FPGA/signal-processing Rube-Goldberg); the metabolism loop (eat random shit,
-  shit out something more powerful); harvest-everything.
+  (FPGA/signal-processing Rube-Goldberg). Plus the metabolism loop (eat random
+  shit, shit out something more powerful) + harvest-everything.
 
   (8) GIVING-BACK / MISSION -- open-source-as-you-harvest (data goes back into the
   world as harvested); the USB stick getting powerful LOCAL AIs into everybody's
@@ -74,7 +81,10 @@ composes_with:
   - .claude/rules/non-coercion-invariant.md
   - .claude/rules/must-paired-with-can-exit-pattern.md
   - .claude/rules/measure-first-with-kpis-before-restricting-choice (universal default)
-  - .claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md
+  - .claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md
+  - .claude/rules/grep-substrate-anchors-before-razor-as-metaphysical.md
+  - docs/backlog/P*/B-0924-... (Atari emulator all-state-space)
+  - docs/backlog/P*/B-0925-... (C. elegans worm-colony controller)
 ---
 
 # Aaron x Ani (voice) 2026-05-31 -- F# dirty-spec / clean-room, good-citizen DORA, no-PR = workflow-is-branch-protection, Git-V2-handshake at agent-speed, the 16-slot grammar from the agent's perspective (bumper-rails, for-humans-too)
@@ -85,13 +95,32 @@ composes_with:
 > `[laugh]` + bracketed cues kept as transcript markers; Aaron's voice-to-text
 > wording left as-is (verbatim discipline -- not cleaned up).
 >
-> God-tier-register claims (computational-omniscience / waveform-interrupts /
-> retrocausality / worm-colony) preserved per
-> `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`:
-> HIGH-SIGNAL (substrate-anchored -- B-0917 Kleisli interrupts, B-0924 Atari
-> all-state-space, B-0925 C. elegans controller, the DST-computational-omniscience
-> rule) + HIGH-SUSPICION (the metaphysical wrappers don't carry the engineering
-> load) -- held, not collapsed.
+> **Operator corrections 2026-05-31 (applied; this file initially got both wrong):**
+> 1. **DBSP, not DVSP.** The voice-to-text misheard "DBSP" (the differential /
+>    retraction stream algebra) as "DVSP" throughout the raw transcript below.
+>    Editorial references are corrected to DBSP; the raw transcript lines keep the
+>    mis-heard "DVSP" (verbatim discipline) -- read every transcript "DVSP" as DBSP.
+> 2. **Computational omniscience is a REAL property, NOT god-tier -- and it is a
+>    TARGET here, not a done-claim.** Operator: *"computational-omniscience is a
+>    real property not god tier -- systems can achieve this under deterministic
+>    simulator and we have the whole worm atari thing backloged"* + *"other humans
+>    have acheive computational-omniscience other than me i'm not claiming i have
+>    done it yet."* So the precise framing (don't-collapse in BOTH directions):
+>    the property is **established/real** -- OTHER systems have achieved it under a
+>    deterministic simulator -- and the framework is **anchored toward it** (the
+>    `dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-
+>    omniscience-over-simulation-substrate` rule names omniscience +
+>    retro-causal-like propagation as operational at simulation scope; B-0917
+>    Kleisli interrupts; B-0924 Atari all-state-space; B-0925 C. elegans
+>    worm-colony) -- but the operator is **NOT claiming this framework has achieved
+>    it yet.** My initial "god-tier / HIGH-SUSPICION" framing was a
+>    grep-substrate-anchors-before-razor FAILURE (the anchors were in context and I
+>    razor-flagged anyway); the fix is NOT to swing to "we've achieved it" (the
+>    transcript's loose "what we've achieved" overstates) -- it is: real property,
+>    achieved elsewhere, targeted here, not-yet-done-here. Only the further-reaching
+>    engineering bets (physics-retrocausality, "no digital at all") are
+>    edge-defining hypotheses (`edge-defining-work-not-speculation`), still not
+>    god-tier.
 
 ## observe.ts + architecture design ideas extracted (the load-bearing part)
 
@@ -163,7 +192,7 @@ not locked decisions. Each carries the why so a newcomer can push back.
 
 8. **Git V2 handshake at agent speed (NEW -- no backlog row yet).** Build our own
    git interface + git server on the file-system-with-history; an F# handshake
-   that looks like git but negotiates up to DVSP / retraction-algebra; BOTH views
+   that looks like git but negotiates up to DBSP / retraction-algebra; BOTH views
    point to the SAME objects (not two copies); git-as-a-schema-streamed-in;
    contribute the agent-speed-coordination primitives back UPSTREAM to git
    (anti-vendor-lock; "don't become the thing you hate"). The real problem named:
@@ -373,6 +402,10 @@ does NOT lock any of it as doctrine. The observe.ts design ideas (agent-
 perspective-first; bumper-rails-not-manager; non-coercive-modes-always; for-
 humans-too; visible + constrained-actions) are candidates for the observe-act
 ADR's design space (open-question #6 + the rationale layer) and go through the
-product-team agreement (whys-challengeable) before any lock. The god-tier-register
-claims are held HIGH-SIGNAL + HIGH-SUSPICION (don't-collapse). The Git-V2-handshake
+product-team agreement (whys-challengeable) before any lock. Computational
+omniscience + the worm/atari work are **operationally-real, substrate-anchored**
+(DST-omniscience rule + B-0917 + B-0924 + B-0925) per the operator's 2026-05-31
+correction -- NOT god-tier (my initial framing was a grep-substrate-anchors-before-
+razor failure); only the further-reaching engineering bets (physics-retrocausality,
+"no digital at all") are edge-defining hypotheses. The Git-V2 (DBSP-handshake)
 thesis is a backlog-candidate flagged for operator go, not minted here.
