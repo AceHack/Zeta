@@ -26,6 +26,26 @@ The intended state per `openspec/README.md`: capabilities under `openspec/specs/
 
 This row tracks the catch-up work needed to restore OpenSpec as actual source-of-truth.
 
+## Current checkpoint (2026-05-31)
+
+The row's 2026-05-03 baseline is stale. The current mechanized inventory
+surface is `tools/openspec/inventory.ts`, and the latest focused run reports:
+
+- `openspec/specs/**`: 9 capability specs.
+- `src/Core/*.fs`: 84 scanned modules, 18 covered modules, 64 uncovered
+  modules after exclusions.
+- Artifact coverage: 4 mapped Z-set algebra test artifacts and 0 missing
+  mapped artifacts.
+- Inventory gate: PASS under the current default gate.
+- Remaining inventory flags: `agentic-organization` and `tick-history` have
+  specs but no module or artifact mapping yet.
+
+This means the next B-0171 slice is no longer "prove OpenSpec is empty." The
+work is now reconciliation: map artifact-backed capabilities, decide which
+open child rows are already satisfied by existing specs, and add one bounded
+capability mapping or child-row correction per PR. Avoid touching
+`docs/BACKLOG.md` while active backlog-index claims own it.
+
 ## Why P1 (foundation)
 
 - Aaron's same-tick framing names OpenSpec catch-up as **load-bearing prerequisite** for Rule 3 (skill-domain packaging + harness hooks for contracts) to fully operationalize
