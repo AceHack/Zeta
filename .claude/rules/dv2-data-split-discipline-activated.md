@@ -126,10 +126,18 @@ exactly-once-*effect* guard, NOT an exactly-once *delivery* guarantee).
   re-applying must be a no-op the second time. Idempotency and DST are
   siblings: DST *requires* replay; idempotency makes *redelivery / partial*
   replay safe.
-- **With lock-free / wait-free (question 2):** lock-free retry loops
-  (CAS) re-attempt the same operation under contention; the operation
-  must be idempotent for the retry to be correct. CAS itself is the
-  canonical idempotent-make primitive.
+- **With lock-free / wait-free (question 2):** a CAS retry loop does NOT
+  require its recomputed transformation to be idempotent — a failed
+  compare-exchange commits *nothing*, so only the single winning attempt
+  takes effect; the loser-iterations' recomputations are discarded. CAS
+  is the canonical primitive for making a read-modify-write *commit
+  exactly once* under contention. Idempotency becomes relevant for
+  lock-free only when the retried body has **observable side effects
+  beyond the CAS word** (I/O, sends, metrics, or any state made visible
+  before the winning exchange — transient allocations don't count, they
+  are just discarded/GC'd unless they escape) — those repeat on every
+  iteration and must themselves be idempotent or deferred until after
+  the winning CAS.
 - **With DV2.0 / git-as-db:** the framework's state model is a
   **G-Set CRDT** of ZetaId-keyed events folded into state (per the
   agentic-organization keystone + `monad-propagation` substrate). G-Set
@@ -159,9 +167,15 @@ NOT (guard):  increment · append-without-dedup · side-effecting send
 ```
 
 Reserve non-idempotent operations for cases where the effect genuinely
-must accumulate (a counter, an audit-append) — and there, the
-*retraction-native* algebra (Z-sets: +1 then −1 nets to 0) restores
-replay-safety at the algebra level rather than the operation level.
+must accumulate (a counter, an audit-append). For those, note carefully:
+the *retraction-native* algebra (Z-sets: +1 then −1 nets to 0) is a
+**correction** mechanism, NOT a duplicate-guard. `ZSet.add` consolidates
+equal keys by *summing* weights, so a duplicate redelivery of a `+1`
+event becomes `+2`, not a no-op — retraction lets you *fix* an over-count
+after the fact (emit a compensating `−1`), but it does not make the
+duplicate add idempotent. Deduping accumulating events still needs an
+idempotency key on the event; the Z-set retraction is the after-the-fact
+repair, not the guard at ingest.
 
 ## Why this rule auto-loads
 
