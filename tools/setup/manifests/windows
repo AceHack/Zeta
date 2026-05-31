@@ -1,7 +1,10 @@
 # tools/setup/manifests/windows — declarative Windows system CLI tools.
 # Resolver priority (operator 2026-05-30): scoop -> winget -> chocolatey. scoop is primary
-# (user-mode, no admin, AI-native). Format per line:  <scoop-id> [winget=<id>] [choco=<id>]
-# winget/choco overrides are optional (default to <scoop-id>). `#` comments + blank lines ignored.
+# (user-mode, no admin, AI-native). Format per line:  <scoop-id> [winget=<id>] [choco=<id>] [optional]
+# winget/choco overrides are optional (default to <scoop-id>). The bare `optional` token marks a
+# BEST-EFFORT tool: install.ps1 warns + continues on failure instead of throwing (for substrate
+# that must never brick the whole install — mirrors Linux's graceful common/local-llm.sh). `#`
+# comments + blank lines ignored.
 #
 # KEEP MINIMAL + symmetric with manifests/apt + manifests/brew. Cross-platform tools belong in
 # .mise.toml (mise) or install via bun/dotnet/uv — NOT here. Only tools that no cross-platform
@@ -20,4 +23,11 @@ git    winget=Git.Git    choco=git
 # classifier + DST fixtures. The pinned MODEL (manifests/local-llm) is pulled by install.ps1's
 # local-LLM step, mirroring common/local-llm.sh. Pins per dep-pin-search-first (verified
 # 2026-05-31): scoop main bucket `ollama` 0.20.7 | winget `Ollama.Ollama` 0.24.0 | choco `ollama`.
-ollama    winget=Ollama.Ollama    choco=ollama
+#
+# `optional` (BEST-EFFORT): the ~1GB ollama download can exhaust a disk-constrained CI container's
+# sandbox (the Server Core docker-windows shield — run 86a365916 died on "not enough space on
+# disk"). Marking it optional means install.ps1 warns + continues there (the toolchain still
+# provisions; the local-LLM step then no-ops gracefully), while a real desktop with disk installs
+# it normally. This matches Linux: common/local-llm.sh installs the ollama binary gracefully too
+# (the local-LLM model is best-effort substrate, never a hard dep).
+ollama    winget=Ollama.Ollama    choco=ollama    optional

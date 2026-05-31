@@ -51,8 +51,8 @@ function Invoke-Tool {
   if ($LASTEXITCODE -ne 0) { throw "$What failed (exit $LASTEXITCODE)" }
 }
 # Best-effort native call: surface merged output, return the exit code, NEVER throw -- for GRACEFUL
-# steps that must not brick install (e.g. the local-LLM pull). Mirrors common/local-llm.sh's
-# warn-and-continue discipline (exceptions-as-signals: the model is best-effort substrate).
+# steps that must not brick install (e.g. the local-LLM pull + `optional` manifest tools). Mirrors
+# common/local-llm.sh's warn-and-continue discipline (exceptions-as-signals: best-effort substrate).
 function Invoke-ToolSoft {
   param([Parameter(Mandatory)][scriptblock]$Cmd)
   $prev = $ErrorActionPreference
@@ -138,6 +138,15 @@ if (Have choco) { Write-Host "choco: $(Get-ToolVersion { choco --version })" }
 #    trims (parity with the awk in macos.sh's brew-manifest loop). Each `scoop install` /
 #    `winget install` / `choco install` is itself detect-first (no-op when already present), so a
 #    re-run only fetches what's missing/stale -- the idempotent-update property.
+#
+#    A line may carry the `optional` token => BEST-EFFORT install (warn + continue on failure,
+#    NEVER throw). This mirrors Linux's common/local-llm.sh, which installs the ollama BINARY
+#    gracefully (a download/extract/disk failure warns + continues -- the local-LLM model is
+#    best-effort substrate, not a hard dep). ollama is `optional` so a disk-constrained CI
+#    container (e.g. the Server Core docker-windows shield, where the ~1GB ollama download can
+#    exhaust the sandbox disk -- run 86a365916) does NOT brick the whole install: a real desktop
+#    has room and installs it; the constrained container warns + the toolchain still provisions.
+#    Required tools (e.g. git, no `optional` token) still throw on failure.
 $manifest = Join-Path $RepoRoot 'tools\setup\manifests\windows'
 foreach ($raw in Get-Content $manifest) {
   $line = ($raw -replace '#.*$', '').Trim(); if (-not $line) { continue }
@@ -145,13 +154,25 @@ foreach ($raw in Get-Content $manifest) {
   $scoopId = $parts[0]
   $winget = ($parts | Where-Object { $_ -like 'winget=*' }) -replace 'winget=', ''
   $choco = ($parts | Where-Object { $_ -like 'choco=*' }) -replace 'choco=', ''
+  $optional = $parts -contains 'optional'             # best-effort: warn, never throw
   $wid = if ($winget) { $winget } else { $scoopId }   # if/else (5.1-safe; NOT the 7+ ?: ternary)
   $cid = if ($choco) { $choco } else { $scoopId }
-  Write-Host "down $scoopId (scoop -> winget -> choco)"
-  if ($(Have scoop)) { Invoke-Tool { scoop install $scoopId } "scoop install $scoopId" }
-  elseif ($(Have winget)) { Invoke-Tool { winget install --id $wid --silent --accept-package-agreements --accept-source-agreements } "winget install $wid" }
-  elseif ($(Have choco)) { Invoke-Tool { choco install $cid -y } "choco install $cid" }
-  else { throw "no package source (scoop/winget/choco) available for $scoopId" }
+  # Pick the first available source's command + label (scoop -> winget -> choco).
+  $cmd = $null; $what = $null
+  if     ($(Have scoop))  { $cmd = { scoop install $scoopId }; $what = "scoop install $scoopId" }
+  elseif ($(Have winget)) { $cmd = { winget install --id $wid --silent --accept-package-agreements --accept-source-agreements }; $what = "winget install $wid" }
+  elseif ($(Have choco))  { $cmd = { choco install $cid -y }; $what = "choco install $cid" }
+  Write-Host "down $scoopId (scoop -> winget -> choco)$(if ($optional) { ' [optional/best-effort]' } else { '' })"
+  if ($null -eq $cmd) {
+    if ($optional) { Write-Host "warn: no package source (scoop/winget/choco) for optional '$scoopId'; skipping (best-effort)"; continue }
+    throw "no package source (scoop/winget/choco) available for $scoopId"
+  }
+  if ($optional) {
+    $code = Invoke-ToolSoft $cmd
+    if ($code -ne 0) { Write-Host "warn: optional '$scoopId' install failed (exit $code); continuing (best-effort substrate -- e.g. disk-constrained CI; real desktops have room)" }
+  } else {
+    Invoke-Tool $cmd $what
+  }
 }
 
 # 3. mise (runtime manager) via scoop -- mirrors macos.sh step 4 (brew install mise).
@@ -168,9 +189,10 @@ try {
 # 5. claude-code via bun --global (bun provided by mise) -- identical to Unix.
 Invoke-Tool { mise exec -- bun install --global '@anthropic-ai/claude-code' } 'bun install -g claude-code'
 
-# 6. local-LLM core primitive -- pull the pinned model (the ollama BINARY was installed by the
-#    manifest loop in step 2, since `ollama` is now in manifests/windows). Mirrors
-#    common/local-llm.sh: idempotent (skip when the model is already present) + GRACEFUL (a
+# 6. local-LLM core primitive -- pull the pinned model (the ollama BINARY is installed by the
+#    manifest loop in step 2; ollama is `optional` there, so on a disk-constrained container it may
+#    be ABSENT -- this step already handles that gracefully via the `-not (Have ollama)` branch).
+#    Mirrors common/local-llm.sh: idempotent (skip when the model is already present) + GRACEFUL (a
 #    registry/network/daemon failure WARNS and continues -- it must NEVER brick install; the
 #    primitive's tests skip-if-absent -> mock-only, per exceptions-as-signals). Reads model/host
 #    from manifests/local-llm (the OS-agnostic shared contract Unix reads too).
@@ -191,7 +213,7 @@ if (Test-Path $llmManifest) {
   if (-not $model) {
     Write-Host "warn: local-llm manifest has no 'model'; skipping local-LLM pull"
   } elseif (-not (Have ollama)) {
-    Write-Host "warn: ollama not on PATH after the manifest step; skipping local-LLM (tests fall back to mock)"
+    Write-Host "warn: ollama not on PATH after the manifest step (optional; may be disk-skipped in CI); skipping local-LLM (tests fall back to mock)"
   } else {
     if (-not (Test-OllamaUp -Base $llmHost)) {
       Write-Host "down starting ollama serve (background)..."
