@@ -9,3 +9,12 @@ entries:
     name: Workflow
   - id: 3
     name: Heartbeat
+  # id 4 — free (B-0890 batch-merge coordinator superseded by B-0890.1 folders-on-main; the proposed "Batch" category is moot)
+  - id: 5
+    name: FrictionTelemetry
+  - id: 6
+    name: Bus
+  - id: 7
+    name: Spawn
+  - id: 8
+    name: WorkItem
