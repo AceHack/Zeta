@@ -398,6 +398,23 @@ describe("mapping table integrity", () => {
     ]);
   });
 
+  test("agentic-organization has source, test, and documentation artifact coverage", () => {
+    expect(CAPABILITY_ARTIFACT_MAP["agentic-organization"]).toEqual([
+      "agentic-organization/package.json",
+      "agentic-organization/packages/domain/src/org-event.ts",
+      "agentic-organization/packages/domain/src/hat-binding.ts",
+      "agentic-organization/packages/domain/src/supervisor-communication.ts",
+      "agentic-organization/packages/application/src/command-contract.ts",
+      "agentic-organization/packages/application/src/command-handler-registry.ts",
+      "agentic-organization/packages/application/src/command-pipeline.ts",
+      "agentic-organization/packages/application/src/ports.ts",
+      "agentic-organization/packages/application/test/command-pipeline.test.ts",
+      "agentic-organization/docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md",
+      "agentic-organization/docs/ORGANIZATION_RUNTIME_ARCHITECTURE.md",
+      "agentic-organization/docs/V0_POLICY_AND_RUNTIME_BOUNDARIES.md",
+    ]);
+  });
+
   test("EXCLUDED_MODULES is a Set of strings", () => {
     expect(EXCLUDED_MODULES).toBeInstanceOf(Set);
     for (const m of EXCLUDED_MODULES) {
@@ -452,5 +469,28 @@ describe("integration: real repo scan", () => {
     expect(tickHistoryMapping!.artifacts).toContain("tools/hygiene/check-tick-history-shard-schema.ts");
     expect(tickHistoryMapping!.missingArtifacts).toEqual([]);
     expect(report.unmappedSpecs).not.toContain("tick-history");
+  });
+
+  test("real agentic-organization spec is artifact-mapped", () => {
+    const repoRoot = join(import.meta.dir, "..", "..");
+    const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
+    const modules = scanModules(join(repoRoot, "src", "Core"));
+    const report = buildGapReport(specs, modules, { artifactRoot: repoRoot });
+
+    const agenticOrgMapping = report.artifactMappings.find((m) => m.capability === "agentic-organization");
+    expect(agenticOrgMapping).toBeDefined();
+    expect(agenticOrgMapping!.artifacts).toContain("agentic-organization/packages/application/src/command-pipeline.ts");
+    expect(agenticOrgMapping!.artifacts).toContain("agentic-organization/docs/ORGANIZATION_RUNTIME_ARCHITECTURE.md");
+    expect(agenticOrgMapping!.missingArtifacts).toEqual([]);
+    expect(report.unmappedSpecs).not.toContain("agentic-organization");
+  });
+
+  test("real README-only capability directories are not strict spec inputs", () => {
+    const repoRoot = join(import.meta.dir, "..", "..");
+    const specs = scanSpecs(join(repoRoot, "openspec", "specs"));
+    const report = buildGapReport(specs, [], { artifactRoot: repoRoot });
+
+    expect(specs.map((s) => s.capability)).not.toContain("retraction-native");
+    expect(report.unmappedSpecs).not.toContain("retraction-native");
   });
 });

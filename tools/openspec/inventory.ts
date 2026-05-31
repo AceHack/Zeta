@@ -96,6 +96,20 @@ const CAPABILITY_MODULE_MAP: Record<string, string[]> = {
 // Keeping this separate prevents tests, proofs, and profile-only evidence from
 // inflating source-module coverage while still making the mapping explicit.
 const CAPABILITY_ARTIFACT_MAP: Record<string, string[]> = {
+  "agentic-organization": [
+    "agentic-organization/package.json",
+    "agentic-organization/packages/domain/src/org-event.ts",
+    "agentic-organization/packages/domain/src/hat-binding.ts",
+    "agentic-organization/packages/domain/src/supervisor-communication.ts",
+    "agentic-organization/packages/application/src/command-contract.ts",
+    "agentic-organization/packages/application/src/command-handler-registry.ts",
+    "agentic-organization/packages/application/src/command-pipeline.ts",
+    "agentic-organization/packages/application/src/ports.ts",
+    "agentic-organization/packages/application/test/command-pipeline.test.ts",
+    "agentic-organization/docs/NORTH_STAR_ALIGNMENT_CHECKPOINT.md",
+    "agentic-organization/docs/ORGANIZATION_RUNTIME_ARCHITECTURE.md",
+    "agentic-organization/docs/V0_POLICY_AND_RUNTIME_BOUNDARIES.md",
+  ],
   "z-set-algebra": [
     "tests/Tests.FSharp/Algebra/ZSet.Tests.fs",
     "tests/Tests.FSharp/Algebra/ZSet.Overflow.Tests.fs",

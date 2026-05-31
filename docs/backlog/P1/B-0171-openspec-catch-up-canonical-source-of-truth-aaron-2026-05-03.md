@@ -10,7 +10,16 @@ created: 2026-05-03
 last_updated: 2026-05-31
 depends_on: []
 composes_with: [B-0058, B-0169, B-0170, B-0172, B-0173, B-0190]
-tags: [openspec, source-of-truth, foundation, architectural-debt, contract-based-development, spec-based-development, p1-foundation]
+tags:
+  [
+    openspec,
+    source-of-truth,
+    foundation,
+    architectural-debt,
+    contract-based-development,
+    spec-based-development,
+    p1-foundation,
+  ]
 type: friction-reducer
 ---
 
@@ -18,11 +27,11 @@ type: friction-reducer
 
 Aaron 2026-05-03, in the autonomous-loop maintainer channel via the skill-design memo (`feedback_skills_as_carved_sentences_knowledge_in_docs_datavault_2_0_pattern_aaron_2026_05_03.md`), named OpenSpec catch-up as load-bearing architectural debt:
 
-> *"openspec which we are way behind on, that's suppsed to be our source of truth lol, if we were to delete everyting other than it"*
+> _"openspec which we are way behind on, that's suppsed to be our source of truth lol, if we were to delete everyting other than it"_
 
 The intended state per `openspec/README.md`: capabilities under `openspec/specs/**` carry behavioral specs that the code is supposed to satisfy. Specs are canonical; code + skills + memos + docs all derive from / serve / reference the specs.
 
-**Current state (2026-05-03):** specs are sparse; most discipline lives outside specs (memos, CLAUDE.md, GOVERNANCE.md). The *"if we deleted everything but OpenSpec, the project would be lost"* test FAILS today.
+**Current state (2026-05-03):** specs are sparse; most discipline lives outside specs (memos, CLAUDE.md, GOVERNANCE.md). The _"if we deleted everything but OpenSpec, the project would be lost"_ test FAILS today.
 
 This row tracks the catch-up work needed to restore OpenSpec as actual source-of-truth.
 
@@ -31,19 +40,20 @@ This row tracks the catch-up work needed to restore OpenSpec as actual source-of
 The row's 2026-05-03 baseline is stale. The current mechanized inventory
 surface is `tools/openspec/inventory.ts`, and the latest focused run reports:
 
-- `openspec/specs/**`: 9 capability specs.
+- `openspec/specs/**`: 9 capability specs with `spec.md` files. The
+  README-only `openspec/specs/retraction-native/` directory remains background
+  material, not an input to the strict unmapped-spec gate.
 - `src/Core/*.fs`: 84 scanned modules, 18 covered modules, 64 uncovered
   modules after exclusions.
-- Artifact coverage: 10 mapped Z-set algebra and tick-history artifacts and 0
-  missing mapped artifacts.
+- Artifact coverage: 22 mapped artifacts across agentic-organization,
+  Z-set algebra, and tick-history; 0 missing mapped artifacts.
 - Inventory gate: PASS under the current default gate.
-- Remaining inventory flag: `agentic-organization` has a spec but no module or
-  artifact mapping yet.
+- Strict unmapped-spec gate: PASS with `--fail-on-unmapped-specs`.
 
 This means the next B-0171 slice is no longer "prove OpenSpec is empty." The
-work is now reconciliation: map artifact-backed capabilities, decide which
-open child rows are already satisfied by existing specs, and add one bounded
-capability mapping or child-row correction per PR. Avoid touching
+work is now reconciliation: continue mapping artifact-backed capabilities,
+decide which open child rows are already satisfied by existing specs, and add
+one bounded capability mapping or child-row correction per PR. Avoid touching
 `docs/BACKLOG.md` while active backlog-index claims own it.
 
 ## Why P1 (foundation)
@@ -54,7 +64,7 @@ capability mapping or child-row correction per PR. Avoid touching
 
 ## Scope (incremental, not big-bang)
 
-The catch-up is **NOT** a single big-bang spec authoring pass. It's incremental backfilling of the most load-bearing capability surfaces FIRST, then extending coverage. Per Aaron's *"foundation right and deliberate"* guidance, quality > coverage.
+The catch-up is **NOT** a single big-bang spec authoring pass. It's incremental backfilling of the most load-bearing capability surfaces FIRST, then extending coverage. Per Aaron's _"foundation right and deliberate"_ guidance, quality > coverage.
 
 ### Phase 1 — Inventory + sequencing
 
@@ -75,7 +85,7 @@ Per `openspec/README.md` modified-fork conventions (no archive, no change-histor
 
 ### Phase 4 — Validation
 
-The *"if we deleted everything but OpenSpec, the project would be lost"* test is the acceptance criterion. When all 4 phases complete, that test should NOT fail.
+The _"if we deleted everything but OpenSpec, the project would be lost"_ test is the acceptance criterion. When all 4 phases complete, that test should NOT fail.
 
 ## Why this matters now
 
@@ -87,7 +97,7 @@ The *"if we deleted everything but OpenSpec, the project would be lost"* test is
 
 - Adopting upstream OpenSpec workflow as-is (the project uses a modified fork; modifications stay)
 - Single big-bang spec authoring (incremental per Phase 1-4 above)
-- Replacing CLAUDE.md / AGENTS.md / GOVERNANCE.md (OpenSpec is the *contract* layer; those remain the *behavioral guidance* + *governance* layers — they reference the contracts)
+- Replacing CLAUDE.md / AGENTS.md / GOVERNANCE.md (OpenSpec is the _contract_ layer; those remain the _behavioral guidance_ + _governance_ layers — they reference the contracts)
 
 ## Composes with
 
@@ -108,6 +118,6 @@ This row closes when:
 1. The top-10 load-bearing capability surfaces have current OpenSpec specs (Phase 2 complete)
 2. CI gate enforces "every load-bearing change references a spec" (Phase 3 complete)
 3. CLAUDE.md + AGENTS.md updated to make OpenSpec FIRST-READ (Phase 3 complete)
-4. The *"delete everything but OpenSpec"* test passes (Phase 4 complete)
+4. The _"delete everything but OpenSpec"_ test passes (Phase 4 complete)
 
-Until done, this row stays open. Per Aaron's *"WONT-DO is 99% deferral, not forever — we will likely do everything eventually"*, the catch-up is on the long arc.
+Until done, this row stays open. Per Aaron's _"WONT-DO is 99% deferral, not forever — we will likely do everything eventually"_, the catch-up is on the long arc.
