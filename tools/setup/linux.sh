@@ -13,7 +13,8 @@
 #   6. common/dotnet-tools.sh — dotnet global tools from
 #                              manifests/dotnet-tools
 #   7. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
-#   8. common/shellenv.sh     — managed PATH file
+#   8. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
+#   9. common/shellenv.sh     — managed PATH file
 #
 # Non-Debian Linuxes (RHEL/Fedora/Arch/Alpine) are deferred — the
 # install-script layering supports adding them alongside apt.
@@ -143,7 +144,7 @@ if ! command -v mise >/dev/null 2>&1; then
 fi
 echo "✓ mise: $(mise --version)"
 
-# ── 3-8. Common steps ───────────────────────────────────────────────
+# ── 3-9. Common steps ───────────────────────────────────────────────
 # mise.sh runs `mise install` from .mise.toml, which now includes
 # dotnet (round-34 flip). No separate dotnet install step needed;
 # mise shims handle PATH. `~/.dotnet/tools` still needs PATH for
@@ -176,6 +177,9 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/verifiers.sh"
+# Agent + peer-AI CLIs (claude/codex/gemini) bun-global from manifests/agent-clis.
+# Best-effort: warns + continues on failure (auth/login is the operator's; never bricks install).
+"$SETUP_DIR/common/agent-clis.sh"
 # Local-LLM core primitive — installs pinned ollama binary + pulls the pinned
 # tiny model (manifests/local-llm). Graceful: warns + continues on failure.
 "$SETUP_DIR/common/local-llm.sh"

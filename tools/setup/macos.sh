@@ -16,7 +16,8 @@
 #   8. common/dotnet-tools.sh — dotnet global tools (semgrep,
 #                              stryker, etc.) from manifests/dotnet-tools
 #   9. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
-#  10. common/shellenv.sh     — managed PATH file
+#  10. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
+#  11. common/shellenv.sh     — managed PATH file
 
 set -euo pipefail
 
@@ -109,7 +110,7 @@ if ! command -v mise >/dev/null 2>&1; then
 fi
 echo "✓ mise: $(mise --version)"
 
-# ── 5-10. Common steps ──────────────────────────────────────────────
+# ── 5-11. Common steps ──────────────────────────────────────────────
 # mise.sh runs `mise install` from .mise.toml, which now includes
 # dotnet (round-34 flip). No separate dotnet install step needed;
 # mise shims handle PATH. `~/.dotnet/tools` still needs PATH for
@@ -142,6 +143,9 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/verifiers.sh"
+# Agent + peer-AI CLIs (claude/codex/gemini) bun-global from manifests/agent-clis.
+# Best-effort: warns + continues on failure (auth/login is the operator's; never bricks install).
+"$SETUP_DIR/common/agent-clis.sh"
 # Local-LLM core primitive — macOS gets the ollama binary via manifests/brew
 # (above); this pulls the pinned tiny model (manifests/local-llm). Graceful.
 "$SETUP_DIR/common/local-llm.sh"
