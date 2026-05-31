@@ -10,10 +10,12 @@
 
   <!-- Zero external dependencies (B-0944 supply-chain doctrine: the algebra is a
        pure event-fold; it needs nothing but FSharp.Core). Compile order matters in
-       F#: Types.fs before Observe.fs. -->
+       F#: Types.fs before Observe.fs before EventLog.fs (the monoid uses
+       Algebra.fold). -->
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="Observe.fs" />
+    <Compile Include="EventLog.fs" />
   </ItemGroup>
 
 </Project>

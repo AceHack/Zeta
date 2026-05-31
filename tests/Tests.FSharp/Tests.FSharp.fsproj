@@ -34,6 +34,7 @@
     <Compile Include="TriBoolean/TriBoolean.Tests.fs" />
     <Compile Include="TriBoolean/Float.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
+    <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
 
     <!-- Circuit/ -->
