@@ -17,7 +17,12 @@
 #                              stryker, etc.) from manifests/dotnet-tools
 #   9. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
 #  10. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
-#  11. common/shellenv.sh     — managed PATH file
+#  11. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
+#                                  from manifests/one-liner-tools
+#  12. common/local-llm.sh   — local-LLM core primitive (ollama via brew above + pinned
+#                              tiny model from manifests/local-llm)
+#  13. common/shellenv.sh    — managed PATH file
+#  14. common/profile-edit.sh — append the managed-PATH source line to the shell profile
 
 set -euo pipefail
 
@@ -110,7 +115,7 @@ if ! command -v mise >/dev/null 2>&1; then
 fi
 echo "✓ mise: $(mise --version)"
 
-# ── 5-11. Common steps ──────────────────────────────────────────────
+# ── 5-12. Common steps ──────────────────────────────────────────────
 # mise.sh runs `mise install` from .mise.toml, which now includes
 # dotnet (round-34 flip). No separate dotnet install step needed;
 # mise shims handle PATH. `~/.dotnet/tools` still needs PATH for
@@ -146,6 +151,9 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 # Agent + peer-AI CLIs (claude/codex/gemini) bun-global from manifests/agent-clis.
 # Best-effort: warns + continues on failure (auth/login is the operator's; never bricks install).
 "$SETUP_DIR/common/agent-clis.sh"
+# Non-package-manager CLIs (grok/cursor-agent/kiro/hermes/forge) via their own one-line
+# installers from manifests/one-liner-tools. Detect-first + best-effort (never bricks install).
+"$SETUP_DIR/common/one-liner-tools.sh"
 # Local-LLM core primitive — macOS gets the ollama binary via manifests/brew
 # (above); this pulls the pinned tiny model (manifests/local-llm). Graceful.
 "$SETUP_DIR/common/local-llm.sh"
