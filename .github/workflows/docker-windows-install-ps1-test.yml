@@ -122,10 +122,19 @@ jobs:
           Write-Host "DockerRootDir = $root"
           if ($root -notlike 'D:*') { Write-Host "::warning::data-root did not relocate to D: (got '$root') — build may still hit C: disk" }
 
+      # GITHUB_TOKEN forwards into the build (as MISE_GITHUB_TOKEN --build-arg) so mise install
+      # authenticates to the GitHub API (5000/hr) instead of hitting the unauthenticated 60/hr -> 403.
+      # Sibling fix to the 4 Unix shields (#6273). The legacy Windows builder has no BuildKit secret
+      # mounts, so the driver uses --build-arg + redacts the value in its logged command; the image is
+      # rmi'd in cleanup() so its history is discarded same-job. ZETA_INSTALL_FULL is NOT set here:
+      # that var gates the Unix one-liner-tools registry, which install.ps1 does not use. The top-level
+      # `permissions: contents: read` is sufficient — mise only READS public release metadata; the
+      # token just raises the rate limit.
       - name: Run Server-Core Docker install.ps1 test
         env:
           DOCKER_LOG_OUT_PATH: docker-windows-install-ps1-test.log
           DOCKER_BUILD_TIMEOUT_SEC: '2400'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bun tools/ci/docker-windows-install-ps1-test.ts
 
       - name: Upload Docker test log (always)

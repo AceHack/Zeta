@@ -51,6 +51,28 @@ COPY tools/persistence/windows C:/workspace/tools/persistence/windows
 COPY .mise.toml C:/workspace/.mise.toml
 COPY package.json C:/workspace/package.json
 
+# mise's GitHub-API token (the shield's rate-limit fix; sibling to the 4 Unix shields in #6273).
+# install.ps1 runs `mise install`, which calls the GitHub API to resolve .mise.toml runtime versions
+# from GitHub releases. UNAUTHENTICATED that API is 60 req/hr -> a cold cluster build exhausts it and
+# mise gets HTTP 403 (the exact failure the Unix macOS shield hit). AUTHENTICATED it's 5000 req/hr.
+#
+# WHY MISE_GITHUB_TOKEN (not GITHUB_TOKEN): mise's auth precedence is MISE_GITHUB_TOKEN >
+# GITHUB_API_TOKEN > GITHUB_TOKEN. Unix mise.sh auto-PROMOTES GITHUB_TOKEN -> MISE_GITHUB_TOKEN;
+# install.ps1 has NO such promotion, so the shield sets the highest-precedence var DIRECTLY.
+#
+# WHY --build-arg (not BuildKit --mount=type=secret like the Unix shields): the windows-2025 runner
+# uses the LEGACY docker builder (see the driver's NOTE), which has no BuildKit secret mounts. ARG
+# is the only build-time channel on the classic builder; declared here it is exposed to the install
+# RUN below as the $env:MISE_GITHUB_TOKEN build env var (core ARG-to-RUN-env behavior, cross-platform),
+# which `mise install` (a child of the RUN's powershell) inherits. It is NOT promoted to a persistent
+# ENV (that would bake it into every layer + `docker inspect` Config.Env) — ARG scope keeps it to the
+# build only. LEAK MITIGATION: (1) the value is the per-run ephemeral GitHub Actions GITHUB_TOKEN
+# (dead the moment the job ends); (2) the driver `docker rmi -f`s this image in cleanup() — its
+# `docker history` (where ARG values surface) is discarded in the same job, never pushed; (3) the
+# driver REDACTS the value to *** in the build command it logs, and GHA auto-masks GITHUB_TOKEN.
+# Empty (local runs without the env var) -> mise stays unauthenticated, identical to prior behavior.
+ARG MISE_GITHUB_TOKEN
+
 # Install graph + assert in ONE RUN so install.ps1's in-process PATH additions (scoop + mise
 # shims) carry to the smoke. -SkipLoopRegister: no interactive session in a container -> the
 # user-mode scheduled task isn't registered (desktop loop-smoke covers it). install.ps1 detects
