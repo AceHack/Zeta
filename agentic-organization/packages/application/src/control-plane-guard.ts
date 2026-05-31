@@ -70,6 +70,28 @@ export type ControlPlaneBudgetCeiling = {
   requested?: number | undefined;
 };
 
+export const ControlPlaneRateLimitKind = {
+  Tokens: "tokens",
+  Tools: "tools",
+  ModelCalls: "model_calls",
+  ExternalProviderCalls: "external_provider_calls",
+  ReleaseActions: "release_actions",
+} as const;
+
+export type ControlPlaneRateLimitKind =
+  (typeof ControlPlaneRateLimitKind)[keyof typeof ControlPlaneRateLimitKind];
+
+export type ControlPlaneRateLimit = {
+  rateLimitId: string;
+  organizationId: string;
+  scope: ControlPlaneScope;
+  kind: ControlPlaneRateLimitKind;
+  window: { startedAt: string; endsAt: string };
+  limit: number;
+  used: number;
+  requested?: number | undefined;
+};
+
 export type ControlPlaneDenialReason =
   | "estop"
   | "organization_freeze"
@@ -77,12 +99,14 @@ export type ControlPlaneDenialReason =
   | "hat_freeze"
   | "provider_freeze"
   | "budget_ceiling"
+  | "rate_limit_exceeded"
   | "secret_scope_unavailable"
   | "simulator_required";
 
 export type ControlPlaneAudit = {
   exempted: boolean;
   matchedFlagIds: readonly string[];
+  matchedRateLimitIds: readonly string[];
   reasonCodes: readonly ControlPlaneDenialReason[];
 };
 
@@ -100,6 +124,7 @@ export type EvaluateControlPlaneAccessInput = {
   evaluatedAt: string;
   flags: readonly ControlPlaneFlag[];
   budgets?: readonly ControlPlaneBudgetCeiling[] | undefined;
+  rateLimits?: readonly ControlPlaneRateLimit[] | undefined;
   usage?: ControlPlaneUsage | undefined;
   availableSecretScopes?: readonly string[] | undefined;
   isControlPlaneExempt?: boolean | undefined;
@@ -107,15 +132,23 @@ export type EvaluateControlPlaneAccessInput = {
 
 export function evaluateControlPlaneAccess(input: EvaluateControlPlaneAccessInput): ControlPlaneAccessDecision {
   const matchedFlags = activeMatchingFlags(input);
+  const matchedRateLimits = exhaustedMatchingRateLimits(input);
   const flagReasons = collectFlagReasons(input, matchedFlags);
   const budgetReasons = budgetCeilingExceeded(input.budgets ?? [], input.usage) ? ["budget_ceiling" as const] : [];
+  const rateLimitReasons = matchedRateLimits.length > 0 ? ["rate_limit_exceeded" as const] : [];
   const secretReasons = missingSecretScopes(input.usage, input.availableSecretScopes)
     ? ["secret_scope_unavailable" as const]
     : [];
-  const reasonCodes = orderedUniqueReasons([...flagReasons.map((entry) => entry.reason), ...budgetReasons, ...secretReasons]);
+  const reasonCodes = orderedUniqueReasons([
+    ...flagReasons.map((entry) => entry.reason),
+    ...budgetReasons,
+    ...rateLimitReasons,
+    ...secretReasons,
+  ]);
   const audit = {
     exempted: input.isControlPlaneExempt === true,
     matchedFlagIds: matchedFlags.map((flag) => flag.controlPlaneFlagId),
+    matchedRateLimitIds: matchedRateLimits.map((limit) => limit.rateLimitId),
     reasonCodes,
   } satisfies ControlPlaneAudit;
 
@@ -221,17 +254,21 @@ function isActive(flag: ControlPlaneFlag, evaluatedAt: string): boolean {
 }
 
 function flagMatchesScope(flag: ControlPlaneFlag, input: EvaluateControlPlaneAccessInput): boolean {
-  if (flag.scope.kind === ControlPlaneScopeKind.Organization) return true;
+  return scopeMatchesInput(flag.scope, input);
+}
 
-  if (flag.scope.kind === ControlPlaneScopeKind.Tenant) {
-    return flag.scope.tenantId === (input.tenantId ?? input.organizationId);
+function scopeMatchesInput(scope: ControlPlaneScope, input: EvaluateControlPlaneAccessInput): boolean {
+  if (scope.kind === ControlPlaneScopeKind.Organization) return true;
+
+  if (scope.kind === ControlPlaneScopeKind.Tenant) {
+    return scope.tenantId === (input.tenantId ?? input.organizationId);
   }
 
-  if (flag.scope.kind === ControlPlaneScopeKind.Hat) {
-    return input.actorHatId !== undefined && flag.scope.hatId === input.actorHatId;
+  if (scope.kind === ControlPlaneScopeKind.Hat) {
+    return input.actorHatId !== undefined && scope.hatId === input.actorHatId;
   }
 
-  return input.providerId !== undefined && flag.scope.providerId === input.providerId;
+  return input.providerId !== undefined && scope.providerId === input.providerId;
 }
 
 function collectFlagReasons(
@@ -279,6 +316,20 @@ function usageCostForBudget(kind: ControlPlaneBudgetKind, usage: ControlPlaneUsa
   return usage.releaseActionCost ?? 0;
 }
 
+function exhaustedMatchingRateLimits(input: EvaluateControlPlaneAccessInput): readonly ControlPlaneRateLimit[] {
+  return (input.rateLimits ?? []).filter((limit) =>
+    limit.organizationId === input.organizationId &&
+    scopeMatchesInput(limit.scope, input) &&
+    limit.window.startedAt <= input.evaluatedAt &&
+    input.evaluatedAt < limit.window.endsAt &&
+    limit.used + (limit.requested ?? usageCostForRateLimit(limit.kind, input.usage)) > limit.limit
+  );
+}
+
+function usageCostForRateLimit(kind: ControlPlaneRateLimitKind, usage: ControlPlaneUsage | undefined): number {
+  return usageCostForBudget(kind, usage);
+}
+
 function missingSecretScopes(
   usage: ControlPlaneUsage | undefined,
   availableSecretScopes: readonly string[] | undefined,
@@ -295,6 +346,7 @@ const DenialPriority: readonly ControlPlaneDenialReason[] = [
   "hat_freeze",
   "provider_freeze",
   "budget_ceiling",
+  "rate_limit_exceeded",
   "secret_scope_unavailable",
   "simulator_required",
 ];

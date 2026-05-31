@@ -3,10 +3,13 @@ import { test } from "node:test";
 
 import {
   ActRejectionReason,
+  ControlPlaneFlagKind,
+  ControlPlaneScopeKind,
   ObserveCommandType,
   RunLifecyclePhase,
   RunScope,
   TriAvailability,
+  type ControlPlaneFlag,
   type Menu16Slot,
 } from "../../../packages/application/src/index.ts";
 import { OrgEventKind, type OrgEvent } from "../../../packages/domain/src/index.ts";
@@ -182,6 +185,151 @@ test("runAgentCliMain persists control-bypass rejection evidence", async () => {
   });
 
   equal(exitCode, 1);
+  equal(events.length, 1);
+  ok(events[0]?.evidenceRefs.includes("observe-act:control_bypass_rejected:control_plane_denied:4"));
+});
+
+test("runAgentCliMain wires production control-plane authorization for prompt-flow tool secrets", async () => {
+  const events: OrgEvent[] = [];
+  let loadedContext = false;
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--run-id",
+      "6",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-secret-prod",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-prompt-flow-secret",
+      "--gate-approved",
+      "--select-index",
+      "6",
+    ],
+    env: {
+      AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON: JSON.stringify([{
+        taskId: "task-secret-context",
+        workItemId: "work-prompt-flow-secret",
+        title: "Load release context",
+        promptFlowId: "flow-release",
+        label: "load release context",
+        scope: RunScope.WorkItem,
+        priority: 100,
+        allowedHatIds: ["release_operator"],
+        directions: ["Load scoped release context."],
+        toolInjections: [{ tool: "github.publish_release", requiredSecretScopes: ["github:write"] }],
+        metrics: [],
+        contextArtifactRefs: [],
+      }]),
+    },
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: () => undefined,
+    writeStderr: () => undefined,
+    runtime: {
+      runCommand: async () => ({ status: "unused" }),
+      dispatchTool: async () => ({ status: "unused" }),
+      loadPromptFlowContext: async () => {
+        loadedContext = true;
+        return {
+          taskId: "task-secret-context",
+          promptFlowId: "flow-release",
+          directions: [],
+          toolInjections: [],
+          metrics: [],
+          contextArtifacts: [],
+        };
+      },
+      loadControlPlaneFlags: async () => [],
+      availableSecretScopes: [],
+      appendObserveActTick: async (event) => {
+        events.push(event);
+      },
+      shutdown: async () => undefined,
+    } as AgentCliMainRuntime & {
+      appendObserveActTick: (event: OrgEvent) => Promise<void>;
+      loadControlPlaneFlags: (organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>;
+      availableSecretScopes: readonly string[];
+    },
+  });
+
+  equal(exitCode, 1);
+  equal(loadedContext, false);
+  equal(events.length, 1);
+  ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:6"));
+});
+
+test("runAgentCliMain wires production control-plane authorization for active flags", async () => {
+  const events: OrgEvent[] = [];
+  let commandDispatched = false;
+
+  const exitCode = await runAgentCliMain({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--run-id",
+      "7",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-freeze-prod",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-command-freeze",
+      "--gate-approved",
+      "--select-index",
+      "4",
+    ],
+    env: {},
+    now: () => "2026-05-31T00:00:00.000Z",
+    writeStdout: () => undefined,
+    writeStderr: () => undefined,
+    runtime: {
+      runCommand: async () => {
+        commandDispatched = true;
+        return { status: "should_not_dispatch" };
+      },
+      dispatchTool: async () => ({ status: "unused" }),
+      loadControlPlaneFlags: async () => [{
+        controlPlaneFlagId: "flag-org-freeze",
+        organizationId: "org-freeze-prod",
+        scope: { kind: ControlPlaneScopeKind.Organization },
+        flag: ControlPlaneFlagKind.Freeze,
+        reason: "operator freeze",
+        setByHatId: "incident_commander",
+        setAt: "2026-05-31T00:00:00.000Z",
+      }],
+      appendObserveActTick: async (event) => {
+        events.push(event);
+      },
+      shutdown: async () => undefined,
+    } as AgentCliMainRuntime & {
+      appendObserveActTick: (event: OrgEvent) => Promise<void>;
+      loadControlPlaneFlags: (organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>;
+    },
+  });
+
+  equal(exitCode, 1);
+  equal(commandDispatched, false);
   equal(events.length, 1);
   ok(events[0]?.evidenceRefs.includes("observe-act:control_bypass_rejected:control_plane_denied:4"));
 });

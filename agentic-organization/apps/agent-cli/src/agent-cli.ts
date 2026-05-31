@@ -98,6 +98,7 @@ export type AgentCliCycleInput = ActDependencies & {
   hierarchy?: HierarchySnapshot;
   scheduleBlocks?: readonly WorkScheduleBlock[];
   deterministicRules?: readonly DeterministicRule[];
+  availableSecretScopes?: readonly string[];
   selectSlot?: MenuSelector;
 };
 
@@ -442,6 +443,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     ...createOptionalPromptFlowPage(parsed.value.promptFlowPage),
     ...createOptionalHierarchy(input.hierarchy),
     ...createOptionalScheduleBlocks(input.scheduleBlocks),
+    ...createOptionalAvailableSecretScopes(input.availableSecretScopes),
   });
   if (observed.outcome === ObserveOutcome.Feedback) {
     input.writeStderr?.(`${observed.feedback.message}\n`);
@@ -518,6 +520,12 @@ function createOptionalScheduleBlocks(
   scheduleBlocks: readonly WorkScheduleBlock[] | undefined,
 ): { scheduleBlocks?: readonly WorkScheduleBlock[] } {
   return scheduleBlocks === undefined ? {} : { scheduleBlocks };
+}
+
+function createOptionalAvailableSecretScopes(
+  availableSecretScopes: readonly string[] | undefined,
+): { availableSecretScopes?: readonly string[] } {
+  return availableSecretScopes === undefined ? {} : { availableSecretScopes };
 }
 
 function createOptionalSlotAuthorizer(

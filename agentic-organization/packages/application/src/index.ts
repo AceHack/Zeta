@@ -156,6 +156,7 @@ export {
 } from "./command-pipeline.ts";
 export {
   ControlPlaneFlagKind,
+  ControlPlaneRateLimitKind,
   ControlPlaneScopeKind,
   createControlPlaneDeterministicRule,
   createControlPlaneSlotAuthorizer,
@@ -167,6 +168,7 @@ export {
   type ControlPlaneBudgetKind,
   type ControlPlaneDenialReason,
   type ControlPlaneFlag,
+  type ControlPlaneRateLimit,
   type ControlPlaneScope,
   type ControlPlaneUsage,
   type EvaluateControlPlaneAccessInput,

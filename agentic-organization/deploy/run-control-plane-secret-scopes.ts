@@ -1,6 +1,6 @@
 /**
- * Phase 2.8 KIND proof: prove hard-control secret scopes are typed onto the
- * observe-act surface and enforced before MCP/tool dispatch.
+ * Phase 2.8 KIND proof: prove hard-control secret scopes and rate limits are
+ * typed onto the observe-act surface and enforced before MCP/tool dispatch.
  *
  *   kubectl -n agentic-org port-forward svc/cockroach 26261:26257 &
  *   COCKROACH_DATABASE_URL=postgresql://root@localhost:26261/defaultdb?sslmode=disable \
@@ -11,8 +11,10 @@ import { randomUUID } from "node:crypto";
 import { env } from "node:process";
 import { Pool } from "pg";
 
+import { runAgentCliMain } from "../apps/agent-cli/src/agent-cli-main.ts";
 import {
   ControlPlaneFlagKind,
+  ControlPlaneRateLimitKind,
   ControlPlaneScopeKind,
   RunLifecyclePhase,
   RunScope,
@@ -100,6 +102,34 @@ async function main(): Promise<void> {
       },
     });
 
+    let rateLimitDispatched = false;
+    const rateLimitDenied = await act(0, mcpMenu(), {
+      authorizeSlot: createControlPlaneSlotAuthorizer({
+        organizationId,
+        tenantId: organizationId,
+        actorHatId: "release_operator",
+        boundary: "mcp_dispatch",
+        evaluatedAt: nowIso,
+        flags: [],
+        rateLimits: [{
+          rateLimitId: `rate-limit-provider-${proofRunId}`,
+          organizationId,
+          scope: { kind: ControlPlaneScopeKind.Tenant, tenantId: organizationId },
+          kind: ControlPlaneRateLimitKind.ExternalProviderCalls,
+          window: { startedAt: new Date(Date.parse(nowIso) - 60_000).toISOString(), endsAt: new Date(Date.parse(nowIso) + 60_000).toISOString() },
+          limit: 1,
+          used: 1,
+        }],
+        availableSecretScopes: ["github:write"],
+        usageForSlot: () => ({ externalProviderCallCost: 1 }),
+      }),
+      runCommand: async () => ({ status: "unused" }),
+      dispatchTool: async () => {
+        rateLimitDispatched = true;
+        return { status: "should_not_dispatch" };
+      },
+    });
+
     const promptFlowSurface = await observeAgentSurface(
       {
         runId: asZetaIdDecimal("42"),
@@ -121,6 +151,60 @@ async function main(): Promise<void> {
       },
     );
 
+    const cliEvents: unknown[] = [];
+    let cliLoadedContext = false;
+    const cliExitCode = await runAgentCliMain({
+      argv: [
+        "observe",
+        "--hat",
+        "release_operator",
+        "--scope",
+        RunScope.WorkItem,
+        "--phase",
+        RunLifecyclePhase.AwaitingGate,
+        "--run-id",
+        "77",
+        "--hat-assignment",
+        "99",
+        "--agent",
+        "agent-release-proof",
+        "--organization",
+        organizationId,
+        "--project",
+        "project-1",
+        "--work-item",
+        "work-1",
+        "--gate-approved",
+        "--select-index",
+        "6",
+      ],
+      env: { AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON: JSON.stringify([promptFlowTask()]) },
+      now: () => nowIso,
+      writeStdout: () => undefined,
+      writeStderr: () => undefined,
+      runtime: {
+        runCommand: async () => ({ status: "unused" }),
+        dispatchTool: async () => ({ status: "unused" }),
+        loadPromptFlowContext: async () => {
+          cliLoadedContext = true;
+          return {
+            taskId: "pft-publish-release",
+            promptFlowId: "pf-release-publish",
+            directions: [],
+            toolInjections: [],
+            metrics: [],
+            contextArtifacts: [],
+          };
+        },
+        loadControlPlaneFlags: async () => activeFlags as readonly ControlPlaneFlag[],
+        availableSecretScopes: ["github:write"],
+        appendObserveActTick: async (event) => {
+          cliEvents.push(event);
+        },
+        shutdown: async () => undefined,
+      },
+    });
+
     const ok =
       activeFlags.length === 1 &&
       providerFreezeDenied.outcome === "rejected" &&
@@ -129,21 +213,32 @@ async function main(): Promise<void> {
       secretDenied.outcome === "rejected" &&
       secretDenied.message.includes("secret_scope_unavailable") &&
       !secretDispatched &&
+      rateLimitDenied.outcome === "rejected" &&
+      rateLimitDenied.message.includes("rate_limit_exceeded") &&
+      !rateLimitDispatched &&
       promptFlowSurface.outcome === "readout" &&
       promptFlowSurface.promptFlows.tasks.length === 0 &&
       promptFlowSurface.promptFlows.vetoedTasks.some((vetoed) =>
         vetoed.ruleName === "prompt-flow-secret-scope" &&
         vetoed.reason.includes("github:write")
-      );
+      ) &&
+      cliExitCode === 1 &&
+      !cliLoadedContext &&
+      JSON.stringify(cliEvents).includes("observe-act:control_bypass_rejected:control_plane_denied:6");
 
     console.log(JSON.stringify({
-      track: "Phase 2.8 control-plane secret scopes",
+      track: "Phase 2.8 control-plane secret scopes and rate limits",
       organizationId,
       activeFlagIds: activeFlags.map((flag) => flag.controlPlaneFlagId),
       providerFreezeDenied,
       providerDispatched,
       secretDenied,
+      rateLimitDenied,
+      rateLimitDispatched,
       promptFlowVetoes: promptFlowSurface.outcome === "readout" ? promptFlowSurface.promptFlows.vetoedTasks : [],
+      cliExitCode,
+      cliLoadedContext,
+      cliEventCount: cliEvents.length,
       secretDispatched,
       PROOF: ok ? "PASS" : "FAIL",
     }, null, 2));

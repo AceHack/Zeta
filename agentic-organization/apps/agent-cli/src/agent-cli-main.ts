@@ -6,12 +6,18 @@ import {
   buildHatDefinitions,
   createCommandHandlerRegistry,
   createCommandPipeline,
+  createControlPlaneSlotAuthorizer,
   createHatAuthorityPort,
   createObserveLifecycleTransitionHandler,
   createScheduleBlockCommandAuthority,
   createSendSupervisorSignalHandler,
   type ActDependencies,
   type CommandResult,
+  type ControlPlaneBoundary,
+  type ControlPlaneFlag,
+  type ControlPlaneRateLimit,
+  type ControlPlaneUsage,
+  type Menu16Slot,
   type ObserveLifecycleTransitionCommand,
   type SendSupervisorSignalCommand,
 } from "../../../packages/application/src/index.ts";
@@ -60,6 +66,9 @@ type ObserveActPipelineCommand = ObserveLifecycleTransitionCommand | SendSupervi
 export type AgentCliMainRuntime = Pick<ActDependencies, "runCommand" | "dispatchTool"> &
   Partial<Pick<ActDependencies, "authorizeSlot" | "loadPromptFlowContext">> & {
     appendObserveActTick?: ((event: OrgEvent) => Promise<void>) | undefined;
+    loadControlPlaneFlags?: ((organizationId: string, evaluatedAt: string) => Promise<readonly ControlPlaneFlag[]>) | undefined;
+    rateLimits?: readonly ControlPlaneRateLimit[] | undefined;
+    availableSecretScopes?: readonly string[] | undefined;
     shutdown: () => Promise<void>;
   };
 
@@ -133,6 +142,7 @@ export async function resolveAgentCliProductionRuntime(
       pool,
       now: input.now,
       createId: (prefix) => `${prefix}-${randomUUID()}`,
+      availableSecretScopes: parseAvailableSecretScopes(input.env.AGENTIC_ORG_AVAILABLE_SECRET_SCOPES),
     }),
   };
 }
@@ -146,10 +156,15 @@ function createAgentCliProductionRuntime(input: {
   pool: PgCockroachWorkerPool & CockroachWorkerShutdownPool;
   now: () => string;
   createId: (prefix: string) => string;
+  availableSecretScopes?: readonly string[] | undefined;
 }): AgentCliMainRuntime {
+  const controlPlaneState = createCockroachControlPlaneStateStore({ executor: input.executor });
   return {
     runCommand: createCockroachAgentCliCommandRunner(input),
     dispatchTool: createAgentCliMcpDispatcher(),
+    loadControlPlaneFlags: async (organizationId, evaluatedAt) =>
+      await controlPlaneState.listActiveFlags(organizationId, evaluatedAt) as readonly ControlPlaneFlag[],
+    ...createOptionalAvailableSecretScopes(input.availableSecretScopes),
     appendObserveActTick: async (event) => {
       await createCockroachOrgEventStore({ executor: input.executor }).append(event);
     },
@@ -163,6 +178,10 @@ function createRunAgentCliCycleInput(
   input: RunAgentCliMainInput,
   runtime: AgentCliMainRuntime,
 ): Parameters<typeof runAgentCliCycle>[0] {
+  const parsed = parseAgentCliArgs(input.argv);
+  const authorizeSlot = runtime.authorizeSlot ?? (
+    parsed.ok ? createAgentCliControlPlaneSlotAuthorizer(runtime, parsed.value, input.now) : undefined
+  );
   return {
     argv: input.argv,
     now: input.now,
@@ -185,15 +204,80 @@ function createRunAgentCliCycleInput(
     }),
     runCommand: runtime.runCommand,
     dispatchTool: runtime.dispatchTool,
-    ...createOptionalAuthorizeSlot(runtime.authorizeSlot),
+    ...createOptionalAuthorizeSlot(authorizeSlot),
     ...createOptionalLoadPromptFlowContext(runtime.loadPromptFlowContext),
+    ...createOptionalAvailableSecretScopes(runtime.availableSecretScopes),
   };
+}
+
+function createAgentCliControlPlaneSlotAuthorizer(
+  runtime: AgentCliMainRuntime,
+  args: ParsedAgentCliArgs,
+  now: () => string,
+): NonNullable<ActDependencies["authorizeSlot"]> {
+  return async (slot) => {
+    const evaluatedAt = now();
+    const authorizer = createControlPlaneSlotAuthorizer({
+      organizationId: args.organizationId,
+      tenantId: args.organizationId,
+      actorHatId: args.hatId,
+      providerId: providerIdForSlot(slot),
+      boundary: boundaryForSlot(slot),
+      evaluatedAt,
+      flags: await (runtime.loadControlPlaneFlags?.(args.organizationId, evaluatedAt) ?? []),
+      rateLimits: runtime.rateLimits,
+      availableSecretScopes: runtime.availableSecretScopes,
+      usageForSlot: usageForSlot,
+    });
+    return await authorizer(slot);
+  };
+}
+
+function boundaryForSlot(slot: Menu16Slot): ControlPlaneBoundary {
+  if (slot.impl?.kind === "command") return "command_dispatch";
+  if (slot.impl?.kind === "mcp" || slot.impl?.kind === "prompt_flow") return "mcp_dispatch";
+  return "act";
+}
+
+function providerIdForSlot(slot: Menu16Slot): string | undefined {
+  const tools = toolsForSlot(slot);
+  const providerIds = [...new Set(tools.map(providerIdForTool).filter(isNonEmptyString))];
+  return providerIds.length === 1 ? providerIds[0] : undefined;
+}
+
+function providerIdForTool(tool: string): string | undefined {
+  return tool.split(".")[0];
+}
+
+function isNonEmptyString(value: string | undefined): value is string {
+  return value !== undefined && value.length > 0;
+}
+
+function usageForSlot(slot: Menu16Slot): ControlPlaneUsage | undefined {
+  return toolsForSlot(slot).length === 0 ? undefined : { externalProviderCallCost: 1, toolCallCost: 1 };
+}
+
+function toolsForSlot(slot: Menu16Slot): readonly string[] {
+  if (slot.impl?.kind === "mcp") return [slot.impl.tool];
+  if (slot.impl?.kind === "prompt_flow") return slot.impl.request.toolInjections.map((injection) => injection.tool);
+  return [];
 }
 
 function createOptionalFetchImpl(
   fetchImpl: typeof fetch | undefined,
 ): { fetchImpl?: typeof fetch } {
   return fetchImpl === undefined ? {} : { fetchImpl };
+}
+
+function createOptionalAvailableSecretScopes(
+  availableSecretScopes: readonly string[] | undefined,
+): { availableSecretScopes?: readonly string[] } {
+  return availableSecretScopes === undefined ? {} : { availableSecretScopes };
+}
+
+function parseAvailableSecretScopes(value: string | undefined): readonly string[] | undefined {
+  if (value === undefined || value.trim().length === 0) return undefined;
+  return [...new Set(value.split(",").map((scope) => scope.trim()).filter((scope) => scope.length > 0))];
 }
 
 async function appendObserveActEvidenceIfPresent(

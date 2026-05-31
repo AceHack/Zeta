@@ -1947,12 +1947,14 @@ The existing release-queue KIND proof was rerun as a regression check for
 
 ---
 
-## Update 2026-05-31 — Phase 2.8 secret-scope hard controls proven in kind
+## Update 2026-05-31 — Phase 2.8 secret-scope and rate-limit hard controls proven in kind
 
 The observe-act action surface now carries secret-scope requirements as typed data. Prompt-flow
 tool injections and MCP slots can declare `requiredSecretScopes`; prompt-flow tasks whose injected
 tools require unavailable scopes are hidden as false slots during observe, and MCP dispatch is
-re-authorized at act time before any tool side effect can run.
+re-authorized at act time before any tool side effect can run. The production CLI now also builds a
+default control-plane slot authorizer from the parsed run context and Cockroach flags, so provider
+freezes and secret/rate-limit controls cannot be bypassed by the foreground loop.
 
 ### What shipped
 
@@ -1964,29 +1966,38 @@ re-authorized at act time before any tool side effect can run.
 - `createControlPlaneSlotAuthorizer` derives control-plane usage from MCP and prompt-flow slots, so
   act-time authorization rejects tool dispatch when the required secret scope is unavailable even if
   the slot was visible at observe time.
+- `ControlPlaneRateLimit` adds windowed per-scope limits for tokens, tools, model calls, external
+  provider calls, and release actions. Exhausted limits produce `rate_limit_exceeded` and expose the
+  matched rate-limit ids in the control-plane audit.
+- `runAgentCliMain` now wires production observe-act control-plane authorization by loading active
+  Cockroach flags at act time and passing available secret scopes into observe.
 - KIND proof runner: `deploy/run-control-plane-secret-scopes.ts`.
 
 ### KIND proof
 
 Worker image rebuilt as `agentic-org-worker:keepalive`
-(`sha256:a88b6edfdbb7c17ff7f4d826a31301523421fc4fb6abd01bbdab4bd977e7e624`), loaded into KIND
-cluster `agentic-org`, and deployed to pod `worker-84c8df764-x9gdf`. Fresh boot logs showed the
+(`sha256:59ff53b16321cf80c047cd97be239b50045d23b82ba2c6d9a591efb4d4b484f7`), loaded into KIND
+cluster `agentic-org`, and deployed to pod `worker-5c9c9c668f-p9k2j`. Fresh boot logs showed the
 expected cadence lanes with zero `worker run failed` or structured error matches.
 
 `deploy/run-control-plane-secret-scopes.ts` ran against in-cluster Cockroach for
-`org-control-plane-secrets-3a3f557a` and proved:
+`org-control-plane-secrets-a8650bdd` and proved:
 
 - A durable provider-freeze flag was upserted and read back through the Cockroach control-plane
-  state store as `flag-provider-freeze-3a3f557a`.
+  state store as `flag-provider-freeze-a8650bdd`.
 - MCP dispatch with `providerId = github` was rejected with `provider_freeze`;
   `providerDispatched` remained false.
 - MCP dispatch with required `github:write` but no available secret scope was rejected with
   `secret_scope_unavailable`; `secretDispatched` remained false.
+- MCP dispatch with exhausted external-provider call rate limit was rejected with
+  `rate_limit_exceeded`; `rateLimitDispatched` remained false.
 - A prompt-flow task whose `github.publish_release` tool injection required `github:write` was
   rendered as a vetoed prompt-flow task with rule `prompt-flow-secret-scope`.
+- The production CLI path selected a prompt-flow slot under a live Cockroach-backed provider freeze;
+  it exited `1`, did not load context, and appended control-bypass evidence.
 
 `PROOF: PASS`.
 
 ### Verification
 
-`npm run typecheck` passed. `npm test` passed: **1189 tests, 1182 pass, 0 fail, 7 skipped**.
+`npm run typecheck` passed. `npm test` passed: **1194 tests, 1187 pass, 0 fail, 7 skipped**.

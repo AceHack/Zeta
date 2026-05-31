@@ -7,6 +7,7 @@ import {
   CommandResultStatus,
   ControlPlaneFlagKind,
   ControlPlaneScopeKind,
+  ControlPlaneRateLimitKind,
   createControlPlaneDeterministicRule,
   createControlPlaneSlotAuthorizer,
   evaluateControlPlaneAccess,
@@ -20,6 +21,7 @@ import {
   RunScope,
   type CommandResult,
   type ControlPlaneFlag,
+  type ControlPlaneRateLimit,
   type ControlPlaneUsage,
   type CommandHandler,
   type Menu16,
@@ -99,6 +101,32 @@ test("control-plane guard propagates ESTOP, tenant, hat, provider, budget, and s
   equal(controlLane.audit.exempted, true);
 });
 
+test("control-plane guard denies tenant-scoped rate limit exhaustion before side effects", () => {
+  const denied = evaluateControlPlaneAccess({
+    organizationId: "org-lfg",
+    tenantId: "tenant-a",
+    actorHatId: "release_operator",
+    providerId: "github",
+    boundary: "mcp_dispatch",
+    actionType: "publish_release",
+    evaluatedAt: NOW,
+    flags: [],
+    rateLimits: [
+      rateLimit("rl-github-tools", ControlPlaneRateLimitKind.Tools, {
+        kind: ControlPlaneScopeKind.Tenant,
+        tenantId: "tenant-a",
+      }, 10, 10),
+    ],
+    usage: { toolCallCost: 1 },
+  });
+
+  equal(denied.status, "denied");
+  if (denied.status !== "denied") return;
+  deepEqual(denied.reasonCodes, ["rate_limit_exceeded"]);
+  ok(denied.message.includes("rate_limit_exceeded"));
+  equal(denied.audit.matchedRateLimitIds[0], "rl-github-tools");
+});
+
 test("control-plane deterministic rule vetoes observe slots before rendering selectable actions", () => {
   const rule = createControlPlaneDeterministicRule({
     flags: [flag("flag-tenant", ControlPlaneFlagKind.Freeze, { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" }, "tenant frozen")],
@@ -125,6 +153,36 @@ test("control-plane deterministic rule vetoes observe slots before rendering sel
   const menu = renderMenu16(readout.readout);
   equal(menu.slots[4]?.availability, "F");
   ok(menu.slots[4]?.reason?.includes("tenant frozen"));
+});
+
+test("control-plane deterministic rule renders rate-limited options as false slots with reasons", () => {
+  const rule = createControlPlaneDeterministicRule({
+    flags: [],
+    rateLimits: [rateLimit("rl-model-calls", ControlPlaneRateLimitKind.ModelCalls, { kind: ControlPlaneScopeKind.Organization }, 3, 3)],
+    organizationId: "org-lfg",
+    actorHatId: "backend_implementer",
+    evaluatedAt: NOW,
+    boundary: "observe",
+    usageForOption: (option) => option.actionType === "execute" ? { modelCallCost: 1 } : undefined,
+  });
+
+  const readout = observe({
+    runId: asZetaIdDecimal("1"),
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingGate,
+    hasGateApproval: true,
+    hasEvidence: false,
+    trace: { correlationId: "corr-1", causationId: "cause-1", traceId: "trace-1" },
+  }, {
+    clock: { now: () => NOW },
+    deterministicRules: [rule],
+  });
+
+  equal(readout.outcome, "readout");
+  if (readout.outcome !== "readout") return;
+  const menu = renderMenu16(readout.readout);
+  equal(menu.slots[4]?.availability, "F");
+  ok(menu.slots[4]?.reason?.includes("rate_limit_exceeded"));
 });
 
 test("control-plane slot authorizer rejects act-time ESTOP that appears after observe", async () => {
@@ -162,6 +220,54 @@ test("control-plane slot authorizer rejects act-time ESTOP that appears after ob
   equal(result.outcome, "rejected");
   if (result.outcome !== "rejected") return;
   equal(result.reason, ActRejectionReason.ControlPlaneDenied);
+  equal(dispatched, false);
+});
+
+test("control-plane slot authorizer rejects act-time rate limit exhaustion before dispatch", async () => {
+  const menu: Menu16 = {
+    slots: [
+      {
+        index: 0,
+        direction: "commit.a",
+        label: "publish provider update",
+        availability: "T",
+        impl: {
+          kind: "mcp",
+          tool: "github.publish",
+        },
+      },
+      ...Array.from({ length: 15 }, (_, offset) => ({
+        index: offset + 1,
+        direction: `empty.${offset}`,
+        label: "empty",
+        availability: "N" as const,
+      })),
+    ],
+  };
+  let dispatched = false;
+
+  const result = await act(0, menu, {
+    authorizeSlot: createControlPlaneSlotAuthorizer({
+      flags: [],
+      rateLimits: [rateLimit("rl-provider-calls", ControlPlaneRateLimitKind.ExternalProviderCalls, { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" }, 1, 1)],
+      organizationId: "org-lfg",
+      tenantId: "org-lfg",
+      actorHatId: "release_operator",
+      evaluatedAt: NOW,
+      boundary: "mcp_dispatch",
+      usageForSlot: () => ({ externalProviderCallCost: 1 }),
+    }),
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => {
+      dispatched = true;
+      return { ok: true };
+    },
+  });
+
+  equal(result.outcome, "rejected");
+  if (result.outcome !== "rejected") return;
+  equal(result.reason, ActRejectionReason.ControlPlaneDenied);
+  ok(result.message.includes("rate_limit_exceeded"));
   equal(dispatched, false);
 });
 
@@ -375,5 +481,25 @@ function flag(
     reason,
     setByHatId: "incident_commander",
     setAt: NOW,
+  };
+}
+
+function rateLimit(
+  rateLimitId: string,
+  kind: ControlPlaneRateLimitKind,
+  scope: ControlPlaneRateLimit["scope"],
+  limit: number,
+  used: number,
+  requested?: number,
+): ControlPlaneRateLimit {
+  return {
+    rateLimitId,
+    organizationId: "org-lfg",
+    scope,
+    kind,
+    window: { startedAt: "2026-05-31T18:00:00.000Z", endsAt: "2026-05-31T20:00:00.000Z" },
+    limit,
+    used,
+    ...(requested !== undefined ? { requested } : {}),
   };
 }
