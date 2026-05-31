@@ -903,6 +903,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0946](backlog/P2/B-0946-filesystem-dsl-fsharp-computation-expression-fuse-backend-benchmark-vs-closure-table-dst-millions-nodes-single-machine-summonable-bft-crdts-aaron-2026-05-30.md)** Filesystem DSL as F# computation expression (fs {}) + FUSE backend (benchmark vs closure-table); cross-cutting -- all microkernel/db/fs/cluster work is DST-simulatable at millions-of-nodes on one machine via summonable-BFT + CRDTs
 - [ ] **[B-0948](backlog/P2/B-0948-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md)** Workflow DUs with first-class BFT oracle/compiler summons + observe.ts keystone -- research-to-get-clean then build
 - [ ] **[B-0951](backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)** Git-native eventually-consistent text indexes (sorted/inverted/graph) + the git-native Hindsight storage interface
+- [ ] **[B-0952](backlog/P2/B-0952-contribute-back-dora-metrics-small-first-trust-building-external-contribution-strategy-not-take-only-aaron-2026-05-31.md)** Contribute-back DORA metrics + small-first trust-building external-contribution strategy (not-take-only good-citizen, made measurable)
 
 ## P3 — convenience / deferred
 
