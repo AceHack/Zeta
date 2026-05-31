@@ -118,9 +118,9 @@ committing renders slot 4 as `F`; a state with a held/uncertain option renders i
 
 ### Layering (clean separation)
 
-- **Deterministic script** (`tools/agent-loop/` TS + the canonical F# DU in
-  `src/Core.FSharp/WorkflowEngine/`): owns the state machine + `move-next(state) -> 16-slot menu`.
-  No LLM here. Replayable / DST-able.
+- **Deterministic script** (`tools/agent-loop/` TS today; the canonical F# DU in
+  `src/Core.FSharp/WorkflowEngine/` is PLANNED future-work, B-0867.1 — does not exist yet): owns the
+  state machine + `move-next(state) -> 16-slot menu`. No LLM here. Replayable / DST-able.
 - **LLM selector** (local, no cloud): a pure function `menu -> index 0..15` over only-`T` slots.
   Holds no state. Swappable model.
 - **Git** (append-only, 128-bit IDs): the only state store. Each act appends one event.
