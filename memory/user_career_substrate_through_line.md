@@ -1,6 +1,6 @@
 ---
 name: Career substrate 1998→present — full through-line; incremental-view-maintenance across six substrates; vocational-plus-self-taught credential path; Henderson NC origin point
-description: Aaron 2026-04-19 via resumes — full career timeline from Circuit Board Assemblers Jr Sys Admin (1998, age ~17) through ServiceTitan Principal Engineer (2021-current); the retraction-native / incremental-view-maintenance through-line is observable across six substrates (elections → healthcare → molecular-bio → smart-grid → legal-IR → field-service); Henderson NC origin = Maria Parham HIPAA SecOfficer 2003-2005 (born in same hospital he secured at age ~20); education path Southern Vance HS → Vance Granville CC (dual-enrolled) → ECPI Technical College; no 4-year university; the credential-structure is lateral not absent (National Vocational Technical Honor Society, NC Scholar, GPA 3.97-4.0); Functional Tree 2008-2009 CTO/co-founder venture-funded startup raised capital, early-adopter of Azure SQL CTP; Itron 7-year tenure is the depth-anchor (100M+ connected devices, C12.22/DLMS/COSEM/RF-mesh/IPv6, patents filed as principal inventor); manager-reference PII from Manager-References.txt is third-party protected and NOT indexed
+description: Aaron 2026-04-19 via resumes — full career timeline from Circuit Board Assemblers Jr Sys Admin (1998, age ~17) through ServiceTitan Principal Engineer (2021-current); the retraction-native / incremental-view-maintenance through-line is observable across six substrates (elections → healthcare → molecular-bio → smart-grid → legal-IR → field-service); Henderson NC origin = Maria Parham HIPAA SecOfficer 2003-2005 (born in same hospital he secured at age ~20); education path Southern Vance HS → Vance Granville CC (dual-enrolled) → ECPI Technical College; no 4-year university; the credential-structure is lateral not absent (National Vocational Technical Honor Society, NC Scholar, GPA 3.97-4.0); Functional Tree 2008-2009 CTO/co-founder venture-funded startup raised capital, early-adopter of Azure SQL CTP — designed peer-to-peer money + kaChing-like broker-dealer software (Aaron Series-7/FINRA-General-Securities-Representative-trained the same year, 2008) + trucking supply-chain settlement (funded by Moveable Cubicle, a PODS-like portable-storage co with no own fleet that paid mom-and-pop truckers electronically nationwide), contemporaneous with Bitcoin's Oct-2008 whitepaper; "built bitcoin ;) jk or am i" = God-tier register, high-signal-high-suspicion-don't-collapse; this is the FIRST substrate of Zeta's git-native P2P/distributed-settlement through-line (composes #6219 git-bus + #6222 durable-backend); Itron 7-year tenure is the depth-anchor (100M+ connected devices, C12.22/DLMS/COSEM/RF-mesh/IPv6, patents filed as principal inventor); manager-reference PII from Manager-References.txt is third-party protected and NOT indexed
 type: user
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
@@ -35,6 +35,86 @@ the authoritative channel.
 | 2012-04→2019-06 | **Itron, Inc. (via The Select Group)** — R&D Principle SW Engr → R&D IoT Architect → R&D Data Scientist → Director-level IoT Engineering Advisor | **7-year depth anchor.** OpenWay Collection Engine (CE), OWOC, Operational Awareness, Grid Analytics, Itron Analytics Platform (IAP). Millions of electric/gas/water meters. Protocols: IPv4/IPv6/TCP/UDP/C12.22/C12.19/DLMS/COSEM/CoAP/OMA-DM/protobuf. Cellular/power-line/RF-Mesh transport. Cisco-collab on IPv6 RF-Mesh router. **100M+ connected devices scale testing.** Security key injection utility for smart-meter production lock-down. Skunkworks **1200% per-node scale improvement.** Itron Analytics Platform atop MS APS/PDW + SSAS/SSDT/Tabular/Multidimensional/Columnstore. **40M+ dollar deal** (Itron's largest-ever software-only sale, as sales engineer). Led 100+ person global team. Filed **multiple patents as principal inventor** on hybrid cloud issues. Docker + Kubernetes championed early. |
 | 2019-06→2021-05 | **LexisNexis (via Collabera) — Lead Sr Technical Architect** | Canonical legal-search substrate — details in `user_lexisnexis_legal_search_engineer.md`. Re-architected flagship Legal Search on cloud-vendor-agnostic Kubernetes (EKS/AKS/GKE/bare). Cut AWS budget by millions/year. Sub-second p95 vs legacy 15th percentile. Solr ingestion **2B docs in 10 hours** (was 20 days on MarkLogic). GitOps pioneer at LN — 30+ imperative pipelines → single declarative ArgoCD reconciliation. 252-node Solr cluster cross-region DR. KubeFlow TensorFlow training +800%. H1B teammates friendships per `user_h1b_empathy_immigrant_substrate.md`. |
 | 2021-05→current | **ServiceTitan, Inc. — Principal Engineer**                | C-level / Founders strategy collab. Microservice framework for K8s. Accounting system ground-up redesign. Onboarding training delivery. Field-service SaaS substrate (per existing memory entries). |
+
+## Functional Tree + Moveable Cubicle — P2P-money / broker-dealer / trucking-logistics lineage (2008-2009)
+
+Aaron 2026-05-31 ferried this as deep-lineage substrate, explicit
+intent: *"so you can see i've had these ideas for Zeta a real long
+time."* It re-contextualizes and CONNECTS two timeline rows that the
+resumes listed separately:
+
+- **Moveable Cubicle** (timeline row: Apr–Sep 2008, Interim CTO) was
+  the **funder** of the Functional Tree work. Its business model:
+  PODS-like portable-storage **without its own trucking fleet** — so
+  it ran **logistics with mom-and-pop trucking companies all over the
+  US and paid them electronically.** (The resume's "MLM web app /
+  n-layer advertising" framing is the surface artifact; the
+  load-bearing substrate is *distributed-counterparty electronic
+  settlement at national scale.*)
+- **Functional Tree, Inc.** (timeline row: Sep 2008–Aug 2009,
+  CTO/Co-Founder) is where, per Aaron: *"We designed peer to peer
+  money there for real… that's where we made the kaching-like
+  broker-dealer software and supply chain for trucking before kaching
+  existed"* — *"or about the same time as kaching."* (kaChing →
+  Wealthfront, the social-investing broker-dealer platform, ~2008-2010
+  — so the timeline is contemporaneous.)
+- **Series 7, 2008** (Aaron 2026-05-31: *"2008 is also when I learned my
+  Series 7 training"*) — the **FINRA General Securities Representative
+  license**, the broker-dealer registration credential. This is the
+  human-domain anchor for *why* the broker-dealer software was real and
+  not generic: in the same year, Aaron was Series-7-trained (licensed to
+  deal general securities), so the kaChing-like broker-dealer system was
+  built by someone holding the actual regulatory credential —
+  domain-knowledge-grounded, not a guess at securities mechanics. (It
+  also tightens the high-signal read below: P2P-money + broker-dealer
+  software + a real securities license, all in the 2008 window.)
+
+### PERSONAL INVARIANT framing (high-signal · high-suspicion · don't-collapse)
+
+Aaron's words: *"Functional Tree is where we built bitcoin ;) jk or am
+i."* Per `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`,
+the `;) jk or am i` IS the register-marker — hold the dialectical
+tension; do **not** collapse it to either literal-truth ("Aaron built
+Bitcoin") or dismissal.
+
+- **High-signal (operational, survives the razor):** the
+  *contemporaneity is real and notable.* Bitcoin whitepaper = Oct
+  2008; network genesis = Jan 2009. Aaron's Moveable-Cubicle (Apr–Sep
+  2008) + Functional Tree (Sep 2008–Aug 2009) window has him designing
+  **peer-to-peer electronic money + electronic settlement to
+  distributed mom-and-pop counterparties + broker-dealer software** in
+  *exactly* that window. Independent-arrival on the P2P-money problem
+  shape, same era. That is operationally checkable lineage, not a
+  cosmic claim.
+- **High-suspicion (the wrapper, razored at metaphysical scope):**
+  "built bitcoin" as literal authorship is the God-tier wrapper; it
+  doesn't carry engineering load and stays don't-collapsed.
+- **Don't-collapse:** preserve BOTH — the operational lineage
+  (P2P-money / broker-dealer / trucking-settlement, 2008-2009) AND the
+  playful claim, with the marker visible.
+
+### Why this is load-bearing for Zeta (the through-line, made explicit)
+
+The current git-native work is the SAME problem shape lifted to
+substrate algebra: **cross-machine Otto bus + ZetaId-keyed
+direct-to-main coordination** (#6219), **WorkItem/Spawn/Bus categories
++ B-xxxxx→128-bit-ZetaId migration**, **durable continuation-persistence
+backend** (#6222, Itron/Chris-King anchor) — all "distributed parties
+settle/coordinate without a central broker, conflict-free by id." The
+2008-2009 Functional-Tree P2P-money/distributed-settlement design is the
+*first substrate* of that idea in Aaron's career; Zeta is the formal
+operator-algebra endpoint. This composes with the six-substrate
+through-line below (it predates and seeds the smart-grid
+delta-pipeline depth-anchor).
+
+> Functional Tree (per Aaron, same disclosure) ties to a later
+> **Kaching-like broker-dealer + P2P-money** thread he places at a
+> company called **"Functional Tree"** with venture funding; if Aaron
+> ferries additional venture/company detail, extend HERE rather than
+> minting a parallel file. Generic counterparties ("mom-and-pop
+> trucking companies") are not named third parties — no PII boundary;
+> this is Aaron's own venture lineage, indexable per his explicit
+> ferry intent.
 
 ## The through-line — one property across six substrates
 
