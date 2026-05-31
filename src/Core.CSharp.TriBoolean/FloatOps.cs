@@ -13,6 +13,12 @@ namespace Zeta.Core.CSharp.TriBoolean;
 /// (Tri.T=1, Tri.F=0). C# null is NOT the held Tri.N state; every operation rejects null loudly.
 /// Roslyn is the non-Byzantine oracle: the switches carry an explicit UnreachableException arm
 /// because the closed Tri hierarchy is not compiler-inferred exhaustive.
+///
+/// Width: field reads accumulate into <see cref="long"/> (matching the Rust u64 + F# int64 oracles;
+/// TS uses f64). This keeps all four oracles in agreement up to f64's 2^53 exact-integer range --
+/// the shared limit, since the decoded value is f64 in every oracle. A naive 32-bit int would wrap
+/// at 2^31, diverging from the other oracles before the f64 limit; long defers that to widths no
+/// realistic shape reaches.
 /// </summary>
 public static class FloatOps
 {
@@ -21,12 +27,13 @@ public static class FloatOps
 
     /// <summary>
     /// MSB-first base-2 read of a trit field (Tri.T=1, Tri.F=0). Returns null iff ANY trit is held
-    /// (Tri.N) -- the held signal. Rejects a null trit loudly (null is not Tri.N).
+    /// (Tri.N) -- the held signal. Rejects a null trit loudly (null is not Tri.N). Accumulates into
+    /// long (no wrap until 63 bits; see class doc for the f64-2^53 shared limit across oracles).
     /// </summary>
-    private static int? IntOf(IEnumerable<Tri> trits)
+    private static long? IntOf(IEnumerable<Tri> trits)
     {
         ArgumentNullException.ThrowIfNull(trits);
-        var v = 0;
+        var v = 0L;
         foreach (var t in trits)
         {
             switch (t)
@@ -50,13 +57,13 @@ public static class FloatOps
     }
 
     /// <summary>MSB-first encode of a non-negative integer into <paramref name="width"/> certain trits.</summary>
-    private static Tri[] IntToTrits(int v, int width)
+    private static Tri[] IntToTrits(long v, int width)
     {
         var trits = new Tri[width];
         for (var i = 0; i < width; i++)
         {
-            var bit = (v >> (width - 1 - i)) & 1;
-            trits[i] = bit == 1 ? Tri.T : Tri.F;
+            var bit = (v >> (width - 1 - i)) & 1L;
+            trits[i] = bit == 1L ? Tri.T : Tri.F;
         }
 
         return trits;
@@ -83,7 +90,7 @@ public static class FloatOps
             return new DecodeResult.Held(FloatFeedback.ValueSuperposed);
         }
 
-        var bias = 1 << (f.Decoder.Count - 1);
+        var bias = 1L << (f.Decoder.Count - 1);
         return new DecodeResult.Decoded(v.Value * Math.Pow(2, mode.Value - bias));
     }
 
@@ -113,7 +120,8 @@ public static class FloatOps
     /// fromValue (biased-exponent canonical encode): find a (mode, V) with V * 2^(mode-bias) = value,
     /// V a non-negative integer fitting the value field and mode in the decoder field. Picks the
     /// SMALLEST mode that works (a canonical representation; the biased-exponent decoder has redundant
-    /// representations). v0 is unsigned + finite. Round-trips with Decode.
+    /// representations). v0 is unsigned + finite. Round-trips with Decode. Bounds math uses long so
+    /// wide shapes return feedback rather than overflowing to negative/incorrect bounds.
     /// </summary>
     public static EncodeResult FromValue(double value, FloatShape shape)
     {
@@ -124,16 +132,16 @@ public static class FloatOps
         }
 
         var valueBits = shape.HighWidth + shape.LowWidth;
-        var maxMode = (1 << shape.DecoderWidth) - 1;
-        var maxV = 1 << valueBits;
-        var bias = 1 << (shape.DecoderWidth - 1);
+        var maxMode = (1L << shape.DecoderWidth) - 1;
+        var maxV = 1L << valueBits;
+        var bias = 1L << (shape.DecoderWidth - 1);
 
-        for (var mode = 0; mode <= maxMode; mode++)
+        for (long mode = 0; mode <= maxMode; mode++)
         {
             var scaled = value / Math.Pow(2, mode - bias); // = V
             if (double.IsInteger(scaled) && scaled >= 0.0 && scaled < maxV)
             {
-                var v = (int)scaled;
+                var v = (long)scaled;
                 var bits = IntToTrits(v, valueBits);
                 return new EncodeResult.Encoded(new TriFloat(
                     shape,

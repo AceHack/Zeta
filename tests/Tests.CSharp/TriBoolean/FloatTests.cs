@@ -117,4 +117,19 @@ public class FloatTests
         Assert.IsType<EncodeResult.NotRepresentable>(FromValue(-1.0, FloatShape.Default));
         Assert.IsType<EncodeResult.NotRepresentable>(FromValue(0.1, FloatShape.Default)); // not dyadic
     }
+
+    // Guards the long widening at the width where the previous 32-bit bug occurred (Copilot P1 on
+    // #6186): a regression to 32-bit accumulation/bounds would wrap and fail these. Wide VALUE field
+    // (52 bits > 31) with a small 3-trit decoder (no mode-search blowup — that wide-DECODER concern
+    // is the separate cross-language hardening row).
+    [Fact]
+    public void DecodeAndFromValueWorkPast32BitsOfValueWidth()
+    {
+        var wide = new FloatShape(26, 3, 26); // valueBits = 52, exact within f64's 2^53 range
+        foreach (var v in new[] { Math.Pow(2, 31), Math.Pow(2, 40), Math.Pow(2, 50), Math.Pow(2, 40) + 32.0 })
+        {
+            var encoded = Assert.IsType<EncodeResult.Encoded>(FromValue(v, wide));
+            Assert.Equal(new DecodeResult.Decoded(v), Decode(encoded.Value));
+        }
+    }
 }
