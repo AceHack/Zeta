@@ -17,7 +17,7 @@ export const Category = {
   Emission: 1,
   Workflow: 2,
   Heartbeat: 3,
-  // 4 free — B-0890 Batch coordinator superseded by B-0890.1 folders-on-main
+  Batch: 4, // branch-mode batch-merge transport (corporate leash, B-0890); slot reserved, impl deferred (sovereign uses folders-on-main, B-0890.1)
   FrictionTelemetry: 5, // friction telemetry per ADR 2026-05-29 (slot registered; impl pending)
   Bus: 6, // cross-machine agent comms (git-native bus spec, #6219)
   Spawn: 7, // agent-spawning (backend-portable: GH Actions / Argo / GitLab)

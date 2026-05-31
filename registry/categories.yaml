@@ -9,7 +9,9 @@ entries:
     name: Workflow
   - id: 3
     name: Heartbeat
-  # id 4 — free (B-0890 batch-merge coordinator superseded by B-0890.1 folders-on-main; the proposed "Batch" category is moot)
+  # Batch — branch-mode batch-merge transport (corporate leash, B-0890); slot reserved 2026-05-31, impl deferred (Max). Sovereign mode uses folders-on-main (B-0890.1), no coordinator.
+  - id: 4
+    name: Batch
   - id: 5
     name: FrictionTelemetry
   - id: 6
