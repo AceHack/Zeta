@@ -275,15 +275,24 @@ coincidence events. Review blockers use `pr-review-blocker`; failed checks use
 `failed-gate`; both share `pr:<number>` correlation keys so same-PR blocker
 signals do not count as independent incidents.
 
+Current B-0250 PR blocker live-output calibration:
+`docs/trajectories/autonomous-loop-coordination/b0250-pr-blocker-live-output-calibration-2026-05-30.md`
+
+It re-runs the live monitor after the PR blocker source joined the
+stronger-source escalation gate. The run reported one incident-grade window,
+but the window came from `otto:merged-pr-6129` plus
+`codex:loop-run-20260530T170632Z`, not from a live PR review or failed-gate
+blocker. A direct open-PR query returned zero open PRs.
+
 ## Recommended Next Action
 
-Calibrate the live monitor output after the PR blocker source joins the
-stronger-source escalation gate, then decide whether explicit broadcast
-blockers need their own bounded adapter.
+Add a bounded explicit broadcast-blocker adapter only when a fresh local bus
+blocker carries enough structure to map into `CoincidenceEvent`; stale local
+broadcast notes remain coordination input, not authoritative remote blockers.
 
 ## Next Child Packets
 
-- B-0250 PR blocker live-output calibration
+- B-0250 explicit broadcast-blocker adapter
 
 ## Evidence Links
 
