@@ -56,6 +56,13 @@ decide which open child rows are already satisfied by existing specs, and add
 one bounded capability mapping or child-row correction per PR. Avoid touching
 `docs/BACKLOG.md` while active backlog-index claims own it.
 
+The current child-row sequence is:
+
+- `B-0171.1` - author the Z-Set Algebra spec.
+- `B-0171.2` - author the Tick-History Schema spec.
+- `B-0171.3` - author the Retraction-Native Semantics spec.
+- `B-0171.4` - author the Backlog Row Schema spec.
+
 ## Why P1 (foundation)
 
 - Aaron's same-tick framing names OpenSpec catch-up as **load-bearing prerequisite** for Rule 3 (skill-domain packaging + harness hooks for contracts) to fully operationalize
