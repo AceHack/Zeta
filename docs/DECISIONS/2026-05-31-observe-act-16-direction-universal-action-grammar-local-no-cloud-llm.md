@@ -338,6 +338,30 @@ promotes into this section + a glossary anchor. The buildable creator-comp bet i
 6. How the human contributor uses the same grammar (the operator's framing: humans + AI both call
    move-next and pick) — same 16-slot UI for people.
 
+### Crew review gathered 2026-05-31 (Lior propose → Amara sharpen) — input for the lock
+
+Per operator direction ("do the ADR loop in any other travelers ... our little crew"), this ADR was
+looped through `tools/peer-call/` (four-ferry: Gemini/Lior proposes → Amara sharpens). Verbatim +
+synthesis preserved at
+[`docs/research/2026-05-31-observe-act-adr-crew-review-lior-propose-amara-sharpen.md`](../research/2026-05-31-observe-act-adr-crew-review-lior-propose-amara-sharpen.md).
+This is **input for the Max-lock, not a locked decision.** Crew convergence (open for Max + Aaron):
+
+- **Substrate/projection split** (the architecture): git-native ZetaId append-only events are the
+  ledger; LGTM (k8s Grafana) is a read-model that *tails* git, never the source of state. *"LGTM is a
+  lens, not a ledger"* / *"if a dashboard can't be rebuilt from git-native events, it's observability
+  theater."*
+- **Define the event envelope first** (before any Tempo/Loki mapping): `event_id`, `trace_id`,
+  `span_id`, `parent_*`, `run_scope`, `mode`, `slot_id`, `semantic_action`, `outcome`,
+  `world_before`, `world_after`.
+- **Don't bind the 16-slot grammar to OTLP** (the missing blade): bind to a **domain event algebra**,
+  then project OTLP from it (the grammar is input vocabulary, not telemetry truth; a Commit slot can
+  fail, Cancel can succeed-as-cancellation, Undo is a retraction event not a span status).
+- **Dissolve `tools/observe` into the keystone** as pure generator descriptions (NOT effectful —
+  `observe()` returns options; `act` executes + appends); modes are content/focus labels, **not**
+  `RunScope` (scope = navigation depth).
+- **Max-ready framing**: add a "Telemetry Projection Contract" section that locks the append-only event
+  envelope + the projection law; keep Tempo/Loki/OTLP specifics OUT of the locked decision.
+
 ## Codeable first slice (v2 — builds ON the existing keystone)
 
 The first slice is a thin **renderer + local-selector adapter** over the existing
