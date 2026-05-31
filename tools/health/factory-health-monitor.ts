@@ -104,6 +104,26 @@ interface PullRequestBlockerObservationInput {
   statusCheckRollup?: PullRequestStatusCheckObservationInput[] | null;
 }
 
+interface BroadcastBusEnvelopeInput {
+  id?: unknown;
+  from?: unknown;
+  to?: unknown;
+  topic?: unknown;
+  timestamp?: unknown;
+  expiresAt?: unknown;
+  payload?: unknown;
+}
+
+interface BroadcastBlockerRecordInput {
+  id?: unknown;
+  trajectory?: unknown;
+  occurredAt?: unknown;
+  observedAt?: unknown;
+  description?: unknown;
+  correlationKey?: unknown;
+  correlationKeys?: unknown;
+}
+
 export type LaneRunwayLane = "codex" | "otto" | "lior" | "alexa" | "riven" | "other";
 
 export type LaneRunwayNamedLane = Exclude<LaneRunwayLane, "other">;
@@ -161,6 +181,9 @@ const FACTORY_EVENT_DEBUG_TRAJECTORY_LIMIT = 4;
 const FACTORY_EVENT_DEBUG_WINDOW_LIMIT = 3;
 const FACTORY_EVENT_LOOKBACK_MS = 24 * 60 * 60 * 1000;
 const FACTORY_EVENT_MERGE_BURST_GAP_MS = 2 * 60 * 1000;
+const FACTORY_EVENT_BROADCAST_BUS_ENVELOPE_LIMIT = 200;
+const FACTORY_HEALTH_BROADCAST_BUS_DIR =
+  process.env.FACTORY_HEALTH_BROADCAST_BUS_DIR ?? process.env.ZETA_BUS_DIR ?? join("/tmp", "zeta-bus");
 const FACTORY_HEALTH_CODEX_LOOP_RUNNER_LOG = resolveCodexLoopRunnerLog(process.env);
 const INCIDENT_GRADE_COINCIDENCE_SOURCES: ReadonlySet<CoincidenceEventSource> = new Set([
   "loop-run",
@@ -527,6 +550,41 @@ function fetchCodexLoopRunnerLog(): ToolResult {
   }
 }
 
+function fetchBroadcastBusEnvelopes(): ToolResult {
+  if (FACTORY_HEALTH_BROADCAST_BUS_DIR.length === 0) {
+    return { ok: true, stdout: "[]" };
+  }
+
+  try {
+    const files = readdirSync(FACTORY_HEALTH_BROADCAST_BUS_DIR)
+      .filter((file) => file.endsWith(".json"))
+      .flatMap((file) => {
+        try {
+          return [
+            {
+              file,
+              mtimeMs: statSync(join(FACTORY_HEALTH_BROADCAST_BUS_DIR, file)).mtimeMs,
+            },
+          ];
+        } catch {
+          return [];
+        }
+      })
+      .sort((a, b) => b.mtimeMs - a.mtimeMs)
+      .slice(0, FACTORY_EVENT_BROADCAST_BUS_ENVELOPE_LIMIT);
+    const envelopes = files.flatMap(({ file }) => {
+      try {
+        return [JSON.parse(readFileSync(join(FACTORY_HEALTH_BROADCAST_BUS_DIR, file), "utf-8")) as unknown];
+      } catch {
+        return [];
+      }
+    });
+    return { ok: true, stdout: JSON.stringify(envelopes) };
+  } catch {
+    return { ok: true, stdout: "[]" };
+  }
+}
+
 function fetchCodexLoopHealth(): ToolResult {
   return run("bun", [join(ROOT, ".codex/bin/codex-loop-health.ts")]);
 }
@@ -653,6 +711,110 @@ function formatFailedGateDescription(prNumber: number, title: string, labels: re
   const visibleLabels = labels.slice(0, 3);
   const suffix = labels.length > visibleLabels.length ? `, +${labels.length - visibleLabels.length} more` : "";
   return `#${prNumber} ${title} failed gates: ${visibleLabels.join(", ")}${suffix}`;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function stringValue(value: unknown): string | null {
+  return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
+}
+
+function eventIdSegment(value: unknown, fallback: string): string {
+  const raw = (typeof value === "number" ? String(value) : stringValue(value)) ?? fallback;
+  const sanitized = raw
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return sanitized.length > 0 ? sanitized : fallback;
+}
+
+function broadcastBlockerRecords(payload: unknown): BroadcastBlockerRecordInput[] {
+  if (!isRecord(payload)) {
+    return [];
+  }
+
+  const blockers = payload.blockers;
+  if (Array.isArray(blockers)) {
+    return blockers.filter(isRecord);
+  }
+
+  return isRecord(payload.blocker) ? [payload.blocker] : [];
+}
+
+function broadcastEnvelopeIsFresh(envelope: BroadcastBusEnvelopeInput, nowIso: string): boolean {
+  const expiresAt = stringValue(envelope.expiresAt);
+  if (expiresAt === null) {
+    return true;
+  }
+
+  const expiresMs = Date.parse(expiresAt);
+  const nowMs = Date.parse(nowIso);
+  if (Number.isNaN(expiresMs) || Number.isNaN(nowMs)) {
+    return false;
+  }
+  return expiresMs >= nowMs;
+}
+
+function broadcastEnvelopeTargetsFactory(envelope: BroadcastBusEnvelopeInput): boolean {
+  return stringValue(envelope.to) === "*";
+}
+
+export function broadcastBlockerEventsFromJson(
+  output: string,
+  nowIso = new Date().toISOString(),
+  lookbackMs = FACTORY_EVENT_LOOKBACK_MS,
+): CoincidenceEvent[] {
+  const parsed = JSON.parse(output) as unknown;
+  const envelopes = Array.isArray(parsed) ? (parsed.filter(isRecord) as BroadcastBusEnvelopeInput[]) : [];
+  const events: CoincidenceEvent[] = [];
+
+  for (const envelope of envelopes) {
+    if (!broadcastEnvelopeTargetsFactory(envelope) || !broadcastEnvelopeIsFresh(envelope, nowIso)) {
+      continue;
+    }
+
+    const envelopeId = eventIdSegment(envelope.id, "envelope");
+    const fallbackOccurredAt = stringValue(envelope.timestamp);
+    const from = stringValue(envelope.from) ?? "unknown";
+    const topic = stringValue(envelope.topic) ?? "unknown";
+
+    for (const [index, blocker] of broadcastBlockerRecords(envelope.payload).entries()) {
+      const trajectory = stringValue(blocker.trajectory);
+      if (trajectory === null) {
+        continue;
+      }
+
+      const occurredAtRaw = stringValue(blocker.occurredAt) ?? stringValue(blocker.observedAt) ?? fallbackOccurredAt;
+      if (occurredAtRaw === null) {
+        continue;
+      }
+
+      const occurredMs = Date.parse(occurredAtRaw);
+      if (Number.isNaN(occurredMs) || !eventTimeInLookback(occurredMs, nowIso, lookbackMs)) {
+        continue;
+      }
+
+      const recordId = eventIdSegment(blocker.id, `${index + 1}`);
+      const correlationKey = stringValue(blocker.correlationKey);
+      const correlationKeys = Array.isArray(blocker.correlationKeys)
+        ? blocker.correlationKeys.map(stringValue).filter((key): key is string => key !== null)
+        : [];
+
+      events.push({
+        id: `broadcast-blocker-${envelopeId}-${recordId}`,
+        trajectory,
+        occurredAt: new Date(occurredMs).toISOString(),
+        description: stringValue(blocker.description) ?? `local bus ${topic} blocker from ${from}`,
+        ...(correlationKey !== null ? { correlationKey } : {}),
+        ...(correlationKeys.length > 0 ? { correlationKeys } : {}),
+        source: "broadcast-blocker",
+      });
+    }
+  }
+
+  return events.sort((a, b) => a.occurredAt.localeCompare(b.occurredAt) || a.id.localeCompare(b.id));
 }
 
 export function pullRequestBlockerEventsFromJson(
@@ -1610,6 +1772,20 @@ function checkCoincidenceEvents(openPRs: ToolResult = fetchOpenPRs()): HealthSig
         level: "warning",
         message: "Could not parse Codex loop-run observations for coincidence signals",
         action: "inspect Codex runner log before trusting loop-run coincidence signals",
+      });
+    }
+  }
+
+  const broadcastBusEnvelopes = fetchBroadcastBusEnvelopes();
+  if (broadcastBusEnvelopes.ok && broadcastBusEnvelopes.stdout.length > 0) {
+    try {
+      events.push(...broadcastBlockerEventsFromJson(broadcastBusEnvelopes.stdout));
+    } catch {
+      sourceWarnings.push({
+        surface: "coincidence",
+        level: "warning",
+        message: "Could not parse local bus broadcast-blocker observations for coincidence signals",
+        action: "inspect structured local bus envelopes before trusting broadcast-blocker coincidence signals",
       });
     }
   }

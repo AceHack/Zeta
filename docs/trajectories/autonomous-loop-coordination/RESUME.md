@@ -284,15 +284,25 @@ but the window came from `otto:merged-pr-6129` plus
 `codex:loop-run-20260530T170632Z`, not from a live PR review or failed-gate
 blocker. A direct open-PR query returned zero open PRs.
 
+Current B-0250 broadcast blocker adapter:
+`docs/trajectories/autonomous-loop-coordination/b0250-broadcast-blocker-adapter-2026-05-31.md`
+
+It adds an optional structured local-bus source for explicit
+`broadcast-blocker` coincidence events. The adapter reads bounded JSON
+envelopes from the configurable bus directory, but only converts fresh
+`payload.blockers[]` / `payload.blocker` records with explicit trajectory and
+time fields. Free-form markdown broadcasts remain coordination input, not
+authoritative event evidence.
+
 ## Recommended Next Action
 
-Add a bounded explicit broadcast-blocker adapter only when a fresh local bus
-blocker carries enough structure to map into `CoincidenceEvent`; stale local
-broadcast notes remain coordination input, not authoritative remote blockers.
+Run the live monitor after the broadcast-blocker adapter branch is ready, then
+calibrate whether any current structured local-bus blocker envelopes join the
+B-0250 incident-grade coincidence window.
 
 ## Next Child Packets
 
-- B-0250 explicit broadcast-blocker adapter
+- B-0250 broadcast-blocker live-output calibration
 
 ## Evidence Links
 
