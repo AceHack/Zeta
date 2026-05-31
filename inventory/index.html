@@ -4,12 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!--
-    BASELINE Content-Security-Policy (Phase 2). Locks the network surface:
+    BASELINE Content-Security-Policy (Phase 2/3). Locks the network surface:
       - connect-src pinned to 'self' + this project's Supabase host only
       - object/base/form-action locked down
     'unsafe-inline' for script/style is the cost of a SINGLE standalone file.
     Phase 7 hardening (per PROGRESS.md) moves JS/CSS to external files + adds
     nonces/SRI and drops 'unsafe-inline'. Do NOT pull that forward here.
+    Fonts: system-ui only (owner decision 2026-05-31) — NO font CDN added.
   -->
   <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
@@ -23,59 +24,151 @@
   " />
   <title>Zeta Inventory</title>
   <style>
-    :root { --bg:#0e1116; --panel:#171c24; --line:#2a323d; --fg:#e6edf3; --muted:#8b97a7;
-            --accent:#3b82f6; --ok:#1f7a3d; --bad:#9b1c1c; --warn:#8a6d1a; }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-           background:var(--bg); color:var(--fg); line-height:1.5; }
-    main { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; }
-    h1 { font-size: 1.4rem; margin: 0 0 4px; }
-    .sub { color: var(--muted); margin: 0 0 24px; font-size: .9rem; }
-    .panel { background:var(--panel); border:1px solid var(--line); border-radius:10px;
-             padding:20px; margin: 0 0 16px; }
-    label { display:block; font-size:.85rem; color:var(--muted); margin: 0 0 4px; }
-    input { width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:8px;
-            background:#0b0e13; color:var(--fg); font-size:1rem; }
-    .field { margin-bottom:14px; }
-    button { font:inherit; cursor:pointer; border:none; border-radius:8px; padding:10px 16px;
-             background:var(--accent); color:#fff; font-weight:600; }
-    button.secondary { background:transparent; border:1px solid var(--line); color:var(--fg); }
+    /* Palette + component shapes conform to the existing Zeta dashboard
+       (demo/index.html): dark glassmorphism, violet accent, panel/stat/list
+       idioms, 768px mobile breakpoint. System fonts (no Google Fonts CDN). */
+    :root {
+      --bg-color:#050505; --panel-bg:rgba(20,20,25,0.4); --panel-border:rgba(255,255,255,0.06);
+      --text-main:#f8fafc; --text-muted:#94a3b8; --accent-primary:#8b5cf6; --accent-secondary:#6366f1;
+      --success:#10b981; --warning:#f59e0b; --danger:#ef4444;
+      --inset:rgba(0,0,0,0.2);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color:var(--bg-color); color:var(--text-main); line-height:1.6;
+      overflow-x:hidden; min-height:100vh;
+    }
+    /* animated background orbs — same motif as the dashboard */
+    .bg-orbs { position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
+    .orb { position:absolute; border-radius:50%; filter:blur(80px); opacity:0.5;
+           animation:float 20s infinite ease-in-out alternate; }
+    .orb-1 { width:40vw; height:40vw; background:radial-gradient(circle,rgba(99,102,241,0.3) 0%,rgba(0,0,0,0) 70%); top:-10%; left:-10%; }
+    .orb-2 { width:35vw; height:35vw; background:radial-gradient(circle,rgba(139,92,246,0.2) 0%,rgba(0,0,0,0) 70%); bottom:-5%; right:-5%; animation-delay:-5s; }
+    .orb-3 { width:30vw; height:30vw; background:radial-gradient(circle,rgba(16,185,129,0.15) 0%,rgba(0,0,0,0) 70%); top:40%; left:40%; animation-delay:-10s; }
+    @keyframes float { 0%{transform:translate(0,0) scale(1);} 100%{transform:translate(5%,5%) scale(1.1);} }
+
+    .container { max-width:1400px; margin:0 auto; padding:2.5rem 1.5rem 4rem; }
+    header { display:flex; justify-content:space-between; align-items:flex-end; gap:1rem;
+             margin-bottom:1.5rem; border-bottom:1px solid var(--panel-border); padding-bottom:1.25rem; }
+    .logo-area h1 { font-size:2.2rem; font-weight:700;
+      background:linear-gradient(135deg,#fff 0%,#a5b4fc 100%);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+      letter-spacing:-1px; }
+    .subtitle { color:var(--text-muted); font-size:1rem; font-weight:300; }
+    .status-badge { display:inline-flex; align-items:center; gap:0.5rem;
+      background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2);
+      padding:0.4rem 0.9rem; border-radius:20px; font-size:0.8rem; color:var(--success); font-weight:500; }
+    .status-badge .pulse { width:8px; height:8px; background:var(--success); border-radius:50%;
+      box-shadow:0 0 10px var(--success); animation:pulse-dot 2s infinite; }
+    @keyframes pulse-dot { 0%{transform:scale(0.95);} 70%{transform:scale(1);} 100%{transform:scale(0.95);} }
+
+    .panel { background:var(--panel-bg); border-radius:16px; padding:1.5rem; margin:0 0 1.25rem;
+      border:1px solid var(--panel-border); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+      box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); }
+    h2 { font-size:1.2rem; font-weight:600; color:#fff; margin-bottom:1rem; }
+    label { display:block; font-size:.8rem; color:var(--text-muted); margin:0 0 4px; text-transform:uppercase; letter-spacing:0.5px; }
+    input, select { width:100%; padding:9px 11px; border:1px solid var(--panel-border); border-radius:8px;
+      background:#0b0e13; color:var(--text-main); font:inherit; font-size:0.95rem; }
+    input:focus, select:focus { outline:none; border-color:var(--accent-primary); }
+    button { font:inherit; cursor:pointer; border:none; border-radius:8px; padding:9px 15px;
+      background:var(--accent-primary); color:#fff; font-weight:600; }
+    button.secondary { background:transparent; border:1px solid var(--panel-border); color:var(--text-main); }
     button:disabled { opacity:.5; cursor:default; }
     .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     .hidden { display:none !important; }
-    .muted { color:var(--muted); }
-    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.8rem;
-             border:1px solid var(--line); }
-    .msg { padding:8px 12px; border-radius:8px; font-size:.9rem; margin-top:10px; white-space:pre-wrap;
-           word-break:break-word; }
-    .msg.ok { background:rgba(31,122,61,.18); border:1px solid var(--ok); }
-    .msg.bad { background:rgba(155,28,28,.18); border:1px solid var(--bad); }
-    .msg.info { background:rgba(138,109,26,.15); border:1px solid var(--warn); }
+    .muted { color:var(--text-muted); }
+    .badge { display:inline-block; padding:2px 8px; border-radius:999px; font-size:.78rem; border:1px solid var(--panel-border); }
+    .msg { padding:8px 12px; border-radius:8px; font-size:.9rem; margin-top:10px; white-space:pre-wrap; word-break:break-word; }
+    .msg.ok { background:rgba(16,185,129,.18); border:1px solid var(--success); }
+    .msg.bad { background:rgba(239,68,68,.18); border:1px solid var(--danger); }
+    .msg.info { background:rgba(245,158,11,.15); border:1px solid var(--warning); }
     code { background:#0b0e13; padding:1px 5px; border-radius:4px; }
-    .stack { display:flex; flex-direction:column; gap:6px; }
-    hr { border:none; border-top:1px solid var(--line); margin:18px 0; }
+    hr { border:none; border-top:1px solid var(--panel-border); margin:16px 0; }
+    details.diag { margin-top:12px; }
+    details.diag summary { cursor:pointer; color:var(--text-muted); font-size:0.85rem; }
+
+    /* ---- Inventory controls ---- */
+    .controls { display:grid; grid-template-columns:1fr; gap:0.85rem; }
+    @media (min-width:760px) { .controls { grid-template-columns:2fr 1fr 1fr 1fr 1fr; align-items:end; } }
+    .control-field { min-width:0; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:0.75rem; align-items:center; justify-content:space-between; margin-top:0.75rem; }
+    .toolbar .left { display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; }
+    .attn-toggle { display:inline-flex; align-items:center; gap:0.45rem; font-size:0.9rem; color:var(--text-main); cursor:pointer; }
+    .attn-toggle input { width:auto; }
+    .count-pill { font-size:0.85rem; color:var(--text-muted); }
+    .sort-hint { font-size:0.75rem; color:var(--text-muted); }
+
+    /* ---- Status pills ---- */
+    .pill { display:inline-block; padding:2px 9px; border-radius:999px; font-size:0.74rem; font-weight:600;
+            white-space:nowrap; border:1px solid var(--panel-border); }
+    .pill-attn { background:rgba(245,158,11,0.12); color:var(--warning); border-color:rgba(245,158,11,0.35); }
+    .pill-active { background:rgba(16,185,129,0.10); color:var(--success); border-color:rgba(16,185,129,0.3); }
+    .pill-other { background:rgba(148,163,184,0.10); color:var(--text-muted); }
+
+    /* ---- Wide: table ---- */
+    .table-wrap { overflow-x:auto; border-radius:12px; border:1px solid var(--panel-border); }
+    table.inv { width:100%; border-collapse:collapse; font-size:0.9rem; }
+    table.inv thead th {
+      position:sticky; top:0; background:#11151c; color:var(--text-muted); text-align:left;
+      padding:0.7rem 0.8rem; font-weight:600; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.5px;
+      cursor:pointer; user-select:none; white-space:nowrap; border-bottom:1px solid var(--panel-border);
+    }
+    table.inv thead th .arrow { color:var(--accent-primary); font-size:0.7rem; margin-left:3px; }
+    table.inv tbody td { padding:0.6rem 0.8rem; border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:top; }
+    table.inv tbody tr:hover { background:rgba(255,255,255,0.03); }
+    table.inv .num { text-align:right; font-variant-numeric:tabular-nums; }
+    .cell-id { color:var(--text-muted); font-variant-numeric:tabular-nums; }
+    .cell-name { font-weight:600; color:#fff; }
+    .cell-notes { max-width:360px; color:var(--text-muted); font-size:0.82rem;
+                  white-space:pre-wrap; word-break:break-word; }
+
+    /* ---- Narrow: cards ---- */
+    .cards { display:flex; flex-direction:column; gap:0.7rem; }
+    .card { background:var(--inset); border:1px solid var(--panel-border); border-radius:12px; padding:0.9rem 1rem; }
+    .card .card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:0.5rem; }
+    .card .card-name { font-weight:600; color:#fff; }
+    .card .card-sub { font-size:0.82rem; color:var(--text-muted); margin-top:2px; }
+    .card .kv { display:grid; grid-template-columns:auto 1fr; gap:2px 10px; margin-top:0.6rem; font-size:0.82rem; }
+    .card .kv .k { color:var(--text-muted); text-transform:uppercase; letter-spacing:0.4px; font-size:0.7rem; }
+    .card .card-notes { margin-top:0.55rem; font-size:0.8rem; color:var(--text-muted); white-space:pre-wrap; word-break:break-word; }
+
+    .empty-state { text-align:center; padding:2.5rem 1rem; color:var(--text-muted);
+      background:var(--inset); border:1px dashed rgba(255,255,255,0.1); border-radius:12px; }
+
+    /* show table on wide, cards on narrow */
+    .view-table { display:none; }
+    .view-cards { display:block; }
+    @media (min-width:760px) { .view-table { display:block; } .view-cards { display:none; } }
   </style>
 </head>
 <body>
-  <main>
-    <h1>Zeta Inventory</h1>
-    <p class="sub">Secure inventory. Sign in to continue.</p>
+  <div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+  <div class="container">
+    <header>
+      <div class="logo-area">
+        <h1>Zeta Inventory</h1>
+        <p class="subtitle">Secure inventory · sign in to continue</p>
+      </div>
+      <div class="status-area">
+        <div class="status-badge"><div class="pulse"></div><span id="conn-badge">Secured by RLS</span></div>
+      </div>
+    </header>
 
     <!-- ===================== SIGN-IN VIEW (sign-in form ONLY) ===================== -->
-    <!-- Intentionally NO sign-up form, NO "create account" link, NO reset-via-signup.
-         Accounts are created only by an admin in the Supabase dashboard. -->
-    <section id="signin-view" class="panel" aria-labelledby="signin-h">
-      <h2 id="signin-h" style="font-size:1.05rem;margin:0 0 14px;">Sign in</h2>
+    <!-- Intentionally NO sign-up form, NO "create account" link. Accounts are
+         created only by an admin in the Supabase dashboard. (unchanged from Phase 2) -->
+    <section id="signin-view" class="panel hidden" aria-labelledby="signin-h">
+      <h2 id="signin-h">Sign in</h2>
       <form id="signin-form" autocomplete="on" novalidate>
-        <div class="field">
+        <div style="margin-bottom:14px;">
           <label for="email">Email</label>
-          <input id="email" name="email" type="email" required autocomplete="username"
-                 inputmode="email" />
+          <input id="email" name="email" type="email" required autocomplete="username" inputmode="email" />
         </div>
-        <div class="field">
+        <div style="margin-bottom:14px;">
           <label for="password">Password</label>
-          <input id="password" name="password" type="password" required
-                 autocomplete="current-password" />
+          <input id="password" name="password" type="password" required autocomplete="current-password" />
         </div>
         <button id="signin-btn" type="submit">Sign in</button>
       </form>
@@ -83,38 +176,88 @@
     </section>
 
     <!-- ===================== AUTHENTICATED VIEW ===================== -->
-    <section id="app-view" class="panel hidden" aria-labelledby="app-h">
-      <div class="row" style="justify-content:space-between;">
-        <h2 id="app-h" style="font-size:1.05rem;margin:0;">Signed in</h2>
-        <button id="signout-btn" class="secondary" type="button">Sign out</button>
+    <section id="app-view" class="hidden">
+      <div class="panel">
+        <div class="row" style="justify-content:space-between;">
+          <div class="row" style="gap:0.6rem;">
+            <span class="muted">Signed in:</span> <span id="who" class="badge"></span>
+            <span class="badge" id="role"></span>
+          </div>
+          <button id="signout-btn" class="secondary" type="button">Sign out</button>
+        </div>
       </div>
-      <div class="stack" style="margin-top:12px;">
-        <div>Email: <span id="who" class="badge"></span></div>
-        <div>Role (from <code>current_user_role()</code>): <span id="role" class="badge"></span></div>
+
+      <!-- Inventory read panel -->
+      <div class="panel">
+        <h2>Inventory</h2>
+        <div class="controls">
+          <div class="control-field">
+            <label for="search">Search</label>
+            <input id="search" type="search" placeholder="name, brand, model, type, category…" autocomplete="off" />
+          </div>
+          <div class="control-field">
+            <label for="f-category">Category</label>
+            <select id="f-category"><option value="">All</option></select>
+          </div>
+          <div class="control-field">
+            <label for="f-brand">Brand</label>
+            <select id="f-brand"><option value="">All</option></select>
+          </div>
+          <div class="control-field">
+            <label for="f-status">Status</label>
+            <select id="f-status"><option value="">All</option></select>
+          </div>
+          <div class="control-field">
+            <label for="f-location">Location</label>
+            <select id="f-location"><option value="">All</option></select>
+          </div>
+        </div>
+        <div class="toolbar">
+          <div class="left">
+            <label class="attn-toggle"><input type="checkbox" id="f-attn" /> Needs Attention only</label>
+            <button id="reset-btn" class="secondary" type="button">Reset</button>
+            <span class="sort-hint">Tip: click a column to sort · shift-click to add a secondary sort</span>
+          </div>
+          <span class="count-pill" id="count-pill">—</span>
+        </div>
+
+        <div id="inv-status" class="msg info hidden" aria-live="polite"></div>
+
+        <div style="margin-top:1rem;">
+          <!-- wide: table -->
+          <div class="view-table">
+            <div class="table-wrap">
+              <table class="inv" aria-label="Inventory items">
+                <thead><tr id="inv-thead"></tr></thead>
+                <tbody id="inv-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+          <!-- narrow: cards -->
+          <div class="view-cards"><div class="cards" id="inv-cards"></div></div>
+          <div id="empty-state" class="empty-state hidden">No items match your search/filters.</div>
+        </div>
       </div>
 
-      <hr />
-
-      <!-- Sign-out proof scaffolding: ONE sample item rendered so we can prove it
-           is wiped from the DOM/memory on sign-out. NOT the Phase 3 read path. -->
-      <h3 style="font-size:.95rem;margin:0 0 6px;">Sample item <span class="muted">(sign-out clears this)</span></h3>
-      <div id="sample-item" class="muted">—</div>
-
-      <hr />
-
-      <!-- (a) proof surface: visible to every role; the DB (RLS) decides. -->
-      <h3 style="font-size:.95rem;margin:0 0 6px;">Edit probe <span class="muted">(DB decides, not the UI)</span></h3>
-      <div class="row">
-        <button id="probe-btn" type="button">Attempt edit (UPDATE items)</button>
+      <!-- Phase-2 diagnostics, preserved (gate-passed evidence) but collapsed. -->
+      <div class="panel">
+        <details class="diag">
+          <summary>Diagnostics (Phase 2 auth/RLS proof scaffolding)</summary>
+          <hr />
+          <h3 style="font-size:.92rem;margin:0 0 6px;">Sample item <span class="muted">(sign-out clears this)</span></h3>
+          <div id="sample-item" class="muted">—</div>
+          <hr />
+          <h3 style="font-size:.92rem;margin:0 0 6px;">Edit probe <span class="muted">(DB decides, not the UI)</span></h3>
+          <div class="row"><button id="probe-btn" class="secondary" type="button">Attempt edit (UPDATE items)</button></div>
+          <div id="probe-msg" class="msg hidden" aria-live="polite"></div>
+        </details>
       </div>
-      <div id="probe-msg" class="msg hidden" aria-live="polite"></div>
     </section>
 
     <div id="status" class="muted" aria-live="polite" style="font-size:.85rem;"></div>
-  </main>
+  </div>
 
-  <!-- supabase-js v2. NOTE (Phase 7): pin an exact version + add SRI. The @2 tag
-       resolves the latest v2 and is verified to load during the Phase 2 proof. -->
+  <!-- supabase-js v2. NOTE (Phase 7): pin an exact version + add SRI. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
     "use strict";
@@ -129,21 +272,17 @@
     });
 
     // In-memory state we MUST be able to clear on sign-out (shared-device safety).
-    let state = { user: null, role: null, sampleItem: null };
+    // `items` is the canonical DB copy; `view` is the derived filtered+sorted list.
+    let state = { user: null, role: null, sampleItem: null, items: [], view: [], sortKeys: [] };
 
     const $ = (id) => document.getElementById(id);
     const signinView = $("signin-view"), appView = $("app-view"), statusEl = $("status");
 
     function setStatus(t) { statusEl.textContent = t || ""; }
-    function showMsg(el, text, kind) {
-      el.className = "msg " + (kind || "info");
-      el.textContent = text;           // textContent => no HTML injection (baseline XSS-safety)
-      el.classList.remove("hidden");
-    }
+    function showMsg(el, text, kind) { el.className = "msg " + (kind||"info"); el.textContent = text; el.classList.remove("hidden"); }
     function hide(el) { el.classList.add("hidden"); }
 
-    // TRUST decisions always use getUser() (server-verified), never getSession()
-    // (which only base64-decodes whatever is in localStorage).
+    // TRUST decisions always use getUser() (server-verified), never getSession().
     async function verifiedUser() {
       const { data, error } = await sb.auth.getUser();
       if (error) return null;
@@ -152,97 +291,295 @@
     async function readRole() {
       const { data, error } = await sb.rpc("current_user_role");
       if (error) return null;
-      return data; // 'viewer' | 'editor' | 'admin' | null
+      return data;
+    }
+
+    // ---- columns for the wide table + multi-sort ----
+    const COLUMNS = [
+      { key:"id",          label:"ID",       type:"num" },
+      { key:"name",        label:"Name",     type:"str" },
+      { key:"brand",       label:"Brand",    type:"str" },
+      { key:"model_pn",    label:"Model/PN", type:"str" },
+      { key:"qty",         label:"Qty",      type:"num" },
+      { key:"device_type", label:"Type",     type:"str" },
+      { key:"category",    label:"Category", type:"str" },
+      { key:"status",      label:"Status",   type:"str" },
+      { key:"location",    label:"Location", type:"str" },
+      { key:"notes",       label:"Notes",    type:"str" },
+    ];
+    // search spans exactly these 5 fields (Phase 3 scope; custom fields = Phase 5).
+    const SEARCH_FIELDS = ["name","brand","model_pn","device_type","category"];
+
+    function statusPillClass(s) {
+      if (s === "Needs Attention") return "pill pill-attn";
+      if (s === "Active/In Use") return "pill pill-active";
+      return "pill pill-other";
+    }
+
+    // distinct, sorted, non-null values for a filter dropdown
+    function distinct(field) {
+      const set = new Set();
+      for (const it of state.items) { const v = it[field]; if (v !== null && v !== undefined && v !== "") set.add(v); }
+      return [...set].sort((a,b) => String(a).localeCompare(String(b), undefined, { sensitivity:"base" }));
+    }
+    function fillSelect(id, field) {
+      const sel = $(id); const cur = sel.value;
+      // keep the "All" option (first child), drop the rest, repopulate via textContent
+      while (sel.children.length > 1) sel.removeChild(sel.lastChild);
+      for (const v of distinct(field)) {
+        const o = document.createElement("option");
+        o.value = String(v); o.textContent = String(v);   // textContent => no injection
+        sel.appendChild(o);
+      }
+      if ([...sel.options].some(o => o.value === cur)) sel.value = cur;
+    }
+
+    function applyView() {
+      const q = $("search").value.trim().toLowerCase();
+      const fc = $("f-category").value, fb = $("f-brand").value, fs = $("f-status").value, fl = $("f-location").value;
+      const attn = $("f-attn").checked;
+
+      let rows = state.items.filter((it) => {
+        if (fc && it.category !== fc) return false;
+        if (fb && it.brand !== fb) return false;
+        if (fs && it.status !== fs) return false;
+        if (fl && it.location !== fl) return false;
+        if (attn && it.status !== "Needs Attention") return false;
+        if (q) {
+          const hay = SEARCH_FIELDS.map((f) => (it[f] == null ? "" : String(it[f]).toLowerCase())).join("  ");
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      // multi-column stable sort
+      if (state.sortKeys.length) {
+        rows = rows.slice().sort((a, b) => {
+          for (const { key, dir } of state.sortKeys) {
+            const col = COLUMNS.find((c) => c.key === key);
+            let av = a[key], bv = b[key];
+            let cmp;
+            if (col && col.type === "num") {
+              av = (av == null ? null : Number(av)); bv = (bv == null ? null : Number(bv));
+              if (av == null && bv == null) cmp = 0;
+              else if (av == null) cmp = 1;        // nulls last
+              else if (bv == null) cmp = -1;
+              else cmp = av - bv;
+            } else {
+              const as = (av == null ? "" : String(av)), bs = (bv == null ? "" : String(bv));
+              if (as === "" && bs === "") cmp = 0;
+              else if (as === "") cmp = 1;
+              else if (bs === "") cmp = -1;
+              else cmp = as.localeCompare(bs, undefined, { sensitivity:"base", numeric:true });
+            }
+            if (cmp !== 0) return dir === "desc" ? -cmp : cmp;
+          }
+          return 0;
+        });
+      }
+      state.view = rows;
+      renderRows();
+    }
+
+    function renderHead() {
+      const tr = $("inv-thead"); tr.replaceChildren();
+      for (const col of COLUMNS) {
+        const th = document.createElement("th");
+        th.textContent = col.label;             // textContent (labels are static, but keep the discipline)
+        const sk = state.sortKeys.find((s) => s.key === col.key);
+        if (sk) {
+          const span = document.createElement("span");
+          span.className = "arrow";
+          const idx = state.sortKeys.length > 1 ? String(state.sortKeys.indexOf(sk) + 1) : "";
+          span.textContent = (sk.dir === "desc" ? " ▼" : " ▲") + idx;
+          th.appendChild(span);
+        }
+        th.addEventListener("click", (e) => onSort(col.key, e.shiftKey));
+        tr.appendChild(th);
+      }
+    }
+
+    function td(text, cls) {
+      const c = document.createElement("td");
+      if (cls) c.className = cls;
+      c.textContent = (text == null || text === "") ? "—" : String(text);   // XSS-safe + null dash
+      return c;
+    }
+
+    function renderRows() {
+      const tbody = $("inv-tbody"); tbody.replaceChildren();
+      const cards = $("inv-cards"); cards.replaceChildren();
+      const empty = $("empty-state");
+
+      $("count-pill").textContent =
+        state.view.length === state.items.length
+          ? state.items.length + " items"
+          : state.view.length + " of " + state.items.length + " items";
+
+      if (state.view.length === 0) { empty.classList.remove("hidden"); return; }
+      empty.classList.add("hidden");
+
+      // wide: table rows
+      for (const it of state.view) {
+        const tr = document.createElement("tr");
+        tr.appendChild(td(it.id, "cell-id num"));
+        tr.appendChild(td(it.name, "cell-name"));
+        tr.appendChild(td(it.brand));
+        tr.appendChild(td(it.model_pn));
+        tr.appendChild(td(it.qty, "num"));
+        tr.appendChild(td(it.device_type));
+        tr.appendChild(td(it.category));
+        // status as a pill
+        const stTd = document.createElement("td");
+        if (it.status) {
+          const span = document.createElement("span");
+          span.className = statusPillClass(it.status);
+          span.textContent = it.status;            // XSS-safe
+          stTd.appendChild(span);
+        } else { stTd.textContent = "—"; }
+        tr.appendChild(stTd);
+        tr.appendChild(td(it.location));
+        tr.appendChild(td(it.notes, "cell-notes"));
+        tbody.appendChild(tr);
+      }
+
+      // narrow: cards
+      for (const it of state.view) {
+        const card = document.createElement("div"); card.className = "card";
+        const top = document.createElement("div"); top.className = "card-top";
+        const left = document.createElement("div");
+        const nm = document.createElement("div"); nm.className = "card-name";
+        nm.textContent = (it.name == null || it.name === "") ? "(unnamed)" : String(it.name);
+        const sub = document.createElement("div"); sub.className = "card-sub";
+        sub.textContent = "#" + it.id + (it.brand ? " · " + it.brand : "") + (it.model_pn ? " · " + it.model_pn : "");
+        left.appendChild(nm); left.appendChild(sub);
+        const stWrap = document.createElement("div");
+        if (it.status) { const sp = document.createElement("span"); sp.className = statusPillClass(it.status); sp.textContent = it.status; stWrap.appendChild(sp); }
+        top.appendChild(left); top.appendChild(stWrap);
+        card.appendChild(top);
+
+        const kv = document.createElement("div"); kv.className = "kv";
+        const pair = (k, v) => {
+          const kd = document.createElement("div"); kd.className = "k"; kd.textContent = k;
+          const vd = document.createElement("div"); vd.textContent = (v == null || v === "") ? "—" : String(v);
+          kv.appendChild(kd); kv.appendChild(vd);
+        };
+        pair("Qty", it.qty); pair("Type", it.device_type); pair("Category", it.category); pair("Location", it.location);
+        card.appendChild(kv);
+
+        if (it.notes) { const nd = document.createElement("div"); nd.className = "card-notes"; nd.textContent = String(it.notes); card.appendChild(nd); }
+        cards.appendChild(card);
+      }
+    }
+
+    function onSort(key, additive) {
+      const existing = state.sortKeys.find((s) => s.key === key);
+      if (additive) {
+        if (existing) existing.dir = existing.dir === "asc" ? "desc" : "asc";
+        else state.sortKeys.push({ key, dir:"asc" });
+      } else {
+        if (existing && state.sortKeys.length === 1) existing.dir = existing.dir === "asc" ? "desc" : "asc";
+        else state.sortKeys = [{ key, dir:"asc" }];
+      }
+      renderHead();
+      applyView();
+    }
+
+    function wireControls() {
+      $("search").addEventListener("input", applyView);
+      for (const id of ["f-category","f-brand","f-status","f-location"]) $(id).addEventListener("change", applyView);
+      $("f-attn").addEventListener("change", applyView);
+      $("reset-btn").addEventListener("click", () => {
+        $("search").value = ""; $("f-attn").checked = false;
+        for (const id of ["f-category","f-brand","f-status","f-location"]) $(id).value = "";
+        state.sortKeys = []; renderHead(); applyView();
+      });
+    }
+
+    async function loadInventory() {
+      const inv = $("inv-status");
+      inv.classList.remove("hidden"); showMsg(inv, "Loading inventory…", "info");
+      // free-tier cold-start can be slow; one gentle retry with a "waking up" note.
+      let data, error;
+      for (let attempt = 0; attempt < 2; attempt++) {
+        ({ data, error } = await sb.from("items")
+          .select("id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,version,created_at,updated_at")
+          .order("id", { ascending: true }));
+        if (!error) break;
+        showMsg(inv, "Backend waking up… retrying", "info");
+        await new Promise((r) => setTimeout(r, 1500));
+      }
+      if (error) { showMsg(inv, "Could not load inventory: " + error.message, "bad"); return; }
+      state.items = Array.isArray(data) ? data : [];
+      // populate filter dropdowns from the data
+      fillSelect("f-category","category"); fillSelect("f-brand","brand");
+      fillSelect("f-status","status"); fillSelect("f-location","location");
+      state.sortKeys = [{ key:"id", dir:"asc" }];
+      renderHead();
+      applyView();
+      inv.classList.add("hidden");
+
+      // diagnostics sample item (Phase 2 scaffolding)
+      state.sampleItem = state.items[0] || null;
+      $("sample-item").textContent = state.sampleItem
+        ? ("#" + state.sampleItem.id + " — " + (state.sampleItem.name || "(unnamed)") + " [" + (state.sampleItem.status || "—") + "]")
+        : "(no items visible)";
     }
 
     async function render() {
       setStatus("Connecting…");
       const user = await verifiedUser();
       if (!user) { showSignIn(); setStatus(""); return; }
-
       state.user = user;
       state.role = await readRole();
-
       $("who").textContent = user.email || "(no email)";
-      $("role").textContent = state.role || "(no role)";
-
-      // Sign-out-proof scaffolding: load exactly ONE item (authenticated SELECT).
-      const { data: items, error } = await sb.from("items").select("id,name,status").limit(1);
-      if (!error && items && items.length) {
-        state.sampleItem = items[0];
-        $("sample-item").textContent =
-          "#" + items[0].id + " — " + (items[0].name || "(unnamed)") + " [" + (items[0].status || "—") + "]";
-      } else {
-        state.sampleItem = null;
-        $("sample-item").textContent = "(no items visible)";
-      }
-
-      hide(signinView);
-      appView.classList.remove("hidden");
-      hide($("probe-msg"));
+      $("role").textContent = "role: " + (state.role || "(none)");
+      hide(signinView); appView.classList.remove("hidden"); hide($("probe-msg"));
       setStatus("");
+      await loadInventory();
     }
 
-    function showSignIn() {
-      appView.classList.add("hidden");
-      signinView.classList.remove("hidden");
-    }
+    function showSignIn() { appView.classList.add("hidden"); signinView.classList.remove("hidden"); }
 
     async function onSignIn(e) {
-      e.preventDefault();
-      hide($("signin-msg"));
-      const email = $("email").value.trim();
-      const password = $("password").value;
-      $("signin-btn").disabled = true;
-      setStatus("Signing in…");
+      e.preventDefault(); hide($("signin-msg"));
+      const email = $("email").value.trim(); const password = $("password").value;
+      $("signin-btn").disabled = true; setStatus("Signing in…");
       const { error } = await sb.auth.signInWithPassword({ email, password });
-      $("signin-btn").disabled = false;
-      setStatus("");
+      $("signin-btn").disabled = false; setStatus("");
       if (error) { showMsg($("signin-msg"), "Sign-in failed: " + error.message, "bad"); return; }
-      $("password").value = "";        // do not leave the password in the DOM
+      $("password").value = "";
       await render();
     }
 
-    // (a) The edit probe: attempt an UPDATE on the sample item. The DB (RLS) is the
-    // gate — a Viewer gets 0 rows back (refused); an Editor/Admin gets the updated row.
+    // (Phase-2 diagnostics) attempt an UPDATE; the DB (RLS) is the gate.
     async function onProbe() {
       hide($("probe-msg"));
       if (!state.sampleItem) { showMsg($("probe-msg"), "No sample item to probe.", "info"); return; }
       setStatus("Attempting UPDATE…");
-      const stamp = new Date().toISOString();
-      const { data, error } = await sb
-        .from("items")
-        .update({ notes: "probe @ " + stamp })
-        .eq("id", state.sampleItem.id)
-        .select("id,notes");
+      const { data, error } = await sb.from("items")
+        .update({ notes: state.sampleItem.notes }).eq("id", state.sampleItem.id).select("id");
       setStatus("");
-      if (error) {
-        showMsg($("probe-msg"),
-          "DB REFUSED the edit (role=" + state.role + "): " + error.message, "bad");
-        return;
-      }
-      if (!data || data.length === 0) {
-        showMsg($("probe-msg"),
-          "DB REFUSED the edit (role=" + state.role + "): 0 rows updated — RLS filtered it out.", "bad");
-        return;
-      }
-      showMsg($("probe-msg"),
-        "DB ALLOWED the edit (role=" + state.role + "): updated row #" + data[0].id + ".", "ok");
+      if (error) { showMsg($("probe-msg"), "DB REFUSED the edit (role=" + state.role + "): " + error.message, "bad"); return; }
+      if (!data || data.length === 0) { showMsg($("probe-msg"), "DB REFUSED the edit (role=" + state.role + "): 0 rows — RLS filtered it.", "bad"); return; }
+      showMsg($("probe-msg"), "DB ALLOWED the edit (role=" + state.role + "): row #" + data[0].id + ".", "ok");
     }
 
-    // (c) Sign out: end the session AND clear all in-memory + rendered data.
+    // Sign out: end the session AND clear ALL in-memory + rendered data (shared-device).
     async function onSignOut() {
       setStatus("Signing out…");
       await sb.auth.signOut();
-      // 1) wipe in-memory state
-      state = { user: null, role: null, sampleItem: null };
-      // 2) wipe rendered data from the DOM
-      $("who").textContent = "";
-      $("role").textContent = "";
+      state = { user:null, role:null, sampleItem:null, items:[], view:[], sortKeys:[] };
+      $("who").textContent = ""; $("role").textContent = "";
       $("sample-item").textContent = "—";
-      hide($("probe-msg"));
-      $("probe-msg").textContent = "";
-      // 3) confirm the session really ended (verified, not just local)
+      $("inv-tbody").replaceChildren(); $("inv-cards").replaceChildren();
+      $("inv-thead").replaceChildren();
+      $("count-pill").textContent = "—";
+      hide($("probe-msg")); $("probe-msg").textContent = "";
+      $("search").value = ""; $("f-attn").checked = false;
+      for (const id of ["f-category","f-brand","f-status","f-location"]) {
+        const sel = $(id); while (sel.children.length > 1) sel.removeChild(sel.lastChild); sel.value = "";
+      }
       const stillUser = await verifiedUser();
       showSignIn();
       setStatus(stillUser ? "WARNING: session still active!" : "Signed out.");
@@ -252,7 +589,8 @@
       $("signin-form").addEventListener("submit", onSignIn);
       $("probe-btn").addEventListener("click", onProbe);
       $("signout-btn").addEventListener("click", onSignOut);
-      render(); // restores an existing session if present, else shows sign-in
+      wireControls();
+      render();
     });
   </script>
 </body>
