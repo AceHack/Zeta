@@ -1,0 +1,14 @@
+[package]
+name = "zeta-core-tri-boolean"
+version = "0.1.0"
+edition = "2024"
+description = "Tri-boolean digital qubit (B-0944) -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the summonable-BFT cross-language consensus."
+license = "Apache-2.0"
+publish = false
+
+# Zero external dependencies (supply-chain doctrine).
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
