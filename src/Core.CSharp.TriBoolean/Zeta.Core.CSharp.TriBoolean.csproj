@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Zeta.Core.CSharp.TriBoolean</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.TriBoolean</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Zero external dependencies in the production library (supply-chain doctrine). -->
+
+</Project>
