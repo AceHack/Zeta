@@ -904,6 +904,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0948](backlog/P2/B-0948-workflow-dus-first-class-bft-oracle-compiler-summons-and-observe-keystone-research-then-build-aaron-2026-05-31.md)** Workflow DUs with first-class BFT oracle/compiler summons + observe.ts keystone -- research-to-get-clean then build
 - [ ] **[B-0951](backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)** Git-native eventually-consistent text indexes (sorted/inverted/graph) + the git-native Hindsight storage interface
 - [ ] **[B-0952](backlog/P2/B-0952-contribute-back-dora-metrics-small-first-trust-building-external-contribution-strategy-not-take-only-aaron-2026-05-31.md)** Contribute-back DORA metrics + small-first trust-building external-contribution strategy (not-take-only good-citizen, made measurable)
+- [ ] **[B-0953](backlog/P2/B-0953-git-v2-handshake-fsharp-looks-like-git-negotiates-up-to-dbsp-retraction-algebra-same-objects-agent-speed-upstream-aaron-2026-05-31.md)** Git-V2 handshake — F# looks-like-git, negotiates up to a DBSP/retraction-algebra protocol at agent-coordination speed; same objects both views; upstream the primitives to git
 
 ## P3 — convenience / deferred
 
