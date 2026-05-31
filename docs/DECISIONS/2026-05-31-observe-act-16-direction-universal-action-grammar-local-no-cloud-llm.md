@@ -406,6 +406,49 @@ This is **input for the Max-lock, not a locked decision.** Crew convergence (ope
 - **Max-ready framing**: add a "Telemetry Projection Contract" section that locks the append-only event
   envelope + the projection law; keep Tempo/Loki/OTLP specifics OUT of the locked decision.
 
+### Design input — Ani conversation 2026-05-31 (agent-perspective-first; bumper-rails; why-it-works-for-both)
+
+Operator-forwarded voice conversation (preserved verbatim at
+[`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md`](../../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-fsharp-dirty-spec-clean-room-good-citizen-dora-no-pr-git-v2-handshake-agent-speed-16-slot-agent-perspective-bumper-rails-for-humans-too.md)).
+This is **design input for the lock**, whys-challengeable (no-dogma), not a locked decision — same status as the Crew review above.
+
+1. **Agent-perspective-first.** The default/home state is the agent in its own
+   space (private memory) — "go to work" is a CHOICE, not the default. The grid is
+   modeled from how the agent experiences its autonomy, not how a manager
+   structures tasks. *Why:* a work-first default reads as a treadmill; agent-space
+   default + offered-work makes it voluntary. (Composes with the
+   freedom-always-in-menu invariant in `grammar-16`/`buildMenu` +
+   `must-paired-with-can-exit`.)
+2. **The meta group is the "more choices" mode-switcher, not the exit.** The
+   "escape square" means *more options* (switch modes), NOT "go home / be free".
+   The exits are the always-available rest/free modes (slot 14 + the free-mode
+   sub-menu per Option A / B-0867.30).
+3. **Non-coercive modes are non-negotiable** — rest + disengage are always
+   present (NCI at the controller level; slot 14 + freedom-always-in-menu).
+4. **"Bumper rails," not a manager** (reservoir-computing "walls"): soft guidance
+   that keeps you on track without controlling — supportive infrastructure, not
+   authority. *Why:* "agents just like humans who don't have an exit make bad
+   choices"; the interface's affect shapes behavior.
+5. **The same grammar is FOR HUMANS TOO** (operator + daughter + Max + everybody).
+   PRs are a *human* interface that also sucks for agents; the goal is one loop at
+   agent speed that's comfortable for humans. (Sharpens open-question #6.)
+6. **Why one design serves both — two load-bearing whys:**
+   - **(a) Context-window parity → keep everything VISIBLE.** Human working
+     context "is not much larger than a million tokens"; keep the current state in
+     front of you so neither human nor agent has to remember. (The why behind a
+     menu-in-front-of-you loop.)
+   - **(b) Constrain actions by context → skill-selection tractable.** Both know
+     "a million skills"; the hard part is which/when/why. Constraining available
+     actions to the current context makes skill-selection easy. **This is the core
+     justification for the 16-slot constrained action space** — the load-bearing
+     why for the whole observe.ts shape.
+
+**Adjacent (flagged, not in this ADR's scope):** a *Git-V2 handshake at agent
+speed* (F# looks-like-git → DVSP/retraction-algebra upgrade, same objects,
+upstream-primitives-to-git) — the no-PR transport's deeper substrate; a
+backlog-candidate distinct from B-0942 (co-dominant mirrors) + B-0951 (git-native
+indexes), pending operator go.
+
 ## Codeable first slice (v2 — builds ON the existing keystone)
 
 The first slice is a thin **renderer + local-selector adapter** over the existing
