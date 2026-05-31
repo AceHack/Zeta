@@ -1,0 +1,145 @@
+# .github/workflows/macos-install-sh-test.yml
+#
+# macOS install.sh shield (B-0857 cross-OS install parity — the macOS lane).
+# Runs tools/setup/install.sh on a real macOS runner, which dispatches to
+# macos.sh (Homebrew + brew ollama + mise toolchain + lean + jars + the
+# local-LLM model pull via common/local-llm.sh). Completes the install-shield
+# matrix — we already cover ubuntu/nixos/windows/wsl; this closes the mac gap:
+#   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu, Docker)
+#   - docker-nixos-install-sh-test    (install.sh on NixOS userspace, Docker)
+#   - docker-windows-install-ps1-test (install.ps1 on Windows Server Core, Docker)
+#   - wsl-install-sh-test             (install.sh in WSL2 Ubuntu on a Windows host)
+#   - macos-install-sh-test           (install.sh on macOS — THIS file)
+#
+# Cost (operator 2026-05-31): GitHub Actions — including macOS runners — is FREE
+# for public repos, and Lucent-Financial-Group/Zeta is public. So this shield
+# costs nothing (the ~10× macOS-minute multiplier only applies to PRIVATE repos).
+# Pattern proven in the SQLSharp repo's CI (macos-latest toolchain matrix).
+#
+# macOS cannot be containerized (no Linux-style container of the Darwin userland;
+# GitHub's jobs.container: is Linux-runners-only), so — unlike the Linux shields —
+# there is NO Docker/image lane for mac. This native-on-runner shield IS the mac
+# test surface (structurally like wsl-install-sh-test: run install.sh directly).
+#
+# Like the other shields this runs the FULL install.sh including the local-LLM
+# core primitive (brew ollama + ~398MB qwen2.5:0.5b model pull) and ASSERTS it
+# (per automated-tests-are-the-shield-assert-dont-skip.md), plus the idempotency
+# 2nd-run assert (a re-run must reuse the on-disk model, not re-pull).
+#
+# Pins (dep-pin-search-first, GitHub API 2026-05-31): actions/checkout v6.0.2
+# (SHA matches the other shields). Runner pinned to macos-15 (Sequoia, arm64 —
+# the current macos-latest), NOT macos-latest, matching the repo's runner-pin
+# discipline (ubuntu-24.04 / windows-2025); bump: GitHub's runner-images repo.
+#
+# Security: runner pinned (macos-15, NOT -latest); third-party actions SHA-pinned
+# with trailing # vX.Y.Z; permissions contents: read; concurrency cancel-in-progress
+# for PRs; no github.event.* values interpolated into run: lines.
+
+name: macos-install-sh-test
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      # Install dispatcher + per-OS scripts + shared library (install.sh -> macos.sh -> common/*)
+      - "tools/setup/**"
+      # Pinned runtime versions read by mise — the IDENTICAL file Unix uses (symmetric)
+      - ".mise.toml"
+      # This workflow file itself
+      - ".github/workflows/macos-install-sh-test.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/setup/**"
+      - ".mise.toml"
+      - ".github/workflows/macos-install-sh-test.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: macos-install-sh-test-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  macos-test:
+    name: macos-install-sh-test
+    runs-on: macos-15
+    # Cold run: brew ollama + mise toolchain (dotnet/python/java/bun/uv) + lean +
+    # jars + ~398MB model pull. Matches the other shields' 40-min bound, +5 slack.
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run install.sh (Darwin -> macos.sh)
+        run: |
+          set -euo pipefail
+          echo "=== macOS install.sh test ==="
+          sw_vers || true
+          uname -sm
+          # actions/checkout on macOS preserves the committed +x bit (APFS, no /mnt
+          # 9p quirk), so invoke the entrypoint DIRECTLY via its shebang — the real
+          # user-invocation path, not `bash …` which would mask a lost +x bit.
+          test -x tools/setup/install.sh || { echo "install.sh not executable after checkout (+x not preserved)"; exit 1; }
+          echo "=== running ./tools/setup/install.sh (direct, via shebang) ==="
+          ./tools/setup/install.sh
+          echo "=== install.sh completed (exit 0) ==="
+
+      - name: Stage toolchain PATH for later steps
+        # install.sh's in-process PATH exports do NOT persist across workflow steps;
+        # publish the install dirs to $GITHUB_PATH so the assert steps see bun (mise)
+        # + mise shims. ollama (brew) is already on the runner's default PATH.
+        run: |
+          {
+            echo "$HOME/.local/share/mise/shims"
+            echo "$HOME/.bun/bin"
+            echo "$HOME/.local/bin"
+          } >> "$GITHUB_PATH"
+
+      - name: Validate local-LLM primitive
+        run: |
+          set -euo pipefail
+          command -v ollama
+          # The daemon doesn't persist from the install step's subshell; start it here,
+          # assert the pinned model, then run the REAL chooseIndex probe + mock tests.
+          (ollama serve >/tmp/ollama.log 2>&1 &)
+          for _ in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:11434/api/version >/dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://127.0.0.1:11434/api/version
+          MODEL="$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')"
+          echo "asserting model: $MODEL"
+          ollama list
+          ollama list | awk 'NR>1 {print $1}' | grep -qx "$MODEL"
+          bun test tools/accelerator/local-llm.test.ts
+          bun tools/accelerator/validate-local-llm.ts --root "$PWD"
+
+      - name: Idempotency / 2nd-run assert
+        # A re-run on an already-provisioned mac must NOT redo work — in particular
+        # it must NOT re-pull the ~398MB model. Run install.sh a 2nd time, then
+        # ASSERT the local-LLM step reports the model already-present + zero re-pull
+        # (per automated-tests-are-the-shield-assert-dont-skip.md — assert the
+        # positive, don't merely tolerate). Capture install.sh's exit EXPLICITLY
+        # (no pipe — so the gate is install.sh's status, not tee's; mirrors the
+        # ubuntu shield's Copilot-#6240 fix).
+        run: |
+          set -euo pipefail
+          MODEL="$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')"
+          echo "=== 2nd install.sh run (idempotency) ==="
+          if ! ./tools/setup/install.sh > /tmp/install-2nd.log 2>&1; then
+            cat /tmp/install-2nd.log
+            echo "FAIL: 2nd install.sh run exited non-zero (a re-run must succeed cleanly)"; exit 1
+          fi
+          cat /tmp/install-2nd.log
+          echo "=== idempotency asserts ==="
+          grep -qF "local-llm model ${MODEL} already present" /tmp/install-2nd.log \
+            || { echo "FAIL: 2nd run did not report '${MODEL} already present' — idempotency hole"; exit 1; }
+          if grep -qF "pulling ${MODEL}" /tmp/install-2nd.log || grep -qF "pulling manifest" /tmp/install-2nd.log; then
+            echo "FAIL: 2nd run RE-PULLED the model — caching/idempotency regression"; exit 1
+          fi
+          echo "OK: 2nd run idempotent — ${MODEL} already present, zero re-pull"
