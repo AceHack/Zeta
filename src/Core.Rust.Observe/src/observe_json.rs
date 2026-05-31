@@ -29,10 +29,16 @@ fn req_bool(j: &Json, key: &str) -> Result<bool, MapError> {
         .ok_or_else(|| MapError(format!("key '{key}' is not a bool")))
 }
 
-/// Optional bool: absent ≡ `fallback`. Used for `needsNewAction` (decompose
-/// children omit it; absent ≡ false — the value the reducer sets).
-fn bool_or(j: &Json, key: &str, fallback: bool) -> bool {
-    j.get(key).and_then(Json::as_bool).unwrap_or(fallback)
+/// Optional bool: absent ≡ `fallback`, but a key present with a non-bool value is a
+/// shape error (not silently coerced to the fallback). Used for `needsNewAction`
+/// (decompose children omit it; absent ≡ false — the value the reducer sets).
+fn opt_bool(j: &Json, key: &str, fallback: bool) -> Result<bool, MapError> {
+    match j.get(key) {
+        None => Ok(fallback),
+        Some(v) => v
+            .as_bool()
+            .ok_or_else(|| MapError(format!("key '{key}' is present but not a bool"))),
+    }
 }
 
 /// Map a JSON object → [`BacklogItem`]. `needsNewAction` is optional (≡ false).
@@ -42,7 +48,7 @@ pub fn parse_item(j: &Json) -> Result<BacklogItem, MapError> {
         title: req_str(j, "title")?,
         ready: req_bool(j, "ready")?,
         ambiguous: req_bool(j, "ambiguous")?,
-        needs_new_action: bool_or(j, "needsNewAction", false),
+        needs_new_action: opt_bool(j, "needsNewAction", false)?,
     })
 }
 

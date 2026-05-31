@@ -3,14 +3,21 @@
 //! compilers don't lie"). The algebra replays the shared golden-vector fixture
 //! (tools/observe/golden-vectors.json) and must value-match the TS reference.
 //!
-//! JSON ingestion is behind the [`json::JsonParser`] trait: the default
-//! [`json::ZetaJsonParser`] is a small zero-dependency parser; an optional
-//! serde_json-backed [`json::SerdeJsonParser`] (feature `serde`) lets us test ours
-//! against serde (differential — "not flying blind") and lets serde drop-in-replace
-//! ours in systems already on serde.
+//! JSON ingestion is hexagonal (ports & adapters). The forward-only
+//! [`json_reader::JsonReader`] is the streaming PRIMITIVE (Utf8JsonReader model:
+//! single-pass, zero-copy, constant memory, depth-capped — safe for untrusted
+//! input). It tokenizes without building a DOM, but reads from a COMPLETE in-memory
+//! buffer (`&str`); truly-unbounded/socket streaming is deferred to a `BufRead`-refill
+//! variant (B-0867.29). The DOM [`json::ZetaJsonParser`] is built on top of it
+//! (trusted-input only — whole-tree materialization is a DoS vector). An optional
+//! serde_json-backed
+//! [`json::SerdeJsonParser`] (feature `serde`) is the ADAPTER: serde conforms to our
+//! [`json::JsonParser`] trait, letting us differentially test ours against serde
+//! ("not flying blind") and letting serde drop-in-replace ours.
 
 pub mod algebra;
 pub mod json;
+pub mod json_reader;
 pub mod observe_json;
 pub mod types;
 

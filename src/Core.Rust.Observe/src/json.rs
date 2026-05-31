@@ -4,8 +4,10 @@
 //! PORT — the rest of the crate (mapping + algebra) depends only on these, never on
 //! any external library's value type. External deps ADAPT INTO our port:
 //!
-//! - [`ZetaJsonParser`] — our own small, zero-dependency, idiomatic recursive-descent
-//!   parser; the production default (supply-chain doctrine: zero external deps).
+//! - [`ZetaJsonParser`] — our own zero-dependency DOM parser, **built on top of the
+//!   forward-only [`JsonReader`](crate::json_reader::JsonReader)** (one tokenizer;
+//!   the reader is the primitive, the DOM is a consumer of it). Production default
+//!   for TRUSTED input only (see the DoS note on the struct).
 //! - [`SerdeJsonParser`] (feature `serde`) — the ADAPTER: it wraps serde_json and
 //!   maps `serde_json::Value` → our [`Json`]. serde conforms to OUR interface, not the
 //!   reverse. This lets us (a) differentially test ours against serde — "not flying
@@ -15,10 +17,13 @@
 //! type, so the crate never *depends on* serde's interface — only its implementation,
 //! behind our port. The port evolves as we learn; improvements flow back upstream.
 //!
-//! Day-one the [`ZetaJsonParser`] is intentionally minimal (owned `String` values).
-//! A low-alloc / zero-copy borrowing variant is the eventual goal, not day-one.
+//! For untrusted or unbounded/streaming input, prefer the forward-only
+//! [`JsonReader`](crate::json_reader::JsonReader) directly — it never materializes
+//! the whole document (constant memory, bounded by nesting depth).
 
 use std::fmt;
+
+use crate::json_reader::{JsonReader, JsonToken};
 
 /// A parsed JSON value (our minimal AST). Objects preserve insertion order.
 #[derive(Debug, Clone, PartialEq)]
@@ -71,6 +76,12 @@ pub struct JsonError {
     pub position: usize,
 }
 
+impl JsonError {
+    fn new(message: &str) -> Self {
+        JsonError { message: message.to_string(), position: 0 }
+    }
+}
+
 impl fmt::Display for JsonError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "JSON parse error at byte {}: {}", self.position, self.message)
@@ -86,247 +97,86 @@ pub trait JsonParser {
     fn parse(&self, input: &str) -> Result<Json, JsonError>;
 }
 
-/// The zero-dependency, hand-rolled parser (production default).
+/// Zero-dependency DOM parser, built on the forward-only
+/// [`JsonReader`](crate::json_reader::JsonReader).
+///
+/// SECURITY — TRUSTED INPUT ONLY. A DOM parse materializes the ENTIRE document in
+/// memory and recurses on nesting depth, so a hostile payload (very large or deeply
+/// nested) can exhaust memory or the stack — a denial-of-service vector. Use the DOM
+/// only when the input is trusted. For untrusted or unbounded/streaming input, use
+/// the forward-only [`JsonReader`](crate::json_reader::JsonReader) directly (constant
+/// memory, bounded by nesting depth). (Operator observation 2026-05-31: a DOM model
+/// "is susceptible to DOS attacks ... only use it in trusted situations" and "the dom
+/// one can be built on the forward pass only one".)
 #[derive(Debug, Clone, Copy, Default)]
 pub struct ZetaJsonParser;
 
 impl JsonParser for ZetaJsonParser {
     fn parse(&self, input: &str) -> Result<Json, JsonError> {
-        let mut p = Cursor::new(input);
-        p.skip_ws();
-        let value = p.parse_value()?;
-        p.skip_ws();
-        if p.pos != p.bytes.len() {
-            return Err(p.err("trailing characters after JSON value"));
+        let mut reader = JsonReader::new(input);
+        let first = reader.read()?.ok_or_else(|| JsonError::new("empty input"))?;
+        let value = build_value(&mut reader, first)?;
+        // The reader yields None at EOF and errors on trailing content; confirm EOF.
+        match reader.read()? {
+            None => Ok(value),
+            Some(_) => Err(JsonError::new("trailing tokens after JSON value")),
         }
-        Ok(value)
     }
 }
 
-/// Internal byte cursor for the recursive-descent parse. Private — not API.
-struct Cursor<'a> {
-    bytes: &'a [u8],
-    pos: usize,
-}
-
-impl<'a> Cursor<'a> {
-    fn new(input: &'a str) -> Self {
-        Cursor { bytes: input.as_bytes(), pos: 0 }
-    }
-
-    fn err(&self, msg: &str) -> JsonError {
-        JsonError { message: msg.to_string(), position: self.pos }
-    }
-
-    fn peek(&self) -> Option<u8> {
-        self.bytes.get(self.pos).copied()
-    }
-
-    fn skip_ws(&mut self) {
-        while let Some(b) = self.peek() {
-            if matches!(b, b' ' | b'\t' | b'\n' | b'\r') {
-                self.pos += 1;
-            } else {
-                break;
-            }
-        }
-    }
-
-    fn expect(&mut self, b: u8, what: &str) -> Result<(), JsonError> {
-        if self.peek() == Some(b) {
-            self.pos += 1;
-            Ok(())
-        } else {
-            Err(self.err(what))
-        }
-    }
-
-    fn parse_value(&mut self) -> Result<Json, JsonError> {
-        self.skip_ws();
-        match self.peek() {
-            Some(b'{') => self.parse_object(),
-            Some(b'[') => self.parse_array(),
-            Some(b'"') => Ok(Json::Str(self.parse_string()?)),
-            Some(b't') | Some(b'f') => self.parse_bool(),
-            Some(b'n') => self.parse_null(),
-            Some(b) if b == b'-' || b.is_ascii_digit() => self.parse_number(),
-            Some(_) => Err(self.err("unexpected character")),
-            None => Err(self.err("unexpected end of input")),
-        }
-    }
-
-    fn parse_object(&mut self) -> Result<Json, JsonError> {
-        self.expect(b'{', "expected '{'")?;
-        let mut fields = Vec::new();
-        self.skip_ws();
-        if self.peek() == Some(b'}') {
-            self.pos += 1;
-            return Ok(Json::Object(fields));
-        }
-        loop {
-            self.skip_ws();
-            let key = self.parse_string()?;
-            self.skip_ws();
-            self.expect(b':', "expected ':'")?;
-            let value = self.parse_value()?;
-            fields.push((key, value));
-            self.skip_ws();
-            match self.peek() {
-                Some(b',') => self.pos += 1,
-                Some(b'}') => {
-                    self.pos += 1;
-                    break;
-                }
-                _ => return Err(self.err("expected ',' or '}'")),
-            }
-        }
-        Ok(Json::Object(fields))
-    }
-
-    fn parse_array(&mut self) -> Result<Json, JsonError> {
-        self.expect(b'[', "expected '['")?;
-        let mut items = Vec::new();
-        self.skip_ws();
-        if self.peek() == Some(b']') {
-            self.pos += 1;
-            return Ok(Json::Array(items));
-        }
-        loop {
-            let value = self.parse_value()?;
-            items.push(value);
-            self.skip_ws();
-            match self.peek() {
-                Some(b',') => self.pos += 1,
-                Some(b']') => {
-                    self.pos += 1;
-                    break;
-                }
-                _ => return Err(self.err("expected ',' or ']'")),
-            }
-        }
-        Ok(Json::Array(items))
-    }
-
-    fn parse_string(&mut self) -> Result<String, JsonError> {
-        self.expect(b'"', "expected '\"'")?;
-        let mut out: Vec<u8> = Vec::new();
-        loop {
-            match self.peek() {
-                None => return Err(self.err("unterminated string")),
-                Some(b'"') => {
-                    self.pos += 1;
-                    break;
-                }
-                Some(b'\\') => {
-                    self.pos += 1;
-                    match self.peek() {
-                        Some(b'"') => out.push(b'"'),
-                        Some(b'\\') => out.push(b'\\'),
-                        Some(b'/') => out.push(b'/'),
-                        Some(b'b') => out.push(0x08),
-                        Some(b'f') => out.push(0x0C),
-                        Some(b'n') => out.push(b'\n'),
-                        Some(b'r') => out.push(b'\r'),
-                        Some(b't') => out.push(b'\t'),
-                        Some(b'u') => {
-                            self.pos += 1;
-                            self.push_unicode_escape(&mut out)?;
-                            continue; // push_unicode_escape advances pos past the digits
-                        }
-                        _ => return Err(self.err("invalid escape")),
-                    }
-                    self.pos += 1;
-                }
-                Some(b) => {
-                    out.push(b);
-                    self.pos += 1;
-                }
-            }
-        }
-        String::from_utf8(out).map_err(|_| self.err("invalid utf-8 in string"))
-    }
-
-    /// Decode a `\uXXXX` (possibly a surrogate pair) and append its UTF-8 bytes.
-    /// Assumes the leading `\u` has been consumed up to (but not including) the hex.
-    fn push_unicode_escape(&mut self, out: &mut Vec<u8>) -> Result<(), JsonError> {
-        let hi = self.parse_hex4()?;
-        let ch = if (0xD800..=0xDBFF).contains(&hi) {
-            self.expect(b'\\', "expected low surrogate")?;
-            self.expect(b'u', "expected low surrogate")?;
-            let lo = self.parse_hex4()?;
-            if !(0xDC00..=0xDFFF).contains(&lo) {
-                return Err(self.err("invalid low surrogate"));
-            }
-            let cp = 0x10000 + (((hi - 0xD800) as u32) << 10) + (lo - 0xDC00) as u32;
-            char::from_u32(cp).ok_or_else(|| self.err("invalid unicode scalar"))?
-        } else {
-            char::from_u32(hi as u32).ok_or_else(|| self.err("invalid unicode scalar"))?
-        };
-        let mut buf = [0u8; 4];
-        out.extend_from_slice(ch.encode_utf8(&mut buf).as_bytes());
-        Ok(())
-    }
-
-    fn parse_hex4(&mut self) -> Result<u16, JsonError> {
-        let mut value: u16 = 0;
-        for _ in 0..4 {
-            let b = self.peek().ok_or_else(|| self.err("unexpected end in \\u escape"))?;
-            let digit = match b {
-                b'0'..=b'9' => b - b'0',
-                b'a'..=b'f' => b - b'a' + 10,
-                b'A'..=b'F' => b - b'A' + 10,
-                _ => return Err(self.err("invalid hex digit")),
-            };
-            value = value * 16 + u16::from(digit);
-            self.pos += 1;
-        }
-        Ok(value)
-    }
-
-    fn parse_bool(&mut self) -> Result<Json, JsonError> {
-        if self.bytes[self.pos..].starts_with(b"true") {
-            self.pos += 4;
-            Ok(Json::Bool(true))
-        } else if self.bytes[self.pos..].starts_with(b"false") {
-            self.pos += 5;
-            Ok(Json::Bool(false))
-        } else {
-            Err(self.err("invalid literal"))
-        }
-    }
-
-    fn parse_null(&mut self) -> Result<Json, JsonError> {
-        if self.bytes[self.pos..].starts_with(b"null") {
-            self.pos += 4;
-            Ok(Json::Null)
-        } else {
-            Err(self.err("invalid literal"))
-        }
-    }
-
-    fn parse_number(&mut self) -> Result<Json, JsonError> {
-        let start = self.pos;
-        if self.peek() == Some(b'-') {
-            self.pos += 1;
-        }
-        while let Some(b) = self.peek() {
-            if b.is_ascii_digit() || matches!(b, b'.' | b'e' | b'E' | b'+' | b'-') {
-                self.pos += 1;
-            } else {
-                break;
-            }
-        }
-        let slice = std::str::from_utf8(&self.bytes[start..self.pos])
-            .map_err(|_| self.err("invalid number bytes"))?;
-        slice
+/// Build one DOM value from a token already pulled from the reader, recursively
+/// draining nested containers.
+///
+/// NOTE: recursion depth = JSON nesting depth — the DoS vector noted on
+/// [`ZetaJsonParser`]. The reader itself is iterative + constant-memory; the
+/// unbounded growth lives only in this DOM materialization layer.
+fn build_value<'a>(reader: &mut JsonReader<'a>, token: JsonToken<'a>) -> Result<Json, JsonError> {
+    match token {
+        JsonToken::Null => Ok(Json::Null),
+        JsonToken::Bool(b) => Ok(Json::Bool(b)),
+        JsonToken::Number(raw) => raw
             .parse::<f64>()
             .map(Json::Number)
-            .map_err(|_| self.err("invalid number"))
+            .map_err(|_| JsonError::new("invalid number")),
+        JsonToken::Str(s) => Ok(Json::Str(s.into_owned())),
+        JsonToken::StartArray => {
+            let mut items = Vec::new();
+            loop {
+                let t = reader.read()?.ok_or_else(|| JsonError::new("unterminated array"))?;
+                if t == JsonToken::EndArray {
+                    break;
+                }
+                items.push(build_value(reader, t)?);
+            }
+            Ok(Json::Array(items))
+        }
+        JsonToken::StartObject => {
+            let mut fields = Vec::new();
+            loop {
+                let t = reader.read()?.ok_or_else(|| JsonError::new("unterminated object"))?;
+                match t {
+                    JsonToken::EndObject => break,
+                    JsonToken::Key(k) => {
+                        let value_token =
+                            reader.read()?.ok_or_else(|| JsonError::new("missing value after key"))?;
+                        let value = build_value(reader, value_token)?;
+                        fields.push((k.into_owned(), value));
+                    }
+                    _ => return Err(JsonError::new("expected an object key")),
+                }
+            }
+            Ok(Json::Object(fields))
+        }
+        JsonToken::EndArray | JsonToken::EndObject | JsonToken::Key(_) => {
+            Err(JsonError::new("unexpected token while building a value"))
+        }
     }
 }
 
-/// serde_json-backed parser (feature `serde`) — for differential testing against
-/// the zero-dep parser and as a drop-in for systems already on serde.
+/// serde_json-backed DOM parser (feature `serde`) — for differential testing against
+/// the zero-dep parser and as a drop-in for systems already on serde. Also a DOM
+/// (materializes the whole tree), so the same TRUSTED-input-only caveat as
+/// [`ZetaJsonParser`] applies.
 #[cfg(feature = "serde")]
 #[derive(Debug, Clone, Copy, Default)]
 pub struct SerdeJsonParser;
