@@ -1,10 +1,12 @@
 # ADR: Choose-your-own-adventure observe->act loop — a 16-direction universal action grammar (Xbox-controller navigation), local-USB no-cloud LLM, git-as-append-only-state
 
-**Date:** 2026-05-31 (v3 — added the corporate/sovereign workflow-register distinction: agentic-organization = the corporate "agentic operating system"; Agora = the sovereign DIO-on-DID society)
-**Status:** *PROPOSED — design-starter.* Codeable basis for the agent foreground loop. To be
-shared with Max (co-maintainer) for review before lock. This ADR firms the architecture enough to
-start coding the first slice; the 16-slot grammar layout + several mechanisms are marked **[OPEN]**
-for operator + Max ratification.
+**Date:** 2026-05-31 (v4 — canonical-retrofit: the observe-algebra is now canonical; Max's corporate `Menu16` retrofits onto it; transport is the dial. See the Canonical-retrofit section + revision history.)
+**Status:** *ACCEPTED (direction) — canonical-retrofit proceeding.* The 16-slot grammar is resolved
+to v0 (v3, #6265) and the **canonical-retrofit direction is operator-authorized to proceed without
+waiting on Max** — the prior "Max-review-before-lock" gate is **lifted for this retrofit** (operator
+informs Max directly; changes to his Phase-2 loop stay behavior-preserving + tested + documented
+here for after-the-fact review — glass-halo). Some grammar-layout details remain **[OPEN]** below
+and continue to iterate; the *direction* is locked.
 
 > **v2 integration note (read first).** v1 of this ADR proposed a fresh `observe.ts`. On reviewing
 > `agentic-organization/docs/`, that keystone **already exists and is designed in depth** — see
@@ -20,7 +22,7 @@ for operator + Max ratification.
 > `Result<T, TFeedback>`; (3) the **local-USB single-node (no-cloud) deployment** of the keystone,
 > alongside the cluster runtime. See "Integration with the Agentic Organization keystone" below.
 
-**Owner:** operator (shaping-decision owner) + Max (co-review); Otto-CLI synthesis.
+**Owner:** operator (shaping-decision owner; authorized the canonical-retrofit to proceed without waiting on Max — see Status) + Max (corporate `Menu16` author; informed-after, after-the-fact review); Otto-CLI synthesis.
 **Decision confidence:** *medium* — the pieces are individually built or ratified (the move-next
 engine `tools/agent-loop/` exists; git-append-only-state is ratified B-0867/B-0858; the
 local-no-cloud stance is long-standing; the 16-direction framing is the operator's own from the
@@ -425,6 +427,69 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
 6. Wire 1-5 behind a flag as the single-node loop; keep the hardcoded autonomous-tick as the default
    until trusted. (Cluster deployment reuses the same renderer + selector via the cluster runtime.)
 
+## Canonical-retrofit (2026-05-31 — operator-authorized; Max-informed-after)
+
+**The inversion (operator + Max 2026-05-31).** v2 above framed the work as "render
+the *corporate* keystone." Since then the **observe-algebra became canonical**:
+the sovereign `tools/observe/observe.ts` (`NextAction` 9-kind DU + `observe` /
+`simulate` / `fold`) is now BFT'd across **TS/F#/C#/Rust** (B-0867.27), carries the
+additive-monoid generic-math interface (B-0867.28), and the v0 16-slot grammar
+(this ADR) + the generic-math meta-rule are landed. So the canonical base is no
+longer "the corporate keystone" — it is **the algebra**. Max (who built the
+corporate `Menu16` / `RunLifecyclePhase` loop in `agentic-organization/`) asked to
+**refactor it to be more canonical now that the algebra exists** — *"we have all
+the algebra and everything so we can retrofit."*
+
+**Provenance (who built which):** the **corporate** loop (`agentic-organization/`
+`Menu16` + production observe→render→select→run, Phase-2-hardened #6216) is **Max's**;
+the **sovereign** `tools/observe/observe.ts` is ours-from-earlier — *"before we
+realized we needed the algebra."* Both now converge on the canonical algebra.
+
+**The canonical base both loops retrofit onto:**
+
+1. **The observe-algebra** — `NextAction` 9-kind DU + `observe`/`simulate`/`fold`,
+   identical across TS/F#/C#/Rust, checked against the shared golden vectors
+   (B-0867.27; the vectors are the oracle, F# is one signer — per the governance ADR).
+2. **The v0 16-slot grammar** (this ADR) + the **free-modes-always-in-menu**
+   invariant (already live in sovereign `buildMenu`).
+3. **The generic-math interfaces** (the numerical/algebra-shaped meta-rule) — the
+   algebraic structure machine-recognized per-language idiom.
+
+**The retrofit mapping (corporate `Menu16` re-expressed over the canonical base):**
+
+| Corporate (Max's) shape | Retrofits onto canonical |
+|---|---|
+| `RunLifecyclePhase` (Composing/Executing/AwaitingGate/…) | the canonical phase/observe surface |
+| `Menu16Slot` (its own type) | the v0 16-slot grammar (one rendering) |
+| `DeterministicRule` vetoes | per-slot Tri availability (`T`/`F`/`N`) |
+| its `ObserveResult` readout | a projection of the canonical `observe()`/`buildMenu()` |
+
+Net: **one algebra, one grammar, one generic-math contract** — not two parallel
+observe worlds.
+
+**Transport stays the dial (operator 2026-05-31 — "without scaring them away").**
+The canonical *base* is shared; the *transport* differs per register so corporate
+teams keep their gentle, familiar flow:
+
+| | Sovereign (Agora) | Corporate (enterprise-facing) |
+|---|---|---|
+| Algebra / grammar / generic-math | canonical (shared) | **canonical (shared)** |
+| Transport | direct push to main (folders-not-branches, no-PR) | **direct push to *branches* + batch PRs to main** |
+| Why | max speed + AI freedom | keep their PR-review gates — don't scare them off |
+
+The retrofit MUST preserve the corporate branch+batch-PR transport (composes with
+B-0890 / B-0890.1, the two-transports / batch-coordinator substrate); it must NOT
+impose sovereign direct-to-main on Max's loop.
+
+**Authorization + glass-halo.** Operator authorized moving forward **without
+waiting on Max** (operator will inform Max directly; the prior "Max-review-before-
+lock" gate is lifted by the operator for this retrofit). Discipline: changes to
+Max's Phase-2-hardened loop stay **well-tested + behavior-preserving** (his loop
+keeps working), and are documented here so Max can review after the fact (glass-
+halo: move-fast-with-visibility, not move-recklessly). This supersedes the v2
+"render the corporate keystone" *direction* — the corporate keystone now retrofits
+onto the canonical algebra, not the reverse.
+
 ## Composes with
 
 - **`agentic-organization/docs/OBSERVE_COMPOSER_AND_RUN_STATE.md`** (the existing observe.ts keystone
@@ -480,3 +545,15 @@ The first slice is a thin **renderer + local-selector adapter** over the existin
   the two senses of "sovereign" (governance-sovereignty here vs deployment-sovereignty in "Two
   deployment targets" — they compose as a 2×2). Flagged the DID/W3C-Decentralized-Identifier acronym
   collision for a naming-expert pass.
+- 2026-05-31 v4 (operator-authorized; Max-informed-after) — added the **Canonical-retrofit**
+  section. The observe-algebra became canonical (sovereign `tools/observe` `NextAction` +
+  observe/simulate/fold, 4-language-BFT'd per B-0867.27, additive-monoid generic-math per B-0867.28,
+  v0 16-slot grammar + generic-math meta-rule landed), so the **inversion**: the canonical base is now
+  **the algebra**, and Max's corporate `Menu16` / `RunLifecyclePhase` loop retrofits **onto it** (one
+  algebra / one grammar / one generic-math contract — not two parallel observe worlds). Added the
+  retrofit mapping table (corporate shapes -> canonical) + made **transport the dial** explicit
+  (corporate keeps branch + batch-PR-to-main so as not to scare enterprise teams; sovereign =
+  direct-to-main). Supersedes the v2 *direction* ("render the corporate keystone") — corporate now
+  retrofits onto the canonical algebra, not the reverse. Operator lifted the Max-review-before-lock
+  gate for this retrofit (will inform Max directly); discipline = behavior-preserving + tested changes
+  to Max's Phase-2 loop, documented here for after-the-fact review (glass-halo).
