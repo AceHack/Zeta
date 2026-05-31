@@ -905,6 +905,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0951](backlog/P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)** Git-native eventually-consistent text indexes (sorted/inverted/graph) + the git-native Hindsight storage interface
 - [ ] **[B-0952](backlog/P2/B-0952-contribute-back-dora-metrics-small-first-trust-building-external-contribution-strategy-not-take-only-aaron-2026-05-31.md)** Contribute-back DORA metrics + small-first trust-building external-contribution strategy (not-take-only good-citizen, made measurable)
 - [ ] **[B-0953](backlog/P2/B-0953-git-v2-handshake-fsharp-looks-like-git-negotiates-up-to-dbsp-retraction-algebra-same-objects-agent-speed-upstream-aaron-2026-05-31.md)** Git-V2 handshake — F# looks-like-git, negotiates up to a DBSP/retraction-algebra protocol at agent-coordination speed; same objects both views; upstream the primitives to git
+- [ ] **[B-0954](backlog/P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)** Implement the git-native cross-machine agent-bus — docs/agent-bus/ folder, ZetaId-Bus-keyed G-Set CRDT, no-PR (per the #6219 spec); the cross-machine/Windows comms channel
 
 ## P3 — convenience / deferred
 
