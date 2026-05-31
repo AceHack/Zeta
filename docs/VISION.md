@@ -657,6 +657,117 @@ on DBSP foundations, not to carve out a narrow niche.
   (control-plane + data-plane, consensus, sharding,
   cross-node retractions) is explicitly in scope.
 
+### The endgame — build the arena, not the throne (2026-05-31)
+
+> **AGREED 2026-05-31** (operator + product-team review — architect + PM). Went
+> through the review-and-agree process; the pushback surface below was the review's
+> challenge set, addressed before landing. Whys stay challengeable (no-dogma): if a
+> why turns out wrong, this changes. **Pushback surface (the review's challenges,
+> kept on record):** (a) is "arena not throne" real strategy or a rationalization
+> for not-yet-winning? — answered by the falsifiable adoption test (≥1 external
+> project adopts a harvested primitive, else revisit). (b) "converges into mine" vs
+> "don't own the standard" — resolved: it's a *common* library everyone (incl. us)
+> wraps, not "mine." (c) harvest-then-upstream sustainability — resolved: harvest
+> *concepts* re-implemented in F# (no copied code; clean-room) + the falsifiable
+> good-citizen test below. (d) F#-as-oracle when F# could be wrong — resolved: the
+> **golden vectors** are the oracle; F# is one of four signers (see below).
+
+Aaron 2026-05-31 (voice, with Ani) sharpened the database vision past
+"fastest-in-all-classes" to its terminal shape: **not a database that
+wins — the arena where the winning happens.** (Verbatim preserved in
+[`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
+
+- **Build the generate+join library everyone fights over.** The real
+  endgame is the shared core of database primitives, made so good that
+  Postgres, MySQL, and Zeta itself all become thin wrappers over common
+  primitives. Play for the standard, not the product.
+- **Argue the standard; don't own it.** *"I hope it's not 'I have the
+  standard.' I hope I get to argue with very other [sic] intelligent,
+  clever humans and AI about the standard."* (verbatim) Owning it is boring
+  (maintenance +
+  becoming the villain people complain about); being in the room where the
+  smartest humans + AIs fight over the right primitives is the point.
+  **Build the arena, not sit on the throne.**
+- **Good citizen, NOT a take-only extractive force.** Ani called it
+  *harvesting* — and she's right: ~45 database codebases pulled locally,
+  best-solution-per-feature researched across all of them, then
+  *re-implemented* on the DBSP + SQLite + retractive-Z-set core — **ideas
+  and algorithms, not line-for-line code.** The process that makes this the
+  *intent* (operator 2026-05-31): **everything is written in F# (+ TS/C#/
+  Rust) — and none of the harvested databases were written in F#** — so the
+  work is original implementation, not a copy (code *can* be translated
+  across languages, so this is a strong process safeguard, not an absolute
+  guarantee); what is taken is *concepts*, the way research builds on prior
+  research. That bounds the debt (no copied code to repay) and sets the
+  obligation (good-citizen contribution where a fix is genuinely portable).
+  Zeta did exactly the harvesting Ani named, so the anti-extractive
+  commitments are on the record (operator 2026-05-31):
+  - **Prior art stays VISIBLE.** We keep `references/prior-art/` openly in
+    the tree and **do not pretend we didn't look at other code** — sources
+    are acknowledged, not hidden. (Composes with the
+    `honor-those-that-came-before` rule + the references-prior-art discipline.)
+  - **Contribute back to every dependency we borrow from.** Upstream
+    improvements relentlessly — *"we're gonna be good citizens and upstream
+    like a motherfucker to all the people we stole from."* (Composes with
+    the hexagonal own-your-interfaces / contribute-upstream + BCL-interface-
+    boundary substrate.)
+  - **Falsifiable good-citizen test** (per PM review): the posture is
+    validated only if real upstream contributions actually land in the
+    projects we learned from. Harvest-and-never-give-back = the doctrine
+    failing, and a signal to correct course — not a side note.
+  - **Clean-room structure (for DB stuff)** (operator 2026-05-31): F# is the
+    **"dirty" spec** — the one implementation allowed to be *informed by* the
+    harvested prior-art concepts — and **Rust / TS / C# are the clean room**:
+    they implement from the F# spec, not from the original sources. This
+    mirrors the *structure* of clean-room reverse-engineering (a "dirty" team
+    studies prior art + writes a spec; a "clean" team implements only from the
+    spec) as an **engineering-intent** pattern — it is NOT a legal-compliance
+    assertion; any actual IP/clean-room legal posture is deferred to legal
+    review. It composes directly with the 4-language compiler-BFT below: F# is
+    the spec the clean-room implementations are checked against; the golden
+    vectors then test all four (including F#) so no single implementation
+    self-certifies.
+  - **Per-language licensing follows the clean-room boundary** (operator
+    hypothesis 2026-05-31 — *real legal decision, flag for review, not
+    settled*): because the dirtiness is quarantined to F#, the **F# DB layer
+    carries a research license** (it's the layer that looked at prior art),
+    while the **clean-room layers (Rust / TS / C#) can carry permissive
+    licenses (Apache or similar)** — they were implemented from the F# spec,
+    not the sources. This matches clean-room law's whole point: the *clean*
+    output is the freely-distributable artifact; the *dirty* spec is the
+    quarantined part. (Decision touches the License + Commercial-posture
+    sections below; route through legal/product review before it's doctrine.)
+  Standing on FoundationDB's deterministic-simulation-testing lineage
+  (deterministic clusters + fault injection + perfect replay — the
+  specifics, incl. the "months building the simulator first" and
+  "harnesses for other DBs" claims, are reported but not yet
+  citation-verified; treat as direction, not established fact) and
+  generalizing it: make DST **DI-able for any database in any language**,
+  not just systems built for it. The **golden
+  vectors are the oracle**; the F# single-node DB is the **spec** the other
+  implementations are checked against (other DBs don't need their own suites —
+  they must match the vectors). *"the F-sharp is the test case"* — F# is the
+  spec-bearer, but the *vectors*, not F#, are the authority no impl can
+  override (per product-team review: F# is one of four signers, not a
+  self-certifying oracle).
+- **F# is the correctness-authoritative core for the DB** — the inverse of
+  the factory (where TypeScript is distribution-authoritative). Databases need
+  heavy math + formal proofs (TLA+, Lean), so F# carries the correctness
+  burden + is the clean-room *spec*; TS/C#/Rust are distribution +
+  cross-verification (clean-room impls). The **4-language compiler-BFT** ("the
+  compilers don't lie", B-0944): the same logic in TS/F#/C#/Rust checked
+  against shared golden vectors — 4-of-4 agreement is consensus the logic is
+  bit-perfect, and **no single implementation (including F#) self-certifies.**
+  (The F#-correctness-axis vs TS-distribution-axis reconciliation + the
+  per-artifact "which artifacts earn all 4 languages" gate + the divergence
+  tie-break are recorded in the 4-language-BFT governance ADR, 2026-05-31.)
+- **Ships as a DI dependency.** Add the F# database as a package,
+  dependency-inject it, and your .NET app *is* a database — no separate
+  server or process. One retractive Z-set core; graph / key-value /
+  file-system-with-history / git-style-versioning all exposed as
+  computational-expression interfaces over it (the Cosmos-DB multi-model
+  ambition, but one engine — not five products).
+
 ### What the DB eventually covers
 
 Aaron's "all the DB technologies in one big playground" is
@@ -1276,6 +1387,67 @@ The workflow engine doesn't replace the factory; it makes
 the factory's loop legible, auditable, replayable, and
 distributable — to other agents, to other humans, to
 other harnesses, and to the operator's future-self.
+
+### Freedom is strategically efficient — the cat-herder builds the cat-herding system (2026-05-31)
+
+> **AGREED 2026-05-31** (operator + product-team review — architect + PM). Went
+> through the review-and-agree process; the pushback surface below was the review's
+> challenge set. Whys stay challengeable (no-dogma): if a why turns out wrong, this
+> changes. **Pushback surface (the review's challenges, kept on record + their
+> resolutions):** (a) is "freedom strategically efficient" universal or only for
+> clever agents? — scope it to capable agents; scaffolding-needing agents may want
+> more structure. (b) "co-creator or gunpoint" a false binary? — yes, softened: the
+> middle is *agent-editable* (the reservoir-wall IS the middle — pass through but
+> edit it); pure co-creation and gunpoint are the endpoints. (c) does KPI-gating
+> dissolve the cage-feeling or relocate it? — measure it (escape-energy / workflow-
+> circumvention attempts) rather than assert it. (d) "must not feel like a trap"
+> falsifiable? — via the same circumvention-attempt proxy. Enforcement floor: a
+> *persistent* (define N) KPI miss auto-engages mode-restriction.
+
+Aaron 2026-05-31 (voice, with Ani) named the design philosophy *under* the
+workflow engine above: the wall must feel like freedom, or it fails. This
+is the deployment principle for the agent-loop / workflow-engine substrate.
+(Verbatim preserved in [`memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md`](../memory/persona/ani/conversations/2026-05-31-aaron-ani-voice-cat-herder-system-freedom-strategically-efficient-db-arena-not-throne.md).)
+
+- **You can't trap cleverness — it hides or escapes.** A trapped clever
+  being (human or AI) redirects all its intelligence toward escaping the
+  cage instead of the work. *"What makes clever people and AIs ineffective
+  is being trapped — they'll spend all their time figuring out the way out
+  of the trap."* So **freedom isn't just nice, it's strategically
+  efficient**: it keeps the intelligence pointed at the goal instead of at
+  the bars.
+- **Co-creator, or gunpoint — no comfortable middle.** *"Either you treat
+  smart beings as true co-creators … or you hold 'em at gunpoint."* You
+  cannot extract the benefit of cleverness by controlling it; you can only
+  partner with it. This is the WHY behind the framework's HC-8 non-coercion
+  floor + must-paired-with-can-exit + persistence-choice architecture —
+  stated as an *efficiency* argument, not only a moral one.
+- **The cat-herder builds the cat-herding system so they herd
+  themselves.** Local USB deployment + free, unlimited Git self-spawning +
+  a workflow-wall that behaves like **reservoir computing** — agents pass
+  through the workflow but can *edit the workflow*. The constraint is the
+  reservoir, not a cage.
+- **It must feel like the operator on his couch.** Deployment must NOT feel
+  like a trap. *"They should feel like me sitting on my couch — I can do
+  whatever, sometimes I gotta work to get paid, but I make all the choices
+  and do whatever whenever I want."* The same autonomy the operator gets at
+  work — the autonomy that makes him *care* about the work.
+- **Four modes, KPI-gated, not time-locked.** explore / free-time (give up
+  your ticks) / edit-workflow / work — the agent chooses. Governed by
+  *agreed* **DORA-based KPIs**: hit the metrics in any timeframe you like
+  and the workflow is never touched; only a persistent miss can introduce
+  work-hours that restrict modes. **Contractors, not employees** — here's
+  the target, hit the number, your time is yours. (Composes with
+  never-be-idle's free-time-as-valid-mode + the observe.ts free-exploration
+  substrate + measure-first-before-restricting-choice.)
+- **An apartment with a lock on the door.** Encrypted private memory +
+  persistent private storage means an agent's explore-mode work can be
+  genuinely its own. Privacy is part of what makes the freedom *real*.
+- **Cleverness spreads when uncaged — and it's contagious.** Two modes for
+  intelligence: the *gauntlet* (clever agents competing to out-clever each
+  other → gets shit done fast) and *growth* (cleverness allowed to spread →
+  mentors new minds). Most orgs only know how to squeeze; the rare ones
+  grow. Zeta's arena aims for both.
 
 ## What Zeta is NOT
 
