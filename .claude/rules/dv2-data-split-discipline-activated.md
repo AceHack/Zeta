@@ -16,8 +16,8 @@ Deterministic Simulation I've just forgot to repeat data vault
 2.0 enought to keep it activated like scale-free lock(wait)-
 free weight free DST"*.
 
-**Five always-active substrate-engineering disciplines** (from
-2026-05-13):
+**Six always-active substrate-engineering disciplines** (the
+original five from 2026-05-13; **idempotency added 2026-05-30**):
 
 | Discipline | Scope | What it produces |
 |---|---|---|
@@ -26,8 +26,9 @@ free weight free DST"*.
 | Weight-free | Type theory | No implicit weighting |
 | DST | Verification | Deterministic replay |
 | **DV2.0** (re-activated) | **Partition** | **Change-rate-based partition into storage shapes** |
+| **Idempotency** (added 2026-05-30) | **Effects / replay / merge** | **Apply-N-times == apply-once: retry-safe, replay-safe, dedup-keyed exactly-once *effects* (under at-least-once delivery — not exactly-once delivery)** |
 
-All five apply simultaneously per
+All six apply simultaneously per
 `.claude/rules/default-to-both.md`.
 
 ## DV2.0 in one paragraph
@@ -88,6 +89,79 @@ ADR? agent? backlog row?), ask:
   often; rule changes very rarely)
 - What's the audience-bandwidth? (per bandwidth-served falsifier)
 - What partition shape fits?
+
+## Idempotency — sixth always-active discipline (operator 2026-05-30)
+
+Operator 2026-05-30, naming the always-active set and extending it:
+
+> *"we have the weight free scale free lock(wait) free deterministic
+> simulation data vault 2.0 stuff. we should add idempotency."*
+
+**Idempotency** joins the always-active set: an operation is idempotent
+when **applying it N times produces the same effect as applying it
+once**. It is the discipline that makes retry, replay, redelivery, and
+merge SAFE — which is why it composes so tightly with the existing five.
+
+### Idempotency in one paragraph
+
+`f(f(x)) = f(x)`. Set-union, `max`, `min`, upsert-by-key,
+compare-and-set, content-addressed writes, and CRDT merges are
+idempotent; counter-increment, append-without-dedup, and "send money"
+are NOT (they need a natural key / dedup token to be made so). The
+discipline at substrate-engineering time: when designing any operation
+that can be **re-run, retried, re-delivered, or re-merged**, make its
+*effect* idempotent — or name the non-idempotence explicitly and guard
+it (the mechanism is an idempotency key + dedup window — a dedup-keyed
+exactly-once-*effect* guard, NOT an exactly-once *delivery* guarantee).
+
+### Why it is load-bearing with the other five
+
+- **With DST (question 4):** a pure single deterministic replay of the
+  same ordered stream is sound on its own — it applies each event exactly
+  once, so even non-idempotent events (e.g. counter-increment) re-produce
+  the same state. Idempotency is what keeps replay safe under the
+  *imperfect* cases DST must tolerate: at-least-once redelivery, retry
+  after a crash mid-replay, or partial re-execution of an
+  already-partly-applied stream — where an event can land twice and
+  re-applying must be a no-op the second time. Idempotency and DST are
+  siblings: DST *requires* replay; idempotency makes *redelivery / partial*
+  replay safe.
+- **With lock-free / wait-free (question 2):** lock-free retry loops
+  (CAS) re-attempt the same operation under contention; the operation
+  must be idempotent for the retry to be correct. CAS itself is the
+  canonical idempotent-make primitive.
+- **With DV2.0 / git-as-db:** the framework's state model is a
+  **G-Set CRDT** of ZetaId-keyed events folded into state (per the
+  agentic-organization keystone + `monad-propagation` substrate). G-Set
+  merge is idempotent **by construction** — re-merging the same event
+  set changes nothing. The whole git-as-append-only-event-store
+  rebuild-the-index model depends on idempotent fold.
+- **With the tri-boolean primitive (B-0944):** `cooperate` (the
+  wonder-compression op) is idempotent — engaging without collapsing,
+  any number of times, leaves the cell unchanged; `measure` is the
+  deliberate **non-idempotent** collapse (the one op that changes
+  state, surfaced as feedback). The idempotent/non-idempotent split IS
+  the cooperate/measure split.
+- **With the observe→act / move-next loop (the observe.ts ADR —
+  [`docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md`](../../docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md)):** a
+  re-fired menu selection / re-delivered action should be a no-op if
+  already applied — idempotent actions are what make the
+  state-machine-in-git loop safe to retry across crashes (this very
+  session crashed mid-arc; idempotent PR-create + git-event append are
+  what let it resume without double-applying).
+
+### Discriminator (powerful vs dangerous), mirroring the existing set
+
+```text
+idempotent:   set-union · max/min · upsert-by-key · CAS · content-address
+make-it-so:   add a natural key / dedup token / idempotency key
+NOT (guard):  increment · append-without-dedup · side-effecting send
+```
+
+Reserve non-idempotent operations for cases where the effect genuinely
+must accumulate (a counter, an audit-append) — and there, the
+*retraction-native* algebra (Z-sets: +1 then −1 nets to 0) restores
+replay-safety at the algebra level rather than the operation level.
 
 ## Why this rule auto-loads
 
@@ -153,10 +227,32 @@ When evaluating any substrate-engineering decision:
    contention?
 3. **Apply weight-free** — does this avoid implicit weighting?
 4. **Apply DST** — can this be replayed deterministically?
-5. **Apply DV2.0 (NEW always-active)** — what changes at what
+5. **Apply DV2.0 (always-active)** — what changes at what
    rate; how should substrate be partitioned?
+6. **Apply idempotency (NEW always-active, 2026-05-30)** — is this
+   operation safe to apply more than once? Does re-running / retrying /
+   re-delivering / re-merging it produce the SAME effect as applying it
+   once? If not, can it be made so (natural key, CAS/compare-set,
+   set-union, content-address, upsert), or must the non-idempotence be
+   named explicitly?
 
-The fifth question catches:
+The sixth question (idempotency) catches:
+
+- Retry-under-failure safety (a re-sent message / re-run tick must not
+  double-apply) — composes with the signal-based exceptions-as-signals
+  discipline (act, let the failure fire, retry safely)
+- CRDT merge correctness (G-Set / OR-Set merge is idempotent by
+  construction; the git-as-db ZetaId-event fold depends on it)
+- DST replay safety (replaying the same seeded event stream must
+  re-produce the same state — idempotency is what makes DST's
+  re-execution sound; composes with question 4)
+- `cooperate` (the tri-boolean wonder-compression op) is idempotent by
+  design; `measure` is the deliberate non-idempotent collapse
+- Upsert / dedup-keyed exactly-once *effects* (not exactly-once delivery) at the operator + storage layer
+- observe→act / move-next actions (a re-fired menu selection should be
+  a no-op if already applied) — the agent-loop / observe.ts substrate
+
+The fifth question (DV2.0) catches:
 
 - Ruleset-divergence smells in repo-split work (per B-0427)
 - Hub-satellite separations in skill design
