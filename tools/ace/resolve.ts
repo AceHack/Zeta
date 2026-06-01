@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { contentHash, type AcePackage, type LoadedTrustEntry } from "./store.ts";
+import { contentHash, type AcePackage, type LoadedTrustEntry, type Registry } from "./store.ts";
 import { verifySignature } from "./signing.ts";
 
 /** Deterministic JSON: object keys recursively sorted; arrays preserve order. */
@@ -22,7 +22,7 @@ export type FetchPackage = (urlOrPath: string) => Promise<string>;
 export type ResolveReason =
   | "version-skew" | "tamper" | "pin-mismatch" | "bad-content-hash"
   | "bad-signature" | "untrusted-key" | "unsupported-algo" | "no-signature"
-  | "cycle" | "fetch-failed" | "invalid-package";
+  | "cycle" | "fetch-failed" | "invalid-package" | "registry-miss";
 
 export type ResolveResult =
   | { ok: true; order: AcePackage[] }
@@ -32,6 +32,7 @@ export async function resolve(
   root: AcePackage,
   fetchPackage: FetchPackage,
   trustStore: Map<string, LoadedTrustEntry>,
+  registry: Registry,
   opts: { allowNoSignature: boolean },
 ): Promise<ResolveResult> {
   const byName = new Map<string, { version: string; pkgHash: string; path: string[] }>();
@@ -44,6 +45,31 @@ export async function resolve(
   const walk = async (node: AcePackage, path: string[]): Promise<ResolveResult | null> => {
     for (const edge of (Array.isArray(node.manifest.dependencies) ? node.manifest.dependencies : [])) {
       const here = [...path, edge.name];
+
+      // Edge-shape guard: dependency edges are untrusted JSON. kind omitted == inline (pre-DU
+      // back-compat); reject an unknown kind + an inline edge missing url/package_hash here with a
+      // precise invalid-package refusal rather than letting it surface later as fetch-failed.
+      const ek = (edge as { readonly kind?: unknown }).kind;
+      if (ek !== undefined && ek !== "inline" && ek !== "registry") {
+        return { ok: false, reason: "invalid-package", detail: `${edge.name}: unknown dependency kind ${JSON.stringify(ek)}`, path: here };
+      }
+
+      // Resolve url + package_hash from the edge kind
+      let url: string;
+      let package_hash: string;
+      if (edge.kind === "registry") {
+        const entry = registry.get(edge.name)?.get(edge.version);
+        if (entry === undefined) {
+          return { ok: false, reason: "registry-miss", detail: `${edge.name}@${edge.version} not found in registry`, path: here };
+        }
+        url = entry.url; package_hash = entry.package_hash;
+      } else {
+        if (typeof edge.url !== "string" || typeof edge.package_hash !== "string") {
+          return { ok: false, reason: "invalid-package", detail: `${edge.name}: inline edge missing url/package_hash`, path: here };
+        }
+        url = edge.url; package_hash = edge.package_hash;
+      }
+
       // NB: the root is seeded into `visiting`, so a root-involving skew (root@1 -> A -> root@2)
       // trips this cycle check before the version-skew check below — both refuse + install nothing.
       if (visiting.has(edge.name)) {
@@ -54,21 +80,21 @@ export async function resolve(
         if (seen.version !== edge.version) {
           return { ok: false, reason: "version-skew", detail: `${edge.name} required at ${seen.version} (via ${seen.path.join(" → ")}) and ${edge.version} (via ${here.join(" → ")})`, path: here };
         }
-        if (seen.pkgHash !== edge.package_hash) {
+        if (seen.pkgHash !== package_hash) {
           return { ok: false, reason: "tamper", detail: `${edge.name}@${edge.version} has two different package hashes`, path: here };
         }
         continue; // diamond dedup: same name+version+package_hash, already resolved
       }
       let dep: AcePackage;
-      try { dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage; }
-      catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
+      try { dep = JSON.parse(await fetchPackage(url)) as AcePackage; }
+      catch (e) { return { ok: false, reason: "fetch-failed", detail: `${url}: ${(e as Error).message}`, path: here }; }
       // Shape guard: verify the parsed JSON is a well-formed AcePackage before any field access.
       // Also reject non-array dependencies: a dependencies field that is present but not an array
       // is malformed and would throw in the for-of loop, so we refuse it here as invalid-package.
       const m = (dep as { manifest?: { dependencies?: unknown }; files?: unknown });
       if (typeof dep !== "object" || dep === null || typeof m.manifest !== "object" || m.manifest === null || typeof m.files !== "object" || m.files === null
           || (m.manifest.dependencies !== undefined && !Array.isArray(m.manifest.dependencies))) {
-        return { ok: false, reason: "invalid-package", detail: `${edge.url}: not a well-formed AcePackage`, path: here };
+        return { ok: false, reason: "invalid-package", detail: `${url}: not a well-formed AcePackage`, path: here };
       }
       // slice-2 self-check
       const filesHash = contentHash(new TextEncoder().encode(JSON.stringify(dep.files)));
@@ -77,8 +103,8 @@ export async function resolve(
       }
       // pin check (whole-package identity)
       const got = packageHash(dep);
-      if (got !== edge.package_hash) {
-        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${edge.package_hash} but fetched ${got}`, path: here };
+      if (got !== package_hash) {
+        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${package_hash} but fetched ${got}`, path: here };
       }
       // declared-identity check
       if (dep.manifest.name !== edge.name || dep.manifest.version !== edge.version) {
@@ -93,7 +119,7 @@ export async function resolve(
           return { ok: false, reason: v.reason, detail: `${edge.name}: ${v.reason}`, path: here };
         }
       }
-      byName.set(edge.name, { version: edge.version, pkgHash: edge.package_hash, path: here });
+      byName.set(edge.name, { version: edge.version, pkgHash: package_hash, path: here });
       visiting.add(edge.name);
       const sub = await walk(dep, here);
       if (sub) return sub;

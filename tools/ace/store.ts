@@ -4,12 +4,9 @@ import { join, dirname } from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
-export interface AceDependency {
-  readonly name: string;
-  readonly version: string;
-  readonly url: string;
-  readonly package_hash: string; // sha256 of the canonical FULL package (manifest incl. signature + files)
-}
+export type AceDependency =
+  | { readonly kind: "inline"; readonly name: string; readonly version: string; readonly url: string; readonly package_hash: string }
+  | { readonly kind: "registry"; readonly name: string; readonly version: string };
 
 export interface AceManifest {
   readonly format_version: number;
@@ -233,4 +230,107 @@ export function listTrustedKeys(
     if (v.label !== undefined) row.label = v.label;
     return row;
   });
+}
+
+// ---- Registry (slice 5.1) ----
+
+export interface RegistryEntry { readonly url: string; readonly package_hash: string; }
+export type Registry = Map<string, Map<string, RegistryEntry>>; // name → version → entry
+
+/** ~/.ace/registry.json — operator-managed (sibling of trusted-keys.json). */
+export function registryPath(): string {
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? ".";
+  return join(home, ".ace", "registry.json");
+}
+
+/** tools/ace/registry.json — bundled root anchor (ships `{}`). Portable ESM idiom (per bundledTrustPath). */
+export function bundledRegistryPath(): string {
+  return join(dirname(fileURLToPath(import.meta.url)), "registry.json");
+}
+
+/** Parse a registry file into the on-disk object shape; {} on missing/malformed (non-fatal). */
+function readRegistryFile(p: string): Record<string, Record<string, RegistryEntry>> {
+  if (!existsSync(p)) return {};
+  try {
+    const obj = JSON.parse(readFileSync(p, "utf8"));
+    if (typeof obj !== "object" || obj === null || Array.isArray(obj)) return {};
+    return obj as Record<string, Record<string, RegistryEntry>>;
+  } catch { return {}; }
+}
+
+/** bundled ∪ user; user overrides bundled on (name, version). */
+export function loadRegistry(bundledPath: string = bundledRegistryPath(), userPath: string = registryPath()): Registry {
+  const m: Registry = new Map();
+  const merge = (src: Record<string, Record<string, RegistryEntry>>): void => {
+    for (const [name, versions] of Object.entries(src)) {
+      if (typeof versions !== "object" || versions === null) continue;
+      let vm = m.get(name);
+      if (!vm) { vm = new Map(); m.set(name, vm); }
+      for (const [version, entry] of Object.entries(versions)) {
+        if (entry && typeof (entry as RegistryEntry).url === "string" && typeof (entry as RegistryEntry).package_hash === "string") {
+          vm.set(version, { url: (entry as RegistryEntry).url, package_hash: (entry as RegistryEntry).package_hash });
+        }
+      }
+    }
+  };
+  merge(readRegistryFile(bundledPath));
+  merge(readRegistryFile(userPath));
+  return m;
+}
+
+/** Add/overwrite a user-registry entry; dir 0o700, file 0o600 on EVERY call (incl. the identical
+ * no-op path) — mirrors addTrustedKey. Re-adding the same name@version with a DIFFERING url or
+ * package_hash overwrites the stale pin (returns updated:true); an identical re-add is an idempotent
+ * no-op (added:false, updated:false). chmod after write (writeFileSync mode only applies on create). */
+export function addRegistryEntry(name: string, version: string, entry: RegistryEntry, userPath: string = registryPath()): { added: boolean; updated: boolean } {
+  const dir = dirname(userPath);
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  try { chmodSync(dir, 0o700); } catch { /* best-effort */ }
+  const tightenFile = (): void => { if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort */ } } };
+  // Null-prototype working copy: a user-controlled "__proto__"/"constructor" name or version
+  // cannot trigger prototype pollution on the bracket assignments below (the registry file can
+  // be operator-edited or shared, so its keys are untrusted).
+  const raw = readRegistryFile(userPath);
+  const obj = Object.create(null) as Record<string, Record<string, RegistryEntry>>;
+  for (const [n, vs] of Object.entries(raw)) {
+    if (typeof vs !== "object" || vs === null) continue;
+    const inner = Object.create(null) as Record<string, RegistryEntry>;
+    for (const [v, e] of Object.entries(vs)) inner[v] = e;
+    obj[n] = inner;
+  }
+  const existing = obj[name]?.[version];
+  // Identical re-add → idempotent no-op (preserves dedup). New OR differing url/hash → write.
+  if (existing && existing.url === entry.url && existing.package_hash === entry.package_hash) {
+    tightenFile();
+    return { added: false, updated: false };
+  }
+  const updated = existing !== undefined; // same name@version, corrected url/hash → overwrite stale pin
+  obj[name] = obj[name] ?? (Object.create(null) as Record<string, RegistryEntry>);
+  obj[name][version] = { url: entry.url, package_hash: entry.package_hash };
+  writeFileSync(userPath, JSON.stringify(obj, null, 2));
+  chmodSync(userPath, 0o600);
+  return { added: !updated, updated };
+}
+
+/** bundled ∪ user flattened to rows; user overrides bundled on (name, version); each row carries source. */
+export function listRegistry(
+  bundledPath: string = bundledRegistryPath(), userPath: string = registryPath(),
+): Array<{ name: string; version: string; url: string; source: "bundled" | "user" }> {
+  const idx = new Map<string, number>(); // "name@version" → row index (for override)
+  const rows: Array<{ name: string; version: string; url: string; source: "bundled" | "user" }> = [];
+  const add = (src: Record<string, Record<string, RegistryEntry>>, source: "bundled" | "user"): void => {
+    for (const [name, versions] of Object.entries(src)) {
+      if (typeof versions !== "object" || versions === null) continue;
+      for (const [version, entry] of Object.entries(versions)) {
+        if (!entry || typeof entry.url !== "string" || typeof entry.package_hash !== "string") continue;
+        const key = `${name}@${version}`;
+        const row = { name, version, url: entry.url, source };
+        const prior = idx.get(key);
+        if (prior !== undefined) rows[prior] = row; else { idx.set(key, rows.length); rows.push(row); }
+      }
+    }
+  };
+  add(readRegistryFile(bundledPath), "bundled");
+  add(readRegistryFile(userPath), "user");
+  return rows;
 }

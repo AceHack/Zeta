@@ -23,7 +23,7 @@ without one.
 
 ## Verb grammar
 
-Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust add`, `trust list`, `list`.
+Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust add`, `trust list`, `registry add`, `registry list`, `list`.
 
 | Verb | Form | What |
 |---|---|---|
@@ -34,6 +34,8 @@ Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust a
 | `verify` | `bun tools/ace/ace.ts verify <hash>` | Confirm an installed package is present |
 | `trust add` | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
 | `trust list` | `bun tools/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
+| `registry add` | `bun tools/ace/ace.ts registry add <name> <version> <url> [--hash <package_hash>]` | Register a package version in the user registry (`~/.ace/registry.json`); fetches + computes package_hash unless `--hash` given |
+| `registry list` | `bun tools/ace/ace.ts registry list` | List registry entries (bundled + user) |
 | `help` | `bun tools/ace/ace.ts help` | Usage |
 
 `install` verifies **integrity** (content hash) AND **authenticity** (Ed25519 signature
@@ -49,6 +51,8 @@ uniqueness BEFORE extracting anything — any failure installs nothing. Refusal 
 `untrusted-key`, `unsupported-algo`, `no-signature`, `cycle`, `fetch-failed`,
 `invalid-package`, `store-collision`. `--allow-no-signature` applies graph-wide
 (permits only genuinely-unsigned nodes; a bad/untrusted signature on any node always refuses).
+
+A dependency edge is one of two kinds: `inline` (`{kind:"inline", name, version, url, package_hash}` — self-pinned) or `registry` (`{kind:"registry", name, version}` — resolved via the registry). Registry deps are looked up **exact-version** in the bundled (`tools/ace/registry.json`) ∪ user (`~/.ace/registry.json`) registry; a miss is the `registry-miss` refusal. After lookup, a registry dep runs the identical verify path (hash + pin + identity + signature) as an inline dep. Semver ranges + a solver are slice 5.2; a lockfile is 5.3.
 
 ## Invocation
 
