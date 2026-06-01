@@ -462,6 +462,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0958](backlog/P1/B-0958-observe-ts-agent-loop-implementation-and-testing-checklist-closed-loop-toward-vendor-store-aaron-otto-2026-05-31.md)** observe.ts agent-loop — implementation + testing checklist (the closed observe→execute→loadWorld loop; toward vendor-store distribution)
 - [ ] **[B-0959](backlog/P1/B-0959-zeta-sovereign-distributed-db-and-agent-loop-master-checklist-one-git-native-zset-substrate-aaron-otto-2026-05-31.md)** Zeta sovereign distributed-DB + agent-loop MASTER checklist — one git-native ZetaId Z-set substrate (algebra ladder · observe loop · git-native bus · distributed time · 4-oracle)
 - [ ] **[B-0964](backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md)** Effectful do_item — command-vs-fact-event envelope + injected executor port + item-class-routed bash surface (just-bash text / local docker real-work / CF cloud-burst)
+- [ ] **[B-0969](backlog/P1/B-0969-invariant-culture-everywhere-configureawait-false-cross-cutting-dotnet-defaults-never-culture-sensitive-fsharp-gset-first-fix-aaron-2026-06-01.md)** Invariant-culture-everywhere + ConfigureAwait(false) as cross-cutting .NET defaults — never default to culture-sensitive (F# G-Set culture-sensitivity is the first concrete fix)
 
 ## P2 — research-grade
 
