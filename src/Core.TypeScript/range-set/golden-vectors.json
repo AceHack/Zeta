@@ -1,0 +1,26 @@
+{
+  "description": "RangeSet cross-language conformance. The TS reference oracle authors these vectors; F#/C#/Rust replay them. For each case: parse(input) -> Ok, render(parsed) == canonical (the cross-language byte lock), and contains(parsed, n) matches each [n, expected] probe. For each rejection: parse(input) -> Err with the named feedback variant (the cross-language rejection-vector contract). Non-negative JS-safe integers; canonical = sorted, disjoint, non-adjacent (overlapping AND touching ranges coalesce), single values as `n`, joined by `,` with no spaces, empty set as ``.",
+  "version": 1,
+  "cases": [
+    { "name": "empty", "input": "", "canonical": "", "contains": [[0, false], [1, false]] },
+    { "name": "single", "input": "8", "canonical": "8", "contains": [[7, false], [8, true], [9, false]] },
+    { "name": "simple_range", "input": "1-5", "canonical": "1-5", "contains": [[0, false], [1, true], [3, true], [5, true], [6, false]] },
+    { "name": "mixed", "input": "1-5,8,10-17", "canonical": "1-5,8,10-17", "contains": [[5, true], [6, false], [8, true], [9, false], [10, true], [17, true], [18, false]] },
+    { "name": "unsorted_normalizes", "input": "8,10-17,1-5", "canonical": "1-5,8,10-17", "contains": [[8, true], [12, true]] },
+    { "name": "overlap_merges", "input": "1-3,2-5", "canonical": "1-5", "contains": [[4, true], [5, true], [6, false]] },
+    { "name": "adjacent_ranges_merge", "input": "1-3,4-6", "canonical": "1-6", "contains": [[3, true], [4, true], [7, false]] },
+    { "name": "adjacent_singles_merge", "input": "1,2,3", "canonical": "1-3", "contains": [[1, true], [2, true], [3, true], [4, false]] },
+    { "name": "duplicate_collapses", "input": "5,5,5", "canonical": "5", "contains": [[5, true]] },
+    { "name": "single_then_overlapping_range", "input": "10-17,3,1-5", "canonical": "1-5,10-17", "contains": [[3, true], [6, false], [10, true]] },
+    { "name": "zero_boundary", "input": "0-2", "canonical": "0-2", "contains": [[0, true], [2, true], [3, false]] }
+  ],
+  "rejections": [
+    { "name": "not_integer", "input": "a-b", "feedback": "NotInteger" },
+    { "name": "not_integer_single", "input": "x", "feedback": "NotInteger" },
+    { "name": "inverted_range", "input": "5-1", "feedback": "InvertedRange" },
+    { "name": "empty_token", "input": "1,,3", "feedback": "Malformed" },
+    { "name": "trailing_comma", "input": "1-5,", "feedback": "Malformed" },
+    { "name": "too_many_dashes", "input": "1-2-3", "feedback": "Malformed" },
+    { "name": "negative_unsupported", "input": "-3", "feedback": "Malformed" }
+  ]
+}
