@@ -23,11 +23,21 @@ signature-gated exactly as today.
 ## Decisions (this spec locks them; operator 2026-06-01)
 
 1. **Full index trust now.** The remote index is verified with **three gates**:
-   (a) **ed25519 signature** against the existing trust store (optionally pinned to a
-   per-registry `key_id`); (b) **anti-rollback** via a per-registry monotonic
-   `sequence` high-water mark; (c) **freshness** via an `issued_at` max-staleness gate.
+   (a) **ed25519 signature** that must match the registry's **mandatory** per-registry
+   `key_id` pin **and** be in the trust store (no any-trusted-key fallback — see the
+   conflated-authority note below); (b) **anti-rollback** via a per-registry monotonic
+   `sequence` high-water mark; (c) **freshness** via an `issued_at` window — bounded both
+   in the past (max-staleness) **and** the future (max-skew; Codex #6424 P2).
    A remote registry is never shipped unsigned. (Anti-rollback + freshness are what the
    per-package pin *cannot* provide — they defend availability + version-selection.)
+   **Mandatory per-registry key (Codex #6424 P1):** the trust store is the *global
+   package-signing* keyring with no registry role separation, so an any-trusted-key
+   fallback would let an unrelated package author's key sign a catalog and steer this
+   registry's version selection. A remote therefore **must** pin its expected signer
+   (`--key` required); the index's `signature.key_id` must equal that pin (and the key
+   must still be trusted). Full trust-store role separation (a distinct registry-
+   authority role) stays deferred to the TUF-roles backlog row — mandatory per-registry
+   pinning closes the conflated-authority gap now without it.
 2. **Cache-fallback + `--offline`.** On an unreachable remote, use the last cached index
    if present, else continue local-only **with a warning**. An `--offline` flag skips
    remotes entirely. Composes with `--frozen` (already registry-independent).
@@ -35,7 +45,7 @@ signature-gated exactly as today.
    `If-Modified-Since` revalidation; content-addressed body cache under
    `~/.ace/registry-cache/`; revalidate each resolve (honors HTTP caching headers).
 4. **`registries.json` + CLI subcommands.** Ordered remotes in `~/.ace/registries.json`;
-   `ace registry remote add <url> [--key <keyid>] [--max-staleness-days <n>]` / `list` /
+   `ace registry remote add <url> --key <keyid> [--max-staleness-days <n>]` / `list` /
    `rm`. **Precedence: user > bundled > remote[0] > remote[1] > …** (local always
    overrides remote; first-listed remote wins among remotes), mirroring the existing
    bundled∪user override.
@@ -88,7 +98,8 @@ Reuse the existing ed25519 + `keyId` + trust-lookup logic; add index-shaped sibl
 
 ### `tools/ace/store.ts` (additive — config + cache paths; sync `loadRegistry` unchanged)
 
-- `RemoteRegistryConfig = { url: string; key_id?: string; max_staleness_days?: number }`
+- `RemoteRegistryConfig = { url: string; key_id: string; max_staleness_days?: number }`
+  (`key_id` is **required** — every remote pins its signer; per Codex #6424 P1).
 - `RegistriesConfig = { remotes: RemoteRegistryConfig[] }`
 - `registriesPath(): string` → `~/.ace/registries.json` (sibling of `registryPath` /
   `trustStorePath`).
@@ -116,18 +127,28 @@ Pure-where-possible; the only effectful surfaces are `fetch` + cache file I/O.
   `registryCacheDir()/<sha256(url)>.json`.
 - `verifyIndex(doc, remote, trustStore, cacheMeta, now, opts): { ok: true } | { ok: false; reason }`
   — the **three gates**, in order:
-  1. **signature** — `verifyIndexSignature`; if `remote.key_id` is set, the doc's
-     `signature.key_id` must equal it (pin); else any trusted key is accepted.
+  1. **signature** — `verifyIndexSignature`: the doc's `signature.key_id` must equal the
+     registry's **mandatory** `remote.key_id` pin **and** the key must be in the trust
+     store. **No any-trusted-key fallback** (Codex #6424 P1 — avoids conflated authority
+     with the global package-signing keyring).
   2. **anti-rollback** — `doc.sequence >= cacheMeta.sequence_high_water` (equal = same
      index; greater = newer; lower = rollback → refuse).
-  3. **freshness** — `now - Date.parse(doc.issued_at) <= maxStaleness`
-     (`remote.max_staleness_days ?? DEFAULT_MAX_STALENESS_DAYS`, where the default is
-     **30 days**). **Skipped only** for a
-     cached body under `--offline` (sig + anti-rollback still enforced).
+  3. **freshness** — a **two-sided** `issued_at` window:
+     - **past:** `now - Date.parse(doc.issued_at) <= maxStaleness`
+       (`remote.max_staleness_days ?? DEFAULT_MAX_STALENESS_DAYS`, default **30 days**);
+     - **future:** `Date.parse(doc.issued_at) - now <= MAX_FUTURE_SKEW` (default
+       **5 minutes**) — a far-future `issued_at` makes the past-check pass trivially
+       (negative diff), so a skewed/compromised signer could publish a future-dated
+       high-sequence index accepted for years; the future-skew bound refuses it
+       (Codex #6424 P2).
+     The **past** gate is **skipped only** for a cached body under `--offline`; the
+     **future-skew** gate is **always** enforced (a future timestamp is never legitimate
+     offline either). Signature + anti-rollback always enforced.
 - `fetchRemoteIndex(remote, trustStore, opts): Promise<{ entries: Registry } | { error: string } | { skipped: string }>`
   — per-registry orchestration:
   1. read cache meta;
-  2. if `opts.offline` → if cached body present, `verifyIndex` (skip freshness) → entries;
+  2. if `opts.offline` → if cached body present, `verifyIndex` (skip **past** max-staleness
+     only; **future-skew, sig + anti-rollback all still enforced**) → entries;
      else `{ skipped }` (+ warn);
   3. else conditional GET (`If-None-Match: etag`, `If-Modified-Since: last_modified`):
      - **304** → use cached body → `verifyIndex` (full gates) → entries;
@@ -150,8 +171,9 @@ Pure-where-possible; the only effectful surfaces are `fetch` + cache file I/O.
 
 ### `tools/ace/ace.ts` (additive — CLI surface + async registry load)
 
-- **`ace registry remote add <url> [--key <keyid>] [--max-staleness-days <n>]`** →
-  `writeRegistryRemote`. **`ace registry remote list`** → print configured remotes.
+- **`ace registry remote add <url> --key <keyid> [--max-staleness-days <n>]`** →
+  `writeRegistryRemote`. **`--key` is required** (every remote pins its signer; Codex
+  #6424 P1) — omitting it is a parse error. **`ace registry remote list`** → print configured remotes.
   **`ace registry remote rm <url>`** → `removeRegistryRemote`. (New `remote` sub-verb
   under the existing `registry` command; parse + handlers mirror the existing
   `registry add` shape.)
@@ -182,24 +204,27 @@ install (graph): read root → verify → loadRegistries(offline?)              
 | --- | --- |
 | Remote unreachable, cache present | Use cache + warn |
 | Remote unreachable, no cache | Skip remote + warn (continue local-only) |
-| `--offline`, cache present | Use cache; **skip freshness**; sig + anti-rollback still enforced |
+| `--offline`, cache present | Use cache; **skip past max-staleness only** (future-skew still enforced); sig + anti-rollback still enforced |
 | `--offline`, no cache | Skip remote + warn |
 | `304 Not Modified` | Use cached body (full gates) |
 | Index parse / shape / `format_version ≠ 1` | **Hard refusal** (named registry) |
-| Index signature bad / untrusted / pin-mismatch | **Hard refusal** (attack signal) |
+| Index signature bad / untrusted / not-the-pinned-key | **Hard refusal** (attack signal; pin is mandatory) |
 | Index `sequence < high-water` | **Hard refusal** (rollback) |
-| Index too stale (`issued_at`) | **Hard refusal** (freshness); `--offline` skips on cache |
+| Index too stale (`issued_at` past max-staleness) | **Hard refusal** (freshness); `--offline` skips this gate on cache |
+| Index `issued_at` in the future beyond max-skew | **Hard refusal** (clock-skew / compromised-signer guard; always enforced, incl. `--offline`) |
 
 ## Testing
 
 - **`tools/ace/registry-remote.test.ts`** (new, pure where possible; `fetch` mocked):
   - `parseIndex` shape-guard (missing/typed-wrong fields, bad `format_version`,
     non-integer `sequence`, unparseable `issued_at`) → `{ error }`, no throw.
-  - signature: good / bad-sig / untrusted-key / pin-mismatch (via a `signIndex` test
-    helper + `generateKeypair`).
+  - signature: good / bad-sig / trusted-but-not-the-pinned-key refused (via a `signIndex`
+    test helper + `generateKeypair`); the `remote.key_id` pin is always enforced.
   - anti-rollback: `sequence < high-water` refused; `==` and `>` accepted; high-water
     persists across fetches.
-  - freshness: stale `issued_at` refused; `--offline` skips staleness on a cached body.
+  - freshness: stale (past) `issued_at` refused; **future-dated `issued_at` beyond
+    max-skew refused** (always, incl. `--offline`); `--offline` skips only the past
+    staleness gate on a cached body.
   - caching: conditional GET — **304 uses cache**, **200 updates cache**, body is
     content-addressed, meta persists etag/last-modified/high-water.
   - offline: `--offline` uses cache; no-cache → skip + warn.
@@ -211,7 +236,8 @@ install (graph): read root → verify → loadRegistries(offline?)              
     registry) and installs the pinned package;
   - rollback / stale / bad-signature each → install refused;
   - `--offline` install path uses cache;
-  - `ace registry remote add` / `list` / `rm` round-trip through `registries.json`.
+  - `ace registry remote add` (with `--key`) / `list` / `rm` round-trip through
+    `registries.json`; `add` **without `--key` is a parse error**.
 - All gated by the existing local `bun test tools/ace/` + strict whole-repo
   `bun --bun tsc --noEmit` (the `lint (tsc tools)` CI gate) + markdownlint on this doc.
 
