@@ -364,3 +364,56 @@ let ``Z-set distinctions: abelian-group inverse, negatives persist, retraction-t
     ZSet.add (ZSet.ofSeq [ ("a", 1L) ]) (ZSet.ofSeq [ ("a", -1L) ])
     |> ZSet.isEmpty
     |> should equal true
+
+
+// ─── generic-math abelian-group surface (Zero + (+) + (~-) + (-)) ───────────
+// Z-set surfaces the native F# generic-math idiom ON THE TYPE: `Zero` + `(+)`
+// (additive monoid) PLUS `(~-)` / `(-)` (the abelian-group inverse) — the
+// `System.Numerics`-shaped interface ("numerics like dotnet", pushed to the
+// other langs that lack generic-math). NOT `INumber` (no total order; the ring
+// scalar is `ZSet.scale`, not a numeric product). These lock the operators to
+// the pooled combiner (operator ≡ module fn) and let generic numeric code +
+// `Seq.sum` aggregate Z-sets through `GenericZero` + `(+)`.
+
+[<Fact>]
+let ``(+) equals ZSet.add — operator delegates to the same pooled combiner`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+    let b = ZSet.ofSeq [ ("b", 1L); ("c", 3L) ]
+    (a + b) |> should equal (ZSet.add a b)
+    (a + b) |> zToList |> should equal [ ("a", 1L); ("b", 3L); ("c", 3L) ]
+
+[<Fact>]
+let ``(~-) equals ZSet.neg and (-) equals ZSet.sub`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+    let b = ZSet.ofSeq [ ("b", 1L) ]
+    (-a) |> should equal (ZSet.neg a)
+    (a - b) |> should equal (ZSet.sub a b)
+    (a - b) |> zToList |> should equal [ ("a", 1L); ("b", 1L) ]
+
+[<Fact>]
+let ``Zero is the additive identity and equals empty / GenericZero`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+    (ZSet<string>.Zero + a) |> should equal a
+    (a + ZSet<string>.Zero) |> should equal a
+    ZSet<string>.Zero |> should equal ZSet.empty<string>
+    LanguagePrimitives.GenericZero<ZSet<string>> |> should equal ZSet.empty<string>
+
+[<Fact>]
+let ``abelian-group inverse via operators: a + (-a) = Zero and a - a = Zero`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", -2L); ("c", 3L) ]
+    (a + (-a)) |> should equal ZSet<string>.Zero
+    (a - a) |> should equal ZSet<string>.Zero
+
+[<Fact>]
+let ``Seq.sum aggregates Z-sets through GenericZero + (+) (retraction nets to 0)`` () =
+    let parts =
+        [ ZSet.ofSeq [ ("a", 1L) ]
+          ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+          ZSet.ofSeq [ ("b", -2L); ("c", 5L) ] ]
+    // empty Seq.sum seed is GenericZero (= empty); b nets to 0 and drops
+    Seq.sum parts |> zToList |> should equal [ ("a", 2L); ("c", 5L) ]
+
+[<Fact>]
+let ``(+) is NOT idempotent: a + a doubles every weight (Z-set, not G-Set)`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", -3L) ]
+    (a + a) |> zToList |> should equal [ ("a", 2L); ("b", -6L) ]

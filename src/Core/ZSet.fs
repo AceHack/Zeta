@@ -41,6 +41,70 @@ type ZSet<'K when 'K : comparison> =
 
     static member Empty : ZSet<'K> = ZSet(ImmutableArray<ZEntry<'K>>.Empty)
 
+    /// Generic-math additive identity (`System.Numerics`-shaped). F# SRTP —
+    /// `LanguagePrimitives.GenericZero`, `Seq.sum`/`List.sum` — resolves the
+    /// zero through this member; the empty Z-set is the `+` identity
+    /// (`a + Zero = a`, `Zero + a = a`). The `ZSet.empty` module value and the
+    /// C# `IAdditiveIdentity` twin carry the same meaning per-language.
+    static member Zero : ZSet<'K> = ZSet<'K>.Empty
+
+    /// `a + b` — per-key **signed sum**, the abelian-group operation. Linear
+    /// sorted-merge over the two spans: one pool workspace + one final array.
+    /// This is the generic-math addition rung (C#'s `IAdditionOperators` twin);
+    /// the `ZSet.add` module function delegates here so SRTP can resolve `(+)`
+    /// on the type itself rather than the (later-defined) module. Combiner is
+    /// SUM, NOT idempotent — `a + a` doubles every weight (the Bag/Z-set step
+    /// away from G-Set's idempotent union).
+    static member (+) (a: ZSet<'K>, b: ZSet<'K>) : ZSet<'K> =
+        if a.IsEmpty then b
+        elif b.IsEmpty then a
+        else
+            let sa = a.AsSpan()
+            let sb = b.AsSpan()
+            let cap = sa.Length + sb.Length
+            let rented = Pool.Rent<ZEntry<'K>> cap
+            try
+                let cmp = Comparer<'K>.Default
+                let mutable i = 0
+                let mutable j = 0
+                let mutable k = 0
+                while i < sa.Length && j < sb.Length do
+                    let c = cmp.Compare(sa.[i].Key, sb.[j].Key)
+                    if c < 0 then rented.[k] <- sa.[i]; i <- i + 1; k <- k + 1
+                    elif c > 0 then rented.[k] <- sb.[j]; j <- j + 1; k <- k + 1
+                    else
+                        // `Checked.(+)` — Z-set weights are int64 but nothing
+                        // stops a stream from running forever; silent wraparound
+                        // on overflow would turn a +2^63 multiset into a -2^63
+                        // multiset and corrupt every downstream query.
+                        let s = Checked.(+) sa.[i].Weight sb.[j].Weight
+                        if s <> 0L then rented.[k] <- ZEntry(sa.[i].Key, s); k <- k + 1
+                        i <- i + 1; j <- j + 1
+                while i < sa.Length do rented.[k] <- sa.[i]; i <- i + 1; k <- k + 1
+                while j < sb.Length do rented.[k] <- sb.[j]; j <- j + 1; k <- k + 1
+                if k = 0 then ZSet<'K>.Empty else ZSet(Pool.FreezeSlice(rented, k))
+            finally
+                Pool.Return rented
+
+    /// `-a` — the abelian-group **inverse**: flip every sign, so
+    /// `a + (-a) = Zero` (the law a Bag cannot satisfy, and why the Z-set — not
+    /// the Bag — is the substrate for retraction / undo / DBSP). Exact-size
+    /// allocation, no workspace. C#'s `IUnaryNegationOperators` twin.
+    static member (~-) (a: ZSet<'K>) : ZSet<'K> =
+        let span = a.AsSpan()
+        if span.IsEmpty then a
+        else
+            let arr = Pool.AllocateExact<ZEntry<'K>> span.Length
+            for i in 0 .. span.Length - 1 do
+                // Checked negation — `-Int64.MinValue` overflows.
+                arr.[i] <- ZEntry(span.[i].Key, Checked.(-) 0L span.[i].Weight)
+            ZSet(Pool.Freeze arr)
+
+    /// `a - b = a + (-b)`. The generic-math subtraction rung (C#'s
+    /// `ISubtractionOperators` twin); retraction expressed directly.
+    static member (-) (a: ZSet<'K>, b: ZSet<'K>) : ZSet<'K> =
+        a + (-b)
+
     member this.Count =
         if this.entries.IsDefault then 0 else this.entries.Length
 
@@ -205,50 +269,17 @@ module ZSet =
     let ofSet (keys: 'K seq) : ZSet<'K> =
         keys |> Seq.distinct |> Seq.map (fun k -> k, 1L) |> ofSeq
 
-    /// `a + b`. Linear sorted-merge. One pool workspace + one final array.
-    let add (a: ZSet<'K>) (b: ZSet<'K>) : ZSet<'K> =
-        if a.IsEmpty then b
-        elif b.IsEmpty then a
-        else
-            let sa = a.AsSpan()
-            let sb = b.AsSpan()
-            let cap = sa.Length + sb.Length
-            let rented = Pool.Rent<ZEntry<'K>> cap
-            try
-                let cmp = Comparer<'K>.Default
-                let mutable i = 0
-                let mutable j = 0
-                let mutable k = 0
-                while i < sa.Length && j < sb.Length do
-                    let c = cmp.Compare(sa.[i].Key, sb.[j].Key)
-                    if c < 0 then rented.[k] <- sa.[i]; i <- i + 1; k <- k + 1
-                    elif c > 0 then rented.[k] <- sb.[j]; j <- j + 1; k <- k + 1
-                    else
-                        // `Checked.(+)` — Z-set weights are int64 but nothing
-                        // stops a stream from running forever; silent wraparound
-                        // on overflow would turn a +2^63 multiset into a -2^63
-                        // multiset and corrupt every downstream query.
-                        let s = Checked.(+) sa.[i].Weight sb.[j].Weight
-                        if s <> 0L then rented.[k] <- ZEntry(sa.[i].Key, s); k <- k + 1
-                        i <- i + 1; j <- j + 1
-                while i < sa.Length do rented.[k] <- sa.[i]; i <- i + 1; k <- k + 1
-                while j < sb.Length do rented.[k] <- sb.[j]; j <- j + 1; k <- k + 1
-                if k = 0 then ZSet.Empty else ZSet(Pool.FreezeSlice(rented, k))
-            finally
-                Pool.Return rented
+    /// `a + b` — per-key signed sum. Delegates to the type's generic-math `(+)`
+    /// operator, where the pooled sorted-merge combiner now lives so F# SRTP
+    /// (`Seq.sum`, `GenericZero`) and the `System.Numerics`-shaped interface can
+    /// resolve addition on the type itself rather than this (later) module.
+    let add (a: ZSet<'K>) (b: ZSet<'K>) : ZSet<'K> = a + b
 
-    /// `-a`. Exact-size allocation, no workspace needed.
-    let neg (a: ZSet<'K>) : ZSet<'K> =
-        let span = a.AsSpan()
-        if span.IsEmpty then a
-        else
-            let arr = Pool.AllocateExact<ZEntry<'K>> span.Length
-            for i in 0 .. span.Length - 1 do
-                // Checked negation — `-Int64.MinValue` overflows.
-                arr.[i] <- ZEntry(span.[i].Key, Checked.(-) 0L span.[i].Weight)
-            ZSet(Pool.Freeze arr)
+    /// `-a` — the abelian-group inverse. Delegates to the type's generic-math
+    /// `(~-)` operator (the unary-negation rung).
+    let neg (a: ZSet<'K>) : ZSet<'K> = -a
 
-    let inline sub (a: ZSet<'K>) (b: ZSet<'K>) : ZSet<'K> = add a (neg b)
+    let inline sub (a: ZSet<'K>) (b: ZSet<'K>) : ZSet<'K> = a - b
 
     let scale (n: Weight) (a: ZSet<'K>) : ZSet<'K> =
         if n = 0L || a.IsEmpty then ZSet.Empty
