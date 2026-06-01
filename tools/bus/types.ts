@@ -38,6 +38,9 @@ export type AgentId =
   | "otto-cli"
   | "otto-desktop"
   | "otto-vscode"
+  // otto-windows — first Windows surface; the git-native cross-machine agent-bus
+  // names it the first Windows sender (#6219 spec / B-0954).
+  | "otto-windows"
   // Alexa multi-surface (Kiro IDE + CLI)
   | "alexa-cli"
   | "alexa-kiro"
@@ -162,6 +165,8 @@ export const SENDER_IDS: readonly SenderAgentId[] = [
   // Multi-surface variants (added 2026-05-13 — multi-foreground-surface activation;
   // otto-vscode added 2026-05-21 per B-0689)
   "otto-cli", "otto-desktop", "otto-vscode",
+  // otto-windows — first Windows surface for the git-native bus (#6219 / B-0954)
+  "otto-windows",
   "alexa-cli", "alexa-kiro",
   "riven-cli", "riven-cursor",
   "lior-antigravity", "lior-gemini",
