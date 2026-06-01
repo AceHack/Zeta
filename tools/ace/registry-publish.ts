@@ -3,7 +3,7 @@
 // No I/O — the caller (ace.ts) reads the package files + sequence + pem and writes the output.
 import type { AcePackage, RegistryEntry } from "./store.ts";
 import { packageHash } from "./resolve.ts";
-import type { IndexSignableContent } from "./signing.ts";
+import type { IndexSignableContent, RevocationMap } from "./signing.ts";
 import { signIndex } from "./signing.ts";
 import type { IndexDoc } from "./registry-remote.ts";
 
@@ -22,7 +22,7 @@ export function nextSequence(prev: IndexDoc | null): number {
 const RESERVED_IDENTITY_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 /** Assemble + sign an index doc from already-read packages. Duplicate name@version → error. */
 export function buildIndexDoc(args: {
-  packages: ReadonlyArray<{ pkg: AcePackage; url?: string }>; baseUrl: string; sequence: number; issuedAt: string; privatePem: string;
+  packages: ReadonlyArray<{ pkg: AcePackage; url?: string }>; baseUrl: string; sequence: number; issuedAt: string; privatePem: string; revoked?: RevocationMap; quarantined?: RevocationMap;
 }): IndexDoc | { error: string } {
   // Null-prototype map: a package name like "__proto__" cannot pollute via bracket-assign.
   const packages: Record<string, Record<string, RegistryEntry>> = Object.create(null);
@@ -41,7 +41,11 @@ export function buildIndexDoc(args: {
     versions[version] = { url, package_hash: packageHash(pkg) };
     packages[name] = versions;
   }
-  const content: IndexSignableContent = { format_version: 1, sequence: args.sequence, issued_at: args.issuedAt, packages };
+  const hasMarks = (m?: RevocationMap) => !!m && Object.keys(m).length > 0;
+  const fmt = (hasMarks(args.revoked) || hasMarks(args.quarantined)) ? 2 : 1;
+  const content: IndexSignableContent = { format_version: fmt, sequence: args.sequence, issued_at: args.issuedAt, packages };
+  if (hasMarks(args.revoked)) content.revoked = args.revoked!;
+  if (hasMarks(args.quarantined)) content.quarantined = args.quarantined!;
   const signature = signIndex(content, args.privatePem);
   return { ...content, signature };
 }

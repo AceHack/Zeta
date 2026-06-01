@@ -2,7 +2,7 @@
 // signed remote registry index. Untrusted-input discipline throughout (never throw on bad
 // input; return { error } / { skipped }). The package bytes the index points at are still
 // hash-pinned + signature-gated downstream (unchanged) — index trust is additive.
-import type { AceSignature, IndexSignableContent, TrustEntry } from "./signing.ts";
+import type { AceSignature, IndexSignableContent, RevocationMap, TrustEntry } from "./signing.ts";
 import { verifyIndexSignature } from "./signing.ts";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
@@ -24,12 +24,28 @@ function isSig(s: unknown): s is AceSignature {
     && typeof (s as AceSignature).sig === "string";
 }
 
+function validMarkMap(m: unknown): boolean {
+  if (typeof m !== "object" || m === null) return false;
+  for (const name of Object.keys(m as object)) {
+    const vs = (m as Record<string, unknown>)[name];
+    if (typeof vs !== "object" || vs === null) return false;
+    for (const v of Object.keys(vs as object)) {
+      const e = (vs as Record<string, unknown>)[v];
+      if (typeof e !== "object" || e === null) return false;
+      const ee = e as Record<string, unknown>;
+      if (typeof ee.at !== "string") return false;
+      if (ee.reason !== undefined && typeof ee.reason !== "string") return false;
+    }
+  }
+  return true;
+}
+
 export function parseIndex(json: string): IndexDoc | { error: string } {
   let raw: unknown;
   try { raw = JSON.parse(json); } catch { return { error: "index is not valid JSON" }; }
   if (!raw || typeof raw !== "object") return { error: "index is not an object" };
   const o = raw as Record<string, unknown>;
-  if (o.format_version !== 1) return { error: "unsupported index format_version" };
+  if (o.format_version !== 1 && o.format_version !== 2) return { error: "unsupported index format_version" };
   if (typeof o.sequence !== "number" || !Number.isInteger(o.sequence) || o.sequence < 0) return { error: "index sequence must be a non-negative integer" };
   if (typeof o.issued_at !== "string" || Number.isNaN(Date.parse(o.issued_at))) return { error: "index issued_at must be RFC3339" };
   if (!o.packages || typeof o.packages !== "object") return { error: "index packages must be an object" };
@@ -43,8 +59,19 @@ export function parseIndex(json: string): IndexDoc | { error: string } {
     }
     packages[name] = vm;
   }
+  if (o.revoked !== undefined) {
+    if (o.format_version !== 2) return { error: "index revoked map requires format_version 2" };
+    if (!validMarkMap(o.revoked)) return { error: "index revoked map is malformed" };
+  }
+  if (o.quarantined !== undefined) {
+    if (o.format_version !== 2) return { error: "index quarantined map requires format_version 2" };
+    if (!validMarkMap(o.quarantined)) return { error: "index quarantined map is malformed" };
+  }
   if (!isSig(o.signature)) return { error: "index signature is malformed" };
-  return { format_version: 1, sequence: o.sequence, issued_at: o.issued_at, packages, signature: o.signature };
+  const doc: IndexDoc = { format_version: o.format_version as number, sequence: o.sequence, issued_at: o.issued_at, packages, signature: o.signature };
+  if (o.revoked !== undefined) doc.revoked = o.revoked as RevocationMap;
+  if (o.quarantined !== undefined) doc.quarantined = o.quarantined as RevocationMap;
+  return doc;
 }
 
 export const DEFAULT_MAX_STALENESS_DAYS = 30;
@@ -126,18 +153,21 @@ function toRegistryFragment(doc: IndexDoc): Registry {
 
 export async function fetchRemoteIndex(
   remote: RemoteRegistryConfig, trustStore: Map<string, TrustEntry>, opts: FetchOpts = {},
-): Promise<{ entries: Registry } | { error: string } | { skipped: string }> {
+): Promise<{ entries: Registry; marks: { revoked?: RevocationMap; quarantined?: RevocationMap } } | { error: string } | { skipped: string }> {
   const now = opts.now ?? Date.now();
   const cached = readCache(remote.url);
   const cacheMeta: CacheMeta = cached?.meta ?? { url: remote.url, sequence_high_water: 0, index_content_hash: "", fetched_at: "" };
 
   // Validate a CACHED body through the three gates; never writes (the fresh-200 path writes its own cache).
-  const useCachedBody = (body: string): { entries: Registry } | { error: string } => {
+  const useCachedBody = (body: string): { entries: Registry; marks: { revoked?: RevocationMap; quarantined?: RevocationMap } } | { error: string } => {
     const parsed = parseIndex(body);
     if ("error" in parsed) return { error: `${remote.url}: ${parsed.error}` };
     const v = verifyIndex(parsed, remote, trustStore, cacheMeta, now, { offline: opts.offline === true });
     if (!v.ok) return { error: `${remote.url}: ${v.reason}` };
-    return { entries: toRegistryFragment(parsed) };
+    const marks: { revoked?: RevocationMap; quarantined?: RevocationMap } = {};
+    if (parsed.revoked !== undefined) marks.revoked = parsed.revoked;
+    if (parsed.quarantined !== undefined) marks.quarantined = parsed.quarantined;
+    return { entries: toRegistryFragment(parsed), marks };
   };
 
   if (opts.offline) {
@@ -176,23 +206,35 @@ export async function fetchRemoteIndex(
     ...(etag !== undefined ? { etag } : {}),
     ...(last_modified !== undefined ? { last_modified } : {}),
   });
-  return { entries: toRegistryFragment(parsed) };
+  const freshMarks: { revoked?: RevocationMap; quarantined?: RevocationMap } = {};
+  if (parsed.revoked !== undefined) freshMarks.revoked = parsed.revoked;
+  if (parsed.quarantined !== undefined) freshMarks.quarantined = parsed.quarantined;
+  return { entries: toRegistryFragment(parsed), marks: freshMarks };
 }
 
 export interface LoadRegistriesOpts { trustStore: Map<string, TrustEntry>; offline?: boolean; now?: number }
 
+export interface LoadedRegistries {
+  registry: Registry;
+  revoked: RevocationMap;
+  quarantined: RevocationMap;
+  warnings: string[];
+  errors: string[];
+}
+
 /** Merge: remotes (reverse listed order) ∪ bundled ∪ user → user > bundled > remote[0] > … */
 export async function loadRegistries(
   opts: LoadRegistriesOpts,
-): Promise<{ registry: Registry; warnings: string[]; errors: string[] }> {
+): Promise<LoadedRegistries> {
   const warnings: string[] = []; const errors: string[] = [];
   const remotes = readRegistriesConfig().remotes;
   const fragments: Registry[] = [];
+  const markFragments: { revoked?: RevocationMap; quarantined?: RevocationMap }[] = [];
   for (const remote of remotes) {
     const r = await fetchRemoteIndex(remote, opts.trustStore, { offline: opts.offline === true, ...(opts.now !== undefined ? { now: opts.now } : {}) });
     if ("error" in r) errors.push(r.error);
     else if ("skipped" in r) warnings.push(r.skipped);
-    else fragments.push(r.entries);
+    else { fragments.push(r.entries); markFragments.push(r.marks); }
   }
   const registry: Registry = new Map();
   const merge = (frag: Registry): void => {
@@ -204,5 +246,16 @@ export async function loadRegistries(
   };
   for (let i = fragments.length - 1; i >= 0; i--) merge(fragments[i]!);
   merge(loadRegistry());
-  return { registry, warnings, errors };
+  const mergedRevoked: RevocationMap = Object.create(null);
+  const mergedQuarantined: RevocationMap = Object.create(null);
+  const unionMerge = (target: RevocationMap, src: RevocationMap | undefined): void => {
+    if (!src) return;
+    for (const name of Object.keys(src)) {
+      const vs = src[name]!;
+      if (!target[name]) target[name] = Object.create(null);
+      for (const v of Object.keys(vs)) { target[name]![v] = vs[v]!; }
+    }
+  };
+  for (const mf of markFragments) { unionMerge(mergedRevoked, mf.revoked); unionMerge(mergedQuarantined, mf.quarantined); }
+  return { registry, revoked: mergedRevoked, quarantined: mergedQuarantined, warnings, errors };
 }

@@ -334,3 +334,63 @@ while all other packages derive their URL from `--base-url`.
 
 - ETag / Last-Modified sidecar for conditional-GET cache validation.
 - Multi-signer publish (multiple signing keys on one index).
+
+## Revocation and quarantine (slice 7)
+
+Slice 7 adds two mark states to the signed registry index. Marks live inside
+`IndexSignableContent` (inherited by the Ed25519 signature, anti-rollback
+sequence, and freshness gates). An index carrying any mark has `format_version`
+set to `2`; a plain publish with no marks stays `format_version` `1`.
+
+### Mark semantics
+
+- **`revoked`** — permanent hard-refuse. A revoked version is refused at resolve
+  and install regardless of the lockfile. There is no `unrevoke`; revocation is
+  terminal.
+- **`quarantined`** — soft-refuse, override-able with `--allow-quarantined`.
+
+Revoke supersedes quarantine: revoking a quarantined version removes the
+quarantine mark and adds the revocation mark. Quarantining an already-revoked
+version is an error.
+
+### Producer subcommands
+
+Each mutate-command reads the existing `--out` index, verifies its signature
+under `--key`, applies the mark, bumps the sequence by one, refreshes
+`issued_at`, re-signs, self-verifies, and writes the result. `--out` must
+already exist (these commands mutate an existing index; use `ace registry
+publish` to create one first).
+
+| Subcommand | Effect |
+|---|---|
+| `ace registry revoke <name>@<version> [--reason "..."] --key <pem> [--out <path>]` | Permanently revokes the version; also clears any quarantine on it |
+| `ace registry quarantine <name>@<version> [--reason "..."] --key <pem> [--out <path>]` | Soft-refuses the version; errors if already revoked |
+| `ace registry unquarantine <name>@<version> --key <pem> [--out <path>]` | Releases the quarantine after review; errors if not quarantined |
+
+### publish carries marks forward
+
+`ace registry publish` preserves existing `revoked` and `quarantined` maps from
+a prior index when `--out` already exists, so marks are not silently dropped on
+republish.
+
+### Consumer behaviour
+
+`ace install` (and the resolver) refuses marked versions:
+
+- **Revoked** — always refused, even when the version is pinned in the lockfile.
+  Revocation overrides the lockfile: if a locked version is subsequently revoked,
+  `ace install` refuses and the lockfile must be updated.
+- **Quarantined** — refused by default; pass `--allow-quarantined` to opt in.
+
+```bash
+# Producer: revoke a bad version
+ace registry revoke my-pkg@1.2.3 --reason "supply-chain compromise" \
+    --key registry.pem --out index.json
+
+# Consumer: plain install now refuses my-pkg@1.2.3
+ace install my-pkg.json
+# Error: my-pkg@1.2.3 is revoked: supply-chain compromise
+
+# Consumer: opt into a quarantined (but not revoked) version
+ace install my-pkg.json --allow-quarantined
+```

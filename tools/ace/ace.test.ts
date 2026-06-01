@@ -10,6 +10,14 @@ import { generateKeypair, signManifest } from "./signing.ts";
 import { generateKeypair as gkpA, signIndex as sidxA } from "./signing.ts";
 import { packageHash } from "./resolve.ts";
 import { parseLockfile } from "./lockfile.ts";
+import { parseIndex } from "./registry-remote.ts";
+
+/** Read an index file + parseIndex it, throwing on a parse error (test ergonomics). */
+function readIndexFile(path: string) {
+  const doc = parseIndex(readFileSync(path, "utf8"));
+  if ("error" in doc) throw new Error(`readIndexFile: ${doc.error}`);
+  return doc;
+}
 
 // ---- Trust-path isolation: redirect ~/.ace to a temp dir in every test ----
 let savedHome: string | undefined;
@@ -1765,5 +1773,202 @@ describe("ace registry publish (slice 6.1)", () => {
     // bad values → parse error
     expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "0"])).toBe(true);
     expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "abc"])).toBe(true);
+  });
+});
+
+describe("ace registry revoke/quarantine/unquarantine (slice 7)", () => {
+  let savedFetch: typeof globalThis.fetch;
+  beforeEach(() => { savedFetch = globalThis.fetch; });
+  afterEach(() => { globalThis.fetch = savedFetch; });
+
+  // Producer helper: write a signed package file named <name>-<version>.json in dir.
+  function writeSignedPkg(dir: string, name: string, version: string) {
+    const files = { [`${name}.txt`]: "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const kp = generateKeypair();
+    const m = { format_version: 1, name, version, content_hash: ch };
+    const pkg = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files };
+    writeFileSync(join(dir, `${name}-${version}.json`), JSON.stringify(pkg));
+    return { kp, pkg };
+  }
+
+  // ---- Producer-side: marks land in a v2 signed index, sequence bumps ----
+
+  test("revoke makes the index format_version 2, adds revoked mark, bumps sequence, self-verifies", async () => {
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-rev-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "r-rev.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "rev-index.json");
+    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    const before = readIndexFile(outPath); expect(before.sequence).toBe(1); expect(before.format_version).toBe(1);
+    const code = await main(["registry", "revoke", "leaf@1.0.0", "--reason", "key compromise", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const after = readIndexFile(outPath);
+    expect(after.format_version).toBe(2);
+    expect(after.sequence).toBe(2);
+    expect(after.revoked?.leaf?.["1.0.0"]).toBeDefined();
+    expect(after.revoked!.leaf!["1.0.0"]!.reason).toBe("key compromise");
+  });
+
+  test("revoke against an index signed by a DIFFERENT key is refused (sig verify fails)", async () => {
+    const idxKp = generateKeypair();
+    const otherKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-rev-otherkey-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "r-own.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "rev-otherkey-index.json");
+    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    const otherPath = join(tempHome, "r-other.pem"); writeFileSync(otherPath, otherKp.privatePem);
+    const code = await main(["registry", "revoke", "leaf@1.0.0", "--key", otherPath, "--out", outPath]);
+    expect(code).toBe(1);
+    const after = readIndexFile(outPath);
+    expect(after.sequence).toBe(1);
+    expect(after.format_version).toBe(1);
+  });
+
+  test("revoke with a missing --out (no existing index) is refused", async () => {
+    const idxKp = generateKeypair();
+    const keyPath = join(tempHome, "r-noidx.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const code = await main(["registry", "revoke", "leaf@1.0.0", "--key", keyPath, "--out", join(tempHome, "does-not-exist.json")]);
+    expect(code).toBe(1);
+  });
+
+  test("quarantine an already-revoked version is an error (exit 1)", async () => {
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-q-on-rev-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "r-qrev.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "qrev-index.json");
+    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    expect(await main(["registry", "revoke", "leaf@1.0.0", "--key", keyPath, "--out", outPath])).toBe(0);
+    const code = await main(["registry", "quarantine", "leaf@1.0.0", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+  });
+
+  test("unquarantine a non-quarantined version is an error (exit 1)", async () => {
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-unq-non-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "r-unqnon.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "unqnon-index.json");
+    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    const code = await main(["registry", "unquarantine", "leaf@1.0.0", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+  });
+
+  test("revoke on a quarantined version moves it (out of quarantined, into revoked)", async () => {
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-q-then-rev-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "r-qmove.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "qmove-index.json");
+    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    expect(await main(["registry", "quarantine", "leaf@1.0.0", "--reason", "review", "--key", keyPath, "--out", outPath])).toBe(0);
+    let doc = readIndexFile(outPath);
+    expect(doc.quarantined?.leaf?.["1.0.0"]).toBeDefined();
+    expect(doc.revoked?.leaf?.["1.0.0"]).toBeUndefined();
+    expect(await main(["registry", "revoke", "leaf@1.0.0", "--key", keyPath, "--out", outPath])).toBe(0);
+    doc = readIndexFile(outPath);
+    expect(doc.revoked?.leaf?.["1.0.0"]).toBeDefined();
+    expect(doc.quarantined?.leaf?.["1.0.0"]).toBeUndefined();
+  });
+
+  test("publish after a revoke preserves the mark (carry-forward)", async () => {
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-after-rev-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "r-cf.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "cf-index.json");
+    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    expect(await main(["registry", "revoke", "leaf@0.9.0", "--reason", "old", "--key", keyPath, "--out", outPath])).toBe(0);
+    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath])).toBe(0);
+    const doc = readIndexFile(outPath);
+    expect(doc.format_version).toBe(2);
+    expect(doc.revoked?.leaf?.["0.9.0"]).toBeDefined();
+  });
+
+  // ---- Consumer-side: resolve/install refuses revoked + quarantined; --allow-quarantined opts in ----
+  // Mirrors the slice-6 install-via-remote harness (fetch mock serving index + package by URL).
+
+  const PKG_URL = "https://pkgs/leaf-1.0.0.json";
+  const IDX_URL = "https://x/index.json";
+
+  /** Build a signed package + a published+optionally-marked index; serve both via a fetch mock;
+   *  register the remote + trust both keys; write a root that depends on leaf@^1.0.0. */
+  async function setupConsumer(opts: { mark?: "revoke" | "quarantine"; reason?: string }) {
+    const idxKp = generateKeypair();
+    const pkgKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-cons-pkgs-"));
+    const files = { "leaf.txt": "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
+    const pkg = { manifest: { ...m, signature: signManifest(m, pkgKp.privatePem) }, files };
+    const pkgJson = JSON.stringify(pkg);
+    writeFileSync(join(pkgDir, "leaf-1.0.0.json"), pkgJson);
+    const keyPath = join(tempHome, "r-cons.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const idxPath = join(tempHome, "cons-index.json");
+    expect(await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", idxPath])).toBe(0);
+    if (opts.mark === "revoke") {
+      expect(await main(["registry", "revoke", "leaf@1.0.0", ...(opts.reason ? ["--reason", opts.reason] : []), "--key", keyPath, "--out", idxPath])).toBe(0);
+    } else if (opts.mark === "quarantine") {
+      expect(await main(["registry", "quarantine", "leaf@1.0.0", ...(opts.reason ? ["--reason", opts.reason] : []), "--key", keyPath, "--out", idxPath])).toBe(0);
+    }
+    const serve = (u: string) => new Response(u === PKG_URL ? pkgJson : readFileSync(idxPath, "utf8"), { status: 200 });
+    globalThis.fetch = (async (u: string) => serve(u)) as unknown as typeof fetch;
+    await main(["trust", "add", idxKp.publicSpkiB64]);
+    await main(["trust", "add", pkgKp.publicSpkiB64]);
+    await main(["registry", "remote", "add", IDX_URL, "--key", idxKp.keyId]);
+    const root = { manifest: { format_version: 1, name: "root", version: "1.0.0",
+      content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
+      dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
+    const rootPath = join(tempHome, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    return { rootPath, idxPath, keyPath, pkgJson, serve, store: () => join(tempHome, ".ace", "store") };
+  }
+
+  async function freshFetchAfterCacheWipe(serve: (u: string) => Response) {
+    const { rmSync } = await import("node:fs");
+    const { registryCacheDir } = await import("./store.ts");
+    rmSync(registryCacheDir(), { recursive: true, force: true });
+    globalThis.fetch = (async (u: string) => serve(u)) as unknown as typeof fetch;
+  }
+
+  test("install of a revoked registry version refuses (resolve)", async () => {
+    const c = await setupConsumer({ mark: "revoke", reason: "compromise" });
+    const code = await main(["install", c.rootPath, "--allow-no-signature"]);
+    expect(code).toBe(1);
+    expect(listInstalled(c.store()).some((p) => p.manifest.name === "leaf")).toBe(false);
+  });
+
+  test("install of a quarantined version refuses without --allow-quarantined, installs with it", async () => {
+    const c = await setupConsumer({ mark: "quarantine", reason: "review" });
+    const refused = await main(["install", c.rootPath, "--allow-no-signature"]);
+    expect(refused).toBe(1);
+    expect(listInstalled(c.store()).some((p) => p.manifest.name === "leaf")).toBe(false);
+    const allowed = await main(["install", c.rootPath, "--allow-no-signature", "--allow-quarantined"]);
+    expect(allowed).toBe(0);
+    expect(listInstalled(c.store()).some((p) => p.manifest.name === "leaf")).toBe(true);
+  });
+
+  test("unquarantine restores normal install", async () => {
+    const c = await setupConsumer({ mark: "quarantine", reason: "review" });
+    expect(await main(["install", c.rootPath, "--allow-no-signature"])).toBe(1);
+    expect(await main(["registry", "unquarantine", "leaf@1.0.0", "--key", c.keyPath, "--out", c.idxPath])).toBe(0);
+    await freshFetchAfterCacheWipe(c.serve);
+    const code = await main(["install", c.rootPath, "--allow-no-signature"]);
+    expect(code).toBe(0);
+    expect(listInstalled(c.store()).some((p) => p.manifest.name === "leaf")).toBe(true);
+  });
+
+  test("lockfile pins leaf@1.0.0; then revoke; ace install --frozen refuses (revocation overrides lockfile)", async () => {
+    const c = await setupConsumer({});
+    const lockPath = join(tempHome, "ace.lock");
+    expect(await main(["install", c.rootPath, "--allow-no-signature", "--lockfile", lockPath])).toBe(0);
+    expect(existsSync(lockPath)).toBe(true);
+    expect(await main(["registry", "revoke", "leaf@1.0.0", "--reason", "compromise", "--key", c.keyPath, "--out", c.idxPath])).toBe(0);
+    await freshFetchAfterCacheWipe(c.serve);
+    const store = mkdtempSync(join(tmpdir(), "ace-lock-rev-store-"));
+    const code = await main(["install", c.rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
   });
 });

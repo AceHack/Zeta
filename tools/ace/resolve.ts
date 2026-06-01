@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import type { RevocationMap } from "./signing.ts";
 import { contentHash, type AcePackage, type LoadedTrustEntry, type Registry } from "./store.ts";
 import { verifySignature } from "./signing.ts";
 import { parseRange, satisfies } from "./semver.ts";
@@ -24,7 +25,7 @@ export type ResolveReason =
   | "version-skew" | "tamper" | "pin-mismatch" | "bad-content-hash"
   | "bad-signature" | "untrusted-key" | "unsupported-algo" | "no-signature"
   | "cycle" | "fetch-failed" | "invalid-package" | "registry-miss"
-  | "unsatisfiable" | "bad-range";
+  | "unsatisfiable" | "bad-range" | "revoked" | "quarantined";
 
 export type ResolveResult =
   | { ok: true; order: AcePackage[] }
@@ -36,7 +37,7 @@ export async function resolve(
   trustStore: Map<string, LoadedTrustEntry>,
   registry: Registry,
   solved: Map<string, string>,
-  opts: { allowNoSignature: boolean },
+  opts: { allowNoSignature: boolean; allowQuarantined?: boolean; revoked?: RevocationMap; quarantined?: RevocationMap },
 ): Promise<ResolveResult> {
   const byName = new Map<string, { version: string; pkgHash: string; path: string[] }>();
   const visiting = new Set<string>();
@@ -87,6 +88,14 @@ export async function resolve(
           return { ok: false, reason: "registry-miss", detail: `${edge.name}@${concrete} not in registry`, path: here };
         }
         url = entry.url; package_hash = entry.package_hash;
+        if (opts.revoked && opts.revoked[edge.name]?.[concrete] !== undefined) {
+          const r = opts.revoked[edge.name]![concrete]!;
+          return { ok: false, reason: "revoked", detail: `${edge.name}@${concrete} is revoked${r.reason ? ": " + r.reason : ""}`, path: here };
+        }
+        if (!opts.allowQuarantined && opts.quarantined && opts.quarantined[edge.name]?.[concrete] !== undefined) {
+          const q = opts.quarantined[edge.name]![concrete]!;
+          return { ok: false, reason: "quarantined", detail: `${edge.name}@${concrete} is quarantined${q.reason ? ": " + q.reason : ""} (use --allow-quarantined)`, path: here };
+        }
         effectiveVersion = concrete;
       } else {
         if (typeof edge.url !== "string" || typeof edge.package_hash !== "string" || typeof edge.version !== "string") {

@@ -24,7 +24,9 @@ import {
   writeRegistryRemote, removeRegistryRemote, readRegistriesConfig,
   type AcePackage,
 } from "./store";
-import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem, verifyIndexSignature } from "./signing";
+import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem, verifyIndexSignature, signIndex } from "./signing";
+import type { IndexSignableContent, RevocationMap } from "./signing";
+import { applyRevoke, applyQuarantine, applyUnquarantine } from "./registry-revoke.ts";
 import { resolve, packageHash } from "./resolve.ts";
 import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
@@ -57,6 +59,7 @@ interface InstallArgs {
   readonly source: string;
   readonly storePath: string;
   readonly allowNoSignature: boolean;
+  readonly allowQuarantined?: boolean;
   readonly printResolution?: boolean;
   readonly frozen: boolean;
   readonly locked: boolean;
@@ -99,7 +102,7 @@ interface UpdateArgs {
 
 interface RegistryArgs {
   readonly command: "registry";
-  readonly sub: "list" | "add" | "remote-add" | "remote-list" | "remote-rm" | "publish";
+  readonly sub: "list" | "add" | "remote-add" | "remote-list" | "remote-rm" | "publish" | "revoke" | "quarantine" | "unquarantine";
   readonly regName?: string;
   readonly regVersion?: string;
   readonly regUrl?: string;
@@ -112,6 +115,9 @@ interface RegistryArgs {
   readonly pubKeyPath?: string;
   readonly pubOut?: string;
   readonly pubSequence?: number;
+  readonly revName?: string;
+  readonly revVersion?: string;
+  readonly revReason?: string;
 }
 
 type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
@@ -274,7 +280,30 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       if (seq !== undefined) r = { ...r, pubSequence: seq };
       return r;
     }
-    return { error: "registry requires 'add', 'list', 'remote', or 'publish'" };
+    if (sub === "revoke" || sub === "quarantine" || sub === "unquarantine") {
+      const spec = argv[2];
+      if (!spec || spec.startsWith("-")) return { error: `registry ${sub} requires <name>@<version>` };
+      // split on the LAST '@' so scoped names (rare) survive; both parts must be non-empty.
+      const at = spec.lastIndexOf("@");
+      if (at <= 0 || at === spec.length - 1) return { error: `registry ${sub}: <name>@<version> must have a non-empty name and version` };
+      const name = spec.slice(0, at), version = spec.slice(at + 1);
+      let key: string | undefined, out: string | undefined, reason: string | undefined;
+      for (let i = 3; i < argv.length; i++) {
+        if (argv[i] === "--key") { key = argv[++i]; if (!key || key.startsWith("-")) return { error: "--key requires a value" }; }
+        else if (argv[i] === "--out") { out = argv[++i]; if (!out || out.startsWith("-")) return { error: "--out requires a value" }; }
+        else if (argv[i] === "--reason") {
+          if (sub === "unquarantine") return { error: "registry unquarantine does not take --reason" };
+          reason = argv[++i]; if (reason === undefined || reason.startsWith("-")) return { error: "--reason requires a value" };
+        }
+        else return { error: `Unknown option for registry ${sub}: ${argv[i]}` };
+      }
+      if (!key) return { error: `registry ${sub} requires --key <pem-path>` };
+      let r: RegistryArgs = { command: "registry", sub, revName: name, revVersion: version, pubKeyPath: key };
+      if (out !== undefined) r = { ...r, pubOut: out };
+      if (reason !== undefined) r = { ...r, revReason: reason };
+      return r;
+    }
+    return { error: "registry requires 'add', 'list', 'remote', 'publish', 'revoke', 'quarantine', or 'unquarantine'" };
   }
 
   if (command === "update") {
@@ -306,6 +335,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     let storePath = defaultStorePath();
     let allowNoSignature = false;
     let printResolution = false;
+    let allowQuarantined = false;
     let frozen = false;
     let locked = false;
     let offline = false;
@@ -318,6 +348,8 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         i++;
       } else if (argv[i] === "--allow-no-signature") {
         allowNoSignature = true;
+      } else if (argv[i] === "--allow-quarantined") {
+        allowQuarantined = true;
       } else if (argv[i] === "--print-resolution") {
         printResolution = true;
       } else if (argv[i] === "--frozen") {
@@ -335,7 +367,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       }
     }
     if (locked && frozen) return { error: "--locked and --frozen are mutually exclusive" };
-    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature, frozen, locked, lockfile: lockfilePath, ...(offline ? { offline: true } : {}) };
+    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature, frozen, locked, lockfile: lockfilePath, ...(allowQuarantined ? { allowQuarantined: true } : {}), ...(offline ? { offline: true } : {}) };
     if (printResolution) return { ...baseResult, printResolution: true };
     return baseResult;
   }
@@ -382,7 +414,7 @@ function printUsage(): void {
 
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
-  ace install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>] [--offline]
+  ace install <url-or-path> [--allow-no-signature] [--allow-quarantined] [--print-resolution] [--frozen|--locked] [--lockfile <path>] [--offline]
                                                    Download/read a package, verify integrity+authenticity, install
                                                    --allow-no-signature only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
                                                    --print-resolution prints the solved name@version graph before installing
@@ -399,6 +431,9 @@ Usage:
   ace registry add <name> <version> <url> [--hash <h>] Register a package in the local registry
   ace registry list                              List all registry entries
   ace registry publish --packages <dir>[,<dir>...] --base-url <url> --key <pem> [--out <path>] [--sequence <n>] Build + sign an index from one or more dirs of packages
+  ace registry revoke <name>@<version> [--reason <s>] --key <pem> [--out <path>] Mark a version revoked (permanent hard-refuse) in the signed index
+  ace registry quarantine <name>@<version> [--reason <s>] --key <pem> [--out <path>] Mark a version quarantined (soft-refuse; --allow-quarantined overrides)
+  ace registry unquarantine <name>@<version> --key <pem> [--out <path>] Release a quarantined version
   ace registry remote add <url> --key <keyid> [--max-staleness-days <n>] Add a signed remote registry
   ace registry remote list                       List configured remote registries
   ace registry remote rm <url>                   Remove a configured remote registry
@@ -408,6 +443,36 @@ Future commands (not yet implemented):
   ace remove <hash>                              Uninstall a DLC
   ace inspect <hash>                             Show manifest without installing`;
   console.log(text);
+}
+
+/** SLICE 7 lockfile re-check: best-effort load the registry marks and refuse any pinned
+ *  name@version that is revoked (always) or quarantined (unless allowQuarantined; warn when
+ *  allowed). Best-effort means an unreachable/empty registry yields no marks and no refusal —
+ *  the --frozen install stays registry-independent (it only gains a security veto when a
+ *  reachable trusted registry has marked a locked pin). Returns an error string or null. */
+async function checkLockedMarks(
+  pins: ReadonlyArray<{ name: string; version: string }>,
+  allowQuarantined: boolean, offline: boolean,
+): Promise<string | null> {
+  let revoked: RevocationMap; let quarantined: RevocationMap;
+  try {
+    const loaded = await loadRegistries({ trustStore: loadTrustStore(), offline });
+    revoked = loaded.revoked; quarantined = loaded.quarantined;
+  } catch { return null; } // marks unavailable → no veto (preserve frozen registry-independence)
+  for (const pin of pins) {
+    if (revoked[pin.name]?.[pin.version] !== undefined) {
+      const r = revoked[pin.name]![pin.version]!;
+      return `${pin.name}@${pin.version} is revoked${r.reason ? ": " + r.reason : ""} (revocation overrides the lockfile)`;
+    }
+    if (quarantined[pin.name]?.[pin.version] !== undefined) {
+      if (!allowQuarantined) {
+        const q = quarantined[pin.name]![pin.version]!;
+        return `${pin.name}@${pin.version} is quarantined${q.reason ? ": " + q.reason : ""} (use --allow-quarantined)`;
+      }
+      console.error(`ace: WARNING: installing quarantined ${pin.name}@${pin.version} (--allow-quarantined).`);
+    }
+  }
+  return null;
 }
 
 export async function main(argv: readonly string[]): Promise<number> {
@@ -662,7 +727,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       if (prev && seq <= prev.sequence) { console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`); return 1; }
       let serialized: string;
       try {
-        const doc = buildIndexDoc({ packages, baseUrl: parsed.pubBaseUrl!, sequence: seq, issuedAt: new Date().toISOString(), privatePem: pem });
+        const doc = buildIndexDoc({ packages, baseUrl: parsed.pubBaseUrl!, sequence: seq, issuedAt: new Date().toISOString(), privatePem: pem, ...(prev?.revoked ? { revoked: prev.revoked } : {}), ...(prev?.quarantined ? { quarantined: prev.quarantined } : {}) });
         if ("error" in doc) { console.error(`ace: publish refused: ${doc.error}`); return 1; }
         serialized = JSON.stringify(doc, null, 2);
         const reparsed = parseIndex(serialized);
@@ -675,6 +740,50 @@ export async function main(argv: readonly string[]): Promise<number> {
       try { writeFileSync(outPath, serialized); }
       catch (e) { console.error(`ace: publish failed: cannot write ${outPath}: ${(e as Error).message}`); return 1; }
       console.log(`ace: published ${packages.length} package(s) at sequence ${seq} → ${outPath}`);
+      return 0;
+    }
+    if (parsed.sub === "revoke" || parsed.sub === "quarantine" || parsed.sub === "unquarantine") {
+      const verb = parsed.sub;
+      let pem: string;
+      try { pem = readFileSync(parsed.pubKeyPath!, "utf8"); }
+      catch (e) { console.error(`ace: ${verb}: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`); return 1; }
+      try {
+        if (createPrivateKey(pem).asymmetricKeyType !== "ed25519") { console.error(`ace: ${verb} refused: --key must be an ed25519 private key`); return 1; }
+      } catch (e) { console.error(`ace: ${verb} refused: invalid private key: ${(e as Error).message}`); return 1; }
+      const outPath = parsed.pubOut ?? "index.json";
+      if (!existsSync(outPath)) { console.error(`ace: ${verb} refused: ${outPath} does not exist — cannot mark a version in a nonexistent index`); return 1; }
+      let prevRaw: string;
+      try { prevRaw = readFileSync(outPath, "utf8"); }
+      catch (e) { console.error(`ace: ${verb} refused: cannot read ${outPath}: ${(e as Error).message}`); return 1; }
+      const p = parseIndex(prevRaw);
+      if ("error" in p) { console.error(`ace: ${verb} refused: ${outPath} is not a valid index (${p.error}) — no silent reset`); return 1; }
+      const prevInfo = publicKeyInfoFromPrivatePem(pem);
+      const { signature: prevSig, ...prevContent } = p;
+      const prevVerify = verifyIndexSignature(prevContent, prevSig, new Map([[prevInfo.keyId, { public_key: prevInfo.public_key }]]));
+      if (!prevVerify.ok) { console.error(`ace: ${verb} refused: ${outPath} signature does not verify under --key (${prevVerify.reason}) — not your index`); return 1; }
+      const name = parsed.revName!, version = parsed.revVersion!;
+      const at = new Date().toISOString();
+      let next: IndexSignableContent | { error: string };
+      if (verb === "revoke") next = applyRevoke(prevContent, name, version, parsed.revReason, at);
+      else if (verb === "quarantine") next = applyQuarantine(prevContent, name, version, parsed.revReason, at);
+      else next = applyUnquarantine(prevContent, name, version, at);
+      if ("error" in next) { console.error(`ace: ${verb} refused: ${next.error}`); return 1; }
+      const seq = p.sequence + 1;
+      const content: IndexSignableContent = { ...next, sequence: seq };
+      let serialized: string;
+      try {
+        const sig = signIndex(content, pem);
+        const doc = { ...content, signature: sig };
+        serialized = JSON.stringify(doc, null, 2);
+        const reparsed = parseIndex(serialized);
+        if ("error" in reparsed) { console.error(`ace: ${verb} refused: self-verify parse failed: ${reparsed.error}`); return 1; }
+        const sv = verifyIndexSignature(content, sig, new Map([[prevInfo.keyId, { public_key: prevInfo.public_key }]]));
+        if (!sv.ok) { console.error(`ace: ${verb} refused: self-verify signature failed: ${sv.reason}`); return 1; }
+      } catch (e) { console.error(`ace: ${verb} refused: signing failed: ${(e as Error).message}`); return 1; }
+      try { writeFileSync(outPath, serialized); }
+      catch (e) { console.error(`ace: ${verb} failed: cannot write ${outPath}: ${(e as Error).message}`); return 1; }
+      const verbed = verb === "revoke" ? "revoked" : verb === "quarantine" ? "quarantined" : "unquarantined";
+      console.log(`ace: ${verbed} ${name}@${version} → ${outPath} (sequence ${seq})`);
       return 0;
     }
     // sub === "add"
@@ -850,6 +959,12 @@ export async function main(argv: readonly string[]): Promise<number> {
           console.error(`ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`);
           return 1;
         }
+        // SLICE 7: revocation overrides the lockfile. Best-effort load the registry marks
+        // (offline/unreachable → empty marks, frozen stays registry-independent) and re-check
+        // every locked pin: a revoked pin hard-refuses; a quarantined pin refuses unless
+        // --allow-quarantined (warn when allowed).
+        const fr = await checkLockedMarks(lf.nodes, parsed.allowQuarantined === true, parsed.offline === true);
+        if (fr !== null) { console.error(`ace: install refused: ${fr}`); return 1; }
         const trust = loadTrustStore();
         // PASS 1 (verify-all, install NOTHING) — mirrors the default-path preflight: fetch → parse →
         // verify pin + content_hash + signature + path-safety + store-key collision across the WHOLE
@@ -900,7 +1015,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const { registry, warnings, errors } = await loadRegistries({
+      const { registry, revoked, quarantined, warnings, errors } = await loadRegistries({
         trustStore: loadTrustStore(), offline: parsed.offline === true,
       });
       for (const w of warnings) console.error(`ace: ${w}`);
@@ -916,7 +1031,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           console.log(`  ${n}@${v}`);
         }
       }
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature, allowQuarantined: parsed.allowQuarantined === true, revoked, quarantined });
       if (!res.ok) {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
@@ -968,6 +1083,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       const lf = parseLockfile(lockRaw);
       if ("error" in lf) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`); return 1; }
       if (!verifyRootMatchesLock(pkg, lf)) { console.error(`ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`); return 1; }
+      const lr = await checkLockedMarks([{ name: pkg.manifest.name, version: pkg.manifest.version }, ...lf.nodes], parsed.allowQuarantined === true, parsed.offline === true);
+      if (lr !== null) { console.error(`ace: install refused: ${lr}`); return 1; }
     } else if (parsed.locked) {
       let lockRaw: string;
       try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }

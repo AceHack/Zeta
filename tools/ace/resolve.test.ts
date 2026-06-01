@@ -301,3 +301,92 @@ describe("resolve — untrusted registry edge version (regression / bad-range)",
     if (!r.ok) expect(r.reason).toBe("invalid-package");
   });
 });
+
+// ─── Task B: revoked / quarantined gates ─────────────────────────────────────
+
+import type { RevocationMap as RM } from "./signing.ts";
+
+describe("resolve — revoked / quarantined gates (Task B)", () => {
+  function mkRegRoot(): AcePackage {
+    return {
+      manifest: {
+        ...pkgOf("root", { "r.txt": "r" }).manifest,
+        dependencies: [{ kind: "registry" as const, name: "D", version: "1.0.0" }],
+      },
+      files: { "r.txt": "r" },
+    };
+  }
+
+  test("revoked concrete version → ok:false reason:revoked", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root = mkRegRoot();
+    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
+    const revokedMap: RM = { D: { "1.0.0": { at: "2026-05-01T00:00:00Z", reason: "CVE-test" } } };
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), {
+      allowNoSignature: true,
+      revoked: revokedMap,
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.reason).toBe("revoked");
+      expect(r.detail).toContain("CVE-test");
+    }
+  });
+
+  test("quarantined version refuses without allowQuarantined", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root = mkRegRoot();
+    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
+    const quarantinedMap: RM = { D: { "1.0.0": { at: "2026-05-01T00:00:00Z", reason: "suspect" } } };
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), {
+      allowNoSignature: true,
+      quarantined: quarantinedMap,
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.reason).toBe("quarantined");
+      expect(r.detail).toContain("suspect");
+      expect(r.detail).toContain("--allow-quarantined");
+    }
+  });
+
+  test("quarantined version resolves with allowQuarantined:true", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root = mkRegRoot();
+    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
+    const quarantinedMap: RM = { D: { "1.0.0": { at: "2026-05-01T00:00:00Z" } } };
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), {
+      allowNoSignature: true,
+      quarantined: quarantinedMap,
+      allowQuarantined: true,
+    });
+    expect(r.ok).toBe(true);
+  });
+
+  test("revoked with no reason in detail still refuses cleanly", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root = mkRegRoot();
+    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
+    const revokedMap: RM = { D: { "1.0.0": { at: "2026-05-01T00:00:00Z" } } };
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), {
+      allowNoSignature: true,
+      revoked: revokedMap,
+    });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("revoked");
+  });
+
+  test("non-revoked/quarantined version resolves normally (no false positive)", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root = mkRegRoot();
+    const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
+    const revokedMap: RM = { D: { "9.9.9": { at: "2026-05-01T00:00:00Z" } } };
+    const quarantinedMap: RM = { OTHER: { "1.0.0": { at: "2026-05-01T00:00:00Z" } } };
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), {
+      allowNoSignature: true,
+      revoked: revokedMap,
+      quarantined: quarantinedMap,
+    });
+    expect(r.ok).toBe(true);
+  });
+});

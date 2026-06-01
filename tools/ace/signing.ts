@@ -78,11 +78,16 @@ export function verifySignature(
   return result;
 }
 
+export interface RevocationEntry { reason?: string; at: string }
+export type RevocationMap = Record<string, Record<string, RevocationEntry>>;
+
 export interface IndexSignableContent {
   format_version: number;
   sequence: number;
   issued_at: string;
   packages: Record<string, Record<string, RegistryEntry>>;
+  revoked?: RevocationMap;
+  quarantined?: RevocationMap;
 }
 
 /** Index content (no `signature`), recursively key-sorted, compact JSON. Sibling of canonicalManifestBytes. */

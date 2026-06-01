@@ -88,3 +88,65 @@ describe("buildIndexDoc", () => {
     expect(withUrl.packages.alpha!["1.0.0"]!.package_hash).toBe(without.packages.alpha!["1.0.0"]!.package_hash);
   });
 });
+
+describe("buildIndexDoc with revoked/quarantined marks", () => {
+  const kp2 = generateKeypair();
+  const issuedAt2 = "2026-06-01T12:00:00Z";
+  const leafPkg = pkg("leaf", "1.0.0");
+
+  test("passing revoked yields v2 doc with marks", () => {
+    const revoked = Object.create(null) as import("./signing.ts").RevocationMap;
+    revoked["leaf"] = Object.create(null);
+    revoked["leaf"]!["1.0.0"] = { at: "2026-06-01T00:00:00Z" };
+    const doc = buildIndexDoc({
+      packages: [{ pkg: leafPkg }],
+      baseUrl: "https://pkgs", sequence: 1, issuedAt: issuedAt2, privatePem: kp2.privatePem,
+      revoked,
+    });
+    expect("error" in doc).toBe(false);
+    if ("error" in doc) return;
+    expect(doc.format_version).toBe(2);
+    expect(doc.revoked?.["leaf"]?.["1.0.0"]?.at).toBe("2026-06-01T00:00:00Z");
+    expect(doc.quarantined).toBeUndefined();
+  });
+
+  test("passing quarantined yields v2 doc with marks", () => {
+    const quarantined = Object.create(null) as import("./signing.ts").RevocationMap;
+    quarantined["leaf"] = Object.create(null);
+    quarantined["leaf"]!["1.0.0"] = { reason: "suspicious", at: "2026-06-01T00:00:00Z" };
+    const doc = buildIndexDoc({
+      packages: [{ pkg: leafPkg }],
+      baseUrl: "https://pkgs", sequence: 1, issuedAt: issuedAt2, privatePem: kp2.privatePem,
+      quarantined,
+    });
+    expect("error" in doc).toBe(false);
+    if ("error" in doc) return;
+    expect(doc.format_version).toBe(2);
+    expect(doc.quarantined?.["leaf"]?.["1.0.0"]?.reason).toBe("suspicious");
+    expect(doc.revoked).toBeUndefined();
+  });
+
+  test("omitting marks yields v1 doc (regression)", () => {
+    const doc = buildIndexDoc({
+      packages: [{ pkg: leafPkg }],
+      baseUrl: "https://pkgs", sequence: 1, issuedAt: issuedAt2, privatePem: kp2.privatePem,
+    });
+    expect("error" in doc).toBe(false);
+    if ("error" in doc) return;
+    expect(doc.format_version).toBe(1);
+    expect(doc.revoked).toBeUndefined();
+    expect(doc.quarantined).toBeUndefined();
+  });
+
+  test("empty revoked/quarantined maps yield v1", () => {
+    const doc = buildIndexDoc({
+      packages: [{ pkg: leafPkg }],
+      baseUrl: "https://pkgs", sequence: 1, issuedAt: issuedAt2, privatePem: kp2.privatePem,
+      revoked: Object.create(null) as import("./signing.ts").RevocationMap,
+      quarantined: Object.create(null) as import("./signing.ts").RevocationMap,
+    });
+    expect("error" in doc).toBe(false);
+    if ("error" in doc) return;
+    expect(doc.format_version).toBe(1);
+  });
+});

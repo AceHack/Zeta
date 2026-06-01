@@ -18,7 +18,7 @@ describe("parseIndex", () => {
   });
   test.each([
     ["not json", "{"],
-    ["bad format_version", JSON.stringify({ format_version: 2, sequence: 1, issued_at: "2026-06-01T12:00:00Z", packages: {}, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
+    ["bad format_version", JSON.stringify({ format_version: 99, sequence: 1, issued_at: "2026-06-01T12:00:00Z", packages: {}, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
     ["negative sequence", JSON.stringify({ format_version: 1, sequence: -1, issued_at: "2026-06-01T12:00:00Z", packages: {}, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
     ["unparseable issued_at", JSON.stringify({ format_version: 1, sequence: 1, issued_at: "nope", packages: {}, signature: { algo: "ed25519", key_id: "k", sig: "s" } })],
     ["missing signature", JSON.stringify({ format_version: 1, sequence: 1, issued_at: "2026-06-01T12:00:00Z", packages: {} })],
@@ -214,5 +214,155 @@ describe("loadRegistries merge precedence", () => {
     const r = await loadRegistries({ trustStore: trust, now });
     expect(r.errors).toEqual([]);
     expect(r.registry.get("leaf")!.get("1.0.0")!.url).toBe("https://R0/l.json");
+  });
+});
+
+// ─── Task B: parseIndex v2 + marks + loadRegistries union-merge ─────────────
+
+import { signIndex as si2, generateKeypair as gk2 } from "./signing.ts";
+import type { RevocationMap } from "./signing.ts";
+
+function mkV2Index(kp: { privatePem: string; keyId: string }, seq: number, issuedAtMs: number, extra: Record<string, unknown> = {}) {
+  const content = {
+    format_version: 2 as const, sequence: seq, issued_at: new Date(issuedAtMs).toISOString(),
+    packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } },
+    ...extra,
+  };
+  return JSON.stringify({ ...content, signature: si2(content, kp.privatePem) });
+}
+
+describe("parseIndex — v2 + marks (Task B)", () => {
+  test("accepts a v2 index with no marks", () => {
+    const kp = gk2(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const json = mkV2Index(kp, 1, now);
+    const r = parseIndex(json);
+    expect("error" in r).toBe(false);
+    if (!("error" in r)) { expect(r.format_version).toBe(2); }
+  });
+
+  test("accepts a v2 index with valid revoked + quarantined maps", () => {
+    const kp = gk2(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const revoked: RevocationMap = { leaf: { "0.9.0": { at: "2026-05-01T00:00:00Z", reason: "CVE-xxx" } } };
+    const quarantined: RevocationMap = { leaf: { "0.8.0": { at: "2026-04-01T00:00:00Z" } } };
+    const json = mkV2Index(kp, 2, now, { revoked, quarantined });
+    const r = parseIndex(json);
+    expect("error" in r).toBe(false);
+    if (!("error" in r)) {
+      expect(r.revoked!["leaf"]!["0.9.0"]!.reason).toBe("CVE-xxx");
+      expect(r.quarantined!["leaf"]!["0.8.0"]!.at).toBe("2026-04-01T00:00:00Z");
+    }
+  });
+
+  test("rejects a v1 index carrying a revoked map", () => {
+    const revoked = { leaf: { "0.9.0": { at: "2026-05-01T00:00:00Z" } } };
+    const json = JSON.stringify({
+      format_version: 1, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
+      packages: {}, revoked,
+      signature: { algo: "ed25519", key_id: "ed25519:k", sig: "BASE64" },
+    });
+    const r = parseIndex(json);
+    expect("error" in r).toBe(true);
+    if ("error" in r) expect(r.error).toContain("format_version 2");
+  });
+
+  test("rejects a v1 index carrying a quarantined map", () => {
+    const quarantined = { leaf: { "0.8.0": { at: "2026-04-01T00:00:00Z" } } };
+    const json = JSON.stringify({
+      format_version: 1, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
+      packages: {}, quarantined,
+      signature: { algo: "ed25519", key_id: "ed25519:k", sig: "BASE64" },
+    });
+    const r = parseIndex(json);
+    expect("error" in r).toBe(true);
+    if ("error" in r) expect(r.error).toContain("format_version 2");
+  });
+
+  test("rejects a malformed revoked map (entry missing at)", () => {
+    const revoked = { leaf: { "0.9.0": { reason: "missing-at" } } };
+    const json = JSON.stringify({
+      format_version: 2, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
+      packages: {}, revoked,
+      signature: { algo: "ed25519", key_id: "ed25519:k", sig: "BASE64" },
+    });
+    const r = parseIndex(json);
+    expect("error" in r).toBe(true);
+    if ("error" in r) expect(r.error).toContain("revoked");
+  });
+
+  test("rejects a malformed quarantined map (versions entry is not an object)", () => {
+    const quarantined = { leaf: "bad" };
+    const json = JSON.stringify({
+      format_version: 2, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
+      packages: {}, quarantined,
+      signature: { algo: "ed25519", key_id: "ed25519:k", sig: "BASE64" },
+    });
+    const r = parseIndex(json);
+    expect("error" in r).toBe(true);
+    if ("error" in r) expect(r.error).toContain("quarantined");
+  });
+});
+
+import { loadRegistries as lr2 } from "./registry-remote.ts";
+import { mkdtempSync as mktmp2 } from "node:fs";
+import { tmpdir as td2 } from "node:os";
+import { join as pj2 } from "node:path";
+
+describe("loadRegistries — union-merge marks (Task B)", () => {
+  let savedFetch2: typeof globalThis.fetch, savedHome2: string | undefined, savedUP2: string | undefined;
+  beforeEach(() => {
+    savedFetch2 = globalThis.fetch; savedHome2 = process.env.HOME; savedUP2 = process.env.USERPROFILE;
+    const h = mktmp2(pj2(td2(), "ace-marks-"));
+    process.env.HOME = h; process.env.USERPROFILE = h;
+  });
+  afterEach(() => {
+    globalThis.fetch = savedFetch2;
+    if (savedHome2 !== undefined) process.env.HOME = savedHome2; else delete process.env.HOME;
+    if (savedUP2 !== undefined) process.env.USERPROFILE = savedUP2; else delete process.env.USERPROFILE;
+  });
+
+  test("union-merges revoked marks from two remote sources", async () => {
+    const kp0 = gk2(), kp1 = gk2();
+    const now = Date.parse("2026-06-01T12:00:00Z");
+
+    const mkBody = (kp: typeof kp0, revoked: RevocationMap) => {
+      const content = {
+        format_version: 2 as const, sequence: 1, issued_at: new Date(now).toISOString(),
+        packages: {}, revoked,
+      };
+      return JSON.stringify({ ...content, signature: si2(content, kp.privatePem) });
+    };
+
+    const body0 = mkBody(kp0, { pkgA: { "1.0.0": { at: "2026-01-01T00:00:00Z", reason: "from-r0" } } });
+    const body1 = mkBody(kp1, { pkgB: { "2.0.0": { at: "2026-02-01T00:00:00Z" } } });
+
+    globalThis.fetch = (async (u: string) =>
+      new Response(u === "https://r0/index.json" ? body0 : body1, { status: 200 })
+    ) as unknown as typeof fetch;
+
+    const { writeRegistryRemote: wrr2 } = await import("./store.ts");
+    wrr2({ url: "https://r0/index.json", key_id: kp0.keyId });
+    wrr2({ url: "https://r1/index.json", key_id: kp1.keyId });
+
+    const trust = new Map([[kp0.keyId, { public_key: kp0.publicSpkiB64 }], [kp1.keyId, { public_key: kp1.publicSpkiB64 }]]);
+    const result = await lr2({ trustStore: trust, now });
+
+    expect(result.errors).toEqual([]);
+    expect(result.revoked["pkgA"]?.["1.0.0"]?.reason).toBe("from-r0");
+    expect(result.revoked["pkgB"]?.["2.0.0"]?.at).toBe("2026-02-01T00:00:00Z");
+    expect(Object.keys(result.quarantined)).toHaveLength(0);
+  });
+
+  test("loadRegistries exposes empty revoked/quarantined when no marks in any source", async () => {
+    const kp = gk2(); const now = Date.parse("2026-06-01T12:00:00Z");
+    const content = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(), packages: {} };
+    const body = JSON.stringify({ ...content, signature: si2(content, kp.privatePem) });
+    globalThis.fetch = (async () => new Response(body, { status: 200 })) as unknown as typeof fetch;
+    const { writeRegistryRemote: wrr3 } = await import("./store.ts");
+    wrr3({ url: "https://x/index.json", key_id: kp.keyId });
+    const trust = new Map([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
+    const result = await lr2({ trustStore: trust, now });
+    expect(result.errors).toEqual([]);
+    expect(Object.keys(result.revoked)).toHaveLength(0);
+    expect(Object.keys(result.quarantined)).toHaveLength(0);
   });
 });
