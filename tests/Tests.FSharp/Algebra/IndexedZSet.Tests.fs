@@ -99,3 +99,50 @@ let ``IndexedZSet empty is empty`` () =
     let e = IndexedZSet.empty<int, string>
     IndexedZSet.isEmpty e |> should be True
     IndexedZSet.keyCount e |> should equal 0
+
+
+// ─── generic-math abelian-group surface (Zero + (+) + (~-) + (-)) ───────────
+// IndexedZSet (Z[K×V]) is an abelian group — same surface as the Z-set rung
+// (#6480): Zero + (+) (additive monoid) PLUS (~-)/(-) (the inverse). The pooled
+// key-group merge combiner lives ON THE TYPE so F# SRTP / Seq.sum / GenericZero
+// resolve it; the module add/neg/sub delegate. NOT INumber — the ring product is
+// the bilinear `join`, surfaced separately, not a numeric multiply.
+
+let private ixz (pairs: ((int * string) * int64) list) : IndexedZSet<int, string> =
+    IndexedZSet.indexWith fst snd (ZSet.ofSeq pairs)
+
+[<Fact>]
+let ``(+) equals IndexedZSet.add; (~-) equals neg; (-) equals sub`` () =
+    let a = ixz [ (1, "a"), 1L; (2, "b"), 2L ]
+    let b = ixz [ (2, "b"), 1L; (3, "c"), 3L ]
+    (a + b) |> should equal (IndexedZSet.add a b)
+    (-a) |> should equal (IndexedZSet.neg a)
+    (a - b) |> should equal (IndexedZSet.sub a b)
+
+[<Fact>]
+let ``Zero is the additive identity and equals empty / GenericZero`` () =
+    let a = ixz [ (1, "a"), 1L ]
+    (IndexedZSet<int, string>.Zero + a) |> should equal a
+    (a + IndexedZSet<int, string>.Zero) |> should equal a
+    IndexedZSet<int, string>.Zero |> should equal IndexedZSet.empty<int, string>
+    LanguagePrimitives.GenericZero<IndexedZSet<int, string>> |> should equal IndexedZSet.empty<int, string>
+
+[<Fact>]
+let ``abelian-group inverse via operators: a + (-a) = Zero and a - a = Zero`` () =
+    let a = ixz [ (1, "a"), 1L; (2, "b"), -2L; (2, "c"), 3L ]
+    (a + (-a)) |> IndexedZSet.isEmpty |> should be True
+    (a - a) |> IndexedZSet.isEmpty |> should be True
+
+[<Fact>]
+let ``Seq.sum aggregates through GenericZero + (+) (key empties out and drops)`` () =
+    let parts =
+        [ ixz [ (1, "a"), 1L ]
+          ixz [ (1, "a"), 1L; (2, "b"), 2L ]
+          ixz [ (2, "b"), -2L ] ]
+    // key 1 → a:2 ; key 2 → b nets 0 → value-ZSet empties → key dropped
+    IndexedZSet.toZSet (Seq.sum parts) |> should equal (ZSet.ofSeq [ (1, "a"), 2L ])
+
+[<Fact>]
+let ``(+) is NOT idempotent: a + a doubles every value-weight`` () =
+    let a = ixz [ (1, "a"), 1L; (1, "b"), -3L ]
+    IndexedZSet.toZSet (a + a) |> should equal (ZSet.ofSeq [ (1, "a"), 2L; (1, "b"), -6L ])

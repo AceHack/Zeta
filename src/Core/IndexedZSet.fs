@@ -35,6 +35,66 @@ type IndexedZSet<'K, 'V when 'K : comparison and 'V : comparison> =
     static member Empty : IndexedZSet<'K, 'V> =
         IndexedZSet(ImmutableArray<KeyGroup<'K, 'V>>.Empty)
 
+    /// Generic-math additive identity (`System.Numerics`-shaped). F# SRTP —
+    /// `LanguagePrimitives.GenericZero`, `Seq.sum` — resolves the zero through
+    /// this member; the empty IndexedZSet is the `+` identity. Mirrors the Z-set
+    /// (#6480) rung and the C# `IAdditiveIdentity` twin.
+    static member Zero : IndexedZSet<'K, 'V> = IndexedZSet<'K, 'V>.Empty
+
+    /// `a + b` — per-key merge, each shared key's value-`ZSet` summed (the
+    /// abelian-group operation; a key whose values cancel to empty is dropped).
+    /// Linear sorted-merge over the key-groups: one pool workspace + one final
+    /// array. This is the generic-math addition rung (C#'s `IAdditionOperators`
+    /// twin); the `IndexedZSet.add` module function delegates here so SRTP can
+    /// resolve `(+)` on the type itself rather than the (later) module. NOT
+    /// idempotent — `a + a` doubles every value-weight.
+    static member (+) (a: IndexedZSet<'K, 'V>, b: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> =
+        if a.IsEmpty then b
+        elif b.IsEmpty then a
+        else
+            let ga = a.AsSpan()
+            let gb = b.AsSpan()
+            let cap = ga.Length + gb.Length
+            let rented = Pool.Rent<KeyGroup<'K, 'V>> cap
+            try
+                let cmp = Comparer<'K>.Default
+                let mutable i = 0
+                let mutable j = 0
+                let mutable k = 0
+                while i < ga.Length && j < gb.Length do
+                    let c = cmp.Compare(ga.[i].Key, gb.[j].Key)
+                    if c < 0 then rented.[k] <- ga.[i]; i <- i + 1; k <- k + 1
+                    elif c > 0 then rented.[k] <- gb.[j]; j <- j + 1; k <- k + 1
+                    else
+                        let merged = ZSet.add ga.[i].Values gb.[j].Values
+                        if not merged.IsEmpty then
+                            rented.[k] <- KeyGroup(ga.[i].Key, merged)
+                            k <- k + 1
+                        i <- i + 1; j <- j + 1
+                while i < ga.Length do rented.[k] <- ga.[i]; i <- i + 1; k <- k + 1
+                while j < gb.Length do rented.[k] <- gb.[j]; j <- j + 1; k <- k + 1
+                if k = 0 then IndexedZSet<'K, 'V>.Empty
+                else IndexedZSet(Pool.FreezeSlice(rented, k))
+            finally
+                Pool.Return rented
+
+    /// `-a` — the abelian-group inverse (negate every key's value-`ZSet`), so
+    /// `a + (-a) = Zero`. Exact-size allocation, no workspace. C#'s
+    /// `IUnaryNegationOperators` twin.
+    static member (~-) (a: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> =
+        let span = a.AsSpan()
+        if span.IsEmpty then a
+        else
+            let arr = Pool.AllocateExact<KeyGroup<'K, 'V>> span.Length
+            for i in 0 .. span.Length - 1 do
+                arr.[i] <- KeyGroup(span.[i].Key, ZSet.neg span.[i].Values)
+            IndexedZSet(Pool.Freeze arr)
+
+    /// `a - b = a + (-b)`. The generic-math subtraction rung (C#'s
+    /// `ISubtractionOperators` twin); retraction expressed directly.
+    static member (-) (a: IndexedZSet<'K, 'V>, b: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> =
+        a + (-b)
+
     member this.KeyCount =
         if this.groups.IsDefault then 0 else this.groups.Length
 
@@ -204,47 +264,17 @@ module IndexedZSet =
             finally
                 Pool.Return rented
 
-    let add (a: IndexedZSet<'K, 'V>) (b: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> =
-        if a.IsEmpty then b
-        elif b.IsEmpty then a
-        else
-            let ga = a.AsSpan()
-            let gb = b.AsSpan()
-            let cap = ga.Length + gb.Length
-            let rented = Pool.Rent<KeyGroup<'K, 'V>> cap
-            try
-                let cmp = Comparer<'K>.Default
-                let mutable i = 0
-                let mutable j = 0
-                let mutable k = 0
-                while i < ga.Length && j < gb.Length do
-                    let c = cmp.Compare(ga.[i].Key, gb.[j].Key)
-                    if c < 0 then rented.[k] <- ga.[i]; i <- i + 1; k <- k + 1
-                    elif c > 0 then rented.[k] <- gb.[j]; j <- j + 1; k <- k + 1
-                    else
-                        let merged = ZSet.add ga.[i].Values gb.[j].Values
-                        if not merged.IsEmpty then
-                            rented.[k] <- KeyGroup(ga.[i].Key, merged)
-                            k <- k + 1
-                        i <- i + 1; j <- j + 1
-                while i < ga.Length do rented.[k] <- ga.[i]; i <- i + 1; k <- k + 1
-                while j < gb.Length do rented.[k] <- gb.[j]; j <- j + 1; k <- k + 1
-                if k = 0 then IndexedZSet<'K, 'V>.Empty
-                else IndexedZSet(Pool.FreezeSlice(rented, k))
-            finally
-                Pool.Return rented
+    /// `a + b` — per-key value-`ZSet` sum. Delegates to the type's generic-math
+    /// `(+)` operator, where the pooled sorted-merge combiner now lives so F#
+    /// SRTP (`Seq.sum`, `GenericZero`) and the `System.Numerics`-shaped interface
+    /// resolve addition on the type itself rather than this (later) module.
+    let add (a: IndexedZSet<'K, 'V>) (b: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> = a + b
 
-    let neg (a: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> =
-        let span = a.AsSpan()
-        if span.IsEmpty then a
-        else
-            let arr = Pool.AllocateExact<KeyGroup<'K, 'V>> span.Length
-            for i in 0 .. span.Length - 1 do
-                arr.[i] <- KeyGroup(span.[i].Key, ZSet.neg span.[i].Values)
-            IndexedZSet(Pool.Freeze arr)
+    /// `-a` — the abelian-group inverse. Delegates to the type's generic-math
+    /// `(~-)` operator (the unary-negation rung).
+    let neg (a: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> = -a
 
-    let inline sub (a: IndexedZSet<'K, 'V>) (b: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> =
-        add a (neg b)
+    let inline sub (a: IndexedZSet<'K, 'V>) (b: IndexedZSet<'K, 'V>) : IndexedZSet<'K, 'V> = a - b
 
     let inline join
         ([<InlineIfLambda>] combine: 'K -> 'VA -> 'VB -> 'C)
