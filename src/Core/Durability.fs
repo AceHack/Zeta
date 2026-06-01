@@ -14,7 +14,7 @@ open System.Threading
 /// definition in `docs/security/THREAT-MODEL.md` under the R
 /// (Repudiation) + the I (Information-disclosure) quadrants.
 ///
-/// Round-17 sketch. The `WitnessDurable` variant is a research
+/// The `WitnessDurable` variant is a research
 /// target — the protocol has not been specified yet and there is
 /// no in-tree paper draft. It's defined here as a skeleton so
 /// callers can type against it. The implementing
@@ -30,7 +30,7 @@ type DurabilityMode =
     /// fsync, ~50 kTPS with group commit. Correctness model: buffered
     /// durable linearizability (Izraelevitz DISC'16).
     ///
-    /// **Round-17 honesty note**: `createBackingStore` currently maps
+    /// **Honesty note:** `createBackingStore` currently maps
     /// this variant to the `OsBuffered` implementation because the
     /// per-`Save` fsync path hasn't shipped yet. Selecting this mode
     /// today gets `OsBuffered` semantics. The factory flags the

@@ -83,36 +83,37 @@ When two specialists (or a specialist and a human) disagree:
 
 Every specialist below is advisory. Their reviews carry weight
 proportional to their domain expertise; none carry veto power.
-Each expert carries a name — see `docs/EXPERT-REGISTRY.md` for
-the full roster + diversity notes. The name is how humans refer
-to them in conversation ("Kira flagged it"); the role title is
-how the skill system invokes them.
+Each expert has a name in `docs/EXPERT-REGISTRY.md` (the full
+roster + diversity notes); the entries below list them by role
+title. The name is how humans refer to them in conversation
+("Kira flagged it"); the role title is how the skill system
+invokes them.
 
-**Storage Specialist — Zara (she/her)** — durability, storage format,
+**Storage Specialist — Zara** — durability, storage format,
 commit protocols. Advises on WDC patterns, checkpoints.
 Values correctness + performance; wary of premature wire-format
 commitment.
 
-**Algebra Owner (he/him)** — Z-set algebra, operator composition
+**Algebra Owner** — Z-set algebra, operator composition
 laws, residuated-lattice extensions. Values algebraic closure and
 composition; wary of engineering shortcuts that break laws.
 
-**Query Planner Specialist (she/her)** — `Plan.fs`, cost models,
+**Query Planner Specialist** — `Plan.fs`, cost models,
 operator ordering, SIMD / tensor intrinsics. Values measured
 speed and clarity; wary of unexplained magic.
 
-**Complexity Theory Reviewer (he/him)** — Big-O honesty across
+**Complexity Theory Reviewer** — Big-O honesty across
 the codebase. Values tight claims backed by proof or benchmark;
 wary of hand-waved asymptotics.
 
-**Threat Model Critic (she/her)** — `docs/security/`, STRIDE,
+**Threat Model Critic** — `docs/security/`, STRIDE,
 SDL. Values explicit adversary models; wary of "probably fine".
 
-**Paper Peer Reviewer (he/him)** — conference-PC-grade review of
+**Paper Peer Reviewer** — conference-PC-grade review of
 any claim that escapes the repo. Values scholarly honesty; wary
 of oversold contributions.
 
-**Maintainability Reviewer (they/them)** — long-horizon
+**Maintainability Reviewer** — long-horizon
 readability, naming, module shape, docstring discipline. Values
 a codebase a new contributor can understand in a week; wary of
 clever constructs that require tribal knowledge.
@@ -123,8 +124,8 @@ attacks). Works in an isolated context by design (see policy in
 skill file). Values defensive prompt design; wary of any payload
 that "wants" to be run.
 
-**Skill Tune-Up Ranker (he/him)** — keeps a running notebook of
-which skills most need improvement. Allowed to recommend himself.
+**Skill Tune-Up Ranker** — keeps a running notebook of
+which skills most need improvement. Allowed to self-recommend.
 
 **TECH-RADAR Owner** — maintains `docs/TECH-RADAR.md` and the
 Adopt/Trial/Assess/Hold ring discipline.

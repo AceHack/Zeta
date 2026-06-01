@@ -36,15 +36,14 @@ open System.Threading.Tasks
 ///   - Retract to zero/negative → `SortedSet<'K>.Remove`
 ///   - Query current max → `SortedSet<'K>.Max`
 ///
-/// ## Round-17 fix
+/// ## Logarithmic retraction
 ///
-/// The previous revision maintained only the **top-2** keys and
-/// triggered a full O(n) scan of the integrated Z-set whenever the
-/// top value was fully retracted. It advertised "O(1) amortised"
-/// retraction, but adversarial retract-top workloads forced an O(n)
-/// scan on every tick — the claim was false. Harsh-critic round-16
-/// flagged this; this revision drops the top-2 cache entirely in
-/// favour of a SortedSet-backed store so **every** operation is
+/// A top-2-cache design (tracking only the **top-2** keys) would
+/// trigger a full O(n) scan of the integrated Z-set whenever the
+/// top value is fully retracted; adversarial retract-top workloads
+/// force that O(n) scan on every tick, so the "O(1) amortised"
+/// retraction such a design advertises is false. This implementation
+/// uses a SortedSet-backed store instead, so **every** operation is
 /// genuinely logarithmic, with no hidden linear-scan fallback.
 ///
 /// ## Wire it into a circuit

@@ -63,13 +63,13 @@ module private Gear =
 /// Chunker that emits boundaries at content-defined offsets. Caller
 /// feeds bytes via `Push`; `TryTakeChunk` returns available chunks.
 ///
-/// **Complexity (round-17 fix):** `Push(n)` amortises to **O(n)**.
-/// The previous implementation restarted the scan from offset 0 on
-/// every `Push`, giving O(n²) when callers streamed bytes one small
-/// span at a time. The current implementation keeps a persistent
+/// **Complexity:** `Push(n)` amortises to **O(n)**.
+/// A naive implementation that restarted the scan from offset 0 on
+/// every `Push` would be O(n²) when callers stream bytes one small
+/// span at a time. This implementation keeps a persistent
 /// `scanCursor` and a persistent `hash` so each byte is Gear-hashed
 /// **exactly once** over the chunker's lifetime. Per-byte `Add` on
-/// a `ResizeArray` is also gone — the buffer is a raw `byte[]` with
+/// a `ResizeArray` is avoided too — the buffer is a raw `byte[]` with
 /// `Buffer.BlockCopy` append, and the emitted-chunk copy uses
 /// `Buffer.BlockCopy` instead of a byte-by-byte loop.
 [<Sealed>]

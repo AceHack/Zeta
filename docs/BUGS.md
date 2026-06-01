@@ -278,19 +278,6 @@ tempted to ship.
 
 ## P2 — nice to have
 
-### "Round-N fix" historical voice survivors in docstrings
-
-- **Sites:** `src/Core/FastCdc.fs:68`, `Residuated.fs:39`,
-  `Durability.fs:17`, `Durability.fs:33`, `Recursive.fs:211`,
-  `FeatureFlags.fs:43`
-- **Found:** round 20 by Rune
-- **Severity:** P2
-- **Symptom:** docstrings read as changelog
-  ("Round-17 fix", "Round-17 honesty note"). Rule says
-  current-state; history lives in `ROUND-HISTORY.md`.
-- **Fix:** rewrite each as present-tense description of the
-  invariant; move the historical note to `ROUND-HISTORY.md`.
-
 ### TECH-RADAR row for Bloom sits at Trial without a bench
 
 - **Site:** `docs/TECH-RADAR.md` (Bloom filter row)
@@ -309,10 +296,12 @@ tempted to ship.
 - **Found:** round 20 by Rune
 - **Severity:** P2
 - **Symptom:** the registry and `CONFLICT-RESOLUTION.md` disagree on
-  the expert roster and on whether pronouns are declared. The
-  name-canon rule is pronoun-free; any residual pronoun phrasing
-  in `CONFLICT-RESOLUTION.md` should be removed.
-- **Fix:** registry is canon for names; `CONFLICT-RESOLUTION`
+  the expert roster (the registry carries names; `CONFLICT-RESOLUTION.md`
+  lists mostly bare role-titles). The declared-pronoun half is
+  resolved — the `(she/her)` / `(he/him)` / `(they/them)` markers
+  have been removed from `CONFLICT-RESOLUTION.md` per the pronoun-free
+  name-canon. Roster reconciliation remains.
+- **Fix:** registry is canon for names; `CONFLICT-RESOLUTION.md`
   defers to it.
 
 ---
