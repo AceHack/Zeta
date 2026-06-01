@@ -363,6 +363,33 @@ FoundationDB-style: all nodes on one deterministic thread.
 - Research anchors: `docs/research/2026-05-26-kestrel-...-time-as-generator-foundationdb-anchor.md`,
   `docs/research/2026-05-26-mika-...-self-derived-iScheduler-recursive-injection.md`.
 
+### The reporting / insights view — a columnar materialized view over everything (Aaron 2026-06-01)
+
+The same F# single-thread FoundationDB-DST DB — multi-node / multi-cluster,
+relativistically-linked, all nodes on one deterministic thread — can run **in the
+shared k8s cluster as a reporting / insights view over everything**: a
+**columnar-store** that takes **slices over the whole substrate**. It's the
+**read-side complement** to the sovereign per-agent **write-side**:
+
+- **Write-side (sovereign):** each agent's clone is a shard (shard-key = agent),
+  append-entry, row-shaped, partition-at-the-agent (§0). Optimized for the agent's
+  own append + local fold.
+- **Read-side (this view):** one cluster-resident DB folds across **all** shards
+  into a **columnar materialized view** (the DBSP `I` integral, §0 part 2) for
+  cross-everything analytics — "slices over everything" (by category, by agent, by
+  time, by lane). Columnar because reporting is scan-heavy / aggregate-heavy, the
+  opposite access pattern from the row-shaped write-side.
+- **Same one substrate** — not a second database. It's the read-optimized
+  projection of the same ZetaId-keyed Z-set log; deterministic (DST, replayable
+  from seed), so the insights view is reproducible, not a lossy ETL copy.
+- **Where it runs:** the shared k8s cluster (the bus/product/heartbeat join
+  surface, §0), as an insights/observability service over the fleet — composes with
+  the OTel/Prometheus lightlike-observability substrate and the §3 Rx-over-bus
+  dashboards (per-agent live view) vs this (cross-fleet columnar reporting view).
+- [ ] Buildable slice: columnar projection of the ZetaId log (category/agent/time
+      columns) materialized incrementally (`I` integral), queryable as cross-fleet
+      slices; deterministic under the §4 IScheduler.
+
 ## 5. Eventually-consistent git-native indexes — [B-0951](../P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md)
 
 - [ ] Sorted / inverted / graph indexes over the same log (the graph index = the
