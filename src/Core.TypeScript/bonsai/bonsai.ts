@@ -375,3 +375,179 @@ export function equals(a: Expr, b: Expr): boolean {
     }
   }
 }
+
+// ---- accumulate-mode (RFC-9457 ProblemDetails) ----------------------------
+//
+// The applicative complement to the fail-fast `parse`: instead of declining at the
+// first error, `parseAll` collects EVERY per-node decline keyed by its JSON-path —
+// "see all the things that went wrong," for debugging a malformed tree / batch /
+// model-validation. Additive over the same `BonsaiFeedback` payload; `toProblemDetails`
+// adapts the collected list to the RFC-9457 shape (.NET `ValidationProblemDetails`'s
+// `errors: {field: messages[]}`). Independent sub-trees accumulate; a fatal-structural
+// node (unknown kind, not-an-object, missing kind) is single for that node (can't
+// recurse what it doesn't understand) but siblings still accumulate.
+
+/** A decline tagged with the JSON-path where it occurred (the ProblemDetails key). */
+export interface PathedFeedback {
+  readonly path: string;
+  readonly feedback: BonsaiFeedback;
+}
+
+/** RFC-9457 "Problem Details" — the field-keyed multi-error document (the shape
+ * .NET ships as `ValidationProblemDetails`; useful well outside HTTP). */
+export interface ProblemDetails {
+  readonly type: string;
+  readonly title: string;
+  readonly errors: Record<string, string[]>;
+}
+
+/** A human-readable message for a feedback variant (the ProblemDetails value). */
+function feedbackMessage(f: BonsaiFeedback): string {
+  switch (f.kind) {
+    case "UnsupportedVersion":
+      return `unsupported version ${f.found} (expected ${f.expected})`;
+    case "MalformedJson":
+      return f.message;
+    case "UnknownKind":
+      return `unknown node kind "${f.nodeKind}"`;
+    case "UnknownConstTag":
+      return `unknown const tag "${f.tag}"`;
+    case "UnknownOp":
+      return `unknown binary operator "${f.op}"`;
+    case "ExpectedString":
+      return "expected a string";
+    case "ExpectedBool":
+      return "expected a boolean";
+    case "ExpectedInt":
+      return "expected a safe integer";
+    case "NonSafeInt":
+      return `integer ${f.value} is outside the safe-integer range`;
+    case "TooDeep":
+      return `nesting exceeds the maximum depth of ${f.limit}`;
+    case "NonCanonical":
+      return "input is not in canonical form";
+  }
+}
+
+/** Adapt the collected declines to an RFC-9457 ProblemDetails document: group by
+ * JSON-path into the `errors` map (each path → its messages). */
+export function toProblemDetails(feedbacks: readonly PathedFeedback[]): ProblemDetails {
+  const errors: Record<string, string[]> = {};
+  for (const { path, feedback } of feedbacks) {
+    (errors[path] ??= []).push(feedbackMessage(feedback));
+  }
+  return { type: "about:blank", title: "Bonsai validation failed", errors };
+}
+
+/** Collect declines for a const value into `out` (non-throwing; mirrors parseConst). */
+function pushConst(path: string, n: unknown, out: PathedFeedback[]): void {
+  if (typeof n !== "object" || n === null || Array.isArray(n)) {
+    out.push({ path, feedback: { kind: "MalformedJson", message: `${path} is not an object` } });
+    return;
+  }
+  const o = n as Record<string, unknown>;
+  switch (o.t) {
+    case "int":
+      if (typeof o.v !== "number" || !Number.isInteger(o.v)) out.push({ path, feedback: { kind: "ExpectedInt", where: path } });
+      else if (!Number.isSafeInteger(o.v)) out.push({ path, feedback: { kind: "NonSafeInt", value: o.v } });
+      return;
+    case "str":
+      if (typeof o.v !== "string") out.push({ path, feedback: { kind: "ExpectedString", where: path } });
+      return;
+    case "bool":
+      if (typeof o.v !== "boolean") out.push({ path, feedback: { kind: "ExpectedBool", where: path } });
+      return;
+    case "null":
+      return;
+    default:
+      out.push({ path, feedback: { kind: "UnknownConstTag", tag: String(o.t) } });
+  }
+}
+
+/** Collect declines for a node into `out`, recursing all independent children
+ * (non-throwing; the accumulate counterpart of parseNode). A fatal-structural node
+ * (not-object / missing-or-unknown kind / too deep) is single for that node; its
+ * siblings still accumulate. */
+function pushNode(path: string, depth: number, n: unknown, out: PathedFeedback[]): void {
+  if (depth > BONSAI_MAX_DEPTH) {
+    out.push({ path, feedback: { kind: "TooDeep", limit: BONSAI_MAX_DEPTH } });
+    return;
+  }
+  if (typeof n !== "object" || n === null || Array.isArray(n)) {
+    out.push({ path, feedback: { kind: "MalformedJson", message: `${path} is not an object` } });
+    return;
+  }
+  const o = n as Record<string, unknown>;
+  if (typeof o.kind !== "string") {
+    out.push({ path, feedback: { kind: "MalformedJson", message: `${path}.kind is missing or not a string` } });
+    return;
+  }
+  switch (o.kind) {
+    case "const":
+      pushConst(`${path}.value`, o.value, out);
+      return;
+    case "param":
+      if (typeof o.name !== "string") out.push({ path: `${path}.name`, feedback: { kind: "ExpectedString", where: `${path}.name` } });
+      return;
+    case "lambda":
+      if (Array.isArray(o.params)) {
+        o.params.forEach((p, i) => {
+          if (typeof p !== "string") out.push({ path: `${path}.params[${i}]`, feedback: { kind: "ExpectedString", where: `${path}.params[${i}]` } });
+        });
+      } else {
+        out.push({ path: `${path}.params`, feedback: { kind: "MalformedJson", message: `${path}.params is not an array` } });
+      }
+      pushNode(`${path}.body`, depth + 1, o.body, out);
+      return;
+    case "binary":
+      if (typeof o.op !== "string" || !BIN_OPS.has(o.op)) out.push({ path: `${path}.op`, feedback: { kind: "UnknownOp", op: String(o.op) } });
+      pushNode(`${path}.left`, depth + 1, o.left, out);
+      pushNode(`${path}.right`, depth + 1, o.right, out);
+      return;
+    case "call":
+      if (typeof o.fn !== "string") out.push({ path: `${path}.fn`, feedback: { kind: "ExpectedString", where: `${path}.fn` } });
+      if (Array.isArray(o.args)) o.args.forEach((a, i) => pushNode(`${path}.args[${i}]`, depth + 1, a, out));
+      else out.push({ path: `${path}.args`, feedback: { kind: "MalformedJson", message: `${path}.args is not an array` } });
+      return;
+    case "cond":
+      pushNode(`${path}.test`, depth + 1, o.test, out);
+      pushNode(`${path}.then`, depth + 1, o.then, out);
+      pushNode(`${path}.else`, depth + 1, o.else, out);
+      return;
+    default:
+      out.push({ path, feedback: { kind: "UnknownKind", nodeKind: o.kind } });
+  }
+}
+
+/**
+ * Accumulate-mode parse: like `parse`, but on failure returns **every** per-node
+ * decline (each with its JSON-path) instead of just the first — the applicative
+ * complement for batch / model-validation / debugging a malformed tree. On success
+ * returns the same `Expr` as `parse` (the canonical-only contract still applies; a
+ * structurally-valid-but-non-canonical input declines `NonCanonical` at `$`).
+ */
+export function parseAll(s: string): Result<Expr, PathedFeedback[]> {
+  if (typeof s !== "string") return { ok: false, error: [{ path: "$", feedback: { kind: "MalformedJson", message: "input was not a string" } }] };
+  let doc: unknown;
+  try {
+    doc = JSON.parse(s);
+  } catch (ex) {
+    return { ok: false, error: [{ path: "$", feedback: { kind: "MalformedJson", message: ex instanceof Error ? ex.message : String(ex) } }] };
+  }
+  if (typeof doc !== "object" || doc === null || Array.isArray(doc)) {
+    return { ok: false, error: [{ path: "$", feedback: { kind: "MalformedJson", message: "document is not an object" } }] };
+  }
+  const d = doc as Record<string, unknown>;
+  if (typeof d.v !== "number") return { ok: false, error: [{ path: "$.v", feedback: { kind: "MalformedJson", message: "document v is not a number" } }] };
+  if (d.v !== BONSAI_VERSION) return { ok: false, error: [{ path: "$.v", feedback: { kind: "UnsupportedVersion", found: d.v, expected: BONSAI_VERSION } }] };
+
+  const errs: PathedFeedback[] = [];
+  pushNode("$.expr", 1, d.expr, errs);
+  if (errs.length > 0) return { ok: false, error: errs };
+
+  // Structurally valid → reuse the fail-fast parse for the Expr + canonical guard.
+  // The only decline reachable here is NonCanonical (structure already validated).
+  const r = parse(s);
+  if (r.ok) return ok(r.value);
+  return { ok: false, error: [{ path: "$", feedback: r.error }] };
+}

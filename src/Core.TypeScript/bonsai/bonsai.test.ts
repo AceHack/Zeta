@@ -24,8 +24,10 @@ import {
   type Expr,
   param,
   parse,
+  parseAll,
   type Result,
   serialize,
+  toProblemDetails,
 } from "./bonsai";
 
 interface GoldenCase {
@@ -221,5 +223,59 @@ describe("Bonsai-subset — nesting-depth contract (shared MaxDepth, bounded)", 
       node = `{"kind":"binary","op":"add","left":${node},"right":{"kind":"const","value":{"t":"int","v":0}}}`;
     }
     expect(errKind(parse(`{"v":1,"expr":${node}}`))).toBe("TooDeep");
+  });
+});
+
+describe("Bonsai-subset — accumulate-mode (parseAll + ProblemDetails)", () => {
+  it("parseAll returns Ok(Expr) for every valid canonical golden vector", () => {
+    for (const c of golden.cases) {
+      const r = parseAll(c.canonical);
+      expect(r.ok).toBe(true);
+      if (r.ok) expect(equals(r.value, c.expr)).toBe(true);
+    }
+  });
+
+  it("parseAll collects EVERY independent decline with its JSON-path (not just the first)", () => {
+    // op="div" (UnknownOp @ $.expr.op) + left name=null (ExpectedString @ $.expr.left.name)
+    // + right bool v=1 (ExpectedBool @ $.expr.right.value) — three independent errors.
+    const doc =
+      '{"v":1,"expr":{"kind":"binary","op":"div","left":{"kind":"param","name":null},"right":{"kind":"const","value":{"t":"bool","v":1}}}}';
+    const r = parseAll(doc);
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.error.map((e) => e.feedback.kind).sort()).toEqual(["ExpectedBool", "ExpectedString", "UnknownOp"]);
+      expect(r.error.map((e) => e.path).sort()).toEqual(["$.expr.left.name", "$.expr.op", "$.expr.right.value"]);
+    }
+  });
+
+  it("toProblemDetails groups the declines into an RFC-9457 errors map keyed by path", () => {
+    const doc =
+      '{"v":1,"expr":{"kind":"binary","op":"div","left":{"kind":"param","name":null},"right":{"kind":"const","value":{"t":"int","v":1.5}}}}';
+    const r = parseAll(doc);
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      const pd = toProblemDetails(r.error);
+      expect(pd.title).toBe("Bonsai validation failed");
+      expect(Object.keys(pd.errors).sort()).toEqual(["$.expr.left.name", "$.expr.op", "$.expr.right.value"]);
+      expect(pd.errors["$.expr.op"]?.length).toBe(1);
+    }
+  });
+
+  it("parseAll returns a single decline for fatal-structural input (malformed JSON)", () => {
+    const r = parseAll("not json");
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.error).toHaveLength(1);
+      expect(r.error[0]!.feedback.kind).toBe("MalformedJson");
+    }
+  });
+
+  it("parseAll declines NonCanonical (single) for structurally-valid but non-canonical input", () => {
+    const r = parseAll('{"v":1,"expr":{"kind":"param","name":"x","extra":0}}');
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.error).toHaveLength(1);
+      expect(r.error[0]!.feedback.kind).toBe("NonCanonical");
+    }
   });
 });
