@@ -175,6 +175,71 @@ randomized backoff is the mitigation, not a proof). Not solved by construction.
 > B-0962 §3 backoff + the (unproven) B-0963 bounded-wait-freedom. Correctness is in how
 > the layers **compose under partial connectivity**, not in a pure per-row story.
 
+## Round 3 — Aaron's resolution: the round-2 pessimism resolves (2026-06-01)
+
+Aaron answered the round-2 findings, and each resolves rather than disputes — the net is
+**stronger** than round 2 concluded. (Authored by Aaron; not a new peer huddle.)
+
+**R2-finding 1 (PACELC undefined intra-process) → RESOLVED: PACELC applies; per-agent is
+PC/EC.** Round 2 assumed a single in-process copy. It isn't: a safe agent is
+**geo-replicated** (F# deterministic DB _or_ CockroachDB) — a single unreplicated copy
+would be unsafe. That replication IS the network boundary, so PACELC applies. Single-writer
+⇒ no write-_conflict_, but the replica set still chooses L-vs-C / C-vs-A → **PC/EC**
+(CockroachDB Raft-per-range + FoundationDB-style single-thread both favor consistency,
+sacrifice the partitioned-minority replica's availability). Aaron 2026-06-01: _"agents
+will have replicas geographically not just one — that would be unsafe."_
+
+**R2-finding 2 (claim/lock is a problematic CP island; distributed-deadlock; systemic
+livelock) → RESOLVED: the bus is BEST-EFFORT AP, not CP — mutual exclusion is NOT
+required.** Both peers assumed "exactly one agent holds X" is a correctness invariant
+(→ CP). Aaron: it is not. Double-claim is fine, even valuable. Aaron 2026-06-01:
+
+> "Bus can be optimistic and even start working on the same problem. If both agents
+> do the same backlog, they use the two PRs to verify each other's work — they rejoin
+> main from their branches and see each other's PRs, or one finishes first and the
+> second sees it. It's deterministic in its ending. They don't have to lock; best-effort
+> is fine and move forward."
+
+So: redundant work = a free **2-oracle cross-check**, and determinism guarantees
+**convergence at main** ("git decides"). With no required mutual exclusion there is no
+lock to contend ⇒ **the distributed-deadlock and systemic-livelock objections do not
+bite** (they only bite if you require at-most-once). The would-be-CP-coordination-cost
+becomes verification value — the same move as the 4-oracle golden-vectors (redundancy
+IS the correctness mechanism, not waste).
+
+**Boundary (don't-collapse):** this holds for **deterministic / idempotent / convergent**
+work (code, docs, backlog — the majority). **Non-idempotent side-effects** (money,
+provisioning, external charges) still need true mutual exclusion. That is exactly
+**B-0962's two-primitive split**: **Claim** = cooperative best-effort AP (default;
+redundancy-as-verification); **Lock** = hard CAS+fencing **CP**, reserved for the gated
+non-idempotent class (B-0918 banker-bot territory). Aaron's point doesn't contradict
+B-0962 — it explains _why it has two primitives_.
+
+**R2-finding (ID allocation is a global uniqueness surface) → RESOLVED: being removed.**
+Sequential `B-NNNN` was a stopgap; **ZetaId (128-bit, already implemented** — B-0858 v1
+"128-bit observation ID", B-0893 v2 structured encoding, `registry/categories.yaml`) is
+content/structure-addressed ⇒ no global allocator ⇒ no coordination surface. Conversion
+is on the main checklist / workstreams (in progress before this discussion). Aaron
+2026-06-01: _"seq backlog id is stupid and was a stopgap — we were literally running the
+backlog to convert this."_
+
+**R2 (per-shared-repo `origin/main` = per-ref CAS) → CONFIRMED** by Aaron ("per ref cas
+yes agree"): AP-with-retry, per-repo, not global.
+
+### Final precise statement (post Round 3)
+
+> **No global consistency surface** across the multi-repo/multi-project society (Aaron's
+> core — holds). Per-agent state is **geo-replicated PC/EC** (single-writer; replication
+> chooses consistency; PACELC applies — CockroachDB/FoundationDB-class). Read-side
+> aggregate is **AP** (bounded staleness). The **Claim** layer is **best-effort AP** —
+> double-work is tolerated as redundancy-as-verification + deterministic convergence at
+> main, so it is NOT a CP requirement and carries no deadlock/livelock for deterministic
+> work. The only genuine **CP** islands are (a) per-agent replication (chosen-C) and
+> (b) the **Lock** primitive for the gated non-idempotent (money) class. ID allocation is
+> being removed as a coordination surface (ZetaId 128-bit). `origin/main` is per-ref CAS,
+> AP-with-retry, per-repo. PACELC: per-agent PC/EC; read-side PA/EL; Lock PC/EC-per-key;
+> Claim PA/EL (best-effort).
+
 ---
 
 ## Gemini (round 1, verbatim)

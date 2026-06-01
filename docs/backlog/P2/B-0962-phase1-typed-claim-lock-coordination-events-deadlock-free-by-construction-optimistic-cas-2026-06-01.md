@@ -97,8 +97,31 @@ AP-with-retry; GitHub is the availability dependency). Correctness is in how tho
 **compose under partial connectivity**. Also: per-agent state is **CA-local** —
 **PACELC is undefined intra-process** (no network boundary), NOT "PC/EC." Cross-row work
 (decomposition / cascades) needs the §1.3 single-resource + release-before-acquire rule;
-hot-row contention needs §3 backoff + the (unproven) B-0963 bounded-wait-freedom. Full
-two-round huddle (Gemini + Grok verbatim, both rounds + Aaron's resolutions):
+hot-row contention needs §3 backoff + the (unproven) B-0963 bounded-wait-freedom.
+
+**Round-3 resolution (Aaron, 2026-06-01) — Claim is best-effort AP, not CP; this row's
+two primitives ARE the AP/CP split.** Round 2's pessimism resolves:
+
+- **Mutual exclusion is NOT a correctness requirement for deterministic/idempotent work.**
+  Two agents double-claiming the same backlog item is fine — even valuable: two PRs that
+  **cross-verify** each other, or one finishes first and the second sees it on main and
+  converges (**deterministic ending; "git decides"**). No lock ⇒ no deadlock/livelock to
+  contend (the round-2 deadlock/livelock objections only bite if at-most-once is required).
+  So **Claim** (§4: cooperative, monotone, G-Set, try-or-pick-different) is **best-effort
+  AP** — redundancy-as-verification, not a CP island.
+- **Lock** (§4: hard CAS + fencing) is the **CP** primitive, reserved for the gated
+  **non-idempotent** class (money / provisioning / external charges — B-0918 banker-bot
+  territory) where double-work IS unsafe. So this row's Claim-vs-Lock split = the AP/CP
+  split: Claim = AP default; Lock = CP escape.
+- **PACELC correction-of-the-correction:** per-agent state is geo-replicated for safety
+  (F# deterministic DB / CockroachDB — a single copy would be unsafe), so PACELC DOES
+  apply: per-agent = **PC/EC** (single-writer; replication chooses C). Round-2's
+  "undefined intra-process" assumed a single copy.
+- **ID surface being removed:** B-NNNN is a stopgap; ZetaId 128-bit (B-0858 v1 /
+  B-0893 v2, already implemented; content/structure-addressed) needs no global allocator.
+
+Full three-round analysis (Gemini + Grok verbatim, both huddle rounds + Aaron's
+resolutions):
 [`docs/research/2026-06-01-cap-posture-per-row-not-global-coordination-avoidance-gemini-grok-aaron.md`](../../research/2026-06-01-cap-posture-per-row-not-global-coordination-avoidance-gemini-grok-aaron.md).
 
 ## §1 The patterns — never-deadlock AND keep-it-simple
