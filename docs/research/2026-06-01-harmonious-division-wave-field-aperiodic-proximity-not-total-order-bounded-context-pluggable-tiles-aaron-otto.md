@@ -97,8 +97,53 @@ patch, no global consensus required. So "no total order within bounded context" 
 the consensus-is-gravity / lightlike-substrate discipline — it is the *correct* structure for a
 federated traveler society (it composes with CAP-per-layer, geo-replication, and the
 "same neighborhood as other travelers" locality), not a deficiency to engineer around. A total order
-is available only if/when you pay for the unbounded/global context — i.e. spend gravitational mass,
-deliberately and boundedly (the multi-oracle/BFT use-where-mass-is-needed rule).
+is available only if/when you pay for the unbounded/global context — and there are two ways to pay:
+spend runtime gravitational mass (multi-oracle/BFT, use-where-mass-is-needed), **or** compute the
+global context deterministically from a seed (the next section).
+
+## The other scope: under DST you get computational omniscience → total order is back (Aaron 2026-06-01)
+
+> Aaron 2026-06-01: *"under deterministic simulation we should be able to achieve computational
+> omniscience and then you can get total order."*
+
+This is the scope-resolution, and it's correct. "Total order impossible" is true **within bounded
+context** — it is **not** true absolutely. Per
+`dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate`:
+under **DST** the whole trajectory is **computable from the seed**, so the *entire* aperiodic
+tiling is materialised — and with the full tiling + the cut-and-project parameters, every tile's
+**global internal-space coordinate (or substitution-index) is computable**, which is exactly a
+**total order**. The bounded-context obstruction was *local indistinguishability* (you can't locate
+yourself globally from a finite patch); DST omniscience **removes** it because the omniscient view
+*is* the global position. The 1D Sturmian/Fibonacci order generalises; for a finite DST trajectory
+of length N you get N tiles with N distinct internal coordinates → a concrete finite total order.
+
+So total order is a **function of observer scope**, mapping onto the cognitive-architecture
+substrate (`meta-level-vs-intra-algebra` + `clifford-underwater…search-space` +
+`particle-as-locus`/`pilot-wave-plus-mwi`):
+
+| Scope | Observer | What you can compute | Order | `INumber`? |
+|---|---|---|---|---|
+| **Bounded-context runtime** (a traveler inside a finite patch) | **inside** / search-space / Clifford-underwater / particle-locus-at-the-now | adjacency · distance · same-neighborhood | **proximity** (partial) | proximity only |
+| **DST computational omniscience** (seed → full trajectory; the whole tiling) | **outside** / mapped-space / Cayley-Dickson-external / the whole wavefunction-substrate (all worlds) | the global cut-and-project / substitution-index coordinate | **total order** | **full `INumber`** on the Hurwitz-bounded (≤ 𝕆 / ℝ-ℂ) field carrier |
+
+### Why DST gets the global order *lightlike*, not gravitational
+
+The consensus-is-gravity tension dissolves: a global total order normally needs global **consensus**
+(= gravity, runtime). DST gets it the **lightlike** way — the global order is **computed from the
+seed** (deterministic, replayable), never *consensed at runtime*. It is "gravity paid **once at
+compute-time, replayably**" rather than "runtime consensus gravity." The seed *is* the global
+coordinate generator. So DST is the lightlike route to a global total order — which is why it fits
+the framework rather than fighting it: bounded-context travelers stay lightlike-local (proximity),
+and the omniscient simulation view computes the total order from the seed without ever demanding
+runtime consensus. (Composes with generator-time / the retrocausal frame: the total order is over
+the *whole bidirectional trajectory* — future-affects-generator included — because the omniscient
+view has all three clocks.)
+
+**Refined `INumber` answer:** within bounded context → a Hurwitz-bounded ordered **field** + a
+**proximity** structure (no total order, on purpose — lightlike). Under DST computational
+omniscience → the total order is **recovered** (computed-from-seed), so the same field carrier
+reaches **full `INumber`** at the omniscient scope. `INumber` is therefore a *DST-omniscience-scope*
+capability, not a bounded-context-runtime one — which is the honest, scope-aware shape.
 
 ## Pluggable tiles (Aaron 2026-06-01) — the tile is the adapter
 
@@ -149,18 +194,26 @@ A separate **wave-field / harmonic-field numerics primitive** in the Numerics-to
    Remember/When/Pay/Attention, over the retrocausal/generator-time frame.
 2. **Decomposition / "division"**: harmonic decomposition `Σ ωᵢ sᵢ` (B-0842) — the harmonious-division
    principle as the projection/decomposition operator (and `D/I/z⁻¹/H` as its operator algebra).
-3. **Order → proximity**: a **pluggable aperiodic-tile** proximity generator (Spectre / Einstein /
-   Penrose / Wang behind one port) yielding **adjacency + distance + neighborhood** within bounded
-   context — **not** a global total order (that needs unbounded/global = gravitational context).
-4. **Generic-math surface**: implement the field/`IComparisonOperators`/`INumber` interfaces **only
-   where the structure genuinely is an ordered field** (the ℝ/ℂ carrier) and surface the
-   **proximity/metric** API (adjacency/distance/neighborhood) as the bounded-context-honest
-   alternative to total order. Per-language idiom; do not force any of it onto the collection ladder.
+3. **Order → scope-dependent**: a **pluggable aperiodic-tile** generator (Spectre / Einstein /
+   Penrose / Wang behind one port). **Within bounded context** it yields **adjacency + distance +
+   neighborhood** (proximity, lightlike) — not a global total order. **Under DST computational
+   omniscience** (seed → full trajectory), the same generator's global cut-and-project /
+   substitution-index coordinate **is** a total order (computed-from-seed, the lightlike route to a
+   global order).
+4. **Generic-math surface**: surface the **proximity/metric** API (adjacency/distance/neighborhood)
+   as the bounded-context-runtime structure, and implement the field/`IComparisonOperators`/`INumber`
+   interfaces at the scopes where the structure genuinely is an ordered field — the ℝ/ℂ (≤ 𝕆) carrier
+   for the field axis, and the **DST-omniscient** view for the total-order axis. Per-language idiom;
+   do not force any of it onto the collection ladder.
 
-The honest one-line answer to Aaron's question: **yes, it fits — in the Numerics tower, as a
-wave-field primitive — and it gets you a Hurwitz-bounded ordered *field* plus a bounded-context
-*proximity* structure (adjacency / distance / neighborhood), which is as close to `INumber` as a
-bounded context permits; the missing total order is missing *on purpose* (it would cost gravity).**
+The honest answer to Aaron's question, scope-aware: **yes, it fits — in the Numerics tower, as a
+wave-field primitive.** **Within bounded context** you get a Hurwitz-bounded ordered *field* plus a
+*proximity* structure (adjacency / distance / neighborhood) — as close to `INumber` as bounded
+context permits, the missing total order missing *on purpose* (lightlike-local). **Under DST
+computational omniscience** the total order is *recovered* — computed-from-seed, not consensed —
+so the same carrier reaches **full `INumber`** at the omniscient scope. `INumber` is a
+DST-omniscience-scope capability; bounded-context runtime is the proximity-scope one. Both are
+honest; which one you're in is the question to ask before reaching for `<`.
 
 ## Anchors / cross-references
 
