@@ -68,6 +68,13 @@ first ADR to do so.
   needs. The second-runtime cost is amortized across two
   use cases. Confidence lifted from *low* to *medium* on
   this input.
+- 2026-05-31 v6 — **triggered revisit** (the watchlist's
+  node/deno/bun-landscape trigger): refine to **Node = safe
+  cross-harness baseline, Bun = accelerator**. Still bun+TS;
+  Node becomes the portable runtime tooling must *run* on,
+  Bun the fast lane. Aaron + Max aligned; Node-24 pin landed
+  (#6290). Details + proposed Rule-0 text in the Addendum
+  at the end.
 
 ## Context
 
@@ -842,3 +849,75 @@ same round.
 - Every future architect dispatch that considers a
   new tool / language / framework cites this ADR or
   replaces it.
+
+## Addendum (2026-05-31, triggered revisit): Node = safe cross-harness baseline, Bun = accelerator
+
+**Status:** Proposed — operator (Aaron) + co-maintainer (Max) aligned 2026-05-31; pending
+broader product-team ratification per the doctrine-through-agreement discipline. On
+acceptance, amend `.claude/rules/rule-0-no-sh-files.md` (proposed text below).
+
+**Trigger:** the watchlist's "node/deno/bun landscape consolidates" revisit-trigger, plus
+two independent pulls toward Node — Max wanted Node for other reasons, and cross-harness
+portability needs a runtime that is *safe everywhere* (not every harness/CI image ships
+Bun; every one ships Node). The Node-24 pin already landed (mise 22→24, "node everywhere
+via the single pin; keep bun", #6290).
+
+### The refinement
+
+The 2026-04-20 decision picked **bun + TypeScript** for post-setup tooling. That stays —
+the runtime *relationship* is sharpened:
+
+- **Node = the safe cross-harness baseline.** TS tooling must run on Node (present in
+  every harness + CI image). Node is what we depend on for portability.
+- **Bun = the accelerator.** Bun stays the fast path (fast install, fast `bun test`, fast
+  startup) for dev + CI where available. Repositioned from "the host" to "the fast lane,"
+  not removed.
+
+Nothing else changes: still TypeScript, still no Python, `.sh` still only for the
+pre-setup install-graph, F#/.NET still engine-adjacent. The one new constraint is
+**nothing may be Bun-only** — every tool must also run on Node.
+
+### What this requires of TS tooling
+
+| Concern | Status |
+|---|---|
+| Use `node:` builtins, not Bun-only APIs (`Bun.argv` / `Bun.file` / `Bun.write` / `Bun.Glob` / `Bun.spawn[Sync]` / `Bun.sleep` / `Bun.stdin` / `Bun.$`) | **TARGET, not current state** — a repo search finds **~29 `tools/` files** still on Bun-only APIs (e.g. `tools/dora-classify/cli.ts` `Bun.argv`, `tools/dashboard/generate-metrics.ts` `Bun.write`, the `tools/ci/qemu-*` `Bun.spawnSync`/`Bun.sleep`). The policy *implies migrating* these to `process.argv` / `node:fs` / `node:child_process` / `node:fs.glob` etc. — tracked, not assumed-done (Codex #6293) |
+| CLI entry guard `import.meta.main` | **Node 24.2+** supports it (verified; aligns with the Node-24 pin) — runs on both |
+| `bun:test` test imports | the accelerator path; for a safe-baseline test run the swap is `node:test` (not required while Bun is in CI/dev) |
+| direct `.ts` invocation | Bun runs TS directly; Node 24 type-strips *erasable* TS, but non-erasable constructs (TS `enum`, `namespace`) need `tsx`/a build — verify per tool; Bun stays the simplest direct-run, Node is the portability floor |
+
+### Migration cost (honest — Codex #6293)
+
+The refinement is **not free**: ~29 existing `tools/` files depend on Bun-only runtime
+APIs and would need porting to `node:`/`process` equivalents to actually run on the safe
+Node baseline. Until they are ported, those specific tools remain Bun-required (they still
+*work* — Bun is in CI/dev — they just aren't yet Node-portable). The honest framing for
+ratification: this ADR sets the *direction* (new tooling is Node-safe by default; nothing
+new may be Bun-only), and the existing-tooling sweep is a **tracked migration** (candidate
+backlog row) prioritized by which tools need to run on Node-only harnesses first — not a
+big-bang rewrite. The agent-bus (#6283) is the first tool authored to the new convention.
+
+### Proposed Rule-0 refinement (`.claude/rules/rule-0-no-sh-files.md`)
+
+Carved sentence — from:
+
+> TypeScript IS cross-platform DST — deterministic, reproducible, **Bun-hosted.**
+
+to:
+
+> TypeScript IS cross-platform DST — deterministic, reproducible. **Node is the safe
+> cross-harness baseline; Bun is the accelerator.** Tooling must *run* on Node (present in
+> every harness/CI image); Bun is the fast path where available — **nothing may be
+> Bun-only.**
+
+The "run via `bun`" line gains: *"runs on Node (safe baseline) and Bun (accelerator);
+prefer `bun` for speed where present, but nothing may be Bun-only."* The
+`.sh`-only-for-install-graph rule is unchanged.
+
+### Composes with
+
+* `.claude/rules/rule-0-no-sh-files.md` — the rule this refines (proposed text above)
+* `.claude/rules/dep-pin-search-first-authority.md` + the "pin only slow-movers" memory — Node is a slow-mover (LTS cadence) so pinning Node 24 is correct; Bun stays a fast-mover on its own default
+* #6290 (mise 22→24, node-everywhere pin — landed) + B-0805 (all-deps current-version sweep)
+* the four-language compiler-BFT ADR (2026-05-31) — Node/Bun is the TypeScript runtime leg of the multi-language story
+* the agent-bus (B-0954, #6283) — already Node-safe at the library level (`node:` builtins) with `import.meta.main` CLIs that run on Node 24.2+ — an empirical confirmation the refinement is satisfiable today
