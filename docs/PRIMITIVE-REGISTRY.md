@@ -34,15 +34,19 @@ swapped underneath without changing callers (the dep-behind-port strategy below)
 
 - **Identity** — ✅ ZetaId (4/4)
 - **Event / reactive** — ✅ Observe loop (4/4) · ⬜ Rx-Observable = Z-set delta-stream (per-lang Rx exists; unify) · ⬜ CALM coordination-free marker
-- **Algebra ladder** — 🚧 G-Set (3/4 — TS/F#/Rust; C# pending #6363) · 🚧 Bag / multiset (next) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
+- **Algebra ladder** — ✅ G-Set (4/4 → Tier-1; C# #6363 merged) · 🚧 Bag / multiset (TS reference in-flight #6364) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
 - **Numerics / algebra tower** — ⬜ complex/imaginary + the **Cayley–Dickson** tower ℝ→ℂ→ℍ→𝕆→𝕊 (F# `src/Core/CayleyDickson.fs` — the "imaginary stack", B-0623) · ⬜ Clifford / geometric algebra (F# substrate) · ✅ Z-set weight ring ℤ (F# `src/Core/Algebra.fs`)
 - **Inference** — ⬜ Infer.NET **BP/EP** factor-graph (F# substrate; architecture B-0365.5 closed + B-0637) · ⬜ uncertainty semiring (B-0367) · ⬜ posterior quorum (B-0255)
 - **Comms** — 🚧 git-native Bus (TS only)
+- **Discovery / transport** (decentralized, further-out) — ⬜ Nostr (signed event relay) · ⬜ DHT (BitTorrent-style peer routing) · ⬜ IPFS (content-addressed object store) · ⬜ Reticulum-over-IP · ⬜ Reticulum-over-mesh · ⬜ 802.11ah Wi-Fi HaLow (sub-GHz long-range). Multi-channel by design — redundant transports so a blocked/slow channel just fails over to the next. Already backlogged: Reticulum B-0704 / B-0726 / B-0772; Green Lantern + HaLow B-0246 / B-0289 / B-0290.
+- **Observability** — ⬜ structured logging · ⬜ OTel / metrics · ⬜ benchmarking. Model on .NET `System.Diagnostics.Metrics` (`Meter`-anchored, tagged/multi-dimensional, OTel-native): `Counter<T>` (monotonic) ≈ a Bag-fold, `UpDownCounter<T>` (up+down) ≈ a Z-set / PN-Counter-fold, `Histogram<T>` ≈ a Bag-over-buckets. Metrics are the **Bag-fold view of the event log** (database-design ADR) — instruments as folds over the algebra, not bolt-on.
+- **Test framework** — ⬜ cross-lang assert/expect + property-based + golden-vector harness primitive (today: bun:test / xUnit / FsCheck / Rust `#[test]` per-lang — unify the surface). Composes with the DST / test primitives below.
 - **Logic / numeric** (the cross-language number BCL) — ✅ TriBoolean (digital qubit) · ✅ TriBoolean middle-out float · ⬜ `bool?` plain-Kleene · ⬜ int8…int128 / uint8…uint128 · ⬜ float32/64 · ⬜ decimal (dep-behind-port) · ⬜ bigint (dep-behind-port)
 - **Nullable / optional** — ⬜ an `Option<T>` / `T?` / nullable wrapper for **every** primitive, all four langs (F# `option`, C# `Nullable<T>` + reference-nullable, Rust `Option<T>`, TS `T | null`) — one common surface
 - **Codec / BCL-like** — ⬜ JSON · ⬜ UTF-8 · ⬜ base64 · ⬜ SHA-256 · ⬜ regex · ⬜ time/clock
 - **DST / test** — ✅ DeterministicEnv (4/4) · ✅ (F#) IClock / FrozenClock · ✅ (F#) ChaosEnvironment (seeded) · ✅ (F#) LawRunner · ✅ (F#) Injection DI seams · ⬜ cross-lang versions of all of these
 - **Concurrency / runtime / IO** (further-out) — ⬜ channels · ⬜ pipelines · ⬜ concurrent dictionary · ⬜ work-stealing / ActionBlock · ⬜ async runtime (Tokio / .NET `Task` / JS event loop) · ⬜ TCP/UDP sockets · ⬜ ASP.NET-class server
+- **Consensus** (furthest-out — gated) — ⬜ gossip · ⬜ Raft · ⬜ Paxos. Deferred until they compose with **CAS / idempotency** as the substrate (built on the algebra + compare-and-set, not specialized per-case). Per the CAP-per-layer model: the per-agent G-Set/Bag/Z-set stay AP / coordination-free (CALM); the CP boundary is taken only at the git-merge / claim layer where mutual exclusion genuinely needs it (`git push` IS the truth-machine — and it's not central: every agent has its own repos / busses / mains, so even that is federated).
 - **Type-system shims** — ✅ Variance (C# `Variance.cs`) · ✅ ZetaCircuitBuilder (C# Z-set binding)
 
 ## Consensus tiers
@@ -67,6 +71,7 @@ Cells below use ✅ (present) / ⚠️ (partial — see note) / ❌ (absent).
 | **Observe loop** — `observe`/`simulate`/`fold`/`replay` event algebra             | ✅  | ✅  | ✅  | ✅   | **Tier 1/2** — shared `golden-vectors.json` (Rust verifies against it; F#/C# crates present) | `src/Core.{FSharp,CSharp,Rust}.Observe/`, `tools/observe/`; fixture `tools/observe/golden-vectors.json` (B-0867.27)                                        |
 | **TriBoolean** — digital qubit (true/false/middle)                                | ✅  | ✅  | ✅  | ✅   | **Tier 2** — compiler-parity + per-lang tests                                                | `src/Core.{TypeScript,FSharp,CSharp,Rust}.TriBoolean/`; tests `tests/Tests.{CSharp,FSharp}/TriBoolean/` (B-0944)                                           |
 | **TriBoolean float** — "middle-out" self-describing float                         | ✅  | ✅  | ✅  | ✅   | **Tier 2** — per-lang tests; **v0 spec** (evolving)                                          | `…TriBoolean/{Float.fs,TriFloat.cs,float.rs}`, `src/Core.TypeScript/tri-boolean-float/`; specs `docs/research/2026-05-3{0,1}-tri-boolean-float-*` (B-0944) |
+| **G-Set** — grow-only set CRDT (bottom rung of the algebra ladder)                | ✅  | ✅  | ✅  | ✅   | **Tier 1/2** — shared `g-set/golden-vectors.json` (Rust verifies; TS reference; F#/C# join)  | TS `src/Core.TypeScript/g-set/`, F# `src/Core/GSet.fs`, C# `src/Core.CSharp/GSet.cs` (#6363), Rust `src/Core.Rust.Algebra/src/gset.rs` (#6360) (B-0954)    |
 
 ## In-progress — the base sweep (the gaps we're closing)
 
@@ -75,8 +80,7 @@ sweep order is **ZetaId → algebra ladder → bus**.
 
 | Primitive                                                          | TS  | F#  | C#  | Rust | Note                                                                                                                                                                                                                                                                                                                    |
 | ------------------------------------------------------------------ | --- | --- | --- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **G-Set** — grow-only set CRDT                                     | ✅  | ✅  | ❌  | ✅   | TS `src/Core.TypeScript/g-set/` (+ `golden-vectors.json` fixture); F# `src/Core/GSet.fs`; Rust `src/Core.Rust.Algebra/src/gset.rs` (#6360). **3/4** — C# `src/Core.CSharp/GSet.cs` pending #6363; flips to 4/4 → Tier-1 when it lands.                                                                                  |
-| **Bag / multiset** — non-negative-weight multiset                  | ❌  | ⚠️  | ❌  | ❌   | The **missing middle rung**. Only implicit-in-Z-set in F# today; no named type anywhere. Cheapest gap.                                                                                                                                                                                                                  |
+| **Bag / multiset** — non-negative-weight multiset                  | 🚧  | ⚠️  | ❌  | ❌   | The **middle rung** (G-Set ⊂ Bag ⊂ Z-set; ℕ / per-key sum). TS reference + `bag/golden-vectors.json` in-flight (#6364); F# only implicit-in-Z-set today. Combiner is SUM (NOT idempotent — `union(a,a)` doubles counts), the step toward Z-set's signed ℤ.                                                              |
 | **Z-set** — signed-weight, retraction-native set (DBSP)            | ❌  | ✅  | ⚠️  | ❌   | F# `src/Core/ZSet.fs` (+`IndexedZSet.fs`); C# is a binding→F# (`ZetaCircuitBuilder`). Needs native TS + Rust.                                                                                                                                                                                                           |
 | **Bus (git-native)** — ZetaId-keyed G-Set of envelopes, no-PR      | ✅  | ❌  | ❌  | ❌   | `tools/agent-bus/` (B-0954, #6283/#6327). The wire is JSON-on-git, so cross-lang = a thin read/write/merge per language (each needs ZetaId first).                                                                                                                                                                      |
 | **Rx-Observable / Z-set delta-stream** — push-based reactive layer | ⚠️  | ⚠️  | ⚠️  | ❌   | The reactive layer **over** Z-set: an Rx query _is_ a Z-set delta-stream (B-0959 §3). Rx.NET / `FSharp.Control.Reactive` exist per-lang (`rx-expert` skill, B-0640); not yet a unified cross-lang primitive. **CALM** (Consistency As Logical Monotonicity) is the law that makes the monotone slice coordination-free. |
@@ -208,9 +212,12 @@ G-Set / Bag / Z-set gaps collapse into a single ladder build per language.
   harness that fails non-zero on mismatch (the `tests/cross-verification/zeta-id/`
   pattern is the template).
 
-_Last updated: 2026-06-01 — ZetaId Tier-1 4-oracle (B-0679); G-Set **3/4** (TS/F#/Rust
-via #6360; C# pending #6363, flips to 4/4 → Tier-1 when it lands); added the
-cross-language-BCL framing, the wish list, the numeric/category primitives table (+ the
-dep-behind-port fill strategy for the ❌ gaps), the numerics/algebra-tower + inference +
-nullable wish items, the DST/test primitives section, and the BCL-like candidate tier
-(JSON, UTF-8 — pull in slowly)._
+_Last updated: 2026-06-01 — ZetaId + **G-Set now Tier-1 4-oracle** (C# #6363 merged →
+G-Set joined ZetaId/Observe/TriBoolean in the stable base); Bag (middle rung) TS reference
+in-flight (#6364). Added wish-list categories the maintainer named: Discovery / transport
+(Nostr, DHT, IPFS, Reticulum-over-IP/-mesh, 802.11ah HaLow — xref'd to existing backlog),
+Observability (structured logging, OTel / `System.Diagnostics.Metrics` Meter model,
+benchmarking — instruments as Bag/Z-set folds), Test framework, and Consensus (gossip /
+Raft / Paxos — gated on CAS-composability, CP only at the federated git-merge boundary).
+Prior: cross-language-BCL framing, numeric/category + numerics-tower + inference + nullable
+wish items, DST/test section, BCL-like candidate tier (JSON, UTF-8 — pull in slowly)._
