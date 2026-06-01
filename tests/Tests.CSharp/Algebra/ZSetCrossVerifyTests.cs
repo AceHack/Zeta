@@ -139,4 +139,63 @@ public class ZSetCrossVerifyTests
         // diff comparer ⇒ not equal
         Assert.False(ZSet.OfEntries([("a", 1L)], ordinal).Equals(ZSet.OfEntries([("a", 1L)], reverse)));
     }
+
+    [Fact]
+    public void GenericMathAbelianGroupSurface()
+    {
+        // dotnet-native generic-math IWSAM: IAdditiveIdentity + IAdditionOperators (monoid) PLUS
+        // ISubtractionOperators + IUnaryNegationOperators (the abelian-group inverse). NOT INumber
+        // (no total order; the ring scalar is per-element). (+) == Union, (-a) == Negate,
+        // (a - b) == Union(Negate); AdditiveIdentity is empty. Mirrors the F# Zero/(+)/(~-)/(-) rung.
+        var cmp = StringComparer.Ordinal;
+        static ZSet<string> Z(StringComparer cmp, params (string, long)[] xs) => ZSet.OfEntries(xs, cmp);
+
+        var a = Z(cmp, ("a", 1L), ("b", 2L));
+        var b = Z(cmp, ("b", 1L), ("c", 3L));
+        var c = Z(cmp, ("c", -1L), ("d", 4L));
+
+        Assert.Equal(a.Union(b), a + b);                    // (+) equals Union
+        Assert.Equal(a.Negate(), -a);                       // unary (-) equals Negate
+        Assert.Equal(a.Union(b.Negate()), a - b);           // (-) equals Union(Negate)
+        Assert.True(ZSet<string>.AdditiveIdentity.IsEmpty); // identity is empty
+        Assert.Equal(a, ZSet<string>.AdditiveIdentity + a); // identity law
+        Assert.Equal(a, a + ZSet<string>.AdditiveIdentity);
+
+        Assert.Equal(a + b, b + a);             // commutative
+        Assert.Equal((a + b) + c, a + (b + c)); // associative
+
+        // abelian-group inverse: a + (-a) == empty and a - a == empty (the law a Bag cannot satisfy)
+        Assert.True((a + (-a)).IsEmpty);
+        Assert.True((a - a).IsEmpty);
+    }
+
+    [Fact]
+    public void GenericMathAdditionIsNotIdempotentAndSubtractionRetracts()
+    {
+        // (+) is SUM, not set-union: a + a doubles every weight (the Bag/Z-set step away from G-Set).
+        var cmp = StringComparer.Ordinal;
+        var a = ZSet.OfEntries([("a", 1L), ("b", -3L)], cmp);
+        Assert.Equal(ZSet.OfEntries([("a", 2L), ("b", -6L)], cmp), a + a);
+
+        // subtraction drives a shared key to net 0 → retracted (dropped)
+        var x = ZSet.OfEntries([("a", 5L), ("b", 2L)], cmp);
+        var y = ZSet.OfEntries([("a", 5L)], cmp);
+        Assert.Equal(ZSet.OfEntries([("b", 2L)], cmp), x - y);
+    }
+
+    [Fact]
+    public void GenericMathIdentityIsComparerAgnosticButNonEmptyMismatchStillThrows()
+    {
+        // empty must absorb under ANY comparer (the identity law); (+)/(-) short-circuit empty BEFORE
+        // Union's same-comparer guard. Two NON-empty operands with mismatched comparers still throw.
+        var reverse = Comparer<string>.Create((x, y) => string.CompareOrdinal(y, x));
+        var custom = ZSet.OfEntries([("x", 1L), ("y", 2L)], reverse);
+        Assert.Equal(custom, custom + ZSet<string>.AdditiveIdentity); // no throw (a + empty = a)
+        Assert.Equal(custom, ZSet<string>.AdditiveIdentity + custom); // no throw (empty + a = a)
+        Assert.Equal(custom, custom - ZSet<string>.AdditiveIdentity); // no throw (a - empty = a)
+
+        var ordinal = ZSet.OfEntries([("a", 1L)], StringComparer.Ordinal);
+        Assert.Throws<ArgumentException>(() => ordinal + custom);
+        Assert.Throws<ArgumentException>(() => ordinal - custom);
+    }
 }

@@ -6,7 +6,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 
 namespace Zeta.Core.CSharp;
 
@@ -135,7 +137,12 @@ public static class ZSet
 /// ordinal) needs <see cref="StringComparer.Ordinal"/>. Pass it explicitly for cross-language parity.
 /// </remarks>
 /// <typeparam name="T">The key type.</typeparam>
-public sealed class ZSet<T> : IEquatable<ZSet<T>>
+public sealed class ZSet<T> :
+    IEquatable<ZSet<T>>,
+    IAdditiveIdentity<ZSet<T>, ZSet<T>>,
+    IAdditionOperators<ZSet<T>, ZSet<T>, ZSet<T>>,
+    ISubtractionOperators<ZSet<T>, ZSet<T>, ZSet<T>>,
+    IUnaryNegationOperators<ZSet<T>, ZSet<T>>
 {
     private readonly ImmutableArray<ZSetEntry<T>> _items;
     private readonly IComparer<T> _comparer;
@@ -296,6 +303,89 @@ public sealed class ZSet<T> : IEquatable<ZSet<T>>
         }
 
         return new ZSet<T>(builder.ToImmutable(), _comparer);
+    }
+
+    // ─── generic-math abelian-group surface (System.Numerics IWSAM) ──────────
+    // "numerics like dotnet as our interface, push to other langs if they don't
+    // have" (Aaron 2026-06-01). The dotnet-native form: Z-set IS-A
+    // IAdditiveIdentity + IAdditionOperators (monoid) + ISubtractionOperators +
+    // IUnaryNegationOperators (the abelian-group inverse). NOT INumber (no total
+    // order; the ring scalar is per-element, not a numeric product). Mirrors the
+    // F# `Zero`/`(+)`/`(~-)`/`(-)` rung and the GSet/Bag IWSAM twins.
+
+    /// <summary>
+    /// The additive identity (empty Z-set): <c>a + AdditiveIdentity == a</c>. Cached, comparer-agnostic
+    /// (built with <see cref="Comparer{T}.Default"/>); the <c>operator +</c>/<c>operator -</c> empty
+    /// short-circuits keep the identity law holding for Z-sets built with any comparer.
+    /// </summary>
+    [SuppressMessage(
+        "Design",
+        "CA1000:Do not declare static members on generic types",
+        Justification = "IWSAM (IAdditiveIdentity) requires the static member on the generic type itself; CA1000 predates static abstract interface members.")]
+    public static ZSet<T> AdditiveIdentity { get; } = ZSet.Empty<T>();
+
+    /// <summary>
+    /// <c>a + b</c> — per-key signed sum (the abelian-group operation; delegates to <see cref="Union"/>).
+    /// Empty is short-circuited as a comparer-agnostic identity BEFORE <see cref="Union"/>'s
+    /// same-comparer check, so <c>a + Zero == a</c> and <c>Zero + a == a</c> hold for any comparer; two
+    /// NON-empty Z-sets with mismatched comparers still fail fast (the comparer is part of identity).
+    /// NOT idempotent — <c>a + a</c> doubles every weight.
+    /// </summary>
+    /// <param name="left">The left Z-set.</param>
+    /// <param name="right">The right Z-set.</param>
+    /// <returns>The per-key sum.</returns>
+    public static ZSet<T> operator +(ZSet<T> left, ZSet<T> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        if (left.IsEmpty)
+        {
+            return right;
+        }
+
+        if (right.IsEmpty)
+        {
+            return left;
+        }
+
+        return left.Union(right);
+    }
+
+    /// <summary>
+    /// <c>-a</c> — the abelian-group inverse (flip every sign; delegates to <see cref="Negate"/>), so
+    /// <c>a + (-a) == AdditiveIdentity</c> (the law a Bag cannot satisfy).
+    /// </summary>
+    /// <param name="value">The Z-set to negate.</param>
+    /// <returns>The Z-set with every weight sign-flipped.</returns>
+    public static ZSet<T> operator -(ZSet<T> value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        return value.Negate();
+    }
+
+    /// <summary>
+    /// <c>a - b == a + (-b)</c> — retraction expressed directly. Empty is short-circuited as a
+    /// comparer-agnostic identity (<c>a - Zero == a</c>, <c>Zero - b == -b</c>) before the same-comparer
+    /// check, matching <c>operator +</c>.
+    /// </summary>
+    /// <param name="left">The minuend.</param>
+    /// <param name="right">The subtrahend.</param>
+    /// <returns><c>left + (-right)</c>.</returns>
+    public static ZSet<T> operator -(ZSet<T> left, ZSet<T> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        if (right.IsEmpty)
+        {
+            return left;
+        }
+
+        if (left.IsEmpty)
+        {
+            return right.Negate();
+        }
+
+        return left.Union(right.Negate());
     }
 
     /// <summary>Throw if <paramref name="other"/> uses a different comparer (the comparer is part of the Z-set's identity).</summary>
