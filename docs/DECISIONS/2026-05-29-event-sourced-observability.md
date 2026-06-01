@@ -35,3 +35,58 @@ To allow the agent swarm to recursively analyze friction bottlenecks and autonom
 * **Consequences:**
   * **Positive:** Complete self-reflective cybernetic feedback loop. The system measures its own friction, alerts on spikes, and recursively rewrites its own workflow DUs to maximize velocity. Zero operational infrastructure costs.
   * **Negative/Costs:** Incremental append-only write volume inside the Git history (mitigated by highly compressed JSON schema structures).
+
+## Addendum (2026-05-31): the LGTM stack, git-native — metrics are a Bag-fold over the event G-Set
+
+Option 2 is not just "a cheaper Prometheus." Once telemetry is a ZetaId-keyed,
+append-only **event G-Set** (the same paradigm as the *in-flight* agent-bus — B-0954,
+Phase 1 landing in #6283, *targeted at* `docs/agent-bus/`; the friction log *planned at*
+`docs/observability/` — neither directory existed on `main` as of this 2026-05-31
+addendum), the entire Grafana
+**LGTM** stack falls out as *folds over that one event store* — "LGTM for git-native":
+
+| LGTM (Grafana) | git-native equivalent | how |
+|---|---|---|
+| **L**oki (logs) | the event files themselves | each ZetaId-keyed JSON event IS a structured log line |
+| **G**rafana (dashboards) | the static `demo/index.html` renderer | renders the folds, no server |
+| **T**empo (traces) | ZetaId correlation across events | a causal chain of related ZetaIds = a trace/span tree |
+| **M**imir (metrics) | a **Bag-fold** (`group-by key → count`) over the event G-Set | counts/rates/histograms are a derived view, not stored aggregates |
+
+The metrics rung is the load-bearing part: **a metric is a Bag** — the middle rung of
+the G-Set / Bag / Z-set ladder (see the
+[bus↔Ace synthesis](../research/2026-05-31-bus-and-ace-one-git-native-zetaid-zset-substrate-gset-comms-vs-dependency-zset.md)).
+You don't *store* the counts; you **fold** them on read:
+
+```text
+event G-Set (stored)  →  group-by key → count  →  the metric (Bag, derived view)
+```
+
+Because the base is append-only, multiplicities only grow — exactly the Bag property
+(ℕ-valued, no retraction).
+
+### Why this is strictly better than the rejected Prometheus stack (not just cheaper)
+
+The original con was only "needs a visualizer." The deeper win is four properties the
+traditional stack cannot give at once:
+
+* **Exact, not sampled** — every event is a file; the count is the true count (Prometheus samples + downsamples).
+* **Time-travel** — fold a metric *as of any commit*: `metric@HEAD`, `metric@<3d-ago>`, `diff(metric@A, metric@B)` = what changed. The append-only git history IS the TSDB.
+* **Cross-machine-correct** — read the fold from `origin/main` and it reflects the merged G-Set across every machine, conflict-free (CRDT union); no central scrape target.
+* **Ray-traceable** — drill from any count straight back to the source event files (glass-halo); the metric and its evidence are the same substrate.
+
+This is the lightlike-observability framing made concrete — *"Prometheus is the
+curvature meter"* becomes *"the Bag-fold is the curvature meter."*
+
+### Storage trade-off (the one knob)
+
+* **Bag-as-fold (default)** — store nothing extra; fold the event G-Set. Full event detail + time-travel. Right at agent-tick cadence (heartbeats, friction events, contribution counts, error-class histograms).
+* **G-Counter cells** — when increments get too numerous to keep one file each, drop to a CRDT G-Counter (one `count[key][machine]` cell; merge = per-cell max; report = Σ). Compact, but loses per-event drill-down + exact time-travel. Pick by volume.
+
+### Composes with
+
+* the agent-bus (B-0954, Phase 1 landing in #6283) — the event G-Set this builds on; observability is the *count-fold* over the same machinery
+* the G-Set / Bag / Z-set ladder ([bus↔Ace synthesis](../research/2026-05-31-bus-and-ace-one-git-native-zetaid-zset-substrate-gset-comms-vs-dependency-zset.md)) — metric = the Bag rung
+* [`.claude/skills/lightlike-observability-discipline/SKILL.md`](../../.claude/skills/lightlike-observability-discipline/SKILL.md) — the OTel / K8s / Argo / Prometheus = lightlike mapping
+* [`2026-05-29-monitoring-and-reducing-pr-review-friction.md`](2026-05-29-monitoring-and-reducing-pr-review-friction.md) — the friction-measurement decision this serves
+* DORA + the FrictionTelemetry ZetaId category + the measure-first principle — the metrics this stack collects
+* shields-detect-not-block — a Bag-fold IS the drift detector (counts diverge / a surface goes quiet / a class spikes) that *surfaces* without gating
