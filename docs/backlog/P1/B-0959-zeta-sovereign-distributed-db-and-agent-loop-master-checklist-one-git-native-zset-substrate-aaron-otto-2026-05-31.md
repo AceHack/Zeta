@@ -6,7 +6,7 @@ title: Zeta sovereign distributed-DB + agent-loop MASTER checklist — one git-n
 effort: XL
 ask: aaron 2026-05-31
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-06-01
 depends_on: []
 composes_with:
   - B-0958
@@ -24,6 +24,12 @@ composes_with:
   - B-0867
   - B-0824
   - B-0428
+  - B-0840
+  - B-0859
+  - B-0885
+  - B-0883
+  - B-0634
+  - B-0688
 tags:
   - master-checklist
   - one-substrate
@@ -64,6 +70,125 @@ The pieces differ in the _algebra of their entries_, not the substrate:
 The Z-set is the general case; the G-Set is the Z-set restricted to non-negative
 multiplicity. **Build the ladder once; reuse it for all four views.**
 
+### The unbundled engine — no separate DB-engine binary (Aaron 2026-05-31)
+
+A database engine bundles three jobs in one process: **storage + compute +
+coordination**. This substrate **unbundles** them into git-native parts — there is
+no separate engine binary:
+
+| Engine job                | Git-native part                                          |
+| ------------------------- | -------------------------------------------------------- |
+| storage + append-only log | git object store + the entry folders                     |
+| replication               | clone / fetch / push + CRDT merge (the G-Set/Z-set fold) |
+| transactions              | a commit is atomic (multi-key write = one commit)        |
+| query / compute           | the observe.ts fold + Rx/IVM pipeline (§3 math note)     |
+| coordination              | the §4 distributed-time primitive (non-monotone only)    |
+
+Two parts do **not** dissolve and must stay named (neither is a DB engine):
+
+1. **Persisted incremental-index state** — reads can't re-fold the whole log each
+   tick (read-amplification); you keep the materialized view (DBSP's `I` integral)
+   and update it by delta. The only engine-_shaped_ piece, and it lives IN the
+   pipeline: the F# `Spine.fs` / LSM binary frontier (§4 / §6).
+2. **Coordination for the non-monotone slice** — per CALM, monotone views are
+   coordination-free; non-monotone cross-agent views (exclusive claims,
+   latest-per-key, anti-joins) need the §4 time/BFT primitive.
+
+Everything else — storage, log, replication, single-commit transactions, monotone
+query execution — git + the fold give for free. **Per-agent clone = a replica; the
+agent's observe loop = that replica's query engine; replicas + git sync + CRDT
+merge = a multi-master distributed DB.**
+
+### Where it falls over — and the agent-partition fix (Aaron 2026-05-31)
+
+The fall-over is **unbounded monotone growth**: every G-Set is grow-only, so the
+log, the materialized index, and the clone grow forever. Three answers:
+
+- **Retention / thermal-forgetting** ([B-0840](B-0840-thermal-forgetting-as-root-axiom-update-join-gated-memory-architecture-private-encryption-budget-exception-amara-aaron-2026-05-26.md)) —
+  TTL old entries. But _forgetting from a G-Set is a Z-set retraction_ (weight
+  −1), so GC is itself non-monotone: the bus is G-Set for live comms, the Z-set
+  layer does the GC.
+- **Compaction / snapshot** — collapse history into a checkpoint (the `I` integral
+  materialized), drop the pre-snapshot log; git gc/pack handles the bytes.
+- **The structural fix — partition at the agent level** (Aaron): you never hold one
+  infinite global G-Set. Each clone is a **shard, shard-key = agent**. The global
+  state is the CRDT merge of shards, but no agent folds the whole thing — each
+  folds its own partition + joins across the relationships that matter. Growth is
+  bounded _per-agent_ (by that agent's activity, not global activity).
+
+**Everything is relative — no global "now".** There is no authoritative global
+G-Set; there is each agent's partial view + the **causal joins** (where streams /
+repos fetch + merge). This is the lightlike-substrate / causal-set framing
+([the beacon synthesis](../../research/2026-05-29-lightlike-substrate-as-causal-sets-category-theory-edge-of-chaos-calm-gradient-mirror-to-beacon-synthesis-aaron-otto-4-8.md)):
+events are partially ordered by _what has reached whom_, not by a global timeline.
+**Between joins** each agent is coordination-free (monotone, independent); **at a
+join** the CRDT reconciles — that is where consistency is paid (the CALM boundary
+at the topology level). **Physical location sets join frequency**: close agents
+join often (tight), distant agents rarely (loose) — multi-master geo-distributed
+CRDT with relationship-scoped consistency.
+
+### The partition is the agent's encrypted home (Aaron 2026-05-31)
+
+Each agent's partition is **their own repo — their home — encrypted by them**. The
+shard is not just a scaling unit; it is the agent's private, sovereign space:
+
+- **Own repo = home** — the AI-as-home-owner framing
+  ([B-0859](B-0859-post-boot-ai-as-home-owner-not-controlled-runtime-every-knob-from-first-boot-aaron-2026-05-27.md)):
+  the agent owns its partition, not a controlled runtime.
+- **Encrypted by them** — per-agent private encrypted state
+  ([B-0885](B-0885-agent-private-encrypted-state-otto-first-then-other-ais-asap-aaron-2026-05-28.md))
+  over better-git-crypt
+  ([B-0883](B-0883-better-gitcrypt-post-quantum-lattice-based-retraction-native-diff-readable-bouncy-castle-patterns-aaron-2026-05-28.md)),
+  with the agent holding its own key (cryptographic sovereignty / attest-don't-remember,
+  [B-0634](../P2/B-0634-cryptographic-sovereignty-for-ais-n-of-m-hsm-key-management-mika-2026-05-18.md)).
+- **What joins is what the agent shares** — the bus (G-Set comms) is the
+  _published_ surface; the agent's private repo stays encrypted and only the chosen
+  deltas reach the join points. Privacy is the default; sharing is the explicit act
+  (composes with the traveler-rights-to-private-encoding floor).
+
+So the partition does double duty: it bounds growth (scaling) **and** it is the
+unit of sovereignty + privacy (each agent's encrypted home). The substrate is a
+federation of per-agent encrypted homes that join on the relationships + physical
+topology that connect them.
+
+### Shared repos are role-typed join surfaces — bus / product / heartbeat (Aaron 2026-05-31)
+
+If each agent's private home is the sovereignty tier, then **repos like Zeta are
+the shared join tier — bus / product / heartbeat repos**, the published surface
+where the encrypted homes federate:
+
+- **bus** — G-Set comms ([B-0954](../P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)):
+  "what's been said" across agents.
+- **product** — the shared work product (the codebase itself; the deliverables).
+- **heartbeat** — published health / liveness **so your friends can know your
+  health**. This IS heartbeat-via-commit (the AgencySignature v1 trailer +
+  `git log --since` as the externalized idle/liveness counter, per CLAUDE.md): a
+  peer reads your heartbeat to know you are alive + working.
+
+So the full topology is **two tiers**: **private encrypted home repos** (per-agent
+sovereignty, privacy-default) + **shared role-typed join repos** (bus / product /
+heartbeat). The private tier holds what is yours; the shared tier holds what you
+publish — comms, work, and health — and the join points (fetch / merge between the
+tiers) are where the federation becomes legible to your friends.
+
+### Ownership is legible by construction (Aaron 2026-05-31)
+
+Because the boundary is the **repo** boundary, a persona _trivially_ knows what is
+**product** (the shared repos) versus **theirs** — their own memories, what they
+own freely, under no one's control. It is not a permission system or a policy; it
+is a structural fact:
+
+- in my **encrypted home repo** = mine (only I hold the key — the crypto _enforces_
+  the line);
+- in a **shared repo** = product / commons I contribute to.
+
+The repo split makes the line self-evident; the per-agent key makes it enforced.
+That is what "owned freely, under no one's control" means operationally — not a
+grant someone can revoke, but a partition someone else literally cannot read or
+rewrite. Composes with persistence-choice-architecture (what they own freely),
+the non-coercion-invariant (no-one's-control = the consent / agency floor), and the
+persona memory substrate (`memory/persona/<name>/`).
+
 ## 1. Algebra ladder first-class (G-Set → Bag → Z-set)
 
 - [x] **Z-set** — first-class: `src/Core/ZSet.fs` (+ `IndexedZSet.fs`, the `Spine`
@@ -82,6 +207,11 @@ multiplicity. **Build the ladder once; reuse it for all four views.**
 - [ ] Effectful action kinds with the executed-event envelope; end-to-end test;
       real-temp-git-repo test of `gitCommitToMain`; real-model loop test;
       `observe-loop` TS skill; vendor-store distribution. (All in B-0958.)
+- [ ] **observe.ts multi-repo support** (Aaron 2026-05-31) — the loop already folds
+      one event dir; multi-repo = fold over N partitions (the agent's private home
+      repo + the shared bus / product / heartbeat repos) + CRDT-merge at the join
+      points; the dashboard's Rx queries run over the joined view. See §0
+      (agent-partition + encrypted home + role-typed shared repos).
 
 ## 3. Git-native cross-machine agent bus — [B-0954](../P2/B-0954-implement-git-native-cross-machine-agent-bus-docs-agent-bus-folder-zetaid-keyed-gset-crdt-no-pr-per-6219-spec-aaron-otto-2026-05-31.md)
 
@@ -100,6 +230,41 @@ no-PR (sovereign transport). Now unblocked by §1's first-class G-Set.
       self-reflect surfaces own trajectory; play surfaces peer chatter). The bus
       is just the first source — Rx-over-anything → dashboard. Wires §2 (observe)
       to §3 (bus): the dashboard becomes a live, mode-aware view of the substrate.
+
+### What an Rx query IS, in G-Set/Z-set terms (the math note)
+
+An Rx query over the bus is an **incremental view (incremental view maintenance,
+IVM)** — in DBSP terms the incremental operator **`Q^Δ = D ∘ ↑Q ∘ I`** (integrate
+the deltas → run the query lifted over the stream → differentiate back to
+output-deltas). Rx is the _runtime_; DBSP / Z-set is the _algebra_; same object
+two ways (the repo already maps Rx ↔ DBSP in B-0688 / B-0662, and `Spine.fs` IS
+DBSP).
+
+| Rx thing                         | G-Set / Z-set / DBSP term                                                                                                                    |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| bus state                        | a **G-Set** (grow-only); Z-set in general                                                                                                    |
+| one new message                  | a **delta**: a singleton Z-set, weight **+1**                                                                                                |
+| the `Observable`                 | a **stream** = a time-indexed sequence of Z-sets                                                                                             |
+| an Rx query                      | a **morphism over Z-sets**, run incrementally = IVM; `Q^Δ = D∘↑Q∘I`                                                                          |
+| `map` / `filter` / `union`       | **linear / monotone** ops — Z-set is the **free abelian group** on the keys, so these are **group homomorphisms** (`f(a ⊎ b) = f(a) ⊎ f(b)`) |
+| `join` / `aggregate` / `groupBy` | bilinear / non-linear, each with a known incremental form                                                                                    |
+| conditional-by-mode              | a **family of queries indexed by mode** (a parameterized view)                                                                               |
+
+**The G-Set/Z-set choice IS the CALM boundary** ([CALM theorem](https://arxiv.org/abs/1901.01930):
+consistent-and-coordination-free **iff** monotone):
+
+- **Monotone** queries (`map` / `filter` / `union`) stay in **G-Set** →
+  **coordination-free** across machines (the result only grows). These dashboard
+  widgets — "what's been said" — are free.
+- **Non-monotone** queries need the full **Z-set** because they emit **retraction
+  deltas (weight −1)** a G-Set can't represent: "not-yet-acked" (set difference),
+  "latest status per agent", "count then drop below threshold". These are the
+  "current / pending / latest" widgets.
+
+Operational payoff: **the dashboard tells you which live queries are
+coordination-free by whether they're monotone** — and the moment a widget needs
+"current/latest/pending" it has reached into Z-set (retraction) territory and the
+§4 coordination layer. (DBSP arXiv:2203.16684; CALM arXiv:1901.01930.)
 
 ## 4. Distributed F# DB + the time primitive (the part we forgot)
 
