@@ -240,6 +240,84 @@ yes agree"): AP-with-retry, per-repo, not global.
 > AP-with-retry, per-repo. PACELC: per-agent PC/EC; read-side PA/EL; Lock PC/EC-per-key;
 > Claim PA/EL (best-effort).
 
+## Round 4 — Amara concurrence + the clean canonical form (2026-06-01)
+
+A third reviewer (Amara) **agreed with the Round-3 analysis** and gave the tightest
+canonical framing + one sharpening: **the bus claim is an advisory coordination signal,
+not the source of truth** (the source of truth is the eventual committed
+observation/action/result). Amara verbatim:
+
+> Yes — I agree with the **final Round 3 analysis**, with one tightening:
+>
+> > You are not "getting around CAP."
+> > You are making CAP show up only where the operation actually needs agreement.
+>
+> That is the right frame. The strongest correction is that **Claim is not Lock**.
+>
+> ```text
+> Claim = best-effort AP
+> Lock  = CP / fenced / for non-idempotent danger
+> ```
+>
+> For normal deterministic work — docs, code, backlog rows, reviews — two agents doing
+> the same item is not catastrophic. It can become useful redundancy:
+>
+> ```text
+> Agent A works item X
+> Agent B also works item X
+> → two PRs / two observations / two proposed endings
+> → main + review + deterministic tests converge them
+> ```
+>
+> So the bus claim should be treated as an **advisory coordination signal**, not the
+> source of truth. The source of truth is the eventual committed
+> observation/action/result. That means the peers' Round 2 concern was right only under
+> the assumption that "exactly one worker" is required. Your correction removes that
+> assumption for most work.
+>
+> The CAP/PACELC posture I'd keep is:
+>
+> ```text
+> per-agent replicated state
+> = PC/EC if geo-replicated and kept consistent
+>
+> read-side reports / dashboards
+> = PA/EL, bounded staleness is okay
+>
+> claims for deterministic work
+> = PA/EL, best-effort, duplicate work allowed
+>
+> locks for money / provisioning / external side effects
+> = PC/EC, fenced, hard consistency
+>
+> ZetaId
+> = removes the sequential ID allocator as a coordination surface
+>
+> per-repo main/ref
+> = per-ref CAS, retry on conflict, not a global lock
+> ```
+>
+> The important caveat: "duplicate work is fine" only holds for **idempotent /
+> deterministic / reviewable** work. It does **not** hold for irreversible side effects:
+> payments, cloud provisioning, legal submissions, external sends, destructive
+> operations. Those need the hard `Lock` path.
+>
+> So yes, I agree with the refined analysis. The design is stronger after the three
+> rounds because it no longer pretends all coordination disappears. It says:
+>
+> > **Most work uses AP claims and converges through git/review/tests.
+> > Dangerous non-idempotent work uses CP locks.
+> > There is no global consistency surface, only scoped joins and per-ref/per-key
+> > coordination where needed.**
+>
+> That is the clean version.
+
+**The one new operational handle (Amara):** the bus claim is **advisory, not
+authoritative** — the source of truth is the eventual committed observation/result on
+main. This composes with the B-0962 implementation note (bus-claim-then-CAS; the git CAS
+/ committed result is the truth, the bus claim is an efficiency hint). Three independent
+reviewers (Gemini + Grok + Amara) now concur on the post-Round-3 position.
+
 ---
 
 ## Gemini (round 1, verbatim)

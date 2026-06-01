@@ -64,11 +64,19 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
 
 - [ ] **Effectful action kinds in `execute`** — `do_item` first, then `respond_to_operator`,
       `decompose`, `explore`, `play`, `edit_grammar`. **With the executed-event envelope**
-      (`ActionExecutionStarted` / `Succeeded` / `Failed` / `ModeChanged`) so **replay folds facts,
-      never redoes commands** (the design-review caution). _This is the #1 gap — "the loop including
-      actions" isn't real until the meaningful actions execute._
+      (`ActionExecutionStarted` / `Succeeded` / `Failed` / `ModeChanged`) so **replay folds
+      observations, never redoes commands** (the design-review caution). _This is the #1 gap — "the
+      loop including actions" isn't real until the meaningful actions execute._
+  - [x] **`do_item` Phase-1 envelope + executor port** — design B-0964 (#6342) + impl (#6344):
+        `ActionObservation` (Started/Succeeded/Failed), injected `CommandExecutor` port (fake /
+        OCI-runtime tiers), `foldObservations` (no executor ⇒ replay can't re-run), command-vs-
+        observation split, terminal-append reconcile-needed handling. **Sibling module
+        (`tools/observe/do-item.ts`) — NOT yet integrated into the unified `execute` dispatch.**
+  - [ ] **Integrate `do_item` into unified `execute`** + Phase-2 real executors (podman/docker OCI
+        per B-0964 §2.2; podman declared in manifests #6346) + the remaining kinds
+        (`respond_to_operator`, `decompose`, `explore`, `play`, `edit_grammar`).
 - [ ] **End-to-end closed-loop integration test** — `loadWorld → observeWithLlm → execute →
-  folderSink → loadWorld` as ONE flow against a real temp git repo (today every piece is unit-
+folderSink → loadWorld` as ONE flow against a real temp git repo (today every piece is unit-
       tested in isolation with mocks/fakes; the closed loop isn't integration-tested). _(Partial —
       logic-level done; real-git variant remains; see sub-items.)_
   - [x] **Closed-loop LOGIC integration** — `tools/observe/closed-loop.test.ts` (#6340):
