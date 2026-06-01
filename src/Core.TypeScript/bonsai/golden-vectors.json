@@ -1,0 +1,172 @@
+{
+  "description": "Bonsai-subset expression-tree serializer — cross-language conformance (B-0976 slice 1). The weakly-typed / reflection-info-omitted mode of Nuqleon Bonsai: kind-tagged nodes (const/param/lambda/binary/call/cond), no .NET type table — the cross-language-portable form. Canonical form (the cross-oracle byte-diff contract): serialize emits COMPACT JSON (no whitespace) with a FIXED key order per node-kind (kind first, then fields in declared order), integer-only numeric literals (no floats), standard JSON string escaping, document wrapper {\"v\":1,\"expr\":<node>}. Each oracle (TS reference here; F#/C#/Rust replay) must: (1) serialize(expr) === canonical (byte-identical), and (2) equals(parse(canonical), expr) (round-trip). Mirrors the algebra-ladder meet-in-the-middle discipline — the compilers do not lie; agreement IS the verification.",
+  "version": 1,
+  "cases": [
+    {
+      "name": "const_int",
+      "note": "integer literal",
+      "expr": {
+        "kind": "const",
+        "value": {
+          "t": "int",
+          "v": 42
+        }
+      },
+      "canonical": "{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"int\",\"v\":42}}}"
+    },
+    {
+      "name": "const_str",
+      "note": "string literal (JSON-escaped value)",
+      "expr": {
+        "kind": "const",
+        "value": {
+          "t": "str",
+          "v": "hi"
+        }
+      },
+      "canonical": "{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"str\",\"v\":\"hi\"}}}"
+    },
+    {
+      "name": "const_bool",
+      "note": "bool literal",
+      "expr": {
+        "kind": "const",
+        "value": {
+          "t": "bool",
+          "v": true
+        }
+      },
+      "canonical": "{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"bool\",\"v\":true}}}"
+    },
+    {
+      "name": "const_null",
+      "note": "null literal (no v field — canonical)",
+      "expr": {
+        "kind": "const",
+        "value": {
+          "t": "null"
+        }
+      },
+      "canonical": "{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"null\"}}}"
+    },
+    {
+      "name": "param",
+      "note": "a bare parameter reference",
+      "expr": {
+        "kind": "param",
+        "name": "x"
+      },
+      "canonical": "{\"v\":1,\"expr\":{\"kind\":\"param\",\"name\":\"x\"}}"
+    },
+    {
+      "name": "lambda_add",
+      "note": "(x, y) => x + y",
+      "expr": {
+        "kind": "lambda",
+        "params": [
+          "x",
+          "y"
+        ],
+        "body": {
+          "kind": "binary",
+          "op": "add",
+          "left": {
+            "kind": "param",
+            "name": "x"
+          },
+          "right": {
+            "kind": "param",
+            "name": "y"
+          }
+        }
+      },
+      "canonical": "{\"v\":1,\"expr\":{\"kind\":\"lambda\",\"params\":[\"x\",\"y\"],\"body\":{\"kind\":\"binary\",\"op\":\"add\",\"left\":{\"kind\":\"param\",\"name\":\"x\"},\"right\":{\"kind\":\"param\",\"name\":\"y\"}}}}"
+    },
+    {
+      "name": "call_empty_args",
+      "note": "true && p() — call with zero args",
+      "expr": {
+        "kind": "binary",
+        "op": "and",
+        "left": {
+          "kind": "const",
+          "value": {
+            "t": "bool",
+            "v": true
+          }
+        },
+        "right": {
+          "kind": "call",
+          "fn": "p",
+          "args": []
+        }
+      },
+      "canonical": "{\"v\":1,\"expr\":{\"kind\":\"binary\",\"op\":\"and\",\"left\":{\"kind\":\"const\",\"value\":{\"t\":\"bool\",\"v\":true}},\"right\":{\"kind\":\"call\",\"fn\":\"p\",\"args\":[]}}}"
+    },
+    {
+      "name": "factorial",
+      "note": "(n) => if n < 2 then 1 else n * fact(n-1) — cond + recursive call",
+      "expr": {
+        "kind": "lambda",
+        "params": [
+          "n"
+        ],
+        "body": {
+          "kind": "cond",
+          "test": {
+            "kind": "binary",
+            "op": "lt",
+            "left": {
+              "kind": "param",
+              "name": "n"
+            },
+            "right": {
+              "kind": "const",
+              "value": {
+                "t": "int",
+                "v": 2
+              }
+            }
+          },
+          "then": {
+            "kind": "const",
+            "value": {
+              "t": "int",
+              "v": 1
+            }
+          },
+          "else": {
+            "kind": "binary",
+            "op": "mul",
+            "left": {
+              "kind": "param",
+              "name": "n"
+            },
+            "right": {
+              "kind": "call",
+              "fn": "fact",
+              "args": [
+                {
+                  "kind": "binary",
+                  "op": "sub",
+                  "left": {
+                    "kind": "param",
+                    "name": "n"
+                  },
+                  "right": {
+                    "kind": "const",
+                    "value": {
+                      "t": "int",
+                      "v": 1
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "canonical": "{\"v\":1,\"expr\":{\"kind\":\"lambda\",\"params\":[\"n\"],\"body\":{\"kind\":\"cond\",\"test\":{\"kind\":\"binary\",\"op\":\"lt\",\"left\":{\"kind\":\"param\",\"name\":\"n\"},\"right\":{\"kind\":\"const\",\"value\":{\"t\":\"int\",\"v\":2}}},\"then\":{\"kind\":\"const\",\"value\":{\"t\":\"int\",\"v\":1}},\"else\":{\"kind\":\"binary\",\"op\":\"mul\",\"left\":{\"kind\":\"param\",\"name\":\"n\"},\"right\":{\"kind\":\"call\",\"fn\":\"fact\",\"args\":[{\"kind\":\"binary\",\"op\":\"sub\",\"left\":{\"kind\":\"param\",\"name\":\"n\"},\"right\":{\"kind\":\"const\",\"value\":{\"t\":\"int\",\"v\":1}}}]}}}}}"
+    }
+  ]
+}

@@ -115,8 +115,12 @@ stream = carrier; ℤ retraction = evolution + compensation.
 
 ## Acceptance / decomposition (slices)
 
-- [ ] Cross-language **Bonsai-subset serializer** (`{Context, Expression}`) +
+- 🚧 Cross-language **Bonsai-subset serializer** (`{Context, Expression}`) +
       golden-vector cross-verify (TS/F#/C#/Rust oracles), Nuqleon as .NET oracle.
+      **TS reference oracle ✅** (`src/Core.TypeScript/bonsai/` — weakly-typed /
+      reflection-omitted subset: const/param/lambda/binary/call/cond; canonical
+      byte-exact serialize + parse round-trip + `golden-vectors.json`; 30 tests).
+      **F#/C#/Rust oracles pending** (replay the shared golden vectors).
 - [ ] **Resume engine** — serialize closure + expr-tree; restore-not-replay;
       no-handles discipline enforced; non-determinism allowed.
 - [ ] **Context propagation** = OTel/IntrCtx — C#/TS AsyncLocal adapter + **F#
