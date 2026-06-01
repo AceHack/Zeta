@@ -44,10 +44,27 @@ describe("parseArgs", () => {
     expect("error" in result).toBe(true);
   });
 
-  test("unimplemented commands return error", () => {
-    for (const cmd of ["install", "verify", "remove", "inspect"]) {
-      const result = parseArgs([cmd]);
-      expect("error" in result).toBe(true);
+  test("install requires a url/path argument", () => {
+    const result = parseArgs(["install"]);
+    expect("error" in result).toBe(true);
+  });
+
+  test("install <url> parses", () => {
+    const result = parseArgs(["install", "https://example.com/p.json"]);
+    expect("error" in result).toBe(false);
+    if (!("error" in result) && result.command === "install") {
+      expect(result.source).toBe("https://example.com/p.json");
+    }
+  });
+
+  test("verify requires a hash argument", () => {
+    const result = parseArgs(["verify"]);
+    expect("error" in result).toBe(true);
+  });
+
+  test("remove + inspect are still unimplemented", () => {
+    for (const cmd of ["remove", "inspect"]) {
+      expect("error" in parseArgs([cmd])).toBe(true);
     }
   });
 
@@ -179,25 +196,25 @@ describe("listInstalled", () => {
 });
 
 describe("main", () => {
-  test("help returns 0", () => {
-    expect(main(["help"])).toBe(0);
+  test("help returns 0", async () => {
+    expect(await main(["help"])).toBe(0);
   });
 
-  test("list on empty store returns 0", () => {
+  test("list on empty store returns 0", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
-    expect(main(["list", "--store", dir])).toBe(0);
+    expect(await main(["list", "--store", dir])).toBe(0);
   });
 
-  test("list --json on empty store returns 0", () => {
+  test("list --json on empty store returns 0", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
-    expect(main(["list", "--store", dir, "--json"])).toBe(0);
+    expect(await main(["list", "--store", dir, "--json"])).toBe(0);
   });
 
-  test("unknown command returns 64", () => {
-    expect(main(["bogus"])).toBe(64);
+  test("unknown command returns 64", async () => {
+    expect(await main(["bogus"])).toBe(64);
   });
 
-  test("list with populated store returns 0", () => {
+  test("list with populated store returns 0", async () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-test-"));
     const pkgDir = join(dir, "sha256-test");
     mkdirSync(pkgDir);
@@ -211,6 +228,6 @@ describe("main", () => {
         description: "Demo package",
       }),
     );
-    expect(main(["list", "--store", dir])).toBe(0);
+    expect(await main(["list", "--store", dir])).toBe(0);
   });
 });
