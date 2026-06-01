@@ -1,0 +1,131 @@
+# Kubernetes + ArgoCD health integration test (B-0967).
+#
+# SECURITY NOTE:
+# - This workflow reads the PR head SHA / push SHA only through env-block
+#   buffering (`ZETA_ARGOCD_GIT_REF`) and then quotes that shell variable.
+# - No attacker-controlled PR title/body/branch text is interpolated into a
+#   `run:` block.
+# - The only third-party action used is checkout, SHA-pinned per
+#   docs/security/GITHUB-ACTIONS-SAFE-PATTERNS.md.
+
+name: k8s-argocd-health-test
+
+on:
+  schedule:
+    # Weekly Sunday cadence: exercises runner-image/Docker/kind/helm drift
+    # without loading every PR in the default required gate.
+    - cron: "43 16 * * 0"
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      - 'tools/cluster/argocd-health-test.ts'
+      - 'tools/cluster/argocd-health-test.test.ts'
+      - 'full-ai-cluster/dev-cluster/**'
+      - 'full-ai-cluster/k8s/applications/**/Application.yaml'
+      - 'docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md'
+      - '.github/workflows/k8s-argocd-health-test.yml'
+      - '.mise.toml'
+      - 'package.json'
+      - 'bun.lock'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/cluster/argocd-health-test.ts'
+      - 'tools/cluster/argocd-health-test.test.ts'
+      - 'full-ai-cluster/dev-cluster/**'
+      - 'full-ai-cluster/k8s/applications/**/Application.yaml'
+      - 'docs/backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md'
+      - '.github/workflows/k8s-argocd-health-test.yml'
+      - '.mise.toml'
+      - 'package.json'
+      - 'bun.lock'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  dry-run:
+    name: plan + unit tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run B-0967 harness unit tests
+        run: bun test tools/cluster/argocd-health-test.test.ts
+
+      - name: Build ArgoCD health dry-run plan
+        env:
+          ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        run: |
+          bun tools/cluster/argocd-health-test.ts \
+            --dry-run \
+            --provider kind \
+            --scope smoke \
+            --runtime docker \
+            --config full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml \
+            --git-ref "$ZETA_ARGOCD_GIT_REF"
+
+  live-kind:
+    name: live kind ArgoCD health (${{ matrix.runner }})
+    needs: dry-run
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Install toolchain via three-way-parity script
+        env:
+          MISE_GITHUB_TOKEN: ${{ github.token }}
+        run: ./tools/setup/install.sh
+
+      - name: Install bun dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run live kind ArgoCD health check
+        env:
+          ZETA_ARGOCD_GIT_REF: ${{ github.event.pull_request.head.sha || github.sha }}
+          ZETA_ARGOCD_GIT_REPO_URL: ${{ github.event.pull_request.head.repo.clone_url || 'https://github.com/Lucent-Financial-Group/Zeta' }}
+        run: |
+          bun tools/cluster/argocd-health-test.ts \
+            --run \
+            --provider kind \
+            --scope smoke \
+            --runtime docker \
+            --config full-ai-cluster/dev-cluster/profiles/ci.kind-config.yaml \
+            --cluster-name zeta-ci \
+            --git-ref "$ZETA_ARGOCD_GIT_REF" \
+            --timeout-sec 1200 \
+            --poll-sec 10
+
+      - name: Print cluster diagnostics
+        if: always()
+        run: |
+          kubectl get nodes -o wide || true
+          kubectl -n argocd get applications.argoproj.io -o wide || true
+          kubectl get pods -A -o wide || true
+          kubectl get events -A --sort-by=.lastTimestamp | tail -200 || true
+
+      - name: Tear down kind cluster
+        if: always()
+        run: full-ai-cluster/dev-cluster/kind-down.sh --cluster-name zeta-ci

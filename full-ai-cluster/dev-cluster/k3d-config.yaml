@@ -17,9 +17,9 @@
 # `k8s/applications/` directory into both clusters. The only
 # environment-specific deltas live in up.sh's root App-of-Apps
 # `exclude:` glob (cilium installed directly via Helm with dev
-# values; Longhorn → local-path-provisioner; no GPU stack).
-# Everything else — ArgoCD, NFD, hat-system, OPA, Vault, SPIRE,
-# cert-manager — runs the same code on both substrates.
+# values; Longhorn -> local-path-provisioner; no GPU stack).
+# Everything else - ArgoCD, NFD, hat-system, OPA, Vault, SPIRE,
+# cert-manager - runs the same code on both substrates.
 #
 # Usage: `./up.sh` (it reads this file).
 # Docs: https://k3d.io/v5/usage/configfile/
@@ -32,11 +32,11 @@ metadata:
 servers: 1
 agents: 2
 
-image: rancher/k3s:v1.31.2-k3s1
+image: rancher/k3s:v1.36.1-k3s1
 
 network: zeta-dev   # named docker network so cilium can reach pods
 
-# Local registry — k3d auto-configures K3S to trust it. Push dev
+# Local registry - k3d auto-configures K3S to trust it. Push dev
 # images via: docker tag X k3d-zeta-dev-registry:5000/X && docker push
 registries:
   create:
@@ -51,14 +51,24 @@ ports:
   - port: "8080:80"
     nodeFilters: [loadbalancer]
 
-# K3S server args — mirror prod's CNI-takeover stance so Cilium can
+# K3S server args - mirror prod's CNI-takeover stance so Cilium can
 # install cleanly. Host kubeconfig perms are handled by k3d itself
 # (writes to ~/.kube/config when `kubeconfig.updateDefaultKubeconfig`
 # is true below); no extra --write-kubeconfig-mode flag needed.
 options:
+  k3d:
+    # Cilium is installed by up.sh immediately after cluster creation. Do not
+    # wait for node Ready before the CNI exists.
+    wait: false
   k3s:
     extraArgs:
-      # Disable bundled CNI / kube-proxy / network-policy — Cilium
+      # Use embedded etcd rather than K3S's default sqlite/kine datastore.
+      # On Docker Desktop for macOS, the sqlite/kine path has repeatedly
+      # produced slow reads and apiserver post-start hook panics before
+      # kubeconfig exists.
+      - arg: --cluster-init
+        nodeFilters: [server:*]
+      # Disable bundled CNI / kube-proxy / network-policy - Cilium
       # takes all three.
       - arg: --flannel-backend=none
         nodeFilters: [server:*]

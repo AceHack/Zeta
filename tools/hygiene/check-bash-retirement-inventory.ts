@@ -86,7 +86,10 @@ const ENV_OPTIONS_WITH_INLINE_OPERAND: readonly string[] = [
 export const EXPECTED_RETAINED_SHELL: readonly string[] = [
   ".gemini/service/install-lior-service.sh",
   ".gemini/service/lior-loop.sh",
+  "full-ai-cluster/dev-cluster/apply-root-app.sh",
   "full-ai-cluster/dev-cluster/down.sh",
+  "full-ai-cluster/dev-cluster/kind-down.sh",
+  "full-ai-cluster/dev-cluster/kind-up.sh",
   "full-ai-cluster/dev-cluster/up.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh",
@@ -126,7 +129,10 @@ const RETAINED_SHELL_CATEGORY_ORDER: readonly RetainedShellCategory[] = [
 export const RETAINED_SHELL_CATEGORY_BY_FILE: Readonly<Record<string, RetainedShellCategory>> = {
   ".gemini/service/install-lior-service.sh": "host-service wrappers",
   ".gemini/service/lior-loop.sh": "host-service wrappers",
+  "full-ai-cluster/dev-cluster/apply-root-app.sh": "dev-cluster wrappers",
   "full-ai-cluster/dev-cluster/down.sh": "dev-cluster wrappers",
+  "full-ai-cluster/dev-cluster/kind-down.sh": "dev-cluster wrappers",
+  "full-ai-cluster/dev-cluster/kind-up.sh": "dev-cluster wrappers",
   "full-ai-cluster/dev-cluster/up.sh": "dev-cluster wrappers",
   "full-ai-cluster/usb-nixos-installer/zeta-first-boot.sh": "nixos installer",
   "full-ai-cluster/usb-nixos-installer/zeta-install.sh": "nixos installer",

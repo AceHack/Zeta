@@ -94,27 +94,145 @@ timeouts.
 
 ## Acceptance
 
-- [ ] A TypeScript integration entrypoint exists for local cluster health, for
+- [x] A TypeScript integration entrypoint exists for local cluster health, for
   example `tools/cluster/argocd-health-test.ts` or
   `tools/ci/k8s-argocd-health-test.ts`.
-- [ ] The harness can create or select an ephemeral k3d/kind cluster and emits
+- [x] The harness can create or select an ephemeral k3d/kind cluster and emits
   Result-shaped structured failures for missing tools, Docker unavailability,
   cluster creation failure, or timeout.
-- [ ] The harness applies or reuses the Zeta bootstrap path for Cilium, ArgoCD,
+- [x] The harness applies or reuses the Zeta bootstrap path for Cilium, ArgoCD,
   and the root App-of-Apps without duplicating the desired-state manifests.
-- [ ] The harness waits for the `argocd` namespace, ArgoCD controller/server
+- [x] The harness waits for the `argocd` namespace, ArgoCD controller/server
   readiness, Application CRD establishment, and root Application creation.
-- [ ] The harness asserts expected ArgoCD Application state and reports exact
+- [x] The harness asserts expected ArgoCD Application state and reports exact
   failing Applications/resources rather than a single opaque timeout.
 - [ ] A safe drift-repair check exists: mutate a non-destructive test resource
   or fixture-owned object, then assert ArgoCD self-heal/prune reconverges it.
-- [ ] CI coverage is added on an appropriate cadence or path filter, likely for
+- [x] CI coverage is added on an appropriate cadence or path filter, likely for
   changes under `full-ai-cluster/k8s/**`, `full-ai-cluster/dev-cluster/**`, and
   the new harness path. It may be separate from default PR checks if runtime is
   too expensive.
-- [ ] The supported architecture story is explicit: x86_64 and ARM64/aarch64
+- [x] The supported architecture story is explicit: x86_64 and ARM64/aarch64
   are both assumed target hardware classes; unsupported runner combinations
   fail with a named dependency, not a green skip.
+
+## Implementation slice 2026-06-01
+
+`tools/cluster/argocd-health-test.ts` is the first executable slice. It has a
+safe dry-run mode, a preflight mode that names missing dependencies, and live
+`--run` modes for:
+
+- `--provider kind --scope smoke --runtime docker`, the conservative outside-ISO
+  CI lane.
+- `--provider kind --scope smoke --runtime podman`, the Podman-standard local
+  lane once the Podman VM has enough memory for the Argo graph.
+- `--provider k3d --scope full --runtime docker`, the closer Cilium-parity lane.
+
+The first CI workflow is `.github/workflows/k8s-argocd-health-test.yml`: it runs
+unit/dry-run checks and a live kind-on-Docker smoke check on a path-filtered
+PR/push surface plus weekly cadence. The workflow runs on Ubuntu x86_64 and
+Ubuntu ARM64 runners so Linux/architecture drift is visible before the
+installer lane consumes the signal.
+
+The helper scripts now keep the desired-state source canonical:
+
+- `full-ai-cluster/dev-cluster/apply-root-app.sh` applies the root App-of-Apps
+  from the current git ref and keeps dev-only GPU/storage exclusions in one
+  place.
+- `full-ai-cluster/dev-cluster/up.sh` and `down.sh` accept `--config` and
+  parse the k3d cluster name from the profile.
+- `full-ai-cluster/dev-cluster/kind-up.sh` and `kind-down.sh` provide the
+  smoke substrate for Docker and Podman.
+
+The Podman lane reuses the repo-wide B-0964 OCI runtime selector:
+`ZETA_CONTAINER_RUNTIME=podman` selects Podman. The older
+`CONTAINER_RUNTIME` spelling is intentionally not an alias; stale callers fail
+fast instead of silently selecting the wrong runtime.
+This harness keeps provider choice explicit instead of fully auto-detecting the
+runtime because provider topology changes with the runtime. For now, k3d stays
+Docker-only because its profile depends on Docker-network and k3d registry
+behavior; the Podman-standard lane runs through kind until a k3d/Podman profile
+is proven separately.
+
+The USB/ISO zflash reformat-retention proof remains in B-0891. Its first
+cluster-health consumption should be narrow, but the intended installed-system
+target is a full Kubernetes cluster with the complete default ArgoCD stack.
+B-0967 owns proving that full ArgoCD graph outside the ISO first, so the
+USB/ISO lane can later assert the same default stack bootstraps after install
+without muddying installer failures with chart/dependency failures.
+
+## Live evidence 2026-06-01
+
+Local outside-ISO evidence on Aaron's macOS host:
+
+- kind-on-Docker smoke passed from a fresh cluster using
+  `--provider kind --scope smoke --runtime docker`.
+- The smoke observed 26 child Applications, a healthy root App-of-Apps, healthy
+  ArgoCD, and `cert-manager` synced/healthy.
+- k3d-on-Docker failed during `k3d cluster create` before kubeconfig existed,
+  with K3S/kine slow SQLite reads and apiserver post-start hook failures. That
+  is before Cilium, Helm, ArgoCD, sync waves, or the Zeta charts run.
+- Follow-up pin audit found the k3d/kind/kubectl/helm mise pins already on the
+  latest stable installable versions, but the k3d node image lagged at
+  `rancher/k3s:v1.31.5-k3s1`. The k3d dev and CI profiles now pin
+  `rancher/k3s:v1.36.1-k3s1`, matching `kubectl 1.36.1`.
+- The k3d CI profile now uses embedded etcd via `--cluster-init` to avoid the
+  Docker Desktop sqlite/kine slow-read path, and `up.sh` trims Cilium's
+  single-node values when `agents: 0`.
+- With that pin and embedded-etcd change, `k3d cluster create --config
+  full-ai-cluster/dev-cluster/profiles/ci.k3d-config.yaml --wait=false` succeeds
+  and `kubectl get --raw=/readyz` returns `ok` before CNI installation. That
+  proves the original pre-kubeconfig failure is past the K3S/kine substrate
+  layer.
+- The current k3d smoke still is not green. It advances past Cilium install,
+  then ArgoCD's `argocd-redis-secret-init` pre-install job times out while
+  CoreDNS/local-path-provisioner/metrics-server are unhealthy. The next k3d
+  slice should test a K3S/Cilium compatibility bump, with `cilium/cilium`
+  `1.19.4` as the current latest chart candidate, before claiming full k3d
+  ArgoCD health.
+- kind-on-Podman control-plane creation passed. Full Argo smoke on the current
+  Podman VM is blocked by the 2 GiB Podman machine budget causing Kubernetes
+  API timeouts under Argo/app reconciliation load.
+- The harness was aligned with the repo-wide OCI runtime swap convention after
+  comparing against the B-0964 `do_item` substrate: `ZETA_CONTAINER_RUNTIME` is
+  now the only environment switch, stale `CONTAINER_RUNTIME` callers fail fast,
+  and `--runtime` remains available for explicit one-off runs.
+
+## Full-cluster target
+
+Aaron clarified on 2026-06-01 that the destination is not merely a minimal
+cluster smoke. The eventual default ISO/USB install should bring up a full
+Kubernetes cluster with the whole ArgoCD-managed stack. The staged proof ladder
+is:
+
+1. Outside-ISO smoke proves Kubernetes, ArgoCD, and the root App-of-Apps are
+   wired correctly.
+2. Outside-ISO full scope proves every non-excluded ArgoCD Application, chart,
+   dependency, sync wave, and parameter flow reconciles correctly.
+3. NixOS and Ubuntu host runs exercise substrate/networking/CNI differences.
+4. Podman becomes the standard OCI-runtime lane, with Docker retained as an
+   accelerator.
+5. USB/ISO acceptance consumes the mature full-cluster proof: boot the
+   installed system and assert the default full stack comes up, while retaining
+   separate zflash/key-retention assertions.
+
+## Follow-on matrix
+
+The next slices should keep the same failure-attribution boundary:
+
+- Add a NixOS-hosted local smoke once a NixOS runner or operator host is
+  available, covering CNI/networking differences that Ubuntu runners do not
+  exercise.
+- Keep Ubuntu x86_64 and Ubuntu ARM64 smoke in CI for kind-on-Docker.
+- Re-run kind-on-Podman smoke after resizing the Podman VM; treat Docker as an
+  accelerator and Podman as the standard lane.
+- Add one USB/ISO post-boot smoke after the outside-ISO harness is green, then
+  graduate that to full-stack default-install acceptance once the outside-ISO
+  full ArgoCD graph is reliable.
+- Add dependency-derived sync waves for ArgoCD. Hard-coded waves are acceptable
+  as a bootstrap, but the target is Flux-like dependency tracking that can
+  generate Argo sync waves/parameters from the repo's existing dependency and
+  semver-solving substrate.
 
 ## Out of scope
 
@@ -134,9 +252,10 @@ timeouts.
 - **B-0794** covers node self-registration leading to ArgoCD full bring-up.
 - **B-0813** covers ArgoCD watching the cluster-nodes tree.
 - **B-0831** remains the QEMU full-install and cluster-auto-join cascade.
-- **B-0891** remains the USB/ISO zflash acceptance lane and should consume only
-  a narrow "cluster is reachable enough / one agent starts" smoke signal, not
-  this lane's full ArgoCD health matrix.
+- **B-0891** remains the USB/ISO zflash acceptance lane. It should consume a
+  narrow smoke first, then graduate to proving the installed ISO/USB default
+  brings up the full Kubernetes + ArgoCD stack after B-0967 proves that stack
+  outside the installer.
 
 ## Substrate-honest framing
 
