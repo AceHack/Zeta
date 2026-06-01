@@ -133,4 +133,41 @@ public class BagCrossVerifyTests
         // diff comparer ⇒ not equal
         Assert.False(Bag.OfEntries([("a", 1L)], ordinal).Equals(Bag.OfEntries([("a", 1L)], reverse)));
     }
+
+    [Fact]
+    public void GenericMathAdditiveMonoidSurface()
+    {
+        // Bag surfaces the generic-math IAdditiveIdentity + IAdditionOperators (NOT INumber —
+        // no inverse / order / product). (+) == Union for same-comparer operands; AdditiveIdentity
+        // is empty. Like G-Set it's an additive commutative monoid, but — unlike G-Set — NOT idempotent.
+        var cmp = StringComparer.Ordinal;
+        static Bag<string> B(StringComparer cmp, params (string, long)[] xs) => Bag.OfEntries(xs, cmp);
+
+        var a = B(cmp, ("a", 1L), ("b", 2L));
+        var b = B(cmp, ("b", 1L), ("c", 3L));
+        var c = B(cmp, ("c", 5L));
+
+        Assert.Equal(a.Union(b), a + b); // (+) equals Union
+        Assert.True(Bag<string>.AdditiveIdentity.IsEmpty); // identity is the empty bag
+        Assert.Equal(a, Bag<string>.AdditiveIdentity + a); // identity law
+        Assert.Equal(a, a + Bag<string>.AdditiveIdentity);
+        Assert.Equal(a + b, b + a); // commutative
+        Assert.Equal((a + b) + c, a + (b + c)); // associative
+        Assert.Equal(B(cmp, ("a", 2L), ("b", 4L)), a + a); // NOT idempotent — doubles counts
+    }
+
+    [Fact]
+    public void GenericMathIdentityIsComparerAgnosticButNonEmptyMismatchStillThrows()
+    {
+        // The additive identity (empty) absorbs under ANY comparer (so the monoid identity law
+        // holds for custom-comparer bags), but two NON-empty operands with different comparers
+        // still delegate to Union → throw (the comparer-identity guard for real merges is kept).
+        var reverse = Comparer<string>.Create((x, y) => string.CompareOrdinal(y, x));
+        var custom = Bag.OfEntries([("x", 1L), ("y", 2L)], reverse);
+        Assert.Equal(custom, custom + Bag<string>.AdditiveIdentity); // no throw
+        Assert.Equal(custom, Bag<string>.AdditiveIdentity + custom);
+
+        var ordinal = Bag.OfEntries([("a", 1L), ("b", 1L)], StringComparer.Ordinal);
+        Assert.Throws<ArgumentException>(() => ordinal + custom);
+    }
 }

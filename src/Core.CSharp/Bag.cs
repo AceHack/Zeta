@@ -6,7 +6,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 
 namespace Zeta.Core.CSharp;
 
@@ -132,7 +134,10 @@ public static class Bag
 /// ordinal) needs <see cref="StringComparer.Ordinal"/>. Pass it explicitly for cross-language parity.
 /// </remarks>
 /// <typeparam name="T">The key type.</typeparam>
-public sealed class Bag<T> : IEquatable<Bag<T>>
+public sealed class Bag<T> :
+    IEquatable<Bag<T>>,
+    IAdditiveIdentity<Bag<T>, Bag<T>>,
+    IAdditionOperators<Bag<T>, Bag<T>, Bag<T>>
 {
     private readonly ImmutableArray<BagEntry<T>> _items;
     private readonly IComparer<T> _comparer;
@@ -259,6 +264,52 @@ public sealed class Bag<T> : IEquatable<Bag<T>>
         }
 
         return new Bag<T>(builder.ToImmutable(), _comparer);
+    }
+
+    /// <summary>
+    /// The additive-monoid identity (generic-math <see cref="IAdditiveIdentity{TSelf, TResult}"/>):
+    /// the empty bag (default comparer), cached so it allocates once per closed generic type (the
+    /// empty bag is immutable). Bag is an additive, commutative monoid (identity + associative
+    /// per-key-sum <see cref="Union"/>, NO inverse) — and, unlike a G-Set, NOT idempotent
+    /// (<c>a + a</c> doubles counts) — so it surfaces only
+    /// <see cref="IAdditiveIdentity{TSelf, TResult}"/> + <see cref="IAdditionOperators{TSelf, TOther, TResult}"/>,
+    /// never <c>INumber</c> (the abelian-group step is the Z-set, where retraction is the inverse).
+    /// </summary>
+    [SuppressMessage(
+        "Design",
+        "CA1000:Do not declare static members on generic types",
+        Justification = "IAdditiveIdentity<TSelf,TResult> requires a static AdditiveIdentity member on the generic type; CA1000 predates static-abstract interface members (IWSAM) and does not apply to generic-math interface implementations.")]
+    public static Bag<T> AdditiveIdentity { get; } = Bag.Empty<T>();
+
+    /// <summary>
+    /// The additive operator (generic-math <c>+</c>): the per-key SUM <see cref="Union"/> merge.
+    /// The empty bag acts as a comparer-agnostic identity (<c>empty + x = x</c>, <c>x + empty = x</c>)
+    /// so <see cref="AdditiveIdentity"/> composes with a bag under any comparer; two NON-empty
+    /// operands still delegate to <see cref="Union"/>, which enforces the comparer-identity match.
+    /// </summary>
+    /// <param name="left">The left bag.</param>
+    /// <param name="right">The right bag.</param>
+    /// <returns>The per-key sum, in canonical order.</returns>
+    public static Bag<T> operator +(Bag<T> left, Bag<T> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+
+        // The additive identity is the empty bag; it must absorb under ANY comparer for the
+        // monoid identity law to hold (AdditiveIdentity uses the default comparer, but a bag
+        // may carry a custom one). Empty has no entries, so its ordering is irrelevant —
+        // short-circuit before Union's deliberate same-comparer check (guards non-empty merges).
+        if (left.IsEmpty)
+        {
+            return right;
+        }
+
+        if (right.IsEmpty)
+        {
+            return left;
+        }
+
+        return left.Union(right);
     }
 
     /// <summary>Increment <paramref name="x"/>'s count by 1 (<see cref="Union"/> with a singleton). NOT idempotent.</summary>
