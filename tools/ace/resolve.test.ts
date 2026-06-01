@@ -49,7 +49,7 @@ const NO_TRUST = new Map(); // empty trust store; basic tests pass allowNoSignat
 describe("resolve — basic", () => {
   test("leaf package (no deps) resolves to [root]", async () => {
     const root = pkgOf("root", { "r.txt": "x" });
-    const r = await resolve(root, fetchOf({}), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({}), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.map((p) => p.manifest.name)).toEqual(["root"]);
   });
@@ -57,7 +57,7 @@ describe("resolve — basic", () => {
     const B = pkgOf("B", { "b.txt": "b" });
     const A = pkgOf("A", { "a.txt": "a" }, [{ pkg: B, url: "http://e/B" }]);
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.map((p) => p.manifest.name)).toEqual(["B", "A", "root"]);
   });
@@ -69,7 +69,7 @@ describe("resolve — dedup", () => {
     const A = pkgOf("A", { "a.txt": "a" }, [{ pkg: D, url: "http://e/D" }]);
     const B = pkgOf("B", { "b.txt": "b" }, [{ pkg: D, url: "http://e/D" }]);
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }, { pkg: B, url: "http://e/B" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D": D }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D": D }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.filter((p) => p.manifest.name === "D").length).toBe(1);
   });
@@ -78,7 +78,7 @@ describe("resolve — dedup", () => {
     const X = pkgOf("X", files);
     const Y = pkgOf("Y", files); // same files, different name => different package_hash
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: X, url: "http://e/X" }, { pkg: Y, url: "http://e/Y" }]);
-    const r = await resolve(root, fetchOf({ "http://e/X": X, "http://e/Y": Y }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/X": X, "http://e/Y": Y }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.map((p) => p.manifest.name).sort()).toEqual(["X", "Y", "root"]);
   });
@@ -91,7 +91,7 @@ describe("resolve — conflicts", () => {
     const A = pkgOf("A", { "a.txt": "a" }, [{ pkg: D1, url: "http://e/D1" }]);
     const B: AcePackage = { manifest: { ...pkgOf("B", { "b.txt": "b" }).manifest, dependencies: [{ kind: "inline" as const, name: "D", version: "2.0.0", url: "http://e/D2", package_hash: packageHash(D2) }] }, files: { "b.txt": "b" } };
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }, { pkg: B, url: "http://e/B" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D1": D1, "http://e/D2": D2 }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B, "http://e/D1": D1, "http://e/D2": D2 }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("version-skew");
   });
@@ -99,7 +99,7 @@ describe("resolve — conflicts", () => {
     const root2: AcePackage = { manifest: { format_version: 1, name: "root", version: "2.0.0", content_hash: "sha256:zzz" }, files: { "r.txt": "two" } };
     const A: AcePackage = { manifest: { ...pkgOf("A", { "a.txt": "a" }).manifest, dependencies: [{ kind: "inline" as const, name: "root", version: "2.0.0", url: "http://e/root2", package_hash: packageHash(root2) }] }, files: { "a.txt": "a" } };
     const root = pkgOf("root", { "r.txt": "one" }, [{ pkg: A, url: "http://e/A" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root2": root2 }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root2": root2 }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(["version-skew", "cycle"]).toContain(r.reason);
   });
@@ -108,7 +108,7 @@ describe("resolve — conflicts", () => {
     const rootPlaceholder = pkgOf("root", root1Files);
     const A: AcePackage = { manifest: { ...pkgOf("A", { "a.txt": "a" }).manifest, dependencies: [{ kind: "inline" as const, name: "root", version: "1.0.0", url: "http://e/root", package_hash: packageHash(rootPlaceholder) }] }, files: { "a.txt": "a" } };
     const root = pkgOf("root", root1Files, [{ pkg: A, url: "http://e/A" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root": root }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/root": root }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("cycle");
   });
@@ -118,7 +118,7 @@ describe("resolve — conflicts", () => {
     const B: AcePackage = { manifest: { ...pkgOf("B", bFiles).manifest, dependencies: [{ kind: "inline" as const, name: "A", version: "1.0.0", url: "http://e/A", package_hash: packageHash(aPlaceholder) }] }, files: bFiles };
     const A: AcePackage = { manifest: { ...pkgOf("A", aFiles).manifest, dependencies: [{ kind: "inline" as const, name: "B", version: "1.0.0", url: "http://e/B", package_hash: packageHash(B) }] }, files: aFiles };
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: A, url: "http://e/A" }]);
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/B": B }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) { expect(r.reason).toBe("cycle"); expect(r.path).toContain("A"); }
   });
@@ -129,7 +129,7 @@ describe("resolve — verification", () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const tampered: AcePackage = { manifest: D.manifest, files: { "d.txt": "TAMPERED" } };
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]); // edge pins original D
-    const r = await resolve(root, fetchOf({ "http://e/D": tampered }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/D": tampered }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("bad-content-hash");
   });
@@ -137,7 +137,7 @@ describe("resolve — verification", () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]);
     (root.manifest.dependencies as any)[0] = { kind: "inline" as const, ...root.manifest.dependencies![0], package_hash: "sha256:wrongwrong" };
-    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("pin-mismatch");
   });
@@ -145,24 +145,24 @@ describe("resolve — verification", () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]);
     (root.manifest.dependencies as any)[0] = { kind: "inline" as const, ...root.manifest.dependencies![0], name: "NOT_D" };
-    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("pin-mismatch");
   });
   test("unsigned node refuses without allowNoSignature, resolves with it", async () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]);
-    const strict = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), { allowNoSignature: false });
+    const strict = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), new Map(), { allowNoSignature: false });
     expect(strict.ok).toBe(false);
     if (!strict.ok) expect(strict.reason).toBe("no-signature");
-    const lax = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const lax = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(lax.ok).toBe(true);
   });
   test("untrusted/bad signature refuses even with allowNoSignature:true", async () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const signed: AcePackage = { manifest: { ...D.manifest, signature: { algo: "ed25519", key_id: "ed25519:unknownkey", sig: "AAAA" } }, files: D.files };
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: signed, url: "http://e/D" }]);
-    const r = await resolve(root, fetchOf({ "http://e/D": signed }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/D": signed }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(["untrusted-key", "bad-signature"]).toContain(r.reason);
   });
@@ -172,7 +172,7 @@ describe("resolve — invalid package", () => {
   test("dep JSON that is parseable but not an AcePackage refuses invalid-package (no throw)", async () => {
     const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: pkgOf("D", { "d.txt": "d" }), url: "http://e/D" }]);
     const badFetch: FetchPackage = async () => JSON.stringify({ foo: 1 }); // valid JSON, not an AcePackage
-    const r = await resolve(root, badFetch, NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, badFetch, NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("invalid-package");
   });
@@ -182,7 +182,7 @@ describe("resolve — invalid package", () => {
     const badDep: any = { manifest: { ...D.manifest, dependencies: {} }, files: D.files }; // dependencies present but not an array
     // point the root edge's package_hash at badDep so it passes the pin check and reaches the dependencies access
     (root.manifest.dependencies as any)[0] = { kind: "inline" as const, name: "D", version: "1.0.0", url: "http://e/D", package_hash: packageHash(badDep) };
-    const r = await resolve(root, fetchOf({ "http://e/D": badDep }), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/D": badDep }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("invalid-package");
   });
@@ -200,14 +200,15 @@ describe("resolve — registry deps", () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "1.0.0")] }, files: { "r.txt": "r" } };
     const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
-    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), { allowNoSignature: true });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.map((p) => p.manifest.name)).toEqual(["D", "root"]);
   });
   test("registry-miss (name/version absent) refuses", async () => {
     const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "9.9.9")] }, files: { "r.txt": "r" } };
     const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: "sha256:x" } } });
-    const r = await resolve(root, fetchOf({}), NO_TRUST, reg, { allowNoSignature: true });
+    // solved has D->9.9.9 (satisfies the edge range "9.9.9" exactly), but 9.9.9 is absent from the registry
+    const r = await resolve(root, fetchOf({}), NO_TRUST, reg, new Map([["D", "9.9.9"]]), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("registry-miss");
   });
@@ -219,7 +220,7 @@ describe("resolve — registry deps", () => {
       regEdge("D", "1.0.0"),
     ] }, files: { "r.txt": "r" } };
     const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: packageHash(D) } } });
-    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/D": D }), NO_TRUST, reg, { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/A": A, "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), { allowNoSignature: true });
     expect(r.ok).toBe(true);
     if (r.ok) expect(r.order.map((p) => p.manifest.name).sort()).toEqual(["A", "D", "root"]);
   });
@@ -227,20 +228,48 @@ describe("resolve — registry deps", () => {
     const D = pkgOf("D", { "d.txt": "d" });
     const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [regEdge("D", "1.0.0")] }, files: { "r.txt": "r" } };
     const reg = regOf({ D: { "1.0.0": { url: "http://e/D", package_hash: "sha256:wrong" } } });
-    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, new Map([["D", "1.0.0"]]), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("pin-mismatch");
   });
   test("an unknown dependency kind refuses with invalid-package (not silently treated as inline)", async () => {
     const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "frobnicate", name: "X", version: "1.0.0" }] as unknown as AceDependency[] }, files: { "r.txt": "r" } };
-    const r = await resolve(root, fetchOf({}), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({}), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("invalid-package");
   });
   test("an inline edge missing url/package_hash refuses with invalid-package", async () => {
     const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "inline", name: "X", version: "1.0.0" }] as unknown as AceDependency[] }, files: { "r.txt": "r" } };
-    const r = await resolve(root, fetchOf({}), NO_TRUST, new Map(), { allowNoSignature: true });
+    const r = await resolve(root, fetchOf({}), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
+});
+
+describe("resolve — solved-map registry edges", () => {
+  test("a registry range edge resolves via the solved concrete version + verifies", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "registry" as const, name: "D", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
+    const reg = new Map([["D", new Map([["1.0.0", { url: "http://e/D", package_hash: packageHash(D) }]])]]);
+    const solved = new Map([["D", "1.0.0"]]);
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, solved, { allowNoSignature: true });
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.order.map((p) => p.manifest.name).sort()).toEqual(["D", "root"]);
+  });
+  test("registry name absent from solved map → unsatisfiable", async () => {
+    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "registry" as const, name: "D", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
+    const reg = new Map([["D", new Map([["1.0.0", { url: "http://e/D", package_hash: "sha256:x" }]])]]);
+    const r = await resolve(root, fetchOf({}), NO_TRUST, reg, new Map(), { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("unsatisfiable");
+  });
+  test("solved version that violates the edge range → unsatisfiable (defense-in-depth)", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "registry" as const, name: "D", version: "^2.0.0" }] }, files: { "r.txt": "r" } };
+    const reg = new Map([["D", new Map([["1.0.0", { url: "http://e/D", package_hash: packageHash(D) }]])]]);
+    const solved = new Map([["D", "1.0.0"]]); // 1.0.0 does NOT satisfy ^2.0.0
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, solved, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("unsatisfiable");
   });
 });

@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { contentHash, type AcePackage, type LoadedTrustEntry, type Registry } from "./store.ts";
 import { verifySignature } from "./signing.ts";
+import { satisfies } from "./semver.ts";
 
 /** Deterministic JSON: object keys recursively sorted; arrays preserve order. */
 function canonicalJson(value: unknown): string {
@@ -22,7 +23,8 @@ export type FetchPackage = (urlOrPath: string) => Promise<string>;
 export type ResolveReason =
   | "version-skew" | "tamper" | "pin-mismatch" | "bad-content-hash"
   | "bad-signature" | "untrusted-key" | "unsupported-algo" | "no-signature"
-  | "cycle" | "fetch-failed" | "invalid-package" | "registry-miss";
+  | "cycle" | "fetch-failed" | "invalid-package" | "registry-miss"
+  | "unsatisfiable" | "bad-range";
 
 export type ResolveResult =
   | { ok: true; order: AcePackage[] }
@@ -33,6 +35,7 @@ export async function resolve(
   fetchPackage: FetchPackage,
   trustStore: Map<string, LoadedTrustEntry>,
   registry: Registry,
+  solved: Map<string, string>,
   opts: { allowNoSignature: boolean },
 ): Promise<ResolveResult> {
   const byName = new Map<string, { version: string; pkgHash: string; path: string[] }>();
@@ -57,17 +60,31 @@ export async function resolve(
       // Resolve url + package_hash from the edge kind
       let url: string;
       let package_hash: string;
+      // For registry edges: look up the solver's output (concrete version), apply the
+      // satisfies defense-in-depth check, then look up the registry entry by concrete version.
+      // For inline edges: url and package_hash come directly from the edge.
+      let effectiveVersion: string;
       if (edge.kind === "registry") {
-        const entry = registry.get(edge.name)?.get(edge.version);
+        const concrete = solved.get(edge.name);
+        if (concrete === undefined) {
+          return { ok: false, reason: "unsatisfiable", detail: `${edge.name}: no solved version`, path: here };
+        }
+        // Defense-in-depth: the solved concrete version must actually satisfy the declared range.
+        if (!satisfies(concrete, edge.version)) {
+          return { ok: false, reason: "unsatisfiable", detail: `${edge.name}: solved ${concrete} violates ${edge.version}`, path: here };
+        }
+        const entry = registry.get(edge.name)?.get(concrete);
         if (entry === undefined) {
-          return { ok: false, reason: "registry-miss", detail: `${edge.name}@${edge.version} not found in registry`, path: here };
+          return { ok: false, reason: "registry-miss", detail: `${edge.name}@${concrete} not in registry`, path: here };
         }
         url = entry.url; package_hash = entry.package_hash;
+        effectiveVersion = concrete;
       } else {
         if (typeof edge.url !== "string" || typeof edge.package_hash !== "string") {
           return { ok: false, reason: "invalid-package", detail: `${edge.name}: inline edge missing url/package_hash`, path: here };
         }
         url = edge.url; package_hash = edge.package_hash;
+        effectiveVersion = edge.version;
       }
 
       // NB: the root is seeded into `visiting`, so a root-involving skew (root@1 -> A -> root@2)
@@ -77,11 +94,11 @@ export async function resolve(
       }
       const seen = byName.get(edge.name);
       if (seen) {
-        if (seen.version !== edge.version) {
-          return { ok: false, reason: "version-skew", detail: `${edge.name} required at ${seen.version} (via ${seen.path.join(" → ")}) and ${edge.version} (via ${here.join(" → ")})`, path: here };
+        if (seen.version !== effectiveVersion) {
+          return { ok: false, reason: "version-skew", detail: `${edge.name} required at ${seen.version} (via ${seen.path.join(" → ")}) and ${effectiveVersion} (via ${here.join(" → ")})`, path: here };
         }
         if (seen.pkgHash !== package_hash) {
-          return { ok: false, reason: "tamper", detail: `${edge.name}@${edge.version} has two different package hashes`, path: here };
+          return { ok: false, reason: "tamper", detail: `${edge.name}@${effectiveVersion} has two different package hashes`, path: here };
         }
         continue; // diamond dedup: same name+version+package_hash, already resolved
       }
@@ -106,9 +123,9 @@ export async function resolve(
       if (got !== package_hash) {
         return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${package_hash} but fetched ${got}`, path: here };
       }
-      // declared-identity check
-      if (dep.manifest.name !== edge.name || dep.manifest.version !== edge.version) {
-        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}@${edge.version}: edge identity != fetched ${dep.manifest.name}@${dep.manifest.version}`, path: here };
+      // declared-identity check: fetched package name/version must match edge name + effectiveVersion
+      if (dep.manifest.name !== edge.name || dep.manifest.version !== effectiveVersion) {
+        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}@${effectiveVersion}: edge identity != fetched ${dep.manifest.name}@${dep.manifest.version}`, path: here };
       }
       // slice-3 signature gate
       const v = verifySignature(dep.manifest, trustStore);
@@ -119,7 +136,7 @@ export async function resolve(
           return { ok: false, reason: v.reason, detail: `${edge.name}: ${v.reason}`, path: here };
         }
       }
-      byName.set(edge.name, { version: edge.version, pkgHash: package_hash, path: here });
+      byName.set(edge.name, { version: effectiveVersion, pkgHash: package_hash, path: here });
       visiting.add(edge.name);
       const sub = await walk(dep, here);
       if (sub) return sub;

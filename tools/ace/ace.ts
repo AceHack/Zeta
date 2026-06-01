@@ -3,7 +3,7 @@
 //
 // Usage:
 //   bun tools/ace/ace.ts list [--store <path>] [--json]
-//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature]
+//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution]
 //   bun tools/ace/ace.ts verify <hash>
 //   bun tools/ace/ace.ts keygen [--out <prefix>]
 //   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
@@ -24,6 +24,7 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
+import { solve } from "./solver.ts";
 import { resolve as toAbsolutePath } from "node:path";
 
 interface ListArgs {
@@ -41,6 +42,7 @@ interface InstallArgs {
   readonly source: string;
   readonly storePath: string;
   readonly allowNoSignature: boolean;
+  readonly printResolution?: boolean;
 }
 
 interface VerifyArgs {
@@ -180,6 +182,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     if (!source || source.startsWith("-")) return { error: "install requires a <url-or-path> argument" };
     let storePath = defaultStorePath();
     let allowNoSignature = false;
+    let printResolution = false;
     for (let i = 2; i < argv.length; i++) {
       if (argv[i] === "--store" || argv[i] === "-s") {
         const next = argv[i + 1];
@@ -188,11 +191,15 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         i++;
       } else if (argv[i] === "--allow-no-signature") {
         allowNoSignature = true;
+      } else if (argv[i] === "--print-resolution") {
+        printResolution = true;
       } else {
         return { error: `Unknown option for install: ${argv[i]}` };
       }
     }
-    return { command: "install", source, storePath, allowNoSignature };
+    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature };
+    if (printResolution) return { ...baseResult, printResolution: true };
+    return baseResult;
   }
 
   if (command === "verify") {
@@ -237,8 +244,10 @@ function printUsage(): void {
 
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
-  ace install <url-or-path> [--allow-no-signature]   Download/read a package, verify integrity+authenticity, install
+  ace install <url-or-path> [--allow-no-signature] [--print-resolution]
+                                                   Download/read a package, verify integrity+authenticity, install
                                                    --allow-no-signature only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
+                                                   --print-resolution prints the solved name@version graph before installing
   ace verify <hash>                              Confirm an installed package is present
   ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
   ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
@@ -488,7 +497,18 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), loadRegistry(), { allowNoSignature: parsed.allowNoSignature });
+      const solveResult = await solve(pkg, fetchPackage, loadRegistry());
+      if (!solveResult.ok) {
+        console.error(`ace: install refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`);
+        return 1;
+      }
+      // Print the solved graph if --print-resolution was requested.
+      if (parsed.printResolution) {
+        for (const [n, v] of [...solveResult.versions].sort()) {
+          console.log(`  ${n}@${v}`);
+        }
+      }
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), loadRegistry(), solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
       if (!res.ok) {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
