@@ -4,35 +4,89 @@ open System
 open System.Globalization
 open System.IO
 open System.Text.Json
-open YamlDotNet.Serialization
 open Xunit
 open Zeta.Core.FSharp.ZetaId
+open Zeta.Core.FSharp.Yaml
+open Zeta.Core.FSharp.Yaml.Dom
 
 /// Flat vector schema matching tests/cross-verification/zeta-id/vectors.yaml.
-/// snake_case YAML → PascalCase F# via YamlMember alias.
+/// Populated by navigating our YAML port's YamlValue tree (own-the-interface:
+/// route through Zeta.Core.FSharp.Yaml.Dom.parse, not YamlDotNet directly).
 [<CLIMutable>]
 type FlatVector = {
-    [<YamlMember(Alias = "id")>] Id: string
-    [<YamlMember(Alias = "version")>] Version: int
-    [<YamlMember(Alias = "timestamp")>] Timestamp: int64
-    [<YamlMember(Alias = "chromosome")>] Chromosome: int
-    [<YamlMember(Alias = "category")>] Category: int
-    [<YamlMember(Alias = "firefly")>] Firefly: int
-    [<YamlMember(Alias = "authority_type")>] AuthorityType: string
-    [<YamlMember(Alias = "authority_raw")>] AuthorityRaw: Nullable<int>
-    [<YamlMember(Alias = "persona")>] Persona: int
-    [<YamlMember(Alias = "momentum_type")>] MomentumType: string
-    [<YamlMember(Alias = "momentum_raw")>] MomentumRaw: Nullable<int>
-    [<YamlMember(Alias = "location")>] Location: int
-    [<YamlMember(Alias = "expected_hex")>] ExpectedHex: string
+    Id: string
+    Version: int
+    Timestamp: int64
+    Chromosome: int
+    Category: int
+    Firefly: int
+    AuthorityType: string
+    AuthorityRaw: Nullable<int>
+    Persona: int
+    MomentumType: string
+    MomentumRaw: Nullable<int>
+    Location: int
+    ExpectedHex: string
 }
 
-[<CLIMutable>]
-type VectorEnvelope = {
-    [<YamlMember(Alias = "version")>] Version: int
-    [<YamlMember(Alias = "description")>] Description: string
-    [<YamlMember(Alias = "vectors")>] Vectors: ResizeArray<FlatVector>
-}
+// --- YamlValue → FlatVector list navigation. The fixture is a top-level VMap with a
+// `vectors:` VSeq of flat VMaps. Extract each field by key from the ordered pairs. ---
+
+let private mapEntries (v: YamlValue) (ctx: string) : (string * YamlValue) list =
+    match v with
+    | VMap entries -> entries
+    | other -> raise (InvalidOperationException(sprintf "expected Map at %s, got %A" ctx other))
+
+let private field (entries: (string * YamlValue) list) (key: string) (ctx: string) : YamlValue =
+    match entries |> List.tryFind (fun (k, _) -> String.Equals(k, key, StringComparison.Ordinal)) with
+    | Some(_, value) -> value
+    | None -> raise (InvalidOperationException(sprintf "missing field '%s' at %s" key ctx))
+
+let private asStr (v: YamlValue) (ctx: string) : string =
+    match v with
+    | VStr s -> s
+    | other -> raise (InvalidOperationException(sprintf "expected Str at %s, got %A" ctx other))
+
+let private asInt (v: YamlValue) (ctx: string) : int =
+    match v with
+    | VInt i -> int i
+    | other -> raise (InvalidOperationException(sprintf "expected Int at %s, got %A" ctx other))
+
+let private asInt64 (v: YamlValue) (ctx: string) : int64 =
+    match v with
+    | VInt i -> i
+    | other -> raise (InvalidOperationException(sprintf "expected Int at %s, got %A" ctx other))
+
+let private asIntOrNull (v: YamlValue) (ctx: string) : Nullable<int> =
+    match v with
+    | VNull -> Nullable()
+    | VInt i -> Nullable(int i)
+    | other -> raise (InvalidOperationException(sprintf "expected Int or Null at %s, got %A" ctx other))
+
+let private toFlatVector (idx: int) (item: YamlValue) : FlatVector =
+    let ctx = sprintf "vectors[%d]" idx
+    let m = mapEntries item ctx
+    {
+        Id            = asStr     (field m "id" ctx)             (ctx + ".id")
+        Version       = asInt     (field m "version" ctx)        (ctx + ".version")
+        Timestamp     = asInt64   (field m "timestamp" ctx)      (ctx + ".timestamp")
+        Chromosome    = asInt     (field m "chromosome" ctx)     (ctx + ".chromosome")
+        Category      = asInt     (field m "category" ctx)       (ctx + ".category")
+        Firefly       = asInt     (field m "firefly" ctx)        (ctx + ".firefly")
+        AuthorityType = asStr     (field m "authority_type" ctx) (ctx + ".authority_type")
+        AuthorityRaw  = asIntOrNull (field m "authority_raw" ctx) (ctx + ".authority_raw")
+        Persona       = asInt     (field m "persona" ctx)        (ctx + ".persona")
+        MomentumType  = asStr     (field m "momentum_type" ctx)  (ctx + ".momentum_type")
+        MomentumRaw   = asIntOrNull (field m "momentum_raw" ctx)  (ctx + ".momentum_raw")
+        Location      = asInt     (field m "location" ctx)       (ctx + ".location")
+        ExpectedHex   = asStr     (field m "expected_hex" ctx)   (ctx + ".expected_hex")
+    }
+
+let private yamlValueToFlatVectors (root: YamlValue) : FlatVector list =
+    let top = mapEntries root "<root>"
+    match field top "vectors" "<root>" with
+    | VSeq items -> items |> List.mapi toFlatVector
+    | other -> raise (InvalidOperationException(sprintf "expected Seq at vectors, got %A" other))
 
 /// Bounds-check int→byte before constructing Raw or casting to enum.
 /// Without this, AuthorityRaw=256 wraps to 0 BEFORE Raw's bounds check fires,
@@ -81,7 +135,7 @@ let private toObservation (v: FlatVector) : ZetaObservation =
     }
 
 /// Walk up from the test assembly looking for Zeta.sln (sentinel at repo root).
-/// .git is unreliable (in a worktree it's a file, not a directory).
+/// .git is unreliable (in a worktree it is a file, not a directory).
 let private repoRoot () : string =
     let assembly = typeof<FlatVector>.Assembly
     let mutable dir = DirectoryInfo(Path.GetDirectoryName(assembly.Location))
@@ -99,14 +153,19 @@ let ``cross-verify twelve vectors match TS+C# bootstrap hex`` () =
     let yamlPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "vectors.yaml")
     let yamlText = File.ReadAllText(yamlPath)
 
-    let deserializer = DeserializerBuilder().Build()
-    let envelope = deserializer.Deserialize<VectorEnvelope>(yamlText)
+    // Own-the-interface: parse through our YAML port (Zeta.Core.FSharp.Yaml.Dom.parse),
+    // not YamlDotNet directly. Decline surfaces as a YamlFeedback, not an exception.
+    let vectors =
+        match parse yamlText with
+        | Ok value -> yamlValueToFlatVectors value
+        | Error feedback ->
+            raise (InvalidOperationException(sprintf "our YAML port declined vectors.yaml: %A" feedback))
 
     let results = System.Collections.Generic.Dictionary<string, obj>(StringComparer.Ordinal)
     let mutable hexMismatches = 0
     let mutable roundtripMismatches = 0
 
-    for v in envelope.Vectors do
+    for v in vectors do
         let obs = toObservation v
         let id = ZetaIdCodec.pack obs DeterministicEnv.Instance
         let hex = id.ToString("x32", CultureInfo.InvariantCulture)

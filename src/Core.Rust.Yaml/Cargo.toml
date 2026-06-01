@@ -1,0 +1,21 @@
+[package]
+name = "zeta-core-yaml"
+version = "0.1.0"
+edition = "2024"
+description = "YAML config-subset port -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language multi-oracle consensus (m-acc: no single language is source of truth). Forward-only one-pass YamlReader emitting a flat YamlEvent stream + a YamlValue DOM fold on top. Zero-dep core; cross-verifies byte-for-byte against the shared golden vectors."
+license = "Apache-2.0"
+publish = false
+
+# Production default = ZERO external dependencies (supply-chain doctrine, matching
+# Core.Rust.ZetaId + Core.Rust.Observe + Core.Rust.TriBoolean). The cross-verify test
+# reads the shared JSON fixture (tests/cross-verification/yaml/vectors.json) with a tiny
+# hand-rolled JSON-string extractor and emits rust-output.json by hand, so the oracle
+# stays zero-dep. The fixture is JSON (not YAML) deliberately: do not use YAML to test
+# YAML. A future vendor differential (the YamlDotNet / Bun.YAML adapter the other oracles
+# carry) would be gated behind an optional feature the same way Observe gates serde_json
+# behind `serde`; the Rust oracle is hand-rolled-only per the plan.
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

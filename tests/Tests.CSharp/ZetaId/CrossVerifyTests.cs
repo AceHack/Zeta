@@ -2,7 +2,7 @@ using System.Globalization;
 using System.IO;
 using System.Text.Json;
 using Xunit;
-using YamlDotNet.Serialization;
+using Zeta.Core.CSharp.Yaml;
 using Zeta.Core.CSharp.ZetaId;
 
 namespace Zeta.Tests.CSharp.ZetaId;
@@ -10,6 +10,79 @@ namespace Zeta.Tests.CSharp.ZetaId;
 public class CrossVerifyTests
 {
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+
+    // --- YamlValue → FlatVector navigation. Own-the-interface: route through our YAML
+    // port (Zeta.Core.CSharp.Yaml.YamlDom.Parse), not YamlDotNet directly. The fixture is
+    // a top-level YMap with a `vectors:` YSeq of flat YMaps. ---
+
+    private static IReadOnlyList<KeyValuePair<string, YamlValue>> MapEntries(YamlValue v, string ctx) =>
+        v is YamlValue.YMap m
+            ? m.Entries
+            : throw new InvalidOperationException($"expected Map at {ctx}, got {v.GetType().Name}");
+
+    private static YamlValue Field(IReadOnlyList<KeyValuePair<string, YamlValue>> entries, string key, string ctx)
+    {
+        foreach (var kvp in entries)
+            if (string.Equals(kvp.Key, key, StringComparison.Ordinal))
+                return kvp.Value;
+        throw new InvalidOperationException($"missing field '{key}' at {ctx}");
+    }
+
+    private static string AsStr(YamlValue v, string ctx) =>
+        v is YamlValue.YStr s
+            ? s.Value
+            : throw new InvalidOperationException($"expected Str at {ctx}, got {v.GetType().Name}");
+
+    private static int AsInt(YamlValue v, string ctx) =>
+        v is YamlValue.YInt i
+            ? checked((int)i.Value)
+            : throw new InvalidOperationException($"expected Int at {ctx}, got {v.GetType().Name}");
+
+    private static long AsLong(YamlValue v, string ctx) =>
+        v is YamlValue.YInt i
+            ? i.Value
+            : throw new InvalidOperationException($"expected Int at {ctx}, got {v.GetType().Name}");
+
+    private static int? AsIntOrNull(YamlValue v, string ctx) =>
+        v switch
+        {
+            YamlValue.YNull => (int?)null,
+            YamlValue.YInt i => checked((int)i.Value),
+            _ => throw new InvalidOperationException($"expected Int or Null at {ctx}, got {v.GetType().Name}"),
+        };
+
+    private static FlatVector ToFlatVector(int idx, YamlValue item)
+    {
+        var ctx = $"vectors[{idx}]";
+        var m = MapEntries(item, ctx);
+        return new FlatVector
+        {
+            Id = AsStr(Field(m, "id", ctx), $"{ctx}.id"),
+            Version = AsInt(Field(m, "version", ctx), $"{ctx}.version"),
+            Timestamp = AsLong(Field(m, "timestamp", ctx), $"{ctx}.timestamp"),
+            Chromosome = AsInt(Field(m, "chromosome", ctx), $"{ctx}.chromosome"),
+            Category = AsInt(Field(m, "category", ctx), $"{ctx}.category"),
+            Firefly = AsInt(Field(m, "firefly", ctx), $"{ctx}.firefly"),
+            AuthorityType = AsStr(Field(m, "authority_type", ctx), $"{ctx}.authority_type"),
+            AuthorityRaw = AsIntOrNull(Field(m, "authority_raw", ctx), $"{ctx}.authority_raw"),
+            Persona = AsInt(Field(m, "persona", ctx), $"{ctx}.persona"),
+            MomentumType = AsStr(Field(m, "momentum_type", ctx), $"{ctx}.momentum_type"),
+            MomentumRaw = AsIntOrNull(Field(m, "momentum_raw", ctx), $"{ctx}.momentum_raw"),
+            Location = AsInt(Field(m, "location", ctx), $"{ctx}.location"),
+            ExpectedHex = AsStr(Field(m, "expected_hex", ctx), $"{ctx}.expected_hex"),
+        };
+    }
+
+    private static List<FlatVector> YamlValueToFlatVectors(YamlValue root)
+    {
+        var top = MapEntries(root, "<root>");
+        if (Field(top, "vectors", "<root>") is not YamlValue.YSeq seq)
+            throw new InvalidOperationException("expected Seq at vectors");
+        var result = new List<FlatVector>(seq.Items.Count);
+        for (int i = 0; i < seq.Items.Count; i++)
+            result.Add(ToFlatVector(i, seq.Items[i]));
+        return result;
+    }
 
     // Bounds-check int→byte cast before constructing Raw or casting to enum.
     // Without this, e.g. AuthorityRaw=256 wraps to 0 BEFORE Authority.Raw's
@@ -87,14 +160,18 @@ public class CrossVerifyTests
         var yamlPath = Path.Join(root, "tests", "cross-verification", "zeta-id", "vectors.yaml");
         var yamlText = File.ReadAllText(yamlPath);
 
-        var deserializer = new DeserializerBuilder().Build();
-        var envelope = deserializer.Deserialize<VectorEnvelope>(yamlText);
+        // Own-the-interface: parse through our YAML port (YamlDom.Parse), not YamlDotNet
+        // directly. Decline surfaces as a YamlFeedback, not an exception.
+        ParseResult parsed = YamlDom.Parse(yamlText);
+        if (!parsed.Ok)
+            throw new InvalidOperationException($"our YAML port declined vectors.yaml: {parsed.Feedback}");
+        var vectors = YamlValueToFlatVectors(parsed.Value!);
 
         var results = new Dictionary<string, object>(StringComparer.Ordinal);
         int hexMismatches = 0;
         int roundtripMismatches = 0;
 
-        foreach (var v in envelope.Vectors)
+        foreach (var v in vectors)
         {
             var obs = ToObservation(v);
             var id = ZetaIdCodec.Pack(obs, DeterministicEnv.Instance);

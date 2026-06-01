@@ -1,0 +1,116 @@
+{
+  "empty-map-value": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"a","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"","kind":"Null","style":"Plain"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "flat-scalars": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"name","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"zeta","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"count","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"42","kind":"Int","style":"Plain"},
+    {"e":"Scalar","raw":"ratio","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"3.14","kind":"Float","style":"Plain"},
+    {"e":"Scalar","raw":"ok","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"true","kind":"Bool","style":"Plain"},
+    {"e":"Scalar","raw":"gone","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"null","kind":"Null","style":"Plain"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "quoted-forces-string": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"a","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"42","kind":"Str","style":"DoubleQuoted"},
+    {"e":"Scalar","raw":"b","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"3.14","kind":"Str","style":"SingleQuoted"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "double-quote-escapes": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"msg","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"he said \"hi\"\nbye","kind":"Str","style":"DoubleQuoted"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "single-quote-escape": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"a","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"it's","kind":"Str","style":"SingleQuoted"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "nested-map": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"outer","kind":"Str","style":"Plain"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"inner","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"1","kind":"Int","style":"Plain"},
+    {"e":"MappingEnd"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "sequence": [
+    {"e":"StreamStart"},
+    {"e":"SequenceStart"},
+    {"e":"Scalar","raw":"a","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"b","kind":"Str","style":"Plain"},
+    {"e":"SequenceEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "sequence-of-maps": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"items","kind":"Str","style":"Plain"},
+    {"e":"SequenceStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"id","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"x","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"n","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"1","kind":"Int","style":"Plain"},
+    {"e":"MappingEnd"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"id","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"y","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"n","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"2","kind":"Int","style":"Plain"},
+    {"e":"MappingEnd"},
+    {"e":"SequenceEnd"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "comments": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"a","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"1","kind":"Int","style":"Plain"},
+    {"e":"Scalar","raw":"b","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"2","kind":"Int","style":"Plain"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ],
+  "null-forms-and-strings": [
+    {"e":"StreamStart"},
+    {"e":"MappingStart"},
+    {"e":"Scalar","raw":"a","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"~","kind":"Null","style":"Plain"},
+    {"e":"Scalar","raw":"b","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"","kind":"Null","style":"Plain"},
+    {"e":"Scalar","raw":"c","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"12abc","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"d","kind":"Str","style":"Plain"},
+    {"e":"Scalar","raw":"-2.5","kind":"Float","style":"Plain"},
+    {"e":"MappingEnd"},
+    {"e":"StreamEnd"}
+  ]
+}

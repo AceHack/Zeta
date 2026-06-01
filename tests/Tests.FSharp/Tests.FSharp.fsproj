@@ -142,6 +142,8 @@
 
     <!-- ZetaId/ — F# peer oracle cross-verify (matches TS + C# canonical hex) -->
     <Compile Include="ZetaId/CrossVerifyTests.fs" />
+    <Compile Include="Yaml/ReaderTests.fs" />
+    <Compile Include="Yaml/CrossVerifyTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -149,6 +151,7 @@
     <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.TriBoolean\Zeta.Core.FSharp.TriBoolean.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

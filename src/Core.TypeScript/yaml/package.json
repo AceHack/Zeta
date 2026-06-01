@@ -1,0 +1,28 @@
+{
+  "name": "@zeta/yaml",
+  "version": "0.1.0",
+  "description": "Standalone TypeScript implementation of a YAML-subset reader — forward-only one-pass YamlReader (flat YamlEvent stream) + YamlValue DOM-on-top. Bun-native; no build step required.",
+  "type": "module",
+  "main": "reader.ts",
+  "types": "reader.ts",
+  "exports": {
+    ".": "./reader.ts",
+    "./reader": "./reader.ts",
+    "./dom": "./dom.ts"
+  },
+  "keywords": [
+    "zeta",
+    "yaml",
+    "yaml-reader",
+    "forward-only",
+    "one-pass",
+    "event-stream",
+    "config",
+    "bun"
+  ],
+  "author": "Lucent Financial Group",
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "bun": ">=1.0.0"
+  }
+}

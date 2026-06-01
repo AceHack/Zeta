@@ -1,0 +1,160 @@
+{
+  "version": 1,
+  "description": "Canonical YAML reader vectors (TS/F#/C#/Rust). Inputs as JSON strings; expected = L1 event stream.",
+  "vectors": [
+    {
+      "id": "empty-map-value",
+      "yaml": "a:\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "a", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "", "kind": "Null", "style": "Plain" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "flat-scalars",
+      "yaml": "name: zeta\ncount: 42\nratio: 3.14\nok: true\ngone: null\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "name", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "zeta", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "count", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "42", "kind": "Int", "style": "Plain" },
+        { "e": "Scalar", "raw": "ratio", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "3.14", "kind": "Float", "style": "Plain" },
+        { "e": "Scalar", "raw": "ok", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "true", "kind": "Bool", "style": "Plain" },
+        { "e": "Scalar", "raw": "gone", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "null", "kind": "Null", "style": "Plain" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "quoted-forces-string",
+      "yaml": "a: \"42\"\nb: '3.14'\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "a", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "42", "kind": "Str", "style": "DoubleQuoted" },
+        { "e": "Scalar", "raw": "b", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "3.14", "kind": "Str", "style": "SingleQuoted" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "double-quote-escapes",
+      "yaml": "msg: \"he said \\\"hi\\\"\\nbye\"\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "msg", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "he said \"hi\"\nbye", "kind": "Str", "style": "DoubleQuoted" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "single-quote-escape",
+      "yaml": "a: 'it''s'\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "a", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "it's", "kind": "Str", "style": "SingleQuoted" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "nested-map",
+      "yaml": "outer:\n  inner: 1\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "outer", "kind": "Str", "style": "Plain" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "inner", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "1", "kind": "Int", "style": "Plain" },
+        { "e": "MappingEnd" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "sequence",
+      "yaml": "- a\n- b\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "SequenceStart" },
+        { "e": "Scalar", "raw": "a", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "b", "kind": "Str", "style": "Plain" },
+        { "e": "SequenceEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "sequence-of-maps",
+      "yaml": "items:\n  - id: x\n    n: 1\n  - id: y\n    n: 2\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "items", "kind": "Str", "style": "Plain" },
+        { "e": "SequenceStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "id", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "x", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "n", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "1", "kind": "Int", "style": "Plain" },
+        { "e": "MappingEnd" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "id", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "y", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "n", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "2", "kind": "Int", "style": "Plain" },
+        { "e": "MappingEnd" },
+        { "e": "SequenceEnd" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "comments",
+      "yaml": "# top\na: 1  # trail\nb: 2\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "a", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "1", "kind": "Int", "style": "Plain" },
+        { "e": "Scalar", "raw": "b", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "2", "kind": "Int", "style": "Plain" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "null-forms-and-strings",
+      "yaml": "a: ~\nb:\nc: 12abc\nd: -2.5\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "a", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "~", "kind": "Null", "style": "Plain" },
+        { "e": "Scalar", "raw": "b", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "", "kind": "Null", "style": "Plain" },
+        { "e": "Scalar", "raw": "c", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "12abc", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "d", "kind": "Str", "style": "Plain" },
+        { "e": "Scalar", "raw": "-2.5", "kind": "Float", "style": "Plain" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    }
+  ]
+}
