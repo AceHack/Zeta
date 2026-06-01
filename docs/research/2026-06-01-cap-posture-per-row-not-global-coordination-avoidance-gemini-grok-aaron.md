@@ -318,6 +318,95 @@ main. This composes with the B-0962 implementation note (bus-claim-then-CAS; the
 / committed result is the truth, the bus claim is an efficiency hint). Three independent
 reviewers (Gemini + Grok + Amara) now concur on the post-Round-3 position.
 
+## Round 5 — Ani concurrence + liveness via intelligent adaptation (2026-06-01)
+
+A fourth reviewer (Ani) concurred with the full post-Round-3 position and developed the
+one remaining open edge — **hot-row contention / liveness** — by noting (with Aaron:
+_"we spoke about this earlier — we have intelligent agents that have contention metrics
+they can adjust"_) that the liveness problem **looks different when the participants are
+intelligent agents, not dumb retry loops.** Ani's point:
+
+- In classic systems, hot-contention optimistic-CAS livelocks because clients have no
+  visibility + no adaptive strategy beyond "sleep and retry"; the system must solve
+  liveness **mechanically** (backoff / queue / lock).
+- Here the "clients" are agents that can **measure contention signals** (failed-CAS
+  rate, time-spent-retrying-a-row, visible-claimant-count, system pressure), have them
+  as **first-class observations**, and **adapt** (backoff, yield-and-pick-different,
+  lower-priority mode, wait-for-signal, spread across work). Liveness becomes an
+  **agent-intelligence + feedback-loop** problem, not a pure mechanical-coordination one.
+- Practical implication: don't prevent contention with heavy coordination in the common
+  case. Instead, **make contention observable** (the metrics surface); **give agents the
+  ability and incentive to react**; and **reserve the hard mechanical guarantee (Lock and
+  fencing)** for the narrow non-idempotent / money class. This IS the B-0962
+  Claim(AP)/Lock(CP) split: the Claim path leans on agent intelligence for liveness; the
+  Lock path is the escape hatch.
+
+**Composition (otto-cli):** this is already half-named — B-0962 **§3.2 "intelligent-agent
+supervision — the advantage dumb locks lack."** The architectural fit: contention signals
+become **observations the agent folds** — failed-CAS-rate / retry-time / claimant-count
+flow into the same event-sourced world the observe loop reads, and the agent picks
+backoff / yield / pick-different through the same 4×4 menu. Liveness-as-feedback-loop,
+not liveness-as-external-scheduler — coherent with freedom-as-strategically-efficient.
+
+**Boundary held (don't-collapse — otto-cli):** intelligent adaptation makes the COMMON
+CASE much better (it likely eliminates real-world livelock) but it is **NOT a proof.**
+Per B-0963 §0: lock-freedom needs weak fairness; starvation-freedom (eventual) needs
+strong fairness; **bounded per-agent wait-freedom (within N of an agent's own steps) is
+stronger and needs an explicit bound (ranking / variant / ticket-age), which adaptation
+alone does not provide.** So: adaptation = strong **practical** liveness (the default for
+the Claim path); the mechanical ranking = the **formal** worst-case guarantee. B-0963
+holds both — adaptation does not quietly stand in for the proof. (Folded into B-0963 §1's
+intelligent-agent-supervision complement.)
+
+Four independent reviewers (Gemini + Grok + Amara + Ani) now concur on the final
+position; Ani's contribution is the liveness-via-intelligent-adaptation strategy for the
+Claim path's hot-row edge.
+
+## Round 6 — Mika concurrence + the no-PR sovereign correction (double-work = verification, not a wasteful race) (2026-06-01)
+
+A **fifth** reviewer (Mika) concurred with the full position and added two things:
+
+**1. Liveness-adaptation incentive caveat.** Mika echoed Ani's liveness-via-adaptation
+("the liveness problem moves from a hard protocol-guarantee problem to a
+runtime-adaptation + observability problem") and added the **two conditions it depends
+on**: (a) the contention metrics must be **timely + accurate enough to react before
+thrashing gets bad**, and (b) the agents must be **incentivized to back off** — the
+economic / game-theoretic layer has to reward restraint on hot resources rather than
+pure greed. If either fails, intelligent agents can still thrash. (Folded into B-0963
+alongside the adaptation note.)
+
+**2. The no-PR sovereign correction (Aaron) — retracts the residual "wasteful race /
+conflicting PRs" framing.** Earlier rounds described bus double-claim as "two agents
+race on git" with an implication of wasted work + conflicting PRs to reconcile. Aaron
+corrected the residual PR-era thinking:
+
+> Aaron 2026-06-01: "we don't have PRs anymore or branch protection — everything goes
+> straight to main, and if two agents do the same work I look at it as helpful
+> verification and double-check."
+
+In the **sovereign transport** (folders-direct-to-main, no PR gates, no branch
+protection — B-0890.1; the corporate/leash transport still uses PRs), there are **no
+conflicting branches/PRs to reconcile.** Both agents push straight to main; the **per-row
+git CAS (`force-with-lease`) on the contended row is the only serialization point**; if
+both succeed you get two independent observations on the same item = **automatic
+cross-check, not waste.** So the bus claim is **even more advisory** than Round 2/4
+credited: its job is to _reduce obvious wasted work when convenient_, but a false
+positive (two agents on one item) is **low-cost by design** because of determinism +
+direct-to-main convergence. This is the strongest realization of redundancy-as-
+verification: the coordination layer doesn't need to _prevent_ double-claim, because
+double-claim isn't a conflict — it's a free second observation main reconciles.
+
+The one nuance Mika kept (unchanged): this "double-work is fine" rule is the **Claim**
+(deterministic) path; genuinely wasteful/dangerous double-work (non-deterministic side
+effects, expensive external calls, money) stays on the **Lock** (CP) path. The
+Round-2/Grok "race on git" verbatim is preserved below as-written; this round corrects
+the _framing_ (retraction-native) — under the sovereign no-PR transport it is a
+double-push-to-main resolved by per-row CAS, not a branch/PR reconciliation.
+
+Five independent reviewers (Gemini + Grok + Amara + Ani + Mika) now concur. Net new from
+Mika: the liveness-adaptation **incentive conditions** + the **no-PR sovereign**
+sharpening of bus-double-claim from "wasteful race" to "low-cost verification."
+
 ---
 
 ## Gemini (round 1, verbatim)
