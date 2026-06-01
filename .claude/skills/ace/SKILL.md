@@ -30,7 +30,7 @@ Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust a
 | `keygen` | `bun tools/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
 | `sign` | `bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
 | `list` | `bun tools/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
-| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
+| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen] [--lockfile <path>]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
 | `verify` | `bun tools/ace/ace.ts verify <hash>` | Confirm an installed package is present |
 | `trust add` | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
 | `trust list` | `bun tools/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
@@ -86,6 +86,23 @@ ace install <pkg> --allow-no-signature --print-resolution
 
 Each printed line has the format `name@version`, sorted lexicographically. Useful for
 auditing which versions the solver selected before committing to the install.
+
+## Lockfile (slice 5.3)
+
+A normal `ace install` on a package with dependencies writes `./ace.lock` after a
+successful graph install. The lockfile pins every resolved dependency by name, version,
+URL, and `package_hash`.
+
+**`--frozen`** replays the locked graph: skips solving and registry access entirely,
+fetches each node from the locked URL, and byte-verifies the result against the locked
+`package_hash` and `content_hash`. Refused if the lockfile is missing or if the root
+package has drifted from its locked state ("lockfile out of date — re-run without
+`--frozen` to regenerate").
+
+**`--lockfile <path>`** overrides the default lockfile path (`ace.lock`).
+
+Errors during lockfile *write* are warnings (install still succeeds). All `--frozen`
+refusals (missing lock, drift, hash mismatch, bad signature) are hard exits (code `1`).
 
 ## Invocation
 

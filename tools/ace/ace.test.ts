@@ -7,10 +7,12 @@ import { parseArgs, main } from "./ace.ts";
 import { listInstalled, contentHash, listTrustedKeys, loadRegistry } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
 import { packageHash } from "./resolve.ts";
+import { parseLockfile } from "./lockfile.ts";
 
 // ---- Trust-path isolation: redirect ~/.ace to a temp dir in every test ----
 let savedHome: string | undefined;
 let savedUserProfile: string | undefined;
+let savedCwd: string | undefined;
 let tempHome: string;
 
 beforeEach(() => {
@@ -19,9 +21,12 @@ beforeEach(() => {
   tempHome = mkdtempSync(join(tmpdir(), "ace-test-home-"));
   process.env.HOME = tempHome;
   process.env.USERPROFILE = tempHome;
+  savedCwd = process.cwd();
+  process.chdir(tempHome);
 });
 
 afterEach(() => {
+  if (savedCwd !== undefined) process.chdir(savedCwd);
   if (savedHome !== undefined) process.env.HOME = savedHome;
   else delete process.env.HOME;
   if (savedUserProfile !== undefined) process.env.USERPROFILE = savedUserProfile;
@@ -171,6 +176,29 @@ describe("parseArgs", () => {
 
   test("trust with no subcommand is an error", () => {
     expect("error" in parseArgs(["trust"])).toBe(true);
+  });
+});
+
+describe("parseArgs — install lockfile flags", () => {
+  test("--frozen defaults off; sets frozen + default lockfile path", () => {
+    const a = parseArgs(["install", "pkg.json"]);
+    expect("command" in a && a.command === "install").toBe(true);
+    if ("command" in a && a.command === "install") {
+      expect(a.frozen).toBe(false);
+      expect(a.lockfile).toBe("ace.lock");
+    }
+  });
+  test("--frozen sets frozen true", () => {
+    const a = parseArgs(["install", "pkg.json", "--frozen"]);
+    if ("command" in a && a.command === "install") expect(a.frozen).toBe(true);
+  });
+  test("--lockfile <path> overrides", () => {
+    const a = parseArgs(["install", "pkg.json", "--lockfile", "custom.lock"]);
+    if ("command" in a && a.command === "install") expect(a.lockfile).toBe("custom.lock");
+  });
+  test("--lockfile without a path is an error", () => {
+    const a = parseArgs(["install", "pkg.json", "--lockfile"]);
+    expect("error" in a).toBe(true);
   });
 });
 
@@ -678,6 +706,28 @@ describe("registry commands", () => {
     expect(listInstalled(store).map((p)=>p.manifest.name).sort()).toEqual(["D","root"]);
   });
 
+  test("e2e: graph install writes ./ace.lock pinning the installed deps", async () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
+    const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
+    const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
+    await main(["registry", "add", "A", "1.0.0", aPath]);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"registry" as const, name:"A", version:"1.0.0" }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(dir, "ace.lock");
+    const code = await main(["install", rootPath, "--store", store, "--allow-no-signature", "--lockfile", lockPath]);
+    expect(code).toBe(0);
+    expect(existsSync(lockPath)).toBe(true);
+    const lf = parseLockfile(readFileSync(lockPath, "utf8"));
+    expect("error" in lf).toBe(false);
+    if (!("error" in lf)) {
+      expect(lf.root.name).toBe("root");
+      expect(lf.nodes.map((n) => `${n.name}@${n.version}`).sort()).toEqual(["A@1.0.0"]);
+      expect(lf.nodes[0]!.package_hash).toBe(packageHash(A as any));
+    }
+  });
+
   test("e2e: install with a registry dep missing from the registry -> exit 1, store empty", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-graph-"));
     const dir = mkdtempSync(join(tmpdir(), "ace-pkgs-"));
@@ -687,6 +737,198 @@ describe("registry commands", () => {
     const code = await main(["install", rootPath, "--store", store, "--allow-no-signature"]);
     expect(code).toBe(1);
     expect(listInstalled(store).length).toBe(0);
+  });
+});
+
+// ---- frozen lockfile replay (slice 5.3) ----
+
+describe("install --frozen (slice 5.3)", () => {
+  const h = (files: Record<string,string>) => "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+
+  // Builds an inline root->A graph in a temp dir, installs it once with --lockfile to
+  // generate the lock (the lock's node url points at the temp A.json — registry never used),
+  // then returns paths so a --frozen run can replay it against an EMPTY registry.
+  function buildInlineGraph() {
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-pkgs-"));
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: packageHash(A as any) }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(dir, "ace.lock");
+    return { dir, A, aPath, root, rootPath, lockPath };
+  }
+
+  test("--frozen installs from the lock with an EMPTY registry (registry-independence)", async () => {
+    const g = buildInlineGraph();
+    const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
+    // 1. Generate the lock via a normal install (inline graph; no registry add ever happens).
+    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    expect(existsSync(g.lockPath)).toBe(true);
+    // 2. Replay into a fresh store with --frozen. Registry is empty (no registry add); the
+    //    replay must install entirely from the lock's pinned url, never consulting the registry.
+    expect(loadRegistry().size).toBe(0);
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-replay-"));
+    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    expect(code).toBe(0);
+    expect(listInstalled(frozenStore).map((p)=>p.manifest.name).sort()).toEqual(["A","root"]);
+  });
+
+  test("--frozen with a drifted root (deps changed vs the lock) is refused", async () => {
+    const g = buildInlineGraph();
+    const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
+    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    // Mutate the root's dep set after the lock was written -> root packageHash drifts.
+    const drifted = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"2.0.0", url: g.aPath, package_hash: packageHash(g.A as any) }] }, files: { "r.txt":"r" } };
+    const driftedPath = join(g.dir, "root-drifted.json"); writeFileSync(driftedPath, JSON.stringify(drifted));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-drift-"));
+    const code = await main(["install", driftedPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen with NO lockfile at the path is refused", async () => {
+    const g = buildInlineGraph();
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-nolock-"));
+    const missingLock = join(g.dir, "does-not-exist.lock");
+    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", missingLock, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen with a tampered locked node (bytes at url != lock pin) is refused", async () => {
+    const g = buildInlineGraph();
+    const genStore = mkdtempSync(join(tmpdir(), "ace-frozen-gen-"));
+    expect(await main(["install", g.rootPath, "--store", genStore, "--allow-no-signature", "--lockfile", g.lockPath])).toBe(0);
+    // Tamper the bytes at A's url AFTER the lock pinned A's package_hash.
+    const tamperedA = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"TAMPERED" }) }, files: { "a.txt":"TAMPERED" } };
+    writeFileSync(g.aPath, JSON.stringify(tamperedA));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-tamper-"));
+    const code = await main(["install", g.rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", g.lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen refuses an untrusted-signature locked node even WITH --allow-no-signature", async () => {
+    // Security surface: the frozen replay's signature gate hard-refuses any present-but-invalid
+    // signature (nv.reason !== "no-signature"); --allow-no-signature ONLY waives no-signature.
+    // Construct a locked node A signed with a key NEVER added to the trust store -> verifySignature
+    // returns "untrusted-key" -> must refuse despite --allow-no-signature. The lock is built directly
+    // so its pin = packageHash(signedA): replay fetches the SAME signed bytes (pin passes, content_hash
+    // passes, path-safety passes) and reaches the signature gate -- proving the gate, not an earlier check.
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-untrusted-"));
+    const untrustedKp = generateKeypair(); // never added to the trust store
+    const aFiles = { "a.txt": "a" };
+    const aManifestBase = { format_version: 1, name: "A", version: "1.0.0", content_hash: h(aFiles) };
+    const signature = signManifest(aManifestBase, untrustedKp.privatePem);
+    const signedA = { manifest: { ...aManifestBase, signature }, files: aFiles };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(signedA));
+    const aHash = packageHash(signedA as any);
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    // Build the lock directly (pin A's SIGNED package_hash) so replay reaches the signature gate.
+    const lock = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
+      nodes: [{ name: "A", version: "1.0.0", url: aPath, package_hash: aHash }],
+    };
+    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-untrusted-store-"));
+    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen atomicity: a 2-node lock whose 2nd node fails verification installs NEITHER (verify-all-before-install-any)", async () => {
+    // Two inline nodes A,B. The lock pins A's real package_hash but B's bytes are TAMPERED after the
+    // lock is written, so B's package_hash no longer matches the pin. With sequential fetch+verify+install
+    // the first verified node (A) would already be on disk by the time B's pin check fails; the two-pass
+    // restructure verifies the WHOLE graph before any extract, so a B failure leaves A NOT installed.
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-atomic-"));
+    const A = { manifest: { format_version:1, name:"A", version:"1.0.0", content_hash: h({ "a.txt":"a" }) }, files: { "a.txt":"a" } };
+    const B = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"b" }) }, files: { "b.txt":"b" } };
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(A));
+    const bPath = join(dir, "B.json"); writeFileSync(bPath, JSON.stringify(B));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
+      { kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: packageHash(A as any) },
+      { kind:"inline" as const, name:"B", version:"1.0.0", url: bPath, package_hash: packageHash(B as any) },
+    ] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    // Build the lock directly so A is node[0] (verifies clean) and B is node[1] (will fail after tamper).
+    const lock = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
+      nodes: [
+        { name: "A", version: "1.0.0", url: aPath, package_hash: packageHash(A as any) },
+        { name: "B", version: "1.0.0", url: bPath, package_hash: packageHash(B as any) },
+      ],
+    };
+    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    // Tamper B's bytes AFTER the lock pinned B's package_hash -> B fails the pin check in pass 1.
+    const tamperedB = { manifest: { format_version:1, name:"B", version:"1.0.0", content_hash: h({ "b.txt":"TAMPERED" }) }, files: { "b.txt":"TAMPERED" } };
+    writeFileSync(bPath, JSON.stringify(tamperedB));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-atomic-store-"));
+    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    // The load-bearing assertion: A (the first, fully-verifiable node) is NOT on disk -> verify-all-then-install.
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen store-collision: two nodes sharing a content_hash store key with different package_hash install NOTHING", async () => {
+    // Two distinct packages X,Y with IDENTICAL files -> identical content_hash (sha256 of files) but
+    // distinct manifests (name X vs Y) -> distinct package_hash. They collide on the content_hash store
+    // key. The frozen pass-1 byStoreKey guard (mirrored from the default-path preflight) must refuse
+    // before installing either, exactly like the default-path store-collision test.
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-collision-"));
+    const sharedFiles = { "same.txt": "identical" };
+    const X = { manifest: { format_version:1, name:"X", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
+    const Y = { manifest: { format_version:1, name:"Y", version:"1.0.0", content_hash: h(sharedFiles) }, files: sharedFiles };
+    const xPath = join(dir, "X.json"); writeFileSync(xPath, JSON.stringify(X));
+    const yPath = join(dir, "Y.json"); writeFileSync(yPath, JSON.stringify(Y));
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[
+      { kind:"inline" as const, name:"X", version:"1.0.0", url: xPath, package_hash: packageHash(X as any) },
+      { kind:"inline" as const, name:"Y", version:"1.0.0", url: yPath, package_hash: packageHash(Y as any) },
+    ] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lock = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
+      nodes: [
+        { name: "X", version: "1.0.0", url: xPath, package_hash: packageHash(X as any) },
+        { name: "Y", version: "1.0.0", url: yPath, package_hash: packageHash(Y as any) },
+      ],
+    };
+    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-collision-store-"));
+    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
+  });
+
+  test("--frozen with a malformed (JSON-valid but not a well-formed package) locked node refuses cleanly (no throw)", async () => {
+    // The fetched node bytes + lockfile are untrusted. A payload that parses as JSON but is not a
+    // well-formed package (no manifest/files) must hit the PASS-1 shape guard and refuse (exit 1)
+    // rather than THROW (np.manifest.content_hash on an undefined manifest). To EXERCISE the guard
+    // (not an earlier check), the lock must pin the MALFORMED payload's package_hash so the pin
+    // check PASSES and execution reaches the shape guard — the exact line that throws unguarded.
+    // Mirrors the untrusted-signature/atomicity tests: build the lock directly to reach a gate.
+    const dir = mkdtempSync(join(tmpdir(), "ace-frozen-malformed-"));
+    const malformed = {}; // valid JSON, no manifest/files — packageHash() runs, np.manifest.content_hash throws
+    const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(malformed));
+    const aHash = packageHash(malformed as any); // pin == the malformed payload's hash → pin check passes
+    const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
+    const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lock = {
+      format_version: 1 as const,
+      root: { name: "root", version: "1.0.0", package_hash: packageHash(root as any) },
+      nodes: [{ name: "A", version: "1.0.0", url: aPath, package_hash: aHash }],
+    };
+    const lockPath = join(dir, "ace.lock"); writeFileSync(lockPath, JSON.stringify(lock));
+    const frozenStore = mkdtempSync(join(tmpdir(), "ace-frozen-malformed-store-"));
+    // The load-bearing assertion: this MUST NOT throw (the unguarded bug is a TypeError on
+    // np.manifest.content_hash). await directly so any throw fails the test loudly; exit 1 = refused.
+    const code = await main(["install", rootPath, "--store", frozenStore, "--allow-no-signature", "--lockfile", lockPath, "--frozen"]);
+    expect(code).toBe(1);
+    expect(listInstalled(frozenStore).length).toBe(0);
   });
 });
 
