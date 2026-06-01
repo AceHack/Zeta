@@ -173,6 +173,8 @@ export type AgentCliCycleResult = {
 export type AgentCliCycleEvidence = {
   menuHash: string;
   selectedIndex: number;
+  selectedImplKind?: string | undefined;
+  actionOutcome?: ActResult["outcome"] | undefined;
   vetoCount: number;
   trueSlotCount: number;
   statusSignalKind?: GlassHaloStatusSignal["kind"] | undefined;
@@ -674,6 +676,8 @@ function createAgentCliCycleEvidence(
   return {
     menuHash: hashMenu(menu),
     selectedIndex: selection.index,
+    ...selectedImplKindEvidence(menu, selection.index),
+    ...(actionResult === undefined ? {} : { actionOutcome: actionResult.outcome }),
     vetoCount: menu.slots.filter((slot) => slot.availability === TriAvailability.False).length,
     trueSlotCount: menu.slots.filter((slot) => slot.availability === TriAvailability.True).length,
     ...selectedStatusEvidence(actionResult),
@@ -798,6 +802,14 @@ function selectedCommandEvidence(
 ): { selectedCommandType?: string } {
   const selected = menu.slots.find((slot) => slot.index === selectedIndex);
   return selected?.impl?.kind === "command" ? { selectedCommandType: selected.impl.commandType } : {};
+}
+
+function selectedImplKindEvidence(
+  menu: Menu16,
+  selectedIndex: number,
+): { selectedImplKind?: string } {
+  const selected = menu.slots.find((slot) => slot.index === selectedIndex);
+  return selected?.impl?.kind === undefined ? {} : { selectedImplKind: selected.impl.kind };
 }
 
 function createOptionalEvidenceNumber<K extends string>(

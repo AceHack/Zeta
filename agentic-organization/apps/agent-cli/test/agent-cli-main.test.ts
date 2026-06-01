@@ -95,6 +95,8 @@ test("runAgentCliMain routes selected command slots through supplied production 
   equal(events[0]?.kind, OrgEventKind.ObserveActTick);
   ok(events[0]?.evidenceRefs.some((ref) => ref.startsWith("observe-act:menu_hash:")));
   ok(events[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:selected_impl:command"));
+  ok(events[0]?.evidenceRefs.includes("observe-act:action_outcome:dispatched"));
 });
 
 test("runAgentCliMain reports malformed env JSON as typed setup feedback instead of throwing", async () => {

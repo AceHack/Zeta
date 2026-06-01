@@ -407,6 +407,15 @@ agent intent visible in tick evidence while keeping the stronger retraction
 ledger, replay proof, and compensating-transaction machinery as the next
 implementation layer rather than implying undo/redo side effects already exist.
 
+**Checkpoint 2026-06-01: selected implementation and outcome evidence**
+
+Observe-act tick events now record both the stable selected slot and the semantic
+result of executing that selection. CLI and worker-lane events include
+`observe-act:selected_impl:<kind>` and `observe-act:action_outcome:<outcome>`
+evidence refs, so no-op/request choices such as rest, grammar-branch, history
+retract, and history redo are auditable from durable org events without scraping
+stdout.
+
 **Algorithms:**
 
 - **menu stability hash:** hash slot directions, labels, availability, reasons,

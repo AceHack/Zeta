@@ -161,6 +161,8 @@ test("observe-act work-item lane runs one tick through observe -> act -> org eve
   ]);
   ok(observeEvents[0]?.evidenceRefs.some((ref) => ref.startsWith("observe-act:menu_hash:")));
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selected_slot:4"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:selected_impl:command"));
+  ok(observeEvents[0]?.evidenceRefs.includes("observe-act:action_outcome:dispatched"));
 });
 
 test("observe-act work-item lane persists selector rejection evidence on fallback-selected ticks", async () => {

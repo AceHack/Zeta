@@ -309,6 +309,7 @@ function observeActEvidenceRefs(
     `observe-act:selected_slot:${evidence.selectedIndex}`,
     `observe-act:veto_count:${evidence.vetoCount}`,
     `observe-act:true_slot_count:${evidence.trueSlotCount}`,
+    ...selectedSemanticEvidenceRefs(evidence),
     ...selectedCommandEvidenceRefs(evidence),
     ...promptFlowPageEvidenceRefs(evidence),
     ...evidence.selectorRejections.flatMap(selectorRejectionEvidenceRefs),
@@ -316,6 +317,15 @@ function observeActEvidenceRefs(
     ...actionRejectionEvidenceRefs(evidence),
     ...evidence.promptFlowIds.map((id) => `observe-act:prompt_flow:${id}`),
     ...evidence.metricBlockIds.map((id) => `observe-act:metric:${id}`),
+  ];
+}
+
+function selectedSemanticEvidenceRefs(
+  evidence: NonNullable<Awaited<ReturnType<typeof runAgentCliCycle>>["evidence"]>,
+): readonly string[] {
+  return [
+    ...(evidence.selectedImplKind === undefined ? [] : [`observe-act:selected_impl:${evidence.selectedImplKind}`]),
+    ...(evidence.actionOutcome === undefined ? [] : [`observe-act:action_outcome:${evidence.actionOutcome}`]),
   ];
 }
 
