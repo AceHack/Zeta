@@ -12,7 +12,7 @@
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { add, contains, empty, equals, ofArray, stringCompare, toArray, union, type GSet } from "./g-set";
+import { add, concatAll, contains, empty, equals, monoid, ofArray, stringCompare, toArray, union, type GSet } from "./g-set";
 
 const cmp = stringCompare;
 const g = (...xs: readonly string[]): GSet<string> => ofArray(cmp, xs);
@@ -59,6 +59,32 @@ describe("G-Set — CRDT convergence laws", () => {
   it("add is idempotent for a present element", () => {
     expect(equals(cmp, add(cmp, "a", setA), setA)).toBe(true);
     expect(toArray(add(cmp, "z", setA))).toEqual(["a", "b", "z"]);
+  });
+});
+
+describe("G-Set — additive-monoid surface (empty + concat)", () => {
+  const m = monoid(cmp);
+  const setA = g("a", "b");
+  const setB = g("b", "c");
+  const setC = g("c", "d");
+
+  it("concat produces the explicit union (not just delegation)", () => {
+    expect(toArray(m.concat(setA, setB))).toEqual(["a", "b", "c"]);
+  });
+  it("empty is the identity: concat(empty, a) == a and concat(a, empty) == a", () => {
+    expect(toArray(m.empty)).toEqual([]);
+    expect(equals(cmp, m.concat(m.empty, setA), setA)).toBe(true);
+    expect(equals(cmp, m.concat(setA, m.empty), setA)).toBe(true);
+  });
+  it("monoid laws: idempotent + commutative + associative via concat", () => {
+    expect(equals(cmp, m.concat(setA, setA), setA)).toBe(true);
+    expect(equals(cmp, m.concat(setA, setB), m.concat(setB, setA))).toBe(true);
+    const left = m.concat(m.concat(setA, setB), setC);
+    const right = m.concat(setA, m.concat(setB, setC));
+    expect(equals(cmp, left, right)).toBe(true);
+  });
+  it("concatAll folds a collection through the monoid", () => {
+    expect(toArray(concatAll(cmp, [g("a"), g("b", "a"), g("c")]))).toEqual(["a", "b", "c"]);
   });
 });
 

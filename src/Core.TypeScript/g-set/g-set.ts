@@ -135,3 +135,46 @@ export function equals<T>(compare: Compare<T>, a: GSet<T>, b: GSet<T>): boolean 
   }
   return true;
 }
+
+// ── generic-math additive-monoid surface (TS idiom: a Monoid record) ────────
+// G-Set is an additive, commutative + idempotent monoid (identity + associative
+// union, NO inverse). TS has no operator overloading or generic-math interfaces, so
+// the additive-monoid surface is a small `{ empty, concat }` record — the TS analog
+// of F#'s `Zero`+`(+)` / C#'s `IAdditiveIdentity`+`IAdditionOperators`. Exposes only
+// empty+concat, never subtraction/negation/product.
+
+/**
+ * A monoid: an identity element (`empty`) + an associative binary combiner (`concat`).
+ * The identity law holds by VALUE/semantic equality (not reference `===`): combining with
+ * `empty` yields a value equal to the other operand — `concat(empty, x)` equals `x` equals
+ * `concat(x, empty)`. (For {@link GSet}, `concat` = `union` returns a fresh array except for
+ * the empty short-circuit, so compare with {@link equals}, never `===`.)
+ */
+export interface Monoid<T> {
+  /** The identity element. */
+  readonly empty: T;
+  /** The associative combiner. */
+  readonly concat: (a: T, b: T) => T;
+}
+
+/**
+ * The additive-monoid surface of a G-Set under `compare`: `empty` (identity) + `concat`
+ * (= {@link union}). Lets generic monoid code fold a collection of G-Sets — see
+ * {@link concatAll}. G-Set's monoid is comparator-specific, so this is a factory over
+ * `compare` (the F#/C#/Rust twins bake the comparer into the type / use a default).
+ */
+export function monoid<T>(compare: Compare<T>): Monoid<GSet<T>> {
+  return {
+    empty: empty<T>(),
+    concat: (a, b) => union(compare, a, b),
+  };
+}
+
+/**
+ * Fold a collection of G-Sets through the monoid (identity + `concat`) — the
+ * "generic code folds it for free" payoff (the TS analog of Rust's `Sum`).
+ */
+export function concatAll<T>(compare: Compare<T>, gs: readonly GSet<T>[]): GSet<T> {
+  const m = monoid(compare);
+  return gs.reduce(m.concat, m.empty);
+}
