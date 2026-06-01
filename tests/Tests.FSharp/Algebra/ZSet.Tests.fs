@@ -1,6 +1,9 @@
 module Zeta.Tests.Algebra.ZSetTests
 #nowarn "0893"
 
+open System.IO
+open System.Reflection
+open System.Text.Json
 open FsUnit.Xunit
 open FsCheck
 open FsCheck.FSharp
@@ -281,3 +284,83 @@ let ``distinctIncremental plus distinct of old equals distinct of new`` (oldV: Z
     let newDistinct = ZSet.distinct (ZSet.add oldV delta)
     let h = ZSet.distinctIncremental oldV delta
     ZSet.add oldDistinct h = newDistinct
+
+
+// ───────────── Shared golden vector (cross-language parity lock) ───────────
+// Z-set is the TOP rung of the cross-language algebra ladder (G-Set ⊂ Bag ⊂
+// Z-set). TS = oracle #1 (the reference + the treaty fixture); this is the F#
+// oracle joining the treaty. The F# `ZSet` engine is the impl under test:
+// `add` is the per-key-SUM combiner (the treaty's `union`), and it drops any
+// key that nets to weight 0 (retraction) — so the same fixture the TS reference
+// emitted replays here byte-for-byte. "The compilers don't lie."
+
+/// Walk up from the test assembly to the repo root (Zeta.sln sentinel) — same
+/// pattern as the Bag / G-Set golden-vector tests.
+let private repoRoot () : string =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then
+        failwith "Could not locate repo root (Zeta.sln) from test assembly location."
+    dir.FullName
+
+/// Eager list-comprehension over `EnumerateArray()` — NOT `Seq.map`. The
+/// `JsonElement.ArrayEnumerator` is a mutable struct that corrupts when boxed
+/// through a lazy Seq pipeline in Release (passes in fsi, fails compiled).
+let private zEntList (e: JsonElement) : (string * int64) list =
+    [ for x in e.EnumerateArray() -> (x.GetProperty("e").GetString(), x.GetProperty("w").GetInt64()) ]
+
+/// Enumerate the canonical (ascending-key, zero-dropped) run to (key, weight).
+let private zToList (z: ZSet<string>) : (string * int64) list =
+    [ for entry in z -> (entry.Key, entry.Weight) ]
+
+type private ZSetOp =
+    | Add of string
+    | AddW of string * int64
+    | Union of (string * int64) list
+
+let private parseZOp (e: JsonElement) : ZSetOp =
+    match e.GetProperty("op").GetString() with
+    | "add" -> Add(e.GetProperty("arg").GetString())
+    | "addW" -> AddW(e.GetProperty("arg").GetString(), e.GetProperty("w").GetInt64())
+    | "union" -> Union(zEntList (e.GetProperty("arg")))
+    | other -> failwithf "unknown z-set op in fixture: %s" other
+
+/// Read the fixture once; copy every primitive into F# values so the
+/// JsonDocument is safe to dispose before the values are used.
+let private loadZVector () : (string * int64) list * ZSetOp list * (string * int64) list list * (string * int64) list =
+    let path = Path.Join(repoRoot (), "src", "Core.TypeScript", "z-set", "golden-vectors.json")
+    use doc = JsonDocument.Parse(File.ReadAllText(path))
+    let root = doc.RootElement
+    let initial = zEntList (root.GetProperty("initialZSet"))
+    let ops = [ for op in root.GetProperty("ops").EnumerateArray() -> parseZOp op ]
+    let replay = [ for st in root.GetProperty("expectedReplayStates").EnumerateArray() -> zEntList st ]
+    let final = zEntList (root.GetProperty("expectedFinalState"))
+    initial, ops, replay, final
+
+[<Fact>]
+let ``F# replays the shared Z-set golden vector to expectedReplayStates + expectedFinalState`` () =
+    let initial, ops, expectedReplay, expectedFinal = loadZVector ()
+    let mutable state = ZSet.ofSeq initial
+    let actual =
+        [ for op in ops do
+              state <-
+                  match op with
+                  | Add x -> ZSet.add state (ZSet.singleton x 1L) // treaty `add` = +1
+                  | AddW (x, w) -> ZSet.add state (ZSet.singleton x w) // signed weight (may be negative)
+                  | Union xs -> ZSet.add state (ZSet.ofSeq xs) // treaty `union` = per-key SUM combiner
+              yield zToList state ]
+    actual |> should equal expectedReplay
+    zToList state |> should equal expectedFinal
+
+[<Fact>]
+let ``Z-set distinctions: abelian-group inverse, negatives persist, retraction-to-0 drops`` () =
+    let a = ZSet.ofSeq [ ("a", 1L); ("b", 2L) ]
+    // inverse: add a (neg a) = empty (the law the Bag's monoid cannot satisfy)
+    ZSet.add a (ZSet.neg a) |> ZSet.isEmpty |> should equal true
+    // negatives persist (drop rule is == 0, not <= 0 — the Bag would drop this)
+    ZSet.ofSeq [ ("c", -1L) ] |> zToList |> should equal [ ("c", -1L) ]
+    // retraction: a key driven to net 0 is dropped
+    ZSet.add (ZSet.ofSeq [ ("a", 1L) ]) (ZSet.ofSeq [ ("a", -1L) ])
+    |> ZSet.isEmpty
+    |> should equal true
