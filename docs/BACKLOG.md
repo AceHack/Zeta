@@ -464,6 +464,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0964](backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md)** Effectful do_item — command-vs-fact-event envelope + injected executor port + item-class-routed bash surface (just-bash text / local docker real-work / CF cloud-burst)
 - [ ] **[B-0967](backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md)** Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance
 - [ ] **[B-0969](backlog/P1/B-0969-invariant-culture-everywhere-configureawait-false-cross-cutting-dotnet-defaults-never-culture-sensitive-fsharp-gset-first-fix-aaron-2026-06-01.md)** Invariant-culture-everywhere + ConfigureAwait(false) as cross-cutting .NET defaults — never default to culture-sensitive (F# G-Set culture-sensitivity is the first concrete fix)
+- [ ] **[B-0976](backlog/P1/B-0976-self-evolving-saga-build-serialized-deferred-execution-bonsai-closure-resume-not-replay-temporal-grade-interface-rides-zset-ladder-aaron-2026-06-01.md)** Self-evolving saga build — serialized deferred execution (Bonsai expr-tree + closure state), resume-not-replay, Temporal-grade interface, rides the Z-set/IndexedZSet ladder (Aaron 2026-06-01)
 
 ## P2 — research-grade
 
