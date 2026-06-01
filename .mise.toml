@@ -65,8 +65,10 @@ shellcheck = "0.11.0"
 # Node runtime must be installed first. Pinned here so dev
 # laptops + CI runners + devcontainers all get the same Node
 # version through the install script — no separate
-# actions/setup-node step in gate.yml. 22 LTS as of 2026-04.
-node = "22"
+# actions/setup-node step in gate.yml. 24 = current Active LTS
+# as of 2026-06 (Node 22 -> Maintenance Oct 2025); supported by
+# all agent CLIs we target (Claude Code >=22.5, Gemini CLI 18+).
+node = "24"
 # markdownlint-cli2: markdown linter. Declarative pin per the
 # human maintainer's "update declaratively everywhere" directive
 # (2026-04-24). Moves the version off a hardcoded
