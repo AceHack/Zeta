@@ -738,6 +738,16 @@ function stableSlotImpl(slot: Menu16Slot): unknown {
         kind: slot.impl.kind,
         reason: slot.impl.reason,
       };
+    case "history_retract":
+      return {
+        kind: slot.impl.kind,
+        reason: slot.impl.reason,
+      };
+    case "history_redo":
+      return {
+        kind: slot.impl.kind,
+        reason: slot.impl.reason,
+      };
     case "grammar_branch":
       return {
         kind: slot.impl.kind,
@@ -1165,6 +1175,10 @@ function formatActResult(result: ActResult): string {
       return `loaded context ${result.context.taskId}`;
     case "status_report":
       return `status ${result.status.kind} ${result.status.scope} ${result.status.phase}`;
+    case "history_retract_requested":
+      return `history-retract requested ${result.reason}`;
+    case "history_redo_requested":
+      return `history-redo requested ${result.reason}`;
     case "grammar_branch_requested":
       return `grammar-branch requested ${result.reason}`;
     case "rested":

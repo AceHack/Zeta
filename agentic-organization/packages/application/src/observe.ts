@@ -348,6 +348,8 @@ export type SlotImpl =
   | { kind: "observe"; toScope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { kind: "status"; status: GlassHaloStatusSignal }
   | { kind: "prompt_flow"; request: PromptFlowContextRequest }
+  | { kind: "history_retract"; reason: string }
+  | { kind: "history_redo"; reason: string }
   | { kind: "grammar_branch"; reason: string }
   | { kind: "rest"; reason: string };
 
@@ -481,6 +483,8 @@ export type ActResult =
   | { outcome: "dispatched"; kind: "command" | "mcp"; result: unknown }
   | { outcome: "loaded_context"; context: PromptFlowContext }
   | { outcome: "status_report"; status: GlassHaloStatusSignal }
+  | { outcome: "history_retract_requested"; reason: string }
+  | { outcome: "history_redo_requested"; reason: string }
   | { outcome: "grammar_branch_requested"; reason: string }
   | { outcome: "rested"; reason: string }
   | { outcome: "reobserve"; scope: RunScope; menuPage?: MenuPageTarget | undefined }
@@ -914,8 +918,8 @@ function renderScopeSlots(rendered: Menu16Slot[], currentScope: RunScope): void 
   rendered[9] = finerScope === undefined
     ? createDisabledGrammarSlot(9, MENU16_DIRECTIONS[9]!, "scope in", "already at run scope")
     : createObserveSlot(9, MENU16_DIRECTIONS[9]!, `scope in to ${finerScope}`, finerScope);
-  rendered[10] = createDisabledGrammarSlot(10, MENU16_DIRECTIONS[10]!, "retract", "retraction is not wired for this run state");
-  rendered[11] = createDisabledGrammarSlot(11, MENU16_DIRECTIONS[11]!, "redo", "redo is not wired for this run state");
+  rendered[10] = createHistoryRetractSlot(10, MENU16_DIRECTIONS[10]!);
+  rendered[11] = createHistoryRedoSlot(11, MENU16_DIRECTIONS[11]!);
 }
 
 function renderBranchSlot(rendered: Menu16Slot[]): void {
@@ -927,6 +931,32 @@ function renderBranchSlot(rendered: Menu16Slot[]): void {
     impl: {
       kind: "grammar_branch",
       reason: "edit-grammar/branch selected; no side effects for this tick",
+    },
+  };
+}
+
+function createHistoryRetractSlot(index: number, direction: string): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: "retract",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "history_retract",
+      reason: "history.retract selected; no ledger mutation for this tick",
+    },
+  };
+}
+
+function createHistoryRedoSlot(index: number, direction: string): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: "redo",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "history_redo",
+      reason: "history.redo selected; no ledger mutation for this tick",
     },
   };
 }
@@ -1304,6 +1334,16 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
       return {
         outcome: "status_report",
         status: slot.impl.status,
+      };
+    case "history_retract":
+      return {
+        outcome: "history_retract_requested",
+        reason: slot.impl.reason,
+      };
+    case "history_redo":
+      return {
+        outcome: "history_redo_requested",
+        reason: slot.impl.reason,
       };
     case "grammar_branch":
       return {

@@ -461,12 +461,18 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
   });
   equal(menu.slots[10]?.direction, "history.retract");
   equal(menu.slots[10]?.label, "retract");
-  equal(menu.slots[10]?.availability, "F");
-  ok(menu.slots[10]?.reason?.includes("retraction is not wired"));
+  equal(menu.slots[10]?.availability, "T");
+  deepEqual(menu.slots[10]?.impl, {
+    kind: "history_retract",
+    reason: "history.retract selected; no ledger mutation for this tick",
+  });
   equal(menu.slots[11]?.direction, "history.redo");
   equal(menu.slots[11]?.label, "redo");
-  equal(menu.slots[11]?.availability, "F");
-  ok(menu.slots[11]?.reason?.includes("redo is not wired"));
+  equal(menu.slots[11]?.availability, "T");
+  deepEqual(menu.slots[11]?.impl, {
+    kind: "history_redo",
+    reason: "history.redo selected; no ledger mutation for this tick",
+  });
   equal(menu.slots[12]?.direction, "meta.refresh");
   equal(menu.slots[12]?.label, "refresh");
   equal(menu.slots[12]?.availability, "T");
@@ -524,6 +530,32 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
   deepEqual(branchResult, {
     outcome: "grammar_branch_requested",
     reason: "edit-grammar/branch selected; no side effects for this tick",
+  });
+
+  const retractResult = await act(10, menu, {
+    runCommand: async () => {
+      throw new Error("history.retract must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("history.retract must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(retractResult, {
+    outcome: "history_retract_requested",
+    reason: "history.retract selected; no ledger mutation for this tick",
+  });
+
+  const redoResult = await act(11, menu, {
+    runCommand: async () => {
+      throw new Error("history.redo must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("history.redo must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(redoResult, {
+    outcome: "history_redo_requested",
+    reason: "history.redo selected; no ledger mutation for this tick",
   });
 });
 

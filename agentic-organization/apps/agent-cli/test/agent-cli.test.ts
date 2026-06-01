@@ -292,8 +292,8 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   ok(stdout.join("\n").includes("[04] T commit.a execute"));
   ok(stdout.join("\n").includes("action: dispatched command"));
   equal(result.evidence?.selectedIndex, 4);
-  equal(result.evidence?.vetoCount, 3);
-  equal(result.evidence?.trueSlotCount, 8);
+  equal(result.evidence?.vetoCount, 1);
+  equal(result.evidence?.trueSlotCount, 10);
   equal(result.evidence?.metricBlockIds[0], "queue");
   ok(result.evidence?.menuHash.match(/^[0-9a-f]{64}$/));
   deepEqual(commands, [
@@ -683,6 +683,53 @@ test("runAgentCliCycle can select edit-grammar/branch without dispatching side e
   ok(stdout.join("\n").includes("[07] T branch.fork edit-grammar / branch"));
   ok(stdout.join("\n").includes("action: grammar-branch requested edit-grammar/branch selected; no side effects for this tick"));
   equal(result.evidence?.selectedIndex, 7);
+});
+
+test("runAgentCliCycle can select history retract/redo without dispatching side effects", async () => {
+  for (const [slotIndex, label, outcome, actionLine] of [
+    [10, "history.retract retract", "history_retract_requested", "action: history-retract requested history.retract selected; no ledger mutation for this tick"],
+    [11, "history.redo redo", "history_redo_requested", "action: history-redo requested history.redo selected; no ledger mutation for this tick"],
+  ] as const) {
+    const stdout: string[] = [];
+    const result = await runAgentCliCycle({
+      argv: [
+        "observe",
+        "--hat",
+        "release_operator",
+        "--hat-assignment",
+        "99",
+        "--agent",
+        "agent-release-1",
+        "--organization",
+        "org-1",
+        "--project",
+        "project-1",
+        "--work-item",
+        "work-1",
+        "--scope",
+        "work_item",
+        "--phase",
+        "awaiting_gate",
+        "--gate-approved",
+        "--select-index",
+        String(slotIndex),
+      ],
+      now: () => "2026-05-31T12:00:00.000Z",
+      writeStdout: (text) => stdout.push(text),
+      runCommand: async () => {
+        throw new Error(`${label} must not dispatch command side effects`);
+      },
+      dispatchTool: async () => {
+        throw new Error(`${label} must not dispatch MCP side effects`);
+      },
+    });
+
+    equal(result.exitCode, 0);
+    equal(result.actionResult?.outcome, outcome);
+    ok(stdout.join("\n").includes(`[${String(slotIndex).padStart(2, "0")}] T ${label}`));
+    ok(stdout.join("\n").includes(actionLine));
+    equal(result.evidence?.selectedIndex, slotIndex);
+  }
 });
 
 test("runAgentCliCycle rejects vetoed work slots while keeping all-vetoed meta controls visible", async () => {

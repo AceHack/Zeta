@@ -397,6 +397,16 @@ now pages through slot 6 (`inspect.more`) only, preserving the fixed 16-slot
 controller grammar while still giving agents access to all scoped prompt-flow
 tasks through navigation.
 
+**Checkpoint 2026-06-01: slots 10/11 history request controls**
+
+Slots 10 and 11 are now selectable ADR grammar controls instead of disabled
+placeholders. `history.retract` and `history.redo` return typed
+`history_retract_requested` and `history_redo_requested` outcomes from `act()`
+without command dispatch, MCP/tool dispatch, or ledger mutation. This makes
+agent intent visible in tick evidence while keeping the stronger retraction
+ledger, replay proof, and compensating-transaction machinery as the next
+implementation layer rather than implying undo/redo side effects already exist.
+
 **Algorithms:**
 
 - **menu stability hash:** hash slot directions, labels, availability, reasons,
