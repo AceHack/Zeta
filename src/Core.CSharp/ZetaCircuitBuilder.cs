@@ -13,7 +13,7 @@ namespace Zeta.Core.CSharp;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Enter the chain with <see cref="CircuitBuilderExtensions.From{T}(Circuit,Stream{ZSet{T}})"/>
+/// Enter the chain with <see cref="CircuitBuilderExtensions.From{T}(Circuit,Stream{Zeta.Core.ZSet{T}})"/>
 /// and terminate with <see cref="Build"/> to obtain an <see cref="OutputHandle{T}"/>.
 /// </para>
 /// <para>
@@ -27,9 +27,9 @@ namespace Zeta.Core.CSharp;
 public sealed class ZetaCircuitBuilder<T>
 {
     private readonly Circuit _circuit;
-    private readonly Stream<ZSet<T>> _stream;
+    private readonly Stream<global::Zeta.Core.ZSet<T>> _stream;
 
-    internal ZetaCircuitBuilder(Circuit circuit, Stream<ZSet<T>> stream)
+    internal ZetaCircuitBuilder(Circuit circuit, Stream<global::Zeta.Core.ZSet<T>> stream)
     {
         _circuit = circuit;
         _stream = stream;
@@ -44,7 +44,7 @@ public sealed class ZetaCircuitBuilder<T>
         => new(_circuit, _circuit.Filter(_stream, predicate));
 
     /// <summary>Flattens each element to a Z-set of <typeparamref name="TResult"/> values.</summary>
-    public ZetaCircuitBuilder<TResult> FlatMap<TResult>(Func<T, ZSet<TResult>> selector)
+    public ZetaCircuitBuilder<TResult> FlatMap<TResult>(Func<T, global::Zeta.Core.ZSet<TResult>> selector)
         => new(_circuit, _circuit.FlatMap(_stream, selector));
 
     /// <summary>
@@ -98,14 +98,14 @@ public sealed class ZetaCircuitBuilder<T>
     /// Returns the underlying <see cref="Stream{T}"/> for use with Circuit APIs
     /// not exposed on this builder (e.g. <c>SpeculativeWindow</c> for temporal windowing).
     /// </summary>
-    public Stream<ZSet<T>> ToStream() => _stream;
+    public Stream<global::Zeta.Core.ZSet<T>> ToStream() => _stream;
 
     /// <summary>
     /// Registers an output handle for the current stream.
     /// After each <see cref="Circuit.StepAsync()"/>, read results from
     /// <see cref="OutputHandle{T}.Current"/>.
     /// </summary>
-    public OutputHandle<ZSet<T>> Build() => _circuit.Output(_stream);
+    public OutputHandle<global::Zeta.Core.ZSet<T>> Build() => _circuit.Output(_stream);
 }
 
 /// <summary>Entry-point extension that begins a <see cref="ZetaCircuitBuilder{T}"/> chain.</summary>
@@ -127,6 +127,6 @@ public static class CircuitBuilderExtensions
     ///     .Build();
     /// </code>
     /// </example>
-    public static ZetaCircuitBuilder<T> From<T>(this Circuit circuit, Stream<ZSet<T>> stream)
+    public static ZetaCircuitBuilder<T> From<T>(this Circuit circuit, Stream<global::Zeta.Core.ZSet<T>> stream)
         => new(circuit, stream);
 }

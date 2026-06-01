@@ -82,7 +82,7 @@ public static class StreamExtensions
     /// <typeparam name="T">Element type.</typeparam>
     /// <param name="handle">Output handle to snapshot.</param>
     /// <returns>A newly-allocated array of Z-entries.</returns>
-    public static ZEntry<T>[] Snapshot<T>(this OutputHandle<ZSet<T>> handle)
+    public static ZEntry<T>[] Snapshot<T>(this OutputHandle<global::Zeta.Core.ZSet<T>> handle)
         where T : IComparable<T>
     {
         var zs = handle.Current;
