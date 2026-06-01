@@ -175,6 +175,34 @@ foreach ($raw in Get-Content $manifest) {
   }
 }
 
+# 2b. Windows long-path enablement (B-0947 / MAX_PATH 260). Zeta's persona-archive filenames exceed
+#     260 chars; without long-path support git refuses to create them ("Filename too long") + some
+#     tools choke. Two layers (WebSearch 2026-05-31:
+#     https://learn.microsoft.com/windows/win32/fileio/maximum-file-path-limitation):
+#       Layer 1 (NO admin, load-bearing): git core.longpaths -- git prepends the Windows extended-length
+#         prefix + bypasses MAX_PATH ITSELF (no registry, no reboot). Fixes the actual problem (git
+#         creating Zeta's long files). Set --global for this user; always-safe, best-effort.
+#       Layer 2 (admin-only, broader bonus): the OS-wide LongPathsEnabled registry DWORD (Win10 1607+;
+#         helps all longPathAware apps; takes effect after a RESTART). Admin-gated + GRACEFUL like the
+#         choco step -- set only when elevated, else print how to enable it. NEVER force elevation.
+if (Have git) {
+  $lpCode = Invoke-ToolSoft { git config --global core.longpaths true }
+  if ($lpCode -eq 0) { Write-Host "ok git core.longpaths=true (user-global; git bypasses MAX_PATH via the Windows extended-length path mechanism -- no admin/reboot)" }
+  else { Write-Host "warn: 'git config --global core.longpaths true' failed (exit $lpCode); continuing (best-effort)" }
+} else {
+  Write-Host "warn: git not on PATH yet; skipping git core.longpaths (re-run after git installs)"
+}
+if (Test-IsAdmin) {
+  try {
+    Set-ItemProperty -Path 'HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem' -Name 'LongPathsEnabled' -Value 1 -Type DWord
+    Write-Host "ok OS LongPathsEnabled=1 (HKLM FileSystem) -- effective for longPathAware apps after a RESTART"
+  } catch {
+    Write-Host "warn: could not set OS LongPathsEnabled ($($_.Exception.Message)); git core.longpaths above already fixes git -- continuing"
+  }
+} else {
+  Write-Host "OS-wide LongPathsEnabled needs admin -- skipped (git core.longpaths above covers git). To enable OS-wide: run elevated, or set HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled=1 (DWORD) + restart."
+}
+
 # 3. mise (runtime manager) via scoop -- mirrors macos.sh step 4 (brew install mise).
 if (-not (Have mise)) { Invoke-Tool { scoop install mise } 'scoop install mise' }
 Write-Host "mise: $(Get-ToolVersion { mise --version })"
