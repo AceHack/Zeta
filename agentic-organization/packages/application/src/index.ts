@@ -199,10 +199,14 @@ export {
   type ScheduleAuthorityCommandRule,
 } from "./schedule-authority.ts";
 export {
+  MissionTrajectoryStatus,
   ScheduleCorrectiveActionKind,
   SchedulePressureLevel,
   SchedulePressureSignalKind,
   computeSchedulePressure,
+  evaluateMissionTrajectory,
+  type MissionTrajectory,
+  type MissionTrajectoryInput,
   schedulePressureReadoutForHat,
   type ScheduleCorrectiveAction,
   type SchedulePressure,

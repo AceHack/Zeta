@@ -654,6 +654,20 @@ when capacity, reliability, or mission pressure changes.
   supervisor/RMO reassignment;
 - expose schedule pressure in director, TPM, manager, and agent readouts.
 
+**Checkpoint 2026-06-01: mission trajectory kernel**
+
+The scheduling kernel now includes `evaluateMissionTrajectory`, a pure
+expected-vs-actual mission slope model. It takes mission timeframe, target
+progress, actual progress, and tolerance, then returns `on_track`, `at_risk`,
+or `off_track` with expected progress, lag, remaining time, evidence refs, and
+legal schedule corrective actions. Management observe readouts now derive their
+mission progress slope from this shared kernel instead of a separate ad hoc
+timeframe calculation, so director/TPM/manager surfaces and supervisor
+reassignment policy use the same trajectory semantics. Subagent review for this
+checkpoint was attempted but blocked by the platform agent-thread limit
+(`collab spawn failed: agent thread limit reached`); the local TDD review
+covered scheduler and observe tests instead.
+
 **Algorithms:**
 
 - **mission trajectory model:** compare target milestone slope to actual progress

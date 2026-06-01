@@ -9,15 +9,82 @@ import {
   type WorkScheduleBlock,
 } from "../../domain/src/index.ts";
 import {
+  MissionTrajectoryStatus,
   ScheduleCorrectiveActionKind,
   SchedulePressureLevel,
   computeSchedulePressure,
+  evaluateMissionTrajectory,
   schedulePressureReadoutForHat,
 } from "../src/index.ts";
 import { buildHatDefinitions } from "../src/org-seed.ts";
 import { WorkClaimState, WorkShardState, type HatWorkQueue } from "../src/work-market.ts";
 
 const NOW = "2026-05-31T12:30:00.000Z";
+
+test("mission trajectory marks late missions off track and emits capacity corrective actions", () => {
+  const trajectory = evaluateMissionTrajectory({
+    organizationId: "org-lfg",
+    missionId: "mission-observe-act",
+    now: "2026-05-31T12:00:00.000Z",
+    startsAt: "2026-05-01T00:00:00.000Z",
+    targetAt: "2026-06-30T00:00:00.000Z",
+    targetProgress: 1,
+    actualProgress: 0.18,
+    tolerance: 0.08,
+    correctiveActionHatId: "engineering_director",
+  });
+
+  equal(trajectory.status, MissionTrajectoryStatus.OffTrack);
+  equal(trajectory.expectedProgress, 0.508);
+  equal(trajectory.actualProgress, 0.18);
+  equal(trajectory.lag, 0.328);
+  deepEqual(
+    trajectory.correctiveActions.map((action) => action.kind),
+    [
+      ScheduleCorrectiveActionKind.PauseLowPriorityWork,
+      ScheduleCorrectiveActionKind.RebalanceHatCapacity,
+      ScheduleCorrectiveActionKind.RequestRmoExpand,
+    ],
+  );
+  ok(trajectory.evidenceRefs.includes("mission:mission-observe-act"));
+  ok(trajectory.evidenceRefs.includes("trajectory:off_track"));
+});
+
+test("mission trajectory distinguishes at-risk and on-track schedules by tolerance", () => {
+  const atRisk = evaluateMissionTrajectory({
+    organizationId: "org-lfg",
+    missionId: "mission-work-market",
+    now: "2026-05-31T12:00:00.000Z",
+    startsAt: "2026-05-01T00:00:00.000Z",
+    targetAt: "2026-06-30T00:00:00.000Z",
+    targetProgress: 1,
+    actualProgress: 0.45,
+    tolerance: 0.04,
+    correctiveActionHatId: "technical_program_manager",
+  });
+  const onTrack = evaluateMissionTrajectory({
+    organizationId: "org-lfg",
+    missionId: "mission-work-market",
+    now: "2026-05-31T12:00:00.000Z",
+    startsAt: "2026-05-01T00:00:00.000Z",
+    targetAt: "2026-06-30T00:00:00.000Z",
+    targetProgress: 1,
+    actualProgress: 0.49,
+    tolerance: 0.04,
+    correctiveActionHatId: "technical_program_manager",
+  });
+
+  equal(atRisk.status, MissionTrajectoryStatus.AtRisk);
+  deepEqual(
+    atRisk.correctiveActions.map((action) => action.kind),
+    [
+      ScheduleCorrectiveActionKind.ExtendFocusBlock,
+      ScheduleCorrectiveActionKind.OpenOfficeHours,
+    ],
+  );
+  equal(onTrack.status, MissionTrajectoryStatus.OnTrack);
+  deepEqual(onTrack.correctiveActions, []);
+});
 
 test("schedule pressure combines queue depth, stale claims, review lag, failure rate, and reliability", () => {
   const pressure = computeSchedulePressure({

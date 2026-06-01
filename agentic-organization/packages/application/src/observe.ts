@@ -48,6 +48,11 @@ import type {
   PromptFlowRollbackPolicy,
   PromptFlowRunState,
 } from "./prompt-flow.ts";
+import {
+  MissionTrajectoryStatus,
+  evaluateMissionTrajectory,
+  type MissionTrajectory,
+} from "./schedule-optimizer.ts";
 
 /**
  * ZetaId rendered as a base-10 string — the canonical index for git-as-db
@@ -1961,12 +1966,13 @@ function hierarchyMissionReadoutForHat(
   const mission = mostSpecificMissionForHat(hat, missions, projects, initiatives);
   if (mission === undefined) return undefined;
 
-  const expectedProgressPercent = expectedMissionProgressPercent(mission.timeframe, observedAt);
-  const actualProgressPercent = clampPercent(mission.progressPercent);
+  const trajectory = missionTrajectoryForReadout(mission, hat, observedAt);
+  const expectedProgressPercent = Math.floor(trajectory.expectedProgress * 100);
+  const actualProgressPercent = Math.floor(trajectory.actualProgress * 100);
   const variancePercent = actualProgressPercent - expectedProgressPercent;
   const daysRemaining = missionDaysRemaining(mission.timeframe, observedAt);
   const lagSignals = missionLagSignals(mission, expectedProgressPercent, actualProgressPercent, daysRemaining);
-  const status = missionStatus(mission.status, lagSignals);
+  const status = missionStatus(mission.status, lagSignals, trajectory.status);
   const corrective = missionCorrectiveActions(status, actions, vetoedActions);
 
   return {
@@ -2038,13 +2044,22 @@ function missionSpecificityScore(
   return score;
 }
 
-function expectedMissionProgressPercent(timeframe: HierarchyMissionTimeframe, observedAt: string): number {
-  const start = Date.parse(timeframe.startsAt);
-  const target = Date.parse(timeframe.targetAt);
-  const observed = Date.parse(observedAt);
-  if (!Number.isFinite(start) || !Number.isFinite(target) || !Number.isFinite(observed)) return 0;
-  if (target <= start) return observed >= target ? 100 : 0;
-  return Math.floor(clampPercent(((observed - start) / (target - start)) * 100));
+function missionTrajectoryForReadout(
+  mission: HierarchyMission,
+  hat: HatDefinition,
+  observedAt: string,
+): MissionTrajectory {
+  return evaluateMissionTrajectory({
+    organizationId: "observe",
+    missionId: mission.missionId,
+    now: observedAt,
+    startsAt: mission.timeframe.startsAt,
+    targetAt: mission.timeframe.targetAt,
+    targetProgress: 1,
+    actualProgress: clampPercent(mission.progressPercent) / 100,
+    tolerance: 0.1,
+    correctiveActionHatId: mission.assignedHatId ?? hat.id,
+  });
 }
 
 function missionDaysRemaining(timeframe: HierarchyMissionTimeframe, observedAt: string): number {
@@ -2122,11 +2137,13 @@ function missionLagSignals(
 function missionStatus(
   declared: HierarchyMissionStatus,
   lagSignals: readonly HierarchyMissionLagSignal[],
+  trajectoryStatus: MissionTrajectoryStatus,
 ): HierarchyMissionStatus {
   if (declared === "complete") return "complete";
   if (lagSignals.some((signal) => signal.severity === "blocked")) return "blocked";
   if (lagSignals.some((signal) => signal.severity === "behind")) return "behind";
-  if (lagSignals.some((signal) => signal.severity === "at_risk")) return "at_risk";
+  if (trajectoryStatus === MissionTrajectoryStatus.OffTrack) return "behind";
+  if (lagSignals.some((signal) => signal.severity === "at_risk") || trajectoryStatus === MissionTrajectoryStatus.AtRisk) return "at_risk";
   return declared;
 }
 

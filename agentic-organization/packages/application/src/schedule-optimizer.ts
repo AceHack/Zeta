@@ -107,6 +107,77 @@ export type SchedulePressureReadout = {
   readonly correctiveActions: readonly ScheduleCorrectiveAction[];
 };
 
+export const MissionTrajectoryStatus = {
+  OnTrack: "on_track",
+  AtRisk: "at_risk",
+  OffTrack: "off_track",
+} as const;
+
+export type MissionTrajectoryStatus =
+  (typeof MissionTrajectoryStatus)[keyof typeof MissionTrajectoryStatus];
+
+export type MissionTrajectoryInput = {
+  readonly organizationId: string;
+  readonly missionId: string;
+  readonly now: string;
+  readonly startsAt: string;
+  readonly targetAt: string;
+  readonly targetProgress: number;
+  readonly actualProgress: number;
+  readonly tolerance?: number;
+  readonly correctiveActionHatId?: string;
+};
+
+export type MissionTrajectory = {
+  readonly organizationId: string;
+  readonly missionId: string;
+  readonly status: MissionTrajectoryStatus;
+  readonly expectedProgress: number;
+  readonly actualProgress: number;
+  readonly lag: number;
+  readonly elapsedRatio: number;
+  readonly remainingRatio: number;
+  readonly correctiveActions: readonly ScheduleCorrectiveAction[];
+  readonly evidenceRefs: readonly string[];
+};
+
+export function evaluateMissionTrajectory(input: MissionTrajectoryInput): MissionTrajectory {
+  const elapsedRatio = elapsedRatioForDates(input.startsAt, input.targetAt, input.now);
+  const remainingRatio = round3(1 - elapsedRatio);
+  const targetProgress = clamp01(input.targetProgress);
+  const expectedProgress = round3(targetProgress * elapsedRatio);
+  const actualProgress = round3(clamp01(input.actualProgress));
+  const lag = round3(Math.max(0, expectedProgress - actualProgress));
+  const tolerance = Math.max(0, input.tolerance ?? 0.1);
+  const missedTarget = elapsedRatio >= 1 && actualProgress < round3(targetProgress - tolerance);
+  const status =
+    missedTarget || lag > tolerance * 2
+      ? MissionTrajectoryStatus.OffTrack
+      : lag > tolerance
+        ? MissionTrajectoryStatus.AtRisk
+        : MissionTrajectoryStatus.OnTrack;
+  const correctiveActions = correctiveActionsForTrajectory(status, input.correctiveActionHatId ?? input.missionId);
+
+  return {
+    organizationId: input.organizationId,
+    missionId: input.missionId,
+    status,
+    expectedProgress,
+    actualProgress,
+    lag,
+    elapsedRatio: round3(elapsedRatio),
+    remainingRatio,
+    correctiveActions,
+    evidenceRefs: [
+      `mission:${input.missionId}`,
+      `trajectory:${status}`,
+      `expected:${expectedProgress}`,
+      `actual:${actualProgress}`,
+      `lag:${lag}`,
+    ],
+  };
+}
+
 export function computeSchedulePressure(input: SchedulePressureInput): SchedulePressure {
   const workMarket = workMarketReadoutForHat(input.workQueues, {
     organizationId: input.organizationId,
@@ -291,6 +362,24 @@ function correctiveActionsForPressure(pressure: SchedulePressure): readonly Sche
   return dedupeActions(actions);
 }
 
+function correctiveActionsForTrajectory(
+  status: MissionTrajectoryStatus,
+  hatId: string,
+): readonly ScheduleCorrectiveAction[] {
+  if (status === MissionTrajectoryStatus.OnTrack) return [];
+  if (status === MissionTrajectoryStatus.AtRisk) {
+    return dedupeActions([
+      action(ScheduleCorrectiveActionKind.ExtendFocusBlock, hatId, "Extend focus block", "mission trajectory is behind expected progress but still recoverable inside tolerance bounds"),
+      action(ScheduleCorrectiveActionKind.OpenOfficeHours, hatId, "Open office hours", "mission trajectory needs coordination before adding capacity"),
+    ]);
+  }
+  return dedupeActions([
+    action(ScheduleCorrectiveActionKind.RebalanceHatCapacity, hatId, "Rebalance hat capacity", "mission trajectory is off track against target slope"),
+    action(ScheduleCorrectiveActionKind.RequestRmoExpand, hatId, "Request RMO expansion", "mission trajectory may require more legal hat capacity"),
+    action(ScheduleCorrectiveActionKind.PauseLowPriorityWork, hatId, "Pause low-priority work", "off-track mission should protect the highest-priority trajectory"),
+  ]);
+}
+
 function action(
   kind: ScheduleCorrectiveActionKind,
   hatId: string,
@@ -335,6 +424,15 @@ function activeAt(block: WorkScheduleBlock, now: string): boolean {
   const startsAt = Date.parse(block.startsAt);
   const endsAt = Date.parse(block.endsAt);
   return block.state === ScheduleBlockState.Active && Number.isFinite(nowMs) && startsAt <= nowMs && nowMs < endsAt;
+}
+
+function elapsedRatioForDates(startsAt: string, targetAt: string, now: string): number {
+  const startsAtMs = Date.parse(startsAt);
+  const targetAtMs = Date.parse(targetAt);
+  const nowMs = Date.parse(now);
+  if (!Number.isFinite(startsAtMs) || !Number.isFinite(targetAtMs) || !Number.isFinite(nowMs)) return 0;
+  if (targetAtMs <= startsAtMs) return nowMs >= targetAtMs ? 1 : 0;
+  return clamp01((nowMs - startsAtMs) / (targetAtMs - startsAtMs));
 }
 
 function blockBelongsToHat(
