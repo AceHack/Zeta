@@ -1,5 +1,5 @@
 {
-  "description": "Resume-engine cross-language conformance (B-0976 resume slice). The TS reference oracle authors these saga traces; F#/C#/Rust replay them. A trace is a Bonsai-subset program whose `call` nodes are activities (suspension points). Each oracle runs start -> (assert suspension fn+args; resume with the next activityResult)* -> done, and must produce the SAME ordered suspension sequence AND the SAME final value. Restore-not-replay: persisting the state at any suspension (serializeState) and resuming from the re-parsed state must give the identical continuation (prior activities are never re-invoked). The compilers do not lie; agreement IS the verification.",
+  "description": "Resume-engine cross-language conformance (B-0976 resume slice). The TS reference oracle authors these saga traces; F#/C#/Rust replay them. A trace is a Bonsai-subset program whose `call` nodes are activities (suspension points). Each oracle runs start -> (assert suspension fn+args; resume with the next activityResult)* -> done, and must produce the SAME ordered suspension sequence AND the SAME final value. Restore-not-replay: persisting the state at any suspension (serializeState) and resuming from the re-parsed state must give the identical continuation (prior activities are never re-invoked). `expectedStateAtSuspension` is the cross-oracle STATE-BYTE lock: the exact canonical serializeState() bytes the TS reference emits at each suspension (in order), so every oracle's persisted continuation is byte-identical, not merely behaviorally equivalent — the kont MUST serialize top-last (innermost frame first in the array; F# cons-lists serialize reversed and must be aligned to this order). The compilers do not lie; agreement IS the verification.",
   "version": 1,
   "traces": [
     {
@@ -20,7 +20,11 @@
         { "fn": "a", "args": [] },
         { "fn": "b", "args": [] }
       ],
-      "expectedFinal": { "t": "int", "v": 30 }
+      "expectedFinal": { "t": "int", "v": 30 },
+      "expectedStateAtSuspension": [
+        "{\"v\":1,\"kont\":[{\"k\":\"evalRight\",\"op\":\"add\",\"right\":{\"v\":1,\"expr\":{\"kind\":\"call\",\"fn\":\"b\",\"args\":[]}},\"env\":{}}],\"awaiting\":{\"fn\":\"a\",\"args\":[]}}",
+        "{\"v\":1,\"kont\":[{\"k\":\"applyOp\",\"op\":\"add\",\"left\":{\"t\":\"int\",\"v\":10}}],\"awaiting\":{\"fn\":\"b\",\"args\":[]}}"
+      ]
     },
     {
       "name": "cond_branch_on_activity",
@@ -39,7 +43,10 @@
       "bindings": {},
       "activityResults": [{ "t": "int", "v": 3 }],
       "expectedSuspensions": [{ "fn": "roll", "args": [] }],
-      "expectedFinal": { "t": "str", "v": "low" }
+      "expectedFinal": { "t": "str", "v": "low" },
+      "expectedStateAtSuspension": [
+        "{\"v\":1,\"kont\":[{\"k\":\"branch\",\"then\":{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"str\",\"v\":\"low\"}}},\"els\":{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"str\",\"v\":\"high\"}}},\"env\":{}},{\"k\":\"evalRight\",\"op\":\"lt\",\"right\":{\"v\":1,\"expr\":{\"kind\":\"const\",\"value\":{\"t\":\"int\",\"v\":5}}},\"env\":{}}],\"awaiting\":{\"fn\":\"roll\",\"args\":[]}}"
+      ]
     },
     {
       "name": "activity_with_computed_args",
@@ -62,7 +69,10 @@
       "expectedSuspensions": [
         { "fn": "act", "args": [{ "t": "int", "v": 3 }, { "t": "int", "v": 7 }] }
       ],
-      "expectedFinal": { "t": "int", "v": 42 }
+      "expectedFinal": { "t": "int", "v": 42 },
+      "expectedStateAtSuspension": [
+        "{\"v\":1,\"kont\":[],\"awaiting\":{\"fn\":\"act\",\"args\":[{\"t\":\"int\",\"v\":3},{\"t\":\"int\",\"v\":7}]}}"
+      ]
     },
     {
       "name": "pure_no_suspension",
@@ -81,7 +91,8 @@
       "bindings": {},
       "activityResults": [],
       "expectedSuspensions": [],
-      "expectedFinal": { "t": "int", "v": 14 }
+      "expectedFinal": { "t": "int", "v": 14 },
+      "expectedStateAtSuspension": []
     },
     {
       "name": "param_binding_plus_activity",
@@ -97,7 +108,10 @@
       "expectedSuspensions": [
         { "fn": "dbl", "args": [{ "t": "int", "v": 5 }] }
       ],
-      "expectedFinal": { "t": "int", "v": 15 }
+      "expectedFinal": { "t": "int", "v": 15 },
+      "expectedStateAtSuspension": [
+        "{\"v\":1,\"kont\":[{\"k\":\"applyOp\",\"op\":\"add\",\"left\":{\"t\":\"int\",\"v\":5}}],\"awaiting\":{\"fn\":\"dbl\",\"args\":[{\"t\":\"int\",\"v\":5}]}}"
+      ]
     }
   ]
 }
