@@ -18,6 +18,8 @@
 //! comparison and keeps the cross-language golden vectors byte-stable.
 
 use core::cmp::Ordering;
+use core::iter::Sum;
+use core::ops::Add;
 
 /// A grow-only set: a canonical ascending-sorted, duplicate-free run under
 /// `T: Ord`. The invariant is held by every constructor here — never build one by
@@ -124,6 +126,46 @@ impl<T: Ord + Clone> GSet<T> {
     }
 }
 
+// ── generic-math additive-monoid surface (native Rust idiom, zero-dep) ──────
+// G-Set is an additive, commutative + idempotent monoid (identity + associative
+// `union`, NO inverse), so it surfaces only `Add` (the `+` operator) + a `Default`
+// identity (the `Zero` analog) + `Sum` (fold a collection) — never `Sub`/`Neg`/`Mul`.
+// `Default` is std's identity-value trait (no `num_traits` dep, per the zero-prod-dep
+// doctrine); `+` IS `union`; `Sum` folds via the monoid so `iter.sum()` works.
+//
+// `Add` is implemented for `&GSet<T>` (ref-operator, `&a + &b`), NOT `GSet<T>` by
+// value: the type already has an inherent `add(&self, x: T)` (add ONE element), and a
+// by-value `Add for GSet` would let `Add::add(self, Self)` win method resolution over
+// that inherent method for owned receivers — silently breaking `s.add(element)`. The
+// ref-operator is the idiomatic Rust form for non-`Copy` collections and keeps both.
+
+impl<T: Ord + Clone> Add for &GSet<T> {
+    type Output = GSet<T>;
+
+    /// The additive operator (`&a + &b`): the CRDT `union` merge — same merge as
+    /// [`GSet::union`]. Ref-operator (see the module note) so it never collides with
+    /// the inherent element-wise [`GSet::add`].
+    fn add(self, rhs: &GSet<T>) -> GSet<T> {
+        self.union(rhs)
+    }
+}
+
+impl<T: Ord + Clone> Default for GSet<T> {
+    /// The additive-monoid identity (the empty set) — the Rust `Default` analog of
+    /// F# `Zero` / C# `AdditiveIdentity`.
+    fn default() -> Self {
+        Self::empty()
+    }
+}
+
+impl<T: Ord + Clone> Sum for GSet<T> {
+    /// Fold a collection of G-Sets through the monoid (`Default` identity + `+`), so
+    /// `iter.sum()` aggregates them — the "generic code folds it for free" payoff.
+    fn sum<I: Iterator<Item = GSet<T>>>(iter: I) -> Self {
+        iter.fold(Self::default(), |acc, x| &acc + &x)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -178,5 +220,42 @@ mod tests {
         let a = g(&["a", "b"]);
         assert_eq!(a.union(&GSet::empty()), a);
         assert_eq!(GSet::<String>::empty().union(&a), a);
+    }
+
+    // ── generic-math additive-monoid surface (Add + Default + Sum) ──────────
+
+    #[test]
+    fn generic_math_add_merges_to_explicit_result() {
+        // assert the explicit merge content (not `&a + &b == union`, which would be
+        // tautological since `+` delegates to `union`) — proves `+` produces the merge
+        let a = g(&["a", "b"]);
+        let b = g(&["b", "c"]);
+        assert_eq!((&a + &b).to_vec(), vec!["a", "b", "c"]);
+    }
+
+    #[test]
+    fn generic_math_default_is_empty_identity() {
+        let a = g(&["a", "b"]);
+        let id = GSet::<String>::default();
+        assert!(id.is_empty());
+        assert_eq!(&id + &a, a); // identity + a = a
+        assert_eq!(&a + &id, a); // a + identity = a
+    }
+
+    #[test]
+    fn generic_math_monoid_laws_via_operator() {
+        let a = g(&["a", "b"]);
+        let b = g(&["b", "c"]);
+        let c = g(&["c", "d"]);
+        assert_eq!(&a + &a, a); // idempotent
+        assert_eq!(&a + &b, &b + &a); // commutative
+        assert_eq!(&(&a + &b) + &c, &a + &(&b + &c)); // associative
+    }
+
+    #[test]
+    fn generic_math_sum_folds_via_monoid() {
+        let sets = vec![g(&["a"]), g(&["b", "a"]), g(&["c"])];
+        let merged: GSet<String> = sets.into_iter().sum();
+        assert_eq!(merged.to_vec(), vec!["a", "b", "c"]);
     }
 }
