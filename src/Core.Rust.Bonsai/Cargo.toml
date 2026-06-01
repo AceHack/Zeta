@@ -1,0 +1,22 @@
+[package]
+name = "zeta-core-bonsai"
+version = "0.1.0"
+edition = "2024"
+description = "Bonsai-subset expression-tree serializer -- Rust parity oracle (#4 of TS/F#/C#/Rust) for B-0976 slice 1. The weakly-typed / reflection-info-omitted mode of Nuqleon Bonsai (kind-tagged nodes, no .NET type table; the cross-language-portable form). Cross-verifies byte-for-byte against the shared golden vectors (src/Core.TypeScript/bonsai/golden-vectors.json). Result over throw (std::result::Result, BCL-native). Production = ZERO external deps: a minimal hand-rolled JSON reader covers the tiny canonical grammar (matching the TS oracle's zero-dep posture); serde_json is DEV-ONLY (reads the golden fixture wrapper in the cross-verify test)."
+license = "Apache-2.0"
+publish = false
+
+# Production = ZERO external dependencies (supply-chain doctrine; matching
+# Core.Rust.{Observe,TriBoolean,ZetaId,Algebra}). The bonsai oracle's parse is a
+# production feature, so it hand-rolls a minimal JSON reader for the canonical
+# grammar rather than depend on serde_json in production -- matching the TS oracle
+# (JS's built-in JSON.parse) and the explicit zero-prod-dep doctrine. serde_json is
+# DEV-ONLY: the cross-verify test reads the golden-vectors.json fixture wrapper.
+[dependencies]
+
+[dev-dependencies]
+serde_json = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
