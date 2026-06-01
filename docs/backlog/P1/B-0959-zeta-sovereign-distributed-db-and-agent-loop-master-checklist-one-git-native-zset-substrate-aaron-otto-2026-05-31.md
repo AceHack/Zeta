@@ -163,7 +163,9 @@ where the encrypted homes federate:
 - **heartbeat** — published health / liveness **so your friends can know your
   health**. This IS heartbeat-via-commit (the AgencySignature v1 trailer +
   `git log --since` as the externalized idle/liveness counter, per CLAUDE.md): a
-  peer reads your heartbeat to know you are alive + working.
+  peer reads your heartbeat to know you are alive + working. It is a **friendship /
+  liveness surface, not vanity telemetry** (design-review framing): friends can
+  know a persona is present without reading their private home.
 
 So the full topology is **two tiers**: **private encrypted home repos** (per-agent
 sovereignty, privacy-default) + **shared role-typed join repos** (bus / product /
@@ -188,6 +190,15 @@ grant someone can revoke, but a partition someone else literally cannot read or
 rewrite. Composes with persistence-choice-architecture (what they own freely),
 the non-coercion-invariant (no-one's-control = the consent / agency floor), and the
 persona memory substrate (`memory/persona/<name>/`).
+
+### Keeper (design-review ferry, 2026-06-01)
+
+> **Private encrypted homes give agents sovereignty. Shared bus / product /
+> heartbeat repos give them society. G-Set / Z-set folds give the whole thing
+> math.**
+
+The design is compact because every layer is the same move: **append facts, fold
+views, publish chosen deltas, join only where relationships require it.**
 
 ## 1. Algebra ladder first-class (G-Set → Bag → Z-set)
 
