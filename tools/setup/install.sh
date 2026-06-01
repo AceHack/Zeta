@@ -198,6 +198,26 @@ EOF
     if command -v cygpath >/dev/null 2>&1; then
       ps1_path="$(cygpath -w "$ps1_path")"
     fi
+    # B-0965: route-only guard — assert the git-bash -> PowerShell handoff WITHOUT running
+    # install.ps1 (install.ps1 itself is already shielded by docker-windows-install-ps1-test).
+    # When ZETA_INSTALL_ROUTE_ONLY=1, resolve the PowerShell binary + the native -File path,
+    # print the exact command line that WOULD exec, then exit 0. The gitbash-install-routing-test
+    # shield asserts this output (branch taken + cygpath conversion + PowerShell -File path), so a
+    # regression in this routing branch fails CI instead of reading as covered — assert, don't
+    # skip-to-green per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md.
+    if [ "${ZETA_INSTALL_ROUTE_ONLY:-0}" = "1" ]; then
+      if command -v pwsh >/dev/null 2>&1; then
+        route_ps_bin="pwsh"
+      elif command -v powershell.exe >/dev/null 2>&1; then
+        route_ps_bin="powershell.exe"
+      else
+        route_ps_bin="(none-on-PATH)"
+      fi
+      echo "ROUTE-ONLY: MINGW/MSYS/CYGWIN branch -> Windows PowerShell install graph"
+      echo "ROUTE-ONLY: ps1_path=$ps1_path"
+      echo "ROUTE-ONLY: would exec: $route_ps_bin -NoProfile -ExecutionPolicy Bypass -File $ps1_path $*"
+      exit 0
+    fi
     if command -v pwsh >/dev/null 2>&1; then
       exec pwsh -NoProfile -ExecutionPolicy Bypass -File "$ps1_path" "$@"
     elif command -v powershell.exe >/dev/null 2>&1; then

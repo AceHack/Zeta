@@ -1,0 +1,122 @@
+# .github/workflows/gitbash-install-routing-test.yml
+#
+# git-bash install-routing shield (B-0965 — the one unshielded install surface).
+#
+# git-bash is NOT a separate installer: tools/setup/install.sh detects
+# MINGW*|MSYS*|CYGWIN*, cygpath-converts the MSYS path (/c/Users/... -> C:\Users\...),
+# and execs tools/setup/install.ps1 via PowerShell. So the git-bash one-liner is a thin
+# ROUTER to the same Windows installer that docker-windows-install-ps1-test already covers.
+#
+# The TARGET (install.ps1) is shielded; the ROUTING BRANCH itself — the
+# MINGW*|MSYS*|CYGWIN* detect -> cygpath conversion -> exec PowerShell handoff — was not.
+# Per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md, an unshielded
+# routing branch is a hole that reads as covered: a regression in the branch (or in cygpath
+# handling, or the relative install.ps1 path it execs) would silently break the git-bash
+# one-liner and no shield would catch it.
+#
+# This shield runs install.sh under git-bash with ZETA_INSTALL_ROUTE_ONLY=1 (the route-only
+# guard added to install.sh in B-0965): the branch resolves the PowerShell binary + the native
+# Windows -File path, prints the command line it WOULD exec, then exits 0 BEFORE running
+# install.ps1. We ASSERT that output (branch taken + cygpath conversion to a native drive-letter
+# path + PowerShell -File invocation) — assert, don't skip-to-green. Scoped to the handoff, NOT
+# a full install.ps1 re-run (docker-windows-install-ps1-test already exercises the full install),
+# so this shield stays cheap.
+#
+# Complements the five existing install shields (brings coverage to 6/6 surfaces):
+#   - docker-ubuntu-install-sh-test   (install.sh on bare Ubuntu, Docker)
+#   - docker-nixos-install-sh-test    (install.sh on NixOS userspace, Docker)
+#   - macos-install-sh-test           (install.sh on real macOS)
+#   - docker-windows-install-ps1-test (install.ps1 on Windows Server Core, Docker)
+#   - wsl-install-sh-test             (install.sh on real WSL2 Ubuntu)
+#
+# Runner: windows-2025 (git-bash ships pre-installed via Git for Windows on the GitHub Windows
+# runner — `shell: bash` resolves to it; no provisioner needed). pwsh (PowerShell 7) is also
+# pre-installed, so the route resolves to it.
+#
+# Security (mirrors wsl-install-sh-test): runner pinned (windows-2025, NOT -latest); third-party
+# actions SHA-pinned with trailing # vX.Y.Z; permissions contents: read; concurrency
+# cancel-in-progress for PRs; no github.event.* values interpolated into run: lines.
+# Pin (dep-pin-search-first, matches the wsl shield): actions/checkout v6.0.2.
+
+name: gitbash-install-routing-test
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+    paths:
+      # Install dispatcher + per-OS scripts + shared library (install.sh -> install.ps1 router)
+      - "tools/setup/**"
+      # Pinned runtime versions read by mise — the IDENTICAL file Unix uses (symmetric)
+      - ".mise.toml"
+      # This workflow file itself
+      - ".github/workflows/gitbash-install-routing-test.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "tools/setup/**"
+      - ".mise.toml"
+      - ".github/workflows/gitbash-install-routing-test.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gitbash-install-routing-test-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  gitbash-routing-test:
+    name: gitbash-install-routing-test
+    runs-on: windows-2025
+    # Route-only: no install.ps1 run, no toolchain download — just the branch decision + cygpath
+    # conversion + assertions. Generous bound for cold checkout on the Windows runner.
+    timeout-minutes: 10
+
+    steps:
+      # Zeta has >260-char filenames (dense persona/research naming); a fresh runner's git fails
+      # checkout with "Filename too long" without long-path support.
+      - name: Enable git long paths (Windows MAX_PATH)
+        run: git config --global core.longpaths true
+
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Assert install.sh routes git-bash -> install.ps1 (route-only)
+        # `shell: bash` on a Windows runner is the Git-for-Windows bash (MSYS) — the real
+        # user-invocation environment for the documented Windows git-bash one-liner.
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "=== environment (must be MINGW/MSYS git-bash) ==="
+          uname -s
+          case "$(uname -s)" in
+            MINGW*|MSYS*|CYGWIN*) echo "ok: running under git-bash/MSYS" ;;
+            *) echo "FAIL: shell:bash is not git-bash/MSYS on this runner (uname=$(uname -s))"; exit 1 ;;
+          esac
+
+          echo "=== run install.sh route-only ==="
+          # ZETA_INSTALL_ROUTE_ONLY=1 stops install.sh after the route decision + path conversion,
+          # before exec'ing install.ps1 (which docker-windows-install-ps1-test already shields).
+          out="$(ZETA_INSTALL_ROUTE_ONLY=1 bash tools/setup/install.sh 2>&1)"
+          echo "$out"
+
+          echo "=== assertions (assert the positive — fail if the branch was skipped) ==="
+          # 1. The MINGW/MSYS/CYGWIN routing branch was taken.
+          echo "$out" | grep -q "MINGW/MSYS/CYGWIN branch" \
+            || { echo "FAIL: git-bash routing branch not taken"; exit 1; }
+          # 2. cygpath converted the MSYS path to a native Windows drive-letter path (e.g. C:\...).
+          #    [\\] matches one literal backslash without tripping shellcheck SC1003.
+          echo "$out" | grep -qE 'ps1_path=[A-Za-z]:[\\]' \
+            || { echo "FAIL: cygpath did not convert ps1_path to a native Windows path"; exit 1; }
+          # 3. The converted native path points at install.ps1.
+          echo "$out" | grep -qE 'ps1_path=[A-Za-z]:[\\].*install\.ps1' \
+            || { echo "FAIL: converted path does not point at install.ps1"; exit 1; }
+          # 4. PowerShell is the exec target, invoked with -File (the routed handoff).
+          echo "$out" | grep -qE 'would exec: (pwsh|powershell\.exe) ' \
+            || { echo "FAIL: PowerShell is not the exec target"; exit 1; }
+          echo "$out" | grep -q -- "-File" \
+            || { echo "FAIL: PowerShell not invoked with -File"; exit 1; }
+
+          echo "=== PASS: git-bash routes to install.ps1 with a native-Windows -File path ==="
