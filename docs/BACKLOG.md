@@ -1078,5 +1078,6 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0947](backlog/P3/B-0947-windows-ci-checkout-fails-filename-too-long-max-path-260-long-persona-archive-names-otto-cli-2026-05-30.md)** Windows CI build-and-test fails at Checkout with "Filename too long" (MAX_PATH 260) on long persona-archive names -- non-required so it merges CLEAN but Windows is silently red
 - [ ] **[B-0949](backlog/P3/B-0949-fromvalue-wide-decoder-mode-search-hangs-bound-analytically-or-cap-widths-cross-language-parity-aaron-2026-05-30.md)** Tri-boolean float FromValue mode-search hangs for wide decoders (biased-exponent impls F#/C#/Rust; TS radix-point unaffected) — bound the scan analytically or cap widths, consistently
 - [ ] **[B-0950](backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md)** Creator compensation via a multi-attribution contribution graph + weighted split (provenance, NOT DRM)
+- [ ] **[B-0966](backlog/P3/B-0966-ace-store-key-by-package-identity-not-files-hash-future-enhancement-2026-06-01.md)** Ace store keyed by package identity (not files-hash) — future enhancement, only if same-files-different-identity arises
 
 <!-- END AUTO-GENERATED -->
