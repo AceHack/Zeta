@@ -32,6 +32,8 @@
 //! don't lie; agreement IS the verification).
 
 use std::cmp::Ordering;
+use std::iter::Sum;
+use std::ops::{Add, Neg, Sub};
 
 use crate::zset::{ZEntry, ZSet};
 
@@ -298,5 +300,133 @@ impl<K: Ord + Clone, V: Ord + Clone> IndexedZSet<K, V> {
             }
         }
         ZSet::of_entries(out)
+    }
+}
+
+// ── generic-math abelian-group surface (native Rust idiom, zero-dep) ─────────
+// Rust has no `System.Numerics`, so we push our own port — the `std::ops` traits
+// ("numerics like dotnet as our interface, push to other langs if they don't
+// have", Aaron 2026-06-01). IndexedZSet (Z[K×V]) is an abelian GROUP, so — like
+// the Z-set rung (#6482) and unlike G-Set/Bag — it surfaces `Sub` + `Neg` on top
+// of `Add`. `Default` is std's identity-value trait (the `Zero` analog; no
+// `num_traits` dep); `Sum` folds a collection. The bilinear `join` is the ring
+// product (surfaced separately, not a numeric multiply).
+//
+// Operators are implemented for `&IndexedZSet<K, V>` (ref-operator, `&a + &b`),
+// NOT by value: the type owns a `Vec`, so a by-value `Add` would force a move on
+// every `+`, and — since the inherent combiner is itself named `add` — the trait
+// methods delegate to it via the type path (`IndexedZSet::add`, inherent-method
+// precedence) so they never recurse into themselves. The ref-operator borrows
+// its inputs and returns an owned value, so no lifetimes leak — idiomatic for
+// non-`Copy` collections (mirrors the G-Set #6469 / Z-set #6482 fix).
+
+impl<K: Ord + Clone, V: Ord + Clone> Add for &IndexedZSet<K, V> {
+    type Output = IndexedZSet<K, V>;
+
+    /// `&a + &b` — per-key value-Z-set sum (the abelian-group operation), the same
+    /// merge as the inherent [`IndexedZSet::add`]. NOT idempotent (`&a + &a`
+    /// doubles every value-weight).
+    fn add(self, rhs: &IndexedZSet<K, V>) -> IndexedZSet<K, V> {
+        IndexedZSet::add(self, rhs)
+    }
+}
+
+impl<K: Ord + Clone, V: Ord + Clone> Neg for &IndexedZSet<K, V> {
+    type Output = IndexedZSet<K, V>;
+
+    /// `-&a` — the abelian-group inverse (negate every group's value-Z-set), the
+    /// same as the inherent [`IndexedZSet::neg`], so `&a + (-&a)` is empty.
+    fn neg(self) -> IndexedZSet<K, V> {
+        IndexedZSet::neg(self)
+    }
+}
+
+impl<K: Ord + Clone, V: Ord + Clone> Sub for &IndexedZSet<K, V> {
+    type Output = IndexedZSet<K, V>;
+
+    /// `&a - &b == &a + (-&b)` — retraction expressed directly (the inherent
+    /// [`IndexedZSet::sub`]).
+    fn sub(self, rhs: &IndexedZSet<K, V>) -> IndexedZSet<K, V> {
+        IndexedZSet::sub(self, rhs)
+    }
+}
+
+impl<K: Ord + Clone, V: Ord + Clone> Default for IndexedZSet<K, V> {
+    /// The additive-monoid identity (the empty indexed Z-set) — the Rust
+    /// `Default` analog of F# `Zero` / C# `AdditiveIdentity`.
+    fn default() -> Self {
+        Self::empty()
+    }
+}
+
+impl<K: Ord + Clone, V: Ord + Clone> Sum for IndexedZSet<K, V> {
+    /// Fold a collection through the group (`+`), so `iter.sum()` aggregates with
+    /// retraction-to-empty drop. `reduce` folds from the FIRST element (no
+    /// identity-clone seed); empty input yields `Default` (empty).
+    fn sum<I: Iterator<Item = IndexedZSet<K, V>>>(iter: I) -> Self {
+        iter.reduce(|acc, x| &acc + &x).unwrap_or_default()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Build an `IndexedZSet<String, String>` from `(key, value, weight)` triples
+    /// (canonicalized via `index_with`).
+    fn ixz(triples: &[(&str, &str, i64)]) -> IndexedZSet<String, String> {
+        let source = ZSet::of_entries(triples.iter().map(|(k, v, w)| ZEntry {
+            e: ((*k).to_string(), (*v).to_string()),
+            w: *w,
+        }));
+        IndexedZSet::index_with(
+            |kv: &(String, String)| kv.0.clone(),
+            |kv: &(String, String)| kv.1.clone(),
+            &source,
+        )
+    }
+
+    #[test]
+    fn generic_math_operators_equal_methods() {
+        let a = ixz(&[("k1", "a", 1), ("k2", "b", 2)]);
+        let b = ixz(&[("k2", "b", 1), ("k3", "c", 3)]);
+        assert_eq!(&a + &b, a.add(&b)); // + == add
+        assert_eq!(-&a, a.neg()); // -a == neg
+        assert_eq!(&a - &b, a.sub(&b)); // a - b == sub
+    }
+
+    #[test]
+    fn generic_math_default_is_empty_and_identity() {
+        let a = ixz(&[("k", "a", 1)]);
+        assert!(IndexedZSet::<String, String>::default().is_empty()); // Default == empty (Zero)
+        assert_eq!(&IndexedZSet::<String, String>::default() + &a, a); // identity + a = a
+        assert_eq!(&a + &IndexedZSet::<String, String>::default(), a); // a + identity = a
+    }
+
+    #[test]
+    fn generic_math_abelian_group_inverse() {
+        // a + (-a) = empty and a - a = empty — the law a Bag's monoid cannot satisfy.
+        let a = ixz(&[("k1", "a", 1), ("k2", "b", -2), ("k2", "c", 3)]);
+        assert!((&a + &(-&a)).is_empty());
+        assert!((&a - &a).is_empty());
+    }
+
+    #[test]
+    fn generic_math_not_idempotent_doubles() {
+        // SUM, not set-union: doubles every value-weight (the Bag/Z-set step away from G-Set).
+        let a = ixz(&[("k", "a", 1), ("k", "b", -3)]);
+        assert_eq!(&a + &a, ixz(&[("k", "a", 2), ("k", "b", -6)]));
+    }
+
+    #[test]
+    fn generic_math_sum_folds_with_retraction() {
+        let parts = vec![
+            ixz(&[("k1", "a", 1)]),
+            ixz(&[("k1", "a", 1), ("k2", "b", 2)]),
+            ixz(&[("k2", "b", -2)]),
+        ];
+        // k1 → a:2 ; k2 → b nets 0 → value-Z-set empties → key dropped
+        let merged: IndexedZSet<String, String> = parts.into_iter().sum();
+        assert_eq!(merged, ixz(&[("k1", "a", 2)]));
     }
 }
