@@ -55,10 +55,9 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
       kinds `not-yet-executable`). `tools/observe/execute.ts` (#6310).
 - [x] **`loadWorld`** — read side: backlog channel (selector = oracle) + mode from folding the event
       log; schema-on-read; closes the loop. `tools/observe/load-world.ts` (#6316).
-- [~] **`folderSink`** — real EventSink: ZetaId-named JSON, folder-direct-to-main, conflict
+- [x] **`folderSink`** — real EventSink: ZetaId-named JSON, folder-direct-to-main, conflict
       discipline (ahead-check + rebase --autostash + targeted undo), idempotency, path-traversal
-      guard, Result-only. **IN-FLIGHT — #6312 armed, not yet on `main`**; flip to [x] +
-      `tools/observe/event-sink-folder.ts` once it merges (Codex #6318).
+      guard, Result-only. `tools/observe/event-sink-folder.ts` (#6312, merged).
 - [x] **Synthesis + transport correction + key-custody design + hardware-to-buy** (#6304/#6306/#6307).
 
 ## LEFT (the testing + impl backlog — ordered)

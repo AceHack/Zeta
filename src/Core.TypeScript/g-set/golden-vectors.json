@@ -1,0 +1,31 @@
+{
+  "description": "G-Set CRDT cross-language conformance (the bottom rung of the algebra ladder; B-0954 bus comms substrate). Every impl starts from `initialSet`, replays `ops` in order with the canonical string comparator, and must value-match `expectedReplayStates[i]` after op i AND `expectedFinalState` at the end. Sets are serialized in canonical ascending order, so equality is array-equality. Oracle #1 = TS reference; F# casts oracle #2; C#/Rust join later per the meet-in-the-middle 4-oracle.",
+  "elementType": "string",
+  "comparator": "ascending Unicode code-point (TS default string compare / F# Comparer<string>.Default / ordinal)",
+  "initialSet": ["b-002", "b-005"],
+  "ops": [
+    { "op": "add", "arg": "b-001", "note": "grow" },
+    { "op": "add", "arg": "b-005", "note": "idempotent: already present, no change" },
+    {
+      "op": "union",
+      "arg": ["b-003", "b-001", "b-009"],
+      "note": "commutative+associative: unsorted input, b-001 already present"
+    },
+    { "op": "union", "arg": [], "note": "identity: union with empty is a no-op" },
+    { "op": "add", "arg": "b-000", "note": "grow at the front" }
+  ],
+  "expectedReplayStates": [
+    ["b-001", "b-002", "b-005"],
+    ["b-001", "b-002", "b-005"],
+    ["b-001", "b-002", "b-003", "b-005", "b-009"],
+    ["b-001", "b-002", "b-003", "b-005", "b-009"],
+    ["b-000", "b-001", "b-002", "b-003", "b-005", "b-009"]
+  ],
+  "expectedFinalState": ["b-000", "b-001", "b-002", "b-003", "b-005", "b-009"],
+  "laws": {
+    "idempotent": "union(a, a) == a",
+    "commutative": "union(a, b) == union(b, a)",
+    "associative": "union(union(a, b), c) == union(a, union(b, c))",
+    "identity": "union(a, empty) == a"
+  }
+}
