@@ -16,13 +16,16 @@ import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
+  abelianGroup,
   add,
   addW,
+  concatAll,
   contains,
   distinctCount,
   empty,
   equals,
   isEmpty,
+  monoid,
   negate,
   ofArray,
   ofEntries,
@@ -32,6 +35,7 @@ import {
   total,
   union,
   weight,
+  type AbelianGroup,
   type ZEntry,
   type ZSet,
 } from "./z-set";
@@ -172,5 +176,48 @@ describe("Z-set — shared golden vector (cross-language parity lock)", () => {
     }
     expect(states).toEqual(gv.expectedReplayStates.map((s) => s.map((x) => ({ e: x.e, w: x.w }))));
     expect(plain(state)).toEqual(gv.expectedFinalState.map((x) => ({ e: x.e, w: x.w })));
+  });
+});
+
+describe("Z-set — generic-math abelian-group surface (monoid / abelianGroup / concatAll)", () => {
+  // TS has no operator overloading, so the dotnet-numerics interface is a record of
+  // the operations: a Monoid (empty + concat) extended to an AbelianGroup with
+  // invert + subtract. The twins are F# Zero/(+)/(~-)/(-), C# IWSAM, Rust std::ops.
+  const a = zset(entry("a", 1), entry("b", 2));
+  const b = zset(entry("b", 1), entry("c", 3));
+
+  it("monoid: concat == union, empty is the identity", () => {
+    const m = monoid(cmp);
+    expect(m.concat(a, b)).toEqual(union(cmp, a, b));
+    expect(m.concat(m.empty, a)).toEqual(a);
+    expect(m.concat(a, m.empty)).toEqual(a);
+    expect(m.empty).toEqual(empty<string>());
+  });
+
+  it("abelianGroup: invert == negate, subtract == union(negate), and is a Monoid", () => {
+    const g: AbelianGroup<ZSet<string>> = abelianGroup(cmp);
+    expect(g.invert(a)).toEqual(negate(a));
+    expect(g.subtract(a, b)).toEqual(union(cmp, a, negate(b)));
+    expect(g.concat(a, b)).toEqual(union(cmp, a, b)); // extends Monoid
+    expect(g.empty).toEqual(empty<string>());
+  });
+
+  it("inverse law: concat(a, invert(a)) == empty and subtract(a, a) == empty", () => {
+    const g = abelianGroup(cmp);
+    const z = zset(entry("a", 1), entry("b", -2), entry("c", 3));
+    expect(g.concat(z, g.invert(z))).toEqual(empty<string>()); // the law a Bag cannot satisfy
+    expect(g.subtract(z, z)).toEqual(empty<string>());
+  });
+
+  it("concat is NOT idempotent: concat(a, a) doubles every weight (Z-set, not G-Set)", () => {
+    const g = abelianGroup(cmp);
+    const z = zset(entry("a", 1), entry("b", -3));
+    expect(g.concat(z, z)).toEqual(zset(entry("a", 2), entry("b", -6)));
+  });
+
+  it("concatAll folds a collection through the monoid (retraction-to-0 drops)", () => {
+    const parts = [zset(entry("a", 1)), zset(entry("a", 1), entry("b", 2)), zset(entry("b", -2), entry("c", 5))];
+    expect(concatAll(cmp, parts)).toEqual(zset(entry("a", 2), entry("c", 5)));
+    expect(concatAll(cmp, [])).toEqual(empty<string>());
   });
 });

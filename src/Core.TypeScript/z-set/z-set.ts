@@ -35,6 +35,8 @@
  * analog of F#'s `'K : comparison` constraint.
  */
 
+import type { Monoid } from "../g-set/g-set";
+
 /** A total order on `T` (`< 0`, `0`, `> 0`), e.g. {@link stringCompare}. */
 export type Compare<T> = (a: T, b: T) => number;
 
@@ -257,4 +259,63 @@ export function equals<T>(compare: Compare<T>, a: ZSet<T>, b: ZSet<T>): boolean 
     if (compare(ea.e, eb.e) !== 0 || ea.w !== eb.w) return false;
   }
   return true;
+}
+
+// ── generic-math abelian-group surface (record idiom — TS has no operators) ──
+// "numerics like dotnet as our interface, push to other langs if they don't
+// have" (Aaron 2026-06-01). TS has no operator overloading / generic-math, so
+// the port is a record of the operations (the analog of F# `Zero`/`(+)`/`(~-)`/
+// `(-)`, C# IWSAM, Rust `std::ops`). Z-set is an abelian GROUP, so it extends the
+// shared `Monoid` (empty + concat) with `invert` (negate) + `subtract`. Like the
+// G-Set/Bag twins these are comparator-specific, so they're factories over
+// `compare` (the F#/C#/Rust twins bake the comparer into the type / use a default).
+
+/**
+ * The abelian-group surface: a {@link Monoid} (identity + associative `concat`)
+ * PLUS the inverse `invert` (so `concat(a, invert(a)) === empty` — the law a Bag
+ * cannot satisfy) and `subtract` (`concat(a, invert(b))`). NOT `INumber` — no
+ * ordering; the ring scalar is per-element, not a numeric product.
+ */
+export interface AbelianGroup<T> extends Monoid<T> {
+  /** The additive inverse: `concat(a, invert(a)) === empty`. */
+  readonly invert: (a: T) => T;
+  /** `subtract(a, b) === concat(a, invert(b))` — retraction expressed directly. */
+  readonly subtract: (a: T, b: T) => T;
+}
+
+/**
+ * The additive-monoid view of a Z-set under `compare`: `empty` (identity) +
+ * `concat` (= {@link union}). The Z-set's full surface is {@link abelianGroup};
+ * this matches the G-Set/Bag `monoid` factories so generic monoid code can fold a
+ * collection of Z-sets uniformly (see {@link concatAll}).
+ */
+export function monoid<T>(compare: Compare<T>): Monoid<ZSet<T>> {
+  return {
+    empty: empty<T>(),
+    concat: (a, b) => union(compare, a, b),
+  };
+}
+
+/**
+ * The abelian-group surface of a Z-set under `compare`: `empty` + `concat`
+ * (= {@link union}) + `invert` (= {@link negate}) + `subtract`. The Z-set's
+ * distinguishing surface over the Bag (which has no inverse).
+ */
+export function abelianGroup<T>(compare: Compare<T>): AbelianGroup<ZSet<T>> {
+  return {
+    empty: empty<T>(),
+    concat: (a, b) => union(compare, a, b),
+    invert: (a) => negate(a),
+    subtract: (a, b) => union(compare, a, negate(b)),
+  };
+}
+
+/**
+ * Fold a collection of Z-sets through the monoid (identity + `concat`) — the
+ * "generic code folds it for free" payoff (the TS analog of Rust's `Sum` /
+ * F#'s `Seq.sum`). Retraction-to-0 keys drop as the fold proceeds.
+ */
+export function concatAll<T>(compare: Compare<T>, zs: readonly ZSet<T>[]): ZSet<T> {
+  const m = monoid(compare);
+  return zs.reduce(m.concat, m.empty);
 }
