@@ -113,14 +113,45 @@ stream = carrier; ℤ retraction = evolution + compensation.
   cached-results + break-exception + state-provider + context) — cheap to build a
   replay-family backend if needed; resume is the superset.
 
+## Error channel — fail-fast `Result` now; accumulate (RFC-9457 ProblemDetails) later
+
+Two complementary modes (the monad/applicative split), each leaning on its
+ecosystem's native shape (hexagonal — own the payload contract, use the BCL
+container where one exists):
+
+- **Fail-fast (monadic) — built now.** `serialize`/`parse` return
+  `Result<T, BonsaiFeedback>`; the first decline short-circuits. Correct for
+  single-parse (you can't continue past a structural error). F#/Rust lean on the
+  BCL `Result` (`FSharp.Core.Result`, `std::result::Result`); C#/TS own a minimal
+  `Result` port + adapt to the widely-used lib (neverthrow / FluentResults-class).
+  `BonsaiFeedback` is the shared cross-oracle payload; its `where` fields are
+  JSON-pointer keys.
+- **Accumulate (applicative) — SAVE, hexagonal eventually (NOT this slice).** For
+  batch / model-validation (validate N golden vectors at once, the bus validating a
+  batch of envelopes, throttled-batch ops) you want *every* failure, keyed by field.
+  That shape is **RFC 9457 "Problem Details"** (supersedes RFC 7807), and .NET ships
+  it as **`ValidationProblemDetails`** with `Errors: IDictionary<string, string[]>`
+  (field → messages) — useful well outside HTTP (only `status` is HTTP-flavored).
+  Hexagonal plan: own a cross-language ProblemDetails-shaped port
+  (`{type, title, status?, detail, instance?, errors}`), adapt to .NET's
+  `ValidationProblemDetails` at the C# seam; a `BonsaiFeedback list` maps straight
+  onto the `errors` map via the `where` keys. Complementary primitive for the family
+  + the git-native bus (B-0954) — build when scheduled; **saved here so the
+  hexagonal isn't forgotten** (the operator 2026-06-01).
+
 ## Acceptance / decomposition (slices)
 
 - 🚧 Cross-language **Bonsai-subset serializer** (`{Context, Expression}`) +
       golden-vector cross-verify (TS/F#/C#/Rust oracles), Nuqleon as .NET oracle.
       **TS reference oracle ✅** (`src/Core.TypeScript/bonsai/` — weakly-typed /
       reflection-omitted subset: const/param/lambda/binary/call/cond; canonical
-      byte-exact serialize + parse round-trip + `golden-vectors.json`; 30 tests).
-      **F#/C#/Rust oracles pending** (replay the shared golden vectors).
+      byte-exact serialize + parse round-trip + `golden-vectors.json`; hardened:
+      safe-integer range, lone-surrogate escaping, canonical-only parse; 43 tests).
+      **F# oracle ✅** (`src/Core/Bonsai.fs` — replays the shared golden vectors
+      byte-for-byte; `serialize`/`parse` return `Result<_, BonsaiFeedback>`
+      (result over throw); rejections asserted by specific feedback variant; 22 tests).
+      **C#/Rust oracles pending** (replay the shared golden vectors; native `Result`
+      container — C# owns a port + adapter, Rust uses `std::result::Result`).
 - [ ] **Resume engine** — serialize closure + expr-tree; restore-not-replay;
       no-handles discipline enforced; non-determinism allowed.
 - [ ] **Context propagation** = OTel/IntrCtx — C#/TS AsyncLocal adapter + **F#
