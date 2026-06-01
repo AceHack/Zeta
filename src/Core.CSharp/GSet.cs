@@ -6,6 +6,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 namespace Zeta.Core.CSharp;
 
@@ -80,7 +82,10 @@ public static class GSet
 /// cross-language parity.
 /// </remarks>
 /// <typeparam name="T">The element type.</typeparam>
-public sealed class GSet<T> : IEquatable<GSet<T>>
+public sealed class GSet<T> :
+    IEquatable<GSet<T>>,
+    IAdditiveIdentity<GSet<T>, GSet<T>>,
+    IAdditionOperators<GSet<T>, GSet<T>, GSet<T>>
 {
     private readonly ImmutableArray<T> _items;
     private readonly IComparer<T> _comparer;
@@ -189,6 +194,50 @@ public sealed class GSet<T> : IEquatable<GSet<T>>
         }
 
         return new GSet<T>(builder.ToImmutable(), _comparer);
+    }
+
+    /// <summary>
+    /// The additive-monoid identity (generic-math <see cref="IAdditiveIdentity{TSelf, TResult}"/>):
+    /// the empty set (default comparer). G-Set is an additive, commutative + idempotent monoid
+    /// (identity + associative <see cref="Union"/>, NO inverse), so it surfaces only
+    /// <see cref="IAdditiveIdentity{TSelf, TResult}"/> + <see cref="IAdditionOperators{TSelf, TOther, TResult}"/>
+    /// — never <c>INumber</c> (no negation / order / multiplication).
+    /// </summary>
+    [SuppressMessage(
+        "Design",
+        "CA1000:Do not declare static members on generic types",
+        Justification = "IAdditiveIdentity<TSelf,TResult> requires a static AdditiveIdentity member on the generic type; CA1000 predates static-abstract interface members (IWSAM) and does not apply to generic-math interface implementations.")]
+    public static GSet<T> AdditiveIdentity { get; } = GSet.Empty<T>();
+
+    /// <summary>
+    /// The additive operator (generic-math <c>+</c>): the CRDT <see cref="Union"/> merge.
+    /// The empty set acts as a comparer-agnostic identity (<c>empty + x = x</c>, <c>x + empty = x</c>)
+    /// so <see cref="AdditiveIdentity"/> composes with a set under any comparer; two NON-empty
+    /// operands still delegate to <see cref="Union"/>, which enforces the comparer-identity match.
+    /// </summary>
+    /// <param name="left">The left set.</param>
+    /// <param name="right">The right set.</param>
+    /// <returns>The union, in canonical order.</returns>
+    public static GSet<T> operator +(GSet<T> left, GSet<T> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+
+        // The additive identity is the empty set; it must absorb under ANY comparer for the
+        // monoid identity law to hold (AdditiveIdentity uses the default comparer, but a set
+        // may carry a custom one). Empty has no elements, so its ordering is irrelevant —
+        // short-circuit before Union's deliberate same-comparer check (guards non-empty merges).
+        if (left.IsEmpty)
+        {
+            return right;
+        }
+
+        if (right.IsEmpty)
+        {
+            return left;
+        }
+
+        return left.Union(right);
     }
 
     /// <summary>Add one element (<see cref="Union"/> with a singleton); idempotent if already present.</summary>

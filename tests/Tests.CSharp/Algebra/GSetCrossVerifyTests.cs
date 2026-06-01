@@ -111,4 +111,43 @@ public class GSetCrossVerifyTests
         Assert.Equal(GSet.OfSeq(expected, ordinal), a.Union(otherOrdinal));
         Assert.False(GSet.OfSeq(aItems, ordinal).Equals(GSet.OfSeq(aItems, reverse))); // diff comparer ⇒ not equal
     }
+
+    [Fact]
+    public void GenericMathAdditiveMonoidSurface()
+    {
+        // G-Set is an additive, commutative + idempotent monoid, so it surfaces the
+        // generic-math IAdditiveIdentity + IAdditionOperators (NOT INumber — no inverse /
+        // order / product). (+) == Union for same-comparer operands; AdditiveIdentity is empty.
+        var cmp = StringComparer.Ordinal;
+        static GSet<string> G(StringComparer cmp, params string[] xs) => GSet.OfSeq(xs, cmp);
+
+        var a = G(cmp, "a", "c");
+        var b = G(cmp, "b", "c", "d");
+        var c = G(cmp, "c", "e");
+
+        Assert.Equal(a.Union(b), a + b); // (+) equals Union
+        Assert.True(GSet<string>.AdditiveIdentity.IsEmpty); // identity is the empty set
+        Assert.Equal(a, GSet<string>.AdditiveIdentity + a); // identity law
+        Assert.Equal(a, a + GSet<string>.AdditiveIdentity);
+        Assert.Equal(a, a + a); // idempotent
+        Assert.Equal(a + b, b + a); // commutative
+        Assert.Equal((a + b) + c, a + (b + c)); // associative
+    }
+
+    [Fact]
+    public void GenericMathIdentityIsComparerAgnosticButNonEmptyMismatchStillThrows()
+    {
+        // The additive identity (empty) must absorb under ANY comparer for the monoid identity
+        // law to hold — AdditiveIdentity carries the default comparer, but a set may carry a
+        // custom one. Empty has no elements, so its ordering is irrelevant: (+) short-circuits.
+        var reverse = Comparer<string>.Create((x, y) => string.CompareOrdinal(y, x));
+        var custom = GSet.OfSeq(["x", "y"], reverse);
+        Assert.Equal(custom, custom + GSet<string>.AdditiveIdentity); // no throw
+        Assert.Equal(custom, GSet<string>.AdditiveIdentity + custom);
+
+        // But two NON-empty operands with different comparers still delegate to Union → throw
+        // (the comparer-identity guard for real merges is preserved).
+        var ordinal = GSet.OfSeq(["a", "b"], StringComparer.Ordinal);
+        Assert.Throws<ArgumentException>(() => ordinal + custom);
+    }
 }
