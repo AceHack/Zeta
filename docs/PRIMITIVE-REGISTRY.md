@@ -34,12 +34,12 @@ swapped underneath without changing callers (the dep-behind-port strategy below)
 
 - **Identity** — ✅ ZetaId (4/4)
 - **Event / reactive** — ✅ Observe loop (4/4) · ⬜ Rx-Observable = Z-set delta-stream (per-lang Rx exists; unify) · ⬜ CALM coordination-free marker
-- **Algebra ladder** — ✅ G-Set (4/4 → Tier-1; C# #6363 merged) · 🚧 Bag / multiset (TS reference in-flight #6364) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
+- **Algebra ladder** — ✅ G-Set (4/4, **Tier 1/2** — per-lang golden-vector replay, no N-way byte-diff harness yet; C# #6363 merged) · 🚧 Bag / multiset (TS reference in-flight #6364) · 🚧 Z-set (F# only) · ✅ IndexedZSet (F#) · ✅ CRDTs — G-Counter / PN-Counter / OR-Set / Delta-CRDT (F# `Crdt.fs` / `DeltaCrdt.fs`)
 - **Numerics / algebra tower** — ⬜ complex/imaginary + the **Cayley–Dickson** tower ℝ→ℂ→ℍ→𝕆→𝕊 (F# `src/Core/CayleyDickson.fs` — the "imaginary stack", B-0623) · ⬜ Clifford / geometric algebra (F# substrate) · ✅ Z-set weight ring ℤ (F# `src/Core/Algebra.fs`)
 - **Inference** — ⬜ Infer.NET **BP/EP** factor-graph (F# substrate; architecture B-0365.5 closed + B-0637) · ⬜ uncertainty semiring (B-0367) · ⬜ posterior quorum (B-0255)
 - **Comms** — 🚧 git-native Bus (TS only)
 - **Discovery / transport** (decentralized, further-out) — ⬜ Nostr (signed event relay) · ⬜ DHT (BitTorrent-style peer routing) · ⬜ IPFS (content-addressed object store) · ⬜ Reticulum-over-IP · ⬜ Reticulum-over-mesh · ⬜ 802.11ah Wi-Fi HaLow (sub-GHz long-range). Multi-channel by design — redundant transports so a blocked/slow channel just fails over to the next. Already backlogged: Reticulum B-0704 / B-0726 / B-0772; Green Lantern + HaLow B-0246 / B-0289 / B-0290.
-- **Observability** — ⬜ structured logging · ⬜ OTel / metrics · ⬜ benchmarking. Model on .NET `System.Diagnostics.Metrics` (`Meter`-anchored, tagged/multi-dimensional, OTel-native): `Counter<T>` (monotonic) ≈ a Bag-fold, `UpDownCounter<T>` (up+down) ≈ a Z-set / PN-Counter-fold, `Histogram<T>` ≈ a Bag-over-buckets. Metrics are the **Bag-fold view of the event log** (database-design ADR) — instruments as folds over the algebra, not bolt-on.
+- **Observability** — ⬜ structured logging · ⬜ metrics · ⬜ benchmarking. **Hexagonal it — own our port; OTel is a swappable _adapter_ behind it, not our interface** (per [`hexagonal-own-interfaces`]; OTel's interfaces are rough and its .NET deps carry test-hostile global/static state — so default OTel **off** in tests, on only for the explicit OTel-adapter tests; everything else goes through our port). The BCL `System.Diagnostics.Metrics` `Meter` API (System.\*, depend-directly per the BCL-interface-boundary rule) is the clean anchor to model on — `Counter<T>` (monotonic) ≈ a Bag-fold, `UpDownCounter<T>` (up+down) ≈ a Z-set / PN-Counter-fold, `Histogram<T>` ≈ a Bag-over-buckets — but standard OTel itself may not even be needed (verify current .NET OTel maturity first per `dep-pin-search-first-authority` — it was ugly years ago; Microsoft's support may have improved). Metrics are the **Bag-fold view of the event log** (database-design ADR) — instruments as folds over the algebra, not bolt-on.
 - **Test framework** — ⬜ cross-lang assert/expect + property-based + golden-vector harness primitive (today: bun:test / xUnit / FsCheck / Rust `#[test]` per-lang — unify the surface). Composes with the DST / test primitives below.
 - **Logic / numeric** (the cross-language number BCL) — ✅ TriBoolean (digital qubit) · ✅ TriBoolean middle-out float · ⬜ `bool?` plain-Kleene · ⬜ int8…int128 / uint8…uint128 · ⬜ float32/64 · ⬜ decimal (dep-behind-port) · ⬜ bigint (dep-behind-port)
 - **Nullable / optional** — ⬜ an `Option<T>` / `T?` / nullable wrapper for **every** primitive, all four langs (F# `option`, C# `Nullable<T>` + reference-nullable, Rust `Option<T>`, TS `T | null`) — one common surface
@@ -212,8 +212,9 @@ G-Set / Bag / Z-set gaps collapse into a single ladder build per language.
   harness that fails non-zero on mismatch (the `tests/cross-verification/zeta-id/`
   pattern is the template).
 
-_Last updated: 2026-06-01 — ZetaId + **G-Set now Tier-1 4-oracle** (C# #6363 merged →
-G-Set joined ZetaId/Observe/TriBoolean in the stable base); Bag (middle rung) TS reference
+_Last updated: 2026-06-01 — ZetaId + **G-Set now 4/4 (Tier 1/2)** (C# #6363 merged →
+G-Set joined ZetaId/Observe/TriBoolean in the stable base; per-lang golden-vector replay,
+no N-way byte-diff harness yet so Tier 1/2 not pure Tier 1); Bag (middle rung) TS reference
 in-flight (#6364). Added wish-list categories the maintainer named: Discovery / transport
 (Nostr, DHT, IPFS, Reticulum-over-IP/-mesh, 802.11ah HaLow — xref'd to existing backlog),
 Observability (structured logging, OTel / `System.Diagnostics.Metrics` Meter model,
