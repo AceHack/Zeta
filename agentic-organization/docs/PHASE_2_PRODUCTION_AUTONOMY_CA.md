@@ -535,6 +535,20 @@ that learns from outcomes while preserving exploration.
 - **lock-in penalty:** consecutive same-hat assignment count remains explicit and
   becomes stronger when confidence is high but outcome diversity is low.
 
+**Checkpoint 2026-06-01: reputation decay and incident retention**
+
+Posterior reputation now accepts an explicit decay policy when projecting
+append-only observations. Old evidence keeps its evidence refs but contributes
+less weight to the posterior, which lowers stale confidence instead of letting
+old success lock an agent into a hat forever. Severe incident-contribution
+observations can retain a configured minimum negative weight under decay, so a
+high-severity incident remains a risk signal until a later review process
+chooses to counterbalance it with durable evidence rather than being erased by
+time alone. RMO candidate materialization now carries review-reversal and
+incident-contribution posteriors into evidence refs, safety-adjusted agent-hat
+reputation, and review-quality scoring, so retained incident evidence changes
+assignment ranking instead of remaining a passive projection.
+
 **Tests and proofs:**
 
 - unit tests for posterior update math;

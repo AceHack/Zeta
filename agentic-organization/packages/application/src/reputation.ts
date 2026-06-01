@@ -93,8 +93,15 @@ export type ReputationReadModel = {
   observationsFor: (key: ReputationKey) => readonly ReputationObservation[];
 };
 
+export type ReputationDecayPolicy = {
+  asOf: string;
+  halfLifeDays?: number | undefined;
+  severeIncidentMinimumWeight?: number | undefined;
+};
+
 export type ProjectReputationReadModelInput = {
   observations: readonly ReputationObservation[];
+  decay?: ReputationDecayPolicy | undefined;
 };
 
 export type ProjectReputationReadModelFromOrgEventsInput = {
@@ -117,6 +124,8 @@ export type ReputationBackedRmoCandidate = RmoHatCandidateReputation & {
     quality: ReputationPosteriorSummary;
     latency: ReputationPosteriorSummary;
     cost: ReputationPosteriorSummary;
+    reviewReversal: ReputationPosteriorSummary;
+    incidentContribution: ReputationPosteriorSummary;
     collaboration: ReputationPosteriorSummary;
     contextRetention: ReputationPosteriorSummary;
     scheduleReliability: ReputationPosteriorSummary;
@@ -154,12 +163,17 @@ type ReputationBucket =
     }
   | {
       kind: "continuous";
-      values: number[];
+      values: WeightedContinuousObservation[];
       lowerIsBetter: boolean;
       unit?: string | undefined;
       latestObservedAt?: string | undefined;
       evidenceRefs: string[];
     };
+
+type WeightedContinuousObservation = {
+  value: number;
+  weight: number;
+};
 
 const BinaryOutcomeClasses = new Set<ReputationOutcomeClass>([
   ReputationOutcomeClass.Quality,
@@ -180,7 +194,7 @@ export function projectReputationReadModel(input: ProjectReputationReadModelInpu
     observations.push(observation);
     observationsByKey.set(key, observations);
 
-    const weight = Math.max(0, observation.signal.weight ?? 1);
+    const weight = effectiveObservationWeight(observation, input.decay);
     const existing = buckets.get(key);
     const latestObservedAt = laterIso(existing?.latestObservedAt, observation.observedAt);
     if (observation.signal.kind === "binary") {
@@ -206,9 +220,7 @@ export function projectReputationReadModel(input: ProjectReputationReadModelInpu
           unit: observation.signal.unit,
           evidenceRefs: [],
         };
-    for (let i = 0; i < Math.max(1, Math.round(weight)); i += 1) {
-      bucket.values.push(observation.signal.value);
-    }
+    if (weight > 0) bucket.values.push({ value: observation.signal.value, weight });
     bucket.lowerIsBetter = observation.signal.lowerIsBetter;
     bucket.unit = observation.signal.unit;
     bucket.latestObservedAt = latestObservedAt;
@@ -235,6 +247,8 @@ export function materializeRmoCandidateReputation(input: MaterializeRmoCandidate
   const quality = input.readModel.summaryFor(key(input, ReputationOutcomeClass.Quality));
   const latency = input.readModel.summaryFor(key(input, ReputationOutcomeClass.Latency));
   const cost = input.readModel.summaryFor(key(input, ReputationOutcomeClass.Cost));
+  const reviewReversal = input.readModel.summaryFor(key(input, ReputationOutcomeClass.ReviewReversal));
+  const incidentContribution = input.readModel.summaryFor(key(input, ReputationOutcomeClass.IncidentContribution));
   const collaboration = input.readModel.summaryFor(key(input, ReputationOutcomeClass.Collaboration));
   const contextRetention = input.readModel.summaryFor(key(input, ReputationOutcomeClass.ContextRetention));
   const scheduleReliability = input.readModel.summaryFor(key(input, ReputationOutcomeClass.ScheduleReliability));
@@ -242,6 +256,8 @@ export function materializeRmoCandidateReputation(input: MaterializeRmoCandidate
     ...quality.evidenceRefs,
     ...latency.evidenceRefs,
     ...cost.evidenceRefs,
+    ...reviewReversal.evidenceRefs,
+    ...incidentContribution.evidenceRefs,
     ...collaboration.evidenceRefs,
     ...contextRetention.evidenceRefs,
     ...scheduleReliability.evidenceRefs,
@@ -250,12 +266,19 @@ export function materializeRmoCandidateReputation(input: MaterializeRmoCandidate
   const qualityScore = summaryScore(quality);
   const latencyScore = continuousLowerIsBetterScore(latency, 60);
   const costScore = continuousLowerIsBetterScore(cost, 10);
+  const reviewReversalScore = summaryScore(reviewReversal);
+  const incidentContributionScore = summaryScore(incidentContribution);
+  const safetyAdjustedQuality = clamp01((qualityScore * 3 + reviewReversalScore + incidentContributionScore) / 5);
   const collaborationScore = summaryScore(collaboration);
   const contextScore = summaryScore(contextRetention);
   const scheduleScore = Math.max(summaryScore(scheduleReliability), latencyScore);
   const evidenceCount = evidenceRefs.length;
+  const reviewReversalUncertainty = reviewReversal.evidenceRefs.length === 0 ? 0 : reviewReversal.uncertainty;
+  const incidentContributionUncertainty = incidentContribution.evidenceRefs.length === 0 ? 0 : incidentContribution.uncertainty;
   const uncertainty = Math.max(
     quality.uncertainty,
+    reviewReversalUncertainty * 0.75,
+    incidentContributionUncertainty,
     collaboration.uncertainty * 0.75,
     contextRetention.uncertainty * 0.5,
   );
@@ -263,10 +286,10 @@ export function materializeRmoCandidateReputation(input: MaterializeRmoCandidate
   return {
     agentId: input.agentId,
     hatId: input.hatId,
-    agentHatReputation: qualityScore,
-    recentOutcomeScore: clamp01((qualityScore * 2 + collaborationScore + contextScore + costScore) / 5),
+    agentHatReputation: safetyAdjustedQuality,
+    recentOutcomeScore: clamp01((safetyAdjustedQuality * 2 + collaborationScore + contextScore + costScore) / 5),
     scheduleReliability: scheduleScore,
-    reviewQuality: qualityScore,
+    reviewQuality: clamp01((qualityScore + reviewReversalScore) / 2),
     qaPassRate: qualityScore,
     completionRate: qualityScore,
     contextFit: contextScore,
@@ -279,6 +302,8 @@ export function materializeRmoCandidateReputation(input: MaterializeRmoCandidate
       quality,
       latency,
       cost,
+      reviewReversal,
+      incidentContribution,
       collaboration,
       contextRetention,
       scheduleReliability,
@@ -425,13 +450,14 @@ function betaSummary(
 }
 
 function normalSummary(
-  values: readonly number[],
+  values: readonly WeightedContinuousObservation[],
   lowerIsBetter: boolean,
   unit: string | undefined,
   latestObservedAt: string | undefined,
   evidenceRefs: readonly string[],
 ): NormalGammaReputationSummary {
-  if (values.length === 0) {
+  const sampleWeight = values.reduce((acc, value) => acc + value.weight, 0);
+  if (values.length === 0 || sampleWeight <= 0) {
     return {
       kind: "normal_gamma",
       sampleCount: 0,
@@ -451,25 +477,25 @@ function normalSummary(
       evidenceRefs: uniqueSorted(evidenceRefs),
     };
   }
-  const mean = values.reduce((acc, value) => acc + value, 0) / values.length;
-  const variance = values.reduce((acc, value) => acc + (value - mean) ** 2, 0) / Math.max(1, values.length - 1);
+  const mean = values.reduce((acc, value) => acc + value.value * value.weight, 0) / sampleWeight;
+  const variance = values.reduce((acc, value) => acc + value.weight * (value.value - mean) ** 2, 0) / Math.max(1, sampleWeight - 1);
   const priorMu = mean;
   const priorKappa = 1;
   const priorAlpha = 1;
   const priorBeta = 1;
-  const posteriorKappa = priorKappa + values.length;
-  const posteriorMu = (priorKappa * priorMu + values.length * mean) / posteriorKappa;
-  const sumSquaredDeviation = values.reduce((acc, value) => acc + (value - mean) ** 2, 0);
-  const posteriorAlpha = priorAlpha + values.length / 2;
+  const posteriorKappa = priorKappa + sampleWeight;
+  const posteriorMu = (priorKappa * priorMu + sampleWeight * mean) / posteriorKappa;
+  const sumSquaredDeviation = values.reduce((acc, value) => acc + value.weight * (value.value - mean) ** 2, 0);
+  const posteriorAlpha = priorAlpha + sampleWeight / 2;
   const posteriorBeta =
     priorBeta +
     0.5 * sumSquaredDeviation +
-    (priorKappa * values.length * (mean - priorMu) ** 2) / (2 * posteriorKappa);
+    (priorKappa * sampleWeight * (mean - priorMu) ** 2) / (2 * posteriorKappa);
   const posteriorPredictiveVariance = posteriorBeta * (posteriorKappa + 1) / (posteriorAlpha * posteriorKappa);
   const predictiveStdDev = Math.sqrt(posteriorPredictiveVariance);
   return {
     kind: "normal_gamma",
-    sampleCount: values.length,
+    sampleCount: rounded(sampleWeight),
     mean: rounded(mean),
     variance: rounded(variance),
     posteriorMu: rounded(posteriorMu),
@@ -496,6 +522,36 @@ function normalizeBinarySuccess(observation: ReputationObservation): boolean {
     return !observation.signal.success;
   }
   return observation.signal.success;
+}
+
+function effectiveObservationWeight(
+  observation: ReputationObservation,
+  decay: ReputationDecayPolicy | undefined,
+): number {
+  const baseWeight = Math.max(0, observation.signal.weight ?? 1);
+  if (decay === undefined || baseWeight === 0) return baseWeight;
+  const decayed = baseWeight * decayMultiplier(observation.observedAt, decay);
+  if (isSevereIncidentContribution(observation)) {
+    return Math.max(decayed, decay.severeIncidentMinimumWeight ?? 0);
+  }
+  return decayed;
+}
+
+function decayMultiplier(observedAt: string, decay: ReputationDecayPolicy): number {
+  const halfLifeDays = decay.halfLifeDays ?? 90;
+  if (!Number.isFinite(halfLifeDays) || halfLifeDays <= 0) return 1;
+  const ageMs = Date.parse(decay.asOf) - Date.parse(observedAt);
+  if (!Number.isFinite(ageMs) || ageMs <= 0) return 1;
+  const ageDays = ageMs / 86_400_000;
+  return 0.5 ** (ageDays / halfLifeDays);
+}
+
+function isSevereIncidentContribution(observation: ReputationObservation): boolean {
+  return (
+    observation.outcomeClass === ReputationOutcomeClass.IncidentContribution &&
+    observation.signal.kind === "binary" &&
+    observation.signal.success === true
+  );
 }
 
 function summaryScore(summary: ReputationPosteriorSummary): number {

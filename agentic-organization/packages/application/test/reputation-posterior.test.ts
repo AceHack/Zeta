@@ -67,6 +67,123 @@ test("posterior projection learns per agent, hat, work type, and outcome class f
   }
 });
 
+test("posterior projection decays stale evidence while preserving evidence refs", () => {
+  const readModel = projectReputationReadModel({
+    observations: [
+      quality("agent-stale", true, {
+        observedAt: "2026-01-01T00:00:00.000Z",
+        evidenceRef: "evidence:agent-stale:old-pass",
+      }),
+      quality("agent-recent", true, {
+        observedAt: "2026-05-31T12:00:00.000Z",
+        evidenceRef: "evidence:agent-recent:recent-pass",
+      }),
+    ],
+    decay: {
+      asOf: "2026-05-31T12:00:00.000Z",
+      halfLifeDays: 30,
+    },
+  });
+
+  const stale = readModel.summaryFor({
+    organizationId: "org-1",
+    agentId: "agent-stale",
+    hatId: "backend_implementer",
+    workType: "code_change",
+    outcomeClass: ReputationOutcomeClass.Quality,
+  });
+  const recent = readModel.summaryFor({
+    organizationId: "org-1",
+    agentId: "agent-recent",
+    hatId: "backend_implementer",
+    workType: "code_change",
+    outcomeClass: ReputationOutcomeClass.Quality,
+  });
+
+  ok(stale.sampleCount < recent.sampleCount);
+  ok(stale.mean < recent.mean);
+  ok(stale.uncertainty > recent.uncertainty);
+  deepEqual(stale.evidenceRefs, ["evidence:agent-stale:old-pass"]);
+});
+
+test("severe incident contribution retains a minimum negative weight under decay", () => {
+  const readModel = projectReputationReadModel({
+    observations: [
+      {
+        ...quality("agent-incident", true),
+        outcomeClass: ReputationOutcomeClass.IncidentContribution,
+        observedAt: "2026-01-01T00:00:00.000Z",
+        signal: { kind: "binary", success: true, weight: 1 },
+        evidenceRef: "evidence:agent-incident:sev1",
+      },
+    ],
+    decay: {
+      asOf: "2026-05-31T12:00:00.000Z",
+      halfLifeDays: 1,
+      severeIncidentMinimumWeight: 0.75,
+    },
+  });
+
+  const incident = readModel.summaryFor({
+    organizationId: "org-1",
+    agentId: "agent-incident",
+    hatId: "backend_implementer",
+    workType: "code_change",
+    outcomeClass: ReputationOutcomeClass.IncidentContribution,
+  });
+
+  equal(incident.kind, "beta_bernoulli");
+  equal(incident.sampleCount, 0.75);
+  ok(incident.mean < 0.5);
+  deepEqual(incident.evidenceRefs, ["evidence:agent-incident:sev1"]);
+});
+
+test("incident and review reversal posteriors lower RMO candidate reputation", () => {
+  const readModel = projectReputationReadModel({
+    observations: [
+      quality("agent-clean", true),
+      quality("agent-clean", true),
+      incidentContribution("agent-clean", false),
+      reviewReversal("agent-clean", false),
+      quality("agent-risk", true),
+      quality("agent-risk", true),
+      incidentContribution("agent-risk", true),
+      reviewReversal("agent-risk", true),
+    ],
+    decay: {
+      asOf: "2026-05-31T12:00:00.000Z",
+      halfLifeDays: 30,
+      severeIncidentMinimumWeight: 0.75,
+    },
+  });
+
+  const clean = materializeRmoCandidateReputation({
+    readModel,
+    organizationId: "org-1",
+    agentId: "agent-clean",
+    hatId: "backend_implementer",
+    workType: "code_change",
+    currentLoad: 0,
+    consecutiveAssignmentCount: 0,
+    recentSameHatAssignments: 0,
+  });
+  const risky = materializeRmoCandidateReputation({
+    readModel,
+    organizationId: "org-1",
+    agentId: "agent-risk",
+    hatId: "backend_implementer",
+    workType: "code_change",
+    currentLoad: 0,
+    consecutiveAssignmentCount: 0,
+    recentSameHatAssignments: 0,
+  });
+
+  ok(clean.agentHatReputation > risky.agentHatReputation);
+  ok(clean.reviewQuality > risky.reviewQuality);
+  ok((risky.posterior?.incidentContribution.mean ?? 1) < 0.5);
+  ok(risky.posterior?.evidenceRefs.includes("evidence:agent-risk:incident") ?? false);
+});
+
 test("RMO candidates are materialized from posterior evidence with uncertainty and bounded lock-in penalties", () => {
   const readModel = projectReputationReadModel({
     observations: [
@@ -305,5 +422,31 @@ function cost(agentId: string, value: number): Parameters<typeof projectReputati
     observedAt,
     signal: { kind: "continuous", value, unit: "usd", lowerIsBetter: true },
     evidenceRef: `evidence:${agentId}:cost:${value}`,
+  };
+}
+
+function incidentContribution(agentId: string, contributed: boolean): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
+  return {
+    organizationId: "org-1",
+    agentId,
+    hatId: "backend_implementer",
+    workType: "code_change",
+    outcomeClass: ReputationOutcomeClass.IncidentContribution,
+    observedAt,
+    signal: { kind: "binary", success: contributed },
+    evidenceRef: `evidence:${agentId}:incident`,
+  };
+}
+
+function reviewReversal(agentId: string, reversed: boolean): Parameters<typeof projectReputationReadModel>[0]["observations"][number] {
+  return {
+    organizationId: "org-1",
+    agentId,
+    hatId: "backend_implementer",
+    workType: "code_change",
+    outcomeClass: ReputationOutcomeClass.ReviewReversal,
+    observedAt,
+    signal: { kind: "binary", success: reversed },
+    evidenceRef: `evidence:${agentId}:review-reversal`,
   };
 }
