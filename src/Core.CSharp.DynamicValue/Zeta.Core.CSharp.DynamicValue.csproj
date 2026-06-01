@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Zeta.Core.CSharp</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.DynamicValue</AssemblyName>
+    <!-- CA1720/CA1716: the case + tag names (Int/Float/String/Object) are the canonical
+         self-describing data-model vocabulary, shared with the F# DynamicValue shape and the
+         DynamicValueType tag across the four oracles. Renaming would diverge the C# oracle from
+         the shared shape; the names are intentional, qualified (DynamicValue.Object), and match the
+         JSON/CBOR data model — suppress rather than diverge. -->
+    <NoWarn>$(NoWarn);CA1720;CA1716</NoWarn>
+  </PropertyGroup>
+
+  <!-- DynamicValue (oracle #3 of TS/F#/C#/Rust) — the universal self-describing-payload
+       primitive: a runtime value tree for shapes NOT known at compile time. Conforms to the
+       F# canonical shape (src/Core/DynamicValue.fs). Self-contained, ZERO external dependencies
+       (supply-chain doctrine). namespace is Zeta.Core.CSharp (assembly is …DynamicValue) so the
+       namespace doesn't collide with the DynamicValue type. -->
+
+</Project>
