@@ -458,6 +458,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0938](backlog/P1/B-0938-automated-background-review-thread-resolution-agentic-pipeline-aaron-2026-05-29.md)** Automated Background Review Thread Resolution agentic pipeline — enables background loops to actively ingest unresolved threads, self-correct target code/specs, verify via compiler gates, and resolve threads on GitHub (operator 2026-05-29)
 - [ ] **[B-0944](backlog/P1/B-0944-tri-boolean-core-primitives-digital-qubit-floating-point-multi-language-build-compiler-parity-non-byzantine-bft-aaron-2026-05-30.md)** Tri-boolean core primitives (digital qubit + tri-boolean floating point) -- multi-language build (TS/F#/C#/Rust); cross-language compiler-parity = non-Byzantine BFT consensus
 - [ ] **[B-0956](backlog/P1/B-0956-migrate-backlog-sequential-b-nnnn-ids-to-zetaid-workitem-keys-conflict-free-no-cross-agent-id-consensus-aaron-otto-2026-05-31.md)** Migrate work-items to ZetaId WorkItem keys (conflict-free, no cross-agent ID consensus) — type ∈ {task, bug}; backlog is a STATE, not a type
+- [ ] **[B-0957](backlog/P1/B-0957-first-class-labels-tags-scopes-on-every-gset-zset-entity-deferred-to-human-state-label-otel-baggage-di-scope-propagation-aaron-otto-2026-05-31.md)** First-class labels/tags + scopes on every G-Set/Z-set entity — deferred-to-human state-label; OTel-baggage / DI-scope propagation; the metadata layer policies + decentralized identity build on
 
 ## P2 — research-grade
 
