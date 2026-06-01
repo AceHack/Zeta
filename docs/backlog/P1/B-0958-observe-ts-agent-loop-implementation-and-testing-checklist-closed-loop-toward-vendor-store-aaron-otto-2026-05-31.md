@@ -6,7 +6,7 @@ title: "observe.ts agent-loop — implementation + testing checklist (the closed
 effort: L
 ask: aaron 2026-05-31
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-06-01
 type: umbrella
 decomposition: umbrella
 depends_on: []
@@ -24,12 +24,12 @@ tags: [observe, agent-loop, event-sourcing, local-llm, execute, sovereign, testi
 
 ## The directive (Aaron 2026-05-31)
 
-> *"lets take our time, save this list somewhere as something we can check off so we both won't
-> forget what we are working on with observe.ts lol"*
+> _"lets take our time, save this list somewhere as something we can check off so we both won't
+> forget what we are working on with observe.ts lol"_
 
 A shared, checkable tracker for the agent-loop work so the thread isn't lost between sessions. Not
-a rush — Aaron 2026-05-31: *"we got lots of testing to do before we add to vendor agent stores but
-this is the right shape."* Check items off as they land; add rows as new gaps surface.
+a rush — Aaron 2026-05-31: _"we got lots of testing to do before we add to vendor agent stores but
+this is the right shape."_ Check items off as they land; add rows as new gaps surface.
 
 ## The loop (what we're building)
 
@@ -65,11 +65,21 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
 - [ ] **Effectful action kinds in `execute`** — `do_item` first, then `respond_to_operator`,
       `decompose`, `explore`, `play`, `edit_grammar`. **With the executed-event envelope**
       (`ActionExecutionStarted` / `Succeeded` / `Failed` / `ModeChanged`) so **replay folds facts,
-      never redoes commands** (the design-review caution). *This is the #1 gap — "the loop including
-      actions" isn't real until the meaningful actions execute.*
+      never redoes commands** (the design-review caution). _This is the #1 gap — "the loop including
+      actions" isn't real until the meaningful actions execute._
 - [ ] **End-to-end closed-loop integration test** — `loadWorld → observeWithLlm → execute →
-      folderSink → loadWorld` as ONE flow against a real temp git repo (today every piece is unit-
-      tested in isolation with mocks/fakes; the closed loop isn't integration-tested).
+  folderSink → loadWorld` as ONE flow against a real temp git repo (today every piece is unit-
+      tested in isolation with mocks/fakes; the closed loop isn't integration-tested). _(Partial —
+      logic-level done; real-git variant remains; see sub-items.)_
+  - [x] **Closed-loop LOGIC integration** — `tools/observe/closed-loop.test.ts` (#6340):
+        `observeWithLlm(mock backend) → execute → fold` as one flow, with the KEY invariant
+        **`fold(initial, sink.appended) === executed world`** (the durable log reconstructs the
+        executed state — "state is a projection of the event log" proven through the real
+        execute+sink seam, not just in-memory `simulate`). Mock backend + fake sink (no ollama,
+        no git) so CI is an always-green shield. Covers single-tick, multi-tick loop, DST
+        determinism, and the not-yet-executable boundary.
+  - [ ] **Real-temp-git-repo variant** — same flow against a real temp repo through the real
+        `folderSink` + `gitCommitToMain` (composes the next item).
 - [ ] **Real-temp-git-repo test of `gitCommitToMain`** — the sovereign-transport path is currently
       logic-only (every unit test injects a fake `commit`); a real `git init` temp repo would
       actually run on-main-guard + ahead-check + commit + push + rebase + autostash + targeted undo.
@@ -90,14 +100,14 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
       golden-vectors first, then the loop. The 4-language fold (B-0867.28) is the proof the pattern
       works.
 
-  | Language | Role on the loop | Frontier |
-  |---|---|---|
-  | **TS** | LEAD | git-native / **text** frontier (pioneers the folder-direct-to-main sink) |
-  | **F#** | LEAD | filesystem / **binary-efficient** frontier (pioneers the stateful-binary sink) |
-  | **C#** | **meet in the middle** | both formats — .NET sibling, so it reaches the binary side; distribution-tier, so it reaches the git-native side |
+  | Language | Role on the loop       | Frontier                                                                                                              |
+  | -------- | ---------------------- | --------------------------------------------------------------------------------------------------------------------- |
+  | **TS**   | LEAD                   | git-native / **text** frontier (pioneers the folder-direct-to-main sink)                                              |
+  | **F#**   | LEAD                   | filesystem / **binary-efficient** frontier (pioneers the stateful-binary sink)                                        |
+  | **C#**   | **meet in the middle** | both formats — .NET sibling, so it reaches the binary side; distribution-tier, so it reaches the git-native side      |
   | **Rust** | **meet in the middle** | both formats — native/low-level, so it reaches the binary side; ubiquitous tooling, so it reaches the git-native side |
 
-  **Why meet-in-the-middle = the 4-oracle**: "frontier" means *who pioneers*, NOT
+  **Why meet-in-the-middle = the 4-oracle**: "frontier" means _who pioneers_, NOT
   language-exclusivity. Each format needs **≥2 independent implementations** or the
   golden-vectors cross-check is not Byzantine-fault-tolerant — one buggy compiler could agree with
   itself. TS+F# each LEAD one format; **C# and Rust meet in the middle by implementing BOTH**, so
@@ -105,6 +115,7 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
   IS the **4-oracle** ("the compilers don't lie"). Each frontier needs its OWN golden-vectors
   (text round-trip AND binary round-trip → same logical events) so the two frontiers stay
   parity-locked.
+
 - [ ] **F# dual-track backend — git-native + filesystem-binary-efficient** (Aaron 2026-05-31).
       The EventSink today is folder-direct-to-main (git-native). The DB-design ADR's "two backends"
       means the loop is backend-agnostic: a **git-native** sink AND a **filesystem binary-efficient**
@@ -125,6 +136,6 @@ only effectful seam; the folder sink is the sovereign transport. Full picture:
 ## Status
 
 Open. The loop's skeleton is fully landed (controller + execute + sink + loadWorld); the work left
-is making the *meaningful* actions execute (with the executed-event envelope) and the *real* tests
+is making the _meaningful_ actions execute (with the executed-event envelope) and the _real_ tests
 (end-to-end, real-git, real-model) that a vendor-store-grade artifact needs. Take it slow; check
 items off as they land.
