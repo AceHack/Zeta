@@ -38,6 +38,7 @@
     <Compile Include="Bonsai/Bonsai.Tests.fs" />
     <Compile Include="Bonsai/Resume.Tests.fs" />
     <Compile Include="RangeSet.Tests.fs" />
+    <Compile Include="DynamicValue.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
