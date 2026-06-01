@@ -25,6 +25,8 @@
 //! cross-language golden vectors are byte-stable.
 
 use core::cmp::Ordering;
+use core::iter::Sum;
+use core::ops::{Add, Neg, Sub};
 
 /// One Z-set entry: a key `e` with a strictly-nonzero signed weight `w`
 /// (`!= 0` in a canonical Z-set; may be negative).
@@ -224,6 +226,72 @@ impl<T: Ord + Clone> ZSet<T> {
     }
 }
 
+// ── generic-math abelian-group surface (native Rust idiom, zero-dep) ─────────
+// Rust has no `System.Numerics`, so we push our own port — the `std::ops` traits
+// ("numerics like dotnet as our interface, push to other langs if they don't
+// have", Aaron 2026-06-01). Z-set is an abelian GROUP (identity + associative
+// `union` + inverse `negate`), so — unlike G-Set/Bag (`Add` + `Default` + `Sum`
+// only) — it surfaces `Sub` + `Neg` too. `Default` is std's identity-value trait
+// (the `Zero` analog; no `num_traits` dep, per the zero-prod-dep doctrine); `+`
+// IS `union`, `-a` IS `negate`, `a - b` IS `union(negate)`; `Sum` folds a
+// collection. NOT a numeric ring product (the scalar is per-element `scale`).
+//
+// All three operators are implemented for `&ZSet<T>` (ref-operator, `&a + &b`),
+// NOT `ZSet<T>` by value: the type has an inherent `add(&self, x: T)` (add ONE
+// key), and a by-value `Add for ZSet` would let `Add::add(self, Self)` win method
+// resolution over that inherent method for owned receivers — silently breaking
+// `z.add(key)`. The ref-operator is the idiomatic Rust form for non-`Copy`
+// collections and keeps both (mirrors the G-Set #6469 fix).
+
+impl<T: Ord + Clone> Add for &ZSet<T> {
+    type Output = ZSet<T>;
+
+    /// `&a + &b` — per-key signed sum (the abelian-group operation), the same merge
+    /// as [`ZSet::union`]. Ref-operator (see the module note) so it never collides
+    /// with the inherent element-wise [`ZSet::add`]. NOT idempotent (`&a + &a`
+    /// doubles every weight).
+    fn add(self, rhs: &ZSet<T>) -> ZSet<T> {
+        self.union(rhs)
+    }
+}
+
+impl<T: Ord + Clone> Neg for &ZSet<T> {
+    type Output = ZSet<T>;
+
+    /// `-&a` — the abelian-group inverse (flip every sign), the same as
+    /// [`ZSet::negate`], so `&a + (-&a)` is empty (the law a Bag cannot satisfy).
+    fn neg(self) -> ZSet<T> {
+        self.negate()
+    }
+}
+
+impl<T: Ord + Clone> Sub for &ZSet<T> {
+    type Output = ZSet<T>;
+
+    /// `&a - &b == &a + (-&b)` — retraction expressed directly (`union` with the
+    /// negation of `rhs`).
+    fn sub(self, rhs: &ZSet<T>) -> ZSet<T> {
+        self.union(&rhs.negate())
+    }
+}
+
+impl<T: Ord + Clone> Default for ZSet<T> {
+    /// The additive-monoid identity (the empty Z-set) — the Rust `Default` analog of
+    /// F# `Zero` / C# `AdditiveIdentity`.
+    fn default() -> Self {
+        Self::empty()
+    }
+}
+
+impl<T: Ord + Clone> Sum for ZSet<T> {
+    /// Fold a collection of Z-sets through the group (`+`), so `iter.sum()`
+    /// aggregates them with retraction-to-0 drop. `reduce` folds from the FIRST
+    /// element (no identity-clone of the seed); empty input yields `Default` (empty).
+    fn sum<I: Iterator<Item = ZSet<T>>>(iter: I) -> Self {
+        iter.reduce(|acc, x| &acc + &x).unwrap_or_default()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -351,5 +419,51 @@ mod tests {
         );
         assert_eq!(a.add_w("z".to_string(), 0), a); // w == 0 no-op
         assert_eq!(a.add_w("a".to_string(), -1).to_entries(), vec![e("b", 2)]); // retract a to 0
+    }
+
+    // ── generic-math abelian-group surface (Add/Sub/Neg + Default + Sum) ──────
+
+    #[test]
+    fn generic_math_operators_equal_methods() {
+        let a = zset(&[("a", 1), ("b", 2)]);
+        let b = zset(&[("b", 1), ("c", 3)]);
+        assert_eq!(&a + &b, a.union(&b)); // + == union
+        assert_eq!(-&a, a.negate()); // -a == negate
+        assert_eq!(&a - &b, a.union(&b.negate())); // a - b == union(negate)
+    }
+
+    #[test]
+    fn generic_math_default_is_empty_and_identity() {
+        let a = zset(&[("a", 1), ("b", 2)]);
+        assert!(ZSet::<String>::default().is_empty()); // Default == empty (the Zero analog)
+        assert_eq!(&ZSet::<String>::default() + &a, a); // identity + a = a
+        assert_eq!(&a + &ZSet::<String>::default(), a); // a + identity = a
+    }
+
+    #[test]
+    fn generic_math_abelian_group_inverse() {
+        // a + (-a) = empty and a - a = empty — the law a Bag's monoid cannot satisfy.
+        let a = zset(&[("a", 1), ("b", -2), ("c", 3)]);
+        assert!((&a + &(-&a)).is_empty());
+        assert!((&a - &a).is_empty());
+    }
+
+    #[test]
+    fn generic_math_not_idempotent_doubles() {
+        let a = zset(&[("a", 1), ("b", -3)]);
+        // SUM, not set-union: doubles every weight (the Bag/Z-set step away from G-Set).
+        assert_eq!((&a + &a).to_entries(), vec![e("a", 2), e("b", -6)]);
+    }
+
+    #[test]
+    fn generic_math_sum_folds_with_retraction() {
+        let zs = vec![
+            zset(&[("a", 1)]),
+            zset(&[("a", 1), ("b", 2)]),
+            zset(&[("b", -2), ("c", 5)]),
+        ];
+        let merged: ZSet<String> = zs.into_iter().sum();
+        // b nets to 0 and drops
+        assert_eq!(merged.to_entries(), vec![e("a", 2), e("c", 5)]);
     }
 }
