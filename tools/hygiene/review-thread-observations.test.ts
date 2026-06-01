@@ -9,6 +9,7 @@ import {
   loadObservationStore,
   parseArgs,
   recordReviewThreadObservation,
+  recordReviewThreadObservationBatch,
   writeObservationStore,
 } from "./review-thread-observations.ts";
 import type { ReviewThreadObservation } from "./divergence-shard.ts";
@@ -278,6 +279,35 @@ describe("recordReviewThreadObservation", () => {
       expect(result.compared).toBe(0);
       expect(result.filed).toEqual([]);
       expect(loadObservationStore(root).observations).toHaveLength(2);
+    });
+  });
+
+  test("records a batch and files disagreements against earlier batch items", () => {
+    withTempRoot((root) => {
+      const results = recordReviewThreadObservationBatch({
+        repoRoot: root,
+        observations: [
+          {
+            observedAt: TICK,
+            tick: TICK,
+            operativeAuthorization: AUTH,
+            observation: observation("otto", "resolve"),
+          },
+          {
+            observedAt: "2026-06-01T11:10:00Z",
+            tick: "2026-06-01T11:10:00Z",
+            operativeAuthorization: AUTH,
+            observation: observation("codex-loop", "needs-fix"),
+          },
+        ],
+      });
+
+      expect(results).toHaveLength(2);
+      expect(results[0]!.compared).toBe(0);
+      expect(results[1]!.compared).toBe(1);
+      expect(results[1]!.filed).toHaveLength(1);
+      expect(loadObservationStore(root).observations).toHaveLength(2);
+      expect(divergenceFiles(root)).toHaveLength(1);
     });
   });
 
