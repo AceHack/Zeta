@@ -185,6 +185,8 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 # Agent + peer-AI CLIs (claude/codex/gemini) bun-global from manifests/agent-clis.
 # Best-effort: warns + continues on failure (auth/login is the operator's; never bricks install).
 "$SETUP_DIR/common/agent-clis.sh"
+# Expose repo package bins (ace, zeta-shadow) on PATH via `bun link`. Best-effort.
+"$SETUP_DIR/common/repo-bins.sh"
 # Non-package-manager CLIs (grok/cursor-agent/kiro/hermes/forge) via their own one-line
 # installers from manifests/one-liner-tools. Detect-first + best-effort (never bricks install).
 "$SETUP_DIR/common/one-liner-tools.sh"

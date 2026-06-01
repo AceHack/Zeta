@@ -19,6 +19,7 @@
     "shadow": "bun tools/shadow/zeta-shadow.ts"
   },
   "bin": {
+    "ace": "tools/ace/ace.ts",
     "zeta-shadow": "tools/shadow/zeta-shadow.ts"
   },
   "devDependencies": {

@@ -217,6 +217,17 @@ try {
 # 5. claude-code via bun --global (bun provided by mise) -- identical to Unix.
 Invoke-Tool { mise exec -- bun install --global '@anthropic-ai/claude-code' } 'bun install -g claude-code'
 
+# 5b. Expose the repo's package bins (ace, zeta-shadow) on PATH via `bun link` (the package.json
+# `bin` map declares them). Best-effort + GRACEFUL (Invoke-ToolSoft): a failure WARNS and
+# continues -- convenience commands, not hard deps; never brick install. Parity with
+# common/repo-bins.sh on Unix.
+Push-Location $RepoRoot
+try {
+  $rbCode = Invoke-ToolSoft { mise exec -- bun link }
+  if ($rbCode -eq 0) { Write-Host "ok bun link -- ace + zeta-shadow linked (open a new shell to pick up bun's global bin on PATH)" }
+  else { Write-Host "warn: 'bun link' failed (exit $rbCode); run it in the repo root manually; continuing" }
+} finally { Pop-Location }
+
 # 6. local-LLM core primitive -- pull the pinned model (the ollama BINARY is installed by the
 #    manifest loop in step 2; ollama is `optional` there, so on a disk-constrained container it may
 #    be ABSENT -- this step already handles that gracefully via the `-not (Have ollama)` branch).
