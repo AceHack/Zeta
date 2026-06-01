@@ -49,6 +49,43 @@ type Bag<'T when 'T : comparison> =
 
     static member Empty : Bag<'T> = Bag(ImmutableArray<BagEntry<'T>>.Empty)
 
+    /// The additive-monoid identity (generic-math `Zero`) — an alias for `Empty`,
+    /// recognized by F# SRTP / `LanguagePrimitives.GenericZero` + generic numeric code.
+    /// Bag is an additive, **commutative** monoid (identity + associative per-key-sum
+    /// `union`, **no inverse**, and — unlike G-Set — **NOT idempotent**: `a + a` doubles
+    /// every count), so it surfaces `Zero` + `(+)` only — never `INumber` (no negation /
+    /// order / multiplication). The Z-set completes this monoid into an abelian group
+    /// (signed ℤ weights, where retraction is the inverse). `(+)` IS `union`.
+    static member Zero : Bag<'T> = Bag<'T>.Empty
+
+    /// The additive operator (generic-math `(+)`): the per-key SUM of two sorted bags,
+    /// kept sorted + count-positive (overflow-checked via `Checked.(+)`). The canonical
+    /// home of the merge; `Bag.union` delegates here.
+    static member (+) (a: Bag<'T>, b: Bag<'T>) : Bag<'T> =
+        let xa = if a.items.IsDefault then ImmutableArray<BagEntry<'T>>.Empty else a.items
+        let xb = if b.items.IsDefault then ImmutableArray<BagEntry<'T>>.Empty else b.items
+        if xa.IsEmpty then Bag<'T>(xb)
+        elif xb.IsEmpty then Bag<'T>(xa)
+        else
+            let out = ImmutableArray.CreateBuilder<BagEntry<'T>>(xa.Length + xb.Length)
+            let mutable i = 0
+            let mutable j = 0
+            while i < xa.Length && j < xb.Length do
+                let c = compare xa.[i].Key xb.[j].Key
+                if c < 0 then
+                    out.Add(xa.[i]); i <- i + 1
+                elif c > 0 then
+                    out.Add(xb.[j]); j <- j + 1
+                else
+                    out.Add({ Key = xa.[i].Key; Count = Checked.(+) xa.[i].Count xb.[j].Count })
+                    i <- i + 1
+                    j <- j + 1
+            while i < xa.Length do
+                out.Add(xa.[i]); i <- i + 1
+            while j < xb.Length do
+                out.Add(xb.[j]); j <- j + 1
+            Bag<'T>(out.ToImmutable())
+
     /// The number of DISTINCT keys (the support size).
     member this.Count =
         if this.items.IsDefault then 0 else this.items.Length
@@ -187,31 +224,9 @@ module Bag =
     /// count-positive. Commutative, associative, and the empty bag is the
     /// identity — but NOT idempotent: `union a a` doubles every count. This
     /// commutative monoid is the step the Z-set completes into an abelian group
-    /// (signed ℤ weights, where retraction is the inverse).
-    let union (a: Bag<'T>) (b: Bag<'T>) : Bag<'T> =
-        let xa = if a.items.IsDefault then ImmutableArray<BagEntry<'T>>.Empty else a.items
-        let xb = if b.items.IsDefault then ImmutableArray<BagEntry<'T>>.Empty else b.items
-        if xa.IsEmpty then Bag<'T>(xb)
-        elif xb.IsEmpty then Bag<'T>(xa)
-        else
-            let out = ImmutableArray.CreateBuilder<BagEntry<'T>>(xa.Length + xb.Length)
-            let mutable i = 0
-            let mutable j = 0
-            while i < xa.Length && j < xb.Length do
-                let c = compare xa.[i].Key xb.[j].Key
-                if c < 0 then
-                    out.Add(xa.[i]); i <- i + 1
-                elif c > 0 then
-                    out.Add(xb.[j]); j <- j + 1
-                else
-                    out.Add({ Key = xa.[i].Key; Count = addCounts xa.[i].Count xb.[j].Count })
-                    i <- i + 1
-                    j <- j + 1
-            while i < xa.Length do
-                out.Add(xa.[i]); i <- i + 1
-            while j < xb.Length do
-                out.Add(xb.[j]); j <- j + 1
-            Bag<'T>(out.ToImmutable())
+    /// (signed ℤ weights, where retraction is the inverse). Delegates to the type's
+    /// generic-math `(+)` operator: same merge, one canonical implementation.
+    let union (a: Bag<'T>) (b: Bag<'T>) : Bag<'T> = a + b
 
     /// Increment `x`'s count by 1 (`union` with a singleton). NOT idempotent.
     let add (x: 'T) (g: Bag<'T>) : Bag<'T> = union g (singleton x 1L)

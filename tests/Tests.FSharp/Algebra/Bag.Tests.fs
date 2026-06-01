@@ -53,6 +53,38 @@ let ``union identity: union a empty = a and union empty a = a`` () =
     Bag.union a Bag.empty<string> |> Bag.toList |> should equal (Bag.toList a)
     Bag.union Bag.empty<string> a |> Bag.toList |> should equal (Bag.toList a)
 
+// ─── generic-math additive-monoid surface (Zero + (+)) ─────────────────────
+// Bag surfaces the native F# generic-math idiom `Zero` + `(+)` (NOT `INumber` — no
+// inverse / order / product). Like G-Set it's an additive commutative monoid, but —
+// unlike G-Set — NOT idempotent (`a + a` doubles counts). These lock `(+)` to `union`
+// + `Zero` to `empty` so generic numeric code can aggregate a Bag.
+
+[<Fact>]
+let ``(+) merges to the explicit per-key sum (semantics, not just delegation)`` () =
+    let a = Bag.ofEntries [ ("a", 1L); ("b", 2L) ]
+    let b = Bag.ofEntries [ ("b", 1L); ("c", 3L) ]
+    (a + b) |> Bag.toList |> should equal [ ("a", 1L); ("b", 3L); ("c", 3L) ]
+
+[<Fact>]
+let ``Zero is the additive identity: Zero + a = a and a + Zero = a`` () =
+    let a = Bag.ofEntries [ ("a", 1L); ("b", 2L) ]
+    (Bag<string>.Zero + a) |> should equal a
+    (a + Bag<string>.Zero) |> should equal a
+
+[<Fact>]
+let ``Zero equals empty and is recognized by GenericZero`` () =
+    Bag<string>.Zero |> should equal Bag.empty<string>
+    LanguagePrimitives.GenericZero<Bag<string>> |> should equal Bag.empty<string>
+
+[<Fact>]
+let ``(+) commutative + associative but NOT idempotent (the Bag distinction)`` () =
+    let a = Bag.ofEntries [ ("a", 1L); ("b", 2L) ]
+    let b = Bag.ofEntries [ ("b", 1L); ("c", 3L) ]
+    let c = Bag.ofEntries [ ("c", 5L) ]
+    (a + b) |> should equal (b + a) // commutative
+    ((a + b) + c) |> should equal (a + (b + c)) // associative
+    (a + a) |> Bag.toList |> should equal [ ("a", 2L); ("b", 4L) ] // NOT idempotent — doubles
+
 [<Fact>]
 let ``multiplicity + contains via binary search`` () =
     let a = Bag.ofEntries [ ("a", 3L); ("c", 1L) ]
