@@ -356,7 +356,8 @@ test("runAgentCliCycle passes schedule blocks into observe so execution can fail
   equal(result.exitCode, 1);
   equal(result.actionResult?.outcome, "rejected");
   if (result.actionResult?.outcome !== "rejected") return;
-  equal(result.actionResult.reason, ActRejectionReason.NoSelectableSlot);
+  equal(result.actionResult.reason, ActRejectionReason.SlotNotSelectable);
+  ok(result.actionResult.message.includes("requires a current schedule block"));
   equal(dispatched, false);
   ok(stdout.join("\n").includes("[04] F commit.a execute"));
   ok(stdout.join("\n").includes("requires a current schedule block"));
@@ -562,7 +563,7 @@ test("runAgentCliCycle status evidence includes hierarchy priority scope when hi
   equal(result.evidence?.statusHierarchyPriorityScope, "department_initiatives");
 });
 
-test("runAgentCliCycle returns typed no_selectable_slot feedback for all-vetoed menus", async () => {
+test("runAgentCliCycle rejects vetoed work slots while keeping all-vetoed meta controls visible", async () => {
   let dispatched = false;
   const stdout: string[] = [];
   const result = await runAgentCliCycle({
@@ -598,14 +599,16 @@ test("runAgentCliCycle returns typed no_selectable_slot feedback for all-vetoed 
   equal(result.exitCode, 1);
   equal(result.actionResult?.outcome, "rejected");
   if (result.actionResult?.outcome !== "rejected") return;
-  equal(result.actionResult.reason, "no_selectable_slot");
-  equal(result.actionResult.message, "no TriAvailability.True slots in rendered menu");
+  equal(result.actionResult.reason, "slot_not_selectable");
+  equal(result.actionResult.message, "tenant freeze blocks compose");
   equal(result.evidence?.selectedIndex, 4);
-  equal(result.evidence?.vetoCount, 2);
-  equal(result.evidence?.trueSlotCount, 0);
+  equal(result.evidence?.vetoCount, 4);
+  equal(result.evidence?.trueSlotCount, 2);
   equal(dispatched, false);
   ok(stdout.join("\n").includes("[04] F commit.a compose (tenant freeze blocks compose)"));
   ok(stdout.join("\n").includes("[05] F commit.b block (tenant freeze blocks block)"));
+  ok(stdout.join("\n").includes("[12] T meta.refresh refresh"));
+  ok(stdout.join("\n").includes("[13] T meta.status status / glass-halo"));
 });
 
 test("runAgentCliCycle renders prompt-flow tasks and loads selected context", async () => {

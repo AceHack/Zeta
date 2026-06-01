@@ -844,9 +844,11 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
   }
   if (readout.options.length > 0) {
     renderScopeSlots(rendered, readout.scope);
-    renderMetaSlots(rendered, readout, options.status, options.escalation, options.escalationDisabledReason);
     const promptFlowPage = renderPromptFlowSlots(rendered, readout, options.promptFlows, options.hatAssignmentId, options.promptFlowPage);
     page = promptFlowPage === undefined ? undefined : { promptFlows: promptFlowPage };
+  }
+  if (readout.options.length > 0 || readout.vetoedOptions.length > 0) {
+    renderMetaSlots(rendered, readout, options.status, options.escalation, options.escalationDisabledReason);
   }
   return {
     slots: rendered,

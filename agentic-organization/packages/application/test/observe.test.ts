@@ -681,6 +681,65 @@ test("observe returns an all-vetoed readout so renderMenu16 can show dark slots 
   equal(menu.slots[5]?.action?.actionType, "block");
 });
 
+test("renderMenu16 keeps meta controls reachable when every work option is vetoed", async () => {
+  const blocked = observe(snapshot({
+    scope: RunScope.Project,
+    phase: RunLifecyclePhase.Observing,
+  }), {
+    clock: deps.clock,
+    deterministicRules: [
+      {
+        name: "maintenance-freeze",
+        veto: (option) => `maintenance freeze blocks ${option.actionType}`,
+      },
+    ],
+  });
+
+  equal(blocked.outcome, ObserveOutcome.Readout);
+  if (blocked.outcome !== ObserveOutcome.Readout) return;
+
+  const menu = renderMenu16(blocked.readout, {
+    status: {
+      metricBlockIds: ["queue.pressure"],
+      promptFlowIds: [],
+      promptFlowTaskCount: 0,
+      vetoedPromptFlowTaskCount: 0,
+    },
+  });
+
+  equal(menu.slots[4]?.availability, "F");
+  equal(menu.slots[5]?.availability, "F");
+  equal(menu.slots[12]?.direction, "meta.refresh");
+  equal(menu.slots[12]?.availability, "T");
+  deepEqual(menu.slots[12]?.impl, { kind: "observe", toScope: RunScope.Project });
+  equal(menu.slots[13]?.direction, "meta.status");
+  equal(menu.slots[13]?.availability, "T");
+  equal(menu.slots[14]?.direction, "meta.pause");
+  equal(menu.slots[14]?.availability, "F");
+  equal(menu.slots[15]?.direction, "meta.escalate");
+  equal(menu.slots[15]?.availability, "F");
+
+  const refreshResult = await act(12, menu, {
+    runCommand: async () => {
+      throw new Error("refresh must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("refresh must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(refreshResult, { outcome: "reobserve", scope: RunScope.Project });
+
+  const statusResult = await act(13, menu, {
+    runCommand: async () => {
+      throw new Error("status must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("status must not dispatch MCP side effects");
+    },
+  });
+  equal(statusResult.outcome, "status_report");
+});
+
 test("renderMenu16 keeps all-vetoed menus dark even when prompt-flow tasks exist", () => {
   const blocked = observe(snapshot({ phase: RunLifecyclePhase.Observing }), {
     clock: deps.clock,

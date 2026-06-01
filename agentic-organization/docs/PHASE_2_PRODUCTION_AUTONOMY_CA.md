@@ -81,8 +81,9 @@ The production gap is therefore in continuous closed-loop operation:
 - the current 16-slot menu is a usable projection, but not yet the ADR's full
   controller grammar with navigation, overflow paging, scope controls,
   retract/redo, and meta/escalation semantics;
-- zero-survivor observe cases still need a rendered all-vetoed menu so the agent
-  can see dark slots and reasons instead of only a feedback object;
+- zero-survivor observe cases now render all-vetoed work slots with reasons and
+  keep safe meta controls visible; remaining work is constrained local-model
+  selection and broader primary-lane rollout;
 - local model selection validates an index after free-form output; it is not yet
   constrained 1-of-16 decoding;
 - CLI and parsing failures still throw in several user-visible paths and must be
@@ -315,7 +316,8 @@ worker path.
   not-wired stubs;
 - the CLI lacks package/bin readiness as an executable production surface;
 - the current slot layout is not yet the full ADR controller grammar;
-- all-vetoed observe cases return feedback instead of a rendered disabled menu;
+- all-vetoed work menus now render disabled commit slots with reasons and keep
+  safe meta controls reachable for refresh/status/escalation;
 - local model selection is prompt-and-regex validation, not constrained decode;
 - several CLI/env/parser paths throw instead of returning typed feedback.
 
@@ -339,6 +341,17 @@ worker path.
 - replace prompt-and-regex local selection with a constrained selection contract
   that returns only an integer slot index and a reason string;
 - make illegal model output a normal feedback path, not a thrown worker crash.
+
+**Checkpoint 2026-06-01: all-work-vetoed menu liveness**
+
+`renderMenu16` now treats the work/commit bank and the controller/meta bank as
+separate safety domains. When every work option is vetoed, commit slots remain
+`False` with their veto reasons, prompt-flow work stays hidden, and
+`meta.refresh` / `meta.status` stay selectable so the agent can reobserve or
+emit glass-halo status instead of being stranded in a dead menu. Disabled
+controller actions such as pause or escalation without supervisor context remain
+`False`. CLI evidence now records this as `slot_not_selectable` when an agent
+chooses a vetoed work slot, while retaining visible meta recovery slots.
 
 **Algorithms:**
 
