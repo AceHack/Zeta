@@ -44,6 +44,14 @@ export {
   type PilotSloReport,
 } from "./pilot-readiness.ts";
 export {
+  Phase2ReadinessProperty,
+  evaluatePhase2ProductionReadiness,
+  type Phase2ProductionReadinessEvaluation,
+  type Phase2ProductionReadinessInput,
+  type Phase2ProductionReadinessReport,
+  type Phase2ReadinessPropertyEvidence,
+} from "./phase-2-production-readiness.ts";
+export {
   TriageActionFeedbackReason,
   TriageActionResolution,
   resolveTriageAction,
