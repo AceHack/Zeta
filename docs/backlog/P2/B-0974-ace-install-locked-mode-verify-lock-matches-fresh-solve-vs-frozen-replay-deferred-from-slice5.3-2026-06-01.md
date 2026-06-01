@@ -1,7 +1,7 @@
 ---
 id: B-0974
 priority: P2
-status: open
+status: closed
 title: Ace `ace install --locked` — verify the lock matches a fresh solve (cargo --locked vs --frozen distinction; deferred from slice 5.3)
 effort: S
 ask: operator 2026-06-01
@@ -40,3 +40,11 @@ flag this slice. Operator: *"everything we skipped lets slice off for further en
 
 - Slice 5.3 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.3-lockfile-design.md`
 - B-0288 (Ace DLC package manager CLI)
+
+## Resolution — shipped by #6416 (slice 5.4)
+
+`ace install --locked` landed in slice 5.4: a fresh solve + `buildLockfile`, then
+`lockfilesEqual` (canonical-JSON equality) against the on-disk `./ace.lock`; drift →
+hard refusal installing **nothing** (`run ace update`). Mutually exclusive with
+`--frozen` (parse-time error). `--locked` on a leaf compares the leaf lock the same
+way. Usage text + SKILL.md document the `--locked` vs `--frozen` distinction. Closed.

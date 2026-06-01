@@ -48,3 +48,14 @@ guarantee. Operator: *"everything we skipped lets slice off for further enhancem
 - Slice 5.3 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.3-lockfile-design.md`
 - B-0973 (`ace update` — consumes the partial-merge primitive)
 - B-0288 (Ace DLC package manager CLI)
+
+## Progress — leaf-install lock shipped by #6416 (slice 5.4)
+
+Item #3 (leaf-install lock) landed in slice 5.4: `buildLeafLockfile(root)` →
+`{ format_version: 1, root, nodes: [] }`; default-written on a leaf `ace install`
+(warn on fail), read + drift-gated under `--frozen`, compared under `--locked`.
+`ace update` on a leaf writes it too.
+
+**Still deferred** (row stays open): #1 partial-merge (the single-package-bump primitive
+B-0973 `--package` builds on) and #2 alphabetical node ordering with re-derived install
+order. The lock format is unchanged (`format_version: 1`, deterministic install order).

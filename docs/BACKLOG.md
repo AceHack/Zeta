@@ -925,7 +925,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0971](backlog/P2/B-0971-ace-remote-registry-http-fetched-index-deferred-from-slice5.x-local-only-2026-06-01.md)** Ace remote registry — HTTP-fetched registry index (deferred from slice 5.x local-only registry)
 - [ ] **[B-0972](backlog/P2/B-0972-ace-solver-installer-single-fetch-cache-deferred-from-slice5.2-two-phase-2026-06-01.md)** Ace solver↔installer single-fetch cache — fetch each package once (deferred from slice 5.2 clean two-phase split)
 - [ ] **[B-0973](backlog/P2/B-0973-ace-update-re-solve-within-ranges-rewrite-lockfile-bump-deferred-from-slice5.3-2026-06-01.md)** Ace `ace update` — re-solve within ranges + rewrite the lockfile (bump; deferred from slice 5.3 lockfile)
-- [ ] **[B-0974](backlog/P2/B-0974-ace-install-locked-mode-verify-lock-matches-fresh-solve-vs-frozen-replay-deferred-from-slice5.3-2026-06-01.md)** Ace `ace install --locked` — verify the lock matches a fresh solve (cargo --locked vs --frozen distinction; deferred from slice 5.3)
+- [x] **[B-0974](backlog/P2/B-0974-ace-install-locked-mode-verify-lock-matches-fresh-solve-vs-frozen-replay-deferred-from-slice5.3-2026-06-01.md)** Ace `ace install --locked` — verify the lock matches a fresh solve (cargo --locked vs --frozen distinction; deferred from slice 5.3)
 - [ ] **[B-0975](backlog/P2/B-0975-ace-lockfile-ergonomics-partial-merge-alphabetical-ordering-leaf-lock-deferred-from-slice5.3-2026-06-01.md)** Ace lockfile ergonomics — partial-merge, alphabetical ordering, leaf-install lock (deferred from slice 5.3)
 
 ## P3 — convenience / deferred

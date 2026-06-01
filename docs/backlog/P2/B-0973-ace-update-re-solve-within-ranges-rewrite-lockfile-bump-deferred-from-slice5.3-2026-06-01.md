@@ -42,3 +42,14 @@ enhancements."*
 - Slice 5.3 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.3-lockfile-design.md`
 - B-0975 (lockfile ergonomics — partial-merge is the single-package-bump primitive)
 - B-0288 (Ace DLC package manager CLI)
+
+## Progress — `ace update` core shipped by #6416 (slice 5.4)
+
+The core `ace update <root>` verb landed in slice 5.4: re-solve within ranges + rewrite
+`./ace.lock`, **lock-only** (never extracts), running the same integrity preflight as
+install **before** writing (content_hash + store-collision + `validatePackagePaths`;
+preflight-before-write per spec #6412 / fix-forward #6414). Leaf root → leaf lock.
+
+**Still deferred** (row stays open): `--package <name>` single-dependency bump, which
+consumes the B-0975 partial-merge primitive. No `--install` side-effect mode shipped
+(update is lock-only by design).
