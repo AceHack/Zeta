@@ -131,6 +131,9 @@ public class ResumeTests
 
             var activityResults = tr.GetProperty("activityResults").EnumerateArray().Select(ConstOfJson).ToList();
             var expectedSuspensions = tr.GetProperty("expectedSuspensions").EnumerateArray().Select(ActivityOfJson).ToList();
+            // the canonical serializeState bytes the TS reference emits at each suspension, in order —
+            // the cross-oracle STATE-BYTE lock this C# oracle must reproduce verbatim (kont top-last)
+            var expectedStateAtSuspension = tr.GetProperty("expectedStateAtSuspension").EnumerateArray().Select(e => e.GetString()!).ToList();
             var expectedFinal = ConstOfJson(tr.GetProperty("expectedFinal"));
 
             var step = StepOk(ResumeEngine.Start(program, bindings));
@@ -142,6 +145,9 @@ public class ResumeTests
 
                 // persist -> re-parse -> resume from the RESTORED state (not a replay)
                 var ser = StrOk(ResumeEngine.SerializeState(suspended.State));
+                // STATE-BYTE LOCK: the persisted continuation must equal the TS reference bytes
+                // (the kont serializes top-last — innermost frame last in the array)
+                Assert.Equal(expectedStateAtSuspension[i], ser);
                 var restored = StateOk(ResumeEngine.ParseState(ser));
                 Assert.Equal(ser, StrOk(ResumeEngine.SerializeState(restored))); // round-trip byte-stable
                 step = StepOk(ResumeEngine.Resume(restored, activityResults[i]));

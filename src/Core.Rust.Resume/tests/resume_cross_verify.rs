@@ -101,6 +101,14 @@ fn rust_resume_replays_every_shared_golden_trace_restore_not_replay() {
         }
         let activity_results: Vec<ConstValue> = tr["activityResults"].as_array().expect("activityResults").iter().map(const_of_json).collect();
         let expected_suspensions: Vec<Activity> = tr["expectedSuspensions"].as_array().expect("expectedSuspensions").iter().map(activity_of_json).collect();
+        // the canonical serialize_state bytes the TS reference emits at each suspension, in order —
+        // the cross-oracle STATE-BYTE lock this Rust oracle must reproduce verbatim (kont top-last)
+        let expected_state_at_suspension: Vec<&str> = tr["expectedStateAtSuspension"]
+            .as_array()
+            .expect("expectedStateAtSuspension")
+            .iter()
+            .map(|s| s.as_str().expect("expectedStateAtSuspension entry"))
+            .collect();
         let expected_final = const_of_json(&tr["expectedFinal"]);
 
         let mut step = start(&program, &bindings).unwrap_or_else(|f| panic!("{name}: start: {f:?}"));
@@ -111,6 +119,9 @@ fn rust_resume_replays_every_shared_golden_trace_restore_not_replay() {
                     assert_eq!(*exp, activity, "{name}: suspension {i}");
                     // persist -> re-parse -> resume from the RESTORED state (not a replay)
                     let ser = serialize_state(&state).unwrap_or_else(|f| panic!("{name}: serialize: {f:?}"));
+                    // STATE-BYTE LOCK: the persisted continuation must equal the TS reference bytes
+                    // (the kont serializes top-last — innermost frame last in the array)
+                    assert_eq!(expected_state_at_suspension[i], ser.as_str(), "{name}: state byte-lock at suspension {i}");
                     let restored = parse_state(&ser).unwrap_or_else(|f| panic!("{name}: parse: {f:?}"));
                     assert_eq!(ser, serialize_state(&restored).expect("re-serialize"), "{name}: round-trip byte-stable");
                     step = resume(restored, activity_results[i].clone()).unwrap_or_else(|f| panic!("{name}: resume: {f:?}"));
