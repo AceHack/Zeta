@@ -4,13 +4,21 @@ import { join, dirname } from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
+export interface AceDependency {
+  readonly name: string;
+  readonly version: string;
+  readonly url: string;
+  readonly package_hash: string; // sha256 of the canonical FULL package (manifest incl. signature + files)
+}
+
 export interface AceManifest {
   readonly format_version: number;
   readonly name: string;
   readonly version: string;
-  readonly content_hash: string;
+  readonly content_hash: string; // slice-2: sha256(files)
   readonly description?: string;
   readonly signature?: { readonly algo: string; readonly key_id: string; readonly sig: string };
+  readonly dependencies?: ReadonlyArray<AceDependency>;
 }
 
 export interface InstalledPackage {
@@ -81,6 +89,17 @@ export interface AcePackage {
 
 export type InstallResult = { ok: true; dir: string } | { ok: false; error: string };
 
+/** Returns the first unsafe file path in the package, or null if all paths are safe.
+ *  Unsafe = contains '..', or is absolute (leading '/' or '\\'), or is a Windows drive
+ *  path (drive-absolute like 'C:\...' or drive-relative like 'C:foo'). Shared by
+ *  installPackage AND the slice-4 graph install preflight so the two never drift. */
+export function validatePackagePaths(pkg: AcePackage): string | null {
+  for (const rel of Object.keys(pkg.files)) {
+    if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\") || /^[A-Za-z]:/.test(rel)) return rel;
+  }
+  return null;
+}
+
 /**
  * Verify-before-extract: recompute the content hash of `pkg.files` and refuse to
  * extract unless it matches `pkg.manifest.content_hash` (integrity). Extracts to
@@ -97,13 +116,14 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   // traversal-blocked install refuses ATOMICALLY (extracts nothing) — the same guarantee a
   // hash mismatch gives. (Validating inside the write loop would leave a partial dir on disk
   // when a bad path is not the first entry.) Reject any '..' component (POSIX `../` or Windows
-  // `..\`) or absolute path (leading '/' or '\').
+  // `..\`) or absolute path (leading '/' or '\') or Windows drive path ('C:\...' or 'C:foo').
+  //
+  // NOTE (slice-4 hardening):
+  //   Windows drive paths (C:\Windows\... and C:foo) are now rejected here. On Windows,
+  //   path.join(store, "C:\\x") discards the store prefix, enabling an escape from the store
+  //   directory. The /^[A-Za-z]:/ regex catches both drive-absolute and drive-relative forms.
   //
   // NOTE (slice-3 hardening):
-  //   (a) PATH: Windows device names (CON/NUL/PRN/AUX/COM1…) and drive-relative paths
-  //       (`C:foo`) are NOT rejected here. They cannot escape `<storePath>/<hash>/` —
-  //       `path.join` embeds them as subpaths — but a malicious package could still target a
-  //       Windows device sink.
   //   (b) CONTENT/SOURCE: the `install <url>` verb fetches package bytes over HTTP and writes
   //       them here (CodeQL js/http-to-file-access, accepted). The write is confined to
   //       `<storePath>/<hash>/` (path guard above) and the bytes are integrity-checked against
@@ -112,10 +132,9 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   //       the signed+trusted path is authenticity-verified, and `--allow-no-signature` is required to
   //       install an unsigned one. The CodeQL js/http-to-file-access alert remains a true
   //       intended-flow observation (the http→file write is the package manager's function).
-  for (const rel of Object.keys(pkg.files)) {
-    if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\")) {
-      return { ok: false, error: `unsafe file path in package: ${rel}` };
-    }
+  const unsafe = validatePackagePaths(pkg);
+  if (unsafe !== null) {
+    return { ok: false, error: `unsafe file path in package: ${unsafe}` };
   }
   const dir = join(storePath, pkg.manifest.content_hash.replace(":", "-"));
   try {

@@ -3,7 +3,7 @@ import { mkdtempSync, existsSync, readFileSync, statSync, writeFileSync, chmodSy
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
-import { contentHash, installPackage, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath } from "./store.ts";
+import { contentHash, installPackage, validatePackagePaths, loadTrustStore, addTrustedKey, listTrustedKeys, trustStorePath } from "./store.ts";
 
 describe("contentHash", () => {
   test("sha256 of known bytes matches the sha256:<hex> form", () => {
@@ -95,6 +95,39 @@ describe("installPackage", () => {
     // Nothing extracted: the hash dir was never created (no partial write of legit.txt).
     const dir = join(store, content_hash.replace(":", "-"));
     expect(existsSync(dir)).toBe(false);
+  });
+
+  test("installPackage ignores a manifest's dependencies field (leaf back-compat)", () => {
+    const store = mkdtempSync(join(tmpdir(), "ace-store-"));
+    const files = { "r.txt": "hi" };
+    const content_hash = "sha256:" + createHash("sha256").update(new TextEncoder().encode(JSON.stringify(files))).digest("hex");
+    const pkg = {
+      manifest: {
+        format_version: 1, name: "demo", version: "1.0.0", content_hash,
+        dependencies: [{ name: "x", version: "1.0.0", url: "http://e/x.json", package_hash: "sha256:deadbeef" }],
+      },
+      files,
+    };
+    const result = installPackage(store, pkg);
+    expect(result.ok).toBe(true);
+  });
+});
+
+describe("validatePackagePaths", () => {
+  test("returns null for safe paths", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "ok.txt": "y" } })).toBeNull();
+  });
+  test("returns the offending path for '..' traversal", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "../escape": "y" } })).toBe("../escape");
+  });
+  test("returns the offending path for an absolute path", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "/etc/passwd": "y" } })).toBe("/etc/passwd");
+  });
+  test("returns the offending path for a Windows drive-absolute path", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "C:\\Windows\\system.ini": "y" } })).toBe("C:\\Windows\\system.ini");
+  });
+  test("returns the offending path for a Windows drive-relative path", () => {
+    expect(validatePackagePaths({ manifest: { format_version: 1, name: "a", version: "1", content_hash: "x" }, files: { "C:evil": "y" } })).toBe("C:evil");
   });
 });
 

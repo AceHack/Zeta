@@ -1,0 +1,110 @@
+import { createHash } from "node:crypto";
+import { contentHash, type AcePackage, type LoadedTrustEntry } from "./store.ts";
+import { verifySignature } from "./signing.ts";
+
+/** Deterministic JSON: object keys recursively sorted; arrays preserve order. */
+function canonicalJson(value: unknown): string {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return "[" + value.map(canonicalJson).join(",") + "]";
+  const obj = value as Record<string, unknown>;
+  const keys = Object.keys(obj).sort();
+  return "{" + keys.map((k) => JSON.stringify(k) + ":" + canonicalJson(obj[k])).join(",") + "}";
+}
+
+/** sha256 of the canonical whole package ({manifest incl. signature, files}). The parent's
+ *  pin / identity for a dependency. Two edges sharing a packageHash are byte-identical. */
+export function packageHash(pkg: AcePackage): string {
+  return "sha256:" + createHash("sha256").update(canonicalJson({ manifest: pkg.manifest, files: pkg.files })).digest("hex");
+}
+
+export type FetchPackage = (urlOrPath: string) => Promise<string>;
+
+export type ResolveReason =
+  | "version-skew" | "tamper" | "pin-mismatch" | "bad-content-hash"
+  | "bad-signature" | "untrusted-key" | "unsupported-algo" | "no-signature"
+  | "cycle" | "fetch-failed" | "invalid-package";
+
+export type ResolveResult =
+  | { ok: true; order: AcePackage[] }
+  | { ok: false; reason: ResolveReason; detail: string; path: string[] };
+
+export async function resolve(
+  root: AcePackage,
+  fetchPackage: FetchPackage,
+  trustStore: Map<string, LoadedTrustEntry>,
+  opts: { allowNoSignature: boolean },
+): Promise<ResolveResult> {
+  const byName = new Map<string, { version: string; pkgHash: string; path: string[] }>();
+  const visiting = new Set<string>();
+  const order: AcePackage[] = [];
+
+  byName.set(root.manifest.name, { version: root.manifest.version, pkgHash: packageHash(root), path: ["root"] });
+  visiting.add(root.manifest.name);
+
+  const walk = async (node: AcePackage, path: string[]): Promise<ResolveResult | null> => {
+    for (const edge of (Array.isArray(node.manifest.dependencies) ? node.manifest.dependencies : [])) {
+      const here = [...path, edge.name];
+      // NB: the root is seeded into `visiting`, so a root-involving skew (root@1 -> A -> root@2)
+      // trips this cycle check before the version-skew check below — both refuse + install nothing.
+      if (visiting.has(edge.name)) {
+        return { ok: false, reason: "cycle", detail: here.join(" → "), path: here };
+      }
+      const seen = byName.get(edge.name);
+      if (seen) {
+        if (seen.version !== edge.version) {
+          return { ok: false, reason: "version-skew", detail: `${edge.name} required at ${seen.version} (via ${seen.path.join(" → ")}) and ${edge.version} (via ${here.join(" → ")})`, path: here };
+        }
+        if (seen.pkgHash !== edge.package_hash) {
+          return { ok: false, reason: "tamper", detail: `${edge.name}@${edge.version} has two different package hashes`, path: here };
+        }
+        continue; // diamond dedup: same name+version+package_hash, already resolved
+      }
+      let dep: AcePackage;
+      try { dep = JSON.parse(await fetchPackage(edge.url)) as AcePackage; }
+      catch (e) { return { ok: false, reason: "fetch-failed", detail: `${edge.url}: ${(e as Error).message}`, path: here }; }
+      // Shape guard: verify the parsed JSON is a well-formed AcePackage before any field access.
+      // Also reject non-array dependencies: a dependencies field that is present but not an array
+      // is malformed and would throw in the for-of loop, so we refuse it here as invalid-package.
+      const m = (dep as { manifest?: { dependencies?: unknown }; files?: unknown });
+      if (typeof dep !== "object" || dep === null || typeof m.manifest !== "object" || m.manifest === null || typeof m.files !== "object" || m.files === null
+          || (m.manifest.dependencies !== undefined && !Array.isArray(m.manifest.dependencies))) {
+        return { ok: false, reason: "invalid-package", detail: `${edge.url}: not a well-formed AcePackage`, path: here };
+      }
+      // slice-2 self-check
+      const filesHash = contentHash(new TextEncoder().encode(JSON.stringify(dep.files)));
+      if (filesHash !== dep.manifest.content_hash) {
+        return { ok: false, reason: "bad-content-hash", detail: `${edge.name}: files hash ${filesHash} != manifest ${dep.manifest.content_hash}`, path: here };
+      }
+      // pin check (whole-package identity)
+      const got = packageHash(dep);
+      if (got !== edge.package_hash) {
+        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${edge.package_hash} but fetched ${got}`, path: here };
+      }
+      // declared-identity check
+      if (dep.manifest.name !== edge.name || dep.manifest.version !== edge.version) {
+        return { ok: false, reason: "pin-mismatch", detail: `${edge.name}@${edge.version}: edge identity != fetched ${dep.manifest.name}@${dep.manifest.version}`, path: here };
+      }
+      // slice-3 signature gate
+      const v = verifySignature(dep.manifest, trustStore);
+      if (!v.ok) {
+        if (v.reason === "no-signature") {
+          if (!opts.allowNoSignature) return { ok: false, reason: "no-signature", detail: `${edge.name}: unsigned (use --allow-no-signature)`, path: here };
+        } else {
+          return { ok: false, reason: v.reason, detail: `${edge.name}: ${v.reason}`, path: here };
+        }
+      }
+      byName.set(edge.name, { version: edge.version, pkgHash: edge.package_hash, path: here });
+      visiting.add(edge.name);
+      const sub = await walk(dep, here);
+      if (sub) return sub;
+      visiting.delete(edge.name);
+      order.push(dep);
+    }
+    return null;
+  };
+
+  const failure = await walk(root, ["root"]);
+  if (failure) return failure;
+  order.push(root);
+  return { ok: true, order };
+}
