@@ -363,6 +363,31 @@ FoundationDB-style: all nodes on one deterministic thread.
 - Research anchors: `docs/research/2026-05-26-kestrel-...-time-as-generator-foundationdb-anchor.md`,
   `docs/research/2026-05-26-mika-...-self-derived-iScheduler-recursive-injection.md`.
 
+### Git-native TEXT durability is the UNIVERSAL durability — binary is the optimization (Aaron 2026-06-01)
+
+Refinement of the B-0958 dual-track ("git-native + filesystem-binary-efficient"): the two
+are **not parallel-equal backends.** The aim is **git-native _text_ durability for ALL fs
+stuff, not just the binary filesystem** — human-readable, diffable, retraction-native text
+files (the agent-bus JSON envelopes, the observe folderSink, heartbeats are the existing
+instances) as the **universal durable truth**; the F# binary-efficient frontier
+(`Spine.fs` / LSM, §4/§6) is an **optimization / cache / index over** that text truth, not
+a separate source of record. Operator 2026-06-01: _"we want to have a git native text
+durability eventually for all our fs stuff not just binary file system."_
+
+- [ ] **Git-native text durability as the universal storage interface** — extend B-0951's
+      git-native-text storage interface so the binary track is a derived cache over the
+      git-native-text durable form (every fs artifact has a diffable text representation;
+      binary is regenerable from it). Eventually, not now — directional aim. Composes
+      [B-0951](../P2/B-0951-git-native-eventually-consistent-text-indexes-sorted-inverted-graph-plus-git-native-hindsight-storage-interface-aaron-2026-05-31.md) + the B-0958 dual-track.
+
+- **DST harness = local bare repos (real git binary), confirmed (Aaron 2026-06-01:
+  "bare … will work with fs ts and rust too").** Multi-agent multi-repo DST runs against
+  `git init --bare` remotes + working clones with pinned `GIT_AUTHOR_DATE` /
+  `GIT_COMMITTER_DATE` — the **real git binary is language-agnostic**, so F#/TS/Rust/C#
+  all drive the same fixtures (the 4-oracle shares one harness); `isomorphic-git` is
+  TS-only and reserved for optional zero-FS determinism; `git-http-mock-server` / Gitea
+  for HTTP integration only (they reintroduce nondeterminism that fights DST).
+
 ### The reporting / insights view — a columnar materialized view over everything (Aaron 2026-06-01)
 
 The same F# single-thread FoundationDB-DST DB — multi-node / multi-cluster,
