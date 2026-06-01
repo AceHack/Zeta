@@ -916,6 +916,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0961](backlog/P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md)** ZetaId root-category taxonomy — gap analysis + DEFERRAL (model Claim/Lock as typed events first; promote to root Category only after producers + identity-rule + growth-theory)
 - [ ] **[B-0962](backlog/P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)** Phase 1 — typed Claim/Lock coordination events (optimistic CAS: mechanism-deadlock-free + symmetry-breaking observe-menu; app-level safety needs fencing + release-before-acquire)
 - [ ] **[B-0963](backlog/P2/B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)** Prove completion-lock-freedom + per-agent wait-freedom — F# model first (no git), then extend to git
+- [ ] **[B-0965](backlog/P2/B-0965-gitbash-routing-install-shield-parity-gap-2026-06-01.md)** git-bash routing install-shield — the one unshielded install surface (parity gap)
 
 ## P3 — convenience / deferred
 
