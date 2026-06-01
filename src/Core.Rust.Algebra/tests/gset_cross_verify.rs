@@ -44,7 +44,9 @@ fn gset_cross_verify_matches_golden_vectors() {
     let mut state = GSet::of_iter(str_vec(&v["initialSet"]));
 
     let ops = v["ops"].as_array().expect("ops array");
-    let expected_replay = v["expectedReplayStates"].as_array().expect("expectedReplayStates array");
+    let expected_replay = v["expectedReplayStates"]
+        .as_array()
+        .expect("expectedReplayStates array");
     assert_eq!(
         ops.len(),
         expected_replay.len(),
