@@ -8,6 +8,9 @@ import {
   PromptFlowRunState,
   RunLifecyclePhase,
   RunScope,
+  WorkClaimState,
+  WorkShardState,
+  type HatWorkQueue,
   type PromptFlowDefinition,
   type ChatCompletionRequest,
   type HierarchySnapshot,
@@ -561,6 +564,45 @@ test("runAgentCliCycle can select meta.status and returns glass-halo evidence", 
   equal(result.evidence?.statusPhase, RunLifecyclePhase.AwaitingGate);
   deepEqual(result.evidence?.metricBlockIds, ["queue.pressure"]);
   deepEqual(result.evidence?.promptFlowIds, ["flow-implement"]);
+});
+
+test("runAgentCliCycle renders work-market queue pressure and active claim status", async () => {
+  const stdout: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "backend_implementer",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-backend-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "observing",
+      "--select-index",
+      "13",
+    ],
+    now: () => "2026-05-31T12:30:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    workQueues: [workMarketQueue()],
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  const rendered = stdout.join("\n");
+  ok(rendered.includes("work market: elevated"));
+  ok(rendered.includes("- queue queue-backend-project-1 project:project-1 ready=1 claimed=1 stale=1"));
+  ok(rendered.includes("- active claim claim-stale shard=shard-claimed owner=agent-backend-2 fence=fence-stale"));
 });
 
 test("runAgentCliCycle status evidence includes hierarchy priority scope when hierarchy is available", async () => {
@@ -1617,6 +1659,66 @@ function scheduleBlock(overrides: Partial<WorkScheduleBlock> = {}): WorkSchedule
       causationId: "cause-1",
       traceId: "trace-1",
     },
+    ...overrides,
+  };
+}
+
+function workMarketQueue(overrides: Partial<HatWorkQueue> = {}): HatWorkQueue {
+  return {
+    queueId: "queue-backend-project-1",
+    organizationId: "org-1",
+    hatId: "backend_implementer",
+    scope: { kind: "project", id: "project-1" },
+    priorityClass: "high",
+    slaDeadlineAt: "2026-05-31T14:00:00.000Z",
+    shardability: "by_component",
+    requiredSkills: ["typescript"],
+    reviewQuorum: {
+      requiredApprovals: 1,
+      reviewerHatIds: ["architect_reviewer"],
+      allowProducerApproval: false,
+    },
+    shards: [
+      {
+        shardId: "shard-ready",
+        workItemId: "work-ready",
+        title: "Ready shard",
+        priority: 80,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+      {
+        shardId: "shard-claimed",
+        workItemId: "work-claimed",
+        title: "Claimed shard",
+        priority: 90,
+        state: WorkShardState.Claimed,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+        claimedByClaimId: "claim-stale",
+      },
+    ],
+    claims: [
+      {
+        claimId: "claim-stale",
+        shardId: "shard-claimed",
+        ownerAgentId: "agent-backend-2",
+        hatAssignmentId: "hat-backend-2",
+        fencingToken: "fence-stale",
+        leaseExpiresAt: "2026-05-31T12:00:00.000Z",
+        heartbeatAt: "2026-05-31T11:55:00.000Z",
+        scheduleBlockId: "block-1",
+        runtimeSessionId: "session-1",
+        workspaceRef: "worktree:agent-backend-2",
+        credentialScope: "tenant:org-1:repo:agentic-organization",
+        compensatingAction: "release_claim_and_requeue_shard",
+        state: WorkClaimState.Active,
+        claimedAt: "2026-05-31T11:45:00.000Z",
+      },
+    ],
+    runtimeLeases: [],
+    reviews: [],
     ...overrides,
   };
 }

@@ -57,6 +57,7 @@ import {
   runAgentCliCycle,
   tryCreateAgentCliHierarchyFromEnv,
   tryCreateAgentCliPromptFlowTasksFromEnv,
+  tryCreateAgentCliWorkQueuesFromEnv,
   type AgentCliCycleEvidence,
   type ParsedAgentCliArgs,
 } from "./agent-cli.ts";
@@ -202,6 +203,11 @@ function createRunAgentCliCycleInput(
   });
   if (!hierarchy.ok) return { ok: false, message: hierarchy.message };
 
+  const workQueues = tryCreateAgentCliWorkQueuesFromEnv({
+    env: input.env,
+  });
+  if (!workQueues.ok) return { ok: false, message: workQueues.message };
+
   return {
     ok: true,
     value: {
@@ -216,6 +222,7 @@ function createRunAgentCliCycleInput(
       }),
       promptFlowTasks: promptFlowTasks.value,
       hierarchy: hierarchy.value,
+      workQueues: workQueues.value,
       selectSlot: createAgentCliSelectorFromEnv({
         env: input.env,
         ...createOptionalFetchImpl(input.fetchImpl),

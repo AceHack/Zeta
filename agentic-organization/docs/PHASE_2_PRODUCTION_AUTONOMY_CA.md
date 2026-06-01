@@ -569,6 +569,18 @@ duplicating work or self-approving.
 - bind claims to schedule block, runtime session, worktree or workspace,
   credential scope, heartbeat deadline, and compensating action.
 
+**Checkpoint 2026-06-01: foreground work-market visibility**
+
+The same-hat work-market readout is now visible in the executable observe-act
+foreground loop. `runAgentCliCycle` accepts `HatWorkQueue` context, computes the
+same scoped `WorkMarketReadout` used by `observeForHat`, and renders queue
+pressure, shard counts, stale-claim counts, and active claim ownership/fencing
+tokens before the 16-slot menu. The production `runAgentCliMain` path can load
+this context from `AGENTIC_ORG_WORK_MARKET_QUEUES_JSON` with typed setup
+feedback on malformed input, so an agent can see whether it should claim a
+different shard, wait for review, or escalate stale same-hat work instead of
+staring at an undifferentiated work item.
+
 **Algorithms:**
 
 - **weighted fair queueing:** reserve capacity by priority class and initiative

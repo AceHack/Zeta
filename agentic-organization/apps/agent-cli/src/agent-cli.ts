@@ -5,6 +5,8 @@ import {
   ActionClass,
   ActRejectionReason,
   asZetaIdDecimal,
+  authorityScopeOf,
+  authoritySubtree,
   buildHatDefinitions,
   compilePromptFlowTasks,
   createTelemetryScopedMetricAgents,
@@ -16,9 +18,13 @@ import {
   ObserveOutcome,
   PromptFlowGateKind,
   PromptFlowRunState,
+  RuntimeLeaseState,
   RunLifecyclePhase,
   RunScope,
   TriAvailability,
+  WorkMarketQuorumOutcome,
+  WorkClaimState,
+  WorkShardState,
   type ActDependencies,
   type ActResult,
   type AgentObserveSnapshot,
@@ -37,6 +43,7 @@ import {
   type Menu16Slot,
   type MetricBlock,
   type GlassHaloStatusSignal,
+  type HatWorkQueue,
   type PromptFlowContext,
   type PromptFlowContextArtifact,
   type PromptFlowContextRequest,
@@ -49,6 +56,9 @@ import {
   type PromptFlowToolInjection,
   type ScopedMetricAgent,
   type ScopedReadout,
+  type WorkMarketReadout,
+  type WorkMarketScope,
+  workMarketReadoutForHat,
 } from "../../../packages/application/src/index.ts";
 import { CommandType, HatLevel, ToolBundle, type ToolBundle as ToolBundleName, type WorkScheduleBlock } from "../../../packages/domain/src/index.ts";
 import { createLgtmTelemetryQueryPort } from "../../../packages/observability/src/index.ts";
@@ -91,6 +101,7 @@ export type AgentCliScreen = {
   promptFlows?: PromptFlowReadout;
   page?: Menu16["page"];
   hierarchy?: HierarchyReadout;
+  workMarket?: WorkMarketReadout;
   slots: readonly Pick<Menu16Slot, "index" | "direction" | "label" | "availability" | "reason">[];
 };
 
@@ -102,6 +113,7 @@ export type AgentCliCycleInput = ActDependencies & {
   metricAgents?: readonly ScopedMetricAgent[];
   promptFlowTasks?: readonly PromptFlowTask[];
   hierarchy?: HierarchySnapshot;
+  workQueues?: readonly HatWorkQueue[];
   scheduleBlocks?: readonly WorkScheduleBlock[];
   deterministicRules?: readonly DeterministicRule[];
   availableSecretScopes?: readonly string[];
@@ -122,7 +134,11 @@ export type CreateAgentCliHierarchyFromEnvInput = {
   env: Readonly<Record<string, string | undefined>>;
 };
 
-export type AgentCliEnvLoadErrorSource = "prompt_flow_tasks" | "hierarchy";
+export type CreateAgentCliWorkQueuesFromEnvInput = {
+  env: Readonly<Record<string, string | undefined>>;
+};
+
+export type AgentCliEnvLoadErrorSource = "prompt_flow_tasks" | "hierarchy" | "work_market";
 
 export type AgentCliEnvLoadResult<T> =
   | { ok: true; value: T }
@@ -278,6 +294,7 @@ export function formatAgentCliScreen(screen: AgentCliScreen): string {
     ...formatPromptFlowTasks(screen.promptFlows),
     ...formatMenuPage(screen.page),
     ...formatHierarchy(screen.hierarchy),
+    ...formatWorkMarket(screen.workMarket),
     "menu:",
     ...screen.slots.map(formatSlot),
   ].join("\n");
@@ -376,6 +393,34 @@ export function tryCreateAgentCliHierarchyFromEnv(
     return {
       ok: false,
       source: "hierarchy",
+      message: extractErrorMessage(error),
+    };
+  }
+}
+
+export function createAgentCliWorkQueuesFromEnv(
+  input: CreateAgentCliWorkQueuesFromEnvInput,
+): readonly HatWorkQueue[] {
+  const raw = input.env.AGENTIC_ORG_WORK_MARKET_QUEUES_JSON;
+  if (raw === undefined || raw.trim().length === 0) {
+    return [];
+  }
+  const parsed = parseJsonEnv(raw, "AGENTIC_ORG_WORK_MARKET_QUEUES_JSON");
+  if (!Array.isArray(parsed)) {
+    throw new Error("AGENTIC_ORG_WORK_MARKET_QUEUES_JSON must be a JSON array");
+  }
+  return parsed.map(parseWorkMarketQueue);
+}
+
+export function tryCreateAgentCliWorkQueuesFromEnv(
+  input: CreateAgentCliWorkQueuesFromEnvInput,
+): AgentCliEnvLoadResult<readonly HatWorkQueue[]> {
+  try {
+    return { ok: true, value: createAgentCliWorkQueuesFromEnv(input) };
+  } catch (error) {
+    return {
+      ok: false,
+      source: "work_market",
       message: extractErrorMessage(error),
     };
   }
@@ -513,6 +558,12 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     promptFlows: observed.promptFlows,
     page: observed.actions.page,
     hierarchy: observed.hierarchy,
+    workMarket: workMarketReadoutForHat(input.workQueues ?? [], {
+      organizationId: parsed.value.organizationId,
+      hatId: hat.id,
+      visibleHatIds: visibleWorkMarketHatIds(hat, hats, input.workQueues ?? []),
+      now: input.now(),
+    }),
     slots: observed.actions.slots,
   })}\n`);
 
@@ -1106,6 +1157,40 @@ function formatHierarchyPolicyViolations(violations: HierarchyReadout["policyVio
   return violations.map((violation) => `- policy violation ${violation.ruleName}: ${violation.reason}`);
 }
 
+function formatWorkMarket(workMarket: WorkMarketReadout | undefined): readonly string[] {
+  if (workMarket === undefined) return ["work market: unavailable"];
+  if (workMarket.queues.length === 0) return ["work market: none"];
+  return [
+    `work market: ${workMarket.queuePressure}`,
+    `work market shards: ready=${workMarket.totalReadyShards} claimed=${workMarket.totalClaimedShards} stale=${workMarket.totalStaleClaims}`,
+    ...workMarket.queues.flatMap((queue) => [
+      `- queue ${queue.queueId} ${queue.scope.kind}:${queue.scope.id} ready=${queue.readyShardCount} claimed=${queue.claimedShardCount} stale=${queue.staleClaimCount}`,
+      ...queue.activeClaims.map((claim) =>
+        `- active claim ${claim.claimId} shard=${claim.shardId} owner=${claim.ownerAgentId} fence=${claim.fencingToken}`),
+    ]),
+  ];
+}
+
+function visibleWorkMarketHatIds(
+  hat: ReturnType<typeof buildHatDefinitions>[number],
+  hats: readonly ReturnType<typeof buildHatDefinitions>[number][],
+  queues: readonly HatWorkQueue[],
+): readonly string[] {
+  const byId = new Map(hats.map((candidate) => [candidate.id, candidate]));
+  const scope = authorityScopeOf(hat.level);
+  if (scope === "organization") return queues.map((queue) => queue.hatId);
+  const subtree = authoritySubtree(hat.id, byId);
+  if (scope === "department") {
+    return queues
+      .filter((queue) => subtree.has(queue.hatId) || byId.get(queue.hatId)?.departmentId === hat.departmentId)
+      .map((queue) => queue.hatId);
+  }
+  if (scope === "team") {
+    return queues.filter((queue) => subtree.has(queue.hatId)).map((queue) => queue.hatId);
+  }
+  return queues.filter((queue) => queue.hatId === hat.id).map((queue) => queue.hatId);
+}
+
 function formatPromptFlowContext(context: PromptFlowContext): string {
   return [
     ...formatPromptFlowContextMetadata(context),
@@ -1345,6 +1430,288 @@ function isExecutablePromptFlowRunState(state: PromptFlowRunState): boolean {
     state === PromptFlowRunState.RunningPhase ||
     state === PromptFlowRunState.AwaitingGate
   );
+}
+
+function parseWorkMarketQueue(value: unknown): HatWorkQueue {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error("work-market queue must be an object");
+  }
+  const queue = value as Record<string, unknown>;
+  return {
+    queueId: parseWorkMarketRequiredString(queue, "queueId"),
+    organizationId: parseWorkMarketRequiredString(queue, "organizationId"),
+    hatId: parseWorkMarketRequiredString(queue, "hatId"),
+    ...parseOptionalWorkMarketNumberProperty(queue.revision, "revision"),
+    scope: parseWorkMarketScope(queue.scope),
+    ...parseOptionalWorkMarketStringProperty(queue.priorityClass, "priorityClass"),
+    ...parseOptionalWorkMarketStringProperty(queue.slaDeadlineAt, "slaDeadlineAt"),
+    shardability: parseWorkMarketShardability(queue.shardability),
+    requiredSkills: parseWorkMarketStringArray(queue.requiredSkills, "requiredSkills"),
+    reviewQuorum: parseWorkMarketReviewQuorum(queue.reviewQuorum),
+    shards: parseWorkMarketShards(queue.shards),
+    claims: parseWorkMarketClaims(queue.claims),
+    ...parseOptionalWorkMarketRuntimeLeases(queue.runtimeLeases),
+    ...parseOptionalWorkMarketReviews(queue.reviews),
+  };
+}
+
+function parseWorkMarketScope(value: unknown): WorkMarketScope {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error("work-market queue scope must be an object");
+  }
+  const scope = value as Record<string, unknown>;
+  const kind = scope.kind;
+  if (
+    kind !== "organization" &&
+    kind !== "department" &&
+    kind !== "project" &&
+    kind !== "initiative" &&
+    kind !== "work_batch" &&
+    kind !== "work_item"
+  ) {
+    throw new Error("work-market queue scope kind is invalid");
+  }
+  return {
+    kind,
+    id: parseWorkMarketRequiredString(scope, "id"),
+  };
+}
+
+function parseWorkMarketShardability(value: unknown): HatWorkQueue["shardability"] {
+  if (value === "none" || value === "by_file" || value === "by_component" || value === "by_test_suite" || value === "manual") {
+    return value;
+  }
+  throw new Error("work-market queue shardability is invalid");
+}
+
+function parseWorkMarketReviewQuorum(value: unknown): HatWorkQueue["reviewQuorum"] {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) {
+    throw new Error("work-market queue reviewQuorum must be an object");
+  }
+  const quorum = value as Record<string, unknown>;
+  return {
+    requiredApprovals: parseWorkMarketPositiveInteger(quorum.requiredApprovals, "reviewQuorum.requiredApprovals"),
+    reviewerHatIds: parseWorkMarketStringArray(quorum.reviewerHatIds, "reviewQuorum.reviewerHatIds"),
+    ...(quorum.allowProducerApproval === undefined ? {} : {
+      allowProducerApproval: parseWorkMarketBoolean(quorum.allowProducerApproval, "reviewQuorum.allowProducerApproval"),
+    }),
+  };
+}
+
+function parseWorkMarketShards(value: unknown): HatWorkQueue["shards"] {
+  if (!Array.isArray(value)) {
+    throw new Error("work-market queue shards must be an array");
+  }
+  return value.map((item) => {
+    if (typeof item !== "object" || item === null || Array.isArray(item)) {
+      throw new Error("work-market shard must be an object");
+    }
+    const shard = item as Record<string, unknown>;
+    return {
+      shardId: parseWorkMarketRequiredString(shard, "shardId"),
+      workItemId: parseWorkMarketRequiredString(shard, "workItemId"),
+      title: parseWorkMarketRequiredString(shard, "title"),
+      priority: parseWorkMarketNumber(shard.priority, "priority"),
+      state: parseWorkShardState(shard.state),
+      dependencyShardIds: parseWorkMarketStringArray(shard.dependencyShardIds, "dependencyShardIds"),
+      mergePolicy: parseWorkShardMergePolicy(shard.mergePolicy),
+      ...(shard.claimedByClaimId === undefined ? {} : { claimedByClaimId: parseWorkMarketRequiredString(shard, "claimedByClaimId") }),
+      ...(shard.completedAt === undefined ? {} : { completedAt: parseWorkMarketRequiredString(shard, "completedAt") }),
+      ...(shard.mergedAt === undefined ? {} : { mergedAt: parseWorkMarketRequiredString(shard, "mergedAt") }),
+      ...(shard.evidenceRefs === undefined ? {} : { evidenceRefs: parseWorkMarketStringArray(shard.evidenceRefs, "evidenceRefs") }),
+    };
+  });
+}
+
+function parseWorkMarketClaims(value: unknown): HatWorkQueue["claims"] {
+  if (!Array.isArray(value)) {
+    throw new Error("work-market queue claims must be an array");
+  }
+  return value.map((item) => {
+    if (typeof item !== "object" || item === null || Array.isArray(item)) {
+      throw new Error("work-market claim must be an object");
+    }
+    const claim = item as Record<string, unknown>;
+    return {
+      claimId: parseWorkMarketRequiredString(claim, "claimId"),
+      shardId: parseWorkMarketRequiredString(claim, "shardId"),
+      ownerAgentId: parseWorkMarketRequiredString(claim, "ownerAgentId"),
+      hatAssignmentId: parseWorkMarketRequiredString(claim, "hatAssignmentId"),
+      fencingToken: parseWorkMarketRequiredString(claim, "fencingToken"),
+      leaseExpiresAt: parseWorkMarketRequiredString(claim, "leaseExpiresAt"),
+      heartbeatAt: parseWorkMarketRequiredString(claim, "heartbeatAt"),
+      scheduleBlockId: parseWorkMarketRequiredString(claim, "scheduleBlockId"),
+      runtimeSessionId: parseWorkMarketRequiredString(claim, "runtimeSessionId"),
+      workspaceRef: parseWorkMarketRequiredString(claim, "workspaceRef"),
+      credentialScope: parseWorkMarketRequiredString(claim, "credentialScope"),
+      compensatingAction: parseWorkMarketRequiredString(claim, "compensatingAction"),
+      state: parseWorkClaimState(claim.state),
+      claimedAt: parseWorkMarketRequiredString(claim, "claimedAt"),
+      ...(claim.completedAt === undefined ? {} : { completedAt: parseWorkMarketRequiredString(claim, "completedAt") }),
+      ...(claim.releasedAt === undefined ? {} : { releasedAt: parseWorkMarketRequiredString(claim, "releasedAt") }),
+      ...(claim.releaseReason === undefined ? {} : { releaseReason: parseWorkMarketRequiredString(claim, "releaseReason") }),
+      ...(claim.evidenceRefs === undefined ? {} : { evidenceRefs: parseWorkMarketStringArray(claim.evidenceRefs, "evidenceRefs") }),
+    };
+  });
+}
+
+function parseOptionalWorkMarketRuntimeLeases(value: unknown): Partial<Pick<HatWorkQueue, "runtimeLeases">> {
+  if (value === undefined) return {};
+  if (!Array.isArray(value)) {
+    throw new Error("work-market queue runtimeLeases must be an array");
+  }
+  const runtimeLeases = value.map((item) => {
+    if (typeof item !== "object" || item === null || Array.isArray(item)) {
+      throw new Error("work-market runtime lease must be an object");
+    }
+    const lease = item as Record<string, unknown>;
+    return {
+      leaseId: parseWorkMarketRequiredString(lease, "leaseId"),
+      claimId: parseWorkMarketRequiredString(lease, "claimId"),
+      organizationId: parseWorkMarketRequiredString(lease, "organizationId"),
+      queueId: parseWorkMarketRequiredString(lease, "queueId"),
+      hatId: parseWorkMarketRequiredString(lease, "hatId"),
+      scope: parseWorkMarketScope(lease.scope),
+      workItemId: parseWorkMarketRequiredString(lease, "workItemId"),
+      shardId: parseWorkMarketRequiredString(lease, "shardId"),
+      hatAssignmentId: parseWorkMarketRequiredString(lease, "hatAssignmentId"),
+      agentId: parseWorkMarketRequiredString(lease, "agentId"),
+      scheduleBlockId: parseWorkMarketRequiredString(lease, "scheduleBlockId"),
+      runtimeSessionId: parseWorkMarketRequiredString(lease, "runtimeSessionId"),
+      workspaceRef: parseWorkMarketRequiredString(lease, "workspaceRef"),
+      credentialScopeRefs: parseWorkMarketStringArray(lease.credentialScopeRefs, "credentialScopeRefs"),
+      fencingToken: parseWorkMarketRequiredString(lease, "fencingToken"),
+      heartbeatAt: parseWorkMarketRequiredString(lease, "heartbeatAt"),
+      heartbeatDeadlineAt: parseWorkMarketRequiredString(lease, "heartbeatDeadlineAt"),
+      leaseExpiresAt: parseWorkMarketRequiredString(lease, "leaseExpiresAt"),
+      compensatingActionRef: parseWorkMarketRequiredString(lease, "compensatingActionRef"),
+      state: parseRuntimeLeaseState(lease.state),
+      activatedAt: parseWorkMarketRequiredString(lease, "activatedAt"),
+      ...(lease.completedAt === undefined ? {} : { completedAt: parseWorkMarketRequiredString(lease, "completedAt") }),
+      ...(lease.expiredAt === undefined ? {} : { expiredAt: parseWorkMarketRequiredString(lease, "expiredAt") }),
+      ...(lease.revokedAt === undefined ? {} : { revokedAt: parseWorkMarketRequiredString(lease, "revokedAt") }),
+    };
+  });
+  return { runtimeLeases };
+}
+
+function parseOptionalWorkMarketReviews(value: unknown): Partial<Pick<HatWorkQueue, "reviews">> {
+  if (value === undefined) return {};
+  if (!Array.isArray(value)) {
+    throw new Error("work-market queue reviews must be an array");
+  }
+  const reviews = value.map((item) => {
+    if (typeof item !== "object" || item === null || Array.isArray(item)) {
+      throw new Error("work-market review must be an object");
+    }
+    const review = item as Record<string, unknown>;
+    return {
+      shardId: parseWorkMarketRequiredString(review, "shardId"),
+      producerAgentId: parseWorkMarketRequiredString(review, "producerAgentId"),
+      outcome: parseWorkMarketQuorumOutcome(review.outcome),
+      approvalCount: parseWorkMarketNonNegativeInteger(review.approvalCount, "approvalCount"),
+      acceptedEvidenceRefs: parseWorkMarketStringArray(review.acceptedEvidenceRefs, "acceptedEvidenceRefs"),
+      reviewedAt: parseWorkMarketRequiredString(review, "reviewedAt"),
+      ...(review.reason === undefined ? {} : { reason: parseWorkShardReviewRejectReason(review.reason) }),
+    };
+  });
+  return { reviews };
+}
+
+function parseWorkShardState(value: unknown): WorkShardState {
+  if (Object.values(WorkShardState).includes(value as WorkShardState)) return value as WorkShardState;
+  throw new Error("work-market shard state is invalid");
+}
+
+function parseWorkClaimState(value: unknown): WorkClaimState {
+  if (Object.values(WorkClaimState).includes(value as WorkClaimState)) return value as WorkClaimState;
+  throw new Error("work-market claim state is invalid");
+}
+
+function parseRuntimeLeaseState(value: unknown): RuntimeLeaseState {
+  if (Object.values(RuntimeLeaseState).includes(value as RuntimeLeaseState)) return value as RuntimeLeaseState;
+  throw new Error("work-market runtime lease state is invalid");
+}
+
+function parseWorkMarketQuorumOutcome(value: unknown): WorkMarketQuorumOutcome {
+  if (Object.values(WorkMarketQuorumOutcome).includes(value as WorkMarketQuorumOutcome)) {
+    return value as WorkMarketQuorumOutcome;
+  }
+  throw new Error("work-market review outcome is invalid");
+}
+
+function parseWorkShardReviewRejectReason(value: unknown): NonNullable<NonNullable<HatWorkQueue["reviews"]>[number]["reason"]> {
+  if (
+    value === "self_only_review" ||
+    value === "insufficient_quorum" ||
+    value === "no_such_shard" ||
+    value === "producer_claim_missing" ||
+    value === "reviewer_hat_not_allowed"
+  ) {
+    return value;
+  }
+  throw new Error("work-market review reason is invalid");
+}
+
+function parseWorkShardMergePolicy(value: unknown): "independent" | "aggregate_before_merge" {
+  if (value === "independent" || value === "aggregate_before_merge") return value;
+  throw new Error("work-market shard mergePolicy is invalid");
+}
+
+function parseWorkMarketRequiredString(candidate: Record<string, unknown>, property: string): string {
+  const value = candidate[property];
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(`work-market requires string ${property}`);
+  }
+  return value;
+}
+
+function parseOptionalWorkMarketStringProperty(value: unknown, property: "priorityClass" | "slaDeadlineAt"): Partial<Pick<HatWorkQueue, "priorityClass" | "slaDeadlineAt">> {
+  if (value === undefined) return {};
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(`work-market ${property} must be a non-empty string when present`);
+  }
+  return { [property]: value };
+}
+
+function parseWorkMarketStringArray(value: unknown, property: string): readonly string[] {
+  if (!Array.isArray(value) || !value.every((item) => typeof item === "string" && item.trim().length > 0)) {
+    throw new Error(`work-market ${property} must contain only non-empty strings`);
+  }
+  return value;
+}
+
+function parseWorkMarketNumber(value: unknown, property: string): number {
+  if (typeof value !== "number" || !Number.isFinite(value)) {
+    throw new Error(`work-market ${property} must be numeric`);
+  }
+  return value;
+}
+
+function parseOptionalWorkMarketNumberProperty(value: unknown, property: "revision"): Partial<Pick<HatWorkQueue, "revision">> {
+  if (value === undefined) return {};
+  return { [property]: parseWorkMarketNumber(value, property) };
+}
+
+function parseWorkMarketPositiveInteger(value: unknown, property: string): number {
+  if (!Number.isInteger(value) || (value as number) <= 0) {
+    throw new Error(`work-market ${property} must be a positive integer`);
+  }
+  return value as number;
+}
+
+function parseWorkMarketNonNegativeInteger(value: unknown, property: string): number {
+  if (!Number.isInteger(value) || (value as number) < 0) {
+    throw new Error(`work-market ${property} must be a non-negative integer`);
+  }
+  return value as number;
+}
+
+function parseWorkMarketBoolean(value: unknown, property: string): boolean {
+  if (typeof value !== "boolean") {
+    throw new Error(`work-market ${property} must be boolean`);
+  }
+  return value;
 }
 
 function parsePromptFlowPhases(value: unknown): readonly PromptFlowPhaseDefinition[] {
