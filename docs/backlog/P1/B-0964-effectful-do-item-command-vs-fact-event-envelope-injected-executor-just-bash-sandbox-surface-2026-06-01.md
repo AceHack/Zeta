@@ -107,7 +107,7 @@ routing is **by item-class**, not a single default:
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | **Tests**                  | **fake executor** (deterministic, no shell)                                                                                                                   | CI / envelope-shakedown                                                                     | always-green shield                                                                                                        |
 | **Text / no-FS items**     | **just-bash** (in-memory FS, network OFF)                                                                                                                     | pure-text work that never needs real tools — zero-ops, in-process                           | sandboxed **only in this config** (in-memory FS can't reach disk; net off)                                                 |
-| **Real effectful work**    | **local docker** (real kernel, real tools)                                                                                                                    | "the first time the item needs real tools, **stop simulating**" (Amara) — git/npm/compilers | real namespaces/cgroups; **language-agnostic boundary** — the 4-oracle's shared executor                                   |
+| **Real effectful work**    | **local OCI runtime** — podman default, swappable (real kernel, real tools)                                                                                   | "the first time the item needs real tools, **stop simulating**" (Amara) — git/npm/compilers | real namespaces/cgroups; **language-agnostic boundary** — the 4-oracle's shared executor (see §2.2 for the runtime choice) |
 | **Constrained**            | [`just`](https://github.com/casey/just) recipes via [just-mcp](https://docs.rs/crate/just-mcp/latest)                                                         | pre-vetted named tasks — an allowlist                                                       | safest: pick a recipe index, not free-form bash (composes the 16-action grammar)                                           |
 | **Cloud-burst escalation** | [Cloudflare Sandbox SDK](https://github.com/cloudflare/sandbox-sdk) (edge containers + fork-sessions) · just-bash OverlayFS/ReadWriteFs/net · real host shell | massive parallel / explicit need                                                            | **GATED** (§3). CF is a **dependency trap for a LOCAL sovereign agent** (Gemini) — escalation only, never the loop default |
 
@@ -119,14 +119,54 @@ routing is **by item-class**, not a single default:
 > tier, gated.
 
 **Recommendation (folded):** **fake for tests; just-bash (in-memory, net-off) only
-for pure-text/no-FS items; LOCAL DOCKER as the default for real effectful work**
-(real kernel, language-agnostic boundary — the 4-oracle drives the same container,
-no 4× bash re-impl); **`just`-recipe allowlist** for known tasks; **CF Sandbox =
-cloud-burst escalation only** (sovereignty trap as a default); **reject
-bash-on-our-own-FUSE-fs** ("we're building an AI factory, not rewriting GNU
-userland" — Gemini). The `CommandExecutor` port (§1) is the invariant Rust/C#/F#
-inherit; the impl is swappable behind it. Each impl is a new dep — implementation
-PR runs dep-pin-search-first for versions + confirms sandbox/config flags.
+for pure-text/no-FS items; a LOCAL OCI RUNTIME (podman default; docker/nerdctl/finch
+swappable) as the default for real effectful work** (real kernel, language-agnostic
+boundary — the 4-oracle drives the same container, no 4× bash re-impl); **`just`-recipe
+allowlist** for known tasks; **CF Sandbox = cloud-burst escalation only** (sovereignty
+trap as a default); **reject bash-on-our-own-FUSE-fs** ("we're building an AI factory,
+not rewriting GNU userland" — Gemini). The `CommandExecutor` port (§1) is the invariant
+Rust/C#/F# inherit; the impl is swappable behind it. Each impl is a new dep —
+implementation PR runs dep-pin-search-first for versions + confirms sandbox/config flags.
+
+## §2.2 Which container runtime — podman default, swappable via `ZETA_CONTAINER_RUNTIME` (huddle 2026-06-01: gemini + grok)
+
+> **Aaron 2026-06-01:** "docker has a lot of kick ass features but should we be using
+> something more license friendly like podman? or support both? … ServiceTitan pays for
+> docker and it's free for open source stuff mostly … multi agent huddle."
+
+The "local docker" tier above is really a **local OCI runtime** tier — podman, docker,
+nerdctl, finch all speak the same image format + `run` semantics, so the executor's only
+variable is the binary name. The huddle (Gemini propose + Grok-build critique; verbatim
+at `docs/research/2026-06-01-multi-ai-review-b0964-docker-vs-podman-oci-runtime-default-gemini-grok.md`)
+**converged on swappability + compose-at-infra + GPU-via-CDI**, and **disagreed on the
+default** — resolved (not collapsed) by auto-detect:
+
+- **Default = podman, but RESOLVED per host** (folds Gemini's docker-on-laptop +
+  Grok's de-facto-friction): resolution order is **(a) `ZETA_CONTAINER_RUNTIME` if set →
+  (b) auto-detect the first present of `[podman, docker]` → (c) fail-fast**. So:
+  Linux cluster → podman (rootless/daemonless/$0 — the autonomous-agent attack-surface
+  win Grok named; Gemini agrees podman-on-Linux); corp laptop with only Docker Desktop →
+  docker transparently (Grok's "works on my machine" friction handled; Gemini's Podman-
+  Machine-VM-brittleness on Mac/Win avoided); maintainer with both → force either via env.
+  podman is the _declared_ default because it's the free/rootless one we want by default,
+  not because docker is excluded.
+- **Compose stays at the INFRA layer** (both agree): the per-item executor does
+  single-container `run` only. Multi-service `do_item` cases (a Postgres sidecar for an
+  integration test — both peers flagged these are real) are a **separate, higher-layer
+  "environment" concept** (a pod / `podman play kube` / the open Compose Spec at infra),
+  never smuggled into the executor. Gemini: prefer `podman play kube` over Compose for
+  the pod case.
+- **GPU = CDI on Linux hosts** (both agree CDI is the runtime-neutral path; both flag the
+  laptop caveat): on the Linux GPU cluster, `--device nvidia.com/gpu=all` via the NVIDIA
+  Container Toolkit + CDI works identically on podman + docker (no `--gpus` docker
+  lock-in). On Mac/Win laptops GPU-in-container is Docker-Desktop-passthrough / WSL2 and
+  is **out of scope** for the loop — GPU items are Linux-host (cluster) only; laptops
+  fail-fast with a clear message rather than a bifurcating fallback (Gemini).
+
+podman is declared in `tools/setup/manifests/{brew,apt,windows}` (version unpinned —
+fast-mover CLI; brew/scoop default — per pin-only-slow-movers). The Phase-2 `docker`
+tier in §5 below is therefore the **OCI-runtime** tier (resolution above); a maintainer's
+pre-existing Docker Desktop satisfies it with no extra install.
 
 ## §2.1 Cross-language + alternatives — the port is the seam (operator 2026-06-01)
 
@@ -220,9 +260,11 @@ LLM sub-loop over just-bash) as Phase 2.
 
 **Phase 2 — real surfaces (review-folded routing):**
 
-- [ ] **local docker `CommandExecutor`** — the DEFAULT for real effectful work
-      (real kernel, language-agnostic boundary the 4-oracle shares). Real
-      namespaces/cgroups; gate per §3.
+- [ ] **local OCI-runtime `CommandExecutor`** — the DEFAULT for real effectful work
+      (real kernel, language-agnostic boundary the 4-oracle shares). Runtime resolved
+      per §2.2: `ZETA_CONTAINER_RUNTIME` → auto-detect `[podman, docker]` → fail-fast
+      (podman declared in `manifests/{brew,apt,windows}`; Docker Desktop satisfies it
+      with no extra install). Real namespaces/cgroups; gate per §3.
 - [ ] **just-bash `CommandExecutor`** — for pure-text / no-FS items only. Package:
       **[`@archildata/just-bash`](https://www.npmjs.com/package/@archildata/just-bash)**
       (operator-provided coordinate 2026-06-01); pin in-memory FS + network-off;
