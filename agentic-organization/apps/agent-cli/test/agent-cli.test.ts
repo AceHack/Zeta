@@ -1062,6 +1062,34 @@ test("runAgentCliCycle rejects an unknown hat before rendering authority", async
   ok(stderr.join("\n").includes("unknown hat"));
 });
 
+test("runAgentCliCycle rejects malformed run ids before rendering authority", async () => {
+  const stderr: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: ["observe", "--hat", "release_operator", "--scope", "work_item", "--run-id", "0x2a"],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStderr: (text) => stderr.push(text),
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 2);
+  ok(stderr.join("\n").includes("--run-id must be a base-10 ZetaId"));
+});
+
+test("runAgentCliCycle rejects malformed hat assignment ids before rendering authority", async () => {
+  const stderr: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: ["observe", "--hat", "release_operator", "--scope", "work_item", "--hat-assignment", "hat-99"],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStderr: (text) => stderr.push(text),
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 2);
+  ok(stderr.join("\n").includes("--hat-assignment must be a base-10 ZetaId"));
+});
+
 test("createAgentCliMetricAgentsFromEnv wires live LGTM telemetry when all endpoints are configured", () => {
   const fetchCalls: string[] = [];
   const agents = createAgentCliMetricAgentsFromEnv({

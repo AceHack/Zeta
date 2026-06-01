@@ -77,6 +77,12 @@ export type ParseAgentCliArgsResult =
   | { ok: true; value: ParsedAgentCliArgs }
   | { ok: false; message: string };
 
+type AgentCliZetaIdDecimal = ReturnType<typeof asZetaIdDecimal>;
+
+type ParseAgentCliZetaIdResult =
+  | { ok: true; value: AgentCliZetaIdDecimal }
+  | { ok: false; message: string };
+
 export type AgentCliScreen = {
   scope: RunScope;
   phase: RunLifecyclePhase;
@@ -448,8 +454,20 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     return { exitCode: 2 };
   }
 
+  const runId = parseAgentCliZetaId(parsed.value.runId, "--run-id");
+  if (!runId.ok) {
+    input.writeStderr?.(`${runId.message}\n`);
+    return { exitCode: 2 };
+  }
+
+  const hatAssignmentId = parseAgentCliZetaId(parsed.value.hatAssignmentId, "--hat-assignment");
+  if (!hatAssignmentId.ok) {
+    input.writeStderr?.(`${hatAssignmentId.message}\n`);
+    return { exitCode: 2 };
+  }
+
   const snapshot: AgentObserveSnapshot = {
-    runId: asZetaIdDecimal(parsed.value.runId),
+    runId: runId.value,
     scope: parsed.value.scope,
     phase: parsed.value.phase,
     trace: {
@@ -459,7 +477,7 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     },
     hasGateApproval: parsed.value.gateApproved,
     hasEvidence: parsed.value.evidence,
-    hatAssignmentId: asZetaIdDecimal(parsed.value.hatAssignmentId),
+    hatAssignmentId: hatAssignmentId.value,
     hat,
     agentId: parsed.value.agentId,
     organizationId: parsed.value.organizationId,
@@ -1763,6 +1781,14 @@ function parseOptionalMetricUnit(value: unknown): { unit?: string } {
     throw new Error("prompt-flow task metric unit must be a string");
   }
   return { unit: value };
+}
+
+function parseAgentCliZetaId(value: string, flagName: string): ParseAgentCliZetaIdResult {
+  try {
+    return { ok: true, value: asZetaIdDecimal(value) };
+  } catch {
+    return { ok: false, message: `${flagName} must be a base-10 ZetaId, got '${value}'` };
+  }
 }
 
 function parseJsonEnv(raw: string, envName: string): unknown {

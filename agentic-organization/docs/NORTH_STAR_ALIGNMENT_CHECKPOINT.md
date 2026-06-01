@@ -11,6 +11,32 @@ status: design
 Current checkpoint after the first executable TypeScript slices and
 subagent review.
 
+## Update 2026-06-01 — Phase 2.2 CLI ZetaId parser feedback closed
+
+The observe-act foreground CLI no longer lets non-base-10 Zeta ID inputs throw
+while constructing the observe snapshot. `runAgentCliCycle` now validates
+`--run-id` and `--hat-assignment` at the CLI boundary, returns exit code 2, and
+prints a flag-specific setup message before rendering authority or calling
+`observeAgentSurface`.
+
+This closes one remaining Phase 2.2 parser hardening path from
+`PHASE_2_PRODUCTION_AUTONOMY_CA.md`: the domain guard `asZetaIdDecimal` remains
+strict, while the CLI translates that guard into operator-readable typed
+feedback.
+
+Verification:
+
+```text
+npm test -- apps/agent-cli/test/agent-cli.test.ts
+  1205 tests / 1198 pass / 0 fail / 7 skipped
+
+KIND
+  Not rerun for this slice. The change is a pre-observe CLI input-validation
+  boundary; existing observe-act worker/KIND proofs exercise the successful
+  `runAgentCliMain` path, while this slice is covered by direct CLI regression
+  tests for both malformed ID flags.
+```
+
 ## Update 2026-05-30 — M1/M4 conformance checker + clamp properties built and proven in kind
 
 The first orchestration-moat phase is shipped: the org can now replay the
