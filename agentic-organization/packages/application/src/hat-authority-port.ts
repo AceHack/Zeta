@@ -10,6 +10,7 @@ import {
   type HatAuthorityRequest,
 } from "../../policy/src/index.ts";
 import { ActionClass, preflightHatAction } from "./hat-guardrails.ts";
+import { ObserveCommandType } from "./observe.ts";
 import type { HatAssignmentAuthorityReaderPort } from "./ports.ts";
 
 export const HatAuthorityPolicyVersion = "hat-authority-v1" as const;
@@ -21,7 +22,7 @@ export type CreateHatAuthorityPortInput = {
   policyVersion?: string | undefined;
 };
 
-const CommandActionClass: Readonly<Partial<Record<CommandType, ActionClass>>> = {
+const CommandActionClass: Readonly<Partial<Record<string, ActionClass>>> = {
   [CommandType.CreateWorkItem]: ActionClass.Prioritize,
   [CommandType.CreateDiscussionAnchor]: ActionClass.WriteDoc,
   [CommandType.RecordQualityGateEvaluation]: ActionClass.ApproveReview,
@@ -29,6 +30,7 @@ const CommandActionClass: Readonly<Partial<Record<CommandType, ActionClass>>> = 
   [CommandType.ScheduleWorkBlock]: ActionClass.Prioritize,
   [CommandType.SendSupervisorSignal]: ActionClass.Prioritize,
   [CommandType.TriageSupervisorSignal]: ActionClass.Prioritize,
+  [ObserveCommandType.LifecycleTransition]: ActionClass.WriteCode,
 };
 
 const ToolActionClass: Readonly<Record<ActionClass, ActionClass>> = {

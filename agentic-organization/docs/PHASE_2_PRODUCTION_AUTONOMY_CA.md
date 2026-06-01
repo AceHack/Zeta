@@ -365,6 +365,17 @@ schema failure, bracketed/free-form text, out-of-range slots, and non-selectable
 slots remain typed selector rejections with fallback evidence instead of worker
 crashes.
 
+**Checkpoint 2026-06-01: observe lifecycle command authority**
+
+Production observe-act command dispatch now reaches the same durable hat
+authority policy as every other command without being rejected as an unknown
+command class. `observe.lifecycle_transition` is classified as a delivery
+`write_code` authority action, so delivery hats can advance selected lifecycle
+commit slots through the real command pipeline while management hats that lack
+delivery authority remain denied. This closes a production wiring gap where the
+CLI could render and dispatch a command slot but the durable policy layer still
+treated the observe-act foreground command as unsupported.
+
 **Algorithms:**
 
 - **menu stability hash:** hash slot directions, labels, availability, reasons,

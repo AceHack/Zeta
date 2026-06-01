@@ -12,6 +12,7 @@ import {
   type HatAuthorityRequest,
 } from "../../policy/src/index.ts";
 import {
+  ObserveCommandType,
   buildHatDefinitions,
   createHatAuthorityPort,
   type HatAssignmentAuthorityReaderPort,
@@ -57,6 +58,34 @@ describe("real hat authority port", () => {
     }));
 
     equal(decision.status, HatAuthorityDecisionStatus.Active);
+  });
+
+  test("allows observe-act lifecycle transition commands through durable hat authority", async () => {
+    const port = createHatAuthorityPort({
+      hatAssignmentAuthorityReader: readerFor(authority({ hatId: "release_operator" })),
+      hatDefinitions: buildHatDefinitions(),
+      createId,
+    });
+
+    const decision = await port.evaluateHatAuthority(request({
+      commandType: ObserveCommandType.LifecycleTransition,
+    }));
+
+    equal(decision.status, HatAuthorityDecisionStatus.Active);
+  });
+
+  test("denies observe-act lifecycle transition commands for hats without delivery authority", async () => {
+    const port = createHatAuthorityPort({
+      hatAssignmentAuthorityReader: readerFor(authority({ hatId: "program_director" })),
+      hatDefinitions: buildHatDefinitions(),
+      createId,
+    });
+
+    const decision = await port.evaluateHatAuthority(request({
+      commandType: ObserveCommandType.LifecycleTransition,
+    }));
+
+    equal(decision.status, HatAuthorityDecisionStatus.ToolDenied);
   });
 
   test("denies missing hat assignments", async () => {
