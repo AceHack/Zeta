@@ -22,6 +22,8 @@
 //! the cross-language golden vectors are byte-stable.
 
 use core::cmp::Ordering;
+use core::iter::Sum;
+use core::ops::Add;
 
 /// One bag entry: a key `e` with a strictly-positive multiplicity `n` (>= 1 in a
 /// canonical bag).
@@ -197,6 +199,43 @@ impl<T: Ord + Clone> Bag<T> {
     }
 }
 
+// ── generic-math additive-monoid surface (native Rust idiom, zero-dep) ──────
+// Bag is an additive, commutative monoid (identity + associative per-key-sum `union`,
+// NO inverse) — but, unlike a G-Set, NOT idempotent (`&a + &a` doubles counts). It
+// surfaces `Add` (the `+` operator) + a `Default` identity (the `Zero` analog) + `Sum`
+// (fold a collection) — never `Sub`/`Neg`/`Mul` (the abelian-group step is the Z-set).
+// `Add` is on `&Bag<T>` (ref-operator, `&a + &b`), NOT `Bag<T>` by value: the type has an
+// inherent `add(&self, x: T)` (add ONE occurrence), and a by-value `Add for Bag` would let
+// `Add::add(self, Self)` win method resolution over it — same collision the G-Set slice hit.
+
+impl<T: Ord + Clone> Add for &Bag<T> {
+    type Output = Bag<T>;
+
+    /// The additive operator (`&a + &b`): the per-key SUM `union` merge (overflow-guarded).
+    /// Ref-operator (see the module note) so it never collides with the inherent [`Bag::add`].
+    fn add(self, rhs: &Bag<T>) -> Bag<T> {
+        self.union(rhs)
+    }
+}
+
+impl<T: Ord + Clone> Default for Bag<T> {
+    /// The additive-monoid identity (the empty bag) — the Rust `Default` analog of
+    /// F# `Zero` / C# `AdditiveIdentity`.
+    fn default() -> Self {
+        Self::empty()
+    }
+}
+
+impl<T: Ord + Clone> Sum for Bag<T> {
+    /// Fold a collection of Bags through the monoid, so `iter.sum()` aggregates them (per-key
+    /// sums) — the "generic code folds it" payoff. `reduce` folds from the FIRST element (no
+    /// identity-seed clone — `&empty + &x` would clone `x` via union's empty short-circuit);
+    /// an empty iterator yields the `Default` identity.
+    fn sum<I: Iterator<Item = Bag<T>>>(iter: I) -> Self {
+        iter.reduce(|acc, x| &acc + &x).unwrap_or_default()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -310,5 +349,41 @@ mod tests {
             vec![e("a", 1), e("b", 2), e("z", 3)]
         );
         assert_eq!(a.add_n("z".to_string(), 0), a); // n <= 0 is a no-op
+    }
+
+    // ── generic-math additive-monoid surface (Add + Default + Sum) ──────────
+
+    #[test]
+    fn generic_math_add_is_per_key_sum() {
+        // explicit per-key-sum result (not `&a + &b == union`, which would be tautological)
+        let a = bag(&[("a", 1), ("b", 2)]);
+        let b = bag(&[("b", 1), ("c", 3)]);
+        assert_eq!((&a + &b).to_entries(), vec![e("a", 1), e("b", 3), e("c", 3)]);
+    }
+
+    #[test]
+    fn generic_math_default_is_empty_identity() {
+        let a = bag(&[("a", 1), ("b", 2)]);
+        let id = Bag::<String>::default();
+        assert!(id.is_empty());
+        assert_eq!(&id + &a, a); // identity + a = a
+        assert_eq!(&a + &id, a); // a + identity = a
+    }
+
+    #[test]
+    fn generic_math_commutative_associative_but_not_idempotent() {
+        let a = bag(&[("a", 1), ("b", 2)]);
+        let b = bag(&[("b", 1), ("c", 3)]);
+        let c = bag(&[("c", 5)]);
+        assert_eq!(&a + &b, &b + &a); // commutative
+        assert_eq!(&(&a + &b) + &c, &a + &(&b + &c)); // associative
+        assert_eq!((&a + &a).to_entries(), vec![e("a", 2), e("b", 4)]); // NOT idempotent — doubles
+    }
+
+    #[test]
+    fn generic_math_sum_folds_per_key() {
+        let bags = vec![bag(&[("a", 1)]), bag(&[("a", 2), ("b", 1)]), bag(&[("b", 3)])];
+        let merged: Bag<String> = bags.into_iter().sum();
+        assert_eq!(merged.to_entries(), vec![e("a", 3), e("b", 4)]);
     }
 }
