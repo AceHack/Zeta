@@ -137,3 +137,31 @@ describe("solve — constraint retraction on backtrack (P1 regression)", () => {
     if (r.ok) { expect(r.versions.get("A")).toBe("1.0.0"); expect(r.versions.get("C")).toBe("1.0.0"); }
   });
 });
+
+describe("solve — untrusted edge shape (regression)", () => {
+  test("registry edge with non-string version → invalid-package (no parseRange crash)", async () => {
+    const bad = { kind: "registry", name: "A", version: 123 } as unknown as AceDependency;
+    const root = pkgAt("root", "1.0.0", [bad]);
+    const r = await solve(root, fetchOf({}), new Map());
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
+  test("inline edge with non-string version → invalid-package (no satisfies/pin crash)", async () => {
+    const A = pkgAt("A", "1.0.0");
+    const bad = { kind: "inline", name: "A", version: 123, url: "http://e/A", package_hash: packageHash(A) } as unknown as AceDependency;
+    const root = pkgAt("root", "1.0.0", [bad]);
+    const r = await solve(root, fetchOf({ "http://e/A": A }), new Map());
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
+});
+
+describe("solve — malformed edge name path fidelity (regression)", () => {
+  test("non-string name → invalid-package, path preserves the stringified bad name", async () => {
+    const bad = { kind: "registry", name: 99, version: "^1.0.0" } as unknown as AceDependency;
+    const root = pkgAt("root", "1.0.0", [bad]);
+    const r = await solve(root, fetchOf({}), new Map());
+    expect(r.ok).toBe(false);
+    if (!r.ok) { expect(r.reason).toBe("invalid-package"); expect(r.path).toEqual(["root", "99"]); }
+  });
+});

@@ -44,7 +44,7 @@ export function parseRange(s: string): RangeOrError {
   return { comparators: out };
 }
 
-// Task 2 extends this with ^ / ~. Task 1: exact, comparators, wildcard token.
+// Parse one comparator token: ^/~ (caret/tilde desugar to a >= / < pair), an exact x.y.z, an op-prefixed (>= <= > < =) version, or a * / x wildcard.
 function parseComparatorToken(token: string): RangeOrError {
   if (token.startsWith("^") || token.startsWith("~")) {
     const v = parseVersion(token.slice(1));

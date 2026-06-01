@@ -273,3 +273,31 @@ describe("resolve — solved-map registry edges", () => {
     if (!r.ok) expect(r.reason).toBe("unsatisfiable");
   });
 });
+
+describe("resolve — untrusted registry edge version (regression / bad-range)", () => {
+  test("non-string registry version → bad-range (no satisfies crash)", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "registry", name: "D", version: 123 } as unknown as AceDependency] }, files: { "r.txt": "r" } };
+    const reg = new Map([["D", new Map([["1.0.0", { url: "http://e/D", package_hash: packageHash(D) }]])]]);
+    const solved = new Map([["D", "1.0.0"]]);
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, solved, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("bad-range");
+  });
+  test("malformed registry range string → bad-range (defense-in-depth; resolve does not assume solve ran)", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "registry" as const, name: "D", version: "@@@" }] }, files: { "r.txt": "r" } };
+    const reg = new Map([["D", new Map([["1.0.0", { url: "http://e/D", package_hash: packageHash(D) }]])]]);
+    const solved = new Map([["D", "1.0.0"]]);
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, reg, solved, { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("bad-range");
+  });
+  test("inline edge with non-string version → invalid-package", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    const root: AcePackage = { manifest: { ...pkgOf("root", { "r.txt": "r" }).manifest, dependencies: [{ kind: "inline", name: "D", version: 123, url: "http://e/D", package_hash: packageHash(D) } as unknown as AceDependency] }, files: { "r.txt": "r" } };
+    const r = await resolve(root, fetchOf({ "http://e/D": D }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
+});

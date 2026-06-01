@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { contentHash, type AcePackage, type LoadedTrustEntry, type Registry } from "./store.ts";
 import { verifySignature } from "./signing.ts";
-import { satisfies } from "./semver.ts";
+import { parseRange, satisfies } from "./semver.ts";
 
 /** Deterministic JSON: object keys recursively sorted; arrays preserve order. */
 function canonicalJson(value: unknown): string {
@@ -69,8 +69,17 @@ export async function resolve(
         if (concrete === undefined) {
           return { ok: false, reason: "unsatisfiable", detail: `${edge.name}: no solved version`, path: here };
         }
-        // Defense-in-depth: the solved concrete version must actually satisfy the declared range.
-        if (!satisfies(concrete, edge.version)) {
+        // Defense-in-depth: edge.version is untrusted JSON. resolve() must not assume solve() ran,
+        // so parse the declared range here (non-string OR malformed → bad-range) before confirming
+        // the solved concrete version satisfies it.
+        if (typeof edge.version !== "string") {
+          return { ok: false, reason: "bad-range", detail: `${edge.name}: registry edge version must be a string`, path: here };
+        }
+        const range = parseRange(edge.version);
+        if ("error" in range) {
+          return { ok: false, reason: "bad-range", detail: `${edge.name}: ${range.error}`, path: here };
+        }
+        if (!satisfies(concrete, range)) {
           return { ok: false, reason: "unsatisfiable", detail: `${edge.name}: solved ${concrete} violates ${edge.version}`, path: here };
         }
         const entry = registry.get(edge.name)?.get(concrete);
@@ -80,8 +89,8 @@ export async function resolve(
         url = entry.url; package_hash = entry.package_hash;
         effectiveVersion = concrete;
       } else {
-        if (typeof edge.url !== "string" || typeof edge.package_hash !== "string") {
-          return { ok: false, reason: "invalid-package", detail: `${edge.name}: inline edge missing url/package_hash`, path: here };
+        if (typeof edge.url !== "string" || typeof edge.package_hash !== "string" || typeof edge.version !== "string") {
+          return { ok: false, reason: "invalid-package", detail: `${edge.name}: inline edge missing/invalid url/package_hash/version`, path: here };
         }
         url = edge.url; package_hash = edge.package_hash;
         effectiveVersion = edge.version;

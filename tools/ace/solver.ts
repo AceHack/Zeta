@@ -95,12 +95,18 @@ export async function solve(root: AcePackage, fetchPackage: FetchPackage, regist
    *  for dep recursion; registry edges add a source-tagged range constraint and queue the name.
    *  Returns a failure or null. */
   const ingest = async (deps: ReadonlyArray<AceDependency>, ownerPath: string[], source: string): Promise<SolveResult | null> => {
-    retractSource(source); // idempotency: clear this source's prior constraints before re-adding
+    if (source !== "root") retractSource(source); // idempotency: clear this source's prior constraints before re-adding (root is seeded once; its constraints are permanent — honors retractSource's "never call with root" invariant)
     for (const edge of deps) {
-      const here = [...ownerPath, edge.name];
+      const here = [...ownerPath, String((edge as { name?: unknown }).name)];
       const ek = (edge as { readonly kind?: unknown }).kind;
       if (ek !== undefined && ek !== "inline" && ek !== "registry") {
         return { ok: false, reason: "invalid-package", detail: `${edge.name}: unknown dependency kind ${JSON.stringify(ek)}`, path: here };
+      }
+      // Edge name + version are untrusted JSON; both kinds read edge.version (registry → parseRange,
+      // inline → satisfies/pin). A non-string crashes those — refuse with a precise invalid-package.
+      const en = edge as { name?: unknown; version?: unknown };
+      if (typeof en.name !== "string" || typeof en.version !== "string") {
+        return { ok: false, reason: "invalid-package", detail: `${String(en.name)}: edge name and version must be strings`, path: here };
       }
 
       if (edge.kind === "registry") {

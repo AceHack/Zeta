@@ -6,7 +6,7 @@
  * but the WASM assertion fails in the worker thread on WASM instance receipt.
  * Exact error: "Aborted(Assertion failed)" at z3-built.js:848 (removeRunDependency → assert).
  *
- * Resolution (no skip — per automated-tests-are-the-shield-assert-dont-skip.md):
+ * Resolution (no skip — per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md):
  * We spawn a Node.js subprocess for each Z3 query. The test file itself runs under Bun;
  * Z3 actually executes and returns a verdict (sat/unsat); assertions are made in Bun.
  * This is NOT a graceful skip — the test FAILS if Node is unavailable or Z3 crashes.
@@ -165,6 +165,7 @@ function encVer(v) {
 })().catch(e => { process.stderr.write(e.message + '\\n'); process.exit(1); });
 `;
 
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- "node" is a trusted PATH runtime lookup; Z3's Emscripten-pthread WASM can't init under Bun (see file header), so each query shells to Node. argv carries only a fixed nodeScript template — no untrusted input.
   const result = spawnSync("node", ["-e", nodeScript], {
     encoding: "utf-8",
     timeout: 25000,

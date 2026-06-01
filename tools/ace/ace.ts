@@ -497,7 +497,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const solveResult = await solve(pkg, fetchPackage, loadRegistry());
+      const registry = loadRegistry();
+      const solveResult = await solve(pkg, fetchPackage, registry);
       if (!solveResult.ok) {
         console.error(`ace: install refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`);
         return 1;
@@ -508,7 +509,7 @@ export async function main(argv: readonly string[]): Promise<number> {
           console.log(`  ${n}@${v}`);
         }
       }
-      const res = await resolve(pkg, fetchPackage, loadTrustStore(), loadRegistry(), solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
       if (!res.ok) {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
