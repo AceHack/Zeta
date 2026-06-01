@@ -54,9 +54,13 @@ Flow (reuses the install front-half verification, skips extraction):
    overridable by `--allow-no-signature`; bad/untrusted/unsupported always refused) →
    root `content_hash` check.
 2. If the root has dependencies: `loadRegistry()` → `solve()` → `resolve()` (fetch +
-   verify the graph, producing `order`) → `buildLockfile(root, order, registry)` →
-   `serializeLockfile` → `writeFileSync(lockfile)`. **No preflight, no
-   `installPackage`.**
+   verify the graph, producing `order`) → **run the install integrity preflight**
+   (`content_hash` + `validatePackagePaths` + store-key collision over `res.order`,
+   identical to the install graph path) → `buildLockfile(root, order, registry)` →
+   `serializeLockfile` → `writeFileSync(lockfile)`. **Runs the full preflight so
+   `update` never writes a lock for a graph that `install` would reject (Codex review
+   on #6412); skips only the extract (`installPackage`) step.** A preflight failure →
+   hard refusal, no lock written.
 3. If the root is a leaf (no deps): write the trivial leaf lock (Feature 3).
 4. A solve/resolve failure → hard refusal (same reason surfacing as install). A lock
    write failure → hard error here (unlike install's warning: producing the refreshed
@@ -126,7 +130,7 @@ clarity since the leaf path has no `order`/`registry` in hand.
 ## Data flow
 
 ```text
-ace update <root>:   read root → verify → solve → resolve → buildLockfile → write lock   (no extract)
+ace update <root>:   read root → verify → solve → resolve → preflight → buildLockfile → write lock   (no extract)
 install --locked:    read root → verify → solve → resolve → buildLockfile → EQ on-disk? differ→refuse / same→preflight+extract
 install (leaf):      read root → verify → install root → write {root, nodes:[]} lock
 install --frozen leaf: read root → verify → read lock → root-drift gate → install root
@@ -137,6 +141,7 @@ install --frozen leaf: read root → verify → read lock → root-drift gate �
 | Situation | Verb | Behavior |
 | --- | --- | --- |
 | `update` solve/resolve fails | update | Hard refusal (reason surfaced) |
+| `update` graph node fails preflight (bad content_hash / unsafe path / store-collision) | update | Hard refusal, **no lock written** (never lock a graph install would reject) |
 | `update` lock write fails | update | **Hard error** (the refreshed lock is the purpose) |
 | `install --locked` + no lockfile | install | Hard refusal ("nothing to check against") |
 | `install --locked` + lock differs from fresh solve | install | Hard refusal, **install nothing** ("run `ace update`") |
