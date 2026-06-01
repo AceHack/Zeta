@@ -1,7 +1,7 @@
 ---
 id: B-0971
 priority: P2
-status: open
+status: closed
 title: Ace remote registry — HTTP-fetched registry index (deferred from slice 5.x local-only registry)
 effort: M
 ask: operator 2026-06-01
@@ -48,3 +48,20 @@ for further enhancements."*
 - Slice 5.1 registry data layer (`tools/ace/store.ts`)
 - B-0863 (one-liner curl install repository — a sibling remote-distribution concern)
 - B-0288 (Ace DLC package manager CLI)
+
+## Resolution — shipped by #6431 (slice 6)
+
+Remote registry landed in slice 6: `registry-remote.ts` fetches a **signed** index over
+HTTP(S), verified by **three gates** — ed25519 **signature** pinned to a **mandatory**
+per-registry `key_id` (no any-trusted-key fallback; Codex #6424 P1) + the key must be
+trusted; monotonic-`sequence` **anti-rollback**; two-sided `issued_at` **freshness**
+(30-day past max-staleness + 5-minute future-skew, always enforced incl. offline;
+Codex #6424 P2). Conditional-GET content-addressed cache under `~/.ace/registry-cache/`;
+**`--offline`** cache-fallback. Config via `~/.ace/registries.json` +
+`ace registry remote add/list/rm`; precedence user > bundled > remote[0] > …. The
+solver/lockfile/install-graph are unchanged — the remote merge produces the same
+`Registry` map. Per-package hash-pin + signature gate unchanged (index trust is additive).
+
+**Deferred sub-rows filed:** B-0977 (mirror/failover), B-0978 (incremental/paginated
+index), B-0979 (full TUF role separation), B-0980 (`ace registry publish` tooling),
+B-0981 (key rotation + multi-signer thresholds). Closed.

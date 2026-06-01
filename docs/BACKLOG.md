@@ -923,7 +923,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0965](backlog/P2/B-0965-gitbash-routing-install-shield-parity-gap-2026-06-01.md)** git-bash routing install-shield — the one unshielded install surface (parity gap)
 - [ ] **[B-0968](backlog/P2/B-0968-both-runtimes-on-windows-shield-coverage-podman-linux-docker-windows-containers-2026-06-01.md)** Both-runtimes-on-Windows shield coverage — podman (Linux-container path via WSL2) alongside docker (Windows-container install.ps1 shield)
 - [ ] **[B-0970](backlog/P2/B-0970-ace-advanced-semver-union-hyphen-prerelease-build-metadata-deferred-from-slice5.2-pragmatic-subset-2026-06-01.md)** Ace advanced semver — `||` unions, hyphen ranges, pre-release precedence, build metadata (deferred from slice 5.2 pragmatic subset)
-- [ ] **[B-0971](backlog/P2/B-0971-ace-remote-registry-http-fetched-index-deferred-from-slice5.x-local-only-2026-06-01.md)** Ace remote registry — HTTP-fetched registry index (deferred from slice 5.x local-only registry)
+- [x] **[B-0971](backlog/P2/B-0971-ace-remote-registry-http-fetched-index-deferred-from-slice5.x-local-only-2026-06-01.md)** Ace remote registry — HTTP-fetched registry index (deferred from slice 5.x local-only registry)
 - [ ] **[B-0972](backlog/P2/B-0972-ace-solver-installer-single-fetch-cache-deferred-from-slice5.2-two-phase-2026-06-01.md)** Ace solver↔installer single-fetch cache — fetch each package once (deferred from slice 5.2 clean two-phase split)
 - [ ] **[B-0973](backlog/P2/B-0973-ace-update-re-solve-within-ranges-rewrite-lockfile-bump-deferred-from-slice5.3-2026-06-01.md)** Ace `ace update` — re-solve within ranges + rewrite the lockfile (bump; deferred from slice 5.3 lockfile)
 - [x] **[B-0974](backlog/P2/B-0974-ace-install-locked-mode-verify-lock-matches-fresh-solve-vs-frozen-replay-deferred-from-slice5.3-2026-06-01.md)** Ace `ace install --locked` — verify the lock matches a fresh solve (cargo --locked vs --frozen distinction; deferred from slice 5.3)
@@ -1090,5 +1090,10 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0949](backlog/P3/B-0949-fromvalue-wide-decoder-mode-search-hangs-bound-analytically-or-cap-widths-cross-language-parity-aaron-2026-05-30.md)** Tri-boolean float FromValue mode-search hangs for wide decoders (biased-exponent impls F#/C#/Rust; TS radix-point unaffected) — bound the scan analytically or cap widths, consistently
 - [ ] **[B-0950](backlog/P3/B-0950-creator-compensation-via-provenance-contribution-graph-weighted-split-not-drm-aaron-2026-05-31.md)** Creator compensation via a multi-attribution contribution graph + weighted split (provenance, NOT DRM)
 - [ ] **[B-0966](backlog/P3/B-0966-ace-store-key-by-package-identity-not-files-hash-future-enhancement-2026-06-01.md)** Ace store keyed by package identity (not files-hash) — future enhancement, only if same-files-different-identity arises
+- [ ] **[B-0977](backlog/P3/B-0977-ace-registry-mirror-failover-multiple-urls-per-registry-deferred-from-slice6-2026-06-01.md)** Ace registry mirror/failover — multiple URLs per registry (deferred from slice 6)
+- [ ] **[B-0978](backlog/P3/B-0978-ace-registry-incremental-paginated-index-deferred-from-slice6-2026-06-01.md)** Ace registry incremental/paginated index — delta updates + range requests (deferred from slice 6)
+- [ ] **[B-0979](backlog/P3/B-0979-ace-registry-full-tuf-role-separation-deferred-from-slice6-2026-06-01.md)** Ace registry full TUF role separation — root/targets/snapshot/timestamp (deferred from slice 6)
+- [ ] **[B-0980](backlog/P3/B-0980-ace-registry-publish-index-generation-tooling-deferred-from-slice6-2026-06-01.md)** Ace `ace registry publish` — index-generation + signing tooling (deferred from slice 6)
+- [ ] **[B-0981](backlog/P3/B-0981-ace-registry-key-rotation-multi-signer-thresholds-deferred-from-slice6-2026-06-01.md)** Ace registry per-registry key rotation + multi-signer thresholds (deferred from slice 6)
 
 <!-- END AUTO-GENERATED -->
