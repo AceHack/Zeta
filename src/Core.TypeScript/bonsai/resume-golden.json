@@ -1,0 +1,103 @@
+{
+  "description": "Resume-engine cross-language conformance (B-0976 resume slice). The TS reference oracle authors these saga traces; F#/C#/Rust replay them. A trace is a Bonsai-subset program whose `call` nodes are activities (suspension points). Each oracle runs start -> (assert suspension fn+args; resume with the next activityResult)* -> done, and must produce the SAME ordered suspension sequence AND the SAME final value. Restore-not-replay: persisting the state at any suspension (serializeState) and resuming from the re-parsed state must give the identical continuation (prior activities are never re-invoked). The compilers do not lie; agreement IS the verification.",
+  "version": 1,
+  "traces": [
+    {
+      "name": "two_sequential_activities",
+      "note": "add(a(), b()) — suspends at a, then b; arithmetic on their results",
+      "program": {
+        "kind": "binary",
+        "op": "add",
+        "left": { "kind": "call", "fn": "a", "args": [] },
+        "right": { "kind": "call", "fn": "b", "args": [] }
+      },
+      "bindings": {},
+      "activityResults": [
+        { "t": "int", "v": 10 },
+        { "t": "int", "v": 20 }
+      ],
+      "expectedSuspensions": [
+        { "fn": "a", "args": [] },
+        { "fn": "b", "args": [] }
+      ],
+      "expectedFinal": { "t": "int", "v": 30 }
+    },
+    {
+      "name": "cond_branch_on_activity",
+      "note": "cond(lt(roll(), 5), 'low', 'high') — one activity, branch on its result",
+      "program": {
+        "kind": "cond",
+        "test": {
+          "kind": "binary",
+          "op": "lt",
+          "left": { "kind": "call", "fn": "roll", "args": [] },
+          "right": { "kind": "const", "value": { "t": "int", "v": 5 } }
+        },
+        "then": { "kind": "const", "value": { "t": "str", "v": "low" } },
+        "else": { "kind": "const", "value": { "t": "str", "v": "high" } }
+      },
+      "bindings": {},
+      "activityResults": [{ "t": "int", "v": 3 }],
+      "expectedSuspensions": [{ "fn": "roll", "args": [] }],
+      "expectedFinal": { "t": "str", "v": "low" }
+    },
+    {
+      "name": "activity_with_computed_args",
+      "note": "act(add(1,2), 7) — args evaluated before the activity suspends",
+      "program": {
+        "kind": "call",
+        "fn": "act",
+        "args": [
+          {
+            "kind": "binary",
+            "op": "add",
+            "left": { "kind": "const", "value": { "t": "int", "v": 1 } },
+            "right": { "kind": "const", "value": { "t": "int", "v": 2 } }
+          },
+          { "kind": "const", "value": { "t": "int", "v": 7 } }
+        ]
+      },
+      "bindings": {},
+      "activityResults": [{ "t": "int", "v": 42 }],
+      "expectedSuspensions": [
+        { "fn": "act", "args": [{ "t": "int", "v": 3 }, { "t": "int", "v": 7 }] }
+      ],
+      "expectedFinal": { "t": "int", "v": 42 }
+    },
+    {
+      "name": "pure_no_suspension",
+      "note": "add(2, mul(3,4)) — no activities; finishes without suspending",
+      "program": {
+        "kind": "binary",
+        "op": "add",
+        "left": { "kind": "const", "value": { "t": "int", "v": 2 } },
+        "right": {
+          "kind": "binary",
+          "op": "mul",
+          "left": { "kind": "const", "value": { "t": "int", "v": 3 } },
+          "right": { "kind": "const", "value": { "t": "int", "v": 4 } }
+        }
+      },
+      "bindings": {},
+      "activityResults": [],
+      "expectedSuspensions": [],
+      "expectedFinal": { "t": "int", "v": 14 }
+    },
+    {
+      "name": "param_binding_plus_activity",
+      "note": "add(n, dbl(n)) with n bound to 5 — param lookup + activity carrying a computed arg",
+      "program": {
+        "kind": "binary",
+        "op": "add",
+        "left": { "kind": "param", "name": "n" },
+        "right": { "kind": "call", "fn": "dbl", "args": [{ "kind": "param", "name": "n" }] }
+      },
+      "bindings": { "n": { "t": "int", "v": 5 } },
+      "activityResults": [{ "t": "int", "v": 10 }],
+      "expectedSuspensions": [
+        { "fn": "dbl", "args": [{ "t": "int", "v": 5 }] }
+      ],
+      "expectedFinal": { "t": "int", "v": 15 }
+    }
+  ]
+}
