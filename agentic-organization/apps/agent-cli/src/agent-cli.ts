@@ -116,6 +116,12 @@ export type CreateAgentCliHierarchyFromEnvInput = {
   env: Readonly<Record<string, string | undefined>>;
 };
 
+export type AgentCliEnvLoadErrorSource = "prompt_flow_tasks" | "hierarchy";
+
+export type AgentCliEnvLoadResult<T> =
+  | { ok: true; value: T }
+  | { ok: false; source: AgentCliEnvLoadErrorSource; message: string };
+
 export const SelectorRejectionReason = {
   ModelError: "model_error",
   ParseFailure: "parse_failure",
@@ -308,7 +314,7 @@ export function createAgentCliPromptFlowTasksFromEnv(
   if (raw === undefined || raw.trim().length === 0) {
     return compiled;
   }
-  const parsed: unknown = JSON.parse(raw);
+  const parsed = parseJsonEnv(raw, "AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON");
   if (!Array.isArray(parsed)) {
     throw new Error("AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON must be a JSON array");
   }
@@ -318,6 +324,20 @@ export function createAgentCliPromptFlowTasksFromEnv(
   ];
 }
 
+export function tryCreateAgentCliPromptFlowTasksFromEnv(
+  input: CreateAgentCliPromptFlowTasksFromEnvInput,
+): AgentCliEnvLoadResult<readonly PromptFlowTask[]> {
+  try {
+    return { ok: true, value: createAgentCliPromptFlowTasksFromEnv(input) };
+  } catch (error) {
+    return {
+      ok: false,
+      source: "prompt_flow_tasks",
+      message: extractErrorMessage(error),
+    };
+  }
+}
+
 export function createAgentCliHierarchyFromEnv(
   input: CreateAgentCliHierarchyFromEnvInput,
 ): HierarchySnapshot {
@@ -325,7 +345,7 @@ export function createAgentCliHierarchyFromEnv(
   if (raw === undefined || raw.trim().length === 0) {
     return { projects: [], initiatives: [] };
   }
-  const parsed: unknown = JSON.parse(raw);
+  const parsed = parseJsonEnv(raw, "AGENTIC_ORG_HIERARCHY_JSON");
   if (typeof parsed !== "object" || parsed === null) {
     throw new Error("AGENTIC_ORG_HIERARCHY_JSON must be a JSON object");
   }
@@ -337,6 +357,20 @@ export function createAgentCliHierarchyFromEnv(
     workItems: parseOptionalHierarchyWorkItems(candidate.workItems),
     missions: parseOptionalHierarchyMissions(candidate.missions),
   };
+}
+
+export function tryCreateAgentCliHierarchyFromEnv(
+  input: CreateAgentCliHierarchyFromEnvInput,
+): AgentCliEnvLoadResult<HierarchySnapshot> {
+  try {
+    return { ok: true, value: createAgentCliHierarchyFromEnv(input) };
+  } catch (error) {
+    return {
+      ok: false,
+      source: "hierarchy",
+      message: extractErrorMessage(error),
+    };
+  }
 }
 
 export function createModelBackedMenuSelector(input: CreateModelBackedMenuSelectorInput): MenuSelector {
@@ -1110,7 +1144,7 @@ function compileAgentCliPromptFlowTasksFromEnv(
 }
 
 function parsePromptFlowDefinitionsJson(raw: string): readonly PromptFlowDefinition[] {
-  const parsed: unknown = JSON.parse(raw);
+  const parsed = parseJsonEnv(raw, "AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON");
   if (!Array.isArray(parsed)) {
     throw new Error("AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON must be a JSON array");
   }
@@ -1123,7 +1157,7 @@ function parsePromptFlowDefinitionsJson(raw: string): readonly PromptFlowDefinit
 }
 
 function parsePromptFlowRunsJson(raw: string): readonly PromptFlowRun[] {
-  const parsed: unknown = JSON.parse(raw);
+  const parsed = parseJsonEnv(raw, "AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON");
   if (!Array.isArray(parsed)) {
     throw new Error("AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON must be a JSON array");
   }
@@ -1729,4 +1763,16 @@ function parseOptionalMetricUnit(value: unknown): { unit?: string } {
     throw new Error("prompt-flow task metric unit must be a string");
   }
   return { unit: value };
+}
+
+function parseJsonEnv(raw: string, envName: string): unknown {
+  try {
+    return JSON.parse(raw);
+  } catch (error) {
+    throw new Error(`${envName} invalid JSON: ${extractErrorMessage(error)}`);
+  }
+}
+
+function extractErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }

@@ -2054,3 +2054,36 @@ failover step behind an explicit human-approval gate.
 ### Verification
 
 `npm run typecheck` passed. `npm test` passed: **1201 tests, 1194 pass, 0 fail, 7 skipped**.
+
+---
+
+## Update 2026-05-31 — Phase 2.2 CLI setup failures become typed env-load feedback
+
+The observe-act agent CLI now has typed env-load result surfaces for the production-visible
+prompt-flow and hierarchy JSON inputs. The previous production main path relied on catching parser
+throws after constructing the cycle input. The CLI still keeps the throwing helpers for existing
+internal call sites and tests, but the executable `runAgentCliMain` path consumes the typed
+`tryCreate...FromEnv` loaders and exits with setup feedback before invoking the observe-act cycle.
+
+### What shipped
+
+- `tryCreateAgentCliPromptFlowTasksFromEnv` returns `{ ok: false, source: "prompt_flow_tasks",
+  message }` for malformed prompt-flow task/definition/run JSON.
+- `tryCreateAgentCliHierarchyFromEnv` returns `{ ok: false, source: "hierarchy", message }` for
+  malformed hierarchy JSON.
+- JSON parse failures now name the exact env variable (`AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON`,
+  `AGENTIC_ORG_PROMPT_FLOW_DEFINITIONS_JSON`, `AGENTIC_ORG_PROMPT_FLOW_RUNS_JSON`, or
+  `AGENTIC_ORG_HIERARCHY_JSON`) before the parser detail.
+- `runAgentCliMain` uses the typed loaders while preserving shutdown behavior and the existing
+  `agent CLI setup failed:` user-visible feedback line.
+
+### Proof boundary
+
+This is a CLI setup-contract hardening slice, not a new in-cluster state transition. No new KIND
+runner was added because the behavior is pure env parsing and cycle-input construction; the
+production KIND proofs that execute the CLI still exercise the same `runAgentCliMain` boundary.
+
+### Verification
+
+Focused tests passed with the full agentic-org test harness: **1203 tests, 1196 pass, 0 fail,
+7 skipped**. `npm run typecheck` passed.

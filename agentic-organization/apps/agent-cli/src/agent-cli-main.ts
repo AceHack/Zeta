@@ -51,12 +51,12 @@ import {
   type PgCockroachWorkerPool,
 } from "../../workers/src/adapters/pg-cockroach-worker-pool.ts";
 import {
-  createAgentCliHierarchyFromEnv,
   createAgentCliMetricAgentsFromEnv,
-  createAgentCliPromptFlowTasksFromEnv,
   createAgentCliSelectorFromEnv,
   parseAgentCliArgs,
   runAgentCliCycle,
+  tryCreateAgentCliHierarchyFromEnv,
+  tryCreateAgentCliPromptFlowTasksFromEnv,
   type AgentCliCycleEvidence,
   type ParsedAgentCliArgs,
 } from "./agent-cli.ts";
@@ -109,8 +109,12 @@ export async function runAgentCliMain(input: RunAgentCliMainInput): Promise<numb
 
   try {
     const cycleInput = createRunAgentCliCycleInput(input, runtime);
+    if (!cycleInput.ok) {
+      input.writeStderr(`agent CLI setup failed: ${cycleInput.message}\n`);
+      return 2;
+    }
     const result = await runAgentCliCycle({
-      ...cycleInput,
+      ...cycleInput.value,
     });
     const evidenceExitCode = await appendObserveActEvidenceIfPresent(input, runtime, result.evidence);
     if (evidenceExitCode !== undefined) return evidenceExitCode;
@@ -183,36 +187,45 @@ function createAgentCliProductionRuntime(input: {
 function createRunAgentCliCycleInput(
   input: RunAgentCliMainInput,
   runtime: AgentCliMainRuntime,
-): Parameters<typeof runAgentCliCycle>[0] {
+): { ok: true; value: Parameters<typeof runAgentCliCycle>[0] } | { ok: false; message: string } {
   const parsed = parseAgentCliArgs(input.argv);
   const authorizeSlot = runtime.authorizeSlot ?? (
     parsed.ok ? createAgentCliControlPlaneSlotAuthorizer(runtime, parsed.value, input.now) : undefined
   );
+  const promptFlowTasks = tryCreateAgentCliPromptFlowTasksFromEnv({
+    env: input.env,
+  });
+  if (!promptFlowTasks.ok) return { ok: false, message: promptFlowTasks.message };
+
+  const hierarchy = tryCreateAgentCliHierarchyFromEnv({
+    env: input.env,
+  });
+  if (!hierarchy.ok) return { ok: false, message: hierarchy.message };
+
   return {
-    argv: input.argv,
-    now: input.now,
-    writeStdout: input.writeStdout,
-    writeStderr: input.writeStderr,
-    metricAgents: createAgentCliMetricAgentsFromEnv({
-      env: input.env,
+    ok: true,
+    value: {
+      argv: input.argv,
       now: input.now,
-      ...createOptionalFetchImpl(input.fetchImpl),
-    }),
-    promptFlowTasks: createAgentCliPromptFlowTasksFromEnv({
-      env: input.env,
-    }),
-    hierarchy: createAgentCliHierarchyFromEnv({
-      env: input.env,
-    }),
-    selectSlot: createAgentCliSelectorFromEnv({
-      env: input.env,
-      ...createOptionalFetchImpl(input.fetchImpl),
-    }),
-    runCommand: runtime.runCommand,
-    dispatchTool: runtime.dispatchTool,
-    ...createOptionalAuthorizeSlot(authorizeSlot),
-    ...createOptionalLoadPromptFlowContext(runtime.loadPromptFlowContext),
-    ...createOptionalAvailableSecretScopes(runtime.availableSecretScopes),
+      writeStdout: input.writeStdout,
+      writeStderr: input.writeStderr,
+      metricAgents: createAgentCliMetricAgentsFromEnv({
+        env: input.env,
+        now: input.now,
+        ...createOptionalFetchImpl(input.fetchImpl),
+      }),
+      promptFlowTasks: promptFlowTasks.value,
+      hierarchy: hierarchy.value,
+      selectSlot: createAgentCliSelectorFromEnv({
+        env: input.env,
+        ...createOptionalFetchImpl(input.fetchImpl),
+      }),
+      runCommand: runtime.runCommand,
+      dispatchTool: runtime.dispatchTool,
+      ...createOptionalAuthorizeSlot(authorizeSlot),
+      ...createOptionalLoadPromptFlowContext(runtime.loadPromptFlowContext),
+      ...createOptionalAvailableSecretScopes(runtime.availableSecretScopes),
+    },
   };
 }
 

@@ -23,6 +23,8 @@ import {
   parseAgentCliArgs,
   runAgentCliCycle,
   selectFirstTrueSlot,
+  tryCreateAgentCliHierarchyFromEnv,
+  tryCreateAgentCliPromptFlowTasksFromEnv,
 } from "../src/agent-cli.ts";
 import {
   CommandType,
@@ -888,6 +890,19 @@ test("createAgentCliHierarchyFromEnv reads hierarchy projects and initiatives fr
   equal(hierarchy.workItems?.[0]?.workItemId, "work-ready");
 });
 
+test("tryCreateAgentCliHierarchyFromEnv returns typed feedback for malformed hierarchy JSON", () => {
+  const result = tryCreateAgentCliHierarchyFromEnv({
+    env: {
+      AGENTIC_ORG_HIERARCHY_JSON: "{",
+    },
+  });
+
+  equal(result.ok, false);
+  if (result.ok) throw new Error("expected typed hierarchy parse failure");
+  equal(result.source, "hierarchy");
+  ok(result.message.includes("AGENTIC_ORG_HIERARCHY_JSON"));
+});
+
 test("runAgentCliCycle renders TPM operating readout for work batches and meetings", async () => {
   const stdout: string[] = [];
   const result = await runAgentCliCycle({
@@ -1112,6 +1127,19 @@ test("createAgentCliPromptFlowTasksFromEnv reads current tasks from JSON", () =>
   equal(tasks[0]?.timeoutSeconds, 900);
   equal(tasks[0]?.retryLimit, 2);
   equal(tasks[0]?.rollbackPolicy?.kind, "compensating_action");
+});
+
+test("tryCreateAgentCliPromptFlowTasksFromEnv returns typed feedback for malformed prompt-flow JSON", () => {
+  const result = tryCreateAgentCliPromptFlowTasksFromEnv({
+    env: {
+      AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON: "{",
+    },
+  });
+
+  equal(result.ok, false);
+  if (result.ok) throw new Error("expected typed prompt-flow parse failure");
+  equal(result.source, "prompt_flow_tasks");
+  ok(result.message.includes("AGENTIC_ORG_PROMPT_FLOW_TASKS_JSON"));
 });
 
 test("createAgentCliPromptFlowTasksFromEnv compiles durable definitions and runs into current tasks", () => {
