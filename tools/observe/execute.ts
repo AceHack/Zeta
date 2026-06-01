@@ -64,13 +64,19 @@ export type AppendOutcome =
   | { readonly ok: false; readonly reason: string };
 
 /**
- * EventSink — the injected durability port. Appends one NextAction to the
+ * EventSink — the injected durability port. Appends one event to the
  * append-only, ZetaId-keyed event log via whichever transport is wired
  * (sovereign folder-direct-to-main / corporate batched). Pure interface;
  * implementations do the I/O. Tests inject a fake.
+ *
+ * Generic over the event type `E` (default `NextAction`, backward-compatible:
+ * `EventSink` ≡ `EventSink<NextAction>`). Effectful actions log **fact** events
+ * instead of the command (B-0964: replay folds facts, never re-runs commands) —
+ * e.g. `EventSink<ActionFact>` for the do_item envelope. One durability-port
+ * shape, parameterized by what gets logged.
  */
-export interface EventSink {
-  append: (action: NextAction) => Promise<AppendOutcome>;
+export interface EventSink<E = NextAction> {
+  append: (event: E) => Promise<AppendOutcome>;
 }
 
 /** The execute feedback channel (asymmetric-authorship). */
