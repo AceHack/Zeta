@@ -914,6 +914,8 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0955](backlog/P2/B-0955-migrate-tools-off-bun-only-apis-to-node-process-equivalents-node-safe-baseline-policy-aaron-otto-2026-05-31.md)** Migrate tools/ production code off Bun-only APIs to node:/process equivalents — honor the Node-safe-baseline policy (2026-04-20 tools-runtime ADR v6)
 - [ ] **[B-0960](backlog/P2/B-0960-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md)** Ace slice 3.1 — pave the strict-by-default road (lower signature friction)
 - [ ] **[B-0961](backlog/P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md)** ZetaId root-category taxonomy — gap analysis + DEFERRAL (model Claim/Lock as typed events first; promote to root Category only after producers + identity-rule + growth-theory)
+- [ ] **[B-0962](backlog/P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)** Phase 1 — typed Claim/Lock coordination events (optimistic CAS: mechanism-deadlock-free + symmetry-breaking observe-menu; app-level safety needs fencing + release-before-acquire)
+- [ ] **[B-0963](backlog/P2/B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)** Prove completion-lock-freedom + per-agent wait-freedom — F# model first (no git), then extend to git
 
 ## P3 — convenience / deferred
 

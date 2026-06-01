@@ -284,9 +284,14 @@ no-PR (sovereign transport). Now unblocked by §1's first-class G-Set.
       to §3 (bus): the dashboard becomes a live, mode-aware view of the substrate.
 - [ ] **ZetaId coordination — Claim + Lock as typed events first; root-Category promotion deferred** — [B-0961](../P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md).
       Multi-agent review (Grok + Amara, 2026-06-01) rejected adding `Claim(9)`/`Lock(10)`
-      to root `Category` now. Phase 1: model Claim (rides `Bus(6)`) + Lock (CAS slice,
-      B-0954.1) as typed coordination **events under existing categories**. Phase 2
-      (promote to root): gated on Gate A (identity-rule — is `Category` in the
+      to root `Category` now. Phase 1 ([B-0962](../P2/B-0962-phase1-typed-claim-lock-coordination-events-deadlock-free-by-construction-optimistic-cas-2026-06-01.md)):
+      model Claim (rides `Bus(6)`) + Lock (CAS slice, B-0954.1) as typed
+      coordination **events under existing categories**. Multi-round review
+      disciplined the guarantee: **mechanism-deadlock-free** (optimistic CAS, not
+      blocking locks); app-level safety via fencing + release-before-acquire; menu
+      symmetry-breaking for livelock; completion-lock-freedom + per-agent
+      wait-freedom formally proven in B-0963 (F# first, then git).
+      Phase 2 (promote to root): gated on Gate A (identity-rule — is `Category` in the
       content-hash?) + Gate B (real producers/consumers). Gate C (growth) **resolved**:
       escape-to-`Extended` (reserve slot `15`, then read a **wider** extension
       field — not repeated 4-bit nibbles — or an `IdVersion` width-bump) means 4
