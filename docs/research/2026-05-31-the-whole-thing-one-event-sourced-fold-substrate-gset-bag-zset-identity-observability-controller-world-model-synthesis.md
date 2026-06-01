@@ -259,14 +259,16 @@ invariants:
 ## 8. Dual mode — sovereign vs corporate (same shape, different wired channels)
 
 The system runs two ways from **one substrate**; the difference is the **transport dial**, not a
-different design:
+different design. **Both land on `main`** (operator 2026-05-31: *"corporate being batch to main
+and sovereign being folders direct to main"*) — the dial is **direct-folders vs batched**, not
+main-vs-branches:
 
 | | **Sovereign** (Agora) | **Corporate** (the leash) |
 |---|---|---|
 | Where | `tools/` (observe, grammar-16, accelerator, workflow-engine) | `agentic-organization/` (Max's keystone, CockroachDB) |
-| Transport | folders-on-`main`, **no-PR**, direct append | branches + batch coordinator + **PR gates** |
-| Optimizes for | **speed + AI freedom** (the engine; run at home + by maintainers) | **money / certifiability** (static, PR-protected DUs) |
-| The dial | `ActionGate = "append-only"` | `ActionGate = "pr-gated"` |
+| Transport | **folders direct to `main`** — no-PR, direct append ([B-0890.1](../backlog/P1/B-0890.1-fast-lane-as-folders-on-main-not-branches-supersedes-coordinator-complexity-per-operator-2026-05-28-zeta-native-branch-protection.md): fast-lane *as folders-on-main, not branches* — supersedes coordinator complexity) | **batch to `main`** — the batch-merge coordinator bundles N events → ONE PR → main ([B-0890](../backlog/P1/B-0890-state-machine-fast-lane-batch-merge-to-main-composes-with-heartbeat-pattern-aaron-2026-05-28.md)) |
+| Optimizes for | **speed + AI freedom** (the engine; run at home + by maintainers) | **money / certifiability** (batched, reviewable DUs) |
+| The dial | `ActionGate = "append-only"` (direct) | `ActionGate = "pr-gated"` (batched) |
 
 Same `observe → render → choose → simulate → fold` loop; same 4×4 grammar (one ADR table); the
 operator channel is just a button that lights up when wired. *"One controller, any traveler."*
