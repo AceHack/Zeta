@@ -43,6 +43,13 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   libssl3t64: "Linux OpenSSL runtime lib; Windows uses Schannel / native TLS",
   "libgssapi-krb5-2": "Linux Kerberos/GSSAPI runtime lib; Windows uses SSPI natively",
   tzdata: "Linux timezone database; Windows ships its own timezone data",
+  // Rootless-podman helpers (added to apt with podman; B-0964 §2). Linux-only: on
+  // Windows podman runs its Linux VM via WSL2, which provides user-namespace mapping,
+  // networking, and overlay storage inside the VM — these host packages have no
+  // Windows-native equivalent (the WSL2 distro carries them).
+  uidmap: "Linux rootless user-namespace mapping (newuidmap/newgidmap); Windows podman uses WSL2's VM",
+  slirp4netns: "Linux rootless container networking; Windows podman uses WSL2's VM networking",
+  "fuse-overlayfs": "Linux rootless overlay storage driver; Windows podman uses WSL2's VM storage",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {

@@ -30,3 +30,11 @@ hermes-agent  # "Self-improving AI agent that creates skills from
 # model is the reproducible/pinned artifact; brew tracks latest ollama binary).
 ollama  # CPU-served tiny model for the move-next selector + observe.ts
         # classifier + DST fixtures. Idempotent: brew install skips if present.
+
+# Container runtime for the effectful do_item executor (rationale: B-0964 §2). podman
+# is the default OCI runtime: Apache-2.0, rootless, daemonless. Coexists with an
+# existing Docker Desktop (separate VM + socket); do NOT install `podman-mac-helper`
+# /`podman-docker` (they shadow the real docker CLI). macOS one-time bootstrap:
+# `podman machine init && podman machine start`. Version unpinned (fast-mover CLI;
+# brew default) per dep-pin-search-first-authority. Idempotent: brew skips if present.
+podman

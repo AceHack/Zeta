@@ -31,3 +31,16 @@ libicu74          # ICU — .NET globalization (the classic "dotnet exited" caus
 libssl3t64        # OpenSSL 3 runtime (Noble t64 name)
 libgssapi-krb5-2  # Kerberos/GSSAPI — .NET networking
 tzdata            # timezone data — .NET DateTime
+
+# Container runtime for the effectful do_item executor (rationale: B-0964 §2). podman
+# is the default OCI runtime: Apache-2.0, rootless, daemonless; native on Linux (no
+# VM). Version unpinned (fast-mover CLI) per dep-pin-search-first-authority.
+podman
+# Rootless-podman helpers: linux.sh runs `apt install --no-install-recommends`, which
+# skips podman's Recommends — so a minimal Ubuntu needs these explicitly or rootless
+# podman silently breaks. Per automated-tests-are-the-shield-assert-dont-skip: declare
+# them so podman actually RUNS rootless, not just installs (a green install that can't
+# run a container is a hole in the shield).
+uidmap          # newuidmap/newgidmap — rootless user-namespace ID mapping
+slirp4netns     # rootless container networking
+fuse-overlayfs  # rootless overlay storage driver
