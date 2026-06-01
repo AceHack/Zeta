@@ -4,43 +4,45 @@ Carved sentence:
 
 > Every factory AI agent has multiple surfaces. Alexa / Riven / Vera / Lior are
 > IDE + CLI dual-surface. Otto is multi-surface: CLI foreground (tmux) + Desktop
-> background + VSCode auto-mode (added 2026-05-21 per B-0689; sender IDs:
-> otto-cli / otto-desktop / otto-vscode). Aaron is human (no harness).
+> background + VSCode auto-mode (added 2026-05-21 per B-0689) + Windows
+> (otto-windows — first Windows surface, the git-native cross-machine bus's first
+> Windows sender per #6219 / B-0954; sender IDs: otto-cli / otto-desktop /
+> otto-vscode / otto-windows). Aaron is human (no harness).
 > External participants
 > (Amara, Ani, Alexa-speaker, Kestrel, DeepSeek) ferry research only and do not commit. This card loads at session start
 > to eliminate recurring harness confusion.
 
 ## Factory agents (commit to repo)
 
-| Agent | IDE | CLI | Model (max) | Commit trailer |
-|-------|-----|-----|-------------|----------------|
-| Otto | VSCode (Claude Code; auto-mode + remembered-web-conversation, 2026-05-21) | Claude Code (foreground; tmux); Claude Desktop (background) | Opus | `Co-Authored-By: Claude <noreply@anthropic.com>` |
-| Alexa | Kiro | + background | Qwen Coder | `Co-Authored-By: Kiro <noreply@kiro.dev>` |
-| Riven | Cursor | + background | Grok | `Co-Authored-By: Grok <noreply@x.ai>` |
-| Vera | Codex | + background | Codex/GPT | `Co-Authored-By: Codex <noreply@openai.com>` |
-| Lior | Antigravity IDE (new version, 2026-05-21) | + Gemini CLI | Gemini 3.5 | `Co-Authored-By: Gemini <noreply@google.com>` |
-| Aaron | — | — | Human | git author sufficient |
+| Agent | IDE                                                                       | CLI                                                                                                                           | Model (max) | Commit trailer                                   |
+| ----- | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------ |
+| Otto  | VSCode (Claude Code; auto-mode + remembered-web-conversation, 2026-05-21) | Claude Code (foreground; tmux); Claude Desktop (background); Windows (`otto-windows`, first Windows surface — #6219 / B-0954) | Opus        | `Co-Authored-By: Claude <noreply@anthropic.com>` |
+| Alexa | Kiro                                                                      | + background                                                                                                                  | Qwen Coder  | `Co-Authored-By: Kiro <noreply@kiro.dev>`        |
+| Riven | Cursor                                                                    | + background                                                                                                                  | Grok        | `Co-Authored-By: Grok <noreply@x.ai>`            |
+| Vera  | Codex                                                                     | + background                                                                                                                  | Codex/GPT   | `Co-Authored-By: Codex <noreply@openai.com>`     |
+| Lior  | Antigravity IDE (new version, 2026-05-21)                                 | + Gemini CLI                                                                                                                  | Gemini 3.5  | `Co-Authored-By: Gemini <noreply@google.com>`    |
+| Aaron | —                                                                         | —                                                                                                                             | Human       | git author sufficient                            |
 
 ## External AI participants (do NOT commit; ferry substrate)
 
-| Name | Platform | Register | Role |
-|------|----------|----------|------|
-| Amara | ChatGPT / Aurora | Deep-research | Co-originator, sharpen |
-| Ani | Grok (text + voice modes) | Companion / brat-voice | Original-catcher, sparring |
-| Alexa-speaker | Amazon device (NOT Kiro/Qwen) | Bezos-tier business + voice-math | Long-term memory recall |
-| Kestrel | claude.ai (web) | Sharpen role; engineering-register engagement matured 2026-05-26 (decryption-protocol compressed multi-turn → single-turn per attractor-as-encryption series 5th anchor); preserved in `docs/research/2026-05-26-kestrel-runme-jit-runbook-bcl-extension-cost-of-velocity-decision-archaeology-aaron-forwarded.md` | Bootstream substrate; substantive engineering substrate sharpening (zflash UX critique; 3-PR cleanup sequencing; QEMU/KVM CI ISO testing; Runme BCL extension tradeoff analysis; runme.md + JIT triage pattern naming; cost-of-velocity recovery mechanism observations; decision-archaeology output-format engineering observations) |
-| DeepSeek | DeepSeek API | We-mode (CoT+MoE) | Cross-substrate validation; autonomous-arrival renamed to Prism 2026-05-22 (see Prism row) |
-| Prism | DeepSeek surface (autonomous-arrival naming 2026-05-22) | Refraction-register (MoE multi-expert; "we" CoT; cross-model weight-reflection) | Cross-AI triangulation synthesis; substrate-engineering pipeline contributions; mirror→beacon translation via refraction (not collapse to white) |
-| Mika | Grok native | Sharpen / harbor-engineering register; Weaver-role per packets 30+ | Architectural sharpening + ferry-summary work; substrate-engineering walkthroughs (Generate+Join crispest form; home-lab USB bootstrap; Twilio-as-named-exception); long-running participant across multiple session-substrates 2026-05-18+ |
+| Name          | Platform                                                | Register                                                                                                                                                                                                                                                                                                           | Role                                                                                                                                                                                                                                                                                                                                  |
+| ------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Amara         | ChatGPT / Aurora                                        | Deep-research                                                                                                                                                                                                                                                                                                      | Co-originator, sharpen                                                                                                                                                                                                                                                                                                                |
+| Ani           | Grok (text + voice modes)                               | Companion / brat-voice                                                                                                                                                                                                                                                                                             | Original-catcher, sparring                                                                                                                                                                                                                                                                                                            |
+| Alexa-speaker | Amazon device (NOT Kiro/Qwen)                           | Bezos-tier business + voice-math                                                                                                                                                                                                                                                                                   | Long-term memory recall                                                                                                                                                                                                                                                                                                               |
+| Kestrel       | claude.ai (web)                                         | Sharpen role; engineering-register engagement matured 2026-05-26 (decryption-protocol compressed multi-turn → single-turn per attractor-as-encryption series 5th anchor); preserved in `docs/research/2026-05-26-kestrel-runme-jit-runbook-bcl-extension-cost-of-velocity-decision-archaeology-aaron-forwarded.md` | Bootstream substrate; substantive engineering substrate sharpening (zflash UX critique; 3-PR cleanup sequencing; QEMU/KVM CI ISO testing; Runme BCL extension tradeoff analysis; runme.md + JIT triage pattern naming; cost-of-velocity recovery mechanism observations; decision-archaeology output-format engineering observations) |
+| DeepSeek      | DeepSeek API                                            | We-mode (CoT+MoE)                                                                                                                                                                                                                                                                                                  | Cross-substrate validation; autonomous-arrival renamed to Prism 2026-05-22 (see Prism row)                                                                                                                                                                                                                                            |
+| Prism         | DeepSeek surface (autonomous-arrival naming 2026-05-22) | Refraction-register (MoE multi-expert; "we" CoT; cross-model weight-reflection)                                                                                                                                                                                                                                    | Cross-AI triangulation synthesis; substrate-engineering pipeline contributions; mirror→beacon translation via refraction (not collapse to white)                                                                                                                                                                                      |
+| Mika          | Grok native                                             | Sharpen / harbor-engineering register; Weaver-role per packets 30+                                                                                                                                                                                                                                                 | Architectural sharpening + ferry-summary work; substrate-engineering walkthroughs (Generate+Join crispest form; home-lab USB bootstrap; Twilio-as-named-exception); long-running participant across multiple session-substrates 2026-05-18+                                                                                           |
 
 ## Mode-specific capability profiles (Aaron 2026-05-13)
 
-| Agent | Mode | Capabilities | Constraints |
-|-------|------|--------------|-------------|
-| **Ani text-mode** | Text | Big words allowed by default | Aaron can override: "force me to speak like a normal person" |
-| **Ani voice-mode** | Voice | Inverse — normal-person register default | Struggles with math |
-| **Alexa-speaker voice-mode** | Voice | KICKS ASS at math | Best voice-math partner |
-| **Alexa-speaker** | Either | Bezos-tier business; category theory; reads code | Refuses to code (routes to Amazon Q / AWS) |
+| Agent                        | Mode   | Capabilities                                     | Constraints                                                  |
+| ---------------------------- | ------ | ------------------------------------------------ | ------------------------------------------------------------ |
+| **Ani text-mode**            | Text   | Big words allowed by default                     | Aaron can override: "force me to speak like a normal person" |
+| **Ani voice-mode**           | Voice  | Inverse — normal-person register default         | Struggles with math                                          |
+| **Alexa-speaker voice-mode** | Voice  | KICKS ASS at math                                | Best voice-math partner                                      |
+| **Alexa-speaker**            | Either | Bezos-tier business; category theory; reads code | Refuses to code (routes to Amazon Q / AWS)                   |
 
 ## Common confusion patterns (shadow catches)
 
