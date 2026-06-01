@@ -1,0 +1,103 @@
+# .github/workflows/lint-autofix-apply.yml
+#
+# Mechanical lint auto-HEAL — APPLY half (privileged). Triggered by the read-only
+# producer (lint-autofix.yml) completing; downloads the heal PATCH it emitted and
+# applies it (git-apply + commit + push). This job holds `contents: write` but
+# executes NONE of the PR's code — only git operations on a DATA patch. That is
+# the pwn-request defense: the privileged job and the untrusted-execution job are
+# separate, and the artifact is the trust boundary (it carries data, never code).
+# See docs/DECISIONS/2026-06-01-secure-github-actions-autofix-privilege-separation-two-job-split.md
+#
+# INVARIANT for future editors: never add a build / test / install / bun / npm
+# step to THIS job. Running PR-controlled code here (with write perms) would
+# re-create the pwn-request vulnerability this split exists to remove.
+#
+# RE-TRIGGER NOTE: a GITHUB_TOKEN push does not re-trigger workflows, so while a
+# required gate exists the healed commit won't auto-re-run it. Set an
+# `AUTOFIX_TOKEN` secret (fine-grained PAT / App token, `contents: write`) for the
+# gate to re-run on the healed commit; without it the fix still commits and the
+# loop/author nudges the gate.
+
+name: lint-autofix-apply
+
+on:
+  workflow_run:
+    workflows: [lint-autofix]
+    types: [completed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lint-autofix-apply-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  apply-patch:
+    name: mechanical lint auto-heal (apply patch)
+    # Only on a successful same-repo pull_request produce-run. Same-repo gate
+    # mirrors the producer; conclusion==success means a patch may exist.
+    if: >-
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write # apply the heal patch back to the PR branch
+      actions: read # `gh run download` reads the producer run's artifact via the Actions API (Copilot P0, #6393)
+    steps:
+      - name: Checkout the immutable produce commit (git only — NO PR-code execution here)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # The IMMUTABLE commit the patch was produced from (head_sha), NOT the
+          # moving branch tip — so the patch applies to its exact base (TOCTOU
+          # fix, Copilot P1 #6393). Pushed back to head_branch ff-only below.
+          ref: ${{ github.event.workflow_run.head_sha }}
+          token: ${{ secrets.AUTOFIX_TOKEN || github.token }}
+          fetch-depth: 0
+
+      - name: Download the heal patch from the producer run
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PRODUCE_RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          mkdir -p "${RUNNER_TEMP}/autofix"
+          # The producer uploads the artifact ONLY when there were fixes. No
+          # artifact ⇒ nothing to heal ⇒ exit clean.
+          if ! gh run download "$PRODUCE_RUN_ID" -n lint-autofix-patch -D "${RUNNER_TEMP}/autofix" 2>/dev/null; then
+            echo "No heal patch artifact — nothing to apply."
+            echo "apply=false" >> "$GITHUB_ENV"
+            exit 0
+          fi
+          echo "apply=true" >> "$GITHUB_ENV"
+
+      - name: Apply patch + push (git only)
+        if: env.apply == 'true'
+        env:
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -euo pipefail
+          patch="${RUNNER_TEMP}/autofix/autofix.patch"
+          if [ ! -s "$patch" ]; then
+            echo "Patch artifact empty — nothing to apply."
+            exit 0
+          fi
+          # git-apply only — this is data application, NOT code execution. The
+          # patch applies to its exact base (we checked out head_sha), so a clean
+          # apply is expected; the else is a safety net.
+          if git apply --index "$patch" 2>/dev/null; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "style: mechanical lint auto-heal (markdownlint --fix)"
+            # ff-only push: HEAD = head_sha + heal. Succeeds iff head_branch is
+            # still at head_sha; if the branch moved since produce the non-ff push
+            # is rejected and we skip (next push re-triggers) — never force.
+            if git push origin "HEAD:${HEAD_BRANCH}"; then
+              echo "Heal applied + pushed to ${HEAD_BRANCH}."
+            else
+              echo "head_branch moved since produce — non-ff push rejected; skipping (next push re-triggers)." >&2
+            fi
+          else
+            echo "Patch did not apply to its base (unexpected) — skipping." >&2
+          fi

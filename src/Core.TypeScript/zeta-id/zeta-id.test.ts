@@ -1,6 +1,6 @@
-import { test, expect } from 'bun:test';
-import { pack, unpack, DETERMINISTIC_ENV } from './zeta-id';
-import type { ZetaObservation } from './types';
+import { test, expect } from "bun:test";
+import { pack, unpack, DETERMINISTIC_ENV } from "./zeta-id";
+import type { ZetaObservation } from "./types";
 
 const fixedObservation: ZetaObservation = {
   version: 1,
@@ -8,13 +8,13 @@ const fixedObservation: ZetaObservation = {
   chromosome: 7,
   category: 0,
   firefly: 1,
-  authority: { type: 'HumanVerified' },
+  authority: { type: "HumanVerified" },
   persona: 1,
-  momentum: { type: 'High' },
+  momentum: { type: "High" },
   location: 1,
 };
 
-test('ZetaId round-trips all fields correctly', () => {
+test("ZetaId round-trips all fields correctly", () => {
   const id = pack(fixedObservation, DETERMINISTIC_ENV);
   const result = unpack(id);
 

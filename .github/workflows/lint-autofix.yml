@@ -1,0 +1,109 @@
+# .github/workflows/lint-autofix.yml
+#
+# Mechanical lint auto-HEAL — PRODUCE half (read-only). Runs the deterministic
+# --fix tools on a PR and emits the resulting diff as an ARTIFACT. It does NOT
+# commit/push — it has `contents: read` and no privilege to abuse, so executing
+# the PR's own code (install.sh / bun install lifecycle scripts) here is harmless.
+# The privileged half that applies the patch is a SEPARATE workflow
+# (lint-autofix-apply.yml, on: workflow_run) which never executes PR code.
+#
+# This two-job privilege separation is the pwn-request defense — see the ADR
+# docs/DECISIONS/2026-06-01-secure-github-actions-autofix-privilege-separation-two-job-split.md
+# (the principle: no single job holds BOTH privilege AND untrusted execution; the
+# artifact is the trust boundary — this job emits DATA, the apply job consumes DATA).
+#
+# Mechanical only (no intelligence): markdownlint-cli2 --fix (the markdownlint
+# required gate; cleanly autofixable), at the same mise-pinned version as gate.yml
+# (via install.sh) for version parity. prettier --write is deferred to a follow-up
+# (see the step comment below) — not a required gate, and needs proper scoping.
+
+name: lint-autofix
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - '**/*.md'
+      - '.github/workflows/lint-autofix.yml'
+      - '.github/workflows/lint-autofix-apply.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: lint-autofix-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  produce-patch:
+    name: mechanical lint auto-heal (produce patch)
+    # Same-repo PRs only (forks get read-only + no secrets anyway; this keeps the
+    # produce/apply pair scoped to trusted-fleet branches). Skip our own heal
+    # commits (loop guard).
+    if: >-
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout the immutable PR head commit (read-only)
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          # Immutable head SHA, not the moving branch ref — the patch is produced
+          # against the exact commit the apply job checks out (determinism / TOCTOU
+          # fix, Copilot P1 #6393).
+          ref: ${{ github.event.pull_request.head.sha }}
+          # Do NOT persist the git token: this job runs PR code (install.sh / bun
+          # lifecycle scripts), so it must expose no credential to that code
+          # (CodeQL "checkout of untrusted code in trusted context", #6393). It is
+          # read-only and produces only a patch artifact — it never needs to push.
+          persist-credentials: false
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Same install path + retry as gate.yml so the heal uses the SAME
+        # mise-pinned markdownlint-cli2 / bun the gate uses (version parity).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then break; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: markdownlint --fix (mechanical)
+        run: mise exec -- markdownlint-cli2 --fix "**/*.md" || true
+
+      # prettier --write (TS/JSON auto-format) is DEFERRED to a follow-up: it is
+      # not a required gate, and doing it correctly needs a deliberate pass on
+      # scope + a .prettierignore + running from the repo ROOT (package.json /
+      # bun.lock live at the root, NOT src/Core.TypeScript — Copilot review of
+      # #6393, 2026-06-01). V1 ships the required-gate autofix (markdownlint --fix)
+      # only; prettier-format joins once its scoping is designed.
+
+      - name: Compute heal patch
+        id: patch
+        run: |
+          set -euo pipefail
+          git diff > autofix.patch
+          if [ -s autofix.patch ]; then
+            echo "has_patch=true" >> "$GITHUB_OUTPUT"
+            echo "Heal patch produced ($(wc -l < autofix.patch) lines)."
+          else
+            echo "has_patch=false" >> "$GITHUB_OUTPUT"
+            echo "No mechanical lint fixes needed — already clean."
+          fi
+
+      - name: Upload heal patch (data handed to the privileged apply job)
+        if: steps.patch.outputs.has_patch == 'true'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lint-autofix-patch
+          path: autofix.patch
+          retention-days: 1
+          if-no-files-found: error

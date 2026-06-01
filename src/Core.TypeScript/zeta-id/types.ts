@@ -1,6 +1,6 @@
 // Branded / phantom types
-export type Milliseconds = number & { readonly __brand: 'ms' };
-export type ZetaId = bigint & { readonly __brand: 'ZetaId' };
+export type Milliseconds = number & { readonly __brand: "ms" };
+export type ZetaId = bigint & { readonly __brand: "ZetaId" };
 
 // Controlled vocabularies
 export const IdVersion = { V1: 1 } as const;
@@ -41,20 +41,20 @@ export const LocationHint = {
 export type LocationHint = (typeof LocationHint)[keyof typeof LocationHint];
 
 export type Authority =
-  | { type: 'HumanVerified' }
-  | { type: 'TrustedAgent' }
-  | { type: 'Standard' }
-  | { type: 'BestEffort' }
-  | { type: 'Simulated' }
-  | { type: 'Raw'; value: number };
+  | { type: "HumanVerified" }
+  | { type: "TrustedAgent" }
+  | { type: "Standard" }
+  | { type: "BestEffort" }
+  | { type: "Simulated" }
+  | { type: "Raw"; value: number };
 
 export type Momentum =
-  | { type: 'Background' }
-  | { type: 'Normal' }
-  | { type: 'Elevated' }
-  | { type: 'High' }
-  | { type: 'Critical' }
-  | { type: 'Raw'; value: number };
+  | { type: "Background" }
+  | { type: "Normal" }
+  | { type: "Elevated" }
+  | { type: "High" }
+  | { type: "Critical" }
+  | { type: "Raw"; value: number };
 
 export interface ZetaObservation {
   readonly version: IdVersion;
@@ -69,6 +69,13 @@ export interface ZetaObservation {
 }
 
 export const ZETA_OBSERVATION_KEYS = [
-  'version', 'timestamp', 'chromosome', 'category',
-  'firefly', 'authority', 'persona', 'momentum', 'location'
+  "version",
+  "timestamp",
+  "chromosome",
+  "category",
+  "firefly",
+  "authority",
+  "persona",
+  "momentum",
+  "location",
 ] as const;

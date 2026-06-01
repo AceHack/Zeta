@@ -13,7 +13,7 @@
 // precision). N in a value trit => value-superposed; N in a decoder trit => the decode instruction
 // itself is superposed (interpretation-superposed) -- the qubit property at the interpretation level.
 
-import { type Tri } from '../tri-boolean';
+import { type Tri } from "../tri-boolean";
 
 /** Field widths of a tri-boolean float (trits per field). */
 export interface FloatShape {
@@ -40,9 +40,7 @@ export interface TriFloat {
 /** Feedback when `measure` cannot collapse to a single number. The two held-states are distinct:
  *  the decode-instruction is held (`interpretation-superposed`, N in the decoder) vs the value is
  *  held (`value-superposed`, N in a value trit while the decoder is certain). */
-export type FloatFeedback =
-  | { readonly reason: 'interpretation-superposed' }
-  | { readonly reason: 'value-superposed' };
+export type FloatFeedback = { readonly reason: "interpretation-superposed" } | { readonly reason: "value-superposed" };
 
 /** Result of `decode`/`measure`: Ok(number) iff fully certain; else which superposition is held. */
 export type DecodeResult =
@@ -51,7 +49,7 @@ export type DecodeResult =
 
 /** Feedback when a target value cannot be represented in the given shape (v0: unsigned + finite,
  *  and value*2^mode must be a non-negative integer that fits the value field for some mode). */
-export type EncodeFeedback = { readonly reason: 'not-representable'; readonly detail: string };
+export type EncodeFeedback = { readonly reason: "not-representable"; readonly detail: string };
 
 /** Result of `fromValue`. */
 export type EncodeResult =

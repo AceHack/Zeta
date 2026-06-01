@@ -9,24 +9,24 @@
 // this is additive exploration. Comparison + recommendation:
 //   docs/research/2026-05-31-tri-boolean-float-decoder-semantics-comparison-radix-point-biased-exponent-high-low-split-aaron-otto.md
 
-import { type Tri } from '../tri-boolean';
-import { type TriFloat, type DecodeResult, type FloatShape } from './types';
+import { type Tri } from "../tri-boolean";
+import { type TriFloat, type DecodeResult, type FloatShape } from "./types";
 
 /** The three candidate decoder semantics for "how the middle decodes the ends." */
 export type DecoderSemantics =
   /** v0 (ratified baseline): mode = radix-point position; value = V / 2^mode. Fractions, limited range. */
-  | 'radix-point'
+  | "radix-point"
   /** mode = biased power-of-two exponent; value = V * 2^(mode - bias). Fractions + wider range; redundant reps. */
-  | 'biased-exponent'
+  | "biased-exponent"
   /** mode = how many high value bits are EXPONENT (rest mantissa); value = mantissa * 2^exponent. Huge range, integer-only (unsigned exp), tapered (posit-spirit). */
-  | 'high-low-split';
+  | "high-low-split";
 
 /** MSB-first base-2 read of a trit field (T=1, F=0); null if any trit is held (N). */
 const intOf = (trits: readonly Tri[]): number | null => {
   let v = 0;
   for (const t of trits) {
-    if (t.s === 'N') return null;
-    v = v * 2 + (t.s === 'T' ? 1 : 0);
+    if (t.s === "N") return null;
+    v = v * 2 + (t.s === "T" ? 1 : 0);
   }
   return v;
 };
@@ -40,13 +40,13 @@ export const applyDecoder = (
   sem: DecoderSemantics,
 ): number => {
   switch (sem) {
-    case 'radix-point':
+    case "radix-point":
       return V / 2 ** mode;
-    case 'biased-exponent': {
+    case "biased-exponent": {
       const bias = 2 ** (decoderWidth - 1);
       return V * 2 ** (mode - bias);
     }
-    case 'high-low-split': {
+    case "high-low-split": {
       const e = Math.min(mode, valueBits); // exponent bits taken from the high end
       const mantBits = valueBits - e;
       // Arithmetic (NOT bitwise): JS >>> / << coerce to uint32 and mask the shift count mod 32,
@@ -64,10 +64,10 @@ export const applyDecoder = (
 /** decode under a chosen semantics (middle-out; shared held-state logic, per-semantics arithmetic). */
 export const decodeWith = (f: TriFloat, sem: DecoderSemantics): DecodeResult => {
   const mode = intOf(f.decoder);
-  if (mode === null) return { ok: false, feedback: { reason: 'interpretation-superposed' } };
+  if (mode === null) return { ok: false, feedback: { reason: "interpretation-superposed" } };
   const valueBits = f.high.length + f.low.length;
   const V = intOf([...f.high, ...f.low]);
-  if (V === null) return { ok: false, feedback: { reason: 'value-superposed' } };
+  if (V === null) return { ok: false, feedback: { reason: "value-superposed" } };
   return { ok: true, value: applyDecoder(V, mode, valueBits, f.decoder.length, sem) };
 };
 

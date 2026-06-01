@@ -9,7 +9,16 @@
     ".": "./zeta-id.ts",
     "./types": "./types.ts"
   },
-  "keywords": ["zeta", "zeta-id", "observation", "canonical-id", "128-bit", "firefly", "agency", "bun"],
+  "keywords": [
+    "zeta",
+    "zeta-id",
+    "observation",
+    "canonical-id",
+    "128-bit",
+    "firefly",
+    "agency",
+    "bun"
+  ],
   "author": "Lucent Financial Group",
   "license": "Apache-2.0",
   "peerDependencies": {

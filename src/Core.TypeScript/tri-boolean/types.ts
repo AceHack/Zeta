@@ -14,21 +14,18 @@
 // non-Byzantine oracles for the "summonable BFT" cross-language consensus (B-0944).
 
 /** The three-valued state. 'N' (Null) is the held / superposed living-uncertainty state. */
-export type Tri =
-  | { readonly s: 'T' }
-  | { readonly s: 'F' }
-  | { readonly s: 'N' };
+export type Tri = { readonly s: "T" } | { readonly s: "F" } | { readonly s: "N" };
 
 /** True. */
-export const T: Tri = { s: 'T' };
+export const T: Tri = { s: "T" };
 /** False. */
-export const F: Tri = { s: 'F' };
+export const F: Tri = { s: "F" };
 /** Null = held superposition / living uncertainty. Never silently collapsed. */
-export const N: Tri = { s: 'N' };
+export const N: Tri = { s: "N" };
 
 /** Feedback surfaced when measure() is asked to collapse a living (Null) cell -- the
  *  forbidden move, surfaced rather than silently performed. */
-export type CollapseFeedback = { readonly reason: 'collapsed-living-uncertainty' };
+export type CollapseFeedback = { readonly reason: "collapsed-living-uncertainty" };
 
 /** Result of measure(): Ok(boolean) for already-certain cells; Err(feedback) when asked
  *  to collapse a living (Null) cell. */
