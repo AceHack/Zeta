@@ -87,7 +87,41 @@ elif [ -f "$APT_MANIFEST" ]; then
     # Use sudo only when not already root (CI containers often run as root).
     SUDO=""
     if [ "$(id -u)" -ne 0 ]; then SUDO="sudo"; fi
-    $SUDO apt-get update -y
+    # `apt-get update` refreshes EVERY configured source, including any
+    # third-party PPAs the host image shipped that we don't control. Under
+    # `set -euo pipefail` a single unreachable source (e.g. a launchpad PPA
+    # returning 403 behind a restricted-network policy) aborts the whole
+    # install before any runtime tooling is set up.
+    #
+    # apt's EXIT CODE is an unreliable partial-failure signal: a signature/403
+    # error exits non-zero, but a DNS/connection failure on one source can exit
+    # 0 with only `W: Some index files failed to download` (Codex review on
+    # PR #6419, confirmed by docker-ubuntu-install-sh-test). So detect partial
+    # failure from BOTH the exit code AND the output, and warn in either case —
+    # otherwise a real third-party-source outage stays silent, which is the very
+    # failure this guard exists to surface. Per
+    # `.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md`
+    # ("grace in the artifact, assert in the test"): the update is GRACEFUL
+    # (warn + continue) while the install below stays STRICT — `apt-get install`
+    # still fails loudly if a package we actually need is unavailable, so the
+    # assert is preserved at install time rather than skipped to a false-green.
+    # STREAM the output live (a slow/retry-heavy mirror must not look hung —
+    # Copilot P1 on PR #6419) WHILE capturing it to a temp file for the
+    # partial-failure probe. `tee` consumes ALL of apt's output, so the
+    # SIGPIPE/pipefail hazard that ruled out `printf | grep -q` (Codex P2) does
+    # not apply here — the probe greps the FILE, not a pipe. Take apt's OWN exit
+    # from PIPESTATUS[0]; the pipeline's own status would be `tee`'s, masking
+    # apt. grep on the file stays line-oriented so `^Err:` still anchors per-line.
+    apt_log="$(mktemp)"
+    apt_update_rc=0
+    if $SUDO apt-get update -y 2>&1 | tee "$apt_log"; then :; else apt_update_rc="${PIPESTATUS[0]}"; fi
+    if [ "$apt_update_rc" -ne 0 ] \
+       || grep -qiE 'Failed to fetch|Some index files failed to download|^Err:' "$apt_log"; then
+      echo "⚠ apt-get update reported errors — likely an unreachable third-party" >&2
+      echo "  source the host image shipped (not a Zeta manifest source). Continuing;" >&2
+      echo "  the apt-get install below still asserts the packages we need are present." >&2
+    fi
+    rm -f "$apt_log"
     # shellcheck disable=SC2086
     $SUDO apt-get install -y --no-install-recommends $PKGS
   else

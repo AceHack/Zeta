@@ -104,3 +104,32 @@ RUN set -eu; \
       echo "FAIL: 2nd run RE-PULLED the model — caching/idempotency regression (a re-run must reuse the on-disk model)"; exit 1; \
     fi; \
     echo "OK: 2nd run idempotent — ${MODEL} already present, zero re-pull"
+
+
+# Apt-source resilience assert (operator 2026-06-01: "as long as it's not silent
+# failure and the test catches the warning if it happens"). A third-party apt source
+# the host image shipped that we don't control must NOT abort the whole install —
+# linux.sh's `apt-get update` is graceful (warn + continue) while `apt-get install`
+# stays strict. Inject an unreachable source (`.invalid` TLD, RFC-2606 reserved →
+# guaranteed non-resolving, no real-network dependency), run install.sh, and ASSERT
+# BOTH per automated-tests-are-the-shield-assert-dont-skip.md: (a) it still exits 0
+# (graceful — pipefail did not abort), AND (b) the warning WAS emitted (NOT silent —
+# a graceful path that warned about nothing would be a false-green hole). The strict
+# half (a genuinely-missing NEEDED package still fails loudly) is preserved by the
+# unchanged `apt-get install` — its packages come from the reachable archive, so the
+# build's success also asserts the bogus source didn't poison real installs.
+RUN set -eu; \
+    SRC=/etc/apt/sources.list.d/zeta-unreachable-test.list; \
+    echo "deb [trusted=yes] https://zeta-unreachable.invalid/ubuntu noble main" > "$SRC"; \
+    echo "=== 3rd install.sh run (unreachable apt-source resilience) ==="; \
+    if ! ZETA_INSTALL_FULL=1 ./tools/setup/install.sh > /tmp/install-resilience.log 2>&1; then \
+      cat /tmp/install-resilience.log; \
+      rm -f "$SRC"; \
+      echo "FAIL: install.sh aborted on an unreachable third-party apt source (it must warn + continue)"; exit 1; \
+    fi; \
+    rm -f "$SRC"; \
+    cat /tmp/install-resilience.log; \
+    echo "=== resilience asserts ==="; \
+    grep -qF "apt-get update reported errors" /tmp/install-resilience.log \
+      || { echo "FAIL: graceful path took but emitted NO warning — silent failure is a shield hole"; exit 1; }; \
+    echo "OK: unreachable apt source warned + continued (graceful, not silent)"
