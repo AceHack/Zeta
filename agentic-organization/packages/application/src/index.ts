@@ -18,10 +18,13 @@ export {
 export {
   TelemetryImprovementMetricKind,
   TelemetryImprovementProposalMode,
+  evaluateTelemetryImprovementOutcome,
   runTelemetryImprovementOptimizer,
+  type EvaluateTelemetryImprovementOutcomeInput,
   type ImprovementHypothesis,
   type RunTelemetryImprovementOptimizerInput,
   type TelemetryImprovementExpectedMetricMovement,
+  type TelemetryImprovementOutcomeEvaluation,
   type TelemetryImprovementOptimizerResult,
   type TelemetryImprovementProposedChange,
   type TelemetryImprovementTrigger,

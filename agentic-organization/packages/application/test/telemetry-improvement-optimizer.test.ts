@@ -4,9 +4,11 @@ import { test } from "node:test";
 import { ChangeArtifactKind, ChangeSetPhase } from "../../domain/src/index.ts";
 import { RecordingTelemetryQueryPort, type TelemetryQueryPort } from "../../observability/src/index.ts";
 import {
+  ReputationOutcomeClass,
   TelemetryImprovementMetricKind,
   TelemetryImprovementProposalMode,
   createContentAddressedEvidenceRef,
+  evaluateTelemetryImprovementOutcome,
   runTelemetryImprovementOptimizer,
 } from "../src/index.ts";
 
@@ -331,6 +333,60 @@ test("multiple telemetry proposals for one work target get distinct durable ids"
   if (first.kind !== "proposed" || second.kind !== "proposed") throw new Error("expected proposals");
   ok(first.changeSet.changeSetId !== second.changeSet.changeSetId);
   ok(first.event.id !== second.event.id);
+});
+
+test("post-rollout metric improvement emits optimizer reputation evidence", async () => {
+  const queryPort = new RecordingTelemetryQueryPort({
+    metrics: [{
+      labels: { hat: "code_reviewer", metric: "review_p95_ms" },
+      points: [
+        { timestamp: "2026-05-31T17:45:00.000Z", value: 100 },
+        { timestamp: "2026-05-31T18:00:00.000Z", value: 100 },
+        { timestamp: "2026-05-31T18:30:00.000Z", value: 300 },
+        { timestamp: "2026-05-31T18:45:00.000Z", value: 300 },
+      ],
+    }],
+    logs: [{ timestamp: NOW, line: "review p95 doubled", labels: { hat: "code_reviewer" } }],
+  });
+  const proposal = await runTelemetryImprovementOptimizer({
+    organizationId: "org-lfg",
+    workItemId: "work-improve-review-p95",
+    proposerHatId: "decision_optimizer",
+    targetRef: "tenant-config/org-lfg.json",
+    now: NOW,
+    queryPort,
+    range: RANGE,
+    telemetryEvidenceRef: TelemetryEvidenceRef,
+    simulationEvidenceRef: SimulationEvidenceRef,
+    simulationDecision: { status: "accepted", reason: "candidate_beats_baseline" },
+    trigger: { ...defaultTrigger(), logQuery: "{app=\"agentic-org-worker\"} |= \"review p95\"" },
+  });
+  equal(proposal.kind, "proposed");
+  if (proposal.kind !== "proposed") throw new Error("expected telemetry improvement proposal");
+
+  const outcome = evaluateTelemetryImprovementOutcome({
+    organizationId: "org-lfg",
+    optimizerAgentId: "agent-decision-optimizer-a",
+    optimizerHatId: "decision_optimizer",
+    hypothesis: proposal.hypothesis,
+    postRolloutMetricValue: 200,
+    evaluatedAt: "2026-05-31T20:45:00.000Z",
+    evidenceRef: createContentAddressedEvidenceRef("telemetry-post-rollout", { metric: "review_p95", window: "after" }),
+    eventId: "evt-optimizer-reputation-review-p95",
+    correlationId: proposal.changeSet.changeSetId,
+    traceId: "trace-optimizer-reputation-review-p95",
+  });
+
+  equal(outcome.kind, "reputation_observed");
+  if (outcome.kind !== "reputation_observed") throw new Error("expected optimizer reputation observation");
+  equal(outcome.expectedMovementMet, true);
+  equal(outcome.observedRelativeMovement, 0.333);
+  equal(outcome.observation.outcomeClass, ReputationOutcomeClass.Quality);
+  deepEqual(outcome.observation.signal, { kind: "binary", success: true, weight: 1 });
+  equal(outcome.event.kind, "reputation_outcome_observed");
+  equal(outcome.event.actorAgentId, "agent-decision-optimizer-a");
+  equal(outcome.event.actorHatId, "decision_optimizer");
+  ok(outcome.event.evidenceRefs.includes(outcome.observation.evidenceRef));
 });
 
 function defaultTrigger() {

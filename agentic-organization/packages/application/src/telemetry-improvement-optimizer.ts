@@ -14,6 +14,11 @@ import type {
 } from "../../observability/src/index.ts";
 import { contentAddressedChangeSetId } from "./change-control-id.ts";
 import { isContentAddressedEvidenceRef } from "./content-addressed-evidence.ts";
+import {
+  ReputationOutcomeClass,
+  createReputationOutcomeOrgEvent,
+  type ReputationObservation,
+} from "./reputation.ts";
 
 export const TelemetryImprovementMetricKind = {
   ReviewP95Ms: "review_p95_ms",
@@ -125,6 +130,32 @@ export type TelemetryImprovementOptimizerResult =
     readonly observedRelativeChange?: number | undefined;
   };
 
+export type EvaluateTelemetryImprovementOutcomeInput = {
+  readonly organizationId: string;
+  readonly optimizerAgentId: string;
+  readonly optimizerHatId: string;
+  readonly hypothesis: ImprovementHypothesis;
+  readonly postRolloutMetricValue: number;
+  readonly evaluatedAt: string;
+  readonly evidenceRef: string;
+  readonly eventId: string;
+  readonly correlationId: string;
+  readonly traceId: string;
+};
+
+export type TelemetryImprovementOutcomeEvaluation =
+  | {
+    readonly kind: "reputation_observed";
+    readonly expectedMovementMet: boolean;
+    readonly observedRelativeMovement: number;
+    readonly observation: ReputationObservation;
+    readonly event: OrgEvent;
+  }
+  | {
+    readonly kind: "no_reputation_observation";
+    readonly reason: "missing_evidence" | "zero_reference_metric";
+  };
+
 export async function runTelemetryImprovementOptimizer(
   input: RunTelemetryImprovementOptimizerInput,
 ): Promise<TelemetryImprovementOptimizerResult> {
@@ -219,6 +250,51 @@ export async function runTelemetryImprovementOptimizer(
     hypothesis,
     changeSet,
     event: improvementEvent(input, hypothesis, changeSet.changeSetId, evidenceRefs),
+  };
+}
+
+export function evaluateTelemetryImprovementOutcome(
+  input: EvaluateTelemetryImprovementOutcomeInput,
+): TelemetryImprovementOutcomeEvaluation {
+  if (!isContentAddressedEvidenceRef(input.evidenceRef)) {
+    return { kind: "no_reputation_observation", reason: "missing_evidence" };
+  }
+  const referenceValue = input.hypothesis.symptom.observedValue;
+  if (referenceValue === 0) {
+    return { kind: "no_reputation_observation", reason: "zero_reference_metric" };
+  }
+
+  const observedRelativeMovement = metricMovement(
+    input.hypothesis.expectedMetricMovement.direction,
+    referenceValue,
+    input.postRolloutMetricValue,
+  );
+  const expectedMovementMet = observedRelativeMovement >= input.hypothesis.expectedMetricMovement.minimumRelativeChange;
+  const observation: ReputationObservation = {
+    organizationId: input.organizationId,
+    agentId: input.optimizerAgentId,
+    hatId: input.optimizerHatId,
+    workType: "telemetry_improvement_optimizer",
+    outcomeClass: ReputationOutcomeClass.Quality,
+    observedAt: input.evaluatedAt,
+    signal: { kind: "binary", success: expectedMovementMet, weight: 1 },
+    evidenceRef: input.evidenceRef,
+  };
+
+  return {
+    kind: "reputation_observed",
+    expectedMovementMet,
+    observedRelativeMovement: round(observedRelativeMovement),
+    observation,
+    event: createReputationOutcomeOrgEvent({
+      eventId: input.eventId,
+      observedAt: input.evaluatedAt,
+      organizationId: input.organizationId,
+      observation,
+      correlationId: input.correlationId,
+      causationId: input.hypothesis.hypothesisId,
+      traceId: input.traceId,
+    }),
   };
 }
 
@@ -361,6 +437,17 @@ function rollbackChange(input: RunTelemetryImprovementOptimizerInput): Telemetry
     rolledOutChangeSetId,
     summary: `rollback ${rolledOutChangeSetId} because post-change telemetry breached rollback condition`,
   };
+}
+
+function metricMovement(
+  direction: TelemetryImprovementExpectedMetricMovement["direction"],
+  referenceValue: number,
+  postRolloutValue: number,
+): number {
+  const denominator = Math.abs(referenceValue);
+  return direction === "decrease"
+    ? (referenceValue - postRolloutValue) / denominator
+    : (postRolloutValue - referenceValue) / denominator;
 }
 
 function degradedSource(result: TelemetryQueryDegraded): string {

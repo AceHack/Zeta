@@ -874,6 +874,33 @@ ChangeSets.
 - post-change regression produces rollback proposal;
 - optimizer proposal carries simulation evidence from Phase 2.7.
 
+**Checkpoint 2026-06-01: telemetry optimizer learning loop**
+
+Phase 2.9 now has a closed proposal-and-learning kernel. The telemetry
+improvement optimizer already turns queryable DORA/LGTM regressions into
+`ImprovementHypothesis` records and drafted ChangeSets with telemetry and
+simulation evidence. It rejects degraded telemetry, empty telemetry, noise below
+the change threshold, missing causal log/trace evidence, missing simulation
+evidence, rejected simulation decisions, and rollback proposals without an
+explicit rolled-out ChangeSet target. The KIND proof at
+`deploy/run-telemetry-improvement-optimizer.ts` persists the proposal and
+`decision_optimization_proposed` event through live Cockroach.
+
+The missing production-learning edge is now explicit: post-rollout metric
+movement is evaluated against the hypothesis' expected metric movement, and the
+result becomes a durable `reputation_outcome_observed` event for the proposing
+optimizer agent/hat. This means optimizer reputation can learn from realized
+metric outcomes instead of gaining credit merely for drafting plausible
+ChangeSets. A successful review-p95 improvement emits a positive quality
+observation; missed movement emits the same substrate with a failed binary
+signal, allowing the existing Bayesian reputation read model to reward or
+penalize optimizer hats.
+
+Subagent review for this checkpoint was attempted but blocked by the platform
+agent-thread limit (`collab spawn failed: agent thread limit reached`); local
+review covered the telemetry improvement optimizer, reputation event substrate,
+export surface, and focused regression tests.
+
 **Exit criteria:**
 
 - telemetry is not passive dashboard data;
