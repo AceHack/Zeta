@@ -78,3 +78,17 @@ export function parseLockfile(json: string): Lockfile | { error: string } {
 export function verifyRootMatchesLock(root: AcePackage, lf: Lockfile): boolean {
   return packageHash(root) === lf.root.package_hash;
 }
+
+/** True iff two lockfiles serialize identically. Canonical JSON normalizes object key order, but node array order IS significant — the same nodes in a different order are NOT equal. */
+export function lockfilesEqual(a: Lockfile, b: Lockfile): boolean {
+  return serializeLockfile(a) === serializeLockfile(b);
+}
+
+/** Lockfile for a no-dependency (leaf) root: the root identity + empty nodes. */
+export function buildLeafLockfile(root: AcePackage): Lockfile {
+  return {
+    format_version: 1,
+    root: { name: root.manifest.name, version: root.manifest.version, package_hash: packageHash(root) },
+    nodes: [],
+  };
+}

@@ -98,3 +98,36 @@ describe("verifyRootMatchesLock", () => {
     expect(verifyRootMatchesLock(changed, lf)).toBe(false);
   });
 });
+
+import { lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
+
+describe("lockfilesEqual", () => {
+  const base: Lockfile = {
+    format_version: 1,
+    root: { name: "root", version: "1.0.0", package_hash: "sha256:r" },
+    nodes: [{ name: "A", version: "1.2.0", url: "u/A", package_hash: "sha256:a" }],
+  };
+  test("true for identical (incl. key-order-insensitive via canonical)", () => {
+    const clone: Lockfile = JSON.parse(JSON.stringify(base));
+    expect(lockfilesEqual(base, clone)).toBe(true);
+  });
+  test("false when a node version differs", () => {
+    const diff: Lockfile = { ...base, nodes: [{ ...base.nodes[0]!, version: "1.3.0" }] };
+    expect(lockfilesEqual(base, diff)).toBe(false);
+  });
+  test("false when root differs", () => {
+    const diff: Lockfile = { ...base, root: { ...base.root, package_hash: "sha256:other" } };
+    expect(lockfilesEqual(base, diff)).toBe(false);
+  });
+});
+
+describe("buildLeafLockfile", () => {
+  test("produces {format_version:1, root, nodes:[]} with the root package_hash", () => {
+    const files = { "f.txt": "leaf@1.0.0" };
+    const root = { manifest: { format_version: 1, name: "leaf", version: "1.0.0", content_hash: contentHash(new TextEncoder().encode(JSON.stringify(files))) }, files };
+    const lf = buildLeafLockfile(root);
+    expect(lf.format_version).toBe(1);
+    expect(lf.nodes).toEqual([]);
+    expect(lf.root).toEqual({ name: "leaf", version: "1.0.0", package_hash: packageHash(root) });
+  });
+});

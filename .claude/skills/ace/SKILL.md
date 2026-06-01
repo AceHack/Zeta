@@ -30,7 +30,8 @@ Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust a
 | `keygen` | `bun tools/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
 | `sign` | `bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
 | `list` | `bun tools/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
-| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen] [--lockfile <path>]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
+| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen\|--locked] [--lockfile <path>]` | Resolve the transitive dependency graph, verify integrity + authenticity of every node, install leaves-first (atomic) |
+| `update` | `bun tools/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]` | Re-solve the graph and rewrite the lockfile; installs nothing (lock-only) |
 | `verify` | `bun tools/ace/ace.ts verify <hash>` | Confirm an installed package is present |
 | `trust add` | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
 | `trust list` | `bun tools/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
@@ -87,22 +88,40 @@ ace install <pkg> --allow-no-signature --print-resolution
 Each printed line has the format `name@version`, sorted lexicographically. Useful for
 auditing which versions the solver selected before committing to the install.
 
-## Lockfile (slice 5.3)
+## Lockfile (slices 5.3 + 5.4)
 
-A normal `ace install` on a package with dependencies writes `./ace.lock` after a
-successful graph install. The lockfile pins every resolved dependency by name, version,
-URL, and `package_hash`.
+A normal `ace install` writes `./ace.lock` after a successful install — for a
+dependency graph (pins every resolved dep by name, version, URL, `package_hash`) AND
+for a leaf (no-dependency) package (an empty-`nodes` lock pinning just the root identity,
+slice 5.4).
 
 **`--frozen`** replays the locked graph: skips solving and registry access entirely,
 fetches each node from the locked URL, and byte-verifies the result against the locked
-`package_hash` and `content_hash`. Refused if the lockfile is missing or if the root
-package has drifted from its locked state ("lockfile out of date — re-run without
-`--frozen` to regenerate").
+`package_hash` and `content_hash`. On a leaf it just drift-gates the root against the
+lock. Refused if the lockfile is missing or if the root package has drifted from its
+locked state ("lockfile out of date — re-run without `--frozen` to regenerate").
 
-**`--lockfile <path>`** overrides the default lockfile path (`ace.lock`).
+**`--locked`** (slice 5.4) is the CI guard: it re-solves, then asserts the committed
+lock equals a fresh solve, and refuses (installing nothing) if they differ — "lockfile
+out of date (--locked) — run 'ace update' to regenerate". Unlike `--frozen` (which
+replays the lock registry-independently), `--locked` consults the registry to detect a
+stale lock. `--locked` and `--frozen` are mutually exclusive (a usage error together).
 
-Errors during lockfile *write* are warnings (install still succeeds). All `--frozen`
-refusals (missing lock, drift, hash mismatch, bad signature) are hard exits (code `1`).
+**`ace update`** (slice 5.4) refreshes the lock by re-solving the dependency graph and
+rewriting the lockfile — it installs nothing (lock-only). It runs the same signature gate,
+root `content_hash` check, solve, resolve, and integrity preflight as `install`, but
+preflights the freshly-solved graph BEFORE writing: it never writes a lock for a graph
+`install` would reject. A failed solve/resolve/preflight refuses with exit `1` and writes
+no lock; a write failure is a hard error (exit `1`). On a leaf it writes the empty-`nodes`
+lock. Typical loop: `ace update` (regenerate) → commit `ace.lock` → `ace install --locked`
+(CI asserts it is current) or `ace install --frozen` (reproducible replay).
+
+**`--lockfile <path>`** overrides the default lockfile path (`ace.lock`) for `install`
+and `update`.
+
+Errors during a normal `install` lockfile *write* are warnings (install still succeeds).
+All `--frozen`/`--locked` refusals (missing lock, drift, stale, hash mismatch, bad
+signature) and an `ace update` write failure are hard exits (code `1`).
 
 ## Invocation
 

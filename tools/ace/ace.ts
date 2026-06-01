@@ -3,7 +3,8 @@
 //
 // Usage:
 //   bun tools/ace/ace.ts list [--store <path>] [--json]
-//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution]
+//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>]
+//   bun tools/ace/ace.ts update <url-or-path> [--lockfile <path>] [--allow-no-signature]
 //   bun tools/ace/ace.ts verify <hash>
 //   bun tools/ace/ace.ts keygen [--out <prefix>]
 //   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
@@ -24,7 +25,7 @@ import {
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
-import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock } from "./lockfile.ts";
+import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
 import { resolve as toAbsolutePath } from "node:path";
 
@@ -45,6 +46,7 @@ interface InstallArgs {
   readonly allowNoSignature: boolean;
   readonly printResolution?: boolean;
   readonly frozen: boolean;
+  readonly locked: boolean;
   readonly lockfile: string;
 }
 
@@ -73,6 +75,13 @@ interface TrustArgs {
   readonly label?: string;
 }
 
+interface UpdateArgs {
+  readonly command: "update";
+  readonly source: string;
+  readonly lockfile: string;
+  readonly allowNoSignature: boolean;
+}
+
 interface RegistryArgs {
   readonly command: "registry";
   readonly sub: "list" | "add";
@@ -82,10 +91,28 @@ interface RegistryArgs {
   readonly regHash?: string;
 }
 
-type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs;
+type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
 
 interface ArgError {
   readonly error: string;
+}
+
+/** Integrity preflight over a resolved graph: per-node content_hash, path-safety, and
+ *  store-key (content_hash -> package_hash) collision. Returns null on success, or an
+ *  error message. Shared by `install` (before extract) and `update` (before lock write). */
+function preflightGraph(order: AcePackage[]): string | null {
+  const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
+  for (const node of order) {
+    const fh = contentHash(new TextEncoder().encode(JSON.stringify(node.files)));
+    if (fh !== node.manifest.content_hash) return `bad-content-hash in ${node.manifest.name}`;
+    const unsafe = validatePackagePaths(node);
+    if (unsafe !== null) return `unsafe file path in ${node.manifest.name}: ${unsafe}`;
+    const ph = packageHash(node);
+    const prior = byStoreKey.get(node.manifest.content_hash);
+    if (prior !== undefined && prior !== ph) return `store-collision — ${node.manifest.name} shares a content_hash store key with a different package`;
+    byStoreKey.set(node.manifest.content_hash, ph);
+  }
+  return null;
 }
 
 export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
@@ -180,6 +207,25 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     return { error: "registry requires 'add' or 'list'" };
   }
 
+  if (command === "update") {
+    const source = argv[1];
+    if (!source || source.startsWith("-")) return { error: "update requires a <url-or-path> argument" };
+    let lockfilePath = "ace.lock";
+    let allowNoSignature = false;
+    for (let i = 2; i < argv.length; i++) {
+      if (argv[i] === "--lockfile") {
+        const next = argv[++i];
+        if (!next || next.startsWith("-")) return { error: "--lockfile requires a path argument" };
+        lockfilePath = next;
+      } else if (argv[i] === "--allow-no-signature") {
+        allowNoSignature = true;
+      } else {
+        return { error: `Unknown option for update: ${argv[i]}` };
+      }
+    }
+    return { command: "update", source, lockfile: lockfilePath, allowNoSignature };
+  }
+
   if (command === "install") {
     const source = argv[1];
     if (!source || source.startsWith("-")) return { error: "install requires a <url-or-path> argument" };
@@ -187,6 +233,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     let allowNoSignature = false;
     let printResolution = false;
     let frozen = false;
+    let locked = false;
     let lockfilePath = "ace.lock";
     for (let i = 2; i < argv.length; i++) {
       if (argv[i] === "--store" || argv[i] === "-s") {
@@ -200,6 +247,8 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         printResolution = true;
       } else if (argv[i] === "--frozen") {
         frozen = true;
+      } else if (argv[i] === "--locked") {
+        locked = true;
       } else if (argv[i] === "--lockfile") {
         const next = argv[++i];
         if (!next || next.startsWith("-")) return { error: "--lockfile requires a path argument" };
@@ -208,7 +257,8 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         return { error: `Unknown option for install: ${argv[i]}` };
       }
     }
-    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature, frozen, lockfile: lockfilePath };
+    if (locked && frozen) return { error: "--locked and --frozen are mutually exclusive" };
+    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature, frozen, locked, lockfile: lockfilePath };
     if (printResolution) return { ...baseResult, printResolution: true };
     return baseResult;
   }
@@ -255,12 +305,15 @@ function printUsage(): void {
 
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
-  ace install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen] [--lockfile <path>]
+  ace install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>]
                                                    Download/read a package, verify integrity+authenticity, install
                                                    --allow-no-signature only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
                                                    --print-resolution prints the solved name@version graph before installing
                                                    writes ./ace.lock on a normal install; --frozen installs exactly the locked graph (registry-independent)
+                                                   --locked asserts the committed lock is up to date vs a fresh solve, else refuses (CI guard; mutually exclusive with --frozen)
                                                    --lockfile <path> overrides the default lockfile path (default: ace.lock)
+  ace update <url-or-path> [--lockfile <path>] [--allow-no-signature]
+                                                   Re-solve the dependency graph and rewrite the lockfile; installs nothing (lock-only)
   ace verify <hash>                              Confirm an installed package is present
   ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
   ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
@@ -459,6 +512,55 @@ export async function main(argv: readonly string[]): Promise<number> {
     return 0;
   }
 
+  if (parsed.command === "update") {
+    let raw: string;
+    try {
+      raw = parsed.source.startsWith("http://") || parsed.source.startsWith("https://")
+        ? await (await fetch(parsed.source)).text() : readFileSync(parsed.source, "utf8");
+    } catch (e) { console.error(`ace: download/read failed: ${(e as Error).message}`); return 1; }
+    let pkg: AcePackage;
+    try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: package is not valid JSON"); return 65; }
+    if (typeof pkg !== "object" || pkg === null || typeof pkg.manifest !== "object" || pkg.manifest === null || typeof pkg.files !== "object" || pkg.files === null) {
+      console.error("ace: update refused: not a well-formed AcePackage"); return 1;
+    }
+    // Signature gate (same policy as install): hard-refuse a present-but-invalid signature;
+    // no-signature is only overridable with --allow-no-signature.
+    const v = verifySignature(pkg.manifest, loadTrustStore());
+    if (!v.ok && v.reason !== "no-signature") { console.error(`ace: update refused: ${v.reason}`); return 1; }
+    if (!v.ok && v.reason === "no-signature" && !parsed.allowNoSignature) { console.error("ace: update refused: unsigned package (use --allow-no-signature)"); return 1; }
+    // Root content_hash.
+    const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
+    if (rootFilesHash !== pkg.manifest.content_hash) { console.error(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`); return 1; }
+
+    if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
+      const fetchPackage = async (u: string): Promise<string> =>
+        (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
+      const registry = loadRegistry();
+      const solveResult = await solve(pkg, fetchPackage, registry);
+      if (!solveResult.ok) { console.error(`ace: update refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`); return 1; }
+      const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
+      if (!res.ok) { console.error(`ace: update refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`); return 1; }
+      // Preflight BEFORE writing — never write a lock the graph install would reject (preflight-before-write per spec #6412, fix-forward #6414).
+      const pf = preflightGraph(res.order);
+      if (pf !== null) { console.error(`ace: update refused: ${pf}`); return 1; }
+      const lf = buildLockfile(pkg, res.order, registry);
+      if ("error" in lf) { console.error(`ace: update refused: could not build lockfile: ${lf.error}`); return 1; }
+      try { writeFileSync(parsed.lockfile, serializeLockfile(lf)); }
+      catch (e) { console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); return 1; }
+      console.log(`ace: wrote lockfile ${parsed.lockfile} (${lf.nodes.length} deps)`);
+      return 0;
+    }
+    // Leaf: trivial lock — preflight the single package before writing, so update never
+    // commits a lock for a package installPackage/--frozen would reject (parity with the
+    // graph path's preflightGraph).
+    const leafUnsafe = validatePackagePaths(pkg);
+    if (leafUnsafe !== null) { console.error(`ace: update refused: unsafe file path in ${pkg.manifest.name}: ${leafUnsafe}`); return 1; }
+    try { writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg))); }
+    catch (e) { console.error(`ace: update failed: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); return 1; }
+    console.log(`ace: wrote lockfile ${parsed.lockfile} (0 deps)`);
+    return 0;
+  }
+
   if (parsed.command === "install") {
     let raw: string;
     try {
@@ -501,7 +603,7 @@ export async function main(argv: readonly string[]): Promise<number> {
     }
 
     // SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
-    if (pkg.manifest.dependencies && pkg.manifest.dependencies.length > 0) {
+    if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
       // Verify root content_hash BEFORE resolving (no wasted graph fetch on a bad root).
       const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
       if (rootFilesHash !== pkg.manifest.content_hash) {
@@ -586,22 +688,25 @@ export async function main(argv: readonly string[]): Promise<number> {
         console.error(`ace: install refused: ${res.reason} — ${res.detail} (path: ${res.path.join(" → ")})`);
         return 1;
       }
-      // PREFLIGHT (atomic): integrity + path-safety + store-key collision across the whole
-      // graph BEFORE any extract. content_hash is verified first (including the root, which
-      // the resolver does not re-check) so a tampered root cannot orphan already-extracted
-      // leaves.
-      const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
-      for (const node of res.order) {
-        // D6 atomicity: verify every node's content_hash before any extraction (incl. root).
-        const fh = contentHash(new TextEncoder().encode(JSON.stringify(node.files)));
-        if (fh !== node.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.manifest.name}`); return 1; }
-        const unsafe = validatePackagePaths(node);
-        if (unsafe !== null) { console.error(`ace: install refused: unsafe file path in ${node.manifest.name}: ${unsafe}`); return 1; }
-        const ph = packageHash(node);
-        const prior = byStoreKey.get(node.manifest.content_hash);
-        if (prior !== undefined && prior !== ph) { console.error(`ace: install refused: store-collision — ${node.manifest.name} shares a content_hash store key with a different package`); return 1; }
-        byStoreKey.set(node.manifest.content_hash, ph);
+      // SLICE 5.4: --locked — assert the committed lock equals a fresh solve, else refuse
+      // (CI guard; installs nothing). Falls through to the normal preflight+extract when it matches.
+      if (parsed.locked) {
+        let lockRaw: string;
+        try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
+        catch { console.error(`ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`); return 1; }
+        const onDisk = parseLockfile(lockRaw);
+        if ("error" in onDisk) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`); return 1; }
+        const fresh = buildLockfile(pkg, res.order, registry);
+        if ("error" in fresh) { console.error(`ace: install refused: could not build lockfile: ${fresh.error}`); return 1; }
+        if (!lockfilesEqual(onDisk, fresh)) {
+          console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`);
+          return 1;
+        }
       }
+      // PREFLIGHT (atomic): integrity + path-safety + store-key collision across the whole
+      // graph BEFORE any extract (shared with `update`'s before-write guard via preflightGraph).
+      const pf = preflightGraph(res.order);
+      if (pf !== null) { console.error(`ace: install refused: ${pf}`); return 1; }
       // EXTRACT all, leaves first.
       for (const node of res.order) {
         const out = installPackage(parsed.storePath, node);
@@ -619,6 +724,25 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 0;
     }
 
+    // SLICE 5.4: leaf (no-dependency) install — uniform lockfile handling.
+    // --frozen: require an on-disk lock + a matching root before installing (drift gate).
+    // --locked: require the on-disk lock to equal a fresh leaf lock (CI guard).
+    // default: install, then write the trivial leaf lock (empty nodes).
+    if (parsed.frozen) {
+      let lockRaw: string;
+      try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
+      catch { console.error(`ace: install refused: no lockfile at ${parsed.lockfile} — run install without --frozen first`); return 1; }
+      const lf = parseLockfile(lockRaw);
+      if ("error" in lf) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${lf.error}`); return 1; }
+      if (!verifyRootMatchesLock(pkg, lf)) { console.error(`ace: install refused: lockfile out of date for ${pkg.manifest.name} — re-run without --frozen to regenerate`); return 1; }
+    } else if (parsed.locked) {
+      let lockRaw: string;
+      try { lockRaw = readFileSync(parsed.lockfile, "utf8"); }
+      catch { console.error(`ace: install refused: --locked but no lockfile at ${parsed.lockfile} — run 'ace update' or install without --locked`); return 1; }
+      const onDisk = parseLockfile(lockRaw);
+      if ("error" in onDisk) { console.error(`ace: install refused: malformed lockfile ${parsed.lockfile}: ${onDisk.error}`); return 1; }
+      if (!lockfilesEqual(onDisk, buildLeafLockfile(pkg))) { console.error(`ace: install refused: lockfile out of date (--locked) — run 'ace update' to regenerate`); return 1; }
+    }
     // INTEGRITY + extract (slice 2, unchanged)
     const result = installPackage(parsed.storePath, pkg);
     if (!result.ok) { console.error(`ace: install refused: ${result.error}`); return 1; }
@@ -627,6 +751,11 @@ export async function main(argv: readonly string[]): Promise<number> {
     } else {
       console.log(`ace: installed ${pkg.manifest.name}@${pkg.manifest.version} -> ${result.dir}`);
       console.log("ace: integrity-verified (content hash). NOT authenticity-verified (--allow-no-signature).");
+    }
+    // SLICE 5.4: default (non-frozen) path writes the trivial leaf lock; write failure is a warning.
+    if (!parsed.frozen) {
+      try { writeFileSync(parsed.lockfile, serializeLockfile(buildLeafLockfile(pkg))); }
+      catch (e) { console.error(`ace: WARNING: could not write lockfile ${parsed.lockfile}: ${(e as Error).message}`); }
     }
     return 0;
   }
