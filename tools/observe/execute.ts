@@ -70,9 +70,9 @@ export type AppendOutcome =
  * implementations do the I/O. Tests inject a fake.
  *
  * Generic over the event type `E` (default `NextAction`, backward-compatible:
- * `EventSink` ≡ `EventSink<NextAction>`). Effectful actions log **fact** events
- * instead of the command (B-0964: replay folds facts, never re-runs commands) —
- * e.g. `EventSink<ActionFact>` for the do_item envelope. One durability-port
+ * `EventSink` ≡ `EventSink<NextAction>`). Effectful actions log **observation** events
+ * instead of the command (B-0964: replay folds observations, never re-runs commands) —
+ * e.g. `EventSink<ActionObservation>` for the do_item envelope. One durability-port
  * shape, parameterized by what gets logged.
  */
 export interface EventSink<E = NextAction> {

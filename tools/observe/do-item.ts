@@ -3,24 +3,24 @@
  *
  * `do_item` is the first action kind with a REAL side-effect (the agent actually
  * does work). The other kinds `execute` handles (`free_time`/`self_reflect`) have
- * no side-effect, so logging the action itself == logging the fact. `do_item` does
+ * no side-effect, so logging the action itself == logging the observation. `do_item` does
  * not: re-running the log must NOT re-run the work (re-build, re-push, re-charge).
- * So we apply the **command-vs-fact-event split** (standard event-sourcing):
+ * So we apply the **command-vs-observation-event split** (standard event-sourcing):
  *
  *   `do_item` is a COMMAND (the chooser's pick) — NOT logged.
- *   Executing it emits FACT events — what actually happened — and THOSE are logged:
+ *   Executing it emits OBSERVATION events — what actually happened — and THOSE are logged:
  *     ActionExecutionStarted{item, tier, gated} → ActionExecutionSucceeded{item}
  *                                                or ActionExecutionFailed{item, reason}
  *
- * `foldFacts` replays the FACTS: a folded `succeeded` re-applies the transition
+ * `foldObservations` replays the OBSERVATIONS: a folded `succeeded` re-applies the transition
  * (item leaves backlog) by DELEGATING to `simulate(do_item)` — the single pure
  * reducer, so the replayed world can't drift from the executed one — and a folded
- * `failed` leaves the item in place. **`foldFacts` takes no executor: replay
+ * `failed` leaves the item in place. **`foldObservations` takes no executor: replay
  * structurally cannot re-run the command.** That is the correctness guarantee.
  *
  * The `CommandExecutor` is INJECTED (asymmetric-authorship: the port authors its
  * own outcome channel; `executeDoItem` stays testable with a fake; no shell in the
- * unit path). The `Started` fact records the executor `tier` + `gated` so the
+ * unit path). The `Started` observation records the executor `tier` + `gated` so the
  * §3 glass-halo audit can tell a sandbox run from a real-FS/docker escalation.
  *
  * Phase 1 (this file): the envelope + port + transition, fake executor, no dep,
@@ -30,7 +30,7 @@
  * (Phase 1 keeps it a sibling so the existing `execute` + its tests stay green).
  *
  * At-least-once corner (PR review 2026-06-01): if the executor RUNS but the terminal
- * fact append fails, the side-effect happened yet only `Started` is durable. That
+ * observation append fails, the side-effect happened yet only `Started` is durable. That
  * surfaces as `terminal-append-failed` (NOT `append-failed`) so the caller does not
  * blind-retry (which would duplicate the side-effect). A `Started`-only log is a
  * **reconcile-needed** state; safe re-execution requires idempotent item-work (the
@@ -40,7 +40,7 @@
  *
  * Composes with (exact paths):
  *   - tools/observe/observe.ts (simulate = the single reducer; World / BacklogItem)
- *   - tools/observe/execute.ts (EventSink<E> = the durability port reused here for facts; AppendOutcome)
+ *   - tools/observe/execute.ts (EventSink<E> = the durability port reused here for observations; AppendOutcome)
  *   - docs/backlog/P1/B-0964-effectful-do-item-command-vs-fact-event-envelope-injected-executor-just-bash-sandbox-surface-2026-06-01.md
  *   - .claude/rules/asymmetric-authorship-substrate-entity-defines-consent-channel-recipient-acknowledges.md
  *   - .claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md (Result<T, TFeedback>)
@@ -51,7 +51,7 @@ import type { AppendOutcome, EventSink } from "./execute";
 
 // ─── the executor port (the "bash surface") ──────────────────────────────────
 
-/** Which surface ran the command — recorded in the Started fact for the audit. */
+/** Which surface ran the command — recorded in the Started observation for the audit. */
 export type ExecutorTier = "fake" | "just-bash" | "docker" | "cloud-burst";
 
 /** What to run. Phase 1: the caller supplies it (B-0964 §4: the sub-loop / recipe map decides later). */
@@ -76,9 +76,9 @@ export function fakeExecutor(outcome: RunOutcome): CommandExecutor {
   return { tier: "fake", run: () => Promise.resolve(outcome) };
 }
 
-// ─── the fact events (what's logged; the command is not) ──────────────────────
+// ─── the observation events (what's logged; the command is not) ──────────────────────
 
-export type ActionFact =
+export type ActionObservation =
   | {
       readonly kind: "ActionExecutionStarted";
       readonly item: BacklogItem;
@@ -89,18 +89,18 @@ export type ActionFact =
   | { readonly kind: "ActionExecutionFailed"; readonly item: BacklogItem; readonly reason: string };
 
 /**
- * Apply ONE fact to the world (the fact reducer). `Succeeded` DELEGATES to
+ * Apply ONE observation to the world (the observation reducer). `Succeeded` DELEGATES to
  * `simulate(do_item)` so the transition can't drift from the pure path; `Started`
  * and `Failed` only move the mode (the item stays until it actually succeeds).
- * No executor — applying a fact never runs anything.
+ * No executor — applying an observation never runs anything.
  */
-export function applyFact(world: World, fact: ActionFact): World {
-  switch (fact.kind) {
+export function applyObservation(world: World, observation: ActionObservation): World {
+  switch (observation.kind) {
     case "ActionExecutionStarted":
       return { ...world, mode: "work" };
     case "ActionExecutionSucceeded":
       // the single reducer: item leaves the backlog, mode → work.
-      return simulate(world, { kind: "do_item", item: fact.item });
+      return simulate(world, { kind: "do_item", item: observation.item });
     case "ActionExecutionFailed":
       // work attempted but failed → item stays; mode reflects the attempt.
       return { ...world, mode: "work" };
@@ -108,11 +108,11 @@ export function applyFact(world: World, fact: ActionFact): World {
 }
 
 /**
- * Replay the fact log. Pure fold — **no executor parameter**, so replay cannot
+ * Replay the observation log. Pure fold — **no executor parameter**, so replay cannot
  * re-run the command (the B-0964 §0 correctness guarantee, enforced by the type).
  */
-export function foldFacts(initial: World, facts: readonly ActionFact[]): World {
-  return facts.reduce(applyFact, initial);
+export function foldObservations(initial: World, observations: readonly ActionObservation[]): World {
+  return observations.reduce(applyObservation, initial);
 }
 
 // ─── execute do_item: append Started → run → append Succeeded|Failed ───────────
@@ -128,15 +128,15 @@ export interface DoItemOptions {
  *   - `append-failed`: the `Started` append failed → the executor NEVER ran (no
  *     side-effect). Safe to retry the whole do_item.
  *   - `terminal-append-failed`: the executor ALREADY RAN (side-effect happened) but
- *     the TERMINAL fact (Succeeded/Failed) didn't land — only `Started` is durable.
+ *     the TERMINAL observation (Succeeded/Failed) didn't land — only `Started` is durable.
  *     A `Started`-only log is a **reconcile-needed** state: do NOT blind-retry (that
  *     would duplicate the side-effect under at-least-once). The caller must reconcile
- *     (re-append the known terminal fact, or check the world + decide). Re-execution
+ *     (re-append the known terminal observation, or check the world + decide). Re-execution
  *     is only safe if the item's work is idempotent (the always-active idempotency
- *     discipline — `dv2-data-split`). `durableFacts` carries what DID land; `reason`
+ *     discipline — `dv2-data-split`). `durableObservations` carries what DID land; `reason`
  *     is the APPEND failure; `ranReason` preserves the executor's own failure reason
  *     when `ranOutcome === "failed"` (so reconciliation doesn't lose WHY the work
- *     failed, only that the terminal fact didn't land) (PR review 2026-06-01).
+ *     failed, only that the terminal observation didn't land) (PR review 2026-06-01).
  */
 export type DoItemFeedback =
   | { readonly kind: "append-failed"; readonly reason: string }
@@ -145,28 +145,33 @@ export type DoItemFeedback =
       readonly ranOutcome: "succeeded" | "failed";
       readonly reason: string;
       readonly ranReason?: string;
-      readonly durableFacts: readonly ActionFact[];
+      readonly durableObservations: readonly ActionObservation[];
     };
 
 /**
- * `ok` means the MACHINERY worked (facts landed); `completed` means the WORK
- * succeeded (item gone). A failed run is still `ok: true` (facts logged) with
+ * `ok` means the MACHINERY worked (observations landed); `completed` means the WORK
+ * succeeded (item gone). A failed run is still `ok: true` (observations logged) with
  * `completed: false` (item stays). `ok: false` only on durability failure.
  */
 export type DoItemResult =
-  | { readonly ok: true; readonly completed: true; readonly world: World; readonly facts: readonly ActionFact[] }
+  | {
+      readonly ok: true;
+      readonly completed: true;
+      readonly world: World;
+      readonly observations: readonly ActionObservation[];
+    }
   | {
       readonly ok: true;
       readonly completed: false;
       readonly world: World;
-      readonly facts: readonly ActionFact[];
+      readonly observations: readonly ActionObservation[];
       readonly reason: string;
     }
   | { readonly ok: false; readonly feedback: DoItemFeedback };
 
 /**
  * Execute a `do_item`: append `Started` (with tier+gated for the audit) → run the
- * injected executor → append `Succeeded` or `Failed` → project via `applyFact`.
+ * injected executor → append `Succeeded` or `Failed` → project via `applyObservation`.
  * Append-first: if the `Started` append fails, nothing runs (durability is the
  * source of truth). The executor never throws (RunOutcome is data); the Succeeded
  * transition leaves the item out of the backlog, the Failed transition keeps it.
@@ -174,11 +179,11 @@ export type DoItemResult =
 export async function executeDoItem(
   world: World,
   item: BacklogItem,
-  sink: EventSink<ActionFact>,
+  sink: EventSink<ActionObservation>,
   executor: CommandExecutor,
   opts: DoItemOptions,
 ): Promise<DoItemResult> {
-  const started: ActionFact = {
+  const started: ActionObservation = {
     kind: "ActionExecutionStarted",
     item,
     tier: executor.tier,
@@ -192,7 +197,7 @@ export async function executeDoItem(
   // The port contract is `Promise<RunOutcome>`, but a real impl (spawn / timeout
   // wrapper / container start) can REJECT instead of returning a failed outcome.
   // Convert a throw into a failed outcome so an effectful run ALWAYS produces a
-  // terminal fact — never an unhandled rejection that leaves a dangling `Started`
+  // terminal observation — never an unhandled rejection that leaves a dangling `Started`
   // (PR review 2026-06-01).
   let outcome: RunOutcome;
   try {
@@ -207,29 +212,34 @@ export async function executeDoItem(
   }
 
   if (outcome.ok) {
-    const succeeded: ActionFact = { kind: "ActionExecutionSucceeded", item };
+    const succeeded: ActionObservation = { kind: "ActionExecutionSucceeded", item };
     const append: AppendOutcome = await sink.append(succeeded);
     if (!append.ok) {
-      // executor RAN; the terminal fact didn't land → reconcile-needed, NOT retry.
+      // executor RAN; the terminal observation didn't land → reconcile-needed, NOT retry.
       return {
         ok: false,
         feedback: {
           kind: "terminal-append-failed",
           ranOutcome: "succeeded",
           reason: append.reason,
-          durableFacts: [started],
+          durableObservations: [started],
         },
       };
     }
-    return { ok: true, completed: true, world: foldFacts(world, [started, succeeded]), facts: [started, succeeded] };
+    return {
+      ok: true,
+      completed: true,
+      world: foldObservations(world, [started, succeeded]),
+      observations: [started, succeeded],
+    };
   }
 
-  const failed: ActionFact = { kind: "ActionExecutionFailed", item, reason: outcome.reason };
+  const failed: ActionObservation = { kind: "ActionExecutionFailed", item, reason: outcome.reason };
   const append: AppendOutcome = await sink.append(failed);
   if (!append.ok) {
-    // executor RAN (and failed); the terminal fact didn't land → reconcile-needed.
+    // executor RAN (and failed); the terminal observation didn't land → reconcile-needed.
     // Preserve the executor's own failure reason (`outcome.reason`) so reconciliation
-    // doesn't lose WHY the work failed — only that the Failed fact didn't land.
+    // doesn't lose WHY the work failed — only that the Failed observation didn't land.
     return {
       ok: false,
       feedback: {
@@ -237,15 +247,15 @@ export async function executeDoItem(
         ranOutcome: "failed",
         reason: append.reason,
         ranReason: outcome.reason,
-        durableFacts: [started],
+        durableObservations: [started],
       },
     };
   }
   return {
     ok: true,
     completed: false,
-    world: foldFacts(world, [started, failed]),
-    facts: [started, failed],
+    world: foldObservations(world, [started, failed]),
+    observations: [started, failed],
     reason: outcome.reason,
   };
 }
