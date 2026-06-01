@@ -1,13 +1,13 @@
 ---
 id: B-0679
 priority: P2
-status: open
+status: closed
 title: ZetaId V1 — Rust implementation as full peer oracle
 tier: research-grade
 effort: M
 ask: maintainer Aaron + Mika 2026-05-21
 created: 2026-05-21
-last_updated: 2026-05-21
+last_updated: 2026-06-01
 depends_on: []
 composes_with: [B-0635, B-0636, B-0644, B-0665, B-0666]
 tags: [zeta-id, multi-oracle, rust, cross-verification]
@@ -37,7 +37,7 @@ Zeta's existing Rust conventions, if any):
   enum (with `Raw(u8)` variant), `ZetaObservation` struct, `IdVersion`
   / `Chromosome` / `Category` / `Firefly` / `Persona` / `Location` enums
 - `src/bit_layout.rs` — computed offsets with reserved-bits at offset 69
-  + offsets 32-34 (per `docs/zeta-id-v1-layout.yaml`)
+  - offsets 32-34 (per `docs/zeta-id-v1-layout.yaml`)
 - `src/zeta_id.rs` — `pack(obs, env)` requires `&dyn SimulationEnvironment`
   (or trait); `unpack(id)` inverse; same canonical hex as TS + F# + C#
 - `tests/cross_verify.rs` — reads `tests/cross-verification/zeta-id/vectors.yaml`
@@ -85,3 +85,45 @@ Zeta's existing Rust conventions, if any):
 Important for multi-oracle resilience but doesn't block V1 substrate
 landing. Implementation work waits until F# V9 + smart-deser TS prototype
 land cleanly.
+
+## Resolution (2026-06-01) — CLOSED, acceptance met
+
+Rust crate landed at `src/Core.Rust.ZetaId/` — a zero-dep core (`lib.rs`,
+`bit_layout.rs`, `zeta_id.rs`) plus `tests/cross_verify.rs`. ZetaId is now a
+**4-oracle primitive** (TS / F# / C# / Rust) with byte-for-byte consensus on all
+12 shared vectors.
+
+Acceptance, with pasted proof:
+
+- `cargo build --release` — clean, **0 warnings, 0 errors**.
+- `cargo test --release` — **14 unit tests + 1 cross-verify, 0 failed** (bit-layout
+  top-down≡bottom-up cross-check, named Authority/Momentum byte values, Raw
+  alias/range rejection, known-vector hex, roundtrips).
+- `cargo test cross_verify --release` — writes `rust-output.json` with **12/12
+  `roundtripOk` + 12/12 `matchesExpected`**.
+- `bun tests/cross-verification/zeta-id/compare.ts` — **✅ All implementations
+  agree on 12 vectors** (TS 12 · F# 12 · C# 12 · Rust 12); `compare.ts` extended
+  to the 4-way diff.
+- Authority cases (HumanVerified=31, TrustedAgent=20, Standard=15, BestEffort=8,
+  Simulated=3) + Momentum cases (Background=32, Normal=96, Elevated=160, High=224,
+  Critical=248) match exactly.
+
+Deviations from the 2026-05-21 scope (with whys — a row's suggestion is revisable
+when its why changed; `future-self-not-bound`):
+
+- **Zero-dep, not `serde_yaml`.** The Rust house style settled later
+  (`Core.Rust.Observe` — hexagonal zero-dep core + optional-serde-adapter behind a
+  feature) and `serde_yaml` is now unmaintained; the flat fixture is read with a
+  ~40-line hand reader. Matches the supply-chain doctrine + `TriBoolean`/`Observe`.
+- **`u8` + named constants** for the open-vocabulary fields (version / chromosome /
+  category / firefly / persona / location), not closed enums — faithful to the
+  F#/C#/TS `EnumOfValue`-accepts-any-in-range-byte semantics (a closed enum would
+  reject unnamed in-range bytes the other oracles accept). Authority/Momentum ARE
+  enums with `Raw(u8)` (they carry named-collision rejection).
+- **`pack` returns `Result<u128, PackError>`** (Result-over-exception /
+  monad-propagation doctrine) rather than throwing; the observable contract
+  (reject out-of-range / aliasing) is identical to the F#/C# `throw` path.
+- **DEFAULT_ENV (cryptographic)** deferred behind a future `rand` feature (a
+  deliberate dependency decision, same gating as `Observe`'s `serde` feature). The
+  no-silent-zero-fallback property holds: `pack` REQUIRES an env (no default);
+  the cross-verify uses `DeterministicEnv` (always 0), matching the vectors.

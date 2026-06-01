@@ -1,0 +1,23 @@
+[package]
+name = "zeta-core-zeta-id"
+version = "0.1.0"
+edition = "2024"
+description = "ZetaId V1 128-bit canonical observation contract -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language multi-oracle consensus (B-0679, m-acc: no single language is source of truth). Zero-dep core; cross-verifies byte-for-byte against the shared golden vectors."
+license = "Apache-2.0"
+publish = false
+
+# Production default = ZERO external dependencies (supply-chain doctrine, matching
+# Core.Rust.Observe + Core.Rust.TriBoolean). The cross-verify test reads the shared
+# flat-schema vectors.yaml with a tiny hand-rolled reader (the fixture is a flat list
+# of scalar `key: value` records -- no nesting, no anchors) and emits rust-output.json
+# by hand, so the oracle stays zero-dep. B-0679 (2026-05-21) suggested `serde_yaml`,
+# but the Rust house style settled later (Core.Rust.Observe, the hexagonal zero-dep +
+# optional-serde-adapter pattern) and serde_yaml is now unmaintained -- so we follow
+# the current doctrine. A cryptographic production env (DEFAULT_ENV) is a deliberate
+# dep decision deferred behind a future `rand` feature, the same way Observe gates
+# serde_json behind `serde`; the cross-verify only needs DeterministicEnv.
+[dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
