@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Zeta.Core.CSharp.Bonsai</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.Bonsai</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Zero external dependencies in the production library (supply-chain doctrine).
+       JSON parsing leans on the BCL (System.Text.Json) per the BCL-interface-boundary
+       rule; serialize hand-rolls canonical compact bytes for byte-exact cross-oracle
+       agreement (System.Text.Json's serializer escapes more chars than JS JSON.stringify). -->
+
+</Project>
