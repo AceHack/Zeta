@@ -326,7 +326,10 @@ module Resume =
     /// Serialize a suspended `SagaState` to a canonical string for persistence.
     let serializeState (state: SagaState) : Result<string, ResumeFeedback> =
         try
-            let kont = state.Kont |> List.map emitFrame |> String.concat ","
+            // The in-memory Kont is a cons-stack (head = top = innermost / next-to-run); the
+            // cross-oracle wire (TS reference) serializes the kont TOP-LAST (outermost frame
+            // first, innermost last), so reverse before emitting to match the byte contract.
+            let kont = state.Kont |> List.rev |> List.map emitFrame |> String.concat ","
             let args = state.Awaiting.Args |> List.map emitConstValue |> String.concat ","
 
             Ok(
@@ -483,7 +486,9 @@ module Resume =
                     | _ -> bad "unsupported state version"
                 | _ -> bad "state version is missing or not a number"
 
-                let kont = readArray (prop root "kont") "kont" |> List.map readFrame
+                // The wire stores the kont TOP-LAST (see serializeState); reverse after reading
+                // to restore the in-memory cons-stack orientation (head = top = innermost).
+                let kont = readArray (prop root "kont") "kont" |> List.map readFrame |> List.rev
 
                 let aw =
                     match root.TryGetProperty "awaiting" with

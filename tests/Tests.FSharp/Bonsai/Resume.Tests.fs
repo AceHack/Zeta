@@ -77,6 +77,9 @@ type private Trace =
       Bindings: Env
       ActivityResults: ConstValue list
       ExpectedSuspensions: Activity list
+      // the canonical serializeState bytes the TS reference emits at each suspension, in order —
+      // the cross-oracle STATE-BYTE lock this F# ferry must reproduce verbatim (kont top-last)
+      ExpectedStateAtSuspension: string list
       ExpectedFinal: ConstValue }
 
 let private goldenTraces () : Trace list =
@@ -94,6 +97,8 @@ let private goldenTraces () : Trace list =
             Bindings = bindings
             ActivityResults = [ for a in c.GetProperty("activityResults").EnumerateArray() -> constValueOfJson a ]
             ExpectedSuspensions = [ for s in c.GetProperty("expectedSuspensions").EnumerateArray() -> activityOfJson s ]
+            ExpectedStateAtSuspension =
+              [ for s in c.GetProperty("expectedStateAtSuspension").EnumerateArray() -> s.GetString() ]
             ExpectedFinal = constValueOfJson (c.GetProperty "expectedFinal") } ]
 
 let private stepOk (r: Result<SagaStep, ResumeFeedback>) : SagaStep =
@@ -126,6 +131,9 @@ let ``F# resume replays every shared golden saga-trace (restore-not-replay at ea
                 Assert.Equal(tr.ExpectedSuspensions.[i], activity)
                 // persist -> re-parse -> resume from the RESTORED state (not a replay)
                 let ser = strOk (serializeState state)
+                // STATE-BYTE LOCK: the persisted continuation must equal the TS reference bytes
+                // (the kont serializes top-last — innermost frame last in the array)
+                Assert.Equal(tr.ExpectedStateAtSuspension.[i], ser)
                 let restored = stateOk (parseState ser)
                 // canonical round-trip is byte-stable
                 Assert.Equal(ser, strOk (serializeState restored))
