@@ -119,14 +119,14 @@ Two complementary modes (the monad/applicative split), each leaning on its
 ecosystem's native shape (hexagonal — own the payload contract, use the BCL
 container where one exists):
 
-- **Fail-fast (monadic) — built now.** `serialize`/`parse` return
+- **Fail-fast (monadic) — built (TS + F#).** `serialize`/`parse` return
   `Result<T, BonsaiFeedback>`; the first decline short-circuits. Correct for
   single-parse (you can't continue past a structural error). F#/Rust lean on the
   BCL `Result` (`FSharp.Core.Result`, `std::result::Result`); C#/TS own a minimal
   `Result` port + adapt to the widely-used lib (neverthrow / FluentResults-class).
   `BonsaiFeedback` is the shared cross-oracle payload; its `where` fields are
   JSON-pointer keys.
-- **Accumulate (applicative) — SAVE, hexagonal eventually (NOT this slice).** For
+- **Accumulate (applicative) — the tracked next slice (consumer-driven).** For
   batch / model-validation (validate N golden vectors at once, the bus validating a
   batch of envelopes, throttled-batch ops) you want *every* failure, keyed by field.
   That shape is **RFC 9457 "Problem Details"** (supersedes RFC 7807), and .NET ships
@@ -143,15 +143,28 @@ container where one exists):
 
 - 🚧 Cross-language **Bonsai-subset serializer** (`{Context, Expression}`) +
       golden-vector cross-verify (TS/F#/C#/Rust oracles), Nuqleon as .NET oracle.
-      **TS reference oracle ✅** (`src/Core.TypeScript/bonsai/` — weakly-typed /
+      **TS oracle ✅** (`src/Core.TypeScript/bonsai/` — weakly-typed /
       reflection-omitted subset: const/param/lambda/binary/call/cond; canonical
-      byte-exact serialize + parse round-trip + `golden-vectors.json`; hardened:
-      safe-integer range, lone-surrogate escaping, canonical-only parse; 43 tests).
+      byte-exact serialize + parse round-trip + `golden-vectors.json`;
+      `serialize`/`parse` return `Result<_, BonsaiFeedback>` (result over throw);
+      safe-int + lone-surrogate + canonical-only + shared `MaxDepth=1024` (parse &
+      serialize) + op/bool boundary validation + total on null; 52 tests).
       **F# oracle ✅** (`src/Core/Bonsai.fs` — replays the shared golden vectors
-      byte-for-byte; `serialize`/`parse` return `Result<_, BonsaiFeedback>`
-      (result over throw); rejections asserted by specific feedback variant; 22 tests).
-      **C#/Rust oracles pending** (replay the shared golden vectors; native `Result`
-      container — C# owns a port + adapter, Rust uses `std::result::Result`).
+      byte-for-byte; `serialize`/`parse` return `Result<_, BonsaiFeedback>`; total
+      on null; rejections asserted by specific variant; 25 tests).
+      **TS + F# now match** byte-for-byte AND error-shape-for-error-shape (same
+      `BonsaiFeedback` variant set, same `Result` contract, same `MaxDepth` cap).
+      **C#/Rust oracles pending** (Result-native: C# owns a port + adapter, Rust
+      uses `std::result::Result`; sound enums → no untyped-caller op/bool holes).
+- [ ] **Accumulate-mode error channel** (RFC-9457 ProblemDetails) — the applicative
+      complement to the fail-fast `Result`: a `parseAll`/`validateAll` that collects
+      *every* per-node decline keyed by `where`/JSON-path (not just the first), for
+      batch / model-validation / the bus validating a batch of envelopes. Additive
+      over the same `BonsaiFeedback` payload (the `where` keys are already
+      ProblemDetails-ready); per-oracle native shape; adapt to .NET
+      `ValidationProblemDetails` at the C# seam. Confirmed next in the "one at a time"
+      order (the operator 2026-06-01); **consumer-driven start** (the bus's
+      batch-validation or a model-validation use pulls it).
 - [ ] **Resume engine** — serialize closure + expr-tree; restore-not-replay;
       no-handles discipline enforced; non-determinism allowed.
 - [ ] **Context propagation** = OTel/IntrCtx — C#/TS AsyncLocal adapter + **F#
