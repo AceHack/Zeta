@@ -614,7 +614,7 @@ test("runAgentCliMain persists selector rejection evidence from local model fall
       AGENTIC_ORG_LLM_MODEL: "llama3.1",
     },
     fetchImpl: (async () =>
-      new Response(JSON.stringify({ message: { content: "15" }, model: "llama3.1" }))) as typeof fetch,
+      new Response(JSON.stringify({ message: { content: JSON.stringify({ slot: 15, reason: "try escalation" }) }, model: "llama3.1" }))) as typeof fetch,
     now: () => "2026-05-31T00:00:00.000Z",
     writeStdout: () => undefined,
     writeStderr: () => undefined,

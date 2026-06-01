@@ -82,10 +82,10 @@ The production gap is therefore in continuous closed-loop operation:
   controller grammar with navigation, overflow paging, scope controls,
   retract/redo, and meta/escalation semantics;
 - zero-survivor observe cases now render all-vetoed work slots with reasons and
-  keep safe meta controls visible; remaining work is constrained local-model
-  selection and broader primary-lane rollout;
-- local model selection validates an index after free-form output; it is not yet
-  constrained 1-of-16 decoding;
+  keep safe meta controls visible; remaining work is broader primary-lane rollout;
+- local model selection now requests structured JSON-schema output for the
+  selectable slot set, then still clamps the returned slot against the rendered
+  `TriAvailability.True` menu;
 - CLI and parsing failures still throw in several user-visible paths and must be
   converted to typed feedback for production loops;
 - telemetry primitives exist, but every live cadence lane must be proven to emit
@@ -318,7 +318,8 @@ worker path.
 - the current slot layout is not yet the full ADR controller grammar;
 - all-vetoed work menus now render disabled commit slots with reasons and keep
   safe meta controls reachable for refresh/status/escalation;
-- local model selection is prompt-and-regex validation, not constrained decode;
+- local model selection now uses a constrained JSON-schema `{ slot, reason }`
+  contract, but broader primary-lane rollout still needs proof windows;
 - several CLI/env/parser paths throw instead of returning typed feedback.
 
 **Implementation:**
@@ -352,6 +353,17 @@ emit glass-halo status instead of being stranded in a dead menu. Disabled
 controller actions such as pause or escalation without supervisor context remain
 `False`. CLI evidence now records this as `slot_not_selectable` when an agent
 chooses a vetoed work slot, while retaining visible meta recovery slots.
+
+**Checkpoint 2026-06-01: constrained local-model selector**
+
+The agent CLI selector now requests structured model output with a JSON schema:
+`{ "slot": <selectable integer>, "reason": <non-empty string> }`. The schema
+enumerates only the currently rendered `TriAvailability.True` slots and is sent
+through the Ollama chat adapter as the request `format` field. The post-model
+clamp still validates the returned `slot` against the full rendered menu, so
+schema failure, bracketed/free-form text, out-of-range slots, and non-selectable
+slots remain typed selector rejections with fallback evidence instead of worker
+crashes.
 
 **Algorithms:**
 

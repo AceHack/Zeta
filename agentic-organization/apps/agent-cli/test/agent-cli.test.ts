@@ -9,6 +9,7 @@ import {
   RunLifecyclePhase,
   RunScope,
   type PromptFlowDefinition,
+  type ChatCompletionRequest,
   type HierarchySnapshot,
   type HierarchyMission,
   type PromptFlowTask,
@@ -109,12 +110,12 @@ test("selectFirstTrueSlot prefers executable work over page navigation", () => {
 });
 
 test("createModelBackedMenuSelector accepts only rendered T slot indexes from the local model", async () => {
-  const prompts: { system: string; user: string }[] = [];
+  const prompts: ChatCompletionRequest[] = [];
   const selector = createModelBackedMenuSelector({
     chat: {
       complete: async (request) => {
         prompts.push(request);
-        return { content: "[04]", model: "llama3.1" };
+        return { content: JSON.stringify({ slot: 4, reason: "execute the available work item" }), model: "llama3.1" };
       },
     },
     fallback: selectFirstTrueSlot,
@@ -123,14 +124,42 @@ test("createModelBackedMenuSelector accepts only rendered T slot indexes from th
   const selected = await selector(menuForSelection());
 
   equal(selected, 4);
+  deepEqual(prompts[0]?.format, {
+    type: "object",
+    additionalProperties: false,
+    required: ["slot", "reason"],
+    properties: {
+      slot: { type: "integer", enum: [4] },
+      reason: { type: "string", minLength: 1 },
+    },
+  });
   ok(prompts[0]?.user.includes("[04] commit.a execute"));
   ok(!prompts[0]?.user.includes("[05] commit.b blocked"));
+});
+
+test("createModelBackedMenuSelector rejects free-form slot text instead of regex-parsing it", async () => {
+  const selector = createModelBackedMenuSelector({
+    chat: {
+      complete: async () => "[04]",
+    },
+    fallback: () => 4,
+  });
+
+  deepEqual(await selector(menuForSelection()), {
+    index: 4,
+    reason: "fallback_after_selector_rejection",
+    selectorRejection: {
+      reason: "parse_failure",
+      rawOutput: "[04]",
+      fallbackIndex: 4,
+    },
+  });
 });
 
 test("createModelBackedMenuSelector records selector rejection evidence when the model chooses a non-selectable slot", async () => {
   const selector = createModelBackedMenuSelector({
     chat: {
-      complete: async () => "5",
+      complete: async () => JSON.stringify({ slot: 5, reason: "try blocked slot" }),
     },
     fallback: () => 4,
   });
@@ -140,7 +169,7 @@ test("createModelBackedMenuSelector records selector rejection evidence when the
     reason: "fallback_after_selector_rejection",
     selectorRejection: {
       reason: "non_selectable_slot",
-      rawOutput: "5",
+      rawOutput: "{\"slot\":5,\"reason\":\"try blocked slot\"}",
       rejectedIndex: 5,
       fallbackIndex: 4,
     },
@@ -172,7 +201,7 @@ test("runAgentCliCycle carries selector rejection evidence into observe-act tick
     now: () => "2026-05-31T12:00:00.000Z",
     selectSlot: createModelBackedMenuSelector({
       chat: {
-        complete: async () => "15",
+        complete: async () => JSON.stringify({ slot: 15, reason: "escalate instead" }),
       },
       fallback: () => 4,
     }),
@@ -184,7 +213,7 @@ test("runAgentCliCycle carries selector rejection evidence into observe-act tick
   equal(result.evidence?.selectedIndex, 4);
   deepEqual(result.evidence?.selectorRejections, [{
     reason: "non_selectable_slot",
-    rawOutput: "15",
+    rawOutput: "{\"slot\":15,\"reason\":\"escalate instead\"}",
     rejectedIndex: 15,
     fallbackIndex: 4,
   }]);
@@ -199,12 +228,21 @@ test("createAgentCliSelectorFromEnv wires a local Ollama selector when configure
     },
     fetchImpl: (async (url, init) => {
       calls.push({ url: String(url), body: JSON.parse(String(init?.body)) });
-      return new Response(JSON.stringify({ message: { content: "4" }, model: "llama3.1" }));
+      return new Response(JSON.stringify({ message: { content: JSON.stringify({ slot: 4, reason: "execute" }) }, model: "llama3.1" }));
     }) as typeof fetch,
   });
 
   equal(await selector(menuForSelection()), 4);
   equal(calls[0]?.url, "http://ollama:11434/api/chat");
+  deepEqual((calls[0]?.body as { format?: unknown } | undefined)?.format, {
+    type: "object",
+    additionalProperties: false,
+    required: ["slot", "reason"],
+    properties: {
+      slot: { type: "integer", enum: [4] },
+      reason: { type: "string", minLength: 1 },
+    },
+  });
 });
 
 test("runAgentCliCycle renders observe output and routes the selected slot through act", async () => {

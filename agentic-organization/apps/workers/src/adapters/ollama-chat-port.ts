@@ -46,6 +46,7 @@ export function createOllamaChatPort(input: CreateOllamaChatPortInput): ChatComp
           body: JSON.stringify({
             model: input.model,
             stream: false,
+            ...createOptionalFormat(request.format),
             options: { temperature: 0 },
             messages: [
               { role: "system", content: request.system },
@@ -72,6 +73,10 @@ export function createOllamaChatPort(input: CreateOllamaChatPortInput): ChatComp
       }
     },
   };
+}
+
+function createOptionalFormat(format: ChatCompletionRequest["format"]): { format?: ChatCompletionRequest["format"] } {
+  return format === undefined ? {} : { format };
 }
 
 function createOptionalTokenUsage(body: OllamaChatResponse): {

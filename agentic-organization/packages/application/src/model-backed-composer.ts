@@ -29,7 +29,30 @@ import {
 export type ChatCompletionRequest = {
   system: string;
   user: string;
+  format?: ChatCompletionFormat | undefined;
 };
+
+export type ChatCompletionFormat = "json" | JsonSchemaObject;
+
+export type JsonSchemaObject = {
+  type: "object";
+  properties: Record<string, JsonSchemaValue>;
+  required?: readonly string[] | undefined;
+  additionalProperties?: boolean | undefined;
+};
+
+export type JsonSchemaValue =
+  | {
+      type: "integer";
+      enum?: readonly number[] | undefined;
+      minimum?: number | undefined;
+      maximum?: number | undefined;
+    }
+  | {
+      type: "string";
+      enum?: readonly string[] | undefined;
+      minLength?: number | undefined;
+    };
 
 export type ChatCompletionUsage = {
   promptTokens?: number;
