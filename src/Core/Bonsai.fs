@@ -341,3 +341,209 @@ module Bonsai =
         | :? KeyNotFoundException -> Error(MalformedJson "missing required property")
         | :? System.InvalidOperationException as ex -> Error(MalformedJson ex.Message)
         | :? System.FormatException as ex -> Error(MalformedJson ex.Message)
+
+    // ---- accumulate-mode (RFC-9457 ProblemDetails) ------------------------
+    //
+    // The applicative complement to the fail-fast parse: parseAll collects EVERY
+    // per-node decline keyed by its JSON-path instead of declining at the first —
+    // for debugging a malformed tree / batch / model-validation. Additive over the
+    // same BonsaiFeedback payload; toProblemDetails adapts the collected list to the
+    // RFC-9457 shape (.NET ValidationProblemDetails's Errors: field -> messages).
+    // Independent sub-trees accumulate; a fatal-structural node (unknown kind,
+    // not-an-object, missing kind) is single for that node but siblings accumulate.
+
+    /// A decline tagged with the JSON-path where it occurred (the ProblemDetails key).
+    type PathedFeedback = { Path: string; Feedback: BonsaiFeedback }
+
+    /// RFC-9457 "Problem Details" — the field-keyed multi-error document (the shape
+    /// .NET ships as ValidationProblemDetails; useful well outside HTTP).
+    type ProblemDetails =
+        { Type: string
+          Title: string
+          Errors: Map<string, string list> }
+
+    /// A human-readable message for a feedback variant (the ProblemDetails value).
+    let feedbackMessage (f: BonsaiFeedback) : string =
+        match f with
+        | UnsupportedVersion(found, expected) -> sprintf "unsupported version %d (expected %d)" found expected
+        | MalformedJson message -> message
+        | UnknownKind kind -> sprintf "unknown node kind \"%s\"" kind
+        | UnknownConstTag tag -> sprintf "unknown const tag \"%s\"" tag
+        | UnknownOp op -> sprintf "unknown binary operator \"%s\"" op
+        | ExpectedString _ -> "expected a string"
+        | ExpectedBool _ -> "expected a boolean"
+        | ExpectedInt _ -> "expected a safe integer"
+        | NonSafeInt value -> sprintf "integer %d is outside the safe-integer range" value
+        | TooDeep limit -> sprintf "nesting exceeds the maximum depth of %d" limit
+        | NonCanonical -> "input is not in canonical form"
+
+    /// Adapt the collected declines to an RFC-9457 ProblemDetails document: group by
+    /// JSON-path into the Errors map (each path -> its messages, in order).
+    let toProblemDetails (feedbacks: PathedFeedback list) : ProblemDetails =
+        let errors =
+            (Map.empty, feedbacks)
+            ||> List.fold (fun acc pf ->
+                let prev = acc |> Map.tryFind pf.Path |> Option.defaultValue []
+                acc |> Map.add pf.Path (prev @ [ feedbackMessage pf.Feedback ]))
+
+        { Type = "about:blank"
+          Title = "Bonsai validation failed"
+          Errors = errors }
+
+    /// The valid binary operator wire-strings, for the non-throwing accumulate check.
+    let private binOpNames = Set.ofList [ "add"; "sub"; "mul"; "eq"; "lt"; "and"; "or" ]
+
+    /// Collect declines for a const value into out (non-throwing; mirrors parseConst).
+    let private pushConst (path: string) (el: JsonElement) (out: ResizeArray<PathedFeedback>) : unit =
+        if el.ValueKind <> JsonValueKind.Object then
+            out.Add { Path = path; Feedback = MalformedJson(sprintf "%s is not an object" path) }
+        else
+            match el.TryGetProperty("t") with
+            | true, t when t.ValueKind = JsonValueKind.String ->
+                match t.GetString() with
+                | "int" ->
+                    match el.TryGetProperty("v") with
+                    | true, v ->
+                        match v.TryGetInt64() with
+                        | true, i ->
+                            if i > MaxSafeInt || i < -MaxSafeInt then
+                                out.Add { Path = path; Feedback = NonSafeInt i }
+                        | false, _ -> out.Add { Path = path; Feedback = ExpectedInt path }
+                    | false, _ -> out.Add { Path = path; Feedback = ExpectedInt path }
+                | "str" ->
+                    match el.TryGetProperty("v") with
+                    | true, v when v.ValueKind = JsonValueKind.String -> ()
+                    | _ -> out.Add { Path = path; Feedback = ExpectedString path }
+                | "bool" ->
+                    match el.TryGetProperty("v") with
+                    | true, v when v.ValueKind = JsonValueKind.True || v.ValueKind = JsonValueKind.False -> ()
+                    | _ -> out.Add { Path = path; Feedback = ExpectedBool path }
+                | "null" -> ()
+                | other -> out.Add { Path = path; Feedback = UnknownConstTag other }
+            | _ -> out.Add { Path = path; Feedback = MalformedJson(sprintf "%s.t is missing or not a string" path) }
+
+    /// Collect declines for a node into out, recursing all independent children
+    /// (non-throwing; the accumulate counterpart of parseNode). A fatal-structural
+    /// node (not-object / missing-or-unknown kind / too deep) is single for that
+    /// node; its siblings still accumulate. Uses direct for-loops over EnumerateArray
+    /// (eager — the JsonElement array enumerator is a mutable struct).
+    let rec private pushNode (path: string) (depth: int) (el: JsonElement) (out: ResizeArray<PathedFeedback>) : unit =
+        if depth > MaxDepth then
+            out.Add { Path = path; Feedback = TooDeep MaxDepth }
+        elif el.ValueKind <> JsonValueKind.Object then
+            out.Add { Path = path; Feedback = MalformedJson(sprintf "%s is not an object" path) }
+        else
+            match el.TryGetProperty("kind") with
+            | true, k when k.ValueKind = JsonValueKind.String ->
+                match k.GetString() with
+                | "const" ->
+                    match el.TryGetProperty("value") with
+                    | true, v -> pushConst (path + ".value") v out
+                    | false, _ -> out.Add { Path = path + ".value"; Feedback = MalformedJson(sprintf "%s.value is missing" path) }
+                | "param" ->
+                    match el.TryGetProperty("name") with
+                    | true, n when n.ValueKind = JsonValueKind.String -> ()
+                    | _ -> out.Add { Path = path + ".name"; Feedback = ExpectedString(path + ".name") }
+                | "lambda" ->
+                    (match el.TryGetProperty("params") with
+                     | true, ps when ps.ValueKind = JsonValueKind.Array ->
+                         let mutable i = 0
+
+                         for p in ps.EnumerateArray() do
+                             if p.ValueKind <> JsonValueKind.String then
+                                 out.Add
+                                     { Path = sprintf "%s.params[%d]" path i
+                                       Feedback = ExpectedString(sprintf "%s.params[%d]" path i) }
+
+                             i <- i + 1
+                     | _ -> out.Add { Path = path + ".params"; Feedback = MalformedJson(sprintf "%s.params is not an array" path) })
+
+                    (match el.TryGetProperty("body") with
+                     | true, b -> pushNode (path + ".body") (depth + 1) b out
+                     | false, _ -> out.Add { Path = path + ".body"; Feedback = MalformedJson(sprintf "%s.body is missing" path) })
+                | "binary" ->
+                    (match el.TryGetProperty("op") with
+                     | true, op when op.ValueKind = JsonValueKind.String && binOpNames.Contains(op.GetString()) -> ()
+                     | true, op when op.ValueKind = JsonValueKind.String -> out.Add { Path = path + ".op"; Feedback = UnknownOp(op.GetString()) }
+                     | _ -> out.Add { Path = path + ".op"; Feedback = UnknownOp "<missing>" })
+
+                    (match el.TryGetProperty("left") with
+                     | true, l -> pushNode (path + ".left") (depth + 1) l out
+                     | false, _ -> out.Add { Path = path + ".left"; Feedback = MalformedJson(sprintf "%s.left is missing" path) })
+
+                    (match el.TryGetProperty("right") with
+                     | true, r -> pushNode (path + ".right") (depth + 1) r out
+                     | false, _ -> out.Add { Path = path + ".right"; Feedback = MalformedJson(sprintf "%s.right is missing" path) })
+                | "call" ->
+                    (match el.TryGetProperty("fn") with
+                     | true, fn when fn.ValueKind = JsonValueKind.String -> ()
+                     | _ -> out.Add { Path = path + ".fn"; Feedback = ExpectedString(path + ".fn") })
+
+                    (match el.TryGetProperty("args") with
+                     | true, args when args.ValueKind = JsonValueKind.Array ->
+                         let mutable i = 0
+
+                         for a in args.EnumerateArray() do
+                             pushNode (sprintf "%s.args[%d]" path i) (depth + 1) a out
+                             i <- i + 1
+                     | _ -> out.Add { Path = path + ".args"; Feedback = MalformedJson(sprintf "%s.args is not an array" path) })
+                | "cond" ->
+                    (match el.TryGetProperty("test") with
+                     | true, t -> pushNode (path + ".test") (depth + 1) t out
+                     | false, _ -> out.Add { Path = path + ".test"; Feedback = MalformedJson(sprintf "%s.test is missing" path) })
+
+                    (match el.TryGetProperty("then") with
+                     | true, t -> pushNode (path + ".then") (depth + 1) t out
+                     | false, _ -> out.Add { Path = path + ".then"; Feedback = MalformedJson(sprintf "%s.then is missing" path) })
+
+                    (match el.TryGetProperty("else") with
+                     | true, e -> pushNode (path + ".else") (depth + 1) e out
+                     | false, _ -> out.Add { Path = path + ".else"; Feedback = MalformedJson(sprintf "%s.else is missing" path) })
+                | other -> out.Add { Path = path; Feedback = UnknownKind other }
+            | _ -> out.Add { Path = path; Feedback = MalformedJson(sprintf "%s.kind is missing or not a string" path) }
+
+    /// Accumulate-mode parse: like parse, but on failure returns EVERY per-node
+    /// decline (each with its JSON-path) instead of just the first — the applicative
+    /// complement for batch / model-validation / debugging a malformed tree. On
+    /// success returns the same Expr as parse (the canonical-only contract applies;
+    /// a structurally-valid-but-non-canonical input declines NonCanonical at $).
+    let parseAll (s: string) : Result<Expr, PathedFeedback list> =
+        if isNull s then
+            Error [ { Path = "$"; Feedback = MalformedJson "input was null" } ]
+        else
+            let docResult =
+                try
+                    Ok(JsonDocument.Parse(s, JsonDocumentOptions(MaxDepth = parseDepthCeiling)))
+                with :? JsonException as ex ->
+                    Error [ { Path = "$"; Feedback = MalformedJson ex.Message } ]
+
+            match docResult with
+            | Error e -> Error e
+            | Ok doc ->
+                use doc = doc
+                let root = doc.RootElement
+
+                if root.ValueKind <> JsonValueKind.Object then
+                    Error [ { Path = "$"; Feedback = MalformedJson "document is not an object" } ]
+                else
+                    match root.TryGetProperty("v") with
+                    | true, vEl when vEl.ValueKind = JsonValueKind.Number ->
+                        match vEl.TryGetInt32() with
+                        | true, v when v = Version ->
+                            match root.TryGetProperty("expr") with
+                            | true, exprEl ->
+                                let out = ResizeArray<PathedFeedback>()
+                                pushNode "$.expr" 1 exprEl out
+
+                                if out.Count > 0 then
+                                    Error(List.ofSeq out)
+                                else
+                                    // Structurally valid -> reuse the fail-fast parse for the Expr +
+                                    // canonical guard (only NonCanonical is reachable here).
+                                    match parse s with
+                                    | Ok node -> Ok node
+                                    | Error f -> Error [ { Path = "$"; Feedback = f } ]
+                            | false, _ -> Error [ { Path = "$.expr"; Feedback = MalformedJson "document expr is missing" } ]
+                        | true, v -> Error [ { Path = "$.v"; Feedback = UnsupportedVersion(v, Version) } ]
+                        | false, _ -> Error [ { Path = "$.v"; Feedback = MalformedJson "document v is not an int32" } ]
+                    | _ -> Error [ { Path = "$.v"; Feedback = MalformedJson "document v is missing or not a number" } ]

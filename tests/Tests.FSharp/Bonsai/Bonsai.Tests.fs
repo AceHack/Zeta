@@ -291,3 +291,79 @@ let ``parse declines null input with MalformedJson (no ArgumentNullException)`` 
             | Bonsai.MalformedJson _ -> true
             | _ -> false)
     )
+
+// ---- accumulate-mode (parseAll + ProblemDetails), matching the TS oracle ----
+
+[<Fact>]
+let ``parseAll returns Ok for every valid canonical golden vector`` () =
+    for (name, canonical) in goldenCanonicals () do
+        match Bonsai.parseAll canonical with
+        | Ok _ -> ()
+        | Error es -> Assert.True(false, sprintf "case %s: expected Ok, got %A" name es)
+
+[<Fact>]
+let ``parseAll collects every independent decline with its JSON-path`` () =
+    // op="div" (UnknownOp @ $.expr.op) + left name=null (ExpectedString @ left.name)
+    // + right bool v=1 (ExpectedBool @ right.value) — three independent errors.
+    let doc =
+        "{\"v\":1,\"expr\":{\"kind\":\"binary\",\"op\":\"div\",\"left\":{\"kind\":\"param\",\"name\":null},\"right\":{\"kind\":\"const\",\"value\":{\"t\":\"bool\",\"v\":1}}}}"
+
+    match Bonsai.parseAll doc with
+    | Ok _ -> Assert.True(false, "expected Error")
+    | Error es ->
+        Assert.Equal(3, List.length es)
+        let paths = es |> List.map (fun e -> e.Path) |> List.sort
+        Assert.Equal<string list>([ "$.expr.left.name"; "$.expr.op"; "$.expr.right.value" ], paths)
+
+        Assert.True(
+            es
+            |> List.exists (fun e ->
+                match e.Feedback with
+                | Bonsai.UnknownOp "div" -> true
+                | _ -> false)
+        )
+
+        Assert.True(
+            es
+            |> List.exists (fun e ->
+                match e.Feedback with
+                | Bonsai.ExpectedBool _ -> true
+                | _ -> false)
+        )
+
+[<Fact>]
+let ``toProblemDetails groups declines into an RFC-9457 errors map keyed by path`` () =
+    let doc =
+        "{\"v\":1,\"expr\":{\"kind\":\"binary\",\"op\":\"div\",\"left\":{\"kind\":\"param\",\"name\":null},\"right\":{\"kind\":\"const\",\"value\":{\"t\":\"int\",\"v\":1.5}}}}"
+
+    match Bonsai.parseAll doc with
+    | Ok _ -> Assert.True(false, "expected Error")
+    | Error es ->
+        let pd = Bonsai.toProblemDetails es
+        Assert.Equal("Bonsai validation failed", pd.Title)
+        let keys = pd.Errors |> Map.toList |> List.map fst |> List.sort
+        Assert.Equal<string list>([ "$.expr.left.name"; "$.expr.op"; "$.expr.right.value" ], keys)
+
+[<Fact>]
+let ``parseAll returns a single decline for malformed JSON`` () =
+    match Bonsai.parseAll "not json" with
+    | Ok _ -> Assert.True(false, "expected Error")
+    | Error es ->
+        Assert.Equal(1, List.length es)
+        Assert.True(
+            match es.Head.Feedback with
+            | Bonsai.MalformedJson _ -> true
+            | _ -> false
+        )
+
+[<Fact>]
+let ``parseAll declines NonCanonical (single) for structurally-valid but non-canonical input`` () =
+    match Bonsai.parseAll "{\"v\":1,\"expr\":{\"kind\":\"param\",\"name\":\"x\",\"extra\":0}}" with
+    | Ok _ -> Assert.True(false, "expected Error")
+    | Error es ->
+        Assert.Equal(1, List.length es)
+        Assert.True(
+            match es.Head.Feedback with
+            | Bonsai.NonCanonical -> true
+            | _ -> false
+        )
