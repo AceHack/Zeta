@@ -325,8 +325,12 @@ test("renderMenu16 prompt-flow overflow prefers executable tasks over vetoed tas
 
   equal(menu.slots[6]?.label, "Allowed task");
   equal(menu.slots[6]?.availability, "T");
-  equal(menu.slots[7]?.label, "Vetoed high task");
-  equal(menu.slots[7]?.availability, "F");
+  equal(menu.slots[7]?.label, "edit-grammar / branch");
+  equal(menu.slots[7]?.availability, "T");
+  deepEqual(menu.slots[7]?.impl, {
+    kind: "grammar_branch",
+    reason: "edit-grammar/branch selected; no side effects for this tick",
+  });
 });
 
 test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", async () => {
@@ -349,7 +353,7 @@ test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", a
     promptFlows: { tasks, vetoedTasks: [] },
   });
 
-  deepEqual(firstPage.page?.promptFlows, { page: 0, pageSize: 2, pageCount: 3, total: 5 });
+  deepEqual(firstPage.page?.promptFlows, { page: 0, pageSize: 1, pageCount: 5, total: 5 });
   equal(firstPage.slots[0]?.direction, "navigate.previous");
   equal(firstPage.slots[0]?.availability, "F");
   ok(firstPage.slots[0]?.reason?.includes("already at first prompt-flow page"));
@@ -360,7 +364,8 @@ test("renderMenu16 pages prompt-flow overflow through fixed navigation slots", a
     toScope: RunScope.WorkItem,
     menuPage: { promptFlows: 1 },
   });
-  deepEqual(firstPage.slots.slice(6, 8).map((slot) => slot.label), ["Task 1", "Task 2"]);
+  equal(firstPage.slots[6]?.label, "Task 1");
+  equal(firstPage.slots[7]?.label, "edit-grammar / branch");
 
   const nextResult = await act(1, firstPage, {
     runCommand: async () => ({ ok: true }),
@@ -396,7 +401,7 @@ test("renderMenu16 renders later prompt-flow overflow pages without changing slo
   });
 
   equal(middlePage.slots.length, 16);
-  deepEqual(middlePage.page?.promptFlows, { page: 1, pageSize: 2, pageCount: 3, total: 5 });
+  deepEqual(middlePage.page?.promptFlows, { page: 1, pageSize: 1, pageCount: 5, total: 5 });
   equal(middlePage.slots[0]?.availability, "T");
   deepEqual(middlePage.slots[0]?.impl, {
     kind: "observe",
@@ -409,22 +414,23 @@ test("renderMenu16 renders later prompt-flow overflow pages without changing slo
     toScope: RunScope.WorkItem,
     menuPage: { promptFlows: 2 },
   });
-  deepEqual(middlePage.slots.slice(6, 8).map((slot) => slot.label), ["Task 3", "Task 4"]);
+  equal(middlePage.slots[6]?.label, "Task 2");
+  equal(middlePage.slots[7]?.label, "edit-grammar / branch");
 
   const lastPage = renderMenu16(approved.readout, {
     hatAssignmentId: asZetaIdDecimal("99"),
-    promptFlowPage: 2,
+    promptFlowPage: 4,
     promptFlows: { tasks, vetoedTasks: [] },
   });
 
-  deepEqual(lastPage.page?.promptFlows, { page: 2, pageSize: 2, pageCount: 3, total: 5 });
+  deepEqual(lastPage.page?.promptFlows, { page: 4, pageSize: 1, pageCount: 5, total: 5 });
   equal(lastPage.slots[0]?.availability, "T");
   equal(lastPage.slots[1]?.availability, "F");
   ok(lastPage.slots[1]?.reason?.includes("already at last prompt-flow page"));
   equal(lastPage.slots[6]?.label, "Task 5");
   equal(lastPage.slots[6]?.availability, "T");
-  equal(lastPage.slots[7]?.label, "empty");
-  equal(lastPage.slots[7]?.availability, "N");
+  equal(lastPage.slots[7]?.label, "edit-grammar / branch");
+  equal(lastPage.slots[7]?.availability, "T");
 });
 
 test("renderMenu16 exposes ADR scope, history, and meta controller slots", async () => {
@@ -446,6 +452,13 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
   equal(menu.slots[9]?.label, "scope in to run");
   equal(menu.slots[9]?.availability, "T");
   deepEqual(menu.slots[9]?.impl, { kind: "observe", toScope: RunScope.Run });
+  equal(menu.slots[7]?.direction, "branch.fork");
+  equal(menu.slots[7]?.label, "edit-grammar / branch");
+  equal(menu.slots[7]?.availability, "T");
+  deepEqual(menu.slots[7]?.impl, {
+    kind: "grammar_branch",
+    reason: "edit-grammar/branch selected; no side effects for this tick",
+  });
   equal(menu.slots[10]?.direction, "history.retract");
   equal(menu.slots[10]?.label, "retract");
   equal(menu.slots[10]?.availability, "F");
@@ -498,6 +511,19 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
   deepEqual(restResult, {
     outcome: "rested",
     reason: "free-time/rest selected; no side effects for this tick",
+  });
+
+  const branchResult = await act(7, menu, {
+    runCommand: async () => {
+      throw new Error("edit-grammar/branch must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("edit-grammar/branch must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(branchResult, {
+    outcome: "grammar_branch_requested",
+    reason: "edit-grammar/branch selected; no side effects for this tick",
   });
 });
 
@@ -804,7 +830,8 @@ test("renderMenu16 keeps all-vetoed menus dark even when prompt-flow tasks exist
   equal(menu.slots[6]?.availability, "N");
   equal(menu.slots[6]?.label, "empty");
   equal(menu.slots[7]?.direction, "branch.fork");
-  equal(menu.slots[7]?.availability, "N");
+  equal(menu.slots[7]?.label, "edit-grammar / branch");
+  equal(menu.slots[7]?.availability, "T");
   equal(menu.slots[8]?.availability, "N");
 });
 
@@ -1189,8 +1216,9 @@ test("observeAgentSurface renders current hat-allowed prompt-flow tasks as conte
   equal(surface.actions.slots[6]?.availability, "T");
   equal(surface.actions.slots[6]?.label, "Implement work item");
   equal(surface.actions.slots[6]?.impl?.kind, "prompt_flow");
-  equal(surface.actions.slots[7]?.availability, "F");
-  equal(surface.actions.slots[7]?.label, "Approve review");
+  deepEqual(surface.actions.page?.promptFlows, { page: 0, pageSize: 1, pageCount: 2, total: 2 });
+  equal(surface.actions.slots[7]?.availability, "T");
+  equal(surface.actions.slots[7]?.label, "edit-grammar / branch");
 });
 
 test("observeAgentSurface shows C-suite projects with trajectories and policy violations", async () => {

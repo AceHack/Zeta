@@ -386,6 +386,17 @@ side effects. The agent CLI includes the selected slot and menu hash in durable
 tick evidence and prints an explicit rested action result, which gives the
 foreground loop a bounded no-op action that is visible, auditable, and legal.
 
+**Checkpoint 2026-06-01: slot 7 edit-grammar/branch**
+
+Slot 7 is now reserved for the ADR's always-reachable `edit-grammar / branch`
+generative exit instead of being reused as prompt-flow overflow capacity.
+`renderMenu16` exposes it as `TriAvailability.True` in normal and all-work-vetoed
+menus, and `act(7)` returns a typed `grammar_branch_requested` result without
+invoking command dispatch or MCP/tool side effects. Prompt-flow context loading
+now pages through slot 6 (`inspect.more`) only, preserving the fixed 16-slot
+controller grammar while still giving agents access to all scoped prompt-flow
+tasks through navigation.
+
 **Algorithms:**
 
 - **menu stability hash:** hash slot directions, labels, availability, reasons,

@@ -582,14 +582,14 @@ test("observe-act work-item lane carries prompt-flow overflow page navigation in
   equal(first.failures.length, 0);
   equal(first.status, "observe-act:reobserve:work_item:prompt_flow_page:1");
   equal(second.failures.length, 0);
-  equal(second.status, "observe-act:context:task-3");
-  ok(stdout.join("\n").includes("prompt-flow page: 2/2"));
-  deepEqual(loaded, ["task-3"]);
+  equal(second.status, "observe-act:context:task-2");
+  ok(stdout.join("\n").includes("prompt-flow page: 2/3"));
+  deepEqual(loaded, ["task-2"]);
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:prompt_flow_page:0"));
   ok(observeEvents[0]?.evidenceRefs.includes("observe-act:reobserve_prompt_flow_page:1"));
   ok(observeEvents[1]?.evidenceRefs.includes("observe-act:prompt_flow_page:1"));
-  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:selected_prompt_flow_task:task-3"));
-  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:selected_prompt_flow:flow-3"));
+  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:selected_prompt_flow_task:task-2"));
+  ok(observeEvents[1]?.evidenceRefs.includes("observe-act:selected_prompt_flow:flow-2"));
 });
 
 test("observe-act work-item lane passes hierarchy readouts through to the agent observe surface", async () => {
