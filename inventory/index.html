@@ -140,6 +140,38 @@
     .view-table { display:none; }
     .view-cards { display:block; }
     @media (min-width:760px) { .view-table { display:block; } .view-cards { display:none; } }
+    /* ---- Phase 4: write-path actions ---- */
+    .actions { display:flex; gap:0.35rem; flex-wrap:wrap; }
+    .btn-sm { font-size:0.78rem; padding:5px 9px; border-radius:7px; }
+    button.danger { background:transparent; border:1px solid rgba(239,68,68,0.5); color:var(--danger); }
+    button.ghost { background:transparent; border:1px solid var(--panel-border); color:var(--text-main); }
+    tr.is-archived { opacity:0.55; }
+    tr.is-archived .cell-name::after,
+    .card.is-archived .card-name::after { content:" · Archived"; color:var(--text-muted); font-weight:400; font-size:0.78rem; }
+    .card.is-archived { opacity:0.6; }
+    .card-actions { display:flex; gap:0.4rem; flex-wrap:wrap; margin-top:0.7rem; }
+    .icon-btn { background:transparent; border:none; color:var(--text-muted); font-size:1.3rem; line-height:1; padding:0 4px; }
+
+    /* ---- Phase 4: modal ---- */
+    .modal-overlay { position:fixed; inset:0; z-index:50; background:rgba(0,0,0,0.6);
+      backdrop-filter:blur(4px); display:flex; align-items:flex-start; justify-content:center;
+      padding:4vh 1rem; overflow-y:auto; }
+    .modal-box { width:100%; max-width:640px; background:#0d1017; border:1px solid var(--panel-border);
+      border-radius:16px; padding:1.4rem 1.5rem 1.6rem; box-shadow:0 30px 60px -15px rgba(0,0,0,0.7); }
+    .modal-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+    .modal-head h2 { margin:0; }
+    .modal-body { display:grid; grid-template-columns:1fr; gap:0.8rem; }
+    @media (min-width:560px) { .modal-body.form-grid { grid-template-columns:1fr 1fr; } .modal-body .full { grid-column:1 / -1; } }
+    .modal-foot { display:flex; gap:0.6rem; justify-content:flex-end; margin-top:1.3rem; flex-wrap:wrap; }
+    .modal-body textarea { width:100%; padding:9px 11px; border:1px solid var(--panel-border); border-radius:8px;
+      background:#0b0e13; color:var(--text-main); font:inherit; font-size:0.95rem; min-height:70px; resize:vertical; }
+    .diff-list { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; font-size:0.9rem; }
+    .diff-list .k { color:var(--text-muted); }
+    .diff-old { color:var(--danger); text-decoration:line-through; }
+    .diff-new { color:var(--success); }
+    .hist-list { display:flex; flex-direction:column; gap:0.5rem; max-height:55vh; overflow-y:auto; }
+    .hist-row { border:1px solid var(--panel-border); border-radius:8px; padding:0.55rem 0.7rem; font-size:0.85rem; }
+    .hist-row .hh { color:var(--text-muted); font-size:0.76rem; }
   </style>
 </head>
 <body>
@@ -183,6 +215,7 @@
             <span class="muted">Signed in:</span> <span id="who" class="badge"></span>
             <span class="badge" id="role"></span>
           </div>
+          <label id="debug-wrap" class="attn-toggle hidden" style="margin-right:0.5rem;"><input type="checkbox" id="debug-toggle" /> Debug</label>
           <button id="signout-btn" class="secondary" type="button">Sign out</button>
         </div>
       </div>
@@ -215,7 +248,9 @@
         <div class="toolbar">
           <div class="left">
             <label class="attn-toggle"><input type="checkbox" id="f-attn" /> Needs Attention only</label>
+            <label class="attn-toggle"><input type="checkbox" id="f-archived" /> Include archived</label>
             <button id="reset-btn" class="secondary" type="button">Reset</button>
+            <button id="add-btn" class="btn-sm hidden" type="button">+ Add item</button>
             <span class="sort-hint">Tip: click a column to sort · shift-click to add a secondary sort</span>
           </div>
           <span class="count-pill" id="count-pill">—</span>
@@ -239,9 +274,9 @@
         </div>
       </div>
 
-      <!-- Phase-2 diagnostics, preserved (gate-passed evidence) but collapsed. -->
-      <div class="panel">
-        <details class="diag">
+      <!-- Phase-2 diagnostics — admin-only, revealed via the Debug toggle (Phase 4). -->
+      <div class="panel hidden" id="diag-panel">
+        <details class="diag" open>
           <summary>Diagnostics (Phase 2 auth/RLS proof scaffolding)</summary>
           <hr />
           <h3 style="font-size:.92rem;margin:0 0 6px;">Sample item <span class="muted">(sign-out clears this)</span></h3>
@@ -255,6 +290,16 @@
     </section>
 
     <div id="status" class="muted" aria-live="polite" style="font-size:.85rem;"></div>
+  </div>
+
+  <!-- Phase 4: reusable modal (edit / add / confirm / history / conflict) -->
+  <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-box">
+      <div class="modal-head"><h2 id="modal-title">—</h2><button id="modal-x" class="icon-btn" type="button" aria-label="Close">×</button></div>
+      <div id="modal-body" class="modal-body"></div>
+      <div id="modal-msg" class="msg hidden" role="alert" aria-live="assertive"></div>
+      <div id="modal-foot" class="modal-foot"></div>
+    </div>
   </div>
 
   <!-- supabase-js v2. NOTE (Phase 7): pin an exact version + add SRI. -->
@@ -273,7 +318,8 @@
 
     // In-memory state we MUST be able to clear on sign-out (shared-device safety).
     // `items` is the canonical DB copy; `view` is the derived filtered+sorted list.
-    let state = { user: null, role: null, sampleItem: null, items: [], view: [], sortKeys: [] };
+    let state = { user: null, role: null, sampleItem: null, items: [], view: [], sortKeys: [],
+                  showArchived: false, debug: false };
 
     const $ = (id) => document.getElementById(id);
     const signinView = $("signin-view"), appView = $("app-view"), statusEl = $("status");
@@ -340,6 +386,7 @@
       const attn = $("f-attn").checked;
 
       let rows = state.items.filter((it) => {
+        if (!state.showArchived && it.is_archived) return false;
         if (fc && it.category !== fc) return false;
         if (fb && it.brand !== fb) return false;
         if (fs && it.status !== fs) return false;
@@ -397,6 +444,10 @@
         th.addEventListener("click", (e) => onSort(col.key, e.shiftKey));
         tr.appendChild(th);
       }
+      if (canWrite()) {
+        const ath = document.createElement("th"); ath.textContent = "Actions";
+        ath.style.cursor = "default"; tr.appendChild(ath);
+      }
     }
 
     function td(text, cls) {
@@ -422,6 +473,7 @@
       // wide: table rows
       for (const it of state.view) {
         const tr = document.createElement("tr");
+        if (it.is_archived) tr.className = "is-archived";
         tr.appendChild(td(it.id, "cell-id num"));
         tr.appendChild(td(it.name, "cell-name"));
         tr.appendChild(td(it.brand));
@@ -440,12 +492,17 @@
         tr.appendChild(stTd);
         tr.appendChild(td(it.location));
         tr.appendChild(td(it.notes, "cell-notes"));
+        if (canWrite()) {
+          const atd = document.createElement("td");
+          atd.appendChild(rowActions(it));
+          tr.appendChild(atd);
+        }
         tbody.appendChild(tr);
       }
 
       // narrow: cards
       for (const it of state.view) {
-        const card = document.createElement("div"); card.className = "card";
+        const card = document.createElement("div"); card.className = "card" + (it.is_archived ? " is-archived" : "");
         const top = document.createElement("div"); top.className = "card-top";
         const left = document.createElement("div");
         const nm = document.createElement("div"); nm.className = "card-name";
@@ -468,6 +525,7 @@
         card.appendChild(kv);
 
         if (it.notes) { const nd = document.createElement("div"); nd.className = "card-notes"; nd.textContent = String(it.notes); card.appendChild(nd); }
+        if (canWrite()) { const ca = rowActions(it); ca.classList.add("card-actions"); card.appendChild(ca); }
         cards.appendChild(card);
       }
     }
@@ -491,6 +549,7 @@
       $("f-attn").addEventListener("change", applyView);
       $("reset-btn").addEventListener("click", () => {
         $("search").value = ""; $("f-attn").checked = false;
+        $("f-archived").checked = false; state.showArchived = false;
         for (const id of ["f-category","f-brand","f-status","f-location"]) $(id).value = "";
         state.sortKeys = []; renderHead(); applyView();
       });
@@ -526,6 +585,338 @@
         : "(no items visible)";
     }
 
+    // =========================================================================
+    // Phase 4: WRITE PATH (edit / add / archive / un-archive). The DATABASE
+    // (RLS items_insert/items_update = editor/admin) is the real gate; the
+    // buttons below are cosmetic. Optimistic locking: every save carries the
+    // loaded `version`; the server-side trigger bumps it, so a stale save
+    // matches 0 rows -> rejected (never a silent overwrite).
+    // =========================================================================
+
+    function canWrite() { return state.role === "editor" || state.role === "admin"; }
+
+    // Editable core fields ONLY. custom_fields editing is Phase 5 (excluded here).
+    const STATUS_VOCAB = ["Active/In Use","In Storage","Needs Attention","In Repair",
+                          "Retired (Archived)","Disposed","Missing"];
+    const EDIT_FIELDS = [
+      { key:"name",               label:"Name",               kind:"text",   full:true },
+      { key:"brand",              label:"Brand",              kind:"text" },
+      { key:"model_pn",           label:"Model / PN",         kind:"text" },
+      { key:"qty",                label:"Qty",                kind:"int" },
+      { key:"device_type",        label:"Device type",        kind:"text" },
+      { key:"category",           label:"Category",           kind:"text" },
+      { key:"status",             label:"Status",             kind:"status" },
+      { key:"location",           label:"Location",           kind:"text" },
+      { key:"assignment_purpose", label:"Assignment / purpose", kind:"text", full:true },
+      { key:"value",              label:"Value",              kind:"num" },
+      { key:"serial",             label:"Serial",             kind:"text" },
+      { key:"notes",              label:"Notes",              kind:"textarea", full:true },
+    ];
+
+    // ---- modal primitives ----------------------------------------------------
+    const modalOverlay = () => $("modal-overlay");
+    function openModal(title) {
+      $("modal-title").textContent = title;
+      $("modal-body").replaceChildren();
+      $("modal-foot").replaceChildren();
+      hide($("modal-msg")); $("modal-msg").textContent = "";
+      modalOverlay().classList.remove("hidden");
+    }
+    function closeModal() {
+      modalOverlay().classList.add("hidden");
+      $("modal-body").replaceChildren(); $("modal-foot").replaceChildren();
+      state.editing = null;
+    }
+    function modalMsg(text, kind) { showMsg($("modal-msg"), text, kind); }
+    function footBtn(label, cls, onClick) {
+      const b = document.createElement("button"); b.type = "button";
+      b.className = cls; b.textContent = label; b.addEventListener("click", onClick);
+      return b;
+    }
+
+    function rowActions(it) {
+      const wrap = document.createElement("div"); wrap.className = "actions";
+      wrap.appendChild(footBtn("Edit", "btn-sm ghost", () => openEdit(it)));
+      wrap.appendChild(footBtn("History", "btn-sm ghost", () => openHistory(it)));
+      if (it.is_archived) wrap.appendChild(footBtn("Un-archive", "btn-sm", () => confirmArchive(it, false)));
+      else                wrap.appendChild(footBtn("Archive", "btn-sm danger", () => confirmArchive(it, true)));
+      return wrap;
+    }
+
+    // ---- build the edit/add form (textContent / .value only — XSS-safe) ------
+    function buildForm(item) {
+      const body = $("modal-body"); body.replaceChildren(); body.className = "modal-body form-grid";
+      const inputs = {};
+      for (const f of EDIT_FIELDS) {
+        const cell = document.createElement("div"); if (f.full) cell.className = "full";
+        const lab = document.createElement("label"); lab.textContent = f.label; lab.htmlFor = "fld-" + f.key;
+        cell.appendChild(lab);
+        let el;
+        if (f.kind === "status") {
+          el = document.createElement("select");
+          const blank = document.createElement("option"); blank.value = ""; blank.textContent = "(none)";
+          el.appendChild(blank);
+          for (const v of STATUS_VOCAB) { const o = document.createElement("option"); o.value = v; o.textContent = v; el.appendChild(o); }
+          el.value = item[f.key] == null ? "" : String(item[f.key]);
+        } else if (f.kind === "textarea") {
+          el = document.createElement("textarea");
+          el.value = item[f.key] == null ? "" : String(item[f.key]);
+        } else {
+          el = document.createElement("input");
+          el.type = (f.kind === "int" || f.kind === "num") ? "number" : "text";
+          if (f.kind === "int") el.step = "1";
+          if (f.kind === "num") el.step = "0.01";
+          if (f.kind === "int" || f.kind === "num") el.min = "0";
+          el.value = item[f.key] == null ? "" : String(item[f.key]);
+        }
+        el.id = "fld-" + f.key;
+        cell.appendChild(el); body.appendChild(cell);
+        inputs[f.key] = el;
+      }
+      return inputs;
+    }
+
+    // collect + type-validate; returns {ok, values} or {ok:false, error}
+    function collectForm(inputs) {
+      const values = {};
+      for (const f of EDIT_FIELDS) {
+        const raw = inputs[f.key].value;
+        if (f.kind === "int" || f.kind === "num") {
+          if (raw.trim() === "") { values[f.key] = null; continue; }
+          const num = Number(raw);
+          if (!Number.isFinite(num) || num < 0) return { ok:false, error: f.label + " must be a non-negative number." };
+          if (f.kind === "int" && !Number.isInteger(num)) return { ok:false, error: f.label + " must be a whole number." };
+          values[f.key] = num;
+        } else {
+          const t = raw.trim();
+          values[f.key] = t === "" ? null : t;
+        }
+      }
+      return { ok:true, values };
+    }
+
+    function diffFields(orig, next) {
+      const changed = {};
+      for (const f of EDIT_FIELDS) {
+        const a = orig[f.key] == null ? null : orig[f.key];
+        const b = next[f.key];
+        // normalize numbers for comparison
+        const na = (f.kind==="int"||f.kind==="num") && a != null ? Number(a) : a;
+        const nb = (f.kind==="int"||f.kind==="num") && b != null ? Number(b) : b;
+        if (na !== nb) changed[f.key] = b;
+      }
+      return changed;
+    }
+
+    function showDiffConfirm(orig, changed, onConfirm) {
+      const body = $("modal-body"); body.replaceChildren(); body.className = "modal-body";
+      const p = document.createElement("p"); p.className = "muted";
+      p.textContent = "Confirm these changes:"; body.appendChild(p);
+      const dl = document.createElement("div"); dl.className = "diff-list";
+      for (const k of Object.keys(changed)) {
+        const kd = document.createElement("div"); kd.className = "k"; kd.textContent = k;
+        const vd = document.createElement("div");
+        const oldS = document.createElement("span"); oldS.className = "diff-old";
+        oldS.textContent = orig[k] == null || orig[k] === "" ? "(empty)" : String(orig[k]);
+        const arrow = document.createTextNode("  →  ");
+        const newS = document.createElement("span"); newS.className = "diff-new";
+        newS.textContent = changed[k] == null || changed[k] === "" ? "(empty)" : String(changed[k]);
+        vd.appendChild(oldS); vd.appendChild(arrow); vd.appendChild(newS);
+        dl.appendChild(kd); dl.appendChild(vd);
+      }
+      body.appendChild(dl);
+      const foot = $("modal-foot"); foot.replaceChildren();
+      foot.appendChild(footBtn("Cancel", "secondary", closeModal));
+      foot.appendChild(footBtn("Save changes", "", onConfirm));
+    }
+
+    // ---- EDIT ----------------------------------------------------------------
+    function openEdit(item) {
+      if (!canWrite()) return;
+      const orig = state.items.find((x) => x.id === item.id) || item;
+      state.editing = { id: orig.id, version: orig.version };
+      openModal("Edit item #" + orig.id);
+      const inputs = buildForm(orig);
+      const foot = $("modal-foot");
+      foot.appendChild(footBtn("Cancel", "secondary", closeModal));
+      foot.appendChild(footBtn("Review changes", "", () => {
+        const c = collectForm(inputs);
+        if (!c.ok) { modalMsg(c.error, "bad"); return; }
+        const changed = diffFields(orig, c.values);
+        if (Object.keys(changed).length === 0) { modalMsg("No changes to save.", "info"); return; }
+        showDiffConfirm(orig, changed, () => saveEdit(orig, changed));
+      }));
+    }
+
+    async function saveEdit(orig, changed) {
+      setStatus("Saving…");
+      const { data, error } = await sb.from("items")
+        .update(changed).eq("id", orig.id).eq("version", orig.version)
+        .select("id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,version,created_at,updated_at");
+      setStatus("");
+      if (error) { modalMsg("Save failed: " + error.message, "bad"); return; }
+      if (!data || data.length === 0) { await handleZeroRows(orig, "save"); return; }
+      mergeRow(data[0]); applyView(); closeModal();
+      setStatus("Saved #" + data[0].id + " (version " + data[0].version + ").");
+    }
+
+    // 0 rows + no error => either stale version, or RLS refusal. Re-fetch to tell apart.
+    async function handleZeroRows(orig, what) {
+      const { data } = await sb.from("items").select("id,version").eq("id", orig.id);
+      if (!data || data.length === 0) { modalMsg("Item no longer exists (it may have been removed).", "bad"); return; }
+      const fresh = data[0];
+      if (fresh.version !== orig.version) {
+        // stale-version conflict — offer reload (undo of the user's lost edit attempt)
+        const body = $("modal-body"); body.replaceChildren(); body.className = "modal-body";
+        const p = document.createElement("p");
+        p.textContent = "This item was changed by someone else since you opened it (version " +
+          orig.version + " → " + fresh.version + "). Your " + what + " was REJECTED, not applied " +
+          "(no silent overwrite). Reload the latest and try again.";
+        body.appendChild(p);
+        const foot = $("modal-foot"); foot.replaceChildren();
+        foot.appendChild(footBtn("Close", "secondary", closeModal));
+        foot.appendChild(footBtn("Reload latest", "", async () => {
+          await loadInventory();
+          const latest = state.items.find((x) => x.id === orig.id);
+          if (latest) openEdit(latest); else closeModal();
+        }));
+        hide($("modal-msg"));
+      } else {
+        // version unchanged but 0 rows => RLS refused (e.g. role downgraded mid-session)
+        modalMsg("The database refused this " + what + " (role=" + state.role + "). RLS is the gate.", "bad");
+      }
+    }
+
+    // ---- ADD -----------------------------------------------------------------
+    function openAdd() {
+      if (!canWrite()) return;
+      const blank = {}; for (const f of EDIT_FIELDS) blank[f.key] = null;
+      openModal("Add item");
+      const inputs = buildForm(blank);
+      const foot = $("modal-foot");
+      foot.appendChild(footBtn("Cancel", "secondary", closeModal));
+      foot.appendChild(footBtn("Review", "", () => {
+        const c = collectForm(inputs);
+        if (!c.ok) { modalMsg(c.error, "bad"); return; }
+        if (c.values.name == null) { modalMsg("Name is required for a new item.", "bad"); return; }
+        // confirm: show the non-empty fields
+        const body = $("modal-body"); body.replaceChildren(); body.className = "modal-body";
+        const p = document.createElement("p"); p.className = "muted"; p.textContent = "Confirm the new item:"; body.appendChild(p);
+        const dl = document.createElement("div"); dl.className = "diff-list";
+        for (const f of EDIT_FIELDS) {
+          if (c.values[f.key] == null) continue;
+          const kd = document.createElement("div"); kd.className = "k"; kd.textContent = f.key;
+          const vd = document.createElement("div"); vd.className = "diff-new"; vd.textContent = String(c.values[f.key]);
+          dl.appendChild(kd); dl.appendChild(vd);
+        }
+        body.appendChild(dl);
+        const ft = $("modal-foot"); ft.replaceChildren();
+        ft.appendChild(footBtn("Back", "secondary", () => openAddPrefilled(c.values)));
+        ft.appendChild(footBtn("Create item", "", () => addItem(c.values)));
+      }));
+    }
+    function openAddPrefilled(values) {
+      openModal("Add item");
+      const inputs = buildForm(values);
+      const foot = $("modal-foot");
+      foot.appendChild(footBtn("Cancel", "secondary", closeModal));
+      foot.appendChild(footBtn("Review", "", () => {
+        const c = collectForm(inputs);
+        if (!c.ok) { modalMsg(c.error, "bad"); return; }
+        if (c.values.name == null) { modalMsg("Name is required.", "bad"); return; }
+        addItem(c.values);
+      }));
+    }
+    async function addItem(values) {
+      setStatus("Adding…");
+      const { data, error } = await sb.from("items").insert([values])
+        .select("id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,version,created_at,updated_at");
+      setStatus("");
+      if (error) { modalMsg("Add failed: " + error.message, "bad"); return; }
+      if (!data || data.length === 0) { modalMsg("The database refused this insert (role=" + state.role + ").", "bad"); return; }
+      state.items.push(data[0]);
+      state.items.sort((a, b) => a.id - b.id);
+      fillSelect("f-category","category"); fillSelect("f-brand","brand");
+      fillSelect("f-status","status"); fillSelect("f-location","location");
+      applyView(); closeModal();
+      setStatus("Added item #" + data[0].id + ".");
+    }
+
+    // ---- ARCHIVE / UN-ARCHIVE -----------------------------------------------
+    function confirmArchive(item, toArchived) {
+      if (!canWrite()) return;
+      const orig = state.items.find((x) => x.id === item.id) || item;
+      openModal((toArchived ? "Archive" : "Un-archive") + " item #" + orig.id);
+      const body = $("modal-body"); body.className = "modal-body";
+      const p = document.createElement("p");
+      p.textContent = toArchived
+        ? "Archive \"" + (orig.name || "(unnamed)") + "\"? It will be hidden from the default view (recoverable via Un-archive)."
+        : "Un-archive \"" + (orig.name || "(unnamed)") + "\"? It will return to the active inventory.";
+      body.appendChild(p);
+      const foot = $("modal-foot");
+      foot.appendChild(footBtn("Cancel", "secondary", closeModal));
+      foot.appendChild(footBtn(toArchived ? "Archive" : "Un-archive", toArchived ? "danger" : "", async () => {
+        setStatus(toArchived ? "Archiving…" : "Un-archiving…");
+        const { data, error } = await sb.from("items")
+          .update({ is_archived: toArchived }).eq("id", orig.id).eq("version", orig.version)
+          .select("id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,version,created_at,updated_at");
+        setStatus("");
+        if (error) { modalMsg("Failed: " + error.message, "bad"); return; }
+        if (!data || data.length === 0) { await handleZeroRows(orig, toArchived ? "archive" : "un-archive"); return; }
+        mergeRow(data[0]); applyView(); closeModal();
+        setStatus((toArchived ? "Archived" : "Un-archived") + " #" + data[0].id + ".");
+      }));
+    }
+
+    // ---- HISTORY (per-item change_log; UTC stored, local shown) --------------
+    async function openHistory(item) {
+      openModal("History — item #" + item.id);
+      const body = $("modal-body"); body.className = "modal-body";
+      const loading = document.createElement("p"); loading.className = "muted"; loading.textContent = "Loading history…";
+      body.appendChild(loading);
+      const foot = $("modal-foot"); foot.appendChild(footBtn("Close", "secondary", closeModal));
+      const { data, error } = await sb.from("change_log")
+        .select("id,actor,action,field,old_value,new_value,changed_at")
+        .eq("item_id", item.id).order("id", { ascending: true });
+      body.replaceChildren();
+      if (error) { modalMsg("Could not load history: " + error.message, "bad"); return; }
+      if (!data || data.length === 0) { const e = document.createElement("p"); e.className = "muted"; e.textContent = "No history rows."; body.appendChild(e); return; }
+      const list = document.createElement("div"); list.className = "hist-list";
+      for (const h of data) {
+        const row = document.createElement("div"); row.className = "hist-row";
+        const head = document.createElement("div");
+        const action = document.createElement("strong"); action.textContent = h.action + (h.field ? " · " + h.field : "");
+        head.appendChild(action);
+        if (h.action === "UPDATE") {
+          const d = document.createElement("div");
+          const o = document.createElement("span"); o.className = "diff-old"; o.textContent = h.old_value == null ? "(empty)" : String(h.old_value);
+          const ar = document.createTextNode("  →  ");
+          const n = document.createElement("span"); n.className = "diff-new"; n.textContent = h.new_value == null ? "(empty)" : String(h.new_value);
+          d.appendChild(o); d.appendChild(ar); d.appendChild(n); row.appendChild(head); row.appendChild(d);
+        } else { row.appendChild(head); }
+        const meta = document.createElement("div"); meta.className = "hh";
+        const local = new Date(h.changed_at).toLocaleString();
+        meta.textContent = local;                 // local display
+        meta.title = "UTC stored: " + h.changed_at; // raw UTC on hover
+        row.appendChild(meta);
+        list.appendChild(row);
+      }
+      body.appendChild(list);
+    }
+
+    // ---- shared: replace a row in state.items by id -------------------------
+    function mergeRow(row) {
+      const i = state.items.findIndex((x) => x.id === row.id);
+      if (i >= 0) state.items[i] = row; else state.items.push(row);
+    }
+
+    function applyWriteUi() {
+      const w = canWrite();
+      $("add-btn").classList.toggle("hidden", !w);
+      $("debug-wrap").classList.toggle("hidden", state.role !== "admin");
+      if (state.role !== "admin") { state.debug = false; $("debug-toggle").checked = false; $("diag-panel").classList.add("hidden"); }
+    }
+
     async function render() {
       setStatus("Connecting…");
       const user = await verifiedUser();
@@ -534,6 +925,7 @@
       state.role = await readRole();
       $("who").textContent = user.email || "(no email)";
       $("role").textContent = "role: " + (state.role || "(none)");
+      applyWriteUi();
       hide(signinView); appView.classList.remove("hidden"); hide($("probe-msg"));
       setStatus("");
       await loadInventory();
@@ -569,7 +961,11 @@
     async function onSignOut() {
       setStatus("Signing out…");
       await sb.auth.signOut();
-      state = { user:null, role:null, sampleItem:null, items:[], view:[], sortKeys:[] };
+      state = { user:null, role:null, sampleItem:null, items:[], view:[], sortKeys:[],
+                showArchived:false, debug:false };
+      closeModal();
+      $("add-btn").classList.add("hidden"); $("debug-wrap").classList.add("hidden");
+      $("diag-panel").classList.add("hidden"); $("f-archived").checked = false;
       $("who").textContent = ""; $("role").textContent = "";
       $("sample-item").textContent = "—";
       $("inv-tbody").replaceChildren(); $("inv-cards").replaceChildren();
@@ -589,6 +985,15 @@
       $("signin-form").addEventListener("submit", onSignIn);
       $("probe-btn").addEventListener("click", onProbe);
       $("signout-btn").addEventListener("click", onSignOut);
+      $("add-btn").addEventListener("click", openAdd);
+      $("modal-x").addEventListener("click", closeModal);
+      $("modal-overlay").addEventListener("click", (e) => { if (e.target === $("modal-overlay")) closeModal(); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("modal-overlay").classList.contains("hidden")) closeModal(); });
+      $("f-archived").addEventListener("change", () => { state.showArchived = $("f-archived").checked; applyView(); });
+      $("debug-toggle").addEventListener("change", () => {
+        state.debug = $("debug-toggle").checked && state.role === "admin";
+        $("diag-panel").classList.toggle("hidden", !state.debug);
+      });
       wireControls();
       render();
     });

@@ -26,6 +26,31 @@ public anon key.
 Phase 1 gate is **passed** only when all three proofs show the expected observed
 output. Until then PROGRESS.md keeps Phase 1 as `[ ]`.
 
+## Phase 4 (Write path — optimistic locking)
+
+Run AFTER `phase1.sql` (Phases 2–3 add no SQL). Additive + idempotent; loosens
+nothing (no new RLS policy, no GRANT/REVOKE).
+
+1. **`phase4.sql`** — owner pastes into the Supabase **SQL editor** and runs once.
+   Adds the `items_bump_version` BEFORE UPDATE trigger so the **server** owns
+   `items.version` (`new.version = old.version + 1`). The client never sends
+   `version`; a stale save (`WHERE id=? AND version=<old>`) then matches 0 rows
+   instead of silently overwriting.
+
+2. **`proofs/phase4_proofs.sql`** — owner runs in the SQL editor. Returns a results
+   table; every row should read `PASSED…` (version bump + stale-version
+   broken-vs-fixed + audit-trail-intact + no-permissive-policy). Runs in a
+   `BEGIN…ROLLBACK`, so it leaves no artifacts.
+
+3. **Client-path proofs** — `inventory/proofs/phase4-write-proofs.ts` (Claude runs
+   as the editor test user, publishable/anon key, NO service_role) proves the
+   write path end-to-end: field-level audit (old→new, UTC stored), stale-version
+   rejection over REST, archive→un-archive recoverable + history intact, and
+   re-runs the anon default-deny check on all four sensitive tables.
+
+Phase 4 gate is **passed** only when all four proofs show observed output and the
+anon checks still return `[]`. Until then PROGRESS.md keeps Phase 4 as `[ ]`.
+
 ## Test users (create AFTER step 1)
 
 Once `phase1.sql` has run, the `handle_new_user` trigger will auto-create a
