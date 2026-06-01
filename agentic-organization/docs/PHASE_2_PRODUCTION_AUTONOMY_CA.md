@@ -712,6 +712,29 @@ ship, unless an emergency waiver is approved.
 - require optimizer ChangeSets that alter policy/config to attach a simulation
   report evidence ref.
 
+**Checkpoint 2026-06-01: simulator evidence gate present**
+
+Phase 2.7 is now implemented in the current runtime substrate. The
+`packages/simulator` package provides seeded counterfactual replay over
+synthetic work events plus recorded `org_event` slices, in-memory adapters for
+org state, hat queues, reputation, schedules, prompt-flow runs, and telemetry
+summaries, policy overlays for autonomy/model/RMO/schedule/reputation/queue/gate
+settings, and a `SimulationReport` containing throughput, lead time, escaped
+defects, conformance failures, cost, review lag, stale claims, and incident
+count. `evaluateSimulationRisk` performs the risk-envelope comparison, and the
+scenario library covers incident spike, review bottleneck, QA churn, agent loss,
+dependency outage, and model degradation.
+
+The gate is wired into policy mutation surfaces: `openChangeSet` and
+`applyChangeSet` reject policy/config changes without content-addressed
+simulation evidence or an emergency waiver, the release queue refuses approved
+config-policy applies without bound simulation evidence, and the decision
+optimizer refuses model/config downgrades when simulation evidence is absent or
+the simulation rejected the candidate. Subagent review for this checkpoint was
+attempted but blocked by the platform agent-thread limit (`collab spawn failed:
+agent thread limit reached`); local review cited the simulator,
+change-control-kernel, decision-optimizer, and release-queue tests.
+
 **Algorithms:**
 
 - **counterfactual replay:** same input stream, different policy overlay;
@@ -1169,7 +1192,7 @@ The production hardening review found the main safety blockers:
   optimizer evidence;
 - conformance is useful but incomplete because context-sensitive and ambiguous
   transitions can still be skipped;
-- no whole-organization simulator/DST package exists yet;
+- the whole-organization simulator/DST package and evidence gate now exist;
 - ESTOP/control-plane freeze, no-bypass write guards, rollback/retraction
   proofs, alert ownership, and restore drills are required before production.
 
