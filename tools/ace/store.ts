@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+import { chmodSync, existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import type { Dirent } from "node:fs";
 import { join, dirname } from "node:path";
 import { createHash } from "node:crypto";
@@ -109,7 +109,7 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   //       `<storePath>/<hash>/` (path guard above) and the bytes are integrity-checked against
   //       the manifest hash. Authenticity (signature over a trusted key) now EXISTS — `ace install`
   //       runs the Ed25519 signature gate (see `ace.ts` + `signing.ts`); a package installed via
-  //       the signed+trusted path is authenticity-verified, and `--allow-unsigned` is required to
+  //       the signed+trusted path is authenticity-verified, and `--allow-no-signature` is required to
   //       install an unsigned one. The CodeQL js/http-to-file-access alert remains a true
   //       intended-flow observation (the http→file write is the package manager's function).
   for (const rel of Object.keys(pkg.files)) {
@@ -178,13 +178,31 @@ export function loadTrustStore(
   return m;
 }
 
-/** Append to the user store (create if absent); dedup by key_id. */
+/** Append to the user store (create if absent); dedup by key_id.
+ * Tightens ~/.ace to 0o700 AND the trust file to 0o600 (both owner-only) on EVERY call — including the dedup early-return path — so a pre-existing permissive
+ * file (e.g. from an old version or bad umask) is always corrected. chmod after write
+ * because writeFileSync's mode option only applies on file creation, not on overwrite.
+ */
 export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePath()): { added: boolean } {
+  const dir = dirname(userPath);
+  // Tighten the ~/.ace DIR to 0o700 FIRST — before reading or writing the trust file — so a
+  // pre-existing group/world-writable dir cannot let another local user swap trusted-keys.json
+  // during the read/write window (TOCTOU). mkdirSync's mode only applies on create, so chmod the
+  // (possibly pre-existing) dir explicitly right after. File mode is tightened after each write
+  // (writeFileSync's mode only applies on create too).
+  mkdirSync(dir, { recursive: true, mode: 0o700 });
+  try { chmodSync(dir, 0o700); } catch { /* best-effort; unusual FS */ }
+  const tightenFile = (): void => {
+    if (existsSync(userPath)) { try { chmodSync(userPath, 0o600); } catch { /* best-effort; unusual FS */ } }
+  };
   const existing = readKeysFile(userPath);
-  if (existing.some((k) => k.key_id === entry.key_id)) return { added: false };
+  if (existing.some((k) => k.key_id === entry.key_id)) {
+    tightenFile(); // dedup path: nothing to write, but correct a pre-existing permissive file
+    return { added: false };
+  }
   existing.push({ ...entry, added: entry.added ?? new Date().toISOString() });
-  mkdirSync(dirname(userPath), { recursive: true });
   writeFileSync(userPath, JSON.stringify(existing, null, 2));
+  chmodSync(userPath, 0o600);
   return { added: true };
 }
 

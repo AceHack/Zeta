@@ -1,9 +1,10 @@
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
-import { chmodSync, mkdirSync, mkdtempSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
+import { chmodSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync, closeSync, openSync, statSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { generateKeyPairSync, createHash } from "node:crypto";
 import { parseArgs, main } from "./ace.ts";
-import { listInstalled, contentHash } from "./store.ts";
+import { listInstalled, contentHash, listTrustedKeys } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
 
 // ---- Trust-path isolation: redirect ~/.ace to a temp dir in every test ----
@@ -103,11 +104,11 @@ describe("parseArgs", () => {
     }
   });
 
-  test("install --allow-unsigned parses", () => {
-    const result = parseArgs(["install", "pkg.json", "--allow-unsigned"]);
+  test("install --allow-no-signature parses", () => {
+    const result = parseArgs(["install", "pkg.json", "--allow-no-signature"]);
     expect("error" in result).toBe(false);
     if (!("error" in result) && result.command === "install") {
-      expect((result as { allowUnsigned: boolean }).allowUnsigned).toBe(true);
+      expect((result as { allowNoSignature: boolean }).allowNoSignature).toBe(true);
     }
   });
 
@@ -364,8 +365,7 @@ describe("main", () => {
     const code = await main(["keygen", "--out", prefix]);
     expect(code).toBe(1);
     // The file must NOT have been overwritten — sentinel content must still be present
-    const { readFileSync: rf } = require("node:fs");
-    expect(rf(keyPath, "utf8")).toBe("OLD");
+    expect(readFileSync(keyPath, "utf8")).toBe("OLD");
   });
 
   // ---- sign ----
@@ -387,7 +387,7 @@ describe("main", () => {
     const code = await main(["sign", pkgPath, "--key", keyPath, "--out", outPath]);
     expect(code).toBe(0);
     expect(existsSync(outPath)).toBe(true);
-    const parsed = JSON.parse(require("node:fs").readFileSync(outPath, "utf8"));
+    const parsed = JSON.parse(readFileSync(outPath, "utf8"));
     expect(parsed.manifest.signature).toBeDefined();
   });
 
@@ -417,6 +417,57 @@ describe("main", () => {
     expect(listCode).toBe(0);
   });
 
+
+  // ---- trust add: invalid key validation ----
+
+  test("trust add with .pub JSON missing public_key field exits 64 or 65 (NOT a fatal throw)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-trust-bad-"));
+    const badPub = join(dir, "bad.pub");
+    // A valid JSON .pub but with public_key missing
+    writeFileSync(badPub, JSON.stringify({ algo: "ed25519", key_id: "ed25519:missing" }));
+    const code = await main(["trust", "add", badPub]);
+    expect(code === 64 || code === 65).toBe(true);
+  });
+
+  test("trust add with a garbage non-base64 string exits 64 or 65 (NOT a fatal throw)", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-trust-garbage-"));
+    const badPub = join(dir, "garbage.pub");
+    // Write a file whose content is clearly not a valid Ed25519 SPKI
+    writeFileSync(badPub, "this-is-not-a-valid-key!!!!!!!!!!!!!!");
+    const code = await main(["trust", "add", badPub]);
+    expect(code === 64 || code === 65).toBe(true);
+  });
+
+  // ---- trust add: non-Ed25519 SPKI rejection (Fix 1) ----
+
+  test("trust add a non-Ed25519 SPKI (EC P-256) exits 65", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "ace-trust-nonec-"));
+    // Generate an EC P-256 keypair — valid SPKI DER, but NOT Ed25519
+    const { publicKey } = generateKeyPairSync("ec", { namedCurve: "P-256" });
+    const spkiB64 = publicKey.export({ type: "spki", format: "der" }).toString("base64");
+    const pubPath = join(dir, "ec.pub");
+    writeFileSync(pubPath, JSON.stringify({ algo: "ec", key_id: "ec:test", public_key: spkiB64 }));
+    const code = await main(["trust", "add", pubPath]);
+    expect(code).toBe(65);
+  });
+
+  test("trust add normalizes a padded SPKI to the canonical key_id (not the padded bytes)", async () => {
+    // createPublicKey accepts an Ed25519 SPKI with trailing bytes but re-exports the
+    // canonical 44-byte form. trust add must store the CANONICAL key_id so it matches
+    // what signManifest/verify derive — else that publisher's packages never authenticate.
+    const { publicKey } = generateKeyPairSync("ed25519");
+    const canon = publicKey.export({ type: "spki", format: "der" }) as Buffer;
+    const padded = Buffer.concat([canon, Buffer.from([0, 0])]);
+    const canonKeyId = "ed25519:" + createHash("sha256").update(canon).digest("hex").slice(0, 16);
+    const paddedKeyId = "ed25519:" + createHash("sha256").update(padded).digest("hex").slice(0, 16);
+    expect(canonKeyId).not.toBe(paddedKeyId); // sanity: padded vs canonical differ
+    const code = await main(["trust", "add", padded.toString("base64")]);
+    expect(code).toBe(0);
+    const ids = listTrustedKeys().map((r) => r.key_id);
+    expect(ids).toContain(canonKeyId);      // stored under the canonical key_id
+    expect(ids).not.toContain(paddedKeyId); // NOT the raw padded bytes' id
+  });
+
   // ---- install authenticity gate ----
 
   test("install signed + trusted → exit 0 (integrity + authenticity verified)", async () => {
@@ -434,7 +485,7 @@ describe("main", () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkgPath, kp, dir } = signedPkgFixture();
     // Write a package with tampered content_hash (after signing)
-    const pkg = JSON.parse(require("node:fs").readFileSync(pkgPath, "utf8"));
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
     pkg.manifest.content_hash = "sha256:TAMPERED"; // but signature was over original
     const tamperedPath = join(dir, "tampered.json");
     writeFileSync(tamperedPath, JSON.stringify(pkg));
@@ -445,15 +496,15 @@ describe("main", () => {
     expect(code).toBe(1);
   });
 
-  test("install untrusted-key → exit 1 EVEN with --allow-unsigned", async () => {
+  test("install untrusted-key → exit 1 EVEN with --allow-no-signature", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkgPath } = signedPkgFixture();
     // Do NOT trust the key
-    const code = await main(["install", pkgPath, "--allow-unsigned", "--store", store]);
+    const code = await main(["install", pkgPath, "--allow-no-signature", "--store", store]);
     expect(code).toBe(1);
   });
 
-  test("install unsigned → exit 1 without --allow-unsigned", async () => {
+  test("install unsigned → exit 1 without --allow-no-signature", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const files = { "a.txt": "hi" };
     const filesJson = JSON.stringify(files);
@@ -465,7 +516,7 @@ describe("main", () => {
     expect(await main(["install", pkgPath, "--store", store])).toBe(1);
   });
 
-  test("install unsigned → exit 0 with --allow-unsigned", async () => {
+  test("install unsigned → exit 0 with --allow-no-signature", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const files = { "a.txt": "hi" };
     const filesJson = JSON.stringify(files);
@@ -474,17 +525,17 @@ describe("main", () => {
     const dir = mkdtempSync(join(tmpdir(), "ace-u-"));
     const pkgPath = join(dir, "u.json");
     writeFileSync(pkgPath, JSON.stringify(pkg));
-    expect(await main(["install", pkgPath, "--allow-unsigned", "--store", store])).toBe(0);
+    expect(await main(["install", pkgPath, "--allow-no-signature", "--store", store])).toBe(0);
   });
 
-  test("install algo-tampered (signed+trusted, algo->none) - exit 1 (unsupported-algo, NOT allow-unsigned-overridable)", async () => {
+  test("install algo-tampered (signed+trusted, algo->none) - exit 1 (unsupported-algo, NOT allow-no-signature-overridable)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkgPath, kp, dir } = signedPkgFixture();
     // Trust the key -- key IS trusted, but we tamper algo before installing
     const pubPath = writePubFile(dir, kp);
     await main(["trust", "add", pubPath]);
     // Read the package and tamper signature.algo
-    const pkg = JSON.parse(require("node:fs").readFileSync(pkgPath, "utf8"));
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
     pkg.manifest.signature.algo = "none";
     const tamperedPath = join(dir, "algo-tampered.json");
     writeFileSync(tamperedPath, JSON.stringify(pkg));
@@ -493,19 +544,19 @@ describe("main", () => {
     expect(code).toBe(1);
   });
 
-  test("install algo-tampered with --allow-unsigned - still exit 1 (unsupported-algo is never overridable)", async () => {
+  test("install algo-tampered with --allow-no-signature - still exit 1 (unsupported-algo is never overridable)", async () => {
     const store = mkdtempSync(join(tmpdir(), "ace-store-"));
     const { pkgPath, kp, dir } = signedPkgFixture();
     // Trust the key
     const pubPath = writePubFile(dir, kp);
     await main(["trust", "add", pubPath]);
     // Tamper algo
-    const pkg = JSON.parse(require("node:fs").readFileSync(pkgPath, "utf8"));
+    const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
     pkg.manifest.signature.algo = "none";
     const tamperedPath = join(dir, "algo-tampered2.json");
     writeFileSync(tamperedPath, JSON.stringify(pkg));
-    // --allow-unsigned must NOT override algorithm-confusion
-    const code = await main(["install", tamperedPath, "--allow-unsigned", "--store", store]);
+    // --allow-no-signature must NOT override algorithm-confusion
+    const code = await main(["install", tamperedPath, "--allow-no-signature", "--store", store]);
     expect(code).toBe(1);
   });
 });

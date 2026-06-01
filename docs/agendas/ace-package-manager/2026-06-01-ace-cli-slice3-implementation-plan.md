@@ -35,7 +35,7 @@ signer reuses slice-2 `contentHash` so signer/installer always agree.
 | `tools/ace/trusted-keys.json` | Bundled root trust anchor (ships `[]`) | **create** |
 | `tools/ace/store.ts` | + `signature?` on `AceManifest`; + trust-store I/O (`trustStorePath`, `bundledTrustPath`, `loadTrustStore`, `addTrustedKey`, `listTrustedKeys`). `contentHash`/`installPackage` unchanged | **modify** |
 | `tools/ace/store.test.ts` | + trust-store tests | **modify** |
-| `tools/ace/ace.ts` | + `keygen`/`sign`/`trust` verbs + install authenticity gate (`--allow-unsigned`) | **modify** |
+| `tools/ace/ace.ts` | + `keygen`/`sign`/`trust` verbs + install authenticity gate (`--allow-no-signature`) | **modify** |
 | `tools/ace/ace.test.ts` | + verb + gate tests | **modify** |
 | `.claude/skills/ace/SKILL.md` | + new verbs; integrity→authenticity note | **modify** |
 
@@ -396,7 +396,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 This is the orchestration task. `ace.ts` imports the pure crypto from `signing.ts`
 and the trust-store + `contentHash` from `store.ts`, and applies the enforcement
-**policy** (only `no-signature` is `--allow-unsigned`-overridable; `bad-signature`
+**policy** (only `no-signature` is `--allow-no-signature`-overridable; `bad-signature`
 and `untrusted-key` are always hard-refused — design §6).
 
 - [ ] **Step 1: Write failing tests (append to `tools/ace/ace.test.ts`)**
@@ -429,12 +429,12 @@ Cases (each `await main([...])` since `main` is async):
 
 1. **install signed + trusted → 0** — `ace trust add` the fixture pubkey to a temp user store (or pre-write it), then `install <pkgPath> --store <tmp>` → exit 0; store dir created.
 2. **install bad-sig → 1** — tamper the signed package's `content_hash` after signing → exit 1.
-3. **install untrusted-key → 1 EVEN with `--allow-unsigned`** — don't trust the key; `install <pkgPath> --allow-unsigned` → exit 1 (override does NOT apply to a present signature).
-4. **install unsigned → 1 without flag; 0 with `--allow-unsigned`** — a slice-2-style package (no `signature`).
+3. **install untrusted-key → 1 EVEN with `--allow-no-signature`** — don't trust the key; `install <pkgPath> --allow-no-signature` → exit 1 (override does NOT apply to a present signature).
+4. **install unsigned → 1 without flag; 0 with `--allow-no-signature`** — a slice-2-style package (no `signature`).
 5. **`keygen` writes private key 0600** — `keygen --out <tmp/k>` → exit 0; on POSIX assert `(statSync(tmp/k.key).mode & 0o777) === 0o600`; on Windows print a skip note (per the shield rule) and assert the file exists.
 6. **`sign` of a tampered package → 1** — package whose `content_hash` doesn't match `files` → `sign` refuses.
 7. **`trust add` + `trust list`** — add a pubkey to a temp user store, list shows it with source `user`.
-8. **`parseArgs`** — `keygen`/`sign`/`trust add`/`trust list`/`install --allow-unsigned` parse into the right shapes; bad forms → ArgError.
+8. **`parseArgs`** — `keygen`/`sign`/`trust add`/`trust list`/`install --allow-no-signature` parse into the right shapes; bad forms → ArgError.
 
 > Use `--store`, and for trust paths thread a temp user store. If `ace.ts` reads `trustStorePath()`/`bundledTrustPath()` with no override, add a `--trust-store <path>` test hook OR set `process.env.HOME`/`USERPROFILE` to a temp dir in the test so `~/.ace` lands in temp. **Pick the env-temp-HOME approach** (no production flag needed): set `process.env.HOME` + `process.env.USERPROFILE` to a temp dir in a `beforeEach`, restore in `afterEach`.
 
@@ -459,13 +459,13 @@ Add `ParsedArgs` members + `parseArgs` branches:
 interface KeygenArgs { command: "keygen"; outPrefix: string; }
 interface SignArgs { command: "sign"; pkgPath: string; keyPath: string; outPath?: string; }
 interface TrustArgs { command: "trust"; sub: "add" | "list"; arg?: string; label?: string; }
-// install gains: allowUnsigned: boolean
+// install gains: allowNoSignature: boolean
 ```
 
 - `keygen`: optional `--out <prefix>` (default `ace-key`).
 - `sign <pkg>`: required `--key <priv>`; optional `--out <file>`.
 - `trust add <pub>` (optional `--label`), `trust list`.
-- `install <src>`: add `--allow-unsigned` boolean.
+- `install <src>`: add `--allow-no-signature` boolean.
 - Keep the existing `known = ["remove", "inspect"]` stub list.
 
 `main` handlers:
@@ -538,7 +538,7 @@ if (parsed.command === "install") {
   try { pkg = JSON.parse(raw) as AcePackage; }
   catch { console.error("ace: package is not valid JSON"); return 65; }
 
-  // AUTHENTICITY GATE (design §6) — before extraction. Only `no-signature` is --allow-unsigned-overridable.
+  // AUTHENTICITY GATE (design §6) — before extraction. Only `no-signature` is --allow-no-signature-overridable.
   const v = verifySignature(pkg.manifest, loadTrustStore());
   let signer: { key_id: string; label?: string } | undefined;
   if (v.ok) {
@@ -549,33 +549,33 @@ if (parsed.command === "install") {
     const kid = pkg.manifest.signature?.key_id ?? "?";
     console.error(`ace: install refused: signature from untrusted key ${kid} (ace trust add to trust it)`); return 1;
   } else { // no-signature
-    if (!parsed.allowUnsigned) { console.error("ace: install refused: unsigned package (use --allow-unsigned to override)"); return 1; }
-    console.error("ace: WARNING: installing UNSIGNED package (--allow-unsigned).");
+    if (!parsed.allowNoSignature) { console.error("ace: install refused: unsigned package (use --allow-no-signature to override)"); return 1; }
+    console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
   }
 
   // INTEGRITY + extract (slice 2, unchanged)
   const result = installPackage(parsed.storePath, pkg);
   if (!result.ok) { console.error(`ace: install refused: ${result.error}`); return 1; }
   if (signer) console.log(`ace: integrity + authenticity verified (signed by ${signer.key_id}${signer.label ? " " + signer.label : ""}) -> ${result.dir}`);
-  else console.log("ace: integrity-verified (content hash). NOT authenticity-verified (--allow-unsigned).");
+  else console.log("ace: integrity-verified (content hash). NOT authenticity-verified (--allow-no-signature).");
   return 0;
 }
 ```
 
-Update `printUsage()`: move `install` to show `[--allow-unsigned]`; add `keygen`, `sign`, `trust add`, `trust list` to the live block.
+Update `printUsage()`: move `install` to show `[--allow-no-signature]`; add `keygen`, `sign`, `trust add`, `trust list` to the live block.
 
 - [ ] **Step 4: Run pass + tsc + smokes**
 
 Run: `bun test tools/ace/` → ALL pass (signing + store + ace).
 Run: `bunx tsc --noEmit -p tsconfig.json 2>&1 | grep -E "tools/ace" || echo "no tsc errors in tools/ace"` → clean.
-Run: `bun tools/ace/ace.ts help` → exit 0, shows keygen/sign/trust/install --allow-unsigned.
+Run: `bun tools/ace/ace.ts help` → exit 0, shows keygen/sign/trust/install --allow-no-signature.
 Run: `bun tools/ace/ace.ts list --json` → exit 0.
 
 - [ ] **Step 5: Commit**
 
 ```bash
 git add tools/ace/ace.ts tools/ace/ace.test.ts
-git commit -m "feat(ace): keygen/sign/trust verbs + install authenticity gate (--allow-unsigned)
+git commit -m "feat(ace): keygen/sign/trust verbs + install authenticity gate (--allow-no-signature)
 
 Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
@@ -591,11 +591,11 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 - [ ] **Step 1: Update `.claude/skills/ace/SKILL.md`**
 
-Add `keygen`/`sign`/`trust add`/`trust list` rows to the verb table; update the `install` row to mention `--allow-unsigned`; change the integrity-only note to: "`install` verifies **integrity** (content hash) AND **authenticity** (Ed25519 signature against the trust store). Unsigned packages need `--allow-unsigned`; a present-but-untrusted signature is always refused (`ace trust add` the key)." Keep the `description:` frontmatter ≤120 chars (it already is; only edit if you change it — re-run the audit if so: `bun tools/hygiene/audit-skill-description-length.ts | grep ace`).
+Add `keygen`/`sign`/`trust add`/`trust list` rows to the verb table; update the `install` row to mention `--allow-no-signature`; change the integrity-only note to: "`install` verifies **integrity** (content hash) AND **authenticity** (Ed25519 signature against the trust store). Unsigned packages need `--allow-no-signature`; a present-but-untrusted signature is always refused (`ace trust add` the key)." Keep the `description:` frontmatter ≤120 chars (it already is; only edit if you change it — re-run the audit if so: `bun tools/hygiene/audit-skill-description-length.ts | grep ace`).
 
 - [ ] **Step 2: Update the store.ts slice-3 NOTE**
 
-In `installPackage`'s NOTE comment, the CONTENT/SOURCE (b) bullet currently says authenticity is "explicitly the authenticity/robustness slice (slice 3). The alert stays open until then." Update it to: authenticity now EXISTS — `ace install` runs the Ed25519 signature gate (see `ace.ts` + `signing.ts`); a package installed via the signed+trusted path is authenticity-verified, and `--allow-unsigned` is required to install an unsigned one. (The CodeQL `js/http-to-file-access` alert remains a true intended-flow observation — the http→file write is the package manager's function — but the source-trust defense the note deferred is now implemented.)
+In `installPackage`'s NOTE comment, the CONTENT/SOURCE (b) bullet currently says authenticity is "explicitly the authenticity/robustness slice (slice 3). The alert stays open until then." Update it to: authenticity now EXISTS — `ace install` runs the Ed25519 signature gate (see `ace.ts` + `signing.ts`); a package installed via the signed+trusted path is authenticity-verified, and `--allow-no-signature` is required to install an unsigned one. (The CodeQL `js/http-to-file-access` alert remains a true intended-flow observation — the http→file write is the package manager's function — but the source-trust defense the note deferred is now implemented.)
 
 - [ ] **Step 3: Validate**
 
@@ -630,7 +630,7 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 - **§3 content_hash distinct + unchanged; signer reuses slice-2 fn** → Task 3 `sign` uses `store.contentHash(JSON.stringify(files))`; `installPackage`/`contentHash` untouched. ✓
 - **§4 trust = bundled ∪ user; user overrides; empty default** → Task 2 `loadTrustStore` + tests. ✓
 - **§5 verbs** keygen/sign/trust add/list → Task 3. ✓
-- **§6 gate** (no-signature overridable; bad-sig + untrusted-key always refuse; before extract) → Task 3 install handler + the untrusted-key-even-with-allow-unsigned test. ✓
+- **§6 gate** (no-signature overridable; bad-sig + untrusted-key always refuse; before extract) → Task 3 install handler + the untrusted-key-even-with-allow-no-signature test. ✓
 - **§8 keygen 0600** → Task 3 `writeFileSync(..., { mode: 0o600 })` + POSIX mode test. ✓
 - **§9 testing** → tasks 1–3 tests; whole-manifest + signer/installer-agreement + 0600 cases present. ✓
 

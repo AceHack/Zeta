@@ -16,7 +16,7 @@ type: feature
 # B-0960 — Ace slice 3.1: pave the strict-by-default road
 
 Follow-on to Ace slice 3 (Ed25519 authenticity; signed-enforced install gate,
-`--allow-unsigned` opt-out). Operator-authorized deferred follow-on
+`--allow-no-signature` opt-out). Operator-authorized deferred follow-on
 (the operator 2026-06-01): *"you can push it through it can be a later follow on …
 it's better to build strict first in my mind and back off later cause of friction
 instead of the other way around."*
@@ -24,7 +24,7 @@ instead of the other way around."*
 ## Decision context — the default is CONFIRMED strict; this row is the paving
 
 The operator reopened the cost-benefit on the default enforcement posture
-(strict-by-default + `--allow-unsigned` switch vs loose-default + opt-in `--strict`).
+(strict-by-default + `--allow-no-signature` switch vs loose-default + opt-in `--strict`).
 Ran it by the team + web research; **all lenses converged on KEEP strict-by-default**:
 
 - **Security (security-researcher):** "Pick A. Do not change the default." Loose-default
@@ -33,7 +33,7 @@ Ran it by the team + web research; **all lenses converged on KEEP strict-by-defa
   argument (the first experience sets the mental model). Loose-default flagged Important
   (teaches the wrong reflex), not a shipped P0 (bundled trust is empty today).
 - **DX (developer-experience-engineer):** strict is the correct posture; the risk is
-  *friction*, not the default — a strict path that's too painful makes `--allow-unsigned`
+  *friction*, not the default — a strict path that's too painful makes `--allow-no-signature`
   the reflexive de-facto mode (strictness becomes theater). Verdict: keep strict, **pave
   the road**.
 - **Web research (search-first):** secure-defaults UX — users stick with defaults;
@@ -51,11 +51,11 @@ The default stays strict (shipped in the slice-3 build PR). This row tracks the
 
 1. **Golden-path refusal messages** — the unsigned-install refusal should name the
    remediation FIRST (`ace trust add <pub>` / where to get the publisher `.pub`),
-   not lead with `--allow-unsigned`. (Slice 3 already enriched the *untrusted-key*
+   not lead with `--allow-no-signature`. (Slice 3 already enriched the *untrusted-key*
    refusal + trust-list-empty hint; extend the same to the *unsigned* refusal +
-   make the `--allow-unsigned` WARNING nudge toward `ace trust add`.)
+   make the `--allow-no-signature` WARNING nudge toward `ace trust add`.)
 2. **Root-key custody ceremony (the big one)** — bundled `tools/ace/trusted-keys.json`
-   ships empty, so out-of-box every install needs `trust add`/`--allow-unsigned`.
+   ships empty, so out-of-box every install needs `trust add`/`--allow-no-signature`.
    Until the real Zeta root key is provisioned (per the
    [agent-native key-custody design](../../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)),
    strict-default is theater for Zeta-store packages. This is the highest-impact
@@ -65,7 +65,7 @@ The default stays strict (shipped in the slice-3 build PR). This row tracks the
    a well-known publisher key is one command, not a key-retrieval-and-pipe dance.
 4. **`ace sign` CI ergonomics** — signing a package in a CI pipeline should be a single
    obvious command, so publishers sign by default rather than skip.
-5. **`--allow-unsigned` telemetry** — a counter in the store log of `--allow-unsigned`
+5. **`--allow-no-signature` telemetry** — a counter in the store log of `--allow-no-signature`
    installs, as a signal if the escape hatch is becoming the de-facto default
    (the degradation-without-policy-change risk both reviewers named).
 6. **Quickstart** — a two-command golden path in `CONTRIBUTING.md`/SKILL so a dev
@@ -75,9 +75,7 @@ The default stays strict (shipped in the slice-3 build PR). This row tracks the
 
 Key rotation/revocation/expiry; order-independent `content_hash`; guardian-AI
 oversight; minisign/sigstore interop (all per slice-3 design §10). Also the open
-operator question on whether to RENAME `--allow-unsigned` (e.g. `--allow-no-signature`)
-— a CLI-contract decision deferred to the operator; the slice-3 build applied only
-the help-text gloss.
+operator resolved 2026-06-01: the install opt-out flag was RENAMED from `--allow-unsigned` to `--allow-no-signature` (clearer that it only covers genuinely-unsigned, never a present signature). The slice-3 cluster shipped the rename across code + tests + docs, not just a help-text gloss.
 
 ## Composes with
 

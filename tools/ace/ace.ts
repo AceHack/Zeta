@@ -3,7 +3,7 @@
 //
 // Usage:
 //   bun tools/ace/ace.ts list [--store <path>] [--json]
-//   bun tools/ace/ace.ts install <url-or-path> [--allow-unsigned]
+//   bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature]
 //   bun tools/ace/ace.ts verify <hash>
 //   bun tools/ace/ace.ts keygen [--out <prefix>]
 //   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
@@ -13,6 +13,7 @@
 // Future commands (not yet implemented): remove, inspect.
 
 import { chmodSync, readFileSync, writeFileSync } from "node:fs";
+import { createPublicKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys,
@@ -34,7 +35,7 @@ interface InstallArgs {
   readonly command: "install";
   readonly source: string;
   readonly storePath: string;
-  readonly allowUnsigned: boolean;
+  readonly allowNoSignature: boolean;
 }
 
 interface VerifyArgs {
@@ -144,20 +145,20 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     const source = argv[1];
     if (!source || source.startsWith("-")) return { error: "install requires a <url-or-path> argument" };
     let storePath = defaultStorePath();
-    let allowUnsigned = false;
+    let allowNoSignature = false;
     for (let i = 2; i < argv.length; i++) {
       if (argv[i] === "--store" || argv[i] === "-s") {
         const next = argv[i + 1];
         if (!next || next.startsWith("-")) return { error: "--store requires a path argument" };
         storePath = next;
         i++;
-      } else if (argv[i] === "--allow-unsigned") {
-        allowUnsigned = true;
+      } else if (argv[i] === "--allow-no-signature") {
+        allowNoSignature = true;
       } else {
         return { error: `Unknown option for install: ${argv[i]}` };
       }
     }
-    return { command: "install", source, storePath, allowUnsigned };
+    return { command: "install", source, storePath, allowNoSignature };
   }
 
   if (command === "verify") {
@@ -202,8 +203,8 @@ function printUsage(): void {
 
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
-  ace install <url-or-path> [--allow-unsigned]   Download/read a package, verify integrity+authenticity, install
-                                                   --allow-unsigned only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
+  ace install <url-or-path> [--allow-no-signature]   Download/read a package, verify integrity+authenticity, install
+                                                   --allow-no-signature only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
   ace verify <hash>                              Confirm an installed package is present
   ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
   ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
@@ -301,8 +302,31 @@ export async function main(argv: readonly string[]): Promise<number> {
       publicB64 = parsed.arg; // not a file -> treat as raw b64
       inputForm = "from b64";
     }
-    const kid = keyId(publicB64);
-    const entry: { key_id: string; public_key: string; label?: string } = { key_id: kid, public_key: publicB64 };
+    // Validate the public key before persisting: it must decode from base64,
+    // parse as an SPKI DER, AND have asymmetricKeyType === "ed25519".
+    // createPublicKey accepts RSA/EC SPKI too; a non-Ed25519 key can never
+    // verify any Ace package signature and must be rejected early.
+    let canonicalB64: string;
+    try {
+      const der = Buffer.from(publicB64, "base64");
+      if (der.length < 32) throw new Error("too short");
+      const pub = createPublicKey({ key: der, format: "der", type: "spki" });
+      if (pub.asymmetricKeyType !== "ed25519") {
+        console.error(`ace: trust add: not an Ed25519 public key (got ${pub.asymmetricKeyType ?? "unknown"}) — only Ed25519 keys are accepted`);
+        return 65;
+      }
+      // Normalize to the canonical SPKI: createPublicKey accepts an SPKI with trailing
+      // bytes but re-exports the canonical 44-byte form. Compute key_id + store from the
+      // canonical bytes so trust-add's key_id matches what signManifest/verify derive
+      // (they hash the re-exported SPKI); a padded input would otherwise be stored under a
+      // key_id no signature ever presents -> that publisher's packages never authenticate.
+      canonicalB64 = (pub.export({ type: "spki", format: "der" }) as Buffer).toString("base64");
+    } catch {
+      console.error("ace: trust add: invalid Ed25519 public key (not a valid SPKI DER) -- check the .pub file or b64 string");
+      return 65;
+    }
+    const kid = keyId(canonicalB64);
+    const entry: { key_id: string; public_key: string; label?: string } = { key_id: kid, public_key: canonicalB64 };
     if (parsed.label !== undefined) entry.label = parsed.label;
     const res = addTrustedKey(entry);
     console.log(res.added ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""} [${inputForm}]` : `ace: ${kid} already trusted`);
@@ -346,8 +370,8 @@ export async function main(argv: readonly string[]): Promise<number> {
     catch { console.error("ace: package is not valid JSON"); return 65; }
 
     // AUTHENTICITY GATE (design §6) — before extraction.
-    // Only `no-signature` is --allow-unsigned-overridable.
-    // `bad-signature` and `untrusted-key` are ALWAYS hard-refused (even with --allow-unsigned).
+    // Only `no-signature` is --allow-no-signature-overridable.
+    // `bad-signature` and `untrusted-key` are ALWAYS hard-refused (even with --allow-no-signature).
     const v = verifySignature(pkg.manifest, loadTrustStore());
     let signer: { key_id: string; label?: string } | undefined;
     if (v.ok) {
@@ -365,11 +389,11 @@ export async function main(argv: readonly string[]): Promise<number> {
       return 1;
     } else {
       // no-signature
-      if (!parsed.allowUnsigned) {
-        console.error("ace: install refused: unsigned package (use --allow-unsigned to override)");
+      if (!parsed.allowNoSignature) {
+        console.error("ace: install refused: unsigned package (use --allow-no-signature to override)");
         return 1;
       }
-      console.error("ace: WARNING: installing UNSIGNED package (--allow-unsigned).");
+      console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
     }
 
     // INTEGRITY + extract (slice 2, unchanged)
@@ -379,7 +403,7 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.log(`ace: integrity + authenticity verified (signed by ${signer.key_id}${signer.label ? " " + signer.label : ""}) -> ${result.dir}`);
     } else {
       console.log(`ace: installed ${pkg.manifest.name}@${pkg.manifest.version} -> ${result.dir}`);
-      console.log("ace: integrity-verified (content hash). NOT authenticity-verified (--allow-unsigned).");
+      console.log("ace: integrity-verified (content hash). NOT authenticity-verified (--allow-no-signature).");
     }
     return 0;
   }

@@ -30,14 +30,14 @@ Publisher verbs: `keygen`, `sign`. Consumer verbs: `install`, `verify`, `trust a
 | `keygen` | `bun tools/ace/ace.ts keygen [--out <prefix>]` | Generate an Ed25519 keypair (writes `<prefix>.key` 0600 + `<prefix>.pub`) |
 | `sign` | `bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]` | Sign a package manifest with an Ed25519 private key |
 | `list` | `bun tools/ace/ace.ts list [--store <path>] [--json]` | List installed packages from `~/.ace/store` |
-| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-unsigned]` | Download/read a package, verify integrity + authenticity, install |
+| `install` | `bun tools/ace/ace.ts install <url-or-path> [--allow-no-signature]` | Download/read a package, verify integrity + authenticity, install |
 | `verify` | `bun tools/ace/ace.ts verify <hash>` | Confirm an installed package is present |
 | `trust add` | `bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]` | Add an Ed25519 public key to the user trust store (`~/.ace/trusted-keys.json`) |
 | `trust list` | `bun tools/ace/ace.ts trust list` | List all trusted keys (bundled + user) |
 | `help` | `bun tools/ace/ace.ts help` | Usage |
 
 `install` verifies **integrity** (content hash) AND **authenticity** (Ed25519 signature
-against the trust store). Unsigned packages need `--allow-unsigned`; a present-but-untrusted
+against the trust store). Unsigned packages need `--allow-no-signature`; a present-but-untrusted
 signature is always refused (`ace trust add` the key).
 
 ## Invocation
