@@ -920,6 +920,9 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0963](backlog/P2/B-0963-prove-completion-lock-freedom-and-per-agent-wait-freedom-in-fsharp-model-first-then-extend-to-git-2026-06-01.md)** Prove completion-lock-freedom + per-agent wait-freedom — F# model first (no git), then extend to git
 - [ ] **[B-0965](backlog/P2/B-0965-gitbash-routing-install-shield-parity-gap-2026-06-01.md)** git-bash routing install-shield — the one unshielded install surface (parity gap)
 - [ ] **[B-0968](backlog/P2/B-0968-both-runtimes-on-windows-shield-coverage-podman-linux-docker-windows-containers-2026-06-01.md)** Both-runtimes-on-Windows shield coverage — podman (Linux-container path via WSL2) alongside docker (Windows-container install.ps1 shield)
+- [ ] **[B-0970](backlog/P2/B-0970-ace-advanced-semver-union-hyphen-prerelease-build-metadata-deferred-from-slice5.2-pragmatic-subset-2026-06-01.md)** Ace advanced semver — `||` unions, hyphen ranges, pre-release precedence, build metadata (deferred from slice 5.2 pragmatic subset)
+- [ ] **[B-0971](backlog/P2/B-0971-ace-remote-registry-http-fetched-index-deferred-from-slice5.x-local-only-2026-06-01.md)** Ace remote registry — HTTP-fetched registry index (deferred from slice 5.x local-only registry)
+- [ ] **[B-0972](backlog/P2/B-0972-ace-solver-installer-single-fetch-cache-deferred-from-slice5.2-two-phase-2026-06-01.md)** Ace solver↔installer single-fetch cache — fetch each package once (deferred from slice 5.2 clean two-phase split)
 
 ## P3 — convenience / deferred
 

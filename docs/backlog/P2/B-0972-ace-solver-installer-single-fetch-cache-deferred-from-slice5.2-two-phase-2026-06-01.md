@@ -1,0 +1,46 @@
+---
+id: B-0972
+priority: P2
+status: open
+title: Ace solver↔installer single-fetch cache — fetch each package once (deferred from slice 5.2 clean two-phase split)
+effort: S
+ask: operator 2026-06-01
+created: 2026-06-01
+last_updated: 2026-06-01
+depends_on:
+  - B-0288
+composes_with: []
+tags: [ace, package-manager, solver, fetch-cache, performance, deferred-enhancement, slice-5.3-adjacent]
+---
+
+## What this row proposes
+
+Slice 5.2 chose a **clean two-phase split** (operator 2026-06-01): the solver fetches
+candidate packages to read their transitive deps, then slice-5.1's `resolve()` re-fetches
+to verify + install. Each package is therefore fetched up to twice. Registry reads are
+local/content-addressed so the double-read is cheap, but it is wasted work for remote
+registries (B-0971) and large graphs.
+
+This row tracks threading a **fetch cache** (solver's fetched + verified packages handed
+to the installer) so each package version is fetched exactly once.
+
+## Why deferred (operator 2026-06-01)
+
+Keeps slice 5.2 minimal + keeps slice-5.1's verified `resolve()` engine fully untouched.
+The cache lands naturally with the **slice 5.3 lockfile** — the lockfile IS the persisted
+solved graph, and a fetch cache is the in-memory analog produced on the way to it.
+Operator: *"everything we skipped lets slice off for further enhancements."*
+
+## Scope sketch
+
+- Solver returns (or populates) a `Map<name@version, AcePackage>` of fetched manifests.
+- `resolve()` accepts an optional pre-fetched-package cache; on a cache hit it skips the
+  network/disk fetch but **still runs every verify step** (content-hash, package-hash
+  pin, identity, signature) — caching must never bypass verification.
+- Compose with the 5.3 lockfile so a locked graph can install with zero solve-time fetches.
+
+## Composes with
+
+- Slice 5.2 spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice5.2-semver-solver-design.md`
+- B-0971 (remote registry — where the double-fetch actually costs)
+- B-0288 (Ace DLC package manager CLI)
