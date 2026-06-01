@@ -21,6 +21,18 @@ crossing languages is safe and a dev doesn't relearn the basics four times. Buil
 slowly, one verified primitive at a time, under the same three-requirement bar as the
 BCL-like tier below (cross-compatible + one common surface + still idiomatic).
 
+**The shared substrate is _agreement_, not any one runtime** (Amara 2026-06-01): the four
+oracles (TS / F# / C# / Rust) each implement a primitive natively and the **shared golden
+vectors are the treaty** — so no runtime becomes king (not C#, F#, Rust, TS, WASM, CLR, or
+JVM; the substrate is the byte-agreement across them). **Keep the stable base sacred + small.**
+The _wish list_ below can be huge, but a primitive only graduates from ⬜/🚧 into the **stable
+base** when it **earns its way in** on Amara's bar: **native** (real per-language impl, not a
+shim) · **tested** (golden-vector replay) · **cross-language** (agrees across the oracles) ·
+**law-backed** (the algebraic laws hold + are checkable). The C# `IndexedZSet` comparer review
+(#6404) is the bar working as intended — a four-oracle system is _supposed_ to flush out the
+ghost bug (comparer-as-identity vs `Dictionary` default equality) before the join/aggregation
+rung corrupts the DBSP/Rx/query layer above it; "good pain, not bad pain."
+
 ## The wish list — every primitive we want (so we don't forget)
 
 The complete set, built + wished, in one place (the maintainer 2026-06-01: "the uber
