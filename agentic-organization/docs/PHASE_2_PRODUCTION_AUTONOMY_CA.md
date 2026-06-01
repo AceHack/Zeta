@@ -932,6 +932,29 @@ export surface, and focused regression tests.
 - production pilot report with all SLOs and incidents;
 - post-pilot ChangeSet backlog generated from measured gaps.
 
+**Checkpoint 2026-06-01: pilot readiness gate and measured backlog**
+
+Phase 2.10 now has a deterministic pilot-readiness kernel. The evaluator binds a
+single pilot to an organization, project, and department, then gates launch on
+the full production-drill bundle: at least seven replay days, zero illegal
+transitions, at least 24 soak hours, zero degraded soak ticks, ESTOP drill,
+restore drill, observe-act primary, reputation updates, work-market claims,
+schedule optimization, simulator-required policy changes, telemetry optimizer,
+and ESTOP capability. Pilot SLOs cover conformance pass ratio, lead time, review
+lag, QA bounce-back rate, cost per completed work item, stale-claim recovery,
+and operator intervention count.
+
+The readiness result carries a production pilot report with SLO observations,
+disaster-drill results, incidents, and stable evidence refs. Unsafe pilots are
+blocked with typed blocker codes, and measured gaps generate the post-pilot
+improvement backlog from SLO misses, failed disaster drills, and incidents. This
+keeps the pilot backlog telemetry/evidence-driven instead of opinion-driven.
+
+Subagent review for this checkpoint was attempted but blocked by the platform
+agent-thread limit (`collab spawn failed: agent thread limit reached`); local
+review covered the readiness gate, SLO/drill blockers, measured backlog
+generation, export surface, and focused regression tests.
+
 **Exit criteria:**
 
 - pilot completes without illegal transitions;

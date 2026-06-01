@@ -30,6 +30,20 @@ export {
   type TelemetryImprovementTrigger,
 } from "./telemetry-improvement-optimizer.ts";
 export {
+  PilotDisasterDrillKind,
+  PilotSloKind,
+  evaluatePilotReadiness,
+  type PilotDisasterDrillResult,
+  type PilotImprovementBacklogItem,
+  type PilotIncidentSummary,
+  type PilotReadinessCapabilities,
+  type PilotReadinessEvaluation,
+  type PilotReadinessInput,
+  type PilotReadinessReport,
+  type PilotSloObservation,
+  type PilotSloReport,
+} from "./pilot-readiness.ts";
+export {
   TriageActionFeedbackReason,
   TriageActionResolution,
   resolveTriageAction,
