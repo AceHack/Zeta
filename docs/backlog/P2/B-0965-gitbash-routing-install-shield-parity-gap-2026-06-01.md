@@ -1,7 +1,7 @@
 ---
 id: B-0965
 priority: P2
-status: open
+status: closed
 title: "git-bash routing install-shield — the one unshielded install surface (parity gap)"
 created: 2026-06-01
 last_updated: 2026-06-01
@@ -47,28 +47,54 @@ break the git-bash one-liner and no shield would catch it.
 
 ## Acceptance
 
-- [ ] New `wsl-install-sh-test`-sibling workflow `gitbash-install-routing-test`
+- [x] New `wsl-install-sh-test`-sibling workflow `gitbash-install-routing-test`
       on `runs-on: windows-2025` (git-bash ships pre-installed via Git for
       Windows on the GitHub Windows runner — no provisioner needed).
-- [ ] Runs the `install.sh` entry under **git-bash** (`bash tools/setup/install.sh`
+- [x] Runs the `install.sh` entry under **git-bash** (`bash tools/setup/install.sh`
       or the curl one-liner) and **asserts** it routes to `install.ps1`: the
       `MINGW*|MSYS*|CYGWIN*` branch is taken, `cygpath` converts the path, and
       PowerShell is invoked with the native-Windows `-File` path.
-- [ ] **Scoped to the handoff**, NOT a full re-run of `install.ps1` (the
+- [x] **Scoped to the handoff**, NOT a full re-run of `install.ps1` (the
       `docker-windows-install-ps1-test` shield already exercises the full Windows
       install). E.g. a dry-run / a `ZETA_INSTALL_ROUTE_ONLY`-style guard that
       stops after the route decision + path conversion, or assert the exact
       PowerShell command line that *would* run. Avoid duplicating the windows-ps1
       shield's cost.
-- [ ] The test **asserts** the positive (routing happened with the converted
+- [x] The test **asserts** the positive (routing happened with the converted
       path) — it must fail if the branch is skipped or `cygpath` is absent/wrong,
       not pass-by-skip (the shield-rule discriminator).
-- [ ] Workflow follows the `wsl-install-sh-test` security pattern: runner pinned
+- [x] Workflow follows the `wsl-install-sh-test` security pattern: runner pinned
       (`windows-2025`, not `-latest`); any third-party actions SHA-pinned with a
       trailing `# vX.Y.Z`; `permissions: contents: read`; concurrency
       cancel-in-progress for PRs; no `github.event.*` interpolated into `run:`.
-- [ ] `paths:` trigger on `tools/setup/**` + `.mise.toml` + the workflow file
+- [x] `paths:` trigger on `tools/setup/**` + `.mise.toml` + the workflow file
       (same as the other install shields).
+
+## Resolution (2026-06-01)
+
+Shipped via **[PR #6430](https://github.com/Lucent-Financial-Group/Zeta/pull/6430)**
+(squash-merged to `main` as `5a68568`). Implementation exactly as the acceptance
+specified — the `ZETA_INSTALL_ROUTE_ONLY`-style guard was the chosen handoff-scope
+mechanism:
+
+- **`tools/setup/install.sh`** — a `ZETA_INSTALL_ROUTE_ONLY=1` guard inside the
+  `MINGW*|MSYS*|CYGWIN*` arm: it resolves the PowerShell binary + native `-File`
+  path, prints the command line it *would* exec, then `exit 0` before running
+  `install.ps1`. Branch-scoped → a no-op on macOS/Linux/NixOS.
+- **`.github/workflows/gitbash-install-routing-test.yml`** — new shield on
+  `windows-2025` running `install.sh` under git-bash with the route-only guard,
+  asserting the route (branch taken + `cygpath` drive-letter conversion +
+  PowerShell `-File` handoff). Scoped to the handoff, not a full `install.ps1`
+  re-run. Asserts the positive (negative-control-verified: fails if the branch is
+  skipped).
+
+Verified green on a real `windows-2025` runner (`gitbash-install-routing-test` ✅
+in ~21s) alongside the full PR check suite. Install-shield coverage is now **6/6
+surfaces** (ubuntu-docker · nixos-docker · macos · windows-ps1-docker · wsl ·
+git-bash routing).
+
+**Follow-on (separate row, not this one):** B-0968 tracks the podman-on-Windows
+(Linux-container via WSL2) shield gap — a different runtime/surface, spike-gated.
 
 ## Why P2 (not P1)
 
@@ -84,6 +110,8 @@ known gap. Closing it brings install-shield coverage to 6/6 surfaces.
   discipline this gap is measured against (assert, don't skip-to-green)
 - B-0857 — Windows parity lane (declarative agent/peer CLIs); the `wsl-install-sh-test`
   shield is the sibling pattern this row mirrors
+- B-0968 — both-runtimes-on-Windows shield coverage (podman); sibling Windows
+  shield-coverage follow-on surfaced alongside this row
 - `tools/setup/install.sh` (the `MINGW*|MSYS*|CYGWIN*` routing branch) +
   `tools/setup/install.ps1` (the routed-to target)
 - `.github/workflows/wsl-install-sh-test.yml` — the workflow template to copy
