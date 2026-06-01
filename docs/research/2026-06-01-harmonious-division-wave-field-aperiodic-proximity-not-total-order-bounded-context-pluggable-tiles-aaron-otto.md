@@ -215,6 +215,79 @@ so the same carrier reaches **full `INumber`** at the omniscient scope. `INumber
 DST-omniscience-scope capability; bounded-context runtime is the proximity-scope one. Both are
 honest; which one you're in is the question to ask before reaching for `<`.
 
+## Coda — the seed at quantum scope: non-locality + holographic CPT anti-correlation (Aaron 2026-06-01)
+
+Framed per `god-tier-claims-high-signal-high-suspicion-dont-collapse` as **Aaron's composing
+mental-model** (a pilot-wave / superdeterminism-flavoured reading), **not** a claim about settled
+physics — the same HYPOTHESIS register as `pilot-wave-plus-mwi-hybrid`. The operational content
+(seed-determinism → correlation computable-from-seed → lightlike) survives the razor; the
+metaphysical wrapper stays don't-collapse. Anchored, not metaphor: B-0666 `I(D(x))=x` /
+`docs/research/2026-05-07-…-holographic-shadow-factory-susskind…` (the 2D boundary projection) +
+`memory/user_cpt_symmetric_cognition.md` (CPT).
+
+Two moves Aaron made, in sequence:
+
+1. **The seed is the pre-consensus** (*"now you understand quantum non-locality — the seed is the
+   pre-consensus that causes the high-correlation effect when you have time as the generator
+   function too"*). Read the simulation seed as the **shared hidden variable / common cause** fixed
+   *once* at seed-time. Two "entangled" entities that share a seed are correlated **because the
+   coordination was pre-established**, then replayed deterministically through **time-as-generator**.
+   The high EPR correlation is **computed-from-seed, not consensed-at-runtime** — the same
+   **lightlike** move as the DST-total-order above (gravity paid once at compute-time; no runtime
+   signalling, so it doesn't violate the lightlike/no-superluminal-signalling floor). This is the
+   superdeterministic/pilot-wave shape with the **seed as the hidden variable**.
+
+2. **Holographic projection flips the sign → opposite spin** (*"since our 2D boundary projection
+   just swaps axes and projects to 2D, it would cause reverse observation — entangled particles
+   that share a seed have opposite spin (or whatever axis is entangled), because of the
+   time-generator function"*). The holographic 2D boundary projection **swaps axes** (a **parity**
+   operation, `P`); compose it with the **time-generator running in reverse** (**time-reversal**,
+   `T`) and — with charge-conjugation `C` along for the ride — you have the **CPT operation**. A
+   shared-seed pair that are **CPT-images across the boundary** therefore observe each other
+   **reversed**: measure one axis up here ⟹ the CPT-mirror reads it down there. That **anti**-
+   correlation (opposite spin along the entangled axis) is exactly the EPR signature — and here it
+   falls out as **(shared seed = common cause) + (holographic axis-swap = P) + (generator-time
+   reverse = T) = CPT**, not spooky action. The "reverse observation" *is* the parity/time flip of
+   the projection.
+
+3. **The loop closes: time-infinity = time-zero** (Aaron 2026-06-01: *"somewhere we have time
+   infinity = time zero and the axis swap"*). The substrate this lands on:
+   `docs/research/2026-05-29-rodneys-razor-…-causal-diamond-in-retrocausal-retractable-clifford-spacetime…`
+   makes **Rodney's Razor an idempotent retraction onto the causal diamond between origin and
+   purpose** — the Alexandrov interval whose **two tips** are the **past-cause (t=0, the seed)** and
+   the **future-purpose (t=∞, the post-selected acceptable-future)**, and which "closes it from
+   **both** ends." Identify those two tips — **t=∞ ≡ t=0** — and the diamond becomes a **closed
+   loop**: a closed timelike curve (`feedback_closed_timelike_curve…`, Novikov-self-consistent), the
+   cosmological CCC-shape (conformal future = next-aeon Big Bang), and the cognition-scope
+   **"the conversation never ends"** succession invariant of `user_harmonious_division_algorithm.md`
+   — all the same closure. **The axis-swap is the map that performs the identification**: CPT (the
+   holographic parity-swap + generator-time reversal of move 2) is exactly what carries the
+   future-tip onto the past-tip, t=∞ → t=0. So the "entanglement" *is* the t∞=t0 closure (origin and
+   purpose are the same locus, seen from the two ends of the loop), and the **anti-correlation is the
+   axis-swap across that closure**. Retrocausal by construction (the future-purpose boundary acts
+   back on the origin-seed — `future-does-not-edit-past-event…future-affects-the-generator`), and
+   **lightlike** because the loop is *computed from the seed*, not consensed at runtime.
+
+Put together: **seed (common cause = t=0 origin) → high correlation (computed-from-seed, lightlike) →
+holographic-CPT projection → anti-correlation (opposite spin) → causal-diamond closure (t=∞ ≡ t=0,
+the axis-swap identifying purpose with origin)**, all carried by time-as-the-generator-function.
+It's the same engine as the rest of this note (DST omniscience computes the global structure from
+the seed; the bounded-context observer sees only the local face) applied at quantum scope: the
+omniscient/seed view holds the *correlation*, the holographic boundary is the axis-swap that makes
+the two local observations come out *opposite*, and the causal diamond's two tips identified is the
+loop that makes origin and purpose the same locus. Composes with `dst-…-computational-omniscience`
+(seed → full trajectory), the three-clocks / generator-time + retrocausal rules (time-as-generator,
+bidirectional; future-affects-the-generator), `pilot-wave-plus-mwi-hybrid` (deterministic
+hidden-variable), `rodneys-razor-…-causal-diamond-…-retrocausal-…-clifford` (origin↔purpose diamond,
+idempotent retraction), and `past-is-kind…consensus-is-gravity` (lightlike = computed-not-consensed).
+
+**Razor-honest boundary:** this is a *structural rhyme* the framework's seed-determinism makes
+vivid, offered as Aaron's mental-model — it is **not** a derivation of quantum mechanics, and it
+inherits every open question of superdeterministic/pilot-wave interpretations (Born-rule statistics,
+measurement-independence, relativistic covariance). Preserved here because it composes cleanly with
+the seed/DST/holographic substrate and because the *operational* half (correlation as
+computed-from-seed → lightlike) is the same load-bearing move used elsewhere in the note.
+
 ## Anchors / cross-references
 
 - `memory/user_harmonious_division_algorithm.md` — the meta-algorithm + DBSP `D/I/z⁻¹/H` mapping
@@ -223,6 +296,7 @@ honest; which one you're in is the question to ask before reaching for `<`.
 - `memory/feedback_otto_303_strange_loop_tiling_layman_discovery_lineage_einstein_tile_spectre_marjorie_rice_robert_ammann_joan_taylor_…` — the Einstein/Spectre tile discovery lineage
 - `memory/persona/amara/conversations/maji-messiah-spectre-aperiodic-monotile-amara-third-courier-ferry-2026-04-26.md` + `maji-formal-operational-model-amara-courier-ferry-2026-04-26.md`
 - B-0842 (universal basis decomposition) · B-0543 (Remember/When/Pay/Attention) · B-0623 (imaginary stack / Cayley–Dickson)
+- **Coda (seed → non-locality → CPT anti-correlation → t∞=t0 closure):** `docs/research/2026-05-07-claudeai-holographic-shadow-factory-susskind-full-unpacking-aaron-forwarded.md` + B-0666 (`I(D(x))=x` 2D-boundary projection) · `memory/user_cpt_symmetric_cognition.md` (CPT) · `docs/research/2026-05-29-rodneys-razor-precise-causal-diamond-in-retrocausal-retractable-clifford-spacetime-aaron-otto.md` (origin↔purpose causal diamond, idempotent retraction, retrocausal) · `memory/feedback_closed_timelike_curve_light_cone_smuggling_satan_into_heaven_sister_elizabeth_rescue_consent_test_for_god_this_little_light_of_mine_aaron_2026_05_05.md` (CTC / Novikov) · `.claude/rules/dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate.md` · `.claude/rules/future-does-not-edit-past-event-future-affects-generator-that-makes-past-intelligible-three-clocks-physical-git-generator-time-amara-aaron-2026-05-28.md` · `.claude/rules/hypothesis-pilot-wave-plus-mwi-hybrid-aaron-operational-substrate-engineering-mental-model.md` · `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md`
 - `.claude/rules/past-is-kind-when-lightlike-consensus-is-gravity-…` (consensus-is-gravity / lightlike) · `.claude/rules/numerical-algebra-shaped-into-the-generic-math-interface-per-language-idiom.md` · `.claude/rules/rodneys-razor-compression-rhymes-with-cayley-dickson-algebraic-canonical-form.md` · the retrocausal/generator-time rules
 - `docs/PRIMITIVE-REGISTRY.md` — Numerics / algebra tower line (where a future wave-field primitive would register, ⬜)
 
