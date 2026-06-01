@@ -386,14 +386,21 @@ export {
   compilePromptFlowTasks,
   lintPromptFlowDefinition,
   type CompilePromptFlowTasksInput,
+  type PromptFlowAdvanceEvidence,
   type PromptFlowAdvanceResult,
   type PromptFlowDefinition,
+  type PromptFlowHumanApproval,
   type PromptFlowLintDiagnostic,
   type PromptFlowPhaseDefinition,
   type PromptFlowPhaseGate,
   type PromptFlowRollbackPolicy,
   type PromptFlowRun,
 } from "./prompt-flow.ts";
+export {
+  IncidentRunbookPromptFlowId,
+  buildProductionIncidentRunbookPromptFlowDefinitions,
+  type BuildProductionIncidentRunbookPromptFlowDefinitionsInput,
+} from "./incident-runbook-prompt-flows.ts";
 export {
   DEPARTMENTS,
   OrgGraphValidation,

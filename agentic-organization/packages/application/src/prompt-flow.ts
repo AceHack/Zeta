@@ -31,7 +31,24 @@ export type PromptFlowPhaseGate = {
   kind: PromptFlowGateKind;
   requiredEvidenceRefs: readonly string[];
   reviewerHatIds?: readonly string[] | undefined;
+  approverHatIds?: readonly string[] | undefined;
+  requiredHumanApprovalCount?: number | undefined;
 };
+
+export type PromptFlowHumanApproval = {
+  approverId: string;
+  approverHatId: string;
+  approved: boolean;
+  approvedAt: string;
+  evidenceRef: string;
+};
+
+export type PromptFlowAdvanceEvidence =
+  | readonly string[]
+  | {
+      evidenceRefs?: readonly string[] | undefined;
+      humanApprovals?: readonly PromptFlowHumanApproval[] | undefined;
+    };
 
 export type PromptFlowRollbackPolicy = {
   kind: "compensating_action" | "revert_artifact" | "cancel_only";
@@ -89,6 +106,8 @@ export type PromptFlowLintDiagnostic = {
     | "missing_directions"
     | "missing_required_evidence"
     | "missing_gate"
+    | "missing_human_approvers"
+    | "invalid_human_approval_count"
     | "invalid_timeout"
     | "missing_rollback"
     | "evidence_gate_mismatch";
@@ -105,9 +124,10 @@ export type PromptFlowAdvanceResult =
   | { outcome: "advanced"; run: PromptFlowRun }
   | {
       outcome: "blocked";
-      reason: "missing_evidence" | "invalid_evidence";
+      reason: "missing_evidence" | "missing_human_approval" | "invalid_evidence";
       missingEvidenceRefs: readonly string[];
       invalidEvidenceRefs: readonly string[];
+      missingHumanApprovalCount?: number | undefined;
     }
   | { outcome: "rejected"; reason: "unknown_phase" | "terminal_state" | "definition_mismatch"; message: string };
 
@@ -168,15 +188,15 @@ export function compilePromptFlowTasks(input: CompilePromptFlowTasksInput): read
 export function canAdvancePromptFlowRun(
   definition: PromptFlowDefinition,
   run: PromptFlowRun,
-  evidenceRefs: readonly string[] = [],
+  evidence: PromptFlowAdvanceEvidence = [],
 ): PromptFlowAdvanceResult {
-  return advancePromptFlowRun(definition, run, evidenceRefs);
+  return advancePromptFlowRun(definition, run, evidence);
 }
 
 export function advancePromptFlowRun(
   definition: PromptFlowDefinition,
   run: PromptFlowRun,
-  evidenceRefs: readonly string[] = [],
+  evidence: PromptFlowAdvanceEvidence = [],
 ): PromptFlowAdvanceResult {
   if (definition.promptFlowId !== run.promptFlowId || definition.version !== run.definitionVersion) {
     return {
@@ -206,7 +226,8 @@ export function advancePromptFlowRun(
   }
 
   const phase = definition.phases[phaseIndex]!;
-  const evidenceCheck = checkGateEvidence(phase, evidenceRefs);
+  const normalizedEvidence = normalizePromptFlowAdvanceEvidence(evidence);
+  const evidenceCheck = checkGateEvidence(phase, normalizedEvidence);
   if (evidenceCheck.outcome === "blocked") {
     return evidenceCheck;
   }
@@ -268,6 +289,25 @@ function lintPromptFlowPhase(phase: PromptFlowPhaseDefinition): readonly PromptF
   if (phase.gate.requiredEvidenceRefs.length === 0) {
     diagnostics.push({ code: "missing_gate", message: "prompt flow phase gate must declare evidence requirements", phaseId });
   }
+  if (phase.gate.kind === PromptFlowGateKind.HumanApproval) {
+    if (phase.gate.approverHatIds === undefined || phase.gate.approverHatIds.length === 0) {
+      diagnostics.push({
+        code: "missing_human_approvers",
+        message: "human-approval gate must name at least one approver hat",
+        phaseId,
+      });
+    }
+    if (
+      phase.gate.requiredHumanApprovalCount !== undefined &&
+      (!Number.isInteger(phase.gate.requiredHumanApprovalCount) || phase.gate.requiredHumanApprovalCount <= 0)
+    ) {
+      diagnostics.push({
+        code: "invalid_human_approval_count",
+        message: "human-approval gate approval count must be a positive integer",
+        phaseId,
+      });
+    }
+  }
   if (!sameStringSet(phase.requiredEvidenceRefs, phase.gate.requiredEvidenceRefs)) {
     diagnostics.push({
       code: "evidence_gate_mismatch",
@@ -283,8 +323,9 @@ function lintPromptFlowPhase(phase: PromptFlowPhaseDefinition): readonly PromptF
 
 function checkGateEvidence(
   phase: PromptFlowPhaseDefinition,
-  evidenceRefs: readonly string[],
+  evidence: NormalizedPromptFlowAdvanceEvidence,
 ): GateEvidenceCheck {
+  const { evidenceRefs, humanApprovals } = evidence;
   const invalidEvidenceRefs = evidenceRefs.filter((ref) => !isContentAddressedEvidenceRef(ref));
   if (invalidEvidenceRefs.length > 0) {
     return {
@@ -304,7 +345,57 @@ function checkGateEvidence(
       invalidEvidenceRefs: [],
     };
   }
+  if (phase.gate.kind === PromptFlowGateKind.HumanApproval) {
+    const invalidApprovalEvidenceRefs = humanApprovals
+      .map((approval) => approval.evidenceRef)
+      .filter((ref) => !isContentAddressedEvidenceRef(ref));
+    if (invalidApprovalEvidenceRefs.length > 0) {
+      return {
+        outcome: "blocked",
+        reason: "invalid_evidence",
+        missingEvidenceRefs: [],
+        invalidEvidenceRefs: invalidApprovalEvidenceRefs,
+      };
+    }
+    const approverHatIds = new Set(phase.gate.approverHatIds ?? []);
+    const approvedCount = humanApprovals.filter((approval) =>
+      approval.approved &&
+      isContentAddressedEvidenceRef(approval.evidenceRef) &&
+      (approverHatIds.size === 0 || approverHatIds.has(approval.approverHatId))
+    ).length;
+    const requiredHumanApprovalCount = phase.gate.requiredHumanApprovalCount ?? 1;
+    if (approvedCount < requiredHumanApprovalCount) {
+      return {
+        outcome: "blocked",
+        reason: "missing_human_approval",
+        missingEvidenceRefs: [],
+        invalidEvidenceRefs: [],
+        missingHumanApprovalCount: requiredHumanApprovalCount - approvedCount,
+      };
+    }
+  }
   return { outcome: "satisfied" };
+}
+
+type NormalizedPromptFlowAdvanceEvidence = {
+  evidenceRefs: readonly string[];
+  humanApprovals: readonly PromptFlowHumanApproval[];
+};
+
+function normalizePromptFlowAdvanceEvidence(
+  evidence: PromptFlowAdvanceEvidence,
+): NormalizedPromptFlowAdvanceEvidence {
+  if (isEvidenceRefList(evidence)) {
+    return { evidenceRefs: evidence, humanApprovals: [] };
+  }
+  return {
+    evidenceRefs: evidence.evidenceRefs ?? [],
+    humanApprovals: evidence.humanApprovals ?? [],
+  };
+}
+
+function isEvidenceRefList(evidence: PromptFlowAdvanceEvidence): evidence is readonly string[] {
+  return Array.isArray(evidence);
 }
 
 function sameStringSet(left: readonly string[], right: readonly string[]): boolean {

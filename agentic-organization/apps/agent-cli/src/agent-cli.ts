@@ -1604,6 +1604,10 @@ function parsePromptFlowGate(value: unknown): PromptFlowPhaseGate {
     kind: gate.kind as PromptFlowGateKind,
     requiredEvidenceRefs: parseStringArray(gate.requiredEvidenceRefs, "gate.requiredEvidenceRefs"),
     ...(gate.reviewerHatIds === undefined ? {} : { reviewerHatIds: parseStringArray(gate.reviewerHatIds, "gate.reviewerHatIds") }),
+    ...(gate.approverHatIds === undefined ? {} : { approverHatIds: parseStringArray(gate.approverHatIds, "gate.approverHatIds") }),
+    ...(gate.requiredHumanApprovalCount === undefined
+      ? {}
+      : { requiredHumanApprovalCount: parsePositiveInteger(gate.requiredHumanApprovalCount, "gate.requiredHumanApprovalCount") }),
   };
 }
 
@@ -1615,7 +1619,7 @@ function parseOptionalPositiveInteger(value: unknown, property: "timeoutSeconds"
   return { [property]: parsed } as Partial<Pick<PromptFlowTask, "timeoutSeconds" | "retryLimit">>;
 }
 
-function parsePositiveInteger(value: unknown, property: "timeoutSeconds"): number {
+function parsePositiveInteger(value: unknown, property: "timeoutSeconds" | "gate.requiredHumanApprovalCount"): number {
   if (!Number.isInteger(value) || (value as number) <= 0) {
     throw new Error(`prompt-flow task ${property} must be a positive integer when present`);
   }

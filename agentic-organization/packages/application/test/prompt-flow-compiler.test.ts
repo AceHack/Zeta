@@ -8,6 +8,7 @@ import {
   PromptFlowRunState,
   RunScope,
   advancePromptFlowRun,
+  buildProductionIncidentRunbookPromptFlowDefinitions,
   compilePromptFlowTasks,
   createContentAddressedEvidenceRef,
   lintPromptFlowDefinition,
@@ -168,6 +169,131 @@ test("advancePromptFlowRun blocks awaiting gate until content-addressed evidence
   equal(advanced.outcome, "advanced");
   if (advanced.outcome === "advanced") {
     equal(advanced.run.state, PromptFlowRunState.Completed);
+  }
+});
+
+test("advancePromptFlowRun requires explicit human approval for human-approval gates", () => {
+  const approvalEvidence = createContentAddressedEvidenceRef("human-approval", {
+    run: "pfr-incident-1",
+    approver: "human-ops-1",
+  });
+  const runbookEvidence = createContentAddressedEvidenceRef("incident-runbook-phase", {
+    run: "pfr-incident-1",
+    phase: "operator-approval",
+  });
+  const flow = definition({
+    promptFlowId: "flow-incident-runbook",
+    allowedHatIds: ["incident_commander"],
+    reviewerHatIds: ["director_engineering"],
+    phases: [
+      {
+        ...definition().phases[0]!,
+        phaseId: "operator-approval",
+        requiredEvidenceRefs: [runbookEvidence],
+        gate: {
+          kind: PromptFlowGateKind.HumanApproval,
+          requiredEvidenceRefs: [runbookEvidence],
+          approverHatIds: ["director_engineering"],
+          requiredHumanApprovalCount: 1,
+        },
+      },
+    ],
+  });
+  const run = {
+    runId: "pfr-incident-1",
+    promptFlowId: "flow-incident-runbook",
+    definitionVersion: "1.0.0",
+    workItemId: "incident-1",
+    scope: RunScope.WorkItem,
+    currentPhaseId: "operator-approval",
+    state: PromptFlowRunState.AwaitingGate,
+    priority: 100,
+  };
+
+  const missingApproval = advancePromptFlowRun(flow, run, { evidenceRefs: [runbookEvidence] });
+  equal(missingApproval.outcome, "blocked");
+  if (missingApproval.outcome === "blocked") {
+    equal(missingApproval.reason, "missing_human_approval");
+    equal(missingApproval.missingHumanApprovalCount, 1);
+  }
+
+  const forgedApproval = advancePromptFlowRun(flow, run, {
+    evidenceRefs: [runbookEvidence],
+    humanApprovals: [
+      {
+        approverId: "human-ops-1",
+        approverHatId: "director_engineering",
+        approved: true,
+        approvedAt: "2026-05-31T00:00:00.000Z",
+        evidenceRef: "plain-approval-note",
+      },
+    ],
+  });
+  equal(forgedApproval.outcome, "blocked");
+  if (forgedApproval.outcome === "blocked") {
+    equal(forgedApproval.reason, "invalid_evidence");
+    deepEqual(forgedApproval.invalidEvidenceRefs, ["plain-approval-note"]);
+  }
+
+  const wrongHatApproval = advancePromptFlowRun(flow, run, {
+    evidenceRefs: [runbookEvidence],
+    humanApprovals: [
+      {
+        approverId: "human-ops-1",
+        approverHatId: "backend_implementer",
+        approved: true,
+        approvedAt: "2026-05-31T00:00:00.000Z",
+        evidenceRef: approvalEvidence,
+      },
+    ],
+  });
+  equal(wrongHatApproval.outcome, "blocked");
+  if (wrongHatApproval.outcome === "blocked") {
+    equal(wrongHatApproval.reason, "missing_human_approval");
+  }
+
+  const approved = advancePromptFlowRun(flow, run, {
+    evidenceRefs: [runbookEvidence],
+    humanApprovals: [
+      {
+        approverId: "human-ops-1",
+        approverHatId: "director_engineering",
+        approved: true,
+        approvedAt: "2026-05-31T00:00:00.000Z",
+        evidenceRef: approvalEvidence,
+      },
+    ],
+  });
+  equal(approved.outcome, "advanced");
+  if (approved.outcome === "advanced") {
+    equal(approved.run.state, PromptFlowRunState.Completed);
+  }
+});
+
+test("production incident runbook prompt flows are lint-clean and expose human approval gates", () => {
+  const runbooks = buildProductionIncidentRunbookPromptFlowDefinitions();
+  const incidentCommander = buildHatDefinitions().find((hat) => hat.id === "incident_commander")!;
+  ok(runbooks.length >= 1);
+  for (const runbook of runbooks) {
+    deepEqual(lintPromptFlowDefinition(runbook), []);
+    ok(runbook.allowedHatIds.includes("incident_commander"));
+    ok(runbook.phases.some((phase) => phase.gate.kind === PromptFlowGateKind.HumanApproval));
+    const tasks = compilePromptFlowTasks({
+      definitions: [runbook],
+      runs: runbook.phases.map((phase, index) => ({
+        runId: `pfr-incident-${index}`,
+        promptFlowId: runbook.promptFlowId,
+        definitionVersion: runbook.version,
+        workItemId: "incident-1",
+        scope: runbook.requiredScope,
+        currentPhaseId: phase.phaseId,
+        state: PromptFlowRunState.RunningPhase,
+        priority: 100 - index,
+      })),
+    });
+    const readout = promptFlowReadoutForHat(incidentCommander, tasks);
+    equal(readout.tasks.length, runbook.phases.length);
+    deepEqual(readout.vetoedTasks, []);
   }
 });
 

@@ -1082,7 +1082,12 @@ test("createAgentCliPromptFlowTasksFromEnv reads current tasks from JSON", () =>
           phaseId: "execute",
           runState: PromptFlowRunState.RunningPhase,
           requiredEvidenceRefs: ["tests.green"],
-          gate: { kind: PromptFlowGateKind.Evidence, requiredEvidenceRefs: ["tests.green"] },
+          gate: {
+            kind: PromptFlowGateKind.HumanApproval,
+            requiredEvidenceRefs: ["tests.green"],
+            approverHatIds: ["operations_director"],
+            requiredHumanApprovalCount: 1,
+          },
           reviewerHatIds: ["code_reviewer"],
           timeoutSeconds: 900,
           retryLimit: 2,
@@ -1100,7 +1105,9 @@ test("createAgentCliPromptFlowTasksFromEnv reads current tasks from JSON", () =>
   equal(tasks[0]?.phaseId, "execute");
   equal(tasks[0]?.runState, PromptFlowRunState.RunningPhase);
   deepEqual(tasks[0]?.requiredEvidenceRefs, ["tests.green"]);
-  equal(tasks[0]?.gate?.kind, PromptFlowGateKind.Evidence);
+  equal(tasks[0]?.gate?.kind, PromptFlowGateKind.HumanApproval);
+  deepEqual(tasks[0]?.gate?.approverHatIds, ["operations_director"]);
+  equal(tasks[0]?.gate?.requiredHumanApprovalCount, 1);
   deepEqual(tasks[0]?.reviewerHatIds, ["code_reviewer"]);
   equal(tasks[0]?.timeoutSeconds, 900);
   equal(tasks[0]?.retryLimit, 2);

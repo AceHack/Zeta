@@ -2024,3 +2024,33 @@ expected cadence lanes with zero `worker run failed` or structured error matches
 ### Verification
 
 `npm run typecheck` passed. `npm test` passed: **1199 tests, 1192 pass, 0 fail, 7 skipped**.
+
+---
+
+## Update 2026-05-31 — Phase 2.8 incident runbook prompt flows gain human approval gates
+
+Production incident runbooks are now represented as typed prompt-flow definitions instead of
+free-form operational text. The first shipped registry entry is the provider-outage incident
+runbook for the `incident_commander` hat. It walks the agent through impact assessment, an
+operator approval packet, and guarded recovery/closure, while keeping the production freeze or
+failover step behind an explicit human-approval gate.
+
+### What shipped
+
+- `PromptFlowPhaseGate` now carries human approver hats and a required approval count for
+  `human_approval` gates.
+- `advancePromptFlowRun` now accepts structured human approvals in addition to evidence refs.
+  A human-approval gate blocks when approval is missing, when the approver hat is not allowed,
+  or when the approval evidence ref is not content-addressed.
+- `lintPromptFlowDefinition` rejects human-approval gates that do not name approver hats or
+  declare an invalid approval count.
+- `buildProductionIncidentRunbookPromptFlowDefinitions` returns the first production runbook
+  registry entry: `incident.provider-outage`.
+- The runbook uses the existing prompt-flow compiler/readout path, so incident work appears in
+  observe as a hat-scoped prompt-flow task rather than a separate control surface.
+- The agent CLI parser preserves `approverHatIds` and `requiredHumanApprovalCount` from durable
+  prompt-flow JSON, so runbook gates survive JSON ingestion.
+
+### Verification
+
+`npm run typecheck` passed. `npm test` passed: **1201 tests, 1194 pass, 0 fail, 7 skipped**.
