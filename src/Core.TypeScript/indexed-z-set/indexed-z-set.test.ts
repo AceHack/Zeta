@@ -1,0 +1,181 @@
+/**
+ * indexed-z-set.test.ts — TS reference (oracle #1) for `IndexedZSet<K,V>`, the
+ * rung above the Z-set on the algebra ladder.
+ *
+ * Three duties (mirroring the Z-set oracle):
+ *   1. The grouped abelian-group laws hold — `add` is commutative / associative
+ *      with `empty` identity and `neg` inverse (`add(a, neg(a)) == empty`), and
+ *      an all-cancelling key DROPS its group (the inverse lifts to the index).
+ *   2. Construction canonicalizes — `indexWith` buckets by key then Z-set-sums
+ *      each bucket (sum + drop-zero), groups sort ascending, empties drop.
+ *   3. The shared golden vector replays to the expected states — the
+ *      cross-language parity lock the F#/C#/Rust twins also cast (`join` is the
+ *      bilinear cross-product with weight-MULTIPLY + consolidate).
+ */
+
+import { describe, expect, it } from "bun:test";
+import { readFileSync } from "node:fs";
+import { join as pathJoin } from "node:path";
+import {
+  equals as zEquals,
+  ofEntries as zOfEntries,
+  stringCompare,
+  type Compare,
+  type ZEntry,
+  type ZSet,
+} from "../z-set/z-set";
+import {
+  add,
+  empty,
+  equals,
+  get,
+  indexWith,
+  isEmpty,
+  type IndexedZSet,
+  join,
+  keyCount,
+  neg,
+  ofGroups,
+  sub,
+  toZSet,
+  tupleCount,
+} from "./indexed-z-set";
+
+const cmp = stringCompare;
+const eqI = (a: IndexedZSet<string, string>, b: IndexedZSet<string, string>) => equals(cmp, cmp, a, b);
+
+// --- fixture loading ------------------------------------------------------
+
+interface Pair {
+  k: string;
+  v: string;
+}
+interface JsonGroup {
+  k: string;
+  values: ZEntry<string>[];
+}
+interface Golden {
+  indexInput: ZEntry<Pair>[];
+  expectedA: JsonGroup[];
+  operandB: JsonGroup[];
+  expectedAddAB: JsonGroup[];
+  expectedNegA: JsonGroup[];
+  expectedSubAB: JsonGroup[];
+  expectedJoinAB: ZEntry<string>[];
+  expectedToZSetA: ZEntry<string>[];
+  expectedKeyCountA: number;
+  expectedTupleCountA: number;
+}
+
+const golden: Golden = JSON.parse(readFileSync(pathJoin(import.meta.dir, "golden-vectors.json"), "utf8"));
+
+// (k, v) pair order: ascending by k, then by v — the source Z-set's element order.
+const pairCompare: Compare<Pair> = (a, b) => {
+  const c = cmp(a.k, b.k);
+  return c !== 0 ? c : cmp(a.v, b.v);
+};
+
+/** A JSON indexed-state is already authored in canonical form — cast it. */
+const toIndexed = (gs: JsonGroup[]): IndexedZSet<string, string> =>
+  gs.map((g) => ({ key: g.k, values: g.values as ZSet<string> }));
+
+const expectedA = toIndexed(golden.expectedA);
+const operandB = ofGroups(cmp, cmp, toIndexed(golden.operandB));
+
+// A is built the real way: a source Z-set, then indexWith.
+const sourceZ = zOfEntries(pairCompare, golden.indexInput);
+const A = indexWith<Pair, string, string>(
+  cmp,
+  cmp,
+  (p) => p.k,
+  (p) => p.v,
+  sourceZ,
+);
+
+// --- 3. golden-vector replay (the cross-language parity lock) --------------
+
+describe("IndexedZSet — golden vector (oracle #1 / parity lock)", () => {
+  it("indexWith builds the expected canonical A (sum per (k,v), drop-zero, sorted)", () => {
+    expect(eqI(A, expectedA)).toBe(true);
+  });
+
+  it("keyCount / tupleCount of A", () => {
+    expect(keyCount(A)).toBe(golden.expectedKeyCountA);
+    expect(tupleCount(A)).toBe(golden.expectedTupleCountA);
+  });
+
+  it("add(A, B) — shared-key ZSet.union, drop the cancelled group", () => {
+    expect(eqI(add(cmp, cmp, A, operandB), toIndexed(golden.expectedAddAB))).toBe(true);
+  });
+
+  it("neg(A) — per-group negation", () => {
+    expect(eqI(neg(A), toIndexed(golden.expectedNegA))).toBe(true);
+  });
+
+  it("sub(A, B) = add(A, neg(B)) — negatives persist", () => {
+    expect(eqI(sub(cmp, cmp, A, operandB), toIndexed(golden.expectedSubAB))).toBe(true);
+  });
+
+  it("join(A, B) — merge-join on key × cross-product values, weight MULTIPLY", () => {
+    const out = join(cmp, cmp, (k, va: string, vb: string) => `${k}|${va}|${vb}`, A, operandB);
+    expect(zEquals(cmp, out, golden.expectedJoinAB)).toBe(true);
+  });
+
+  it("toZSet(A) — flatten (k,v) tuples to a Z-set<string>", () => {
+    const out = toZSet(cmp, (k, v: string) => `${k}|${v}`, A);
+    expect(zEquals(cmp, out, golden.expectedToZSetA)).toBe(true);
+  });
+});
+
+// --- 1. grouped abelian-group laws ----------------------------------------
+
+describe("IndexedZSet — abelian-group laws (grouped over the Z-set)", () => {
+  const e = empty<string, string>();
+
+  it("empty is the identity: add(A, empty) == add(empty, A) == A", () => {
+    expect(eqI(add(cmp, cmp, A, e), A)).toBe(true);
+    expect(eqI(add(cmp, cmp, e, A), A)).toBe(true);
+  });
+
+  it("inverse: add(A, neg(A)) == empty (every group cancels and DROPS)", () => {
+    const cancelled = add(cmp, cmp, A, neg(A));
+    expect(isEmpty(cancelled)).toBe(true);
+  });
+
+  it("commutative: add(A, B) == add(B, A)", () => {
+    expect(eqI(add(cmp, cmp, A, operandB), add(cmp, cmp, operandB, A))).toBe(true);
+  });
+
+  it("associative: add(add(A,B),A) == add(A,add(B,A))", () => {
+    const left = add(cmp, cmp, add(cmp, cmp, A, operandB), A);
+    const right = add(cmp, cmp, A, add(cmp, cmp, operandB, A));
+    expect(eqI(left, right)).toBe(true);
+  });
+});
+
+// --- 2. construction / lookup invariants ----------------------------------
+
+describe("IndexedZSet — construction + lookup", () => {
+  it("get returns a key's Z-set, empty for an absent key", () => {
+    // A has keys a, b; A.a = {x:2, y:2}
+    const ax = get(cmp, A, "a");
+    expect(ax.length).toBe(2);
+    expect(get(cmp, A, "zzz").length).toBe(0);
+  });
+
+  it("indexWith drops a group whose values fully cancel to empty", () => {
+    // (k1, p): +1 then -1 → the only key's value-Z-set is empty → no group.
+    const src = zOfEntries<Pair>(pairCompare, [
+      { e: { k: "k1", v: "p" }, w: 1 },
+      { e: { k: "k1", v: "p" }, w: -1 },
+    ]);
+    const idx = indexWith<Pair, string, string>(
+      cmp,
+      cmp,
+      (p) => p.k,
+      (p) => p.v,
+      src,
+    );
+    expect(isEmpty(idx)).toBe(true);
+  });
+});

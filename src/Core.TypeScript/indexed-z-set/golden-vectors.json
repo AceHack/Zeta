@@ -1,0 +1,84 @@
+{
+  "description": "IndexedZSet<K,V> cross-language conformance — the rung ABOVE the Z-set on the algebra ladder (G-Set ⊂ Bag ⊂ Z-set ⊂ IndexedZSet). An IndexedZSet is conceptually Z[K × V] (a Z-set over (key, value) pairs) but stored GROUPED BY KEY: an ascending-by-key run of groups, each carrying its per-key Z-set<V>. That grouping is what turns the bilinear JOIN and key-wise aggregation into a linear merge over two sorted runs — which is why it is the substrate DBSP incremental views are built on. Mirrors the F# engine src/Core/IndexedZSet.fs (the originating oracle). Canonical form (the equality contract for cross-oracle byte-diff): groups sorted ascending by key (no key twice), each group's values a canonical Z-set (sorted by value, weight != 0), and a group whose values cancel to empty is DROPPED (the abelian-group inverse lifts to the indexed level). Every op reduces to the Z-set primitive: indexWith buckets-by-key then Z-set-canonicalizes each bucket (sum + drop-zero); add merge-joins the runs and ZSet.unions shared keys; neg negates per group; sub = add(a, neg(b)); join merge-joins on key then cross-products the value-Z-sets with weight-MULTIPLY + consolidate. The fixture is intentionally small + hand-verifiable: build A via indexWith(indexInput) and assert == expectedA, then assert add/neg/sub/join/toZSet of A against operandB.",
+  "keyType": "string",
+  "valueType": "string",
+  "comparator": "ascending ordinal on the key, then ascending ordinal on the value (TS string < / C# StringComparer.Ordinal / byte-ordered Rust Ord). Same ASCII-only caveat as the Z-set/Bag oracles: F# Comparer<'K>.Default is culture-sensitive but coincides with ordinal for these single-letter keys/values.",
+  "combiners": {
+    "toZSet": "(k, v) => `${k}|${v}` — flatten a (key,value) tuple to a single string element",
+    "join": "(k, va, vb) => `${k}|${va}|${vb}` — name a joined triple as a single string element"
+  },
+  "indexInput": [
+    { "e": { "k": "a", "v": "x" }, "w": 1 },
+    { "e": { "k": "a", "v": "y" }, "w": 2 },
+    { "e": { "k": "b", "v": "x" }, "w": 1 },
+    { "e": { "k": "a", "v": "x" }, "w": 1, "note": "second (a,x) — sums with the first to weight 2" }
+  ],
+  "expectedA": [
+    {
+      "k": "a",
+      "values": [
+        { "e": "x", "w": 2 },
+        { "e": "y", "w": 2 }
+      ]
+    },
+    { "k": "b", "values": [{ "e": "x", "w": 1 }] }
+  ],
+  "operandB": [
+    {
+      "k": "a",
+      "values": [
+        { "e": "x", "w": -2 },
+        { "e": "z", "w": 1 }
+      ]
+    },
+    { "k": "c", "values": [{ "e": "w", "w": 1 }] }
+  ],
+  "expectedAddAB": [
+    {
+      "k": "a",
+      "values": [
+        { "e": "y", "w": 2 },
+        { "e": "z", "w": 1 }
+      ],
+      "note": "key a: union({x:2,y:2},{x:-2,z:1}) → x cancels to 0 (DROPPED), y:2, z:1"
+    },
+    { "k": "b", "values": [{ "e": "x", "w": 1 }] },
+    { "k": "c", "values": [{ "e": "w", "w": 1 }] }
+  ],
+  "expectedNegA": [
+    {
+      "k": "a",
+      "values": [
+        { "e": "x", "w": -2 },
+        { "e": "y", "w": -2 }
+      ]
+    },
+    { "k": "b", "values": [{ "e": "x", "w": -1 }] }
+  ],
+  "expectedSubAB": [
+    {
+      "k": "a",
+      "values": [
+        { "e": "x", "w": 4 },
+        { "e": "y", "w": 2 },
+        { "e": "z", "w": -1 }
+      ],
+      "note": "add(A, neg(B)): key a union({x:2,y:2},{x:2,z:-1}) → x:4, y:2, z:-1 (negative persists)"
+    },
+    { "k": "b", "values": [{ "e": "x", "w": 1 }] },
+    { "k": "c", "values": [{ "e": "w", "w": -1 }] }
+  ],
+  "expectedJoinAB": [
+    { "e": "a|x|x", "w": -4, "note": "only key a matches; cross-product A.a×B.a with weight MULTIPLY: 2 * -2" },
+    { "e": "a|x|z", "w": 2 },
+    { "e": "a|y|x", "w": -4 },
+    { "e": "a|y|z", "w": 2 }
+  ],
+  "expectedToZSetA": [
+    { "e": "a|x", "w": 2 },
+    { "e": "a|y", "w": 2 },
+    { "e": "b|x", "w": 1 }
+  ],
+  "expectedKeyCountA": 2,
+  "expectedTupleCountA": 3
+}
