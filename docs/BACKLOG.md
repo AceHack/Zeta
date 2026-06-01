@@ -913,6 +913,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0954.1](backlog/P2/B-0954.1-agent-bus-tip-partition-tolerance-named-ref-consensus-claim-coordinator-single-row-cas-co-dominant-mirrors-aaron-otto-2026-06-01.md)** Agent-bus tip partition-tolerance — the named-ref consensus story (claim-coordinator + single-row CAS/lease + co-dominant mirrors + §4), not "CRDT merge
 - [ ] **[B-0955](backlog/P2/B-0955-migrate-tools-off-bun-only-apis-to-node-process-equivalents-node-safe-baseline-policy-aaron-otto-2026-05-31.md)** Migrate tools/ production code off Bun-only APIs to node:/process equivalents — honor the Node-safe-baseline policy (2026-04-20 tools-runtime ADR v6)
 - [ ] **[B-0960](backlog/P2/B-0960-ace-slice3.1-pave-the-strict-default-road-2026-06-01.md)** Ace slice 3.1 — pave the strict-by-default road (lower signature friction)
+- [ ] **[B-0961](backlog/P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md)** ZetaId root-category taxonomy — gap analysis + DEFERRAL (model Claim/Lock as typed events first; promote to root Category only after producers + identity-rule + growth-theory)
 
 ## P3 — convenience / deferred
 

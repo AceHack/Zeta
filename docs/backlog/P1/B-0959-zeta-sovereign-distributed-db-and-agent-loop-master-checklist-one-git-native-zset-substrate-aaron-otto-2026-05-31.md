@@ -282,6 +282,20 @@ no-PR (sovereign transport). Now unblocked by §1's first-class G-Set.
       self-reflect surfaces own trajectory; play surfaces peer chatter). The bus
       is just the first source — Rx-over-anything → dashboard. Wires §2 (observe)
       to §3 (bus): the dashboard becomes a live, mode-aware view of the substrate.
+- [ ] **ZetaId coordination — Claim + Lock as typed events first; root-Category promotion deferred** — [B-0961](../P2/B-0961-zetaid-root-category-taxonomy-gap-analysis-claim-lock-coordination-categories-2026-05-31.md).
+      Multi-agent review (Grok + Amara, 2026-06-01) rejected adding `Claim(9)`/`Lock(10)`
+      to root `Category` now. Phase 1: model Claim (rides `Bus(6)`) + Lock (CAS slice,
+      B-0954.1) as typed coordination **events under existing categories**. Phase 2
+      (promote to root): gated on Gate A (identity-rule — is `Category` in the
+      content-hash?) + Gate B (real producers/consumers). Gate C (growth) **resolved**:
+      escape-to-`Extended` (reserve slot `15`, then read a **wider** extension
+      field — not repeated 4-bit nibbles — or an `IdVersion` width-bump) means 4
+      bits is no ceiling (Aaron 2026-05-31). "Free slots ≠ permission."
+- [ ] **Backlog → ZetaId conversion** (Aaron 2026-05-31): once B-0961 settles,
+      convert `docs/backlog/P*/B-*.md` → `WorkItem(8)` events in the G-Set event-store.
+      The category already exists (`WorkItem(8)` was reserved for `B-xxxxx → ZetaId`)
+      — so this is **tooling, not a new category**, gated on B-0961. Then the
+      backlog is queryable via the same Rx-over-bus pipeline as everything else.
 
 ### What an Rx query IS, in G-Set/Z-set terms (the math note)
 
