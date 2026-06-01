@@ -1,7 +1,8 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import type { Dirent } from "node:fs";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { createHash } from "node:crypto";
+import { fileURLToPath } from "node:url";
 
 export interface AceManifest {
   readonly format_version: number;
@@ -9,6 +10,7 @@ export interface AceManifest {
   readonly version: string;
   readonly content_hash: string;
   readonly description?: string;
+  readonly signature?: { readonly algo: string; readonly key_id: string; readonly sig: string };
 }
 
 export interface InstalledPackage {
@@ -83,7 +85,7 @@ export type InstallResult = { ok: true; dir: string } | { ok: false; error: stri
  * Verify-before-extract: recompute the content hash of `pkg.files` and refuse to
  * extract unless it matches `pkg.manifest.content_hash` (integrity). Extracts to
  * `<storePath>/<hash-with-':'-as-'-'>/` with a `manifest.json`. INTEGRITY ONLY —
- * authenticity (signatures) is a separate concern (slice 3).
+ * authenticity (signatures) is a separate concern handled in ace.ts + signing.ts.
  */
 export function installPackage(storePath: string, pkg: AcePackage): InstallResult {
   const filesJson = JSON.stringify(pkg.files);
@@ -97,7 +99,7 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   // when a bad path is not the first entry.) Reject any '..' component (POSIX `../` or Windows
   // `..\`) or absolute path (leading '/' or '\').
   //
-  // NOTE (slice-3 hardening — on the map per the shield rule, NOT silenced):
+  // NOTE (slice-3 hardening):
   //   (a) PATH: Windows device names (CON/NUL/PRN/AUX/COM1…) and drive-relative paths
   //       (`C:foo`) are NOT rejected here. They cannot escape `<storePath>/<hash>/` —
   //       `path.join` embeds them as subpaths — but a malicious package could still target a
@@ -105,10 +107,11 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   //   (b) CONTENT/SOURCE: the `install <url>` verb fetches package bytes over HTTP and writes
   //       them here (CodeQL js/http-to-file-access, accepted). The write is confined to
   //       `<storePath>/<hash>/` (path guard above) and the bytes are integrity-checked against
-  //       the manifest hash — but the manifest ships WITH the download, so integrity alone does
-  //       not defend against a malicious *source*. Authenticity (signature over a trusted key)
-  //       is the defense, and is explicitly the authenticity/robustness slice (slice 3). The
-  //       alert stays open until then rather than being suppressed.
+  //       the manifest hash. Authenticity (signature over a trusted key) now EXISTS — `ace install`
+  //       runs the Ed25519 signature gate (see `ace.ts` + `signing.ts`); a package installed via
+  //       the signed+trusted path is authenticity-verified, and `--allow-unsigned` is required to
+  //       install an unsigned one. The CodeQL js/http-to-file-access alert remains a true
+  //       intended-flow observation (the http→file write is the package manager's function).
   for (const rel of Object.keys(pkg.files)) {
     if (rel.includes("..") || rel.startsWith("/") || rel.startsWith("\\")) {
       return { ok: false, error: `unsafe file path in package: ${rel}` };
@@ -127,4 +130,70 @@ export function installPackage(storePath: string, pkg: AcePackage): InstallResul
   } catch (e) {
     return { ok: false, error: `extract failed: ${(e as Error).message}` };
   }
+}
+
+// ---- Trust store (slice 3) ----
+
+export interface TrustedKey { key_id: string; public_key: string; label?: string; added?: string; }
+export interface LoadedTrustEntry { public_key: string; label?: string; source: "bundled" | "user"; }
+
+/** ~/.ace/trusted-keys.json — operator-managed keyring (sibling of the store). */
+export function trustStorePath(): string {
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? ".";
+  return join(home, ".ace", "trusted-keys.json");
+}
+
+/** tools/ace/trusted-keys.json — the in-repo bundled root anchor (ships empty). */
+export function bundledTrustPath(): string {
+  // node:url + import.meta.url is the standard-ESM portable idiom (works on Bun AND
+  // Node >= 22.5); import.meta.dir is Bun-only and would be undefined under Node,
+  // silently breaking the bundled-anchor path. Keep this portable per the skill's Node-floor claim.
+  return join(dirname(fileURLToPath(import.meta.url)), "trusted-keys.json");
+}
+
+function readKeysFile(p: string): TrustedKey[] {
+  if (!existsSync(p)) return [];
+  try {
+    const arr = JSON.parse(readFileSync(p, "utf8"));
+    if (!Array.isArray(arr)) return [];
+    return arr.filter((k) => k && typeof k.key_id === "string" && typeof k.public_key === "string");
+  } catch {
+    return [];
+  }
+}
+
+function makeTrustEntry(k: TrustedKey, source: "bundled" | "user"): LoadedTrustEntry {
+  const entry: LoadedTrustEntry = { public_key: k.public_key, source };
+  if (k.label !== undefined) entry.label = k.label;
+  return entry;
+}
+
+/** bundled ∪ user; user entries override bundled on key_id collision. */
+export function loadTrustStore(
+  bundledPath: string = bundledTrustPath(), userPath: string = trustStorePath(),
+): Map<string, LoadedTrustEntry> {
+  const m = new Map<string, LoadedTrustEntry>();
+  for (const k of readKeysFile(bundledPath)) m.set(k.key_id, makeTrustEntry(k, "bundled"));
+  for (const k of readKeysFile(userPath)) m.set(k.key_id, makeTrustEntry(k, "user"));
+  return m;
+}
+
+/** Append to the user store (create if absent); dedup by key_id. */
+export function addTrustedKey(entry: TrustedKey, userPath: string = trustStorePath()): { added: boolean } {
+  const existing = readKeysFile(userPath);
+  if (existing.some((k) => k.key_id === entry.key_id)) return { added: false };
+  existing.push({ ...entry, added: entry.added ?? new Date().toISOString() });
+  mkdirSync(dirname(userPath), { recursive: true });
+  writeFileSync(userPath, JSON.stringify(existing, null, 2));
+  return { added: true };
+}
+
+export function listTrustedKeys(
+  bundledPath: string = bundledTrustPath(), userPath: string = trustStorePath(),
+): Array<{ key_id: string; label?: string; source: "bundled" | "user" }> {
+  return [...loadTrustStore(bundledPath, userPath).entries()].map(([key_id, v]) => {
+    const row: { key_id: string; label?: string; source: "bundled" | "user" } = { key_id, source: v.source };
+    if (v.label !== undefined) row.label = v.label;
+    return row;
+  });
 }

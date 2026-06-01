@@ -3,13 +3,22 @@
 //
 // Usage:
 //   bun tools/ace/ace.ts list [--store <path>] [--json]
-//   bun tools/ace/ace.ts install <url-or-path>
+//   bun tools/ace/ace.ts install <url-or-path> [--allow-unsigned]
 //   bun tools/ace/ace.ts verify <hash>
+//   bun tools/ace/ace.ts keygen [--out <prefix>]
+//   bun tools/ace/ace.ts sign <pkg> --key <priv.key> [--out <file>]
+//   bun tools/ace/ace.ts trust add <pub-file-or-b64> [--label <name>]
+//   bun tools/ace/ace.ts trust list
 //
 // Future commands (not yet implemented): remove, inspect.
 
-import { readFileSync } from "node:fs";
-import { defaultStorePath, listInstalled, installPackage, type AcePackage } from "./store";
+import { chmodSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  defaultStorePath, listInstalled, installPackage, contentHash,
+  loadTrustStore, addTrustedKey, listTrustedKeys,
+  type AcePackage,
+} from "./store";
+import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 
 interface ListArgs {
   readonly command: "list";
@@ -25,6 +34,7 @@ interface InstallArgs {
   readonly command: "install";
   readonly source: string;
   readonly storePath: string;
+  readonly allowUnsigned: boolean;
 }
 
 interface VerifyArgs {
@@ -33,7 +43,26 @@ interface VerifyArgs {
   readonly storePath: string;
 }
 
-type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs;
+interface KeygenArgs {
+  readonly command: "keygen";
+  readonly outPrefix: string;
+}
+
+interface SignArgs {
+  readonly command: "sign";
+  readonly pkgPath: string;
+  readonly keyPath: string;
+  readonly outPath?: string;
+}
+
+interface TrustArgs {
+  readonly command: "trust";
+  readonly sub: "add" | "list";
+  readonly arg?: string;
+  readonly label?: string;
+}
+
+type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs;
 
 interface ArgError {
   readonly error: string;
@@ -45,10 +74,90 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     return { command: "help" };
   }
 
+  if (command === "keygen") {
+    let outPrefix = "ace-key";
+    for (let i = 1; i < argv.length; i++) {
+      if (argv[i] === "--out" || argv[i] === "-o") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--out requires a prefix argument" };
+        outPrefix = next;
+        i++;
+      } else {
+        return { error: `Unknown option for keygen: ${argv[i]}` };
+      }
+    }
+    return { command: "keygen", outPrefix };
+  }
+
+  if (command === "sign") {
+    const pkgPath = argv[1];
+    if (!pkgPath || pkgPath.startsWith("-")) return { error: "sign requires a <pkg-path> argument" };
+    let keyPath: string | undefined;
+    let outPath: string | undefined;
+    for (let i = 2; i < argv.length; i++) {
+      if (argv[i] === "--key") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--key requires a path argument" };
+        keyPath = next;
+        i++;
+      } else if (argv[i] === "--out" || argv[i] === "-o") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--out requires a path argument" };
+        outPath = next;
+        i++;
+      } else {
+        return { error: `Unknown option for sign: ${argv[i]}` };
+      }
+    }
+    if (!keyPath) return { error: "sign requires --key <priv.key>" };
+    const result: SignArgs = { command: "sign", pkgPath, keyPath };
+    if (outPath !== undefined) return { ...result, outPath };
+    return result;
+  }
+
+  if (command === "trust") {
+    const sub = argv[1];
+    if (!sub) return { error: "trust requires a subcommand: add | list" };
+    if (sub === "list") return { command: "trust", sub: "list" };
+    if (sub === "add") {
+      const arg = argv[2];
+      if (!arg || arg.startsWith("-")) return { error: "trust add requires a <pubkey-file-or-b64> argument" };
+      let label: string | undefined;
+      for (let i = 3; i < argv.length; i++) {
+        if (argv[i] === "--label") {
+          const next = argv[i + 1];
+          if (!next || next.startsWith("-")) return { error: "--label requires a name argument" };
+          label = next;
+          i++;
+        } else {
+          return { error: `Unknown option for trust add: ${argv[i]}` };
+        }
+      }
+      const result: TrustArgs = { command: "trust", sub: "add", arg };
+      if (label !== undefined) return { ...result, label };
+      return result;
+    }
+    return { error: `Unknown trust subcommand: ${sub}` };
+  }
+
   if (command === "install") {
     const source = argv[1];
     if (!source || source.startsWith("-")) return { error: "install requires a <url-or-path> argument" };
-    return { command: "install", source, storePath: defaultStorePath() };
+    let storePath = defaultStorePath();
+    let allowUnsigned = false;
+    for (let i = 2; i < argv.length; i++) {
+      if (argv[i] === "--store" || argv[i] === "-s") {
+        const next = argv[i + 1];
+        if (!next || next.startsWith("-")) return { error: "--store requires a path argument" };
+        storePath = next;
+        i++;
+      } else if (argv[i] === "--allow-unsigned") {
+        allowUnsigned = true;
+      } else {
+        return { error: `Unknown option for install: ${argv[i]}` };
+      }
+    }
+    return { command: "install", source, storePath, allowUnsigned };
   }
 
   if (command === "verify") {
@@ -93,8 +202,13 @@ function printUsage(): void {
 
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
-  ace install <url-or-path>                      Download/read a package, verify integrity, install
+  ace install <url-or-path> [--allow-unsigned]   Download/read a package, verify integrity+authenticity, install
+                                                   --allow-unsigned only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
   ace verify <hash>                              Confirm an installed package is present
+  ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
+  ace sign <pkg> --key <priv.key> [--out <file>] Sign a package manifest with an Ed25519 private key
+  ace trust add <pub-file-or-b64> [--label <name>] Trust an Ed25519 public key
+  ace trust list                                 List all trusted keys
   ace help                                       Show this help
 
 Future commands (not yet implemented):
@@ -113,6 +227,85 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   if (parsed.command === "help") {
     printUsage();
+    return 0;
+  }
+
+  // keygen — exclusive-create the private key so secret bytes never land in a
+  // pre-existing (possibly permissive) file, then belt-and-suspenders chmodSync.
+  // Refuse with exit 1 if <prefix>.key already exists (never silently clobber).
+  if (parsed.command === "keygen") {
+    const kp = generateKeypair();
+    const keyPath = `${parsed.outPrefix}.key`;
+    try {
+      // flag "wx": exclusive create — fails with EEXIST if the file already exists.
+      // mode 0o600: applied on create (POSIX-guaranteed; advisory on Windows).
+      writeFileSync(keyPath, kp.privatePem, { mode: 0o600, flag: "wx" });
+    } catch (e) {
+      if ((e as NodeJS.ErrnoException).code === "EEXIST") {
+        console.error(`ace: keygen refused: ${keyPath} already exists — remove it or choose a different --out (refusing to overwrite a private key)`);
+        return 1;
+      }
+      throw e;
+    }
+    // Belt-and-suspenders: force 0o600 even if the platform ignored mode-on-create.
+    chmodSync(keyPath, 0o600);
+    // Only write .pub after .key exclusive-create succeeds.
+    writeFileSync(`${parsed.outPrefix}.pub`, JSON.stringify({ algo: "ed25519", key_id: kp.keyId, public_key: kp.publicSpkiB64 }, null, 2));
+    console.log(`ace: wrote ${parsed.outPrefix}.key (0600) + ${parsed.outPrefix}.pub  key_id ${kp.keyId} — share ${parsed.outPrefix}.pub with consumers; keep ${parsed.outPrefix}.key private`);
+    return 0;
+  }
+
+  // sign — recompute content_hash with the SLICE-2 contentHash (never sort files); refuse on mismatch
+  if (parsed.command === "sign") {
+    let pkg: AcePackage;
+    try { pkg = JSON.parse(readFileSync(parsed.pkgPath, "utf8")) as AcePackage; }
+    catch { console.error("ace: package is not valid JSON"); return 65; }
+    const recomputed = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
+    if (recomputed !== pkg.manifest.content_hash) {
+      console.error(`ace: sign refused: package content changed since its content_hash was computed — rebuild the package, then sign`);
+      return 1;
+    }
+    let priv: string;
+    try { priv = readFileSync(parsed.keyPath, "utf8"); }
+    catch { console.error(`ace: cannot read key ${parsed.keyPath}`); return 1; }
+    const signature = signManifest(pkg.manifest, priv);
+    const signed = { ...pkg, manifest: { ...pkg.manifest, signature } };
+    const out = JSON.stringify(signed, null, 2);
+    if (parsed.outPath) {
+      writeFileSync(parsed.outPath, out);
+      console.log(`ace: signed -> ${parsed.outPath} (key_id ${signature.key_id})`);
+    } else {
+      process.stderr.write(`ace: signed (key_id ${signature.key_id}) — redirect stdout to a file, or use --out <file>\n`);
+      console.log(out);
+    }
+    return 0;
+  }
+
+  // trust
+  if (parsed.command === "trust") {
+    if (parsed.sub === "list") {
+      const rows = listTrustedKeys();
+      if (rows.length === 0) { console.log("No trusted keys. (add one: ace trust add <pub>)"); return 0; }
+      for (const r of rows) console.log(`  ${r.key_id}  [${r.source}]${r.label ? "  " + r.label : ""}`);
+      return 0;
+    }
+    // add: arg is a .pub file path OR a raw base64 SPKI
+    if (!parsed.arg) { console.error("ace: trust add requires a <pubkey-file-or-b64>"); return 64; }
+    let publicB64: string;
+    let inputForm: string;
+    try {
+      const raw = readFileSync(parsed.arg, "utf8").trim();
+      publicB64 = raw.startsWith("{") ? (JSON.parse(raw).public_key as string) : raw;
+      inputForm = `from file: ${parsed.arg}`;
+    } catch {
+      publicB64 = parsed.arg; // not a file -> treat as raw b64
+      inputForm = "from b64";
+    }
+    const kid = keyId(publicB64);
+    const entry: { key_id: string; public_key: string; label?: string } = { key_id: kid, public_key: publicB64 };
+    if (parsed.label !== undefined) entry.label = parsed.label;
+    const res = addTrustedKey(entry);
+    console.log(res.added ? `ace: trusted ${kid}${parsed.label ? " (" + parsed.label + ")" : ""} [${inputForm}]` : `ace: ${kid} already trusted`);
     return 0;
   }
 
@@ -151,10 +344,43 @@ export async function main(argv: readonly string[]): Promise<number> {
     let pkg: AcePackage;
     try { pkg = JSON.parse(raw) as AcePackage; }
     catch { console.error("ace: package is not valid JSON"); return 65; }
+
+    // AUTHENTICITY GATE (design §6) — before extraction.
+    // Only `no-signature` is --allow-unsigned-overridable.
+    // `bad-signature` and `untrusted-key` are ALWAYS hard-refused (even with --allow-unsigned).
+    const v = verifySignature(pkg.manifest, loadTrustStore());
+    let signer: { key_id: string; label?: string } | undefined;
+    if (v.ok) {
+      signer = { key_id: v.key_id };
+      if (v.label !== undefined) signer.label = v.label;
+    } else if (v.reason === "bad-signature") {
+      console.error("ace: install refused: bad signature");
+      return 1;
+    } else if (v.reason === "unsupported-algo") {
+      console.error("ace: install refused: unsupported signature algorithm (expected ed25519)");
+      return 1;
+    } else if (v.reason === "untrusted-key") {
+      const kid = pkg.manifest.signature?.key_id ?? "?";
+      console.error(`ace: install refused: signature from untrusted key ${kid} — unknown publisher. Run 'ace trust list' to see trusted keys, or obtain the publisher's .pub and run 'ace trust add <pub>'.`);
+      return 1;
+    } else {
+      // no-signature
+      if (!parsed.allowUnsigned) {
+        console.error("ace: install refused: unsigned package (use --allow-unsigned to override)");
+        return 1;
+      }
+      console.error("ace: WARNING: installing UNSIGNED package (--allow-unsigned).");
+    }
+
+    // INTEGRITY + extract (slice 2, unchanged)
     const result = installPackage(parsed.storePath, pkg);
     if (!result.ok) { console.error(`ace: install refused: ${result.error}`); return 1; }
-    console.log(`ace: installed ${pkg.manifest.name}@${pkg.manifest.version} -> ${result.dir}`);
-    console.log("ace: integrity-verified (content hash). NOT authenticity-verified (no signature check yet).");
+    if (signer) {
+      console.log(`ace: integrity + authenticity verified (signed by ${signer.key_id}${signer.label ? " " + signer.label : ""}) -> ${result.dir}`);
+    } else {
+      console.log(`ace: installed ${pkg.manifest.name}@${pkg.manifest.version} -> ${result.dir}`);
+      console.log("ace: integrity-verified (content hash). NOT authenticity-verified (--allow-unsigned).");
+    }
     return 0;
   }
 
