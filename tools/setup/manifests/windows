@@ -39,4 +39,9 @@ ollama    winget=Ollama.Ollama    choco=ollama    optional
 # https://winget.run/pkg/RedHat/Podman + https://community.chocolatey.org/packages/podman-cli):
 # scoop `podman` | winget `RedHat.Podman` | choco `podman-cli` (the CLI package — NOT
 # `podman`, which would 404 on a choco-only host; `podman-desktop` is the separate GUI).
+# Windows-container caveat: podman on Windows runs LINUX containers ONLY (via the WSL2 VM);
+# native Windows containers (e.g. the docker-windows-install-ps1-test Server-Core shield) need
+# Docker. So docker stays the Windows default for Windows-container workloads (consistent with
+# B-0964: docker = Mac/Win default; podman preferred on the Linux cluster).
+# Both-runtimes-on-Windows shield coverage tracked in B-0968.
 podman    winget=RedHat.Podman    choco=podman-cli
