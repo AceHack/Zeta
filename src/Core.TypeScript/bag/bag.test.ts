@@ -20,10 +20,12 @@ import {
   addN,
   type Bag,
   type BagEntry,
+  concatAll,
   contains,
   distinctCount,
   empty,
   equals,
+  monoid,
   multiplicity,
   ofArray,
   ofEntries,
@@ -123,6 +125,33 @@ describe("Bag — commutative-monoid laws (and NON-idempotence)", () => {
     expect(toEntries(add(cmp, "a", bagA))).toEqual([entry("a", 2), entry("b", 2)]);
     expect(toEntries(addN(cmp, "z", 3, bagA))).toEqual([entry("a", 1), entry("b", 2), entry("z", 3)]);
     expect(equals(cmp, addN(cmp, "z", 0, bagA), bagA)).toBe(true);
+  });
+});
+
+describe("Bag — additive-monoid surface (empty + concat)", () => {
+  const m = monoid(cmp);
+  const a = bag(entry("a", 1), entry("b", 2));
+  const b = bag(entry("b", 1), entry("c", 3));
+  const c = bag(entry("c", 5));
+
+  it("concat is the explicit per-key sum (not just delegation)", () => {
+    expect(toEntries(m.concat(a, b))).toEqual([entry("a", 1), entry("b", 3), entry("c", 3)]);
+  });
+  it("empty is the identity: concat(empty, a) == a and concat(a, empty) == a", () => {
+    expect(toEntries(m.empty)).toEqual([]);
+    expect(equals(cmp, m.concat(m.empty, a), a)).toBe(true);
+    expect(equals(cmp, m.concat(a, m.empty), a)).toBe(true);
+  });
+  it("monoid laws: commutative + associative but NOT idempotent (the Bag distinction)", () => {
+    expect(equals(cmp, m.concat(a, b), m.concat(b, a))).toBe(true);
+    expect(equals(cmp, m.concat(m.concat(a, b), c), m.concat(a, m.concat(b, c)))).toBe(true);
+    expect(toEntries(m.concat(a, a))).toEqual([entry("a", 2), entry("b", 4)]); // doubles
+  });
+  it("concatAll folds a collection through the monoid (per-key sums)", () => {
+    expect(toEntries(concatAll(cmp, [bag(entry("a", 1)), bag(entry("a", 2), entry("b", 1)), bag(entry("b", 3))]))).toEqual([
+      entry("a", 3),
+      entry("b", 4),
+    ]);
   });
 });
 

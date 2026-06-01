@@ -28,6 +28,10 @@
  * analog of F#'s `'T : comparison` constraint.
  */
 
+// The Monoid record type is the lower rung's (G-Set's) — reused, not redeclared, so the
+// additive-monoid surface is one shape across the ladder.
+import type { Monoid } from "../g-set/g-set";
+
 /** A total order on `T` (`< 0`, `0`, `> 0`), e.g. {@link stringCompare}. */
 export type Compare<T> = (a: T, b: T) => number;
 
@@ -244,4 +248,33 @@ export function equals<T>(compare: Compare<T>, a: Bag<T>, b: Bag<T>): boolean {
     if (compare(ea.e, eb.e) !== 0 || ea.n !== eb.n) return false;
   }
   return true;
+}
+
+// ── generic-math additive-monoid surface (TS idiom: a Monoid record) ────────
+// Bag is an additive, commutative monoid (identity + associative per-key-sum union, NO
+// inverse) — but, unlike a G-Set, NOT idempotent (concat(a, a) doubles every count). The
+// TS additive-monoid surface is a `{ empty, concat }` record (the analog of F# Zero+(+) /
+// C# IAdditiveIdentity+operator+ / Rust Add+Default). Exposes empty+concat only — never
+// subtraction/negation (the abelian-group step is the Z-set, where retraction is the inverse).
+
+/**
+ * The additive-monoid surface of a Bag under `compare`: `empty` (identity) + `concat`
+ * (= {@link union}, the per-key sum). Lets generic monoid code fold a collection of Bags —
+ * see {@link concatAll}. Bag's monoid is comparator-specific, so this is a factory over
+ * `compare`. Identity holds by VALUE equality (compare with {@link equals}, not `===`).
+ */
+export function monoid<T>(compare: Compare<T>): Monoid<Bag<T>> {
+  return {
+    empty: empty<T>(),
+    concat: (a, b) => union(compare, a, b),
+  };
+}
+
+/**
+ * Fold a collection of Bags through the monoid (identity + `concat`, the per-key sum) — the
+ * "generic code folds it for free" payoff (the TS analog of Rust's `Sum`).
+ */
+export function concatAll<T>(compare: Compare<T>, bs: readonly Bag<T>[]): Bag<T> {
+  const m = monoid(compare);
+  return bs.reduce(m.concat, m.empty);
 }
