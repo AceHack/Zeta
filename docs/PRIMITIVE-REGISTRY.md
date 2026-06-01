@@ -290,6 +290,15 @@ suites. Cost 4× implementation; buys zero shared-runtime lock-in, full native i
 BFT property (_the compilers don't lie_). The shared-substrate efforts re-enter as **adapters
 behind our ports**, not replacements — a WASM-component adapter, an Arrow-Flight adapter.
 
+**Why conformance-by-agreement is the asset — "languages turned inside out"** (Aaron 2026-06-01):
+just as Kafka turned the database inside out (the log is primary, the DB a derived view), this
+turns _languages_ inside out — the **binary-compatible primitive layer (the byte-locked golden
+vectors + the shared interface) is the asset; the language it's written in is the swappable
+rendering.** A primitive isn't "the F# Z-set," it's "the Z-set, of which F#/C#/Rust/TS are four
+byte-equal renderings." Positioning: **"C++ Boost for any language"** — Boost's depth/elegance,
+DB-heavy + observability-heavy, but byte-locked across N languages instead of one. Full thesis +
+Boost-as-prior-art: [`docs/research/2026-06-01-languages-turned-inside-out-binary-compatible-bcl-is-the-asset-cpp-boost-for-any-language-aaron-otto.md`](research/2026-06-01-languages-turned-inside-out-binary-compatible-bcl-is-the-asset-cpp-boost-for-any-language-aaron-otto.md).
+
 **Closest conceptual neighbors** to our dynamic-object / polymorphic-shape (v8 hidden-shape)
 line: GraalVM Truffle interop ("ask a foreign value what members it supports" = `QueryInterface`
 for N languages), WASM Component Model / WIT (typed, runtime-checkable interface description),

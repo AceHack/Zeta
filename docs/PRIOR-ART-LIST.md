@@ -88,6 +88,38 @@ with a ⭐ below and add a row there.
   2008-2012); the historical F#-native refinement-type checker.
   Dormant (download artefact dated 2012). Listed for lineage;
   not a live dependency.
+- **Boost (C++)** — deep, composable primitive collection; the
+  "C++ Boost for any language" prior-art for our cross-language
+  primitive effort (study the design, not the C++ — ideas-not-code;
+  we own our interfaces per `bcl-interface-boundary`). Near-total
+  coverage of our primitives wish-list: `Boost.Hana` / `MPL` /
+  `Fusion` (compile-time metaprogramming + heterogeneous sequences,
+  the generic-math / type-level discipline), `Boost.Graph` (visitor /
+  property-map separation, our `Graph` primitive), `Boost.Spirit`
+  (PEG / parser-combinators, ZetaParse), `Boost.Asio` (proactor /
+  executor model, concurrency / IO), `Boost.Multiprecision` /
+  `Rational` / `Units` (numeric tower + units, Cayley-Dickson + UoM),
+  `Boost.Intrusive` / `Container` (allocation-aware containers, the
+  pooled hot-path our Z-set / IndexedZSet combiners already use),
+  `Boost.Outcome` (`Result`-style errors, the `Result<T, TFeedback>`
+  lineage). The elegance to learn is the separation of policy from
+  mechanism (allocators / comparators / traits as parameters) — the
+  same shape as our comparer-as-identity + generic-math-as-port
+  design. Per Aaron: used at MacVector for DNA-sequencing +
+  molecular-simulation software. Refresh manifest entries: the 7
+  `boost-*` repos in `references/reference-sources.json`. See
+  `docs/research/2026-06-01-languages-turned-inside-out-binary-compatible-bcl-is-the-asset-cpp-boost-for-any-language-aaron-otto.md`.
+- **NIST algorithms / reference standards** — numeric + statistical +
+  cryptographic standards (FIPS, the Statistical Reference Datasets
+  / StRD, special-function and linear-algebra reference results,
+  molecular / physical reference data). Prior art for numeric-
+  correctness golden vectors and the conformance-by-agreement
+  discipline (cross-check our primitives against authoritative
+  reference outputs). Distinct from the NIST AI RMF entry in the AI / ML
+  section below (that is the AI-risk framework; this is the
+  numeric / FIPS / StRD algorithm standards). Per Aaron: used
+  NIST-based algorithms for DNA + molecular-simulation work at
+  MacVector.
 
 ## AI / ML / adversarial-AI reading list
 

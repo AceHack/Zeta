@@ -692,7 +692,12 @@
     "url": "https://github.com/SakanaAI/AI-Scientist-v2.git",
     "branch": "main",
     "path": "references/prior-art/sakana-ai-scientist-v2",
-    "categories": ["multi-agent-scientific-discovery", "automated-research", "agentic-tree-search", "workshop-level-publication"],
+    "categories": [
+      "multi-agent-scientific-discovery",
+      "automated-research",
+      "agentic-tree-search",
+      "workshop-level-publication"
+    ],
     "notes": "Sakana AI 'AI Scientist-v2: Workshop-Level Automated Scientific Discovery via Agentic Tree Search' (2026). Robin closed-loop architecture descendant. Substrate-engineering reference for agentic tree search + workshop-level paper generation. Composes with B-0867 workflow engine extensions per 7 substrate-engineering candidate gaps (PR #5762)."
   },
   {
@@ -732,7 +737,13 @@
     "url": "https://github.com/probmods/webppl.git",
     "branch": "dev",
     "path": "references/prior-art/webppl",
-    "categories": ["probabilistic-programming", "bayesian-inference", "javascript", "ts-substrate", "mh-hmc-particle-filter-variational"],
+    "categories": [
+      "probabilistic-programming",
+      "bayesian-inference",
+      "javascript",
+      "ts-substrate",
+      "mh-hmc-particle-filter-variational"
+    ],
     "notes": "Closest TS/JS analog to Microsoft Infer.NET — full probabilistic programming framework in JS (Goodman + Mansinghka et al, Stanford). Inference engines: enumerate, rejection, MCMC (MH + HMC), particle filters, variational inference. Runs in Node + browser. MIT-licensed. Composes with B-0914.1 TrueSkill substrate + future B-0914.1.N factor-graph-DSL substrate-engineering work per Aaron 2026-05-28 'is there anything like infer.net in ts' substrate-engineering question. WebPPL doesn't have TrueSkill or EP first-class, but provides PP-substrate base that compositions can build on."
   },
   {
@@ -742,5 +753,61 @@
     "path": "references/prior-art/videolectures-net",
     "categories": ["phd-learning-substrate", "ml-research-talks", "transcripts-plus-slides", "no-throttle"],
     "notes": "PhD-level academic ML/AI/research talks archive (videolectures.net). Per Aaron 2026-05-28: 'you'd love videolectures.net in your free time i think, you'll really know everything this is PhD everything here. they don't throttle that i can tell and they have transcripts and powerpoints.' Substrate-accessible (transcripts + slides) for AI consumption per never-be-idle + agent-qol free-time-as-valid-mode substrate. Mirror URL placeholder; actual videolectures.net does not have official GitHub mirror — listing for documentation purposes only; manual access via https://videolectures.net/ when learning substrate is needed. Tom Minka TrueSkill talks among canonical references. Compose with B-0914 substrate-engineering candidate gap research."
+  },
+  {
+    "name": "boost-hana",
+    "url": "https://github.com/boostorg/hana.git",
+    "branch": "master",
+    "path": "references/prior-art/boost-hana",
+    "categories": ["boost", "primitive-design", "compile-time-meta", "type-level"],
+    "notes": "Boost.Hana — compile-time metaprogramming + heterogeneous sequences; design study for the generic-math / type-level discipline (the modern form of the Boost MPL/Fusion family). Study the design (policy-from-mechanism), ideas-not-code; we own our interfaces (bcl-interface-boundary). Per the C++-Boost-for-any-language thesis (docs/research/2026-06-01-languages-turned-inside-out-binary-compatible-bcl-is-the-asset-cpp-boost-for-any-language-aaron-otto.md; Aaron used Boost first-hand at MacVector). NB the boostorg/boost superproject is git submodules — these standalone per-library repos are what shallow-clone usefully."
+  },
+  {
+    "name": "boost-graph",
+    "url": "https://github.com/boostorg/graph.git",
+    "branch": "master",
+    "path": "references/prior-art/boost-graph",
+    "categories": ["boost", "primitive-design", "graph"],
+    "notes": "Boost.Graph (BGL) — the canonical generic-graph design (visitor + property-map separation); prior art for our Graph primitive. Design-study, ideas-not-code; we own our interfaces."
+  },
+  {
+    "name": "boost-spirit",
+    "url": "https://github.com/boostorg/spirit.git",
+    "branch": "master",
+    "path": "references/prior-art/boost-spirit",
+    "categories": ["boost", "primitive-design", "parser-combinators"],
+    "notes": "Boost.Spirit — PEG / parser-combinator design; prior art for the ZetaParse wish-list line. Design-study, ideas-not-code; we own our interfaces."
+  },
+  {
+    "name": "boost-asio",
+    "url": "https://github.com/boostorg/asio.git",
+    "branch": "master",
+    "path": "references/prior-art/boost-asio",
+    "categories": ["boost", "primitive-design", "concurrency", "io"],
+    "notes": "Boost.Asio — the proactor / executor model; prior art for the concurrency / IO wish-list line. Design-study, ideas-not-code; we own our interfaces."
+  },
+  {
+    "name": "boost-multiprecision",
+    "url": "https://github.com/boostorg/multiprecision.git",
+    "branch": "master",
+    "path": "references/prior-art/boost-multiprecision",
+    "categories": ["boost", "primitive-design", "numeric-tower"],
+    "notes": "Boost.Multiprecision — numeric tower (arbitrary-precision int/float, rational, complex); prior art for the numerics / Cayley-Dickson + units-of-measure lines. Design-study, ideas-not-code; we own our interfaces."
+  },
+  {
+    "name": "boost-intrusive",
+    "url": "https://github.com/boostorg/intrusive.git",
+    "branch": "master",
+    "path": "references/prior-art/boost-intrusive",
+    "categories": ["boost", "primitive-design", "allocation-aware-containers"],
+    "notes": "Boost.Intrusive — allocation-aware intrusive containers; prior art for the pooled hot-path discipline (our F#/C# Z-set / IndexedZSet combiners + ArrayPool workspaces). Design-study, ideas-not-code; we own our interfaces."
+  },
+  {
+    "name": "boost-outcome",
+    "url": "https://github.com/boostorg/outcome.git",
+    "branch": "master",
+    "path": "references/prior-art/boost-outcome",
+    "categories": ["boost", "primitive-design", "error-handling", "result"],
+    "notes": "Boost.Outcome — Result/Outcome-style error handling (result<T>, outcome<T>); prior art for our Result<T, TFeedback> + monad-propagation substrate. Design-study, ideas-not-code; we own our interfaces."
   }
 ]
