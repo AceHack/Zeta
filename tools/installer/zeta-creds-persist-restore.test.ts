@@ -4,7 +4,7 @@
 // (not just pure-function units; the CLI surfaces have FS I/O).
 
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { buildBlob, composeBundle, parseArgs as parsePersistArgs } from "./zeta-creds-persist";
@@ -153,6 +153,49 @@ describe("persist → restore round-trip via tmpdir", () => {
     const ghPath = resolveCredPaths(DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!, restoreRoot)[0]!;
     const restored = readFileSync(ghPath, "utf8");
     expect(restored).toBe("PERSISTED-TOKEN-VALUE");
+  });
+
+  it("keeps ESP blob usable across root reformat and skips already-present restores", () => {
+    const persistArgs = {
+      usbUuid: UUID,
+      output: join(tmp, "esp-retention", "zeta-creds.enc"),
+      passphrase: PASS,
+      persona: null,
+      bakeCredArgs: ["gh-cli=RETENTION-TOKEN-VALUE"],
+    };
+    mkdirSync(join(tmp, "esp-retention"), { recursive: true });
+    const bundle = composeBundle(persistArgs);
+    if ("error" in bundle) throw new Error(bundle.error);
+    const blob = buildBlob(bundle, persistArgs.usbUuid, persistArgs.passphrase);
+    writeFileSync(persistArgs.output, blob);
+
+    const firstRoot = join(tmp, "retention-root-a");
+    const firstPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, firstRoot);
+    if ("error" in firstPlan) throw new Error(firstPlan.error);
+    expect(applyPlan(firstPlan)).toBe(1);
+    const firstGhPath = resolveCredPaths(
+      DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!,
+      firstRoot,
+    )[0]!;
+    expect(readFileSync(firstGhPath, "utf8")).toBe("RETENTION-TOKEN-VALUE");
+
+    // Simulates root reformat: target root is removed while ESP blob remains.
+    rmSync(firstRoot, { recursive: true, force: true });
+    const secondRoot = join(tmp, "retention-root-b");
+    const reformatPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, secondRoot);
+    if ("error" in reformatPlan) throw new Error(reformatPlan.error);
+    expect(applyPlan(reformatPlan)).toBe(1);
+    const secondGhPath = resolveCredPaths(
+      DEFAULT_MANIFEST.credentials.find((c) => c.id === "gh-cli")!,
+      secondRoot,
+    )[0]!;
+    expect(readFileSync(secondGhPath, "utf8")).toBe("RETENTION-TOKEN-VALUE");
+
+    const idempotentPlan = planRestore(readFileSync(persistArgs.output), UUID, PASS, null, secondRoot);
+    if ("error" in idempotentPlan) throw new Error(idempotentPlan.error);
+    expect(idempotentPlan.writes).toHaveLength(0);
+    expect(idempotentPlan.skipped).toContainEqual({ id: "gh-cli", reason: "already-present" });
+    expect(applyPlan(idempotentPlan)).toBe(0);
   });
 
   it("persona cred (claude under otto) round-trips", () => {

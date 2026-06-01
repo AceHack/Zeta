@@ -211,6 +211,9 @@
                     # precise per-node hardware inventory.
     dmidecode
     skopeo
+    # File-backed zflash image substrate: mcopy writes ESP payloads
+    # into raw QEMU boot images without touching physical /dev disks.
+    mtools
     kubectl kubernetes-helm k9s argocd
     cilium-cli hubble
 
@@ -243,8 +246,11 @@
     # detects Linux, dispatches to linux.sh, which detects NixOS via
     # /etc/NIXOS marker file and routes directly to common/mise.sh).
     # Mise then installs bun + all other .mise.toml runtimes for the
-    # zeta user. Subsequent `bun install --global @anthropic-ai/claude-code`
-    # uses the mise-managed bun.
+    # zeta user. Agent/peer CLIs are then installed by
+    # common/agent-clis.sh from tools/setup/manifests/agent-clis,
+    # using the mise-managed bun. NixOS stays declarative for system
+    # packages; install.sh stays canonical for repo/toolchain runtime
+    # and agent CLI drift.
     mise
 
     # iter-5.5 NetBIOS client tools — `samba` package brings
@@ -281,8 +287,8 @@
     if command -v mise >/dev/null 2>&1; then
       eval "$(mise activate bash)"
     fi
-    # bun's `bun install --global` writes binaries here (claude-code
-    # lands at $HOME/.bun/bin/claude).
+    # bun's `bun install --global` writes manifest-driven agent CLI
+    # binaries here (claude/codex/gemini today).
     if [ -d "$HOME/.bun/bin" ]; then
       export PATH="$HOME/.bun/bin:$PATH"
     fi

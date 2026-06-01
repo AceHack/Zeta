@@ -4,6 +4,8 @@ import { join } from "node:path";
 import {
   taskHasDurationAndNextRun,
   miseProvidesTool,
+  parseAgentCliManifest,
+  bunGlobalOutputContainsPackage,
   SHARED_COMMANDS,
   CONTAINER_SKIPS,
 } from "./windows-install-ps1-smoke";
@@ -36,6 +38,26 @@ test("container mode documents its skip (loop-task) — never silent", () => {
 
 test("shared commands are scoop, git, mise", () => {
   expect([...SHARED_COMMANDS]).toEqual(["scoop", "git", "mise"]);
+});
+
+test("agent CLI manifest parser keeps package id plus expected binary metadata", () => {
+  const entries = parseAgentCliManifest(`
+    # comment
+    @anthropic-ai/claude-code  bin=claude
+    @openai/codex              bin=codex
+  `);
+  expect(entries).toEqual([
+    { packageId: "@anthropic-ai/claude-code", binary: "claude" },
+    { packageId: "@openai/codex", binary: "codex" },
+  ]);
+});
+
+test("bun global package detection accepts scoped id or unscoped package name", () => {
+  expect(bunGlobalOutputContainsPackage("@openai/codex@1.2.3", "@openai/codex")).toBe(true);
+  expect(bunGlobalOutputContainsPackage("claude-code@1.2.3", "@anthropic-ai/claude-code")).toBe(true);
+  expect(bunGlobalOutputContainsPackage("other@1.2.3", "@google/gemini-cli")).toBe(false);
+  expect(bunGlobalOutputContainsPackage("not-claude-code@1.2.3", "@anthropic-ai/claude-code")).toBe(false);
+  expect(bunGlobalOutputContainsPackage("@openai/codex-plus@1.2.3", "@openai/codex")).toBe(false);
 });
 
 // Empirical anchor (Server-Core Docker run #3, 2026-05-30): install.ps1 had an em-dash (—) and

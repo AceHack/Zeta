@@ -145,6 +145,9 @@
     util-linux
     cryptsetup
     dosfstools
+    # File-backed zflash image substrate: mcopy writes ESP payloads
+    # into raw QEMU boot images without mounting physical USB devices.
+    mtools
     e2fsprogs
     xfsprogs
     btrfs-progs

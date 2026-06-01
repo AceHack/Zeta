@@ -71,6 +71,21 @@ describe("B-0891 scenarios.ts invariants", () => {
     }
   });
 
+  it("keeps Kubernetes and ArgoCD health outside USB/ISO runtime scope", () => {
+    const s = findScenario("boot-cluster-up");
+    if (!s) throw new Error("scenario missing");
+    expect(s.acceptanceCriteria.join(" ")).toContain("Kubernetes and ArgoCD health");
+    expect(s.notes).toContain("orthogonal integration lane");
+  });
+
+  it("distinguishes retained identity from no-retention reformat identity", () => {
+    const retained = findScenario("reformat-with-retention");
+    const fresh = findScenario("reformat-from-scratch");
+    if (!retained || !fresh) throw new Error("scenario missing");
+    expect(retained.acceptanceCriteria.join(" ")).toContain("same cluster/node identity");
+    expect(fresh.acceptanceCriteria.join(" ")).toContain("new cluster/node identity");
+  });
+
   it("validateScenarios catches duplicate id", () => {
     const first = SCENARIOS[0];
     if (!first) throw new Error("SCENARIOS unexpectedly empty");

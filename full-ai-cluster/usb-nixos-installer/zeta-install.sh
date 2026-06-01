@@ -374,6 +374,7 @@ sudo mkdir -p "$PROBE_MOUNT"
 
 PUBKEY_FILE=""
 INJECT_OK=0
+BOOT_USB_CREDS_PRESEEDED=0
 
 # Try 1: scan already-mounted filesystems.
 # Per #5083 Copilot P0: under `set -euo pipefail`, `find` exits non-zero
@@ -503,6 +504,26 @@ if [ -n "$PUBKEY_FILE" ]; then
   else
     echo "[B-0852.3a-prep]   WARN: could not derive USB partition device OR blkid unavailable;"
     echo "[B-0852.3a-prep]         /etc/zeta/usb-uuid NOT written; picker will SKIP"
+  fi
+
+  # ── B-0891/B-0852 retention preseed: carry zflash-baked creds forward ────
+  # zflash can bake the encrypted credential blob onto the boot USB ESP as
+  # zeta-creds.enc. Copy that blob onto the target ESP before we unmount the
+  # USB ESP so a reformat-with-retention keeps the operator answers/accounts
+  # without re-running the interactive picker.
+  BOOT_USB_CREDS_BLOB="$(dirname "$PUBKEY_FILE")/zeta-creds.enc"
+  if sudo test -f "$BOOT_USB_CREDS_BLOB"; then
+    echo "[B-0891-retention]   found pre-baked zeta-creds.enc on boot USB ESP"
+    if command -v mountpoint >/dev/null 2>&1 && mountpoint -q /mnt/boot; then
+      sudo install -m 0600 "$BOOT_USB_CREDS_BLOB" /mnt/boot/zeta-creds.enc
+      BOOT_USB_CREDS_PRESEEDED=1
+      echo "[B-0891-retention]   copied retained cred blob to /mnt/boot/zeta-creds.enc"
+      echo "[B-0891-retention]   Step 6.95-picker will skip account re-entry"
+    else
+      echo "[B-0891-retention]   WARN: /mnt/boot is not mounted; retained cred blob not copied"
+    fi
+  else
+    echo "[B-0891-retention]   no pre-baked zeta-creds.enc on boot USB ESP; Step 6.95-picker remains normal"
   fi
 
   sudo umount "$PROBE_MOUNT" 2>/dev/null || true
@@ -1322,69 +1343,61 @@ else
 fi
 
 if [ -d "$ZETA_HOME" ]; then
-  echo "[iter-5.5.0] ── claude-code install + credential persistence (B-0848) ──"
+  echo "[iter-5.5.0] ── canonical runtime/agent CLI install + credential persistence (B-0848) ──"
 
   # 6.95a — bootstrap runtimes via mise (.mise.toml single source of
-  # truth; operator 2026-05-27 ALIGNMENT catch). Then install claude-code
-  # via bun. We pre-clone the Zeta repo at Step 6.95d-equivalent BEFORE
-  # this step so .mise.toml is available; reorder vs the original PR.
+  # truth; operator 2026-05-27 ALIGNMENT catch) AND install peer/agent
+  # CLIs via the canonical setup manifests:
+  #
+  #   tools/setup/manifests/agent-clis       (claude/codex/gemini)
+  #   tools/setup/manifests/one-liner-tools  (grok/cursor/kiro/hermes/forge)
+  #
+  # We pre-clone the Zeta repo at Step 6.95d-equivalent BEFORE this
+  # step so .mise.toml + setup manifests are available; reorder vs the
+  # original PR. The installer no longer hardcodes bun installs for
+  # individual harnesses here — install.sh owns declarative dependency
+  # drift, and this block only handles operator-interactive login.
   #
   # Pre-clone the repo NOW (was Step 6.95d; moved up so 6.95a can read
   # .mise.toml). Subsequent 6.95d block is a no-op if directory exists.
   if [ ! -d "$ZETA_HOME/Zeta" ]; then
     echo "[iter-5.5.0] pre-cloning Zeta repo to $ZETA_HOME/Zeta..."
     sudo -u "#$ZETA_UID" git clone https://github.com/Lucent-Financial-Group/Zeta.git "$ZETA_HOME/Zeta" 2>&1 | tail -3 || \
-      echo "[iter-5.5.0]   WARN: clone failed — claude-code install will also fail; can retry post-reboot"
+      echo "[iter-5.5.0]   WARN: clone failed — target runtime/agent bootstrap cannot run; can retry post-reboot"
   fi
 
   # 6.95a-bootstrap — invoke the canonical install entry from the
-  # pre-cloned repo. tools/setup/install.sh dispatches to linux.sh which
-  # detects NixOS via /etc/NIXOS, skips apt, and routes to
-  # common/mise.sh — which reads .mise.toml and installs bun =
-  # "1.3" + other pinned runtimes for the zeta user. Same single source
-  # of truth dev laptops + CI runners + devcontainers use (GOVERNANCE
-  # §24 three-way-parity extended to NixOS cluster nodes).
+  # pre-cloned repo. tools/setup/install.sh is the single install graph
+  # dev laptops + CI runners + devcontainers use (GOVERNANCE §24), now
+  # extended to installed-target bootstrap from the live ISO.
+  #
+  # Important: this shell still runs in the LIVE ISO namespace where
+  # /etc/NIXOS + /iso or /run/initramfs are present. Without the explicit
+  # ZETA_INSTALL_NIXOS_MODE=installed override, install.sh intentionally
+  # routes to the live-USB guard and exits 2. The override is scoped to
+  # this target-runtime bootstrap call only; direct operator calls to
+  # install.sh on the live ISO still get the safety guard.
+  #
+  # ZETA_INSTALL_FULL=1 opts into the one-liner registry even when the
+  # install is launched non-interactively (first-boot flow), so the
+  # installed system picks up the same declarative agent CLI surface as
+  # an interactive dev shell.
   if [ -d "$ZETA_HOME/Zeta" ]; then
-    echo "[iter-5.5.0] running tools/setup/install.sh (mise-based runtime bootstrap)..."
-    sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" \
+    echo "[iter-5.5.0] running tools/setup/install.sh (target runtime + declarative agent CLI bootstrap)..."
+    sudo -u "#$ZETA_UID" \
+      HOME="$ZETA_HOME" \
+      BUN_INSTALL="$ZETA_HOME/.bun" \
+      ZETA_INSTALL_NIXOS_MODE=installed \
+      ZETA_INSTALL_FULL=1 \
       bash -c "cd $ZETA_HOME/Zeta && tools/setup/install.sh" 2>&1 | tail -10 || \
-        echo "[iter-5.5.0]   WARN: install.sh FAILED — runtimes may be partial; can retry post-reboot via 'cd ~/Zeta && tools/setup/install.sh'"
+        echo "[iter-5.5.0]   WARN: install.sh FAILED — runtimes/agent CLIs may be partial; can retry post-reboot via 'cd ~/Zeta && tools/setup/install.sh'"
   fi
 
-  # 6.95a-claude — install claude-code via the mise-managed bun.
-  # bun is now on the zeta user's PATH via mise activation; --global
-  # binaries land in ~/.bun/bin/ regardless of bun version.
-  echo "[iter-5.5.0] installing @anthropic-ai/claude-code via mise-managed bun..."
+  # install.sh owns the manifest-driven agent CLI installs. Keep the
+  # ~/.bun directory present/owned so login flows and post-reboot retries
+  # have the expected target home layout even if install.sh warned.
   sudo mkdir -p "$ZETA_HOME/.bun/bin"
   sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.bun"
-  # Source mise activation so the subshell finds bun via mise shims.
-  # tail -5 INSIDE the bash -c so pipefail covers the WHOLE pipeline
-  # (per Copilot review on PR #5398: outer pipe to tail -5 was masking
-  # bun install exit status; tail outside bash -c isn't covered by
-  # the inner shell's pipefail setting).
-  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
-    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @anthropic-ai/claude-code 2>&1 | tail -5' || \
-      echo "[iter-5.5.0]   WARN: bun install claude-code FAILED — can retry post-reboot via 'bun install --global @anthropic-ai/claude-code'"
-
-  # 6.95a-gemini — install @google/gemini-cli via bun (B-0850 Phase 3d).
-  # Mirrors the claude install pattern; 2nd vendor for the ≥3 systemd
-  # agents target. Binary lands at ~/.bun/bin/gemini. WebSearch
-  # verified install path per dep-pin-search-first-authority discipline
-  # at implementation time (npm @google/gemini-cli is bun-compat).
-  echo "[iter-5.5.0] installing @google/gemini-cli via mise-managed bun (B-0850 Phase 3d Lior 2nd vendor)..."
-  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
-    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @google/gemini-cli 2>&1 | tail -5' || \
-      echo "[iter-5.5.0]   WARN: bun install gemini-cli FAILED — can retry post-reboot via 'bun install --global @google/gemini-cli'"
-
-  # 6.95a-codex — install @openai/codex via bun (B-0850 Phase 3c).
-  # 3rd vendor — hits the ≥3 BFT floor (Anthropic + Google + OpenAI).
-  # WebSearch verified per dep-pin-search-first-authority at
-  # implementation time: npm @openai/codex is bun-compat; binary
-  # lands at ~/.bun/bin/codex.
-  echo "[iter-5.5.0] installing @openai/codex via mise-managed bun (B-0850 Phase 3c Vera 3rd vendor — hits ≥3 BFT floor)..."
-  sudo HOME="$ZETA_HOME" BUN_INSTALL="$ZETA_HOME/.bun" -u "#$ZETA_UID" \
-    bash -c 'set -o pipefail; eval "$(mise activate bash 2>/dev/null || true)"; bun install --global @openai/codex 2>&1 | tail -5' || \
-      echo "[iter-5.5.0]   WARN: bun install codex FAILED — can retry post-reboot via 'bun install --global @openai/codex'"
 
   # 6.95-picker — B-0852.3a cred-picker (operator interactive at setup time)
   # Operator 2026-05-27 framing: "human interactive at setup time" + "ask what declared
@@ -1422,7 +1435,10 @@ if [ -d "$ZETA_HOME" ]; then
   # subprocess env only; the parent installer shell holds the secret in the
   # NON-EXPORTED shell var ZETA_CREDS_PASSPHRASE_VAL, never exported anywhere.
   PICKER_OPT_OUT=0
-  if [ "${ZETA_CREDS_PICKER:-1}" = "0" ]; then
+  if [ "${BOOT_USB_CREDS_PRESEEDED:-0}" = "1" ] && [ -f /mnt/boot/zeta-creds.enc ]; then
+    PICKER_OPT_OUT=1
+    PICKER_SKIP_REASON="/mnt/boot/zeta-creds.enc already present from zflash retention preseed"
+  elif [ "${ZETA_CREDS_PICKER:-1}" = "0" ]; then
     PICKER_OPT_OUT=1
     PICKER_SKIP_REASON="ZETA_CREDS_PICKER=0 (env opt-out)"
   elif [ -f /etc/zeta/no-picker ]; then
@@ -1592,7 +1608,7 @@ if [ -d "$ZETA_HOME" ]; then
   # install needs .mise.toml). This sub-step is intentionally empty
   # since the clone moved up.
 
-  echo "[iter-5.5.0] ── DONE — first login will have: mise-managed runtimes (bun/node/python/dotnet/java/uv/etc) + gh + claude + kubectl + helm + k9s + argocd on PATH; ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated; ~/.bun/bin on PATH ──"
+  echo "[iter-5.5.0] ── DONE — first login will have: install.sh-managed runtimes + declarative agent CLIs on PATH; ~/Zeta cloned (via 6.95a-bootstrap); ~/.config/{gh,claude} populated when available; ~/.bun/bin on PATH ──"
 else
   echo "[iter-5.5.0] $ZETA_HOME absent; skipping (nixos-install ordering changed?)"
 fi

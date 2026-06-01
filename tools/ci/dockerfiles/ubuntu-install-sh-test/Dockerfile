@@ -92,7 +92,7 @@ RUN set -eu; \
     export PATH="/root/.local/bin:$PATH"; \
     MODEL="$(grep -E '^model' tools/setup/manifests/local-llm | awk '{print $2}')"; \
     echo "=== 2nd install.sh run (idempotency) ==="; \
-    if ! ./tools/setup/install.sh > /tmp/install-2nd.log 2>&1; then \
+    if ! ZETA_INSTALL_FULL=1 ./tools/setup/install.sh > /tmp/install-2nd.log 2>&1; then \
       cat /tmp/install-2nd.log; \
       echo "FAIL: 2nd install.sh run exited non-zero (a re-run must succeed cleanly)"; exit 1; \
     fi; \

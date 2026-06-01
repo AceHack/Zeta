@@ -138,6 +138,28 @@ export interface RestorePlan {
   readonly errors: readonly string[];
 }
 
+function pushWriteUnlessAlreadyPresent(
+  writes: { path: string; bytes: number; value: Buffer }[],
+  skipped: { id: string; reason: string }[],
+  id: string,
+  path: string,
+  value: Buffer,
+): void {
+  if (existsSync(path)) {
+    try {
+      const current = readFileSync(path);
+      if (current.equals(value)) {
+        skipped.push({ id, reason: "already-present" });
+        return;
+      }
+    } catch {
+      // Fall through: applyPlan will attempt the restore write and surface
+      // any persistent filesystem failure at the write boundary.
+    }
+  }
+  writes.push({ path, bytes: value.length, value });
+}
+
 /**
  * Decrypt + decode the blob + plan writes per manifest. Single decrypt
  * (scrypt is expensive — per Copilot review on PR #5422 the prior split
@@ -177,7 +199,7 @@ export function planRestore(
     }
     const paths = resolveCredPaths(entry, targetRoot);
     // Write to FIRST path only (canonical); other paths are alternates the caller may symlink
-    writes.push({ path: paths[0]!, bytes: value.length, value });
+    pushWriteUnlessAlreadyPresent(writes, skipped, id, paths[0]!, value);
   }
 
   // Persona creds (only restore the requested persona's section)
@@ -198,7 +220,7 @@ export function planRestore(
           continue;
         }
         const paths = resolveCredPaths(entry, targetRoot);
-        writes.push({ path: paths[0]!, bytes: value.length, value });
+        pushWriteUnlessAlreadyPresent(writes, skipped, id, paths[0]!, value);
       }
     } else if (Object.keys(bundle.personaCreds).length > 0) {
       skipped.push({

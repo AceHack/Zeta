@@ -6,7 +6,7 @@ title: zflash "done" acceptance criteria + QEMU test harness — 5-scenario test
 effort: L
 ask: aaron 2026-05-28 acceptance-criteria
 created: 2026-05-28
-last_updated: 2026-05-28
+last_updated: 2026-06-01
 depends_on:
   - B-0844
   - B-0852
@@ -24,6 +24,7 @@ composes_with:
   - B-0590
   - B-0770
   - B-0778
+  - B-0967
 related_rules:
   - non-coercion-invariant
   - persistence-choice-architecture-for-zeta-ais
@@ -40,6 +41,7 @@ tags:
   - operator-personal-axis-usb-priority-top
   - composes-with-pq-gitcrypt-zflash-integration-b-0884
   - composes-with-symbiotic-self-healing-b-0889
+  - k8s-argocd-health-carved-to-b-0967
 ---
 
 ## Operator framing 2026-05-28
@@ -57,6 +59,23 @@ Concrete operator-set acceptance criteria for zflash "done" + signal that testin
 | **3** | **Reformat WITH key + selection retention** | Re-bake USB with existing operator-chosen credentials + auth settings (Touch ID per B-0737, passphrase per B-0852) + UUID-bound keys preserved; no need to re-enter passphrase or re-pair Touch ID; existing cluster recognizes the re-baked USB |
 | **4** | **Reformat from scratch (wipe + fresh keys)** | Wipe-and-rebake from zero state; fresh keys; new USB UUID; operator can choose to migrate existing cluster's credentials onto new USB OR start fresh cluster — both paths supported |
 | **5** | **Cluster joining (new node)** | New node boots from USB; joins existing running cluster cleanly; gets credentials provisioned per B-0852.3 cred-picker integration; appears in cluster state within bounded time |
+
+## Scope clarification 2026-05-31
+
+Aaron clarified that Kubernetes and ArgoCD health need their own integration
+test lane, using kind/k3d or equivalent local-cluster substrate. This B-0891
+USB/ISO lane should mostly prove:
+
+- `zflash` and the ISO/USB boot path work,
+- retention reformat keeps the same cluster/node identity,
+- no-retention reformat creates a new cluster/node identity,
+- one authenticated or local-LLM/no-account agent path starts, and
+- physical hardware testing covers biometric behavior that QEMU cannot model
+  honestly.
+
+Full Kubernetes and ArgoCD health is carved out to **B-0967**. B-0891 may keep
+a narrow cluster smoke signal for end-to-end confidence, but should not absorb
+the full ArgoCD Application health matrix.
 
 ## QEMU test harness scope
 
@@ -110,6 +129,9 @@ This composes with the trajectory-async-review surface (B-0873) — testing-prog
 - **B-0590** fleet-replication-20-machines — at-scale validation context
 - **B-0770** GL-iNet Comet Pro IP-KVM — for remote USB-boot fleet testing
 - **B-0778** commodity hardware reference + fingerbot — hardware context for cluster tests
+- **B-0967** Kubernetes + ArgoCD kind/k3d integration health tests — separate
+  cluster-health proof; this row consumes only a narrow smoke signal from that
+  domain
 
 ## Substrate-honest framing
 

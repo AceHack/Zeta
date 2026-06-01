@@ -242,14 +242,13 @@ in
           ExecStart (binary grok doesn't exist at ~/.bun/bin/grok).
         '';
       }
-      # B-0850.3c (Vera/Codex) shipped this PR — assertion removed.
-      # zeta-install.sh Step 6.95a-codex installs @openai/codex via
-      # bun + Step 6.95b-codex runs `codex login --device-auth`.
-      # Binary lands at ~/.bun/bin/codex; creds at ~/.codex/auth.json.
-      # B-0850.3d (Lior/Gemini) shipped this PR — assertion removed.
-      # zeta-install.sh Step 6.95a-gemini installs @google/gemini-cli
-      # via bun + Step 6.95b-gemini runs interactive gemini auth login.
-      # Binary lands at ~/.bun/bin/gemini.
+      # B-0850.3c/3d (Vera/Codex + Lior/Gemini) shipped: the
+      # assertions are removed. zeta-install.sh Step 6.95 delegates
+      # package installation to tools/setup/install.sh, whose
+      # common/agent-clis.sh consumes tools/setup/manifests/agent-clis
+      # for codex/gemini/claude. The persona-specific Step 6.95b
+      # login flows remain in zeta-install.sh because auth is
+      # operator-interactive, not package installation.
     ];
 
     # Generate one systemd service per enabled persona.

@@ -30,6 +30,12 @@ export function isValidHostname(s: string): boolean {
   return VALID_HOSTNAME_REGEX.test(s);
 }
 
+function isPhysicalDevicePath(path: string): boolean {
+  const trimmed = path.trim();
+  const windowsDevicePath = trimmed.replace(/\//g, "\\");
+  return /^\/dev\//.test(trimmed) || /^\\\\\.\\PhysicalDrive\d+(?:\\|$)/i.test(windowsDevicePath);
+}
+
 /**
  * Parse `diskutil list <device>` output to find a FAT/EFI partition.
  *
@@ -66,6 +72,377 @@ export function parseFatPartitionFromDiskutilList(diskutilOutput: string): strin
     }
   }
   return null;
+}
+
+/**
+ * Parse `diskutil info <partition>` output for the filesystem UUID used as
+ * the USB-bound credential KDF input.
+ *
+ * Prefer `Volume UUID` because that matches Linux `blkid -s UUID` for the
+ * FAT filesystem that zeta-install.sh records at install time. Do not fall
+ * back to the GPT partition UUID; Linux restore uses the FAT filesystem UUID.
+ */
+export function parseUuidFromDiskutilInfo(diskutilOutput: string): string | null {
+  const volume = diskutilOutput.match(/^\s*Volume UUID:\s+(.+)$/m)?.[1]?.trim();
+  if (!volume) return null;
+  return /^[0-9a-fA-F]{4}-[0-9a-fA-F]{4}$/.test(volume) ? volume : null;
+}
+
+export interface CommandPlan {
+  readonly command: string;
+  readonly args: readonly string[];
+}
+
+export interface FileBackedEspWrite {
+  readonly destination: "/zeta-authorized-keys.pub" | "/zeta-hostname.txt" | "/zeta-creds.enc";
+  readonly sourcePath?: string;
+  readonly content?: string;
+}
+
+export interface FileBackedZflashImagePlan {
+  readonly isoPath: string;
+  readonly outputImagePath: string;
+  readonly espOffsetBytes: number;
+  readonly imageCommand: CommandPlan;
+  readonly espWrites: readonly FileBackedEspWrite[];
+}
+
+export type FileBackedZflashImagePlanResult =
+  | { readonly ok: true; readonly value: FileBackedZflashImagePlan }
+  | { readonly ok: false; readonly error: string };
+
+export interface FileBackedZflashImagePlanInput {
+  readonly isoPath: string;
+  readonly outputImagePath: string;
+  readonly espOffsetBytes: number;
+  readonly pubkeyPath?: string;
+  readonly hostname?: string;
+  readonly credentialBlobPath?: string;
+}
+
+export interface FileBackedInlineFile {
+  readonly destination: FileBackedEspWrite["destination"];
+  readonly path: string;
+  readonly content: string;
+}
+
+export type FileBackedZflashImageExecutionStep =
+  | { readonly kind: "command"; readonly command: CommandPlan }
+  | { readonly kind: "write-inline-file"; readonly file: FileBackedInlineFile };
+
+export interface FileBackedZflashImageExecutionPlan {
+  readonly imagePath: string;
+  readonly mtoolsImageSpecifier: string;
+  readonly imageCommand: CommandPlan;
+  readonly inlineFiles: readonly FileBackedInlineFile[];
+  readonly espWriteCommands: readonly CommandPlan[];
+  readonly steps: readonly FileBackedZflashImageExecutionStep[];
+}
+
+export interface FileBackedZflashImageExecutionPlanInput {
+  readonly plan: FileBackedZflashImagePlan;
+  readonly inlineStagingDirectory?: string;
+}
+
+export type FileBackedZflashImageExecutionPlanResult =
+  | { readonly ok: true; readonly value: FileBackedZflashImageExecutionPlan }
+  | { readonly ok: false; readonly error: string };
+
+export interface FileBackedZflashImageCommandResult {
+  readonly exitCode: number | null;
+  readonly stdout?: string;
+  readonly stderr?: string;
+}
+
+export interface FileBackedZflashImageExecutor {
+  readonly writeFile: (file: FileBackedInlineFile) => void;
+  readonly runCommand: (command: CommandPlan) => FileBackedZflashImageCommandResult;
+}
+
+export type FileBackedZflashImageExecutionFeedback =
+  | {
+      readonly kind: "inline-file-write-failed";
+      readonly file: FileBackedInlineFile;
+      readonly reason: string;
+      readonly completedSteps: readonly FileBackedZflashImageExecutionStep[];
+    }
+  | {
+      readonly kind: "command-failed";
+      readonly command: CommandPlan;
+      readonly exitCode: number | null;
+      readonly stdout: string;
+      readonly stderr: string;
+      readonly completedSteps: readonly FileBackedZflashImageExecutionStep[];
+    }
+  | {
+      readonly kind: "executor-threw";
+      readonly step: FileBackedZflashImageExecutionStep;
+      readonly reason: string;
+      readonly completedSteps: readonly FileBackedZflashImageExecutionStep[];
+    };
+
+export interface FileBackedZflashImageExecution {
+  readonly imagePath: string;
+  readonly completedSteps: readonly FileBackedZflashImageExecutionStep[];
+  readonly retentionBootImageEnvironment: {
+    readonly ZFLASH_QEMU_RETENTION_BOOT_IMAGE: string;
+  };
+}
+
+export type FileBackedZflashImageExecutionResult =
+  | { readonly ok: true; readonly value: FileBackedZflashImageExecution }
+  | { readonly ok: false; readonly error: FileBackedZflashImageExecutionFeedback };
+
+/**
+ * Plan the non-destructive, file-backed equivalent of zflash's current
+ * physical-device flow for QEMU tests.
+ *
+ * The existing zflash path intentionally talks to `/dev/diskN` via
+ * flash-usb.ts, then remounts the USB ESP with diskutil/mount_msdos. QEMU
+ * proof needs a raw image artifact instead. This pure planner captures the
+ * safe target shape and ESP-write intents before any executor exists.
+ */
+export function planFileBackedZflashImage(
+  input: FileBackedZflashImagePlanInput,
+): FileBackedZflashImagePlanResult {
+  const isoPath = input.isoPath.trim();
+  const outputImagePath = input.outputImagePath.trim();
+  if (isoPath.length === 0) {
+    return { ok: false, error: "isoPath is required" };
+  }
+  if (!isoPath.endsWith(".iso")) {
+    return { ok: false, error: `isoPath must end with .iso: ${isoPath}` };
+  }
+  if (outputImagePath.length === 0) {
+    return { ok: false, error: "outputImagePath is required" };
+  }
+  if (isPhysicalDevicePath(outputImagePath)) {
+    return {
+      ok: false,
+      error: `outputImagePath must be file-backed, not a device path: ${outputImagePath}`,
+    };
+  }
+  if (!Number.isSafeInteger(input.espOffsetBytes) || input.espOffsetBytes <= 0) {
+    return { ok: false, error: "espOffsetBytes must be a positive safe integer" };
+  }
+
+  const espWrites: FileBackedEspWrite[] = [];
+  const pubkeyPath = input.pubkeyPath?.trim();
+  if (pubkeyPath !== undefined && pubkeyPath.length > 0) {
+    espWrites.push({
+      destination: "/zeta-authorized-keys.pub",
+      sourcePath: pubkeyPath,
+    });
+  }
+  const hostname = input.hostname?.trim();
+  if (hostname !== undefined && hostname.length > 0) {
+    if (!isValidHostname(hostname)) {
+      return { ok: false, error: `hostname is not RFC1123-valid: ${hostname}` };
+    }
+    espWrites.push({
+      content: `${hostname}\n`,
+      destination: "/zeta-hostname.txt",
+    });
+  }
+  const credentialBlobPath = input.credentialBlobPath?.trim();
+  if (credentialBlobPath !== undefined && credentialBlobPath.length > 0) {
+    espWrites.push({
+      destination: "/zeta-creds.enc",
+      sourcePath: credentialBlobPath,
+    });
+  }
+  if (espWrites.length === 0) {
+    return { ok: false, error: "at least one ESP write is required" };
+  }
+
+  return {
+    ok: true,
+    value: {
+      espOffsetBytes: input.espOffsetBytes,
+      espWrites,
+      imageCommand: {
+        command: "qemu-img",
+        args: ["convert", "-f", "raw", "-O", "raw", isoPath, outputImagePath],
+      },
+      isoPath,
+      outputImagePath,
+    },
+  };
+}
+
+function joinFileBackedPath(directory: string, basename: string): string {
+  const trimmed = directory.trim().replace(/\\/g, "/").replace(/\/+$/, "");
+  return `${trimmed}/${basename}`;
+}
+
+function stagingBasename(destination: FileBackedEspWrite["destination"]): string {
+  return destination.replace(/^\//, "");
+}
+
+/**
+ * Expand a pure file-backed zflash plan into the concrete command/file steps
+ * an I/O executor needs.
+ *
+ * `qemu-img` creates the writable raw image from the ISO. `mcopy` then writes
+ * each payload directly into the FAT ESP at `image@@offset`, avoiding loop
+ * mounts and keeping the future executor usable on CI runners.
+ */
+export function planFileBackedZflashImageExecution(
+  input: FileBackedZflashImageExecutionPlanInput,
+): FileBackedZflashImageExecutionPlanResult {
+  const plan = input.plan;
+  if (isPhysicalDevicePath(plan.outputImagePath)) {
+    return {
+      ok: false,
+      error: `outputImagePath must be file-backed, not a device path: ${plan.outputImagePath}`,
+    };
+  }
+  if (!Number.isSafeInteger(plan.espOffsetBytes) || plan.espOffsetBytes <= 0) {
+    return { ok: false, error: "espOffsetBytes must be a positive safe integer" };
+  }
+  if (plan.espWrites.length === 0) {
+    return { ok: false, error: "at least one ESP write is required" };
+  }
+
+  const contentWrites = plan.espWrites.filter((write) => write.content !== undefined);
+  const inlineStagingDirectory = input.inlineStagingDirectory?.trim();
+  if (contentWrites.length > 0 && (inlineStagingDirectory === undefined || inlineStagingDirectory.length === 0)) {
+    return { ok: false, error: "inlineStagingDirectory is required for content ESP writes" };
+  }
+
+  const mtoolsImageSpecifier = `${plan.outputImagePath}@@${plan.espOffsetBytes}`;
+  const inlineFiles: FileBackedInlineFile[] = [];
+  const espWriteCommands: CommandPlan[] = [];
+  const steps: FileBackedZflashImageExecutionStep[] = [
+    { kind: "command", command: plan.imageCommand },
+  ];
+
+  for (const write of plan.espWrites) {
+    const sourcePath = write.sourcePath?.trim();
+    const hasSourcePath = sourcePath !== undefined && sourcePath.length > 0;
+    const hasContent = write.content !== undefined;
+    if (hasSourcePath === hasContent) {
+      return {
+        ok: false,
+        error: `ESP write ${write.destination} must specify exactly one of sourcePath or content`,
+      };
+    }
+
+    let source: string;
+    if (hasSourcePath) {
+      source = sourcePath;
+    } else {
+      const content = write.content ?? "";
+      if (content.length === 0) {
+        return { ok: false, error: `ESP write ${write.destination} content must be non-empty` };
+      }
+      const file = {
+        content,
+        destination: write.destination,
+        path: joinFileBackedPath(inlineStagingDirectory!, stagingBasename(write.destination)),
+      };
+      inlineFiles.push(file);
+      steps.push({ kind: "write-inline-file", file });
+      source = file.path;
+    }
+
+    const command = {
+      command: "mcopy",
+      args: ["-o", "-i", mtoolsImageSpecifier, source, `::${write.destination}`],
+    };
+    espWriteCommands.push(command);
+    steps.push({ kind: "command", command });
+  }
+
+  return {
+    ok: true,
+    value: {
+      espWriteCommands,
+      imageCommand: plan.imageCommand,
+      imagePath: plan.outputImagePath,
+      inlineFiles,
+      mtoolsImageSpecifier,
+      steps,
+    },
+  };
+}
+
+function describeExecutorError(e: unknown): string {
+  return e instanceof Error ? e.message : String(e);
+}
+
+/**
+ * Execute a file-backed zflash image plan through injected I/O.
+ *
+ * The library remains dependency-free/testable: callers provide filesystem and
+ * process effects, while this function enforces the planned order and returns
+ * the exact env binding needed by the QEMU retention harness.
+ */
+export function executeFileBackedZflashImageExecutionPlan(
+  plan: FileBackedZflashImageExecutionPlan,
+  executor: FileBackedZflashImageExecutor,
+): FileBackedZflashImageExecutionResult {
+  const completedSteps: FileBackedZflashImageExecutionStep[] = [];
+
+  for (const step of plan.steps) {
+    if (step.kind === "write-inline-file") {
+      try {
+        executor.writeFile(step.file);
+        completedSteps.push(step);
+      } catch (e) {
+        return {
+          ok: false,
+          error: {
+            kind: "inline-file-write-failed",
+            completedSteps,
+            file: step.file,
+            reason: describeExecutorError(e),
+          },
+        };
+      }
+      continue;
+    }
+
+    let result: FileBackedZflashImageCommandResult;
+    try {
+      result = executor.runCommand(step.command);
+    } catch (e) {
+      return {
+        ok: false,
+        error: {
+          kind: "executor-threw",
+          completedSteps,
+          reason: describeExecutorError(e),
+          step,
+        },
+      };
+    }
+    if (result.exitCode !== 0) {
+      return {
+        ok: false,
+        error: {
+          kind: "command-failed",
+          command: step.command,
+          completedSteps,
+          exitCode: result.exitCode,
+          stderr: result.stderr ?? "",
+          stdout: result.stdout ?? "",
+        },
+      };
+    }
+    completedSteps.push(step);
+  }
+
+  return {
+    ok: true,
+    value: {
+      completedSteps,
+      imagePath: plan.imagePath,
+      retentionBootImageEnvironment: {
+        ZFLASH_QEMU_RETENTION_BOOT_IMAGE: plan.imagePath,
+      },
+    },
+  };
 }
 
 /**

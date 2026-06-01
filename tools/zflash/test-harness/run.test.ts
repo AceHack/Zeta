@@ -1,0 +1,165 @@
+import { describe, expect, test } from "bun:test";
+import { spawnSync } from "node:child_process";
+import { join, resolve } from "node:path";
+import { runRetentionRuntime } from "./run";
+import type {
+  Qcow2RetentionExecutionStep,
+  QemuCommand,
+  QemuCommandExecution,
+} from "./qemu-state";
+
+const SCRIPT = join(import.meta.dir, "run.ts");
+
+function run(...args: string[]): { readonly stdout: string; readonly stderr: string; readonly exitCode: number } {
+  // eslint-disable-next-line sonarjs/no-os-command-from-path -- bun is intentionally resolved from the active PATH; args are structured and never shell-expanded.
+  const result = spawnSync("bun", [SCRIPT, ...args], {
+    encoding: "utf-8",
+  });
+  return {
+    stdout: (result.stdout ?? "").trim(),
+    stderr: (result.stderr ?? "").trim(),
+    exitCode: result.status ?? 1,
+  };
+}
+
+function successfulExecution(
+  step: Qcow2RetentionExecutionStep,
+  command: QemuCommand,
+): QemuCommandExecution {
+  return { step, command, exitCode: 0, stdout: `${step} ok`, stderr: "" };
+}
+
+describe("B-0891 test-harness dispatcher", () => {
+  test("dry-run can inspect scaffolded retention without claiming runtime success", () => {
+    const result = run("--dry-run", "--scenario", "reformat-with-retention");
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toBe("");
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.mode).toBe("dry-run");
+    expect(parsed.targets[0].id).toBe("reformat-with-retention");
+    expect(parsed.targets[0].plan).toContain("implementation pending");
+  });
+
+  test("runtime attempt for retention emits QEMU plan but fails closed", () => {
+    const result = run("--scenario", "reformat-with-retention", "/tmp/nonexistent.iso");
+    expect(result.exitCode).toBe(1);
+    const parsed = JSON.parse(result.stdout);
+    const diskPath = parsed.results[0].qemuRetentionPlan.diskPath;
+    expect(diskPath.endsWith("nonexistent.iso.scenario3.qcow2")).toBe(true);
+    expect(diskPath).not.toBe("/tmp/nonexistent.iso.scenario3.qcow2");
+    expect(parsed.summary.failed).toBe(1);
+    expect(parsed.summary.scaffolded).toBe(0);
+    expect(parsed.results[0].status).toBe("failed");
+    expect(parsed.results[0].message).toContain("fails closed");
+    expect(parsed.results[0].message).toContain("ZFLASH_QEMU_RETENTION_EXECUTE=1");
+    expect(parsed.results[0].qemuRetentionPlan.createDiskImage.args).toEqual([
+      "create",
+      "-f",
+      "qcow2",
+      diskPath,
+      "20G",
+    ]);
+    expect(parsed.results[0].qemuRetentionPlan.initialInstallFromIsoWithDisk.args).toContain(
+      `file=${diskPath},if=virtio,format=qcow2`,
+    );
+    expect(parsed.results[0].qemuRetentionPlan.createBaselineSnapshot.args).toEqual([
+      "snapshot",
+      "-c",
+      "post-initial-format",
+      diskPath,
+    ]);
+    expect(parsed.results[0].qemuRetentionPlan.restoreBaselineSnapshot.args).toContain(
+      diskPath,
+    );
+    expect(parsed.results[0].qemuRetentionPlan.restartFromIsoWithDisk.args).toContain(
+      `file=${diskPath},if=virtio,format=qcow2`,
+    );
+    expect(parsed.results[0].qemuRetentionPlan.requiredSerialMarkers).toContain("already-present");
+  });
+
+  test("retention runtime executes through an injected QEMU executor when explicitly enabled", () => {
+    const observedSteps: Qcow2RetentionExecutionStep[] = [];
+    const result = runRetentionRuntime("/tmp/zeta.iso", {
+      execute: true,
+      executor: {
+        runCommand: (step, command) => {
+          observedSteps.push(step);
+          return successfulExecution(step, command);
+        },
+        runCommandUntilSerialMarkers: (step, command) => {
+          observedSteps.push(step);
+          return successfulExecution(step, command);
+        },
+        readSerialOutput: () => [
+          "zeta-creds-restore: reading preserved ESP blob",
+          "zeta-creds-restore: already-present, skipping credential rewrite",
+        ].join("\n"),
+      },
+    });
+
+    expect(result.status).toBe("passed");
+    expect(observedSteps).toEqual([
+      "create-disk-image",
+      "initial-install-from-iso-with-disk",
+      "create-baseline-snapshot",
+      "list-baseline-snapshots",
+      "restore-baseline-snapshot",
+      "restart-from-iso-with-disk",
+    ]);
+    expect(result.qemuRetentionExecution).toBeDefined();
+    if (result.qemuRetentionExecution && "ok" in result.qemuRetentionExecution) {
+      expect(result.qemuRetentionExecution.ok.serialAssertion.matchedMarkers).toContain("already-present");
+    } else {
+      throw new Error("expected retention execution success");
+    }
+  });
+
+  test("retention runtime can plan against an explicit zflash-prepared boot image", () => {
+    const result = runRetentionRuntime("/tmp/zeta.iso", {
+      bootImagePath: "/tmp/zflash-boot.img",
+    });
+
+    expect(result.status).toBe("failed");
+    expect(result.qemuRetentionPlan?.bootImagePath).toBe("/tmp/zflash-boot.img");
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain(
+      "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
+    );
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain("qemu-xhci,id=xhci");
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).toContain(
+      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+    );
+    expect(result.qemuRetentionPlan?.restartFromIsoWithDisk.args).not.toContain("-cdrom");
+  });
+
+  test("retention runtime writes scenario artifacts under a writable run directory", () => {
+    const runDirectory = resolve("/tmp/zeta-retention-run");
+    const result = runRetentionRuntime("/nix/store/read-only/zeta.iso", {
+      runDirectory,
+    });
+
+    expect(result.status).toBe("failed");
+    expect(result.qemuRetentionPlan?.diskPath).toBe(join(runDirectory, "zeta.iso.scenario3.qcow2"));
+    expect(result.qemuRetentionPlan?.serialLogPath).toBe(join(runDirectory, "zeta.iso.scenario3.serial.log"));
+    expect(result.qemuRetentionPlan?.diskPath.startsWith(resolve("/nix/store/read-only"))).toBe(false);
+  });
+
+  test("retention runtime stays failed when QEMU output does not prove retention", () => {
+    const result = runRetentionRuntime("/tmp/zeta.iso", {
+      execute: true,
+      executor: {
+        runCommand: successfulExecution,
+        runCommandUntilSerialMarkers: successfulExecution,
+        readSerialOutput: () => "zeta-creds-restore: restored credentials",
+      },
+    });
+
+    expect(result.status).toBe("failed");
+    expect(result.message).toContain("serial output did not prove retention");
+    expect(result.qemuRetentionExecution).toBeDefined();
+    if (result.qemuRetentionExecution && "error" in result.qemuRetentionExecution) {
+      expect(result.qemuRetentionExecution.error.kind).toBe("serial-marker-failed");
+    } else {
+      throw new Error("expected retention execution failure");
+    }
+  });
+});

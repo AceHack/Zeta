@@ -15,6 +15,13 @@ be able to recreate the environment from this doc.
 | **Python 3** | 3.14 (mise-pinned) | Package-audit script JSON parsing + helper scripts; uv venv auto-source per `.mise.toml` | mise-managed via `.mise.toml` (`python = "3.14"`); resolved through `mise exec -- python3` for dev/CI parity. System Python may remain on personal machines but is not used for the build. |
 | **bash / awk / curl / git** | system default | `tools/*.sh` helper scripts | Pre-installed |
 
+## System CLI tools (declared through install manifests)
+
+| Tool | Version | Why | How installed |
+|---|---|---|---|
+| **QEMU / qemu-img** | OS package manager version | USB/ISO boot, full-install, and B-0891 retention QEMU proofs | `tools/setup/install.sh` via `tools/setup/manifests/{apt,brew}`; Windows via `tools/setup/manifests/windows`; Nix dev/cluster surfaces via `full-ai-cluster/**/flake.nix` and `full-ai-cluster/nixos/modules/common.nix` |
+| **mtools / mcopy** | OS package manager version | File-backed zflash ESP writes into raw QEMU boot images without mounting physical USB devices | `tools/setup/install.sh` via `tools/setup/manifests/{apt,brew}`; Nix dev/cluster surfaces via `full-ai-cluster/**/flake.nix` and NixOS package lists |
+
 ## Project-specific binary artifacts (downloaded by `tools/setup/install.sh`)
 
 | Artifact | Version | Path | Why | Install command |

@@ -84,9 +84,9 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     status: "composes-with-existing",
     acceptanceCriteria: [
       "USB boots in QEMU",
-      "cluster nodes (mini-PC fleet per B-0590) come up successfully",
-      "reach steady-state with all expected services running",
-      "observability backend reports healthy",
+      "installer reaches post-install boot substrate without manual intervention",
+      "one agent can start through either retained authentication or local-LLM/no-account mode",
+      "Kubernetes and ArgoCD health are covered by separate cluster integration tests, not this USB/ISO harness",
     ],
     composesWith: [
       "tools/ci/qemu-full-install-test.ts",
@@ -95,7 +95,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     ],
     gates: ["reformat-with-retention", "cluster-joining"],
     notes:
-      "qemu-full-install-test.ts already watches for [iter-5.1] marker proving nixos-install reached post-install phase. This scenario extends with cluster-auto-join verification per B-0831 Slice 2 (deferred to follow-up; PoC scaffolds the dispatcher contract).",
+      "qemu-full-install-test.ts already watches for [iter-5.1] marker proving nixos-install reached post-install phase. USB/ISO scope is zflash + boot + one agent start path; Kubernetes/ArgoCD health belongs in an orthogonal integration lane rather than this harness.",
   },
   {
     id: "reformat-with-retention",
@@ -104,6 +104,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     status: "scaffolded",
     acceptanceCriteria: [
       "re-bake USB with existing operator-chosen credentials preserved",
+      "same cluster/node identity is retained when retention mode is selected",
       "Touch ID pairing per B-0737 preserved (no re-pair required)",
       "passphrase per B-0852 preserved (no re-enter required)",
       "UUID-bound keys preserved across re-bake",
@@ -125,6 +126,7 @@ export const SCENARIOS: ReadonlyArray<Scenario> = [
     status: "scaffolded",
     acceptanceCriteria: [
       "wipe-and-rebake from zero state produces fresh keys + new USB UUID",
+      "no-retention reformat produces a new cluster/node identity",
       "operator can choose path: migrate existing cluster's credentials to new USB",
       "operator can choose path: start fresh cluster with new keys",
       "both paths supported + tested",

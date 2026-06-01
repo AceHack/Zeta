@@ -41,7 +41,7 @@ App-of-Apps `exclude:` glob in `up.sh`:
 
 ```bash
 # Pre-requirements (one-time):
-brew install k3d kubectl helm
+bash tools/setup/install.sh
 # + Docker Desktop or Colima
 
 cd full-ai-cluster/dev-cluster

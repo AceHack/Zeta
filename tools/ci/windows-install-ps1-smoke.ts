@@ -14,6 +14,8 @@
 //
 // Exit 0 = all checks passed; 1 = one or more FAILED; 2 = bad usage.
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
 export type Mode = "desktop" | "container";
 
@@ -37,6 +39,40 @@ export function miseProvidesTool(miseListOutput: string, tool: string): boolean 
     .some((l) => new RegExp(`(^|\\s)${tool}(\\s|@|$)`).test(l));
 }
 
+export interface AgentCliManifestEntry {
+  readonly packageId: string;
+  readonly binary?: string;
+}
+
+/** Pure: parse tools/setup/manifests/agent-clis. */
+export function parseAgentCliManifest(text: string): AgentCliManifestEntry[] {
+  return text
+    .split(/\r?\n/)
+    .map((l) => l.replace(/#.*$/, "").trim())
+    .filter((l) => l.length > 0)
+    .map((line) => {
+      const parts = line.split(/\s+/);
+      const packageId = parts[0]!;
+      const binToken = parts.find((p) => p.startsWith("bin="));
+      const binary = binToken?.slice("bin=".length);
+      return binary === undefined ? { packageId } : { packageId, binary };
+    });
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function bunPackageTokenRegex(packageId: string): RegExp {
+  return new RegExp(`(^|\\s)${escapeRegExp(packageId)}(?:@|\\s|$)`, "m");
+}
+
+/** Pure: bun global output can vary between package id and unscoped package name. */
+export function bunGlobalOutputContainsPackage(output: string, packageId: string): boolean {
+  const unscoped = packageId.split("/").at(-1) ?? packageId;
+  return bunPackageTokenRegex(packageId).test(output) || bunPackageTokenRegex(unscoped).test(output);
+}
+
 /** Pure: system-command checks that run in BOTH modes. */
 export const SHARED_COMMANDS = ["scoop", "git", "mise"] as const;
 
@@ -53,6 +89,10 @@ function have(cmd: string): boolean {
   } catch {
     return false;
   }
+}
+
+function repoRoot(): string {
+  return join(import.meta.dir, "..", "..");
 }
 
 function main(): void {
@@ -86,8 +126,15 @@ function main(): void {
 
   try {
     const g = execFileSync("mise", ["exec", "--", "bun", "pm", "ls", "-g"], { encoding: "utf8" });
-    if (g.includes("claude-code")) pass("claude-code installed (bun --global)");
-    else fail("claude-code not in bun global packages");
+    const manifestPath = join(repoRoot(), "tools", "setup", "manifests", "agent-clis");
+    const entries = parseAgentCliManifest(readFileSync(manifestPath, "utf8"));
+    for (const entry of entries) {
+      if (bunGlobalOutputContainsPackage(g, entry.packageId)) {
+        pass(`${entry.packageId} installed (bun --global via manifests/agent-clis)`);
+      } else {
+        fail(`${entry.packageId} not in bun global packages`);
+      }
+    }
   } catch {
     fail("could not check bun global packages");
   }

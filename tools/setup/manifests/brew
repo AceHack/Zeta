@@ -31,6 +31,14 @@ hermes-agent  # "Self-improving AI agent that creates skills from
 ollama  # CPU-served tiny model for the move-next selector + observe.ts
         # classifier + DST fixtures. Idempotent: brew install skips if present.
 
+# USB/ISO QEMU acceptance substrate (operator 2026-05-31): B-0891 uses
+# qemu-system-x86_64 for boot/full-install/retention scenarios and qemu-img
+# for qcow2 snapshot/restart state preservation. The file-backed zflash
+# image builder uses mtools' mcopy to write ESP payloads into raw images
+# without mounting physical USB devices.
+qemu
+mtools
+
 # Container runtime for the effectful do_item executor (rationale: B-0964 §2). podman
 # is the default OCI runtime: Apache-2.0, rootless, daemonless. Coexists with an
 # existing Docker Desktop (separate VM + socket); do NOT install `podman-mac-helper`

@@ -29,7 +29,7 @@
 #   - Linux non-NixOS (no /etc/NIXOS)        -> setup/linux.sh
 #   - NixOS installed (/etc/NIXOS,           -> setup/linux.sh
 #     not docker, no /iso, no                   (NixOS-installed nodes get the same
-#     /run/initramfs)                            mise + bun + claude runtime setup
+#     /run/initramfs)                            mise + bun + agent CLI runtime setup
 #                                                as any Linux build machine; nixos-
 #                                                rebuild handles the NixOS-side
 #                                                declarative config)
@@ -40,6 +40,12 @@
 #     /run/initramfs canonical installer-       (B-0857.3 will factor that body into
 #     ISO markers)                              a callable nixos-install-from-usb.sh;
 #                                                this routing stub lands first)
+#   - NixOS target bootstrap inside zeta-      -> setup/linux.sh via explicit
+#     install.sh while the live ISO is still      ZETA_INSTALL_NIXOS_MODE=installed
+#     mounted (/etc/NIXOS + /iso present)         override; this keeps target runtime
+#                                                  setup on the canonical install.sh
+#                                                  graph instead of duplicating it in
+#                                                  zeta-install.sh
 #   - Windows (Git Bash MINGW/MSYS/CYGWIN)   -> exec tools/setup/install.ps1 via PowerShell
 #                                                (b2; the PowerShell graph is the
 #                                                Windows install path)
@@ -64,34 +70,53 @@ echo "Repo root: $REPO_ROOT"
 #
 # Discriminator priority (per B-0849 docker-test-harness composition):
 #   1. /etc/NIXOS marker → NixOS (else linux-non-nixos)
-#   2. /.dockerenv → installed (Docker container, e.g., the B-0849
+#   2. ZETA_INSTALL_NIXOS_MODE=installed|live override for callers
+#      that intentionally run inside a live-ISO namespace while
+#      bootstrapping the installed target (zeta-install.sh Step 6.95)
+#   3. /.dockerenv → installed (Docker container, e.g., the B-0849
 #      docker-nixos-install-sh-test harness, which manually creates
 #      /etc/NIXOS to exercise the NixOS userspace path; Docker uses
 #      overlayfs at root which would false-positive on the live-USB
 #      check, so the docker discriminator runs FIRST)
-#   3. /iso present OR /run/initramfs present → live-USB (the canonical
+#   4. /iso present OR /run/initramfs present → live-USB (the canonical
 #      NixOS-installer-ISO markers; these are what zeta-install.sh
 #      itself probes for in its boot-USB detection logic)
-#   4. Otherwise → installed (safer default; overlayfs-without-iso is
+#   5. Otherwise → installed (safer default; overlayfs-without-iso is
 #      more likely an unusual installed config than a live boot)
 detect_linux_flavor() {
   if [ ! -f /etc/NIXOS ]; then
     echo "linux-non-nixos"
     return 0
   fi
-  # Discriminator 2: Docker container short-circuits to installed
+  case "${ZETA_INSTALL_NIXOS_MODE:-auto}" in
+    auto|"")
+      ;;
+    installed|nixos-installed)
+      echo "nixos-installed"
+      return 0
+      ;;
+    live|nixos-live)
+      echo "nixos-live"
+      return 0
+      ;;
+    *)
+      echo "error: invalid ZETA_INSTALL_NIXOS_MODE='${ZETA_INSTALL_NIXOS_MODE}' (expected auto, installed, or live)" >&2
+      exit 1
+      ;;
+  esac
+  # Discriminator 3: Docker container short-circuits to installed
   # (the B-0849 harness creates /etc/NIXOS manually but is not a
   # live USB; its overlayfs root would otherwise false-positive).
   if [ -f /.dockerenv ]; then
     echo "nixos-installed"
     return 0
   fi
-  # Discriminator 3: canonical NixOS-installer-ISO markers.
+  # Discriminator 4: canonical NixOS-installer-ISO markers.
   if [ -d /iso ] || [ -d /run/initramfs ]; then
     echo "nixos-live"
     return 0
   fi
-  # Discriminator 4 (default): installed.
+  # Discriminator 5 (default): installed.
   echo "nixos-installed"
 }
 
@@ -109,7 +134,7 @@ case "$os" in
         "$SETUP_DIR/linux.sh"
         ;;
       nixos-installed)
-        echo "OS: NixOS (installed; runtime setup via mise + bun + claude)"
+        echo "OS: NixOS (installed; runtime setup via mise + bun + agent CLIs)"
         echo "Note: NixOS-side declarative config managed via nixos-rebuild;"
         echo "      this step only sets up the operator runtime tooling."
         "$SETUP_DIR/linux.sh"
@@ -138,7 +163,7 @@ operator-injection points (SSH pubkey, hostname, password) per:
 
 After the target machine reboots into installed-NixOS, run this
 install.sh script again on the installed system to set up the
-runtime tooling (mise + bun + claude). The same script entry —
+runtime tooling (mise + bun + agent CLIs). The same script entry —
 different routing.
 
 B-0857.3 (follow-up sub-row) will factor zeta-install.sh into a

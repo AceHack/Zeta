@@ -67,6 +67,12 @@ import { existsSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync } 
 import { homedir, platform, tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {
+  buildBlob,
+  composeBundle,
+  parseArgs as parsePersistArgs,
+} from "../../tools/installer/zeta-creds-persist";
+import { parseUuidFromDiskutilInfo } from "./zflash-lib";
 
 const ISO_GLOB_PREFIX = "zeta-installer-";
 const DEFAULT_SSH_KEY = join(homedir(), ".ssh", "id_ed25519.pub");
@@ -513,6 +519,13 @@ type EspMountResult = {
   tmpdir?: string;
 };
 
+interface CredBakeOptions {
+  readonly bakeCredArgs: readonly string[];
+  readonly passphraseFile: string | null;
+  readonly passphraseEnv: string | null;
+  readonly persona: string | null;
+}
+
 function mountEsp(espPart: string): EspMountResult {
   // Path 1: try diskutil mount (works for GPT-formatted EFI ESPs).
   // Don't dump diagnostics if this fails — fallback is expected for
@@ -584,6 +597,15 @@ function getMountPoint(partition: string): string | null {
   }
 }
 
+function getPartitionUuid(partition: string): string | null {
+  try {
+    const out = execFileSync("diskutil", ["info", partition], { encoding: "utf8" });
+    return parseUuidFromDiskutilInfo(out);
+  } catch {
+    return null;
+  }
+}
+
 function dumpDiagnostics(context: string): void {
   // Photo-friendly compact diagnostic block per maintainer 2026-05-26
   // discipline. Keep section count low + critical info at top so the
@@ -615,10 +637,73 @@ function dumpDiagnostics(context: string): void {
   );
 }
 
-async function injectPubkeyToUsb(pubkeyPath: string, hostOverride: string | null): Promise<void> {
+function writeCredBlobToEsp(mountPoint: string, espPart: string, credBake: CredBakeOptions): void {
+  if (credBake.bakeCredArgs.length === 0) return;
+
+  const usbUuid = getPartitionUuid(espPart);
+  if (!usbUuid) {
+    dumpDiagnostics(`diskutil info ${espPart} did not report a FAT Volume UUID`);
+    throw new Error(`could not resolve FAT USB UUID for ${espPart}`);
+  }
+
+  const target = join(mountPoint, "zeta-creds.enc");
+  const persistArgv = [
+    "--usb-uuid",
+    usbUuid,
+    "--output",
+    target,
+  ];
+  if (credBake.passphraseFile !== null) {
+    persistArgv.push("--passphrase-file", credBake.passphraseFile);
+  }
+  if (credBake.passphraseEnv !== null) {
+    persistArgv.push("--passphrase-env", credBake.passphraseEnv);
+  }
+  if (credBake.persona !== null) {
+    persistArgv.push("--persona", credBake.persona);
+  }
+  for (const arg of credBake.bakeCredArgs) {
+    persistArgv.push("--bake-cred", arg);
+  }
+
+  const parsed = parsePersistArgs(persistArgv, process.env);
+  if ("error" in parsed) {
+    throw new Error(parsed.error);
+  }
+  const bundle = composeBundle(parsed);
+  if ("error" in bundle) {
+    throw new Error(bundle.error);
+  }
+  const blob = buildBlob(bundle, parsed.usbUuid, parsed.passphrase);
+
+  try {
+    execFileSync("sudo", ["tee", target], {
+      input: blob,
+      stdio: ["pipe", "ignore", "inherit"],
+    });
+  } catch (e) {
+    dumpDiagnostics(`sudo tee ${target} failed`);
+    throw new Error(`sudo tee ${target} failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
+  try {
+    execFileSync("sudo", ["chmod", "600", target], { stdio: "ignore" });
+  } catch {
+    process.stdout.write(`B-0852: chmod 600 not honored for ${target}; continuing because some FAT mounts ignore POSIX modes\n`);
+  }
+  process.stdout.write(`B-0852: wrote encrypted credential blob to ${target} (USB UUID ${usbUuid})\n`);
+}
+
+async function injectPubkeyToUsb(
+  pubkeyPath: string,
+  hostOverride: string | null,
+  credBake: CredBakeOptions,
+): Promise<void> {
   process.stdout.write(`\niter-4.2: injecting ${pubkeyPath} into freshly-flashed USB ESP ...\n`);
   if (hostOverride !== null) {
     process.stdout.write(`iter-5.2: ALSO injecting hostname '${hostOverride}' into ESP ...\n`);
+  }
+  if (credBake.bakeCredArgs.length > 0) {
+    process.stdout.write(`B-0852: ALSO baking ${credBake.bakeCredArgs.length} credential blob entr${credBake.bakeCredArgs.length === 1 ? "y" : "ies"} into ESP ...\n`);
   }
 
   // Brief settle so macOS re-reads partition table after dd
@@ -731,6 +816,15 @@ async function injectPubkeyToUsb(pubkeyPath: string, hostOverride: string | null
     process.stdout.write(`iter-5.2: installed node will be reachable as ssh zeta@${hostOverride}.local\n`);
   }
 
+  if (credBake.bakeCredArgs.length > 0) {
+    try {
+      writeCredBlobToEsp(mountPoint, espPart, credBake);
+    } catch (e) {
+      unmountEsp(espPart, mountResult);
+      bail(3, `B-0852 zeta-creds inject failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
   // Unmount via the matching method (diskutil-mounted → diskutil
   // unmount; mount_msdos-mounted → sudo umount + rmSync tmpdir).
   unmountEsp(espPart, mountResult);
@@ -765,6 +859,10 @@ async function main() {
     "--skip-iso-pull",
     "--host",
     "--agent",
+    "--bake-cred",
+    "--bake-passphrase-file",
+    "--bake-passphrase-env",
+    "--persona",
   ]);
   const argv = process.argv.slice(2);
 
@@ -775,6 +873,10 @@ async function main() {
   let skipIsoPull = false;
   let hostOverride: string | null = null;
   let agentMode = false;
+  const bakeCredArgs: string[] = [];
+  let bakePassphraseFile: string | null = null;
+  let bakePassphraseEnv: string | null = null;
+  let bakePersona: string | null = null;
   const rawFlags: string[] = [];
   const positional: string[] = [];
   for (let i = 0; i < argv.length; i++) {
@@ -832,6 +934,45 @@ async function main() {
       i++;
       continue;
     }
+    if (a === "--bake-cred") {
+      const next = argv[i + 1];
+      if (!next || next.startsWith("-")) {
+        bail(2, "--bake-cred requires an id=value argument (e.g., --bake-cred gh-cli=ghp_xxx)");
+      }
+      bakeCredArgs.push(next);
+      i++;
+      continue;
+    }
+    if (a === "--bake-passphrase-file") {
+      const next = argv[i + 1];
+      if (!next || next.startsWith("-")) {
+        bail(2, "--bake-passphrase-file requires a path argument");
+      }
+      const expanded = next === "~" || next.startsWith("~/")
+        ? join(homedir(), next.slice(next === "~" ? 1 : 2))
+        : next;
+      bakePassphraseFile = resolve(expanded);
+      i++;
+      continue;
+    }
+    if (a === "--bake-passphrase-env") {
+      const next = argv[i + 1];
+      if (!next || next.startsWith("-")) {
+        bail(2, "--bake-passphrase-env requires an environment variable name");
+      }
+      bakePassphraseEnv = next;
+      i++;
+      continue;
+    }
+    if (a === "--persona") {
+      const next = argv[i + 1];
+      if (!next || next.startsWith("-")) {
+        bail(2, "--persona requires a persona name");
+      }
+      bakePersona = next;
+      i++;
+      continue;
+    }
     if (a.startsWith("-")) {
       rawFlags.push(a);
       continue;
@@ -856,6 +997,27 @@ async function main() {
         `Refusing to proceed — destructive tool requires exact arg count.`,
     );
   }
+  const credBake: CredBakeOptions = {
+    bakeCredArgs,
+    passphraseFile: bakePassphraseFile,
+    passphraseEnv: bakePassphraseEnv,
+    persona: bakePersona,
+  };
+  if (credBake.bakeCredArgs.length === 0) {
+    if (credBake.passphraseFile !== null || credBake.passphraseEnv !== null || credBake.persona !== null) {
+      bail(2, "--bake-passphrase-* and --persona require at least one --bake-cred");
+    }
+  } else {
+    if (credBake.passphraseFile !== null && credBake.passphraseEnv !== null) {
+      bail(2, "choose exactly one passphrase source: --bake-passphrase-file OR --bake-passphrase-env");
+    }
+    if (credBake.passphraseFile === null && credBake.passphraseEnv === null) {
+      bail(2, "--bake-cred requires --bake-passphrase-file <path> or --bake-passphrase-env <VAR>");
+    }
+    if (noInject) {
+      bail(2, "--bake-cred requires ESP injection; remove --no-inject");
+    }
+  }
   const isHelp = rawFlags.includes("-h") || rawFlags.includes("--help");
   if (isHelp) {
     process.stdout.write(
@@ -874,6 +1036,14 @@ async function main() {
         "                            operator's Mac (cannot be agent-bypassed). Use when running\n" +
         "                            zflash through a pipe ('| tail', '2>&1 >log', etc.) which\n" +
         "                            breaks the default readline.question stdin-from-terminal flow.\n" +
+        "  --bake-cred <id=value>    B-0852 write encrypted /zeta-creds.enc to USB ESP\n" +
+        "                            after flashing; repeatable. Values use the existing\n" +
+        "                            zeta-creds-persist credential handlers.\n" +
+        "  --bake-passphrase-file <path>\n" +
+        "                            passphrase file for --bake-cred encryption\n" +
+        "  --bake-passphrase-env <VAR>\n" +
+        "                            environment variable containing passphrase for --bake-cred\n" +
+        "  --persona <name>          persona scope for persona-scoped --bake-cred entries\n" +
         "  iso-path                  (optional) explicit ISO; default = newest under ~/Downloads,\n" +
         "                            auto-pulled from CI if origin/main has fresher build\n" +
         "  Run zflash-setup once first to install Touch ID for sudo.\n",
@@ -1041,7 +1211,7 @@ async function main() {
   }
 
   if (willInject) {
-    await injectPubkeyToUsb(pubkeyPath, hostOverride);
+    await injectPubkeyToUsb(pubkeyPath, hostOverride, credBake);
   } else {
     process.stdout.write("\n(iter-4.2 inject skipped per --no-inject or missing pubkey)\n");
     if (hostOverride !== null) {

@@ -32,6 +32,15 @@ libssl3t64        # OpenSSL 3 runtime (Noble t64 name)
 libgssapi-krb5-2  # Kerberos/GSSAPI — .NET networking
 tzdata            # timezone data — .NET DateTime
 
+# USB/ISO QEMU acceptance substrate (operator 2026-05-31): B-0891 uses
+# qemu-system-* for boot/full-install/retention scenarios and qemu-img
+# for qcow2 snapshot/restart state preservation. The file-backed zflash
+# image builder uses mtools' mcopy to write ESP payloads into raw images
+# without mounting physical USB devices.
+qemu-system-x86
+qemu-utils
+mtools
+
 # Container runtime for the effectful do_item executor (rationale: B-0964 §2). podman
 # is the default OCI runtime: Apache-2.0, rootless, daemonless; native on Linux (no
 # VM). Version unpinned (fast-mover CLI) per dep-pin-search-first-authority.

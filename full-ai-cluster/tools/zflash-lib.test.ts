@@ -17,10 +17,14 @@
 
 import { describe, expect, test } from "bun:test";
 import {
+  executeFileBackedZflashImageExecutionPlan,
   generateRandomNodeName,
   isValidHostname,
   parseFatPartitionFromDiskutilList,
   parseOutputFileMarker,
+  parseUuidFromDiskutilInfo,
+  planFileBackedZflashImage,
+  planFileBackedZflashImageExecution,
   VALID_HOSTNAME_REGEX,
 } from "./zflash-lib";
 
@@ -188,6 +192,34 @@ describe("parseFatPartitionFromDiskutilList", () => {
   });
 });
 
+describe("parseUuidFromDiskutilInfo", () => {
+  test("prefers Volume UUID for USB-bound credential KDF", () => {
+    const out = `   Device Identifier:         disk6s2
+   Volume Name:               NIXOS_ISO
+   Volume UUID:               1234-ABCD
+   Disk / Partition UUID:     DEADBEEF-0000-1111-2222-333344445555`;
+    expect(parseUuidFromDiskutilInfo(out)).toBe("1234-ABCD");
+  });
+
+  test("rejects Disk / Partition UUID fallback when Volume UUID is absent", () => {
+    const out = `   Device Identifier:         disk6s2
+   Disk / Partition UUID:     DEADBEEF-0000-1111-2222-333344445555`;
+    expect(parseUuidFromDiskutilInfo(out)).toBe(null);
+  });
+
+  test("rejects GUID-shaped Volume UUID for USB-bound credential KDF", () => {
+    const out = `   Device Identifier:         disk6s2
+   Volume UUID:               DEADBEEF-0000-1111-2222-333344445555`;
+    expect(parseUuidFromDiskutilInfo(out)).toBe(null);
+  });
+
+  test("returns null when no UUID field is present", () => {
+    const out = `   Device Identifier:         disk6s2
+   Volume Name:               NIXOS_ISO`;
+    expect(parseUuidFromDiskutilInfo(out)).toBe(null);
+  });
+});
+
 describe("generateRandomNodeName", () => {
   test("produces `node-` prefix", () => {
     const name = generateRandomNodeName();
@@ -221,6 +253,422 @@ describe("generateRandomNodeName", () => {
     expect(a).toBe("node-000000");
     expect(b).toBe("node-ffffff");
     expect(a).not.toBe(b);
+  });
+});
+
+describe("planFileBackedZflashImage", () => {
+  test("plans a qemu-img raw copy plus ESP writes for QEMU boot media", () => {
+    const result = planFileBackedZflashImage({
+      credentialBlobPath: "artifacts/zeta-creds.enc",
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.imageCommand).toEqual({
+      command: "qemu-img",
+      args: [
+        "convert",
+        "-f",
+        "raw",
+        "-O",
+        "raw",
+        "artifacts/zeta-installer.iso",
+        "artifacts/zflash-baked.img",
+      ],
+    });
+    expect(result.value.espOffsetBytes).toBe(1_048_576);
+    expect(result.value.espWrites).toEqual([
+      {
+        destination: "/zeta-authorized-keys.pub",
+        sourcePath: "fixtures/id_ed25519.pub",
+      },
+      {
+        content: "pikachu\n",
+        destination: "/zeta-hostname.txt",
+      },
+      {
+        destination: "/zeta-creds.enc",
+        sourcePath: "artifacts/zeta-creds.enc",
+      },
+    ]);
+  });
+
+  test("refuses physical device output paths", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "/dev/disk6",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "outputImagePath must be file-backed, not a device path: /dev/disk6",
+    });
+  });
+
+  test("refuses Windows raw device output paths", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "\\\\.\\PhysicalDrive0",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "outputImagePath must be file-backed, not a device path: \\\\.\\PhysicalDrive0",
+    });
+  });
+
+  test("rejects invalid hostname before planning ESP writes", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      hostname: "bad name",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "hostname is not RFC1123-valid: bad name",
+    });
+  });
+
+  test("requires a positive ESP offset", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 0,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "espOffsetBytes must be a positive safe integer",
+    });
+  });
+
+  test("requires at least one ESP write intent", () => {
+    const result = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "at least one ESP write is required",
+    });
+  });
+});
+
+describe("planFileBackedZflashImageExecution", () => {
+  test("expands a file-backed zflash plan into qemu-img plus mtools steps", () => {
+    const planned = planFileBackedZflashImage({
+      credentialBlobPath: "artifacts/zeta-creds.enc",
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) throw new Error(planned.error);
+
+    const result = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "/tmp/zflash-inline/",
+      plan: planned.value,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.mtoolsImageSpecifier).toBe("artifacts/zflash-baked.img@@1048576");
+    expect(result.value.inlineFiles).toEqual([
+      {
+        content: "pikachu\n",
+        destination: "/zeta-hostname.txt",
+        path: "/tmp/zflash-inline/zeta-hostname.txt",
+      },
+    ]);
+    expect(result.value.espWriteCommands).toEqual([
+      {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          "artifacts/zflash-baked.img@@1048576",
+          "fixtures/id_ed25519.pub",
+          "::/zeta-authorized-keys.pub",
+        ],
+      },
+      {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          "artifacts/zflash-baked.img@@1048576",
+          "/tmp/zflash-inline/zeta-hostname.txt",
+          "::/zeta-hostname.txt",
+        ],
+      },
+      {
+        command: "mcopy",
+        args: [
+          "-o",
+          "-i",
+          "artifacts/zflash-baked.img@@1048576",
+          "artifacts/zeta-creds.enc",
+          "::/zeta-creds.enc",
+        ],
+      },
+    ]);
+    const [pubkeyCommand, hostnameCommand, credsCommand] = result.value.espWriteCommands;
+    const [hostnameFile] = result.value.inlineFiles;
+    if (!pubkeyCommand || !hostnameCommand || !credsCommand || !hostnameFile) {
+      throw new Error("expected complete file-backed execution plan");
+    }
+    expect(result.value.steps).toEqual([
+      { kind: "command", command: planned.value.imageCommand },
+      { kind: "command", command: pubkeyCommand },
+      { kind: "write-inline-file", file: hostnameFile },
+      { kind: "command", command: hostnameCommand },
+      { kind: "command", command: credsCommand },
+    ]);
+  });
+
+  test("normalizes Windows inline staging paths before handing them to mtools", () => {
+    const planned = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) throw new Error(planned.error);
+
+    const result = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "C:\\Temp\\zflash-inline\\",
+      plan: planned.value,
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(result.error);
+    expect(result.value.inlineFiles).toEqual([
+      {
+        content: "pikachu\n",
+        destination: "/zeta-hostname.txt",
+        path: "C:/Temp/zflash-inline/zeta-hostname.txt",
+      },
+    ]);
+  });
+
+  test("requires an inline staging directory before planning content writes", () => {
+    const planned = planFileBackedZflashImage({
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) throw new Error(planned.error);
+
+    expect(planFileBackedZflashImageExecution({ plan: planned.value })).toEqual({
+      ok: false,
+      error: "inlineStagingDirectory is required for content ESP writes",
+    });
+  });
+
+  test("refuses Windows raw device paths before expanding execution steps", () => {
+    const result = planFileBackedZflashImageExecution({
+      plan: {
+        espOffsetBytes: 1_048_576,
+        espWrites: [{ destination: "/zeta-authorized-keys.pub", sourcePath: "fixtures/id_ed25519.pub" }],
+        imageCommand: {
+          command: "qemu-img",
+          args: ["convert", "-f", "raw", "-O", "raw", "a.iso", "\\\\.\\PhysicalDrive0"],
+        },
+        isoPath: "a.iso",
+        outputImagePath: "\\\\.\\PhysicalDrive0",
+      },
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "outputImagePath must be file-backed, not a device path: \\\\.\\PhysicalDrive0",
+    });
+  });
+
+  test("rejects ambiguous ESP writes before producing mcopy commands", () => {
+    const result = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "/tmp/zflash-inline",
+      plan: {
+        espOffsetBytes: 1_048_576,
+        espWrites: [
+          {
+            content: "pikachu\n",
+            destination: "/zeta-hostname.txt",
+            sourcePath: "fixtures/hostname.txt",
+          },
+        ],
+        imageCommand: {
+          command: "qemu-img",
+          args: ["convert", "-f", "raw", "-O", "raw", "a.iso", "b.img"],
+        },
+        isoPath: "a.iso",
+        outputImagePath: "b.img",
+      },
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: "ESP write /zeta-hostname.txt must specify exactly one of sourcePath or content",
+    });
+  });
+});
+
+describe("executeFileBackedZflashImageExecutionPlan", () => {
+  test("materializes inline files, runs qemu-img/mcopy steps, and returns the QEMU boot image env", () => {
+    const planned = planFileBackedZflashImage({
+      credentialBlobPath: "artifacts/zeta-creds.enc",
+      espOffsetBytes: 1_048_576,
+      hostname: "pikachu",
+      isoPath: "artifacts/zeta-installer.iso",
+      outputImagePath: "artifacts/zflash-baked.img",
+      pubkeyPath: "fixtures/id_ed25519.pub",
+    });
+    expect(planned.ok).toBe(true);
+    if (!planned.ok) throw new Error(planned.error);
+    const execution = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "/tmp/zflash-inline",
+      plan: planned.value,
+    });
+    expect(execution.ok).toBe(true);
+    if (!execution.ok) throw new Error(execution.error);
+
+    const observed: string[] = [];
+    const result = executeFileBackedZflashImageExecutionPlan(execution.value, {
+      writeFile: (file) => {
+        observed.push(`write:${file.path}:${file.content}`);
+      },
+      runCommand: (command) => {
+        observed.push(`${command.command} ${command.args.join(" ")}`);
+        return { exitCode: 0, stderr: "", stdout: "ok" };
+      },
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) throw new Error(JSON.stringify(result.error));
+    expect(observed).toEqual([
+      "qemu-img convert -f raw -O raw artifacts/zeta-installer.iso artifacts/zflash-baked.img",
+      "mcopy -o -i artifacts/zflash-baked.img@@1048576 fixtures/id_ed25519.pub ::/zeta-authorized-keys.pub",
+      "write:/tmp/zflash-inline/zeta-hostname.txt:pikachu\n",
+      "mcopy -o -i artifacts/zflash-baked.img@@1048576 /tmp/zflash-inline/zeta-hostname.txt ::/zeta-hostname.txt",
+      "mcopy -o -i artifacts/zflash-baked.img@@1048576 artifacts/zeta-creds.enc ::/zeta-creds.enc",
+    ]);
+    expect(result.value.completedSteps).toEqual(execution.value.steps);
+    expect(result.value.retentionBootImageEnvironment).toEqual({
+      ZFLASH_QEMU_RETENTION_BOOT_IMAGE: "artifacts/zflash-baked.img",
+    });
+  });
+
+  test("stops before later mcopy commands when inline materialization fails", () => {
+    const execution = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "/tmp/zflash-inline",
+      plan: {
+        espOffsetBytes: 1_048_576,
+        espWrites: [
+          {
+            content: "pikachu\n",
+            destination: "/zeta-hostname.txt",
+          },
+        ],
+        imageCommand: {
+          command: "qemu-img",
+          args: ["convert", "-f", "raw", "-O", "raw", "a.iso", "b.img"],
+        },
+        isoPath: "a.iso",
+        outputImagePath: "b.img",
+      },
+    });
+    expect(execution.ok).toBe(true);
+    if (!execution.ok) throw new Error(execution.error);
+    const imageCommandStep = execution.value.steps[0];
+    const hostnameInlineFile = execution.value.inlineFiles[0];
+    if (!imageCommandStep || !hostnameInlineFile) {
+      throw new Error("expected image command step and hostname inline file");
+    }
+
+    const result = executeFileBackedZflashImageExecutionPlan(execution.value, {
+      writeFile: () => {
+        throw new Error("disk full");
+      },
+      runCommand: () => ({ exitCode: 0 }),
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: {
+        kind: "inline-file-write-failed",
+        completedSteps: [imageCommandStep],
+        file: hostnameInlineFile,
+        reason: "disk full",
+      },
+    });
+  });
+
+  test("reports failed command output without running later steps", () => {
+    const execution = planFileBackedZflashImageExecution({
+      inlineStagingDirectory: "/tmp/zflash-inline",
+      plan: {
+        espOffsetBytes: 1_048_576,
+        espWrites: [
+          {
+            sourcePath: "fixtures/id_ed25519.pub",
+            destination: "/zeta-authorized-keys.pub",
+          },
+        ],
+        imageCommand: {
+          command: "qemu-img",
+          args: ["convert", "-f", "raw", "-O", "raw", "a.iso", "b.img"],
+        },
+        isoPath: "a.iso",
+        outputImagePath: "b.img",
+      },
+    });
+    expect(execution.ok).toBe(true);
+    if (!execution.ok) throw new Error(execution.error);
+    const imageCommandStep = execution.value.steps[0];
+    const pubkeyMcopyCommand = execution.value.espWriteCommands[0];
+    if (!imageCommandStep || !pubkeyMcopyCommand) {
+      throw new Error("expected image command step and pubkey mcopy command");
+    }
+
+    const result = executeFileBackedZflashImageExecutionPlan(execution.value, {
+      writeFile: () => {
+        throw new Error("unexpected inline write");
+      },
+      runCommand: (command) => command.command === "qemu-img"
+        ? { exitCode: 0 }
+        : { exitCode: 1, stderr: "No such file or directory", stdout: "copy attempt" },
+    });
+
+    expect(result).toEqual({
+      ok: false,
+      error: {
+        kind: "command-failed",
+        command: pubkeyMcopyCommand,
+        completedSteps: [imageCommandStep],
+        exitCode: 1,
+        stderr: "No such file or directory",
+        stdout: "copy attempt",
+      },
+    });
   });
 });
 

@@ -1,20 +1,24 @@
 # tools/setup/manifests/agent-clis — agent + peer-AI CLIs installed bun-global on EVERY OS
-# (bun provided by mise; the IDENTICAL pkg set cross-OS — symmetric). Installed by
-# common/agent-clis.sh on Unix (install.ps1 wiring is a follow-up, after the option-B disk
-# experiment settles, so we don't add packages to the disk-constrained Windows container
-# mid-experiment). BEST-EFFORT: each is an auth-gated dev/peer tool, NOT a hard dep — an
-# install failure warns + continues (never bricks install); LOGIN/auth is the operator's to
-# do after install. `bun install --global` is idempotent (install if absent, update if
-# present), so re-runs only refresh — the idempotent-update property.
+# (bun provided by mise; the IDENTICAL package set cross-OS — symmetric). Installed by
+# common/agent-clis.sh on Unix and tools/setup/install.ps1 on Windows. BEST-EFFORT on
+# Unix and required in the Windows shield: each is an auth-gated dev/peer tool; LOGIN/auth
+# is the operator's to do after install. `bun install --global` is idempotent (install if
+# absent, update if present), so re-runs only refresh — the idempotent-update property.
 #
 # PACKAGE-MANAGER CLIs only (npm/bun-global). Non-package-manager CLIs that ship their own
 # one-line installers (grok / cursor-agent / kiro = curl|bash or PS installers) go in the
 # separate one-liner installer registry (operator 2026-05-31), NOT here.
 #
+# Format per line:
+#   <bun-package-id>  [bin=<expected-binary>]
+#
+# The `bin=` qualifier is metadata for install shields/smoke tests; installers consume the
+# first token as the bun package id and ignore unknown qualifiers.
+#
 # Pins per dep-pin-search-first (WebSearch 2026-05-31):
 #   claude-code   — @anthropic-ai/claude-code  (Anthropic; already in the Windows graph)
 #   codex (Vera)  — @openai/codex              (https://github.com/openai/codex)
 #   gemini (Lior) — @google/gemini-cli         (https://github.com/google-gemini/gemini-cli; Node 20+, bun provides)
-@anthropic-ai/claude-code
-@openai/codex
-@google/gemini-cli
+@anthropic-ai/claude-code  bin=claude
+@openai/codex              bin=codex
+@google/gemini-cli         bin=gemini

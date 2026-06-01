@@ -43,6 +43,7 @@
           name = "zeta-usb-installer";
           packages = with pkgs; [
             git
+            mtools
             nix-output-monitor
             nh
           ];

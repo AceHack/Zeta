@@ -21,6 +21,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 GIT_REF="${1:-main}"
 
 # Reject git refs that aren't safe to interpolate into the heredoc
@@ -39,9 +40,10 @@ for cmd in docker k3d kubectl helm; do
     echo "ERROR: $cmd not found. Install with:"
     case "$cmd" in
       docker) echo "  Docker Desktop or Colima (https://docs.docker.com/desktop/install/mac-install/)" ;;
-      k3d)    echo "  brew install k3d" ;;
-      kubectl) echo "  brew install kubectl" ;;
-      helm)   echo "  brew install helm" ;;
+      k3d|kubectl|helm)
+        echo "  bash \"${REPO_ROOT}/tools/setup/install.sh\""
+        echo "  # installs k3d/kubectl/helm from the repo's .mise.toml"
+        ;;
     esac
     exit 1
   }

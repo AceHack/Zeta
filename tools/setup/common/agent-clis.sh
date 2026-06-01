@@ -34,10 +34,16 @@ if ! command -v mise >/dev/null 2>&1; then
 fi
 
 # Read the manifest directly (NOT via a pipe) so an all-comments file doesn't trip pipefail,
-# and strip inline `#` comments + trim. `|| [ -n "$line" ]` catches a final no-newline line.
+# and strip inline `#` comments + trim. First token is the package id; later key=value
+# qualifiers are metadata for smoke tests / other OS adapters. `|| [ -n "$line" ]` catches
+# a final no-newline line.
 while IFS= read -r line || [ -n "$line" ]; do
-  pkg="${line%%#*}"
-  pkg="$(echo "$pkg" | xargs)" # trim leading/trailing whitespace
+  line="${line%%#*}"
+  line="$(echo "$line" | xargs)" # trim leading/trailing whitespace
+  [ -z "$line" ] && continue
+  # shellcheck disable=SC2086  # intentional word-split of the trusted manifest line
+  set -- $line
+  pkg="${1:-}"
   [ -z "$pkg" ] && continue
   echo "↓ bun -g install $pkg (best-effort agent CLI)..."
   if ! mise exec -- bun install --global "$pkg"; then

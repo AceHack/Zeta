@@ -3,9 +3,10 @@
 #
 # Parity with tools/setup/install.sh -> macos.sh (B-0857 Windows parity). System CLI tools
 # resolve scoop -> winget -> chocolatey (operator 2026-05-30; scoop primary = user-mode, no
-# admin, AI-native). Runtimes via mise/.mise.toml; claude via bun --global -- the IDENTICAL files
-# Unix uses, so the tool set stays in sync + symmetric across OSes. Background loop registered via
-# tools/persistence/windows/install-scheduled-task.ts (schtasks ~= launchd). No admin required.
+# admin, AI-native). Runtimes via mise/.mise.toml; agent CLIs via manifests/agent-clis +
+# bun --global -- the IDENTICAL files Unix uses, so the tool set stays in sync + symmetric across
+# OSes. Background loop registered via tools/persistence/windows/install-scheduled-task.ts
+# (schtasks ~= launchd). No admin required.
 #
 # Idempotent (detect-first-install-else-update) -- safe to run repeatedly to keep tools fresh.
 # Mirrors the macOS Homebrew flow: a fresh machine gets the full install; a re-run efficiently
@@ -40,7 +41,7 @@ function Test-IsAdmin {
 # $ErrorActionPreference='Stop' the moment the tool emits ANY stderr line -- even with 2>$null or
 # 2>&1 (Server-Core build 2026-05-31: `mise trust` printing "mise trusted ..." to stderr crashed
 # install). Conversely, Stop does NOT catch a native non-zero EXIT in 5.1, so real failures went
-# silent (e.g. a failed `bun install -g claude-code`). So route native calls through here: run
+# silent (e.g. a failed manifest-driven bun global install). So route native calls through here: run
 # stderr-tolerant (ErrorActionPreference=Continue so merged stderr is just text), surface output,
 # then fault ONLY on a real non-zero exit code.
 function Invoke-Tool {
@@ -214,8 +215,18 @@ try {
   Invoke-Tool { mise install } 'mise install'
 } finally { Pop-Location }
 
-# 5. claude-code via bun --global (bun provided by mise) -- identical to Unix.
-Invoke-Tool { mise exec -- bun install --global '@anthropic-ai/claude-code' } 'bun install -g claude-code'
+# 5. agent + peer-AI CLIs via bun --global (bun provided by mise) -- identical manifest to Unix.
+$agentCliManifest = Join-Path $RepoRoot 'tools\setup\manifests\agent-clis'
+if (Test-Path $agentCliManifest) {
+  foreach ($raw in Get-Content $agentCliManifest) {
+    $line = ($raw -replace '#.*$', '').Trim(); if (-not $line) { continue }
+    $parts = $line -split '\s+'
+    $packageId = $parts[0] # later key=value qualifiers are metadata for smoke tests / adapters
+    Invoke-Tool { mise exec -- bun install --global $packageId } "bun install -g $packageId"
+  }
+} else {
+  Write-Host "warn: agent-clis manifest missing; skipping agent CLI install"
+}
 
 # 5b. Expose the repo's package bins (ace, zeta-shadow) on PATH via `bun link` (the package.json
 # `bin` map declares them). Best-effort + GRACEFUL (Invoke-ToolSoft): a failure WARNS and

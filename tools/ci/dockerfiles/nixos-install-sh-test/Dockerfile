@@ -148,19 +148,24 @@ RUN --mount=type=secret,id=github_token \
 # composes with .claude/rules/dep-pin-search-first-authority.md.
 RUN bash -lc 'eval "$(mise activate bash)" && bun --version | grep -q "^1\.3\." || (echo "ERROR: bun version mismatch (expected 1.3.x per .mise.toml)" && bun --version && exit 1)'
 
-# Validation step 2: claude-code installable via bun (validates the
-# iter-5.5.0 substrate's bun install --global pattern works on NixOS
-# userspace). Doesn't actually run claude-code (would need API key);
-# just verifies the install succeeds + the binary lands at the
-# expected path.
+# Validation step 2: every manifests/agent-clis package is installable
+# via bun (validates the iter-5.5.0 substrate's bun install --global
+# pattern works on NixOS userspace). Doesn't actually run the CLIs
+# (would need auth); just verifies install succeeds + declared binaries
+# land at the expected path.
 # set -o pipefail ensures `bun install ... | tail -5` propagates bun's
 # non-zero exit (per Copilot review on PR #5393 — without pipefail the
 # pipeline returns tail's exit status which masks install failures
 # when a cached/stale claude binary already exists at the path).
-RUN bash -lc 'set -o pipefail && eval "$(mise activate bash)" && \
+RUN bash -lc 'set -eo pipefail && eval "$(mise activate bash)" && \
     mkdir -p /root/.bun/bin && \
-    BUN_INSTALL=/root/.bun bun install --global @anthropic-ai/claude-code 2>&1 | tail -5 && \
-    test -x /root/.bun/bin/claude || (echo "ERROR: claude not at expected path" && exit 1)'
+    while IFS= read -r line || [ -n "$line" ]; do \
+      line="${line%%#*}"; line="$(echo "$line" | xargs)"; [ -z "$line" ] && continue; \
+      set -- $line; pkg="$1"; bin=""; shift || true; \
+      for tok in "$@"; do case "$tok" in bin=*) bin="${tok#bin=}" ;; esac; done; \
+      BUN_INSTALL=/root/.bun bun install --global "$pkg" 2>&1 | tail -5; \
+      if [ -n "$bin" ]; then test -x "/root/.bun/bin/$bin" || (echo "ERROR: $bin not at expected path" && exit 1); fi; \
+    done < tools/setup/manifests/agent-clis'
 
 # Validation step 3: gh installed via mise / nix (the iter-5.5.0 Bug 5
 # fix added gh to common.nix systemPackages; in Docker we don't have

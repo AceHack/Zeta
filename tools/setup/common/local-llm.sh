@@ -14,6 +14,12 @@
 # OS split (matches the install-graph convention): macOS installs the ollama
 # binary via manifests/brew (the brew step); Linux installs the pinned release
 # binary here (mise-style curl-fetch). Both then pull the pinned model.
+#
+# NON-INTERACTIVE DEFAULT-SKIP: the Ollama runtime + model path is heavyweight
+# best-effort substrate. Generic CI jobs and scripted install.sh runs must not
+# fail because a latest-release download or model pull is slow/interrupted. The
+# dedicated install shields opt in with ZETA_INSTALL_FULL=1 and assert the real
+# local-LLM path; interactive dev shells run it by default.
 
 set -euo pipefail
 
@@ -40,6 +46,11 @@ HOST="$(mget host)"
 
 if [ -z "$MODEL" ]; then
   echo "warn: local-llm manifest has no 'model'; skipping" >&2
+  exit 0
+fi
+
+if [ ! -t 0 ] && [ "${ZETA_INSTALL_FULL:-0}" != "1" ]; then
+  echo "✓ local-llm: skipping Ollama/model install (non-interactive run; best-effort; set ZETA_INSTALL_FULL=1 to exercise; interactive dev shells run it by default)"
   exit 0
 fi
 

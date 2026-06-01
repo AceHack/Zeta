@@ -201,6 +201,7 @@
             nix-output-monitor nvd nh
             kubectl kubernetes-helm k9s argocd
             cilium-cli hubble
+            qemu mtools
             age sops ssh-to-age
             git gh jq yq-go ripgrep fd
           ];

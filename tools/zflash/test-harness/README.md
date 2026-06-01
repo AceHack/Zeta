@@ -4,18 +4,34 @@ PoC scaffold for the zflash "done" acceptance criteria — the 5-scenario QEMU t
 
 ## Scope
 
-**PoC**: declarative scenario definitions + CLI dispatcher contract + invariant tests.
+**PoC**: declarative scenario definitions + CLI dispatcher contract +
+invariant tests + QEMU disk bootstrap, snapshot/restart command planning,
+explicit scenario-3 process-executor wiring, and serial-marker lifecycle
+stop conditions for QEMU boot phases.
 
-**NOT in PoC** (deferred to follow-up): QEMU snapshot/restart logic for scenarios 3-5 (state preservation between boots); multi-VM orchestration for scenario 5 (cluster-joining); GitHub Actions workflow integration.
+**NOT in PoC** (deferred to follow-up): default-on QEMU snapshot/restart
+execution for scenarios 3-5 (state preservation between boots); multi-VM
+orchestration for scenario 5 (cluster-joining); GitHub Actions workflow
+integration.
+
+Operator clarification, 2026-05-31: this harness proves USB/ISO behavior,
+not Kubernetes or ArgoCD health. The USB lane should cover zflash, boot,
+retention/no-retention semantics, and one agent start path via retained
+auth or local-LLM/no-account mode. Kubernetes and ArgoCD require their own
+cluster integration tests outside B-0891. Touch ID/biometric retention is
+represented by preserved auth-state markers here and remains
+operator-collaborative physical testing. Zeta is intentionally baked into
+the image; external contributor flows are future work. Target architecture
+assumptions include both x86_64 and ARM64/aarch64 hardware.
 
 ## Scenarios
 
 | # | Scenario | Status | Composes-with |
 |---|---|---|---|
 | 1 | Initial format (USB-bake from zero) | composes-with-existing | `tools/ci/qemu-boot-test.ts` + `tools/ci/audit-installer-iso-content.ts` |
-| 2 | Initial boot + cluster comes up | composes-with-existing | `tools/ci/qemu-full-install-test.ts` (B-0831 Slice 1) |
-| 3 | Reformat WITH key + selection retention | scaffolded | B-0737 Touch ID + B-0852 USB-bound creds (requires QEMU state preservation) |
-| 4 | Reformat from scratch (wipe + fresh keys) | scaffolded | B-0852 USB-bound creds + B-0884 PQ git-crypt (requires test-harness path-fork) |
+| 2 | Initial boot + agent start path | composes-with-existing | `tools/ci/qemu-full-install-test.ts` (B-0831 Slice 1); K8s/ArgoCD health is external integration coverage |
+| 3 | Reformat WITH key + selection retention | scaffolded | B-0737 Touch ID + B-0852 USB-bound creds; same cluster/node identity retained (requires QEMU state preservation) |
+| 4 | Reformat from scratch (wipe + fresh keys) | scaffolded | B-0852 USB-bound creds + B-0884 PQ git-crypt; new cluster/node identity (requires test-harness path-fork) |
 | 5 | Cluster joining (new node) | scaffolded | B-0831 cluster-auto-join + B-0852.3 cred-picker (requires multi-VM QEMU orchestration) |
 
 ## CLI
@@ -39,9 +55,47 @@ bun tools/zflash/test-harness/run.ts --all <iso-path>
 
 Exit codes:
 
-- `0` — all requested scenarios passed (or all skipped/scaffolded)
+- `0` — all requested runnable scenarios passed; `--list`/`--dry-run` succeeded
 - `1` — one or more requested scenarios FAILED
 - `2` — usage error OR scenario-definition invariant violation
+
+Runtime attempts for scenario 3 now emit the QEMU snapshot/restart command
+plan and still fail closed with exit `1` unless the operator explicitly opts
+into the real process executor:
+
+```bash
+ZFLASH_QEMU_RETENTION_EXECUTE=1 \
+  bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention <iso-path>
+```
+
+When testing a zflash-prepared USB artifact instead of a plain installer
+ISO, point the runner at the raw boot image with
+`ZFLASH_QEMU_RETENTION_BOOT_IMAGE`:
+
+```bash
+ZFLASH_QEMU_RETENTION_BOOT_IMAGE=/path/to/zflash-boot.img \
+ZFLASH_QEMU_RETENTION_EXECUTE=1 \
+  bun tools/zflash/test-harness/run.ts --scenario reformat-with-retention <iso-path>
+```
+
+The positional ISO path names the artifact stem only. Scenario-3 writes its
+qcow2 disk and serial log under a writable temporary run directory by
+default, or under `ZFLASH_QEMU_RETENTION_RUN_DIR` when that override is set.
+The boot-image env var supplies the actual USB-shaped boot media so QEMU can
+observe the zflash-baked ESP contents.
+
+The opt-in path runs the planned `qemu-img`/`qemu-system-x86_64` sequence:
+create the qcow2 disk, boot the ISO once to establish the baseline disk,
+stop that boot when the serial log reaches the post-install `[iter-5.1]`
+success marker, snapshot the baseline, restore it, restart from the ISO with
+the same disk, stop that restart only when retention markers appear, then
+pass only when the final serial assertion includes the required retention
+markers. If either lifecycle phase reaches the plain installer prompt before
+its required success markers, the run fails fast instead of waiting for the
+full QEMU timeout. Runtime attempts for scenarios 4-5 remain
+scaffolded/fail-closed.
+`--dry-run` remains the planning surface for inspecting pending scenarios
+without claiming a false green.
 
 ## Tests
 
@@ -66,6 +120,7 @@ When a scenario transitions to composes-with-existing:
 
 - [`tools/ci/qemu-full-install-test.ts`](../../ci/qemu-full-install-test.ts) — B-0831 Slice 1 starter; existing QEMU full-install harness
 - [`tools/ci/qemu-boot-test.ts`](../../ci/qemu-boot-test.ts) — cascade #5 boot smoke-test
+- [`qemu-state.ts`](qemu-state.ts) — scenario 3 qcow2 disk bootstrap + snapshot/restart command planner
 - [`tools/ci/audit-installer-iso-content.ts`](../../ci/audit-installer-iso-content.ts) — cascade #4 ISO content audit
 - [`full-ai-cluster/tools/zflash.ts`](../../../full-ai-cluster/tools/zflash.ts) — the zflash CLI under test
 - [`full-ai-cluster/tools/zflash-lib.ts`](../../../full-ai-cluster/tools/zflash-lib.ts) — library substrate

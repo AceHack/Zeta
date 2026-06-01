@@ -2,10 +2,11 @@
 # tools/ci/dockerfiles/windows-install-ps1-test/Dockerfile
 #
 # Slice 2c — Server-Core Docker test for tools/setup/install.ps1 (B-0857 Windows parity).
-# Validates install.ps1's TOOL-INSTALL GRAPH (scoop -> git/mise -> .mise.toml runtimes -> claude)
-# on a clean Windows Server Core userspace, then asserts via tools/ci/windows-install-ps1-smoke.ts
-# --mode container. The user-mode scheduled task is NOT covered here — a Windows container has no
-# interactive session; the desktop loop-smoke covers it. The smoke PRINTS that skip (not silent)
+# Validates install.ps1's TOOL-INSTALL GRAPH (scoop -> git/mise -> .mise.toml runtimes ->
+# manifests/agent-clis) on a clean Windows Server Core userspace, then asserts via
+# tools/ci/windows-install-ps1-smoke.ts --mode container. The user-mode scheduled task is NOT
+# covered here — a Windows container has no interactive session; the desktop loop-smoke covers it.
+# The smoke PRINTS that skip (not silent)
 # per .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md.
 #
 # Runs on the windows-2025 GitHub runner (process isolation; container OS must match the host).
@@ -30,7 +31,7 @@ SHELL ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", "$E
 # desktops ship. bun.exe needs it — without it `mise exec -- bun` dies with STATUS_DLL_NOT_FOUND
 # (0xC0000135 / exit 3221225781), and install.ps1's own `bun install -g claude-code` step fails
 # silently (PS 5.1 doesn't fault on a native non-zero exit). This is a SYSTEM runtime that a real
-# desktop already has, so it's provisioned in the container harness here — NOT in install.ps1,
+# desktop already has, so it's provisioned in the container harness here -- NOT in install.ps1,
 # which is deliberately user-mode/no-admin. Single quotes only (the SHELL -Command wrapper collides
 # with double-quoted strings in a RUN). Pin: aka.ms/vs/17/release/vc_redist.x64.exe = Microsoft's
 # evergreen latest VC++ 2015-2022 x64 redist (WebSearch 2026-05-31;
