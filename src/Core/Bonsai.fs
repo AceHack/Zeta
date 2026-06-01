@@ -547,3 +547,14 @@ module Bonsai =
                         | true, v -> Error [ { Path = "$.v"; Feedback = UnsupportedVersion(v, Version) } ]
                         | false, _ -> Error [ { Path = "$.v"; Feedback = MalformedJson "document v is not an int32" } ]
                     | _ -> Error [ { Path = "$.v"; Feedback = MalformedJson "document v is missing or not a number" } ]
+
+    /// The Bonsai canonical-JSON serializer exposed as a value codec (the hexagonal port) —
+    /// callers can depend on `Codec.ICodec<Expr, string, BonsaiFeedback>` rather than the
+    /// concrete serialize/parse, so the canonical-JSON mechanism is swappable behind the port.
+    /// The byte-exact canonical contract + the accumulate-mode (parseAll/ProblemDetails) remain
+    /// Bonsai-specific extensions on top of the port's serialize/deserialize.
+    let codec: Codec.ICodec<Expr, string, BonsaiFeedback> =
+        { new Codec.ICodec<Expr, string, BonsaiFeedback> with
+            member _.Serialize(value) = serialize value
+            member _.Deserialize(wire) = parse wire
+            member _.Name = "bonsai/canonical-json-v1" }

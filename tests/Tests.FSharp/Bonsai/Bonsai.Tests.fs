@@ -367,3 +367,26 @@ let ``parseAll declines NonCanonical (single) for structurally-valid but non-can
             | Bonsai.NonCanonical -> true
             | _ -> false
         )
+
+// ---- hexagonal value-codec port (Codec.ICodec adapter) ----
+
+[<Fact>]
+let ``Bonsai.codec is the value-codec port: round-trips every golden + agrees with serialize/parse`` () =
+    let codec = Bonsai.codec
+    Assert.Equal("bonsai/canonical-json-v1", codec.Name)
+    let cases = goldenCanonicals ()
+    Assert.True(cases.Length > 0, "no golden cases loaded")
+
+    for (name, canonical) in cases do
+        // the codec round-trips byte-exact through the port
+        let node = codec.Deserialize canonical |> ok
+        Assert.Equal(canonical, codec.Serialize node |> ok)
+        // and the port agrees with the concrete serialize/parse it adapts
+        Assert.Equal<Bonsai.Expr>((Bonsai.parse canonical |> ok), node)
+        Assert.Equal((Bonsai.serialize node), (codec.Serialize node))
+        ignore name
+
+[<Fact>]
+let ``Bonsai.codec surfaces the typed feedback channel (no exception crosses the port)`` () =
+    let codec = Bonsai.codec
+    Assert.True(codec.Deserialize "not json" |> isErr (fun _ -> true))
