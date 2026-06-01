@@ -79,13 +79,13 @@ describe("executeDoItem — the observation envelope", () => {
 
   it("the Started observation records the executor TIER + gated (the §3 glass-halo audit)", async () => {
     const sink = fakeObservationSink();
-    const dockerish: CommandExecutor = { tier: "docker", run: () => Promise.resolve(okRun) };
-    await executeDoItem(w([item("B-1")]), item("B-1"), sink, dockerish, { spec: { script: "x" }, gated: true });
+    const ociExec: CommandExecutor = { tier: "oci", run: () => Promise.resolve(okRun) };
+    await executeDoItem(w([item("B-1")]), item("B-1"), sink, ociExec, { spec: { script: "x" }, gated: true });
 
     const started = sink.appended[0];
     expect(started?.kind).toBe("ActionExecutionStarted");
     if (started?.kind !== "ActionExecutionStarted") return;
-    expect(started.tier).toBe("docker");
+    expect(started.tier).toBe("oci");
     expect(started.gated).toBe(true);
   });
 

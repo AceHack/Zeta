@@ -21,11 +21,12 @@
  * The `CommandExecutor` is INJECTED (asymmetric-authorship: the port authors its
  * own outcome channel; `executeDoItem` stays testable with a fake; no shell in the
  * unit path). The `Started` observation records the executor `tier` + `gated` so the
- * §3 glass-halo audit can tell a sandbox run from a real-FS/docker escalation.
+ * §3 glass-halo audit can tell a sandbox run from a real-FS/OCI escalation.
  *
  * Phase 1 (this file): the envelope + port + transition, fake executor, no dep,
- * no shell. Phase 2 wires real impls behind `CommandExecutor` (local docker for
- * real work; just-bash in-memory for text; per B-0964 §2 review-folded routing).
+ * no shell. Phase 2 wires real impls behind `CommandExecutor` (local OCI runtime —
+ * podman default, swappable — for real work; just-bash in-memory for text; per
+ * B-0964 §2 / §2.2 review-folded routing).
  * Integrating `executeDoItem` into the unified `execute`/log/sink is a follow-up
  * (Phase 1 keeps it a sibling so the existing `execute` + its tests stay green).
  *
@@ -51,8 +52,13 @@ import type { AppendOutcome, EventSink } from "./execute";
 
 // ─── the executor port (the "bash surface") ──────────────────────────────────
 
-/** Which surface ran the command — recorded in the Started observation for the audit. */
-export type ExecutorTier = "fake" | "just-bash" | "docker" | "cloud-burst";
+/**
+ * Which surface ran the command — recorded in the Started observation for the audit.
+ * `oci` = the runtime-agnostic local OCI runtime (podman default, swappable to
+ * docker/nerdctl/finch via `ZETA_CONTAINER_RUNTIME`; B-0964 §2.2). The tier names the
+ * boundary CLASS, not a specific vendor — so the audit doesn't lie about which engine ran.
+ */
+export type ExecutorTier = "fake" | "just-bash" | "oci" | "cloud-burst";
 
 /** What to run. Phase 1: the caller supplies it (B-0964 §4: the sub-loop / recipe map decides later). */
 export interface RunSpec {
@@ -65,7 +71,7 @@ export type RunOutcome =
   | { readonly ok: true; readonly stdout: string; readonly exitCode: 0 }
   | { readonly ok: false; readonly reason: string; readonly exitCode: number; readonly stderr: string };
 
-/** The injected bash surface. Fake in tests; docker / just-bash in prod (B-0964 §2). */
+/** The injected bash surface. Fake in tests; oci / just-bash in prod (B-0964 §2). */
 export interface CommandExecutor {
   readonly tier: ExecutorTier;
   run: (spec: RunSpec) => Promise<RunOutcome>;
