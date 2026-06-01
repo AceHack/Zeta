@@ -17,6 +17,7 @@
     <Compile Include="Semiring.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="GSet.fs" />
+    <Compile Include="Bag.fs" />
     <Compile Include="ZSet.fs" />
     <Compile Include="ToffoliGate.fs" />
     <Compile Include="IndexedZSet.fs" />
