@@ -5,7 +5,9 @@ import { tmpdir } from "node:os";
 import { generateKeyPairSync, createHash } from "node:crypto";
 import { parseArgs, main } from "./ace.ts";
 import { listInstalled, contentHash, listTrustedKeys, loadRegistry } from "./store.ts";
+import { readRegistriesConfig } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
+import { generateKeypair as gkpA, signIndex as sidxA } from "./signing.ts";
 import { packageHash } from "./resolve.ts";
 import { parseLockfile } from "./lockfile.ts";
 
@@ -1226,5 +1228,127 @@ describe("ace update (slice 5.4)", () => {
     const lf = parseLockfile(readFileSync(lockPath, "utf8"));
     expect("error" in lf).toBe(false);
     if (!("error" in lf)) expect(lf.nodes).toEqual([]);
+  });
+});
+
+describe("ace registry remote (slice 6)", () => {
+  test("add (with --key) → list → rm round-trips", async () => {
+    expect(await main(["registry", "remote", "add", "https://r/index.json", "--key", "ed25519:abc"])).toBe(0);
+    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/index.json", key_id: "ed25519:abc" }]);
+    expect(await main(["registry", "remote", "list"])).toBe(0);
+    expect(await main(["registry", "remote", "rm", "https://r/index.json"])).toBe(0);
+    expect(readRegistriesConfig().remotes).toEqual([]);
+  });
+  test("add WITHOUT --key is a parse error", () => {
+    expect("error" in parseArgs(["registry", "remote", "add", "https://r/index.json"])).toBe(true);
+  });
+  test("add with --max-staleness-days", async () => {
+    expect(await main(["registry", "remote", "add", "https://r/i.json", "--key", "ed25519:k", "--max-staleness-days", "7"])).toBe(0);
+    expect(readRegistriesConfig().remotes[0]!.max_staleness_days).toBe(7);
+  });
+});
+
+describe("ace install via remote registry (slice 6)", () => {
+  let savedFetch: typeof globalThis.fetch;
+  beforeEach(() => { savedFetch = globalThis.fetch; });
+  afterEach(() => { globalThis.fetch = savedFetch; });
+
+  test("resolves + installs a package from a signed remote index", async () => {
+    const idxKp = gkpA(); const now = Date.now();
+    const files = { "leaf.txt": "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const pkgKp = generateKeypair();
+    const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
+    const pkg = { manifest: { ...m, signature: signManifest(m, pkgKp.privatePem) }, files };
+    const pkgJson = JSON.stringify(pkg);
+    const pkgHash = packageHash(pkg as unknown as Parameters<typeof packageHash>[0]);
+    const pkgUrl = "https://pkgs/leaf-1.0.0.json";
+    const idxContent = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
+      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } } };
+    const idxJson = JSON.stringify({ ...idxContent, signature: sidxA(idxContent, idxKp.privatePem) });
+    globalThis.fetch = (async (u: string) => new Response(u === pkgUrl ? pkgJson : idxJson, { status: 200 })) as unknown as typeof fetch;
+    await main(["trust", "add", idxKp.publicSpkiB64]);
+    await main(["trust", "add", pkgKp.publicSpkiB64]);
+    await main(["registry", "remote", "add", "https://x/index.json", "--key", idxKp.keyId]);
+    const root = { manifest: { format_version: 1, name: "root", version: "1.0.0",
+      content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
+      dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
+    const rootPath = join(tempHome, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const code = await main(["install", rootPath, "--allow-no-signature"]);
+    expect(code).toBe(0);
+    expect(listInstalled(join(tempHome, ".ace", "store")).some((p) => p.manifest.name === "leaf")).toBe(true);
+  });
+
+  test("--offline + --frozen parse OK together", () => {
+    expect("error" in parseArgs(["install", "x.json", "--offline", "--frozen"])).toBe(false);
+  });
+
+  // ---- update --offline: uses cached registry-index, still fetches package artifacts ----
+
+  test("update --offline uses cached registry-index (no index fetch) + writes lockfile", async () => {
+    // Setup: a signed remote index + signed package, mirroring the install test above.
+    const idxKp = gkpA(); const now = Date.now();
+    const files = { "leaf.txt": "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const pkgKp = generateKeypair();
+    const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
+    const pkg = { manifest: { ...m, signature: signManifest(m, pkgKp.privatePem) }, files };
+    const pkgJson = JSON.stringify(pkg);
+    const pkgHash = packageHash(pkg as unknown as Parameters<typeof packageHash>[0]);
+    const pkgUrl = "https://pkgs/leaf-1.0.0.json";
+    const idxUrl = "https://x/index.json";
+    const idxContent = { format_version: 1 as const, sequence: 1, issued_at: new Date(now).toISOString(),
+      packages: { leaf: { "1.0.0": { url: pkgUrl, package_hash: pkgHash } } } };
+    const idxJson = JSON.stringify({ ...idxContent, signature: sidxA(idxContent, idxKp.privatePem) });
+
+    // Trust both keys and register the remote.
+    await main(["trust", "add", idxKp.publicSpkiB64]);
+    await main(["trust", "add", pkgKp.publicSpkiB64]);
+    await main(["registry", "remote", "add", idxUrl, "--key", idxKp.keyId]);
+
+    // Build a root with a registry dep on "leaf".
+    const root = { manifest: { format_version: 1, name: "root", version: "1.0.0",
+      content_hash: contentHash(new TextEncoder().encode(JSON.stringify({ "r.txt": "r" }))),
+      dependencies: [{ kind: "registry", name: "leaf", version: "^1.0.0" }] }, files: { "r.txt": "r" } };
+    const rootPath = join(tempHome, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
+    const lockPath = join(tempHome, "ace.lock");
+
+    // === PASS 1 (ONLINE): prime the registry-index cache ===
+    // fetch serves both the index URL and the package URL.
+    globalThis.fetch = (async (u: string) =>
+      new Response(u === pkgUrl ? pkgJson : idxJson, { status: 200 })) as unknown as typeof fetch;
+    const onlineCode = await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature"]);
+    expect(onlineCode).toBe(0);
+    expect(existsSync(lockPath)).toBe(true);
+
+    // === FALSE-GREEN CHECK: wipe the registry-cache + confirm offline update then fails ===
+    // Without a cached index, --offline cannot resolve registry deps.
+    const { rmSync } = await import("node:fs");
+    const { registryCacheDir } = await import("./store.ts");
+    rmSync(registryCacheDir(), { recursive: true, force: true });
+    rmSync(lockPath, { force: true });
+    // Fetch throws for everything — no index cache, offline update cannot resolve.
+    globalThis.fetch = (() => { throw new Error("network disabled"); }) as unknown as typeof fetch;
+    const failCode = await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature", "--offline"]);
+    expect(failCode).not.toBe(0); // no cache -> must fail (false-green check)
+
+    // === PASS 2 (OFFLINE): restore cache via online pass, then confirm offline succeeds ===
+    // Re-prime the cache with a fresh online pass.
+    globalThis.fetch = (async (u: string) =>
+      new Response(u === pkgUrl ? pkgJson : idxJson, { status: 200 })) as unknown as typeof fetch;
+    expect(await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature"])).toBe(0);
+    // Block only the INDEX url; package URL still served (--offline skips registry network).
+    globalThis.fetch = (async (u: string) => {
+      if (u === idxUrl) throw new Error("registry unreachable");
+      return new Response(pkgJson, { status: 200 });
+    }) as unknown as typeof fetch;
+    const offlineCode = await main(["update", rootPath, "--lockfile", lockPath, "--allow-no-signature", "--offline"]);
+    expect(offlineCode).toBe(0); // cached index used; update writes lock
+    // Lockfile must pin leaf@1.0.0 from the cached registry resolution.
+    const lf = parseLockfile(readFileSync(lockPath, "utf8"));
+    expect("error" in lf).toBe(false);
+    if (!("error" in lf)) {
+      expect(lf.nodes.map((n) => `${n.name}@${n.version}`)).toEqual(["leaf@1.0.0"]);
+    }
   });
 });

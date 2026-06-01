@@ -137,3 +137,90 @@ Exit codes: `0` ok · `64` usage error · `65` invalid package JSON · `1` refus
 - Authenticity design: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice3-authenticity-signature-verify-design.md`
 - Agenda: `docs/agendas/ace-package-manager/AGENDA.md`
 - The bus↔Ace one-substrate synthesis: PR #6284 (G-Set ⊂ bag ⊂ Z-set; shared B-0867.27 fold engine)
+
+## Remote registries (slice 6)
+
+Slice 6 extends the registry from a local-only file to a network of signed,
+anti-rollback-protected remote index servers.
+
+### Registering a remote
+
+```bash
+ace registry remote add <url> --key <keyid> [--max-staleness-days <n>]
+```
+
+- **`--key <keyid>`** is **required**: every remote pins its Ed25519 signer by
+  key ID. The pinned key must also be present in the trust store (add it first
+  with `ace trust add`).
+- **`--max-staleness-days <n>`** overrides the 30-day default maximum age for
+  a fetched index.
+- **`ace registry remote list`** — print all registered remotes.
+- **`ace registry remote rm <url>`** — deregister a remote.
+
+Remote entries are persisted in **`~/.ace/registries.json`**.
+
+### Three index-trust gates
+
+Every index fetched from a remote must pass three gates before any package
+resolution uses it:
+
+1. **Signature** — the index carries an Ed25519 signature that must match the
+   registry's pinned key *and* that key must be in the user trust store.
+2. **Anti-rollback** — each registry maintains a monotonic per-registry
+   `sequence` high-water mark. An incoming index whose `sequence` is lower than
+   the stored high-water mark is refused outright.
+3. **Two-sided freshness** — the index's `issued_at` timestamp must satisfy both
+   bounds:
+
+   - **Past bound**: `issued_at` must not be older than the registry's
+     `max-staleness-days` (default 30 days). This gate is skipped when running
+     `--offline` (see below).
+   - **Future bound**: `issued_at` must not be more than 5 minutes in the future.
+     A future-dated index is always refused, even when offline.
+
+### `--offline` flag
+
+Pass `--offline` to `ace install` or `ace update` to use the cached index and
+skip all network calls:
+
+```bash
+ace install <pkg> --offline
+ace update  <pkg> --offline [--lockfile <path>]
+```
+
+- The past-staleness gate is skipped (stale cache is accepted as-is).
+- The signature, anti-rollback, and future-skew gates are still enforced
+  against the cached index.
+- `--offline` composes with `--frozen`: both flags may be supplied together; the
+  registry-index fetch uses the cache (no registry network) while package artifacts
+  at `http(s)` URLs are still fetched. `--offline` skips the *registry* network,
+  not all network. The signature, anti-rollback, and future-skew gates remain
+  enforced against the cached index throughout.
+
+### Index cache
+
+Fetched indexes are stored content-addressed under **`~/.ace/registry-cache/`**.
+Revalidation uses conditional GET (ETag / Last-Modified headers), so unchanged
+indexes cost only a round-trip with no body transfer.
+
+### Registry precedence
+
+When multiple registries supply an entry for the same package, the resolution
+order is:
+
+1. **User registry** (`~/.ace/registry.json`) — always wins.
+2. **Bundled registry** (`tools/ace/registry.json`) — wins over any remote.
+3. **Remote registries** — resolved in the order listed in
+   `~/.ace/registries.json` (first-listed remote wins among remotes).
+
+Local registries always override remotes; earlier-listed remotes win over
+later-listed ones.
+
+### Relationship to per-package security
+
+The index-trust gates defend **availability** and **version-selection integrity**:
+they prevent an attacker from rolling back the index to an older version list or
+injecting a future-dated index. The per-package **content-hash pin** and
+**Ed25519 signature gate** (slice 2–3) are unchanged and still enforced on every
+downloaded package. Remote registry support is additive security — the two layers
+cover different attack surfaces and both must pass.

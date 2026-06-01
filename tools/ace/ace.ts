@@ -20,13 +20,15 @@ import { createPublicKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys, validatePackagePaths,
-  loadRegistry, addRegistryEntry, listRegistry,
+  addRegistryEntry, listRegistry,
+  writeRegistryRemote, removeRegistryRemote, readRegistriesConfig,
   type AcePackage,
 } from "./store";
 import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
 import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
+import { loadRegistries } from "./registry-remote.ts";
 import { resolve as toAbsolutePath } from "node:path";
 
 interface ListArgs {
@@ -48,6 +50,7 @@ interface InstallArgs {
   readonly frozen: boolean;
   readonly locked: boolean;
   readonly lockfile: string;
+  readonly offline?: boolean;
 }
 
 interface VerifyArgs {
@@ -80,15 +83,19 @@ interface UpdateArgs {
   readonly source: string;
   readonly lockfile: string;
   readonly allowNoSignature: boolean;
+  readonly offline?: boolean;
 }
 
 interface RegistryArgs {
   readonly command: "registry";
-  readonly sub: "list" | "add";
+  readonly sub: "list" | "add" | "remote-add" | "remote-list" | "remote-rm";
   readonly regName?: string;
   readonly regVersion?: string;
   readonly regUrl?: string;
   readonly regHash?: string;
+  readonly remoteUrl?: string;
+  readonly remoteKey?: string;
+  readonly remoteMaxStaleness?: number;
 }
 
 type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
@@ -204,6 +211,29 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       if (hash !== undefined) return { ...result, regHash: hash };
       return result;
     }
+    if (sub === "remote") {
+      const action = argv[2];
+      if (action === "list") return { command: "registry", sub: "remote-list" };
+      if (action === "rm") {
+        const url = argv[3];
+        if (!url || url.startsWith("-")) return { error: "registry remote rm requires <url>" };
+        return { command: "registry", sub: "remote-rm", remoteUrl: url };
+      }
+      if (action === "add") {
+        const url = argv[3];
+        if (!url || url.startsWith("-")) return { error: "registry remote add requires <url> --key <keyid>" };
+        let key: string | undefined; let msd: number | undefined;
+        for (let i = 4; i < argv.length; i++) {
+          if (argv[i] === "--key") { key = argv[++i]; if (!key || key.startsWith("-")) return { error: "--key requires a value" }; }
+          else if (argv[i] === "--max-staleness-days") { const v = argv[++i]; if (!v || v.startsWith("-")) return { error: "--max-staleness-days requires a value" }; msd = Number(v); if (!Number.isInteger(msd) || msd <= 0) return { error: "--max-staleness-days must be a positive integer" }; }
+          else return { error: `Unknown option for registry remote add: ${argv[i]}` };
+        }
+        if (!key) return { error: "registry remote add requires --key <keyid>" };
+        const r: RegistryArgs = { command: "registry", sub: "remote-add", remoteUrl: url, remoteKey: key };
+        return msd !== undefined ? { ...r, remoteMaxStaleness: msd } : r;
+      }
+      return { error: "registry remote requires 'add', 'list', or 'rm'" };
+    }
     return { error: "registry requires 'add' or 'list'" };
   }
 
@@ -212,6 +242,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     if (!source || source.startsWith("-")) return { error: "update requires a <url-or-path> argument" };
     let lockfilePath = "ace.lock";
     let allowNoSignature = false;
+    let offline = false;
     for (let i = 2; i < argv.length; i++) {
       if (argv[i] === "--lockfile") {
         const next = argv[++i];
@@ -219,11 +250,14 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         lockfilePath = next;
       } else if (argv[i] === "--allow-no-signature") {
         allowNoSignature = true;
+      } else if (argv[i] === "--offline") {
+        offline = true;
       } else {
         return { error: `Unknown option for update: ${argv[i]}` };
       }
     }
-    return { command: "update", source, lockfile: lockfilePath, allowNoSignature };
+    const updateResult: UpdateArgs = { command: "update", source, lockfile: lockfilePath, allowNoSignature };
+    return offline ? { ...updateResult, offline: true } : updateResult;
   }
 
   if (command === "install") {
@@ -234,6 +268,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     let printResolution = false;
     let frozen = false;
     let locked = false;
+    let offline = false;
     let lockfilePath = "ace.lock";
     for (let i = 2; i < argv.length; i++) {
       if (argv[i] === "--store" || argv[i] === "-s") {
@@ -249,6 +284,8 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
         frozen = true;
       } else if (argv[i] === "--locked") {
         locked = true;
+      } else if (argv[i] === "--offline") {
+        offline = true;
       } else if (argv[i] === "--lockfile") {
         const next = argv[++i];
         if (!next || next.startsWith("-")) return { error: "--lockfile requires a path argument" };
@@ -258,7 +295,7 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       }
     }
     if (locked && frozen) return { error: "--locked and --frozen are mutually exclusive" };
-    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature, frozen, locked, lockfile: lockfilePath };
+    const baseResult: InstallArgs = { command: "install", source, storePath, allowNoSignature, frozen, locked, lockfile: lockfilePath, ...(offline ? { offline: true } : {}) };
     if (printResolution) return { ...baseResult, printResolution: true };
     return baseResult;
   }
@@ -305,14 +342,14 @@ function printUsage(): void {
 
 Usage:
   ace list [--store <path>] [--json]             List installed DLC packages
-  ace install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>]
+  ace install <url-or-path> [--allow-no-signature] [--print-resolution] [--frozen|--locked] [--lockfile <path>] [--offline]
                                                    Download/read a package, verify integrity+authenticity, install
                                                    --allow-no-signature only installs packages with NO signature; it never bypasses a present (bad or untrusted) signature
                                                    --print-resolution prints the solved name@version graph before installing
                                                    writes ./ace.lock on a normal install; --frozen installs exactly the locked graph (registry-independent)
                                                    --locked asserts the committed lock is up to date vs a fresh solve, else refuses (CI guard; mutually exclusive with --frozen)
                                                    --lockfile <path> overrides the default lockfile path (default: ace.lock)
-  ace update <url-or-path> [--lockfile <path>] [--allow-no-signature]
+  ace update <url-or-path> [--lockfile <path>] [--allow-no-signature] [--offline]
                                                    Re-solve the dependency graph and rewrite the lockfile; installs nothing (lock-only)
   ace verify <hash>                              Confirm an installed package is present
   ace keygen [--out <prefix>]                    Generate an Ed25519 keypair (writes <prefix>.key + <prefix>.pub)
@@ -321,6 +358,9 @@ Usage:
   ace trust list                                 List all trusted keys
   ace registry add <name> <version> <url> [--hash <h>] Register a package in the local registry
   ace registry list                              List all registry entries
+  ace registry remote add <url> --key <keyid> [--max-staleness-days <n>] Add a signed remote registry
+  ace registry remote list                       List configured remote registries
+  ace registry remote rm <url>                   Remove a configured remote registry
   ace help                                       Show this help
 
 Future commands (not yet implemented):
@@ -446,6 +486,25 @@ export async function main(argv: readonly string[]): Promise<number> {
 
   // registry
   if (parsed.command === "registry") {
+    if (parsed.sub === "remote-list") {
+      const remotes = readRegistriesConfig().remotes;
+      if (remotes.length === 0) { console.log("No remote registries. (add: ace registry remote add <url> --key <keyid>)"); return 0; }
+      for (const r of remotes) console.log(`  ${r.url}  key=${r.key_id}${r.max_staleness_days ? `  max-staleness=${r.max_staleness_days}d` : ""}`);
+      return 0;
+    }
+    if (parsed.sub === "remote-rm") {
+      const { removed } = removeRegistryRemote(parsed.remoteUrl!);
+      console.log(removed ? `ace: removed remote ${parsed.remoteUrl}` : `ace: no such remote ${parsed.remoteUrl}`);
+      return 0;
+    }
+    if (parsed.sub === "remote-add") {
+      const entry = parsed.remoteMaxStaleness !== undefined
+        ? { url: parsed.remoteUrl!, key_id: parsed.remoteKey!, max_staleness_days: parsed.remoteMaxStaleness }
+        : { url: parsed.remoteUrl!, key_id: parsed.remoteKey! };
+      const { added, updated } = writeRegistryRemote(entry);
+      console.log(`ace: ${updated ? "updated" : added ? "added" : "noop"} remote ${parsed.remoteUrl}`);
+      return 0;
+    }
     if (parsed.sub === "list") {
       const rows = listRegistry();
       if (rows.length === 0) { console.log("No registry entries. (add one: ace registry add <name> <version> <url>)"); return 0; }
@@ -535,7 +594,11 @@ export async function main(argv: readonly string[]): Promise<number> {
     if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const registry = loadRegistry();
+      const { registry, warnings, errors } = await loadRegistries({
+        trustStore: loadTrustStore(), offline: parsed.offline === true,
+      });
+      for (const w of warnings) console.error(`ace: ${w}`);
+      if (errors.length > 0) { for (const e of errors) console.error(`ace: update refused: ${e}`); return 1; }
       const solveResult = await solve(pkg, fetchPackage, registry);
       if (!solveResult.ok) { console.error(`ace: update refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`); return 1; }
       const res = await resolve(pkg, fetchPackage, loadTrustStore(), registry, solveResult.versions, { allowNoSignature: parsed.allowNoSignature });
@@ -671,7 +734,11 @@ export async function main(argv: readonly string[]): Promise<number> {
       }
       const fetchPackage = async (u: string): Promise<string> =>
         (u.startsWith("http://") || u.startsWith("https://")) ? await (await fetch(u)).text() : readFileSync(u, "utf8");
-      const registry = loadRegistry();
+      const { registry, warnings, errors } = await loadRegistries({
+        trustStore: loadTrustStore(), offline: parsed.offline === true,
+      });
+      for (const w of warnings) console.error(`ace: ${w}`);
+      if (errors.length > 0) { for (const e of errors) console.error(`ace: install refused: ${e}`); return 1; }
       const solveResult = await solve(pkg, fetchPackage, registry);
       if (!solveResult.ok) {
         console.error(`ace: install refused: ${solveResult.reason} — ${solveResult.detail} (path: ${solveResult.path.join(" → ")})`);

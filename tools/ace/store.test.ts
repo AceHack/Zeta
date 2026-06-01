@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { mkdtempSync, existsSync, readFileSync, statSync, writeFileSync, chmodSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -328,5 +328,50 @@ describe("addRegistryEntry", () => {
     addRegistryEntry("a", "1.0.0", { url: "U", package_hash: "sha256:u" }, u);
     expect(statSync(u).mode & 0o077).toBe(0);
     expect(statSync(aceDir).mode & 0o077).toBe(0);
+  });
+});
+
+import { readRegistriesConfig, writeRegistryRemote, removeRegistryRemote, registriesPath, registryCacheDir } from "./store.ts";
+
+describe("remote-registry config", () => {
+  let home: string, savedHome: string | undefined, savedUP: string | undefined;
+  beforeEach(() => { savedHome = process.env.HOME; savedUP = process.env.USERPROFILE;
+    home = mkdtempSync(join(tmpdir(), "ace-cfg-")); process.env.HOME = home; process.env.USERPROFILE = home; });
+  afterEach(() => { if (savedHome !== undefined) process.env.HOME = savedHome; else delete process.env.HOME;
+    if (savedUP !== undefined) process.env.USERPROFILE = savedUP; else delete process.env.USERPROFILE; });
+
+  test("empty/missing → { remotes: [] }", () => { expect(readRegistriesConfig().remotes).toEqual([]); });
+  test("add → read round-trips; key_id required", () => {
+    writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:abc" });
+    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/index.json", key_id: "ed25519:abc" }]);
+  });
+  test("add dedups by url (updated)", () => {
+    writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:abc" });
+    const r = writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:def", max_staleness_days: 7 });
+    expect(r.updated).toBe(true);
+    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/index.json", key_id: "ed25519:def", max_staleness_days: 7 }]);
+  });
+  test("malformed entries dropped (no key_id)", () => {
+    const p = registriesPath();
+    require("node:fs").mkdirSync(require("node:path").dirname(p), { recursive: true });
+    require("node:fs").writeFileSync(p, JSON.stringify({ remotes: [{ url: "https://r/x" }, { url: "https://r/y", key_id: "ed25519:k" }] }));
+    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/y", key_id: "ed25519:k" }]);
+  });
+  test("remove", () => {
+    writeRegistryRemote({ url: "https://r/index.json", key_id: "ed25519:abc" });
+    expect(removeRegistryRemote("https://r/index.json").removed).toBe(true);
+    expect(readRegistriesConfig().remotes).toEqual([]);
+    expect(removeRegistryRemote("https://nope").removed).toBe(false);
+  });
+  test("cacheDir under ~/.ace", () => { expect(registryCacheDir()).toBe(join(home, ".ace", "registry-cache")); });
+  test("malformed key_id dropped (empty or wrong prefix)", () => {
+    const p = registriesPath();
+    require("node:fs").mkdirSync(require("node:path").dirname(p), { recursive: true });
+    require("node:fs").writeFileSync(p, JSON.stringify({ remotes: [
+      { url: "https://r/a", key_id: "" },
+      { url: "https://r/b", key_id: "notprefixed" },
+      { url: "https://r/c", key_id: "ed25519:ok" },
+    ] }));
+    expect(readRegistriesConfig().remotes).toEqual([{ url: "https://r/c", key_id: "ed25519:ok" }]);
   });
 });

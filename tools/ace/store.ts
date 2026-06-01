@@ -334,3 +334,58 @@ export function listRegistry(
   add(readRegistryFile(userPath), "user");
   return rows;
 }
+
+// ---- Remote registries (slice 6) ----
+export interface RemoteRegistryConfig { readonly url: string; readonly key_id: string; readonly max_staleness_days?: number; }
+export interface RegistriesConfig { readonly remotes: RemoteRegistryConfig[]; }
+
+/** ~/.ace/registries.json — operator-managed ordered remote list (sibling of registry.json). */
+export function registriesPath(): string {
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? ".";
+  return join(home, ".ace", "registries.json");
+}
+
+/** ~/.ace/registry-cache/ — content-addressed cache of fetched indexes + per-registry meta. */
+export function registryCacheDir(): string {
+  const home = process.env.HOME ?? process.env.USERPROFILE ?? ".";
+  return join(home, ".ace", "registry-cache");
+}
+
+/** Untrusted-input discipline: malformed → { remotes: [] }; drop entries missing url OR key_id. */
+export function readRegistriesConfig(p: string = registriesPath()): RegistriesConfig {
+  let raw: unknown;
+  try { raw = JSON.parse(readFileSync(p, "utf8")); } catch { return { remotes: [] }; }
+  if (!raw || typeof raw !== "object" || !Array.isArray((raw as { remotes?: unknown }).remotes)) return { remotes: [] };
+  const remotes: RemoteRegistryConfig[] = [];
+  for (const r of (raw as { remotes: unknown[] }).remotes) {
+    if (!r || typeof r !== "object") continue;
+    const url = (r as { url?: unknown }).url;
+    const key_id = (r as { key_id?: unknown }).key_id;
+    if (typeof url !== "string" || url === "" || typeof key_id !== "string" || !key_id.startsWith("ed25519:")) continue; // key_id REQUIRED + well-formed (Codex #6424 P1)
+    const msd = (r as { max_staleness_days?: unknown }).max_staleness_days;
+    remotes.push(typeof msd === "number" ? { url, key_id, max_staleness_days: msd } : { url, key_id });
+  }
+  return { remotes };
+}
+
+export function writeRegistryRemote(entry: RemoteRegistryConfig, p: string = registriesPath()): { added: boolean; updated: boolean } {
+  mkdirSync(dirname(p), { recursive: true, mode: 0o700 });
+  try { chmodSync(dirname(p), 0o700); } catch { /* best-effort */ }
+  const cfg = readRegistriesConfig(p);
+  const remotes = cfg.remotes.filter((r) => r.url !== entry.url);
+  const updated = remotes.length !== cfg.remotes.length;
+  remotes.push(entry);
+  writeFileSync(p, JSON.stringify({ remotes }, null, 2));
+  try { chmodSync(p, 0o600); } catch { /* best-effort */ }
+  return { added: !updated, updated };
+}
+
+export function removeRegistryRemote(url: string, p: string = registriesPath()): { removed: boolean } {
+  const cfg = readRegistriesConfig(p);
+  const remotes = cfg.remotes.filter((r) => r.url !== url);
+  if (remotes.length === cfg.remotes.length) return { removed: false };
+  mkdirSync(dirname(p), { recursive: true, mode: 0o700 });
+  writeFileSync(p, JSON.stringify({ remotes }, null, 2));
+  try { chmodSync(p, 0o600); } catch { /* best-effort */ }
+  return { removed: true };
+}
