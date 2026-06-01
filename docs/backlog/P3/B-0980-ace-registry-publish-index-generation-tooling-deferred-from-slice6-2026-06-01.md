@@ -71,13 +71,22 @@ Core `ace registry publish` shipped. Spec: `docs/agendas/ace-package-manager/202
   handler + `signing.ts` `publicKeyInfoFromPrivatePem` + `.claude/skills/ace/SKILL.md`
   publish section + unit + e2e tests.
 
-**Deferred (future enhancement candidates — not blocking; core is complete):**
+**Slice 6.2 (#6462, merged 2026-06-01) shipped three of the four deferred items** — spec
+`docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice6.2-publish-enhancements-design.md`
+(spec PR #6456):
 
-- Per-package `url` override (the "maybe 2" URL model — operator chose base-url-only for now).
-- ETag / Last-Modified sidecar emission for static hosting.
-- Multi-directory / `--packages` list input (currently one dir).
-- Explicit `--sequence` override flag (currently auto-bump only; the dead anti-rollback
-  guard already in the handler covers the future flag).
+- Per-package `url` override — optional top-level `url` field (publish-only; excluded from
+  `package_hash`; relaxes the `<name>-<version>.json` filename guard for that package).
+- Multi-directory input — comma-separated `--packages a,b,c` (scan + merge; per-dir
+  readability required; cross-dir duplicate `name@version` is a hard error).
+- Explicit `--sequence <n>` override (positive integer; anti-rollback-gated — the
+  formerly-dead guard is now live).
+- ETag / Last-Modified sidecar — **dropped** (not deferred-again): the consumer already does
+  HTTP conditional-GET and 6.1's deterministic output yields a stable host ETag, so there is
+  nothing for the producer to emit.
+
+**Still deferred (separate rows):**
+
 - Incremental index → B-0978; full TUF role separation → B-0979; key rotation / multi-signer
   → B-0981 (already rowed).
 
