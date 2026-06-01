@@ -69,6 +69,51 @@ So Ace is the *richer* instance: it needs retraction + resolution; the bus only
 needs append + read. Building the bus first (B-0954) is building the **G-Set floor
 of the same substrate** Ace later extends to a Z-set.
 
+## The algebraic ladder — G-Set, Bag, Z-set (why these are *the* canonical containers)
+
+Both names are real, standard terms from two different fields, and they sit on one
+algebraic ladder indexed by **what an element's count can be** and **how you merge**:
+
+| | element count | merge op | structure | retraction? | field of origin |
+|---|---|---|---|---|---|
+| **Set / G-Set** | {0, 1} (presence) | union / max | join-semilattice (idempotent) | no | CRDT (distributed systems) |
+| **Multiset / Bag** | ℕ (0, 1, 2, …) | sum | commutative monoid | no | combinatorics / counting |
+| **Z-set** | ℤ (… −1, 0, 1 …) | sum | abelian group | **yes** (negative count = retract) | DBSP / differential dataflow (databases) |
+
+- **G-Set = Grow-only Set** — the canonical first CRDT (Shapiro, Preguiça, Baquero &
+  Zawirski, *Conflict-free Replicated Data Types*, 2011, alongside G-Counter). `add`
+  only; merge = **set union**, which is associative + commutative + **idempotent** →
+  a join-semilattice → replicas always converge regardless of order or duplication.
+  That idempotent-union convergence is exactly why the git-native bus is
+  conflict-free: disjoint ZetaId-named files, union-merge, no coordination.
+- **Z-set** — from incremental view maintenance (DBSP / differential dataflow): each
+  element carries an integer multiplicity in ℤ, so a `−1` retracts. That makes it the
+  **free abelian group** over the key set; add + retract net to a resolved view. This
+  is Ace's dependency state (add/remove deps → resolution).
+
+**The honest relationship.** The intuition "G-Set = Z-set restricted to non-negative
+multiplicity" points the right way (drop retraction → lose the negatives), but the
+*precise* statement is that they merge with **different algebras**: G-Set merges with
+idempotent union (add-twice = add-once); Z-set merges with group addition (add-twice =
+count 2, and you can subtract). The **Bag** sits exactly between — ℕ multiplicity,
+additive, but no negatives, so no retraction.
+
+**The through-line: each rung is the *free* structure of its kind over the key set** —
+G-Set is the free join-semilattice, Bag the free commutative monoid, Z-set the free
+abelian group. "Free" = the most general object with that algebra and nothing extra,
+which is precisely why each is the *canonical* conflict-mergeable container at its
+level. (This free-object ladder **rhymes with** the Cayley-Dickson ladder — both are
+"add structure, change a property" ladders — but it is a *rhyme, not an identity*: the
+free constructions here are universal-free-object claims over a key set, whereas
+Cayley-Dickson is a dimension-doubling algebraic extension. Per the framework's
+Cayley-Dickson-as-RHYMES discipline, that link stays a rhyme, not a theorem.)
+
+**So the bus↔Ace split is just two rungs of one ladder:** the **bus is the G-Set
+rung** (append-only comms, no retraction needed); **Ace is the Z-set rung** (deps add
+*and* retract, netting to a resolved view). Build the bus first = build the bottom
+rung — and the Bag rung is there if a future ZetaId category ever needs
+counted-but-not-retractable entries.
+
 ## They compose — one substrate layer, many ZetaId categories
 
 Both are **categories of the same ZetaId** over the same observe/fold/simulate
