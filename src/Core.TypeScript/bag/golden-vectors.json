@@ -1,0 +1,69 @@
+{
+  "description": "Bag (multiset) cross-language conformance — the MIDDLE rung of the algebra ladder (G-Set ⊂ Bag ⊂ Z-set; B-0954 bus / B-0867.27 observe-algebra). A Bag is the Z-set restricted to NON-NEGATIVE multiplicity (weight codomain ℕ): every key carries a count >= 1 and the combiner is per-key SUM (per the database-design ADR 2026-05-31 — Bag = ℕ/sum). The load-bearing contrast with the G-Set: G-Set union is set-union, hence idempotent; Bag union is a commutative MONOID, NOT a semilattice — union(a, a) DOUBLES every count (the `notIdempotent` law below). Every impl starts from `initialBag`, replays `ops` in order under the canonical key comparator, and must value-match `expectedReplayStates[i]` after op i AND `expectedFinalState`. Bags serialize as ascending-key-sorted { e, n } entries (n >= 1, no key twice), so equality is array-equality. Oracle #1 = TS reference; F#/C#/Rust join later per the meet-in-the-middle 4-oracle.",
+  "elementType": "string",
+  "comparator": "ascending ordinal / UTF-16 code-unit order on the key `e` (TS `<` / C# StringComparer.Ordinal / byte-ordered Rust `Ord`). NOTE: the F# G-Set oracle currently sorts via `Comparer<'T>.Default`, which for string is culture-sensitive (not ordinal); it coincides with ordinal for these ASCII keys — where ordinal also equals Unicode code-point order — so all four oracles agree on these vectors, but moving F# to ordinal for true non-ASCII parity is a known gap. Astral-plane keys (UTF-16 code-unit vs code-point divergence) are out of scope for the v1 contract.",
+  "combiner": "sum (per-key multiplicities add; NOT idempotent)",
+  "initialBag": [
+    { "e": "b-002", "n": 1 },
+    { "e": "b-005", "n": 2 }
+  ],
+  "ops": [
+    { "op": "add", "arg": "b-001", "note": "grow: new key at count 1" },
+    { "op": "add", "arg": "b-005", "note": "NON-idempotent: existing key, count 2 → 3 (the Bag/G-Set distinction)" },
+    {
+      "op": "union",
+      "arg": [
+        { "e": "b-003", "n": 1 },
+        { "e": "b-001", "n": 2 },
+        { "e": "b-005", "n": 1 }
+      ],
+      "note": "sum combiner over unsorted input: b-001 1→3, b-003 0→1, b-005 3→4"
+    },
+    { "op": "union", "arg": [], "note": "identity: union with the empty bag is a no-op" },
+    { "op": "addN", "arg": "b-000", "n": 5, "note": "addN: new key at count 5, sorted to the front" }
+  ],
+  "expectedReplayStates": [
+    [
+      { "e": "b-001", "n": 1 },
+      { "e": "b-002", "n": 1 },
+      { "e": "b-005", "n": 2 }
+    ],
+    [
+      { "e": "b-001", "n": 1 },
+      { "e": "b-002", "n": 1 },
+      { "e": "b-005", "n": 3 }
+    ],
+    [
+      { "e": "b-001", "n": 3 },
+      { "e": "b-002", "n": 1 },
+      { "e": "b-003", "n": 1 },
+      { "e": "b-005", "n": 4 }
+    ],
+    [
+      { "e": "b-001", "n": 3 },
+      { "e": "b-002", "n": 1 },
+      { "e": "b-003", "n": 1 },
+      { "e": "b-005", "n": 4 }
+    ],
+    [
+      { "e": "b-000", "n": 5 },
+      { "e": "b-001", "n": 3 },
+      { "e": "b-002", "n": 1 },
+      { "e": "b-003", "n": 1 },
+      { "e": "b-005", "n": 4 }
+    ]
+  ],
+  "expectedFinalState": [
+    { "e": "b-000", "n": 5 },
+    { "e": "b-001", "n": 3 },
+    { "e": "b-002", "n": 1 },
+    { "e": "b-003", "n": 1 },
+    { "e": "b-005", "n": 4 }
+  ],
+  "laws": {
+    "commutative": "union(a, b) == union(b, a)",
+    "associative": "union(union(a, b), c) == union(a, union(b, c))",
+    "identity": "union(a, empty) == a",
+    "notIdempotent": "union(a, a) doubles every count (== scale a by 2) — the Bag/G-Set distinction"
+  }
+}

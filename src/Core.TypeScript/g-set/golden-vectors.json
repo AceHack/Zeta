@@ -1,7 +1,7 @@
 {
   "description": "G-Set CRDT cross-language conformance (the bottom rung of the algebra ladder; B-0954 bus comms substrate). Every impl starts from `initialSet`, replays `ops` in order with the canonical string comparator, and must value-match `expectedReplayStates[i]` after op i AND `expectedFinalState` at the end. Sets are serialized in canonical ascending order, so equality is array-equality. Oracle #1 = TS reference; F# casts oracle #2; C#/Rust join later per the meet-in-the-middle 4-oracle.",
   "elementType": "string",
-  "comparator": "ascending Unicode code-point (TS default string compare / F# Comparer<string>.Default / ordinal)",
+  "comparator": "ascending ordinal / UTF-16 code-unit order (TS `<` / C# StringComparer.Ordinal / byte-ordered Rust `Ord`). NOTE: the F# G-Set oracle currently sorts via `Comparer<'T>.Default` (src/Core/GSet.fs), which for string is culture-sensitive (not ordinal); it coincides with ordinal for these ASCII keys — where ordinal also equals Unicode code-point order — so all four oracles agree on these vectors, but moving F# to ordinal for true non-ASCII parity is a known gap. Astral-plane keys (UTF-16 code-unit vs code-point divergence) are out of scope for the v1 contract.",
   "initialSet": ["b-002", "b-005"],
   "ops": [
     { "op": "add", "arg": "b-001", "note": "grow" },

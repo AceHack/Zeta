@@ -1,0 +1,247 @@
+/**
+ * bag.ts — a Bag (multiset), the MIDDLE rung of the Zeta algebra ladder
+ * (**G-Set → Bag → Z-set**) made first-class instead of implicit.
+ *
+ * A Bag is the Z-set restricted to NON-NEGATIVE multiplicity: every key carries
+ * a count `n >= 1` (absent key ⇒ multiplicity 0), and the only combiner is
+ * `union` = per-key **sum**. That is the precise contrast with the G-Set, whose
+ * `union` is set-union and therefore idempotent: a Bag's `union` is a
+ * commutative **monoid** — commutative, associative, with the empty bag as
+ * identity — but it is **NOT** a semilattice, because `union(a, a)` DOUBLES
+ * every count. That non-idempotence is exactly what makes the Bag the counting
+ * structure (DORA / metrics / the LGTM "M") and the step toward the Z-set's
+ * signed ℤ weights + retraction. Per the database-design ADR (2026-05-31):
+ * Bag = ℕ / sum
+ * (`docs/DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md`).
+ *
+ * Like the G-Set, this is comms/counting substrate for the git-native stack:
+ * the Z-set (signed) is one widening up; the G-Set (idempotent set) is one
+ * narrowing down. The F#/C#/Rust twins join the shared `golden-vectors.json`
+ * per the meet-in-the-middle 4-oracle; all impls produce the identical
+ * canonical entry array, so the fixture is byte-stable across languages.
+ *
+ * Canonical representation: an **ascending-key-sorted** `readonly` array of
+ * `{ e, n }` entries, every `n >= 1`, no key appearing twice. The canonical
+ * order makes `equals` a plain element-wise comparison and keeps the
+ * cross-language golden vector stable. The required `compare` is a total order
+ * on the KEY only (the count never participates in ordering); it is the TS
+ * analog of F#'s `'T : comparison` constraint.
+ */
+
+/** A total order on `T` (`< 0`, `0`, `> 0`), e.g. {@link stringCompare}. */
+export type Compare<T> = (a: T, b: T) => number;
+
+/** One bag entry: a key `e` with a strictly-positive multiplicity `n` (>= 1). */
+export interface BagEntry<T> {
+  readonly e: T;
+  readonly n: number;
+}
+
+/**
+ * A multiset: an ascending-key-sorted, count-positive run under some `compare`.
+ * The invariant (sorted, every `n >= 1`, no key twice) is held by every
+ * constructor here — never build one by hand from raw entries; use
+ * {@link ofEntries} or {@link ofArray}.
+ */
+export type Bag<T> = readonly BagEntry<T>[];
+
+/**
+ * Index a run whose bound is guaranteed by the surrounding loop. The cast
+ * targets the bare element type parameter `E` — the same assertion-free-at-the-
+ * call-site idiom the G-Set twin uses (`a[i] as T`) — because
+ * `noUncheckedIndexedAccess` would otherwise widen every `arr[i]` to
+ * `E | undefined` and force a non-null assertion at each access.
+ */
+function at<E>(arr: readonly E[], i: number): E {
+  return arr[i] as E;
+}
+
+/**
+ * A multiplicity must be a safe integer — counts are ℕ, so a fraction / NaN /
+ * Infinity / unsafe-magnitude value is not a natural count and cannot be
+ * represented by the integer F#/C#/Rust oracles (it would also make `total` /
+ * `multiplicity` stop being counts). Zero and negative integers ARE accepted as
+ * input (the constructors drop them — a count `<= 0` is never stored), but a
+ * non-integer is rejected at admission so a canonical bag always holds integer
+ * counts `>= 1`.
+ */
+function assertCount(n: number): void {
+  if (!Number.isSafeInteger(n)) {
+    throw new RangeError(`Bag multiplicity must be a safe integer (got ${String(n)})`);
+  }
+}
+
+/**
+ * Add two counts and re-assert the sum is still a safe integer before it is
+ * stored. Two valid (safe-integer) counts can sum past `Number.MAX_SAFE_INTEGER`
+ * — e.g. `MAX_SAFE_INTEGER + 2` rounds in JS — which would silently lose
+ * precision where the int64 F#/C#/Rust oracles would not, so every summed count
+ * (the `union` / `ofEntries` merge of a shared key, and the `total` aggregate)
+ * is guarded.
+ */
+function addCounts(a: number, b: number): number {
+  const sum = a + b;
+  assertCount(sum);
+  return sum;
+}
+
+/**
+ * Ascending ordinal (UTF-16 code-unit) order — JS `<` on strings — matching
+ * C# `StringComparer.Ordinal` and a byte-ordered Rust `Ord`. NOTE the F# G-Set
+ * oracle currently sorts via `Comparer<'T>.Default` (`src/Core/GSet.fs`), which
+ * for `string` is CULTURE-SENSITIVE, not ordinal; it coincides with ordinal for
+ * the ASCII `b-XXX` fixture keys (where ordinal also equals code-point order),
+ * so all four oracles agree on those vectors — but moving F# to ordinal for true
+ * non-ASCII parity is a known gap. Astral-plane keys (UTF-16 code-unit
+ * vs Unicode code-point divergence) are out of scope for the v1 contract; pass
+ * an explicit code-point comparator if you need them.
+ */
+export const stringCompare: Compare<string> = (a, b) => {
+  if (a < b) return -1;
+  if (a > b) return 1;
+  return 0;
+};
+
+/** The empty Bag (the `union` identity). */
+export function empty<T>(): Bag<T> {
+  return [];
+}
+
+/** A one-key Bag at count `n` (default 1, must be a safe integer); `n <= 0` yields the empty Bag. */
+export function singleton<T>(x: T, n = 1): Bag<T> {
+  assertCount(n);
+  return n > 0 ? [{ e: x, n }] : [];
+}
+
+/**
+ * Canonicalize arbitrary entries: sum counts per key, drop any whose summed
+ * count is `<= 0`, and sort ascending by key. This is the constructor that
+ * re-establishes the invariant from unordered, possibly-duplicated input.
+ */
+export function ofEntries<T>(compare: Compare<T>, entries: readonly BagEntry<T>[]): Bag<T> {
+  const sorted = [...entries].sort((a, b) => compare(a.e, b.e));
+  const out: BagEntry<T>[] = [];
+  for (const entry of sorted) {
+    assertCount(entry.n);
+    const last = out.length - 1;
+    if (last >= 0 && compare(at(out, last).e, entry.e) === 0) {
+      const prev = at(out, last);
+      out[last] = { e: prev.e, n: addCounts(prev.n, entry.n) };
+    } else {
+      out.push({ e: entry.e, n: entry.n });
+    }
+  }
+  return out.filter((entry) => entry.n > 0);
+}
+
+/** Build a Bag by counting occurrences in a list — each occurrence adds 1. */
+export function ofArray<T>(compare: Compare<T>, xs: readonly T[]): Bag<T> {
+  return ofEntries(
+    compare,
+    xs.map((x) => ({ e: x, n: 1 })),
+  );
+}
+
+/** The multiplicity of `x` (0 if absent). Binary search on the sorted keys. O(log n). */
+export function multiplicity<T>(compare: Compare<T>, g: Bag<T>, x: T): number {
+  let lo = 0;
+  let hi = g.length - 1;
+  while (lo <= hi) {
+    const mid = lo + ((hi - lo) >> 1);
+    const e = at(g, mid);
+    const c = compare(e.e, x);
+    if (c === 0) return e.n;
+    if (c < 0) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  return 0;
+}
+
+/** Membership: whether `x` has a positive multiplicity. */
+export function contains<T>(compare: Compare<T>, g: Bag<T>, x: T): boolean {
+  return multiplicity(compare, g, x) > 0;
+}
+
+/**
+ * The combiner: the per-key SUM of two sorted bags, kept sorted and
+ * count-positive. Commutative, associative, and the empty bag is the identity —
+ * but NOT idempotent: `union(a, a)` doubles every count. This commutative
+ * monoid is the step the Z-set completes into an abelian group (signed ℤ
+ * weights, where retraction is the inverse).
+ */
+export function union<T>(compare: Compare<T>, a: Bag<T>, b: Bag<T>): Bag<T> {
+  if (a.length === 0) return b;
+  if (b.length === 0) return a;
+  const out: BagEntry<T>[] = [];
+  let i = 0;
+  let j = 0;
+  while (i < a.length && j < b.length) {
+    const ea = at(a, i);
+    const eb = at(b, j);
+    const c = compare(ea.e, eb.e);
+    if (c < 0) {
+      out.push(ea);
+      i += 1;
+    } else if (c > 0) {
+      out.push(eb);
+      j += 1;
+    } else {
+      out.push({ e: ea.e, n: addCounts(ea.n, eb.n) }); // same key → counts add (guarded against overflow)
+      i += 1;
+      j += 1;
+    }
+  }
+  while (i < a.length) {
+    out.push(at(a, i));
+    i += 1;
+  }
+  while (j < b.length) {
+    out.push(at(b, j));
+    j += 1;
+  }
+  return out;
+}
+
+/** Increment `x`'s count by 1 (`union` with a singleton). NOT idempotent. */
+export function add<T>(compare: Compare<T>, x: T, g: Bag<T>): Bag<T> {
+  return union(compare, g, [{ e: x, n: 1 }]);
+}
+
+/** Increment `x`'s count by `n` (a safe integer; `n <= 0` is a no-op — the Bag is grow-only over ℕ). */
+export function addN<T>(compare: Compare<T>, x: T, n: number, g: Bag<T>): Bag<T> {
+  assertCount(n);
+  return n > 0 ? union(compare, g, [{ e: x, n }]) : g;
+}
+
+/** The entries in canonical (ascending-key) order — a defensive copy. */
+export function toEntries<T>(g: Bag<T>): BagEntry<T>[] {
+  return g.map((entry) => ({ e: entry.e, n: entry.n }));
+}
+
+/** The number of DISTINCT keys (the support size). */
+export function distinctCount<T>(g: Bag<T>): number {
+  return g.length;
+}
+
+/** The sum of all multiplicities (the total count across keys); throws if the sum overflows safe-integer range. */
+export function total<T>(g: Bag<T>): number {
+  let s = 0;
+  for (const entry of g) s = addCounts(s, entry.n); // guarded: the running sum stays a safe integer
+  return s;
+}
+
+/** Whether the Bag has no keys. */
+export function isEmpty<T>(g: Bag<T>): boolean {
+  return g.length === 0;
+}
+
+/** Equality of two canonical bags — element-wise key + count comparison. */
+export function equals<T>(compare: Compare<T>, a: Bag<T>, b: Bag<T>): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i += 1) {
+    const ea = at(a, i);
+    const eb = at(b, i);
+    if (compare(ea.e, eb.e) !== 0 || ea.n !== eb.n) return false;
+  }
+  return true;
+}
