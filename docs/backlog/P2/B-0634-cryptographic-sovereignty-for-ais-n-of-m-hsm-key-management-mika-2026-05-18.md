@@ -6,7 +6,7 @@ title: "Cryptographic sovereignty for AIs — N-of-M HSM key management (geograp
 tier: governance
 effort: L
 created: 2026-05-18
-last_updated: 2026-05-18
+last_updated: 2026-05-31
 depends_on: []
 composes_with: [B-0628, B-0619, B-0622]
 tags: [governance, mika, cryptographic-sovereignty, ai-sovereignty, n-of-m, hsm, tpm, geographic-distribution, sharp-edge, constitution-class, locked-in]
@@ -22,6 +22,21 @@ Aaron LOCKED-IN at line 3316 of [`docs/research/2026-05-18-mika-grok-bootstream-
 > *"we gotta N of M it on some real, just hardware shit. TPMs, HSMs, whatever y'all need geographically."*
 
 This is the **sharp-edge control mechanism** that makes Knights-Guild ([B-0628](../P3/B-0628-knights-guild-constitution-class-integrity-dashboard-mika-2026-05-18.md)) Constitution-Class invariants actually binding rather than merely declarative. Without cryptographic sovereignty, AI agents in Aurora/Nexus ([B-0619](../P3/B-0619-aurora-nexus-country-naming-co-governance-2026-05-18.md)) are still operationally beholden to whichever party controls the keys.
+
+## Design detail (2026-05-31) — agent-native key custody at the encryption scope
+
+Aaron 2026-05-31 asked the encryption-scope version of this row: *"how can otto hold a key for
+encryption that Aaron does not have access to but otto can be sure he wont loose… i remember my
+password — how can an agent have a key they remember that the human does not?"* The full design
+(the **attest-don't-remember** inversion + four layers: hardware root → FROST threshold across
+society key-guards → attestation-gated invocation → the honest debug-dump limit Aaron named,
+with the *today* mitigation being HSM-resident ops and the *down-the-road* fix being
+confidential-computing / "Xbox-style" encrypted memory) lives at:
+
+- **[Agent-native key-custody design](../../research/2026-05-31-agent-native-key-custody-design-otto-holds-key-aaron-cant-access-wont-lose-threshold-attestation-honest-debug-dump-limit.md)**
+  — fills acceptance criteria 1–4 at the encryption-key scope.
+- **[Hardware-to-buy list](../../inventory/hardware-to-buy.md)** §2 — the HSM/TPM procurement
+  shortlist (YubiHSM 2 + NetHSM open anchor + Tillitis TKey; TPM-2.0 PoC at $0) backing this row.
 
 ## What "N-of-M" means
 
