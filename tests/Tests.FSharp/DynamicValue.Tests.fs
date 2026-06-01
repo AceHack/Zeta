@@ -146,3 +146,20 @@ let ``get declines malformed paths`` () =
     Assert.Equal(None, DynamicValue.get "a.b[x]" sample) // non-digit index
     Assert.Equal(None, DynamicValue.get "a]b" sample) // stray close bracket
     Assert.Equal(None, DynamicValue.get "a.b[99999999999999999999]" sample) // index overflows Int32 -> None, not an exception
+
+[<Fact>]
+let ``get declines empty path segments`` () =
+    Assert.Equal(None, DynamicValue.get ".flag" sample) // leading dot
+    Assert.Equal(None, DynamicValue.get "a..b" sample) // doubled dot
+    Assert.Equal(None, DynamicValue.get "a." sample) // trailing dot
+    Assert.Equal(None, DynamicValue.get "." sample) // lone dot
+
+[<Fact>]
+let ``default ImmutableArray bytes behave as empty`` () =
+    // A default (uninitialized) ImmutableArray must not poison equality/hashing/accessors —
+    // it normalizes to the empty payload rather than throwing on enumeration.
+    let d = DynamicValue.Bytes Unchecked.defaultof<ImmutableArray<byte>>
+    let e = DynamicValue.Bytes ImmutableArray<byte>.Empty
+    Assert.Equal(d, e)
+    Assert.Equal(d.GetHashCode(), e.GetHashCode())
+    Assert.True((DynamicValue.tryBytes d).Value.IsEmpty)

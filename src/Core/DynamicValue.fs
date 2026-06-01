@@ -97,7 +97,12 @@ type DynamicValue =
             | DynamicValue.Float a, DynamicValue.Float b -> a.Equals(b)
             | DynamicValue.String a, DynamicValue.String b ->
                 System.String.Equals(a, b, System.StringComparison.Ordinal)
-            | DynamicValue.Bytes a, DynamicValue.Bytes b -> System.Linq.Enumerable.SequenceEqual(a, b)
+            | DynamicValue.Bytes a, DynamicValue.Bytes b ->
+                // normalize a default (uninitialized) ImmutableArray to empty so it doesn't throw
+                // on enumeration and compares equal to an explicitly-empty payload
+                let na = if a.IsDefault then ImmutableArray<byte>.Empty else a
+                let nb = if b.IsDefault then ImmutableArray<byte>.Empty else b
+                System.Linq.Enumerable.SequenceEqual(na, nb)
             | DynamicValue.Array a, DynamicValue.Array b -> System.Linq.Enumerable.SequenceEqual(a, b)
             | DynamicValue.Object a, DynamicValue.Object b -> System.Linq.Enumerable.SequenceEqual(a, b)
             | _ -> false
@@ -112,8 +117,10 @@ type DynamicValue =
         | DynamicValue.String s -> hash s
         | DynamicValue.Bytes bytes ->
             let mutable h = 17
-            for x in bytes do
-                h <- (h * 31) ^^^ int x
+            // skip a default (uninitialized) ImmutableArray; its hash matches an empty payload's
+            if not bytes.IsDefault then
+                for x in bytes do
+                    h <- (h * 31) ^^^ int x
             h
         | DynamicValue.Array items ->
             let mutable h = 19
@@ -174,7 +181,7 @@ module DynamicValue =
 
     let tryBytes (value: DynamicValue) : ImmutableArray<byte> option =
         match value with
-        | DynamicValue.Bytes b -> Some b
+        | DynamicValue.Bytes b -> Some(if b.IsDefault then ImmutableArray<byte>.Empty else b)
         | _ -> None
 
     let tryArray (value: DynamicValue) : DynamicValue list option =
@@ -208,51 +215,70 @@ module DynamicValue =
         | Key of string
         | Index of int
 
-    /// Parse a dotted/indexed path ("a.b[3].c", "items[0].name", "[2]") into
-    /// steps. None on a malformed bracket (non-digit, unterminated, or stray
-    /// `]`). An empty path parses to no steps (the identity navigation).
-    let private tryParsePath (path: string) : Step list option =
-        let steps = ResizeArray<Step>()
-        let key = System.Text.StringBuilder()
+    /// Reads "[<digits>]" in `s` starting at `openPos` (the '['). Returns (index, nextPos)
+    /// or None on a malformed bracket (no digits, unterminated, or an index overflowing Int32 —
+    /// TryParse, never an OverflowException escaping `get`).
+    let private tryReadIndex (s: string) (openPos: int) : (int * int) option =
+        let start = openPos + 1
+        let mutable j = start
+        while j < s.Length && System.Char.IsDigit s.[j] do
+            j <- j + 1
+        if j = start || j >= s.Length || s.[j] <> ']' then
+            None
+        else
+            match System.Int32.TryParse(s.Substring(start, j - start)) with
+            | true, idx -> Some(idx, j + 1)
+            | false, _ -> None
 
-        let flushKey () =
-            if key.Length > 0 then
-                steps.Add(Key(key.ToString()))
-                key.Clear() |> ignore
+    /// Parse one path segment ("key", "key[i][j]…", or "[i][j]…"). None if empty (a leading,
+    /// doubled, or trailing dot surfaces as an empty segment) or malformed.
+    let private tryParseSegment (segment: string) : Step list option =
+        if segment.Length = 0 then
+            None
+        else
+            let firstBracket = segment.IndexOf '['
 
-        let mutable ok = true
-        let mutable i = 0
-        let n = path.Length
-
-        while ok && i < n do
-            let c = path.[i]
-            match c with
-            | '.' ->
-                flushKey ()
-                i <- i + 1
-            | '[' ->
-                flushKey ()
-                let start = i + 1
-                let mutable j = start
-                while j < n && System.Char.IsDigit path.[j] do
-                    j <- j + 1
-                if j = start || j >= n || path.[j] <> ']' then
-                    ok <- false
+            let keyResult =
+                if firstBracket = 0 then
+                    Some([], 0)
                 else
-                    // TryParse (not Parse): an index that overflows Int32 is a
-                    // malformed path -> None, never an OverflowException escaping `get`.
-                    match System.Int32.TryParse(path.Substring(start, j - start)) with
-                    | true, idx ->
-                        steps.Add(Index idx)
-                        i <- j + 1
-                    | false, _ -> ok <- false
-            | ']' -> ok <- false
-            | _ ->
-                key.Append(c) |> ignore
-                i <- i + 1
+                    let keyPart =
+                        if firstBracket < 0 then segment else segment.Substring(0, firstBracket)
 
-        flushKey ()
-        if ok then Some(List.ofSeq steps) else None
+                    if keyPart.Contains ']' then
+                        None // stray ']' in the key part
+                    else
+                        Some([ Key keyPart ], (if firstBracket < 0 then segment.Length else firstBracket))
+
+            match keyResult with
+            | None -> None
+            | Some(keySteps, i0) ->
+                let rec readIndices i acc =
+                    if i >= segment.Length then
+                        Some(List.rev acc)
+                    else
+                        match tryReadIndex segment i with
+                        | Some(idx, next) -> readIndices next (Index idx :: acc)
+                        | None -> None
+
+                readIndices i0 [] |> Option.map (fun idxSteps -> keySteps @ idxSteps)
+
+    /// Parse a dotted/indexed path ("a.b[3].c", "items[0].name", "[2]"). None on any malformed
+    /// segment (bad bracket, stray `]`, or an empty segment from a leading/doubled/trailing dot).
+    /// An empty path parses to no steps (the identity navigation).
+    let private tryParsePath (path: string) : Step list option =
+        if path.Length = 0 then
+            Some []
+        else
+            let rec loop segs acc =
+                match segs with
+                | [] -> Some(List.rev acc |> List.concat)
+                | seg :: rest ->
+                    match tryParseSegment seg with
+                    | Some steps -> loop rest (steps :: acc)
+                    | None -> None
+
+            loop (List.ofArray (path.Split '.')) []
 
     let rec private navigate (steps: Step list) (value: DynamicValue) : DynamicValue option =
         match steps with
