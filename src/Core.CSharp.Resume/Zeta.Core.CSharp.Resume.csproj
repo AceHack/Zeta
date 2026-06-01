@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Zeta.Core.CSharp.Resume</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.Resume</AssemblyName>
+    <!-- CA1716: "Resume" is a VB `Resume` keyword. It is the established cross-oracle domain
+         name (F# Zeta.Core.Resume module, TS resume.ts, Rust resume), and this is an internal
+         library not consumed from VB — the rename the rule wants would break cross-oracle
+         naming parity for zero real benefit. -->
+    <NoWarn>$(NoWarn);CA1716</NoWarn>
+  </PropertyGroup>
+
+  <!-- The resume engine (oracle #3 of TS/F#/C#/Rust) reuses the C# Bonsai oracle's types
+       (Expr/ConstValue/BinOp/Result/BonsaiFeedback) + BonsaiCodec for embedded-expr serialize/
+       parse — it does NOT re-implement them (own-our-interface; the Bonsai project IS our port).
+       Zero external dependencies in the production library (supply-chain doctrine); JSON parsing
+       leans on the BCL (System.Text.Json); state serialize hand-rolls canonical compact bytes
+       matching JS JSON.stringify for cross-oracle byte agreement. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Core.CSharp.Bonsai\Zeta.Core.CSharp.Bonsai.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -18,6 +18,7 @@
     <ProjectReference Include="..\..\src\Core.CSharp.TriBoolean\Zeta.Core.CSharp.TriBoolean.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Observe\Zeta.Core.CSharp.Observe.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Bonsai\Zeta.Core.CSharp.Bonsai.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.Resume\Zeta.Core.CSharp.Resume.csproj" />
   </ItemGroup>
 
   <ItemGroup>
