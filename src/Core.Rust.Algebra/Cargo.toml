@@ -1,0 +1,21 @@
+[package]
+name = "zeta-core-algebra"
+version = "0.1.0"
+edition = "2024"
+description = "Zeta algebra ladder (G-Set ⊂ Bag ⊂ Z-set) -- Rust parity oracle (#4 of TS/F#/C#/Rust). Zero-dep core; the bottom rung (G-Set) cross-verifies byte-for-byte against the shared golden vectors. Bag + Z-set rungs land in this crate next (one crate, one ladder, mirroring how F# keeps GSet.fs + ZSet.fs together in src/Core/)."
+license = "Apache-2.0"
+publish = false
+
+# Production = ZERO external dependencies (supply-chain doctrine; matching
+# Core.Rust.{Observe,TriBoolean,ZetaId}). serde_json is DEV-ONLY: the cross-verify
+# test reads the shared NESTED-JSON golden-vectors.json fixture (arrays-of-arrays),
+# for which a real parser is warranted; we match the Core.Rust.Observe pin ("1").
+# The production algebra has no dependencies.
+[dependencies]
+
+[dev-dependencies]
+serde_json = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
