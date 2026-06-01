@@ -1,6 +1,6 @@
 ---
 name: factory-audit
-description: Factory audit — governance rules, persona coverage, round cadence, memory hygiene, documentation landscape, meta-process.
+description: Factory audit — governance rules, persona coverage, round cadence, memory hygiene, docs landscape, meta-process.
 ---
 
 # Factory Audit — Procedure

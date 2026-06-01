@@ -1,6 +1,6 @@
 ---
 name: make-persistent
-description: Install persistent agent service on this machine — OS detection, service worktree, tick script, background service registration, heartbeat verify.
+description: Install persistent agent service — OS detection, service worktree, tick script, registration, heartbeat verification.
 when-to-wear: When setting up persistence on the current machine, recovering a broken service, or upgrading an existing service.
 ---
 

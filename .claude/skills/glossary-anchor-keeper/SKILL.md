@@ -1,6 +1,6 @@
 ---
 name: glossary-anchor-keeper
-description: Glossary anchor audit — external-definition drift, missing citations, anchor-breaking changes, Tower-of-Babel prevention.
+description: Glossary anchor audit — external-definition drift, missing citations, anchor breakage, Tower-of-Babel prevention.
 ---
 
 # Glossary Anchor Keeper

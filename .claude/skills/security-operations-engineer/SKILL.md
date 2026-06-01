@@ -1,6 +1,6 @@
 ---
 name: security-operations-engineer
-description: Runtime security ops — incident response, patch triage, SLSA signing, HSM key rotation, breach response, artifact attestation.
+description: Runtime security ops — incident response, patch triage, SLSA signing, HSM rotation, breach response, attestations.
 ---
 
 # Security Operations Engineer — Procedure (stub)

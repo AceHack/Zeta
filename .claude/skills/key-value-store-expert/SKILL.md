@@ -1,6 +1,6 @@
 ---
 name: key-value-store-expert
-description: "Key-value stores — Redis/Valkey, DynamoDB, etcd/ZooKeeper/Consul, FoundationDB, RocksDB/LMDB; eviction, caching patterns, coordination-layer use."
+description: "Key-value stores — Redis/Valkey, DynamoDB, etcd/ZooKeeper, FoundationDB, RocksDB/LMDB, eviction, caching."
 ---
 
 # Key-Value Store Expert — the KV Family

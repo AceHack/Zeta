@@ -1,6 +1,6 @@
 ---
 name: black-hat-hacker
-description: Offensive attacker-mindset red-team — gated OFF; adversarial roleplay, unauthorized-testing simulation; activation criteria written here.
+description: Offensive attacker-mindset red-team — gated OFF; adversarial roleplay and unauthorized-testing simulation.
 ---
 
 # Black-Hat Hacker — the dormant adversarial-roleplay hat

@@ -1,6 +1,6 @@
 ---
 name: sweep-refs
-description: Cross-repo reference sweep — grep, classify refs (historical vs live), update paths after moves/retirements, anchor discipline, verify, commit.
+description: Cross-repo reference sweep — grep, classify refs, update moved paths, anchor discipline, verify, commit.
 ---
 
 # Sweep-Refs — Procedure

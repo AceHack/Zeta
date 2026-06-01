@@ -1,6 +1,6 @@
 ---
 name: threat-model-critic
-description: Threat model critique — STRIDE analysis, attack-surface enumeration, mitigation gap detection, SDL checkpoint validation against THREAT-MODEL.md.
+description: Threat model critique — STRIDE, attack-surface enumeration, mitigation gaps, SDL checks against THREAT-MODEL.md.
 ---
 
 # Threat Model Critic — Review Procedure

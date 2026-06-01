@@ -1,6 +1,6 @@
 ---
 name: holistic-view
-description: "Whole-system sanity lens — cross-cutting implication check before escalation; the second hat every specialist wears without architect authority."
+description: "Whole-system sanity lens — cross-cutting implication check before escalation; second hat every specialist wears."
 ---
 
 # Holistic View — Procedure

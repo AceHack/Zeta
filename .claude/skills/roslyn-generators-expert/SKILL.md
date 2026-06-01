@@ -1,6 +1,6 @@
 ---
 name: roslyn-generators-expert
-description: Roslyn source generators — IIncrementalGenerator pipeline, equality/caching discipline, .g.cs naming, NuGet packaging, attribute-driven generation.
+description: Roslyn source generators — IIncrementalGenerator, equality/caching, .g.cs naming, NuGet packaging, attributes.
 ---
 
 # Roslyn Generators Expert — Incremental Source Generators

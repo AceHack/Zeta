@@ -1,6 +1,6 @@
 ---
 name: long-term-rescheduler
-description: Long-lived CronCreate jobs beyond 7-day cap — self-renewing heartbeat, session-restart recovery, GitHub Actions/Routines bridge.
+description: Long-lived CronCreate jobs beyond 7-day cap — renewal heartbeat, restart recovery, GitHub Actions/Routines bridge.
 ---
 
 # Long-Term Rescheduler — Procedure

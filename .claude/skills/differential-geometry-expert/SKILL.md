@@ -1,6 +1,6 @@
 ---
 name: differential-geometry-expert
-description: Differential geometry — manifolds, tensors, co/contravariance, parallel transport, curvature, fiber bundles, gauge theory bridge.
+description: Differential geometry — manifolds, tensors, variance, parallel transport, curvature, fiber bundles, gauge bridge.
 ---
 
 # Differential Geometry Expert — Where Upper and Lower Indices Come From

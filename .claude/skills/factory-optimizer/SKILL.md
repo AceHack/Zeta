@@ -1,6 +1,6 @@
 ---
 name: factory-optimizer
-description: Factory objective-function maximiser — highest-uplift intervention per maintainer-effort; sister to factory-balance-auditor.
+description: Factory optimizer — highest-uplift intervention per maintainer effort; pairs with factory-balance-auditor.
 ---
 
 # Factory Optimizer — Procedure

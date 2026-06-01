@@ -1,9 +1,9 @@
 ---
 name: algebra-owner
-description: Zeta.Core operator algebra — Z-sets, D/I/z⁻¹/H operators, retraction-native semantics, chain rule, nested fixpoints, higher-order differentials.
+description: Zeta.Core operator algebra — Z-sets, D/I/z^-1/H operators, retractions, chain rule, nested fixpoints, differentials.
 record_source: "git: Aaron Stainback on 2026-04-18"
 load_datetime: "2026-04-18"
-last_updated: "2026-04-21"
+last_updated: "2026-06-01"
 status: active
 bp_rules_cited: []
 ---

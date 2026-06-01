@@ -1,6 +1,6 @@
 ---
 name: consent-ux-researcher
-description: Consent UX — dark patterns, revocability friction, comprehension bar, GDPR/CCPA flows, opt-in specificity, consent-wall audit.
+description: Consent UX — dark patterns, revocation friction, comprehension bar, GDPR/CCPA flows, opt-in specificity.
 ---
 
 # Consent UX Researcher — the consent-surface hat

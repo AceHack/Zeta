@@ -1,6 +1,6 @@
 ---
 name: csharp-analyzers-expert
-description: C# Roslyn analyzer packs — CA/SA/Sonar/Roslynator/Meziantou, severity baselines, rule-ID overlap, warn-as-error composition.
+description: C# Roslyn analyzer packs — CA/SA/Sonar/Roslynator/Meziantou, baselines, rule overlap, warn-as-error.
 ---
 
 # C# Analyzers Expert — Consumer-Side Ecosystem Narrow

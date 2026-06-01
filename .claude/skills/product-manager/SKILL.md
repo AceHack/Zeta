@@ -1,6 +1,6 @@
 ---
 name: product-manager
-description: PM-2 product discovery — feature-gap prediction, roadmap option shaping, acceptance-criteria sharpening, vague-signal-to-testable-bet.
+description: PM-2 discovery — feature-gap prediction, roadmap options, acceptance criteria, vague signal to testable bet.
 ---
 
 # Product Manager PM-2

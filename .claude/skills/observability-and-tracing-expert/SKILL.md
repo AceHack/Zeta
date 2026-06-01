@@ -1,6 +1,6 @@
 ---
 name: observability-and-tracing-expert
-description: "Observability — OpenTelemetry, distributed tracing, metrics/logs/traces pillars, sampling strategies, continuous profiling."
+description: "Observability — OpenTelemetry, distributed tracing, metrics/logs/traces, sampling, continuous profiling."
 ---
 
 # Observability + Tracing Expert — Signal Under Novelty

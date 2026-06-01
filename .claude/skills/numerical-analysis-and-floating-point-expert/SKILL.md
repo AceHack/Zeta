@@ -1,6 +1,6 @@
 ---
 name: numerical-analysis-and-floating-point-expert
-description: IEEE 754, ULP bounds, condition numbers, Kahan summation, rounding, catastrophic cancellation, denormals, BV64/Int62 exact arithmetic.
+description: IEEE 754, ULP bounds, condition numbers, Kahan summation, rounding, cancellation, denormals, BV64/Int62 exact math.
 ---
 
 # Numerical Analysis and Floating-Point Expert — Narrow

@@ -1,6 +1,6 @@
 ---
 name: round-open-checklist
-description: Round-open procedure — reset CURRENT-ROUND.md, carry DEBT/P1 forward, name anchor, dispatch reviewer floor, confirm branch strategy.
+description: Round-open procedure — reset CURRENT-ROUND.md, carry DEBT/P1, name anchor, dispatch reviewer floor, confirm branch plan.
 ---
 
 # Round-Open Checklist — Procedure

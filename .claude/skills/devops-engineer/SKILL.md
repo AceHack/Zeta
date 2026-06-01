@@ -1,6 +1,6 @@
 ---
 name: devops-engineer
-description: DevOps — install script parity, GitHub Actions design, runner pinning, least-privilege permissions, upstream contribution PRs.
+description: DevOps — install script parity, GitHub Actions design, runner pinning, least privilege, upstream PRs.
 ---
 
 # DevOps Engineer — Procedure

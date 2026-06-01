@@ -1,6 +1,6 @@
 ---
 name: physics-expert
-description: Physics umbrella — Shannon entropy, tropical semiring, anti-entropy dynamics, dimensional reasoning; load-bearing vs rhetorical.
+description: Physics — entropy, tropical semiring, anti-entropy dynamics, dimensional reasoning, load-bearing vs rhetorical use.
 ---
 
 # Physics Expert — Umbrella

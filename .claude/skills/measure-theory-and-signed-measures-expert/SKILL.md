@@ -1,6 +1,6 @@
 ---
 name: measure-theory-and-signed-measures-expert
-description: Measure theory — σ-algebras, signed measures, Hahn/Jordan/Radon-Nikodym, ZSet-as-signed-measure, multiplicity, retraction semantics.
+description: Measure theory — σ-algebras, signed measures, Hahn/Jordan/Radon-Nikodym, ZSet multiplicity, retractions.
 ---
 
 # Measure Theory and Signed Measures Expert — Narrow

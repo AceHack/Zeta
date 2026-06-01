@@ -1,9 +1,9 @@
 ---
 name: flash-cluster-iso
-description: Flash a Zeta cluster installer ISO to USB from macOS via zflash + Touch ID; covers operator-only and agent-driven (expect) paths.
+description: Flash Zeta cluster installer ISO to USB from macOS via zflash + Touch ID; operator-only and agent-driven paths.
 record_source: "operator-agent zflash flow, 2026-05-25 session"
 load_datetime: "2026-05-25"
-last_updated: "2026-05-28"
+last_updated: "2026-06-01"
 status: active
 ---
 

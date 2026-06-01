@@ -1,6 +1,6 @@
 ---
 name: probability-and-bayesian-inference-expert
-description: Bayesian inference — priors, posteriors, conjugate families, MCMC, variational inference, KL divergence, credible intervals, Zeta.Bayesian.
+description: Bayesian inference — priors, posteriors, MCMC, variational inference, KL divergence, intervals, Zeta.Bayesian.
 ---
 
 # Probability and Bayesian Inference Expert — Narrow

@@ -1,6 +1,6 @@
 ---
 name: data-vault-expert
-description: Data Vault 2.0 — hub/link/satellite, hash-key discipline, raw vs business vault, PIT tables, audit columns, retraction-native.
+description: Data Vault 2.0 — hubs/links/satellites, hash keys, raw vs business vault, PIT tables, audit columns, retraction.
 ---
 
 # Data Vault Expert — Data Vault 2.0 Narrow

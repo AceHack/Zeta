@@ -1,6 +1,6 @@
 ---
 name: alloy-expert
-description: Alloy 6 formal specs — sig/pred/fact/assert, run vs check, SAT4J solver, counter-example reading, relational algebra, .als authoring.
+description: Alloy 6 formal specs — sig/pred/fact/assert, run vs check, SAT4J, counter-examples, relational algebra, .als.
 ---
 
 # Alloy Expert — Procedure + Lore

@@ -1,6 +1,6 @@
 ---
 name: blockchain-expert
-description: Blockchain / permissionless consensus — Nakamoto, PoW/PoS, HotStuff/Tendermint, merkle proofs, UTXO, cryptoeconomics, tamper-evidence.
+description: Blockchain / permissionless consensus — Nakamoto, PoW/PoS, HotStuff/Tendermint, Merkle proofs, UTXO, tamper-evidence.
 ---
 
 # Blockchain Expert — Permissionless-Consensus Hat

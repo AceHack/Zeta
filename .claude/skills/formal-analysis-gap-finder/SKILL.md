@@ -1,6 +1,6 @@
 ---
 name: formal-analysis-gap-finder
-description: Formal-analysis gap scanner — finds unverified invariants, unchecked consensus claims, missing proofs across code and docs.
+description: Formal-analysis gap scanner — finds unverified invariants, unchecked consensus claims, and missing proofs.
 ---
 
 # Formal Analysis Gap Finder — Procedure

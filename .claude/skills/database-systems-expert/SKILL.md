@@ -1,6 +1,6 @@
 ---
 name: database-systems-expert
-description: Database systems — storage-model selection, CAP/PACELC, consistency models, NewSQL, sharding, polyglot persistence, isolation anomalies.
+description: Database systems — storage models, CAP/PACELC, consistency, NewSQL, sharding, polyglot persistence, anomalies.
 ---
 
 # Database-Systems Expert — the Umbrella

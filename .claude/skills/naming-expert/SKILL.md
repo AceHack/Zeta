@@ -1,6 +1,6 @@
 ---
 name: naming-expert
-description: Naming decisions for code, APIs, modules, commits — ubiquitous language, rename-as-governance, anti-patterns, BP-HOME discriminators.
+description: Naming decisions for code, APIs, modules, commits — ubiquitous language, rename governance, anti-patterns, BP-HOME.
 ---
 
 # Naming Expert — Names as Load-Bearing Contracts

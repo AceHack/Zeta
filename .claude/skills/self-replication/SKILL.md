@@ -1,6 +1,6 @@
 ---
 name: self-replication
-description: Agent persistence — OS-detect, service worktree, tick script deploy, daemon register, heartbeat verify; SSH remote replication.
+description: Agent persistence — OS detect, service worktree, tick deploy, daemon register, heartbeat verify, SSH remote replication.
 when-to-wear: When setting up a new machine as a factory node, when replicating to a remote machine via SSH, when recovering a broken background service, or when upgrading an existing service to the latest tick script.
 ---
 

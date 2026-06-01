@@ -1,6 +1,6 @@
 ---
 name: file-system-persistence-expert
-description: File-system durability — fsync/fdatasync, journaling FS semantics, io_uring/IOCP, atomic rename, crash-safety, cross-OS path hazards.
+description: File-system durability — fsync/fdatasync, journal semantics, io_uring/IOCP, atomic rename, crash-safety, path hazards.
 ---
 
 # File-System + Persistence Expert — OS-Specific Durability

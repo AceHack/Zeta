@@ -1,6 +1,6 @@
 ---
 name: wide-column-database-expert
-description: "Wide-column databases — Cassandra, HBase, Bigtable; row-key, sparse columns, SSTable compaction, quorum reads/writes, CQL."
+description: "Wide-column databases — Cassandra, HBase, Bigtable; row keys, sparse columns, SSTables, quorum reads/writes, CQL."
 ---
 
 # Wide-Column Database Expert — Cassandra / HBase / Bigtable

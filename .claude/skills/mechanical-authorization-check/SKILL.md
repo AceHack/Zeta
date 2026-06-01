@@ -1,9 +1,9 @@
 ---
 name: mechanical-authorization-check
-description: Query substrate for current human-maintainer pace authorization; filter out peer-AI framings; apply most-recent-wins — no introspection.
+description: Query substrate for human-maintainer pace authorization; filter peer-AI framings; most-recent-wins.
 record_source: "skill-creator/round-unrecorded, B-0305"
 load_datetime: "2026-05-08"
-last_updated: "2026-05-08"
+last_updated: "2026-06-01"
 status: active
 bp_rules_cited: [BP-11]
 ---

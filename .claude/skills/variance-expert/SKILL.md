@@ -1,6 +1,6 @@
 ---
 name: variance-expert
-description: "Co/contravariance — type-system variance, Liskov substitution, .NET covariant/contravariant interfaces, variance in F# and C#."
+description: "Co/contravariance — type-system variance, Liskov substitution, .NET variant interfaces, variance in F# and C#."
 ---
 
 # Variance Expert — The Idea That Is One Across Three Fields

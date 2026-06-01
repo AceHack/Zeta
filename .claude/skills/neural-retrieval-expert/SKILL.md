@@ -1,6 +1,6 @@
 ---
 name: neural-retrieval-expert
-description: "Applied neural retrieval — bi-encoders, SPLADE, ColBERT, cross-encoder re-ranking, hybrid BM25+dense, MS-MARCO/BEIR eval."
+description: "Applied neural retrieval — bi-encoders, SPLADE, ColBERT, cross-encoder rerank, hybrid BM25+dense, BEIR eval."
 ---
 
 # Neural Retrieval Expert — BERT-Era IR Applied

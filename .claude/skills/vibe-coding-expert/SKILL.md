@@ -1,6 +1,6 @@
 ---
 name: vibe-coding-expert
-description: "Vibe-coding / AI factory method — AI-directed software production, spec/skill/subagent/PR loop, anti-patterns, quality gates."
+description: "Vibe-coding / AI factory method — AI-directed software production, spec/skill/subagent/PR loop, quality gates."
 ---
 
 # Vibe-Coding Expert — the method hat

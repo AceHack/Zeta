@@ -1,6 +1,6 @@
 ---
 name: backlog-decomposer
-description: Backlog decomposition — splits large B-rows into dependency-ordered child rows, depends_on edges, classifies buildable vs blocked vs research.
+description: Backlog decomposition — split B-rows into dependency-ordered child rows, depends_on edges, buildable/blocked/research.
 ---
 
 # Backlog Decomposer

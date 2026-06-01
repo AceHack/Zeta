@@ -1,6 +1,6 @@
 ---
 name: knowledge-graph-expert
-description: "Knowledge graphs — RDF/property-graph models, SPARQL/Cypher/GQL, Neo4j/Neptune/JanusGraph, supernode hazard, entity/relationship schema design."
+description: "Knowledge graphs — RDF/property graphs, SPARQL/Cypher/GQL, Neo4j/Neptune/JanusGraph, supernodes, schema design."
 ---
 
 # Knowledge Graph Expert — Storage and Query at Scale

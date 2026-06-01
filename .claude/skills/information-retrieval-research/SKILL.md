@@ -1,6 +1,6 @@
 ---
 name: information-retrieval-research
-description: "IR research frontier — HyDE, generative retrieval, RAG critique, dense/sparse hybrid, Lost-in-the-Middle, SIGIR/CIKM/BEIR/MIRACL tracking."
+description: "IR research frontier — HyDE, generative retrieval, RAG critique, hybrid search, SIGIR/CIKM/BEIR/MIRACL tracking."
 ---
 
 # Information Retrieval Research — Open Questions

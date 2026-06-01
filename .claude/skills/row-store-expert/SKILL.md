@@ -1,6 +1,6 @@
 ---
 name: row-store-expert
-description: Row-store / OLTP layout — heap files, slotted pages, HOT chains, B+ tree leaf layout, FSM, page latching, WAL-page-image, point-read/write paths.
+description: Row-store / OLTP layout — heap files, slotted pages, HOT chains, B+ tree leaves, FSM, latching, WAL images.
 ---
 
 # Row Store Expert — Row-Oriented Layout Narrow

@@ -1,6 +1,6 @@
 ---
 name: java-expert
-description: "Java for Zeta's narrow surface — AlloyRunner.java driver, JDK 21, SAT4J, single-file compilation, exit-code discipline for .java files."
+description: "Java for Zeta — AlloyRunner.java, JDK 21, SAT4J, single-file compilation, exit-code discipline for .java files."
 ---
 
 # Java Expert — Procedure + Lore

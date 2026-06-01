@@ -1,6 +1,6 @@
 ---
 name: master-data-management-expert
-description: Master data management — golden-record, entity resolution, survivorship rules, MDM styles, dedup, stewardship, GDPR, cross-reference tables.
+description: Master data management — golden record, entity resolution, survivorship, MDM styles, dedup, stewardship, GDPR.
 ---
 
 # Master Data Management Expert — Golden Records

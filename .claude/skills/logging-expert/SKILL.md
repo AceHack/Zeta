@@ -1,6 +1,6 @@
 ---
 name: logging-expert
-description: "Logging — ILogger/Serilog/NLog, log-level discipline, correlation IDs, Loki/Splunk/Datadog backends, PII minefield, log-as-metric antipattern."
+description: "Logging — ILogger/Serilog/NLog, log levels, correlation IDs, Loki/Splunk/Datadog, PII risks, log-as-metric traps."
 ---
 
 # Logging Expert — The Event-Record Pillar

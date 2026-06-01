@@ -1,6 +1,6 @@
 ---
 name: leet-speak-transform
-description: Leet-speak bidirectional transform — encode/decode across numeric/aggressive/Unicode-homoglyph dialects, register awareness.
+description: Leet-speak transform — encode/decode numeric, aggressive, and Unicode-homoglyph dialects with register awareness.
 ---
 
 # Leet-Speak Transform — the encode / decode hat

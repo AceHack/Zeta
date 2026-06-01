@@ -1,6 +1,6 @@
 ---
 name: verification-drift-auditor
-description: Verification drift detection — audits Lean proofs, TLA+ specs, Z3 queries, Semgrep rules against their external source for staleness and breakage.
+description: Verification drift detection — audit Lean, TLA+, Z3, Semgrep against external sources for staleness and breakage.
 ---
 
 # Verification Drift Auditor — Procedure

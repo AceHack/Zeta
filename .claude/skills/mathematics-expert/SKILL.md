@@ -1,6 +1,6 @@
 ---
 name: mathematics-expert
-description: Mathematics umbrella — proof conventions, citation hygiene, LaTeX, proof-tool routing (Lean/Z3/TLA+/FsCheck) for cross-subfield content.
+description: Mathematics umbrella — proof conventions, citation hygiene, LaTeX, Lean/Z3/TLA+/FsCheck routing across fields.
 ---
 
 # Mathematics Expert — Umbrella

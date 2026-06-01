@@ -1,6 +1,6 @@
 ---
 name: theoretical-mathematics-expert
-description: Theoretical mathematics — abstract algebra, category theory, topology, measure theory, model theory; research-grade proofs and formal reasoning.
+description: Theoretical mathematics — algebra, category theory, topology, measure/model theory, research-grade proofs.
 ---
 
 # Theoretical Mathematics Expert — Split

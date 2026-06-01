@@ -1,6 +1,6 @@
 ---
 name: transaction-manager-expert
-description: SQL transaction manager — ACID guarantees, isolation levels, MVCC, 2PL, deadlock detection, savepoints, distributed 2PC/Saga, commit protocols.
+description: SQL transaction manager — ACID, isolation, MVCC, 2PL, deadlocks, savepoints, 2PC/Saga, commit protocols.
 ---
 
 # Transaction Manager Expert — ACID + WAL + Recovery

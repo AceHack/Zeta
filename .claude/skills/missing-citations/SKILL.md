@@ -1,6 +1,6 @@
 ---
 name: missing-citations
-description: Research-integrity audit — flags uncited claims ("as is well known", implicit authority appeals) in docs/research drafts; outputs triage list.
+description: Research-integrity audit — flags uncited claims and authority appeals in docs/research drafts; outputs triage.
 ---
 
 # Missing Citations — Research-Integrity Hat

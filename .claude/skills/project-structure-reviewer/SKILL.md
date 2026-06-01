@@ -1,6 +1,6 @@
 ---
 name: project-structure-reviewer
-description: Repo layout audit — folder tree shape, file placement, naming conventions, misplaced artifacts, tech-debt-as-disorganization.
+description: Repo layout audit — folder tree shape, file placement, naming conventions, misplaced artifacts, debt as disorganization.
 ---
 
 # Project Structure Reviewer — Procedure

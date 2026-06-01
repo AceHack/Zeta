@@ -1,6 +1,6 @@
 ---
 name: consent-primitives-expert
-description: Consent algebra — grant/revocation data structures, abelian-group model, GDPR erasure vs audit, scope intersection, delegation.
+description: Consent algebra — grants/revocations, abelian-group model, GDPR erasure vs audit, scope intersection, delegation.
 ---
 
 # Consent Primitives Expert — the consent-algebra hat

@@ -1,6 +1,6 @@
 ---
 name: relational-database-expert
-description: RDBMS family — Postgres/MySQL/MSSQL/Oracle/SQLite/NewSQL, Codd/normal forms, MVCC vs 2PL, WAL, partitioning, cloud-managed.
+description: RDBMS family — Postgres/MySQL/MSSQL/Oracle/SQLite/NewSQL, Codd forms, MVCC vs 2PL, WAL, partitioning.
 ---
 
 # Relational-Database Expert — the RDBMS Class

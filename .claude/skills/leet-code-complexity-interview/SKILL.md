@@ -1,6 +1,6 @@
 ---
 name: leet-code-complexity-interview
-description: "Interview complexity communication — big-O verbalization, amortized analysis, master theorem, space-time tradeoffs, common misstatements."
+description: "Interview complexity communication — big-O, amortized analysis, master theorem, space-time tradeoffs, misstatements."
 ---
 
 # Leet-Code Complexity Interview — the interview-grade

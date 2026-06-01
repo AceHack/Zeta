@@ -1,6 +1,6 @@
 ---
 name: operations-monitoring-expert
-description: SRE operations — SLI/SLO/error-budgets, on-call, incident command, blameless post-mortems, runbooks, chaos engineering, toil reduction.
+description: SRE operations — SLI/SLO/error budgets, on-call, incident command, runbooks, chaos engineering, toil reduction.
 ---
 
 # Operations Monitoring Expert — SRE Discipline for Services

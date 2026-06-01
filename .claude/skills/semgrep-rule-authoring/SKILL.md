@@ -1,6 +1,6 @@
 ---
 name: semgrep-rule-authoring
-description: Semgrep rule authoring — rule anatomy, pattern/regex/either, severity, message discipline, prior-review-finding codification.
+description: Semgrep rule authoring — anatomy, pattern/regex/either, severity, messages, prior-review finding codification.
 ---
 
 # Semgrep Rule Authoring — Procedure + Lore

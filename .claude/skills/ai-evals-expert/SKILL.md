@@ -1,9 +1,9 @@
 ---
 name: ai-evals-expert
-description: LLM / ML evaluation — eval-suite design, LM-as-judge, BLEU/ROUGE, calibration, benchmark drift detection, honest measurement.
+description: LLM / ML evaluation — eval-suite design, LM-as-judge, BLEU/ROUGE, calibration, benchmark drift, measurement.
 record_source: "skill-creator, round 34"
 load_datetime: "2026-04-19"
-last_updated: "2026-04-21"
+last_updated: "2026-06-01"
 status: active
 bp_rules_cited: [BP-11]
 ---

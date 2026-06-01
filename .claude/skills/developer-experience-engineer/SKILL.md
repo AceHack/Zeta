@@ -1,6 +1,6 @@
 ---
 name: developer-experience-engineer
-description: Developer experience — first-60-minutes friction, CONTRIBUTING.md, install script, build loop, IDE integration, error noise.
+description: Developer experience — first-hour friction, CONTRIBUTING.md, install script, build loop, IDE setup, error noise.
 ---
 
 # Developer Experience Engineer — Procedure

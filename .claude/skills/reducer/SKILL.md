@@ -1,6 +1,6 @@
 ---
 name: reducer
-description: Complexity reduction — essential vs accidental (Brooks), Kolmogorov/Shannon metrics, Rodney's Razor, cyclomatic/cognitive audit.
+description: Complexity reduction — Brooks essential/accidental, Kolmogorov/Shannon metrics, Rodney's Razor, code complexity audit.
 ---
 
 # Reducer — Complexity Minimisation, Occam's-Razor-Plus

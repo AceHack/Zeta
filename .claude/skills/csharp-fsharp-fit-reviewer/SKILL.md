@@ -1,6 +1,6 @@
 ---
 name: csharp-fsharp-fit-reviewer
-description: C#/F# fit review — detects where cross-language rewrite wins on idioms, hot-path struct layout, Span ergonomics, or SIMD.
+description: C#/F# fit review — finds cross-language rewrite wins for idioms, hot-path layout, Span ergonomics, or SIMD.
 ---
 
 # C#/F# Fit Reviewer — Procedure

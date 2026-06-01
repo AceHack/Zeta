@@ -1,6 +1,6 @@
 ---
 name: taxonomy-expert
-description: "Hierarchical classification — faceted taxonomy, controlled vocabularies, ontology vs taxonomy, parent/child relationships."
+description: "Hierarchical classification — faceted taxonomy, controlled vocabularies, ontology contrast, parent/child relations."
 ---
 
 # Taxonomy Expert — Hierarchical Classification

@@ -1,6 +1,6 @@
 ---
 name: msbuild-expert
-description: "MSBuild / .NET project files — Directory.Build.props, central package management, .fsproj compile-order, InternalsVisibleTo."
+description: "MSBuild/.NET projects — Directory.Build.props, central packages, .fsproj compile order, InternalsVisibleTo."
 ---
 
 # MSBuild Expert — Procedure + Lore

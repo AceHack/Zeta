@@ -1,6 +1,6 @@
 ---
 name: sql-binder-expert
-description: SQL binder — name resolution, type coercion, overload resolution, scope rules, ambiguity detection between parse and optimize.
+description: SQL binder — name resolution, type coercion, overload resolution, scope rules, ambiguity before optimization.
 ---
 
 # SQL Binder Expert — Semantic Analysis Narrow

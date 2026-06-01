@@ -1,6 +1,6 @@
 ---
 name: skill-ontology-auditor
-description: Skill-library ontological hygiene — facet declarations, orthogonality violations, theory/applied drift, hand-off contracts, naming conventions.
+description: Skill-library ontology hygiene — facets, orthogonality violations, theory/applied drift, hand-off contracts, naming.
 ---
 
 # Skill Ontology Auditor — Orthogonality Enforcement

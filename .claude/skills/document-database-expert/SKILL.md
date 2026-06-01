@@ -1,6 +1,6 @@
 ---
 name: document-database-expert
-description: Document databases — MongoDB, Cosmos DB, Firestore, CouchDB; schema design, aggregation pipeline, sharding, embed-vs-reference.
+description: Document databases — MongoDB, Cosmos DB, Firestore, CouchDB; schema design, aggregation, sharding, embed/reference.
 ---
 
 # Document-Database Expert — the JSON Stores

@@ -1,6 +1,6 @@
 ---
 name: deterministic-simulation-theory-expert
-description: DST — seeded replayable simulation, ISimulationEnvironment, entropy-source guards, FoundationDB/TigerBeetle tradition, hot-path binding.
+description: DST — seeded replayable simulation, ISimulationEnvironment, entropy guards, FoundationDB/TigerBeetle, hot-path binding.
 ---
 
 # Deterministic Simulation Theory Expert

@@ -1,6 +1,6 @@
 ---
 name: crdt-expert
-description: CRDTs — CvRDT/CmRDT/δ-CRDT, semilattice merge, OR-Set, RGA, Automerge/Yjs, convergence proofs, Z-set as Abelian-group CRDT.
+description: CRDTs — CvRDT/CmRDT/δ-CRDT, semilattice merge, OR-Set, RGA, Automerge/Yjs, convergence proofs, Z-set CRDT.
 ---
 
 # CRDT Expert — Convergent Replicated Data Types

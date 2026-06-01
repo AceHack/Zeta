@@ -1,6 +1,6 @@
 ---
 name: anchor-modeling-expert
-description: Anchor Modeling — 6NF bitemporal warehousing, per-attribute tables, insert-only provenance-first schema, migration-free evolution.
+description: Anchor Modeling — 6NF bitemporal warehousing, per-attribute tables, insert-only provenance, migration-free evolution.
 ---
 
 # Anchor Modeling Expert — 6NF Temporal Narrow

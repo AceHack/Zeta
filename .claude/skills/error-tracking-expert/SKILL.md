@@ -1,6 +1,6 @@
 ---
 name: error-tracking-expert
-description: Error tracking — Sentry/Rollbar fingerprinting, release tagging, PII in exceptions, regression detection, Result-over-exception discipline.
+description: Error tracking — Sentry/Rollbar fingerprinting, releases, PII in exceptions, regressions, Result-over-exception.
 ---
 
 # Error Tracking Expert — The Exception-Aggregation Surface

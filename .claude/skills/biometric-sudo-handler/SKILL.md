@@ -1,6 +1,6 @@
 ---
 name: biometric-sudo-handler
-description: Detects and handles macOS sudo password and Touch ID prompts in background runs, and instructs on Touch ID PAM authentication patterns to prevent permission leaks.
+description: Handles macOS sudo, password, and Touch ID prompts in background runs; avoids leaks and root-owned workspaces.
 ---
 
 # Biometric Sudo Handler

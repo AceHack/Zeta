@@ -1,6 +1,6 @@
 ---
 name: bash-expert
-description: Bash scripting — macOS/Linux portability, quoting discipline, shellcheck, idempotency patterns; applies to install-graph .sh files only.
+description: Bash scripting — macOS/Linux portability, quoting, shellcheck, idempotency; install-graph .sh only.
 ---
 
 # Bash Expert — Procedure + Lore

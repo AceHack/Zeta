@@ -1,6 +1,6 @@
 ---
 name: prompt-engineering-expert
-description: Prompt engineering — system prompts, few-shot design, tool descriptions, reasoning scaffolds, output-schema enforcement, context budgets.
+description: Prompt engineering — system prompts, few-shot design, tool descriptions, reasoning scaffolds, schemas, context budgets.
 ---
 
 # Prompt Engineering Expert — the prompt-craft hat

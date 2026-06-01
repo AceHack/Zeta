@@ -1,6 +1,6 @@
 ---
 name: csharp-expert
-description: C# — nullable refs, records, pattern matching, ConfigureAwait, F# interop, init/required members for Zeta's CSharp facade.
+description: C# — nullable refs, records, pattern matching, ConfigureAwait, F# interop, init/required facade members.
 ---
 
 # C# Expert — Procedure + Lore

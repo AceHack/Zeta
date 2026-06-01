@@ -1,6 +1,6 @@
 ---
 name: vectorised-execution-expert
-description: "Vectorised execution — SIMD dispatch, columnar morsel processing, operator fusion, AVX-512, Apache Arrow, branchless kernels."
+description: "Vectorised execution — SIMD dispatch, columnar morsels, operator fusion, AVX-512, Apache Arrow, branchless kernels."
 ---
 
 # Vectorised Execution Expert — Batch-at-a-Time Hot Path

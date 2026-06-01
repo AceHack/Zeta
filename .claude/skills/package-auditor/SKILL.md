@@ -1,6 +1,6 @@
 ---
 name: package-auditor
-description: NuGet package audit — version pins vs latest, major/minor/patch bump classification, API surface touch analysis, concrete bump plan.
+description: NuGet package audit — pins vs latest, bump classification, API surface impact, concrete bump plan.
 ---
 
 # Zeta.Core Package Auditor

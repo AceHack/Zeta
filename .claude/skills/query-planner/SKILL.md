@@ -1,6 +1,6 @@
 ---
 name: query-planner
-description: Query planner review — join ordering, predicate pushdown, index selection, SIMD kernel dispatch, cardinality estimation, cost model.
+description: Query planner review — join ordering, predicate pushdown, indexes, SIMD dispatch, cardinality estimates, cost model.
 ---
 
 # Query Planner Specialist — Advisory Code Owner

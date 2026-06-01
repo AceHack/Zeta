@@ -1,6 +1,6 @@
 ---
 name: grey-hat-hacker
-description: Gray-area offensive security — self-owned hardware, side-channels, DEF CON/CCC/Black Hat technique calibration, real-world threat models.
+description: Gray-area offensive security — owned hardware, side-channels, DEF CON/CCC/Black Hat calibration, threat models.
 ---
 
 # Grey-Hat Hacker — the curious-but-careful hat

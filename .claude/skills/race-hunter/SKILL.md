@@ -1,6 +1,6 @@
 ---
 name: race-hunter
-description: F# concurrency bug hunter — Interlocked.CompareExchange misses, torn reads, lock-across-await, concurrent ResizeArray, P0/P1/P2 findings.
+description: F# concurrency bug hunter — CompareExchange misses, torn reads, lock-across-await, concurrent ResizeArray, P0/P1/P2.
 ---
 
 # Zeta.Core Race Hunter

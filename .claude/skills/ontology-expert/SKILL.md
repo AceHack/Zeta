@@ -1,6 +1,6 @@
 ---
 name: ontology-expert
-description: Formal knowledge representations — RDF/OWL/SHACL, description logic, upper ontologies, ontology matching, competency questions.
+description: Formal knowledge representation — RDF/OWL/SHACL, description logic, upper ontologies, matching, competency questions.
 ---
 
 # Ontology Expert — Formal Knowledge Representation

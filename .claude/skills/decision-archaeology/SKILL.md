@@ -1,6 +1,6 @@
 ---
 name: decision-archaeology
-description: Decision archaeology — reconstruct "why is it like this?" via git blame, ADRs, round-history, memory memos, supersession chains.
+description: Decision archaeology — reconstruct why via git blame, ADRs, round-history, memory memos, supersession chains.
 ---
 
 # Decision Archaeology — "Why Is It Like This?"

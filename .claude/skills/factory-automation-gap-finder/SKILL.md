@@ -1,6 +1,6 @@
 ---
 name: factory-automation-gap-finder
-description: Factory automation gap scanner — finds manual factory work that should be automated; CI, release, hygiene, dependency cadences.
+description: Factory automation gap scanner — finds manual factory work to automate across CI, release, hygiene, dependencies.
 ---
 
 # Factory Automation Gap Finder — Procedure

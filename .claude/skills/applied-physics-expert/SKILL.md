@@ -1,6 +1,6 @@
 ---
 name: applied-physics-expert
-description: Applied physics in Zeta code — tropical semiring / stat-mech limit, anti-entropy CRDT dynamics, Shannon-entropy sketch tuning.
+description: Applied physics in Zeta — tropical semiring/stat-mech limits, anti-entropy CRDTs, Shannon sketch tuning.
 ---
 
 # Applied Physics Expert — Split

@@ -1,6 +1,6 @@
 ---
 name: leet-speak-obfuscation-detector
-description: "Leet-speak filter-bypass detection — Unicode normalization/NFKC, homoglyph lookup, reverse substitution scoring, moderation pipeline integration."
+description: "Leet-speak filter bypass — Unicode NFKC, homoglyph lookup, reverse substitution scoring, moderation pipelines."
 ---
 
 # Leet-Speak Obfuscation Detector — the audit hat

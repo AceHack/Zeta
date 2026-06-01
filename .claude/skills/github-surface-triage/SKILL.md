@@ -1,9 +1,9 @@
 ---
 name: github-surface-triage
-description: GitHub surface triage — ten surfaces (PRs, Issues, Wiki, Discussions, Settings, Security, etc.) under one round-close sweep.
+description: GitHub surface triage — PRs, Issues, Wiki, Discussions, Settings, Security, and other round-close surfaces.
 record_source: "architect, round 44"
 load_datetime: "2026-04-22"
-last_updated: "2026-04-22"
+last_updated: "2026-06-01"
 status: active
 bp_rules_cited: [BP-11]
 ---

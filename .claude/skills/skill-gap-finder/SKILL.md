@@ -1,6 +1,6 @@
 ---
 name: skill-gap-finder
-description: Skill gap finder — scans for recurring patterns and tribal knowledge that should be centralised in a skill but are not yet.
+description: Skill gap finder — scans recurring patterns and tribal knowledge that should become a central skill.
 ---
 
 # Skill Gap Finder — Procedure

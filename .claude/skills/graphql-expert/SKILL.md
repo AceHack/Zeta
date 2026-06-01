@@ -1,6 +1,6 @@
 ---
 name: graphql-expert
-description: "GraphQL — type system, resolvers, N+1/DataLoader, Apollo/Relay/URQL clients, persisted queries, subscriptions, pagination."
+description: "GraphQL — type system, resolvers, N+1/DataLoader, Apollo/Relay/URQL, persisted queries, subscriptions, pagination."
 ---
 
 # GraphQL Expert — Schema, Resolvers, and the N+1

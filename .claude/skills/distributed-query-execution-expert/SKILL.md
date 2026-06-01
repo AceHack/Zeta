@@ -1,6 +1,6 @@
 ---
 name: distributed-query-execution-expert
-description: Distributed SQL execution — partitioning, shuffle/broadcast/gather, collocated joins, partition-wise aggregation, shard routing.
+description: Distributed SQL execution — partitioning, shuffle/broadcast/gather, collocated joins, aggregation, shard routing.
 ---
 
 # Distributed Query Execution Expert — Shuffle + Broadcast

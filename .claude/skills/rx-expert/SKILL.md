@@ -1,6 +1,6 @@
 ---
 name: rx-expert
-description: Reactive Extensions (Rx.NET) — IObservable, schedulers, hot/cold, back-pressure, operators, Reaqtor standing queries, push-based delta streams.
+description: Reactive Extensions (Rx.NET) — IObservable, schedulers, hot/cold, back-pressure, operators, Reaqtor, delta streams.
 ---
 
 # Rx Expert — Reactive Extensions, the Push-Based Dual

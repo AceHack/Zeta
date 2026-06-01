@@ -1,6 +1,6 @@
 ---
 name: graph-theory-expert
-description: Graph theory — BFS/DFS, shortest paths, flow/matching, spectral, planarity, treewidth; DBSP DAG and join-graph reasoning.
+description: Graph theory — BFS/DFS, shortest paths, flow/matching, spectral, planarity, treewidth; DBSP DAGs and join graphs.
 ---
 
 # Graph Theory Expert

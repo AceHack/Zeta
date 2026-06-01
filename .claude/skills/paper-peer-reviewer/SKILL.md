@@ -1,6 +1,6 @@
 ---
 name: paper-peer-reviewer
-description: Paper peer review — SIGMOD/VLDB/POPL PC-member standards, related-work audit, proof/benchmark requirements, rebuttal questions.
+description: Paper peer review — SIGMOD/VLDB/POPL standards, related-work audit, proof/benchmark requirements, rebuttal questions.
 ---
 
 # Paper Peer Reviewer — Advisory Code Owner

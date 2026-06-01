@@ -1,6 +1,6 @@
 ---
 name: cross-domain-translation
-description: Cross-domain translation — glossary bridge, IR table, back-translation check for documents spanning incompatible vocabularies.
+description: Cross-domain translation — glossary bridge, IR table, back-translation for incompatible document vocabularies.
 facet: expert × applied × transformer
 ---
 

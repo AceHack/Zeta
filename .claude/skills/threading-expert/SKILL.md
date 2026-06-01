@@ -1,6 +1,6 @@
 ---
 name: threading-expert
-description: Threading/concurrency — OS threads, thread pools, lock-free structures, memory models, .NET Task/async, F# MailboxProcessor.
+description: Threading/concurrency — OS threads, pools, lock-free structures, memory models, .NET Task/async, F# MailboxProcessor.
 ---
 
 # Threading Expert — Concurrency Primitives and Hazards

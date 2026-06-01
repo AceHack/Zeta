@@ -1,6 +1,6 @@
 ---
 name: documentation-agent
-description: Keeps project documentation current — updates stale docs, writes missing docs, enforces docs-as-current-state discipline.
+description: Keeps project documentation current — updates stale/missing docs and enforces current-state discipline.
 ---
 
 # Documentation Agent

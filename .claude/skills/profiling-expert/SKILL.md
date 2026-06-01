@@ -1,6 +1,6 @@
 ---
 name: profiling-expert
-description: Profiling — CPU/off-CPU/memory sampling, flame graphs, dotnet-trace/PerfView, eBPF continuous profiling, differential analysis.
+description: Profiling — CPU/off-CPU/memory sampling, flame graphs, dotnet-trace/PerfView, eBPF, differential analysis.
 ---
 
 # Profiling Expert — Where Time Actually Goes

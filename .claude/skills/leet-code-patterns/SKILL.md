@@ -1,6 +1,6 @@
 ---
 name: leet-code-patterns
-description: "LeetCode interview patterns — two-pointers, sliding window, BFS/DFS, DP, binary search, greedy, topological sort, heap/top-K, bit manipulation."
+description: "LeetCode patterns — two-pointers, sliding window, BFS/DFS, DP, binary search, greedy, topological sort, heaps, bits."
 ---
 
 # Leet-Code Patterns — the pattern-selection hat

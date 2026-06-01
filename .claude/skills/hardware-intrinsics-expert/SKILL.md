@@ -1,6 +1,6 @@
 ---
 name: hardware-intrinsics-expert
-description: .NET hardware intrinsics — Vector128/256/512, SSE/AVX/AdvSimd, IsSupported gating, cache-line alignment, branchless SIMD.
+description: .NET hardware intrinsics — Vector128/256/512, SSE/AVX/AdvSimd, IsSupported, cache alignment, branchless SIMD.
 ---
 
 # Hardware Intrinsics Expert — SIMD + CPU-Level Performance

@@ -1,6 +1,6 @@
 ---
 name: tech-radar-owner
-description: docs/TECH-RADAR.md stewardship — Adopt/Trial/Assess/Hold ring discipline, promotion/demotion, new-entry gate, quarterly review cadence.
+description: docs/TECH-RADAR.md stewardship — Adopt/Trial/Assess/Hold rings, promotion/demotion, entry gate, reviews.
 ---
 
 # TECH-RADAR Owner

@@ -1,6 +1,6 @@
 ---
 name: backlog-scrum-master
-description: Backlog + roadmap grooming — BACKLOG.md / ROADMAP.md, in-flight rolling view, round velocity, priority shifts, scope-boundary flags.
+description: Backlog + roadmap grooming — BACKLOG.md/ROADMAP.md, in-flight view, velocity, priorities, scope boundaries.
 ---
 
 # Backlog & Scrum Master — the `backlog-scrum-master`

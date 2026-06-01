@@ -1,6 +1,6 @@
 ---
 name: negotiation-expert
-description: Negotiation — BATNA/ZOPA, integrative vs distributive, upstream-contribution asks, vendor contracts, AI-to-AI bargaining.
+description: Negotiation — BATNA/ZOPA, integrative vs distributive, upstream asks, vendor contracts, AI-to-AI bargaining.
 ---
 
 # Negotiation Expert — Bargaining Under Different Interests

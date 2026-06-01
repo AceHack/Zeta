@@ -1,6 +1,6 @@
 ---
 name: applied-mathematics-expert
-description: Applied mathematics — numerical linear algebra, optimization, statistical inference, signal processing, spectral methods on concrete data.
+description: Applied mathematics — numerical linear algebra, optimization, inference, signal processing, spectral methods on data.
 ---
 
 # Applied Mathematics Expert — Split

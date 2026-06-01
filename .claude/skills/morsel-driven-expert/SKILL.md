@@ -1,6 +1,6 @@
 ---
 name: morsel-driven-expert
-description: Morsel-driven parallelism — cache-sized work units, NUMA-aware scheduling, work-stealing, pipeline-breakers, DST-compatibility (Hyper/Umbra).
+description: Morsel-driven parallelism — cache-sized work units, NUMA scheduling, work-stealing, DST-safe Hyper/Umbra pipelines.
 ---
 
 # Morsel-Driven Expert — Parallel Scheduling Narrow

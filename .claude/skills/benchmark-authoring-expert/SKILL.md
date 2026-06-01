@@ -1,6 +1,6 @@
 ---
 name: benchmark-authoring-expert
-description: BenchmarkDotNet authoring — MemoryDiagnoser, warmup config, Params sweeps, baseline comparisons, allocation tracking, outlier detection.
+description: BenchmarkDotNet authoring — MemoryDiagnoser, warmups, Params sweeps, baselines, allocations, outlier detection.
 ---
 
 # Benchmark Authoring Expert — Procedure + Lore

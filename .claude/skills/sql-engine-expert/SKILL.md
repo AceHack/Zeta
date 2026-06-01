@@ -1,6 +1,6 @@
 ---
 name: sql-engine-expert
-description: Zeta SQL engine umbrella — cross-layer view of parser, binder, optimizer, planner, execution model, storage, wire protocol.
+description: Zeta SQL engine umbrella — parser, binder, optimizer, planner, execution model, storage, wire protocol.
 ---
 
 # SQL Engine Expert — Holistic Umbrella

@@ -1,6 +1,6 @@
 ---
 name: round-management
-description: Round planning — parallel-agent dispatch, synthesis, close-out; invoked at round-open, mid-round, round-close by the Architect.
+description: Round planning — parallel-agent dispatch, synthesis, close-out at round-open, mid-round, and round-close.
 ---
 
 # Round Management — Procedure

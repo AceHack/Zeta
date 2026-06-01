@@ -1,6 +1,6 @@
 ---
 name: public-api-designer
-description: Public API design gatekeeper — public type/member/signature changes, internal→public flips, conservative contract review, advisory.
+description: Public API design gatekeeper — public type/member/signature changes, internal→public flips, contract review.
 ---
 
 # Public API Designer

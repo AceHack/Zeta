@@ -1,6 +1,6 @@
 ---
 name: roslyn-analyzers-expert
-description: Roslyn analyzers — DiagnosticAnalyzer/CodeFixProvider authoring, lifecycle, severity, editorconfig wiring, suppressor, NuGet packaging.
+description: Roslyn analyzers — DiagnosticAnalyzer/CodeFixProvider authoring, lifecycle, severity, editorconfig, suppressors.
 ---
 
 # Roslyn Analyzers Expert — DiagnosticAnalyzer + CodeFixProvider

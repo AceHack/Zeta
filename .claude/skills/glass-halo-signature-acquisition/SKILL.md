@@ -1,6 +1,6 @@
 ---
 name: glass-halo-signature-acquisition
-description: Use when acquiring or recording a glass-halo consent signature from a person (operator, family, business partner, external participant). Triggers on "sign my glass-halo", "let's sign", "add <person> to the consent roster", "record <person>'s consent", or any request to capture glass-halo consent. Records the full three-part audit trail -- what was shown, the person's English response, and their signature -- into docs/consent/glass-halo/.
+description: Glass-halo consent signature capture — records shown text, English response, and signature audit trail.
 ---
 
 # Glass-halo signature acquisition

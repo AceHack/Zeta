@@ -1,6 +1,6 @@
 ---
 name: distributed-consensus-expert
-description: Distributed consensus — FLP impossibility, quorum arithmetic, CFT vs BFT, linearizability, Paxos/Raft protocol selection.
+description: Distributed consensus — FLP, quorums, CFT vs BFT, linearizability, Paxos/Raft protocol choice.
 ---
 
 # Distributed Consensus Expert — Protocol-Family Umbrella

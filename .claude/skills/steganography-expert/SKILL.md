@@ -1,6 +1,6 @@
 ---
 name: steganography-expert
-description: Steganography — hidden-channel detection, LSB, invisible-Unicode smuggling, LLM prompt injection, watermarking, C2PA/SynthID provenance.
+description: Steganography — hidden-channel detection, LSB, invisible Unicode, prompt injection, watermarking, C2PA provenance.
 ---
 
 # Steganography Expert — the hidden-channel hat
