@@ -781,6 +781,31 @@ roll out config, model, policy, release, or tool-dispatch changes.
   query index;
 - add production incident runbooks as prompt flows with human approval gates.
 
+**Checkpoint 2026-06-01: hard controls and no-bypass guardrails**
+
+Phase 2.8 now has executable hard controls. `ControlPlaneFlag` covers ESTOP,
+tenant/hat/org freeze, budget freeze, provider freeze, and simulator-required
+mode. `ControlPlaneRateLimit` covers tokens, tools, model calls, external
+provider calls, and release actions. The shared control-plane guard is wired
+into observe slot rendering, act-time slot authorization, command dispatch,
+MCP/tool dispatch, org-event append, release application, reaction-plan
+execution, optimizer rollout, and cadence tick start; coordinator/readiness/
+control lanes remain explicitly ESTOP-exempt and audited.
+
+The foreground loop now treats secret scopes as typed data on MCP slots and
+prompt-flow tool injections, hides unavailable prompt-flow tasks during observe,
+and re-authorizes selected slots at act time so a late freeze or missing secret
+cannot bypass the guard. Restore drills compute stable checksums over
+tenant-scoped Cockroach projections, and the production incident runbook registry
+ships the provider-outage runbook as a typed prompt flow with a human-approval
+gate. The missing tenant-isolation proof is now covered directly: a tenant
+freeze for `tenant-a` denies `tenant-a` and leaves `tenant-b` allowed.
+
+Subagent review for this checkpoint was attempted but blocked by the platform
+agent-thread limit (`collab spawn failed: agent thread limit reached`); local
+review covered control-plane guard, agent CLI, org cadence, reaction-plan,
+optimizer, restore-drill, and prompt-flow runbook tests.
+
 **Algorithms:**
 
 - **freeze propagation:** org freeze disables all non-control actions; hat freeze
@@ -1193,8 +1218,10 @@ The production hardening review found the main safety blockers:
 - conformance is useful but incomplete because context-sensitive and ambiguous
   transitions can still be skipped;
 - the whole-organization simulator/DST package and evidence gate now exist;
-- ESTOP/control-plane freeze, no-bypass write guards, rollback/retraction
-  proofs, alert ownership, and restore drills are required before production.
+- ESTOP/control-plane freeze, no-bypass write guards, tenant isolation,
+  restore-drill checksums, secret-scope guards, and rate limits now have
+  executable proofs; ongoing production readiness still needs alert-ownership
+  operating cadence and repeated disaster-drill evidence.
 
 This is why Phase 2.1 hardens telemetry/conformance before the optimizer and why
 Phase 2.7 requires simulator evidence before policy mutation.

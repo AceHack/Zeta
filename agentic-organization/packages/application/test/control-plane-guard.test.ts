@@ -127,6 +127,45 @@ test("control-plane guard denies tenant-scoped rate limit exhaustion before side
   equal(denied.audit.matchedRateLimitIds[0], "rl-github-tools");
 });
 
+test("control-plane tenant freeze does not affect another tenant", () => {
+  const flags: readonly ControlPlaneFlag[] = [
+    flag("flag-tenant-a", ControlPlaneFlagKind.Freeze, {
+      kind: ControlPlaneScopeKind.Tenant,
+      tenantId: "tenant-a",
+    }, "tenant-a frozen"),
+  ];
+
+  const frozenTenant = evaluateControlPlaneAccess({
+    organizationId: "org-lfg",
+    tenantId: "tenant-a",
+    actorHatId: "backend_implementer",
+    boundary: "command_dispatch",
+    actionType: "execute",
+    evaluatedAt: NOW,
+    flags,
+  });
+  const otherTenant = evaluateControlPlaneAccess({
+    organizationId: "org-lfg",
+    tenantId: "tenant-b",
+    actorHatId: "backend_implementer",
+    boundary: "command_dispatch",
+    actionType: "execute",
+    evaluatedAt: NOW,
+    flags,
+  });
+
+  equal(frozenTenant.status, "denied");
+  if (frozenTenant.status === "denied") {
+    deepEqual(frozenTenant.reasonCodes, ["tenant_freeze"]);
+    deepEqual(frozenTenant.audit.matchedFlagIds, ["flag-tenant-a"]);
+  }
+  equal(otherTenant.status, "allowed");
+  if (otherTenant.status === "allowed") {
+    deepEqual(otherTenant.audit.matchedFlagIds, []);
+    deepEqual(otherTenant.audit.reasonCodes, []);
+  }
+});
+
 test("control-plane deterministic rule vetoes observe slots before rendering selectable actions", () => {
   const rule = createControlPlaneDeterministicRule({
     flags: [flag("flag-tenant", ControlPlaneFlagKind.Freeze, { kind: ControlPlaneScopeKind.Tenant, tenantId: "org-lfg" }, "tenant frozen")],
