@@ -14,7 +14,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 
 namespace Zeta.Core.CSharp;
 
@@ -156,7 +158,12 @@ public static class IndexedZSet
 /// </summary>
 /// <typeparam name="TKey">The key type.</typeparam>
 /// <typeparam name="TValue">The value type.</typeparam>
-public sealed class IndexedZSet<TKey, TValue> : IEquatable<IndexedZSet<TKey, TValue>>
+public sealed class IndexedZSet<TKey, TValue> :
+    IEquatable<IndexedZSet<TKey, TValue>>,
+    IAdditiveIdentity<IndexedZSet<TKey, TValue>, IndexedZSet<TKey, TValue>>,
+    IAdditionOperators<IndexedZSet<TKey, TValue>, IndexedZSet<TKey, TValue>, IndexedZSet<TKey, TValue>>,
+    ISubtractionOperators<IndexedZSet<TKey, TValue>, IndexedZSet<TKey, TValue>, IndexedZSet<TKey, TValue>>,
+    IUnaryNegationOperators<IndexedZSet<TKey, TValue>, IndexedZSet<TKey, TValue>>
 {
     private readonly ImmutableArray<KeyGroup<TKey, TValue>> _groups;
     private readonly IComparer<TKey> _compareK;
@@ -328,6 +335,88 @@ public sealed class IndexedZSet<TKey, TValue> : IEquatable<IndexedZSet<TKey, TVa
     {
         ArgumentNullException.ThrowIfNull(other);
         return Add(other.Negate());
+    }
+
+    // ─── generic-math abelian-group surface (System.Numerics IWSAM) ──────────
+    // "numerics like dotnet as our interface, push to other langs if they don't
+    // have" (Aaron 2026-06-01). IndexedZSet IS-A IAdditiveIdentity +
+    // IAdditionOperators (monoid) + ISubtractionOperators + IUnaryNegationOperators
+    // (the abelian-group inverse). Mirrors the Z-set rung (#6481) and the F#
+    // Zero/(+)/(~-)/(-) twin. NOT INumber — the ring product is the bilinear Join,
+    // surfaced separately, not a numeric multiply.
+
+    /// <summary>
+    /// The additive identity (empty indexed Z-set): <c>a + AdditiveIdentity == a</c>. Cached,
+    /// comparer-agnostic (default comparers); the <c>operator +</c>/<c>operator -</c> empty
+    /// short-circuits keep the identity law holding for indexed Z-sets built with any comparers.
+    /// </summary>
+    [SuppressMessage(
+        "Design",
+        "CA1000:Do not declare static members on generic types",
+        Justification = "IWSAM (IAdditiveIdentity) requires the static member on the generic type itself; CA1000 predates static abstract interface members.")]
+    public static IndexedZSet<TKey, TValue> AdditiveIdentity { get; } = IndexedZSet.Empty<TKey, TValue>();
+
+    /// <summary>
+    /// <c>a + b</c> — per-key value-Z-set sum (the abelian-group operation; delegates to <see cref="Add"/>).
+    /// Empty is short-circuited as a comparer-agnostic identity BEFORE <see cref="Add"/>'s same-comparer
+    /// check, so <c>a + Zero == a</c> and <c>Zero + a == a</c> hold for any comparers; two NON-empty
+    /// operands with mismatched comparers still fail fast. NOT idempotent — <c>a + a</c> doubles weights.
+    /// </summary>
+    /// <param name="left">The left indexed Z-set.</param>
+    /// <param name="right">The right indexed Z-set.</param>
+    /// <returns>The per-key sum.</returns>
+    public static IndexedZSet<TKey, TValue> operator +(IndexedZSet<TKey, TValue> left, IndexedZSet<TKey, TValue> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        if (left.IsEmpty)
+        {
+            return right;
+        }
+
+        if (right.IsEmpty)
+        {
+            return left;
+        }
+
+        return left.Add(right);
+    }
+
+    /// <summary>
+    /// <c>-a</c> — the abelian-group inverse (delegates to <see cref="Negate"/>), so
+    /// <c>a + (-a) == AdditiveIdentity</c> (the law a Bag cannot satisfy).
+    /// </summary>
+    /// <param name="value">The indexed Z-set to negate.</param>
+    /// <returns>The indexed Z-set with every weight sign-flipped.</returns>
+    public static IndexedZSet<TKey, TValue> operator -(IndexedZSet<TKey, TValue> value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        return value.Negate();
+    }
+
+    /// <summary>
+    /// <c>a - b == a + (-b)</c> (delegates to <see cref="Sub"/>). Empty is short-circuited as a
+    /// comparer-agnostic identity (<c>a - Zero == a</c>, <c>Zero - b == -b</c>) before the same-comparer
+    /// check, matching <c>operator +</c>.
+    /// </summary>
+    /// <param name="left">The minuend.</param>
+    /// <param name="right">The subtrahend.</param>
+    /// <returns><c>left + (-right)</c>.</returns>
+    public static IndexedZSet<TKey, TValue> operator -(IndexedZSet<TKey, TValue> left, IndexedZSet<TKey, TValue> right)
+    {
+        ArgumentNullException.ThrowIfNull(left);
+        ArgumentNullException.ThrowIfNull(right);
+        if (right.IsEmpty)
+        {
+            return left;
+        }
+
+        if (left.IsEmpty)
+        {
+            return right.Negate();
+        }
+
+        return left.Sub(right);
     }
 
     /// <summary>

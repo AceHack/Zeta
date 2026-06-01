@@ -143,4 +143,76 @@ public class IndexedZSetCrossVerifyTests
         var a = BuildA(r);
         Assert.True(a.Add(a.Negate()).IsEmpty); // add(a, neg(a)) == empty (every group cancels + drops)
     }
+
+    // ─── generic-math abelian-group surface (System.Numerics IWSAM) ──────────
+
+    private static IndexedZSet<string, string> BuildIxz(
+        IComparer<string> kc,
+        IComparer<string> vc,
+        params (string K, string V, long W)[] triples)
+    {
+        var pairCmp = Comparer<(string, string)>.Create((x, y) =>
+        {
+            var c = kc.Compare(x.Item1, y.Item1);
+            return c != 0 ? c : vc.Compare(x.Item2, y.Item2);
+        });
+        var source = ZSet.OfEntries(triples.Select(t => ((t.K, t.V), t.W)), pairCmp);
+        return IndexedZSet.IndexWith(source, p => p.Item1, p => p.Item2, kc, vc);
+    }
+
+    private static IndexedZSet<string, string> Ixz(params (string K, string V, long W)[] triples) =>
+        BuildIxz(Ord, Ord, triples);
+
+    [Fact]
+    public void GenericMathAbelianGroupSurface()
+    {
+        // dotnet IWSAM: IAdditiveIdentity + IAdditionOperators (monoid) PLUS
+        // ISubtractionOperators + IUnaryNegationOperators (the abelian-group inverse).
+        // (+) == Add, (-a) == Negate, (a-b) == Sub; AdditiveIdentity is empty. NOT INumber.
+        var a = Ixz(("k1", "a", 1L), ("k2", "b", 2L));
+        var b = Ixz(("k2", "b", 1L), ("k3", "c", 3L));
+        var c = Ixz(("k3", "c", -1L), ("k4", "d", 4L));
+
+        Assert.Equal(a.Add(b), a + b);  // (+) == Add
+        Assert.Equal(a.Negate(), -a);   // unary (-) == Negate
+        Assert.Equal(a.Sub(b), a - b);  // (-) == Sub
+        Assert.True(IndexedZSet<string, string>.AdditiveIdentity.IsEmpty);
+        Assert.Equal(a, IndexedZSet<string, string>.AdditiveIdentity + a); // identity law
+        Assert.Equal(a, a + IndexedZSet<string, string>.AdditiveIdentity);
+
+        Assert.Equal(a + b, b + a);             // commutative
+        Assert.Equal((a + b) + c, a + (b + c)); // associative
+        Assert.True((a + (-a)).IsEmpty);        // inverse: a + (-a) == empty
+        Assert.True((a - a).IsEmpty);           // a - a == empty
+    }
+
+    [Fact]
+    public void GenericMathAdditionIsNotIdempotentAndSubtractionRetracts()
+    {
+        // (+) is SUM, not set-union: a + a doubles every value-weight.
+        var a = Ixz(("k", "a", 1L), ("k", "b", -3L));
+        Assert.Equal(Ixz(("k", "a", 2L), ("k", "b", -6L)), a + a);
+
+        // subtraction drives a shared (key,value) to net 0 → retracted (group empties + drops)
+        var x = Ixz(("k", "a", 5L), ("k", "b", 2L));
+        var y = Ixz(("k", "a", 5L));
+        Assert.Equal(Ixz(("k", "b", 2L)), x - y);
+    }
+
+    [Fact]
+    public void GenericMathIdentityIsComparerAgnosticButNonEmptyMismatchThrows()
+    {
+        // empty must absorb under ANY comparers (the identity law); (+)/(-) short-circuit empty
+        // BEFORE Add's RequireSameComparers. Two NON-empty operands with mismatched comparers throw.
+        var rev = Comparer<string>.Create((x, y) => string.CompareOrdinal(y, x));
+        var custom = BuildIxz(rev, rev, ("x", "p", 1L));
+        var id = IndexedZSet<string, string>.AdditiveIdentity;
+        Assert.Equal(custom, custom + id); // a + empty = a (no throw)
+        Assert.Equal(custom, id + custom); // empty + a = a (no throw)
+        Assert.Equal(custom, custom - id); // a - empty = a (no throw)
+
+        var ordinal = Ixz(("a", "p", 1L));
+        Assert.Throws<ArgumentException>(() => ordinal + custom);
+        Assert.Throws<ArgumentException>(() => ordinal - custom);
+    }
 }
