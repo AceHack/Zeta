@@ -1,0 +1,22 @@
+[package]
+name = "zeta-core-resume"
+version = "0.1.0"
+edition = "2024"
+description = "Resume engine -- Rust ferry of the B-0976 resume slice (TS reference -> F# -> C# -> Rust). The self-evolving-saga kernel the serialized Bonsai expression-tree feeds: a small-step CEK machine over the Bonsai-subset Expr with restore-not-replay durable execution (call nodes are activities/suspension points; resume restores the continuation without re-invoking prior activities). Reuses zeta-core-bonsai for Expr/ConstValue/BinOp/serialize/parse (own-our-interface; the bonsai crate IS the port). Result over throw. Production = ZERO external deps: a minimal order-preserving hand-rolled JSON reader covers the canonical state grammar (matching the bonsai oracle's zero-dep posture); serde_json is DEV-ONLY (reads the shared resume-golden.json fixture)."
+license = "Apache-2.0"
+publish = false
+
+# Production = ZERO external dependencies (supply-chain doctrine; matching
+# Core.Rust.{Bonsai,Observe,TriBoolean,ZetaId,Algebra}). The only runtime dep is the
+# sibling bonsai oracle (path dep) whose types + serialize/parse we reuse. State JSON
+# parsing hand-rolls a minimal order-preserving reader rather than depend on serde_json
+# in production. serde_json is DEV-ONLY: the cross-verify test reads resume-golden.json.
+[dependencies]
+zeta-core-bonsai = { path = "../Core.Rust.Bonsai" }
+
+[dev-dependencies]
+serde_json = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
