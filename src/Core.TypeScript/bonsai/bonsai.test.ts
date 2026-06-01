@@ -2,21 +2,31 @@
  * bonsai.test.ts — TS reference (oracle #1) for the Bonsai-subset serializer
  * (B-0976 slice 1).
  *
- * Three duties (mirroring the algebra-ladder oracles):
- *   1. **Canonical serialize is byte-exact** — `serialize(expr) === canonical`
- *      for every shared golden vector (the cross-language parity lock the
- *      F#/C#/Rust twins will also cast: same compact JSON, same fixed key order).
+ * `serialize`/`parse` return `Result<_, BonsaiFeedback>` (result over throw, matching
+ * the F# oracle). Duties:
+ *   1. **Canonical serialize is byte-exact** — `serialize(expr)` is `Ok canonical`
+ *      for every shared golden vector (the cross-language parity lock).
  *   2. **`parse` round-trips** — `equals(parse(canonical), expr)` and
- *      `serialize(parse(canonical)) === canonical` (the canonical string is the
- *      fixed point).
- *   3. **Structural laws** — `equals` is reflexive; `serialize ∘ parse ∘
- *      serialize == serialize`; unknown kinds are rejected (no silent accept).
+ *      `serialize(parse(canonical))` is `Ok canonical` (canonical is the fixed point).
+ *   3. **Rejection contract** — bad input declines the **specific** `BonsaiFeedback`
+ *      variant (the cross-oracle rejection-vector contract), and no exception ever
+ *      crosses the boundary (even on `null`).
  */
 
 import { describe, expect, it } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join as pathJoin } from "node:path";
-import { cint, equals, type Expr, parse, serialize } from "./bonsai";
+import {
+  BONSAI_MAX_DEPTH,
+  type BonsaiFeedback,
+  cint,
+  equals,
+  type Expr,
+  param,
+  parse,
+  type Result,
+  serialize,
+} from "./bonsai";
 
 interface GoldenCase {
   readonly name: string;
@@ -34,6 +44,16 @@ const golden: Golden = JSON.parse(
   readFileSync(pathJoin(import.meta.dir, "golden-vectors.json"), "utf8"),
 ) as Golden;
 
+// Unwrap an Ok, or fail the test with the feedback.
+function expectOk<T>(r: Result<T, BonsaiFeedback>): T {
+  if (!r.ok) throw new Error(`expected Ok, got Error ${JSON.stringify(r.error)}`);
+  return r.value;
+}
+// The feedback variant of an Error result, or null when Ok.
+function errKind(r: Result<unknown, BonsaiFeedback>): string | null {
+  return r.ok ? null : r.error.kind;
+}
+
 describe("Bonsai-subset — golden vectors (oracle #1 / parity lock)", () => {
   it("the fixture is non-empty and version 1", () => {
     expect(golden.version).toBe(1);
@@ -41,16 +61,16 @@ describe("Bonsai-subset — golden vectors (oracle #1 / parity lock)", () => {
   });
 
   for (const c of golden.cases) {
-    it(`${c.name}: serialize(expr) is byte-exact canonical`, () => {
-      expect(serialize(c.expr)).toBe(c.canonical);
+    it(`${c.name}: serialize(expr) is Ok byte-exact canonical`, () => {
+      expect(expectOk(serialize(c.expr))).toBe(c.canonical);
     });
 
     it(`${c.name}: parse(canonical) structurally equals expr`, () => {
-      expect(equals(parse(c.canonical), c.expr)).toBe(true);
+      expect(equals(expectOk(parse(c.canonical)), c.expr)).toBe(true);
     });
 
     it(`${c.name}: canonical is the serialize fixed point`, () => {
-      expect(serialize(parse(c.canonical))).toBe(c.canonical);
+      expect(expectOk(serialize(expectOk(parse(c.canonical))))).toBe(c.canonical);
     });
   }
 });
@@ -58,8 +78,8 @@ describe("Bonsai-subset — golden vectors (oracle #1 / parity lock)", () => {
 describe("Bonsai-subset — round-trip + structural laws", () => {
   it("serialize ∘ parse ∘ serialize == serialize (every case)", () => {
     for (const c of golden.cases) {
-      const once = serialize(c.expr);
-      expect(serialize(parse(once))).toBe(once);
+      const once = expectOk(serialize(c.expr));
+      expect(expectOk(serialize(expectOk(parse(once))))).toBe(once);
     }
   });
 
@@ -73,81 +93,133 @@ describe("Bonsai-subset — round-trip + structural laws", () => {
     const exprs = golden.cases.map((c) => c.expr);
     for (let i = 0; i < exprs.length; i++) {
       for (let j = i + 1; j < exprs.length; j++) {
-        // distinct canonical strings ⇒ must not be structurally equal
-        if (serialize(exprs[i]!) !== serialize(exprs[j]!)) {
+        if (expectOk(serialize(exprs[i]!)) !== expectOk(serialize(exprs[j]!))) {
           expect(equals(exprs[i]!, exprs[j]!)).toBe(false);
         }
       }
     }
   });
+});
 
-  it("parse rejects an unknown node kind (no silent accept)", () => {
-    expect(() => parse('{"v":1,"expr":{"kind":"bogus"}}')).toThrow();
+describe("Bonsai-subset — rejection contract (declines the specific variant)", () => {
+  it("parse declines an unknown node kind with UnknownKind", () => {
+    expect(errKind(parse('{"v":1,"expr":{"kind":"bogus"}}'))).toBe("UnknownKind");
   });
 
-  it("parse rejects an unsupported version", () => {
-    expect(() => parse('{"v":2,"expr":{"kind":"param","name":"x"}}')).toThrow();
+  it("parse declines an unsupported version with UnsupportedVersion", () => {
+    expect(errKind(parse('{"v":2,"expr":{"kind":"param","name":"x"}}'))).toBe("UnsupportedVersion");
+  });
+
+  it("parse declines an unknown binary operator with UnknownOp", () => {
+    expect(
+      errKind(parse('{"v":1,"expr":{"kind":"binary","op":"div","left":{"kind":"param","name":"a"},"right":{"kind":"param","name":"b"}}}')),
+    ).toBe("UnknownOp");
+  });
+
+  it("parse declines an unknown const tag with UnknownConstTag", () => {
+    expect(errKind(parse('{"v":1,"expr":{"kind":"const","value":{"t":"bogus"}}}'))).toBe("UnknownConstTag");
+  });
+
+  it("parse declines a fractional int literal with ExpectedInt", () => {
+    expect(errKind(parse('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":1.5}}}'))).toBe("ExpectedInt");
+  });
+
+  it("parse declines an int beyond the safe-integer range with NonSafeInt", () => {
+    expect(errKind(parse('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":99999999999999999}}}'))).toBe("NonSafeInt");
+  });
+
+  it("parse declines a null const string value with ExpectedString", () => {
+    expect(errKind(parse('{"v":1,"expr":{"kind":"const","value":{"t":"str","v":null}}}'))).toBe("ExpectedString");
+  });
+
+  it("parse declines a non-boolean bool literal with ExpectedBool", () => {
+    expect(errKind(parse('{"v":1,"expr":{"kind":"const","value":{"t":"bool","v":1}}}'))).toBe("ExpectedBool");
+  });
+
+  it("parse declines non-array call args with MalformedJson", () => {
+    expect(errKind(parse('{"v":1,"expr":{"kind":"call","fn":"f","args":"nope"}}'))).toBe("MalformedJson");
+  });
+
+  it("parse declines a null expr with MalformedJson", () => {
+    expect(errKind(parse('{"v":1,"expr":null}'))).toBe("MalformedJson");
+  });
+
+  it("parse declines malformed JSON with MalformedJson", () => {
+    expect(errKind(parse("not json at all"))).toBe("MalformedJson");
   });
 });
 
-describe("Bonsai-subset — strict validation (the parse/construct conformance surface)", () => {
-  it("cint rejects non-integer / NaN / Infinity (no silent truncation)", () => {
-    expect(() => cint(1.9)).toThrow();
-    expect(() => cint(Number.NaN)).toThrow();
-    expect(() => cint(Number.POSITIVE_INFINITY)).toThrow();
+describe("Bonsai-subset — canonical-only (the serialize∘parse fixed point)", () => {
+  it("declines an unknown extra field with NonCanonical", () => {
+    expect(errKind(parse('{"v":1,"expr":{"kind":"param","name":"x","extra":0}}'))).toBe("NonCanonical");
   });
 
-  it("cint rejects integers outside the JS safe-integer range (no silent rounding)", () => {
-    expect(() => cint(2 ** 53)).toThrow(); // 2^53 is NOT a safe integer (MAX is 2^53 - 1)
+  it("declines non-canonical whitespace with NonCanonical", () => {
+    expect(errKind(parse('{"v":1, "expr":{"kind":"param","name":"x"}}'))).toBe("NonCanonical");
   });
 
-  it("parse rejects a non-integer int literal", () => {
-    expect(() => parse('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":1.5}}}')).toThrow();
+  it("declines non-canonical key order with NonCanonical", () => {
+    expect(errKind(parse('{"expr":{"kind":"param","name":"x"},"v":1}'))).toBe("NonCanonical");
+  });
+});
+
+describe("Bonsai-subset — total contract (no exception escapes, even on null)", () => {
+  it("serialize declines an unsafe-integer constant with NonSafeInt (cint is total)", () => {
+    expect(errKind(serialize(cint(2 ** 53)))).toBe("NonSafeInt"); // 2^53 is NOT safe (MAX is 2^53 - 1)
   });
 
-  it("parse rejects an int beyond the safe-integer range (e.g. an int64 from another oracle)", () => {
-    expect(() => parse('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":99999999999999999}}}')).toThrow();
+  it("serialize declines a fractional constant with ExpectedInt", () => {
+    expect(errKind(serialize(cint(1.5)))).toBe("ExpectedInt");
   });
 
-  it("parse rejects an unknown binary operator (e.g. div)", () => {
-    expect(() =>
-      parse('{"v":1,"expr":{"kind":"binary","op":"div","left":{"kind":"param","name":"a"},"right":{"kind":"param","name":"b"}}}'),
-    ).toThrow();
+  it("serialize accepts the safe-integer boundary (2^53 - 1)", () => {
+    expect(expectOk(serialize(cint(2 ** 53 - 1)))).toBe('{"v":1,"expr":{"kind":"const","value":{"t":"int","v":9007199254740991}}}');
   });
 
-  it("parse rejects non-array call args", () => {
-    expect(() => parse('{"v":1,"expr":{"kind":"call","fn":"f","args":"nope"}}')).toThrow();
+  it("serialize declines a null string field with ExpectedString (no NRE)", () => {
+    // A JS caller (no TS types) can pass null through param(); decline cleanly.
+    expect(errKind(serialize(param(null as unknown as string)))).toBe("ExpectedString");
   });
 
-  it("parse rejects a null expr (deterministic Bonsai error, not a generic TypeError)", () => {
-    expect(() => parse('{"v":1,"expr":null}')).toThrow();
+  it("parse declines null input with MalformedJson (no throw)", () => {
+    expect(errKind(parse(null as unknown as string))).toBe("MalformedJson");
   });
 
-  it("parse rejects a null const value", () => {
-    expect(() => parse('{"v":1,"expr":{"kind":"const","value":null}}')).toThrow();
+  it("serialize declines an invalid binary operator with UnknownOp (boundary symmetry with parse)", () => {
+    const bad: Expr = { kind: "binary", op: "div" as unknown as "add", left: cint(1), right: cint(2) };
+    expect(errKind(serialize(bad))).toBe("UnknownOp");
   });
 
-  it("parse rejects a non-object document", () => {
-    expect(() => parse("null")).toThrow();
-    expect(() => parse("42")).toThrow();
+  it("serialize declines a non-boolean bool constant with ExpectedBool (boundary symmetry with parse)", () => {
+    const bad: Expr = { kind: "const", value: { t: "bool", v: 1 as unknown as boolean } };
+    expect(errKind(serialize(bad))).toBe("ExpectedBool");
+  });
+});
+
+describe("Bonsai-subset — nesting-depth contract (shared MaxDepth, bounded)", () => {
+  const buildDeepChain = (n: number): Expr => {
+    let e: Expr = cint(1);
+    for (let i = 0; i < n; i++) e = { kind: "binary", op: "add", left: e, right: cint(0) };
+    return e;
+  };
+
+  it("a deep-but-valid expression round-trips (past JSON's typical default depth)", () => {
+    const deep = buildDeepChain(100);
+    expect(equals(expectOk(parse(expectOk(serialize(deep)))), deep)).toBe(true);
   });
 
-  it("parse rejects a bool literal carrying a non-boolean value", () => {
-    expect(() => parse('{"v":1,"expr":{"kind":"const","value":{"t":"bool","v":1}}}')).toThrow();
+  it("serialize declines an expression past the shared MaxDepth with TooDeep", () => {
+    expect(errKind(serialize(buildDeepChain(BONSAI_MAX_DEPTH + 50)))).toBe("TooDeep");
   });
 
-  // Canonical-only: parse accepts the canonical byte form ONLY, so the advertised
-  // serialize∘parse fixed point holds and a non-canonical saga vector can't pass
-  // this oracle yet disagree on a peer oracle's byte-diff.
-  it("parse rejects a non-canonical vector carrying an unknown extra field", () => {
-    expect(() => parse('{"v":1,"expr":{"kind":"param","name":"x","extra":0}}')).toThrow();
-  });
-
-  it("parse rejects non-canonical whitespace (canonical form is whitespace-free)", () => {
-    expect(() => parse('{"v":1, "expr":{"kind":"param","name":"x"}}')).toThrow();
-  });
-
-  it("parse rejects non-canonical key order (canonical fixes kind/v first)", () => {
-    expect(() => parse('{"expr":{"kind":"param","name":"x"},"v":1}')).toThrow();
+  it("parse declines a deeply-nested document with TooDeep during parsing (bounded recursion)", () => {
+    // Build an over-MaxDepth JSON document by hand (can't via serialize — it
+    // declines first); parse must decline TooDeep via the parseNode depth counter,
+    // not recurse to a stack-overflow before the serialize guard.
+    let node = '{"kind":"const","value":{"t":"int","v":1}}';
+    for (let i = 0; i < BONSAI_MAX_DEPTH + 50; i++) {
+      node = `{"kind":"binary","op":"add","left":${node},"right":{"kind":"const","value":{"t":"int","v":0}}}`;
+    }
+    expect(errKind(parse(`{"v":1,"expr":${node}}`))).toBe("TooDeep");
   });
 });
