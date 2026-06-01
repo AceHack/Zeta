@@ -292,8 +292,8 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   ok(stdout.join("\n").includes("[04] T commit.a execute"));
   ok(stdout.join("\n").includes("action: dispatched command"));
   equal(result.evidence?.selectedIndex, 4);
-  equal(result.evidence?.vetoCount, 4);
-  equal(result.evidence?.trueSlotCount, 6);
+  equal(result.evidence?.vetoCount, 3);
+  equal(result.evidence?.trueSlotCount, 7);
   equal(result.evidence?.metricBlockIds[0], "queue");
   ok(result.evidence?.menuHash.match(/^[0-9a-f]{64}$/));
   deepEqual(commands, [
@@ -601,6 +601,48 @@ test("runAgentCliCycle status evidence includes hierarchy priority scope when hi
   equal(result.evidence?.statusHierarchyPriorityScope, "department_initiatives");
 });
 
+test("runAgentCliCycle can select free-time/rest without dispatching side effects", async () => {
+  const stdout: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+      "--select-index",
+      "14",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    runCommand: async () => {
+      throw new Error("rest must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("rest must not dispatch MCP side effects");
+    },
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "rested");
+  ok(stdout.join("\n").includes("[14] T meta.pause free-time / rest"));
+  ok(stdout.join("\n").includes("action: rested free-time/rest selected; no side effects for this tick"));
+  equal(result.evidence?.selectedIndex, 14);
+});
+
 test("runAgentCliCycle rejects vetoed work slots while keeping all-vetoed meta controls visible", async () => {
   let dispatched = false;
   const stdout: string[] = [];
@@ -640,13 +682,14 @@ test("runAgentCliCycle rejects vetoed work slots while keeping all-vetoed meta c
   equal(result.actionResult.reason, "slot_not_selectable");
   equal(result.actionResult.message, "tenant freeze blocks compose");
   equal(result.evidence?.selectedIndex, 4);
-  equal(result.evidence?.vetoCount, 4);
-  equal(result.evidence?.trueSlotCount, 2);
+  equal(result.evidence?.vetoCount, 3);
+  equal(result.evidence?.trueSlotCount, 3);
   equal(dispatched, false);
   ok(stdout.join("\n").includes("[04] F commit.a compose (tenant freeze blocks compose)"));
   ok(stdout.join("\n").includes("[05] F commit.b block (tenant freeze blocks block)"));
   ok(stdout.join("\n").includes("[12] T meta.refresh refresh"));
   ok(stdout.join("\n").includes("[13] T meta.status status / glass-halo"));
+  ok(stdout.join("\n").includes("[14] T meta.pause free-time / rest"));
 });
 
 test("runAgentCliCycle renders prompt-flow tasks and loads selected context", async () => {

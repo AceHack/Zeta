@@ -347,7 +347,8 @@ export type SlotImpl =
   | { kind: "mcp"; tool: string; args?: unknown; requiredSecretScopes?: readonly string[] | undefined }
   | { kind: "observe"; toScope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { kind: "status"; status: GlassHaloStatusSignal }
-  | { kind: "prompt_flow"; request: PromptFlowContextRequest };
+  | { kind: "prompt_flow"; request: PromptFlowContextRequest }
+  | { kind: "rest"; reason: string };
 
 export const ObserveCommandType = {
   LifecycleTransition: "observe.lifecycle_transition",
@@ -479,6 +480,7 @@ export type ActResult =
   | { outcome: "dispatched"; kind: "command" | "mcp"; result: unknown }
   | { outcome: "loaded_context"; context: PromptFlowContext }
   | { outcome: "status_report"; status: GlassHaloStatusSignal }
+  | { outcome: "rested"; reason: string }
   | { outcome: "reobserve"; scope: RunScope; menuPage?: MenuPageTarget | undefined }
   | { outcome: "rejected"; reason: ActRejectionReason; message: string };
 
@@ -923,8 +925,21 @@ function renderMetaSlots(
   const currentScope = readout.scope;
   rendered[12] = createObserveSlot(12, MENU16_DIRECTIONS[12]!, "refresh", currentScope);
   rendered[13] = createStatusSlot(13, MENU16_DIRECTIONS[13]!, readout, statusContext);
-  rendered[14] = createDisabledGrammarSlot(14, MENU16_DIRECTIONS[14]!, "pause", "pause mode is not wired for this run state");
+  rendered[14] = createRestSlot(14, MENU16_DIRECTIONS[14]!);
   rendered[15] = createEscalationSlot(15, MENU16_DIRECTIONS[15]!, readout, escalationContext, escalationDisabledReason);
+}
+
+function createRestSlot(index: number, direction: string): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: "free-time / rest",
+    availability: TriAvailability.True,
+    impl: {
+      kind: "rest",
+      reason: "free-time/rest selected; no side effects for this tick",
+    },
+  };
 }
 
 function createEscalationSlot(
@@ -1273,6 +1288,11 @@ export async function act(index: number, menu: Menu16, deps: ActDependencies): P
       return {
         outcome: "status_report",
         status: slot.impl.status,
+      };
+    case "rest":
+      return {
+        outcome: "rested",
+        reason: slot.impl.reason,
       };
     case "prompt_flow":
       if (deps.loadPromptFlowContext === undefined) {

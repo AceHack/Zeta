@@ -460,7 +460,12 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
   equal(menu.slots[13]?.direction, "meta.status");
   equal(menu.slots[13]?.label, "status / glass-halo");
   equal(menu.slots[14]?.direction, "meta.pause");
-  equal(menu.slots[14]?.label, "pause");
+  equal(menu.slots[14]?.label, "free-time / rest");
+  equal(menu.slots[14]?.availability, "T");
+  deepEqual(menu.slots[14]?.impl, {
+    kind: "rest",
+    reason: "free-time/rest selected; no side effects for this tick",
+  });
   equal(menu.slots[15]?.direction, "meta.escalate");
   equal(menu.slots[15]?.label, "escalate");
 
@@ -481,6 +486,19 @@ test("renderMenu16 exposes ADR scope, history, and meta controller slots", async
     dispatchTool: async () => ({ ok: true }),
   });
   deepEqual(refreshResult, { outcome: "reobserve", scope: RunScope.WorkItem });
+
+  const restResult = await act(14, menu, {
+    runCommand: async () => {
+      throw new Error("rest must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("rest must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(restResult, {
+    outcome: "rested",
+    reason: "free-time/rest selected; no side effects for this tick",
+  });
 });
 
 test("renderMenu16 makes meta.status emit a glass-halo status signal", async () => {
@@ -715,7 +733,12 @@ test("renderMenu16 keeps meta controls reachable when every work option is vetoe
   equal(menu.slots[13]?.direction, "meta.status");
   equal(menu.slots[13]?.availability, "T");
   equal(menu.slots[14]?.direction, "meta.pause");
-  equal(menu.slots[14]?.availability, "F");
+  equal(menu.slots[14]?.label, "free-time / rest");
+  equal(menu.slots[14]?.availability, "T");
+  deepEqual(menu.slots[14]?.impl, {
+    kind: "rest",
+    reason: "free-time/rest selected; no side effects for this tick",
+  });
   equal(menu.slots[15]?.direction, "meta.escalate");
   equal(menu.slots[15]?.availability, "F");
 
@@ -738,6 +761,19 @@ test("renderMenu16 keeps meta controls reachable when every work option is vetoe
     },
   });
   equal(statusResult.outcome, "status_report");
+
+  const restResult = await act(14, menu, {
+    runCommand: async () => {
+      throw new Error("rest must not dispatch command side effects");
+    },
+    dispatchTool: async () => {
+      throw new Error("rest must not dispatch MCP side effects");
+    },
+  });
+  deepEqual(restResult, {
+    outcome: "rested",
+    reason: "free-time/rest selected; no side effects for this tick",
+  });
 });
 
 test("renderMenu16 keeps all-vetoed menus dark even when prompt-flow tasks exist", () => {

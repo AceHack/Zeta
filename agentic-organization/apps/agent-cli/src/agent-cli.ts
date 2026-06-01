@@ -733,6 +733,11 @@ function stableSlotImpl(slot: Menu16Slot): unknown {
         promptFlowIds: slot.impl.status.promptFlowIds,
         hierarchy: slot.impl.status.hierarchy ?? null,
       };
+    case "rest":
+      return {
+        kind: slot.impl.kind,
+        reason: slot.impl.reason,
+      };
     case "command":
       return {
         kind: slot.impl.kind,
@@ -1155,6 +1160,8 @@ function formatActResult(result: ActResult): string {
       return `loaded context ${result.context.taskId}`;
     case "status_report":
       return `status ${result.status.kind} ${result.status.scope} ${result.status.phase}`;
+    case "rested":
+      return `rested ${result.reason}`;
     case "reobserve":
       return `reobserve ${result.scope}${result.menuPage?.promptFlows === undefined ? "" : ` prompt-flow-page ${result.menuPage.promptFlows + 1}`}`;
     case "rejected":
