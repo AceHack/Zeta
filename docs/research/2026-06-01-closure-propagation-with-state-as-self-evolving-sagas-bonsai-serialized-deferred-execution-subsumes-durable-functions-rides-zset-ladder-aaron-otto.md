@@ -76,6 +76,46 @@ Serializing the **expression tree itself** as data means the **pattern is
 durable AND mutable** — the strict superset the operator named. A running saga
 can be **rewritten** (retract a sub-tree, add a new one) without redeploying.
 
+## Correction — closure-serialization is *not* the crux; the no-handles discipline is shared (the operator 2026-06-01)
+
+An earlier framing of this comparison flagged "faithful serialization of live
+closure state — especially **non-serializable handles** — is the genuinely hard
+part our design has to solve and DF gets to skip." The operator corrected it, and
+the correction holds:
+
+> *"especially non-serializable handles — is genuinely hard — they don't do this
+> either in durable functions to my knowledge; they said just don't open
+> handles."*
+
+DF doesn't serialize handles — it **forbids** them. That is exactly the
+[orchestrator code-constraints](https://learn.microsoft.com/en-us/azure/azure-functions/durable/durable-functions-code-constraints):
+the orchestrator body must be deterministic and side-effect-free; **all I/O and
+handles live in activity functions** (run once, return a serializable result,
+which is what gets recorded). DF never holds a handle across a suspend point.
+
+So the "hard part" is not a DF advantage — **neither system serializes handles;
+both keep them out of the durable body.** Adopt the same discipline for sagas (no
+handles captured in the saga closure; handles live in the leaf / activity calls)
+and our closure is *all serializable values* — no harder to serialize than DF's
+history. Bonsai already solves the expression-tree half. **The closure-
+serialization crux largely evaporates.**
+
+What's left is sharper, and it tilts *further* toward resume — because the two
+models require **different** disciplines on the durable body:
+
+| Discipline on the durable body | Replay (DF / Temporal / Dapr Workflow) | Resume (self-evolving saga) |
+| --- | --- | --- |
+| No handles across suspend | required | required (**same**) |
+| **No non-determinism** (`DateTime.Now`, `Guid.NewGuid`, random) | **required** — replay would recompute differently | **not required** — we snapshot the *value*, so non-deterministic code is fine |
+
+Replay needs *both* constraints because it **re-runs the body** and must
+reproduce identical results. Resume needs **only** the no-handles one, because it
+**restores snapshotted values** and never re-runs the body. Resume is the
+strictly looser constraint set. The genuinely-hard residue is therefore not
+serialization — it is the *runtime guarantees* the replay engines have already
+built (durable timers, exactly-once-effect at the activity boundary,
+management/observability tooling, managed scale-out): engineering, not unknowns.
+
 ## The sharp part — it rides the Z-set / IndexedZSet ladder (just completed 4/4)
 
 A serialized deferred computation is a **payload**: `(Bonsai expression-tree,
@@ -235,6 +275,72 @@ control-flow generator → serialized, it is a saga) and the Xbox-controller
 universal-action-grammar (the move-next menu is the saga's next-transition
 surface). The generic combinator lives in `observe.ts`; the per-workflow DU is
 the input.
+
+## Dapr is the planned runtime — Workflow (replay family) + Actors (the mediator carrier)
+
+The operator (2026-06-01): *"we are going to have dapr and dapr actors and
+workflow."* Dapr is the planned runtime substrate (it is **already deployed** in
+the cluster per [B-0785](../backlog/P1/B-0785-unified-namespace-across-fsharp-kubernetes-ontology-plus-experiment-id-routing-via-argo-rollouts-cilium-service-mesh-aaron-mika-2026-05-25.md):
+`full-ai-cluster/k8s/applications/dapr`). Two pieces, two different relationships
+to this primitive:
+
+- **Dapr Workflow = same replay family as Durable Functions.** It is internally
+  implemented with **`durabletask-go`** (the Durable Task Framework) and runs on
+  Dapr's actor runtime — one workflow-actor per instance, event-sourced history,
+  turn-based, [deterministic replay required](https://docs.dapr.io/developing-applications/building-blocks/workflow/workflow-features-concepts/).
+  So everything in the **Correction** + **subsumes-DF** sections above applies to
+  Dapr Workflow *identically*: replay → determinism-constrained body → **cannot
+  self-evolve**. Dapr Workflow joins DF/Temporal as a **conformance oracle in the
+  replay family**, not as the self-evolving target.
+- **Dapr Actors = the virtual-actor carrier (Orleans lineage).** Turn-based,
+  single-threaded-per-actor, state persisted via a state store — this maps
+  *directly* onto our **cross-partition-join mediator**: Dapr Agents already use
+  the virtual-actor model per agent instance, and the workflow-actor (one per
+  instance, holds history, turn-based) IS the "agent whose tick stream is the
+  carrier, holding both sides local." Dapr Actors are also the missing **Durable
+  Entities** primitive in the registry.
+
+The pragmatic shape this implies: **ride Dapr Actors as the runtime/carrier**
+(the mediator is a virtual actor; per-partition saga state lives in actor state)
+while the saga *body* uses **resume (serialize-restore)** rather than Dapr
+Workflow's **replay** — so we get Dapr's actor runtime + state stores + sidecar
+building-blocks *and* the looser body-constraints + live self-evolution. Dapr
+Workflow remains available as a replay-family backend for the cases that don't
+need self-evolution. (Per `default-to-both`: Dapr Workflow as conformance
+oracle + the resume-model saga as the superset, the same meet-in-the-middle the
+algebra ladder runs.)
+
+## Composes with the existing durable-execution backlog (verify-existing-substrate)
+
+This note's first cut under-cited the substrate — the operator's catch
+("we have some backlog around this too") is correct. The durable-execution
+cluster this primitive composes onto:
+
+- **[B-0251](../backlog/P1/B-0251-durable-computation-stack-temporal-reaqtor-orleans-bonsai-research-2026-05-07.md)** —
+  *durable-computation stack: Temporal + Reaqtor + Orleans + Bonsai* (tags incl.
+  `durable-functions`). The canonical research row for this whole area.
+- **[B-0668](../backlog/P1/B-0668-compositional-dbsp-frame-architecture-gnostic-2d-base-plus-two-wolves-emotion-meta-plus-clifford-rx-bonsai-meta-tagged-dims-plus-fsharp-ce-composition-operator-aaron-2026-05-19.md)** +
+  **[B-0668.1](../backlog/P1/B-0668.1-fsharp-k8s-mapping.md)** — *our-own fork of
+  Azure/durabletask*; explicitly: **"durable-task state-history IS the DBSP
+  time-indexed-state substrate; saga compensation = retraction = additive inverse
+  in Z-set algebra."** The **saga = retraction = ℤ-inverse** insight this note's
+  "sharp part" leans on **already lives here** — this note sharpens + extends
+  B-0668, it does not mint it. The Integrate (∫) primitive gets its
+  retraction-aware persistence at the durabletask layer; the F# → Orleans →
+  our-own-durabletask-fork → K8s pipeline is B-0668's target.
+- **[B-0706](../backlog/P1/B-0706-zeta-on-orleans-deployment-architecture-servicetitan-scale-orleans-grains-jit-compilation-rented-tools-2026-05-22.md)** —
+  *Zeta-on-Orleans*: **grain identity = agent identity**, grains as ticksource +
+  cron. The agent-mediator = grain/actor mapping; composes with the Dapr-Actors
+  carrier above (Orleans grain ≈ Dapr virtual actor).
+- **[B-0776](../backlog/P1/B-0776-simplest-first-plugin-sequence-wrapping-already-deployed-cluster-substrate-redis-nats-cockroach-temporal-orleans-opa-aaron-2026-05-25.md)** /
+  **[B-0764](../backlog/P2/B-0764-cncf-ecosystem-as-force-multipliers-behind-zeta-interfaces-keda-dapr-opa-oam-kubevela-plus-ace-and-ontology-negotiation-aaron-2026-05-25.md)** —
+  Dapr (distributed-app runtime) + Temporal/Orleans/Argo (workflow/actors) as
+  already-deployed cluster substrate to wrap.
+- **[B-0777](../backlog/P1/B-0777-industry-sharp-categories-plus-per-persona-ontology-maps-plus-ace-package-manager-negotiation-aaron-2026-05-25.md)** `Zeta.Actors`
+  + **[B-0040](../backlog/P2/B-0040-actor-model-factory-register-lens.md)** (actor-model lens) +
+  **[B-0253](../backlog/P2/B-0253-realtime-interloop-messaging-orleans-grains-not-broadcast-files-2026-05-07.md)** — the actor-model surface.
+
+Net: the self-evolving-saga is the **crystallization + cross-language + self-evolution extension** of an existing backlog cluster (B-0251 research → B-0668 durabletask-fork-with-Z-set-retraction → B-0706 Orleans-deployment), now with Dapr named as the concrete runtime. The new contribution over the backlog is (1) the explicit replay-vs-resume fork + looser-body-constraints, (2) self-evolution (mutate the running pattern), (3) the cross-language Bonsai-subset/oracle discipline. The Z-set-retraction-as-saga-compensation core is B-0668's; cite it.
 
 ## Build options (when the operator drives it — not now)
 
