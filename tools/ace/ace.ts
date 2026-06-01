@@ -111,6 +111,7 @@ interface RegistryArgs {
   readonly pubBaseUrl?: string;
   readonly pubKeyPath?: string;
   readonly pubOut?: string;
+  readonly pubSequence?: number;
 }
 
 type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
@@ -251,18 +252,27 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
     }
     if (sub === "publish") {
       let dir: string | undefined, base: string | undefined, key: string | undefined, out: string | undefined;
+      let seq: number | undefined;
       for (let i = 2; i < argv.length; i++) {
         if (argv[i] === "--packages") { dir = argv[++i]; if (!dir || dir.startsWith("-")) return { error: "--packages requires a value" }; }
         else if (argv[i] === "--base-url") { base = argv[++i]; if (!base || base.startsWith("-")) return { error: "--base-url requires a value" }; }
         else if (argv[i] === "--key") { key = argv[++i]; if (!key || key.startsWith("-")) return { error: "--key requires a value" }; }
         else if (argv[i] === "--out") { out = argv[++i]; if (!out || out.startsWith("-")) return { error: "--out requires a value" }; }
+        else if (argv[i] === "--sequence") {
+          const sv = argv[++i];
+          const n = Number(sv);
+          if (!sv || !Number.isInteger(n) || n <= 0) return { error: "--sequence requires a positive integer" };
+          seq = n;
+        }
         else return { error: `Unknown option for registry publish: ${argv[i]}` };
       }
       if (!dir) return { error: "registry publish requires --packages <dir>" };
       if (!base) return { error: "registry publish requires --base-url <url>" };
       if (!key) return { error: "registry publish requires --key <pem-path>" };
-      const r: RegistryArgs = { command: "registry", sub: "publish", pubPackagesDir: dir, pubBaseUrl: base, pubKeyPath: key };
-      return out !== undefined ? { ...r, pubOut: out } : r;
+      let r: RegistryArgs = { command: "registry", sub: "publish", pubPackagesDir: dir, pubBaseUrl: base, pubKeyPath: key };
+      if (out !== undefined) r = { ...r, pubOut: out };
+      if (seq !== undefined) r = { ...r, pubSequence: seq };
+      return r;
     }
     return { error: "registry requires 'add', 'list', 'remote', or 'publish'" };
   }
@@ -388,7 +398,7 @@ Usage:
   ace trust list                                 List all trusted keys
   ace registry add <name> <version> <url> [--hash <h>] Register a package in the local registry
   ace registry list                              List all registry entries
-  ace registry publish --packages <dir> --base-url <url> --key <pem> [--out <path>] Build + sign an index from a dir of packages
+  ace registry publish --packages <dir>[,<dir>...] --base-url <url> --key <pem> [--out <path>] [--sequence <n>] Build + sign an index from one or more dirs of packages
   ace registry remote add <url> --key <keyid> [--max-staleness-days <n>] Add a signed remote registry
   ace registry remote list                       List configured remote registries
   ace registry remote rm <url>                   Remove a configured remote registry
@@ -553,67 +563,85 @@ export async function main(argv: readonly string[]): Promise<number> {
           console.error("ace: publish refused: --key must be an ed25519 private key"); return 1;
         }
       } catch (e) { console.error(`ace: publish refused: invalid private key: ${(e as Error).message}`); return 1; }
-      let entries: string[];
-      try { entries = readdirSync(parsed.pubPackagesDir!).filter((f) => f.endsWith(".json")); }
-      catch (e) { console.error(`ace: publish: cannot read dir ${parsed.pubPackagesDir}: ${(e as Error).message}`); return 1; }
-      const packages: AcePackage[] = [];
-      for (const f of entries) {
-        const full = join(parsed.pubPackagesDir!, f);
-        let raw: string;
-        try { raw = readFileSync(full, "utf8"); } catch { console.error(`ace: publish: skip unreadable ${f}`); continue; }
-        let obj: unknown;
-        try { obj = JSON.parse(raw); } catch { console.error(`ace: publish: skip non-JSON ${f}`); continue; }
-        if (typeof obj !== "object" || obj === null || typeof (obj as AcePackage).manifest !== "object" || (obj as AcePackage).manifest === null
-          || typeof (obj as AcePackage).manifest.name !== "string" || typeof (obj as AcePackage).manifest.version !== "string"
-          || typeof (obj as AcePackage).files !== "object" || (obj as AcePackage).files === null) {
-          console.error(`ace: publish: skip non-package ${f}`); continue;
+      const dirs = parsed.pubPackagesDir!.split(",").map((s) => s.trim()).filter((s) => s.length > 0);
+      if (dirs.length === 0) { console.error("ace: publish refused: --packages requires at least one directory"); return 1; }
+      const packages: { pkg: AcePackage; url?: string }[] = [];
+      for (const d of dirs) {
+        let entries: string[];
+        try { entries = readdirSync(d).filter((f) => f.endsWith(".json")); }
+        catch (e) { console.error(`ace: publish: cannot read dir ${d}: ${(e as Error).message}`); return 1; }
+        for (const f of entries) {
+          const full = join(d, f);
+          let raw: string;
+          try { raw = readFileSync(full, "utf8"); } catch { console.error(`ace: publish: skip unreadable ${f}`); continue; }
+          let obj: unknown;
+          try { obj = JSON.parse(raw); } catch { console.error(`ace: publish: skip non-JSON ${f}`); continue; }
+          if (typeof obj !== "object" || obj === null || typeof (obj as AcePackage).manifest !== "object" || (obj as AcePackage).manifest === null
+            || typeof (obj as AcePackage).manifest.name !== "string" || typeof (obj as AcePackage).manifest.version !== "string"
+            || typeof (obj as AcePackage).files !== "object" || (obj as AcePackage).files === null) {
+            console.error(`ace: publish: skip non-package ${f}`); continue;
+          }
+          // P2-C: a package whose content_hash is missing or does not match its files would be indexed
+          // but fail the consumer's content-hash gate. Skip + warn (consistent with the non-package skip).
+          if (typeof (obj as AcePackage).manifest.content_hash !== "string") {
+            console.error(`ace: publish: skip ${f} — missing manifest.content_hash`); continue;
+          }
+          const fh = contentHash(new TextEncoder().encode(JSON.stringify((obj as AcePackage).files)));
+          if (fh !== (obj as AcePackage).manifest.content_hash) {
+            console.error(`ace: publish: skip ${f} — content_hash does not match files`); continue;
+          }
+          // Optional top-level url override (publish-only, outside the signed manifest). When present
+          // it sets the consumer URL directly and relaxes the <name>-<version>.json filename guard for
+          // this package. Must be a non-empty, absolute URL or the package is skipped.
+          let urlOverride: string | undefined;
+          const rawUrl = (obj as { url?: unknown }).url;
+          if (rawUrl !== undefined) {
+            if (typeof rawUrl !== "string" || rawUrl.length === 0) { console.error(`ace: publish: skip ${f} — url must be a non-empty string`); continue; }
+            try { new URL(rawUrl); } catch { console.error(`ace: publish: skip ${f} — url is not an absolute URL: ${rawUrl}`); continue; }
+            urlOverride = rawUrl;
+          }
+          // filename guard applies ONLY when there is no url override (the derived URL depends on the basename)
+          if (urlOverride === undefined) {
+            const expectedFile = `${(obj as AcePackage).manifest.name}-${(obj as AcePackage).manifest.version}.json`;
+            if (f !== expectedFile) {
+              console.error(`ace: publish: skip ${f} — filename must be ${expectedFile} to match its derived consumer URL`); continue;
+            }
+          }
+          const deps = (obj as AcePackage).manifest.dependencies;
+          if (deps !== undefined && !Array.isArray(deps)) {
+            console.error(`ace: publish: skip ${f} — manifest.dependencies must be an array`); continue;
+          }
+          // P2: every files value must be a string — installPackage's writeFileSync(dest, contents)
+          // throws on non-string values, so a self-verified index could point at an un-installable
+          // package. Skip + warn (consistent with the other scan skips).
+          const fileVals = Object.values((obj as AcePackage).files as Record<string, unknown>);
+          if (fileVals.some((v) => typeof v !== "string")) {
+            console.error(`ace: publish: skip ${f} — every file value must be a string`); continue;
+          }
+          // P2: package name/version must be URL-safe — the derived consumer URL is
+          // <base>/<name>-<version>.json, so a '#' or '?' (or path sep / control char) would break or
+          // redirect the fetched URL. Applies in both cases (the package_hash store key is name-keyed).
+          const nm = (obj as AcePackage).manifest.name;
+          const ver = (obj as AcePackage).manifest.version;
+          if (/[\x00-\x20#?%/\\]/.test(nm) || /[\x00-\x20#?%/\\]/.test(ver)) {
+            console.error(`ace: publish: skip ${f} — name/version has a URL-unsafe character`); continue;
+          }
+          // P2: dependency edges must be well-formed (matching the consumer's AceDependency shape),
+          // else a consumer resolve would break on a self-verified index.
+          const depEdges = (obj as AcePackage).manifest.dependencies;
+          if (Array.isArray(depEdges) && !depEdges.every(isValidDepEdge)) {
+            console.error(`ace: publish: skip ${f} — malformed dependency edge`); continue;
+          }
+          // P2: reuse the consumer's path guard — a package with an unsafe files key (../ or absolute)
+          // would index but be rejected/unsafe at install. Skip + warn.
+          const unsafePath = validatePackagePaths(obj as AcePackage);
+          if (unsafePath !== null) {
+            console.error(`ace: publish: skip ${f} — unsafe file path: ${unsafePath}`); continue;
+          }
+          packages.push(urlOverride !== undefined ? { pkg: obj as AcePackage, url: urlOverride } : { pkg: obj as AcePackage });
         }
-        // P2-C: a package whose content_hash is missing or does not match its files would be indexed
-        // but fail the consumer's content-hash gate. Skip + warn (consistent with the non-package skip).
-        if (typeof (obj as AcePackage).manifest.content_hash !== "string") {
-          console.error(`ace: publish: skip ${f} — missing manifest.content_hash`); continue;
-        }
-        const fh = contentHash(new TextEncoder().encode(JSON.stringify((obj as AcePackage).files)));
-        if (fh !== (obj as AcePackage).manifest.content_hash) {
-          console.error(`ace: publish: skip ${f} — content_hash does not match files`); continue;
-        }
-        const expectedFile = `${(obj as AcePackage).manifest.name}-${(obj as AcePackage).manifest.version}.json`;
-        if (f !== expectedFile) {
-          console.error(`ace: publish: skip ${f} — filename must be ${expectedFile} to match its derived consumer URL`); continue;
-        }
-        const deps = (obj as AcePackage).manifest.dependencies;
-        if (deps !== undefined && !Array.isArray(deps)) {
-          console.error(`ace: publish: skip ${f} — manifest.dependencies must be an array`); continue;
-        }
-        // P2: every files value must be a string — installPackage's writeFileSync(dest, contents)
-        // throws on non-string values, so a self-verified index could point at an un-installable
-        // package. Skip + warn (consistent with the other scan skips).
-        const fileVals = Object.values((obj as AcePackage).files as Record<string, unknown>);
-        if (fileVals.some((v) => typeof v !== "string")) {
-          console.error(`ace: publish: skip ${f} — every file value must be a string`); continue;
-        }
-        // P2: package name/version must be URL-safe — the consumer URL is <base>/<name>-<version>.json,
-        // so a '#' or '?' (or path sep / control char) would break or redirect the fetched URL.
-        const nm = (obj as AcePackage).manifest.name;
-        const ver = (obj as AcePackage).manifest.version;
-        if (/[\x00-\x20#?%/\\]/.test(nm) || /[\x00-\x20#?%/\\]/.test(ver)) {
-          console.error(`ace: publish: skip ${f} — name/version has a URL-unsafe character`); continue;
-        }
-        // P2: dependency edges must be well-formed (matching the consumer's AceDependency shape),
-        // else a consumer resolve would break on a self-verified index.
-        const depEdges = (obj as AcePackage).manifest.dependencies;
-        if (Array.isArray(depEdges) && !depEdges.every(isValidDepEdge)) {
-          console.error(`ace: publish: skip ${f} — malformed dependency edge`); continue;
-        }
-        // P2: reuse the consumer's path guard — a package with an unsafe files key (../ or absolute)
-        // would index but be rejected/unsafe at install. Skip + warn.
-        const unsafePath = validatePackagePaths(obj as AcePackage);
-        if (unsafePath !== null) {
-          console.error(`ace: publish: skip ${f} — unsafe file path: ${unsafePath}`); continue;
-        }
-        packages.push(obj as AcePackage);
       }
-      if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`); return 1; }
+      if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${dirs.join(", ")}`); return 1; }
       const outPath = parsed.pubOut ?? "index.json";
       let prev: IndexDoc | null = null;
       if (existsSync(outPath)) {
@@ -628,7 +656,7 @@ export async function main(argv: readonly string[]): Promise<number> {
         if (!prevVerify.ok) { console.error(`ace: publish refused: existing ${outPath} signature does not verify under --key (${prevVerify.reason}) — refusing to auto-bump from an untrusted index; fix or remove it`); return 1; }
         prev = p;
       }
-      const seq = nextSequence(prev);
+      const seq = parsed.pubSequence ?? nextSequence(prev);
       // Anti-rollback guard (defense-in-depth): unreachable while sequence is auto-bumped (+1),
       // but protects the deferred explicit --sequence flag from emitting a non-increasing index.
       if (prev && seq <= prev.sequence) { console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`); return 1; }

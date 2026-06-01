@@ -1657,4 +1657,113 @@ describe("ace registry publish (slice 6.1)", () => {
       expect(doc.packages.bad).toBeUndefined();
     }
   });
+
+  function writeUrlPkg(dir: string, file: string, name: string, version: string, url: unknown) {
+    const files = { [`${name}.txt`]: "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const kp = generateKeypair();
+    const m = { format_version: 1, name, version, content_hash: ch };
+    const pkg = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files, url };
+    writeFileSync(join(dir, file), JSON.stringify(pkg));
+  }
+
+  test("per-package url override is honored; absent derives from base-url", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-url-"));
+    writeUrlPkg(pkgDir, "leaf.json", "leaf", "1.0.0", "https://cdn/leaf-v1.json"); // NOT canonical basename
+    writeSignedPkg(pkgDir, "other", "2.0.0");                                       // canonical, no url
+    const keyPath = join(tempHome, "r-url.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "i-url.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if ("error" in doc) throw new Error(doc.error);
+    expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://cdn/leaf-v1.json");
+    expect(doc.packages.other!["2.0.0"]!.url).toBe("https://pkgs/other-2.0.0.json");
+  });
+
+  test("non-canonical filename WITHOUT url is skipped; WITH url is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-fn-"));
+    // bad: leaf.json, no url → filename guard skips it
+    const files = { "leaf.txt": "hi" }; const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const kp = generateKeypair(); const m = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: ch };
+    writeFileSync(join(pkgDir, "leaf.json"), JSON.stringify({ manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files }));
+    const keyPath = join(tempHome, "r-fn.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const out1 = join(tempHome, "i-fn1.json");
+    const c1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", out1]);
+    expect(c1).toBe(1); // no valid packages (leaf.json skipped by filename guard)
+    // now add url → indexed
+    writeUrlPkg(pkgDir, "leaf.json", "leaf", "1.0.0", "https://cdn/leaf.json");
+    const out2 = join(tempHome, "i-fn2.json");
+    const c2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", out2]);
+    expect(c2).toBe(0);
+    const doc = parseIndex(readFileSync(out2, "utf8"));
+    if ("error" in doc) throw new Error(doc.error);
+    expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://cdn/leaf.json");
+  });
+
+  test("invalid url (not an absolute URL) is skipped", async () => {
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badurl-"));
+    writeUrlPkg(pkgDir, "leaf-1.0.0.json", "leaf", "1.0.0", "leaf#x"); // not absolute
+    const keyPath = join(tempHome, "r-bu.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "i-bu.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1); // only package skipped → no valid packages
+  });
+
+  test("comma-separated --packages indexes both dirs; cross-dir duplicate errors", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const dirA = mkdtempSync(join(tmpdir(), "ace-pub-a-"));
+    const dirB = mkdtempSync(join(tmpdir(), "ace-pub-b-"));
+    writeSignedPkg(dirA, "aa", "1.0.0");
+    writeSignedPkg(dirB, "bb", "1.0.0");
+    const keyPath = join(tempHome, "r-md.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "i-md.json");
+    const code = await main(["registry", "publish", "--packages", `${dirA},${dirB}`, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if ("error" in doc) throw new Error(doc.error);
+    expect(doc.packages.aa).toBeDefined();
+    expect(doc.packages.bb).toBeDefined();
+    // cross-dir duplicate
+    writeSignedPkg(dirB, "aa", "1.0.0");
+    const out2 = join(tempHome, "i-md2.json");
+    const dup = await main(["registry", "publish", "--packages", `${dirA},${dirB}`, "--base-url", "https://pkgs", "--key", keyPath, "--out", out2]);
+    expect(dup).toBe(1);
+  });
+
+  test("unreadable listed dir is a hard error", async () => {
+    const idxKp = generateKeypair();
+    const dirA = mkdtempSync(join(tmpdir(), "ace-pub-ok-"));
+    writeSignedPkg(dirA, "aa", "1.0.0");
+    const keyPath = join(tempHome, "r-ud.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "i-ud.json");
+    const code = await main(["registry", "publish", "--packages", `${dirA},/no/such/dir/xyz`, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+  });
+
+  test("--sequence sets the sequence; rollback is refused; bad value is a parse error", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-seq-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "r-seq.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "i-seq.json");
+    const c1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath, "--sequence", "5"]);
+    expect(c1).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if ("error" in doc) throw new Error(doc.error);
+    expect(doc.sequence).toBe(5);
+    // rollback against prev (5)
+    const c2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath, "--sequence", "3"]);
+    expect(c2).toBe(1);
+    // bad values → parse error
+    expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "0"])).toBe(true);
+    expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x", "--key", "k", "--sequence", "abc"])).toBe(true);
+  });
 });

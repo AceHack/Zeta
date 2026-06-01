@@ -22,13 +22,14 @@ export function nextSequence(prev: IndexDoc | null): number {
 const RESERVED_IDENTITY_KEYS = new Set(["__proto__", "constructor", "prototype"]);
 /** Assemble + sign an index doc from already-read packages. Duplicate name@version → error. */
 export function buildIndexDoc(args: {
-  packages: AcePackage[]; baseUrl: string; sequence: number; issuedAt: string; privatePem: string;
+  packages: ReadonlyArray<{ pkg: AcePackage; url?: string }>; baseUrl: string; sequence: number; issuedAt: string; privatePem: string;
 }): IndexDoc | { error: string } {
   // Null-prototype map: a package name like "__proto__" cannot pollute via bracket-assign.
   const packages: Record<string, Record<string, RegistryEntry>> = Object.create(null);
   const sorted = [...args.packages].sort((a, b) =>
-    a.manifest.name.localeCompare(b.manifest.name) || a.manifest.version.localeCompare(b.manifest.version));
-  for (const pkg of sorted) {
+    a.pkg.manifest.name.localeCompare(b.pkg.manifest.name) || a.pkg.manifest.version.localeCompare(b.pkg.manifest.version));
+  for (const entry of sorted) {
+    const pkg = entry.pkg;
     const name = pkg.manifest.name;
     const version = pkg.manifest.version;
     const versions = packages[name] ?? (Object.create(null) as Record<string, RegistryEntry>);
@@ -36,7 +37,8 @@ export function buildIndexDoc(args: {
       return { error: `reserved package identity not allowed: ${name}@${version}` };
     }
     if (versions[version] !== undefined) return { error: `duplicate package ${name}@${version}` };
-    versions[version] = { url: joinUrl(args.baseUrl, `${name}-${version}.json`), package_hash: packageHash(pkg) };
+    const url = entry.url ?? joinUrl(args.baseUrl, `${name}-${version}.json`);
+    versions[version] = { url, package_hash: packageHash(pkg) };
     packages[name] = versions;
   }
   const content: IndexSignableContent = { format_version: 1, sequence: args.sequence, issued_at: args.issuedAt, packages };

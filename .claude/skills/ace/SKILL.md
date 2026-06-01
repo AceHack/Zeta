@@ -233,27 +233,35 @@ package manifests, builds a signed index, and writes the file a registry serves.
 ### Command
 
 ```bash
-ace registry publish --packages <dir> --base-url <url> --key <pem-path> [--out index.json]
+ace registry publish --packages <dir>[,<dir>...] --base-url <url> --key <pem-path> [--out <path>] [--sequence <n>]
 ```
 
-- **`--packages <dir>`** — directory to scan. Every `*.json` file is attempted
-  as a package manifest; files that do not parse as a valid package manifest are
-  skipped with a warning.
+- **`--packages <dir>[,<dir>...]`** — one or more directories to scan (comma-separated).
+  Every `*.json` file in each directory is attempted as a package manifest; files
+  that do not parse as a valid package manifest are skipped with a warning. Each
+  listed directory must be readable (an unreadable directory is a hard error).
+  A duplicate `name@version` across directories is also a hard error.
 - **`--base-url <url>`** — base URL of the registry. Each package's consumer
-  `url` is derived as `<base-url>/<name>-<version>.json` and its `package_hash`
-  is the `packageHash` of the canonical whole package (`{ manifest, files }`) — the same hash the consumer pins.
+  `url` is derived as `<base-url>/<name>-<version>.json` (unless overridden — see
+  Per-package `url` below) and its `package_hash` is the `packageHash` of the
+  canonical whole package (`{ manifest, files }`) — the same hash the consumer pins.
 - **`--key <pem-path>`** — path to the Ed25519 **private** key (PEM format). The index is signed
   with this key. Recommended: restrict the key file so only you can read it
   (e.g. `chmod 600` on POSIX); `publish` reads the key but does not enforce
   its file permissions.
-- **`--out <file>`** — path to write the signed index JSON (default: `./index.json`).
+- **`--out <path>`** — path to write the signed index JSON (default: `./index.json`).
+- **`--sequence <n>`** — explicit positive integer to use as the index sequence number,
+  overriding the auto-bump. Still anti-rollback-gated: if `--out` holds a prior index
+  and `n <= prior_sequence`, publish refuses (exit 1). Absent → auto-bump as before.
 
 ### Sequence auto-bump
 
 If `--out` already exists, `publish` reads the previous index and sets the new
 index's `sequence` to `prior_sequence + 1`. A sequence that is not strictly
 increasing is refused (exit 1). This is the producer-side mirror of the
-consumer's anti-rollback gate: the published sequence always advances.
+consumer's anti-rollback gate: the published sequence always advances. Pass
+`--sequence <n>` to supply an explicit positive integer instead of auto-bumping;
+the anti-rollback gate still applies.
 
 ### Round-trip self-verify
 
@@ -282,9 +290,47 @@ The `index.json` written by `publish` is the file a registry serves at the URL
 consumers configure. It contains the package list, `sequence`, `issued_at`,
 and the Ed25519 signature over the canonical payload.
 
+### Per-package `url` field (slice 6.2)
+
+A package file may carry an optional top-level `url` key — a sibling of `manifest`
+and `files`, outside the signed manifest:
+
+```text
+{
+  "manifest": { ... },
+  "files": { ... },
+  "url": "https://cdn.example/my-pkg-v1.json"
+}
+```
+
+When present, `url` overrides the derived `<base-url>/<name>-<version>.json` for
+that package in the published index. Key properties:
+
+- **Publish-only:** the `url` field is excluded from `package_hash`, which hashes
+  only `manifest` and `files`. The content/signature gates are unaffected.
+- **Filename exemption:** a package WITH a `url` is exempt from the
+  `<name>-<version>.json` filename requirement (the on-disk file may be named
+  anything, e.g. a CDN-style path). A package WITHOUT a `url` still must be named
+  `<name>-<version>.json`.
+- **Validation:** `url` must be a non-empty string that is a valid absolute URL.
+  An invalid or empty `url` causes `publish` to skip that package with a warning.
+
+Example — two directories, one package with a CDN url:
+
+```bash
+ace registry publish   --packages /srv/pkgs/tier1,/srv/pkgs/tier2   --base-url https://registry.example   --key registry.pem   --out index.json   --sequence 7
+```
+
+In `tier1/leaf.json`:
+
+```text
+{ "manifest": { ... }, "files": { ... }, "url": "https://cdn.example/leaf-v2.json" }
+```
+
+The published index entry for `leaf` uses `https://cdn.example/leaf-v2.json`
+while all other packages derive their URL from `--base-url`.
+
 ### Deferred
 
-- Per-package URL override (custom artifact hosting).
 - ETag / Last-Modified sidecar for conditional-GET cache validation.
-- Multi-directory publish and incremental (append-only) publish.
 - Multi-signer publish (multiple signing keys on one index).

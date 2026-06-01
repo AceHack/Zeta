@@ -32,7 +32,7 @@ describe("buildIndexDoc", () => {
   const issuedAt = "2026-06-01T12:00:00Z";
   test("assembles url + package_hash per package, signs, self-verifies", () => {
     const p = pkg("leaf", "1.0.0");
-    const doc = buildIndexDoc({ packages: [p], baseUrl: "https://pkgs", sequence: 3, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [{ pkg: p }], baseUrl: "https://pkgs", sequence: 3, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(false);
     if ("error" in doc) return;
     expect(doc.sequence).toBe(3);
@@ -47,23 +47,44 @@ describe("buildIndexDoc", () => {
   });
 
   test.each(["__proto__", "constructor", "prototype"])("rejects reserved package name %s", (bad) => {
-    const doc = buildIndexDoc({ packages: [pkg(bad, "1.0.0")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [{ pkg: pkg(bad, "1.0.0") }], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(true);
   });
   test("rejects reserved package version", () => {
-    const doc = buildIndexDoc({ packages: [pkg("ok", "__proto__")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [{ pkg: pkg("ok", "__proto__") }], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(true);
   });
 
   test("duplicate name@version → error", () => {
-    const doc = buildIndexDoc({ packages: [pkg("leaf", "1.0.0"), pkg("leaf", "1.0.0")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [{ pkg: pkg("leaf", "1.0.0") }, { pkg: pkg("leaf", "1.0.0") }], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(true);
   });
 
   test("packages sorted by name then version regardless of input order", () => {
-    const doc = buildIndexDoc({ packages: [pkg("zeta", "1.0.0"), pkg("alpha", "1.0.0")], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const doc = buildIndexDoc({ packages: [{ pkg: pkg("zeta", "1.0.0") }, { pkg: pkg("alpha", "1.0.0") }], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
     expect("error" in doc).toBe(false);
     if ("error" in doc) return;
     expect(Object.keys(doc.packages)).toEqual(["alpha", "zeta"]);
+  });
+
+  test("per-package url override is used; absent falls back to base-url", () => {
+    const a = pkg("alpha", "1.0.0");
+    const b = pkg("beta", "1.0.0");
+    const doc = buildIndexDoc({
+      packages: [{ pkg: a, url: "https://cdn.example/alpha-v1.json" }, { pkg: b }],
+      baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem,
+    });
+    expect("error" in doc).toBe(false);
+    if ("error" in doc) return;
+    expect(doc.packages.alpha!["1.0.0"]!.url).toBe("https://cdn.example/alpha-v1.json");
+    expect(doc.packages.beta!["1.0.0"]!.url).toBe("https://pkgs/beta-1.0.0.json");
+  });
+
+  test("url override does not change package_hash", () => {
+    const a = pkg("alpha", "1.0.0");
+    const withUrl = buildIndexDoc({ packages: [{ pkg: a, url: "https://cdn/x.json" }], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    const without = buildIndexDoc({ packages: [{ pkg: a }], baseUrl: "https://pkgs", sequence: 1, issuedAt, privatePem: kp.privatePem });
+    if ("error" in withUrl || "error" in without) throw new Error("unexpected");
+    expect(withUrl.packages.alpha!["1.0.0"]!.package_hash).toBe(without.packages.alpha!["1.0.0"]!.package_hash);
   });
 });
