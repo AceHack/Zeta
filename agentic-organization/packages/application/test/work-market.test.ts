@@ -13,6 +13,7 @@ import {
   completeWorkClaim,
   evaluateWorkShardReviewQuorum,
   mergeReviewedWorkShards,
+  planWorkMarketClaims,
   reapStaleWorkClaims,
   workMarketReadoutForHat,
   type HatWorkQueue,
@@ -573,6 +574,158 @@ test("hat readout exposes queue pressure, active claims, stale claims, and shard
   equal(readout.queues[0]?.activeClaims[0]?.claimId, "claim-1");
 });
 
+test("market clearing assigns same-hat agents across queues by pressure, reputation, and fairness", () => {
+  const urgent = queue({
+    queueId: "queue-urgent",
+    priorityClass: "p0",
+    slaDeadlineAt: "2026-05-31T12:10:00.000Z",
+    shards: [
+      {
+        shardId: "shard-urgent",
+        workItemId: "work-urgent",
+        title: "Restore incident automation",
+        priority: 60,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+    ],
+  });
+  const normal = queue({
+    queueId: "queue-normal",
+    priorityClass: "p2",
+    slaDeadlineAt: "2026-06-02T12:00:00.000Z",
+    shards: [
+      {
+        shardId: "shard-normal",
+        workItemId: "work-normal",
+        title: "Refactor worker readout",
+        priority: 100,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+    ],
+  });
+
+  const plan = planWorkMarketClaims({
+    organizationId: "org-1",
+    hatId: "backend_implementer",
+    now: NOW,
+    queues: [normal, urgent],
+    agents: [
+      {
+        agentId: "agent-steady",
+        hatAssignmentId: "steady-backend-hat",
+        reputation: 0.95,
+        currentLoad: 3,
+        recentSameHatClaims: 5,
+        skillIds: ["typescript", "distributed-systems"],
+      },
+      {
+        agentId: "agent-recovered",
+        hatAssignmentId: "recovered-backend-hat",
+        reputation: 0.78,
+        currentLoad: 0,
+        recentSameHatClaims: 0,
+        skillIds: ["typescript", "distributed-systems"],
+      },
+    ],
+  });
+
+  deepEqual(
+    plan.assignments.map((assignment) => [assignment.agentId, assignment.queueId, assignment.shardId]),
+    [
+      ["agent-recovered", "queue-urgent", "shard-urgent"],
+      ["agent-steady", "queue-normal", "shard-normal"],
+    ],
+  );
+  ok(plan.assignments[0]?.reasonCodes.includes("sla_pressure"));
+  ok(plan.assignments[0]?.reasonCodes.includes("fairness_rotation"));
+  ok(plan.assignments[1]?.reasonCodes.includes("agent_reputation"));
+});
+
+test("market clearing excludes active claimed and dependency-blocked shards", () => {
+  const base = queue({
+    shards: [
+      {
+        shardId: "shard-claimed",
+        workItemId: "work-claimed",
+        title: "Already claimed",
+        priority: 120,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+      {
+        shardId: "shard-blocked",
+        workItemId: "work-blocked",
+        title: "Blocked shard",
+        priority: 110,
+        state: WorkShardState.Ready,
+        dependencyShardIds: ["shard-upstream"],
+        mergePolicy: "independent",
+      },
+      {
+        shardId: "shard-upstream",
+        workItemId: "work-upstream",
+        title: "Unfinished upstream",
+        priority: 80,
+        state: WorkShardState.Claimed,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+        claimedByClaimId: "claim-upstream",
+      },
+      {
+        shardId: "shard-open",
+        workItemId: "work-open",
+        title: "Open shard",
+        priority: 70,
+        state: WorkShardState.Ready,
+        dependencyShardIds: [],
+        mergePolicy: "independent",
+      },
+    ],
+    claims: [
+      {
+        claimId: "claim-existing",
+        shardId: "shard-claimed",
+        ownerAgentId: "agent-other",
+        hatAssignmentId: "agent-other-backend-hat",
+        fencingToken: "fence-existing",
+        leaseExpiresAt: AFTER_LATER,
+        heartbeatAt: NOW,
+        scheduleBlockId: "agent-other-block",
+        runtimeSessionId: "agent-other-session",
+        workspaceRef: "worktree:agent-other",
+        credentialScope: "tenant:org-1:repo:agentic-organization",
+        compensatingAction: "release_claim_and_requeue_shard",
+        state: WorkClaimState.Active,
+        claimedAt: NOW,
+      },
+    ],
+  });
+
+  const plan = planWorkMarketClaims({
+    organizationId: "org-1",
+    hatId: "backend_implementer",
+    now: NOW,
+    queues: [base],
+    agents: [
+      {
+        agentId: "agent-free",
+        hatAssignmentId: "agent-free-backend-hat",
+        reputation: 0.7,
+        skillIds: ["typescript", "distributed-systems"],
+      },
+    ],
+  });
+
+  equal(plan.assignments.length, 1);
+  equal(plan.assignments[0]?.shardId, "shard-open");
+  deepEqual(plan.unassignedShardIds, ["shard-blocked", "shard-claimed"]);
+});
+
 function claimInput(
   ownerAgentId: string,
   claimId: string,
@@ -597,7 +750,7 @@ function claimInput(
   };
 }
 
-function queue(): HatWorkQueue {
+function queue(override: Partial<HatWorkQueue> = {}): HatWorkQueue {
   return {
     queueId: "queue-backend-project-1",
     organizationId: "org-1",
@@ -635,5 +788,6 @@ function queue(): HatWorkQueue {
     ],
     claims: [],
     reviews: [],
+    ...override,
   };
 }

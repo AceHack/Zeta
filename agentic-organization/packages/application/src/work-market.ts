@@ -332,6 +332,42 @@ export type WorkMarketReadout = {
   readonly queuePressure: WorkMarketPressure;
 };
 
+export type WorkMarketAgentCandidate = {
+  readonly agentId: string;
+  readonly hatAssignmentId: string;
+  readonly reputation?: number;
+  readonly currentLoad?: number;
+  readonly recentSameHatClaims?: number;
+  readonly skillIds?: readonly string[];
+};
+
+export type PlanWorkMarketClaimsInput = {
+  readonly organizationId: string;
+  readonly hatId: string;
+  readonly now: string;
+  readonly queues: readonly HatWorkQueue[];
+  readonly agents: readonly WorkMarketAgentCandidate[];
+  readonly maxAssignments?: number;
+  readonly priorityClassWeights?: Readonly<Record<string, number>>;
+};
+
+export type PlannedWorkMarketClaim = {
+  readonly agentId: string;
+  readonly hatAssignmentId: string;
+  readonly queueId: string;
+  readonly shardId: string;
+  readonly workItemId: string;
+  readonly score: number;
+  readonly reasonCodes: readonly string[];
+};
+
+export type WorkMarketClaimPlan = {
+  readonly organizationId: string;
+  readonly hatId: string;
+  readonly assignments: readonly PlannedWorkMarketClaim[];
+  readonly unassignedShardIds: readonly string[];
+};
+
 export function claimNextWorkShard(queue: HatWorkQueue, input: ClaimNextWorkShardInput): WorkMarketClaimResult {
   const currentRevision = queue.revision ?? 0;
   if (input.expectedQueueRevision !== undefined && input.expectedQueueRevision !== currentRevision) {
@@ -411,6 +447,50 @@ export function claimNextWorkShard(queue: HatWorkQueue, input: ClaimNextWorkShar
     claim,
     runtimeLease,
     shard: claimedShard,
+  };
+}
+
+export function planWorkMarketClaims(input: PlanWorkMarketClaimsInput): WorkMarketClaimPlan {
+  const scopedQueues = input.queues.filter((queue) =>
+    queue.organizationId === input.organizationId &&
+    queue.hatId === input.hatId);
+  const bids = scopedQueues.flatMap((queue) => {
+    const claimableShards = readyClaimableShards(queue);
+    return claimableShards.flatMap((shard) =>
+      input.agents
+        .filter((agent) => agentCanClaimQueue(agent, queue))
+        .map((agent) => marketBid(input, queue, shard, agent)),
+    );
+  });
+  const sortedBids = bids.sort((left, right) =>
+    right.score - left.score ||
+    left.queueId.localeCompare(right.queueId) ||
+    left.shardId.localeCompare(right.shardId) ||
+    left.agentId.localeCompare(right.agentId));
+  const maxAssignments = Math.max(0, Math.min(input.maxAssignments ?? input.agents.length, input.agents.length));
+  const assignedAgents = new Set<string>();
+  const assignedShards = new Set<string>();
+  const assignments: PlannedWorkMarketClaim[] = [];
+  for (const bid of sortedBids) {
+    if (assignments.length >= maxAssignments) break;
+    if (assignedAgents.has(bid.agentId) || assignedShards.has(bid.shardId)) continue;
+    assignedAgents.add(bid.agentId);
+    assignedShards.add(bid.shardId);
+    assignments.push(bid);
+  }
+
+  const unassignedShardIds = scopedQueues
+    .flatMap((queue) => queue.shards)
+    .filter((shard) => shard.state === WorkShardState.Ready)
+    .filter((shard) => !assignedShards.has(shard.shardId))
+    .map((shard) => shard.shardId)
+    .sort();
+
+  return {
+    organizationId: input.organizationId,
+    hatId: input.hatId,
+    assignments,
+    unassignedShardIds,
   };
 }
 
@@ -677,6 +757,97 @@ function readyClaimableShards(queue: HatWorkQueue): readonly WorkShard[] {
     .sort((left: WorkShard, right: WorkShard) => right.priority - left.priority || left.shardId.localeCompare(right.shardId));
 }
 
+function marketBid(
+  input: PlanWorkMarketClaimsInput,
+  queue: HatWorkQueue,
+  shard: WorkShard,
+  agent: WorkMarketAgentCandidate,
+): PlannedWorkMarketClaim {
+  const priorityWeight = priorityClassWeight(queue.priorityClass, input.priorityClassWeights);
+  const slaUrgency = slaUrgencyScore(queue.slaDeadlineAt, input.now);
+  const reputation = clamp01(agent.reputation ?? 0.5);
+  const currentLoad = Math.max(0, agent.currentLoad ?? 0);
+  const recentSameHatClaims = Math.max(0, agent.recentSameHatClaims ?? 0);
+  const score = rounded(
+    priorityWeight * 20 +
+    slaUrgency * 10 +
+    shard.priority / 10 +
+    reputation * 10 -
+    currentLoad * 4 -
+    recentSameHatClaims * 2,
+  );
+  const reasonCodes = [
+    ...(priorityWeight > 1 ? ["priority_class"] : []),
+    ...(slaUrgency > 0 ? ["sla_pressure"] : []),
+    ...(reputation > 0.5 ? ["agent_reputation"] : []),
+    ...(isFairnessRotation(input.agents, agent) ? ["fairness_rotation"] : []),
+    ...(queue.requiredSkills.length > 0 ? ["skill_match"] : []),
+  ];
+  return {
+    agentId: agent.agentId,
+    hatAssignmentId: agent.hatAssignmentId,
+    queueId: queue.queueId,
+    shardId: shard.shardId,
+    workItemId: shard.workItemId,
+    score,
+    reasonCodes,
+  };
+}
+
+function agentCanClaimQueue(agent: WorkMarketAgentCandidate, queue: HatWorkQueue): boolean {
+  if (queue.requiredSkills.length === 0) return true;
+  const skillIds = new Set(agent.skillIds ?? []);
+  return queue.requiredSkills.every((skill) => skillIds.has(skill));
+}
+
+function priorityClassWeight(
+  priorityClass: string | undefined,
+  override: Readonly<Record<string, number>> | undefined,
+): number {
+  if (priorityClass !== undefined && override?.[priorityClass] !== undefined) {
+    return Math.max(0, override[priorityClass]);
+  }
+  switch (priorityClass) {
+    case "p0":
+    case "critical":
+      return 5;
+    case "p1":
+    case "high":
+      return 4;
+    case "p2":
+    case "normal":
+      return 3;
+    case "p3":
+    case "low":
+      return 2;
+    default:
+      return 1;
+  }
+}
+
+function slaUrgencyScore(deadlineAt: string | undefined, now: string): number {
+  if (deadlineAt === undefined || !isValidIso(deadlineAt) || !isValidIso(now)) return 0;
+  const remainingMs = Date.parse(deadlineAt) - Date.parse(now);
+  if (remainingMs <= 0) return 5;
+  const remainingMinutes = remainingMs / 60_000;
+  if (remainingMinutes <= 15) return 4;
+  if (remainingMinutes <= 60) return 3;
+  if (remainingMinutes <= 24 * 60) return 1.5;
+  return 0;
+}
+
+function isFairnessRotation(
+  agents: readonly WorkMarketAgentCandidate[],
+  agent: WorkMarketAgentCandidate,
+): boolean {
+  const load = Math.max(0, agent.currentLoad ?? 0) + Math.max(0, agent.recentSameHatClaims ?? 0);
+  if (load > 0) return false;
+  return agents.some((candidate) =>
+    candidate.agentId !== agent.agentId &&
+    (candidate.reputation ?? 0) > (agent.reputation ?? 0) &&
+    (Math.max(0, candidate.currentLoad ?? 0) + Math.max(0, candidate.recentSameHatClaims ?? 0)) > 0);
+}
+
 function claimIsStale(queue: HatWorkQueue, claim: WorkClaim, now: string): boolean {
   if (!isValidIso(claim.leaseExpiresAt) || isIsoAtOrBefore(claim.leaseExpiresAt, now)) {
     return true;
@@ -783,6 +954,15 @@ function distinctBy<T>(items: readonly T[], key: (item: T) => string): readonly 
 
 function sum(values: readonly number[]): number {
   return values.reduce((total, value) => total + value, 0);
+}
+
+function clamp01(value: number): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.max(0, Math.min(1, value));
+}
+
+function rounded(value: number): number {
+  return Math.round(value * 1000) / 1000;
 }
 
 function pressureFor(input: {

@@ -595,6 +595,18 @@ feedback on malformed input, so an agent can see whether it should claim a
 different shard, wait for review, or escalate stale same-hat work instead of
 staring at an undifferentiated work item.
 
+**Checkpoint 2026-06-01: deterministic same-hat market clearing**
+
+The work-market kernel now includes `planWorkMarketClaims`, a deterministic
+cross-queue planner for same-hat agents. It scores claimable shards by queue
+priority class, SLA urgency, shard priority, agent-hat reputation, current load,
+recent same-hat claims, and required-skill fit, then emits a stable assignment
+plan with at most one shard per agent and no duplicate shard ownership. The
+planner makes the market surface explicit before claim mutation: supervisors and
+foreground agents can see which agent should claim which queue/shard, which
+ready shards remain unassigned, and why the selected assignments were preferred
+without bypassing the existing lease-fenced `claimNextWorkShard` store boundary.
+
 **Algorithms:**
 
 - **weighted fair queueing:** reserve capacity by priority class and initiative
