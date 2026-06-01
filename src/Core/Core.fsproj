@@ -24,6 +24,7 @@
     <Compile Include="Codec.fs" />
     <Compile Include="Bonsai.fs" />
     <Compile Include="Resume.fs" />
+    <Compile Include="RangeSet.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
     <Compile Include="PluginHarness.fs" />
