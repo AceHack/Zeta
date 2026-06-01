@@ -1,0 +1,120 @@
+{
+  "primitive": "DynamicValue",
+  "version": 1,
+  "description": "DynamicValue cross-language conformance SEED — the self-describing-payload primitive (Null | Bool | Int(int64) | Float | String | Bytes | Array | Object; src/Core/DynamicValue.fs is the reference DU, C# in src/Core.CSharp.DynamicValue/ conforms on behavior). SEED-FIRST / grow-code-from-the-seed (Aaron 2026-06-01: 'we are growing code from the seeds'): THIS DATA is canonical and language-neutral; every oracle (TS/F#/C#/Rust) grows code that AGREES on it — conformance is agreement-on-the-seed, NOT a port of one language's type. This is also the byte-lock + the root of DST: each vector pins a VALUE (the language-neutral `value` tagged form) and its CANONICAL JSON encoding (`json`), so every oracle's encode(value) === json (byte-lock) and decode(json) === value (round-trip); each oracle is a deterministic replay of the seed. Build code to produce the seed, then the code is verifiably-from-the-seed (the future/seed makes the past/code intelligible — the three-clocks rule). v1 LOCKS six cases: null/bool/int/string/array/object. DEFERRED (see `deferred`): Float (a JSON number with a decimal/exponent is ambiguous Int-vs-Float on decode, and shortest-float canonicalization is unsolved in plain JSON) and Bytes (JSON has no native byte type; base64-in-a-string is indistinguishable from String on decode without a tag) — both lock cleanly under CBOR (RFC 8949: native int/float distinction + §4.2 shortest-float + native byte-strings) OR a tagged-JSON convention, in a later codec. Accessor / PropertyPath conformance (tryInt / get 'a.b[3].c') is a separate v2 axis; v1 is the encode/decode byte-lock only. Oracle status: F# + C# conform on behavior (#6492/#6494/#6495); this seed locks the BYTES; F#/C# re-ground against it, Rust/TS grow from it.",
+  "valueForm": "Each `value` is a language-neutral TAGGED node: { t, v }. t = null | bool | int | float | str | bytes | arr | obj. v by tag: null -> (omitted); bool -> JSON bool; int -> EXACT DECIMAL STRING (so the seed file's own JSON parser can't lose int64 precision — e.g. '9223372036854775807'); float -> decimal string (DEFERRED); str -> JSON string (the raw content); bytes -> base64 string (DEFERRED); arr -> array of tagged nodes; obj -> ORDERED array of [key, taggedNode] pairs (insertion order is significant — DynamicValue.Object is order-significant, so the pairs are a list, not a map). An oracle reads t, then interprets v accordingly.",
+  "canonicalJson": "The `json` field is the EXACT canonical JSON TEXT for that value (the byte-lock target; the bytes are its UTF-8 encoding). Rules: (1) MINIFIED — no insignificant whitespace between any tokens. (2) Object keys are emitted in INSERTION ORDER, NOT sorted — DynamicValue.Object is order-significant, so a key-sorting canonical form (JCS / RFC 8785 / CBOR §4.2) would be LOSSY (cannot round-trip order) and is rejected; insertion-order preservation is the canonical rule (NB: this contradicts the current DynamicValue.fs doc comment that says the wire encoder 'sorts keys when byte-locking' — that comment is leftover map-thinking and should be corrected; the order-significant value requires order-preserving bytes for a bijective round-trip). (3) Int -> bare exact decimal: no leading zeros, no '+', '-' only for negatives, no decimal point. (4) String -> RFC 8259 minimal escaping: escape '\"' and '\\' and control chars U+0000..U+001F (short forms \\b \\t \\n \\f \\r where they exist, else \\u00XX lowercase-hex); '/' is NOT escaped; all other characters (incl. non-ASCII / astral) are emitted RAW UTF-8, not \\u-escaped. (5) Float -> DEFERRED. (6) Bytes -> DEFERRED. Decode disambiguation: a JSON number token with NO '.'/'e'/'E' decodes to Int; with one it would be Float (DEFERRED, so v1 numbers are always Int).",
+  "byteLock": "bytes := UTF-8(json). For the ASCII-only vectors, character-equality of `json` equals byte-equality; the unicode/astral vectors (string-unicode, string-emoji) exercise raw-UTF-8 emission and are byte-compared as UTF-8.",
+  "deferred": {
+    "float": {
+      "reason": "JSON number is ambiguous Int-vs-Float on decode (no syntactic guarantee), and a canonical shortest-round-trippable float text is unspecified in plain JSON (so no deterministic byte-lock). Locks under CBOR §4.2 shortest-float, or a tagged-JSON convention.",
+      "examples": ["1.5", "-0.0", "1e10", "3.141592653589793", "NaN", "Infinity", "-Infinity"]
+    },
+    "bytes": {
+      "reason": "JSON has no native byte type; a base64 string is indistinguishable from a String on decode without an out-of-band tag, so a faithful round-trip needs a convention. Locks under CBOR native byte-strings, or a tagged-JSON convention like {\"$b64\":\"...\"}.",
+      "examples": [
+        { "base64": "", "note": "empty" },
+        { "base64": "AAEC/w==", "note": "0x00 0x01 0x02 0xFF" }
+      ]
+    }
+  },
+  "vectors": [
+    { "name": "null", "value": { "t": "null" }, "json": "null" },
+    { "name": "bool-true", "value": { "t": "bool", "v": true }, "json": "true" },
+    { "name": "bool-false", "value": { "t": "bool", "v": false }, "json": "false" },
+    { "name": "int-zero", "value": { "t": "int", "v": "0" }, "json": "0" },
+    { "name": "int-one", "value": { "t": "int", "v": "1" }, "json": "1" },
+    { "name": "int-neg-one", "value": { "t": "int", "v": "-1" }, "json": "-1" },
+    { "name": "int-42", "value": { "t": "int", "v": "42" }, "json": "42" },
+    { "name": "int-neg-42", "value": { "t": "int", "v": "-42" }, "json": "-42" },
+    { "name": "int-i64-max", "value": { "t": "int", "v": "9223372036854775807" }, "json": "9223372036854775807" },
+    { "name": "int-i64-min", "value": { "t": "int", "v": "-9223372036854775808" }, "json": "-9223372036854775808" },
+    { "name": "string-empty", "value": { "t": "str", "v": "" }, "json": "\"\"" },
+    { "name": "string-ascii", "value": { "t": "str", "v": "hello" }, "json": "\"hello\"" },
+    { "name": "string-space", "value": { "t": "str", "v": "a b c" }, "json": "\"a b c\"" },
+    { "name": "string-quote", "value": { "t": "str", "v": "a\"b" }, "json": "\"a\\\"b\"" },
+    { "name": "string-backslash", "value": { "t": "str", "v": "a\\b" }, "json": "\"a\\\\b\"" },
+    { "name": "string-slash-not-escaped", "value": { "t": "str", "v": "a/b" }, "json": "\"a/b\"" },
+    { "name": "string-newline-tab", "value": { "t": "str", "v": "x\ny\tz" }, "json": "\"x\\ny\\tz\"" },
+    { "name": "string-control-u0001", "value": { "t": "str", "v": "\u0001" }, "json": "\"\\u0001\"" },
+    { "name": "string-unicode-bmp", "value": { "t": "str", "v": "héllo→世" }, "json": "\"héllo→世\"" },
+    { "name": "string-emoji-astral", "value": { "t": "str", "v": "😀" }, "json": "\"😀\"" },
+    { "name": "array-empty", "value": { "t": "arr", "v": [] }, "json": "[]" },
+    {
+      "name": "array-ints",
+      "value": {
+        "t": "arr",
+        "v": [
+          { "t": "int", "v": "1" },
+          { "t": "int", "v": "2" },
+          { "t": "int", "v": "3" }
+        ]
+      },
+      "json": "[1,2,3]"
+    },
+    {
+      "name": "array-mixed",
+      "value": {
+        "t": "arr",
+        "v": [{ "t": "int", "v": "1" }, { "t": "bool", "v": true }, { "t": "null" }, { "t": "str", "v": "x" }]
+      },
+      "json": "[1,true,null,\"x\"]"
+    },
+    {
+      "name": "array-nested",
+      "value": {
+        "t": "arr",
+        "v": [
+          { "t": "arr", "v": [{ "t": "int", "v": "1" }] },
+          { "t": "arr", "v": [] }
+        ]
+      },
+      "json": "[[1],[]]"
+    },
+    { "name": "object-empty", "value": { "t": "obj", "v": [] }, "json": "{}" },
+    { "name": "object-single", "value": { "t": "obj", "v": [["a", { "t": "int", "v": "1" }]] }, "json": "{\"a\":1}" },
+    {
+      "name": "object-order-preserved",
+      "value": {
+        "t": "obj",
+        "v": [
+          ["b", { "t": "int", "v": "2" }],
+          ["a", { "t": "int", "v": "1" }]
+        ]
+      },
+      "json": "{\"b\":2,\"a\":1}"
+    },
+    {
+      "name": "object-mixed",
+      "value": {
+        "t": "obj",
+        "v": [
+          ["on", { "t": "bool", "v": true }],
+          ["name", { "t": "str", "v": "zeta" }],
+          ["nil", { "t": "null" }]
+        ]
+      },
+      "json": "{\"on\":true,\"name\":\"zeta\",\"nil\":null}"
+    },
+    {
+      "name": "object-key-escaped",
+      "value": { "t": "obj", "v": [["a\"b", { "t": "int", "v": "1" }]] },
+      "json": "{\"a\\\"b\":1}"
+    },
+    {
+      "name": "object-nested",
+      "value": { "t": "obj", "v": [["outer", { "t": "obj", "v": [["inner", { "t": "bool", "v": true }]] }]] },
+      "json": "{\"outer\":{\"inner\":true}}"
+    },
+    {
+      "name": "deep-nest",
+      "value": {
+        "t": "obj",
+        "v": [
+          ["a", { "t": "arr", "v": [{ "t": "obj", "v": [["b", { "t": "arr", "v": [{ "t": "int", "v": "1" }] }]] }] }]
+        ]
+      },
+      "json": "{\"a\":[{\"b\":[1]}]}"
+    }
+  ]
+}
