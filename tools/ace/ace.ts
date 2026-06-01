@@ -15,8 +15,8 @@
 //
 // Future commands (not yet implemented): remove, inspect.
 
-import { chmodSync, readFileSync, writeFileSync } from "node:fs";
-import { createPublicKey } from "node:crypto";
+import { chmodSync, existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createPublicKey, createPrivateKey } from "node:crypto";
 import {
   defaultStorePath, listInstalled, installPackage, contentHash,
   loadTrustStore, addTrustedKey, listTrustedKeys, validatePackagePaths,
@@ -24,12 +24,23 @@ import {
   writeRegistryRemote, removeRegistryRemote, readRegistriesConfig,
   type AcePackage,
 } from "./store";
-import { generateKeypair, signManifest, verifySignature, keyId } from "./signing";
+import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem, verifyIndexSignature } from "./signing";
 import { resolve, packageHash } from "./resolve.ts";
 import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
-import { loadRegistries } from "./registry-remote.ts";
-import { resolve as toAbsolutePath } from "node:path";
+
+function isValidDepEdge(e: unknown): boolean {
+  if (typeof e !== "object" || e === null) return false;
+  const d = e as Record<string, unknown>;
+  if (typeof d.name !== "string" || typeof d.version !== "string") return false;
+  if (d.kind === "registry") return true;
+  if (d.kind === "inline") return typeof d.url === "string" && typeof d.package_hash === "string";
+  return false;
+}
+import { buildIndexDoc, nextSequence } from "./registry-publish.ts";
+import { loadRegistries, parseIndex } from "./registry-remote.ts";
+import type { IndexDoc } from "./registry-remote.ts";
+import { resolve as toAbsolutePath, join } from "node:path";
 
 interface ListArgs {
   readonly command: "list";
@@ -88,7 +99,7 @@ interface UpdateArgs {
 
 interface RegistryArgs {
   readonly command: "registry";
-  readonly sub: "list" | "add" | "remote-add" | "remote-list" | "remote-rm";
+  readonly sub: "list" | "add" | "remote-add" | "remote-list" | "remote-rm" | "publish";
   readonly regName?: string;
   readonly regVersion?: string;
   readonly regUrl?: string;
@@ -96,6 +107,10 @@ interface RegistryArgs {
   readonly remoteUrl?: string;
   readonly remoteKey?: string;
   readonly remoteMaxStaleness?: number;
+  readonly pubPackagesDir?: string;
+  readonly pubBaseUrl?: string;
+  readonly pubKeyPath?: string;
+  readonly pubOut?: string;
 }
 
 type ParsedArgs = ListArgs | HelpArgs | InstallArgs | VerifyArgs | KeygenArgs | SignArgs | TrustArgs | RegistryArgs | UpdateArgs;
@@ -234,7 +249,22 @@ export function parseArgs(argv: readonly string[]): ParsedArgs | ArgError {
       }
       return { error: "registry remote requires 'add', 'list', or 'rm'" };
     }
-    return { error: "registry requires 'add' or 'list'" };
+    if (sub === "publish") {
+      let dir: string | undefined, base: string | undefined, key: string | undefined, out: string | undefined;
+      for (let i = 2; i < argv.length; i++) {
+        if (argv[i] === "--packages") { dir = argv[++i]; if (!dir || dir.startsWith("-")) return { error: "--packages requires a value" }; }
+        else if (argv[i] === "--base-url") { base = argv[++i]; if (!base || base.startsWith("-")) return { error: "--base-url requires a value" }; }
+        else if (argv[i] === "--key") { key = argv[++i]; if (!key || key.startsWith("-")) return { error: "--key requires a value" }; }
+        else if (argv[i] === "--out") { out = argv[++i]; if (!out || out.startsWith("-")) return { error: "--out requires a value" }; }
+        else return { error: `Unknown option for registry publish: ${argv[i]}` };
+      }
+      if (!dir) return { error: "registry publish requires --packages <dir>" };
+      if (!base) return { error: "registry publish requires --base-url <url>" };
+      if (!key) return { error: "registry publish requires --key <pem-path>" };
+      const r: RegistryArgs = { command: "registry", sub: "publish", pubPackagesDir: dir, pubBaseUrl: base, pubKeyPath: key };
+      return out !== undefined ? { ...r, pubOut: out } : r;
+    }
+    return { error: "registry requires 'add', 'list', 'remote', or 'publish'" };
   }
 
   if (command === "update") {
@@ -358,6 +388,7 @@ Usage:
   ace trust list                                 List all trusted keys
   ace registry add <name> <version> <url> [--hash <h>] Register a package in the local registry
   ace registry list                              List all registry entries
+  ace registry publish --packages <dir> --base-url <url> --key <pem> [--out <path>] Build + sign an index from a dir of packages
   ace registry remote add <url> --key <keyid> [--max-staleness-days <n>] Add a signed remote registry
   ace registry remote list                       List configured remote registries
   ace registry remote rm <url>                   Remove a configured remote registry
@@ -509,6 +540,113 @@ export async function main(argv: readonly string[]): Promise<number> {
       const rows = listRegistry();
       if (rows.length === 0) { console.log("No registry entries. (add one: ace registry add <name> <version> <url>)"); return 0; }
       for (const r of rows) console.log(`  ${r.name}@${r.version}  ${r.url}  [${r.source}]`);
+      return 0;
+    }
+    if (parsed.sub === "publish") {
+      let pem: string;
+      try { pem = readFileSync(parsed.pubKeyPath!, "utf8"); }
+      catch (e) { console.error(`ace: publish: cannot read key ${parsed.pubKeyPath}: ${(e as Error).message}`); return 1; }
+      // P2-A: signIndex uses crypto.sign(null, ...) which only supports Ed25519/Ed448 — an RSA/EC key
+      // THROWS rather than signing. Pre-check here to fail fast with a clear error before building the index.
+      try {
+        if (createPrivateKey(pem).asymmetricKeyType !== "ed25519") {
+          console.error("ace: publish refused: --key must be an ed25519 private key"); return 1;
+        }
+      } catch (e) { console.error(`ace: publish refused: invalid private key: ${(e as Error).message}`); return 1; }
+      let entries: string[];
+      try { entries = readdirSync(parsed.pubPackagesDir!).filter((f) => f.endsWith(".json")); }
+      catch (e) { console.error(`ace: publish: cannot read dir ${parsed.pubPackagesDir}: ${(e as Error).message}`); return 1; }
+      const packages: AcePackage[] = [];
+      for (const f of entries) {
+        const full = join(parsed.pubPackagesDir!, f);
+        let raw: string;
+        try { raw = readFileSync(full, "utf8"); } catch { console.error(`ace: publish: skip unreadable ${f}`); continue; }
+        let obj: unknown;
+        try { obj = JSON.parse(raw); } catch { console.error(`ace: publish: skip non-JSON ${f}`); continue; }
+        if (typeof obj !== "object" || obj === null || typeof (obj as AcePackage).manifest !== "object" || (obj as AcePackage).manifest === null
+          || typeof (obj as AcePackage).manifest.name !== "string" || typeof (obj as AcePackage).manifest.version !== "string"
+          || typeof (obj as AcePackage).files !== "object" || (obj as AcePackage).files === null) {
+          console.error(`ace: publish: skip non-package ${f}`); continue;
+        }
+        // P2-C: a package whose content_hash is missing or does not match its files would be indexed
+        // but fail the consumer's content-hash gate. Skip + warn (consistent with the non-package skip).
+        if (typeof (obj as AcePackage).manifest.content_hash !== "string") {
+          console.error(`ace: publish: skip ${f} — missing manifest.content_hash`); continue;
+        }
+        const fh = contentHash(new TextEncoder().encode(JSON.stringify((obj as AcePackage).files)));
+        if (fh !== (obj as AcePackage).manifest.content_hash) {
+          console.error(`ace: publish: skip ${f} — content_hash does not match files`); continue;
+        }
+        const expectedFile = `${(obj as AcePackage).manifest.name}-${(obj as AcePackage).manifest.version}.json`;
+        if (f !== expectedFile) {
+          console.error(`ace: publish: skip ${f} — filename must be ${expectedFile} to match its derived consumer URL`); continue;
+        }
+        const deps = (obj as AcePackage).manifest.dependencies;
+        if (deps !== undefined && !Array.isArray(deps)) {
+          console.error(`ace: publish: skip ${f} — manifest.dependencies must be an array`); continue;
+        }
+        // P2: every files value must be a string — installPackage's writeFileSync(dest, contents)
+        // throws on non-string values, so a self-verified index could point at an un-installable
+        // package. Skip + warn (consistent with the other scan skips).
+        const fileVals = Object.values((obj as AcePackage).files as Record<string, unknown>);
+        if (fileVals.some((v) => typeof v !== "string")) {
+          console.error(`ace: publish: skip ${f} — every file value must be a string`); continue;
+        }
+        // P2: package name/version must be URL-safe — the consumer URL is <base>/<name>-<version>.json,
+        // so a '#' or '?' (or path sep / control char) would break or redirect the fetched URL.
+        const nm = (obj as AcePackage).manifest.name;
+        const ver = (obj as AcePackage).manifest.version;
+        if (/[\x00-\x20#?%/\\]/.test(nm) || /[\x00-\x20#?%/\\]/.test(ver)) {
+          console.error(`ace: publish: skip ${f} — name/version has a URL-unsafe character`); continue;
+        }
+        // P2: dependency edges must be well-formed (matching the consumer's AceDependency shape),
+        // else a consumer resolve would break on a self-verified index.
+        const depEdges = (obj as AcePackage).manifest.dependencies;
+        if (Array.isArray(depEdges) && !depEdges.every(isValidDepEdge)) {
+          console.error(`ace: publish: skip ${f} — malformed dependency edge`); continue;
+        }
+        // P2: reuse the consumer's path guard — a package with an unsafe files key (../ or absolute)
+        // would index but be rejected/unsafe at install. Skip + warn.
+        const unsafePath = validatePackagePaths(obj as AcePackage);
+        if (unsafePath !== null) {
+          console.error(`ace: publish: skip ${f} — unsafe file path: ${unsafePath}`); continue;
+        }
+        packages.push(obj as AcePackage);
+      }
+      if (packages.length === 0) { console.error(`ace: publish refused: no valid packages in ${parsed.pubPackagesDir}`); return 1; }
+      const outPath = parsed.pubOut ?? "index.json";
+      let prev: IndexDoc | null = null;
+      if (existsSync(outPath)) {
+        let prevRaw: string;
+        try { prevRaw = readFileSync(outPath, "utf8"); }
+        catch (e) { console.error(`ace: publish refused: cannot read existing ${outPath}: ${(e as Error).message}`); return 1; }
+        const p = parseIndex(prevRaw);
+        if ("error" in p) { console.error(`ace: publish refused: existing ${outPath} is not a valid index (${p.error}) — refusing to reset sequence (would look like a rollback to consumers); remove or fix it`); return 1; }
+        const prevInfo = publicKeyInfoFromPrivatePem(pem);
+        const { signature: prevSig, ...prevContent } = p;
+        const prevVerify = verifyIndexSignature(prevContent, prevSig, new Map([[prevInfo.keyId, { public_key: prevInfo.public_key }]]));
+        if (!prevVerify.ok) { console.error(`ace: publish refused: existing ${outPath} signature does not verify under --key (${prevVerify.reason}) — refusing to auto-bump from an untrusted index; fix or remove it`); return 1; }
+        prev = p;
+      }
+      const seq = nextSequence(prev);
+      // Anti-rollback guard (defense-in-depth): unreachable while sequence is auto-bumped (+1),
+      // but protects the deferred explicit --sequence flag from emitting a non-increasing index.
+      if (prev && seq <= prev.sequence) { console.error(`ace: publish refused: sequence ${seq} <= prev ${prev.sequence}`); return 1; }
+      let serialized: string;
+      try {
+        const doc = buildIndexDoc({ packages, baseUrl: parsed.pubBaseUrl!, sequence: seq, issuedAt: new Date().toISOString(), privatePem: pem });
+        if ("error" in doc) { console.error(`ace: publish refused: ${doc.error}`); return 1; }
+        serialized = JSON.stringify(doc, null, 2);
+        const reparsed = parseIndex(serialized);
+        if ("error" in reparsed) { console.error(`ace: publish refused: self-verify parse failed: ${reparsed.error}`); return 1; }
+        const info = publicKeyInfoFromPrivatePem(pem);
+        const { signature, ...content } = doc;
+        const sv = verifyIndexSignature(content, signature, new Map([[info.keyId, { public_key: info.public_key }]]));
+        if (!sv.ok) { console.error(`ace: publish refused: self-verify signature failed: ${sv.reason}`); return 1; }
+      } catch (e) { console.error(`ace: publish refused: signing failed (check --key is a valid Ed25519 PEM): ${(e as Error).message}`); return 1; }
+      try { writeFileSync(outPath, serialized); }
+      catch (e) { console.error(`ace: publish failed: cannot write ${outPath}: ${(e as Error).message}`); return 1; }
+      console.log(`ace: published ${packages.length} package(s) at sequence ${seq} → ${outPath}`);
       return 0;
     }
     // sub === "add"

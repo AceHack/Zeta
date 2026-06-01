@@ -1,10 +1,12 @@
 import { describe, expect, test } from "bun:test";
+import { generateKeyPairSync } from "node:crypto";
 import {
   generateKeypair, keyId, canonicalManifestBytes, signManifest, verifySignature,
   type TrustEntry,
+  signIndex, verifyIndexSignature, type IndexSignableContent,
+  publicKeyInfoFromPrivatePem,
 } from "./signing.ts";
 import type { AceManifest } from "./store.ts";
-import { signIndex, verifyIndexSignature, type IndexSignableContent } from "./signing.ts";
 
 function baseManifest(overrides: Partial<AceManifest> = {}): AceManifest {
   return { format_version: 1, name: "demo", version: "1.0.0", content_hash: "sha256:abc", ...overrides };
@@ -126,5 +128,29 @@ describe("index signing", () => {
     const r = verifyIndexSignature(indexContent, sig, new Map());
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("unsupported-algo");
+  });
+});
+
+
+describe("publicKeyInfoFromPrivatePem", () => {
+  test("derives the same keyId + public_key as generateKeypair for the same key", () => {
+    const kp = generateKeypair();
+    const info = publicKeyInfoFromPrivatePem(kp.privatePem);
+    expect(info.keyId).toBe(kp.keyId);
+    expect(info.public_key).toBe(kp.publicSpkiB64);
+  });
+  test("the derived public_key verifies an index this key signed", () => {
+    const kp = generateKeypair();
+    const content = { format_version: 1 as const, sequence: 1, issued_at: "2026-06-01T12:00:00Z",
+      packages: { leaf: { "1.0.0": { url: "https://x/l.json", package_hash: "sha256:aa" } } } };
+    const sig = signIndex(content, kp.privatePem);
+    const info = publicKeyInfoFromPrivatePem(kp.privatePem);
+    const trust = new Map([[info.keyId, { public_key: info.public_key }]]);
+    expect(verifyIndexSignature(content, sig, trust).ok).toBe(true);
+  });
+  test("throws for a non-ed25519 key", () => {
+    const { privateKey } = generateKeyPairSync("rsa", { modulusLength: 2048 });
+    const rsaPem = privateKey.export({ type: "pkcs8", format: "pem" }) as string;
+    expect(() => publicKeyInfoFromPrivatePem(rsaPem)).toThrow(/ed25519/);
   });
 });

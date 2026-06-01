@@ -1352,3 +1352,309 @@ describe("ace install via remote registry (slice 6)", () => {
     }
   });
 });
+
+describe("ace registry publish (slice 6.1)", () => {
+  function writeSignedPkg(dir: string, name: string, version: string) {
+    const files = { [`${name}.txt`]: "hi" };
+    const ch = contentHash(new TextEncoder().encode(JSON.stringify(files)));
+    const kp = generateKeypair();
+    const m = { format_version: 1, name, version, content_hash: ch };
+    const pkg = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files };
+    writeFileSync(join(dir, `${name}-${version}.json`), JSON.stringify(pkg));
+    return { kp, pkg };
+  }
+
+  test("publish a dir → signed index; sequence auto-bumps; non-package skipped", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    writeFileSync(join(pkgDir, "not-a-package.json"), JSON.stringify({ hello: "world" }));
+    const keyPath = join(tempHome, "registry.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.sequence).toBe(1);
+      expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://pkgs/leaf-1.0.0.json");
+    }
+    const code2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code2).toBe(0);
+    const doc2 = parseIndex(readFileSync(outPath, "utf8"));
+    if (!("error" in doc2)) expect(doc2.sequence).toBe(2);
+  });
+
+  test("package with a non-string file value is skipped", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-fv-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // files value is a number, not a string: content_hash matches its JSON, so it clears the
+    // content gate, but installPackage would throw at writeFileSync. Must be skipped at publish.
+    const badFiles = { "a.txt": 123 };
+    const bch = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const bm = { format_version: 1, name: "bad", version: "1.0.0", content_hash: bch };
+    const bkp = generateKeypair();
+    const badPkg = { manifest: { ...bm, signature: signManifest(bm, bkp.privatePem) }, files: badFiles };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "registry-fv.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "index-fv.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
+  });
+
+  test("publish without --key is a parse error", () => {
+    expect("error" in parseArgs(["registry", "publish", "--packages", "d", "--base-url", "https://x"])).toBe(true);
+  });
+
+  test("second SAME-identity file with a mismatched basename is skipped (basename filter precedes dup check); dup-detection itself covered at buildIndexDoc unit level", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-dup-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    // a second file, SAME name@version, but its basename != leaf-1.0.0.json so Fix 2 skips it
+    // BEFORE it can reach buildIndexDoc's duplicate check. (Two files cannot share the canonical
+    // basename leaf-1.0.0.json in one dir, so the CLI scan can no longer surface a duplicate.)
+    const dupFiles = { "leaf.txt": "other" };
+    const dupCh = contentHash(new TextEncoder().encode(JSON.stringify(dupFiles)));
+    const dupKp = generateKeypair();
+    const dupM = { format_version: 1, name: "leaf", version: "1.0.0", content_hash: dupCh };
+    const dupPkg = { manifest: { ...dupM, signature: signManifest(dupM, dupKp.privatePem) }, files: dupFiles };
+    writeFileSync(join(pkgDir, "leaf-dup.json"), JSON.stringify(dupPkg));
+    const keyPath = join(tempHome, "dup.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "dup-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if (!("error" in doc)) {
+      // only the canonically-named leaf-1.0.0.json was indexed; the mismatched dup was skipped
+      expect(doc.packages.leaf!["1.0.0"]!.url).toBe("https://pkgs/leaf-1.0.0.json");
+    }
+  });
+
+  test("malformed (non-PEM) key → publish refused (exit 1, no index written)", async () => {
+    const { existsSync: existsSyncLocal } = await import("node:fs");
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badkey-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "bad.pem"); writeFileSync(keyPath, "not a pem at all");
+    const outPath = join(tempHome, "badkey-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+    expect(existsSyncLocal(outPath)).toBe(false);
+  });
+
+  test("non-ed25519 key → publish refused (exit 1, no index)", async () => {
+    const { existsSync: existsLocal } = await import("node:fs");
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-rsa-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const rsa = generateKeyPairSync("rsa", { modulusLength: 2048 }).privateKey.export({ type: "pkcs8", format: "pem" }).toString();
+    const keyPath = join(tempHome, "rsa.pem"); writeFileSync(keyPath, rsa);
+    const outPath = join(tempHome, "rsa-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+    expect(existsLocal(outPath)).toBe(false);
+  });
+
+  test("existing unparseable --out → publish refused (no rollback reset)", async () => {
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-corrupt-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "ck.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "corrupt-index.json"); writeFileSync(outPath, "{ truncated");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+  });
+
+  test("package with mismatched content_hash is skipped (not indexed)", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-badhash-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // a package whose content_hash does NOT match files
+    const kp = generateKeypair();
+    const m = { format_version: 1, name: "bad", version: "1.0.0", content_hash: "sha256:deadbeef" };
+    const bad = { manifest: { ...m, signature: signManifest(m, kp.privatePem) }, files: { "bad.txt": "x" } };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(bad));
+    const keyPath = join(tempHome, "bh.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "badhash-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if (!("error" in doc)) { expect(doc.packages.good).toBeDefined(); expect(doc.packages.bad).toBeUndefined(); }
+  });
+
+  test("tampered existing --out (signature flipped) → publish refused; index unchanged", async () => {
+    const { existsSync: existsSyncLocal } = await import("node:fs");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-tamper-"));
+    writeSignedPkg(pkgDir, "leaf", "1.0.0");
+    const keyPath = join(tempHome, "tk.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "tamper-index.json");
+    // publish a valid index once
+    const code1 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code1).toBe(0);
+    // tamper: lower sequence (still parseable, but sequence is signed so signature no longer verifies)
+    const tampered = JSON.parse(readFileSync(outPath, "utf8")) as { sequence: number };
+    tampered.sequence = 0;
+    const tamperedBytes = JSON.stringify(tampered, null, 2);
+    writeFileSync(outPath, tamperedBytes);
+    // republish with same key + packages → refused (signature does not verify under --key)
+    const code2 = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code2).toBe(1);
+    // on-disk index unchanged (publish must not overwrite on refusal)
+    expect(existsSyncLocal(outPath)).toBe(true);
+    expect(readFileSync(outPath, "utf8")).toBe(tamperedBytes);
+  });
+
+  test("package file whose basename != name-version.json is skipped", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-mismatch-"));
+    // correctly-named package
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // mismatched filename: manifest other@2.0.0 written as mypkg.json (valid content_hash)
+    const oFiles = { "other.txt": "x" };
+    const oCh = contentHash(new TextEncoder().encode(JSON.stringify(oFiles)));
+    const oKp = generateKeypair();
+    const oM = { format_version: 1, name: "other", version: "2.0.0", content_hash: oCh };
+    const oPkg = { manifest: { ...oM, signature: signManifest(oM, oKp.privatePem) }, files: oFiles };
+    writeFileSync(join(pkgDir, "mypkg.json"), JSON.stringify(oPkg));
+    const keyPath = join(tempHome, "mm.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "mismatch-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    if (!("error" in doc)) {
+      expect(doc.packages.good!["1.0.0"]).toBeDefined();
+      expect(doc.packages.other).toBeUndefined();
+    }
+  });
+
+  test("all package files have mismatched basenames → no valid packages (exit 1)", async () => {
+    const { existsSync: existsSyncLocal } = await import("node:fs");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-allmismatch-"));
+    // only one file, manifest foo@1.0.0 but named mypkg.json
+    const fFiles = { "foo.txt": "x" };
+    const fCh = contentHash(new TextEncoder().encode(JSON.stringify(fFiles)));
+    const fKp = generateKeypair();
+    const fM = { format_version: 1, name: "foo", version: "1.0.0", content_hash: fCh };
+    const fPkg = { manifest: { ...fM, signature: signManifest(fM, fKp.privatePem) }, files: fFiles };
+    writeFileSync(join(pkgDir, "mypkg.json"), JSON.stringify(fPkg));
+    const keyPath = join(tempHome, "am.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "allmismatch-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(1);
+    expect(existsSyncLocal(outPath)).toBe(false);
+  });
+
+  test("package with non-array dependencies is skipped; well-formed sibling is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-baddeps-"));
+    // Good package
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // Bad package: dependencies is a string, not an array
+    const badFiles = { "bad.txt": "x" };
+    const badCh = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const badKp = generateKeypair();
+    const badM = { format_version: 1 as const, name: "bad", version: "1.0.0", content_hash: badCh };
+    const badSig = signManifest(badM, badKp.privatePem);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const badPkg = { manifest: { ...badM, dependencies: "not-an-array" as any, signature: badSig }, files: badFiles };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "bd.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "baddeps-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
+  });
+
+  test("URL-unsafe name is skipped; well-formed sibling is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-urlbad-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // bad: name contains '#', which is URL-unsafe
+    const badName = "bad#x";
+    const badFiles = { "bad.txt": "x" };
+    const badCh = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const badKp = generateKeypair();
+    const badM = { format_version: 1, name: badName, version: "1.0.0", content_hash: badCh };
+    const badPkg = { manifest: { ...badM, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
+    // filename matches <name>-<version>.json so it clears the basename guard, but name is URL-unsafe
+    writeFileSync(join(pkgDir, `${badName}-1.0.0.json`), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "urlbad.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "urlbad-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages[badName]).toBeUndefined();
+    }
+  });
+
+  test("malformed dep edge (missing version) is skipped; well-formed sibling is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-baddep-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // bad: dep edge missing version field
+    const badFiles = { "bad.txt": "x" };
+    const badCh = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const badKp = generateKeypair();
+    const badM = { format_version: 1, name: "bad", version: "1.0.0", content_hash: badCh };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const badPkg = { manifest: { ...badM, dependencies: [{ kind: "registry", name: "dep" }] as any, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "baddep.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "baddep-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
+  });
+
+  test("unsafe file path is skipped; well-formed sibling is indexed", async () => {
+    const { parseIndex } = await import("./registry-remote.ts");
+    const idxKp = generateKeypair();
+    const pkgDir = mkdtempSync(join(tmpdir(), "ace-pub-unsafe-"));
+    writeSignedPkg(pkgDir, "good", "1.0.0");
+    // bad: files key is a path-traversal path
+    const badFiles = { "../escape.txt": "x" };
+    const badCh = contentHash(new TextEncoder().encode(JSON.stringify(badFiles)));
+    const badKp = generateKeypair();
+    const badM = { format_version: 1, name: "bad", version: "1.0.0", content_hash: badCh };
+    const badPkg = { manifest: { ...badM, signature: signManifest(badM, badKp.privatePem) }, files: badFiles };
+    writeFileSync(join(pkgDir, "bad-1.0.0.json"), JSON.stringify(badPkg));
+    const keyPath = join(tempHome, "unsafe.pem"); writeFileSync(keyPath, idxKp.privatePem);
+    const outPath = join(tempHome, "unsafe-index.json");
+    const code = await main(["registry", "publish", "--packages", pkgDir, "--base-url", "https://pkgs", "--key", keyPath, "--out", outPath]);
+    expect(code).toBe(0);
+    const doc = parseIndex(readFileSync(outPath, "utf8"));
+    expect("error" in doc).toBe(false);
+    if (!("error" in doc)) {
+      expect(doc.packages.good).toBeDefined();
+      expect(doc.packages.bad).toBeUndefined();
+    }
+  });
+});
