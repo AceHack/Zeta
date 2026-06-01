@@ -1093,7 +1093,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0977](backlog/P3/B-0977-ace-registry-mirror-failover-multiple-urls-per-registry-deferred-from-slice6-2026-06-01.md)** Ace registry mirror/failover — multiple URLs per registry (deferred from slice 6)
 - [ ] **[B-0978](backlog/P3/B-0978-ace-registry-incremental-paginated-index-deferred-from-slice6-2026-06-01.md)** Ace registry incremental/paginated index — delta updates + range requests (deferred from slice 6)
 - [ ] **[B-0979](backlog/P3/B-0979-ace-registry-full-tuf-role-separation-deferred-from-slice6-2026-06-01.md)** Ace registry full TUF role separation — root/targets/snapshot/timestamp (deferred from slice 6)
-- [ ] **[B-0980](backlog/P3/B-0980-ace-registry-publish-index-generation-tooling-deferred-from-slice6-2026-06-01.md)** Ace `ace registry publish` — index-generation + signing tooling (deferred from slice 6)
+- [x] **[B-0980](backlog/P3/B-0980-ace-registry-publish-index-generation-tooling-deferred-from-slice6-2026-06-01.md)** Ace `ace registry publish` — index-generation + signing tooling (deferred from slice 6)
 - [ ] **[B-0981](backlog/P3/B-0981-ace-registry-key-rotation-multi-signer-thresholds-deferred-from-slice6-2026-06-01.md)** Ace registry per-registry key rotation + multi-signer thresholds (deferred from slice 6)
 
 <!-- END AUTO-GENERATED -->

@@ -1,7 +1,7 @@
 ---
 id: B-0980
 priority: P3
-status: open
+status: closed
 title: Ace `ace registry publish` — index-generation + signing tooling (deferred from slice 6)
 effort: M
 ask: operator 2026-06-01
@@ -42,6 +42,44 @@ The consumer side is what slice 6 needed to resolve against a hosted catalog; an
 be hand-assembled + signed with the test helper for now. First-class publish tooling is
 ergonomics for registry operators, not a consumer capability gap. Operator: *"everything
 we skipped lets slice off for further enhancements."*
+
+## Resolution (2026-06-01 — slice 6.1 core shipped via PR #6439, merge `2d662dbb`)
+
+Core `ace registry publish` shipped. Spec: `docs/agendas/ace-package-manager/2026-06-01-ace-cli-slice6.1-registry-publish-design.md` (spec PR #6434).
+
+**Shipped:**
+
+- `ace registry publish --packages <dir> --base-url <url> --key <pem> [--out index.json]` —
+  scans `<dir>` for `*.json` packages, derives each `url = <base-url>/<name>-<version>.json`
+  + `package_hash = packageHash(pkg)`, assembles + Ed25519-signs the index, sets `issued_at`,
+  auto-bumps `sequence` from an existing `--out` (read as prev), and **round-trip self-verifies**
+  (consumer `parseIndex` + `verifyIndexSignature` under the signing key's own public key)
+  before writing — never writes a non-self-verifying index.
+- **Publish-side anti-rollback:** refuses to auto-bump from an existing `--out` whose
+  signature does not verify under `--key`, and refuses an unparseable `--out` (no silent
+  sequence reset that would look like a rollback to consumers).
+- **Input-validation hardening** (skip+warn any package that would fail on a consumer, so a
+  self-verified index can't point at an un-installable package): non-Ed25519 `--key` refused;
+  `content_hash` required + must match `files`; basename must equal `<name>-<version>.json`;
+  reserved prototype-key identities (`__proto__`/`constructor`/`prototype`) rejected;
+  URL-unsafe name/version characters rejected; `dependencies` must be a well-formed array of
+  valid `AceDependency` edges; every `files` value must be a string; unsafe file paths
+  (`../`/absolute) rejected by reusing the consumer's `validatePackagePaths`.
+- **Deterministic output:** packages sorted by `(name, version)` so re-publishing yields a
+  byte-stable `index.json`.
+- Surfaces: `tools/ace/registry-publish.ts` (pure module) + `ace.ts` `registry publish`
+  handler + `signing.ts` `publicKeyInfoFromPrivatePem` + `.claude/skills/ace/SKILL.md`
+  publish section + unit + e2e tests.
+
+**Deferred (future enhancement candidates — not blocking; core is complete):**
+
+- Per-package `url` override (the "maybe 2" URL model — operator chose base-url-only for now).
+- ETag / Last-Modified sidecar emission for static hosting.
+- Multi-directory / `--packages` list input (currently one dir).
+- Explicit `--sequence` override flag (currently auto-bump only; the dead anti-rollback
+  guard already in the handler covers the future flag).
+- Incremental index → B-0978; full TUF role separation → B-0979; key rotation / multi-signer
+  → B-0981 (already rowed).
 
 ## Composes with
 
