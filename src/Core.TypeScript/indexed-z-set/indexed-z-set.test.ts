@@ -20,12 +20,15 @@ import {
   equals as zEquals,
   ofEntries as zOfEntries,
   stringCompare,
+  type AbelianGroup,
   type Compare,
   type ZEntry,
   type ZSet,
 } from "../z-set/z-set";
 import {
+  abelianGroup,
   add,
+  concatAll,
   empty,
   equals,
   get,
@@ -34,6 +37,7 @@ import {
   type IndexedZSet,
   join,
   keyCount,
+  monoid,
   neg,
   ofGroups,
   sub,
@@ -177,5 +181,89 @@ describe("IndexedZSet — construction + lookup", () => {
       src,
     );
     expect(isEmpty(idx)).toBe(true);
+  });
+});
+
+describe("IndexedZSet — generic-math abelian-group surface (monoid / abelianGroup / concatAll)", () => {
+  // TS has no operator overloading, so the dotnet-numerics interface is a record:
+  // a Monoid (empty + concat) extended to an AbelianGroup with invert + subtract
+  // (reusing the shared interfaces from g-set/z-set). Twins: F# Zero/(+)/(~-)/(-),
+  // C# IWSAM, Rust std::ops. The last ladder rung.
+  const ixz = (triples: readonly [string, string, number][]): IndexedZSet<string, string> =>
+    indexWith<Pair, string, string>(
+      cmp,
+      cmp,
+      (p) => p.k,
+      (p) => p.v,
+      zOfEntries(
+        pairCompare,
+        triples.map(([k, v, w]) => ({ e: { k, v }, w })),
+      ),
+    );
+
+  const a = ixz([
+    ["k1", "a", 1],
+    ["k2", "b", 2],
+  ]);
+  const b = ixz([
+    ["k2", "b", 1],
+    ["k3", "c", 3],
+  ]);
+
+  it("monoid: concat == add, empty is the identity", () => {
+    const m = monoid<string, string>(cmp, cmp);
+    expect(eqI(m.concat(a, b), add(cmp, cmp, a, b))).toBe(true);
+    expect(eqI(m.concat(m.empty, a), a)).toBe(true);
+    expect(eqI(m.concat(a, m.empty), a)).toBe(true);
+    expect(isEmpty(m.empty)).toBe(true);
+  });
+
+  it("abelianGroup: invert == neg, subtract == sub, and is a Monoid", () => {
+    const g: AbelianGroup<IndexedZSet<string, string>> = abelianGroup<string, string>(cmp, cmp);
+    expect(eqI(g.invert(a), neg(a))).toBe(true);
+    expect(eqI(g.subtract(a, b), sub(cmp, cmp, a, b))).toBe(true);
+    expect(eqI(g.concat(a, b), add(cmp, cmp, a, b))).toBe(true); // extends Monoid
+    expect(isEmpty(g.empty)).toBe(true);
+  });
+
+  it("inverse law: concat(a, invert(a)) == empty and subtract(a, a) == empty", () => {
+    const g = abelianGroup<string, string>(cmp, cmp);
+    const z = ixz([
+      ["k1", "a", 1],
+      ["k2", "b", -2],
+      ["k2", "c", 3],
+    ]);
+    expect(isEmpty(g.concat(z, g.invert(z)))).toBe(true); // the law a Bag cannot satisfy
+    expect(isEmpty(g.subtract(z, z))).toBe(true);
+  });
+
+  it("concat is NOT idempotent: concat(a, a) doubles every value-weight", () => {
+    const g = abelianGroup<string, string>(cmp, cmp);
+    const z = ixz([
+      ["k", "a", 1],
+      ["k", "b", -3],
+    ]);
+    expect(
+      eqI(
+        g.concat(z, z),
+        ixz([
+          ["k", "a", 2],
+          ["k", "b", -6],
+        ]),
+      ),
+    ).toBe(true);
+  });
+
+  it("concatAll folds a collection (key empties out and drops; [] => empty)", () => {
+    const parts = [
+      ixz([["k1", "a", 1]]),
+      ixz([
+        ["k1", "a", 1],
+        ["k2", "b", 2],
+      ]),
+      ixz([["k2", "b", -2]]),
+    ];
+    expect(eqI(concatAll(cmp, cmp, parts), ixz([["k1", "a", 2]]))).toBe(true);
+    expect(isEmpty(concatAll(cmp, cmp, []))).toBe(true);
   });
 });

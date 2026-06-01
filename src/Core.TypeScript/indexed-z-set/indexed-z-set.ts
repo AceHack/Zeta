@@ -20,6 +20,7 @@
  * matching keys' value-Z-sets with weight-multiply + consolidate.
  */
 
+import type { Monoid } from "../g-set/g-set";
 import {
   empty as zEmpty,
   isEmpty as zIsEmpty,
@@ -27,6 +28,7 @@ import {
   ofEntries as zOfEntries,
   toEntries as zToEntries,
   union as zUnion,
+  type AbelianGroup,
   type Compare,
   type ZEntry,
   type ZSet,
@@ -273,4 +275,55 @@ export function equals<K, V>(
     }
   }
   return true;
+}
+
+// ── generic-math abelian-group surface (record idiom — TS has no operators) ──
+// "numerics like dotnet as our interface, push to other langs if they don't
+// have" (Aaron 2026-06-01). The last ladder rung. IndexedZSet (Z[K×V]) is an
+// abelian GROUP — same surface as the Z-set rung (#6483): reuse the shared
+// `Monoid` (g-set) + `AbelianGroup` (z-set) interfaces. NOT INumber — the ring
+// product is the bilinear `join`, surfaced separately, not a numeric multiply.
+// Factories are comparator-specific in BOTH key and value comparers (the per-key
+// value-Z-set merge needs the value comparer), like the Z-set/Bag twins.
+
+/**
+ * The additive-monoid view of an IndexedZSet under `compareK` / `compareV`:
+ * `empty` (identity) + `concat` (= group-wise {@link add}; the per-key value-Z-set
+ * merge needs the value comparer). Matches the G-Set/Bag/Z-set `monoid` factories
+ * so generic monoid code can fold a collection (see {@link concatAll}).
+ */
+export function monoid<K, V>(compareK: Compare<K>, compareV: Compare<V>): Monoid<IndexedZSet<K, V>> {
+  return {
+    empty: empty<K, V>(),
+    concat: (a, b) => add(compareK, compareV, a, b),
+  };
+}
+
+/**
+ * The abelian-group surface of an IndexedZSet under `compareK` / `compareV`:
+ * `empty` + `concat` (= {@link add}) + `invert` (= {@link neg}) + `subtract`
+ * (= {@link sub}). The distinguishing surface over the Bag (no inverse);
+ * `concat(a, invert(a))` is empty.
+ */
+export function abelianGroup<K, V>(compareK: Compare<K>, compareV: Compare<V>): AbelianGroup<IndexedZSet<K, V>> {
+  return {
+    empty: empty<K, V>(),
+    concat: (a, b) => add(compareK, compareV, a, b),
+    invert: (a) => neg(a),
+    subtract: (a, b) => sub(compareK, compareV, a, b),
+  };
+}
+
+/**
+ * Fold a collection of IndexedZSets through the monoid (identity + `concat`) — the
+ * "generic code folds it for free" payoff (the TS analog of Rust's `Sum` / F#'s
+ * `Seq.sum`). Keys whose value-Z-sets empty out (retraction-to-0) drop as it folds.
+ */
+export function concatAll<K, V>(
+  compareK: Compare<K>,
+  compareV: Compare<V>,
+  is: readonly IndexedZSet<K, V>[],
+): IndexedZSet<K, V> {
+  const m = monoid<K, V>(compareK, compareV);
+  return is.reduce(m.concat, m.empty);
 }
