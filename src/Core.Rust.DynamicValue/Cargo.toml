@@ -1,0 +1,20 @@
+[package]
+name = "zeta-core-dynamic-value"
+version = "0.1.0"
+edition = "2024"
+description = "DynamicValue -- the universal self-describing-payload primitive. Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language byte-lock (B-0944, \"the compilers don't lie\"). Grown from the shared seed src/Core.TypeScript/dynamic-value/golden-vectors.json (seed-first): the canonical-JSON encoder AGREES on it (encode(value) === json). v1 locks null/bool/int/string/array/object; Float + Bytes are deferred. Zero-dependency production core; serde_json is DEV-ONLY for the cross-verify fixture parse."
+license = "Apache-2.0"
+publish = false
+
+# Production default = ZERO external dependencies (supply-chain doctrine).
+[dependencies]
+
+# serde_json is DEV-ONLY: the cross-verify test reads the shared nested-JSON
+# golden-vectors.json fixture, for which a real parser is warranted; we match the
+# Core.Rust.{Observe,Algebra} pin ("1"). The production crate has no dependencies.
+[dev-dependencies]
+serde_json = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
