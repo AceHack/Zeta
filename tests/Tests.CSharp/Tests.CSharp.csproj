@@ -19,6 +19,7 @@
     <ProjectReference Include="..\..\src\Core.CSharp.Observe\Zeta.Core.CSharp.Observe.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Bonsai\Zeta.Core.CSharp.Bonsai.csproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Resume\Zeta.Core.CSharp.Resume.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.RangeSet\Zeta.Core.CSharp.RangeSet.csproj" />
   </ItemGroup>
 
   <ItemGroup>

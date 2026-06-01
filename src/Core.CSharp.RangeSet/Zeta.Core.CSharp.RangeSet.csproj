@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Zeta.Core.CSharp.RangeSet</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.RangeSet</AssemblyName>
+  </PropertyGroup>
+
+  <!-- RangeSet (oracle #3 of TS/F#/C#/Rust) — a sparse-integer-set primitive in compact range
+       notation. Self-contained, ZERO external dependencies (supply-chain doctrine): owns its
+       minimal Result port; render hand-rolls canonical compact bytes (no JsonSerializer). -->
+
+</Project>
