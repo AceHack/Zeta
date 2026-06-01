@@ -1,5 +1,7 @@
 import { deepEqual, equal, ok } from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import { test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import {
   ActRejectionReason,
@@ -21,6 +23,22 @@ import {
   runAgentCliMain,
   type AgentCliMainRuntime,
 } from "../src/agent-cli-main.ts";
+
+test("package metadata exposes observe-act as the production CLI entrypoint", async () => {
+  const packageJsonUrl = new URL("../../../package.json", import.meta.url);
+  const packageJson = JSON.parse(await readFile(fileURLToPath(packageJsonUrl), "utf8")) as {
+    scripts?: Record<string, string>;
+    bin?: Record<string, string>;
+    engines?: Record<string, string>;
+  };
+  const mainEntrypointUrl = new URL("../src/main.ts", import.meta.url);
+  const mainEntrypoint = await readFile(fileURLToPath(mainEntrypointUrl), "utf8");
+
+  equal(packageJson.scripts?.["agent:observe"], "node --experimental-strip-types apps/agent-cli/src/main.ts");
+  equal(packageJson.bin?.["agentic-org-observe"], "./apps/agent-cli/src/main.ts");
+  equal(packageJson.engines?.node, ">=22.12.0");
+  ok(mainEntrypoint.startsWith("#!/usr/bin/env -S node --experimental-strip-types\n"));
+});
 
 test("resolveAgentCliProductionRuntime fails closed without COCKROACH_DATABASE_URL", async () => {
   const resolved = await resolveAgentCliProductionRuntime({

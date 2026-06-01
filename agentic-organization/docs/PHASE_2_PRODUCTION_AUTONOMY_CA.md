@@ -312,9 +312,6 @@ worker path.
 
 **Current production blockers:**
 
-- `apps/agent-cli/src/main.ts` still wires `runCommand` and `dispatchTool` to
-  not-wired stubs;
-- the CLI lacks package/bin readiness as an executable production surface;
 - the current slot layout is not yet the full ADR controller grammar;
 - all-vetoed work menus now render disabled commit slots with reasons and keep
   safe meta controls reachable for refresh/status/rest/escalation;
@@ -415,6 +412,17 @@ result of executing that selection. CLI and worker-lane events include
 evidence refs, so no-op/request choices such as rest, grammar-branch, history
 retract, and history redo are auditable from durable org events without scraping
 stdout.
+
+**Checkpoint 2026-06-01: production CLI entrypoint readiness**
+
+The observe-act foreground loop now has a tested executable surface. The root
+`agentic-organization/package.json` exposes `npm run agent:observe` and the
+`agentic-org-observe` bin entry, while `apps/agent-cli/src/main.ts` has the
+`node --experimental-strip-types` shebang expected by that bin. The package
+metadata test also anchors the Node engine floor used by the executable path.
+This moves package/bin readiness out of the blocker list; remaining production
+work is primary-lane rollout, controller-grammar completion, and deeper typed
+feedback coverage.
 
 **Algorithms:**
 
