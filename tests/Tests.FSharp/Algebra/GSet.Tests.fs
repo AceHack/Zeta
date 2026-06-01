@@ -65,6 +65,40 @@ let ``custom equality: order-independent inputs are equal + hash-stable`` () =
     a.GetHashCode() |> should equal (b.GetHashCode())
     (a = GSet.ofSeq [ "a"; "b" ]) |> should equal false
 
+// ─── generic-math additive-monoid surface (Zero + (+)) ─────────────────────
+// G-Set is an additive, commutative + idempotent monoid, so it surfaces the
+// native F# generic-math idiom `Zero` + `(+)` (NOT `INumber` — no inverse /
+// order / product). These lock `(+)` to `union` and `Zero` to `empty` so generic
+// numeric code (`GenericZero`, SRTP-constrained folds) can aggregate a G-Set.
+
+[<Fact>]
+let ``(+) merges to the explicit union result (semantics, not just delegation)`` () =
+    // assert the actual merged content, not `(+) = union` (which is tautological now that
+    // `union` delegates to `(+)`) — proves `(+)` produces the correct sorted-unique merge
+    let a = GSet.ofSeq [ "a"; "b" ]
+    let b = GSet.ofSeq [ "b"; "c" ]
+    (a + b) |> GSet.toList |> should equal [ "a"; "b"; "c" ]
+
+[<Fact>]
+let ``Zero is the additive identity: Zero + a = a and a + Zero = a`` () =
+    let a = GSet.ofSeq [ "a"; "b" ]
+    (GSet<string>.Zero + a) |> should equal a
+    (a + GSet<string>.Zero) |> should equal a
+
+[<Fact>]
+let ``Zero equals empty and is recognized by GenericZero`` () =
+    GSet<string>.Zero |> should equal GSet.empty<string>
+    LanguagePrimitives.GenericZero<GSet<string>> |> should equal GSet.empty<string>
+
+[<Fact>]
+let ``(+) monoid laws: idempotent + commutative + associative`` () =
+    let a = GSet.ofSeq [ "a"; "b" ]
+    let b = GSet.ofSeq [ "b"; "c" ]
+    let c = GSet.ofSeq [ "c"; "d" ]
+    (a + a) |> should equal a // idempotent
+    (a + b) |> should equal (b + a) // commutative
+    ((a + b) + c) |> should equal (a + (b + c)) // associative
+
 // ─── Shared golden vector (cross-language parity lock) ─────────────────────
 
 /// Walk up from the test assembly to the repo root (Zeta.sln sentinel) — same

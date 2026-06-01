@@ -38,6 +38,39 @@ type GSet<'T when 'T : comparison> =
 
     static member Empty : GSet<'T> = GSet(ImmutableArray<'T>.Empty)
 
+    /// The additive-monoid identity (generic-math `Zero`) — an alias for `Empty`,
+    /// recognized by F# SRTP / `LanguagePrimitives.GenericZero` + generic numeric
+    /// code. G-Set is an additive, **commutative + idempotent** monoid (identity +
+    /// associative `union`, **no inverse**), so it surfaces `Zero` + `(+)` only —
+    /// never `INumber` (no negation / order / multiplication). `(+)` IS `union`.
+    static member Zero : GSet<'T> = GSet<'T>.Empty
+
+    /// The additive operator (generic-math `(+)`): the CRDT `union` merge of two
+    /// sorted-unique runs, kept sorted-unique. Idempotent + commutative +
+    /// associative. The canonical home of the merge; `GSet.union` delegates here.
+    static member (+) (a: GSet<'T>, b: GSet<'T>) : GSet<'T> =
+        let xa = if a.items.IsDefault then ImmutableArray<'T>.Empty else a.items
+        let xb = if b.items.IsDefault then ImmutableArray<'T>.Empty else b.items
+        if xa.IsEmpty then GSet<'T>(xb)
+        elif xb.IsEmpty then GSet<'T>(xa)
+        else
+            let out = ImmutableArray.CreateBuilder<'T>(xa.Length + xb.Length)
+            let mutable i = 0
+            let mutable j = 0
+            while i < xa.Length && j < xb.Length do
+                let c = Comparer<'T>.Default.Compare(xa.[i], xb.[j])
+                if c < 0 then
+                    out.Add(xa.[i]); i <- i + 1
+                elif c > 0 then
+                    out.Add(xb.[j]); j <- j + 1
+                else
+                    out.Add(xa.[i]); i <- i + 1; j <- j + 1 // duplicate → keep one
+            while i < xa.Length do
+                out.Add(xa.[i]); i <- i + 1
+            while j < xb.Length do
+                out.Add(xb.[j]); j <- j + 1
+            GSet<'T>(out.ToImmutable())
+
     member this.Count =
         if this.items.IsDefault then 0 else this.items.Length
 
@@ -128,29 +161,9 @@ module GSet =
     /// The CRDT merge: the union of two sorted-unique runs, kept sorted-unique.
     /// Idempotent (`union a a = a`), commutative (`union a b = union b a`), and
     /// associative — verified by the law tests + the cross-language golden
-    /// vector.
-    let union (a: GSet<'T>) (b: GSet<'T>) : GSet<'T> =
-        let xa = if a.items.IsDefault then ImmutableArray<'T>.Empty else a.items
-        let xb = if b.items.IsDefault then ImmutableArray<'T>.Empty else b.items
-        if xa.IsEmpty then GSet<'T>(xb)
-        elif xb.IsEmpty then GSet<'T>(xa)
-        else
-            let out = ImmutableArray.CreateBuilder<'T>(xa.Length + xb.Length)
-            let mutable i = 0
-            let mutable j = 0
-            while i < xa.Length && j < xb.Length do
-                let c = Comparer<'T>.Default.Compare(xa.[i], xb.[j])
-                if c < 0 then
-                    out.Add(xa.[i]); i <- i + 1
-                elif c > 0 then
-                    out.Add(xb.[j]); j <- j + 1
-                else
-                    out.Add(xa.[i]); i <- i + 1; j <- j + 1 // duplicate → keep one
-            while i < xa.Length do
-                out.Add(xa.[i]); i <- i + 1
-            while j < xb.Length do
-                out.Add(xb.[j]); j <- j + 1
-            GSet<'T>(out.ToImmutable())
+    /// vector. Delegates to the type's generic-math `(+)` operator: same merge,
+    /// one canonical implementation (so `union` and `(+)` can never drift).
+    let union (a: GSet<'T>) (b: GSet<'T>) : GSet<'T> = a + b
 
     /// Add one element (`union` with a singleton). Idempotent: adding a present
     /// element returns an equal set.
