@@ -104,10 +104,27 @@ function slug(identity: string): string {
   return identity.replace(/[^A-Za-z0-9._@+-]/g, "_");
 }
 
+/** Every flag the CLI recognizes — a typo'd/unsupported `--flag` must error, not be
+ *  silently ignored once a mode flag is present (e.g. `--recipent` dropping a recipient). */
+const KNOWN_FLAGS: ReadonlySet<string> = new Set([
+  "--list-algs", "--validate", "--dry-run-envelope",
+  "--gen-recipient", "--out-dir", "--force",
+  "--encrypt-file", "--self-key", "--recipient", "--out",
+  "--decrypt-file", "--key", "--sender-sig",
+]);
+
 function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
   const args = argv.slice(2);
   if (args.length === 0) {
     return { error: "no mode specified — see file header for usage" };
+  }
+  // Reject unknown flags BEFORE dispatch — otherwise a misspelled flag (e.g.
+  // `--recipent`) is silently ignored once a mode flag is present, which for a
+  // crypto CLI can mean encrypting to fewer recipients than intended. (Values that
+  // begin with `--` are already treated as a missing value by `valueFlag`.)
+  const unknown = args.filter((a) => a.startsWith("--") && !KNOWN_FLAGS.has(a));
+  if (unknown.length > 0) {
+    return { error: `unrecognized flag(s): ${unknown.join(", ")}` };
   }
   if (args.includes("--list-algs")) return { mode: "list-algs" };
   if (args.includes("--validate")) return { mode: "validate" };
