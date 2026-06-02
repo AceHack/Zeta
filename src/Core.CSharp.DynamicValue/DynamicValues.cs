@@ -958,9 +958,10 @@ public static class DynamicValues
                 return DecodeError.UnexpectedEnd; // 'u' + 4 hex digits
             }
 
-            // require exactly 4 hex digits — a partial parse would silently accept malformed \uXXXX
+            // require exactly 4 hex digits — AllowHexSpecifier (NOT HexNumber, which also permits
+            // leading/trailing whitespace) so a "\u 001"-style escape is rejected, not trimmed
             if (!ushort.TryParse(
-                    s.AsSpan(pos + 1, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort code))
+                    s.AsSpan(pos + 1, 4), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out ushort code))
             {
                 return DecodeError.UnexpectedEnd;
             }

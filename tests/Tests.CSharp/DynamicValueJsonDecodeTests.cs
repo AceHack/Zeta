@@ -120,6 +120,8 @@ public class DynamicValueJsonDecodeTests
     [InlineData("{\"a\"", DecodeError.UnexpectedEnd)] // object missing colon+value
     [InlineData("\"unterminated", DecodeError.UnexpectedEnd)] // unterminated string
     [InlineData("\"\\u00gg\"", DecodeError.UnexpectedEnd)] // \uXXXX with non-hex digits
+    [InlineData("\"\\u 001\"", DecodeError.UnexpectedEnd)] // \uXXXX leading whitespace (HexNumber would trim)
+    [InlineData("\"\\u001 \"", DecodeError.UnexpectedEnd)] // \uXXXX trailing whitespace
     [InlineData("\"\\q\"", DecodeError.UnexpectedEnd)] // invalid escape
     [InlineData("1.", DecodeError.UnexpectedEnd)] // no digit after '.'
     [InlineData("1e", DecodeError.UnexpectedEnd)] // no exponent digits
