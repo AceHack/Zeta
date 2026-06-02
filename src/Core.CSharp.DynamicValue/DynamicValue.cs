@@ -22,8 +22,9 @@ namespace Zeta.Core.CSharp;
 /// <see cref="DynamicValues"/> companion. Equality is structural and hand-written for the
 /// collection shapes: <see cref="Bytes"/> compares CONTENTS (not the
 /// <see cref="ImmutableArray{T}"/> reference); <see cref="Array"/> / <see cref="Object"/> recurse;
-/// <see cref="Object"/> is order-sensitive (insertion order is preserved; a canonical wire encoder
-/// sorts keys when byte-locking).
+/// <see cref="Object"/> is order-sensitive (insertion order is preserved; the canonical wire
+/// encoder PRESERVES that order when byte-locking — a key-sorting form would be lossy /
+/// non-bijective for an order-significant value; see <see cref="DynamicValues.ToCanonicalJson"/>).
 /// </summary>
 public abstract record DynamicValue
 {
@@ -140,8 +141,9 @@ public abstract record DynamicValue
     }
 
     /// <summary>An ordered key → value object. Equality is order-sensitive and recurses (the value
-    /// tree preserves insertion order; a canonical wire encoder sorts keys when byte-locking); a
-    /// default (uninitialized) array normalizes to empty.</summary>
+    /// tree preserves insertion order; the canonical wire encoder PRESERVES that order when
+    /// byte-locking — key-sorting would be lossy / non-bijective); a default (uninitialized) array
+    /// normalizes to empty.</summary>
     public sealed record Object : DynamicValue
     {
         /// <summary>Initializes the object (a default array normalizes to empty).</summary>

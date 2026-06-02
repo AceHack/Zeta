@@ -4,6 +4,7 @@
 
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Text;
 
 namespace Zeta.Core.CSharp;
 
@@ -178,5 +179,171 @@ public static class DynamicValues
         return int.TryParse(segment.AsSpan(start, j - start), NumberStyles.None, CultureInfo.InvariantCulture, out index)
             ? j + 1
             : -1;
+    }
+
+    /// <summary>Canonical JSON encoding — the byte-lock target (the shared seed is
+    /// <c>src/Core.TypeScript/dynamic-value/golden-vectors.json</c>). Minified; <see
+    /// cref="DynamicValue.Object"/> keys in INSERTION order — NOT sorted, because Object is
+    /// order-significant, so a key-sorting canonical form (JCS / RFC 8785 / CBOR §4.2) would be
+    /// lossy / non-bijective; <see cref="DynamicValue.Int"/> = bare exact decimal (invariant);
+    /// strings per RFC 8259 minimal escaping. v1 locks null/bool/int/string/array/object;
+    /// <see cref="DynamicValue.Float"/> and <see cref="DynamicValue.Bytes"/> are DEFERRED (no
+    /// canonical JSON form yet) and surfaced as <see cref="Result{T, TError}.Err"/> data per the
+    /// Result-over-exception hard rule (AGENTS.md), never thrown.</summary>
+    /// <param name="value">the value to encode.</param>
+    /// <returns><see cref="Result{T, TError}.Ok"/> with the canonical JSON, or
+    /// <see cref="Result{T, TError}.Err"/> carrying the deferred-variant reason.</returns>
+    public static Result<string, EncodeError> ToCanonicalJson(DynamicValue value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+
+        if (FirstDeferred(value) is EncodeError deferred)
+        {
+            return new Result<string, EncodeError>.Err(deferred);
+        }
+
+        var sb = new StringBuilder();
+        WriteCanonical(sb, value);
+        return new Result<string, EncodeError>.Ok(sb.ToString());
+    }
+
+    // The first deferred variant (Float/Bytes) anywhere in the tree, or null if fully encodable.
+    private static EncodeError? FirstDeferred(DynamicValue value)
+    {
+        switch (value)
+        {
+            case DynamicValue.Float:
+                return EncodeError.FloatDeferred;
+            case DynamicValue.Bytes:
+                return EncodeError.BytesDeferred;
+            case DynamicValue.Array a:
+                // first deferred among the items (Select is lazy; FirstOrDefault short-circuits)
+                return a.Items.Select(FirstDeferred).FirstOrDefault(e => e is not null);
+            case DynamicValue.Object o:
+                return o.Pairs.Select(pair => FirstDeferred(pair.Value)).FirstOrDefault(e => e is not null);
+            default:
+                return null;
+        }
+    }
+
+    private static void WriteCanonical(StringBuilder sb, DynamicValue value)
+    {
+        switch (value)
+        {
+            case DynamicValue.Null:
+                sb.Append("null");
+                break;
+            case DynamicValue.Bool b:
+                sb.Append(b.Value ? "true" : "false");
+                break;
+            case DynamicValue.Int i:
+                sb.Append(i.Value.ToString(CultureInfo.InvariantCulture));
+                break;
+            case DynamicValue.String s:
+                AppendEscaped(sb, s.Value);
+                break;
+            case DynamicValue.Array a:
+                sb.Append('[');
+                for (int k = 0; k < a.Items.Length; k++)
+                {
+                    if (k > 0)
+                    {
+                        sb.Append(',');
+                    }
+
+                    WriteCanonical(sb, a.Items[k]);
+                }
+
+                sb.Append(']');
+                break;
+            case DynamicValue.Object o:
+                sb.Append('{');
+                for (int k = 0; k < o.Pairs.Length; k++)
+                {
+                    if (k > 0)
+                    {
+                        sb.Append(',');
+                    }
+
+                    AppendEscaped(sb, o.Pairs[k].Key);
+                    sb.Append(':');
+                    WriteCanonical(sb, o.Pairs[k].Value);
+                }
+
+                sb.Append('}');
+                break;
+            default:
+                // Unreachable: null is guarded, Float/Bytes are caught by FirstDeferred.
+                throw new InvalidOperationException(
+                    $"WriteCanonical reached a non-locked variant ({value.Type}); should be pre-checked by FirstDeferred");
+        }
+    }
+
+    // JSON string literal (incl. surrounding quotes), RFC 8259 minimal escaping: '"' and '\' and
+    // control chars U+0000..U+001F (short forms where they exist, else \u00XX lowercase-hex); '/'
+    // is NOT escaped; valid surrogate PAIRS emit the astral char raw, but LONE surrogates are
+    // \u-escaped (a raw lone surrogate is invalid Unicode + non-bijective under UTF-8 byte-lock);
+    // all other characters emitted raw.
+    private static void AppendEscaped(StringBuilder sb, string? rawValue)
+    {
+        // Null-safe: normalize a malformed null String payload / object key (reachable via
+        // nullable-disabled / interop callers) to empty, so the encoder never throws here.
+        string s = rawValue ?? string.Empty;
+        sb.Append('"');
+        for (int i = 0; i < s.Length; i++)
+        {
+            char ch = s[i];
+            switch (ch)
+            {
+                case '"':
+                    sb.Append("\\\"");
+                    break;
+                case '\\':
+                    sb.Append("\\\\");
+                    break;
+                case '\b':
+                    sb.Append("\\b");
+                    break;
+                case '\f':
+                    sb.Append("\\f");
+                    break;
+                case '\n':
+                    sb.Append("\\n");
+                    break;
+                case '\r':
+                    sb.Append("\\r");
+                    break;
+                case '\t':
+                    sb.Append("\\t");
+                    break;
+                default:
+                    if (ch < 0x20)
+                    {
+                        sb.Append("\\u");
+                        sb.Append(((int)ch).ToString("x4", CultureInfo.InvariantCulture));
+                    }
+                    else if (char.IsHighSurrogate(ch) && i + 1 < s.Length && char.IsLowSurrogate(s[i + 1]))
+                    {
+                        // valid surrogate pair -> emit the astral char raw
+                        sb.Append(ch);
+                        sb.Append(s[i + 1]);
+                        i++;
+                    }
+                    else if (char.IsSurrogate(ch))
+                    {
+                        // lone surrogate -> escape (raw would be invalid Unicode / non-bijective)
+                        sb.Append("\\u");
+                        sb.Append(((int)ch).ToString("x4", CultureInfo.InvariantCulture));
+                    }
+                    else
+                    {
+                        sb.Append(ch);
+                    }
+
+                    break;
+            }
+        }
+
+        sb.Append('"');
     }
 }
