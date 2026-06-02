@@ -69,8 +69,11 @@ type DynamicValueType =
 /// Equality is structural but hand-written (`Bytes` compares contents, not the
 /// `ImmutableArray` reference; arrays/objects recurse). `Object` is an ORDERED
 /// key→value list: two objects with the same pairs in different orders are NOT
-/// equal — the value tree preserves insertion order, and a canonical wire encoder
-/// sorts keys when byte-locking. (Caveat: `Float` equality is .NET double
+/// equal — the value tree preserves insertion order, and the canonical wire
+/// encoder (`toCanonicalJson`) PRESERVES that insertion order when byte-locking
+/// (a key-sorting canonical form — JCS / RFC 8785 / CBOR §4.2 — would be lossy /
+/// non-bijective for an order-significant value, so it is rejected; see the seed
+/// `src/Core.TypeScript/dynamic-value/golden-vectors.json`). (Caveat: `Float` equality is .NET double
 /// equality, so `nan = nan` is true and `-0.0 = 0.0`; canonical encoding handles
 /// those on the wire.)
 ///
@@ -132,6 +135,17 @@ type DynamicValue =
             for (k, v) in pairs do
                 h <- (h * 31) ^^^ hash k ^^^ v.GetHashCode()
             h
+
+/// Why a `DynamicValue` could not be canonically encoded (v1). `Float` and
+/// `Bytes` have no canonical JSON form yet (they lock under CBOR or a tagged-JSON
+/// convention); surfaced as data per the Result-over-exception hard rule
+/// (AGENTS.md), never thrown.
+[<RequireQualifiedAccess>]
+type EncodeError =
+    /// `DynamicValue.Float` has no canonical shortest-float form in plain JSON.
+    | FloatDeferred
+    /// `DynamicValue.Bytes` has no native JSON byte type.
+    | BytesDeferred
 
 /// Companion module (the `Option`/`List` type-plus-module pattern): the tag
 /// accessor, the lazy-bind `try*` accessors, and `PropertyPath` navigation.
@@ -291,3 +305,99 @@ module DynamicValue =
     /// An empty path returns the value itself.
     let get (path: string) (value: DynamicValue) : DynamicValue option =
         tryParsePath path |> Option.bind (fun steps -> navigate steps value)
+
+    /// Escape a string as a JSON string literal (including the surrounding
+    /// quotes), RFC 8259 minimal escaping: '"' and '\' and control chars
+    /// U+0000..U+001F (short forms where they exist, else \u00XX lowercase-hex);
+    /// '/' is NOT escaped; valid surrogate PAIRS are emitted raw (the astral
+    /// char), but LONE surrogates are \u-escaped (a raw lone surrogate is not
+    /// valid Unicode and would be replaced by UTF-8 byte-locking, breaking
+    /// bijectivity); all other characters are emitted raw.
+    let private escapeJsonString (rawValue: string) : string =
+        // Null-safe: a `DynamicValue.String null` / null object key is malformed (the
+        // Null shape is for null) but reachable via nullable-disabled C# / interop;
+        // normalize null -> empty (mirroring the records' default-array normalization)
+        // so the Result-advertising encoder never throws an NRE here.
+        // (the module shadows F#'s `isNull` with the DynamicValue tag accessor, so
+        // use ReferenceEquals for the BCL-string null check)
+        let s = if System.Object.ReferenceEquals(rawValue, null) then "" else rawValue
+        let sb = System.Text.StringBuilder(s.Length + 2)
+        sb.Append('"') |> ignore
+        let mutable i = 0
+
+        while i < s.Length do
+            let ch = s.[i]
+
+            match ch with
+            | '"' ->
+                sb.Append("\\\"") |> ignore
+                i <- i + 1
+            | '\\' ->
+                sb.Append("\\\\") |> ignore
+                i <- i + 1
+            | '\b' ->
+                sb.Append("\\b") |> ignore
+                i <- i + 1
+            | '\f' ->
+                sb.Append("\\f") |> ignore
+                i <- i + 1
+            | '\n' ->
+                sb.Append("\\n") |> ignore
+                i <- i + 1
+            | '\r' ->
+                sb.Append("\\r") |> ignore
+                i <- i + 1
+            | '\t' ->
+                sb.Append("\\t") |> ignore
+                i <- i + 1
+            | c when int c < 0x20 ->
+                sb.AppendFormat("\\u{0:x4}", int c) |> ignore
+                i <- i + 1
+            | c when System.Char.IsHighSurrogate c && i + 1 < s.Length && System.Char.IsLowSurrogate s.[i + 1] ->
+                // valid surrogate pair -> emit the astral char raw
+                sb.Append(c) |> ignore
+                sb.Append(s.[i + 1]) |> ignore
+                i <- i + 2
+            | c when System.Char.IsSurrogate c ->
+                // lone surrogate -> escape (raw would be invalid Unicode / non-bijective)
+                sb.AppendFormat("\\u{0:x4}", int c) |> ignore
+                i <- i + 1
+            | c ->
+                sb.Append(c) |> ignore
+                i <- i + 1
+
+        sb.Append('"') |> ignore
+        sb.ToString()
+
+    /// Canonical JSON encoding — the byte-lock target (the shared seed is
+    /// `src/Core.TypeScript/dynamic-value/golden-vectors.json`). Minified (no
+    /// insignificant whitespace); `Object` keys in INSERTION order — NOT sorted,
+    /// because `Object` is order-significant, so a key-sorting canonical form
+    /// (JCS / RFC 8785 / CBOR §4.2) would be lossy / non-bijective; `Int` = bare
+    /// exact decimal (invariant culture); `String` per `escapeJsonString`. v1
+    /// locks null/bool/int/string/array/object; `Float` and `Bytes` are DEFERRED
+    /// (no canonical JSON form yet — they lock under CBOR or a tagged-JSON
+    /// convention) and are surfaced as `Error EncodeError.*` data per the
+    /// Result-over-exception hard rule (AGENTS.md), never thrown.
+    let rec toCanonicalJson (value: DynamicValue) : Result<string, EncodeError> =
+        match value with
+        | DynamicValue.Null -> Ok "null"
+        | DynamicValue.Bool b -> Ok(if b then "true" else "false")
+        | DynamicValue.Int i -> Ok(i.ToString(System.Globalization.CultureInfo.InvariantCulture))
+        | DynamicValue.Float _ -> Error EncodeError.FloatDeferred
+        | DynamicValue.String s -> Ok(escapeJsonString s)
+        | DynamicValue.Bytes _ -> Error EncodeError.BytesDeferred
+        | DynamicValue.Array items ->
+            items
+            |> List.fold
+                (fun acc item -> acc |> Result.bind (fun parts -> toCanonicalJson item |> Result.map (fun s -> s :: parts)))
+                (Ok [])
+            |> Result.map (fun parts -> "[" + String.concat "," (List.rev parts) + "]")
+        | DynamicValue.Object pairs ->
+            pairs
+            |> List.fold
+                (fun acc (k, v) ->
+                    acc
+                    |> Result.bind (fun parts -> toCanonicalJson v |> Result.map (fun s -> (escapeJsonString k + ":" + s) :: parts)))
+                (Ok [])
+            |> Result.map (fun parts -> "{" + String.concat "," (List.rev parts) + "}")
