@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Compile Include="Message.fs" />
+    <Compile Include="MessageBatch.fs" />
     <Compile Include="FactorGraph.fs" />
     <Compile Include="BayesianAggregate.fs" />
   </ItemGroup>
@@ -21,5 +22,6 @@
 
   <ItemGroup>
     <PackageReference Include="FSharp.Core" />
+    <PackageReference Include="Apache.Arrow" />
   </ItemGroup>
 </Project>
