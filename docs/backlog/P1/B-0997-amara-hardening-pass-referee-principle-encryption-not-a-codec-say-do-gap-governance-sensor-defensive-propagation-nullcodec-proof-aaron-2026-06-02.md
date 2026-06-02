@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
 composes_with: [B-0883, B-0989, B-0982, B-0995, B-0703, B-0643.1, B-0726, B-0954, B-0993, B-0996]
-tags: [hardening, encryption, decrypt-encrypt-invariant, referee-principle, golden-vectors, differential-testing, say-do-gap, governance-sensor, anti-cartel, anti-monopoly, defensive-propagation, local-global-cache, suppression-ladder, shields-not-cages, nullcodec, formal-proof, color-lantern-not-law, amara, aaron]
+tags: [hardening, encryption, decrypt-encrypt-invariant, referee-principle, golden-vectors, differential-testing, say-do-gap, governance-sensor, anti-cartel, anti-monopoly, defensive-propagation, local-global-cache, suppression-ladder, shields-not-cages, nullcodec, formal-proof, color-lantern-not-law, dst, algebra-under-dst, nist-kat, deterministic-at-test-time, seed, meta-internal, externally-known, open-question, amara, aaron]
 type: research
 ---
 
@@ -28,6 +28,24 @@ Encryption must **not** join JSON/YAML/CBOR/XML as "just another codec," because
 > **decrypt(encrypt(value)) ≡ value**
 
 Composes B-0883 (better-git-crypt privacy fence — *"privacy is a TRANSFORM, not a 5th codec"*) + B-0989 (the deterministic bond holds for the *inner* value, not the ciphertext). The clean line: **Serialization is the treaty. Privacy is the fence. Identity is the key shape.**
+
+**Encryption IS an algebra — under DST; only production is non-deterministic** (Aaron 2026-06-02): *"the ciphertext must be randomized — it can be deterministically randomized at test time ... so it can be algebra under DST right? only [the] non-deterministic version [is production]."* The resolution of the "not a codec" tension:
+
+| Mode | Randomness source | Ciphertext | Algebra member? |
+|---|---|---|---|
+| **DST / test** | **deterministically seeded** (fixed nonce/IV from seed; the DST always-active discipline, `dv2-data-split`) | **reproducible** | **YES** — byte-lockable, golden-vector-able, refereed → **joins the 4×4 treaty / generic-math / referee bond** (B-0989/B-0982/B-0997 referee-principle) |
+| **Production** | live CSPRNG (real entropy) | **randomized (non-deterministic)** | NO — only `decrypt(encrypt(v)) ≡ v` holds; the **one** non-deterministic version |
+
+So encryption is **algebra under DST**: DST is precisely what pulls it into the treaty for testing/verification (seed the entropy → deterministic ciphertext → bond + referee apply). **NIST KATs are exactly this** — Known-Answer-Tests fix the seed/nonce so the ciphertext is deterministic and comparable to a known answer (the referee-principle in its canonical form). The *only* non-deterministic version is production (live RNG), where the law reverts to `decrypt(encrypt(v)) ≡ v`. This composes the DST discipline (`dv2-data-split-discipline-activated`) + the referee-principle (blade 2) + B-0883 (seed deterministic nonces in the privacy-fence tests).
+
+**OPEN QUESTION (Aaron 2026-06-02, "I'm not sure"): does the seed need to be META-KNOWN by the algebra, or is EXTERNALLY-KNOWN-ONLY enough?** This is the `meta-level-vs-intra-algebra-self-reference` distinction applied to the DST seed:
+
+| Option | The seed is… | Maps to | Implication |
+|---|---|---|---|
+| **Externally-known-only** | injected by the test-harness from *outside*; the algebra stays seed-agnostic (encrypt/decrypt is already a pure function of `(plaintext, key, nonce)` — fix the nonce externally → deterministic) | **construction-level** self-reference (Cayley-Dickson; external observer holds the construction parameter) | simpler; encryption stays a clean pure function; the seed is just an input the harness pins. Likely sufficient for golden-vectors / KATs. |
+| **Meta-known (meta-internal)** | a parameter the algebra *carries / knows about itself, internally* (intra-algebra) | **intra-algebra** self-expression (Clifford; the algebra expresses its own parameter) | needed only if the algebra must *reason about its own randomness internally* (self-referential proofs / seed-aware composition) |
+
+`[labeling-confidence: open question]` — Aaron is explicitly unsure; do NOT resolve prematurely (razor; don't speculate). The likely-sufficient answer is **externally-known-only** (encryption is already pure in `(plaintext, key, nonce)`; pinning the nonce externally gives determinism without the algebra needing self-knowledge of the seed), but the **meta-known (meta-internal)** option may be required for self-referential / seed-aware composition. **Route to `formal-verification-expert` (Soraya)** alongside the nullcodec proof (blade 5) — both are seed/determinism formalization questions. Composes `meta-level-vs-intra-algebra-self-reference-distinction-shape-said-so-verbal-translation-bottleneck`.
 
 ### 2. Referee principle — 4×4 strands refereed against outside implementations
 
@@ -62,7 +80,7 @@ Adinkras, Einstein tilings, "computational omniscience," "superfluid AI"-as-onto
 
 ## Acceptance (research → build)
 
-1. **Encryption-invariant** — assert `decrypt(encrypt(v))≡v` (not byte-determinism) in the privacy-fence tests (B-0883); the 4×4 byte-lock applies to the inner canonical value, not the ciphertext.
+1. **Encryption-invariant + algebra-under-DST** — in **production**, assert `decrypt(encrypt(v))≡v` (not byte-determinism); the 4×4 byte-lock applies to the inner canonical value, not the ciphertext. **Under DST** (deterministically-seeded nonce/IV), the ciphertext IS reproducible → byte-lock + golden-vector + referee it like any algebra (NIST-KAT style); encryption joins the 4×4 treaty under DST. Privacy-fence tests (B-0883) seed deterministic nonces; production uses live CSPRNG.
 2. **Referee harness** — differential-test each 4×4 strand against ≥1 outside impl (Bouncy Castle / NIST KATs / Noble / stdlib) + golden-vectors (B-0989/B-0982).
 3. **Say-do-gap hub sensor** — instrument hub claim-vs-deed (route/suppress/amplify/coordinate); flag cartel/fake-decentralization/concentration-drift (B-0995 + B-0643.1 + B-0703).
 4. **Defensive-propagation framing** — keep the propagation/suppression substrate defensive (survival-not-dependent-on-single-carrier; shields-not-cages; agency-preserving); the local/global-cache-coherence model.
