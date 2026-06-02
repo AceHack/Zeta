@@ -6,14 +6,14 @@ title: Git-native eventually-consistent text indexes (sorted/inverted/graph) + t
 tier: memory-substrate
 ask: Aaron 2026-05-31
 created: 2026-05-31
-last_updated: 2026-05-31
+last_updated: 2026-06-02
 decomposition: umbrella
 composes_with:
   - .claude/rules/dv2-data-split-discipline-activated.md
   - .claude/rules/substrate-or-it-didnt-happen.md
   - .claude/rules/additive-not-zero-sum.md
   - .claude/rules/honor-those-that-came-before.md
-tags: [memory-substrate, git-native, indexes, eventually-consistent, materialized-view, dbsp, z-set, dv2.0, retrieval, knowledge-graph, hindsight, hermes, o-notation, text-based]
+tags: [memory-substrate, git-native, indexes, eventually-consistent, materialized-view, dbsp, z-set, dv2.0, retrieval, knowledge-graph, hindsight, hermes, o-notation, text-based, spatial-index, h3, geohash, bloom-filter, temporal-index, time-travel, semantic-index, vector-index, hnsw, ann, aggregation-index, integrity-index]
 type: feature
 ---
 
@@ -57,6 +57,14 @@ row generalizes it into a first-class retrieval layer.
 - **inverted index** — `<term> <tab> <files…>` for full-text.
 - **graph adjacency index** — built from the `[[name]]` cross-links → adjacency list; the
   Hindsight-style knowledge graph, traversable as text.
+
+Additional index types (added 2026-06-02; Lior-ferry index-structure question — each still a git-committed text file, materialized-view-over-git, regenerate-never-merge):
+
+- **spatial index** — H3 (hexagonal) / S2 / geohash cell → records; `<cell> <tab> <records…>`, O(1) point→cell→jurisdiction lookup. Powers **B-0988** world-borders O(1) (the hexagonal H3 cell rhymes the hex core B-0985) + B-0986 orientation-tile. The "spatial reverse index."
+- **bloom-filter index** — git-committed bit-array for fast **negative membership** ("definitely-not-here" in O(1), no log scan); composes the caustic-engineered-bloom-filter / `substrate-smoothness` substrate. The cheap pre-filter before a sorted/inverted lookup.
+- **temporal / time-bucketed index** — `<time-bucket> <tab> <events…>` over the event log, for **time-travel queries** (the three-clocks / generator-time substrate); distinct from sorted-key (by-key) — this is by-time-range over the append-only log.
+- **semantic / vector index** — approximate-nearest-neighbor (HNSW / LSH + product-quantization) over embeddings; the **veridicality-detector** retrieval substrate. Distinct from the *text-keyword* inverted index — this is *meaning* similarity. (Git-committed: the quantized vectors + the ANN graph as text/binary blobs.)
+- **aggregation / materialized-metric index** — DBSP **incremental-view-maintenance** folds cached as git data: the `integrity_index` / say-do-gap metric (B-0995/B-0997), the LGTM/Prometheus metric series + Rainbow-Table-after-storms recovery metrics (B-0994). The metric *is* a materialized view over the event log; cache the fold, recompute incrementally (the Z-set delta nets in).
 
 **Three disciplines that make it O-fast + conflict-safe:**
 
