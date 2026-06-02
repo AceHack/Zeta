@@ -401,3 +401,131 @@ module DynamicValue =
                     |> Result.bind (fun parts -> toCanonicalJson v |> Result.map (fun s -> (escapeJsonString k + ":" + s) :: parts)))
                 (Ok [])
             |> Result.map (fun parts -> "{" + String.concat "," (List.rev parts) + "}")
+
+    /// Canonical CBOR encoding (RFC 8949) — the TOTAL byte-lock target for all
+    /// eight shapes (the shared seed is
+    /// `src/Core.TypeScript/dynamic-value/golden-vectors-cbor.json`). Where
+    /// `toCanonicalJson` is a partial projection (6/8 shapes; Float/Bytes
+    /// deferred), CBOR is total: `Float` uses the RFC 8949 §4.2.2 shortest-float
+    /// rule (float16 if it round-trips exactly, else float32, else float64; NaN
+    /// canonicalizes to `0xf97e00`) and `Bytes` uses a native major-type-2 byte
+    /// string — so the result is `byte[]`, not `Result` (CBOR has a canonical form
+    /// for every shape).
+    ///
+    /// One deliberate deviation from RFC 8949 §4.2.1 deterministic encoding:
+    /// `Object` map keys stay in INSERTION order, NOT bytewise-sorted, because
+    /// `Object` is order-significant — the §4.2.1 key-sort would be lossy /
+    /// non-bijective (the same call v1 made for canonical JSON). Integers and
+    /// string/array/map lengths use preferred (shortest) serialization per §4.2.1.
+    ///
+    /// Domain: "total" is over the eight SHAPES (each has a canonical CBOR form,
+    /// unlike JSON which defers Float/Bytes), for valid-Unicode values. A `String`
+    /// (or object key) holding a LONE UTF-16 surrogate is malformed content,
+    /// reachable only via C#/F# interop: it is not a valid Unicode scalar sequence,
+    /// so it is unrepresentable in a CBOR text string (RFC 8949 §3.1 = UTF-8) AND
+    /// unrepresentable in the Rust oracle (Rust `String` is guaranteed valid UTF-8)
+    /// AND in the seed — i.e. outside the cross-language byte-lock domain. .NET's
+    /// `Encoding.UTF8.GetBytes` emits U+FFFD for it (encoder-defined). Unlike the
+    /// JSON encoder, CBOR text cannot `\u`-escape it back to bijectivity; that
+    /// asymmetry is inherent to CBOR's UTF-8 text requirement, not an encoder choice.
+    let toCanonicalCbor (value: DynamicValue) : byte[] =
+        let buf = System.Collections.Generic.List<byte>()
+
+        // CBOR initial byte (major type in the top 3 bits) + preferred/shortest argument.
+        let writeHead (major: int) (arg: uint64) =
+            let mt = byte (major <<< 5)
+
+            if arg <= 23UL then
+                buf.Add(mt ||| byte arg)
+            elif arg <= 0xffUL then
+                buf.Add(mt ||| 24uy)
+                buf.Add(byte arg)
+            elif arg <= 0xffffUL then
+                buf.Add(mt ||| 25uy)
+                buf.Add(byte (arg >>> 8))
+                buf.Add(byte arg)
+            elif arg <= 0xffffffffUL then
+                buf.Add(mt ||| 26uy)
+                buf.Add(byte (arg >>> 24))
+                buf.Add(byte (arg >>> 16))
+                buf.Add(byte (arg >>> 8))
+                buf.Add(byte arg)
+            else
+                buf.Add(mt ||| 27uy)
+
+                for shift in [ 56; 48; 40; 32; 24; 16; 8; 0 ] do
+                    buf.Add(byte (arg >>> shift))
+
+        // Major 0 for v >= 0; major 1 for v < 0 (which encodes -1 - v). `~~~v` yields
+        // -1 - v without the Int64.MinValue overflow that `-1L - v` / `-v` would hit.
+        let writeInt (v: int64) =
+            if v >= 0L then writeHead 0 (uint64 v) else writeHead 1 (uint64 (~~~v))
+
+        // Major 3 text string: raw UTF-8, no escaping. A lone surrogate is not a valid Unicode
+        // scalar; .NET UTF-8 encodes it as U+FFFD (encoder-defined) — the seed's strings are valid.
+        let writeText (s: string) =
+            let utf8 =
+                System.Text.Encoding.UTF8.GetBytes(if System.Object.ReferenceEquals(s, null) then "" else s)
+
+            writeHead 3 (uint64 utf8.Length)
+            buf.AddRange(utf8)
+
+        // RFC 8949 §4.2.2 shortest float: NaN -> 0xf97e00; else the shortest of float16 / float32 /
+        // float64 that decodes back to the exact same value (±0 and ±Inf round-trip through float16).
+        // `float f32 = v` also rejects a width that overflowed to Inf (e.g. 1e300 as float32),
+        // correctly falling through to the wider form.
+        let writeFloat (v: float) =
+            if System.Double.IsNaN v then
+                buf.Add 0xf9uy
+                buf.Add 0x7euy
+                buf.Add 0x00uy
+            else
+                let f32 = float32 v
+
+                if float f32 = v then
+                    let h: System.Half = System.Half.op_Explicit f32
+
+                    if (System.Half.op_Explicit h: float32) = f32 then
+                        let bits16 = System.BitConverter.HalfToUInt16Bits h
+                        buf.Add 0xf9uy
+                        buf.Add(byte (bits16 >>> 8))
+                        buf.Add(byte bits16)
+                    else
+                        let bits32 = System.BitConverter.SingleToUInt32Bits f32
+                        buf.Add 0xfauy
+                        buf.Add(byte (bits32 >>> 24))
+                        buf.Add(byte (bits32 >>> 16))
+                        buf.Add(byte (bits32 >>> 8))
+                        buf.Add(byte bits32)
+                else
+                    let bits64 = System.BitConverter.DoubleToUInt64Bits v
+                    buf.Add 0xfbuy
+
+                    for shift in [ 56; 48; 40; 32; 24; 16; 8; 0 ] do
+                        buf.Add(byte (bits64 >>> shift))
+
+        let rec write (v: DynamicValue) =
+            match v with
+            | DynamicValue.Null -> buf.Add 0xf6uy
+            | DynamicValue.Bool b -> buf.Add(if b then 0xf5uy else 0xf4uy)
+            | DynamicValue.Int i -> writeInt i
+            | DynamicValue.Float f -> writeFloat f
+            | DynamicValue.String s -> writeText s
+            | DynamicValue.Bytes bytes ->
+                let b = if bytes.IsDefault then ImmutableArray<byte>.Empty else bytes
+                writeHead 2 (uint64 b.Length)
+                buf.AddRange(b)
+            | DynamicValue.Array items ->
+                writeHead 4 (uint64 (List.length items))
+
+                for item in items do
+                    write item
+            | DynamicValue.Object pairs ->
+                writeHead 5 (uint64 (List.length pairs))
+
+                for (k, value) in pairs do
+                    writeText k
+                    write value
+
+        write value
+        buf.ToArray()
