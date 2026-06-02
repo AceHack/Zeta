@@ -928,6 +928,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0973](backlog/P2/B-0973-ace-update-re-solve-within-ranges-rewrite-lockfile-bump-deferred-from-slice5.3-2026-06-01.md)** Ace `ace update` — re-solve within ranges + rewrite the lockfile (bump; deferred from slice 5.3 lockfile)
 - [x] **[B-0974](backlog/P2/B-0974-ace-install-locked-mode-verify-lock-matches-fresh-solve-vs-frozen-replay-deferred-from-slice5.3-2026-06-01.md)** Ace `ace install --locked` — verify the lock matches a fresh solve (cargo --locked vs --frozen distinction; deferred from slice 5.3)
 - [ ] **[B-0975](backlog/P2/B-0975-ace-lockfile-ergonomics-partial-merge-alphabetical-ordering-leaf-lock-deferred-from-slice5.3-2026-06-01.md)** Ace lockfile ergonomics — partial-merge, alphabetical ordering, leaf-install lock (deferred from slice 5.3)
+- [ ] **[B-0982](backlog/P2/B-0982-four-oracle-multi-format-golden-vector-seeds-cbor-json-yaml-xml-nothing-is-single-source-of-truth-aaron-2026-06-01.md)** 4-oracle multi-format golden-vector seeds (CBOR/JSON/YAML/XML) — nothing is single source of truth, the seed itself must be cross-validated not trusted as one file
 
 ## P3 — convenience / deferred
 
