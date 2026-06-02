@@ -1,0 +1,82 @@
+---
+id: B-1009
+priority: P2
+status: open
+title: "z3 in CI — add z3 to gate.yml build-and-test so the Z3 SMT proofs are ENFORCED, not self-skipped (today z3 is only in stryker-mutation.yml → Z3.Laws.Tests.fs green-by-skip in the gate; assert-don't-skip hole) (Aaron 2026-06-02)"
+tier: formal-verification
+effort: S
+created: 2026-06-02
+last_updated: 2026-06-02
+depends_on: []
+composes_with: [B-1007, B-1000]
+tags: [z3, smt, ci, gate-yml, green-by-skip, assert-dont-skip, formal-proof-first, formal-verification, self-skip-hole, shield-with-a-hole, infer-net, aaron]
+type: tooling
+---
+
+# z3 in CI — enforce the Z3 SMT proofs, don't let them self-skip
+
+## The gap (found landing B-1007 C1, 2026-06-02)
+
+`tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` shells to the `z3` CLI and **self-skips
+when z3 is absent from PATH** (the existing `which "z3"` guard → "informational only").
+**z3 is installed in `.github/workflows/stryker-mutation.yml` but NOT in
+`.github/workflows/gate.yml`** (the build-and-test job). So in the merge gate the Z3
+proofs run **green-by-skip** — the check passes without exercising the proof.
+
+This is the [`automated-tests-are-the-shield-assert-dont-skip`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
+failure: *a shield with a hole reads as covered.* The Z-set abelian-group Z3 lemmas
+have had this property all along; B-1007 C1 added the Gaussian-group Z3 lemmas, which
+were verified **locally** (z3 on PATH, 7/7 passed, 0 skipped) but **self-skip in the
+gate**. As more of B-1007's C1–C14 land with Z3 halves, the gate increasingly *reads
+as* proven while the symbolic half never runs.
+
+## Fix
+
+1. **Install z3 in the `gate.yml` build-and-test job** (and any OS leg that runs
+   `dotnet test Zeta.sln`). Pin a version (per `dep-pin-search-first-authority` —
+   WebSearch current stable). Ubuntu: `apt-get install z3` (or a pinned release);
+   macOS leg: `brew install z3`; confirm the binary lands on PATH for the test step.
+2. **Convert green-by-skip into assert-don't-skip** for CI: the `Z3.Laws.Tests.fs`
+   self-skip is correct for *local dev without z3*, but in CI the absence of z3 must
+   be a **failure, not a skip**. Add a CI-only assertion (e.g., an env flag
+   `ZETA_REQUIRE_Z3=1` set in gate.yml that flips the "tool not installed →
+   informational" branch into an explicit `failwith "z3 required in CI but not on
+   PATH"`). Keep the graceful skip for local runs; strip the grace only in the gate
+   (per the rule: keep grace in the artifact, strip it in the gate).
+3. Verify: a gate run shows the Z3 lemmas as **run + passed** (0 skipped), and a
+   deliberately-broken z3 install makes the gate **fail** (not silently skip).
+
+## Why P2 (not P0)
+
+The proofs ARE verified — locally, where z3 is present. The hole is *enforcement in
+the gate*, not *correctness of the proof*. So it's important (it's the difference
+between "proven" and "reads-as-proven" in CI) but not silent-corruption-of-results.
+It should land soon after the first few B-1007 Z3 proofs accumulate, so the gate
+actually guards them.
+
+## Acceptance
+
+1. z3 on PATH in `gate.yml` build-and-test (pinned version, per OS leg that runs tests).
+2. `Z3.Laws.Tests.fs` runs (not skips) in the gate — 0 skipped for the Z3 lemmas.
+3. CI-only assertion: z3-absent-in-CI ⇒ gate FAILS (assert-don't-skip), while local
+   dev without z3 still skips gracefully.
+4. A note in the formal-coverage cadence template (`tools/soraya-formal-coverage/`)
+   updated: the z3-in-CI gap is closed (remove the "verify Z3 locally" caveat).
+
+## Composes with
+
+- **B-1007** (the formal-coverage backlog whose Z3 halves this enforces) · **B-1000**
+  (the engine being proven)
+- rules: [`automated-tests-are-the-shield-assert-dont-skip`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
+  (the exact failure mode), `formal-proof-first-...` (a proof that self-skips in the
+  gate isn't enforced), `dep-pin-search-first-authority` (pin the z3 version).
+- substrate: `.github/workflows/gate.yml` (the target) · `.github/workflows/stryker-mutation.yml`
+  (where z3 is already installed — copy the install step) · `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`
+  (the self-skip to convert).
+
+## Substrate-honest framing
+
+Pre-existing condition (the Z-set Z3 lemmas had it before B-1007); surfaced now
+because B-1007 makes Z3 proofs a growing, load-bearing part of the formal-coverage
+gate. Closing it makes the gate actually guard the symbolic proofs instead of reading
+as if it does.
