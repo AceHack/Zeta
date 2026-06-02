@@ -709,3 +709,248 @@ module DynamicValue =
                 Error DecodeError.NonCanonical
             else
                 Ok value
+
+    /// Decodes canonical JSON text into a `DynamicValue` — the inverse of `toCanonicalJson`,
+    /// completing the text↔value round-trip for the six locked shapes (Float + Bytes are DEFERRED
+    /// in JSON and lock under CBOR; a number with a decimal point or exponent is a Float ->
+    /// `DecodeError.Unsupported`). Strictly canonical: a lenient recursive-descent parse, then one
+    /// fixed-point check (`toCanonicalJson decoded = input`) rejects every non-canonical form
+    /// (insignificant whitespace, non-minimal escapes, leading zeros) as
+    /// `DecodeError.NonCanonical` (a leading '+' is invalid JSON → `UnexpectedEnd`, not non-canonical).
+    /// int64 precision is preserved by parsing the number token as text,
+    /// never via a float. Surfaced as data via `Result`, never thrown. Mirrors the TS/C#/Rust decoder.
+    let fromCanonicalJson (json: string) : Result<DynamicValue, DecodeError> =
+        let mutable pos = 0
+        let len = json.Length
+
+        let skipWs () =
+            while pos < len
+                  && (json.[pos] = ' ' || json.[pos] = '\t' || json.[pos] = '\n' || json.[pos] = '\r') do
+                pos <- pos + 1
+
+        let isDigit c = c >= '0' && c <= '9'
+
+        // consumes one or more digits at pos; UnexpectedEnd if none (the JSON grammar's
+        // "at least one digit" for the integer part, fraction, and exponent)
+        let consumeDigits () : Result<unit, DecodeError> =
+            let d0 = pos
+
+            while pos < len && isDigit json.[pos] do
+                pos <- pos + 1
+
+            if pos = d0 then Error DecodeError.UnexpectedEnd else Ok()
+
+        // reads one escape (pos at the backslash), returns the decoded char, advances pos
+        let readEscape () : Result<char, DecodeError> =
+            pos <- pos + 1 // past backslash
+
+            if pos >= len then
+                Error DecodeError.UnexpectedEnd
+            elif json.[pos] = 'u' then
+                if pos + 5 > len then
+                    Error DecodeError.UnexpectedEnd // 'u' + 4 hex digits
+                else
+                    // require exactly 4 hex digits — AllowHexSpecifier (NOT HexNumber, which also
+                    // permits leading/trailing whitespace) so a "\u 001"-style escape is rejected
+                    match
+                        System.UInt16.TryParse(
+                            System.MemoryExtensions.AsSpan(json, pos + 1, 4),
+                            System.Globalization.NumberStyles.AllowHexSpecifier,
+                            System.Globalization.CultureInfo.InvariantCulture
+                        )
+                    with
+                    | true, code ->
+                        pos <- pos + 5 // 'u' + 4 hex
+                        Ok(char code)
+                    | false, _ -> Error DecodeError.UnexpectedEnd
+            else
+                let rep =
+                    match json.[pos] with
+                    | '"' -> Some '"'
+                    | '\\' -> Some '\\'
+                    | '/' -> Some '/'
+                    | 'b' -> Some '\b'
+                    | 'f' -> Some '\f'
+                    | 'n' -> Some '\n'
+                    | 'r' -> Some '\r'
+                    | 't' -> Some '\t'
+                    | _ -> None
+
+                match rep with
+                | Some c ->
+                    pos <- pos + 1
+                    Ok c
+                | None -> Error DecodeError.UnexpectedEnd // invalid escape
+
+        let readString () : Result<string, DecodeError> =
+            pos <- pos + 1 // opening quote
+            let sb = System.Text.StringBuilder()
+
+            let rec loop () : Result<string, DecodeError> =
+                if pos >= len then
+                    Error DecodeError.UnexpectedEnd // unterminated
+                else
+                    let c = json.[pos]
+
+                    if c = '"' then
+                        pos <- pos + 1
+                        Ok(sb.ToString())
+                    elif c = '\\' then
+                        match readEscape () with
+                        | Error e -> Error e
+                        | Ok ch ->
+                            sb.Append(ch) |> ignore
+                            loop ()
+                    else
+                        sb.Append(c) |> ignore
+                        pos <- pos + 1
+                        loop ()
+
+            loop ()
+
+        let readNumber () : Result<DynamicValue, DecodeError> =
+            let start = pos
+
+            if pos < len && json.[pos] = '-' then
+                pos <- pos + 1
+
+            let readFrac () =
+                if pos < len && json.[pos] = '.' then
+                    pos <- pos + 1
+                    consumeDigits () |> Result.map (fun () -> true) // fraction required after '.'
+                else
+                    Ok false
+
+            let readExp () =
+                if pos < len && (json.[pos] = 'e' || json.[pos] = 'E') then
+                    pos <- pos + 1
+
+                    if pos < len && (json.[pos] = '+' || json.[pos] = '-') then
+                        pos <- pos + 1
+
+                    consumeDigits () |> Result.map (fun () -> true) // exponent digits required
+                else
+                    Ok false
+
+            consumeDigits () // integer part — required (rejects "-", "-.5")
+            |> Result.bind readFrac
+            |> Result.bind (fun hasFrac -> readExp () |> Result.map (fun hasExp -> hasFrac || hasExp))
+            |> Result.bind (fun isFloat ->
+                if isFloat then
+                    Error DecodeError.Unsupported // Float deferred in v1 JSON
+                else
+                    match
+                        System.Int64.TryParse(
+                            System.MemoryExtensions.AsSpan(json, start, pos - start),
+                            System.Globalization.NumberStyles.AllowLeadingSign,
+                            System.Globalization.CultureInfo.InvariantCulture
+                        )
+                    with
+                    | true, n -> Ok(DynamicValue.Int n)
+                    | false, _ -> Error DecodeError.IntegerOverflow) // token is -?[0-9]+, so only overflow fails
+
+        let rec readValue () : Result<DynamicValue, DecodeError> =
+            skipWs ()
+
+            if pos >= len then
+                Error DecodeError.UnexpectedEnd
+            else
+                match json.[pos] with
+                | 'n' -> readLiteral "null" DynamicValue.Null
+                | 't' -> readLiteral "true" (DynamicValue.Bool true)
+                | 'f' -> readLiteral "false" (DynamicValue.Bool false)
+                | '"' -> readString () |> Result.map DynamicValue.String
+                | '[' -> readArray ()
+                | '{' -> readObject ()
+                | c when c = '-' || isDigit c -> readNumber ()
+                | _ -> Error DecodeError.UnexpectedEnd
+
+        and readLiteral (lit: string) (lifted: DynamicValue) : Result<DynamicValue, DecodeError> =
+            if pos + lit.Length > len || System.String.CompareOrdinal(json, pos, lit, 0, lit.Length) <> 0 then
+                Error DecodeError.UnexpectedEnd
+            else
+                pos <- pos + lit.Length
+                Ok lifted
+
+        and readArray () : Result<DynamicValue, DecodeError> =
+            pos <- pos + 1 // past the opening bracket
+            skipWs ()
+
+            if pos < len && json.[pos] = ']' then
+                pos <- pos + 1
+                Ok(DynamicValue.Array [])
+            else
+                let rec loop acc =
+                    match readValue () with
+                    | Error e -> Error e
+                    | Ok item ->
+                        skipWs ()
+
+                        if pos >= len then
+                            Error DecodeError.UnexpectedEnd
+                        elif json.[pos] = ',' then
+                            pos <- pos + 1
+                            loop (item :: acc)
+                        elif json.[pos] = ']' then
+                            pos <- pos + 1
+                            Ok(DynamicValue.Array(List.rev (item :: acc)))
+                        else
+                            Error DecodeError.UnexpectedEnd
+
+                loop []
+
+        and readObject () : Result<DynamicValue, DecodeError> =
+            pos <- pos + 1 // past the opening brace
+            skipWs ()
+
+            if pos < len && json.[pos] = '}' then
+                pos <- pos + 1
+                Ok(DynamicValue.Object [])
+            else
+                let rec loop acc =
+                    skipWs ()
+
+                    if pos >= len || json.[pos] <> '"' then
+                        Error DecodeError.UnexpectedEnd // key must be a string
+                    else
+                        match readString () with
+                        | Error e -> Error e
+                        | Ok key ->
+                            skipWs ()
+
+                            if pos >= len || json.[pos] <> ':' then
+                                Error DecodeError.UnexpectedEnd
+                            else
+                                pos <- pos + 1
+
+                                match readValue () with
+                                | Error e -> Error e
+                                | Ok v ->
+                                    skipWs ()
+
+                                    if pos >= len then
+                                        Error DecodeError.UnexpectedEnd
+                                    elif json.[pos] = ',' then
+                                        pos <- pos + 1
+                                        loop ((key, v) :: acc)
+                                    elif json.[pos] = '}' then
+                                        pos <- pos + 1
+                                        Ok(DynamicValue.Object(List.rev ((key, v) :: acc)))
+                                    else
+                                        Error DecodeError.UnexpectedEnd
+
+                loop []
+
+        match readValue () with
+        | Error e -> Error e
+        | Ok value ->
+            skipWs ()
+
+            if pos <> len then
+                Error DecodeError.TrailingData
+            else
+                // canonical fixed-point: a canonical string re-encodes to itself; the decoder only
+                // produces the six locked shapes, so toCanonicalJson is always Ok here
+                match toCanonicalJson value with
+                | Ok s when System.String.Equals(s, json, System.StringComparison.Ordinal) -> Ok value
+                | _ -> Error DecodeError.NonCanonical

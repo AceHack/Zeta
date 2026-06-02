@@ -42,6 +42,7 @@
     <Compile Include="DynamicValue.GoldenVectors.Tests.fs" />
     <Compile Include="DynamicValue.CborGoldenVectors.Tests.fs" />
     <Compile Include="DynamicValue.CborDecode.Tests.fs" />
+    <Compile Include="DynamicValue.JsonDecode.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
