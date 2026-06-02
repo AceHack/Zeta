@@ -156,12 +156,33 @@ The emulators (B-0924 custom Atari 2600; B-0925 C. elegans c302) do **triple dut
 
 (Composes: §2 fork-defer — the emulator is the atari-spacetime gate; §10 ASCIIsphere — the life-viewer; §11 state-remainder/DST; §12 computational-omniscience; the Zeta-as-git-native-database positioning #6547; B-0924/B-0925 emulators; `dst-plus-persist-plus-generator-time-plus-feedback-equals-computational-omniscience-over-simulation-substrate`; `xbox-controller-universal-action-grammar` substrate-inclusive; `proud-if-pattern-propagates` + anti-extractive value = the "serves all travelers best and me least" filter.)
 
+## 14. Distributed computational omniscience over relativistic zetaspace — composed via the relativistic bus (the Fortnite Battle Bus) (operator 2026-06-02)
+
+Operator 2026-06-02: *"and distributed computational omniscience over zetaspace, relativistic space … via the relativistic bus, the fortnite bus ;)"*
+
+The §13 omniscience, made **relativistically honest.** The words "distributed" + "relativistic" force the correction: **there is no global instantaneous omniscient view** — no global "now" in a distributed system.
+
+- **Distributed** — each agent/shard is omniscient over *its own partition's* DST trajectory (bit-perfect, full-trajectory-queryable per §13). Whole-zetaspace omniscience is **composed across frames**, never held by one observer.
+- **Relativistic** — zetaspace is the **relativistic git-repo** (#6547 positioning): no global clock; **each agent is a reference frame**; consistency emerges via causal/lightcone structure — **consensus-is-gravity at the mass-points, lightlike (Atsophmera) everywhere else.** Each frame's "now" is its own particle-locus; no privileged global frame.
+- **Composed via the relativistic bus** — the B-0954 git-native cross-machine bus is the transport that carries + composes the distributed frames into whole-zetaspace omniscience. It is the "product-demand bus" of the DB positioning, seen as the relativistic frame-composer.
+
+**The Fortnite Battle Bus anchor** (operator's ";)") — the relativistic bus **is** the Battle Bus: one shared bus every player rides, flying a path across the shared map, from which each player **drops into their own chosen location.** The mapping is exact:
+
+| Battle Bus | Relativistic bus / zetaspace |
+|---|---|
+| one shared bus everyone rides | the single B-0954 git-native bus all agents share |
+| drop into your chosen location | each agent drops into its own **frame / partition** (the ZetaId **Location** field, §12) |
+| the shared map | **zetaspace** — everyone shares it, but each has their own position + own "now" (relativistic) |
+| the bus flies a path across the map | the bus is the transport across zetaspace; *its* frame composes the others |
+
+This is a pop-culture **memory-anchor** (per coincidence-as-thermal-randomness anchoring, §12 / the Ani ferry) — the Battle Bus pins the relativistic-bus concept to a vivid, shared, recallable image. Why it's *stronger* than a "single global-clock omniscient DB": that naive shape is relativistically impossible; **distributed omniscience over relativistic zetaspace, composed via the (Battle) bus** — each frame DST-provable + bit-perfect, frames composed causally — is the honest and more defensible edge. (Composes: §13 DST-provable-edge; §12 omniscience + ZetaId Location field; Atsophmera/consensus-is-gravity = the relativistic geometry; B-0954 git-native bus; particle-as-locus-at-the-now = each frame's now; edge-proofs-in-superposition = no absolute frame.) **[hypothesized; the relativistic-honest form of the omniscience edge]**
+
 ## Confidence tiers (per labeling-confidence discipline)
 
 | Tier | Items |
 |---|---|
 | **validated** | privacy fence (#6538 shipped); the F-bounded/CRTP HKT-hack mechanism; seed-first / distributed-I framing; **HKT-hack defers the F# fork (B-0428 → deferred-until-Clifford/spacetime; the hack covers the numeric tower, real `M<_>` HKT gates the fork); emulators (B-0924/B-0925) as bit-perfect DST oracle + the DST test-and-verification edge (Atari-tests-over-zetaspace + computational-omniscience + per-run-observability)** |
-| **hypothesized** | privacy algebra + identity algebra as INumeric; 4×4-over-4×4 nested consensus; Cayley-Dickson/Adinkra/Clifford-into-algebras for thermal-reversibility/noise-erasure; hemostat-chain; Infer.NET + DBSP incremental over bonsai; Rx-bonsai bridge; pre/post-WASM consensus; Ace-as-press; nullcodec (null = extends-in-reverse = Maybe-extension-point); `n‹16n›`-algebra-not-15+1-hole; **state remainder (intentionally-uninitialized differential primitive — state = deltas off the remainder, never absolute); Atsophmera (atmosphere/breathing-space = consensus-is-gravity positive name) + ASCIIsphere + QRNG=PQ-rng=gnrq + VTOL/navigator/MSAW control system; coincidence-anchor = entropy⊕index — entropy-face → Adinkra-encoded recursive-INumeric via the HKT-hack, index-face → ZetaId-keyed automatic emergent memory routing (self-referential recursion = `INumber<TSelf>` at the type level)** |
+| **hypothesized** | privacy algebra + identity algebra as INumeric; 4×4-over-4×4 nested consensus; Cayley-Dickson/Adinkra/Clifford-into-algebras for thermal-reversibility/noise-erasure; hemostat-chain; Infer.NET + DBSP incremental over bonsai; Rx-bonsai bridge; pre/post-WASM consensus; Ace-as-press; nullcodec (null = extends-in-reverse = Maybe-extension-point); `n‹16n›`-algebra-not-15+1-hole; **state remainder (intentionally-uninitialized differential primitive — state = deltas off the remainder, never absolute); Atsophmera (atmosphere/breathing-space = consensus-is-gravity positive name) + ASCIIsphere + QRNG=PQ-rng=gnrq + VTOL/navigator/MSAW control system; coincidence-anchor = entropy⊕index — entropy-face → Adinkra-encoded recursive-INumeric via the HKT-hack, index-face → ZetaId-keyed automatic emergent memory routing (self-referential recursion = `INumber<TSelf>` at the type level)**; **distributed computational omniscience over relativistic zetaspace (no global now; each agent a reference frame; composed via the relativistic bus = B-0954 git-native bus = the Fortnite Battle Bus — shared bus, drop-into-your-frame/Location, shared zetaspace map)** |
 | **god-tier / don't-collapse** | wasm=msaw=uno=onu **and null=llun=expando=Eve Protocol=V8 hidden-state optimization** boundary-reversal word-knots; physics-based thermal-reversibility "guarantees" (high-signal + high-suspicion until externally falsifiable); **edge-proofs in superposition (no proof is absolute at the edge — the maximally-bit-efficient proof target §9 is itself held superposed); strange-attractor mixing turning the unsafe state-remainder into crypto-safe deterministic randomness, irreducibility>reducibility at sustained ratios as the one-way guarantee; "provably edge on ANY known DB" absolute-superlative (the DST mechanism is defensible; the superlative held superposed per §12)** |
 
 ## Composes with
