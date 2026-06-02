@@ -25,6 +25,24 @@ let private genWires : Arbitrary<ToffoliWires> =
 type ToffoliArb() =
     static member Wires() = genWires
 
+type WeightPair = {
+    Left : Weight
+    Right : Weight
+}
+
+let private genSmallWeight : Gen<Weight> =
+    Gen.choose (-15, 15) |> Gen.map int64
+
+let private genWeightPair : Arbitrary<WeightPair> =
+    Gen.map2
+        (fun left right -> { Left = left; Right = right })
+        genSmallWeight
+        genSmallWeight
+    |> Arb.fromGen
+
+type WeightPairArb() =
+    static member WeightPair() = genWeightPair
+
 
 // ── Toffoli gate laws ────────────────────────────────────────────────────
 //
@@ -153,6 +171,35 @@ let private allGateWires (step: ToffoliGateStep) =
     [ step.ControlA; step.ControlB; step.Target ]
 
 
+let private applyStep (wires: WireMap) (step: ToffoliGateStep) =
+    let target =
+        if wires.[step.ControlA] = One && wires.[step.ControlB] = One then
+            match wires.[step.Target] with
+            | Zero -> One
+            | One -> Zero
+        else
+            wires.[step.Target]
+
+    wires |> Map.add step.Target target
+
+
+let private applySteps steps wires =
+    steps |> List.fold applyStep wires
+
+
+let private executionStates steps wires =
+    steps |> List.scan applyStep wires
+
+
+let private wireKeySet (wires: WireMap) =
+    wires |> Map.toSeq |> Seq.map fst |> Set.ofSeq
+
+
+let private erasedWireCount before after =
+    Set.difference (wireKeySet before) (wireKeySet after)
+    |> Set.count
+
+
 [<Fact>]
 let ``Weight multiplication fragment encodes signed magnitude inputs`` () =
     let fragment = ToffoliGate.modelWeightMul -3L 5L
@@ -260,3 +307,44 @@ let ``Weight multiplication fragment propagates colliding partial-product carrie
             && step.ControlB = fragment.ConstantOneWire
             && step.Target = columnThree))
     |> should equal true
+
+
+// ── Reversibility laws over the retained join-weight fragment (B-0366.2.3) ──
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<WeightPairArb> |], MaxTest = 128)>]
+let ``Weight multiplication fragment forward then reverse restores retained wires`` (pair: WeightPair) =
+    let fragment = ToffoliGate.modelWeightMul pair.Left pair.Right
+    let initial = fragment.Circuit.Wires
+
+    let afterForward =
+        applySteps fragment.Circuit.Gates initial
+
+    let afterReverse =
+        applySteps (List.rev fragment.Circuit.Gates) afterForward
+
+    afterReverse = initial
+
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<WeightPairArb> |], MaxTest = 128)>]
+let ``Weight multiplication fragment forward execution never erases retained wires`` (pair: WeightPair) =
+    let fragment = ToffoliGate.modelWeightMul pair.Left pair.Right
+    let initial = fragment.Circuit.Wires
+    let initialKeys = wireKeySet initial
+
+    executionStates fragment.Circuit.Gates initial
+    |> List.forall (fun state ->
+        Map.count state = Map.count initial
+        && wireKeySet state = initialKeys)
+
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<WeightPairArb> |], MaxTest = 128)>]
+let ``Weight multiplication fragment Landauer accounting reports zero erased bits`` (pair: WeightPair) =
+    let fragment = ToffoliGate.modelWeightMul pair.Left pair.Right
+    let initial = fragment.Circuit.Wires
+    let afterForward = applySteps fragment.Circuit.Gates initial
+    let afterReverse = applySteps (List.rev fragment.Circuit.Gates) afterForward
+
+    fragment.Circuit.Ancilla = Map.count initial
+    && erasedWireCount initial afterForward = 0
+    && erasedWireCount afterForward afterReverse = 0
+    && erasedWireCount initial afterReverse = 0
