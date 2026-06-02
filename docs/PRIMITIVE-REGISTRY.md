@@ -135,6 +135,19 @@ to agree. Three tiers, strongest first:
 
 Cells below use ✅ (present) / ⚠️ (partial — see note) / ❌ (absent).
 
+> **Two orthogonal axes — consensus-tier ✅ is NOT a proof/canonical mark.** The
+> ✅/⚠️/❌ above track the **consensus tier** (cross-language _agreement_: golden-vector
+> byte-consensus / compiler-parity). They do **not** mean _math-proven_. Even Tier-1
+> byte-consensus proves only that the four implementations _agree byte-for-byte_, not
+> that they are _correct w.r.t. the seed_ — four implementations can agree on the same
+> wrong behavior (the consensus≠validation trap). **Canonical** is the separate
+> proof axis: an item is canonical only with a proof-lineage edge to the seed (its
+> homeostat proven) + the hex (Cl(1,3))/4×4 connection — tracked by **B-1007** and
+> the [`formal-proof-first` rule](../.claude/rules/formal-proof-first-proven-by-default-consensus-not-validation-canonical-is-homeostat-proven-from-seed-ace-shields-zeta.md).
+> So a primitive can be Tier-1 ✅ **and** non-canonical at once: many primitives are
+> _validated_; ~0 are _proven_. Read ✅ as "ships + agrees across langs," never as
+> "proven."
+
 ## Tier-1/2 — the stable base (4-oracle)
 
 | Primitive                                                                         | TS  | F#  | C#  | Rust | Consensus                                                                                    | Locations                                                                                                                                                  |
