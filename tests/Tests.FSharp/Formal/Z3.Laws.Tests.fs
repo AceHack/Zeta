@@ -438,3 +438,89 @@ let ``TLC model-checker is available when configured`` () =
     | None ->
         // Tool not installed — test is informational only.
         ()
+
+// ═══════════════════════════════════════════════════════════════════
+// B-1007 C1 — Gaussian message product is an ABELIAN GROUP on the
+// natural-parameter representation (ν = μ·τ, τ = 1/σ²). product =
+// component-wise add, divide = component-wise subtract, identity =
+// One = (0,0). This is ℝ² under vector +/- — the abelian-group axioms
+// hold symbolically over the IDEAL REALS (QF_LRA). The FsCheck twin in
+// tests/Bayesian.Tests/Message.Tests.fs proves the FLOAT impl conforms;
+// THIS proves the algebraic model is correct-by-construction.
+//
+// Anchor: KFL 2001 (sum-product), Minka 2001 (EP cavity = divide),
+// Wainwright-Jordan 2008 §3 (exp-family natural params = free abelian
+// group). Mirrors the Z-set abelian-group lemmas above (same property
+// class, Gaussian payload). Authored by Soraya per B-1007.
+//
+// Float overflow (proper closure can break when τ1+τ2 overflows to ∞)
+// is invisible to QF_LRA ideal reals — that is the FsCheck side's job
+// (closure property on the bounded domain) + the separate C9 obligation.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves Gaussian message product is associative (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(declare-const nuB Real)\n(declare-const tauB Real)\n" +
+        "(declare-const nuC Real)\n(declare-const tauC Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (+ (+ nuA nuB) nuC)   (+ nuA (+ nuB nuC)))\n" +
+        "  (= (+ (+ tauA tauB) tauC) (+ tauA (+ tauB tauC))))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian product associative" script
+
+[<Fact>]
+let ``Z3 proves Gaussian message product is commutative (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(declare-const nuB Real)\n(declare-const tauB Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (+ nuA nuB)   (+ nuB nuA))\n" +
+        "  (= (+ tauA tauB) (+ tauB tauA)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian product commutative" script
+
+[<Fact>]
+let ``Z3 proves One (0,0) is the identity for Gaussian product (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (+ nuA 0.0)  nuA)  (= (+ tauA 0.0)  tauA)\n" +
+        "  (= (+ 0.0 nuA)  nuA)  (= (+ 0.0 tauA)  tauA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian product identity (0,0)" script
+
+[<Fact>]
+let ``Z3 proves Gaussian divide is the inverse via negation (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (- nuA nuA)   0.0)  (= (- tauA tauA)  0.0)\n" +
+        "  (= (+ nuA (- 0.0 nuA))   0.0)\n" +
+        "  (= (+ tauA (- 0.0 tauA)) 0.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian product inverse (divide = subtract)" script
+
+[<Fact>]
+let ``Z3 proves Gaussian divide round-trips the product, the EP cavity (C1)`` () =
+    let script =
+        "(declare-const nuA Real)\n(declare-const tauA Real)\n" +
+        "(declare-const nuB Real)\n(declare-const tauB Real)\n" +
+        "(assert (not (and\n" +
+        "  (= (- (+ nuA nuB) nuB)   nuA)\n" +
+        "  (= (- (+ tauA tauB) tauB) tauA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 Gaussian cavity round-trip ((a*b)/b = a)" script
+
+[<Fact>]
+let ``Z3 proves proper Gaussians are closed under product, guarded (C1)`` () =
+    let script =
+        "(declare-const tauA Real)\n(declare-const tauB Real)\n" +
+        // τA>0 and τB>0 ⇒ τA+τB>0 (proper closed under product). GUARDED
+        // implication, not unconditional — divide (cavity) can leave the
+        // proper domain (Minka 2001), which is correct, not a bug.
+        "(assert (not (=> (and (> tauA 0.0) (> tauB 0.0))\n" +
+        "                 (> (+ tauA tauB) 0.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C1 proper closed under product (guarded)" script

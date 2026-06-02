@@ -1,7 +1,11 @@
 module Zeta.Bayesian.Tests.MessageTests
+#nowarn "0893"
 
 open FsUnit.Xunit
 open global.Xunit
+open FsCheck
+open FsCheck.FSharp
+open FsCheck.Xunit
 open Zeta.Bayesian
 
 // The message algebra (B-1000 slice 2) — the inference kernel of the
@@ -177,3 +181,83 @@ let ``divide may yield an improper message and isProper detects it (EP cavity)``
     let cav = Gaussian.divide wide narrow            // τ = 0.5 - 1 = -0.5 < 0
     Gaussian.isProper cav |> should equal false
     cav.Precision |> should (equalWithin 1e-9) -0.5  // well-defined, just improper
+
+// ═══════════════════════════════════════════════════════════════════
+// C1 (B-1007 P0) — Gaussian message product is a COMMUTATIVE GROUP over
+// the proper-message domain. FsCheck half of the BP-16 cross-check; the
+// Z3 twin (Formal/Z3.Laws.Tests.fs) proves the ideal-real algebra is an
+// abelian group symbolically. THIS proves the float impl CONFORMS over
+// the domain. Disagreement IS the finding — the tolerance below is NOT
+// to be relaxed to hide a real divergence.
+//
+// Anchor: KFL 2001 (product = combine), Minka 2001 (divide = cavity),
+// Wainwright-Jordan 2008 §3 (exp-family natural params form a free
+// abelian group under +/-). Authored by Soraya (formal-verification-
+// expert) per B-1007. uniform identity is `Gaussian.One`.
+//
+// Domain discipline: generate over the NATURAL parameters (precision
+// τ>0, precision-mean ν) so every generated message is PROPER. Improper
+// messages are EP cavities, not a group failure (Minka 2001).
+// ═══════════════════════════════════════════════════════════════════
+
+/// Build a PROPER Gaussian from two raw floats (FsCheck's NormalFloat
+/// excludes NaN/inf), clamped to a well-conditioned band so a property
+/// failure means a REAL algebraic divergence, not an engineered overflow
+/// (overflow-at-the-edge is the separate Z3/C9 obligation). τ forced > 0
+/// so every message is proper (Gaussian.isProper) — improper messages are
+/// EP cavities, not a group failure (Minka 2001).
+let private mkProper (nuRaw: float) (tauRaw: float) : Gaussian =
+    let clamp lo hi x = max lo (min hi x)
+    { PrecisionMean = clamp -1.0e6 1.0e6 nuRaw
+      Precision = clamp 1.0e-6 1.0e6 (abs tauRaw) }
+
+/// Natural-parameter equality within an absolute tolerance. Compared on
+/// (ν, τ) directly — NOT mean/variance, because mean = ν/τ amplifies
+/// error near τ≈0 and would hide a true natural-param divergence. DO NOT widen.
+let private gEq (a: Gaussian) (b: Gaussian) : bool =
+    let tol = 1e-7
+    abs (a.PrecisionMean - b.PrecisionMean) <= tol
+    && abs (a.Precision - b.Precision) <= tol
+
+[<Property>]
+let ``C1 Gaussian product is associative``
+    (NormalFloat nuA) (NormalFloat tauA)
+    (NormalFloat nuB) (NormalFloat tauB)
+    (NormalFloat nuC) (NormalFloat tauC) =
+    let a, b, c = mkProper nuA tauA, mkProper nuB tauB, mkProper nuC tauC
+    gEq ((a * b) * c) (a * (b * c))
+
+[<Property>]
+let ``C1 Gaussian product is commutative``
+    (NormalFloat nuA) (NormalFloat tauA) (NormalFloat nuB) (NormalFloat tauB) =
+    let a, b = mkProper nuA tauA, mkProper nuB tauB
+    gEq (a * b) (b * a)
+
+[<Property>]
+let ``C1 Gaussian One is the two-sided identity for product``
+    (NormalFloat nuA) (NormalFloat tauA) =
+    let a = mkProper nuA tauA
+    gEq (Gaussian.One * a) a && gEq (a * Gaussian.One) a
+
+[<Property>]
+let ``C1 Gaussian divide is the right inverse of product (EP cavity round-trip)``
+    (NormalFloat nuA) (NormalFloat tauA) (NormalFloat nuB) (NormalFloat tauB) =
+    // (a * b) / b = a — the EP cavity recovers the message it removed.
+    let a, b = mkProper nuA tauA, mkProper nuB tauB
+    gEq ((a * b) / b) a
+
+[<Property>]
+let ``C1 Gaussian product of two proper messages stays proper (closure)``
+    (NormalFloat nuA) (NormalFloat tauA) (NormalFloat nuB) (NormalFloat tauB) =
+    // τ1>0 and τ2>0 ⇒ τ1+τ2>0. The half the PROPER domain satisfies;
+    // the cavity (divide) deliberately can leave it — Minka 2001.
+    let a, b = mkProper nuA tauA, mkProper nuB tauB
+    Gaussian.isProper (a * b)
+
+[<Property>]
+let ``C1 Gaussian divide is the natural-parameter inverse element``
+    (NormalFloat nuA) (NormalFloat tauA) (NormalFloat nuB) (NormalFloat tauB) =
+    // a / b = a * (One / b) — divide IS multiply-by-inverse (group law in element form).
+    let a, b = mkProper nuA tauA, mkProper nuB tauB
+    let invB = Gaussian.One / b
+    gEq (a / b) (a * invB)
