@@ -147,6 +147,27 @@ type EncodeError =
     /// `DynamicValue.Bytes` has no native JSON byte type.
     | BytesDeferred
 
+/// Why canonical CBOR bytes could not be decoded into a `DynamicValue`. Surfaced as
+/// data per the Result-over-exception hard rule (AGENTS.md), never thrown. Mirrors the
+/// C#/Rust `DecodeError`.
+[<RequireQualifiedAccess>]
+type DecodeError =
+    /// Input ended mid-item (a head or payload was truncated).
+    | UnexpectedEnd
+    /// Extra bytes remained after a complete top-level value.
+    | TrailingData
+    /// An additional-info or major-7 simple value this decoder does not accept (reserved
+    /// 28-30, indefinite-length 31, CBOR tags (major 6), or an unsupported simple value).
+    | Unsupported
+    /// A CBOR integer does not fit int64 (`DynamicValue.Int`).
+    | IntegerOverflow
+    /// An object (map) key was not a text string (`DynamicValue.Object` keys are strings).
+    | NonTextKey
+    /// Well-formed CBOR that is NOT the canonical form this codec emits — non-shortest
+    /// int/length width, non-shortest float / non-canonical NaN, or invalid UTF-8 repaired
+    /// to U+FFFD. Detected by the fixed-point check `toCanonicalCbor decoded = input`.
+    | NonCanonical
+
 /// Companion module (the `Option`/`List` type-plus-module pattern): the tag
 /// accessor, the lazy-bind `try*` accessors, and `PropertyPath` navigation.
 module DynamicValue =
@@ -529,3 +550,162 @@ module DynamicValue =
 
         write value
         buf.ToArray()
+
+    /// Decode canonical CBOR (RFC 8949) bytes back into a `DynamicValue` — the inverse
+    /// of `toCanonicalCbor`, completing the byte↔value bijection for all eight shapes.
+    /// Decode is partial (truncation, reserved/indefinite forms, CBOR tags, oversized
+    /// integers, non-text map keys, non-canonical encodings), so it returns
+    /// `Result<DynamicValue, DecodeError>` per the Result-over-exception hard rule
+    /// (AGENTS.md) — never throws for malformed input. Mirrors the C#/Rust decoder.
+    ///
+    /// Strictly canonical: the canonical bytes are exactly the fixed points of
+    /// encode∘decode, so after a structurally-valid decode it asserts
+    /// `toCanonicalCbor decoded = input` and returns `DecodeError.NonCanonical` otherwise
+    /// — rejecting non-shortest int/length widths, non-shortest floats / non-canonical
+    /// NaN, and invalid UTF-8 repaired to U+FFFD, in one uniform check. float16 payloads
+    /// decode via `System.Half`.
+    let fromCanonicalCbor (bytes: byte[]) : Result<DynamicValue, DecodeError> =
+        let mutable pos = 0
+
+        // read n big-endian bytes as uint64 (caller has bounds-checked)
+        let readBE (n: int) : uint64 =
+            let mutable v = 0UL
+            for i in 0 .. n - 1 do
+                v <- (v <<< 8) ||| uint64 bytes.[pos + i]
+            pos <- pos + n
+            v
+
+        // CBOR argument after the initial byte: inline for 0-23, else 1/2/4/8 BE bytes
+        let readArg (ai: int) : Result<uint64, DecodeError> =
+            if ai < 24 then
+                Ok(uint64 ai)
+            else
+                let n =
+                    match ai with
+                    | 24 -> 1
+                    | 25 -> 2
+                    | 26 -> 4
+                    | 27 -> 8
+                    | _ -> -1
+
+                if n < 0 then Error DecodeError.Unsupported
+                elif pos + n > bytes.Length then Error DecodeError.UnexpectedEnd
+                else Ok(readBE n)
+
+        let rec readValue () : Result<DynamicValue, DecodeError> =
+            if pos >= bytes.Length then
+                Error DecodeError.UnexpectedEnd
+            else
+                let initial = int bytes.[pos]
+                pos <- pos + 1
+                let major = initial >>> 5
+                let ai = initial &&& 0x1f
+
+                if major = 7 then
+                    readSimpleOrFloat ai
+                else
+                    match readArg ai with
+                    | Error e -> Error e
+                    | Ok arg ->
+                        match major with
+                        | 0 ->
+                            if arg > uint64 System.Int64.MaxValue then
+                                Error DecodeError.IntegerOverflow
+                            else
+                                Ok(DynamicValue.Int(int64 arg))
+                        | 1 ->
+                            if arg > uint64 System.Int64.MaxValue then
+                                Error DecodeError.IntegerOverflow
+                            else
+                                Ok(DynamicValue.Int(-1L - int64 arg))
+                        | 2 -> readByteString arg
+                        | 3 -> readTextString arg
+                        | 4 -> readArray arg
+                        | 5 -> readMap arg
+                        | _ -> Error DecodeError.Unsupported
+
+        // major 7: simple values (false/true/null) + IEEE floats; float16 via System.Half
+        and readSimpleOrFloat (ai: int) : Result<DynamicValue, DecodeError> =
+            match ai with
+            | 20 -> Ok(DynamicValue.Bool false)
+            | 21 -> Ok(DynamicValue.Bool true)
+            | 22 -> Ok DynamicValue.Null
+            | 25 ->
+                if pos + 2 > bytes.Length then
+                    Error DecodeError.UnexpectedEnd
+                else
+                    let h = System.BitConverter.UInt16BitsToHalf(uint16 (readBE 2))
+                    Ok(DynamicValue.Float(System.Half.op_Explicit h: float))
+            | 26 ->
+                if pos + 4 > bytes.Length then
+                    Error DecodeError.UnexpectedEnd
+                else
+                    Ok(DynamicValue.Float(float (System.BitConverter.UInt32BitsToSingle(uint32 (readBE 4)))))
+            | 27 ->
+                if pos + 8 > bytes.Length then
+                    Error DecodeError.UnexpectedEnd
+                else
+                    Ok(DynamicValue.Float(System.BitConverter.UInt64BitsToDouble(readBE 8)))
+            | _ -> Error DecodeError.Unsupported
+
+        and readByteString (arg: uint64) : Result<DynamicValue, DecodeError> =
+            if arg > uint64 (bytes.Length - pos) then
+                Error DecodeError.UnexpectedEnd
+            else
+                let n = int arg
+                let slice = Array.sub bytes pos n
+                pos <- pos + n
+                Ok(DynamicValue.Bytes(ImmutableArray.Create<byte>(slice)))
+
+        and readTextString (arg: uint64) : Result<DynamicValue, DecodeError> =
+            if arg > uint64 (bytes.Length - pos) then
+                Error DecodeError.UnexpectedEnd
+            else
+                let n = int arg
+                let s = System.Text.Encoding.UTF8.GetString(bytes, pos, n)
+                pos <- pos + n
+                Ok(DynamicValue.String s)
+
+        // each item is >= 1 byte, so a count beyond the remaining bytes is truncated
+        and readArray (arg: uint64) : Result<DynamicValue, DecodeError> =
+            if arg > uint64 (bytes.Length - pos) then
+                Error DecodeError.UnexpectedEnd
+            else
+                let rec loop i acc =
+                    if i >= int arg then
+                        Ok(DynamicValue.Array(List.rev acc))
+                    else
+                        match readValue () with
+                        | Error e -> Error e
+                        | Ok item -> loop (i + 1) (item :: acc)
+
+                loop 0 []
+
+        and readMap (arg: uint64) : Result<DynamicValue, DecodeError> =
+            if arg > uint64 (bytes.Length - pos) then
+                Error DecodeError.UnexpectedEnd
+            else
+                let rec loop i acc =
+                    if i >= int arg then
+                        Ok(DynamicValue.Object(List.rev acc))
+                    else
+                        match readValue () with
+                        | Error e -> Error e
+                        | Ok(DynamicValue.String k) ->
+                            match readValue () with
+                            | Error e -> Error e
+                            | Ok v -> loop (i + 1) ((k, v) :: acc)
+                        | Ok _ -> Error DecodeError.NonTextKey
+
+                loop 0 []
+
+        match readValue () with
+        | Error e -> Error e
+        | Ok value ->
+            if pos <> bytes.Length then
+                Error DecodeError.TrailingData
+            // canonical fixed-point: canonical bytes are exactly those `b` with toCanonicalCbor(decode b) = b
+            elif toCanonicalCbor value <> bytes then
+                Error DecodeError.NonCanonical
+            else
+                Ok value
