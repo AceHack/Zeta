@@ -12,6 +12,7 @@
     <Compile Include="FactorGraph.Tests.fs" />
     <Compile Include="MessageBatch.Tests.fs" />
     <Compile Include="Bp.Tests.fs" />
+    <Compile Include="Ep.Tests.fs" />
     <Compile Include="BayesianTests.fs" />
   </ItemGroup>
 

@@ -13,6 +13,7 @@
     <Compile Include="Message.fs" />
     <Compile Include="MessageBatch.fs" />
     <Compile Include="FactorGraph.fs" />
+    <Compile Include="Ep.fs" />
     <Compile Include="BayesianAggregate.fs" />
   </ItemGroup>
 

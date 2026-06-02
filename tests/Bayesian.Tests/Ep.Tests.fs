@@ -1,0 +1,110 @@
+module Zeta.Bayesian.Tests.EpTests
+
+open System
+open FsUnit.Xunit
+open global.Xunit
+open Zeta.Bayesian
+
+// EP (B-1000 slice 5) — non-conjugate factors via moment matching. The
+// probit site's closed-form moments are checked against NUMERICAL
+// QUADRATURE of the tilted distribution N(x;m,v)·Φ(x) (self-verifying),
+// and an EP factor plugged into the existing FactorGraph + runToFixpoint
+// converges to the moment-matched posterior. "The compilers don't lie."
+
+// trapezoidal quadrature of f over [lo,hi] with n panels
+let private quad (f: float -> float) (lo: float) (hi: float) (n: int) : float =
+    let h = (hi - lo) / float n
+    let mutable s = 0.0
+    for i in 0 .. n do
+        let x = lo + float i * h
+        let w = if i = 0 || i = n then 0.5 else 1.0
+        s <- s + w * f x
+    s * h
+
+// moments (mean, variance) of the tilted distribution N(x;m,v)·Φ(x),
+// computed by quadrature — the ground truth for the probit projection.
+let private tiltedMoments (m: float) (v: float) : float * float =
+    let sd = sqrt v
+    let lo, hi = m - 12.0 * sd, m + 12.0 * sd
+    let n = 40000
+    let pdfN x = exp (-0.5 * (x - m) * (x - m) / v) / sqrt (2.0 * Math.PI * v)
+    let integrand (p: float -> float) x = pdfN x * Normal.cdf x * p x
+    let z = quad (integrand (fun _ -> 1.0)) lo hi n
+    let m1 = quad (integrand id) lo hi n / z
+    let m2 = quad (integrand (fun x -> x * x)) lo hi n / z
+    m1, m2 - m1 * m1
+
+// ─── Normal cdf/pdf (Abramowitz–Stegun erf) ───
+
+[<Fact>]
+let ``Normal cdf and pdf are accurate`` () =
+    Normal.cdf 0.0 |> should (equalWithin 1e-6) 0.5
+    Normal.cdf 1.96 |> should (equalWithin 1e-3) 0.975
+    Normal.cdf -1.0 |> should (equalWithin 1e-3) 0.1586553
+    Normal.pdf 0.0 |> should (equalWithin 1e-7) 0.3989422804
+
+// ─── The probit projection vs numerical quadrature (the formula is right) ───
+
+[<Fact>]
+let ``probit projection matches numerical quadrature of cavity times Phi`` () =
+    for m, v in [ (0.0, 1.0); (0.5, 2.0); (-1.0, 0.5); (1.5, 0.25) ] do
+        let proj = Ep.probitProject (Gaussian.ofMeanVariance m v)
+        let qMean, qVar = tiltedMoments m v
+        Gaussian.mean proj |> should (equalWithin 2e-3) qMean
+        Gaussian.variance proj |> should (equalWithin 2e-3) qVar
+
+// ─── Extreme negative cavity: Φ(z) underflows → asymptotic inverse Mills ───
+
+[<Fact>]
+let ``probit projection stays finite and proper for an extreme negative cavity`` () =
+    // cavity strongly contradicts "x > 0": Φ(z) underflows to 0, so the naive
+    // λ = φ/Φ would be ∞/NaN and throw via ofMeanVariance. The stabilized
+    // inverse Mills (asymptotic tail) must keep the projection finite, proper,
+    // and variance-reduced (the factor still adds information).
+    for m, v in [ (-15.0, 1.0); (-40.0, 0.25); (-8.0, 4.0) ] do
+        let proj = Ep.probitProject (Gaussian.ofMeanVariance m v)
+        Gaussian.isProper proj |> should equal true
+        Double.IsFinite(Gaussian.mean proj) |> should equal true
+        Double.IsFinite(Gaussian.variance proj) |> should equal true
+        // probit observation adds information → posterior variance ≤ cavity
+        Gaussian.variance proj |> should be (lessThanOrEqualTo v)
+        // and it pushes the (very negative) mean upward toward the constraint
+        Gaussian.mean proj |> should be (greaterThan m)
+
+[<Fact>]
+let ``probit projection stays finite for an extremely broad cavity (no v-squared overflow)`` () =
+    // v = 1e308 is finite + positive → accepted by the public constructor, so
+    // probitProject must handle it. The naive v² intermediate would overflow to
+    // ∞; the factored v·(1 − (v/(1+v))·λ(z+λ)) update stays in range.
+    for m, v in [ (0.0, 1e308); (1e150, 1e300); (-1e150, 1e300) ] do
+        let proj = Ep.probitProject (Gaussian.ofMeanVariance m v)
+        Gaussian.isProper proj |> should equal true
+        Double.IsFinite(Gaussian.mean proj) |> should equal true
+        Double.IsFinite(Gaussian.variance proj) |> should equal true
+        Gaussian.variance proj |> should be (lessThanOrEqualTo v)
+
+// ─── EP as a factor in the existing BP loop ───
+
+[<Fact>]
+let ``EP probit factor in runToFixpoint converges to the moment-matched posterior`` () =
+    // prior N(0,1) + soft observation "x > 0" (probit). The marginal must
+    // converge to moment-match(N(0,1)·Φ) — verified against quadrature.
+    let g0 =
+        FactorGraph.empty Gaussian.algebra
+        |> FactorGraph.addFactor 0 (Factor.prior 0 (Gaussian.ofMeanVariance 0.0 1.0))
+        |> FactorGraph.addFactor 1 (Ep.probitFactor 0)
+    let g, _rounds, converged = FactorGraph.runToFixpoint Gaussian.distance 1e-9 50 g0
+    converged |> should equal true
+    let marginal = FactorGraph.marginal 0 g
+    let trueMean, trueVar = tiltedMoments 0.0 1.0
+    Gaussian.mean marginal |> should (equalWithin 2e-3) trueMean      // ≈ 0.564
+    Gaussian.variance marginal |> should (equalWithin 2e-3) trueVar   // ≈ 0.682
+    // the observation "x > 0" must shift the posterior mean positive
+    Gaussian.mean marginal |> should be (greaterThan 0.5)
+
+[<Fact>]
+let ``the probit factor emits a flat message under an improper (uniform) cavity`` () =
+    // before any prior has propagated, the cavity is uniform → no NaN,
+    // the factor sends the flat message (no information yet)
+    let out = (Ep.probitFactor 3).ComputeMessages (Map.ofList [ 3, Gaussian.One ])
+    out.[3] |> should equal Gaussian.One
