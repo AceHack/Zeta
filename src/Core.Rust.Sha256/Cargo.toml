@@ -1,0 +1,25 @@
+[package]
+name = "zeta-core-sha256"
+version = "0.1.0"
+edition = "2024"
+description = "SHA-256 (FIPS 180-4) -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language multi-oracle consensus (m-acc: no single language is source of truth). Hand-rolled, zero-dep production core; cross-verifies byte-for-byte against the shared standard-anchored golden vectors."
+license = "Apache-2.0"
+publish = false
+
+# Production default = ZERO external dependencies (supply-chain doctrine, matching
+# Core.Rust.ZetaId + Core.Rust.Yaml + Core.Rust.Observe + Core.Rust.TriBoolean). The
+# SHA-256 compression is hand-rolled per FIPS 180-4; the published NIST vectors are the
+# gate (a padding/endianness bug cannot pass them). A `sha2`-style differential-oracle
+# feature is OUT of scope for this slice (the same way Observe gates serde_json behind
+# `serde`); default is the hand-rolled impl.
+[dependencies]
+
+# The cross-verify test reads the shared `tests/cross-verification/sha256/vectors.yaml`
+# via our own zero-dep YAML port (slice 8 dogfooding -- slice 8 consumes the YAML port).
+# This is a DEV-dependency only; the production sha256 crate stays zero-dep.
+[dev-dependencies]
+zeta-core-yaml = { path = "../Core.Rust.Yaml" }
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

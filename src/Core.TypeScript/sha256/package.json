@@ -1,0 +1,22 @@
+{
+  "name": "@zeta/sha256",
+  "version": "0.1.0",
+  "description": "Standalone TypeScript SHA-256 reference implementation for N-way cross-language oracle verification (TS/F#/C#/Rust). Bun-native; no build step required.",
+  "type": "module",
+  "main": "sha256.ts",
+  "exports": {
+    ".": "./sha256.ts"
+  },
+  "keywords": [
+    "zeta",
+    "sha256",
+    "hash",
+    "cross-language",
+    "bun"
+  ],
+  "author": "Lucent Financial Group",
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "bun": ">=1.0.0"
+  }
+}

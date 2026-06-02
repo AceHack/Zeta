@@ -145,6 +145,8 @@
     <Compile Include="ZetaId/CrossVerifyTests.fs" />
     <Compile Include="Yaml/ReaderTests.fs" />
     <Compile Include="Yaml/CrossVerifyTests.fs" />
+    <Compile Include="Sha256/Sha256Tests.fs" />
+    <Compile Include="Sha256/CrossVerifyTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -153,6 +155,7 @@
     <ProjectReference Include="..\..\src\Core.FSharp.TriBoolean\Zeta.Core.FSharp.TriBoolean.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Sha256\Zeta.Core.FSharp.Sha256.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

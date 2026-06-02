@@ -1,0 +1,23 @@
+version: 1
+description: "Canonical SHA-256 test vectors for TS/F#/C#/Rust cross-verification (flat schema). Standard-anchored (FIPS/NIST) + Ace-shaped."
+
+vectors:
+  - id: empty
+    input_utf8: ""
+    expected_hex: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+
+  - id: abc
+    input_utf8: "abc"
+    expected_hex: "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+
+  - id: nist-two-block
+    input_utf8: "abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"
+    expected_hex: "248d6a61d20638b8e5c026930c3e6039a33ce45964ff2167f6ecedd419db06c1"
+
+  - id: ace-json-small
+    input_utf8: '{"a":1}'
+    expected_hex: "015abd7f5cc57a2dd94b7590f04ad8084273905ee33ec5cebeae62276a97f862"
+
+  - id: bytes-deadbeef
+    input_hex: "deadbeef"
+    expected_hex: "5f78c33274e43fa9de5659265c1d917e25c03722dcb0b8d27db8d5feaa813953"

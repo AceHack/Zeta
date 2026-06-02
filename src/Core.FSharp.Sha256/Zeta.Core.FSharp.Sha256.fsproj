@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Core.FSharp.Sha256</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.Sha256</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- Zero external dependencies in the production library -->
+
+  <ItemGroup>
+    <Compile Include="Sha256.fs" />
+  </ItemGroup>
+
+</Project>
