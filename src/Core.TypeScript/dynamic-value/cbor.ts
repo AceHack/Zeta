@@ -247,8 +247,17 @@ function bytesEqual(a: number[], b: number[]): boolean {
  * (`canonicalCbor(decoded)` must equal the input) rejects every non-canonical form
  * (non-shortest int/length width, non-shortest float / non-canonical NaN, invalid UTF-8
  * repaired to U+FFFD) as `NonCanonical`. Never throws for malformed input.
+ *
+ * The input is typed `number[]` (the C#/F#/Rust oracles take `byte[]`/`Vec<u8>`, which
+ * enforce 0..255 at the type level; JS cannot). Any element that is not an integer in
+ * 0..255 is not a valid CBOR byte, so the input cannot be canonical CBOR → `NonCanonical`.
+ * This boundary check also preserves the never-throws contract: without it a non-integer
+ * element (e.g. `1.5`, `NaN`, `Infinity`) would reach `BigInt(...)` and throw `RangeError`.
  */
 export function fromCanonicalCbor(bytes: number[]): DecodeResult {
+  for (const b of bytes) {
+    if (!Number.isInteger(b) || b < 0 || b > 255) return { ok: false, error: "NonCanonical" };
+  }
   let pos = 0;
   const fail = (e: DecodeError): never => {
     throw new CborDecodeError(e);

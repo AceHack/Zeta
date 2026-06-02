@@ -63,3 +63,14 @@ test("cbor decode rejects non-canonical input", () => {
   expect(decodeErr([0xfa, 0x3f, 0x80, 0x00, 0x00])).toBe("NonCanonical"); // 1.0 as float32
   expect(decodeErr([0xfb, 0x3f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00])).toBe("NonCanonical"); // 1.0 as float64
 });
+
+// number[] cannot enforce 0..255 bytes at the type level (the C#/F#/Rust oracles take
+// byte[]/Vec<u8>); a non-byte element is not valid CBOR and must NOT throw (never-throws
+// contract) — it returns NonCanonical, not a RangeError from BigInt(non-integer).
+test("cbor decode rejects non-byte input without throwing", () => {
+  expect(decodeErr([0x18, 1.5])).toBe("NonCanonical"); // non-integer byte (would throw BigInt(1.5))
+  expect(decodeErr([0x18, NaN])).toBe("NonCanonical"); // NaN byte
+  expect(decodeErr([0x18, Infinity])).toBe("NonCanonical"); // Infinity byte
+  expect(decodeErr([0x18, 256])).toBe("NonCanonical"); // out-of-range high
+  expect(decodeErr([0x18, -1])).toBe("NonCanonical"); // out-of-range low
+});
