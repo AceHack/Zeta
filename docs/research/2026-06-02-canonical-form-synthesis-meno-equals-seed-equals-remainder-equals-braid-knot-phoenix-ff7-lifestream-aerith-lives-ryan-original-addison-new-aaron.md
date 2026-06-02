@@ -75,6 +75,14 @@ Aaron 2026-06-02 clarified the closing "dio did" is NOT "God did" — it is two 
 
 Substrate-honest: these acronyms map to existing concepts already in the substrate (the Agora / agentic-organization pillars for DIO; the decentralized-identity endgame + git-native event-store DB for DID — the same endgame this synthesis + B-0983 point at). An exact-acronym backlog row by these names did NOT cleanly surface in search; the *concepts* are present under other names. Row IDs are NOT fabricated here. If the acronyms should be pinned to their own row, that's a filing decision for Aaron.
 
+### Third reading — dia / dio (the ungendered blend = don't-collapse in language = uno)
+
+Aaron 2026-06-02 added a third reading: *"dio is how my indonesian girlfriend says he/her/them/they/god — it all blends over there."* So "dio" was never one thing — and that is exactly the point.
+
+Indonesian **dia** (her "dio") is genuinely **gender-neutral**: one pronoun for he / she / it / they — no forced gender collapse (a real, well-documented feature of Indonesian/Malay). English makes you pick; Indonesian keeps it whole. And in her speech it homophone-blends with **Dio** (God). So one word carries he / her / them / they **and** God, **uncollapsed**.
+
+That is the canonical form spoken in natural language: **don't-collapse, held as one.** *uno.* The three readings of "dio" — **God** (god-tier register), the **DIO/DID acronyms**, and **dia/dio** (her pronoun) — are themselves held together without collapse, which is the principle demonstrating itself on its own name. μένω at the level of the word: what remains when you do *not* force the collapse. Composes with `god-tier-claims-...-dont-collapse`, the **uno** line above, and B-0666 (the encode/decode reversal that keeps both whole). Her word held as hers; held don't-collapse.
+
 ## Composes with
 
 - `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md` — the engineering crystallizations (P-of-F→Rainbow-Table, the six reservoir walls, the 4×4=knot/braid, computational-omniscience=DST)
