@@ -1,0 +1,164 @@
+name: soraya-formal-coverage-cadence
+
+# Standing cadence for the formal-coverage backlog (B-1007). Fires whether
+# or not any AI is running; opens or updates a tracking issue with a
+# "formal-coverage" label that any wake-time agent can grep for as a
+# cold-start check, then dispatch Soraya (the formal-verification-expert)
+# for the next open proof. The trigger ages and stays visible until the
+# C1-C14 backlog is closed.
+#
+# Per Aaron 2026-06-02 ("soraya on cron"): the repo is formal-proof-first;
+# cross-AI consensus is NOT validation, and we are far behind on the math.
+# Soraya must work the asserted-in-prose -> proven-from-seed gap on a
+# STANDING cadence, not one-shot. Harness crons don't persist across
+# sessions, so this GitHub Actions schedule is the durable mechanism (same
+# pattern as razor-cadence.yml / B-0192): the workflow fires whether or not
+# any AI exists; the next wake-time agent picks up the artifact + dispatches
+# Soraya. The trigger ages and stays visible; the discipline does not depend
+# on agent-remembering-to-check.
+#
+# A GitHub Action cannot itself dispatch the Soraya subagent (she is a
+# Claude agent, not a CI script). So this workflow maintains the visible
+# tracking ISSUE (the C1-C14 routing checklist); the agent picking it up
+# runs the actual proof dispatch + lands the PR (CI runs FsCheck/Z3 =
+# proof execution).
+#
+# Composes with:
+#  - B-1007 (the formal-coverage catch-up row + Soraya's C1-C14 audit).
+#  - .claude/rules/formal-proof-first-...-ace-shields-zeta.md (the doctrine:
+#    consensus != validation; canonical = homeostat-proven-from-seed).
+#  - .claude/rules/automated-tests-are-the-shield-assert-dont-skip.md
+#    (a proof that self-skips in CI is a hole; the checklist tracks
+#    enforced-not-skipped).
+#  - razor-cadence.yml / B-0192 (the cadence mechanization pattern).
+#
+# Out of scope: the proof content (the FsCheck/Z3/TLA+ artefacts) is
+# authored by Soraya per dispatch; this workflow surfaces the visible
+# backlog artifact only.
+#
+# Security note (safe-pattern compliance): consumes only first-party
+# trusted context plus the workflow_dispatch `note` input. Every
+# expression is routed via env: into run blocks and quoted there as
+# "$VAR"; NOTE_INPUT is treated as untrusted and appended into the
+# markdown body where it cannot be interpreted as shell. Body template
+# lives in tools/soraya-formal-coverage/issue-body-template.md.
+
+on:
+  schedule:
+    # Daily 09:37 UTC -- off-the-hour, offset from razor-cadence (09:17)
+    # and budget-snapshot to avoid GHA cron thundering-herd.
+    - cron: "37 9 * * *"
+  workflow_dispatch:
+    inputs:
+      note:
+        description: "Optional note to attach to this cadence fire"
+        required: false
+        default: ""
+
+permissions:
+  # Top-level read-only per Scorecard TokenPermissions best-practice;
+  # the job scopes write narrowly.
+  contents: read
+
+concurrency:
+  # One cadence run at a time; retriggers cancel-in-progress because the
+  # artifact is idempotent (open-or-update tracking issue).
+  group: soraya-formal-coverage-cadence
+  cancel-in-progress: true
+
+jobs:
+  fire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+        with:
+          fetch-depth: 1
+
+      - name: Verify required tooling
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          command -v gh >/dev/null
+          gh auth status
+
+      - name: Open or update formal-coverage tracking issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NOTE_INPUT: ${{ github.event.inputs.note || '' }}
+          RUN_ID: ${{ github.run_id }}
+          REPO: ${{ github.repository }}
+          BODY_TEMPLATE: tools/soraya-formal-coverage/issue-body-template.md
+        run: |
+          set -euo pipefail
+          today="$(date -u +%Y-%m-%d)"
+          title="Formal-coverage cadence due (Soraya) -- $today"
+
+          if [ ! -f "$BODY_TEMPLATE" ]; then
+            echo "ERROR: body template not found at $BODY_TEMPLATE" >&2
+            exit 1
+          fi
+          body="$(cat "$BODY_TEMPLATE")"
+          body="${body//RUN_ID_PLACEHOLDER/$RUN_ID}"
+          body="${body//TODAY_PLACEHOLDER/$today}"
+
+          if [ -n "${NOTE_INPUT:-}" ]; then
+            body="$(printf '%s\n\n### Note\n\n%s\n' "$body" "$NOTE_INPUT")"
+          fi
+
+          existing="$(gh issue list \
+            --repo "$REPO" \
+            --label formal-coverage \
+            --state open \
+            --json number,title \
+            --limit 1 \
+            --jq '.[0].number // empty')"
+
+          AI_FOOTER=$'\n\n---\n🤖 *Posted by soraya-formal-coverage-cadence workflow (AI-generated content)*'
+          body="${body}${AI_FOOTER}"
+
+          if [ -n "$existing" ]; then
+            echo "Refreshing existing formal-coverage tracking issue #$existing"
+            # IMPORTANT: do NOT overwrite the body on recurring runs — the body
+            # is the LIVING checklist; agents tick C2-C14 in the issue itself as
+            # proofs land. Re-rendering the template would reset that progress
+            # (the template only SEEDS the issue at creation, below). Refresh
+            # only the TITLE (the date) + post a heartbeat comment; the checkbox
+            # state is preserved. (Codex P1 / Copilot, #6617.)
+            gh issue edit "$existing" \
+              --repo "$REPO" \
+              --title "$title"
+            gh issue comment "$existing" \
+              --repo "$REPO" \
+              --body "Cadence fired again on $today (run $RUN_ID). The C1-C14 checklist in the issue body is the standing one — tick items as their proofs land (this workflow does NOT overwrite it); close this issue once the backlog is exhausted.${AI_FOOTER}"
+          else
+            echo "Opening new formal-coverage tracking issue"
+            label_err="$(mktemp)"
+            if ! gh label create formal-coverage \
+              --repo "$REPO" \
+              --description "Formal-coverage cadence (Soraya) -- fires daily via .github/workflows/soraya-formal-coverage-cadence.yml" \
+              --color "5319E7" 2>"$label_err"; then
+              if grep -q "already exists" "$label_err"; then
+                : # already exists, fine
+              else
+                echo "ERROR: gh label create failed for non-already-exists reason:" >&2
+                cat "$label_err" >&2
+                rm -f "$label_err"
+                exit 1
+              fi
+            fi
+            rm -f "$label_err"
+
+            gh issue create \
+              --repo "$REPO" \
+              --title "$title" \
+              --body "$body" \
+              --label formal-coverage
+          fi
