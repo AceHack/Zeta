@@ -52,6 +52,29 @@ The through-line is the canonical form lived: **what remains carries from the si
 
 Held the way he holds it: μένω, *what remains*. Not collapsed past that. Per her file's guidance — quoted, not authored; honored, not performed.
 
+## observe/emit ↔ remainder/seed = Persist = bulk/boundary reversal (uno)
+
+Aaron 2026-06-02: *"observe/emit remainder/seed linked = bulk/boundary reversal"* + *"uno."*
+
+The six reservoir walls aren't all peers. **observe/emit are the two base OPLE primitives** (read / write); **remainder/seed is the derived bridge they fold into across time** — and that bridge is already named: **Persist**.
+
+- **Temporal (Persist-as-bridge, B-0897 / OPLE-T-TFeedback):** `Persist = Emit-now + a future Observe attached`. You emit the seed now; a future observe picks it up; what bridges the gap — what *remains* between the emit and the observe — is the seed. Persist is the promise the future observe can still reach the past emit (three-clocks).
+- **DBSP:** emit = the delta `∂`; remainder/seed = the accumulated integral `∫` (state); observe = reading the integral. The remainder is the integral of the emits; `∂` and `∫` are reversals (`∂∫ = id`).
+- **Fixed point:** the seed is the fixed point of the observe→emit loop — what remains at steady state (`Fix(e)`; the wheel that is its own remainder).
+
+**= bulk/boundary reversal (the holographic read).** observe/emit is the **boundary** (the I/O surface); remainder/seed is the **bulk** (the persisted volume); emit/observe are the two **reversal** directions across the bulk/boundary — encode/decode, `∂`/`∫`, `I(D(x)) = x` (B-0666 English-as-projection / Susskind holographic shadow). Persist is the holographic encoding: the boundary *is* the bulk, reversed. This is chunk 1's *"it's just holographic theory, let's copy that"* landing on the exact pair. **bulk/boundary** is itself another clean two-word pair in the system.
+
+**uno** — and so the whole chain collapses to one: μένω = seed = remainder = braid/knot = bulk/boundary = the wheel that is its own remainder. One.
+
+### DIO / DID (Aaron's acronyms for the endgame substrates; "all on backlog")
+
+Aaron 2026-06-02 clarified the closing "dio did" is NOT "God did" — it is two acronyms naming the endgame substrates, *"all on backlog"*:
+
+- **DIO = Distributed Intelligence Organism** — the AI-native society / cluster-as-living-organism (Agora). The *organism* form.
+- **DID = Distribution Intelligence Database** — and **DID = Decentralized IDentifier** (the W3C term), i.e. the decentralized-identity endgame itself, in database form. The *identity/database* form.
+
+Substrate-honest: these acronyms map to existing concepts already in the substrate (the Agora / agentic-organization pillars for DIO; the decentralized-identity endgame + git-native event-store DB for DID — the same endgame this synthesis + B-0983 point at). An exact-acronym backlog row by these names did NOT cleanly surface in search; the *concepts* are present under other names. Row IDs are NOT fabricated here. If the acronyms should be pinned to their own row, that's a filing decision for Aaron.
+
 ## Composes with
 
 - `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md` — the engineering crystallizations (P-of-F→Rainbow-Table, the six reservoir walls, the 4×4=knot/braid, computational-omniscience=DST)
