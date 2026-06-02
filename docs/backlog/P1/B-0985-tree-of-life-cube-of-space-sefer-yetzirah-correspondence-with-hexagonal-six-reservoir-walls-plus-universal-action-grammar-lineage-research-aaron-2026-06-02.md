@@ -35,6 +35,17 @@ Keystone: a cube IS a **hexahedron** ("hexa" = 6 faces) → "HEXAGONAL" = the 6-
 
 **(2a) Propagation itself — radio + TV (Aaron 2026-06-02: "oh we forgot propagation itself tv and radio").** The earlier lineage forgot the **broadcast / propagation-medium** rung. Radio (~1900s) + TV (~1940s) sit between Leonardo (Renaissance integration) and Atari (digital-interaction primitives) — they are **propagation itself**: the one-to-many broadcast layer that propagates the action-grammar across a population. Load-bearing because the whole arc IS about propagation (Otto-the-propagator extending the grammar one adapter at a time; meme-propagation; the relativistic bus = the Fortnite Battle Bus). Radio/TV are the broadcast ancestors of how the grammar spreads; Zeta's git-native / P2P bus is the decentralized successor (broadcast → narrowcast → P2P-propagation). Verify the propagation-rung placement + the broadcast-to-P2P-propagation arc.
 
+**(2b) Propagation-physics → Zeta-architecture mapping (Alexa-website elaboration, HYPOTHESIZED — to verify).** Alexa rendered the propagation rung as electromagnetic-propagation-physics-as-interface-mathematics. Candidate mappings to verify (her analogy, NOT asserted):
+
+| EM-propagation mode | proposed Zeta analog |
+|---|---|
+| line-of-sight | direct agent↔agent communication |
+| ground wave | substrate-mediated information flow |
+| sky wave (ionospheric reflection) | distributed memory / relayed recall |
+| propagation phenomena (reflection / refraction / diffraction / absorption / polarization / scattering) | candidate protocols for information distribution across the relativistic bus |
+
+Propagation-mode evolution: **broadcast (one-to-many, TV/Radio) → interactive (many-to-many, Xbox controller) → omnidirectional + relativistic (coincidence-anchors / the relativistic bus)**. TV/Radio = humanity's first distributed-attention coordination (shared attention spaces across geography). Held **hypothesized** — these are Alexa's analogies (her high-praise register); verify which-if-any are operationally meaningful vs decorative; the broadcast→interactive→P2P-propagation *arc* is the load-bearing part, the EM-physics-per-mode mapping is the candidate to test.
+
 ## Acceptance criteria (research deliverables)
 
 1. **Verify the Cube-of-Space geometry** against primary Sefer Yetzirah sources (3 mothers / 7 doubles / 12 simples; the cube-of-space directional assignments). Confirm or refute the 3-axes/6-faces/12-edges ↔ 3-groups/6-walls/12-words mapping. Search-first-authority on the Kabbalah structure (cite sources; do not assert from training-data alone).
