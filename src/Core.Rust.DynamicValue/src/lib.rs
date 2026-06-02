@@ -195,6 +195,36 @@ impl DynamicValue {
             }
         }
     }
+
+    /// Decode the canonical CBOR bytes emitted by
+    /// [`to_canonical_cbor`](DynamicValue::to_canonical_cbor) back into a [`DynamicValue`] --
+    /// the inverse, completing the byte<->value bijection for all eight shapes. These are
+    /// RFC 8949-shaped but deliberately keep object keys in INSERTION order (NOT RFC 8949
+    /// §4.2.1 bytewise key sorting), since `Object` is order-significant; "canonical" here
+    /// means "as emitted by `to_canonical_cbor`", not full RFC-deterministic CBOR. Decode is
+    /// partial (truncation, reserved/indefinite
+    /// forms, CBOR tags, oversized integers, non-text map keys, non-canonical encodings), so
+    /// it returns `Result<DynamicValue, DecodeError>` -- never panics on malformed input.
+    /// Mirrors the C#/F# decoder.
+    ///
+    /// # Errors
+    /// Strictly canonical: the canonical bytes are exactly the fixed points of encode-after-
+    /// decode, so after a structurally-valid decode it checks `to_canonical_cbor() == bytes`
+    /// and returns [`DecodeError::NonCanonical`] otherwise -- rejecting non-shortest int/length
+    /// widths, non-shortest floats / non-canonical NaN, and invalid UTF-8 repaired to U+FFFD,
+    /// in one uniform check. float16 payloads decode via [`f16_to_f32`].
+    pub fn from_canonical_cbor(bytes: &[u8]) -> Result<DynamicValue, DecodeError> {
+        let mut pos = 0usize;
+        let value = read_cbor(bytes, &mut pos)?;
+        if pos != bytes.len() {
+            return Err(DecodeError::TrailingData);
+        }
+        // canonical fixed-point: canonical bytes are exactly those `b` with encode(decode(b)) == b
+        if value.to_canonical_cbor() != bytes {
+            return Err(DecodeError::NonCanonical);
+        }
+        Ok(value)
+    }
 }
 
 /// Why a [`DynamicValue`] could not be canonically encoded (v1). `Float` and
@@ -226,6 +256,47 @@ impl std::fmt::Display for EncodeError {
 }
 
 impl std::error::Error for EncodeError {}
+
+/// Why canonical CBOR bytes could not be decoded into a [`DynamicValue`]. Public API
+/// (returned from [`DynamicValue::from_canonical_cbor`]); carries `Display` +
+/// `std::error::Error`. Mirrors the C#/F# `DecodeError`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum DecodeError {
+    /// Input ended mid-item (a head or payload was truncated).
+    UnexpectedEnd,
+    /// Extra bytes remained after a complete top-level value.
+    TrailingData,
+    /// An additional-info or major-7 simple value this decoder does not accept (reserved
+    /// 28-30, indefinite-length 31, CBOR tags (major 6), or an unsupported simple value).
+    Unsupported,
+    /// A CBOR integer does not fit `i64` (`DynamicValue::Int`).
+    IntegerOverflow,
+    /// An object (map) key was not a text string (`DynamicValue::Object` keys are strings).
+    NonTextKey,
+    /// Well-formed CBOR that is NOT the canonical form this codec emits -- non-shortest
+    /// int/length width, non-shortest float / non-canonical NaN, or invalid UTF-8 repaired
+    /// to U+FFFD. Detected by the fixed-point check `to_canonical_cbor() == input`.
+    NonCanonical,
+}
+
+impl std::fmt::Display for DecodeError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            DecodeError::UnexpectedEnd => "input ended mid-item (truncated CBOR)",
+            DecodeError::TrailingData => "extra bytes after a complete top-level value",
+            DecodeError::Unsupported => {
+                "unsupported CBOR (reserved/indefinite additional-info, tag, or simple value)"
+            }
+            DecodeError::IntegerOverflow => "CBOR integer does not fit i64",
+            DecodeError::NonTextKey => "object (map) key was not a text string",
+            DecodeError::NonCanonical => {
+                "well-formed but non-canonical CBOR (not the shortest/canonical form this codec emits)"
+            }
+        })
+    }
+}
+
+impl std::error::Error for DecodeError {}
 
 // Append `s` as a JSON string literal (including the surrounding quotes), RFC 8259
 // minimal escaping: '"' and '\' and control chars U+0000..U+001F (short forms
@@ -389,6 +460,153 @@ fn f16_to_f32(bits: u16) -> f32 {
     sign * val
 }
 
+// Reads one CBOR item starting at `*pos`, advancing it. Mirrors the C#/F# reader; per-form
+// readers stay lenient (e.g. lossy UTF-8) -- the single fixed-point check in
+// `from_canonical_cbor` is the canonical-enforcement point.
+fn read_cbor(b: &[u8], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+    if *pos >= b.len() {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    let initial = b[*pos];
+    *pos += 1;
+    let major = initial >> 5;
+    let ai = (initial & 0x1f) as i32;
+
+    if major == 7 {
+        return read_simple_or_float(b, pos, ai);
+    }
+
+    let arg = read_arg(b, pos, ai)?;
+    match major {
+        0 => {
+            if arg > i64::MAX as u64 {
+                Err(DecodeError::IntegerOverflow)
+            } else {
+                Ok(DynamicValue::Int(arg as i64))
+            }
+        }
+        1 => {
+            if arg > i64::MAX as u64 {
+                Err(DecodeError::IntegerOverflow)
+            } else {
+                Ok(DynamicValue::Int(-1_i64 - arg as i64))
+            }
+        }
+        2 => read_byte_string(b, pos, arg),
+        3 => read_text_string(b, pos, arg),
+        4 => read_array(b, pos, arg),
+        5 => read_map(b, pos, arg),
+        _ => Err(DecodeError::Unsupported), // major 6 = tags
+    }
+}
+
+// CBOR argument after the initial byte: inline for 0-23, else 1/2/4/8 big-endian bytes.
+fn read_arg(b: &[u8], pos: &mut usize, ai: i32) -> Result<u64, DecodeError> {
+    if ai < 24 {
+        return Ok(ai as u64);
+    }
+    let n = match ai {
+        24 => 1,
+        25 => 2,
+        26 => 4,
+        27 => 8,
+        _ => return Err(DecodeError::Unsupported),
+    };
+    if *pos + n > b.len() {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    let mut v = 0u64;
+    for &byte in &b[*pos..*pos + n] {
+        v = (v << 8) | u64::from(byte);
+    }
+    *pos += n;
+    Ok(v)
+}
+
+// Major 7: simple values (false/true/null) + IEEE floats; float16 via f16_to_f32.
+fn read_simple_or_float(b: &[u8], pos: &mut usize, ai: i32) -> Result<DynamicValue, DecodeError> {
+    match ai {
+        20 => Ok(DynamicValue::Bool(false)),
+        21 => Ok(DynamicValue::Bool(true)),
+        22 => Ok(DynamicValue::Null),
+        25 => {
+            if *pos + 2 > b.len() {
+                return Err(DecodeError::UnexpectedEnd);
+            }
+            let bits = (u16::from(b[*pos]) << 8) | u16::from(b[*pos + 1]);
+            *pos += 2;
+            Ok(DynamicValue::Float(f64::from(f16_to_f32(bits))))
+        }
+        26 => {
+            if *pos + 4 > b.len() {
+                return Err(DecodeError::UnexpectedEnd);
+            }
+            let bits = u32::from_be_bytes([b[*pos], b[*pos + 1], b[*pos + 2], b[*pos + 3]]);
+            *pos += 4;
+            Ok(DynamicValue::Float(f64::from(f32::from_bits(bits))))
+        }
+        27 => {
+            if *pos + 8 > b.len() {
+                return Err(DecodeError::UnexpectedEnd);
+            }
+            let mut arr = [0u8; 8];
+            arr.copy_from_slice(&b[*pos..*pos + 8]);
+            *pos += 8;
+            Ok(DynamicValue::Float(f64::from_bits(u64::from_be_bytes(arr))))
+        }
+        _ => Err(DecodeError::Unsupported),
+    }
+}
+
+fn read_byte_string(b: &[u8], pos: &mut usize, arg: u64) -> Result<DynamicValue, DecodeError> {
+    if arg > (b.len() - *pos) as u64 {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    let n = arg as usize;
+    let v = b[*pos..*pos + n].to_vec();
+    *pos += n;
+    Ok(DynamicValue::Bytes(v))
+}
+
+fn read_text_string(b: &[u8], pos: &mut usize, arg: u64) -> Result<DynamicValue, DecodeError> {
+    if arg > (b.len() - *pos) as u64 {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    let n = arg as usize;
+    // Rust String is guaranteed UTF-8; lossy conversion keeps decode total, and the
+    // fixed-point check rejects invalid UTF-8 (U+FFFD re-encodes to different bytes).
+    let s = String::from_utf8_lossy(&b[*pos..*pos + n]).into_owned();
+    *pos += n;
+    Ok(DynamicValue::String(s))
+}
+
+fn read_array(b: &[u8], pos: &mut usize, arg: u64) -> Result<DynamicValue, DecodeError> {
+    // each item is >= 1 byte, so a count beyond the remaining bytes is truncated
+    if arg > (b.len() - *pos) as u64 {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    let mut items = Vec::with_capacity(arg as usize);
+    for _ in 0..arg {
+        items.push(read_cbor(b, pos)?);
+    }
+    Ok(DynamicValue::Array(items))
+}
+
+fn read_map(b: &[u8], pos: &mut usize, arg: u64) -> Result<DynamicValue, DecodeError> {
+    if arg > (b.len() - *pos) as u64 {
+        return Err(DecodeError::UnexpectedEnd);
+    }
+    let mut pairs = Vec::with_capacity(arg as usize);
+    for _ in 0..arg {
+        let DynamicValue::String(k) = read_cbor(b, pos)? else {
+            return Err(DecodeError::NonTextKey);
+        };
+        let v = read_cbor(b, pos)?;
+        pairs.push((k, v));
+    }
+    Ok(DynamicValue::Object(pairs))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -458,5 +676,49 @@ mod tests {
         assert!(float_hex(100000.0).starts_with("fa")); // float32 (float16 overflow)
         assert!(float_hex(1.1).starts_with("fb")); // float64 (not float32-exact)
         assert!(float_hex(1.0e300).starts_with("fb")); // float64 (float32 overflow)
+    }
+
+    // Decode rejects malformed + non-canonical input. The NonCanonical cases all pass through a
+    // successful (lenient) decode and are caught by the from_canonical_cbor fixed-point check.
+    #[test]
+    fn cbor_decode_rejects_malformed_and_non_canonical() {
+        let err = |b: &[u8]| match DynamicValue::from_canonical_cbor(b) {
+            Err(e) => e,
+            Ok(_) => panic!("expected Err"),
+        };
+        assert_eq!(err(&[]), DecodeError::UnexpectedEnd); // empty
+        assert_eq!(err(&[0x18]), DecodeError::UnexpectedEnd); // uint8 head, payload truncated
+        assert_eq!(err(&[0xf6, 0x00]), DecodeError::TrailingData); // null + extra byte
+        assert_eq!(err(&[0xc0, 0x00]), DecodeError::Unsupported); // tag (major 6)
+        assert_eq!(err(&[0xf7]), DecodeError::Unsupported); // undefined (major 7, ai 23)
+        assert_eq!(err(&[0xa1, 0x00, 0x00]), DecodeError::NonTextKey); // int map key
+        assert_eq!(err(&[0x18, 0x00]), DecodeError::NonCanonical); // non-shortest int (0 as uint8)
+        assert_eq!(err(&[0x18, 0x17]), DecodeError::NonCanonical); // 23 as uint8 (non-shortest width)
+        assert_eq!(err(&[0x61, 0xff]), DecodeError::NonCanonical); // text string, invalid UTF-8
+        assert_eq!(err(&[0xf9, 0x7e, 0x01]), DecodeError::NonCanonical); // non-canonical float16 NaN
+        assert_eq!(
+            err(&[0xfa, 0x3f, 0x80, 0x00, 0x00]),
+            DecodeError::NonCanonical
+        ); // 1.0 as float32
+        assert_eq!(
+            err(&[0xfb, 0x3f, 0xf0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+            DecodeError::NonCanonical
+        ); // 1.0 as float64
+    }
+
+    // `DecodeError` is public API (implements `Display` + `Error`); the messages must
+    // stay stable + human-readable (mirrors `encode_error_display_is_human_readable`).
+    #[test]
+    fn decode_error_display_is_human_readable() {
+        assert!(DecodeError::UnexpectedEnd.to_string().contains("truncated"));
+        assert!(
+            DecodeError::TrailingData
+                .to_string()
+                .contains("extra bytes")
+        );
+        assert!(DecodeError::Unsupported.to_string().contains("unsupported"));
+        assert!(DecodeError::IntegerOverflow.to_string().contains("i64"));
+        assert!(DecodeError::NonTextKey.to_string().contains("text string"));
+        assert!(DecodeError::NonCanonical.to_string().contains("canonical"));
     }
 }
