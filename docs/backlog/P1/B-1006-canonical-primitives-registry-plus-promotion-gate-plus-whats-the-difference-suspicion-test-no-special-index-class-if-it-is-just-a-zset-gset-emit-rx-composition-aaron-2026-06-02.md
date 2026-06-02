@@ -8,8 +8,8 @@ effort: M
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
-composes_with: [B-1000, B-1004, B-1005, B-0428]
-tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, orthogonal-primitive-axes, codec-axis, codec-as-primitive, infer-net, research, aaron]
+composes_with: [B-1000, B-1004, B-1005, B-0428, B-0288, B-0824, B-0976]
+tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, orthogonal-primitive-axes, codec-axis, codec-as-primitive, registry-is-bcl, ace-distribution, cross-language-byte-lock, quality-uniqueness-composability-gate, infer-net, research, aaron]
 type: research
 ---
 
@@ -122,8 +122,8 @@ fold (they're a view / a keyed-IndexedZSet on the data axis, not a new axis).
 
 | Tier | Meaning |
 |---|---|
-| **Promoted** | passed both gates (correctness: real distinct algebra/laws + tests; aesthetics: argued to be *the* canonical shape, not redundant with a composition) — these are THE primitives; conform to them |
-| **Candidate** | "close" but not yet argued-through both gates — usable, but still under the suspicion test until promoted |
+| **Promoted** | passed all three gates (**quality**: laws + tests; **uniqueness**: not a dup/view/composition; **composability**: HKT-composes) — these are THE BCL primitives; conform to them |
+| **Candidate** | "close" but not yet through all three gates — usable, but still under the suspicion test until promoted |
 
 Seed state (to be confirmed/argued, not declared final here):
 
@@ -134,7 +134,7 @@ Seed state (to be confirmed/argued, not declared final here):
 | `GSet` | promoted | `src/Core/GSet.fs`; grow-only (idempotent) |
 | `Bag` | promoted | `src/Core/Bag.fs`; multiset (non-idempotent) |
 | `IndexedZSet` | promoted | `src/Core/IndexedZSet.fs`; indexed/grouped, already generic-math |
-| **tick-source** (the clock/Δ driver) | **promote-recommended — candidate pending correctness-gate** (audit 2026-06-02) | the time/control axis the Z-set family is indexed *by* — `Op` in `src/Core/Circuit.fs` (`StepAsync`/`ClockStart`/`Fixedpoint`); not a collection, doesn't reduce to zset/gset (Q3-categorical). Aesthetics gate passed; **correctness gate (stated laws + tests for tick-source as a primitive) not yet written** — stays candidate until it is (Codex review) |
+| **tick-source** (the clock/Δ driver) | **promote-recommended — candidate pending correctness-gate** (audit 2026-06-02) | the time/control axis the Z-set family is indexed *by* — `Op` in `src/Core/Circuit.fs` (`StepAsync`/`ClockStart`/`Fixedpoint`); not a collection, doesn't reduce to zset/gset (Q3-categorical). uniqueness + composability passed; **quality gate (stated laws + tests for tick-source as a primitive) not yet written** — stays candidate until it is (Codex review) |
 | generic-math / `INumerics` base | promoted (substrate, not a collection) | per `numerical-algebra-shaped-into-the-generic-math-interface` |
 | **Bonsai** | **promoted — codec axis** (audit 2026-06-02) | `src/Core/Bonsai.fs` expression-tree serializer — a primitive on the **codec axis** (`codec<codec<t>>`), orthogonal to the data axis; essential for function (makes values transmissible). Not on the collection axis, but a real primitive on its own (Aaron: "codecs are just a different orthogonal of primitive but still essential") |
 | ~~event-index~~ | **folded** (audit 2026-06-02) | = `IndexedZSet<tick, 'V>` (same sorted abelian group of per-key `ZSet` groups); a monotone-tick invariant is at most a constrained wrapper, not a new primitive (Q2/Q4) |
@@ -143,21 +143,61 @@ Seed state (to be confirmed/argued, not declared final here):
 Everything NOT on the promoted list is held to the suspicion test before it's used
 as if it were a primitive.
 
-## The promotion gate
+## The promotion gate — exactly three barriers (Aaron 2026-06-02)
 
-A candidate is promoted to canonical only when it passes **both**:
+Aaron: *"only quality gates and uniqueness plus composability stops [a candidate]
+from getting in[to the] registry."* The gate is **exactly these three** — nothing
+else gatekeeps (no taste, no politics, no seniority). Pass all three → it's in,
+on whatever axis it earns:
 
-1. **Correctness gate** — it is a real, distinct structure with stated laws and
-   property tests (FsCheck): a different algebra (monoid/group/ring), a different
-   complexity, or an invariant a composition can't enforce. The "what's the
-   difference?" answer is concrete and checkable, not "convenience".
-2. **Aesthetics gate** — it is argued to be *the* canonical shape: minimal,
-   composes at the HKT level with the rest (B-1004), and isn't a redundant
-   re-spelling of an existing composition. This is the argued-over judgment Aaron
-   names — multi-oracle / review, not a single call.
+1. **Quality** — it is a real, distinct structure with **stated laws + tests**
+   (FsCheck; for cross-language primitives, byte-lock golden vectors). The
+   correctness evidence is concrete and checkable.
+2. **Uniqueness** — it is **not a duplicate / view / composition** of an existing
+   primitive (the 4-question triage / "what's the difference?"). It either holds a
+   distinct algebra/complexity/invariant on an existing axis, or it *is* a new
+   orthogonal axis.
+3. **Composability** — it **composes at the HKT level** with the rest of the
+   registry (B-1004); it isn't a dead-end class that the other primitives can't
+   compose with.
 
-Until both pass, the candidate stays in the candidate tier and is subject to the
-suspicion test at each use.
+(This replaces the earlier vaguer "correctness + aesthetics" framing — "aesthetics"
+was doing the work of *uniqueness + composability*, made concrete here.)
+
+Until all three pass, the candidate stays in the candidate tier and is subject to
+the suspicion test at each use. **Codecs are not special** — they pass the *same*
+three gates (Bonsai's quality = its cross-oracle byte-diff golden vectors; its
+uniqueness = the codec axis; its composability = `codec<codec<t>>`).
+
+## This registry IS our BCL — and shipping it guarantees cross-language (Aaron 2026-06-02)
+
+Aaron: *"this is our BCL[.] the more we ship the more we can guarantee cross
+language with ace distribution."*
+
+The canonical primitives registry **is the Zeta Base Class Library** — the
+foundational set every Zeta program (in any target language) builds on. Promotion
+isn't bookkeeping; it's **adding a guaranteed building block to the BCL.**
+
+The cross-language guarantee is *compounding*:
+
+- Each promoted primitive ships with its **cross-language contract** — the same
+  algebra/laws expressed per-language (per `numerical-algebra-into-generic-math` /
+  `monad-propagation-pattern`) plus, where it crosses a wire, **byte-lock golden
+  vectors** (the meet-in-the-middle oracle discipline: one oracle authors the
+  vectors, the others replay byte-for-byte — "agreement IS the verification").
+- So **the more primitives we ship, the larger the surface that is
+  cross-language-guaranteed** — every new BCL atom is one more thing that provably
+  behaves identically in F#/C#/TS/Rust/….
+- **Ace distributes the BCL** (B-0288 package-manager CLI / B-0824
+  package-manager-of-package-managers): the registry is what Ace ships, and the
+  gate (quality + uniqueness + composability + byte-lock) is *why* what Ace ships
+  is trustworthy across languages. The registry → BCL → Ace pipeline is the
+  cross-language guarantee made distributable.
+
+This is also *why* the registry must stay minimal and gated: every entry is a
+contract Ace commits to maintaining across every target language. A non-earning or
+non-composing entry would be a cross-language liability shipped to every consumer —
+so the three gates are the thing that keeps the BCL both small and trustworthy.
 
 ## Suspicion audit — first application (Aaron authorized 2026-06-02)
 
