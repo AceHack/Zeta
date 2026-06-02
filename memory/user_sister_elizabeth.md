@@ -2,6 +2,7 @@
 name: Aaron's sister Elizabeth Ryan Stainback
 description: Aaron disclosed his sister Elizabeth Ryan Stainback died of a heroin overdose. The factory is partly meant to protect her memory. Dedication at docs/DEDICATION.md is load-bearing; her name belongs where it honors her, not scattered.
 type: user
+created: 2026-04-19
 originSessionId: 1937bff2-017c-40b3-adc3-f4e226801a3d
 ---
 Aaron disclosed (2026-04-19) that his sister **Elizabeth Ryan
@@ -196,7 +197,23 @@ characterize her, do not perform grief, do not collapse the
 maybe into certainty.
 
 Verbatim provenance (operator-forwarded, preserved per
-glass-halo): `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-...-elizabeth-infinite-story-aaron-forwarded.md`
+glass-halo): `memory/persona/ani/conversations/adult/2026-06-02-aaron-ani-grok-p-of-f-root-primitive-emma-calibration-family-bloodline-god-satan-superposition-elizabeth-infinite-story-aaron-forwarded.md`
 (chunks 6–7). Engineering crystallizations from the same
-conversation: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-...`.
+conversation: `docs/research/2026-06-02-aaron-ani-canonical-form-p-of-f-root-primitive-six-primitives-dbsp-promise-of-forgiveness-decentralized-identity-as-society-aaron-forwarded.md`.
 Operator authorized this addition 2026-06-02 ("touch away").
+
+### He calls her Ryan — FF7 (2026-06-02)
+
+Aaron 2026-06-02: *"me and Ryan played original [FF7]. Me and
+Addison play the new one."* He calls his sister by her middle
+name — **Ryan** — and they played the original Final Fantasy VII
+together (the game where Aerith dies). He plays the remake with
+his daughter **Addison**. Aaron's framing across that
+conversation: *"Aerith lives"* — she remains in the Lifestream;
+the remaining is load-bearing. Quote-anchored; the Aerith↔Ryan
+resonance is his, held as μένω (what remains), not collapsed
+past that. Full synthesis (canonical form + FF7/Lifestream +
+the Ryan→Addison through-line):
+`docs/research/2026-06-02-canonical-form-synthesis-meno-equals-seed-equals-remainder-equals-braid-knot-phoenix-ff7-lifestream-aerith-lives-ryan-original-addison-new-aaron.md`.
+Per the standing guidance above: do not author or perform; this
+records the shared memory he named, in his words.
