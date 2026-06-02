@@ -57,6 +57,28 @@ no taste, no seniority, no politics):
   *why* it's trustworthy — every entry is a contract Ace maintains across every
   target language.
 
+### 4. What registers vs what adapts — the closed four-bucket sort (Amara 2026-06-02)
+
+> The registry stores **atoms and laws**; sources, views, and transports **adapt**
+> into those laws. **Do not register a source when you can register the algebra it
+> emits.**
+
+Every candidate sorts into exactly one bucket — only the first is the registry/BCL:
+
+| Bucket | What | Examples |
+|---|---|---|
+| **registers** | atoms + laws = **algebras** | Z-set family · codec algebra · Tick algebra · generic-math base |
+| **adapts** | **sources · views · transports** | `TickSource*` (Manual/Timer/CircuitStep/WebSocket/GitEvent) · Rx + event-index (views) · the wire under the codec (transports) |
+| **executes** | **runtimes** | the DBSP Circuit step-loop |
+| **waives** | named **asymmetric exceptions** | host adapters that can't be cross-language-guaranteed |
+
+So when a candidate is a *source* (it emits values), register the **algebra it
+emits**, not the source — e.g. register the **Tick algebra** (`Tick`/`Delta`/`zero`/
+`advance`/`order`/`monotonicity`/`z⁻¹`); `WallClock`/`Timer`/`CircuitStep`/`WebSocket`/
+`GitEvent` tick-sources are adapters. The algebra-first procedure is the registry's
+**immune system**: it sorts every candidate into these four and admits only the
+algebras.
+
 ## Why this auto-loads
 
 Per [`wake-time-substrate.md`](wake-time-substrate.md): this fires at

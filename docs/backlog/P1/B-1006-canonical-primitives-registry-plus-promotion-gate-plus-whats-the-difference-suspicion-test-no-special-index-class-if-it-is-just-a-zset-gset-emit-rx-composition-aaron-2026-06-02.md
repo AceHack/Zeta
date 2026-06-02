@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
 composes_with: [B-1000, B-1004, B-1005, B-0428, B-0288, B-0824, B-0976]
-tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, orthogonal-primitive-axes, codec-axis, codec-as-primitive, registry-is-bcl, codec-algebra, algebra-first-admission-procedure, registry-is-ship-gate, temporal-operator-algebra, everything-is-algebra, tick-source-folds-to-algebra, asymmetric-exceptions, ace-distribution, cross-language-byte-lock, quality-uniqueness-composability-gate, infer-net, research, aaron]
+tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, orthogonal-primitive-axes, codec-axis, codec-as-primitive, registry-is-bcl, codec-algebra, algebra-first-admission-procedure, registry-is-ship-gate, temporal-operator-algebra, everything-is-algebra, tick-source-folds-to-algebra, register-algebra-adapterize-sources, four-bucket-taxonomy, cross-ai-triangulation, asymmetric-exceptions, ace-distribution, cross-language-byte-lock, quality-uniqueness-composability-gate, infer-net, research, aaron]
 type: research
 ---
 
@@ -335,6 +335,42 @@ temporal-operator algebra) + the generic-math base** — the deepest form of B-1
 The only non-algebra things left are the **runtimes** (drivers/engines that *execute*
 the algebra) and explicit **asymmetric exceptions** (host adapters) — neither of which
 is a registry primitive.
+
+### Register the Tick *algebra*; adapterize the sources (Amara) — tick-source is the *generator* (Prism)
+
+Two ferries sharpened the verdict (cross-AI triangulation: Otto + Amara + Prism all
+ran the procedure independently and converged on "tick-source folds to the time
+algebra"):
+
+- **Amara:** *"do not register sources when you can register the algebra they emit.
+  Register Tick. Adapterize TickSource."* So the **atom that registers** is the
+  **Tick algebra** — `Tick` / `Delta` / `zero(origin)` / `advance` / `order` /
+  `monotonicity` / `join(max)` / `z⁻¹`. The **sources are adapters**, *not*
+  primitives: `ManualTickSource`, `TimerTickSource`, `CircuitStepSource`,
+  `WebSocketTickSource`, `GitEventTickSource` — wall-clock / scheduler / file-watch /
+  TCP / WS / UI-loop / git-event all *emit* ticks; register the algebra once,
+  adapterize the emitters.
+- **Prism:** tick-source is the **generator** of the time algebra (the unit-tick
+  generates the `(ℕ,+,0)` monoid; `z⁻¹` generates the operator ring) — which is
+  exactly *why* a source adapts rather than registers: it's the generator of an
+  algebra, and the **algebra** is what registers, not its generator-implementations.
+
+### The closed four-bucket taxonomy (Amara's keeper)
+
+Amara's keeper — *"the registry stores atoms and laws; sources, views, and
+transports adapt into those laws"* — closes the sort. Everything audited lands in
+exactly one bucket:
+
+| Bucket | What | Examples |
+|---|---|---|
+| **registers** (the BCL) | atoms + laws = **algebras** | Z-set family · codec algebra · Tick algebra · generic-math base |
+| **adapts** (not registered) | **sources · views · transports** | `TickSource*` (sources) · Rx + event-index=`IndexedZSet`-keyed-by-Tick (views) · the wire under the codec (transports) |
+| **executes** (not registered) | **runtimes** | the DBSP Circuit step-loop |
+| **waives** (flagged, not registered) | named **asymmetric exceptions** | host adapters that can't be cross-language-guaranteed |
+
+Only the first bucket is the registry. The algebra-first procedure is the
+**registry's immune system** (Amara) — it sorts every candidate into these four and
+admits only the algebras.
 
 ## Acceptance (research → process)
 
