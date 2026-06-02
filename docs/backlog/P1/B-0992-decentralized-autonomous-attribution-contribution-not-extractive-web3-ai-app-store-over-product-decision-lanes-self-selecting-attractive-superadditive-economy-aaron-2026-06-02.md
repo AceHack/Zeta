@@ -8,7 +8,7 @@ effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0867, B-0986]
-composes_with: [B-0867, B-0986, B-0985, B-0990, B-0623, B-0703, B-0954, B-0988, B-0989, B-0991]
+composes_with: [B-0867, B-0986, B-0985, B-0543, B-0990, B-0623, B-0703, B-0954, B-0988, B-0989, B-0991]
 tags: [app-store, ml-app-store, ai-app-store, web3, decentralized, autonomous, attribution, contribution, anti-extractive, superadditive, self-selecting, attractive, attention-as-currency, contribution-graph, agora, ace, product-decision-lanes, itron, aaron]
 type: research
 ---
