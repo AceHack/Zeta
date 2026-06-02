@@ -7,8 +7,8 @@ tier: research
 effort: L
 created: 2026-06-02
 last_updated: 2026-06-02
-depends_on: [B-0986, B-0704, B-0703]
-composes_with: [B-0986, B-0985, B-0703, B-0638, B-0704, B-0954, B-0883, B-0643.1, B-0987]
+depends_on: [B-0989, B-0986, B-0704, B-0703]
+composes_with: [B-0989, B-0986, B-0985, B-0703, B-0638, B-0704, B-0954, B-0883, B-0643.1, B-0987]
 tags: [world-borders, geospatial, o1-lookup, spatial-index, h3, s2, geohash, map-projection, perspective-relative, fme, safe-fme, tiger, gadm, osm, natural-earth, sovereign-boundaries, multi-oracle, eve-protocol, bounded-sovereign, hexagonal, addressing, real-estate, market-dynamics, concept-not-code, aaron]
 type: research
 ---
@@ -20,6 +20,8 @@ type: research
 Aaron 2026-06-02 (verbatim): *"that's why it's called safe**fme** — it's the world's borders in code, we should for sure follow and do the same and have the world's borders in Zeta for O(1) lookup"* + *"from any perspective"* + *"and any map projection system"* + (the WHY) *"cause they all disagree."*
 
 SAFE FME (Feature Manipulation Engine, Safe Software) is effectively **the world's borders in code** — it converts geospatial data from/to anything across any sovereign nation's boundary systems + coordinate lines. The directive: **do the same in Zeta** — have the world's borders natively, with **O(1) point→jurisdiction lookup**, answerable **from any perspective** and across **any map projection system**. This is the build-target sitting under the orientation-tile addressing layer (B-0986); it composes the framework's multi-oracle / no-single-truth substrate (B-0703) because **the borders all disagree.**
+
+> **BLOCKED BY [B-0989](B-0989-geospatial-core-algebra-hardened-4x4-bonded-geometry-crs-projection-store-once-canonical-prereq-for-world-borders-aaron-2026-06-02.md) — harden the geospatial core FIRST.** Aaron 2026-06-02: *"we need geospatial algebra agreement on our normal 4×4s first before SAFE-FME-like borders ... we need the geospatial core hardened first, high priority."* Do NOT start this border ingest until the geospatial core algebra (B-0989) passes the 4×4 bond. The hardened core is what makes the **store-once-canonical** property real (store the border once, derive every projection/perspective on query — *not 50 redundant copies*); without it, ingest would re-introduce the redundancy the design avoids.
 
 ## What it is — the build
 
