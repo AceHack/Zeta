@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { joinUrl, nextSequence, buildIndexDoc } from "./registry-publish.ts";
 import { generateKeypair, verifyIndexSignature, publicKeyInfoFromPrivatePem } from "./signing.ts";
 import { parseIndex } from "./registry-remote.ts";
-import { packageHash } from "./resolve.ts";
+import { packageHash } from "./package-hash.ts";
 import { contentHash } from "./store.ts";
 
 // helper: a minimal well-formed AcePackage with a correct content_hash

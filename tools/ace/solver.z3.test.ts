@@ -18,7 +18,8 @@
 import { describe, test, expect } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { solve } from "./solver.ts";
-import { packageHash, type FetchPackage } from "./resolve.ts";
+import type { FetchPackage } from "./resolve.ts";
+import { packageHash } from "./package-hash.ts";
 import { contentHash } from "./store.ts";
 import type { AcePackage, AceDependency, RegistryEntry } from "./store.ts";
 import { satisfies } from "./semver.ts";

@@ -27,7 +27,8 @@ import {
 import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem, verifyIndexSignature, signIndex } from "./signing";
 import type { IndexSignableContent, RevocationMap } from "./signing";
 import { applyRevoke, applyQuarantine, applyUnquarantine } from "./registry-revoke.ts";
-import { resolve, packageHash } from "./resolve.ts";
+import { resolve } from "./resolve.ts";
+import { packageHash } from "./package-hash.ts";
 import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
 

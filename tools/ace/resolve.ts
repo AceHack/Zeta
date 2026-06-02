@@ -1,6 +1,5 @@
-import { createHash } from "node:crypto";
-import { canonicalBytes } from "./canonical.ts";
 import type { RevocationMap } from "./signing.ts";
+import { packageHash } from "./package-hash.ts";
 import { contentHash, type AcePackage, type LoadedTrustEntry, type Registry } from "./store.ts";
 import { verifySignature } from "./signing.ts";
 import { parseRange, satisfies } from "./semver.ts";
@@ -15,13 +14,6 @@ export function canonicalJson(value: unknown): string {
   const obj = value as Record<string, unknown>;
   const keys = Object.keys(obj).sort();
   return "{" + keys.map((k) => JSON.stringify(k) + ":" + canonicalJson(obj[k])).join(",") + "}";
-}
-
-/** sha256 of the canonical whole package ({manifest incl. signature, files}) via the shared
- *  canonical byte form (§8.1). The parent's pin / identity for a dependency. Two edges sharing
- *  a packageHash are byte-identical. */
-export function packageHash(pkg: AcePackage): string {
-  return "sha256:" + createHash("sha256").update(canonicalBytes({ manifest: pkg.manifest, files: pkg.files })).digest("hex");
 }
 
 export type FetchPackage = (urlOrPath: string) => Promise<string>;

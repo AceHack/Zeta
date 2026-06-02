@@ -8,7 +8,7 @@ import { listInstalled, contentHash, listTrustedKeys, loadRegistry } from "./sto
 import { readRegistriesConfig } from "./store.ts";
 import { generateKeypair, signManifest } from "./signing.ts";
 import { generateKeypair as gkpA, signIndex as sidxA } from "./signing.ts";
-import { packageHash } from "./resolve.ts";
+import { packageHash } from "./package-hash.ts";
 import { parseLockfile } from "./lockfile.ts";
 import { parseIndex } from "./registry-remote.ts";
 
@@ -932,14 +932,17 @@ describe("install --frozen (slice 5.3)", () => {
   test("--frozen with a malformed (JSON-valid but not a well-formed package) locked node refuses cleanly (no throw)", async () => {
     // The fetched node bytes + lockfile are untrusted. A payload that parses as JSON but is not a
     // well-formed package (no manifest/files) must hit the PASS-1 shape guard and refuse (exit 1)
-    // rather than THROW (np.manifest.content_hash on an undefined manifest). To EXERCISE the guard
-    // (not an earlier check), the lock must pin the MALFORMED payload's package_hash so the pin
-    // check PASSES and execution reaches the shape guard — the exact line that throws unguarded.
-    // Mirrors the untrusted-signature/atomicity tests: build the lock directly to reach a gate.
+    // rather than THROW. The shape guard runs BEFORE the pin check, so the malformed node is
+    // refused at the guard regardless of the lock's pin value (a placeholder pin is used below).
+    // Mirrors the untrusted-signature/atomicity tests: build the lock directly to reach the gate.
     const dir = mkdtempSync(join(tmpdir(), "ace-frozen-malformed-"));
-    const malformed = {}; // valid JSON, no manifest/files — packageHash() runs, np.manifest.content_hash throws
+    const malformed = {}; // valid JSON, no manifest/files — hits PASS-1 shape guard before packageHash runs
     const aPath = join(dir, "A.json"); writeFileSync(aPath, JSON.stringify(malformed));
-    const aHash = packageHash(malformed as any); // pin == the malformed payload's hash → pin check passes
+    // Any pin value works: the PASS-1 shape guard refuses the malformed node BEFORE the pin check,
+    // so the value is never compared. (packageHash now excludes the signature and throws on a
+    // manifest-less payload, so it can no longer be called on `malformed` to derive the pin —
+    // a placeholder hash exercises the same guard.) slice 8.2.
+    const aHash = "sha256:" + "0".repeat(64);
     const root = { manifest: { format_version:1, name:"root", version:"1.0.0", content_hash: h({ "r.txt":"r" }), dependencies:[{ kind:"inline" as const, name:"A", version:"1.0.0", url: aPath, package_hash: aHash }] }, files: { "r.txt":"r" } };
     const rootPath = join(dir, "root.json"); writeFileSync(rootPath, JSON.stringify(root));
     const lock = {

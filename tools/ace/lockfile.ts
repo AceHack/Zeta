@@ -1,4 +1,5 @@
-import { canonicalJson, packageHash } from "./resolve.ts";
+import { canonicalJson } from "./resolve.ts";
+import { packageHash } from "./package-hash.ts";
 import type { AcePackage, Registry } from "./store.ts";
 
 export type LockNode = { name: string; version: string; url: string; package_hash: string };

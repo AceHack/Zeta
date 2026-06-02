@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { packageHash, resolve, type FetchPackage } from "./resolve.ts";
+import { resolve, type FetchPackage } from "./resolve.ts";
+import { packageHash } from "./package-hash.ts";
 import type { AcePackage, AceDependency } from "./store.ts";
 import { contentHash } from "./store.ts";
 import type { RegistryEntry } from "./store.ts";

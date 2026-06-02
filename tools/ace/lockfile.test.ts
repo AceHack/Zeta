@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { buildLockfile } from "./lockfile.ts";
-import { packageHash } from "./resolve.ts";
+import { packageHash } from "./package-hash.ts";
 import { contentHash } from "./store.ts";
 import type { AcePackage, AceDependency, RegistryEntry, Registry } from "./store.ts";
 
