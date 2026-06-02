@@ -929,6 +929,7 @@ are closed (status: closed in frontmatter)._
 - [x] **[B-0974](backlog/P2/B-0974-ace-install-locked-mode-verify-lock-matches-fresh-solve-vs-frozen-replay-deferred-from-slice5.3-2026-06-01.md)** Ace `ace install --locked` — verify the lock matches a fresh solve (cargo --locked vs --frozen distinction; deferred from slice 5.3)
 - [ ] **[B-0975](backlog/P2/B-0975-ace-lockfile-ergonomics-partial-merge-alphabetical-ordering-leaf-lock-deferred-from-slice5.3-2026-06-01.md)** Ace lockfile ergonomics — partial-merge, alphabetical ordering, leaf-install lock (deferred from slice 5.3)
 - [ ] **[B-0982](backlog/P2/B-0982-four-oracle-multi-format-golden-vector-seeds-cbor-json-yaml-xml-nothing-is-single-source-of-truth-aaron-2026-06-01.md)** 4-oracle multi-format golden-vector seeds (CBOR/JSON/YAML/XML) — nothing is single source of truth, the seed itself must be cross-validated not trusted as one file
+- [ ] **[B-0983](backlog/P2/B-0983-topology-of-traveler-attractors-euler-characteristic-persistent-homology-invariant-across-dimensions-the-remainder-is-the-bonsai-closure-state-identity-fingerprint-aaron-2026-06-02.md)** Topology of traveler-attractors — Euler-characteristic / persistent-homology invariant across dimensions; the remainder IS the bonsai closure state (identity fingerprint) (Aaron 2026-06-02)
 
 ## P3 — convenience / deferred
 
