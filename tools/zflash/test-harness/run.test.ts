@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { spawnSync } from "node:child_process";
 import { join, resolve } from "node:path";
-import { runRetentionRuntime } from "./run";
+import { runPathForkRuntime, runRetentionRuntime } from "./run";
 import type {
   Qcow2RetentionExecutionStep,
   QemuCommand,
@@ -75,6 +75,65 @@ describe("B-0891 test-harness dispatcher", () => {
       `file=${diskPath},if=virtio,format=qcow2`,
     );
     expect(parsed.results[0].qemuRetentionPlan.requiredSerialMarkers).toContain("already-present");
+  });
+
+  test("dry-run can inspect scaffolded path-fork without claiming runtime success", () => {
+    const result = run("--dry-run", "--scenario", "reformat-from-scratch");
+    expect(result.exitCode).toBe(0);
+    expect(result.stderr).toBe("");
+    const parsed = JSON.parse(result.stdout);
+    expect(parsed.mode).toBe("dry-run");
+    expect(parsed.targets[0].id).toBe("reformat-from-scratch");
+    expect(parsed.targets[0].plan).toContain("path-fork plan");
+    expect(parsed.targets[0].plan).toContain("identity comparison proof");
+  });
+
+  test("runtime attempt for path-fork emits migrate + fresh plans but fails closed", () => {
+    const result = run("--scenario", "reformat-from-scratch", "/tmp/nonexistent.iso");
+    expect(result.exitCode).toBe(1);
+    const parsed = JSON.parse(result.stdout);
+    const scenarioResult = parsed.results[0];
+    expect(parsed.summary.failed).toBe(1);
+    expect(parsed.summary.scaffolded).toBe(0);
+    expect(scenarioResult.status).toBe("failed");
+    expect(scenarioResult.message).toContain("fails closed");
+    expect(scenarioResult.message).toContain("zflash-prepared boot image");
+    expect(scenarioResult.pathForkPlan.forks).toHaveLength(2);
+
+    const migrate = scenarioResult.pathForkPlan.forks.find((fork: { forkId: string }) => fork.forkId === "migrate-existing-creds");
+    const fresh = scenarioResult.pathForkPlan.forks.find((fork: { forkId: string }) => fork.forkId === "fresh-cluster");
+    expect(migrate).toBeDefined();
+    expect(fresh).toBeDefined();
+    expect(migrate.missingRuntimeRequirements).toContain("zflash-prepared boot image containing /zeta-creds.enc");
+    expect(migrate.qemuBootCommand).toBeUndefined();
+    expect(migrate.requiredSerialMarkers.join(" ")).toContain("found pre-baked zeta-creds.enc");
+    expect(fresh.requiredSerialMarkers.join(" ")).toContain("no pre-baked zeta-creds.enc");
+    expect(fresh.forbiddenSerialMarkers.join(" ")).toContain("found pre-baked zeta-creds.enc");
+    expect(fresh.qemuBootCommand.args).toContain("-cdrom");
+    expect(fresh.qemuBootCommand.args).toContain(resolve("/tmp/nonexistent.iso"));
+  });
+
+  test("path-fork runtime can plan against an explicit zflash-prepared boot image", () => {
+    const runDirectory = resolve("/tmp/zeta-path-fork-run");
+    const result = runPathForkRuntime("/tmp/zeta.iso", {
+      bootImagePath: "/tmp/zflash-boot.img",
+      runDirectory,
+    });
+
+    expect(result.status).toBe("failed");
+    expect(result.pathForkPlan?.bootImagePath).toBe("/tmp/zflash-boot.img");
+    expect(result.pathForkPlan?.startingDiskPath).toBe(join(runDirectory, "zeta.iso.scenario4.qcow2"));
+    const migrate = result.pathForkPlan?.forks.find((fork) => fork.forkId === "migrate-existing-creds");
+    const fresh = result.pathForkPlan?.forks.find((fork) => fork.forkId === "fresh-cluster");
+    expect(migrate?.missingRuntimeRequirements).toEqual([]);
+    expect(migrate?.qemuBootCommand?.args).toContain(
+      "file=/tmp/zflash-boot.img,if=none,format=raw,readonly=on,id=zflashboot",
+    );
+    expect(migrate?.qemuBootCommand?.args).toContain(
+      "usb-storage,bus=xhci.0,drive=zflashboot,bootindex=1",
+    );
+    expect(fresh?.qemuBootCommand?.args).toContain("-cdrom");
+    expect(fresh?.qemuBootCommand?.args).toContain("/tmp/zeta.iso");
   });
 
   test("retention runtime executes through an injected QEMU executor when explicitly enabled", () => {

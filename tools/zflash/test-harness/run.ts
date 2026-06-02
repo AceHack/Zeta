@@ -20,9 +20,11 @@
  *               or tools/ci/qemu-boot-test.ts. For scenario 3, emits the
  *               QEMU snapshot/restart plan but still fails closed until
  *               the real process runner is connected to the execution
- *               contract. Other scaffolded
- *               scenarios report "not yet implemented" with the
- *               implementation substrate path documented.
+ *               contract. Scenario 4 emits the path-fork runtime plan
+ *               and fails closed until the executor + identity comparison
+ *               proof lands. Other scaffolded scenarios report "not yet
+ *               implemented" with the implementation substrate path
+ *               documented.
  *   --all       Run all 5 scenarios in orderIndex order; gate failures
  *               skip dependent scenarios.
  *
@@ -57,6 +59,10 @@ import {
   type Qcow2RetentionExecutor,
   type Qcow2SnapshotRetentionPlan,
 } from "./qemu-state";
+import {
+  planPathForkRuntime,
+  type PathForkRuntimePlan,
+} from "./path-fork";
 
 type Mode = "list" | "dry-run" | "scenario" | "all";
 
@@ -73,6 +79,7 @@ export interface ScenarioResult {
   readonly message?: string;
   readonly qemuRetentionPlan?: Qcow2SnapshotRetentionPlan;
   readonly qemuRetentionExecution?: Qcow2RetentionExecutionResult;
+  readonly pathForkPlan?: PathForkRuntimePlan;
 }
 
 export interface RetentionRuntimeOptions {
@@ -85,11 +92,19 @@ export interface RetentionRuntimeOptions {
   readonly runDirectory?: string;
 }
 
+export interface PathForkRuntimeOptions {
+  readonly bootImagePath?: string;
+  readonly runDirectory?: string;
+  readonly kvmAvailable?: boolean;
+}
+
 const REPO_ROOT = resolve(import.meta.dir, "../../..");
 const RETENTION_EXECUTION_ENV = "ZFLASH_QEMU_RETENTION_EXECUTE";
 const RETENTION_TIMEOUT_ENV = "ZFLASH_QEMU_RETENTION_TIMEOUT_MS";
 const RETENTION_BOOT_IMAGE_ENV = "ZFLASH_QEMU_RETENTION_BOOT_IMAGE";
 const RETENTION_RUN_DIRECTORY_ENV = "ZFLASH_QEMU_RETENTION_RUN_DIR";
+const PATH_FORK_BOOT_IMAGE_ENV = "ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE";
+const PATH_FORK_RUN_DIRECTORY_ENV = "ZFLASH_QEMU_PATH_FORK_RUN_DIR";
 const KVM_PATH = "/dev/kvm";
 
 function parseArgs(argv: ReadonlyArray<string>): ParsedArgs | { error: string } {
@@ -184,10 +199,7 @@ function emitDryRun(scenarioId?: ScenarioId): number {
         targets: targets.map((s) => ({
           id: s.id,
           status: s.status,
-          plan:
-            s.status === "composes-with-existing"
-              ? `would delegate to existing tools/ci/ substrate: ${s.composesWith[0]}`
-              : `would report scaffolded — implementation pending; composes-with: ${s.composesWith.join(", ")}`,
+          plan: dryRunPlanMessage(s),
         })),
       },
       null,
@@ -195,6 +207,19 @@ function emitDryRun(scenarioId?: ScenarioId): number {
     ),
   );
   return 0;
+}
+
+function dryRunPlanMessage(scenario: Scenario): string {
+  if (scenario.status === "composes-with-existing") {
+    return `would delegate to existing tools/ci/ substrate: ${scenario.composesWith[0]}`;
+  }
+  if (scenario.id === "reformat-with-retention") {
+    return "would generate QEMU snapshot/restart retention plan; implementation pending real execution opt-in";
+  }
+  if (scenario.id === "reformat-from-scratch") {
+    return "would generate QEMU path-fork plan for migrate-existing-creds + fresh-cluster; implementation pending executor + identity comparison proof";
+  }
+  return `would report scaffolded — implementation pending; composes-with: ${scenario.composesWith.join(", ")}`;
 }
 
 function runComposingScenario(scenario: Scenario, isoPath: string): ScenarioResult {
@@ -267,6 +292,14 @@ function retentionBootImagePathFromEnv(): string | undefined {
   return resolve(raw);
 }
 
+function pathForkBootImagePathFromEnv(): string | undefined {
+  const raw = process.env[PATH_FORK_BOOT_IMAGE_ENV];
+  if (raw === undefined || raw.trim().length === 0) {
+    return undefined;
+  }
+  return resolve(raw);
+}
+
 function prepareRetentionRunDirectory(option: string | undefined): { ok: string } | { error: string } {
   const raw = option ?? process.env[RETENTION_RUN_DIRECTORY_ENV];
   try {
@@ -281,6 +314,20 @@ function prepareRetentionRunDirectory(option: string | undefined): { ok: string 
   }
 }
 
+function preparePathForkRunDirectory(option: string | undefined): { ok: string } | { error: string } {
+  const raw = option ?? process.env[PATH_FORK_RUN_DIRECTORY_ENV];
+  try {
+    if (raw !== undefined && raw.trim().length > 0) {
+      const runDirectory = resolve(raw);
+      mkdirSync(runDirectory, { recursive: true });
+      return { ok: runDirectory };
+    }
+    return { ok: mkdtempSync(join(tmpdir(), "zeta-zflash-path-fork-")) };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
 function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
   readonly diskPath: string;
   readonly serialLogPath: string;
@@ -289,6 +336,19 @@ function retentionArtifactPaths(absIsoPath: string, runDirectory: string): {
   return {
     diskPath: join(runDirectory, `${artifactStem}.scenario3.qcow2`),
     serialLogPath: join(runDirectory, `${artifactStem}.scenario3.serial.log`),
+  };
+}
+
+function pathForkArtifactPaths(absIsoPath: string, runDirectory: string): {
+  readonly startingDiskPath: string;
+  readonly migrateSerialLogPath: string;
+  readonly freshSerialLogPath: string;
+} {
+  const artifactStem = basename(absIsoPath);
+  return {
+    startingDiskPath: join(runDirectory, `${artifactStem}.scenario4.qcow2`),
+    migrateSerialLogPath: join(runDirectory, `${artifactStem}.scenario4.migrate.serial.log`),
+    freshSerialLogPath: join(runDirectory, `${artifactStem}.scenario4.fresh.serial.log`),
   };
 }
 
@@ -359,6 +419,52 @@ export function runRetentionRuntime(
   };
 }
 
+export function runPathForkRuntime(
+  isoPath: string,
+  options: PathForkRuntimeOptions = {},
+): ScenarioResult {
+  const absIsoPath = resolve(isoPath);
+  const runDirectory = preparePathForkRunDirectory(options.runDirectory);
+  if ("error" in runDirectory) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: `could not prepare QEMU path-fork run directory: ${runDirectory.error}`,
+    };
+  }
+  const bootImagePath = options.bootImagePath === undefined
+    ? pathForkBootImagePathFromEnv()
+    : resolve(options.bootImagePath);
+  const artifacts = pathForkArtifactPaths(absIsoPath, runDirectory.ok);
+  const planned = planPathForkRuntime({
+    isoPath: absIsoPath,
+    ...(bootImagePath === undefined ? {} : { bootImagePath }),
+    startingDiskPath: artifacts.startingDiskPath,
+    migrateSerialLogPath: artifacts.migrateSerialLogPath,
+    freshSerialLogPath: artifacts.freshSerialLogPath,
+    kvmAvailable: options.kvmAvailable ?? existsSync(KVM_PATH),
+  });
+  if ("error" in planned) {
+    return {
+      id: "reformat-from-scratch",
+      status: "failed",
+      message: `could not plan QEMU path-fork runtime: ${planned.error.field} ${planned.error.reason}`,
+    };
+  }
+
+  const missingRequirements = planned.ok.forks.flatMap((fork) => fork.missingRuntimeRequirements);
+  const requirementSuffix = missingRequirements.length === 0
+    ? ""
+    : ` Missing runtime requirement(s): ${[...new Set(missingRequirements)].join(", ")}.`;
+
+  return {
+    id: "reformat-from-scratch",
+    status: "failed",
+    message: `QEMU path-fork plan generated; scenario 4 still fails closed until a process executor and identity-comparison proof consume both forks.${requirementSuffix}`,
+    pathForkPlan: planned.ok,
+  };
+}
+
 function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
   const scenario = findScenario(scenarioId);
   if (!scenario) {
@@ -378,6 +484,9 @@ function runScenario(scenarioId: ScenarioId, isoPath: string): ScenarioResult {
           ? { execute: retentionExecutionEnabledFromEnv() }
           : { execute: retentionExecutionEnabledFromEnv(), timeoutMs };
         return runRetentionRuntime(isoPath, options);
+      }
+      if (scenario.id === "reformat-from-scratch") {
+        return runPathForkRuntime(isoPath);
       }
       return reportScaffolded(scenario);
     case "operator-runtime":

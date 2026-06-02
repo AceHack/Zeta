@@ -6,13 +6,13 @@ PoC scaffold for the zflash "done" acceptance criteria — the 5-scenario QEMU t
 
 **PoC**: declarative scenario definitions + CLI dispatcher contract +
 invariant tests + QEMU disk bootstrap, snapshot/restart command planning,
-explicit scenario-3 process-executor wiring, and serial-marker lifecycle
-stop conditions for QEMU boot phases.
+explicit scenario-3 process-executor wiring, scenario-4 path-fork command
+planning, and serial-marker lifecycle stop conditions for QEMU boot phases.
 
 **NOT in PoC** (deferred to follow-up): default-on QEMU snapshot/restart
-execution for scenarios 3-5 (state preservation between boots); multi-VM
-orchestration for scenario 5 (cluster-joining); GitHub Actions workflow
-integration.
+execution for scenarios 3-5 (state preservation between boots); scenario-4
+process execution + identity comparison proof; multi-VM orchestration for
+scenario 5 (cluster-joining); GitHub Actions workflow integration.
 
 Operator clarification, 2026-05-31: this harness proves USB/ISO behavior,
 not Kubernetes or ArgoCD health. The USB lane should cover zflash, boot,
@@ -92,8 +92,35 @@ the same disk, stop that restart only when retention markers appear, then
 pass only when the final serial assertion includes the required retention
 markers. If either lifecycle phase reaches the plain installer prompt before
 its required success markers, the run fails fast instead of waiting for the
-full QEMU timeout. Runtime attempts for scenarios 4-5 remain
-scaffolded/fail-closed.
+full QEMU timeout.
+
+Runtime attempts for scenario 4 now emit a two-branch path-fork plan and
+still fail closed with exit `1` until a process executor and identity
+comparison proof consume both forks:
+
+```bash
+bun tools/zflash/test-harness/run.ts --scenario reformat-from-scratch <iso-path>
+```
+
+By default the migrate-existing-creds fork records a missing runtime
+requirement because it needs a zflash-prepared boot image containing
+`/zeta-creds.enc`. Provide that raw USB-shaped artifact with
+`ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE`:
+
+```bash
+ZFLASH_QEMU_PATH_FORK_BOOT_IMAGE=/path/to/zflash-boot.img \
+  bun tools/zflash/test-harness/run.ts --scenario reformat-from-scratch <iso-path>
+```
+
+Scenario 4 restores the same baseline snapshot before each fork. The
+migrate fork expects the installer serial markers for finding a pre-baked
+`zeta-creds.enc` and skipping account re-entry; the fresh fork expects the
+no-prebaked-credential marker and treats retained-credential markers as
+failures. The positional ISO path names the artifact stem only. Scenario-4
+writes its planned qcow2 disk and serial logs under a writable temporary run
+directory by default, or under `ZFLASH_QEMU_PATH_FORK_RUN_DIR` when that
+override is set. Runtime attempts for scenario 5 remain scaffolded/fail-
+closed.
 `--dry-run` remains the planning surface for inspecting pending scenarios
 without claiming a false green.
 
@@ -121,6 +148,7 @@ When a scenario transitions to composes-with-existing:
 - [`tools/ci/qemu-full-install-test.ts`](../../ci/qemu-full-install-test.ts) — B-0831 Slice 1 starter; existing QEMU full-install harness
 - [`tools/ci/qemu-boot-test.ts`](../../ci/qemu-boot-test.ts) — cascade #5 boot smoke-test
 - [`qemu-state.ts`](qemu-state.ts) — scenario 3 qcow2 disk bootstrap + snapshot/restart command planner
+- [`path-fork.ts`](path-fork.ts) — scenario 4 migrate-vs-fresh path-fork command planner
 - [`tools/ci/audit-installer-iso-content.ts`](../../ci/audit-installer-iso-content.ts) — cascade #4 ISO content audit
 - [`full-ai-cluster/tools/zflash.ts`](../../../full-ai-cluster/tools/zflash.ts) — the zflash CLI under test
 - [`full-ai-cluster/tools/zflash-lib.ts`](../../../full-ai-cluster/tools/zflash-lib.ts) — library substrate

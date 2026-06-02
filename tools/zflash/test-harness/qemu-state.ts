@@ -14,6 +14,19 @@ export interface QemuCommand {
   readonly args: readonly string[];
 }
 
+export type QemuSystemBootMedia =
+  | { readonly kind: "iso"; readonly path: string }
+  | { readonly kind: "usb-image"; readonly path: string };
+
+export interface QemuSystemBootArgsInput {
+  readonly diskPath: string;
+  readonly serialLogPath: string;
+  readonly memoryMB: number;
+  readonly cpuCount: number;
+  readonly kvmAvailable: boolean;
+  readonly bootMedia: QemuSystemBootMedia;
+}
+
 export interface Qcow2SnapshotRetentionInput {
   readonly isoPath: string;
   readonly bootImagePath?: string;
@@ -245,7 +258,7 @@ type NormalizedQcow2SnapshotRetentionInput =
   & Required<Omit<Qcow2SnapshotRetentionInput, "bootImagePath">>
   & Pick<Qcow2SnapshotRetentionInput, "bootImagePath">;
 
-function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonly string[] {
+export function buildQemuSystemBootArgs(input: QemuSystemBootArgsInput): readonly string[] {
   const args: string[] = [
     "-machine",
     "q35",
@@ -265,10 +278,10 @@ function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonl
     "virtio-net-pci,netdev=net0",
   ];
 
-  if (input.bootImagePath !== undefined) {
+  if (input.bootMedia.kind === "usb-image") {
     args.push(
       "-drive",
-      `file=${input.bootImagePath},if=none,format=raw,readonly=on,id=zflashboot`,
+      `file=${input.bootMedia.path},if=none,format=raw,readonly=on,id=zflashboot`,
       "-device",
       "qemu-xhci,id=xhci",
       "-device",
@@ -277,7 +290,7 @@ function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonl
   } else {
     args.push(
       "-cdrom",
-      input.isoPath,
+      input.bootMedia.path,
       "-boot",
       "d",
     );
@@ -290,6 +303,19 @@ function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonl
   }
 
   return args;
+}
+
+function buildRestartArgs(input: NormalizedQcow2SnapshotRetentionInput): readonly string[] {
+  return buildQemuSystemBootArgs({
+    diskPath: input.diskPath,
+    serialLogPath: input.serialLogPath,
+    memoryMB: input.memoryMB,
+    cpuCount: input.cpuCount,
+    kvmAvailable: input.kvmAvailable,
+    bootMedia: input.bootImagePath === undefined
+      ? { kind: "iso", path: input.isoPath }
+      : { kind: "usb-image", path: input.bootImagePath },
+  });
 }
 
 export function planQcow2SnapshotRetention(
@@ -322,7 +348,7 @@ export function planQcow2SnapshotRetention(
       diskSizeGB: normalized.diskSizeGB,
       createDiskImage: {
         bin: "qemu-img",
-        args: ["create", "-f", "qcow2", normalized.diskPath, `${normalized.diskSizeGB}G`],
+        args: ["create", "-f", "qcow2", normalized.diskPath, `${String(normalized.diskSizeGB)}G`],
       },
       initialInstallFromIsoWithDisk: {
         bin: "qemu-system-x86_64",
@@ -423,7 +449,6 @@ function defaultSpawnSyncQemuCommand(
   const spawnOptions = options.cwd === undefined
     ? { encoding: "utf8" as const, timeout: options.timeoutMs }
     : { cwd: options.cwd, encoding: "utf8" as const, timeout: options.timeoutMs };
-  // eslint-disable-next-line sonarjs/no-os-command-from-path -- QEMU tool names are planned constants; args are structured and never shell-expanded.
   const result = nodeSpawnSync(command.bin, [...command.args], spawnOptions);
   const stdout = stringifySpawnOutput(result.stdout);
   const stderr = appendSpawnError(stringifySpawnOutput(result.stderr), result.error);
@@ -454,7 +479,6 @@ function defaultSpawnManagedQemuCommand(
   if (options.cwd !== undefined) {
     spawnOptions.cwd = options.cwd;
   }
-  // eslint-disable-next-line sonarjs/no-os-command-from-path -- QEMU tool names are planned constants; args are structured and never shell-expanded.
   const child = nodeSpawn(command.bin, [...command.args], spawnOptions);
   let stderr = "";
   child.stderr?.on("data", (chunk: Buffer | string) => {
@@ -646,7 +670,7 @@ function runManagedCommandUntilSerialMarkers(
     command,
     exitCode: 1,
     stdout: "",
-    stderr: `timeout (${options.timeoutMs}ms) waiting for serial markers: ${stopCondition.successMarkers.join(", ")}`,
+    stderr: `timeout (${String(options.timeoutMs)}ms) waiting for serial markers: ${stopCondition.successMarkers.join(", ")}`,
   };
 }
 
