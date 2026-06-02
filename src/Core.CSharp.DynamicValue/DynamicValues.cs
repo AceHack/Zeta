@@ -520,4 +520,291 @@ public static class DynamicValues
             buf.Add((byte)(bits64 >> shift));
         }
     }
+
+    /// <summary>Decode canonical CBOR (RFC 8949) bytes back into a <see cref="DynamicValue"/> — the
+    /// inverse of <see cref="ToCanonicalCbor"/>, completing the byte↔value bijection for all eight
+    /// shapes. Decode is partial (truncation, reserved/indefinite forms, CBOR tags, oversized
+    /// integers, non-text map keys), so it returns <see cref="Result{T, TError}"/> per the
+    /// Result-over-exception hard rule (AGENTS.md) — never throws for malformed input.
+    /// <para>Round-trip is the byte-lock: <c>ToCanonicalCbor(FromCanonicalCbor(b)) == b</c> for every
+    /// canonical <c>b</c> in the shared seed. float16 payloads decode via <see cref="Half"/>.</para>
+    /// </summary>
+    /// <param name="bytes">canonical CBOR bytes.</param>
+    /// <returns><see cref="Result{T, TError}.Ok"/> with the decoded value, or
+    /// <see cref="Result{T, TError}.Err"/> carrying the <see cref="DecodeError"/>.</returns>
+    public static Result<DynamicValue, DecodeError> FromCanonicalCbor(byte[] bytes)
+    {
+        ArgumentNullException.ThrowIfNull(bytes);
+        int pos = 0;
+        DecodeError? err = TryReadCbor(bytes, ref pos, out DynamicValue value);
+        if (err is DecodeError e)
+        {
+            return new Result<DynamicValue, DecodeError>.Err(e);
+        }
+
+        if (pos != bytes.Length)
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.TrailingData);
+        }
+
+        // Canonical-form fixed-point check: the canonical bytes are exactly those `b` with
+        // ToCanonicalCbor(decode(b)) == b. This rejects well-formed-but-non-canonical input —
+        // non-shortest int/length widths (18 00 vs 00), non-shortest floats / non-canonical NaN,
+        // and invalid UTF-8 silently repaired to U+FFFD (which re-encodes to different bytes) — in
+        // one uniform check, instead of scattering per-form strictness through the reader.
+        if (!ToCanonicalCbor(value).AsSpan().SequenceEqual(bytes))
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.NonCanonical);
+        }
+
+        return new Result<DynamicValue, DecodeError>.Ok(value);
+    }
+
+    // Reads one CBOR item starting at `pos`, advancing it. Returns null on success (value set), or
+    // the DecodeError on failure.
+    private static DecodeError? TryReadCbor(byte[] b, ref int pos, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        if (pos >= b.Length)
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        byte initial = b[pos++];
+        int major = initial >> 5;
+        int ai = initial & 0x1f;
+
+        // Major 7: simple values (false/true/null) + IEEE floats.
+        if (major == 7)
+        {
+            return TryReadSimpleOrFloat(b, ref pos, ai, out value);
+        }
+
+        DecodeError? argErr = TryReadCborArg(b, ref pos, ai, out ulong arg);
+        if (argErr is DecodeError ae)
+        {
+            return ae;
+        }
+
+        switch (major)
+        {
+            case 0: // unsigned integer
+                if (arg > long.MaxValue)
+                {
+                    return DecodeError.IntegerOverflow;
+                }
+
+                value = new DynamicValue.Int((long)arg);
+                return null;
+            case 1: // negative integer = -1 - arg
+                if (arg > long.MaxValue)
+                {
+                    return DecodeError.IntegerOverflow;
+                }
+
+                value = new DynamicValue.Int(-1L - (long)arg);
+                return null;
+            case 2:
+                return TryReadByteString(b, ref pos, arg, out value);
+            case 3:
+                return TryReadTextString(b, ref pos, arg, out value);
+            case 4:
+                return TryReadArray(b, ref pos, arg, out value);
+            case 5:
+                return TryReadMap(b, ref pos, arg, out value);
+            default:
+                return DecodeError.Unsupported; // major 6 = tags, not used by our canonical form
+        }
+    }
+
+    // Major 7: simple values (false/true/null) + IEEE floats (float16/32/64). NaN/Inf/±0 ride the
+    // float payloads; float16 decodes via System.Half.
+    private static DecodeError? TryReadSimpleOrFloat(byte[] b, ref int pos, int ai, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        switch (ai)
+        {
+            case 20:
+                value = new DynamicValue.Bool(false);
+                return null;
+            case 21:
+                value = new DynamicValue.Bool(true);
+                return null;
+            case 22:
+                return null; // value already Null
+            case 25:
+            {
+                if (pos + 2 > b.Length)
+                {
+                    return DecodeError.UnexpectedEnd;
+                }
+
+                ushort bits16 = (ushort)((b[pos] << 8) | b[pos + 1]);
+                pos += 2;
+                value = new DynamicValue.Float((double)BitConverter.UInt16BitsToHalf(bits16));
+                return null;
+            }
+            case 26:
+            {
+                if (pos + 4 > b.Length)
+                {
+                    return DecodeError.UnexpectedEnd;
+                }
+
+                uint bits32 = ((uint)b[pos] << 24) | ((uint)b[pos + 1] << 16) | ((uint)b[pos + 2] << 8) | b[pos + 3];
+                pos += 4;
+                value = new DynamicValue.Float(BitConverter.UInt32BitsToSingle(bits32));
+                return null;
+            }
+            case 27:
+            {
+                if (pos + 8 > b.Length)
+                {
+                    return DecodeError.UnexpectedEnd;
+                }
+
+                ulong bits64 = 0;
+                for (int i = 0; i < 8; i++)
+                {
+                    bits64 = (bits64 << 8) | b[pos + i];
+                }
+
+                pos += 8;
+                value = new DynamicValue.Float(BitConverter.UInt64BitsToDouble(bits64));
+                return null;
+            }
+            default:
+                return DecodeError.Unsupported; // undefined / 1-byte simple value / reserved
+        }
+    }
+
+    private static DecodeError? TryReadByteString(byte[] b, ref int pos, ulong arg, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        if (arg > (ulong)(b.Length - pos))
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        int n = (int)arg;
+        var slice = new byte[n];
+        Array.Copy(b, pos, slice, 0, n);
+        pos += n;
+        value = new DynamicValue.Bytes(slice.ToImmutableArray());
+        return null;
+    }
+
+    private static DecodeError? TryReadTextString(byte[] b, ref int pos, ulong arg, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        if (arg > (ulong)(b.Length - pos))
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        int n = (int)arg;
+        value = new DynamicValue.String(Encoding.UTF8.GetString(b, pos, n));
+        pos += n;
+        return null;
+    }
+
+    private static DecodeError? TryReadArray(byte[] b, ref int pos, ulong arg, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        // each item is ≥ 1 byte, so a count beyond the remaining bytes is truncated
+        if (arg > (ulong)(b.Length - pos))
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        var items = ImmutableArray.CreateBuilder<DynamicValue>((int)arg);
+        for (ulong i = 0; i < arg; i++)
+        {
+            DecodeError? itemErr = TryReadCbor(b, ref pos, out DynamicValue item);
+            if (itemErr is DecodeError ie)
+            {
+                return ie;
+            }
+
+            items.Add(item);
+        }
+
+        value = new DynamicValue.Array(items.ToImmutable());
+        return null;
+    }
+
+    private static DecodeError? TryReadMap(byte[] b, ref int pos, ulong arg, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        if (arg > (ulong)(b.Length - pos))
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        var pairs = ImmutableArray.CreateBuilder<KeyValuePair<string, DynamicValue>>((int)arg);
+        for (ulong i = 0; i < arg; i++)
+        {
+            DecodeError? keyErr = TryReadCbor(b, ref pos, out DynamicValue key);
+            if (keyErr is DecodeError ke)
+            {
+                return ke;
+            }
+
+            if (key is not DynamicValue.String ks)
+            {
+                return DecodeError.NonTextKey;
+            }
+
+            DecodeError? valErr = TryReadCbor(b, ref pos, out DynamicValue val);
+            if (valErr is DecodeError ve)
+            {
+                return ve;
+            }
+
+            pairs.Add(new KeyValuePair<string, DynamicValue>(ks.Value, val));
+        }
+
+        value = new DynamicValue.Object(pairs.ToImmutable());
+        return null;
+    }
+
+    // Reads a CBOR argument (the value after the initial byte) for additional-info `ai`: inline for
+    // 0–23, else 1/2/4/8 big-endian bytes for 24/25/26/27. 28–31 are reserved/indefinite (Unsupported).
+    private static DecodeError? TryReadCborArg(byte[] b, ref int pos, int ai, out ulong arg)
+    {
+        arg = 0;
+        if (ai < 24)
+        {
+            arg = (ulong)ai;
+            return null;
+        }
+
+        int n = ai switch
+        {
+            24 => 1,
+            25 => 2,
+            26 => 4,
+            27 => 8,
+            _ => -1,
+        };
+        if (n < 0)
+        {
+            return DecodeError.Unsupported;
+        }
+
+        if (pos + n > b.Length)
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        ulong v = 0;
+        for (int i = 0; i < n; i++)
+        {
+            v = (v << 8) | b[pos + i];
+        }
+
+        pos += n;
+        arg = v;
+        return null;
+    }
 }
