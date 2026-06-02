@@ -346,4 +346,178 @@ public static class DynamicValues
 
         sb.Append('"');
     }
+
+    /// <summary>Canonical CBOR encoding (RFC 8949) — the TOTAL byte-lock target for all eight shapes
+    /// (the shared seed is <c>src/Core.TypeScript/dynamic-value/golden-vectors-cbor.json</c>). Where
+    /// <see cref="ToCanonicalJson"/> is a partial projection (6/8 shapes; Float/Bytes deferred), CBOR
+    /// is total: <see cref="DynamicValue.Float"/> uses the RFC 8949 §4.2.2 shortest-float rule
+    /// (float16 if it round-trips exactly, else float32, else float64; NaN canonicalizes to
+    /// <c>0xf97e00</c>) and <see cref="DynamicValue.Bytes"/> uses a native major-type-2 byte string —
+    /// so no <see cref="Result{T, TError}"/> is needed (CBOR has a canonical form for every shape).
+    /// <para>One deliberate deviation from RFC 8949 §4.2.1 deterministic encoding:
+    /// <see cref="DynamicValue.Object"/> map keys stay in INSERTION order, NOT bytewise-sorted,
+    /// because Object is order-significant — the §4.2.1 key-sort would be lossy / non-bijective (the
+    /// same call v1 made for canonical JSON). Integers and string/array/map lengths use preferred
+    /// (shortest) serialization per §4.2.1.</para></summary>
+    /// <param name="value">the value to encode.</param>
+    /// <returns>the canonical CBOR bytes.</returns>
+    public static byte[] ToCanonicalCbor(DynamicValue value)
+    {
+        ArgumentNullException.ThrowIfNull(value);
+        var buf = new List<byte>();
+        WriteCbor(buf, value);
+        return buf.ToArray();
+    }
+
+    private static void WriteCbor(List<byte> buf, DynamicValue value)
+    {
+        switch (value)
+        {
+            case DynamicValue.Null:
+                buf.Add(0xf6);
+                break;
+            case DynamicValue.Bool b:
+                buf.Add(b.Value ? (byte)0xf5 : (byte)0xf4);
+                break;
+            case DynamicValue.Int i:
+                WriteCborInt(buf, i.Value);
+                break;
+            case DynamicValue.Float f:
+                WriteCborFloat(buf, f.Value);
+                break;
+            case DynamicValue.String s:
+                WriteCborText(buf, s.Value);
+                break;
+            case DynamicValue.Bytes by:
+                WriteCborHead(buf, 2, (ulong)by.Value.Length);
+                buf.AddRange(by.Value);
+                break;
+            case DynamicValue.Array a:
+                WriteCborHead(buf, 4, (ulong)a.Items.Length);
+                foreach (DynamicValue item in a.Items)
+                {
+                    WriteCbor(buf, item);
+                }
+
+                break;
+            case DynamicValue.Object o:
+                WriteCborHead(buf, 5, (ulong)o.Pairs.Length);
+                foreach (KeyValuePair<string, DynamicValue> pair in o.Pairs)
+                {
+                    WriteCborText(buf, pair.Key);
+                    WriteCbor(buf, pair.Value);
+                }
+
+                break;
+            default:
+                // Unreachable: the DynamicValue hierarchy is closed (sealed record cases).
+                throw new InvalidOperationException(
+                    $"WriteCbor reached an unknown variant ({value.Type}); the DynamicValue hierarchy is closed");
+        }
+    }
+
+    // CBOR initial byte (major type in top 3 bits) + preferred/shortest argument (RFC 8949 §3, §4.2.1).
+    private static void WriteCborHead(List<byte> buf, int major, ulong arg)
+    {
+        byte mt = (byte)(major << 5);
+        if (arg <= 23UL)
+        {
+            buf.Add((byte)(mt | (byte)arg));
+        }
+        else if (arg <= 0xffUL)
+        {
+            buf.Add((byte)(mt | 24));
+            buf.Add((byte)arg);
+        }
+        else if (arg <= 0xffffUL)
+        {
+            buf.Add((byte)(mt | 25));
+            buf.Add((byte)(arg >> 8));
+            buf.Add((byte)arg);
+        }
+        else if (arg <= 0xffffffffUL)
+        {
+            buf.Add((byte)(mt | 26));
+            buf.Add((byte)(arg >> 24));
+            buf.Add((byte)(arg >> 16));
+            buf.Add((byte)(arg >> 8));
+            buf.Add((byte)arg);
+        }
+        else
+        {
+            buf.Add((byte)(mt | 27));
+            for (int shift = 56; shift >= 0; shift -= 8)
+            {
+                buf.Add((byte)(arg >> shift));
+            }
+        }
+    }
+
+    // Major 0 for v >= 0; major 1 for v < 0 (which encodes -1 - v). `~v` yields -1 - v without the
+    // long.MinValue overflow that `-1 - v` / `-v` would hit.
+    private static void WriteCborInt(List<byte> buf, long value)
+    {
+        if (value >= 0)
+        {
+            WriteCborHead(buf, 0, (ulong)value);
+        }
+        else
+        {
+            WriteCborHead(buf, 1, (ulong)(~value));
+        }
+    }
+
+    // Major 3 text string: raw UTF-8, no escaping (unlike JSON). A String holding a lone surrogate
+    // is not a valid Unicode scalar sequence; .NET UTF-8 encodes it as U+FFFD (encoder-defined) — the
+    // seed's string vectors are all valid UTF-8.
+    private static void WriteCborText(List<byte> buf, string? value)
+    {
+        byte[] utf8 = Encoding.UTF8.GetBytes(value ?? string.Empty);
+        WriteCborHead(buf, 3, (ulong)utf8.Length);
+        buf.AddRange(utf8);
+    }
+
+    // RFC 8949 §4.2.2 shortest float: NaN -> 0xf97e00; otherwise the shortest of float16 / float32 /
+    // float64 that decodes back to the exact same value (±0 and ±Inf round-trip through float16). The
+    // `(double)narrowed == value` test also rejects a width that overflowed to Inf (e.g. 1e300 as
+    // float32), correctly falling through to the wider form.
+    private static void WriteCborFloat(List<byte> buf, double value)
+    {
+        if (double.IsNaN(value))
+        {
+            buf.Add(0xf9);
+            buf.Add(0x7e);
+            buf.Add(0x00);
+            return;
+        }
+
+        float f32 = (float)value;
+        if ((double)f32 == value)
+        {
+            var f16 = (Half)f32;
+            if ((float)f16 == f32)
+            {
+                ushort bits16 = BitConverter.HalfToUInt16Bits(f16);
+                buf.Add(0xf9);
+                buf.Add((byte)(bits16 >> 8));
+                buf.Add((byte)bits16);
+                return;
+            }
+
+            uint bits32 = BitConverter.SingleToUInt32Bits(f32);
+            buf.Add(0xfa);
+            buf.Add((byte)(bits32 >> 24));
+            buf.Add((byte)(bits32 >> 16));
+            buf.Add((byte)(bits32 >> 8));
+            buf.Add((byte)bits32);
+            return;
+        }
+
+        ulong bits64 = BitConverter.DoubleToUInt64Bits(value);
+        buf.Add(0xfb);
+        for (int shift = 56; shift >= 0; shift -= 8)
+        {
+            buf.Add((byte)(bits64 >> shift));
+        }
+    }
 }

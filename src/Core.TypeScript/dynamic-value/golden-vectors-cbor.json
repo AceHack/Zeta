@@ -1,0 +1,474 @@
+{
+  "primitive": "DynamicValue",
+  "format": "canonical-cbor",
+  "spec": "RFC 8949 (CBOR), preferred/shortest int+length (§4.2.1) and shortest-float (§4.2.2)",
+  "note": "Canonical CBOR byte-lock for all eight DynamicValue shapes (CBOR is TOTAL where canonical JSON is partial: it locks Float via shortest-float and Bytes via major-type-2). DELIBERATE deviation from RFC 8949 §4.2.1 deterministic encoding: Object map keys stay in INSERTION order, NOT bytewise-sorted, because Object is order-significant (sorting would be lossy/non-bijective) -- the same call v1 made for canonical JSON. value.v for float is the IEEE-754 f64 bit pattern (16 hex, big-endian) for exactness; for int a decimal string; for bytes a hex string. Generated + RFC-8949-Appendix-A-anchored by tools-side python; each language oracle replays.",
+  "vectors": [
+    {
+      "name": "null",
+      "value": {
+        "t": "null"
+      },
+      "cbor": "f6"
+    },
+    {
+      "name": "bool-false",
+      "value": {
+        "t": "bool",
+        "v": false
+      },
+      "cbor": "f4"
+    },
+    {
+      "name": "bool-true",
+      "value": {
+        "t": "bool",
+        "v": true
+      },
+      "cbor": "f5"
+    },
+    {
+      "name": "int-zero",
+      "value": {
+        "t": "int",
+        "v": "0"
+      },
+      "cbor": "00"
+    },
+    {
+      "name": "int-23-max-inline",
+      "value": {
+        "t": "int",
+        "v": "23"
+      },
+      "cbor": "17"
+    },
+    {
+      "name": "int-24-one-byte",
+      "value": {
+        "t": "int",
+        "v": "24"
+      },
+      "cbor": "1818"
+    },
+    {
+      "name": "int-1000",
+      "value": {
+        "t": "int",
+        "v": "1000"
+      },
+      "cbor": "1903e8"
+    },
+    {
+      "name": "int-1000000",
+      "value": {
+        "t": "int",
+        "v": "1000000"
+      },
+      "cbor": "1a000f4240"
+    },
+    {
+      "name": "int-i64-max",
+      "value": {
+        "t": "int",
+        "v": "9223372036854775807"
+      },
+      "cbor": "1b7fffffffffffffff"
+    },
+    {
+      "name": "int-neg-1",
+      "value": {
+        "t": "int",
+        "v": "-1"
+      },
+      "cbor": "20"
+    },
+    {
+      "name": "int-neg-1000",
+      "value": {
+        "t": "int",
+        "v": "-1000"
+      },
+      "cbor": "3903e7"
+    },
+    {
+      "name": "int-i64-min",
+      "value": {
+        "t": "int",
+        "v": "-9223372036854775808"
+      },
+      "cbor": "3b7fffffffffffffff"
+    },
+    {
+      "name": "str-empty",
+      "value": {
+        "t": "str",
+        "v": ""
+      },
+      "cbor": "60"
+    },
+    {
+      "name": "str-a",
+      "value": {
+        "t": "str",
+        "v": "a"
+      },
+      "cbor": "6161"
+    },
+    {
+      "name": "str-ietf",
+      "value": {
+        "t": "str",
+        "v": "IETF"
+      },
+      "cbor": "6449455446"
+    },
+    {
+      "name": "str-unicode",
+      "value": {
+        "t": "str",
+        "v": "a水b"
+      },
+      "cbor": "6561e6b0b462",
+      "note": "raw UTF-8, no escaping"
+    },
+    {
+      "name": "float-zero",
+      "value": {
+        "t": "float",
+        "v": "0000000000000000"
+      },
+      "cbor": "f90000",
+      "note": "0.0 -> f90000"
+    },
+    {
+      "name": "float-neg-zero",
+      "value": {
+        "t": "float",
+        "v": "8000000000000000"
+      },
+      "cbor": "f98000",
+      "note": "-0.0 -> f98000 (sign preserved)"
+    },
+    {
+      "name": "float-one",
+      "value": {
+        "t": "float",
+        "v": "3ff0000000000000"
+      },
+      "cbor": "f93c00",
+      "note": "1.0 -> f93c00"
+    },
+    {
+      "name": "float-one-point-five",
+      "value": {
+        "t": "float",
+        "v": "3ff8000000000000"
+      },
+      "cbor": "f93e00",
+      "note": "1.5 -> f93e00"
+    },
+    {
+      "name": "float-f16-max",
+      "value": {
+        "t": "float",
+        "v": "40effc0000000000"
+      },
+      "cbor": "f97bff",
+      "note": "largest float16 -> f97bff"
+    },
+    {
+      "name": "float-f32-only",
+      "value": {
+        "t": "float",
+        "v": "40f86a0000000000"
+      },
+      "cbor": "fa47c35000",
+      "note": "f16 overflow -> float32 fa47c35000"
+    },
+    {
+      "name": "float-f32-max",
+      "value": {
+        "t": "float",
+        "v": "47efffffe0000000"
+      },
+      "cbor": "fa7f7fffff",
+      "note": "float32 max -> fa7f7fffff"
+    },
+    {
+      "name": "float-f64-only",
+      "value": {
+        "t": "float",
+        "v": "7e37e43c8800759c"
+      },
+      "cbor": "fb7e37e43c8800759c",
+      "note": "f32 overflow -> float64 fb7e37e43c8800759c"
+    },
+    {
+      "name": "float-f16-subnormal",
+      "value": {
+        "t": "float",
+        "v": "3e70000000000000"
+      },
+      "cbor": "f90001",
+      "note": "smallest f16 subnormal -> f90001"
+    },
+    {
+      "name": "float-f16-min-normal",
+      "value": {
+        "t": "float",
+        "v": "3f10000000000000"
+      },
+      "cbor": "f90400",
+      "note": "2^-14 smallest f16 normal -> f90400"
+    },
+    {
+      "name": "float-neg-four",
+      "value": {
+        "t": "float",
+        "v": "c010000000000000"
+      },
+      "cbor": "f9c400",
+      "note": "-4.0 -> f9c400"
+    },
+    {
+      "name": "float-neg-four-point-one",
+      "value": {
+        "t": "float",
+        "v": "c010666666666666"
+      },
+      "cbor": "fbc010666666666666",
+      "note": "not f32-exact -> float64 fbc010666666666666"
+    },
+    {
+      "name": "float-pos-inf",
+      "value": {
+        "t": "float",
+        "v": "7ff0000000000000"
+      },
+      "cbor": "f97c00",
+      "note": "Infinity -> f97c00"
+    },
+    {
+      "name": "float-neg-inf",
+      "value": {
+        "t": "float",
+        "v": "fff0000000000000"
+      },
+      "cbor": "f9fc00",
+      "note": "-Infinity -> f9fc00"
+    },
+    {
+      "name": "float-nan",
+      "value": {
+        "t": "float",
+        "v": "7ff8000000000000"
+      },
+      "cbor": "f97e00",
+      "note": "canonical quiet NaN -> f97e00"
+    },
+    {
+      "name": "bytes-empty",
+      "value": {
+        "t": "bytes",
+        "v": ""
+      },
+      "cbor": "40",
+      "note": "major-type-2 empty -> 40"
+    },
+    {
+      "name": "bytes-1234",
+      "value": {
+        "t": "bytes",
+        "v": "01020304"
+      },
+      "cbor": "4401020304",
+      "note": "h'01020304' -> 4401020304"
+    },
+    {
+      "name": "array-empty",
+      "value": {
+        "t": "arr",
+        "v": []
+      },
+      "cbor": "80"
+    },
+    {
+      "name": "array-ints",
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "int",
+            "v": "2"
+          },
+          {
+            "t": "int",
+            "v": "3"
+          }
+        ]
+      },
+      "cbor": "83010203"
+    },
+    {
+      "name": "array-mixed",
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "float",
+            "v": "3ff8000000000000"
+          },
+          {
+            "t": "bytes",
+            "v": "ff"
+          },
+          {
+            "t": "null"
+          }
+        ]
+      },
+      "cbor": "8401f93e0041fff6",
+      "note": "float+bytes nested in array"
+    },
+    {
+      "name": "array-nested",
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "arr",
+            "v": [
+              {
+                "t": "int",
+                "v": "2"
+              },
+              {
+                "t": "int",
+                "v": "3"
+              }
+            ]
+          }
+        ]
+      },
+      "cbor": "8201820203"
+    },
+    {
+      "name": "object-empty",
+      "value": {
+        "t": "obj",
+        "v": []
+      },
+      "cbor": "a0"
+    },
+    {
+      "name": "object-single",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "cbor": "a1616101"
+    },
+    {
+      "name": "object-rfc-ordered",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ],
+          [
+            "b",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "int",
+                  "v": "2"
+                },
+                {
+                  "t": "int",
+                  "v": "3"
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "cbor": "a26161016162820203",
+      "note": "RFC A: a26161016162820203"
+    },
+    {
+      "name": "object-order-significant",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "b",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ],
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "cbor": "a2616201616102",
+      "note": "insertion order b,a NOT sorted"
+    },
+    {
+      "name": "object-float-bytes-values",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "pi",
+            {
+              "t": "float",
+              "v": "400c000000000000"
+            }
+          ],
+          [
+            "raw",
+            {
+              "t": "bytes",
+              "v": "dead"
+            }
+          ]
+        ]
+      },
+      "cbor": "a2627069f943006372617742dead",
+      "note": "float+bytes as object values"
+    }
+  ]
+}
