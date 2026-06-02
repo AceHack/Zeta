@@ -8,6 +8,7 @@ import {
   sign as nodeSign, verify as nodeVerify,
 } from "node:crypto";
 import type { AceManifest, RegistryEntry } from "./store.ts";
+import { canonicalBytes } from "./canonical.ts";
 
 export interface Keypair { privatePem: string; publicSpkiB64: string; keyId: string; }
 export interface AceSignature { algo: "ed25519"; key_id: string; sig: string; }
@@ -30,23 +31,11 @@ export function generateKeypair(): Keypair {
   return { privatePem, publicSpkiB64, keyId: keyId(publicSpkiB64) };
 }
 
-function canonicalize(value: unknown): unknown {
-  if (Array.isArray(value)) return value.map(canonicalize);
-  if (value && typeof value === "object") {
-    const out: Record<string, unknown> = {};
-    for (const k of Object.keys(value as Record<string, unknown>).sort()) {
-      out[k] = canonicalize((value as Record<string, unknown>)[k]);
-    }
-    return out;
-  }
-  return value;
-}
-
-/** Whole manifest minus `signature`, recursively key-sorted, compact JSON. */
+/** Whole manifest minus `signature`, via the shared canonical byte form (§8.1). */
 export function canonicalManifestBytes(manifest: AceManifest): Uint8Array {
   const { signature, ...rest } = manifest as AceManifest & { signature?: AceSignature };
   void signature; // excluded from canonical bytes — only `rest` is serialized
-  return new TextEncoder().encode(JSON.stringify(canonicalize(rest)));
+  return canonicalBytes(rest);
 }
 
 export function signManifest(manifest: AceManifest, privatePem: string): AceSignature {
@@ -90,9 +79,9 @@ export interface IndexSignableContent {
   quarantined?: RevocationMap;
 }
 
-/** Index content (no `signature`), recursively key-sorted, compact JSON. Sibling of canonicalManifestBytes. */
+/** Index content (no `signature`), via the shared canonical byte form. Sibling of canonicalManifestBytes. */
 export function canonicalIndexBytes(content: IndexSignableContent): Uint8Array {
-  return new TextEncoder().encode(JSON.stringify(canonicalize(content)));
+  return canonicalBytes(content);
 }
 
 export function signIndex(content: IndexSignableContent, privatePem: string): AceSignature {

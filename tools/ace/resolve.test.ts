@@ -186,6 +186,17 @@ describe("resolve — invalid package", () => {
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.reason).toBe("invalid-package");
   });
+  test("dep with a non-safe-integer manifest field refuses invalid-package (no throw)", async () => {
+    const D = pkgOf("D", { "d.txt": "d" });
+    // Inject a float into the manifest: packageHash's shared canonicalBytes uses
+    // Number.isSafeInteger and throws on it. resolve must surface that as a clean
+    // invalid-package refusal, not an unhandled exception (slice 8.1).
+    const floatDep: any = { manifest: { ...D.manifest, bogus: 1.5 }, files: D.files };
+    const root = pkgOf("root", { "r.txt": "r" }, [{ pkg: D, url: "http://e/D" }]);
+    const r = await resolve(root, fetchOf({ "http://e/D": floatDep }), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
 });
 
 function regOf(src: Record<string, Record<string, RegistryEntry>>): Map<string, Map<string, RegistryEntry>> {
