@@ -215,3 +215,12 @@ tools/alignment/out/ WHEN the host's
 # pollute the working tree.
 /hardware-configuration.nix
 tools/alignment/out/
+
+# better-git-crypt (B-0883) SECRET key material — NEVER commit. `--gen-recipient`
+# writes `<identity>.secret.json` (the private KEM/signature bundle; the ONLY
+# thing that can decrypt) into `--out-dir` (default `.`). A repo-root `git add .`
+# would otherwise stage it despite the CLI's warning. The PUBLIC `*.recipient.json`
+# is intentionally NOT ignored (it is shareable/committable). `~/.zeta-keys/` is
+# outside the repo; this also covers a repo-local `.zeta-keys/` if anyone uses one.
+*.secret.json
+.zeta-keys/

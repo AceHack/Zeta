@@ -2,51 +2,163 @@
 /**
  * tools/crypto/better-git-crypt/cli/main.ts
  *
- * B-0883 v1 — better-git-crypt CLI dispatcher (PoC scaffold)
+ * B-0883 v1 — better-git-crypt CLI (post-quantum file encryption; the rejected
+ * legacy git-crypt's replacement).
  *
- * Usage:
- *   bun tools/crypto/better-git-crypt/cli/main.ts --list-algs
- *   bun tools/crypto/better-git-crypt/cli/main.ts --validate
- *   bun tools/crypto/better-git-crypt/cli/main.ts --dry-run-envelope
- *
- * Modes:
+ * Scaffold modes (no crypto):
  *   --list-algs         Print ALG_REGISTRY as structured JSON
  *   --validate          Run registry invariants; exit non-zero on violation
- *   --dry-run-envelope  Construct a synthetic FileEnvelope using ships-v1
- *                       algorithms + validate its structure; emit JSON
- *                       describing the envelope shape (NO crypto; NO bytes)
+ *   --dry-run-envelope  Construct + validate a synthetic FileEnvelope shape
+ *
+ * File modes (real PQ crypto — XWing KEM + ML-DSA-65 sig + ChaCha20-Poly1305):
+ *   --gen-recipient <identity> [--out-dir <dir>] [--force]
+ *       Generate a v1 keypair. Refuses to overwrite an existing keypair (that
+ *       would destroy the only secret able to decrypt prior .zc) unless --force.
+ *       Writes <identity>.recipient.json (PUBLIC,
+ *       shareable/committable) + <identity>.secret.json (SECRET bundle — the
+ *       ONLY thing that can decrypt; NEVER commit; store it safely).
+ *
+ *   --encrypt-file <path> --self-key <secret.json> [--recipient <r.json>]... [--out <path>] [--force]
+ *       Encrypt <path> with your secret bundle as sender + self-recipient (plus
+ *       any extra --recipient public keys). Writes <path>.zc (canonical CBOR
+ *       envelope = ciphertext) unless --out; refuses to overwrite an existing
+ *       output unless --force. Plaintext NEVER enters the output;
+ *       commit the .zc, keep the plaintext out of git.
+ *
+ *   --decrypt-file <path.zc> --key <secret.json> [--sender-sig <r.json>] [--out <path>] [--force]
+ *       Decrypt <path.zc> with your secret bundle. --sender-sig is the signer's
+ *       PUBLIC recipient JSON (default: self, for self-encrypted files); its
+ *       identity is bound (must match the envelope's signerIdentity). Writes
+ *       the recovered plaintext to <path without .zc> unless --out; refuses to
+ *       overwrite an existing output (may be an edited plaintext) unless --force.
  *
  * Exit codes:
  *   0 — operation successful
- *   1 — runtime validation FAILED (registry invariant OR envelope structure)
+ *   1 — runtime failure (validation / crypto feedback / file I/O)
  *   2 — usage error
  *
- * Per rule-0-no-sh-files (TS-first) + zeta-ships-with-skills-immediate-value
- * (TS PoC ships first; F# crystallization later).
+ * Security model (load-bearing): encrypt SIGNS with the sender's secret key and
+ * the sender is a self-recipient — so self-encryption means ONLY the holder of
+ * the secret bundle can read the output. The secret bundle is yours; hold it.
  *
- * PoC scope: declarative dispatcher + invariant validation + envelope-
- * structure dry-run. Real Noble integration + KEM operations + CBOR
- * encoding + actual encrypt/decrypt = Phase 2 (operator-authorized
- * follow-up). The scaffold types the substrate + surfaces the integration
- * points for Phase 2.
+ * Per rule-0-no-sh-files (TS-first) + zeta-ships-with-skills-immediate-value.
  */
 
+import { readFileSync, writeFileSync, chmodSync, existsSync } from "node:fs";
+import { join } from "node:path";
+
 import { ALG_REGISTRY, validateAlgRegistry, validateEnvelopeStructure, type FileEnvelope } from "../types";
+import {
+  generateKeyPairJSON,
+  deserializeRecipient,
+  deserializeSecretBundle,
+  looksLikeSecretBundle,
+  encryptBytes,
+  decryptBytes,
+  type RecipientKeyJSON,
+  type SecretBundleJSON,
+} from "../files";
 
-type Mode = "list-algs" | "validate" | "dry-run-envelope";
+type ParsedArgs =
+  | { mode: "list-algs" }
+  | { mode: "validate" }
+  | { mode: "dry-run-envelope" }
+  | { mode: "gen-recipient"; identity: string; outDir: string; force: boolean }
+  | { mode: "encrypt-file"; inPath: string; selfKeyPath: string; recipientPaths: string[]; outPath: string; force: boolean }
+  | { mode: "decrypt-file"; inPath: string; selfKeyPath: string; senderSigPath: string | null; outPath: string | null; force: boolean };
 
-interface ParsedArgs {
-  readonly mode: Mode;
+/**
+ * Resolve a value-taking flag into three states so a flag that is PRESENT but
+ * missing its value becomes a USAGE ERROR rather than a silent fallback (which
+ * could e.g. write a secret bundle to the repo root, or encrypt to fewer
+ * recipients than intended). A value starting with `--` counts as missing.
+ */
+type FlagState = { kind: "absent" } | { kind: "missing" } | { kind: "value"; value: string };
+function valueFlag(args: readonly string[], name: string): FlagState {
+  const i = args.indexOf(name);
+  if (i < 0) return { kind: "absent" };
+  const v = args[i + 1];
+  if (v === undefined || v.startsWith("--")) return { kind: "missing" };
+  return { kind: "value", value: v };
+}
+
+/**
+ * All values for the repeatable `--recipient` flag, or `null` if ANY occurrence is
+ * missing its value (a usage error — silently dropping it would encrypt to fewer
+ * recipients than the user intended).
+ */
+function recipientValues(args: readonly string[]): string[] | null {
+  const out: string[] = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] !== "--recipient") continue;
+    const v = args[i + 1];
+    if (v === undefined || v.startsWith("--")) return null;
+    out.push(v);
+  }
+  return out;
+}
+
+/** Filename-safe slug for an identity (keeps the common @ . _ + - chars; `+` is
+ *  common in email identities like `user+tag@…`, and path separators are stripped). */
+function slug(identity: string): string {
+  return identity.replace(/[^A-Za-z0-9._@+-]/g, "_");
 }
 
 function parseArgs(argv: readonly string[]): ParsedArgs | { error: string } {
   const args = argv.slice(2);
   if (args.length === 0) {
-    return { error: "no mode specified — use --list-algs, --validate, or --dry-run-envelope" };
+    return { error: "no mode specified — see file header for usage" };
   }
   if (args.includes("--list-algs")) return { mode: "list-algs" };
   if (args.includes("--validate")) return { mode: "validate" };
   if (args.includes("--dry-run-envelope")) return { mode: "dry-run-envelope" };
+
+  const gen = valueFlag(args, "--gen-recipient");
+  if (gen.kind !== "absent") {
+    if (gen.kind === "missing") return { error: "--gen-recipient requires an <identity> value" };
+    const outDir = valueFlag(args, "--out-dir");
+    if (outDir.kind === "missing") return { error: "--out-dir requires a <dir> value" };
+    return { mode: "gen-recipient", identity: gen.value, outDir: outDir.kind === "value" ? outDir.value : ".", force: args.includes("--force") };
+  }
+
+  const enc = valueFlag(args, "--encrypt-file");
+  if (enc.kind !== "absent") {
+    if (enc.kind === "missing") return { error: "--encrypt-file requires a <path> value" };
+    const selfKey = valueFlag(args, "--self-key");
+    if (selfKey.kind !== "value") return { error: "--encrypt-file requires --self-key <secret.json>" };
+    const recips = recipientValues(args);
+    if (recips === null) return { error: "--recipient requires a <recipient.json> value" };
+    const out = valueFlag(args, "--out");
+    if (out.kind === "missing") return { error: "--out requires a <path> value" };
+    return {
+      mode: "encrypt-file",
+      inPath: enc.value,
+      selfKeyPath: selfKey.value,
+      recipientPaths: recips,
+      outPath: out.kind === "value" ? out.value : enc.value + ".zc",
+      force: args.includes("--force"),
+    };
+  }
+
+  const dec = valueFlag(args, "--decrypt-file");
+  if (dec.kind !== "absent") {
+    if (dec.kind === "missing") return { error: "--decrypt-file requires a <path.zc> value" };
+    const key = valueFlag(args, "--key");
+    if (key.kind !== "value") return { error: "--decrypt-file requires --key <secret.json>" };
+    const senderSig = valueFlag(args, "--sender-sig");
+    if (senderSig.kind === "missing") return { error: "--sender-sig requires a <recipient.json> value" };
+    const out = valueFlag(args, "--out");
+    if (out.kind === "missing") return { error: "--out requires a <path> value" };
+    return {
+      mode: "decrypt-file",
+      inPath: dec.value,
+      selfKeyPath: key.value,
+      senderSigPath: senderSig.kind === "value" ? senderSig.value : null,
+      outPath: out.kind === "value" ? out.value : null,
+      force: args.includes("--force"),
+    };
+  }
+
   return { error: `unrecognized arguments: ${args.join(" ")}` };
 }
 
@@ -87,13 +199,7 @@ function modeValidate(): number {
     });
     return 0;
   } catch (e) {
-    emitJson({
-      rowId: "B-0883",
-      subRow: "v1",
-      mode: "validate",
-      result: "failed",
-      error: (e as Error).message,
-    });
+    emitJson({ rowId: "B-0883", subRow: "v1", mode: "validate", result: "failed", error: (e as Error).message });
     return 1;
   }
 }
@@ -102,17 +208,9 @@ function modeDryRunEnvelope(): number {
   try {
     validateAlgRegistry(ALG_REGISTRY);
   } catch (e) {
-    emitJson({
-      rowId: "B-0883",
-      subRow: "v1",
-      mode: "dry-run-envelope",
-      result: "failed",
-      stage: "registry-validation",
-      error: (e as Error).message,
-    });
+    emitJson({ rowId: "B-0883", subRow: "v1", mode: "dry-run-envelope", result: "failed", stage: "registry-validation", error: (e as Error).message });
     return 1;
   }
-  // Construct a synthetic envelope using ships-v1 primary algorithms.
   const synthetic: FileEnvelope = {
     version: 1,
     context: "zeta.git-crypt.file.v1",
@@ -121,14 +219,7 @@ function modeDryRunEnvelope(): number {
     algWrap: "ChaCha20-Poly1305-AEAD",
     algContent: "ChaCha20-Poly1305",
     algSig: "ML-DSA-65",
-    recipients: [
-      {
-        identity: "otto-cli@zeta",
-        kemCt: new Uint8Array(0),
-        wrappedCek: new Uint8Array(0),
-        kdfInfo: new Uint8Array(0),
-      },
-    ],
+    recipients: [{ identity: "otto-cli@zeta", kemCt: new Uint8Array(0), wrappedCek: new Uint8Array(0), kdfInfo: new Uint8Array(0) }],
     ciphertext: new Uint8Array(0),
     contentNonce: new Uint8Array(12),
     signerIdentity: "otto-cli@zeta",
@@ -144,43 +235,177 @@ function modeDryRunEnvelope(): number {
       envelope: {
         version: synthetic.version,
         context: synthetic.context,
-        algorithms: {
-          kem: synthetic.algKem,
-          kdf: synthetic.algKdf,
-          wrap: synthetic.algWrap,
-          content: synthetic.algContent,
-          signature: synthetic.algSig,
-        },
+        algorithms: { kem: synthetic.algKem, kdf: synthetic.algKdf, wrap: synthetic.algWrap, content: synthetic.algContent, signature: synthetic.algSig },
         recipientCount: synthetic.recipients.length,
         signerIdentity: synthetic.signerIdentity,
       },
-      phase2Implemented: {
-        crypto: "../crypto.ts — generateRecipientKeyPair / encrypt / decrypt / encodeEnvelope / decodeEnvelope",
-        kem: "XWing (ML-KEM-768 + X25519) via @noble/post-quantum/hybrid",
-        signature: "ML-DSA-65 via @noble/post-quantum/ml-dsa (sign + self-verify)",
-        kdf: "HKDF-SHA256 via @noble/hashes",
-        aead: "ChaCha20-Poly1305 via @noble/ciphers (content + CEK-wrap)",
-        cbor: "canonical/deterministic envelope via cborg",
+      fileModes: {
+        genRecipient: "--gen-recipient <id> [--out-dir <dir>]",
+        encryptFile: "--encrypt-file <path> --self-key <secret.json> [--recipient <r.json>]... [--out <path>]",
+        decryptFile: "--decrypt-file <path.zc> --key <secret.json> [--sender-sig <r.json>] [--out <path>]",
       },
       stillDeferred: {
-        gitTextconv: "git textconv filter integration for diff-readable ciphertext",
-        recipientManagement: ".zeta-crypt/recipients.json read/write + rotation",
-        multiCipherHedge: "B-0883.2 — Saber / NTRU-Prime / FrodoKEM ship as alternates when TS-native impls mature",
+        gitTextconv: "git clean/smudge or textconv filter integration (transparent encrypt-on-commit)",
+        recipientRegistry: ".zeta-crypt/recipients.json multi-party registry + rotation (B-0883.3)",
+        multiCipherHedge: "B-0883.2 — Saber / NTRU-Prime / FrodoKEM alternates when TS-native impls mature",
         metadataEncryption: "B-0883.5 — filenames / commit messages (v1 is content-only)",
-        seedSourcesBeyondRandom: "adinkra-derived (B-0623) + hsm-derived seed sources",
       },
-      beforeRealUse: "KATs vs Noble vectors + formal-verification + security-ops review (crypto-don't-rush gate)",
     });
     return 0;
   } catch (e) {
+    emitJson({ rowId: "B-0883", subRow: "v1", mode: "dry-run-envelope", result: "failed", stage: "envelope-structure-validation", error: (e as Error).message });
+    return 1;
+  }
+}
+
+function modeGenRecipient(identity: string, outDir: string, force: boolean): number {
+  try {
+    const base = slug(identity);
+    const recPath = join(outDir, `${base}.recipient.json`);
+    const secPath = join(outDir, `${base}.secret.json`);
+    // P0 (data-loss) guard: regenerating a keypair for an existing identity would
+    // destroy the ONLY secret bundle able to decrypt files already encrypted to it.
+    if (!force && (existsSync(secPath) || existsSync(recPath))) {
+      emitJson({
+        rowId: "B-0883",
+        mode: "gen-recipient",
+        result: "failed",
+        error: `refusing to overwrite an existing keypair for '${identity}' (${existsSync(secPath) ? secPath : recPath}). Regenerating destroys the ONLY secret bundle that can decrypt files already encrypted to it. Use a different --out-dir / identity, or pass --force if you are certain.`,
+      });
+      return 1;
+    }
+    const { recipient, secret } = generateKeyPairJSON(identity);
+    writeFileSync(recPath, JSON.stringify(recipient, null, 2) + "\n");
+    writeFileSync(secPath, JSON.stringify(secret, null, 2) + "\n", { mode: 0o600 });
+    try {
+      chmodSync(secPath, 0o600);
+    } catch {
+      /* best-effort on filesystems without POSIX modes */
+    }
     emitJson({
       rowId: "B-0883",
-      subRow: "v1",
-      mode: "dry-run-envelope",
-      result: "failed",
-      stage: "envelope-structure-validation",
-      error: (e as Error).message,
+      mode: "gen-recipient",
+      result: "passed",
+      identity,
+      recipientPublic: recPath,
+      secretBundle: secPath,
+      warning: "the SECRET bundle is the ONLY way to decrypt — store it safely, NEVER commit it (gitignore it or keep it outside the repo). The .recipient.json (public) is shareable/committable.",
     });
+    return 0;
+  } catch (e) {
+    emitJson({ rowId: "B-0883", mode: "gen-recipient", result: "failed", error: (e as Error).message });
+    return 1;
+  }
+}
+
+/**
+ * Read a PUBLIC recipient JSON, REFUSING a secret bundle (P1 footgun guard): a
+ * `.secret.json` passed where a public recipient is expected would treat private
+ * key material as a public recipient and invites accidental sharing/committing.
+ */
+function loadPublicRecipient(path: string) {
+  const obj = JSON.parse(readFileSync(path, "utf8")) as unknown;
+  if (looksLikeSecretBundle(obj)) {
+    throw new Error(
+      `refusing to use '${path}' as a recipient: it contains SECRET key material (a .secret.json bundle). Pass the PUBLIC .recipient.json instead.`,
+    );
+  }
+  return deserializeRecipient(obj as RecipientKeyJSON);
+}
+
+function modeEncryptFile(inPath: string, selfKeyPath: string, recipientPaths: string[], outPath: string, force: boolean): number {
+  try {
+    // Don't silently destroy an existing output (e.g. --out pointed at the plaintext
+    // itself, or an existing .zc the user meant to keep).
+    if (!force && existsSync(outPath)) {
+      emitJson({
+        rowId: "B-0883",
+        mode: "encrypt-file",
+        result: "failed",
+        in: inPath,
+        error: `refusing to overwrite existing output '${outPath}' — it may be a file you meant to keep. Use --out <path> or --force.`,
+      });
+      return 1;
+    }
+    const plaintext = readFileSync(inPath); // Buffer IS a Uint8Array — pass directly (no copy)
+    const self = deserializeSecretBundle(JSON.parse(readFileSync(selfKeyPath, "utf8")) as SecretBundleJSON);
+    const extras = recipientPaths.map((p) => loadPublicRecipient(p));
+    const res = encryptBytes(plaintext, self, extras);
+    if (!res.ok) {
+      emitJson({ rowId: "B-0883", mode: "encrypt-file", result: "failed", in: inPath, feedback: res.feedback });
+      return 1;
+    }
+    writeFileSync(outPath, res.envelopeBytes); // Uint8Array writes directly (no copy)
+    emitJson({
+      rowId: "B-0883",
+      mode: "encrypt-file",
+      result: "passed",
+      in: inPath,
+      out: outPath,
+      plaintextBytes: plaintext.length,
+      envelopeBytes: res.envelopeBytes.length,
+      recipients: res.recipientIdentities,
+      note: "commit the .zc (ciphertext); keep the plaintext out of git",
+    });
+    return 0;
+  } catch (e) {
+    emitJson({ rowId: "B-0883", mode: "encrypt-file", result: "failed", in: inPath, error: (e as Error).message });
+    return 1;
+  }
+}
+
+function modeDecryptFile(
+  inPath: string,
+  selfKeyPath: string,
+  senderSigPath: string | null,
+  outPath: string | null,
+  force: boolean,
+): number {
+  try {
+    const envelopeBytes = readFileSync(inPath); // Buffer IS a Uint8Array — pass directly (no copy)
+    const self = deserializeSecretBundle(JSON.parse(readFileSync(selfKeyPath, "utf8")) as SecretBundleJSON);
+    let senderSig: Uint8Array | undefined;
+    let expectedSignerIdentity: string | undefined;
+    if (senderSigPath) {
+      // P1: BIND the --sender-sig identity. signerIdentity is signed-but-self-declared;
+      // decryptBytes enforces signerIdentity === expectedSignerIdentity (fail-closed) so
+      // an envelope can't claim identity X while signed by key-for-Y.
+      const senderRecipient = loadPublicRecipient(senderSigPath);
+      senderSig = senderRecipient.publicSigKey;
+      expectedSignerIdentity = senderRecipient.identity;
+    }
+    const out = outPath ?? (inPath.endsWith(".zc") ? inPath.slice(0, -3) : inPath + ".dec");
+    // P2: don't silently destroy an existing (possibly edited) plaintext.
+    if (!force && existsSync(out)) {
+      emitJson({
+        rowId: "B-0883",
+        mode: "decrypt-file",
+        result: "failed",
+        in: inPath,
+        error: `refusing to overwrite existing output '${out}' — it may be an edited plaintext. Use --out <path> or --force.`,
+      });
+      return 1;
+    }
+    const res = decryptBytes(envelopeBytes, self, senderSig, expectedSignerIdentity);
+    if (!res.ok) {
+      if ("identityMismatch" in res) {
+        emitJson({
+          rowId: "B-0883",
+          mode: "decrypt-file",
+          result: "failed",
+          in: inPath,
+          error: `envelope signerIdentity '${res.identityMismatch.actual}' does not match --sender-sig identity '${res.identityMismatch.expected}'`,
+        });
+      } else {
+        emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "failed", in: inPath, feedback: res.feedback });
+      }
+      return 1;
+    }
+    writeFileSync(out, res.plaintext); // Uint8Array writes directly (no copy)
+    emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "passed", in: inPath, out, plaintextBytes: res.plaintext.length });
+    return 0;
+  } catch (e) {
+    emitJson({ rowId: "B-0883", mode: "decrypt-file", result: "failed", in: inPath, error: (e as Error).message });
     return 1;
   }
 }
@@ -199,6 +424,12 @@ function main(argv: readonly string[]): number {
       return modeValidate();
     case "dry-run-envelope":
       return modeDryRunEnvelope();
+    case "gen-recipient":
+      return modeGenRecipient(parsed.identity, parsed.outDir, parsed.force);
+    case "encrypt-file":
+      return modeEncryptFile(parsed.inPath, parsed.selfKeyPath, parsed.recipientPaths, parsed.outPath, parsed.force);
+    case "decrypt-file":
+      return modeDecryptFile(parsed.inPath, parsed.selfKeyPath, parsed.senderSigPath, parsed.outPath, parsed.force);
   }
 }
 
