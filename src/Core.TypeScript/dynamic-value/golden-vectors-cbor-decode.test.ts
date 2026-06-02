@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import vectors from "./golden-vectors-cbor.json";
-import { type Tagged, type DecodeError, fromCanonicalCbor } from "./cbor";
+import { type Tagged, type DecodeError, fromCanonicalCbor, fromHex } from "./cbor";
 
 // DynamicValue canonical-CBOR DECODE byte-lock — fromCanonicalCbor is the inverse of
 // canonicalCbor, completing the byte↔value bijection. The decoder is strictly canonical
@@ -17,12 +17,6 @@ interface Vector {
   note?: string;
 }
 
-const hexToBytes = (hex: string): number[] => {
-  const out: number[] = [];
-  for (let i = 0; i < hex.length; i += 2) out.push(parseInt(hex.slice(i, i + 2), 16));
-  return out;
-};
-
 const decodeErr = (bytes: number[]): DecodeError => {
   const r = fromCanonicalCbor(bytes);
   if (r.ok) throw new Error("expected decode failure");
@@ -33,7 +27,7 @@ const seed = vectors as unknown as { vectors: Vector[] };
 
 for (const v of seed.vectors) {
   test(`cbor decode round-trip: ${v.name}`, () => {
-    const r = fromCanonicalCbor(hexToBytes(v.cbor));
+    const r = fromCanonicalCbor(fromHex(v.cbor));
     // ok ⟹ the decoder's internal fixed-point check passed (canonicalCbor(decoded) == input),
     // i.e. the byte-lock holds against the already-verified encoder.
     expect(r.ok).toBe(true);

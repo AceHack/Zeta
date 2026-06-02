@@ -1,0 +1,661 @@
+{
+  "primitive": "DynamicValue",
+  "description": "Unified canonical value manifest (B-0982): the single source for WHICH canonical DynamicValues exist. The per-format seeds (golden-vectors.json, golden-vectors-cbor.json, + future yaml/xml) are PROJECTIONS — each expresses the subset its format can carry. golden-vectors-manifest.test.ts cross-validates that no per-format seed drifts from this set (every seed value is here) and that each format projection is complete + decodes back to the listed value. Nothing is single source of truth for ENCODINGS (each is cross-checked by decode round-trip + the RFC-8949 Appendix-A anchor); this manifest is the single source for VALUE DEFINITIONS. value = the language-neutral tagged form ({t,v}); formats = the per-format seeds that currently express it.",
+  "formats": {
+    "json": "6 shapes — Float + Bytes DEFERRED (a JSON number is ambiguous Int-vs-Float; JSON has no native byte type; they lock under CBOR)",
+    "cbor": "8 shapes — total (Float via RFC 8949 §4.2.2 shortest-float; Bytes via major-type-2)"
+  },
+  "values": [
+    {
+      "value": {
+        "t": "null"
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "bool",
+        "v": false
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "bool",
+        "v": true
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "0"
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "23"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "24"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "1000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "1000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "9223372036854775807"
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "-1"
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "-1000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "-9223372036854775808"
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": ""
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "a"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "IETF"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "a水b"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "0000000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "8000000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "3ff0000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "3ff8000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "40effc0000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "40f86a0000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "47efffffe0000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "7e37e43c8800759c"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "3e70000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "3f10000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "c010000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "c010666666666666"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "7ff0000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "fff0000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "float",
+        "v": "7ff8000000000000"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "bytes",
+        "v": ""
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "bytes",
+        "v": "01020304"
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "arr",
+        "v": []
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "int",
+            "v": "2"
+          },
+          {
+            "t": "int",
+            "v": "3"
+          }
+        ]
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "float",
+            "v": "3ff8000000000000"
+          },
+          {
+            "t": "bytes",
+            "v": "ff"
+          },
+          {
+            "t": "null"
+          }
+        ]
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "arr",
+            "v": [
+              {
+                "t": "int",
+                "v": "2"
+              },
+              {
+                "t": "int",
+                "v": "3"
+              }
+            ]
+          }
+        ]
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": []
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "formats": ["cbor", "json"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ],
+          [
+            "b",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "int",
+                  "v": "2"
+                },
+                {
+                  "t": "int",
+                  "v": "3"
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "b",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ],
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "2"
+            }
+          ]
+        ]
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "pi",
+            {
+              "t": "float",
+              "v": "400c000000000000"
+            }
+          ],
+          [
+            "raw",
+            {
+              "t": "bytes",
+              "v": "dead"
+            }
+          ]
+        ]
+      },
+      "formats": ["cbor"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "1"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "42"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "int",
+        "v": "-42"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "hello"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "a b c"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "a\"b"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "a\\b"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "a/b"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "x\ny\tz"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "\u0001"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "héllo→世"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "str",
+        "v": "😀"
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "bool",
+            "v": true
+          },
+          {
+            "t": "null"
+          },
+          {
+            "t": "str",
+            "v": "x"
+          }
+        ]
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "arr",
+            "v": [
+              {
+                "t": "int",
+                "v": "1"
+              }
+            ]
+          },
+          {
+            "t": "arr",
+            "v": []
+          }
+        ]
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "b",
+            {
+              "t": "int",
+              "v": "2"
+            }
+          ],
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "on",
+            {
+              "t": "bool",
+              "v": true
+            }
+          ],
+          [
+            "name",
+            {
+              "t": "str",
+              "v": "zeta"
+            }
+          ],
+          [
+            "nil",
+            {
+              "t": "null"
+            }
+          ]
+        ]
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a\"b",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "outer",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "inner",
+                  {
+                    "t": "bool",
+                    "v": true
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "formats": ["json"]
+    },
+    {
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "b",
+                      {
+                        "t": "arr",
+                        "v": [
+                          {
+                            "t": "int",
+                            "v": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "formats": ["json"]
+    }
+  ]
+}

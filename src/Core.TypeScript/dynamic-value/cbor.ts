@@ -221,6 +221,13 @@ export function canonicalCbor(n: Tagged): number[] {
 
 export const toHex = (bytes: number[]): string => bytes.map((b) => b.toString(16).padStart(2, "0")).join("");
 
+// inverse of toHex — the seed carries CBOR bytes as a hex string; shared by the decode + manifest tests
+export const fromHex = (hex: string): number[] => {
+  const out: number[] = [];
+  for (let i = 0; i < hex.length; i += 2) out.push(parseInt(hex.slice(i, i + 2), 16));
+  return out;
+};
+
 // --- CBOR decode (inverse of canonicalCbor) ---
 
 // Internal control-flow carrier: a decode failure throws this and is caught at the
