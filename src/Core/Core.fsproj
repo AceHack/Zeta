@@ -36,6 +36,7 @@
     <Compile Include="Handles.fs" />
     <Compile Include="Environment.fs" />
     <Compile Include="FeatureFlags.fs" />
+    <Compile Include="Limit.fs" />
     <Compile Include="Simd.fs" />
     <Compile Include="HardwareCrc.fs" />
     <Compile Include="SplitMix64.fs" />
