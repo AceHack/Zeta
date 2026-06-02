@@ -2,7 +2,7 @@
 id: B-1009
 priority: P2
 status: open
-title: "z3 in CI — add z3 to gate.yml build-and-test so the Z3 SMT proofs are ENFORCED, not self-skipped (today z3 is only in stryker-mutation.yml → Z3.Laws.Tests.fs green-by-skip in the gate; assert-don't-skip hole) (Aaron 2026-06-02)"
+title: "z3 in CI — add z3 to gate.yml build-and-test so the Z3 SMT proofs are ENFORCED, not self-skipped (today the z3 CLI is installed in NO workflow → Z3.Laws.Tests.fs green-by-skip in the gate; assert-don't-skip hole) (Aaron 2026-06-02)"
 tier: formal-verification
 effort: S
 created: 2026-06-02
@@ -19,9 +19,12 @@ type: tooling
 
 `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` shells to the `z3` CLI and **self-skips
 when z3 is absent from PATH** (the existing `which "z3"` guard → "informational only").
-**z3 is installed in `.github/workflows/stryker-mutation.yml` but NOT in
-`.github/workflows/gate.yml`** (the build-and-test job). So in the merge gate the Z3
-proofs run **green-by-skip** — the check passes without exercising the proof.
+**The `z3` CLI is installed in NO workflow** — it appears only in a *comment* in
+`stryker-mutation.yml` (not an install step), and neither `gate.yml` nor
+`tools/setup/install.sh` install it. (`Microsoft.Z3` NuGet 4.12.2 *is* pinned in
+`Directory.Packages.props` for an in-process path, but the harness uses the CLI.) So
+in the merge gate the Z3 proofs run **green-by-skip** — the check passes without
+exercising the proof.
 
 This is the [`automated-tests-are-the-shield-assert-dont-skip`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
 failure: *a shield with a hole reads as covered.* The Z-set abelian-group Z3 lemmas
@@ -70,8 +73,10 @@ actually guards them.
 - rules: [`automated-tests-are-the-shield-assert-dont-skip`](../../../.claude/rules/automated-tests-are-the-shield-assert-dont-skip.md)
   (the exact failure mode), `formal-proof-first-...` (a proof that self-skips in the
   gate isn't enforced), `dep-pin-search-first-authority` (pin the z3 version).
-- substrate: `.github/workflows/gate.yml` (the target) · `.github/workflows/stryker-mutation.yml`
-  (where z3 is already installed — copy the install step) · `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`
+- substrate: `.github/workflows/gate.yml` (the target — add a fresh z3 install step;
+  none exists to copy, since no workflow installs z3 today) · `Directory.Packages.props`
+  (`Microsoft.Z3` 4.12.2 already pinned — the in-process alternative if the harness is
+  ever switched off the CLI) · `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs`
   (the self-skip to convert).
 
 ## Substrate-honest framing
