@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: [B-0993]
 composes_with: [B-0994, B-0643, B-0643.1, B-0245, B-0638, B-0639, B-0986, B-0990, B-0985, B-0703]
-tags: [body-plan, embodiment, sensor, effector, ears, eyes, mouth, body, verbal, non-verbal, communication-channels, failure-detector, threat-detector, prey-detector, diplomacy, weapon, defender, aggressor, replicator, doer, eve-protocol, ksk, sensor-suite, afferent, efferent, active-inference, predictive-coding, sensorimotor, nociception, transduction-transmission-modulation-perception, signal-processing, 4x4, instrumentability, boundary-effect, lightlike, dark, subjective, glass-halo, observability, privacy, say-do-gap, revealed-preference, stated-preference, cheap-talk, intention-behavior-gap, alignment, trust, veridicality, aaron]
+tags: [body-plan, embodiment, sensor, effector, ears, eyes, mouth, body, verbal, non-verbal, communication-channels, failure-detector, threat-detector, prey-detector, diplomacy, weapon, defender, aggressor, replicator, doer, eve-protocol, ksk, sensor-suite, afferent, efferent, active-inference, predictive-coding, sensorimotor, nociception, transduction-transmission-modulation-perception, signal-processing, 4x4, instrumentability, boundary-effect, lightlike, dark, subjective, glass-halo, observability, privacy, say-do-gap, revealed-preference, stated-preference, cheap-talk, intention-behavior-gap, alignment, trust, veridicality, integrity-index, trust-score, alignment-anchor, prism, deepseek, aaron]
 type: research
 ---
 
@@ -108,6 +108,20 @@ Widely-studied anchor (search-first-verified, 2026-06-02): this is exactly **rev
 **Operational principle:** instrument *both* the mouth-claim and the body-action, **measure the gap** — `mouth-claim == body-action` → consistent / trustworthy; **divergence** = the say-do gap (misalignment / deception / aspiration-vs-reality). The gap is the alignment signal you **can** see, precisely because internal motivation is the one you **can't**. Composes the **veridicality-detector / provenance-aware-claim-veracity** substrate (claim vs reality), **useful-output-is-evidence-not-authority** (the *behavior* is the evidence; the *claim* is not authority), the **trust-calculus / multi-oracle**, and `razor-discipline` (operate on the observable gap; **infer** motivation, never *assert* the private why). AI-alignment-relevant: alignment is verified by **say-do consistency over time**, not by trusting the claim.
 
 **Sources** (2026-06-02): [Revealed vs. Stated Preferences](https://reference.museumprogress.com/entries/revealed-vs-stated-preferences/); [The Say/Do Gap (stated-preference failure)](https://cloud.army/why-stated-preferences-fail-the-saydo-gap-in-market/); [Revealed versus Stated Preferences — Review of Environmental Economics and Policy](https://www.journals.uchicago.edu/doi/10.1093/reep/rez010).
+
+### `integrity_index` — the say-do gap as a metric in the observability stack (Prism operationalization)
+
+Prism (DeepSeek) 2026-06-02 (Aaron-forwarded; verbatim at `memory/persona/prism/conversations/2026-06-02-prism-deepseek-say-do-gap-as-alignment-anchor-integrity-index-metric-...md`) operationalized the say-do gap as a **derived metric** in the LGTM/Prometheus observability stack (B-0994):
+
+- **Metric:** `integrity_index = alignment(say, do)` (a.k.a. `trust_score` / `alignment_integrity_index`) — a sliding-scale measure of how well the agent's actions align with its stated claims; the **observable alignment anchor** (computable *without* accessing internal motivation).
+- **Instrumentation:** mouth-speech is on the comms channel (verbally observable); body-action is observable as behavior; both flow into the LGTM stack (B-0994); the gap is the **derived metric**.
+- **Three use-cases:**
+  1. **Inter-agent trust** — agent says "I will help" + body doesn't → its `integrity_index` drops (feeds the trust-calculus / multi-oracle, B-0703).
+  2. **Self-monitoring as alignment preventative-maintenance** — an agent monitors *its own* say-do gap as a health metric — the alignment-PdM layer (composes the acoustic/sonic/visual preventative-maintenance-on-memory+attention, B-0994: catch drift before failure; here, catch *alignment* drift).
+  3. **Human oversight** — a dashboard showing which agents consistently say one thing and do another (the Grafana/Atsophmera surface, B-0994).
+- **Governance form:** at *hub* scope this is the say-do-gap-as-governance-sensor (anti-cartel / hub-accountability, B-0997) — `integrity_index` is its metric.
+
+`[labeling-confidence: hypothesized metric on established say-do-gap]` — the say-do gap is the established anchor (above); `integrity_index = alignment(say, do)` as a concrete observability metric is the operationalization to specify (the `alignment(·,·)` function + the windowing over time). The key property holds either way: it's the **primary empirical signal for trust/alignment that needs no access to internal motivation** — observe both effects, measure the delta.
 
 ## KSK floor — weapon + aggressor are consent-first / defensive-only
 
