@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
 composes_with: [B-1000, B-1004, B-1005, B-0428]
-tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, infer-net, research, aaron]
+tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, orthogonal-primitive-axes, codec-axis, codec-as-primitive, infer-net, research, aaron]
 type: research
 ---
 
@@ -99,7 +99,26 @@ non-earning *entries* (B-1004); this extends the discipline to non-earning
 A maintained list of primitives **promoted through all gates** — the ones the
 team has argued through on **correctness AND aesthetics** (per Aaron: "the ones we
 really argue over correctness and aesthetics"). Two tiers, because promotion is by
-argument and not everything is decided:
+argument and not everything is decided.
+
+**The registry is multi-axis, not a flat list (Aaron 2026-06-02):** *"codecs are
+just a different orthogonal of primitive but they are still essential for
+function."* Primitives live on **orthogonal axes**, and a candidate promotes onto
+*an* axis (it isn't promoted-or-excluded against one flat list). The axes so far:
+
+- **data axis** — the Z-set family (`ZSet`/`GSet`/`Bag`/`IndexedZSet`): the
+  values/collections that flow.
+- **time/control axis** — `tick-source` (the clock/Δ-driver): what the data is
+  indexed *by*.
+- **codec axis** — `codec<codec<t>>` (serializers; Bonsai): what makes a value on
+  any axis *transmissible/persistable*. **Essential for function** — a value you
+  can't serialize can't cross a boundary — so codecs are first-class primitives,
+  just orthogonal to the collection axis.
+- **base substrate** — generic-math / `INumerics` under all of them.
+
+"Fold vs promote" is therefore "does it earn a place *on some axis*?" — Bonsai is
+not "not a primitive"; it's a primitive on the *codec* axis. Rx/event-index still
+fold (they're a view / a keyed-IndexedZSet on the data axis, not a new axis).
 
 | Tier | Meaning |
 |---|---|
@@ -115,11 +134,11 @@ Seed state (to be confirmed/argued, not declared final here):
 | `GSet` | promoted | `src/Core/GSet.fs`; grow-only (idempotent) |
 | `Bag` | promoted | `src/Core/Bag.fs`; multiset (non-idempotent) |
 | `IndexedZSet` | promoted | `src/Core/IndexedZSet.fs`; indexed/grouped, already generic-math |
-| **tick-source** (the clock/Δ driver) | **promoted** (audit 2026-06-02) | the time/control axis the Z-set family is indexed *by* — `Circuit.Op` `StepAsync`/`ClockStart`/`Fixedpoint`; not a collection, doesn't reduce to zset/gset (Q3-categorical) |
+| **tick-source** (the clock/Δ driver) | **promote-recommended — candidate pending correctness-gate** (audit 2026-06-02) | the time/control axis the Z-set family is indexed *by* — `Op` in `src/Core/Circuit.fs` (`StepAsync`/`ClockStart`/`Fixedpoint`); not a collection, doesn't reduce to zset/gset (Q3-categorical). Aesthetics gate passed; **correctness gate (stated laws + tests for tick-source as a primitive) not yet written** — stays candidate until it is (Codex review) |
 | generic-math / `INumerics` base | promoted (substrate, not a collection) | per `numerical-algebra-shaped-into-the-generic-math-interface` |
-| ~~event-index~~ | **folded** (audit 2026-06-02) | = `IndexedZSet<tick, 'V>` (same sorted-KeyGroup abelian group); a monotone-tick invariant is at most a constrained wrapper, not a new primitive (Q2/Q4) |
+| **Bonsai** | **promoted — codec axis** (audit 2026-06-02) | `src/Core/Bonsai.fs` expression-tree serializer — a primitive on the **codec axis** (`codec<codec<t>>`), orthogonal to the data axis; essential for function (makes values transmissible). Not on the collection axis, but a real primitive on its own (Aaron: "codecs are just a different orthogonal of primitive but still essential") |
+| ~~event-index~~ | **folded** (audit 2026-06-02) | = `IndexedZSet<tick, 'V>` (same sorted abelian group of per-key `ZSet` groups); a monotone-tick invariant is at most a constrained wrapper, not a new primitive (Q2/Q4) |
 | ~~Rx (`IObservable`)~~ | **view + adapter** (audit 2026-06-02) | push-dual *view* of `Stream<ZSet>` (`src/Core/Rx.fs` `RxAdapter`: `Stream<ZSet>` ≅ `IObservable<ChangeSet>`); an interop adapter, not a core primitive (Q2) |
-| ~~Bonsai~~ | **codec, not a primitive** (audit 2026-06-02) | `src/Core/Bonsai.fs` is an expression-tree *serializer* (serialize/parse→Result, byte-diff contract); belongs in the `codec<codec<t>>`/serializer layer (B-0976/B-1002), not the primitive registry |
 
 Everything NOT on the promoted list is held to the suspicion test before it's used
 as if it were a primitive.
@@ -144,26 +163,37 @@ suspicion test at each use.
 
 Acceptance #3 run on the four candidates, against the promoted core
 (ZSet/GSet/Bag/IndexedZSet + generic-math base), grounded in the actual source.
-The test dissolved **three of four** — the discipline working: most "candidates"
-are existing primitives wearing a different hat.
+On the **collection axis** the test folds two of four (nothing new there — the
+discipline working: those "candidates" are existing primitives wearing a different
+hat); the other two promote onto **different orthogonal axes** (codec, time) per
+Aaron's "codecs are a different orthogonal of primitive, still essential". So:
+**event-index** + **Rx** fold (collection axis); **Bonsai** → codec axis;
+**tick-source** → time axis (candidate pending its correctness gate).
 
 | Candidate | Triage | Verdict | Evidence |
 |---|---|---|---|
-| **event-index** | Q2 (view) / Q4 (composition) | **fold** → `IndexedZSet<tick, 'V>` | `src/Core/IndexedZSet.fs` is a sorted run of `KeyGroup<'K, ZSet<'V>>`, an abelian group keyed by any comparable `'K`. An event/time-keyed log is just `'K = tick`. The only candidate-difference is a *monotone-tick / append-only invariant* on the key — not a new algebra, complexity, or structure; at most a **constrained wrapper/view** of `IndexedZSet`, not a primitive. |
+| **event-index** | Q2 (view) / Q4 (composition) | **fold** → `IndexedZSet<tick, 'V>` | `src/Core/IndexedZSet.fs` is a sorted run of `KeyGroup<'K, 'V>` where each group's `Values` is a `ZSet<'V>` (there is no `KeyGroup<'K, ZSet<'V>>` instantiation) — an abelian group keyed by any comparable `'K`. An event/time-keyed log is just `'K = tick`. The only candidate-difference is a *monotone-tick / append-only invariant* on the key — not a new algebra, complexity, or structure; at most a **constrained wrapper/view** of `IndexedZSet`, not a primitive. |
 | **Rx** (`IObservable`) | Q2 (view) + adapter | **view + interop adapter**, not a primitive | `src/Core/Rx.fs` is `RxAdapter`; its own doc: *"DBSP's `Stream<ZSet<'T>>` is morally equivalent to `IObservable<ChangeSet<'T>>`"* (Meijer push-dual of `IEnumerable`). Rx is the **push-dual presentation** of `tick-source + ZSet deltas` plus an adapter into System.Reactive. It earns its keep as **ecosystem interop**, not as a core primitive. |
-| **Bonsai** | not a collection | **codec, not a primitive** | `src/Core/Bonsai.fs` is an *expression-tree serializer* (serialize/parse → `Result`, compact-JSON byte-diff cross-oracle contract). It's a **codec** — it belongs in the `codec<codec<t>>` / serializer layer (B-0976 serializer roster, B-1002 Eve transport), the thing that makes the Rx-view *transmissible*. Not a collection primitive; doesn't enter the registry. |
-| **tick-source** | Q3 (categorical — a different kind) | **promote** → the logical-clock / Δ-driver | `src/Core/Circuit.fs` `Op` exposes `StepAsync` / `ClockStart` / `ClockEnd` / `Fixedpoint` — the circuit advances one **tick** at a time. The tick-source is not data; it is the **time/control axis the whole Z-set family is indexed *by***. Nothing in zset/gset *produces* ticks (they are the data flowing *between* ticks). It can't be reduced to a collection composition → a genuine primitive, distinct in **kind** (control/time, not data). Already present as the Circuit clock/step machinery. |
+| **Bonsai** | Q3 (categorical — a different orthogonal axis) | **promote → codec axis** | `src/Core/Bonsai.fs` is an *expression-tree serializer* (serialize/parse → `Result`, compact-JSON byte-diff cross-oracle contract). It's a **codec** — and codecs are *a different orthogonal axis of primitive, still essential for function* (Aaron 2026-06-02): a value you can't serialize can't cross a boundary. So Bonsai is a real primitive **on the codec axis** (`codec<codec<t>>`, the B-0976 serializer roster / B-1002 Eve transport), not on the collection axis. It enters the registry — just on its own axis. |
+| **tick-source** | Q3 (categorical — a different kind) | **promote-recommended → time axis (candidate pending correctness-gate)** | `Op` in `src/Core/Circuit.fs` exposes `StepAsync` / `ClockStart` / `ClockEnd` / `Fixedpoint` — the circuit advances one **tick** at a time. The tick-source is not data; it is the **time/control axis the whole Z-set family is indexed *by***. Nothing in zset/gset *produces* ticks (they are the data flowing *between* ticks). It can't be reduced to a collection composition → a genuine primitive, distinct in **kind** (control/time, not data); the Circuit clock/step machinery is the implementation. Aesthetics/categorical gate passed; **stays candidate until the correctness gate (stated laws + tests for tick-source as a primitive) is written** (Codex review). |
 
-**Result:** the promoted core gains exactly one new primitive — **tick-source** (the
-time axis) — alongside the Z-set family + generic-math base. event-index folds into
-`IndexedZSet`; Rx is a view+adapter; Bonsai is a codec. This is the registry staying
-minimal by construction: the only thing that promoted is the one candidate with a
-*categorical* difference (it's a different kind, not a re-spelling). The registry
-table above is updated with these verdicts.
+**Result (corrected per Aaron 2026-06-02 + Codex review):** the two candidates with a
+*categorical* difference promote onto **new orthogonal axes** — **Bonsai** onto the
+**codec axis** (codecs are a different orthogonal kind of primitive, still essential:
+a value you can't serialize can't cross a boundary), and **tick-source** onto the
+**time/control axis** (promote-recommended, but staying *candidate* until its
+correctness gate — stated laws + tests — is written, per Codex). The two with no
+categorical difference fold: **event-index** = `IndexedZSet<tick,'V>`; **Rx** = the
+push-dual *view* of `tick-source + ZSet deltas` + interop adapter. So the test still
+keeps the *collection* axis minimal (nothing new there) while surfacing that the
+registry is **multi-axis** — data / time / codec / generic-math base. The earlier
+"Bonsai is not a primitive" framing was wrong: it's a primitive on a *different* axis,
+not excluded.
 
-(Audit caveat: verdicts are operationally grounded in the current source; if the
-exact "two core dimensions" naming or a hard monotone-tick invariant changes the
-picture, re-run the triage — that's the point of the gate.)
+(Audit caveat: verdicts are operationally grounded in the current source; the
+correctness-gate evidence for tick-source as a primitive is still owed; if the exact
+"two core dimensions" naming or a hard monotone-tick invariant changes the picture,
+re-run the triage — that's the point of the gate.)
 
 ## Acceptance (research → process)
 
