@@ -807,4 +807,400 @@ public static class DynamicValues
         arg = v;
         return null;
     }
+
+    /// <summary>Decodes canonical JSON text into a <see cref="DynamicValue"/> — the inverse of
+    /// <see cref="ToCanonicalJson"/>, completing the text↔value round-trip for the six locked shapes
+    /// (Float + Bytes are DEFERRED in JSON and lock under CBOR instead; a number with a decimal point
+    /// or exponent is a Float → <see cref="DecodeError.Unsupported"/>).
+    /// <para>Strictly canonical: a lenient recursive-descent parse, then one fixed-point check
+    /// (<c>ToCanonicalJson(decoded) == input</c>) rejects every non-canonical form (insignificant
+    /// whitespace, non-minimal escapes, leading zeros / '+' signs) as <see cref="DecodeError.NonCanonical"/>.
+    /// int64 precision is preserved by parsing the number token as text (<see cref="long"/>), never via a
+    /// double. Surfaced as data via <see cref="Result{T, TError}"/>, never thrown. Mirrors the TS/F#/Rust
+    /// decoder.</para></summary>
+    /// <param name="json">canonical JSON text.</param>
+    /// <returns><see cref="Result{T, TError}.Ok"/> with the decoded value, or
+    /// <see cref="Result{T, TError}.Err"/> carrying the <see cref="DecodeError"/>.</returns>
+    public static Result<DynamicValue, DecodeError> FromCanonicalJson(string json)
+    {
+        ArgumentNullException.ThrowIfNull(json);
+        int pos = 0;
+        DecodeError? err = TryReadJsonValue(json, ref pos, out DynamicValue value);
+        if (err is DecodeError e)
+        {
+            return new Result<DynamicValue, DecodeError>.Err(e);
+        }
+
+        SkipJsonWs(json, ref pos);
+        if (pos != json.Length)
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.TrailingData);
+        }
+
+        // Canonical-form fixed-point: a canonical string re-encodes to itself. The decoder only
+        // produces the six locked shapes, so ToCanonicalJson is always Ok here; anything else (extra
+        // whitespace, non-minimal escapes, leading zeros) is well-formed but not canonical.
+        if (ToCanonicalJson(value) is not Result<string, EncodeError>.Ok reEnc
+            || !string.Equals(reEnc.Value, json, StringComparison.Ordinal))
+        {
+            return new Result<DynamicValue, DecodeError>.Err(DecodeError.NonCanonical);
+        }
+
+        return new Result<DynamicValue, DecodeError>.Ok(value);
+    }
+
+    private static void SkipJsonWs(string s, ref int pos)
+    {
+        while (pos < s.Length && (s[pos] == ' ' || s[pos] == '\t' || s[pos] == '\n' || s[pos] == '\r'))
+        {
+            pos++;
+        }
+    }
+
+    // Reads one JSON value at `pos`, advancing it. Returns null on success (value set), else the error.
+    private static DecodeError? TryReadJsonValue(string s, ref int pos, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        SkipJsonWs(s, ref pos);
+        if (pos >= s.Length)
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        char c = s[pos];
+        switch (c)
+        {
+            case 'n':
+                return TryReadJsonLiteral(s, ref pos, "null", new DynamicValue.Null(), out value);
+            case 't':
+                return TryReadJsonLiteral(s, ref pos, "true", new DynamicValue.Bool(true), out value);
+            case 'f':
+                return TryReadJsonLiteral(s, ref pos, "false", new DynamicValue.Bool(false), out value);
+            case '"':
+                return TryReadJsonString(s, ref pos, out value);
+            case '[':
+                return TryReadJsonArray(s, ref pos, out value);
+            case '{':
+                return TryReadJsonObject(s, ref pos, out value);
+            default:
+                if (c == '-' || (c >= '0' && c <= '9'))
+                {
+                    return TryReadJsonNumber(s, ref pos, out value);
+                }
+
+                return DecodeError.UnexpectedEnd;
+        }
+    }
+
+    private static DecodeError? TryReadJsonLiteral(
+        string s, ref int pos, string lit, DynamicValue lifted, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        if (pos + lit.Length > s.Length || !s.AsSpan(pos, lit.Length).SequenceEqual(lit))
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        pos += lit.Length;
+        value = lifted;
+        return null;
+    }
+
+    // Reads a JSON string body into `result` (pos is at the opening quote). Lenient on escapes;
+    // the fixed-point check rejects non-canonical escapes (e.g. A for raw "A") as NonCanonical.
+    private static DecodeError? TryReadJsonStringRaw(string s, ref int pos, out string result)
+    {
+        result = string.Empty;
+        var sb = new StringBuilder();
+        pos++; // opening quote
+        while (pos < s.Length)
+        {
+            char c = s[pos];
+            if (c == '"')
+            {
+                pos++;
+                result = sb.ToString();
+                return null;
+            }
+
+            if (c == '\\')
+            {
+                DecodeError? escErr = ReadJsonEscape(s, ref pos, sb);
+                if (escErr is DecodeError ee)
+                {
+                    return ee;
+                }
+            }
+            else
+            {
+                sb.Append(c);
+                pos++;
+            }
+        }
+
+        return DecodeError.UnexpectedEnd; // unterminated string
+    }
+
+    // Reads one escape sequence (pos at the backslash), appends the decoded char, advances pos.
+    private static DecodeError? ReadJsonEscape(string s, ref int pos, StringBuilder sb)
+    {
+        pos++; // past backslash
+        if (pos >= s.Length)
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        char e = s[pos];
+        if (e == 'u')
+        {
+            if (pos + 5 > s.Length)
+            {
+                return DecodeError.UnexpectedEnd; // 'u' + 4 hex digits
+            }
+
+            // require exactly 4 hex digits — a partial parse would silently accept malformed \uXXXX
+            if (!ushort.TryParse(
+                    s.AsSpan(pos + 1, 4), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ushort code))
+            {
+                return DecodeError.UnexpectedEnd;
+            }
+
+            sb.Append((char)code);
+            pos += 5; // 'u' + 4 hex
+            return null;
+        }
+
+        char? rep = e switch
+        {
+            '"' => '"',
+            '\\' => '\\',
+            '/' => '/',
+            'b' => '\b',
+            'f' => '\f',
+            'n' => '\n',
+            'r' => '\r',
+            't' => '\t',
+            _ => (char?)null,
+        };
+        if (rep is not char rc)
+        {
+            return DecodeError.UnexpectedEnd; // invalid escape
+        }
+
+        sb.Append(rc);
+        pos++; // past escape char
+        return null;
+    }
+
+    private static DecodeError? TryReadJsonString(string s, ref int pos, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        DecodeError? err = TryReadJsonStringRaw(s, ref pos, out string str);
+        if (err is DecodeError e)
+        {
+            return e;
+        }
+
+        value = new DynamicValue.String(str);
+        return null;
+    }
+
+    // Consumes one or more digits at pos; UnexpectedEnd if none (enforces the JSON grammar's
+    // "at least one digit" for the integer part, fraction, and exponent).
+    private static DecodeError? ConsumeJsonDigits(string s, ref int pos)
+    {
+        int d0 = pos;
+        while (pos < s.Length && s[pos] >= '0' && s[pos] <= '9')
+        {
+            pos++;
+        }
+
+        return pos == d0 ? DecodeError.UnexpectedEnd : null;
+    }
+
+    private static DecodeError? TryReadJsonNumber(string s, ref int pos, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        int start = pos;
+        if (s[pos] == '-')
+        {
+            pos++;
+        }
+
+        if (ConsumeJsonDigits(s, ref pos) is DecodeError intErr) // integer part — required ("-", "-.5")
+        {
+            return intErr;
+        }
+
+        bool isFloat = false;
+        if (pos < s.Length && s[pos] == '.')
+        {
+            isFloat = true;
+            pos++;
+            if (ConsumeJsonDigits(s, ref pos) is DecodeError fracErr) // fraction — required after '.'
+            {
+                return fracErr;
+            }
+        }
+
+        if (pos < s.Length && (s[pos] == 'e' || s[pos] == 'E'))
+        {
+            isFloat = true;
+            pos++;
+            if (pos < s.Length && (s[pos] == '+' || s[pos] == '-'))
+            {
+                pos++;
+            }
+
+            if (ConsumeJsonDigits(s, ref pos) is DecodeError expErr) // exponent — required ("1e", "1e+")
+            {
+                return expErr;
+            }
+        }
+
+        if (isFloat)
+        {
+            return DecodeError.Unsupported; // Float deferred in v1 JSON
+        }
+
+        // token is `-?[0-9]+`, so the only way long.TryParse fails is int64 overflow
+        if (!long.TryParse(
+                s.AsSpan(start, pos - start), NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture, out long n))
+        {
+            return DecodeError.IntegerOverflow;
+        }
+
+        value = new DynamicValue.Int(n);
+        return null;
+    }
+
+    private static DecodeError? TryReadJsonArray(string s, ref int pos, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        pos++; // past the opening bracket
+        var items = ImmutableArray.CreateBuilder<DynamicValue>();
+        SkipJsonWs(s, ref pos);
+        if (pos < s.Length && s[pos] == ']')
+        {
+            pos++;
+            value = new DynamicValue.Array(items.ToImmutable());
+            return null;
+        }
+
+        while (pos < s.Length)
+        {
+            DecodeError? itemErr = TryReadJsonValue(s, ref pos, out DynamicValue item);
+            if (itemErr is DecodeError ie)
+            {
+                return ie;
+            }
+
+            items.Add(item);
+            SkipJsonWs(s, ref pos);
+            if (pos >= s.Length)
+            {
+                break;
+            }
+
+            char c = s[pos];
+            if (c == ',')
+            {
+                pos++;
+                continue;
+            }
+
+            if (c == ']')
+            {
+                pos++;
+                value = new DynamicValue.Array(items.ToImmutable());
+                return null;
+            }
+
+            return DecodeError.UnexpectedEnd;
+        }
+
+        return DecodeError.UnexpectedEnd;
+    }
+
+    // Reads one "key": value pair (pos at the opening quote of the key), advancing pos.
+    private static DecodeError? TryReadJsonPair(
+        string s, ref int pos, out KeyValuePair<string, DynamicValue> pair)
+    {
+        pair = default;
+        DecodeError? keyErr = TryReadJsonStringRaw(s, ref pos, out string key);
+        if (keyErr is DecodeError ke)
+        {
+            return ke;
+        }
+
+        SkipJsonWs(s, ref pos);
+        if (pos >= s.Length || s[pos] != ':')
+        {
+            return DecodeError.UnexpectedEnd;
+        }
+
+        pos++;
+        DecodeError? valErr = TryReadJsonValue(s, ref pos, out DynamicValue val);
+        if (valErr is DecodeError ve)
+        {
+            return ve;
+        }
+
+        pair = new KeyValuePair<string, DynamicValue>(key, val);
+        return null;
+    }
+
+    private static DecodeError? TryReadJsonObject(string s, ref int pos, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        pos++; // past the opening brace
+        var pairs = ImmutableArray.CreateBuilder<KeyValuePair<string, DynamicValue>>();
+        SkipJsonWs(s, ref pos);
+        if (pos < s.Length && s[pos] == '}')
+        {
+            pos++;
+            value = new DynamicValue.Object(pairs.ToImmutable());
+            return null;
+        }
+
+        while (pos < s.Length)
+        {
+            SkipJsonWs(s, ref pos);
+            if (pos >= s.Length || s[pos] != '"')
+            {
+                return DecodeError.UnexpectedEnd; // key must be a string
+            }
+
+            DecodeError? pairErr = TryReadJsonPair(s, ref pos, out KeyValuePair<string, DynamicValue> pair);
+            if (pairErr is DecodeError pe)
+            {
+                return pe;
+            }
+
+            pairs.Add(pair);
+            SkipJsonWs(s, ref pos);
+            if (pos >= s.Length)
+            {
+                break;
+            }
+
+            char c = s[pos];
+            if (c == ',')
+            {
+                pos++;
+                continue;
+            }
+
+            if (c == '}')
+            {
+                pos++;
+                value = new DynamicValue.Object(pairs.ToImmutable());
+                return null;
+            }
+
+            return DecodeError.UnexpectedEnd;
+        }
+
+        return DecodeError.UnexpectedEnd;
+    }
 }
