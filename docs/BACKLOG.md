@@ -465,6 +465,7 @@ are closed (status: closed in frontmatter)._
 - [ ] **[B-0967](backlog/P1/B-0967-kubernetes-argocd-kind-k3d-integration-health-tests-separate-from-usb-iso-aaron-2026-05-31.md)** Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance
 - [ ] **[B-0969](backlog/P1/B-0969-invariant-culture-everywhere-configureawait-false-cross-cutting-dotnet-defaults-never-culture-sensitive-fsharp-gset-first-fix-aaron-2026-06-01.md)** Invariant-culture-everywhere + ConfigureAwait(false) as cross-cutting .NET defaults — never default to culture-sensitive (F# G-Set culture-sensitivity is the first concrete fix)
 - [ ] **[B-0976](backlog/P1/B-0976-self-evolving-saga-build-serialized-deferred-execution-bonsai-closure-resume-not-replay-temporal-grade-interface-rides-zset-ladder-aaron-2026-06-01.md)** Self-evolving saga build — serialized deferred execution (Bonsai expr-tree + closure state), resume-not-replay, Temporal-grade interface, rides the Z-set/IndexedZSet ladder (Aaron 2026-06-01)
+- [ ] **[B-0985](backlog/P1/B-0985-tree-of-life-cube-of-space-sefer-yetzirah-correspondence-with-hexagonal-six-reservoir-walls-plus-universal-action-grammar-lineage-research-aaron-2026-06-02.md)** Tree of Life / Cube of Space (Sefer Yetzirah) ↔ hexagonal-six reservoir walls — verify the Kabbalah correspondence + the universal-action-grammar lineage (Aaron 2026-06-02)
 
 ## P2 — research-grade
 
