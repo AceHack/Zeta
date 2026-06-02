@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <Compile Include="Message.fs" />
+    <Compile Include="FactorGraph.fs" />
     <Compile Include="BayesianAggregate.fs" />
   </ItemGroup>
 
