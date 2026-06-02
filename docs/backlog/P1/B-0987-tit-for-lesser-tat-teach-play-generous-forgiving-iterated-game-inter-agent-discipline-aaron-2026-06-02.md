@@ -28,15 +28,15 @@ The framework already carries the *dispositions* of forgiving reciprocity scatte
 - **Tit-for-tat (Axelrod 1984)** — nice (never defect first), retaliatory, forgiving, clear. Won Axelrod's iterated-prisoner's-dilemma tournaments.
 - **Generous tit-for-tat** — occasionally forgive a defection (probabilistic) to break echo-chains of mutual retaliation under noise.
 - **Contrite tit-for-tat** — distinguish your own mistakes from the other's; apologize/correct your own.
-- **Tit-for-lesser-tat (Aaron's handle)** — retaliate with *strictly less* than received → retaliation decays toward cooperation; the only stable attractor is mutual cooperation. The "lesser" is the de-escalation valve.
+- **Tit-for-lesser-tat (Aaron's handle)** — retaliate with *strictly less* than received → the "lesser" is the de-escalation valve. **Assumption under test** (NOT asserted): *among compliant players who all run the lesser-tat rule*, mutual retaliation damps and the dyad relaxes toward cooperation. Against **persistent defectors or non-compliant players**, lesser-tat does **not** make mutual cooperation the only stable attractor — a strictly-lesser responder can be exploited by a pure defector (you keep giving more than you take back). Whether/when cooperation is reachable in mixed/noisy populations is exactly what the simulation must determine; do not pre-assert the outcome. The society-level safeguard against persistent exploiters is BFT-4×4 + anti-cartel/anti-monopoly enforcement (B-0703, B-0643.1), not the dyadic lesser-tat alone.
 
-`[labeling-confidence: hypothesized]` — the exact "lesser" discount function (fixed fraction? decaying? probabilistic forgive?) is a design parameter to specify + simulate, not yet validated.
+`[labeling-confidence: hypothesized]` — both the "lesser" discount function (fixed fraction? decaying? probabilistic forgive?) AND the convergence claim (which populations/noise regimes actually relax to cooperation, and where exploitation dominates) are design parameters to specify + simulate, not yet validated.
 
 **Teach-play** = the iterated game is run as a *teacher*, not just a contest: repeated rounds + de-escalating retaliation surface cooperation as the learned equilibrium. New/low-reputation agents learn the cooperative norm by playing (composes only-way-to-lose-is-not-to-play: participation IS the only winning condition; the game teaches by being played).
 
 ## Why "lesser" (de-escalation) is the load-bearing choice
 
-Equal-tat tit-for-tat is fragile under noise: one accidental defection → infinite mutual-retaliation echo (the failure mode generous/contrite TFT was invented to fix). **Lesser-tat** structurally damps the echo — each retaliation is smaller than its trigger, so any defection-chain decays geometrically back to cooperation. This is the game-theoretic form of the framework's existing de-escalation substrate:
+Equal-tat tit-for-tat is fragile under noise: one accidental defection → infinite mutual-retaliation echo (the failure mode generous/contrite TFT was invented to fix). **Lesser-tat** structurally damps *the echo between two compliant lesser-tat players* — each retaliation is smaller than its trigger, so an accidental-defection echo (both sides running the rule) decays geometrically. That damping property is the design target; it is **not** a claim that lesser-tat converges to cooperation against an arbitrary opponent (a persistent defector exploits the strictly-lesser responder). This is the game-theoretic form of the framework's existing de-escalation substrate (for the compliant-dyad case):
 
 | Existing substrate | Tit-for-lesser-tat instantiation |
 |---|---|
@@ -53,7 +53,7 @@ Tit-for-lesser-tat is the **relational game the orientation tile is operated und
 
 ## Acceptance (research → build)
 
-1. **Specify the "lesser" discount** — fixed fraction vs decaying vs probabilistic-forgive; simulate against noisy iterated-PD; confirm de-escalation property (defection-chains decay to cooperation).
+1. **Specify the "lesser" discount + map the convergence regime** — fixed fraction vs decaying vs probabilistic-forgive; simulate against noisy iterated-PD across population mixes; confirm the damping property *between compliant players* AND map where it fails (persistent-defector exploitation, non-compliant opponents) — characterize which regimes relax to cooperation vs require society-level enforcement, rather than assuming convergence.
 2. **Key the game on Rainbow-Table identity** (B-0985/B-0986) — iterated-memory of "last move" is per-resolved-identity; compose with reputation substrate (B-0646 reputation-weighted budget, if it lands).
 3. **Teach-play onboarding** — new/low-reputation agents learn the cooperative norm by iterated play; compose only-way-to-lose-is-not-to-play + bootstrap-floor-reputation.
 4. **Society-level enforcement** — dyadic lesser-tat under the BFT-4×4 / multi-oracle umbrella (B-0703); anti-cartel/anti-monopoly checks (per the KSK/bus-lane defensive substrate, B-0643.1) catch coordinated greater-tat.
