@@ -85,35 +85,32 @@ impl DynamicValue {
     /// `\u00XX` lowercase; all else raw UTF-8). v1 locks
     /// null/bool/int/string/array/object.
     ///
-    /// # Panics
-    /// Panics on `Float` or `Bytes` -- both are DEFERRED (no canonical JSON form
-    /// yet; they lock under CBOR or a tagged-JSON convention).
-    #[must_use]
-    pub fn to_canonical_json(&self) -> String {
+    /// # Errors
+    /// Returns [`EncodeError`] for `Float` or `Bytes` -- both are DEFERRED (no
+    /// canonical JSON form yet; they lock under CBOR or a tagged-JSON
+    /// convention), surfaced as data per the Result-over-exception rule (AGENTS.md),
+    /// never panicked. Mirrors the F#/C# `Result<string, EncodeError>` oracles.
+    pub fn to_canonical_json(&self) -> Result<String, EncodeError> {
         let mut out = String::new();
-        self.write_canonical(&mut out);
-        out
+        self.write_canonical(&mut out)?;
+        Ok(out)
     }
 
-    fn write_canonical(&self, out: &mut String) {
+    fn write_canonical(&self, out: &mut String) -> Result<(), EncodeError> {
         match self {
             DynamicValue::Null => out.push_str("null"),
             DynamicValue::Bool(b) => out.push_str(if *b { "true" } else { "false" }),
             DynamicValue::Int(i) => out.push_str(&i.to_string()),
-            DynamicValue::Float(_) => panic!(
-                "DynamicValue::Float canonical JSON is DEFERRED (no canonical shortest-float in plain JSON); locks under CBOR or a tagged-JSON convention"
-            ),
+            DynamicValue::Float(_) => return Err(EncodeError::FloatDeferred),
             DynamicValue::String(s) => escape_json_string(s, out),
-            DynamicValue::Bytes(_) => panic!(
-                "DynamicValue::Bytes canonical JSON is DEFERRED (no native JSON byte type); locks under CBOR or a tagged-JSON convention"
-            ),
+            DynamicValue::Bytes(_) => return Err(EncodeError::BytesDeferred),
             DynamicValue::Array(items) => {
                 out.push('[');
                 for (k, item) in items.iter().enumerate() {
                     if k > 0 {
                         out.push(',');
                     }
-                    item.write_canonical(out);
+                    item.write_canonical(out)?;
                 }
                 out.push(']');
             }
@@ -125,13 +122,45 @@ impl DynamicValue {
                     }
                     escape_json_string(key, out);
                     out.push(':');
-                    val.write_canonical(out);
+                    val.write_canonical(out)?;
                 }
                 out.push('}');
             }
         }
+
+        Ok(())
     }
 }
+
+/// Why a [`DynamicValue`] could not be canonically encoded (v1). `Float` and
+/// `Bytes` have no canonical JSON form yet (they lock under CBOR or a tagged-JSON
+/// convention); surfaced as `Err` data per the Result-over-exception rule
+/// (AGENTS.md), never panicked. Mirrors the F#/C# `EncodeError`.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum EncodeError {
+    /// `DynamicValue::Float` has no canonical shortest-float form in plain JSON.
+    FloatDeferred,
+    /// `DynamicValue::Bytes` has no native JSON byte type.
+    BytesDeferred,
+}
+
+// `EncodeError` is public API (returned from `to_canonical_json`), so it carries
+// a stable human-readable `Display` and is a real `std::error::Error` -- callers
+// surface it without leaning on `Debug`.
+impl std::fmt::Display for EncodeError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(match self {
+            EncodeError::FloatDeferred => {
+                "DynamicValue::Float has no canonical JSON form yet (deferred to CBOR or a tagged-JSON convention)"
+            }
+            EncodeError::BytesDeferred => {
+                "DynamicValue::Bytes has no native JSON byte type yet (deferred to CBOR or a tagged-JSON convention)"
+            }
+        })
+    }
+}
+
+impl std::error::Error for EncodeError {}
 
 // Append `s` as a JSON string literal (including the surrounding quotes), RFC 8259
 // minimal escaping: '"' and '\' and control chars U+0000..U+001F (short forms
@@ -158,4 +187,37 @@ fn escape_json_string(s: &str, out: &mut String) {
         }
     }
     out.push('"');
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Lock the Result contract this oracle introduced: the deferred variants
+    // surface as `Err` and NEVER panic, per the Result-over-exception rule
+    // (AGENTS.md). The seed has no Float/Bytes vectors, so the cross-verify
+    // oracle can't catch a regression here -- these assert the contract directly
+    // (assert-don't-skip: a contract with no test is a hole in the shield).
+    #[test]
+    fn float_is_deferred_error_not_panic() {
+        assert_eq!(
+            DynamicValue::Float(1.5).to_canonical_json(),
+            Err(EncodeError::FloatDeferred)
+        );
+    }
+
+    #[test]
+    fn bytes_is_deferred_error_not_panic() {
+        assert_eq!(
+            DynamicValue::Bytes(vec![0u8, 1, 2]).to_canonical_json(),
+            Err(EncodeError::BytesDeferred)
+        );
+    }
+
+    // `EncodeError` is public API; Display must be stable + human-readable.
+    #[test]
+    fn encode_error_display_is_human_readable() {
+        assert!(EncodeError::FloatDeferred.to_string().contains("Float"));
+        assert!(EncodeError::BytesDeferred.to_string().contains("Bytes"));
+    }
 }

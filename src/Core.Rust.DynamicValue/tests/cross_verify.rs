@@ -79,9 +79,10 @@ fn dynamic_value_cross_verify_matches_golden_vectors() {
         let name = vec["name"].as_str().expect("name string");
         let value = build_value(&vec["value"]);
         let expected = vec["json"].as_str().expect("json string");
-        let actual = value.to_canonical_json();
-        if actual != expected {
-            failures.push(format!("{name}: expected {expected} but got {actual}"));
+        match value.to_canonical_json() {
+            Ok(actual) if actual == expected => {}
+            Ok(actual) => failures.push(format!("{name}: expected {expected} but got {actual}")),
+            Err(e) => failures.push(format!("{name}: expected {expected} but got Err {e:?}")),
         }
     }
 
