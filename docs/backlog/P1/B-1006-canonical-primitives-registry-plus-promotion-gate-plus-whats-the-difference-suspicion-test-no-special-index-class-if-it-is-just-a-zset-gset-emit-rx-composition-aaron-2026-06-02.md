@@ -9,7 +9,7 @@ created: 2026-06-02
 last_updated: 2026-06-02
 depends_on: []
 composes_with: [B-1000, B-1004, B-1005, B-0428, B-0288, B-0824, B-0976]
-tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, orthogonal-primitive-axes, codec-axis, codec-as-primitive, registry-is-bcl, ace-distribution, cross-language-byte-lock, quality-uniqueness-composability-gate, infer-net, research, aaron]
+tags: [canonical-primitives, primitives-registry, promotion-gate, whats-the-difference-test, decomposition-direction-triage, earn-its-keep, minimal-vocabulary, suspicion-by-default, zset, gset, bag, indexed-zset, event-index, rx, bonsai, tick-source, aesthetics-gate, correctness-gate, orthogonal-primitive-axes, codec-axis, codec-as-primitive, registry-is-bcl, codec-algebra, algebra-first-admission-procedure, registry-is-ship-gate, asymmetric-exceptions, ace-distribution, cross-language-byte-lock, quality-uniqueness-composability-gate, infer-net, research, aaron]
 type: research
 ---
 
@@ -110,15 +110,20 @@ function."* Primitives live on **orthogonal axes**, and a candidate promotes ont
   values/collections that flow.
 - **time/control axis** — `tick-source` (the clock/Δ-driver): what the data is
   indexed *by*.
-- **codec axis** — `codec<codec<t>>` (serializers; Bonsai): what makes a value on
-  any axis *transmissible/persistable*. **Essential for function** — a value you
-  can't serialize can't cross a boundary — so codecs are first-class primitives,
-  just orthogonal to the collection axis.
+- **codec axis = the codec *algebra*** — `codec<codec<t>>` (serializers; Bonsai):
+  what makes a value on any axis *transmissible/persistable*. **Essential for
+  function** (a value you can't serialize can't cross a boundary). Per the
+  algebra-first procedure below, codecs **are an algebra** — a codec is an encode/
+  decode pair with the round-trip law `decode ∘ encode = id`, i.e. an **invariant
+  functor** closed under product (`Codec<a>×Codec<b> → Codec<a×b>`), sum (tagged
+  `Codec<a+b>`), and identity (`Codec<unit>`); `codec<codec<t>>` *is* codec
+  composition. So the codec axis is an **algebraic** axis, not a non-algebra special
+  kind (prior art: scodec / Haskell `codec` / profunctor-optics).
 - **base substrate** — generic-math / `INumerics` under all of them.
 
 "Fold vs promote" is therefore "does it earn a place *on some axis*?" — Bonsai is
-not "not a primitive"; it's a primitive on the *codec* axis. Rx/event-index still
-fold (they're a view / a keyed-IndexedZSet on the data axis, not a new axis).
+a primitive on the *codec-algebra* axis. Rx/event-index still fold (they're a
+view / a keyed-IndexedZSet on the data axis, not a new axis).
 
 | Tier | Meaning |
 |---|---|
@@ -142,6 +147,31 @@ Seed state (to be confirmed/argued, not declared final here):
 
 Everything NOT on the promoted list is held to the suspicion test before it's used
 as if it were a primitive.
+
+## The admission procedure — algebra-first, ordered (Aaron 2026-06-02)
+
+Before the three gates, run the **ordered admission procedure** on any candidate
+(Aaron, codecs as the worked example: *"can codecs be algebra[?] if yes do it; if
+not[,] does algebra completely cover its use case[?] yes[:] stop; no[:] see if any
+of the other rules apply; if not[,] add it to registry."* — *"very similar for
+everything we have."*):
+
+1. **Can it be an algebra?** (generic-math / the existing algebraic vocabulary —
+   monoid/group/ring, Z-set family, the codec algebra, …)
+   → **YES → do that.** Express it as the algebra; it lives on an algebraic axis.
+     (Codecs cleared this: a codec is an invariant functor with `decode∘encode=id`,
+     closed under product/sum/identity → the **codec algebra**.)
+2. **If not an algebra — does the existing algebra completely cover its use case
+   anyway?** → **YES → stop** (don't add; the use case is already served — adding
+   it would be a redundant non-earning entry).
+3. **If algebra doesn't cover it — do any of the other rules / existing primitives
+   apply?** → **YES → use those** (don't add). → **NO → add it to the registry**
+   (a genuine new primitive; then it must clear the three gates below).
+
+The procedure is **algebra-first by design**: it prefers *express-as-algebra* >
+*already-covered* > *use-existing-rule* > *add-new*. Every step before the last is
+a reason **not** to grow the registry — which is how the BCL stays minimal while
+absorbing everything expressible.
 
 ## The promotion gate — exactly three barriers (Aaron 2026-06-02)
 
@@ -198,6 +228,34 @@ This is also *why* the registry must stay minimal and gated: every entry is a
 contract Ace commits to maintaining across every target language. A non-earning or
 non-composing entry would be a cross-language liability shipped to every consumer —
 so the three gates are the thing that keeps the BCL both small and trustworthy.
+
+### The shipping policy — the registry is the ship gate (Aaron 2026-06-02)
+
+Aaron: *"we want all things to be in registry eventually or else what's it for[.]
+we don't ship what's not in registry unless there is special asymmetric
+exceptions."*
+
+- **Goal: everything in the registry eventually.** The registry is not a curated
+  highlights reel — it is meant to be the *complete* authoritative set of shippable
+  building blocks. If a thing we rely on isn't in it, that's a gap to close (run
+  the admission procedure on it), not a permanent outsider. "Or else what's it
+  for" — a registry that doesn't aim at completeness isn't doing its job.
+- **Ship gate: we don't ship what's not in the registry.** Registry-membership is
+  the precondition for shipping (via Ace). To ship is to have passed the admission
+  procedure + the three gates + carry the cross-language contract — which is exactly
+  what makes the shipped thing trustworthy across languages. Un-registered code is
+  not a BCL primitive and isn't shipped as one.
+- **Exception: special asymmetric exceptions.** Explicit, named exceptions exist
+  (the asymmetric cases — e.g. a host/platform-specific adapter that can't be
+  cross-language-guaranteed, an interop shim, a temporary bootstrap). These ship
+  *as flagged exceptions*, not as registry primitives, and the asymmetry is stated
+  (what guarantee is waived + why). Composes with the human-audit / risk-acceptance
+  attribution pattern — an exception is a named, documented waiver, not a silent
+  bypass.
+
+So the full lifecycle of any building block: **admission procedure (algebra-first)
+→ three gates (quality + uniqueness + composability) → registry (BCL) → Ace
+distribution**, with the only off-ramp being an explicit asymmetric exception.
 
 ## Suspicion audit — first application (Aaron authorized 2026-06-02)
 
