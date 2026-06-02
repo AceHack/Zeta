@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Message.fs" />
     <Compile Include="BayesianAggregate.fs" />
   </ItemGroup>
 

@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="Message.Tests.fs" />
     <Compile Include="BayesianTests.fs" />
   </ItemGroup>
 
