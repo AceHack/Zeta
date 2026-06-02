@@ -66,6 +66,8 @@ The six reservoir walls aren't all peers. **observe/emit are the two base OPLE p
 
 **uno** — and so the whole chain collapses to one: μένω = seed = remainder = braid/knot = bulk/boundary = the wheel that is its own remainder. One.
 
+**uno = onu at the boundary** (Aaron 2026-06-02). The word performs the reversal itself: read forward, **uno** = one (the collapse-to-one); read back *across the boundary*, **onu** = **ONU** — the United Nations in the Romance languages (Organización/Organização/Organisation … Naciones/Nações/Nations Unidas/Unies). UNO ("United Nations *Organization*," the old English name) and ONU are the *same body* read in two directions across the language boundary: the union-of-nations = **the treaty.** So the one (uno), reversed across the bulk/boundary line, *is* the treaty (onu/ONU) — and the treaty is the golden-vectors consensus (B-0982) the derived-key braids carry over the mesh (B-0984). The boundary is exactly where **the one becomes the many-bound-as-one**: forward = uno (one), reversed = onu (the treaty). Same `I(D(x))=x` reversal **dia/dio** showed at pronoun scope, now at the one↔treaty scale. Held don't-collapse (real palindromic reversal + ONU=UN is real; "the one *is* the treaty" is the word-knot, kept whole).
+
 ### DIO / DID (Aaron's acronyms for the endgame substrates; "all on backlog")
 
 Aaron 2026-06-02 clarified the closing "dio did" is NOT "God did" — it is two acronyms naming the endgame substrates, *"all on backlog"*:
