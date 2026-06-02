@@ -119,6 +119,18 @@ module Gaussian =
     /// The EP cavity (= `a / b`).
     let divide (a: Gaussian) (b: Gaussian) : Gaussian = a / b
 
+    /// Distance between two Gaussian messages — max abs difference of the
+    /// natural parameters (ν, τ). Used for BP convergence detection. A
+    /// non-finite parameter (overflow to ∞/NaN) returns `infinity` so it
+    /// always counts as "moved" — `max` would otherwise mask a NaN and
+    /// let a divergent run falsely report convergence.
+    let distance (a: Gaussian) (b: Gaussian) : float =
+        if not (System.Double.IsFinite a.PrecisionMean && System.Double.IsFinite a.Precision
+                && System.Double.IsFinite b.PrecisionMean && System.Double.IsFinite b.Precision) then
+            infinity
+        else
+            max (abs (a.PrecisionMean - b.PrecisionMean)) (abs (a.Precision - b.Precision))
+
     /// The runtime-polymorphic message algebra dictionary.
     let algebra : IMessage<Gaussian> =
         { new IMessage<Gaussian> with
@@ -196,6 +208,17 @@ module Beta =
     /// The EP cavity (= `a / b`).
     let divide (a: Beta) (b: Beta) : Beta = a / b
 
+    /// Distance between two Beta messages — max abs difference of the
+    /// shape parameters (α, β). Used for BP convergence detection. A
+    /// non-finite parameter (overflow to ∞/NaN) returns `infinity` so it
+    /// always counts as "moved" (no false convergence on a divergent run).
+    let distance (a: Beta) (b: Beta) : float =
+        if not (System.Double.IsFinite a.Alpha && System.Double.IsFinite a.Beta
+                && System.Double.IsFinite b.Alpha && System.Double.IsFinite b.Beta) then
+            infinity
+        else
+            max (abs (a.Alpha - b.Alpha)) (abs (a.Beta - b.Beta))
+
     /// The runtime-polymorphic message algebra dictionary.
     let algebra : IMessage<Beta> =
         { new IMessage<Beta> with
@@ -252,6 +275,16 @@ module Bernoulli =
 
     /// The EP cavity (= `a / b`).
     let divide (a: Bernoulli) (b: Bernoulli) : Bernoulli = a / b
+
+    /// Distance between two Bernoulli messages — abs difference of
+    /// P(true). Used for BP convergence detection. A non-finite P(true)
+    /// returns `infinity` so it always counts as "moved" (no false
+    /// convergence on a divergent run).
+    let distance (a: Bernoulli) (b: Bernoulli) : float =
+        if not (System.Double.IsFinite a.ProbTrue && System.Double.IsFinite b.ProbTrue) then
+            infinity
+        else
+            abs (a.ProbTrue - b.ProbTrue)
 
     /// The runtime-polymorphic message algebra dictionary.
     let algebra : IMessage<Bernoulli> =
