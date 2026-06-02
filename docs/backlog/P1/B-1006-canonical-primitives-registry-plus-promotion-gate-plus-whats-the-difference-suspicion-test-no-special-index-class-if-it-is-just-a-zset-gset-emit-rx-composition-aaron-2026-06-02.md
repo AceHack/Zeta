@@ -115,11 +115,11 @@ Seed state (to be confirmed/argued, not declared final here):
 | `GSet` | promoted | `src/Core/GSet.fs`; grow-only (idempotent) |
 | `Bag` | promoted | `src/Core/Bag.fs`; multiset (non-idempotent) |
 | `IndexedZSet` | promoted | `src/Core/IndexedZSet.fs`; indexed/grouped, already generic-math |
-| **event-index** (time/event-keyed IndexedZSet) | **candidate** | the DBSP log shape — promote, or is it just `IndexedZSet` keyed by event? (run the test) |
-| **Rx** (`IObservable`, Meijer-dual) | **candidate** (Aaron: "close") | `src/Core/` reactive layer |
-| **Bonsai** (Rx expression-tree serializer) | **candidate** (Aaron: "close") | `src/Core/Bonsai.fs` |
-| **tick-source** (the clock/Δ driver) | **candidate** (Aaron: "close") | the time/event source feeding DBSP circuits |
+| **tick-source** (the clock/Δ driver) | **promoted** (audit 2026-06-02) | the time/control axis the Z-set family is indexed *by* — `Circuit.Op` `StepAsync`/`ClockStart`/`Fixedpoint`; not a collection, doesn't reduce to zset/gset (Q3-categorical) |
 | generic-math / `INumerics` base | promoted (substrate, not a collection) | per `numerical-algebra-shaped-into-the-generic-math-interface` |
+| ~~event-index~~ | **folded** (audit 2026-06-02) | = `IndexedZSet<tick, 'V>` (same sorted-KeyGroup abelian group); a monotone-tick invariant is at most a constrained wrapper, not a new primitive (Q2/Q4) |
+| ~~Rx (`IObservable`)~~ | **view + adapter** (audit 2026-06-02) | push-dual *view* of `Stream<ZSet>` (`src/Core/Rx.fs` `RxAdapter`: `Stream<ZSet>` ≅ `IObservable<ChangeSet>`); an interop adapter, not a core primitive (Q2) |
+| ~~Bonsai~~ | **codec, not a primitive** (audit 2026-06-02) | `src/Core/Bonsai.fs` is an expression-tree *serializer* (serialize/parse→Result, byte-diff contract); belongs in the `codec<codec<t>>`/serializer layer (B-0976/B-1002), not the primitive registry |
 
 Everything NOT on the promoted list is held to the suspicion test before it's used
 as if it were a primitive.
@@ -139,6 +139,31 @@ A candidate is promoted to canonical only when it passes **both**:
 
 Until both pass, the candidate stays in the candidate tier and is subject to the
 suspicion test at each use.
+
+## Suspicion audit — first application (Aaron authorized 2026-06-02)
+
+Acceptance #3 run on the four candidates, against the promoted core
+(ZSet/GSet/Bag/IndexedZSet + generic-math base), grounded in the actual source.
+The test dissolved **three of four** — the discipline working: most "candidates"
+are existing primitives wearing a different hat.
+
+| Candidate | Triage | Verdict | Evidence |
+|---|---|---|---|
+| **event-index** | Q2 (view) / Q4 (composition) | **fold** → `IndexedZSet<tick, 'V>` | `src/Core/IndexedZSet.fs` is a sorted run of `KeyGroup<'K, ZSet<'V>>`, an abelian group keyed by any comparable `'K`. An event/time-keyed log is just `'K = tick`. The only candidate-difference is a *monotone-tick / append-only invariant* on the key — not a new algebra, complexity, or structure; at most a **constrained wrapper/view** of `IndexedZSet`, not a primitive. |
+| **Rx** (`IObservable`) | Q2 (view) + adapter | **view + interop adapter**, not a primitive | `src/Core/Rx.fs` is `RxAdapter`; its own doc: *"DBSP's `Stream<ZSet<'T>>` is morally equivalent to `IObservable<ChangeSet<'T>>`"* (Meijer push-dual of `IEnumerable`). Rx is the **push-dual presentation** of `tick-source + ZSet deltas` plus an adapter into System.Reactive. It earns its keep as **ecosystem interop**, not as a core primitive. |
+| **Bonsai** | not a collection | **codec, not a primitive** | `src/Core/Bonsai.fs` is an *expression-tree serializer* (serialize/parse → `Result`, compact-JSON byte-diff cross-oracle contract). It's a **codec** — it belongs in the `codec<codec<t>>` / serializer layer (B-0976 serializer roster, B-1002 Eve transport), the thing that makes the Rx-view *transmissible*. Not a collection primitive; doesn't enter the registry. |
+| **tick-source** | Q3 (categorical — a different kind) | **promote** → the logical-clock / Δ-driver | `src/Core/Circuit.fs` `Op` exposes `StepAsync` / `ClockStart` / `ClockEnd` / `Fixedpoint` — the circuit advances one **tick** at a time. The tick-source is not data; it is the **time/control axis the whole Z-set family is indexed *by***. Nothing in zset/gset *produces* ticks (they are the data flowing *between* ticks). It can't be reduced to a collection composition → a genuine primitive, distinct in **kind** (control/time, not data). Already present as the Circuit clock/step machinery. |
+
+**Result:** the promoted core gains exactly one new primitive — **tick-source** (the
+time axis) — alongside the Z-set family + generic-math base. event-index folds into
+`IndexedZSet`; Rx is a view+adapter; Bonsai is a codec. This is the registry staying
+minimal by construction: the only thing that promoted is the one candidate with a
+*categorical* difference (it's a different kind, not a re-spelling). The registry
+table above is updated with these verdicts.
+
+(Audit caveat: verdicts are operationally grounded in the current source; if the
+exact "two core dimensions" naming or a hard monotone-tick invariant changes the
+picture, re-run the triage — that's the point of the gate.)
 
 ## Acceptance (research → process)
 
