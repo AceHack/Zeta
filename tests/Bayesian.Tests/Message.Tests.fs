@@ -457,3 +457,87 @@ let ``C6 Bernoulli identical converges, non-finite residual moves``
     not (movedC6 (Bernoulli.distance b b))
     && System.Double.IsPositiveInfinity (Bernoulli.distance b bad)
     && movedC6 (Bernoulli.distance b bad)
+
+// ═══════════════════════════════════════════════════════════════════
+// C4 (B-1007 P1) — `Message.marginal` is the product-FOLD, generic over
+// the family (Message.fs:308: `Seq.fold ( * ) GenericOne`). It is a
+// MONOID HOMOMORPHISM from (list, @, []) to (message, *, One):
+//   * identity on empty   — marginal [] = One
+//   * singleton           — marginal [m] = m
+//   * fold-homomorphism   — marginal (xs @ ys) = marginal xs * marginal ys
+//   * order-independent    — marginal xs = marginal (rev xs)  (product is
+//                            commutative — proven C1/C2/C3)
+// The homomorphism + identity-on-empty are the C4 claims (KFL 2001 — the
+// marginal is the product of all incoming messages). FsCheck per family;
+// the laws hold by the C1/C2/C3 monoid structure regardless of properness,
+// so no closure gating is needed (gEq* compares values within tolerance).
+// Bernoulli lists are capped so the summed log-odds stays representable.
+// ═══════════════════════════════════════════════════════════════════
+
+// marginal [] = One bit-exactly (fold over the empty list returns the
+// GenericOne seed), so we assert direct record equality against `One` over
+// `List.empty<_>` — reading straight as the (list, @, []) source monoid's
+// identity law (clearer failure than a boolean `gEq |> should be true`).
+
+[<Fact>]
+let ``C4 Gaussian marginal of the empty list is One (identity on empty)`` () =
+    Message.marginal (List.empty<Gaussian>) |> should equal Gaussian.One
+
+[<Fact>]
+let ``C4 Beta marginal of the empty list is One (identity on empty)`` () =
+    Message.marginal (List.empty<Beta>) |> should equal Beta.One
+
+[<Fact>]
+let ``C4 Bernoulli marginal of the empty list is One (identity on empty)`` () =
+    Message.marginal (List.empty<Bernoulli>) |> should equal Bernoulli.One
+
+[<Property>]
+let ``C4 Gaussian marginal is a fold-homomorphism (concat = product) and order-independent``
+    (raw: NormalFloat[]) =
+    let ms =
+        raw |> Array.truncate 8 |> Array.chunkBySize 2 |> Array.filter (fun c -> c.Length = 2)
+            |> Array.map (fun c ->
+                let (NormalFloat a) = c.[0]
+                let (NormalFloat b) = c.[1]
+                mkProper a b)
+    let single = ms.Length = 0 || gEq (Message.marginal [ ms.[0] ]) ms.[0]
+    let k = ms.Length / 2
+    let xs, ys = Array.toList ms.[.. k - 1], Array.toList ms.[k ..]
+    let homo = gEq (Message.marginal (xs @ ys)) (Gaussian.product (Message.marginal xs) (Message.marginal ys))
+    let comm = gEq (Message.marginal ms) (Message.marginal (Array.rev ms))
+    single && homo && comm
+
+[<Property>]
+let ``C4 Beta marginal is a fold-homomorphism (concat = product) and order-independent``
+    (raw: NormalFloat[]) =
+    let ms =
+        raw |> Array.truncate 8 |> Array.chunkBySize 2 |> Array.filter (fun c -> c.Length = 2)
+            |> Array.map (fun c ->
+                let (NormalFloat a) = c.[0]
+                let (NormalFloat b) = c.[1]
+                mkProperBeta a b)
+    let single = ms.Length = 0 || gEqBeta (Message.marginal [ ms.[0] ]) ms.[0]
+    let k = ms.Length / 2
+    let xs, ys = Array.toList ms.[.. k - 1], Array.toList ms.[k ..]
+    let homo = gEqBeta (Message.marginal (xs @ ys)) (Beta.product (Message.marginal xs) (Message.marginal ys))
+    let comm = gEqBeta (Message.marginal ms) (Message.marginal (Array.rev ms))
+    single && homo && comm
+
+[<Property>]
+let ``C4 Bernoulli marginal is a fold-homomorphism (concat = product) and order-independent``
+    (raw: NormalFloat[]) =
+    // Exercise the >4 fold (production `marginal` has no cap). Bernoulli
+    // product is in PROBABILITY space (t=∏p, f=∏(1−p), t/(t+f)), which
+    // saturates toward p→0/1 as messages accumulate; per-message log-odds
+    // are bounded to ±2 (p∈[0.12,0.88]) so an 8-message fold stays well
+    // clear of saturation and two regroupings agree within tol.
+    let mkBern (l: float) : Bernoulli =
+        let lc = max -2.0 (min 2.0 l)
+        { ProbTrue = 1.0 / (1.0 + exp (-lc)) }
+    let ms = raw |> Array.truncate 8 |> Array.map (fun (NormalFloat l) -> mkBern l)
+    let single = ms.Length = 0 || gEqBern (Message.marginal [ ms.[0] ]) ms.[0]
+    let k = ms.Length / 2
+    let xs, ys = Array.toList ms.[.. k - 1], Array.toList ms.[k ..]
+    let homo = gEqBern (Message.marginal (xs @ ys)) (Bernoulli.product (Message.marginal xs) (Message.marginal ys))
+    let comm = gEqBern (Message.marginal ms) (Message.marginal (Array.rev ms))
+    single && homo && comm
