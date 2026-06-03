@@ -20,6 +20,12 @@ import {
   GraphEdgeKind,
   GraphConfidence,
 } from "../../domain/src/index.ts";
+import {
+  ContextPackAdvisoryPromotionDecisionStatus,
+  ContextPackInboxAnchorPriority,
+  ContextPackInboxAnchorStatus,
+  ContextPackItemKind,
+} from "../../application/src/index.ts";
 
 export const CockroachCoreStateMigrationName = {
   CoreStateV1: "0001_agentic_org_core_state",
@@ -46,6 +52,14 @@ export const CockroachCoreStateMigrationName = {
   OrgEventTransitionContextV22: "0022_agentic_org_event_transition_context",
   ControlPlaneFlagsV23: "0023_agentic_org_control_plane_flags",
   ControlPlaneRateLimitsV24: "0024_agentic_org_control_plane_rate_limits",
+  GraphNodeKindExpansionV25: "0025_agentic_org_graph_node_kind_expansion",
+  ContextPackSnapshotV26: "0026_agentic_org_context_pack_snapshots",
+  DocUnitBoundConsultIndexesV27: "0027_agentic_org_doc_unit_bound_consult_indexes",
+  DocConsultContextPackExposureV28: "0028_agentic_org_doc_consult_context_pack_exposure",
+  ContextPackSnapshotPhaseV29: "0029_agentic_org_context_pack_snapshot_phase",
+  DocConsultOutcomeStampV30: "0030_agentic_org_doc_consult_outcome_stamp",
+  ContextPackAdvisoryPromotionDecisionV31: "0031_agentic_org_context_pack_advisory_promotion_decisions",
+  ContextPackInboxAnchorV32: "0032_agentic_org_context_pack_inbox_anchors",
 } as const;
 
 export type CockroachCoreStateMigrationName =
@@ -87,9 +101,13 @@ export const CockroachTableName = {
   DocEntities: "agentic_org_doc_entities",
   DocGraphEdges: "agentic_org_doc_graph_edges",
   DocConsultLedger: "agentic_org_doc_consult_ledger",
+  DocConsultOutcomes: "agentic_org_doc_consult_outcomes",
   GraphNodes: "agentic_org_graph_nodes",
   GraphEdges: "agentic_org_graph_edges",
   TenantConfig: "agentic_org_tenant_config",
+  ContextPackSnapshots: "agentic_org_context_pack_snapshots",
+  ContextPackAdvisoryPromotionDecisions: "agentic_org_context_pack_advisory_promotion_decisions",
+  ContextPackInboxAnchors: "agentic_org_context_pack_inbox_anchors",
 } as const;
 
 export type CockroachTableName = (typeof CockroachTableName)[keyof typeof CockroachTableName];
@@ -126,6 +144,11 @@ export const CockroachCheckConstraintName = {
   ControlPlaneRateLimitScopeShape: "agentic_org_control_plane_rate_limits_scope_shape_check",
   ControlPlaneRateLimitWindowOrder: "agentic_org_control_plane_rate_limits_window_order_check",
   ControlPlaneRateLimitCounts: "agentic_org_control_plane_rate_limits_counts_check",
+  ContextPackAdvisoryPromotionDecisionStatus: "agentic_org_context_pack_advisory_promotion_decisions_status_check",
+  ContextPackAdvisoryPromotionDecisionItemKind: "agentic_org_context_pack_advisory_promotion_decisions_item_kind_check",
+  ContextPackAdvisoryPromotionDecisionBlocker: "agentic_org_context_pack_advisory_promotion_decisions_blocker_check",
+  ContextPackInboxAnchorPriority: "agentic_org_context_pack_inbox_anchors_priority_check",
+  ContextPackInboxAnchorStatus: "agentic_org_context_pack_inbox_anchors_status_check",
 } as const;
 
 export type CockroachCheckConstraintName =
@@ -201,6 +224,14 @@ export function createCockroachCoreStateMigrations(): readonly CockroachSchemaMi
     createCockroachOrgEventTransitionContextMigration(),
     createCockroachControlPlaneFlagsMigration(),
     createCockroachControlPlaneRateLimitsMigration(),
+    createCockroachGraphNodeKindExpansionMigration(),
+    createCockroachContextPackSnapshotMigration(),
+    createCockroachDocUnitBoundConsultIndexesMigration(),
+    createCockroachDocConsultContextPackExposureMigration(),
+    createCockroachContextPackSnapshotPhaseMigration(),
+    createCockroachDocConsultOutcomeStampMigration(),
+    createCockroachContextPackAdvisoryPromotionDecisionMigration(),
+    createCockroachContextPackInboxAnchorMigration(),
   ];
 }
 
@@ -413,7 +444,43 @@ export function createCockroachDocumentIntelligenceMigration(): CockroachSchemaM
       createDocEntitiesTableSql(),
       createDocGraphEdgesTableSql(),
       createDocConsultLedgerTableSql(),
+      createDocConsultOutcomesTableSql(),
     ].join("\n"),
+  };
+}
+
+export function createCockroachDocConsultContextPackExposureMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.DocConsultContextPackExposureV28,
+    sql: createDocConsultContextPackExposureMigrationSql(),
+  };
+}
+
+export function createCockroachContextPackSnapshotPhaseMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29,
+    sql: createContextPackSnapshotPhaseMigrationSql(),
+  };
+}
+
+export function createCockroachDocConsultOutcomeStampMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.DocConsultOutcomeStampV30,
+    sql: createDocConsultOutcomeStampMigrationSql(),
+  };
+}
+
+export function createCockroachContextPackAdvisoryPromotionDecisionMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31,
+    sql: createContextPackAdvisoryPromotionDecisionTableSql(),
+  };
+}
+
+export function createCockroachContextPackInboxAnchorMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ContextPackInboxAnchorV32,
+    sql: createContextPackInboxAnchorsTableSql(),
   };
 }
 
@@ -476,6 +543,27 @@ export function createCockroachControlPlaneRateLimitsMigration(): CockroachSchem
   };
 }
 
+export function createCockroachGraphNodeKindExpansionMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.GraphNodeKindExpansionV25,
+    sql: createGraphNodeKindExpansionMigrationSql(),
+  };
+}
+
+export function createCockroachContextPackSnapshotMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.ContextPackSnapshotV26,
+    sql: createContextPackSnapshotsTableSql(),
+  };
+}
+
+export function createCockroachDocUnitBoundConsultIndexesMigration(): CockroachSchemaMigration {
+  return {
+    name: CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27,
+    sql: createDocUnitBoundConsultIndexesMigrationSql(),
+  };
+}
+
 function createGraphNodesTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.GraphNodes} (
@@ -495,6 +583,14 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.GraphNodes} (
   INDEX graph_nodes_by_org_kind (organization_id, kind),
   INDEX graph_nodes_by_source (organization_id, source_key)
 );`.trim();
+}
+
+function createGraphNodeKindExpansionMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.GraphNodes}
+  DROP CONSTRAINT IF EXISTS ${CockroachCheckConstraintName.GraphNodeKind};
+ALTER TABLE IF EXISTS ${CockroachTableName.GraphNodes}
+  ADD CONSTRAINT ${CockroachCheckConstraintName.GraphNodeKind} CHECK (kind IN (${createSqlStringList(Object.values(GraphNodeKind))}));`.trim();
 }
 
 function createGraphEdgesTableSql(): string {
@@ -579,6 +675,14 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocEntities} (
 );`.trim();
 }
 
+function createDocUnitBoundConsultIndexesMigrationSql(): string {
+  return `
+CREATE INVERTED INDEX IF NOT EXISTS doc_units_by_bound_hat_ids
+  ON ${CockroachTableName.DocUnits} (bound_hat_ids);
+CREATE INVERTED INDEX IF NOT EXISTS doc_units_by_bound_stage_ids
+  ON ${CockroachTableName.DocUnits} (bound_stage_ids);`.trim();
+}
+
 function createDocGraphEdgesTableSql(): string {
   return `
 CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocGraphEdges} (
@@ -601,12 +705,189 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocConsultLedger} (
   organization_id STRING NOT NULL,
   doc_unit_id STRING NOT NULL,
   stage_id STRING NOT NULL,
-  work_item_id STRING NOT NULL,
+  work_item_id STRING NULL,
   consulted_at TIMESTAMPTZ NOT NULL,
+  context_pack_id STRING NULL,
+  run_id STRING NULL,
+  scope STRING NULL,
+  hat_id STRING NULL,
+  hat_assignment_id STRING NULL,
+  agent_id STRING NULL,
+  project_id STRING NULL,
+  team_id STRING NULL,
+  context_item_ids JSONB NOT NULL DEFAULT '[]'::JSONB,
+  source_refs JSONB NOT NULL DEFAULT '[]'::JSONB,
+  required BOOL NOT NULL DEFAULT false,
+  freshness STRING NULL,
+  reasons JSONB NOT NULL DEFAULT '[]'::JSONB,
+  doc_type STRING NULL,
+  doc_scope_kind STRING NULL,
+  doc_scope_id STRING NULL,
+  content_ref STRING NULL,
+  content_hash STRING NULL,
+  source_id STRING NULL,
+  doc_version INT8 NULL,
+  trace_id STRING NULL,
+  correlation_id STRING NULL,
+  causation_id STRING NULL,
   outcome STRING NULL,
+  outcome_ref STRING NULL,
+  outcome_recorded_at TIMESTAMPTZ NULL,
   INDEX doc_consult_by_unit (doc_unit_id, consulted_at),
-  INDEX doc_consult_by_work (work_item_id, consulted_at)
+  INDEX doc_consult_by_work (work_item_id, consulted_at),
+  INDEX doc_consult_by_context_pack (organization_id, context_pack_id, consulted_at),
+  INDEX doc_consult_by_hat (organization_id, hat_assignment_id, consulted_at),
+  INDEX doc_consult_by_outcome (organization_id, outcome, consulted_at),
+  INDEX doc_consult_by_outcome_ref (organization_id, outcome_ref, outcome_recorded_at)
 );`.trim();
+}
+
+function createDocConsultOutcomesTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocConsultOutcomes} (
+  doc_consult_id STRING NOT NULL,
+  outcome_ref STRING NOT NULL,
+  organization_id STRING NOT NULL,
+  doc_unit_id STRING NOT NULL,
+  outcome STRING NOT NULL,
+  outcome_recorded_at TIMESTAMPTZ NOT NULL,
+  context_pack_id STRING NULL,
+  run_id STRING NULL,
+  stage_id STRING NULL,
+  hat_id STRING NULL,
+  hat_assignment_id STRING NULL,
+  agent_id STRING NULL,
+  project_id STRING NULL,
+  team_id STRING NULL,
+  work_item_id STRING NULL,
+  trace_id STRING NULL,
+  correlation_id STRING NULL,
+  causation_id STRING NULL,
+  PRIMARY KEY (doc_consult_id, outcome_ref),
+  INDEX doc_consult_outcomes_by_scope (organization_id, hat_id, stage_id, project_id, team_id, outcome_recorded_at),
+  INDEX doc_consult_outcomes_by_work (organization_id, project_id, work_item_id, outcome_recorded_at),
+  INDEX doc_consult_outcomes_by_outcome_ref (organization_id, outcome_ref, outcome_recorded_at)
+);`.trim();
+}
+
+function createContextPackSnapshotPhaseMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.ContextPackSnapshots}
+  ADD COLUMN IF NOT EXISTS phase STRING;`.trim();
+}
+
+function createDocConsultOutcomeStampMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.DocConsultLedger}
+  ADD COLUMN IF NOT EXISTS outcome_ref STRING,
+  ADD COLUMN IF NOT EXISTS outcome_recorded_at TIMESTAMPTZ;
+
+CREATE INDEX IF NOT EXISTS doc_consult_by_outcome_ref
+  ON ${CockroachTableName.DocConsultLedger} (organization_id, outcome_ref, outcome_recorded_at);
+
+${createDocConsultOutcomesTableSql()}`.trim();
+}
+
+function createContextPackAdvisoryPromotionDecisionTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ContextPackAdvisoryPromotionDecisions} (
+  decision_id STRING PRIMARY KEY,
+  decision_key STRING NOT NULL UNIQUE,
+  organization_id STRING NOT NULL,
+  status STRING NOT NULL,
+  policy_version STRING NOT NULL,
+  lifecycle_blocker STRING NOT NULL,
+  item_kind STRING NOT NULL,
+  summary_hash STRING NOT NULL,
+  citation_refs JSONB NOT NULL,
+  source_pointer_keys JSONB NOT NULL,
+  evidence_refs JSONB NOT NULL,
+  hat_id STRING NULL,
+  hat_assignment_id STRING NULL,
+  project_id STRING NULL,
+  team_id STRING NULL,
+  work_item_id STRING NULL,
+  curation_profile_id STRING NULL,
+  decided_by_hat_id STRING NOT NULL,
+  decided_by_hat_assignment_id STRING NOT NULL,
+  decided_by_agent_id STRING NULL,
+  decided_at TIMESTAMPTZ NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  trace_id STRING NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  CONSTRAINT ${CockroachCheckConstraintName.ContextPackAdvisoryPromotionDecisionStatus} CHECK (status IN (${createSqlStringList(Object.values(ContextPackAdvisoryPromotionDecisionStatus))})),
+  CONSTRAINT ${CockroachCheckConstraintName.ContextPackAdvisoryPromotionDecisionItemKind} CHECK (item_kind IN (${createSqlStringList([ContextPackItemKind.SynthesisGapHypothesis])})),
+  CONSTRAINT ${CockroachCheckConstraintName.ContextPackAdvisoryPromotionDecisionBlocker} CHECK (length(trim(lifecycle_blocker)) > 0),
+  INDEX advisory_promotion_decisions_by_scope (organization_id, hat_id, hat_assignment_id, project_id, team_id, work_item_id, curation_profile_id, status, policy_version),
+  INDEX advisory_promotion_decisions_by_fingerprint (organization_id, item_kind, summary_hash, status, policy_version),
+  INDEX advisory_promotion_decisions_by_curator (organization_id, decided_by_hat_id, updated_at DESC)
+);`.trim();
+}
+
+function createContextPackInboxAnchorsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ContextPackInboxAnchors} (
+  inbox_anchor_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING NULL,
+  work_item_id STRING NULL,
+  target_hat_assignment_id STRING NOT NULL,
+  target_agent_id STRING NULL,
+  title STRING NOT NULL,
+  summary STRING NOT NULL,
+  priority STRING NOT NULL,
+  status STRING NOT NULL,
+  delivered_at TIMESTAMPTZ NOT NULL,
+  snoozed_until TIMESTAMPTZ NULL,
+  source_ref STRING NULL,
+  trace_id STRING NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  CONSTRAINT ${CockroachCheckConstraintName.ContextPackInboxAnchorPriority} CHECK (priority IN (${createSqlStringList(Object.values(ContextPackInboxAnchorPriority))})),
+  CONSTRAINT ${CockroachCheckConstraintName.ContextPackInboxAnchorStatus} CHECK (status IN (${createSqlStringList(Object.values(ContextPackInboxAnchorStatus))})),
+  INDEX context_pack_inbox_anchors_by_target_hat (organization_id, project_id, target_hat_assignment_id, target_agent_id, status, delivered_at DESC),
+  INDEX context_pack_inbox_anchors_by_work_item (organization_id, project_id, work_item_id, status, delivered_at DESC)
+);`.trim();
+}
+
+function createDocConsultContextPackExposureMigrationSql(): string {
+  return `
+ALTER TABLE IF EXISTS ${CockroachTableName.DocConsultLedger}
+  ALTER COLUMN work_item_id DROP NOT NULL;
+
+ALTER TABLE IF EXISTS ${CockroachTableName.DocConsultLedger}
+  ADD COLUMN IF NOT EXISTS context_pack_id STRING,
+  ADD COLUMN IF NOT EXISTS run_id STRING,
+  ADD COLUMN IF NOT EXISTS scope STRING,
+  ADD COLUMN IF NOT EXISTS hat_id STRING,
+  ADD COLUMN IF NOT EXISTS hat_assignment_id STRING,
+  ADD COLUMN IF NOT EXISTS agent_id STRING,
+  ADD COLUMN IF NOT EXISTS project_id STRING,
+  ADD COLUMN IF NOT EXISTS team_id STRING,
+  ADD COLUMN IF NOT EXISTS context_item_ids JSONB NOT NULL DEFAULT '[]'::JSONB,
+  ADD COLUMN IF NOT EXISTS source_refs JSONB NOT NULL DEFAULT '[]'::JSONB,
+  ADD COLUMN IF NOT EXISTS required BOOL NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS freshness STRING,
+  ADD COLUMN IF NOT EXISTS reasons JSONB NOT NULL DEFAULT '[]'::JSONB,
+  ADD COLUMN IF NOT EXISTS doc_type STRING,
+  ADD COLUMN IF NOT EXISTS doc_scope_kind STRING,
+  ADD COLUMN IF NOT EXISTS doc_scope_id STRING,
+  ADD COLUMN IF NOT EXISTS content_ref STRING,
+  ADD COLUMN IF NOT EXISTS content_hash STRING,
+  ADD COLUMN IF NOT EXISTS source_id STRING,
+  ADD COLUMN IF NOT EXISTS doc_version INT8,
+  ADD COLUMN IF NOT EXISTS trace_id STRING,
+  ADD COLUMN IF NOT EXISTS correlation_id STRING,
+  ADD COLUMN IF NOT EXISTS causation_id STRING;
+
+CREATE INDEX IF NOT EXISTS doc_consult_by_context_pack
+  ON ${CockroachTableName.DocConsultLedger} (organization_id, context_pack_id, consulted_at);
+CREATE INDEX IF NOT EXISTS doc_consult_by_hat
+  ON ${CockroachTableName.DocConsultLedger} (organization_id, hat_assignment_id, consulted_at);
+CREATE INDEX IF NOT EXISTS doc_consult_by_outcome
+  ON ${CockroachTableName.DocConsultLedger} (organization_id, outcome, consulted_at);`.trim();
 }
 
 function createChangeSetsTableSql(): string {
@@ -757,6 +1038,37 @@ CREATE TABLE IF NOT EXISTS ${CockroachTableName.ControlPlaneRateLimits} (
   CONSTRAINT ${CockroachCheckConstraintName.ControlPlaneRateLimitCounts} CHECK (limit_count > 0 AND used_count >= 0 AND (requested_count IS NULL OR requested_count >= 0)),
   INDEX control_plane_rate_limits_by_org_window (organization_id, window_started_at, window_ends_at),
   INDEX control_plane_rate_limits_by_org_scope (organization_id, scope_kind, scope_id)
+);`.trim();
+}
+
+function createContextPackSnapshotsTableSql(): string {
+  return `
+CREATE TABLE IF NOT EXISTS ${CockroachTableName.ContextPackSnapshots} (
+  context_pack_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  run_id STRING NOT NULL,
+  scope STRING NOT NULL,
+  hat_assignment_id STRING NOT NULL,
+  hat_id STRING NOT NULL,
+  agent_id STRING NULL,
+  project_id STRING NULL,
+  team_id STRING NULL,
+  work_item_id STRING NULL,
+  status STRING NOT NULL,
+  phase STRING NULL,
+  generated_at TIMESTAMPTZ NOT NULL,
+  freshness_deadline TIMESTAMPTZ NOT NULL,
+  recorded_at TIMESTAMPTZ NOT NULL,
+  source_graph_version STRING NOT NULL,
+  policy_version STRING NOT NULL,
+  trace_id STRING NOT NULL,
+  correlation_id STRING NOT NULL,
+  causation_id STRING NOT NULL,
+  context_json JSONB NOT NULL,
+  INDEX context_pack_snapshots_by_org_recorded (organization_id, recorded_at DESC),
+  INDEX context_pack_snapshots_by_scope (organization_id, project_id, team_id, work_item_id, recorded_at DESC),
+  INDEX context_pack_snapshots_by_hat (organization_id, hat_assignment_id, recorded_at DESC),
+  INDEX context_pack_snapshots_by_status (organization_id, status, recorded_at DESC)
 );`.trim();
 }
 

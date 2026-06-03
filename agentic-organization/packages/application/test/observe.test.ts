@@ -4,10 +4,14 @@ import { buildHatDefinitions } from "../src/org-seed.ts";
 import { ActionClass } from "../src/hat-guardrails.ts";
 import {
   CommandType,
+  DepartmentId,
+  DocScopeKind,
+  GraphNodeKind,
   ScheduleBlockState,
   ScheduleBlockType,
   SupervisorChainLevel,
   SupervisorSignalToolType,
+  graphNodeId,
   type WorkScheduleBlock,
 } from "../../domain/src/index.ts";
 import {
@@ -25,8 +29,19 @@ import {
   renderMenu16,
   RunLifecyclePhase,
   RunScope,
+  ContextPackFreshness,
+  ContextPackItemKind,
+  ContextPackOmissionReason,
+  ContextPackCurationStageKind,
+  ContextPackSourcePointerKind,
+  ContextPackStatus,
+  ContextPackUncertaintySeverity,
+  ContextPackUncertaintySignalKind,
+  TriAvailability,
   type EphemeralComposerPort,
   type AgentObserveSnapshot,
+  type ContextPackBuilderPort,
+  type ContextPackSourcePointer,
   type HierarchyInitiative,
   type HierarchyProject,
   type HierarchyWorkBatch,
@@ -1203,6 +1218,1641 @@ test("observeAgentSurface returns the 16-slot controller plus deterministic scop
   equal(surface.actions.slots.length, 16);
   deepEqual(surface.metrics.blocks.map((block) => block.id), ["work-item-tests"]);
   equal(surface.metrics.scope, RunScope.WorkItem);
+});
+
+test("observeAgentSurface attaches a hat-scoped context pack for a director facing a blocked initiative", async () => {
+  const engineeringDirector = buildHatDefinitions().find((h) => h.id === "engineering_director")!;
+  const capturedScopes: string[] = [];
+  const contextPackBuilder: ContextPackBuilderPort = {
+    build: async (request) => {
+      capturedScopes.push(`${request.snapshot.hat.id}:${request.hierarchy.priorityScope}:${request.snapshot.workItemId}`);
+      return {
+        pack: {
+          id: "ctx-pack-director-blocker",
+          runId: request.snapshot.runId,
+          scope: request.snapshot.scope,
+          agentId: request.snapshot.agentId,
+          hatAssignmentId: request.snapshot.hatAssignmentId,
+          hatId: request.snapshot.hat.id,
+          organizationId: request.snapshot.organizationId,
+          projectId: request.snapshot.projectId,
+          workItemId: request.snapshot.workItemId,
+          generatedAt: request.observedAt,
+          freshnessDeadline: "2026-05-29T00:15:00.000Z",
+          sourceGraphVersion: "graph-v7",
+          policyVersion: "policy-v3",
+          tokenBudget: 4096,
+          items: [
+            {
+              id: "doc-brd",
+              kind: ContextPackItemKind.BusinessDocument,
+              title: "BRD: Observe management surface",
+              summary: "Business requires blocked initiatives to surface escalation and staffing options.",
+              sourceRef: "doc:brd-observe-management",
+              required: true,
+              freshness: "current",
+              confidence: 1,
+              reasons: ["stage-bound business rule"],
+              sourcePointers: [
+                {
+                  kind: ContextPackSourcePointerKind.DocUnit,
+                  docUnitId: "brd-observe-management",
+                  organizationId: "org-1",
+                  scopeKind: DocScopeKind.Project,
+                  scopeId: "project-eng",
+                  contentRef: "doc:brd-observe-management",
+                  contentHash: "hash-brd-observe-management",
+                  sourceId: "source-main",
+                  version: 1,
+                },
+              ],
+            },
+            {
+              id: "graph-impact",
+              kind: ContextPackItemKind.GraphNeighborhood,
+              title: "Impact: observe-act worker lane",
+              summary: "The blocked work affects the director dashboard, worker cadence, and prompt-flow context loading.",
+              sourceRef: "graph:observe-worker-lane",
+              required: true,
+              freshness: "current",
+              confidence: 0.92,
+              reasons: ["dependency traversal"],
+              sourcePointers: [
+                {
+                  kind: ContextPackSourcePointerKind.GraphNode,
+                  nodeId: "observe-worker-lane",
+                },
+                {
+                  kind: ContextPackSourcePointerKind.WorkItem,
+                  workItemId: "work-blocked",
+                },
+              ],
+            },
+            {
+              id: "memory-prior",
+              kind: ContextPackItemKind.MemoryPointer,
+              title: "Prior context-retention outcome",
+              summary: "Similar blocker was resolved by staffing a docs pass before implementation.",
+              sourceRef: "memory:hindsight:ctx-retention-42",
+              required: false,
+              freshness: "current",
+              confidence: 0.75,
+              reasons: ["hat-scoped recall"],
+              sourcePointers: [
+                {
+                  kind: ContextPackSourcePointerKind.HindsightMemory,
+                  providerId: "hindsight",
+                  memoryId: "ctx-retention-42",
+                  creatingAgentId: "agent-director-1",
+                  creatingHatAssignmentId: request.snapshot.hatAssignmentId,
+                  creatingProjectId: "project-eng",
+                  creatingWorkItemId: "work-blocked",
+                  advisory: true,
+                },
+              ],
+            },
+          ],
+          omittedItemsWithReason: [],
+          contradictions: [],
+          staleInputs: [],
+          lifecycleBlockers: ["work item work-blocked is blocked"],
+          curationTrace: [
+            {
+              stage: ContextPackCurationStageKind.DeterministicScope,
+              summary: "Scoped to engineering director over project project-eng and work item work-blocked.",
+              evidenceRefs: ["work:work-blocked", "project:project-eng"],
+            },
+            {
+              stage: ContextPackCurationStageKind.RequiredConsult,
+              summary: "Loaded required BRD and graph impact context.",
+              evidenceRefs: ["doc:brd-observe-management", "graph:observe-worker-lane"],
+            },
+            {
+              stage: ContextPackCurationStageKind.EphemeralSynthesis,
+              summary: "Synthesized director decision brief from graph, docs, and hat memory pointers.",
+              evidenceRefs: ["doc:brd-observe-management", "graph:observe-worker-lane"],
+            },
+            {
+              stage: ContextPackCurationStageKind.GapReview,
+              summary: "No omissions or contradictions.",
+              evidenceRefs: [],
+            },
+          ],
+        },
+      };
+    },
+  };
+
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      agentId: "agent-director-1",
+      organizationId: "org-1",
+      projectId: "project-eng",
+      workItemId: "work-blocked",
+      scope: RunScope.Project,
+      phase: RunLifecyclePhase.Blocked,
+      hat: engineeringDirector,
+    }),
+    {
+      ...deps,
+      contextPackBuilder,
+      hierarchy: {
+        projects: [hierarchyProject({ projectId: "project-eng", departmentId: "engineering" })],
+        initiatives: [
+          hierarchyInitiative({
+            initiativeId: "init-risk",
+            projectId: "project-eng",
+            title: "Resolve blocker routing",
+            priorityScore: 98,
+          }),
+        ],
+        workItems: [
+          hierarchyWorkItem({
+            workItemId: "work-blocked",
+            projectId: "project-eng",
+            initiativeId: "init-risk",
+            title: "Blocked observe context pack",
+            state: "blocked",
+            priorityScore: 100,
+          }),
+        ],
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  deepEqual(capturedScopes, ["engineering_director:department_initiatives:work-blocked"]);
+  equal(surface.context.status, "current");
+  equal(surface.context.pack.hatId, "engineering_director");
+  equal(surface.context.pack.generatedAt, "2026-05-29T00:00:00.000Z");
+  deepEqual(surface.context.requiredItems.map((item) => item.id), ["doc-brd", "graph-impact"]);
+  deepEqual(surface.context.optionalItems.map((item) => item.id), ["memory-prior"]);
+  deepEqual(surface.context.drillTargetGroups.map((group) => ({
+    itemId: group.itemId,
+    routeRefs: group.targets.map((target) => target.routeRef),
+  })), [
+    {
+      itemId: "doc-brd",
+      routeRefs: ["doc_unit:brd-observe-management:v1"],
+    },
+    {
+      itemId: "graph-impact",
+      routeRefs: ["graph_node:observe-worker-lane", "work_item:work-blocked"],
+    },
+    {
+      itemId: "memory-prior",
+      routeRefs: ["hindsight_memory:hindsight:ctx-retention-42"],
+    },
+  ]);
+  deepEqual(surface.context.lifecycleBlockers, ["work item work-blocked is blocked"]);
+  equal(surface.context.summary.requiredItemCount, 2);
+  equal(surface.context.summary.optionalItemCount, 1);
+  equal(surface.context.summary.omissionCount, 0);
+  ok(surface.context.pack.curationTrace.some((stage) => stage.stage === ContextPackCurationStageKind.EphemeralSynthesis));
+});
+
+test("observeAgentSurface marks source-less or under-curated context packs as incomplete", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-under-curated",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "doc-source-less",
+                kind: ContextPackItemKind.BusinessDocument,
+                title: "BRD",
+                summary: "This item lacks replayable provenance.",
+                sourceRef: "doc:source-less",
+                required: true,
+                freshness: ContextPackFreshness.Current,
+                confidence: 1,
+                reasons: ["test"],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped but did not prove required consult or gap review.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+      enforceContextReadiness: true,
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, "incomplete");
+});
+
+test("observeAgentSurface darkens lifecycle work slots when context is not ready", async () => {
+  const implementer = buildHatDefinitions().find((h) => h.id === "backend_implementer")!;
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      scope: RunScope.WorkItem,
+      hat: implementer,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-incomplete",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [],
+            omittedItemsWithReason: [
+              {
+                nodeId: "context_requirement:management_blocker_business",
+                reason: ContextPackOmissionReason.NotIndexed,
+                message: "missing BRD",
+              },
+            ],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: ["required context is missing"],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to work item.",
+                evidenceRefs: ["work:work-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "Required consult missing.",
+                evidenceRefs: ["context_requirement:management_blocker_business"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "One required omission.",
+                evidenceRefs: ["context_requirement:management_blocker_business"],
+              },
+            ],
+          },
+        }),
+      },
+      enforceContextReadiness: true,
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  const executeSlot = surface.actions.slots.find((slot) => slot.action?.actionType === "execute");
+  equal(executeSlot?.availability, TriAvailability.False);
+  ok(executeSlot?.reason?.includes("context pack ctx-incomplete is incomplete"));
+  ok(executeSlot?.reason?.includes("omissions=1"));
+  equal(surface.actions.slots[12]?.availability, TriAvailability.True);
+  equal(surface.actions.slots[13]?.availability, TriAvailability.True);
+  equal(surface.actions.slots[14]?.availability, TriAvailability.True);
+});
+
+test("observeAgentSurface groups uncertainty signals for reviewer-facing readiness context", async () => {
+  const implementer = buildHatDefinitions().find((h) => h.id === "backend_implementer")!;
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      scope: RunScope.WorkItem,
+      hat: implementer,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-uncertain",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [],
+            omittedItemsWithReason: [
+              {
+                nodeId: "context_requirement:acceptance_criteria",
+                reason: ContextPackOmissionReason.NotIndexed,
+                message: "missing acceptance criteria",
+              },
+            ],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: ["required context is missing"],
+            uncertaintySignals: [
+              {
+                kind: ContextPackUncertaintySignalKind.StaleEvidence,
+                severity: ContextPackUncertaintySeverity.High,
+                evidenceRefs: ["doc:old-acceptance-criteria"],
+                message: "Only stale acceptance criteria were available.",
+              },
+              {
+                kind: ContextPackUncertaintySignalKind.IndirectEvidence,
+                severity: ContextPackUncertaintySeverity.Medium,
+                evidenceRefs: ["memory:similar-work"],
+                message: "Business intent is inferred from similar work.",
+              },
+            ],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to work item.",
+                evidenceRefs: ["work:work-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "Required consult missing.",
+                evidenceRefs: ["context_requirement:acceptance_criteria"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "One required omission with uncertainty.",
+                evidenceRefs: ["context_requirement:acceptance_criteria"],
+              },
+            ],
+          },
+        }),
+      },
+      enforceContextReadiness: true,
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.summary.uncertaintySignalCount, 2);
+  equal(surface.context.uncertainty.signalCount, 2);
+  equal(surface.context.uncertainty.highSeverityCount, 1);
+  equal(surface.context.uncertainty.mediumSeverityCount, 1);
+  deepEqual(surface.context.uncertainty.groups, [
+    {
+      kind: ContextPackUncertaintySignalKind.StaleEvidence,
+      severity: ContextPackUncertaintySeverity.High,
+      count: 1,
+      evidenceRefs: ["doc:old-acceptance-criteria"],
+      messages: ["Only stale acceptance criteria were available."],
+    },
+    {
+      kind: ContextPackUncertaintySignalKind.IndirectEvidence,
+      severity: ContextPackUncertaintySeverity.Medium,
+      count: 1,
+      evidenceRefs: ["memory:similar-work"],
+      messages: ["Business intent is inferred from similar work."],
+    },
+  ]);
+  const executeSlot = surface.actions.slots.find((slot) => slot.action?.actionType === "execute");
+  ok(executeSlot?.reason?.includes("uncertainty=2"));
+  ok(executeSlot?.reason?.includes("top_uncertainty=high:stale_evidence"));
+});
+
+test("observeAgentSurface applies an injected context-pack readiness policy", async () => {
+  const implementer = buildHatDefinitions().find((h) => h.id === "backend_implementer")!;
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      phase: RunLifecyclePhase.AwaitingGate,
+      hasGateApproval: true,
+      scope: RunScope.WorkItem,
+      hat: implementer,
+    }),
+    {
+      ...deps,
+      contextPackReadinessPolicy: {
+        evaluate: (request) => ({
+          status: request.pack.id === "ctx-policy-stop" ? ContextPackStatus.Incomplete : ContextPackStatus.Current,
+          policyVersion: "test-readiness-policy:v1",
+          hardStopReasons: ["test readiness hard stop"],
+        }),
+      },
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-policy-stop",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [{
+              id: "doc-acceptance",
+              kind: ContextPackItemKind.BusinessDocument,
+              title: "Acceptance criteria",
+              summary: "Current scoped acceptance criteria.",
+              sourceRef: "doc:acceptance",
+              required: true,
+              freshness: ContextPackFreshness.Current,
+              confidence: 1,
+              reasons: ["required-doc"],
+              sourcePointers: [{
+                kind: ContextPackSourcePointerKind.WorkItem,
+                workItemId: "work-1",
+              }],
+            }],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to work item.",
+                evidenceRefs: ["work:work-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "Required consult loaded.",
+                evidenceRefs: ["doc:acceptance"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+      enforceContextReadiness: true,
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  const executeSlot = surface.actions.slots.find((slot) => slot.action?.actionType === "execute");
+  equal(executeSlot?.availability, TriAvailability.False);
+  ok(executeSlot?.reason?.includes("context pack ctx-policy-stop is incomplete"));
+});
+
+test("observeAgentSurface returns an explicit degraded context pack when no context builder is wired", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    deps,
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.pack.id, "ctx:42:99:missing-builder");
+  equal(surface.context.summary.omissionCount, 1);
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.BuilderUnavailable);
+  ok(surface.context.lifecycleBlockers.some((blocker) => blocker.includes("context pack builder is not configured")));
+});
+
+test("observeAgentSurface degrades context when the context builder fails", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async () => {
+          throw new Error("graph index unavailable");
+        },
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, "incomplete");
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.RetrievalFailed);
+  ok(surface.context.lifecycleBlockers.some((blocker) => blocker.includes("context pack retrieval failed")));
+});
+
+test("observeAgentSurface rejects context packs that do not match the current hat scope", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-poisoned",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: "engineering_director",
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.pack.id, "ctx:42:99:scope-mismatch");
+  equal(surface.context.status, "incomplete");
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+});
+
+test("observeAgentSurface rejects context packs that omit required snapshot scope", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-too-broad",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "doc-too-broad",
+                kind: ContextPackItemKind.BusinessDocument,
+                title: "Broad BRD",
+                summary: "This pack did not prove org/project/work scope.",
+                sourceRef: "doc:broad",
+                required: true,
+                freshness: ContextPackFreshness.Current,
+                confidence: 1,
+                reasons: ["test"],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.pack.id, "ctx:42:99:scope-mismatch");
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+});
+
+test("observeAgentSurface marks packs with wrong-scope item provenance as incomplete", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-wrong-item-provenance",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "doc-wrong-project",
+                kind: ContextPackItemKind.BusinessDocument,
+                title: "Wrong project BRD",
+                summary: "This required document belongs to another project.",
+                sourceRef: "doc:wrong-project-brd",
+                required: true,
+                freshness: ContextPackFreshness.Current,
+                confidence: 1,
+                reasons: ["test"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.DocUnit,
+                    docUnitId: "wrong-project-brd",
+                    organizationId: "org-1",
+                    scopeKind: DocScopeKind.Project,
+                    scopeId: "project-unrelated",
+                    contentRef: "doc:wrong-project-brd",
+                    contentHash: "hash-wrong-project-brd",
+                    sourceId: "source-main",
+                    version: 1,
+                  },
+                ],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active work.",
+                evidenceRefs: ["work:work-1", "project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "Loaded required documents.",
+                evidenceRefs: ["doc:wrong-project-brd"],
+              },
+              {
+                stage: ContextPackCurationStageKind.EphemeralSynthesis,
+                summary: "No synthesis needed.",
+                evidenceRefs: [],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+  ok(surface.context.omittedItemsWithReason[0]?.message.includes("item provenance is outside active scope"));
+});
+
+test("observeAgentSurface marks packs with wrong-work item provenance as incomplete", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-wrong-work-provenance",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "decision-wrong-work",
+                kind: ContextPackItemKind.DecisionRecord,
+                title: "Wrong work decision",
+                summary: "This decision is attached to another active work item.",
+                sourceRef: "decision:wrong-work",
+                required: true,
+                freshness: ContextPackFreshness.Current,
+                confidence: 1,
+                reasons: ["test"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.WorkItem,
+                    workItemId: "work-2",
+                  },
+                ],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active work.",
+                evidenceRefs: ["work:work-1", "project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "Loaded required decisions.",
+                evidenceRefs: ["decision:wrong-work"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+  ok(surface.context.omittedItemsWithReason[0]?.message.includes("item provenance is outside active scope"));
+});
+
+test("observeAgentSurface marks packs with wrong-project graph provenance as incomplete", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-wrong-graph-provenance",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "graph-wrong-project",
+                kind: ContextPackItemKind.GraphNeighborhood,
+                title: "Wrong project graph",
+                summary: "This graph neighborhood is rooted in another project.",
+                sourceRef: "graph:wrong-project",
+                required: true,
+                freshness: ContextPackFreshness.Live,
+                confidence: 0.9,
+                reasons: ["test"],
+                citationRefs: ["graph:wrong-project"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.GraphNode,
+                    nodeId: graphNodeId("org-1", GraphNodeKind.Project, "project-2"),
+                  },
+                ],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active work.",
+                evidenceRefs: ["work:work-1", "project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GraphTraversal,
+                summary: "Loaded graph context.",
+                evidenceRefs: ["graph:wrong-project"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "No required docs.",
+                evidenceRefs: [],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+  ok(surface.context.omittedItemsWithReason[0]?.message.includes("item provenance is outside active scope"));
+});
+
+test("observeAgentSurface marks packs with raw wrong-project graph provenance as incomplete", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-raw-wrong-graph-provenance",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "graph-raw-wrong-project",
+                kind: ContextPackItemKind.GraphNeighborhood,
+                title: "Raw wrong project graph",
+                summary: "This legacy graph node is rooted in another project.",
+                sourceRef: "graph:project-2",
+                required: true,
+                freshness: ContextPackFreshness.Live,
+                confidence: 0.9,
+                reasons: ["test"],
+                citationRefs: ["graph:project-2"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.GraphNode,
+                    nodeId: "project-2",
+                  },
+                ],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active work.",
+                evidenceRefs: ["work:work-1", "project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GraphTraversal,
+                summary: "Loaded graph context.",
+                evidenceRefs: ["graph:project-2"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "No required docs.",
+                evidenceRefs: [],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+  ok(surface.context.omittedItemsWithReason[0]?.message.includes("item provenance is outside active scope"));
+});
+
+for (const pointer of [
+  { kind: ContextPackSourcePointerKind.GitBlob, path: "docs/other-project.md" },
+  { kind: ContextPackSourcePointerKind.Decision, decisionId: "decision-other" },
+  { kind: ContextPackSourcePointerKind.Discussion, discussionId: "discussion-other" },
+  { kind: ContextPackSourcePointerKind.QualityGate, qualityGateEvaluationId: "gate-other" },
+  { kind: ContextPackSourcePointerKind.Trace, traceId: "trace-other" },
+  { kind: ContextPackSourcePointerKind.Policy, policyId: "policy-other" },
+] satisfies readonly ContextPackSourcePointer[]) {
+  test(`observeAgentSurface marks audit-only ${pointer.kind} provenance as incomplete`, async () => {
+    const surface = await observeAgentSurface(
+      agentSnapshot({
+        organizationId: "org-1",
+        projectId: "project-1",
+        workItemId: "work-1",
+        scope: RunScope.WorkItem,
+      }),
+      {
+        ...deps,
+        contextPackBuilder: {
+          build: async (request) => ({
+            pack: {
+              id: `ctx-audit-only-${pointer.kind}`,
+              runId: request.snapshot.runId,
+              scope: request.snapshot.scope,
+              hatAssignmentId: request.snapshot.hatAssignmentId,
+              hatId: request.snapshot.hat.id,
+              organizationId: request.snapshot.organizationId,
+              projectId: request.snapshot.projectId,
+              workItemId: request.snapshot.workItemId,
+              generatedAt: request.observedAt,
+              freshnessDeadline: "2026-05-29T00:15:00.000Z",
+              sourceGraphVersion: "graph-v7",
+              policyVersion: "policy-v3",
+              tokenBudget: 4096,
+              items: [
+                {
+                  id: `audit-only-${pointer.kind}`,
+                  kind: ContextPackItemKind.Evidence,
+                  title: "Audit-only pointer",
+                  summary: "Audit-only replay handles need a scoped companion pointer.",
+                  sourceRef: `audit:${pointer.kind}`,
+                  required: true,
+                  freshness: ContextPackFreshness.Current,
+                  confidence: 0.9,
+                  reasons: ["test"],
+                  sourcePointers: [pointer],
+                },
+              ],
+              omittedItemsWithReason: [],
+              contradictions: [],
+              staleInputs: [],
+              lifecycleBlockers: [],
+              curationTrace: [
+                {
+                  stage: ContextPackCurationStageKind.DeterministicScope,
+                  summary: "Scoped to active work.",
+                  evidenceRefs: ["work:work-1", "project:project-1"],
+                },
+                {
+                  stage: ContextPackCurationStageKind.RequiredConsult,
+                  summary: "Loaded audit pointer.",
+                  evidenceRefs: [`audit:${pointer.kind}`],
+                },
+                {
+                  stage: ContextPackCurationStageKind.GapReview,
+                  summary: "No gaps.",
+                  evidenceRefs: [],
+                },
+              ],
+            },
+          }),
+        },
+      },
+    );
+
+    equal(surface.outcome, ObserveOutcome.Readout);
+    if (surface.outcome !== ObserveOutcome.Readout) return;
+    equal(surface.context.status, ContextPackStatus.Incomplete);
+    equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+  });
+}
+
+test("observeAgentSurface marks broad project packs with unscoped foreign work-item provenance as incomplete", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: undefined,
+      scope: RunScope.Project,
+    }),
+    {
+      ...deps,
+      hierarchy: {
+        projects: [hierarchyProject({ projectId: "project-1" })],
+        initiatives: [],
+        workItems: [hierarchyWorkItem({ workItemId: "work-1", projectId: "project-1" })],
+      },
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-project-foreign-work",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "foreign-work",
+                kind: ContextPackItemKind.WorkItem,
+                title: "Foreign work",
+                summary: "A non-priority work item should not be replay-valid in project scope.",
+                sourceRef: "work:work-other",
+                required: true,
+                freshness: ContextPackFreshness.Current,
+                confidence: 0.9,
+                reasons: ["test"],
+                sourcePointers: [{ kind: ContextPackSourcePointerKind.WorkItem, workItemId: "work-other" }],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active project.",
+                evidenceRefs: ["project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "Loaded work context.",
+                evidenceRefs: ["work:work-other"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+});
+
+test("observeAgentSurface marks graph edges from active roots to wrong-scope roots as incomplete without scoped evidence", async () => {
+  const activeProjectNodeId = graphNodeId("org-1", GraphNodeKind.Project, "project-1");
+  const wrongProjectNodeId = graphNodeId("org-1", GraphNodeKind.Project, "project-2");
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: undefined,
+      scope: RunScope.Project,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-cross-project-edge",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "cross-project-edge",
+                kind: ContextPackItemKind.GraphNeighborhood,
+                title: "Cross-project edge",
+                summary: "An edge from the active project to a foreign project needs scoped evidence.",
+                sourceRef: "graph:cross-project",
+                required: true,
+                freshness: ContextPackFreshness.Live,
+                confidence: 0.9,
+                reasons: ["test"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.GraphEdge,
+                    edgeId: "edge-cross-project",
+                    fromNodeId: activeProjectNodeId,
+                    toNodeId: wrongProjectNodeId,
+                  },
+                ],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active project.",
+                evidenceRefs: ["project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GraphTraversal,
+                summary: "Loaded graph context.",
+                evidenceRefs: ["graph:cross-project"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "No required docs.",
+                evidenceRefs: [],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+});
+
+test("observeAgentSurface accepts active-hat department documentation scope", async () => {
+  const qaVerifier = buildHatDefinitions().find((h) => h.id === "qa_verifier")!;
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+      hat: qaVerifier,
+    }),
+    {
+      ...deps,
+      hierarchy: {
+        projects: [hierarchyProject({ projectId: "project-1", departmentId: DepartmentId.Engineering })],
+        initiatives: [],
+      },
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-hat-department-doc",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "doc-qa-runbook",
+                kind: ContextPackItemKind.Policy,
+                title: "QA runbook",
+                summary: "QA verification policy for active QA hats.",
+                sourceRef: "doc:qa-runbook",
+                required: true,
+                freshness: ContextPackFreshness.Current,
+                confidence: 1,
+                reasons: ["active hat department documentation scope"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.DocUnit,
+                    docUnitId: "qa-runbook",
+                    organizationId: "org-1",
+                    scopeKind: DocScopeKind.Department,
+                    scopeId: DepartmentId.QaAndVerification,
+                    contentRef: "doc:qa-runbook",
+                    contentHash: "hash-qa-runbook",
+                    sourceId: "source-main",
+                    version: 1,
+                  },
+                ],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active work.",
+                evidenceRefs: ["work:work-1", "project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "Loaded active hat docs.",
+                evidenceRefs: ["doc:qa-runbook"],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Current);
+  equal(surface.context.omittedItemsWithReason.length, 0);
+});
+
+test("observeAgentSurface marks packs with wrong-project memory provenance as incomplete", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-wrong-memory-provenance",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "memory-wrong-project",
+                kind: ContextPackItemKind.MemoryPointer,
+                title: "Wrong project memory",
+                summary: "This memory was created on another project.",
+                sourceRef: "memory:hindsight:wrong-project",
+                required: false,
+                freshness: ContextPackFreshness.Current,
+                confidence: 0.7,
+                reasons: ["test"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.HindsightMemory,
+                    providerId: "hindsight",
+                    memoryId: "wrong-project",
+                    creatingAgentId: "agent-1",
+                    creatingHatAssignmentId: request.snapshot.hatAssignmentId,
+                    creatingProjectId: "project-2",
+                    creatingWorkItemId: "work-1",
+                    advisory: true,
+                  },
+                ],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active work.",
+                evidenceRefs: ["work:work-1", "project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.MemoryRecall,
+                summary: "Loaded memory context.",
+                evidenceRefs: ["memory-wrong-project"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "No required docs.",
+                evidenceRefs: [],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Incomplete);
+  equal(surface.context.omittedItemsWithReason[0]?.reason, ContextPackOmissionReason.OutOfScope);
+  ok(surface.context.omittedItemsWithReason[0]?.message.includes("item provenance is outside active scope"));
+});
+
+test("observeAgentSurface accepts same-project prior-work memory recalled for the current wake-up", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      agentId: "agent-director-1",
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-prior-work-memory",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            agentId: request.snapshot.agentId,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-29T00:15:00.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "memory-prior-work",
+                kind: ContextPackItemKind.MemoryPointer,
+                title: "Prior work memory",
+                summary: "A useful lesson retained by the same agent on an earlier work item in this project.",
+                sourceRef: "memory:hindsight:prior-work",
+                required: false,
+                freshness: ContextPackFreshness.Current,
+                confidence: 0.7,
+                reasons: ["same-project prior-work recall"],
+                sourcePointers: [
+                  {
+                    kind: ContextPackSourcePointerKind.HindsightMemory,
+                    providerId: "hindsight",
+                    memoryId: "prior-work",
+                    creatingAgentId: "agent-director-1",
+                    creatingHatAssignmentId: "prior-hat-assignment",
+                    creatingProjectId: "project-1",
+                    creatingWorkItemId: "work-prior",
+                    recallAgentId: request.snapshot.agentId,
+                    recallHatAssignmentId: request.snapshot.hatAssignmentId,
+                    recallProjectId: request.snapshot.projectId,
+                    recallWorkItemId: request.snapshot.workItemId,
+                    advisory: true,
+                  },
+                ],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [
+              {
+                stage: ContextPackCurationStageKind.DeterministicScope,
+                summary: "Scoped to active work.",
+                evidenceRefs: ["work:work-1", "project:project-1"],
+              },
+              {
+                stage: ContextPackCurationStageKind.MemoryRecall,
+                summary: "Loaded memory context.",
+                evidenceRefs: ["memory-prior-work"],
+              },
+              {
+                stage: ContextPackCurationStageKind.RequiredConsult,
+                summary: "No required docs.",
+                evidenceRefs: [],
+              },
+              {
+                stage: ContextPackCurationStageKind.GapReview,
+                summary: "No gaps.",
+                evidenceRefs: [],
+              },
+            ],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, ContextPackStatus.Current);
+  equal(surface.context.omittedItemsWithReason.length, 0);
+});
+
+test("observeAgentSurface marks expired or stale context packs as stale", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-stale",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: request.observedAt,
+            freshnessDeadline: "2026-05-28T23:59:59.000Z",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "adr-old",
+                kind: ContextPackItemKind.ArchitectureDocument,
+                title: "Old ADR",
+                summary: "Outdated design decision.",
+                sourceRef: "doc:adr-old",
+                required: true,
+                freshness: "current",
+                confidence: 0.7,
+                reasons: ["required architecture context"],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, "stale");
+});
+
+test("observeAgentSurface marks invalid context pack timestamps as incomplete", async () => {
+  const surface = await observeAgentSurface(
+    agentSnapshot({
+      organizationId: "org-1",
+      projectId: "project-1",
+      workItemId: "work-1",
+      scope: RunScope.WorkItem,
+    }),
+    {
+      ...deps,
+      contextPackBuilder: {
+        build: async (request) => ({
+          pack: {
+            id: "ctx-invalid-time",
+            runId: request.snapshot.runId,
+            scope: request.snapshot.scope,
+            hatAssignmentId: request.snapshot.hatAssignmentId,
+            hatId: request.snapshot.hat.id,
+            organizationId: request.snapshot.organizationId,
+            projectId: request.snapshot.projectId,
+            workItemId: request.snapshot.workItemId,
+            generatedAt: "not-a-date",
+            freshnessDeadline: "also-not-a-date",
+            sourceGraphVersion: "graph-v7",
+            policyVersion: "policy-v3",
+            tokenBudget: 4096,
+            items: [
+              {
+                id: "doc-brd",
+                kind: ContextPackItemKind.BusinessDocument,
+                title: "BRD",
+                summary: "A timestamp-invalid pack must not be current.",
+                sourceRef: "doc:brd",
+                required: true,
+                freshness: ContextPackFreshness.Current,
+                confidence: 1,
+                reasons: ["test"],
+              },
+            ],
+            omittedItemsWithReason: [],
+            contradictions: [],
+            staleInputs: [],
+            lifecycleBlockers: [],
+            curationTrace: [],
+          },
+        }),
+      },
+    },
+  );
+
+  equal(surface.outcome, ObserveOutcome.Readout);
+  if (surface.outcome !== ObserveOutcome.Readout) return;
+  equal(surface.context.status, "incomplete");
 });
 
 test("observeAgentSurface renders current hat-allowed prompt-flow tasks as context-loading slots", async () => {

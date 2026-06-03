@@ -6,6 +6,7 @@ import {
 } from "../../application/src/ports.ts";
 import type {
   AuditEvent,
+  ContextPackInboxAnchor,
   DecisionRecord,
   DiscussionAnchor,
   IdempotencyRecord,
@@ -13,6 +14,7 @@ import type {
   SupervisorSignal,
   QualityGateEvaluation,
   WorkScheduleBlock,
+  ContextPackInboxAnchorStatusTransition,
 } from "../../domain/src/index.ts";
 import { DiscussionAnchorType, ScheduleBlockState } from "../../domain/src/index.ts";
 import {
@@ -39,6 +41,7 @@ export type InMemoryOrganizationStoreSnapshot<Result = unknown> = {
   readonly decisionRecords: readonly DecisionRecord[];
   readonly qualityGateEvaluations: readonly QualityGateEvaluation[];
   readonly workScheduleBlocks: readonly WorkScheduleBlock[];
+  readonly contextPackInboxAnchors: readonly ContextPackInboxAnchor[];
   readonly auditEvents: readonly AuditEvent[];
   readonly outboxEvents: readonly OutboxEvent[];
   readonly idempotencyRecords: ReadonlyMap<string, IdempotencyRecord<Result>>;
@@ -73,6 +76,7 @@ type MutableInMemoryOrganizationStoreSnapshot<Result> = {
   decisionRecords: DecisionRecord[];
   qualityGateEvaluations: QualityGateEvaluation[];
   workScheduleBlocks: WorkScheduleBlock[];
+  contextPackInboxAnchors: ContextPackInboxAnchor[];
   auditEvents: AuditEvent[];
   outboxEvents: OutboxEvent[];
   idempotencyRecords: Map<string, IdempotencyRecord<Result>>;
@@ -90,6 +94,7 @@ function createEmptySnapshot<Result>(): MutableInMemoryOrganizationStoreSnapshot
     decisionRecords: [],
     qualityGateEvaluations: [],
     workScheduleBlocks: [],
+    contextPackInboxAnchors: [],
     auditEvents: [],
     outboxEvents: [],
     idempotencyRecords: new Map<string, IdempotencyRecord<Result>>(),
@@ -151,6 +156,11 @@ function createCommandStateStore<Result>(
       applyDecisionRecordCreates(nextSnapshot, input.effects.decisionRecords);
       applyQualityGateEvaluationCreates(nextSnapshot, input.effects.qualityGateEvaluations);
       applyWorkScheduleBlockCreates(nextSnapshot, input.effects.workScheduleBlocks);
+      nextSnapshot.contextPackInboxAnchors.push(...(input.effects.contextPackInboxAnchors ?? []).map(cloneRecord));
+      applyContextPackInboxAnchorStatusTransitions(
+        nextSnapshot,
+        input.effects.contextPackInboxAnchorStatusTransitions ?? [],
+      );
       nextSnapshot.auditEvents.push(...input.effects.auditEvents.map(cloneRecord));
       nextSnapshot.outboxEvents.push(...input.effects.outboxEvents.map(cloneRecord));
       replaceSnapshot(snapshot, nextSnapshot);
@@ -177,6 +187,7 @@ function cloneMutableSnapshot<Result>(
     decisionRecords: snapshot.decisionRecords.map(cloneRecord),
     qualityGateEvaluations: snapshot.qualityGateEvaluations.map(cloneRecord),
     workScheduleBlocks: snapshot.workScheduleBlocks.map(cloneRecord),
+    contextPackInboxAnchors: snapshot.contextPackInboxAnchors.map(cloneRecord),
     auditEvents: snapshot.auditEvents.map(cloneRecord),
     outboxEvents: snapshot.outboxEvents.map(cloneRecord),
     idempotencyRecords: cloneIdempotencyRecords(snapshot.idempotencyRecords),
@@ -197,6 +208,7 @@ function replaceSnapshot<Result>(
   target.decisionRecords = source.decisionRecords;
   target.qualityGateEvaluations = source.qualityGateEvaluations;
   target.workScheduleBlocks = source.workScheduleBlocks;
+  target.contextPackInboxAnchors = source.contextPackInboxAnchors;
   target.auditEvents = source.auditEvents;
   target.outboxEvents = source.outboxEvents;
   target.idempotencyRecords = source.idempotencyRecords;
@@ -312,7 +324,67 @@ function findCommandEffectConflict(
     }
   }
 
+  for (const statusTransition of effects.contextPackInboxAnchorStatusTransitions ?? []) {
+    if (!hasContextPackInboxAnchorForStatusTransition(snapshot, effects.contextPackInboxAnchors ?? [], statusTransition)) {
+      return CommandOutcomeEffectConflictReason.ContextPackInboxAnchorMissing;
+    }
+  }
+
   return undefined;
+}
+
+function applyContextPackInboxAnchorStatusTransitions(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<unknown>,
+  statusTransitions: readonly ContextPackInboxAnchorStatusTransition[],
+): void {
+  for (const statusTransition of statusTransitions) {
+    const inboxAnchorIndex = snapshot.contextPackInboxAnchors.findIndex(
+      (inboxAnchor) => contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
+    );
+    const inboxAnchor = snapshot.contextPackInboxAnchors[inboxAnchorIndex];
+
+    if (inboxAnchor === undefined) {
+      continue;
+    }
+
+    snapshot.contextPackInboxAnchors[inboxAnchorIndex] = {
+      ...cloneRecord(inboxAnchor),
+      status: statusTransition.status,
+    };
+  }
+}
+
+function hasContextPackInboxAnchorForStatusTransition(
+  snapshot: MutableInMemoryOrganizationStoreSnapshot<unknown>,
+  createdInboxAnchors: readonly ContextPackInboxAnchor[],
+  statusTransition: ContextPackInboxAnchorStatusTransition,
+): boolean {
+  return snapshot.contextPackInboxAnchors.some(
+    (inboxAnchor) => contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
+  ) ||
+    createdInboxAnchors.some(
+      (inboxAnchor) => contextPackInboxAnchorMatchesStatusTransition(inboxAnchor, statusTransition),
+    );
+}
+
+function contextPackInboxAnchorMatchesStatusTransition(
+  inboxAnchor: ContextPackInboxAnchor,
+  statusTransition: ContextPackInboxAnchorStatusTransition,
+): boolean {
+  return inboxAnchor.inboxAnchorId === statusTransition.inboxAnchorId &&
+    inboxAnchor.organizationId === statusTransition.organizationId &&
+    inboxAnchor.projectId === statusTransition.projectId &&
+    optionalScopeValueMatchesStrict(inboxAnchor.teamId, statusTransition.teamId) &&
+    optionalScopeValueMatchesStrict(inboxAnchor.workItemId, statusTransition.workItemId) &&
+    inboxAnchor.targetHatAssignmentId === statusTransition.targetHatAssignmentId &&
+    optionalScopeValueMatchesStrict(inboxAnchor.targetAgentId, statusTransition.targetAgentId);
+}
+
+function optionalScopeValueMatchesStrict(
+  left: string | undefined,
+  right: string | undefined,
+): boolean {
+  return left === right;
 }
 
 function applyDecisionRecordCreates(

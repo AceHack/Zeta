@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS agentic_org_context_pack_inbox_anchors (
+  inbox_anchor_id STRING PRIMARY KEY,
+  organization_id STRING NOT NULL,
+  project_id STRING NOT NULL,
+  team_id STRING NULL,
+  work_item_id STRING NULL,
+  target_hat_assignment_id STRING NOT NULL,
+  target_agent_id STRING NULL,
+  title STRING NOT NULL,
+  summary STRING NOT NULL,
+  priority STRING NOT NULL,
+  status STRING NOT NULL,
+  delivered_at TIMESTAMPTZ NOT NULL,
+  snoozed_until TIMESTAMPTZ NULL,
+  source_ref STRING NULL,
+  trace_id STRING NULL,
+  updated_at TIMESTAMPTZ NOT NULL,
+  version INT8 NOT NULL,
+  CONSTRAINT agentic_org_context_pack_inbox_anchors_priority_check CHECK (priority IN ('normal', 'urgent')),
+  CONSTRAINT agentic_org_context_pack_inbox_anchors_status_check CHECK (status IN ('unread', 'read', 'snoozed', 'dismissed')),
+  INDEX context_pack_inbox_anchors_by_target_hat (organization_id, project_id, target_hat_assignment_id, target_agent_id, status, delivered_at DESC),
+  INDEX context_pack_inbox_anchors_by_work_item (organization_id, project_id, work_item_id, status, delivered_at DESC)
+);

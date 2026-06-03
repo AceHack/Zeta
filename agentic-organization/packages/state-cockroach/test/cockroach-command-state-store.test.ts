@@ -5,6 +5,11 @@ import {
   CommandOutcomeEffectConflictReason,
   CommandOutcomePersistenceStatus,
   CommandResultStatus,
+  ContextPackAdvisoryPromotionDecisionStatus,
+  ContextPackInboxAnchorPriority,
+  ContextPackInboxAnchorStatus,
+  ContextPackItemKind,
+  DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
   type CommandResult,
   type RecordCommandOutcomeInput,
 } from "../../application/src/index.ts";
@@ -24,12 +29,14 @@ import {
   SupervisorSignalToolType,
   WorkItemState,
   WorkItemType,
+  type ContextPackInboxAnchorStatusTransition,
 } from "../../domain/src/index.ts";
 import {
   CockroachCommandStateStoreStatement,
   createCockroachCommandStateStoreFactory,
   type CockroachSqlExecutor,
 } from "../src/cockroach-command-state-store.ts";
+import { CockroachDocConsultLedgerStoreStatement } from "../src/cockroach-doc-consult-ledger-store.ts";
 import { CockroachWorkAnchorStateStoreStatement } from "../src/cockroach-work-anchor-state-store.ts";
 
 describe("cockroach command state store", () => {
@@ -225,6 +232,199 @@ describe("cockroach command state store", () => {
     );
   });
 
+  test("records context-pack inbox anchor effects in the command outcome transaction", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({ includeContextPackInboxAnchorEffects: true }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.Committed);
+    const insertInboxAnchor = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.InsertContextPackInboxAnchor,
+    );
+
+    equal(insertInboxAnchor?.sql.includes("INSERT INTO agentic_org_context_pack_inbox_anchors"), true);
+    deepEqual(insertInboxAnchor?.parameters, [
+      "context-pack-inbox-anchor-001",
+      "org-lfg",
+      "project-agentic-org",
+      "team-runtime",
+      "work-outbox-001",
+      "hat-assignment-director-001",
+      "agent-director-001",
+      "Director context pack is stale",
+      "Wake the director hat because the blocker briefing needs refreshed context.",
+      ContextPackInboxAnchorPriority.Urgent,
+      ContextPackInboxAnchorStatus.Unread,
+      "2026-05-25T20:12:00.000Z",
+      "context_pack:pack-director-stale",
+      "trace-001",
+      "2026-05-25T20:12:00.000Z",
+      1,
+    ]);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [
+        CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+        CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
+        CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertContextPackInboxAnchor,
+        CockroachCommandStateStoreStatement.InsertAuditEvent,
+        CockroachCommandStateStoreStatement.InsertOutboxEvent,
+      ],
+    );
+  });
+
+  test("records context-pack advisory-promotion decision effects in the command outcome transaction", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({
+      includeContextPackAdvisoryPromotionDecisionEffects: true,
+    }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.Committed);
+    const insertDecision = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.UpsertContextPackAdvisoryPromotionDecision,
+    );
+
+    equal(insertDecision?.sql.includes("UPSERT INTO agentic_org_context_pack_advisory_promotion_decisions"), true);
+    deepEqual(insertDecision?.parameters, [
+      "context-pack-advisory-promotion-decision-001",
+      "org-lfg:engineering_director:99:project-agentic-org:team-runtime:work-outbox-001:management_blocker:" +
+        "synthesis_gap_hypothesis:summary-hash-owner-gap",
+      "org-lfg",
+      ContextPackAdvisoryPromotionDecisionStatus.Approved,
+      DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
+      "ownership gap blocks execution",
+      ContextPackItemKind.SynthesisGapHypothesis,
+      "summary-hash-owner-gap",
+      JSON.stringify(["context_requirement:owner", "doc:billing-brd"]),
+      JSON.stringify(["doc_unit:billing-brd:1"]),
+      JSON.stringify(["doc:billing-brd", "context_requirement:owner"]),
+      "engineering_director",
+      "99",
+      "project-agentic-org",
+      "team-runtime",
+      "work-outbox-001",
+      "management_blocker",
+      "engineering_director",
+      "hat-assignment-dev-001",
+      "agent-developer-001",
+      "2026-05-25T20:12:00.000Z",
+      "2026-05-25T20:12:00.000Z",
+      "trace-001",
+      "corr-001",
+      "cause-001",
+    ]);
+  });
+
+  test("records context-pack inbox anchor status transitions in the command outcome transaction", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({
+      includeContextPackInboxAnchorStatusTransitionEffects: true,
+    }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.Committed);
+    const updateInboxAnchorStatus = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.UpdateContextPackInboxAnchorStatus,
+    );
+
+    equal(updateInboxAnchorStatus?.sql.includes("UPDATE agentic_org_context_pack_inbox_anchors"), true);
+    equal(updateInboxAnchorStatus?.sql.includes("RETURNING inbox_anchor_id"), true);
+    deepEqual(updateInboxAnchorStatus?.parameters, [
+      "context-pack-inbox-anchor-001",
+      "org-lfg",
+      "project-agentic-org",
+      "team-runtime",
+      "work-outbox-001",
+      "hat-assignment-director-001",
+      "agent-director-001",
+      ContextPackInboxAnchorStatus.Dismissed,
+      "2026-05-25T20:13:00.000Z",
+      null,
+    ]);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [
+        CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+        CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
+        CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.UpdateContextPackInboxAnchorStatus,
+        CockroachCommandStateStoreStatement.InsertAuditEvent,
+        CockroachCommandStateStoreStatement.InsertOutboxEvent,
+      ],
+    );
+  });
+
+  test("records context-pack inbox anchor snooze transitions with their wake time", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({
+      contextPackInboxAnchorStatusTransition: createContextPackInboxAnchorStatusTransition({
+        status: ContextPackInboxAnchorStatus.Snoozed,
+        snoozedUntil: "2026-05-26T13:00:00.000Z",
+      }),
+    }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.Committed);
+    const updateInboxAnchorStatus = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachCommandStateStoreStatement.UpdateContextPackInboxAnchorStatus,
+    );
+
+    equal(updateInboxAnchorStatus?.sql.includes("snoozed_until = $10"), true);
+    deepEqual(updateInboxAnchorStatus?.parameters, [
+      "context-pack-inbox-anchor-001",
+      "org-lfg",
+      "project-agentic-org",
+      "team-runtime",
+      "work-outbox-001",
+      "hat-assignment-director-001",
+      "agent-director-001",
+      ContextPackInboxAnchorStatus.Snoozed,
+      "2026-05-25T20:13:00.000Z",
+      "2026-05-26T13:00:00.000Z",
+    ]);
+  });
+
+  test("returns an effect conflict when context-pack inbox anchor status transition matches no anchor", async () => {
+    const executor = createRecordingExecutor({
+      failContextPackInboxAnchorStatusTransition: true,
+    });
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({
+      includeContextPackInboxAnchorStatusTransitionEffects: true,
+    }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.EffectConflict);
+    if (result.status !== CommandOutcomePersistenceStatus.EffectConflict) {
+      throw new Error("expected effect conflict");
+    }
+    equal(result.reason, CommandOutcomeEffectConflictReason.ContextPackInboxAnchorMissing);
+  });
+
   test("records discussion anchor effects with full traceability", async () => {
     const executor = createRecordingExecutor();
     const store = createCockroachCommandStateStoreFactory<CommandResult>({
@@ -378,6 +578,80 @@ describe("cockroach command state store", () => {
     ]);
   });
 
+  test("stamps context-pack doc consult outcomes in the command outcome transaction", async () => {
+    const executor = createRecordingExecutor({
+      stampedDocConsultRows: [{ doc_consult_id: "context_pack_doc_consult:one" }],
+    });
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({ includeDocConsultOutcomeStamp: true }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.Committed);
+    const stampOutcome = executor.transactionStatements.find(
+      (statement) => statement.name === CockroachDocConsultLedgerStoreStatement.StampOutcome,
+    );
+
+    equal(stampOutcome?.sql.includes("INSERT INTO agentic_org_doc_consult_outcomes"), true);
+    equal(stampOutcome?.sql.includes("FROM agentic_org_doc_consult_ledger"), true);
+    equal(stampOutcome?.sql.includes("consulted_at <= $4"), true);
+    equal(stampOutcome?.sql.includes("agent_id = $5"), true);
+    equal(stampOutcome?.sql.includes("hat_assignment_id = $6"), true);
+    deepEqual(stampOutcome?.parameters, [
+      QualityGateOutcome.ChangesRequested,
+      "quality_gate:quality-gate-evaluation-002",
+      "org-lfg",
+      "2026-05-25T20:12:00.000Z",
+      "agent-developer-001",
+      "hat-assignment-dev-001",
+      "project-agentic-org",
+      "work-outbox-001",
+      "team-runtime",
+    ]);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [
+        CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+        CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
+        CockroachDocConsultLedgerStoreStatement.StampOutcome,
+        CockroachCommandStateStoreStatement.FindOverlappingWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertWorkScheduleBlock,
+        CockroachCommandStateStoreStatement.InsertAuditEvent,
+        CockroachCommandStateStoreStatement.InsertOutboxEvent,
+      ],
+    );
+  });
+
+  test("returns an effect conflict when a doc consult outcome stamp matches no consulted context", async () => {
+    const executor = createRecordingExecutor();
+    const store = createCockroachCommandStateStoreFactory<CommandResult>({
+      executor,
+    }).createCommandStateStore();
+
+    const result = await store.recordCommandOutcome(createCommandOutcome({ includeDocConsultOutcomeStamp: true }));
+
+    equal(result.status, CommandOutcomePersistenceStatus.EffectConflict);
+    if (result.status !== CommandOutcomePersistenceStatus.EffectConflict) {
+      throw new Error("expected effect conflict");
+    }
+    equal(result.reason, CommandOutcomeEffectConflictReason.DocConsultOutcomeStampMissing);
+    deepEqual(
+      executor.transactionStatements.map((statement) => statement.name),
+      [
+        CockroachCommandStateStoreStatement.ClaimIdempotencyRecord,
+        CockroachCommandStateStoreStatement.InsertSupervisorSignal,
+        CockroachCommandStateStoreStatement.InsertDiscussionAnchor,
+        CockroachCommandStateStoreStatement.InsertDecisionRecord,
+        CockroachCommandStateStoreStatement.InsertQualityGateEvaluation,
+        CockroachDocConsultLedgerStoreStatement.StampOutcome,
+      ],
+    );
+  });
+
   test("rejects overlapping work schedule blocks before inserting later effects", async () => {
     const executor = createRecordingExecutor({
       hasOverlappingScheduleBlock: true,
@@ -438,23 +712,30 @@ describe("cockroach command state store", () => {
 });
 
 type RecordingCockroachSqlExecutor = CockroachSqlExecutor & {
-  statements: { name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement; sql: string; parameters: readonly unknown[] }[];
-  transactionStatements: { name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement; sql: string; parameters: readonly unknown[] }[];
+  statements: RecordingCockroachSqlStatement[];
+  transactionStatements: RecordingCockroachSqlStatement[];
+};
+
+type RecordingCockroachSqlStatement = {
+  name:
+    | CockroachCommandStateStoreStatement
+    | CockroachDocConsultLedgerStoreStatement
+    | CockroachWorkAnchorStateStoreStatement;
+  sql: string;
+  parameters: readonly unknown[];
 };
 
 function createRecordingExecutor(
   input: {
     claimStatus?: CommandOutcomePersistenceStatus;
+    failContextPackInboxAnchorStatusTransition?: boolean;
     failWorkAnchorProjectInsert?: boolean;
     hasOverlappingScheduleBlock?: boolean;
+    stampedDocConsultRows?: readonly Record<string, unknown>[];
   } = {},
 ): RecordingCockroachSqlExecutor {
-  const statements: { name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement; sql: string; parameters: readonly unknown[] }[] = [];
-  const transactionStatements: {
-    name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement;
-    sql: string;
-    parameters: readonly unknown[];
-  }[] = [];
+  const statements: RecordingCockroachSqlStatement[] = [];
+  const transactionStatements: RecordingCockroachSqlStatement[] = [];
 
   return {
     statements,
@@ -468,7 +749,10 @@ function createRecordingExecutor(
     executeTransaction: async (operation) =>
       await operation({
         execute: async <Row = Record<string, unknown>>(statement: {
-          name: CockroachCommandStateStoreStatement | CockroachWorkAnchorStateStoreStatement;
+          name:
+            | CockroachCommandStateStoreStatement
+            | CockroachDocConsultLedgerStoreStatement
+            | CockroachWorkAnchorStateStoreStatement;
           sql: string;
           parameters: readonly unknown[];
         }) => {
@@ -498,6 +782,12 @@ function createRecordingExecutor(
                 input.hasOverlappingScheduleBlock === true
                   ? ([{ work_schedule_block_id: "work-schedule-block-existing-001" }] as readonly unknown[] as readonly Row[])
                   : [],
+            };
+          }
+
+          if (statement.name === CockroachDocConsultLedgerStoreStatement.StampOutcome) {
+            return {
+              rows: (input.stampedDocConsultRows ?? []) as readonly unknown[] as readonly Row[],
             };
           }
 
@@ -553,6 +843,15 @@ function createRecordingExecutor(
             };
           }
 
+          if (statement.name === CockroachCommandStateStoreStatement.UpdateContextPackInboxAnchorStatus) {
+            return {
+              rows:
+                input.failContextPackInboxAnchorStatusTransition === true
+                  ? []
+                  : ([{ inbox_anchor_id: statement.parameters[0] }] as readonly unknown[] as readonly Row[]),
+            };
+          }
+
           return {
             rows: [],
           };
@@ -578,8 +877,34 @@ function createUnsupportedDiscussionAnchorOutcome(): RecordCommandOutcomeInput<C
   };
 }
 
+function createContextPackInboxAnchorStatusTransition(
+  overrides: Partial<ContextPackInboxAnchorStatusTransition> = {},
+): ContextPackInboxAnchorStatusTransition {
+  return {
+    inboxAnchorId: "context-pack-inbox-anchor-001",
+    organizationId: "org-lfg",
+    projectId: "project-agentic-org",
+    teamId: "team-runtime",
+    workItemId: "work-outbox-001",
+    targetHatAssignmentId: "hat-assignment-director-001",
+    targetAgentId: "agent-director-001",
+    status: ContextPackInboxAnchorStatus.Dismissed,
+    changedAt: "2026-05-25T20:13:00.000Z",
+    traceId: "trace-001",
+    ...overrides,
+  };
+}
+
 function createCommandOutcome(
-  input: { includeAuditPolicyEvidence?: boolean; includeWorkAnchorEffects?: boolean } = {},
+  input: {
+    includeContextPackAdvisoryPromotionDecisionEffects?: boolean;
+    includeAuditPolicyEvidence?: boolean;
+    includeContextPackInboxAnchorEffects?: boolean;
+    includeContextPackInboxAnchorStatusTransitionEffects?: boolean;
+    contextPackInboxAnchorStatusTransition?: ContextPackInboxAnchorStatusTransition;
+    includeDocConsultOutcomeStamp?: boolean;
+    includeWorkAnchorEffects?: boolean;
+  } = {},
 ): RecordCommandOutcomeInput<CommandResult> {
   const includeAuditPolicyEvidence = input.includeAuditPolicyEvidence ?? true;
 
@@ -732,6 +1057,96 @@ function createCommandOutcome(
           },
         },
       ],
+      ...(input.includeContextPackInboxAnchorEffects === true
+        ? {
+            contextPackInboxAnchors: [
+              {
+                inboxAnchorId: "context-pack-inbox-anchor-001",
+                organizationId: "org-lfg",
+                projectId: "project-agentic-org",
+                teamId: "team-runtime",
+                workItemId: "work-outbox-001",
+                targetHatAssignmentId: "hat-assignment-director-001",
+                targetAgentId: "agent-director-001",
+                title: "Director context pack is stale",
+                summary: "Wake the director hat because the blocker briefing needs refreshed context.",
+                priority: ContextPackInboxAnchorPriority.Urgent,
+                status: ContextPackInboxAnchorStatus.Unread,
+                deliveredAt: "2026-05-25T20:12:00.000Z",
+                sourceRef: "context_pack:pack-director-stale",
+                traceId: "trace-001",
+              },
+            ],
+          }
+        : {}),
+      ...(input.includeContextPackAdvisoryPromotionDecisionEffects === true
+        ? {
+            contextPackAdvisoryPromotionDecisions: [
+              {
+                decisionId: "context-pack-advisory-promotion-decision-001",
+                decisionKey: "org-lfg:engineering_director:99:project-agentic-org:team-runtime:work-outbox-001:" +
+                  "management_blocker:synthesis_gap_hypothesis:summary-hash-owner-gap",
+                organizationId: "org-lfg",
+                status: ContextPackAdvisoryPromotionDecisionStatus.Approved,
+                policyVersion: DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
+                lifecycleBlocker: "ownership gap blocks execution",
+                fingerprint: {
+                  itemKind: ContextPackItemKind.SynthesisGapHypothesis,
+                  summaryHash: "summary-hash-owner-gap",
+                  citationRefs: ["context_requirement:owner", "doc:billing-brd"],
+                  sourcePointerKeys: ["doc_unit:billing-brd:1"],
+                },
+                evidenceRefs: ["doc:billing-brd", "context_requirement:owner"],
+                hatId: "engineering_director",
+                hatAssignmentId: "99",
+                projectId: "project-agentic-org",
+                teamId: "team-runtime",
+                workItemId: "work-outbox-001",
+                curationProfileId: "management_blocker",
+                audit: {
+                  decidedByHatId: "engineering_director",
+                  decidedByHatAssignmentId: "hat-assignment-dev-001",
+                  decidedByAgentId: "agent-developer-001",
+                  decidedAt: "2026-05-25T20:12:00.000Z",
+                  traceId: "trace-001",
+                  correlationId: "corr-001",
+                  causationId: "cause-001",
+                },
+              },
+            ],
+          }
+        : {}),
+      ...(input.includeContextPackInboxAnchorStatusTransitionEffects === true
+        ? {
+            contextPackInboxAnchorStatusTransitions: [
+              createContextPackInboxAnchorStatusTransition(),
+            ],
+          }
+        : input.contextPackInboxAnchorStatusTransition === undefined
+        ? {}
+        : {
+            contextPackInboxAnchorStatusTransitions: [
+              input.contextPackInboxAnchorStatusTransition,
+            ],
+          }
+      ),
+      ...(input.includeDocConsultOutcomeStamp === true
+        ? {
+            docConsultOutcomeStamps: [
+              {
+                organizationId: "org-lfg",
+                agentId: "agent-developer-001",
+                hatAssignmentId: "hat-assignment-dev-001",
+                projectId: "project-agentic-org",
+                teamId: "team-runtime",
+                workItemId: "work-outbox-001",
+                outcome: QualityGateOutcome.ChangesRequested,
+                outcomeRef: "quality_gate:quality-gate-evaluation-002",
+                outcomeRecordedAt: "2026-05-25T20:12:00.000Z",
+              },
+            ],
+          }
+        : {}),
       auditEvents: [
         {
           auditEventId: "audit-001",

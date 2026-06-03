@@ -104,6 +104,45 @@ export const DefaultScheduleAuthorityCommandRules: readonly ScheduleAuthorityCom
     allowedBlockTypes: [ScheduleBlockType.Meeting, ScheduleBlockType.PrioritizedWork, ScheduleBlockType.Reporting],
     scheduleRequired: true,
   },
+  {
+    commandType: CommandType.AuthorContextPackInboxAnchor,
+    allowedBlockTypes: [
+      ScheduleBlockType.FreeTime,
+      ScheduleBlockType.Meeting,
+      ScheduleBlockType.PrioritizedWork,
+      ScheduleBlockType.PromptFlowExecution,
+      ScheduleBlockType.Reflection,
+      ScheduleBlockType.Reporting,
+      ScheduleBlockType.Review,
+    ],
+    scheduleRequired: true,
+  },
+  {
+    commandType: CommandType.UpdateContextPackInboxAnchorStatus,
+    allowedBlockTypes: [
+      ScheduleBlockType.FreeTime,
+      ScheduleBlockType.Meeting,
+      ScheduleBlockType.PrioritizedWork,
+      ScheduleBlockType.PromptFlowExecution,
+      ScheduleBlockType.Reflection,
+      ScheduleBlockType.Reporting,
+      ScheduleBlockType.Review,
+    ],
+    scheduleRequired: true,
+  },
+  {
+    commandType: CommandType.AuthorContextPackAdvisoryPromotionDecision,
+    allowedBlockTypes: [
+      ScheduleBlockType.FreeTime,
+      ScheduleBlockType.Meeting,
+      ScheduleBlockType.PrioritizedWork,
+      ScheduleBlockType.PromptFlowExecution,
+      ScheduleBlockType.Reflection,
+      ScheduleBlockType.Reporting,
+      ScheduleBlockType.Review,
+    ],
+    scheduleRequired: true,
+  },
 ];
 
 async function authorizeCommandSchedule(

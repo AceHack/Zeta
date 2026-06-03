@@ -80,6 +80,34 @@ the local single-node deployment.** Everything else (observe/compose/decide, the
 state model, the governance gate) is the agentic-organization keystone, which this ADR now cites
 rather than re-specifies.
 
+### Context packs are the read-side companion to the 16-slot action grammar
+
+The 16-slot action grammar constrains what an agent may do next, but it does not
+by itself solve the harder autonomy problem: giving the active hat the right
+context for the decision. The agentic-organization observe surface therefore
+pairs `Menu16` with a hat-scoped `ContextReadout` assembled by
+`ContextPackBuilderPort` (`agentic-organization/packages/application/src/context-pack-builder.ts`;
+see `agentic-organization/docs/OBSERVE_CONTEXT_PACKS.md`).
+
+The context pack follows the same keystone rules as the menu:
+
+- deterministic state narrows the world before model synthesis;
+- source pointers and curation stages make the pack replayable;
+- omissions are visible instead of silently becoming model guesses;
+- lifecycle anchors are first-class: discussions, decisions, quality-gate
+  evaluations, schedule blocks, and supervisor signals load through a generic
+  `ContextPackLifecycleAnchorPort` before graph traversal and before ephemeral
+  synthesis;
+- lifecycle anchors become graph root seeds, so a director resolving a blocker
+  can traverse from the blocker to the actual decisions, meetings, quality
+  gates, schedules, supervisor signals, documents, traces, and owners around it;
+- the ephemeral composer may summarize, rank, and ask questions only against
+  deterministic evidence already admitted into the pack.
+
+This keeps the observe-act loop local, legal, and context-rich: the selector
+chooses from a bounded action surface while the context pack explains what the
+hat should pay attention to and why.
+
 ### Two workflow registers: corporate (agentic-organization) vs sovereign (Agora = DIO on DID) (operator 2026-05-30)
 
 > *"agentic-org FYI is the corporate workflow. Agora is the sovereign workflow/society — the DIO

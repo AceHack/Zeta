@@ -10,12 +10,20 @@ import {
   buildHatDefinitions,
   compilePromptFlowTasks,
   createTelemetryScopedMetricAgents,
+  decideContextPackRefresh,
   lintPromptFlowDefinition,
+  listContextPackAttentionLaneDescriptors,
+  listContextPackCurationProfileDescriptors,
+  listTenantContextPackCompletenessRequirementSetDescriptors,
+  listTenantContextPackSynthesisRequirementSetDescriptors,
+  previewTenantContextPackCompletenessPolicy,
+  previewTenantContextPackSynthesisRequirementPolicy,
   rejectAct,
   type DeterministicRule,
   observeAgentSurface,
   ObserveCommandType,
   ObserveOutcome,
+  previewTenantContextPackCurationPolicy,
   PromptFlowGateKind,
   PromptFlowRunState,
   RuntimeLeaseState,
@@ -30,6 +38,36 @@ import {
   type AgentObserveSnapshot,
   type ChatCompletionPort,
   type ChatCompletionResult,
+  ContextPackAdvisoryPromotionDecisionStatus,
+  type ContextPackAdvisoryPromotionDecision,
+  type ContextPackAdvisoryPromotionDecisionReadPort,
+  type ContextPackAdvisoryPromotionFingerprint,
+  type ContextPackAdvisoryPromotionPolicyRequest,
+  type ContextPackBuilderPort,
+  type ContextPackBuildRequest,
+  type ContextPackCompletenessPolicyRequest,
+  type ContextPackCompletenessPolicyResult,
+  type ContextPackCurationPlan,
+  type ContextPackCurationIntent,
+  ContextPackInboxAnchorStatus,
+  ContextPackInboxWorkflowActionKind,
+  type ContextPackInboxWorkflowView,
+  type ContextPackInboxWorkflowActionKind as ContextPackInboxWorkflowActionKindType,
+  type ContextPackReadinessPolicyPort,
+  type ContextPackSynthesisRequirement,
+  type ContextPackSynthesisRequirementPolicyRequest,
+  type ContextPackSnapshotRecord,
+  type ContextPackSnapshotStorePort,
+  type ContextPackRefreshDecision,
+  ContextPackAttentionLaneRefKind,
+  type ContextPackAttentionLaneRef,
+  type ContextPackAttentionLaneKind,
+  type ContextPackItem,
+  ContextPackItemKind,
+  ContextPackSourcePointerKind,
+  type ContextPackSourcePointer,
+  type ContextReadout,
+  contextPackAdvisoryPromotionFingerprint,
   type HierarchyInitiative,
   type HierarchyMission,
   type HierarchyMissionMilestone,
@@ -60,7 +98,26 @@ import {
   type WorkMarketScope,
   workMarketReadoutForHat,
 } from "../../../packages/application/src/index.ts";
-import { CommandType, HatLevel, ToolBundle, type ToolBundle as ToolBundleName, type WorkScheduleBlock } from "../../../packages/domain/src/index.ts";
+import {
+  CommandType,
+  HatLevel,
+  isTenantContextPackCurationInstruction,
+  isTenantContextPackCurationLaneKind,
+  isTenantContextPackCurationProfileId,
+  TenantContextPackCompletenessRequirementSetId,
+  TenantContextPackSynthesisRequirementSetId,
+  ToolBundle,
+  type TenantContextPackCompletenessPolicy,
+  type TenantContextPackCompletenessRequirementSetId as TenantContextPackCompletenessRequirementSetIdType,
+  type TenantContextPackCurationInstruction,
+  type TenantContextPackCurationLaneKind,
+  type TenantContextPackCurationPolicy,
+  type TenantContextPackCurationProfileId,
+  type TenantContextPackSynthesisRequirementPolicy,
+  type TenantContextPackSynthesisRequirementSetId as TenantContextPackSynthesisRequirementSetIdType,
+  type ToolBundle as ToolBundleName,
+  type WorkScheduleBlock,
+} from "../../../packages/domain/src/index.ts";
 import { createLgtmTelemetryQueryPort } from "../../../packages/observability/src/index.ts";
 import { createOllamaChatPort } from "../../workers/src/adapters/ollama-chat-port.ts";
 
@@ -81,6 +138,13 @@ export type ParsedAgentCliArgs = {
   evidence: boolean;
   promptFlowPage?: number;
   selectIndex?: number;
+  inboxAnchorId?: string;
+  inboxAction?: ContextPackInboxWorkflowActionKindType;
+  inboxSnoozedUntil?: string;
+  contextCurationPreview?: AgentCliTenantContextPackCurationPreviewArgs;
+  contextCompletenessPreview?: AgentCliTenantContextPackCompletenessPreviewArgs;
+  contextSynthesisRequirementPreview?: AgentCliTenantContextPackSynthesisRequirementPreviewArgs;
+  contextAdvisoryPromotionDecision?: AgentCliContextPackAdvisoryPromotionDecisionArgs;
 };
 
 export type ParseAgentCliArgsResult =
@@ -98,6 +162,9 @@ export type AgentCliScreen = {
   phase: RunLifecyclePhase;
   hatId: string;
   metrics: ScopedReadout;
+  context?: ContextReadout;
+  advisoryPromotionDecisions?: readonly ContextPackAdvisoryPromotionDecision[];
+  inboxWorkflow?: ContextPackInboxWorkflowView;
   promptFlows?: PromptFlowReadout;
   page?: Menu16["page"];
   hierarchy?: HierarchyReadout;
@@ -117,8 +184,120 @@ export type AgentCliCycleInput = ActDependencies & {
   scheduleBlocks?: readonly WorkScheduleBlock[];
   deterministicRules?: readonly DeterministicRule[];
   availableSecretScopes?: readonly string[];
+  contextPackBuilder?: ContextPackBuilderPort;
+  contextPackReadinessPolicy?: ContextPackReadinessPolicyPort;
+  enforceContextReadiness?: boolean;
+  loadLatestContextPackSnapshot?: ContextPackSnapshotStorePort["latestForScope"];
+  recordContextPackSnapshot?: ContextPackSnapshotStorePort["record"];
+  loadContextPackInboxWorkflow?: (lookup: ContextPackInboxWorkflowLookup) => Promise<ContextPackInboxWorkflowView>;
+  loadContextPackAdvisoryPromotionDecisions?: ContextPackAdvisoryPromotionDecisionReadPort["listForPromotion"];
   selectSlot?: MenuSelector;
 };
+
+export type ContextPackInboxWorkflowLookup = {
+  organizationId: string;
+  projectId: string;
+  teamId?: string | undefined;
+  targetHatAssignmentId: string;
+  targetAgentId?: string | undefined;
+  observedAt: string;
+};
+
+const AgentCliInboxWorkflowFlag = {
+  Action: "inbox-action",
+  Anchor: "inbox-anchor",
+  SnoozedUntil: "inbox-snoozed-until",
+} as const;
+
+const AgentCliInboxWorkflowActionErrorMessage = {
+  ActionMissing: "--inbox-action is required when --inbox-anchor is provided",
+  ActionUnavailable: "requested inbox action is not available for the workflow item",
+  AnchorMissing: "--inbox-anchor is required when --inbox-action is provided",
+  LoaderMissing: "inbox workflow actions require a context-pack inbox workflow loader",
+  SnoozedUntilRequired: "--inbox-snoozed-until is required for snooze",
+  WorkflowItemMissing: "requested inbox anchor is not visible in the workflow view",
+} as const;
+
+type AgentCliInboxWorkflowActionErrorMessage =
+  (typeof AgentCliInboxWorkflowActionErrorMessage)[keyof typeof AgentCliInboxWorkflowActionErrorMessage];
+
+const AGENT_CLI_INBOX_ACTION_SLOT_INDEX = -1;
+const AGENT_CLI_INBOX_ACTION_DIRECTION = "inbox.action";
+const AGENT_CLI_ADVISORY_PROMOTION_DECISION_SLOT_INDEX = -2;
+const AGENT_CLI_ADVISORY_PROMOTION_DECISION_DIRECTION = "context.advisory_promotion_decision";
+const AGENT_CLI_ADVISORY_PROMOTION_UNKNOWN_CURATION_PROFILE = "unknown";
+const AGENT_CLI_CONTEXT_PACK_ADVISORY_PROMOTION_STATUS_QUERY =
+  "observe-act advisory-promotion candidate status";
+const AGENT_CLI_TENANT_CONTEXT_PACK_LANE_PRIORITY_SEPARATOR = "=";
+const AGENT_CLI_TENANT_CONTEXT_PACK_COMPLETENESS_PREVIEW_QUERY = "observe-act tenant completeness authoring preview";
+const AGENT_CLI_TENANT_CONTEXT_PACK_SYNTHESIS_PREVIEW_ANY_APPLIES_TO = "any";
+
+const AgentCliTenantContextPackCurationFlag = {
+  BlockInheritedInstructions: "context-block-inherited-instructions",
+  DeterministicInstruction: "context-deterministic-instruction",
+  LanePriority: "context-lane-priority",
+  Preview: "context-curation-preview",
+  Profile: "context-curation-profile",
+  RequiredLane: "context-required-lane",
+} as const;
+
+type AgentCliTenantContextPackCurationPreviewArgs = {
+  policy: TenantContextPackCurationPolicy;
+};
+
+const AgentCliTenantContextPackCompletenessFlag = {
+  Preview: "context-completeness-preview",
+  RequirementSet: "context-completeness-set",
+} as const;
+
+type AgentCliTenantContextPackCompletenessPreviewArgs = {
+  policy: TenantContextPackCompletenessPolicy;
+};
+
+const AgentCliTenantContextPackSynthesisRequirementFlag = {
+  Preview: "context-synthesis-preview",
+  RequirementSet: "context-synthesis-set",
+} as const;
+
+type AgentCliTenantContextPackSynthesisRequirementPreviewArgs = {
+  policy: TenantContextPackSynthesisRequirementPolicy;
+};
+
+const AGENT_CLI_TENANT_CONTEXT_PACK_EMPTY_CURATION_PLAN: ContextPackCurationPlan = {
+  lanes: [],
+  deterministicInstructions: [],
+};
+
+const AgentCliContextPackAdvisoryPromotionFlag = {
+  Blocker: "context-advisory-promotion-blocker",
+  Item: "context-advisory-promotion-item",
+  Status: "context-advisory-promotion-status",
+} as const;
+
+const AgentCliContextPackAdvisoryPromotionErrorMessage = {
+  FlagsIncomplete: "--context-advisory-promotion-item, --context-advisory-promotion-status, and --context-advisory-promotion-blocker are required together",
+  ItemMissing: "requested advisory-promotion item is not visible in the current context pack",
+  ItemNotPromotable: "requested advisory-promotion item is not a synthesis gap hypothesis",
+  StatusUnknown: "unknown context advisory-promotion status",
+} as const;
+
+type AgentCliContextPackAdvisoryPromotionErrorMessage =
+  (typeof AgentCliContextPackAdvisoryPromotionErrorMessage)[keyof typeof AgentCliContextPackAdvisoryPromotionErrorMessage];
+
+type ContextPackAdvisoryPromotionDecisionStatusType =
+  (typeof ContextPackAdvisoryPromotionDecisionStatus)[keyof typeof ContextPackAdvisoryPromotionDecisionStatus];
+
+type AgentCliContextPackAdvisoryPromotionDecisionArgs = {
+  itemId: string;
+  status: ContextPackAdvisoryPromotionDecisionStatusType;
+  lifecycleBlocker: string;
+};
+
+const AgentCliContextPackAdvisoryPromotionCandidateStatus = {
+  Approved: ContextPackAdvisoryPromotionDecisionStatus.Approved,
+  NotApproved: "not_approved",
+  Unknown: "unknown",
+} as const;
 
 export type CreateAgentCliMetricAgentsFromEnvInput = {
   env: Readonly<Record<string, string | undefined>>;
@@ -168,7 +347,15 @@ export type MenuSelectionResult = {
 
 export type MenuSelectorOutput = number | MenuSelectionResult;
 
-export type MenuSelector = (menu: Menu16) => Promise<MenuSelectorOutput> | MenuSelectorOutput;
+export type MenuSelectionSurface = {
+  context?: ContextReadout | undefined;
+  inboxWorkflow?: ContextPackInboxWorkflowView | undefined;
+  metrics?: ScopedReadout | undefined;
+  promptFlows?: PromptFlowReadout | undefined;
+  hierarchy?: HierarchyReadout | undefined;
+};
+
+export type MenuSelector = (menu: Menu16, surface?: MenuSelectionSurface | undefined) => Promise<MenuSelectorOutput> | MenuSelectorOutput;
 
 export type CreateModelBackedMenuSelectorInput = {
   chat: ChatCompletionPort;
@@ -184,6 +371,19 @@ export type AgentCliCycleResult = {
   exitCode: number;
   actionResult?: ActResult;
   evidence?: AgentCliCycleEvidence;
+  failureEvidence?: AgentCliCycleFailureEvidence;
+};
+
+export const AgentCliCycleFailureKind = {
+  ContextRefreshLookupFailed: "context_refresh_lookup_failed",
+} as const;
+
+export type AgentCliCycleFailureKind =
+  (typeof AgentCliCycleFailureKind)[keyof typeof AgentCliCycleFailureKind];
+
+export type AgentCliCycleFailureEvidence = {
+  kind: AgentCliCycleFailureKind;
+  message: string;
 };
 
 export type AgentCliCycleEvidence = {
@@ -202,6 +402,24 @@ export type AgentCliCycleEvidence = {
   selectedPromptFlowTaskId?: string | undefined;
   selectedPromptFlowId?: string | undefined;
   reobservePromptFlowPage?: number | undefined;
+  contextPackId?: string | undefined;
+  contextPackStatus?: ContextReadout["status"] | undefined;
+  contextRequiredItemCount?: number | undefined;
+  contextOptionalItemCount?: number | undefined;
+  contextOmissionCount?: number | undefined;
+  contextContradictionCount?: number | undefined;
+  contextStaleInputCount?: number | undefined;
+  contextLifecycleBlockerCount?: number | undefined;
+  contextRequiredItemIds: readonly string[];
+  contextSourceGraphVersion?: string | undefined;
+  contextPolicyVersion?: string | undefined;
+  contextCurationStages: readonly string[];
+  contextSourcePointerRefs: readonly string[];
+  contextRefreshReason?: ContextPackRefreshDecision["reason"] | undefined;
+  contextRefreshRequiresBuild?: boolean | undefined;
+  previousContextPackId?: string | undefined;
+  previousContextPackStatus?: ContextPackRefreshDecision["previousStatus"] | undefined;
+  contextSnapshot?: ContextReadout | undefined;
   promptFlowIds: readonly string[];
   metricBlockIds: readonly string[];
   selectorRejections: readonly MenuSelectorRejection[];
@@ -251,6 +469,27 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
       return { ok: false, message: `--prompt-flow-page must be a non-negative integer, got '${promptFlowPageValue}'` };
     }
   }
+  const inboxAnchorId = values.flags.get(AgentCliInboxWorkflowFlag.Anchor);
+  const inboxActionValue = values.flags.get(AgentCliInboxWorkflowFlag.Action);
+  const inboxAction = parseContextPackInboxWorkflowActionKind(inboxActionValue);
+  if (inboxActionValue !== undefined && inboxAction === undefined) {
+    return { ok: false, message: `unknown --${AgentCliInboxWorkflowFlag.Action} '${inboxActionValue}'` };
+  }
+  if (inboxAnchorId !== undefined && inboxAction === undefined) {
+    return { ok: false, message: AgentCliInboxWorkflowActionErrorMessage.ActionMissing };
+  }
+  if (inboxAction !== undefined && inboxAnchorId === undefined) {
+    return { ok: false, message: AgentCliInboxWorkflowActionErrorMessage.AnchorMissing };
+  }
+  const inboxSnoozedUntil = values.flags.get(AgentCliInboxWorkflowFlag.SnoozedUntil);
+  const contextCurationPreview = parseTenantContextPackCurationPreview(values);
+  if (!contextCurationPreview.ok) return contextCurationPreview;
+  const contextCompletenessPreview = parseTenantContextPackCompletenessPreview(values);
+  if (!contextCompletenessPreview.ok) return contextCompletenessPreview;
+  const contextSynthesisRequirementPreview = parseTenantContextPackSynthesisRequirementPreview(values);
+  if (!contextSynthesisRequirementPreview.ok) return contextSynthesisRequirementPreview;
+  const contextAdvisoryPromotionDecision = parseContextPackAdvisoryPromotionDecision(values);
+  if (!contextAdvisoryPromotionDecision.ok) return contextAdvisoryPromotionDecision;
 
   return {
     ok: true,
@@ -271,6 +510,11 @@ export function parseAgentCliArgs(argv: readonly string[]): ParseAgentCliArgsRes
       evidence: values.booleans.has("evidence"),
       ...createOptionalPromptFlowPage(promptFlowPageValue === undefined ? undefined : promptFlowPage),
       ...createOptionalSelectIndex(selectIndexValue === undefined ? undefined : selectIndex),
+      ...createOptionalInboxWorkflowAction(inboxAnchorId, inboxAction, inboxSnoozedUntil),
+      ...createOptionalTenantContextPackCurationPreview(contextCurationPreview.value),
+      ...createOptionalTenantContextPackCompletenessPreview(contextCompletenessPreview.value),
+      ...createOptionalTenantContextPackSynthesisRequirementPreview(contextSynthesisRequirementPreview.value),
+      ...createOptionalContextPackAdvisoryPromotionDecision(contextAdvisoryPromotionDecision.value),
     },
   };
 }
@@ -290,6 +534,8 @@ export function formatAgentCliScreen(screen: AgentCliScreen): string {
     `hat: ${screen.hatId}`,
     "metrics:",
     ...formatMetricBlocks(screen.metrics.blocks),
+    ...formatContextReadout(screen.context, screen.advisoryPromotionDecisions),
+    ...formatContextPackInboxWorkflow(screen.inboxWorkflow),
     "prompt flows:",
     ...formatPromptFlowTasks(screen.promptFlows),
     ...formatMenuPage(screen.page),
@@ -298,6 +544,124 @@ export function formatAgentCliScreen(screen: AgentCliScreen): string {
     "menu:",
     ...screen.slots.map(formatSlot),
   ].join("\n");
+}
+
+function formatTenantContextPackCurationAuthoringPreview(preview: ContextPackCurationIntent): string {
+  return [
+    "tenant context-pack curation authoring:",
+    ...formatTenantContextPackCurationProfileCatalog(),
+    ...formatTenantContextPackCurationLaneCatalog(),
+    `tenant curation preview: profile=${preview.curationProfile.profileId} focus=${preview.documentFocus.profileId} policy=${preview.curationProfile.policyVersion}`,
+    `tenant curation preview docs: ${preview.documentFocus.preferredDocTypes.join(",")}`,
+    `tenant curation preview query: ${preview.documentFocus.queryTerms.join(",")}`,
+    ...formatTenantContextPackCurationPreviewLanePriorities(preview),
+    ...formatTenantContextPackCurationPreviewRequiredLanes(preview),
+    ...formatTenantContextPackCurationPreviewInstructions(preview),
+  ].join("\n");
+}
+
+function formatTenantContextPackCurationProfileCatalog(): readonly string[] {
+  return listContextPackCurationProfileDescriptors().map((profile) =>
+    `- profile ${profile.profileId} focus=${profile.documentFocus.profileId} docs=${profile.documentFocus.preferredDocTypes.join(",")} terms=${profile.documentFocus.queryTerms.join(",")}`
+  );
+}
+
+function formatTenantContextPackCurationLaneCatalog(): readonly string[] {
+  return listContextPackAttentionLaneDescriptors().map((lane) =>
+    `- lane ${lane.kind} defaultPriority=${lane.defaultPriority} required=${String(lane.defaultRequired)} objective=${lane.objective}`
+  );
+}
+
+function formatTenantContextPackCurationPreviewLanePriorities(preview: ContextPackCurationIntent): readonly string[] {
+  const overrides = preview.curationProfile.lanePriorityOverrides ?? {};
+  return Object.entries(overrides)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([lane, priority]) => `- preview lane ${lane} priority=${priority}`);
+}
+
+function formatTenantContextPackCurationPreviewRequiredLanes(preview: ContextPackCurationIntent): readonly string[] {
+  return [...(preview.curationProfile.requiredLanes ?? [])]
+    .sort((left, right) => left.localeCompare(right))
+    .map((lane) => `- preview required lane ${lane}`);
+}
+
+function formatTenantContextPackCurationPreviewInstructions(preview: ContextPackCurationIntent): readonly string[] {
+  return [...(preview.curationProfile.deterministicInstructions ?? [])]
+    .map((instruction) => `- preview instruction ${instruction}`);
+}
+
+function formatTenantContextPackCompletenessAuthoringPreview(preview: ContextPackCompletenessPolicyResult): string {
+  return [
+    "tenant context-pack completeness authoring:",
+    ...formatTenantContextPackCompletenessRequirementSetCatalog(),
+    ...formatTenantContextPackCompletenessPreviewOmissions(preview),
+    ...formatTenantContextPackCompletenessPreviewBlockers(preview),
+    ...formatTenantContextPackCompletenessPreviewEvidence(preview),
+  ].join("\n");
+}
+
+function formatTenantContextPackCompletenessRequirementSetCatalog(): readonly string[] {
+  return listTenantContextPackCompletenessRequirementSetDescriptors().map((descriptor) =>
+    `- completeness set ${descriptor.setId} requirements=${descriptor.requirements.map(formatTenantContextPackCompletenessRequirement).join(",")}`
+  );
+}
+
+function formatTenantContextPackCompletenessRequirement(
+  requirement: ReturnType<typeof listTenantContextPackCompletenessRequirementSetDescriptors>[number]["requirements"][number],
+): string {
+  return `${requirement.requirementId}:${requirement.itemKind}:${requirement.requiredSourceScope}`;
+}
+
+function formatTenantContextPackCompletenessPreviewOmissions(
+  preview: ContextPackCompletenessPolicyResult,
+): readonly string[] {
+  return preview.omittedItemsWithReason.map((item) =>
+    `- completeness preview omission ${item.nodeId ?? "unspecified"} ${item.reason}: ${item.message}`
+  );
+}
+
+function formatTenantContextPackCompletenessPreviewBlockers(
+  preview: ContextPackCompletenessPolicyResult,
+): readonly string[] {
+  return (preview.lifecycleBlockers ?? []).map((blocker) => `- completeness preview blocker ${blocker}`);
+}
+
+function formatTenantContextPackCompletenessPreviewEvidence(
+  preview: ContextPackCompletenessPolicyResult,
+): readonly string[] {
+  return (preview.evidenceRefs ?? []).map((evidenceRef) => `- completeness preview evidence ${evidenceRef}`);
+}
+
+function formatTenantContextPackSynthesisRequirementAuthoringPreview(
+  preview: ContextPackSynthesisRequirement,
+): string {
+  return [
+    "tenant context-pack synthesis-requirement authoring:",
+    ...formatTenantContextPackSynthesisRequirementSetCatalog(),
+    `tenant synthesis preview: decision=${preview.decision} reason=${preview.reason} policy=${preview.policyVersion}`,
+  ].join("\n");
+}
+
+function formatTenantContextPackSynthesisRequirementSetCatalog(): readonly string[] {
+  return listTenantContextPackSynthesisRequirementSetDescriptors().map((descriptor) =>
+    `- synthesis set ${descriptor.setId} requirements=${descriptor.requirements.map(formatTenantContextPackSynthesisRequirement).join(",")}`
+  );
+}
+
+function formatTenantContextPackSynthesisRequirement(
+  requirement: ReturnType<typeof listTenantContextPackSynthesisRequirementSetDescriptors>[number]["requirements"][number],
+): string {
+  return [
+    `${requirement.requirementId}:${requirement.reason}`,
+    `phases=${formatTenantContextPackSynthesisAppliesToValues(requirement.appliesTo?.phases)}`,
+    `scopes=${formatTenantContextPackSynthesisAppliesToValues(requirement.appliesTo?.scopes)}`,
+  ].join(" ");
+}
+
+function formatTenantContextPackSynthesisAppliesToValues(values: readonly string[] | undefined): string {
+  return values === undefined || values.length === 0
+    ? AGENT_CLI_TENANT_CONTEXT_PACK_SYNTHESIS_PREVIEW_ANY_APPLIES_TO
+    : values.join(",");
 }
 
 export function createAgentCliMetricAgentsFromEnv(
@@ -427,10 +791,10 @@ export function tryCreateAgentCliWorkQueuesFromEnv(
 }
 
 export function createModelBackedMenuSelector(input: CreateModelBackedMenuSelectorInput): MenuSelector {
-  return async (menu) => {
+  return async (menu, surface) => {
     const selectable = menu.slots.filter((slot) => slot.availability === TriAvailability.True);
     if (selectable.length === 0) {
-      return await input.fallback(menu);
+      return await input.fallback(menu, surface);
     }
 
     let completion: ChatCompletionResult;
@@ -438,11 +802,11 @@ export function createModelBackedMenuSelector(input: CreateModelBackedMenuSelect
       completion = await input.chat.complete({
         system:
           "You are selecting from a deterministic 16-slot agent controller. Return JSON only. The `slot` value must be one selectable slot index, and `reason` must briefly explain the choice.",
-        user: buildMenuSelectorPrompt(selectable),
+        user: buildMenuSelectorPrompt(selectable, surface),
         format: buildMenuSelectionSchema(selectable),
       });
     } catch {
-      const fallback = normalizeMenuSelectionResult(await input.fallback(menu), "fallback_after_model_error");
+      const fallback = normalizeMenuSelectionResult(await input.fallback(menu, surface), "fallback_after_model_error");
       return {
         index: fallback.index,
         reason: "fallback_after_selector_rejection",
@@ -457,7 +821,7 @@ export function createModelBackedMenuSelector(input: CreateModelBackedMenuSelect
     const parsed = parseModelSelectedIndex(rawOutput, menu);
     if (parsed.ok) return parsed.index;
 
-    const fallback = normalizeMenuSelectionResult(await input.fallback(menu), "fallback_after_selector_rejection");
+    const fallback = normalizeMenuSelectionResult(await input.fallback(menu, surface), "fallback_after_selector_rejection");
     return {
       index: fallback.index,
       reason: "fallback_after_selector_rejection",
@@ -535,6 +899,19 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     ...(parsed.value.supervisorHatAssignmentId === undefined ? {} : { supervisorHatAssignmentId: parsed.value.supervisorHatAssignmentId }),
   };
 
+  const refreshDecisionResult = await loadContextPackRefreshDecision(input, snapshot);
+  if (!refreshDecisionResult.ok) {
+    input.writeStderr?.(`agent CLI context-pack previous snapshot lookup failed: ${refreshDecisionResult.message}\n`);
+    return {
+      exitCode: 1,
+      failureEvidence: {
+        kind: AgentCliCycleFailureKind.ContextRefreshLookupFailed,
+        message: refreshDecisionResult.message,
+      },
+    };
+  }
+  const contextRefresh = refreshDecisionResult.decision;
+
   const observed = await observeAgentSurface(snapshot, {
     clock: { now: input.now },
     ...createOptionalDeterministicRules(input.deterministicRules),
@@ -544,10 +921,43 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     ...createOptionalHierarchy(input.hierarchy),
     ...createOptionalScheduleBlocks(input.scheduleBlocks),
     ...createOptionalAvailableSecretScopes(input.availableSecretScopes),
+    ...createOptionalContextPackBuilder(input.contextPackBuilder),
+    ...createOptionalContextPackReadinessPolicy(input.contextPackReadinessPolicy),
+    ...createOptionalContextPackWakeContext(contextRefresh),
+    ...createOptionalContextReadinessEnforcement(input.enforceContextReadiness),
   });
   if (observed.outcome === ObserveOutcome.Feedback) {
     input.writeStderr?.(`${observed.feedback.message}\n`);
     return { exitCode: 1 };
+  }
+
+  if (input.recordContextPackSnapshot !== undefined) {
+    const snapshotResult = await tryRecordContextPackSnapshot(input.recordContextPackSnapshot, {
+      context: observed.context,
+      phase: parsed.value.phase,
+      recordedAt: input.now(),
+      trace: snapshot.trace,
+    });
+    if (!snapshotResult.ok) {
+      input.writeStderr?.(`agent CLI context-pack snapshot record failed: ${snapshotResult.message}\n`);
+      return { exitCode: 1 };
+    }
+  }
+
+  const inboxWorkflowResult = await loadContextPackInboxWorkflow(input, parsed.value);
+  if (!inboxWorkflowResult.ok) {
+    input.writeStderr?.(`agent CLI inbox workflow load failed: ${inboxWorkflowResult.message}\n`);
+    return { exitCode: 1 };
+  }
+
+  const advisoryPromotionDecisionResult = await loadContextPackAdvisoryPromotionDecisions(
+    input,
+    snapshot,
+    observed,
+    contextRefresh,
+  );
+  if (!advisoryPromotionDecisionResult.ok) {
+    input.writeStderr?.(`agent CLI advisory-promotion decision status load failed: ${advisoryPromotionDecisionResult.message}\n`);
   }
 
   input.writeStdout?.(`${formatAgentCliScreen({
@@ -555,6 +965,9 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     phase: parsed.value.phase,
     hatId: parsed.value.hatId,
     metrics: observed.metrics,
+    context: observed.context,
+    ...createOptionalContextPackAdvisoryPromotionDecisions(advisoryPromotionDecisionResult.decisions),
+    ...createOptionalInboxWorkflow(inboxWorkflowResult.view),
     promptFlows: observed.promptFlows,
     page: observed.actions.page,
     hierarchy: observed.hierarchy,
@@ -567,9 +980,92 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
     slots: observed.actions.slots,
   })}\n`);
 
+  if (parsed.value.contextCurationPreview !== undefined) {
+    const preview = await previewTenantContextPackCurationPolicy({
+      policy: parsed.value.contextCurationPreview.policy,
+      request: {
+        request: contextPackBuildRequestForAgentCliPreview(snapshot, observed, contextRefresh),
+      },
+    });
+    input.writeStdout?.(`${formatTenantContextPackCurationAuthoringPreview(preview)}\n`);
+    return {
+      exitCode: 0,
+      actionResult: rejectAct(
+        ActRejectionReason.MissingImplementation,
+        "tenant context-pack curation authoring preview rendered without dispatching side effects",
+      ),
+    };
+  }
+
+  if (parsed.value.contextCompletenessPreview !== undefined) {
+    const preview = await previewTenantContextPackCompletenessPolicy({
+      policy: parsed.value.contextCompletenessPreview.policy,
+      request: contextPackCompletenessPolicyRequestForAgentCliPreview(
+        contextPackBuildRequestForAgentCliPreview(snapshot, observed, contextRefresh),
+        observed.context.pack.items,
+      ),
+    });
+    input.writeStdout?.(`${formatTenantContextPackCompletenessAuthoringPreview(preview)}\n`);
+    return {
+      exitCode: 0,
+      actionResult: rejectAct(
+        ActRejectionReason.MissingImplementation,
+        "tenant context-pack completeness authoring preview rendered without dispatching side effects",
+      ),
+    };
+  }
+
+  if (parsed.value.contextSynthesisRequirementPreview !== undefined) {
+    const preview = await previewTenantContextPackSynthesisRequirementPolicy({
+      policy: parsed.value.contextSynthesisRequirementPreview.policy,
+      request: contextPackSynthesisRequirementPolicyRequestForAgentCliPreview(
+        contextPackBuildRequestForAgentCliPreview(snapshot, observed, contextRefresh),
+        observed.context.pack,
+      ),
+    });
+    input.writeStdout?.(`${formatTenantContextPackSynthesisRequirementAuthoringPreview(preview)}\n`);
+    return {
+      exitCode: 0,
+      actionResult: rejectAct(
+        ActRejectionReason.MissingImplementation,
+        "tenant context-pack synthesis-requirement authoring preview rendered without dispatching side effects",
+      ),
+    };
+  }
+
+  if (parsed.value.contextAdvisoryPromotionDecision !== undefined) {
+    const advisoryPromotionResult = await dispatchContextPackAdvisoryPromotionDecision({
+      input,
+      args: {
+        ...parsed.value,
+        contextAdvisoryPromotionDecision: parsed.value.contextAdvisoryPromotionDecision,
+      },
+      menu: observed.actions,
+      contextRefresh,
+      observed,
+    });
+    return advisoryPromotionResult;
+  }
+
+  if (parsed.value.inboxAction !== undefined && parsed.value.inboxAnchorId !== undefined) {
+    const inboxActionResult = await dispatchContextPackInboxWorkflowAction({
+      input,
+      args: {
+        ...parsed.value,
+        inboxAction: parsed.value.inboxAction,
+        inboxAnchorId: parsed.value.inboxAnchorId,
+      },
+      menu: observed.actions,
+      inboxWorkflow: inboxWorkflowResult.view,
+      contextRefresh,
+      observed,
+    });
+    return inboxActionResult;
+  }
+
   const selection = parsed.value.selectIndex === undefined
     ? normalizeMenuSelectionResult(
-      await (input.selectSlot?.(observed.actions) ?? selectFirstTrueSlot(observed.actions)),
+      await (input.selectSlot?.(observed.actions, createMenuSelectionSurface(observed, inboxWorkflowResult.view)) ?? selectFirstTrueSlot(observed.actions)),
       "selector_selected",
     )
     : {
@@ -582,7 +1078,15 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
       ActRejectionReason.NoSelectableSlot,
       "no TriAvailability.True slots in rendered menu",
     );
-    const evidence = createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics, actionResult);
+    const evidence = createAgentCliCycleEvidence(
+      observed.actions,
+      selection,
+      observed.promptFlows,
+      observed.metrics,
+      observed.context,
+      contextRefresh,
+      actionResult,
+    );
     input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
     return { exitCode: 1, actionResult, evidence };
   }
@@ -600,7 +1104,473 @@ export async function runAgentCliCycle(input: AgentCliCycleInput): Promise<Agent
   return {
     exitCode: actionResult.outcome === "rejected" ? 1 : 0,
     actionResult,
-    evidence: createAgentCliCycleEvidence(observed.actions, selection, observed.promptFlows, observed.metrics, actionResult),
+    evidence: createAgentCliCycleEvidence(
+      observed.actions,
+      selection,
+      observed.promptFlows,
+      observed.metrics,
+      observed.context,
+      contextRefresh,
+      actionResult,
+    ),
+  };
+}
+
+async function dispatchContextPackInboxWorkflowAction(input: {
+  input: AgentCliCycleInput;
+  args: ParsedAgentCliArgs & { inboxAction: ContextPackInboxWorkflowActionKindType; inboxAnchorId: string };
+  menu: Menu16;
+  inboxWorkflow: ContextPackInboxWorkflowView | undefined;
+  contextRefresh: ContextPackRefreshDecision | undefined;
+  observed: {
+    actions: Menu16;
+    promptFlows: PromptFlowReadout;
+    metrics: ScopedReadout;
+    context: ContextReadout;
+  };
+}): Promise<AgentCliCycleResult> {
+  const actionCommand = createContextPackInboxWorkflowActionCommand(input);
+  if (!actionCommand.ok) {
+    input.input.writeStderr?.(`agent CLI inbox workflow action failed: ${actionCommand.message}\n`);
+    const actionResult = rejectAct(ActRejectionReason.MissingImplementation, actionCommand.message);
+    return {
+      exitCode: 1,
+      actionResult,
+      evidence: createAgentCliCycleEvidence(
+        input.menu,
+        { index: AGENT_CLI_INBOX_ACTION_SLOT_INDEX, reason: "cli_inbox_action_rejected" },
+        input.observed.promptFlows,
+        input.observed.metrics,
+        input.observed.context,
+        input.contextRefresh,
+        actionResult,
+      ),
+    };
+  }
+
+  const actionSlot = createContextPackInboxWorkflowActionSlot(input.args.inboxAction, actionCommand.value);
+  const actionResult: ActResult = {
+    outcome: "dispatched",
+    kind: "command",
+    result: await input.input.runCommand(CommandType.UpdateContextPackInboxAnchorStatus, actionCommand.value, actionSlot),
+  };
+  input.input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
+  return {
+    exitCode: 0,
+    actionResult,
+    evidence: createAgentCliCycleEvidence(
+      menuWithInboxWorkflowActionSlot(input.menu, actionSlot),
+      { index: AGENT_CLI_INBOX_ACTION_SLOT_INDEX, reason: "cli_inbox_action" },
+      input.observed.promptFlows,
+      input.observed.metrics,
+      input.observed.context,
+      input.contextRefresh,
+      actionResult,
+    ),
+  };
+}
+
+async function dispatchContextPackAdvisoryPromotionDecision(input: {
+  input: AgentCliCycleInput;
+  args: ParsedAgentCliArgs & { contextAdvisoryPromotionDecision: AgentCliContextPackAdvisoryPromotionDecisionArgs };
+  menu: Menu16;
+  contextRefresh: ContextPackRefreshDecision | undefined;
+  observed: {
+    actions: Menu16;
+    promptFlows: PromptFlowReadout;
+    metrics: ScopedReadout;
+    context: ContextReadout;
+  };
+}): Promise<AgentCliCycleResult> {
+  const actionCommand = createContextPackAdvisoryPromotionDecisionCommand(input);
+  if (!actionCommand.ok) {
+    input.input.writeStderr?.(`agent CLI advisory-promotion decision failed: ${actionCommand.message}\n`);
+    const actionResult = rejectAct(ActRejectionReason.MissingImplementation, actionCommand.message);
+    return {
+      exitCode: 1,
+      actionResult,
+      evidence: createAgentCliCycleEvidence(
+        input.menu,
+        { index: AGENT_CLI_ADVISORY_PROMOTION_DECISION_SLOT_INDEX, reason: "cli_advisory_promotion_decision_rejected" },
+        input.observed.promptFlows,
+        input.observed.metrics,
+        input.observed.context,
+        input.contextRefresh,
+        actionResult,
+      ),
+    };
+  }
+
+  const actionSlot = createContextPackAdvisoryPromotionDecisionSlot(actionCommand.value);
+  const actionResult: ActResult = {
+    outcome: "dispatched",
+    kind: "command",
+    result: await input.input.runCommand(CommandType.AuthorContextPackAdvisoryPromotionDecision, actionCommand.value, actionSlot),
+  };
+  input.input.writeStdout?.(`action: ${formatActResult(actionResult)}\n`);
+  return {
+    exitCode: 0,
+    actionResult,
+    evidence: createAgentCliCycleEvidence(
+      menuWithContextPackActionSlot(input.menu, actionSlot),
+      { index: AGENT_CLI_ADVISORY_PROMOTION_DECISION_SLOT_INDEX, reason: "cli_advisory_promotion_decision" },
+      input.observed.promptFlows,
+      input.observed.metrics,
+      input.observed.context,
+      input.contextRefresh,
+      actionResult,
+    ),
+  };
+}
+
+async function loadContextPackRefreshDecision(
+  input: Pick<AgentCliCycleInput, "loadLatestContextPackSnapshot" | "now">,
+  snapshot: AgentObserveSnapshot,
+): Promise<{ ok: true; decision?: ContextPackRefreshDecision | undefined } | { ok: false; message: string }> {
+  if (input.loadLatestContextPackSnapshot === undefined || snapshot.organizationId === undefined || snapshot.agentId === undefined) {
+    return { ok: true };
+  }
+  try {
+    const previous = await input.loadLatestContextPackSnapshot({
+      organizationId: snapshot.organizationId,
+      agentId: snapshot.agentId,
+    });
+    return {
+      ok: true,
+      decision: decideContextPackRefresh({
+        current: snapshot,
+        observedAt: input.now(),
+        previous,
+      }),
+    };
+  } catch (error) {
+    return { ok: false, message: extractErrorMessage(error) };
+  }
+}
+
+async function tryRecordContextPackSnapshot(
+  record: ContextPackSnapshotStorePort["record"],
+  snapshot: ContextPackSnapshotRecord,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  try {
+    await record(snapshot);
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, message: extractErrorMessage(error) };
+  }
+}
+
+async function loadContextPackInboxWorkflow(
+  input: Pick<AgentCliCycleInput, "loadContextPackInboxWorkflow" | "now">,
+  parsed: ParsedAgentCliArgs,
+): Promise<{ ok: true; view?: ContextPackInboxWorkflowView | undefined } | { ok: false; message: string }> {
+  if (input.loadContextPackInboxWorkflow === undefined) {
+    return { ok: true };
+  }
+  try {
+    return {
+      ok: true,
+      view: await input.loadContextPackInboxWorkflow({
+        organizationId: parsed.organizationId,
+        projectId: parsed.projectId,
+        ...(parsed.teamId === undefined ? {} : { teamId: parsed.teamId }),
+        targetHatAssignmentId: parsed.hatAssignmentId,
+        targetAgentId: parsed.agentId,
+        observedAt: input.now(),
+      }),
+    };
+  } catch (error) {
+    return { ok: false, message: extractErrorMessage(error) };
+  }
+}
+
+async function loadContextPackAdvisoryPromotionDecisions(
+  input: Pick<AgentCliCycleInput, "loadContextPackAdvisoryPromotionDecisions">,
+  snapshot: AgentObserveSnapshot,
+  observed: {
+    readout: ContextPackBuildRequest["readout"];
+    metrics: ContextPackBuildRequest["metrics"];
+    promptFlows: ContextPackBuildRequest["promptFlows"];
+    hierarchy: ContextPackBuildRequest["hierarchy"];
+    context: ContextReadout;
+  },
+  contextRefresh: ContextPackRefreshDecision | undefined,
+): Promise<
+  | { ok: true; decisions?: readonly ContextPackAdvisoryPromotionDecision[] | undefined }
+  | { ok: false; message: string; decisions?: undefined }
+> {
+  if (input.loadContextPackAdvisoryPromotionDecisions === undefined) {
+    return { ok: true };
+  }
+  try {
+    return {
+      ok: true,
+      decisions: await input.loadContextPackAdvisoryPromotionDecisions(
+        contextPackAdvisoryPromotionPolicyRequestForAgentCliPreview(
+          contextPackBuildRequestForAgentCliPreview(snapshot, observed, contextRefresh),
+          observed.context.pack,
+        ),
+      ),
+    };
+  } catch (error) {
+    return { ok: false, message: extractErrorMessage(error) };
+  }
+}
+
+function createContextPackInboxWorkflowActionCommand(input: {
+  args: ParsedAgentCliArgs & { inboxAction: ContextPackInboxWorkflowActionKindType; inboxAnchorId: string };
+  inboxWorkflow: ContextPackInboxWorkflowView | undefined;
+}): { ok: true; value: unknown } | { ok: false; message: AgentCliInboxWorkflowActionErrorMessage } {
+  if (input.inboxWorkflow === undefined) {
+    return { ok: false, message: AgentCliInboxWorkflowActionErrorMessage.LoaderMissing };
+  }
+  const item = contextPackInboxWorkflowItemFor(input.inboxWorkflow, input.args.inboxAnchorId);
+  if (item === undefined) {
+    return { ok: false, message: AgentCliInboxWorkflowActionErrorMessage.WorkflowItemMissing };
+  }
+  const action = item.actions.find((candidate) => candidate.kind === input.args.inboxAction);
+  if (action === undefined) {
+    return { ok: false, message: AgentCliInboxWorkflowActionErrorMessage.ActionUnavailable };
+  }
+  if (action.requiresSnoozedUntil && input.args.inboxSnoozedUntil === undefined) {
+    return { ok: false, message: AgentCliInboxWorkflowActionErrorMessage.SnoozedUntilRequired };
+  }
+
+  return {
+    ok: true,
+    value: {
+      commandId: `cmd-inbox-${input.args.runId}-${item.inboxAnchorId}-${action.kind}`,
+      type: CommandType.UpdateContextPackInboxAnchorStatus,
+      idempotencyKey: `observe-inbox:${input.args.runId}:${input.args.hatAssignmentId}:${input.args.phase}:${item.inboxAnchorId}:${action.kind}`,
+      requestHash: [
+        CommandType.UpdateContextPackInboxAnchorStatus,
+        input.args.runId,
+        input.args.hatAssignmentId,
+        input.args.phase,
+        item.inboxAnchorId,
+        action.kind,
+        action.targetStatus,
+      ].join(":"),
+      correlationId: `observe-cli-${input.args.runId}`,
+      causationId: `observe-cli-${input.args.runId}`,
+      traceId: `observe-cli-${input.args.runId}`,
+      organizationId: item.organizationId,
+      projectId: item.projectId,
+      ...createOptionalCommandString("teamId", item.teamId),
+      ...createOptionalCommandString("workItemId", item.workItemId),
+      actor: {
+        agentId: input.args.agentId,
+        hatAssignmentId: input.args.hatAssignmentId,
+      },
+      inboxAnchorId: item.inboxAnchorId,
+      targetHatAssignmentId: item.targetHatAssignmentId,
+      ...createOptionalCommandString("targetAgentId", item.targetAgentId),
+      status: action.targetStatus,
+      ...createOptionalCommandString(
+        "snoozedUntil",
+        action.targetStatus === ContextPackInboxAnchorStatus.Snoozed ? input.args.inboxSnoozedUntil : undefined,
+      ),
+    },
+  };
+}
+
+function createContextPackAdvisoryPromotionDecisionCommand(input: {
+  args: ParsedAgentCliArgs & { contextAdvisoryPromotionDecision: AgentCliContextPackAdvisoryPromotionDecisionArgs };
+  observed: { context: ContextReadout };
+}): { ok: true; value: unknown } | { ok: false; message: AgentCliContextPackAdvisoryPromotionErrorMessage } {
+  const item = input.observed.context.pack.items.find((candidate) =>
+    candidate.id === input.args.contextAdvisoryPromotionDecision.itemId
+  );
+  if (item === undefined) {
+    return { ok: false, message: AgentCliContextPackAdvisoryPromotionErrorMessage.ItemMissing };
+  }
+  if (item.kind !== ContextPackItemKind.SynthesisGapHypothesis) {
+    return { ok: false, message: AgentCliContextPackAdvisoryPromotionErrorMessage.ItemNotPromotable };
+  }
+
+  return {
+    ok: true,
+    value: {
+      commandId: `cmd-advisory-promotion-${input.args.runId}-${item.id}-${input.args.contextAdvisoryPromotionDecision.status}`,
+      type: CommandType.AuthorContextPackAdvisoryPromotionDecision,
+      idempotencyKey: `observe-advisory-promotion:${input.args.runId}:${input.args.hatAssignmentId}:${input.args.phase}:${item.id}:${input.args.contextAdvisoryPromotionDecision.status}`,
+      requestHash: [
+        CommandType.AuthorContextPackAdvisoryPromotionDecision,
+        input.args.runId,
+        input.args.hatAssignmentId,
+        input.args.phase,
+        item.id,
+        input.args.contextAdvisoryPromotionDecision.status,
+        input.args.contextAdvisoryPromotionDecision.lifecycleBlocker,
+      ].join(":"),
+      correlationId: `observe-cli-${input.args.runId}`,
+      causationId: `observe-cli-${input.args.runId}`,
+      traceId: `observe-cli-${input.args.runId}`,
+      organizationId: input.args.organizationId,
+      projectId: input.args.projectId,
+      ...createOptionalCommandString("teamId", input.args.teamId),
+      ...createOptionalCommandString("workItemId", input.args.workItemId),
+      actor: {
+        agentId: input.args.agentId,
+        hatAssignmentId: input.args.hatAssignmentId,
+      },
+      hatId: input.args.hatId,
+      hatAssignmentId: input.args.hatAssignmentId,
+      ...createOptionalCommandString("curationProfileId", input.observed.context.pack.curationPlan?.profileId),
+      status: input.args.contextAdvisoryPromotionDecision.status,
+      lifecycleBlocker: input.args.contextAdvisoryPromotionDecision.lifecycleBlocker,
+      fingerprint: contextPackAdvisoryPromotionFingerprint(item),
+      evidenceRefs: contextPackAdvisoryPromotionDecisionEvidenceRefs(item),
+    },
+  };
+}
+
+function contextPackBuildRequestForAgentCliPreview(
+  snapshot: AgentObserveSnapshot,
+  observed: {
+    readout: ContextPackBuildRequest["readout"];
+    metrics: ContextPackBuildRequest["metrics"];
+    promptFlows: ContextPackBuildRequest["promptFlows"];
+    hierarchy: ContextPackBuildRequest["hierarchy"];
+  },
+  contextRefresh: ContextPackRefreshDecision | undefined,
+): ContextPackBuildRequest {
+  return {
+    snapshot,
+    readout: observed.readout,
+    metrics: observed.metrics,
+    promptFlows: observed.promptFlows,
+    hierarchy: observed.hierarchy,
+    observedAt: observed.readout.observedAt,
+    ...(contextRefresh === undefined ? {} : { wakeContext: contextRefresh }),
+  };
+}
+
+function contextPackCompletenessPolicyRequestForAgentCliPreview(
+  request: ContextPackBuildRequest,
+  items: ContextPackCompletenessPolicyRequest["items"],
+): ContextPackCompletenessPolicyRequest {
+  return {
+    query: AGENT_CLI_TENANT_CONTEXT_PACK_COMPLETENESS_PREVIEW_QUERY,
+    observedAt: request.observedAt,
+    request,
+    documentUnits: [],
+    items,
+  };
+}
+
+function contextPackSynthesisRequirementPolicyRequestForAgentCliPreview(
+  request: ContextPackBuildRequest,
+  pack: ContextReadout["pack"],
+): ContextPackSynthesisRequirementPolicyRequest {
+  return {
+    request,
+    curationPlan: pack.curationPlan ?? AGENT_CLI_TENANT_CONTEXT_PACK_EMPTY_CURATION_PLAN,
+    items: pack.items,
+    omissions: pack.omittedItemsWithReason,
+  };
+}
+
+function contextPackAdvisoryPromotionPolicyRequestForAgentCliPreview(
+  request: ContextPackBuildRequest,
+  pack: ContextReadout["pack"],
+): ContextPackAdvisoryPromotionPolicyRequest {
+  return {
+    query: AGENT_CLI_CONTEXT_PACK_ADVISORY_PROMOTION_STATUS_QUERY,
+    observedAt: request.observedAt,
+    request,
+    deterministicItems: pack.items.filter((item) => item.kind !== ContextPackItemKind.SynthesisGapHypothesis),
+    advisoryItems: pack.items.filter((item) => item.kind === ContextPackItemKind.SynthesisGapHypothesis),
+    omissions: pack.omittedItemsWithReason,
+    curationPlan: pack.curationPlan ?? AGENT_CLI_TENANT_CONTEXT_PACK_EMPTY_CURATION_PLAN,
+  };
+}
+
+function contextPackInboxWorkflowItemFor(
+  workflow: ContextPackInboxWorkflowView,
+  inboxAnchorId: string,
+): ContextPackInboxWorkflowView["batches"][number]["items"][number] | undefined {
+  return workflow.batches
+    .flatMap((batch) => batch.items)
+    .find((item) => item.inboxAnchorId === inboxAnchorId);
+}
+
+function createContextPackInboxWorkflowActionSlot(
+  action: ContextPackInboxWorkflowActionKindType,
+  command: unknown,
+): Menu16Slot {
+  return {
+    index: AGENT_CLI_INBOX_ACTION_SLOT_INDEX,
+    direction: AGENT_CLI_INBOX_ACTION_DIRECTION,
+    label: action,
+    availability: TriAvailability.True,
+    impl: {
+      kind: "command",
+      commandType: CommandType.UpdateContextPackInboxAnchorStatus,
+      command,
+    },
+  };
+}
+
+function createContextPackAdvisoryPromotionDecisionSlot(command: unknown): Menu16Slot {
+  return {
+    index: AGENT_CLI_ADVISORY_PROMOTION_DECISION_SLOT_INDEX,
+    direction: AGENT_CLI_ADVISORY_PROMOTION_DECISION_DIRECTION,
+    label: CommandType.AuthorContextPackAdvisoryPromotionDecision,
+    availability: TriAvailability.True,
+    impl: {
+      kind: "command",
+      commandType: CommandType.AuthorContextPackAdvisoryPromotionDecision,
+      command,
+    },
+  };
+}
+
+function menuWithInboxWorkflowActionSlot(menu: Menu16, actionSlot: Menu16Slot): Menu16 {
+  return menuWithContextPackActionSlot(menu, actionSlot);
+}
+
+function menuWithContextPackActionSlot(menu: Menu16, actionSlot: Menu16Slot): Menu16 {
+  return {
+    slots: [...menu.slots, actionSlot],
+    ...createOptionalMenuPage(menu.page),
+  };
+}
+
+function contextPackAdvisoryPromotionDecisionEvidenceRefs(item: ContextPackItem): readonly string[] {
+  return uniqueSorted([
+    item.id,
+    item.sourceRef,
+    ...(item.citationRefs ?? []),
+  ]);
+}
+
+function createOptionalMenuPage(page: Menu16["page"] | undefined): { page?: Menu16["page"] } {
+  return page === undefined ? {} : { page };
+}
+
+function createOptionalCommandString<K extends string>(
+  key: K,
+  value: string | undefined,
+): { [P in K]?: string } {
+  return value === undefined ? {} : { [key]: value } as { [P in K]?: string };
+}
+
+function createMenuSelectionSurface(
+  observed: {
+    context: ContextReadout;
+    metrics: ScopedReadout;
+    promptFlows: PromptFlowReadout;
+    hierarchy: HierarchyReadout;
+  },
+  inboxWorkflow: ContextPackInboxWorkflowView | undefined,
+): MenuSelectionSurface {
+  return {
+    context: observed.context,
+    ...(inboxWorkflow === undefined ? {} : { inboxWorkflow }),
+    metrics: observed.metrics,
+    promptFlows: observed.promptFlows,
+    hierarchy: observed.hierarchy,
   };
 }
 
@@ -722,6 +1692,8 @@ function createAgentCliCycleEvidence(
   selection: MenuSelectionResult,
   promptFlows: PromptFlowReadout,
   metrics: ScopedReadout,
+  context: ContextReadout,
+  contextRefresh?: ContextPackRefreshDecision | undefined,
   actionResult?: ActResult | undefined,
 ): AgentCliCycleEvidence {
   return {
@@ -736,6 +1708,8 @@ function createAgentCliCycleEvidence(
     ...createOptionalEvidenceNumber("promptFlowPage", menu.page?.promptFlows?.page),
     ...selectedPromptFlowEvidence(menu, selection.index),
     ...(actionResult?.outcome === "reobserve" ? createOptionalEvidenceNumber("reobservePromptFlowPage", actionResult.menuPage?.promptFlows) : {}),
+    ...contextPackEvidence(context),
+    ...contextPackRefreshEvidence(contextRefresh),
     promptFlowIds: uniqueSorted([
       ...promptFlows.tasks.map((task) => task.promptFlowId),
       ...promptFlows.vetoedTasks.map((vetoed) => vetoed.task.promptFlowId),
@@ -744,6 +1718,97 @@ function createAgentCliCycleEvidence(
     selectorRejections: selection.selectorRejection === undefined ? [] : [selection.selectorRejection],
     ...(actionResult?.outcome === "rejected" ? { actionRejectionReason: actionResult.reason } : {}),
   };
+}
+
+function contextPackRefreshEvidence(
+  decision: ContextPackRefreshDecision | undefined,
+): Pick<
+  AgentCliCycleEvidence,
+  "contextRefreshReason" | "contextRefreshRequiresBuild" | "previousContextPackId" | "previousContextPackStatus"
+> {
+  if (decision === undefined) return {};
+  return {
+    contextRefreshReason: decision.reason,
+    contextRefreshRequiresBuild: decision.requiresBuild,
+    ...(decision.previousContextPackId === undefined ? {} : { previousContextPackId: decision.previousContextPackId }),
+    ...(decision.previousStatus === undefined ? {} : { previousContextPackStatus: decision.previousStatus }),
+  };
+}
+
+function contextPackEvidence(context: ContextReadout): Pick<
+  AgentCliCycleEvidence,
+  | "contextPackId"
+  | "contextPackStatus"
+  | "contextRequiredItemCount"
+  | "contextOptionalItemCount"
+  | "contextOmissionCount"
+  | "contextContradictionCount"
+  | "contextStaleInputCount"
+  | "contextLifecycleBlockerCount"
+  | "contextRequiredItemIds"
+  | "contextSourceGraphVersion"
+  | "contextPolicyVersion"
+  | "contextCurationStages"
+  | "contextSourcePointerRefs"
+  | "contextSnapshot"
+> {
+  return {
+    contextPackId: context.pack.id,
+    contextPackStatus: context.status,
+    contextSnapshot: context,
+    contextRequiredItemCount: context.summary.requiredItemCount,
+    contextOptionalItemCount: context.summary.optionalItemCount,
+    contextOmissionCount: context.summary.omissionCount,
+    contextContradictionCount: context.summary.contradictionCount,
+    contextStaleInputCount: context.summary.staleInputCount,
+    contextLifecycleBlockerCount: context.summary.lifecycleBlockerCount,
+    contextRequiredItemIds: uniqueSorted(context.requiredItems.map((item) => item.id)),
+    contextSourceGraphVersion: context.pack.sourceGraphVersion,
+    contextPolicyVersion: context.pack.policyVersion,
+    contextCurationStages: uniqueSorted(context.pack.curationTrace.map((stage) => stage.stage)),
+    contextSourcePointerRefs: uniqueSorted(context.pack.items.flatMap((item) =>
+      (item.sourcePointers ?? []).map(contextSourcePointerEvidenceRef),
+    )),
+  };
+}
+
+function contextSourcePointerEvidenceRef(pointer: ContextPackSourcePointer): string {
+  switch (pointer.kind) {
+    case ContextPackSourcePointerKind.DocUnit:
+      return `doc_unit:${pointer.docUnitId}:${pointer.version}`;
+    case ContextPackSourcePointerKind.GitBlob:
+      return `git_blob:${pointer.path}:${pointer.commitSha ?? "unknown"}:${pointer.blobSha ?? "unknown"}`;
+    case ContextPackSourcePointerKind.GraphNode:
+      return `graph_node:${pointer.nodeId}`;
+    case ContextPackSourcePointerKind.GraphEdge:
+      return `graph_edge:${pointer.edgeId}`;
+    case ContextPackSourcePointerKind.HindsightMemory:
+      return `hindsight_memory:${pointer.providerId}:${pointer.memoryId}`;
+    case ContextPackSourcePointerKind.WorkItem:
+      return `work_item:${pointer.workItemId}`;
+    case ContextPackSourcePointerKind.Decision:
+      return `decision:${pointer.decisionId}`;
+    case ContextPackSourcePointerKind.Discussion:
+      return `discussion:${pointer.discussionId}`;
+    case ContextPackSourcePointerKind.InboxAnchor:
+      return `inbox_anchor:${pointer.inboxAnchorId}:${pointer.targetHatAssignmentId ?? "unknown"}:${pointer.targetAgentId ?? "unknown"}`;
+    case ContextPackSourcePointerKind.Meeting:
+      return `meeting:${pointer.meetingId}`;
+    case ContextPackSourcePointerKind.QualityGate:
+      return `quality_gate:${pointer.qualityGateEvaluationId}`;
+    case ContextPackSourcePointerKind.ScheduleBlock:
+      return `schedule_block:${pointer.workScheduleBlockId}`;
+    case ContextPackSourcePointerKind.SupervisorSignal:
+      return `supervisor_signal:${pointer.supervisorSignalId}`;
+    case ContextPackSourcePointerKind.Trace:
+      return `trace:${pointer.traceId}`;
+    case ContextPackSourcePointerKind.Metric:
+      return `metric:${pointer.source}:${pointer.query}:${pointer.seriesId ?? "unknown"}`;
+    case ContextPackSourcePointerKind.Log:
+      return `log:${pointer.source}:${pointer.query}:${pointer.logRef}`;
+    case ContextPackSourcePointerKind.Policy:
+      return `policy:${pointer.policyId}:${pointer.version ?? "unknown"}`;
+  }
 }
 
 function hashMenu(menu: Menu16): string {
@@ -874,12 +1939,112 @@ function uniqueSorted(values: readonly string[]): readonly string[] {
   return [...new Set(values)].sort((left, right) => left.localeCompare(right));
 }
 
-function buildMenuSelectorPrompt(selectable: readonly Menu16Slot[]): string {
+function buildMenuSelectorPrompt(selectable: readonly Menu16Slot[], surface: MenuSelectionSurface | undefined): string {
   return [
     "Selectable slots:",
     ...selectable.map((slot) => `[${String(slot.index).padStart(2, "0")}] ${slot.direction} ${slot.label}`),
+    ...formatMenuSelectionSurface(surface),
     "Return exactly this JSON shape: {\"slot\": <one listed integer>, \"reason\": \"short reason\"}.",
   ].join("\n");
+}
+
+function formatMenuSelectionSurface(surface: MenuSelectionSurface | undefined): readonly string[] {
+  if (surface === undefined) return [];
+  return [
+    ...formatSelectorContext(surface.context),
+    ...formatSelectorInboxWorkflow(surface.inboxWorkflow),
+    ...formatSelectorMetrics(surface.metrics),
+  ];
+}
+
+function formatSelectorContext(context: ContextReadout | undefined): readonly string[] {
+  if (context === undefined) return [];
+  return [
+    `Context pack: ${context.status} ${context.pack.id}`,
+    `Context summary: required=${context.summary.requiredItemCount} optional=${context.summary.optionalItemCount} omissions=${context.summary.omissionCount} contradictions=${context.summary.contradictionCount} stale=${context.summary.staleInputCount} blockers=${context.summary.lifecycleBlockerCount}`,
+    ...formatSelectorContextItems("Required context:", context.requiredItems),
+    ...formatSelectorAttentionLanes(context),
+    `Context omissions: ${context.summary.omissionCount}`,
+  ];
+}
+
+function formatSelectorContextItems(label: string, items: readonly ContextReadout["requiredItems"][number][]): readonly string[] {
+  if (items.length === 0) return [];
+  return [
+    label,
+    ...items.slice(0, 5).map((item) => `- ${item.kind} ${item.id}: ${item.title}`),
+  ];
+}
+
+function formatSelectorAttentionLanes(context: ContextReadout): readonly string[] {
+  const lanes = context.pack.curationPlan?.lanes ?? [];
+  if (lanes.length === 0) return [];
+  return [
+    "Attention lanes:",
+    ...lanes.map((lane) =>
+      `- ${lane.kind} priority=${lane.priority} required=${String(lane.required)} refs=${formatAttentionLaneRefs(lane.refs)} objective=${lane.objective}`
+    ),
+    ...formatSelectorAttentionLaneDetails(context),
+  ];
+}
+
+function formatSelectorAttentionLaneDetails(context: ContextReadout): readonly string[] {
+  const lanes = context.pack.curationPlan?.lanes ?? [];
+  if (lanes.length === 0) return [];
+  const details = lanes
+    .flatMap((lane) => lane.refs.slice(0, 3).map((ref) => formatSelectorAttentionLaneRefDetail(lane.kind, ref, context)));
+  if (details.length === 0) return [];
+  return [
+    "Attention lane details:",
+    ...details,
+  ];
+}
+
+function formatSelectorAttentionLaneRefDetail(
+  laneKind: ContextPackAttentionLaneKind,
+  ref: ContextPackAttentionLaneRef,
+  context: ContextReadout,
+): string {
+  switch (ref.kind) {
+    case ContextPackAttentionLaneRefKind.Item: {
+      const item = context.pack.items.find((candidate) => candidate.id === ref.itemId);
+      return item === undefined
+        ? `- lane=${laneKind} missing item ${ref.itemId}`
+        : `- lane=${laneKind} item ${item.kind} ${item.id}: ${item.title}`;
+    }
+    case ContextPackAttentionLaneRefKind.Omission: {
+      const omission = context.omittedItemsWithReason.find((candidate) =>
+        candidate.nodeId === ref.omissionRef || `omission:${candidate.reason}` === ref.omissionRef
+      );
+      return omission === undefined
+        ? `- lane=${laneKind} missing omission ${ref.omissionRef}`
+        : `- lane=${laneKind} omission ${omission.reason}${omission.nodeId === undefined ? "" : ` ${omission.nodeId}`}: ${omission.message}`;
+    }
+    case ContextPackAttentionLaneRefKind.LegalAction:
+      return `- lane=${laneKind} legal action ${ref.actionType}`;
+    case ContextPackAttentionLaneRefKind.ScopeAnchor:
+      return `- lane=${laneKind} scope anchor ${ref.anchorRef}`;
+  }
+}
+
+function formatSelectorInboxWorkflow(inboxWorkflow: ContextPackInboxWorkflowView | undefined): readonly string[] {
+  if (inboxWorkflow === undefined) return [];
+  return [
+    `Inbox workflow: total=${inboxWorkflow.summary.totalVisibleCount} urgent=${inboxWorkflow.summary.urgentUnreadCount} normal=${inboxWorkflow.summary.normalUnreadCount} due=${inboxWorkflow.summary.snoozedDueCount} future=${inboxWorkflow.summary.snoozedFutureCount} read=${inboxWorkflow.summary.readCount}`,
+    ...inboxWorkflow.batches.flatMap((batch) =>
+      batch.items.slice(0, 3).map((item) =>
+        `- ${batch.kind} ${item.inboxAnchorId} ${item.priority}/${item.status}${formatInboxWorkflowSnooze(item)}: ${item.title} actions=${item.actions.map((action) => action.kind).join(",")}`
+      )
+    ).slice(0, 5),
+  ];
+}
+
+function formatSelectorMetrics(metrics: ScopedReadout | undefined): readonly string[] {
+  if (metrics === undefined || metrics.blocks.length === 0) return [];
+  return [
+    "Metrics:",
+    ...metrics.blocks.slice(0, 5).map((block) => `- ${block.label}: ${block.value}${block.unit === undefined ? "" : ` ${block.unit}`}`),
+  ];
 }
 
 function buildMenuSelectionSchema(selectable: readonly Menu16Slot[]): {
@@ -984,12 +2149,189 @@ function isSupervisorSignalPayload(
   );
 }
 
+function parseTenantContextPackCurationPreview(
+  values: { flags: Map<string, string>; booleans: Set<string> },
+): { ok: true; value?: AgentCliTenantContextPackCurationPreviewArgs | undefined } | { ok: false; message: string } {
+  const previewRequested = values.booleans.has(AgentCliTenantContextPackCurationFlag.Preview);
+  const profileValue = values.flags.get(AgentCliTenantContextPackCurationFlag.Profile);
+  const requiredLaneValue = values.flags.get(AgentCliTenantContextPackCurationFlag.RequiredLane);
+  const lanePriorityValue = values.flags.get(AgentCliTenantContextPackCurationFlag.LanePriority);
+  const deterministicInstructionValue = values.flags.get(AgentCliTenantContextPackCurationFlag.DeterministicInstruction);
+  const blockInheritedInstructions = values.booleans.has(AgentCliTenantContextPackCurationFlag.BlockInheritedInstructions);
+  if (
+    !previewRequested &&
+    profileValue === undefined &&
+    requiredLaneValue === undefined &&
+    lanePriorityValue === undefined &&
+    deterministicInstructionValue === undefined &&
+    !blockInheritedInstructions
+  ) {
+    return { ok: true };
+  }
+  if (!previewRequested) {
+    return { ok: false, message: `--${AgentCliTenantContextPackCurationFlag.Preview} is required for context curation authoring flags` };
+  }
+
+  const policy: TenantContextPackCurationPolicy = {};
+  if (profileValue !== undefined) {
+    if (!isTenantContextPackCurationProfileId(profileValue)) {
+      return { ok: false, message: `unknown --${AgentCliTenantContextPackCurationFlag.Profile} '${profileValue}'` };
+    }
+    policy.profileId = profileValue as TenantContextPackCurationProfileId;
+  }
+  if (requiredLaneValue !== undefined) {
+    if (!isTenantContextPackCurationLaneKind(requiredLaneValue)) {
+      return { ok: false, message: `unknown --${AgentCliTenantContextPackCurationFlag.RequiredLane} '${requiredLaneValue}'` };
+    }
+    policy.requiredLanes = [requiredLaneValue as TenantContextPackCurationLaneKind];
+  }
+  if (lanePriorityValue !== undefined) {
+    const parsed = parseTenantContextPackCurationLanePriority(lanePriorityValue);
+    if (!parsed.ok) return parsed;
+    policy.lanePriorityOverrides = { [parsed.kind]: parsed.priority };
+  }
+  if (deterministicInstructionValue !== undefined) {
+    if (!isTenantContextPackCurationInstruction(deterministicInstructionValue)) {
+      return { ok: false, message: `unknown --${AgentCliTenantContextPackCurationFlag.DeterministicInstruction} '${deterministicInstructionValue}'` };
+    }
+    policy.deterministicInstructions = [deterministicInstructionValue as TenantContextPackCurationInstruction];
+  }
+  if (blockInheritedInstructions) {
+    policy.blocksInheritedDeterministicInstructions = true;
+  }
+  return { ok: true, value: { policy } };
+}
+
+function parseTenantContextPackCurationLanePriority(
+  value: string,
+): { ok: true; kind: TenantContextPackCurationLaneKind; priority: number } | { ok: false; message: string } {
+  const [kind, priorityValue, extra] = value.split(AGENT_CLI_TENANT_CONTEXT_PACK_LANE_PRIORITY_SEPARATOR);
+  if (kind === undefined || priorityValue === undefined || extra !== undefined || !isTenantContextPackCurationLaneKind(kind)) {
+    return { ok: false, message: `--${AgentCliTenantContextPackCurationFlag.LanePriority} must be <lane>=<non-negative-integer>` };
+  }
+  const priority = Number.parseInt(priorityValue, 10);
+  if (!Number.isInteger(priority) || priority < 0 || String(priority) !== priorityValue) {
+    return { ok: false, message: `--${AgentCliTenantContextPackCurationFlag.LanePriority} priority must be a non-negative integer` };
+  }
+  return { ok: true, kind: kind as TenantContextPackCurationLaneKind, priority };
+}
+
+function parseTenantContextPackCompletenessPreview(
+  values: { flags: Map<string, string>; booleans: Set<string> },
+): { ok: true; value?: AgentCliTenantContextPackCompletenessPreviewArgs | undefined } | { ok: false; message: string } {
+  const previewRequested = values.booleans.has(AgentCliTenantContextPackCompletenessFlag.Preview);
+  const requirementSetValue = values.flags.get(AgentCliTenantContextPackCompletenessFlag.RequirementSet);
+  if (!previewRequested && requirementSetValue === undefined) {
+    return { ok: true };
+  }
+  if (!previewRequested) {
+    return { ok: false, message: `--${AgentCliTenantContextPackCompletenessFlag.Preview} is required for context completeness authoring flags` };
+  }
+  if (requirementSetValue === undefined) {
+    return { ok: true, value: { policy: {} } };
+  }
+  if (!isTenantContextPackCompletenessRequirementSetId(requirementSetValue)) {
+    return { ok: false, message: `unknown --${AgentCliTenantContextPackCompletenessFlag.RequirementSet} '${requirementSetValue}'` };
+  }
+  return {
+    ok: true,
+    value: {
+      policy: {
+        requirementSetIds: [requirementSetValue as TenantContextPackCompletenessRequirementSetIdType],
+      },
+    },
+  };
+}
+
+function isTenantContextPackCompletenessRequirementSetId(
+  value: string,
+): value is TenantContextPackCompletenessRequirementSetIdType {
+  return Object.values(TenantContextPackCompletenessRequirementSetId)
+    .includes(value as TenantContextPackCompletenessRequirementSetIdType);
+}
+
+function parseTenantContextPackSynthesisRequirementPreview(
+  values: { flags: Map<string, string>; booleans: Set<string> },
+): { ok: true; value?: AgentCliTenantContextPackSynthesisRequirementPreviewArgs | undefined } | { ok: false; message: string } {
+  const previewRequested = values.booleans.has(AgentCliTenantContextPackSynthesisRequirementFlag.Preview);
+  const requirementSetValue = values.flags.get(AgentCliTenantContextPackSynthesisRequirementFlag.RequirementSet);
+  if (!previewRequested && requirementSetValue === undefined) {
+    return { ok: true };
+  }
+  if (!previewRequested) {
+    return { ok: false, message: `--${AgentCliTenantContextPackSynthesisRequirementFlag.Preview} is required for context synthesis-requirement authoring flags` };
+  }
+  if (requirementSetValue === undefined) {
+    return { ok: true, value: { policy: {} } };
+  }
+  if (!isTenantContextPackSynthesisRequirementSetId(requirementSetValue)) {
+    return { ok: false, message: `unknown --${AgentCliTenantContextPackSynthesisRequirementFlag.RequirementSet} '${requirementSetValue}'` };
+  }
+  return {
+    ok: true,
+    value: {
+      policy: {
+        requirementSetIds: [requirementSetValue as TenantContextPackSynthesisRequirementSetIdType],
+      },
+    },
+  };
+}
+
+function isTenantContextPackSynthesisRequirementSetId(
+  value: string,
+): value is TenantContextPackSynthesisRequirementSetIdType {
+  return Object.values(TenantContextPackSynthesisRequirementSetId)
+    .includes(value as TenantContextPackSynthesisRequirementSetIdType);
+}
+
+function parseContextPackAdvisoryPromotionDecision(
+  values: { flags: Map<string, string>; booleans: Set<string> },
+): { ok: true; value?: AgentCliContextPackAdvisoryPromotionDecisionArgs | undefined } | { ok: false; message: string } {
+  const itemId = values.flags.get(AgentCliContextPackAdvisoryPromotionFlag.Item);
+  const statusValue = values.flags.get(AgentCliContextPackAdvisoryPromotionFlag.Status);
+  const lifecycleBlocker = values.flags.get(AgentCliContextPackAdvisoryPromotionFlag.Blocker);
+  if (itemId === undefined && statusValue === undefined && lifecycleBlocker === undefined) {
+    return { ok: true };
+  }
+  if (itemId === undefined || statusValue === undefined || lifecycleBlocker === undefined) {
+    return { ok: false, message: AgentCliContextPackAdvisoryPromotionErrorMessage.FlagsIncomplete };
+  }
+  if (!isContextPackAdvisoryPromotionDecisionStatus(statusValue)) {
+    return {
+      ok: false,
+      message: `${AgentCliContextPackAdvisoryPromotionErrorMessage.StatusUnknown} '${statusValue}'`,
+    };
+  }
+  return {
+    ok: true,
+    value: {
+      itemId,
+      status: statusValue,
+      lifecycleBlocker,
+    },
+  };
+}
+
+function isContextPackAdvisoryPromotionDecisionStatus(
+  value: string,
+): value is ContextPackAdvisoryPromotionDecisionStatusType {
+  return Object.values(ContextPackAdvisoryPromotionDecisionStatus)
+    .includes(value as ContextPackAdvisoryPromotionDecisionStatusType);
+}
+
 function parseFlags(args: readonly string[]): { ok: true; flags: Map<string, string>; booleans: Set<string> } | { ok: false; message: string } {
   const flags = new Map<string, string>();
   const booleans = new Set<string>();
   for (let index = 0; index < args.length; index += 1) {
     const token = args[index];
-    if (token === "--gate-approved" || token === "--evidence") {
+    if (
+      token === "--gate-approved" ||
+      token === "--evidence" ||
+      token === `--${AgentCliTenantContextPackCurationFlag.Preview}` ||
+      token === `--${AgentCliTenantContextPackCurationFlag.BlockInheritedInstructions}` ||
+      token === `--${AgentCliTenantContextPackCompletenessFlag.Preview}` ||
+      token === `--${AgentCliTenantContextPackSynthesisRequirementFlag.Preview}`
+    ) {
       booleans.add(token.slice(2));
       continue;
     }
@@ -1016,12 +2358,56 @@ function parseRunLifecyclePhase(value: string): RunLifecyclePhase | undefined {
     : undefined;
 }
 
+function parseContextPackInboxWorkflowActionKind(
+  value: string | undefined,
+): ContextPackInboxWorkflowActionKindType | undefined {
+  return value !== undefined && Object.values(ContextPackInboxWorkflowActionKind).includes(value as ContextPackInboxWorkflowActionKindType)
+    ? value as ContextPackInboxWorkflowActionKindType
+    : undefined;
+}
+
 function createOptionalSelectIndex(selectIndex: number | undefined): { selectIndex?: number } {
   return selectIndex === undefined ? {} : { selectIndex };
 }
 
 function createOptionalPromptFlowPage(promptFlowPage: number | undefined): { promptFlowPage?: number } {
   return promptFlowPage === undefined ? {} : { promptFlowPage };
+}
+
+function createOptionalInboxWorkflowAction(
+  inboxAnchorId: string | undefined,
+  inboxAction: ContextPackInboxWorkflowActionKindType | undefined,
+  inboxSnoozedUntil: string | undefined,
+): Pick<ParsedAgentCliArgs, "inboxAnchorId" | "inboxAction" | "inboxSnoozedUntil"> {
+  return {
+    ...(inboxAnchorId === undefined ? {} : { inboxAnchorId }),
+    ...(inboxAction === undefined ? {} : { inboxAction }),
+    ...(inboxSnoozedUntil === undefined ? {} : { inboxSnoozedUntil }),
+  };
+}
+
+function createOptionalTenantContextPackCurationPreview(
+  preview: AgentCliTenantContextPackCurationPreviewArgs | undefined,
+): Pick<ParsedAgentCliArgs, "contextCurationPreview"> {
+  return preview === undefined ? {} : { contextCurationPreview: preview };
+}
+
+function createOptionalTenantContextPackCompletenessPreview(
+  preview: AgentCliTenantContextPackCompletenessPreviewArgs | undefined,
+): Pick<ParsedAgentCliArgs, "contextCompletenessPreview"> {
+  return preview === undefined ? {} : { contextCompletenessPreview: preview };
+}
+
+function createOptionalTenantContextPackSynthesisRequirementPreview(
+  preview: AgentCliTenantContextPackSynthesisRequirementPreviewArgs | undefined,
+): Pick<ParsedAgentCliArgs, "contextSynthesisRequirementPreview"> {
+  return preview === undefined ? {} : { contextSynthesisRequirementPreview: preview };
+}
+
+function createOptionalContextPackAdvisoryPromotionDecision(
+  decision: AgentCliContextPackAdvisoryPromotionDecisionArgs | undefined,
+): Pick<ParsedAgentCliArgs, "contextAdvisoryPromotionDecision"> {
+  return decision === undefined ? {} : { contextAdvisoryPromotionDecision: decision };
 }
 
 function createOptionalMetricAgents(
@@ -1034,6 +2420,42 @@ function createOptionalPromptFlowTasks(
   promptFlowTasks: readonly PromptFlowTask[] | undefined,
 ): { promptFlowTasks?: readonly PromptFlowTask[] } {
   return promptFlowTasks === undefined ? {} : { promptFlowTasks };
+}
+
+function createOptionalContextPackBuilder(
+  contextPackBuilder: ContextPackBuilderPort | undefined,
+): { contextPackBuilder?: ContextPackBuilderPort } {
+  return contextPackBuilder === undefined ? {} : { contextPackBuilder };
+}
+
+function createOptionalContextPackReadinessPolicy(
+  contextPackReadinessPolicy: ContextPackReadinessPolicyPort | undefined,
+): { contextPackReadinessPolicy?: ContextPackReadinessPolicyPort } {
+  return contextPackReadinessPolicy === undefined ? {} : { contextPackReadinessPolicy };
+}
+
+function createOptionalContextPackWakeContext(
+  contextRefresh: ContextPackRefreshDecision | undefined,
+): { contextPackWakeContext?: ContextPackRefreshDecision } {
+  return contextRefresh === undefined ? {} : { contextPackWakeContext: contextRefresh };
+}
+
+function createOptionalContextReadinessEnforcement(
+  enforceContextReadiness: boolean | undefined,
+): { enforceContextReadiness?: boolean } {
+  return enforceContextReadiness === undefined ? {} : { enforceContextReadiness };
+}
+
+function createOptionalInboxWorkflow(
+  inboxWorkflow: ContextPackInboxWorkflowView | undefined,
+): { inboxWorkflow?: ContextPackInboxWorkflowView } {
+  return inboxWorkflow === undefined ? {} : { inboxWorkflow };
+}
+
+function createOptionalContextPackAdvisoryPromotionDecisions(
+  advisoryPromotionDecisions: readonly ContextPackAdvisoryPromotionDecision[] | undefined,
+): { advisoryPromotionDecisions?: readonly ContextPackAdvisoryPromotionDecision[] } {
+  return advisoryPromotionDecisions === undefined ? {} : { advisoryPromotionDecisions };
 }
 
 function createOptionalHierarchy(
@@ -1061,6 +2483,212 @@ function formatMetricBlocks(blocks: readonly MetricBlock[]): readonly string[] {
     return ["- no scoped metrics"];
   }
   return blocks.map((block) => `- ${block.label}: ${block.value}${block.unit ?? ""}`);
+}
+
+function formatContextReadout(
+  context: ContextReadout | undefined,
+  advisoryPromotionDecisions: readonly ContextPackAdvisoryPromotionDecision[] | undefined,
+): readonly string[] {
+  if (context === undefined) {
+    return ["context: unavailable", "- no context pack"];
+  }
+  return [
+    `context: ${context.status} ${context.pack.id}`,
+    `context summary: required=${context.summary.requiredItemCount} optional=${context.summary.optionalItemCount} omissions=${context.summary.omissionCount} contradictions=${context.summary.contradictionCount} stale=${context.summary.staleInputCount} blockers=${context.summary.lifecycleBlockerCount}`,
+    ...formatContextItems("required", context.requiredItems),
+    ...formatContextItems("optional", context.optionalItems),
+    ...formatContextAdvisoryPromotionCandidates(context, advisoryPromotionDecisions),
+    ...formatContextAttentionLanes(context),
+    ...formatContextDrillTargetGroups(context),
+    ...formatContextOmissions(context.omittedItemsWithReason),
+    ...formatContextStringList("context contradiction", context.contradictions),
+    ...formatContextStringList("context stale input", context.staleInputs),
+    ...formatContextStringList("context blocker", context.lifecycleBlockers),
+  ];
+}
+
+function formatContextPackInboxWorkflow(
+  inboxWorkflow: ContextPackInboxWorkflowView | undefined,
+): readonly string[] {
+  if (inboxWorkflow === undefined) return ["inbox workflow: unavailable"];
+  return [
+    `inbox workflow: total=${inboxWorkflow.summary.totalVisibleCount} urgent=${inboxWorkflow.summary.urgentUnreadCount} normal=${inboxWorkflow.summary.normalUnreadCount} due=${inboxWorkflow.summary.snoozedDueCount} future=${inboxWorkflow.summary.snoozedFutureCount} read=${inboxWorkflow.summary.readCount}`,
+    ...formatContextPackInboxWorkflowBatches(inboxWorkflow),
+  ];
+}
+
+function formatContextPackInboxWorkflowBatches(
+  inboxWorkflow: ContextPackInboxWorkflowView,
+): readonly string[] {
+  if (inboxWorkflow.batches.length === 0) return ["- no inbox workflow items"];
+  return inboxWorkflow.batches.flatMap((batch) =>
+    batch.items.map((item) =>
+      `- inbox ${batch.kind} ${item.inboxAnchorId} ${item.priority}/${item.status}${formatInboxWorkflowSnooze(item)} ${item.title} actions=${item.actions.map((action) => action.kind).join(",")}`
+    )
+  );
+}
+
+function formatInboxWorkflowSnooze(
+  item: ContextPackInboxWorkflowView["batches"][number]["items"][number],
+): string {
+  return item.snoozedUntil === undefined ? "" : ` until=${item.snoozedUntil}`;
+}
+
+function formatContextAttentionLanes(context: ContextReadout): readonly string[] {
+  const lanes = context.pack.curationPlan?.lanes ?? [];
+  if (lanes.length === 0) return ["- no context attention lanes"];
+  return [
+    "context attention lanes:",
+    ...lanes.map((lane) =>
+      `- attention lane ${lane.kind} priority=${lane.priority} required=${String(lane.required)}: ${lane.objective}; refs=${formatAttentionLaneRefs(lane.refs)}`
+    ),
+    ...formatContextAttentionInstructions(context.pack.curationPlan?.deterministicInstructions ?? []),
+  ];
+}
+
+function formatContextAttentionInstructions(instructions: readonly string[]): readonly string[] {
+  if (instructions.length === 0) return [];
+  return instructions.map((instruction) => `- attention instruction: ${instruction}`);
+}
+
+function formatContextDrillTargetGroups(context: ContextReadout): readonly string[] {
+  if (context.drillTargetGroups.length === 0) return ["- no context drill targets"];
+  return [
+    "context drill targets:",
+    ...context.drillTargetGroups.flatMap((group) =>
+      group.targets.map((target) =>
+        `- context drill ${group.itemId} ${target.routeRef} ${target.label}${formatContextDrillGovernance(target)}`
+      )
+    ),
+  ];
+}
+
+function formatContextDrillGovernance(
+  target: ContextReadout["drillTargetGroups"][number]["targets"][number],
+): string {
+  if (target.governance === undefined) return "";
+  return ` governance=${target.governance.tier}/${target.governance.phase} weight=${target.governance.weight} floor=${target.governance.readFloor}`;
+}
+
+function formatAttentionLaneRefs(refs: readonly ContextPackAttentionLaneRef[]): string {
+  if (refs.length === 0) return "none";
+  return refs.map(formatAttentionLaneRef).join(",");
+}
+
+function formatAttentionLaneRef(ref: ContextPackAttentionLaneRef): string {
+  switch (ref.kind) {
+    case ContextPackAttentionLaneRefKind.Item:
+      return `item:${ref.itemId}`;
+    case ContextPackAttentionLaneRefKind.Omission:
+      return `omission:${ref.omissionRef}`;
+    case ContextPackAttentionLaneRefKind.LegalAction:
+      return `legal_action:${ref.actionType}`;
+    case ContextPackAttentionLaneRefKind.ScopeAnchor:
+      return `scope_anchor:${ref.anchorRef}`;
+  }
+}
+
+function formatContextItems(
+  label: string,
+  items: ContextReadout["requiredItems"],
+): readonly string[] {
+  if (items.length === 0) return [`- no ${label} context items`];
+  return items.map((item) => `- ${label} context ${item.kind} ${item.id}: ${item.title}`);
+}
+
+function formatContextAdvisoryPromotionCandidates(
+  context: ContextReadout,
+  advisoryPromotionDecisions: readonly ContextPackAdvisoryPromotionDecision[] | undefined,
+): readonly string[] {
+  const candidates = context.pack.items.filter((item) => item.kind === ContextPackItemKind.SynthesisGapHypothesis);
+  if (candidates.length === 0) return [];
+  return [
+    "context advisory-promotion candidates:",
+    ...candidates.map((item) => {
+      const fingerprint = contextPackAdvisoryPromotionFingerprint(item);
+      return [
+        `- advisory promotion candidate ${item.id}`,
+        `profile=${context.pack.curationPlan?.profileId ?? AGENT_CLI_ADVISORY_PROMOTION_UNKNOWN_CURATION_PROFILE}`,
+        `fingerprint=${fingerprint.itemKind}:${fingerprint.summaryHash}`,
+        ...formatContextAdvisoryPromotionCandidateStatus(item, advisoryPromotionDecisions),
+        `title=${item.title}`,
+        `citations=${formatContextAdvisoryPromotionCsv(fingerprint.citationRefs)}`,
+        `sourcePointers=${formatContextAdvisoryPromotionCsv(fingerprint.sourcePointerKeys)}`,
+        `evidence=${formatContextAdvisoryPromotionCsv(contextPackAdvisoryPromotionDecisionEvidenceRefs(item))}`,
+        `command=${formatContextAdvisoryPromotionCommandHint(item)}`,
+      ].join(" ");
+    }),
+  ];
+}
+
+function formatContextAdvisoryPromotionCandidateStatus(
+  item: ContextPackItem,
+  advisoryPromotionDecisions: readonly ContextPackAdvisoryPromotionDecision[] | undefined,
+): readonly string[] {
+  if (advisoryPromotionDecisions === undefined) {
+    return [`status=${AgentCliContextPackAdvisoryPromotionCandidateStatus.Unknown}`];
+  }
+  const decision = contextPackAdvisoryPromotionApprovedDecisionFor(item, advisoryPromotionDecisions);
+  if (decision === undefined) {
+    return [`status=${AgentCliContextPackAdvisoryPromotionCandidateStatus.NotApproved}`];
+  }
+  return [
+    `status=${AgentCliContextPackAdvisoryPromotionCandidateStatus.Approved}`,
+    `decision=${decision.decisionId}`,
+    `blocker=${decision.lifecycleBlocker}`,
+  ];
+}
+
+function contextPackAdvisoryPromotionApprovedDecisionFor(
+  item: ContextPackItem,
+  advisoryPromotionDecisions: readonly ContextPackAdvisoryPromotionDecision[],
+): ContextPackAdvisoryPromotionDecision | undefined {
+  const fingerprint = contextPackAdvisoryPromotionFingerprint(item);
+  return advisoryPromotionDecisions.find((decision) =>
+    decision.status === ContextPackAdvisoryPromotionDecisionStatus.Approved &&
+    contextPackAdvisoryPromotionFingerprintsMatch(decision.fingerprint, fingerprint)
+  );
+}
+
+function contextPackAdvisoryPromotionFingerprintsMatch(
+  expected: ContextPackAdvisoryPromotionFingerprint,
+  actual: ContextPackAdvisoryPromotionFingerprint,
+): boolean {
+  return expected.itemKind === actual.itemKind &&
+    expected.summaryHash === actual.summaryHash &&
+    stringArraysMatch(expected.citationRefs, actual.citationRefs) &&
+    stringArraysMatch(expected.sourcePointerKeys, actual.sourcePointerKeys);
+}
+
+function stringArraysMatch(left: readonly string[], right: readonly string[]): boolean {
+  return left.length === right.length && left.every((value, index) => value === right[index]);
+}
+
+function formatContextAdvisoryPromotionCsv(values: readonly string[]): string {
+  return values.length === 0 ? "none" : values.join(",");
+}
+
+function formatContextAdvisoryPromotionCommandHint(item: ContextPackItem): string {
+  return [
+    `--${AgentCliContextPackAdvisoryPromotionFlag.Item}`,
+    item.id,
+    `--${AgentCliContextPackAdvisoryPromotionFlag.Status}`,
+    ContextPackAdvisoryPromotionDecisionStatus.Approved,
+    `--${AgentCliContextPackAdvisoryPromotionFlag.Blocker}`,
+    "<text>",
+  ].join(" ");
+}
+
+function formatContextOmissions(omissions: ContextReadout["omittedItemsWithReason"]): readonly string[] {
+  if (omissions.length === 0) return ["- no context omissions"];
+  return omissions.map((omission) =>
+    `- context omission ${omission.reason}${omission.nodeId === undefined ? "" : ` ${omission.nodeId}`}: ${omission.message}`
+  );
+}
+
+function formatContextStringList(label: string, values: readonly string[]): readonly string[] {
+  if (values.length === 0) return [`- no ${label}s`];
+  return values.map((value) => `- ${label}: ${value}`);
 }
 
 function formatPromptFlowTasks(promptFlows: PromptFlowReadout | undefined): readonly string[] {

@@ -12,7 +12,12 @@ import {
   WorkItemType,
 } from "../../domain/src/index.ts";
 import { CommandErrorCode, CommandResultArtifactType, CommandResultStatus, type CommandResult } from "../src/index.ts";
-import { recordDecision, type RecordDecisionCommand } from "../src/handlers/record-decision.ts";
+import {
+  ContextPackBusinessValidationOutcome,
+  RecordDecisionDocConsultOutcomeKind,
+  recordDecision,
+  type RecordDecisionCommand,
+} from "../src/index.ts";
 import type {
   CommandWorkAnchorWorkItem,
   DiscussionAnchorStateReaderPort,
@@ -108,6 +113,66 @@ describe("record decision handler", () => {
       alternativesConsidered: command.alternativesConsidered,
       followUpWorkItemIds: command.followUpWorkItemIds,
     });
+  });
+
+  test("records a business-validation doc consult outcome stamp for non-gate decisions", async () => {
+    const outcome = await recordDecision({
+      ...command,
+      title: "Product business validation",
+      decision: "The delivered behavior satisfies the accepted customer billing scope.",
+      docConsultOutcome: {
+        kind: RecordDecisionDocConsultOutcomeKind.BusinessValidation,
+        outcome: ContextPackBusinessValidationOutcome.Approved,
+      },
+    }, {
+      now: () => "2026-05-29T01:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+      discussionAnchorStateReader: createDiscussionAnchorStateReader(createDiscussionAnchor()),
+      workAnchorStateReader: createWorkAnchorStateReader([createFollowUpWorkItem("work-evidence-001")]),
+    });
+
+    equal(outcome.result.status, CommandResultStatus.Accepted);
+    deepEqual(outcome.effects.docConsultOutcomeStamps, [
+      {
+        organizationId: command.organizationId,
+        agentId: command.actor.agentId,
+        hatAssignmentId: command.actor.hatAssignmentId,
+        projectId: command.projectId,
+        teamId: command.teamId,
+        workItemId: command.workItemId,
+        outcome: ContextPackBusinessValidationOutcome.Approved,
+        outcomeRef: "business_validation:decision-record-001",
+        outcomeRecordedAt: "2026-05-29T01:00:00.000Z",
+      },
+    ]);
+    deepEqual(outcome.effects.outboxEvents[0]?.envelope.payload.docConsultOutcome, {
+      kind: RecordDecisionDocConsultOutcomeKind.BusinessValidation,
+      outcome: ContextPackBusinessValidationOutcome.Approved,
+    });
+  });
+
+  test("rejects malformed business-validation doc consult outcomes before emitting effects", async () => {
+    const outcome = await recordDecision(
+      {
+        ...command,
+        docConsultOutcome: {
+          kind: RecordDecisionDocConsultOutcomeKind.BusinessValidation,
+          outcome: "maybe",
+        },
+      } as unknown as RecordDecisionCommand,
+      {
+        now: () => "2026-05-29T01:00:00.000Z",
+        createId: (prefix) => `${prefix}-001`,
+        discussionAnchorStateReader: createDiscussionAnchorStateReader(createDiscussionAnchor()),
+        workAnchorStateReader: createWorkAnchorStateReader([createFollowUpWorkItem("work-evidence-001")]),
+      },
+    );
+
+    equal(outcome.result.status, CommandResultStatus.Rejected);
+    equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
+    equal(outcome.result.error?.message, "decision business-validation outcome is invalid");
+    equal(outcome.effects.decisionRecords.length, 0);
+    deepEqual(outcome.effects.docConsultOutcomeStamps, []);
   });
 
   test("rejects decisions without an existing discussion anchor reader", async () => {

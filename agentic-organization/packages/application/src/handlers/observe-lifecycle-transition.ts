@@ -1,6 +1,7 @@
 import {
   AgenticAggregateType,
   AgenticEventType,
+  StageOutcome,
   assertWorkItemTransition,
   createAgenticEventEnvelope,
   WorkItemState,
@@ -19,6 +20,7 @@ import {
   RunLifecyclePhase,
   type LifecycleTransitionCommandPayload,
 } from "../observe.ts";
+import { contextPackDocConsultOutcomeStampForLifecycleTransition } from "../context-pack-doc-consult-ledger.ts";
 import type {
   Clock,
   CommandEffects,
@@ -71,38 +73,54 @@ type WorkItemTransitionMapping = {
   toState: WorkItemState;
 };
 
+export const ObserveLifecycleActionType = {
+  Execute: "execute",
+  RequestReview: "request_review",
+  Complete: "complete",
+  Rework: "rework",
+  Resume: "resume",
+} as const;
+
+export type ObserveLifecycleActionType =
+  (typeof ObserveLifecycleActionType)[keyof typeof ObserveLifecycleActionType];
+
 const LIFECYCLE_TRANSITIONS: Readonly<Record<string, WorkItemTransitionMapping>> = {
-  execute: {
+  [ObserveLifecycleActionType.Execute]: {
     fromPhase: RunLifecyclePhase.AwaitingGate,
     toPhase: RunLifecyclePhase.Executing,
     fromState: WorkItemState.Ready,
     toState: WorkItemState.InProgress,
   },
-  request_review: {
+  [ObserveLifecycleActionType.RequestReview]: {
     fromPhase: RunLifecyclePhase.AwaitingEvidence,
     toPhase: RunLifecyclePhase.AwaitingReview,
     fromState: WorkItemState.InProgress,
     toState: WorkItemState.Review,
   },
-  complete: {
+  [ObserveLifecycleActionType.Complete]: {
     fromPhase: RunLifecyclePhase.AwaitingReview,
     toPhase: RunLifecyclePhase.Completed,
     fromState: WorkItemState.Review,
     toState: WorkItemState.Done,
   },
-  rework: {
+  [ObserveLifecycleActionType.Rework]: {
     fromPhase: RunLifecyclePhase.AwaitingReview,
     toPhase: RunLifecyclePhase.Executing,
     fromState: WorkItemState.Review,
     toState: WorkItemState.InProgress,
   },
-  resume: {
+  [ObserveLifecycleActionType.Resume]: {
     fromPhase: RunLifecyclePhase.Blocked,
     toPhase: RunLifecyclePhase.Observing,
     fromState: WorkItemState.Blocked,
     toState: WorkItemState.InProgress,
   },
 } as const;
+
+const DOC_CONSULT_OUTCOME_BY_LIFECYCLE_ACTION: Readonly<Partial<Record<ObserveLifecycleActionType, StageOutcome>>> = {
+  [ObserveLifecycleActionType.Complete]: StageOutcome.Approve,
+  [ObserveLifecycleActionType.Rework]: StageOutcome.RequestChanges,
+};
 
 export function createObserveLifecycleTransitionHandler(): CommandHandler<
   ObserveLifecycleTransitionCommand,
@@ -338,6 +356,7 @@ function createEffects(
     decisionRecords: [],
     qualityGateEvaluations: [],
     workScheduleBlocks: [],
+    docConsultOutcomeStamps: createDocConsultOutcomeStamps(command, transitionInput, occurredAt),
     auditEvents: [
       {
         auditEventId,
@@ -370,6 +389,7 @@ function createEmptyEffects(): CommandEffects {
     decisionRecords: [],
     qualityGateEvaluations: [],
     workScheduleBlocks: [],
+    docConsultOutcomeStamps: [],
     auditEvents: [],
     outboxEvents: [],
     workAnchors: {
@@ -380,6 +400,33 @@ function createEmptyEffects(): CommandEffects {
       workItemTransitions: [],
     },
   };
+}
+
+function createDocConsultOutcomeStamps(
+  command: ObserveLifecycleTransitionCommand,
+  transitionInput: CommandWorkAnchorTransitionInput,
+  occurredAt: string,
+): NonNullable<CommandEffects["docConsultOutcomeStamps"]> {
+  const actionType = observeLifecycleActionType(command.actionType);
+  if (actionType === undefined) return [];
+  const outcome = DOC_CONSULT_OUTCOME_BY_LIFECYCLE_ACTION[actionType];
+  if (outcome === undefined) return [];
+  return [contextPackDocConsultOutcomeStampForLifecycleTransition({
+    organizationId: command.organizationId,
+    projectId: command.projectId,
+    ...(command.teamId === undefined ? {} : { teamId: command.teamId }),
+    workItemId: command.workItemId,
+    actor: command.actor,
+    workStateTransitionId: transitionInput.transition.workStateTransitionId,
+    outcome,
+    outcomeRecordedAt: occurredAt,
+  })];
+}
+
+function observeLifecycleActionType(value: string): ObserveLifecycleActionType | undefined {
+  return Object.values(ObserveLifecycleActionType).includes(value as ObserveLifecycleActionType)
+    ? value as ObserveLifecycleActionType
+    : undefined;
 }
 
 function createOptionalTeamScope(command: ObserveLifecycleTransitionCommand): { teamId?: string } {

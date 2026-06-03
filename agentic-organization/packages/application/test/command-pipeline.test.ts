@@ -13,6 +13,7 @@ import {
   QualityGateKind,
   QualityGateOutcome,
   BusinessRuleEvaluationStatus,
+  ContextPackInboxAnchorPriority,
   type QualityGateEvaluation,
   SupervisorChainLevel,
   SupervisorSignalToolType,
@@ -46,6 +47,10 @@ import {
   createContentAddressedEvidenceRef,
 } from "../src/content-addressed-evidence.ts";
 import { createCommandPipeline } from "../src/command-pipeline.ts";
+import {
+  createAuthorContextPackInboxAnchorHandler,
+  type AuthorContextPackInboxAnchorCommand,
+} from "../src/handlers/author-context-pack-inbox-anchor.ts";
 import {
   createSendSupervisorSignalHandler,
   type SendSupervisorSignalCommand,
@@ -171,6 +176,26 @@ const qualityGateCommand: RecordQualityGateEvaluationCommand = {
   ],
 };
 
+const authorInboxAnchorCommand: AuthorContextPackInboxAnchorCommand = {
+  commandId: "cmd-author-inbox-anchor-pipeline-001",
+  type: CommandType.AuthorContextPackInboxAnchor,
+  idempotencyKey: "idem-author-inbox-anchor-pipeline-001",
+  requestHash: "hash-author-inbox-anchor-pipeline-001",
+  correlationId: "corr-author-inbox-anchor-pipeline-001",
+  causationId: "cause-author-inbox-anchor-pipeline-001",
+  traceId: "trace-author-inbox-anchor-pipeline-001",
+  organizationId: "org-lfg",
+  projectId: "project-agentic-org",
+  actor: {
+    agentId: "agent-developer-001",
+    hatAssignmentId: "hat-assignment-dev-001",
+  },
+  targetHatAssignmentId: "hat-assignment-director-001",
+  title: "Director context pack is stale",
+  summary: "Wake the director hat because the blocker briefing needs refreshed context.",
+  priority: ContextPackInboxAnchorPriority.Urgent,
+};
+
 const ApplicationTestCommandType = {
   RecordGenericArtifact: "test.record_generic_artifact",
 } as const;
@@ -183,6 +208,7 @@ type RecordGenericArtifactCommand = PipelineCommand & {
 type OrganizationTestCommand =
   | SendSupervisorSignalCommand
   | CreateWorkItemCommand
+  | AuthorContextPackInboxAnchorCommand
   | CreateDiscussionAnchorCommand
   | RecordQualityGateEvaluationCommand
   | RecordGenericArtifactCommand;
@@ -908,6 +934,34 @@ describe("command pipeline idempotency", () => {
       policyVersion: "policy-v1",
     });
     deepEqual(stateStoreFactory.recordedOutcomes[0]?.effects.outboxEvents[0]?.envelope.policy, {
+      decisionId: "policy-decision-allow-001",
+      policyVersion: "policy-v1",
+    });
+  });
+
+  test("preserves context-pack inbox anchor effects through policy attachment", async () => {
+    const stateStoreFactory = createRecordingCommandStateStoreFactory<CommandResult>();
+    const pipeline = createCommandPipeline<OrganizationTestCommand>({
+      stateStoreFactory,
+      commandAuthorizationPort: createAllowingCommandAuthorizationPort(),
+      policyDecisionObservationPort: createRecordingPolicyDecisionObservationPort(),
+      handlerRegistry: createCommandHandlerRegistry<OrganizationTestCommand, CommandResult>([
+        createAuthorContextPackInboxAnchorHandler(),
+      ]),
+      now: () => "2026-06-03T14:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+    });
+
+    const result = await pipeline.execute(authorInboxAnchorCommand);
+
+    equal(result.status, CommandResultStatus.Accepted);
+    equal(result.contextPackInboxAnchor?.inboxAnchorId, "context-pack-inbox-anchor-001");
+    equal(stateStoreFactory.recordedOutcomes.length, 1);
+    equal(
+      stateStoreFactory.recordedOutcomes[0]?.effects.contextPackInboxAnchors?.[0]?.inboxAnchorId,
+      "context-pack-inbox-anchor-001",
+    );
+    deepEqual(stateStoreFactory.recordedOutcomes[0]?.effects.auditEvents[0]?.policy, {
       decisionId: "policy-decision-allow-001",
       policyVersion: "policy-v1",
     });

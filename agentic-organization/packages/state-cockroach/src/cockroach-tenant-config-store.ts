@@ -17,11 +17,23 @@ export type CreateCockroachTenantConfigStoreInput = { executor: CockroachGeneric
 
 type ConfigRow = { organization_id: string; config: unknown; updated_at: string | Date; version: number | string };
 
+export const CockroachTenantConfigStoreStatement = {
+  Get: "get_tenant_config",
+  Upsert: "upsert_tenant_config",
+} as const;
+
+export type CockroachTenantConfigStoreStatement =
+  (typeof CockroachTenantConfigStoreStatement)[keyof typeof CockroachTenantConfigStoreStatement];
+
 export function createCockroachTenantConfigStore(input: CreateCockroachTenantConfigStoreInput): TenantConfigStore {
   const T = CockroachTableName.TenantConfig;
   return {
     async get(organizationId: string): Promise<TenantConfig | null> {
-      const r = await input.executor.execute<ConfigRow>({ name: "get_tenant_config", sql: `SELECT organization_id, config, updated_at, version FROM ${T} WHERE organization_id = $1`, parameters: [organizationId] });
+      const r = await input.executor.execute<ConfigRow>({
+        name: CockroachTenantConfigStoreStatement.Get,
+        sql: `SELECT organization_id, config, updated_at, version FROM ${T} WHERE organization_id = $1`,
+        parameters: [organizationId],
+      });
       const row = r.rows[0];
       if (row === undefined) return null;
       const config = (typeof row.config === "string" ? JSON.parse(row.config) : row.config) as Omit<TenantConfig, "organizationId" | "updatedAt" | "version">;
@@ -35,7 +47,7 @@ export function createCockroachTenantConfigStore(input: CreateCockroachTenantCon
     async upsert(config: TenantConfig): Promise<void> {
       const { organizationId, updatedAt, version, ...rest } = config;
       await input.executor.execute({
-        name: "upsert_tenant_config",
+        name: CockroachTenantConfigStoreStatement.Upsert,
         sql: `INSERT INTO ${T} (organization_id, config, updated_at, version) VALUES ($1,$2,$3,$4)
           ON CONFLICT (organization_id) DO UPDATE SET config = excluded.config, updated_at = excluded.updated_at, version = excluded.version`,
         parameters: [organizationId, JSON.stringify(rest), updatedAt, version],

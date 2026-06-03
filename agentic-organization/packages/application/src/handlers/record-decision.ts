@@ -16,6 +16,11 @@ import {
   CommandResultStatus,
   type CommandResult,
 } from "../command-result.ts";
+import {
+  type ContextPackBusinessValidationOutcome,
+  contextPackDocConsultOutcomeStampForBusinessValidation,
+  isContextPackBusinessValidationOutcome,
+} from "../context-pack-doc-consult-ledger.ts";
 import type {
   Clock,
   CommandEffects,
@@ -39,6 +44,8 @@ export const RecordDecisionValidationErrorMessage = {
   AnchorWithoutDecisionOutput: "decision requires a discussion anchor expecting a decision output",
   AlternativesInvalid: "decision alternatives must be string arrays",
   DecisionRequired: "decision content is required",
+  DocConsultBusinessValidationOutcomeInvalid: "decision business-validation outcome is invalid",
+  DocConsultOutcomeKindInvalid: "decision doc-consult outcome kind is invalid",
   FollowUpWorkInvalid: "decision follow-up work item IDs must be string arrays",
   FollowUpWorkMissing: "decision follow-up work item is missing",
   FollowUpWorkScopeMismatch: "decision follow-up work item scope does not match the command scope",
@@ -53,6 +60,18 @@ export const RecordDecisionValidationErrorMessage = {
 export type RecordDecisionValidationErrorMessage =
   (typeof RecordDecisionValidationErrorMessage)[keyof typeof RecordDecisionValidationErrorMessage];
 
+export const RecordDecisionDocConsultOutcomeKind = {
+  BusinessValidation: "business_validation",
+} as const;
+
+export type RecordDecisionDocConsultOutcomeKind =
+  (typeof RecordDecisionDocConsultOutcomeKind)[keyof typeof RecordDecisionDocConsultOutcomeKind];
+
+export type RecordDecisionDocConsultOutcome = {
+  kind: typeof RecordDecisionDocConsultOutcomeKind.BusinessValidation;
+  outcome: ContextPackBusinessValidationOutcome;
+};
+
 export type RecordDecisionCommand = PipelineCommand & {
   type: typeof CommandType.RecordDecision;
   teamId?: string;
@@ -62,6 +81,7 @@ export type RecordDecisionCommand = PipelineCommand & {
   decision: string;
   rationale: string;
   alternativesConsidered?: readonly string[] | undefined;
+  docConsultOutcome?: RecordDecisionDocConsultOutcome | undefined;
   followUpWorkItemIds?: readonly string[] | undefined;
 };
 
@@ -136,6 +156,7 @@ export async function recordDecision(
       decision: command.decision,
       rationale: command.rationale,
       alternativesConsidered: createOptionalStringList(command.alternativesConsidered),
+      ...createOptionalDocConsultOutcomePayload(command),
       followUpWorkItemIds: createOptionalStringList(command.followUpWorkItemIds),
     },
   });
@@ -169,6 +190,7 @@ export async function recordDecision(
       supervisorSignals: [],
       discussionAnchors: [],
       decisionRecords: [decisionRecord],
+      docConsultOutcomeStamps: createDocConsultOutcomeStamps(command, decisionRecord),
       qualityGateEvaluations: [],
       workScheduleBlocks: [],
       auditEvents: [
@@ -344,6 +366,36 @@ function validateRecordDecisionCommand(
     return RecordDecisionValidationErrorMessage.FollowUpWorkInvalid;
   }
 
+  const docConsultOutcomeValidation = validateDocConsultOutcome(command);
+
+  if (docConsultOutcomeValidation !== undefined) {
+    return docConsultOutcomeValidation;
+  }
+
+  return undefined;
+}
+
+function validateDocConsultOutcome(
+  command: RecordDecisionCommand,
+): RecordDecisionValidationErrorMessage | undefined {
+  const { docConsultOutcome } = command;
+
+  if (docConsultOutcome === undefined) {
+    return undefined;
+  }
+
+  if (!isRecord(docConsultOutcome)) {
+    return RecordDecisionValidationErrorMessage.DocConsultOutcomeKindInvalid;
+  }
+
+  if (docConsultOutcome.kind !== RecordDecisionDocConsultOutcomeKind.BusinessValidation) {
+    return RecordDecisionValidationErrorMessage.DocConsultOutcomeKindInvalid;
+  }
+
+  if (!isContextPackBusinessValidationOutcome(docConsultOutcome.outcome)) {
+    return RecordDecisionValidationErrorMessage.DocConsultBusinessValidationOutcomeInvalid;
+  }
+
   return undefined;
 }
 
@@ -412,6 +464,7 @@ function createEmptyCommandEffects(): CommandEffects {
     supervisorSignals: [],
     discussionAnchors: [],
     decisionRecords: [],
+    docConsultOutcomeStamps: [],
     qualityGateEvaluations: [],
     workScheduleBlocks: [],
     auditEvents: [],
@@ -434,6 +487,43 @@ function createOptionalTeamScope(command: Pick<RecordDecisionCommand, "teamId">)
   return command.teamId === undefined ? {} : { teamId: command.teamId };
 }
 
+function createOptionalDocConsultOutcomePayload(
+  command: Pick<RecordDecisionCommand, "docConsultOutcome">,
+): { docConsultOutcome?: RecordDecisionDocConsultOutcome } {
+  if (command.docConsultOutcome === undefined) {
+    return {};
+  }
+
+  return {
+    docConsultOutcome: {
+      kind: command.docConsultOutcome.kind,
+      outcome: command.docConsultOutcome.outcome,
+    },
+  };
+}
+
+function createDocConsultOutcomeStamps(
+  command: RecordDecisionCommand,
+  decisionRecord: DecisionRecord,
+): NonNullable<CommandEffects["docConsultOutcomeStamps"]> {
+  if (command.docConsultOutcome?.kind !== RecordDecisionDocConsultOutcomeKind.BusinessValidation) {
+    return [];
+  }
+
+  return [
+    contextPackDocConsultOutcomeStampForBusinessValidation({
+      organizationId: command.organizationId,
+      actor: command.actor,
+      ...(command.projectId === undefined ? {} : { projectId: command.projectId }),
+      ...(command.teamId === undefined ? {} : { teamId: command.teamId }),
+      workItemId: command.workItemId,
+      businessValidationId: decisionRecord.decisionRecordId,
+      outcome: command.docConsultOutcome.outcome,
+      outcomeRecordedAt: decisionRecord.decidedAt,
+    }),
+  ];
+}
+
 function isBlank(value: unknown): boolean {
   return typeof value !== "string" || value.trim().length === 0;
 }
@@ -448,4 +538,8 @@ function createOptionalStringList(value: readonly string[] | undefined): readonl
 
 function isNonBlankString(value: unknown): value is string {
   return typeof value === "string" && !isBlank(value);
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }

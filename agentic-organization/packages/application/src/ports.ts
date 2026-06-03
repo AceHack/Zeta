@@ -1,6 +1,8 @@
 import type {
   AuditEvent,
   AgenticActor,
+  ContextPackInboxAnchor,
+  ContextPackInboxAnchorStatusTransition,
   DecisionRecord,
   DiscussionAnchor,
   HatAssignmentAuthoritySnapshot,
@@ -16,6 +18,8 @@ import type {
   WorkStateTransition,
 } from "../../domain/src/index.ts";
 import type { CommandType } from "../../domain/src/index.ts";
+import type { ContextPackAdvisoryPromotionDecisionWriteInput } from "./context-pack-advisory-promotion-policy.ts";
+import type { ContextPackDocConsultOutcomeStamp } from "./context-pack-doc-consult-ledger.ts";
 
 export type Clock = {
   now: () => string;
@@ -31,8 +35,12 @@ export type CommandEffects = {
   decisionRecords: readonly DecisionRecord[];
   qualityGateEvaluations: readonly QualityGateEvaluation[];
   workScheduleBlocks: readonly WorkScheduleBlock[];
+  contextPackInboxAnchors?: readonly ContextPackInboxAnchor[] | undefined;
+  contextPackInboxAnchorStatusTransitions?: readonly ContextPackInboxAnchorStatusTransition[] | undefined;
+  contextPackAdvisoryPromotionDecisions?: readonly ContextPackAdvisoryPromotionDecisionWriteInput[] | undefined;
   auditEvents: readonly AuditEvent[];
   outboxEvents: readonly OutboxEvent[];
+  docConsultOutcomeStamps?: readonly ContextPackDocConsultOutcomeStamp[] | undefined;
   workAnchors?: WorkAnchorCommandEffects | undefined;
 };
 
@@ -90,6 +98,10 @@ export type WorkAnchorStateReaderPort = {
 
 export type DiscussionAnchorStateReaderPort = {
   findDiscussionAnchor: (discussionAnchorId: string) => Promise<DiscussionAnchor | undefined>;
+};
+
+export type ContextPackInboxAnchorStateReaderPort = {
+  findContextPackInboxAnchor: (inboxAnchorId: string) => Promise<ContextPackInboxAnchor | undefined>;
 };
 
 export type HatAssignmentAuthorityReaderPort = {
@@ -195,6 +207,8 @@ export type CommandOutcomePersistenceStatus =
   (typeof CommandOutcomePersistenceStatus)[keyof typeof CommandOutcomePersistenceStatus];
 
 export const CommandOutcomeEffectConflictReason = {
+  DocConsultOutcomeStampMissing: "doc_consult_outcome_stamp_missing",
+  ContextPackInboxAnchorMissing: "context_pack_inbox_anchor_missing",
   UnsupportedDiscussionAnchorEffectType: "unsupported_discussion_anchor_effect_type",
   WorkAnchorEffectConflict: "work_anchor_effect_conflict",
   WorkScheduleBlockOverlap: "work_schedule_block_overlap",

@@ -168,6 +168,13 @@ export {
   createCockroachWorkItemStateHistoryMetadataMigration,
   createCockroachControlPlaneFlagsMigration,
   createCockroachControlPlaneRateLimitsMigration,
+  createCockroachGraphNodeKindExpansionMigration,
+  createCockroachContextPackSnapshotMigration,
+  createCockroachDocConsultContextPackExposureMigration,
+  createCockroachContextPackSnapshotPhaseMigration,
+  createCockroachDocConsultOutcomeStampMigration,
+  createCockroachContextPackAdvisoryPromotionDecisionMigration,
+  createCockroachContextPackInboxAnchorMigration,
   type CockroachSchemaMigration,
 } from "./cockroach-schema.ts";
 export {
@@ -202,7 +209,10 @@ export {
   type CreateCockroachReviewStageStatusStoreInput,
 } from "./cockroach-review-stage-status-store.ts";
 export {
+  CockroachMemoryStateStoreStatement,
+  createCockroachContextPackMemoryEnvelopeReader,
   createCockroachMemoryStateStore,
+  type CockroachMemoryStateStoreStatement as CockroachMemoryStateStoreStatementName,
   type MemoryStateStore,
   type CreateCockroachMemoryStateStoreInput,
 } from "./cockroach-memory-state-store.ts";
@@ -216,6 +226,53 @@ export {
   type DocUnitStore,
   type CreateCockroachDocUnitStoreInput,
 } from "./cockroach-doc-unit-store.ts";
+export {
+  createCockroachDocEntityStore,
+  type DocEntityStore,
+  type CreateCockroachDocEntityStoreInput,
+} from "./cockroach-doc-entity-store.ts";
+export {
+  createCockroachContextPackDocumentPort,
+  type CreateCockroachContextPackDocumentPortInput,
+} from "./cockroach-context-pack-document-port.ts";
+export {
+  CockroachContextPackLifecycleAnchorStatement,
+  createCockroachContextPackLifecycleAnchorPort,
+  type CockroachContextPackLifecycleAnchorSqlExecutor,
+  type CockroachContextPackLifecycleAnchorSqlResult,
+  type CockroachContextPackLifecycleAnchorSqlStatement,
+  type CreateCockroachContextPackLifecycleAnchorPortInput,
+} from "./cockroach-context-pack-lifecycle-anchor-port.ts";
+export {
+  CockroachContextPackInboxAnchorStatement,
+  createCockroachContextPackInboxAnchorPort,
+  createCockroachContextPackInboxWorkflowViewReader,
+  type CockroachContextPackInboxWorkflowViewReader,
+  type CockroachContextPackInboxAnchorSqlExecutor,
+  type CockroachContextPackInboxAnchorSqlResult,
+  type CockroachContextPackInboxAnchorSqlStatement,
+  type ContextPackInboxWorkflowAnchorLookup,
+  type CreateCockroachContextPackInboxAnchorPortInput,
+} from "./cockroach-context-pack-inbox-anchor-port.ts";
+export {
+  CockroachContextPackSnapshotStoreStatement,
+  createCockroachContextPackSnapshotStore,
+  type CockroachContextPackSnapshotStoreStatement as CockroachContextPackSnapshotStoreStatementName,
+  type CreateCockroachContextPackSnapshotStoreInput,
+} from "./cockroach-context-pack-snapshot-store.ts";
+export {
+  CockroachContextPackAdvisoryPromotionDecisionStoreStatement,
+  createCockroachContextPackAdvisoryPromotionDecisionStore,
+  type CockroachContextPackAdvisoryPromotionDecisionStoreStatement as CockroachContextPackAdvisoryPromotionDecisionStoreStatementName,
+  type CreateCockroachContextPackAdvisoryPromotionDecisionStoreInput,
+} from "./cockroach-context-pack-advisory-promotion-decision-store.ts";
+export {
+  CockroachDocConsultLedgerStoreStatement,
+  createCockroachDocConsultLedgerStore,
+  type CockroachDocConsultLedgerStore,
+  type CockroachDocConsultLedgerStoreStatement as CockroachDocConsultLedgerStoreStatementName,
+  type CreateCockroachDocConsultLedgerStoreInput,
+} from "./cockroach-doc-consult-ledger-store.ts";
 export { createCockroachKnowledgeGraphMigration } from "./cockroach-schema.ts";
 export {
   createCockroachGraphStore,
@@ -224,7 +281,9 @@ export {
 } from "./cockroach-graph-store.ts";
 export { createCockroachTenantConfigMigration } from "./cockroach-schema.ts";
 export {
+  CockroachTenantConfigStoreStatement,
   createCockroachTenantConfigStore,
+  type CockroachTenantConfigStoreStatement as CockroachTenantConfigStoreStatementName,
   type TenantConfigStore,
   type CreateCockroachTenantConfigStoreInput,
 } from "./cockroach-tenant-config-store.ts";

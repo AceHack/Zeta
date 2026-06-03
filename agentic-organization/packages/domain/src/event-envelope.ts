@@ -12,6 +12,9 @@ export const CommandType = {
   ScheduleWorkBlock: "schedule_work_block",
   SendSupervisorSignal: "send_supervisor_signal",
   TriageSupervisorSignal: "triage_supervisor_signal",
+  AuthorContextPackInboxAnchor: "author_context_pack_inbox_anchor",
+  UpdateContextPackInboxAnchorStatus: "update_context_pack_inbox_anchor_status",
+  AuthorContextPackAdvisoryPromotionDecision: "author_context_pack_advisory_promotion_decision",
 } as const;
 
 export type CommandType = (typeof CommandType)[keyof typeof CommandType];

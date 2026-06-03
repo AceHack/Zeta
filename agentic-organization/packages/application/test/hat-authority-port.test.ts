@@ -60,6 +60,20 @@ describe("real hat authority port", () => {
     equal(decision.status, HatAuthorityDecisionStatus.Active);
   });
 
+  test("allows advisory-promotion decision authoring through durable hat authority", async () => {
+    const port = createHatAuthorityPort({
+      hatAssignmentAuthorityReader: readerFor(authority({ hatId: "dependency_manager" })),
+      hatDefinitions: buildHatDefinitions(),
+      createId,
+    });
+
+    const decision = await port.evaluateHatAuthority(request({
+      commandType: CommandType.AuthorContextPackAdvisoryPromotionDecision,
+    }));
+
+    equal(decision.status, HatAuthorityDecisionStatus.Active);
+  });
+
   test("allows observe-act lifecycle transition commands through durable hat authority", async () => {
     const port = createHatAuthorityPort({
       hatAssignmentAuthorityReader: readerFor(authority({ hatId: "release_operator" })),

@@ -135,6 +135,19 @@ describe("record quality gate evaluation handler", () => {
         },
       },
     ]);
+    deepEqual(outcome.effects.docConsultOutcomeStamps, [
+      {
+        organizationId: command.organizationId,
+        agentId: command.actor.agentId,
+        hatAssignmentId: command.actor.hatAssignmentId,
+        projectId: command.projectId,
+        teamId: command.teamId,
+        workItemId: command.workItemId,
+        outcome: command.outcome,
+        outcomeRef: "quality_gate:quality-gate-evaluation-001",
+        outcomeRecordedAt: "2026-05-29T15:00:00.000Z",
+      },
+    ]);
     deepEqual(outcome.effects.outboxEvents[0]?.envelope.payload, {
       discussionAnchorId: command.discussionAnchorId,
       gateKind: command.gateKind,
@@ -169,6 +182,23 @@ describe("record quality gate evaluation handler", () => {
     equal(outcome.result.status, CommandResultStatus.Rejected);
     equal(outcome.result.error?.code, CommandErrorCode.ValidationFailed);
     equal(outcome.result.error?.message, "approved final business validation requires all business rules satisfied, not applicable, or changed by decision");
+    equal(outcome.effects.qualityGateEvaluations.length, 0);
+  });
+
+  test("rejects quality gates when the related work item belongs to another team", async () => {
+    const outcome = await recordQualityGateEvaluation(command, {
+      now: () => "2026-05-29T15:00:00.000Z",
+      createId: (prefix) => `${prefix}-001`,
+      discussionAnchorStateReader: createDiscussionAnchorStateReader(createDiscussionAnchor()),
+      qualityGateEvaluationStateReader: createQualityGateEvaluationStateReader(
+        createSatisfiedPriorQualityGateChain(command.gateKind),
+      ),
+      workAnchorStateReader: createWorkAnchorStateReader([createTeamScopedWorkItem(command.workItemId, "team-other")]),
+    });
+
+    equal(outcome.result.status, CommandResultStatus.Rejected);
+    equal(outcome.result.error?.code, CommandErrorCode.PreconditionFailed);
+    equal(outcome.result.error?.message, "quality gate scope does not match the command scope");
     equal(outcome.effects.qualityGateEvaluations.length, 0);
   });
 
@@ -478,6 +508,13 @@ function createWorkItem(workItemId: string): CommandWorkAnchorWorkItem {
       traceId: command.traceId,
     },
   } as CommandWorkAnchorWorkItem;
+}
+
+function createTeamScopedWorkItem(workItemId: string, teamId: string): CommandWorkAnchorWorkItem {
+  return {
+    ...createWorkItem(workItemId),
+    teamId,
+  } as CommandWorkAnchorWorkItem & { teamId: string };
 }
 
 function createQualityGateEvaluation(gateKind: QualityGateKind): QualityGateEvaluation {

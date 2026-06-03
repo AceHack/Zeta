@@ -25,6 +25,12 @@ import {
   GraphConfidence,
 } from "../../domain/src/index.ts";
 import {
+  ContextPackAdvisoryPromotionDecisionStatus,
+  ContextPackInboxAnchorPriority,
+  ContextPackInboxAnchorStatus,
+  ContextPackItemKind,
+} from "../../application/src/index.ts";
+import {
   CockroachCoreStateMigrationName,
   CockroachSchemaBackfillValue,
   CockroachTableName,
@@ -52,6 +58,14 @@ import {
   createCockroachOrgEventTransitionContextMigration,
   createCockroachControlPlaneFlagsMigration,
   createCockroachControlPlaneRateLimitsMigration,
+  createCockroachGraphNodeKindExpansionMigration,
+  createCockroachContextPackSnapshotMigration,
+  createCockroachDocUnitBoundConsultIndexesMigration,
+  createCockroachDocConsultContextPackExposureMigration,
+  createCockroachContextPackSnapshotPhaseMigration,
+  createCockroachDocConsultOutcomeStampMigration,
+  createCockroachContextPackAdvisoryPromotionDecisionMigration,
+  createCockroachContextPackInboxAnchorMigration,
 } from "../src/cockroach-schema.ts";
 
 describe("cockroach core state schema", () => {
@@ -117,6 +131,14 @@ describe("cockroach core state schema", () => {
     equal(migrations[21]?.name, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
     equal(migrations[22]?.name, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
     equal(migrations[23]?.name, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24);
+    equal(migrations[24]?.name, CockroachCoreStateMigrationName.GraphNodeKindExpansionV25);
+    equal(migrations[25]?.name, CockroachCoreStateMigrationName.ContextPackSnapshotV26);
+    equal(migrations[26]?.name, CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27);
+    equal(migrations[27]?.name, CockroachCoreStateMigrationName.DocConsultContextPackExposureV28);
+    equal(migrations[28]?.name, CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29);
+    equal(migrations[29]?.name, CockroachCoreStateMigrationName.DocConsultOutcomeStampV30);
+    equal(migrations[30]?.name, CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31);
+    equal(migrations[31]?.name, CockroachCoreStateMigrationName.ContextPackInboxAnchorV32);
   });
 
   test("declares the hermes run table (durable agent-run history)", () => {
@@ -376,7 +398,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the memory system migration as V16 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 9]!.name, CockroachCoreStateMigrationName.MemorySystemV16);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.OrgSystemV15, CockroachCoreStateMigrationName.MemorySystemV16);
   });
 
   test("declares the change control kernel (change_sets + review_stage_status) with phase check", () => {
@@ -396,7 +418,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the change control migration as V17 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 8]!.name, CockroachCoreStateMigrationName.ChangeControlV17);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.MemorySystemV16, CockroachCoreStateMigrationName.ChangeControlV17);
   });
 
   test("declares the document intelligence kernel (doc units/sources/entities/graph/consult) with lifecycle + type checks", () => {
@@ -413,6 +435,15 @@ describe("cockroach core state schema", () => {
     ok(migration.sql.includes("provenance_change_set_id STRING NULL"));
     ok(migration.sql.includes("bound_hat_ids JSONB NOT NULL"));
     ok(migration.sql.includes("bound_stage_ids JSONB NOT NULL"));
+    ok(migration.sql.includes("context_pack_id STRING NULL"));
+    ok(migration.sql.includes("context_item_ids JSONB NOT NULL DEFAULT '[]'::JSONB"));
+    ok(migration.sql.includes("work_item_id STRING NULL"));
+    ok(migration.sql.includes("outcome_ref STRING NULL"));
+    ok(migration.sql.includes("outcome_recorded_at TIMESTAMPTZ NULL"));
+    ok(migration.sql.includes("INDEX doc_consult_by_outcome_ref"));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocConsultOutcomes}`));
+    ok(migration.sql.includes("PRIMARY KEY (doc_consult_id, outcome_ref)"));
+    ok(migration.sql.includes("INDEX doc_consult_outcomes_by_scope"));
     // CHECK constraints derive from the domain enums (no drift possible).
     ok(migration.sql.includes(createCheckConstraintValues(Object.values(DocType))));
     ok(migration.sql.includes(createCheckConstraintValues(Object.values(DocScopeKind))));
@@ -423,7 +454,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the document intelligence migration as V18 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 7]!.name, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.ChangeControlV17, CockroachCoreStateMigrationName.DocumentIntelligenceV18);
   });
 
   test("declares the knowledge graph kernel (graph_nodes + graph_edges) with confidence + kind checks", () => {
@@ -446,7 +477,7 @@ describe("cockroach core state schema", () => {
 
   test("registers the knowledge graph migration as V19 in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 6]!.name, CockroachCoreStateMigrationName.KnowledgeGraphV19);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.DocumentIntelligenceV18, CockroachCoreStateMigrationName.KnowledgeGraphV19);
   });
 
   test("declares the tenant config table (the org as a configurable runtime)", () => {
@@ -461,17 +492,17 @@ describe("cockroach core state schema", () => {
 
   test("registers the tenant config migration as V20 before traceparent in the ordered migration set", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 5]!.name, CockroachCoreStateMigrationName.TenantConfigV20);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.KnowledgeGraphV19, CockroachCoreStateMigrationName.TenantConfigV20);
   });
 
   test("registers the reaction plan traceparent migration as V21 before org-event transition context", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 4]!.name, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.TenantConfigV20, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21);
   });
 
   test("registers the org-event transition-context migration as V22 before control-plane flags", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 3]!.name, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.ReactionPlanTraceparentV21, CockroachCoreStateMigrationName.OrgEventTransitionContextV22);
   });
 
   test("declares an additive org-event transition-context migration for existing databases", () => {
@@ -484,8 +515,172 @@ describe("cockroach core state schema", () => {
 
   test("registers control-plane rate limits as V24 after control-plane flags", () => {
     const all = createCockroachCoreStateMigrations();
-    equal(all[all.length - 2]!.name, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
-    equal(all[all.length - 1]!.name, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.OrgEventTransitionContextV22, CockroachCoreStateMigrationName.ControlPlaneFlagsV23);
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.ControlPlaneFlagsV23, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24);
+  });
+
+  test("declares graph-node kind expansion as an additive existing-cluster migration", () => {
+    const migration = createCockroachGraphNodeKindExpansionMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.GraphNodeKindExpansionV25);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.GraphNodes}`));
+    ok(migration.sql.includes("DROP CONSTRAINT IF EXISTS agentic_org_graph_nodes_kind_check"));
+    ok(migration.sql.includes("ADD CONSTRAINT agentic_org_graph_nodes_kind_check"));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(GraphNodeKind))));
+  });
+
+  test("registers graph-node kind expansion after control-plane rate limits", () => {
+    const all = createCockroachCoreStateMigrations();
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.ControlPlaneRateLimitsV24, CockroachCoreStateMigrationName.GraphNodeKindExpansionV25);
+  });
+
+  test("declares the context-pack snapshot table for replayable observe context", () => {
+    const migration = createCockroachContextPackSnapshotMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ContextPackSnapshotV26);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ContextPackSnapshots}`));
+    ok(migration.sql.includes("context_pack_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("organization_id STRING NOT NULL"));
+    ok(migration.sql.includes("hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("status STRING NOT NULL"));
+    ok(migration.sql.includes("phase STRING NULL"));
+    ok(migration.sql.includes("source_graph_version STRING NOT NULL"));
+    ok(migration.sql.includes("policy_version STRING NOT NULL"));
+    ok(migration.sql.includes("context_json JSONB NOT NULL"));
+    ok(migration.sql.includes("INDEX context_pack_snapshots_by_scope"));
+    ok(migration.sql.includes("INDEX context_pack_snapshots_by_hat"));
+    ok(migration.sql.includes("INDEX context_pack_snapshots_by_status"));
+  });
+
+  test("registers context-pack snapshots after graph-node kind expansion", () => {
+    const all = createCockroachCoreStateMigrations();
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.GraphNodeKindExpansionV25, CockroachCoreStateMigrationName.ContextPackSnapshotV26);
+  });
+
+  test("declares doc-unit bound consult indexes as an additive existing-cluster migration", () => {
+    const migration = createCockroachDocUnitBoundConsultIndexesMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27);
+    ok(migration.sql.includes("CREATE INVERTED INDEX IF NOT EXISTS doc_units_by_bound_hat_ids"));
+    ok(migration.sql.includes("CREATE INVERTED INDEX IF NOT EXISTS doc_units_by_bound_stage_ids"));
+    ok(migration.sql.includes(`ON ${CockroachTableName.DocUnits} (bound_hat_ids)`));
+    ok(migration.sql.includes(`ON ${CockroachTableName.DocUnits} (bound_stage_ids)`));
+  });
+
+  test("registers doc-unit bound consult indexes after context-pack snapshots", () => {
+    const all = createCockroachCoreStateMigrations();
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.ContextPackSnapshotV26, CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27);
+  });
+
+  test("declares doc consult context-pack exposure as an additive existing-cluster migration", () => {
+    const migration = createCockroachDocConsultContextPackExposureMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.DocConsultContextPackExposureV28);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.DocConsultLedger}`));
+    ok(migration.sql.includes("ALTER COLUMN work_item_id DROP NOT NULL"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS context_pack_id STRING"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS context_item_ids JSONB NOT NULL DEFAULT '[]'::JSONB"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS source_refs JSONB NOT NULL DEFAULT '[]'::JSONB"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS hat_assignment_id STRING"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS trace_id STRING"));
+    ok(migration.sql.includes("CREATE INDEX IF NOT EXISTS doc_consult_by_context_pack"));
+    ok(migration.sql.includes("CREATE INDEX IF NOT EXISTS doc_consult_by_hat"));
+  });
+
+  test("registers doc consult context-pack exposure after doc-unit bound consult indexes", () => {
+    const all = createCockroachCoreStateMigrations();
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.DocUnitBoundConsultIndexesV27, CockroachCoreStateMigrationName.DocConsultContextPackExposureV28);
+  });
+
+  test("declares context-pack snapshot phase as an additive existing-cluster migration", () => {
+    const migration = createCockroachContextPackSnapshotPhaseMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.ContextPackSnapshots}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS phase STRING"));
+  });
+
+  test("registers context-pack snapshot phase after doc consult context-pack exposure", () => {
+    const all = createCockroachCoreStateMigrations();
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.DocConsultContextPackExposureV28, CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29);
+  });
+
+  test("declares doc consult outcome stamp as an additive existing-cluster migration", () => {
+    const migration = createCockroachDocConsultOutcomeStampMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.DocConsultOutcomeStampV30);
+    ok(migration.sql.includes(`ALTER TABLE IF EXISTS ${CockroachTableName.DocConsultLedger}`));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS outcome_ref STRING"));
+    ok(migration.sql.includes("ADD COLUMN IF NOT EXISTS outcome_recorded_at TIMESTAMPTZ"));
+    ok(migration.sql.includes("CREATE INDEX IF NOT EXISTS doc_consult_by_outcome_ref"));
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.DocConsultOutcomes}`));
+    ok(migration.sql.includes("PRIMARY KEY (doc_consult_id, outcome_ref)"));
+    ok(migration.sql.includes("INDEX doc_consult_outcomes_by_outcome_ref"));
+  });
+
+  test("registers doc consult outcome stamp after context-pack snapshot phase", () => {
+    const all = createCockroachCoreStateMigrations();
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.ContextPackSnapshotPhaseV29, CockroachCoreStateMigrationName.DocConsultOutcomeStampV30);
+  });
+
+  test("declares context-pack advisory promotion decisions as approval-backed durable state", () => {
+    const migration = createCockroachContextPackAdvisoryPromotionDecisionMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ContextPackAdvisoryPromotionDecisions}`));
+    ok(migration.sql.includes("decision_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("decision_key STRING NOT NULL UNIQUE"));
+    ok(migration.sql.includes("organization_id STRING NOT NULL"));
+    ok(migration.sql.includes("status STRING NOT NULL"));
+    ok(migration.sql.includes("policy_version STRING NOT NULL"));
+    ok(migration.sql.includes("lifecycle_blocker STRING NOT NULL"));
+    ok(migration.sql.includes("item_kind STRING NOT NULL"));
+    ok(migration.sql.includes("summary_hash STRING NOT NULL"));
+    ok(migration.sql.includes("citation_refs JSONB NOT NULL"));
+    ok(migration.sql.includes("source_pointer_keys JSONB NOT NULL"));
+    ok(migration.sql.includes("evidence_refs JSONB NOT NULL"));
+    ok(migration.sql.includes("decided_by_hat_id STRING NOT NULL"));
+    ok(migration.sql.includes("decided_by_hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("updated_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(ContextPackAdvisoryPromotionDecisionStatus))));
+    ok(migration.sql.includes(createCheckConstraintValues([ContextPackItemKind.SynthesisGapHypothesis])));
+    ok(migration.sql.includes("CHECK (length(trim(lifecycle_blocker)) > 0)"));
+    ok(migration.sql.includes("INDEX advisory_promotion_decisions_by_scope"));
+    ok(migration.sql.includes("INDEX advisory_promotion_decisions_by_fingerprint"));
+    ok(migration.sql.includes("INDEX advisory_promotion_decisions_by_curator"));
+  });
+
+  test("registers context-pack advisory promotion decisions after doc consult outcome stamps", () => {
+    const all = createCockroachCoreStateMigrations();
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.DocConsultOutcomeStampV30, CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31);
+  });
+
+  test("declares context-pack inbox anchors as durable per-hat wake context", () => {
+    const migration = createCockroachContextPackInboxAnchorMigration();
+
+    equal(migration.name, CockroachCoreStateMigrationName.ContextPackInboxAnchorV32);
+    ok(migration.sql.includes(`CREATE TABLE IF NOT EXISTS ${CockroachTableName.ContextPackInboxAnchors}`));
+    ok(migration.sql.includes("inbox_anchor_id STRING PRIMARY KEY"));
+    ok(migration.sql.includes("organization_id STRING NOT NULL"));
+    ok(migration.sql.includes("project_id STRING NOT NULL"));
+    ok(migration.sql.includes("team_id STRING NULL"));
+    ok(migration.sql.includes("work_item_id STRING NULL"));
+    ok(migration.sql.includes("target_hat_assignment_id STRING NOT NULL"));
+    ok(migration.sql.includes("target_agent_id STRING NULL"));
+    ok(migration.sql.includes("priority STRING NOT NULL"));
+    ok(migration.sql.includes("status STRING NOT NULL"));
+    ok(migration.sql.includes("delivered_at TIMESTAMPTZ NOT NULL"));
+    ok(migration.sql.includes("source_ref STRING NULL"));
+    ok(migration.sql.includes("trace_id STRING NULL"));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(ContextPackInboxAnchorPriority))));
+    ok(migration.sql.includes(createCheckConstraintValues(Object.values(ContextPackInboxAnchorStatus))));
+    ok(migration.sql.includes("INDEX context_pack_inbox_anchors_by_target_hat"));
+    ok(migration.sql.includes("INDEX context_pack_inbox_anchors_by_work_item"));
+  });
+
+  test("registers context-pack inbox anchors after advisory promotion decisions", () => {
+    const all = createCockroachCoreStateMigrations();
+    assertMigrationAfter(all, CockroachCoreStateMigrationName.ContextPackAdvisoryPromotionDecisionV31, CockroachCoreStateMigrationName.ContextPackInboxAnchorV32);
   });
 
   test("declares the control-plane flags table for ESTOP, freezes, budgets, providers, and simulator mode", () => {
@@ -538,6 +733,16 @@ describe("cockroach core state schema", () => {
 
 function createCheckConstraintValues(values: readonly string[]): string {
   return values.map((value) => `'${value}'`).join(", ");
+}
+
+function assertMigrationAfter(
+  migrations: readonly { name: CockroachCoreStateMigrationName }[],
+  previous: CockroachCoreStateMigrationName,
+  current: CockroachCoreStateMigrationName,
+): void {
+  const names = migrations.map((migration) => migration.name);
+  const previousIndex = names.indexOf(previous);
+  equal(names[previousIndex + 1], current);
 }
 
 async function readMigrationSqlFile(migrationName: CockroachCoreStateMigrationName): Promise<string> {

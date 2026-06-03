@@ -149,11 +149,33 @@ handbooks, this project's docs, the touched services' runbooks, the stage's boun
 handbooks. The corpus collapses from N to the relevant slice **with zero model
 calls**. (RAG searches everything; most of its false positives are out-of-scope.)
 
+### Stage 1.5 — Hat-profiled document focus
+
+After the legal scope is known, but before recall ranking, the Organization
+applies a typed document-focus policy. The policy does not widen access. It says
+which kinds of documents should be more salient for this hat and moment:
+
+- a director or manager handling a blocker should prefer BRDs, architecture
+  docs, ADRs, policies, and decision records;
+- an implementer in execution should prefer specs, runbooks, architecture, ADRs,
+  and BRDs;
+- tenant or department policy can add other profiles without changing retrieval
+  storage or model synthesis code.
+
+This is the director-context move in concrete form. The director's dashboard is
+not asking a model to guess whether business rules, architecture, or decisions
+matter. The Organization names that focus before retrieval, then records the
+selected profile and policy version in the context-pack curation trace.
+
 ### Stage 2 — Entity resolution (graph-anchored, not raw-query-embedded)
 
 Resolve the query's entities to canonical nodes (Part B). A question about billing
 anchors on the `service:billing` node; we can now retrieve *via the graph* — its
 runbook, its architecture unit, the ADR that changed it — not just lexical matches.
+In production, Cockroach stores the canonical entities and aliases in
+`agentic_org_doc_entities`; the context-pack document adapter consumes them
+through a generic entity reader so alias retrieval works without embedding
+vendor-specific entity policy into the adapter.
 
 ### Stage 3 — Hybrid recall over the scoped slice (Hindsight)
 
@@ -192,6 +214,41 @@ score = w_sem·semantic + w_fresh·freshness + w_auth·authority
   correlated with good work-outcomes surface more; consulted-but-never-helpful docs
   sink.* The corpus learns which docs actually help — RAG never does.
 
+In the current context-pack implementation, utility enters retrieval through the
+generic `ContextPackDocConsultOutcomeReaderPort`. The Cockroach adapter reads
+`agentic_org_doc_consult_outcomes`, groups known append-only outcomes by
+`doc_unit_id`, and returns success/failure counts scoped by organization, hat,
+workflow stage, work project, and team. Consult rows remain the "shown context"
+facts and retain the exact work item for replay and audit. Default utility
+aggregation intentionally does not filter to the current work item; a new blocker
+should inherit evidence from similar prior work instead of cold-starting. Exact
+work-item aggregation exists, but callers must explicitly request it with
+`ContextPackDocConsultOutcomeAggregationScope.ExactWorkItem` and provide
+`workItemId`; malformed exact requests fail closed to empty utility rather than
+widening into similar-work history.
+`createCockroachContextPackDocumentPort(...)` merges those counts into
+`RetrievalDeps.consultOutcomes`, and `runRetrieval(...)` keeps the Stage 6 rerank
+pure. This means the director's context surface can learn which BRDs, ADRs,
+policies, meeting decisions, and runbooks actually helped prior blocked work,
+without making application retrieval code vendor-specific.
+
+V0 classifies approved/waived gate outcomes and approved review stages as
+success, and classifies rejected/change-request outcomes as failure. Unknown
+outcomes are ignored until company policy names them. Quality gates are now the
+first write-side source: accepted `record_quality_gate_evaluation` commands emit
+generic consult-outcome stamps, and Cockroach command persistence applies them
+inside the same durable command transaction that records the gate. The writer
+scopes by organization, project, team, work item, evaluating agent, hat
+assignment, recorded time, and outcome ref, then copies the matched consult row's
+context-pack/run/stage/hat/trace provenance into
+`agentic_org_doc_consult_outcomes`. Replays upsert the same outcome ref, but
+distinct outcomes remain separate history rows, so a later approval does not
+erase an earlier change request. A zero-row stamp is a typed command effect
+conflict because the organization cannot self-improve from a gate that never
+joined back to the context the agent actually saw. The next write-side
+extensions are review bounces, successful completion, and non-quality-gate
+business validation events.
+
 ### Stage 7 — Conflict + staleness handling
 
 If two in-scope units conflict, **surface both with the conflict flag** (don't
@@ -202,10 +259,12 @@ units never surface. Stale-but-current units are flagged so the agent weights th
 
 Per the memory reliability discipline, the load-bearing case is **not** the agent
 remembering to search. A workflow stage **deterministically consults** its bound
-handbooks (`consult_handbook(handbookId)` injects them); **structural triggers**
-fire scope retrieval (IF the work touches `service:billing`, inject its runbook +
-architecture). The agent *additionally* queries when it wants — but it can never
-*skip* the bound consult. This is the precision RAG structurally cannot provide.
+handbooks (`consult_handbook(handbookId)` injects them), and an active hat also
+deterministically consults hat-bound docs such as handbooks, policies, or
+standing operating briefs. **Structural triggers** fire scope retrieval (IF the
+work touches `service:billing`, inject its runbook + architecture). The agent
+*additionally* queries when it wants — but it can never *skip* the bound consult.
+This is the precision RAG structurally cannot provide.
 
 ---
 
@@ -215,7 +274,7 @@ architecture). The agent *additionally* queries when it wants — but it can nev
 |-----------|-----------|------------------------|
 | Unit | arbitrary fixed chunk | structural semantic unit (section/procedure/decision) |
 | Search space | whole corpus | scope-pre-filtered slice (Stage 1) |
-| Query | embed raw text | entity-resolved + graph-anchored (Stage 2) |
+| Query | embed raw text | hat-profiled, entity-resolved + graph-anchored (Stages 1.5-2) |
 | Recall | vector top-k | vector+BM25+temporal+graph over the slice (Stage 3) |
 | Output | top-k chunks dumped | summary-map + drill-by-pointer (Stage 4) |
 | Context | the chunk alone | unit + graph neighborhood (Stage 5) |
@@ -248,7 +307,7 @@ The two-store split (Part C), made concrete:
 
 | Store | Holds | Why |
 |-------|-------|-----|
-| **CockroachDB** | `agentic_org_doc_sources` (connector config + per-source sync cursor), `agentic_org_doc_units` (structure, ontology axes, status, freshness, provenance), `agentic_org_doc_graph_edges`, `agentic_org_doc_entities`, `agentic_org_doc_consult_ledger` (which unit was consulted at which stage/work → the utility signal) | queryable structure + lifecycle state + the consult/outcome join |
+| **CockroachDB** | `agentic_org_doc_sources` (connector config + per-source sync cursor), `agentic_org_doc_units` (structure, ontology axes, status, freshness, provenance, indexed hat/stage bindings), `agentic_org_doc_graph_edges`, `agentic_org_doc_entities`, `agentic_org_doc_consult_ledger` (which unit was shown to which agent/hat/stage/work), `agentic_org_doc_consult_outcomes` (append-only lifecycle outcomes attributed back to shown context) | queryable structure + lifecycle state + the consult/outcome join |
 | **git** (the [git-as-DB substrate](GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md)) | the **canonical handbooks** as markdown-as-row — diffable, versioned, reviewable by PR; the source of truth for prose | a handbook is a document humans + agents edit; git gives history, review, and blame |
 | **Hindsight** (per the [memory design](DYNAMIC_MEMORY_SYSTEM_DESIGN.md)) | unit **bodies** + embeddings + the vector/BM25/graph/temporal recall, tagged `type+scope+entities` | the recall engine — never CockroachDB (pgvector) |
 
@@ -316,6 +375,60 @@ Finishing a BRD *is* adding the BRD doc; recording an ADR *is* adding the ADR;
 ingesting a codebase *produces* the architecture handbook. No separate "remember to
 document" step — documentation is a by-product of the traced work, emitted
 deterministically.
+
+### Agent-authored documentation quality contract
+
+Agents may create or update markdown while wearing hats, but not every note is
+source-of-truth context. Agent-authored docs must carry enough structured
+metadata for the ingestion layer, context-pack builder, reviewers, and future
+agents to know what the document is allowed to mean.
+
+Required frontmatter for docs that can enter context packs:
+
+```yaml
+---
+title: <human-readable title>
+canonical_name: Agentic Organization
+status: draft | in_review | active | stale | superseded | archived
+docType: brd | architecture | adr | runbook | policy | spec | reference | meeting_note | decision_record | handbook
+scope:
+  kind: organization | department | project | service | team
+  id: <scope id>
+owningHat: <hat id responsible for freshness>
+authorHatAssignment: <hat assignment id that wrote or revised it>
+workAnchors: [<work item / initiative / project ids that produced or require it>]
+governingDecisionIds: [<decision ids this doc follows or records>]
+boundHatIds: [<hat ids that must always consult it>]
+boundStageIds: [<workflow stages that must always consult it>]
+entities: [<canonical entity ids mentioned>]
+citations: [<source refs proving claims>]
+freshnessAt: <ISO timestamp>
+reviewBy: <ISO timestamp or policy duration>
+sourceOfTruthLevel: advisory | operational | load_bearing
+confidence: <0..1>
+---
+```
+
+Quality gates:
+
+- load-bearing docs (`handbook`, `policy`, `architecture`, `adr`) enter
+  `in_review` and require a documentation/reviewer hat plus any configured human
+  gate before they become retrieval-eligible `active` context;
+- `citations` are required for business rules, architecture constraints,
+  security policy, release criteria, and customer requirements;
+- `workAnchors` are required for org-produced docs so later agents can traverse
+  from work to the document that work created;
+- `owningHat` and `reviewBy` are required so stale docs are somebody's scheduled
+  responsibility, not a passive warning;
+- missing required frontmatter produces an ingestion omission or a
+  documentation-gate bounce, never a silent active document;
+- agents may still write advisory notes with weaker metadata, but advisory notes
+  do not satisfy required context-pack lanes or director sufficiency rules until
+  promoted through review.
+
+This is the documentation side of the same rule used by context packs: memory
+and synthesis can help explain, but source-of-truth documents require provenance,
+scope, ownership, freshness, and review.
 
 ---
 
@@ -393,6 +506,7 @@ the same cycle, the same drift detection, the same pointers.
 |---------|---------------|--------------|
 | Parsing to units | structural (AST/heading tree) | — |
 | Scope pre-filter | from active hat/stage/work | — |
+| Document focus | hat/phase policy selects preferred doc types and query focus inside legal scope | request more through additive retrieval |
 | Entity resolution | dictionary + graph | enrichment of new entities |
 | Recall | Hindsight over the scoped slice | the natural-language query |
 | Ranking | the weight formula | — |
@@ -413,7 +527,7 @@ synthesis. Retrieval quality stops being a hope.
 | **D2** | Entity extraction + the shared knowledge-graph edges; canonicalization (dedup/supersede/conflict). |
 | **D3** | The **document lifecycle** (Part G) DU + transitions + `doc_*` org_events; the add-taxonomy entry points (Part H), incl. org-produced docs emitted from work items. |
 | **D4** | The retrieval pipeline (Part D: scope pre-filter → entity resolve → Hindsight recall → multi-resolution → graph augment → KPI-weighted rerank → conflict handling) + the retrieve-trigger taxonomy (Part I); the consult ledger. |
-| **D5** | Deterministic consultation wired into workflow stages (bound handbooks + structural triggers) + the utility self-tuning loop (consult → outcome → weight). |
+| **D5** | Deterministic consultation wired into workflow stages (bound handbooks + structural triggers) + the utility self-tuning loop. V0 now writes context-pack consult facts, appends actor/hat-scoped quality-gate outcomes during durable command persistence, and reads scoped outcome aggregates into retrieval; the remaining write-side work is review bounces, successful completion, and non-quality-gate business validation events. |
 | **D6** | The **maintenance cycle** (Part J): NATS-scheduled, Documentation-dept-owned; re-sync + freshness + weight + archive (auto) and canonicalize + promote + **drift-remediation-as-work-item** (hat/human-gated). Drift detection wired to the codebase graph. |
 | **D7** | **Kind proof:** ingest a sample external doc set + a codebase; show (a) a stage consulting the *right* scoped, *active* handbook; (b) an entity-anchored retrieval returning a service's runbook + its *superseding* ADR (not the stale duplicate); (c) summary-first/drill-by-pointer; (d) the maintenance cycle detecting a doc↔code drift and opening a remediation work item; (e) a doc lifecycle moving `draft → in_review → active` through the documentation gate — all observed in `org_events`, contrasted against a naive top-k baseline on the same corpus. |
 

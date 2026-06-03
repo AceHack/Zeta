@@ -53,6 +53,33 @@ import {
   evaluateMissionTrajectory,
   type MissionTrajectory,
 } from "./schedule-optimizer.ts";
+import {
+  evaluateContextPackReadiness,
+  type ContextPackReadinessPolicyPort,
+} from "./context-pack-readiness-policy.ts";
+import {
+  contextPackMatchesSnapshot,
+  contextPackWithItemProvenanceOmissions,
+} from "./context-pack-scope-evaluator.ts";
+import { contextPackDrillTargetGroupsForPack } from "./context-pack-drill-targets.ts";
+import {
+  ContextPackCurationStageKind,
+  ContextPackOmissionReason,
+  ContextPackStatus,
+  ContextPackUncertaintySeverity,
+  type ContextPack,
+  type ContextPackBuildResult,
+  type ContextPackBuilderPort,
+  type ContextPackUncertaintyGroup,
+  type ContextPackUncertaintySignal,
+  type ContextPackUncertaintySummary,
+  type ContextReadout,
+  type ContextPackWakeContext,
+  type QueryContext,
+} from "./context-pack-contracts.ts";
+export * from "./context-pack-contracts.ts";
+import { RunScope } from "./run-scope.ts";
+export * from "./run-scope.ts";
 
 /**
  * ZetaId rendered as a base-10 string — the canonical index for git-as-db
@@ -66,17 +93,6 @@ export function asZetaIdDecimal(value: string): ZetaIdDecimal {
   }
   return value as ZetaIdDecimal;
 }
-
-/** Varying scopes a single run can be observed at (operator idea 5). */
-export const RunScope = {
-  Run: "run",
-  WorkItem: "work_item",
-  Initiative: "initiative",
-  Project: "project",
-  Organization: "organization",
-} as const;
-
-export type RunScope = (typeof RunScope)[keyof typeof RunScope];
 
 /**
  * The run lifecycle as an explicit DU. Mirrors the V0 spine
@@ -161,6 +177,18 @@ export const ObserveFeedbackReason = {
   TerminalPhase: "terminal_phase",
   DeterministicRuleViolation: "deterministic_rule_violation",
 } as const;
+
+const ContextReadinessVetoLabel = {
+  Blockers: "blockers",
+  Contradictions: "contradictions",
+  Omissions: "omissions",
+  Required: "required",
+  Stale: "stale",
+  TopUncertainty: "top_uncertainty",
+  Uncertainty: "uncertainty",
+} as const;
+
+const ContextPackUncertaintyGroupKeySeparator = "::";
 
 export type ObserveFeedbackReason = (typeof ObserveFeedbackReason)[keyof typeof ObserveFeedbackReason];
 
@@ -393,6 +421,7 @@ export type RenderMenu16Options = {
   promptFlows?: PromptFlowReadout;
   promptFlowPage?: number | undefined;
   status?: GlassHaloStatusContext | undefined;
+  context?: ContextReadout | undefined;
   escalation?: SupervisorEscalationContext | undefined;
   escalationDisabledReason?: string | undefined;
 };
@@ -770,13 +799,15 @@ export type PromptFlowContext = {
   rollbackPolicy?: PromptFlowRollbackPolicy | undefined;
 };
 
-export type QueryContext = {
-  runId: ZetaIdDecimal;
-  scope: RunScope;
-  hatAssignmentId: ZetaIdDecimal;
-  trace: RunTrace;
-};
-
+const MISSING_CONTEXT_PACK_SOURCE_VERSION = "unavailable";
+const MISSING_CONTEXT_PACK_POLICY_VERSION = "unavailable";
+const MISSING_CONTEXT_PACK_DEADLINE_OFFSET_MS = 0;
+const MISSING_CONTEXT_PACK_TOKEN_BUDGET = 0;
+const MISSING_CONTEXT_PACK_OMISSION_MESSAGE = "context pack builder is not configured for observeAgentSurface";
+const RETRIEVAL_FAILED_CONTEXT_PACK_SOURCE_VERSION = "retrieval_failed";
+const SCOPE_MISMATCH_CONTEXT_PACK_SOURCE_VERSION = "scope_mismatch";
+const CONTEXT_PACK_SCOPE_MISMATCH_MESSAGE = "context pack builder returned a pack outside the current observe scope";
+const CONTEXT_PACK_RETRIEVAL_FAILED_MESSAGE = "context pack retrieval failed";
 export type ScopedMetricAgent = {
   id: string;
   scope: RunScope;
@@ -794,6 +825,10 @@ export type AgentObserveDependencies = ObserveDependencies & {
   promptFlowPage?: number | undefined;
   hierarchy?: HierarchySnapshot;
   availableSecretScopes?: readonly string[] | undefined;
+  contextPackBuilder?: ContextPackBuilderPort | undefined;
+  contextPackReadinessPolicy?: ContextPackReadinessPolicyPort | undefined;
+  contextPackWakeContext?: ContextPackWakeContext | undefined;
+  enforceContextReadiness?: boolean | undefined;
 };
 
 export type AgentObserveResult =
@@ -802,6 +837,7 @@ export type AgentObserveResult =
       readout: RunStateReadout;
       actions: Menu16;
       metrics: ScopedReadout;
+      context: ContextReadout;
       promptFlows: PromptFlowReadout;
       hierarchy: HierarchyReadout;
     }
@@ -850,7 +886,10 @@ export function renderMenu16(readout: RunStateReadout, options: RenderMenu16Opti
     const survivor = survivorsByAction.get(option.actionType);
     const vetoed = vetoesByAction.get(option.actionType);
     if (survivor !== undefined) {
-      rendered[slotIndex] = createCommandSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, readout, survivor, options);
+      const contextVeto = contextReadinessVeto(options.context);
+      rendered[slotIndex] = contextVeto === undefined
+        ? createCommandSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, readout, survivor, options)
+        : createContextReadinessVetoedSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, survivor, contextVeto);
     } else if (vetoed !== undefined) {
       rendered[slotIndex] = createVetoedSlot(slotIndex, MENU16_DIRECTIONS[slotIndex]!, vetoed);
     }
@@ -910,6 +949,36 @@ function createVetoedSlot(index: number, direction: string, vetoed: VetoedOption
     action: vetoed.option,
     reason: vetoed.reason,
   };
+}
+
+function createContextReadinessVetoedSlot(
+  index: number,
+  direction: string,
+  option: AvailableOption,
+  reason: string,
+): Menu16Slot {
+  return {
+    index,
+    direction,
+    label: option.actionType,
+    availability: TriAvailability.False,
+    action: option,
+    reason,
+  };
+}
+
+function contextReadinessVeto(context: ContextReadout | undefined): string | undefined {
+  if (context === undefined || context.status === ContextPackStatus.Current) return undefined;
+  const reasonParts = [
+    `context pack ${context.pack.id} is ${context.status}`,
+    `${ContextReadinessVetoLabel.Required}=${context.summary.requiredItemCount}`,
+    `${ContextReadinessVetoLabel.Omissions}=${context.summary.omissionCount}`,
+    `${ContextReadinessVetoLabel.Contradictions}=${context.summary.contradictionCount}`,
+    `${ContextReadinessVetoLabel.Stale}=${context.summary.staleInputCount}`,
+    `${ContextReadinessVetoLabel.Blockers}=${context.summary.lifecycleBlockerCount}`,
+    ...contextReadinessUncertaintyParts(context.uncertainty),
+  ];
+  return reasonParts.join("; ");
 }
 
 function renderScopeSlots(rendered: Menu16Slot[], currentScope: RunScope): void {
@@ -1397,6 +1466,11 @@ export async function observeAgentSurface(
   const blocks = await Promise.all(matchingAgents.map((agent) => agent.compute(ctx)));
   const promptFlows = promptFlowReadoutForHat(snapshot.hat, deps.promptFlowTasks ?? [], deps.availableSecretScopes);
   const hierarchy = hierarchyReadoutForHat(snapshot.hat, deps.hierarchy, observed.readout.observedAt);
+  const metrics: ScopedReadout = {
+    scope: snapshot.scope,
+    blocks,
+  };
+  const context = await buildContextReadout(snapshot, observed.readout, metrics, promptFlows, hierarchy, deps);
   return {
     outcome: ObserveOutcome.Readout,
     readout: observed.readout,
@@ -1405,14 +1479,317 @@ export async function observeAgentSurface(
       promptFlows,
       promptFlowPage: deps.promptFlowPage,
       status: createGlassHaloStatusContext(blocks, promptFlows, hierarchy),
+      ...createOptionalContextReadiness(deps.enforceContextReadiness, context),
       ...createOptionalSupervisorEscalationContext(snapshot, deps.scheduleBlocks),
     }),
-    metrics: {
-      scope: snapshot.scope,
-      blocks,
-    },
+    metrics,
+    context,
     promptFlows,
     hierarchy,
+  };
+}
+
+function createOptionalContextReadiness(
+  enforceContextReadiness: boolean | undefined,
+  context: ContextReadout,
+): { context?: ContextReadout } {
+  return enforceContextReadiness === true ? { context } : {};
+}
+
+async function buildContextReadout(
+  snapshot: AgentObserveSnapshot,
+  readout: RunStateReadout,
+  metrics: ScopedReadout,
+  promptFlows: PromptFlowReadout,
+  hierarchy: HierarchyReadout,
+  deps: AgentObserveDependencies,
+): Promise<ContextReadout> {
+  if (deps.contextPackBuilder === undefined) {
+    return createContextReadout(
+      createMissingContextPack(snapshot, readout.observedAt),
+      ContextPackStatus.Missing,
+    );
+  }
+
+  let result: ContextPackBuildResult;
+  try {
+    result = await deps.contextPackBuilder.build({
+        snapshot,
+        readout,
+        metrics,
+        promptFlows,
+        hierarchy,
+        observedAt: readout.observedAt,
+        wakeContext: deps.contextPackWakeContext,
+      });
+  } catch (error) {
+    return createContextReadout(
+      createRetrievalFailedContextPack(snapshot, readout.observedAt, error),
+      ContextPackStatus.Incomplete,
+    );
+  }
+
+  if (!contextPackMatchesSnapshot(result.pack, snapshot)) {
+    return createContextReadout(
+      createScopeMismatchContextPack(snapshot, readout.observedAt, result.pack),
+      ContextPackStatus.Incomplete,
+    );
+  }
+
+  const pack = contextPackWithItemProvenanceOmissions(result.pack, snapshot, hierarchy);
+  const status = await contextPackReadinessStatus(pack, readout.observedAt, snapshot, deps);
+  return createContextReadout(pack, status);
+}
+
+function createContextReadout(pack: ContextPack, status: ContextPackStatus): ContextReadout {
+  const requiredItems = pack.items.filter((item) => item.required);
+  const optionalItems = pack.items.filter((item) => !item.required);
+  const uncertainty = summarizeContextPackUncertainty(pack.uncertaintySignals ?? []);
+  const drillTargetGroups = contextPackDrillTargetGroupsForPack(pack);
+  return {
+    status,
+    pack,
+    requiredItems,
+    optionalItems,
+    omittedItemsWithReason: pack.omittedItemsWithReason,
+    contradictions: pack.contradictions,
+    staleInputs: pack.staleInputs,
+    lifecycleBlockers: pack.lifecycleBlockers,
+    uncertainty,
+    drillTargetGroups,
+    summary: {
+      requiredItemCount: requiredItems.length,
+      optionalItemCount: optionalItems.length,
+      omissionCount: pack.omittedItemsWithReason.length,
+      contradictionCount: pack.contradictions.length,
+      staleInputCount: pack.staleInputs.length,
+      lifecycleBlockerCount: pack.lifecycleBlockers.length,
+      uncertaintySignalCount: uncertainty.signalCount,
+    },
+  };
+}
+
+async function contextPackReadinessStatus(
+  pack: ContextPack,
+  observedAt: string,
+  snapshot: AgentObserveSnapshot,
+  deps: Pick<AgentObserveDependencies, "contextPackReadinessPolicy">,
+): Promise<ContextPackStatus> {
+  if (deps.contextPackReadinessPolicy === undefined) {
+    return evaluateContextPackReadiness(pack, observedAt);
+  }
+
+  try {
+    const result = await deps.contextPackReadinessPolicy.evaluate({ pack, observedAt, snapshot });
+    return result.status;
+  } catch {
+    return ContextPackStatus.Incomplete;
+  }
+}
+
+function summarizeContextPackUncertainty(
+  signals: readonly ContextPackUncertaintySignal[],
+): ContextPackUncertaintySummary {
+  const groupsByKey = new Map<string, MutableContextPackUncertaintyGroup>();
+  let highSeverityCount = 0;
+  let mediumSeverityCount = 0;
+  let lowSeverityCount = 0;
+
+  for (const signal of signals) {
+    if (signal.severity === ContextPackUncertaintySeverity.High) {
+      highSeverityCount += 1;
+    } else if (signal.severity === ContextPackUncertaintySeverity.Medium) {
+      mediumSeverityCount += 1;
+    } else {
+      lowSeverityCount += 1;
+    }
+
+    const key = contextPackUncertaintyGroupKey(signal);
+    const existing = groupsByKey.get(key);
+    if (existing === undefined) {
+      groupsByKey.set(key, {
+        kind: signal.kind,
+        severity: signal.severity,
+        count: 1,
+        evidenceRefs: uniqueContextPackUncertaintyValues(signal.evidenceRefs),
+        messages: [signal.message],
+      });
+      continue;
+    }
+    existing.count += 1;
+    existing.evidenceRefs = uniqueContextPackUncertaintyValues([...existing.evidenceRefs, ...signal.evidenceRefs]);
+    existing.messages = uniqueContextPackUncertaintyValues([...existing.messages, signal.message]);
+  }
+
+  const groups = [...groupsByKey.values()]
+    .sort((left, right) => contextPackUncertaintySeverityRank(right.severity) - contextPackUncertaintySeverityRank(left.severity))
+    .map((group) => ({ ...group }));
+
+  return {
+    signalCount: signals.length,
+    highSeverityCount,
+    mediumSeverityCount,
+    lowSeverityCount,
+    groups,
+    ...(groups[0] === undefined ? {} : { highestSeverity: groups[0].severity }),
+  };
+}
+
+type MutableContextPackUncertaintyGroup = {
+  -readonly [Key in keyof ContextPackUncertaintyGroup]: ContextPackUncertaintyGroup[Key];
+};
+
+function contextReadinessUncertaintyParts(uncertainty: ContextPackUncertaintySummary): readonly string[] {
+  if (uncertainty.signalCount === 0) {
+    return [];
+  }
+
+  const topGroup = uncertainty.groups[0];
+  return [
+    `${ContextReadinessVetoLabel.Uncertainty}=${uncertainty.signalCount}`,
+    ...(topGroup === undefined
+      ? []
+      : [`${ContextReadinessVetoLabel.TopUncertainty}=${topGroup.severity}:${topGroup.kind}`]),
+  ];
+}
+
+function contextPackUncertaintyGroupKey(signal: ContextPackUncertaintySignal): string {
+  return `${signal.severity}${ContextPackUncertaintyGroupKeySeparator}${signal.kind}`;
+}
+
+function contextPackUncertaintySeverityRank(severity: ContextPackUncertaintySeverity): number {
+  switch (severity) {
+    case ContextPackUncertaintySeverity.High:
+      return 3;
+    case ContextPackUncertaintySeverity.Medium:
+      return 2;
+    case ContextPackUncertaintySeverity.Low:
+      return 1;
+  }
+}
+
+function uniqueContextPackUncertaintyValues(values: readonly string[]): readonly string[] {
+  return [...new Set(values)];
+}
+
+function createRetrievalFailedContextPack(
+  snapshot: AgentObserveSnapshot,
+  observedAt: string,
+  error: unknown,
+): ContextPack {
+  return createDegradedContextPack({
+    snapshot,
+    observedAt,
+    id: `ctx:${snapshot.runId}:${snapshot.hatAssignmentId}:retrieval-failed`,
+    sourceGraphVersion: RETRIEVAL_FAILED_CONTEXT_PACK_SOURCE_VERSION,
+    reason: ContextPackOmissionReason.RetrievalFailed,
+    message: `${CONTEXT_PACK_RETRIEVAL_FAILED_MESSAGE}: ${extractObserveErrorMessage(error)}`,
+  });
+}
+
+function createScopeMismatchContextPack(
+  snapshot: AgentObserveSnapshot,
+  observedAt: string,
+  returnedPack: ContextPack,
+): ContextPack {
+  return createDegradedContextPack({
+    snapshot,
+    observedAt,
+    id: `ctx:${snapshot.runId}:${snapshot.hatAssignmentId}:scope-mismatch`,
+    sourceGraphVersion: SCOPE_MISMATCH_CONTEXT_PACK_SOURCE_VERSION,
+    reason: ContextPackOmissionReason.OutOfScope,
+    message: `${CONTEXT_PACK_SCOPE_MISMATCH_MESSAGE}: ${returnedPack.id}`,
+  });
+}
+
+function createDegradedContextPack(input: {
+  snapshot: AgentObserveSnapshot;
+  observedAt: string;
+  id: string;
+  sourceGraphVersion: string;
+  reason: ContextPackOmissionReason;
+  message: string;
+}): ContextPack {
+  const freshnessDeadline = new Date(Date.parse(input.observedAt) + MISSING_CONTEXT_PACK_DEADLINE_OFFSET_MS).toISOString();
+  return {
+    id: input.id,
+    runId: input.snapshot.runId,
+    scope: input.snapshot.scope,
+    hatAssignmentId: input.snapshot.hatAssignmentId,
+    hatId: input.snapshot.hat.id,
+    generatedAt: input.observedAt,
+    freshnessDeadline,
+    sourceGraphVersion: input.sourceGraphVersion,
+    policyVersion: MISSING_CONTEXT_PACK_POLICY_VERSION,
+    tokenBudget: MISSING_CONTEXT_PACK_TOKEN_BUDGET,
+    items: [],
+    omittedItemsWithReason: [
+      {
+        reason: input.reason,
+        message: input.message,
+      },
+    ],
+    contradictions: [],
+    staleInputs: [],
+    lifecycleBlockers: [input.message],
+    curationTrace: [
+      {
+        stage: ContextPackCurationStageKind.GapReview,
+        summary: input.message,
+        evidenceRefs: [],
+      },
+    ],
+    ...createOptionalContextPackScope(input.snapshot),
+  };
+}
+
+function extractObserveErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function createMissingContextPack(snapshot: AgentObserveSnapshot, observedAt: string): ContextPack {
+  const freshnessDeadline = new Date(Date.parse(observedAt) + MISSING_CONTEXT_PACK_DEADLINE_OFFSET_MS).toISOString();
+  return {
+    id: `ctx:${snapshot.runId}:${snapshot.hatAssignmentId}:missing-builder`,
+    runId: snapshot.runId,
+    scope: snapshot.scope,
+    hatAssignmentId: snapshot.hatAssignmentId,
+    hatId: snapshot.hat.id,
+    generatedAt: observedAt,
+    freshnessDeadline,
+    sourceGraphVersion: MISSING_CONTEXT_PACK_SOURCE_VERSION,
+    policyVersion: MISSING_CONTEXT_PACK_POLICY_VERSION,
+    tokenBudget: MISSING_CONTEXT_PACK_TOKEN_BUDGET,
+    items: [],
+    omittedItemsWithReason: [
+      {
+        reason: ContextPackOmissionReason.BuilderUnavailable,
+        message: MISSING_CONTEXT_PACK_OMISSION_MESSAGE,
+      },
+    ],
+    contradictions: [],
+    staleInputs: [],
+    lifecycleBlockers: [MISSING_CONTEXT_PACK_OMISSION_MESSAGE],
+    curationTrace: [
+      {
+        stage: ContextPackCurationStageKind.GapReview,
+        summary: MISSING_CONTEXT_PACK_OMISSION_MESSAGE,
+        evidenceRefs: [],
+      },
+    ],
+    ...createOptionalContextPackScope(snapshot),
+  };
+}
+
+function createOptionalContextPackScope(
+  snapshot: AgentObserveSnapshot,
+): Pick<ContextPack, "agentId" | "organizationId" | "projectId" | "teamId" | "workItemId"> {
+  return {
+    ...(snapshot.agentId === undefined ? {} : { agentId: snapshot.agentId }),
+    ...(snapshot.organizationId === undefined ? {} : { organizationId: snapshot.organizationId }),
+    ...(snapshot.projectId === undefined ? {} : { projectId: snapshot.projectId }),
+    ...(snapshot.teamId === undefined ? {} : { teamId: snapshot.teamId }),
+    ...(snapshot.workItemId === undefined ? {} : { workItemId: snapshot.workItemId }),
   };
 }
 

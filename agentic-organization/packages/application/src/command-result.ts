@@ -1,6 +1,8 @@
 import type {
   AgenticAggregateType,
   AgenticEventType,
+  ContextPackInboxAnchor,
+  ContextPackInboxAnchorStatusTransition,
   DecisionRecord,
   DiscussionAnchor,
   PolicyDecisionEvidence,
@@ -10,6 +12,7 @@ import type {
   WorkItem,
 } from "../../domain/src/index.ts";
 import type { PolicyDenialReason } from "../../policy/src/index.ts";
+import type { ContextPackAdvisoryPromotionDecisionWriteInput } from "./context-pack-advisory-promotion-policy.ts";
 
 export const CommandResultStatus = {
   Accepted: "accepted",
@@ -35,6 +38,8 @@ export type CommandErrorCode = (typeof CommandErrorCode)[keyof typeof CommandErr
 export const CommandResultArtifactType = {
   DecisionRecord: "decision_record",
   DiscussionAnchor: "discussion_anchor",
+  ContextPackAdvisoryPromotionDecision: "context_pack_advisory_promotion_decision",
+  ContextPackInboxAnchor: "context_pack_inbox_anchor",
   Generic: "generic",
   QualityGateEvaluation: "quality_gate_evaluation",
   SupervisorSignal: "supervisor_signal",
@@ -68,6 +73,9 @@ export type CommandResult = {
   decisionRecord?: DecisionRecord;
   discussionAnchor?: DiscussionAnchor;
   qualityGateEvaluation?: QualityGateEvaluation;
+  contextPackAdvisoryPromotionDecision?: ContextPackAdvisoryPromotionDecisionWriteInput;
+  contextPackInboxAnchor?: ContextPackInboxAnchor;
+  contextPackInboxAnchorStatusTransition?: ContextPackInboxAnchorStatusTransition;
   workScheduleBlock?: WorkScheduleBlock;
   workItem?: WorkItem;
   supervisorSignal?: SupervisorSignal;

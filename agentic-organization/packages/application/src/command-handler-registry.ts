@@ -1,6 +1,7 @@
 import type {
   Clock,
   CommandEffects,
+  ContextPackInboxAnchorStateReaderPort,
   DiscussionAnchorStateReaderPort,
   HatAssignmentAuthorityReaderPort,
   IdGenerator,
@@ -20,6 +21,7 @@ export type CommandHandlerOutcome<Result = unknown> = {
 
 export type CommandExecutionContext = Clock &
   IdGenerator & {
+    contextPackInboxAnchorStateReader?: ContextPackInboxAnchorStateReaderPort | undefined;
     discussionAnchorStateReader?: DiscussionAnchorStateReaderPort | undefined;
     hatAssignmentAuthorityReader?: HatAssignmentAuthorityReaderPort | undefined;
     qualityGateEvaluationStateReader?: QualityGateEvaluationStateReaderPort | undefined;

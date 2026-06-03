@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS agentic_org_graph_nodes (
   created_at TIMESTAMPTZ NOT NULL,
   updated_at TIMESTAMPTZ NOT NULL,
   version INT8 NOT NULL,
-  CONSTRAINT agentic_org_graph_nodes_kind_check CHECK (kind IN ('service', 'module', 'repo', 'endpoint', 'datastore', 'environment', 'test_target', 'doc_unit', 'entity', 'decision', 'release', 'work_item', 'hat')),
+  CONSTRAINT agentic_org_graph_nodes_kind_check CHECK (kind IN ('service', 'module', 'repo', 'endpoint', 'datastore', 'environment', 'test_target', 'doc_unit', 'entity', 'inbox_anchor', 'decision', 'discussion', 'initiative', 'meeting', 'mission', 'organization', 'project', 'quality_gate', 'release', 'schedule_block', 'supervisor_signal', 'team', 'trace', 'work_item', 'hat')),
   CONSTRAINT agentic_org_graph_nodes_confidence_check CHECK (confidence IN ('extracted', 'inferred', 'verified', 'canonical', 'retracted')),
   INDEX graph_nodes_by_org_kind (organization_id, kind),
   INDEX graph_nodes_by_source (organization_id, source_key)

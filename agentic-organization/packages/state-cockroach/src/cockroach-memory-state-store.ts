@@ -19,12 +19,25 @@ import {
   type MemoryRecord,
   type MemoryState,
 } from "../../domain/src/index.ts";
+import type { ContextPackMemoryEnvelopeReaderPort } from "../../application/src/index.ts";
 import type { CockroachGenericSqlExecutor } from "./cockroach-sql-executor.ts";
+
+export const CockroachMemoryStateStoreStatement = {
+  Upsert: "upsert_memory_state",
+  Get: "get_memory_state",
+  ListByScopes: "list_memory_state_by_scopes",
+  ListByMemoryIds: "list_memory_state_by_memory_ids",
+  ListAll: "list_all_memory_state",
+} as const;
+
+export type CockroachMemoryStateStoreStatement =
+  (typeof CockroachMemoryStateStoreStatement)[keyof typeof CockroachMemoryStateStoreStatement];
 
 export type MemoryStateStore = {
   upsert: (record: MemoryRecord, state: MemoryState) => Promise<void>;
   get: (memoryId: string) => Promise<MemoryEnvelope | null>;
   listByScopes: (organizationId: string, scopes: readonly string[]) => Promise<readonly MemoryEnvelope[]>;
+  listByMemoryIds: (organizationId: string, memoryIds: readonly string[]) => Promise<readonly MemoryEnvelope[]>;
   listAll: (organizationId: string) => Promise<readonly MemoryEnvelope[]>;
 };
 
@@ -99,7 +112,7 @@ export function createCockroachMemoryStateStore(
   return {
     async upsert(record: MemoryRecord, state: MemoryState): Promise<void> {
       await input.executor.execute({
-        name: "upsert_memory_state",
+        name: CockroachMemoryStateStoreStatement.Upsert,
         sql: `
           INSERT INTO agentic_org_memory_state (
             memory_id, organization_id, tier, scope, key, phase,
@@ -130,7 +143,7 @@ export function createCockroachMemoryStateStore(
 
     async get(memoryId: string): Promise<MemoryEnvelope | null> {
       const result = await input.executor.execute({
-        name: "get_memory_state",
+        name: CockroachMemoryStateStoreStatement.Get,
         sql: `SELECT * FROM agentic_org_memory_state WHERE memory_id = $1`,
         parameters: [memoryId],
       });
@@ -145,7 +158,7 @@ export function createCockroachMemoryStateStore(
       if (scopes.length === 0) return [];
       const placeholders = scopes.map((_, i) => `$${i + 2}`).join(", ");
       const result = await input.executor.execute({
-        name: "list_memory_state_by_scopes",
+        name: CockroachMemoryStateStoreStatement.ListByScopes,
         sql: `SELECT * FROM agentic_org_memory_state
               WHERE organization_id = $1
                 AND scope IN (${placeholders})
@@ -157,13 +170,40 @@ export function createCockroachMemoryStateStore(
       return (result.rows as MemoryStateRow[]).map(rowToEnvelope);
     },
 
+    async listByMemoryIds(
+      organizationId: string,
+      memoryIds: readonly string[],
+    ): Promise<readonly MemoryEnvelope[]> {
+      const uniqueMemoryIds = [...new Set(memoryIds)];
+      if (uniqueMemoryIds.length === 0) return [];
+      const placeholders = uniqueMemoryIds.map((_, i) => `$${i + 2}`).join(", ");
+      const result = await input.executor.execute({
+        name: CockroachMemoryStateStoreStatement.ListByMemoryIds,
+        sql: `SELECT * FROM agentic_org_memory_state
+              WHERE organization_id = $1
+                AND memory_id IN (${placeholders})
+              ORDER BY weight DESC, memory_id ASC`,
+        parameters: [organizationId, ...uniqueMemoryIds],
+      });
+      return (result.rows as MemoryStateRow[]).map(rowToEnvelope);
+    },
+
     async listAll(organizationId: string): Promise<readonly MemoryEnvelope[]> {
       const result = await input.executor.execute({
-        name: "list_all_memory_state",
+        name: CockroachMemoryStateStoreStatement.ListAll,
         sql: `SELECT * FROM agentic_org_memory_state WHERE organization_id = $1 ORDER BY weight DESC`,
         parameters: [organizationId],
       });
       return (result.rows as MemoryStateRow[]).map(rowToEnvelope);
     },
+  };
+}
+
+export function createCockroachContextPackMemoryEnvelopeReader(
+  input: CreateCockroachMemoryStateStoreInput,
+): ContextPackMemoryEnvelopeReaderPort {
+  const store = createCockroachMemoryStateStore(input);
+  return {
+    listByMemoryIds: async (request) => await store.listByMemoryIds(request.organizationId, request.memoryIds),
   };
 }

@@ -124,6 +124,34 @@ row store keyed by `ZetaIdDecimal`. This is the same edge mechanism the doc grap
 uses (`composes_with` in `DOC_FRONTMATTER_CONVENTION.md`) — docs and data rows
 share one traversal model.
 
+### Markdown index projection into context packs
+
+Context packs do not read arbitrary markdown blobs directly. The frontmatter
+index projects markdown into the document-intelligence and graph contracts that
+`observe.ts` can replay:
+
+1. A markdown row's frontmatter is validated against its schema and folded from
+   the git event log.
+2. Document rows become `DocUnit` records with `docType`, scope, lifecycle
+   status, content pointer, content hash, hat/stage bindings, provenance change
+   set, freshness, and version.
+3. Foreign-key and `fk_array` fields become graph edges: document-to-work,
+   document-to-decision, document-to-entity, document-to-hat, and
+   document-to-superseded-document.
+4. The Cockroach projection indexes those rows for low-latency scope queries.
+5. `ContextPackDocumentReadPort` loads scoped active `DocUnit`s and bound
+   consults, then returns them as `doc_unit` source pointers.
+6. `ContextPackBuilderPort` turns those units into context-pack items and graph
+   roots, while preserving the original git content ref and content hash.
+7. A later source change creates a new event, changes the projected content hash
+   or lifecycle state, and invalidates future wake decisions through freshness,
+   consult outcomes, or explicit stale/superseded status.
+
+The invariant is simple: if a director sees a document in a context pack, the UI
+and future agents must be able to traverse back to the markdown row, git change,
+source document, graph neighbors, and work outcomes that made it useful or
+dangerous.
+
 ## Layer 5 — Cockroach is the index, and the converter is generic (idea 1)
 
 CockroachDB is the low-latency query projection (`WHERE status='ready' ORDER BY

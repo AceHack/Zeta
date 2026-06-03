@@ -30,6 +30,9 @@ const CommandActionClass: Readonly<Partial<Record<string, ActionClass>>> = {
   [CommandType.ScheduleWorkBlock]: ActionClass.Prioritize,
   [CommandType.SendSupervisorSignal]: ActionClass.Prioritize,
   [CommandType.TriageSupervisorSignal]: ActionClass.Prioritize,
+  [CommandType.AuthorContextPackInboxAnchor]: ActionClass.Prioritize,
+  [CommandType.UpdateContextPackInboxAnchorStatus]: ActionClass.Prioritize,
+  [CommandType.AuthorContextPackAdvisoryPromotionDecision]: ActionClass.Prioritize,
   [ObserveCommandType.LifecycleTransition]: ActionClass.WriteCode,
 };
 

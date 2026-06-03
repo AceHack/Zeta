@@ -41,6 +41,7 @@ export type HindsightRecallRequest = {
 export type HindsightRecallCandidate = {
   memoryId: string;
   text: string;
+  metadata: Record<string, string>;
 };
 
 export type HindsightClient = {
@@ -110,7 +111,7 @@ export function createHindsightHttpClient(input: CreateHindsightHttpClientInput)
         const memoryId = r.metadata?.memoryId ?? r.id ?? "";
         if (memoryId === "" || seen.has(memoryId)) continue;
         seen.add(memoryId);
-        results.push({ memoryId, text: r.text ?? "" });
+        results.push({ memoryId, text: r.text ?? "", metadata: r.metadata ?? {} });
       }
       return { results };
     },
@@ -146,6 +147,32 @@ function attributionToMetadata(attr: MemoryAttribution, organizationId: string):
   };
 }
 
+function attributionFromMetadata(metadata: Record<string, string>): MemoryAttribution | undefined {
+  const {
+    agentId,
+    hatAssignmentId,
+    projectId,
+    workItemId,
+    promptFlowRunId,
+  } = metadata;
+  if (
+    agentId === undefined ||
+    hatAssignmentId === undefined ||
+    projectId === undefined ||
+    workItemId === undefined ||
+    promptFlowRunId === undefined
+  ) {
+    return undefined;
+  }
+  return {
+    agentId,
+    hatAssignmentId,
+    projectId,
+    workItemId,
+    promptFlowRunId,
+  };
+}
+
 function scopeTags(attr: MemoryAttribution): readonly string[] {
   return [`agent:${attr.agentId}`, `work:${attr.workItemId}`, `hat:${attr.hatAssignmentId}`];
 }
@@ -177,7 +204,11 @@ export function createHindsightMemory(input: CreateHindsightMemoryInput): Memory
       });
       return {
         operation: MemoryOperation.Recall,
-        memories: results.map((r) => ({ memoryId: r.memoryId, attribution, content: r.text, retainedAtMs: now() })),
+        memories: results.flatMap((r) => {
+          const originalAttribution = attributionFromMetadata(r.metadata);
+          if (originalAttribution === undefined) return [];
+          return [{ memoryId: r.memoryId, attribution: originalAttribution, content: r.text, retainedAtMs: now() }];
+        }),
       };
     },
 

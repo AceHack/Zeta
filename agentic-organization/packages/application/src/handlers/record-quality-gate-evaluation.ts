@@ -30,6 +30,7 @@ import {
   verifiedContentAddressedEvidenceRefs,
   type ContentAddressedEvidenceArtifact,
 } from "../content-addressed-evidence.ts";
+import { contextPackDocConsultOutcomeStampForQualityGate } from "../context-pack-doc-consult-ledger.ts";
 import type {
   Clock,
   CommandEffects,
@@ -208,6 +209,7 @@ export async function recordQualityGateEvaluation(
       decisionRecords: [],
       qualityGateEvaluations: [qualityGateEvaluation],
       workScheduleBlocks: [],
+      docConsultOutcomeStamps: [contextPackDocConsultOutcomeStampForQualityGate(qualityGateEvaluation)],
       auditEvents: [
         {
           auditEventId,
@@ -471,8 +473,26 @@ function hasMatchingWorkItemScope(
   return (
     workItem.workItemId === command.workItemId &&
     workItem.organizationId === command.organizationId &&
-    workItem.projectId === command.projectId
+    workItem.projectId === command.projectId &&
+    hasCompatibleOptionalWorkItemTeamScope(command, workItem)
   );
+}
+
+function hasCompatibleOptionalWorkItemTeamScope(
+  command: Pick<RecordQualityGateEvaluationCommand, "teamId">,
+  workItem: CommandWorkAnchorWorkItem,
+): boolean {
+  const teamId = readOptionalWorkItemTeamId(workItem);
+  return teamId === undefined || teamId === command.teamId;
+}
+
+function readOptionalWorkItemTeamId(workItem: CommandWorkAnchorWorkItem): string | undefined {
+  if (!("teamId" in workItem)) {
+    return undefined;
+  }
+
+  const value = (workItem as { teamId?: unknown }).teamId;
+  return typeof value === "string" ? value : undefined;
 }
 
 function createRejectedValidationOutcome(

@@ -31,7 +31,35 @@ function fakeClient(): {
   const client: HindsightClient = {
     async ensureBank(bankId) { if (!banks.includes(bankId)) banks.push(bankId); },
     async retain(bankId, items) { retained.push({ bankId, items }); return { ids: items.map((_, i) => `hs-${i}`) }; },
-    async recall(bankId, req) { recalls.push({ bankId, req }); return { results: [{ memoryId: "mem-a", text: "Require a rollback plan." }, { memoryId: "mem-b", text: "Pad QA by 20%." }] }; },
+    async recall(bankId, req) {
+      recalls.push({ bankId, req });
+      return {
+        results: [
+          {
+            memoryId: "mem-a",
+            text: "Require a rollback plan.",
+            metadata: {
+              agentId: "agent-author",
+              hatAssignmentId: "hat-author",
+              projectId: "proj-1",
+              workItemId: "work-9",
+              promptFlowRunId: "run-9",
+            },
+          },
+          {
+            memoryId: "mem-b",
+            text: "Pad QA by 20%.",
+            metadata: {
+              agentId: "agent-reviewer",
+              hatAssignmentId: "hat-reviewer",
+              projectId: "proj-1",
+              workItemId: "work-8",
+              promptFlowRunId: "run-8",
+            },
+          },
+        ],
+      };
+    },
     async reflect(bankId, query) { reflects.push({ bankId, query }); return { operationId: "op-9" }; },
   };
   return { client, banks, retained, recalls, reflects };
@@ -66,6 +94,26 @@ test("recall is project-scoped (bank=projectId) and tag-filtered to the binding 
   equal(result.memories.length, 2);
   equal(result.memories[0]!.memoryId, "mem-a");
   equal(result.memories[0]!.content, "Require a rollback plan.");
+  equal(result.memories[0]!.attribution.agentId, "agent-author");
+  equal(result.memories[0]!.attribution.hatAssignmentId, "hat-author");
+  equal(result.memories[0]!.attribution.workItemId, "work-9");
+});
+
+test("recall drops Hindsight results without original attribution metadata", async () => {
+  const f = fakeClient();
+  const client: HindsightClient = {
+    ...f.client,
+    async recall(bankId, req) {
+      f.recalls.push({ bankId, req });
+      return { results: [{ memoryId: "mem-unattributed", text: "Looks useful but has no author metadata.", metadata: {} }] };
+    },
+  };
+  const mem = createHindsightMemory({ client, organizationId: "org-lfg" });
+
+  const result = await mem.recall(attr);
+
+  equal(result.operation, MemoryOperation.Recall);
+  deepEqual(result.memories, []);
 });
 
 test("reflect drives Hindsight /reflect for the binding and reports the operation id", async () => {

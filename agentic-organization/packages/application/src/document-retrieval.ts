@@ -4,7 +4,7 @@
  * throws away: SCOPE (don't search the whole corpus), ENTITY ANCHORING (one node, any
  * wording), STRUCTURE (summary-first + drill pointer, not shredded chunks), the GRAPH
  * neighborhood, KPI-WEIGHTED usefulness (not just similarity), CONFLICT/STALENESS handling,
- * and a DETERMINISTIC stage-bound consult (retrieval is a guarantee, not a hope).
+ * and DETERMINISTIC stage/hat-bound consults (retrieval is a guarantee, not a hope).
  *
  * Each stage is a pure function; runRetrieval composes them and reports per-stage
  * diagnostics so the narrowing is observable. Hybrid vector recall + graph traversal are
@@ -26,9 +26,10 @@ export type RetrievalScope = { kind: DocUnit["scopeKind"]; id: string };
 export type RetrievalContext = {
   organizationId: string;
   hatId?: string;
-  stageId?: string; // the workflow stage — its bound handbooks are deterministically consulted
+  stageId?: string; // workflow stage for deterministic consults alongside hat bindings
   workItemId?: string;
   scopes: readonly RetrievalScope[]; // this dept's + this project's + touched services' scopes
+  preferredDocTypes?: readonly DocUnit["type"][] | undefined;
 };
 
 export type ScoredUnit = {
@@ -43,6 +44,7 @@ export type RetrievalDiagnostics = {
   afterScope: number;
   queryEntities: readonly string[];
   afterRecall: number;
+  preferredTypeBoosts: number;
   staleDemoted: number;
   conflictsSurfaced: number;
   deterministicConsults: number;
@@ -51,7 +53,7 @@ export type RetrievalDiagnostics = {
 export type RetrievalResult = {
   /** the summary-first ranked hits: summary + drill pointer, NOT raw chunks (Stage 4) */
   hits: readonly ScoredUnit[];
-  /** stage-bound handbooks ALWAYS injected regardless of the query (Stage 8 guarantee) */
+  /** stage/hat-bound handbooks ALWAYS injected regardless of the query (Stage 8 guarantee) */
   consulted: readonly DocUnit[];
   /** same-topic active-load-bearing disagreements, surfaced not averaged (Stage 7) */
   conflicts: readonly { a: DocUnit; b: DocUnit }[];
@@ -89,6 +91,10 @@ function lexicalScore(queryTokens: ReadonlySet<string>, unit: DocUnit): number {
   return overlap / queryTokens.size; // fraction of query tokens matched
 }
 
+function preferredDocTypeScore(preferredDocTypes: ReadonlySet<DocUnit["type"]>, unit: DocUnit): number {
+  return preferredDocTypes.has(unit.type) ? 0.2 : 0;
+}
+
 // ── the orchestrator ─────────────────────────────────────────────────────────
 
 export function runRetrieval(
@@ -110,6 +116,8 @@ export function runRetrieval(
 
   // Stage 3 — hybrid recall over the scoped slice + entity-anchor boost
   const queryTokens = new Set(entityKey(query).split(" ").filter((t) => t.length > 0));
+  const preferredDocTypes = new Set(context.preferredDocTypes ?? []);
+  let preferredTypeBoosts = 0;
   let scored: ScoredUnit[] = scoped
     .map((unit) => {
       const reasons: string[] = [];
@@ -120,6 +128,12 @@ export function runRetrieval(
       if (unitEntities.some((e) => queryEntityIds.has(e.docEntityId))) {
         score += 0.5;
         reasons.push("entity-anchored");
+      }
+      const typeScore = preferredDocTypeScore(preferredDocTypes, unit);
+      if (typeScore > 0) {
+        preferredTypeBoosts += 1;
+        score += typeScore;
+        reasons.push(`preferred-doc-type:${unit.type}`);
       }
       return { unit, score, reasons, entities: unitEntities };
     })
@@ -153,16 +167,15 @@ export function runRetrieval(
   scored.sort((a, b) => b.score - a.score || a.unit.docUnitId.localeCompare(b.unit.docUnitId));
   const hits = scored.slice(0, topK);
 
-  // Stage 8 — deterministic consultation: stage-bound handbooks ALWAYS injected
-  const consulted =
-    context.stageId === undefined
-      ? []
-      : corpus.filter(
-          (u) =>
-            u.organizationId === context.organizationId &&
-            isRetrievalEligible(u.status) &&
-            u.boundStageIds.includes(context.stageId!),
-        );
+  // Stage 8 — deterministic consultation: stage/hat-bound handbooks ALWAYS inject
+  const consulted = corpus.filter((u) =>
+    u.organizationId === context.organizationId &&
+    isRetrievalEligible(u.status) &&
+    (
+      (context.stageId !== undefined && u.boundStageIds.includes(context.stageId)) ||
+      (context.hatId !== undefined && u.boundHatIds.includes(context.hatId))
+    )
+  );
 
   return {
     hits,
@@ -173,6 +186,7 @@ export function runRetrieval(
       afterScope: scoped.length,
       queryEntities: queryEntities.map((e) => e.docEntityId),
       afterRecall: scored.length,
+      preferredTypeBoosts,
       staleDemoted,
       conflictsSurfaced: conflicts.length,
       deterministicConsults: consulted.length,

@@ -12,6 +12,7 @@ composes_with:
   - ./BUSINESS_QUALITY_GATE_SYSTEM.md
   - ./GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md
   - ./DOC_FRONTMATTER_CONVENTION.md
+  - ./OBSERVE_CONTEXT_PACKS.md
 code_anchors:
   - ../packages/application/src/observe.ts
   - ../packages/application/test/observe.test.ts
@@ -118,6 +119,22 @@ recurring report. The metric pipeline therefore reuses the trace envelope
 (`correlationId`/`causationId`/`traceId`/`idempotencyKey`) already carried on
 every readout. Detailed metric schemas extend `OBSERVABILITY_AND_SELF_HEALING.md`
 rather than living here.
+
+## Context packs: intelligence needs the right context
+
+`observeAgentSurface` also returns a hat-scoped context readout. The core
+`observe(snapshot, deps)` kernel remains context-pack blind and pure; context is
+assembled at the surface through an injected `ContextPackBuilderPort` after the
+deterministic readout, scoped metrics, prompt-flow readout, and hierarchy readout
+exist.
+
+The context pack is the Organization's answer to the real autonomy problem: a
+director, TPM, reviewer, or implementer must wake up with the governing docs,
+decisions, graph neighborhood, memory pointers, omissions, stale inputs, and
+contradictions needed for this hat and this work. If no builder is wired, the
+surface returns a degraded `missing` context pack with an explicit
+`builder_unavailable` omission instead of silently implying that no context is
+needed. The detailed architecture lives in `OBSERVE_CONTEXT_PACKS.md`.
 
 ## Constitution ratification needs ≥3 agents (idea 2, governance half)
 

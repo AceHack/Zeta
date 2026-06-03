@@ -16,6 +16,15 @@ import {
   createCockroachWorkAnchorStateStore,
   type CockroachWorkAnchorSqlStatement,
 } from "./cockroach-work-anchor-state-store.ts";
+import {
+  CockroachDocConsultLedgerStoreStatement,
+  createCockroachDocConsultLedgerStore,
+} from "./cockroach-doc-consult-ledger-store.ts";
+import type {
+  CockroachAnySqlResult,
+  CockroachAnySqlStatement,
+  CockroachGenericSqlTransactionExecutor,
+} from "./cockroach-sql-executor.ts";
 
 export const CockroachCommandStateStoreStatement = {
   FindIdempotencyRecord: "find_idempotency_record",
@@ -26,6 +35,9 @@ export const CockroachCommandStateStoreStatement = {
   InsertQualityGateEvaluation: "insert_quality_gate_evaluation",
   FindOverlappingWorkScheduleBlock: "find_overlapping_work_schedule_block",
   InsertWorkScheduleBlock: "insert_work_schedule_block",
+  InsertContextPackInboxAnchor: "insert_context_pack_inbox_anchor",
+  UpdateContextPackInboxAnchorStatus: "update_context_pack_inbox_anchor_status",
+  UpsertContextPackAdvisoryPromotionDecision: "upsert_context_pack_advisory_promotion_decision",
   InsertAuditEvent: "insert_audit_event",
   InsertOutboxEvent: "insert_outbox_event",
 } as const;
@@ -37,7 +49,13 @@ export type CockroachSqlStatement = {
   name: CockroachCommandStateStoreStatement;
   sql: string;
   parameters: readonly unknown[];
-} | CockroachWorkAnchorSqlStatement;
+} | CockroachDocConsultLedgerSqlStatement | CockroachWorkAnchorSqlStatement;
+
+export type CockroachDocConsultLedgerSqlStatement = {
+  name: CockroachDocConsultLedgerStoreStatement;
+  sql: string;
+  parameters: readonly unknown[];
+};
 
 export type CockroachSqlResult<Row = Record<string, unknown>> = {
   rows: readonly Row[];
@@ -143,9 +161,39 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
           await transaction.execute(createInsertQualityGateEvaluationStatement(qualityGateEvaluation));
         }
 
+        const docConsultLedgerStore = createCockroachDocConsultLedgerStore({
+          executor: createDocConsultLedgerTransactionExecutor(transaction),
+        });
+
+        for (const docConsultOutcomeStamp of outcome.effects.docConsultOutcomeStamps ?? []) {
+          const stampResult = await docConsultLedgerStore.stampOutcome(docConsultOutcomeStamp);
+          if (stampResult.stampedCount === 0) {
+            throw new CockroachCommandEffectConflictError(
+              CommandOutcomeEffectConflictReason.DocConsultOutcomeStampMissing,
+            );
+          }
+        }
+
         for (const workScheduleBlock of outcome.effects.workScheduleBlocks) {
           await assertNoOverlappingWorkScheduleBlock(transaction, workScheduleBlock);
           await transaction.execute(createInsertWorkScheduleBlockStatement(workScheduleBlock));
+        }
+
+        for (const inboxAnchor of outcome.effects.contextPackInboxAnchors ?? []) {
+          await transaction.execute(createInsertContextPackInboxAnchorStatement(inboxAnchor));
+        }
+
+        for (const decision of outcome.effects.contextPackAdvisoryPromotionDecisions ?? []) {
+          await transaction.execute(createUpsertContextPackAdvisoryPromotionDecisionStatement(decision));
+        }
+
+        for (const statusTransition of outcome.effects.contextPackInboxAnchorStatusTransitions ?? []) {
+          const result = await transaction.execute(createUpdateContextPackInboxAnchorStatusStatement(statusTransition));
+          if (result.rows.length === 0) {
+            throw new CockroachCommandEffectConflictError(
+              CommandOutcomeEffectConflictReason.ContextPackInboxAnchorMissing,
+            );
+          }
         }
 
         const workAnchorStateStore = createCockroachWorkAnchorStateStore({
@@ -182,6 +230,30 @@ function createCockroachCommandStateStore<Result>(executor: CockroachSqlExecutor
       }
     },
   };
+}
+
+function createDocConsultLedgerTransactionExecutor(
+  transaction: CockroachSqlTransactionExecutor,
+): CockroachGenericSqlTransactionExecutor {
+  return {
+    execute: async <Row = Record<string, unknown>>(
+      statement: CockroachAnySqlStatement,
+    ): Promise<CockroachAnySqlResult<Row>> => {
+      if (!isCockroachDocConsultLedgerStatement(statement)) {
+        throw new Error("unsupported doc consult ledger command transaction statement");
+      }
+
+      return await transaction.execute<Row>(statement);
+    },
+  };
+}
+
+function isCockroachDocConsultLedgerStatement(
+  statement: CockroachAnySqlStatement,
+): statement is CockroachDocConsultLedgerSqlStatement {
+  return Object.values(CockroachDocConsultLedgerStoreStatement).includes(
+    statement.name as CockroachDocConsultLedgerStoreStatement,
+  );
 }
 
 function findUnsupportedCommandEffectConflict(
@@ -410,6 +482,94 @@ function createInsertWorkScheduleBlockStatement(
   };
 }
 
+function createInsertContextPackInboxAnchorStatement(
+  inboxAnchor: NonNullable<CommandStateStoreResult<unknown>["effects"]["contextPackInboxAnchors"]>[number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.InsertContextPackInboxAnchor,
+    sql: CockroachCommandStateStoreSql.InsertContextPackInboxAnchor,
+    parameters: [
+      inboxAnchor.inboxAnchorId,
+      inboxAnchor.organizationId,
+      inboxAnchor.projectId,
+      inboxAnchor.teamId ?? null,
+      inboxAnchor.workItemId ?? null,
+      inboxAnchor.targetHatAssignmentId,
+      inboxAnchor.targetAgentId ?? null,
+      inboxAnchor.title,
+      inboxAnchor.summary,
+      inboxAnchor.priority,
+      inboxAnchor.status,
+      inboxAnchor.deliveredAt,
+      inboxAnchor.sourceRef ?? null,
+      inboxAnchor.traceId ?? null,
+      inboxAnchor.deliveredAt,
+      1,
+    ],
+  };
+}
+
+function createUpsertContextPackAdvisoryPromotionDecisionStatement(
+  decision: NonNullable<
+    CommandStateStoreResult<unknown>["effects"]["contextPackAdvisoryPromotionDecisions"]
+  >[number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.UpsertContextPackAdvisoryPromotionDecision,
+    sql: CockroachCommandStateStoreSql.UpsertContextPackAdvisoryPromotionDecision,
+    parameters: [
+      decision.decisionId,
+      decision.decisionKey,
+      decision.organizationId,
+      decision.status,
+      decision.policyVersion,
+      decision.lifecycleBlocker,
+      decision.fingerprint.itemKind,
+      decision.fingerprint.summaryHash,
+      jsonArrayParameter(decision.fingerprint.citationRefs),
+      jsonArrayParameter(decision.fingerprint.sourcePointerKeys),
+      jsonArrayParameter(decision.evidenceRefs),
+      decision.hatId ?? null,
+      decision.hatAssignmentId ?? null,
+      decision.projectId ?? null,
+      decision.teamId ?? null,
+      decision.workItemId ?? null,
+      decision.curationProfileId ?? null,
+      decision.audit.decidedByHatId,
+      decision.audit.decidedByHatAssignmentId,
+      decision.audit.decidedByAgentId ?? null,
+      decision.audit.decidedAt,
+      decision.audit.decidedAt,
+      decision.audit.traceId,
+      decision.audit.correlationId,
+      decision.audit.causationId,
+    ],
+  };
+}
+
+function createUpdateContextPackInboxAnchorStatusStatement(
+  statusTransition: NonNullable<
+    CommandStateStoreResult<unknown>["effects"]["contextPackInboxAnchorStatusTransitions"]
+  >[number],
+): CockroachSqlStatement {
+  return {
+    name: CockroachCommandStateStoreStatement.UpdateContextPackInboxAnchorStatus,
+    sql: CockroachCommandStateStoreSql.UpdateContextPackInboxAnchorStatus,
+    parameters: [
+      statusTransition.inboxAnchorId,
+      statusTransition.organizationId,
+      statusTransition.projectId,
+      statusTransition.teamId ?? null,
+      statusTransition.workItemId ?? null,
+      statusTransition.targetHatAssignmentId,
+      statusTransition.targetAgentId ?? null,
+      statusTransition.status,
+      statusTransition.changedAt,
+      statusTransition.snoozedUntil ?? null,
+    ],
+  };
+}
+
 function createInsertAuditEventStatement(
   auditEvent: CommandStateStoreResult<unknown>["effects"]["auditEvents"][number],
 ): CockroachSqlStatement {
@@ -613,6 +773,75 @@ const CockroachCommandStateStoreSql = {
       trace_id
     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)
   `,
+  InsertContextPackInboxAnchor: `
+    INSERT INTO ${CockroachTableName.ContextPackInboxAnchors} (
+      inbox_anchor_id,
+      organization_id,
+      project_id,
+      team_id,
+      work_item_id,
+      target_hat_assignment_id,
+      target_agent_id,
+      title,
+      summary,
+      priority,
+      status,
+      delivered_at,
+      source_ref,
+      trace_id,
+      updated_at,
+      version
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
+  `,
+  UpsertContextPackAdvisoryPromotionDecision: `
+    UPSERT INTO ${CockroachTableName.ContextPackAdvisoryPromotionDecisions} (
+      decision_id,
+      decision_key,
+      organization_id,
+      status,
+      policy_version,
+      lifecycle_blocker,
+      item_kind,
+      summary_hash,
+      citation_refs,
+      source_pointer_keys,
+      evidence_refs,
+      hat_id,
+      hat_assignment_id,
+      project_id,
+      team_id,
+      work_item_id,
+      curation_profile_id,
+      decided_by_hat_id,
+      decided_by_hat_assignment_id,
+      decided_by_agent_id,
+      decided_at,
+      updated_at,
+      trace_id,
+      correlation_id,
+      causation_id
+    ) VALUES (
+      $1, $2, $3, $4, $5, $6, $7, $8, $9::JSONB, $10::JSONB,
+      $11::JSONB, $12, $13, $14, $15, $16, $17, $18, $19,
+      $20, $21::TIMESTAMPTZ, $22::TIMESTAMPTZ, $23, $24, $25
+    )
+  `,
+  UpdateContextPackInboxAnchorStatus: `
+    UPDATE ${CockroachTableName.ContextPackInboxAnchors}
+    SET
+      status = $8,
+      updated_at = $9,
+      snoozed_until = $10,
+      version = version + 1
+    WHERE inbox_anchor_id = $1
+      AND organization_id = $2
+      AND project_id = $3
+      AND team_id IS NOT DISTINCT FROM $4
+      AND work_item_id IS NOT DISTINCT FROM $5
+      AND target_hat_assignment_id = $6
+      AND target_agent_id IS NOT DISTINCT FROM $7
+    RETURNING inbox_anchor_id
+  `,
   InsertAuditEvent: `
     INSERT INTO ${CockroachTableName.AuditEvents} (
       audit_event_id,
@@ -639,3 +868,7 @@ const CockroachCommandStateStoreSql = {
     ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
   `,
 } as const;
+
+function jsonArrayParameter(values: readonly string[]): string {
+  return JSON.stringify(values);
+}

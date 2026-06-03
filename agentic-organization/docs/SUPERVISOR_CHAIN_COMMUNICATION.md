@@ -104,6 +104,15 @@ Each active hat should receive a communication brief in its context
 pack. The brief should be generated from the hat graph and Organization
 policy.
 
+Implementation note: `createDeterministicContextPackBuilder(...)` now asks a
+`ContextPackHatCommunicationBriefPort` for this brief before document retrieval
+results are handed to ephemeral synthesis. The default provider emits a required
+`hat_communication_brief` item sourced from the active `HatDefinition`,
+`buildHatCommunicationBrief(...)`, and the supervisor-signal tool policy, with
+graph pointers to the current hat and target supervisor hat. That keeps the
+generic communication lifecycle visible to Hermes before it decides whether to
+work, ask, report, request, escalate, or suggest an improvement.
+
 The brief includes:
 
 - `hatId`;

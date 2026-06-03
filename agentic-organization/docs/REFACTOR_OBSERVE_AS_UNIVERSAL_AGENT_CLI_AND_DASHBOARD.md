@@ -3,7 +3,7 @@ title: Refactor — observe.ts as the universal agent CLI + scoped dashboard (ev
 canonical_name: Agentic Organization
 status: design / refactor-spec
 implements_adr: ../../docs/DECISIONS/2026-05-31-observe-act-16-direction-universal-action-grammar-local-no-cloud-llm.md
-composes_with: OBSERVE_COMPOSER_AND_RUN_STATE.md, OBSERVABILITY_LGTM_STACK_DESIGN.md, AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md, GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md
+composes_with: OBSERVE_COMPOSER_AND_RUN_STATE.md, OBSERVE_CONTEXT_PACKS.md, OBSERVABILITY_LGTM_STACK_DESIGN.md, AGENT_WORK_RHYTHM_AND_PROMPT_FLOWS.md, GIT_COCKROACH_SYNC_AND_ZETAID_ADDRESSING.md
 date: 2026-05-31
 ---
 
@@ -110,12 +110,19 @@ const hatAuthorityRule = (hat: HatDefinition): DeterministicRule => ({
 type AgentObserveResult = {
   actions: Menu16;          // renderMenu16(readout)
   metrics: ScopedReadout;   // the deterministic query sub-agents (Section 4)
+  context: ContextReadout;   // hat-scoped context pack: docs + graph + memory pointers
 };
 ```
 
 **The only behavior change to the core `observe()`**: collect vetoes *with their reasons* instead of
 dropping them (today it only counts survivors). That is a small, backward-compatible change — every
 existing caller still reads `readout.options`; new callers also read `readout.vetoedOptions`.
+
+The context half is intentionally not in the core `observe()` kernel. It is a surface composition
+step behind `ContextPackBuilderPort`: deterministic scope, required consults, graph traversal,
+memory pointers, ephemeral synthesis, and gap review happen outside the kernel, then return a
+pointer-rich `ContextReadout`. If the builder is absent, the surface returns an explicit degraded
+context pack so the agent and UI can see that the missing context is a real operational weakness.
 
 ## 4. The dashboard half — deterministic query sub-agents
 

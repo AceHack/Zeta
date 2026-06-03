@@ -88,3 +88,38 @@ test("Stage 8 deterministic consult: a stage-bound handbook is ALWAYS injected r
   ok(r.consulted.some((c) => c.docUnitId === "bound"), "the stage-bound handbook is consulted deterministically");
   equal(r.diagnostics.deterministicConsults, 1);
 });
+
+test("Stage 8 deterministic consult: a hat-bound handbook is ALWAYS injected regardless of the query", () => {
+  const corpus = [
+    u({ docUnitId: "hat-bound", type: DocType.Handbook, scopeId: "docs", title: "Director Handbook", summary: "no overlapping words", boundHatIds: ["engineering_director"] }),
+    u({ docUnitId: "lexical", title: "Something else", summary: "matches the query words exactly" }),
+  ];
+  const hatOnlyContext: RetrievalContext = { organizationId: ctx.organizationId, scopes: ctx.scopes };
+  const r = runRetrieval(
+    "something else",
+    { ...hatOnlyContext, hatId: "engineering_director" },
+    corpus,
+    [],
+  );
+  ok(r.consulted.some((c) => c.docUnitId === "hat-bound"), "the hat-bound handbook is consulted deterministically");
+  equal(r.diagnostics.deterministicConsults, 1);
+});
+
+test("profile-preferred doc types surface inside scope without relying on lexical overlap", () => {
+  const corpus = [
+    u({ docUnitId: "project-brd", type: DocType.Brd, scopeId: "eng", title: "Customer rulebook", summary: "No shared query words." }),
+    u({ docUnitId: "project-runbook", type: DocType.Runbook, scopeId: "eng", title: "Customer runbook", summary: "No shared query words." }),
+    u({ docUnitId: "other-brd", type: DocType.Brd, scopeId: "sales", title: "Customer rulebook", summary: "No shared query words." }),
+  ];
+  const r = runRetrieval(
+    "billing blocker",
+    { ...ctx, preferredDocTypes: [DocType.Brd] },
+    corpus,
+    [],
+  );
+
+  equal(r.hits[0]?.unit.docUnitId, "project-brd");
+  ok(r.hits[0]?.reasons.includes(`preferred-doc-type:${DocType.Brd}`));
+  ok(!r.hits.some((hit) => hit.unit.docUnitId === "project-runbook"));
+  ok(!r.hits.some((hit) => hit.unit.docUnitId === "other-brd"));
+});

@@ -32,6 +32,7 @@ import {
   type CommandScheduleAuthorityRequest,
   type CommandStateStore,
   type CommandStateStoreFactory,
+  type ContextPackInboxAnchorStateReaderPort,
   type DiscussionAnchorStateReaderPort,
   type HatAssignmentAuthorityReaderPort,
   type IdGenerator,
@@ -51,6 +52,7 @@ export type CommandPipelineDependencies<Command extends PipelineCommand = Pipeli
     policyDecisionObservationPort: PolicyDecisionObservationPort;
     commandScheduleAuthorityPort?: CommandScheduleAuthorityPort | undefined;
     handlerRegistry: CommandHandlerRegistry<Command, CommandResult>;
+    contextPackInboxAnchorStateReader?: ContextPackInboxAnchorStateReaderPort | undefined;
     discussionAnchorStateReader?: DiscussionAnchorStateReaderPort | undefined;
     hatAssignmentAuthorityReader?: HatAssignmentAuthorityReaderPort | undefined;
     qualityGateEvaluationStateReader?: QualityGateEvaluationStateReaderPort | undefined;
@@ -521,6 +523,9 @@ function attachPolicyDecisionEvidence(effects: CommandEffects, decision: PolicyD
     decisionRecords: effects.decisionRecords,
     qualityGateEvaluations: effects.qualityGateEvaluations,
     workScheduleBlocks: effects.workScheduleBlocks,
+    contextPackInboxAnchors: effects.contextPackInboxAnchors,
+    contextPackInboxAnchorStatusTransitions: effects.contextPackInboxAnchorStatusTransitions,
+    docConsultOutcomeStamps: effects.docConsultOutcomeStamps,
     workAnchors: effects.workAnchors,
     auditEvents: effects.auditEvents.map((auditEvent) => ({
       ...auditEvent,
@@ -598,6 +603,14 @@ function createEffectConflictMessage(reason: CommandOutcomeEffectConflictReason)
     return "schedule block overlaps an existing active or scheduled block for the same hat assignment";
   }
 
+  if (reason === CommandOutcomeEffectConflictReason.DocConsultOutcomeStampMissing) {
+    return "context-pack document consult outcome stamp did not match any consulted document rows";
+  }
+
+  if (reason === CommandOutcomeEffectConflictReason.ContextPackInboxAnchorMissing) {
+    return "context-pack inbox anchor status transition did not match any existing inbox anchor";
+  }
+
   if (reason === CommandOutcomeEffectConflictReason.UnsupportedDiscussionAnchorEffectType) {
     return "unsupported discussion anchor effect type";
   }
@@ -645,6 +658,8 @@ function createEmptyCommandEffects(): CommandEffects {
     decisionRecords: [],
     qualityGateEvaluations: [],
     workScheduleBlocks: [],
+    contextPackInboxAnchors: [],
+    contextPackInboxAnchorStatusTransitions: [],
     auditEvents: [],
     outboxEvents: [],
     workAnchors: createEmptyWorkAnchorCommandEffects(),

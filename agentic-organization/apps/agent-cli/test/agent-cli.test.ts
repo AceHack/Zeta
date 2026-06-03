@@ -4,12 +4,35 @@ import { test } from "node:test";
 import {
   ActionClass,
   ActRejectionReason,
+  asZetaIdDecimal,
+  ContextPackAdvisoryPromotionDecisionStatus,
+  DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
+  ContextPackAttentionLaneKind,
+  ContextPackAttentionLaneRefKind,
+  ContextPackFreshness,
+  ContextPackInboxAnchorPriority,
+  ContextPackInboxAnchorStatus,
+  ContextPackInboxWorkflowActionKind,
+  ContextPackInboxWorkflowBatchKind,
+  ContextPackItemKind,
+  ContextPackOmissionReason,
+  ContextPackRefreshReason,
+  ContextPackSourcePointerKind,
+  ContextPackStatus,
+  ContextPackCurationProfileInstruction,
+  ContextPackCurationProfileId,
   PromptFlowGateKind,
   PromptFlowRunState,
   RunLifecyclePhase,
   RunScope,
   WorkClaimState,
   WorkShardState,
+  contextPackAdvisoryPromotionFingerprint,
+  type ContextPackAdvisoryPromotionDecision,
+  type ContextPackAdvisoryPromotionPolicyRequest,
+  type ContextPackBuilderPort,
+  type ContextPackInboxWorkflowView,
+  type ContextReadout,
   type HatWorkQueue,
   type PromptFlowDefinition,
   type ChatCompletionRequest,
@@ -32,10 +55,20 @@ import {
 } from "../src/agent-cli.ts";
 import {
   CommandType,
+  DocScopeKind,
+  MemoryPhase,
+  MemoryTier,
   ScheduleBlockState,
   ScheduleBlockType,
   SupervisorChainLevel,
   SupervisorSignalToolType,
+  TenantContextPackCurationInstruction,
+  TenantContextPackCurationLaneKind,
+  TenantContextPackCurationProfileId,
+  TenantContextPackCompletenessRequirementId,
+  TenantContextPackCompletenessRequirementSetId,
+  TenantContextPackSynthesisRequirementReason,
+  TenantContextPackSynthesisRequirementSetId,
   ToolBundle,
   type WorkScheduleBlock,
 } from "../../../packages/domain/src/index.ts";
@@ -51,6 +84,41 @@ test("parseAgentCliArgs accepts the minimal observe invocation and defaults repl
   equal(parsed.value.runId, "1");
   equal(parsed.value.hatAssignmentId, "1");
   equal(parsed.value.selectIndex, undefined);
+});
+
+test("parseAgentCliArgs accepts typed inbox workflow action flags", () => {
+  const parsed = parseAgentCliArgs([
+    "observe",
+    "--hat",
+    "release_operator",
+    "--inbox-anchor",
+    "inbox-release-blocker",
+    "--inbox-action",
+    ContextPackInboxWorkflowActionKind.MarkRead,
+  ]);
+
+  equal(parsed.ok, true);
+  if (!parsed.ok) return;
+  equal(parsed.value.inboxAnchorId, "inbox-release-blocker");
+  equal(parsed.value.inboxAction, ContextPackInboxWorkflowActionKind.MarkRead);
+});
+
+test("parseAgentCliArgs rejects unknown advisory-promotion decision statuses", () => {
+  const parsed = parseAgentCliArgs([
+    "observe",
+    "--hat",
+    "engineering_director",
+    "--context-advisory-promotion-item",
+    "synthesis-gap-owner",
+    "--context-advisory-promotion-status",
+    "maybe",
+    "--context-advisory-promotion-blocker",
+    "ownership gap blocks execution",
+  ]);
+
+  equal(parsed.ok, false);
+  if (parsed.ok) return;
+  ok(parsed.message.includes("unknown context advisory-promotion status 'maybe'"));
 });
 
 test("formatAgentCliScreen prints the scoped dashboard and all 16 controller slots", () => {
@@ -77,6 +145,147 @@ test("formatAgentCliScreen prints the scoped dashboard and all 16 controller slo
   ok(rendered.includes("- tests: 7"));
   equal(rendered.split("\n").filter((line) => /^\[[0-9]{2}\]/.test(line)).length, 16);
   ok(rendered.includes("[04] T commit.a execute"));
+});
+
+test("formatAgentCliScreen prints context pack status, items, omissions, contradictions, stale inputs, and blockers", () => {
+  const rendered = formatAgentCliScreen({
+    scope: RunScope.Project,
+    phase: RunLifecyclePhase.Blocked,
+    hatId: "engineering_director",
+    metrics: {
+      scope: RunScope.Project,
+      blocks: [],
+    },
+    context: contextReadout(),
+    slots: Array.from({ length: 16 }, (_, index) => ({
+      index,
+      direction: `slot.${index}`,
+      label: "empty",
+      availability: "N",
+      reason: "no action rendered for this direction",
+    })),
+  });
+
+  ok(rendered.includes("context: conflicted ctx-pack-1"));
+  ok(rendered.includes("context summary: required=1 optional=1 omissions=1 contradictions=1 stale=1 blockers=1"));
+  ok(rendered.includes("- required context business_document doc-brd: BRD"));
+  ok(rendered.includes("- optional context memory_pointer mem-1: Prior blocker memory"));
+  ok(rendered.includes("context attention lanes:"));
+  ok(rendered.includes("- attention lane required_documents priority=20 required=true: Resolve against approved docs"));
+  ok(rendered.includes("refs=item:doc-brd"));
+  ok(rendered.includes("- attention lane memory priority=50 required=false: Use advisory memory"));
+  ok(rendered.includes("refs=item:mem-1"));
+  ok(rendered.includes("- attention lane omissions priority=60 required=true: Resolve visible gaps"));
+  ok(rendered.includes("refs=omission:decision-redacted"));
+  ok(rendered.includes("- attention lane legal_actions priority=70 required=true: Pick legal next action"));
+  ok(rendered.includes("refs=legal_action:meta.escalate"));
+  ok(rendered.includes("context drill targets:"));
+  ok(rendered.includes("- context drill doc-brd doc_unit:doc-brd:v1 Document doc-brd"));
+  ok(rendered.includes("- context drill mem-1 hindsight_memory:hindsight:mem-1 Memory mem-1 governance=work/active weight=0.81 floor=0.35"));
+  ok(rendered.includes("- context omission access_denied decision-redacted: redacted by policy"));
+  ok(rendered.includes("- context contradiction: BRD conflicts with stale ADR"));
+  ok(rendered.includes("- context stale input: adr-old"));
+  ok(rendered.includes("- context blocker: work item is blocked"));
+});
+
+test("formatAgentCliScreen prints advisory-promotion candidates with derived fingerprints", () => {
+  const context = advisoryPromotionContextReadout();
+  const advisoryItem = context.pack.items.find((item) => item.id === "synthesis-gap-owner");
+  ok(advisoryItem);
+  const fingerprint = contextPackAdvisoryPromotionFingerprint(advisoryItem);
+
+  const rendered = formatAgentCliScreen({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingReview,
+    hatId: "engineering_director",
+    metrics: {
+      scope: RunScope.WorkItem,
+      blocks: [],
+    },
+    context,
+    slots: Array.from({ length: 16 }, (_, index) => ({
+      index,
+      direction: `slot.${index}`,
+      label: "empty",
+      availability: "N",
+      reason: "no action rendered for this direction",
+    })),
+  });
+
+  ok(rendered.includes("context advisory-promotion candidates:"));
+  ok(rendered.includes(`- advisory promotion candidate synthesis-gap-owner profile=management_blocker fingerprint=${fingerprint.itemKind}:${fingerprint.summaryHash}`));
+  ok(rendered.includes("status=unknown"));
+  ok(rendered.includes("title=Owner gap"));
+  ok(rendered.includes("citations=context_requirement:owner,doc:billing-brd"));
+  ok(rendered.includes("sourcePointers=doc_unit:doc-brd:1"));
+  ok(rendered.includes("evidence=context_requirement:owner,doc:billing-brd,synthesis-gap-owner,synthesis:gap-owner"));
+  ok(rendered.includes("command=--context-advisory-promotion-item synthesis-gap-owner --context-advisory-promotion-status approved --context-advisory-promotion-blocker <text>"));
+  ok(!rendered.includes("advisory promotion candidate doc-brd"));
+});
+
+test("formatAgentCliScreen prints approved advisory-promotion status from scoped decisions", () => {
+  const context = advisoryPromotionContextReadout();
+  const advisoryItem = context.pack.items.find((item) => item.id === "synthesis-gap-owner");
+  ok(advisoryItem);
+  const decision = advisoryPromotionDecisionFor(advisoryItem);
+
+  const rendered = formatAgentCliScreen({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingReview,
+    hatId: "engineering_director",
+    metrics: {
+      scope: RunScope.WorkItem,
+      blocks: [],
+    },
+    context,
+    advisoryPromotionDecisions: [decision],
+    slots: Array.from({ length: 16 }, (_, index) => ({
+      index,
+      direction: `slot.${index}`,
+      label: "empty",
+      availability: "N",
+      reason: "no action rendered for this direction",
+    })),
+  });
+
+  ok(rendered.includes("status=approved"));
+  ok(rendered.includes("decision=decision-synthesis-gap-owner"));
+  ok(rendered.includes("blocker=ownership gap blocks execution"));
+});
+
+test("formatAgentCliScreen prints not-approved advisory-promotion status when no scoped approval matches", () => {
+  const context = advisoryPromotionContextReadout();
+  const advisoryItem = context.pack.items.find((item) => item.id === "synthesis-gap-owner");
+  ok(advisoryItem);
+  const decision = {
+    ...advisoryPromotionDecisionFor(advisoryItem),
+    fingerprint: {
+      ...contextPackAdvisoryPromotionFingerprint(advisoryItem),
+      summaryHash: "different-summary",
+    },
+  };
+
+  const rendered = formatAgentCliScreen({
+    scope: RunScope.WorkItem,
+    phase: RunLifecyclePhase.AwaitingReview,
+    hatId: "engineering_director",
+    metrics: {
+      scope: RunScope.WorkItem,
+      blocks: [],
+    },
+    context,
+    advisoryPromotionDecisions: [decision],
+    slots: Array.from({ length: 16 }, (_, index) => ({
+      index,
+      direction: `slot.${index}`,
+      label: "empty",
+      availability: "N",
+      reason: "no action rendered for this direction",
+    })),
+  });
+
+  ok(rendered.includes("status=not_approved"));
+  ok(!rendered.includes("status=approved"));
 });
 
 test("selectFirstTrueSlot returns the first selectable slot index", () => {
@@ -138,6 +347,61 @@ test("createModelBackedMenuSelector accepts only rendered T slot indexes from th
   });
   ok(prompts[0]?.user.includes("[04] commit.a execute"));
   ok(!prompts[0]?.user.includes("[05] commit.b blocked"));
+});
+
+test("createModelBackedMenuSelector includes bounded context pack evidence in the selector prompt", async () => {
+  const prompts: ChatCompletionRequest[] = [];
+  const selector = createModelBackedMenuSelector({
+    chat: {
+      complete: async (request) => {
+        prompts.push(request);
+        return { content: JSON.stringify({ slot: 4, reason: "required BRD supports execution" }), model: "llama3.1" };
+      },
+    },
+    fallback: selectFirstTrueSlot,
+  });
+
+  const selected = await selector(menuForSelection(), {
+    context: contextReadout(),
+    metrics: { scope: RunScope.Project, blocks: [{ id: "queue.pressure", label: "queue pressure", value: 3 }] },
+  });
+
+  equal(selected, 4);
+  ok(prompts[0]?.user.includes("Context pack: conflicted ctx-pack-1"));
+  ok(prompts[0]?.user.includes("Required context:"));
+  ok(prompts[0]?.user.includes("- business_document doc-brd: BRD"));
+  ok(prompts[0]?.user.includes("Attention lanes:"));
+  ok(prompts[0]?.user.includes("- required_documents priority=20 required=true refs=item:doc-brd objective=Resolve against approved docs"));
+  ok(prompts[0]?.user.includes("- memory priority=50 required=false refs=item:mem-1 objective=Use advisory memory"));
+  ok(prompts[0]?.user.includes("Attention lane details:"));
+  ok(prompts[0]?.user.includes("- lane=memory item memory_pointer mem-1: Prior blocker memory"));
+  ok(prompts[0]?.user.includes("- lane=omissions omission access_denied decision-redacted: redacted by policy"));
+  ok(prompts[0]?.user.includes("- legal_actions priority=70 required=true refs=legal_action:meta.escalate objective=Pick legal next action"));
+  ok(prompts[0]?.user.includes("Context omissions: 1"));
+  ok(prompts[0]?.user.includes("Metrics:"));
+  ok(prompts[0]?.user.includes("- queue pressure: 3"));
+});
+
+test("createModelBackedMenuSelector includes bounded inbox workflow evidence in the selector prompt", async () => {
+  const prompts: ChatCompletionRequest[] = [];
+  const selector = createModelBackedMenuSelector({
+    chat: {
+      complete: async (request) => {
+        prompts.push(request);
+        return { content: JSON.stringify({ slot: 4, reason: "urgent inbox wakeup supports execution" }), model: "llama3.1" };
+      },
+    },
+    fallback: selectFirstTrueSlot,
+  });
+
+  const selected = await selector(menuForSelection(), {
+    inboxWorkflow: contextPackInboxWorkflowView(),
+  });
+
+  equal(selected, 4);
+  ok(prompts[0]?.user.includes("Inbox workflow: total=2 urgent=1 normal=0 due=0 future=1 read=0"));
+  ok(prompts[0]?.user.includes("- urgent_unread inbox-release-blocker urgent/unread: Release blocker inbox actions=mark_read,snooze"));
+  ok(prompts[0]?.user.includes("- snoozed_future inbox-director-review normal/snoozed until=2026-05-31T14:30:00.000Z: Director review inbox actions=mark_read"));
 });
 
 test("createModelBackedMenuSelector rejects free-form slot text instead of regex-parsing it", async () => {
@@ -304,6 +568,814 @@ test("runAgentCliCycle renders observe output and routes the selected slot throu
   ]);
 });
 
+test("runAgentCliCycle dispatches typed inbox workflow actions from durable workflow items", async () => {
+  const commands: string[] = [];
+  const stdout: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-visible-but-not-trusted-for-command",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--gate-approved",
+      "--inbox-anchor",
+      "inbox-release-blocker",
+      "--inbox-action",
+      ContextPackInboxWorkflowActionKind.MarkRead,
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    loadContextPackInboxWorkflow: async () => ({
+      organizationId: "org-1",
+      targetHatAssignmentId: "99",
+      targetAgentId: "agent-release-1",
+      observedAt: "2026-05-31T12:00:00.000Z",
+      summary: {
+        totalVisibleCount: 1,
+        urgentUnreadCount: 1,
+        normalUnreadCount: 0,
+        readCount: 0,
+        snoozedDueCount: 0,
+        snoozedFutureCount: 0,
+      },
+      batches: [{
+        kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
+        items: [{
+          inboxAnchorId: "inbox-release-blocker",
+          organizationId: "org-1",
+          projectId: "project-1",
+          teamId: "team-release",
+          workItemId: "work-from-workflow-item",
+          targetHatAssignmentId: "99",
+          targetAgentId: "agent-release-1",
+          title: "Release blocker inbox",
+          summary: "Release operator wakeup was triggered by missing gate evidence.",
+          priority: ContextPackInboxAnchorPriority.Urgent,
+          status: ContextPackInboxAnchorStatus.Unread,
+          deliveredAt: "2026-05-31T00:40:00.000Z",
+          actions: [{
+            kind: ContextPackInboxWorkflowActionKind.MarkRead,
+            targetStatus: ContextPackInboxAnchorStatus.Read,
+            requiresSnoozedUntil: false,
+          }],
+        }],
+      }],
+    }),
+    runCommand: async (commandType, command) => {
+      commands.push(`${commandType}:${JSON.stringify(command)}`);
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "dispatched");
+  ok(stdout.join("\n").includes("inbox workflow: total=1 urgent=1 normal=0 due=0 future=0 read=0"));
+  ok(stdout.join("\n").includes("action: dispatched command"));
+  deepEqual(commands, [
+    `${CommandType.UpdateContextPackInboxAnchorStatus}:{"commandId":"cmd-inbox-1-inbox-release-blocker-mark_read","type":"update_context_pack_inbox_anchor_status","idempotencyKey":"observe-inbox:1:99:awaiting_gate:inbox-release-blocker:mark_read","requestHash":"update_context_pack_inbox_anchor_status:1:99:awaiting_gate:inbox-release-blocker:mark_read:read","correlationId":"observe-cli-1","causationId":"observe-cli-1","traceId":"observe-cli-1","organizationId":"org-1","projectId":"project-1","teamId":"team-release","workItemId":"work-from-workflow-item","actor":{"agentId":"agent-release-1","hatAssignmentId":"99"},"inboxAnchorId":"inbox-release-blocker","targetHatAssignmentId":"99","targetAgentId":"agent-release-1","status":"read"}`,
+  ]);
+});
+
+test("runAgentCliCycle rejects inbox snooze actions without a wake time", async () => {
+  const commands: string[] = [];
+  const stderr: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingGate,
+      "--inbox-anchor",
+      "inbox-release-blocker",
+      "--inbox-action",
+      ContextPackInboxWorkflowActionKind.Snooze,
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    writeStderr: (text) => stderr.push(text),
+    loadContextPackInboxWorkflow: async () => ({
+      organizationId: "org-1",
+      targetHatAssignmentId: "99",
+      targetAgentId: "agent-release-1",
+      observedAt: "2026-05-31T12:00:00.000Z",
+      summary: {
+        totalVisibleCount: 1,
+        urgentUnreadCount: 1,
+        normalUnreadCount: 0,
+        readCount: 0,
+        snoozedDueCount: 0,
+        snoozedFutureCount: 0,
+      },
+      batches: [{
+        kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
+        items: [{
+          inboxAnchorId: "inbox-release-blocker",
+          organizationId: "org-1",
+          projectId: "project-1",
+          targetHatAssignmentId: "99",
+          targetAgentId: "agent-release-1",
+          title: "Release blocker inbox",
+          summary: "Release operator wakeup was triggered by missing gate evidence.",
+          priority: ContextPackInboxAnchorPriority.Urgent,
+          status: ContextPackInboxAnchorStatus.Unread,
+          deliveredAt: "2026-05-31T00:40:00.000Z",
+          actions: [{
+            kind: ContextPackInboxWorkflowActionKind.Snooze,
+            targetStatus: ContextPackInboxAnchorStatus.Snoozed,
+            requiresSnoozedUntil: true,
+          }],
+        }],
+      }],
+    }),
+    runCommand: async (commandType, command) => {
+      commands.push(`${commandType}:${JSON.stringify(command)}`);
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 1);
+  equal(result.actionResult?.outcome, "rejected");
+  ok(stderr.join("").includes("agent CLI inbox workflow action failed: --inbox-snoozed-until is required for snooze"));
+  deepEqual(commands, []);
+});
+
+test("runAgentCliCycle renders tenant curation authoring preview without dispatching work", async () => {
+  const commands: string[] = [];
+  const stdout: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-director",
+      "--organization",
+      "org-lfg",
+      "--project",
+      "project-billing",
+      "--team",
+      "team-platform",
+      "--work-item",
+      "work-billing",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.Blocked,
+      "--context-curation-preview",
+      "--context-curation-profile",
+      TenantContextPackCurationProfileId.SecurityControl,
+      "--context-required-lane",
+      TenantContextPackCurationLaneKind.Memory,
+      "--context-lane-priority",
+      `${TenantContextPackCurationLaneKind.LegalActions}=6`,
+      "--context-deterministic-instruction",
+      TenantContextPackCurationInstruction.SecurityControl,
+      "--context-block-inherited-instructions",
+    ],
+    now: () => "2026-06-01T00:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    runCommand: async (commandType, command) => {
+      commands.push(`${commandType}:${JSON.stringify(command)}`);
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  const rendered = stdout.join("\n");
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "rejected");
+  deepEqual(commands, []);
+  ok(rendered.includes("tenant context-pack curation authoring:"));
+  ok(rendered.includes("- profile security_control focus=security_control docs=policy,adr,decision_record,architecture,runbook terms=credential proxy,least privilege,policy,audit evidence,decision"));
+  ok(rendered.includes("- lane memory defaultPriority=50 required=false objective=Use scoped memory only as advisory color after source-of-truth context."));
+  ok(rendered.includes("tenant curation preview: profile=security_control focus=security_control policy="));
+  ok(rendered.includes("tenant curation preview docs: policy,adr,decision_record,architecture,runbook"));
+  ok(rendered.includes("tenant curation preview query: credential proxy,least privilege,policy,audit evidence,decision"));
+  ok(rendered.includes("- preview lane legal_actions priority=6"));
+  ok(rendered.includes("- preview required lane memory"));
+  ok(rendered.includes(`- preview instruction ${ContextPackCurationProfileInstruction.SecurityControl}`));
+});
+
+test("runAgentCliCycle renders tenant completeness authoring preview without dispatching work", async () => {
+  const commands: string[] = [];
+  const stdout: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_manager",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-manager",
+      "--organization",
+      "org-lfg",
+      "--project",
+      "project-release",
+      "--work-item",
+      "work-release",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingReview,
+      "--context-completeness-preview",
+      "--context-completeness-set",
+      TenantContextPackCompletenessRequirementSetId.ReleaseReadinessCore,
+    ],
+    now: () => "2026-06-01T00:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    runCommand: async (commandType, command) => {
+      commands.push(`${commandType}:${JSON.stringify(command)}`);
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  const rendered = stdout.join("\n");
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "rejected");
+  deepEqual(commands, []);
+  ok(rendered.includes("tenant context-pack completeness authoring:"));
+  ok(rendered.includes("- completeness set release_readiness_core requirements=release_deployment_evidence:evidence:active_scope,release_readiness_meeting:meeting:active_scope"));
+  ok(rendered.includes(`- completeness preview omission context_requirement:${TenantContextPackCompletenessRequirementId.ReleaseDeploymentEvidence} not_indexed: release deployment evidence is required`));
+  ok(rendered.includes(`- completeness preview omission context_requirement:${TenantContextPackCompletenessRequirementId.ReleaseReadinessMeeting} not_indexed: release readiness meeting notes are required`));
+  ok(rendered.includes("- completeness preview blocker release deployment evidence is required"));
+  ok(rendered.includes("- completeness preview blocker release readiness meeting notes are required"));
+  ok(rendered.includes("- completeness preview evidence context_policy:tenant_release_readiness_core:v1"));
+});
+
+test("runAgentCliCycle renders tenant synthesis-requirement authoring preview without dispatching work", async () => {
+  const commands: string[] = [];
+  const stdout: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_manager",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-manager",
+      "--organization",
+      "org-lfg",
+      "--project",
+      "project-release",
+      "--work-item",
+      "work-release",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingReview,
+      "--context-synthesis-preview",
+      "--context-synthesis-set",
+      TenantContextPackSynthesisRequirementSetId.ReleaseReadinessCore,
+    ],
+    now: () => "2026-06-01T00:00:00.000Z",
+    writeStdout: (text) => stdout.push(text),
+    runCommand: async (commandType, command) => {
+      commands.push(`${commandType}:${JSON.stringify(command)}`);
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  const rendered = stdout.join("\n");
+  equal(result.exitCode, 0);
+  equal(result.actionResult?.outcome, "rejected");
+  deepEqual(commands, []);
+  ok(rendered.includes("tenant context-pack synthesis-requirement authoring:"));
+  ok(rendered.includes(`- synthesis set release_readiness_core requirements=tenant_release_readiness_model_briefing:${TenantContextPackSynthesisRequirementReason.TenantRequiresReleaseReadinessBriefing} phases=awaiting_review scopes=work_item,project`));
+  ok(rendered.includes(`tenant synthesis preview: decision=required reason=${TenantContextPackSynthesisRequirementReason.TenantRequiresReleaseReadinessBriefing} policy=`));
+});
+
+test("runAgentCliCycle dispatches advisory-promotion decisions from visible synthesis gap items", async () => {
+  const commands: { commandType: string; command: Record<string, unknown> }[] = [];
+  const stdout: string[] = [];
+  const stderr: string[] = [];
+  const context = advisoryPromotionContextReadout();
+  const advisoryItem = context.pack.items.find((item) => item.id === "synthesis-gap-owner");
+  ok(advisoryItem);
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-director",
+      "--organization",
+      "org-lfg",
+      "--project",
+      "project-billing",
+      "--team",
+      "team-platform",
+      "--work-item",
+      "work-billing",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingReview,
+      "--context-advisory-promotion-item",
+      advisoryItem.id,
+      "--context-advisory-promotion-status",
+      ContextPackAdvisoryPromotionDecisionStatus.Approved,
+      "--context-advisory-promotion-blocker",
+      "ownership gap blocks execution",
+    ],
+    now: () => "2026-06-01T00:00:00.000Z",
+    contextPackBuilder: { build: async () => ({ pack: context.pack }) },
+    writeStdout: (text) => stdout.push(text),
+    writeStderr: (text) => stderr.push(text),
+    runCommand: async (commandType, command) => {
+      commands.push({ commandType, command: command as Record<string, unknown> });
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0, stderr.join(""));
+  equal(result.actionResult?.outcome, "dispatched");
+  equal(commands.length, 1);
+  equal(commands[0]?.commandType, CommandType.AuthorContextPackAdvisoryPromotionDecision);
+  equal(commands[0]?.command.type, CommandType.AuthorContextPackAdvisoryPromotionDecision);
+  equal(commands[0]?.command.hatId, "engineering_director");
+  equal(commands[0]?.command.hatAssignmentId, "99");
+  equal(commands[0]?.command.curationProfileId, ContextPackCurationProfileId.ManagementBlocker);
+  equal(commands[0]?.command.status, ContextPackAdvisoryPromotionDecisionStatus.Approved);
+  equal(commands[0]?.command.lifecycleBlocker, "ownership gap blocks execution");
+  deepEqual(commands[0]?.command.fingerprint, contextPackAdvisoryPromotionFingerprint(advisoryItem));
+  deepEqual(commands[0]?.command.evidenceRefs, [
+    "context_requirement:owner",
+    "doc:billing-brd",
+    "synthesis-gap-owner",
+    "synthesis:gap-owner",
+  ]);
+  ok(stdout.join("\n").includes("action: dispatched command"));
+});
+
+test("runAgentCliCycle loads scoped advisory-promotion decisions before rendering candidates", async () => {
+  const stdout: string[] = [];
+  const stderr: string[] = [];
+  const requests: ContextPackAdvisoryPromotionPolicyRequest[] = [];
+  const context = advisoryPromotionContextReadout();
+  const advisoryItem = context.pack.items.find((item) => item.id === "synthesis-gap-owner");
+  ok(advisoryItem);
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-director",
+      "--organization",
+      "org-lfg",
+      "--project",
+      "project-billing",
+      "--team",
+      "team-platform",
+      "--work-item",
+      "work-billing",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingReview,
+      "--context-curation-preview",
+      "--context-curation-profile",
+      TenantContextPackCurationProfileId.ManagementBlocker,
+    ],
+    now: () => "2026-06-01T00:00:00.000Z",
+    contextPackBuilder: { build: async () => ({ pack: context.pack }) },
+    loadContextPackAdvisoryPromotionDecisions: async (request) => {
+      requests.push(request);
+      return [advisoryPromotionDecisionFor(advisoryItem)];
+    },
+    writeStdout: (text) => stdout.push(text),
+    writeStderr: (text) => stderr.push(text),
+    runCommand: async () => ({ status: "accepted" }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  const rendered = stdout.join("\n");
+  equal(result.exitCode, 0, stderr.join(""));
+  equal(requests.length, 1);
+  equal(requests[0]?.request.snapshot.organizationId, "org-lfg");
+  equal(requests[0]?.request.snapshot.hat.id, "engineering_director");
+  equal(requests[0]?.request.snapshot.hatAssignmentId, "99");
+  equal(requests[0]?.request.snapshot.projectId, "project-billing");
+  equal(requests[0]?.request.snapshot.teamId, "team-platform");
+  equal(requests[0]?.request.snapshot.workItemId, "work-billing");
+  equal(requests[0]?.curationPlan?.profileId, ContextPackCurationProfileId.ManagementBlocker);
+  ok(requests[0]?.advisoryItems.some((item) => item.id === "synthesis-gap-owner"));
+  ok(requests[0]?.deterministicItems.every((item) => item.kind !== ContextPackItemKind.SynthesisGapHypothesis));
+  ok(rendered.includes("status=approved"));
+  ok(rendered.includes("blocker=ownership gap blocks execution"));
+});
+
+test("runAgentCliCycle rejects advisory-promotion decisions for non-synthesis items", async () => {
+  const commands: unknown[] = [];
+  const stderr: string[] = [];
+  const context = advisoryPromotionContextReadout();
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-director",
+      "--organization",
+      "org-lfg",
+      "--project",
+      "project-billing",
+      "--team",
+      "team-platform",
+      "--work-item",
+      "work-billing",
+      "--scope",
+      RunScope.WorkItem,
+      "--phase",
+      RunLifecyclePhase.AwaitingReview,
+      "--context-advisory-promotion-item",
+      "doc-brd",
+      "--context-advisory-promotion-status",
+      ContextPackAdvisoryPromotionDecisionStatus.Approved,
+      "--context-advisory-promotion-blocker",
+      "ownership gap blocks execution",
+    ],
+    now: () => "2026-06-01T00:00:00.000Z",
+    contextPackBuilder: { build: async () => ({ pack: context.pack }) },
+    writeStderr: (text) => stderr.push(text),
+    runCommand: async (commandType, command) => {
+      commands.push({ commandType, command });
+      return { status: "accepted" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 1);
+  equal(result.actionResult?.outcome, "rejected");
+  deepEqual(commands, []);
+  ok(stderr.join("").includes("requested advisory-promotion item is not a synthesis gap hypothesis"));
+});
+
+test("runAgentCliCycle records context pack identity and health in cycle evidence", async () => {
+  const contextPackBuilder: ContextPackBuilderPort = {
+    build: async (request) => ({
+      pack: {
+        id: "ctx-director-blocker",
+        runId: request.snapshot.runId,
+        scope: request.snapshot.scope,
+        hatAssignmentId: request.snapshot.hatAssignmentId,
+        hatId: request.snapshot.hat.id,
+        generatedAt: request.observedAt,
+        freshnessDeadline: "2026-05-31T12:05:00.000Z",
+        sourceGraphVersion: "git-index:abc123",
+        policyVersion: "context-policy:v1",
+        tokenBudget: 4096,
+        organizationId: request.snapshot.organizationId,
+        projectId: request.snapshot.projectId,
+        workItemId: request.snapshot.workItemId,
+        agentId: request.snapshot.agentId,
+        items: [
+          {
+            id: "brd-blocker",
+            kind: ContextPackItemKind.BusinessDocument,
+            title: "Blocker BRD",
+            summary: "Defines the customer outcome blocked by this issue.",
+            sourceRef: "git://docs/brd/blocker.md",
+            freshness: ContextPackFreshness.Current,
+            confidence: 0.97,
+            required: true,
+            reasons: ["required business context for blocked project work"],
+          },
+        ],
+        omittedItemsWithReason: [
+          {
+            reason: ContextPackOmissionReason.NotIndexed,
+            nodeId: "meeting-followup",
+            message: "recent director discussion has not been indexed yet",
+          },
+        ],
+        contradictions: ["BRD priority conflicts with an older ADR"],
+        staleInputs: ["adr-old"],
+        lifecycleBlockers: ["work item work-blocked is blocked"],
+        curationTrace: [],
+      },
+    }),
+  };
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "77",
+      "--agent",
+      "agent-director-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-blocked",
+      "--scope",
+      "project",
+      "--phase",
+      "blocked",
+      "--select-index",
+      "13",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    contextPackBuilder,
+    writeStdout: () => {},
+    runCommand: async () => ({ appendedOrgEvent: "org-event-1" }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  equal(result.evidence?.contextPackId, "ctx-director-blocker");
+  equal(result.evidence?.contextPackStatus, ContextPackStatus.Conflicted);
+  equal(result.evidence?.contextRequiredItemCount, 1);
+  equal(result.evidence?.contextOptionalItemCount, 0);
+  equal(result.evidence?.contextOmissionCount, 1);
+  equal(result.evidence?.contextContradictionCount, 1);
+  equal(result.evidence?.contextStaleInputCount, 1);
+  equal(result.evidence?.contextLifecycleBlockerCount, 1);
+  deepEqual(result.evidence?.contextRequiredItemIds, ["brd-blocker"]);
+  equal(result.evidence?.contextSnapshot?.pack.id, "ctx-director-blocker");
+  equal(result.evidence?.contextSnapshot?.status, ContextPackStatus.Conflicted);
+  equal(result.evidence?.contextSnapshot?.pack.organizationId, "org-1");
+});
+
+test("runAgentCliCycle records context refresh reason when an agent wakes with a reassigned hat", async () => {
+  const latestLookups: unknown[] = [];
+  let builderWakeReason: string | undefined;
+  let builderPreviousPackId: string | undefined;
+  const contextPackBuilder: ContextPackBuilderPort = {
+    build: async (request) => {
+      builderWakeReason = request.wakeContext?.reason;
+      builderPreviousPackId = request.wakeContext?.previousContextPackId;
+      return {
+        pack: {
+          id: "ctx-new-assignment",
+          runId: request.snapshot.runId,
+          scope: request.snapshot.scope,
+          hatAssignmentId: request.snapshot.hatAssignmentId,
+          hatId: request.snapshot.hat.id,
+          generatedAt: request.observedAt,
+          freshnessDeadline: "2026-06-02T12:05:00.000Z",
+          sourceGraphVersion: "git-index:new",
+          policyVersion: "context-policy:v1",
+          tokenBudget: 4096,
+          organizationId: request.snapshot.organizationId,
+          projectId: request.snapshot.projectId,
+          workItemId: request.snapshot.workItemId,
+          agentId: request.snapshot.agentId,
+          items: [],
+          omittedItemsWithReason: [],
+          contradictions: [],
+          staleInputs: [],
+          lifecycleBlockers: [],
+          curationTrace: [],
+        },
+      };
+    },
+  };
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "77",
+      "--agent",
+      "agent-director-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "project",
+      "--phase",
+      "blocked",
+      "--select-index",
+      "13",
+    ],
+    now: () => "2026-06-02T12:00:00.000Z",
+    contextPackBuilder,
+    loadLatestContextPackSnapshot: async (lookup) => {
+      latestLookups.push(lookup);
+      return {
+        context: {
+          ...contextReadout(),
+          status: ContextPackStatus.Current,
+          pack: {
+            ...contextReadout().pack,
+            id: "ctx-previous-assignment",
+            hatAssignmentId: asZetaIdDecimal("76"),
+            generatedAt: "2026-06-02T11:55:00.000Z",
+            freshnessDeadline: "2026-06-02T12:05:00.000Z",
+          },
+        },
+        recordedAt: "2026-06-02T11:55:00.000Z",
+        trace: {
+          traceId: "trace-previous-assignment",
+          correlationId: "corr-previous-assignment",
+          causationId: "cause-previous-assignment",
+        },
+      };
+    },
+    writeStdout: () => {},
+    runCommand: async () => ({ appendedOrgEvent: "org-event-1" }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  deepEqual(latestLookups, [{
+    organizationId: "org-1",
+    agentId: "agent-director-1",
+  }]);
+  equal(result.evidence?.contextRefreshReason, ContextPackRefreshReason.HatAssignmentChanged);
+  equal(result.evidence?.previousContextPackId, "ctx-previous-assignment");
+  equal(result.evidence?.contextRefreshRequiresBuild, true);
+  equal(result.evidence?.previousContextPackStatus, ContextPackStatus.Current);
+  equal(builderWakeReason, ContextPackRefreshReason.HatAssignmentChanged);
+  equal(builderPreviousPackId, "ctx-previous-assignment");
+});
+
+test("runAgentCliCycle fails closed when previous context-pack lookup fails", async () => {
+  const stderr: string[] = [];
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "77",
+      "--agent",
+      "agent-director-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "project",
+      "--phase",
+      "blocked",
+      "--select-index",
+      "13",
+    ],
+    now: () => "2026-06-02T12:00:00.000Z",
+    loadLatestContextPackSnapshot: async () => {
+      throw new Error("snapshot index unavailable");
+    },
+    writeStderr: (text) => stderr.push(text),
+    runCommand: async () => ({ ok: true }),
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 1);
+  ok(stderr.join("").includes("agent CLI context-pack previous snapshot lookup failed: snapshot index unavailable"));
+});
+
+test("runAgentCliCycle records replayable context before selector choice and action execution", async () => {
+  const order: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "release_operator",
+      "--hat-assignment",
+      "99",
+      "--agent",
+      "agent-release-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-1",
+      "--scope",
+      "work_item",
+      "--phase",
+      "awaiting_gate",
+      "--gate-approved",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    contextPackBuilder: { build: async () => ({ pack: matchingReleaseContextReadout().pack }) },
+    recordContextPackSnapshot: async (snapshot) => {
+      order.push(`snapshot:${snapshot.context.pack.id}`);
+    },
+    selectSlot: () => {
+      order.push("selector");
+      return 4;
+    },
+    writeStdout: () => {},
+    runCommand: async () => {
+      order.push("action");
+      return { appendedOrgEvent: "org-event-1" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 0);
+  deepEqual(order, ["snapshot:ctx-release-match", "selector", "action"]);
+});
+
+test("runAgentCliCycle fails closed when replayable context cannot be recorded", async () => {
+  const order: string[] = [];
+  const stderr: string[] = [];
+
+  const result = await runAgentCliCycle({
+    argv: [
+      "observe",
+      "--hat",
+      "engineering_director",
+      "--hat-assignment",
+      "77",
+      "--agent",
+      "agent-director-1",
+      "--organization",
+      "org-1",
+      "--project",
+      "project-1",
+      "--work-item",
+      "work-blocked",
+      "--scope",
+      "project",
+      "--phase",
+      "blocked",
+    ],
+    now: () => "2026-05-31T12:00:00.000Z",
+    contextPackBuilder: { build: async () => ({ pack: matchingReleaseContextReadout().pack }) },
+    recordContextPackSnapshot: async () => {
+      order.push("snapshot");
+      throw new Error("database unavailable");
+    },
+    selectSlot: () => {
+      order.push("selector");
+      return 13;
+    },
+    writeStdout: () => {},
+    writeStderr: (text) => stderr.push(text),
+    runCommand: async () => {
+      order.push("action");
+      return { appendedOrgEvent: "org-event-1" };
+    },
+    dispatchTool: async () => ({ ok: true }),
+  });
+
+  equal(result.exitCode, 1);
+  deepEqual(order, ["snapshot"]);
+  ok(stderr.join("").includes("agent CLI context-pack snapshot record failed: database unavailable"));
+});
+
 test("runAgentCliCycle materializes meta.escalate as a send-supervisor-signal command", async () => {
   const commands: string[] = [];
   const stdout: string[] = [];
@@ -358,6 +1430,7 @@ test("runAgentCliCycle materializes meta.escalate as a send-supervisor-signal co
 test("runAgentCliCycle passes schedule blocks into observe so execution can fail closed", async () => {
   let dispatched = false;
   const stdout: string[] = [];
+  const latestLookups: unknown[] = [];
   const result = await runAgentCliCycle({
     argv: [
       "observe",
@@ -384,6 +1457,10 @@ test("runAgentCliCycle passes schedule blocks into observe so execution can fail
     now: () => "2026-05-31T12:00:00.000Z",
     writeStdout: (text) => stdout.push(text),
     scheduleBlocks: [],
+    loadLatestContextPackSnapshot: async (lookup) => {
+      latestLookups.push(lookup);
+      return null;
+    },
     runCommand: async () => {
       dispatched = true;
       return { ok: true };
@@ -399,6 +1476,9 @@ test("runAgentCliCycle passes schedule blocks into observe so execution can fail
   if (result.actionResult?.outcome !== "rejected") return;
   equal(result.actionResult.reason, ActRejectionReason.SlotNotSelectable);
   ok(result.actionResult.message.includes("requires a current schedule block"));
+  deepEqual(latestLookups, [{ organizationId: "org-1", agentId: "agent-release-1" }]);
+  equal(result.evidence?.contextRefreshReason, ContextPackRefreshReason.FirstHatWake);
+  equal(result.evidence?.contextRefreshRequiresBuild, true);
   equal(dispatched, false);
   ok(stdout.join("\n").includes("[04] F commit.a execute"));
   ok(stdout.join("\n").includes("requires a current schedule block"));
@@ -1584,6 +2664,370 @@ function promptFlowTask(overrides: Partial<PromptFlowTask> = {}): PromptFlowTask
     metrics: [],
     contextArtifactRefs: [],
     ...overrides,
+  };
+}
+
+function contextReadout(): ContextReadout {
+  const docUnitId = "doc-brd";
+  const memoryId = "mem-1";
+  const requiredItem = {
+    id: docUnitId,
+    kind: ContextPackItemKind.BusinessDocument,
+    title: "BRD",
+    summary: "Business context.",
+    sourceRef: "doc:brd",
+    required: true,
+    freshness: ContextPackFreshness.Current,
+    confidence: 1,
+    reasons: ["stage-bound"],
+    sourcePointers: [{
+      kind: ContextPackSourcePointerKind.DocUnit,
+      docUnitId,
+      contentRef: "docs/project/brd.md",
+      contentHash: "hash-brd",
+      sourceId: "source-main",
+      version: 1,
+    }],
+  };
+  const optionalItem = {
+    id: memoryId,
+    kind: ContextPackItemKind.MemoryPointer,
+    title: "Prior blocker memory",
+    summary: "A prior blocker was resolved by staffing docs first.",
+    sourceRef: "memory:1",
+    required: false,
+    freshness: ContextPackFreshness.Current,
+    confidence: 0.7,
+    reasons: ["hat-scoped recall"],
+    sourcePointers: [{
+      kind: ContextPackSourcePointerKind.HindsightMemory,
+      providerId: "hindsight",
+      memoryId,
+      advisory: true,
+    }],
+  };
+  const pack = {
+    id: "ctx-pack-1",
+    runId: asZetaIdDecimal("1"),
+    scope: RunScope.Project,
+    hatAssignmentId: asZetaIdDecimal("2"),
+    hatId: "engineering_director",
+    generatedAt: "2026-05-29T00:00:00.000Z",
+    freshnessDeadline: "2026-05-29T00:15:00.000Z",
+    sourceGraphVersion: "graph-1",
+    policyVersion: "policy-1",
+    tokenBudget: 2048,
+    items: [requiredItem, optionalItem],
+    omittedItemsWithReason: [
+      {
+        nodeId: "decision-redacted",
+        reason: ContextPackOmissionReason.AccessDenied,
+        message: "redacted by policy",
+      },
+    ],
+    contradictions: ["BRD conflicts with stale ADR"],
+    staleInputs: ["adr-old"],
+    lifecycleBlockers: ["work item is blocked"],
+    curationPlan: {
+      lanes: [
+        {
+          kind: ContextPackAttentionLaneKind.Authority,
+          priority: 10,
+          objective: "Understand hat authority",
+          required: true,
+          refs: [{ kind: ContextPackAttentionLaneRefKind.ScopeAnchor, anchorRef: "hat:engineering_director" }],
+        },
+        {
+          kind: ContextPackAttentionLaneKind.RequiredDocuments,
+          priority: 20,
+          objective: "Resolve against approved docs",
+          required: true,
+          refs: [{ kind: ContextPackAttentionLaneRefKind.Item, itemId: "doc-brd" }],
+        },
+        {
+          kind: ContextPackAttentionLaneKind.ActiveWork,
+          priority: 30,
+          objective: "Anchor current work",
+          required: true,
+          refs: [{ kind: ContextPackAttentionLaneRefKind.ScopeAnchor, anchorRef: "project:project-1" }],
+        },
+        {
+          kind: ContextPackAttentionLaneKind.GraphNeighborhood,
+          priority: 40,
+          objective: "Traverse graph context",
+          required: false,
+          refs: [{ kind: ContextPackAttentionLaneRefKind.ScopeAnchor, anchorRef: "graph:project-1" }],
+        },
+        {
+          kind: ContextPackAttentionLaneKind.Memory,
+          priority: 50,
+          objective: "Use advisory memory",
+          required: false,
+          refs: [{ kind: ContextPackAttentionLaneRefKind.Item, itemId: "mem-1" }],
+        },
+        {
+          kind: ContextPackAttentionLaneKind.LegalActions,
+          priority: 70,
+          objective: "Pick legal next action",
+          required: true,
+          refs: [{ kind: ContextPackAttentionLaneRefKind.LegalAction, actionType: "meta.escalate" }],
+        },
+        {
+          kind: ContextPackAttentionLaneKind.Omissions,
+          priority: 60,
+          objective: "Resolve visible gaps",
+          required: true,
+          refs: [{ kind: ContextPackAttentionLaneRefKind.Omission, omissionRef: "decision-redacted" }],
+        },
+      ],
+      deterministicInstructions: ["Rank source-of-truth docs before advisory memory"],
+    },
+    curationTrace: [],
+  };
+  return {
+    status: ContextPackStatus.Conflicted,
+    pack,
+    requiredItems: [requiredItem],
+    optionalItems: [optionalItem],
+    omittedItemsWithReason: pack.omittedItemsWithReason,
+    contradictions: pack.contradictions,
+    staleInputs: pack.staleInputs,
+    lifecycleBlockers: pack.lifecycleBlockers,
+    uncertainty: {
+      signalCount: 0,
+      highSeverityCount: 0,
+      mediumSeverityCount: 0,
+      lowSeverityCount: 0,
+      groups: [],
+    },
+    drillTargetGroups: [
+      {
+        itemId: docUnitId,
+        itemKind: ContextPackItemKind.BusinessDocument,
+        itemTitle: "BRD",
+        targets: [{
+          targetKind: ContextPackSourcePointerKind.DocUnit,
+          targetId: docUnitId,
+          routeRef: "doc_unit:doc-brd:v1",
+          label: "Document doc-brd",
+          sourcePointer: requiredItem.sourcePointers[0]!,
+        }],
+      },
+      {
+        itemId: memoryId,
+        itemKind: ContextPackItemKind.MemoryPointer,
+        itemTitle: "Prior blocker memory",
+        targets: [{
+          targetKind: ContextPackSourcePointerKind.HindsightMemory,
+          targetId: memoryId,
+          routeRef: "hindsight_memory:hindsight:mem-1",
+          label: "Memory mem-1",
+          sourcePointer: optionalItem.sourcePointers[0]!,
+          governance: {
+            tier: MemoryTier.Work,
+            phase: MemoryPhase.Active,
+            scope: "work-1",
+            weight: 0.81,
+            readFloor: 0.35,
+            freshnessAt: "2026-05-29T00:00:00.000Z",
+            outcome: {
+              successCount: 4,
+              failureCount: 1,
+              inconclusiveCount: 0,
+            },
+            utility: {
+              injectedCount: 8,
+              citedCount: 6,
+            },
+          },
+        }],
+      },
+    ],
+    summary: {
+      requiredItemCount: 1,
+      optionalItemCount: 1,
+      omissionCount: 1,
+      contradictionCount: 1,
+      staleInputCount: 1,
+      lifecycleBlockerCount: 1,
+      uncertaintySignalCount: 0,
+    },
+  };
+}
+
+function matchingReleaseContextReadout(): ContextReadout {
+  const readout = contextReadout();
+  const pack = {
+    ...readout.pack,
+    id: "ctx-release-match",
+    scope: RunScope.WorkItem,
+    hatAssignmentId: asZetaIdDecimal("99"),
+    hatId: "release_operator",
+    agentId: "agent-release-1",
+    organizationId: "org-1",
+    projectId: "project-1",
+    workItemId: "work-1",
+  };
+  return {
+    ...readout,
+    pack,
+  };
+}
+
+function advisoryPromotionContextReadout(): ContextReadout {
+  const readout = contextReadout();
+  const advisoryItem = {
+    id: "synthesis-gap-owner",
+    kind: ContextPackItemKind.SynthesisGapHypothesis,
+    title: "Owner gap",
+    summary: "The work is ready for review but no accountable owner is recorded.",
+    sourceRef: "synthesis:gap-owner",
+    required: false,
+    freshness: ContextPackFreshness.Current,
+    confidence: 0.72,
+    reasons: ["grounded synthesis gap"],
+    citationRefs: ["doc:billing-brd", "context_requirement:owner"],
+    sourcePointers: [{
+      kind: ContextPackSourcePointerKind.DocUnit,
+      docUnitId: "doc-brd",
+      contentRef: "docs/project/brd.md",
+      contentHash: "hash-brd",
+      sourceId: "source-main",
+      version: 1,
+      organizationId: "org-lfg",
+      scopeKind: DocScopeKind.Project,
+      scopeId: "project-billing",
+    }],
+  };
+  const scopedExistingItems = readout.pack.items.map((item) => ({
+    ...item,
+    sourcePointers: (item.sourcePointers ?? []).map((pointer) =>
+      pointer.kind === ContextPackSourcePointerKind.DocUnit
+        ? {
+            ...pointer,
+            organizationId: "org-lfg",
+            scopeKind: DocScopeKind.Project,
+            scopeId: "project-billing",
+          }
+        : pointer
+    ),
+  }));
+  const baseCurationPlan = readout.pack.curationPlan;
+  if (baseCurationPlan === undefined) throw new Error("context readout fixture is missing curation plan");
+  const pack = {
+    ...readout.pack,
+    id: "ctx-advisory-promotion",
+    scope: RunScope.WorkItem,
+    hatAssignmentId: asZetaIdDecimal("99"),
+    hatId: "engineering_director",
+    organizationId: "org-lfg",
+    projectId: "project-billing",
+    teamId: "team-platform",
+    workItemId: "work-billing",
+    agentId: "agent-director",
+    items: [...scopedExistingItems, advisoryItem],
+    curationPlan: {
+      ...baseCurationPlan,
+      profileId: ContextPackCurationProfileId.ManagementBlocker,
+    },
+  };
+  return {
+    ...readout,
+    pack,
+    optionalItems: [...readout.optionalItems, advisoryItem],
+    summary: {
+      ...readout.summary,
+      optionalItemCount: readout.summary.optionalItemCount + 1,
+    },
+  };
+}
+
+function advisoryPromotionDecisionFor(
+  item: ContextReadout["pack"]["items"][number],
+): ContextPackAdvisoryPromotionDecision {
+  return {
+    decisionId: `decision-${item.id}`,
+    status: ContextPackAdvisoryPromotionDecisionStatus.Approved,
+    policyVersion: DEFAULT_CONTEXT_PACK_ADVISORY_PROMOTION_POLICY_VERSION,
+    lifecycleBlocker: "ownership gap blocks execution",
+    fingerprint: contextPackAdvisoryPromotionFingerprint(item),
+    evidenceRefs: ["doc:billing-brd"],
+    organizationId: "org-lfg",
+    hatId: "engineering_director",
+    hatAssignmentId: "99",
+    projectId: "project-billing",
+    teamId: "team-platform",
+    workItemId: "work-billing",
+    curationProfileId: ContextPackCurationProfileId.ManagementBlocker,
+  };
+}
+
+function contextPackInboxWorkflowView(): ContextPackInboxWorkflowView {
+  return {
+    organizationId: "org-1",
+    targetHatAssignmentId: "99",
+    targetAgentId: "agent-release-1",
+    observedAt: "2026-05-31T12:00:00.000Z",
+    summary: {
+      totalVisibleCount: 2,
+      urgentUnreadCount: 1,
+      normalUnreadCount: 0,
+      readCount: 0,
+      snoozedDueCount: 0,
+      snoozedFutureCount: 1,
+    },
+    batches: [
+      {
+        kind: ContextPackInboxWorkflowBatchKind.UrgentUnread,
+        items: [{
+          inboxAnchorId: "inbox-release-blocker",
+          organizationId: "org-1",
+          projectId: "project-1",
+          teamId: "team-release",
+          workItemId: "work-1",
+          targetHatAssignmentId: "99",
+          targetAgentId: "agent-release-1",
+          title: "Release blocker inbox",
+          summary: "Release operator wakeup was triggered by missing gate evidence.",
+          priority: ContextPackInboxAnchorPriority.Urgent,
+          status: ContextPackInboxAnchorStatus.Unread,
+          deliveredAt: "2026-05-31T00:40:00.000Z",
+          actions: [
+            {
+              kind: ContextPackInboxWorkflowActionKind.MarkRead,
+              targetStatus: ContextPackInboxAnchorStatus.Read,
+              requiresSnoozedUntil: false,
+            },
+            {
+              kind: ContextPackInboxWorkflowActionKind.Snooze,
+              targetStatus: ContextPackInboxAnchorStatus.Snoozed,
+              requiresSnoozedUntil: true,
+            },
+          ],
+        }],
+      },
+      {
+        kind: ContextPackInboxWorkflowBatchKind.SnoozedFuture,
+        items: [{
+          inboxAnchorId: "inbox-director-review",
+          organizationId: "org-1",
+          projectId: "project-1",
+          targetHatAssignmentId: "99",
+          targetAgentId: "agent-release-1",
+          title: "Director review inbox",
+          summary: "Director requested a later review of the release decision.",
+          priority: ContextPackInboxAnchorPriority.Normal,
+          status: ContextPackInboxAnchorStatus.Snoozed,
+          deliveredAt: "2026-05-31T00:45:00.000Z",
+          snoozedUntil: "2026-05-31T14:30:00.000Z",
+          actions: [{
+            kind: ContextPackInboxWorkflowActionKind.MarkRead,
+            targetStatus: ContextPackInboxAnchorStatus.Read,
+            requiresSnoozedUntil: false,
+          }],
+        }],
+      },
+    ],
   };
 }
 

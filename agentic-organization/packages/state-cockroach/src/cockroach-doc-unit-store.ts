@@ -19,6 +19,7 @@ export type DocUnitStore = {
   get: (docUnitId: string) => Promise<DocUnit | null>;
   listByOrgScope: (organizationId: string, scopeKind: DocScopeKind, scopeId: string) => Promise<readonly DocUnit[]>;
   listByOrgStatus: (organizationId: string, status: DocLifecycleState) => Promise<readonly DocUnit[]>;
+  listBoundConsults: (organizationId: string, hatId: string | undefined, stageId: string | undefined) => Promise<readonly DocUnit[]>;
   findByContentHash: (organizationId: string, contentHash: string) => Promise<DocUnit | null>;
 };
 
@@ -129,6 +130,27 @@ export function createCockroachDocUnitStore(input: CreateCockroachDocUnitStoreIn
         name: "list_doc_units_by_status",
         sql: `${select} WHERE organization_id = $1 AND status = $2 ORDER BY created_at ASC`,
         parameters: [organizationId, status],
+      });
+      return result.rows.map(rowToDocUnit);
+    },
+    async listBoundConsults(organizationId, hatId, stageId): Promise<readonly DocUnit[]> {
+      const result = await input.executor.execute<DocUnitRow>({
+        name: "list_bound_doc_consults",
+        sql: `
+          ${select}
+          WHERE organization_id = $1
+            AND status = $2
+            AND (
+              ($3::JSONB != '[]'::JSONB AND bound_hat_ids @> $3::JSONB)
+              OR ($4::JSONB != '[]'::JSONB AND bound_stage_ids @> $4::JSONB)
+            )
+          ORDER BY created_at ASC`,
+        parameters: [
+          organizationId,
+          DocLifecycleState.Active,
+          JSON.stringify(hatId === undefined ? [] : [hatId]),
+          JSON.stringify(stageId === undefined ? [] : [stageId]),
+        ],
       });
       return result.rows.map(rowToDocUnit);
     },

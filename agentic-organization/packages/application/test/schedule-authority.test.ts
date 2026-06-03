@@ -84,6 +84,22 @@ describe("schedule block command authority", () => {
     });
   });
 
+  test("requires current schedule authority for advisory-promotion decision authoring", async () => {
+    const authority = createScheduleBlockCommandAuthority({
+      scheduleBlockReader: createScheduleBlockReader([]),
+    });
+
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(CommandType.AuthorContextPackAdvisoryPromotionDecision),
+    );
+
+    deepEqual(decision, {
+      status: CommandScheduleAuthorityDecisionStatus.Denied,
+      reason: CommandScheduleAuthorityDenialReason.ScheduleBlockRequired,
+      message: ScheduleAuthorityMessage.BlockRequired,
+    });
+  });
+
   test("requires current schedule authority for quality gate evaluations", async () => {
     const authority = createScheduleBlockCommandAuthority({
       scheduleBlockReader: createScheduleBlockReader([]),
@@ -168,6 +184,25 @@ describe("schedule block command authority", () => {
 
     const decision = await authority.authorizeCommandSchedule(
       createScheduleRequest(CommandType.RecordQualityGateEvaluation),
+    );
+
+    deepEqual(decision, {
+      status: CommandScheduleAuthorityDecisionStatus.Allowed,
+      scheduleBlockId: "work-schedule-block-001",
+    });
+  });
+
+  test("allows advisory-promotion decision authoring during review schedule blocks", async () => {
+    const authority = createScheduleBlockCommandAuthority({
+      scheduleBlockReader: createScheduleBlockReader([
+        createScheduleBlock({
+          blockType: ScheduleBlockType.Review,
+        }),
+      ]),
+    });
+
+    const decision = await authority.authorizeCommandSchedule(
+      createScheduleRequest(CommandType.AuthorContextPackAdvisoryPromotionDecision),
     );
 
     deepEqual(decision, {

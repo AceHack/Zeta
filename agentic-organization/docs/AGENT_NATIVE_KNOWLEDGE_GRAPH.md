@@ -419,6 +419,15 @@ Context packs should be regenerated when:
 - memory adaptation changes relevant recall;
 - hat assignment changes.
 
+The first retrieval pass should be profile-aware before a model summarizes it.
+When the graph asks for a context pack, the application resolves a document
+focus profile from the active hat, lifecycle phase, and scope. That profile can
+prefer document types such as BRDs, architecture docs, ADRs, policies, decision
+records, specs, or runbooks without granting broader visibility. The graph and
+document retrieval layers then return the scoped slice plus inclusion reasons,
+while the context pack records the selected profile and policy version for
+replay.
+
 Rules:
 
 - no Hermes run starts without a current context pack;

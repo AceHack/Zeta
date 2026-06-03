@@ -229,6 +229,14 @@ agent wearing hat
 
 Agents can still reason creatively inside a phase, but the phase boundary, tools, required outputs, and gates are deterministic.
 
+`resolve context pack` is itself policy-driven work. The active hat and phase
+select a document-focus profile before retrieval, so a director blocker flow,
+implementer execution flow, reviewer gate, or manager reflection block receives
+the document types that fit its duty without broadening access. The flow should
+record which context refs it consulted and whether those refs helped, failed, or
+were missing. That consult ledger becomes the later utility signal for document
+ranking and the evidence trail for improving the prompt flow.
+
 Prompt-flow execution should record each universal action, observation, correction, and reviewer decision. That gives the Organization a reusable action corpus: over time, Engineering Managers and prompt-flow designers can discover which action patterns work, which fail, and which should become new reusable phases.
 
 ## Flow Gates and Reviewers
