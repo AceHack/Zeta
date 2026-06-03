@@ -146,10 +146,17 @@ Its real value is two different things:
    constructive-tower proof extracts an executable program — the proof that maps
    directly to running code.
 
-So: build the constructive tower for **Choice-freedom + program-extraction**, and
-count it toward robustness **only** for claims that are *not* classically provable
-(where constructive vs classical genuinely diverge — e.g., claims that fail
-without excluded middle). Composes with the existing Lean leg
+So: build the constructive tower for **Choice-freedom + program-extraction**. Its
+robustness contribution is **conservative-foundation survival**, not a separate
+equivalence class: a constructive proof shows the claim holds **without LEM or
+Choice**, so it's robust to a constructivist's *rejection* of those axioms — and
+the §4 hidden-AoC worry is eliminated by construction. That is a **strengthening of
+the same claim** (a dependency removed), **not** an incomparable independent
+foundation to tally under §2 — since constructive ⊆ classical, every
+constructively-provable claim is already classically provable, so it never adds a
+distinct equivalence class. (Counting "claims provable constructively but not
+classically" would be vacuous — that set is empty by ⊆; the genuine value is the
+removed dependency, not a new tower.) Composes with the existing Lean leg
 (`tools/lean4/Lean4/DbspChainRule.lean`) + B-0446 / B-0131 Lean-proof rows.
 
 ## 6. Intuition is calibrated by provable output over time — track the misses
