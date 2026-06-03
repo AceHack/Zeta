@@ -140,6 +140,16 @@ let ``Z3 proves negation distributes over addition`` () =
 
 
 [<Fact>]
+// Completes the abelian-group law set: subtraction IS addition-of-the-inverse —
+// the per-key-weight statement of DBSP retraction (a - b = a + (-b)). The symbolic
+// (Z3) leg of the BP-16 cross-check; the FsCheck leg exercises the real ZSet<int>
+// (-) operator (ZSet.Tests.fs). Verified unsat with a sat negative control.
+let ``Z3 proves subtraction is addition of the inverse`` () =
+    z3AxiomHolds "subtraction = add inverse"
+        "(= (- a b) (+ a (- b)))"
+
+
+[<Fact>]
 let ``Z3 proves distinct is idempotent`` () =
     z3AxiomHolds "distinct idempotent"
         "(= (ite (> (ite (> a 0) 1 0) 0) 1 0) (ite (> a 0) 1 0))"
