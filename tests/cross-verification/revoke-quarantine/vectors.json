@@ -1,0 +1,345 @@
+{
+  "transitions": [
+    {
+      "id": "revoke-fresh",
+      "op": "revoke",
+      "prev": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        }
+      },
+      "name": "leaf",
+      "version": "1.0.0",
+      "reason": "cve",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}},\"tool\":{\"2.0.0\":{\"package_hash\":\"sha256:bb\",\"url\":\"https://x/tool-2.0.0.json\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-02T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":5}",
+      "expected_sha256": "81840fe2e22e169d6c8db6c229fb18eb4c65b225805043ffdd916256087b9473"
+    },
+    {
+      "id": "quarantine-fresh",
+      "op": "quarantine",
+      "prev": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        }
+      },
+      "name": "tool",
+      "version": "2.0.0",
+      "reason": "review",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}},\"tool\":{\"2.0.0\":{\"package_hash\":\"sha256:bb\",\"url\":\"https://x/tool-2.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-02T00:00:00Z\",\"reason\":\"review\"}}},\"sequence\":5}",
+      "expected_sha256": "ca2d8c13e712270311cd503b7122cf64b4adedf35f3baef561596a9b74a15f46"
+    },
+    {
+      "id": "revoke-supersedes-quarantine",
+      "op": "revoke",
+      "prev": {
+        "format_version": 2,
+        "sequence": 6,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        },
+        "quarantined": {
+          "leaf": {
+            "1.0.0": {
+              "reason": "review",
+              "at": "2026-05-01T00:00:00Z"
+            }
+          }
+        }
+      },
+      "name": "leaf",
+      "version": "1.0.0",
+      "reason": "cve",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}},\"tool\":{\"2.0.0\":{\"package_hash\":\"sha256:bb\",\"url\":\"https://x/tool-2.0.0.json\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-02T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":6}",
+      "expected_sha256": "c1322c1edf73c40659c68352333154b7fe00721bcb726378ddeabd71fbf061f4"
+    },
+    {
+      "id": "unquarantine-back-to-v1",
+      "op": "unquarantine",
+      "prev": {
+        "format_version": 2,
+        "sequence": 7,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        },
+        "quarantined": {
+          "leaf": {
+            "1.0.0": {
+              "reason": "review",
+              "at": "2026-05-01T00:00:00Z"
+            }
+          }
+        }
+      },
+      "name": "leaf",
+      "version": "1.0.0",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_canonical_json": "{\"format_version\":1,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}},\"tool\":{\"2.0.0\":{\"package_hash\":\"sha256:bb\",\"url\":\"https://x/tool-2.0.0.json\"}}},\"sequence\":7}",
+      "expected_sha256": "397be54f9145e9f3626388e95e0dbb9300a6ecb799b2b82bb786150fb87fe1a9"
+    },
+    {
+      "id": "revoke-without-reason",
+      "op": "revoke",
+      "prev": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        }
+      },
+      "name": "leaf",
+      "version": "1.0.0",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}},\"tool\":{\"2.0.0\":{\"package_hash\":\"sha256:bb\",\"url\":\"https://x/tool-2.0.0.json\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-02T00:00:00Z\"}}},\"sequence\":5}",
+      "expected_sha256": "266cda62ada5ed6c28cd197ffa3cba6fa2c8fa018381ba7d727f9f0aaf366024"
+    },
+    {
+      "id": "quarantine-alongside-revoked",
+      "op": "quarantine",
+      "prev": {
+        "format_version": 2,
+        "sequence": 8,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        },
+        "revoked": {
+          "leaf": {
+            "1.0.0": {
+              "reason": "cve",
+              "at": "2026-05-01T00:00:00Z"
+            }
+          }
+        }
+      },
+      "name": "tool",
+      "version": "2.0.0",
+      "reason": "review",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}},\"tool\":{\"2.0.0\":{\"package_hash\":\"sha256:bb\",\"url\":\"https://x/tool-2.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-02T00:00:00Z\",\"reason\":\"review\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-05-01T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":8}",
+      "expected_sha256": "9b1ff01071e3c2e28ff9a83f90de1b0d27cecb85bed617d1568b0b867e5e4a05"
+    },
+    {
+      "id": "revoke-one-of-two-quarantined",
+      "op": "revoke",
+      "prev": {
+        "format_version": 2,
+        "sequence": 9,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        },
+        "quarantined": {
+          "leaf": {
+            "1.0.0": {
+              "reason": "review",
+              "at": "2026-05-01T00:00:00Z"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "reason": "audit",
+              "at": "2026-05-02T00:00:00Z"
+            }
+          }
+        }
+      },
+      "name": "leaf",
+      "version": "1.0.0",
+      "reason": "cve",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}},\"tool\":{\"2.0.0\":{\"package_hash\":\"sha256:bb\",\"url\":\"https://x/tool-2.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-05-02T00:00:00Z\",\"reason\":\"audit\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-02T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":9}",
+      "expected_sha256": "fc4e40dbccf3947b4dd4c6d0636fc7df4eff7d662dcc3ef37ce172887dc9cbcb"
+    },
+    {
+      "id": "multi-package",
+      "op": "revoke",
+      "prev": {
+        "format_version": 2,
+        "sequence": 10,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        },
+        "revoked": {
+          "leaf": {
+            "1.0.0": {
+              "reason": "cve",
+              "at": "2026-05-01T00:00:00Z"
+            }
+          }
+        }
+      },
+      "name": "tool",
+      "version": "2.0.0",
+      "reason": "malware",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}},\"tool\":{\"2.0.0\":{\"package_hash\":\"sha256:bb\",\"url\":\"https://x/tool-2.0.0.json\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-05-01T00:00:00Z\",\"reason\":\"cve\"}},\"tool\":{\"2.0.0\":{\"at\":\"2026-06-02T00:00:00Z\",\"reason\":\"malware\"}}},\"sequence\":10}",
+      "expected_sha256": "92e760a160916a137eeb09303140a93b935f0a439a82fbfc36fbc028a574fbc6"
+    }
+  ],
+  "invalid": [
+    {
+      "id": "quarantine-after-revoke",
+      "op": "quarantine",
+      "prev": {
+        "format_version": 2,
+        "sequence": 11,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        },
+        "revoked": {
+          "leaf": {
+            "1.0.0": {
+              "reason": "cve",
+              "at": "2026-05-01T00:00:00Z"
+            }
+          }
+        }
+      },
+      "name": "leaf",
+      "version": "1.0.0",
+      "reason": "review",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_error_substring": "terminal"
+    },
+    {
+      "id": "unquarantine-not-quarantined",
+      "op": "unquarantine",
+      "prev": {
+        "format_version": 1,
+        "sequence": 12,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          },
+          "tool": {
+            "2.0.0": {
+              "url": "https://x/tool-2.0.0.json",
+              "package_hash": "sha256:bb"
+            }
+          }
+        }
+      },
+      "name": "leaf",
+      "version": "1.0.0",
+      "at": "2026-06-02T00:00:00Z",
+      "expected_error_substring": "not quarantined"
+    }
+  ]
+}
