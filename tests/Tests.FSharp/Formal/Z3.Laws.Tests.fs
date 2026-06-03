@@ -524,3 +524,131 @@ let ``Z3 proves proper Gaussians are closed under product, guarded (C1)`` () =
         "                 (> (+ tauA tauB) 0.0))))\n" +
         "(check-sat)\n"
     z3ScriptHolds "C1 proper closed under product (guarded)" script
+
+// ═══════════════════════════════════════════════════════════════════
+// B-1007 C2 — Beta message product is an ABELIAN GROUP on the SHIFTED
+// natural parameters. The impl works on (α, β) directly: product =
+// α₁+α₂−1, divide = α₁−α₂+1, identity One = Beta(1,1). These ARE the
+// abelian-group axioms on the shifted naturals (n = α−1), proven here
+// symbolically over the ideal reals (QF_LRA). The FsCheck twin proves
+// the float impl conforms. Anchor: Bishop PRML ch.2, KFL 2001, Minka
+// 2001. Lemmas use the α-coordinate; β is identical by symmetry.
+//
+// CLOSURE differs from C1: proper (α>0) is NOT closed under product
+// (0.1+0.1−1<0). The honest closure is the conjugate update — proper
+// prior (α>0) × likelihood (α≥1) ⇒ proper. Stated as the guarded lemma.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves Beta product is associative on shifted naturals (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n(declare-const aB Real)\n(declare-const aC Real)\n" +
+        // (a*b)*c = ((aA+aB-1)+aC-1) ; a*(b*c) = (aA+(aB+aC-1)-1)
+        "(assert (not (= (- (+ (- (+ aA aB) 1.0) aC) 1.0)\n" +
+        "                (- (+ aA (- (+ aB aC) 1.0)) 1.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta product associative (shifted naturals)" script
+
+[<Fact>]
+let ``Z3 proves Beta product is commutative on shifted naturals (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n(declare-const aB Real)\n" +
+        "(assert (not (= (- (+ aA aB) 1.0) (- (+ aB aA) 1.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta product commutative" script
+
+[<Fact>]
+let ``Z3 proves Beta One = Beta(1,1) is the identity for product (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n" +
+        // a * One : aA + 1 - 1 = aA ; One * a : 1 + aA - 1 = aA  (One.Alpha = 1)
+        "(assert (not (and (= (- (+ aA 1.0) 1.0) aA)\n" +
+        "                  (= (- (+ 1.0 aA) 1.0) aA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta product identity (Beta(1,1))" script
+
+[<Fact>]
+let ``Z3 proves Beta divide round-trips the product, the EP cavity (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n(declare-const aB Real)\n" +
+        // (a*b)/b = ((aA+aB-1) - aB + 1) = aA
+        "(assert (not (= (+ (- (- (+ aA aB) 1.0) aB) 1.0) aA)))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta cavity round-trip ((a*b)/b = a)" script
+
+[<Fact>]
+let ``Z3 proves Beta divide is the shifted-natural inverse element (C2)`` () =
+    let script =
+        "(declare-const aA Real)\n(declare-const aB Real)\n" +
+        // a/b = aA - aB + 1 ; a*(One/b) where One/b = 2 - aB :  aA + (2-aB) - 1 = aA - aB + 1
+        "(assert (not (= (+ (- aA aB) 1.0)\n" +
+        "                (- (+ aA (- 2.0 aB)) 1.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta divide = multiply by inverse" script
+
+[<Fact>]
+let ``Z3 proves proper Beta prior times a likelihood stays proper, guarded (C2)`` () =
+    let script =
+        "(declare-const aPrior Real)\n(declare-const aLike Real)\n" +
+        // proper prior (aPrior>0) AND likelihood (aLike>=1) ⇒ aPrior+aLike-1 > 0.
+        // NOT unconditional: two arbitrary propers can give α<0 (improper).
+        "(assert (not (=> (and (> aPrior 0.0) (>= aLike 1.0))\n" +
+        "                 (> (- (+ aPrior aLike) 1.0) 0.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C2 Beta conjugate closure (prior x likelihood, guarded)" script
+
+// ═══════════════════════════════════════════════════════════════════
+// B-1007 C3 — Bernoulli message product is an ABELIAN GROUP via LOG-ODDS
+// addition. The impl computes in probability space (t/(t+f)); that is
+// mathematically log-odds add. Here Z3 proves the LOG-ODDS model
+// (ℓ ∈ ℝ, product = ℓ_a + ℓ_b, identity One = 0, inverse = negation) is
+// an abelian group over the ideal reals; the FsCheck twin proves the
+// prob-space float impl conforms. Anchor: KFL 2001, Minka 2001,
+// exponential-family (log-odds = Bernoulli natural parameter).
+//
+// CLOSURE is unconditional: ℝ is closed under +, and the logistic
+// ℝ→(0,1) bijection carries that to p ∈ (0,1) — so unlike Beta, any two
+// proper Bernoullis have a proper product. (No guard needed; the
+// FsCheck closure property exercises the prob-space normalizer.)
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves Bernoulli product is associative in log-odds (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n(declare-const lB Real)\n(declare-const lC Real)\n" +
+        "(assert (not (= (+ (+ lA lB) lC) (+ lA (+ lB lC)))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli product associative (log-odds)" script
+
+[<Fact>]
+let ``Z3 proves Bernoulli product is commutative in log-odds (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n(declare-const lB Real)\n" +
+        "(assert (not (= (+ lA lB) (+ lB lA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli product commutative" script
+
+[<Fact>]
+let ``Z3 proves One = 0.5 (log-odds 0) is the identity for Bernoulli product (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n" +
+        "(assert (not (and (= (+ lA 0.0) lA) (= (+ 0.0 lA) lA))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli product identity (log-odds 0)" script
+
+[<Fact>]
+let ``Z3 proves Bernoulli divide is the inverse via log-odds negation (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n" +
+        "(assert (not (and (= (- lA lA) 0.0)\n" +
+        "                  (= (+ lA (- 0.0 lA)) 0.0))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli divide = log-odds negation" script
+
+[<Fact>]
+let ``Z3 proves Bernoulli divide round-trips the product, the EP cavity (C3)`` () =
+    let script =
+        "(declare-const lA Real)\n(declare-const lB Real)\n" +
+        "(assert (not (= (- (+ lA lB) lB) lA)))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C3 Bernoulli cavity round-trip ((a*b)/b = a)" script

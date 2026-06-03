@@ -261,3 +261,153 @@ let ``C1 Gaussian divide is the natural-parameter inverse element``
     let a, b = mkProper nuA tauA, mkProper nuB tauB
     let invB = Gaussian.One / b
     gEq (a / b) (a * invB)
+
+// ═══════════════════════════════════════════════════════════════════
+// C2 (B-1007 P0) — Beta message product is a COMMUTATIVE GROUP on the
+// SHIFTED natural parameters (α−1, β−1): product = (α₁−1)+(α₂−1) ⇒
+// α_prod = α₁+α₂−1, divide subtracts, identity = One = Beta(1,1) ⇒
+// naturals (0,0). FsCheck half of the BP-16 cross-check; the Z3 twin
+// (Formal/Z3.Laws.Tests.fs) proves the ideal-real shifted-natural
+// algebra is an abelian group symbolically.
+//
+// Anchor: KFL 2001 (product = combine), Minka 2001 (divide = cavity),
+// Bishop PRML ch.2 (Beta-Bernoulli conjugacy; α−1,β−1 are the exp-family
+// naturals). Wainwright-Jordan 2008 §3.
+//
+// CLOSURE DIFFERS FROM C1: two ARBITRARY proper Betas are NOT closed
+// under product (α=0.1, α'=0.1 ⇒ 0.1+0.1−1 = −0.8 < 0, improper). The
+// meaningful closure is the CONJUGATE update: a proper prior × a
+// LIKELIHOOD (Beta(1+s,1+f), so α≥1,β≥1 ⇒ naturals ≥ 0) stays proper.
+// That is the law tested below — the honest Beta closure, not a false
+// "product of two propers stays proper" claim.
+// ═══════════════════════════════════════════════════════════════════
+
+/// A PROPER Beta (α>0, β>0) built from two raw floats, clamped to a
+/// well-conditioned band so a property failure is a REAL algebraic
+/// divergence. NOTE: proper ≠ closed-under-product for Beta (see header).
+let private mkProperBeta (aRaw: float) (bRaw: float) : Beta =
+    let clamp lo hi x = max lo (min hi x)
+    { Alpha = clamp 1.0e-6 1.0e6 (abs aRaw)
+      Beta = clamp 1.0e-6 1.0e6 (abs bRaw) }
+
+/// A LIKELIHOOD Beta = Beta(1+s, 1+f) with s,f ≥ 0, so α≥1 ∧ β≥1
+/// (shifted-naturals ≥ 0). Product of a proper prior with this stays
+/// proper — the conjugate-update closure.
+let private mkLikelihoodBeta (sRaw: float) (fRaw: float) : Beta =
+    let clampNonNeg hi x = max 0.0 (min hi (abs x))
+    { Alpha = 1.0 + clampNonNeg 1.0e6 sRaw
+      Beta = 1.0 + clampNonNeg 1.0e6 fRaw }
+
+/// Beta equality on the (α, β) parameters directly within tolerance. DO NOT widen.
+let private gEqBeta (a: Beta) (b: Beta) : bool =
+    let tol = 1e-7
+    abs (a.Alpha - b.Alpha) <= tol && abs (a.Beta - b.Beta) <= tol
+
+[<Property>]
+let ``C2 Beta product is associative``
+    (NormalFloat aA) (NormalFloat bA) (NormalFloat aB) (NormalFloat bB) (NormalFloat aC) (NormalFloat bC) =
+    let a, b, c = mkProperBeta aA bA, mkProperBeta aB bB, mkProperBeta aC bC
+    gEqBeta ((a * b) * c) (a * (b * c))
+
+[<Property>]
+let ``C2 Beta product is commutative``
+    (NormalFloat aA) (NormalFloat bA) (NormalFloat aB) (NormalFloat bB) =
+    let a, b = mkProperBeta aA bA, mkProperBeta aB bB
+    gEqBeta (a * b) (b * a)
+
+[<Property>]
+let ``C2 Beta One = Beta(1,1) is the two-sided identity for product``
+    (NormalFloat aA) (NormalFloat bA) =
+    let a = mkProperBeta aA bA
+    gEqBeta (Beta.One * a) a && gEqBeta (a * Beta.One) a
+
+[<Property>]
+let ``C2 Beta divide is the right inverse of product (EP cavity round-trip)``
+    (NormalFloat aA) (NormalFloat bA) (NormalFloat aB) (NormalFloat bB) =
+    let a, b = mkProperBeta aA bA, mkProperBeta aB bB
+    gEqBeta ((a * b) / b) a
+
+[<Property>]
+let ``C2 Beta divide is the shifted-natural inverse element``
+    (NormalFloat aA) (NormalFloat bA) (NormalFloat aB) (NormalFloat bB) =
+    let a, b = mkProperBeta aA bA, mkProperBeta aB bB
+    let invB = Beta.One / b
+    gEqBeta (a / b) (a * invB)
+
+[<Property>]
+let ``C2 Beta proper prior times a likelihood stays proper (conjugate closure)``
+    (NormalFloat aPrior) (NormalFloat bPrior) (NormalFloat s) (NormalFloat f) =
+    // proper prior (α>0,β>0) × likelihood Beta(1+s,1+f) (α≥1,β≥1) ⇒ proper.
+    // This is the HONEST Beta closure — NOT "two arbitrary propers stay proper".
+    let prior = mkProperBeta aPrior bPrior
+    let like = mkLikelihoodBeta s f
+    Beta.isProper (prior * like)
+
+// ═══════════════════════════════════════════════════════════════════
+// C3 (B-1007 P0) — Bernoulli message product is a COMMUTATIVE GROUP via
+// LOG-ODDS addition: ℓ = log(p/(1−p)); product adds log-odds (the impl
+// multiplies true/false masses + renormalizes, t/(t+f), which IS
+// log-odds add), divide subtracts, identity = One = P(true)=0.5 ⇒ ℓ=0.
+// FsCheck half of the BP-16 cross-check; the Z3 twin proves log-odds
+// add is an abelian group symbolically.
+//
+// Anchor: KFL 2001 / Minka 2001 / exponential-family (log-odds is the
+// Bernoulli natural parameter). Finite log-odds ⟺ p ∈ (0,1) (proper);
+// p ∈ {0,1} is a hard factor, not a message. Generators stay strictly
+// inside (0,1) via logistic of a bounded log-odds — both keeps the
+// prob-space arithmetic well-conditioned AND models "proper".
+//
+// CLOSURE (unlike Beta) IS unconditional: log-odds add is closed on ℝ,
+// and the logistic ℝ→(0,1) bijection carries that to p ∈ (0,1) — the
+// impl's normalizer t+f is always positive for proper inputs.
+// ═══════════════════════════════════════════════════════════════════
+
+/// A PROPER Bernoulli (p strictly in (0,1)) built as the logistic of a
+/// bounded log-odds (|ℓ| ≤ 8 ⇒ p ∈ ~(3e-4, 1−3e-4)) — keeps the
+/// probability-space product/divide well-conditioned so a property
+/// failure is a REAL divergence, not engineered saturation.
+let private mkProperBern (lRaw: float) : Bernoulli =
+    let clamp lo hi x = max lo (min hi x)
+    let l = clamp -8.0 8.0 lRaw
+    { ProbTrue = 1.0 / (1.0 + exp (-l)) }
+
+/// Bernoulli equality on P(true) within tolerance. DO NOT widen.
+let private gEqBern (a: Bernoulli) (b: Bernoulli) : bool =
+    abs (a.ProbTrue - b.ProbTrue) <= 1e-7
+
+[<Property>]
+let ``C3 Bernoulli product is associative``
+    (NormalFloat lA) (NormalFloat lB) (NormalFloat lC) =
+    let a, b, c = mkProperBern lA, mkProperBern lB, mkProperBern lC
+    gEqBern ((a * b) * c) (a * (b * c))
+
+[<Property>]
+let ``C3 Bernoulli product is commutative`` (NormalFloat lA) (NormalFloat lB) =
+    let a, b = mkProperBern lA, mkProperBern lB
+    gEqBern (a * b) (b * a)
+
+[<Property>]
+let ``C3 Bernoulli One = 0.5 is the two-sided identity for product`` (NormalFloat lA) =
+    let a = mkProperBern lA
+    gEqBern (Bernoulli.One * a) a && gEqBern (a * Bernoulli.One) a
+
+[<Property>]
+let ``C3 Bernoulli divide is the right inverse of product (EP cavity round-trip)``
+    (NormalFloat lA) (NormalFloat lB) =
+    let a, b = mkProperBern lA, mkProperBern lB
+    gEqBern ((a * b) / b) a
+
+[<Property>]
+let ``C3 Bernoulli divide is the log-odds inverse element``
+    (NormalFloat lA) (NormalFloat lB) =
+    let a, b = mkProperBern lA, mkProperBern lB
+    let invB = Bernoulli.One / b
+    gEqBern (a / b) (a * invB)
+
+[<Property>]
+let ``C3 Bernoulli product of two proper messages stays proper (closure)``
+    (NormalFloat lA) (NormalFloat lB) =
+    // p ∈ (0,1) ∧ p' ∈ (0,1) ⇒ t,f > 0 ⇒ t/(t+f) ∈ (0,1). Unconditional
+    // closure (log-odds add closed on ℝ; logistic bijection to (0,1)).
+    let a, b = mkProperBern lA, mkProperBern lB
+    Bernoulli.isProper (a * b)
