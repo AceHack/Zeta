@@ -158,6 +158,7 @@
     <Compile Include="Yaml/CrossVerifyTests.fs" />
     <Compile Include="Sha256/Sha256Tests.fs" />
     <Compile Include="Sha256/CrossVerifyTests.fs" />
+    <Compile Include="CanonicalJson/CrossVerifyTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -167,6 +168,7 @@
     <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Sha256\Zeta.Core.FSharp.Sha256.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.AceCanonical\Zeta.Core.FSharp.AceCanonical.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

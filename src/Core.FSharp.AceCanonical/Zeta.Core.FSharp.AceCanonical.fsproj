@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Core.FSharp.AceCanonical</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.AceCanonical</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- Zero external dependencies in the production library (BCL System.Text.Json only) -->
+
+  <ItemGroup>
+    <Compile Include="AceCanonical.fs" />
+  </ItemGroup>
+
+</Project>
