@@ -69,6 +69,7 @@
     <Compile Include="Operators/Fusion.Tests.fs" />
     <Compile Include="Operators/ResidualMax.Tests.fs" />
     <Compile Include="Operators/Differentiate.Tests.fs" />
+    <Compile Include="Operators/OperatorAlgebra.Tests.fs" />
     <Compile Include="Operators/RecursiveCounting.MultiSeed.Tests.fs" />
     <Compile Include="Operators/RecursiveSemiNaive.Boundary.Tests.fs" />
     <Compile Include="Operators/CrmScenarios.Tests.fs" />

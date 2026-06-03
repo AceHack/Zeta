@@ -697,3 +697,42 @@ let ``Z3 proves the finite convergence threshold has no converged-and-moved over
         "(assert (and (<= d tol) (> d tol)))\n" +
         "(check-sat)\n"
     z3ScriptHolds "C6 finite threshold has no converged-and-moved overlap" script
+
+
+// ═══════════════════════════════════════════════════════════════════
+// C13 (B-1007 P1) — the DBSP operator-inverse identities, symbolically
+// over the IDEAL REALS (QF_LRA). z⁻¹ (delay): (z⁻¹ x)[t] = x[t−1], x[−1]=0.
+// I (integrate): I(s)[t] = Σ_{i≤t} s[i]. D (differentiate): D(x)[t] =
+// x[t] − x[t−1] = (1 − z⁻¹)(x). The substance is the TELESCOPING:
+// D∘I = I∘D = id over a bounded 3-tick stream s0,s1,s2. The FsCheck twin
+// (Operators/OperatorAlgebra.Tests.fs C13) runs the REAL Circuit on int64
+// Z-sets; Z3 proves the algebra over ideal reals (BP-16 cross-check).
+// Spec: DBSP (Budiu et al.) — I = (1−z⁻¹)⁻¹.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves C13 D∘I = id (differentiate of integrate telescopes to each tick)`` () =
+    // I[t]=Σ_{i≤t}s[i]; D(I(s))[t]=I[t]−I[t−1] must equal s[t] for every t.
+    // assert the violation (some tick disagrees) ⇒ UNSAT ⇒ identity holds.
+    let script =
+        "(set-logic QF_LRA)\n" +
+        "(declare-const s0 Real)(declare-const s1 Real)(declare-const s2 Real)\n" +
+        "(assert (or\n" +
+        "  (not (= (- s0 0.0) s0))\n" +
+        "  (not (= (- (+ s0 s1) s0) s1))\n" +
+        "  (not (= (- (+ s0 s1 s2) (+ s0 s1)) s2))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C13 D∘I = id" script
+
+[<Fact>]
+let ``Z3 proves C13 I∘D = id (integrate of differentiate telescopes to each tick)`` () =
+    // D(s)[t]=s[t]−s[t−1] (s[−1]=0); I(D(s))[t]=Σ_{i≤t}D(s)[i] must equal s[t].
+    let script =
+        "(set-logic QF_LRA)\n" +
+        "(declare-const s0 Real)(declare-const s1 Real)(declare-const s2 Real)\n" +
+        "(assert (or\n" +
+        "  (not (= (- s0 0.0) s0))\n" +
+        "  (not (= (+ (- s0 0.0) (- s1 s0)) s1))\n" +
+        "  (not (= (+ (- s0 0.0) (- s1 s0) (- s2 s1)) s2))))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C13 I∘D = id" script
