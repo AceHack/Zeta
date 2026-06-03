@@ -251,6 +251,7 @@
             <label class="attn-toggle"><input type="checkbox" id="f-archived" /> Include archived</label>
             <button id="reset-btn" class="secondary" type="button">Reset</button>
             <button id="add-btn" class="btn-sm hidden" type="button">+ Add item</button>
+            <button id="manage-fields-btn" class="btn-sm secondary hidden" type="button">⚙ Manage fields</button>
             <span class="sort-hint">Tip: click a column to sort · shift-click to add a secondary sort</span>
           </div>
           <span class="count-pill" id="count-pill">—</span>
@@ -304,8 +305,12 @@
 
   <!-- supabase-js v2. NOTE (Phase 7): pin an exact version + add SRI. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Phase 5: shared custom-field logic (same-origin; CSP script-src 'self').
+       ONE SOURCE OF TRUTH with inventory/proofs/custom-fields.unit.test.ts. -->
+  <script src="lib/custom-fields.js"></script>
   <script>
     "use strict";
+    const CF = window.CustomFields;  // shared typed-custom-field logic (lib/custom-fields.js)
 
     // Public, low-privilege key (publishable/anon). Safe in client code by design;
     // real security is Postgres RLS. NEVER place the service_role/secret key here.
@@ -319,7 +324,7 @@
     // In-memory state we MUST be able to clear on sign-out (shared-device safety).
     // `items` is the canonical DB copy; `view` is the derived filtered+sorted list.
     let state = { user: null, role: null, sampleItem: null, items: [], view: [], sortKeys: [],
-                  showArchived: false, debug: false };
+                  showArchived: false, debug: false, fieldDefs: [] };
 
     const $ = (id) => document.getElementById(id);
     const signinView = $("signin-view"), appView = $("app-view"), statusEl = $("status");
@@ -355,6 +360,41 @@
     ];
     // search spans exactly these 5 fields (Phase 3 scope; custom fields = Phase 5).
     const SEARCH_FIELDS = ["name","brand","model_pn","device_type","category"];
+
+    // ---- Phase 5: typed dynamic custom fields ----
+    // ONE select list (now incl. custom_fields) — was duplicated 4x; centralized.
+    const ITEM_SELECT = "id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,custom_fields,version,created_at,updated_at";
+
+    function activeDefs() { return state.fieldDefs.filter((d) => d.is_active); }
+    function customColumns() {
+      return activeDefs().map((d) => ({
+        key: "cf:" + d.key, label: d.label, def: d, isCustom: true,
+        ctype: CF.comparatorType(d.type),
+      }));
+    }
+    function allColumns() { return COLUMNS.concat(customColumns()); }
+    function defByKey(key) { return state.fieldDefs.find((d) => d.key === key) || null; }
+    // accessor + comparator type for a sort key (core OR "cf:<key>" custom).
+    function colMeta(key) {
+      if (key.indexOf("cf:") === 0) {
+        const d = activeDefs().find((x) => x.key === key.slice(3));
+        if (!d) return null;
+        return { ctype: CF.comparatorType(d.type),
+                 get: (it) => (it.custom_fields ? it.custom_fields[d.key] : null) };
+      }
+      const col = COLUMNS.find((c) => c.key === key);
+      if (!col) return null;
+      return { ctype: col.type === "num" ? "num" : "str", get: (it) => it[key] };
+    }
+    // merge form custom values onto the item's EXISTING custom_fields so INACTIVE
+    // keys (not shown in the form) are PRESERVED, never dropped on save.
+    function mergeCustom(origCf, formCustom) {
+      const out = Object.assign({}, origCf || {});
+      for (const k of Object.keys(formCustom)) {
+        if (formCustom[k] === null) delete out[k]; else out[k] = formCustom[k];
+      }
+      return out;
+    }
 
     function statusPillClass(s) {
       if (s === "Needs Attention") return "pill pill-attn";
@@ -393,7 +433,11 @@
         if (fl && it.location !== fl) return false;
         if (attn && it.status !== "Needs Attention") return false;
         if (q) {
-          const hay = SEARCH_FIELDS.map((f) => (it[f] == null ? "" : String(it[f]).toLowerCase())).join("  ");
+          let hay = SEARCH_FIELDS.map((f) => (it[f] == null ? "" : String(it[f]).toLowerCase())).join("  ");
+          for (const d of activeDefs()) {
+            const cv = it.custom_fields ? it.custom_fields[d.key] : null;
+            hay += "  " + CF.searchTextForValue(d, cv).toLowerCase();
+          }
           if (!hay.includes(q)) return false;
         }
         return true;
@@ -403,22 +447,12 @@
       if (state.sortKeys.length) {
         rows = rows.slice().sort((a, b) => {
           for (const { key, dir } of state.sortKeys) {
-            const col = COLUMNS.find((c) => c.key === key);
-            let av = a[key], bv = b[key];
-            let cmp;
-            if (col && col.type === "num") {
-              av = (av == null ? null : Number(av)); bv = (bv == null ? null : Number(bv));
-              if (av == null && bv == null) cmp = 0;
-              else if (av == null) cmp = 1;        // nulls last
-              else if (bv == null) cmp = -1;
-              else cmp = av - bv;
-            } else {
-              const as = (av == null ? "" : String(av)), bs = (bv == null ? "" : String(bv));
-              if (as === "" && bs === "") cmp = 0;
-              else if (as === "") cmp = 1;
-              else if (bs === "") cmp = -1;
-              else cmp = as.localeCompare(bs, undefined, { sensitivity:"base", numeric:true });
-            }
+            const meta = colMeta(key);
+            if (!meta) continue;
+            // shared typed comparator (lib/custom-fields.js): numeric/date/bool/str,
+            // nulls treated as +inf so the dir flip gives the same null semantics
+            // as the core columns did. Custom keys are "cf:<key>".
+            const cmp = CF.compareValues(meta.ctype, meta.get(a), meta.get(b));
             if (cmp !== 0) return dir === "desc" ? -cmp : cmp;
           }
           return 0;
@@ -430,7 +464,7 @@
 
     function renderHead() {
       const tr = $("inv-thead"); tr.replaceChildren();
-      for (const col of COLUMNS) {
+      for (const col of allColumns()) {
         const th = document.createElement("th");
         th.textContent = col.label;             // textContent (labels are static, but keep the discipline)
         const sk = state.sortKeys.find((s) => s.key === col.key);
@@ -492,6 +526,10 @@
         tr.appendChild(stTd);
         tr.appendChild(td(it.location));
         tr.appendChild(td(it.notes, "cell-notes"));
+        for (const d of activeDefs()) {                       // Phase 5 custom columns
+          const cv = it.custom_fields ? it.custom_fields[d.key] : null;
+          tr.appendChild(td(CF.displayText(d, cv), d.type === "number" ? "num" : null));
+        }
         if (canWrite()) {
           const atd = document.createElement("td");
           atd.appendChild(rowActions(it));
@@ -522,6 +560,10 @@
           kv.appendChild(kd); kv.appendChild(vd);
         };
         pair("Qty", it.qty); pair("Type", it.device_type); pair("Category", it.category); pair("Location", it.location);
+        for (const d of activeDefs()) {                       // Phase 5 custom fields
+          const cv = it.custom_fields ? it.custom_fields[d.key] : null;
+          pair(d.label, CF.displayText(d, cv));
+        }
         card.appendChild(kv);
 
         if (it.notes) { const nd = document.createElement("div"); nd.className = "card-notes"; nd.textContent = String(it.notes); card.appendChild(nd); }
@@ -562,7 +604,7 @@
       let data, error;
       for (let attempt = 0; attempt < 2; attempt++) {
         ({ data, error } = await sb.from("items")
-          .select("id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,version,created_at,updated_at")
+          .select(ITEM_SELECT)
           .order("id", { ascending: true }));
         if (!error) break;
         showMsg(inv, "Backend waking up… retrying", "info");
@@ -673,11 +715,50 @@
         cell.appendChild(el); body.appendChild(cell);
         inputs[f.key] = el;
       }
-      return inputs;
+      // ---- Phase 5: typed inputs for active custom fields. Labels + dropdown
+      //      options set via textContent ONLY (XSS-safe), same discipline as core.
+      const customInputs = {};
+      const defs = activeDefs();
+      if (defs.length) {
+        const sep = document.createElement("div"); sep.className = "full";
+        const sh = document.createElement("div"); sh.className = "muted";
+        sh.style.cssText = "border-top:1px solid var(--panel-border);padding-top:8px;font-size:.74rem;text-transform:uppercase;letter-spacing:.5px;";
+        sh.textContent = "Custom fields"; sep.appendChild(sh); body.appendChild(sep);
+      }
+      const curCf = item.custom_fields || {};
+      for (const d of defs) {
+        const cell = document.createElement("div");
+        const lab = document.createElement("label"); lab.textContent = d.label; lab.htmlFor = "cf-" + d.key;
+        cell.appendChild(lab);
+        const cur = curCf[d.key];
+        let el;
+        if (d.type === "dropdown") {
+          el = document.createElement("select");
+          const blank = document.createElement("option"); blank.value = ""; blank.textContent = "(none)"; el.appendChild(blank);
+          for (const opt of (d.options || [])) { const o = document.createElement("option"); o.value = opt; o.textContent = opt; el.appendChild(o); }
+          el.value = cur == null ? "" : String(cur);
+        } else if (d.type === "boolean") {
+          el = document.createElement("select");
+          for (const ov of [["", "(none)"], ["true", "Yes"], ["false", "No"]]) { const o = document.createElement("option"); o.value = ov[0]; o.textContent = ov[1]; el.appendChild(o); }
+          el.value = cur === true ? "true" : cur === false ? "false" : "";
+        } else {
+          el = document.createElement("input");
+          el.type = d.type === "number" ? "number" : d.type === "date" ? "date" : "text";
+          if (d.type === "number") el.step = "any";
+          el.value = cur == null ? "" : String(cur);
+        }
+        el.id = "cf-" + d.key;
+        cell.appendChild(el); body.appendChild(cell);
+        customInputs[d.key] = el;
+      }
+      return { core: inputs, custom: customInputs };
     }
 
-    // collect + type-validate; returns {ok, values} or {ok:false, error}
-    function collectForm(inputs) {
+    // collect + type-validate; returns {ok, values, custom} or {ok:false, error}.
+    // refs = { core, custom } from buildForm. `custom` maps active def key -> typed
+    // value (null = cleared). The DB trigger (phase5.sql) is the FINAL authority.
+    function collectForm(refs) {
+      const inputs = refs.core, customInputs = refs.custom || {};
       const values = {};
       for (const f of EDIT_FIELDS) {
         const raw = inputs[f.key].value;
@@ -692,7 +773,15 @@
           values[f.key] = t === "" ? null : t;
         }
       }
-      return { ok:true, values };
+      const custom = {};
+      for (const d of activeDefs()) {
+        const el = customInputs[d.key];
+        if (!el) continue;
+        const r = CF.coerceFormValue(d, el.value);
+        if (!r.ok) return { ok:false, error: r.error };
+        custom[d.key] = r.value;
+      }
+      return { ok:true, values, custom };
     }
 
     function diffFields(orig, next) {
@@ -714,6 +803,7 @@
       p.textContent = "Confirm these changes:"; body.appendChild(p);
       const dl = document.createElement("div"); dl.className = "diff-list";
       for (const k of Object.keys(changed)) {
+        if (k === "custom_fields") { renderCustomDiff(orig.custom_fields || {}, changed.custom_fields || {}, dl); continue; }
         const kd = document.createElement("div"); kd.className = "k"; kd.textContent = k;
         const vd = document.createElement("div");
         const oldS = document.createElement("span"); oldS.className = "diff-old";
@@ -736,13 +826,15 @@
       const orig = state.items.find((x) => x.id === item.id) || item;
       state.editing = { id: orig.id, version: orig.version };
       openModal("Edit item #" + orig.id);
-      const inputs = buildForm(orig);
+      const refs = buildForm(orig);
       const foot = $("modal-foot");
       foot.appendChild(footBtn("Cancel", "secondary", closeModal));
       foot.appendChild(footBtn("Review changes", "", () => {
-        const c = collectForm(inputs);
+        const c = collectForm(refs);
         if (!c.ok) { modalMsg(c.error, "bad"); return; }
         const changed = diffFields(orig, c.values);
+        const mergedCf = mergeCustom(orig.custom_fields, c.custom);
+        if (JSON.stringify(mergedCf) !== JSON.stringify(orig.custom_fields || {})) changed.custom_fields = mergedCf;
         if (Object.keys(changed).length === 0) { modalMsg("No changes to save.", "info"); return; }
         showDiffConfirm(orig, changed, () => saveEdit(orig, changed));
       }));
@@ -752,7 +844,7 @@
       setStatus("Saving…");
       const { data, error } = await sb.from("items")
         .update(changed).eq("id", orig.id).eq("version", orig.version)
-        .select("id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,version,created_at,updated_at");
+        .select(ITEM_SELECT);
       setStatus("");
       if (error) { modalMsg("Save failed: " + error.message, "bad"); return; }
       if (!data || data.length === 0) { await handleZeroRows(orig, "save"); return; }
@@ -792,11 +884,11 @@
       if (!canWrite()) return;
       const blank = {}; for (const f of EDIT_FIELDS) blank[f.key] = null;
       openModal("Add item");
-      const inputs = buildForm(blank);
+      const refs = buildForm(blank);
       const foot = $("modal-foot");
       foot.appendChild(footBtn("Cancel", "secondary", closeModal));
       foot.appendChild(footBtn("Review", "", () => {
-        const c = collectForm(inputs);
+        const c = collectForm(refs);
         if (!c.ok) { modalMsg(c.error, "bad"); return; }
         if (c.values.name == null) { modalMsg("Name is required for a new item.", "bad"); return; }
         // confirm: show the non-empty fields
@@ -809,28 +901,36 @@
           const vd = document.createElement("div"); vd.className = "diff-new"; vd.textContent = String(c.values[f.key]);
           dl.appendChild(kd); dl.appendChild(vd);
         }
+        for (const d of activeDefs()) {
+          if (c.custom[d.key] == null) continue;
+          const kd = document.createElement("div"); kd.className = "k"; kd.textContent = d.label;
+          const vd = document.createElement("div"); vd.className = "diff-new"; vd.textContent = CF.displayText(d, c.custom[d.key]);
+          dl.appendChild(kd); dl.appendChild(vd);
+        }
         body.appendChild(dl);
         const ft = $("modal-foot"); ft.replaceChildren();
-        ft.appendChild(footBtn("Back", "secondary", () => openAddPrefilled(c.values)));
-        ft.appendChild(footBtn("Create item", "", () => addItem(c.values)));
+        ft.appendChild(footBtn("Back", "secondary", () => openAddPrefilled(c.values, c.custom)));
+        ft.appendChild(footBtn("Create item", "", () => addItem(c.values, c.custom)));
       }));
     }
-    function openAddPrefilled(values) {
+    function openAddPrefilled(values, customVals) {
       openModal("Add item");
-      const inputs = buildForm(values);
+      const seed = Object.assign({}, values, { custom_fields: customVals || {} });
+      const refs = buildForm(seed);
       const foot = $("modal-foot");
       foot.appendChild(footBtn("Cancel", "secondary", closeModal));
       foot.appendChild(footBtn("Review", "", () => {
-        const c = collectForm(inputs);
+        const c = collectForm(refs);
         if (!c.ok) { modalMsg(c.error, "bad"); return; }
         if (c.values.name == null) { modalMsg("Name is required.", "bad"); return; }
-        addItem(c.values);
+        addItem(c.values, c.custom);
       }));
     }
-    async function addItem(values) {
+    async function addItem(values, customVals) {
       setStatus("Adding…");
-      const { data, error } = await sb.from("items").insert([values])
-        .select("id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,version,created_at,updated_at");
+      const payload = Object.assign({}, values, { custom_fields: mergeCustom({}, customVals || {}) });
+      const { data, error } = await sb.from("items").insert([payload])
+        .select(ITEM_SELECT);
       setStatus("");
       if (error) { modalMsg("Add failed: " + error.message, "bad"); return; }
       if (!data || data.length === 0) { modalMsg("The database refused this insert (role=" + state.role + ").", "bad"); return; }
@@ -859,7 +959,7 @@
         setStatus(toArchived ? "Archiving…" : "Un-archiving…");
         const { data, error } = await sb.from("items")
           .update({ is_archived: toArchived }).eq("id", orig.id).eq("version", orig.version)
-          .select("id,name,brand,model_pn,qty,device_type,category,status,location,assignment_purpose,notes,value,serial,is_archived,version,created_at,updated_at");
+          .select(ITEM_SELECT);
         setStatus("");
         if (error) { modalMsg("Failed: " + error.message, "bad"); return; }
         if (!data || data.length === 0) { await handleZeroRows(orig, toArchived ? "archive" : "un-archive"); return; }
@@ -904,6 +1004,147 @@
       body.appendChild(list);
     }
 
+    // ---- Phase 5: per-changed-custom-field diff rows (labels + values via
+    //      textContent — XSS-safe) ----
+    function renderCustomDiff(origCf, newCf, dl) {
+      const keys = new Set([...Object.keys(origCf || {}), ...Object.keys(newCf || {})]);
+      for (const sk of keys) {
+        const ov = (origCf || {})[sk], nv = (newCf || {})[sk];
+        if (JSON.stringify(ov) === JSON.stringify(nv)) continue;
+        const d = defByKey(sk) || { type: "text", label: sk };
+        const kd = document.createElement("div"); kd.className = "k"; kd.textContent = d.label || sk;
+        const vd = document.createElement("div");
+        const oS = document.createElement("span"); oS.className = "diff-old";
+        oS.textContent = ov == null ? "(empty)" : CF.displayText(d, ov);
+        vd.appendChild(oS); vd.appendChild(document.createTextNode("  →  "));
+        const nS = document.createElement("span"); nS.className = "diff-new";
+        nS.textContent = nv == null ? "(empty)" : CF.displayText(d, nv);
+        vd.appendChild(nS);
+        dl.appendChild(kd); dl.appendChild(vd);
+      }
+    }
+
+    // =========================================================================
+    // Phase 5: ADMIN custom-field management (add / deactivate / reactivate).
+    // The DATABASE (field_definitions RLS: INSERT/UPDATE = admin) is the real
+    // gate; this UI is cosmetic. Adding a definition makes the field appear on
+    // EVERY item instantly (custom_fields default '{}'); deactivating sets
+    // is_active=false and PRESERVES stored values + change_log history.
+    // =========================================================================
+    function isAdmin() { return state.role === "admin"; }
+
+    async function loadFieldDefs() {
+      const { data, error } = await sb.from("field_definitions")
+        .select("key,label,type,options,required,is_active,created_at")
+        .order("created_at", { ascending: true });
+      state.fieldDefs = !error && Array.isArray(data) ? data : [];
+    }
+
+    function openManageFields() {
+      if (!isAdmin()) return;
+      openModal("Manage custom fields");
+      renderManageFields();
+    }
+
+    function renderManageFields() {
+      const body = $("modal-body"); body.replaceChildren(); body.className = "modal-body";
+
+      const listWrap = document.createElement("div");
+      const h = document.createElement("div"); h.className = "muted";
+      h.style.cssText = "font-size:.74rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;";
+      h.textContent = "Existing fields"; listWrap.appendChild(h);
+      if (state.fieldDefs.length === 0) {
+        const e = document.createElement("div"); e.className = "muted"; e.textContent = "No custom fields yet.";
+        listWrap.appendChild(e);
+      } else {
+        const list = document.createElement("div"); list.className = "hist-list";
+        for (const d of state.fieldDefs) {
+          const row = document.createElement("div"); row.className = "hist-row row"; row.style.justifyContent = "space-between";
+          const meta = document.createElement("div");
+          const strong = document.createElement("strong"); strong.textContent = d.label;       // XSS-safe
+          const sub = document.createElement("div"); sub.className = "hh";
+          sub.textContent = d.key + " · " + d.type + (d.is_active ? "" : " · INACTIVE") +
+            (d.options && d.options.length ? " · [" + d.options.join(", ") + "]" : "");  // textContent => safe
+          meta.appendChild(strong); meta.appendChild(sub);
+          const btn = footBtn(d.is_active ? "Deactivate" : "Reactivate", d.is_active ? "btn-sm danger" : "btn-sm", () => setFieldActive(d, !d.is_active));
+          row.appendChild(meta); row.appendChild(btn);
+          list.appendChild(row);
+        }
+        listWrap.appendChild(list);
+      }
+      body.appendChild(listWrap);
+      body.appendChild(document.createElement("hr"));
+
+      const addH = document.createElement("div"); addH.className = "muted";
+      addH.style.cssText = "font-size:.74rem;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;";
+      addH.textContent = "Add a field"; body.appendChild(addH);
+
+      const grid = document.createElement("div"); grid.className = "modal-body form-grid";
+      const mk = (labelText, el, full) => {
+        const cell = document.createElement("div"); if (full) cell.className = "full";
+        const lab = document.createElement("label"); lab.textContent = labelText; cell.appendChild(lab);
+        cell.appendChild(el); grid.appendChild(cell); return el;
+      };
+      const keyEl = mk("Key (a–z, 0–9, _; starts with a letter)", document.createElement("input"));
+      keyEl.placeholder = "warranty_expires";
+      const labelEl = mk("Label", document.createElement("input"));
+      labelEl.placeholder = "Warranty expires";
+      const typeEl = document.createElement("select");
+      for (const t of CF.CUSTOM_TYPES) { const o = document.createElement("option"); o.value = t; o.textContent = t; typeEl.appendChild(o); }
+      mk("Type", typeEl);
+      const reqEl = document.createElement("select");
+      for (const rv of [["false", "Optional"], ["true", "Required (UX nudge)"]]) { const o = document.createElement("option"); o.value = rv[0]; o.textContent = rv[1]; reqEl.appendChild(o); }
+      mk("Required", reqEl);
+      const optsEl = document.createElement("textarea");
+      optsEl.placeholder = "one option per line (dropdown only)";
+      const optsCell = mk("Options", optsEl, true);
+      const syncOpts = () => { optsCell.parentElement.style.display = typeEl.value === "dropdown" ? "" : "none"; };
+      typeEl.addEventListener("change", syncOpts); syncOpts();
+      body.appendChild(grid);
+
+      const foot = $("modal-foot"); foot.replaceChildren();
+      foot.appendChild(footBtn("Close", "secondary", closeModal));
+      foot.appendChild(footBtn("Add field", "", () => {
+        addFieldDef({ key: keyEl.value.trim(), label: labelEl.value.trim(), type: typeEl.value,
+                      required: reqEl.value === "true", optionsText: optsEl.value });
+      }));
+    }
+
+    async function addFieldDef(input) {
+      if (!CF.isValidKey(input.key)) { modalMsg("Key must be a–z / 0–9 / _ and start with a letter.", "bad"); return; }
+      if (!input.label) { modalMsg("Label is required.", "bad"); return; }
+      let options = null;
+      if (input.type === "dropdown") {
+        options = CF.parseOptions(input.optionsText);
+        if (options.length === 0) { modalMsg("A dropdown needs at least one option.", "bad"); return; }
+      }
+      setStatus("Adding field…");
+      const row = { key: input.key, label: input.label, type: input.type, required: input.required };
+      if (options) row.options = options;
+      const { data, error } = await sb.from("field_definitions").insert([row]).select("key");
+      setStatus("");
+      if (error) { modalMsg("Add field failed: " + error.message, "bad"); return; }
+      if (!data || data.length === 0) { modalMsg("The database refused this (admin only). RLS is the gate.", "bad"); return; }
+      await loadFieldDefs();
+      renderHead(); applyView();
+      openManageFields();
+      setStatus("Added field \"" + input.key + "\".");
+    }
+
+    async function setFieldActive(def, active) {
+      if (!isAdmin()) return;
+      setStatus(active ? "Reactivating…" : "Deactivating…");
+      const { data, error } = await sb.from("field_definitions")
+        .update({ is_active: active }).eq("key", def.key).select("key,is_active");
+      setStatus("");
+      if (error) { modalMsg("Update failed: " + error.message, "bad"); return; }
+      if (!data || data.length === 0) { modalMsg("The database refused this (admin only). RLS is the gate.", "bad"); return; }
+      await loadFieldDefs();
+      renderHead(); applyView();
+      renderManageFields();
+      setStatus((active ? "Reactivated" : "Deactivated") + " \"" + def.key + "\".");
+    }
+
     // ---- shared: replace a row in state.items by id -------------------------
     function mergeRow(row) {
       const i = state.items.findIndex((x) => x.id === row.id);
@@ -913,6 +1154,7 @@
     function applyWriteUi() {
       const w = canWrite();
       $("add-btn").classList.toggle("hidden", !w);
+      $("manage-fields-btn").classList.toggle("hidden", !isAdmin());
       $("debug-wrap").classList.toggle("hidden", state.role !== "admin");
       if (state.role !== "admin") { state.debug = false; $("debug-toggle").checked = false; $("diag-panel").classList.add("hidden"); }
     }
@@ -928,6 +1170,7 @@
       applyWriteUi();
       hide(signinView); appView.classList.remove("hidden"); hide($("probe-msg"));
       setStatus("");
+      await loadFieldDefs();   // load custom-field definitions before rendering columns
       await loadInventory();
     }
 
@@ -962,9 +1205,9 @@
       setStatus("Signing out…");
       await sb.auth.signOut();
       state = { user:null, role:null, sampleItem:null, items:[], view:[], sortKeys:[],
-                showArchived:false, debug:false };
+                showArchived:false, debug:false, fieldDefs:[] };
       closeModal();
-      $("add-btn").classList.add("hidden"); $("debug-wrap").classList.add("hidden");
+      $("add-btn").classList.add("hidden"); $("manage-fields-btn").classList.add("hidden"); $("debug-wrap").classList.add("hidden");
       $("diag-panel").classList.add("hidden"); $("f-archived").checked = false;
       $("who").textContent = ""; $("role").textContent = "";
       $("sample-item").textContent = "—";
@@ -986,6 +1229,7 @@
       $("probe-btn").addEventListener("click", onProbe);
       $("signout-btn").addEventListener("click", onSignOut);
       $("add-btn").addEventListener("click", openAdd);
+      $("manage-fields-btn").addEventListener("click", openManageFields);
       $("modal-x").addEventListener("click", closeModal);
       $("modal-overlay").addEventListener("click", (e) => { if (e.target === $("modal-overlay")) closeModal(); });
       document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("modal-overlay").classList.contains("hidden")) closeModal(); });

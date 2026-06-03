@@ -102,11 +102,35 @@ un-archive.
   RLS unchanged (no new policy / USING(true) / GRANT). Full raw output in "Phase 4 — FIXED run"
   appendix. Phase-7 Auditor re-verifies on the live site (and may run the owner-side SQL companion
   `sql/proofs/phase4_proofs.sql`, incl. its pg_policies no-permissive-items-policy check).
-- [ ] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
+- [x] Phase 5 — Typed dynamic fields (CENTERPIECE; use higher reasoning effort).
 GATE: dedicated test suite passes; add-field applies to ALL items; per-type validation;
 search/sort INCLUDE custom fields; XSS-safe.
 VERIFY: add one field of each type; enter a <script> payload as a value → rendered inert; search by
 a custom field returns correct items; "number" rejects text.
+  STATUS (2026-06-03, 5a checkpoint — NOT [x]; live DB proofs pending owner creds + SQL-editor run):
+  CODE COMPLETE — sql/phase5.sql (BEFORE INS/UPD validate_custom_fields() trigger: DB-side per-type
+  validation + unknown-key reject + GIN index; loosens no RLS); lib/custom-fields.js shared typed
+  comparator/coercion/validation (+ peer .d.ts so the test stays type-checked, not skipped);
+  index.html UI (custom columns in table+cards, typed search + typed multi-sort, typed form inputs,
+  admin Manage-fields add/deactivate; centralized ITEM_SELECT incl. custom_fields; cleaned a stray
+  0x01 byte in the search join); REST harness proofs/phase5-custom-fields-proofs.ts; SQL proof
+  sql/proofs/phase5_proofs.sql. PROVEN NOW, NO CREDS (raw output in the "Phase 5 evidence" appendix):
+  (a) 20/20 bun unit tests incl. broken-vs-fixed numeric sort (sabotaged comparator -> 2 fail);
+  (b) REAL-BROWSER (Playwright, real renderHead()/applyView()): numeric sort [9,10,100] asc &
+      [100,10,9] desc (NOT lexicographic 10,100,9); an `<img onerror>`+`<script>` payload rendered
+      INERT as BOTH a custom VALUE and a field LABEL (window.__xss stayed undefined; innerHTML
+      escaped to `&lt;img...`); custom-field VALUE searchable (search "100" -> only the rating=100
+      row). The lib
+      loaded from CSP 'self'. (CDN-blocked-by-proxy note: the container proxy MITMs jsdelivr's cert,
+      so the proof ran against a gitignored _proof_tmp/boot.html = index.html with ONLY the CDN tag
+      swapped for a supabase stub — no source divergence; the real merged site has no such block.)
+  PENDING (needs OWNER): (1) run sql/phase5.sql then sql/proofs/phase5_proofs.sql in the SQL editor
+  (expect all rows PASSED incl. typed-vs-lexicographic sort); (2) create a BURNABLE admin test user +
+  provide ADMIN_*/EDITOR_* creds via ENV so Claude runs phase5-custom-fields-proofs.ts (live: per-type
+  DB-rejection via direct REST as editor, add-field-appears-on-all, deactivate-preserves-values+history,
+  anon default-deny). required-at-DB intentionally DEFERRED (would break edits of the 210 existing
+  items); required stays an app-side UX nudge. NOT marked [x] until (1)+(2) show observed output.
+  LIVE GATE PASSED (2026-06-03): owner ran sql/phase5.sql + sql/proofs/phase5_proofs.sql in the SQL editor — ALL 12 rows PASSED (per-type accept/reject + numeric-cast sort [10,100,9] vs [9,10,100] + no-permissive). Editor direct-REST unknown-key write REJECTED 400 post-install (was 204 before). CI run #11 (.github/workflows/inventory-phase5-proof.yml, admin secret, publishable key, NO service_role) = ALL PASS: (1) admin added 5 typed fields; (2) visible to editor + every item has custom_fields; (2b) 5 valid values stored; (3) all 6 malformed/unknown writes DB-rejected with correct per-type messages, valid value intact; (4) <script>/onerror stored verbatim as data; (5) deactivate -> value 42 PRESERVED + change_log history intact; (6) anon default-deny on all four tables = []. Two harness bugs the live run surfaced + fixed (PGRST102 heterogeneous bulk-insert keys; jsonb order-insensitive comparison) — feature itself unchanged. Phase-7 Auditor re-verifies on the live merged site. CLEANUP (owner, pre-launch SQL editor): archived throwaway items 216/225/226/227/228 + inactive defs 'p5_mpyh93ei_%' and 'p5_mpyhaucf_%'. Build-time test users (editor@/viewer@ + admin secret) are chat/secret-shared -> burn in Phase 7 (residual risk register).
 - [ ] Phase 6 — QR labels + export.
 GATE: scan resolves post-login; export round-trips incl. unicode/comma/quote.
 VERIFY: generate + scan a label → correct item after login; export then re-import → identical data.
@@ -258,20 +282,20 @@ approval before Phase 0b.
 ### Item #7 — Plain Supabase web-dashboard setup steps (for Phase 0b; service_role NOT requested)
 
 1. Go to **app.supabase.com** → sign in → **New project**.
-2. Pick your org → **Name** (e.g., `zeta-inventory`) → **Database password**: click *Generate*, then
+2. Pick your org → **Name** (e.g., `zeta-inventory`) → **Database password**: click _Generate_, then
    store it in YOUR password manager (NOT in this repo, NOT pasted to me) → **Region**: pick a **US**
    region → **Plan: Free** → **Create new project**. (First provision takes a couple of minutes.)
 3. **RLS on new tables**: heads-up — Supabase enforces RLS **per table**, not via a single global
-   "Enable RLS on new tables" switch. In the Table Editor's *New table* dialog there is an **"Enable
+   "Enable RLS on new tables" switch. In the Table Editor's _New table_ dialog there is an **"Enable
    Row Level Security (RLS)"** checkbox that is **ON by default — leave it on.** Additionally, in
    Phase 1 I create every table via SQL with an explicit `ALTER TABLE … ENABLE ROW LEVEL SECURITY`, so
    RLS-on is guaranteed regardless of the dashboard default. (Flagging because the bundle's exact
    wording assumes a toggle that isn't labeled that way today — the protection is real either way.)
 4. **Find the values I'll need in Phase 0b** — go to **Project Settings → API Keys**:
-   - **Project URL**: copy it (looks like `https://<ref>.supabase.co`). (Also shown in the *Connect*
+   - **Project URL**: copy it (looks like `https://<ref>.supabase.co`). (Also shown in the _Connect_
      dialog / Settings → Data API.)
    - **Public key**: copy the **Publishable** key (`sb_publishable_…`) — OR, if you're on legacy keys,
-     the **anon** `public` key from the *Legacy API Keys* tab. Either is fine for client code.
+     the **anon** `public` key from the _Legacy API Keys_ tab. Either is fine for client code.
    - **Do NOT** copy or send the **secret** (`sb_secret_…`) / **service_role** key. I won't ask for it
      and won't use it.
 5. Provide me, when you're ready for Phase 0b: the **Project URL** + the **publishable/anon public**
@@ -782,3 +806,63 @@ Remove in the SQL editor like the Phase-1 proof item:
 `delete from public.items where id in (212,213,214);`
 `alter table public.change_log enable trigger change_log_immutable;`
 (The items id sequence is unaffected — next auto id continues after the current max.)
+
+## Phase 5 evidence (5a checkpoint, 2026-06-03 — Claude, NO creds yet)
+
+Recorded per the Evidence rule. Live DB proofs (owner creds + SQL editor) still pending — see the
+Phase 5 STATUS line. These are the credential-free proofs run THIS session.
+
+### Unit suite (bun) — 20/20, with broken-vs-fixed
+
+```
+$ bun test inventory/proofs/custom-fields.unit.test.ts
+ 20 pass / 0 fail / 52 expect() calls
+# deliberate break (toNumeric num path -> String(v)) => 2 fail incl. the numeric-order test;
+# revert => 20 pass. (CLAUDE.md 'key test FAILS on broken code, passes when fixed'.)
+```
+
+### Real-browser (Playwright + Chrome 149) against the REAL renderHead()/applyView()
+
+Injected state: number field `rating` {9,10,100}; XSS payload `<img src=x onerror="window.__xss=1"><script>window.__xss=1</script>` as BOTH a custom VALUE and a field LABEL; sort key `cf:rating`.
+
+```json
+{ "headers_count": 13, "rating_header": "Rating \u25b2",
+  "rating_column_order_ascending": ["9","10","100"],
+  "xss_value_cell_textContent_is_literal": true,
+  "xss_value_cell_has_live_img_or_script": false,
+  "xss_value_cell_innerHTML_escaped_head": "&lt;img src=x onerror=\"window.__xss=1\"&g",
+  "malicious_header_textContent_is_literal": true,
+  "malicious_header_has_live_img_or_script": false,
+  "custom_fields_lib_loaded": true }
+// follow-up: { "xss_global_after_render": "undefined",   // payload NEVER executed
+//             "rating_desc": ["100","10","9"],
+//             "search_100_rows": ["3:100"] }            // custom VALUE searchable
+```
+
+Interpretation: risk (ii) typed numeric search+sort and risk (iii) XSS-safe render (values AND field
+names, at header + cell) PROVEN in a real browser. Risk (i) DB-side validation is proven structurally
+by sql/phase5.sql + the SQL/REST proofs (pending owner run). The Phase-7 Auditor re-verifies on the
+live merged site.
+
+### Live admin-path proof — CI run #11 (2026-06-03) — ALL PASS
+
+Run via .github/workflows/inventory-phase5-proof.yml (INVENTORY_ADMIN_EMAIL/PASSWORD secrets; publishable key; NO service_role). Raw observed:
+
+```
+admin role -> "admin"
+(1) 5 typed field defs created (http 201): PASS
+(2) all 5 defs visible to editor AND every item has a custom_fields object: PASS
+(2b) set valid custom_fields -> http 200; all five typed values stored: PASS
+(3) per-type validation REJECTED at the DB (direct REST):
+   number<-string   -> 400 ((number) must be a JSON number (got string))
+   boolean<-string  -> 400 ((boolean) must be a JSON boolean (got string))
+   date<-2024-13-40 -> 400 ((date) is not a valid calendar date (got 2024-13-40))
+   dropdown<-purple -> 400 ((dropdown) value purple is not an allowed option)
+   text<-number     -> 400 ((text) must be a JSON string (got number))
+   unknown key      -> 400 (no field_definitions row exists)
+   value intact after all rejects -> OK ; ASSERTION PASS
+(4) <img onerror>+<script> stored verbatim as a JSON string: PASS
+(5) deactivate field -> number value (42) PRESERVED; change_log custom_fields history 2 rows: PASS
+(6) anon items/field_definitions/change_log/profiles all [] : PASS
+=== SUMMARY: (1)=PASS (2)=PASS (2b)=PASS (3)=PASS (4)=PASS (5)=PASS (6)=PASS ===
+```
