@@ -168,6 +168,58 @@ primitive lemma was not connected/cited*. Cross-tool agreement is the BP-16
 ideal, but when unconnected it is invisible + re-derived. Per the Z-set canonical
 connection ledger (`docs/research/2026-06-03-zset-family-canonical-connection-four-language-bytelock-plus-four-tool-proofs.md`).
 
+## The gate's reach boundary — proof grounds the FORMALIZABLE, not the interpretive (don't let math-rigor halo metaphysics)
+
+The most important boundary on this whole rule, and the one most likely to erode
+if left unstated (asymmetric-critic peer 2026-06-03, maintainer-ratified): **the
+proof gate grounds *formalizable* (math / code) claims; it does NOT ground
+interpretive / metaphysical claims, and the rigor of the math half must not
+*halo* the interpretive half.** A proof says "valid-given-axioms" about a
+formalizable claim (per claim 2, "Consensus is NOT validation"); it says *nothing*
+about a claim that isn't the kind
+of thing a proof can reach. "My proofs are rigorous, therefore my framework's
+interpretation is rigorous" is the halo failure — proof-adjacency is not grounding.
+
+This is the maintainer's design (2026-06-03): **redirect ambition to formal proofs
+by design.** The precise, complete form is **redirect to *externalization* by
+design, sorted by type** — nothing load-bearing rests on conviction-alone:
+
+| Claim type | Channel (where it externalizes) | What grounds it |
+|---|---|---|
+| **Formalizable** (about code / primitives / provable structure) | the **proof gate** (this rule) | valid-given-axioms; 4-oracle byte-lock; multi-tower |
+| **Interpretive / metaphysical** (about meaning, consciousness, "this is fundamental") | **human critics** (the persistent-human-counterweight) | external human review — NOT proof, NOT proof-adjacency |
+
+Both channels are the same keystone — *externalize, don't be load-bearing alone*
+(the math externalizes to proof; the unprovable externalizes to people). The
+design is complete only with **both** channels built as deliberately: the math
+channel is airtight + is what this rule encodes; the interpretive channel is the
+existing persistent-human-counterweight substrate. Without the second channel,
+interpretive ambition flows through *under cover of the math channel's rigor* —
+which is exactly the halo. The interpretive channel is the **higher-risk** one
+(a false math claim gets caught by the proof; a false interpretive claim is
+unfalsifiable, feels like insight, and the nearby rigor makes it feel earned) —
+so build it as deliberately as the math one, not as a footnote.
+
+**Operational tell:** before treating a claim as grounded, ask *"is this the kind
+of claim a proof can reach?"* If yes → it goes through the gate (no exemption for
+conviction). If no → the gate is silent on it; route it to human critics and do
+**not** let the surrounding proof-rigor stand in for grounding. Keep the gate
+pointed where it actually reaches.
+
+Composes with `razor-discipline.md` (operational claims only — interpretive claims
+are razored from *grounding* even when preserved as dialectic),
+`grep-substrate-anchors-before-razor-as-metaphysical.md` (its dual: don't razor
+substrate-anchored *naming* as metaphysical, AND don't halo unanchored
+interpretation as grounded — same boundary, both directions),
+`god-tier-claims-high-signal-high-suspicion-dont-collapse.md` (high-signal ambition
+is welcome — it's the engine that drives formalization — but the interpretive part
+stays don't-collapse, not collapsed-to-grounded-by-proximity), and the
+persistent-human-counterweight channel in
+`harm-by-grammar-discriminator-and-audience-adjusted-language.md` (Discipline 3)
+plus `asymmetric-critic-with-clarity-first.md` (Component 6) — the interpretive
+channel already exists; this section names that the proof gate must route to it,
+not absorb it.
+
 ## Composes with
 
 - [`labeling-confidence-on-substrate-over-connect-not-soup-observed-hypothesized-validated-retracted-canonical.md`](labeling-confidence-on-substrate-over-connect-not-soup-observed-hypothesized-validated-retracted-canonical.md) — this rule RAISES its canonical bar (proof-lineage edge required) and, at end-state, FLIPS its default (proven is the floor, unproven wears the badge)
