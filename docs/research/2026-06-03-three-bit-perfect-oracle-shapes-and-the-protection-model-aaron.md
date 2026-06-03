@@ -85,12 +85,12 @@ never has to be re-resolved.
 This places shape-1 precisely in the framework's existing substrate:
 
 - **The hexagonal / I/O-monad port** (`.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md`:
-  *hexagonal IS the I/O-monad shape*). The serializer port — `parse : wire → Result<T, Feedback>`
+  *hexagonal IS the I/O-monad shape*). The serializer port — `parse : wire → Result<T, TFeedback>`
   — IS the Kleisli arrow at the external edge; **shape-1 is that port's first
   stage**, made bit-perfect across the oracles.
-- **OPLE `Observe`** — the external-observation intake (the "O" of Observe/Persist/
-  Limit/Emit). The serializer layer is the **first stage of Observe**: the raw
-  outside, mapped in and pinned.
+- **OPLE `Observe`** — the external-observation intake (the "O" of
+  `Observe`/`Persist`/`Limit`/`Emit`). The serializer layer is the **first stage of
+  Observe**: the raw outside, mapped in and pinned.
 - **The uncertainty-reduction telos** — the inference/Bayesian engine reduces
   uncertainty over observations downstream; shape-1 reduces it **at the I/O edge
   itself** — the prior to everything above it. Bit-perfect-at-the-edge means the
