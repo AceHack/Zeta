@@ -28,7 +28,7 @@ import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFro
 import type { IndexSignableContent, RevocationMap } from "./signing";
 import { applyRevoke, applyQuarantine, applyUnquarantine } from "./registry-revoke.ts";
 import { resolve } from "./resolve.ts";
-import { packageHash } from "./package-hash.ts";
+import { safePackageHash } from "./package-hash.ts";
 import { buildLockfile, serializeLockfile, parseLockfile, verifyRootMatchesLock, lockfilesEqual, buildLeafLockfile } from "./lockfile.ts";
 import { solve } from "./solver.ts";
 
@@ -137,7 +137,9 @@ function preflightGraph(order: AcePackage[]): string | null {
     if (fh !== node.manifest.content_hash) return `bad-content-hash in ${node.manifest.name}`;
     const unsafe = validatePackagePaths(node);
     if (unsafe !== null) return `unsafe file path in ${node.manifest.name}: ${unsafe}`;
-    const ph = packageHash(node);
+    const phr = safePackageHash(node);
+    if (!phr.ok) return `invalid-package in ${node.manifest.name}: ${phr.reason}`;
+    const ph = phr.hash;
     const prior = byStoreKey.get(node.manifest.content_hash);
     if (prior !== undefined && prior !== ph) return `store-collision — ${node.manifest.name} shares a content_hash store key with a different package`;
     byStoreKey.set(node.manifest.content_hash, ph);
@@ -806,7 +808,8 @@ export async function main(argv: readonly string[]): Promise<number> {
       let pkg: AcePackage;
       try { pkg = JSON.parse(raw) as AcePackage; } catch { console.error("ace: registry add: package is not valid JSON"); return 65; }
       // Shape guard before hashing: a parseable-but-malformed package (missing manifest/files)
-      // would otherwise produce a bogus hash / throw; refuse with a clean exit. Also verify the
+      // is refused here for SHAPE; a malformed field VALUE (float / lone surrogate) still throws
+      // in packageHash, so safePackageHash below maps that to a clean exit. Also verify the
       // package identity matches the CLI name/version so a package cannot be registered under the
       // wrong name (mirrors the resolver declared-identity check, caught here at add-time).
       const pm = pkg as { manifest?: { name?: unknown; version?: unknown }; files?: unknown };
@@ -818,7 +821,9 @@ export async function main(argv: readonly string[]): Promise<number> {
         console.error(`ace: registry add: package identity ${String(pm.manifest.name)}@${String(pm.manifest.version)} != ${parsed.regName}@${parsed.regVersion}`);
         return 65;
       }
-      pkgHash = packageHash(pkg);
+      const phr = safePackageHash(pkg);
+      if (!phr.ok) { console.error(`ace: registry add: invalid package — ${phr.reason}`); return 65; }
+      pkgHash = phr.hash;
     }
     const res = addRegistryEntry(parsed.regName!, parsed.regVersion!, { url: storedUrl, package_hash: pkgHash });
     console.log(res.added ? `ace: registered ${parsed.regName}@${parsed.regVersion}` : res.updated ? `ace: updated ${parsed.regName}@${parsed.regVersion} (corrected url/hash)` : `ace: ${parsed.regName}@${parsed.regVersion} already registered (identical)`);
@@ -866,6 +871,13 @@ export async function main(argv: readonly string[]): Promise<number> {
     // Root content_hash.
     const rootFilesHash = contentHash(new TextEncoder().encode(JSON.stringify(pkg.files)));
     if (rootFilesHash !== pkg.manifest.content_hash) { console.error(`ace: update refused: bad-content-hash in ${pkg.manifest.name} (root)`); return 1; }
+    // Root is untrusted: guard a packageHash-throw ONCE before any helper (resolve / buildLockfile /
+    // buildLeafLockfile) hashes it, so a malformed root refuses as invalid-package, not ace: fatal:.
+    const rootHashCheck = safePackageHash(pkg);
+    if (!rootHashCheck.ok) {
+      console.error(`ace: update refused: invalid-package — ${pkg.manifest.name} (root): ${rootHashCheck.reason}`);
+      return 1;
+    }
 
     if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
       const fetchPackage = async (u: string): Promise<string> =>
@@ -941,6 +953,16 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.error("ace: WARNING: installing UNSIGNED package (--allow-no-signature).");
     }
 
+    // The root is untrusted: a malformed field (float / lone surrogate) makes packageHash throw.
+    // Guard it ONCE here — before ANY path (graph / leaf / frozen) calls a packageHash-using helper
+    // (resolve, verifyRootMatchesLock, buildLockfile, buildLeafLockfile, preflightGraph) — so a
+    // malformed root refuses as invalid-package instead of escaping to the ace: fatal: catch-all.
+    const rootHashCheck = safePackageHash(pkg);
+    if (!rootHashCheck.ok) {
+      console.error(`ace: install refused: invalid-package — ${pkg.manifest.name} (root): ${rootHashCheck.reason}`);
+      return 1;
+    }
+
     // SLICE 4: transitive graph. Leaf (no deps) falls through to the single-package path below (unchanged).
     if (Array.isArray(pkg.manifest.dependencies) && pkg.manifest.dependencies.length > 0) {
       // Verify root content_hash BEFORE resolving (no wasted graph fetch on a bad root).
@@ -973,7 +995,8 @@ export async function main(argv: readonly string[]): Promise<number> {
         const byStoreKey = new Map<string, string>(); // content_hash -> package_hash
         // Seed the collision set with the root (already content_hash+signature verified above), so a
         // locked node that shares the root's content_hash store key with a different package is caught.
-        byStoreKey.set(pkg.manifest.content_hash, packageHash(pkg));
+        // root already validated (hashable) at install-command entry; reuse that hash
+        byStoreKey.set(pkg.manifest.content_hash, rootHashCheck.hash);
         const verified: AcePackage[] = []; // locked nodes in lock order; root installed separately
         for (const node of lf.nodes) {
           let nodeRaw: string;
@@ -981,13 +1004,17 @@ export async function main(argv: readonly string[]): Promise<number> {
           catch (e) { console.error(`ace: install refused: fetch failed for ${node.name}@${node.version} (${node.url}): ${(e as Error).message}`); return 1; }
           let np: AcePackage;
           try { np = JSON.parse(nodeRaw) as AcePackage; } catch { console.error(`ace: install refused: ${node.name}@${node.version} is not valid JSON`); return 1; }
-          // Shape-guard the untrusted fetched bytes before any verify primitive touches them, so a
-          // malformed payload refuses cleanly instead of throwing in packageHash/contentHash.
+          // Shape-guard the untrusted fetched bytes (object-ness) before any verify primitive
+          // touches them. A malformed field VALUE (float / lone surrogate) still throws in
+          // packageHash; safePackageHash below maps that to a clean refusal.
           const npm = (np as { manifest?: unknown; files?: unknown });
           if (typeof npm !== "object" || npm === null || typeof npm.manifest !== "object" || npm.manifest === null || typeof npm.files !== "object" || npm.files === null) {
             console.error(`ace: install refused: ${node.name}@${node.version} is not a well-formed package`); return 1;
           }
-          if (packageHash(np) !== node.package_hash) { console.error(`ace: install refused: package_hash mismatch for ${node.name}@${node.version} (lock pin violated)`); return 1; }
+          const nphr = safePackageHash(np);
+          if (!nphr.ok) { console.error(`ace: install refused: invalid-package — ${node.name}@${node.version}: ${nphr.reason}`); return 1; }
+          const nph = nphr.hash;
+          if (nph !== node.package_hash) { console.error(`ace: install refused: package_hash mismatch for ${node.name}@${node.version} (lock pin violated)`); return 1; }
           const fh = contentHash(new TextEncoder().encode(JSON.stringify(np.files)));
           if (fh !== np.manifest.content_hash) { console.error(`ace: install refused: bad-content-hash in ${node.name}@${node.version}`); return 1; }
           const unsafe = validatePackagePaths(np);
@@ -995,7 +1022,6 @@ export async function main(argv: readonly string[]): Promise<number> {
           const nv = verifySignature(np.manifest, trust);
           if (!nv.ok && nv.reason !== "no-signature") { console.error(`ace: install refused: ${nv.reason} for ${node.name}@${node.version}`); return 1; }
           if (!nv.ok && nv.reason === "no-signature" && !parsed.allowNoSignature) { console.error(`ace: install refused: unsigned ${node.name}@${node.version} (use --allow-no-signature)`); return 1; }
-          const nph = packageHash(np);
           const prior = byStoreKey.get(np.manifest.content_hash);
           if (prior !== undefined && prior !== nph) { console.error(`ace: install refused: store-collision — ${node.name}@${node.version} shares a content_hash store key with a different package`); return 1; }
           byStoreKey.set(np.manifest.content_hash, nph);

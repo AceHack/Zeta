@@ -402,3 +402,27 @@ describe("resolve — revoked / quarantined gates (Task B)", () => {
     expect(r.ok).toBe(true);
   });
 });
+
+describe("resolve — malformed root refuses cleanly (no escaped throw)", () => {
+  test("float manifest field on root -> invalid-package at path [root]", async () => {
+    const badRoot = {
+      manifest: { format_version: 1, name: "root", version: "1.0.0", content_hash: "sha256:aaa", bogus: 1.5 },
+      files: { "a.txt": "x" },
+    } as unknown as AcePackage;
+    const r = await resolve(badRoot, fetchOf({}), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.reason).toBe("invalid-package");
+      expect(r.path).toEqual(["root"]);
+    }
+  });
+  test("lone-surrogate manifest field on root -> invalid-package", async () => {
+    const badRoot = {
+      manifest: { format_version: 1, name: "root", version: "1.0.0", content_hash: "sha256:aaa", bogus: "\uD800" },
+      files: { "a.txt": "x" },
+    } as unknown as AcePackage;
+    const r = await resolve(badRoot, fetchOf({}), NO_TRUST, new Map(), new Map(), { allowNoSignature: true });
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toBe("invalid-package");
+  });
+});

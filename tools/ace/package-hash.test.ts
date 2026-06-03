@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { packageHash } from "./package-hash.ts";
+import { packageHash, safePackageHash } from "./package-hash.ts";
 import type { AcePackage } from "./store.ts";
 
 const base: AcePackage = {
@@ -55,5 +55,27 @@ describe("packageHash", () => {
     expect(() => packageHash(floatPkg)).toThrow();
     const surrPkg = { manifest: { ...base.manifest, bogus: "\uD800" }, files: base.files } as unknown as AcePackage;
     expect(() => packageHash(surrPkg)).toThrow();
+  });
+});
+
+describe("safePackageHash", () => {
+  test("well-formed package: { ok: true, hash } matching packageHash", () => {
+    const r = safePackageHash(base);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(r.hash).toBe(packageHash(base));
+  });
+
+  test("float field: { ok: false } with a safe-integer reason (no throw)", () => {
+    const floatPkg = { manifest: { ...base.manifest, bogus: 1.5 }, files: base.files } as unknown as AcePackage;
+    const r = safePackageHash(floatPkg);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toMatch(/safe integer/);
+  });
+
+  test("lone-surrogate field: { ok: false } with a lone-surrogate reason (no throw)", () => {
+    const surrPkg = { manifest: { ...base.manifest, bogus: "\uD800" }, files: base.files } as unknown as AcePackage;
+    const r = safePackageHash(surrPkg);
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.reason).toMatch(/lone surrogate/);
   });
 });

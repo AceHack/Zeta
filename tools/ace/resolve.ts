@@ -1,5 +1,5 @@
 import type { RevocationMap } from "./signing.ts";
-import { packageHash } from "./package-hash.ts";
+import { safePackageHash } from "./package-hash.ts";
 import { contentHash, type AcePackage, type LoadedTrustEntry, type Registry } from "./store.ts";
 import { verifySignature } from "./signing.ts";
 import { parseRange, satisfies } from "./semver.ts";
@@ -40,7 +40,14 @@ export async function resolve(
   const visiting = new Set<string>();
   const order: AcePackage[] = [];
 
-  byName.set(root.manifest.name, { version: root.manifest.version, pkgHash: packageHash(root), path: ["root"] });
+  // The root is untrusted input: a non-safe-integer / lone-surrogate manifest field makes
+  // packageHash throw (via canonicalBytes → toTagged). safePackageHash maps that to a clean
+  // invalid-package refusal rather than letting it escape resolve() to the ace: fatal: catch-all.
+  const rootHash = safePackageHash(root);
+  if (!rootHash.ok) {
+    return { ok: false, reason: "invalid-package", detail: `root: ${rootHash.reason}`, path: ["root"] };
+  }
+  byName.set(root.manifest.name, { version: root.manifest.version, pkgHash: rootHash.hash, path: ["root"] });
   visiting.add(root.manifest.name);
 
   const walk = async (node: AcePackage, path: string[]): Promise<ResolveResult | null> => {
@@ -134,15 +141,14 @@ export async function resolve(
         return { ok: false, reason: "bad-content-hash", detail: `${edge.name}: files hash ${filesHash} != manifest ${dep.manifest.content_hash}`, path: here };
       }
       // pin check (whole-package identity). packageHash canonicalizes via the shared
-      // canonicalBytes, which throws on a non-safe-integer (e.g. a float in an untrusted
-      // manifest field); map that to a clean invalid-package refusal rather than letting it
-      // escape resolve() as an unhandled exception (slice 8.1).
-      let got: string;
-      try {
-        got = packageHash(dep);
-      } catch (e) {
-        return { ok: false, reason: "invalid-package", detail: `${edge.name}: ${e instanceof Error ? e.message : String(e)}`, path: here };
+      // canonicalBytes, which throws on a non-safe-integer (e.g. a float) or a lone-surrogate
+      // field in an untrusted manifest; safePackageHash maps that to a clean invalid-package
+      // refusal rather than letting it escape resolve() as an unhandled exception (slice 8.1).
+      const hashed = safePackageHash(dep);
+      if (!hashed.ok) {
+        return { ok: false, reason: "invalid-package", detail: `${edge.name}: ${hashed.reason}`, path: here };
       }
+      const got = hashed.hash;
       if (got !== package_hash) {
         return { ok: false, reason: "pin-mismatch", detail: `${edge.name}: expected package_hash ${package_hash} but fetched ${got}`, path: here };
       }

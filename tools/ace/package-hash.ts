@@ -23,3 +23,22 @@ export function packageHash(pkg: AcePackage): string {
   void signature;
   return "sha256:" + createHash("sha256").update(canonicalBytes({ manifest: rest, files: pkg.files })).digest("hex");
 }
+
+/** Result of {@link safePackageHash}: the hash, or a reason the input was malformed. */
+export type SafePackageHash = { ok: true; hash: string } | { ok: false; reason: string };
+
+/**
+ * Throw-safe `packageHash` for UNTRUSTED input. `packageHash` throws (via
+ * canonicalBytes → toTagged) on a malformed field — a non-safe-integer (e.g. a float)
+ * or a lone UTF-16 surrogate. This wrapper maps that throw to `{ ok: false, reason }`
+ * so a caller can refuse cleanly (e.g. `invalid-package`) instead of letting it escape
+ * to the generic `ace: fatal:` catch-all (which is for genuinely-unexpected internal
+ * faults). Trusted / own-built packages may keep calling `packageHash` directly.
+ */
+export function safePackageHash(pkg: AcePackage): SafePackageHash {
+  try {
+    return { ok: true, hash: packageHash(pkg) };
+  } catch (e) {
+    return { ok: false, reason: e instanceof Error ? e.message : String(e) };
+  }
+}
