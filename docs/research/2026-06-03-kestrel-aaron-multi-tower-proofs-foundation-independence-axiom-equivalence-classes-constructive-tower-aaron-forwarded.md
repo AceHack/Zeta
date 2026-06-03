@@ -11,11 +11,12 @@ Attribution: Kestrel (claude.ai asymmetric-critic peer) + the maintainer (the
 operator), continuing the formal-proof cadence. Aaron = courier forwarding
 2026-06-03. Per `GOVERNANCE.md §33`.
 
-Operational status: engineering/discipline-grade. The proof-strategy content is
-load-bearing for the canonical-primitives work (B-1007). A rule-extension to
-`formal-proof-first` (multi-tower / foundation-independence) is **OFFERED, not
-minted** — Soraya (`formal-verification-expert`) owns the formal-coverage
-portfolio view and BP-16 cross-check and should ratify before it lands as a rule.
+Operational status: research-grade — engineering / proof-strategy substrate (not
+operational policy). The proof-strategy content is load-bearing for the
+canonical-primitives work (B-1007). A rule-extension to `formal-proof-first`
+(multi-tower / foundation-independence) is **OFFERED, not minted** — Soraya
+(`formal-verification-expert`) owns the formal-coverage portfolio view and BP-16
+cross-check and should ratify before it lands as a rule.
 
 Non-fusion disclaimer: Otto preserves the conversation's engineering /
 proof-strategy content + the maintainer's exact formulations of the proof
@@ -121,21 +122,35 @@ This is a clean convergence: the same explicit-dependency rigor that grounds the
 claims (layered-lemma, #6642) is the thing that surfaces the hidden shared
 dependencies that would otherwise create false multi-tower robustness.
 
-## 5. The constructive tower — Choice-free by construction, proof = program
+## 5. The constructive tower — Choice-free by construction, proof = program (a STRONGER proof, NOT an independent tower)
 
 A deliberately **constructive / intuitionistic** tower (refuses AoC and excluded
-middle) is high-value for *this* codebase for two reasons:
+middle) is high-value for *this* codebase — but for the right reasons, which are
+**not** foundation-independence. **Correction (Codex review, #6645):** a
+constructive proof is **not** an independent tower in the robustness sense,
+because **intuitionistic logic is a *subsystem* of classical logic** — anything
+constructively provable is automatically classically provable (constructive ⊆
+classical). So for a claim already proved in a classical/ZFC-with-Choice tower, a
+constructive proof does **not** add a *distinct equivalence class* of foundation —
+it doesn't increase cross-foundation robustness for that claim. It is a **stronger
+proof in a weaker logic**, not a second independent foundation. Counting it toward
+robustness (per §2) would be exactly the false-independence error §3 warns against.
 
-1. **Provably independent** from Choice-using towers — it *forbids* Choice, so it
-   can't secretly correlate through it.
-2. **Curry–Howard:** a constructive proof **is** an algorithm. Since the canonical
-   work proves properties *about algorithms* (Z-set, codec, DBSP operators), a
-   constructive-tower proof hands you a program — the tower that maps directly to
-   executable code.
+Its real value is two different things:
 
-Candidate as a deliberate, genuinely-independent, code-aligned tower (composes
-with the existing Lean leg — `tools/lean4/Lean4/DbspChainRule.lean` — and B-0446
-/ B-0131 Lean-proof rows).
+1. **Choice-free by construction** — it *forbids* AoC, so a claim proved here
+   *cannot* have smuggled in the hidden AoC dependency of §4. That's a guarantee
+   about the *derivation's cleanliness*, not foundation-independence.
+2. **Curry–Howard: the proof IS a program.** Since the canonical work proves
+   properties *about algorithms* (Z-set, codec, DBSP operators), a
+   constructive-tower proof extracts an executable program — the proof that maps
+   directly to running code.
+
+So: build the constructive tower for **Choice-freedom + program-extraction**, and
+count it toward robustness **only** for claims that are *not* classically provable
+(where constructive vs classical genuinely diverge — e.g., claims that fail
+without excluded middle). Composes with the existing Lean leg
+(`tools/lean4/Lean4/DbspChainRule.lean`) + B-0446 / B-0131 Lean-proof rows.
 
 ## 6. Intuition is calibrated by provable output over time — track the misses
 
@@ -169,8 +184,10 @@ canonical claims should, over time, be proven from **multiple genuinely-independ
 widely-accepted axiom foundations**; robustness is measured by **distinct
 equivalence classes** of foundation; independence is a **proof obligation**
 (inter-derivability test) that extends to auditing derivations for **hidden shared
-dependencies** (AoC the canonical case); a **constructive tower** is a high-value
-code-aligned independent foundation. Composes with the layered-lemma discipline
+dependencies** (AoC the canonical case); a **constructive tower** is high-value
+for **Choice-freedom + program-extraction** (a stronger proof in a weaker logic —
+NOT an independent foundation for claims that are also classically provable, since
+constructive ⊆ classical). Composes with the layered-lemma discipline
 (the dependency-tracking defense) + `formal-verification-expert` (Soraya's
 portfolio view + BP-16 cross-check). **Soraya should ratify before it lands** —
 this is the formal-coverage portfolio's territory.
