@@ -224,7 +224,7 @@ Refinements (what makes it real, not theatrical):
 
 Composes with: `must-paired-with-can-exit-pattern.md` (can't-stop-a-fork; bind by
 worth-staying-with not by being mandatory), `non-coercion-invariant.md`,
-`proud-if-pattern-propagates-...md`. **Rule/backlog candidate (OFFERED):** Nexus
+`proud-if-pattern-propagates-personal-filter-for-substrate-engineering.md`. **Rule/backlog candidate (OFFERED):** Nexus
 meta-jurisdiction as forkable peer (structural, interoperable forkability).
 
 ## Through-line
@@ -244,7 +244,7 @@ This note authors no rule and mints no doctrine — it **preserves** the
 engineering/governance substrate (per the verbatim-preservation trigger in
 `substrate-or-it-didnt-happen.md`) and **offers** the rule/backlog candidates for
 the maintainer to direct (the doctrine-level and floor-composing ones are not
-Otto's to mint unilaterally per `autonomous-decider-within-permission-bounds-...md`).
+Otto's to mint unilaterally per `autonomous-decider-within-permission-bounds-not-over-permission-liability-expansion.md`).
 Personal/wellbeing/personal-history content and the business ventures from the same
 exchange are intentionally excluded (harm-by-grammar; not Zeta engineering
 substrate). Verbatim-in-principle: the maintainer's exact formulations of the
