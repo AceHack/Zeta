@@ -197,6 +197,7 @@ let ``All documented TLA specs have their .tla file on disk`` () =
           "DictionaryStripedCAS"; "AsyncStreamEnumerator"
           "InfoTheoreticSharder"
           "RecursiveCountingLFP"; "FeatureFlagsResolution"
+          "BpExactOnTree"
           "SmokeCheck" ]
     for s in specs do
         File.Exists(Path.Combine(specsPath, $"{s}.tla"))
@@ -325,6 +326,25 @@ let ``TLC validates SpineMergeInvariants`` () =
     // can't dump from level i while level i+1 is at the cap-overshoot
     // boundary, mirroring the synchronous cascade in BalancedSpine.fs.
     assertSpecValid "SpineMergeInvariants"
+
+
+[<Fact>]
+let ``TLC validates BpExactOnTree`` () =
+    // B-1007 C5 — sum-product BP runToFixpoint is EXACT ON TREES and
+    // TERMINATES under the bounded round cap. Models the synchronous
+    // passOnce schedule (FactorGraph.fs:124-191) on the 3-variable tree
+    // (path 0—1—2: equality factors {0,1}+{1,2}, prior on each). Tracks
+    // marginal[v] as the SET of evidence ids folded in (the
+    // RecursiveCountingLFP ghost-set idiom; product is order-independent
+    // by C1/C2/C3). Proves two state invariants over every reachable
+    // state:
+    //   * ExactOnTree        — converged ⇒ every marginal = {0,1,2}
+    //                          (the whole tree; KFL 2001 exactness)
+    //   * ConvergesBeforeCap — rounds ≥ Diameter+1 (=3) ⇒ converged
+    //                          (the cap never blocks a tree)
+    // The numeric float marginal is cross-checked by the FsCheck companion
+    // (Bp.Tests.fs, random trees) per BP-16 (TLA+ schedule ∧ FsCheck float).
+    assertSpecValid "BpExactOnTree"
 
 
 [<Fact>]

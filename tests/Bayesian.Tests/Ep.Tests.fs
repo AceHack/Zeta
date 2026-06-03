@@ -1,8 +1,12 @@
 module Zeta.Bayesian.Tests.EpTests
+#nowarn "0893"
 
 open System
 open FsUnit.Xunit
 open global.Xunit
+open FsCheck
+open FsCheck.FSharp
+open FsCheck.Xunit
 open Zeta.Bayesian
 
 // EP (B-1000 slice 5) — non-conjugate factors via moment matching. The
@@ -52,6 +56,31 @@ let ``probit projection matches numerical quadrature of cavity times Phi`` () =
         let qMean, qVar = tiltedMoments m v
         Gaussian.mean proj |> should (equalWithin 2e-3) qMean
         Gaussian.variance proj |> should (equalWithin 2e-3) qVar
+
+// ═══════════════════════════════════════════════════════════════════
+// C7 (B-1007 P1) — the probit moment-match is accurate OVER THE CAVITY
+// DOMAIN, not just at 4 fixed points. Lifts the cross-check above to
+// FsCheck-GENERATED cavities, keeping numerical quadrature of
+// N(x;m,v)·Φ(x) (`tiltedMoments`) as the oracle (Minka 2001 / GPML 3.58).
+// Cavities stay in a moderate band [m∈[-4,4], v∈[0.1,6]] where the
+// trapezoidal oracle (±12 sd, 40k panels) is accurate and Φ(z) does not
+// underflow — the extreme/broad cavities are covered by the asymptotic
+// inverse-Mills / no-overflow [<Fact>] tests below. The shared A-S erf
+// cancels between formula and oracle (both call Normal.cdf), so this
+// isolates the GPML 3.58 MOMENT-MATCH formula, which is the C7 claim.
+// ═══════════════════════════════════════════════════════════════════
+
+let private clampMC7 (x: float) = max -4.0 (min 4.0 x)
+let private clampVC7 (x: float) = max 0.1 (min 6.0 (abs x))
+
+[<Property>]
+let ``C7 probit projection matches quadrature over generated cavities (moment-match formula is right)``
+    (NormalFloat mRaw) (NormalFloat vRaw) =
+    let m, v = clampMC7 mRaw, clampVC7 vRaw
+    let proj = Ep.probitProject (Gaussian.ofMeanVariance m v)
+    let qMean, qVar = tiltedMoments m v
+    abs (Gaussian.mean proj - qMean) <= 2.5e-3
+    && abs (Gaussian.variance proj - qVar) <= 2.5e-3
 
 // ─── Extreme negative cavity: Φ(z) underflows → asymptotic inverse Mills ───
 
