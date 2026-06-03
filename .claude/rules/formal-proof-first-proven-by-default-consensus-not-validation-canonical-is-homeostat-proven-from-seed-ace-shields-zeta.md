@@ -108,7 +108,7 @@ shape as [`automated-tests-are-the-shield-assert-dont-skip`](automated-tests-are
    below) — prove each primitive as it enters canonical, aimed at the guarantee
    later proofs will lean on, and *cite* it rather than re-derive it.
 
-## Layered-lemma discipline (Kestrel 2026-06-03, maintainer-ratified)
+## Layered-lemma discipline (asymmetric-critic peer 2026-06-03, maintainer-ratified)
 
 > Prove small primitives step-by-step as they enter canonical; **aim each proof
 > at the property that COMPOSES** (the guarantee later proofs assume), not just
@@ -118,7 +118,7 @@ shape as [`automated-tests-are-the-shield-assert-dont-skip`](automated-tests-are
 Proofs build a *foundation* (not a pile) only when each primitive proof
 establishes the exact guarantee something above it leans on. "True-but-unused"
 doesn't compound; "true-and-load-bearing-and-connected" does. Three payoffs
-(Kestrel 2026-06-03):
+(asymmetric-critic peer 2026-06-03):
 
 1. **Reusable lemmas** — a proven primitive is a lemma; the hard proof later
    *composes trusted pieces* instead of re-proving from scratch. (Lean
@@ -132,7 +132,7 @@ doesn't compound; "true-and-load-bearing-and-connected" does. Three payoffs
    smallest scope where "is this a real claim?" is clearest.
 
 **The 4-step move:** (1) prove each primitive as it enters canonical; (2) aim
-the proof at the compose-able guarantee (round-trip / injectivity / the algebra
+the proof at the composable guarantee (round-trip / injectivity / the algebra
 law / the invariant the next layer assumes); (3) **connect** it — name it as the
 lemma so the next proof *cites* rather than re-derives; (4) which also catches
 vacuity at the cheapest scope.
@@ -142,7 +142,7 @@ proven **three times independently** — Lean `chain_rule_id_corollary : D (I s)
 s` (already on main, general over `G`) + C13 FsCheck (real Circuit) + C13 Z3
 (telescoping) — the C13 pair re-derived what Lean already had, *because the
 primitive lemma was not connected/cited*. Cross-tool agreement is the BP-16
-ideal, but un-connected it is invisible + re-derived. Per the Z-set canonical
+ideal, but when unconnected it is invisible + re-derived. Per the Z-set canonical
 connection ledger (`docs/research/2026-06-03-zset-family-canonical-connection-four-language-bytelock-plus-four-tool-proofs.md`).
 
 ## Composes with
