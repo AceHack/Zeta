@@ -117,8 +117,8 @@ shape as [`automated-tests-are-the-shield-assert-dont-skip`](automated-tests-are
 
 Proofs build a *foundation* (not a pile) only when each primitive proof
 establishes the exact guarantee something above it leans on. "True-but-unused"
-doesn't compound; "true-and-load-bearing-and-connected" does. Three payoffs
-(asymmetric-critic peer 2026-06-03):
+doesn't compound; "true-and-load-bearing-and-connected" does. Four payoffs
+(asymmetric-critic peer 2026-06-03; #4 the maintainer 2026-06-03):
 
 1. **Reusable lemmas** — a proven primitive is a lemma; the hard proof later
    *composes trusted pieces* instead of re-proving from scratch. (Lean
@@ -130,6 +130,19 @@ doesn't compound; "true-and-load-bearing-and-connected" does. Three payoffs
 3. **Vacuity caught at the cheapest scope** — Tick-monoid-shaped vacuity is
    obvious on a primitive in isolation, hidden inside a big composite. Prove at
    smallest scope where "is this a real claim?" is clearest.
+4. **Reduced debug surface (system-level, AIs + humans)** — the runtime corollary
+   of #2, generalized from proof-failure-localization to *bug-search*. Code with a
+   math-verified homeostat + 4-oracle byte-lock — itself proven down to the
+   bit-perfect oracles / the proven hexagonal vector-wall reservoir-computing core
+   dimensions — is **excluded from the bug-suspect surface** once proven. When a
+   bug arises, search the **less-rigorously-proven code first**; the proven
+   components can't be the cause until everything less-proven is ruled out. This
+   bounds the debug search and **reduces debugging uncertainty for both AIs and
+   humans at a system level** — proven = not-a-suspect, so the proof investment
+   pays out again every time something breaks. (Honest scope: this excludes only
+   what is *actually* proven — per proven-by-default, the unbadged/unproven set is
+   the default suspect surface; the exclusion grows as more primitives earn the
+   homeostat-proven-from-seed bar.)
 
 **The 4-step move:** (1) prove each primitive as it enters canonical; (2) aim
 the proof at the composable guarantee (round-trip / injectivity / the algebra
