@@ -30,17 +30,27 @@ human's call).
 ### The discriminator — TWO prongs (both required), per FDA General Wellness policy
 
 FDA's *General Wellness: Policy for Low Risk Devices* gives the carve-out only to
-products that satisfy **BOTH**: (1) **intended for general-wellness use** (no
-reference to a disease or condition; maintains general health / healthy lifestyle)
+products that satisfy **BOTH**: (1) **intended for general-wellness use**
 **AND** (2) **present low risk** to user safety. ([FDA guidance](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-wellness-policy-low-risk-devices)
 — active; CDRH refresh 2026.)
+
+General-wellness use has **two FDA-permitted sub-categories**: (1a) maintaining /
+encouraging a general state of health — **no** disease/condition reference; (1b)
+relating a **healthy lifestyle** to **"may help reduce the risk of"** or **"may
+help living well with"** a chronic disease/condition, where the lifestyle→outcome
+link is well-understood and accepted. So FDA permits *some* disease references
+(sub-category 1b). **Our standing discipline is deliberately conservative: default
+to 1a (no disease references) to stay clearly in-lane**; 1b is available per FDA
+if a product genuinely needs it, but reach for it knowingly, not by accident.
+Stricter-than-the-floor is the intended posture (we're avoiding medical-device red
+tape, not maximizing the carve-out).
 
 - **Prong 1 — general-wellness-use (describe, don't diagnose):** does the tool
   make a **CLINICAL JUDGMENT** (medical) or **DESCRIBE + REPORT** and let a human
   clinician interpret (wellness)? Status is about **what the tool claims to do**,
-  not the data it holds. Keep outputs **descriptive** + free of disease/condition
-  claims → satisfies prong 1. The moment it asserts a clinical conclusion →
-  medical.
+  not the data it holds. Keep outputs **descriptive**, and (our conservative
+  default) free of disease/condition claims (sub-category 1a) → satisfies prong 1.
+  The moment it asserts a clinical conclusion → medical.
 - **Prong 2 — low risk:** even a purely-descriptive tool must **present low risk**
   to user safety to keep the carve-out. A "describe-only" tool that could still
   cause harm (e.g., surfaces a signal a vulnerable user acts on dangerously, or
