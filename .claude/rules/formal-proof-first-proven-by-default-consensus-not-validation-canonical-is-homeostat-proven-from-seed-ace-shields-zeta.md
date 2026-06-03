@@ -132,17 +132,27 @@ doesn't compound; "true-and-load-bearing-and-connected" does. Four payoffs
    smallest scope where "is this a real claim?" is clearest.
 4. **Reduced debug surface (system-level, AIs + humans)** — the runtime corollary
    of #2, generalized from proof-failure-localization to *bug-search*. Code with a
-   math-verified homeostat + 4-oracle byte-lock — itself proven down to the
-   bit-perfect oracles / the proven hexagonal vector-wall reservoir-computing core
-   dimensions — is **excluded from the bug-suspect surface** once proven. When a
-   bug arises, search the **less-rigorously-proven code first**; the proven
-   components can't be the cause until everything less-proven is ruled out. This
-   bounds the debug search and **reduces debugging uncertainty for both AIs and
-   humans at a system level** — proven = not-a-suspect, so the proof investment
-   pays out again every time something breaks. (Honest scope: this excludes only
-   what is *actually* proven — per proven-by-default, the unbadged/unproven set is
-   the default suspect surface; the exclusion grows as more primitives earn the
-   homeostat-proven-from-seed bar.)
+   math-verified homeostat + 4-oracle byte-lock — proven down to the bit-perfect
+   oracles (and, as the stack matures, the hexagonal vector-wall reservoir-computing
+   core) — drops to the **bottom of the bug-suspect surface** once proven. When a
+   bug arises, search the **less-rigorously-proven code first**; proven components
+   are the **last place to look**, not the first. (Not an *absolute* exclusion: a
+   proof verifies **code-matches-spec, not spec-matches-intent** — a wrong/incomplete
+   spec can still harbor a bug (the "valid-given-axioms ≠ true" point, at debug
+   scope) — so proven = search-*last*, not search-*never*.) This bounds the debug
+   search and
+   **reduces debugging uncertainty for both AIs and humans at a system level** —
+   proven = search-last, so the proof investment pays out again every time something
+   breaks. (Honest scope: this de-prioritizes only what is *actually* proven — per
+   proven-by-default, the unbadged/unproven set is the default suspect surface; the
+   de-prioritization grows as more primitives earn the homeostat-proven-from-seed
+   bar. Concretely today: the **hex / vector-wall reservoir core is a LOT of
+   speculation** — NOT proven, not fully 4-language — so it is **firmly a suspect**,
+   not excluded. The aspiration: **if** it's proven **from first principles** (its
+   own intellectual tower, encoded in CS techniques + math proofs) it becomes **its
+   own proof tower** — a genuinely-independent foundation per the multi-tower
+   discipline — and only *then* drops down the suspect surface. Until proven it's
+   speculation, not an exclusion — **don't pre-exclude it**.)
 
 **The 4-step move:** (1) prove each primitive as it enters canonical; (2) aim
 the proof at the composable guarantee (round-trip / injectivity / the algebra
