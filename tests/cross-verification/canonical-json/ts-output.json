@@ -1,0 +1,42 @@
+{
+  "canonical": {
+    "sorted-keys": {
+      "canonical_json": "{\"a\":1,\"b\":2,\"c\":3}",
+      "sha256": "e6a3385fb77c287a712e7f406a451727f0625041823ecf23bea7ef39b2e39805"
+    },
+    "nested-sort": {
+      "canonical_json": "{\"a\":3,\"z\":{\"x\":2,\"y\":1}}",
+      "sha256": "8d4ec158025ac90e3962f423d3201b8e960ee4280830656f6e536587a1f00fe9"
+    },
+    "array-order-preserved": {
+      "canonical_json": "{\"a\":2,\"b\":1,\"list\":[3,1,2]}",
+      "sha256": "f82619973b09e20282197cb23f290431b48fe6ce8978e49f8af0dfdb8d3b26d0"
+    },
+    "empty-and-nested-empty": {
+      "canonical_json": "{\"arr\":[],\"nested\":{\"e\":[]},\"obj\":{}}",
+      "sha256": "ccc3f81599af114b8f05308c17631c5984f92024b508c931cbd9dd0eba0323d2"
+    },
+    "mixed-types": {
+      "canonical_json": "{\"a\":[1,false,null],\"b\":true,\"i\":42,\"n\":null,\"s\":\"hi\"}",
+      "sha256": "9a52e6150ab3aca73c6d493a4b7d9494803be3b3075ab9d40be6aa07a7544a89"
+    },
+    "safe-int-bounds": {
+      "canonical_json": "{\"max\":9007199254740991,\"min\":-9007199254740991,\"neg\":-7,\"zero\":0}",
+      "sha256": "f83aa6c73be26828dc4f9431b95fb09e49ae3b274ff1e122e395c436e2ea59c9"
+    },
+    "astral-in-value": {
+      "canonical_json": "{\"emoji\":\"a😀b\",\"plain\":\"text\"}",
+      "sha256": "9054e5aadb8543f3ea423e35d6eebd0799479e5fbd4d1929590cf1be4711651e"
+    },
+    "top-level-array": {
+      "canonical_json": "[3,{\"a\":2,\"b\":1},\"x\"]",
+      "sha256": "d355965e27d2b1b8caebfd6b5ead13f99811d386c6ed390266f594abc55b4bf3"
+    }
+  },
+  "invalid": {
+    "float": "threw:safe integer",
+    "unsafe-magnitude": "threw:safe integer",
+    "lone-surrogate-value": "threw:lone surrogate",
+    "lone-surrogate-key": "threw:lone surrogate"
+  }
+}
