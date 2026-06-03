@@ -33,6 +33,30 @@ shim) · **tested** (golden-vector replay) · **cross-language** (agrees across 
 ghost bug (comparer-as-identity vs `Dictionary` default equality) before the join/aggregation
 rung corrupts the DBSP/Rx/query layer above it; "good pain, not bad pain."
 
+## The three bit-perfect shapes (the organizing lens)
+
+"Bit-perfect" = the oracles agree **byte-for-byte / protocol-for-protocol**, so _agreement_
+(not any one runtime) is the substrate. The primitives below fall into **three distinct shapes**,
+each its own serializer/oracle category (the maintainer 2026-06-03):
+
+1. **Text & binary serializers** (cbor / json / xml / yaml + more binary) — make the **persisted
+   seeds** bit-perfect (the golden-vectors the oracles agree on).
+2. **Code / data-flow serializers** (rx / bonsai; more ways to oracle code-flow over time —
+   bonsai is fine for now) — make the **code-flow data structures** bit-perfect.
+3. **Structured-data serializers / protocols** (Apache Arrow + others) — make **memory / graph /
+   ontology** bit-perfect. Arrow is kept _distinct_ from the base serializer (memory-layout
+   interface differs; deserialization-security + V8-hidden-class negotiation live in the
+   polymorphic-diplomacy layer — scoped by `B-1001`).
+
+Every inflection point across all three shapes is **designed to be** protected by the same
+**intended** stack: **deterministic simulation + 4 languages + persisted-seed verification of
+the oracles + Rx-join of the homeostates + math proof on multiple intellectual towers** (target:
+no single point of failure — not runtime, not language, not axiom-tower). This is the protection
+_model_, not a claim that every primitive already has the full stack — the per-primitive status
+above (mostly ⬜/🚧) is the honest current state; the stack is built up one verified primitive at
+a time (tracked by `B-0959`). Full framing:
+[`research/2026-06-03-three-bit-perfect-oracle-shapes-and-the-protection-model-aaron.md`](research/2026-06-03-three-bit-perfect-oracle-shapes-and-the-protection-model-aaron.md).
+
 ## The wish list — every primitive we want (so we don't forget)
 
 The complete set, built + wished, in one place (the maintainer 2026-06-01: "the uber
