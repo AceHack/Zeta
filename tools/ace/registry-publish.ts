@@ -3,8 +3,9 @@
 // No I/O — the caller (ace.ts) reads the package files + sequence + pem and writes the output.
 import type { AcePackage, RegistryEntry } from "./store.ts";
 import { packageHash } from "./package-hash.ts";
-import type { IndexSignableContent, RevocationMap } from "./signing.ts";
-import { signIndex } from "./signing.ts";
+import type { RevocationMap } from "./signing.ts";
+import type { IndexSignableContent } from "./index-signature.ts";
+import { signIndex } from "./index-signature.ts";
 import type { IndexDoc } from "./registry-remote.ts";
 
 /** Join a base url + filename with exactly one separator (trailing slashes normalized). */

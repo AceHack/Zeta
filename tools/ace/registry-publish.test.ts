@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { joinUrl, nextSequence, buildIndexDoc } from "./registry-publish.ts";
-import { generateKeypair, verifyIndexSignature, publicKeyInfoFromPrivatePem } from "./signing.ts";
+import { generateKeypair, publicKeyInfoFromPrivatePem } from "./signing.ts";
+import { verifyIndexSignature } from "./index-signature.ts";
 import { parseIndex } from "./registry-remote.ts";
 import { packageHash } from "./package-hash.ts";
 import { contentHash } from "./store.ts";

@@ -1,6 +1,7 @@
 // registry-revoke.ts -- Ace slice 7: pure apply functions for revocation + quarantine marks.
 // All functions are pure (no I/O). Returns new content or { error: string }.
-import type { IndexSignableContent, RevocationMap, RevocationEntry } from "./signing.ts";
+import type { RevocationMap, RevocationEntry } from "./signing.ts";
+import type { IndexSignableContent } from "./index-signature.ts";
 
 // format_version is 2 iff a mark remains, else 1.  Also strips empty mark maps
 // so a v1 result never carries revoked:{} or quarantined:{}, which parseIndex rejects.

@@ -24,8 +24,10 @@ import {
   writeRegistryRemote, removeRegistryRemote, readRegistriesConfig,
   type AcePackage,
 } from "./store";
-import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem, verifyIndexSignature, signIndex } from "./signing";
-import type { IndexSignableContent, RevocationMap } from "./signing";
+import { generateKeypair, signManifest, verifySignature, keyId, publicKeyInfoFromPrivatePem } from "./signing";
+import { verifyIndexSignature, signIndex } from "./index-signature.ts";
+import type { RevocationMap } from "./signing";
+import type { IndexSignableContent } from "./index-signature.ts";
 import { applyRevoke, applyQuarantine, applyUnquarantine } from "./registry-revoke.ts";
 import { resolve } from "./resolve.ts";
 import { safePackageHash } from "./package-hash.ts";

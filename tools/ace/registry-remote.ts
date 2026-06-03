@@ -2,8 +2,9 @@
 // signed remote registry index. Untrusted-input discipline throughout (never throw on bad
 // input; return { error } / { skipped }). The package bytes the index points at are still
 // hash-pinned + signature-gated downstream (unchanged) — index trust is additive.
-import type { AceSignature, IndexSignableContent, RevocationMap, TrustEntry } from "./signing.ts";
-import { verifyIndexSignature } from "./signing.ts";
+import type { AceSignature, RevocationMap, TrustEntry } from "./signing.ts";
+import type { IndexSignableContent } from "./index-signature.ts";
+import { verifyIndexSignature } from "./index-signature.ts";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";

@@ -1,7 +1,8 @@
 import { describe, expect, test, beforeEach, afterEach } from "bun:test";
 import { parseIndex } from "./registry-remote.ts";
 import type { TrustEntry } from "./signing.ts";
-import { generateKeypair, signIndex } from "./signing.ts";
+import { generateKeypair } from "./signing.ts";
+import { signIndex } from "./index-signature.ts";
 import { verifyIndex, type CacheMeta } from "./registry-remote.ts";
 
 const good = JSON.stringify({
@@ -95,7 +96,8 @@ describe("cache I/O", () => {
   test("missing → null", () => { expect(readCache("https://nope")).toBeNull(); });
 });
 
-import { generateKeypair as gkp, signIndex as sidx } from "./signing.ts";
+import { generateKeypair as gkp } from "./signing.ts";
+import { signIndex as sidx } from "./index-signature.ts";
 import { fetchRemoteIndex } from "./registry-remote.ts";
 
 function indexJson(kp: { privatePem: string }, seq: number, issuedAtMs: number) {
@@ -219,7 +221,8 @@ describe("loadRegistries merge precedence", () => {
 
 // ─── Task B: parseIndex v2 + marks + loadRegistries union-merge ─────────────
 
-import { signIndex as si2, generateKeypair as gk2 } from "./signing.ts";
+import { generateKeypair as gk2 } from "./signing.ts";
+import { signIndex as si2 } from "./index-signature.ts";
 import type { RevocationMap } from "./signing.ts";
 
 function mkV2Index(kp: { privatePem: string; keyId: string }, seq: number, issuedAtMs: number, extra: Record<string, unknown> = {}) {

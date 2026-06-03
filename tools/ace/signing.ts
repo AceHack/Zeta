@@ -7,7 +7,7 @@ import {
   createHash, generateKeyPairSync, createPrivateKey, createPublicKey,
   sign as nodeSign, verify as nodeVerify,
 } from "node:crypto";
-import type { AceManifest, RegistryEntry } from "./store.ts";
+import type { AceManifest } from "./store.ts";
 import { canonicalBytes } from "./canonical.ts";
 
 export interface Keypair { privatePem: string; publicSpkiB64: string; keyId: string; }
@@ -69,46 +69,6 @@ export function verifySignature(
 
 export interface RevocationEntry { reason?: string; at: string }
 export type RevocationMap = Record<string, Record<string, RevocationEntry>>;
-
-export interface IndexSignableContent {
-  format_version: number;
-  sequence: number;
-  issued_at: string;
-  packages: Record<string, Record<string, RegistryEntry>>;
-  revoked?: RevocationMap;
-  quarantined?: RevocationMap;
-}
-
-/** Index content (no `signature`), via the shared canonical byte form. Sibling of canonicalManifestBytes. */
-export function canonicalIndexBytes(content: IndexSignableContent): Uint8Array {
-  return canonicalBytes(content);
-}
-
-export function signIndex(content: IndexSignableContent, privatePem: string): AceSignature {
-  const bytes = canonicalIndexBytes(content);
-  const priv = createPrivateKey(privatePem);
-  const sig = (nodeSign(null, bytes, priv) as Buffer).toString("base64");
-  const spkiB64 = (createPublicKey(priv).export({ type: "spki", format: "der" }) as Buffer).toString("base64");
-  return { algo: "ed25519", key_id: keyId(spkiB64), sig };
-}
-
-export function verifyIndexSignature(
-  content: IndexSignableContent, signature: AceSignature, trustStore: Map<string, TrustEntry>,
-): VerifyResult {
-  if (signature.algo !== "ed25519") return { ok: false, reason: "unsupported-algo" };
-  const entry = trustStore.get(signature.key_id);
-  if (!entry) return { ok: false, reason: "untrusted-key" };
-  let verified = false;
-  try {
-    const pub = createPublicKey({ key: Buffer.from(entry.public_key, "base64"), format: "der", type: "spki" });
-    verified = nodeVerify(null, canonicalIndexBytes(content), pub, Buffer.from(signature.sig, "base64"));
-  } catch { verified = false; }
-  if (!verified) return { ok: false, reason: "bad-signature" };
-  const result: VerifyResult = { ok: true, key_id: signature.key_id };
-  if (entry.label !== undefined) (result as { ok: true; key_id: string; label?: string }).label = entry.label;
-  return result;
-}
-
 
 /** Derive the SPKI-DER base64 public key + its keyId from a private PEM (for a self-verify
  *  trust store). Sibling of signIndex's internal signer-id derivation. */

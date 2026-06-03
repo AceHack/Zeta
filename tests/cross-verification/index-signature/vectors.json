@@ -1,0 +1,197 @@
+{
+  "canonical": [
+    {
+      "id": "minimal",
+      "content": {
+        "format_version": 1,
+        "sequence": 1,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {}
+      },
+      "expected_canonical_json": "{\"format_version\":1,\"issued_at\":\"2026-06-01T00:00:00Z\",\"packages\":{},\"sequence\":1}"
+    },
+    {
+      "id": "with-packages",
+      "content": {
+        "format_version": 1,
+        "sequence": 3,
+        "issued_at": "2026-06-01T12:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        }
+      },
+      "expected_canonical_json": "{\"format_version\":1,\"issued_at\":\"2026-06-01T12:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"sequence\":3}"
+    },
+    {
+      "id": "with-marks",
+      "content": {
+        "format_version": 2,
+        "sequence": 7,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "revoked": {
+          "leaf": {
+            "1.0.0": {
+              "reason": "cve",
+              "at": "2026-06-01T00:00:00Z"
+            }
+          }
+        },
+        "quarantined": {
+          "tool": {
+            "2.0.0": {
+              "reason": "review",
+              "at": "2026-06-01T06:00:00Z"
+            }
+          }
+        }
+      },
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-01T06:00:00Z\",\"reason\":\"review\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-01T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":7}"
+    }
+  ],
+  "envelope": [
+    {
+      "id": "with-marks",
+      "private_pem": "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIGJhLUCsf3seeKzdGpas+Ko6nMKm+nMG8j0uupu9mV/o\n-----END PRIVATE KEY-----\n",
+      "content": {
+        "format_version": 2,
+        "sequence": 7,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "revoked": {
+          "leaf": {
+            "1.0.0": {
+              "reason": "cve",
+              "at": "2026-06-01T00:00:00Z"
+            }
+          }
+        },
+        "quarantined": {
+          "tool": {
+            "2.0.0": {
+              "reason": "review",
+              "at": "2026-06-01T06:00:00Z"
+            }
+          }
+        }
+      },
+      "expected_key_id": "ed25519:0dbe5a2385bc2af4",
+      "expected_sig": "Vr7aY5hf0n8mDJyiovneyfEe0liEEFjOoSBNHLvKmkMQTH+ylsIG5Lp8+giY9rrdj5L/Cd0pw/TC2M6fqgUqCw==",
+      "expected_canonical_json": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-01T06:00:00Z\",\"reason\":\"review\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-01T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":7}"
+    }
+  ],
+  "invalid": [
+    {
+      "id": "tampered-content",
+      "content": {
+        "format_version": 1,
+        "sequence": 1,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {}
+      },
+      "signature": {
+        "algo": "ed25519",
+        "key_id": "ed25519:0dbe5a2385bc2af4",
+        "sig": "GhmHc8l9uPf6x0KGMUN7hyLe8TvvkM6p7PmEBe5SVreIXePGVxOaYC5rA1osNYj9sxK6CFyGlObQeoCLoQwJDA=="
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "expected_reason": "bad-signature"
+    },
+    {
+      "id": "tampered-sig",
+      "content": {
+        "format_version": 1,
+        "sequence": 3,
+        "issued_at": "2026-06-01T12:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        }
+      },
+      "signature": {
+        "algo": "ed25519",
+        "key_id": "ed25519:0dbe5a2385bc2af4",
+        "sig": "GhmHc8l9uPf6x0KGMUN7hyLe8TvvkM6p7PmEBe5SVreIXePGVxOaYC5rA1osNYj9sxK6CFyGlObQeoCLoQwJAAAA"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "expected_reason": "bad-signature"
+    },
+    {
+      "id": "untrusted-key",
+      "content": {
+        "format_version": 1,
+        "sequence": 3,
+        "issued_at": "2026-06-01T12:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        }
+      },
+      "signature": {
+        "algo": "ed25519",
+        "key_id": "ed25519:0dbe5a2385bc2af4",
+        "sig": "GhmHc8l9uPf6x0KGMUN7hyLe8TvvkM6p7PmEBe5SVreIXePGVxOaYC5rA1osNYj9sxK6CFyGlObQeoCLoQwJDA=="
+      },
+      "trust": {},
+      "expected_reason": "untrusted-key"
+    },
+    {
+      "id": "unsupported-algo",
+      "content": {
+        "format_version": 1,
+        "sequence": 3,
+        "issued_at": "2026-06-01T12:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        }
+      },
+      "signature": {
+        "algo": "rsa",
+        "key_id": "ed25519:0dbe5a2385bc2af4",
+        "sig": "GhmHc8l9uPf6x0KGMUN7hyLe8TvvkM6p7PmEBe5SVreIXePGVxOaYC5rA1osNYj9sxK6CFyGlObQeoCLoQwJDA=="
+      },
+      "trust": {},
+      "expected_reason": "unsupported-algo"
+    }
+  ]
+}

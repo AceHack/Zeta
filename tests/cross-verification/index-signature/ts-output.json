@@ -1,0 +1,20 @@
+{
+  "canonical": {
+    "minimal": "{\"format_version\":1,\"issued_at\":\"2026-06-01T00:00:00Z\",\"packages\":{},\"sequence\":1}",
+    "with-packages": "{\"format_version\":1,\"issued_at\":\"2026-06-01T12:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"sequence\":3}",
+    "with-marks": "{\"format_version\":2,\"issued_at\":\"2026-06-02T00:00:00Z\",\"packages\":{\"leaf\":{\"1.0.0\":{\"package_hash\":\"sha256:aa\",\"url\":\"https://x/leaf-1.0.0.json\"}}},\"quarantined\":{\"tool\":{\"2.0.0\":{\"at\":\"2026-06-01T06:00:00Z\",\"reason\":\"review\"}}},\"revoked\":{\"leaf\":{\"1.0.0\":{\"at\":\"2026-06-01T00:00:00Z\",\"reason\":\"cve\"}}},\"sequence\":7}"
+  },
+  "envelope": {
+    "with-marks": {
+      "key_id": "ed25519:0dbe5a2385bc2af4",
+      "sig": "Vr7aY5hf0n8mDJyiovneyfEe0liEEFjOoSBNHLvKmkMQTH+ylsIG5Lp8+giY9rrdj5L/Cd0pw/TC2M6fqgUqCw==",
+      "verify_ok": true
+    }
+  },
+  "invalid": {
+    "tampered-content": "bad-signature",
+    "tampered-sig": "bad-signature",
+    "untrusted-key": "untrusted-key",
+    "unsupported-algo": "unsupported-algo"
+  }
+}

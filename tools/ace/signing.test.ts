@@ -3,9 +3,9 @@ import { generateKeyPairSync } from "node:crypto";
 import {
   generateKeypair, keyId, canonicalManifestBytes, signManifest, verifySignature,
   type TrustEntry,
-  signIndex, verifyIndexSignature, type IndexSignableContent,
   publicKeyInfoFromPrivatePem,
 } from "./signing.ts";
+import { signIndex, verifyIndexSignature } from "./index-signature.ts";
 import type { AceManifest } from "./store.ts";
 
 function baseManifest(overrides: Partial<AceManifest> = {}): AceManifest {
@@ -91,46 +91,6 @@ describe("sign + verify", () => {
     if (!r.ok) expect(r.reason).toBe("unsupported-algo");
   });
 });
-
-const indexContent: IndexSignableContent = {
-  format_version: 1, sequence: 3, issued_at: "2026-06-01T12:00:00Z",
-  packages: { leaf: { "1.0.0": { url: "https://x/leaf-1.0.0.json", package_hash: "sha256:aa" } } },
-};
-
-describe("index signing", () => {
-  test("sign + verify round-trips against a trusted key", () => {
-    const kp = generateKeypair();
-    const sig = signIndex(indexContent, kp.privatePem);
-    const trust = new Map<string, TrustEntry>([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
-    const r = verifyIndexSignature(indexContent, sig, trust);
-    expect(r.ok).toBe(true);
-    if (r.ok) expect(r.key_id).toBe(kp.keyId);
-  });
-  test("untrusted key \u2192 untrusted-key", () => {
-    const kp = generateKeypair();
-    const sig = signIndex(indexContent, kp.privatePem);
-    const r = verifyIndexSignature(indexContent, sig, new Map());
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.reason).toBe("untrusted-key");
-  });
-  test("tampered content \u2192 bad-signature", () => {
-    const kp = generateKeypair();
-    const sig = signIndex(indexContent, kp.privatePem);
-    const trust = new Map<string, TrustEntry>([[kp.keyId, { public_key: kp.publicSpkiB64 }]]);
-    const tampered = { ...indexContent, sequence: 4 };
-    const r = verifyIndexSignature(tampered, sig, trust);
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.reason).toBe("bad-signature");
-  });
-  test("non-ed25519 algo \u2192 unsupported-algo", () => {
-    const kp = generateKeypair();
-    const sig = { ...signIndex(indexContent, kp.privatePem), algo: "rsa" as "ed25519" };
-    const r = verifyIndexSignature(indexContent, sig, new Map());
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.reason).toBe("unsupported-algo");
-  });
-});
-
 
 describe("publicKeyInfoFromPrivatePem", () => {
   test("derives the same keyId + public_key as generateKeypair for the same key", () => {

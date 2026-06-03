@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { applyRevoke, applyQuarantine, applyUnquarantine } from "./registry-revoke.ts";
-import type { IndexSignableContent } from "./signing.ts";
+import type { IndexSignableContent } from "./index-signature.ts";
 
 function baseContent(): IndexSignableContent {
   return {
