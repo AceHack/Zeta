@@ -652,3 +652,48 @@ let ``Z3 proves Bernoulli divide round-trips the product, the EP cavity (C3)`` (
         "(assert (not (= (- (+ lA lB) lB) lA)))\n" +
         "(check-sat)\n"
     z3ScriptHolds "C3 Bernoulli cavity round-trip ((a*b)/b = a)" script
+// B-1007 C6 — BP convergence detection (`not (distance x y <= tol)`) is
+// NaN/∞-SAFE: a divergent run can never falsely report convergence. The
+// NaN/∞ cases are IEEE-754 facts, so they are proven in Z3's
+// floating-point theory (QF_FP); the finite threshold is proven in
+// QF_LRA. The FsCheck twin (Bayesian.Tests/Message.Tests.fs) exercises
+// the real-float per-family `distance` (returns ∞ for non-finite). Anchor:
+// factory-native; the `moved` invariant in FactorGraph.runToFixpoint.
+// ═══════════════════════════════════════════════════════════════════
+
+[<Fact>]
+let ``Z3 proves a NaN residual counts as moved, never converged (C6)`` () =
+    // moved = not (fp.leq d tol). For NaN d, (fp.leq NaN tol) is FALSE ∀ tol,
+    // so moved is TRUE. Assert the negation (fp.leq d tol) under isNaN d ⇒ UNSAT.
+    let script =
+        "(set-logic QF_FP)\n" +
+        "(declare-const d (_ FloatingPoint 11 53))\n" +
+        "(declare-const tol (_ FloatingPoint 11 53))\n" +
+        "(assert (fp.isNaN d))\n" +
+        "(assert (fp.leq d tol))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C6 NaN residual is always moved" script
+
+[<Fact>]
+let ``Z3 proves a +infinity residual counts as moved for any finite tol (C6)`` () =
+    // (fp.leq +oo finite-tol) is FALSE, so +∞ residual is always moved.
+    let script =
+        "(set-logic QF_FP)\n" +
+        "(declare-const tol (_ FloatingPoint 11 53))\n" +
+        "(assert (not (fp.isInfinite tol)))\n" +
+        "(assert (not (fp.isNaN tol)))\n" +
+        "(assert (fp.leq (_ +oo 11 53) tol))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C6 +inf residual is always moved (finite tol)" script
+
+[<Fact>]
+let ``Z3 proves the finite convergence threshold has no converged-and-moved overlap (C6)`` () =
+    // For a finite residual d ≥ 0 and tol ≥ 0, converged (d ≤ tol) and moved
+    // (d > tol) are mutually exclusive — no d is BOTH. UNSAT ⇒ the threshold
+    // is an exact partition (no finite residual is misclassified).
+    let script =
+        "(declare-const d Real)\n(declare-const tol Real)\n" +
+        "(assert (>= d 0.0))\n(assert (>= tol 0.0))\n" +
+        "(assert (and (<= d tol) (> d tol)))\n" +
+        "(check-sat)\n"
+    z3ScriptHolds "C6 finite threshold has no converged-and-moved overlap" script

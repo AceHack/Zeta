@@ -411,3 +411,49 @@ let ``C3 Bernoulli product of two proper messages stays proper (closure)``
     // closure (log-odds add closed on ℝ; logistic bijection to (0,1)).
     let a, b = mkProperBern lA, mkProperBern lB
     Bernoulli.isProper (a * b)
+// C6 (B-1007 P0) — convergence detection is NaN/divergence-SAFE. The BP
+// fixpoint loop (FactorGraph.runToFixpoint) decides convergence with the
+// residual test `not (distance x y <= tol)` — written that way (not
+// `d > tol`) precisely so a NaN/∞ residual counts as MOVED: `NaN <= tol`
+// is false in IEEE-754, so `not false` = moved ⇒ a divergent run can
+// NEVER falsely report convergence. The per-family `distance` feeds that
+// invariant by returning ∞ for any non-finite message.
+//
+// FsCheck half: the real-float `distance` returns 0 for identical (⇒
+// converged) and +∞ for a non-finite message (⇒ moved), per family. The
+// Z3 twin (Formal/Z3.Laws.Tests.fs) proves the boolean `not (d<=tol)`
+// logic incl. the IEEE NaN/∞ cases (QF_FP) + the finite threshold (QF_LRA).
+// ═══════════════════════════════════════════════════════════════════
+
+let private tolC6 = 1e-9
+/// The exact residual test from FactorGraph.runToFixpoint: NaN/∞ ⇒ moved.
+let private movedC6 (d: float) : bool = not (d <= tolC6)
+
+[<Property>]
+let ``C6 Gaussian identical converges, non-finite residual moves (never false-converged)``
+    (NormalFloat nu) (NormalFloat tau) =
+    let g = mkProper nu tau
+    let bad : Gaussian = { PrecisionMean = nan; Precision = 1.0 }
+    not (movedC6 (Gaussian.distance g g))                        // identical ⇒ converged
+    && System.Double.IsPositiveInfinity (Gaussian.distance g bad) // non-finite ⇒ ∞
+    && movedC6 (Gaussian.distance g bad)                         // ∞ ⇒ moved
+
+[<Property>]
+let ``C6 Beta identical converges, non-finite residual moves``
+    (NormalFloat aA) (NormalFloat bA) =
+    let clamp lo hi x = max lo (min hi x)
+    let d : Beta = { Alpha = clamp 1.0e-6 1.0e6 (abs aA); Beta = clamp 1.0e-6 1.0e6 (abs bA) }
+    let bad : Beta = { Alpha = nan; Beta = 1.0 }
+    not (movedC6 (Beta.distance d d))
+    && System.Double.IsPositiveInfinity (Beta.distance d bad)
+    && movedC6 (Beta.distance d bad)
+
+[<Property>]
+let ``C6 Bernoulli identical converges, non-finite residual moves``
+    (NormalFloat l) =
+    let p = 1.0 / (1.0 + exp (-(max -8.0 (min 8.0 l))))
+    let b : Bernoulli = { ProbTrue = p }
+    let bad : Bernoulli = { ProbTrue = nan }
+    not (movedC6 (Bernoulli.distance b b))
+    && System.Double.IsPositiveInfinity (Bernoulli.distance b bad)
+    && movedC6 (Bernoulli.distance b bad)

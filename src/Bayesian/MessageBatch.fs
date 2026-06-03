@@ -16,8 +16,13 @@ open Apache.Arrow.Types
 ///
 /// Each family supplies an `IColumnar<'M>` adapter (its natural-parameter
 /// columns): Gaussian = `(ν, τ)` (identity); Beta = `(α-1, β-1)`;
-/// Bernoulli = `log-odds`. The columnar `product`/`divide` are bit-exact
-/// equivalent to the scalar `Message` ops (proven in the tests).
+/// Bernoulli = `log-odds`. The columnar `product`/`divide` agree with the
+/// scalar `Message` ops on the VALUE, within float tolerance (property-
+/// tested: B-1007 C11). They are bit-exact only for **Gaussian** (identity
+/// columns, same adds in the same order); for **Beta** they differ by
+/// last-ULP reassociation ((α-1)+(α'-1)+1 vs α+α'-1), and for **Bernoulli**
+/// by representation (scalar product is computed in probability space
+/// `t/(t+f)`, the column is log-odds add) — value-equivalent, not bit-equal.
 
 /// A columnar batch in natural parameters: `Columns.[k].[i]` is the k-th
 /// natural parameter of the i-th message. `product`/`divide` are
@@ -91,8 +96,10 @@ module NaturalBatch =
     let toMessages (c: IColumnar<'M>) (b: NaturalBatch) : 'M[] = c.OfColumns b.Columns
 
     /// Batched message **product** = column-wise vector ADD (natural
-    /// parameters). Bit-exact equivalent to the scalar `product`,
-    /// element-wise — and SIMD-friendly over the contiguous columns.
+    /// parameters). Agrees with the scalar `product` element-wise on the
+    /// VALUE within float tolerance (B-1007 C11; bit-exact for Gaussian,
+    /// value-equal for Beta/Bernoulli) — and SIMD-friendly over the
+    /// contiguous columns.
     let product (a: NaturalBatch) (b: NaturalBatch) : NaturalBatch =
         { Columns = Array.map2 (fun (x: float[]) (y: float[]) -> Array.map2 (+) x y) a.Columns b.Columns }
 
