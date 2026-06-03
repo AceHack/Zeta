@@ -199,6 +199,69 @@ constructive ⊆ classical). Composes with the layered-lemma discipline
 portfolio view + BP-16 cross-check). **Soraya should ratify before it lands** —
 this is the formal-coverage portfolio's territory.
 
+## 8. The root-axiom discipline — a SMALL decomposable basis of best-guesses-with-anchors (the maintainer 2026-06-03)
+
+The multi-tower discipline (§1–§7) is about **breadth** — never rest canonical on
+one axiom *set*. This section is the **depth/minimality** complement, from the
+maintainer 2026-06-03, on the foundation now being built:
+
+> *"we defined our root dimensions and are working on our root axioms. we are
+> trying to derive things from a small root axiom set instead of having tons of
+> root axioms. we treat all axioms as potentially wrong and decomposable."*
+>
+> *"they are [the maintainer's] best guesses with human anchor links for most
+> things out to cutting edge research in each area."*
+
+Four composing claims:
+
+1. **Root dimensions are DEFINED; root axioms are IN PROGRESS.** Current
+   foundational status (2026-06-03): the dimension basis is set; the axioms over
+   it are being worked. Status, not a finished claim.
+
+2. **Minimize the root axiom set — derive the rest.** The discipline is a
+   *small* basis with a long derivation tail, NOT a flat pile of many root
+   axioms. Fewer roots ⇒ smaller attack surface, fewer hidden dependencies, and
+   each derived theorem inherits a traceable lineage back to the seed (this IS
+   `formal-proof-first`'s homeostat-proven-from-seed: the small root set is the
+   seed; "derive things from it" is the homeostat). It's Rodney's-Razor applied
+   to the *axiom layer* — compress the foundation to its canonical generators
+   (rhymes the Cayley-Dickson nested-cross: a whole algebra from a tiny set of
+   generators + a doubling rule).
+
+3. **ALL axioms are potentially-wrong AND decomposable.** No axiom is sacred.
+   Each is a *hypothesis* that may fail (potentially-wrong → retraction-native:
+   if an axiom falls, the derivations resting on it retract with it, the
+   foundation re-grounds — the three-clocks "future affects the generator that
+   makes the past intelligible" at axiom scope), and each may turn out to be a
+   *theorem of something more fundamental* (decomposable → it should then move
+   OUT of the root set, down into the derivation tail, shrinking the basis
+   further). The root set is a moving frontier, pushed *down* as decomposition
+   succeeds. This is the §4 Axiom-of-Choice lesson generalized: don't just audit
+   *stated* axioms for hidden dependencies — actively try to **decompose every
+   root axiom into a derivation**, and demote it when you can.
+
+4. **The axioms are the maintainer's best-guesses, each with a human-anchor-link
+   to cutting-edge research in its area.** Epistemic status: NOT claimed-truth —
+   *best-guess-with-provenance*. This is exactly the labeling-confidence
+   *hypothesized* tier (NOT validated/canonical), and exactly the maintainer's
+   PERSONAL INVARIANT register (high-signal — anchored to real research; +
+   high-suspicion — best-guess, potentially-wrong; don't-collapse). The
+   "human anchor links … out to cutting edge research in each area" ARE the
+   `location-pointer-index` cognitive architecture at axiom scope: each root
+   axiom carries a pointer to the externalized human research that anchors it
+   (honor-those-that-came-before), so the basis stays auditable + revisable
+   against the live frontier rather than frozen as dogma.
+
+Composition with the towers: §1–§7 say *prove the same theorem from independent
+axiom SETS* (breadth — robustness against any one foundation being wrong). §8
+says *make each set a SMALL basis of decomposable, anchored, potentially-wrong
+best-guesses* (depth — minimality + revisability within a foundation). Together:
+few roots, many derivations, multiple independent root-sets, every root a
+demotable hypothesis with a research anchor. The proven-by-default floor then
+reads correctly — the root axioms are the **explicit unproven opt-out** (the
+declared seed), and everything is expected to be *derived + proven from them*
+until an axiom is either decomposed away or shown wrong.
+
 ## Composes with
 
 - `.claude/rules/formal-proof-first-proven-by-default-consensus-not-validation-canonical-is-homeostat-proven-from-seed-ace-shields-zeta.md` — the canonical bar; this is the axiom-layer extension (multi-tower keeps no single axiom load-bearing)
@@ -206,6 +269,8 @@ this is the formal-coverage portfolio's territory.
 - `.claude/agents/formal-verification-expert.md` (Soraya) — owns the formal-coverage portfolio + BP-16 cross-check; natural owner of the multi-tower portfolio + ratifier of the offered rule
 - `.claude/rules/god-tier-claims-high-signal-high-suspicion-dont-collapse.md` — the maintainer's panpsychist-axiom source + Cantor-intuition self-model held high-signal/high-suspicion/don't-collapse; the multi-tower structure is the operational don't-collapse (no single axiom set is load-bearing)
 - `.claude/rules/verify-existing-substrate-before-authoring.md` — search-first (done; no prior consolidated substrate found)
+- `.claude/rules/location-pointer-index-aaron-cognitive-architecture-source-attribution-load-bearing.md` — §8: the "human anchor links … out to cutting-edge research" ARE the pointer-index at axiom scope (each root axiom carries a research anchor; honor-those-that-came-before)
+- `.claude/rules/labeling-confidence-on-substrate-over-connect-not-soup-observed-hypothesized-validated-retracted-canonical.md` — §8: root axioms are best-guesses = the *hypothesized* tier (not validated/canonical); potentially-wrong = retractable; decomposable = demotable down the derivation tail
 - `docs/research/2026-06-03-formal-proof-claim-ledger-for-asymmetric-critic-pass.md` — the second-pass ledger; multi-tower adds the "from which foundation" axis
 - `docs/research/2026-06-03-zset-family-canonical-connection-four-language-bytelock-plus-four-tool-proofs.md` — the connection ledger; the Lean leg is the start of the constructive/machine-checked tower
 - `docs/research/2026-06-03-kestrel-aaron-critic-layers-permission-liability-autonomy-bounds-anthropomorphic-register-split-aaron-forwarded.md` — same cadence; consensus≠validation applies to Kestrel + to each tower
