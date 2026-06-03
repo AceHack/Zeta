@@ -7,13 +7,16 @@ open Zeta.Core
 // ═══════════════════════════════════════════════════════════════════
 // C13 (B-1007 P1) — the DBSP linear-operator algebra over Stream<ZSet>
 // (Incremental/Circuit): z⁻¹ (delay), I (integrate), D (differentiate),
-// plus the Tick (ℕ,+,0) monoid the streams are indexed by. The existing
-// Circuit.Tests.fs proves these as fixed [<Fact>] EXAMPLES; C13 GENERALISES
-// them to FsCheck over random delta-sequences and adds the operator
-// identities. Spec: DBSP (Budiu et al.) — I = (1−z⁻¹)⁻¹, D = 1−z⁻¹,
-// D∘I = I∘D = id. The symbolic operator identities are cross-checked in
-// Z3 (Z3.Laws.Tests.fs C13) per BP-16: FsCheck on the real Circuit ∧ Z3 on
-// ideal reals. "The compilers don't lie."
+// indexed by the logical-clock tick. The existing Circuit.Tests.fs proves
+// these as fixed [<Fact>] EXAMPLES; C13 GENERALISES them to FsCheck over
+// random delta-sequences and adds the operator identities. Spec: DBSP
+// (Budiu et al.) — I = (1−z⁻¹)⁻¹, D = 1−z⁻¹, D∘I = I∘D = id. The symbolic
+// operator identities are cross-checked in Z3 (Z3.Laws.Tests.fs C13) per
+// BP-16: FsCheck on the real Circuit ∧ Z3 on ideal reals.
+//
+// (The "Tick (ℕ,+,0) monoid" property was dropped 2026-06-03 — see the
+// note at the foot of this file — it verified .NET int arithmetic, not
+// Zeta code, failing the proof bar.) "The compilers don't lie."
 // ═══════════════════════════════════════════════════════════════════
 
 // build a per-tick ZSet delta from generated pairs: keys in 0..4 (small,
@@ -99,13 +102,16 @@ let ``C13 I = running sum (integrate snapshot = fold of all deltas so far)``
         acc <- ZSet.add acc d
         out.Current = acc)
 
-// ── the Tick (ℕ,+,0) monoid the operator stream is indexed by ──
-// `tick` is a [<Measure>] (Window.fs); `int<tick>` addition is the integer
-// monoid lifted to the logical-clock unit-of-measure — the UoM is the safety
-// (no tick/ms swap), the algebra is ℤ's commutative monoid with identity 0.
-[<Property>]
-let ``C13 Tick is the (ℕ,+,0) commutative monoid`` (a: int) (b: int) (d: int) =
-    let ta, tb, tc = a * 1<tick>, b * 1<tick>, d * 1<tick>
-    (ta + tb) + tc = ta + (tb + tc)              // associative
-    && ta + 0<tick> = ta && 0<tick> + ta = ta    // two-sided identity
-    && ta + tb = tb + ta                          // commutative
+// NOTE — the "Tick (ℕ,+,0) monoid" property was DROPPED here (the maintainer
+// 2026-06-03 proof bar: only proofs that verify OUR code against OUR claims).
+// `tick` is a phantom [<Measure>] type (Window.fs:13-14); `int<tick>` is a plain
+// .NET `int` annotated with that unit, so the monoid laws of `int<tick>`
+// addition ARE .NET integer arithmetic — code we did NOT write — and a runtime
+// FsCheck of them verifies the BCL, not Zeta (the "bullshit math test" class).
+// The UoM's real and sole guarantee is COMPILE-TIME unit separation (`tick + ms`
+// does not compile) — enforced by the type system, needing no runtime proof.
+// The tick AS the stream index is already exercised by every operator property
+// above (they drive the circuit tick-by-tick via Step()). So C13's substantive
+// content is the operator algebra (D∘I / I∘D / z⁻¹ / D=1−z⁻¹ / I=running-sum) +
+// the Z3 telescoping identities, each verifying a real FactorGraph/Incremental
+// claim.
