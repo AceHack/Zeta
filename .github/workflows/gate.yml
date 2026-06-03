@@ -1078,3 +1078,59 @@ jobs:
         # the .tsconfig.json strictness profile (verbatimModuleSyntax,
         # noUncheckedIndexedAccess, exactOptionalPropertyTypes).
         run: bun --bun tsc --noEmit -p tsconfig.json
+
+  cross-verify:
+    # Enforce the trust-core cross-language byte-lock + golden-vector oracles + the Ace
+    # package-manager suite. Previously only `lint (tsc tools)` type-checked these, so a
+    # regression to a committed golden vector, or a 4-language disagreement, could merge green.
+    # This job runs the ASSERTIONS (assert-dont-skip): every tests/cross-verification/<primitive>/
+    # oracle via tools/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
+    # canonical vectors = the non-Byzantine compile-time agreement, baked in; cross-verify.ts = the
+    # TS golden-vector oracle) plus `bun test tools/ace/`. It asserts COMMITTED outputs, so no
+    # dotnet/rust toolchain is needed here. This is the ENFORCEMENT half of the canonical-primitive
+    # gate (proof + 4-language byte-lock); the proof half is the Soraya formal-coverage / lean-proof
+    # lane. NOTE: promoting this to a REQUIRED check (branch protection) is a separate operator/devops
+    # step — until then it runs + shows on every PR but does not block auto-merge.
+    name: cross-verify (trust-core oracles + ace suite)
+    timeout-minutes: 5
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Cache install.sh outputs (mise runtimes + dotnet tools + verifier jars)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.local/bin/mise
+            ~/.local/share/mise
+            ~/.cache/mise
+            ~/.dotnet/tools
+            ~/.elan
+            ~/.config/zeta
+          key: install-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('.mise.toml', 'tools/setup/**', 'global.json') }}
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Provides bun via mise (.mise.toml pin); shellenv wires BASH_ENV so later run: steps
+        # have bun on PATH. Retry rationale per lint-tsc-tools (mise+bun CDN 502 flake class).
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3 4 5; do
+            if ./tools/setup/install.sh; then exit 0; fi
+            [ "$attempt" = "5" ] && { echo "install.sh failed after 5 attempts"; exit 1; }
+            case "$attempt" in
+              1) backoff=10 ;;
+              2) backoff=30 ;;
+              3) backoff=60 ;;
+              4) backoff=120 ;;
+            esac
+            echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
+            sleep "$backoff"
+          done
+
+      - name: Ace package-manager suite
+        run: bun test tools/ace/
+
+      - name: Cross-language byte-lock + golden-vector oracles
+        run: bun tools/ci/cross-verify-all.ts
