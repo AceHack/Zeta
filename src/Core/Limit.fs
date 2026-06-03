@@ -73,6 +73,13 @@ module LimitGrantId =
         else
             Ok (LimitGrantId(value.Trim()))
 
+    /// True only when the grant evidence identifier carries a canonical
+    /// (non-blank, already trimmed) value. Guards direct evidence paths
+    /// against bypasses that skip `tryCreate`.
+    let isCanonical (grantId: LimitGrantId) : bool =
+        let value = grantId.Value
+        not (String.IsNullOrWhiteSpace value) && value = value.Trim()
+
 
 /// Explicit evidence that one operation is currently allowed.
 type LimitGrantEvidence =
@@ -109,6 +116,13 @@ module LimitGrantEvidence =
     let grantedAt (evidence: LimitGrantEvidence) : DateTimeOffset =
         evidence.GrantedAt
 
+    /// True only when both operation and grant identifier are canonical.
+    /// Malformed evidence is no evidence for a deny-default boundary.
+    let isCanonical (evidence: LimitGrantEvidence) : bool =
+        not (isNull (box evidence))
+        && LimitOperation.isCanonical evidence.Operation
+        && LimitGrantId.isCanonical evidence.GrantId
+
 
 /// Limit boundary. The default is not stored as mutable state: it is always
 /// `Deny`, and only explicit valid grants create white patches.
@@ -132,10 +146,15 @@ module LimitBoundary =
     let defaultLimit : LimitBoundary =
         LimitBoundary Map.empty
 
-    /// Attach one explicit grant to a boundary.
+    /// Attach one explicit grant to a boundary. Malformed direct evidence is
+    /// ignored fail-closed so bypassed grant identifiers cannot open a
+    /// boundary.
     let withGrant (evidence: LimitGrantEvidence) (boundary: LimitBoundary) : LimitBoundary =
-        let (LimitBoundary grants) = boundary
-        LimitBoundary (Map.add (LimitGrantEvidence.operation evidence) evidence grants)
+        if not (LimitGrantEvidence.isCanonical evidence) then
+            boundary
+        else
+            let (LimitBoundary grants) = boundary
+            LimitBoundary (Map.add (LimitGrantEvidence.operation evidence) evidence grants)
 
     /// Validate raw grant input and attach it when it is explicit and valid.
     /// A non-canonical operation (e.g. an `Unchecked.defaultof<LimitOperation>`
@@ -162,5 +181,7 @@ module LimitBoundary =
             let (LimitBoundary grants) = boundary
 
             match Map.tryFind operation grants with
-            | Some _ -> PermissionState.Allow
+            | Some evidence when LimitGrantEvidence.isCanonical evidence ->
+                PermissionState.Allow
             | None -> PermissionState.Deny
+            | Some _ -> PermissionState.Deny

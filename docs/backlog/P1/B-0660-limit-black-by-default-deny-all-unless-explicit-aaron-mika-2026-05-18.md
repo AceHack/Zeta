@@ -6,7 +6,7 @@ title: "Limit primitive defaults to BLACK (deny-all unless explicitly allowed) â
 tier: design
 effort: S
 created: 2026-05-18
-last_updated: 2026-06-02
+last_updated: 2026-06-03
 depends_on: [B-0629, B-0644]
 composes_with: [B-0629, B-0644, B-0659, B-0643, B-0654, B-0631]
 tags: [design, aaron, mika, limit-black-by-default, deny-all-by-default, security-first, fail-closed, architectural-posture, locked-in]
@@ -141,3 +141,5 @@ Each prior example is a domain-specific instance; this row is the substrate-prim
 Open. **LOCKED-IN** by Aaron + Mika 2026-05-18. Companion architectural rule to B-0659 (consent-as-Limit-operation); together they ground the consent semantics in security-first architectural defaults.
 
 2026-06-02 Codex background-service F# slice: added the core `LimitBoundary.defaultLimit` / explicit grant primitive with focused deny-default tests. Remaining acceptance work stays open: governance doc, Lean proof, composition docs, worked example, and KSK / child-safety integration.
+
+2026-06-03 Codex background-service F# slice: hardened direct grant evidence paths so non-canonical grant identifiers behave like no evidence. This covers the adversarial malformed-grant regression while leaving the broader proof / governance / integration acceptance work open.

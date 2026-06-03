@@ -96,3 +96,33 @@ let ``non-canonical operation bypass fails closed on grant and check`` () =
             LimitBoundary.defaultLimit
 
     Assert.Equal(PermissionState.Deny, LimitBoundary.checkOperation bypass smuggled)
+
+
+[<Fact>]
+let ``non-canonical grant evidence bypass fails closed on direct grant path`` () =
+    let operation = mustOk (LimitOperation.tryCreate "rotate-credential")
+    let bypassGrantId = Unchecked.defaultof<LimitGrantId>
+
+    Assert.False(LimitGrantId.isCanonical bypassGrantId)
+
+    let smuggled =
+        LimitBoundary.withGrant
+            (LimitGrantEvidence.create operation bypassGrantId DateTimeOffset.UnixEpoch)
+            LimitBoundary.defaultLimit
+
+    Assert.True(smuggled.ExplicitGrants.IsEmpty)
+    Assert.Equal(PermissionState.Deny, LimitBoundary.checkOperation operation smuggled)
+
+
+[<Fact>]
+let ``null grant evidence bypass fails closed on direct grant path`` () =
+    let operation = mustOk (LimitOperation.tryCreate "rotate-credential")
+    let nullEvidence = Unchecked.defaultof<LimitGrantEvidence>
+
+    Assert.False(LimitGrantEvidence.isCanonical nullEvidence)
+
+    let smuggled =
+        LimitBoundary.withGrant nullEvidence LimitBoundary.defaultLimit
+
+    Assert.True(smuggled.ExplicitGrants.IsEmpty)
+    Assert.Equal(PermissionState.Deny, LimitBoundary.checkOperation operation smuggled)
