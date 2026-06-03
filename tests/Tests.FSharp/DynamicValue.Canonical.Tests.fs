@@ -1,0 +1,182 @@
+module Zeta.Tests.DynamicValueCanonicalTests
+#nowarn "0893"
+
+open System.IO
+open System.Reflection
+open System.Collections.Immutable
+open System.Text.Json
+open global.Xunit
+open FsCheck
+open FsCheck.FSharp
+open FsCheck.Xunit
+open Zeta.Core
+
+// ═══════════════════════════════════════════════════════════════════
+// CANONICAL primitive candidate — DynamicValue round-trip PROVEN FROM THE
+// SEED. DynamicValue already has the 4-language byte-lock (TS/F#/C#/Rust
+// agree on golden-vectors{,-cbor}.json — the consensus axis). The existing
+// golden-vector tests prove the SEED EXAMPLES encode to the locked bytes;
+// this file adds the missing PROOF axis: the GENERAL round-trip LAW
+// (decode ∘ encode = id for EVERY value, not just the seed) + that the
+// canonical encoding is INJECTIVE, then ANCHORS the law to the seed
+// (the seed's canonical bytes are fixed points of encode∘decode = the
+// seed-lineage edge, half-(b) of canonical per formal-proof-first).
+//
+//   * CBOR is TOTAL (8/8 shapes — Float via RFC 8949 §4.2.2 shortest-float,
+//     Bytes via major-type-2): full round-trip law over all 8 shapes.
+//   * canonical JSON is PARTIAL (6/8 — no Float/Bytes): round-trip law over
+//     null/bool/int/string/array/object.
+//
+// FsCheck for the universal law ∧ the seed fixtures for the lineage edge.
+// "The compilers don't lie."
+// ═══════════════════════════════════════════════════════════════════
+
+// ── seed helpers (copied from DynamicValue.CborGoldenVectors.Tests.fs) ──
+let private repoRoot () : string =
+    let mutable dir = DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location))
+    while not (isNull dir) && not (File.Exists(Path.Join(dir.FullName, "Zeta.sln"))) do
+        dir <- dir.Parent
+    if isNull dir then failwith "Could not locate repo root (Zeta.sln) from test assembly location."
+    dir.FullName
+
+let private children (el: JsonElement) : JsonElement[] = [| for child in el.EnumerateArray() -> child |]
+let private hex (bytes: byte[]) : string = System.Convert.ToHexString(bytes).ToLowerInvariant()
+let private seedPath (file: string) = Path.Join(repoRoot (), "src", "Core.TypeScript", "dynamic-value", file)
+
+// ── FsCheck generators for an arbitrary DynamicValue tree (bounded depth) ──
+let private genChar = Gen.elements [ 'a'; 'Z'; '0'; '"'; '\\'; '\n'; '\t'; '/'; ' '; 'é'; '☃' ]
+let private genStr =
+    gen { let! n = Gen.choose (0, 6)
+          let! cs = Gen.listOfLength n genChar
+          return System.String(List.toArray cs) }
+let private genInt64 =
+    Gen.oneof
+        [ Gen.choose (-100000, 100000) |> Gen.map int64
+          Gen.elements [ 0L; 1L; -1L; System.Int64.MaxValue; System.Int64.MinValue ] ]
+let private genFiniteFloat =
+    // finite floats — CBOR §4.2.2 shortest-float round-trips these exactly;
+    // non-finite (NaN/±inf/-0) are covered by a dedicated [<Fact>] below.
+    Gen.oneof
+        [ Gen.choose (-1000000, 1000000) |> Gen.map (fun n -> float n / 1000.0)
+          Gen.elements [ 0.0; 1.0; 1.5; -4.0; 65504.0; 1.0e300 ] ]
+let private genBytes =
+    gen { let! n = Gen.choose (0, 6)
+          let! bs = Gen.listOfLength n (Gen.choose (0, 255) |> Gen.map byte)
+          return ImmutableArray.CreateRange bs }
+
+// all 8 shapes (CBOR) vs the 6 JSON-canonical shapes (no Float/Bytes)
+let private cborLeaf =
+    Gen.oneof
+        [ Gen.constant DynamicValue.Null
+          Gen.map DynamicValue.Bool (Gen.elements [ true; false ])
+          Gen.map DynamicValue.Int genInt64
+          Gen.map DynamicValue.Float genFiniteFloat
+          Gen.map DynamicValue.String genStr
+          Gen.map DynamicValue.Bytes genBytes ]
+let private jsonLeaf =
+    Gen.oneof
+        [ Gen.constant DynamicValue.Null
+          Gen.map DynamicValue.Bool (Gen.elements [ true; false ])
+          Gen.map DynamicValue.Int genInt64
+          Gen.map DynamicValue.String genStr ]
+
+let private build (leaf: Gen<DynamicValue>) : Gen<DynamicValue> =
+    let rec aux (size: int) : Gen<DynamicValue> =
+        if size <= 0 then
+            leaf
+        else
+            Gen.oneof
+                [ leaf
+                  gen { let! n = Gen.choose (0, 3)
+                        let! items = Gen.listOfLength n (aux (size / 2))
+                        return DynamicValue.Array items }
+                  gen { let! n = Gen.choose (0, 3)
+                        let! rawKeys = Gen.listOfLength n genStr
+                        // Object is order-significant with UNIQUE keys (duplicate
+                        // keys aren't a faithful canonical map) → distinct.
+                        let keys = List.distinct rawKeys
+                        let! vals = Gen.listOfLength keys.Length (aux (size / 2))
+                        return DynamicValue.Object(List.zip keys vals) } ]
+    Gen.sized aux
+
+type CborDvArb() =
+    static member Dv() = Arb.fromGen (build cborLeaf)
+
+type JsonDvArb() =
+    static member Dv() = Arb.fromGen (build jsonLeaf)
+
+// ── the general round-trip LAW (math proof, half-a) ──
+
+[<Property(Arbitrary = [| typeof<CborDvArb> |])>]
+let ``CANONICAL DynamicValue: CBOR round-trip — fromCanonicalCbor ∘ toCanonicalCbor = id (8/8 shapes)``
+    (v: DynamicValue) =
+    DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor v) = Ok v
+
+[<Property(Arbitrary = [| typeof<JsonDvArb> |])>]
+let ``CANONICAL DynamicValue: JSON round-trip — fromCanonicalJson ∘ toCanonicalJson = id (6/8 shapes)``
+    (v: DynamicValue) =
+    // the 6 JSON-canonical shapes must always encode AND decode back to self
+    match DynamicValue.toCanonicalJson v with
+    | Ok json -> DynamicValue.fromCanonicalJson json = Ok v
+    | Error _ -> false
+
+[<Property(Arbitrary = [| typeof<CborDvArb> |])>]
+let ``CANONICAL DynamicValue: canonical CBOR encoding is INJECTIVE (distinct values never collide)``
+    (a: DynamicValue) (b: DynamicValue) =
+    // a corollary of round-trip, stated explicitly: the 4-language byte-lock is
+    // a FAITHFUL identity only if encode is injective — no two distinct values
+    // share canonical bytes (else the lock would equate things that differ).
+    (DynamicValue.toCanonicalCbor a = DynamicValue.toCanonicalCbor b) = (a = b)
+
+// ── non-finite floats: NaN / ±inf / -0.0 CBOR round-trip (generator is finite) ──
+
+[<Fact>]
+let ``CANONICAL DynamicValue: non-finite floats (NaN, ±inf, -0.0) CBOR round-trip`` () =
+    for f in [ nan; infinity; -infinity; -0.0; 0.0 ] do
+        let v = DynamicValue.Float f
+        Assert.Equal(Ok v, DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor v))
+
+// ── seed-lineage edge (half-b): the law holds ON THE SEED ──
+// The seed's canonical bytes/strings are FIXED POINTS of encode∘decode — i.e.
+// decoding the seed's locked form and re-encoding returns exactly the seed.
+// This anchors the universal law above to the actual 4-language seed (the
+// canonical DATA, "seed-first / root of DST"): the bytes the four oracles
+// agree on ARE what our encoder produces from the value they decode to.
+
+[<Fact>]
+let ``CANONICAL DynamicValue: every CBOR seed vector is a fixed point of encode∘decode (anchored to golden-vectors-cbor.json)`` () =
+    use doc = JsonDocument.Parse(File.ReadAllText(seedPath "golden-vectors-cbor.json"))
+    let vectors = children (doc.RootElement.GetProperty "vectors")
+    Assert.NotEmpty vectors
+    let failures =
+        vectors
+        |> Array.choose (fun v ->
+            let name = v.GetProperty("name").GetString()
+            let seedHex = v.GetProperty("cbor").GetString()
+            let bytes = System.Convert.FromHexString seedHex
+            match DynamicValue.fromCanonicalCbor bytes with
+            | Ok value ->
+                let reHex = hex (DynamicValue.toCanonicalCbor value)
+                if reHex = seedHex then None
+                else Some(sprintf "%s: re-encode %s ≠ seed %s" name reHex seedHex)
+            | Error e -> Some(sprintf "%s: seed bytes failed to decode: %A" name e))
+    Assert.True(Array.isEmpty failures, "CBOR seed fixed-point failures:\n" + System.String.Join("\n", failures))
+
+[<Fact>]
+let ``CANONICAL DynamicValue: every JSON seed vector is a fixed point of encode∘decode (anchored to golden-vectors.json)`` () =
+    use doc = JsonDocument.Parse(File.ReadAllText(seedPath "golden-vectors.json"))
+    let vectors = children (doc.RootElement.GetProperty "vectors")
+    Assert.NotEmpty vectors
+    let failures =
+        vectors
+        |> Array.choose (fun v ->
+            let name = v.GetProperty("name").GetString()
+            let seedJson = v.GetProperty("json").GetString()
+            match DynamicValue.fromCanonicalJson seedJson with
+            | Ok value ->
+                match DynamicValue.toCanonicalJson value with
+                | Ok reJson when reJson = seedJson -> None
+                | Ok reJson -> Some(sprintf "%s: re-encode %s ≠ seed %s" name reJson seedJson)
+                | Error e -> Some(sprintf "%s: re-encode failed: %A" name e)
+            | Error e -> Some(sprintf "%s: seed json failed to decode: %A" name e))
+    Assert.True(Array.isEmpty failures, "JSON seed fixed-point failures:\n" + System.String.Join("\n", failures))
