@@ -417,3 +417,37 @@ let ``Seq.sum aggregates Z-sets through GenericZero + (+) (retraction nets to 0)
 let ``(+) is NOT idempotent: a + a doubles every weight (Z-set, not G-Set)`` () =
     let a = ZSet.ofSeq [ ("a", 1L); ("b", -3L) ]
     (a + a) |> zToList |> should equal [ ("a", 2L); ("b", -6L) ]
+
+
+// ───────────── C14 (B-1007 P1): earn-its-keep auto-prune ─────────────
+// The ±1 Z-set ABELIAN GROUP laws (assoc / commut / Zero-identity /
+// negation-inverse / double-neg / sub) are already proven in the "Group
+// axioms" section above — C14 does NOT duplicate them. C14's remaining
+// half is the EARN-ITS-KEEP AUTO-PRUNE (B-1006): a key whose weights sum
+// to 0 is dropped (it didn't earn its keep; ZSet `(+)` at Algebra.fs:81
+// stores only `s <> 0L`), and that physical prune PRESERVES SEMANTICS.
+// Two FsCheck laws over SmallZSetArb:
+//   * invariant — no surviving entry has weight 0 (every key earned its keep)
+//   * semantics — lookup is an additive homomorphism: lookup k (a+b) =
+//     lookup k a + lookup k b at EVERY key (present or absent), so a
+//     cancelled/dropped key still looks up as its true sum (0). Shapiro CRDTs.
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<SmallZSetArb> |])>]
+let ``C14 earn-its-keep: no surviving entry has weight zero (auto-prune invariant)``
+    (a: ZSet<int>) (b: ZSet<int>) =
+    let nonzero (z: ZSet<int>) = z |> Seq.forall (fun e -> e.Weight <> 0L)
+    // the group OPERATIONS preserve the invariant — cancellations are pruned
+    nonzero a && nonzero b
+    && nonzero (ZSet.add a b) && nonzero (ZSet.sub a b) && nonzero (ZSet.neg a)
+
+[<FsCheck.Xunit.Property(Arbitrary = [| typeof<SmallZSetArb> |])>]
+let ``C14 auto-prune preserves semantics: lookup is an additive homomorphism (dropped keys look up as 0)``
+    (a: ZSet<int>) (b: ZSet<int>) =
+    // every key present in a or b, plus absent sentinels — the homomorphism
+    // must hold even where a+b physically dropped a cancelled key (lookup 0).
+    let keys =
+        Seq.append (a |> Seq.map (fun e -> e.Key)) (b |> Seq.map (fun e -> e.Key))
+        |> Seq.append (seq { -1; 0; 9999 })
+        |> Seq.distinct
+    let sum = ZSet.add a b
+    keys |> Seq.forall (fun k -> ZSet.lookup k sum = ZSet.lookup k a + ZSet.lookup k b)
