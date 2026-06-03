@@ -1086,9 +1086,10 @@ jobs:
     # This job runs the ASSERTIONS (assert-dont-skip): every tests/cross-verification/<primitive>/
     # oracle via tools/ci/cross-verify-all.ts (compare.ts = TS/F#/C#/Rust committed outputs vs the
     # canonical vectors = the non-Byzantine compile-time agreement, baked in; cross-verify.ts = the
-    # TS golden-vector oracle) plus `bun test tools/ace/`. It asserts COMMITTED outputs, so no
-    # dotnet/rust toolchain is needed here. This is the ENFORCEMENT half of the canonical-primitive
-    # gate (proof + 4-language byte-lock); the proof half is the Soraya formal-coverage / lean-proof
+    # TS golden-vector oracle) plus `bun test tools/ace/`. The ORACLES assert COMMITTED outputs (no
+    # dotnet/rust toolchain needed); the ace suite installs npm deps (z3-solver) + uses the runner
+    # node for its solver Z3 differential. This is the ENFORCEMENT half of the canonical-primitive
+    # gate (proof + 4-language byte-lock); the proof half is the formal-coverage cadence / lean-proof
     # lane. NOTE: promoting this to a REQUIRED check (branch protection) is a separate operator/devops
     # step — until then it runs + shows on every PR but does not block auto-merge.
     name: cross-verify (trust-core oracles + ace suite)
@@ -1128,6 +1129,12 @@ jobs:
             echo "install.sh attempt $attempt failed; retrying in ${backoff}s..." >&2
             sleep "$backoff"
           done
+
+      - name: Install npm devDependencies (z3-solver for the ace solver Z3 differential, etc.)
+        # The ace suite's solver.z3.test.ts spawns node to require('z3-solver') (assert-dont-skip:
+        # it FAILS rather than skips if the dep is absent). --frozen-lockfile fails if the lockfile
+        # is stale vs package.json (same discipline as lint-tsc-tools).
+        run: bun install --frozen-lockfile
 
       - name: Ace package-manager suite
         run: bun test tools/ace/
