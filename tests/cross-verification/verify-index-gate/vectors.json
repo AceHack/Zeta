@@ -1,0 +1,421 @@
+{
+  "cases": [
+    {
+      "id": "happy-path",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "jI6hbX5olmTDelvv5Yafe9rDvHpNkhAAJAv9rNj4737689iyFI7RY9c12866fxteFTHQQAY99X7SLmGRdWaEAQ=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": true,
+      "expected_gate": "ok"
+    },
+    {
+      "id": "pinned-key-mismatch",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "jI6hbX5olmTDelvv5Yafe9rDvHpNkhAAJAv9rNj4737689iyFI7RY9c12866fxteFTHQQAY99X7SLmGRdWaEAQ=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:deadbeefdeadbeef"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "pinned-key"
+    },
+    {
+      "id": "sig-untrusted-key",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "jI6hbX5olmTDelvv5Yafe9rDvHpNkhAAJAv9rNj4737689iyFI7RY9c12866fxteFTHQQAY99X7SLmGRdWaEAQ=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {},
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "signature:untrusted-key"
+    },
+    {
+      "id": "sig-bad-signature",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "jI6hbX5olmTDelvv5Yafe9rDvHpNkhAAJAv9rNj4737689iyFI7RY9c12866fxteFTHQQAY99X7SLmGRdWaEAAAA"
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "signature:bad-signature"
+    },
+    {
+      "id": "sig-unsupported-algo",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "rsa",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "jI6hbX5olmTDelvv5Yafe9rDvHpNkhAAJAv9rNj4737689iyFI7RY9c12866fxteFTHQQAY99X7SLmGRdWaEAQ=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "signature:unsupported-algo"
+    },
+    {
+      "id": "rollback",
+      "doc": {
+        "format_version": 1,
+        "sequence": 2,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "C7ltBBlBPQgwvgmMqVL06cJygYMOSmsJmTe5Z0NZEIMdW3Bz8hpDn0s5o0z9wxVVdQY1aIt78rxZkU0RLWcmCQ=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 5,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "rollback"
+    },
+    {
+      "id": "future-skew",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-03T00:10:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "4IcbG9A+v69BJNEReujYj1SN2T3uUHKIy+z8a8cV2A7rHlKI1LhrEbfhtVN/p5zUh7N8B1CJf2Yp6fHq+fvmCw=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "future-skew"
+    },
+    {
+      "id": "stale-default",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-04-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "dtGs97g3qAXVDwMwOEbNKTEXQ2VHOk4gvNeuOQIaTbXVPYotmUCWmNMawXYFObVBNZgD5MbVwwyBUIevPOmFCg=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "stale"
+    },
+    {
+      "id": "stale-custom",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "eaepxS5TsVInlPvpZwps0+qYKXfri6wnkfu0UtlRWXZxQUkRBb5fs9hiX1jQqveeP8EjuLC9rmsOd0pWf7OACQ=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4",
+        "max_staleness_days": 1
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "stale"
+    },
+    {
+      "id": "offline-skips-staleness",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-04-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "dtGs97g3qAXVDwMwOEbNKTEXQ2VHOk4gvNeuOQIaTbXVPYotmUCWmNMawXYFObVBNZgD5MbVwwyBUIevPOmFCg=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": true,
+      "expected_ok": true,
+      "expected_gate": "ok"
+    },
+    {
+      "id": "order-pinned-key-beats-bad-sig",
+      "doc": {
+        "format_version": 1,
+        "sequence": 5,
+        "issued_at": "2026-06-02T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "jI6hbX5olmTDelvv5Yafe9rDvHpNkhAAJAv9rNj4737689iyFI7RY9c12866fxteFTHQQAY99X7SLmGRdWaEAAAA"
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:deadbeefdeadbeef"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 3,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "pinned-key"
+    },
+    {
+      "id": "order-rollback-beats-stale",
+      "doc": {
+        "format_version": 1,
+        "sequence": 2,
+        "issued_at": "2026-04-01T00:00:00Z",
+        "packages": {
+          "leaf": {
+            "1.0.0": {
+              "url": "https://x/leaf-1.0.0.json",
+              "package_hash": "sha256:aa"
+            }
+          }
+        },
+        "signature": {
+          "algo": "ed25519",
+          "key_id": "ed25519:0dbe5a2385bc2af4",
+          "sig": "1cPT+IoSd3RI5VxwM2VNrPHQIcmlr6ABIPJj/Fje3kpSqoLxPbncVAUUU9r3a5B6T08iixIkR5uZSOkHzRp8Bw=="
+        }
+      },
+      "remote": {
+        "url": "https://r",
+        "key_id": "ed25519:0dbe5a2385bc2af4"
+      },
+      "trust": {
+        "ed25519:0dbe5a2385bc2af4": {
+          "public_key": "MCowBQYDK2VwAyEAoIUueNhaJSEZEGI789wqWx7JBSeGUxUPnFSPQHRhnIA="
+        }
+      },
+      "cache_sequence_high_water": 5,
+      "now": 1780444800000,
+      "offline": false,
+      "expected_ok": false,
+      "expected_gate": "rollback"
+    }
+  ]
+}

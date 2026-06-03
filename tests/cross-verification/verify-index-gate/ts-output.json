@@ -1,0 +1,50 @@
+{
+  "happy-path": {
+    "ok": true,
+    "gate": "ok"
+  },
+  "pinned-key-mismatch": {
+    "ok": false,
+    "gate": "pinned-key"
+  },
+  "sig-untrusted-key": {
+    "ok": false,
+    "gate": "signature:untrusted-key"
+  },
+  "sig-bad-signature": {
+    "ok": false,
+    "gate": "signature:bad-signature"
+  },
+  "sig-unsupported-algo": {
+    "ok": false,
+    "gate": "signature:unsupported-algo"
+  },
+  "rollback": {
+    "ok": false,
+    "gate": "rollback"
+  },
+  "future-skew": {
+    "ok": false,
+    "gate": "future-skew"
+  },
+  "stale-default": {
+    "ok": false,
+    "gate": "stale"
+  },
+  "stale-custom": {
+    "ok": false,
+    "gate": "stale"
+  },
+  "offline-skips-staleness": {
+    "ok": true,
+    "gate": "ok"
+  },
+  "order-pinned-key-beats-bad-sig": {
+    "ok": false,
+    "gate": "pinned-key"
+  },
+  "order-rollback-beats-stale": {
+    "ok": false,
+    "gate": "rollback"
+  }
+}
