@@ -38,6 +38,7 @@
     <Compile Include="TriBoolean/Float.Tests.fs" />
     <Compile Include="Bonsai/Bonsai.Tests.fs" />
     <Compile Include="Bonsai/Resume.Tests.fs" />
+    <Compile Include="Core/Codec.Tests.fs" />
     <Compile Include="RangeSet.Tests.fs" />
     <Compile Include="DynamicValue.Tests.fs" />
     <Compile Include="DynamicValue.GoldenVectors.Tests.fs" />
