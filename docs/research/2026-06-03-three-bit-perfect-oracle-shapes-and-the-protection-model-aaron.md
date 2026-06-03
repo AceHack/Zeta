@@ -68,6 +68,41 @@ So: **DST + 4-lang + persisted-seed-verification + Rx-join-of-homeostates +
 multi-tower-math-proof** — bit-perfect *and* proven, at every inflection, with no
 single point of failure (not runtime, not language, not axiom-tower).
 
+## Shape-1 is the I/O-monad external edge — bit-perfect serialization reduces uncertainty in external observation over time (the maintainer 2026-06-03)
+
+> *"the bit-perfect oracles at the data/serializer layer really is us mapping the
+> first stages of our I/O external side of the monad, so we can keep reducing
+> uncertainty in external observations over time."*
+
+Shape-1 (the text/binary serializers) is not just "how we persist seeds" — it is
+the **mapping of the first stages of the I/O external side of the monad**: the
+external edge where uncertain outside observations enter the system. Making that
+edge **bit-perfect** (oracle-agreed) is how we **monotonically reduce uncertainty
+in external observation over time** — each observation pinned to a bit-perfect,
+oracle-agreed representation is one less source of external uncertainty, and it
+never has to be re-resolved.
+
+This places shape-1 precisely in the framework's existing substrate:
+
+- **The hexagonal / I/O-monad port** (`.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md`:
+  *hexagonal IS the I/O-monad shape*). The serializer port — `parse : wire → Result<T, Feedback>`
+  — IS the Kleisli arrow at the external edge; **shape-1 is that port's first
+  stage**, made bit-perfect across the oracles.
+- **OPLE `Observe`** — the external-observation intake (the "O" of Observe/Persist/
+  Limit/Emit). The serializer layer is the **first stage of Observe**: the raw
+  outside, mapped in and pinned.
+- **The uncertainty-reduction telos** — the inference/Bayesian engine reduces
+  uncertainty over observations downstream; shape-1 reduces it **at the I/O edge
+  itself** — the prior to everything above it. Bit-perfect-at-the-edge means the
+  downstream homeostats inherit a certain, not noisy, external input.
+
+So the three shapes sit at different depths of the monad: **shape-1 is the I/O
+external edge** (where the outside is mapped in + made certain — the Observe-side
+uncertainty reduction); shapes 2 (rx/bonsai, code/data-flow) and 3 (Arrow,
+memory/graph) are progressively more *internal*. Reducing external-observation
+uncertainty is specifically shape-1's job, because shape-1 is where the external
+boundary of the monad lives.
+
 ## Composes with
 
 - `docs/PRIMITIVE-REGISTRY.md` — the per-primitive status view this taxonomy organizes
@@ -75,6 +110,9 @@ single point of failure (not runtime, not language, not axiom-tower).
 - `docs/DECISIONS/2026-05-31-zeta-database-design-event-sourced-gset-bag-zset-rx-fold-materialized-views-two-backends.md` — rx-fold (shape-2 + the Rx-join)
 - `B-1001` (Arrow / columnar + Eve-polymorphic serialization security — shape-3) · `B-1002` (Eve transport codecs) · `B-0976` (bonsai saga — shape-2) · `B-0930` (schema-registry over DBSP — shape-3 ontology)
 - `B-1006` (canonical-primitives registry + promotion gate) · `B-1011` (serializer round-trip-from-seed — shape-1)
+- `.claude/rules/bcl-interface-boundary-own-your-interfaces-hexagonal.md` — hexagonal IS the I/O-monad shape; shape-1 is that port's external-edge first stage
+- `.claude/rules/ople-primitives-surface-t-and-tfeedback-not-just-t-asymmetric-authorship-at-framework-primitive-scope.md` — OPLE `Observe`; shape-1 is Observe's first stage (external-observation intake)
+- `.claude/rules/monad-propagation-pattern-cross-language-substrate-shape.md` — `Result<T, TFeedback>` Kleisli; the serializer port is the Kleisli arrow at the I/O edge
 - `.claude/rules/formal-proof-first-...md` (math-proof-everywhere; canonical = homeostat-proven-from-seed)
 - `docs/research/2026-06-03-kestrel-aaron-...multi-tower-...md` (multiple intellectual math towers — no single point of math failure)
 - the four-oracle per-language-load-bearing-roles memo (TS/C#/F#/Rust roles)
