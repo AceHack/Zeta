@@ -96,6 +96,14 @@
       ],
       "expected_canonical_json": "[3,{\"a\":2,\"b\":1},\"x\"]",
       "expected_sha256": "d355965e27d2b1b8caebfd6b5ead13f99811d386c6ed390266f594abc55b4bf3"
+    },
+    {
+      "id": "control-chars",
+      "value": {
+        "ctrl": "a\tb\nc\u0001d"
+      },
+      "expected_canonical_json": "{\"ctrl\":\"a\\tb\\nc\\u0001d\"}",
+      "expected_sha256": "018896b8ddf4fe401e5cc256e892ecea3782de456554cab402546e51252719df"
     }
   ],
   "invalid": [
@@ -121,6 +129,11 @@
       "value": {
         "\ud800": 1
       },
+      "expected_error_substring": "lone surrogate"
+    },
+    {
+      "id": "lone-surrogate-bare",
+      "value": "\ud800",
       "expected_error_substring": "lone surrogate"
     }
   ]

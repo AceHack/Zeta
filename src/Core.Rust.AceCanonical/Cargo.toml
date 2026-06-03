@@ -1,0 +1,25 @@
+[package]
+name = "zeta-core-ace-canonical"
+version = "0.1.0"
+edition = "2024"
+description = "Ace canonical-JSON seam (slice 8.8) -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language byte-lock. Reproduces tools/ace/canonical.ts (toTagged + canonicalBytes) byte-for-byte: code-unit key sort at every object level, insertion-order arrays, safe-integer-only ints, lone-surrogate rejection, minified raw-unicode output. Zero-dependency production core; the DynamicValue port is the value model."
+license = "Apache-2.0"
+publish = false
+
+# Production default = ZERO external dependencies (supply-chain doctrine, matching
+# Core.Rust.{Sha256,DynamicValue,Observe} production cores). The Ace seam is hand-rolled;
+# the shared vectors.json fixture is the gate (a key-sort / escaping / integer-bound bug
+# cannot pass it). The cross-verify test hand-rolls a lenient JSON parser (zero-dep) to read
+# the fixture -- no serde_json, even in dev.
+[dependencies]
+zeta-core-dynamic-value = { path = "../Core.Rust.DynamicValue" }
+
+# ZERO dev-dependencies: the cross-verify test reads vectors.json via its own zero-dep
+# lenient JSON parser (the fixture inputs are deliberately NON-canonical -- unsorted keys --
+# so DynamicValue::from_canonical_json cannot parse them; a lenient parser is required and
+# kept dependency-free).
+[dev-dependencies]
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
