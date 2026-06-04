@@ -54,3 +54,34 @@ let ``DynamicValue round-trips through YAML (locked shapes, compound) — the ma
           DynamicValue.Object [ "looksInt", DynamicValue.String "123"; "looksBool", DynamicValue.String "true" ] ]
     for dv in cases do
         dvRoundtripsYaml dv |> should equal true
+
+// The format-agreement MATRIX (value-tree formats): JSON, CBOR, and YAML all
+// recover the SAME DynamicValue — i.e. all paths commute on the common value.
+// Restricted to the locked shapes all three share (null/bool/int/string/array/
+// object): JSON defers Float+Bytes, YAML has no Bytes, so the intersection is these.
+let private jsonRoundtrips (dv: DynamicValue) : bool =
+    match DynamicValue.toCanonicalJson dv with
+    | Ok j ->
+        match DynamicValue.fromCanonicalJson j with
+        | Ok d -> d = dv
+        | Error _ -> false
+    | Error _ -> false
+
+let private cborRoundtrips (dv: DynamicValue) : bool =
+    match DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor dv) with
+    | Ok d -> d = dv
+    | Error _ -> false
+
+[<Fact>]
+let ``format-agreement matrix: JSON + CBOR + YAML all commute on DynamicValue (locked shapes)`` () =
+    let cases =
+        [ DynamicValue.Object [ "a", DynamicValue.Int 1L; "b", DynamicValue.String "x"
+                                "n", DynamicValue.Null; "f", DynamicValue.Bool true ]
+          DynamicValue.Array [ DynamicValue.Int 1L; DynamicValue.String "two"; DynamicValue.Bool false ]
+          DynamicValue.Object [ "nested", DynamicValue.Object [ "deep", DynamicValue.Array [ DynamicValue.String "x" ] ] ]
+          DynamicValue.Object [ "looksInt", DynamicValue.String "123"; "looksBool", DynamicValue.String "true" ] ]
+    for dv in cases do
+        // each format round-trips dv to itself → all three recover the SAME value (commute)
+        jsonRoundtrips dv |> should equal true
+        cborRoundtrips dv |> should equal true
+        dvRoundtripsYaml dv |> should equal true

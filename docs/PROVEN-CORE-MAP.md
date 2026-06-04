@@ -30,6 +30,11 @@
   tests in each oracle). YAML is the storage of record, so this is the priority
   format. Next: the **format-agreement matrix** (YAML↔CBOR↔JSON↔Arrow all commute
   on the common value), then Arrow-as-serializer. (Serializer doctrine: B-1011.)
+- **Format-agreement matrix (value-tree) PROVEN (2026-06-04):** JSON + CBOR + YAML
+  all recover the SAME DynamicValue on the locked shapes (commute on the common
+  value) — `DynamicValueYamlBridgeTests`. DynamicValue = μF; codecs/bridges = folds
+  (see `docs/serializer-recursion-schemes.md`). DOM-unify decided (option 2: extract
+  DynamicValue as the LCD core); extraction refactor is the next phase.
 - **Merkle 4-lang** decision (Aaron): **pure-TS XxHash128** (no dep — honors
   zero-dep doctrine; C#=System.IO.Hashing, F#=done, Rust=twox-hash dev-dep).
   Deferred behind the G-Set vertical.
