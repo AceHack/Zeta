@@ -86,3 +86,29 @@ Design row, not yet built. JSON + CBOR round-trips are DONE (DynamicValue
 canonical). YAML/XML are **blocked on encoder implementation** — filed so
 Aaron's "support json yaml xml and cbor" directive is durable, with the real
 prerequisite (encoders) named rather than papered over with a fake round-trip.
+
+## Serialization doctrine (Aaron 2026-06-04) — make-or-break, equal rigor
+
+Serializers are our **most-tested surface** and **make-or-break**: "it doesn't
+matter how good our CBOR byte-lock is if we store everything in YAML." So:
+
+- **Every serializer gets the SAME rigor** — JSON, CBOR, **YAML**, XML, **Arrow**,
+  Bonsai (and any future binary): canonical (deterministic) + cross-language
+  agreement + self round-trip. YAML especially — it is the **standard storage of
+  record** (text in git), so its rigor matters as much as CBOR's byte-lock.
+- **Storage strategy:** YAML/JSON = text, checked into git (the store); CBOR =
+  binary capability, only a few golden vectors at junction points (don't
+  text-corner ourselves); CBOR/binary is for future git-alternative backends.
+- **Different interfaces, same rigor:** base text/binary serializers share one
+  interface (value ↔ bytes/text); **Arrow (columnar batch) and Bonsai
+  (expression-tree / reactive)** have their OWN interfaces (hexagonal ports per
+  shape) — held to the same canonical+cross-lang+round-trip bar.
+- **Format-agreement MATRIX (the owed test surface):** test every format-pair, at
+  byte level (canonical) or at least parse level — each format round-trips itself
+  (YAML→YAML, CBOR→CBOR, Arrow→Arrow…) AND converting BETWEEN any two loses
+  nothing (one canonical value, N codecs, all paths commute). The shared seed /
+  common value (DynamicValue) is the treaty all codecs target.
+
+Status: F# canonical YAML encoder is WIP (round-trip 3/6 — nesting/escape inverse
+vs the block parser still buggy; in Otto's clone, not landed). Cross-lang YAML +
+the full matrix + Arrow-as-serializer are the larger owed work under this doctrine.
