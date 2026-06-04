@@ -9,9 +9,14 @@
 > `--check`/`--kpi`, baseline 16693B) → orthogonality proof
 > (`tools/observe/orthogonality.ts` + `Jaccard.Laws.Tests.fs`; live rules corpus
 > IS an orthogonal basis, max J=0.050). "green" defined in `docs/BUILD-GATES.md`.
-> Remaining future work: bytes→tokens calibration; other (harness × surface)
-> manifests beyond claude-code; wire `--kpi` into a persisted DORA trend store;
-> surfaces-as-DSL-into-observe.ts (refinement C).
+> bytes→tokens calibration (`token-calibration.ts`, flagged estimate),
+> persisted DORA trend store (`context-cost-trend.ts` + daily free cron
+> `context-cost-trend-cadence.yml`, verified bot-push to main), AND surfaces-as-DSL
+> (`surface-dsl.ts`, refinement C: choose-point payload 82.5% smaller than raw) all
+> SHIPPED 2026-06-04. **Arc complete end-to-end.** Remaining future work: real
+> tokenizer samples → `--fit` the calibration; more (harness × surface) manifests
+> beyond claude-code; wire `surface-dsl.toChoosePrompt` into observe.ts's actual
+> chooseAction call.
 
 > "context window minimization should be our most rigorous proofs minimization
 > that's not coercive to the AI follows our NCI. this will save us money, I just
