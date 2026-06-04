@@ -75,6 +75,12 @@ bit-use). Not one monolithic proof.
 **F# units-of-measure** so wrong-key-type code won't compile and a proof scoped to
 one key type can't be applied to another (UoM-as-category-tag). ZetaId has 4-lang
 byte-lock; per-key-type math legs + the UoM guard are open.
+⇒ **bit packing**: the recursive index rolls in **4-bit nibbles** with two
+bit-optimal absence schemes — **15+1 hole** (in-band absence/continuation marker;
+self-terminating, prefix-free) vs **16+null** (full nibble + monadic out-of-band
+null) — a monad-propagation rule (null-as-value vs null-as-monad at 4-bit grain).
+Stays **bit-optimal even for SMALL partitions** (rolling adapts to partition size,
+no fixed-width waste) — what makes "many small key types" cheap.
 
 ## Time is a family, not one clock (no global causal order)
 
