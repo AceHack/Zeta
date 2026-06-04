@@ -97,3 +97,48 @@ fromDynamic : DynamicValue -> Result<T, BridgeFeedback>  // confess what can't b
 
 Keeper: **DynamicValue is the foldable common body of value-tree data; codecs are
 folds over it; bridges are folds into it; lossy bridges must confess what they lose.**
+
+## Open base type: typed structs are LENSES into DynamicValue (Aaron 2026-06-04)
+
+DynamicValue (`μF`) is an **open superset**. A compiled struct does not own the
+data — it **projects out the subset of fields it knows** and leaves everything else
+in the **extra-data / extensible region** of the same value. So a typed view is a
+**lens / prism** into DynamicValue, and the bridge gains a provable obligation:
+
+- **Round-trip preserves unknowns** — `toDynamic (fromDynamic dv) ⊇ dv` (the lens
+  **get-put** law). The lossy bridge's `LossReport`/residual **IS** the extra-data
+  region; that is *why* loss is first-class. Lossless ⟺ residual empty.
+- **put-get** — reading back a field you just set yields what you set.
+
+This makes data **version-independent at runtime**: decode against the open tree, a
+newer/older schema's extra fields survive untouched, and the concrete type can be
+**runtime-swapped via polymorphic deserialization** with no data loss. Open records
+/ row polymorphism / protobuf unknown-field retention / Postel's robustness — made
+provable (lens laws over `μF`).
+
+The extra-data region is also the **cross-cutting metadata channel** (context,
+span/tracing, uncertainty, structured-logging scope, claim/auth, "other passing")
+— the W3C Trace-Context / OpenTelemetry baggage / gRPC-metadata pattern: metadata
+rides alongside the value without the value's type knowing. `claim/auth` in baggage
+mirrors `no-directives` (claim = source travels; authorization stays gated);
+`uncertainty` in baggage carries proven-vs-asserted confidence with the value.
+
+### The boundary holds the FULL type; languages are lossy renderers
+
+The full **open recursive polymorphic generic** type lives at the
+**boundary / serialization layer** — that is the canonical, maximally-expressive
+form. Each *language* then gets a **lossy projection** when it can't represent the
+whole thing (the lens, dumbed-down per target). This inverts the usual stance: the
+**wire is canonical, the language type is the lossy view** — not "language type is
+king, serialization is a dumbed-down transport." It is interfaces-are-the-asset /
+seed-is-the-data taken to its end: the boundary type is the asset; languages are
+lossy lenses over it. Consequence: C#/Rust being lossier than F#/TS is **expected
+per-language capability**, not debt (composes the 4-oracle per-language roles).
+
+**Sequencing:** zero-downtime **versioned schema-evolution proofs** grow ON TOP of
+these lens laws — an expand-stage payoff, deferred until the primitives close. The
+round-trip-preserves-unknowns law is the lemma they will stand on.
+
+- Lineage (Beacon): lens laws — Foster et al. *"Combinators for Bidirectional Tree
+  Transformations"* (get-put / put-get); row polymorphism — Wand / Rémy; unknown-
+  field retention — Protocol Buffers; baggage — W3C Trace Context / OpenTelemetry.
