@@ -1,46 +1,27 @@
 ---
 name: streaming-and-execution
-description: Incremental & streaming computation and query execution — DBSP/delta-streams, dataflow, windows, operators, iteration models, and deterministic replay. Open this for any engine-level decision about how data moves and is computed over time.
+description: Incremental/streaming computation and query execution — DBSP, dataflow, windows, operators, deterministic replay.
 ---
 
-# Streaming & Execution
+# streaming and execution
 
-Category skill (a "blueprint pack"). The description above is the **only**
-thing the router sees — broad and generic on purpose. The detail lives in
-the blueprints below; open the one that matches and read it in full (they
-are fat by design).
+Category skill (blueprint pack). The `description` above is the only thing the
+router sees — broad and generic on purpose. The fat detail lives in the
+blueprints below; open the one that matches and read it in full.
 
-This category carries Zeta's identity substrate: **streaming, incremental,
-retraction-native**. Every other engine-type narrow layers over it.
+Governs its own form per `.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md`
+and `.claude/rules/mirror-beacon-register-discipline.md` (carved sentence = hub /
+Beacon; blueprint = satellite / Mirror). The directory is an independent shipping unit.
 
 ## Blueprints
 
-Read the blueprint whose scope matches the decision in front of you.
-
-| Blueprint | Open it when… |
-|---|---|
-| [`streaming-incremental`](blueprints/streaming-incremental.md) ✅ | DBSP / Timely / Differential / IVM, retractions, standing queries, watermarks, frontiers — the base substrate |
-| `streaming-window` ⏳ | tumbling/sliding/session windows, watermark policy, late data, allowed-lateness |
-| `push-pull-dataflow` ⏳ | push vs pull scheduling, demand-driven vs data-driven operator wiring |
-| `rx` ⏳ | Rx as algebra — Observable as categorical dual of Enumerable, merge-monoid, operator laws |
-| `volcano-iterator` ⏳ | classic open/next/close iterator model, pipelining, blocking operators |
-| `morsel-driven` ⏳ | morsel-driven parallelism, NUMA-aware scheduling, work-stealing execution |
-| `vectorised-execution` ⏳ | batch/vectorised operators, columnar kernels, SIMD-friendly execution |
-| `execution-model` ⏳ | overall execution-model choice and how the above compose into one engine |
-| `deterministic-simulation-theory` ⏳ | DST — deterministic replay, seeded schedulers, simulation as the truth oracle |
-| `algebra-owner` ⏳ | the Z-set / IndexedZSet operator algebra — D/I/z⁻¹/H, chain rule, nested fixpoints |
-
-✅ migrated · ⏳ pending migration from the corresponding `*-expert` skill in `skills.bak/`
-
-## How this category was built
-
-- Router sees one broad carved sentence (the frontmatter `description`).
-- Body is an index of pointers to fat blueprint md files under `blueprints/`.
-- Each blueprint is a former standalone skill body, migrated near-verbatim
-  with its routing frontmatter stripped (it is a doc now, not a router entry).
-- The whole directory is an **independent shipping unit** — a self-contained
-  package (`SKILL.md` + `blueprints/`) that could be installed from a skill
-  store on its own.
-
-Governs its own form per `.claude/rules/rules-are-small-carved-sentences-pointing-to-docs.md`
-(same hub/satellite shape, applied to skills: carved sentence = hub, blueprint = satellite).
+- [`streaming-incremental-expert`](blueprints/streaming-incremental-expert.md) — DBSP / Timely Dataflow — delta-stream composition, retraction-native IVM, standing queries, watermarks, frontiers.
+- [`streaming-window-expert`](blueprints/streaming-window-expert.md) — Windowed streaming — tumbling/hopping/session windows, watermarks, late events, retraction-native deltas.
+- [`push-pull-dataflow-expert`](blueprints/push-pull-dataflow-expert.md) — Push vs pull dataflow — operator direction, streaming vs materialise, back-pressure, Zeta push-default.
+- [`rx-expert`](blueprints/rx-expert.md) — Reactive Extensions (Rx.NET) — IObservable, schedulers, hot/cold, back-pressure, operators, Reaqtor, delta streams.
+- [`volcano-iterator-expert`](blueprints/volcano-iterator-expert.md) — Volcano/iterator model — open/next/close, pull-based pipeline, blocking operators, bushy/left-deep trees.
+- [`morsel-driven-expert`](blueprints/morsel-driven-expert.md) — Morsel-driven parallelism — cache-sized work units, NUMA scheduling, work-stealing, DST-safe Hyper/Umbra pipelines.
+- [`vectorised-execution-expert`](blueprints/vectorised-execution-expert.md) — "Vectorised execution — SIMD dispatch, columnar morsels, operator fusion, AVX-512, Apache Arrow, branchless kernels."
+- [`execution-model-expert`](blueprints/execution-model-expert.md) — Execution model — Volcano vs vectorised vs morsel-driven vs JIT-codegen vs push/pull vs streaming/incremental.
+- [`deterministic-simulation-theory-expert`](blueprints/deterministic-simulation-theory-expert.md) — DST — seeded replayable simulation, ISimulationEnvironment, entropy guards, FoundationDB/TigerBeetle, hot-path binding.
+- [`algebra-owner`](blueprints/algebra-owner.md) — Zeta.Core operator algebra — Z-sets, D/I/z^-1/H operators, retractions, chain rule, nested fixpoints, differentials.

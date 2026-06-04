@@ -87,7 +87,7 @@ describe("auditSkillsDir — live invariant (B-0347 acceptance #1/#2)", () => {
     const root = process.cwd().replace(/\/tools\/hygiene$/, "");
     const { checked, violations } = auditSkillsDir(join(root, ".claude/skills"));
     const errors = violations.filter((v) => v.severity === "error");
-    expect(checked).toBeGreaterThan(200);
+    expect(checked).toBeGreaterThanOrEqual(20); // 21 blueprint-pack SKILL.md (router-facing); per-capability detail lives in <pack>/blueprints/*.md
     expect(errors).toEqual([]);
   });
 });

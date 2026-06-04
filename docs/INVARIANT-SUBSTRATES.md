@@ -49,7 +49,7 @@ substrate today.
 | **Property** — law-checking across generated domains | FsCheck properties in `tests/Tests.FSharp/` | FsCheck, Stryker | shipped |
 | **Data** — Z-set multiplicity invariants | operator-algebra types in `src/Core/**` | F# type system, DBSP laws, FsCheck | shipped |
 | **Code (refinement)** — function-level pre/post-conditions | LiquidF# (evaluation in flight — `docs/research/liquidfsharp-evaluation.md`) | SMT via LiquidF# | evaluation |
-| **Skill** — agent-scope invariants | `.claude/skills/<name>/skill.yaml` | `alloy`, `semgrep`, `fscheck`, `tla` (per-claim hints) | two pilots landed (`prompt-protector`, `skill-tune-up`) |
+| **Skill** — agent-scope invariants | `.claude/skills/<pack>/blueprints/<name>.skill.yaml` | `alloy`, `semgrep`, `fscheck`, `tla` (per-claim hints) | two pilots landed (`prompt-protector`, `skill-tune-up`) |
 | **Agent behaviour** — empirical outcome claims | `plugin:skill-creator` eval harness (`evals/` + benchmark.json) | grader + comparator subagents | shipped (used round 42-43) |
 | **Policy / governance** — repo-wide invariants | `docs/AGENT-BEST-PRACTICES.md` (stable BP-NN rules) | `skill-tune-up` lint, reviewer roster | shipped |
 | **Ontology** — canonical-home rules | `.claude/skills/canonical-home-auditor/SKILL.md` map | `canonical-home-auditor` | shipped (round 40) |
@@ -93,7 +93,7 @@ everything lol."* The hypothesis tier is the start, not the
 destination.
 
 The first concrete pilot of this pattern is
-`.claude/skills/prompt-protector/skill.yaml` (spec-version
+`.claude/skills/security/blueprints/prompt-protector.skill.yaml` (spec-version
 0.1-draft, round 43): 5 hypothesis, 6 observed, 2 verified,
 13 total after the round-43 safety-clause promotion. Burn-
 down targets named.
@@ -177,7 +177,7 @@ verified, across all substrates.
   Soraya's routing authority. She picks the checker per claim;
   this doc declares that every claim lives at some layer and
   carries a checker hint.
-- `.claude/skills/prompt-protector/skill.yaml` — the first
+- `.claude/skills/security/blueprints/prompt-protector.skill.yaml` — the first
   concrete skill-layer substrate, pilot for the pattern.
 - `.claude/skills/prompt-protector/SKILL.md` — the prose body
   the skill.yaml accompanies.
@@ -251,7 +251,7 @@ the honest state of the system is visible on every round.
 ## Tooling
 
 - **`tools/invariant-substrates/tally.ts`** — reads every
-  `.claude/skills/*/skill.yaml` and prints a markdown table
+  `.claude/skills/*/blueprints/*.skill.yaml` and prints a markdown table
   of per-substrate tier counts plus portfolio totals. Use
   at round-close to see where the hypothesis / observed /
   verified totals stand and whether any declared `total`

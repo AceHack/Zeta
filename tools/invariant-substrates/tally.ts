@@ -2,7 +2,7 @@
 // tally.ts
 //
 // Aggregate invariant-substrate burn-down counts across every
-// `.claude/skills/*/skill.yaml`. Emits a markdown table of
+// `.claude/skills/*/blueprints/*.skill.yaml`. Emits a markdown table of
 // per-skill counts plus a portfolio total row. Backs the
 // "burn-down count is the honest backlog" promise in
 // `docs/INVARIANT-SUBSTRATES.md`.
@@ -91,7 +91,7 @@ function printHelp(): void {
     "  bun ./tools/invariant-substrates/tally.ts --fail-on-mismatch",
     "  bun ./tools/invariant-substrates/tally.ts --fail-on-no-progress",
     "",
-    "Reads every `.claude/skills/*/skill.yaml` and aggregates its",
+    "Reads every `.claude/skills/*/blueprints/*.skill.yaml` and aggregates its",
     "top-level scalars and `counts:` block (hypothesis / observed /",
     "verified / total). `guess:` is accepted as a legacy alias for",
     "`hypothesis:` during the round-43 rename transition.",
@@ -214,7 +214,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  const glob = new Glob(".claude/skills/*/skill.yaml");
+  const glob = new Glob(".claude/skills/*/blueprints/*.skill.yaml");
   const paths: string[] = [];
   // `dot: true` is required — `.claude` is a dotfile directory and Bun's
   // Glob otherwise skips it, returning zero matches. Discovered
@@ -229,7 +229,7 @@ async function main(): Promise<void> {
   const out: string[] = [];
   out.push("# Invariant-substrate tally\n");
   out.push(
-    "Aggregated from every `.claude/skills/<name>/skill.yaml`. " +
+    "Aggregated from every `.claude/skills/<pack>/blueprints/<name>.skill.yaml`. " +
       "Per-substrate tier counts plus portfolio totals. The " +
       "`hypothesis` column is the honest backlog — every entry " +
       "there is a candidate for promotion to `observed` (at " +
