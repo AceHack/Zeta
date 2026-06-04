@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Zeta.Core.CSharp</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.ByteCost</AssemblyName>
+  </PropertyGroup>
+
+  <!-- ByteCost (oracle #3 of TS/F#/C#/Rust) — the context-window minimization meter
+       (B-1016 slice 1). Conforms to the F# canonical shape (src/Core/ByteCost.fs) by
+       AGREEING on the shared seed (src/Core.TypeScript/byte-cost/golden-vectors.json):
+       measure(text) = UTF-8 byte length. Bytes not model-tokens (deterministic +
+       byte-lockable). Self-contained, ZERO external dependencies. -->
+
+</Project>
