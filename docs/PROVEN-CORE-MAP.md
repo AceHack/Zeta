@@ -16,13 +16,15 @@
   homeostat-tie/convergence-to-LUB is cleanest; genuinely exercises every leg).
   Leg order: **4-ser → Arrow → Bonsai → homeostat-tie**. Take it to FULL PROVEN,
   then replicate the template to the next primitive.
-- **homeostat-tie = "hello world" homeostasis via heartbeats** (Aaron 2026-06-04,
-  scope = "nothing else"): the different actors (otto-cli-fg/bg, desktop, chat,
-  cowork, peers…) each emit **heartbeats**; the homeostat is the **G-Set/CRDT merge
-  of those heartbeats converging** (runToFixpoint) to a consistent fleet-liveness
-  view, reconciled over the bus. The minimal end-to-end demo connecting the proven
-  primitives (G-Set/CRDT merge + clock/versionstamp timestamps + actor addresses)
-  into one converging homeostat. Rides the existing heartbeat-via-commit substrate.
+- **homeostat-tie = "hello world" homeostasis via heartbeats** — ✅ DEMO LANDED
+  (`tools/observe/heartbeat-homeostat.ts`, 4 tests). Actors emit heartbeats; the
+  homeostat is a CRDT map `actor → max-versionstamp` whose per-actor-max merge
+  CONVERGES (runToFixpoint/LUB) to one fleet-liveness view regardless of order or
+  duplicates — that convergence IS homeostasis. Connects the proven primitives
+  (CRDT merge + clock/versionstamp + actor addresses); rides heartbeat-via-commit.
+- **Leg order pivot:** 4-ser is gated on B-1011 (CBOR/YAML/XML serializers not all
+  built — G-Set has JSON only), so the ungated **homeostat-tie was done first** as
+  the payoff demo. Remaining G-Set legs: 4-ser (after B-1011), Arrow, Bonsai.
 - **Merkle 4-lang** decision (Aaron): **pure-TS XxHash128** (no dep — honors
   zero-dep doctrine; C#=System.IO.Hashing, F#=done, Rust=twox-hash dev-dep).
   Deferred behind the G-Set vertical.
