@@ -1,0 +1,18 @@
+[package]
+name = "zeta-core-clock"
+version = "0.1.0"
+edition = "2024"
+description = "Clock -- the logical-clock primitive (B-1016 floor #1). Rust parity oracle (#4 of TS/F#/C#/Rust). Grown from the shared seed src/Core.TypeScript/clock/golden-vectors.json (seed-first): a monotonic versionstamp (total order) + an injectable deterministic scheduler; Scheduler::run(seed, n) yields the same monotone stamp sequence as the other oracles. tick = +1 = one step = z⁻¹ inverse. Zero-dependency production core; serde_json is DEV-ONLY for the cross-verify fixture parse."
+license = "Apache-2.0"
+publish = false
+
+# Production default = ZERO external dependencies (supply-chain doctrine).
+[dependencies]
+
+# serde_json is DEV-ONLY: the cross-verify test reads the shared golden-vectors.json.
+[dev-dependencies]
+serde_json = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

@@ -44,7 +44,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 
 | # | Primitive | Where | math | 4-lang | 4-ser | Bonsai | Arrow | homeostat | Verdict |
 |---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
-| 1 | **Clock / causal order** | `src/Core/Clock.fs` | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only (total-order instance) |
+| 1 | **Clock / causal order** | `src/Core/Clock.fs` + `Core.{TypeScript,CSharp,Rust}.Clock` | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | **math + 4-lang** (total-order instance; DST seed byte-locked F#/TS/C#/Rust) |
 | 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | partial | ✗ | ✗ | ✗ | **math + 4-lang** (V1 cell); rolling-monadic encoding + UoM-per-type + per-version/category cells open |
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` | ✓ (ACI+identity+LUB; GCounter over state) | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only |
