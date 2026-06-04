@@ -302,12 +302,15 @@ type BlockedBloomFilter(bucketCount: int, probesPerLookup: int) =
         let struct (h1, h2) = BloomHash.pairOfGeneric key
         testPair h1 h2
 
-    /// Unsafe OR-merge with another same-shape filter. After merge,
-    /// both lookups go through the combined bit-pattern; the merged
-    /// filter preserves all elements of both.
+    /// OR-merge with another same-shape filter. A bitwise OR-join is only valid
+    /// when BOTH structural parameters match — table length (m) AND probe count
+    /// (k); a differing k means the filters address bits differently, so the OR
+    /// would be meaningless. Both are asserted (Lior review 2026-06-04, gap #3).
     member this.MergeFrom(other: BlockedBloomFilter) =
         if other.Table.Length <> table.Length then
-            invalidArg (nameof other) "filter shape must match"
+            invalidArg (nameof other) "filter shape must match: table length (m) differs"
+        if other.ProbesPerLookup <> probesPerLookup then
+            invalidArg (nameof other) "filter shape must match: probe count (k) differs"
         for i in 0 .. table.Length - 1 do
             table.[i] <- table.[i] ||| other.Table.[i]
 

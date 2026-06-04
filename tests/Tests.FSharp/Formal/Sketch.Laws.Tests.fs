@@ -2,6 +2,7 @@ module Zeta.Tests.Formal.SketchLawsTests
 
 open FsCheck
 open FsCheck.Xunit
+open global.Xunit
 open Zeta.Core
 
 // B-1016 floor #6 — the SKETCH merge-laws (math leg), at STATE level (not the
@@ -123,3 +124,18 @@ let ``CMS never undercounts (estimate ≥ true frequency — one-sided error)`` 
     |> List.forall (fun h ->
         let trueCount = items |> List.filter ((=) h) |> List.length |> int64
         c.Estimate(h) >= trueCount)
+
+// DIMENSIONALITY GUARD (Lior review 2026-06-04, gap #3): an OR-join is only valid
+// when BOTH params match (m AND k). Merging mismatched shapes must THROW, not
+// silently produce a meaningless filter.
+[<Fact>]
+let ``Bloom MergeFrom rejects a mismatched probe count (k)`` () =
+    let a = BlockedBloomFilter(64, 4)
+    let b = BlockedBloomFilter(64, 8) // same m, different k
+    Assert.Throws<System.ArgumentException>(fun () -> a.MergeFrom(b)) |> ignore
+
+[<Fact>]
+let ``Bloom MergeFrom rejects a mismatched table length (m)`` () =
+    let a = BlockedBloomFilter(64, 4)
+    let b = BlockedBloomFilter(128, 4)
+    Assert.Throws<System.ArgumentException>(fun () -> a.MergeFrom(b)) |> ignore
