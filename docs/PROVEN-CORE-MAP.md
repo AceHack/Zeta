@@ -137,8 +137,9 @@ External formal review surfaced 5 gaps; status:
    Z3-proven (the lifting lemma).
 3. **Sketch dimensionality** — ✅ fixed: Bloom `MergeFrom` now guards both m AND
    k (CMS already guarded depth/width/seed); mismatch throws (tested).
-4. **Bayesian BP/EP metric scale-sensitivity** — open: max-abs-diff on natural
-   params is scale-dependent; route to B-1007 (KL-divergence or scaled tolerance).
+4. **Bayesian BP/EP metric scale-sensitivity** — ✅ routed to B-1007 (Soraya
+   cadence): max-abs-diff on natural params is scale-dependent; fix = KL-divergence
+   or magnitude-scaled tolerance.
 5. **ZetaId ordering caveat** — partially: proven within a version (Version is the
    top field); cross-version is version-first by layout, so time-series range
    scans must partition by Version. Documented in Canonical.Tests.fs.
