@@ -126,6 +126,20 @@ item is *validated* (tested) or *hypothesized* (asserted) — never canonical.
 - rules: `fsharp-anchor-dotnet-build-sanity-check` (compiler = asymmetric critic), `razor-discipline`, `premise-flagged-unverified-stays-unverified-downstream`, `labeling-confidence-...` (the canonical-tier bar this raises), `algebra-first-admission-...` (the registry gate)
 - `docs/TECH-RADAR.md` (FsCheck/Z3/TLA+ Adopt; Lean Assess; LiquidF# Hold) — the tool-ring constraints
 
+## Routed in: Lior external review 2026-06-04 — gap #4 (convergence metric)
+
+The BP/EP **convergence metric is scale-sensitive**: `Message.fs` uses max-abs-diff
+of natural parameters (`max (abs (a.PrecisionMean - b.PrecisionMean)) (abs
+(a.Precision - b.Precision))`). Absolute difference on natural params is
+scale-dependent — precision 0.1→1.1 vs 10000.1→10001.1 both register distance 1.0,
+so a fixed `tol` can oscillate forever (large values) or falsely converge (small
+values). **Fix:** KL-divergence (the sound metric for distribution movement in BP),
+or — if keeping abs-diff for perf — scale `tol` relative to parameter magnitude.
+Sibling of the C6 "NaN-safe `moved`" row (same `runToFixpoint` path). Owner:
+Soraya cadence. (Other Lior gaps handled by Otto 2026-06-04: #1 Z3-overflow
+boundary, #2 scalar→map Z3 lift, #3 sketch dimensionality guard — fixed; #5 ZetaId
+within-version ordering — documented. #4 here needs the inference-engine proof lane.)
+
 ## Substrate-honest framing
 
 `[labeling-confidence: this row is itself observed/established (Soraya's audit is empirical — file:line cited; the example-only test state is a fact). The CLAIM that "nothing is canonical yet" is established under our own canonical bar. The proofs themselves are the owed work — none done yet (numerator +0 this round, denominator +7; the ratio dropped — engine shipped faster than its formal coverage).]` This row does not make anything canonical; it names the gap honestly and routes the proofs that will. Formal proof first; consensus is not validation; the math is.
