@@ -163,6 +163,7 @@
     <Compile Include="Yaml/ReaderTests.fs" />
     <Compile Include="Yaml/CrossVerifyTests.fs" />
     <Compile Include="Yaml/EncoderRoundTripTests.fs" />
+    <Compile Include="Yaml/DynamicValueYamlBridgeTests.fs" />
     <Compile Include="Sha256/Sha256Tests.fs" />
     <Compile Include="Sha256/CrossVerifyTests.fs" />
     <Compile Include="CanonicalJson/CrossVerifyTests.fs" />
