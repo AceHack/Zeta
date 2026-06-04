@@ -45,7 +45,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | # | Primitive | Where | math | 4-lang | 4-ser | Bonsai | Arrow | homeostat | Verdict |
 |---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
 | 1 | **Clock / causal order** | `src/Core/Clock.fs` | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only (total-order instance) |
-| 2 | **Identity / keys** | `src/Core.*.ZetaId` | ✗ | ✓ | partial | ✗ | ✗ | ✗ | 4-lang validated; math leg open |
+| 2 | **Identity / keys** (ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✗ | ✓ | partial | ✗ | ✗ | ✗ | 4-lang validated; math leg open |
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` | ✓ (ACI+identity+LUB; GCounter over state) | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
@@ -54,6 +54,23 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 **Nothing on this floor is PROVEN by the full bar yet.** The math leg is started
 for clock / CRDT / byte-cost; 4-lang holds for identity / byte-cost / serialization.
 The remaining legs (4-ser, Bonsai, Arrow, homeostat-tie) are open across the board.
+
+## Identity / keys — ordered composite keys, NOT content-hashes
+
+Keys are not content-hashes (you *can* prove with hashes, but that's a technique,
+not the mechanism). A key is a **composite ordered key**:
+- **time-ordered crypto-unique bits** — monotonic unique prefix = the
+  clock/versionstamp embedded INTO the key (identity embeds the clock).
+- **+ recursively-extensible index bits in order** — nested subspaces (FDB
+  tuple/subspace; DV2.0 hub→sub-key).
+- **optimal bit-encoding** (dense, round-trip bijective), and **bits differ PER
+  CATEGORY**.
+
+⇒ lookups are **ordered index range-scans, NOT hash point-lookups** — order is
+preserved, which is what makes the time-ordered curve/history range-scannable.
+⇒ **proof is a MATRIX: per id-version × per category** (each layout = its own
+spec: uniqueness, time-ordering, recursive extensibility, optimal bit-use). Not
+one monolithic proof. ZetaId has 4-lang byte-lock; per-cell math legs are open.
 
 ## Time is a family, not one clock (no global causal order)
 
