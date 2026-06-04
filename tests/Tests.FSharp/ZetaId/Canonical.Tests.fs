@@ -102,3 +102,21 @@ let ``CANONICAL ZetaId: distinct observations pack to distinct ids under the sam
     // region: pack a = pack b iff a = b (no two observations alias).
     let env = DeterministicEnv.Instance
     (ZetaIdCodec.pack a env = ZetaIdCodec.pack b env) = (a = b)
+
+// THE KEY EMBEDS THE CLOCK (ties identity #2 to Clock.fs #1). Timestamp occupies
+// bits 75-122 — just below Version, ABOVE every other field — so within a fixed
+// Version + other fields, the packed id orders EXACTLY by timestamp. The
+// time-ordered prefix IS the embedded clock: range-scanning the keyspace is
+// range-scanning time. One key-type cell (V1); the per-version/category matrix
+// reuses this since Timestamp's position is layout-invariant above the fields.
+[<Property(Arbitrary = [| typeof<ZetaObsArb> |])>]
+let ``CANONICAL ZetaId: id order respects timestamp order — the key embeds the clock``
+    (obs: ZetaObservation) (a: int64) (b: int64) =
+    let mask48 = (1L <<< 48) - 1L
+    let t1 = a &&& mask48 // mask to the 48-bit field (always 0 .. 2^48-1; no overflow)
+    let t2 = b &&& mask48
+    let o1 = { obs with Timestamp = LanguagePrimitives.Int64WithMeasure<ms> t1 }
+    let o2 = { obs with Timestamp = LanguagePrimitives.Int64WithMeasure<ms> t2 }
+    let id1 = ZetaIdCodec.pack o1 DeterministicEnv.Instance
+    let id2 = ZetaIdCodec.pack o2 DeterministicEnv.Instance
+    compare t1 t2 = compare id1 id2

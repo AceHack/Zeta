@@ -45,7 +45,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | # | Primitive | Where | math | 4-lang | 4-ser | Bonsai | Arrow | homeostat | Verdict |
 |---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
 | 1 | **Clock / causal order** | `src/Core/Clock.fs` | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only (total-order instance) |
-| 2 | **Identity / keys** (ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✗ | ✓ | partial | ✗ | ✗ | ✗ | 4-lang validated; math leg open |
+| 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | partial | ✗ | ✗ | ✗ | **math + 4-lang** (V1 cell); rolling-monadic encoding + UoM-per-type + per-version/category cells open |
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` | ✓ (ACI+identity+LUB; GCounter over state) | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
@@ -71,10 +71,21 @@ preserved, which is what makes the time-ordered curve/history range-scannable.
 ⇒ **proof is a MATRIX: per id-version × per category × per key-type** (each
 layout = its own spec: uniqueness, time-ordering, recursive extensibility, optimal
 bit-use). Not one monolithic proof.
-⇒ keys are **238 bits**, **many key types** partition the bit-space, guarded by
-**F# units-of-measure** so wrong-key-type code won't compile and a proof scoped to
-one key type can't be applied to another (UoM-as-category-tag). ZetaId has 4-lang
-byte-lock; per-key-type math legs + the UoM guard are open.
+⇒ keys are **128 bits** (confirmed in `BitLayout.fs`: `TotalBits = 128`, `UInt128`
+codec — the V1 layout is `Version(5)|Timestamp(48 ms)|Chromosome(5)|rsvd|
+Category(4)|Firefly(1)|Authority(5)|Persona(8)|Momentum(8)|Location(8)|rsvd|
+Randomness(32)`). The Timestamp(48) IS the time-ordered prefix = the embedded
+clock. **Many key types** partition the bit-space, to be guarded by **F#
+units-of-measure** so wrong-key-type code won't compile and a proof scoped to one
+key type can't be applied to another (UoM-as-category-tag). (An earlier note
+wrongly said "238 bits" — a slip recorded without checking the code; it is 128.)
+⇒ **already proven (V1 cell)**: `unpack∘pack = id` (bijection), field injectivity,
+env-invariance, and **id order = timestamp order (key embeds the clock)** —
+`tests/Tests.FSharp/ZetaId/Canonical.Tests.fs`; plus 4-lang byte-lock. Open:
+per-version/category/key-type cells, the UoM guard, the rolling-monadic encoding.
+⇒ **AFTER CORE (future)**: key types that carry **error-correction** bits
+(self-correcting keys — ECC parity in the unique-bits region); prove on the map
+after the core proof chain, not now.
 ⇒ **bit packing**: the recursive index rolls in **4-bit nibbles**, two absence
 schemes (a monad-propagation rule, null-as-value vs null-as-monad):
   - **16+null (monadic) — bit-OPTIMAL.** All 16 codes are payload; null /
@@ -111,8 +122,19 @@ The clock is an injectable family behind `IScheduler` (B-0684 negotiation stack)
   append-only / un-rewritable (Merkle + no-force-push), so the derived
   curve/curvature are trustworthy.
 
+## Relation to the larger primitives wishlist
+
+[`docs/PRIMITIVE-REGISTRY.md`](PRIMITIVE-REGISTRY.md) (tracked by **B-0959**) is
+the full cross-language **wishlist** + the **4-lang-consensus** status view — the
+"4-lang" leg of the PROVEN bar. THIS map is the complementary **math / proof-leg**
+view over the floor. They connect, not fork: `PROVEN = (4-lang from the registry)
+∧ (math from this map) ∧ 4-ser ∧ Bonsai ∧ Arrow ∧ homeostat`. Build the wishlist
+one primitive at a time, connecting each to these proven floor primitives once
+there's a full proof chain (sequencing is the agent's call).
+
 ## Pointers
 - B-1016 (context-window minimization — the program this map serves)
+- `docs/PRIMITIVE-REGISTRY.md` + B-0959 (the larger wishlist / 4-lang status view)
 - B-0684 (clock-protocol-negotiation-stack) · B-0683 (deferred-causality / Z-sets)
 - B-0907 (Rx temporal joins / bus) · B-0924 (IScheduler DST)
 - B-1007 (asserted→proven gap; the formal-coverage ledger)
