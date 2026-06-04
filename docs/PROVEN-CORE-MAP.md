@@ -7,6 +7,26 @@
 > the floor primitives beneath it, and the proof status of each, so a human or AI
 > can navigate it and prove one bit at a time.
 
+## Current focus (Aaron 2026-06-04): depth-first lock-down
+
+> "lock down what we got over the next day — hammer ONE primitive through all the
+> legs one at a time and connect them in homeostasis." No new concepts; slow.
+
+- **First full vertical = G-Set** (already math∧4-lang; simplest lattice so its
+  homeostat-tie/convergence-to-LUB is cleanest; genuinely exercises every leg).
+  Leg order: **4-ser → Arrow → Bonsai → homeostat-tie**. Take it to FULL PROVEN,
+  then replicate the template to the next primitive.
+- **homeostat-tie = "hello world" homeostasis via heartbeats** (Aaron 2026-06-04,
+  scope = "nothing else"): the different actors (otto-cli-fg/bg, desktop, chat,
+  cowork, peers…) each emit **heartbeats**; the homeostat is the **G-Set/CRDT merge
+  of those heartbeats converging** (runToFixpoint) to a consistent fleet-liveness
+  view, reconciled over the bus. The minimal end-to-end demo connecting the proven
+  primitives (G-Set/CRDT merge + clock/versionstamp timestamps + actor addresses)
+  into one converging homeostat. Rides the existing heartbeat-via-commit substrate.
+- **Merkle 4-lang** decision (Aaron): **pure-TS XxHash128** (no dep — honors
+  zero-dep doctrine; C#=System.IO.Hashing, F#=done, Rust=twox-hash dev-dep).
+  Deferred behind the G-Set vertical.
+
 ## The spine (dependency order, top is built last)
 
 ```
