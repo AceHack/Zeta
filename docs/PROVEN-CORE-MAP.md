@@ -49,7 +49,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` | ✓ (ACI+identity+LUB; GCounter over state) | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
-| 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓; sketches ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (byte-cost) only |
+| 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL join + CMS monoid merge-laws ✓ (state-level); error-bounds ✗; Bloom deferred | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (merge-laws); error-bounds open |
 
 **Nothing on this floor is PROVEN by the full bar yet.** The math leg is started
 for clock / CRDT / byte-cost; 4-lang holds for identity / byte-cost / serialization.
@@ -75,12 +75,16 @@ bit-use). Not one monolithic proof.
 **F# units-of-measure** so wrong-key-type code won't compile and a proof scoped to
 one key type can't be applied to another (UoM-as-category-tag). ZetaId has 4-lang
 byte-lock; per-key-type math legs + the UoM guard are open.
-⇒ **bit packing**: the recursive index rolls in **4-bit nibbles** with two
-bit-optimal absence schemes — **15+1 hole** (in-band absence/continuation marker;
-self-terminating, prefix-free) vs **16+null** (full nibble + monadic out-of-band
-null) — a monad-propagation rule (null-as-value vs null-as-monad at 4-bit grain).
-Stays **bit-optimal even for SMALL partitions** (rolling adapts to partition size,
-no fixed-width waste) — what makes "many small key types" cheap.
+⇒ **bit packing**: the recursive index rolls in **4-bit nibbles**, two absence
+schemes (a monad-propagation rule, null-as-value vs null-as-monad):
+  - **16+null (monadic) — bit-OPTIMAL.** All 16 codes are payload; null /
+    termination is handled by a structure ONCE (out-of-band, amortized), NOT per
+    nibble. No recurring waste.
+  - **15+1 hole — NOT bit-optimal.** Reserves 1-of-16 as an in-band hole on EVERY
+    nibble (~3.9 usable bits/4), so the waste COMPOUNDS with each recursive
+    extension. Self-terminating/prefix-free, but pays a code per roll.
+  The monadic scheme is what keeps "many small key types" cheap (terminate once,
+  not every recursion).
 
 ## Time is a family, not one clock (no global causal order)
 

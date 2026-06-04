@@ -141,6 +141,7 @@
     <Compile Include="Formal/Clock.Laws.Tests.fs" />
     <Compile Include="Formal/Crdt.Laws.Tests.fs" />
     <Compile Include="Formal/Merkle.Laws.Tests.fs" />
+    <Compile Include="Formal/Sketch.Laws.Tests.fs" />
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />
     <Compile Include="Formal/Alloy.Runner.Tests.fs" />
     <Compile Include="Formal/Sharder.InfoTheoretic.Tests.fs" />
