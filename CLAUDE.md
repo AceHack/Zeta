@@ -21,7 +21,7 @@ Read active trajectories: `docs/trajectories/*/RESUME.md`.
 ## 3. Pick work
 
 Open `docs/BACKLOG.md`. Before starting any row, complete the backlog-item start gate
-(prior-art search + dependency check — see `.claude/rules/backlog-item-start-gate.md`).
+(prior-art search + dependency check — see `.claude/rules.bak/backlog-item-start-gate.md`).
 
 ## 4. Build gate
 
@@ -55,19 +55,19 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
   — `rg "pattern" .` is safe-by-default (ripgrep respects gitignore), but plain `grep -r` needs
   `--exclude-dir=upstreams` (basename, NOT a path) or an explicit allowlist
   (`memory/ docs/ .claude/ tools/`). Refresh the mirror on demand: `tools/setup/common/sync-prior-art.sh`.
-  Full: `.claude/rules/references-prior-art-not-our-code-search-excludes.md`.
+  Full: `.claude/rules.bak/references-prior-art-not-our-code-search-excludes.md`.
 - **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
   are razored (cooling-period required, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
 - **Heartbeat-via-commit = externalized idle counter** — the AgencySignature v1 trailer
   block on every commit + `git log --since="2min ago" origin/main` IS the externalized
   counter for the N=6 brief-ack threshold in
-  `.claude/rules/holding-without-named-dependency-is-standing-by-failure.md`. Each
+  `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`. Each
   autonomous-loop tick: if you emit "Quiet."/"Holding."/"Standing by." with NO commit
   produced in the prior tick window AND no named-dependency named explicitly, that IS
   the failure mode the rule was carved against. The narrative self-model counter is
   unreliable (Kira 2026-05-27 caught Otto-CLI emitting 100+ "Quiet." with the counter
   never firing — the agent cannot count itself). Commits produce durable substrate per
-  `.claude/rules/substrate-or-it-didnt-happen.md`; git log queries produce a persistent
+  `.claude/rules.bak/substrate-or-it-didnt-happen.md`; git log queries produce a persistent
   counter that survives compaction; the rule's forcing function fires reliably only
   when externalized. Audit via `bun tools/hygiene/audit-agencysignature-main-tip.ts
   --since YYYY-MM-DD --max N`. Spec: AgencySignature Convention v1 trailer block
