@@ -105,10 +105,20 @@ data — it **projects out the subset of fields it knows** and leaves everything
 in the **extra-data / extensible region** of the same value. So a typed view is a
 **lens / prism** into DynamicValue, and the bridge gains a provable obligation:
 
-- **Round-trip preserves unknowns** — `toDynamic (fromDynamic dv) ⊇ dv` (the lens
-  **get-put** law). The lossy bridge's `LossReport`/residual **IS** the extra-data
-  region; that is *why* loss is first-class. Lossless ⟺ residual empty.
+- **Round-trip preserves unknowns (get-put)** — `toDynamic (fromDynamic dv) ⊇ dv`,
+  on the **representable subset**. The lossy bridge's `LossReport`/residual **IS** the
+  extra-data region; that is *why* loss is first-class. Lossless ⟺ residual empty.
 - **put-get** — reading back a field you just set yields what you set.
+- **LossReport-completeness (the second, easy-to-forget obligation — Kestrel
+  2026-06-04)** — get-put alone is INSUFFICIENT: a lens could silently shovel data
+  into the residual and still pass a naive `⊇ dv` check while violating the honesty
+  loss-first-class exists for. So the real obligation is *two* theorems: (1) get-put
+  on the representable subset, AND (2) **the `LossReport` accounts for exactly what is
+  dropped** — `dv = recombine (fromDynamic dv) (LossReport dv)` with NOTHING lost that
+  isn't reported. Proving (1) without (2) is the over-claim to avoid: (2) is the whole
+  point of the design (no silent loss), so a bridge proof that omits it is vacuous on
+  the property that matters. Scope honestly: get-put holds on the lossless subset; the
+  lossy edges (Bytes-in-YAML, float repr) are carried by the residual AND reported.
 
 This makes data **version-independent at runtime**: decode against the open tree, a
 newer/older schema's extra fields survive untouched, and the concrete type can be
