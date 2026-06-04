@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Zeta.Core.CSharp</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.Clock</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Clock (oracle of TS/F#/C#/Rust) — the logical-clock primitive (B-1016 floor #1):
+       a monotonic versionstamp (total order) + an injectable deterministic scheduler.
+       Conforms to the F# canonical shape (src/Core/Clock.fs) by AGREEING on the shared
+       seed (src/Core.TypeScript/clock/golden-vectors.json): Scheduler.Run(seed, n) yields
+       the same monotone stamp sequence. tick = +1 = one step = z⁻¹ inverse. Zero deps. -->
+
+</Project>
