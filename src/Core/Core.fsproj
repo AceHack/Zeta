@@ -27,6 +27,7 @@
     <Compile Include="Resume.fs" />
     <Compile Include="RangeSet.fs" />
     <Compile Include="ByteCost.fs" />
+    <Compile Include="Clock.fs" />
     <Compile Include="DynamicValue.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
