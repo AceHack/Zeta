@@ -159,6 +159,18 @@ let ``format-agreement matrix LAW: ∀ dv (locked subset) — JSON + CBOR + YAML
     let wrapped = DynamicValue.Object [ "v", v ]
     jsonRoundtrips wrapped && cborRoundtrips wrapped && dvRoundtripsYaml wrapped
 
+// never-collapse stated DIRECTLY for YAML — parity with the proven CBOR injectivity
+// (`canonical CBOR encoding is INJECTIVE`). YAML is the STORAGE OF RECORD, so its
+// byte-lock is only a FAITHFUL identity if distinct values never share canonical
+// bytes. Formally a corollary of the round-trip LAW above (parse ∘ encode = id ⇒
+// encode injective), made explicit because never-collapse is the load-bearing
+// requirement (B-1016 is the empty-collection case that currently violates it; this
+// proves it holds on the non-empty locked subset).
+[<Property(Arbitrary = [| typeof<MatrixDvArb> |])>]
+let ``YAML never-collapse: canonical encoding is INJECTIVE on the locked subset (distinct values never share bytes)``
+    (a: DynamicValue) (b: DynamicValue) =
+    (encode (dvToYaml a) = encode (dvToYaml b)) = (a = b)
+
 // REQUIRED never-collapse (B-1016) — found by the FsCheck properties above; minimal
 // case Object []. Serialization must NEVER collapse two states that are actually
 // different (SQL-null-as-monad-propagator; tri-boolean everywhere; `Some [] ≠ None`):
