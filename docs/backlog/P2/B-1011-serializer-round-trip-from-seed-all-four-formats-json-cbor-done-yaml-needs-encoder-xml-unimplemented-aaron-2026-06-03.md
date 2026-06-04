@@ -147,3 +147,28 @@ canonical-default fns; grow a config object as options appear.)
 `src/Core.TypeScript/yaml/encoder.ts` is an exact mirror of the F# encoder —
 byte-identical canonical output (cross-lang byte-lock tests: TS encode === F#
 encode). F# ✓ + TS ✓; C#/Rust YAML encoders next, then the full format matrix.
+
+## DOM decision (Aaron 2026-06-04): UNIFY on DynamicValue for value-tree formats
+
+> "do we keep per-format DOMs or unify on DynamicValue? I think unify unless there
+> are real edge cases where we lose a feature for some file types."
+
+**Decision: UNIFY on DynamicValue for the value-tree serializers (JSON / CBOR /
+YAML)** — every codec produces/consumes DynamicValue directly; retire the separate
+`YamlValue` DOM. No feature loss: DynamicValue is the 8-type common core
+(Null/Bool/Int/Float/String/Bytes/Array/Object); CBOR maps directly, JSON is a
+subset, and our YAML SUBSET already drops comments/anchors/tags at the reader, so
+YamlValue carried nothing extra. Benefit: "all formats agree" becomes
+structural-by-construction (no bridge to drift); the matrix is trivial.
+
+**Real edge cases — keep their own interface (same rigor, different interfaces):**
+- **XML** — attributes vs elements, namespaces, mixed content, ordering. A value
+  tree needs a CONVENTION (`@attr` / `#text`) or a richer node; decide when XML is
+  built. (Bytes: YAML has no native byte type → base64-string convention or CBOR.)
+- **Arrow** — columnar schema + typed columns + dict encoding (a batch of typed
+  columns, not a single value tree).
+- **Bonsai** — expression-tree / reactive.
+
+**Unification work (next phase):** point the YAML reader+encoder at DynamicValue
+across the 4 oracles (retire YamlValue); the DynamicValue↔YamlValue bridge
+(currently a test helper) becomes unnecessary. Refactor across F#/TS/C#/Rust YAML.
