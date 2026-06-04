@@ -1,0 +1,384 @@
+{
+  "primitive": "DynamicValue",
+  "codec": "canonical-xml",
+  "version": 1,
+  "description": "DynamicValue cross-language canonical XML byte-lock SEED. Typed-element form: <null/> <bool> <int> <str> <arr> <obj><e k=..>..</e></obj>. Minified; text escapes & < > and tab/lf/cr as char-refs (&#9;&#10;&#13;); key attr also escapes \". v1 locks the same 6 shapes as JSON; Float+Bytes DEFERRED (CBOR). REPRESENTABILITY: XML 1.0 forbids NUL + C0 controls except tab/lf/cr even as char-refs, so strings/keys containing them are excluded (the XML analogue of Bytes-not-in-YAML). encode(value)===xml + decode(xml)===value with a fixed-point canonicality check. Never-collapse free: <null/>, <arr></arr>, <obj></obj>, <str></str> distinct.",
+  "vectors": [
+    {
+      "name": "null",
+      "value": {
+        "t": "null"
+      },
+      "xml": "<null/>"
+    },
+    {
+      "name": "bool-true",
+      "value": {
+        "t": "bool",
+        "v": true
+      },
+      "xml": "<bool>true</bool>"
+    },
+    {
+      "name": "bool-false",
+      "value": {
+        "t": "bool",
+        "v": false
+      },
+      "xml": "<bool>false</bool>"
+    },
+    {
+      "name": "int-zero",
+      "value": {
+        "t": "int",
+        "v": "0"
+      },
+      "xml": "<int>0</int>"
+    },
+    {
+      "name": "int-one",
+      "value": {
+        "t": "int",
+        "v": "1"
+      },
+      "xml": "<int>1</int>"
+    },
+    {
+      "name": "int-neg-one",
+      "value": {
+        "t": "int",
+        "v": "-1"
+      },
+      "xml": "<int>-1</int>"
+    },
+    {
+      "name": "int-42",
+      "value": {
+        "t": "int",
+        "v": "42"
+      },
+      "xml": "<int>42</int>"
+    },
+    {
+      "name": "int-neg-42",
+      "value": {
+        "t": "int",
+        "v": "-42"
+      },
+      "xml": "<int>-42</int>"
+    },
+    {
+      "name": "int-i64-max",
+      "value": {
+        "t": "int",
+        "v": "9223372036854775807"
+      },
+      "xml": "<int>9223372036854775807</int>"
+    },
+    {
+      "name": "int-i64-min",
+      "value": {
+        "t": "int",
+        "v": "-9223372036854775808"
+      },
+      "xml": "<int>-9223372036854775808</int>"
+    },
+    {
+      "name": "string-empty",
+      "value": {
+        "t": "str",
+        "v": ""
+      },
+      "xml": "<str></str>"
+    },
+    {
+      "name": "string-ascii",
+      "value": {
+        "t": "str",
+        "v": "hello"
+      },
+      "xml": "<str>hello</str>"
+    },
+    {
+      "name": "string-space",
+      "value": {
+        "t": "str",
+        "v": "a b c"
+      },
+      "xml": "<str>a b c</str>"
+    },
+    {
+      "name": "string-quote",
+      "value": {
+        "t": "str",
+        "v": "a\"b"
+      },
+      "xml": "<str>a\"b</str>"
+    },
+    {
+      "name": "string-backslash",
+      "value": {
+        "t": "str",
+        "v": "a\\b"
+      },
+      "xml": "<str>a\\b</str>"
+    },
+    {
+      "name": "string-slash-not-escaped",
+      "value": {
+        "t": "str",
+        "v": "a/b"
+      },
+      "xml": "<str>a/b</str>"
+    },
+    {
+      "name": "string-newline-tab",
+      "value": {
+        "t": "str",
+        "v": "x\ny\tz"
+      },
+      "xml": "<str>x&#10;y&#9;z</str>"
+    },
+    {
+      "name": "string-unicode-bmp",
+      "value": {
+        "t": "str",
+        "v": "héllo→世"
+      },
+      "xml": "<str>héllo→世</str>"
+    },
+    {
+      "name": "string-emoji-astral",
+      "value": {
+        "t": "str",
+        "v": "😀"
+      },
+      "xml": "<str>😀</str>"
+    },
+    {
+      "name": "array-empty",
+      "value": {
+        "t": "arr",
+        "v": []
+      },
+      "xml": "<arr></arr>"
+    },
+    {
+      "name": "array-ints",
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "int",
+            "v": "2"
+          },
+          {
+            "t": "int",
+            "v": "3"
+          }
+        ]
+      },
+      "xml": "<arr><int>1</int><int>2</int><int>3</int></arr>"
+    },
+    {
+      "name": "array-mixed",
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "int",
+            "v": "1"
+          },
+          {
+            "t": "bool",
+            "v": true
+          },
+          {
+            "t": "null"
+          },
+          {
+            "t": "str",
+            "v": "x"
+          }
+        ]
+      },
+      "xml": "<arr><int>1</int><bool>true</bool><null/><str>x</str></arr>"
+    },
+    {
+      "name": "array-nested",
+      "value": {
+        "t": "arr",
+        "v": [
+          {
+            "t": "arr",
+            "v": [
+              {
+                "t": "int",
+                "v": "1"
+              }
+            ]
+          },
+          {
+            "t": "arr",
+            "v": []
+          }
+        ]
+      },
+      "xml": "<arr><arr><int>1</int></arr><arr></arr></arr>"
+    },
+    {
+      "name": "object-empty",
+      "value": {
+        "t": "obj",
+        "v": []
+      },
+      "xml": "<obj></obj>"
+    },
+    {
+      "name": "object-single",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "xml": "<obj><e k=\"a\"><int>1</int></e></obj>"
+    },
+    {
+      "name": "object-order-preserved",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "b",
+            {
+              "t": "int",
+              "v": "2"
+            }
+          ],
+          [
+            "a",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "xml": "<obj><e k=\"b\"><int>2</int></e><e k=\"a\"><int>1</int></e></obj>"
+    },
+    {
+      "name": "object-mixed",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "on",
+            {
+              "t": "bool",
+              "v": true
+            }
+          ],
+          [
+            "name",
+            {
+              "t": "str",
+              "v": "zeta"
+            }
+          ],
+          [
+            "nil",
+            {
+              "t": "null"
+            }
+          ]
+        ]
+      },
+      "xml": "<obj><e k=\"on\"><bool>true</bool></e><e k=\"name\"><str>zeta</str></e><e k=\"nil\"><null/></e></obj>"
+    },
+    {
+      "name": "object-key-escaped",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a\"b",
+            {
+              "t": "int",
+              "v": "1"
+            }
+          ]
+        ]
+      },
+      "xml": "<obj><e k=\"a&quot;b\"><int>1</int></e></obj>"
+    },
+    {
+      "name": "object-nested",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "outer",
+            {
+              "t": "obj",
+              "v": [
+                [
+                  "inner",
+                  {
+                    "t": "bool",
+                    "v": true
+                  }
+                ]
+              ]
+            }
+          ]
+        ]
+      },
+      "xml": "<obj><e k=\"outer\"><obj><e k=\"inner\"><bool>true</bool></e></obj></e></obj>"
+    },
+    {
+      "name": "deep-nest",
+      "value": {
+        "t": "obj",
+        "v": [
+          [
+            "a",
+            {
+              "t": "arr",
+              "v": [
+                {
+                  "t": "obj",
+                  "v": [
+                    [
+                      "b",
+                      {
+                        "t": "arr",
+                        "v": [
+                          {
+                            "t": "int",
+                            "v": "1"
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "xml": "<obj><e k=\"a\"><arr><obj><e k=\"b\"><arr><int>1</int></arr></e></obj></arr></e></obj>"
+    }
+  ]
+}

@@ -146,6 +146,10 @@ type EncodeError =
     | FloatDeferred
     /// `DynamicValue.Bytes` has no native JSON byte type.
     | BytesDeferred
+    /// A `DynamicValue.String` (or `Object` key) holds a char that is NOT XML-1.0
+    /// representable — NUL or a C0 control other than `\t \n \r`, which XML 1.0 forbids
+    /// even as a character reference (the XML analogue of `BytesDeferred`).
+    | NonRepresentable
 
 /// Why canonical CBOR bytes could not be decoded into a `DynamicValue`. Surfaced as
 /// data per the Result-over-exception hard rule (AGENTS.md), never thrown. Mirrors the
@@ -167,6 +171,11 @@ type DecodeError =
     /// int/length width, non-shortest float / non-canonical NaN, or invalid UTF-8 repaired
     /// to U+FFFD. Detected by the fixed-point check `toCanonicalCbor decoded = input`.
     | NonCanonical
+    /// Input is not well-formed for the canonical XML grammar this codec parses —
+    /// an unterminated tag/entity, a missing `k="…"` attribute, a bad numeric
+    /// char-ref, or a structurally invalid element (the XML analogue of malformation).
+    /// XML-only.
+    | MalformedXml
 
 /// Companion module (the `Option`/`List` type-plus-module pattern): the tag
 /// accessor, the lazy-bind `try*` accessors, and `PropertyPath` navigation.
@@ -953,4 +962,356 @@ module DynamicValue =
                 // produces the six locked shapes, so toCanonicalJson is always Ok here
                 match toCanonicalJson value with
                 | Ok s when System.String.Equals(s, json, System.StringComparison.Ordinal) -> Ok value
+                | _ -> Error DecodeError.NonCanonical
+
+    // ----------------------------------------------------------------------------
+    // Canonical XML codec — mirrors src/Core.TypeScript/dynamic-value/xml.ts.
+    // ----------------------------------------------------------------------------
+
+    /// A char is XML-1.0 legal as content iff it is `\t \n \r` or >= 0x20. NUL and any
+    /// other C0 control are forbidden — even as a character reference (XML 1.0 §2.2).
+    let private isForbiddenC0 (code: int) : bool =
+        code < 0x20 && code <> 0x09 && code <> 0x0a && code <> 0x0d
+
+    /// Escape element TEXT: `&` `<` `>` as entities; `\t \n \r` as char-refs (so
+    /// whitespace survives XML content line-ending + normalization). Returns Error
+    /// `NonRepresentable` on a forbidden C0 char. Iterates by UTF-16 code unit, which
+    /// is correct here: the chars we test (`& < > \t \n \r`, C0) are all BMP, and
+    /// surrogate halves are emitted raw (the astral char round-trips as its pair).
+    let private escapeXmlText (rawValue: string) : Result<string, EncodeError> =
+        let s = if System.Object.ReferenceEquals(rawValue, null) then "" else rawValue
+        let sb = System.Text.StringBuilder(s.Length)
+        let mutable err = false
+        let mutable i = 0
+
+        while i < s.Length && not err do
+            let ch = s.[i]
+
+            match ch with
+            | '&' -> sb.Append("&amp;") |> ignore
+            | '<' -> sb.Append("&lt;") |> ignore
+            | '>' -> sb.Append("&gt;") |> ignore
+            | '\t' -> sb.Append("&#9;") |> ignore
+            | '\n' -> sb.Append("&#10;") |> ignore
+            | '\r' -> sb.Append("&#13;") |> ignore
+            | c when isForbiddenC0 (int c) -> err <- true
+            | c -> sb.Append(c) |> ignore
+
+            i <- i + 1
+
+        if err then Error EncodeError.NonRepresentable else Ok(sb.ToString())
+
+    /// Escape an attribute value (object key): like text plus `"` as `&quot;`.
+    let private escapeXmlAttr (rawValue: string) : Result<string, EncodeError> =
+        let s = if System.Object.ReferenceEquals(rawValue, null) then "" else rawValue
+        let sb = System.Text.StringBuilder(s.Length)
+        let mutable err = false
+        let mutable i = 0
+
+        while i < s.Length && not err do
+            let ch = s.[i]
+
+            match ch with
+            | '&' -> sb.Append("&amp;") |> ignore
+            | '<' -> sb.Append("&lt;") |> ignore
+            | '>' -> sb.Append("&gt;") |> ignore
+            | '"' -> sb.Append("&quot;") |> ignore
+            | '\t' -> sb.Append("&#9;") |> ignore
+            | '\n' -> sb.Append("&#10;") |> ignore
+            | '\r' -> sb.Append("&#13;") |> ignore
+            | c when isForbiddenC0 (int c) -> err <- true
+            | c -> sb.Append(c) |> ignore
+
+            i <- i + 1
+
+        if err then Error EncodeError.NonRepresentable else Ok(sb.ToString())
+
+    /// Canonical XML encoding — the byte-lock target (shared seed
+    /// `src/Core.TypeScript/dynamic-value/golden-vectors-xml.json`). Typed-element,
+    /// minified, one rendering per value: `<null/>`, `<bool>true</bool>`,
+    /// `<int>DECIMAL</int>`, `<str>TEXT</str>`, `<arr>CHILD…</arr>`,
+    /// `<obj><e k="KEY">VALUE</e>…</obj>` (keys in INSERTION order). Element text
+    /// escapes `& < >` and `\t \n \r` as char-refs; attribute (key) escapes also `"`.
+    /// v1 locks the same 6 shapes as JSON; `Float` and `Bytes` are DEFERRED (lock
+    /// under CBOR) → `Error EncodeError.*`. A string/key with a forbidden C0 char is
+    /// NOT XML-1.0 representable → `Error EncodeError.NonRepresentable`. Surfaced as
+    /// data per the Result-over-exception hard rule (AGENTS.md), never thrown.
+    let rec toCanonicalXml (value: DynamicValue) : Result<string, EncodeError> =
+        match value with
+        | DynamicValue.Null -> Ok "<null/>"
+        | DynamicValue.Bool b -> Ok(if b then "<bool>true</bool>" else "<bool>false</bool>")
+        | DynamicValue.Int i -> Ok("<int>" + i.ToString(System.Globalization.CultureInfo.InvariantCulture) + "</int>")
+        | DynamicValue.Float _ -> Error EncodeError.FloatDeferred
+        | DynamicValue.String s -> escapeXmlText s |> Result.map (fun t -> "<str>" + t + "</str>")
+        | DynamicValue.Bytes _ -> Error EncodeError.BytesDeferred
+        | DynamicValue.Array items ->
+            items
+            |> List.fold
+                (fun acc item -> acc |> Result.bind (fun parts -> toCanonicalXml item |> Result.map (fun s -> s :: parts)))
+                (Ok [])
+            |> Result.map (fun parts -> "<arr>" + String.concat "" (List.rev parts) + "</arr>")
+        | DynamicValue.Object pairs ->
+            pairs
+            |> List.fold
+                (fun acc (k, v) ->
+                    acc
+                    |> Result.bind (fun parts ->
+                        escapeXmlAttr k
+                        |> Result.bind (fun ke -> toCanonicalXml v |> Result.map (fun s -> ("<e k=\"" + ke + "\">" + s + "</e>") :: parts))))
+                (Ok [])
+            |> Result.map (fun parts -> "<obj>" + String.concat "" (List.rev parts) + "</obj>")
+
+    /// Decodes canonical XML text into a `DynamicValue` — the inverse of `toCanonicalXml`,
+    /// completing the text↔value round-trip for the six locked shapes (`Float`/`Bytes`
+    /// DEFERRED; `<float>`/`<bytes>`/unknown tags → `DecodeError.Unsupported`). Strictly
+    /// canonical: a lenient parse, then one fixed-point check (`toCanonicalXml decoded =
+    /// input`) rejects every non-canonical form (self-closing empties, `&#x9;` vs `&#9;`,
+    /// insignificant whitespace, leading zeros) as `DecodeError.NonCanonical`. Surfaced as
+    /// data via `Result`, never thrown. Mirrors the TS decoder.
+    let fromCanonicalXml (xml: string) : Result<DynamicValue, DecodeError> =
+        let mutable pos = 0
+        let len = xml.Length
+
+        let at () : char = if pos < len then xml.[pos] else ' '
+
+        // Unescape XML content/attribute: the inverse of escapeXmlText/escapeXmlAttr.
+        // Accepts the entities + numeric char-refs this codec emits (and common named
+        // ones), decimal and hex. Lenient: the fixed-point check re-canonicalizes, so any
+        // non-canonical spelling (&#x9; vs &#9;, or a raw literal newline) is rejected.
+        let unescape (s: string) : Result<string, DecodeError> =
+            let sb = System.Text.StringBuilder(s.Length)
+            let mutable i = 0
+            let mutable err = false
+
+            while i < s.Length && not err do
+                let ch = s.[i]
+
+                if ch <> '&' then
+                    sb.Append(ch) |> ignore
+                    i <- i + 1
+                else
+                    let semi = s.IndexOf(';', i)
+
+                    if semi < 0 then
+                        err <- true
+                    else
+                        let ent = s.Substring(i + 1, semi - i - 1)
+
+                        let appendCode (digits: string) (radix: int) =
+                            let style =
+                                if radix = 16 then
+                                    System.Globalization.NumberStyles.AllowHexSpecifier
+                                else
+                                    System.Globalization.NumberStyles.None
+
+                            match System.Int32.TryParse(digits, style, System.Globalization.CultureInfo.InvariantCulture) with
+                            | true, code when code >= 0 && code <= 0x10ffff ->
+                                sb.Append(System.Char.ConvertFromUtf32(code)) |> ignore
+                            | _ -> err <- true
+
+                        if ent = "amp" then sb.Append('&') |> ignore
+                        elif ent = "lt" then sb.Append('<') |> ignore
+                        elif ent = "gt" then sb.Append('>') |> ignore
+                        elif ent = "quot" then sb.Append('"') |> ignore
+                        elif ent = "apos" then sb.Append('\'') |> ignore
+                        elif ent.Length > 0 && ent.[0] = '#' then
+                            let isHex = ent.Length > 1 && (ent.[1] = 'x' || ent.[1] = 'X')
+                            let digits = if isHex then ent.Substring(2) else ent.Substring(1)
+
+                            let allValid =
+                                digits.Length > 0
+                                && (if isHex then
+                                        digits |> Seq.forall System.Uri.IsHexDigit
+                                    else
+                                        digits |> Seq.forall (fun c -> c >= '0' && c <= '9'))
+
+                            if not allValid then err <- true else appendCode digits (if isHex then 16 else 10)
+                        else
+                            err <- true
+
+                        i <- semi + 1
+
+            if err then Error DecodeError.MalformedXml else Ok(sb.ToString())
+
+        // Read raw text up to the next '<' (no nested tags); the still-escaped run.
+        let readTextRun () : string =
+            let start = pos
+
+            while pos < len && xml.[pos] <> '<' do
+                pos <- pos + 1
+
+            xml.Substring(start, pos - start)
+
+        // A parsed tag: name, whether it is a close tag, self-closing, and the optional
+        // unescaped k="..." attribute value (only ever present on <e>).
+        let readTag () : Result<string * bool * bool * string option, DecodeError> =
+            if at () <> '<' then
+                Error DecodeError.MalformedXml
+            else
+                pos <- pos + 1
+                let mutable close = false
+
+                if at () = '/' then
+                    close <- true
+                    pos <- pos + 1
+
+                let nameStart = pos
+
+                while pos < len && xml.[pos] >= 'a' && xml.[pos] <= 'z' do
+                    pos <- pos + 1
+
+                let name = xml.Substring(nameStart, pos - nameStart)
+
+                if name.Length = 0 then
+                    Error DecodeError.MalformedXml
+                else
+                    // optional single attribute: ` k="..."` (only on <e>)
+                    let attrResult : Result<string option, DecodeError> =
+                        if at () = ' ' then
+                            pos <- pos + 1
+
+                            if pos + 3 > len || xml.Substring(pos, 3) <> "k=\"" then
+                                Error DecodeError.MalformedXml
+                            else
+                                pos <- pos + 3
+                                let vStart = pos
+
+                                while pos < len && xml.[pos] <> '"' do
+                                    pos <- pos + 1
+
+                                if pos >= len then
+                                    Error DecodeError.UnexpectedEnd
+                                else
+                                    let raw = xml.Substring(vStart, pos - vStart)
+                                    pos <- pos + 1 // closing quote
+                                    unescape raw |> Result.map Some
+                        else
+                            Ok None
+
+                    match attrResult with
+                    | Error e -> Error e
+                    | Ok attrK ->
+                        let mutable selfClose = false
+
+                        if at () = '/' then
+                            selfClose <- true
+                            pos <- pos + 1
+
+                        if at () <> '>' then
+                            Error DecodeError.MalformedXml
+                        else
+                            pos <- pos + 1
+                            Ok(name, close, selfClose, attrK)
+
+        let expectClose (name: string) : Result<unit, DecodeError> =
+            match readTag () with
+            | Error e -> Error e
+            | Ok(n, close, selfClose, _) ->
+                if (not close) || n <> name || selfClose then
+                    Error DecodeError.MalformedXml
+                else
+                    Ok()
+
+        let rec parseValue () : Result<DynamicValue, DecodeError> =
+            if at () <> '<' then
+                Error DecodeError.MalformedXml
+            else
+                match readTag () with
+                | Error e -> Error e
+                | Ok(name, close, selfClose, attrK) ->
+                    if close then
+                        Error DecodeError.MalformedXml
+                    else
+                        match name with
+                        | "null" -> if not selfClose then Error DecodeError.MalformedXml else Ok DynamicValue.Null
+                        | "bool" ->
+                            if selfClose then
+                                Error DecodeError.MalformedXml
+                            else
+                                let text = readTextRun ()
+
+                                expectClose "bool"
+                                |> Result.bind (fun () ->
+                                    if text = "true" then Ok(DynamicValue.Bool true)
+                                    elif text = "false" then Ok(DynamicValue.Bool false)
+                                    else Error DecodeError.MalformedXml)
+                        | "int" ->
+                            if selfClose then
+                                Error DecodeError.MalformedXml
+                            else
+                                let text = readTextRun ()
+
+                                expectClose "int"
+                                |> Result.bind (fun () ->
+                                    let valid =
+                                        text.Length > 0
+                                        && (let body = if text.[0] = '-' then text.Substring(1) else text
+                                            body.Length > 0 && body |> Seq.forall (fun c -> c >= '0' && c <= '9'))
+
+                                    if not valid then
+                                        Error DecodeError.MalformedXml
+                                    else
+                                        match
+                                            System.Int64.TryParse(
+                                                text,
+                                                System.Globalization.NumberStyles.AllowLeadingSign,
+                                                System.Globalization.CultureInfo.InvariantCulture
+                                            )
+                                        with
+                                        | true, n -> Ok(DynamicValue.Int n)
+                                        | false, _ -> Error DecodeError.IntegerOverflow)
+                        | "str" ->
+                            if selfClose then
+                                Ok(DynamicValue.String "") // tolerated; fixed-point rejects (canonical is <str></str>)
+                            else
+                                let raw = readTextRun ()
+
+                                unescape raw
+                                |> Result.bind (fun text -> expectClose "str" |> Result.map (fun () -> DynamicValue.String text))
+                        | "arr" ->
+                            if selfClose then
+                                Ok(DynamicValue.Array []) // tolerated; fixed-point rejects
+                            else
+                                let rec loop acc =
+                                    if at () = '<' && pos + 1 < len && xml.[pos + 1] = '/' then
+                                        expectClose "arr" |> Result.map (fun () -> DynamicValue.Array(List.rev acc))
+                                    else
+                                        match parseValue () with
+                                        | Error e -> Error e
+                                        | Ok item -> loop (item :: acc)
+
+                                loop []
+                        | "obj" ->
+                            if selfClose then
+                                Ok(DynamicValue.Object []) // tolerated; fixed-point rejects
+                            else
+                                let rec loop acc =
+                                    if at () = '<' && pos + 1 < len && xml.[pos + 1] = '/' then
+                                        expectClose "obj" |> Result.map (fun () -> DynamicValue.Object(List.rev acc))
+                                    else
+                                        match readTag () with
+                                        | Error e -> Error e
+                                        | Ok(en, eclose, eselfClose, eattrK) ->
+                                            if eclose || en <> "e" || eattrK.IsNone || eselfClose then
+                                                Error DecodeError.MalformedXml
+                                            else
+                                                match parseValue () with
+                                                | Error e -> Error e
+                                                | Ok v ->
+                                                    expectClose "e"
+                                                    |> Result.bind (fun () -> loop ((eattrK.Value, v) :: acc))
+
+                                loop []
+                        | _ -> Error DecodeError.Unsupported // <float>/<bytes> deferred in v1; unknown tags
+
+        match parseValue () with
+        | Error e -> Error e
+        | Ok value ->
+            if pos <> len then
+                Error DecodeError.TrailingData
+            else
+                // canonical fixed-point: a canonical string re-encodes to itself; anything
+                // else (self-closing empties, &#x9; vs &#9;, raw whitespace) is rejected.
+                match toCanonicalXml value with
+                | Ok s when System.String.Equals(s, xml, System.StringComparison.Ordinal) -> Ok value
                 | _ -> Error DecodeError.NonCanonical

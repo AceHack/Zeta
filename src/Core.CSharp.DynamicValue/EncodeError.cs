@@ -14,4 +14,9 @@ public enum EncodeError
 
     /// <summary><see cref="DynamicValue.Bytes"/> has no native JSON byte type.</summary>
     BytesDeferred,
+
+    /// <summary>A <see cref="DynamicValue.String"/> value or <see cref="DynamicValue.Object"/> key
+    /// contains a character XML 1.0 forbids (NUL or a C0 control other than tab/lf/cr) — not
+    /// representable even as a character reference. The XML analogue of the Bytes-not-in-YAML gap.</summary>
+    NotXmlRepresentable,
 }

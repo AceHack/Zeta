@@ -75,8 +75,16 @@ let private cborRoundtrips (dv: DynamicValue) : bool =
     | Ok d -> d = dv
     | Error _ -> false
 
+let private xmlRoundtrips (dv: DynamicValue) : bool =
+    match DynamicValue.toCanonicalXml dv with
+    | Ok x ->
+        match DynamicValue.fromCanonicalXml x with
+        | Ok d -> d = dv
+        | Error _ -> false
+    | Error _ -> false
+
 [<Fact>]
-let ``format-agreement matrix: JSON + CBOR + YAML all commute on DynamicValue (locked shapes)`` () =
+let ``format-agreement matrix: JSON + CBOR + YAML + XML all commute on DynamicValue (locked shapes)`` () =
     let cases =
         [ DynamicValue.Object [ "a", DynamicValue.Int 1L; "b", DynamicValue.String "x"
                                 "n", DynamicValue.Null; "f", DynamicValue.Bool true ]
@@ -84,10 +92,11 @@ let ``format-agreement matrix: JSON + CBOR + YAML all commute on DynamicValue (l
           DynamicValue.Object [ "nested", DynamicValue.Object [ "deep", DynamicValue.Array [ DynamicValue.String "x" ] ] ]
           DynamicValue.Object [ "looksInt", DynamicValue.String "123"; "looksBool", DynamicValue.String "true" ] ]
     for dv in cases do
-        // each format round-trips dv to itself → all three recover the SAME value (commute)
+        // each format round-trips dv to itself → all FOUR recover the SAME value (commute)
         jsonRoundtrips dv |> should equal true
         cborRoundtrips dv |> should equal true
         dvRoundtripsYaml dv |> should equal true
+        xmlRoundtrips dv |> should equal true
 
 // ── PROPERTY-BASED matrix (FsCheck) — generalize the fixed cases above ──
 // The YAML leg is the storage of record (B-1011) but only had example-based tests
@@ -152,10 +161,29 @@ let ``YAML round-trip LAW: ∀ dv (locked subset) — parse ∘ encode = id (sto
     dvRoundtripsYaml (DynamicValue.Object [ "v", v ])
 
 [<Property(Arbitrary = [| typeof<MatrixDvArb> |])>]
-let ``format-agreement matrix LAW: ∀ dv (locked subset) — JSON + CBOR + YAML all commute``
+let ``format-agreement matrix LAW: ∀ dv (locked subset) — JSON + CBOR + YAML + XML all commute``
     (v: DynamicValue) =
     let wrapped = DynamicValue.Object [ "v", v ]
-    jsonRoundtrips wrapped && cborRoundtrips wrapped && dvRoundtripsYaml wrapped
+    jsonRoundtrips wrapped && cborRoundtrips wrapped && dvRoundtripsYaml wrapped && xmlRoundtrips wrapped
+
+// XML round-trip LAW + injectivity (parity with the CBOR / YAML laws). The matrix
+// subset's generated strings (genStrY) contain only XML-1.0-representable chars (no
+// NUL / forbidden C0), so the law holds on the full subset INCLUDING empties — XML's
+// typed elements make empty {} <arr></arr> / <obj></obj> / null distinct by
+// construction (never-collapse free; B-1016's invariant, native to XML).
+[<Property(Arbitrary = [| typeof<MatrixDvArb> |])>]
+let ``XML round-trip LAW: ∀ dv (locked subset) — fromCanonicalXml ∘ toCanonicalXml = id``
+    (v: DynamicValue) =
+    xmlRoundtrips (DynamicValue.Object [ "v", v ])
+
+[<Property(Arbitrary = [| typeof<MatrixDvArb> |])>]
+let ``XML never-collapse: canonical encoding is INJECTIVE on the locked subset (distinct values never share bytes)``
+    (a: DynamicValue) (b: DynamicValue) =
+    // corollary of round-trip, stated directly (parity with the CBOR/YAML injectivity).
+    match DynamicValue.toCanonicalXml (DynamicValue.Object [ "v", a ]),
+          DynamicValue.toCanonicalXml (DynamicValue.Object [ "v", b ]) with
+    | Ok xa, Ok xb -> (xa = xb) = (a = b)
+    | _ -> false
 
 // never-collapse stated DIRECTLY for YAML — parity with the proven CBOR injectivity
 // (`canonical CBOR encoding is INJECTIVE`). YAML is the STORAGE OF RECORD, so its

@@ -252,6 +252,92 @@ impl DynamicValue {
             _ => Err(DecodeError::NonCanonical),
         }
     }
+
+    /// Canonical XML encoding -- the byte-lock target (seed:
+    /// `src/Core.TypeScript/dynamic-value/golden-vectors-xml.json`). Typed-element,
+    /// minified form (one rendering per value):
+    /// `<null/>` / `<bool>true</bool>` / `<int>DECIMAL</int>` / `<str>TEXT</str>` /
+    /// `<arr>CHILD...</arr>` / `<obj><e k="KEY">VALUE</e>...</obj>`. Empty collections
+    /// render distinctly (`<arr></arr>`, `<obj></obj>`, `<str></str>`), never collapsing
+    /// to null. Element TEXT escapes `& < >` and `\t \n \r` as char-refs (`&#9; &#10;
+    /// &#13;`); the key attribute additionally escapes `"`. `Object` keys in INSERTION
+    /// order. v1 locks the same 6 shapes as JSON.
+    ///
+    /// # Errors
+    /// Returns [`EncodeError::FloatDeferred`] / [`EncodeError::BytesDeferred`] for
+    /// `Float`/`Bytes` (DEFERRED to CBOR), and [`EncodeError::NotXmlRepresentable`] for
+    /// a string/key containing NUL or a C0 control other than `\t \n \r` (XML 1.0 forbids
+    /// these even as char-refs -- the XML analogue of Bytes-not-in-YAML). Mirrors the TS
+    /// `canonicalXml` + `XmlEncodeError`.
+    pub fn to_canonical_xml(&self) -> Result<String, EncodeError> {
+        let mut out = String::new();
+        self.write_canonical_xml(&mut out)?;
+        Ok(out)
+    }
+
+    fn write_canonical_xml(&self, out: &mut String) -> Result<(), EncodeError> {
+        match self {
+            DynamicValue::Null => out.push_str("<null/>"),
+            DynamicValue::Bool(b) => out.push_str(if *b { "<bool>true</bool>" } else { "<bool>false</bool>" }),
+            DynamicValue::Int(i) => {
+                out.push_str("<int>");
+                out.push_str(&i.to_string());
+                out.push_str("</int>");
+            }
+            DynamicValue::Float(_) => return Err(EncodeError::FloatDeferred),
+            DynamicValue::String(s) => {
+                out.push_str("<str>");
+                escape_xml_text(s, out)?;
+                out.push_str("</str>");
+            }
+            DynamicValue::Bytes(_) => return Err(EncodeError::BytesDeferred),
+            DynamicValue::Array(items) => {
+                out.push_str("<arr>");
+                for item in items {
+                    item.write_canonical_xml(out)?;
+                }
+                out.push_str("</arr>");
+            }
+            DynamicValue::Object(pairs) => {
+                out.push_str("<obj>");
+                for (k, v) in pairs {
+                    out.push_str("<e k=\"");
+                    escape_xml_attr(k, out)?;
+                    out.push_str("\">");
+                    v.write_canonical_xml(out)?;
+                    out.push_str("</e>");
+                }
+                out.push_str("</obj>");
+            }
+        }
+        Ok(())
+    }
+
+    /// Decode canonical XML emitted by [`to_canonical_xml`](DynamicValue::to_canonical_xml)
+    /// back into a [`DynamicValue`], completing the text<->value round-trip. Strictly
+    /// canonical: a lenient recursive-descent parse, then one fixed-point check
+    /// (`to_canonical_xml() == input`) -- any non-canonical spelling (self-closing empties,
+    /// `&#x9;` vs `&#9;`, raw whitespace, leading zeros) is rejected as
+    /// [`DecodeError::NonCanonical`]. `<float>`/`<bytes>`/unknown tags ->
+    /// [`DecodeError::Unsupported`]. int64-overflow -> [`DecodeError::IntegerOverflow`].
+    ///
+    /// # Errors
+    /// Returns the [`DecodeError`] describing why the input is not a valid canonical-XML
+    /// v1 value. Mirrors the TS `fromCanonicalXml`.
+    pub fn from_canonical_xml(xml: &str) -> Result<DynamicValue, DecodeError> {
+        let chars: Vec<char> = xml.chars().collect();
+        let mut pos = 0usize;
+        let value = parse_xml_value(&chars, &mut pos)?;
+        if pos != chars.len() {
+            return Err(DecodeError::TrailingData);
+        }
+        // canonical fixed-point: a canonical string re-encodes to itself; anything else
+        // (self-closing empties, &#x9; vs &#9;, raw whitespace, leading zeros) is rejected.
+        match value.to_canonical_xml() {
+            Ok(s) if s == xml => Ok(value),
+            _ => Err(DecodeError::NonCanonical),
+        }
+    }
 }
 
 /// Why a [`DynamicValue`] could not be canonically encoded (v1). `Float` and
@@ -264,6 +350,10 @@ pub enum EncodeError {
     FloatDeferred,
     /// `DynamicValue::Bytes` has no native JSON byte type.
     BytesDeferred,
+    /// A string or object key contains a character (NUL or a C0 control other than
+    /// `\t \n \r`) that XML 1.0 cannot represent even as a character reference.
+    /// Surfaced only by [`DynamicValue::to_canonical_xml`].
+    NotXmlRepresentable,
 }
 
 // `EncodeError` is public API (returned from `to_canonical_json`), so it carries
@@ -277,6 +367,9 @@ impl std::fmt::Display for EncodeError {
             }
             EncodeError::BytesDeferred => {
                 "DynamicValue::Bytes has no native JSON byte type yet (deferred to CBOR or a tagged-JSON convention)"
+            }
+            EncodeError::NotXmlRepresentable => {
+                "string or key contains a character not representable in XML 1.0 (NUL or a C0 control other than tab/lf/cr)"
             }
         })
     }
@@ -350,6 +443,246 @@ fn escape_json_string(s: &str, out: &mut String) {
         }
     }
     out.push('"');
+}
+
+// --- canonical XML helpers (mirrors src/Core.TypeScript/dynamic-value/xml.ts) ---
+
+// A char is XML-1.0 forbidden as content iff it is a C0 control other than \t \n \r.
+fn is_forbidden_c0(code: u32) -> bool {
+    code < 0x20 && code != 0x09 && code != 0x0a && code != 0x0d
+}
+
+// Escape element TEXT: & < > as entities; \t \n \r as char-refs; forbidden C0 declines.
+fn escape_xml_text(s: &str, out: &mut String) -> Result<(), EncodeError> {
+    for ch in s.chars() {
+        match ch {
+            '&' => out.push_str("&amp;"),
+            '<' => out.push_str("&lt;"),
+            '>' => out.push_str("&gt;"),
+            '\t' => out.push_str("&#9;"),
+            '\n' => out.push_str("&#10;"),
+            '\r' => out.push_str("&#13;"),
+            c if is_forbidden_c0(c as u32) => return Err(EncodeError::NotXmlRepresentable),
+            c => out.push(c),
+        }
+    }
+    Ok(())
+}
+
+// Escape an attribute value (object key): like text plus " as &quot;.
+fn escape_xml_attr(s: &str, out: &mut String) -> Result<(), EncodeError> {
+    for ch in s.chars() {
+        match ch {
+            '&' => out.push_str("&amp;"),
+            '<' => out.push_str("&lt;"),
+            '>' => out.push_str("&gt;"),
+            '"' => out.push_str("&quot;"),
+            '\t' => out.push_str("&#9;"),
+            '\n' => out.push_str("&#10;"),
+            '\r' => out.push_str("&#13;"),
+            c if is_forbidden_c0(c as u32) => return Err(EncodeError::NotXmlRepresentable),
+            c => out.push(c),
+        }
+    }
+    Ok(())
+}
+
+// Unescape XML content/attribute: inverse of the escapers. Lenient (accepts named +
+// decimal + hex char-refs); the fixed-point check rejects any non-canonical spelling.
+fn unescape_xml(s: &[char]) -> Result<String, DecodeError> {
+    let mut out = String::new();
+    let mut i = 0usize;
+    while i < s.len() {
+        if s[i] != '&' {
+            out.push(s[i]);
+            i += 1;
+            continue;
+        }
+        let semi = (i + 1..s.len()).find(|&j| s[j] == ';').ok_or(DecodeError::Unsupported)?;
+        let ent: String = s[i + 1..semi].iter().collect();
+        match ent.as_str() {
+            "amp" => out.push('&'),
+            "lt" => out.push('<'),
+            "gt" => out.push('>'),
+            "quot" => out.push('"'),
+            "apos" => out.push('\''),
+            _ if ent.starts_with('#') => {
+                let is_hex = ent.starts_with("#x") || ent.starts_with("#X");
+                let digits = if is_hex { &ent[2..] } else { &ent[1..] };
+                if digits.is_empty() {
+                    return Err(DecodeError::Unsupported);
+                }
+                let radix = if is_hex { 16 } else { 10 };
+                let code = u32::from_str_radix(digits, radix).map_err(|_| DecodeError::Unsupported)?;
+                let c = char::from_u32(code).ok_or(DecodeError::Unsupported)?;
+                out.push(c);
+            }
+            _ => return Err(DecodeError::Unsupported),
+        }
+        i = semi + 1;
+    }
+    Ok(out)
+}
+
+struct XmlTag {
+    name: String,
+    close: bool,
+    self_close: bool,
+    attr_k: Option<String>,
+}
+
+// Read a `<...>` tag at `*pos` (must point at '<'). Mirrors readTag.
+fn read_xml_tag(s: &[char], pos: &mut usize) -> Result<XmlTag, DecodeError> {
+    if s.get(*pos) != Some(&'<') {
+        return Err(DecodeError::Unsupported);
+    }
+    *pos += 1;
+    let mut close = false;
+    if s.get(*pos) == Some(&'/') {
+        close = true;
+        *pos += 1;
+    }
+    let name_start = *pos;
+    while *pos < s.len() && s[*pos].is_ascii_lowercase() {
+        *pos += 1;
+    }
+    let name: String = s[name_start..*pos].iter().collect();
+    if name.is_empty() {
+        return Err(DecodeError::Unsupported);
+    }
+    let mut attr_k: Option<String> = None;
+    if s.get(*pos) == Some(&' ') {
+        *pos += 1;
+        let prefix: String = s.get(*pos..*pos + 3).map(|c| c.iter().collect()).unwrap_or_default();
+        if prefix != "k=\"" {
+            return Err(DecodeError::Unsupported);
+        }
+        *pos += 3;
+        let v_start = *pos;
+        while *pos < s.len() && s[*pos] != '"' {
+            *pos += 1;
+        }
+        if *pos >= s.len() {
+            return Err(DecodeError::UnexpectedEnd);
+        }
+        attr_k = Some(unescape_xml(&s[v_start..*pos])?);
+        *pos += 1; // closing quote
+    }
+    let mut self_close = false;
+    if s.get(*pos) == Some(&'/') {
+        self_close = true;
+        *pos += 1;
+    }
+    if s.get(*pos) != Some(&'>') {
+        return Err(DecodeError::Unsupported);
+    }
+    *pos += 1;
+    Ok(XmlTag { name, close, self_close, attr_k })
+}
+
+// Read raw text (still-escaped) up to the next '<'.
+fn read_xml_text_run(s: &[char], pos: &mut usize) -> Vec<char> {
+    let start = *pos;
+    while *pos < s.len() && s[*pos] != '<' {
+        *pos += 1;
+    }
+    s[start..*pos].to_vec()
+}
+
+fn expect_xml_close(s: &[char], pos: &mut usize, name: &str) -> Result<(), DecodeError> {
+    let tag = read_xml_tag(s, pos)?;
+    if !tag.close || tag.name != name || tag.self_close {
+        return Err(DecodeError::Unsupported);
+    }
+    Ok(())
+}
+
+fn parse_xml_value(s: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+    if s.get(*pos) != Some(&'<') {
+        return Err(DecodeError::Unsupported);
+    }
+    let tag = read_xml_tag(s, pos)?;
+    if tag.close {
+        return Err(DecodeError::Unsupported);
+    }
+    match tag.name.as_str() {
+        "null" => {
+            if !tag.self_close {
+                return Err(DecodeError::Unsupported);
+            }
+            Ok(DynamicValue::Null)
+        }
+        "bool" => {
+            if tag.self_close {
+                return Err(DecodeError::Unsupported);
+            }
+            let text: String = read_xml_text_run(s, pos).iter().collect();
+            expect_xml_close(s, pos, "bool")?;
+            match text.as_str() {
+                "true" => Ok(DynamicValue::Bool(true)),
+                "false" => Ok(DynamicValue::Bool(false)),
+                _ => Err(DecodeError::Unsupported),
+            }
+        }
+        "int" => {
+            if tag.self_close {
+                return Err(DecodeError::Unsupported);
+            }
+            let text: String = read_xml_text_run(s, pos).iter().collect();
+            expect_xml_close(s, pos, "int")?;
+            let bytes = text.as_bytes();
+            let valid = !bytes.is_empty()
+                && {
+                    let digits = if bytes[0] == b'-' { &bytes[1..] } else { bytes };
+                    !digits.is_empty() && digits.iter().all(u8::is_ascii_digit)
+                };
+            if !valid {
+                return Err(DecodeError::Unsupported);
+            }
+            match text.parse::<i64>() {
+                Ok(i) => Ok(DynamicValue::Int(i)),
+                Err(_) => Err(DecodeError::IntegerOverflow),
+            }
+        }
+        "str" => {
+            if tag.self_close {
+                return Ok(DynamicValue::String(String::new())); // tolerated; fixed-point rejects
+            }
+            let run = read_xml_text_run(s, pos);
+            let text = unescape_xml(&run)?;
+            expect_xml_close(s, pos, "str")?;
+            Ok(DynamicValue::String(text))
+        }
+        "arr" => {
+            if tag.self_close {
+                return Ok(DynamicValue::Array(Vec::new())); // tolerated; fixed-point rejects
+            }
+            let mut items = Vec::new();
+            while !(s.get(*pos) == Some(&'<') && s.get(*pos + 1) == Some(&'/')) {
+                items.push(parse_xml_value(s, pos)?);
+            }
+            expect_xml_close(s, pos, "arr")?;
+            Ok(DynamicValue::Array(items))
+        }
+        "obj" => {
+            if tag.self_close {
+                return Ok(DynamicValue::Object(Vec::new())); // tolerated; fixed-point rejects
+            }
+            let mut pairs = Vec::new();
+            while !(s.get(*pos) == Some(&'<') && s.get(*pos + 1) == Some(&'/')) {
+                let e_tag = read_xml_tag(s, pos)?;
+                if e_tag.close || e_tag.name != "e" || e_tag.attr_k.is_none() || e_tag.self_close {
+                    return Err(DecodeError::Unsupported);
+                }
+                let val = parse_xml_value(s, pos)?;
+                expect_xml_close(s, pos, "e")?;
+                pairs.push((e_tag.attr_k.expect("attr_k present"), val));
+            }
+            expect_xml_close(s, pos, "obj")?;
+            Ok(DynamicValue::Object(pairs))
+        }
+        _ => Err(DecodeError::Unsupported), // <float>/<bytes> deferred; unknown tags
+    }
 }
 
 // CBOR initial byte (major type in the top 3 bits) + preferred/shortest argument

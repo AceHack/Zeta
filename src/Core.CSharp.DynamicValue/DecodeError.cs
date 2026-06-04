@@ -28,4 +28,10 @@ public enum DecodeError
     /// invalid UTF-8 silently repaired to U+FFFD. Detected by the fixed-point check
     /// <c>ToCanonicalCbor(decoded) == input</c>; canonical bytes are exactly those fixed points.</summary>
     NonCanonical,
+
+    /// <summary>The input is not well-formed for the canonical XML grammar — a malformed tag,
+    /// entity, or structure the lenient XML parser cannot read (the XML analogue of a syntax
+    /// error). Distinct from <see cref="NonCanonical"/>, which is well-formed but not the one
+    /// canonical spelling.</summary>
+    MalformedXml,
 }
