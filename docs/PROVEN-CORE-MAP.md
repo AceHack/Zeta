@@ -46,7 +46,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 |---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
 | 1 | **Clock / causal order** | `src/Core/Clock.fs` | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only (total-order instance) |
 | 2 | **Identity / keys** | `src/Core.*.ZetaId` | ✗ | ✓ | partial | ✗ | ✗ | ✗ | 4-lang validated; math leg open |
-| 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✗ | ? | ✗ | ✗ | ✗ | ✗ | present; unproven |
+| 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` | ✓ (ACI+identity+LUB; GCounter over state) | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
 | 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓; sketches ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (byte-cost) only |
