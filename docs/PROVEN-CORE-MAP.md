@@ -21,16 +21,39 @@ replayable homeostat            (converges to fixpoint — the goal)
   ↑ serialization seed          (golden vectors → 4 lang + 4 formats + Arrow + Rx/Bonsai)
 ```
 
+## What "PROVEN" means (Aaron's bar — 2026-06-04)
+
+A primitive is **PROVEN** only when ALL legs are green — not when the F# math
+leg alone passes. Over-badging the math leg as "proven" is the failure mode
+(Amara's blade: prove the smallest scope honestly, badge only that, widen one law
+at a time). The legs:
+
+| Leg | What it means |
+|-----|---------------|
+| **math** | F# Z3 / FsCheck proof of the laws (the math leg only) |
+| **4-lang** | TS + F# + C# + Rust agree (byte-lock / cross-verify) |
+| **4-ser** | the 4 serializers agree on it |
+| **Bonsai** | tied into the Bonsai (animation / reactive) layer |
+| **Arrow** | tied into the Arrow (columnar memory) layer |
+| **homeostat** | tied to an existing homeostat (proven-from-seed) |
+
+`PROVEN ⟺ math ∧ 4-lang ∧ 4-ser ∧ Bonsai ∧ Arrow ∧ homeostat.` Anything less is
+named by the legs it has (e.g. "math-leg only", "math + 4-lang").
+
 ## The floor (named primitives the spine rests on — prove these first)
 
-| # | Primitive | Where | Status | Anchor |
-|---|-----------|-------|--------|--------|
-| 1 | **Clock / causal order** | `src/Core/Clock.fs` | **PROVEN** ✓ (Z3 total-order + FsCheck + DST replay) | FoundationDB versionstamp · Lamport 1978 · Rx IScheduler |
-| 2 | **Identity / keys** | `src/Core.*.ZetaId` | **VALIDATED** (4-lang byte-lock); formal-proof leg open | content-address / ZetaId |
-| 3 | **Hash-chain / Merkle integrity** | `src/Core/Merkle.fs` | present; proof open | Merkle 1987 · git SHA DAG |
-| 4 | **Join-semilattice / CRDT merge + idempotency** | `src/Core/Crdt.fs`, `GSet.fs` | **in progress** (this commit) | Shapiro et al. CRDTs |
-| 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | **PROVEN/byte-locked** ✓ | golden vectors / seed-first |
-| 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost monoid proven; sketch merge-laws open | OTel · Bloom 1970 · Count-Min 2005 · HLL 2007 |
+| # | Primitive | Where | math | 4-lang | 4-ser | Bonsai | Arrow | homeostat | Verdict |
+|---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
+| 1 | **Clock / causal order** | `src/Core/Clock.fs` | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only (total-order instance) |
+| 2 | **Identity / keys** | `src/Core.*.ZetaId` | ✗ | ✓ | partial | ✗ | ✗ | ✗ | 4-lang validated; math leg open |
+| 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✗ | ? | ✗ | ✗ | ✗ | ✗ | present; unproven |
+| 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` | ✓ (ACI+identity+LUB; GCounter over state) | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only |
+| 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
+| 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓; sketches ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (byte-cost) only |
+
+**Nothing on this floor is PROVEN by the full bar yet.** The math leg is started
+for clock / CRDT / byte-cost; 4-lang holds for identity / byte-cost / serialization.
+The remaining legs (4-ser, Bonsai, Arrow, homeostat-tie) are open across the board.
 
 ## Time is a family, not one clock (no global causal order)
 

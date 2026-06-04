@@ -65,6 +65,16 @@ let ``Z3 proves join is commutative`` () =
 let ``Z3 proves join is associative`` () =
     z3Holds "associative" "(= (j (j a b) c) (j a (j b c)))"
 
+// ACI is the heart, but LEAST-UPPER-BOUND is what justifies "merge" as
+// convergence, not merely a nice operator. a ≤ b := (a ⊔ b = b).
+[<Fact>]
+let ``Z3 proves join is an upper bound (a ≤ a⊔b and b ≤ a⊔b)`` () =
+    z3Holds "upper-bound" "(and (<= a (j a b)) (<= b (j a b)))"
+
+[<Fact>]
+let ``Z3 proves join is the LEAST upper bound (a≤c ∧ b≤c ⇒ a⊔b ≤ c)`` () =
+    z3Holds "least-upper-bound" "(=> (and (<= a c) (<= b c)) (<= (j a b) c))"
+
 
 // ════════════════════════════════════════════════════════════════════
 // 2. FsCheck — the join laws on the REAL G-Set union (the bottom rung).
@@ -89,6 +99,21 @@ let ``G-Set Zero is the merge identity`` (xs: int list) =
     let a = g xs
     a + GSet<int>.Zero = a && GSet<int>.Zero + a = a
 
+// LUB on the real G-Set: a ≤ b := (a ⊔ b = b). Upper-bound + least-upper-bound
+// are what make union a JOIN (convergence), not just a commutative-idempotent
+// monoid — Amara's blade: ACI is the heart, LUB justifies "merge".
+let private leq (a: GSet<int>) (b: GSet<int>) : bool = a + b = b
+
+[<Property>]
+let ``G-Set join is an upper bound of both operands`` (xs: int list) (ys: int list) =
+    let a, b = g xs, g ys
+    leq a (a + b) && leq b (a + b)
+
+[<Property>]
+let ``G-Set join is the LEAST upper bound`` (xs: int list) (ys: int list) (zs: int list) =
+    let a, b, c = g xs, g ys, g zs
+    not (leq a c && leq b c) || leq (a + b) c
+
 
 // ════════════════════════════════════════════════════════════════════
 // 3. Convergence — the payoff: fold-merge reaches the SAME LUB regardless of
@@ -108,17 +133,21 @@ let ``merge is duplicate-insensitive (re-delivering a state changes nothing)`` (
     // delivering b twice == delivering it once (idempotent redelivery)
     (a + b) + b = a + b
 
+// G-Counter proven over STATE (the per-replica Counts ZSet), NOT just .Value —
+// Amara's catch: a .Value-only check masks per-replica structural bugs. GCounter
+// has [<NoEquality>], so compare its underlying ZSet<string> (which IS structurally
+// equatable). Merge = elementwise max per replica = a join-semilattice on state.
 [<Property>]
-let ``G-Counter merge is idempotent, commutative, and convergent`` (ops: (string * int) list) =
-    // build two counters from disjoint perspectives, then merge both ways
+let ``G-Counter merge is ACI over per-replica STATE (not just .Value)`` (ops: (string * int) list) =
     let build (pick: int -> bool) =
         ops
         |> List.indexed
         |> List.filter (fun (i, _) -> pick i)
-        |> List.fold (fun (c: GCounter) (_, (r, d)) -> c.Increment(r, int64 (abs d % 1000))) GCounter.Empty
-    let a = build (fun i -> i % 2 = 0)
-    let b = build (fun i -> i % 2 = 1)
-    let m1 = GCounter.Merge a b
-    let m2 = GCounter.Merge b a
-    // commutative (same value) + idempotent (merging the result with a changes nothing)
-    m1.Value = m2.Value && (GCounter.Merge m1 a).Value = m1.Value
+        |> List.fold (fun (c: GCounter) (_, (r, d)) -> c.Increment((if r = "" then "r0" else r), int64 (abs d % 1000))) GCounter.Empty
+    let a = build (fun i -> i % 3 = 0)
+    let b = build (fun i -> i % 3 = 1)
+    let c = build (fun i -> i % 3 = 2)
+    let idempotent = (GCounter.Merge a a).Counts = a.Counts
+    let commutative = (GCounter.Merge a b).Counts = (GCounter.Merge b a).Counts
+    let associative = (GCounter.Merge (GCounter.Merge a b) c).Counts = (GCounter.Merge a (GCounter.Merge b c)).Counts
+    idempotent && commutative && associative
