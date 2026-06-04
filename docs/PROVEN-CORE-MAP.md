@@ -68,9 +68,13 @@ not the mechanism). A key is a **composite ordered key**:
 
 ⇒ lookups are **ordered index range-scans, NOT hash point-lookups** — order is
 preserved, which is what makes the time-ordered curve/history range-scannable.
-⇒ **proof is a MATRIX: per id-version × per category** (each layout = its own
-spec: uniqueness, time-ordering, recursive extensibility, optimal bit-use). Not
-one monolithic proof. ZetaId has 4-lang byte-lock; per-cell math legs are open.
+⇒ **proof is a MATRIX: per id-version × per category × per key-type** (each
+layout = its own spec: uniqueness, time-ordering, recursive extensibility, optimal
+bit-use). Not one monolithic proof.
+⇒ keys are **238 bits**, **many key types** partition the bit-space, guarded by
+**F# units-of-measure** so wrong-key-type code won't compile and a proof scoped to
+one key type can't be applied to another (UoM-as-category-tag). ZetaId has 4-lang
+byte-lock; per-key-type math legs + the UoM guard are open.
 
 ## Time is a family, not one clock (no global causal order)
 
