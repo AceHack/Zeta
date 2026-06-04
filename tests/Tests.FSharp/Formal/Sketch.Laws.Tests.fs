@@ -78,3 +78,48 @@ let ``CMS Union is NOT idempotent (sum doubles) — it is a monoid, not a join``
     let snap = Array.copy a.Table
     a.Union(cms nonEmpty)
     a.Table <> snap
+
+
+// ── Deterministic error-DIRECTION guarantees (the safe half of the bounds).
+//    The probabilistic MAGNITUDE bounds (Bloom FP-rate, CMS ε/δ) are NOT proven
+//    here — they need empirical/probabilistic treatment. These one-sided laws are
+//    deterministic and always hold. ──
+
+let private bloom (xs: uint64 list) =
+    let b = BlockedBloomFilter(64, 4)
+    for x in xs do b.Add(x)
+    b
+
+[<Property>]
+let ``Bloom never gives a false negative (added keys always MayContain)`` (xs: uint64 list) =
+    let b = bloom xs
+    List.forall (fun (x: uint64) -> b.MayContain(x)) xs
+
+[<Property>]
+let ``Bloom MergeFrom is idempotent at bit state (OR join)`` (xs: uint64 list) =
+    let a = bloom xs
+    let snap = Array.copy a.Table
+    a.MergeFrom(bloom xs)
+    a.Table = snap
+
+[<Property>]
+let ``Bloom MergeFrom is commutative at bit state`` (xs: uint64 list) (ys: uint64 list) =
+    let ab = bloom xs in ab.MergeFrom(bloom ys)
+    let ba = bloom ys in ba.MergeFrom(bloom xs)
+    ab.Table = ba.Table
+
+[<Property>]
+let ``Bloom merge preserves membership of BOTH inputs (union upper bound)`` (xs: uint64 list) (ys: uint64 list) =
+    let a = bloom xs
+    a.MergeFrom(bloom ys)
+    List.forall (fun (x: uint64) -> a.MayContain(x)) xs && List.forall (fun (y: uint64) -> a.MayContain(y)) ys
+
+[<Property>]
+let ``CMS never undercounts (estimate ≥ true frequency — one-sided error)`` (items: uint64 list) =
+    let c = CountMinSketch(8, 64, 7L)
+    for h in items do c.Add(h, 1L)
+    items
+    |> List.distinct
+    |> List.forall (fun h ->
+        let trueCount = items |> List.filter ((=) h) |> List.length |> int64
+        c.Estimate(h) >= trueCount)
