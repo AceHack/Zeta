@@ -56,11 +56,16 @@ const STORE = "tools/observe/context-cost-trend.jsonl";
 
 function measureNow(): Array<{ harness: string; bytes: number }> {
   return MANIFESTS.map((m) => {
-    const paths = m.globs
-      .flatMap((g) => (g.includes("*") ? [...new Glob(g).scanSync({ cwd: ".", dot: true })] : existsSync(g) ? [g] : []))
-      .sort();
-    const files = paths.map((p) => ({ path: p, text: readFileSync(p, "utf8") }));
-    return { harness: m.harness, bytes: measureHarness(m.harness, files).total.bytes };
+    const files = m.surfaces.flatMap((s) => {
+      const paths = s.glob.includes("*")
+        ? [...new Glob(s.glob).scanSync({ cwd: ".", dot: true })]
+        : existsSync(s.glob)
+          ? [s.glob]
+          : [];
+      return paths.sort().map((p) => ({ path: p, text: readFileSync(p, "utf8"), mode: s.mode }));
+    });
+    // Record RESIDENT cold-boot bytes (what actually loads at startup).
+    return { harness: m.harness, bytes: measureHarness(m.harness, files).resident.bytes };
   });
 }
 

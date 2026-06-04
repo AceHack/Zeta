@@ -2,7 +2,7 @@
   "tolerance": 0.1,
   "harnesses": {
     "claude-code": {
-      "total": 16693
+      "resident": 26402
     }
   }
 }
