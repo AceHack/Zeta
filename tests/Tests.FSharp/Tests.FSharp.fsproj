@@ -136,6 +136,7 @@
 
     <!-- Formal/ -->
     <Compile Include="Formal/Z3.Laws.Tests.fs" />
+    <Compile Include="Formal/ByteCost.Laws.Tests.fs" />
     <Compile Include="Formal/Tlc.Runner.Tests.fs" />
     <Compile Include="Formal/Alloy.Runner.Tests.fs" />
     <Compile Include="Formal/Sharder.InfoTheoretic.Tests.fs" />
