@@ -8,22 +8,31 @@ Carved sentence:
 > in the shared checkout. Concurrent writers + shifting shared-stash indices
 > corrupt each other's work; `git pull` to refresh the view, nothing else.
 
-## Persona = identity; worktree = isolation; clone = the per-persona store
+## Clone = per writer/loop/ticksource; persona = its owner
 
 Two separate axes:
-- **Identity is persona-based, not surface/tick-source.** You commit as your
+- **The clone is per writer/loop/ticksource** — the unit that actually writes
+  concurrently. Each loop/ticksource gets its OWN clone (its private working tree).
+  Two writers never share a tree (that's the shared-stash race). Coordinate only
+  through `origin/main`.
+- **The persona is the OWNER/identity** of that writer — you commit as your
   persona (`<persona>/*` branch namespace, AgencySignature `persona=`, ZetaId
-  persona field) regardless of which harness/CLI/tick woke you. One **clone per
-  persona** (`~/.local/share/zeta-<persona>`).
-- **Isolation is per concurrent instance.** The hazard is *two writers in one
-  tree*, so the unit of isolation is the working tree, not the persona. If a
-  persona runs >1 instance at once, each instance needs its OWN **`git worktree`**
-  off the persona clone (shared object store, separate working dir + index +
-  stash) — two instances of the same persona must never share one tree.
+  persona field) regardless of which harness/CLI woke the writer. Identity is
+  persona-based; the clone is writer-based.
 
-So: clone per persona, worktree per concurrent instance, coordinate only through
-`origin/main`. Composes the worktree-pool primitive (B-0558) + the Agent tool's
-`isolation: worktree`.
+So **one persona owns MANY clones** — one per loop/ticksource it runs. Live
+example: persona Lior owns `~/.local/share/zeta-lior-control` +
+`~/.local/share/zeta-lior-loop` (two writers, two clones). Otto's first writer
+clone is `~/.local/share/zeta-otto`. Composes the worktree-pool primitive (B-0558)
++ the Agent tool's `isolation: worktree` (worktrees are the cheap-disk variant of
+the same per-writer isolation).
+
+**The unique writer signature = persona ⊕ location/surface/ticksource.** Persona
+alone isn't unique (many writers); persona + surface is. This is already the
+system's shape: AgencySignature = `persona=` (owner) + `Agent-Runtime`/surface
+(which writer); ZetaId = Persona field + Location field + Timestamp (the same
+composite uniqueness, encoded in the 128-bit key — so the clock-embedded key IS
+this signature).
 
 ## Why
 
