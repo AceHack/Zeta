@@ -361,6 +361,29 @@ public static class YamlReader
             return (true, default);
         }
 
+        // B-1016: an UNQUOTED value token of exactly {} / [] is an EMPTY flow collection --
+        // emit the empty container event-pair (not a scalar), so empty map / empty seq / null
+        // stay three distinct states across the round-trip (never-collapse). General flow
+        // ({a: b}, [1,2]) remains out of subset (declines via ParseValue). A quoted "{}" is a
+        // String (starts with ", never matches here).
+        public (bool ok, YamlFeedback feedback) EmitValueOrEmptyFlow(string value)
+        {
+            string token = StripTrailingComment(value).TrimEnd();
+            if (string.Equals(token, "{}", StringComparison.Ordinal))
+            {
+                _events.Add(new YamlEvent.MappingStart());
+                _events.Add(new YamlEvent.MappingEnd());
+                return (true, default);
+            }
+            if (string.Equals(token, "[]", StringComparison.Ordinal))
+            {
+                _events.Add(new YamlEvent.SequenceStart());
+                _events.Add(new YamlEvent.SequenceEnd());
+                return (true, default);
+            }
+            return EmitValue(value);
+        }
+
         public void PopAll()
         {
             while (_stack.Count > 0)
@@ -420,7 +443,7 @@ public static class YamlReader
 
             if (inner.Value.Value is not null)
             {
-                var (valOk, valFb) = s.EmitValue(inner.Value.Value);
+                var (valOk, valFb) = s.EmitValueOrEmptyFlow(inner.Value.Value);
                 if (!valOk) return valFb;
             }
             else
@@ -434,8 +457,8 @@ public static class YamlReader
         }
         else
         {
-            // plain scalar item
-            var (valOk, valFb) = s.EmitValue(itemContent);
+            // plain scalar item (or empty flow {} / [])
+            var (valOk, valFb) = s.EmitValueOrEmptyFlow(itemContent);
             if (!valOk) return valFb;
         }
         return null;
@@ -452,7 +475,7 @@ public static class YamlReader
 
         if (entry.Value.Value is not null)
         {
-            var (valOk, valFb) = s.EmitValue(entry.Value.Value);
+            var (valOk, valFb) = s.EmitValueOrEmptyFlow(entry.Value.Value);
             if (!valOk) return valFb;
         }
         else

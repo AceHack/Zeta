@@ -309,6 +309,24 @@ function scan(text: string): YamlEvent[] {
     events.push({ e: "Scalar", raw: parsed.raw, kind: parsed.kind, style: parsed.style });
   };
 
+  // B-1016: an UNQUOTED value token of exactly `{}` / `[]` is an EMPTY flow collection
+  // — emit the empty container event-pair (not a scalar), so empty map / empty seq /
+  // null stay three distinct states across the round-trip (never-collapse). General
+  // flow (`{a: b}`, `[1,2]`) remains out of subset (declines via parseValue). A quoted
+  // `"{}"` is a String (starts with `"`, never matches here).
+  const emitValueOrEmptyFlow = (value: string): void => {
+    const token = stripTrailingComment(value).trimEnd();
+    if (token === "{}") {
+      events.push({ e: "MappingStart" });
+      events.push({ e: "MappingEnd" });
+    } else if (token === "[]") {
+      events.push({ e: "SequenceStart" });
+      events.push({ e: "SequenceEnd" });
+    } else {
+      emitValue(value);
+    }
+  };
+
   for (let li = 0; li < lines.length; li++) {
     const { indent, text: body } = lines[li]!;
 
@@ -350,7 +368,7 @@ function scan(text: string): YamlEvent[] {
         pushContainer(mapIndent, "Mapping");
         emitKey(innerEntry.key);
         if (innerEntry.value !== null) {
-          emitValue(innerEntry.value);
+          emitValueOrEmptyFlow(innerEntry.value);
         } else {
           const childIndent = childIndentAt(li);
           if (childIndent > mapIndent) {
@@ -362,7 +380,7 @@ function scan(text: string): YamlEvent[] {
         continue;
       }
 
-      emitValue(itemContent); // plain scalar item
+      emitValueOrEmptyFlow(itemContent); // plain scalar item (or empty flow {} / [])
       continue;
     }
 
@@ -371,7 +389,7 @@ function scan(text: string): YamlEvent[] {
     if (!entry) throw new DeclineError("UnsupportedConstruct");
     emitKey(entry.key);
     if (entry.value !== null) {
-      emitValue(entry.value);
+      emitValueOrEmptyFlow(entry.value);
     } else {
       const childIndent = childIndentAt(li);
       if (childIndent > indent) {

@@ -72,4 +72,43 @@ public class EncoderTests
             Assert.True(Roundtrips(v));
         }
     }
+
+    // B-1016 "flow-empty": empty map / empty seq / null are THREE DISTINCT states. Empty
+    // collections render INLINE as flow {} / [] (block style cannot carry an empty container);
+    // each round-trips to itself (never-collapse).
+    [Fact]
+    public void EmptyCollectionsRenderInlineFlowAndStayDistinct()
+    {
+        var emptyMap = Map(("v", new YamlValue.YMap(new List<KeyValuePair<string, YamlValue>>())));
+        var emptySeq = Map(("v", new YamlValue.YSeq(new List<YamlValue>())));
+        var nullVal = Map(("v", YamlValue.YNull.Instance));
+
+        // Encoded forms.
+        Assert.Equal("\"v\": {}\n", YamlEncoder.Encode(emptyMap));
+        Assert.Equal("\"v\": []\n", YamlEncoder.Encode(emptySeq));
+        Assert.Equal("\"v\": null\n", YamlEncoder.Encode(nullVal));
+
+        // All three distinct.
+        var encMap = YamlEncoder.Encode(emptyMap);
+        var encSeq = YamlEncoder.Encode(emptySeq);
+        var encNull = YamlEncoder.Encode(nullVal);
+        Assert.NotEqual(encMap, encSeq);
+        Assert.NotEqual(encMap, encNull);
+        Assert.NotEqual(encSeq, encNull);
+
+        // Each round-trips to itself, and the parsed value carries the right kind.
+        Assert.True(Roundtrips(emptyMap));
+        Assert.True(Roundtrips(emptySeq));
+        Assert.True(Roundtrips(nullVal));
+
+        var pMap = YamlDom.Parse(encMap);
+        var pSeq = YamlDom.Parse(encSeq);
+        var pNull = YamlDom.Parse(encNull);
+        Assert.True(pMap.Ok && pSeq.Ok && pNull.Ok);
+        var mapInner = Assert.IsType<YamlValue.YMap>(((YamlValue.YMap)pMap.Value!).Entries[0].Value);
+        var seqInner = Assert.IsType<YamlValue.YSeq>(((YamlValue.YMap)pSeq.Value!).Entries[0].Value);
+        Assert.Empty(mapInner.Entries);
+        Assert.Empty(seqInner.Items);
+        Assert.IsType<YamlValue.YNull>(((YamlValue.YMap)pNull.Value!).Entries[0].Value);
+    }
 }

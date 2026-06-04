@@ -438,5 +438,123 @@
     {
       "e": "StreamEnd"
     }
+  ],
+  "empty-flow-map-value": [
+    {
+      "e": "StreamStart"
+    },
+    {
+      "e": "MappingStart"
+    },
+    {
+      "e": "Scalar",
+      "raw": "a",
+      "kind": "Str",
+      "style": "Plain"
+    },
+    {
+      "e": "MappingStart"
+    },
+    {
+      "e": "MappingEnd"
+    },
+    {
+      "e": "MappingEnd"
+    },
+    {
+      "e": "StreamEnd"
+    }
+  ],
+  "empty-flow-seq-value": [
+    {
+      "e": "StreamStart"
+    },
+    {
+      "e": "MappingStart"
+    },
+    {
+      "e": "Scalar",
+      "raw": "a",
+      "kind": "Str",
+      "style": "Plain"
+    },
+    {
+      "e": "SequenceStart"
+    },
+    {
+      "e": "SequenceEnd"
+    },
+    {
+      "e": "MappingEnd"
+    },
+    {
+      "e": "StreamEnd"
+    }
+  ],
+  "empty-flow-map-in-seq": [
+    {
+      "e": "StreamStart"
+    },
+    {
+      "e": "SequenceStart"
+    },
+    {
+      "e": "MappingStart"
+    },
+    {
+      "e": "MappingEnd"
+    },
+    {
+      "e": "SequenceEnd"
+    },
+    {
+      "e": "StreamEnd"
+    }
+  ],
+  "empty-flow-seq-in-seq": [
+    {
+      "e": "StreamStart"
+    },
+    {
+      "e": "SequenceStart"
+    },
+    {
+      "e": "SequenceStart"
+    },
+    {
+      "e": "SequenceEnd"
+    },
+    {
+      "e": "SequenceEnd"
+    },
+    {
+      "e": "StreamEnd"
+    }
+  ],
+  "empty-flow-encoder-form-quoted-key": [
+    {
+      "e": "StreamStart"
+    },
+    {
+      "e": "MappingStart"
+    },
+    {
+      "e": "Scalar",
+      "raw": "v",
+      "kind": "Str",
+      "style": "DoubleQuoted"
+    },
+    {
+      "e": "MappingStart"
+    },
+    {
+      "e": "MappingEnd"
+    },
+    {
+      "e": "MappingEnd"
+    },
+    {
+      "e": "StreamEnd"
+    }
   ]
 }

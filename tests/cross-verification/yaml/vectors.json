@@ -155,6 +155,69 @@
         { "e": "MappingEnd" },
         { "e": "StreamEnd" }
       ]
+    },
+    {
+      "id": "empty-flow-map-value",
+      "yaml": "a: {}\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "a", "kind": "Str", "style": "Plain" },
+        { "e": "MappingStart" },
+        { "e": "MappingEnd" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "empty-flow-seq-value",
+      "yaml": "a: []\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "a", "kind": "Str", "style": "Plain" },
+        { "e": "SequenceStart" },
+        { "e": "SequenceEnd" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "empty-flow-map-in-seq",
+      "yaml": "- {}\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "SequenceStart" },
+        { "e": "MappingStart" },
+        { "e": "MappingEnd" },
+        { "e": "SequenceEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "empty-flow-seq-in-seq",
+      "yaml": "- []\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "SequenceStart" },
+        { "e": "SequenceStart" },
+        { "e": "SequenceEnd" },
+        { "e": "SequenceEnd" },
+        { "e": "StreamEnd" }
+      ]
+    },
+    {
+      "id": "empty-flow-encoder-form-quoted-key",
+      "yaml": "\"v\": {}\n",
+      "expected": [
+        { "e": "StreamStart" },
+        { "e": "MappingStart" },
+        { "e": "Scalar", "raw": "v", "kind": "Str", "style": "DoubleQuoted" },
+        { "e": "MappingStart" },
+        { "e": "MappingEnd" },
+        { "e": "MappingEnd" },
+        { "e": "StreamEnd" }
+      ]
     }
   ]
 }

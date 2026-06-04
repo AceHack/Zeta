@@ -403,6 +403,25 @@ module Reader =
                 Ok()
             | Error f -> Error f
 
+        /// B-1016: an UNQUOTED value token of exactly `{}` / `[]` is an EMPTY flow
+        /// collection -- emit the empty container event-pair (not a scalar), so empty map
+        /// / empty seq / null stay three distinct states across the round-trip
+        /// (never-collapse). General flow (`{a: b}`, `[1,2]`) remains out of subset
+        /// (declines via parseValue). A quoted `"{}"` is a String (starts with `"`, never
+        /// matches here). Used at VALUE sites only; keys are never affected.
+        member this.EmitValueOrEmptyFlow(value: string) : Result<unit, YamlFeedback> =
+            let token = (stripTrailingComment value).TrimEnd()
+            if token = "{}" then
+                events.Add(MappingStart)
+                events.Add(MappingEnd)
+                Ok()
+            elif token = "[]" then
+                events.Add(SequenceStart)
+                events.Add(SequenceEnd)
+                Ok()
+            else
+                this.EmitValue(value)
+
         member _.PopAll() =
             while stack.Count > 0 do
                 let frame = stack.[stack.Count - 1]
@@ -478,7 +497,7 @@ module Reader =
                                     | Ok() ->
                                         match inner.Value with
                                         | Some v ->
-                                            match s.EmitValue(v) with
+                                            match s.EmitValueOrEmptyFlow(v) with
                                             | Error f -> feedback <- Some f
                                             | Ok() -> ()
                                         | None ->
@@ -487,7 +506,8 @@ module Reader =
                                                 s.PushContainer(childIndent, peekChildKind lines li childIndent)
                                             | _ -> s.EmitNull()
                                 | None ->
-                                    match s.EmitValue(itemContent) with // plain scalar item
+                                    // plain scalar item (or empty flow {} / [])
+                                    match s.EmitValueOrEmptyFlow(itemContent) with
                                     | Error f -> feedback <- Some f
                                     | Ok() -> ()
                         else
@@ -500,7 +520,7 @@ module Reader =
                                 | Ok() ->
                                     match entry.Value with
                                     | Some v ->
-                                        match s.EmitValue(v) with
+                                        match s.EmitValueOrEmptyFlow(v) with
                                         | Error f -> feedback <- Some f
                                         | Ok() -> ()
                                     | None ->

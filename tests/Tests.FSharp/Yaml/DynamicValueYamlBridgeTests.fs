@@ -121,10 +121,10 @@ let private matrixLeaf =
           Gen.map DynamicValue.Int genInt64Y
           Gen.map DynamicValue.String genStrY ]
 
-// NOTE: collections are generated NON-EMPTY (n ≥ 1). Empty Object/Array are a known
-// canonical-block-YAML representability gap — see the KNOWN GAP fact below — so the
-// round-trip LAW is scoped to its real domain (non-empty), and the empty case is
-// pinned separately as a characterization, not silently swept under the generator.
+// Collections are generated INCLUDING EMPTY (n ≥ 0): B-1016 landed flow `{}` / `[]`
+// across all four languages, so empty Object/Array now round-trip distinct from null
+// (never-collapse). The round-trip LAW therefore covers the full domain, empties
+// included; the explicit never-collapse fact below proves the empty case directly.
 let private buildMatrix : Gen<DynamicValue> =
     let rec aux (size: int) : Gen<DynamicValue> =
         if size <= 0 then
@@ -132,15 +132,13 @@ let private buildMatrix : Gen<DynamicValue> =
         else
             Gen.oneof
                 [ matrixLeaf
-                  gen { let! n = Gen.choose (1, 3)
+                  gen { let! n = Gen.choose (0, 3)
                         let! items = Gen.listOfLength n (aux (size / 2))
                         return DynamicValue.Array items }
-                  gen { let! n = Gen.choose (1, 3)
+                  gen { let! n = Gen.choose (0, 3)
                         let! rawKeys = Gen.listOfLength n genStrY
                         // Object is order-significant with UNIQUE keys.
                         let keys = List.distinct rawKeys
-                        // List.distinct can drop the count below 1; refill is unneeded
-                        // because an Object with ≥1 raw key keeps ≥1 distinct key.
                         let! vals = Gen.listOfLength keys.Length (aux (size / 2))
                         return DynamicValue.Object(List.zip keys vals) } ]
     Gen.sized aux
@@ -169,28 +167,25 @@ let ``format-agreement matrix LAW: ∀ dv (locked subset) — JSON + CBOR + YAML
 [<Property(Arbitrary = [| typeof<MatrixDvArb> |])>]
 let ``YAML never-collapse: canonical encoding is INJECTIVE on the locked subset (distinct values never share bytes)``
     (a: DynamicValue) (b: DynamicValue) =
-    (encode (dvToYaml a) = encode (dvToYaml b)) = (a = b)
+    // Tested as map VALUES (the storage domain), matching the round-trip LAW. A
+    // top-level BARE empty `{}` / `[]` both render to a bare document (the reader
+    // rejects bare-scalar/bare-empty top-level documents — the same pre-existing
+    // top-level-bare-document gap noted in EncoderRoundTripTests, orthogonal to
+    // B-1016 which is about empties as VALUES). Wrapping isolates injectivity to the
+    // real storage case, where empty `{}` / `[]` / null are three distinct bytes.
+    let wa = DynamicValue.Object [ "v", a ]
+    let wb = DynamicValue.Object [ "v", b ]
+    (encode (dvToYaml wa) = encode (dvToYaml wb)) = (wa = wb)
 
-// REQUIRED never-collapse (B-1016) — found by the FsCheck properties above; minimal
-// case Object []. Serialization must NEVER collapse two states that are actually
-// different (SQL-null-as-monad-propagator; tri-boolean everywhere; `Some [] ≠ None`):
-// empty `[]`, empty `{}`, and `null` are THREE distinct states and MUST round-trip
-// distinctly — i.e. canonical encode must be INJECTIVE (the property already proven
-// for CBOR; JSON+CBOR goldens carry array-empty/object-empty). Canonical BLOCK YAML
-// currently collapses `{}` / `[]` → a bare `"key":` → parsed back as null, merging
-// three distinct states. This is a BUG, not an acceptable gap.
-//
-// FIX (B-1016, deliberate — NOT done unilaterally here): canonical YAML emits flow
-// `{}` / `[]` for empties (the one necessary, unambiguous flow exception) — a spec
-// change touching the scanner (Reader), the DOM fold (Dom), the encoder, and the
-// cross-verification vectors, coordinated across ALL FOUR oracles (TS/F#/Rust + the
-// C# encoder) so the faithful-port + byte-lock treaty stays intact.
-//
-// Skipped (not failing) so the build gate stays green while the cross-lang fix is
-// scheduled; asserts the REQUIRED behavior, so the day B-1016 lands this un-skips and
-// proves never-collapse for empties. The non-empty round-trip LAW above already holds.
-[<Fact(Skip = "B-1016: canonical YAML must emit flow {} / [] so empty collections round-trip distinct from null (never-collapse / encode-injective); cross-lang scanner+dom+encoder+cross-verify change owed")>]
-let ``REQUIRED never-collapse: empty {} and [] round-trip DISTINCT from null and from each other`` () =
+// never-collapse (B-1016, LANDED) — serialization must NEVER collapse two states
+// that are actually different (SQL-null-as-monad-propagator; tri-boolean everywhere;
+// `Some [] ≠ None`): empty `[]`, empty `{}`, and `null` are THREE distinct states and
+// round-trip distinctly — canonical encode is INJECTIVE (parity with CBOR; JSON+CBOR
+// goldens carry array-empty/object-empty). B-1016 landed canonical YAML flow `{}` /
+// `[]` across all four oracles (TS reference + F#/Rust/C# ports + cross-verify), so
+// block YAML no longer collapses empties to a bare `"key":` → null. This proves it.
+[<Fact>]
+let ``never-collapse (B-1016): empty {} and [] round-trip DISTINCT from null and from each other`` () =
     let rt (dv: DynamicValue) =
         match parse (encode (dvToYaml dv)) with
         | Ok y -> Some(yamlToDv y)

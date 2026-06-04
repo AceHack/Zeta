@@ -42,6 +42,12 @@ fn scalar(v: &YamlValue) -> Option<String> {
         YamlValue::Int(i) => Some(i.to_string()),
         YamlValue::Float(f) => Some(force_float(*f)),
         YamlValue::Str(s) => Some(quote(s)),
+        // Empty collections render INLINE as flow `{}` / `[]` (B-1016): block style
+        // cannot represent an empty map/seq, so without this `{}`, `[]`, and null all
+        // collapse to a bare `key:` -> null. The one necessary flow exception; non-empty
+        // containers still render as block (return None -> recurse).
+        YamlValue::Map(entries) if entries.is_empty() => Some("{}".to_string()),
+        YamlValue::Seq(items) if items.is_empty() => Some("[]".to_string()),
         YamlValue::Seq(_) | YamlValue::Map(_) => None,
     }
 }
@@ -160,5 +166,29 @@ mod tests {
         for v in &cases {
             assert!(roundtrips(v));
         }
+    }
+
+    // B-1016: empty map `{}`, empty seq `[]`, and null are THREE DISTINCT states; each
+    // encodes to its own inline form and round-trips to itself (never-collapse).
+    #[test]
+    fn empty_flow_three_distinct_states_round_trip() {
+        let empty_map = YamlValue::Map(vec![("v".into(), YamlValue::Map(vec![]))]);
+        let empty_seq = YamlValue::Map(vec![("v".into(), YamlValue::Seq(vec![]))]);
+        let null_val = YamlValue::Map(vec![("v".into(), YamlValue::Null)]);
+
+        // Each encodes to its own inline form.
+        assert_eq!(encode(&empty_map), "\"v\": {}\n");
+        assert_eq!(encode(&empty_seq), "\"v\": []\n");
+        assert_eq!(encode(&null_val), "\"v\": null\n");
+
+        // Each parses back equal to itself.
+        assert_eq!(parse(&encode(&empty_map)).unwrap(), empty_map);
+        assert_eq!(parse(&encode(&empty_seq)).unwrap(), empty_seq);
+        assert_eq!(parse(&encode(&null_val)).unwrap(), null_val);
+
+        // All three are DISTINCT (no collapse).
+        assert_ne!(empty_map, empty_seq);
+        assert_ne!(empty_map, null_val);
+        assert_ne!(empty_seq, null_val);
     }
 }

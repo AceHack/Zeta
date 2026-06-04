@@ -13,8 +13,9 @@
 //   - null/bool/int rendered plain; float via invariant "R" with a forced "." so it
 //     resolves back to Float (e.g. 1.0 not 1). Culture-INVARIANT throughout.
 //
-// Scope (v1): scalars, maps, sequences, arbitrary nesting. Empty map/seq have no
-// pure block-YAML form (only flow `{}`/`[]`, which the parser rejects) — out of v1.
+// Scope: scalars, maps, sequences, arbitrary nesting. Empty map/seq have no pure
+// block-YAML form, so they render INLINE as flow `{}`/`[]` (B-1016) — the one
+// necessary flow exception, round-tripping distinct from null and from each other.
 module Zeta.Core.FSharp.Yaml.Encoder
 
 open System.Globalization
@@ -48,6 +49,12 @@ let private scalar (v: YamlValue) : string option =
         let looksFloat = r |> Seq.exists (fun c -> c = '.' || c = 'e' || c = 'E')
         Some(if looksFloat then r else r + ".0")
     | VStr s -> Some(quote s)
+    // Empty collections render INLINE as flow `{}` / `[]` (B-1016): block style
+    // cannot represent an empty map/seq, so without this `{}`, `[]`, and null all
+    // collapse to a bare `key:` -> null. The one necessary flow exception; non-empty
+    // containers still return None -> recurse as block.
+    | VMap [] -> Some "{}"
+    | VSeq [] -> Some "[]"
     | VSeq _
     | VMap _ -> None
 

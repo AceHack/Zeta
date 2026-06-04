@@ -49,7 +49,13 @@ public static class YamlEncoder
         YamlValue.YInt i => i.Value.ToString(CultureInfo.InvariantCulture),
         YamlValue.YFloat f => ForceFloat(f.Value),
         YamlValue.YStr s => Quote(s.Value),
-        _ => null, // YSeq / YMap
+        // Empty collections render INLINE as flow {} / [] (B-1016): block style cannot
+        // represent an empty map/seq, so without this {}, [], and null all collapse to a
+        // bare key: -> null. The one necessary flow exception; non-empty containers still
+        // render as block (return null -> recurse).
+        YamlValue.YMap m => m.Entries.Count == 0 ? "{}" : null,
+        YamlValue.YSeq seq => seq.Items.Count == 0 ? "[]" : null,
+        _ => null,
     };
 
     private static void Emit(int indent, YamlValue v, List<string> lines)

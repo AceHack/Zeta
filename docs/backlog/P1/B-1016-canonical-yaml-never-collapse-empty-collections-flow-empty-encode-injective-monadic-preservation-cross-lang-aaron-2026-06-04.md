@@ -1,5 +1,16 @@
 # B-1016 — Canonical YAML must never-collapse empty collections (flow `{}` / `[]`)
 
+> **✅ LANDED 2026-06-04.** Implemented across all four oracles (TS reference +
+> F#/Rust/C# ports): encoder emits inline flow `{}` / `[]` for empties; reader
+> tokenizes `{}` / `[]` value tokens into empty container event-pairs; DOM unchanged.
+> 5 cross-verify vectors added (`empty-flow-*`), 4-way `compare.ts` agreement on 15
+> vectors. F# `DynamicValueYamlBridgeTests` never-collapse fact un-skipped + green;
+> round-trip + injectivity properties restored to include empties. Full solution
+> build 0 warnings. NOTE: top-level *bare* empty documents remain out-of-subset (the
+> pre-existing bare-document parser gap; empties as VALUES — the storage case — fully
+> round-trip). Schema-mode absent→null completion (Aaron's later nuance) is a separate
+> decode-time concern, not this wire fix.
+
 **Priority:** P1 (correctness — storage-of-record format violates encode-injectivity)
 **Filed:** 2026-06-04 (Aaron) — found by FsCheck on the new YAML round-trip property
 (`DynamicValueYamlBridgeTests`, minimal case `Object []`).

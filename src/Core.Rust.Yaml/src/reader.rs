@@ -478,6 +478,28 @@ impl Scanner {
         });
         Ok(())
     }
+
+    // B-1016: an UNQUOTED value token of exactly `{}` / `[]` is an EMPTY flow collection
+    // -- emit the empty container event-pair (not a scalar), so empty map / empty seq /
+    // null stay three distinct states across the round-trip (never-collapse). General
+    // flow (`{a: b}`, `[1,2]`) remains out of subset (declines via parse_value). A quoted
+    // `"{}"` is a String (starts with `"`, never matches here).
+    fn emit_value_or_empty_flow(&mut self, value: &str) -> Result<(), YamlFeedback> {
+        let token = strip_trailing_comment(value).trim_end();
+        match token {
+            "{}" => {
+                self.events.push(YamlEvent::MappingStart);
+                self.events.push(YamlEvent::MappingEnd);
+                Ok(())
+            }
+            "[]" => {
+                self.events.push(YamlEvent::SequenceStart);
+                self.events.push(YamlEvent::SequenceEnd);
+                Ok(())
+            }
+            _ => self.emit_value(value),
+        }
+    }
 }
 
 /// Peek the next line's indent (or `None` if there is no next content line).
@@ -561,7 +583,7 @@ fn scan(text: &str) -> Result<Vec<YamlEvent>, YamlFeedback> {
                 s.push_container(map_indent, ContainerKind::Mapping);
                 s.emit_key(&inner.key)?;
                 match inner.value {
-                    Some(v) => s.emit_value(&v)?,
+                    Some(v) => s.emit_value_or_empty_flow(&v)?,
                     None => match child_indent_at(&lines, li) {
                         Some(child_indent) if child_indent > map_indent => {
                             s.push_container(child_indent, peek_child_kind(&lines, li, child_indent));
@@ -572,7 +594,7 @@ fn scan(text: &str) -> Result<Vec<YamlEvent>, YamlFeedback> {
                 continue;
             }
 
-            s.emit_value(item_content)?; // plain scalar item
+            s.emit_value_or_empty_flow(item_content)?; // plain scalar item (or empty flow {} / [])
             continue;
         }
 
@@ -583,7 +605,7 @@ fn scan(text: &str) -> Result<Vec<YamlEvent>, YamlFeedback> {
         };
         s.emit_key(&entry.key)?;
         match entry.value {
-            Some(v) => s.emit_value(&v)?,
+            Some(v) => s.emit_value_or_empty_flow(&v)?,
             None => match child_indent_at(&lines, li) {
                 Some(child_indent) if child_indent > indent => {
                     s.push_container(child_indent, peek_child_kind(&lines, li, child_indent));
