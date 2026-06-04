@@ -132,9 +132,9 @@ External formal review surfaced 5 gaps; status:
    Z3 models ℤ (logical), impl uses `Checked.(+)` → throws at Int64.Max/Min
    (boundary tested, no silent wrap). Same `Checked` pattern in CRDT/byte-cost;
    full BitVec64 modeling is optional extra rigor.
-2. **Scalar-to-map CRDT** — open: Z3 proves the scalar `max` join; the pointwise
-   lift over a map (G-Counter) is FsCheck-validated (state-level) but not yet
-   Z3-proven (the lifting lemma).
+2. **Scalar-to-map CRDT** — ◑ representative finite pointwise-map Z3 proof added
+   (2-key map: pointwise max is ACI + LUB per key); full arbitrary-map induction
+   (Lean-tier) still open. G-Counter state-merge also FsCheck-validated.
 3. **Sketch dimensionality** — ✅ fixed: Bloom `MergeFrom` now guards both m AND
    k (CMS already guarded depth/width/seed); mismatch throws (tested).
 4. **Bayesian BP/EP metric scale-sensitivity** — ✅ routed to B-1007 (Soraya
