@@ -13,6 +13,13 @@
 // Connects the proven primitives into one self-consistent whole: clock
 // (versionstamp), CRDT merge (the join), actor addresses (persona⊕surface⊕
 // instance⊕topology). Rides the existing heartbeat-via-commit substrate. NCI-safe.
+//
+// DELIVERY-SEMANTICS PAYOFF: because the merge is idempotent + commutative +
+// associative, DUPLICATE deliveries can't change the fixpoint — so the bus needs
+// only AT-LEAST-ONCE delivery, NOT the famously-hard/expensive exactly-once.
+// Idempotent merge makes at-least-once sufficient for eventual consistency (the
+// idempotency discipline cashing out). The bus may redeliver freely; convergence
+// is unharmed.
 
 /** An actor's bus address: persona ⊕ surface/loop ⊕ instance ⊕ machine/node/cluster. */
 export type ActorAddress = string;
