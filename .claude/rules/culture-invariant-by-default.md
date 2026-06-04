@@ -40,6 +40,14 @@ control-char/special replica keys the merge state is non-associative. A
 state-level CRDT test (Otto 2026-06-04) falsified on exactly this. Culture-aware
 comparison is a UI/display concern — opt in at the edge, never in the substrate.
 
+**Deeper why (Aaron 2026-06-04):** "this way low-level byte/order/uom won't cause
+our AI to crash into humans." Byte-perfect + culture-invariant collation + UoM
+safety is the lowest layer of the common-ground safety thesis (extend proven
+ground = autonomy AND safety): make bytes/order/units provably identical across
+oracles and legible to humans so a representation mismatch can't compound into
+behavior that collides with a person — the Mars Climate Orbiter failure (lbf vs N)
+generalized to AI↔human. Get the bytes right so the morals can stand on them.
+
 ## Pointers
 
 - B-0969 — the G-Set/CRDT Comparer.Default culture gap (the canonical instance)
