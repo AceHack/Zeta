@@ -125,6 +125,24 @@ The clock is an injectable family behind `IScheduler` (B-0684 negotiation stack)
   append-only / un-rewritable (Merkle + no-force-push), so the derived
   curve/curvature are trustworthy.
 
+## Known math-leg gaps (Lior review 2026-06-04)
+
+External formal review surfaced 5 gaps; status:
+1. **Z3 Int vs machine int64 (overflow blindspot)** — ✅ addressed for clock:
+   Z3 models ℤ (logical), impl uses `Checked.(+)` → throws at Int64.Max/Min
+   (boundary tested, no silent wrap). Same `Checked` pattern in CRDT/byte-cost;
+   full BitVec64 modeling is optional extra rigor.
+2. **Scalar-to-map CRDT** — open: Z3 proves the scalar `max` join; the pointwise
+   lift over a map (G-Counter) is FsCheck-validated (state-level) but not yet
+   Z3-proven (the lifting lemma).
+3. **Sketch dimensionality** — ✅ fixed: Bloom `MergeFrom` now guards both m AND
+   k (CMS already guarded depth/width/seed); mismatch throws (tested).
+4. **Bayesian BP/EP metric scale-sensitivity** — open: max-abs-diff on natural
+   params is scale-dependent; route to B-1007 (KL-divergence or scaled tolerance).
+5. **ZetaId ordering caveat** — partially: proven within a version (Version is the
+   top field); cross-version is version-first by layout, so time-series range
+   scans must partition by Version. Documented in Canonical.Tests.fs.
+
 ## Relation to the larger primitives wishlist
 
 [`docs/PRIMITIVE-REGISTRY.md`](PRIMITIVE-REGISTRY.md) (tracked by **B-0959**) is

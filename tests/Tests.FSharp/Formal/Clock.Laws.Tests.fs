@@ -122,6 +122,24 @@ let ``run is strictly increasing — append order embeds clock order`` (seed: in
     Array.forall (fun i -> stamps.[i].Version < stamps.[i + 1].Version) [| 0 .. stamps.Length - 2 |]
 
 
+// MACHINE-BOUNDARY (Lior review 2026-06-04, gap #1): the Z3 proofs above model the
+// LOGICAL clock over unbounded ℤ (correct for the model), but the impl runs on
+// int64. The honest closure: the impl is NOT blind to the machine boundary — tick
+// uses Checked.(+), so at Int64.MaxValue it THROWS (OverflowException) rather than
+// silently wrapping to a smaller stamp (which would violate monotonicity + corrupt
+// ordering). The boundary is guarded + tested; full BitVec64 modeling is optional
+// extra rigor noted in the map.
+[<Fact>]
+let ``tick at Int64.MaxValue throws (Checked guards the machine boundary, no silent wrap)`` () =
+    let atMax = Versionstamp.ofInt64 System.Int64.MaxValue
+    Assert.Throws<OverflowException>(fun () -> Versionstamp.tick atMax |> ignore) |> ignore
+
+[<Fact>]
+let ``delay at Int64.MinValue throws (Checked guards underflow)`` () =
+    let atMin = Versionstamp.ofInt64 System.Int64.MinValue
+    Assert.Throws<OverflowException>(fun () -> Versionstamp.delay atMin |> ignore) |> ignore
+
+
 // ════════════════════════════════════════════════════════════════════
 // 3. DST replay — Scheduler.run agrees with the shared seed (deterministic
 //    timeline; the 4-language-replayable golden vectors).
