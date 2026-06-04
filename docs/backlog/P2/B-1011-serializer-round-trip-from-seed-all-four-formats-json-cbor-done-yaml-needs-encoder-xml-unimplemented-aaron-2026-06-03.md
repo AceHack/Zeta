@@ -132,3 +132,18 @@ the full matrix + Arrow-as-serializer are the larger owed work under this doctri
 - **Polymorphic type system (Aaron 2026-06-04):** a whole polymorphic type system
   sits ON TOP of this value/serializer substrate — prove AFTER the serializer
   basics + the matrix land (forward work, not now).
+
+## Serializer configuration (Aaron 2026-06-04) — Options/IConfiguration pattern
+
+Serializers take CONFIG pushed into the constructor as a config object (.NET
+IOptions / IConfiguration shape; DI). **Default = STATIC one-time configuration**
+(immutable at construction). **Real-time updates** (IOptionsMonitor live reload)
+are a FUTURE option — only if we decide to do real-time config AND prove it. Until
+then the canonical defaults ARE the static config. (Current encoders are pure
+canonical-default fns; grow a config object as options appear.)
+
+## Cross-language YAML: F# + TS agree (2026-06-04)
+
+`src/Core.TypeScript/yaml/encoder.ts` is an exact mirror of the F# encoder —
+byte-identical canonical output (cross-lang byte-lock tests: TS encode === F#
+encode). F# ✓ + TS ✓; C#/Rust YAML encoders next, then the full format matrix.
