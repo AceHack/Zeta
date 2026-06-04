@@ -2,6 +2,17 @@
 
 **P0 · money-floor · 2026-06-04 · Aaron**
 
+> **STATUS 2026-06-04: proof arc SHIPPED (folders-on-main).** minimize (MEMORY.md
+> hub, CLAUDE.md razor, generalized carved-sentence rule) → meter (ByteCost,
+> proven F# Z3/FsCheck, 4-oracle byte-lock TS/F#/C#/Rust, registered in
+> cross-verify-all) → drift-alert/DORA (`tools/observe/context-cost.ts`
+> `--check`/`--kpi`, baseline 16693B) → orthogonality proof
+> (`tools/observe/orthogonality.ts` + `Jaccard.Laws.Tests.fs`; live rules corpus
+> IS an orthogonal basis, max J=0.050). "green" defined in `docs/BUILD-GATES.md`.
+> Remaining future work: bytes→tokens calibration; other (harness × surface)
+> manifests beyond claude-code; wire `--kpi` into a persisted DORA trend store;
+> surfaces-as-DSL-into-observe.ts (refinement C).
+
 > "context window minimization should be our most rigorous proofs minimization
 > that's not coercive to the AI follows our NCI. this will save us money, I just
 > got fired for the 200k spend." — "This is all on my money now."
