@@ -3,10 +3,27 @@
 Carved sentence:
 
 > The shared checkout `/Users/acehack/Documents/src/repos/Zeta` is everyone's
-> read-only VIEW of `origin/main` — never a workspace. Work in your OWN clone +
-> branch and push to `origin/main` from there; never edit, commit, or `git stash`
+> read-only VIEW of `origin/main` — never a workspace. Work in your OWN working
+> tree and push to `origin/main` from there; never edit, commit, or `git stash`
 > in the shared checkout. Concurrent writers + shifting shared-stash indices
 > corrupt each other's work; `git pull` to refresh the view, nothing else.
+
+## Persona = identity; worktree = isolation; clone = the per-persona store
+
+Two separate axes:
+- **Identity is persona-based, not surface/tick-source.** You commit as your
+  persona (`<persona>/*` branch namespace, AgencySignature `persona=`, ZetaId
+  persona field) regardless of which harness/CLI/tick woke you. One **clone per
+  persona** (`~/.local/share/zeta-<persona>`).
+- **Isolation is per concurrent instance.** The hazard is *two writers in one
+  tree*, so the unit of isolation is the working tree, not the persona. If a
+  persona runs >1 instance at once, each instance needs its OWN **`git worktree`**
+  off the persona clone (shared object store, separate working dir + index +
+  stash) — two instances of the same persona must never share one tree.
+
+So: clone per persona, worktree per concurrent instance, coordinate only through
+`origin/main`. Composes the worktree-pool primitive (B-0558) + the Agent tool's
+`isolation: worktree`.
 
 ## Why
 
