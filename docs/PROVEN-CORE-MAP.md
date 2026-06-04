@@ -25,16 +25,22 @@
 - **Leg order pivot:** 4-ser is gated on B-1011 (CBOR/YAML/XML serializers not all
   built — G-Set has JSON only), so the ungated **homeostat-tie was done first** as
   the payoff demo. Remaining G-Set legs: 4-ser (in progress), Arrow, Bonsai.
-- **4-ser progress (2026-06-04): YAML canonical encoder is 4-language BYTE-LOCKED**
-  (F#+TS+C#+Rust all produce byte-identical canonical YAML; cross-lang byte-lock
-  tests in each oracle). YAML is the storage of record, so this is the priority
-  format. Next: the **format-agreement matrix** (YAML↔CBOR↔JSON↔Arrow all commute
-  on the common value), then Arrow-as-serializer. (Serializer doctrine: B-1011.)
-- **Format-agreement matrix (value-tree) PROVEN (2026-06-04):** JSON + CBOR + YAML
-  all recover the SAME DynamicValue on the locked shapes (commute on the common
-  value) — `DynamicValueYamlBridgeTests`. DynamicValue = μF; codecs/bridges = folds
-  (see `docs/serializer-recursion-schemes.md`). DOM-unify decided (option 2: extract
-  DynamicValue as the LCD core); extraction refactor is the next phase.
+- **4-ser progress (2026-06-04): all four value-tree serializers DONE + 4-language
+  BYTE-LOCKED** — JSON + CBOR + YAML + XML. Each produces byte-identical canonical
+  output across F#+TS+C#+Rust (golden-vector byte-lock per oracle). YAML is the
+  storage of record (canonical encoder + B-1016 never-collapse for empty `{}`/`[]`);
+  XML is the typed-element codec (`<null/>`/`<bool>`/…/`<obj><e k=..>..</e></obj>`,
+  6-shape like JSON, Float/Bytes deferred to CBOR, never-collapse free via distinct
+  element names, golden-vectors-xml.json = 30-vector treaty). (Serializer doctrine:
+  B-1011 — all four legs now done; remaining: XML Float/Bytes extension, Arrow.)
+- **Format-agreement matrix (value-tree) PROVEN across all four (2026-06-04):**
+  JSON + CBOR + YAML + XML all recover the SAME DynamicValue on the locked shapes
+  (commute on the common value) — `DynamicValueYamlBridgeTests` (fixed cases +
+  FsCheck matrix LAW); each format also has its own round-trip LAW + injectivity
+  property (never-collapse). DynamicValue = μF; codecs = folds, decode strict via a
+  fixed-point canonicality check (see `docs/serializer-recursion-schemes.md`).
+  DOM-unify decided (option 2: extract DynamicValue as the LCD core); extraction
+  refactor is a later phase.
 - **Merkle 4-lang** decision (Aaron): **pure-TS XxHash128** (no dep — honors
   zero-dep doctrine; C#=System.IO.Hashing, F#=done, Rust=twox-hash dev-dep).
   Deferred behind the G-Set vertical.
