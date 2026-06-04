@@ -29,10 +29,11 @@
   BYTE-LOCKED** — JSON + CBOR + YAML + XML. Each produces byte-identical canonical
   output across F#+TS+C#+Rust (golden-vector byte-lock per oracle). YAML is the
   storage of record (canonical encoder + B-1016 never-collapse for empty `{}`/`[]`);
-  XML is the typed-element codec (`<null/>`/`<bool>`/…/`<obj><e k=..>..</e></obj>`,
-  6-shape like JSON, Float/Bytes deferred to CBOR, never-collapse free via distinct
-  element names, golden-vectors-xml.json = 30-vector treaty). (Serializer doctrine:
-  B-1011 — all four legs now done; remaining: XML Float/Bytes extension, Arrow.)
+  XML is the typed-element codec (`<null/>`/`<bool>`/…/`<float>`/`<bytes>`/`<obj><e
+  k=..>..</e></obj>`, now **TOTAL 8/8** like CBOR — Float=16-hex IEEE-754 f64 bits,
+  Bytes=lowercase hex; never-collapse free via distinct element names — 5 distinct
+  empties; golden-vectors-xml.json = 47-vector treaty). (Serializer doctrine: B-1011
+  — all four legs done + total-or-documented-partial; remaining: Arrow-as-serializer.)
 - **Format-agreement matrix (value-tree) PROVEN across all four (2026-06-04):**
   JSON + CBOR + YAML + XML all recover the SAME DynamicValue on the locked shapes
   (commute on the common value) — `DynamicValueYamlBridgeTests` (fixed cases +
