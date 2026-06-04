@@ -36,14 +36,18 @@ let ``CountMinSketch handles retractions via median`` () =
     // +5 then -2 for "x" → 3.
     cms.Add("x", 5L)
     cms.Add("x", -2L)
-    let est = cms.EstimateMedian(
-        // Mix the deterministic XxHash3 of "x" with the
-        // SplitMix64 golden-ratio multiplier; any 64-bit input
-        // through `SplitMix64.mix` gives uniform avalanche.
-        // See `src/Core/SplitMix64.fs` for the constant rationale.
-        SplitMix64.mix (detStringHash "x"))
-    // Just verify it ran — for single-key the result should be in range.
-    est |> should be (greaterThanOrEqualTo 0L)
+    let est = cms.EstimateMedian "x"
+    est |> should equal 3L
+
+
+[<Fact>]
+let ``CountMinSketch handles bytes and overloads correctly`` () =
+    let cms = CountMinSketch(depth = 5, width = 256, seed = 42L)
+    let bytes = System.Text.Encoding.UTF8.GetBytes "hello"
+    cms.AddBytes(ReadOnlySpan bytes, 10L)
+    cms.AddBytes(ReadOnlySpan bytes, -3L)
+    cms.EstimateBytes(ReadOnlySpan bytes) |> should equal 7L
+    cms.EstimateMedianBytes(ReadOnlySpan bytes) |> should equal 7L
 
 
 [<Fact>]

@@ -107,6 +107,10 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
         z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
         this.Estimate(z ^^^ (z >>> 31))
 
+    /// Hash a byte span directly to estimate frequency.
+    member this.EstimateBytes(bytes: ReadOnlySpan<byte>) : int64 =
+        this.Estimate(XxHash3.HashToUInt64 bytes)
+
     /// Median-row estimate — robust to retractions. At the cost of a
     /// `depth`-sized sort per query, gives an unbiased estimator even
     /// when weights go negative.
@@ -118,6 +122,18 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
         Array.sortInPlace buf
         if depth % 2 = 1 then buf.[depth / 2]
         else (buf.[depth / 2 - 1] + buf.[depth / 2]) / 2L
+
+    /// Convenience: hash `value` with `HashCode.Combine` then estimate median.
+    member this.EstimateMedian(value: 'T) : int64 =
+        let h32 = HashCode.Combine value |> uint64
+        let mutable z = h32 * 0x9E3779B97F4A7C15UL
+        z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
+        z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
+        this.EstimateMedian(z ^^^ (z >>> 31))
+
+    /// Hash a byte span directly to estimate median frequency.
+    member this.EstimateMedianBytes(bytes: ReadOnlySpan<byte>) : int64 =
+        this.EstimateMedian(XxHash3.HashToUInt64 bytes)
 
     /// Merge another CMS into this one — **linear** merge. Both sketches
     /// must share the same `depth`, `width`, and `seed` (so hash

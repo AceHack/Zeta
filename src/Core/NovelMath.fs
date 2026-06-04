@@ -164,7 +164,8 @@ type HyperMinHash(logBuckets: int) =
     // = rank (≤ 64), low 24 bits = truncated min-hash for Jaccard.
     let slots = Array.zeroCreate<uint32> m
 
-    let addHash (hash: uint64) =
+    [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
+    member _.AddHash(hash: uint64) =
         let bucket = int (hash >>> (64 - logBuckets))
         let rest = (hash <<< logBuckets) ||| (1UL <<< (logBuckets - 1))
         let rank = min 63 (System.Numerics.BitOperations.LeadingZeroCount rest + 1)
@@ -173,12 +174,25 @@ type HyperMinHash(logBuckets: int) =
         let packed = (uint32 rank <<< 24) ||| minHashBits
         if packed > slots.[bucket] then slots.[bucket] <- packed
 
-    member _.Add(value: 'T) =
+    [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
+    member this.Add(value: 'T) =
         let h32 = HashCode.Combine value |> uint64
         let mutable z = h32 * 0x9E3779B97F4A7C15UL
         z <- (z ^^^ (z >>> 30)) * 0xBF58476D1CE4E5B9UL
         z <- (z ^^^ (z >>> 27)) * 0x94D049BB133111EBUL
-        addHash (z ^^^ (z >>> 31))
+        this.AddHash (z ^^^ (z >>> 31))
+
+    [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
+    member this.AddBytes(bytes: ReadOnlySpan<byte>) =
+        this.AddHash (XxHash3.HashToUInt64 bytes)
+
+    /// Merge another HyperMinHash sketch (same bucket count).
+    member _.Union(other: HyperMinHash) =
+        if other.LogBuckets <> logBuckets then
+            invalidArg (nameof other) "logBuckets mismatch"
+        let o : uint32 array = other.Slots
+        for i in 0 .. m - 1 do
+            if o.[i] > slots.[i] then slots.[i] <- o.[i]
 
     /// Cardinality estimate — HLL-compatible formula over the rank
     /// portion of each slot.
