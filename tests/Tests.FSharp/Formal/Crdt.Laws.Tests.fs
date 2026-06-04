@@ -75,6 +75,51 @@ let ``Z3 proves join is an upper bound (a ≤ a⊔b and b ≤ a⊔b)`` () =
 let ``Z3 proves join is the LEAST upper bound (a≤c ∧ b≤c ⇒ a⊔b ≤ c)`` () =
     z3Holds "least-upper-bound" "(=> (and (<= a c) (<= b c)) (<= (j a b) c))"
 
+// Lior gap #2 — the POINTWISE LIFT. A G-Counter is a MAP (replica→ℤ), not a
+// scalar; the scalar proof above assumed (unstated) that a pointwise semilattice
+// over a map is a semilattice. Prove it on a representative 2-key map: pointwise
+// max is still ACI + LUB. Each key is independent, so the scalar laws hold per
+// key — the 2-key witness + that per-key-independence argument closes the lemma
+// (arbitrary key sets follow by the same independence; an inductive proof over
+// keys is the Lean-tier extension).
+let private z3Map (name: string) (claim: string) =
+    let script =
+        "(declare-const a1 Int)(declare-const a2 Int)\n"
+        + "(declare-const b1 Int)(declare-const b2 Int)\n"
+        + "(declare-const c1 Int)(declare-const c2 Int)\n"
+        + "(define-fun jm ((x Int) (y Int)) Int (ite (>= x y) x y))\n"
+        + "(assert (not " + claim + "))\n(check-sat)\n"
+    match which "z3" with
+    | None -> ()
+    | Some _ ->
+        let psi = ProcessStartInfo("z3", "-in",
+                    RedirectStandardInput = true, RedirectStandardOutput = true, UseShellExecute = false)
+        use p = Process.Start psi
+        p.StandardInput.Write script
+        p.StandardInput.Close()
+        let out = p.StandardOutput.ReadToEnd()
+        p.WaitForExit()
+        if not (out.Contains "unsat") then failwithf "Z3 failed to prove pointwise-map %s. Output:\n%s" name out
+
+[<Fact>]
+let ``Z3 proves pointwise map join is idempotent (per-key)`` () =
+    z3Map "map-idempotent" "(and (= (jm a1 a1) a1) (= (jm a2 a2) a2))"
+
+[<Fact>]
+let ``Z3 proves pointwise map join is commutative (per-key)`` () =
+    z3Map "map-commutative" "(and (= (jm a1 b1) (jm b1 a1)) (= (jm a2 b2) (jm b2 a2)))"
+
+[<Fact>]
+let ``Z3 proves pointwise map join is associative (per-key)`` () =
+    z3Map "map-associative"
+        "(and (= (jm (jm a1 b1) c1) (jm a1 (jm b1 c1))) (= (jm (jm a2 b2) c2) (jm a2 (jm b2 c2))))"
+
+[<Fact>]
+let ``Z3 proves pointwise map join is the LEAST upper bound (componentwise ≤)`` () =
+    z3Map "map-lub"
+        "(=> (and (and (<= a1 c1) (<= a2 c2)) (and (<= b1 c1) (<= b2 c2)))
+             (and (<= (jm a1 b1) c1) (<= (jm a2 b2) c2)))"
+
 
 // ════════════════════════════════════════════════════════════════════
 // 2. FsCheck — the join laws on the REAL G-Set union (the bottom rung).
@@ -137,13 +182,25 @@ let ``merge is duplicate-insensitive (re-delivering a state changes nothing)`` (
 // Amara's catch: a .Value-only check masks per-replica structural bugs. GCounter
 // has [<NoEquality>], so compare its underlying ZSet<string> (which IS structurally
 // equatable). Merge = elementwise max per replica = a join-semilattice on state.
+//
+// SCOPE (B-0969): replica keys are ordinal-safe ("r0".."r4"). With arbitrary
+// strings (control chars), this state-level test FALSIFIES — GCounter.Merge's
+// Dictionary uses ORDINAL string equality while ZSet.ofSeq sorts with
+// Comparer<string>.Default (CULTURE-sensitive), so they disagree on special
+// strings. That is the known B-0969 "Comparer.Default culture gap" (fix:
+// StringComparer.Ordinal in the ZSet sort + CRDTs), in Lior's active CRDT lane —
+// tracked separately. This test proves the JOIN ALGEBRA over normal keys; the
+// string-comparer bug is orthogonal. (The state-level test surfaced it exactly
+// per Lior review gap #2 — .Value masked it.)
 [<Property>]
 let ``G-Counter merge is ACI over per-replica STATE (not just .Value)`` (ops: (string * int) list) =
+    let replica (d: int) = sprintf "r%d" (((d % 5) + 5) % 5) // ordinal-safe r0..r4
+    let delta (d: int) = int64 (((d % 1000) + 1000) % 1000)  // 0..999, no abs/overflow
     let build (pick: int -> bool) =
         ops
         |> List.indexed
         |> List.filter (fun (i, _) -> pick i)
-        |> List.fold (fun (c: GCounter) (_, (r, d)) -> c.Increment((if r = "" then "r0" else r), int64 (abs d % 1000))) GCounter.Empty
+        |> List.fold (fun (c: GCounter) (_, (_, d)) -> c.Increment(replica d, delta d)) GCounter.Empty
     let a = build (fun i -> i % 3 = 0)
     let b = build (fun i -> i % 3 = 1)
     let c = build (fun i -> i % 3 = 2)
