@@ -112,3 +112,23 @@ matter how good our CBOR byte-lock is if we store everything in YAML." So:
 Status: F# canonical YAML encoder is WIP (round-trip 3/6 — nesting/escape inverse
 vs the block parser still buggy; in Otto's clone, not landed). Cross-lang YAML +
 the full matrix + Arrow-as-serializer are the larger owed work under this doctrine.
+
+## YAML encoder v1 landed (F#) + owed work (2026-06-04)
+
+- **Done:** `src/Core.FSharp.Yaml/Encoder.fs` — canonical, deterministic, block-style
+  YAML encoder; a true inverse of the parser for all compound/value cases (round-trip
+  6/6: scalars/strings/maps/seqs/nesting as values; ambiguous + escaped + ordered).
+  Zero-dep, in-house (the swappable hexagonal v1; external libs = differential oracle).
+- **Parser gap (owed):** the block reader rejects a top-level BARE scalar document
+  (`null`/`0`/`true`/`"x"` alone → UnsupportedConstruct); a document must be a
+  mapping/sequence. Real storage is maps, but a single-scalar doc is valid YAML —
+  parser fix owed for full rigor.
+- **Best-practice round-tripping (Aaron 2026-06-04):** support EXTENSION-DATA
+  round-tripping — unknown/future fields preserved across (de)serialize, the
+  IExtensibleDataObject (WCF) / [JsonExtensionData] (System.Text.Json) pattern.
+  DynamicValue (the open self-describing tree) IS this by construction (preserves
+  all keys); typed projections keep an extension bag for fields outside the view.
+  The format-agreement matrix must include "unknown fields preserved."
+- **Polymorphic type system (Aaron 2026-06-04):** a whole polymorphic type system
+  sits ON TOP of this value/serializer substrate — prove AFTER the serializer
+  basics + the matrix land (forward work, not now).

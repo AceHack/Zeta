@@ -12,6 +12,7 @@
   <ItemGroup>
     <Compile Include="Reader.fs" />
     <Compile Include="Dom.fs" />
+    <Compile Include="Encoder.fs" />
   </ItemGroup>
 
 </Project>
