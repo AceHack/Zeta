@@ -24,7 +24,12 @@
   (CRDT merge + clock/versionstamp + actor addresses); rides heartbeat-via-commit.
 - **Leg order pivot:** 4-ser is gated on B-1011 (CBOR/YAML/XML serializers not all
   built — G-Set has JSON only), so the ungated **homeostat-tie was done first** as
-  the payoff demo. Remaining G-Set legs: 4-ser (after B-1011), Arrow, Bonsai.
+  the payoff demo. Remaining G-Set legs: 4-ser (in progress), Arrow, Bonsai.
+- **4-ser progress (2026-06-04): YAML canonical encoder is 4-language BYTE-LOCKED**
+  (F#+TS+C#+Rust all produce byte-identical canonical YAML; cross-lang byte-lock
+  tests in each oracle). YAML is the storage of record, so this is the priority
+  format. Next: the **format-agreement matrix** (YAML↔CBOR↔JSON↔Arrow all commute
+  on the common value), then Arrow-as-serializer. (Serializer doctrine: B-1011.)
 - **Merkle 4-lang** decision (Aaron): **pure-TS XxHash128** (no dep — honors
   zero-dep doctrine; C#=System.IO.Hashing, F#=done, Rust=twox-hash dev-dep).
   Deferred behind the G-Set vertical.
