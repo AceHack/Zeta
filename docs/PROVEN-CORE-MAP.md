@@ -47,13 +47,16 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | 1 | **Clock / causal order** | `src/Core/Clock.fs` + `Core.{TypeScript,CSharp,Rust}.Clock` | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | **math + 4-lang** (total-order instance; DST seed byte-locked F#/TS/C#/Rust) |
 | 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | partial | ✗ | ✗ | ✗ | **math + 4-lang** (V1 cell); rolling-monadic encoding + UoM-per-type + per-version/category cells open |
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
-| 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` | ✓ (ACI+identity+LUB; GCounter over state) | ✗ | ✗ | ✗ | ✗ | ✗ | math-leg only |
+| 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB; GCounter over state) | ✓ (G-Set 4/4 per registry) | ✗ | ✗ | ✗ | ✗ | **math + 4-lang** (G-Set/Bag/Z-set/IndexedZSet all 4/4 in PRIMITIVE-REGISTRY) |
 | 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
 | 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL+Bloom join & CMS monoid merge-laws ✓ (state-level) · error-DIRECTION ✓ (Bloom no-false-neg, CMS no-undercount); probabilistic magnitude bounds ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (merge + error-direction); magnitude bounds + 4-lang open |
 
-**Nothing on this floor is PROVEN by the full bar yet.** The math leg is started
-for clock / CRDT / byte-cost; 4-lang holds for identity / byte-cost / serialization.
-The remaining legs (4-ser, Bonsai, Arrow, homeostat-tie) are open across the board.
+**Nothing on this floor is PROVEN by the full bar yet** (none have 4-ser ∧ Bonsai
+∧ Arrow ∧ homeostat-tie). But **math ∧ 4-lang now holds for 4 of 6**: clock,
+identity, CRDT merge, serialization. Merkle + metric-aggregation have the math leg
+(4-lang partial). The remaining legs (4-ser, Bonsai, Arrow, homeostat-tie) are the
+gap to full PROVEN. The **4-lang column is sourced from `PRIMITIVE-REGISTRY.md`**
+(the consensus authority); this map adds the math + remaining legs.
 
 ## Identity / keys — ordered composite keys, NOT content-hashes
 
