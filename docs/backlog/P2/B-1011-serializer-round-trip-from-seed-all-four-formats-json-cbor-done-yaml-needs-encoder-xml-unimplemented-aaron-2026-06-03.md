@@ -172,3 +172,26 @@ structural-by-construction (no bridge to drift); the matrix is trivial.
 **Unification work (next phase):** point the YAML reader+encoder at DynamicValue
 across the 4 oracles (retire YamlValue); the DynamicValue↔YamlValue bridge
 (currently a test helper) becomes unnecessary. Refactor across F#/TS/C#/Rust YAML.
+
+## DynamicValue = LCD + bridge-per-type (Aaron 2026-06-04)
+
+> "DynamicValue is the lowest common denominator useful for polymorphic
+> [de]serialization, so it could be a bridge per type where DynamicValue is the
+> lossy translation; if it's one-to-one then maybe [share] a common base bridge."
+
+Resolves the dependency-graph fork to **(2): extract DynamicValue as the small
+foundational LCD value lib** — every codec + typed value sits on it; no lean port
+couples to big Core.
+
+**Bridge pattern (per type, to/from DynamicValue):**
+- DynamicValue is the **LCD pivot** for polymorphic (de)serialization, and the
+  translation through it is **LOSSY** (the LCD can't carry every type's richness).
+- **Lossless (1:1) types → a shared COMMON BASE bridge** (generic round-trip;
+  no custom code).
+- **Lossy types → a custom PER-TYPE bridge** (handles what the LCD drops).
+- Ties to the polymorphic type system on top: typed layer bridges DOWN to
+  DynamicValue (1:1 → generic, lossy → custom); DynamicValue serializes via the
+  value-tree codecs (JSON/CBOR/YAML). XML/Arrow/Bonsai keep their own interface.
+
+Next phase: extract the small DynamicValue core, then the value-tree YAML
+reader/encoder target it; typed bridges (generic base + per-type) layer on.
