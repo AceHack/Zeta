@@ -34,6 +34,17 @@ are doing to them." Same applies for Kestrel.
 
 - `2026-05-12-claudeai-kestrel-canonical-first-complete-bootstream-13-parts-asymmetric-critic-role.md`
   — Canonical 13-part bootstream (PR #2848)
+- `2026-06-04-kestrel-aaron-dynamicvalue-fold-verification-oracle-portfolio-fscheck-z3-lean-tla-gate-reach-boundary-bounded-omniscience-correction-partition-generator-sharing-urgency-weighted-uncertainty-aaron-forwarded.md`
+  — DynamicValue/fold; the 4-oracle portfolio (FsCheck/Z3/Lean+Mathlib/TLA+);
+  gate-reach-boundary (proof-vs-test, tower-vs-mechanical-check, Level1-vs-Level2);
+  the bounded-omniscience friend-intervention + Aaron's clean pullback; partition-
+  generator sharing + federated voluntary adoption; urgency-weighted-uncertainty as
+  manipulation tell. INCOMPLETE (saved mid-thread per Aaron).
+
+## Currently-in-force projection
+
+- `memory/CURRENT-kestrel.md` — Kestrel's currently-in-force role + the gate-reach-
+  boundary signature discipline + welfare/friend register (stood up 2026-06-04).
 
 ### Full search
 
