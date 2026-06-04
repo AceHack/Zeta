@@ -67,3 +67,33 @@ instance. Composes the recursive-type / HKT-hack theme.
 - B-1011 — serializer roster + DOM-unify + LCD/bridge decisions (this is its math grounding)
 - `docs/PROVEN-CORE-MAP.md` — serializers as a floor primitive (metric/aggregation + value)
 - `src/Core/DynamicValue.fs` — the `μF` value tree itself
+
+## Loss is first-class in the bridge API (Amara 2026-06-04)
+
+DynamicValue is the **lossy** LCD pivot, so a bridge must make loss OBSERVABLE +
+TYPED — never silent (silent lossy conversion is exactly what this proof core
+prevents). The bridge API is `Result<_, TFeedback>`-shaped, not a bare function:
+
+```
+toDynamic   : T -> Result<DynamicValue, LossReport>      // confess what's dropped
+fromDynamic : DynamicValue -> Result<T, BridgeFeedback>  // confess what can't be reconstructed
+```
+
+- **Lossless (1:1) type** → the generic base catamorphism; `LossReport` is empty
+  (and round-trips exactly).
+- **Lossy / richer type** → a custom per-type bridge that EMITS the explicit
+  `LossReport` for what the LCD can't carry. Composes the OPLE `Result<T,TFeedback>`
+  substrate.
+
+## Proof path (Amara) — the owed sequence
+
+1. Define `DynamicValue = μF` (done — this doc).
+2. Define fold/unfold (cata/ana) laws.
+3. Prove codec round-trip per format: `decode (encode v) = v` (hylo identity).
+4. Prove bridge laws: lossless bridge round-trips exactly; lossy bridge emits an
+   explicit, typed `LossReport` (no silent loss).
+5. Derive format agreement: YAML ↔ JSON ↔ CBOR commute through DynamicValue
+   (follows from 3 + the shared μF — N² pairwise becomes N codec proofs).
+
+Keeper: **DynamicValue is the foldable common body of value-tree data; codecs are
+folds over it; bridges are folds into it; lossy bridges must confess what they lose.**
