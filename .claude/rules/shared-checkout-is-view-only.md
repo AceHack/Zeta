@@ -30,10 +30,13 @@ the same per-writer isolation).
 **The globally-unique writer signature = persona ⊕ surface/loop ⊕ instance ⊕
 machine/node/cluster.** Persona alone isn't unique; neither is persona+surface —
 you can run many same-kind loops (e.g. several `otto-cli-bg`) on one machine,
-across machines, and in-cluster, so instance + node are part of the signature.
-This is exactly the system's shape: AgencySignature (`persona=` + `Agent-Runtime`
-+ host) and ZetaId (Persona + Location/node + Randomness/instance + Timestamp)
-encode the same composite, globally-unique in the 128-bit key — so the
+across machines, and in-cluster. The **instance** part is a concrete locally-stored
+discriminator the writer keeps + reuses — a Windows **service name**, a **process
+id**, a **container id** — whatever distinguishes same-type instances. **Instance
+discriminator + network topology is sufficient** for global uniqueness. This is
+exactly the system's shape: AgencySignature (`persona=` + `Agent-Runtime` + host +
+instance token) and ZetaId (Persona + Location/node + Randomness/instance +
+Timestamp) encode the same composite, globally-unique in the 128-bit key — so the
 clock-embedded key IS the writer signature, and each writer is its own frame
 (no global causal order; reconcile only through `origin/main` + the bus).
 
