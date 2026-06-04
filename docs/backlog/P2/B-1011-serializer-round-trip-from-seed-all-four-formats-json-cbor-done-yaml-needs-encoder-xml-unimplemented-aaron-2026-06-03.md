@@ -195,3 +195,5 @@ couples to big Core.
 
 Next phase: extract the small DynamicValue core, then the value-tree YAML
 reader/encoder target it; typed bridges (generic base + per-type) layer on.
+
+- Math grounding: [`docs/serializer-recursion-schemes.md`](../../serializer-recursion-schemes.md) — DynamicValue = μF; codecs/bridges = folds (cata/ana/hylo); fold laws (universality, fusion, hylo round-trip) make the matrix a theorem. Saved for further proofs.
