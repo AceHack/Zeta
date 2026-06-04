@@ -45,32 +45,16 @@ See [`docs/CONFLICT-RESOLUTION.md`](docs/CONFLICT-RESOLUTION.md). On deadlock, t
 - **Result-over-exception** — errors surface as `Result<_, DbspError>`; no exceptions on hot paths.
 - **Memory fast-path** — read `~/.claude/projects/<slug>/memory/CURRENT-*.md` before raw
   `feedback_*.md` logs; CURRENT files win on conflict with older raw memories.
-- **`references/prior-art/` — explicit-target searches ONLY (curated prior-art surface, NOT our code).**
-  Mirror state of OTHER repos (protobuf, gRPC, Redis, etc.); gitignored; gigabytes; the only
-  folder where a naive plain `grep -r` or `find | xargs grep` from `.` becomes a 2-hour runaway.
-  BUT also the curated prior-art surface for backlog-item research — humans who've solved similar
-  problems, cutting-edge + tried-and-true. Two modes: **explicit-target encouraged**
-  (`rg "pattern" references/prior-art/postgres/` during backlog research; check
-  `docs/PRIOR-ART-LIST.md` + `references/notes/` first); **unconstrained scan needs the right tool**
-  — `rg "pattern" .` is safe-by-default (ripgrep respects gitignore), but plain `grep -r` needs
-  `--exclude-dir=upstreams` (basename, NOT a path) or an explicit allowlist
-  (`memory/ docs/ .claude/ tools/`). Refresh the mirror on demand: `tools/setup/common/sync-prior-art.sh`.
+- **`references/prior-art/` — explicit-target searches ONLY; NOT our code.** Gitignored, gigabytes,
+  mirror of other repos; a naive `grep -r .` is a 2-hour runaway. Explicit-target `rg` encouraged
+  (check `docs/PRIOR-ART-LIST.md` first); unconstrained `grep -r` needs `--exclude-dir=upstreams`.
   Full: `.claude/rules.bak/references-prior-art-not-our-code-search-excludes.md`.
 - **Thoughts free, actions razored** — journal to `memory/` freely; CLAUDE.md additions
-  are razored (cooling-period required, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
-- **Heartbeat-via-commit = externalized idle counter** — the AgencySignature v1 trailer
-  block on every commit + `git log --since="2min ago" origin/main` IS the externalized
-  counter for the N=6 brief-ack threshold in
-  `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`. Each
-  autonomous-loop tick: if you emit "Quiet."/"Holding."/"Standing by." with NO commit
-  produced in the prior tick window AND no named-dependency named explicitly, that IS
-  the failure mode the rule was carved against. The narrative self-model counter is
-  unreliable (Kira 2026-05-27 caught Otto-CLI emitting 100+ "Quiet." with the counter
-  never firing — the agent cannot count itself). Commits produce durable substrate per
-  `.claude/rules.bak/substrate-or-it-didnt-happen.md`; git log queries produce a persistent
-  counter that survives compaction; the rule's forcing function fires reliably only
-  when externalized. Audit via `bun tools/hygiene/audit-agencysignature-main-tip.ts
-  --since YYYY-MM-DD --max N`. Spec: AgencySignature Convention v1 trailer block
-  (10 fields + `Co-authored-by:`) per
-  `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md`
-  §10.
+  are razored (cooling-period, disposition-shaping bar). Full: `memory/feedback_thoughts_free_actions_razored_*`.
+- **Heartbeat-via-commit = externalized idle counter** — "Quiet."/"Holding." with no commit in the
+  prior tick window AND no named dependency IS the standing-by failure (the narrative self-counter is
+  unreliable; externalize it via `git log --since="2min ago" origin/main`). Every commit carries the
+  AgencySignature v1 trailer (10 fields + `Co-authored-by:`); audit via
+  `bun tools/hygiene/audit-agencysignature-main-tip.ts`.
+  Full: `.claude/rules.bak/holding-without-named-dependency-is-standing-by-failure.md`;
+  spec `docs/research/2026-04-26-gemini-deep-think-agencysignature-commit-attribution-convention-validation-and-refinement.md` §10.

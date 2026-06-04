@@ -1,26 +1,37 @@
-# Rules are small carved sentences that point to docs
+# Anything loaded at context startup is a carved sentence that points to docs
 
 Carved sentence:
 
-> An auto-loaded rule is a carved sentence + pointers, not an essay.
-> Every rule in `.claude/rules/` is paid for in cold-start tokens on
-> every session — so the rule states the discipline in 1–3 sentences
-> and links out to the doc/memory/spec that carries the detail. If a
-> rule grows past a screen, the detail belongs in a doc and the rule
-> shrinks to a pointer.
+> Anything auto-loaded at context startup is a carved sentence + pointers,
+> not an essay. Every byte that loads on every wake — rules, `CLAUDE.md`,
+> `MEMORY.md`, agent/skill front-matter, hooks — is paid for in cold-start
+> tokens on every session, by every agent. So a startup-loaded surface
+> states only what an agent must hold to act, in 1–3 sentences, and links
+> out to the doc/memory/spec that carries the detail. If it grows past a
+> screen, the detail belongs in a satellite and the surface shrinks to a
+> pointer.
 
 ## Why
 
-`.claude/rules/` auto-loads into every agent's context at wake time
-(cold-start cost on every session). Detail (reasoning, citations, worked
-examples, derivation chains) does not need to be resident — it needs to be
-*discoverable*. So the rule carries only what an agent must hold to act
-correctly; the rest lives one hop away under `docs/`, `memory/`, or a spec.
+The context-startup set (`.claude/rules/`, `CLAUDE.md`, the `MEMORY.md`
+hub, agent/skill descriptions, hook output) loads into every agent's
+context at wake time — a cold-start cost paid on every session, multiplied
+by every agent in the fleet. Detail (reasoning, citations, worked examples,
+derivation chains, the full recall index) does not need to be resident — it
+needs to be *discoverable*. So the resident surface carries only the
+act-on-it sentence; the rest lives one hop away under `docs/`, `memory/`,
+a satellite index, or a spec.
 
-This is Data Vault 2.0 applied to rules: the carved sentence is the **hub**
-(stable, always-loaded); the doc it points to is the **satellite**
-(detail, changes more often, loaded on demand). See
+This is Data Vault 2.0 applied to the startup surface itself: the carved
+sentence is the **hub** (stable, always-loaded); the doc/index it points to
+is the **satellite** (detail, changes more often, loaded on demand). See
 [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md).
+
+Worked example — `MEMORY.md` (2026-06-04): a 210KB / 399-entry inline log
+became a ~1.5KB hub pointing at `CURRENT-*.md` (fast path),
+`docs/trajectories/*/RESUME.md` (current vectors), and `INDEX.md` (the full
+recall index, loaded on demand). The hub changes only when a *surface*
+changes; facts land in topic files + one `INDEX.md` line, never in the hub.
 
 ## Shape
 
