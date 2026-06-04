@@ -1,0 +1,105 @@
+name: context-cost-trend-cadence
+
+# Daily DORA trend cadence for B-1016 context-window minimization. Runs
+# `bun tools/observe/context-cost-trend.ts --record`, which appends one row per
+# harness (bytes + token estimate) to the append-only trend store
+# tools/observe/context-cost-trend.jsonl, and commits it directly to main
+# (folders-on-main / no-PR — the local build + this deterministic script ARE the
+# gate; no LLM, free runner). This turns the trend store from one datapoint into a
+# real over-time series so context-cost DRIFT is visible.
+#
+# Composes with:
+#  - tools/observe/context-cost-trend.ts (the --record tool)
+#  - tools/observe/context-cost.ts + byte-cost meter (the measured signal)
+#  - .github/workflows/manifesto-citation-snapshot-cadence.yml (pattern reference)
+#  - B-1016 (context-window minimization; over-time enforcement leg)
+#
+# Cost note: this is a deterministic bash+bun job (NO model/LLM), so the GitHub
+# Actions run is free — exactly the "workflows are free, they just won't gate"
+# direction (Aaron 2026-06-04). Append-only/lightlike: never rewrites the past.
+#
+# Security: consumes only first-party trusted context (secrets.GITHUB_TOKEN,
+# github.run_id); no untrusted expression is interpolated into a run block.
+
+on:
+  schedule:
+    # Daily 07:23 UTC — off-the-hour, clear of razor (09:17), manifesto (06:37),
+    # so the fleet's cadence runs don't all land on the same minute.
+    - cron: "23 7 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: context-cost-trend-cadence
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Install bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+
+      - name: Record context-cost trend row
+        run: |
+          set -euo pipefail
+          bun tools/observe/context-cost-trend.ts --record
+
+      - name: Inspect diff
+        id: diff
+        run: |
+          set -euo pipefail
+          if [ -z "$(git status --porcelain -- tools/observe/context-cost-trend.jsonl)" ]; then
+            echo "changed=false" >>"$GITHUB_OUTPUT"
+            echo "no change (today's row already recorded)"
+          else
+            echo "changed=true" >>"$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit trend row to main
+        if: steps.diff.outputs.changed == 'true'
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          today="$(date -u +%Y-%m-%d)"
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tools/observe/context-cost-trend.jsonl
+          {
+            echo "ops(B-1016): daily context-cost trend row $today"
+            echo
+            echo "Appended one row per harness (bytes + token estimate) to the"
+            echo "append-only DORA trend store via context-cost-trend.ts --record."
+            echo
+            echo "Agency-Signature-Version: 1"
+            echo "Agent: context-cost-trend-cadence-workflow"
+            echo "Agent-Runtime: GitHub Actions"
+            echo "Agent-Model: bash + bun"
+            echo "Credential-Identity: github-actions[bot]"
+            echo "Credential-Mode: dedicated-agent"
+            echo "Human-Review: not-implied-by-credential"
+            echo "Human-Review-Evidence: none"
+            echo "Action-Mode: autonomous-fail-open"
+            echo "Task: B-1016"
+            echo "Co-authored-by: Otto <noreply@anthropic.com>"
+          } | git commit --file=-
+          # Fast-forward-safe push to main (Branch Safety floor: no force / linear).
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: No-change report
+        if: steps.diff.outputs.changed == 'false'
+        run: echo "No diff — today's trend row already on main (idempotent per day)."
