@@ -128,13 +128,34 @@ let ``CANONICAL DynamicValue: canonical CBOR encoding is INJECTIVE (distinct val
     // share canonical bytes (else the lock would equate things that differ).
     (DynamicValue.toCanonicalCbor a = DynamicValue.toCanonicalCbor b) = (a = b)
 
-// ── non-finite floats: NaN / ±inf / -0.0 CBOR round-trip (generator is finite) ──
+// ── XML is now TOTAL (8/8) like CBOR — same round-trip LAW + injectivity ──
+// (XML float = 16-hex IEEE-754 f64 bits, bytes = lowercase hex; generated strings
+// are XML-representable — genChar has no forbidden C0 — so encode is always Ok here.)
+
+[<Property(Arbitrary = [| typeof<CborDvArb> |])>]
+let ``CANONICAL DynamicValue: XML round-trip — fromCanonicalXml ∘ toCanonicalXml = id (8/8 shapes)``
+    (v: DynamicValue) =
+    match DynamicValue.toCanonicalXml v with
+    | Ok xml -> DynamicValue.fromCanonicalXml xml = Ok v
+    | Error _ -> false
+
+[<Property(Arbitrary = [| typeof<CborDvArb> |])>]
+let ``CANONICAL DynamicValue: canonical XML encoding is INJECTIVE (distinct values never collide)``
+    (a: DynamicValue) (b: DynamicValue) =
+    match DynamicValue.toCanonicalXml a, DynamicValue.toCanonicalXml b with
+    | Ok xa, Ok xb -> (xa = xb) = (a = b)
+    | _ -> false
+
+// ── non-finite floats: NaN / ±inf / -0.0 CBOR + XML round-trip (generator is finite) ──
 
 [<Fact>]
-let ``CANONICAL DynamicValue: non-finite floats (NaN, ±inf, -0.0) CBOR round-trip`` () =
+let ``CANONICAL DynamicValue: non-finite floats (NaN, ±inf, -0.0) CBOR + XML round-trip`` () =
     for f in [ nan; infinity; -infinity; -0.0; 0.0 ] do
         let v = DynamicValue.Float f
         Assert.Equal(Ok v, DynamicValue.fromCanonicalCbor (DynamicValue.toCanonicalCbor v))
+        match DynamicValue.toCanonicalXml v with
+        | Ok xml -> Assert.Equal(Ok v, DynamicValue.fromCanonicalXml xml)
+        | Error e -> failwithf "XML encode failed for non-finite float %f: %A" f e
 
 // ── seed-lineage edge (half-b): the law holds ON THE SEED ──
 // The seed's canonical bytes/strings are FIXED POINTS of encode∘decode — i.e.

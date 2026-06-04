@@ -1,15 +1,18 @@
 // DynamicValues — canonical XML codec (the C# oracle conforming byte-for-byte to the locked TS
 // reference src/Core.TypeScript/dynamic-value/xml.ts; shared byte-lock seed
-// src/Core.TypeScript/dynamic-value/golden-vectors-xml.json). Canonical XML is the PARTIAL form
-// (6/8 shapes): Float + Bytes are DEFERRED (lock under CBOR), matching the JSON codec's coverage.
-// The typed-element form makes the 6 shapes UNAMBIGUOUS and never-collapse natural: <null/>, empty
-// <arr></arr>, empty <obj></obj>, and empty <str></str> are four distinct element shapes.
+// src/Core.TypeScript/dynamic-value/golden-vectors-xml.json). Canonical XML is the TOTAL form
+// (8/8 shapes): Float (16-hex IEEE-754 f64 big-endian bits) and Bytes (lowercase hex) are carried in
+// the language-neutral tagged form already locked by CBOR, so XML inherits their byte-lock. The
+// typed-element form makes the 8 shapes UNAMBIGUOUS and never-collapse natural: <null/>, empty
+// <arr></arr>, empty <obj></obj>, empty <str></str>, and empty <bytes></bytes> are distinct shapes.
 //
 // Canonical rules (minified, one rendering per value):
 //   null  -> <null/>
 //   bool  -> <bool>true</bool> | <bool>false</bool>
 //   int   -> <int>DECIMAL</int>           (int64-exact; no leading zeros / '+')
 //   str   -> <str>TEXT</str>              (empty: <str></str>)
+//   float -> <float>16-HEX</float>        (IEEE-754 f64 big-endian bits; NaN=7ff8000000000000)
+//   bytes -> <bytes>HEX</bytes>           (lowercase hex; empty: <bytes></bytes>)
 //   arr   -> <arr>CHILD...</arr>          (empty: <arr></arr>)
 //   obj   -> <obj><e k="KEY">VALUE</e>...</obj>   (empty: <obj></obj>; keys keep insertion order)
 // No insignificant whitespace. Element TEXT escapes & < > and \t \n \r as character references
@@ -33,29 +36,12 @@ public static class DynamicValuesXml
     private const long I64Max = 9223372036854775807L;
     private const long I64Min = -9223372036854775808L;
 
-    // The first deferred variant (Float/Bytes) anywhere in the tree, or null if fully encodable.
-    private static EncodeError? FirstDeferred(DynamicValue value)
-    {
-        switch (value)
-        {
-            case DynamicValue.Float:
-                return EncodeError.FloatDeferred;
-            case DynamicValue.Bytes:
-                return EncodeError.BytesDeferred;
-            case DynamicValue.Array a:
-                return a.Items.Select(FirstDeferred).FirstOrDefault(e => e is not null);
-            case DynamicValue.Object o:
-                return o.Pairs.Select(pair => FirstDeferred(pair.Value)).FirstOrDefault(e => e is not null);
-            default:
-                return null;
-        }
-    }
-
     /// <summary>Canonical XML encoding — the byte-lock target (shared seed
     /// <c>src/Core.TypeScript/dynamic-value/golden-vectors-xml.json</c>). Typed-element, minified
-    /// form; <see cref="DynamicValue.Object"/> keys in INSERTION order. v1 locks the same six shapes
-    /// as JSON; <see cref="DynamicValue.Float"/> and <see cref="DynamicValue.Bytes"/> are DEFERRED,
-    /// and a string/key with an XML-1.0-forbidden control char declines — all surfaced as
+    /// form; <see cref="DynamicValue.Object"/> keys in INSERTION order. Locks all eight shapes
+    /// (<see cref="DynamicValue.Float"/> as 16-hex IEEE-754 f64 big-endian bits,
+    /// <see cref="DynamicValue.Bytes"/> as lowercase hex); a string/key with an XML-1.0-forbidden
+    /// control char declines — all surfaced as
     /// <see cref="Result{T, TError}.Err"/> data per the Result-over-exception rule (AGENTS.md),
     /// never thrown.</summary>
     /// <param name="value">the value to encode.</param>
@@ -64,11 +50,6 @@ public static class DynamicValuesXml
     public static Result<string, EncodeError> ToCanonicalXml(DynamicValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
-
-        if (FirstDeferred(value) is EncodeError deferred)
-        {
-            return new Result<string, EncodeError>.Err(deferred);
-        }
 
         if (FirstNotRepresentable(value) is EncodeError notRep)
         {
@@ -151,6 +132,12 @@ public static class DynamicValuesXml
                 AppendXmlText(sb, s.Value);
                 sb.Append("</str>");
                 break;
+            case DynamicValue.Float f:
+                WriteFloat(sb, f.Value);
+                break;
+            case DynamicValue.Bytes by:
+                WriteBytes(sb, by.Value);
+                break;
             case DynamicValue.Array a:
                 sb.Append("<arr>");
                 foreach (var item in a.Items)
@@ -174,10 +161,31 @@ public static class DynamicValuesXml
                 sb.Append("</obj>");
                 break;
             default:
-                // Unreachable: Float/Bytes caught by FirstDeferred, null guarded by the caller.
+                // Unreachable: all eight variants are handled above; null guarded by the caller.
                 throw new InvalidOperationException(
                     $"WriteCanonicalXml reached a non-locked variant ({value.Type}); should be pre-checked");
         }
+    }
+
+    // 16 lowercase hex of the IEEE-754 f64 big-endian bit pattern (the language-neutral canonical
+    // float form already locked by CBOR). NaN -> 7ff8000000000000; -0.0 distinct from +0.0.
+    private static void WriteFloat(StringBuilder sb, double value)
+    {
+        sb.Append("<float>");
+        sb.Append(((ulong)BitConverter.DoubleToInt64Bits(value)).ToString("x16", CultureInfo.InvariantCulture));
+        sb.Append("</float>");
+    }
+
+    // lowercase hex of the raw payload (empty -> <bytes></bytes>).
+    private static void WriteBytes(StringBuilder sb, ImmutableArray<byte> bytes)
+    {
+        sb.Append("<bytes>");
+        foreach (byte b in bytes)
+        {
+            sb.Append(b.ToString("x2", CultureInfo.InvariantCulture));
+        }
+
+        sb.Append("</bytes>");
     }
 
     // Escape element TEXT: & < > as entities; \t \n \r as char-refs. Forbidden C0 is pre-checked.
@@ -250,8 +258,8 @@ public static class DynamicValuesXml
     }
 
     /// <summary>Decodes canonical XML into a <see cref="DynamicValue"/> — the inverse of
-    /// <see cref="ToCanonicalXml"/> for the six locked shapes (<c>&lt;float&gt;</c>/<c>&lt;bytes&gt;</c>
-    /// and unknown tags → <see cref="DecodeError.Unsupported"/>). Strictly canonical: a lenient parse,
+    /// <see cref="ToCanonicalXml"/> for all eight locked shapes (unknown tags →
+    /// <see cref="DecodeError.Unsupported"/>). Strictly canonical: a lenient parse,
     /// then one fixed-point check (<c>ToCanonicalXml(decoded) == input</c>) rejects every non-canonical
     /// form (self-closing empties, <c>&amp;#x9;</c> vs <c>&amp;#9;</c>, whitespace, leading zeros) as
     /// <see cref="DecodeError.NonCanonical"/>. Surfaced as data, never thrown. Mirrors the TS decoder.</summary>
@@ -275,7 +283,7 @@ public static class DynamicValuesXml
         }
 
         // Canonical fixed-point: a canonical string re-encodes to itself. The decoder produces only
-        // the six locked shapes (no forbidden C0, since those ride as char-refs back through
+        // the eight locked shapes (no forbidden C0, since those ride as char-refs back through
         // unescape and re-encode literally), so ToCanonicalXml is Ok here; anything else
         // (self-closing empties, &#x9; vs &#9;, raw whitespace) is well-formed-ish but not canonical.
         if (ToCanonicalXml(value) is not Result<string, EncodeError>.Ok reEnc
@@ -458,13 +466,95 @@ public static class DynamicValuesXml
                 return ParseInt(xml, ref pos, tag, out value);
             case "str":
                 return ParseStr(xml, ref pos, tag, out value);
+            case "float":
+                return ParseFloat(xml, ref pos, tag, out value);
+            case "bytes":
+                return ParseBytes(xml, ref pos, tag, out value);
             case "arr":
                 return ParseArr(xml, ref pos, tag, out value);
             case "obj":
                 return ParseObj(xml, ref pos, tag, out value);
             default:
-                return DecodeError.Unsupported; // <float>/<bytes> deferred; unknown tags
+                return DecodeError.Unsupported; // unknown element tags
         }
+    }
+
+    private static DecodeError? ParseFloat(string xml, ref int pos, XmlTag tag, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        if (tag.SelfClose)
+        {
+            return DecodeError.MalformedXml;
+        }
+
+        string text = ReadXmlTextRun(xml, ref pos);
+        DecodeError? ce = ExpectXmlClose(xml, ref pos, "float");
+        if (ce is DecodeError fe)
+        {
+            return fe;
+        }
+
+        // canonical = exactly 16 LOWERCASE hex (IEEE-754 f64 big-endian bits); else non-canonical.
+        if (!IsLowerHex(text, 16, 16))
+        {
+            return DecodeError.MalformedXml;
+        }
+
+        ulong bits = ulong.Parse(text, NumberStyles.HexNumber, CultureInfo.InvariantCulture);
+        value = new DynamicValue.Float(BitConverter.Int64BitsToDouble(unchecked((long)bits)));
+        return null;
+    }
+
+    private static DecodeError? ParseBytes(string xml, ref int pos, XmlTag tag, out DynamicValue value)
+    {
+        value = new DynamicValue.Null();
+        if (tag.SelfClose)
+        {
+            value = new DynamicValue.Bytes(ImmutableArray<byte>.Empty); // tolerated; fixed-point rejects
+            return null;
+        }
+
+        string text = ReadXmlTextRun(xml, ref pos);
+        DecodeError? ce = ExpectXmlClose(xml, ref pos, "bytes");
+        if (ce is DecodeError be)
+        {
+            return be;
+        }
+
+        // canonical = even-length LOWERCASE hex (empty allowed); else non-canonical.
+        if (text.Length % 2 != 0 || !IsLowerHex(text, 0, int.MaxValue))
+        {
+            return DecodeError.MalformedXml;
+        }
+
+        var bytes = ImmutableArray.CreateBuilder<byte>(text.Length / 2);
+        for (int i = 0; i < text.Length; i += 2)
+        {
+            bytes.Add(byte.Parse(text.AsSpan(i, 2), NumberStyles.HexNumber, CultureInfo.InvariantCulture));
+        }
+
+        value = new DynamicValue.Bytes(bytes.ToImmutable());
+        return null;
+    }
+
+    // True iff `text` is all lowercase hex digits and its length is within [minLen, maxLen].
+    private static bool IsLowerHex(string text, int minLen, int maxLen)
+    {
+        if (text.Length < minLen || text.Length > maxLen)
+        {
+            return false;
+        }
+
+        foreach (char c in text)
+        {
+            bool ok = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f');
+            if (!ok)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static DecodeError? ParseBool(string xml, ref int pos, XmlTag tag, out DynamicValue value)

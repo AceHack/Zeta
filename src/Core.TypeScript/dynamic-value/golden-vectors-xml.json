@@ -1,8 +1,8 @@
 {
   "primitive": "DynamicValue",
   "codec": "canonical-xml",
-  "version": 1,
-  "description": "DynamicValue cross-language canonical XML byte-lock SEED. Typed-element form: <null/> <bool> <int> <str> <arr> <obj><e k=..>..</e></obj>. Minified; text escapes & < > and tab/lf/cr as char-refs (&#9;&#10;&#13;); key attr also escapes \". v1 locks the same 6 shapes as JSON; Float+Bytes DEFERRED (CBOR). REPRESENTABILITY: XML 1.0 forbids NUL + C0 controls except tab/lf/cr even as char-refs, so strings/keys containing them are excluded (the XML analogue of Bytes-not-in-YAML). encode(value)===xml + decode(xml)===value with a fixed-point canonicality check. Never-collapse free: <null/>, <arr></arr>, <obj></obj>, <str></str> distinct.",
+  "version": 2,
+  "description": "DynamicValue cross-language canonical XML byte-lock SEED (v2: now TOTAL, 8/8 shapes). Typed-element form: <null/> <bool> <int> <str> <float> <bytes> <arr> <obj><e k=..>..</e></obj>. Minified; text escapes & < > and tab/lf/cr as char-refs (&#9;&#10;&#13;); key attr also escapes \". FLOAT = 16-hex IEEE-754 f64 big-endian bits (exact; matches CBOR golden value-form; all corners NaN/Inf/-0.0/subnormals distinct). BYTES = lowercase hex (empty <bytes></bytes>). encode(value)===xml + decode(xml)===value with a fixed-point canonicality check. Never-collapse free: <null/> <arr></arr> <obj></obj> <str></str> <bytes></bytes> distinct. REPRESENTABILITY: XML 1.0 forbids NUL + C0 controls except tab/lf/cr even as char-refs, so such strings/keys are excluded (XML analogue of Bytes-not-in-YAML).",
   "vectors": [
     {
       "name": "null",
@@ -379,6 +379,142 @@
         ]
       },
       "xml": "<obj><e k=\"a\"><arr><obj><e k=\"b\"><arr><int>1</int></arr></e></obj></arr></e></obj>"
+    },
+    {
+      "name": "float-zero",
+      "value": {
+        "t": "float",
+        "v": "0000000000000000"
+      },
+      "xml": "<float>0000000000000000</float>"
+    },
+    {
+      "name": "float-neg-zero",
+      "value": {
+        "t": "float",
+        "v": "8000000000000000"
+      },
+      "xml": "<float>8000000000000000</float>"
+    },
+    {
+      "name": "float-one",
+      "value": {
+        "t": "float",
+        "v": "3ff0000000000000"
+      },
+      "xml": "<float>3ff0000000000000</float>"
+    },
+    {
+      "name": "float-one-point-five",
+      "value": {
+        "t": "float",
+        "v": "3ff8000000000000"
+      },
+      "xml": "<float>3ff8000000000000</float>"
+    },
+    {
+      "name": "float-f16-max",
+      "value": {
+        "t": "float",
+        "v": "40effc0000000000"
+      },
+      "xml": "<float>40effc0000000000</float>"
+    },
+    {
+      "name": "float-f32-only",
+      "value": {
+        "t": "float",
+        "v": "40f86a0000000000"
+      },
+      "xml": "<float>40f86a0000000000</float>"
+    },
+    {
+      "name": "float-f32-max",
+      "value": {
+        "t": "float",
+        "v": "47efffffe0000000"
+      },
+      "xml": "<float>47efffffe0000000</float>"
+    },
+    {
+      "name": "float-f64-only",
+      "value": {
+        "t": "float",
+        "v": "7e37e43c8800759c"
+      },
+      "xml": "<float>7e37e43c8800759c</float>"
+    },
+    {
+      "name": "float-f16-subnormal",
+      "value": {
+        "t": "float",
+        "v": "3e70000000000000"
+      },
+      "xml": "<float>3e70000000000000</float>"
+    },
+    {
+      "name": "float-f16-min-normal",
+      "value": {
+        "t": "float",
+        "v": "3f10000000000000"
+      },
+      "xml": "<float>3f10000000000000</float>"
+    },
+    {
+      "name": "float-neg-four",
+      "value": {
+        "t": "float",
+        "v": "c010000000000000"
+      },
+      "xml": "<float>c010000000000000</float>"
+    },
+    {
+      "name": "float-neg-four-point-one",
+      "value": {
+        "t": "float",
+        "v": "c010666666666666"
+      },
+      "xml": "<float>c010666666666666</float>"
+    },
+    {
+      "name": "float-pos-inf",
+      "value": {
+        "t": "float",
+        "v": "7ff0000000000000"
+      },
+      "xml": "<float>7ff0000000000000</float>"
+    },
+    {
+      "name": "float-neg-inf",
+      "value": {
+        "t": "float",
+        "v": "fff0000000000000"
+      },
+      "xml": "<float>fff0000000000000</float>"
+    },
+    {
+      "name": "float-nan",
+      "value": {
+        "t": "float",
+        "v": "7ff8000000000000"
+      },
+      "xml": "<float>7ff8000000000000</float>"
+    },
+    {
+      "name": "bytes-empty",
+      "value": {
+        "t": "bytes",
+        "v": ""
+      },
+      "xml": "<bytes></bytes>"
+    },
+    {
+      "name": "bytes-1234",
+      "value": {
+        "t": "bytes",
+        "v": "01020304"
+      },
+      "xml": "<bytes>01020304</bytes>"
     }
   ]
 }

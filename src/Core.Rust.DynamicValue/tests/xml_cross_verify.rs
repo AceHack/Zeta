@@ -22,6 +22,15 @@ fn repo_root() -> PathBuf {
     }
 }
 
+/// Decode an even-length lowercase-hex string into bytes (mirrors the CBOR golden test).
+fn decode_hex(s: &str) -> Vec<u8> {
+    assert!(s.len() % 2 == 0, "byte hex must have even length: {s}");
+    (0..s.len())
+        .step_by(2)
+        .map(|i| u8::from_str_radix(&s[i..i + 2], 16).expect("hex byte"))
+        .collect()
+}
+
 /// Build a `DynamicValue` from the seed's language-neutral tagged form `{ t, v }`.
 fn build_value(v: &Value) -> DynamicValue {
     match v["t"].as_str().expect("tag string") {
@@ -35,6 +44,13 @@ fn build_value(v: &Value) -> DynamicValue {
                 .expect("i64 parse"),
         ),
         "str" => DynamicValue::String(v["v"].as_str().expect("str value").to_string()),
+        // float v = 16-hex IEEE-754 f64 big-endian bits (mirrors the CBOR golden builder)
+        "float" => DynamicValue::Float(f64::from_bits(
+            u64::from_str_radix(v["v"].as_str().expect("float bits hex"), 16)
+                .expect("u64 hex parse"),
+        )),
+        // bytes v = lowercase hex
+        "bytes" => DynamicValue::Bytes(decode_hex(v["v"].as_str().expect("bytes hex"))),
         "arr" => DynamicValue::Array(
             v["v"]
                 .as_array()
@@ -97,6 +113,14 @@ fn xml_round_trip_decode_matches_golden() {
     let mut failures: Vec<String> = Vec::new();
     for (name, value, xml) in load_vectors() {
         match DynamicValue::from_canonical_xml(&xml) {
+            // NaN: Rust f64::NAN != f64::NAN under derived PartialEq, so the float-nan
+            // vector is compared via the bit pattern (mirrors the CBOR golden test).
+            Ok(DynamicValue::Float(a)) if matches!(value, DynamicValue::Float(_)) => {
+                let DynamicValue::Float(b) = value else { unreachable!() };
+                if a.to_bits() != b.to_bits() {
+                    failures.push(format!("{name}: decode({xml}) bits {:x} != {:x}", a.to_bits(), b.to_bits()));
+                }
+            }
             Ok(actual) if actual == value => {}
             Ok(actual) => failures.push(format!("{name}: decode({xml}) = {actual:?} != {value:?}")),
             Err(e) => failures.push(format!("{name}: decode({xml}) = Err {e:?}")),
@@ -111,11 +135,13 @@ fn xml_never_collapses_empties() {
     let arr = DynamicValue::Array(vec![]).to_canonical_xml().unwrap();
     let obj = DynamicValue::Object(vec![]).to_canonical_xml().unwrap();
     let str = DynamicValue::String(String::new()).to_canonical_xml().unwrap();
+    let bytes = DynamicValue::Bytes(vec![]).to_canonical_xml().unwrap();
     assert_eq!(null, "<null/>");
     assert_eq!(arr, "<arr></arr>");
     assert_eq!(obj, "<obj></obj>");
     assert_eq!(str, "<str></str>");
-    let all = [&null, &arr, &obj, &str];
+    assert_eq!(bytes, "<bytes></bytes>");
+    let all = [&null, &arr, &obj, &str, &bytes];
     for i in 0..all.len() {
         for j in (i + 1)..all.len() {
             assert_ne!(all[i], all[j], "empty shapes must be distinct");

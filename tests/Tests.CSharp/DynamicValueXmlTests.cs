@@ -12,8 +12,8 @@ namespace Zeta.Tests.CSharp;
 /// DynamicValue cross-language canonical XML byte-lock — the C# oracle grounded against the shared
 /// seed (<c>src/Core.TypeScript/dynamic-value/golden-vectors-xml.json</c>). Proves encode AGREES
 /// (<c>ToCanonicalXml(value) == xml</c>) and decode round-trips (<c>FromCanonicalXml(xml) == value</c>)
-/// for every locked vector, plus never-collapse distinctness and canonicality rejection. v1 locks
-/// null/bool/int/str/arr/obj; Float + Bytes are DEFERRED. "The compilers don't lie."
+/// for every locked vector, plus never-collapse distinctness and canonicality rejection. Locks all
+/// eight shapes: null/bool/int/str/float/bytes/arr/obj. "The compilers don't lie."
 /// </summary>
 public class DynamicValueXmlTests
 {
@@ -45,8 +45,15 @@ public class DynamicValueXmlTests
                 return new DynamicValue.Bool(el.GetProperty("v").GetBoolean());
             case "int":
                 return new DynamicValue.Int(long.Parse(Str(el, "v"), CultureInfo.InvariantCulture));
+            case "float":
+                // v is the IEEE-754 f64 bit pattern (16 hex, big-endian) — mirrors the CBOR golden test.
+                return new DynamicValue.Float(
+                    BitConverter.UInt64BitsToDouble(
+                        ulong.Parse(Str(el, "v"), NumberStyles.HexNumber, CultureInfo.InvariantCulture)));
             case "str":
                 return new DynamicValue.String(Str(el, "v"));
+            case "bytes":
+                return new DynamicValue.Bytes(Convert.FromHexString(Str(el, "v")).ToImmutableArray());
             case "arr":
                 return new DynamicValue.Array(
                     el.GetProperty("v").EnumerateArray().Select(BuildValue).ToImmutableArray());
@@ -68,7 +75,7 @@ public class DynamicValueXmlTests
                         })
                         .ToImmutableArray());
             default:
-                throw new InvalidOperationException($"unsupported tag in v1 seed: {tag}");
+                throw new InvalidOperationException($"unsupported tag in seed: {tag}");
         }
     }
 
@@ -145,19 +152,39 @@ public class DynamicValueXmlTests
     }
 
     [Fact]
-    public void NeverCollapseGivesFourDistinctXmlStrings()
+    public void NeverCollapseGivesFiveDistinctXmlStrings()
     {
         string nullXml = Encode(new DynamicValue.Null());
         string emptyArr = Encode(new DynamicValue.Array(ImmutableArray<DynamicValue>.Empty));
         string emptyObj = Encode(new DynamicValue.Object(ImmutableArray<KeyValuePair<string, DynamicValue>>.Empty));
         string emptyStr = Encode(new DynamicValue.String(string.Empty));
+        string emptyBytes = Encode(new DynamicValue.Bytes(ImmutableArray<byte>.Empty));
 
-        var distinct = new HashSet<string>(StringComparer.Ordinal) { nullXml, emptyArr, emptyObj, emptyStr };
-        Assert.Equal(4, distinct.Count);
+        var distinct = new HashSet<string>(StringComparer.Ordinal) { nullXml, emptyArr, emptyObj, emptyStr, emptyBytes };
+        Assert.Equal(5, distinct.Count);
         Assert.Equal("<null/>", nullXml);
         Assert.Equal("<arr></arr>", emptyArr);
         Assert.Equal("<obj></obj>", emptyObj);
         Assert.Equal("<str></str>", emptyStr);
+        Assert.Equal("<bytes></bytes>", emptyBytes);
+    }
+
+    [Fact]
+    public void NaNFloatRoundTripsByBitPattern()
+    {
+        // XML preserves the EXACT f64 bit pattern (unlike CBOR, which collapses all NaNs to f97e00),
+        // so the seed's canonical NaN is 7ff8000000000000. double.NaN != double.NaN, so compare BIT
+        // PATTERNS (mirrors the CBOR golden test's NaN handling) rather than value equality.
+        const ulong canonicalNaNBits = 0x7ff8000000000000UL;
+        double nan = BitConverter.UInt64BitsToDouble(canonicalNaNBits);
+        Assert.True(double.IsNaN(nan));
+
+        const string xml = "<float>7ff8000000000000</float>";
+        Assert.Equal(xml, Encode(new DynamicValue.Float(nan)));
+
+        var ok = Assert.IsType<Result<DynamicValue, DecodeError>.Ok>(DynamicValuesXml.FromCanonicalXml(xml));
+        var f = Assert.IsType<DynamicValue.Float>(ok.Value);
+        Assert.Equal(canonicalNaNBits, (ulong)BitConverter.DoubleToInt64Bits(f.Value));
     }
 
     [Theory]

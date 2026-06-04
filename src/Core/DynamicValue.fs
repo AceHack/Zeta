@@ -1032,8 +1032,9 @@ module DynamicValue =
     /// `<int>DECIMAL</int>`, `<str>TEXT</str>`, `<arr>CHILD…</arr>`,
     /// `<obj><e k="KEY">VALUE</e>…</obj>` (keys in INSERTION order). Element text
     /// escapes `& < >` and `\t \n \r` as char-refs; attribute (key) escapes also `"`.
-    /// v1 locks the same 6 shapes as JSON; `Float` and `Bytes` are DEFERRED (lock
-    /// under CBOR) → `Error EncodeError.*`. A string/key with a forbidden C0 char is
+    /// XML is the TOTAL form (8/8 shapes): `Float` → `<float>HHHHHHHHHHHHHHHH</float>`
+    /// (16 lowercase hex IEEE-754 f64 big-endian bits, reusing the CBOR f64-bits form)
+    /// and `Bytes` → `<bytes>HH…</bytes>` (lowercase hex). A string/key with a forbidden C0 char is
     /// NOT XML-1.0 representable → `Error EncodeError.NonRepresentable`. Surfaced as
     /// data per the Result-over-exception hard rule (AGENTS.md), never thrown.
     let rec toCanonicalXml (value: DynamicValue) : Result<string, EncodeError> =
@@ -1041,9 +1042,19 @@ module DynamicValue =
         | DynamicValue.Null -> Ok "<null/>"
         | DynamicValue.Bool b -> Ok(if b then "<bool>true</bool>" else "<bool>false</bool>")
         | DynamicValue.Int i -> Ok("<int>" + i.ToString(System.Globalization.CultureInfo.InvariantCulture) + "</int>")
-        | DynamicValue.Float _ -> Error EncodeError.FloatDeferred
+        | DynamicValue.Float f ->
+            // 16 lowercase hex = the IEEE-754 f64 big-endian bit pattern — the SAME
+            // language-neutral form the CBOR float64 path uses (System.BitConverter bits).
+            // Total here: float never hits the NonRepresentable boundary.
+            let bits = System.BitConverter.DoubleToUInt64Bits f
+            Ok("<float>" + bits.ToString("x16", System.Globalization.CultureInfo.InvariantCulture) + "</float>")
         | DynamicValue.String s -> escapeXmlText s |> Result.map (fun t -> "<str>" + t + "</str>")
-        | DynamicValue.Bytes _ -> Error EncodeError.BytesDeferred
+        | DynamicValue.Bytes bytes ->
+            // canonical lowercase hex (empty bytes -> <bytes></bytes>); reuses the byte
+            // payload normalization the CBOR codec applies. Total: never NonRepresentable.
+            let b = if bytes.IsDefault then ImmutableArray<byte>.Empty else bytes
+            let hex = System.Convert.ToHexString(b.AsSpan()).ToLowerInvariant()
+            Ok("<bytes>" + hex + "</bytes>")
         | DynamicValue.Array items ->
             items
             |> List.fold
@@ -1062,8 +1073,9 @@ module DynamicValue =
             |> Result.map (fun parts -> "<obj>" + String.concat "" (List.rev parts) + "</obj>")
 
     /// Decodes canonical XML text into a `DynamicValue` — the inverse of `toCanonicalXml`,
-    /// completing the text↔value round-trip for the six locked shapes (`Float`/`Bytes`
-    /// DEFERRED; `<float>`/`<bytes>`/unknown tags → `DecodeError.Unsupported`). Strictly
+    /// completing the text↔value round-trip for all eight shapes (`<float>` = 16 lowercase
+    /// hex IEEE-754 f64 bits, `<bytes>` = even-length lowercase hex; unknown tags →
+    /// `DecodeError.Unsupported`). Strictly
     /// canonical: a lenient parse, then one fixed-point check (`toCanonicalXml decoded =
     /// input`) rejects every non-canonical form (self-closing empties, `&#x9;` vs `&#9;`,
     /// insignificant whitespace, leading zeros) as `DecodeError.NonCanonical`. Surfaced as
@@ -1260,6 +1272,50 @@ module DynamicValue =
                                         with
                                         | true, n -> Ok(DynamicValue.Int n)
                                         | false, _ -> Error DecodeError.IntegerOverflow)
+                        | "float" ->
+                            if selfClose then
+                                Error DecodeError.MalformedXml
+                            else
+                                let text = readTextRun ()
+
+                                expectClose "float"
+                                |> Result.bind (fun () ->
+                                    // canonical = exactly 16 LOWERCASE hex (IEEE-754 f64 bits)
+                                    let valid =
+                                        text.Length = 16
+                                        && text
+                                           |> Seq.forall (fun c ->
+                                               (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))
+
+                                    if not valid then
+                                        Error DecodeError.MalformedXml
+                                    else
+                                        let bits =
+                                            System.UInt64.Parse(
+                                                text,
+                                                System.Globalization.NumberStyles.HexNumber,
+                                                System.Globalization.CultureInfo.InvariantCulture)
+
+                                        Ok(DynamicValue.Float(System.BitConverter.UInt64BitsToDouble bits)))
+                        | "bytes" ->
+                            if selfClose then
+                                Ok(DynamicValue.Bytes(ImmutableArray<byte>.Empty)) // tolerated; fixed-point rejects (canonical is <bytes></bytes>)
+                            else
+                                let text = readTextRun ()
+
+                                expectClose "bytes"
+                                |> Result.bind (fun () ->
+                                    // canonical = even-length LOWERCASE hex
+                                    let valid =
+                                        text.Length % 2 = 0
+                                        && text
+                                           |> Seq.forall (fun c ->
+                                               (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))
+
+                                    if not valid then
+                                        Error DecodeError.MalformedXml
+                                    else
+                                        Ok(DynamicValue.Bytes(ImmutableArray.Create<byte>(System.Convert.FromHexString text))))
                         | "str" ->
                             if selfClose then
                                 Ok(DynamicValue.String "") // tolerated; fixed-point rejects (canonical is <str></str>)
@@ -1302,7 +1358,7 @@ module DynamicValue =
                                                     |> Result.bind (fun () -> loop ((eattrK.Value, v) :: acc))
 
                                 loop []
-                        | _ -> Error DecodeError.Unsupported // <float>/<bytes> deferred in v1; unknown tags
+                        | _ -> Error DecodeError.Unsupported // unknown tags
 
         match parseValue () with
         | Error e -> Error e

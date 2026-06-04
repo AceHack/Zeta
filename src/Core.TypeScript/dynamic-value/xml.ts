@@ -1,10 +1,12 @@
 // DynamicValue canonical XML codec — the TS oracle, shared by the encode + decode
-// byte-lock tests. Canonical XML is the PARTIAL form (6/8 shapes): Float + Bytes are
-// DEFERRED (lock under CBOR; see cbor.ts), matching the JSON codec's coverage so the
-// format-agreement matrix shares one subset. The typed-element form makes the 6 shapes
-// UNAMBIGUOUS — and makes never-collapse natural: `<null/>`, empty `<arr></arr>`, empty
-// `<obj></obj>`, and empty `<str></str>` are four distinct element shapes, so empty
-// collections never collapse to null (the B-1016 invariant, free here by construction).
+// byte-lock tests. Canonical XML is now the TOTAL form (8/8 shapes): like CBOR it
+// locks Float (16-hex IEEE-754 f64 bits) and Bytes (lowercase hex) — both carried in
+// the tagged form already (see cbor.ts), so XML inherits their byte-lock for free and
+// is exact (all float corners NaN/Inf/-0.0/subnormals are distinct bit patterns). The
+// typed-element form makes every shape UNAMBIGUOUS — and makes never-collapse natural:
+// `<null/>`, empty `<arr></arr>`, empty `<obj></obj>`, empty `<str></str>`, empty
+// `<bytes></bytes>` are distinct element shapes, so empties never collapse to null
+// (the B-1016 invariant, free here by construction).
 //
 // Canonical rules (minified, one rendering per value):
 //   null  -> <null/>
@@ -25,7 +27,12 @@
 // check (canonicalXml(parsed) === input) rejecting every non-canonical form as
 // NonCanonical. "The compilers don't lie."
 
-import type { Tagged } from "./json";
+// 8-shape Tagged (the total form): float v = 16-hex IEEE-754 f64 big-endian bits,
+// bytes v = lowercase hex — the SAME language-neutral canonical forms CBOR already
+// locks (see cbor.ts). XML wraps them in typed elements; no bit conversion here, so
+// the float/bytes byte-lock is inherited from the tagged form (exact; all float
+// corners — NaN/Inf/-0.0/subnormals — are distinct bit patterns).
+import type { Tagged } from "./cbor";
 
 export type { Tagged };
 
@@ -115,6 +122,12 @@ export function canonicalXml(n: Tagged): string {
       return "<int>" + BigInt(n.v).toString() + "</int>";
     case "str":
       return "<str>" + escapeText(n.v) + "</str>";
+    case "float":
+      // n.v is the canonical 16-hex IEEE-754 f64 bit pattern (from the tagged form)
+      return "<float>" + n.v + "</float>";
+    case "bytes":
+      // n.v is canonical lowercase hex (empty bytes -> <bytes></bytes>)
+      return "<bytes>" + n.v + "</bytes>";
     case "arr":
       return "<arr>" + n.v.map(canonicalXml).join("") + "</arr>";
     case "obj":
@@ -263,6 +276,22 @@ export function fromCanonicalXml(xml: string): DecodeResult {
         expectClose("str");
         return { t: "str", v: text };
       }
+      case "float": {
+        if (tag.selfClose) fail("MalformedXml");
+        const text = readTextRun();
+        expectClose("float");
+        // canonical = exactly 16 LOWERCASE hex (IEEE-754 f64 bits); else non-canonical
+        if (!/^[0-9a-f]{16}$/.test(text)) fail("MalformedXml");
+        return { t: "float", v: text };
+      }
+      case "bytes": {
+        if (tag.selfClose) return { t: "bytes", v: "" }; // tolerated; fixed-point rejects (canonical is <bytes></bytes>)
+        const text = readTextRun();
+        expectClose("bytes");
+        // canonical = even-length LOWERCASE hex; else non-canonical
+        if (!/^([0-9a-f]{2})*$/.test(text)) fail("MalformedXml");
+        return { t: "bytes", v: text };
+      }
       case "arr": {
         if (tag.selfClose) return { t: "arr", v: [] }; // tolerated; fixed-point rejects
         const items: Tagged[] = [];
@@ -286,7 +315,7 @@ export function fromCanonicalXml(xml: string): DecodeResult {
         return { t: "obj", v: pairs };
       }
       default:
-        return fail("Unsupported"); // <float>/<bytes> deferred in v1; unknown tags
+        return fail("Unsupported"); // unknown element tag
     }
   };
 

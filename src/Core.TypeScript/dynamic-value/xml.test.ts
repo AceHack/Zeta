@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import { canonicalXml, fromCanonicalXml } from "./xml";
-import type { Tagged } from "./json";
+import type { Tagged } from "./cbor";
 import goldens from "./golden-vectors-xml.json";
 
 // TS oracle for the canonical XML codec. Golden byte-lock (encode(value)===xml,
@@ -26,15 +26,34 @@ test("XML golden round-trip: decode(xml) === value for every vector", () => {
   }
 });
 
-test("XML never-collapse: null / empty arr / empty obj / empty str are four distinct forms", () => {
+test("XML never-collapse: null / empty arr / empty obj / empty str / empty bytes are five distinct forms", () => {
   const forms = [
     canonicalXml({ t: "null" }),
     canonicalXml({ t: "arr", v: [] }),
     canonicalXml({ t: "obj", v: [] }),
     canonicalXml({ t: "str", v: "" }),
+    canonicalXml({ t: "bytes", v: "" }),
   ];
-  expect(forms).toEqual(["<null/>", "<arr></arr>", "<obj></obj>", "<str></str>"]);
-  expect(new Set(forms).size).toBe(4);
+  expect(forms).toEqual(["<null/>", "<arr></arr>", "<obj></obj>", "<str></str>", "<bytes></bytes>"]);
+  expect(new Set(forms).size).toBe(5);
+});
+
+test("XML float corners are distinct + round-trip exactly (bit-pattern form)", () => {
+  // -0.0 (8000…) vs +0.0 (0000…) vs NaN (7ff8…) vs +Inf (7ff0…) — distinct bits, never collapse
+  const posZero: Tagged = { t: "float", v: "0000000000000000" };
+  const negZero: Tagged = { t: "float", v: "8000000000000000" };
+  const nan: Tagged = { t: "float", v: "7ff8000000000000" };
+  const posInf: Tagged = { t: "float", v: "7ff0000000000000" };
+  const corners = [posZero, negZero, nan, posInf];
+  const encs = corners.map(canonicalXml);
+  expect(new Set(encs).size).toBe(4); // all distinct
+  for (const t of corners) expect(fromCanonicalXml(canonicalXml(t))).toEqual({ ok: true, value: t });
+  // uppercase / wrong-length float hex is non-canonical
+  expect(fromCanonicalXml("<float>3FF0000000000000</float>").ok).toBe(false);
+  expect(fromCanonicalXml("<float>3ff0</float>").ok).toBe(false);
+  // odd-length / uppercase bytes hex non-canonical
+  expect(fromCanonicalXml("<bytes>0</bytes>").ok).toBe(false);
+  expect(fromCanonicalXml("<bytes>AABB</bytes>").ok).toBe(false);
 });
 
 test("XML round-trips whitespace + markup chars in text and keys", () => {
@@ -61,8 +80,10 @@ test("XML canonicality: non-canonical forms rejected via fixed-point", () => {
   expect(fromCanonicalXml("<int>01</int>").ok).toBe(false);
   // trailing data rejected
   expect(fromCanonicalXml("<null/><null/>")).toEqual({ ok: false, error: "TrailingData" });
-  // deferred shapes / unknown tags
-  expect(fromCanonicalXml("<float>1.5</float>")).toEqual({ ok: false, error: "Unsupported" });
+  // float is now the 16-hex IEEE-754 bit form: a decimal float token is malformed
+  expect(fromCanonicalXml("<float>1.5</float>").ok).toBe(false);
+  // unknown element tag is unsupported
+  expect(fromCanonicalXml("<date>2026</date>")).toEqual({ ok: false, error: "Unsupported" });
 });
 
 test("XML int64 boundaries round-trip; overflow rejected", () => {

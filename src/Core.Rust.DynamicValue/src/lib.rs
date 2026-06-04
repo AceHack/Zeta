@@ -257,18 +257,18 @@ impl DynamicValue {
     /// `src/Core.TypeScript/dynamic-value/golden-vectors-xml.json`). Typed-element,
     /// minified form (one rendering per value):
     /// `<null/>` / `<bool>true</bool>` / `<int>DECIMAL</int>` / `<str>TEXT</str>` /
-    /// `<arr>CHILD...</arr>` / `<obj><e k="KEY">VALUE</e>...</obj>`. Empty collections
-    /// render distinctly (`<arr></arr>`, `<obj></obj>`, `<str></str>`), never collapsing
-    /// to null. Element TEXT escapes `& < >` and `\t \n \r` as char-refs (`&#9; &#10;
-    /// &#13;`); the key attribute additionally escapes `"`. `Object` keys in INSERTION
-    /// order. v1 locks the same 6 shapes as JSON.
+    /// `<float>16-HEX</float>` / `<bytes>HEX</bytes>` / `<arr>CHILD...</arr>` /
+    /// `<obj><e k="KEY">VALUE</e>...</obj>`. Empty collections render distinctly
+    /// (`<arr></arr>`, `<obj></obj>`, `<str></str>`, `<bytes></bytes>`), never collapsing
+    /// to null. `Float` is the 16-hex lowercase IEEE-754 f64 big-endian bit pattern (the
+    /// same language-neutral form CBOR locks); `Bytes` is lowercase hex. Element TEXT
+    /// escapes `& < >` and `\t \n \r` as char-refs (`&#9; &#10; &#13;`); the key attribute
+    /// additionally escapes `"`. `Object` keys in INSERTION order. TOTAL: all 8 shapes lock.
     ///
     /// # Errors
-    /// Returns [`EncodeError::FloatDeferred`] / [`EncodeError::BytesDeferred`] for
-    /// `Float`/`Bytes` (DEFERRED to CBOR), and [`EncodeError::NotXmlRepresentable`] for
-    /// a string/key containing NUL or a C0 control other than `\t \n \r` (XML 1.0 forbids
-    /// these even as char-refs -- the XML analogue of Bytes-not-in-YAML). Mirrors the TS
-    /// `canonicalXml` + `XmlEncodeError`.
+    /// Returns [`EncodeError::NotXmlRepresentable`] for a string/key containing NUL or a
+    /// C0 control other than `\t \n \r` (XML 1.0 forbids these even as char-refs -- the XML
+    /// analogue of Bytes-not-in-YAML). Mirrors the TS `canonicalXml` + `XmlEncodeError`.
     pub fn to_canonical_xml(&self) -> Result<String, EncodeError> {
         let mut out = String::new();
         self.write_canonical_xml(&mut out)?;
@@ -284,13 +284,31 @@ impl DynamicValue {
                 out.push_str(&i.to_string());
                 out.push_str("</int>");
             }
-            DynamicValue::Float(_) => return Err(EncodeError::FloatDeferred),
+            DynamicValue::Float(f) => {
+                // <float> + 16 LOWERCASE hex of the IEEE-754 f64 big-endian bit pattern --
+                // the SAME language-neutral form CBOR's golden value carries (f64::to_bits()).
+                // Distinct for every corner (NaN canonical 7ff8000000000000; -0.0 != +0.0).
+                out.push_str("<float>");
+                for byte in f.to_bits().to_be_bytes() {
+                    out.push(char::from_digit((u32::from(byte) >> 4) & 0xf, 16).expect("hex digit"));
+                    out.push(char::from_digit(u32::from(byte) & 0xf, 16).expect("hex digit"));
+                }
+                out.push_str("</float>");
+            }
             DynamicValue::String(s) => {
                 out.push_str("<str>");
                 escape_xml_text(s, out)?;
                 out.push_str("</str>");
             }
-            DynamicValue::Bytes(_) => return Err(EncodeError::BytesDeferred),
+            DynamicValue::Bytes(b) => {
+                // <bytes> + lowercase hex (empty -> <bytes></bytes>) -- the CBOR byte/hex form.
+                out.push_str("<bytes>");
+                for byte in b {
+                    out.push(char::from_digit((u32::from(*byte) >> 4) & 0xf, 16).expect("hex digit"));
+                    out.push(char::from_digit(u32::from(*byte) & 0xf, 16).expect("hex digit"));
+                }
+                out.push_str("</bytes>");
+            }
             DynamicValue::Array(items) => {
                 out.push_str("<arr>");
                 for item in items {
@@ -318,8 +336,9 @@ impl DynamicValue {
     /// canonical: a lenient recursive-descent parse, then one fixed-point check
     /// (`to_canonical_xml() == input`) -- any non-canonical spelling (self-closing empties,
     /// `&#x9;` vs `&#9;`, raw whitespace, leading zeros) is rejected as
-    /// [`DecodeError::NonCanonical`]. `<float>`/`<bytes>`/unknown tags ->
-    /// [`DecodeError::Unsupported`]. int64-overflow -> [`DecodeError::IntegerOverflow`].
+    /// [`DecodeError::NonCanonical`]. `<float>` parses 16-hex f64 bits; `<bytes>` parses
+    /// lowercase hex; unknown tags -> [`DecodeError::Unsupported`]. int64-overflow ->
+    /// [`DecodeError::IntegerOverflow`].
     ///
     /// # Errors
     /// Returns the [`DecodeError`] describing why the input is not a valid canonical-XML
@@ -653,6 +672,43 @@ fn parse_xml_value(s: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeEr
             expect_xml_close(s, pos, "str")?;
             Ok(DynamicValue::String(text))
         }
+        "float" => {
+            if tag.self_close {
+                return Err(DecodeError::Unsupported);
+            }
+            let text: String = read_xml_text_run(s, pos).iter().collect();
+            expect_xml_close(s, pos, "float")?;
+            // canonical = exactly 16 LOWERCASE hex (IEEE-754 f64 big-endian bits)
+            let b = text.as_bytes();
+            let valid = b.len() == 16
+                && b.iter()
+                    .all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(c));
+            if !valid {
+                return Err(DecodeError::Unsupported);
+            }
+            let bits = u64::from_str_radix(&text, 16).map_err(|_| DecodeError::Unsupported)?;
+            Ok(DynamicValue::Float(f64::from_bits(bits)))
+        }
+        "bytes" => {
+            if tag.self_close {
+                return Ok(DynamicValue::Bytes(Vec::new())); // tolerated; fixed-point rejects
+            }
+            let text: String = read_xml_text_run(s, pos).iter().collect();
+            expect_xml_close(s, pos, "bytes")?;
+            // canonical = even-length LOWERCASE hex
+            let b = text.as_bytes();
+            let valid = b.len() % 2 == 0
+                && b.iter()
+                    .all(|c| c.is_ascii_digit() || (b'a'..=b'f').contains(c));
+            if !valid {
+                return Err(DecodeError::Unsupported);
+            }
+            let bytes = (0..b.len())
+                .step_by(2)
+                .map(|i| u8::from_str_radix(&text[i..i + 2], 16).expect("hex byte"))
+                .collect();
+            Ok(DynamicValue::Bytes(bytes))
+        }
         "arr" => {
             if tag.self_close {
                 return Ok(DynamicValue::Array(Vec::new())); // tolerated; fixed-point rejects
@@ -681,7 +737,7 @@ fn parse_xml_value(s: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeEr
             expect_xml_close(s, pos, "obj")?;
             Ok(DynamicValue::Object(pairs))
         }
-        _ => Err(DecodeError::Unsupported), // <float>/<bytes> deferred; unknown tags
+        _ => Err(DecodeError::Unsupported), // unknown tags
     }
 }
 

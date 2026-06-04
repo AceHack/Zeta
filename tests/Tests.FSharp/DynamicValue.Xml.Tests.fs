@@ -3,6 +3,7 @@ module Zeta.Tests.DynamicValueXmlTests
 open System.IO
 open System.Reflection
 open System.Globalization
+open System.Collections.Immutable
 open System.Text.Json
 open global.Xunit
 open Zeta.Core
@@ -11,7 +12,7 @@ open Zeta.Core
 // against the shared seed (src/Core.TypeScript/dynamic-value/golden-vectors-xml.json).
 // Seed-first: the seed is the canonical DATA; this proves the F# XML codec AGREES on
 // it (encode(value) = Ok xml AND decode(xml) = Ok value) for every locked vector.
-// v1 locks null/bool/int/string/array/object; Float + Bytes are DEFERRED.
+// XML is the TOTAL form (8/8 shapes): float = 16-hex IEEE-754 f64 bits, bytes = hex.
 // "The compilers don't lie."
 
 /// Walk up from the test assembly to the repo root (Zeta.sln sentinel).
@@ -38,6 +39,14 @@ let rec private buildValue (el: JsonElement) : DynamicValue =
     | "null" -> DynamicValue.Null
     | "bool" -> DynamicValue.Bool(el.GetProperty("v").GetBoolean())
     | "int" -> DynamicValue.Int(System.Int64.Parse(el.GetProperty("v").GetString(), CultureInfo.InvariantCulture))
+    // float v is the IEEE-754 f64 big-endian bit pattern (16 hex) — built bit-exact
+    // (mirrors DynamicValue.CborGoldenVectors.Tests.fs) so NaN/-0.0/Inf corners survive.
+    | "float" ->
+        DynamicValue.Float(
+            System.BitConverter.UInt64BitsToDouble(
+                System.UInt64.Parse(el.GetProperty("v").GetString(), NumberStyles.HexNumber, CultureInfo.InvariantCulture)))
+    // bytes v is a hex string (empty -> empty payload)
+    | "bytes" -> DynamicValue.Bytes(ImmutableArray.Create<byte>(System.Convert.FromHexString(el.GetProperty("v").GetString())))
     | "str" -> DynamicValue.String(el.GetProperty("v").GetString())
     | "arr" -> DynamicValue.Array [ for item in children (el.GetProperty("v")) -> buildValue item ]
     | "obj" ->
@@ -91,17 +100,19 @@ let ``F# canonical XML decoder round-trips the shared seed`` () =
     Assert.True(List.isEmpty failures, "round-trip mismatches:\n" + String.concat "\n" failures)
 
 [<Fact>]
-let ``empty shapes never collapse — four distinct canonical XML strings`` () =
+let ``empty shapes never collapse — five distinct canonical XML strings`` () =
     let nul = DynamicValue.toCanonicalXml DynamicValue.Null
     let arr = DynamicValue.toCanonicalXml (DynamicValue.Array [])
     let obj = DynamicValue.toCanonicalXml (DynamicValue.Object [])
     let str = DynamicValue.toCanonicalXml (DynamicValue.String "")
+    let bytes = DynamicValue.toCanonicalXml (DynamicValue.Bytes ImmutableArray.Empty)
     Assert.Equal(Ok "<null/>", nul)
     Assert.Equal(Ok "<arr></arr>", arr)
     Assert.Equal(Ok "<obj></obj>", obj)
     Assert.Equal(Ok "<str></str>", str)
-    let all = [ "<null/>"; "<arr></arr>"; "<obj></obj>"; "<str></str>" ]
-    Assert.Equal(4, all |> List.distinct |> List.length)
+    Assert.Equal(Ok "<bytes></bytes>", bytes)
+    let all = [ "<null/>"; "<arr></arr>"; "<obj></obj>"; "<str></str>"; "<bytes></bytes>" ]
+    Assert.Equal(5, all |> List.distinct |> List.length)
 
 [<Fact>]
 let ``non-canonical XML is rejected (self-closing empties, leading zeros)`` () =
@@ -127,16 +138,29 @@ let ``non-canonical XML is rejected (self-closing empties, leading zeros)`` () =
     )
 
 [<Fact>]
-let ``Float and Bytes are deferred in canonical XML`` () =
-    Assert.Equal(Error EncodeError.FloatDeferred, DynamicValue.toCanonicalXml (DynamicValue.Float 1.5))
+let ``Float and Bytes are total in canonical XML (16-hex / hex)`` () =
+    // 1.5 = IEEE-754 f64 bits 0x3ff8000000000000
+    Assert.Equal(Ok "<float>3ff8000000000000</float>", DynamicValue.toCanonicalXml (DynamicValue.Float 1.5))
+    // NaN built from the canonical 7ff8… bit pattern round-trips bit-exact (XML carries
+    // the raw f64 bits, so the golden `float-nan` payload 7ff8000000000000 is preserved
+    // verbatim — distinct from .NET's own Double.NaN which is fff8…).
+    let nanCanon = System.BitConverter.UInt64BitsToDouble(0x7ff8000000000000UL)
+    Assert.Equal(Ok "<float>7ff8000000000000</float>", DynamicValue.toCanonicalXml (DynamicValue.Float nanCanon))
+    Assert.Equal(Ok "<float>8000000000000000</float>", DynamicValue.toCanonicalXml (DynamicValue.Float -0.0))
+    Assert.Equal(Ok "<float>0000000000000000</float>", DynamicValue.toCanonicalXml (DynamicValue.Float 0.0))
 
     Assert.Equal(
-        Error EncodeError.BytesDeferred,
-        DynamicValue.toCanonicalXml (DynamicValue.Bytes(System.Collections.Immutable.ImmutableArray.Create<byte>([| 1uy |])))
+        Ok "<bytes>0102ff</bytes>",
+        DynamicValue.toCanonicalXml (DynamicValue.Bytes(ImmutableArray.Create<byte>([| 1uy; 2uy; 255uy |])))
     )
 
+    Assert.Equal(Ok "<bytes></bytes>", DynamicValue.toCanonicalXml (DynamicValue.Bytes ImmutableArray.Empty))
+
 [<Fact>]
-let ``unknown and deferred tags decode to Unsupported`` () =
-    Assert.Equal(Error DecodeError.Unsupported, DynamicValue.fromCanonicalXml "<float>1.5</float>")
-    Assert.Equal(Error DecodeError.Unsupported, DynamicValue.fromCanonicalXml "<bytes>00</bytes>")
+let ``unknown tags decode to Unsupported; malformed float/bytes are MalformedXml`` () =
     Assert.Equal(Error DecodeError.Unsupported, DynamicValue.fromCanonicalXml "<wat>x</wat>")
+    // non-16-hex float / odd-length / uppercase hex → malformed (regex validation)
+    Assert.Equal(Error DecodeError.MalformedXml, DynamicValue.fromCanonicalXml "<float>1.5</float>")
+    Assert.Equal(Error DecodeError.MalformedXml, DynamicValue.fromCanonicalXml "<float>3FF8000000000000</float>")
+    Assert.Equal(Error DecodeError.MalformedXml, DynamicValue.fromCanonicalXml "<bytes>0</bytes>")
+    Assert.Equal(Error DecodeError.MalformedXml, DynamicValue.fromCanonicalXml "<bytes>FF</bytes>")
