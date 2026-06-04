@@ -31,10 +31,13 @@ the same per-writer isolation).
 ⊕ instance ⊕ machine/node/cluster.** Persona alone isn't unique; neither is
 persona+surface — you can run many same-kind loops (e.g. several `otto-cli-bg`) on
 one machine, across machines, and in-cluster. The **instance** part is a concrete
-locally-stored discriminator the writer keeps + reuses — a Windows **service
-name**, a **process id**, a **container id** — whatever distinguishes same-type
-instances. **Instance discriminator + network topology is sufficient** for global
-uniqueness on the bus.
+locally-stored discriminator the writer keeps + reuses. Stability differs: service
+name (across restarts) > container id (container lifetime) > raw process id (process
+lifetime only — **PIDs recycle**). **Blade (Amara): never use raw PID alone as the
+durable discriminator** — use a durable `instanceToken`, or compose
+`instanceToken + processId + boot/session epoch` so the same persona+surface+loop
+can run multiple writers on one machine without address collision. **Instance
+discriminator + network topology is sufficient** for global uniqueness on the bus.
 
 **This is bus-uniqueness (addressing/routing a writer endpoint), NOT identity.**
 Identity in this system is a *combination of multiple unique things*, of which the
