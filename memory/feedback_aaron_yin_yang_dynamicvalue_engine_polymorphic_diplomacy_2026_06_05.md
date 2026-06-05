@@ -28,6 +28,24 @@ the remains/acts split, not the specific tag.
 encoding (Bonsai reified as a discriminated DynamicValue sibling). Yin = the immutable DBSP value;
 yang = the Rx fold/animation over it.
 
+## Refinement — two axes, not one (Aaron, 2026-06-05): stay/act INSIDE the DST, in/out AT the boundary
+
+The split sharpens into **two orthogonal axes**:
+
+- **stay / act — WITHIN the deterministic simulation (DST interior).** stay = yin (what remains), act =
+  yang (what acts). This is the *deterministic, replayable* interior — the `YinYang.Cell {Remains; Acts}`
+  already shipped (`src/Core/YinYang.fs`, first slice).
+- **in / out — AT the boundary.** The I/O ports: **observe (in) / emit (out)** — where the DST meets the
+  *non-deterministic* outside (searches, GitHub, other agents). This is the **Observe-Emit constitutive
+  role** (the 6+2-axes hypothesis, §B-other) and the standard DST pattern: deterministic core, all
+  non-determinism injected at the boundary. ("Every traveler frame runs simultaneously based on its tests
+  and its outside-world comms over its own GitHub stream" — the comms ARE the in/out boundary.)
+
+So: **stay/act is the engine's interior (deterministic); in/out is its skin (where it observes/emits).**
+The shipped cell is the interior; the **boundary in/out ports are the engine's next layer** (not a
+correction — an addition). NCI lives at the boundary: what crosses in/out is where coercion/revelation
+could happen; the interior stay/act is private (within the encryption budget).
+
 ## What it unlocks — polymorphic diplomacy (the agent handshake)
 
 The yin-yang engine becomes the **universal handshake / common language** by which agents **describe,
