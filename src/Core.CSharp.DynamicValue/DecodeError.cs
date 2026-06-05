@@ -34,4 +34,11 @@ public enum DecodeError
     /// error). Distinct from <see cref="NonCanonical"/>, which is well-formed but not the one
     /// canonical spelling.</summary>
     MalformedXml,
+
+    /// <summary>The input is not a well-formed Arrow IPC stream for the node-table schema this codec
+    /// emits — a truncated/garbage stream, the wrong schema (column types/order), a row count of
+    /// zero, a parent index out of range / not forming a tree rooted at row 0, or a kind whose
+    /// scalar payload is missing. The Arrow analogue of <see cref="MalformedXml"/>: any
+    /// <c>Apache.Arrow</c> read failure is caught and surfaced here rather than thrown.</summary>
+    MalformedArrow,
 }

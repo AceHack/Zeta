@@ -14,6 +14,14 @@
     <NoWarn>$(NoWarn);CA1720;CA1716</NoWarn>
   </PropertyGroup>
 
+  <!-- Apache.Arrow — the DELIBERATE single dependency of this otherwise zero-dep oracle, for the
+       columnar DynamicValue ↔ Arrow IPC codec (Arrow Phase 2, option c: F# + C# both use the .NET
+       Apache.Arrow lib so they produce byte-identical Arrow IPC). Same version Core uses
+       (Directory.Packages.props). -->
+  <ItemGroup>
+    <PackageReference Include="Apache.Arrow" />
+  </ItemGroup>
+
   <!-- DynamicValue (oracle #3 of TS/F#/C#/Rust) — the universal self-describing-payload
        primitive: a runtime value tree for shapes NOT known at compile time. Conforms to the
        F# canonical shape (src/Core/DynamicValue.fs). Self-contained, ZERO external dependencies
