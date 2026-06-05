@@ -18,6 +18,7 @@
     <!-- Algebra/ -->
     <Compile Include="Algebra/Weight.Tests.fs" />
     <Compile Include="Algebra/CayleyDickson.Tests.fs" />
+    <Compile Include="Algebra/Octonion.Laws.Tests.fs" />
     <Compile Include="Algebra/HexCore.Tests.fs" />
     <Compile Include="Algebra/Units.Tests.fs" />
     <Compile Include="Algebra/GSet.Tests.fs" />
