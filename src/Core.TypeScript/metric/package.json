@@ -1,0 +1,17 @@
+{
+  "name": "@zeta/metric",
+  "version": "0.1.0",
+  "description": "Standalone TypeScript metric/aggregation sketches (Bloom + CountMin, pure; XXH3-128 reused from @zeta/merkle) for N-way cross-language oracle verification (TS/F#/C#/Rust). Byte-identical to src/Core/{BloomFilter,CountMin}.fs on the deterministic core. Bun-native.",
+  "type": "module",
+  "main": "bloom.ts",
+  "exports": {
+    "./bloom": "./bloom.ts",
+    "./countmin": "./countmin.ts"
+  },
+  "keywords": ["zeta", "bloom", "countmin", "sketch", "cross-language", "bun"],
+  "author": "Lucent Financial Group",
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "bun": ">=1.0.0"
+  }
+}
