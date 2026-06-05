@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Zeta.Core.CSharp</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.Metric</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Metric / aggregation sketches (oracle of TS/F#/C#/Rust) — Bloom + CountMin, the
+       byte-lockable CORE (deterministic surface only): Bloom keys via XXH3-128
+       (System.IO.Hashing), CountMin via Add(baseHash) = SplitMix + fastrange. Conforms
+       byte-for-byte to the F# canonical shapes (src/Core/BloomFilter.fs, src/Core/CountMin.fs).
+       The .NET HashCode.Combine convenience path is NOT portable and is intentionally omitted. -->
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Hashing" />
+  </ItemGroup>
+
+</Project>

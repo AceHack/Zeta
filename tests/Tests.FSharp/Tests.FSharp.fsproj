@@ -65,6 +65,7 @@
     <Compile Include="Metric.Homeostat.Tests.fs" />
     <Compile Include="Metric.MagnitudeBounds.Tests.fs" />
     <Compile Include="Metric.Serializer.Tests.fs" />
+    <Compile Include="Metric.FourLang.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
@@ -191,6 +192,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
     <ProjectReference Include="..\..\src\Core.CSharp.Merkle\Zeta.Core.CSharp.Merkle.csproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.Metric\Zeta.Core.CSharp.Metric.csproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.TriBoolean\Zeta.Core.FSharp.TriBoolean.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />
