@@ -95,7 +95,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 |---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
 | 1 | **Clock / causal order** (Versionstamp) | `src/Core/Clock.fs` + `Core.{TypeScript,CSharp,Rust}.Clock` | ✓ | ✓ | ✓ (ddac32e9) | ✓ (ddac32e9, max reified) | ✓ (ddac32e9) | ✓ (ddac32e9, max-convergence) | ✅ **FULL PROVEN** — 2nd floor primitive (legs in `Clock.FullVertical.Tests.fs`; Versionstamp=int64 logical clock, merge=max=join) |
 | 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | ✓ (Identity.FullVertical) | ✓ (Identity.FullVertical, resolve reified) | ✓ (Identity.FullVertical) | ✓ (Identity.FullVertical, injectivity + idempotent dedup) | ✅ **FULL PROVEN** (local-handle layer) — 4th floor primitive (legs in `Identity.FullVertical.Tests.fs`; bridge = Object-of-decoded-fields; homeostat = identity-dedup, tied to G-Set). Perspectival belief-map layer = research, NOT in scope |
-| 3 | **Merkle integrity** | `src/Core/Merkle.fs` + `src/Core.CSharp.Merkle` | ✓ (structural tamper-evidence; crypto premise named) | partial (F#+C# byte-locked, `Merkle.FullVertical`; Rust + pure-TS XXH128 remain) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, combine reified) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, anti-entropy: verify + minimal-delta) | **5.5 of 6 legs** — math + 4-ser + Bonsai + Arrow + homeostat + 2/4 langs (`Merkle.FullVertical.Tests.fs`); ONLY Rust + pure-TS XXH128 ports remain for FULL PROVEN |
+| 3 | **Merkle integrity** | `src/Core/Merkle.fs` + `src/Core.CSharp.Merkle` + `src/Core.Rust.Merkle` | ✓ (structural tamper-evidence; crypto premise named) | partial 3/4 (F#+C#+Rust byte-locked; **only pure-TS XXH128 remains**) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, combine reified) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, anti-entropy: verify + minimal-delta) | **~5.75 of 6 legs** — math + 4-ser + Bonsai + Arrow + homeostat + 3/4 langs; ONLY the pure-TS XXH128 port remains for FULL PROVEN |
 | 4 | **CRDT merge + idempotency** (G-Set) | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB) | ✓ (G-Set 4/4) | ✓ (29c1ffe4) | ✓ (658c8e24, reify/apply) | ✓ (51d2937c) | ✓ (658c8e24, convergence-to-LUB) | ✅ **FULL PROVEN** — the FIRST floor primitive to clear the full bar (all G-Set legs in `tests/Tests.FSharp/GSet.FourSer.Tests.fs`) |
 | 5 | **Serialization seed** (ByteCost) | `src/Core/ByteCost.fs` + `Core.{TypeScript,CSharp,Rust}.ByteCost` | ✓ (commutative-monoid laws; Z3+FsCheck) | ✓ (golden-vectors byte-lock) | ✓ (SerializationSeed.FullVertical) | ✓ (SerializationSeed.FullVertical, add reified) | ✓ (SerializationSeed.FullVertical) | ✓ (SerializationSeed.FullVertical, order-independent aggregation) | ✅ **FULL PROVEN** — 3rd floor primitive (legs in `SerializationSeed.FullVertical.Tests.fs`; commutative MONOID not semilattice — homeostat-tie = path-independent aggregate, not idempotent LUB) |
 | 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL+Bloom join & CMS monoid merge-laws ✓ (state-level) · error-DIRECTION ✓ (Bloom no-false-neg, CMS no-undercount); probabilistic magnitude bounds ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (merge + error-direction); magnitude bounds + 4-lang open |
@@ -135,11 +135,16 @@ keys; a bijection, so two distinct personas never silently merge) + idempotent d
 All four homeostat-tie classes are now worked end-to-end:
 semilattice→converge-to-LUB · integrity→verify-the-converged-state ·
 monoid→order-independent-aggregate · identity→dedup (injective + idempotent).
-The other 2 are NOT yet full: **Merkle now has 5.5 of 6 legs** (math + 4-ser +
-Bonsai + Arrow + homeostat + F#↔C# byte-lock in `Merkle.FullVertical.Tests.fs`,
-2026-06-04 — `src/Core.CSharp.Merkle` shares `System.IO.Hashing.XxHash128` + the LE Hi/Lo
-combine layout, so roots are byte-identical; only the **Rust + pure-TS XXH128** ports
-remain); **metric-aggregation has the math leg** (4-lang partial). The
+The other 2 are NOT yet full: **Merkle now has ~5.75 of 6 legs** (math + 4-ser +
+Bonsai + Arrow + homeostat + F#↔C#↔Rust byte-lock, 2026-06-04 — `src/Core.CSharp.Merkle`
+shares `System.IO.Hashing.XxHash128`; `src/Core.Rust.Merkle` is HEXAGONAL — the zero-dep
+core owns the `Hasher128` port + `MerkleHash` + `MerkleTree`; the `xxhash-rust` crate is a
+swappable adapter (`Xxh3Hasher128`) behind the default `xxh3` feature, exact-pinned `=0.8.10`
+per the supply-chain doctrine (the core builds `--no-default-features`, so a future zero-dep
+pure XXH3 adapter drops in behind the same trait). Verified byte-identical against golden
+vectors generated from F#, after correcting for .NET's XXH128 canonical big-endian output
+(`Hi/Lo = swap` of `xxh3_128`'s halves); only the **pure-TS XXH128** port remains);
+**metric-aggregation has the math leg** (4-lang partial). The
 remaining legs are the gap to full PROVEN. The **4-lang column is sourced from `PRIMITIVE-REGISTRY.md`**
 (the consensus authority); this map adds the math + remaining legs.
 
