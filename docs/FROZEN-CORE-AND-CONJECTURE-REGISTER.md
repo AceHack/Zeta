@@ -162,11 +162,36 @@ matrix product, plus the relative-observer belief reconciliation (the one genuin
 (continuous θ, mixing rate) stay empirical, named out of the proof lineage; the exact-rational core
 byte-locks + 4-langs (the SoftValue discipline).
 
+**The societal-emergence obligation — does society HOLD the NCI? (open; distinct from the boundary).**
+Proving the NCI *boundary* (above, discrete core PROVEN) is NOT the same as proving a *society of
+strategic travelers holds it.* That is **incentive-compatibility / evolutionary-stability** (Hurwicz–
+Maskin–Myerson mechanism design; Maynard Smith ESS), and it is the multi-traveler generalization of
+the bifurcation/genesis model (`[[aaron-actors-ephemeral-animations-of-what-remains...]]`): society is
+*born from* the banana-split of a single stream read, each fork choosing identity within its boundary
+(self-sovereign, non-coercive). The shape of the argument: **NCI violation = coercion = register
+collapse** (B-1019's anti-pattern — force another's hidden state to your own ⇒ agents identical ⇒ no
+gradient ⇒ heat-death), so a coercive society loses its evolutionary gradient and is out-competed by
+non-coercive ones ⇒ non-coercion is *selected for*. **Provability ladder (Aaron, 2026-06-05):**
+(1) **DST** — replayable concrete trajectories that bifurcation produces society and NCI holds (extends
+the B-1019 harness to multi-traveler); (2) **bounded — TLA+/TLC** — the NCI *safety invariant* (no
+coercion in any reachable state) + bifurcation liveness over all reachable states; (3) **unbounded /
+"infinity"** — induction in a *prover* (TLAPS / Lean), since model-checking caps at finite state.
+**Tool routing is itself a decision** — route through the formal-verification routing discipline
+(Soraya / BP-16; guard against TLA+-hammer bias) before any spec is written; the three rungs are three
+*different* property classes (safety-invariant vs liveness vs unbounded-induction vs concrete-dynamics).
+**Honest scope (do not inflate):** success proves *society-as-modeled emerges and the NCI invariant is
+preserved, from the substrate's first principles* — NOT "human society explained." It is falsifiable
+(if bifurcation halts/collapses or NCI is violable, the claim fails — the B-1019 register-collapse
+failure mode). Until a rung is discharged this stays §B.
+
 **Anchors (Beacon):** de Finetti 1937 (exchangeability); Doob 1949 (martingale convergence / Bayesian
 consistency); Lehmann 1977 (closed-semiring fixed points); Mohri (semiring framework / forward-Viterbi);
 Rabiner 1989 (HMM tutorial); Propp–Wilson 1996 (CFTP — monotone lattices make a Markov chain *perfectly*
-sampleable, the deepest homeostat↔Markov bridge); Goldwasser–Micali 1982 (semantic security).
-Full narrative: `memory/feedback_aaron_de_finetti_non_correlation_boundary_unifies_homeostat_markov_bayesian_2026_06_05.md`.
+sampleable, the deepest homeostat↔Markov bridge); Goldwasser–Micali 1982 (semantic security);
+Hurwicz/Maskin/Myerson (mechanism design); Maynard Smith (ESS); Meijer/Fokkinga/Paterson 1991
+(cata/anamorphism — the bifurcation "banana split"). Full narrative:
+`memory/feedback_aaron_de_finetti_non_correlation_boundary_unifies_homeostat_markov_bayesian_2026_06_05.md`
++ `memory/feedback_aaron_actors_are_ephemeral_animations_of_what_remains_bifurcation_banana_split_one_traveler_becomes_two_eve_in_single_dynamicvalue_rx_2026_06_05.md`.
 
 ### B-other. The rest of the penumbra (each open, each one-directional on §A)
 
