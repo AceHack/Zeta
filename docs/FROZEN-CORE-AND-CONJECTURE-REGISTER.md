@@ -33,15 +33,18 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 | 8 | **Traveler frame (Layer 0)** — causal frame + inter-frame transformation law | transformation = causal-join is a bounded join-semilattice (idempotent/commutative/associative/monotone, LUB) ⇒ order-independent; all travelers reach ONE common frame = the relative-frame **consistency** law | `TravelerFrame.fs` / `TravelerFrame.Tests` |
 | 9 | **Action grid (Layer 2)** — 4×4 universal action grammar, navigation label-independence | navigation is a pure function of position, never of labels (proven via a discriminating predicate + negative control); frame (fixed geometry) and content (labels) separated by construction | `ActionGrid.fs` / `ActionGrid.Tests` |
 | 10 | **Uncertain clock (Layer 0 clock-with-uncertainty)** — CockroachDB HLC + uncertainty window | `definitelyBefore` is a strict partial order; trichotomy with the uncertain (overlap) zone; definite order refines the HLC total order (never contradicts the clock); ε=0 collapses to exact order; HLC receive/send monotone (bounded divergence) — the uncertain zone = where order is genuinely unknown (SoftValue carries both) | `UncertainClock.fs` / `UncertainClock.Tests` |
+| 11 | **Frame delta (Layer 0 group law)** — relative offset between frames | frame-offsets form an ABELIAN GROUP under composition (identity/associative/commutative/inverse) acting on frames by translation (apply identity, apply∘compose, `between` takes a→b, the cocycle, inverse-of-between) — the transformation group, distinct from the merge-semilattice | `FrameDelta.fs` / `FrameDelta.Tests` |
 
 > If it isn't in this table, **do not build load-bearing work on it yet.** That's the whole point.
 >
-> **Promoted 2026-06-05:** Traveler-frame Layer 0 (#8, consistency law) + the clock-with-uncertainty
-> sub-leg (#10). `TravelerFrame.transform` (causal-join) is a proven bounded join-semilattice
-> (order-independent ⇒ one common frame); `UncertainClock` adds the CockroachDB-HLC uncertainty window
-> — a *partial* temporal order where overlapping windows are honestly uncertain (no false certainty;
-> the SoftValue tie). **Layer 0 is now tied off** for the consistency + uncertainty legs; the only
-> remaining Layer-0 sub-leg in §B is the relativistic *group* law (inverses/boosts).
+> **Promoted 2026-06-05:** Traveler-frame Layer 0 is **COMPLETE** — consistency law (#8, `TravelerFrame`),
+> clock-with-uncertainty (#10, `UncertainClock`), and the group law (#11, `FrameDelta`). The causal-join
+> is the irreversible *merge* (semilattice, order-independent ⇒ one common frame); the uncertainty window
+> makes the clock a *partial* order (honestly uncertain on overlap, SoftValue-tied); the frame-offset is
+> the reversible *transformation* (abelian group acting by translation — the boost analog). Honest scope on
+> #11: it is the abelian *translation* group the discrete causal frame carries, NOT the full non-abelian
+> Lorentz group (which needs a boost-velocity/metric the model doesn't have) — named, not overclaimed.
+> **No open Layer-0 sub-legs remain.**
 
 ---
 
@@ -60,8 +63,10 @@ Separated into layers (the cram was holding all four at once = the dirt):
   (`TravelerFrame.fs`: the causal-join is a proven bounded join-semilattice ⇒ order-independent ⇒ one
   common frame = the relative-frame consistency law). The **clock-with-uncertainty** sub-leg is also
   now discharged (✅ §A #10, `UncertainClock.fs`: CockroachDB-HLC + uncertainty window — a partial
-  temporal order, honestly uncertain on overlap, SoftValue-tied). **Only remaining Layer-0 sub-leg:**
-  the relativistic *group* law (inverses/boosts — structure beyond the monotone semilattice).
+  temporal order, honestly uncertain on overlap, SoftValue-tied). The **group law** is discharged too
+  (✅ §A #11, `FrameDelta.fs`: frame-offsets form an abelian group acting by translation — the boost
+  analog, distinct from the merge-semilattice; honest scope = abelian translation group, not the full
+  non-abelian Lorentz group). **Layer 0 is COMPLETE — no open sub-legs remain.**
 - **Layer 1 — meta-frames** = Rx queries that meta-tag dimensions on the stream. A *derived view*
   over Layer 0 (one-directional). Clean, but downstream of Layer 0; do not build into the base frame.
 - **Layer 2 — universal action grammar (Xbox controller; the 4×4 grid). ✅ keystone DISCHARGED, 2026-06-05.**
