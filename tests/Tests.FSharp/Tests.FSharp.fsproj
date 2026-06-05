@@ -62,7 +62,6 @@
     <Compile Include="SerializationSeed.FullVertical.Tests.fs" />
     <Compile Include="Identity.FullVertical.Tests.fs" />
     <Compile Include="Predicate3.Tests.fs" />
-    <Compile Include="Maybe.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
