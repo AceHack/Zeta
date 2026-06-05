@@ -67,6 +67,7 @@
     <Compile Include="Metric.Serializer.Tests.fs" />
     <Compile Include="Metric.FourLang.Tests.fs" />
     <Compile Include="Fuzz.DecodeBoundary.Tests.fs" />
+    <Compile Include="SchemaEvolution.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />

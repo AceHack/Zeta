@@ -34,6 +34,7 @@
     <Compile Include="Clock.fs" />
     <Compile Include="DynamicValue.fs" />
     <Compile Include="DynamicValueFold.fs" />
+    <Compile Include="SchemaEvolution.fs" />
     <Compile Include="DynamicValueXmlPolicy.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
