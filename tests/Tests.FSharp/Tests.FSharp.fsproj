@@ -81,6 +81,7 @@
     <Compile Include="UncertainClock.Tests.fs" />
     <Compile Include="UncertainClock.CrossVerify.Tests.fs" />
     <Compile Include="Watermark.CrossVerify.Tests.fs" />
+    <Compile Include="Watermark.Legs.Tests.fs" />
     <Compile Include="SplitMix64.CrossVerify.Tests.fs" />
     <Compile Include="RendezvousHash.CrossVerify.Tests.fs" />
     <Compile Include="Crc32c.CrossVerify.Tests.fs" />

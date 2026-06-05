@@ -180,11 +180,15 @@ generated from F#, after correcting for .NET's XXH128 canonical big-endian outpu
   `Core.TypeScript/uncertain-clock/`, `Core.Rust.UncertainClock` — `compareHlc`/`send`/`receive`/
   `definitelyBefore`/`uncertain`, all exact int64 so the FULL surface byte-locks, no float caveat).
   (`UncertainClock.Tests` / `.CrossVerify.Tests`)
-- **Event-time watermark** — `src/Core/Watermark.fs`: the Akidau et al. (Dataflow Model, VLDB 2015)
-  watermark — monotone running max with bounded-lateness allowance, `combine` = min across sources
-  (can't progress past the slowest input), `isLate` = e ≤ wm. math + 4-lang (F#+C#+TS+Rust:
-  `Core.CSharp/Watermark.cs`, `Core.TypeScript/watermark/`, `Core.Rust.Watermark` — exact int64 in the
-  safe-integer range). (`Infra/Watermark.Tests` / `Watermark.CrossVerify.Tests`)
+- **Event-time watermark — ✅ FULL PROVEN (all six legs)** — `src/Core/Watermark.fs`: the Akidau et al.
+  (Dataflow Model, VLDB 2015) watermark — monotone running max with bounded-lateness allowance,
+  `combine` = min across sources (can't progress past the slowest input), `isLate` = e ≤ wm. math
+  (`Infra/Watermark.Tests`) + 4-lang (F#+C#+TS+Rust: `Core.CSharp/Watermark.cs`,
+  `Core.TypeScript/watermark/`, `Core.Rust.Watermark` — exact int64) + 4-ser + Arrow + homeostat
+  (SEMILATTICE class — `combine`=min is a bounded MEET-semilattice; convergence-to-GLB, the meet/GLB
+  dual of TravelerFrame's join/LUB; identity = Int64.MaxValue) + Bonsai (combine reified). The third
+  post-floor primitive at floor-grade rigor, and the first using the *meet*-semilattice homeostat class.
+  (`Watermark.CrossVerify.Tests` / `Watermark.Legs.Tests`)
 - **Group law — ✅ FULL PROVEN (all six legs)** — `src/Core/FrameDelta.fs`: frame-offsets form an abelian group
   (identity/assoc/comm/inverse) acting on frames by translation — the boost analog, distinct from the merge.
   Honest scope: abelian *translation* group, not the full non-abelian Lorentz group. math + 4-lang
@@ -202,10 +206,13 @@ the clock; D∘I=I∘D=id; math + 4-lang + 4-ser + Arrow — its honest CEILING:
 derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. Directional axes
 (Bearing/Where-looking) deliberately NOT built — no honest anchor in a causal frame.
 
-> **New-layer FULL-PROVEN primitives (2026-06-05):** `TravelerFrame` (merge / semilattice) and `FrameDelta`
-> (transformation / group) each clear all six legs — the first post-floor primitives at floor-grade rigor,
-> each using the homeostat class that honestly fits its algebra (convergence vs aggregation). `Curve` tops
-> out at four legs (Bonsai/homeostat N/A by kind). The six-leg bar is a bar for *mergeable* primitives.
+> **New-layer FULL-PROVEN primitives (2026-06-05):** `TravelerFrame` (merge / join-semilattice),
+> `FrameDelta` (transformation / group), and `Watermark` (frontier / meet-semilattice) each clear all six
+> legs — the first post-floor primitives at floor-grade rigor, each using the homeostat class that honestly
+> fits its algebra: convergence-to-LUB (join), order-independent aggregation (monoid), convergence-to-GLB
+> (meet). `Curve` tops out at four legs (Bonsai/homeostat N/A by kind). The six-leg bar is a bar for
+> *mergeable* primitives; the SplitMix64/RendezvousHash/CRC32C/FastCDC/Consensus cluster is math + 4-lang
+> (not mergeable — no honest homeostat leg).
 
 **Determinism + integrity substrate (not measurement axes):**
 
