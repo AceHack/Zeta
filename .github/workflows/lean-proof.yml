@@ -128,7 +128,13 @@ jobs:
         working-directory: tools/lean4
         run: lake env lean ImaginaryStack/ToyModel.lean
 
-      - name: Guard — ToyModel proofs are sorry-free (axiom audit)
+      - name: Type-check ImaginaryStack/ErasureDistance.lean
+        # The erasure-correction principle (distance ⇒ any <d erasures correctable)
+        # and its 16/12/5 specialisation — the QECC strengthening on top of ToyModel.
+        working-directory: tools/lean4
+        run: lake env lean ImaginaryStack/ErasureDistance.lean
+
+      - name: Guard — ImaginaryStack proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
         # lemmas and fail if `sorryAx` appears — the rigorous sorry-free check.
@@ -136,8 +142,14 @@ jobs:
         run: |
           printf '#print axioms lemma1_toy\n#print axioms reconstruction_property\n#print axioms code_covers_boundary\n' \
             | cat ImaginaryStack/ToyModel.lean - > /tmp/toymodel_axiom_audit.lean
+          printf '#print axioms erasure_correctable_of_min_distance\n#print axioms recover_from_any_12_of_16\n#print axioms low_weight_codeword_of_uncorrectable\n' \
+            | cat ImaginaryStack/ErasureDistance.lean - > /tmp/erasure_axiom_audit.lean
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
           fi
-          echo "ToyModel axiom audit clean (no sorryAx)."
+          if lake env lean /tmp/erasure_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::ErasureDistance depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          echo "ImaginaryStack axiom audit clean (no sorryAx)."

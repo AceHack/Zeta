@@ -26,6 +26,36 @@ because <one-line>.`
 
 ---
 
+## `ImaginaryStack.ErasureDistance.recover_from_any_12_of_16` *(erasure-correction principle)*
+
+- **Artifact.** `tools/lean4/ImaginaryStack/ErasureDistance.lean`
+  (Lean 4, Mathlib; `erasure_correctable_of_min_distance`,
+  `recover_from_any_12_of_16`, `low_weight_codeword_of_uncorrectable`).
+  Machine-checked + axiom-audited (no `sorryAx`) in
+  `lean-proof.yml`. Authored 2026-06-05.
+- **Source anchors.** Singleton (1964) bound + MDS codes;
+  Reed–Solomon (1960); HaPPY holographic codes
+  `arXiv:1503.06237`.
+- **Claim.** For a linear code `C ⊆ (Fin 16 → ZMod 17)` whose
+  every nonzero codeword has Hamming weight ≥ `d` (min distance
+  ≥ `d`), any two codewords agreeing off an erased set of size
+  `< d` are equal — unique recovery from any `(16 − e)` surviving
+  coordinates with `e < d`. Specialised: distance-5 ⇒ recovery
+  from ANY 12 of 16 coordinates (any 4 erased).
+- **Fidelity scope.** Faithful statement of the standard
+  distance⇒erasure-correction theorem of coding theory (the
+  implication). **NOT claimed** (named-open, file header +
+  register §B): the *construction* of a concrete distance-5
+  `[16,12]` MDS/Reed–Solomon code and that a specific
+  imaginary-stack generator achieves it (needs Cauchy/Vandermonde
+  determinants). The theorem is a real (non-vacuous) implication;
+  exhibiting a code meeting its hypothesis is the open rung.
+- **Last audit.** 2026-06-05, authored by Otto (shadow); not yet
+  independently audited. Grade: machine-checked principle
+  (A-grade-with-CI for the implication it states).
+
+---
+
 ## `ImaginaryStack.ToyModel.lemma1_toy` *(Adinkra-as-generator / bulk-from-boundary, TOY)*
 
 - **Artifact.** `tools/lean4/ImaginaryStack/ToyModel.lean`
