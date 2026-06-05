@@ -88,3 +88,25 @@ module ProbabilitySemiring =
         let mutable cur = v
         for _ in 1 .. steps do cur <- viterbiStep cur p
         cur
+
+    // ── The NCI boundary on the exact-rational cell (the rational sibling of `BeliefConvergence`) ──
+    // A belief is unnormalized non-negative rational weights over a fixed candidate set. A Bayesian
+    // `observe` with a FIXED (state-independent) likelihood is pointwise multiplication — non-coercive:
+    // it does not read the belief it updates. Multiplication commutes+associates, so observing a SET of
+    // evidence is order-independent (the NCI / de Finetti exchangeability boundary). The boundary is
+    // crossed by a STATE-DEPENDENT revision (`sharpen`, which reads the belief) — coercive, order-matters.
+
+    /// **Bayesian observe (fixed likelihood)** — pointwise-multiply the per-candidate likelihood into the
+    /// belief. Non-coercive: the update does not depend on the belief it transforms. Exact (rational).
+    let observe (likelihood: Rational[]) (belief: Rational[]) : Rational[] =
+        Array.map2 mul likelihood belief
+
+    /// Fold a sequence of observations into a belief (left to right).
+    let observeAll (evidence: Rational[] list) (belief: Rational[]) : Rational[] =
+        List.fold (fun b l -> observe l b) belief evidence
+
+    /// A **state-dependent / coercive** revision: square each weight (it READS the belief it transforms).
+    /// Marks the boundary — unlike `observe`, this does NOT commute with `observe`. (The `sharpen`
+    /// counterexample, over rationals.)
+    let sharpen (belief: Rational[]) : Rational[] =
+        Array.map (fun w -> mul w w) belief
