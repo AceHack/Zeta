@@ -1,0 +1,42 @@
+{
+  "description": "Rendezvous (HRW) consistent-hash golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). Thaler & Ravishankar 1998. Pure wrapping uint64: seed(i) = SplitMix64.mix(i); score_i = SplitMix64.mix(key ^ seed_i); pick = argmax (first index wins on a tie). Byte-lockable because the score is the (already 4-lang-proven) SplitMix64 finaliser. NB: Jump consistent hash is NOT cross-verified — it uses f64 arithmetic, and floats are out of Zeta's proof lineage. uint64 carried as decimal STRINGS (exceeds JSON's exact number range); bucket indices are small ints.",
+  "seeds": {
+    "n": 8,
+    "result": [
+      "0",
+      "16294208416658607535",
+      "7960286522194355700",
+      "487617019471545679",
+      "17909611376780542444",
+      "1961750202426094747",
+      "6038094601263162090",
+      "3207296026000306913"
+    ]
+  },
+  "pick": [
+    { "buckets": 4, "key": "0", "result": 3 },
+    { "buckets": 4, "key": "1", "result": 0 },
+    { "buckets": 4, "key": "42", "result": 1 },
+    { "buckets": 4, "key": "1000", "result": 2 },
+    { "buckets": 4, "key": "18446744073709551615", "result": 1 },
+    { "buckets": 4, "key": "9223372036854775808", "result": 1 },
+    { "buckets": 4, "key": "12345678901234567890", "result": 3 },
+    { "buckets": 4, "key": "7", "result": 1 },
+    { "buckets": 8, "key": "0", "result": 7 },
+    { "buckets": 8, "key": "1", "result": 5 },
+    { "buckets": 8, "key": "42", "result": 1 },
+    { "buckets": 8, "key": "1000", "result": 7 },
+    { "buckets": 8, "key": "18446744073709551615", "result": 6 },
+    { "buckets": 8, "key": "9223372036854775808", "result": 5 },
+    { "buckets": 8, "key": "12345678901234567890", "result": 3 },
+    { "buckets": 8, "key": "7", "result": 5 },
+    { "buckets": 16, "key": "0", "result": 7 },
+    { "buckets": 16, "key": "1", "result": 5 },
+    { "buckets": 16, "key": "42", "result": 12 },
+    { "buckets": 16, "key": "1000", "result": 7 },
+    { "buckets": 16, "key": "18446744073709551615", "result": 6 },
+    { "buckets": 16, "key": "9223372036854775808", "result": 15 },
+    { "buckets": 16, "key": "12345678901234567890", "result": 3 },
+    { "buckets": 16, "key": "7", "result": 5 }
+  ]
+}

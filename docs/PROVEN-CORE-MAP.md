@@ -215,6 +215,14 @@ derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. D
   `Core.Rust.SplitMix64` — pure wrapping uint64, byte-identical; uint64 carried as decimal strings since it
   exceeds JSON's exact range). The 4-lang leg is load-bearing for DST itself: replays must produce identical
   pseudo-random streams across the language ports, which this proves. (`SplitMix64.CrossVerify.Tests`)
+- **Rendezvous (HRW) consistent hash** — `src/Core/ConsistentHash.fs` (`RendezvousHash`): Thaler &
+  Ravishankar 1998; scores each bucket by `SplitMix64.mix(key ^ seed_i)` and picks the argmax, with
+  `seed(i) = SplitMix64.mix(i)`. math (valid-bucket + near-optimal 1/N rebalance churn, `Runtime/
+  ConsistentHash.Tests`) + 4-lang (F#+C#+TS+Rust: `Core.CSharp/RendezvousHash.cs`,
+  `Core.TypeScript/consistent-hash/`, `Core.Rust.ConsistentHash` — pure wrapping uint64, builds on the
+  4-lang-proven SplitMix64). **Honest scope:** only the pure-integer HRW algorithm is byte-locked;
+  `JumpConsistentHash` is deliberately NOT cross-verified because it uses `f64` arithmetic, and floats
+  are out of the proof lineage. (`RendezvousHash.CrossVerify.Tests`)
 
 **Adinkra / holographic chain — COMPLETE to the published correspondence** (Lean, sorry-free, axiom-audited):
 
