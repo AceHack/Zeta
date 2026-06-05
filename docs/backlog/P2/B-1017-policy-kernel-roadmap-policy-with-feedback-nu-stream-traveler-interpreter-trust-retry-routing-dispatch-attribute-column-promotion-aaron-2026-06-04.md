@@ -35,7 +35,11 @@ Discipline (Aaron + Amara): **do not overgeneralize early** — the generic kern
 proven by one boring instance (shipped); add interpreters as real needs appear.
 
 ## Kestrel's refinements (2026-06-04, `memory/persona/kestrel/conversations/2026-06-04-kestrel-policy-shapes-…`)
-Item #1 (Policy<input,decision,feedback>) SHIPPED (commit 7bb817a8b). Kestrel adds:
+Item #1 (Policy<input,decision,feedback>) SHIPPED (commit 7bb817a8b); item #6 below
+(typed kinds + validator-obligation) SHIPPED (commit e17113316 — `src/Core/PolicyKind.fs`:
+Technical/Legal/Governance + requiredValidator + Signoff + Draft/Active where activate
+gates on the matching validator, so active-without-the-right-signoff is unreachable by
+construction). Kestrel adds:
 6. **Three policy KINDS, each with its own validator** — technical (proof/tests),
    legal (counsel), governance (human-review; motive-touching ones → psychiatrist+Max).
    Up-project to a TYPED policy where the kind is a typed lens; **the type is a ROUTER,
