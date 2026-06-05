@@ -23,6 +23,7 @@ public sealed class MediatorPortTests
         var services = new ServiceCollection();
         services.AddSingleton<TickSink>();
         services.AddSingleton<BehaviorSink>();
+        services.AddSingleton<AgentBus>();
         services.AddMediator();            // generated registration — discovers the port handlers
         services.AddZetaMediatorAdapter(); // our port adapter over the generated IMediator
         services.AddZetaPipelineBehavior(typeof(CountingBehavior<,>)); // via the Zeta port, no global::Mediator
@@ -147,5 +148,21 @@ public sealed class MediatorPortTests
         Assert.Equal<long[]>([1L, 2L, 4L], [.. trend.Costs]);
         Assert.Equal<long[]>([.. Zeta.Core.Curve.differentiate([1L, 2L, 4L])], [.. trend.Rate]);
         Assert.Equal<long[]>([.. Zeta.Core.Curve.curvature([1L, 2L, 4L])], [.. trend.Curvature]);
+    }
+
+    [Fact]
+    public async Task AgentBusNotificationFoldsIntoGSetIdempotently()
+    {
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        var bus = provider.GetRequiredService<AgentBus>();
+
+        await mediator.Publish(new AgentMessageObserved("msg-1"));
+        await mediator.Publish(new AgentMessageObserved("msg-1")); // redelivery — idempotent (G-Set union)
+        await mediator.Publish(new AgentMessageObserved("msg-2"));
+
+        Assert.True(bus.Has("msg-1"));
+        Assert.True(bus.Has("msg-2"));
+        Assert.Equal(2, bus.Count); // duplicate "msg-1" absorbed — the agent-bus G-Set property
     }
 }
