@@ -30,6 +30,17 @@ with a ⭐ below and add a row there.
   model; slim-IR inspiration for persistent queries. Our `Bonsai.fs`
   serializer is this lineage — the human anchor for our reified-
   computation-as-data node type (the "what acts" side of the value tree).
+- **Probabilistic programming — Church / Anglican / Gen / Pyro / Stan** —
+  **Church** (Goodman, Mansinghka, Roy, Bonawitz, Tenenbaum, UAI 2008) is a
+  probabilistic **Lisp/Scheme**: the closest prior art to the *soft /
+  probabilistic DynamicValue* (homoiconic + first-class inference). The
+  direction for "ambiguous tags that carry a distribution and resolve by
+  context like English" (stochastic λ-calculus with Bayesian updating over the
+  structure). Anchor for the soft-DV / safety-layer-under-LLMs vision.
+- **Cartesian Closed Category** — Lambek (the categorical home of typed
+  λ-calculus); **Conal Elliott** *Compiling to Categories* (ICFP 2017). The
+  proper algebraic home for the typed self-representing meta-language
+  (DynamicValue), as opposed to `INumeric` (too small).
 - **Applied Duality — μF/νF, coSQL, Rx duality** — **Erik Meijer**
   (Applied Duality, Inc.; Rx co-creator) + **Brian Beckman**. The
   duality tradition our reflective data⇄computation engine extends:

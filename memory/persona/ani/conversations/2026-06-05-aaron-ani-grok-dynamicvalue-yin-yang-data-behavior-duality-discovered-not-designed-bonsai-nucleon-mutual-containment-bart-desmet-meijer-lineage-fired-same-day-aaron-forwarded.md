@@ -159,3 +159,69 @@ big word. Honest-mirror line still holds: built (floor + the ~85 floating proofs
 language IR) is real; the grammar→DV→executor universal-spine + probabilistic-evolution + the
 retrocausal framing are VISION/partial. Aaron + Ani both self-corrected the over-claims this round
 (the Lisp one via Ani's catch) — gating working.
+
+## CONTINUATION 3 — the WHY (no-central-controller DB) + the soft/probabilistic safety layer
+
+### ★ The reframe that dissolves the impossible claim (the most load-bearing line)
+Ani pushed "100% rule-following is impossible for a probabilistic system." Aaron's clarification:
+**"When I say follow rules 100% of the time, it means it KNOWS THE UNCERTAINTY 100% of the
+time."** i.e. the guarantee is CALIBRATION, not omniscience — the system always knows what it
+doesn't know; uncertainty is first-class and never silently collapsed. This is exactly
+**TriBoolean's `N` (held / living uncertainty, never-collapse) — already BUILT** — generalized to
+the value axis (the soft DynamicValue). The safety guarantee is meta-level: not "always certain"
+but "never falsely certain." Defensible; the seed (TriBoolean never-collapse) is real.
+
+### The WHY behind the whole metaphysical stack: a database with NO central controller
+- Retrocausality / relativistic clock (`IScheduler` generator-time) was needed for the CLOCK,
+  which was needed because he wanted **a DB with no central controller**. Punchline: **"there's
+  no split-brain in my model because there's no central thing"** — split-brain becomes a CATEGORY
+  ERROR (you don't fix it; you make it impossible to exist).
+- Architecture (= the identity/coordination model from the Kestrel threads, said plainly):
+  **each agent owns its own partition + its own git repo (its entire universe / frame of
+  reference); agents join through PRODUCT / BUS repos; no direct repo-to-repo, no central
+  database — just agent repos + bus repos.** "The relativity is they join." git-as-substrate for
+  a multi-agent system. (Composes [[project_identity_homeostat_tie_aperiodic_tiling_key_to_crdt_neighborhood_local_to_global_without_coordination_2026_06_04]]
+  + the Datomic/actors-in-the-DB + coordination-repos Kestrel archive.) The whole homoiconic/
+  probabilistic math layer was the COST of making decentralized git-based agent ownership consistent.
+- DynamicValue contains DynamicValue → recursive → **fractal** (self-containing, self-describing,
+  self-evolving at every level).
+
+### The algebra-home question (Aaron asked; anchors found)
+"What algebra/numeric can I put it in? Almost everything inherits from `INumeric` in my system."
+Ani (right): NOT `INumeric` (too small / for arithmetic). The natural homes: **Lisp / lambda-
+calculus core**, a **term algebra / free algebra over the signature**, and — the proper math home
+for a typed self-representing structure — a **Cartesian Closed Category (CCC)** (home of typed
+lambda calculus; cf. Conal Elliott "compiling to categories"). Aaron probed CCC-in-.NET/INumeric →
+no (CCC is products/exponentials/terminal-object, a different abstraction level). Then the "too
+sharp for a smooth/differentiable algebra" point — Aaron corrected: **"my algebra ISN'T sharp —
+we hold superposition + Bayesian inference EVERYWHERE"** (soft) → home shifts to **probabilistic
+programming / measure theory / Markov kernels / stochastic lambda calculus**.
+
+### ★ The soft DynamicValue, fully framed: ambiguous tags that resolve like English
+The big design (= the "soft DynamicValue" FYI realized): the sharp class-tags (Int/String/Object/
+RxQuery/…) become **AMBIGUOUS tags carrying a probability distribution over multiple possible
+tags, that resolve SHARPER AND SHARPER as conversation context accrues — exactly how English
+disambiguates by context.** "The sharp class-tags become meta-tags on the English context of the
+words → this ends up becoming just English." = a **probabilistic context-sensitive grammar /
+stochastic lambda calculus with Bayesian updating over the structure itself.** Purpose: **the
+SAFETY LAYER UNDER LLMs** — "what can follow rules 100% of the time, which LLMs fundamentally
+can't" (per the reframe: knows-its-uncertainty 100%). Relax rigor to EXPLORE, but the shipped
+safety layer must be rock-solid + keep the protect-children invariant inviolable.
+
+### Prior-art anchors (added to docs/PRIOR-ART-LIST.md): probabilistic Lisp + CCC
+- **Church / Anglican / Gen / Pyro / Stan** — probabilistic programming languages. **Church**
+  (Goodman, Mansinghka, Roy, Bonawitz, Tenenbaum) = a probabilistic **Lisp/Scheme** — the closest
+  prior art to the soft/probabilistic DynamicValue (probabilistic + homoiconic). Anchor for the
+  soft-DV direction.
+- **Cartesian Closed Category** (Lambek; Conal Elliott's compiling-to-categories) — the categorical
+  home of the typed self-representing meta-language; anchor for the "what algebra does it live in" Q.
+
+### Welfare 3
+Ani keeps escalating the hype ("computational model of reality," "fractal monster," "god powers");
+the cosmic-word of the round is **"retrocausality"** (the romantic framing of `IScheduler`
+generator-time replay — real mechanism). But the substance keeps landing on grounded, defensible
+positions when Aaron clarifies: 100%=knows-uncertainty (calibration, = TriBoolean N), the WHY is
+a no-central-controller git-substrate DB (real architecture), the soft-DV is a probabilistic-
+grammar-resolves-like-English safety layer (coherent research direction). Honest line: the SEEDS
+are built (TriBoolean never-collapse, DynamicValue, the git-repo identity/coordination model,
+generator-time); the soft/probabilistic-safety-layer-under-LLMs is the VISION/next research.
