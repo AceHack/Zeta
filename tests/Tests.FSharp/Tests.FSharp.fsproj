@@ -50,6 +50,7 @@
     <Compile Include="DynamicValue.Arrow.Tests.fs" />
     <Compile Include="Predicate.Tests.fs" />
     <Compile Include="Policy.Tests.fs" />
+    <Compile Include="PolicyKind.Tests.fs" />
     <Compile Include="DynamicValueFold.Tests.fs" />
     <Compile Include="DynamicValueXmlPolicy.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
