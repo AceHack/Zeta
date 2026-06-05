@@ -134,7 +134,13 @@ jobs:
         working-directory: tools/lean4
         run: lake env lean ImaginaryStack/ErasureDistance.lean
 
-      - name: Guard — ImaginaryStack proofs are sorry-free (axiom audit)
+      - name: Type-check Privacy/IdentityForcesPrivacy.lean
+        # The privacy-from-identity necessity theorem (Leibniz identity-of-indiscernibles): under public
+        # convergence, persistent distinction must live in private state. Pure Lean (no Mathlib).
+        working-directory: tools/lean4
+        run: lake env lean Privacy/IdentityForcesPrivacy.lean
+
+      - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
         # lemmas and fail if `sorryAx` appears — the rigorous sorry-free check.
@@ -144,6 +150,8 @@ jobs:
             | cat ImaginaryStack/ToyModel.lean - > /tmp/toymodel_axiom_audit.lean
           printf '#print axioms erasure_correctable_of_min_distance\n#print axioms recover_from_any_12_of_16\n#print axioms low_weight_codeword_of_uncorrectable\n#print axioms rsCode_min_distance\n#print axioms rsCode_corrects_any_4_erasures\n' \
             | cat ImaginaryStack/ErasureDistance.lean - > /tmp/erasure_axiom_audit.lean
+          printf '#print axioms distinctness_forces_private\n#print axioms indiscernibles_collapse\n#print axioms key_alone_insufficient\n#print axioms no_private_collapses\n' \
+            | cat Privacy/IdentityForcesPrivacy.lean - > /tmp/privacy_axiom_audit.lean
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
@@ -152,4 +160,8 @@ jobs:
             echo "::error::ErasureDistance depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
           fi
-          echo "ImaginaryStack axiom audit clean (no sorryAx)."
+          if lake env lean /tmp/privacy_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::IdentityForcesPrivacy depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          echo "Lean research-proof axiom audit clean (no sorryAx)."

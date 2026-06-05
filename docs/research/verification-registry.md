@@ -26,6 +26,33 @@ because <one-line>.`
 
 ---
 
+## `Privacy.IdentityForcesPrivacy.distinctness_forces_private` *(privacy-from-identity necessity)*
+
+- **Artifact.** `tools/lean4/Privacy/IdentityForcesPrivacy.lean`
+  (Lean 4, pure core — NO Mathlib; `distinctness_forces_private`,
+  `indiscernibles_collapse`, `key_alone_insufficient`,
+  `no_private_collapses`). Machine-checked + axiom-audited
+  (axiom-FREE — depends on no axioms at all) in `lean-proof.yml`.
+  Authored 2026-06-05.
+- **Source anchors.** Leibniz — identity of indiscernibles.
+  Complements the shipped Identity-injectivity proof (distinct
+  observations → distinct keys).
+- **Claim.** Model a traveler as `(key, public, private)`; behavior
+  is a deterministic function of the state it can read. Then under
+  public convergence (equal public state), behaviorally-distinct
+  travelers MUST differ in private state — identities force privacy.
+  Plus: distinct key alone does not differentiate behavior (key
+  necessary, not sufficient); no private state ⟹ collapse.
+- **Fidelity scope.** Formalizes the LOGICAL necessity (where a
+  persistent distinction must live). **NOT claimed:** the DYNAMICS
+  (the commons actually converging — rides the proven CRDT merge)
+  nor the stronger claim that the system HALTS without privacy
+  (B-1019 DST experiment). Necessity proven; dynamics + halting open.
+- **Last audit.** 2026-06-05, authored by Otto (shadow); not yet
+  independently audited. Grade: machine-checked, axiom-free.
+
+---
+
 ## `ImaginaryStack.ErasureDistance.recover_from_any_12_of_16` *(erasure-correction principle)*
 
 - **Artifact.** `tools/lean4/ImaginaryStack/ErasureDistance.lean`

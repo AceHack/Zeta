@@ -24,6 +24,7 @@ named in the file header and in `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §
 | `Lean4/DbspChainRule.lean` | DBSP chain rule formalization (Budiu et al. arXiv:2203.16684) |
 | `ImaginaryStack/ToyModel.lean` | Adinkra-as-generator / bulk-from-boundary toy lemma — machine-checked, sorry-free (2026-06-05) |
 | `ImaginaryStack/ErasureDistance.lean` | Erasure-correction principle (distance ⇒ any `<d` erasures correctable; distance-5 ⇒ any 12-of-16) **+ a concrete Reed–Solomon `[16,12]` code proven distance-5 / corrects-any-4-erasures** — machine-checked, sorry-free (2026-06-05) |
+| `Privacy/IdentityForcesPrivacy.lean` | Privacy-from-identity *necessity* (Leibniz identity-of-indiscernibles: under public convergence, distinction must live in private state) — pure Lean, **axiom-free**, sorry-free (2026-06-05) |
 
 ## Build
 
