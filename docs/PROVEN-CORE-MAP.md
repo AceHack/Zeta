@@ -93,7 +93,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 
 | # | Primitive | Where | math | 4-lang | 4-ser | Bonsai | Arrow | homeostat | Verdict |
 |---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
-| 1 | **Clock / causal order** | `src/Core/Clock.fs` + `Core.{TypeScript,CSharp,Rust}.Clock` | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | **math + 4-lang** (total-order instance; DST seed byte-locked F#/TS/C#/Rust) |
+| 1 | **Clock / causal order** (Versionstamp) | `src/Core/Clock.fs` + `Core.{TypeScript,CSharp,Rust}.Clock` | ✓ | ✓ | ✓ (ddac32e9) | ✓ (ddac32e9, max reified) | ✓ (ddac32e9) | ✓ (ddac32e9, max-convergence) | ✅ **FULL PROVEN** — 2nd floor primitive (legs in `Clock.FullVertical.Tests.fs`; Versionstamp=int64 logical clock, merge=max=join) |
 | 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | partial | ✗ | ✗ | ✗ | **math + 4-lang** (V1 cell); rolling-monadic encoding + UoM-per-type + per-version/category cells open |
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
 | 4 | **CRDT merge + idempotency** (G-Set) | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB) | ✓ (G-Set 4/4) | ✓ (29c1ffe4) | ✓ (658c8e24, reify/apply) | ✓ (51d2937c) | ✓ (658c8e24, convergence-to-LUB) | ✅ **FULL PROVEN** — the FIRST floor primitive to clear the full bar (all G-Set legs in `tests/Tests.FSharp/GSet.FourSer.Tests.fs`) |
@@ -101,12 +101,14 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL+Bloom join & CMS monoid merge-laws ✓ (state-level) · error-DIRECTION ✓ (Bloom no-false-neg, CMS no-undercount); probabilistic magnitude bounds ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (merge + error-direction); magnitude bounds + 4-lang open |
 
 **G-Set (CRDT merge) is the FIRST FULL-PROVEN floor primitive** (2026-06-04,
-658c8e24 — all six legs: math ∧ 4-lang ∧ 4-ser ∧ Arrow ∧ Bonsai ∧ homeostat-tie,
-proven in `tests/Tests.FSharp/GSet.FourSer.Tests.fs`). It is the **template** the
-other 5 follow (each: bridge the primitive's value/operation to DynamicValue → 4-ser
+658c8e24 — all six legs in `GSet.FourSer.Tests.fs`); **Clock/Versionstamp is the
+SECOND** (ddac32e9, `Clock.FullVertical.Tests.fs` — both join-semilattices: G-Set
+merge=union, Clock merge=max; the reusable `_Support/SerializerLegs.fs` helper backs
+the 4-ser+Arrow legs). **2 of 6 floor primitives now FULL PROVEN.** The pattern is the
+**template** the other 4 follow (each: bridge the primitive's value/operation to DynamicValue → 4-ser
 round-trip + Arrow round-trip + reify-the-operation-as-Bonsai + homeostat-convergence).
-The other 5 are NOT yet full: **math ∧ 4-lang holds for 4 of 6** (clock,
-identity, CRDT merge, serialization). Merkle + metric-aggregation have the math leg
+The other 4 are NOT yet full: **identity + serialization-seed have math ∧ 4-lang**
+(need 4-ser/Arrow/Bonsai/homeostat); **Merkle + metric-aggregation have the math leg**
 (4-lang partial). The remaining legs (4-ser, Bonsai, Arrow, homeostat-tie) are the
 gap to full PROVEN. The **4-lang column is sourced from `PRIMITIVE-REGISTRY.md`**
 (the consensus authority); this map adds the math + remaining legs.
