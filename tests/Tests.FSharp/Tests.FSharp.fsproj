@@ -70,6 +70,7 @@
     <Compile Include="SchemaEvolution.Tests.fs" />
     <Compile Include="SchemaRegistry.Tests.fs" />
     <Compile Include="Protobuf.Tests.fs" />
+    <Compile Include="Protobuf.Swap.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
@@ -210,6 +211,7 @@
   <ItemGroup>
     <PackageReference Include="FSharp.Core" />
     <PackageReference Include="System.IO.Hashing" />
+    <PackageReference Include="Google.Protobuf" />
     <PackageReference Include="System.Reactive" />
     <PackageReference Include="System.Numerics.Tensors" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
