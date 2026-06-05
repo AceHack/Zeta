@@ -1,0 +1,21 @@
+{
+  "description": "Watermark golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). The event-time watermark of Akidau et al. (The Dataflow Model, VLDB 2015); the Beam/Flink primitive. All int64, no floats — byte-lockable in the safe-integer range. observe = the WatermarkTracker fold: maxSeen = running max of event times; emitted candidate = maxSeen (monotonic) or maxSeen - lateness (bounded; same formula Periodic uses), clamped monotone non-decreasing. isLate(wm, e) = e <= wm. combine = min across sources (an operator can't progress past its slowest input).",
+  "observe": [
+    { "strategy": "monotonic", "lateness": 0, "events": [10, 5, 20, 15, 25], "result": [10, 10, 20, 20, 25] },
+    { "strategy": "monotonic", "lateness": 0, "events": [7, 7, 7], "result": [7, 7, 7] },
+    { "strategy": "bounded", "lateness": 3, "events": [10, 5, 20, 15, 25], "result": [7, 7, 17, 17, 22] },
+    { "strategy": "bounded", "lateness": 100, "events": [1000, 900, 1200], "result": [900, 900, 1100] }
+  ],
+  "isLate": [
+    { "wm": 100, "eventTime": 90, "result": true },
+    { "wm": 100, "eventTime": 100, "result": true },
+    { "wm": 100, "eventTime": 150, "result": false },
+    { "wm": 0, "eventTime": -5, "result": true }
+  ],
+  "combine": [
+    { "sources": [100, 50, 200], "result": 50 },
+    { "sources": [5], "result": 5 },
+    { "sources": [7, 7, 7], "result": 7 },
+    { "sources": [200, 100, 100, 300], "result": 100 }
+  ]
+}

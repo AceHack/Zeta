@@ -176,7 +176,15 @@ generated from F#, after correcting for .NET's XXH128 canonical big-endian outpu
   Bonsai. (`TravelerFrame.Tests` / `.Legs.Tests` / `.CrossVerify.Tests`)
 - **Clock-with-uncertainty** — `src/Core/UncertainClock.fs`: CockroachDB HLC + uncertainty window; a *partial*
   temporal order (definitelyBefore is a strict partial order; the overlap zone is honestly uncertain — the
-  SoftValue tie; ε=0 collapses to exact). (`UncertainClock.Tests` — math leg)
+  SoftValue tie; ε=0 collapses to exact). math + 4-lang (F#+C#+TS+Rust: `Core.CSharp/UncertainClock.cs`,
+  `Core.TypeScript/uncertain-clock/`, `Core.Rust.UncertainClock` — `compareHlc`/`send`/`receive`/
+  `definitelyBefore`/`uncertain`, all exact int64 so the FULL surface byte-locks, no float caveat).
+  (`UncertainClock.Tests` / `.CrossVerify.Tests`)
+- **Event-time watermark** — `src/Core/Watermark.fs`: the Akidau et al. (Dataflow Model, VLDB 2015)
+  watermark — monotone running max with bounded-lateness allowance, `combine` = min across sources
+  (can't progress past the slowest input), `isLate` = e ≤ wm. math + 4-lang (F#+C#+TS+Rust:
+  `Core.CSharp/Watermark.cs`, `Core.TypeScript/watermark/`, `Core.Rust.Watermark` — exact int64 in the
+  safe-integer range). (`Infra/Watermark.Tests` / `Watermark.CrossVerify.Tests`)
 - **Group law — ✅ FULL PROVEN (all six legs)** — `src/Core/FrameDelta.fs`: frame-offsets form an abelian group
   (identity/assoc/comm/inverse) acting on frames by translation — the boost analog, distinct from the merge.
   Honest scope: abelian *translation* group, not the full non-abelian Lorentz group. math + 4-lang
