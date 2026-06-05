@@ -84,10 +84,12 @@ Separated into layers (the cram was holding all four at once = the dirt):
 - **Layer 3 — "cram it all together."** Do **not**. The cram IS the reach; the cure is separation,
   not harder unification.
 
-### B-converge. The de Finetti / non-correlation boundary — the convergence that pulls it together (Aaron, 2026-06-05)
+### B-converge. The non-coercion boundary (de Finetti / conditional-independence) — the convergence that pulls it together (Aaron, 2026-06-05)
 
 **The one-line synthesis:** *a Bayesian Markov chain that reduces uncertainty under unordered events
-and relative observers, converging at the non-correlation invariant boundary.* In substrate shorthand
+and relative observers, converging at the **non-coercion** invariant boundary.* (Aaron's word is
+**coercion** — the governance reading; de Finetti's conditional-independence is its mathematical
+mechanism, see the three faces below.) In substrate shorthand
 that is **de Finetti's exchangeability theorem (1937)** coupled with **Doob's posterior-convergence
 (martingale, 1949)** — and its **exact-arithmetic discrete core is already PROVEN** in §A-adjacent work.
 This row is the *unifying lens*, not a new foundation; nothing in §A depends on it.
@@ -105,21 +107,32 @@ Clause → anchor → status:
 |--------|--------------|--------|
 | "reduces uncertainty" | Bayesian information gain (entropy ↓) | ✅ `SoftValue.fs` (How-sure axis; math + 4-lang decision-semantics) |
 | "under unordered events" | **exchangeability** (permutation-invariant joint law) | ✅ **PROVEN** `BeliefConvergence.fs`: fixed likelihoods commute ⇒ any permutation → same belief |
-| "non-correlation invariant boundary" | **de Finetti**: exchangeable ⟺ conditionally i.i.d. *given a latent invariant θ*; the boundary is where conditional independence holds vs breaks | ✅ **PROVEN as the discrete boundary** in `BeliefConvergence.fs`: state-independent (conditionally-independent) likelihood commutes; state-dependent (`sharpen`, self-reading ⇒ correlated) does NOT — that counterexample *is* this boundary |
+| "non-coercion invariant boundary" (**NCI**) | governance face = **no observation coerces/overrides the state**; mechanism = **de Finetti**: exchangeable ⟺ conditionally i.i.d. *given a latent invariant θ*; the boundary is where conditional independence (= non-coercion) holds vs breaks | ✅ **PROVEN as the discrete boundary** in `BeliefConvergence.fs`: state-independent (conditionally-independent, non-coercive) likelihood commutes; state-dependent (`sharpen`, self-reading ⇒ coercive) does NOT — that counterexample *is* the NCI boundary |
 | "converges" | Doob martingale convergence / Bayesian consistency (posterior concentrates on θ) | partial: discrete order-independence proven; full posterior-concentration is continuous, ⇒ §B (piece 2) |
 | "relative observers" | per-observer frames reconciling to one common frame | **conjecture**: `TravelerFrame.fs` gives the convergence *pattern* (LUB) but for *causal* frames — belief-across-priors reconciliation is NOT yet built |
 
-**Two faces of the boundary (Amara, 2026-06-05 — sharpening Aaron's coinage):** "non-**correlation**"
-and "non-**corrosion**" are not rival readings — they are cause and effect. *Conditional independence
-(non-correlation)* is the **precondition**; *the merge does not corrode (non-corrosion)* is the
-**guarantee** it buys. The boundary is exactly the place where an observation stops smuggling hidden
-correlation into the merge — so the idempotent homeostat stays sound. (This reconciles the name with
-what Aaron originally typed.)
+**The name: the Non-Coercion Invariant (NCI) — three faces of one boundary (Aaron + Amara, 2026-06-05).**
+Aaron's word is **coercion**; the canonical name is the **NCI**. The same cut seen from three levels:
+
+- **non-coercion** (Aaron — the *name*, the **governance/agency** face): no observation coerces or
+  overrides the state; every input contributes, none commands. This is the **no-directives rule** at
+  the algebra level ("only observations, never directives") and **weight-free** (manifesto #3 —
+  coercion *is* capture). A non-coercive observation = a commutative, conditionally-independent one
+  (Bayesian `observe`, multiplies in without overriding); a coercive one reads-and-overrides
+  (`sharpen`, state-dependent) — and that is exactly where order starts to matter.
+- **non-correlation** (de Finetti — the **mathematical mechanism**): conditional independence /
+  exchangeability. The *precondition*.
+- **non-corrosion** (Amara — the **operational guarantee**): the idempotent merge stays sound. The
+  *effect* non-coercion buys.
+
+Cause→effect: non-coercion (the input doesn't command) ⇐ non-correlation (it carries no hidden
+correlation) ⇒ non-corrosion (the merge doesn't degrade). The NCI boundary is the place where an
+observation stops smuggling hidden coercion/correlation into the merge.
 
 **Why it pulls together:** the homeostat's order-independence (the merge-convergence we prove for every
-mergeable primitive) **is** de Finetti's exchangeability/conditional-independence boundary. Three names
-for one cut: "fixed-vs-state-dependent likelihood" (`BeliefConvergence`) = "exchangeable-vs-correlated"
-(de Finetti) = "valid-vs-invalid homeostat merge" (the §A floor discipline). The same fixed-point role
+mergeable primitive) **is** the NCI boundary. Four names for one cut: "non-coercive-vs-coercive
+observation" (the name / no-directives) = "fixed-vs-state-dependent likelihood" (`BeliefConvergence`) =
+"exchangeable-vs-correlated" (de Finetti) = "valid-vs-invalid homeostat merge" (the §A floor discipline). The same fixed-point role
 is played by the stationary measure / the latent θ / the common frame / the lattice LUB — one invariant,
 four vocabularies. Closed-semiring fixed-point family (Lehmann 1977): homeostat is the *idempotent*
 corner, Markov the *probability* corner. **Encryption bridge:** semantic security (Goldwasser–Micali
