@@ -31,6 +31,7 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 | 6 | **SchemaEvolution / SchemaRegistry** — field-ops, fwd/back compat | round-trips through the proven codecs; proto fwd-compat exercises it | `SchemaRegistry.fs` |
 | 7 | **SoftValue** (value-axis) — distribution + Bayesian observe | observe commutes for independent evidence (the convergence crux, proven leg) | `SoftValue.fs` |
 | 8 | **Traveler frame (Layer 0)** — causal frame + inter-frame transformation law | transformation = causal-join is a bounded join-semilattice (idempotent/commutative/associative/monotone, LUB) ⇒ order-independent; all travelers reach ONE common frame = the relative-frame **consistency** law | `TravelerFrame.fs` / `TravelerFrame.Tests` |
+| 9 | **Action grid (Layer 2)** — 4×4 universal action grammar, navigation label-independence | navigation is a pure function of position, never of labels (proven via a discriminating predicate + negative control); frame (fixed geometry) and content (labels) separated by construction | `ActionGrid.fs` / `ActionGrid.Tests` |
 
 > If it isn't in this table, **do not build load-bearing work on it yet.** That's the whole point.
 >
@@ -61,13 +62,18 @@ Separated into layers (the cram was holding all four at once = the dirt):
   law is closed; the group law and uncertainty-combination are the next discharges.
 - **Layer 1 — meta-frames** = Rx queries that meta-tag dimensions on the stream. A *derived view*
   over Layer 0 (one-directional). Clean, but downstream of Layer 0; do not build into the base frame.
-- **Layer 2 — universal action grammar (Xbox controller; the 4×4 grid).** ORTHOGONAL to the frame:
-  frame = *where/when things are*; action grammar = *what you can do*. The grid = fixed
-  directionality/color/navigation (the frame geometry) + world-state-dependent **labels** (content).
-  **Open keystone property (checkable, even provable):** *navigation is a pure function of position,
-  never of the labels.* "Directionality stays the same while labels change" is true **iff** how-you-move
-  depends only on grid-coordinates and never peeks at a label. Slots onto the floor as: fixed-topology
-  graph (provable label-independent) + `Map<position, DynamicValue>` evolving in immutable offsets.
+- **Layer 2 — universal action grammar (Xbox controller; the 4×4 grid). ✅ keystone DISCHARGED, 2026-06-05.**
+  ORTHOGONAL to the frame: frame = *where/when things are*; action grammar = *what you can do*. The grid =
+  fixed directionality/color/navigation (the frame geometry) + world-state-dependent **labels** (content).
+  **Keystone property — PROVEN** (`ActionGrid.fs` / `ActionGrid.Tests`): *navigation is a pure function of
+  position, never of the labels.* Made a discriminating predicate `labelIndependentOver` over the space of
+  possible navigations (`Nav = World -> Position -> Direction -> Position option`); the fixed geometry
+  (`geomNav`) is proven label-independent for all world pairs, with a **negative control** (a label-peeking
+  nav is correctly rejected, so the predicate is not vacuous), plus the fixed-geometry laws (determinism,
+  edge-closedness, interior invertibility, fixed color) and relabel-commutation. Frame/content cleanly
+  separated by construction: `move`/`navigate` never receive a `World`; `labelAt` is the sole coupling.
+  **Open Layer-2 sub-legs (still §B):** the 6-vs-8 axis count / what the 16 cells *mean* (see B-other);
+  the label evolution riding immutable offsets (the Eve/offset model) is a wiring task, not a proof gap.
 - **Layer 3 — "cram it all together."** Do **not**. The cram IS the reach; the cure is separation,
   not harder unification.
 
