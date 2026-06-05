@@ -77,6 +77,7 @@
     <Compile Include="ActionGrid.Tests.fs" />
     <Compile Include="UncertainClock.Tests.fs" />
     <Compile Include="FrameDelta.Tests.fs" />
+    <Compile Include="FrameDelta.Legs.Tests.fs" />
     <Compile Include="Curve.Tests.fs" />
     <Compile Include="Curve.CrossVerify.Tests.fs" />
     <Compile Include="Curve.Serializer.Tests.fs" />
