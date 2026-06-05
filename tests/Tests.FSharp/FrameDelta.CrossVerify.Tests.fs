@@ -56,3 +56,12 @@ let ``F# FrameDelta agrees with the shared golden seed`` () =
 
     for v in section "distance" do
         Assert.Equal<int64>((v.GetProperty "result").GetInt64(), FD.distance (toFrame (v.GetProperty "from")) (toFrame (v.GetProperty "to")))
+
+    // homeostat leg (order-independent aggregation) across the oracle: folding the deltas in any order
+    // gives the same total.
+    for v in section "aggregate" do
+        let deltas = [ for d in (v.GetProperty "deltas").EnumerateArray() -> toDelta d ]
+        let total = toMap (v.GetProperty "total")
+        let fold order = (List.fold FD.compose FD.identity order).Shifts
+        Assert.Equal<Map<string, int64>>(total, fold deltas)
+        Assert.Equal<Map<string, int64>>(total, fold (List.rev deltas))

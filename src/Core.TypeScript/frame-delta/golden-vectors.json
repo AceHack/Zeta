@@ -26,5 +26,12 @@
   "distance": [
     { "from": { "a": 1 }, "to": { "a": 4, "b": 3 }, "result": 6 },
     { "from": { "a": 5 }, "to": { "a": 5 }, "result": 0 }
+  ],
+  "aggregate": [
+    { "deltas": [{ "x": 1 }, { "y": 2 }, { "x": -1, "z": 3 }], "total": { "y": 2, "z": 3 } },
+    { "deltas": [{ "a": 5 }], "total": { "a": 5 } },
+    { "deltas": [], "total": {} },
+    { "deltas": [{ "a": 1, "b": 1 }, { "a": -1, "b": 1 }, { "b": -2 }], "total": {} },
+    { "deltas": [{ "a": 2 }, { "a": 3 }, { "b": -1 }], "total": { "a": 5, "b": -1 } }
   ]
 }

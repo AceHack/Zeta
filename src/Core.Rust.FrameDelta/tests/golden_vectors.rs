@@ -55,4 +55,14 @@ fn frame_delta_cross_verify_matches_golden_vectors() {
             "distance"
         );
     }
+    // homeostat leg (order-independent aggregation): folding the deltas in any order gives the same total.
+    for c in v["aggregate"].as_array().expect("aggregate array") {
+        let deltas: Vec<FrameMap> = c["deltas"].as_array().expect("deltas").iter().map(to_map).collect();
+        let total = to_map(&c["total"]);
+        let fold = |ds: &[FrameMap]| ds.iter().fold(FrameMap::new(), |acc, d| compose(&acc, d));
+        assert_eq!(fold(&deltas), total, "aggregate");
+        let mut reversed = deltas.clone();
+        reversed.reverse();
+        assert_eq!(fold(&reversed), total, "aggregate-reversed");
+    }
 }

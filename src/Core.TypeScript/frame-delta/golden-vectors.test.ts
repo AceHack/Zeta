@@ -13,6 +13,7 @@ const seed = seedJson as unknown as {
   apply: { delta: FrameMap; frame: FrameMap; result: FrameMap }[];
   magnitude: { d: FrameMap; result: number }[];
   distance: { from: FrameMap; to: FrameMap; result: number }[];
+  aggregate: { deltas: FrameMap[]; total: FrameMap }[];
 };
 
 test("TS FrameDelta agrees with the shared golden seed", () => {
@@ -22,4 +23,10 @@ test("TS FrameDelta agrees with the shared golden seed", () => {
   for (const v of seed.apply) expect(apply(v.delta, v.frame)).toEqual(v.result);
   for (const v of seed.magnitude) expect(magnitude(v.d)).toBe(v.result);
   for (const v of seed.distance) expect(distance(v.from, v.to)).toBe(v.result);
+  // homeostat leg (order-independent aggregation): folding the deltas in any order gives the same total.
+  for (const v of seed.aggregate) {
+    const fold = (ds: FrameMap[]): FrameMap => ds.reduce(compose, {} as FrameMap);
+    expect(fold(v.deltas)).toEqual(v.total);
+    expect(fold([...v.deltas].reverse())).toEqual(v.total);
+  }
 });

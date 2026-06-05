@@ -80,5 +80,16 @@ public class FrameDeltaCrossVerifyTests
         {
             Assert.Equal(v.GetProperty("result").GetInt64(), FrameDelta.Distance(Map(v.GetProperty("from")), Map(v.GetProperty("to"))));
         }
+
+        // homeostat leg (order-independent aggregation): folding the deltas in any order gives the same total.
+        var empty = (IReadOnlyDictionary<string, long>)new Dictionary<string, long>(System.StringComparer.Ordinal);
+        foreach (var v in seed.GetProperty("aggregate").EnumerateArray())
+        {
+            var deltas = v.GetProperty("deltas").EnumerateArray()
+                .Select(e => (IReadOnlyDictionary<string, long>)Map(e)).ToList();
+            var total = Map(v.GetProperty("total"));
+            AssertMapEqual(total, deltas.Aggregate(empty, FrameDelta.Compose));
+            AssertMapEqual(total, Enumerable.Reverse(deltas).Aggregate(empty, FrameDelta.Compose));
+        }
     }
 }
