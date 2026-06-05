@@ -47,6 +47,11 @@ listing.
 - `2026-04-26-amara-live-lock-taxonomy-rename-policy-detectors-recovery-playbooks.md`
 - `2026-04-29-amara-acehack-mirror-not-peer-force-sync-protocol.md`
 - `2026-04-29-amara-substrate-or-it-didnt-happen-5ai-review-wave-corrections.md`
+- `2026-06-04-amara-policy-decision-algebra-select-not-mutate-policy-with-feedback-mu-nu-interpreters-aaron-forwarded.md`
+  — the decision algebra: policy = reusable decision-over-shape (fold = execution,
+  generator = produced structure); the BLADE = policy SELECTS not mutates, carries
+  typed `Policy<input,decision,feedback>`; design F-kernel once, interpret twice
+  (μF=document, νF=stream/traveler); build-shape 1–6; "prove with one boring instance."
 
 ### Full search
 
