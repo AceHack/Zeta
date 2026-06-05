@@ -69,6 +69,7 @@
     <Compile Include="Fuzz.DecodeBoundary.Tests.fs" />
     <Compile Include="SchemaEvolution.Tests.fs" />
     <Compile Include="SchemaRegistry.Tests.fs" />
+    <Compile Include="Protobuf.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
