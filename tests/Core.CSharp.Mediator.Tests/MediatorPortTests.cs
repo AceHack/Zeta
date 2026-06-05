@@ -136,4 +136,16 @@ public sealed class MediatorPortTests
         Assert.Equal(expected, root);
         Assert.NotEqual(Zeta.Core.CSharp.MerkleHash.Zero, root);
     }
+
+    [Fact]
+    public async Task CostTrendHandlerComposesByteCostAndCurveThroughTheMediator()
+    {
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        string[] surfaces = ["a", "bb", "cccc"]; // byte costs 1, 2, 4
+        var trend = await mediator.Send(new MeasureCostTrendQuery(surfaces));
+        Assert.Equal<long[]>([1L, 2L, 4L], [.. trend.Costs]);
+        Assert.Equal<long[]>([.. Zeta.Core.Curve.differentiate([1L, 2L, 4L])], [.. trend.Rate]);
+        Assert.Equal<long[]>([.. Zeta.Core.Curve.curvature([1L, 2L, 4L])], [.. trend.Curvature]);
+    }
 }

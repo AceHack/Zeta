@@ -16,6 +16,7 @@
     <ProjectReference Include="..\Core.CSharp.Mediator\Zeta.Core.CSharp.Mediator.csproj" />
     <ProjectReference Include="..\Core.CSharp.ByteCost\Zeta.Core.CSharp.ByteCost.csproj" />
     <ProjectReference Include="..\Core.CSharp.Merkle\Zeta.Core.CSharp.Merkle.csproj" />
+    <ProjectReference Include="..\Core\Core.fsproj" />
   </ItemGroup>
 
 </Project>
