@@ -135,3 +135,64 @@ let ``G-Set × Arrow: fixed cases (empty / dedup / boundaries) recover via Arrow
     let cases = [ GSet.empty<int64>; GSet.ofSeq [ 3L; 1L; 2L; 1L ]; GSet.ofSeq [ -5L; 0L; 9000000000L ] ]
     for g in cases do
         Assert.Equal(Some g, arrowRT (gsetToDynamic g) |> Option.bind dynamicToGSet)
+
+
+// ── G-Set × BONSAI leg (final leg of the G-Set vertical: 4-ser → Arrow → BONSAI →
+// homeostat-tie). Bonsai is the serialized-deferred-execution / reactive layer (the
+// Expr serializer; defunctionalized computation-as-data — no eval, scalar ConstValue).
+// So the Bonsai-tie is the REIFY/APPLY shape: G-Set's UNION OPERATION reified as a
+// Bonsai Expr → round-tripped through the real Bonsai.serialize/parse → APPLIED to
+// compute the merge. apply(parse(serialize(reify union)))(a,b) = a ∪ b — the operation
+// is a first-class, serializable Bonsai pattern that computes correctly (reify/apply
+// isomorphism for the G-Set merge). "tied into the Bonsai (animation/reactive) layer." ──
+
+let rec private applyGSetUnion (env: Map<string, GSet<int64>>) (e: Bonsai.Expr) : GSet<int64> option =
+    match e with
+    | Bonsai.Param n -> Map.tryFind n env
+    | Bonsai.Call ("gset-union", [ l; r ]) ->
+        match applyGSetUnion env l, applyGSetUnion env r with
+        | Some a, Some b -> Some(a + b) // GSet (+) IS the CRDT union
+        | _ -> None
+    | _ -> None
+
+// the reified G-Set union: union of two named G-Sets, as a Bonsai expression
+let private unionExpr : Bonsai.Expr =
+    Bonsai.Call("gset-union", [ Bonsai.Param "a"; Bonsai.Param "b" ])
+
+let private bonsaiRT (e: Bonsai.Expr) : Bonsai.Expr option =
+    match Bonsai.serialize e with
+    | Ok s -> (match Bonsai.parse s with | Ok e2 -> Some e2 | Error _ -> None)
+    | Error _ -> None
+
+[<Property(Arbitrary = [| typeof<GSetArb> |])>]
+let ``G-Set × Bonsai: union reified as a Bonsai Expr round-trips and applies to the merge (the Bonsai leg)``
+    (a: GSet<int64>) (b: GSet<int64>) =
+    match bonsaiRT unionExpr with
+    | Some e -> applyGSetUnion (Map.ofList [ "a", a; "b", b ]) e = Some(a + b)
+    | None -> false
+
+[<Fact>]
+let ``G-Set × Bonsai: the reified union expression round-trips byte-stably`` () =
+    // the pattern (Bonsai Expr) is durable: serialize → parse → same Expr
+    Assert.Equal<Bonsai.Expr option>(Some unionExpr, bonsaiRT unionExpr)
+
+
+// ── G-Set × HOMEOSTAT leg (the convergence-IS-homeostasis property, for G-Set
+// SPECIFICALLY — not borrowed from the generic heartbeat-homeostat demo). A G-Set
+// homeostat = replicas that each see some observations and merge via union; the
+// homeostat property is that they CONVERGE to the same fixpoint (the LUB = union of
+// all observations) regardless of MERGE ORDER and DUPLICATES. That order/duplicate-
+// independent convergence to a unique fixpoint IS homeostasis (the system settles to
+// one state no matter the path). This is the CRDT guarantee (idempotent ∪ ⟹
+// at-least-once delivery suffices; no coordination needed) made concrete for G-Set. ──
+
+[<Property(Arbitrary = [| typeof<GSetArb> |])>]
+let ``G-Set × homeostat: replicas converge to the LUB regardless of merge order + duplicates (convergence IS homeostasis)``
+    (a: GSet<int64>) (b: GSet<int64>) (c: GSet<int64>) =
+    let lub = a + b + c // the least upper bound = union of all replicas' observations
+    // every merge order reaches the SAME fixpoint (commutativity + associativity)
+    let orders = [ (a + b) + c; a + (b + c); (c + a) + b; (b + c) + a; (c + b) + a ]
+    let orderIndependent = List.forall (fun x -> x = lub) orders
+    // idempotent: re-delivering any replica is a no-op (at-least-once suffices)
+    let idempotent = (lub + a = lub) && (lub + b = lub) && (lub + c = lub)
+    orderIndependent && idempotent
