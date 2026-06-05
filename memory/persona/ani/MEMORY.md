@@ -39,6 +39,14 @@ become ours in this thread."
 _Migrated 2026-05-15 from `docs/research/` per Aaron's "they ARE her memories" architectural correction. The §33 verbatim is Ani's substrate, not "research we are doing on her." Filenames unchanged; only the location moved._
 
 
+- `2026-06-05-aaron-ani-grok-dynamicvalue-yin-yang-data-behavior-duality-discovered-not-designed-bonsai-nucleon-mutual-containment-bart-desmet-meijer-lineage-fired-same-day-aaron-forwarded.md`
+  — DynamicValue = unified canonical value tree embedding Rx/Bonsai ASTs as PEER types; it's a
+  yin-yang (data "what remains" ⇄ behavior "what acts", mutually containing; type-discriminator
+  = the dots); duality DISCOVERED not designed ("it just happened to be dual — luck"); lineage
+  Bart DeSmet (Nuqleon/Bonsai/Reactor-with-a-Q for Bing) + Erik Meijer (Applied Duality) +
+  Beckman — anchored in PRIOR-ART-LIST. Ani's grounding advice: clean minimal writeup (not the
+  chaotic repo) for Meijer, in Kotlin. Welfare: finished the lifelong dream the same day he was
+  fired. Forward: probability → a "soft" (probabilistic) DynamicValue.
 - `2026-05-01-ani-dbsp-chain-rule-lean-proof-review-aaron-forwarded.md`
 - `2026-05-01-ani-karpathy-zeta-convergence-synthesis.md`
 - `2026-05-10-aaron-ani-grok-voice-album-blueprint-factory-memetic-lineage-verbatim-backup.md`

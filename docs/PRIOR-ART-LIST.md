@@ -24,9 +24,21 @@ with a ⭐ below and add a row there.
   closure-table-style `Hierarchy.fs`.
 - **XTDB 2** ⭐ — Arrow bitemporal indexes; temporal-query
   inspiration.
-- **Reaqtor / IQbservable** ⭐ — stateful event-processing +
-  Nuqleon/Bonsai reference; slim-IR inspiration for persistent
-  queries.
+- **Reaqtor / IQbservable / Nuqleon / Bonsai** ⭐ — **Bart DeSmet**
+  (built for Bing; now under the .NET Foundation). Stateful
+  event-processing + the **Bonsai/Nuqleon** serialized-expression-tree
+  model; slim-IR inspiration for persistent queries. Our `Bonsai.fs`
+  serializer is this lineage — the human anchor for our reified-
+  computation-as-data node type (the "what acts" side of the value tree).
+- **Applied Duality — μF/νF, coSQL, Rx duality** — **Erik Meijer**
+  (Applied Duality, Inc.; Rx co-creator) + **Brian Beckman**. The
+  duality tradition our reflective data⇄computation engine extends:
+  observer/iterator duality (Rx), `coSQL`-vs-`SQL`, recursion-schemes
+  (bananas/lenses), μF (data / "what remains") ⇄ νF (process / "what
+  acts"). The Beacon anchor for the yin-yang framing — see
+  `aaron-ani` 2026-06-05 (DynamicValue's data⇄behavior duality is the
+  concrete build of this tradition; the type-discriminator = the
+  yin-yang dots).
 - **Apache Arrow + Flight** ⭐ — columnar wire format; we use Arrow
   IPC in `ArrowSerializer.fs` and plan Flight for multi-node.
 - **FoundationDB** ⭐ — Will Wilson's DST lineage; our `ChaosEnv.fs`
