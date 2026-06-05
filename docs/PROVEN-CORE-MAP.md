@@ -218,6 +218,7 @@ Proven via `tests/Core.CSharp.Mediator.Tests` incl. cross-language F# handler di
 
 Keys are not content-hashes (you *can* prove with hashes, but that's a technique,
 not the mechanism). A key is a **composite ordered key**:
+
 - **time-ordered crypto-unique bits** — monotonic unique prefix = the
   clock/versionstamp embedded INTO the key (identity embeds the clock).
 - **+ recursively-extensible index bits in order** — nested subspaces (FDB
@@ -247,20 +248,23 @@ per-version/category/key-type cells, the UoM guard, the rolling-monadic encoding
 after the core proof chain, not now.
 ⇒ **bit packing**: the recursive index rolls in **4-bit nibbles**, two absence
 schemes (a monad-propagation rule, null-as-value vs null-as-monad):
-  - **16+null (monadic) — bit-OPTIMAL.** All 16 codes are payload; null /
-    termination is handled by a structure ONCE (out-of-band, amortized), NOT per
-    nibble. No recurring waste.
-  - **15+1 hole — NOT bit-optimal.** Reserves 1-of-16 as an in-band hole on EVERY
-    nibble (~3.9 usable bits/4), so the waste COMPOUNDS with each recursive
-    extension. Self-terminating/prefix-free, but pays a code per roll.
-  The monadic scheme is what keeps "many small key types" cheap (terminate once,
-  not every recursion).
+
+- **16+null (monadic) — bit-OPTIMAL.** All 16 codes are payload; null /
+  termination is handled by a structure ONCE (out-of-band, amortized), NOT per
+  nibble. No recurring waste.
+- **15+1 hole — NOT bit-optimal.** Reserves 1-of-16 as an in-band hole on EVERY
+  nibble (~3.9 usable bits/4), so the waste COMPOUNDS with each recursive
+  extension. Self-terminating/prefix-free, but pays a code per roll.
+
+The monadic scheme is what keeps "many small key types" cheap (terminate once,
+not every recursion).
 
 ## Time is a family, not one clock (no global causal order)
 
 The clock is an injectable family behind `IScheduler` (B-0684 negotiation stack);
 **there is no global causal order — relativistic**: each agent = its own git repo
 = its own frame; frames connect only through **bus repos over Rx joins** (B-0907).
+
 - clock TYPES: FDB versionstamp (total, single-shard) · CockroachDB HLC
   (uncertainty interval) · generator-time + retrocausality (three-clocks).
 - causal order AND speed are set by a **consensus ladder × trust gradient**:
@@ -284,6 +288,7 @@ The clock is an injectable family behind `IScheduler` (B-0684 negotiation stack)
 ## Known math-leg gaps (Lior review 2026-06-04)
 
 External formal review surfaced 5 gaps; status:
+
 1. **Z3 Int vs machine int64 (overflow blindspot)** — ✅ addressed for clock:
    Z3 models ℤ (logical), impl uses `Checked.(+)` → throws at Int64.Max/Min
    (boundary tested, no silent wrap). Same `Checked` pattern in CRDT/byte-cost;
@@ -311,6 +316,7 @@ one primitive at a time, connecting each to these proven floor primitives once
 there's a full proof chain (sequencing is the agent's call).
 
 ## Pointers
+
 - B-1016 (context-window minimization — the program this map serves)
 - `docs/PRIMITIVE-REGISTRY.md` + B-0959 (the larger wishlist / 4-lang status view)
 - B-0684 (clock-protocol-negotiation-stack) · B-0683 (deferred-causality / Z-sets)
