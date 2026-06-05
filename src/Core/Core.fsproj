@@ -16,6 +16,7 @@
     <Compile Include="Predicate.fs" />
     <Compile Include="Policy.fs" />
     <Compile Include="PolicyKind.fs" />
+    <Compile Include="RetryPolicy.fs" />
     <Compile Include="CayleyDickson.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />

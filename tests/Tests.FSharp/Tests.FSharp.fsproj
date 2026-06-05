@@ -52,6 +52,7 @@
     <Compile Include="Policy.Tests.fs" />
     <Compile Include="StreamPolicy.Tests.fs" />
     <Compile Include="PolicyKind.Tests.fs" />
+    <Compile Include="RetryPolicy.Tests.fs" />
     <Compile Include="DynamicValueFold.Tests.fs" />
     <Compile Include="DynamicValueXmlPolicy.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
