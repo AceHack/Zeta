@@ -18,9 +18,12 @@ instance. Remaining, in recommended order:
    *why*) — policy SELECTS, never mutates; the generator/actor performs the action.
    OPLE `Result<T,TFeedback>` discipline; auditable; prevents a "magic authority blob."
    Add **ShapePath / ShapeContext** + path/kind/key/value/meta predicates.
-2. **νF stream/traveler interpreter.** Interpret the same kernel over νF (Rx/streams):
-   fold/unfold → stream; combined streams = multidispatch over travelers; each stream a
-   routed entity on the traveler-bus. Same kernel, second interpreter.
+2. **νF stream/traveler interpreter.** ✅ SHIPPED 2026-06-04 (commit 203d13959 —
+   `src/Core/StreamPolicy.fs`: applyPolicy/decisions/partition/route over IObservable;
+   Traveler<'a>={Address;Stream}; zip2/zip3 = combinator/multidispatch over travelers;
+   the interpret-twice assertion proven). Same kernel, second interpreter (μF=document,
+   νF=stream). Remaining νF depth (genuine unfold/anamorphism, backpressure, bus
+   addressing/Reticulum) composes later.
 3. **Runtime interpreters reusing the kernel:** trust (accept/quarantine/reject/
    require-oracle), retry (retry/backoff/circuit-break/fail-closed — Polly-shaped),
    routing (local/bus/Reticulum/dead-letter), dispatch (which handler/multimethod).
