@@ -24,10 +24,13 @@ instance. Remaining, in recommended order:
    the interpret-twice assertion proven). Same kernel, second interpreter (μF=document,
    νF=stream). Remaining νF depth (genuine unfold/anamorphism, backpressure, bus
    addressing/Reticulum) composes later.
-3. **Runtime interpreters reusing the kernel:** trust (accept/quarantine/reject/
-   require-oracle), retry (retry/backoff/circuit-break/fail-closed — Polly-shaped),
-   routing (local/bus/Reticulum/dead-letter), dispatch (which handler/multimethod).
-   Same shape → reuse the kernel; genuinely-different shape → specialize the interpreter.
+3. **Runtime interpreters reusing the kernel:** RETRY ✅ SHIPPED 2026-06-04 (commit
+   661c2706c — `src/Core/RetryPolicy.fs`: RetryContext → Retry/CircuitBreak/FailClosed/
+   Stop via exponentialBackoff + withCircuitBreaker + failClosedOn; the validating
+   instance proving the kernel generalizes to the resilience junction). REMAINING:
+   trust (accept/quarantine/reject/require-oracle), routing (local/bus/Reticulum/
+   dead-letter — note StreamPolicy already has `route`), dispatch (which handler/
+   multimethod). Add as real needs appear (don't pre-build all).
 4. **XML attribute-promotion slice** (instance-1 currently does named-vs-generic element
    only). Attribute promotion has order- + type-loss caveats (XML attributes are
    unordered string values) → a documented projection/normal-form, not a free bijection.
