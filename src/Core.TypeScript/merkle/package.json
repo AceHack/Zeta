@@ -1,0 +1,24 @@
+{
+  "name": "@zeta/merkle",
+  "version": "0.1.0",
+  "description": "Standalone TypeScript Merkle-tree reference implementation (pure XXH3-128, no dependency) for N-way cross-language oracle verification (TS/F#/C#/Rust). Byte-identical roots to src/Core/Merkle.fs. Bun-native; no build step required.",
+  "type": "module",
+  "main": "merkle.ts",
+  "exports": {
+    ".": "./merkle.ts",
+    "./xxh3": "./xxh3.ts"
+  },
+  "keywords": [
+    "zeta",
+    "merkle",
+    "xxh3",
+    "xxhash128",
+    "cross-language",
+    "bun"
+  ],
+  "author": "Lucent Financial Group",
+  "license": "Apache-2.0",
+  "peerDependencies": {
+    "bun": ">=1.0.0"
+  }
+}
