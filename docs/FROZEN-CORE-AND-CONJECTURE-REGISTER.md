@@ -30,8 +30,15 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 | 5 | **Property-loss algebra ladder** — ℝ→ℂ→ℍ→𝕆 (Cayley-Dickson) | octonion division-algebra laws proven (alternative, norm-mult.) | `Algebra/Octonion.Laws` |
 | 6 | **SchemaEvolution / SchemaRegistry** — field-ops, fwd/back compat | round-trips through the proven codecs; proto fwd-compat exercises it | `SchemaRegistry.fs` |
 | 7 | **SoftValue** (value-axis) — distribution + Bayesian observe | observe commutes for independent evidence (the convergence crux, proven leg) | `SoftValue.fs` |
+| 8 | **Traveler frame (Layer 0)** — causal frame + inter-frame transformation law | transformation = causal-join is a bounded join-semilattice (idempotent/commutative/associative/monotone, LUB) ⇒ order-independent; all travelers reach ONE common frame = the relative-frame **consistency** law | `TravelerFrame.fs` / `TravelerFrame.Tests` |
 
 > If it isn't in this table, **do not build load-bearing work on it yet.** That's the whole point.
+>
+> **Promoted 2026-06-05:** Traveler-frame Layer 0 (#8). The open keystone — the inter-frame
+> transformation law — is discharged: `TravelerFrame.transform` (the causal-join) is proven a bounded
+> join-semilattice, so the transformation is order-independent and all travelers converge to one
+> common frame. Remaining Layer-0 **sub-legs** stay in §B (the *group* law — inverses/boosts; the
+> CockroachDB-HLC **uncertainty-window** combination): this is the consistency law, not yet the group law.
 
 ---
 
@@ -45,12 +52,13 @@ The hex core is **not numerology** — it's the attempt to pin a traveler's *rel
 frame* computed incrementally over the DBSP stream (no global frame; each traveler a frame).
 Separated into layers (the cram was holding all four at once = the dirt):
 
-- **Layer 0 — base traveler frame (NEAREST to promotable).** = clock-with-uncertainty
-  (**CockroachDB HLC + uncertainty window** — production-proven model for relative-time-no-global-clock;
-  maps onto our tracked-frontier-uncertainty) + identity/belief-map (relative-who/where) +
-  **causal-join / coordination-repo as the inter-frame transformation**. Prior art says the
-  *transformation law between frames* is the content; the axes are secondary. Two legs (clock,
-  identity) are in §A; the **transformation-law leg is the open keystone** — pin it and Layer 0 promotes.
+- **Layer 0 — base traveler frame (✅ PROMOTED to §A #8, 2026-06-05).** = clock + identity/belief-map +
+  **causal-join as the inter-frame transformation**. The transformation-law keystone is discharged
+  (`TravelerFrame.fs`: the causal-join is a proven bounded join-semilattice ⇒ order-independent ⇒ one
+  common frame = the relative-frame consistency law). **Open Layer-0 sub-legs remaining here:** the
+  *group* law (inverses/boosts — relativistic structure beyond the monotone semilattice) and the
+  **CockroachDB-HLC uncertainty-window** combination (the clock-with-uncertainty leg). The consistency
+  law is closed; the group law and uncertainty-combination are the next discharges.
 - **Layer 1 — meta-frames** = Rx queries that meta-tag dimensions on the stream. A *derived view*
   over Layer 0 (one-directional). Clean, but downstream of Layer 0; do not build into the base frame.
 - **Layer 2 — universal action grammar (Xbox controller; the 4×4 grid).** ORTHOGONAL to the frame:

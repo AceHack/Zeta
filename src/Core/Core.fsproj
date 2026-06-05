@@ -32,6 +32,7 @@
     <Compile Include="RangeSet.fs" />
     <Compile Include="ByteCost.fs" />
     <Compile Include="Clock.fs" />
+    <Compile Include="TravelerFrame.fs" />
     <Compile Include="DynamicValue.fs" />
     <Compile Include="DynamicValueFold.fs" />
     <Compile Include="SchemaEvolution.fs" />
