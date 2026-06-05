@@ -24,7 +24,13 @@
   (CRDT merge + clock/versionstamp + actor addresses); rides heartbeat-via-commit.
 - **Leg order pivot:** 4-ser is gated on B-1011 (CBOR/YAML/XML serializers not all
   built — G-Set has JSON only), so the ungated **homeostat-tie was done first** as
-  the payoff demo. Remaining G-Set legs: 4-ser (in progress), Arrow, Bonsai.
+  the payoff demo. Remaining G-Set legs: ~~4-ser~~ ✅ DONE (29c1ffe4), Arrow, Bonsai.
+- **G-Set × 4-ser leg ✅ LANDED (2026-06-04, 29c1ffe4):** B-1011's serializers
+  unblocked it — `tests/Tests.FSharp/GSet.FourSer.Tests.fs` proves a G-Set value's
+  canonical DynamicValue (ascending Array) round-trips through JSON+CBOR+YAML+XML and
+  all four recover the SAME G-Set (FsCheck over GSet<int64> + fixed cases). The CRDT/
+  G-Set 4-ser cell flips ✗→✓. NEXT legs of the G-Set vertical: Arrow-tie (via
+  DynamicValueArrow), Bonsai-tie, then it's FULL PROVEN (homeostat-tie already demoed).
 - **4-ser progress (2026-06-04): all four value-tree serializers DONE + 4-language
   BYTE-LOCKED** — JSON + CBOR + YAML + XML. Each produces byte-identical canonical
   output across F#+TS+C#+Rust (golden-vector byte-lock per oracle). YAML is the
@@ -86,7 +92,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | 1 | **Clock / causal order** | `src/Core/Clock.fs` + `Core.{TypeScript,CSharp,Rust}.Clock` | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | **math + 4-lang** (total-order instance; DST seed byte-locked F#/TS/C#/Rust) |
 | 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | partial | ✗ | ✗ | ✗ | **math + 4-lang** (V1 cell); rolling-monadic encoding + UoM-per-type + per-version/category cells open |
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
-| 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB; GCounter over state) | ✓ (G-Set 4/4 per registry) | ✗ | ✗ | ✗ | ✗ | **math + 4-lang** (G-Set/Bag/Z-set/IndexedZSet all 4/4 in PRIMITIVE-REGISTRY) |
+| 4 | **CRDT merge + idempotency** | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB; GCounter over state) | ✓ (G-Set 4/4 per registry) | ✓ (G-Set, 29c1ffe4) | ✗ | ✗ | ✗ | **math + 4-lang + 4-ser** (G-Set 4-ser leg tied; Arrow/Bonsai/homeostat next on the G-Set vertical) |
 | 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
 | 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL+Bloom join & CMS monoid merge-laws ✓ (state-level) · error-DIRECTION ✓ (Bloom no-false-neg, CMS no-undercount); probabilistic magnitude bounds ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (merge + error-direction); magnitude bounds + 4-lang open |
 
