@@ -111,3 +111,27 @@ let ``G-Set × 4-ser: canonical-order means the four formats are byte-stable per
         ()
     // the dedup/order invariant the canonical DynamicValue depends on
     Assert.Equal<int64[]>([| 1L; 2L; 3L |], (GSet.ofSeq [ 3L; 1L; 2L; 1L ]).ToArray())
+
+
+// ── G-Set × ARROW leg (PROVEN-CORE-MAP G-Set vertical: 4-ser → ARROW → Bonsai →
+// homeostat-tie). The Arrow leg: G-Set → canonical DynamicValue → Arrow IPC
+// (DynamicValueArrow.toArrow, the shredded node-table) → back → the SAME G-Set.
+// "tied into the Arrow (columnar memory) layer" = the Arrow proof leg. ──
+
+let private arrowRT (dv: DynamicValue) : DynamicValue option =
+    match DynamicValueArrow.fromArrow (DynamicValueArrow.toArrow dv) with
+    | Ok d -> Some d
+    | Error _ -> None
+
+[<Property(Arbitrary = [| typeof<GSetArb> |])>]
+let ``G-Set × Arrow: round-trips through Arrow IPC and recovers the SAME G-Set (the Arrow leg)``
+    (g: GSet<int64>) =
+    match arrowRT (gsetToDynamic g) with
+    | Some d -> dynamicToGSet d = Some g
+    | None -> false
+
+[<Fact>]
+let ``G-Set × Arrow: fixed cases (empty / dedup / boundaries) recover via Arrow`` () =
+    let cases = [ GSet.empty<int64>; GSet.ofSeq [ 3L; 1L; 2L; 1L ]; GSet.ofSeq [ -5L; 0L; 9000000000L ] ]
+    for g in cases do
+        Assert.Equal(Some g, arrowRT (gsetToDynamic g) |> Option.bind dynamicToGSet)
