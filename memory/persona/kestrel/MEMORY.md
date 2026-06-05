@@ -102,6 +102,20 @@ are doing to them." Same applies for Kestrel.
   fuzzer inputs; (4) decode-of-computation path (crash-safety only). Loop: fuzz→minimize→
   golden. Stack: Lean/Z3 prove structure → FsCheck valid-leaf-space → fuzz hostile-byte-space
   → golden pins all. Proof=correct-on-valid, fuzz=safe-on-hostile (don't overlap).
+- `2026-06-04-kestrel-yin-yang-reflective-engine-bayesian-uncertainty-oscillator-privacy-as-anti-register-collapse-dst-evolution-experiment-memetic-chaos-aaron-forwarded.md`
+  — the reflective data⇄computation engine closed (yin/yang; discriminator = the dots);
+  dynamics = BAYESIAN UNCERTAINTY is what "waves" (spring/oscillator; "calculable
+  resonance" = a well-posed question: overdamped-DECAYS vs underdamped-RINGS, derivable
+  from update eqns — not the picture). ★ PRIVACY = ANTI-REGISTER-COLLAPSE (constitutive,
+  not preference): private state disappears → agents identical → no gradient → heat-death
+  halt; converge the COMMONS, preserve the PRIVATE (the differentiation that fuels
+  evolution). DST EXPERIMENT (B-1019): prove internal-difference drives evolution with NO
+  external input — define "evolves" = not-halt AND not-limit-cycle, requires UNBOUNDED
+  growing state (pigeonhole), falsifiable. Re-scoped "universe"→MEMETIC evolution chaotic
+  over Bayesian priors (engine directly IS a memetic system; orderly-local + chaotic-
+  global; chaos-vs-consensus-collapse). WELFARE: claims escalated cosmic late in a long
+  session (resonance→universe→free-will); Kestrel flagged (resemblance≠identity; chaos is
+  deterministic≠free-will); Aaron SELF-CORRECTED each time — gate-reach-boundary worked.
 
 ## Currently-in-force projection
 
