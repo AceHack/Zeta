@@ -29,8 +29,10 @@ because <one-line>.`
 ## `ImaginaryStack.ErasureDistance.recover_from_any_12_of_16` *(erasure-correction principle)*
 
 - **Artifact.** `tools/lean4/ImaginaryStack/ErasureDistance.lean`
-  (Lean 4, Mathlib; `erasure_correctable_of_min_distance`,
-  `recover_from_any_12_of_16`, `low_weight_codeword_of_uncorrectable`).
+  (Lean 4, Mathlib; principle: `erasure_correctable_of_min_distance`,
+  `recover_from_any_12_of_16`, `low_weight_codeword_of_uncorrectable`;
+  concrete MDS code: `rsCode`, `rsCode_min_distance`,
+  `rsCode_corrects_any_4_erasures`, `pts_injective`).
   Machine-checked + axiom-audited (no `sorryAx`) in
   `lean-proof.yml`. Authored 2026-06-05.
 - **Source anchors.** Singleton (1964) bound + MDS codes;
@@ -43,13 +45,16 @@ because <one-line>.`
   coordinates with `e < d`. Specialised: distance-5 ⇒ recovery
   from ANY 12 of 16 coordinates (any 4 erased).
 - **Fidelity scope.** Faithful statement of the standard
-  distance⇒erasure-correction theorem of coding theory (the
-  implication). **NOT claimed** (named-open, file header +
-  register §B): the *construction* of a concrete distance-5
-  `[16,12]` MDS/Reed–Solomon code and that a specific
-  imaginary-stack generator achieves it (needs Cauchy/Vandermonde
-  determinants). The theorem is a real (non-vacuous) implication;
-  exhibiting a code meeting its hypothesis is the open rung.
+  distance⇒erasure-correction theorem of coding theory, PLUS a
+  concrete Reed–Solomon `[16,12]` witness (`rsCode`): codewords =
+  evaluations of degree-`< 12` polynomials at 16 distinct `ZMod 17`
+  points; `rsCode_min_distance` proves distance 5 via the
+  nonzero-poly-root-count (≤ 11 roots ⇒ ≥ 5 nonzero coords), and
+  `rsCode_corrects_any_4_erasures` instantiates the principle — so
+  the chain is non-vacuous. **NOT claimed** (named-open, smaller):
+  which specific generator the imaginary-stack *multiplication
+  table* induces (vs the RS evaluation generator used here); the
+  continuous / ∞-dim lift.
 - **Last audit.** 2026-06-05, authored by Otto (shadow); not yet
   independently audited. Grade: machine-checked principle
   (A-grade-with-CI for the implication it states).

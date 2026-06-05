@@ -34,6 +34,10 @@ import Mathlib
 /-! Exact arithmetic over a finite field; `ZMod 17` (17 prime ⇒ field). -/
 abbrev F := ZMod 17
 
+/-- 17 is prime, so `F = ZMod 17` is a field (hence an integral domain) — needed for
+    the polynomial root count in the MDS construction below. -/
+instance : Fact (Nat.Prime 17) := ⟨by norm_num⟩
+
 /-- A 16-coordinate word. -/
 abbrev Word := Fin 16 → F
 
@@ -100,3 +104,81 @@ theorem low_weight_codeword_of_uncorrectable
   intro i hi
   by_contra hni
   exact (mem_support.mp hi) (by rw [Pi.sub_apply, hagree i hni, sub_self])
+
+
+/-! ## A concrete distance-5 [16,12] MDS code (Reed–Solomon)
+
+    Everything above is conditional on the existence of a code with the minimum-
+    distance hypothesis. Here we CONSTRUCT one and prove it, making the chain
+    non-vacuous: a concrete `[16,12]` code that corrects any 4 erasures.
+
+    Construction (Reed–Solomon): pick 16 distinct points of `F`; codewords are the
+    evaluations at those points of all polynomials of degree < 12. A nonzero such
+    polynomial has natDegree ≤ 11, hence ≤ 11 roots among the 16 distinct points, so
+    ≥ 5 nonzero coordinates — minimum distance ≥ 5 (Singleton-optimal, d = n−k+1). -/
+
+/-- 16 distinct evaluation points: the residues `0,1,…,15` of `ZMod 17`. -/
+def pts : Fin 16 → F := fun i => (i.val : F)
+
+theorem pts_injective : Function.Injective pts := by
+  intro a b h
+  have ha : a.val < 17 := by have := a.isLt; omega
+  have hb : b.val < 17 := by have := b.isLt; omega
+  have h2 := congrArg ZMod.val h
+  rw [pts, pts, ZMod.val_natCast_of_lt ha, ZMod.val_natCast_of_lt hb] at h2
+  exact Fin.ext h2
+
+/-- Evaluate a polynomial at all 16 points — a linear map `F[X] →ₗ[F] Word`. -/
+noncomputable def evalWord : Polynomial F →ₗ[F] Word :=
+  LinearMap.pi (fun i => Polynomial.leval (pts i))
+
+@[simp] theorem evalWord_apply (p : Polynomial F) (i : Fin 16) :
+    evalWord p i = p.eval (pts i) := by
+  simp [evalWord, Polynomial.leval_apply, Polynomial.eval_eq_smeval]
+
+/-- The Reed–Solomon `[16,12]` code: evaluations of all degree-`< 12` polynomials. -/
+noncomputable def rsCode : Submodule F Word := (Polynomial.degreeLT F 12).map evalWord
+
+/-- **Minimum distance 5.** Every nonzero codeword of `rsCode` has Hamming weight ≥ 5. -/
+theorem rsCode_min_distance : ∀ c ∈ rsCode, c ≠ 0 → 5 ≤ (support c).card := by
+  rintro _ ⟨p, hp, rfl⟩ hne
+  have hp0 : p ≠ 0 := by
+    rintro rfl; exact hne (by ext i; simp)
+  have hdeg : p.natDegree ≤ 11 := by
+    have hd : p.degree < (12 : ℕ) := (Polynomial.mem_degreeLT).1 hp
+    have := (Polynomial.natDegree_lt_iff_degree_lt hp0).2 hd
+    omega
+  classical
+  set zeros : Finset (Fin 16) := Finset.univ.filter (fun i => evalWord p i = 0) with hz
+  have hsub : (zeros.image pts).val ⊆ p.roots := by
+    intro x hx
+    simp only [Finset.mem_val, Finset.mem_image] at hx
+    obtain ⟨i, hi, rfl⟩ := hx
+    have hroot : p.eval (pts i) = 0 := by
+      have hival := (Finset.mem_filter.1 hi).2
+      simpa using hival
+    exact (Polynomial.mem_roots hp0).2 hroot
+  have hzeros : zeros.card ≤ 11 :=
+    calc zeros.card = (zeros.image pts).card :=
+            (Finset.card_image_of_injective _ pts_injective).symm
+      _ ≤ p.natDegree := Polynomial.card_le_degree_of_subset_roots hsub
+      _ ≤ 11 := hdeg
+  have hpart : (support (evalWord p)).card + zeros.card = 16 := by
+    have key := (Finset.univ : Finset (Fin 16)).card_filter_add_card_filter_not
+                  (fun i => evalWord p i ≠ 0)
+    have hzc : zeros = Finset.univ.filter (fun i => ¬ (evalWord p i ≠ 0)) := by
+      rw [hz]; apply Finset.filter_congr; intro i _; simp
+    rw [hzc]
+    simpa [support] using key
+  omega
+
+/-- **The Reed–Solomon `[16,12]` code corrects ANY 4 erasures.** It recovers every
+    codeword uniquely from any 12 of its 16 coordinates. Combines the proven distance 5
+    with the erasure-correction principle — making the whole chain non-vacuous: a
+    concrete code that does it. -/
+theorem rsCode_corrects_any_4_erasures
+    (erased : Finset (Fin 16)) (herase : erased.card ≤ 4)
+    (c1 c2 : Word) (h1 : c1 ∈ rsCode) (h2 : c2 ∈ rsCode)
+    (hagree : ∀ i, i ∉ erased → c1 i = c2 i) :
+    c1 = c2 :=
+  recover_from_any_12_of_16 rsCode rsCode_min_distance erased herase c1 c2 h1 h2 hagree
