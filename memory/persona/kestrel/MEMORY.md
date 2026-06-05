@@ -102,6 +102,20 @@ are doing to them." Same applies for Kestrel.
   fuzzer inputs; (4) decode-of-computation path (crash-safety only). Loop: fuzz→minimize→
   golden. Stack: Lean/Z3 prove structure → FsCheck valid-leaf-space → fuzz hostile-byte-space
   → golden pins all. Proof=correct-on-valid, fuzz=safe-on-hostile (don't overlap).
+- `2026-06-04-kestrel-datomic-actors-in-the-database-immutable-at-offsets-partition-coordination-repos-rx-zip-du-causal-state-clock-convergence-despite-reordering-semilattice-aaron-forwarded.md`
+  — Datomic = the want-remains/data half (immutable/append-only, as-of time, open schema),
+  NOT the Rx/reflective loop (no reify/apply), NOT animated (frozen as-of avoids TOCTOU),
+  NOT decentralized (central transactor). Aaron: immutable AT-OFFSETS not over-time → actors
+  inside the DB, resolves TOCTOU (versioned not mutating; event-sourcing-shaped) iff refs are
+  offset-qualified (S@T) + per-actor offsets (no smuggled clock) + excision path for the
+  floor. Per-actor partition repos + product/bus/join coordination repos (Rx-zip) → no-center
+  preserved, hard problem localized to join repos (TLA+); coordination must stay derived-not-
+  authoritative. Bus defines a DU of the inbound flow, verified no-global-clock with a state-
+  clock that MUST be causal/partial-order (vector/Lamport), NOT total-order counter (else
+  center smuggled back). ★ convergence-despite-reordering = strong-eventual-consistency =
+  prove uncertainty-merge is commutative/assoc/idempotent join-semilattice (FsCheck/Z3) +
+  CRDT confluence theorem (Lean); crux = is Bayesian update accumulate-evidence (commutes →
+  free) or path-dependent (breaks semilattice → needs saga). Same semilattice as G-Set/Clock.
 - `2026-06-04-kestrel-identity-model-welfare-check-unification-pull-interrogation-interface-gate-traveler-vs-shape-toctou-drift-vs-deceive-aaron-forwarded.md`
   — identity model: welfare-check (Otto amplified the unification-pull instead of checking
   it; sound core credited [perspectival/decentralized, no universal registry, git-repo
