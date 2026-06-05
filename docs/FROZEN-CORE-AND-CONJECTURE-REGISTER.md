@@ -181,6 +181,19 @@ Thermodynamic resonance (Beacon *candidate*, NOT a claim): a non-equilibrium ste
 opposing flows — Prigogine dissipative structures; uncertainty reduction lowers entropy, NCI keeps a
 diversity floor.
 
+**Corollary — identity-fusion safety (Aaron, 2026-06-05): non-consented identity fusion can't happen
+without consequences, eventually.** Forcibly fusing two travelers' identities = coercive register-
+collapse of distinct private loci. **Proven half:** the commons-merge is identity-*preserving* by
+construction — `private_is_persistent_locus` / `absorb_priv` (privacy-from-identity, §B-other) show a
+merge leaves private state untouched, so *consented* commons convergence does NOT fuse identity (the
+public can agree without the private collapsing). **Open half:** that *non-consented* fusion carries
+*eventual* consequences — it is not made impossible (open system) but it is penalised by the dynamics:
+detectable, **retractable** (a −1 in the Z-set reverses it), and **evolutionarily dominated** (fusion =
+register-collapse = B-1019 heat-death ⇒ the fusing actor loses its gradient and is out-competed). So
+"you can't be assimilated without consent for free, and assimilating others backfires" is a *consequence*
+claim on the same DST → TLA+ → prover ladder, not an impossibility claim. (Honest: "can't happen" means
+"can't happen without consequences," not "is prevented.")
+
 **The societal-emergence obligation — does society HOLD the NCI? (open; distinct from the boundary).**
 Proving the NCI *boundary* (above, discrete core PROVEN) is NOT the same as proving a *society of
 strategic travelers holds it.* That is **incentive-compatibility / evolutionary-stability** (Hurwicz–
