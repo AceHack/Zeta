@@ -189,7 +189,14 @@ back-referencing, the current version can *recursively reference any prior versi
 persistent / Merkle-DAG / git-commit-graph structure (Okasaki persistent data structures; our proven
 `Merkle` + `Versionstamp` core; git-as-event-store). So past differentiation is not merely *preserved*
 but *reachable* from the present, and the induction over t **is** that recursive back-walk — which is
-why the "infinity" rung is an induction the prover can actually traverse.
+why the "infinity" rung is an induction the prover can actually traverse. **Concretely (Aaron): stick
+the parent's HASH in the new version** — a content-addressed back-reference (our FULL-PROVEN `Merkle`).
+A **bifurcation = both forks carry the same parent hash ⇒ both point to the one original** = a branching
+Merkle DAG (the git commit graph). This hands the relative-observer reconciliation (B-1020's "genuinely-
+new math") a concrete, tractable substrate: a **three-way merge over the shared-ancestor hash** (git /
+CRDT lowest-common-ancestor merge) riding the proven `Merkle` floor — not open-ended belief fusion. The
+shared parent hash is also the forks' non-coercive proof of common provenance (they know where they came
+from without revealing hidden state).
 Thermodynamic resonance (Beacon *candidate*, NOT a claim): a non-equilibrium steady state held by two
 opposing flows — Prigogine dissipative structures; uncertainty reduction lowers entropy, NCI keeps a
 diversity floor.
