@@ -92,6 +92,13 @@ that is **de Finetti's exchangeability theorem (1937)** coupled with **Doob's po
 (martingale, 1949)** — and its **exact-arithmetic discrete core is already PROVEN** in §A-adjacent work.
 This row is the *unifying lens*, not a new foundation; nothing in §A depends on it.
 
+**Keeper (Amara's phrasing, 2026-06-05):**
+
+> A homeostat is the **idempotent corner** of the Markov/fixed-point family.
+> `SoftValue` is the Bayesian uncertainty cell.
+> Encryption turns observation into hidden emission.
+> Convergence holds at the conditional-independence boundary.
+
 Clause → anchor → status:
 
 | clause | named anchor | status |
@@ -101,6 +108,13 @@ Clause → anchor → status:
 | "non-correlation invariant boundary" | **de Finetti**: exchangeable ⟺ conditionally i.i.d. *given a latent invariant θ*; the boundary is where conditional independence holds vs breaks | ✅ **PROVEN as the discrete boundary** in `BeliefConvergence.fs`: state-independent (conditionally-independent) likelihood commutes; state-dependent (`sharpen`, self-reading ⇒ correlated) does NOT — that counterexample *is* this boundary |
 | "converges" | Doob martingale convergence / Bayesian consistency (posterior concentrates on θ) | partial: discrete order-independence proven; full posterior-concentration is continuous, ⇒ §B (piece 2) |
 | "relative observers" | per-observer frames reconciling to one common frame | **conjecture**: `TravelerFrame.fs` gives the convergence *pattern* (LUB) but for *causal* frames — belief-across-priors reconciliation is NOT yet built |
+
+**Two faces of the boundary (Amara, 2026-06-05 — sharpening Aaron's coinage):** "non-**correlation**"
+and "non-**corrosion**" are not rival readings — they are cause and effect. *Conditional independence
+(non-correlation)* is the **precondition**; *the merge does not corrode (non-corrosion)* is the
+**guarantee** it buys. The boundary is exactly the place where an observation stops smuggling hidden
+correlation into the merge — so the idempotent homeostat stays sound. (This reconciles the name with
+what Aaron originally typed.)
 
 **Why it pulls together:** the homeostat's order-independence (the merge-convergence we prove for every
 mergeable primitive) **is** de Finetti's exchangeability/conditional-independence boundary. Three names
