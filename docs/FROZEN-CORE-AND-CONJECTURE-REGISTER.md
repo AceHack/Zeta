@@ -197,6 +197,32 @@ new math") a concrete, tractable substrate: a **three-way merge over the shared-
 CRDT lowest-common-ancestor merge) riding the proven `Merkle` floor — not open-ended belief fusion. The
 shared parent hash is also the forks' non-coercive proof of common provenance (they know where they came
 from without revealing hidden state).
+
+**Content-addressing — the full razored picture (Aaron, 2026-06-05).**
+
+- **Separate the concerns, content-hash EACH (DV2.0).** Three orthogonal structures, each with its OWN
+  content hash, never conflated (the naive single-hash mistake): the **value tree** (`DynamicValue` —
+  *what is*), the **uncertainty prior** (the Bayesian belief / `SoftValue` — *how-sure*), and the
+  **act-based AST** (the reified operation — `Bonsai` Expr / `ActionGrid` grammar — *what you can do*).
+- **What content-hashing gives.** Identical structures collapse to one hash ⇒ free structural sharing /
+  dedup + a unique address per distinct value (rides FULL-PROVEN `Merkle`).
+- **Why "aperiodic" is partly REAL — remainder math.** Aperiodicity comes from the *modular* arithmetic
+  of the hash. With SplitMix64's **GoldenRatio** multiplier (= Knuth multiplicative hashing), the spacing
+  is **Weyl-equidistributed / lowest-discrepancy** (three-distance theorem; φ = the most irrational ⇒ the
+  *most* aperiodic spacing = the 1-D quasicrystal). "Depending on hash size" = the modulus 2^k = the
+  collision/period horizon. Real, citeable spine, riding the proven SplitMix64 BigCrush avalanche.
+- **Honest flag (still).** The precise "**Penrose** aperiodic *tiling*" (2-D, matching rules) is the
+  higher-dim *analogy* of the real 1-D φ-quasicrystal — it NEEDS A DERIVATION (de Bruijn projection /
+  matching-rule ⇒ non-periodicity) before it is claimed. φ-equidistribution: earned. Penrose tiling:
+  Beacon-candidate.
+- **Limitation Aaron caught, and its fix.** An avalanche content-hash makes belief **neighborhoods
+  rigid** (a tiny belief change ⇒ a totally different hash) — anti-metric BY DESIGN, carrying *identity*
+  not *similarity*; real belief is continuous. Fix = the separation above: continuity lives in the
+  **uncertainty-prior** structure via the PROVEN Range metric `FrameDelta.distance` (rational-valued ⇒
+  closeness to any rational precision on the exact-ℚ substrate), NOT in the value-tree hash; reach for
+  locality-sensitive hashing (LSH, Indyk–Motwani 1998) only if a *neighbor-respecting* hash is wanted.
+  (Same trade as floats-out-of-lineage: discrete-exact over continuous; the metric recovers closeness
+  without leaving the proof lineage.)
 Thermodynamic resonance (Beacon *candidate*, NOT a claim): a non-equilibrium steady state held by two
 opposing flows — Prigogine dissipative structures; uncertainty reduction lowers entropy, NCI keeps a
 diversity floor.
