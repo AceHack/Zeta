@@ -207,6 +207,15 @@ derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. D
 > each using the homeostat class that honestly fits its algebra (convergence vs aggregation). `Curve` tops
 > out at four legs (Bonsai/homeostat N/A by kind). The six-leg bar is a bar for *mergeable* primitives.
 
+**Determinism substrate (not a measurement axis):**
+
+- **SplitMix64 finaliser** — `src/Core/SplitMix64.fs`: Vigna's mixer (arxiv 1410.0530 §3), the deterministic
+  mixing step behind Zeta's DST RNG. math (BigCrush-validated upstream; the three golden-ratio/Vigna
+  constants documented) + 4-lang (F#+C#+TS+Rust: `Core.CSharp/SplitMix64.cs`, `Core.TypeScript/splitmix64/`,
+  `Core.Rust.SplitMix64` — pure wrapping uint64, byte-identical; uint64 carried as decimal strings since it
+  exceeds JSON's exact range). The 4-lang leg is load-bearing for DST itself: replays must produce identical
+  pseudo-random streams across the language ports, which this proves. (`SplitMix64.CrossVerify.Tests`)
+
 **Adinkra / holographic chain — COMPLETE to the published correspondence** (Lean, sorry-free, axiom-audited):
 
 - `tools/lean4/ImaginaryStack/ToyModel.lean` — bulk-from-boundary reconstruction for a graph-code.

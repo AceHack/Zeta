@@ -1,0 +1,15 @@
+{
+  "description": "SplitMix64 finaliser golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). Sebastiano Vigna's mixer (arxiv 1410.0530 §3; public-domain reference https://prng.di.unimi.it/splitmix64.c), the deterministic mixing step behind Zeta's DST RNG. mix(x) = let z = x*GoldenRatio; z = (z ^ z>>30)*VignaA; z = (z ^ z>>27)*VignaB; z ^ z>>31 — all WRAPPING uint64 arithmetic. uint64 exceeds JSON's exact number range, so inputs and outputs are decimal STRINGS (parse to BigInt / UInt64 / u64). Cross-language agreement here is load-bearing: DST replays must produce identical pseudo-random streams across the language ports.",
+  "mix": [
+    { "x": "0", "result": "0" },
+    { "x": "1", "result": "16294208416658607535" },
+    { "x": "2", "result": "7960286522194355700" },
+    { "x": "10", "result": "17561866513979060390" },
+    { "x": "255", "result": "80788758552623550" },
+    { "x": "18446744073709551615", "result": "3703370420611038912" },
+    { "x": "11400714819323198485", "result": "5878998237028904013" },
+    { "x": "9223372036854775808", "result": "2720858781877447050" },
+    { "x": "12345678901234567890", "result": "284664278009360702" },
+    { "x": "1000000000000000000", "result": "11308661470685490763" }
+  ]
+}
