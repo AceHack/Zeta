@@ -1,0 +1,30 @@
+{
+  "description": "FrameDelta golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). Frames and deltas are {actor: int64} maps. Deltas are normalized (zero shifts dropped); apply keeps zero coordinates (union of keys). compose = pointwise add; inverse = negate; between(from,to) = to−from; apply(delta,frame) = frame+delta; magnitude = Σ|shift|; distance(from,to) = magnitude(between).",
+  "compose": [
+    { "a": { "x": 3, "y": -2 }, "b": { "y": 5, "z": 1 }, "result": { "x": 3, "y": 3, "z": 1 } },
+    { "a": { "x": 1 }, "b": { "x": -1 }, "result": {} },
+    { "a": {}, "b": { "a": 2 }, "result": { "a": 2 } }
+  ],
+  "inverse": [
+    { "d": { "x": 3, "y": -2 }, "result": { "x": -3, "y": 2 } },
+    { "d": {}, "result": {} }
+  ],
+  "between": [
+    { "from": { "a": 1, "b": 2 }, "to": { "a": 4, "b": 2, "c": 3 }, "result": { "a": 3, "c": 3 } },
+    { "from": {}, "to": { "a": 5 }, "result": { "a": 5 } },
+    { "from": { "a": 5 }, "to": { "a": 5 }, "result": {} }
+  ],
+  "apply": [
+    { "delta": { "a": 3 }, "frame": { "a": 1, "b": 2 }, "result": { "a": 4, "b": 2 } },
+    { "delta": { "a": -1 }, "frame": { "a": 1 }, "result": { "a": 0 } },
+    { "delta": { "c": 5 }, "frame": { "a": 1 }, "result": { "a": 1, "c": 5 } }
+  ],
+  "magnitude": [
+    { "d": { "x": 3, "y": -2 }, "result": 5 },
+    { "d": {}, "result": 0 }
+  ],
+  "distance": [
+    { "from": { "a": 1 }, "to": { "a": 4, "b": 3 }, "result": 6 },
+    { "from": { "a": 5 }, "to": { "a": 5 }, "result": 0 }
+  ]
+}
