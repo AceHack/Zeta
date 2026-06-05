@@ -14,6 +14,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="Predicate.fs" />
+    <Compile Include="Maybe.fs" />
     <Compile Include="Policy.fs" />
     <Compile Include="PolicyKind.fs" />
     <Compile Include="RetryPolicy.fs" />
