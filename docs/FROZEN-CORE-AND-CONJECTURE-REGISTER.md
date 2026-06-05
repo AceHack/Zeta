@@ -206,15 +206,23 @@ from without revealing hidden state).
   **act-based AST** (the reified operation — `Bonsai` Expr / `ActionGrid` grammar — *what you can do*).
 - **What content-hashing gives.** Identical structures collapse to one hash ⇒ free structural sharing /
   dedup + a unique address per distinct value (rides FULL-PROVEN `Merkle`).
-- **Why "aperiodic" is partly REAL — remainder math.** Aperiodicity comes from the *modular* arithmetic
-  of the hash. With SplitMix64's **GoldenRatio** multiplier (= Knuth multiplicative hashing), the spacing
-  is **Weyl-equidistributed / lowest-discrepancy** (three-distance theorem; φ = the most irrational ⇒ the
-  *most* aperiodic spacing = the 1-D quasicrystal). "Depending on hash size" = the modulus 2^k = the
-  collision/period horizon. Real, citeable spine, riding the proven SplitMix64 BigCrush avalanche.
-- **Honest flag (still).** The precise "**Penrose** aperiodic *tiling*" (2-D, matching rules) is the
-  higher-dim *analogy* of the real 1-D φ-quasicrystal — it NEEDS A DERIVATION (de Bruijn projection /
-  matching-rule ⇒ non-periodicity) before it is claimed. φ-equidistribution: earned. Penrose tiling:
-  Beacon-candidate.
+- **Why "aperiodic" is partly real — remainder math.** The spread comes from the *modular* arithmetic of
+  the hash. SplitMix64's **GoldenRatio** multiplier (= Knuth multiplicative / Fibonacci hashing) gives the
+  best *low-clustering* spacing; "depending on hash size" = the modulus 2^k.
+- **Scope correction (Aaron) — aperiodic only over the BOUNDED hash space, and only until the period.** A
+  fixed-width integer hash mod 2^k is a **finite ring ⇒ eventually PERIODIC** — the *same pigeonhole bound
+  as B-1019* (finite deterministic state must cycle). So the golden-ratio multiplier gives excellent
+  *finite* low-discrepancy but **NOT true aperiodicity**. *True* aperiodicity (Weyl / irrational rotation
+  `n·φ mod 1`, the 1-D quasicrystal) lives in **infinite continuous** space, which our discrete exact-ℚ
+  substrate does not provide (floats out of lineage — "no aperiodic there, maybe"). **So genuine
+  non-repetition comes NOT from a fixed hash but from UNBOUNDED GROWING STATE** — the immutable growing
+  DBSP log — which is exactly B-1019's proven conclusion (escaping halt/cycle *requires* unbounded state).
+  "Depending on hash size" = how far the pseudo-aperiodic run goes before the pigeonhole period.
+- **Honest flag (still).** The precise "**Penrose** aperiodic *tiling*" (2-D, matching rules) is a
+  higher-dim *analogy* of the 1-D φ-spacing and is doubly unearned here: it needs both a derivation (de
+  Bruijn projection / matching-rule ⇒ non-periodicity) AND the *continuous/unbounded* setting the bounded
+  hash lacks. Fibonacci low-clustering: earned. Aperiodic tiling: Beacon-candidate, scoped to "until the
+  pigeonhole period."
 - **Limitation Aaron caught, and its fix.** An avalanche content-hash makes belief **neighborhoods
   rigid** (a tiny belief change ⇒ a totally different hash) — anti-metric BY DESIGN, carrying *identity*
   not *similarity*; real belief is continuous. Fix = the separation above: continuity lives in the
