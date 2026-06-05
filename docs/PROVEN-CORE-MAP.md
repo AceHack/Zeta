@@ -97,14 +97,17 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | partial | ✗ | ✗ | ✗ | **math + 4-lang** (V1 cell); rolling-monadic encoding + UoM-per-type + per-version/category cells open |
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ✗ (F#-only; TS/C#/Rust XxHash128 port deferred) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, combine reified) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, anti-entropy: verify + minimal-delta) | **5 of 6 legs** — math + 4-ser + Bonsai + Arrow + homeostat (`Merkle.FullVertical.Tests.fs`); ONLY 4-lang remains (the gap to FULL PROVEN) |
 | 4 | **CRDT merge + idempotency** (G-Set) | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB) | ✓ (G-Set 4/4) | ✓ (29c1ffe4) | ✓ (658c8e24, reify/apply) | ✓ (51d2937c) | ✓ (658c8e24, convergence-to-LUB) | ✅ **FULL PROVEN** — the FIRST floor primitive to clear the full bar (all G-Set legs in `tests/Tests.FSharp/GSet.FourSer.Tests.fs`) |
-| 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
+| 5 | **Serialization seed** (ByteCost) | `src/Core/ByteCost.fs` + `Core.{TypeScript,CSharp,Rust}.ByteCost` | ✓ (commutative-monoid laws; Z3+FsCheck) | ✓ (golden-vectors byte-lock) | ✓ (SerializationSeed.FullVertical) | ✓ (SerializationSeed.FullVertical, add reified) | ✓ (SerializationSeed.FullVertical) | ✓ (SerializationSeed.FullVertical, order-independent aggregation) | ✅ **FULL PROVEN** — 3rd floor primitive (legs in `SerializationSeed.FullVertical.Tests.fs`; commutative MONOID not semilattice — homeostat-tie = path-independent aggregate, not idempotent LUB) |
 | 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL+Bloom join & CMS monoid merge-laws ✓ (state-level) · error-DIRECTION ✓ (Bloom no-false-neg, CMS no-undercount); probabilistic magnitude bounds ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (merge + error-direction); magnitude bounds + 4-lang open |
 
 **G-Set (CRDT merge) is the FIRST FULL-PROVEN floor primitive** (2026-06-04,
 658c8e24 — all six legs in `GSet.FourSer.Tests.fs`); **Clock/Versionstamp is the
 SECOND** (ddac32e9, `Clock.FullVertical.Tests.fs` — both join-semilattices: G-Set
 merge=union, Clock merge=max; the reusable `_Support/SerializerLegs.fs` helper backs
-the 4-ser+Arrow legs). **2 of 6 floor primitives now FULL PROVEN.** The pattern is the
+the 4-ser+Arrow legs). **Serialization-seed (ByteCost) is the THIRD** (2026-06-04,
+`SerializationSeed.FullVertical.Tests.fs` — a commutative MONOID, not a semilattice:
+its homeostat-tie is order-independent AGGREGATION (path-independent fileset total),
+explicitly NOT idempotent LUB). **3 of 6 floor primitives now FULL PROVEN.** The pattern is the
 **template** the other 4 follow (each: bridge the primitive's value/operation to DynamicValue → 4-ser
 round-trip + Arrow round-trip + reify-the-operation-as-Bonsai + homeostat-convergence).
 **Merkle (2026-06-04, `Merkle.FullVertical.Tests.fs`) clears 5 of those 6 legs** and is
@@ -115,8 +118,16 @@ root is a deterministic witness of the converged leaf-state (same state → same
 `LeafDiff` pinpoints exactly the changed leaves so shipping only the delta drives a replica
 to the same root. So the role taxonomy (semilattice→converges; integrity→verifies) is now
 demonstrated, not just asserted. Merkle's only remaining leg is the 4-lang port.
-The other 4 are NOT yet full: **identity + serialization-seed have math ∧ 4-lang**
-(need 4-ser/Arrow/Bonsai/homeostat); **Merkle now has 5 of 6 legs** (math + 4-ser +
+**Serialization-seed (ByteCost, 2026-06-04) adds the THIRD operation class:** a
+commutative MONOID (`add` is associative + commutative with `Zero` identity but NOT
+idempotent — re-adding double-counts), so its homeostat-tie is **order-independent
+aggregation** (the fileset total is path-independent — the DORA-aggregate soundness),
+distinct from both idempotent LUB-convergence (G-Set/Clock) and integrity-verification
+(Merkle). All three homeostat-tie classes are now worked end-to-end:
+semilattice→converge-to-LUB · integrity→verify-the-converged-state ·
+monoid→order-independent-aggregate.
+The other 3 are NOT yet full: **identity has math ∧ 4-lang**
+(needs 4-ser/Arrow/Bonsai/homeostat); **Merkle now has 5 of 6 legs** (math + 4-ser +
 Bonsai + Arrow + homeostat in `Merkle.FullVertical.Tests.fs`, 2026-06-04 — ONLY the
 4-lang port remains); **metric-aggregation has the math leg** (4-lang partial). The
 remaining legs are the gap to full PROVEN. The **4-lang column is sourced from `PRIMITIVE-REGISTRY.md`**
