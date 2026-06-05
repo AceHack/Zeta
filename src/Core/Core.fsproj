@@ -35,6 +35,7 @@
     <Compile Include="DynamicValue.fs" />
     <Compile Include="DynamicValueFold.fs" />
     <Compile Include="SchemaEvolution.fs" />
+    <Compile Include="SchemaRegistry.fs" />
     <Compile Include="SoftValue.fs" />
     <Compile Include="DynamicValueXmlPolicy.fs" />
     <Compile Include="Circuit.fs" />
