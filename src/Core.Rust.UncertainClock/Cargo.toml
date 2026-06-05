@@ -1,0 +1,14 @@
+[package]
+name = "zeta-uncertain-clock"
+version = "0.1.0"
+edition = "2021"
+description = "UncertainClock — a Hybrid Logical Clock with an uncertainty window, Rust oracle for Zeta.Core cross-language agreement."
+license = "MIT"
+publish = false
+
+# Zero-dependency production core. serde_json is a DEV-only dependency, used solely to replay the
+# shared golden seed in the cross-verify test.
+[dependencies]
+
+[dev-dependencies]
+serde_json = "=1.0.140"

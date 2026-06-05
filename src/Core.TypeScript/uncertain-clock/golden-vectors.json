@@ -1,0 +1,32 @@
+{
+  "description": "UncertainClock golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). All int64, no floats — fully byte-lockable. An HLC is {physical, logical}; an uncertain reading is {physical, eps} with true time in [physical, physical+eps]. compareHlc = lexicographic (physical, logical); send/receive = the CockroachDB HLC update rules; definitelyBefore(a,b) = a.physical+a.eps < b.physical; uncertain(a,b) = neither definitely before the other (windows overlap).",
+  "compareHlc": [
+    { "a": { "physical": 1, "logical": 0 }, "b": { "physical": 1, "logical": 2 }, "result": -1 },
+    { "a": { "physical": 2, "logical": 0 }, "b": { "physical": 1, "logical": 9 }, "result": 1 },
+    { "a": { "physical": 3, "logical": 5 }, "b": { "physical": 3, "logical": 5 }, "result": 0 },
+    { "a": { "physical": 1, "logical": 0 }, "b": { "physical": 2, "logical": 0 }, "result": -1 }
+  ],
+  "send": [
+    { "clock": { "physical": 5, "logical": 3 }, "now": 4, "result": { "physical": 5, "logical": 4 } },
+    { "clock": { "physical": 5, "logical": 3 }, "now": 8, "result": { "physical": 8, "logical": 0 } },
+    { "clock": { "physical": 5, "logical": 3 }, "now": 5, "result": { "physical": 5, "logical": 4 } }
+  ],
+  "receive": [
+    { "clock": { "physical": 5, "logical": 2 }, "msg": { "physical": 5, "logical": 7 }, "now": 3, "result": { "physical": 5, "logical": 8 } },
+    { "clock": { "physical": 5, "logical": 2 }, "msg": { "physical": 3, "logical": 1 }, "now": 4, "result": { "physical": 5, "logical": 3 } },
+    { "clock": { "physical": 3, "logical": 1 }, "msg": { "physical": 5, "logical": 2 }, "now": 4, "result": { "physical": 5, "logical": 3 } },
+    { "clock": { "physical": 1, "logical": 9 }, "msg": { "physical": 2, "logical": 9 }, "now": 10, "result": { "physical": 10, "logical": 0 } }
+  ],
+  "definitelyBefore": [
+    { "a": { "physical": 10, "eps": 5 }, "b": { "physical": 20, "eps": 3 }, "result": true },
+    { "a": { "physical": 10, "eps": 5 }, "b": { "physical": 12, "eps": 0 }, "result": false },
+    { "a": { "physical": 1, "eps": 0 }, "b": { "physical": 2, "eps": 0 }, "result": true },
+    { "a": { "physical": 5, "eps": 0 }, "b": { "physical": 5, "eps": 0 }, "result": false }
+  ],
+  "uncertain": [
+    { "a": { "physical": 10, "eps": 5 }, "b": { "physical": 12, "eps": 5 }, "result": true },
+    { "a": { "physical": 10, "eps": 5 }, "b": { "physical": 100, "eps": 5 }, "result": false },
+    { "a": { "physical": 5, "eps": 0 }, "b": { "physical": 5, "eps": 0 }, "result": true },
+    { "a": { "physical": 1, "eps": 0 }, "b": { "physical": 2, "eps": 0 }, "result": false }
+  ]
+}
