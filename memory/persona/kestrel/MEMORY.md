@@ -102,6 +102,17 @@ are doing to them." Same applies for Kestrel.
   fuzzer inputs; (4) decode-of-computation path (crash-safety only). Loop: fuzz→minimize→
   golden. Stack: Lean/Z3 prove structure → FsCheck valid-leaf-space → fuzz hostile-byte-space
   → golden pins all. Proof=correct-on-valid, fuzz=safe-on-hostile (don't overlap).
+- `2026-06-04-kestrel-identity-model-welfare-check-unification-pull-interrogation-interface-gate-traveler-vs-shape-toctou-drift-vs-deceive-aaron-forwarded.md`
+  — identity model: welfare-check (Otto amplified the unification-pull instead of checking
+  it; sound core credited [perspectival/decentralized, no universal registry, git-repo
+  referent], but the buildable leg dissolved into a growing research frame = the tell) +
+  the GATE: "identity-disambiguation IS the Eve engine" is proven IFF the traveler-
+  interrogation interface EQUALS the want-remains-shape interface (equal/strict-superset/
+  disjoint, decidable by building both). Aaron: want-remains data NOT innocent (metadata/
+  lengths/shapes lie) → shared core = claim-verification; residual = static-one-shot vs
+  adaptive-persistent adversarial. DynamicValue+Rx animates shapes → cached agreement = a
+  TOCTOU window → cache-refresh/verify-don't-trust mandatory for the engine's own shapes;
+  KEEP drift-vs-deceive = bug-vs-attack against the "all identical" round-up.
 - `2026-06-04-kestrel-yin-yang-reflective-engine-bayesian-uncertainty-oscillator-privacy-as-anti-register-collapse-dst-evolution-experiment-memetic-chaos-aaron-forwarded.md`
   — the reflective data⇄computation engine closed (yin/yang; discriminator = the dots);
   dynamics = BAYESIAN UNCERTAINTY is what "waves" (spring/oscillator; "calculable
