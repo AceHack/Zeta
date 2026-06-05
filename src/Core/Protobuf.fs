@@ -19,12 +19,13 @@ open System.Text
 [<RequireQualifiedAccess>]
 module Protobuf =
 
-    /// The proto scalar types this slice supports.
+    /// The proto scalar types supported.
     type ProtoType =
         | PInt64
         | PBool
         | PString
         | PBytes
+        | PDouble // wire type 1 (fixed64): 8-byte little-endian IEEE-754
 
     /// A message schema: ordered (field-number, name, type). Field-numbers are the stable wire
     /// identity (names can be renamed via a migration; numbers must not be reused — proto's rule).
@@ -76,6 +77,7 @@ module Protobuf =
         | PBool -> 0 // varint
         | PString
         | PBytes -> 2 // length-delimited
+        | PDouble -> 1 // fixed64
 
     let private fieldByNumber (schema: ProtoSchema) (n: int) =
         schema |> List.tryPick (fun (num, name, ty) -> if num = n then Some(name, ty) else None)
@@ -113,6 +115,11 @@ module Protobuf =
                         let arr = Seq.toArray bs
                         Wire.writeVarint (uint64 arr.Length) out
                         out.AddRange arr
+                    | PDouble, DynamicValue.Float f ->
+                        Wire.writeVarint tag out
+                        let buf = Array.zeroCreate<byte> 8
+                        System.Buffers.Binary.BinaryPrimitives.WriteDoubleLittleEndian(System.Span<byte>(buf), f)
+                        out.AddRange buf
                     | _ -> err <- Some(sprintf "field '%s' value does not match schema type" name)
             match err with
             | Some e -> Error e
@@ -157,7 +164,16 @@ module Protobuf =
                              | Some (name, _) -> err <- Some(sprintf "wire type 2 does not match schema for field %d" num)
                              | None -> ()) // unknown field → skip
                             pos <- p2 + len
-                | _ -> err <- Some(sprintf "unsupported wire type %d (slice 1: varint + length-delimited only)" wt)
+                | 1 -> // fixed64 (PDouble)
+                    if p1 + 8 > bytes.Length then err <- Some "truncated fixed64"
+                    else
+                        let f = System.Buffers.Binary.BinaryPrimitives.ReadDoubleLittleEndian(System.ReadOnlySpan<byte>(bytes, p1, 8))
+                        (match fieldByNumber schema num with
+                         | Some (name, PDouble) -> fields.Add(name, DynamicValue.Float f)
+                         | Some (name, _) -> err <- Some(sprintf "wire type 1 does not match schema for field %d" num)
+                         | None -> ()) // unknown field → skip
+                        pos <- p1 + 8
+                | _ -> err <- Some(sprintf "unsupported wire type %d (varint, fixed64, length-delimited supported)" wt)
         match err with
         | Some e -> Error e
         | None -> Ok(DynamicValue.Object(List.ofSeq fields))

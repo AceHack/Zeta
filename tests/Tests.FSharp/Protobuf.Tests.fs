@@ -71,6 +71,15 @@ let ``Protobuf: DynamicValue.Object round-trips through proto under its schema``
     | Ok obj2 -> asMap obj2 = asMap obj
     | Error _ -> false
 
+[<Fact>]
+let ``Protobuf: double (fixed64) fields round-trip`` () =
+    let s : PB.ProtoSchema = [ 5, "d", PB.PDouble ]
+    for v in [ 0.0; 1.5; -2.25; 3.141592653589793; System.Double.MaxValue ] do
+        let obj = DynamicValue.Object [ "d", DynamicValue.Float v ]
+        match PB.toProto s obj |> Result.bind (PB.fromProto s) with
+        | Ok (DynamicValue.Object [ "d", DynamicValue.Float v2 ]) -> Assert.Equal(v, v2)
+        | other -> failwithf "double round-trip failed: %A" other
+
 // ── forward compatibility: an old reader skips fields it doesn't know ──
 
 [<Fact>]

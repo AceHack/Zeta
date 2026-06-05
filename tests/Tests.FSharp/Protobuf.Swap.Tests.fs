@@ -59,6 +59,13 @@ let ``Swap: our wire == Google.Protobuf for bytes fields`` () =
         Assert.Equal<byte[]>(g, ours schema ("by", DynamicValue.Bytes(ImmutableArray.CreateRange v)))
 
 [<Fact>]
+let ``Swap: our wire == Google.Protobuf for double fields (fixed64)`` () =
+    let schema = [ 5, "d", PB.PDouble ]
+    for v in [ 0.0; 1.5; -2.25; 3.141592653589793; System.Double.MaxValue; System.Double.MinValue ] do
+        let g = googleBytes (fun cos -> cos.WriteTag(5, WireFormat.WireType.Fixed64); cos.WriteDouble v)
+        Assert.Equal<byte[]>(g, ours schema ("d", DynamicValue.Float v))
+
+[<Fact>]
 let ``Swap: Google.Protobuf can DECODE what our codec encodes (full round direction)`` () =
     // our encode -> Google decode -> same scalar values (the reverse swap direction)
     let schema = [ 1, "x", PB.PInt64; 3, "s", PB.PString ]
