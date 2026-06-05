@@ -177,6 +177,14 @@ consensus via the commutative CRDT join = uncertainty reduction) **and** `privat
 the dynamical stability over unbounded time** — that the balanced dynamics has the differentiated
 manifold as a *stable attractor* (Lyapunov-stable; no collapse, no fragmentation, ∀ time). That is the
 "don't collapse into eternity" claim, and it rides the same DST → TLA+ → prover ladder below + B-1019.
+**What "unbounded time" IS here = DBSP retractable immutable time (Aaron, 2026-06-05):** each evolution
+step creates a NEW `DynamicValue` at t+1 and **never destroys the last** — time is the immutable,
+append-only DBSP stream, with **retraction (−1) as correction-forward, not deletion**. This grounds
+"eternity" in the proven Z-set/DBSP core (not abstract wall-clock) and *adds resilience to the
+non-collapse argument*: a momentary collapse at some t cannot **erase** the differentiation recorded at
+earlier t — it persists in the immutable log and can be corrected forward by a −1 at t+1 — so the past
+gradient is never truly lost. (It also IS the self-evolving cell's step: `next = observe(self, obs)`
+*creates* the successor at t+1 rather than mutating `self`.)
 Thermodynamic resonance (Beacon *candidate*, NOT a claim): a non-equilibrium steady state held by two
 opposing flows — Prigogine dissipative structures; uncertainty reduction lowers entropy, NCI keeps a
 diversity floor.
