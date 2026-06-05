@@ -80,6 +80,21 @@ let ``Protobuf: double (fixed64) fields round-trip`` () =
         | Ok (DynamicValue.Object [ "d", DynamicValue.Float v2 ]) -> Assert.Equal(v, v2)
         | other -> failwithf "double round-trip failed: %A" other
 
+[<Fact>]
+let ``Protobuf: nested messages round-trip (recursive, multi-level)`` () =
+    let inner : PB.ProtoSchema = [ 10, "a", PB.PInt64; 11, "s", PB.PString ]
+    let mid : PB.ProtoSchema = [ 1, "id", PB.PInt64; 2, "inner", PB.PMessage inner ]
+    let outer : PB.ProtoSchema = [ 1, "tag", PB.PString; 2, "mid", PB.PMessage mid ]
+    let obj =
+        DynamicValue.Object
+            [ "tag", DynamicValue.String "root"
+              "mid", DynamicValue.Object
+                  [ "id", DynamicValue.Int 99L
+                    "inner", DynamicValue.Object [ "a", DynamicValue.Int 7L; "s", DynamicValue.String "deep" ] ] ]
+    match PB.toProto outer obj |> Result.bind (PB.fromProto outer) with
+    | Ok roundtripped -> Assert.Equal(obj, roundtripped)
+    | Error e -> failwith e
+
 // ── forward compatibility: an old reader skips fields it doesn't know ──
 
 [<Fact>]

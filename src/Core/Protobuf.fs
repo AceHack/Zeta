@@ -19,17 +19,18 @@ open System.Text
 [<RequireQualifiedAccess>]
 module Protobuf =
 
-    /// The proto scalar types supported.
+    /// The proto field types supported. Scalars + nested messages (recursive).
     type ProtoType =
         | PInt64
         | PBool
         | PString
         | PBytes
         | PDouble // wire type 1 (fixed64): 8-byte little-endian IEEE-754
+        | PMessage of ProtoSchema // wire type 2: a length-delimited nested sub-message
 
     /// A message schema: ordered (field-number, name, type). Field-numbers are the stable wire
     /// identity (names can be renamed via a migration; numbers must not be reused — proto's rule).
-    type ProtoSchema = (int * string * ProtoType) list
+    and ProtoSchema = (int * string * ProtoType) list
 
     // ── wire primitives (the hexagonal, vendored-replaceable surface) ──
     module Wire =
@@ -77,6 +78,7 @@ module Protobuf =
         | PBool -> 0 // varint
         | PString
         | PBytes -> 2 // length-delimited
+        | PMessage _ -> 2 // length-delimited (nested message)
         | PDouble -> 1 // fixed64
 
     let private fieldByNumber (schema: ProtoSchema) (n: int) =
@@ -87,7 +89,7 @@ module Protobuf =
 
     /// Encode a `DynamicValue.Object` to protobuf bytes under `schema`. Fields are emitted in
     /// schema (field-number) order — canonical. Object fields absent from the schema are skipped.
-    let toProto (schema: ProtoSchema) (value: DynamicValue) : Result<byte[], string> =
+    let rec toProto (schema: ProtoSchema) (value: DynamicValue) : Result<byte[], string> =
         match value with
         | DynamicValue.Object kvs ->
             let out = ResizeArray<byte>()
@@ -120,6 +122,13 @@ module Protobuf =
                         let buf = Array.zeroCreate<byte> 8
                         System.Buffers.Binary.BinaryPrimitives.WriteDoubleLittleEndian(System.Span<byte>(buf), f)
                         out.AddRange buf
+                    | PMessage sub, (DynamicValue.Object _) ->
+                        match toProto sub dv with
+                        | Ok subBytes ->
+                            Wire.writeVarint tag out
+                            Wire.writeVarint (uint64 subBytes.Length) out
+                            out.AddRange subBytes
+                        | Error e -> err <- Some(sprintf "nested message '%s': %s" name e)
                     | _ -> err <- Some(sprintf "field '%s' value does not match schema type" name)
             match err with
             | Some e -> Error e
@@ -129,7 +138,7 @@ module Protobuf =
     /// Decode protobuf bytes to a `DynamicValue.Object` under `schema`. Unknown field-numbers are
     /// SKIPPED (proto forward-compatibility — an old reader tolerates new fields). Total: a clean
     /// Error on a truncated/malformed stream, never an exception.
-    let fromProto (schema: ProtoSchema) (bytes: byte[]) : Result<DynamicValue, string> =
+    let rec fromProto (schema: ProtoSchema) (bytes: byte[]) : Result<DynamicValue, string> =
         let fields = ResizeArray<string * DynamicValue>()
         let mutable pos = 0
         let mutable err = None
@@ -161,6 +170,10 @@ module Protobuf =
                             (match fieldByNumber schema num with
                              | Some (name, PString) -> fields.Add(name, DynamicValue.String(Encoding.UTF8.GetString payload))
                              | Some (name, PBytes) -> fields.Add(name, DynamicValue.Bytes(System.Collections.Immutable.ImmutableArray.CreateRange payload))
+                             | Some (name, PMessage sub) ->
+                                 (match fromProto sub payload with
+                                  | Ok subObj -> fields.Add(name, subObj)
+                                  | Error e -> err <- Some(sprintf "nested message '%s': %s" name e))
                              | Some (name, _) -> err <- Some(sprintf "wire type 2 does not match schema for field %d" num)
                              | None -> ()) // unknown field → skip
                             pos <- p2 + len
