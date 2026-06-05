@@ -1,0 +1,21 @@
+{
+  "description": "TravelerFrame golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). A frame is a per-actor {actor: int64} map (the causal vector clock). transform(a,b) = pointwise MAX over the union of keys (the causal-join / LUB); dominates(a,b) = a ≥ b on every key of b (the semilattice order); converge = fold transform over a list of frames to the LUB (order-independent — the homeostat convergence).",
+  "transform": [
+    { "a": { "x": 3, "y": 1 }, "b": { "y": 5, "z": 2 }, "result": { "x": 3, "y": 5, "z": 2 } },
+    { "a": { "a": 1 }, "b": { "a": 1 }, "result": { "a": 1 } },
+    { "a": {}, "b": { "a": 2 }, "result": { "a": 2 } },
+    { "a": { "a": 4, "b": 1 }, "b": { "a": 2, "b": 7 }, "result": { "a": 4, "b": 7 } }
+  ],
+  "dominates": [
+    { "a": { "x": 3, "y": 5, "z": 2 }, "b": { "y": 5 }, "result": true },
+    { "a": { "x": 1 }, "b": { "x": 2 }, "result": false },
+    { "a": { "a": 3, "b": 2 }, "b": { "a": 3, "b": 2 }, "result": true },
+    { "a": {}, "b": { "a": 1 }, "result": false },
+    { "a": { "a": 5, "b": 5 }, "b": { "a": 5 }, "result": true }
+  ],
+  "converge": [
+    { "frames": [{ "a": 1 }, { "a": 3, "b": 2 }, { "b": 1, "c": 5 }], "lub": { "a": 3, "b": 2, "c": 5 } },
+    { "frames": [{ "a": 5 }], "lub": { "a": 5 } },
+    { "frames": [], "lub": {} }
+  ]
+}
