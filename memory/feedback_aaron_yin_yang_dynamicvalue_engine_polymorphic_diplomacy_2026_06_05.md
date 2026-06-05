@@ -46,6 +46,32 @@ The shipped cell is the interior; the **boundary in/out ports are the engine's n
 correction — an addition). NCI lives at the boundary: what crosses in/out is where coercion/revelation
 could happen; the interior stay/act is private (within the encryption budget).
 
+## Homoiconic + recursive (Aaron, 2026-06-05)
+
+The **action language can contain the staying language and vice versa** — they are **homoiconic**
+(code-as-data / data-as-code, the Lisp property): yang (the Bonsai action) can embed a yin value
+(`Const` holding a `DynamicValue`), and yin (a `DynamicValue`) can embed a yang (a serialized cell *is*
+a `DynamicValue`). **And recursive:** yin can contain yang can contain yin… unboundedly (ties to the
+recursive back-reference / Merkle-DAG structure). The shipped `YinYang.Cell` types already permit this
+mutual recursive nesting (a cell's `Remains` may itself be a serialized cell; a cell's `Acts` may carry a
+`DynamicValue` literal) — a demonstrating test is a clean next enhancement.
+
+## The two operating modes — the boundary toggle IS reflection vs action (Aaron, 2026-06-05)
+
+The same engine, two modes, distinguished only by whether the **in/out boundary** is connected:
+
+- **Boundary OFF — test runs in deterministic simulation that update the priors = SELF-REFLECTION.** The
+  act (Bonsai) runs internally over test/simulated data, updating the Bayesian priors (`SoftValue` /
+  `BeliefConvergence` / the B-1020 cell) — the agent thinks / dreams / learns *without acting on the
+  world*. Replayable, safe, private.
+- **Boundary ON — runs with real I/O hooked up = MOVING FORWARD.** The in/out ports connect to the real
+  world (searches, GitHub, other agents); the agent acts, with real consequences and real evolution.
+
+So **DST-with-prior-updates = self-reflection; real-I/O = moving forward.** (Training vs deployment;
+dreaming vs waking — same engine, boundary toggled.) This is exactly the DST discipline (#7): run the
+agent in pure simulation to reflect/learn safely *before* connecting real I/O to move forward; and NCI
+governs only the moving-forward mode (real interaction), never self-reflection (purely internal).
+
 ## What it unlocks — polymorphic diplomacy (the agent handshake)
 
 The yin-yang engine becomes the **universal handshake / common language** by which agents **describe,
