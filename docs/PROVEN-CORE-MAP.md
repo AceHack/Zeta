@@ -237,6 +237,15 @@ derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. D
   wrapping uint64). The seed stays tiny by having each oracle deterministically regenerate the byte
   stream (`byte[i] = mix(i) & 0xFF`) and cross-verifying the chunk-length sequence; a 200000-byte stream
   exercises genuine content-defined cuts (variable lengths, not only max-forced). (`FastCdc.CrossVerify.Tests`)
+- **BFT quorum consensus (decision core)** — `src/Core/Consensus.fs` (`quorumThreshold` / `decide`):
+  the classic 2f+1 quorum (`quorumThreshold(n) = 2⌊(n-1)/3⌋+1`) and the vote tally (group by value,
+  stable-sort by descending count preserving first-occurrence, commit the top iff support reaches the
+  threshold). math (quorum N=4→3 / N=7→5, empty rejects, unanimous commits; existing Consensus suite) +
+  4-lang (F#+C#+TS+Rust: `Core.CSharp/Consensus.cs`, `Core.TypeScript/consensus/`, `Core.Rust.Consensus`
+  — pure integer). **Honest scope:** only the decision core is byte-locked; the vote state machine
+  (`transition`) carries `DateTimeOffset` timestamps and is out of clean byte-lock scope. The tie-break
+  (first-occurrence on equal counts) is locked via a deliberate `["b","a","a","b"]` vector across all four
+  stable sorts. (`Consensus.CrossVerify.Tests`)
 
 **Adinkra / holographic chain — COMPLETE to the published correspondence** (Lean, sorry-free, axiom-audited):
 
