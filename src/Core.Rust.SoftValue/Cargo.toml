@@ -1,0 +1,18 @@
+[package]
+name = "zeta-core-soft-value"
+version = "0.1.0"
+edition = "2024"
+description = "SoftValue -- the 'how-sure' value axis (DECISION semantics). Rust parity oracle (#4 of TS/F#/C#/Rust). Grown from the shared seed src/Core.TypeScript/soft-value/golden-vectors.json (seed-first): resolve = argmax candidate returned iff confidence >= rational threshold; observe_resolve = Bayesian multiply then decide. Exact i64 weights; the float confidence/entropy values are F#-only (floats do not byte-lock). Zero-dependency production core; serde_json is DEV-ONLY for the cross-verify fixture parse."
+license = "Apache-2.0"
+publish = false
+
+# Production default = ZERO external dependencies (supply-chain doctrine).
+[dependencies]
+
+# serde_json is DEV-ONLY: the cross-verify test reads the shared golden-vectors.json fixture.
+[dev-dependencies]
+serde_json = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"

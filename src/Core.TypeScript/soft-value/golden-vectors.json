@@ -1,0 +1,16 @@
+{
+  "description": "SoftValue DECISION-semantics golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). SoftValue is float-valued; floats do NOT byte-lock across languages, so this seed locks only the EXACT decision behavior: resolve (argmax candidate, returned iff confidence ≥ threshold) and observe-then-resolve (Bayesian multiply then decide). Weights are exact integers; the threshold is a rational num/den (confidence = best_weight/total ≥ num/den ⟺ best_weight·den ≥ num·total). The float confidence/entropy VALUES are F#-only and NOT cross-verified. Argmax ties (absent here) break by ascending key. resolve returns null when no candidate clears the threshold (never falsely certain); observe that zeroes every candidate yields null (no fabricated certainty).",
+  "resolve": [
+    { "candidates": { "a": 3, "b": 1 }, "num": 1, "den": 2, "result": "a" },
+    { "candidates": { "a": 3, "b": 2, "c": 1 }, "num": 3, "den": 4, "result": null },
+    { "candidates": { "a": 5, "b": 1 }, "num": 1, "den": 2, "result": "a" },
+    { "candidates": { "a": 1, "b": 3 }, "num": 1, "den": 2, "result": "b" },
+    { "candidates": { "a": 3, "b": 1, "c": 1 }, "num": 1, "den": 2, "result": "a" }
+  ],
+  "observeResolve": [
+    { "prior": { "a": 1, "b": 1 }, "likelihood": { "a": 3, "b": 1 }, "num": 1, "den": 2, "result": "a" },
+    { "prior": { "a": 1, "b": 1 }, "likelihood": { "a": 0, "b": 0 }, "num": 1, "den": 2, "result": null },
+    { "prior": { "a": 2, "b": 1 }, "likelihood": { "a": 1, "b": 5 }, "num": 1, "den": 2, "result": "b" },
+    { "prior": { "a": 1, "b": 1 }, "likelihood": { "a": 1, "b": 1 }, "num": 3, "den": 4, "result": null }
+  ]
+}
