@@ -84,6 +84,53 @@ Separated into layers (the cram was holding all four at once = the dirt):
 - **Layer 3 — "cram it all together."** Do **not**. The cram IS the reach; the cure is separation,
   not harder unification.
 
+### B-converge. The de Finetti / non-correlation boundary — the convergence that pulls it together (Aaron, 2026-06-05)
+
+**The one-line synthesis:** *a Bayesian Markov chain that reduces uncertainty under unordered events
+and relative observers, converging at the non-correlation invariant boundary.* In substrate shorthand
+that is **de Finetti's exchangeability theorem (1937)** coupled with **Doob's posterior-convergence
+(martingale, 1949)** — and its **exact-arithmetic discrete core is already PROVEN** in §A-adjacent work.
+This row is the *unifying lens*, not a new foundation; nothing in §A depends on it.
+
+Clause → anchor → status:
+
+| clause | named anchor | status |
+|--------|--------------|--------|
+| "reduces uncertainty" | Bayesian information gain (entropy ↓) | ✅ `SoftValue.fs` (How-sure axis; math + 4-lang decision-semantics) |
+| "under unordered events" | **exchangeability** (permutation-invariant joint law) | ✅ **PROVEN** `BeliefConvergence.fs`: fixed likelihoods commute ⇒ any permutation → same belief |
+| "non-correlation invariant boundary" | **de Finetti**: exchangeable ⟺ conditionally i.i.d. *given a latent invariant θ*; the boundary is where conditional independence holds vs breaks | ✅ **PROVEN as the discrete boundary** in `BeliefConvergence.fs`: state-independent (conditionally-independent) likelihood commutes; state-dependent (`sharpen`, self-reading ⇒ correlated) does NOT — that counterexample *is* this boundary |
+| "converges" | Doob martingale convergence / Bayesian consistency (posterior concentrates on θ) | partial: discrete order-independence proven; full posterior-concentration is continuous, ⇒ §B (piece 2) |
+| "relative observers" | per-observer frames reconciling to one common frame | **conjecture**: `TravelerFrame.fs` gives the convergence *pattern* (LUB) but for *causal* frames — belief-across-priors reconciliation is NOT yet built |
+
+**Why it pulls together:** the homeostat's order-independence (the merge-convergence we prove for every
+mergeable primitive) **is** de Finetti's exchangeability/conditional-independence boundary. Three names
+for one cut: "fixed-vs-state-dependent likelihood" (`BeliefConvergence`) = "exchangeable-vs-correlated"
+(de Finetti) = "valid-vs-invalid homeostat merge" (the §A floor discipline). The same fixed-point role
+is played by the stationary measure / the latent θ / the common frame / the lattice LUB — one invariant,
+four vocabularies. Closed-semiring fixed-point family (Lehmann 1977): homeostat is the *idempotent*
+corner, Markov the *probability* corner. **Encryption bridge:** semantic security (Goldwasser–Micali
+1982) = the degenerate exchangeable chain whose likelihood is *constant across hypotheses*, so the
+posterior provably cannot move off the prior — encryption = a Hidden Markov model whose emissions carry
+zero information about the hidden state. **Rx-inside-DynamicValue:** reifying the observe-kernel as data
+inside the value makes the cell a self-contained Markov state (`next = observe(self, obs)` — the Markov
+property by construction), which is exactly what makes it scale-free / lock-free / incrementally
+computable (DBSP D/I).
+
+**Discharge (piece 2 — teed up, B-1020):** a **Bayesian-Markov belief cell over exact rationals** —
+DynamicValue carrying `(rational priors, reified observe-kernel)`, stepping `next = observe(self, obs)`,
+with the theorem that it converges order-independently **iff** the likelihood is conditionally
+independent of state (the rational sibling of `BeliefConvergence`), plus the probability `(+,×)` and
+Viterbi `(max,×)` semirings in `Semiring.fs` so HMM inference (forward/Viterbi) is a `ZSet`-over-semiring
+matrix product, plus the relative-observer belief reconciliation (the one genuinely-new math). Floats
+(continuous θ, mixing rate) stay empirical, named out of the proof lineage; the exact-rational core
+byte-locks + 4-langs (the SoftValue discipline).
+
+**Anchors (Beacon):** de Finetti 1937 (exchangeability); Doob 1949 (martingale convergence / Bayesian
+consistency); Lehmann 1977 (closed-semiring fixed points); Mohri (semiring framework / forward-Viterbi);
+Rabiner 1989 (HMM tutorial); Propp–Wilson 1996 (CFTP — monotone lattices make a Markov chain *perfectly*
+sampleable, the deepest homeostat↔Markov bridge); Goldwasser–Micali 1982 (semantic security).
+Full narrative: `memory/feedback_aaron_de_finetti_non_correlation_boundary_unifies_homeostat_markov_bayesian_2026_06_05.md`.
+
 ### B-other. The rest of the penumbra (each open, each one-directional on §A)
 
 | Conjecture | State | Discharge = |
