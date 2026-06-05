@@ -22,6 +22,7 @@
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
     <Compile Include="ProbabilitySemiring.fs" />
+    <Compile Include="ReflectionEngine.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="GSet.fs" />
     <Compile Include="Bag.fs" />

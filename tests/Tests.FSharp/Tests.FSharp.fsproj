@@ -41,6 +41,7 @@
     <Compile Include="ProbabilitySemiring.CrossVerify.Tests.fs" />
     <Compile Include="YinYang.Tests.fs" />
     <Compile Include="YinYang.Homoiconic.Tests.fs" />
+    <Compile Include="ReflectionEngine.Tests.fs" />
     <Compile Include="TriBoolean/TriBoolean.Tests.fs" />
     <Compile Include="TriBoolean/Float.Tests.fs" />
     <Compile Include="Bonsai/Bonsai.Tests.fs" />
