@@ -169,14 +169,20 @@ generated from F#, after correcting for .NET's XXH128 canonical big-endian outpu
 
 **Traveler self-frame over DBSP — Layer 0 COMPLETE** (the relativistic relative-frame, three distinct objects):
 
-- **Consistency / merge** — `src/Core/TravelerFrame.fs`: the causal-join of two travelers' vector clocks is a
-  bounded join-semilattice ⇒ order-independent ⇒ all travelers reach ONE common frame. (`TravelerFrame.Tests`)
+- **Consistency / merge — ✅ FULL PROVEN (all six legs)** — `src/Core/TravelerFrame.fs`: the causal-join of
+  two travelers' vector clocks is a bounded join-semilattice ⇒ order-independent ⇒ all travelers reach ONE
+  common frame. math + 4-lang (F#+C#+TS+Rust: `Core.CSharp/TravelerFrame.cs`, `Core.TypeScript/traveler-frame/`,
+  `Core.Rust.TravelerFrame`) + 4-ser + Arrow + homeostat (SEMILATTICE class — convergence-to-LUB, 4-lang) +
+  Bonsai. (`TravelerFrame.Tests` / `.Legs.Tests` / `.CrossVerify.Tests`)
 - **Clock-with-uncertainty** — `src/Core/UncertainClock.fs`: CockroachDB HLC + uncertainty window; a *partial*
   temporal order (definitelyBefore is a strict partial order; the overlap zone is honestly uncertain — the
-  SoftValue tie; ε=0 collapses to exact). (`UncertainClock.Tests`)
-- **Group law** — `src/Core/FrameDelta.fs`: frame-offsets form an abelian group (identity/assoc/comm/inverse)
-  acting on frames by translation — the boost analog, distinct from the merge. Honest scope: abelian
-  *translation* group, not the full non-abelian Lorentz group. (`FrameDelta.Tests`)
+  SoftValue tie; ε=0 collapses to exact). (`UncertainClock.Tests` — math leg)
+- **Group law — ✅ FULL PROVEN (all six legs)** — `src/Core/FrameDelta.fs`: frame-offsets form an abelian group
+  (identity/assoc/comm/inverse) acting on frames by translation — the boost analog, distinct from the merge.
+  Honest scope: abelian *translation* group, not the full non-abelian Lorentz group. math + 4-lang
+  (`Core.CSharp/FrameDelta.cs`, `Core.TypeScript/frame-delta/`, `Core.Rust.FrameDelta`) + 4-ser + Arrow +
+  homeostat (MONOID class — order-independent aggregation, 4-lang) + Bonsai. (`FrameDelta.Tests` /
+  `.Legs.Tests` / `.CrossVerify.Tests`)
 - **Range metric** — `FrameDelta.distance`: the vector-clock L1 metric (non-neg, zero-iff-coincide [Leibniz],
   symmetric, triangle) — the "Range" measurement axis.
 - Action grid (Layer 2) — `src/Core/ActionGrid.fs`: the 4×4 universal action grammar; navigation is a pure
@@ -184,8 +190,14 @@ generated from F#, after correcting for .NET's XXH128 canonical big-endian outpu
 
 **Measurement axes** (the 6+2 hypothesis — four built; completeness is the open obligation):
 When = `Clock` · How-sure = `src/Core/SoftValue.fs` · Rate/curvature = `src/Core/Curve.fs` (DBSP D/I over
-the clock; D∘I=I∘D=id) · Range = `FrameDelta.distance`. Directional axes (Bearing/Where-looking) deliberately
-NOT built — no honest anchor in a causal frame.
+the clock; D∘I=I∘D=id; math + 4-lang + 4-ser + Arrow — its honest CEILING: Bonsai/homeostat are N/A for a
+derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. Directional axes
+(Bearing/Where-looking) deliberately NOT built — no honest anchor in a causal frame.
+
+> **New-layer FULL-PROVEN primitives (2026-06-05):** `TravelerFrame` (merge / semilattice) and `FrameDelta`
+> (transformation / group) each clear all six legs — the first post-floor primitives at floor-grade rigor,
+> each using the homeostat class that honestly fits its algebra (convergence vs aggregation). `Curve` tops
+> out at four legs (Bonsai/homeostat N/A by kind). The six-leg bar is a bar for *mergeable* primitives.
 
 **Adinkra / holographic chain — COMPLETE to the published correspondence** (Lean, sorry-free, axiom-audited):
 
