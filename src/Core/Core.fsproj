@@ -13,6 +13,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Algebra.fs" />
+    <Compile Include="Predicate.fs" />
     <Compile Include="CayleyDickson.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
@@ -29,6 +30,8 @@
     <Compile Include="ByteCost.fs" />
     <Compile Include="Clock.fs" />
     <Compile Include="DynamicValue.fs" />
+    <Compile Include="DynamicValueFold.fs" />
+    <Compile Include="DynamicValueXmlPolicy.fs" />
     <Compile Include="Circuit.fs" />
     <Compile Include="PluginApi.fs" />
     <Compile Include="PluginHarness.fs" />
