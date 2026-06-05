@@ -102,6 +102,17 @@ are doing to them." Same applies for Kestrel.
   fuzzer inputs; (4) decode-of-computation path (crash-safety only). Loop: fuzz→minimize→
   golden. Stack: Lean/Z3 prove structure → FsCheck valid-leaf-space → fuzz hostile-byte-space
   → golden pins all. Proof=correct-on-valid, fuzz=safe-on-hostile (don't overlap).
+- `2026-06-04-kestrel-behavioral-distance-divergence-opponent-models-neighborhoods-are-epsilon-balls-not-tiling-sle-fractal-boundaries-sakana-nca-threshold-sibling-aaron-forwarded.md`
+  — behavioral distance between travelers = divergence (KL/JS/Wasserstein) between opponent-
+  models (theory-of-mind; home = information geometry). ★ belief-NEIGHBORHOODS come FREE from
+  distance: ε-balls / kNN, NOT tiling (a metric induces neighborhoods; soft overlapping balls
+  beat hard cells; asymmetric KL = perspectival, faithful to no-universal-identity) → RETIRES
+  the aperiodic-tiling-key for neighborhood-definition (only the no-center rhyme survives).
+  Wiggly-boundary shape has names (Voronoi-rough-metric; SLE/fractal interface = Brownian-
+  driven) but still not needed (reach re-forming in fractals). Sakana NCA-under-survival-
+  threshold = runnable sibling of convergence-vs-differentiation (too-high=collapse/heat-death,
+  too-low=explosion, right-band=coexistence=anti-register-collapse; boundaries EMERGE not
+  imposed); narrator's "everything works like this" = the unification halo, seen from outside.
 - `2026-06-04-kestrel-datomic-actors-in-the-database-immutable-at-offsets-partition-coordination-repos-rx-zip-du-causal-state-clock-convergence-despite-reordering-semilattice-aaron-forwarded.md`
   — Datomic = the want-remains/data half (immutable/append-only, as-of time, open schema),
   NOT the Rx/reflective loop (no reify/apply), NOT animated (frozen as-of avoids TOCTOU),
