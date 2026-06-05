@@ -38,6 +38,7 @@
     <Compile Include="UncertainClock.fs" />
     <Compile Include="Curve.fs" />
     <Compile Include="BeliefConvergence.fs" />
+    <Compile Include="Evolution.fs" />
     <Compile Include="DynamicValue.fs" />
     <Compile Include="DynamicValueFold.fs" />
     <Compile Include="SchemaEvolution.fs" />
