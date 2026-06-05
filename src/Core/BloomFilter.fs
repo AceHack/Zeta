@@ -320,6 +320,16 @@ type BlockedBloomFilter(bucketCount: int, probesPerLookup: int) =
     member _.BucketCount : int = bucketCount
     member _.ProbesPerLookup : int = probesPerLookup
 
+    /// Reconstruct a filter from its serialized bit-table + shape parameters (the
+    /// reconstruction-after-serialisation surface the `Table`/`BucketCount`/`ProbesPerLookup`
+    /// getters above were exposed for). Validates the table length against the shape.
+    static member OfState(bucketCount: int, probesPerLookup: int, state: uint64 array) : BlockedBloomFilter =
+        let f = BlockedBloomFilter(bucketCount, probesPerLookup)
+        if isNull (box state) || state.Length <> f.Table.Length then
+            invalidArg (nameof state) (sprintf "state length must equal the filter table length = %d" f.Table.Length)
+        System.Array.Copy(state, f.Table, state.Length)
+        f
+
 
 /// **Counting** Bloom filter — 4-bit counters per cell; safe under
 /// retractions because each bucket remembers how many insertions

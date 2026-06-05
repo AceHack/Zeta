@@ -158,6 +158,20 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
 
     member internal _.Table = table
 
+    /// A copy of the raw counter table (row-major `depth * width`), for serialization.
+    /// Pairs with `OfState` to round-trip the sketch through a value-tree serializer.
+    member _.Snapshot() : int64[] = Array.copy table
+
+    /// Reconstruct a sketch from its serialized state (the inverse of `Snapshot` plus the
+    /// `depth`/`width`/`seed` parameters). Validates the table shape. This is the
+    /// reconstruction-after-serialisation surface the serializer legs need.
+    static member OfState(depth: int, width: int, seed: int64, state: int64[]) : CountMinSketch =
+        if isNull (box state) || state.Length <> depth * width then
+            invalidArg (nameof state) (sprintf "state length must equal depth*width = %d" (depth * width))
+        let c = CountMinSketch(depth, width, seed)
+        Array.blit state 0 c.Table 0 state.Length
+        c
+
 
 [<RequireQualifiedAccess>]
 [<CompilationRepresentation(CompilationRepresentationFlags.ModuleSuffix)>]

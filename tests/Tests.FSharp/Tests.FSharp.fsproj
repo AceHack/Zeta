@@ -64,6 +64,7 @@
     <Compile Include="Predicate3.Tests.fs" />
     <Compile Include="Metric.Homeostat.Tests.fs" />
     <Compile Include="Metric.MagnitudeBounds.Tests.fs" />
+    <Compile Include="Metric.Serializer.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
