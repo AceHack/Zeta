@@ -94,7 +94,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | # | Primitive | Where | math | 4-lang | 4-ser | Bonsai | Arrow | homeostat | Verdict |
 |---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
 | 1 | **Clock / causal order** (Versionstamp) | `src/Core/Clock.fs` + `Core.{TypeScript,CSharp,Rust}.Clock` | ✓ | ✓ | ✓ (ddac32e9) | ✓ (ddac32e9, max reified) | ✓ (ddac32e9) | ✓ (ddac32e9, max-convergence) | ✅ **FULL PROVEN** — 2nd floor primitive (legs in `Clock.FullVertical.Tests.fs`; Versionstamp=int64 logical clock, merge=max=join) |
-| 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | partial | ✗ | ✗ | ✗ | **math + 4-lang** (V1 cell); rolling-monadic encoding + UoM-per-type + per-version/category cells open |
+| 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | ✓ (Identity.FullVertical) | ✓ (Identity.FullVertical, resolve reified) | ✓ (Identity.FullVertical) | ✓ (Identity.FullVertical, injectivity + idempotent dedup) | ✅ **FULL PROVEN** (local-handle layer) — 4th floor primitive (legs in `Identity.FullVertical.Tests.fs`; bridge = Object-of-decoded-fields; homeostat = identity-dedup, tied to G-Set). Perspectival belief-map layer = research, NOT in scope |
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` + `src/Core.CSharp.Merkle` | ✓ (structural tamper-evidence; crypto premise named) | partial (F#+C# byte-locked, `Merkle.FullVertical`; Rust + pure-TS XXH128 remain) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, combine reified) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, anti-entropy: verify + minimal-delta) | **5.5 of 6 legs** — math + 4-ser + Bonsai + Arrow + homeostat + 2/4 langs (`Merkle.FullVertical.Tests.fs`); ONLY Rust + pure-TS XXH128 ports remain for FULL PROVEN |
 | 4 | **CRDT merge + idempotency** (G-Set) | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB) | ✓ (G-Set 4/4) | ✓ (29c1ffe4) | ✓ (658c8e24, reify/apply) | ✓ (51d2937c) | ✓ (658c8e24, convergence-to-LUB) | ✅ **FULL PROVEN** — the FIRST floor primitive to clear the full bar (all G-Set legs in `tests/Tests.FSharp/GSet.FourSer.Tests.fs`) |
 | 5 | **Serialization seed** (ByteCost) | `src/Core/ByteCost.fs` + `Core.{TypeScript,CSharp,Rust}.ByteCost` | ✓ (commutative-monoid laws; Z3+FsCheck) | ✓ (golden-vectors byte-lock) | ✓ (SerializationSeed.FullVertical) | ✓ (SerializationSeed.FullVertical, add reified) | ✓ (SerializationSeed.FullVertical) | ✓ (SerializationSeed.FullVertical, order-independent aggregation) | ✅ **FULL PROVEN** — 3rd floor primitive (legs in `SerializationSeed.FullVertical.Tests.fs`; commutative MONOID not semilattice — homeostat-tie = path-independent aggregate, not idempotent LUB) |
@@ -107,7 +107,12 @@ merge=union, Clock merge=max; the reusable `_Support/SerializerLegs.fs` helper b
 the 4-ser+Arrow legs). **Serialization-seed (ByteCost) is the THIRD** (2026-06-04,
 `SerializationSeed.FullVertical.Tests.fs` — a commutative MONOID, not a semilattice:
 its homeostat-tie is order-independent AGGREGATION (path-independent fileset total),
-explicitly NOT idempotent LUB). **3 of 6 floor primitives now FULL PROVEN.** The pattern is the
+explicitly NOT idempotent LUB). **Identity (local-handle layer) is the FOURTH** (2026-06-04,
+`Identity.FullVertical.Tests.fs` — ZetaId as the absolute injective proven-base handle;
+bridge = Object-of-decoded-fields; homeostat-tie = IDENTITY-DEDUP, a fourth class:
+injectivity/no-bad-collapse + idempotent dedup, tied to the proven G-Set; the perspectival
+belief-map / ε-ball-neighborhood layer is research and explicitly OUT of scope).
+**4 of 6 floor primitives now FULL PROVEN.** The pattern is the
 **template** the other 4 follow (each: bridge the primitive's value/operation to DynamicValue → 4-ser
 round-trip + Arrow round-trip + reify-the-operation-as-Bonsai + homeostat-convergence).
 **Merkle (2026-06-04, `Merkle.FullVertical.Tests.fs`) clears 5 of those 6 legs** and is
@@ -123,11 +128,14 @@ commutative MONOID (`add` is associative + commutative with `Zero` identity but 
 idempotent — re-adding double-counts), so its homeostat-tie is **order-independent
 aggregation** (the fileset total is path-independent — the DORA-aggregate soundness),
 distinct from both idempotent LUB-convergence (G-Set/Clock) and integrity-verification
-(Merkle). All three homeostat-tie classes are now worked end-to-end:
+(Merkle). **Identity (local-handle, 2026-06-04) adds the FOURTH operation class:**
+IDENTITY-DEDUP — injectivity/no-bad-collapse (distinct observations pack to distinct
+keys; a bijection, so two distinct personas never silently merge) + idempotent dedup
+(re-observing the same identity is a no-op, a G-Set of packed keys — the GOOD collapse).
+All four homeostat-tie classes are now worked end-to-end:
 semilattice→converge-to-LUB · integrity→verify-the-converged-state ·
-monoid→order-independent-aggregate.
-The other 3 are NOT yet full: **identity has math ∧ 4-lang**
-(needs 4-ser/Arrow/Bonsai/homeostat); **Merkle now has 5.5 of 6 legs** (math + 4-ser +
+monoid→order-independent-aggregate · identity→dedup (injective + idempotent).
+The other 2 are NOT yet full: **Merkle now has 5.5 of 6 legs** (math + 4-ser +
 Bonsai + Arrow + homeostat + F#↔C# byte-lock in `Merkle.FullVertical.Tests.fs`,
 2026-06-04 — `src/Core.CSharp.Merkle` shares `System.IO.Hashing.XxHash128` + the LE Hi/Lo
 combine layout, so roots are byte-identical; only the **Rust + pure-TS XXH128** ports
