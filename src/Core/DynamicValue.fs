@@ -734,6 +734,10 @@ module DynamicValue =
     /// int64 precision is preserved by parsing the number token as text,
     /// never via a float. Surfaced as data via `Result`, never thrown. Mirrors the TS/C#/Rust decoder.
     let fromCanonicalJson (json: string) : Result<DynamicValue, DecodeError> =
+        // Totality (B-1018): a null input is not an exception — treat it as empty (no value),
+        // which takes the clean-Error path. The decoder returns Result on EVERY input.
+        // (`System.Object.ReferenceEquals` — the module-local `isNull` is DynamicValue→bool.)
+        let json = if System.Object.ReferenceEquals(json, null) then "" else json
         let mutable pos = 0
         let len = json.Length
 
@@ -1086,6 +1090,10 @@ module DynamicValue =
     /// insignificant whitespace, leading zeros) as `DecodeError.NonCanonical`. Surfaced as
     /// data via `Result`, never thrown. Mirrors the TS decoder.
     let fromCanonicalXml (xml: string) : Result<DynamicValue, DecodeError> =
+        // Totality (B-1018): a null input is not an exception — treat it as empty (no value),
+        // which takes the clean-Error path. The decoder returns Result on EVERY input.
+        // (`System.Object.ReferenceEquals` — the module-local `isNull` is DynamicValue→bool.)
+        let xml = if System.Object.ReferenceEquals(xml, null) then "" else xml
         let mutable pos = 0
         let len = xml.Length
 
