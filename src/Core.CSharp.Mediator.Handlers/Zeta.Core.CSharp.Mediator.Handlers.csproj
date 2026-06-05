@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Zeta.Mediator.Handlers</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.Mediator.Handlers</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Real business handlers wired through the hexagonal Zeta.Mediator port. Each handler is a thin
+       CQRS shell over proven Core logic — the mediator carries the request, Core does the work. The
+       first one is the B-1016 context-cost meter (a genuine operational concern: cold-start token
+       minimization). Identity / schema / agent-bus handlers follow the same shape. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Core.CSharp.Mediator\Zeta.Core.CSharp.Mediator.csproj" />
+    <ProjectReference Include="..\Core.CSharp.ByteCost\Zeta.Core.CSharp.ByteCost.csproj" />
+  </ItemGroup>
+
+</Project>

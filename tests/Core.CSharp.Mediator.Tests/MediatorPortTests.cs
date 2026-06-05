@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Zeta.Mediator;
+using Zeta.Mediator.Handlers;
 using Zeta.Tests.FSharp.MediatorFixtures;
 
 // Configure the source generator (the one package-coupled surface, isolated to this edge assembly).
@@ -109,5 +110,17 @@ public sealed class MediatorPortTests
         var mediator = provider.GetRequiredService<IMediator>();
         var response = await mediator.Send(new FSharpPing("ada"));
         Assert.Equal("fsharp-pong:ada", response);
+    }
+
+    [Fact]
+    public async Task RealBusinessHandlerMeasuresContextCostThroughTheMediator()
+    {
+        // A real production handler (src/Core.CSharp.Mediator.Handlers) delegating to proven ByteCost Core.
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        const string surface = "the quick brown fox";
+        var bytes = await mediator.Send(new MeasureContextCostQuery(surface));
+        Assert.Equal(Zeta.Core.CSharp.ByteCost.MeasureText(surface).Bytes, bytes);
+        Assert.True(bytes > 0);
     }
 }

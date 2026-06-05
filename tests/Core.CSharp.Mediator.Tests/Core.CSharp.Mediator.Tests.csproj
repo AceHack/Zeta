@@ -17,6 +17,8 @@
        HERE, proving it discovers handlers that implement our inheriting interfaces. -->
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core.CSharp.Mediator\Zeta.Core.CSharp.Mediator.csproj" />
+    <!-- Real business handlers (production) — proven to dispatch through the mediator here. -->
+    <ProjectReference Include="..\..\src\Core.CSharp.Mediator.Handlers\Zeta.Core.CSharp.Mediator.Handlers.csproj" />
     <!-- F# assembly with a handler authored against the Zeta port — to check cross-language discovery. -->
     <ProjectReference Include="..\Core.FSharp.Mediator.Fixtures\Zeta.Tests.FSharp.MediatorFixtures.fsproj" />
   </ItemGroup>
