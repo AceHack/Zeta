@@ -129,6 +129,16 @@ Cause→effect: non-coercion (the input doesn't command) ⇐ non-correlation (it
 correlation) ⇒ non-corrosion (the merge doesn't degrade). The NCI boundary is the place where an
 observation stops smuggling hidden coercion/correlation into the merge.
 
+**What the NCI says, operationally (Aaron, 2026-06-05):** *do not force another traveler to reveal
+hidden / encrypted state within their **encryption budget**.* Coercion = forcing state revelation; the
+**encryption budget** is the resource bound — semantic security is privacy against a *bounded*
+adversary, so the budget is how much hidden state a traveler can afford to keep hidden. Within budget,
+the emission (ciphertext) leaks nothing (the zero-information-emission HMM above) and no observer may
+coerce decryption. This makes NCI the convergence-layer statement of **privacy-from-identity** (§B-other,
+necessity + dynamics PROVEN) and **consent-first** (manifesto #6): a merge that respects every
+traveler's encrypted private state up to its budget is exactly a non-coercive (order-independent,
+conditionally-independent) merge.
+
 **Why it pulls together:** the homeostat's order-independence (the merge-convergence we prove for every
 mergeable primitive) **is** the NCI boundary. Four names for one cut: "non-coercive-vs-coercive
 observation" (the name / no-directives) = "fixed-vs-state-dependent likelihood" (`BeliefConvergence`) =
