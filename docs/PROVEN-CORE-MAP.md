@@ -161,6 +161,57 @@ generated from F#, after correcting for .NET's XXH128 canonical big-endian outpu
 (`Hi/Lo = swap` of `xxh3_128`'s halves). The **4-lang column is sourced from `PRIMITIVE-REGISTRY.md`**
 (the consensus authority); this map adds the math + remaining legs.
 
+## Beyond the floor — landed 2026-06-05 (proven primitives built ON the floor)
+
+> With the 6/6 floor complete, a second layer landed in one push. Full per-item detail (with the §A
+> frozen-core ↔ §B conjecture-register split) lives in
+> [`FROZEN-CORE-AND-CONJECTURE-REGISTER.md`](FROZEN-CORE-AND-CONJECTURE-REGISTER.md); this is the map index.
+
+**Traveler self-frame over DBSP — Layer 0 COMPLETE** (the relativistic relative-frame, three distinct objects):
+- **Consistency / merge** — `src/Core/TravelerFrame.fs`: the causal-join of two travelers' vector clocks is a
+  bounded join-semilattice ⇒ order-independent ⇒ all travelers reach ONE common frame. (`TravelerFrame.Tests`)
+- **Clock-with-uncertainty** — `src/Core/UncertainClock.fs`: CockroachDB HLC + uncertainty window; a *partial*
+  temporal order (definitelyBefore is a strict partial order; the overlap zone is honestly uncertain — the
+  SoftValue tie; ε=0 collapses to exact). (`UncertainClock.Tests`)
+- **Group law** — `src/Core/FrameDelta.fs`: frame-offsets form an abelian group (identity/assoc/comm/inverse)
+  acting on frames by translation — the boost analog, distinct from the merge. Honest scope: abelian
+  *translation* group, not the full non-abelian Lorentz group. (`FrameDelta.Tests`)
+- **Range metric** — `FrameDelta.distance`: the vector-clock L1 metric (non-neg, zero-iff-coincide [Leibniz],
+  symmetric, triangle) — the "Range" measurement axis.
+- Action grid (Layer 2) — `src/Core/ActionGrid.fs`: the 4×4 universal action grammar; navigation is a pure
+  function of position, never of labels (proven via a discriminating predicate + negative control).
+
+**Measurement axes** (the 6+2 hypothesis — four built; completeness is the open obligation):
+When = `Clock` · How-sure = `src/Core/SoftValue.fs` · Rate/curvature = `src/Core/Curve.fs` (DBSP D/I over
+the clock; D∘I=I∘D=id) · Range = `FrameDelta.distance`. Directional axes (Bearing/Where-looking) deliberately
+NOT built — no honest anchor in a causal frame.
+
+**Adinkra / holographic chain — COMPLETE to the published correspondence** (Lean, sorry-free, axiom-audited):
+- `tools/lean4/ImaginaryStack/ToyModel.lean` — bulk-from-boundary reconstruction for a graph-code.
+- `tools/lean4/ImaginaryStack/ErasureDistance.lean` — distance ⇒ any-`<d`-erasure correctable; a concrete
+  Reed-Solomon `[16,12]` MDS code proven distance-5 / corrects-any-4-erasures.
+- `src/Core/AdinkraCode.fs` — the genuine Adinkra generator IDENTIFIED: the `[8,4]` extended Hamming code,
+  proven doubly-even (Gates/Iga correspondence). Open: the Cayley-Dickson→this-generator derivation (Vera's).
+
+**Privacy from identity — COMPLETE to the provable limit** (Lean, axiom-FREE):
+`tools/lean4/Privacy/IdentityForcesPrivacy.lean` — necessity (`distinctness_forces_private`: under public
+convergence, distinct behavior ⇒ distinct private; Leibniz) + dynamics (`commons_converges`,
+`private_is_persistent_locus`: consensus can't erase private differentiation). Halting experiment:
+`src/Core/Evolution.fs` (B-1019) — the pigeonhole bound PROVEN (finite+deterministic+no-input ⇒ halt-or-cycle,
+so growth requires the differentiation engine) + the differentiation-evolves / collapse-halts DST harness.
+Open (honest): the universal "halts without privacy" claim is empirical, not a theorem.
+
+**Belief convergence — GENERAL case** — `src/Core/BeliefConvergence.fs`: Bayesian observe (pointwise-multiply
+fixed likelihoods) commutes ⇒ order-independent convergence for ANY fixed likelihoods (independence was
+sufficient, not the condition); boundary = state-dependent/nonlinear revision (counterexample). Generalizes
+the SoftValue independent-evidence proof.
+
+**Mediator subsystem** (hexagonal, source-gen, swappable, polyglot) — `src/Core.CSharp.Mediator` (the
+`Zeta.Mediator.*` port over martinothamar/Mediator: Unit + Request/Command/Query/Stream/Notification/Pipeline
++ adapter + DI) · `src/Core.FSharp.Mediator` (F# `unit`↔`Zeta.Unit` bridge) · `src/Core.CSharp.Mediator.Handlers`
+(four real handlers over proven Core: context-cost query, Merkle root, cost-curve trend, agent-bus notification).
+Proven via `tests/Core.CSharp.Mediator.Tests` incl. cross-language F# handler discovery.
+
 ## Identity / keys — ordered composite keys, NOT content-hashes
 
 Keys are not content-hashes (you *can* prove with hashes, but that's a technique,
