@@ -82,3 +82,15 @@ module FrameDelta =
     let sameFrame (a: TravelerFrame.Frame) (b: TravelerFrame.Frame) : bool =
         Set.union (frameKeys a) (frameKeys b)
         |> Set.forall (fun k -> (TravelerFrame.coord k a).Version = (TravelerFrame.coord k b).Version)
+
+    /// The L1 magnitude of a transformation: the total absolute shift across all actors. The norm the
+    /// frame metric is built from.
+    let magnitude (d: Delta) : int64 =
+        d.Shifts |> Map.fold (fun acc _ v -> acc + abs v) 0L
+
+    /// **The range between two frames** — the L1 / Manhattan distance of their offset (the "Range"
+    /// measurement axis). A genuine metric on traveler frames (proven in FrameDelta.Tests): non-negative,
+    /// zero IFF the frames coincide (identity-of-indiscernibles — the same Leibniz principle the privacy
+    /// proof rests on), symmetric, and satisfies the triangle inequality. The vector-clock distance.
+    let distance (a: TravelerFrame.Frame) (b: TravelerFrame.Frame) : int64 =
+        magnitude (between a b)

@@ -91,3 +91,21 @@ let ``between composes along the path (cocycle)`` (a: TF.Frame) (b: TF.Frame) (c
 [<Property(Arbitrary = [| typeof<FDArb> |])>]
 let ``inverse of between reverses the endpoints`` (a: TF.Frame) (b: TF.Frame) =
     FD.inverse (FD.between a b) = FD.between b a
+
+// ── the frame METRIC (the "Range" measurement axis): distance is a genuine metric ──
+
+[<Property(Arbitrary = [| typeof<FDArb> |])>]
+let ``distance is non-negative`` (a: TF.Frame) (b: TF.Frame) =
+    FD.distance a b >= 0L
+
+[<Property(Arbitrary = [| typeof<FDArb> |])>]
+let ``distance is zero iff the frames coincide (identity of indiscernibles)`` (a: TF.Frame) (b: TF.Frame) =
+    (FD.distance a b = 0L) = FD.sameFrame a b
+
+[<Property(Arbitrary = [| typeof<FDArb> |])>]
+let ``distance is symmetric`` (a: TF.Frame) (b: TF.Frame) =
+    FD.distance a b = FD.distance b a
+
+[<Property(Arbitrary = [| typeof<FDArb> |])>]
+let ``distance satisfies the triangle inequality`` (a: TF.Frame) (b: TF.Frame) (c: TF.Frame) =
+    FD.distance a c <= FD.distance a b + FD.distance b c
