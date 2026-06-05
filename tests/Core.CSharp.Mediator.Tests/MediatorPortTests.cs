@@ -123,4 +123,17 @@ public sealed class MediatorPortTests
         Assert.Equal(Zeta.Core.CSharp.ByteCost.MeasureText(surface).Bytes, bytes);
         Assert.True(bytes > 0);
     }
+
+    [Fact]
+    public async Task RealMerkleRootHandlerComputesThroughTheMediator()
+    {
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        string[] leaves = ["a", "b", "c"];
+        var root = await mediator.Send(new ComputeMerkleRootQuery(leaves));
+        var expected = new Zeta.Core.CSharp.MerkleTree(
+            [.. System.Linq.Enumerable.Select(leaves, System.Text.Encoding.UTF8.GetBytes)]).Root;
+        Assert.Equal(expected, root);
+        Assert.NotEqual(Zeta.Core.CSharp.MerkleHash.Zero, root);
+    }
 }
