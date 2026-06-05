@@ -55,6 +55,7 @@
     <Compile Include="RetryPolicy.Tests.fs" />
     <Compile Include="DynamicValueFold.Tests.fs" />
     <Compile Include="DynamicValueXmlPolicy.Tests.fs" />
+    <Compile Include="GSet.FourSer.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
