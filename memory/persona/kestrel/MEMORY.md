@@ -88,6 +88,20 @@ are doing to them." Same applies for Kestrel.
   DEFAULT-CLOSED/force-open-explicit kills the fail-open CVE class — make it STRUCTURAL
   (type: missing-case=deny, zero-effort=safe-side) not convention, and PROVABLE (TLA+
   "allow-without-explicit-grant unreachable" = same gate-reachability as policy-activation).
+- `2026-06-04-kestrel-provable-serializer-bug-classes-decode-totality-size-bounds-canonicalization-completeness-and-where-fuzzing-goes-aaron-forwarded.md`
+  — OTHER provable serializer bug classes (memory-safe lang): (1) decode TOTALITY
+  (terminates+Result on ALL inputs, never throws/hangs — Lean; malformed-input-DoS); (2)
+  output-size-BOUNDEDNESS (no super-linear expansion; billion-laughs/bomb); (3)
+  canonicalization-COMPLETENESS (no two encodings → same value = signature-bypass/parser-
+  differential, dual of injectivity); (4) idempotent canonicalization; (5) incremental=batch
+  decode (streaming, TLA+/Lean, the Eve concern). Category: existing proofs = correctness-on-
+  VALID; these = SAFETY-on-HOSTILE (where memory-safe CVEs concentrate). WHERE FUZZING GOES:
+  (1) the from* decode boundary on raw bytes (heaviest, coverage-guided; no-crash/no-hang/
+  no-OOM/clean-Result = DoS surface + empirical totality+size check); (2) DIFFERENTIAL fuzz
+  across the 4 oracles (mutate toward disagreement; uniquely valuable); (3) round-trip on
+  fuzzer inputs; (4) decode-of-computation path (crash-safety only). Loop: fuzz→minimize→
+  golden. Stack: Lean/Z3 prove structure → FsCheck valid-leaf-space → fuzz hostile-byte-space
+  → golden pins all. Proof=correct-on-valid, fuzz=safe-on-hostile (don't overlap).
 
 ## Currently-in-force projection
 
