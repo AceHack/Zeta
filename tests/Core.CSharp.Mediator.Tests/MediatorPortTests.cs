@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 using Zeta.Mediator;
+using Zeta.Tests.FSharp.MediatorFixtures;
 
 // Configure the source generator (the one package-coupled surface, isolated to this edge assembly).
 // Fully qualified so the test body needs no `using Mediator;` — it names only Zeta.Mediator.* types.
@@ -97,5 +98,16 @@ public sealed class MediatorPortTests
         var response = await mediator.Send(new Ping("ada"));
         Assert.Equal("pong:ada", response);
         Assert.True(sink.Count > before, "the pipeline behavior should have wrapped the handler");
+    }
+
+    [Fact]
+    public async Task FSharpHandlerInReferencedAssemblyIsDiscoveredAndDispatched()
+    {
+        // The handler lives in a referenced F# assembly (Core.FSharp.Mediator.Fixtures), authored against
+        // the Zeta port. This proves the C# source generator discovers handlers across the language seam.
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        var response = await mediator.Send(new FSharpPing("ada"));
+        Assert.Equal("fsharp-pong:ada", response);
     }
 }

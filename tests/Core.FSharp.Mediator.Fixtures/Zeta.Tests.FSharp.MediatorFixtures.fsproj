@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Tests.FSharp.MediatorFixtures</RootNamespace>
+    <AssemblyName>Zeta.Tests.FSharp.MediatorFixtures</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <!-- An F# assembly authoring a request + handler against the C# Zeta.Mediator port. Referenced by the
+       C# edge test so we can check whether the (C#) source generator discovers handlers defined in a
+       referenced F# assembly. References only the Zeta port + Mediator.Abstractions (for the handler
+       method signature) — never the Mediator package's generator. -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Core.CSharp.Mediator\Zeta.Core.CSharp.Mediator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mediator.Abstractions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="FSharpHandlers.fs" />
+  </ItemGroup>
+
+</Project>
