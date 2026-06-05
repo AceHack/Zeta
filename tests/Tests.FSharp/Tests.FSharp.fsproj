@@ -74,6 +74,7 @@
     <Compile Include="Protobuf.Swap.Tests.fs" />
     <Compile Include="SoftValue.Tests.fs" />
     <Compile Include="TravelerFrame.Tests.fs" />
+    <Compile Include="TravelerFrame.Legs.Tests.fs" />
     <Compile Include="ActionGrid.Tests.fs" />
     <Compile Include="UncertainClock.Tests.fs" />
     <Compile Include="FrameDelta.Tests.fs" />
