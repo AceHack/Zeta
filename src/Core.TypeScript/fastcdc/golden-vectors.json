@@ -1,0 +1,14 @@
+{
+  "description": "FastCDC content-defined chunking golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). Xia et al. USENIX ATC 2016 (arXiv:1706.03410). Pure wrapping uint64: GEAR[i] = SplitMix64.mix(i); rolling hash = (hash<<1)+GEAR[byte]; normalized masks 2^15-1 (offset<avg) / 2^11-1 (offset>=avg); skip first `min` bytes; force a cut at `max`; flush the trailing remainder. To keep the seed tiny while exercising real content-defined cuts on large streams, each oracle DETERMINISTICALLY GENERATES the byte stream as byte[i] = mix(i) & 0xFF (gen='splitmix-low8'), chunks it, and the chunk LENGTHS (which fully determine the boundaries) are cross-verified. gearSamples spot-checks the table construction. uint64 carried as decimal strings; lengths are ints.",
+  "gearSamples": [
+    { "i": 0, "value": "0" },
+    { "i": 1, "value": "16294208416658607535" },
+    { "i": 2, "value": "7960286522194355700" },
+    { "i": 255, "value": "80788758552623550" }
+  ],
+  "chunk": [
+    { "gen": "splitmix-low8", "count": 50, "min": 4, "avg": 8, "max": 16, "lengths": [16, 16, 16, 2] },
+    { "gen": "splitmix-low8", "count": 5000, "min": 64, "avg": 256, "max": 1024, "lengths": [562, 697, 1024, 1024, 515, 1024, 154] },
+    { "gen": "splitmix-low8", "count": 200000, "min": 2048, "avg": 8192, "max": 65536, "lengths": [8502, 9023, 11480, 15455, 9204, 4611, 12267, 8621, 11303, 8768, 8961, 15497, 11490, 9059, 11806, 11397, 11332, 12132, 2554, 2531, 4007] }
+  ]
+}

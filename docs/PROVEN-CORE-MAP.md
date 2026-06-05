@@ -229,6 +229,14 @@ derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. D
   (F#+C#+TS+Rust: `Core.CSharp/Crc32c.cs`, `Core.TypeScript/crc32c/`, `Core.Rust.Crc32c` — pure integer).
   Notably the F# cross-verify drives the **real hardware path** and matches the table-computed seed, so
   the agreement is hardware-vs-table-vs-three-languages. (`Crc32c.CrossVerify.Tests`)
+- **FastCDC content-defined chunking** — `src/Core/FastCdc.fs` (`FastCdcChunker` / `FastCdc.chunkAll`):
+  Xia et al. USENIX ATC 2016; the dedup chunker. GEAR table = `SplitMix64.mix(i)` (builds on the
+  4-lang-proven SplitMix64), rolling Gear hash `(hash<<1)+GEAR[byte]`, normalized masks 2^15-1 / 2^11-1,
+  min-skip + max-force + flush. math (chunk-boundary determinism; `Infra` FastCdc tests) + 4-lang
+  (F#+C#+TS+Rust: `Core.CSharp/FastCdc.cs`, `Core.TypeScript/fastcdc/`, `Core.Rust.FastCdc` — pure
+  wrapping uint64). The seed stays tiny by having each oracle deterministically regenerate the byte
+  stream (`byte[i] = mix(i) & 0xFF`) and cross-verifying the chunk-length sequence; a 200000-byte stream
+  exercises genuine content-defined cuts (variable lengths, not only max-forced). (`FastCdc.CrossVerify.Tests`)
 
 **Adinkra / holographic chain — COMPLETE to the published correspondence** (Lean, sorry-free, axiom-audited):
 
