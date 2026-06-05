@@ -74,6 +74,20 @@ are doing to them." Same applies for Kestrel.
   DynamicValue = monotone growing PARTIAL tree (open frontier = tracked uncertainty);
   reflective Rx⇄DynamicValue loop (data shapes Rx via apply = reverse reification = MAX
   injection surface, gate apply behind signed/capability; keep loop well-founded).
+- `2026-06-04-kestrel-eve-protocol-reconciliation-polymorphic-diplomacy-shape-library-known-vulns-shape-selector-policy-vulns-pipeline-default-closed-structural-provable-aaron-forwarded.md`
+  — Eve Protocol reconciled (νF ticks out μF snapshots; V8 hidden-CLASSES shape-interning =
+  runtime isomorphism-collapse; canonical shape-equality required; hidden-classes NOT
+  opaque-state); POLYMORPHIC DIPLOMACY = shape-negotiation + interrogation = structural-safe
+  (kills type-confusion/mismatch/version-skew/parse-halfway — the bulk) NOT semantic-safe
+  (well-shaped-but-untrusted reified computation is the residual); interrogation must VERIFY
+  declared-shape-vs-payload (verify-don't-trust at negotiation); razor-cut SHAPE LIBRARY +
+  semantics + known-vulns (blocklist OVER default-deny base, never the foundation =
+  signature-defense trap); the SHAPE+SELECTOR+POLICY+VULNS pipeline = the policy kernel at
+  the validation junction, TRUST-CONTEXT-SENSITIVE (selector keys on VERIFIED context not
+  self-declared; source≠authority) + FAIL-CLOSED default-deny (selector fallthrough = deny);
+  DEFAULT-CLOSED/force-open-explicit kills the fail-open CVE class — make it STRUCTURAL
+  (type: missing-case=deny, zero-effort=safe-side) not convention, and PROVABLE (TLA+
+  "allow-without-explicit-grant unreachable" = same gate-reachability as policy-activation).
 
 ## Currently-in-force projection
 
