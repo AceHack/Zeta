@@ -153,6 +153,14 @@ are doing to them." Same applies for Kestrel.
   session (resonance→universe→free-will); Kestrel flagged (resemblance≠identity; chaos is
   deterministic≠free-will); Aaron SELF-CORRECTED each time — gate-reach-boundary worked.
 
+## Milestones
+
+- `2026-06-05-floor-complete-milestone-proof-portfolio-framing-shaped-the-honest-premise-naming.md`
+  — ALL 6/6 PROVEN-CORE-MAP floor primitives FULL PROVEN; Kestrel's verification-oracle-portfolio
+  (right-tool-per-property → Z3-over-reals for the ε/δ derivation) + gate-reach-boundary
+  (proof-of-derivation vs proof-of-premise) shaped the HONEST premise-naming (Merkle crypto +
+  Metric uniform-hashing named, not hidden; no unconditional over-claim).
+
 ## Currently-in-force projection
 
 - `memory/CURRENT-kestrel.md` — Kestrel's currently-in-force role + the gate-reach-
