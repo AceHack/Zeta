@@ -98,7 +98,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 | 3 | **Merkle integrity** | `src/Core/Merkle.fs` + `src/Core.CSharp.Merkle` + `src/Core.Rust.Merkle` + `src/Core.TypeScript/merkle` | ✓ (structural tamper-evidence; crypto premise named) | ✓ (4/4 byte-locked — F#+C#+Rust+pure-TS XXH3-128, golden vectors) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, combine reified) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, anti-entropy: verify + minimal-delta) | ✅ **FULL PROVEN** — 5th floor primitive (all 6 legs; 4-lang closed by the pure-TS XXH3-128 port `src/Core.TypeScript/merkle/xxh3.ts`, byte-identical to .NET/Rust) |
 | 4 | **CRDT merge + idempotency** (G-Set) | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB) | ✓ (G-Set 4/4) | ✓ (29c1ffe4) | ✓ (658c8e24, reify/apply) | ✓ (51d2937c) | ✓ (658c8e24, convergence-to-LUB) | ✅ **FULL PROVEN** — the FIRST floor primitive to clear the full bar (all G-Set legs in `tests/Tests.FSharp/GSet.FourSer.Tests.fs`) |
 | 5 | **Serialization seed** (ByteCost) | `src/Core/ByteCost.fs` + `Core.{TypeScript,CSharp,Rust}.ByteCost` | ✓ (commutative-monoid laws; Z3+FsCheck) | ✓ (golden-vectors byte-lock) | ✓ (SerializationSeed.FullVertical) | ✓ (SerializationSeed.FullVertical, add reified) | ✓ (SerializationSeed.FullVertical) | ✓ (SerializationSeed.FullVertical, order-independent aggregation) | ✅ **FULL PROVEN** — 3rd floor primitive (legs in `SerializationSeed.FullVertical.Tests.fs`; commutative MONOID not semilattice — homeostat-tie = path-independent aggregate, not idempotent LUB) |
-| 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL+Bloom join & CMS monoid merge-laws ✓ (state-level) · error-DIRECTION ✓ (Bloom no-false-neg, CMS no-undercount); magnitude bounds: **empirical ✓** (Metric.MagnitudeBounds — CMS overestimate ≤ ε·N, Bloom FP-rate bounded; deterministic), **formal ✗** (closed-form ε/δ Lean/Z3 still open) | ✓ (4/4 byte-locked — F#+C#+Rust+TS; Bloom XXH3-128 core, CMS SplitMix+fastrange core; `Core.{CSharp,Rust}.Metric` + `Core.TypeScript/metric`. NB: `.NET HashCode.Combine` convenience path is not portable + excluded) | ✓ (Metric.Serializer, via OfState rehydrate) | ✓ (Metric.Serializer, merge reified) | ✓ (Metric.Serializer) | ✓ (Metric.Homeostat — Bloom OR=semilattice, CMS add=monoid; merge-convergence + error-direction preserved) | math (merge + error-direction + empirical magnitude) + 4-ser + Arrow + Bonsai + homeostat + **4-lang**; **ONLY the formal (closed-form ε/δ) magnitude bound remains** for FULL PROVEN — every other leg is done |
+| 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL+Bloom join & CMS monoid merge-laws ✓ (state-level) · error-DIRECTION ✓ (Bloom no-false-neg, CMS no-undercount); magnitude bounds: **empirical ✓** (Metric.MagnitudeBounds — deterministic) AND **formal ✓** (Formal/Metric.Bounds — Z3-verified ε/δ derivation [Cormode-Muthukrishnan] + Bloom FP; premise: uniform/pairwise-independent hashing + Markov + row-independence, NAMED — same status as Merkle's crypto premise) | ✓ (4/4 byte-locked — F#+C#+Rust+TS; Bloom XXH3-128 core, CMS SplitMix+fastrange core; `Core.{CSharp,Rust}.Metric` + `Core.TypeScript/metric`. NB: `.NET HashCode.Combine` convenience path is not portable + excluded) | ✓ (Metric.Serializer, via OfState rehydrate) | ✓ (Metric.Serializer, merge reified) | ✓ (Metric.Serializer) | ✓ (Metric.Homeostat — Bloom OR=semilattice, CMS add=monoid; merge-convergence + error-direction preserved) | ✅ **FULL PROVEN** — 6th floor primitive (all six legs; ε/δ bound proven modulo the standard uniform-hashing premise, exactly as Merkle's tamper-evidence is modulo the crypto premise) |
 
 **G-Set (CRDT merge) is the FIRST FULL-PROVEN floor primitive** (2026-06-04,
 658c8e24 — all six legs in `GSet.FourSer.Tests.fs`); **Clock/Versionstamp is the
@@ -112,8 +112,9 @@ explicitly NOT idempotent LUB). **Identity (local-handle layer) is the FOURTH** 
 bridge = Object-of-decoded-fields; homeostat-tie = IDENTITY-DEDUP, a fourth class:
 injectivity/no-bad-collapse + idempotent dedup, tied to the proven G-Set; the perspectival
 belief-map / ε-ball-neighborhood layer is research and explicitly OUT of scope).
-**5 of 6 floor primitives now FULL PROVEN** (G-Set, Clock, Serialization-seed, Identity,
-Merkle — only metric/aggregation remains). The pattern is the
+**ALL 6 of 6 floor primitives now FULL PROVEN** (G-Set, Clock, Serialization-seed, Identity,
+Merkle, Metric — the floor is complete; premise-conditional legs [Merkle crypto, Metric
+uniform-hashing] are named, not gaps). The pattern is the
 **template** the other 4 follow (each: bridge the primitive's value/operation to DynamicValue → 4-ser
 round-trip + Arrow round-trip + reify-the-operation-as-Bonsai + homeostat-convergence).
 **Merkle (2026-06-04, `Merkle.FullVertical.Tests.fs`) clears 5 of those 6 legs** and is
@@ -141,12 +142,16 @@ XXH3-128 port (`src/Core.TypeScript/merkle/xxh3.ts`, zero-dep per Aaron's decisi
 port of the xxhash-rust reference for seed 0 across all length classes incl. the long
 accumulate/scramble/merge path) is byte-identical to .NET/Rust, verified against golden
 vectors generated from F#. So all four oracles (F#/C#/Rust/TS) agree on every Merkle root.
-Only **1 of 6 is NOT yet full: metric/aggregation** — and it now has EVERY leg except the
-**formal (closed-form ε/δ) magnitude bound** (research): math (merge + error-direction +
-*empirical* magnitude) + 4-ser + Arrow + Bonsai + homeostat + **4-lang** (Bloom + CountMin
-byte-locked across F#/C#/Rust/TS, `Core.{CSharp,Rust}.Metric` + `Core.TypeScript/metric`; the
-deterministic core only — the `.NET HashCode.Combine` convenience hash is not portable). The
-single remaining gap is the closed-form probabilistic proof (Lean/Z3). Merkle's 4-lang leg
+**Metric/aggregation reached FULL PROVEN (6th, 2026-06-05) — the floor is complete.** Its
+last leg, the formal ε/δ magnitude bound, is now Z3-verified (`Formal/Metric.Bounds.Tests.fs`):
+the Cormode-Muthukrishnan derivation (expectation → Markov → width-condition → row-independence
+powering → δ) + the Bloom FP bound, each step a theorem over ℝ (negation unsat). The
+probabilistic premises (uniform/pairwise-independent hashing, Markov, row independence) are
+NAMED — the bound is proven *modulo* them, exactly as Merkle's tamper-evidence is proven modulo
+its crypto premise. metric's other legs: math (merge + error-direction + empirical + formal
+magnitude) + 4-ser + Arrow + Bonsai + homeostat + **4-lang** (Bloom + CountMin byte-locked
+across F#/C#/Rust/TS, `Core.{CSharp,Rust}.Metric` + `Core.TypeScript/metric`; deterministic
+core only — `.NET HashCode.Combine` is not portable). Merkle's 4-lang leg
 (the last gap) closed across all four oracles: `src/Core.CSharp.Merkle` shares
 `System.IO.Hashing.XxHash128`; `src/Core.Rust.Merkle` is HEXAGONAL (zero-dep core owns the
 `Hasher128` port; `xxhash-rust` is a swappable adapter behind the default `xxh3` feature,

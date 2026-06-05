@@ -115,9 +115,10 @@ let ``CMS Union is NOT idempotent (sum doubles) — it is a monoid, not a join``
 
 
 // ── Deterministic error-DIRECTION guarantees (the safe half of the bounds).
-//    The probabilistic MAGNITUDE bounds (Bloom FP-rate, CMS ε/δ) are NOT proven
-//    here — they need empirical/probabilistic treatment. These one-sided laws are
-//    deterministic and always hold. ──
+//    The probabilistic MAGNITUDE bounds (Bloom FP-rate, CMS ε/δ) are proven separately:
+//    empirically in Metric.MagnitudeBounds.Tests.fs (deterministic measured-vs-bound) and
+//    formally in Formal/Metric.Bounds.Tests.fs (Z3-verified ε/δ derivation, premises named).
+//    These one-sided laws are deterministic and always hold. ──
 
 let private bloom (xs: uint64 list) =
     let b = BlockedBloomFilter(64, 4)
