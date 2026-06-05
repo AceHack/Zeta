@@ -18,6 +18,7 @@
     <Compile Include="PolicyKind.fs" />
     <Compile Include="RetryPolicy.fs" />
     <Compile Include="CayleyDickson.fs" />
+    <Compile Include="AdinkraCode.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
     <Compile Include="Pool.fs" />
