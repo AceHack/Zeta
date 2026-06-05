@@ -53,7 +53,13 @@ let ``WorkStealingRuntime shards and processes`` () =
         do! rt.SendAsync(ZSet.ofKeys [ 1 ; 2 ; 3 ; 4 ; 5 ; 6 ; 7 ; 8 ])
         do! rt.StepAsync()
         let gathered = rt.Gather()
-        gathered.Count |> should be (greaterThan 0)
+        // Deterministic result: StepAsync awaits every shard's Step() to completion, so the
+        // gathered output is ALWAYS the full doubled set — no timing-dependent partial reads.
+        // (Was a weak `Count > 0` smoke check that flaked when a shard's Step() lagged the gather;
+        // a flake means non-determinism, which violates DST §7. This now asserts the exact result.)
+        gathered.Count |> should equal 8
+        for v in [ 2 ; 4 ; 6 ; 8 ; 10 ; 12 ; 14 ; 16 ] do
+            gathered.[v] |> should equal 1L
     }
 
 

@@ -38,9 +38,23 @@ type WorkStealingRuntime<'K when 'K : comparison>
     // TPL Dataflow's ActionBlock is a work-stealing queue out of the box.
     // We post "step shard i" commands to a single block with parallelism
     // equal to `maxDegreeOfParallelism`; the ThreadPool distributes.
+    //
+    // Each command carries a TaskCompletionSource that is signalled AFTER the
+    // shard's Step() has fully run (or faulted). StepAsync awaits all of them,
+    // so the observable result is DETERMINISTIC regardless of thread-scheduling
+    // timing — the work-stealing parallelism is an internal detail, not an
+    // externally-visible race. (The old code polled `InputCount`, which only
+    // reports the *input queue* draining — the last item can be dequeued and
+    // still mid-Step() — so `Gather()` could read partial output: a real,
+    // non-deterministic flake. This replaces that with true completion.)
     let stepBlock =
-        ActionBlock<int>(
-            (fun (shardIdx: int) -> circuits.[shardIdx].Step()),
+        ActionBlock<int * TaskCompletionSource<bool>>(
+            (fun (shardIdx: int, tcs: TaskCompletionSource<bool>) ->
+                try
+                    circuits.[shardIdx].Step()
+                    tcs.SetResult true
+                with ex ->
+                    tcs.SetException ex),
             ExecutionDataflowBlockOptions(
                 MaxDegreeOfParallelism = maxDegreeOfParallelism,
                 BoundedCapacity = shardCount * 2,
@@ -65,16 +79,19 @@ type WorkStealingRuntime<'K when 'K : comparison>
                     inputs.[i].Send shards.[i]
         } :> Task
 
-    /// Post all shard-step tasks to the work-stealing block and await completion.
+    /// Post all shard-step tasks to the work-stealing block and await the ACTUAL
+    /// completion of every shard's Step() — deterministic result, no timing race.
     member _.StepAsync() : Task =
         task {
-            let completions = Array.init shardCount (fun i ->
-                stepBlock.SendAsync i |> ignore
-                ())
-            // Wait for block's current buffer to drain.
-            do! Task.Delay(1)   // yield so dataflow block runs
-            while stepBlock.InputCount > 0 do do! Task.Yield()
-            ignore completions
+            let tcss =
+                Array.init shardCount (fun _ ->
+                    TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously))
+            // Await each send (respects BoundedCapacity back-pressure — no dropped work).
+            for i in 0 .. shardCount - 1 do
+                let! _ = stepBlock.SendAsync((i, tcss.[i]))
+                ()
+            // Await every shard's Step() to fully complete before returning.
+            do! (Task.WhenAll(tcss |> Array.map (fun t -> t.Task)) :> Task)
         }
 
     member _.Gather() : ZSet<'K> =
