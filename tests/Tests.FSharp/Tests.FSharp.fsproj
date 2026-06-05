@@ -13,6 +13,7 @@
     <Compile Include="_Support/DeterministicTestPath.fs" />
     <Compile Include="_Support/ConcurrencyHarness.fs" />
     <Compile Include="_Support/CartelInjector.fs" />
+    <Compile Include="_Support/SerializerLegs.fs" />
 
     <!-- Algebra/ -->
     <Compile Include="Algebra/Weight.Tests.fs" />
@@ -56,6 +57,7 @@
     <Compile Include="DynamicValueFold.Tests.fs" />
     <Compile Include="DynamicValueXmlPolicy.Tests.fs" />
     <Compile Include="GSet.FourSer.Tests.fs" />
+    <Compile Include="Clock.FullVertical.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
