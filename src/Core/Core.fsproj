@@ -105,6 +105,7 @@
     <Compile Include="MailboxRuntime.fs" />
     <Compile Include="FSharpApi.fs" />
     <Compile Include="Rx.fs" />
+    <Compile Include="StreamPolicy.fs" />
     <Compile Include="Serializer.fs" />
     <Compile Include="ArrowSerializer.fs" />
     <Compile Include="DynamicValueArrow.fs" />
