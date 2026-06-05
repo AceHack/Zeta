@@ -12,6 +12,7 @@
   <ItemGroup>
     <Compile Include="Types.fs" />
     <Compile Include="TriBoolean.fs" />
+    <Compile Include="Predicate3.fs" />
     <!-- Tri-boolean float (B-0944 slice 5 pt2): biased-exponent decoder, built from the Tri cell. -->
     <Compile Include="Float.fs" />
   </ItemGroup>
