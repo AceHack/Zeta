@@ -83,8 +83,16 @@ let private xmlRoundtrips (dv: DynamicValue) : bool =
         | Error _ -> false
     | Error _ -> false
 
+let private arrowRoundtrips (dv: DynamicValue) : bool =
+    // Arrow is the columnar leg (shredded node-table); round-trip, not byte-lock
+    // (Arrow IPC is not byte-identical across language libs — its rigor is
+    // round-trip + cross-language semantic interop).
+    match Zeta.Core.DynamicValueArrow.fromArrow (Zeta.Core.DynamicValueArrow.toArrow dv) with
+    | Ok d -> d = dv
+    | Error _ -> false
+
 [<Fact>]
-let ``format-agreement matrix: JSON + CBOR + YAML + XML all commute on DynamicValue (locked shapes)`` () =
+let ``format-agreement matrix: JSON + CBOR + YAML + XML + Arrow all commute on DynamicValue (locked shapes)`` () =
     let cases =
         [ DynamicValue.Object [ "a", DynamicValue.Int 1L; "b", DynamicValue.String "x"
                                 "n", DynamicValue.Null; "f", DynamicValue.Bool true ]
@@ -92,11 +100,12 @@ let ``format-agreement matrix: JSON + CBOR + YAML + XML all commute on DynamicVa
           DynamicValue.Object [ "nested", DynamicValue.Object [ "deep", DynamicValue.Array [ DynamicValue.String "x" ] ] ]
           DynamicValue.Object [ "looksInt", DynamicValue.String "123"; "looksBool", DynamicValue.String "true" ] ]
     for dv in cases do
-        // each format round-trips dv to itself → all FOUR recover the SAME value (commute)
+        // each format round-trips dv to itself → all FIVE recover the SAME value (commute)
         jsonRoundtrips dv |> should equal true
         cborRoundtrips dv |> should equal true
         dvRoundtripsYaml dv |> should equal true
         xmlRoundtrips dv |> should equal true
+        arrowRoundtrips dv |> should equal true
 
 // ── PROPERTY-BASED matrix (FsCheck) — generalize the fixed cases above ──
 // The YAML leg is the storage of record (B-1011) but only had example-based tests
@@ -161,10 +170,11 @@ let ``YAML round-trip LAW: ∀ dv (locked subset) — parse ∘ encode = id (sto
     dvRoundtripsYaml (DynamicValue.Object [ "v", v ])
 
 [<Property(Arbitrary = [| typeof<MatrixDvArb> |])>]
-let ``format-agreement matrix LAW: ∀ dv (locked subset) — JSON + CBOR + YAML + XML all commute``
+let ``format-agreement matrix LAW: ∀ dv (locked subset) — JSON + CBOR + YAML + XML + Arrow all commute``
     (v: DynamicValue) =
     let wrapped = DynamicValue.Object [ "v", v ]
     jsonRoundtrips wrapped && cborRoundtrips wrapped && dvRoundtripsYaml wrapped && xmlRoundtrips wrapped
+    && arrowRoundtrips wrapped
 
 // XML round-trip LAW + injectivity (parity with the CBOR / YAML laws). The matrix
 // subset's generated strings (genStrY) contain only XML-1.0-representable chars (no

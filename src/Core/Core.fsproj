@@ -102,6 +102,7 @@
     <Compile Include="Rx.fs" />
     <Compile Include="Serializer.fs" />
     <Compile Include="ArrowSerializer.fs" />
+    <Compile Include="DynamicValueArrow.fs" />
     <Compile Include="DeltaCrdt.fs" />
     <Compile Include="SignalQuality.fs" />
     <Compile Include="Maji.fs" />

@@ -176,6 +176,11 @@ type DecodeError =
     /// char-ref, or a structurally invalid element (the XML analogue of malformation).
     /// XML-only.
     | MalformedXml
+    /// Input is not a well-formed Arrow node-table for the schema this codec emits —
+    /// not a single readable RecordBatch, a missing/mistyped column, a parent index out
+    /// of range, an unknown `kind` tag, a missing scalar payload for the kind, or any
+    /// Apache.Arrow read failure (caught, never thrown). Arrow-only.
+    | MalformedArrow
 
 /// Companion module (the `Option`/`List` type-plus-module pattern): the tag
 /// accessor, the lazy-bind `try*` accessors, and `PropertyPath` navigation.
