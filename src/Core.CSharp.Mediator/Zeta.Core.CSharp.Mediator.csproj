@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Zeta.Mediator</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.Mediator</AssemblyName>
+  </PropertyGroup>
+
+  <!-- The hexagonal PORT for the mediator pattern. Business code depends only on the
+       Zeta.Mediator.* names defined here; the underlying martinothamar/Mediator package is an
+       adapter we intend to replace. Every `global::Mediator.*` reference is confined to this
+       project (interface inheritance + the ZetaMediator adapter) so the swap is cheap.
+
+       This library references ONLY Mediator.Abstractions (the interfaces our ports inherit) +
+       DI.Abstractions (the IServiceCollection the adapter registers into). It does NOT reference
+       Mediator.SourceGenerator — the generator runs in the EDGE/composition-root assembly that
+       declares the handlers and calls AddMediator(). -->
+  <ItemGroup>
+    <PackageReference Include="Mediator.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+  </ItemGroup>
+
+</Project>
