@@ -68,6 +68,55 @@ module DynamicValueFold =
                     (a.Object xs, b.Object ys) }
         cata tupled value
 
+    // ───────────────────────── ShapeContext ─────────────────────────
+    // The serialization-junction INPUT a structure policy sees. A policy that
+    // selects per-node structure (e.g. XML named-vs-generic element) inspects
+    // not just the value but WHERE it sits and under WHAT key. ShapeContext is
+    // that view: the document-order path from the root, the immediate Object key
+    // (if this node is an Object entry), and the value's coarse shape kind.
+
+    /// One step in a `ShapePath`: into an Object under a `Key`, or into an Array
+    /// at an `Index`.
+    type ShapeStep =
+        | Key of string
+        | Index of int
+
+    /// The path from the document root to a node, head = outermost (document
+    /// order). `[]` is the root.
+    type ShapePath = ShapeStep list
+
+    /// The coarse shape kind of a `DynamicValue` — the "what type is this node"
+    /// a structure policy keys on, independent of the value's contents.
+    type ShapeKind =
+        | NullK
+        | BoolK
+        | IntK
+        | FloatK
+        | StringK
+        | BytesK
+        | ArrayK
+        | ObjectK
+
+    /// The serialization-junction input a structure policy inspects: the
+    /// document-order `Path` to this node, the immediate Object `Key` (if this
+    /// node is an Object entry; `None` otherwise), and the node's `Kind`.
+    type ShapeContext =
+        { Path: ShapePath
+          Key: string option
+          Kind: ShapeKind }
+
+    /// The coarse `ShapeKind` of a `DynamicValue`.
+    let kindOf (value: DynamicValue) : ShapeKind =
+        match value with
+        | DynamicValue.Null -> NullK
+        | DynamicValue.Bool _ -> BoolK
+        | DynamicValue.Int _ -> IntK
+        | DynamicValue.Float _ -> FloatK
+        | DynamicValue.String _ -> StringK
+        | DynamicValue.Bytes _ -> BytesK
+        | DynamicValue.Array _ -> ArrayK
+        | DynamicValue.Object _ -> ObjectK
+
     /// The identity algebra: rebuilds the value unchanged. Sanity anchor —
     /// `cata identityAlgebra dv = dv` (the catamorphism's reflection law).
     let identityAlgebra: DvAlgebra<DynamicValue> =

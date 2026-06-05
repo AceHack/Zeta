@@ -6,9 +6,13 @@ namespace Zeta.Core
 /// (`DynamicValue.toCanonicalXml`) renders every Object entry generically as
 /// `<e k="KEY">VALUE</e>`. This codec adds ONE degree of freedom — a policy that
 /// decides, PER Object key, whether to promote that entry to a NAMED element
-/// `<KEY>VALUE</KEY>` instead. The policy is a `Predicate<string>` from File 1's
-/// kernel (`'a = key`), so "which keys get ontology-shaped element names" is the
-/// same decision-over-shape algebra reused at the serialization junction.
+/// `<KEY>VALUE</KEY>` instead. The policy is a
+/// `Policy<ShapeContext, XmlPlacement, string>` from the policy kernel
+/// (`Policy.fs`, B-1017 #1): given a `ShapeContext` (the serialization junction:
+/// path, key, kind) it SELECTS a typed `XmlPlacement` and attaches a `string`
+/// feedback (the *why*). The policy only SELECTS; this codec ACTS on the
+/// decision — the same decision-over-shape algebra reused at the serialization
+/// junction, now carrying a typed decision + auditable reason, not a bare bool.
 ///
 /// This is the "add ontology by a filter over the fold" capability: the structure
 /// is produced by `DynamicValueFold.cata` (File 2), and the policy is the filter.
@@ -26,10 +30,18 @@ namespace Zeta.Core
 [<RequireQualifiedAccess>]
 module DynamicValueXmlPolicy =
 
-    /// Per-key structure policy: `Named key` ⇒ promote that Object entry to a
-    /// named element `<key>…</key>` (subject to the validity + reserved-name
-    /// guards); otherwise render the canonical generic `<e k="key">…</e>`.
-    type StructurePolicy = { Named: Predicate.Predicate<string> }
+    /// The typed structure DECISION a policy selects for an Object entry:
+    /// promote it to a named element `<KEY>…</KEY>` or render it as the canonical
+    /// generic `<e k="KEY">…</e>`. (`Attribute` is a backlogged later slice — not
+    /// added here.)
+    type XmlPlacement =
+        | NamedElement
+        | GenericElement
+
+    /// Instance-1 of the policy kernel: a policy from a serialization-junction
+    /// `ShapeContext` to an `XmlPlacement` decision, carrying a `string`
+    /// feedback (the why). The policy SELECTS; `toStructuredXml` ACTS.
+    type XmlStructurePolicy = Policy.Policy<DynamicValueFold.ShapeContext, XmlPlacement, string>
 
     /// The nine value-tag names the canonical XML grammar reserves. A key equal to
     /// one of these is NEVER promoted (it would be indistinguishable from a value
@@ -52,12 +64,27 @@ module DynamicValueXmlPolicy =
         && key |> Seq.forall isNameChar
         && not (key.Length >= 3 && key.Substring(0, 3).ToLowerInvariant() = "xml")
 
-    /// Decide whether an Object entry with this key is promoted to a named element:
-    /// the policy says so AND the key is a valid, non-reserved XML Name.
-    let private isPromoted (policy: StructurePolicy) (key: string) : bool =
-        policy.Named key
-        && isValidXmlName key
-        && not (Set.contains key reservedTagNames)
+    /// Convenience constructor preserving today's behavior + adding feedback: a
+    /// policy that promotes exactly the keys in `keys`, subject to the validity +
+    /// reserved-name guards, and reports the specific reason as feedback. For an
+    /// Object-entry `ShapeContext` (one carrying `Key = Some k`): if `k` is in the
+    /// set AND a valid XML Name AND not a reserved value-tag name → `NamedElement`
+    /// with "named: key in policy set"; otherwise `GenericElement` with the
+    /// specific reason (reserved-tag / invalid-name / not-in-policy). A context
+    /// with no key (a non-entry node) is never named.
+    let namedKeys (keys: Set<string>) : XmlStructurePolicy =
+        fun (ctx: DynamicValueFold.ShapeContext) ->
+            match ctx.Key with
+            | None -> Policy.result GenericElement "generic: no object key (non-entry node)"
+            | Some k ->
+                if not (Set.contains k keys) then
+                    Policy.result GenericElement "generic: not-in-policy"
+                elif Set.contains k reservedTagNames then
+                    Policy.result GenericElement "generic: reserved-tag"
+                elif not (isValidXmlName k) then
+                    Policy.result GenericElement "generic: invalid-name"
+                else
+                    Policy.result NamedElement "named: key in policy set"
 
     /// Escape an Object key as an XML attribute value, mirroring the canonical codec's
     /// (private) `escapeXmlAttr`: `& < > "` as entities; `\t \n \r` as char-refs. A
@@ -81,37 +108,46 @@ module DynamicValueXmlPolicy =
         if err then Error EncodeError.NonRepresentable else Ok(sb.ToString())
 
     /// Render `dv` as policy-structured XML. Identical to `DynamicValue.toCanonicalXml`
-    /// EXCEPT each Object entry whose key is promoted becomes `<KEY>INNER</KEY>` (INNER =
-    /// the canonical XML of the value) instead of `<e k="ESC">INNER</e>`. Implemented as a
-    /// `DynamicValueFold.cata` whose carrier is `Result<string, EncodeError>`; non-object
+    /// EXCEPT each Object entry for which the policy SELECTS `NamedElement` becomes
+    /// `<KEY>INNER</KEY>` (INNER = the canonical XML of the value) instead of
+    /// `<e k="ESC">INNER</e>`. Implemented as a direct, path-aware recursion so the
+    /// `ShapePath` (root→node, document order) can be threaded into each entry's
+    /// `ShapeContext`; the policy is consulted per Object entry and only its
+    /// `Decision` is acted on (the policy SELECTS, this codec ACTS). Non-object
     /// nodes reuse the exact canonical rendering. Surfaced as data, never thrown.
-    let toStructuredXml (policy: StructurePolicy) (dv: DynamicValue) : Result<string, EncodeError> =
+    let toStructuredXml (policy: XmlStructurePolicy) (dv: DynamicValue) : Result<string, EncodeError> =
         let combine (parts: Result<string, EncodeError> list) (wrap: string list -> string) : Result<string, EncodeError> =
             parts
             |> List.fold (fun acc p -> acc |> Result.bind (fun xs -> p |> Result.map (fun x -> x :: xs))) (Ok [])
             |> Result.map (fun xs -> wrap (List.rev xs))
 
-        let alg: DynamicValueFold.DvAlgebra<Result<string, EncodeError>> =
-            { Null = DynamicValue.toCanonicalXml DynamicValue.Null
-              Bool = fun b -> DynamicValue.toCanonicalXml (DynamicValue.Bool b)
-              Int = fun i -> DynamicValue.toCanonicalXml (DynamicValue.Int i)
-              Float = fun f -> DynamicValue.toCanonicalXml (DynamicValue.Float f)
-              String = fun s -> DynamicValue.toCanonicalXml (DynamicValue.String s)
-              Bytes = fun b -> DynamicValue.toCanonicalXml (DynamicValue.Bytes b)
-              Array = fun parts -> combine parts (fun xs -> "<arr>" + System.String.Concat xs + "</arr>")
-              Object =
-                fun parts ->
-                    parts
-                    |> List.map (fun (k, inner) ->
-                        inner
-                        |> Result.bind (fun innerXml ->
-                            if isPromoted policy k then
-                                Ok("<" + k + ">" + innerXml + "</" + k + ">")
-                            else
-                                escapeKeyAttr k
-                                |> Result.map (fun ke -> "<e k=\"" + ke + "\">" + innerXml + "</e>")))
-                    |> fun entries -> combine entries (fun xs -> "<obj>" + System.String.Concat xs + "</obj>") }
-        DynamicValueFold.cata alg dv
+        // path = document-order steps from the root to THIS node (head outermost).
+        let rec render (path: DynamicValueFold.ShapePath) (value: DynamicValue) : Result<string, EncodeError> =
+            match value with
+            | DynamicValue.Array items ->
+                items
+                |> List.mapi (fun i item -> render (path @ [ DynamicValueFold.Index i ]) item)
+                |> fun parts -> combine parts (fun xs -> "<arr>" + System.String.Concat xs + "</arr>")
+            | DynamicValue.Object pairs ->
+                pairs
+                |> List.map (fun (k, v) ->
+                    let entryPath = path @ [ DynamicValueFold.Key k ]
+                    let ctx: DynamicValueFold.ShapeContext =
+                        { Path = entryPath
+                          Key = Some k
+                          Kind = DynamicValueFold.kindOf v }
+                    render entryPath v
+                    |> Result.bind (fun innerXml ->
+                        match (policy ctx).Decision with
+                        | NamedElement -> Ok("<" + k + ">" + innerXml + "</" + k + ">")
+                        | GenericElement ->
+                            escapeKeyAttr k
+                            |> Result.map (fun ke -> "<e k=\"" + ke + "\">" + innerXml + "</e>")))
+                |> fun entries -> combine entries (fun xs -> "<obj>" + System.String.Concat xs + "</obj>")
+            // leaves: exact canonical rendering, no policy involvement.
+            | leaf -> DynamicValue.toCanonicalXml leaf
+
+        render [] dv
 
     // ───────────────────────── decode ─────────────────────────
     // A self-contained structured-XML parser. It differs from the canonical XML
@@ -129,7 +165,7 @@ module DynamicValueXmlPolicy =
     /// Strictly canonical: a structural parse then a fixed-point check
     /// (`toStructuredXml policy parsed = input`) rejects non-canonical spellings as
     /// `NonCanonical`. Surfaced as data, never thrown.
-    let fromStructuredXml (policy: StructurePolicy) (xml: string) : Result<DynamicValue, DecodeError> =
+    let fromStructuredXml (policy: XmlStructurePolicy) (xml: string) : Result<DynamicValue, DecodeError> =
         let mutable pos = 0
         let len = xml.Length
         let at () : char = if pos < len then xml.[pos] else ' '

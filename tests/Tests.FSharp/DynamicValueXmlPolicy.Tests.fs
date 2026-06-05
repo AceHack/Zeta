@@ -15,8 +15,8 @@ open Zeta.Core
 //   (c) zero-policy (Named=never) ≡ canonical toCanonicalXml.
 // ═══════════════════════════════════════════════════════════════════
 
-let private named (keys: string list) : DynamicValueXmlPolicy.StructurePolicy =
-    { Named = Predicate.ofSet (Set.ofList keys) }
+let private named (keys: string list) : DynamicValueXmlPolicy.XmlStructurePolicy =
+    DynamicValueXmlPolicy.namedKeys (Set.ofList keys)
 
 [<Fact>]
 let ``(a) exact structured shape for {id,name} policy`` () =
@@ -110,14 +110,14 @@ let private genPair =
           let keys = collectKeys dv
           let! flags = Gen.listOfLength keys.Length (Gen.elements [ true; false ])
           let chosen = List.zip keys flags |> List.filter snd |> List.map fst |> Set.ofList
-          return (dv, ({ Named = Predicate.ofSet chosen }: DynamicValueXmlPolicy.StructurePolicy)) }
+          return (dv, DynamicValueXmlPolicy.namedKeys chosen) }
 
 type PairArb() =
     static member Pair() = Arb.fromGen genPair
 
 [<Property(Arbitrary = [| typeof<PairArb> |])>]
 let ``(b) round-trip LAW: fromStructuredXml p (toStructuredXml p dv) = Ok dv``
-    (pair: DynamicValue * DynamicValueXmlPolicy.StructurePolicy) =
+    (pair: DynamicValue * DynamicValueXmlPolicy.XmlStructurePolicy) =
     let (dv, policy) = pair
     match DynamicValueXmlPolicy.toStructuredXml policy dv with
     | Ok xml -> DynamicValueXmlPolicy.fromStructuredXml policy xml = Ok dv
@@ -127,6 +127,45 @@ type ZeroDvArb() =
     static member Dv() = Arb.fromGen build
 
 [<Property(Arbitrary = [| typeof<ZeroDvArb> |])>]
-let ``(c) zero-policy (Named=never) = canonical toCanonicalXml`` (dv: DynamicValue) =
-    let policy: DynamicValueXmlPolicy.StructurePolicy = { Named = Predicate.never }
+let ``(c) zero-policy (namedKeys empty) = canonical toCanonicalXml`` (dv: DynamicValue) =
+    let policy = DynamicValueXmlPolicy.namedKeys Set.empty
     DynamicValueXmlPolicy.toStructuredXml policy dv = DynamicValue.toCanonicalXml dv
+
+// ── (d) FEEDBACK: the policy SELECTS a typed decision + an auditable why ──
+[<Fact>]
+let ``(d) feedback: in-policy valid key selects NamedElement`` () =
+    let policy = DynamicValueXmlPolicy.namedKeys (set [ "id" ])
+    let ctx: DynamicValueFold.ShapeContext =
+        { Path = [ DynamicValueFold.Key "id" ]; Key = Some "id"; Kind = DynamicValueFold.IntK }
+    let r = policy ctx
+    Assert.Equal(DynamicValueXmlPolicy.NamedElement, r.Decision)
+    Assert.Contains("named", r.Feedback)
+
+[<Fact>]
+let ``(d) feedback: a key equal to a reserved tag falls back to GenericElement with 'reserved' why`` () =
+    // "int" is a reserved value-tag name; even if promoted by the set it must
+    // render generically, and the feedback must say why.
+    let policy = DynamicValueXmlPolicy.namedKeys (set [ "int" ])
+    let ctx: DynamicValueFold.ShapeContext =
+        { Path = [ DynamicValueFold.Key "int" ]; Key = Some "int"; Kind = DynamicValueFold.BoolK }
+    let r = policy ctx
+    Assert.Equal(DynamicValueXmlPolicy.GenericElement, r.Decision)
+    Assert.Contains("reserved", r.Feedback)
+
+[<Fact>]
+let ``(d) feedback: a key not in the policy set is GenericElement with 'not-in-policy' why`` () =
+    let policy = DynamicValueXmlPolicy.namedKeys (set [ "id" ])
+    let ctx: DynamicValueFold.ShapeContext =
+        { Path = [ DynamicValueFold.Key "other" ]; Key = Some "other"; Kind = DynamicValueFold.BoolK }
+    let r = policy ctx
+    Assert.Equal(DynamicValueXmlPolicy.GenericElement, r.Decision)
+    Assert.Contains("not-in-policy", r.Feedback)
+
+[<Fact>]
+let ``(d) reserved-tag key 'int' renders generically end-to-end`` () =
+    let dv = DynamicValue.Object [ ("int", DynamicValue.Bool true) ]
+    let policy = DynamicValueXmlPolicy.namedKeys (set [ "int" ])
+    let expected = "<obj><e k=\"int\"><bool>true</bool></e></obj>"
+    match DynamicValueXmlPolicy.toStructuredXml policy dv with
+    | Ok s -> Assert.Equal(expected, s)
+    | Error e -> failwithf "unexpected encode error %A" e

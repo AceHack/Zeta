@@ -14,6 +14,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Algebra.fs" />
     <Compile Include="Predicate.fs" />
+    <Compile Include="Policy.fs" />
     <Compile Include="CayleyDickson.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
