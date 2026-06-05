@@ -184,7 +184,12 @@ append-only DBSP stream, with **retraction (−1) as correction-forward, not del
 non-collapse argument*: a momentary collapse at some t cannot **erase** the differentiation recorded at
 earlier t — it persists in the immutable log and can be corrected forward by a −1 at t+1 — so the past
 gradient is never truly lost. (It also IS the self-evolving cell's step: `next = observe(self, obs)`
-*creates* the successor at t+1 rather than mutating `self`.)
+*creates* the successor at t+1 rather than mutating `self`.) **And because versions are immutable and
+back-referencing, the current version can *recursively reference any prior version*** (Aaron) — a
+persistent / Merkle-DAG / git-commit-graph structure (Okasaki persistent data structures; our proven
+`Merkle` + `Versionstamp` core; git-as-event-store). So past differentiation is not merely *preserved*
+but *reachable* from the present, and the induction over t **is** that recursive back-walk — which is
+why the "infinity" rung is an induction the prover can actually traverse.
 Thermodynamic resonance (Beacon *candidate*, NOT a claim): a non-equilibrium steady state held by two
 opposing flows — Prigogine dissipative structures; uncertainty reduction lowers entropy, NCI keeps a
 diversity floor.
