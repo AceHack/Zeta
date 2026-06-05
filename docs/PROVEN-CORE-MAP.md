@@ -168,6 +168,7 @@ generated from F#, after correcting for .NET's XXH128 canonical big-endian outpu
 > [`FROZEN-CORE-AND-CONJECTURE-REGISTER.md`](FROZEN-CORE-AND-CONJECTURE-REGISTER.md); this is the map index.
 
 **Traveler self-frame over DBSP — Layer 0 COMPLETE** (the relativistic relative-frame, three distinct objects):
+
 - **Consistency / merge** — `src/Core/TravelerFrame.fs`: the causal-join of two travelers' vector clocks is a
   bounded join-semilattice ⇒ order-independent ⇒ all travelers reach ONE common frame. (`TravelerFrame.Tests`)
 - **Clock-with-uncertainty** — `src/Core/UncertainClock.fs`: CockroachDB HLC + uncertainty window; a *partial*
@@ -187,6 +188,7 @@ the clock; D∘I=I∘D=id) · Range = `FrameDelta.distance`. Directional axes (B
 NOT built — no honest anchor in a causal frame.
 
 **Adinkra / holographic chain — COMPLETE to the published correspondence** (Lean, sorry-free, axiom-audited):
+
 - `tools/lean4/ImaginaryStack/ToyModel.lean` — bulk-from-boundary reconstruction for a graph-code.
 - `tools/lean4/ImaginaryStack/ErasureDistance.lean` — distance ⇒ any-`<d`-erasure correctable; a concrete
   Reed-Solomon `[16,12]` MDS code proven distance-5 / corrects-any-4-erasures.
@@ -207,8 +209,8 @@ sufficient, not the condition); boundary = state-dependent/nonlinear revision (c
 the SoftValue independent-evidence proof.
 
 **Mediator subsystem** (hexagonal, source-gen, swappable, polyglot) — `src/Core.CSharp.Mediator` (the
-`Zeta.Mediator.*` port over martinothamar/Mediator: Unit + Request/Command/Query/Stream/Notification/Pipeline
-+ adapter + DI) · `src/Core.FSharp.Mediator` (F# `unit`↔`Zeta.Unit` bridge) · `src/Core.CSharp.Mediator.Handlers`
+`Zeta.Mediator.*` port over martinothamar/Mediator: Unit, Request/Command/Query/Stream/Notification/Pipeline,
+adapter, DI) · `src/Core.FSharp.Mediator` (F# `unit`↔`Zeta.Unit` bridge) · `src/Core.CSharp.Mediator.Handlers`
 (four real handlers over proven Core: context-cost query, Merkle root, cost-curve trend, agent-bus notification).
 Proven via `tests/Core.CSharp.Mediator.Tests` incl. cross-language F# handler discovery.
 
