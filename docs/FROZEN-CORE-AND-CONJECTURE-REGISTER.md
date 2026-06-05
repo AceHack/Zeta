@@ -32,14 +32,16 @@ OR (for non-floor members) a proof / byte-lock / conformance anchor that is clos
 | 7 | **SoftValue** (value-axis) — distribution + Bayesian observe | observe commutes for independent evidence (the convergence crux, proven leg) | `SoftValue.fs` |
 | 8 | **Traveler frame (Layer 0)** — causal frame + inter-frame transformation law | transformation = causal-join is a bounded join-semilattice (idempotent/commutative/associative/monotone, LUB) ⇒ order-independent; all travelers reach ONE common frame = the relative-frame **consistency** law | `TravelerFrame.fs` / `TravelerFrame.Tests` |
 | 9 | **Action grid (Layer 2)** — 4×4 universal action grammar, navigation label-independence | navigation is a pure function of position, never of labels (proven via a discriminating predicate + negative control); frame (fixed geometry) and content (labels) separated by construction | `ActionGrid.fs` / `ActionGrid.Tests` |
+| 10 | **Uncertain clock (Layer 0 clock-with-uncertainty)** — CockroachDB HLC + uncertainty window | `definitelyBefore` is a strict partial order; trichotomy with the uncertain (overlap) zone; definite order refines the HLC total order (never contradicts the clock); ε=0 collapses to exact order; HLC receive/send monotone (bounded divergence) — the uncertain zone = where order is genuinely unknown (SoftValue carries both) | `UncertainClock.fs` / `UncertainClock.Tests` |
 
 > If it isn't in this table, **do not build load-bearing work on it yet.** That's the whole point.
 >
-> **Promoted 2026-06-05:** Traveler-frame Layer 0 (#8). The open keystone — the inter-frame
-> transformation law — is discharged: `TravelerFrame.transform` (the causal-join) is proven a bounded
-> join-semilattice, so the transformation is order-independent and all travelers converge to one
-> common frame. Remaining Layer-0 **sub-legs** stay in §B (the *group* law — inverses/boosts; the
-> CockroachDB-HLC **uncertainty-window** combination): this is the consistency law, not yet the group law.
+> **Promoted 2026-06-05:** Traveler-frame Layer 0 (#8, consistency law) + the clock-with-uncertainty
+> sub-leg (#10). `TravelerFrame.transform` (causal-join) is a proven bounded join-semilattice
+> (order-independent ⇒ one common frame); `UncertainClock` adds the CockroachDB-HLC uncertainty window
+> — a *partial* temporal order where overlapping windows are honestly uncertain (no false certainty;
+> the SoftValue tie). **Layer 0 is now tied off** for the consistency + uncertainty legs; the only
+> remaining Layer-0 sub-leg in §B is the relativistic *group* law (inverses/boosts).
 
 ---
 
@@ -56,10 +58,10 @@ Separated into layers (the cram was holding all four at once = the dirt):
 - **Layer 0 — base traveler frame (✅ PROMOTED to §A #8, 2026-06-05).** = clock + identity/belief-map +
   **causal-join as the inter-frame transformation**. The transformation-law keystone is discharged
   (`TravelerFrame.fs`: the causal-join is a proven bounded join-semilattice ⇒ order-independent ⇒ one
-  common frame = the relative-frame consistency law). **Open Layer-0 sub-legs remaining here:** the
-  *group* law (inverses/boosts — relativistic structure beyond the monotone semilattice) and the
-  **CockroachDB-HLC uncertainty-window** combination (the clock-with-uncertainty leg). The consistency
-  law is closed; the group law and uncertainty-combination are the next discharges.
+  common frame = the relative-frame consistency law). The **clock-with-uncertainty** sub-leg is also
+  now discharged (✅ §A #10, `UncertainClock.fs`: CockroachDB-HLC + uncertainty window — a partial
+  temporal order, honestly uncertain on overlap, SoftValue-tied). **Only remaining Layer-0 sub-leg:**
+  the relativistic *group* law (inverses/boosts — structure beyond the monotone semilattice).
 - **Layer 1 — meta-frames** = Rx queries that meta-tag dimensions on the stream. A *derived view*
   over Layer 0 (one-directional). Clean, but downstream of Layer 0; do not build into the base frame.
 - **Layer 2 — universal action grammar (Xbox controller; the 4×4 grid). ✅ keystone DISCHARGED, 2026-06-05.**
