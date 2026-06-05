@@ -51,6 +51,19 @@ are doing to them." Same applies for Kestrel.
   decompose into composable DUs + assume-guarantee contracts; bounded→unbounded via a
   proven inductive step in Lean using TLA+ results as base-cases/lemmas (pushes the bound
   to the leaves).
+- `2026-06-04-kestrel-policy-algebra-uom-vs-phantom-types-electron-shell-metaphor-closed-system-isomorphism-rodneys-razor-formalized-rx-reducibility-calm-aaron-forwarded.md`
+  — policy algebra "for fun": UoM is wrong for KINDS (no arithmetic on a tag → phantom
+  type/typed DU instead; UoM-proper only for numeric thresholds); electron-shell metaphor
+  (kernel=Hamiltonian, kinds=shells, floor=1s/Aufbau, Pauli=unique-dispatch; breaks at
+  closed-vs-open → floor=closed-rigid, rest=open); defer the closed-system design + the
+  isomorphism question (checkable later; novelty/closure feeling = the halo trap);
+  RODNEY'S RAZOR FORMALIZED = Occam + isomorphism-collapse-to-one+pointers + factorization
+  into irreducibles over a POSET ("primes without total ordering") + orthogonal labels —
+  holds: unique-factorization is a theorem to prove not a primality freebie (ℤ[√−5]),
+  label-orthogonality checkable not word-choice-guaranteed (OQ-1 un-clean pair = the test
+  firing); the Rx refinement: data factors can be SHARED, identity = (shapes, Rx) pair
+  (μF/νF = factors/operation), relocated obligations = pair-canonicality + Rx-irreducibility
+  (zip/product/banana-split/join; ~CALM theorem, Aaron deferring).
 
 ## Currently-in-force projection
 
