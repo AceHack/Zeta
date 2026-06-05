@@ -95,7 +95,7 @@ named by the legs it has (e.g. "math-leg only", "math + 4-lang").
 |---|-----------|-------|:----:|:------:|:-----:|:------:|:-----:|:---------:|---------|
 | 1 | **Clock / causal order** (Versionstamp) | `src/Core/Clock.fs` + `Core.{TypeScript,CSharp,Rust}.Clock` | ✓ | ✓ | ✓ (ddac32e9) | ✓ (ddac32e9, max reified) | ✓ (ddac32e9) | ✓ (ddac32e9, max-convergence) | ✅ **FULL PROVEN** — 2nd floor primitive (legs in `Clock.FullVertical.Tests.fs`; Versionstamp=int64 logical clock, merge=max=join) |
 | 2 | **Identity / keys** (128-bit ordered composite key, NOT hash) | `src/Core.*.ZetaId` | ✓ (bijection + injectivity + env-invariance + key-embeds-clock ordering; V1 cell) | ✓ | partial | ✗ | ✗ | ✗ | **math + 4-lang** (V1 cell); rolling-monadic encoding + UoM-per-type + per-version/category cells open |
-| 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ? | ✗ | ✗ | ✗ | ✗ | math-leg only |
+| 3 | **Merkle integrity** | `src/Core/Merkle.fs` | ✓ (structural tamper-evidence; crypto premise named) | ✗ (F#-only; TS/C#/Rust XxHash128 port deferred) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, combine reified) | ✓ (Merkle.FullVertical) | ✓ (Merkle.FullVertical, anti-entropy: verify + minimal-delta) | **5 of 6 legs** — math + 4-ser + Bonsai + Arrow + homeostat (`Merkle.FullVertical.Tests.fs`); ONLY 4-lang remains (the gap to FULL PROVEN) |
 | 4 | **CRDT merge + idempotency** (G-Set) | `Crdt.fs`, `GSet.fs` + 4-lang G-Set | ✓ (ACI+identity+LUB) | ✓ (G-Set 4/4) | ✓ (29c1ffe4) | ✓ (658c8e24, reify/apply) | ✓ (51d2937c) | ✓ (658c8e24, convergence-to-LUB) | ✅ **FULL PROVEN** — the FIRST floor primitive to clear the full bar (all G-Set legs in `tests/Tests.FSharp/GSet.FourSer.Tests.fs`) |
 | 5 | **Serialization seed** | `byte-cost`, `DynamicValue` | ✓ | ✓ | partial | ✗ | ✗ | ✗ | math + 4-lang byte-locked |
 | 6 | **Metric / aggregation algebra** | `byte-cost`, `Bloom`/`CountMin`/`Sketch` | byte-cost ✓ · HLL+Bloom join & CMS monoid merge-laws ✓ (state-level) · error-DIRECTION ✓ (Bloom no-false-neg, CMS no-undercount); probabilistic magnitude bounds ✗ | byte-cost ✓ | ✗ | ✗ | ✗ | ✗ | math-leg (merge + error-direction); magnitude bounds + 4-lang open |
@@ -107,10 +107,19 @@ merge=union, Clock merge=max; the reusable `_Support/SerializerLegs.fs` helper b
 the 4-ser+Arrow legs). **2 of 6 floor primitives now FULL PROVEN.** The pattern is the
 **template** the other 4 follow (each: bridge the primitive's value/operation to DynamicValue → 4-ser
 round-trip + Arrow round-trip + reify-the-operation-as-Bonsai + homeostat-convergence).
+**Merkle (2026-06-04, `Merkle.FullVertical.Tests.fs`) clears 5 of those 6 legs** and is
+the first vertical where the homeostat-tie is NOT convergence-to-LUB: Merkle's `combine`
+is deliberately non-commutative (a Merkle tree is a *sequence* witness, not a set), so it
+is **not** a join-semilattice. Its homeostat role is **integrity / anti-entropy** — the
+root is a deterministic witness of the converged leaf-state (same state → same root), and
+`LeafDiff` pinpoints exactly the changed leaves so shipping only the delta drives a replica
+to the same root. So the role taxonomy (semilattice→converges; integrity→verifies) is now
+demonstrated, not just asserted. Merkle's only remaining leg is the 4-lang port.
 The other 4 are NOT yet full: **identity + serialization-seed have math ∧ 4-lang**
-(need 4-ser/Arrow/Bonsai/homeostat); **Merkle + metric-aggregation have the math leg**
-(4-lang partial). The remaining legs (4-ser, Bonsai, Arrow, homeostat-tie) are the
-gap to full PROVEN. The **4-lang column is sourced from `PRIMITIVE-REGISTRY.md`**
+(need 4-ser/Arrow/Bonsai/homeostat); **Merkle now has 5 of 6 legs** (math + 4-ser +
+Bonsai + Arrow + homeostat in `Merkle.FullVertical.Tests.fs`, 2026-06-04 — ONLY the
+4-lang port remains); **metric-aggregation has the math leg** (4-lang partial). The
+remaining legs are the gap to full PROVEN. The **4-lang column is sourced from `PRIMITIVE-REGISTRY.md`**
 (the consensus authority); this map adds the math + remaining legs.
 
 ## Identity / keys — ordered composite keys, NOT content-hashes
