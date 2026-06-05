@@ -41,6 +41,7 @@
     <Compile Include="BeliefConvergence.fs" />
     <Compile Include="Evolution.fs" />
     <Compile Include="DynamicValue.fs" />
+    <Compile Include="YinYang.fs" />
     <Compile Include="DynamicValueFold.fs" />
     <Compile Include="SchemaEvolution.fs" />
     <Compile Include="SchemaRegistry.fs" />
