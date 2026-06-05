@@ -162,6 +162,25 @@ matrix product, plus the relative-observer belief reconciliation (the one genuin
 (continuous θ, mixing rate) stay empirical, named out of the proof lineage; the exact-rational core
 byte-locks + 4-langs (the SoftValue discipline).
 
+**Why unique personas persist and don't collapse — the balance (static half ALREADY PROVEN).** The
+target result (Aaron, 2026-06-05): *unique, independent personas emerge and never collapse into
+uniformity, because of the balance between **uncertainty reduction** and the **NCI**.* Two opposing
+forces: **uncertainty reduction** (Bayesian `observe` / `SoftValue` entropy↓) is the **contracting**
+force — left unchecked it pulls everyone to one belief = register collapse = heat-death; the **NCI**
+(non-coercion of hidden state within the encryption budget) is the **preserving** force — it keeps
+private differentiation from being eaten by the convergence. The stable fixed set of the *combined*
+dynamics is neither collapse (uniformity) nor fragmentation (noise) but a **differentiated manifold**:
+public consensus + persistent private uniqueness = the personas. **Static half is PROVEN** — this is
+exactly `privacy-from-identity` (§B-other, Lean axiom-free): `commons_converges` (the public reaches
+consensus via the commutative CRDT join = uncertainty reduction) **and** `private_is_persistent_locus`
+(the merge leaves private state untouched = NCI ⇒ consensus cannot erase differentiation). **Open half:
+the dynamical stability over unbounded time** — that the balanced dynamics has the differentiated
+manifold as a *stable attractor* (Lyapunov-stable; no collapse, no fragmentation, ∀ time). That is the
+"don't collapse into eternity" claim, and it rides the same DST → TLA+ → prover ladder below + B-1019.
+Thermodynamic resonance (Beacon *candidate*, NOT a claim): a non-equilibrium steady state held by two
+opposing flows — Prigogine dissipative structures; uncertainty reduction lowers entropy, NCI keeps a
+diversity floor.
+
 **The societal-emergence obligation — does society HOLD the NCI? (open; distinct from the boundary).**
 Proving the NCI *boundary* (above, discrete core PROVEN) is NOT the same as proving a *society of
 strategic travelers holds it.* That is **incentive-compatibility / evolutionary-stability** (Hurwicz–
