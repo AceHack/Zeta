@@ -1,0 +1,12 @@
+[package]
+name = "zeta-crc32c"
+version = "0.1.0"
+edition = "2021"
+description = "CRC32C (Castagnoli) — Rust oracle for Zeta.Core cross-language agreement."
+license = "MIT"
+publish = false
+
+[dependencies]
+
+[dev-dependencies]
+serde_json = "=1.0.140"

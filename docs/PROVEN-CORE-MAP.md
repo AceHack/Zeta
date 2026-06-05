@@ -207,7 +207,7 @@ derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. D
 > each using the homeostat class that honestly fits its algebra (convergence vs aggregation). `Curve` tops
 > out at four legs (Bonsai/homeostat N/A by kind). The six-leg bar is a bar for *mergeable* primitives.
 
-**Determinism substrate (not a measurement axis):**
+**Determinism + integrity substrate (not measurement axes):**
 
 - **SplitMix64 finaliser** — `src/Core/SplitMix64.fs`: Vigna's mixer (arxiv 1410.0530 §3), the deterministic
   mixing step behind Zeta's DST RNG. math (BigCrush-validated upstream; the three golden-ratio/Vigna
@@ -223,6 +223,12 @@ derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. D
   4-lang-proven SplitMix64). **Honest scope:** only the pure-integer HRW algorithm is byte-locked;
   `JumpConsistentHash` is deliberately NOT cross-verified because it uses `f64` arithmetic, and floats
   are out of the proof lineage. (`RendezvousHash.CrossVerify.Tests`)
+- **CRC32C (Castagnoli) integrity checksum** — `src/Core/HardwareCrc.fs` (`HardwareCrc.Crc32C`): the
+  checkpoint-format checksum, hardware-accelerated (SSE4.2 / ARMv8) with a table form computing the
+  identical standard value. math (canonical check value `CRC32C("123456789") = 0xE3069283`) + 4-lang
+  (F#+C#+TS+Rust: `Core.CSharp/Crc32c.cs`, `Core.TypeScript/crc32c/`, `Core.Rust.Crc32c` — pure integer).
+  Notably the F# cross-verify drives the **real hardware path** and matches the table-computed seed, so
+  the agreement is hardware-vs-table-vs-three-languages. (`Crc32c.CrossVerify.Tests`)
 
 **Adinkra / holographic chain — COMPLETE to the published correspondence** (Lean, sorry-free, axiom-audited):
 

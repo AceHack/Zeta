@@ -1,0 +1,11 @@
+{
+  "description": "CRC32C (Castagnoli) golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). Standard CRC32C: init 0xFFFFFFFF, reflected, polynomial 0x82F63B78, final xor 0xFFFFFFFF. The Zeta hardware path (SSE4.2 Crc32 / ARMv8 ComputeCrc32C) and the table form compute the identical value. The canonical check value CRC32C(\"123456789\") = 3808858755 (0xE3069283) anchors correctness. Payloads are byte arrays (0..255); results are uint32 (fit JSON's exact range). Pure integer — fully byte-lockable.",
+  "crc32c": [
+    { "name": "empty", "payload": [], "result": 0 },
+    { "name": "a", "payload": [97], "result": 3251651376 },
+    { "name": "check-123456789", "payload": [49, 50, 51, 52, 53, 54, 55, 56, 57], "result": 3808858755 },
+    { "name": "quick-brown-fox", "payload": [84, 104, 101, 32, 113, 117, 105, 99, 107, 32, 98, 114, 111, 119, 110, 32, 102, 111, 120, 32, 106, 117, 109, 112, 115, 32, 111, 118, 101, 114, 32, 116, 104, 101, 32, 108, 97, 122, 121, 32, 100, 111, 103], "result": 576848900 },
+    { "name": "bytes-0-to-9", "payload": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], "result": 36446513 },
+    { "name": "high-bytes", "payload": [255, 254, 253, 0, 128, 64, 32, 16], "result": 369651932 }
+  ]
+}

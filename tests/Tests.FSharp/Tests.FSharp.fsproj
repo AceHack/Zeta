@@ -83,6 +83,7 @@
     <Compile Include="Watermark.CrossVerify.Tests.fs" />
     <Compile Include="SplitMix64.CrossVerify.Tests.fs" />
     <Compile Include="RendezvousHash.CrossVerify.Tests.fs" />
+    <Compile Include="Crc32c.CrossVerify.Tests.fs" />
     <Compile Include="FrameDelta.Tests.fs" />
     <Compile Include="FrameDelta.Legs.Tests.fs" />
     <Compile Include="FrameDelta.CrossVerify.Tests.fs" />
