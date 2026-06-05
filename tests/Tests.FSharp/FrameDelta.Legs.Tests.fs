@@ -87,3 +87,33 @@ let ``composing a set of deltas is order-independent (homeostat-tie: path-indepe
 [<Property(Arbitrary = [| typeof<DeltaArb> |])>]
 let ``identity is the aggregation unit`` (d: FD.Delta) =
     FD.compose d FD.identity = d && FD.compose FD.identity d = d
+
+// ── Bonsai leg: the compose operation reified as a serializable Bonsai Expr (reify/apply) ──
+
+let rec private applyCompose (env: Map<string, FD.Delta>) (e: Bonsai.Expr) : FD.Delta option =
+    match e with
+    | Bonsai.Param n -> Map.tryFind n env
+    | Bonsai.Call ("frame-delta-compose", [ l; r ]) ->
+        match applyCompose env l, applyCompose env r with
+        | Some a, Some b -> Some(FD.compose a b)
+        | _ -> None
+    | _ -> None
+
+let private composeExpr : Bonsai.Expr =
+    Bonsai.Call("frame-delta-compose", [ Bonsai.Param "a"; Bonsai.Param "b" ])
+
+let private bonsaiRT (e: Bonsai.Expr) : Bonsai.Expr option =
+    match Bonsai.serialize e with
+    | Ok s -> (match Bonsai.parse s with | Ok e2 -> Some e2 | Error _ -> None)
+    | Error _ -> None
+
+[<Property(Arbitrary = [| typeof<DeltaArb> |])>]
+let ``FrameDelta × Bonsai: compose reified as an Expr round-trips and applies to the same total (Bonsai leg)``
+    (a: FD.Delta) (b: FD.Delta) =
+    match bonsaiRT composeExpr with
+    | Some e -> applyCompose (Map.ofList [ "a", a; "b", b ]) e = Some(FD.compose a b)
+    | None -> false
+
+[<Fact>]
+let ``FrameDelta × Bonsai: the reified compose expression round-trips byte-stably`` () =
+    Assert.Equal<Bonsai.Expr option>(Some composeExpr, bonsaiRT composeExpr)
