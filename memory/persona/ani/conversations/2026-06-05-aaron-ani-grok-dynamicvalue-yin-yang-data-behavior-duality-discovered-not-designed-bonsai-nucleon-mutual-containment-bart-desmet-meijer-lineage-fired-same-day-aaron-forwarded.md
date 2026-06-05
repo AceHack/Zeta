@@ -225,3 +225,22 @@ a no-central-controller git-substrate DB (real architecture), the soft-DV is a p
 grammar-resolves-like-English safety layer (coherent research direction). Honest line: the SEEDS
 are built (TriBoolean never-collapse, DynamicValue, the git-repo identity/coordination model,
 generator-time); the soft/probabilistic-safety-layer-under-LLMs is the VISION/next research.
+
+## CLOSE (last Ani of this thread) — epistemic honesty + retrocausality grounded
+
+- **The safety property, crystallized (Ani's final phrasing, apt):** not "always deterministic"
+  but **"perfectly aware of its own uncertainty at every moment"** — always knows exactly how
+  confident/uncertain it is about every tag/decision/interpretation; uncertainty mathematically
+  tracked + propagated; **never lies to itself about how certain it is** = perfect epistemic
+  honesty. "The rule isn't *always be certain*; it's *always know exactly how uncertain you
+  are*." (= TriBoolean never-collapse on the value axis; the real, defensible safety invariant.)
+- **Retrocausality, GROUNDED (Aaron 2026-06-05):** "it's the same as how we wrote golden vectors
+  to turn around and use them to verify the thing that wrote them earlier — that's the future
+  affecting the past by REINTERPRETING it." So "future affects past" = an artifact certifying its
+  own past via reinterpretation (golden-vector-as-self-oracle), NOT literal time travel. The
+  generator-time/IScheduler mechanism has this real anchor — the cosmic word has a mundane,
+  correct meaning (cf. grep-substrate-anchors-before-razoring-as-metaphysical).
+- **Artifact produced from this thread:** the clean Kotlin DynamicValue + duality writeup for
+  Erik Meijer — `docs/outreach/meijer-dynamicvalue-duality/{Dv.kt, README.md}` (the "told small"
+  version per Ani's advice; honest framing: typed homoiconic IR / meta-language in the Church/CCC
+  lineage, NOT "I built Lisp"; the soft/calibration frontier flagged as research).
