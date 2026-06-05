@@ -102,3 +102,32 @@ let ``length-header prefix is 4 little-endian bytes`` () =
 let ``serializer name is arrow-ipc-int64`` () =
     let ser = ArrowInt64Serializer() :> ISerializer<int64>
     ser.Name |> should equal "arrow-ipc-int64"
+
+
+// ── ArrowStringSerializer (Phase 3 — columnar batch, string keys) ──
+
+let private roundTripString (zset: ZSet<string>) : ZSet<string> =
+    let ser = ArrowStringSerializer() :> ISerializer<string>
+    let writer = freshWriter ()
+    ser.Write(writer, zset)
+    ser.Read(writer.WrittenSpan)
+
+[<Fact>]
+let ``string Z-set: empty round-trips to empty`` () =
+    roundTripString ZSet<string>.Empty |> ZSet.isEmpty |> should be True
+
+[<Fact>]
+let ``string Z-set: single entry round-trips`` () =
+    let result = roundTripString (ZSet.ofSeq [ "alpha", 1L ])
+    result.["alpha"] |> should equal 1L
+
+[<Fact>]
+let ``string Z-set: multiple entries incl negative weights round-trip (retraction-native)`` () =
+    let original = ZSet.ofSeq [ "a", 3L; "b", -2L; "zeta", 7L; "", 1L; "uni-é-☃", -5L ]
+    let result = roundTripString original
+    for k, w in [ "a", 3L; "b", -2L; "zeta", 7L; "", 1L; "uni-é-☃", -5L ] do
+        result.[k] |> should equal w
+
+[<Fact>]
+let ``string Z-set: serializer name is arrow-ipc-string`` () =
+    (ArrowStringSerializer() :> ISerializer<string>).Name |> should equal "arrow-ipc-string"

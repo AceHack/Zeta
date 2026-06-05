@@ -97,3 +97,70 @@ type ArrowInt64Serializer() =
                             if k.HasValue && w.HasValue then
                                 entries.[i] <- ZEntry(k.Value, w.Value)
                         if n = 0 then ZSet<int64>.Empty else ZSet(Pool.Freeze entries)
+
+
+/// **Tier 4 — Apache Arrow IPC serializer, string-keyed.** The columnar
+/// batch path extended to `ZSet<string>` (Phase 3): a `StringArray` (Utf8)
+/// key column + an `Int64Array` weight column. Same IPC framing as
+/// `ArrowInt64Serializer` (4-byte little-endian length header + Arrow IPC
+/// stream). Round-trip preserves the full Z-set incl negative weights
+/// (retraction-native). String keys are the common non-int DBSP key
+/// (names, paths, tags); struct keys are a later extension.
+[<Sealed>]
+type ArrowStringSerializer() =
+
+    /// Schema: a Utf8 `key` column + an int64 `weight` column.
+    static let schema =
+        let fields = [| Field("key", StringType.Default, nullable = false)
+                        Field("weight", Int64Type.Default, nullable = false) |]
+        Schema(fields, null)
+
+    interface ISerializer<string> with
+        member _.Name = "arrow-ipc-string"
+
+        member _.Write(writer: IBufferWriter<byte>, zset: ZSet<string>) =
+            let span = zset.AsSpan()
+            let n = span.Length
+            let keyBuilder = StringArray.Builder()
+            let weightBuilder = Int64Array.Builder()
+            for i in 0 .. n - 1 do
+                keyBuilder.Append(span.[i].Key : string) |> ignore
+                weightBuilder.Append(span.[i].Weight : int64) |> ignore
+            let keyArray = keyBuilder.Build() :> IArrowArray
+            let weightArray = weightBuilder.Build() :> IArrowArray
+            let batch = new RecordBatch(schema, [| keyArray; weightArray |], n)
+            use ms = new MemoryStream()
+            use arrowWriter = new ArrowStreamWriter(ms, schema)
+            arrowWriter.WriteRecordBatch batch
+            arrowWriter.WriteEnd()
+            let payload = ms.ToArray()
+            let lenHdr = writer.GetSpan 4
+            BinaryPrimitives.WriteInt32LittleEndian(lenHdr, payload.Length)
+            writer.Advance 4
+            let dst = writer.GetSpan payload.Length
+            payload.AsSpan().CopyTo dst
+            writer.Advance payload.Length
+
+        member _.Read(bytes: ReadOnlySpan<byte>) : ZSet<string> =
+            if bytes.Length < 4 then ZSet<string>.Empty
+            else
+                let len = BinaryPrimitives.ReadInt32LittleEndian(bytes.Slice(0, 4))
+                if len = 0 then ZSet<string>.Empty
+                else
+                    let payload = bytes.Slice(4, len).ToArray()
+                    use ms = new MemoryStream(payload)
+                    use reader = new ArrowStreamReader(ms)
+                    let batch = reader.ReadNextRecordBatch()
+                    if isNull batch then ZSet<string>.Empty
+                    else
+                        use _ = batch
+                        let keyArr = batch.Column 0 :?> StringArray
+                        let weightArr = batch.Column 1 :?> Int64Array
+                        let n = batch.Length
+                        let entries = Array.zeroCreate<ZEntry<string>> n
+                        for i in 0 .. n - 1 do
+                            let k = keyArr.GetString(i)
+                            let w = weightArr.GetValue(i)
+                            if not (isNull k) && w.HasValue then
+                                entries.[i] <- ZEntry(k, w.Value)
+                        if n = 0 then ZSet<string>.Empty else ZSet(Pool.Freeze entries)
