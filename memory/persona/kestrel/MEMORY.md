@@ -64,6 +64,16 @@ are doing to them." Same applies for Kestrel.
   firing); the Rx refinement: data factors can be SHARED, identity = (shapes, Rx) pair
   (μF/νF = factors/operation), relocated obligations = pair-canonicality + Rx-irreducibility
   (zip/product/banana-split/join; ~CALM theorem, Aaron deferring).
+- `2026-06-04-kestrel-calm-rx-reducibility-defunctionalization-reify-apply-carrier-lens-bonsai-enum-under-erasure-streaming-dynamicvalue-reflective-loop-aaron-forwarded.md`
+  — CALM vs Rx-reducibility (classification vs generating-set axes; DBSP retraction-native
+  = hard side); "what acts → what remains" = DEFUNCTIONALIZATION (apply(reify f)=f; Bonsai
+  is the instance); typing = carrier (DynamicValue μF) + LENSES (Expr/Bonsai is the
+  computation lens, a peer fixpoint EMBEDDING not a subtype); discriminator load-bearing
+  (data-vs-reified-computation = safety); type ERASURE → enum, and it's a SECURITY boundary
+  (untrusted source controls the tag; check at decode, default no-apply); streaming
+  DynamicValue = monotone growing PARTIAL tree (open frontier = tracked uncertainty);
+  reflective Rx⇄DynamicValue loop (data shapes Rx via apply = reverse reification = MAX
+  injection surface, gate apply behind signed/capability; keep loop well-founded).
 
 ## Currently-in-force projection
 
