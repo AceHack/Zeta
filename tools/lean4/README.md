@@ -7,9 +7,12 @@ Machine-checked formalizations of Zeta's load-bearing mathematical claims using
 [Mathlib](https://leanprover-community.github.io/). The artifact-grade module
 `Lean4/DbspChainRule.lean` is fully machine-checked — no `sorry`, no `admit` —
 and CI-type-checked against the pinned toolchain on every PR that touches
-`tools/lean4/**`. Other modules under `tools/lean4/` (e.g.,
-`ImaginaryStack/ToyModel.lean`) are exploratory and may carry `sorry`
-placeholders pending future formalization rounds.
+`tools/lean4/**`. As of 2026-06-05, `ImaginaryStack/ToyModel.lean` (the
+Adinkra-as-generator / bulk-from-boundary toy lemma) is **also** machine-checked
+and sorry-free — CI type-checks it and runs an axiom audit that fails on
+`sorryAx`. Its honest scope (erasure-distance for arbitrary erasure patterns; the
+specific generator the multiplication table induces; the continuous lift) is
+named in the file header and in `docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B.
 
 ## Repository layout
 
@@ -19,7 +22,7 @@ placeholders pending future formalization rounds.
 | `lean-toolchain` | Pinned Lean 4 toolchain (`leanprover/lean4:v4.30.0-rc1`) |
 | `Lean4.lean` | Library root — imports every machine-checked module so `lake build` walks them transitively |
 | `Lean4/DbspChainRule.lean` | DBSP chain rule formalization (Budiu et al. arXiv:2203.16684) |
-| `ImaginaryStack/ToyModel.lean` | Imaginary-stack toy model exploration |
+| `ImaginaryStack/ToyModel.lean` | Adinkra-as-generator / bulk-from-boundary toy lemma — machine-checked, sorry-free (2026-06-05) |
 
 ## Build
 

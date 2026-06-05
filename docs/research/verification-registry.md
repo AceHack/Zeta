@@ -26,6 +26,37 @@ because <one-line>.`
 
 ---
 
+## `ImaginaryStack.ToyModel.lemma1_toy` *(Adinkra-as-generator / bulk-from-boundary, TOY)*
+
+- **Artifact.** `tools/lean4/ImaginaryStack/ToyModel.lean`
+  (Lean 4, Mathlib; `lemma1_toy` + `reconstruction_property` +
+  `code_covers_boundary`). Machine-checked + axiom-audited
+  (no `sorryAx`) in `lean-proof.yml`. Discharged 2026-06-05.
+- **Source anchors.** Pastawski, Yoshida, Harlow, Preskill —
+  *Holographic quantum error-correcting codes* (HaPPY),
+  `arXiv:1503.06237` (bulk-from-boundary reconstruction); Gates
+  et al. — Adinkra graphs as the generator/codeword structure.
+- **Claim (honest, TOY).** Models 16 = 12 (boundary) ⊕ 4 (bulk).
+  For the code = graph of any linear generator `G : boundary → bulk`,
+  the single linear map `reconstruct G = id.prod G` recovers every
+  codeword exactly from its 12 boundary coordinates. This is the
+  provable *skeleton* of HaPPY bulk-from-boundary for a graph code —
+  NOT a replication of the HaPPY paper's results.
+- **Fidelity scope.** Faithful: a linear reconstruction map exists
+  and recovers the bulk from a fixed boundary for a linear code.
+  **NOT claimed** (named-open, in the file header + FROZEN-CORE
+  register §B): erasure *distance* (arbitrary 12-of-16 erasure
+  patterns — depends on the concrete Adinkra matrix); which `G` the
+  imaginary-stack multiplication table induces; the continuous/∞-dim
+  lift. The toy proves the existence/exactness core, not the QECC
+  distance properties that make HaPPY codes error-*correcting*.
+- **Last audit.** 2026-06-05, authored by Otto (shadow); not yet
+  independently audited by the verification-drift-auditor. Grade:
+  machine-checked toy (A-grade-with-CI for what it states; the
+  *scope* is deliberately narrower than the full HaPPY claim).
+
+---
+
 ## `Dbsp.ChainRule.chain_rule_proposition_3_2`
 
 - **Artifact.** `tools/lean4/Lean4/DbspChainRule.lean:~695`

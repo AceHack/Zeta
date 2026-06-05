@@ -120,3 +120,24 @@ jobs:
         # hand-run to A-grade-with-CI.
         working-directory: tools/lean4
         run: lake env lean Lean4/DbspChainRule.lean
+
+      - name: Type-check ImaginaryStack/ToyModel.lean
+        # The Adinkra-as-generator / bulk-from-boundary toy lemma. Its `sorry`
+        # placeholders were discharged 2026-06-05; this step keeps it honest
+        # (type-checks the proof on every PR that touches tools/lean4/**).
+        working-directory: tools/lean4
+        run: lake env lean ImaginaryStack/ToyModel.lean
+
+      - name: Guard — ToyModel proofs are sorry-free (axiom audit)
+        # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
+        # would not catch a regression. Print the axiom set of the headline
+        # lemmas and fail if `sorryAx` appears — the rigorous sorry-free check.
+        working-directory: tools/lean4
+        run: |
+          printf '#print axioms lemma1_toy\n#print axioms reconstruction_property\n#print axioms code_covers_boundary\n' \
+            | cat ImaginaryStack/ToyModel.lean - > /tmp/toymodel_axiom_audit.lean
+          if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          echo "ToyModel axiom audit clean (no sorryAx)."
