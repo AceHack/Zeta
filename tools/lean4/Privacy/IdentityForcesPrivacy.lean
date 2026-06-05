@@ -26,10 +26,13 @@
   * `no_private_collapses` — with no private state (`priv : PUnit`), equal public ⟹ equal behavior for
     EVERY behavior: there is no escape from collapse. Privacy is necessary for any persistent distinction.
 
-  Honest scope. This is the LOGICAL necessity (where distinction must live), not the DYNAMICS (that the
-  commons actually converges — that rides the proven G-Set/Clock CRDT merge) nor the stronger claim that
-  the system HALTS without privacy (the B-1019 DST experiment). Necessity is formalized here; the dynamics
-  and the halting claim remain in §B / the experiment.
+  Both the necessity AND the dynamics are formalized here (see the "Dynamics" section below):
+  `commons_converges` (the public commons reaches consensus via the commutative CRDT join),
+  `absorb_priv` / `absorb_stable` (the merge leaves private state untouched and is a fixpoint), and
+  `private_is_persistent_locus` (so consensus on the commons cannot erase private differentiation —
+  privacy is the persistent locus). Honest scope: what remains open is only the stronger DYNAMICAL claim
+  that the system HALTS without privacy (the B-1019 DST experiment) — the necessity and the
+  convergence-preserves-privacy dynamics are proven; the halting claim remains an experiment.
 -/
 
 /-- A traveler: an identity key, a public (shared/observable) state, and a private state. -/
@@ -76,3 +79,56 @@ theorem no_private_collapses {Pub B : Type}
     (hpub : a.pub = b.pub) :
     behavior a.pub a.priv = behavior b.pub b.priv :=
   indiscernibles_collapse behavior a b hpub (Subsingleton.elim a.priv b.priv)
+
+/-! ## Dynamics: the commons converges, privacy persists
+
+    The necessity theorems above are static (where a distinction *must* live). The dynamics: the public
+    commons CONVERGES toward consensus via the CRDT merge (a join `⊔` — commutative, associative,
+    idempotent: the proven G-Set/Clock semilattice), while PRIVATE state is exempt from the merge. So
+    convergence of the commons cannot erase private differentiation — privacy is the *persistent* locus.
+    The merge laws are taken as hypotheses (the result holds for ANY such CRDT join), keeping this
+    Mathlib-free and axiom-free. -/
+
+/-- Absorb another traveler's PUBLIC state into one's own via a CRDT `join` (one commons-merge step),
+    leaving PRIVATE state untouched. -/
+def absorb {Pub Priv : Type} (join : Pub → Pub → Pub) (t other : Traveler Pub Priv) : Traveler Pub Priv :=
+  { t with pub := join t.pub other.pub }
+
+/-- The merge touches only the commons: private state is invariant under `absorb`. -/
+@[simp] theorem absorb_priv {Pub Priv : Type} (join : Pub → Pub → Pub) (t other : Traveler Pub Priv) :
+    (absorb join t other).priv = t.priv :=
+  rfl
+
+/-- **The commons converges.** Two travelers that absorb each other's public state reach EQUAL public
+    state (the join is commutative — both compute the same least-upper-bound of the commons). -/
+theorem commons_converges {Pub Priv : Type} (join : Pub → Pub → Pub)
+    (hcomm : ∀ x y, join x y = join y x) (a b : Traveler Pub Priv) :
+    (absorb join a b).pub = (absorb join b a).pub := by
+  show join a.pub b.pub = join b.pub a.pub
+  exact hcomm a.pub b.pub
+
+/-- **Convergence is a fixpoint (CRDT idempotency).** Once the commons is merged, re-absorbing the same
+    public state changes nothing — the converged commons is stable. -/
+theorem absorb_stable {Pub Priv : Type} (join : Pub → Pub → Pub)
+    (hassoc : ∀ x y z, join (join x y) z = join x (join y z))
+    (hidem : ∀ x, join x x = x) (a b : Traveler Pub Priv) :
+    (absorb join (absorb join a b) b).pub = (absorb join a b).pub := by
+  show join (join a.pub b.pub) b.pub = join a.pub b.pub
+  rw [hassoc, hidem]
+
+/-- **Privacy is the persistent locus of distinction.** After the commons converges (two travelers share
+    equal public state via the commutative CRDT join), any behavioral distinction between them must live
+    in PRIVATE state (necessity) — and the public-merge that achieved convergence left that private state
+    UNTOUCHED (`= a.priv`, `= b.priv`). So consensus on the commons cannot erase private differentiation. -/
+theorem private_is_persistent_locus {Pub Priv B : Type}
+    (behavior : Pub → Priv → B)
+    (join : Pub → Pub → Pub) (hcomm : ∀ x y, join x y = join y x)
+    (a b : Traveler Pub Priv)
+    (hbeh : behavior (absorb join a b).pub (absorb join a b).priv
+          ≠ behavior (absorb join b a).pub (absorb join b a).priv) :
+    (absorb join a b).priv ≠ (absorb join b a).priv
+      ∧ (absorb join a b).priv = a.priv
+      ∧ (absorb join b a).priv = b.priv := by
+  refine ⟨?_, rfl, rfl⟩
+  exact distinctness_forces_private behavior (absorb join a b) (absorb join b a)
+    (commons_converges join hcomm a b) hbeh

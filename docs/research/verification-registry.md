@@ -38,16 +38,18 @@ because <one-line>.`
   Complements the shipped Identity-injectivity proof (distinct
   observations → distinct keys).
 - **Claim.** Model a traveler as `(key, public, private)`; behavior
-  is a deterministic function of the state it can read. Then under
-  public convergence (equal public state), behaviorally-distinct
-  travelers MUST differ in private state — identities force privacy.
-  Plus: distinct key alone does not differentiate behavior (key
-  necessary, not sufficient); no private state ⟹ collapse.
-- **Fidelity scope.** Formalizes the LOGICAL necessity (where a
-  persistent distinction must live). **NOT claimed:** the DYNAMICS
-  (the commons actually converging — rides the proven CRDT merge)
-  nor the stronger claim that the system HALTS without privacy
-  (B-1019 DST experiment). Necessity proven; dynamics + halting open.
+  is a deterministic function of the state it can read. Necessity:
+  under public convergence, behaviorally-distinct travelers MUST
+  differ in private state (key alone insufficient; no private ⟹
+  collapse). Dynamics: the public commons converges via a commutative
+  CRDT join, the merge leaves private state untouched and is a
+  fixpoint, so consensus cannot erase private differentiation —
+  privacy is the persistent locus (`private_is_persistent_locus`).
+- **Fidelity scope.** Formalizes the LOGICAL necessity AND the
+  convergence-preserves-privacy DYNAMICS (the CRDT-merge laws taken
+  as hypotheses, so it holds for any such join). **NOT claimed:** the
+  stronger dynamical claim that the system HALTS without privacy
+  (B-1019 DST experiment) — that remains open.
 - **Last audit.** 2026-06-05, authored by Otto (shadow); not yet
   independently audited. Grade: machine-checked, axiom-free.
 
