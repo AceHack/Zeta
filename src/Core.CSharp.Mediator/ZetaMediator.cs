@@ -11,6 +11,9 @@ internal sealed class ZetaMediator(global::Mediator.IMediator inner) : IMediator
     public ValueTask<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default) =>
         inner.Send(request, cancellationToken);
 
+    public IAsyncEnumerable<TResponse> CreateStream<TResponse>(IStreamRequest<TResponse> request, CancellationToken cancellationToken = default) =>
+        inner.CreateStream(request, cancellationToken);
+
     public ValueTask Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = default)
         where TNotification : INotification =>
         inner.Publish(notification, cancellationToken);

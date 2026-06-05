@@ -52,4 +52,36 @@ public sealed class MediatorPortTests
         await mediator.Publish(new Tick());
         Assert.Equal(1, sink.Count);
     }
+
+    [Fact]
+    public async Task CommandDispatchesThroughThePort()
+    {
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        var response = await mediator.Send(new Greet("ada"));
+        Assert.Equal("hello:ada", response);
+    }
+
+    [Fact]
+    public async Task QueryDispatchesThroughThePort()
+    {
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        var response = await mediator.Send(new Answer());
+        Assert.Equal(42, response);
+    }
+
+    [Fact]
+    public async Task StreamRequestYieldsItsSequenceThroughThePort()
+    {
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        var collected = new List<int>();
+        await foreach (var n in mediator.CreateStream(new Countdown(3)))
+        {
+            collected.Add(n);
+        }
+
+        Assert.Equal([3, 2, 1], collected);
+    }
 }
