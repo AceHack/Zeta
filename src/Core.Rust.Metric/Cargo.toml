@@ -1,0 +1,23 @@
+[package]
+name = "zeta-core-metric"
+version = "0.1.0"
+edition = "2024"
+description = "Metric / aggregation sketches (Bloom + CountMin) -- Rust parity oracle (#4 of TS/F#/C#/Rust) for the cross-language byte-lock. Conforms byte-for-byte to the F# canonical shapes (src/Core/BloomFilter.fs, src/Core/CountMin.fs) on the deterministic CORE: Bloom keys via XXH3-128, CountMin via add(baseHash) = SplitMix + fastrange. The .NET HashCode.Combine convenience path is NOT portable and is omitted."
+license = "Apache-2.0"
+publish = false
+
+# Bloom needs XXH3-128 (same as Merkle): xxhash-rust behind the default `xxh3` feature,
+# exact-pinned per the supply-chain doctrine. CountMin's core needs no hash (SplitMix).
+[features]
+default = ["xxh3"]
+xxh3 = ["dep:xxhash-rust"]
+
+[dependencies]
+xxhash-rust = { version = "=0.8.10", features = ["xxh3"], optional = true }
+
+[dev-dependencies]
+serde_json = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
