@@ -20,8 +20,10 @@ public sealed class MediatorPortTests
     {
         var services = new ServiceCollection();
         services.AddSingleton<TickSink>();
+        services.AddSingleton<BehaviorSink>();
         services.AddMediator();            // generated registration — discovers the port handlers
         services.AddZetaMediatorAdapter(); // our port adapter over the generated IMediator
+        services.AddZetaPipelineBehavior(typeof(CountingBehavior<,>)); // via the Zeta port, no global::Mediator
         return services.BuildServiceProvider();
     }
 
@@ -83,5 +85,17 @@ public sealed class MediatorPortTests
         }
 
         Assert.Equal([3, 2, 1], collected);
+    }
+
+    [Fact]
+    public async Task PipelineBehaviorRunsAroundTheHandler()
+    {
+        using var provider = BuildProvider();
+        var mediator = provider.GetRequiredService<IMediator>();
+        var sink = provider.GetRequiredService<BehaviorSink>();
+        var before = sink.Count;
+        var response = await mediator.Send(new Ping("ada"));
+        Assert.Equal("pong:ada", response);
+        Assert.True(sink.Count > before, "the pipeline behavior should have wrapped the handler");
     }
 }

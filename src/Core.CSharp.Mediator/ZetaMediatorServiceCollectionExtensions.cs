@@ -20,4 +20,20 @@ public static class ZetaMediatorServiceCollectionExtensions
         services.AddSingleton<IPublisher>(static sp => sp.GetRequiredService<IMediator>());
         return services;
     }
+
+    /// <summary>
+    /// Register an open-generic pipeline behavior (a type implementing <see cref="IPipelineBehavior{TMessage,TResponse}"/>,
+    /// e.g. <c>typeof(LoggingBehavior&lt;,&gt;)</c>). The generated mediator resolves behaviors from DI, so this is
+    /// the hexagonal seam for registering them without the composition root naming <c>global::Mediator</c>.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="openGenericBehavior">The open-generic behavior type to register.</param>
+    /// <returns>The same service collection, for chaining.</returns>
+    public static IServiceCollection AddZetaPipelineBehavior(this IServiceCollection services, Type openGenericBehavior)
+    {
+        ArgumentNullException.ThrowIfNull(services);
+        ArgumentNullException.ThrowIfNull(openGenericBehavior);
+        services.AddSingleton(typeof(global::Mediator.IPipelineBehavior<,>), openGenericBehavior);
+        return services;
+    }
 }

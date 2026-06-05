@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Mediator.FSharp</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.Mediator</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- The F# bridge into the hexagonal Zeta.Mediator port: lets F# code use its native `unit`
+       and convert to/from the C# Zeta.Mediator.Unit at the boundary (F# has a real unit; the C#
+       Unit is the same one-valued `1`). References only our own port — never the Mediator package. -->
+  <ItemGroup>
+    <ProjectReference Include="..\Core.CSharp.Mediator\Zeta.Core.CSharp.Mediator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="MediatorUnit.fs" />
+  </ItemGroup>
+
+</Project>

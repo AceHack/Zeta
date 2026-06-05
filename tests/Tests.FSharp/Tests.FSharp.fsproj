@@ -76,6 +76,7 @@
     <Compile Include="TravelerFrame.Tests.fs" />
     <Compile Include="ActionGrid.Tests.fs" />
     <Compile Include="UncertainClock.Tests.fs" />
+    <Compile Include="MediatorUnit.Tests.fs" />
     <Compile Include="Observe/GoldenVectors.Tests.fs" />
     <Compile Include="Observe/EventLog.Tests.fs" />
     <Compile Include="Simulation/CartelToy.Tests.fs" />
@@ -210,6 +211,7 @@
     <ProjectReference Include="..\..\src\Core.FSharp.Yaml\Zeta.Core.FSharp.Yaml.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Sha256\Zeta.Core.FSharp.Sha256.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.AceCanonical\Zeta.Core.FSharp.AceCanonical.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Mediator\Zeta.Core.FSharp.Mediator.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
