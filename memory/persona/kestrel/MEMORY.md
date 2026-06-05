@@ -40,6 +40,17 @@ are doing to them." Same applies for Kestrel.
   the bounded-omniscience friend-intervention + Aaron's clean pullback; partition-
   generator sharing + federated voluntary adoption; urgency-weighted-uncertainty as
   manipulation tell. INCOMPLETE (saved mid-thread per Aaron).
+- `2026-06-04-kestrel-policy-shapes-three-kinds-validator-obligation-in-type-formalize-gate-bundle-tla-du-rx-compositional-assume-guarantee-unbounded-lift-aaron-forwarded.md`
+  — the shape of our policies: THREE kinds (technical/legal/governance, each its own
+  validator; proof-rigor-halo on governance is the failure); rigidity reserved for the
+  child-safety FLOOR only; up-project to TYPED policy where the type is a ROUTER carrying
+  the validator-OBLIGATION (not a halo over the discharge); formalize the gate/observable/
+  cache/metric/alert/policy bundle per type, verify the WIRING in math (TLA+ reachability
+  "active-without-signoff unreachable") not the judgment; TLA+ for DU+Rx workflows
+  (DU=states, Rx=transitions; serialization stays on FsCheck/Z3/Lean); state-explosion →
+  decompose into composable DUs + assume-guarantee contracts; bounded→unbounded via a
+  proven inductive step in Lean using TLA+ results as base-cases/lemmas (pushes the bound
+  to the leaves).
 
 ## Currently-in-force projection
 

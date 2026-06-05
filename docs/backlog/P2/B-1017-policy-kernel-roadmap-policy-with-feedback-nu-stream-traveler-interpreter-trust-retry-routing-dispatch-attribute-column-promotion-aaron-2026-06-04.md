@@ -33,3 +33,37 @@ instance. Remaining, in recommended order:
 
 Discipline (Aaron + Amara): **do not overgeneralize early** — the generic kernel is
 proven by one boring instance (shipped); add interpreters as real needs appear.
+
+## Kestrel's refinements (2026-06-04, `memory/persona/kestrel/conversations/2026-06-04-kestrel-policy-shapes-…`)
+Item #1 (Policy<input,decision,feedback>) SHIPPED (commit 7bb817a8b). Kestrel adds:
+6. **Three policy KINDS, each with its own validator** — technical (proof/tests),
+   legal (counsel), governance (human-review; motive-touching ones → psychiatrist+Max).
+   Up-project to a TYPED policy where the kind is a typed lens; **the type is a ROUTER,
+   not a validator** — carry the **required-validator + validation-status in the type**
+   so a Legal policy can't go active without counsel-signoff, Governance without
+   human-review. Type encodes the OBLIGATION, not the discharge (the keystone compiled
+   into the policy type). Failure to avoid: proof-rigor-halo making a values-policy feel
+   settled because its technical layer is proven.
+7. **Formalize the gate/observable/cache/metric/alert/policy bundle PER TYPE** and verify
+   the WIRING in math: gate exists; observable populated BEFORE the active transition;
+   metric→alert wired; cache invalidates on the gate event; no active-without-signoff.
+   → **TLA+ reachability** ("active-without-signoff is unreachable") + types (bundle
+   completeness) + FsCheck (config invariants). Proves PRESENCE+ROUTING of validation,
+   NOT correctness of the signoff content (judgment stays with the validator).
+8. **Rigidity reserved for the child-safety FLOOR only** — everywhere else rigidity IS
+   the failure mode; policies stay minimal/editable/data-validated. An elaborate
+   load-bearing policy outside the floor is the smell.
+
+## Verification methodology (Kestrel) — for the workflow/policy DUs
+- **DU+Rx workflow = state machine** (DU=states, Rx=transitions) → TLA+ for transition-
+   safety/reachability; serialization stays on FsCheck/Z3/Lean (don't merge the claims).
+- **State-explosion → decompose into small composable DUs**; verify each in isolation
+   (bounded, TLC-exhaustive) + **assume-guarantee contracts** at every seam (prove each
+   piece's guarantees discharge the connected pieces' assumptions — the unstated
+   seam-assumption is where bugs hide). Scope = "compositionally verified over bounded
+   component models with discharged contracts."
+- **Bounded → unbounded LIFT**: TLA+/TLC results as verified base-cases/lemmas; prove
+   the **inductive step over arbitrary N** in Lean/Coq/Isabelle (DU hierarchy is
+   inductive). Earned ONLY by the proven step (not induction-by-example). Conditional on
+   the TLC lemmas → "unbounded composition over TLC-verified component lemmas" (pushes
+   the bound to the leaves).
