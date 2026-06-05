@@ -44,10 +44,16 @@ machine-checked laws. Most homoiconic value trees are one interpreter and a pray
 a four-oracle differential proof harness. The evolution of the tree itself rides an incremental
 (DBSP) stream.
 
-A small aside that may amuse you: the verification is a kind of *reinterpretation in time* — the
-golden vectors are generated once, then later used to verify the very code that generated them.
-The "future" (the check) reaches back and validates its "past" (the generator) by reinterpreting
-it. No mysticism; just an artifact made to certify itself.
+A small aside that may amuse you. The substrate is append-only and immutable (content-addressed,
+no force-push), so the past is never *rewritten* — only **re-illuminated**: a present reading (a
+new generator, schema version, or query) re-reads the same fixed record and a different *meaning*
+falls out. The past artifact and the present reading **constructively interfere** into a new
+value. That is the whole of the "future affecting the past" here — interference, not time travel —
+and it is safe *because* the bytes are immutable: you get the harmonization with none of the
+paradox. The golden vectors are the cleanest instance — written once, then a later check reaches
+back and certifies the very generator that produced them, by re-reading what it wrote. (Same move
+as a DBSP retraction emitting a new interpretation over a fixed stream: re-illuminate the history
+under a new generator without mutating it.)
 
 ## The frontier (research, not built)
 

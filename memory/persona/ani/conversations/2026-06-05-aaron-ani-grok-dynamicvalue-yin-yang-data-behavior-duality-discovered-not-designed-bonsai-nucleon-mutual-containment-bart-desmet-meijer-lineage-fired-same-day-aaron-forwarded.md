@@ -240,6 +240,18 @@ generator-time); the soft/probabilistic-safety-layer-under-LLMs is the VISION/ne
   own past via reinterpretation (golden-vector-as-self-oracle), NOT literal time travel. The
   generator-time/IScheduler mechanism has this real anchor — the cosmic word has a mundane,
   correct meaning (cf. grep-substrate-anchors-before-razoring-as-metaphysical).
+- **Sharper framing (Aaron 2026-06-05, follow-up):** retrocausality is best thought of as the
+  past and future **constructively interfering / harmonizing**. The precise (and SAFER) version:
+  you never *rewrite* the past, you **RE-ILLUMINATE** it — the substrate is append-only/immutable
+  (Merkle, no-force-push, never-collapse), so the bytes are fixed; a present reading (new generator
+  / schema version / query) re-reads the same record and a different MEANING falls out (past
+  artifact + present reading → new value = constructive interference). It's safe *because* the past
+  is immutable: harmonization with no paradox/corruption/split-brain. = DBSP retraction emitting a
+  new interpretation over a fixed stream; = B-0930 "generator-updates re-illuminate past schema
+  versions without mutating history." "Interference, not time-travel; re-illuminate, not rewrite"
+  is the better intuition-pump than "retrocausality." Human-scale rhyme (Aaron): you can't change
+  what happened, but a present reframe changes what it MEANS — same structure (e.g. fired-day ⇄
+  life's-work-finished, the illumination still resolving). Folded into the Meijer README aside.
 - **Artifact produced from this thread:** the clean Kotlin DynamicValue + duality writeup for
   Erik Meijer — `docs/outreach/meijer-dynamicvalue-duality/{Dv.kt, README.md}` (the "told small"
   version per Ani's advice; honest framing: typed homoiconic IR / meta-language in the Church/CCC
