@@ -170,3 +170,31 @@ let ``Merkle × homeostat: anti-entropy fixed case (one changed leaf syncs via t
     for i in diff do
         patched.[i] <- [| "a"B; "b"B; "c"B |].[i]
     Assert.Equal(cur.Root, (MerkleTree patched).Root) // converged after shipping only leaf 1
+
+// ── Merkle × 4-lang (F# ↔ C#) byte-lock leg ──
+// The C# oracle (Zeta.Core.CSharp.Merkle) shares System.IO.Hashing.XxHash128 and the
+// identical little-endian Hi/Lo combine layout, so the root over the same leaves is
+// BYTE-IDENTICAL across F# and C#. This is the SECOND of the four language ports;
+// Rust + pure-TS XxHash128 (byte-identical to .NET's XXH3-128) remain the 4-lang gap.
+
+let private genLeaves : Gen<byte[][]> =
+    Gen.arrayOf (Gen.arrayOf (Gen.choose (0, 255) |> Gen.map byte))
+
+type LeavesArb() =
+    static member L() = Arb.fromGen genLeaves
+
+[<Property(Arbitrary = [| typeof<LeavesArb> |])>]
+let ``Merkle × 4-lang: F# and C# produce byte-identical roots over the same leaves`` (leaves: byte[][]) =
+    let fsRoot = (MerkleTree leaves).Root
+    let csRoot = (Zeta.Core.CSharp.MerkleTree(leaves)).Root
+    fsRoot.ToHex() = csRoot.ToHex()
+
+[<Fact>]
+let ``Merkle × 4-lang: F# ↔ C# byte-lock on fixed cases (empty / single / odd / even)`` () =
+    let cases =
+        [ [||]
+          [| "a"B |]
+          [| "a"B; "b"B; "c"B |]
+          [| "x"B; "y"B; "z"B; "w"B; "q"B |] ]
+    for leaves in cases do
+        Assert.Equal((MerkleTree leaves).Root.ToHex(), (Zeta.Core.CSharp.MerkleTree(leaves)).Root.ToHex())

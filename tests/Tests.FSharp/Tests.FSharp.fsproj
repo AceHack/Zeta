@@ -185,6 +185,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
+    <ProjectReference Include="..\..\src\Core.CSharp.Merkle\Zeta.Core.CSharp.Merkle.csproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.ZetaId\Zeta.Core.FSharp.ZetaId.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.TriBoolean\Zeta.Core.FSharp.TriBoolean.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />

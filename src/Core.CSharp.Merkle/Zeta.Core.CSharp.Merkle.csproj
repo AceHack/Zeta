@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Zeta.Core.CSharp</RootNamespace>
+    <AssemblyName>Zeta.Core.CSharp.Merkle</AssemblyName>
+  </PropertyGroup>
+
+  <!-- Merkle integrity (oracle #2 of TS/F#/C#/Rust) — the checkpoint/anti-entropy
+       building block (PROVEN-CORE-MAP #3). Conforms to the F# canonical shape
+       (src/Core/Merkle.fs) byte-for-byte: same XxHash128 (System.IO.Hashing) leaf
+       hash + same little-endian Hi/Lo combine layout, so a tree over the same leaves
+       produces a BYTE-IDENTICAL root in F# and C# (the cross-language byte-lock).
+       Rust + pure-TS XxHash128 ports remain (the 4-lang gap). -->
+
+  <ItemGroup>
+    <PackageReference Include="System.IO.Hashing" />
+  </ItemGroup>
+
+</Project>
