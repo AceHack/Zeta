@@ -21,6 +21,7 @@
     <Compile Include="AdinkraCode.fs" />
     <Compile Include="HexCore.fs" />
     <Compile Include="Semiring.fs" />
+    <Compile Include="ProbabilitySemiring.fs" />
     <Compile Include="Pool.fs" />
     <Compile Include="GSet.fs" />
     <Compile Include="Bag.fs" />
