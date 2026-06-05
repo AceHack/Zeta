@@ -1,0 +1,30 @@
+import { describe, expect, test } from "bun:test";
+import { rat, add, mul, max, forwardStep, viterbiStep, type Rational } from "./probability-semiring";
+import vectors from "./golden-vectors.json";
+
+// Replays the shared golden seed through the TS oracle; the C#/F#/Rust oracles replay the same file.
+
+const r = (x: { n: number; d: number }): Rational => rat(x.n, x.d);
+const vec = (xs: { n: number; d: number }[]): Rational[] => xs.map(r);
+const mat = (xs: { n: number; d: number }[][]): Rational[][] => xs.map(vec);
+
+describe("ProbabilitySemiring golden vectors", () => {
+  test("normalize", () => {
+    for (const v of vectors.normalize) expect(rat(v.n, v.d)).toEqual(r(v.result));
+  });
+  test("add (+,x)", () => {
+    for (const v of vectors.add) expect(add(r(v.a), r(v.b))).toEqual(r(v.result));
+  });
+  test("mul", () => {
+    for (const v of vectors.mul) expect(mul(r(v.a), r(v.b))).toEqual(r(v.result));
+  });
+  test("max (Viterbi +)", () => {
+    for (const v of vectors.max) expect(max(r(v.a), r(v.b))).toEqual(r(v.result));
+  });
+  test("forwardStep (pi*P over +,x)", () => {
+    for (const v of vectors.forwardStep) expect(forwardStep(vec(v.pi), mat(v.p))).toEqual(vec(v.result));
+  });
+  test("viterbiStep (max,x)", () => {
+    for (const v of vectors.viterbiStep) expect(viterbiStep(vec(v.v), mat(v.p))).toEqual(vec(v.result));
+  });
+});

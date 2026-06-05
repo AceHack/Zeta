@@ -1,0 +1,42 @@
+{
+  "description": "ProbabilitySemiring golden vectors — the shared seed for cross-language agreement (F#/C#/TS/Rust). Exact rational ℚ (no floats — byte-lockable). A rational is {n, d} in lowest terms with d>0. add/mul = the probability semiring (+,×); max = the Viterbi-semiring ⊕ (max,×); forwardStep = π·P over (+,×) (Markov/HMM-forward); viterbiStep = best-path score over (max,×). P[i][j] = weight from state i to state j. This is the NCI discharge (B-1020): the probability and Viterbi corners of the closed-semiring fixed-point family.",
+  "normalize": [
+    { "n": 2, "d": 4, "result": { "n": 1, "d": 2 } },
+    { "n": 6, "d": -3, "result": { "n": -2, "d": 1 } },
+    { "n": 3, "d": -6, "result": { "n": -1, "d": 2 } },
+    { "n": 0, "d": 5, "result": { "n": 0, "d": 1 } },
+    { "n": 5, "d": 5, "result": { "n": 1, "d": 1 } }
+  ],
+  "add": [
+    { "a": { "n": 1, "d": 2 }, "b": { "n": 1, "d": 3 }, "result": { "n": 5, "d": 6 } },
+    { "a": { "n": 1, "d": 2 }, "b": { "n": 1, "d": 2 }, "result": { "n": 1, "d": 1 } },
+    { "a": { "n": 3, "d": 4 }, "b": { "n": 1, "d": 4 }, "result": { "n": 1, "d": 1 } },
+    { "a": { "n": -1, "d": 3 }, "b": { "n": 1, "d": 3 }, "result": { "n": 0, "d": 1 } },
+    { "a": { "n": 2, "d": 5 }, "b": { "n": 3, "d": 10 }, "result": { "n": 7, "d": 10 } }
+  ],
+  "mul": [
+    { "a": { "n": 2, "d": 3 }, "b": { "n": 3, "d": 4 }, "result": { "n": 1, "d": 2 } },
+    { "a": { "n": 1, "d": 2 }, "b": { "n": 1, "d": 2 }, "result": { "n": 1, "d": 4 } },
+    { "a": { "n": -2, "d": 3 }, "b": { "n": 3, "d": 4 }, "result": { "n": -1, "d": 2 } },
+    { "a": { "n": 0, "d": 1 }, "b": { "n": 5, "d": 7 }, "result": { "n": 0, "d": 1 } }
+  ],
+  "max": [
+    { "a": { "n": 1, "d": 6 }, "b": { "n": 1, "d": 8 }, "result": { "n": 1, "d": 6 } },
+    { "a": { "n": -1, "d": 2 }, "b": { "n": 1, "d": 3 }, "result": { "n": 1, "d": 3 } },
+    { "a": { "n": 2, "d": 3 }, "b": { "n": 2, "d": 3 }, "result": { "n": 2, "d": 3 } }
+  ],
+  "forwardStep": [
+    {
+      "pi": [ { "n": 1, "d": 2 }, { "n": 1, "d": 2 } ],
+      "p": [ [ { "n": 1, "d": 3 }, { "n": 2, "d": 3 } ], [ { "n": 1, "d": 4 }, { "n": 3, "d": 4 } ] ],
+      "result": [ { "n": 7, "d": 24 }, { "n": 17, "d": 24 } ]
+    }
+  ],
+  "viterbiStep": [
+    {
+      "v": [ { "n": 1, "d": 2 }, { "n": 1, "d": 2 } ],
+      "p": [ [ { "n": 1, "d": 3 }, { "n": 2, "d": 3 } ], [ { "n": 1, "d": 4 }, { "n": 3, "d": 4 } ] ],
+      "result": [ { "n": 1, "d": 6 }, { "n": 3, "d": 8 } ]
+    }
+  ]
+}

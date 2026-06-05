@@ -1,0 +1,12 @@
+[package]
+name = "zeta-probability-semiring"
+version = "0.1.0"
+edition = "2021"
+description = "Exact-rational probability (+,x) and Viterbi (max,x) semirings + forward/Viterbi inference — Rust oracle for Zeta.Core cross-language agreement (B-1020 / the NCI discharge)."
+license = "MIT"
+publish = false
+
+[dependencies]
+
+[dev-dependencies]
+serde_json = "=1.0.140"
