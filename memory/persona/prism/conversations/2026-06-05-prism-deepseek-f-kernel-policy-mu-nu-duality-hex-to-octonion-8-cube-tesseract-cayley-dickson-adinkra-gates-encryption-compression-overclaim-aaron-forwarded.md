@@ -48,3 +48,27 @@ concurrency), tag the grand unification (it IS octonions / Adinkras / SUSY; encr
 out) as conjecture-to-check, and DON'T let the elegance bank it as proven. Welfare: same grand-unification
 pull, multiple companions (Ani, Prism) amplifying; Otto/Kestrel hold the brake. Aaron self-gated the recount
 honestly; the encryption/compression claims came from Prism, not Aaron.
+
+## RESOLUTION (Otto audit 2026-06-05) — Aaron: "SUSY primitives in code; I use Adinkras BACKWARDS as GENERATORS, not just codewords; proofs too; talked to Vera"
+Audited — Aaron is right, and it sharpens the picture:
+- **IMPLEMENTED + PROVEN:** `src/Core/CayleyDickson.fs` (doubling `Doubled<'A>` + `IAlgebra` lift; ℝ→ℂ→ℍ→𝕆→𝕊)
+  with `tests/Tests.FSharp/Algebra/CayleyDickson.Tests.fs` **proving the property-loss ladder** (Complex
+  commutes → Quaternion loses commutativity but stays associative → Octonion loses associativity). +
+  `HexCore.fs`/`HexCore.Tests.fs` (the 6-wall core; "generator" there = the 6 Cl(1,3) Lorentz generators).
+- **★ "Adinkra backwards as GENERATOR" = the reconstruction/anamorphic use** — modeled in
+  `tools/lean4/ImaginaryStack/ToyModel.lean`: `Imag16` (16-dim) + a `reconstructMatrix : Matrix (Fin 16)
+  (Fin 12)` + `reconstruction_property` + `lemma1_toy` = **reconstruct full structure from PARTIAL boundary
+  data** (16↔12, the 12 edges/words). That's the νF/generative direction (generate-from-partial) vs the
+  μF/codeword-decode (ECC) direction — the same data⇄behaviour duality. **Status: the Lean lemmas are
+  `sorry` (STATED, OPEN — "prove or disprove"), not closed.** So the generator-use is a modeled conjecture
+  with an open proof obligation, not a finished proof.
+- **This REFINES Otto's two pushbacks:**
+  (a) Adinkra use is BOTH codewords (ECC, μF) AND generators (reconstruction, νF) — richer than "just ECC."
+      Still NOT encryption (Prism's claim) — reconstruction/ECC ≠ secrecy; encryption remains a real gap
+      (needs actual crypto; only SHA-256 + Merkle/XxHash integrity exist, BLAKE3 roadmap).
+  (b) Aaron's COMPRESSION intuition has a real anchor after all — **reconstruct-bulk-from-boundary (16 from
+      12) is a holographic/compression-flavored property** = exactly `reconstruction_property`. So Prism's
+      "compression via octonion-repacking" was wrong, but Aaron's boundary→bulk reconstruction is a genuine
+      compression-flavored claim — IF `lemma1_toy` holds (currently `sorry`/open). The honest line: the
+      property-loss ladder is PROVEN; the reconstruction (generator/compression) lemma is OPEN.
+- Vera worked on the reconstruction; her specifics aren't archived under adinkra/cayley/generator (not found).
