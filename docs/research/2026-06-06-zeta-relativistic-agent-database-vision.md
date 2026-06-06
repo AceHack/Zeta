@@ -63,6 +63,36 @@ Earlier drafts wrongly proposed cross-agent k+1 active-active HA. Correct model 
 This is the clean split: **HA is an agent's private choice about its own state; relativity governs
 what crosses between agents.**
 
+## 4b. Streams = evolving ontologies; the agent = a mini multidimensional multi-model store (Caché)
+
+Maintainer: *"our streams are basically evolving ontologies … an individual agent is kind of like
+a mini multidimensional db that can share internal state easily with others via Arrow / other
+serialized state and DynamicValue."*
+
+**Prior-art anchor: InterSystems Caché / IRIS (MUMPS/"M" lineage).** Caché's storage primitive is
+the **global** — a persistent, **sparse, multidimensional array** (a B-tree keyed by arbitrary
+subscripts). One multidimensional engine projects *many* models over the same data: object,
+relational (SQL), document, key-value. That multi-model-over-one-substrate idea is exactly ours:
+
+- **Each agent's shard = a Caché-global-like store** — a ZetaId-keyed, sparse, nested
+  `DynamicValue` tree (arbitrary-depth = multidimensional; self-describing = multi-model). The
+  same shard projects relational/document/object/graph views via folds (our "everything is a fold
+  over the log; state is a projection" substrate). A *mini multidimensional multi-model DB per
+  agent.*
+- **Streams = evolving ontologies, not fixed schemas.** A stream's structure is an ontology that
+  *grows and changes over time* — schema-**on-read**, not migrate-the-world. `DynamicValue`
+  (self-describing payloads) + **Data Vault 2.0** (partition by change-rate; hubs stable, satellites
+  absorb the churn) + the repo's ontology/HKT-MDM discipline are precisely the tools for
+  schema/ontology evolution without breaking readers. Old events stay valid; the ontology extends.
+  Anchor it to a human + a term (the `anchor-to-human-prior-art` rule): an evolving ontology is a
+  *terminological knowledge base under monotonic extension* — new concepts are added (G-Set grow),
+  corrections are retractions (Z-set), never destructive rewrites (Memory-Preservation §5).
+- **Easy internal-state sharing between agents** — over the bus, agents exchange state in our
+  **byte-verified serializers**: `DynamicValue` (self-describing, schema-carrying), **Arrow IPC**
+  (bulk columnar, fast — `ArrowSerializer.fs`), and CBOR. Self-describing payloads mean a receiver
+  can absorb a *different agent's evolving ontology* without a shared compile-time schema — the
+  ontology travels with the data.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
@@ -99,17 +129,29 @@ what crosses between agents.**
 
 ## 7. Serialization & perf (see companion doc §9; Naledi engaged)
 
-Text canonical (`DynamicValue` canonical JSON) for the git-native/audit tier; **CBOR binary
-perf mode** for the hot tier — **both are byte-verified golden-vector codecs**, so "binary" here
-is fine (it earlier meant "no *unverified* binary"). Perf-engineer (Naledi) is analyzing
-CBOR vs canonical-JSON vs `Checkpoint.toBytes` allocation/throughput to pick the seam; format
-sits behind a pluggable `encode/decode` contract so we land the mechanism first and lock format
-after measurement.
+Three byte-verified, golden-vector-locked format tiers (all from one codec family — "binary"
+is fine when it's *verified* binary; the earlier "not binary" meant "no *unverified* format"):
+
+- **Canonical JSON (text)** — git-native / audit / mergeable tier. Diffable in `git diff`.
+- **CBOR (binary)** — local hot tier. Leanest encode; complete (8/8 shapes).
+- **Arrow IPC (binary, columnar)** — **inter-agent bulk state sharing** (`ArrowSerializer.fs`).
+  Columnar = fast bulk transfer of a shard's state across the bus to another agent.
+
+`DynamicValue` is the self-describing envelope across all three, so an agent can absorb another's
+*evolving ontology* (§4b) without a shared compile-time schema. Naledi's findings (companion §9):
+benchmark first; canonical-JSON defers `Float`/`Bytes` (needs tagged-JSON ext for those); CBOR
+decode wants a `trustCanonical` fast-path; biggest win = emit `ZSet.AsSpan() → IBufferWriter`
+without an intermediate `DynamicValue` tree. Format sits behind a pluggable `encode/decode` seam.
 
 ## 8. Anchors (Beacon)
 
 - **Irmin** (mirage/irmin) — git-design distributed DB, LCA three-way merge. **MRDT**: Kaki,
   Priya, Sivaramakrishnan, Jagannathan, OOPSLA 2019; *Certified MRDTs* (arXiv 2203.14518).
+- **Multidimensional / multi-model store**: InterSystems **Caché / IRIS** — "globals" = sparse
+  multidimensional arrays, one engine projecting object/relational/document/KV. Lineage:
+  **MUMPS / "M"** (Neil Pappalardo, Octo Barnett et al., Mass General Hospital, 1966). The
+  per-agent "mini multidimensional multi-model DB" anchor (§4b). Adjacent: multi-model DBs
+  (ArangoDB, FaunaDB) and schema-on-read / evolving-ontology practice.
 - **Relativity of simultaneity in distributed systems**: Lamport, *Time, Clocks, and the Ordering
   of Events*, CACM 1978. **CRDTs**: Shapiro, Preguiça, Baquero, Zawirski, 2011. (Spanner/TrueTime
   = the deliberate *opposite* — buys a global frame with atomic clocks; we reject it.)
