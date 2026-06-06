@@ -44,5 +44,6 @@ Tests mirror `tests/Tests.FSharp/Storage/Spine.Disk.Tests.fs`: roundtrip, spill,
 BackedSpineAsync-matches-Spine, Clear, per-instance isolation, path guards.
 
 ## Anchors
+
 - async-all-the-way rule (`.claude/rules/async-all-the-way-truthful-signatures.md`)
 - sync counterpart: `src/Core/DiskSpine.fs` (the algorithm to mirror)

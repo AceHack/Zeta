@@ -32,6 +32,7 @@ the result arity on top of that core.
 ## Shape
 
 `FerryThrottler<'TItem,'TResult>`:
+
 - `ProcessAsync(item, ?ct) : Task<'TResult>` — individual feel; backed by a
   per-item `TaskCompletionSource<'TResult>`.
 - batch processor: `ReadOnlyMemory<'TItem> -> CancellationToken -> Task<'TResult[]>`
