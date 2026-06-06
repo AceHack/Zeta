@@ -148,7 +148,8 @@ let ``Recursive reachability reaches transitive closure`` () =
     edges.Send(ZSet.ofKeys [ 1, 2 ; 2, 3 ; 3, 4 ])
 
     // Iterate until the recursive circuit reaches a fixed point.
-    let iterations = c.IterateToFixedPoint(reach, 16)
+    let struct (iterations, converged) = c.IterateToFixedPoint(reach, 16)
+    converged |> should equal true
     iterations |> should be (lessThanOrEqualTo 16)
 
     // All reachable pairs: (1,2), (1,3), (1,4), (2,3), (2,4), (3,4)

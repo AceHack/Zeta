@@ -90,10 +90,11 @@ type internal ConstantOp<'T>(value: 'T) =
 [<Extension>]
 type PrimitiveExtensions =
 
-    [<Extension>]
-    static member Delay<'T>(this: Circuit, s: Stream<'T>) : Stream<'T> =
-        this.RegisterStream (DelayOp<'T>(s.Op, Unchecked.defaultof<'T>))
-
+    /// `z^-1` (one-tick delay). The initial value emitted on the very first
+    /// tick is REQUIRED — there is no no-initial overload, because
+    /// `Unchecked.defaultof<'T>` silently yields `null` for reference types,
+    /// contradicting the "declared initial value on the first tick" contract.
+    /// For Z-sets use `DelayZSet` (initial = the empty Z-set identity).
     [<Extension>]
     static member Delay<'T>(this: Circuit, s: Stream<'T>, initial: 'T) : Stream<'T> =
         this.RegisterStream (DelayOp<'T>(s.Op, initial))

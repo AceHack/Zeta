@@ -72,7 +72,7 @@ let ``RecursiveSemiNaive matches Recursive on monotone inputs (acyclic DAG)`` ()
     let outRef = OutputHandle closureRef.Op
     cRef.Build()
     edgesRef.Send (ZSet.ofKeys edges)
-    let struct (_, _) = cRef.IterateToFixedPointWithConvergence(closureRef, 20)
+    let struct (_, _) = cRef.IterateToFixedPoint(closureRef, 20)
     let refResult = outRef.Current
 
     // ── Semi-naïve under test ──
@@ -85,7 +85,7 @@ let ``RecursiveSemiNaive matches Recursive on monotone inputs (acyclic DAG)`` ()
     let outSN = OutputHandle closureSN.Op
     cSN.Build()
     edgesSN.Send (ZSet.ofKeys edges)
-    let struct (_, _) = cSN.IterateToFixedPointWithConvergence(closureSN, 20)
+    let struct (_, _) = cSN.IterateToFixedPoint(closureSN, 20)
     let snResult = outSN.Current
 
     // Both combinators MUST agree on the integrated closure under
@@ -144,14 +144,14 @@ let ``RecursiveSemiNaive leaks stale facts after retraction (documented boundary
 
     // tick 0: inserts (1,2), (2,3) → closure grows to include (1,3).
     edgesSN.Send (ZSet.ofKeys [ struct (1, 2); struct (2, 3) ])
-    let struct (_, _) = cSN.IterateToFixedPointWithConvergence(closureSN, 20)
+    let struct (_, _) = cSN.IterateToFixedPoint(closureSN, 20)
     let after0 = outSN.Current
     after0.[struct (1, 3)] |> should be (greaterThan 0L)
 
     // tick 1: retract edge (2,3). Under semi-naïve, the positive-
     // integrated `total` cannot be reversed — (1,3) leaks.
     edgesSN.Send (ZSet.ofPairs [ struct (struct (2, 3), -1L) ])
-    let struct (_, _) = cSN.IterateToFixedPointWithConvergence(closureSN, 20)
+    let struct (_, _) = cSN.IterateToFixedPoint(closureSN, 20)
     let after1 = outSN.Current
 
     // Leaked row (1,3) MUST still carry positive weight — this

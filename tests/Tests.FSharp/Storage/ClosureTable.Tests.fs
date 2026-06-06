@@ -58,7 +58,7 @@ let ``ClosureTable transitively closes a chain 1->2->3`` () =
     let out = OutputHandle closure.Op
     c.Build()
     edges.Send (ZSet.ofKeys [ struct (1, 2); struct (2, 3) ])
-    let struct (_, converged) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, converged) = c.IterateToFixedPoint(closure, 20)
     converged |> should be True
     // Expect {(1,2,1), (2,3,1), (1,3,2)} — three closure rows.
     out.Current.Count |> should equal 3
@@ -83,7 +83,7 @@ let private runClosure
     let out = OutputHandle closure.Op
     c.Build()
     edges.Send (ZSet.ofKeys input)
-    let struct (_, converged) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, converged) = c.IterateToFixedPoint(closure, 20)
     converged |> should be True
     out.Current
 
@@ -127,7 +127,7 @@ let ``CountingClosureTable retracts closure rows when edges are retracted`` () =
     c.Build()
     // Insert chain 1->2->3.
     edges.Send (ZSet.ofKeys [ struct (1, 2); struct (2, 3) ])
-    let struct (_, conv1) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, conv1) = c.IterateToFixedPoint(closure, 20)
     conv1 |> should be True
     let after1 = out.Current
     after1.Count |> should equal 3
@@ -141,7 +141,7 @@ let ``CountingClosureTable retracts closure rows when edges are retracted`` () =
     //   (1,3,2) — chain via the retracted edge
     // Edge (1,2,1) survives since its derivation does not use (2,3).
     edges.Send (ZSet.ofSeq [ struct (2, 3), -1L ])
-    let struct (_, conv2) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, conv2) = c.IterateToFixedPoint(closure, 20)
     conv2 |> should be True
     let after2 = out.Current
     after2.Count |> should equal 1
@@ -166,7 +166,7 @@ let ``CountingClosureTable counts multiple derivations of a closure pair`` () =
         struct (1, 2); struct (1, 3);
         struct (2, 4); struct (3, 4)
     ])
-    let struct (_, converged) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, converged) = c.IterateToFixedPoint(closure, 20)
     converged |> should be True
     // Depth-1 edges have weight 1 each.
     out.Current.[ClosurePair<int>(1, 2, 1)] |> should equal 1L
@@ -228,7 +228,7 @@ let ``CountingClosureTable never emits negative weights on paired insert/retract
 
         // Tick 1: insert all edges.
         edgeIn.Send (ZSet.ofKeys inserts)
-        let struct (_, conv1) = c.IterateToFixedPointWithConvergence(closure, 32)
+        let struct (_, conv1) = c.IterateToFixedPoint(closure, 32)
         // If the acyclic generator produced duplicates we might need
         // more iterations; bail out gently if convergence escapes.
         let insertedOk =
@@ -241,7 +241,7 @@ let ``CountingClosureTable never emits negative weights on paired insert/retract
         let half = max 1 (List.length inserts / 2)
         let toRetract = inserts |> List.truncate half
         edgeIn.Send (ZSet.ofSeq (toRetract |> List.map (fun e -> e, -1L)))
-        let struct (_, conv2) = c.IterateToFixedPointWithConvergence(closure, 32)
+        let struct (_, conv2) = c.IterateToFixedPoint(closure, 32)
         let retractedOk =
             conv2 &&
             out.Current

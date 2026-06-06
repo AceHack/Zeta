@@ -194,42 +194,6 @@ tempted to ship.
   returns `true` unconditionally, OR delete the Stable
   stage entirely and document graduation-means-deletion.
 
-### IterateToFixedPoint lossy overload
-
-- **Site:** `src/Core/Recursive.fs:247-264`
-- **Found:** round 20 by Viktor
-- **Severity:** P1
-- **Symptom:** the `int`-returning overload can't distinguish
-  "converged on last iteration" from "hit the iteration cap";
-  the `WithConvergence` overload can. Spec says the driver
-  MUST return enough info.
-- **Fix:** delete the lossy overload or document it as
-  "for converged-only callers; use `WithConvergence` if you
-  need cap detection."
-
-### CountingBloomFilter hash quality on user types
-
-- **Site:** `src/Core/BloomFilter.fs:125-133`
-- **Found:** round 20 by Kira
-- **Severity:** P1
-- **Symptom:** fallback uses `EqualityComparer<'T>.Default.GetHashCode`
-  (32-bit, poor quality) then re-hashes through XxHash128.
-  Effective hash is the 32-bit input; FPR silently inflates.
-- **Fix:** require user types to implement `IHashable` or pass
-  a `ReadOnlySpan<byte>` serialiser; fall back only with a
-  `TraceWarning`.
-
-### Delay overload without initial uses Unchecked.defaultof
-
-- **Site:** `src/Core/Primitive.fs:74-75`
-- **Found:** round 20 by Viktor
-- **Severity:** P1
-- **Symptom:** `Delay` no-initial overload passes
-  `Unchecked.defaultof<'T>`. For reference types that's `null`;
-  spec says "declared initial value on very first tick."
-- **Fix:** remove the no-initial overload, or amend spec to
-  define `Unchecked.defaultof` as the declared default.
-
 ---
 
 ## P2 — nice to have

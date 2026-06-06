@@ -302,34 +302,15 @@ type RecursiveExtensions =
 
     /// Run the circuit until its observable outputs stabilise (no changes
     /// between ticks). Bounded by `maxIterations` to prevent infinite loops
-    /// on non-monotone queries. Returns the number of iterations run.
+    /// on non-monotone queries. Returns `struct (iterations, converged)`:
+    /// `converged = true` iff a fixed point was reached BEFORE the cap, so a
+    /// caller can enforce "must converge" as a hard invariant (and a caller
+    /// that only wants the count can ignore the bool). The single canonical
+    /// driver — there is no lossy `int`-only overload, because returning just
+    /// the count cannot distinguish "converged on the last iteration" from
+    /// "hit the cap", and silently conflating the two hides non-convergence.
     [<Extension>]
-    [<TailCall>]
     static member IterateToFixedPoint<'T>
-        (this: Circuit,
-         observe: Stream<'T>,
-         maxIterations: int) : int =
-        let handle = OutputHandle observe.Op
-        this.Step()
-        let mutable prev = handle.Current
-        let mutable iterations = 1
-        let mutable stable = false
-        while not stable && iterations < maxIterations do
-            this.Step()
-            iterations <- iterations + 1
-            let cur = handle.Current
-            if EqualityComparer<'T>.Default.Equals(cur, prev) then
-                stable <- true
-            else
-                prev <- cur
-        iterations
-
-    /// Same as `IterateToFixedPoint` but returns a `(iterations, converged)`
-    /// pair so callers can distinguish "reached a fixed point" from "hit
-    /// the iteration cap". Use this over the `int`-returning overload when
-    /// your caller needs to enforce "must converge" as a hard invariant.
-    [<Extension>]
-    static member IterateToFixedPointWithConvergence<'T>
         (this: Circuit,
          observe: Stream<'T>,
          maxIterations: int) : struct (int * bool) =

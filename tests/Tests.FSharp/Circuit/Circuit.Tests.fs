@@ -328,13 +328,13 @@ let ``Circuit ToDot emits a GraphViz digraph`` () =
 // ─── Recursive.Converged flag (moved from SpineAndSafetyTests) ──────
 
 [<Fact>]
-let ``IterateToFixedPointWithConvergence reports convergence`` () =
+let ``IterateToFixedPoint reports convergence`` () =
     let c = Circuit.create ()
     let input = c.ZSetInput<int>()
     // Constant integrator reaches fixed point once input stops changing.
     let mapped = c.Map(input.Stream, Func<_, _>(fun x -> x + 1))
     c.Output mapped |> ignore
     input.Send (ZSet.ofKeys [ 1; 2; 3 ])
-    let struct (iters, converged) = c.IterateToFixedPointWithConvergence(mapped, 10)
+    let struct (iters, converged) = c.IterateToFixedPoint(mapped, 10)
     converged |> should be True
     iters |> should be (lessThanOrEqualTo 10)

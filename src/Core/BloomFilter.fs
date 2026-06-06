@@ -80,16 +80,17 @@ open Microsoft.FSharp.NativeInterop
 /// `uint32`, `Guid`, `string`) route through the matching
 /// `pairOfXxx` function; strings hash their `ReadOnlySpan<char>`
 /// via `MemoryMarshal.AsBytes` with no UTF-8 encode allocation.
-/// The generic `pairOfGeneric<'T>` falls back to
-/// `EqualityComparer<'T>.Default.GetHashCode` for user types — it's
-/// the right choice when nothing else applies but reduces hash
-/// strength to 32 bits.
+/// User-defined types hash through the `ReadOnlySpan<byte>` entry point
+/// (`pair`) at FULL 128-bit strength — the caller serialises its key to
+/// bytes. There is deliberately NO `GetHashCode`-based generic fallback:
+/// it would silently reduce hash strength to 32 bits and inflate the
+/// false-positive rate without the caller noticing.
 ///
 /// `BlockedBloomFilter` and `CountingBloomFilter` expose typed
-/// `Add`/`Remove`/`MayContain` overloads that funnel into the
-/// matching `pairOfXxx` directly; F# overload resolution picks the
-/// primitive overload over the generic fallback at every call site
-/// where the key type is a sealed primitive.
+/// `Add`/`Remove`/`MayContain` overloads that funnel into the matching
+/// `pairOfXxx` directly; F# overload resolution picks the primitive
+/// overload for a sealed primitive key, and the `ReadOnlySpan<byte>`
+/// overload for everything else.
 [<RequireQualifiedAccess>]
 module internal BloomHash =
     /// Produce `(h1, h2)` from a 128-bit hash. The two halves of
@@ -157,13 +158,6 @@ module internal BloomHash =
             let bytes = System.Runtime.InteropServices.MemoryMarshal.AsBytes chars
             split (XxHash128.HashToUInt128 bytes)
 
-    /// Hash a user-defined key via its `GetHashCode`. Correct but
-    /// lossy; callers that want full-fidelity hashing should pass
-    /// a `ReadOnlySpan<byte>` to `pair` directly, or use one of
-    /// the typed `pairOfXxx` entry points for a primitive key.
-    let inline pairOfGeneric<'T> (key: 'T) : struct (uint64 * uint64) =
-        let h = uint64 (EqualityComparer<'T>.Default.GetHashCode key)
-        pairOfUInt64 h
 
 
 /// Insert-only blocked Bloom filter with cache-line-aligned buckets.
@@ -264,14 +258,14 @@ type BlockedBloomFilter(bucketCount: int, probesPerLookup: int) =
         let struct (h1, h2) = BloomHash.pairOfString key
         addPair h1 h2
 
-    /// Generic fallback for user types. Uses structural hashing via
-    /// `EqualityComparer<'T>.Default.GetHashCode`, so the effective
-    /// hash is 32-bit and subject to the collision rate of the
-    /// user type's `GetHashCode`. A primitive-typed overload is
-    /// always preferred by F# overload resolution when the key
-    /// matches.
-    member _.Add<'T>(key: 'T) =
-        let struct (h1, h2) = BloomHash.pairOfGeneric key
+    /// User-type entry point: hash the key's own bytes at FULL 128-bit
+    /// strength (XxHash128). The caller serialises its type to a
+    /// `ReadOnlySpan<byte>` (zero-alloc if stack/`Span`-backed) — this
+    /// replaces the old `Add<'T>` generic, which derived the pair from a
+    /// 32-bit `GetHashCode` and silently inflated the false-positive rate.
+    /// Primitive keys keep their dedicated zero-alloc overloads above.
+    member _.Add(key: ReadOnlySpan<byte>) =
+        let struct (h1, h2) = BloomHash.pair key
         addPair h1 h2
 
     member _.MayContain(key: int64) : bool =
@@ -298,8 +292,11 @@ type BlockedBloomFilter(bucketCount: int, probesPerLookup: int) =
         let struct (h1, h2) = BloomHash.pairOfString key
         testPair h1 h2
 
-    member _.MayContain<'T>(key: 'T) : bool =
-        let struct (h1, h2) = BloomHash.pairOfGeneric key
+    /// User-type membership test at full 128-bit strength — the read-side
+    /// twin of `Add(ReadOnlySpan<byte>)`. Serialise the key identically to
+    /// how it was added.
+    member _.MayContain(key: ReadOnlySpan<byte>) : bool =
+        let struct (h1, h2) = BloomHash.pair key
         testPair h1 h2
 
     /// OR-merge with another same-shape filter. A bitwise OR-join is only valid
@@ -433,8 +430,13 @@ type CountingBloomFilter(cellCount: int, probesPerLookup: int) =
         let struct (h1, h2) = BloomHash.pairOfString key
         applyDeltaPair h1 h2 1
 
-    member _.Add<'T>(key: 'T) =
-        let struct (h1, h2) = BloomHash.pairOfGeneric key
+    /// User-type insert at FULL 128-bit strength: the caller serialises its
+    /// key to a `ReadOnlySpan<byte>` (replaces the old `Add<'T>` 32-bit
+    /// `GetHashCode` path that silently inflated the false-positive rate).
+    /// Pair this with the matching `Remove(ReadOnlySpan<byte>)` / serialise
+    /// identically (the DBSP retraction invariant).
+    member _.Add(key: ReadOnlySpan<byte>) =
+        let struct (h1, h2) = BloomHash.pair key
         applyDeltaPair h1 h2 1
 
     /// Retract a key; probes decrement each. Caller guarantees a
@@ -463,8 +465,10 @@ type CountingBloomFilter(cellCount: int, probesPerLookup: int) =
         let struct (h1, h2) = BloomHash.pairOfString key
         applyDeltaPair h1 h2 -1
 
-    member _.Remove<'T>(key: 'T) =
-        let struct (h1, h2) = BloomHash.pairOfGeneric key
+    /// User-type retraction at full 128-bit strength — the inverse of
+    /// `Add(ReadOnlySpan<byte>)`. Serialise the key identically to the Add.
+    member _.Remove(key: ReadOnlySpan<byte>) =
+        let struct (h1, h2) = BloomHash.pair key
         applyDeltaPair h1 h2 -1
 
     member _.MayContain(key: int64) : bool =
@@ -491,8 +495,11 @@ type CountingBloomFilter(cellCount: int, probesPerLookup: int) =
         let struct (h1, h2) = BloomHash.pairOfString key
         testPair h1 h2
 
-    member _.MayContain<'T>(key: 'T) : bool =
-        let struct (h1, h2) = BloomHash.pairOfGeneric key
+    /// User-type membership test at full 128-bit strength — the read-side
+    /// twin of `Add(ReadOnlySpan<byte>)`. Serialise the key identically to
+    /// how it was added.
+    member _.MayContain(key: ReadOnlySpan<byte>) : bool =
+        let struct (h1, h2) = BloomHash.pair key
         testPair h1 h2
 
     /// Has any cell saturated at 15? If so the filter is untrustworthy

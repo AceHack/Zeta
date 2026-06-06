@@ -53,7 +53,7 @@ let ``CountingClosureTable integrates multi-tick insert seed into closure`` () =
 
     // tick 0: insert edge (a,b) → a=1, b=2.
     edges.Send (ZSet.ofKeys [ struct (1, 2) ])
-    let struct (_, conv0) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, conv0) = c.IterateToFixedPoint(closure, 20)
     conv0 |> should be True
     let after0 = out.Current
     after0.Count |> should equal 1
@@ -61,7 +61,7 @@ let ``CountingClosureTable integrates multi-tick insert seed into closure`` () =
 
     // tick 1: insert edge (b,c) → b=2, c=3.
     edges.Send (ZSet.ofKeys [ struct (2, 3) ])
-    let struct (_, conv1) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, conv1) = c.IterateToFixedPoint(closure, 20)
     conv1 |> should be True
     let after1 = out.Current
     // Expect three closure rows, each with weight 1.
@@ -84,13 +84,13 @@ let ``CountingClosureTable cancels an insert+retract pair across ticks`` () =
     c.Build()
 
     edges.Send (ZSet.ofKeys [ struct (1, 2) ])
-    let struct (_, conv0) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, conv0) = c.IterateToFixedPoint(closure, 20)
     conv0 |> should be True
     out.Current.[ClosurePair<int>(1, 2, 1)] |> should equal 1L
 
     // Retract the edge.
     edges.Send (ZSet.ofSeq [ struct (1, 2), -1L ])
-    let struct (_, conv1) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, conv1) = c.IterateToFixedPoint(closure, 20)
     conv1 |> should be True
     let after1 = out.Current
     // Consolidated Z-set should be empty (weight 0 entries drop).
@@ -115,13 +115,13 @@ let ``CountingClosureTable integrates an insert after an iterated seed`` () =
 
     // Insert first edge + iterate to stable.
     edges.Send (ZSet.ofKeys [ struct (1, 2) ])
-    let struct (_, conv0) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, conv0) = c.IterateToFixedPoint(closure, 20)
     conv0 |> should be True
     out.Current.Count |> should equal 1
 
     // Insert second edge *after* the first has fully propagated.
     edges.Send (ZSet.ofKeys [ struct (2, 3) ])
-    let struct (_, conv1) = c.IterateToFixedPointWithConvergence(closure, 20)
+    let struct (_, conv1) = c.IterateToFixedPoint(closure, 20)
     conv1 |> should be True
     let after1 = out.Current
     after1.Count |> should equal 3
@@ -233,9 +233,9 @@ let ``CountingClosureTable clamped to Distinct matches ClosureTable oracle``
             countIn.Send delta
             oracleIn.Send delta
             let struct (_, convC) =
-                counting.IterateToFixedPointWithConvergence(countStream, 40)
+                counting.IterateToFixedPoint(countStream, 40)
             let struct (_, convO) =
-                oracle.IterateToFixedPointWithConvergence(oracleStream, 40)
+                oracle.IterateToFixedPoint(oracleStream, 40)
             if convC && convO then
                 let clamped = clampToSet countOut.Current
                 let oracleMap = clampToSet oracleOut.Current

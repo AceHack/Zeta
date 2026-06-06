@@ -32,6 +32,29 @@ let ``Counting Bloom supports Remove (retraction-native path)`` () =
 
 
 [<Fact>]
+let ``Blocked Bloom ReadOnlySpan<byte> overload round-trips a user-type key (full 128-bit path)`` () =
+    // User types hash via the byte-span entry point (replaces the deleted 32-bit
+    // GetHashCode generic). Serialise the key to bytes; presence holds, a different
+    // key is (very likely) absent.
+    let bf = BloomFilter.createBlocked 1000 0.01
+    let key = Text.Encoding.UTF8.GetBytes "user:42"
+    let other = Text.Encoding.UTF8.GetBytes "user:9999"
+    bf.Add(ReadOnlySpan<byte>(key))
+    bf.MayContain(ReadOnlySpan<byte>(key)) |> should be True
+    bf.MayContain(ReadOnlySpan<byte>(other)) |> should be False
+
+
+[<Fact>]
+let ``Counting Bloom ReadOnlySpan<byte> overload supports Add then Remove (retraction)`` () =
+    let bf = BloomFilter.createCounting 1000 0.01
+    let key = Text.Encoding.UTF8.GetBytes "user:42"
+    bf.Add(ReadOnlySpan<byte>(key))
+    bf.MayContain(ReadOnlySpan<byte>(key)) |> should be True
+    bf.Remove(ReadOnlySpan<byte>(key))
+    bf.MayContain(ReadOnlySpan<byte>(key)) |> should be False
+
+
+[<Fact>]
 let ``Blocked Bloom FP rate stays below 10% at target p=1%, n=1000`` () =
     let bf = BloomFilter.createBlocked 1000 0.01
     let rng = Random 17
