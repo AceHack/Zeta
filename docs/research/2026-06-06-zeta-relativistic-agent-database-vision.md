@@ -223,6 +223,25 @@ inspect-before-execute boundary (§5b) *by construction*. The host stops being o
 becomes auditable, reproducible, self-describing data — exactly where the Trusting-Trust discipline
 needs it.
 
+**The sound restatement — seed = observation; inspection GUARANTEES safety invariants; CHECK not
+SEARCH (maintainer, 2026-06-06).** The defensible claim, stated precisely: *the observation of the
+128 bits + inspection guarantees the generator-function combination meets certain math safety
+invariants.* Three things this gets exactly right:
+1. **Seed is an OBSERVATION**, not a command or a container — so it flows through the same
+   observation → scrutiny → guarantee pipeline as `commit = observation` (§5c). The bits assert
+   nothing by fiat; inspection is what grants the guarantee.
+2. **Proof = CHECK, not SEARCH.** Proof-*checking* is decidable and fast and can be driven from
+   seed + host (replay/verify a seeded proof structure). Proof-*generation* (finding the proof) is
+   undecidable — Curry-Howard: finding a proof ≡ finding a program. We do the former, never claim
+   the latter. This is a *replay/checker*, not an automated-theorem-prover-in-128-bits.
+3. **Bounded invariants, not "all of math."** "Certain math safety invariants" — a specific,
+   checkable set (e.g. the recovery fixed point, type/effect/resource bounds, the soft/branchless
+   constraints) — not a universal claim. Inspection guarantees *those*.
+
+So: the bits are inspectable; inspecting them (+ the host's checker) *guarantees* the composed
+generators satisfy named safety invariants. That is real, decidable, and honest — and it keeps the
+meet-in-the-middle sound (per-instance verified seam = the checker's job, not an asserted closure).
+
 **Host progression — descending toward the metal (maintainer, 2026-06-06).** The bootstrap host
 lowers over time: managed **4-lang (F#/TS/C#/Rust)** now → eventually **ASM / CUDA / FPGA**-like
 hosts → **GPGPU / shader**-like hosts. The unfolder must therefore be a portable PROVEN primitive:
