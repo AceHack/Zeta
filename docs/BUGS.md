@@ -34,6 +34,15 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
+### gate windows-2025 red — DynamicValue canonical codec StackOverflow on deep nesting
+
+- **Site:** `src/Core/DynamicValue.fs` (`toCanonicalJson` inner recursion, ~L428; the decoders share the unbounded-recursion shape) — exercised by `tests/Tests.FSharp/Fuzz.DecodeBoundary.Tests.fs` (depth-2000 deep-nesting cases + the decode∘encode∘decode property).
+- **Found:** 2026-06-06 by Otto (CI triage; gate went red at `92b04d498`, green at `b40a097a5`).
+- **Severity:** P0 (gate-red — blocks main).
+- **Symptom:** `build-and-test (windows-2025)` ONLY (all 5 other platforms incl. windows-11-arm + both ubuntu + macos pass) crashes the test runner with `Xunit.Sdk.TestPipelineException` / `VSTestTask returned false but did not log an error`. Root cause: the canonical codec recurses per nesting level with no depth guard; deep nesting overflows the tighter windows-x64 threadpool (`Task.Run`, ~1 MB) stack, and a `StackOverflowException` is unhandleable in .NET → it kills the process mid-assembly (598 passed, then FATAL). Not a flake: deterministic on windows-x64.
+- **Fix:** add a recursion-depth guard to the DynamicValue canonical codec (encode + decode) that returns `Error` past a bound (Result-over-exception, fits the no-throw contract) — or trampoline the traversal. Must preserve 4-serializer parity + golden vectors. Validate on a windows-x64 runner (not reproducible on darwin/arm).
+- **Who:** DynamicValue owner / Kenji — delicate PROVEN-primitive change, not a drive-by.
+
 ### Expert/skill split half-done — onboarding confusion
 
 - **Site:** `.claude/agents/` vs `.claude/skills/` vs `docs/EXPERT-REGISTRY.md`
