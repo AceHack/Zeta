@@ -81,3 +81,27 @@ let ``snapshot-then-recover with no further commits is identity`` () =
     let recovered = RecoverableSpine<int>.RecoverAsync(log, store, pointer).Result
     recovered.Consolidate() |> should equal (live.Consolidate())
     recovered.AppliedSeq |> should equal 4L
+
+
+[<Fact>]
+let ``AutoSnapshotEvery takes cadenced snapshots and GCs the log`` () =
+    let log, store = fresh ()
+    let spine = RecoverableSpine.create log store
+    spine.AutoSnapshotEvery <- 3
+    for i in 1 .. 7 do spine.CommitAsync(ZSet.ofKeys [ i ]).Wait()
+    // Snapshots fired at seq 3 and 6; log GC'd through 6; only seq 7 remains.
+    spine.LatestSnapshot |> Option.map (fun p -> p.Seq) |> should equal (Some 6L)
+    let remaining = log.ReplayAsync(0L, ct).AsTask().Result
+    remaining |> Array.map (fun e -> e.Seq) |> should equal [| 7L |]
+
+
+[<Fact>]
+let ``recover from the cadenced snapshot + GC'd log equals live`` () =
+    let log, store = fresh ()
+    let spine = RecoverableSpine.create log store
+    spine.AutoSnapshotEvery <- 4
+    for i in 1 .. 10 do spine.CommitAsync(ZSet.ofKeys [ i ]).Wait()
+    // Crash: recover from the latest cadenced snapshot + the (truncated) tail.
+    let recovered = RecoverableSpine<int>.RecoverAsync(log, store, spine.LatestSnapshot.Value).Result
+    recovered.Consolidate() |> should equal (spine.Consolidate())
+    recovered.AppliedSeq |> should equal 10L

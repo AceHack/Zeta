@@ -50,6 +50,13 @@ type IDeltaLog<'K when 'K : comparison> =
             -> ValueTask<DeltaLogEntry<'K>[]>
     /// Highest assigned sequence number (0 if empty).
     abstract HighWater: int64
+    /// GC entries with seq ≤ `throughSeqInclusive` — the log tail a durable
+    /// snapshot has already absorbed. SAFETY: only call with a seq that a
+    /// persisted snapshot covers; afterward recovery MUST start from a snapshot
+    /// pointer whose `Seq` ≥ the truncation point (the pre-snapshot history is
+    /// gone). `HighWater` is unaffected (sequence numbers never rewind).
+    abstract TruncateAsync:
+        throughSeqInclusive: int64 * ct: CancellationToken -> ValueTask
 
 
 /// In-memory delta log — the reference implementation + the DST/test substrate.
@@ -79,3 +86,8 @@ type InMemoryDeltaLog<'K when 'K : comparison>() =
             ValueTask<DeltaLogEntry<'K>[]>(tail)
 
         member _.HighWater = lock gate (fun () -> nextSeq)
+
+        member _.TruncateAsync(throughSeqInclusive, _ct) =
+            lock gate (fun () ->
+                entries.RemoveAll(fun e -> e.Seq <= throughSeqInclusive) |> ignore)
+            ValueTask.CompletedTask

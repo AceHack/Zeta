@@ -75,3 +75,16 @@ let ``DST: fold of replayed deltas reconstructs state exactly (incl retraction)`
     recovered.[2] |> should equal 0L
     recovered.[1] |> should equal 1L
     recovered.[4] |> should equal 1L
+
+
+[<Fact>]
+let ``TruncateAsync GCs the absorbed tail but keeps HighWater`` () =
+    let log = InMemoryDeltaLog<int>() :> IDeltaLog<int>
+    for i in 1 .. 5 do log.AppendAsync(ZSet.ofKeys [ i ], empty, ct).AsTask().Wait()
+    log.TruncateAsync(3L, ct).AsTask().Wait()
+    let remaining = log.ReplayAsync(0L, ct).AsTask().Result
+    remaining |> Array.map (fun e -> e.Seq) |> should equal [| 4L; 5L |]
+    log.HighWater |> should equal 5L   // sequence numbers never rewind
+    // A new append continues from 6, not 4.
+    let s6 = log.AppendAsync(ZSet.ofKeys [ 6 ], empty, ct).AsTask().Result
+    s6 |> should equal 6L
