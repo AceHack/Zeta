@@ -189,6 +189,16 @@ deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural sou
   transitions ignored/rejected). DEFERRED (don't over-complicate yet): formalizing valid-transition
   traversal may later connect to the existing **policy primitives** — not now; the DU-as-state-
   machine + step-as-validator is enough for v1.
+- **DurableSaga = Zeta's k8s operator / controller (Beacon framing, maintainer 2026-06-06).** A
+  saga IS the operator pattern: a durable **reconcile loop** that watches events, drives state
+  toward a desired DU, and takes corrective/compensating action against external (non-retractable)
+  surfaces — idempotently (discipline #6), restart-safe via the persisted log (k8s persists to
+  etcd; we replay the delta log). Nuance: k8s operators are **level-triggered** (reconcile against
+  a desired spec); our saga is **edge-triggered** event-sourcing (the delta log) — but `step` can
+  also compare desired/actual, so it expresses both. Anchor: the **Operator pattern** (CoreOS 2016)
+  / Kubernetes controller reconcile loop; the compensation half is the **Saga pattern** (Garcia-
+  Molina & Salem, SIGMOD 1987). DurableSaga = operator (reconcile) ⊕ saga (compensate) on the
+  Z-set substrate.
 
 ## 6. The hard problems (research-grade — name them honestly)
 
