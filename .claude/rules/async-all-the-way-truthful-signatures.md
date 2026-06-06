@@ -1,34 +1,49 @@
-# Async all the way — and the signature tells the truth
+# Async all the way, truthful signatures — and `Task.Run` is a smell
 
 Carved sentence:
 
-> Async all the way, or sync all the way — never bridge, and never lie about
-> which. **No `async void`** (it is fire-and-forget: exceptions escape to the
-> top, nothing can await it — use `Task`/`Task<_>` / F# `Async<_>`/`Task`).
-> **No sync-over-async** (`.Result`, `.Wait()`, `.GetAwaiter().GetResult()`,
-> `Async.RunSynchronously` on a hot/shared-context path → deadlock and
-> threadpool starvation). **No async-over-sync** (`Task.Run` wrapping CPU-bound
-> sync work to *look* awaitable lies to the caller about yielding). A method's
-> signature must tell the truth about whether it actually yields; prefer
-> genuinely-async APIs over fake ones.
+> Our concurrency north star is **FoundationDB's model**: a *single-threaded*
+> deterministic run loop (Flow actors) where all concurrency is cooperative
+> async on one thread, so execution replays deterministically (DST, manifesto
+> §7). Under that model **`Task.Run` / `Task.Factory.StartNew` / parallel
+> fan-out is a smell** — it spawns real OS-thread parallelism, the exact
+> nondeterminism we are moving away from. Also: **no `async void`** (unawaitable,
+> swallows failures), **no sync-over-async** (`.Result`/`.Wait()`/`GetAwaiter().GetResult()`/`RunSynchronously`
+> → deadlock + threadpool starvation), **no async-over-sync** (`Task.Run`
+> wrapping CPU/sync work to *look* awaitable lies about yielding). A signature
+> must tell the truth about whether it yields; prefer genuine async I/O on the
+> single loop over spawning threads.
 
-## Why
+## Why (the FoundationDB anchor — Beacon)
 
-`async void` can't be awaited and swallows its failure path — an unobservable
-crash. Sync-over-async blocks a threadpool thread on a continuation that needs a
-threadpool thread → self-deadlock under load; it also defeats the
-lock-free/wait-free discipline (manifesto §2) by reintroducing a blocking wait.
-Async-over-sync is the mirror lie: a `Task`-returning signature that never yields
-makes callers pay async overhead and reason wrongly about concurrency. Truthful
-interfaces — sync stays sync, async genuinely yields — keep the concurrency model
-honest end to end. On library/hot paths, pair real async with
-`ConfigureAwait(false)` (B-0969) so we don't capture a context we don't own.
+FoundationDB runs its entire logical workload on one thread via **Flow**, a C++
+actor/`Future` dialect, and tests it with **deterministic simulation** — the same
+seed replays the same interleaving, which is why FDB's correctness story is the
+reference standard. Single-threaded cooperative async has no locks, no threadpool
+starvation, and is deterministic *by construction* — it directly satisfies
+manifesto §2 (lock/wait-free) and §7 (DST). `Task.Run` breaks all three: it hands
+work to the threadpool, reintroduces real parallelism (nondeterministic
+interleaving → DST can't replay), and parks/contends threads. Genuine async I/O
+(`File.*Async`, `WaitToReadAsync`, awaited — not `Task.Run`-wrapped) is the
+single-thread-friendly shape: the one loop issues I/O and cooperatively yields
+until it completes, spawning no thread. On library/hot paths pair real async with
+`ConfigureAwait(false)` (B-0969).
+
+**Anchor:** Zhou et al., *FoundationDB: A Distributed Unbundled Transactional Key
+Value Store*, SIGMOD 2021 · Will Wilson, *Testing Distributed Systems w/
+Deterministic Simulation* (Strange Loop 2014) · the Flow actor language.
+
+## Allowed exception
+
+Genuine CPU-bound parallelism that is *outside* the deterministic core and
+explicitly opted out of DST may use the threadpool — but it must be named as such
+at the call site (a comment stating it is non-deterministic / not on the sim path),
+never silently. When in doubt, keep it on the single loop.
 
 ## Pointers
 
-- B-0969 — `ConfigureAwait(false)` as a cross-cutting .NET default (the companion
-  hot-path rule); `docs/backlog/P1/B-0969-*.md`
-- [`manifesto-11-specifications.md`](manifesto-11-specifications.md) §2 Lock/Wait-free
-  — sync-over-async reintroduces the blocking wait this spec forbids
-- [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md)
-  — discipline #2 (lock-free/wait-free) is the same constraint at substrate scope
+- [`manifesto-11-specifications.md`](manifesto-11-specifications.md) §2 lock/wait-free, §7 DST — the specs this enforces
+- [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — disciplines #2 (lock/wait-free) and #4 (DST) at substrate scope
+- [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — why the FoundationDB citation above is load-bearing, not decoration
+- B-0969 — `ConfigureAwait(false)` cross-cutting default; `docs/backlog/P1/B-0969-*.md`
+- Open coordination note: `Task.Run` smells at `src/Core/Runtime.fs` (shard fan-out) and `src/Core/SpineAsync.fs` (worker) — see `docs/backlog/` async-direction finding
