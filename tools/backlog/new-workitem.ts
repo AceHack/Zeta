@@ -183,15 +183,18 @@ function main(argv: readonly string[]): number {
 
   let minted: MintedWorkItem;
   try {
+    // Build the spec omitting absent optionals (exactOptionalPropertyTypes: do not
+    // pass explicit `undefined` to optional fields).
+    const spec: NewWorkItemSpec = {
+      title,
+      type,
+      dependsOn: splitList(args["depends-on"]),
+      composesWith: splitList(args["composes-with"]),
+      ...(args["priority"] ? { priority: args["priority"] } : {}),
+      ...(args["persona"] ? { persona: Number(args["persona"]) } : {}),
+    };
     minted = mintWorkItem(
-      {
-        title,
-        type,
-        priority: args["priority"],
-        dependsOn: splitList(args["depends-on"]),
-        composesWith: splitList(args["composes-with"]),
-        persona: args["persona"] ? Number(args["persona"]) : undefined,
-      },
+      spec,
       SYSTEM_ENV, // the ONLY non-determinism, injected at the boundary (DST §7)
     );
   } catch (e) {
