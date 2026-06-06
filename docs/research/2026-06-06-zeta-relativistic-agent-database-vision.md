@@ -167,6 +167,15 @@ that compiles down to plain logged Z-set deltas; the data plane stays a fast, de
 fold.** Stored procs = yang Bonsai.Exprs in DynamicValue cells, logged as commands, replayed
 deterministically.
 
+**⚠ Capability boundary — a `Bonsai.Expr` in a DynamicValue is NOT automatically safe to execute
+(Amara, 2026-06-06).** This is the §5c observation→command trust boundary applied to *execution*:
+a yang/stored-proc never runs just because it arrived. It passes a scrutiny gate first —
+**schema/version check → capability check → determinism check → resource budget → non-determinism
+capture → result logged as a delta.** Only then does its effect enter the log. Without this, "stored
+procs" become arbitrary code smuggled into the DB. So both *inbound observations* (commits/events)
+AND *yang execution* go through scrutiny; the data plane only ever folds the authorized, logged
+deltas that survive the gate.
+
 ## 5c. DurableSaga: the connector at the seam (LANDED `703941ac6`, maintainer 2026-06-06)
 
 A **DurableSaga** is the control-plane primitive that lives exactly at the seam: a long-running
@@ -264,6 +273,11 @@ deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural sou
    **predictive/arithmetic coding**, **predictive coding** (brain as prediction-error minimizer).
    Sequencing: v1 stores the literal delta log (built); this is an OPTIONAL compression layer ON the
    log tier, MUST stay lossless. Workitem R4.
+   - **Blade (Amara, 2026-06-06): wonder compression MUST stay lossless on the durable recovery
+     path.** Approximate/lossy compression is fine for *analytics, summaries, prediction* — but the
+     durable recovery path needs exact reconstruction, UNLESS the uncertainty itself is the value
+     being preserved (in which case the uncollapsed distribution IS the lossless content). Never let
+     a lossy predictor silently degrade recoverable state.
 
 ## 7. Serialization & perf (see companion doc §9; Naledi engaged)
 
