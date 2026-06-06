@@ -121,6 +121,47 @@ This is the "everything is a fold over Z-sets, at every scale" recursion (manife
 §10 Self-similar) taken to its conclusion: data, schema/ontology, filesystem, version history, and
 eventually the OS are all the same retraction-native Z-set substrate.
 
+## 4d. ZetaId as the universal, self-describing pointer (maintainer, 2026-06-06)
+
+One addressing scheme across the whole substrate: a **ZetaId** points at content at *any*
+granularity — a log entry, a git blob/commit (across **history and branches**, because git is
+already content-addressed), a file, even a **section within a file**. Generic pointers that resolve
+uniformly in memory, on disk, and in git. (IPFS-CID-like content addressing unified with a named
+distributed key.)
+
+**The key is self-describing — category + version select the addressing/key TYPE** (maintainer's
+resolution of the "CRC vs unique-id" tension). Different category/version values "pull in different
+directions" *by design*, read straight from the key:
+
+- a **random-minted** category → conflict-free unique id (today's default; no coordination).
+- a **content-addressed** category → embeds a content digest (XxHash128 / `Merkle.fs`); **the id IS
+  the CRC** — recompute the digest, compare to the key → torn-write / corruption detection, no
+  separate CRC32c needed.
+- categories that need both → carry a unique segment AND a separate digest field ("move the CRC out").
+
+So the same construct is a unique pointer, a content-address, *or* an integrity check depending on
+its self-describing prefix — a reader dispatches on category/version to know how to interpret and
+whether to verify. This is the **multiformats / multihash / CID-version** pattern (the prefix tells
+you how to read the rest). It lets the segment-append log use the entry's ZetaId digest as its
+integrity check, and lets a generic pointer address a git object / file / section uniformly.
+
+Anchor: multiformats (multihash, CID v1 self-describing identifiers); content-addressed storage
+(git, IPFS); `Merkle.fs` (XxHash128). Affects: the segment-append+CRC log (`081KTF9T0E4` — CRC
+becomes the id digest) and the disk entry/frame format (still being finalized).
+
+**Parsed by combinators + generators, not lookups — and some ids encode ACTIONS (maintainer,
+2026-06-06).** Higher bits describe how to parse the lower bits (or vice versa), *recursively*, via
+**parser combinators + generators** rather than a static lookup table — so the key is a small
+self-describing, composable language, extensible without a central registry (generators over
+lookups, same spirit as wonder compression). Most categories parse to a *pointer* or a
+*content-address*; but certain categories can parse to an **action** — the id encodes a
+computation, not just a location (id-as-program). **Capability boundary still applies (§5b):** an
+action-encoding id is an *observation*, never auto-executed — it passes the scrutiny gate
+(schema/version → capability → determinism → resource budget → non-determinism capture → logged as
+delta) before its action runs. So "ids can encode actions" composes with, rather than bypasses, the
+observation→command trust boundary. Anchor: parser combinators (Hutton/Meijer); self-describing
+bytecode / tagged encodings.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
