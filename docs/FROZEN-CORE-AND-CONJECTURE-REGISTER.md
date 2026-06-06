@@ -278,7 +278,12 @@ owner ⇒ no coercion in any reachable state) holds over all interleavings of Bi
 guarded-never-enabled (design-guarantee form). TLC clean; **teeth verified** (enabling `Coerce` makes TLC
 produce the exact violating trace). **BP-16 second tool**: a FsCheck property on the real `Reconcile.fs`
 (`merge3` never mutates the counterparties' beliefs) closes TLC's abstraction gap on the deployed code.
-*bifurcation liveness* is a separate config (deferred). (3) **unbounded /
+*bifurcation liveness* ✅ ALSO BUILT (`tools/tla/specs/NciLiveness.tla`, 2026-06-05, Soraya-routed):
+`forked ~> (\E frame : \A t : belief[t] = frame)` under WF on Reconcile; the convergence crux solved by
+a monotone CRDT join (Shapiro 2011) + finite observation (a reflection budget, faithful to rung-1's
+finite evidence streams). TLC clean; **both teeth controls verified** (remove fairness → violated;
+arbitrary-frame merge → violated). BP-16 convergence witness = the proven `reconcileAll` order-
+independence (real merge-confluence). So **rung 2 is COMPLETE (safety + liveness)**. (3) **unbounded /
 "infinity"** — induction in a *prover* (TLAPS / Lean), since model-checking caps at finite state.
 **Tool routing is itself a decision** — route through the formal-verification routing discipline
 (Soraya / BP-16; guard against TLA+-hammer bias) before any spec is written; the three rungs are three
