@@ -162,6 +162,7 @@ YamlValue carried nothing extra. Benefit: "all formats agree" becomes
 structural-by-construction (no bridge to drift); the matrix is trivial.
 
 **Real edge cases — keep their own interface (same rigor, different interfaces):**
+
 - **XML** — attributes vs elements, namespaces, mixed content, ordering. A value
   tree needs a CONVENTION (`@attr` / `#text`) or a richer node; decide when XML is
   built. (Bytes: YAML has no native byte type → base64-string convention or CBOR.)
@@ -184,6 +185,7 @@ foundational LCD value lib** — every codec + typed value sits on it; no lean p
 couples to big Core.
 
 **Bridge pattern (per type, to/from DynamicValue):**
+
 - DynamicValue is the **LCD pivot** for polymorphic (de)serialization, and the
   translation through it is **LOSSY** (the LCD can't carry every type's richness).
 - **Lossless (1:1) types → a shared COMMON BASE bridge** (generic round-trip;

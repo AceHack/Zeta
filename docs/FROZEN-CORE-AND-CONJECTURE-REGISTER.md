@@ -176,6 +176,7 @@ property by construction), which is exactly what makes it scale-free / lock-free
 computable (DBSP D/I).
 
 **Confirmations / connections (Aaron, Mika parts 10-11, 2026-06-05):**
+
 - **YinYang dual confirmed = the shipped `YinYang.fs`.** Aaron independently states: `DynamicValue` and
   the Rx/Bonsai animation-queries are *duals* — yin (what remains) / yang (what acts), the two dots are
   discriminators; Bonsai (an AST) becomes a *peer node type inside DynamicValue* ("just better Lisp",
@@ -353,6 +354,7 @@ sampleable, the deepest homeostat↔Markov bridge); Goldwasser–Micali 1982 (se
 Hurwicz/Maskin/Myerson (mechanism design); Maynard Smith (ESS); Meijer/Fokkinga/Paterson 1991
 (cata/anamorphism — the bifurcation "banana split"). Full narrative:
 `memory/feedback_aaron_de_finetti_non_correlation_boundary_unifies_homeostat_markov_bayesian_2026_06_05.md`
+
 + `memory/feedback_aaron_actors_are_ephemeral_animations_of_what_remains_bifurcation_banana_split_one_traveler_becomes_two_eve_in_single_dynamicvalue_rx_2026_06_05.md`.
 
 ### B-other. The rest of the penumbra (each open, each one-directional on §A)

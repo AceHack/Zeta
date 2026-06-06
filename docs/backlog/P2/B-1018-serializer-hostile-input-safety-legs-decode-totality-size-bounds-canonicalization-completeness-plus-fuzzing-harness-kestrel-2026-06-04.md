@@ -24,6 +24,7 @@ safety. Existing proofs (round-trip/injectivity/canonicality/matrix/never-collap
 CORRECTNESS ON VALID input. This item is SAFETY ON HOSTILE input (DoS, signature-bypass).
 
 ## Provable legs to add (per primitive's codecs)
+
 1. **Decode TOTALITY** — `from*` terminates + returns Result on EVERY byte input (incl
    hostile garbage), never throws / never hangs (the malformed-input-DoS class). Lean
    termination / structural-recursion proof. (Distinct from round-trip: ALL inputs, not
@@ -40,6 +41,7 @@ CORRECTNESS ON VALID input. This item is SAFETY ON HOSTILE input (DoS, signature
    serializer analogue of the DBSP incremental=batch theorem).
 
 ## Fuzzing harness (the hostile/unstructured space proof + FsCheck don't reach)
+
 1. **`from*` decode boundary on raw bytes** — heaviest; coverage-guided (cargo-fuzz/
    libFuzzer for Rust, AFL.NET/SharpFuzz for .NET): assert no-crash / no-hang (timeout=bug)
    / no-OOM (bomb) / always Ok-or-clean-Error. The DoS-CVE surface + empirical check on
@@ -54,6 +56,7 @@ CORRECTNESS ON VALID input. This item is SAFETY ON HOSTILE input (DoS, signature
 the proven structure or the FsCheck-owned valid space.
 
 ## The whole stack (mental model)
+
 Lean/Z3 prove the STRUCTURE (all valid) → FsCheck the valid LEAF space (sampled) → FUZZING
 the hostile BYTE space (no-crash/hang/divergence) → golden vectors PIN all. Proof =
 correct-on-valid; fuzzing = safe-on-hostile; non-overlapping; the hostile half is where the

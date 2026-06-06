@@ -49,6 +49,7 @@ analysis; Lean/Mathlib measure-theoretic Markov).
 | Algebra | ✓ | ✗ | ✓ | ✗ | **2/4 — F#+Rust** |
 
 ### New seeds (built, F#-only — 1/4)
+
 | seed | langs | what it proves |
 |------|-------|----------------|
 | **Predicate3** (Kleene K3) | F# | three-valued predicate; UNKNOWN propagates, collapse only at the terminal filter |

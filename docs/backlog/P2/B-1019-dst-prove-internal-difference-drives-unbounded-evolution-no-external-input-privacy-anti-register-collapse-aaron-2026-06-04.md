@@ -19,6 +19,7 @@ depends_on: []
 `project_privacy_is_anti_register_collapse_constitutive_…` (Otto memory).
 
 ## The claim to prove (falsifiable)
+
 **Internal agent-difference (private state) is sufficient to keep the multi-agent engine
 evolving — with NO external input.** If true, privacy is CONSTITUTIVE (the anti-register-
 collapse / anti-heat-death term: private state disappears → agents identical → no gradient
@@ -26,6 +27,7 @@ collapse / anti-heat-death term: private state disappears → agents identical �
 difference is the only possible engine.
 
 ## Design (deterministic simulation = reproducible proof)
+
 - Deterministic + seeded (replayable; vary the seed). The DST skill.
 - **Define "evolves" rigorously** = NOT-halt AND **NOT-limit-cycle**. (A deterministic
   no-input system can change forever in a PERIODIC LOOP — a different collapse; a false
@@ -41,6 +43,7 @@ difference is the only possible engine.
 - Pre-committed reading (Aaron): a halt/cycle refutes "privacy is required."
 
 ## Scope (Kestrel)
+
 The engine directly IS a **memetic-evolution** system (agents propagating representations,
 Bayesian-updating over priors, shapes competing for adoption), so the result is strong
 evidence about Bayesian-agent memetic evolution (this class) and moderate about memetic

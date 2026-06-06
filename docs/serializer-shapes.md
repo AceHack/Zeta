@@ -6,6 +6,7 @@
 > if a signature here drifts from the code, the code wins — re-derive.
 
 ## 1. `DynamicValue` — the self-describing value tree (μF)
+
 `src/Core/DynamicValue.fs`
 
 ```fsharp
@@ -45,6 +46,7 @@ Rust) via golden vectors. **Never-collapse**: `null`, empty `[]`, empty `{}` are
 distinct round-tripping states (encode is injective).
 
 ## 2. The regular (static) serializer seam — `ISerializer<'T>`
+
 `src/Core/Serializer.fs`. For types **known at compile time**, serializing a **Z-set**
 (the DBSP unit). Distinct from `DynamicValue` (runtime-unknown shapes).
 
@@ -59,6 +61,7 @@ non-blittable deltas) · `FsPicklerSerializer` (exotic F# DUs/records/quotations
 Arrow pair below (large analytical cross-language batches).
 
 ## 3. Arrow — two faces
+
 `src/Core/ArrowSerializer.fs` + `src/Core/DynamicValueArrow.fs`
 
 (a) Columnar Z-set batch serializers (`ISerializer<'T>` instances — Arrow's natural fit):
@@ -89,6 +92,7 @@ cross-library "cross-language" = standard Arrow-ecosystem IPC interop, not hand-
 TS/Rust oracles (those stay zero-dep).
 
 ## 4. Bonsai — serialized expression / closure AST
+
 `src/Core/Bonsai.fs`. Computation as data (the νF-adjacent "deferred execution" shape).
 
 ```fsharp
@@ -116,6 +120,7 @@ Bonsai.deserialize : string -> Result<Expr,   BonsaiFeedback>
 ```
 
 ## How they relate
+
 - **`DynamicValue`** = the open, self-describing **value tree** (μF) — runtime-unknown
   shapes; the lowest-common-denominator all the value-tree codecs fold to/from.
 - **`ISerializer<'T>`** = the **static, compile-time-typed** Z-set seam — a different

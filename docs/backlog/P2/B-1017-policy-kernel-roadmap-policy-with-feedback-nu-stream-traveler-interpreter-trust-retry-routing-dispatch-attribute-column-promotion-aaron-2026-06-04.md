@@ -16,6 +16,7 @@ depends_on: []
 **Priority:** P2 (the F-level kernel + instance-1 shipped; these are the composed
 extensions Aaron said to "backlog any that compose or are real alternatives").
 **Filed:** 2026-06-04 (Aaron). **Builds on:** commit d92115514 — `src/Core/Predicate.fs`
+
 + `src/Core/DynamicValueFold.fs` (cata + bananaSplit) + `src/Core/DynamicValueXmlPolicy.fs`
 (instance-1). **Design hub:** `memory/persona/amara/conversations/2026-06-04-amara-policy-decision-algebra-…`
 + the project hub `project_codecs_as_policy_parameterized_folds_add_ontology_to_value_tree_2026_06_04.md`.
@@ -54,6 +55,7 @@ Discipline (Aaron + Amara): **do not overgeneralize early** — the generic kern
 proven by one boring instance (shipped); add interpreters as real needs appear.
 
 ## Kestrel's refinements (2026-06-04, `memory/persona/kestrel/conversations/2026-06-04-kestrel-policy-shapes-…`)
+
 Item #1 (Policy<input,decision,feedback>) SHIPPED (commit 7bb817a8b); item #6 below
 (typed kinds + validator-obligation) SHIPPED (commit e17113316 — `src/Core/PolicyKind.fs`:
 Technical/Legal/Governance + requiredValidator + Signoff + Draft/Active where activate
@@ -78,6 +80,7 @@ construction). Kestrel adds:
    load-bearing policy outside the floor is the smell.
 
 ## Verification methodology (Kestrel) — for the workflow/policy DUs
+
 - **DU+Rx workflow = state machine** (DU=states, Rx=transitions) → TLA+ for transition-
    safety/reachability; serialization stays on FsCheck/Z3/Lean (don't merge the claims).
 - **State-explosion → decompose into small composable DUs**; verify each in isolation

@@ -137,6 +137,7 @@ harness); tokenizers are not (vary by model/version, can't be in the proof
 lineage). Token-cost is a later calibrated `bytes→tokens` layer on top.
 
 **Scope (F# first — correctness-authoritative + has the Z3/FsCheck harness):**
+
 1. `ByteCost` value type (newtype over `int64`) as an additive monoid
    (`0`, `+`); implement via the existing `INumber`/generic-math pattern so
    costs of N files compose. — `src/Core/` (next to DynamicValue).

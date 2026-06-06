@@ -112,23 +112,24 @@ module SocietyUnbounded =
         let mutable pop = seedAgents seed n cands identical
         let mutable forks = 0
         let mutable halted = -1
-        let mutable cycled = false
+        let mutable cycledAt = -1
         curve.Add(distinctBeliefs pop)
         seen.Add(signature pop) |> ignore
-        let mutable tick = 1
-        while tick <= budget && halted < 0 && not cycled do
-            let next = step cands forks pop
-            if List.length next = List.length pop then
-                halted <- tick // no fork fired ⇒ no internal difference ⇒ stable fixed point
-            else
-                forks <- forks + 1
-                pop <- next
-                let sg = signature pop
-                if not (seen.Add sg) then cycled <- true // content signature repeated ⇒ limit cycle
-                curve.Add(distinctBeliefs pop)
-            tick <- tick + 1
+        // `stepNo` is a loop INDEX (not a shared Zeta tick): a `for` over the budget, gated by the
+        // halt/cycle flags — no mutable counter to torn-read (avoids the plain-tick-increment convention).
+        for stepNo in 1 .. budget do
+            if halted < 0 && cycledAt < 0 then
+                let next = step cands forks pop
+                if List.length next = List.length pop then
+                    halted <- stepNo // no fork fired ⇒ no internal difference ⇒ stable fixed point
+                else
+                    forks <- forks + 1
+                    pop <- next
+                    let sg = signature pop
+                    if not (seen.Add sg) then cycledAt <- stepNo // content signature repeated ⇒ limit cycle
+                    curve.Add(distinctBeliefs pop)
         let c = List.ofSeq curve
         if halted >= 0 then Refute(halted, distinctBeliefs pop)
-        elif cycled then Refute(tick - 1, distinctBeliefs pop)
+        elif cycledAt >= 0 then Refute(cycledAt, distinctBeliefs pop)
         elif (c |> List.pairwise |> List.forall (fun (a, b) -> b > a)) then Pass c
         else Inconclusive c
