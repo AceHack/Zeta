@@ -92,6 +92,27 @@ if [ "$HOME_DRIFT" -eq 0 ]; then
 fi
 echo
 
+# ── 3b. TLAPS (tlapm) proof manager — optional, opam source-build ────
+# Formal-verification rung 3. tlapm is built from source via opam
+# (common/tlaps.sh) only on a full install (ZETA_INSTALL_FULL=1) — it
+# is heavy and not part of the minimal toolchain. So its ABSENCE is a
+# WARN, never a FAIL: a minimal install legitimately lacks it. We probe
+# both PATH and the dedicated opam build switch.
+echo "[3b/6] TLAPS (tlapm) — optional formal-verification rung 3"
+TLAPM_VER=""
+if command -v tlapm >/dev/null 2>&1; then
+  TLAPM_VER="$(tlapm --version 2>&1 | head -n1)"
+elif command -v opam >/dev/null 2>&1 \
+     && opam exec --switch=tlaps-build -- tlapm --version >/dev/null 2>&1; then
+  TLAPM_VER="$(opam exec --switch=tlaps-build -- tlapm --version 2>&1 | head -n1) (opam switch tlaps-build)"
+fi
+if [ -n "$TLAPM_VER" ]; then
+  pass "tlapm: $TLAPM_VER"
+else
+  warn "tlapm not found — optional; build with ZETA_INSTALL_FULL=1 tools/setup/common/tlaps.sh"
+fi
+echo
+
 # ── 4. Mise runtimes match .mise.toml ───────────────────────────────
 echo "[4/6] mise runtimes match .mise.toml"
 if command -v mise >/dev/null 2>&1 && [ -f .mise.toml ]; then

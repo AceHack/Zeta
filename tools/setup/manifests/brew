@@ -39,6 +39,15 @@ ollama  # CPU-served tiny model for the move-next selector + observe.ts
 qemu
 mtools
 
+# Formal-verification rung 3 — TLAPS (tlapm, TLA+ proof manager) toolchain
+# (Aaron path-A 2026-06-05: opam source-build is the right long-term cross-OS
+# solution — upstream tlapm's latest BINARY release is 2022, x86_64-only
+# self-extracting .bin, NO arm64; opam compiles tlapm natively on arm64).
+# opam = the OCaml package manager that builds tlapm from a pinned source
+# commit (see common/tlaps.sh). The SMT backend (z3) is declared below.
+# Bottled; idempotent (brew install skips if present).
+opam  # OCaml package manager — builds tlapm from source per common/tlaps.sh
+
 # Container runtime for the effectful do_item executor (rationale: B-0964 §2). podman
 # is the default OCI runtime: Apache-2.0, rootless, daemonless. Coexists with an
 # existing Docker Desktop (separate VM + socket); do NOT install `podman-mac-helper`

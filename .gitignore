@@ -88,6 +88,7 @@ tools/tla/specs/states/
 # proves (run-tlaps.ts). Regenerated; not source.
 .tlacache/
 tools/tla/specs/.tlacache/
+**/.tlacache/
 
 .fake
 

@@ -32,6 +32,14 @@ libssl3t64        # OpenSSL 3 runtime (Noble t64 name)
 libgssapi-krb5-2  # Kerberos/GSSAPI — .NET networking
 tzdata            # timezone data — .NET DateTime
 
+# Formal-verification rung 3 — TLAPS (tlapm, TLA+ proof manager) toolchain
+# (Aaron path-A 2026-06-05: opam source-build is the right long-term cross-OS
+# solution — upstream tlapm's latest BINARY release is 2022, x86_64-only, NO
+# arm64; opam compiles tlapm natively on any arch). opam = the OCaml package
+# manager that builds tlapm from a pinned source commit (see common/tlaps.sh).
+# The SMT backend (z3) is declared below. Idempotent (apt skips if present).
+opam  # OCaml package manager — builds tlapm from source per common/tlaps.sh
+
 # USB/ISO QEMU acceptance substrate (operator 2026-05-31): B-0891 uses
 # qemu-system-* for boot/full-install/retention scenarios and qemu-img
 # for qcow2 snapshot/restart state preservation. The file-backed zflash

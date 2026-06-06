@@ -16,6 +16,8 @@
 #   8. common/dotnet-tools.sh — dotnet global tools (semgrep,
 #                              stryker, etc.) from manifests/dotnet-tools
 #   9. common/verifiers.sh    — TLA+ + Alloy jars from manifests/verifiers
+#   9b. common/tlaps.sh       — TLAPS (tlapm) opam source-build, gated on
+#                              ZETA_INSTALL_FULL (heavy OCaml build)
 #  10. common/agent-clis.sh   — agent/peer CLIs (bun-global) from manifests/agent-clis
 #  11. common/one-liner-tools.sh — non-package-manager CLIs (download-then-exec installers)
 #                                  from manifests/one-liner-tools
@@ -148,6 +150,15 @@ export PATH="$HOME/.dotnet/tools:$PATH"
 "$SETUP_DIR/common/elan.sh"
 "$SETUP_DIR/common/dotnet-tools.sh"
 "$SETUP_DIR/common/verifiers.sh"
+# TLAPS (tlapm, TLA+ proof manager) — opam source-build (no arm64 upstream
+# binary; Aaron path-A). Heavy OCaml build → gated behind ZETA_INSTALL_FULL
+# so minimal/CI/devcontainer installs stay fast. opam + z3 come from
+# manifests/brew above. Best-effort: warns + continues (never bricks install).
+if [ "${ZETA_INSTALL_FULL:-0}" = "1" ]; then
+  "$SETUP_DIR/common/tlaps.sh" || echo "⚠ tlaps.sh failed — see output above; continuing"
+else
+  echo "✓ skipping TLAPS opam source-build (set ZETA_INSTALL_FULL=1 to build tlapm)"
+fi
 # Agent + peer-AI CLIs (claude/codex/gemini) bun-global from manifests/agent-clis.
 # Best-effort: warns + continues on failure (auth/login is the operator's; never bricks install).
 "$SETUP_DIR/common/agent-clis.sh"
