@@ -840,7 +840,7 @@ jobs:
     #
     # Lifecycle: discovery #3676/#3679 → narrow fix #3680 → scanner #3692 →
     # filter + quality rounds #3692 (fixups) → baseline mechanism #3699 →
-    # CI enforce gate (this job). The `--baseline` flag grandfathers the 10
+    # CI enforce gate (this job). The `--baseline` flag grandfathers
     # pre-existing findings recorded in audit-tick-shard-relative-paths.baseline.json
     # so historical residue in immutable shards doesn't block — new violations
     # still fail. Same shape as Stryker `--reset` or ESLint suppressions.

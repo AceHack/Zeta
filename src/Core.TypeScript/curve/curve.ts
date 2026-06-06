@@ -8,7 +8,7 @@
 
 /** Differentiate (D = 1 − z⁻¹): the per-tick rate of change. */
 export const differentiate = (s: readonly number[]): number[] =>
-  s.map((_, i) => (i === 0 ? s[0]! : s[i]! - s[i - 1]!));
+  s.map((value, i) => (i === 0 ? value : value - s[i - 1]!));
 
 /** Integrate (I): the running prefix sum — the inverse of `differentiate`. */
 export const integrate = (s: readonly number[]): number[] => {

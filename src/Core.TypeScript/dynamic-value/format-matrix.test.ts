@@ -39,7 +39,10 @@ function yamlToDv(y: YamlValue): Tagged {
 const eq = (a: Tagged, b: Tagged) => JSON.stringify(a) === JSON.stringify(b);
 
 const jsonRT = (t: Tagged) => { const r = fromCanonicalJson(canonicalJson(t)); return r.ok && eq(r.value, t); };
-const cborRT = (t: Tagged) => { const r = fromCanonicalCbor(canonicalCbor(t as unknown as CborTagged)); return r.ok && eq(r.value as unknown as Tagged, t); };
+const cborRT = (t: Tagged) => {
+  const r = fromCanonicalCbor(canonicalCbor(t as unknown as CborTagged));
+  return r.ok && eq(r.value as unknown as Tagged, t);
+};
 const yamlRT = (t: Tagged) => { const r = parse(encode(dvToYaml(t))); return r.ok && eq(yamlToDv(r.value), t); };
 const xmlRT = (t: Tagged) => { const r = fromCanonicalXml(canonicalXml(t)); return r.ok && eq(r.value as unknown as Tagged, t); };
 

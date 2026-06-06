@@ -67,8 +67,8 @@ export class MerkleTree {
       const parent: MerkleHash[] = [];
       for (let i = 0; i < cur.length; i += 2) {
         const left = cur[i]!;
-        const right = i + 1 < cur.length ? cur[i + 1]! : left; // duplicate last for odd
-        parent.push(combine(left, right));
+        const right = i + 1 < cur.length ? cur[i + 1] : left; // duplicate last for odd
+        parent.push(combine(left, right!));
       }
       all.push(parent);
       cur = parent;

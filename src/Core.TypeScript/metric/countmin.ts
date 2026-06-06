@@ -48,7 +48,9 @@ export class CountMinSketch {
   }
 
   private colAt(baseHash: bigint, row: number): number {
-    let z = (baseHash & MASK64) ^ this.rowSeeds[row]!;
+    const rowSeed = this.rowSeeds[row];
+    if (rowSeed === undefined) throw new Error("row out of bounds");
+    let z = (baseHash & MASK64) ^ rowSeed!;
     z = mul64(z ^ (z >> 30n), KB);
     z = mul64(z ^ (z >> 27n), KC);
     return CountMinSketch.columnFor(z ^ (z >> 31n), this.width);

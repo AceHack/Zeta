@@ -1,6 +1,6 @@
 # CURRENT-vera
 
-Snapshot created: 2026-05-08T15:50:00Z.
+Snapshot refreshed: 2026-06-06.
 
 This file is Vera's compact continuity handoff for the Codex lane.
 It is not a source of authority. If this file conflicts with
@@ -21,6 +21,31 @@ The active operating split:
 - Codex host loop: launchd-backed background continuity and gate checks.
 - GitHub/git: authoritative coordination and durable project state.
 - Broadcast bus: local coordination cache, never final authority.
+
+As of 2026-06-06 maintainer direction, do not assume a Codex background
+service is currently running. To save money, push work forward in the
+foreground chat session unless the maintainer explicitly re-enables a
+background service.
+
+## Re-entry Notes
+
+The 2026-06-06 Codex IDE re-entry found the root checkout still
+contested and stale rather than a safe write surface:
+
+- root checkout on `main` was behind `origin/main` by hundreds of
+  commits, with untracked `.claude/projects/` and `xcrun_db`
+- local broadcast files were stale relative to git/GitHub state and
+  should be treated as hints only
+- `gh` was not available on PATH in the Codex desktop shell; use
+  plain `git`, repo scripts, or an available GitHub connector before
+  relying on GitHub CLI commands
+- `git fetch --prune origin` may report stale local remote-tracking
+  refs during large branch cleanups; prefer `git ls-remote --heads
+  origin 'claim/*'` for the current remote claim set when fetch output
+  is noisy
+
+If these observations drift, refresh this section from live probes
+rather than carrying it forward as doctrine.
 
 ## Continuity Contract
 
@@ -61,6 +86,8 @@ Read these before relying on chat continuity:
 - Take one toe-safe step per heartbeat; do not turn wakeups into churn.
 - Preserve before cleanup: prove local commits are reachable or explicitly
   abandon/preserve the branch before deleting a worktree.
+- When `gh` is unavailable, say so explicitly in handoffs and record
+  which fallback supplied the state used for the decision.
 
 ## Startup Rule
 

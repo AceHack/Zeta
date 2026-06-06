@@ -231,8 +231,13 @@ const accumulate512 = (acc: bigint[], input: Uint8Array, ioff: number, secret: U
   for (let i = 0; i < ACC_NB; i++) {
     const dataVal = readU64(input, ioff + 8 * i);
     const dataKey = dataVal ^ readU64(secret, soff + 8 * i);
-    acc[i ^ 1] = add64(acc[i ^ 1]!, dataVal);
-    acc[i] = add64(acc[i]!, mult32to64(dataKey & MASK32, dataKey >> 32n));
+    const adjacent = acc[i ^ 1];
+    const current = acc[i];
+    if (adjacent === undefined || current === undefined) throw new Error("accumulator out of bounds");
+    const dataKeyLo: bigint = dataKey & MASK32;
+    const dataKeyHi: bigint = dataKey >> 32n;
+    acc[i ^ 1] = add64(adjacent!, dataVal);
+    acc[i] = add64(current!, mult32to64(dataKeyLo, dataKeyHi));
   }
 };
 

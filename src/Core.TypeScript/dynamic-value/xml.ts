@@ -307,9 +307,10 @@ export function fromCanonicalXml(xml: string): DecodeResult {
         while (!(at() === "<" && xml.charAt(pos + 1) === "/")) {
           const eTag = readTag();
           if (eTag.close || eTag.name !== "e" || eTag.attrK === null || eTag.selfClose) fail("MalformedXml");
+          const key = eTag.attrK!;
           const val = parseValue();
           expectClose("e");
-          pairs.push([eTag.attrK!, val]);
+          pairs.push([key, val]);
         }
         expectClose("obj");
         return { t: "obj", v: pairs };

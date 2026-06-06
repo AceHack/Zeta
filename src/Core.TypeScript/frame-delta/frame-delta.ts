@@ -15,7 +15,8 @@ const unionKeys = (a: FrameMap, b: FrameMap): string[] => [
 const normalize = (m: FrameMap): FrameMap => {
   const out: FrameMap = {};
   for (const k of Object.keys(m)) {
-    if (m[k] !== 0) out[k] = m[k]!;
+    const value = m[k]!;
+    if (value !== 0) out[k] = value;
   }
   return out;
 };

@@ -112,8 +112,8 @@ function parseArgs(argv: readonly string[]): Args {
 
 // Baseline of known-acceptable findings — historical residue that pre-dates
 // the audit's introduction. Loading the baseline lets `--enforce` reject only
-// NEW findings (`new_findings - baseline`), while still surfacing the
-// pre-existing 10 as detect-only signal. Same shape as Stryker's `--reset`
+// NEW findings (`new_findings - baseline`), while still surfacing
+// pre-existing residue as detect-only signal. Same shape as Stryker's `--reset`
 // or ESLint suppressions: don't edit historical artifacts; track what's
 // grandfathered so new violations still fail CI.
 //
