@@ -39,15 +39,18 @@ not push code changes to these files while that work is in flight; fold into it.
 
 ## Sites found (sweep 2026-06-06)
 
-1. **`src/Core/SpineAsync.fs:33`** — background merge worker is `Task.Run(fun () -> ...)`
-   that blocks on `reader.WaitToReadAsync(...).AsTask().Result` (sync-over-async,
-   line 42). Parks one threadpool thread for the spine's whole lifetime.
-   - Prepared (held, unpushed) patch: rewrite as a `backgroundTask` loop with
-     `let! ready = reader.WaitToReadAsync ct` — genuine async, parks no thread.
-     Verified locally: Core builds 0/0, Spine tests 30/30. Patch text saved at
-     `/tmp/spineasync-async-truthful.patch` (regenerate from this note if lost).
-   - Open design question for the FDB direction: should this worker exist as a
-     separate task at all, or fold into the single run loop?
+1. **`src/Core/SpineAsync.fs:33`** — UPDATE 2026-06-06: the sync-over-async half
+   is **RESOLVED by Vera in PR #6693** (merge `436128c7c`) — the `.Result` block is
+   gone; the worker is now a genuine `task { let! ready = WaitToReadAsync ... }`.
+   Otto's held `/tmp/spineasync-async-truthful.patch` is therefore **obsolete**
+   (superseded — do not apply).
+   - REMAINING smell: the worker is still launched via `Task.Run(Func<Task>(...))`.
+     It is a single long-lived async worker (effectively DoP=1), so the residual
+     question is cosmetic-to-architectural: `Task.Run` to kick off one async loop
+     is mild, but for the FDB direction either fold it into the run loop or express
+     it as a DoP=1 `FerryThrottler` so the single-vs-N knob is uniform.
+   - Open design question (FDB): should this worker exist as a separate task at
+     all, or fold into the single run loop?
 
 2. **`src/Core/Runtime.fs:77`** — `ShardedRuntime.StepAsync` fans shard work out
    via `Array.init shardCount (fun i -> Task.Run(...))` + `Task.WhenAll`.
@@ -64,6 +67,9 @@ not push code changes to these files while that work is in flight; fold into it.
 
 ## Related landed work
 
-- `IAsyncBackingStore` / `BackedSpineAsync` additive contract (the truthful-async
-  disk store Vera deferred) — separate work item; gives a single-thread-friendly
-  async I/O path so no `Task.Run`-over-sync-I/O pretense is needed for spill.
+- `src/Core/FerryThrottler.fs` — LANDED (`3497fa3e4`): the DoP-knobbed ferry-boat
+  throttle this migration targets (DoP=1 deterministic ⇒ scale to N). The Runtime
+  shard fan-out (site 2) should route through it.
+- `IAsyncBackingStore` / `BackedSpineAsync` — LANDED (`e0a68c1e2`, gate-green): the
+  truthful-async disk store (the piece Vera handed to Otto); no `Task.Run`-over-
+  sync-I/O pretense for spill.
