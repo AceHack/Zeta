@@ -54,3 +54,21 @@ Built already this session (foundation): `IAsyncBackingStore` / `DiskAsyncBackin
 
 Storage lane = Otto. Vera owns runtime async + FerryThrottler. The group-commit tier (4)
 may want a FerryThrottler (DoP-knobbed batched fsync) — coordinate if so.
+
+## Discovered gap (2026-06-06, during DiskDeltaLog end-to-end test)
+
+DiskAsyncBackingStore uses a per-instance GUID prefix in spill filenames, so a
+FRESH instance cannot reload a prior instance's SNAPSHOT by handle. Cross-restart
+recovery therefore works via full delta-log replay (proven) but NOT yet via
+snapshot+tail across a restart. Fix: STABLE SNAPSHOT ADDRESSING — a durable
+manifest/ref (git ref in the git-native backend) naming the latest snapshot file
+with a stable path, so SnapshotPointer survives a restart. New increment, slots
+before/with parent-dir fsync.
+
+## Progress (2026-06-06)
+
+Landed: DeltaLog (inc1), RecoverableSpine + snapshot/cadence/GC (inc2/3),
+IDeltaCodec seam + ZSet<->DynamicValue + Checkpoint/CBOR codecs, DiskDeltaLog
+(filesystem/CBOR, fsync, fresh-instance recovery). Plus DurableSaga. ~33 tests green.
+Remaining: group-commit via FerryThrottler, parent-dir fsync, stable snapshot
+addressing, then tier model.
