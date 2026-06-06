@@ -11,10 +11,10 @@ F# can express algebraic properties as first-class equations. Running them as pr
 | Tool | Job | File |
 |---|---|---|
 | **FsCheck** (FsCheck 3 / FsCheck.Xunit.v3) | Property-based tests over generated inputs | `tests/Tests.FSharp/MathInvariantTests.fs` + others |
-| **Z3 SMT** (Microsoft.Z3 4.12.2) | Proofs of pointwise axioms over unbounded integers | `tools/Z3Verify/Program.fs` + `tests/.../FormalVerificationTests.fs` |
-| **TLA+/TLC** | Concurrent-protocol + state-machine invariants | `docs/*.tla` (6 specs) |
+| **Z3 SMT** (Microsoft.Z3 4.12.2) | Proofs of pointwise axioms over unbounded integers | `tools/Z3Verify/Program.fs` + `tests/Tests.FSharp/Formal/Z3.Laws.Tests.fs` |
+| **TLA+/TLC** | Concurrent-protocol + state-machine invariants | `tools/tla/specs/*.tla`; `.cfg` files mark the TLC-runnable set |
 | **xUnit** + `FsUnit.Xunit` | Concrete scenarios, boundary cases | throughout |
-| **Lean 4** (roadmap) | Machine-checked proof of the DBSP chain rule | TBD |
+| **Lean 4** | Machine-checked proof of the DBSP chain rule and related proof artifacts | `tools/lean4/**` |
 
 ## Properties currently enforced
 
@@ -62,7 +62,9 @@ Together these three make `(GCounter, Merge, Empty)` a bounded join-semilattice 
 
 ## TLA+ specs (concurrency invariants)
 
-Located in `docs/`:
+Located in `tools/tla/specs/`. The committed `.cfg` files are the
+machine-runnable subset; specs without `.cfg` are parked until their
+state space or proof role is explicit.
 
 1. **`DbspSpec.tla`** — the algebraic axioms of D, I, z⁻¹, H over a symbolic trace
 2. **`SpineAsyncProtocol.tla`** — producer/worker handoff with lost-wakeup invariant
@@ -72,6 +74,11 @@ Located in `docs/`:
 6. **`TransactionInterleaving.tla`** — CAS Transaction commit/rollback + autoCommit consistency
 7. **`ChaosEnvDeterminism.tla`** — seeded RNG + clock atomicity under concurrent Delay
 8. **`ConsistentHashRebalance.tla`** — total-coverage of keys across rebalance events
+9. **Recursive / consensus / safety models** — the remaining
+   `.cfg`-backed specs cover recursive-query fixpoint disciplines,
+   bounded consensus and liveness models, feature-flag resolution,
+   information-theoretic sharding, NCI safety/liveness/non-urgency,
+   operator lifecycle races, and tick monotonicity.
 
 ## Z3 SMT (pointwise axioms)
 
@@ -86,7 +93,7 @@ Located in `tools/Z3Verify/Program.fs` and run from `tests/.../FormalVerificatio
 
 For **algebraic laws over unbounded inputs** — commutativity, distributivity, chain rules — property-based tests find counterexamples no unit test reaches. FsCheck's shrinker drives failures down to their minimal triggering inputs, so when `tropical distrib` fails it shrinks to the two specific bytes that broke associativity (typically an overflow edge case).
 
-For **concurrent protocols** — lock orderings, exactly-once commits, register-vs-build — TLA+ is stronger because it exhaustively searches all interleavings up to a bound. Our 8 TLA+ specs cover every concurrent code path.
+For **concurrent protocols** — lock orderings, exactly-once commits, register-vs-build — TLA+ is stronger because it exhaustively searches all interleavings up to a bound. The TLC-runnable set is discovered from committed `.cfg` files by `tools/formal-verification/run-tlc.ts --all`.
 
 For **pointwise axioms over unbounded ℤ** — Z3 is the right tool because its bit-vector / integer theories are *strictly stronger* than property-based sampling over int64.
 
@@ -104,6 +111,6 @@ For **pointwise axioms over unbounded ℤ** — Z3 is the right tool because its
 2. Write the three-to-five laws from that class as `[<Property>]` tests.
 3. If concurrent-mutating, write a TLA+ spec in `tools/tla/specs/MyOpSpec.tla`.
 4. If a pointwise SMT-decidable axiom applies, add a Z3 proof in `tools/Z3Verify/Program.fs`.
-5. If a **machine-checked proof** is worth the effort (i.e. you plan to cite the law in a paper), start a Lean 4 port in `proofs/MyOp.lean` (P3 roadmap).
+5. If a **machine-checked proof** is worth the effort (i.e. you plan to cite the law in a paper), add a Lean 4 artifact under `tools/lean4/` and wire it into that Lake project.
 
 **The test file is the library's axiom list.** Keep it small, keep it pure, keep it paper-cited.

@@ -14,9 +14,12 @@
 //     .cfg.
 //
 //   bun tools/formal-verification/run-tlc.ts --all
-//     Run TLC on every spec the curated catalogue lists. Treats
-//     missing-from-catalogue specs as failures (catalogue drift).
+//     Run TLC on every spec with a committed .cfg file under
+//     tools/tla/specs/. Treats a missing paired .tla file as drift.
 //     Per-failure stdout-tail printed for CI triage.
+//
+//   bun tools/formal-verification/run-tlc.ts --list
+//     List every .cfg-backed spec that --all will run.
 //
 //   bun tools/formal-verification/run-tlc.ts --check-toolchain
 //     Useful for CI gating + dev-local diagnostics.
@@ -30,8 +33,9 @@
 // Design notes:
 //   - No xunit dependency
 //   - No CI=true / OS / arch / workflow filtering needed: this script
-//     runs only when the workflow that invokes it does (B-0183
-//     Phase 2 wiring will land a Linux-only workflow that calls this)
+//     runs only when the workflow that invokes it does.
+//   - No hand-maintained TLC catalogue: .cfg is the declaration that a
+//     spec is runnable by TLC, so --all discovers cfg-backed specs.
 //   - Trace-file cleanup matches the F# version's behavior:
 //     <SpecName>_TTrace_*.tla, <SpecName>_TTrace_*.bin, MC*.tla
 //   - working directory set to tools/tla/specs so TLC resolves
@@ -59,28 +63,6 @@ function escapeRegex(s: string): string {
 }
 
 const SPAWN_MAX_BUFFER = 64 * 1024 * 1024;
-
-// Curated spec catalogue (matches F# Tlc.Runner.Tests.fs registration).
-// Keep in sync with `[<Fact>]` entries in
-// `tests/Tests.FSharp/Formal/Tlc.Runner.Tests.fs` until the F#
-// retirement (B-0183 Phase 3).
-const CATALOGUE: readonly string[] = [
-  "SmokeCheck",
-  "TickMonotonicity",
-  "OperatorLifecycleRace",
-  "TransactionInterleaving",
-  "TwoPCSink",
-  "InfoTheoreticSharder",
-  "RecursiveCountingLFP",
-  "FeatureFlagsResolution",
-  "DbspSpec",
-  "CircuitRegistration",
-  "SpineAsyncProtocol",
-  "NciSafety",
-  "NciLiveness",
-  "NciNonUrgency",
-  "NciUnbounded",
-];
 
 function repoRoot(): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path
@@ -210,6 +192,19 @@ function specExists(toolchain: Toolchain, specName: string): boolean {
   );
 }
 
+function configuredSpecNames(specsPath: string): readonly string[] {
+  let entries: readonly import("node:fs").Dirent[];
+  try {
+    entries = readdirSync(specsPath, { withFileTypes: true });
+  } catch {
+    return [];
+  }
+  return entries
+    .filter((entry) => entry.isFile() && entry.name.endsWith(".cfg"))
+    .map((entry) => entry.name.slice(0, -".cfg".length))
+    .sort((a, b) => a.localeCompare(b));
+}
+
 function runOne(toolchain: Toolchain, specName: string): ExitCode {
   if (!specExists(toolchain, specName)) {
     process.stderr.write(
@@ -234,17 +229,21 @@ function runOne(toolchain: Toolchain, specName: string): ExitCode {
 }
 
 function runAll(toolchain: Toolchain): ExitCode {
+  const specs = configuredSpecNames(toolchain.specsPath);
   const passed: string[] = [];
   const failed: string[] = [];
   const missing: string[] = [];
   const failureDetails: { spec: string; result: TlcResult }[] = [];
-  for (const specName of CATALOGUE) {
+  if (specs.length === 0) {
+    process.stderr.write(`ERROR: no .cfg-backed TLC specs found in ${toolchain.specsPath}\n`);
+    return 1;
+  }
+  for (const specName of specs) {
     if (!specExists(toolchain, specName)) {
-      // Per #1412 P1 finding: a missing catalogued spec is
-      // catalogue drift (renamed / deleted), NOT an acceptable
-      // skip. Treat it as a failure so --all gates against drift.
+      // A committed .cfg declares that TLC should be able to run this
+      // spec. A missing paired .tla is drift, not an acceptable skip.
       process.stderr.write(
-        `MISSING: ${specName} (no .tla or .cfg in ${toolchain.specsPath})\n`,
+        `MISSING: ${specName} (has .cfg but no paired .tla in ${toolchain.specsPath})\n`,
       );
       missing.push(specName);
       continue;
@@ -264,7 +263,7 @@ function runAll(toolchain: Toolchain): ExitCode {
   }
   process.stdout.write("\n");
   process.stdout.write(
-    `summary: ${String(passed.length)} passed, ${String(failed.length)} failed, ${String(missing.length)} missing-from-catalogue (out of ${String(CATALOGUE.length)} catalogued)\n`,
+    `summary: ${String(passed.length)} passed, ${String(failed.length)} failed, ${String(missing.length)} missing-paired-tla (out of ${String(specs.length)} cfg-backed)\n`,
   );
   // Per #1412 P2 finding: print a failure-tail per failed spec so
   // CI triage doesn't require re-running with --one. Cap at last
@@ -298,7 +297,16 @@ function main(argv: readonly string[]): ExitCode {
     process.stdout.write("Usage:\n");
     process.stdout.write("  bun tools/formal-verification/run-tlc.ts <SpecName>\n");
     process.stdout.write("  bun tools/formal-verification/run-tlc.ts --all\n");
+    process.stdout.write("  bun tools/formal-verification/run-tlc.ts --list\n");
     process.stdout.write("  bun tools/formal-verification/run-tlc.ts --check-toolchain\n");
+    return 0;
+  }
+
+  if (argv[0] === "--list") {
+    const specsPath = join(root, "tools", "tla", "specs");
+    for (const specName of configuredSpecNames(specsPath)) {
+      process.stdout.write(`${specName}\n`);
+    }
     return 0;
   }
 
