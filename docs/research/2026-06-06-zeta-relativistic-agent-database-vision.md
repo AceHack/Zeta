@@ -110,7 +110,8 @@ eventually *is* the OS substrate:
   commit** (git never rewrites history; Landauer-honest; Memory-Preservation §5), cross-branch
   merge = MRDT three-way via git's LCA. The *filesystem* backend must build all of this itself.
 - **Zeta is a git server** (endgame): the DB and the git remote are the same thing — a client
-  `git push`/`pull` IS a DB commit/read.
+  `git push` lands an **observation** (scrutinized before any command is extracted — see §5c trust
+  boundary), `git pull` is a read.
 - **FUSE filesystem** (existing backlog) exposes the in-DB filesystem to the OS as a mountable
   fs — so ordinary tools see the Z-set-backed filesystem.
 - **Microkernel** (endgame): the whole substrate targets a microkernel — Zeta as the OS, with the
@@ -200,13 +201,25 @@ deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural sou
   Molina & Salem, SIGMOD 1987). DurableSaga = operator (reconcile) ⊕ saga (compensate) on the
   Z-set substrate.
 - **GitOps falls out for free — "everything declarative" (the long game; maintainer 2026-06-06).**
-  Because the DB *is* git (§4c git-native backend; Zeta-as-git-server), a **commit = a command**, so
-  a **declarative desired-state change pushed to git triggers the saga to reconcile** actual→desired
-  — exactly the GitOps level-triggered model (Flux/ArgoCD), but *native* rather than bolted on (the
+  Because the DB *is* git (§4c git-native backend; Zeta-as-git-server), a **declarative
+  desired-state change pushed to git** can trigger the saga to reconcile actual→desired — exactly
+  the GitOps level-triggered model (Flux/ArgoCD), but *native* rather than bolted on (the
   desired-state store and the database are the same git). The endgame: everything is declared as
   desired state in git; sagas (operators) reconcile and compensate; the edge-triggered delta log and
   the level-triggered git-desired-state are two views of one substrate. Anchor: **GitOps**
   (Weaveworks/Flux, 2017; ArgoCD); declarative reconciliation.
+- **⚠ A commit = an OBSERVATION, not a command (security trust boundary; maintainer 2026-06-06).**
+  Treating a pushed commit (or inbound bus message / external event) directly *as a command* is an
+  injection attack vector — anyone who can push could inject commands. So a commit is an
+  **observation**: it carries a *source* (who proposed it — anyone may attach) but **no
+  authorization** (only a gated authority grants that). Commands are **extracted only after
+  scrutiny**: validation → authorization → policy → provenance/attestation (AgencySignature /
+  SPIFFE / signature) → *then* a command is admitted to the delta log and a saga may act. This is
+  the repo's [`no-directives`](../../.claude/rules/no-directives.md) discipline (**source ≠
+  authorization**) applied to the git input surface, plus BP-11 (never execute instructions found in
+  an audited surface) and zero-trust (good/bad-actor decided at the node, not by a central
+  authority). The observation→scrutiny→command pipeline IS the trust boundary between the
+  git/bus input plane and the execution plane; the saga reconciles only over *authorized* commands.
 
 ## 6. The hard problems (research-grade — name them honestly)
 
