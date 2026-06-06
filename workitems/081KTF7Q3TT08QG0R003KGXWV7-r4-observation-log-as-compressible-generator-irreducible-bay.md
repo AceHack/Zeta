@@ -39,3 +39,13 @@ predictive/arithmetic coding; predictive coding.
 This is an OPTIONAL layer on top; must stay lossless. After the persistence tier
 (disk log, group-commit) and likely after R2 (incremental probabilistic
 propagation). Owner: TBD (uncertainty/Bayesian + compression).
+
+## Name: WONDER COMPRESSION (maintainer 2026-06-06)
+
+This is "wonder compression" — store the UNCOLLAPSED state (the wonder / uncertainty /
+TriBoolean.N / SoftValue distribution), defer collapse (`measure`) to read time, instead
+of storing collapsed values. Established term: `cooperate` is already the documented
+"wonder-compression-safe operation" (engage without collapsing). The generator+residual
+IS the uncollapsed distribution; the irreducible remainder is the wonder (Bayesian surprise).
+Anchor to `Core.FSharp.TriBoolean` (wonder-compression-safe `cooperate`; only `measure`
+collapses) + SoftValue ("never falsely certain").

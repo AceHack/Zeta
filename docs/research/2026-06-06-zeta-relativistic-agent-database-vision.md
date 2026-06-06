@@ -241,8 +241,13 @@ deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural sou
    causality." Decision: define causal correctness **within a bus**; the git commit DAG is exact
    causality *for what you fetched*; accept (and document) causal gaps across buses you don't
    subscribe to.
-4. **Observation log as a compressible generator; irreducible = Bayesian surprise (long game;
-   maintainer 2026-06-06).** The "persist inputs" log need not store observations *literally*: it
+4. **WONDER COMPRESSION — store the uncollapsed state, not collapsed values (long game;
+   maintainer 2026-06-06).** This is "wonder compression" at the storage scope — an established Zeta
+   term: the *wonder* is the held/uncollapsed uncertainty (`TriBoolean.N`; `cooperate` is already
+   the documented "wonder-compression-safe operation" — engage WITHOUT collapsing; the only
+   collapsing op is `measure`). Wonder compression = **save the uncollapsed distribution (the
+   uncertainty), defer collapse to read/query time**, instead of storing collapsed (measured)
+   values. The "persist inputs" log need not store observations *literally*: it
    compresses to **(generator function + seed + irreducible residual)**. A learned/Bayesian
    generative model predicts the next observation; you store only the **residual** (the correction
    from prediction to truth) — predictable history costs ~0 bits, and what remains is exactly the
