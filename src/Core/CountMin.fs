@@ -121,7 +121,9 @@ type CountMinSketch(depth: int, width: int, seed: int64) =
             buf.[row] <- table.[row * width + col]
         Array.sortInPlace buf
         if depth % 2 = 1 then buf.[depth / 2]
-        else (buf.[depth / 2 - 1] + buf.[depth / 2]) / 2L
+        // Midpoint-safe average (lo + (hi-lo)/2): the naive (lo+hi)/2 overflows near Int64.MaxValue
+        // when estimates are large (Lior audit 2026-06-06). buf is sorted so hi >= lo, hi-lo >= 0.
+        else buf.[depth / 2 - 1] + (buf.[depth / 2] - buf.[depth / 2 - 1]) / 2L
 
     /// Convenience: hash `value` with `HashCode.Combine` then estimate median.
     member this.EstimateMedian(value: 'T) : int64 =

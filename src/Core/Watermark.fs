@@ -77,11 +77,15 @@ type WatermarkTracker(strategy: WatermarkStrategy) =
                 | WatermarkStrategy.Monotonic -> maxSeen
                 | WatermarkStrategy.BoundedLateness lateness ->
                     let latenessMs = int64 lateness.TotalMilliseconds
-                    if maxSeen = Int64.MinValue then Int64.MinValue
+                    // Saturating subtraction: maxSeen near Int64.MinValue would underflow + wrap to a
+                    // large positive, breaking watermark monotonicity (Lior audit 2026-06-06). latenessMs ≥ 0.
+                    if maxSeen <= Int64.MinValue + latenessMs then Int64.MinValue
                     else maxSeen - latenessMs
                 | WatermarkStrategy.Periodic (_interval, lateness) ->
                     let latenessMs = int64 lateness.TotalMilliseconds
-                    if maxSeen = Int64.MinValue then Int64.MinValue
+                    // Saturating subtraction: maxSeen near Int64.MinValue would underflow + wrap to a
+                    // large positive, breaking watermark monotonicity (Lior audit 2026-06-06). latenessMs ≥ 0.
+                    if maxSeen <= Int64.MinValue + latenessMs then Int64.MinValue
                     else maxSeen - latenessMs
             // Watermarks must be monotone non-decreasing.
             if candidate > lastEmitted then lastEmitted <- candidate

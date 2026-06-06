@@ -41,7 +41,6 @@ with
     /// Increment this replica's counter by `delta` (must be positive).
     member this.Increment(replicaId: string, delta: int64) : GCounter =
         if delta < 0L then invalidArg (nameof delta) "G-counter increments must be non-negative"
-        let cur = this.Counts.[replicaId]
         let diff = ZSet.ofSeq [ replicaId, delta ]
         { Counts = ZSet.add this.Counts diff }
 
@@ -75,6 +74,8 @@ with
     static member Empty : PNCounter = { P = GCounter.Empty; N = GCounter.Empty }
 
     member this.Increment(replicaId: string, delta: int64) : PNCounter =
+        // -delta on Int64.MinValue overflows back to Int64.MinValue (Lior audit 2026-06-06) — reject it.
+        if delta = System.Int64.MinValue then invalidArg (nameof delta) "Int64.MinValue not representable (negation overflows)"
         if delta >= 0L then { this with P = this.P.Increment(replicaId, delta) }
         else { this with N = this.N.Increment(replicaId, -delta) }
 

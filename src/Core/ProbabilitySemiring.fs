@@ -27,6 +27,11 @@ module ProbabilitySemiring =
     /// Construct a normalized rational (lowest terms, positive denominator). `den = 0` is invalid.
     let rat (num: int64) (den: int64) : Rational =
         if den = 0L then invalidArg (nameof den) "rational denominator is zero"
+        // `abs Int64.MinValue` throws OverflowException; the sign-normalisation `-MinValue` overflows too.
+        // MinValue is not a real numerator/denominator in this exact-probability domain — reject it
+        // (Lior audit 2026-06-06).
+        if num = System.Int64.MinValue || den = System.Int64.MinValue then
+            invalidArg (nameof num) "Int64.MinValue not representable in an exact rational"
         let s = if den < 0L then -1L else 1L
         let n = s * num
         let d = s * den

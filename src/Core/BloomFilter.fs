@@ -519,11 +519,18 @@ module BloomFilter =
         if falsePositiveRate <= 0.0 || falsePositiveRate >= 1.0 then
             invalidArg (nameof falsePositiveRate) "must be in (0, 1)"
         let ln2 = Math.Log 2.0
-        let m = ceil (-(float expectedElements) * Math.Log falsePositiveRate / (ln2 * ln2)) |> int
+        let mFloat = ceil (-(float expectedElements) * Math.Log falsePositiveRate / (ln2 * ln2))
+        // Reject an absurd filter size (> 2^30 bits ≈ 128 MB) BEFORE the int conversion / round-up.
+        // Without this guard a large `m` overflowed int32 in the old `while p < m do p <- p <<< 1`
+        // loop (p → Int32.MinValue → 0 → 0 < m forever = infinite loop / DoS — Lior audit 2026-06-06).
+        if mFloat > 1073741824.0 then
+            invalidArg (nameof expectedElements)
+                "filter too large (> 2^30 bits); reduce expectedElements or raise falsePositiveRate"
+        let m = int mFloat
         let k = max 1 (int (ceil ((float m / float expectedElements) * ln2)))
-        // Round m up to the next power of 2 for pow2-mask indexing.
-        let mutable p = 1
-        while p < m do p <- p <<< 1
+        // Round m up to the next power of 2 (mask indexing). RoundUpToPowerOf2 is total + overflow-safe
+        // for m ≤ 2^30 (guarded above); no manual shift loop.
+        let p = int (System.Numerics.BitOperations.RoundUpToPowerOf2(uint32 (max 1 m)))
         struct (p, k)
 
     /// Create a blocked Bloom filter (insert-only) sized for the

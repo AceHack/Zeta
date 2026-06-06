@@ -82,13 +82,6 @@ tempted to ship.
 
 ## P1 — serious
 
-### BloomFilter.optimalShape can infinite-loop on a very large filter
-- **Site:** `src/Core/BloomFilter.fs:517` (`optimalShape`, the `while p < m do p <- p <<< 1` round-up)
-- **Found:** 2026-06-06 by Lior (primitives audit)
-- **Symptom:** if the optimal bit count `m` exceeds 2^30, `p <- p <<< 1` overflows int32 → MinValue → 0, and `0 < m` is then always true → infinite loop (DoS on a huge `expectedElements`).
-- **Fix:** clamp the max filter size / use `BitOperations.RoundUpToPowerOf2` (or a bounds check on `m`) instead of the unguarded shift.
-- **Who:** architect (Kenji) / Naledi
-
 ### BloomBench.fs referenced but not on disk
 
 - **Site:** `docs/BUGS.md` and `docs/research/bloom-filter-frontier.md`
@@ -291,34 +284,6 @@ tempted to ship.
 - **Symptom:** doc/impl gap — actual cost is O(N) on every diff, not the advertised pruned walk (perf, not correctness).
 - **Fix:** implement the recursive top-down walk on the level digests (prune subtrees where `digestA = digestB`), or correct the docstring to O(N).
 - **Who:** Naledi / Kenji
-
-### CRDT overflow + dead-code hardening (Lior audit 2026-06-06)
-- **Site:** `src/Core/Crdt.fs` — (a) `GCounter.Increment` (~L44) computes `let cur = this.Counts.[replicaId]` then never uses it (dead code; increment is done via Z-set add); (b) `PNCounter` negation (~L79) `this.N.Increment(replicaId, -delta)` overflows if `delta = Int64.MinValue`.
-- **Found:** 2026-06-06 by Lior
-- **Symptom:** (a) dead lookup; (b) `-delta` on Int64.MinValue is itself MinValue (silent), though GCounter throws on the resulting negative.
-- **Fix:** remove the dead `cur`; use checked subtraction or assert `delta <> Int64.MinValue` in PNCounter.
-- **Who:** Kenji
-
-### CountMin.EstimateMedian unchecked average can overflow
-- **Site:** `src/Core/CountMin.fs:117` (`EstimateMedian`, `(buf.[d/2-1] + buf.[d/2]) / 2L`)
-- **Found:** 2026-06-06 by Lior
-- **Symptom:** the mid-average addition can overflow to negative when estimates are near Int64.MaxValue (quiet corruption).
-- **Fix:** `Checked.(+)` or a midpoint-safe average (`lo + (hi-lo)/2`).
-- **Who:** Kenji
-
-### Watermark BoundedLateness subtraction can underflow
-- **Site:** `src/Core/Watermark.fs:81` (`BoundedLateness`, `maxSeen - latenessMs`)
-- **Found:** 2026-06-06 by Lior
-- **Symptom:** if `maxSeen` is near Int64.MinValue, `maxSeen - latenessMs` underflows → wraps to a large positive → violates watermark monotonicity.
-- **Fix:** clamp to Int64.MinValue on underflow / checked subtraction with fallback.
-- **Who:** Kenji
-
-### ProbabilitySemiring rational normalization throws on Int64.MinValue
-- **Site:** `src/Core/ProbabilitySemiring.fs:33` (`rat`, `gcd (abs n) d`)
-- **Found:** 2026-06-06 by Lior
-- **Symptom:** `abs Int64.MinValue` throws `System.OverflowException` (.NET) → a rational with MinValue numerator crashes normalization.
-- **Fix:** handle Int64.MinValue without negating (unsigned gcd, or pattern-match the MinValue case).
-- **Who:** Kenji
 
 ### TECH-RADAR row for Bloom sits at Trial without a bench
 
