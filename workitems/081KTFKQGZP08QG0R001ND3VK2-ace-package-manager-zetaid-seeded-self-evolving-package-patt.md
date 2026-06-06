@@ -101,6 +101,66 @@ PackageManifest (a DynamicValue / YinYang.Cell):
   observation/delta log = a `GitDeltaLog` stream; a fork = a git branch of the same seed
   ref; divergence = signed Z-set deltas; merge = MRDT three-way over git's LCA.
 
+## Refinement (Amara ↔ Aaron, 2026-06-06) — Ace is ALREADY a package-manager-of-package-managers
+
+**SHIPPED REALITY (not vision), per Aaron:** Ace already understands ~10 real package
+managers (npm · NuGet · Cargo · pip · Maven/Gradle · Go modules · apt/brew · …) and
+**normalizes their dependency graphs into git-ops declarative artifacts.** So the treaty
+layer exists today. The *new* move is to address that normalized graph by **ZetaID** — one
+canonical dependency graph over all ecosystems, instead of N adapter-specific graphs.
+
+The pipeline:
+
+```text
+foreign package identity        (npm:react@x · nuget:Newtonsoft.Json@x · cargo:serde@x)
+  → Ace canonical node          (normalized declarative artifact in git — EXISTS today)
+  → ZetaID package pointer      (self-describing seed/dep/proof/source pointer — the new layer)
+  → git/db/persistence pointers
+  → self-evolving Ace package patterns
+```
+
+**ZetaID becomes the universal pointer namespace** — one ZetaId can point to: a package seed ·
+a dependency · a compiler host · a persistence protocol · a git commit/branch/file/section · a
+DB row/stream/saga-state · a generated hardware host. That is the bridge: package manager →
+git/db substrate → self-hosting runtime, all one graph.
+
+**Staged trust boundary (keep this sharp).** The recursion has STAGES so it does not collapse:
+Stage 0 external compiler host (.NET AOT exe) → S1 seed boots the Yin/Yang host → S2 host loads
+package seeds + dep pointers → S3 patterns evolve via DU/saga state → S4 engine writes better
+hosts → S5 optimized native/ASM/CUDA/FPGA/shader hosts replace earlier ones. Same shape as
+compiler self-hosting, but the "compiler" is the whole package/runtime/persistence substrate.
+
+**Two load-bearing blades (do NOT lose):**
+
+1. **Foreign identity ≠ Zeta-native identity.** A NuGet version is NOT automatically a Zeta seed.
+   It becomes one only after Ace wraps it: source coordinate · integrity hash · lock metadata ·
+   capabilities · license/security facts · dependency edges · proof/check status · local policy ·
+   ZetaID wrapper. (`foreign artifact (observed)` → `Ace node (normalized)` → `ZetaID package
+   (self-describing seed-pattern with proofs/policies/evolution)`.) Prevents "npm package exists"
+   ⇒ "trusted Zeta seed."
+2. **A package ZetaID seed is an OBSERVATION, not authority** (restated): seed observed → resolve
+   deps → inspect generator → verify proof/check certs → check capabilities → admit to host →
+   unfold/run. The seed proposes; the host inspects; the checker admits. Same commit=observation
+   boundary, staged.
+
+**The 128-bit seed names the fixpoint, it does not contain all bits** (restated for this layer):
+the rest lives in host interpreter + dep graph + proof certs + generated code + persistent log +
+wonder residual + local observations. Sound restatement: *128 bits selects the lawful generator
+path through a host that knows how to unfold it.*
+
+**Keepers (verbatim, Amara):**
+
+- *"Ace distributes the seed; Zeta interprets the seed; the Yin/Yang engine evolves the seed;
+  persistence records where reality diverged from the seed."*
+- *"Ace does not merely install packages. Ace reifies dependency graphs into git-native,
+  ZetaID-addressed, evolvable patterns."*
+- *"ZetaID is the seed-name. Ace is the seed distributor. Yin/Yang is the seed host. DUs are the
+  lawful state space. Sagas are the evolution engine. Persistence is the memory of divergence.
+  Compiler hosts are temporary bodies. Hardware hosts are the eventual bodies the system learns
+  to grow."*
+
+Cross-ref: vision doc §4f (bootstrap tower + Ace⊗Zeta mutual fixpoint), `docs/research/…vision.md`.
+
 ## Anchors (Beacon — fill before any outward use)
 
 - Nix/Guix (functional package management; derivations as pure functions of inputs) ·
