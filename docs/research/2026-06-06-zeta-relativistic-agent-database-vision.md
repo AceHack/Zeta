@@ -237,6 +237,14 @@ portability (divergence) AND lose smoothness/differentiability. Write soft, comp
 code by default; a branch is a smell to be designed out, not a tool to reach for. (Anchor: branchless
 / data-oriented design; Dijkstra "Go To Statement Considered Harmful" — `if` is the next rung.)
 
+**Positive form (maintainer 2026-06-06): fragment control flow into composable *soft* DUs/ADTs.**
+Don't just delete branches — **reify control flow as data**: a discriminated union / algebraic data
+type you compose and `fold`/interpret (total `match`), not imperative branches. "Soft" = the DU
+carries uncertainty (`SoftValue`/`TriBoolean`) so dispatch stays soft. This is the DurableSaga
+DU-state-machine (§5c) generalized + the interpreter / free-monad pattern (control-as-data,
+interpreted). Total `match` on a valid-states DU is *composition*, not branching — that's the
+sanctioned shape; collapse/`measure` only at the edge.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
