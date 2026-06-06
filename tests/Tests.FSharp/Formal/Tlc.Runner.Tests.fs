@@ -199,6 +199,7 @@ let ``All documented TLA specs have their .tla file on disk`` () =
           "RecursiveCountingLFP"; "FeatureFlagsResolution"
           "BpExactOnTree"
           "NciSafety"
+          "NciLiveness"
           "SmokeCheck" ]
     for s in specs do
         File.Exists(Path.Combine(specsPath, $"{s}.tla"))
