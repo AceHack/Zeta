@@ -82,21 +82,31 @@ stream and stay bit-identical — **active-active state-machine replication**, n
 (VoltDB k-safety; TigerBeetle VSR). HA falls out of the same determinism for free; defer
 implementation but design the log so it can be mirrored to k+1 shard replicas.
 
-## 7. Open decisions (for the maintainer)
+## 7. Decisions (LOCKED 2026-06-06, maintainer)
 
-1. **Adopt "persist inputs + recompute derived" as the PRIMARY architecture?** (vs. a
-   per-write WAL of spine mutations.) This is the big bet. Recommendation: yes.
-2. **Tiers vs free-form per-table policy?** Recommend a small fixed tier set
-   (`durable`/`derived`/`ephemeral`) relations join, not arbitrary per-table knobs.
-3. **Where does the tier attach?** Proposed: at relation/stream registration (a "stream
-   type/group" carries its tier) — matches the maintainer's per-stream-group intuition.
-4. **Auto-classify `derived`?** The dataflow graph *knows* which relations are pure functions
-   of inputs — we could derive the tier automatically and only require explicit tiers for
-   inputs/ephemeral. Recommendation: auto-classify, allow override upward.
-5. **Is per-stream-group VoltDB mode novel?** VoltDB itself has ONE global command log.
-   "Command log scoped per stream-group" is beyond VoltDB — promising but needs the
-   upward-closed invariant (§2) to stay sound across groups.
-6. **HA/replication in scope now or later?** Recommend: design the log for it, build later.
+1. **Persist model: inputs + snapshots, recompute derived. ✓** Log committed input Z-set
+   deltas + cadenced spine snapshots; regenerate derived state by replaying the deterministic
+   dataflow on recovery. NOT a per-write WAL of spine mutations. (The big bet — taken.)
+2. **Policy shape: a small fixed tier set joined at registration. ✓**
+   `durable` / `derived` / `ephemeral`; no free-form per-table knobs; no per-write overrides
+   (breaks DST). A stream-group joins a tier.
+3. **Tier assignment: auto-classify internal relations; declare only leaves. ✓**
+   The dataflow graph marks any relation that is a deterministic function of durable inputs as
+   `derived` (don't persist). The author declares only the **leaves**: inputs → `durable`,
+   scratch → `ephemeral` (the graph cannot infer *intent* at a source). Override-upward
+   allowed.
+   - **Audit-via-manifest, not hand-declaration** (maintainer's question — "does auditability
+     buy us anything? we can audit via convention"): correct — explicit per-relation
+     declaration buys nothing the **upward-closed invariant check** (§2) doesn't already
+     enforce, and it drifts. Instead **emit the computed classification as a generated tier
+     manifest** ("relation X = `derived` because f(durable Y, Z)") — a queryable/checked-in
+     audit artifact with zero boilerplate. Convention + generated manifest + invariant check.
+4. **HA: design the log for replication, build later. ✓** Shape the delta-log + snapshot
+   format so it can be mirrored to k+1 replicas (active-active state-machine replication), but
+   don't build replication/k-safety yet.
+
+Note (informational): per-stream-group command-logging is **beyond VoltDB** (one global
+command log). Soundness across groups rests entirely on the upward-closed invariant (§2).
 
 ## Anchors (Beacon)
 
