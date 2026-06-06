@@ -32,6 +32,14 @@ tags:
 
 # B-0956 — Work-items → ZetaId WorkItem keys (conflict-free, no consensus)
 
+> **Product-team design review (2026-06-06):** the design memo this umbrella asks for is
+> [`docs/research/2026-06-06-product-team-review-b0956-backlog-to-zetaid-workitem-migration-pm2-ilyana-rodney-otto.md`](../../research/2026-06-06-product-team-review-b0956-backlog-to-zetaid-workitem-migration-pm2-ilyana-rodney-otto.md).
+> Unanimous: **incremental alias-and-keep, NOT big-bang**; first slice = mint tool + frontmatter-lint +
+> ref-integrity-lint (zero row changes). Blocker found: **B-0682 (ZetaId string encoding) must lock first**
+> (promote P2→P1). Open decision (Aaron's): filename shape (frontmatter-only ZetaId [recommended] vs flat
+> `workitems/<zetaid>.md`). Root cause of the chronic `backlog-index-integrity` red also found there
+> (B-1016 has no frontmatter; B-0366.2 id mismatch).
+
 ## Problem (the does-not-scale pain, operator-named 2026-05-31)
 
 > Aaron: *"do we have a backlog migration row to workitems with zeta ids ... so you don't
