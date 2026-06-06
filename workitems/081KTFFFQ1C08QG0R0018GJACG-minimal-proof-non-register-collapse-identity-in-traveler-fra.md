@@ -16,7 +16,7 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTFFFQ1C08QG0R0018GJACG-*.md` glob. -->
 
-## Status: §B CONJECTURE (NOT proven). Maintainer 2026-06-06.
+## Status: §B CONJECTURE (NOT proven) — maintainer 2026-06-06
 
 ### The apex — two ROOT proof obligations; all others serve them
 
@@ -41,8 +41,9 @@ Two Zeta roots — but note the crucial refinement below (forward momentum ≠ l
 
 Every other proof (durability recovery `recover∘crash=fold(committed)`, byte-lock treaties,
 codec round-trips, ZSet monoid laws) is subordinate — it discharges in service of one of
-these two roots. Anchor: Lamport, *Proving the Correctness of Multiprocess Programs* (safety
-+ liveness — but forward momentum is the *progress*-strengthening of liveness, via variant).
+these two roots. Anchor: Lamport, *Proving the Correctness of Multiprocess Programs*
+(safety and liveness — but forward momentum is the *progress*-strengthening of liveness,
+via a variant/ranking function).
 
 ### Reframe: non-register-collapse = identity-in-the-traveler-frame via heartbeats
 
