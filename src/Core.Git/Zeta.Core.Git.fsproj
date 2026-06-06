@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Zeta.Core.Git</RootNamespace>
+    <AssemblyName>Zeta.Core.Git</AssemblyName>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!-- Git-native adapter for the durability ports (IDeltaLog / ISnapshotStore).
+       LibGit2Sharp is the FIRST git backend behind our hexagonal ports; a
+       pure-managed loose-object backend can replace it later without touching
+       callers. The native dep is ISOLATED to this adapter project, never in Core. -->
+  <ItemGroup>
+    <ProjectReference Include="../Core/Core.fsproj" />
+    <PackageReference Include="LibGit2Sharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="GitDeltaLog.fs" />
+    <Compile Include="GitSnapshotStore.fs" />
+  </ItemGroup>
+
+</Project>
