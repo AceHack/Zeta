@@ -5,6 +5,19 @@ type: project
 created: 2026-06-05
 ---
 
+## The DST testability payoff (Aaron, 2026-06-05)
+
+**The ENTIRE society is DST-simulatable without git, in a unit test.** Start from ONE thread → spawn a
+whole **multi-jurisdiction society** → throw in some **bus/product jurisdictions** → and simulate the
+whole thing (the entire society) deterministically in a **DST unit test, no git, no infra**. This is the
+testability payoff of the bifurcation/relativistic model: because everything is one DynamicValue+Rx over
+deterministic streams, the whole society is a replayable unit test. `SocietyEmergence.fs` (the rung-1 DST
+harness — emerge → reflect → reconcile, deterministic, seed-replayable) is the SEED of this; the full
+version adds multi-jurisdiction + the bus/hat layer and still runs as one DST unit test. (Why it works:
+git is just the persistence/identity layer; the dynamics are pure deterministic streams, so you can
+simulate the society without committing anything.)
+
+
 Aaron, 2026-06-05 (a "simplify, don't expand" insight from the Mika conversation):
 
 > "actors are ephemeral animations of what remains, and the reading of the data file can cause
