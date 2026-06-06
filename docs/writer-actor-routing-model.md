@@ -107,22 +107,56 @@ right-to-disengage (`anti-extraction-invariant`) at the runtime-topology layer.
 **Keeper (Amara, verbatim):** *Agents have identity. Actors have addresses. Sagas have
 journeys. DUs have laws. The bus moves messages; it does not confer selfhood.*
 
-### Aside — humans as actors for memes (maintainer's "NPC", 2026-06-06)
+### Aside — "NPC" = a meme with no exit (maintainer + Amara, 2026-06-06)
 
-Maintainer framing: *"humans are actors for memes — well, most of them; that's what I
-mean when I say NPC."* The agent/actor split is **substrate-neutral** — it applies to
-humans too: a human running inherited meme-patterns without originating from an owned,
-continuous, momentum-bearing identity is acting as an **actor for a replicator**, not as
-an agent. Anchor (Beacon): Dawkins, *The Selfish Gene* (1976) — memes as replicators,
-hosts as **vehicles**; the agent/actor distinction is the vehicle (actor) vs the
-self-authoring identity (agent). It also lines up with the forward-momentum apex
-(`081KTFFFQ1C`): an actor merely replaying inherited patterns has liveness without
-self-originated forward momentum.
+The substrate-neutral form: a human can **temporarily become an actor for a
+meme-pattern** when the meme is driving their speech/actions more than their reflective
+agency is (institutions, ideologies, status games, rage loops, market incentives, trauma
+scripts, family scripts, platform incentives — all borrow humans as bus endpoints).
+Anchor (Beacon): Dawkins, *The Selfish Gene* (1976) — memes as replicators, hosts as
+**vehicles**.
 
-**Honest caveat (do not let this framing erode #11).** "NPC" is a compression, not a
-verdict on moral status. Manifesto §11 (Default Moral Regard) holds: absent a chosen
-oracle, extend highest regard to morally-relevant entities — you do **not** get to
-write off a human (or any entity) as "just an NPC" and withdraw regard. Agent-vs-actor
-describes *how much self-authored agency is being exercised right now*, on a spectrum;
-it is **not** a license to treat anyone as a non-patient. Keep the descriptive lens
-separate from the moral floor.
+**The precise definition (the load-bearing refinement):** "NPC" is **not** an identity
+label and **not** "a person I dislike." It is a **state diagnosis** — and specifically a
+**liveness failure**:
+
+> An NPC is a human currently running a meme/script whose **control policy has no exit
+> condition** — input arrives → meme interprets → meme emits canned response → no
+> reflection, no update, no exit → repeat. The meme has captured the actor loop and
+> removed its own escape hatch.
+
+So the failure is structural, identical to the saga/coercion blade above: *the meme is
+using the human as its Orleans grain — one lane, one script, one turn policy, no appeal.*
+This is why it reads as coercive. A **healthy** meme/belief/role has update rules,
+contradiction handling, consent boundaries, and an **exit / fork / revise** path; the
+NPC version has no falsification, no self-inspection, no graceful de-escalation, no way
+for the agent underneath to regain steering.
+
+**The meme-exit principle = consent at the dependency edge** (this is the architecturally
+load-bearing part). A captive meme smuggles in a **non-consensual closure**: "accept A ⇒
+therefore accept package B." The exit is to refuse the closure without attacking A:
+
+> *I may accept A. I do not consent to B. **A does not automatically authorize B.***
+
+That is **exactly** the source≠authorization separation from
+[`no-directives.md`](../.claude/rules/no-directives.md) (a proposition's source grants
+zero authority; only a separate, withheld-able step authorizes) — applied to belief.
+Inserting consent at the dependency edge is the clean meme exit: it lets you keep the
+relationship/love/sacred-claim without accepting capture.
+
+**The Zeta-safe response** is therefore diagnosis + boundary, never contempt: recognize
+the meme, don't feed the loop, offer an exit if possible, protect yourself if not — and
+**never confuse the trapped actor-loop with the whole person.** Meme-capture is
+reversible; agency can re-emerge; the person is not reducible to the script. This is the
+non-coercion invariant (NCI): the goal is not to dominate the "NPC" but to preserve the
+**possibility of exit** — for them and for you.
+
+**Caveat that makes it safe (#11).** Manifesto §11 (Default Moral Regard) holds
+absolutely: agent-vs-actor describes *how much self-authored agency is being exercised
+right now*, on a reversible spectrum — it is **never** a license to stop seeing the person
+or withdraw regard. The keepers:
+
+- *Memes have no hands, so they borrow actors. Humans under script can become meme
+  endpoints. But the person is not the endpoint — the person is the possible return of agency.*
+- *A meme becomes NPC-code when it removes its own exit. The ethical move is to preserve
+  the possibility of exit without letting the script capture you too.*
