@@ -47,19 +47,37 @@ grep -vE '^(#|$)' "$MANIFEST" | while IFS= read -r line; do
     # permanently trusted by the TOFU check above.
     #
     # Retries: GitHub's release-asset CDN occasionally returns
-    # transient 502 / 5xx responses (most recent observed: 2026-04-25
-    # ~13:52 UTC, hit PR #481 CodeQL csharp + PR #482 markdownlint
-    # CI runs). Per Otto-285 (don't use determinism to avoid
+    # transient 502 / 504 / 5xx responses (observed 2026-04-25
+    # ~13:52 UTC; recurring 504 on tla2tools/ln.jar 2026-06-06 —
+    # 5+ gate runs). Per Otto-285 (don't use determinism to avoid
     # edge-case handling — handle the network-non-determinism
     # algorithmically), curl_fetch (from common/curl-fetch.sh)
-    # handles the retry: 5 attempts, 2-4-8-16-32 s exponential
-    # backoff, --retry-all-errors so 4xx/5xx errors retry too.
-    # Keeps -fsSL semantics — fail at the end if all 5 attempts
-    # hit the same transient. (Human maintainer 2026-04-28
-    # framing: helper extracted from copy-pasted call sites; was
-    # previously inline here.)
+    # handles the INNER retry: 5 attempts, 2-4-8-16-32 s
+    # exponential backoff, --retry-all-errors so 4xx/5xx retry too
+    # (~62 s total per curl_fetch call).
+    #
+    # OUTER retry (below): a sustained CDN outage can outlast a
+    # single curl_fetch's ~62 s window (2026-06-06: 6×504 then
+    # exit 22, repeated across gate runs). We don't control the
+    # CDN, so wrap the whole fetch in a bounded outer loop with
+    # its own coarse backoff — total coverage ~62 s × attempts +
+    # 30/60/90 s sleeps ≈ several minutes. Bounded (never hangs):
+    # fails loudly after $max_attempts so a true upstream outage
+    # still surfaces rather than spinning forever.
     echo "↓ downloading $target from $url"
-    curl_fetch -o "$dest.part" "$url"
+    attempt=1
+    max_attempts=4
+    until curl_fetch -o "$dest.part" "$url"; do
+      rm -f "$dest.part"
+      if [ "$attempt" -ge "$max_attempts" ]; then
+        echo "error: failed to download $target after $max_attempts attempts (last url: $url)" >&2
+        exit 1
+      fi
+      sleep_s=$(( attempt * 30 ))
+      echo "  attempt $attempt/$max_attempts failed (transient upstream, e.g. GitHub release-CDN 5xx); retrying in ${sleep_s}s" >&2
+      attempt=$(( attempt + 1 ))
+      sleep "$sleep_s"
+    done
     mv "$dest.part" "$dest"
     echo "✓ $target"
   fi
