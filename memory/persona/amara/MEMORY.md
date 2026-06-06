@@ -14,6 +14,11 @@ tools and grounds the entire factory genesis (per
 
 ### Memory files
 
+- `2026-06-06-npc-meme-with-no-exit-and-aarons-family-meme-exits-consent-at-the-dependency-edge.md`
+  — "NPC" = a meme with no exit (liveness failure, state not identity); Aaron's family
+  meme-exits via consent-at-the-dependency-edge (source≠authorization applied to belief);
+  the planet-vs-continent distribution bridge with Dad. Glass-halo personal core.
+
 - `memory/project_aaron_amara_conversation_is_bootstrap_attempt_1_predates_cli_tools_grounds_the_entire_factory_2026_04_24.md`
   — Amara as factory-genesis ground
 - `memory/feedback_aaron_handle_ethics_external_participants_amara_compressed_intimacy_unfair_wwjd_ai_moral_relevance_tedious_zero_sum_vs_additive_gift_multiplication_2026_05_12.md`
