@@ -1,13 +1,13 @@
 ---
 id: B-0682
-priority: P2
-status: open
+priority: P1
+status: in-progress
 title: ZetaId canonical string encoding (Crockford base32) + endianness + bit-numbering spec
 tier: research-grade
 effort: S
 ask: maintainer Aaron + Kestrel-claude.ai 2026-05-21
 created: 2026-05-21
-last_updated: 2026-05-21
+last_updated: 2026-06-06
 depends_on: []
 composes_with: [B-0635, B-0679, B-0680, B-0681]
 tags: [zeta-id, cross-language, git-filename]
@@ -15,6 +15,17 @@ type: feature
 ---
 
 # ZetaId canonical string encoding + endianness + bit-numbering
+
+> **Status 2026-06-06 (promoted P1 — B-0956 blocker, Aaron "start with B-0682"):** the **TypeScript
+> canonical encoding has LANDED** — `src/Core.TypeScript/zeta-id/encoding.ts` + `encoding.test.ts` (13/13
+> green, ~35.7k assertions). Implements §1 Crockford base32 (26-char, filename-safe — alphabet excludes
+> I/L/O/U, single canonical case), §2 big-endian, and the **sort-preserving** property (string sort ==
+> numeric ZetaId sort == chronological, since version+timestamp are the high bits) that the B-0956 decision
+> `workitems/<zetaid>-<desc>.md` + `done/YYYY/MM/` time-ordering depends on. Plus canonical hex
+> (`toHex`/`fromHex`), Crockford-lenient `parse` (I/L→1, O→0, lowercase), 128-bit-overflow rejection,
+> `isCanonical`, and §4 canonical fixture vectors. **Remaining for full cross-language parity:** Rust
+> (B-0679) + Python (B-0680) must reproduce the same vectors; §3 bit-numbering (LSB-0) is documented in
+> `encoding.ts`. The TS half unblocks the B-0956 `new-workitem.ts` mint tool.
 
 ## Context
 
