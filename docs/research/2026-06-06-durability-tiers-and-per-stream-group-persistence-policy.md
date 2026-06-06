@@ -75,12 +75,20 @@ recorded into the log at execution time and re-fed on replay**. This is exactly 
 deterministic-simulation discipline already in `ChaosEnv.fs` / `VirtualTimeScheduler`. The
 order of concurrent delta sources must be fixed and logged.
 
-## 6. HA (later) = replicate the deterministic delta stream
+## 6. HA is TWO-LEVEL (corrected 2026-06-06, maintainer)
 
-Because execution is deterministic, replicas independently re-execute the same ordered delta
-stream and stay bit-identical — **active-active state-machine replication**, no page shipping
-(VoltDB k-safety; TigerBeetle VSR). HA falls out of the same determinism for free; defer
-implementation but design the log so it can be mirrored to k+1 shard replicas.
+Earlier draft wrongly proposed cross-agent k+1 active-active HA. The real model has two levels
+(see the vision doc `2026-06-06-zeta-relativistic-agent-database-vision.md` §4):
+
+- **Intra-agent (own state) — traditional HA lives here.** An agent MAY replicate *its own shard*
+  k+1 for redundancy/durability. Within one shard there is a single writer and a local order, so
+  determinism makes this active-active state-machine replication of the deterministic delta stream
+  (VoltDB k-safety / TigerBeetle VSR style). This is where the delta-log + snapshot design must be
+  mirrorable. Defer the build; design the log for it.
+- **Inter-agent — relativistic, NOT blanket HA.** Agents own their shards and **selectively**
+  replicate from each other over shared buses (partial replication; G-Set CRDT bus). No global
+  truth; cross-agent consistency is causal/mergeable (MRDT three-way merge over the git DAG), not
+  k+1 replication. Do NOT mirror every agent's log to every other agent.
 
 ## 7. Decisions (LOCKED 2026-06-06, maintainer)
 
