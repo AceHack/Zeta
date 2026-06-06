@@ -77,6 +77,7 @@ type DiskSnapshotStore<'K when 'K : comparison>
                     if fsync then fs.Flush(flushToDisk = true)
                  } : Task)
             File.Move(tmp, path, overwrite = true)   // atomic replace on the same volume
+            if fsync then FileSync.fsyncDir root     // durably commit the rename in the dir
         }
         :> Task
 

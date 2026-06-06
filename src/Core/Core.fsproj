@@ -107,6 +107,7 @@
     <Compile Include="HigherOrder.fs" />
     <Compile Include="DiskSpine.fs" />
     <Compile Include="DiskSpineAsync.fs" />
+    <Compile Include="FileSync.fs" />
     <Compile Include="DeltaLog.fs" />
     <Compile Include="DeltaCodec.fs" />
     <Compile Include="DiskDeltaLog.fs" />

@@ -80,6 +80,7 @@ type DiskDeltaLog<'K when 'K : comparison>
             do! fs.WriteAsync(ReadOnlyMemory bytes, ct).AsTask()
             do! fs.FlushAsync ct
             if fsync then fs.Flush(flushToDisk = true)
+            if fsync then FileSync.fsyncDir root   // durably commit the new dir entry
         }
         :> Task
 
