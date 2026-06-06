@@ -72,6 +72,12 @@ jobs:
       - name: frontmatter schema lint (index-poisoning guard)
         run: bun tools/backlog/lint-frontmatter.ts --schema-only
 
+      # B-0956 cutover guard: docs/backlog/ is FROZEN to the grandfathered B-NNNN rows. New work-items
+      # must be minted as conflict-free ZetaIds (tools/backlog/new-workitem.ts → workitems/), not added
+      # as new consensus-allocated B-NNNN files. Fails on any B-NNNN id outside frozen-bnnnn-ids.json.
+      - name: no-new-B-NNNN cutover guard (mint ZetaIds instead)
+        run: bun tools/backlog/lint-no-new-bnnnn.ts
+
       - name: verify per-row + index parity
         shell: bash
         run: |
