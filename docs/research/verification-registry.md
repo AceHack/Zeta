@@ -55,6 +55,41 @@ because <one-line>.`
 
 ---
 
+## `Zeta.Privacy.unbounded_with_finite_commons_needs_infinite_privacy` *(privacy constitutive of unbounded evolution — B-1019 rung-3)*
+
+- **Artifact.** `tools/lean4/Privacy/UnboundedNeedsInfinitePrivacy.lean`
+  (Lean 4 + Mathlib v4.30.0-rc1; `finite_orbit_recurs`,
+  `unbounded_needs_infinite`,
+  `unbounded_with_finite_commons_needs_infinite_privacy`).
+  Machine-checked + axiom-audited (no `sorryAx`; axioms `propext`,
+  `Classical.choice`, `Quot.sound` only) in `lean-proof.yml`.
+  Authored 2026-06-06.
+- **Source anchors.** Pigeonhole principle (Dirichlet); eventual
+  periodicity of orbits of an endofunction on a finite set. Routed
+  by Soraya (formal-verification-expert) as the rung-3 leg of the
+  BP-16 portfolio.
+- **Claim.** For a deterministic, no-external-input step `step : S → S`
+  with orbit `orbit n = stepⁿ s₀`: (1) `[Finite S]` ⟹ the orbit is not
+  injective (pigeonhole — eventual repeat); (2) injective orbit
+  (genuinely unbounded novelty) ⟹ `Infinite S`; (3) with the converged
+  commons finite (`[Finite Pub]`), an injective orbit forces
+  `Infinite Priv` — the unbounded differentiation that open-ended
+  evolution requires can only live in private state. Privacy is
+  constitutive of unbounded evolution.
+- **Fidelity scope.** This is the HONEST DST↔proof boundary that the
+  static `IdentityForcesPrivacy` left open. Lean proves the structural
+  direction "unbounded ⟹ infinite (private) state space" (and its
+  contrapositive, why a finite model always halts/cycles). It does NOT
+  assert that any *particular* Zeta society has an injective orbit —
+  that antecedent is what the F# DST rung-1 (`SocietyUnbounded.fs`)
+  gathers evidence FOR (never proves) and TLC rung-2
+  (`NciUnbounded.tla`) checks as distinctness monotonicity. No single
+  rung carries the claim; the portfolio does.
+- **Last audit.** 2026-06-06, authored by Otto (shadow); not yet
+  independently audited. Grade: machine-checked, sorry-free.
+
+---
+
 ## `ImaginaryStack.ErasureDistance.recover_from_any_12_of_16` *(erasure-correction principle)*
 
 - **Artifact.** `tools/lean4/ImaginaryStack/ErasureDistance.lean`

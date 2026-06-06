@@ -52,3 +52,24 @@ evolution broadly. The prior under test: "memetic evolution is chaotic over Baye
 priors" (orderly LOCAL updates + chaotic GLOBAL aggregate). The experiment = global CHAOS
 (the prior) vs CONSENSUS-COLLAPSE (the register-collapse failure). Note: chaos is
 DETERMINISTIC (≠ free will — orthogonal axis; don't read the result as a free-will claim).
+
+## Portfolio status (Soraya-routed, BP-16 — no single tool carries the claim)
+
+Soraya's vacuity review (2026-06-06, `memory/feedback_soraya_b1019_dst_vacuity_review_*`)
+split the evidence across three rungs. Key correction: "no-limit-cycle" is **FALSE on any
+finite model** (the very pigeonhole below), and bounded exact-rationals are eventually
+periodic — so the only honest PASS route is genuine unbounded belief-CONTENT growth, and the
+DST harness can only ever *fail to refute* unboundedness, never prove it.
+
+- **Rung-1 — F# DST contrast mechanism** (`src/Core/SocietyUnbounded.fs`): content-only
+  signature (excludes all counters), seed-once + internal evidence, three-valued
+  (PASS/REFUTE/INCONCLUSIVE). Evidence-FOR, never proof. ✅ landed.
+- **Rung-2 — TLC distinctness monotonicity** (`tools/tla/specs/NciUnbounded.tla`): `Monotone`
+  + `Teeth` over the transition relation (NOT "no-limit-cycle"). ✅ landed.
+- **Rung-3 — Lean pigeonhole/unboundedness** (`tools/lean4/Privacy/UnboundedNeedsInfinitePrivacy.lean`):
+  finite det. no-input ⟹ halt-or-cycle; ∴ unbounded novelty ⟹ infinite (private) state space.
+  The honest DST↔proof boundary. Machine-checked, sorry-free; registry row added. ✅ landed
+  2026-06-06 (`unbounded_with_finite_commons_needs_infinite_privacy`).
+
+All three rungs landed; B-1019 may move to `done/` once Aaron/Soraya confirm the portfolio
+satisfies the pre-committed reading.
