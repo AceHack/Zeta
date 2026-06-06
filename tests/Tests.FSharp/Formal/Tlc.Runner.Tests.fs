@@ -201,6 +201,7 @@ let ``All documented TLA specs have their .tla file on disk`` () =
           "NciSafety"
           "NciLiveness"
           "NciNonUrgency"
+          "NciUnbounded"
           "SmokeCheck" ]
     for s in specs do
         File.Exists(Path.Combine(specsPath, $"{s}.tla"))
