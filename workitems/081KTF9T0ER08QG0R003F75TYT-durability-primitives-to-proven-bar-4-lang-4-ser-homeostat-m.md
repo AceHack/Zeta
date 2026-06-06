@@ -72,3 +72,11 @@ crash, recover}.
   TLAPS upgrade path for a machine-checked proof. FsCheck rides `dotnet test`.
 - **Handoff (Soraya's authority bound):** routing only; spec author = Otto or Kenji;
   Soraya recommends Kenji concur before it enters the gate.
+
+## Math leg COMPLETE (2026-06-06)
+
+All three legs landed for the recovery invariant: DST crash harness (DurabilitySim.Tests,
+executable witness) + FsCheck cross-check (DurabilityProperty.Tests, randomized refinement)
++ TLA+ RecoveryHomeostat.tla (exhaustive interleavings, 70 states, teeth-checked: broken GC
+violates NoCommittedLoss). Recovery invariant recover∘crash=fold(committed) + NoCommittedLoss
+(register never collapses under snapshot+GC) verified.

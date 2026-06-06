@@ -97,3 +97,12 @@ for the CRDT **merge** (`IdentityForcesPrivacy.lean` `absorb_priv`), NOT for com
   primary (false-green on finite C), Z3 (silently forces linear C), Alloy (counterexample
   only) — costs per Soraya.
 - **CI:** lean-proof.yml + tools/tla + dotnet test; do NOT gate until step 0.
+
+## Note: durability-layer non-collapse is now PROVEN (distinct from this §B item)
+
+`RecoveryHomeostat.tla` `NoCommittedLoss` (committed log/register never collapses under
+snapshot+GC — the "register always expands" property at the durability layer) is VERIFIED
+(TLC, teeth-checked). That is a different notion from THIS §B conjecture, which is per-agent
+ORTHOGONAL-COMPRESSION non-collapse (one agent not collapsing into another), still 2
+definitions short of stateable (C + O undefined). Two non-collapse notions — durability-layer
+(proven) vs per-agent-orthogonal (§B). Do not conflate.
