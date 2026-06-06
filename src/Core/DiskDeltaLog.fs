@@ -8,6 +8,12 @@ open System.Threading
 open System.Threading.Tasks
 
 
+[<Struct>]
+type private GroupCommitDeltaAppendRequest =
+    { Seq: int64
+      Record: byte[] }
+
+
 /// Disk-backed `IDeltaLog` — one file per entry under a directory, named by
 /// zero-padded sequence (`{seq:020}.delta`). File-per-entry is git-native-friendly
 /// (diffable, mirrors the agent-bus folder/G-Set pattern) and makes truncation a
@@ -132,3 +138,186 @@ type DiskDeltaLog<'K when 'K : comparison>
             for p in toDelete do
                 try File.Delete p with _ -> ()
             ValueTask.CompletedTask
+
+
+/// Segment-backed `IDeltaLog` with group-commit fsync. Unlike
+/// `DiskDeltaLog`, which writes one file per entry for audit/git-native
+/// inspectability, this hot-path backend appends framed records to one segment
+/// file and routes appends through `FerryThrottler<'TItem,'TResult>`. Each ferry
+/// boat writes N records then performs one `Flush(true)` before completing the N
+/// caller tasks. This v1 backend is a single-segment writer, so
+/// `MaxDegreeOfParallelism` must be 1; segment sharding/striping is a later
+/// scale-out backend, not an implicit behavior here.
+///
+/// Record frame:
+/// `[len:int32-LE][crc32c:uint32-LE][payload]`, where payload is
+/// `[seq:int64-LE][capLen:int32-LE][capturedJson][deltaLen:int32-LE][deltaBytes]`.
+/// Recovery scans from the start, ignores/truncates a torn trailing record, and
+/// fails loudly for non-trailing CRC corruption.
+[<Sealed>]
+type GroupCommitDiskDeltaLog<'K when 'K : comparison>
+    (dir: string,
+     codec: IDeltaCodec<'K>,
+     ?config: FerryThrottlerConfig,
+     ?maxBatchBytes: int) =
+
+    let root = Path.GetFullPath dir
+    do Directory.CreateDirectory root |> ignore
+
+    let segmentPath = Path.Combine(root, "delta.segment")
+    let gate = obj ()
+
+    let baseConfig =
+        match config with
+        | Some c -> c
+        | None -> { FerryThrottlerConfig.deterministic with MaxBatchSize = 64 }
+
+    let ferryConfig =
+        match maxBatchBytes with
+        | Some bytes -> { baseConfig with MaxBatchBytes = Some bytes }
+        | None -> baseConfig
+    do
+        if ferryConfig.MaxDegreeOfParallelism <> 1 then
+            invalidArg
+                (nameof config)
+                "GroupCommitDiskDeltaLog writes one segment file; MaxDegreeOfParallelism must be 1."
+
+    let framePayload (seq: int64) (captured: Map<string, string>) (delta: ZSet<'K>) : byte[] =
+        let dict = Dictionary<string, string>()
+        for KeyValue (k, v) in captured do
+            dict.[k] <- v
+        let capBytes = JsonSerializer.SerializeToUtf8Bytes dict
+        let deltaBytes = codec.Encode delta
+        use ms = new MemoryStream()
+        use bw = new BinaryWriter(ms)
+        bw.Write(seq)
+        bw.Write(capBytes.Length)
+        bw.Write(capBytes)
+        bw.Write(deltaBytes.Length)
+        bw.Write(deltaBytes)
+        bw.Flush()
+        ms.ToArray()
+
+    let frameRecord (payload: byte[]) : byte[] =
+        use ms = new MemoryStream()
+        use bw = new BinaryWriter(ms)
+        bw.Write(payload.Length)
+        bw.Write(HardwareCrc.Crc32C(ReadOnlySpan payload))
+        bw.Write(payload)
+        bw.Flush()
+        ms.ToArray()
+
+    let decodePayload (payload: byte[]) : DeltaLogEntry<'K> =
+        use ms = new MemoryStream(payload)
+        use br = new BinaryReader(ms)
+        let seq = br.ReadInt64()
+        let capLen = br.ReadInt32()
+        let capBytes = br.ReadBytes capLen
+        let captured =
+            JsonSerializer.Deserialize<Dictionary<string, string>> capBytes
+            |> fun d ->
+                match d with
+                | null -> Map.empty
+                | _ -> d |> Seq.map (fun kv -> kv.Key, kv.Value) |> Map.ofSeq
+        let deltaLen = br.ReadInt32()
+        let deltaBytes = br.ReadBytes deltaLen
+        { Seq = seq; Delta = codec.Decode deltaBytes; Captured = captured }
+
+    let scanEntries (truncateTrailingTornWrite: bool) : DeltaLogEntry<'K>[] =
+        if not (File.Exists segmentPath) then
+            [||]
+        else
+            let access = if truncateTrailingTornWrite then FileAccess.ReadWrite else FileAccess.Read
+            use fs = new FileStream(segmentPath, FileMode.Open, access, FileShare.ReadWrite)
+            use br = new BinaryReader(fs)
+            let entries = ResizeArray<DeltaLogEntry<'K>>()
+            let mutable scanning = true
+            while scanning do
+                let recordStart = fs.Position
+                if fs.Length - fs.Position = 0L then
+                    scanning <- false
+                elif fs.Length - fs.Position < 8L then
+                    if truncateTrailingTornWrite then
+                        fs.SetLength recordStart
+                    scanning <- false
+                else
+                    let len = br.ReadInt32()
+                    let expectedCrc = br.ReadUInt32()
+                    if len < 0 then
+                        invalidOp $"GroupCommitDiskDeltaLog: negative record length {len} at byte {recordStart}."
+                    elif fs.Length - fs.Position < int64 len then
+                        if truncateTrailingTornWrite then
+                            fs.SetLength recordStart
+                        scanning <- false
+                    else
+                        let payload = br.ReadBytes len
+                        let actualCrc = HardwareCrc.Crc32C(ReadOnlySpan payload)
+                        if actualCrc <> expectedCrc then
+                            if fs.Position = fs.Length then
+                                if truncateTrailingTornWrite then
+                                    fs.SetLength recordStart
+                                scanning <- false
+                            else
+                                invalidOp
+                                    $"GroupCommitDiskDeltaLog: CRC mismatch at byte {recordStart} (expected 0x{expectedCrc:X8}, got 0x{actualCrc:X8})."
+                        else
+                            entries.Add(decodePayload payload)
+            entries.ToArray()
+
+    let mutable nextSeq =
+        let recovered = scanEntries true
+        if recovered.Length = 0 then 0L else recovered |> Array.maxBy _.Seq |> _.Seq
+
+    let appendBoat (boat: ReadOnlyMemory<GroupCommitDeltaAppendRequest>) (ct: CancellationToken) : Task<int64 array> =
+        task {
+            let createdSegment = not (File.Exists segmentPath)
+            use fs =
+                new FileStream(
+                    segmentPath,
+                    FileMode.Append,
+                    FileAccess.Write,
+                    FileShare.Read,
+                    4096,
+                    FileOptions.Asynchronous ||| FileOptions.WriteThrough)
+            for i in 0 .. boat.Length - 1 do
+                let req = boat.Span.[i]
+                do! fs.WriteAsync(ReadOnlyMemory req.Record, ct).AsTask()
+            do! fs.FlushAsync ct
+            fs.Flush(flushToDisk = true)
+            if createdSegment then
+                FileSync.fsyncDir root
+            return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i].Seq |]
+        }
+
+    let throttler =
+        new FerryThrottler<GroupCommitDeltaAppendRequest, int64>(
+            ferryConfig,
+            appendBoat,
+            itemSizeBytes = (fun req -> req.Record.Length))
+
+    interface IDeltaLog<'K> with
+        member _.AppendAsync(delta, captured, ct) =
+            if ct.IsCancellationRequested then
+                ValueTask<int64>(Task.FromCanceled<int64> ct)
+            else
+                let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
+                let payload = framePayload seq captured delta
+                let req = { Seq = seq; Record = frameRecord payload }
+                throttler.ProcessAsync(req, CancellationToken.None) |> ValueTask<int64>
+
+        member _.ReplayAsync(fromSeqExclusive, _ct) =
+            scanEntries false
+            |> Array.filter (fun e -> e.Seq > fromSeqExclusive)
+            |> Array.sortBy _.Seq
+            |> ValueTask<DeltaLogEntry<'K>[]>
+
+        member _.HighWater = lock gate (fun () -> nextSeq)
+
+        member _.TruncateAsync(_throughSeqInclusive, _ct) =
+            // Segment compaction/rollover is the next perf-tier increment. Recovery
+            // and callers already pass `fromSeqExclusive`, so the correctness
+            // invariant does not depend on physical deletion in this v1 backend.
+            ValueTask.CompletedTask
+
+    interface IDisposable with
+        member _.Dispose() = (throttler :> IDisposable).Dispose()

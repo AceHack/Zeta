@@ -47,3 +47,21 @@ conforming to the **byte-lock treaty** `src/Core/golden-vectors-deltacodec.json`
 - F# source to port: `src/Core/DeltaLog.fs`, `DeltaCodec.fs`, `RecoverableSpine.fs`, `SnapshotStore.fs`.
 - Rules: honest async (`.claude/rules/async-all-the-way-truthful-signatures.md` — DoP-knob, no raw Task.Run),
   culture-invariant/ordinal, the 11 manifesto specs, FoundationDB + Will Wilson DST as guiding principles.
+
+## Progress (Vera, 2026-06-06)
+
+- **A partial/landable:** added `GroupCommitDiskDeltaLog<'K>` as a segment-backed
+  `IDeltaLog` hot-path tier. It uses `FerryThrottler<'TItem,'TResult>` with
+  byte-aware boats and `MaxDegreeOfParallelism = 1` by default; each boat appends
+  N framed records and completes callers only after one segment `Flush(true)`.
+- Recovery scans `[len][crc32c][payload]` records, truncates torn trailing writes,
+  preserves `HighWater` across fresh instances, and continues to work through the
+  canonical CBOR `IDeltaCodec` seam.
+- Tests added in `tests/Tests.FSharp/Storage/DiskDeltaLog.Tests.fs`: group
+  append/replay, fresh-instance high-water recovery, CBOR codec compatibility,
+  torn trailing record truncation, and `RecoverableSpine` recovery over the
+  segment log.
+- **Still open:** B, the C# port of `DeltaLog` + `DeltaCodec` + recovery against
+  `src/Core/golden-vectors-deltacodec.json`. Segment compaction/rollover remains
+  the follow-up for the perf-tier log's physical `TruncateAsync`; v1 keeps
+  correctness by honoring `ReplayAsync(fromSeqExclusive)` while retaining bytes.

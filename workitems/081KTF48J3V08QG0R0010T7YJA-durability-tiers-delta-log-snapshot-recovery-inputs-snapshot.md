@@ -70,5 +70,7 @@ before/with parent-dir fsync.
 Landed: DeltaLog (inc1), RecoverableSpine + snapshot/cadence/GC (inc2/3),
 IDeltaCodec seam + ZSet<->DynamicValue + Checkpoint/CBOR codecs, DiskDeltaLog
 (filesystem/CBOR, fsync, fresh-instance recovery). Plus DurableSaga. ~33 tests green.
-Remaining: group-commit via FerryThrottler, parent-dir fsync, stable snapshot
-addressing, then tier model.
+Vera follow-on: group-commit via FerryThrottler now exists as
+`GroupCommitDiskDeltaLog<'K>` (segment + CRC32C + one `Flush(true)` per byte-aware
+boat). Remaining: segment rollover/compaction, parent-dir fsync where relevant,
+stable snapshot addressing, then tier model.

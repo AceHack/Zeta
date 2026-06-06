@@ -36,3 +36,11 @@ Two disk logs then coexist behind IDeltaLog: file-per-entry (git-native/audit) a
 segment+CRC (hot perf) — a backend choice, like the format tiers. MEASURE both
 (Naledi's SerializationBench extended to append throughput) before defaulting.
 Anchor: classic WAL (ARIES); SQLite WAL; segment+CRC is standard.
+
+## Progress (Vera, 2026-06-06)
+
+`GroupCommitDiskDeltaLog<'K>` now lands the first segment-backed perf tier behind
+`IDeltaLog`: FerryThrottler byte-aware boats, one segment `Flush(true)` per boat,
+CRC32C-framed records, fresh-instance recovery, and torn trailing record
+truncation. Remaining: segment rollover/compaction so physical `TruncateAsync`
+can reclaim bytes instead of relying only on `ReplayAsync(fromSeqExclusive)`.
