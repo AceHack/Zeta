@@ -54,6 +54,14 @@ module ProbabilitySemiring =
     /// Exact maximum (⊕ of the Viterbi semiring — the idempotent corner).
     let max (a: Rational) (b: Rational) : Rational = if compare a b >= 0 then a else b
 
+    /// Exact reciprocal `1/a` (ℚ is a field). `a = 0` is invalid.
+    let recip (a: Rational) : Rational =
+        if a.Num = 0L then invalidArg (nameof a) "reciprocal of zero" else rat a.Den a.Num
+
+    /// Exact division `a / b` (`b = 0` is invalid). Used by the relative-observer reconciliation
+    /// (a 3-way merge divides out the common ancestor).
+    let div (a: Rational) (b: Rational) : Rational = mul a (recip b)
+
     // ── Inference as a matrix-vector product over the chosen semiring ──
     // A distribution is a row vector `π` (length n); a transition is a matrix `P` (n×n), `P.[i].[j]` =
     // weight from state i to state j. One step is `π'(j) = ⊕_i ( π(i) ⊗ P(i,j) )`.
