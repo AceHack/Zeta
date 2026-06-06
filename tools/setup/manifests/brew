@@ -46,3 +46,11 @@ mtools
 # `podman machine init && podman machine start`. Version unpinned (fast-mover CLI;
 # brew default) per dep-pin-search-first-authority. Idempotent: brew skips if present.
 podman
+
+# Z3 SMT solver — the formal-verification portfolio's SMT prover (tools/Z3Verify +
+# Formal/Z3.Laws.Tests shell `z3 -in`). Was UNDECLARED (the test self-skips when absent =
+# silent non-enforcement); declaring it closes B-1009. Also the SMT backend TLAPS shells
+# out to (rung-3). Version unpinned (brew default) per dep-pin-search-first-authority;
+# idempotent (brew skips if present). The Microsoft.Z3 NuGet is deliberately NOT used (no
+# osx-arm64 native) — the CLI is the real dependency.
+z3

@@ -4,8 +4,9 @@ open System
 open System.Diagnostics
 open System.IO
 
-/// Z3 SMT-LIB2 verification via the `z3` CLI (installed via Homebrew /
-/// apt / winget). Bypasses the .NET wrapper, which has no osx-arm64 native
+/// Z3 SMT-LIB2 verification via the `z3` CLI (declaratively installed:
+/// `tools/setup/manifests/{brew,apt}` → z3; winget on Windows). Bypasses
+/// the .NET wrapper, which has no osx-arm64 native
 /// binary, and talks to Z3 directly over stdin. Unlike TLC's finite-domain
 /// enumeration, this proves each identity over the full unbounded integer
 /// theory: UNSAT on the negated claim = proof over all integers.

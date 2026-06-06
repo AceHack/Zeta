@@ -53,3 +53,9 @@ podman
 uidmap          # newuidmap/newgidmap — rootless user-namespace ID mapping
 slirp4netns     # rootless container networking
 fuse-overlayfs  # rootless overlay storage driver
+
+# Z3 SMT solver — the formal-verification SMT prover (tools/Z3Verify + Formal/Z3.Laws.Tests
+# shell `z3 -in`). Was UNDECLARED (test self-skips when absent = silent non-enforcement);
+# closes B-1009. Also the SMT backend TLAPS shells out to (rung-3). Unpinned (apt default)
+# per dep-pin-search-first-authority; idempotent.
+z3
