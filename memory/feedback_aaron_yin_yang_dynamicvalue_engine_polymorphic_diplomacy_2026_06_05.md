@@ -58,6 +58,22 @@ introspection/interrogation over DynamicValue" is the compression. The built pri
 no hidden-state coercion); the **banana-split projection** (value tree → shaped XML/etc. views) =
 reflection-over-structure; **Rx meta-dimensions** = introspection. One interface, several faces.
 
+**The reflection interface is CAUSALLY BOUNDED (Aaron, 2026-06-05).** Each choice/reflection sees only
+the stream **up to now** — never the future. The reflection interface **cannot see shape-definitions that
+arrive later**; it **caches what it can** (the shape known so far), and later definitions are folded in by
+the order-independent convergence over the (possibly late / out-of-order) events. This is the *temporal*
+form of the "space is uncertain about the universe" certainty-limit — a choice's view is its past
+light-cone of the stream, and the localized axiom-of-choice (simulate-then-choose) operates only over
+that finite up-to-now prefix. It's also exactly why retractable Z-sets matter: the future refines the
+shape; retraction + convergence reconcile it without corrupting history.
+
+**Lisp vs DynamicValue (Aaron, 2026-06-05 — the precise differentiator).** Same homoiconic data-is-code
+core, BUT DynamicValue adds, beyond Lisp: (a) **math proofs**, (b) **4-lang executors**, (c) **4
+serializers**, and crucially (d) it must work over **INFINITE Z-set streams** (retractable +1/−1 — late
+events, incremental compute) **and G-set streams** (grow-only, idempotent CRDT). So it is *Lisp over
+infinite, incremental, retractable, convergent DBSP/CRDT streams* — not a static structure. The
+infinite-stream operation (with the causal up-to-now bound above) is the real difference.
+
 ## Homoiconic + recursive (Aaron, 2026-06-05)
 
 The **action language can contain the staying language and vice versa** — they are **homoiconic**
