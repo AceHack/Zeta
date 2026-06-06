@@ -66,3 +66,19 @@ Until then: conjecture, with this discharge condition.
 **Action (Aaron 2026-06-06): find the MINIMAL proof for non-register-collapse.** Routed to
 Soraya for tool + minimal proof-obligation scoping; tracked as a workitem. (Scope note:
 the society-emergence extension is deliberately NOT recorded here.)
+
+## Reframe + apex (maintainer 2026-06-06) — see workitem 081KTFFFQ1C
+
+- **Non-register-collapse = proof of identity in the traveler frame of other identities** —
+  "I commit therefore I am," via *their heartbeats* (relational cogito; AgencySignature /
+  heartbeat-via-commit). It is the **root of the forward-momentum homeostat** ("prove never
+  idle eventually" — a liveness property). Claimed-VERIFY: "heartbeats drive the yin/yang
+  engine" (hedged "something close to that").
+- **The apex: all other proofs serve two roots — FORWARD MOMENTUM (liveness) and SAFETY**
+  (Lamport safety∧liveness, named as the Zeta roots). Durability/byte-locks/codec/laws are
+  subordinate. Forward momentum = never-idle homeostat; safety = NCI/child-floor/non-collapse/
+  capability-boundary.
+- **Soraya routing (honest):** not "1 tool short of green" — **2 definitions short of
+  stateable** (C compression + O orthogonality undefined; collapse proven only for merge, not
+  compression). Step 0 = define C and O in code; then Lean non-interference (primary) + TLC
+  liveness/NCI cross-check + FsCheck. Stays §B, out of the gate, until step 0.
