@@ -24,6 +24,7 @@ interface Args {
     strict: boolean;
     checks: Set<number>;
     baseDir: string;
+    schemaOnly: boolean;
 }
 
 interface Finding {
@@ -82,19 +83,25 @@ function parseArgs(argv: string[]): Args {
         strict: false,
         checks: new Set([1, 2, 3, 4]),
         baseDir: "docs/backlog",
+        schemaOnly: false,
     };
     for (let i = 0; i < argv.length; i++) {
         const a = argv[i];
         const next = argv[i + 1];
         if (a === "--file" && next) { args.files.push(next); i++; }
         else if (a === "--strict") { args.strict = true; }
+        else if (a === "--schema-only") { args.schemaOnly = true; }
         else if (a === "--check" && next) {
-            args.checks = new Set(next.split(",").map(Number).filter(n => n >= 1 && n <= 4));
+            args.checks = new Set(next.split(",").map(Number).filter(n => n >= 1 && n <= 5));
             i++;
         }
         else if (a === "--base-dir" && next) { args.baseDir = next; i++; }
         else if (a === "--help" || a === "-h") {
-            process.stdout.write("Usage: bun tools/backlog/lint-frontmatter.ts [--file PATH] [--strict] [--check 1,2,3,4]\n");
+            process.stdout.write(
+                "Usage: bun tools/backlog/lint-frontmatter.ts [--file PATH] [--strict] [--check 1,2,3,4,5]\n" +
+                "       --schema-only   CI gate: only the index-poisoning checks (missing frontmatter +\n" +
+                "                       required id/status/title + id-matches-filename); ALWAYS exits 1 on findings.\n",
+            );
             process.exit(0);
         }
         else { process.stderr.write("unknown arg: " + a + "\n"); process.exit(2); }
@@ -282,6 +289,24 @@ function check4_redundantEdges(path: string, fm: Frontmatter): Finding[] {
     return findings;
 }
 
+// check 5 — REQUIRED schema fields the index generator depends on. This is the
+// recurrence guard for the chronic backlog-index-integrity red (2026-06-06): a row
+// missing id/status/title (or with an id that disagrees with its filename) makes
+// generate-index.ts emit an empty/garbled row and lose hand-written descriptions on
+// regen. P0; fatal under --schema-only.
+function check5_requiredFields(path: string, fm: Frontmatter): Finding[] {
+    const findings: Finding[] = [];
+    const fileName = path.split("/").pop() ?? path;
+    const push = (message: string) =>
+        findings.push({ file: path, line: 1, col: 1, priority: "P0", check: 5, message });
+
+    if (!fm.id || fm.id.trim() === "") push("missing or empty `id:` (generate-index emits an empty link)");
+    else if (!fileName.startsWith(fm.id + "-")) push(`id '${fm.id}' does not match filename prefix (cross-refs + index break)`);
+    if (!fm.status || fm.status.trim() === "") push("missing or empty `status:` (generate-index can't set the checkbox)");
+    if (!fm.title || fm.title.trim() === "") push("missing or empty `title:` (generate-index emits an empty title — description lost on regen)");
+    return findings;
+}
+
 function walkBacklog(baseDir: string): string[] {
     const out: string[] = [];
     function recurse(dir: string): void {
@@ -317,11 +342,17 @@ function main(): void {
             });
             continue;
         }
+        if (args.schemaOnly) {
+            // CI recurrence-guard mode: ONLY the index-poisoning checks (0 above + 5).
+            allFindings.push(...check5_requiredFields(path, fm));
+            continue;
+        }
         const refs = extractBodyBLinks(path, fm.headerEnd);
         if (args.checks.has(1)) allFindings.push(...check1_pathPrefix(path, fm, refs));
         if (args.checks.has(2)) allFindings.push(...check2_composesCompleteness(path, fm, refs));
         if (args.checks.has(3)) allFindings.push(...check3_nonSchemaKeys(path, fm));
         if (args.checks.has(4)) allFindings.push(...check4_redundantEdges(path, fm));
+        if (args.checks.has(5)) allFindings.push(...check5_requiredFields(path, fm));
     }
 
     if (allFindings.length === 0) {
@@ -343,7 +374,8 @@ function main(): void {
     }
     process.stdout.write("\nTotal: " + allFindings.length + " finding(s) across " + byFile.size + " file(s) (of " + files.length + " scanned)\n");
 
-    if (args.strict) process.exit(1);
+    // --schema-only is a CI gate: the index-poisoning checks are ALWAYS fatal.
+    if (args.strict || args.schemaOnly) process.exit(1);
     process.exit(0);
 }
 

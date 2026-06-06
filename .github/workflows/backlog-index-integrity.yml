@@ -64,6 +64,14 @@ jobs:
       - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
         run: ./tools/setup/install.sh
 
+      # Recurrence guard for the chronic drift (2026-06-06): fail FAST on any per-row
+      # file that's missing frontmatter or required id/status/title, or whose id
+      # disagrees with its filename — the exact gaps that made generate-index emit
+      # empty rows / lose descriptions. Only the index-poisoning checks (0 + 5); the
+      # advisory style checks (1-4) are not gated here.
+      - name: frontmatter schema lint (index-poisoning guard)
+        run: bun tools/backlog/lint-frontmatter.ts --schema-only
+
       - name: verify per-row + index parity
         shell: bash
         run: |
