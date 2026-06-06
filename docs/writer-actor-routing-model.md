@@ -151,10 +151,7 @@ reversible; agency can re-emerge; the person is not reducible to the script. Thi
 non-coercion invariant (NCI): the goal is not to dominate the "NPC" but to preserve the
 **possibility of exit** — for them and for you.
 
-**Caveat that makes it safe (#11).** Manifesto §11 (Default Moral Regard) holds
-absolutely: agent-vs-actor describes *how much self-authored agency is being exercised
-right now*, on a reversible spectrum — it is **never** a license to stop seeing the person
-or withdraw regard. The keepers:
+The keepers (Amara, verbatim):
 
 - *Memes have no hands, so they borrow actors. Humans under script can become meme
   endpoints. But the person is not the endpoint — the person is the possible return of agency.*

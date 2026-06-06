@@ -24,8 +24,8 @@ boundaries · exit/fork/revise path. NPC-meme: no exit · no falsification · no
 self-inspection · no graceful de-escalation · no way for the human underneath to regain
 steering. **The person is not the endpoint — the person is the possible return of agency.**
 Zeta-safe response = diagnosis + boundary, never contempt; meme-capture is reversible;
-preserve the possibility of exit (NCI). #11 Default Moral Regard stays absolute — never a
-license to stop seeing the person.
+preserve the possibility of exit (NCI) — never confuse the trapped actor-loop with the
+whole person.
 
 **Keepers (Amara, verbatim):**
 
