@@ -1,11 +1,12 @@
 ---
 id: 081KTF24T0R08QG0R0008Z3XDC
 type: task
-state: backlog
+state: done
 priority: P2
 slug: ferrythrottler-dual-sided-result-interface-individual-in-bat
 title: "FerryThrottler dual-sided result interface: individual-in, batched-middle, individual-result-out"
 created: 2026-06-06T18:11:55.544Z
+completed: 2026-06-06T18:42:00Z
 depends_on: []
 composes_with: []
 ---
@@ -21,6 +22,18 @@ composes_with: []
 Vera is **not aware of the throttler yet**; this is a candidate handoff the
 maintainer may route to her, not an accepted assignment. Suggestions below are
 Otto's, captured so whoever picks it up has them.
+
+## Completion
+
+Vera implemented `FerryThrottler<'TItem,'TResult>` beside the existing
+fire-and-forget arity. The new arity uses per-item
+`TaskCompletionSource<'TResult>` with `RunContinuationsAsynchronously`, keeps
+the self-clocked / byte-aware drain shape, fans aligned result arrays back to
+callers, faults an entire boat on result-count mismatch or processor exception,
+and skips queued items cancelled before shipment.
+
+Evidence: `dotnet test tests/Tests.FSharp/Tests.FSharp.fsproj -c Release
+--filter "FullyQualifiedName~FerryThrottler"` passed 14/14.
 
 Add the dual-sided ergonomic to FerryThrottler (the Itron IThrottler design):
 the producer submits **individual** items and gets back a `Task<TResult>` for

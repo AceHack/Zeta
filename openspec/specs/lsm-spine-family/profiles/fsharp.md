@@ -117,10 +117,10 @@ F# today. Prose bullets, no RFC-2119 keywords; those live in the base
   a `sent` counter. The hot path is allocation-free for the batch (the
   `ZSet<'K>` is passed by value as a readonly struct) and cost is bounded
   by the channel-write itself — depth-independent, as the spec requires.
-- The worker loop drains the channel synchronously via
-  `WaitToReadAsync(...).AsTask().Result`; inside the loop it takes
-  `spineLock`, invokes `spine.Insert(batch)`, and increments a `processed`
-  counter.
+- The worker loop awaits `WaitToReadAsync(...).AsTask()` in its background
+  worker; inside the loop it takes `spineLock`, invokes
+  `spine.Insert(batch)`, and increments a `processed` counter. It does not
+  block synchronously on the channel wait.
 - `Flush()` captures `target = sent` at entry and polls
   `processed >= target` with a `Task.Yield` in the wait loop. This gives
   the spec's linearisation-point semantics — a `Consolidate` immediately

@@ -151,3 +151,148 @@ let ``invalid configuration is rejected at construction`` () =
     |> should throw typeof<ArgumentException>
     (fun () -> new FerryThrottler<int>({ FerryThrottlerConfig.deterministic with MaxBatchSize = 0 }, noop) |> ignore)
     |> should throw typeof<ArgumentException>
+
+
+[<Fact>]
+let ``result arity returns one aligned result per item`` () =
+    let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+        task {
+            return
+                [| for i in 0 .. boat.Length - 1 do
+                       boat.Span.[i] * 10 |]
+        }
+    use throttler = new FerryThrottler<int, int>(FerryThrottlerConfig.deterministic, processBatch)
+    let tasks =
+        [ 1 .. 20 ]
+        |> List.map (fun x -> throttler.ProcessAsync x)
+        |> Array.ofList
+    Task.WaitAll(tasks |> Array.map (fun t -> t :> Task))
+    throttler.CompleteAsync().Wait()
+    tasks |> Array.map (fun t -> t.Result) |> should equal [| for x in 1 .. 20 -> x * 10 |]
+
+
+[<Fact>]
+let ``result arity faults entire boat on result-length mismatch`` () =
+    let processBatch (_boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+        Task.FromResult [||]
+    let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 4 }
+    use throttler = new FerryThrottler<int, int>(config, processBatch)
+    let tasks =
+        [ 1 .. 4 ]
+        |> List.map (fun x -> throttler.ProcessAsync x)
+        |> Array.ofList
+    (fun () -> Task.WaitAll(tasks |> Array.map (fun t -> t :> Task))) |> should throw typeof<AggregateException>
+    throttler.CompleteAsync().Wait()
+    tasks
+    |> Array.forall (fun t -> t.IsFaulted && t.Exception.InnerExceptions |> Seq.exists (fun ex -> ex :? InvalidOperationException))
+    |> should equal true
+
+
+[<Fact>]
+let ``result arity faults every item when processor throws`` () =
+    let boom = InvalidOperationException "boom"
+    let processBatch (_boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+        Task.FromException<int array> boom
+    use throttler = new FerryThrottler<int, int>(FerryThrottlerConfig.deterministic, processBatch)
+    let tasks =
+        [ 1 .. 3 ]
+        |> List.map (fun x -> throttler.ProcessAsync x)
+        |> Array.ofList
+    (fun () -> Task.WaitAll(tasks |> Array.map (fun t -> t :> Task))) |> should throw typeof<AggregateException>
+    throttler.CompleteAsync().Wait()
+    tasks |> Array.forall (fun t -> t.IsFaulted) |> should equal true
+
+
+[<Fact>]
+let ``result arity cancels queued item before shipping`` () =
+    let processed = ConcurrentQueue<int>()
+    let gate = new TaskCompletionSource<unit>(TaskCreationOptions.RunContinuationsAsynchronously)
+    let entered = new TaskCompletionSource<unit>(TaskCreationOptions.RunContinuationsAsynchronously)
+    let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+        task {
+            processed.Enqueue boat.Span.[0]
+            entered.TrySetResult() |> ignore
+            do! gate.Task
+            return [| boat.Span.[0] |]
+        }
+    let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 1 }
+    use throttler = new FerryThrottler<int, int>(config, processBatch)
+    let first = throttler.ProcessAsync 1
+    entered.Task.Wait 2000 |> should equal true
+    use cts = new CancellationTokenSource()
+    let second = throttler.ProcessAsync(2, cts.Token)
+    cts.Cancel()
+    gate.SetResult()
+    first.Wait 2000 |> should equal true
+    (fun () -> second.Wait()) |> should throw typeof<AggregateException>
+    throttler.CompleteAsync().Wait()
+    second.IsCanceled |> should equal true
+    List.ofSeq processed |> should equal [ 1 ]
+
+
+[<Fact>]
+let ``result arity dispose cancels queued caller tasks`` () =
+    let entered = new TaskCompletionSource<unit>(TaskCreationOptions.RunContinuationsAsynchronously)
+    let processBatch (boat: ReadOnlyMemory<int>) (ct: CancellationToken) : Task<int array> =
+        task {
+            entered.TrySetResult() |> ignore
+            do! Task.Delay(Timeout.Infinite, ct)
+            return [| boat.Span.[0] |]
+        }
+    let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 1 }
+    let throttler = new FerryThrottler<int, int>(config, processBatch)
+    let first = throttler.ProcessAsync 1
+    entered.Task.Wait 2000 |> should equal true
+    let second = throttler.ProcessAsync 2
+    (throttler :> IDisposable).Dispose()
+    Task.WhenAny(second :> Task, Task.Delay 2000).Result |> should equal (second :> Task)
+    second.IsCanceled |> should equal true
+    Task.WhenAny(first :> Task, Task.Delay 2000).Result |> should equal (first :> Task)
+    (first.IsCanceled || first.IsFaulted) |> should equal true
+
+
+[<Fact>]
+let ``result arity honors byte budget while preserving aligned results`` () =
+    let boats = ConcurrentQueue<int>()
+    let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+        task {
+            boats.Enqueue boat.Length
+            return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] + 1 |]
+        }
+    let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 100; MaxBatchBytes = Some 25 }
+    use throttler = new FerryThrottler<int, int>(config, processBatch, itemSizeBytes = (fun _ -> 10))
+    let tasks =
+        [ 1 .. 10 ]
+        |> List.map (fun x -> throttler.ProcessAsync x)
+        |> Array.ofList
+    Task.WaitAll(tasks |> Array.map (fun t -> t :> Task))
+    throttler.CompleteAsync().Wait()
+    tasks |> Array.map (fun t -> t.Result) |> should equal [| for x in 1 .. 10 -> x + 1 |]
+    List.ofSeq boats |> List.forall (fun n -> n >= 1 && n <= 2) |> should equal true
+
+
+[<Fact>]
+let ``result arity faults request when byte sizer throws`` () =
+    let processed = ConcurrentQueue<int>()
+    let processBatch (boat: ReadOnlyMemory<int>) (_ct: CancellationToken) : Task<int array> =
+        task {
+            for i in 0 .. boat.Length - 1 do
+                processed.Enqueue boat.Span.[i]
+            return [| for i in 0 .. boat.Length - 1 -> boat.Span.[i] |]
+        }
+    let config = { FerryThrottlerConfig.deterministic with MaxBatchSize = 4; MaxBatchBytes = Some 100 }
+    let sizer item =
+        if item = 2 then invalidOp "size failed"
+        10
+    use throttler = new FerryThrottler<int, int>(config, processBatch, itemSizeBytes = sizer)
+    let ok1 = throttler.ProcessAsync 1
+    let bad = throttler.ProcessAsync 2
+    let ok3 = throttler.ProcessAsync 3
+    Task.WhenAll([| ok1; ok3 |]).Wait()
+    Task.WhenAny(bad :> Task, Task.Delay 2000).Result |> should equal (bad :> Task)
+    bad.IsFaulted |> should equal true
+    bad.Exception.InnerExceptions |> Seq.exists (fun ex -> ex.Message = "size failed") |> should equal true
+    throttler.CompleteAsync().Wait()
+    ok1.Result |> should equal 1
+    ok3.Result |> should equal 3
+    List.ofSeq processed |> should equal [ 1; 3 ]
