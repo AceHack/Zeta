@@ -53,7 +53,7 @@ const TLAPS_SWITCH = "tlaps-build";
 // Curated catalogue of specs carrying machine-checked TLAPS proofs.
 // Keep in sync as rungs land. Distinct from run-tlc.ts's CATALOGUE:
 // that lists model-checked specs; this lists PROVEN ones.
-const CATALOGUE: readonly string[] = ["NciSafetyProofs"];
+const CATALOGUE: readonly string[] = ["NciSafetyProofs", "NciNonUrgencyProofs"];
 
 function repoRoot(): string {
   // eslint-disable-next-line sonarjs/no-os-command-from-path

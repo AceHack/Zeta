@@ -46,7 +46,12 @@ list.
     eventually completes, necessarily on a refreshed cache; the agent is never starved of the
     refresh-then-decide chance = "always allowed to refresh + use cache before the tick is forced").
     Teeth: drop WF(Refresh) ⇒ violated. Scope: bounded (3 travelers, budget 1) + fairness-conditioned.
-    The unbounded rung-3 of these (TLAPS) remains open. The set is still open ("other rules later").
+  • **SAFETY proven UNBOUNDED (rung-3 TLAPS)** — `NciNonUrgencyProofs.tla` (tlapm, 35/35 obligations):
+    `Spec => []NoCoercion` for ANY Travelers / EventBudget, across all adversarial urgency. Inductive
+    (NoCoercion is its own invariant): staleDecided set only by the two guarded coercion actions, both
+    disabled by `ASSUME AllowForce=FALSE /\ TrustUrgency=FALSE` (the design constraint). AC-free / pure ZF.
+    The LIVENESS half (Responsive) stays bounded TLC+WF (liveness is OUT of the prover, per the ladder).
+    The set is still open ("other rules later").
 
 ## The structural invariant (Aaron 2026-06-05) — what actually makes #1/#2 hold
 
