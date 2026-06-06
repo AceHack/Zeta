@@ -196,7 +196,7 @@ type DecodeError =
 /// accessor, the lazy-bind `try*` accessors, and `PropertyPath` navigation.
 module DynamicValue =
 
-    /// Maximum value/​input nesting depth the recursive canonical codecs (JSON, XML)
+    /// Maximum value/input nesting depth the recursive canonical codecs (JSON, XML)
     /// will walk before returning `Error EncodeError.NestingTooDeep` /
     /// `Error DecodeError.NestingTooDeep`. A fixed resource-safety bound, NOT part of the
     /// contract's value domain: it sits FAR above any realistic `DynamicValue` (events,
