@@ -133,6 +133,39 @@ eventually the OS are all the same retraction-native Z-set substrate.
   that owns agents." This is the reframing to design around — it makes uncertainty-native values
   and agent-shards load-bearing rather than decorative.
 
+## 5b. Two planes: hot data plane vs the yin/yang control plane (maintainer Q, 2026-06-06)
+
+Maintainer: *"DynamicValues then can be our stored-procs-like interface? I want the yin/yang engine
+in the db around agents but not hurt performance at the lower levels — put it at the right level."*
+
+**Yes — and the medium already exists: `YinYang.fs`.** A `YinYang.Cell = { Remains: DynamicValue;
+Acts: Bonsai.Expr }` — **yin = Remains** (the value / what persists) + **yang = Acts** (a
+serializable reactive engine, a `Bonsai.Expr` / what acts). One DynamicValue carrying both a value
+and an engine, the medium for "polymorphic diplomacy" (agents read/interrogate/negotiate each
+other's identity+behaviour). The **yang (a `Bonsai.Expr` in a DynamicValue) IS the stored-proc
+interface** — and it rides BOTH proven serializers (Bonsai `Expr↔string` + DynamicValue 4-ser/Arrow).
+
+**The layering that keeps it off the hot path — put yin/yang at the CONTROL plane, not the data plane:**
+
+- **Data plane (lower level — hot, dumb, deterministic).** Raw Z-sets, CBOR, the fold, the
+  delta-log, recovery (`DeltaLog`/`RecoverableSpine`). It only ever **folds deltas**. Values may be
+  `SoftValue`/`TriBoolean` — uncertainty *as data* is cheap (just a value). NO Bonsai evaluation,
+  NO agent/LLM reasoning here. Zero-alloc, replayable.
+- **Yin/Yang control plane (the right level — agents, Bonsai engines, Bayesian belief, LLMs).**
+  Agents author/negotiate `YinYang.Cell`s; the **yang (`Bonsai.Expr`) is a stored proc**. Invoking
+  it = running the engine ONCE to **produce Z-set deltas**, which are appended to the delta-log as
+  **commands** (VoltDB command-logging: log the proc invocation/result, not per-row WAL).
+- **The bridge + the perf rule:** *the yang produces deltas; the data plane only folds deltas.* The
+  expensive reasoning is paid **once** at command time and captured into the log (non-determinism —
+  LLM output, clock, RNG — recorded per §5/DST so replay is deterministic). The hot inner loop
+  **never re-runs the engine** — recovery just re-folds logged deltas (or re-runs a *deterministic*
+  Bonsai.Expr against captured inputs). So intelligence cost never enters the inner loop.
+
+This is the "put it at the right level" answer: **yin/yang is a per-command control-plane concern
+that compiles down to plain logged Z-set deltas; the data plane stays a fast, deterministic delta
+fold.** Stored procs = yang Bonsai.Exprs in DynamicValue cells, logged as commands, replayed
+deterministically.
+
 ## 6. The hard problems (research-grade — name them honestly)
 
 1. **Merge of uncertain values has no canonical theory.** MRDT `merge(σ_lca, σ_a, σ_b)` is defined
