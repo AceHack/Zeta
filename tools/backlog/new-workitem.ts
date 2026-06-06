@@ -30,7 +30,7 @@
 
 import { mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { pack, DEFAULT_ENV, type SimulationEnvironment } from "../../src/Core.TypeScript/zeta-id/zeta-id";
+import { pack, DEFAULT_ENV } from "../../src/Core.TypeScript/zeta-id/zeta-id";
 import { format } from "../../src/Core.TypeScript/zeta-id/encoding";
 import { Category, Chromosome, Firefly, type ZetaObservation } from "../../src/Core.TypeScript/zeta-id/types";
 
@@ -43,9 +43,27 @@ export interface NewWorkItemSpec {
   readonly dependsOn?: readonly string[];
   readonly composesWith?: readonly string[];
   readonly persona?: number; // ZetaId persona byte (0 = unspecified)
-  readonly nowMs?: number; // injectable for tests/determinism
-  readonly env?: SimulationEnvironment; // injectable for tests/determinism
 }
+
+/**
+ * DST boundary (manifesto §7 — Deterministic Simulation Testing). ALL
+ * non-determinism — the clock AND randomness — is injected through this
+ * environment. `mintWorkItem` is a pure function of (spec, env): given the same
+ * env it replays identically. `Date.now()` / crypto appear ONLY in `SYSTEM_ENV`,
+ * the outermost boundary used by the CLI — never inside the mint logic.
+ */
+export interface WorkItemEnv {
+  /** Current wall-clock in ms (→ ZetaId timestamp high-bits → chronological sort). */
+  nowMs(): number;
+  /** 64 bits of randomness (→ ZetaId low bits → conflict-free across concurrent minters). */
+  nextInt64(): bigint;
+}
+
+/** Real-world environment — the ONLY place `Date.now()` + crypto enter. CLI-boundary use. */
+export const SYSTEM_ENV: WorkItemEnv = {
+  nowMs: () => Date.now(),
+  nextInt64: () => DEFAULT_ENV.nextInt64(),
+};
 
 export interface MintedWorkItem {
   readonly zetaid: string; // canonical Crockford base32
@@ -71,16 +89,17 @@ function yamlList(items: readonly string[]): string {
   return "[" + items.map((s) => JSON.stringify(s)).join(", ") + "]";
 }
 
-/** Pure mint: produces the ZetaId, filename, and file content — no filesystem. */
-export function mintWorkItem(spec: NewWorkItemSpec): MintedWorkItem {
+/** Pure mint: produces the ZetaId, filename, and file content — no filesystem, no
+ *  ambient clock/randomness. DETERMINISTIC given (spec, env): all non-determinism
+ *  arrives via `env` (DST §7). Pass `SYSTEM_ENV` in production; a fixed env in tests. */
+export function mintWorkItem(spec: NewWorkItemSpec, env: WorkItemEnv): MintedWorkItem {
   if (!spec.title || spec.title.trim().length === 0) {
     throw new Error("new-workitem: --title is required and must be non-empty");
   }
   if (spec.type !== "task" && spec.type !== "bug") {
     throw new Error(`new-workitem: --type must be 'task' or 'bug', got ${JSON.stringify(spec.type)}`);
   }
-  const nowMs = spec.nowMs ?? Date.now();
-  const env = spec.env ?? DEFAULT_ENV;
+  const nowMs = env.nowMs();
 
   // The work-item identity: a WorkItem-category ZetaId. timestamp -> high bits ->
   // chronological sort; randomness -> collision-free across concurrent minters.
@@ -164,14 +183,17 @@ function main(argv: readonly string[]): number {
 
   let minted: MintedWorkItem;
   try {
-    minted = mintWorkItem({
-      title,
-      type,
-      priority: args["priority"],
-      dependsOn: splitList(args["depends-on"]),
-      composesWith: splitList(args["composes-with"]),
-      persona: args["persona"] ? Number(args["persona"]) : undefined,
-    });
+    minted = mintWorkItem(
+      {
+        title,
+        type,
+        priority: args["priority"],
+        dependsOn: splitList(args["depends-on"]),
+        composesWith: splitList(args["composes-with"]),
+        persona: args["persona"] ? Number(args["persona"]) : undefined,
+      },
+      SYSTEM_ENV, // the ONLY non-determinism, injected at the boundary (DST §7)
+    );
   } catch (e) {
     process.stderr.write(`new-workitem: ${(e as Error).message}\n`);
     return 2;
