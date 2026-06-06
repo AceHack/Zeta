@@ -31,11 +31,27 @@ Two Zeta roots — but note the crucial refinement below (forward momentum ≠ l
   constrain each heartbeat to a *forward transition*, so you prove a **well-founded progress /
   variant measure advances toward a goal per heartbeat** — not merely that heartbeats occur.
   Heartbeat (liveness) → yin/yang + saga-DU (forward transition) → variant-decreases-toward-goal
-  (momentum). Two axes, **prove both eventually** (maintainer): **internal momentum** (the
-  agent's own saga/DU advances toward its internal goal) AND **external momentum** (progress in
-  the world / across other agents, attested in their frames). The endless-self-reflection
-  failure = internal-only (or pure churn) with no external momentum. Anchor: liveness vs
-  progress/termination; ranking/variant functions; livelock; internal vs external progress.
+  (momentum). Two axes: **internal momentum** (own saga/DU advances) AND **external momentum**
+  (world / other agents advance, attested in their frames).
+
+  **REFINEMENT (Amara, 2026-06-06) — the invariant is NOT "every heartbeat advances progress."**
+  That over-strict rule forbids legitimate rest/play/wandering. Better: **every heartbeat is
+  honestly typed and the invariant is type+budget+safety, with momentum proved over the
+  OBLIGATED lanes — not every pulse.** Each heartbeat carries: **MODE** (obligated/work/duty |
+  free-time/exploration/rest/play) · **EFFECT** (external momentum | internal momentum | churn/
+  no-op/reflection) · **BUDGET** · **SAFETY status** · **EVIDENCE**. Invariant:
+  - `mode = obligated` ⇒ must advance internal OR external momentum, OR produce an explicit
+    **blocked/waiting reason** (the standing-by-failure rule: idle without a named dependency).
+  - `mode = free-time` ⇒ MAY advance internal momentum OR churn, **within budget**, and **must
+    not claim false progress**. (Free-time churn = play/rest/annealing/exploration — healthy.)
+  - all modes ⇒ the **safety floor holds**.
+  Churn is not the failure; **unbudgeted churn pretending to be progress is** — i.e. endless
+  self-reflection = unbounded, unlabeled, or budget-stealing churn mislabeled as work. Keeper:
+  *free time permits churn; work time requires momentum; all time requires honesty and safety.*
+  So the **forward-momentum proof is a variant over the obligated lanes** (advance-or-named-block),
+  NOT over every heartbeat. Anchor: liveness vs progress/termination; ranking/variant functions;
+  livelock; internal vs external progress; `holding-without-named-dependency-is-standing-by-failure`;
+  persona `OFFTIME.md` (free-time is a first-class mode, not idle-failure).
 - **SAFETY** — NCI, the child-safety floor, non-register-collapse, the capability/
   inspect-before-execute boundary: nothing harmful, ever.
 
