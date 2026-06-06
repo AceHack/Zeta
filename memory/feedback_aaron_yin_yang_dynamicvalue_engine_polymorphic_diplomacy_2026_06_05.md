@@ -46,6 +46,18 @@ The shipped cell is the interior; the **boundary in/out ports are the engine's n
 correction — an addition). NCI lives at the boundary: what crosses in/out is where coercion/revelation
 could happen; the interior stay/act is private (within the encryption budget).
 
+## Unifying lens — it's all ONE reflection/introspection/interrogation interface (Aaron, 2026-06-05)
+
+The whole layer — **Eve / polymorphic-diplomacy / the cache over infinite streams / shapes /
+traveler-shapes / banana-split** — collapses to ONE thing: a **reflection / introspection /
+interrogation interface on top of `DynamicValue`**. It lands cleanly *because* `DynamicValue` is
+homoiconic + self-describing (data, code/Bonsai, animations, names all in the one tree), so reflection
+over it is first-class (the Lisp property). The separate names were the expansion; "reflection/
+introspection/interrogation over DynamicValue" is the compression. The built primitives are instances:
+**`Diplomacy.describe/interrogate/negotiate`** = interrogation-over-shape (read another's shape, NCI-safe,
+no hidden-state coercion); the **banana-split projection** (value tree → shaped XML/etc. views) =
+reflection-over-structure; **Rx meta-dimensions** = introspection. One interface, several faces.
+
 ## Homoiconic + recursive (Aaron, 2026-06-05)
 
 The **action language can contain the staying language and vice versa** — they are **homoiconic**
