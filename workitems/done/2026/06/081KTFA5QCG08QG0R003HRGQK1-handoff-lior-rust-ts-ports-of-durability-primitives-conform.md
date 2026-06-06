@@ -1,7 +1,7 @@
 ---
 id: 081KTFA5QCG08QG0R003HRGQK1
 type: task
-state: backlog
+state: done
 priority: P2
 slug: handoff-lior-rust-ts-ports-of-durability-primitives-conform
 title: "HANDOFF Lior: Rust + TS ports of durability primitives (conform to golden vectors)"
