@@ -94,3 +94,17 @@ let ``worked exact reconciliation`` () =
     let b = [| r 6L 1L; r 3L 1L |]
     Assert.Equal<PS.Rational[]>([| r 12L 1L; r 3L 1L |], RC.merge3 anc a b)
     Assert.Equal<PS.Rational[]>([| r 2L 1L; r 1L 1L |], RC.delta anc a) // 4/2, 3/3
+
+// ── BP-16 cross-check (Soraya's mandatory second tool for the P0 NCI safety invariant): the TLA+ spec
+// (tools/tla/specs/NciSafety.tla) proved the ABSTRACT model is non-coercive; this proves the DEPLOYED
+// merge never WRITES the counterparties' beliefs (it reads them, returns a new array) — closing the
+// abstraction gap on the real F# code. ──
+[<Property(Arbitrary = [| typeof<TripleArb> |])>]
+let ``merge3 does not mutate the counterparties' beliefs (real-code NCI / non-coercion)``
+    (t: PS.Rational[] * PS.Rational[] * PS.Rational[]) =
+    let anc, a, b = t
+    let ancBefore = Array.copy anc
+    let aBefore = Array.copy a
+    let bBefore = Array.copy b
+    RC.merge3 anc a b |> ignore
+    anc = ancBefore && a = aBefore && b = bBefore

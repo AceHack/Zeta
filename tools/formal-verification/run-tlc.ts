@@ -76,6 +76,7 @@ const CATALOGUE: readonly string[] = [
   "DbspSpec",
   "CircuitRegistration",
   "SpineAsyncProtocol",
+  "NciSafety",
 ];
 
 function repoRoot(): string {
