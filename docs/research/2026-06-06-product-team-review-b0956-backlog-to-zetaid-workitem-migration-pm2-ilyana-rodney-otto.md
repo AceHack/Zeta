@@ -63,6 +63,36 @@ the **ZetaId prefix** (glob `<zetaid>-*.md`), so a reworded description changes 
 identity — path stays resolvable (the proven Jekyll-post / ADR `NNNN-title.md` / Zettelkasten pattern). The
 `<description>` must be filename-safe-sanitized (same charset constraint as the ZetaId).
 
+**State-as-folder-location (Aaron 2026-06-06): completed items move to `workitems/done/`.** The lifecycle
+state can be encoded by the file's FOLDER — active items in `workitems/`, completed ones moved under
+`workitems/done/` (the same folder-as-attribute pattern the repo already uses: `P0/P1/P2` priority folders,
+the agent-heartbeat folder, fast-lane-as-folders B-0890.1, pr-archive-on-merge). Benefits: the "backlog"
+(open) view becomes a plain folder listing (no fold needed for the common open-vs-done split), and the
+active working set stays lean at 1116+ scale. **Still conflict-free** — a state transition is a git RENAME
+of a disjoint, ZetaId-prefixed file; each agent moves its OWN file, so no path collision even at 500 agents.
+**Identity survives the move** — resolve cross-refs by **recursive** ZetaId-prefix glob
+(`workitems/**/<zetaid>-*.md`); the ZetaId is stable wherever the file sits. Relationship to the
+state-as-field model: **folder = coarse lifecycle bucket** (open vs done, maybe in-progress); **frontmatter
+`state` carries the fine value** (in-progress/blocked/…) and the move IS a lifecycle event the DORA Bag-folds
+see (created→done = lead time). Decide later which is canonical when they could disagree (likely:
+folder for open/done routing, frontmatter `state` authoritative).
+
+**Dated done-archive (Aaron 2026-06-06): `done/YYYY/MM/DD/<zetaid>-<description>.md`.** Otto's assessment
+(asked "what do you think?"): **yes, at scale** — 500 agents completing items for years would pile
+thousands into one `done/` dir (git + filesystem cost); date folders keep every dir small and make
+completion-range queries (`done/2026/06/`) a path scan. Three refinements:
+1. **Partition by COMPLETION date (the path), not creation.** The ZetaId prefix inside the filename still
+   carries creation time → you get both axes (path = done-when; zetaid = created-when; the gap = how long
+   it sat). Document that path date = completion.
+2. **Only `done/` gets the tree; keep the active `workitems/` FLAT.** Active is the lean working set agents
+   hit most, already ZetaId-sorted by creation; don't nest it.
+3. **Keep a `zetaid → path` index** (extend the planned `slug → zetaid` index). The one real cost:
+   completion-date is NOT derivable from the ZetaId, so by-id lookup of a done item otherwise needs a
+   recursive glob over `done/**`. An index keeps cross-ref resolution O(1).
+Razor note: **start at `done/YYYY/MM/`**; deepen to `/DD/` only when a month-dir actually gets large
+(volume call, not forever). Conflict-freedom + identity-survives-move both still hold (disjoint per-file git
+rename; resolve via index or `done/**/<zetaid>-*.md`).
+
 **Third win for option A (Aaron 2026-06-06): free time-ordered lookup + ordering.** Because the ZetaId is
 time-prefixed (B-0893 targets the Snowflake/ULID family), a **lexicographic sort of the `workitems/<zetaid>.md`
 filenames = chronological creation order** — `ls` sorted is day-ordered, and "items from day D" is a
