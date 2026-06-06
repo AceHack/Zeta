@@ -294,7 +294,18 @@ a monotone CRDT join (Shapiro 2011) + finite observation (a reflection budget, f
 finite evidence streams). TLC clean; **both teeth controls verified** (remove fairness → violated;
 arbitrary-frame merge → violated). BP-16 convergence witness = the proven `reconcileAll` order-
 independence (real merge-confluence). So **rung 2 is COMPLETE (safety + liveness)**. (3) **unbounded /
-"infinity"** — induction in a *prover* (TLAPS / Lean), since model-checking caps at finite state.
+"infinity"** — induction in a *prover* (Soraya-routed → **TLAPS** over `NciSafety.tla`; keystone (A)
+unbounded NCI safety + (A′) non-collapse-as-preservation; (B) eventual-differentiation is OUT/rung-4),
+since model-checking caps at finite state. **Tooling prereq IN PROGRESS:** TLAPS via **opam source-build**
+(no arm64 upstream binary) — the declarative cross-OS install is being built (z3 declared; opam/tlapm
+source-build underway). **PROOF-DISCIPLINE CONSTRAINTS (Aaron, 2026-06-05):** (i) **axiom-free / NO axiom
+of choice** — Aaron agrees ZF, distrusts the C; "hardcore look for the axiom of choice sneaking in" — the
+rung-3 proof (and any Lean/Z3/TLAPS proof) must be AC-free and AUDITED for AC; the existing privacy-from-
+identity Lean is already axiom-free (aligns). (ii) **non-malice core + identity-as-immune-system** — prove
+the core from first principles in the *non-malice* model (no adversarial cases — keeps proofs clean); push
+adversarial defence DOWN into the decentralized identity layer (a "reputation killer for malice"). This
+validates `NciSafety`'s `Coerce`-guarded-never-enabled design-guarantee model: adversaries are an
+identity-layer concern, not a core-math one.
 **Tool routing is itself a decision** — route through the formal-verification routing discipline
 (Soraya / BP-16; guard against TLA+-hammer bias) before any spec is written; the three rungs are three
 *different* property classes (safety-invariant vs liveness vs unbounded-induction vs concrete-dynamics).
