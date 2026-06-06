@@ -176,6 +176,15 @@ procs" become arbitrary code smuggled into the DB. So both *inbound observations
 AND *yang execution* go through scrutiny; the data plane only ever folds the authorized, logged
 deltas that survive the gate.
 
+**Why this is tractable: `Bonsai.Expr` is inspectable data, not opaque code (Amara, 2026-06-06).**
+A yang is a reified, serializable AST — so the scrutiny gate can **statically analyze it before
+execution**: determinism check, effect/capability analysis (what surfaces it can touch), resource
+estimation — all by reading the expression, not by trusting a black-box closure. This is the
+decisive advantage of expressing stored procs as `Bonsai.Expr` rather than compiled lambdas: the
+proc is **auditable as data** (and the same property powers human/AI review, diffing, and the
+provenance trail). Inspect-before-execute is the structural defense that makes the capability
+boundary enforceable rather than aspirational.
+
 ## 5c. DurableSaga: the connector at the seam (LANDED `703941ac6`, maintainer 2026-06-06)
 
 A **DurableSaga** is the control-plane primitive that lives exactly at the seam: a long-running
