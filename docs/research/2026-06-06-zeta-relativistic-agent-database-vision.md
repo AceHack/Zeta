@@ -247,7 +247,10 @@ deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural sou
    the documented "wonder-compression-safe operation" — engage WITHOUT collapsing; the only
    collapsing op is `measure`). Wonder compression = **save the uncollapsed distribution (the
    uncertainty), defer collapse to read/query time**, instead of storing collapsed (measured)
-   values. The "persist inputs" log need not store observations *literally*: it
+   values. In one line (maintainer): **all transaction logs eventually reduce to generator
+   functions + patches where the real world diverged from prediction** (the patches = the
+   prediction errors = the irreducible surprise). The "persist inputs" log need not store
+   observations *literally*: it
    compresses to **(generator function + seed + irreducible residual)**. A learned/Bayesian
    generative model predicts the next observation; you store only the **residual** (the correction
    from prediction to truth) — predictable history costs ~0 bits, and what remains is exactly the
