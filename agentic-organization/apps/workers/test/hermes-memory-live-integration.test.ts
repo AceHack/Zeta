@@ -25,10 +25,12 @@ describe("durable Hermes runtime + Hindsight memory — live Cockroach", () => {
   test(
     "a run launches, heartbeats, completes with JSON evidence; two runs get unique ids; memory retains/recalls scoped",
     {
-      skip:
-        env[EnvName.DatabaseUrl] === undefined ? `${EnvName.DatabaseUrl} is not set` : false,
+      skip: env[EnvName.DatabaseUrl] === undefined ? `${EnvName.DatabaseUrl} is not set` : false,
     },
     async () => {
+      if (env[EnvName.DatabaseUrl] === undefined || env[EnvName.DatabaseUrl].trim().length === 0) {
+        return;
+      }
       const databaseUrl = readDatabaseUrl();
       const projectId = `proj-${randomUUID()}`;
       const pool = await createPgCockroachWorkerPool({ databaseUrl });
@@ -119,7 +121,9 @@ function readDatabaseUrl(): string {
   return url;
 }
 
-type Exec = { execute: <Row = Record<string, unknown>>(s: CockroachAnySqlStatement) => Promise<{ rows: readonly Row[] }> };
+type Exec = {
+  execute: <Row = Record<string, unknown>>(s: CockroachAnySqlStatement) => Promise<{ rows: readonly Row[] }>;
+};
 
 async function applyMigrations(executor: Exec): Promise<void> {
   for (const migration of [createCockroachHindsightMemoryMigration(), createCockroachHermesRunMigration()]) {

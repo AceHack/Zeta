@@ -158,6 +158,9 @@ describe("durable worker live integration", () => {
       skip: shouldSkipDurableLiveIntegration(),
     },
     async () => {
+      if (shouldSkipDurableLiveIntegration() !== false) {
+        return;
+      }
       const databaseUrl = readIntegrationDatabaseUrl();
       const natsServers = readIntegrationNatsServers();
       const run = createDurableLiveIntegrationRun();
@@ -565,42 +568,60 @@ async function cleanupCockroachRowsBestEffort(
   run: DurableLiveIntegrationRun,
 ): Promise<void> {
   try {
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupReactionPlans, [
-      `DELETE FROM ${CockroachTableName.ReactionPlans} WHERE trigger_event_id = $1`,
-      [run.eventId],
-    ]));
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupInboxReceipts, [
-      `DELETE FROM ${CockroachTableName.InboxReceipts} WHERE event_id = $1`,
-      [run.eventId],
-    ]));
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupOutboxEvents, [
-      `DELETE FROM ${CockroachTableName.OutboxEvents} WHERE outbox_event_id = $1 OR event_id = $2`,
-      [run.outboxEventId, run.eventId],
-    ]));
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupAuditEvents, [
-      `DELETE FROM ${CockroachTableName.AuditEvents} WHERE audit_event_id = $1 OR aggregate_id = $2`,
-      [run.auditEventId, run.supervisorSignalId],
-    ]));
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupSupervisorSignals, [
-      `DELETE FROM ${CockroachTableName.SupervisorSignals} WHERE supervisor_signal_id = $1`,
-      [run.supervisorSignalId],
-    ]));
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupPolicyObservations, [
-      `DELETE FROM ${CockroachTableName.PolicyObservations} WHERE command_id = $1 OR idempotency_key = $2`,
-      [run.commandId, run.idempotencyKey],
-    ]));
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupIdempotencyRecords, [
-      `DELETE FROM ${CockroachTableName.IdempotencyRecords} WHERE idempotency_key = $1`,
-      [run.idempotencyKey],
-    ]));
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupWorkItems, [
-      `DELETE FROM ${CockroachTableName.WorkItems} WHERE work_item_id = $1`,
-      [`${DurableLiveIntegrationIdPrefix.WorkItem}-${run.runId}`],
-    ]));
-    await executor.execute(createCleanupStatement(DurableLiveIntegrationStatementName.CleanupProjects, [
-      `DELETE FROM ${CockroachTableName.Projects} WHERE project_id = $1`,
-      [`${DurableLiveIntegrationIdPrefix.Project}-${run.runId}`],
-    ]));
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupReactionPlans, [
+        `DELETE FROM ${CockroachTableName.ReactionPlans} WHERE trigger_event_id = $1`,
+        [run.eventId],
+      ]),
+    );
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupInboxReceipts, [
+        `DELETE FROM ${CockroachTableName.InboxReceipts} WHERE event_id = $1`,
+        [run.eventId],
+      ]),
+    );
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupOutboxEvents, [
+        `DELETE FROM ${CockroachTableName.OutboxEvents} WHERE outbox_event_id = $1 OR event_id = $2`,
+        [run.outboxEventId, run.eventId],
+      ]),
+    );
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupAuditEvents, [
+        `DELETE FROM ${CockroachTableName.AuditEvents} WHERE audit_event_id = $1 OR aggregate_id = $2`,
+        [run.auditEventId, run.supervisorSignalId],
+      ]),
+    );
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupSupervisorSignals, [
+        `DELETE FROM ${CockroachTableName.SupervisorSignals} WHERE supervisor_signal_id = $1`,
+        [run.supervisorSignalId],
+      ]),
+    );
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupPolicyObservations, [
+        `DELETE FROM ${CockroachTableName.PolicyObservations} WHERE command_id = $1 OR idempotency_key = $2`,
+        [run.commandId, run.idempotencyKey],
+      ]),
+    );
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupIdempotencyRecords, [
+        `DELETE FROM ${CockroachTableName.IdempotencyRecords} WHERE idempotency_key = $1`,
+        [run.idempotencyKey],
+      ]),
+    );
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupWorkItems, [
+        `DELETE FROM ${CockroachTableName.WorkItems} WHERE work_item_id = $1`,
+        [`${DurableLiveIntegrationIdPrefix.WorkItem}-${run.runId}`],
+      ]),
+    );
+    await executor.execute(
+      createCleanupStatement(DurableLiveIntegrationStatementName.CleanupProjects, [
+        `DELETE FROM ${CockroachTableName.Projects} WHERE project_id = $1`,
+        [`${DurableLiveIntegrationIdPrefix.Project}-${run.runId}`],
+      ]),
+    );
   } catch {
     // The live proof may fail before migrations or rows exist; preserve the primary failure.
   }

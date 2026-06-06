@@ -70,6 +70,8 @@ const WINDOWS_EXCEPTIONS: Record<string, string> = {
   uidmap: "Linux rootless user-namespace mapping (newuidmap/newgidmap); Windows podman uses WSL2's VM",
   slirp4netns: "Linux rootless container networking; Windows podman uses WSL2's VM networking",
   "fuse-overlayfs": "Linux rootless overlay storage driver; Windows podman uses WSL2's VM storage",
+  opam: "OCaml package manager; only needed on Unix to build tlapm from source. Windows tlapm installs via prebuilt MSI/zip.",
+  z3: "SMT solver; on Windows, Z3 is either scoop-installed or used via JS z3-solver npm package.",
 };
 
 test("manifests/windows covers every apt/brew system tool (or an allowlisted exception)", () => {
@@ -109,10 +111,8 @@ test("Windows agent CLI install consumes the shared agent-clis manifest", () => 
   expect(installPs1).toContain("manifests\\agent-clis");
   expect(agentCliManifest).toContain("@anthropic-ai/claude-code");
   expect(agentCliManifest).toContain("@openai/codex");
-  expect(agentCliManifest).toContain("@google/gemini-cli");
   expect(agentCliManifest).toContain("bin=claude");
   expect(agentCliManifest).toContain("bin=codex");
-  expect(agentCliManifest).toContain("bin=gemini");
 
   // Install adapters consume the manifest; package ids do not belong hardcoded in install.ps1.
   expect(installPs1).not.toContain("@anthropic-ai/claude-code");

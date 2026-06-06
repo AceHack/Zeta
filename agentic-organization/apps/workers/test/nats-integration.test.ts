@@ -26,12 +26,8 @@ import {
   AgenticMessagingDomain,
   buildAgenticEventSubject,
 } from "../../../packages/messaging/src/index.ts";
-import {
-  createNatsJetStreamEventConsumer,
-} from "../../../packages/messaging-nats/src/index.ts";
-import {
-  EventIngestionOutcomeStatus,
-} from "../../../packages/state/src/index.ts";
+import { createNatsJetStreamEventConsumer } from "../../../packages/messaging-nats/src/index.ts";
+import { EventIngestionOutcomeStatus } from "../../../packages/state/src/index.ts";
 import {
   WorkerDependencyName,
   WorkerDependencyReadinessStatus,
@@ -91,12 +87,15 @@ describe("NATS worker live integration", () => {
   test(
     "publishes a canonical event, consumes it through the generic ingestion port, acknowledges it, and shuts down",
     {
-      skip:
-        env[NatsIntegrationEnvName.Servers] === undefined
-          ? `${NatsIntegrationEnvName.Servers} is not set`
-          : false,
+      skip: env[NatsIntegrationEnvName.Servers] === undefined ? `${NatsIntegrationEnvName.Servers} is not set` : false,
     },
     async () => {
+      if (
+        env[NatsIntegrationEnvName.Servers] === undefined ||
+        env[NatsIntegrationEnvName.Servers].trim().length === 0
+      ) {
+        return;
+      }
       const servers = readIntegrationNatsServers();
       const run = createNatsIntegrationRun();
       await recreateNatsIntegrationSubstrate(servers, run);
@@ -209,10 +208,7 @@ type NatsIntegrationRun = {
   subject: string;
 };
 
-async function recreateNatsIntegrationSubstrate(
-  servers: readonly string[],
-  run: NatsIntegrationRun,
-): Promise<void> {
+async function recreateNatsIntegrationSubstrate(servers: readonly string[], run: NatsIntegrationRun): Promise<void> {
   await cleanupNatsIntegrationSubstrate(servers, run);
 
   const connection = await connect({

@@ -136,9 +136,9 @@ describe("refExists", () => {
     });
 
     test("resolves sibling-rule reference (bare `<name>.md` in .claude/rules/)", () => {
-        // refresh-before-decide.md is a real rule file
+        // no-directives.md is a real rule file
         expect(
-            refExists({ fromRule: "test.md", raw: "refresh-before-decide.md", kind: "path" }),
+            refExists({ fromRule: "test.md", raw: "no-directives.md", kind: "path" }),
         ).toBe(true);
     });
 

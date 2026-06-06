@@ -129,6 +129,12 @@ describe("Cockroach worker live integration", () => {
           : false,
     },
     async () => {
+      if (
+        env[CockroachIntegrationEnvName.DatabaseUrl] === undefined ||
+        env[CockroachIntegrationEnvName.DatabaseUrl].trim().length === 0
+      ) {
+        return;
+      }
       const databaseUrl = readIntegrationDatabaseUrl();
       const run = createCockroachIntegrationRun();
       const pool = await createPgCockroachWorkerPool({
@@ -237,6 +243,12 @@ describe("Cockroach worker live integration", () => {
           : false,
     },
     async () => {
+      if (
+        env[CockroachIntegrationEnvName.DatabaseUrl] === undefined ||
+        env[CockroachIntegrationEnvName.DatabaseUrl].trim().length === 0
+      ) {
+        return;
+      }
       const databaseUrl = readIntegrationDatabaseUrl();
       const run = createWorkAnchorMigrationRun();
       const pool = await createPgCockroachWorkerPool({
@@ -339,11 +351,13 @@ describe("Cockroach worker live integration", () => {
         equal(metadataRows.rows[0]?.updated_at.toISOString(), "2026-05-01T12:40:00.000Z");
         equal(metadataRows.rows[0]?.version, "1");
       } finally {
-        await executor.execute({
-          name: CockroachIntegrationStatementName.DropLegacyWorkItemsTable,
-          sql: run.sql.DropLegacyWorkItemsTable,
-          parameters: [],
-        }).catch(() => undefined);
+        await executor
+          .execute({
+            name: CockroachIntegrationStatementName.DropLegacyWorkItemsTable,
+            sql: run.sql.DropLegacyWorkItemsTable,
+            parameters: [],
+          })
+          .catch(() => undefined);
         await createCockroachWorkerShutdownPort({
           pool,
         }).shutdown();
@@ -377,18 +391,20 @@ async function assertRollbackKeepsProbeAbsent(
     parameters: [CockroachIntegrationProbeId.Rollback],
   });
 
-  await executor.executeTransaction(async (transaction) => {
-    await transaction.execute({
-      name: CockroachIntegrationStatementName.InsertProbeBeforeRollback,
-      sql: run.sql.InsertProbe,
-      parameters: [CockroachIntegrationProbeId.Rollback, CockroachIntegrationProbeValue.RolledBack],
+  await executor
+    .executeTransaction(async (transaction) => {
+      await transaction.execute({
+        name: CockroachIntegrationStatementName.InsertProbeBeforeRollback,
+        sql: run.sql.InsertProbe,
+        parameters: [CockroachIntegrationProbeId.Rollback, CockroachIntegrationProbeValue.RolledBack],
+      });
+      throw new Error(CockroachIntegrationRuntimeErrorMessage.RollbackProbe);
+    })
+    .catch((error: unknown) => {
+      if (!(error instanceof Error) || error.message !== CockroachIntegrationRuntimeErrorMessage.RollbackProbe) {
+        throw error;
+      }
     });
-    throw new Error(CockroachIntegrationRuntimeErrorMessage.RollbackProbe);
-  }).catch((error: unknown) => {
-    if (!(error instanceof Error) || error.message !== CockroachIntegrationRuntimeErrorMessage.RollbackProbe) {
-      throw error;
-    }
-  });
 
   const rolledBackProbe = await executor.execute<{ value: string }>({
     name: CockroachIntegrationStatementName.SelectRolledBackProbe,
@@ -446,11 +462,13 @@ function createWorkAnchorMigrationSql(
   workItemStateHistoryTableName: string,
   workItemStateHistoryMetadataTableName: string,
 ): WorkAnchorMigrationRun["sql"] {
-  const workAnchorMigration = createCockroachWorkAnchorKernelMigration().sql
-    .replaceAll(CockroachTableName.WorkItems, workItemsTableName)
+  const workAnchorMigration = createCockroachWorkAnchorKernelMigration()
+    .sql.replaceAll(CockroachTableName.WorkItems, workItemsTableName)
     .replaceAll(CockroachTableName.WorkItemStateHistory, workItemStateHistoryTableName);
-  const workItemStateHistoryMetadataMigration = createCockroachWorkItemStateHistoryMetadataMigration().sql
-    .replaceAll(CockroachTableName.WorkItemStateHistory, workItemStateHistoryMetadataTableName);
+  const workItemStateHistoryMetadataMigration = createCockroachWorkItemStateHistoryMetadataMigration().sql.replaceAll(
+    CockroachTableName.WorkItemStateHistory,
+    workItemStateHistoryMetadataTableName,
+  );
 
   return {
     CreateLegacyWorkItemsTable: `

@@ -149,11 +149,15 @@ describe("buildInventoryReport", () => {
   test("summarizes retained shell files by explicit category", () => {
     const report = buildInventoryReport(EXPECTED_RETAINED_SHELL);
 
-    expect(report.retainedCategories).toEqual([
-      {
-        category: "setup/bootstrap",
-        files: expect.arrayContaining(["tools/setup/install.sh", "tools/setup/common/mise.sh"]),
-      },
+    const firstCategory = report.retainedCategories[0];
+    expect(firstCategory).toBeDefined();
+    if (firstCategory) {
+      expect(firstCategory.category).toBe("setup/bootstrap");
+      expect(firstCategory.files).toContain("tools/setup/install.sh");
+      expect(firstCategory.files).toContain("tools/setup/common/mise.sh");
+    }
+
+    expect(report.retainedCategories.slice(1)).toEqual([
       {
         category: "host-service wrappers",
         files: [".gemini/service/install-lior-service.sh", ".gemini/service/lior-loop.sh"],
@@ -175,7 +179,13 @@ describe("buildInventoryReport", () => {
       },
       {
         category: "dev-cluster wrappers",
-        files: ["full-ai-cluster/dev-cluster/down.sh", "full-ai-cluster/dev-cluster/up.sh"],
+        files: [
+          "full-ai-cluster/dev-cluster/apply-root-app.sh",
+          "full-ai-cluster/dev-cluster/down.sh",
+          "full-ai-cluster/dev-cluster/kind-down.sh",
+          "full-ai-cluster/dev-cluster/kind-up.sh",
+          "full-ai-cluster/dev-cluster/up.sh",
+        ],
       },
     ]);
     expect(report.retainedCategories.flatMap((summary) => summary.files)).toHaveLength(EXPECTED_RETAINED_SHELL.length);
@@ -276,7 +286,7 @@ describe("renderReport", () => {
     const bootstrapCount =
       report.retainedCategories.find((summary) => summary.category === "setup/bootstrap")?.files
         .length ?? 0;
-    expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount}`);
+    expect(renderReport(report)).toContain(`- setup/bootstrap: ${bootstrapCount.toString()}`);
     expect(renderReport(report)).toContain("- host-service wrappers: 2");
   });
 

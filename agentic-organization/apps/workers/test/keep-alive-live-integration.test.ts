@@ -38,6 +38,12 @@ describe("deterministic keep-alive — live Cockroach control plane (operator te
           : false,
     },
     async () => {
+      if (
+        env[KeepAliveIntegrationEnvName.DatabaseUrl] === undefined ||
+        env[KeepAliveIntegrationEnvName.DatabaseUrl].trim().length === 0
+      ) {
+        return;
+      }
       const databaseUrl = readIntegrationDatabaseUrl();
       const organizationId = `org-keepalive-${randomUUID()}`;
       const pool = await createPgCockroachWorkerPool({ databaseUrl });
@@ -112,6 +118,12 @@ describe("deterministic keep-alive — live Cockroach control plane (operator te
           : false,
     },
     async () => {
+      if (
+        env[KeepAliveIntegrationEnvName.DatabaseUrl] === undefined ||
+        env[KeepAliveIntegrationEnvName.DatabaseUrl].trim().length === 0
+      ) {
+        return;
+      }
       const databaseUrl = readIntegrationDatabaseUrl();
       const organizationId = `org-agentlive-${randomUUID()}`;
       const agentId = `agent-${randomUUID()}`;
@@ -234,9 +246,7 @@ function readIntegrationDatabaseUrl(): string {
 }
 
 type ControlPlaneSqlExecutor = {
-  execute: <Row = Record<string, unknown>>(
-    statement: CockroachAnySqlStatement,
-  ) => Promise<{ rows: readonly Row[] }>;
+  execute: <Row = Record<string, unknown>>(statement: CockroachAnySqlStatement) => Promise<{ rows: readonly Row[] }>;
 };
 
 async function applyKeepAliveMigrations(executor: ControlPlaneSqlExecutor): Promise<void> {

@@ -106,7 +106,7 @@ describe("countInboundRefs", () => {
 
 describe("auditRetractibility", () => {
   test("returns valid shape for a known skill", () => {
-    const result = auditRetractibility([".claude/skills/alignment-auditor/SKILL.md"]);
+    const result = auditRetractibility([".claude/skills/governance/SKILL.md"]);
     expect(result.schema).toBe("retractibility-v1");
     expect(result.totalSurfaces).toBe(1);
     expect(result.entanglementThreshold).toBe(5);
@@ -114,7 +114,7 @@ describe("auditRetractibility", () => {
 
     const surface = result.surfaces[0]!;
     expect(surface.kind).toBe("skill");
-    expect(surface.name).toBe("alignment-auditor");
+    expect(surface.name).toBe("governance");
     expect(surface.gitTracked).toBe(true);
     expect(typeof surface.inboundRefs).toBe("number");
     expect(["retractible", "entangled"]).toContain(surface.status);
@@ -141,7 +141,7 @@ describe("auditRetractibility", () => {
 
   test("counts add up correctly", () => {
     const result = auditRetractibility([
-      ".claude/skills/alignment-auditor/SKILL.md",
+      ".claude/skills/governance/SKILL.md",
       ".claude/agents/alignment-auditor.md",
       "definitely-not-a-real-file-xyz.md",
     ]);
@@ -151,7 +151,7 @@ describe("auditRetractibility", () => {
 
   test("sorts surfaces by descending inbound refs", () => {
     const result = auditRetractibility([
-      ".claude/skills/alignment-auditor/SKILL.md",
+      ".claude/skills/governance/SKILL.md",
       ".claude/agents/alignment-auditor.md",
     ]);
     if (result.surfaces.length >= 2) {
