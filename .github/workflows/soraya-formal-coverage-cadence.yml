@@ -143,7 +143,7 @@ jobs:
             label_err="$(mktemp)"
             if ! gh label create formal-coverage \
               --repo "$REPO" \
-              --description "Formal-coverage cadence (Soraya) -- fires daily via .github/workflows/soraya-formal-coverage-cadence.yml" \
+              --description "Formal-coverage cadence (Soraya) -- fires daily; see soraya-formal-coverage-cadence.yml" \
               --color "5319E7" 2>"$label_err"; then
               if grep -q "already exists" "$label_err"; then
                 : # already exists, fine
