@@ -50,3 +50,12 @@ let ``F# ProbabilitySemiring agrees with the shared golden seed`` () =
 
     for v in section "viterbiStep" do
         Assert.Equal<PS.Rational[]>(vec (v.GetProperty "result"), PS.viterbiStep (vec (v.GetProperty "v")) (mat (v.GetProperty "p")))
+
+    // div (ProbabilitySemiring) + merge3 (Reconcile) — the relative-observer reconciliation's 4-lang leg.
+    for v in section "div" do
+        Assert.Equal<PS.Rational>(r (v.GetProperty "result"), PS.div (r (v.GetProperty "a")) (r (v.GetProperty "b")))
+
+    for v in section "merge3" do
+        Assert.Equal<PS.Rational[]>(
+            vec (v.GetProperty "result"),
+            Reconcile.merge3 (vec (v.GetProperty "ancestor")) (vec (v.GetProperty "a")) (vec (v.GetProperty "b")))

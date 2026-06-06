@@ -3,7 +3,7 @@
 use serde_json::Value;
 use std::fs;
 use std::path::PathBuf;
-use zeta_probability_semiring::{add, forward_step, max, mul, rat, viterbi_step, Rational};
+use zeta_probability_semiring::{add, div, forward_step, max, merge3, mul, rat, viterbi_step, Rational};
 
 fn seed() -> Value {
     let root = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -72,5 +72,24 @@ fn viterbi_step_agrees() {
     let s = seed();
     for v in s["viterbiStep"].as_array().unwrap() {
         assert_eq!(viterbi_step(&vec_r(&v["v"]), &mat_r(&v["p"])), vec_r(&v["result"]));
+    }
+}
+
+#[test]
+fn div_agrees() {
+    let s = seed();
+    for v in s["div"].as_array().unwrap() {
+        assert_eq!(div(r(&v["a"]), r(&v["b"])), r(&v["result"]));
+    }
+}
+
+#[test]
+fn merge3_agrees() {
+    let s = seed();
+    for v in s["merge3"].as_array().unwrap() {
+        assert_eq!(
+            merge3(&vec_r(&v["ancestor"]), &vec_r(&v["a"]), &vec_r(&v["b"])),
+            vec_r(&v["result"])
+        );
     }
 }

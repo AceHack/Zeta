@@ -53,6 +53,26 @@ public static class ProbabilitySemiring
     /// <summary>Viterbi-semiring ⊕: exact <c>max(a, b)</c>.</summary>
     public static Rational Max(Rational a, Rational b) => Compare(a, b) >= 0 ? a : b;
 
+    /// <summary>Exact reciprocal <c>1/a</c> (ℚ is a field). <c>a = 0</c> is invalid.</summary>
+    public static Rational Recip(Rational a) =>
+        a.N == 0 ? throw new ArgumentException("reciprocal of zero", nameof(a)) : Rat(a.D, a.N);
+
+    /// <summary>Exact division <c>a / b</c> (<c>b = 0</c> invalid) — used by the relative-observer reconciliation.</summary>
+    public static Rational Div(Rational a, Rational b) => Mul(a, Recip(b));
+
+    /// <summary>Relative-observer 3-way merge over the Merkle ancestor: <c>merged(i) = a(i)·b(i)/ancestor(i)</c>.</summary>
+    public static IReadOnlyList<Rational> Merge3(IReadOnlyList<Rational> ancestor, IReadOnlyList<Rational> a, IReadOnlyList<Rational> b)
+    {
+        var n = ancestor.Count;
+        var outp = new List<Rational>(n);
+        for (var i = 0; i < n; i++)
+        {
+            outp.Add(Div(Mul(a[i], b[i]), ancestor[i]));
+        }
+
+        return outp;
+    }
+
     /// <summary>One forward step over <c>(+,×)</c>: <c>π'(j) = Σ_i π(i)·P(i,j)</c>.</summary>
     public static IReadOnlyList<Rational> ForwardStep(IReadOnlyList<Rational> pi, IReadOnlyList<IReadOnlyList<Rational>> p)
     {

@@ -45,6 +45,24 @@ export function max(a: Rational, b: Rational): Rational {
   return compare(a, b) >= 0 ? a : b;
 }
 
+/** Exact reciprocal 1/a (ℚ is a field). a.n === 0 throws. */
+export function recip(a: Rational): Rational {
+  if (a.n === 0) throw new Error("reciprocal of zero");
+  return rat(a.d, a.n);
+}
+
+/** Exact division a / b (b = 0 throws) — used by the relative-observer reconciliation. */
+export function div(a: Rational, b: Rational): Rational {
+  return mul(a, recip(b));
+}
+
+/** Relative-observer 3-way merge over the Merkle ancestor: merged(i) = a(i)·b(i)/ancestor(i). */
+export function merge3(ancestor: Rational[], a: Rational[], b: Rational[]): Rational[] {
+  const out: Rational[] = [];
+  for (let i = 0; i < ancestor.length; i++) out.push(div(mul(a[i], b[i]), ancestor[i]));
+  return out;
+}
+
 /** One forward step over (+,×): π'(j) = Σ_i π(i)·P(i,j). */
 export function forwardStep(pi: Rational[], p: Rational[][]): Rational[] {
   const n = p.length;

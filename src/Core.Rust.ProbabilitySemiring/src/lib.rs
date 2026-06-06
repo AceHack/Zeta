@@ -59,6 +59,22 @@ pub fn max(a: Rational, b: Rational) -> Rational {
     }
 }
 
+/// Exact reciprocal `1/a` (ℚ is a field). `a.n == 0` panics.
+pub fn recip(a: Rational) -> Rational {
+    assert!(a.n != 0, "reciprocal of zero");
+    rat(a.d, a.n)
+}
+
+/// Exact division `a / b` (`b = 0` panics) — used by the relative-observer reconciliation.
+pub fn div(a: Rational, b: Rational) -> Rational {
+    mul(a, recip(b))
+}
+
+/// Relative-observer 3-way merge over the Merkle ancestor: `merged(i) = a(i)·b(i)/ancestor(i)`.
+pub fn merge3(ancestor: &[Rational], a: &[Rational], b: &[Rational]) -> Vec<Rational> {
+    (0..ancestor.len()).map(|i| div(mul(a[i], b[i]), ancestor[i])).collect()
+}
+
 /// One forward step over `(+,×)`: `π'(j) = Σ_i π(i)·P(i,j)`.
 pub fn forward_step(pi: &[Rational], p: &[Vec<Rational>]) -> Vec<Rational> {
     let n = p.len();

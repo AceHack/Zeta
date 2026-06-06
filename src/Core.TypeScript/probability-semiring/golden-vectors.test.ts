@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { rat, add, mul, max, forwardStep, viterbiStep, type Rational } from "./probability-semiring";
+import { rat, add, mul, max, div, merge3, forwardStep, viterbiStep, type Rational } from "./probability-semiring";
 import vectors from "./golden-vectors.json";
 
 // Replays the shared golden seed through the TS oracle; the C#/F#/Rust oracles replay the same file.
@@ -26,5 +26,11 @@ describe("ProbabilitySemiring golden vectors", () => {
   });
   test("viterbiStep (max,x)", () => {
     for (const v of vectors.viterbiStep) expect(viterbiStep(vec(v.v), mat(v.p))).toEqual(vec(v.result));
+  });
+  test("div", () => {
+    for (const v of vectors.div) expect(div(r(v.a), r(v.b))).toEqual(r(v.result));
+  });
+  test("merge3 (relative-observer reconciliation)", () => {
+    for (const v of vectors.merge3) expect(merge3(vec(v.ancestor), vec(v.a), vec(v.b))).toEqual(vec(v.result));
   });
 });

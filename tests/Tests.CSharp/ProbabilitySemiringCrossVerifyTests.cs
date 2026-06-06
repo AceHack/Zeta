@@ -91,4 +91,24 @@ public class ProbabilitySemiringCrossVerifyTests
             Assert.Equal<IReadOnlyList<R>>(Vec(v.GetProperty("result")), ProbabilitySemiring.ViterbiStep(Vec(v.GetProperty("v")), Mat(v.GetProperty("p"))));
         }
     }
+
+    [Fact]
+    public void DivAgreesWithSeed()
+    {
+        foreach (var v in Seed().GetProperty("div").EnumerateArray())
+        {
+            Assert.Equal(Rd(v.GetProperty("result")), ProbabilitySemiring.Div(Rd(v.GetProperty("a")), Rd(v.GetProperty("b"))));
+        }
+    }
+
+    [Fact]
+    public void Merge3AgreesWithSeed()
+    {
+        foreach (var v in Seed().GetProperty("merge3").EnumerateArray())
+        {
+            Assert.Equal<IReadOnlyList<R>>(
+                Vec(v.GetProperty("result")),
+                ProbabilitySemiring.Merge3(Vec(v.GetProperty("ancestor")), Vec(v.GetProperty("a")), Vec(v.GetProperty("b"))));
+        }
+    }
 }
