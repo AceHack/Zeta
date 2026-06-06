@@ -43,3 +43,32 @@ Parallelizable breakdown (hand off):
 Depends on: the codec seam (landed) + golden vectors. Composes with R4 (wonder
 compression) later. Guiding principles: FoundationDB + Will Wilson DST + honest
 async + the 11 manifesto specs.
+
+## Math leg ROUTED by Soraya (2026-06-06)
+
+Invariant: `recover ∘ crash = fold(committed)` — recovery reconstructs exactly the
+committed-and-durable deltas across any interleaving of {commit, snapshot, gc,
+crash, recover}.
+
+- **Primary: TLA+/TLC** — `tools/tla/specs/RecoveryHomeostat.tla` + `.cfg` (MaxSeq=4).
+  Vars: committedSeq, snapshotSeq, truncatedThroughSeq, recoveredState, crashed.
+  Actions: Commit/Snapshot/GC(guard truncatedThroughSeq ≤ snapshotSeq)/Crash/Recover.
+  Safety: `RecoveryCorrect == ~crashed => recoveredState = {1..committedSeq}` +
+  `NoCommittedLoss == truncatedThroughSeq ≤ snapshotSeq ≤ committedSeq`.
+  Liveness (the HOMEOSTAT clause): `Crash ~> recoveredState = {1..committedSeq}`
+  (recover is the absorbing transition whose fixed point is committed truth — the
+  Markov/homeostat framing lives INSIDE the spec, not as a separate tool).
+- **Cross-check (BP-16): FsCheck** — promote `DurabilitySim.Tests.fs` to a randomized
+  generator over op-script × crash-point × cadence; proves the F# impl REFINES the
+  TLA+ model. Two independent failure surfaces.
+- **Not chosen (wrong-tool cost named):** Apalache (only if TLC state-space blows up),
+  Alloy (data-layout, misses temporal crash-ordering), Lean (reserve for the
+  fold-monoid/ZSet-`+` associativity leg).
+- **Composition:** DST harness = executable witness; TLA+ = abstract twin (TLC
+  enumerates interleavings the harness samples). Register as a homeostat-tie in
+  `docs/PROVEN-COVERAGE-AND-GAPS.md §4`; closes the unmodeled Durability row in
+  `docs/research/proof-tool-coverage.md`.
+- **CI:** rides the existing tlc runner (cfg-derived catalog, commit 8004e9d34);
+  TLAPS upgrade path for a machine-checked proof. FsCheck rides `dotnet test`.
+- **Handoff (Soraya's authority bound):** routing only; spec author = Otto or Kenji;
+  Soraya recommends Kenji concur before it enters the gate.
