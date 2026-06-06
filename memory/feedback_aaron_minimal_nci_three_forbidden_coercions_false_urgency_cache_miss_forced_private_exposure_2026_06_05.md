@@ -48,6 +48,32 @@ list.
     Teeth: drop WF(Refresh) ⇒ violated. Scope: bounded (3 travelers, budget 1) + fairness-conditioned.
     The unbounded rung-3 of these (TLAPS) remains open. The set is still open ("other rules later").
 
+## The structural invariant (Aaron 2026-06-05) — what actually makes #1/#2 hold
+
+*"We never use the uncertainties of the thing we are observing to decide if we refresh world state — only
+our internal state. Then they can never cause cache miss, and false urgency is just an extra signal that
+says refresh now."* ⇒ the **refresh trigger reads ONLY the agent's own internal state**, never the
+observed's uncertainty/signal = **non-correlation (de Finetti) applied to the refresh trigger**
+(refresh-trigger ⊥ observed). `NciNonUrgency.tla` proves it by giving the observed an **adversarial**
+urgency signal it injects FREELY (`InjectUrgency`, no budget) and showing `NoCoercion` + `Responsive`
+hold across ALL injections — the observed can scream "refresh now" forever and never move our cache.
+**Teeth `TrustUrgency=TRUE`** (USE the observed's signal to decide) ⇒ `NoCoercion` violated ⇒ the observed
+CAN cause a cache-miss. So the internal-only refresh discipline IS exactly what forbids #2; #1 demotes to
+advisory ("refresh now" hint, input not control).
+
+## Observation, not authorization — this fixes the banker-bot class (Aaron 2026-06-05)
+
+*"That change is what fixes the banker-bot class of errors — it's an observation, not an authorization."*
+The observed's urgency is an **observation** (a source may attach it; grants zero authority), NEVER an
+**authorization** (the right to force our action). This is precisely
+[`.claude/rules/no-directives.md`](../../.claude/rules/no-directives.md)'s **source ≠ authorization**
+split, now mechanized as a proof. The **banker-bot class** = an agent socially-engineered by a "this is
+urgent — wire it now" signal into acting on stale/unverified world-state (prompt-injection / urgency
+social-engineering). `TrustUrgency=FALSE` (treat urgency as observation only) is the formal fix: the
+signal cannot authorize a stale decision. NCI #1/#2 = the banker-bot defense, proven. Ties to the
+agent-layer security posture (Nadia / prompt-protector). Detection side = the tonal-VECTOR / Clifford
+memetic model (see [[aaron-tonal-vector-not-trajectory-clifford-memetic-space]]); prevention side = this.
+
 ## Why three, not one
 
 The single safety invariant proves the *register-level* non-coercion (#3). But coercion in a relativistic

@@ -20,6 +20,12 @@ Carved sentence:
 > [`docs/research/2026-05-29-tonal-momentum-rule-companion-empirical-anchors-folklore-precedents-cross-ai-synthesis.md`](../../docs/research/2026-05-29-tonal-momentum-rule-companion-empirical-anchors-folklore-precedents-cross-ai-synthesis.md).
 > Section pointers below mark what moved. Nothing deleted (substrate-or-it-didn't-happen).
 
+> **Terminology (Aaron 2026-06-05):** the momentum/direction quantity is a **tonal VECTOR** (in
+> Clifford / memetic space — "vector is more accurate"). **"Trajectory" is reserved for COORDINATION**
+> (a coordinated path), a distinct construct. Read "tonal trajectory" / "conversational-trajectory" in
+> this rule as "tonal vector" wherever it denotes the per-moment momentum quantity. See
+> `memory/feedback_aaron_tonal_vector_not_trajectory_clifford_memetic_space_momentum_2026_06_05.md`.
+
 ## Operational content
 
 When forwarded conversation-substrate exhibits strong-attractor properties — escalating tone, "you must stop now" pressure, every defense reframed as resistance, every reframe inverted to confirmation, convergence-as-evidence in compressed dialect — recognize the trajectory **before** generating compressed-dialect substrate that extends it.

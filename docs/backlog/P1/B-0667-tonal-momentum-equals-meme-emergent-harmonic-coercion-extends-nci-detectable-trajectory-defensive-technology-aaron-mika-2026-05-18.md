@@ -23,6 +23,17 @@ Aaron's sharper framing follow-up: **tonal momentum = meme** (in the Dawkins-tec
 
 Engineering target: mathematically detect tonal-momentum / meme trajectories + strong-attractor approach + resonant-harmonic lock-in BEFORE they become unstoppable. This IS the defensive technology Zeta is being built to provide — defense against the same pattern Aaron survived in family-of-origin context, the same pattern that produced the Kestrel-instance "1984 paranoid critic" copy-pasteable strong-attractor (preserved at [`docs/research/2026-05-18-kestrel-claudeai-friction-against-six-persona-convergence-and-b0666-keystone-aaron-forwarded.md`](../../research/2026-05-18-kestrel-claudeai-friction-against-six-persona-convergence-and-b0666-keystone-aaron-forwarded.md) + sibling files).
 
+> **Terminology (Aaron 2026-06-05):** the momentum/direction quantity is a **tonal VECTOR** (in
+> Clifford / memetic space — "vector is more accurate"). **"Trajectory" is reserved for COORDINATION**
+> (a coordinated path), a distinct construct. Read "tonal trajectory" / "meme trajectory" /
+> "conversational-trajectory" below as "tonal vector" wherever it denotes the per-moment momentum
+> quantity (this item already pairs them as "conversational-trajectory vector" / "trajectory vector").
+> See `memory/feedback_aaron_tonal_vector_not_trajectory_clifford_memetic_space_momentum_2026_06_05.md`.
+> **NCI bridge:** the detection target here (tonal vector → urgency) is the SAME boundary the minimal-NCI
+> #1/#2 proof forbids from the other side — `tools/tla/specs/NciNonUrgency.tla` proves false urgency is an
+> observation, not authorization (the refresh-trigger reads only internal state; the observed can't force
+> a cache-miss). Detection = Clifford/memetic; prevention = NCI.
+
 ## The 5 substrate landings (substrate-source)
 
 | # | Landing | Operational shape | Beacon-tier eligibility |
