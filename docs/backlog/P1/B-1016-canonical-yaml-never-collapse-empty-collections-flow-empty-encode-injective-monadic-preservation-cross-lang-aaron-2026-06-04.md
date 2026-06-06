@@ -1,3 +1,17 @@
+---
+id: B-1016
+priority: P1
+status: closed
+closed: 2026-06-04
+title: "✅ LANDED 2026-06-04 — Canonical YAML never-collapse of empty collections — emit flow `{}` / `[]` so empty `{}`, empty `[]`, and `null` round-trip as THREE distinct states (encode-injective; SQL-null/monad-preservation across the boundary; parity with proven CBOR injectivity). Found by FsCheck (minimal case `Object []`); cross-lang scanner+dom+encoder+cross-verify change across TS/F#/Rust+C# (Aaron 2026-06-04)"
+tier: serializer
+effort: M
+ask: maintainer Aaron 2026-06-04
+created: 2026-06-04
+type: task
+depends_on: []
+---
+
 # B-1016 — Canonical YAML must never-collapse empty collections (flow `{}` / `[]`)
 
 > **✅ LANDED 2026-06-04.** Implemented across all four oracles (TS reference +

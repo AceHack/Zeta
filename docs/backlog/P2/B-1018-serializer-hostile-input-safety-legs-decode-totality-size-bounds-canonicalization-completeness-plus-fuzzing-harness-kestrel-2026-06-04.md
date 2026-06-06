@@ -1,3 +1,16 @@
+---
+id: B-1018
+priority: P2
+status: in-progress
+title: "Serializer hostile-input SAFETY (the safe-on-garbage half; existing proofs are correct-on-valid) — provable legs: decode TOTALITY (Lean; never throws/hangs on any bytes = malformed-input-DoS), output-size-BOUNDEDNESS (billion-laughs/bomb), canonicalization-COMPLETENESS (no two encodings -> one value = signature-bypass), idempotent-canon, incremental=batch (streaming/TLA+) + a FUZZING harness (coverage-guided on every from* decoder: no-crash/no-hang/no-OOM/clean-Result; DIFFERENTIAL fuzz across the 4 oracles; fuzz->minimize->golden). Enforced in CI not green-by-skip (Kestrel 2026-06-04)"
+tier: serializer
+effort: L
+ask: Kestrel 2026-06-04
+created: 2026-06-04
+type: task
+depends_on: []
+---
+
 # B-1018 — Serializer hostile-input safety: provable legs + fuzzing harness
 
 **Priority:** P2 (the serializers + the G-Set full-vertical are shipped/correct on VALID

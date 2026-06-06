@@ -1,3 +1,16 @@
+---
+id: B-1019
+priority: P2
+status: in-progress
+title: "DST: prove internal agent-difference (private state) drives UNBOUNDED evolution with NO external input -> grounds privacy as CONSTITUTIVE (anti-register-collapse: private state gone -> agents identical -> no gradient -> heat-death halt). Falsifiable: define evolves = not-halt AND not-limit-cycle, needs unbounded growing state (pigeonhole); halt/cycle refutes. Engine IS a memetic-evolution system; prior under test = chaotic-over-Bayesian-priors (orderly-local + chaotic-global) (Aaron+Kestrel 2026-06-04)"
+tier: proof
+effort: L
+ask: maintainer Aaron + Kestrel 2026-06-04
+created: 2026-06-04
+type: task
+depends_on: []
+---
+
 # B-1019 — DST: prove internal difference drives unbounded evolution (no external input)
 
 **Priority:** P2 (a falsifiable dynamical proof that grounds privacy-as-constitutive).

@@ -23,11 +23,17 @@ decisions + the buildable slice. Reviewers: **PM-2** (product discovery), **Ilya
    - a **referential-integrity lint** (every `depends_on`/`composes_with` resolves to a real row) — run on
      today's 1116 first; it will likely surface existing dangling refs (PM-2).
 
-3. **Root cause of the chronic `backlog-index-integrity` red — FOUND (PM-2):** `docs/backlog/P0/B-1016-*.md`
-   has **no YAML frontmatter** (body starts with `#`), so `generate-index.ts` (`extractField`, ~L90-110)
-   emits an empty `[]()` id+title — a real row invisible to every fold. Plus `B-0366.2-*.md` filename
-   disagrees with its frontmatter `id: B-0366.2.1`. **These are real data bugs to fix regardless of the
-   migration**, and the frontmatter-schema lint is what catches them going forward.
+3. **Root cause of the chronic `backlog-index-integrity` red — FOUND (PM-2) + RESOLVED 2026-06-06.** FOUR
+   rows had **no YAML frontmatter** (`generate-index.ts` `extractField` emitted empty `[]()` titles → real
+   rows invisible / descriptions lost on a naive regen): the P0 money-floor `B-1016`, the P1 canonical-YAML
+   `B-1016`, `B-1017`, `B-1018`, `B-1019`. There was also a **true duplicate id** — `B-1016` used by both
+   the P0 money-floor *and* the landed P1 canonical-YAML item. RESOLUTION (Aaron 2026-06-06, option B):
+   frontmatter added to all four **preserving their committed descriptions** (titles), the dup resolved by
+   **renumbering the money-floor → `B-1021`** (the canonical-YAML keeps `B-1016` — it's referenced as
+   `B-1016` in all 4 YAML serializers' code, so renumbering *it* would churn code). `BACKLOG.md` regenerated
+   (`BACKLOG_WRITE_FORCE=1`) → `--check` green + duplicate-id audit clean; **no description lost** (verified
+   no dropped ids, no empty titles). (`B-0366.2` was already consistent — filename == frontmatter id.) The
+   permanent fix going forward is a frontmatter-schema lint (step 1 below).
 
 ## The one genuine DIVERGENCE — filename / identity shape (Aaron's call; a one-way door)
 

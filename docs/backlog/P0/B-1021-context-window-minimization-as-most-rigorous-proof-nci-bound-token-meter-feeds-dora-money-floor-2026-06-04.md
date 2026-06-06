@@ -1,4 +1,20 @@
-# B-1016 — Context-window minimization as our most rigorous proof (NCI-bound; token-meter → DORA)
+---
+id: B-1021
+priority: P0
+status: in-progress
+title: Context-window minimization as our most rigorous proof (NCI-bound; token-meter to DORA)
+renumbered_from: B-1016
+renumbered_reason: "B-1016 collided with the landed canonical-YAML never-collapse item (referenced as B-1016 in all 4 YAML serializers' code); per Aaron 2026-06-06 option B, the money-floor row took the new id"
+tier: money-floor
+effort: M
+ask: maintainer Aaron 2026-06-04
+created: 2026-06-04
+last_updated: 2026-06-06
+type: task
+depends_on: []
+---
+
+# B-1021 — Context-window minimization as our most rigorous proof (NCI-bound; token-meter → DORA)
 
 **P0 · money-floor · 2026-06-04 · Aaron**
 
