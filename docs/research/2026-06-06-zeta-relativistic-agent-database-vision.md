@@ -209,6 +209,25 @@ source — so a self-unfolding substrate could hide something in the unfolder/se
 are inspectable data (Bonsai-style), reproducibly built, and scrutinized, not trusted by fiat. Self-
 hosting buys independence from the host; it does not buy a pass on auditability.
 
+**Host progression — descending toward the metal (maintainer, 2026-06-06).** The bootstrap host
+lowers over time: managed **4-lang (F#/TS/C#/Rust)** now → eventually **ASM / CUDA / FPGA**-like
+hosts → **GPGPU / shader**-like hosts. The unfolder must therefore be a portable PROVEN primitive:
+**4-language + 4-serializer + Arrow + protobuf/gRPC**, with the **math leg proven via the existing
+homeostat / Markov links in the chain** (the recovery-fixed-point proof composes with the other
+math homeostats). Same primitive, many hosts — manifesto §4 Bounded Mobility (compute relocates
+within safety bounds) taken down to the silicon; the microkernel/FPGA endgame is the bottom of this
+ladder.
+
+**Why we must stay SOFT, not SHARP (maintainer, 2026-06-06) — it's a hardware-portability law, not
+just epistemics.** To run on **GPGPU / shaders** the computation must be *soft*: branchless,
+data-parallel, continuous/probabilistic (`SoftValue`, `TriBoolean` held-uncertainty, uncollapsed),
+**not sharp** (hard branches, early collapse). Sharp control flow = **SIMT branch divergence** =
+can't run efficiently on shaders. So the "never falsely certain / don't collapse early / wonder"
+discipline is *simultaneously* epistemic honesty AND the thing that makes the substrate executable
+on the ultimate massively-parallel hosts. Soft compute = wonder-preserving = shader-portable; this
+is why uncertainty stays first-class all the way down. Anchor: SIMT/branch-divergence, data-parallel
+& differentiable/soft computing, branchless programming.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
