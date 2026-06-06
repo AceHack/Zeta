@@ -1,49 +1,57 @@
-# Async all the way, truthful signatures — and `Task.Run` is a smell
+# Async all the way, truthful signatures — beautiful on 1, scales to N
 
 Carved sentence:
 
-> Our concurrency north star is **FoundationDB's model**: a *single-threaded*
-> deterministic run loop (Flow actors) where all concurrency is cooperative
-> async on one thread, so execution replays deterministically (DST, manifesto
-> §7). Under that model **`Task.Run` / `Task.Factory.StartNew` / parallel
-> fan-out is a smell** — it spawns real OS-thread parallelism, the exact
-> nondeterminism we are moving away from. Also: **no `async void`** (unawaitable,
-> swallows failures), **no sync-over-async** (`.Result`/`.Wait()`/`GetAwaiter().GetResult()`/`RunSynchronously`
-> → deadlock + threadpool starvation), **no async-over-sync** (`Task.Run`
-> wrapping CPU/sync work to *look* awaitable lies about yielding). A signature
-> must tell the truth about whether it yields; prefer genuine async I/O on the
-> single loop over spawning threads.
+> Concurrency must be **scale-free across thread count** (manifesto §1 applied to
+> threads): run *beautifully on one thread* — deterministic, DST-replayable,
+> FoundationDB-style — *and* scale to N, **same code path, no special cases**. The
+> knob is a degree-of-parallelism on a queue/ferry abstraction (DoP=1 ⇒ a single
+> cooperative loop ⇒ deterministic; DoP=N ⇒ N ferries draining the same queue).
+> So **raw `Task.Run` / `Task.Factory.StartNew` is a smell** — it is *un-knobbed*
+> thread spawn: you can't dial it to 1, it bypasses the queue, and it makes the
+> run nondeterministic (DST can't replay it). Route parallel work through a
+> throttle with a DoP knob instead. Also: **no `async void`**, **no
+> sync-over-async** (`.Result`/`.Wait()`/`GetAwaiter().GetResult()`/`RunSynchronously`),
+> **no async-over-sync** (`Task.Run` wrapping sync work to look awaitable). A
+> signature must tell the truth about whether it yields.
 
-## Why (the FoundationDB anchor — Beacon)
+## Why
 
-FoundationDB runs its entire logical workload on one thread via **Flow**, a C++
-actor/`Future` dialect, and tests it with **deterministic simulation** — the same
-seed replays the same interleaving, which is why FDB's correctness story is the
-reference standard. Single-threaded cooperative async has no locks, no threadpool
-starvation, and is deterministic *by construction* — it directly satisfies
-manifesto §2 (lock/wait-free) and §7 (DST). `Task.Run` breaks all three: it hands
-work to the threadpool, reintroduces real parallelism (nondeterministic
-interleaving → DST can't replay), and parks/contends threads. Genuine async I/O
-(`File.*Async`, `WaitToReadAsync`, awaited — not `Task.Run`-wrapped) is the
-single-thread-friendly shape: the one loop issues I/O and cooperatively yields
-until it completes, spawning no thread. On library/hot paths pair real async with
-`ConfigureAwait(false)` (B-0969).
+The goal is one substrate that is correct and *legible* at DoP=1 — where
+FoundationDB's run loop (Flow actors + deterministic simulation) is the reference
+standard: single-threaded, no locks, no threadpool starvation, replays the same
+interleaving from the same seed (manifesto §2 lock/wait-free, §7 DST) — and still
+fast at DoP=N when you want throughput. A **ferry-boat throttle** gives both from
+one code path: items go on a bounded queue; `MaxDegreeOfParallelism` ferries pull
+and process them with a genuinely-async processor (`await itemProcessor`, not a
+blocked thread). Set DoP=1 on the simulation/seed path and you have the
+deterministic FDB loop for free; set DoP=N in production. `Task.Run` can do
+neither — it spawns straight onto the threadpool with no DoP ceiling, no queue, no
+1-thread mode, and no determinism. That is the smell.
 
-**Anchor:** Zhou et al., *FoundationDB: A Distributed Unbundled Transactional Key
-Value Store*, SIGMOD 2021 · Will Wilson, *Testing Distributed Systems w/
-Deterministic Simulation* (Strange Loop 2014) · the Flow actor language.
+## Prescribed pattern (the alternative to `Task.Run`)
 
-## Allowed exception
+A queue + DoP-knobbed ferry. Reference shapes (TPL Dataflow `ActionBlock` with
+`MaxDegreeOfParallelism`, or `SemaphoreSlim`-gated async) both degrade cleanly to
+DoP=1. Genuine async I/O (`File.*Async`, `WaitToReadAsync` awaited) is the
+single-loop-friendly form: the ferry yields while I/O is in flight, spawning no
+thread.
 
-Genuine CPU-bound parallelism that is *outside* the deterministic core and
-explicitly opted out of DST may use the threadpool — but it must be named as such
-at the call site (a comment stating it is non-deterministic / not on the sim path),
-never silently. When in doubt, keep it on the single loop.
+## Anchors (Beacon)
+
+- **Ferry-boat throttle prior art (human anchor):** the maintainer's Itron
+  `Platform.DotNet` `Threading.Tasks.Throttling` — `IThrottler.TryProcessAsync`,
+  `ThrottlerConfiguration.MaxDegreeOfParallelism` / `MaxQueueSize`, impls over
+  `ActionBlock` and `SemaphoreSlim`, batch variant. The "1-to-N ferries, degrades
+  to 1" design we are emulating.
+- **Single-thread determinism:** Zhou et al., *FoundationDB* (SIGMOD 2021); Will
+  Wilson, *Testing Distributed Systems w/ Deterministic Simulation* (Strange Loop
+  2014); the Flow actor language.
 
 ## Pointers
 
-- [`manifesto-11-specifications.md`](manifesto-11-specifications.md) §2 lock/wait-free, §7 DST — the specs this enforces
-- [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — disciplines #2 (lock/wait-free) and #4 (DST) at substrate scope
-- [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — why the FoundationDB citation above is load-bearing, not decoration
-- B-0969 — `ConfigureAwait(false)` cross-cutting default; `docs/backlog/P1/B-0969-*.md`
-- Open coordination note: `Task.Run` smells at `src/Core/Runtime.fs` (shard fan-out) and `src/Core/SpineAsync.fs` (worker) — see `docs/backlog/` async-direction finding
+- [`manifesto-11-specifications.md`](manifesto-11-specifications.md) §1 scale-free, §2 lock/wait-free, §7 DST
+- [`dv2-data-split-discipline-activated.md`](dv2-data-split-discipline-activated.md) — #1 scale-free, #2 lock/wait-free, #4 DST
+- [`anchor-to-human-prior-art.md`](anchor-to-human-prior-art.md) — why the anchors above are load-bearing
+- B-0969 — `ConfigureAwait(false)` cross-cutting default
+- Coordination: `Task.Run` sites at `src/Core/Runtime.fs` (shard fan-out) + `src/Core/SpineAsync.fs` (worker) → workitem `081KTF10R0108QG0R003P44BA2` (for Vera's in-flight async work)

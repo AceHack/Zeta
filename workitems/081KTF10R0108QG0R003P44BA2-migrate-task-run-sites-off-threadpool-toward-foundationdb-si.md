@@ -18,12 +18,18 @@ composes_with: []
 
 ## Why (direction)
 
-FoundationDB is our concurrency north star: a single-threaded deterministic
-run loop (Flow actors) tested with deterministic simulation. Under that model
-`Task.Run` / threadpool fan-out is a **smell** — it reintroduces real OS-thread
-parallelism, the nondeterminism DST (manifesto §7) exists to eliminate. See the
-rule `.claude/rules/async-all-the-way-truthful-signatures.md` (FDB-anchored,
-Beacon citation: Zhou et al. SIGMOD 2021; Will Wilson, Strange Loop 2014).
+Concurrency must be **scale-free across thread count**: beautiful on 1 thread
+(deterministic, DST-replayable, FoundationDB-style) AND scale to N — same code
+path. The mechanism is a **ferry-boat throttle**: a bounded queue + a
+`MaxDegreeOfParallelism` knob; DoP=1 ⇒ single cooperative loop ⇒ deterministic,
+DoP=N ⇒ N ferries. Raw `Task.Run` is a **smell** because it is *un-knobbed*
+spawn — no DoP ceiling, no queue, no 1-thread mode, nondeterministic (DST §7
+can't replay). The migration target is NOT "single-thread only"; it is "route
+parallel work through a DoP-knobbed throttle that defaults to 1." See the rule
+`.claude/rules/async-all-the-way-truthful-signatures.md`. Prior-art anchor: the
+maintainer's Itron `Threading.Tasks.Throttling` (`IThrottler`,
+`ThrottlerConfiguration.MaxDegreeOfParallelism`, ActionBlock / SemaphoreSlim
+impls); FDB anchor: Zhou et al. SIGMOD 2021; Will Wilson, Strange Loop 2014.
 
 ## Coordination
 
@@ -44,11 +50,11 @@ not push code changes to these files while that work is in flight; fold into it.
      separate task at all, or fold into the single run loop?
 
 2. **`src/Core/Runtime.fs:77`** — `ShardedRuntime.StepAsync` fans shard work out
-   via `Array.init shardCount (fun i -> Task.Run(...))` + `Task.WhenAll`. Genuine
-   CPU parallelism today; under the single-thread model this is the canonical
-   "parallel fan-out" smell. Needs a direction call: keep as an explicitly
-   DST-opted-out parallel fast path (allowed-exception per the rule), or serialize
-   onto the deterministic loop.
+   via `Array.init shardCount (fun i -> Task.Run(...))` + `Task.WhenAll`.
+   Un-knobbed fan-out: always spawns `shardCount` threadpool tasks, no DoP=1
+   mode, nondeterministic interleaving. Target: route shard steps through a
+   ferry-boat throttle with `MaxDegreeOfParallelism` (DoP=1 on the sim/seed path
+   ⇒ deterministic per-shard order; DoP=N in production). Same code path both.
 
 ## Not violations (reviewed, leave as-is)
 
