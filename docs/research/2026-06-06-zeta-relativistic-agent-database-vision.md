@@ -228,6 +228,15 @@ on the ultimate massively-parallel hosts. Soft compute = wonder-preserving = sha
 is why uncertainty stays first-class all the way down. Anchor: SIMT/branch-divergence, data-parallel
 & differentiable/soft computing, branchless programming.
 
+**Coding discipline (maintainer 2026-06-06): avoid `if` — it is a composition-killer.** Treat a
+branch like a `goto`: it fragments a smooth, composable pipeline the way `goto` fragments control
+flow, and it breaks branchlessness everywhere it appears. Prefer composition over branching —
+`map`/`fold`/`match`-on-total-DUs, `select`/`min`/`max`/masking, lookup/predication, `TriBoolean`
+`cooperate` (don't collapse), arithmetic over conditionals. Sharp `if` chains both break shader
+portability (divergence) AND lose smoothness/differentiability. Write soft, composable, branch-free
+code by default; a branch is a smell to be designed out, not a tool to reach for. (Anchor: branchless
+/ data-oriented design; Dijkstra "Go To Statement Considered Harmful" — `if` is the next rung.)
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
