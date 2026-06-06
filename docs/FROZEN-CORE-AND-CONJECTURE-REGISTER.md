@@ -139,6 +139,16 @@ necessity + dynamics PROVEN) and **consent-first** (manifesto #6): a merge that 
 traveler's encrypted private state up to its budget is exactly a non-coercive (order-independent,
 conditionally-independent) merge.
 
+**The mechanism of coercion (Aaron, 2026-06-05 — the sharpest definition):** *coercion = using **false
+urgency** to make another agent **not refresh its world state** before taking action.* Non-coercion =
+the other always gets to refresh (observe) before deciding. This is the agency/temporal face of the same
+boundary: a non-coercive observation lets you `observe`/update first (order-independent, exchangeable); a
+coercive one forces the decision *before* the belief-refresh (state-dependent ⇒ order matters ⇒ the
+boundary is crossed). It is why the NCI is the algebraic form of memetic-weaponization defence — a
+memetic weapon IS false urgency that blocks belief-refresh. (Built into the system from the start as one
+of two original guardrails — NCI + don't-violate-MNPI — plus the permanent child-safety floor: anything
+child-safety = hard stop, contact a human.)
+
 **Why it pulls together:** the homeostat's order-independence (the merge-convergence we prove for every
 mergeable primitive) **is** the NCI boundary. Four names for one cut: "non-coercive-vs-coercive
 observation" (the name / no-directives) = "fixed-vs-state-dependent likelihood" (`BeliefConvergence`) =
