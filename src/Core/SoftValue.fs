@@ -1,5 +1,7 @@
 namespace Zeta.Core
 
+open System.Collections.Generic
+
 /// **SoftValue — the value-axis "soft" DynamicValue seed (calibrated / probabilistic).**
 ///
 /// A normalized distribution over candidate `DynamicValue`s. The safety property is NOT
@@ -31,20 +33,27 @@ module SoftValue =
     /// Merge equal candidates (first-seen order), drop non-positive weights, normalize.
     /// `None` if nothing positive remains (empty or total ≈ 0) — no fabricated certainty.
     let private build (xs: (DynamicValue * float) list) : SoftValue option =
-        let merged =
-            xs
-            |> List.fold
-                (fun acc (d, w) ->
-                    if w <= 0.0 then
-                        acc
-                    else
-                        match acc |> List.tryFindIndex (fun (d2, _) -> d2 = d) with
-                        | Some i -> acc |> List.mapi (fun j (d2, w2) -> if j = i then (d2, w2 + w) else (d2, w2))
-                        | None -> acc @ [ d, w ])
-                []
-        let total = merged |> List.sumBy snd
-        if List.isEmpty merged || total <= EPS then None
-        else Some { Candidates = merged |> List.map (fun (d, w) -> d, w / total) }
+        let positions = Dictionary<DynamicValue, int>()
+        let merged = ResizeArray<DynamicValue * float>()
+        let mutable total = 0.0
+
+        for d, w in xs do
+            if w > 0.0 then
+                total <- total + w
+                match positions.TryGetValue d with
+                | true, i ->
+                    let existing, existingWeight = merged.[i]
+                    merged.[i] <- existing, existingWeight + w
+                | false, _ ->
+                    positions.Add(d, merged.Count)
+                    merged.Add(d, w)
+
+        if merged.Count = 0 || total <= EPS then None
+        else
+            Some
+                { Candidates =
+                    [ for d, w in merged do
+                          d, w / total ] }
 
     /// A point mass — fully certain at `dv` (confidence 1).
     let certain (dv: DynamicValue) : SoftValue = { Candidates = [ dv, 1.0 ] }

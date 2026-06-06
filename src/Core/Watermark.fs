@@ -2,6 +2,7 @@ namespace Zeta.Core
 
 open System
 open System.Runtime.CompilerServices
+open System.Threading
 
 
 /// Event-time watermark — a monotone lower-bound on "no event with
@@ -65,34 +66,41 @@ type WatermarkStrategy =
 type WatermarkTracker(strategy: WatermarkStrategy) =
     let mutable maxSeen = Int64.MinValue
     let mutable lastEmitted = Int64.MinValue
-    let lockObj = obj ()
+
+    [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
+    let candidateFor (observedMax: int64) : int64 =
+        match strategy with
+        | WatermarkStrategy.Monotonic -> observedMax
+        | WatermarkStrategy.BoundedLateness lateness ->
+            let latenessMs = int64 lateness.TotalMilliseconds
+            // Saturating subtraction: observedMax near Int64.MinValue would underflow + wrap to a
+            // large positive, breaking watermark monotonicity (Lior audit 2026-06-06). latenessMs >= 0.
+            if observedMax <= Int64.MinValue + latenessMs then Int64.MinValue
+            else observedMax - latenessMs
+        | WatermarkStrategy.Periodic (_interval, lateness) ->
+            let latenessMs = int64 lateness.TotalMilliseconds
+            // Saturating subtraction: observedMax near Int64.MinValue would underflow + wrap to a
+            // large positive, breaking watermark monotonicity (Lior audit 2026-06-06). latenessMs >= 0.
+            if observedMax <= Int64.MinValue + latenessMs then Int64.MinValue
+            else observedMax - latenessMs
+
+    [<MethodImpl(MethodImplOptions.AggressiveInlining)>]
+    let rec publishMax (cell: byref<int64>) (value: int64) : int64 =
+        let current = Volatile.Read &cell
+        if value <= current then
+            current
+        else
+            let prior = Interlocked.CompareExchange(&cell, value, current)
+            if prior = current then value else publishMax &cell value
 
     /// Observe a new event timestamp. Returns the new watermark (may be
     /// unchanged from the previous value).
     member _.Observe(eventTime: int64) : int64 =
-        lock lockObj (fun () ->
-            if eventTime > maxSeen then maxSeen <- eventTime
-            let candidate =
-                match strategy with
-                | WatermarkStrategy.Monotonic -> maxSeen
-                | WatermarkStrategy.BoundedLateness lateness ->
-                    let latenessMs = int64 lateness.TotalMilliseconds
-                    // Saturating subtraction: maxSeen near Int64.MinValue would underflow + wrap to a
-                    // large positive, breaking watermark monotonicity (Lior audit 2026-06-06). latenessMs ≥ 0.
-                    if maxSeen <= Int64.MinValue + latenessMs then Int64.MinValue
-                    else maxSeen - latenessMs
-                | WatermarkStrategy.Periodic (_interval, lateness) ->
-                    let latenessMs = int64 lateness.TotalMilliseconds
-                    // Saturating subtraction: maxSeen near Int64.MinValue would underflow + wrap to a
-                    // large positive, breaking watermark monotonicity (Lior audit 2026-06-06). latenessMs ≥ 0.
-                    if maxSeen <= Int64.MinValue + latenessMs then Int64.MinValue
-                    else maxSeen - latenessMs
-            // Watermarks must be monotone non-decreasing.
-            if candidate > lastEmitted then lastEmitted <- candidate
-            lastEmitted)
+        let observedMax = publishMax &maxSeen eventTime
+        publishMax &lastEmitted (candidateFor observedMax)
 
-    member _.Current = lock lockObj (fun () -> lastEmitted)
-    member _.MaxObserved = lock lockObj (fun () -> maxSeen)
+    member _.Current = Volatile.Read &lastEmitted
+    member _.MaxObserved = Volatile.Read &maxSeen
 
 
 /// Predicate: is `eventTime` late according to the current watermark?

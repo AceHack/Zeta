@@ -30,22 +30,20 @@ type SpineAsync<'K when 'K : comparison>() =
     let cts = new CancellationTokenSource()
 
     let worker : Task =
-        Task.Run(fun () ->
-            let reader = inbox.Reader
-            try
-                let mutable item = Unchecked.defaultof<ZSet<'K>>
-                while not cts.IsCancellationRequested do
-                    // Block synchronously on the channel reader using
-                    // `WaitToReadAsync` awaited via `.GetAwaiter().GetResult()`.
-                    // Acceptable because the worker task has no other work.
-                    let ready =
-                        try reader.WaitToReadAsync(cts.Token).AsTask().Result
-                        with :? AggregateException -> false
-                    if ready then
-                        while reader.TryRead &item do
-                            lock spineLock (fun () -> spine.Insert item)
-                            Interlocked.Increment &processed |> ignore
-            with :? OperationCanceledException -> ())
+        Task.Run(Func<Task>(fun () ->
+            task {
+                let reader = inbox.Reader
+                try
+                    let mutable item = Unchecked.defaultof<ZSet<'K>>
+                    while not cts.IsCancellationRequested do
+                        let! ready = reader.WaitToReadAsync(cts.Token).AsTask()
+                        if ready then
+                            while reader.TryRead &item do
+                                lock spineLock (fun () -> spine.Insert item)
+                                Interlocked.Increment &processed |> ignore
+                with :? OperationCanceledException ->
+                    ()
+            }))
 
     /// Enqueue a batch for background merging. TryWrite MUST precede the
     /// `sent` increment — otherwise `Flush()` can observe `sent = N+1`

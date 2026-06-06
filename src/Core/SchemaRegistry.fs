@@ -95,7 +95,8 @@ module SchemaRegistry =
             match getI "from", getI "to", Map.tryFind "ops" m with
             | Some f, Some t, Some (DynamicValue.Array ops) ->
                 ops
-                |> List.fold (fun acc o -> acc |> Result.bind (fun xs -> opOfDynamic o |> Result.map (fun x -> xs @ [ x ]))) (Ok [])
+                |> List.fold (fun acc o -> acc |> Result.bind (fun xs -> opOfDynamic o |> Result.map (fun x -> x :: xs))) (Ok [])
+                |> Result.map List.rev
                 |> Result.map (fun parsed -> { From = f; To = t; Ops = parsed })
             | _ -> Error "malformed migration"
         | _ -> Error "migration must be an object"
@@ -112,7 +113,8 @@ module SchemaRegistry =
                         match v with
                         | DynamicValue.Array migs ->
                             migs
-                            |> List.fold (fun a m -> a |> Result.bind (fun xs -> migOfDynamic m |> Result.map (fun x -> xs @ [ x ]))) (Ok [])
+                            |> List.fold (fun a m -> a |> Result.bind (fun xs -> migOfDynamic m |> Result.map (fun x -> x :: xs))) (Ok [])
+                            |> Result.map List.rev
                             |> Result.map (fun parsed -> { Schemas = Map.add id parsed reg.Schemas })
                         | _ -> Error(sprintf "schema '%s' must map to an array of migrations" id)))
                 (Ok empty)
