@@ -199,6 +199,14 @@ deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural sou
   / Kubernetes controller reconcile loop; the compensation half is the **Saga pattern** (Garcia-
   Molina & Salem, SIGMOD 1987). DurableSaga = operator (reconcile) ⊕ saga (compensate) on the
   Z-set substrate.
+- **GitOps falls out for free — "everything declarative" (the long game; maintainer 2026-06-06).**
+  Because the DB *is* git (§4c git-native backend; Zeta-as-git-server), a **commit = a command**, so
+  a **declarative desired-state change pushed to git triggers the saga to reconcile** actual→desired
+  — exactly the GitOps level-triggered model (Flux/ArgoCD), but *native* rather than bolted on (the
+  desired-state store and the database are the same git). The endgame: everything is declared as
+  desired state in git; sagas (operators) reconcile and compensate; the edge-triggered delta log and
+  the level-triggered git-desired-state are two views of one substrate. Anchor: **GitOps**
+  (Weaveworks/Flux, 2017; ArgoCD); declarative reconciliation.
 
 ## 6. The hard problems (research-grade — name them honestly)
 
