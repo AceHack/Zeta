@@ -209,6 +209,20 @@ source — so a self-unfolding substrate could hide something in the unfolder/se
 are inspectable data (Bonsai-style), reproducibly built, and scrutinized, not trusted by fiat. Self-
 hosting buys independence from the host; it does not buy a pass on auditability.
 
+**The host is stored IN the YinYang/saga engine — which resolves the auditability concern
+(maintainer, 2026-06-06).** The complete bootstrap unit is **(128-bit seed + an interpreting host)**;
+the seed is inert alone, the host supplies the interpretation, and the seed's *first act under a host*
+is to self-bootstrap because the host knows how to read it (DNA + ribosome — neither alone is life;
+together they unfold). Most of the information lives in the **host**, not the 128-bit seed — so the
+honest claim is "*the seed* is 128 bits," not "*the system* is 128 bits," and the **host is the
+trust-critical surface** (Trusting-Trust: audit the interpreter, not the tiny seed). The resolution:
+**store the host (the unfolder) IN the YinYang / saga engine** — so the interpreter is itself a
+`YinYang.Cell` / `Bonsai.Expr` = **inspectable data**, which (a) makes it portable — easy to
+implement against in any compiler/host — and (b) puts the trust-critical surface squarely inside the
+inspect-before-execute boundary (§5b) *by construction*. The host stops being opaque trusted code and
+becomes auditable, reproducible, self-describing data — exactly where the Trusting-Trust discipline
+needs it.
+
 **Host progression — descending toward the metal (maintainer, 2026-06-06).** The bootstrap host
 lowers over time: managed **4-lang (F#/TS/C#/Rust)** now → eventually **ASM / CUDA / FPGA**-like
 hosts → **GPGPU / shader**-like hosts. The unfolder must therefore be a portable PROVEN primitive:
