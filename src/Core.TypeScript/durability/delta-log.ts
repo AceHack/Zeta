@@ -1,4 +1,4 @@
-import { ZSet } from "../z-set/z-set";
+import type { ZSet } from "../z-set/z-set";
 
 /**
  * One entry in the delta log — the durable record of a committed input Z-set delta

@@ -1,5 +1,5 @@
-import { Tagged, canonicalCbor, fromCanonicalCbor } from "../dynamic-value/cbor";
-import { Compare, ofEntries, ZSet } from "../z-set/z-set";
+import { type Tagged, canonicalCbor, fromCanonicalCbor } from "../dynamic-value/cbor";
+import { type Compare, ofEntries, type ZSet } from "../z-set/z-set";
 
 /**
  * Pluggable serialization seam for the durable delta log. Encodes a
@@ -55,11 +55,14 @@ export function ofDynamicValue<K>(
  * then rides Tagged's golden-vector-locked CBOR.
  */
 export class CborDeltaCodec<K> implements IDeltaCodec<K> {
-  constructor(
-    private readonly compare: Compare<K>,
-    private readonly keyEnc: (k: K) => Tagged,
-    private readonly keyDec: (t: Tagged) => K
-  ) {}
+  private readonly compare: Compare<K>;
+  private readonly keyEnc: (k: K) => Tagged;
+  private readonly keyDec: (t: Tagged) => K;
+  constructor(compare: Compare<K>, keyEnc: (k: K) => Tagged, keyDec: (t: Tagged) => K) {
+    this.compare = compare;
+    this.keyEnc = keyEnc;
+    this.keyDec = keyDec;
+  }
 
   encode(z: ZSet<K>): number[] {
     const dv = toDynamicValue(this.keyEnc, z);

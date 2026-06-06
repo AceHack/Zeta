@@ -1,6 +1,6 @@
-import { Compare, union, ZSet, empty } from "../z-set/z-set";
-import { IDeltaLog, DeltaLogEntry } from "./delta-log";
-import { ISnapshotStore, SnapshotPointer } from "./snapshot-store";
+import { type Compare, union, type ZSet, empty } from "../z-set/z-set";
+import type { IDeltaLog } from "./delta-log";
+import type { ISnapshotStore, SnapshotPointer } from "./snapshot-store";
 
 /**
  * RecoverableSpine — ties an input IDeltaLog together with cadenced
@@ -12,14 +12,20 @@ export class RecoverableSpine<K> {
   private cadence = 0;
   private commitsSinceSnapshot = 0;
   private latestSnapshotPointer: SnapshotPointer | null = null;
+  private readonly compare: Compare<K>;
+  private readonly log: IDeltaLog<K>;
+  private readonly snap: ISnapshotStore<K>;
 
   constructor(
-    private readonly compare: Compare<K>,
-    private readonly log: IDeltaLog<K>,
-    private readonly snap: ISnapshotStore<K>,
+    compare: Compare<K>,
+    log: IDeltaLog<K>,
+    snap: ISnapshotStore<K>,
     initialState: ZSet<K>,
     initialSeq: number
   ) {
+    this.compare = compare;
+    this.log = log;
+    this.snap = snap;
     this.state = initialState;
     this.appliedSeq = initialSeq;
   }

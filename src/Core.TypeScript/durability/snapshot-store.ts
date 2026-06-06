@@ -1,4 +1,4 @@
-import { ZSet } from "../z-set/z-set";
+import type { ZSet } from "../z-set/z-set";
 
 /**
  * A durable pointer to a snapshot: the store handle + the delta-log sequence the snapshot covers.
