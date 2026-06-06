@@ -24,7 +24,7 @@ crash-consistent and git-native-friendly, but slow on the hot append path
 IDeltaLog seam:
 
 - **Single append-only segment file**; one open fd; append in place.
-- **Per-record framing: [len][crc32c][capturedJson][deltaBytes]** (reuse the
+- **Per-record framing:** `[len][crc32c][capturedJson][deltaBytes]` (reuse the
   existing Crc32c primitive). On recovery, scan the segment; a torn TRAILING
   record (crash mid-append) is detected by a short read or bad CRC → truncate it
   (single-writer ⇒ only the last record can be partial). A bad CRC mid-stream =

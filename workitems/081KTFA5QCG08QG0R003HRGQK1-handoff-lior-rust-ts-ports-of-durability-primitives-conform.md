@@ -22,12 +22,15 @@ Port the durability primitives to **Rust and TypeScript** (the remaining two of 
 4-lang leg toward PROVEN). Otto owns F#; Vera takes C#; you take Rust + TS.
 
 ### Scope
+
 Port `DeltaLog` (append-only input-delta log) + `DeltaCodec` (CBOR via the
 DynamicValue mapping) + recovery (snapshot + tail replay) to:
+
 - `src/Core.Rust.*` (Rust)
 - `src/Core.TypeScript/*` (TS)
 
 ### The hard constraint — conform to the byte-lock treaty
+
 `src/Core/golden-vectors-deltacodec.json` is the treaty. Your CBOR encoder MUST
 reproduce those exact hex bytes (empty=80, single=81820101, multi=82820101820203,
 retraction=82820521820701) and decode them back to the same Z-set. Add the same
@@ -35,6 +38,7 @@ golden-vector test in each language (mirror the F# test in DeltaCodec.Tests.fs).
 Culture-invariant / ordinal key order (ZSet canonical ascending).
 
 ### Pointers
+
 - Treaty: `src/Core/golden-vectors-deltacodec.json` (+ existing `golden-vectors-cbor.json`
   for the DynamicValue CBOR base your encoder builds on).
 - F# reference impls: `src/Core/DeltaLog.fs`, `DeltaCodec.fs`, `RecoverableSpine.fs`, `SnapshotStore.fs`.

@@ -40,6 +40,7 @@ conforming to the **byte-lock treaty** `src/Core/golden-vectors-deltacodec.json`
 (your CBOR output MUST match the hex exactly). Cross-oracle differential fuzz vs F#.
 
 ### Pointers
+
 - Design: `docs/research/2026-06-06-zeta-relativistic-agent-database-vision.md` (§5b/§5c/§6) +
   `docs/research/2026-06-06-durability-tiers-and-per-stream-group-persistence-policy.md`.
 - PROVEN plan: workitem `081KTF9T0ER`. Group-commit also tracked in `081KTF48J3V` (inc 4).
