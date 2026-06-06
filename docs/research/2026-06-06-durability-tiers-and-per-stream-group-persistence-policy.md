@@ -179,6 +179,30 @@ and swap in the byte-verified canonical codec without touching the log/recovery 
 the "don't rush, get it right" path: ship the mechanism, then upgrade the format under a stable
 contract.
 
+### Naledi (perf-engineer) findings, 2026-06-06 (code-read; no benchmark on file yet)
+
+- **No codec benchmark exists** — `bench/Benchmarks/` has zero coverage of CBOR / canonical-JSON
+  / `Checkpoint.toBytes`. **Add `SerializationBench.fs` (`[MemoryDiagnoser]`, ZSet fixture at
+  16/256/4096 entries) BEFORE locking the seam.** Measurement-led.
+- **Codec locations:** Checkpoint JSON = `Transaction.fs:151` (triple-copy + reflection
+  `System.Text.Json`); canonical JSON = `DynamicValue.fs:438`; canonical CBOR = `DynamicValue.fs:496`
+  (decode `:611`).
+- **Code-read ranking:** CBOR fastest + least-alloc on encode (single-pass `List<byte>`);
+  canonical-JSON slowest/most-alloc (per-level string-list fold + `String.concat` + UTF-16→UTF-8);
+  Checkpoint-JSON in between, reflection-taxed.
+- **⚠ Text codec is INCOMPLETE:** canonical JSON defers `Float` and `Bytes` (6/8 shapes,
+  `DynamicValue.fs:450/452`). If delta batches carry floats or byte payloads, the text/git-native
+  tier needs the tagged-JSON extension first. **CBOR is complete (8/8).** → confirm batch shape.
+- **⚠ CBOR decode has a hidden ~2× cost:** `fromCanonicalCbor` re-runs the encoder for a
+  canonicality fixed-point check (`DynamicValue.fs:752`). Add a `trustCanonical` fast-path that
+  skips the re-encode for our *own* log (we produced it canonically) → ~2× restore throughput.
+- **Highest-leverage pre-seam perf:** (1) emit **directly from `ZSet.AsSpan()` to an
+  `IBufferWriter<byte>`**, never materializing an intermediate `DynamicValue` tree; (2) pooled
+  output buffer (`ArrayPool`); (3) `writeText` direct UTF-8 into the writer. Don't lock the seam
+  on the current `ToArray()`/string-list shape.
+- **Recommendation:** text/audit tier → canonical JSON (after Float/Bytes extension); hot tier →
+  canonical CBOR (with `trustCanonical`). Benchmark first, then optimize, then lock.
+
 ## Anchors (Beacon)
 
 - DBSP: Budiu et al., *DBSP: Automatic Incremental View Maintenance*, VLDB 2023.
