@@ -241,6 +241,21 @@ deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural sou
    causality." Decision: define causal correctness **within a bus**; the git commit DAG is exact
    causality *for what you fetched*; accept (and document) causal gaps across buses you don't
    subscribe to.
+4. **Observation log as a compressible generator; irreducible = Bayesian surprise (long game;
+   maintainer 2026-06-06).** The "persist inputs" log need not store observations *literally*: it
+   compresses to **(generator function + seed + irreducible residual)**. A learned/Bayesian
+   generative model predicts the next observation; you store only the **residual** (the correction
+   from prediction to truth) — predictable history costs ~0 bits, and what remains is exactly the
+   information-theoretic **surprise** (entropy of the residual under the model). **Lossless for DST
+   replay** because the residual exactly reconstructs the observation (predictive / arithmetic
+   coding). The deep unification: our **DST seeded data-generators and the production observation
+   log become the same thing** — both are generator+seed+residual; "we can accurately generate
+   history with a certain (bounded) uncertainty." The irreducible core is the Bayesian uncertainty,
+   first-class (SoftValue/BeliefConvergence). Anchors: **Kolmogorov complexity / Solomonoff
+   induction** (shortest generator), **MDL** (Rissanen 1978 — model that minimizes model+data|model),
+   **predictive/arithmetic coding**, **predictive coding** (brain as prediction-error minimizer).
+   Sequencing: v1 stores the literal delta log (built); this is an OPTIONAL compression layer ON the
+   log tier, MUST stay lossless. Workitem R4.
 
 ## 7. Serialization & perf (see companion doc §9; Naledi engaged)
 
