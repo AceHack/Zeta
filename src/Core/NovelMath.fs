@@ -169,8 +169,12 @@ type HyperMinHash(logBuckets: int) =
         let bucket = int (hash >>> (64 - logBuckets))
         let rest = (hash <<< logBuckets) ||| (1UL <<< (logBuckets - 1))
         let rank = min 63 (System.Numerics.BitOperations.LeadingZeroCount rest + 1)
-        // Truncated 24-bit min-hash portion derived from `rest`.
-        let minHashBits = uint32 (rest &&& 0xFFFFFFUL)
+        // Truncated 24-bit min-hash portion. Derived from the ORIGINAL hash's LOW bits (not `rest`):
+        // `rest` shifts the low logBuckets bits to zero (+ a constant set bit), so `rest & 0xFFFFFF`
+        // loses logBuckets bits of entropy → min-hash collisions inflate Jaccard. The bucket uses the
+        // HIGH bits (`hash >>> 64-logBuckets`), so the low 24 bits of `hash` are statistically
+        // independent of the bucket and preserve the full 24 bits (Lior audit 2026-06-06).
+        let minHashBits = uint32 (hash &&& 0xFFFFFFUL)
         let packed = (uint32 rank <<< 24) ||| minHashBits
         if packed > slots.[bucket] then slots.[bucket] <- packed
 
@@ -218,17 +222,22 @@ type HyperMinHash(logBuckets: int) =
             invalidArg (nameof b) "logBuckets mismatch"
         let slotsA : uint32 array = a.Slots
         let slotsB : uint32 array = b.Slots
+        // Denominator = the UNION of occupied buckets (at least one sketch non-zero), NOT the
+        // intersection. The old `va<>0 && vb<>0` counted Jaccard CONDITIONAL on a bucket being occupied
+        // in BOTH — which massively overestimates (small overlap → tiny both-occupied set, almost all of
+        // which match). Union denominator is the true Jaccard estimator (Lior audit 2026-06-06: error
+        // 600% → <2.6%). A bucket "agrees" only when both are occupied and their min-hashes match.
         let mutable agree = 0
-        let mutable totalNonZero = 0
+        let mutable totalUnion = 0
         for i in 0 .. slotsA.Length - 1 do
             let va = slotsA.[i]
             let vb = slotsB.[i]
-            if va <> 0u && vb <> 0u then
-                totalNonZero <- totalNonZero + 1
-                if (va &&& 0xFFFFFFu) = (vb &&& 0xFFFFFFu) then
+            if va <> 0u || vb <> 0u then
+                totalUnion <- totalUnion + 1
+                if va <> 0u && vb <> 0u && (va &&& 0xFFFFFFu) = (vb &&& 0xFFFFFFu) then
                     agree <- agree + 1
-        if totalNonZero = 0 then 0.0
-        else double agree / double totalNonZero
+        if totalUnion = 0 then 0.0
+        else double agree / double totalUnion
 
     member _.LogBuckets = logBuckets
     member internal _.Slots = slots

@@ -42,9 +42,12 @@ let ``HyperMinHash Union merges sketches correctly`` () =
     let b = HyperMinHash 14
     for i in 1 .. 1000 do a.Add i
     for i in 800 .. 1800 do b.Add i
+    // TRUE Jaccard = |{800..1000}| / |{1..1800}| = 201/1800 ≈ 0.112. (The OLD assertion 0.70–0.90
+    // encoded the union-vs-intersection Jaccard BUG — Lior audit 2026-06-06: "0.84 for true 0.11".
+    // After the union-denominator + min-hash-entropy fixes, the estimate tracks the true ~0.11.)
     let jaccardBefore = HyperMinHash.Jaccard(a, b)
-    jaccardBefore |> should be (greaterThan 0.70)
-    jaccardBefore |> should be (lessThan 0.90)
+    jaccardBefore |> should be (greaterThan 0.05)
+    jaccardBefore |> should be (lessThan 0.20)
     a.Union b
     let est = a.Count()
     est |> should be (greaterThan 1500L)
