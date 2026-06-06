@@ -106,6 +106,7 @@
     <Compile Include="ChaosEnv.fs" />
     <Compile Include="HigherOrder.fs" />
     <Compile Include="DiskSpine.fs" />
+    <Compile Include="DiskSpineAsync.fs" />
     <Compile Include="Durability.fs" />
     <Compile Include="Checkpoint.fs" />
     <Compile Include="Consensus.fs" />
