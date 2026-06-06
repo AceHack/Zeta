@@ -116,3 +116,38 @@ let ``end-to-end: snapshot+tail recovery survives a restart via the manifest`` (
             let recovered = RecoverableSpine<int>.RecoverAsync(mkLog (), mkSnap ()).Result
             recovered.Consolidate() |> should equal (live.Consolidate())
             recovered.AppliedSeq |> should equal 8L))
+
+
+[<Fact>]
+let ``orphan .tmp from a crashed append is ignored on recovery`` () =
+    withDir "ddl-orphan" (fun dir ->
+        (let log = DiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>()) :> IDeltaLog<int>
+         log.AppendAsync(ZSet.ofKeys [ 1 ], empty, ct).AsTask().Wait()
+         log.AppendAsync(ZSet.ofKeys [ 2 ], empty, ct).AsTask().Wait())
+        // Simulate a crash mid-append: a leftover, torn .delta.tmp.
+        File.WriteAllText(Path.Combine(dir, "00000000000000000003.delta.tmp"), "torn-garbage")
+        // Fresh instance: orphan ignored, history intact, sequence continues at 3.
+        let log2 = DiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>()) :> IDeltaLog<int>
+        log2.HighWater |> should equal 2L
+        log2.ReplayAsync(0L, ct).AsTask().Result.Length |> should equal 2
+        log2.AppendAsync(ZSet.ofKeys [ 3 ], empty, ct).AsTask().Result |> should equal 3L)
+
+
+[<Fact>]
+let ``recovery invariant holds over a long deterministic add/retract sequence`` () =
+    withDir "ddl-invariant" (fun dir ->
+        let snap = InMemorySnapshotStore<int>() :> ISnapshotStore<int>
+        // 200 deterministic ops: ~1/3 are retractions, keys cycle through 0..16.
+        let live =
+            let s = RecoverableSpine.create (DiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>()) :> IDeltaLog<int>) snap
+            for i in 1 .. 200 do
+                let key = i % 17
+                let z = if i % 3 = 0 then ZSet.neg (ZSet.ofKeys [ key ]) else ZSet.ofKeys [ key ]
+                s.CommitAsync(z).Wait()
+            s
+        // Recover from a FRESH disk log (full replay): recovered == live, exactly.
+        let recovered =
+            RecoverableSpine<int>.RecoverAsync(
+                DiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>()) :> IDeltaLog<int>, snap).Result
+        recovered.Consolidate() |> should equal (live.Consolidate())
+        recovered.AppliedSeq |> should equal 200L)

@@ -71,16 +71,24 @@ type DiskDeltaLog<'K when 'K : comparison>
         let deltaBytes = br.ReadBytes deltaLen
         captured, codec.Decode deltaBytes
 
+    // Atomic append: write to a `.delta.tmp` then rename to `.delta`. A crash
+    // mid-write leaves at most an orphan `.tmp` (ignored by the `*.delta` glob),
+    // never a partial/torn `.delta` entry — so recovery never sees a corrupt entry
+    // (crash-consistency by construction, like the snapshot store's temp+rename).
     let writeFileAsync (path: string) (bytes: byte[]) (ct: CancellationToken) : Task =
         task {
+            let tmp = path + ".tmp"
             let opts =
                 if fsync then FileOptions.Asynchronous ||| FileOptions.WriteThrough
                 else FileOptions.Asynchronous
-            use fs = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None, 4096, opts)
-            do! fs.WriteAsync(ReadOnlyMemory bytes, ct).AsTask()
-            do! fs.FlushAsync ct
-            if fsync then fs.Flush(flushToDisk = true)
-            if fsync then FileSync.fsyncDir root   // durably commit the new dir entry
+            do! (task {
+                    use fs = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None, 4096, opts)
+                    do! fs.WriteAsync(ReadOnlyMemory bytes, ct).AsTask()
+                    do! fs.FlushAsync ct
+                    if fsync then fs.Flush(flushToDisk = true)
+                 } : Task)
+            File.Move(tmp, path, overwrite = true)   // atomic publish of the complete entry
+            if fsync then FileSync.fsyncDir root      // durably commit the new dir entry
         }
         :> Task
 
