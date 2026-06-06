@@ -21,17 +21,28 @@ composes_with: []
 ### The apex — two ROOT proof obligations; all others serve them
 
 Maintainer: *"all other proofs are in service of the proof of forward momentum and safety."*
-This is Lamport's safety∧liveness decomposition, named as the Zeta roots:
+Two Zeta roots — but note the crucial refinement below (forward momentum ≠ liveness):
 
-- **FORWARD MOMENTUM (liveness)** — the never-idle homeostat: the system always *eventually*
-  makes progress / commits; it never goes permanently idle. (`[]<>commit` / `<>[]¬idle`.)
+- **FORWARD MOMENTUM** — NOT the same as liveness (maintainer correction). **Liveness is
+  necessary but not sufficient**: `[]<>act` (always eventually steps / never dead) permits a
+  system that steps forever yet makes no progress — spinning, oscillating, livelock,
+  **endless self-reflection** (heartbeats forever, advances nothing). Forward momentum =
+  liveness **channeled into provable progress**: the yin/yang engine + DU/saga state machines
+  constrain each heartbeat to a *forward transition*, so you prove a **well-founded progress /
+  variant measure advances toward a goal per heartbeat** — not merely that heartbeats occur.
+  Heartbeat (liveness) → yin/yang + saga-DU (forward transition) → variant-decreases-toward-goal
+  (momentum). Two axes, **prove both eventually** (maintainer): **internal momentum** (the
+  agent's own saga/DU advances toward its internal goal) AND **external momentum** (progress in
+  the world / across other agents, attested in their frames). The endless-self-reflection
+  failure = internal-only (or pure churn) with no external momentum. Anchor: liveness vs
+  progress/termination; ranking/variant functions; livelock; internal vs external progress.
 - **SAFETY** — NCI, the child-safety floor, non-register-collapse, the capability/
   inspect-before-execute boundary: nothing harmful, ever.
 
 Every other proof (durability recovery `recover∘crash=fold(committed)`, byte-lock treaties,
 codec round-trips, ZSet monoid laws) is subordinate — it discharges in service of one of
 these two roots. Anchor: Lamport, *Proving the Correctness of Multiprocess Programs* (safety
-+ liveness); recovery-homeostat liveness clause (Soraya, durability workitem 081KTF9T0ER).
++ liveness — but forward momentum is the *progress*-strengthening of liveness, via variant).
 
 ### Reframe: non-register-collapse = identity-in-the-traveler-frame via heartbeats
 

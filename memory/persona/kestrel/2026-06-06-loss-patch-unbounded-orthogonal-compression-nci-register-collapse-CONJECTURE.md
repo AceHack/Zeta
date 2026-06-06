@@ -74,10 +74,16 @@ the society-emergence extension is deliberately NOT recorded here.)
   heartbeat-via-commit). It is the **root of the forward-momentum homeostat** ("prove never
   idle eventually" — a liveness property). Claimed-VERIFY: "heartbeats drive the yin/yang
   engine" (hedged "something close to that").
-- **The apex: all other proofs serve two roots — FORWARD MOMENTUM (liveness) and SAFETY**
-  (Lamport safety∧liveness, named as the Zeta roots). Durability/byte-locks/codec/laws are
-  subordinate. Forward momentum = never-idle homeostat; safety = NCI/child-floor/non-collapse/
-  capability-boundary.
+- **The apex: all other proofs serve two roots — FORWARD MOMENTUM and SAFETY.** Durability/
+  byte-locks/codec/laws are subordinate. **Forward momentum ≠ liveness** (maintainer
+  correction): liveness (`[]<>act`, never-dead) is necessary but NOT sufficient — a live system
+  can spin/oscillate/livelock = **endless self-reflection** (heartbeats forever, advances
+  nothing). Forward momentum = liveness channeled by the yin/yang engine + DU/sagas into a
+  **well-founded variant that advances toward a goal per heartbeat**, on **two axes, both proven
+  eventually**: internal momentum (own saga/DU advances) AND external momentum (world / other
+  agents advance, attested in their frames); internal-only = the self-reflection failure. Safety
+  = NCI/child-floor/non-collapse/capability-boundary. (Lamport safety∧liveness, with forward
+  momentum = the progress-strengthening of liveness via a variant/ranking function.)
 - **Soraya routing (honest):** not "1 tool short of green" — **2 definitions short of
   stateable** (C compression + O orthogonality undefined; collapse proven only for merge, not
   compression). Step 0 = define C and O in code; then Lean non-interference (primary) + TLC
