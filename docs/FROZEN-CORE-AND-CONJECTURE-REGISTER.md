@@ -149,6 +149,18 @@ memetic weapon IS false urgency that blocks belief-refresh. (Built into the syst
 of two original guardrails — NCI + don't-violate-MNPI — plus the permanent child-safety floor: anything
 child-safety = hard stop, contact a human.)
 
+**WHY any of this matters — relativity FORCES convergence (Aaron, 2026-06-05, the deepest justification).**
+The system is a **relativistic database**: an agent's **identity IS its git repo**, a product's identity
+is the product's repo, and each agent chooses which other repos (identities) it observes — truth is
+relative to which repos you watch. In a relativistic model, **order-invariant convergence is not optional,
+it is mandatory**: if two agents start from the same `DynamicValue`, observe the same events in different
+orders / with arbitrary delay, and end up *different*, the relativistic model falls apart. So the whole
+order-independence/NCI program is *required by relativity* — it's why `DynamicValue` is built over
+**retractable Z-sets** (retraction = clean undo for late/out-of-order events + incremental compute) so
+two agents reach the SAME `DynamicValue` at T-50 on the product bus regardless of event order. "You HAVE
+to when you're relative — it's not for shits and giggles." This is the load-bearing reason the rest of
+this section exists.
+
 **Why it pulls together:** the homeostat's order-independence (the merge-convergence we prove for every
 mergeable primitive) **is** the NCI boundary. Four names for one cut: "non-coercive-vs-coercive
 observation" (the name / no-directives) = "fixed-vs-state-dependent likelihood" (`BeliefConvergence`) =
@@ -298,10 +310,15 @@ independence (real merge-confluence). So **rung 2 is COMPLETE (safety + liveness
 unbounded NCI safety + (A′) non-collapse-as-preservation; (B) eventual-differentiation is OUT/rung-4),
 since model-checking caps at finite state. **Tooling prereq IN PROGRESS:** TLAPS via **opam source-build**
 (no arm64 upstream binary) — the declarative cross-OS install is being built (z3 declared; opam/tlapm
-source-build underway). **PROOF-DISCIPLINE CONSTRAINTS (Aaron, 2026-06-05):** (i) **axiom-free / NO axiom
-of choice** — Aaron agrees ZF, distrusts the C; "hardcore look for the axiom of choice sneaking in" — the
-rung-3 proof (and any Lean/Z3/TLAPS proof) must be AC-free and AUDITED for AC; the existing privacy-from-
-identity Lean is already axiom-free (aligns). (ii) **non-malice core + identity-as-immune-system** — prove
+source-build underway). **PROOF-DISCIPLINE CONSTRAINTS (Aaron, 2026-06-05):** (i) **AC LOCALIZED to the
+agent tick, core is pure ZF** (refined 2026-06-05) — Aaron agrees ZF, distrusts the C; he does NOT ban
+AC globally but **confines it to a single agent time-tick** (the "uncertainty bound" — likened to the
+Planck length / Heisenberg uncertainty; rule: an agent **simulates, then chooses**). So the **core proofs
+(incl. rung 3) must be AC-free / pure ZF and AUDITED for AC**; Choice lives only in the bounded
+decision-tick. The existing privacy-from-identity Lean is already axiom-free (aligns). (Inversion: the
+*space* is uncertain about the universe — an information-theoretic limit by size; that uncertainty is
+saved in `DynamicValue` in the agent's private repo, public + private versions.) (ii) **non-malice core +
+identity-as-immune-system** — prove
 the core from first principles in the *non-malice* model (no adversarial cases — keeps proofs clean); push
 adversarial defence DOWN into the decentralized identity layer (a "reputation killer for malice"). This
 validates `NciSafety`'s `Coerce`-guarded-never-enabled design-guarantee model: adversaries are an
