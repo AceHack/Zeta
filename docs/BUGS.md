@@ -34,16 +34,6 @@ tempted to ship.
 
 ## P0 — ship-blockers
 
-### gate windows-2025 red — DynamicValue canonical codec StackOverflow on deep nesting
-
-- **Site:** `src/Core/DynamicValue.fs` — encoder `toCanonicalJson` (`let rec`, ~L417; recurses per level in `Array`/`Object` via `List.fold`+`Result.bind`, ~L428/L436) and decoder `readValue`/`readArray`/`readObject` (`let rec … and …`, ~L870–960; recurses per nesting level). The XML codec has the parallel shape. Exercised by `tests/Tests.FSharp/Fuzz.DecodeBoundary.Tests.fs` (depth-2000 JSON+XML deep-nesting Facts + the decode∘encode∘decode property). **Amplifier:** `fromCanonicalJson`'s canonicity check re-encodes the decoded value (`toCanonicalJson decoded = input`), so a deep *decode* also walks the deep *encode* recursion.
-- **Found:** 2026-06-06 by Otto (CI triage; gate went red at `92b04d498`, green at `b40a097a5`).
-- **Severity:** P0 (gate-red — blocks main).
-- **Symptom:** `build-and-test (windows-2025)` ONLY (all 5 other platforms incl. windows-11-arm + both ubuntu + macos pass) crashes the test runner with `Xunit.Sdk.TestPipelineException` / `VSTestTask returned false but did not log an error`. Root cause: the canonical codec recurses per nesting level with no depth guard; deep nesting overflows the tighter windows-x64 threadpool (`Task.Run`, ~1 MB) stack, and a `StackOverflowException` is unhandleable in .NET → it kills the process mid-assembly (598 passed, then FATAL). Deterministic on windows-x64.
-- **Fix LANDED 2026-06-06 (awaiting windows-x64 CI confirm):** added a dedicated `NestingTooDeep` case to `EncodeError` + `DecodeError`, mirrored across all four languages (F#/C#/Rust/TS), and a recursion-depth guard (fixed internal bound `maxNestingDepth = 256`, well above any real value) to the **JSON + XML encode + decode** paths in every language. Past the bound the codec returns `Error NestingTooDeep` as data (Result-over-exception), never overflows. Ilyana (public-api-designer) reviewed + approved the surface (named the case, fixed-internal bound, no reuse). Boundary contract test added (depth 256 → Ok, 257 → `NestingTooDeep`). Validated locally across all 4 langs (F# 95, C# 94, Rust all, TS 170 + full-solution build clean); CI windows-x64 is the final confirmation the SOF is gone. **This entry is deleted once that gate run is green.**
-- **Fast-follow (filed separately):** the CBOR + Arrow codecs and the TS string-returning `canonicalJson`/`canonicalXml` encoders lack an `Error` channel (return `byte[]`/`string`), so guarding them needs a return-type change — deferred (no failing test, separate API decision). Also pending: boundary tests in C#/Rust/TS, Rust `#[non_exhaustive]` on the error enums, and the TS per-codec `DecodeError` fragmentation (Ilyana flags). See the fast-follow workitem.
-- **Who:** Otto (shadow) implemented + Ilyana reviewed. Fast-follow → DynamicValue owner / Kenji.
-
 ### Expert/skill split half-done — onboarding confusion
 
 - **Site:** `.claude/agents/` vs `.claude/skills/` vs `docs/EXPERT-REGISTRY.md`
