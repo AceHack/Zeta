@@ -1,0 +1,121 @@
+# Durability tiers + per-stream-group persistence policy (research → design)
+
+**Date:** 2026-06-06 · **Author:** Otto · **Status:** proposal (decisions open — see §7)
+**Drivers:** maintainer ("really fast and safe"; "VoltDB persistence mode … per table
+types or table groups (stream types/groups)") + Vera ("real async durable backing store,
+explicit durability modes") .
+
+## 1. The decisive insight (Beacon)
+
+Every deterministic single-threaded engine keeps durability **uniform** to keep recovery
+provable: FoundationDB (one TLog tier; SIGMOD 2021), TigerBeetle (one VSR log), VoltDB
+(one command log; VLDB 2008 / ICDE 2014). They pay that price *on purpose*.
+
+A **DBSP / Z-set incremental-dataflow** core has an escape they lack. Operators are
+**deterministic pure functions of their input deltas** (Budiu et al., DBSP, VLDB 2023).
+Therefore **derived relations are regenerable**: you do not persist them — you *recompute*
+them on recovery by replaying the input deltas through the dataflow. This is VoltDB's
+command-logging trick (log the *command*, not the *data*; log volume ∝ transaction count,
+not write volume — Malviya/Stonebraker, *Rethinking Main Memory OLTP Recovery*, ICDE 2014)
+made strictly stronger, because incremental view maintenance re-derives every downstream
+view automatically.
+
+**Persist the irreducible inputs + cadenced snapshots. Recompute the rest.**
+
+## 2. Three durability tiers (attached at registration)
+
+Prior-art models for per-object policy: (a) policy-at-registration (Postgres `UNLOGGED`,
+Kafka topic config), (b) policy *groups/tiers* relations join (Kafka config templates;
+DV2.0 hub/satellite by change-rate), (c) per-write override flags (RocksDB
+`WriteOptions.disableWAL`). Recommendation: **(b) a small fixed tier set, attached at
+registration (a); forbid (c) on the deterministic core** — per-write nondeterministic
+durability is exactly what breaks DST replay (the FDB/TigerBeetle/VoltDB lesson).
+
+| Tier | Who | Persistence | Recovery |
+|------|-----|-------------|----------|
+| **`durable`** | input relations + any relation NOT a pure function of durable inputs | command/delta log + snapshot (SlateDB-style CAS-manifest + writer-epoch fencing) | restore snapshot → replay tail deltas |
+| **`derived`** | relations that ARE deterministic functions of durable inputs (most operator state + materialized views) | **none** — regenerated | replay dataflow from last consistent checkpoint (FASTER-style epoch checkpoint as the time boundary) |
+| **`ephemeral`** | scratch / session state | none | discard-on-recovery, clean empty semantics (Postgres `UNLOGGED` truncate-on-recovery) |
+
+**Load-bearing invariant — durability is upward-closed over the dataflow DAG.** A relation's
+tier must be ≥ the max tier of every non-derivable input it depends on. Enforce at
+registration. This single rule eliminates the "recovered durable state references lost
+derived state" hazard.
+
+## 3. The durable-tier mechanism = command/delta log + snapshot ("VoltDB mode")
+
+1. **Delta log:** append committed input Z-set batches + logical clock + captured
+   non-determinism to a sequential log (one record per delta-batch).
+2. **Snapshot cadence:** flush an LSM-consistent spine checkpoint every N deltas / T seconds
+   (piggyback on memtable flushes); GC log segments older than the latest durable snapshot.
+3. **Recovery:** restore snapshot → replay tail deltas through the deterministic dataflow.
+
+Recovery cost = snapshot-load + (deltas-since-snapshot × execute). Snapshot cadence is the
+dial trading steady-state cost vs recovery time (the canonical command-log tradeoff).
+
+## 4. fsync policy is an ORTHOGONAL axis (already partly built)
+
+The fsync knob is independent of the tier. Three settings (Otto landed the disk path for
+these in `DiskAsyncBackingStore` / `createAsyncBackingStore`, 2026-06-06):
+- **async / OS-buffered** — fastest, bounded loss window.
+- **group-commit** — batch many delta-batches per fsync (VoltDB sync-with-batching); the
+  recommended default for `durable`.  *(not yet built)*
+- **fsync-per-save (synchronous)** — zero-loss, highest latency; reserve for HARD-LIMIT
+  durability. *(built: `StableStorage` async path, WriteThrough + Flush(true))*
+
+Honesty caveat carried forward: current fsync covers file data+metadata, **not** the parent
+directory — crash-consistent *creates* need a parent-dir fsync follow-up before claiming full
+buffered-durable-linearizability (Izraelevitz et al., DISC'16).
+
+## 5. Determinism capture (DST — manifesto §7, non-negotiable)
+
+Command/delta-log replay is only correct if replay is deterministic. Anything impure —
+wall-clock reads, RNG seeds, external I/O / non-deterministic operator inputs — **must be
+recorded into the log at execution time and re-fed on replay**. This is exactly the
+deterministic-simulation discipline already in `ChaosEnv.fs` / `VirtualTimeScheduler`. The
+order of concurrent delta sources must be fixed and logged.
+
+## 6. HA (later) = replicate the deterministic delta stream
+
+Because execution is deterministic, replicas independently re-execute the same ordered delta
+stream and stay bit-identical — **active-active state-machine replication**, no page shipping
+(VoltDB k-safety; TigerBeetle VSR). HA falls out of the same determinism for free; defer
+implementation but design the log so it can be mirrored to k+1 shard replicas.
+
+## 7. Open decisions (for the maintainer)
+
+1. **Adopt "persist inputs + recompute derived" as the PRIMARY architecture?** (vs. a
+   per-write WAL of spine mutations.) This is the big bet. Recommendation: yes.
+2. **Tiers vs free-form per-table policy?** Recommend a small fixed tier set
+   (`durable`/`derived`/`ephemeral`) relations join, not arbitrary per-table knobs.
+3. **Where does the tier attach?** Proposed: at relation/stream registration (a "stream
+   type/group" carries its tier) — matches the maintainer's per-stream-group intuition.
+4. **Auto-classify `derived`?** The dataflow graph *knows* which relations are pure functions
+   of inputs — we could derive the tier automatically and only require explicit tiers for
+   inputs/ephemeral. Recommendation: auto-classify, allow override upward.
+5. **Is per-stream-group VoltDB mode novel?** VoltDB itself has ONE global command log.
+   "Command log scoped per stream-group" is beyond VoltDB — promising but needs the
+   upward-closed invariant (§2) to stay sound across groups.
+6. **HA/replication in scope now or later?** Recommend: design the log for it, build later.
+
+## Anchors (Beacon)
+
+- DBSP: Budiu et al., *DBSP: Automatic Incremental View Maintenance*, VLDB 2023.
+- VoltDB/H-Store: Kallman et al., *H-Store*, VLDB 2008; Malviya et al., *Rethinking Main
+  Memory OLTP Recovery*, ICDE 2014; Harizopoulos et al., *OLTP Through the Looking Glass*,
+  SIGMOD 2008.
+- FoundationDB: Zhou et al., SIGMOD 2021 (unbundled, uniform durability, DST).
+- FASTER: Chandramouli et al., SIGMOD 2018 (hybrid log, epoch checkpoint).
+- Snapshots: Chandy & Lamport, *Distributed Snapshots*, TOCS 1985; Carbone et al.,
+  *Lightweight Asynchronous Snapshots* (Flink ABS), 2015.
+- SlateDB (writer epochs + CAS manifest); RocksDB column families + `disableWAL`; Kafka
+  per-topic durability tuple (`acks` × `min.insync.replicas`); Postgres `UNLOGGED` /
+  `synchronous_commit`; TigerBeetle VSR; Izraelevitz et al., DISC'16.
+
+## Related
+
+- `src/Core/Durability.fs` (tiers + factory), `src/Core/DiskSpineAsync.fs` (async + fsync),
+  `src/Core/Checkpoint.fs`, `src/Core/Sink.fs` (delivery), `openspec/specs/durability-modes/`,
+  `openspec/specs/lsm-spine-family/`.
+- WDC research preview (`B-0712`) is a separate, narrower durable-commit protocol; this note
+  is the broader tiering/recovery architecture it would slot into.
