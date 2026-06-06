@@ -195,6 +195,20 @@ So "all of Zeta from 128 bits" is exact for the *self-reproducing canonical kern
 point; the unfolder regenerates itself and the derivable system; the log carries the surprise. That
 keeps the dream both beautiful and information-theoretically honest.
 
+**Grounding: this is compiler bootstrapping / self-hosting (maintainer, 2026-06-06).** Not sci-fi —
+it's *"writing the C# compiler in C# after you've written it in C first."* We write the unfolder in
+a **host (F# = the "C" stage)**; then Zeta **self-hosts** (the "C#-in-C#" stage), and the host can
+fall away once the system reproduces itself. Standard practice (GCC/rustc bootstrap, T-diagrams),
+applied to the whole substrate rather than just a compiler. The `self-boot` skill is the manual
+version of the same move.
+
+**Security corollary — the bootstrap must be auditable (Thompson, *Reflections on Trusting Trust*,
+1984).** A self-reproducing compiler can carry a backdoor that survives recompilation from clean
+source — so a self-unfolding substrate could hide something in the unfolder/seed. Defense: the
+**capability/inspect-before-execute boundary (§5b) extends down to the seed and unfolder** — they
+are inspectable data (Bonsai-style), reproducibly built, and scrutinized, not trusted by fiat. Self-
+hosting buys independence from the host; it does not buy a pass on auditability.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
