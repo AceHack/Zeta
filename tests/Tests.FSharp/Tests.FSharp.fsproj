@@ -167,6 +167,7 @@
 
     <!-- Runtime/ -->
     <Compile Include="Runtime/Runtime.Tests.fs" />
+    <Compile Include="Runtime/FerryThrottler.Tests.fs" />
     <Compile Include="Runtime/Mailbox.Tests.fs" />
     <Compile Include="Runtime/Shard.Tests.fs" />
     <Compile Include="Runtime/ConsistentHash.Tests.fs" />
