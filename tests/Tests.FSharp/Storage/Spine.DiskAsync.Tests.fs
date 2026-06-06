@@ -117,3 +117,57 @@ let ``DiskAsyncBackingStore instances sharing a dir don't clobber each other`` (
         l2.[10] |> should equal 1L
     finally
         if Directory.Exists dir then Directory.Delete(dir, true)
+
+
+// ─── Async durability factory (DurabilityMode.createAsyncBackingStore) ───────
+
+[<Fact>]
+let ``createAsyncBackingStore InMemoryOnly roundtrips`` () =
+    let store =
+        DurabilityMode.createAsyncBackingStore<int>
+            DurabilityMode.InMemoryOnly "" "" 1024L
+    let h = store.SaveAsync(0, ZSet.ofKeys [ 1; 2; 3 ], Threading.CancellationToken.None).AsTask().Result
+    store.LoadAsync(h, Threading.CancellationToken.None).AsTask().Result |> should equal (ZSet.ofKeys [ 1; 2; 3 ])
+
+
+[<Fact>]
+let ``createAsyncBackingStore StableStorage fsyncs and roundtrips through disk`` () =
+    let tmp = DeterministicTestPath.nextDir "dbsp-stable-async"
+    try
+        // Tiny quota forces spill, so the fsync-per-save write path is exercised.
+        let store =
+            DurabilityMode.createAsyncBackingStore<int>
+                DurabilityMode.StableStorage tmp tmp 0L
+        let h = store.SaveAsync(0, ZSet.ofKeys [ 5; 6; 7 ], Threading.CancellationToken.None).AsTask().Result
+        // A spill file was written through to disk.
+        Directory.GetFiles(tmp, "spine-*.json").Length |> should be (greaterThan 0)
+        store.LoadAsync(h, Threading.CancellationToken.None).AsTask().Result |> should equal (ZSet.ofKeys [ 5; 6; 7 ])
+        store.ReleaseAsync(h, Threading.CancellationToken.None).AsTask().Wait()
+    finally
+        try Directory.Delete(tmp, recursive = true) with _ -> ()
+
+
+[<Fact>]
+let ``createAsyncBackingStore WitnessDurable without the flag is rejected`` () =
+    (fun () ->
+        DurabilityMode.createAsyncBackingStore<int>
+            DurabilityMode.WitnessDurable "wd" "wd" 1024L |> ignore)
+    |> should throw typeof<exn>
+
+
+[<Fact>]
+let ``BackedSpineAsync over a StableStorage store matches Spine`` () =
+    let tmp = DeterministicTestPath.nextDir "dbsp-stable-spine"
+    try
+        let store =
+            DurabilityMode.createAsyncBackingStore<int>
+                DurabilityMode.StableStorage tmp tmp 0L
+        let spine = BackedSpineAsync<int>(store)
+        let refSpine = Spine<int>()
+        for i in 1 .. 12 do
+            let b = ZSet.ofKeys [ i ; i + 50 ]
+            spine.InsertAsync(b).Wait()
+            refSpine.Insert b
+        spine.ConsolidateAsync().Result |> should equal (refSpine.Consolidate())
+    finally
+        try Directory.Delete(tmp, recursive = true) with _ -> ()

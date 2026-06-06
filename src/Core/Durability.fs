@@ -135,6 +135,44 @@ type WitnessDurableBackingStore<'K when 'K : comparison>
             ()
 
 
+/// Async sibling of `WitnessDurableBackingStore` — the WDC skeleton on the
+/// `IAsyncBackingStore` surface. `SaveAsync`/`LoadAsync` throw until the WDC
+/// protocol is specified + TLA+-proved; `ReleaseAsync` is a safe no-op.
+[<Sealed>]
+type WitnessDurableAsyncBackingStore<'K when 'K : comparison>
+    (workDir: string, witnessDir: string, nvmeAtomicWriteSize: int) =
+    do
+        if nvmeAtomicWriteSize <= 0 then
+            invalidArg (nameof nvmeAtomicWriteSize) "must be positive"
+        if nvmeAtomicWriteSize &&& (nvmeAtomicWriteSize - 1) <> 0 then
+            invalidArg (nameof nvmeAtomicWriteSize) "must be a power of 2"
+    let rootWorkDir = System.IO.Path.GetFullPath workDir
+    let rootWitnessDir = System.IO.Path.GetFullPath witnessDir
+    do
+        System.IO.Directory.CreateDirectory rootWorkDir |> ignore
+        System.IO.Directory.CreateDirectory rootWitnessDir |> ignore
+
+    member _.Mode : DurabilityMode = DurabilityMode.WitnessDurable
+    member _.WorkDir : string = rootWorkDir
+    member _.WitnessDir : string = rootWitnessDir
+    member _.WitnessPageSize : int = nvmeAtomicWriteSize
+
+    interface IAsyncBackingStore<'K> with
+        member _.SaveAsync(_level, _batch, _ct) =
+            raise (NotImplementedException(
+                "WitnessDurableAsyncBackingStore.SaveAsync is not yet implemented. \
+                 The WDC protocol is not specified; no TLA+ proof, no paper draft. \
+                 Use DurabilityMode.StableStorage (async: fsync-per-save) or \
+                 OsBuffered for now."))
+        member _.LoadAsync(_handle, _ct) =
+            raise (NotImplementedException(
+                "WitnessDurableAsyncBackingStore.LoadAsync: skeleton throws; no \
+                 witness recovery path implemented yet."))
+        member _.ReleaseAsync(_handle, _ct) =
+            // Release is idempotent on an empty store; safe to no-op.
+            System.Threading.Tasks.ValueTask.CompletedTask
+
+
 /// Pick the backing store that matches a declared `DurabilityMode`.
 /// Keeps callers declarative — they pick the mode, the factory picks
 /// the right implementation.
@@ -186,6 +224,39 @@ module DurabilityMode =
             // caller is responsible for measuring their device before
             // relying on this default once the protocol ships.
             upcast WitnessDurableBackingStore<'K>(workDir, witnessDir, 512)
+
+    /// Async sibling of `createBackingStore` — picks an `IAsyncBackingStore`
+    /// for the declared mode (genuine `File.*Async`, no `Task.Run` fakery).
+    ///
+    /// **`StableStorage` is honoured for real here**: unlike the sync
+    /// `createBackingStore` (which maps `StableStorage` → OS-buffered with an
+    /// honesty note), the async disk store supports fsync-per-save, so this
+    /// returns a genuinely write-through store. Caveat carried from
+    /// `DiskAsyncBackingStore`: data + file metadata are fsync'd, parent-dir
+    /// fsync (crash-consistent creates) is a documented follow-up.
+    let createAsyncBackingStore<'K when 'K : comparison>
+        (mode: DurabilityMode)
+        (workDir: string)
+        (witnessDir: string)
+        (inMemoryQuotaBytes: int64) : IAsyncBackingStore<'K> =
+        match mode with
+        | DurabilityMode.InMemoryOnly -> upcast InMemoryAsyncBackingStore<'K>()
+        | DurabilityMode.OsBuffered ->
+            upcast DiskAsyncBackingStore<'K>(workDir, inMemoryQuotaBytes, fsyncPerSave = false)
+        | DurabilityMode.StableStorage ->
+            // The async path CAN fsync per save — so StableStorage is real here,
+            // not aliased to OsBuffered. (See the factory doc comment for the
+            // parent-dir-fsync follow-up caveat.)
+            upcast DiskAsyncBackingStore<'K>(workDir, inMemoryQuotaBytes, fsyncPerSave = true)
+        | DurabilityMode.WitnessDurable ->
+            if not (FeatureFlags.isEnabled Flag.WitnessDurable) then
+                invalidOp
+                    "DurabilityMode.WitnessDurable is a research preview and \
+                     throws on every Save. Enable the WitnessDurable feature \
+                     flag (FeatureFlags.set, DBSP_FLAG_WITNESSDURABLE=1, or \
+                     DBSP_FLAG_RESEARCHPREVIEW=1) to obtain a store anyway, or \
+                     pick DurabilityMode.StableStorage for a usable fsync default."
+            upcast WitnessDurableAsyncBackingStore<'K>(workDir, witnessDir, 512)
 
     /// Honest advertised properties for each mode — useful for auditing
     /// a deployment's durability story against `docs/security/THREAT-MODEL.md`.

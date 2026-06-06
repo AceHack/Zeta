@@ -47,11 +47,42 @@ type InMemoryAsyncBackingStore<'K when 'K : comparison>() =
 /// quota, per-instance GUID prefix, path canonicalisation + traversal/ADS guards,
 /// and the same lock discipline (metadata under `hotLock`; **all I/O awaited
 /// OUTSIDE the lock**) — but the actual reads/writes are `File.*Async`.
+/// `fsyncPerSave` (default false) selects the durability mode:
+///   • false ⇒ **OS-buffered** — `File.WriteAllBytesAsync`; durable across a
+///     process crash, last ~sec lost on a host/kernel crash.
+///   • true  ⇒ **fsync-per-save** — the spill is written through to stable
+///     storage (`FileOptions.WriteThrough` + `Flush(flushToDisk=true)`) before
+///     `SaveAsync` completes. HONESTY CAVEAT: this fsyncs the file's data +
+///     metadata; it does NOT yet fsync the *parent directory*, so a brand-new
+///     file's directory entry could be lost on a crash between create and dir
+///     fsync. Parent-dir fsync is a documented follow-up before this is claimed
+///     as full buffered-durable-linearizability (Izraelevitz DISC'16).
 [<Sealed>]
 type DiskAsyncBackingStore<'K when 'K : comparison>
-    (workDir: string, inMemoryQuotaBytes: int64) =
+    (workDir: string, inMemoryQuotaBytes: int64, ?fsyncPerSave: bool) =
+    let fsync = defaultArg fsyncPerSave false
     let rootDir = Path.GetFullPath workDir
     do Directory.CreateDirectory rootDir |> ignore
+
+    /// Write bytes to `path`, forcing them through to stable storage when
+    /// `fsync` is set. Async throughout — no `Task.Run` over sync I/O.
+    let writeBytesAsync (path: string) (bytes: byte[]) (ct: CancellationToken) : Task =
+        task {
+            let opts =
+                if fsync then FileOptions.Asynchronous ||| FileOptions.WriteThrough
+                else FileOptions.Asynchronous
+            use fs =
+                new FileStream(
+                    path, FileMode.Create, FileAccess.Write, FileShare.None,
+                    bufferSize = 4096, options = opts)
+            do! fs.WriteAsync(ReadOnlyMemory(bytes), ct).AsTask()
+            do! fs.FlushAsync ct
+            // WriteThrough already bypasses the OS write-back cache; the explicit
+            // flush-to-disk is belt-and-braces for platforms where WriteThrough
+            // is advisory.
+            if fsync then fs.Flush(flushToDisk = true)
+        }
+        :> Task
     let instancePrefix = Guid.NewGuid().ToString("N")
     let hot = Dictionary<int64, ZSet<'K>>()
     let paths = Dictionary<int64, string>()
@@ -115,7 +146,7 @@ type DiskAsyncBackingStore<'K when 'K : comparison>
                     evictIfOverQuotaLocked ())
             task {
                 for (path, bytes) in writes do
-                    do! File.WriteAllBytesAsync(path, bytes, ct)
+                    do! writeBytesAsync path bytes ct
                 return (id :> obj)
             }
             |> ValueTask<obj>
