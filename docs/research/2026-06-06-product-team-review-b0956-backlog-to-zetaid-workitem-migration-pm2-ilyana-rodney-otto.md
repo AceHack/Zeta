@@ -37,12 +37,31 @@ decisions + the buildable slice. Reviewers: **PM-2** (product discovery), **Ilya
 | **B** | Rodney + (lean) Otto | keep `P<n>/<slug>.md`; **ZetaId in frontmatter ONLY** (new items); cross-refs stay slug; legacy untouched | Minimal churn, generator-compatible (no `B-` filter change if new slugs keep the prefix, else a ~3-line filter edit), **defers the filename one-way-door entirely** (ZetaId never in a filename → encoding-blocker is moot for paths). Delivers 100% of the consensus-free benefit. |
 | **C** | PM-2 (hybrid) | legacy keep `B-NNNN-<slug>.md`; new items `<slug>.<zetaid-short>.md`; cross-refs by stable SLUG | Human-readable. **Ilyana rejects**: truncated ZetaId = collision surface; two contracts (mutable slug + immutable id) welded into one filename. |
 
-**Otto's recommendation: start with B** — it's the minimal essential path (Rodney's razor + Aaron's
-"no rush / it's just markdown in git" ethos), delivers the full mint benefit now, and **keeps the
-filename-as-ZetaId decision (A) as a separate, later, reversible step** if the immutability ever pays for
-itself. Cross-refs: Ilyana argues ZetaId (rename-proof), PM-2 argues slug (human-followable); under B,
-**legacy cross-refs stay `B-NNNN` slugs (frozen, fine) and new cross-refs can be either** — punt until the
-mint tool exists and we see real usage.
+**DECIDED: option A (Aaron 2026-06-06, the 500-agent collision test).** Aaron's deciding question: *"if we
+have 500 agents committing to zeta [under option B], do they have a collision this way?"* — **yes, option B
+collides at the FILENAME.** The ZetaId in frontmatter is collision-free (128-bit, locally minted), but
+option B's filename is `P<n>/<slug>.md` and the **slug is title-derived — a shared human namespace**: two
+of 500 concurrent agents filing similar items generate the same slug → same path → **git merge conflict**.
+That is a *hidden consensus point on the slug* — the exact "incrementing-ids-are-a-hidden-consensus" pain
+B-0956 exists to remove, merely relocated from the number to the slug. **Option A (`workitems/<zetaid>.md`)
+makes the filename ITSELF the conflict-free key** → every agent writes its own **disjoint file** → no
+shared path, no merge conflict, at any N. This is exactly the proven **B-0954 agent-bus G-Set property**
+(disjoint ZetaId-keyed files, no-PR, conflict-free, cross-machine). My earlier "start with B" lean was
+WRONG for the at-scale concurrent-create case — it optimized churn/readability and missed that the slug
+filename is a consensus surface. **Filename = ZetaId.** Human-readability preserved via `slug` + `title`
+frontmatter + a generated **`slug → zetaid` index** (navigate by slug; canonical file is ZetaId-named).
+Cross-refs resolve by **ZetaId** (rename-proof; render to slug for humans); legacy `B-NNNN` refs stay
+frozen slugs. **Consequence:** the B-0682 blocker hardens — the ZetaId string is now the filename, so its
+encoding must be locked **and filename-safe** (case-fold-safe for APFS/NTFS; no `/`) before any mint.
+(Option C stays rejected — truncated ZetaId reintroduces the collision.)
+
+**Third win for option A (Aaron 2026-06-06): free time-ordered lookup + ordering.** Because the ZetaId is
+time-prefixed (B-0893 targets the Snowflake/ULID family), a **lexicographic sort of the `workitems/<zetaid>.md`
+filenames = chronological creation order** — `ls` sorted is day-ordered, and "items from day D" is a
+filename **prefix range-scan**, no separate time index. This is a property only option A gives (slug
+filenames sort alphabetically, meaninglessly). **It adds a hard requirement on B-0682:** the canonical
+string encoding must be **sort-preserving** — time in the high bits, big-endian, and a lexicographically-
+monotonic alphabet (e.g. Crockford base32 like ULID, or zero-padded hex) so byte/string sort == time sort.
 
 ## Lock-before-any-ZetaId-persists (one-way doors — Ilyana)
 
@@ -83,11 +102,14 @@ mint tool exists and we see real usage.
 1. Fix the two data bugs (B-1016 missing frontmatter, B-0366.2 id mismatch) + add a **frontmatter-schema
    lint** → clears the chronic `backlog-index-integrity` red. (separable, small)
 2. Add a **referential-integrity lint**; run on the 1116, fix any dangling refs surfaced.
-3. Resolve **B-0682** (promote P1) + ship `format()`/`parse()` in the ZetaId impl.
-4. Build **`tools/backlog/new-workitem.ts`** (local mint; `id`+`type`+`state`+`slug`+`title` frontmatter;
-   refuses `B-`). New items ZetaId-keyed from here; legacy 1116 stay B-NNNN forever.
-5. (Deferred / optional) the filename-as-ZetaId shape (option A) + any bulk legacy rewrite — only if it
-   ever earns its way.
+3. Resolve **B-0682** (promote P1) + ship **filename-safe** `format()`/`parse()` in the ZetaId impl
+   (case-fold-safe for APFS/NTFS; no `/`) — REQUIRED because the ZetaId string is now the filename (option A).
+4. Build **`tools/backlog/new-workitem.ts`** (local mint; writes **`workitems/<zetaid>.md`** — filename =
+   ZetaId, the conflict-free key; `id`+`type`+`state`+`slug`+`title`+cross-refs frontmatter; refuses `B-`)
+   + the generated **`slug → zetaid` index** for human navigation. New items ZetaId-keyed/named from here;
+   legacy 1116 stay `B-NNNN` slugs forever (alias-and-keep).
+5. (Deferred / optional) any bulk legacy rewrite of the 1116 → `workitems/<zetaid>.md` — only if it ever
+   earns its way; not needed for the 500-agent conflict-free-create property (that's delivered at step 4).
 
 Pointer added from B-0956. Reviewers' full findings are in their agent outputs (this synthesis is the
 durable artifact).
