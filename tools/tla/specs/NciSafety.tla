@@ -90,4 +90,7 @@ Spec == Init /\ [][Next]_vars
 \* ── The NCI safety invariant: every private register is only ever written by its owner. ──
 NCI == \A t \in Travelers : lastWriter[t] = t
 
+\* The UNBOUNDED proof of []NCI lives in NciSafetyProofs.tla (TLAPS / rung 3), kept in a separate
+\* module so TLC (run-tlc.ts) never has to resolve the TLAPS standard module. run-tlaps.ts proves it.
+
 =============================================================================
