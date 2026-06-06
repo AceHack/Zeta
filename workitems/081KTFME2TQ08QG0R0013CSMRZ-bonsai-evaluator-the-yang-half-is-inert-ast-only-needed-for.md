@@ -16,6 +16,46 @@ composes_with: []
      STATE = this folder; completion moves the file to workitems/done/YYYY/MM/.
      Identity is the zetaid prefix — resolve cross-refs by `081KTFME2TQ08QG0R0013CSMRZ-*.md` glob. -->
 
+## RESOLVED — the design decision (maintainer, 2026-06-06)
+
+Maintainer's answer to the soft-vs-sharp fork (verbatim intent):
+
+> *We need sharp versions for mechanical optimizations and we need the soft version of
+> persistence, and in the best case the soft version would collapse to the sharp version
+> based on firing and confidence thresholds — and certain thresholds — and snap into the
+> sharp versions for execution. Not wonder-compression holding the uncertainty, but
+> executing with uncertainty can snap to sharp.*
+
+So it is **both representations with a threshold-gated collapse morphism**, not either/or:
+
+- **Soft** = the **persisted** form; holds uncertainty (wonder-preserving), DST-replayable.
+- **Sharp** = the **execution** form; concrete branch, for mechanical optimization.
+- **Soft → sharp** = a collapse/**snap** gated by **firing / confidence thresholds**; at
+  execution time, once confident enough, the soft value snaps to a definite sharp value.
+  Distinct from wonder-compression (which holds uncertainty indefinitely): here, *execution
+  with uncertainty MAY snap to sharp* when the threshold is crossed.
+
+**The mechanism already exists — `src/Core/SoftValue.fs`.** `SoftValue = { Candidates:
+(DynamicValue * float) list }` is the soft/persisted form; `confidence sv` = max weight;
+and **`resolve (threshold) sv : DynamicValue option`** is documented as *"the ONE legitimate
+collapse: a definite value iff confidence ≥ threshold, else None (held)."* That **IS** the
+soft→sharp snap. So the evaluator semantics are fully determined by existing types — no new
+design surface:
+
+- `evalSoft : env -> Expr -> SoftValue` — holds uncertainty. `Cond(test, t, e)` evaluated
+  **softly** (blend the then/else distributions weighted by the test's truth-confidence — no
+  hard branch); `Binary` over candidate distributions (probabilistic interpretation, lines up
+  with `ProbabilitySemiring`); `Const` → `SoftValue.certain`; `Param` → env lookup.
+- **snap** = `SoftValue.resolve threshold` → sharp `DynamicValue` for execution, else held.
+- Persistence keeps the `SoftValue`; execution snaps. `Cond` is NOT deprecated — it lives
+  sharp in the collapsed execution form and soft (blended) in the persisted form.
+
+Build plan: minimal first slice = `evalSoft` for `Const · Param · Binary · Cond` + the
+`resolve`-threshold snap, in `src/Core/`, with tests; `Lambda`/`Call` (closures / named
+functions) marked unsupported in v1 (honest feedback, not silent). Then the yin/yang
+control-plane wiring (`Acts(Remains) → delta → GitDeltaLog commit → recover`) is the same
+clean composition the saga was.
+
 ## The finding (Otto, 2026-06-06, scoping the yin/yang-control-plane rung)
 
 After shipping the durability substrate (Core.Git PR #6696) and the saga rung

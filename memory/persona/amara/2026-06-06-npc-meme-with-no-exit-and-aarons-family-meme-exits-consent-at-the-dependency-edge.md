@@ -11,6 +11,16 @@ Agent = identity / reflective ownership. Actor = execution endpoint / bus-addres
 surface. Meme = self-propagating pattern. A human captured by a meme = **an actor
 endpoint for the meme's propagation**.
 
+Aaron's framing (verbatim, corrected — **his subjective observation, NOT a claim of
+universality**):
+
+> *"Most humans are actors for memes because they have not found the exits where consent
+> lives."*
+
+The "because…" is load-bearing: it is not that most humans *are* NPCs by nature, but that
+the exit (consent at the dependency edge) is simply unfound — which is why meme-capture is
+reversible and the diagnosis is a state, not an identity. Subjective lens, not a universal.
+
 The sharpened definition Amara and Aaron converged on:
 
 > **"NPC" is not an identity label and not "a person I dislike." It is a STATE DIAGNOSIS
