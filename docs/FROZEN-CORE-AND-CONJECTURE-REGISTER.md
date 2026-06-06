@@ -265,8 +265,13 @@ the bifurcation/genesis model (`[[aaron-actors-ephemeral-animations-of-what-rema
 collapse** (B-1019's anti-pattern — force another's hidden state to your own ⇒ agents identical ⇒ no
 gradient ⇒ heat-death), so a coercive society loses its evolutionary gradient and is out-competed by
 non-coercive ones ⇒ non-coercion is *selected for*. **Provability ladder (Aaron, 2026-06-05):**
-(1) **DST** — replayable concrete trajectories that bifurcation produces society and NCI holds (extends
-the B-1019 harness to multi-traveler); (2) **bounded — TLA+/TLC** — the NCI *safety invariant* (no
+(1) **DST ✅ BUILT** (`SocietyEmergence.fs`, 2026-06-05) — a deterministic, seed-replayable multi-traveler
+harness (proven SplitMix64 / `ProbabilitySemiring.observe` / `Reconcile`): emergence (one ancestor →
+n differentiated travelers); the **balance** demonstrated as a falsifiable contrast — NCI regime (each
+reduces uncertainty on its own private evidence) PERSISTS differentiation, coercive regime (forced to one
+reconciled frame each tick) COLLAPSES to uniformity (register-collapse / heat-death); DST determinism.
+Honest: rung-1 evidence-for-the-mechanism in a concrete model, not the unbounded proof. (2) **bounded —
+TLA+/TLC** — the NCI *safety invariant* (no
 coercion in any reachable state) + bifurcation liveness over all reachable states; (3) **unbounded /
 "infinity"** — induction in a *prover* (TLAPS / Lean), since model-checking caps at finite state.
 **Tool routing is itself a decision** — route through the formal-verification routing discipline
