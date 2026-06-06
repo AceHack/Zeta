@@ -207,12 +207,14 @@ derivative operator, which is non-mergeable) · Range = `FrameDelta.distance`. D
 (Bearing/Where-looking) deliberately NOT built — no honest anchor in a causal frame.
 
 > **New-layer FULL-PROVEN primitives (2026-06-05):** `TravelerFrame` (merge / join-semilattice),
-> `FrameDelta` (transformation / group), and `Watermark` (frontier / meet-semilattice) each clear all six
-> legs — the first post-floor primitives at floor-grade rigor, each using the homeostat class that honestly
-> fits its algebra: convergence-to-LUB (join), order-independent aggregation (monoid), convergence-to-GLB
-> (meet). `Curve` tops out at four legs (Bonsai/homeostat N/A by kind). The six-leg bar is a bar for
-> *mergeable* primitives; the SplitMix64/RendezvousHash/CRC32C/FastCDC/Consensus cluster is math + 4-lang
-> (not mergeable — no honest homeostat leg).
+> `FrameDelta` (transformation / group), `Watermark` (frontier / meet-semilattice), and `Reconcile`
+> (relative-observer 3-way merge over the Merkle ancestor — `a·b/ancestor`; order-independent =
+> convergence-to-one-frame) each clear all six legs — post-floor primitives at floor-grade rigor, each
+> using the homeostat class that honestly fits its algebra: convergence-to-LUB (join), order-independent
+> aggregation (monoid), convergence-to-GLB (meet), order-independent reconciliation (Reconcile). `Curve`
+> tops out at four legs (Bonsai/homeostat N/A by kind). The six-leg bar is a bar for *mergeable*
+> primitives; the SplitMix64/RendezvousHash/CRC32C/FastCDC/Consensus cluster is math + 4-lang (not
+> mergeable — no honest homeostat leg). `ProbabilitySemiring` is math + 4-lang (incl. div + merge3).
 
 **Determinism + integrity substrate (not measurement axes):**
 
