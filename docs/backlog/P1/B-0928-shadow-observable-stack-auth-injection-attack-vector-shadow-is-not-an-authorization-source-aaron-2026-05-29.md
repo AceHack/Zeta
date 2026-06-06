@@ -1,5 +1,6 @@
 ---
 id: B-0928
+zetaid: 081KSRGFP0008QG0R001RY8S3N
 priority: P1
 status: open
 title: "Shadow-observable-stack auth-injection attack vector — the auto-click grey-text channel can inject operator-authorizations the AI executes; harden the authorization-source filter (Shadow is NOT an authorization source)"

@@ -1,5 +1,6 @@
 ---
 id: B-0875
+zetaid: 081KSNY2Z0008QG0R000K3ETGB
 priority: P2
 status: open
 title: Error-class extraction meta-loop — turn auto-reviewer findings into named classes into machine-checkable rules with before/after effectiveness measurement

@@ -1,5 +1,6 @@
 ---
 id: B-0404
+zetaid: 081KR7JY10008QG0R003H102F0
 priority: P2
 status: open
 title: "Tick procurement mechanism — agent economic agency for autonomous resource acquisition"

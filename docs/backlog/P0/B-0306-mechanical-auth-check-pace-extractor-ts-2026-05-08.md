@@ -1,5 +1,6 @@
 ---
 id: B-0306
+zetaid: 081KR2E4K0008QG0R0007CFSZ7
 priority: P0
 status: closed
 closed: 2026-05-08

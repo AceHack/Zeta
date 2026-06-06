@@ -1,5 +1,6 @@
 ---
 id: B-0880
+zetaid: 081KSNY2Z0008QG0R000ED0ED8
 priority: P2
 status: open
 title: Backlog-vs-tech-debt growth-rate ratio discipline — manage RATES not absolute values; both are infinite in AI-world

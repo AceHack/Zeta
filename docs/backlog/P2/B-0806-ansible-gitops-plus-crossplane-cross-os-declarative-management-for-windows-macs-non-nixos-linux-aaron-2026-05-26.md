@@ -1,5 +1,6 @@
 ---
 id: B-0806
+zetaid: 081KSGS9H0008QG0R001Y9FB62
 priority: P2
 status: open
 title: Ansible+GitOps + Crossplane composition — cross-OS declarative management for Windows + Macs + non-NixOS Linux; extends GitOps reach beyond K8s manifests + NixOS flake.nix to the heterogeneous OS substrate the maintainer actually runs

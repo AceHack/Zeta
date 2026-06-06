@@ -1,5 +1,6 @@
 ---
 id: B-0461
+zetaid: 081KRHWGX0008QG0R000JMEYBH
 priority: P1
 status: open
 title: "B-0442 slice 5.3 — missed-substrate-cascade subscriber handler (branch-vs-merged-PR drift closer)"

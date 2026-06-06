@@ -1,5 +1,6 @@
 ---
 id: B-0131
+zetaid: 081KQGDBJ0008QG0R000D1YJCH
 priority: P2
 status: open
 title: Extend Z-set retraction algebra Lean formalization beyond the existing DBSP chain-rule proof

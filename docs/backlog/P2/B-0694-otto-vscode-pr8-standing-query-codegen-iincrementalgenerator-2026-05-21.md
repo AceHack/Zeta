@@ -1,5 +1,6 @@
 ---
 id: B-0694
+zetaid: 081KS3X9Y0008QG0R000J4SFTS
 priority: P2
 status: open
 title: Standing-query codegen — IIncrementalGenerator that rewrites circuit expressions to fused IL (Otto-VSCode 8-PR campaign PR #8 — the capstone)

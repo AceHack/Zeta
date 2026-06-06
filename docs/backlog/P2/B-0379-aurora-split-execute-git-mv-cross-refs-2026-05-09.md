@@ -1,5 +1,6 @@
 ---
 id: B-0379
+zetaid: 081KR50HA0008QG0R003DJ093T
 priority: P2
 status: open
 title: Execute the docs/aurora split — mkdir new dir, git mv history-import files, update all cross-refs in memory/** and ROUND-HISTORY

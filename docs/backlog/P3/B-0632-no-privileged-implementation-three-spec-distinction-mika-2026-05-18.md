@@ -1,5 +1,6 @@
 ---
 id: B-0632
+zetaid: 081KRW63S0008QG0R002Z2GR1X
 priority: P3
 status: open
 title: "'No privileged implementation' + 3-spec distinction (Formal / Open / Static-Analysis) — mutual regeneration rule (Mika 2026-05-18 LOCKED-IN)"

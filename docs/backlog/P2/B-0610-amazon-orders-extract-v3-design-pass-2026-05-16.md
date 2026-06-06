@@ -1,5 +1,6 @@
 ---
 id: B-0610
+zetaid: 081KRQ1AB0008QG0R002TZ063S
 title: Amazon orders extract — v3 design pass (8 deferred reviewer-thread findings)
 status: open
 priority: P2

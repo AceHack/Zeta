@@ -1,5 +1,6 @@
 ---
 id: B-0772
+zetaid: 081KSE6WT0008QG0R003WMG4XV
 priority: P2
 status: open
 title: Observable cluster fabric — universal device plugins (NPU/GPU/audio/etc.) + Reticulum mesh (AllJoyn-successor) + polyglot Rx streams in every language

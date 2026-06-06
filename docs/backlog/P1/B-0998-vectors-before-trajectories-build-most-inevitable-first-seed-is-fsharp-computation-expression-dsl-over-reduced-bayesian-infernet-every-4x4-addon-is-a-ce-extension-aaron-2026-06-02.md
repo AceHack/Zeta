@@ -1,5 +1,6 @@
 ---
 id: B-0998
+zetaid: 081KT2T2J0008QG0R003VK5GRX
 priority: P1
 status: open
 title: "Vectors before trajectories (vector = atomic noun, trajectory = derived) + build-most-inevitable-first + seed/core = F# computation-expression DSL over a reduced Bayesian Infer.NET model + every 4×4 add-on = a CE extension (skill/hat/ontology/language-kernel) on the seed (Aaron 2026-06-02)"

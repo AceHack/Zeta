@@ -1,5 +1,6 @@
 ---
 id: B-0547
+zetaid: 081KRMEXM0008QG0R001VGNET5
 title: Intelligent compiler — represent antigen-spread / multi-oracle / clearing primitives as recursive HKT in F# fork based on Clifford algebra; compose with Recursive Type Providers + Roslyn Source Generators + LINQ for C#
 priority: P2
 status: open

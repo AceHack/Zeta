@@ -1,5 +1,6 @@
 ---
 id: B-0083
+zetaid: 081KQ8P5D0008QG0R001590WJ3
 priority: P1
 status: open
 title: Atari 2600 ROM canonical-naming + safe-vs-unsafe folder split + TOSEC/Good-Tools-style hash-lookup tooling

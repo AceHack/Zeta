@@ -1,5 +1,6 @@
 ---
 id: B-0422
+zetaid: 081KRCQQF0008QG0R0008VT354
 title: Clifford-algebraic narrative engine for testing the Pauli-symmetry-breaking-from-agenda-conservation prediction (research target identified by DeepSeek 2026-05-12)
 priority: P3
 status: open

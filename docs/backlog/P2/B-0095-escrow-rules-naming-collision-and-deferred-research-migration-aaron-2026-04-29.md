@@ -1,5 +1,6 @@
 ---
 id: B-0095
+zetaid: 081KQB8J40008QG0R0005ZEYNN
 priority: P2
 status: open
 title: Escrow — define rules + resolve naming collision with software-vendoring sense + migrate other deferred research from backlog/research/

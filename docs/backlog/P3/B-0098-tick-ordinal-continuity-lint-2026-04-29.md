@@ -1,5 +1,6 @@
 ---
 id: B-0098
+zetaid: 081KQB8J40008QG0R003VMCFWB
 priority: P3
 status: open
 title: Tick-ordinal-continuity lint — ordinals are computed, not narrated

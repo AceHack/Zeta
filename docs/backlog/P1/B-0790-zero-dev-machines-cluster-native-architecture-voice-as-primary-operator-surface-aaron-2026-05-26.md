@@ -1,5 +1,6 @@
 ---
 id: B-0790
+zetaid: 081KSGS9H0008QG0R00153CQ8B
 priority: P1
 status: open
 title: Zero-dev-machines cluster-native architecture — all PRs from cluster; voice (Alexa + future microphones) as primary operator interface; dev machines and Alexa surfaces are conversational entry points into the cluster, not work substrate

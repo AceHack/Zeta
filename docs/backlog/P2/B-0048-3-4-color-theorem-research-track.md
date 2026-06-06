@@ -1,5 +1,6 @@
 ---
 id: B-0048
+zetaid: 081KQ3HBZ0008QG0R003JCR6P8
 priority: P2
 status: open
 title: 3-color / 4-color theorem research track — graph coloring, computer-assisted proof, Gonthier Coq formalization, formal-verification routing

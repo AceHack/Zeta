@@ -1,5 +1,6 @@
 ---
 id: B-0310
+zetaid: 081KR2E4K0008QG0R003DS2XHJ
 priority: P1
 status: closed
 title: "Concept-registry extraction tool — canonical inventory of load-bearing concepts"

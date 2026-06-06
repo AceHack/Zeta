@@ -1,5 +1,6 @@
 ---
 id: B-0387
+zetaid: 081KR50HA0008QG0R000M838VA
 priority: P2
 status: open
 title: Synthesis ADR — which Austrian primitives admit quant-grade formalization (+ which don't + why); open-research publishing pipeline

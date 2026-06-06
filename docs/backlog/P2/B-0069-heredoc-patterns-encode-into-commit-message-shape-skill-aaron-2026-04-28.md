@@ -1,5 +1,6 @@
 ---
 id: B-0069
+zetaid: 081KQ8P5D0008QG0R002HB1ENY
 priority: P2
 status: closed
 title: Encode HEREDOC patterns into commit-message-shape skill (Aaron 2026-04-28)

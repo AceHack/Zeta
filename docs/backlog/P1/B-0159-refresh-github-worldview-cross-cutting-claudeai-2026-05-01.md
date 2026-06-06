@@ -1,5 +1,6 @@
 ---
 id: B-0159
+zetaid: 081KQGDBJ0008QG0R003H0G5YQ
 priority: P1
 status: closed
 title: refresh-github-worldview cross-cutting refresh script (Claude.ai 2026-05-01)

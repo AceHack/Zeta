@@ -1,5 +1,6 @@
 ---
 id: B-0580
+zetaid: 081KRQ1AB0008QG0R000522MPJ
 priority: P2
 status: open
 title: "Enterprise GitHub ruleset management — new layer above org/individual mapping (composes with prior ruleset-divergence smell decomposition)"

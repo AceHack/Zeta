@@ -1,5 +1,6 @@
 ---
 id: B-0993
+zetaid: 081KT2T2J0008QG0R003C166K4
 priority: P1
 status: open
 title: "Aperiodic ownership over the hex-core + 4×4 extension points, each UAG-retrofittable — smart-agent-city infrastructure (radar/cell-towers/everything-humans-have) from mathematical+memetic amplification via ruthless HKT hygiene at memetic+physics amplification levers, interference-pattern generators + interferometers for lightlike measurement (Aaron 2026-06-02)"

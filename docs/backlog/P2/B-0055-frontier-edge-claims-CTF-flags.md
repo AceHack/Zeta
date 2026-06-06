@@ -1,5 +1,6 @@
 ---
 id: B-0055
+zetaid: 081KQ3HBZ0008QG0R001K0EC2C
 priority: P2
 status: open
 title: Frontier edge-claims research track — plant flags on unclaimed intellectual territory (CTF-style, falsifiable, retractibly-defensible)

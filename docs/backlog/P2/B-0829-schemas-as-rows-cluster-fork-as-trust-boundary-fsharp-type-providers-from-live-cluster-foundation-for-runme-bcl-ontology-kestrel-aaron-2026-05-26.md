@@ -1,5 +1,6 @@
 ---
 id: B-0829
+zetaid: 081KSGS9H0008QG0R000Q18PGQ
 title: Schemas-as-rows + cluster-fork-as-trust-boundary + F# type providers from live cluster — foundation layer for Runme BCL ontology capability
 status: open
 priority: P2

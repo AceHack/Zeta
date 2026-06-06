@@ -1,5 +1,6 @@
 ---
 id: B-0175
+zetaid: 081KQNJ500008QG0R00055XHBG
 priority: P2
 status: open
 title: Substrate-retrieval-index — active in-flight matcher for memos + carved sentences (Aaron 2026-05-03 'specialed indeex we build over time'; addresses 4-layer retrieval gap empirically self-demonstrated)

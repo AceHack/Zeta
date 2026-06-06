@@ -1,5 +1,6 @@
 ---
 id: B-0132
+zetaid: 081KQGDBJ0008QG0R000Y66YYQ
 priority: P2
 status: open
 title: CRDT-composition for BFT propagation — substrate events as composed CRDTs

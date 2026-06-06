@@ -1,5 +1,6 @@
 ---
 id: B-0686
+zetaid: 081KS3X9Y0008QG0R003R74B20
 priority: P3
 status: open
 title: Tick-shard immutability CI gate — block PRs modifying historical shards after grace period

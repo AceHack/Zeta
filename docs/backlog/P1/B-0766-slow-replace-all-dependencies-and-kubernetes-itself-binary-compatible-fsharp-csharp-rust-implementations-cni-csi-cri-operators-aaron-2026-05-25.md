@@ -1,5 +1,6 @@
 ---
 id: B-0766
+zetaid: 081KSE6WT0008QG0R00049EFBD
 priority: P1
 status: open
 title: Slow-replace all dependencies (and Kubernetes itself) with binary-compatible Zeta-native F#/C#/Rust implementations — CNI, CSI, CRI, operators

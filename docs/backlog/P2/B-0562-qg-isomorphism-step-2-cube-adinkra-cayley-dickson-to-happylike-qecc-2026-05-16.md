@@ -1,5 +1,6 @@
 ---
 id: B-0562
+zetaid: 081KRQ1AB0008QG0R001F7DE2D
 title: QG isomorphism Step 2 — Cube + Adinkra + Cayley-Dickson → HaPPY-like QEC structure
 priority: P2
 status: in_progress

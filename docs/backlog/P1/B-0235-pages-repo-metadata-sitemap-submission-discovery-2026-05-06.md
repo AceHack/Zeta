@@ -1,5 +1,6 @@
 ---
 id: B-0235
+zetaid: 081KQX9B50008QG0R003HVP90P
 priority: P1
 status: open
 title: "GitHub Pages discoverability - repo metadata, sitemap submission, and discovery signals"

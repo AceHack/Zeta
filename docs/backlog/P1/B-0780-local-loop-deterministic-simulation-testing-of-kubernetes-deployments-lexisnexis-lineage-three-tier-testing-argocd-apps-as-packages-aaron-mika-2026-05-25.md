@@ -1,5 +1,6 @@
 ---
 id: B-0780
+zetaid: 081KSE6WT0008QG0R000RH1526
 priority: P1
 status: open
 title: Local Loop — deterministic simulation testing of Kubernetes deployments (LexisNexis Spark-on-K8s fork lineage); three-tier testing (pure-code / Docker-observable / CI); Argo CD App-of-Apps as packages.json

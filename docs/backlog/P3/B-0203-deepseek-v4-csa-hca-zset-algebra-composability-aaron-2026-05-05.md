@@ -1,5 +1,6 @@
 ---
 id: B-0203
+zetaid: 081KQTPYE0008QG0R003H4QRMK
 priority: P3
 status: open
 title: DeepSeek V4 CSA+HCA architecture composability analysis with Zeta's Z-set algebra -- attention-as-Z-set-operators isomorphism (Aaron 2026-05-05)

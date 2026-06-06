@@ -1,5 +1,6 @@
 ---
 id: B-0533
+zetaid: 081KRMEXM0008QG0R000K25MXS
 priority: P3
 status: open
 title: "§33 migration dead-xref sweep + static lint — live-nav pointers to docs/research/ paths that have been migrated to memory/persona/<name>/conversations/"

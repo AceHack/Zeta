@@ -1,5 +1,6 @@
 ---
 id: B-0011
+zetaid: 081KQ0YZ80008QG0R001AN2CJ3
 priority: P2
 status: open
 title: Pliny carve-out cross-surface wording tightening — explicit "no verbatim payload excerpts" across CLAUDE.md + AGENTS.md + GOVERNANCE.md §5 + Pliny memory file

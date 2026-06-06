@@ -1,5 +1,6 @@
 ---
 id: B-0781
+zetaid: 081KSE6WT0008QG0R001H3DA90
 priority: P1
 status: open
 title: F# type system as universe boundary — every YAML / Nix / Kubernetes / Argo CD / NATS config becomes first-class strongly-typed F#; F# compiler is single source of truth (Caché analog)

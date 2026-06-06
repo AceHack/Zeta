@@ -1,5 +1,6 @@
 ---
 id: B-0003
+zetaid: 081KQ0YZ80008QG0R001QJJTVF
 priority: P1
 status: open
 title: ALIGNMENT.md rewrite — incorporate Otto-281..287 + bidirectional alignment + factory-as-superfluid + Noether direction; spread via rigor not manipulation (matrix-pill not poison-pill)

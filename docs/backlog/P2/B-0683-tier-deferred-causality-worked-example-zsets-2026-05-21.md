@@ -1,5 +1,6 @@
 ---
 id: B-0683
+zetaid: 081KS3X9Y0008QG0R0006MQXA4
 priority: P2
 status: open
 title: Tier-deferred causality worked example — 2-tier Z-set composition demonstrating different observable orderings

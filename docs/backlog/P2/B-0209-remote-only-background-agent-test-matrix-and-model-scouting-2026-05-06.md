@@ -1,5 +1,6 @@
 ---
 id: B-0209
+zetaid: 081KQX9B50008QG0R001MNYK61
 priority: P2
 status: open
 title: "Remote-only background agent test matrix — prove claim coordination without local broadcast"

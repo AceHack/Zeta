@@ -1,5 +1,6 @@
 ---
 id: B-0651
+zetaid: 081KRW63S0008QG0R002N6PPVK
 priority: P2
 status: open
 title: "Two-pass principles set — first-pass operational (lock-free/wait-free/det-replayable-retractable/adversarial-review) + second-pass deferred (scale-free/self-similar) (Aaron + Mika 2026-05-18 LOCKED-IN substrate-honest)"

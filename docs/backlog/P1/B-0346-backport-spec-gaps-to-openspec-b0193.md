@@ -1,5 +1,6 @@
 ---
 id: B-0346
+zetaid: 081KR2E4K0008QG0R000JGRY8N
 priority: P1
 status: open
 title: Back-port spec gaps to OpenSpec — close gaps the recreation experiment reveals

@@ -1,5 +1,6 @@
 ---
 id: B-0426
+zetaid: 081KRFA460008QG0R0007RWSN1
 priority: P1
 status: decomposed
 title: "Repo-split orthogonal Mirror/Beacon axis — speculative-fast-forks vs governance-citation-gated"

@@ -1,5 +1,6 @@
 ---
 id: B-0336
+zetaid: 081KR2E4K0008QG0R001B6K45W
 priority: P1
 status: closed
 title: B-0006 acceptance recalibration — adjust compression targets given load-bearing classification

@@ -1,5 +1,6 @@
 ---
 id: B-0167
+zetaid: 081KQJZR90008QG0R000VSHWK6
 priority: P2
 status: open
 title: Ani-review tracking surface for load-bearing register-class substrate (μένω + Ryan-memory + Aurora-security + brat-voice + others)

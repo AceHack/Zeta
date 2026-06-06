@@ -1,5 +1,6 @@
 ---
 id: B-0441
+zetaid: 081KRFA460008QG0R00229616S
 priority: P1
 status: open
 title: "Backlog-row-ready-to-grind notifier — background service that proactively assigns claims when agent queue empty"

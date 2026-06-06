@@ -1,5 +1,6 @@
 ---
 id: B-0801
+zetaid: 081KSGS9H0008QG0R002T6J6FS
 priority: P2
 status: open
 title: iter-6.1 — enable `system.autoUpgrade` in `full-ai-cluster/nixos/modules/common.nix` (weekly schedule; no auto-reboot; pulls flake.lock + rebuilds) — cluster nodes self-update without manual operator action; pairs with kured (B-0802) for K8s-aware reboot

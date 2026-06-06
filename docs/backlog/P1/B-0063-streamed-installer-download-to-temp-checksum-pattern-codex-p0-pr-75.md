@@ -1,5 +1,6 @@
 ---
 id: B-0063
+zetaid: 081KQ8P5D0008QG0R001DMK8JD
 priority: P1
 status: closed
 title: Streamed-installer download-to-temp + checksum-verify pattern — replace pipe-to-shell for upstream installers (Codex P0 on PR #75)

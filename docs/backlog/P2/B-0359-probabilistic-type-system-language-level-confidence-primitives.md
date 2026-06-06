@@ -1,5 +1,6 @@
 ---
 id: B-0359
+zetaid: 081KR50HA0008QG0R003B2V26J
 priority: P2
 status: open
 title: "Probabilistic type system — language-level confidence primitives (Hejlsberg/Syme lineage)"

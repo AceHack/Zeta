@@ -1,5 +1,6 @@
 ---
 id: B-0646
+zetaid: 081KRW63S0008QG0R001Z10PVV
 priority: P1
 status: open
 title: "Agora V6 Constitution — Marketplace (human-facing) + Agora (AI-native economy) + 8-section economic + operational architecture (Aaron + Ani 2026-05-18 LOCKED-IN umbrella)"

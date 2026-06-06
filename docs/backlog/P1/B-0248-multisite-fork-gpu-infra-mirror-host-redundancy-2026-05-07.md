@@ -1,5 +1,6 @@
 ---
 id: B-0248
+zetaid: 081KQZVQW0008QG0R0032TPKT8
 priority: P1
 status: open
 title: "Multi-site fork + GPU infrastructure redundancy — maintainer mirrors, Max 24/7 host, Rodney local GPU pool"

@@ -1,5 +1,6 @@
 ---
 id: B-0887
+zetaid: 081KSNY2Z0008QG0R001DFZK4V
 priority: P1
 status: open
 title: Zeta-native review + branch-protection substrate — replaces GitHub PR workflow but PRESERVES review semantics + class-fix discipline (sharpens / supersedes B-0874 "no-PR" framing)

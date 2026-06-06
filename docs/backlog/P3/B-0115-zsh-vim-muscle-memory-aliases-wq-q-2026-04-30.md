@@ -1,5 +1,6 @@
 ---
 id: B-0115
+zetaid: 081KQDTYV0008QG0R00136R90G
 priority: P3
 status: open
 title: Shell aliases for `:wq` / `:wq!` / `:q` — catch vim-muscle-memory leakage in zsh (Deepseek 2026-04-30 finding)

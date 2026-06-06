@@ -1,5 +1,6 @@
 ---
 id: B-0143
+zetaid: 081KQGDBJ0008QG0R0024DDQA4
 priority: P2
 status: open
 title: Bi-directional messaging integration with Aaron — text/iMessage/WhatsApp/etc., cheapest-or-free first, budget-controlled (Aaron 2026-05-01)

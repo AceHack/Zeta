@@ -1,5 +1,6 @@
 ---
 id: B-0584
+zetaid: 081KRQ1AB0008QG0R001YAF3TR
 priority: P2
 status: open
 title: "Imaginary stack Step 1 — formalize 4D cube (R/W/P/A) and imaginary intersection as categorical/algebraic primitives"

@@ -1,5 +1,6 @@
 ---
 id: B-0951
+zetaid: 081KSXN940008QG0R000R76H45
 priority: P2
 status: open
 title: Git-native eventually-consistent text indexes (sorted/inverted/graph) + the git-native Hindsight storage interface

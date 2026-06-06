@@ -1,5 +1,6 @@
 ---
 id: B-0181
+zetaid: 081KQNJ500008QG0R003DMVGZB
 priority: P1
 status: closed
 title: Fix SpineMergeInvariants.tla counterexample (closed — Cascade downstream-room precondition + state constraint; B1 → A CI registration landed)

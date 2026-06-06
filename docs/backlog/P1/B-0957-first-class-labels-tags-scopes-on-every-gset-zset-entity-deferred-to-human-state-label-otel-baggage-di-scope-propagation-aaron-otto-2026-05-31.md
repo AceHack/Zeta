@@ -1,5 +1,6 @@
 ---
 id: B-0957
+zetaid: 081KSXN940008QG0R001YABTHH
 title: First-class labels/tags + scopes on every G-Set/Z-set entity — deferred-to-human state-label; OTel-baggage / DI-scope propagation; the metadata layer policies + decentralized identity build on
 status: open
 priority: P1

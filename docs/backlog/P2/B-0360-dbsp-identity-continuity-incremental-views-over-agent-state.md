@@ -1,5 +1,6 @@
 ---
 id: B-0360
+zetaid: 081KR50HA0008QG0R0010RZTJK
 priority: P2
 status: open
 title: "DBSP identity continuity — incremental views over agent state via D/I operators"

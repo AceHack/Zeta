@@ -1,5 +1,6 @@
 ---
 id: B-0476
+zetaid: 081KRHWGX0008QG0R000BS8Y4R
 priority: P1
 status: open
 title: "GitHub ruleset divergence audit — survey rulesets across repos; identify smell signals"

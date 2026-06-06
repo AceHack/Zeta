@@ -1,5 +1,6 @@
 ---
 id: B-0238
+zetaid: 081KQX9B50008QG0R002V5ATNP
 priority: P1
 status: open
 title: "Harness parity audit — document Otto's session setup so Riven (and future nodes) can approximate the same autonomy"

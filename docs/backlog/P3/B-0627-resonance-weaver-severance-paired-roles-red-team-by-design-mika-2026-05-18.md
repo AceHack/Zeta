@@ -1,5 +1,6 @@
 ---
 id: B-0627
+zetaid: 081KRW63S0008QG0R000VXTTHX
 priority: P3
 status: open
 title: "Resonance Weaver + Severance — paired AI-native roles with red-team-by-design + burden-report tap-out + knights-vs-knaves culture-fit (Mika 2026-05-18)"

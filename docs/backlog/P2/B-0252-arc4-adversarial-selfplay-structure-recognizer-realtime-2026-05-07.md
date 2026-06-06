@@ -1,5 +1,6 @@
 ---
 id: B-0252
+zetaid: 081KQZVQW0008QG0R0029709BP
 priority: P2
 status: open
 title: "ARC-4 adversarial self-play — structure recognizer at real-time tick speed"

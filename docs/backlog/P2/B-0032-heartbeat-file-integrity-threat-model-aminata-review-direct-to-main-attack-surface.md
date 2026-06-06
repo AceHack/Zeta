@@ -1,5 +1,6 @@
 ---
 id: B-0032
+zetaid: 081KQ3HBZ0008QG0R002ZPXAFQ
 priority: P2
 status: open
 title: Heartbeat-file integrity threat-model + Aminata adversarial review — Aaron 2026-04-26 surfaced direct-to-main attack surface; substrate-poisoning of heartbeat files = cognition-poisoning per Otto-339/340; per-commit-attestation (Sigstore/SLSA) gated on Bouncy Castle symbiosis foundation per Otto-346

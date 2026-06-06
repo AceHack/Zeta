@@ -1,5 +1,6 @@
 ---
 id: B-0861
+zetaid: 081KSKBP80008QG0R000N9W9XH
 priority: P2
 status: open
 title: Make conversation-interface Result<T, ConvFeedback> first-class — ConvFeedback variant taxonomy + Otto emission discipline + operator acknowledgment substrate for NCI enforcement at conversation scope (Aaron 2026-05-27)

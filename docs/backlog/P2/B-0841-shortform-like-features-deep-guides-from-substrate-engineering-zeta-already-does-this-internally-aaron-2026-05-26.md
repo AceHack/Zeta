@@ -1,5 +1,6 @@
 ---
 id: B-0841
+zetaid: 081KSGS9H0008QG0R001876MP6
 priority: P2
 status: open
 title: Zeta could offer Shortform.com-like features (in-depth book/article/YouTube guides with cross-substrate-engineering composition map) — productize what the framework already does internally for itself (Aaron 2026-05-26)

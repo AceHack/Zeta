@@ -1,5 +1,6 @@
 ---
 id: B-0334
+zetaid: 081KR2E4K0008QG0R003MSVG42
 priority: P1
 status: closed
 title: Memory cross-reference integrity enforcement — bidirectional composes-with audit

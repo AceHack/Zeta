@@ -1,5 +1,6 @@
 ---
 id: B-0198
+zetaid: 081KQTPYE0008QG0R0004H9ZB8
 priority: P3
 status: open
 title: F# UoM-on-BigInteger upstream contribution -- comment on fslang-suggestions/831 + optional RFC pre-draft (Aaron 2026-05-05 absorb-and-contribute)

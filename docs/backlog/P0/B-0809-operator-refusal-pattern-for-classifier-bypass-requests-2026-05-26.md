@@ -1,5 +1,6 @@
 ---
 id: B-0809
+zetaid: 081KSGS9H0008QG0R001HC663P
 priority: P0
 status: closed
 title: "Operator-refusal pattern for classifier-bypass deployment requests"

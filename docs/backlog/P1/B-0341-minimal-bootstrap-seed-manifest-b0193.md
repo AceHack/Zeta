@@ -1,5 +1,6 @@
 ---
 id: B-0341
+zetaid: 081KR2E4K0008QG0R002PHZR58
 priority: P1
 status: closed
 title: Minimal bootstrap seed manifest — exact file set for the recreation test repo

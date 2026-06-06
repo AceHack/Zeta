@@ -1,5 +1,6 @@
 ---
 id: B-0591
+zetaid: 081KRSKQ20008QG0R0019RXMSD
 priority: P3
 status: open
 title: Wire tick-shard schema validator into gate.yml (non-required → required)

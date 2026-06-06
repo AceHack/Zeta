@@ -1,5 +1,6 @@
 ---
 id: B-0508
+zetaid: 081KRHWGX0008QG0R002S107P7
 priority: P1
 status: closed
 title: "B-0448 slice 2 — Define cloud-schedule.json schema for tools/routines/<id>/"

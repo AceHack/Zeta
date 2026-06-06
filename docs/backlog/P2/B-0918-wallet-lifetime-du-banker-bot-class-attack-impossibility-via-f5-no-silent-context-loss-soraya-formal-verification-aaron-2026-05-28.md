@@ -1,5 +1,6 @@
 ---
 id: B-0918
+zetaid: 081KSNY2Z0008QG0R0036SJ3T1
 title: WalletLifetime DU — banker-bot class attack impossibility via F.5 (no silent context loss) Soraya formal verification + IntrCtx composition (Aaron 2026-05-28)
 status: open
 priority: P2

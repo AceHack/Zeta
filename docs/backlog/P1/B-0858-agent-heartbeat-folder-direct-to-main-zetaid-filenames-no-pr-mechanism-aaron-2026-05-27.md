@@ -1,5 +1,6 @@
 ---
 id: B-0858
+zetaid: 081KSKBP80008QG0R001KK9WV6
 priority: P1
 status: open
 title: Agent heartbeat folder — direct-to-main push (no PR) with ZetaID-collision-free filenames per agent; mechanizes the externalized-counter discipline operator named 2026-05-27

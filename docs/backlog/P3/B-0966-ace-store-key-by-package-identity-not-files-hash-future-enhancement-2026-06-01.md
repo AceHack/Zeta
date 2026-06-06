@@ -1,5 +1,6 @@
 ---
 id: B-0966
+zetaid: 081KT07NV0008QG0R001HKPJW6
 priority: P3
 status: open
 title: "Ace store keyed by package identity (not files-hash) — future enhancement, only if same-files-different-identity arises"

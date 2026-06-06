@@ -1,5 +1,6 @@
 ---
 id: B-0521
+zetaid: 081KRHWGX0008QG0R002VD5ZNP
 priority: P3
 status: open
 title: Decomposed: Tinygrad UOp rewrite walk + retract mapping (peeled from B-0202)

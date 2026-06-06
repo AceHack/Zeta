@@ -1,5 +1,6 @@
 ---
 id: B-0648
+zetaid: 081KRW63S0008QG0R0025E4PH6
 priority: P1
 status: open
 title: "Cross-substrate triangulation as first-class skill + hat — N-independent-AI-persona observation paths arriving at consistent substrate = strongest epistemic ratification (Aaron 2026-05-18 LOCKED-IN)"

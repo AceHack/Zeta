@@ -1,5 +1,6 @@
 ---
 id: B-0014
+zetaid: 081KQ0YZ80008QG0R001BWYV8P
 priority: P3
 status: open
 title: Red-team / offensive-security library for game-days + CTF — code, tools, skills so red-team exercises aren't one-sided against blue-team-heavy factory

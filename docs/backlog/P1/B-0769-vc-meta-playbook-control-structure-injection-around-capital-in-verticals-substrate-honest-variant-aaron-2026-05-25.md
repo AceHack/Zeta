@@ -1,5 +1,6 @@
 ---
 id: B-0769
+zetaid: 081KSE6WT0008QG0R001E1F862
 priority: P1
 status: open
 title: VC meta-playbook (control-structure injection around capital flow in verticals) — substrate-honest variant for Zeta

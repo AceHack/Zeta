@@ -1,5 +1,6 @@
 ---
 id: B-0228
+zetaid: 081KQX9B50008QG0R003GWYQR3
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - formal specification plan"

@@ -1,5 +1,6 @@
 ---
 id: B-0189
+zetaid: 081KQR4HQ0008QG0R002933PRR
 priority: P2
 status: open
 title: Q# runtime acceleration via Bayesian belief propagation + expectation propagation — research opportunity not yet integrated by humans (Aaron 2026-05-04)

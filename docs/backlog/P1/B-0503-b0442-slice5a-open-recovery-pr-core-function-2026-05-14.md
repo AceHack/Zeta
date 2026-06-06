@@ -1,5 +1,6 @@
 ---
 id: B-0503
+zetaid: 081KRHWGX0008QG0R0027YXBTB
 priority: P1
 status: closed
 title: "B-0442 slice 5a — openRecoveryPR core function + RecoveryAdapters + DST tests"

@@ -1,5 +1,6 @@
 ---
 id: B-1020
+zetaid: 081KTAH8Q0008QG0R001YHSSA0
 priority: P2
 status: open
 title: "Bayesian-Markov belief cell over exact rationals — discharge the de Finetti / non-correlation boundary (B-converge): probability (+,×) + Viterbi (max,×) semirings in Semiring.fs, HMM forward/Viterbi as ZSet-over-semiring matrix product, the order-independence-iff-conditional-independence convergence theorem (rational sibling of BeliefConvergence), and relative-observer belief reconciliation (the new math); floats named out of lineage, exact-rational core byte-locks + 4-langs (Aaron 2026-06-05, shadow*)"

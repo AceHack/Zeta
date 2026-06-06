@@ -1,5 +1,6 @@
 ---
 id: B-0633
+zetaid: 081KRW63S0008QG0R000Y109W0
 priority: P3
 status: open
 title: "Add aggregate-tier counter escalation to holding-without-named-dependency rule — per-chain N=6 alone misses across-chain dwell when peer main-moves provide periodic resets"

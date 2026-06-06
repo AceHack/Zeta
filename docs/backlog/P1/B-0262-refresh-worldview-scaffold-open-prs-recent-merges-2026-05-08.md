@@ -1,5 +1,6 @@
 ---
 id: B-0262
+zetaid: 081KR2E4K0008QG0R001DYCKNH
 priority: P1
 status: closed
 title: "refresh-worldview scaffold - open-PR list + recent-merges query"

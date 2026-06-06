@@ -1,5 +1,6 @@
 ---
 id: B-0134
+zetaid: 081KQGDBJ0008QG0R0032X1MMC
 priority: P2
 status: open
 title: Type-theoretic encoding of orthogonality discipline (extension vs creation as decidable judgment)

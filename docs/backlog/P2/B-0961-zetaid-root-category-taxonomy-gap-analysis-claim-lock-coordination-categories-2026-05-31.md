@@ -1,5 +1,6 @@
 ---
 id: B-0961
+zetaid: 081KSXN940008QG0R000JZVFXX
 title: ZetaId root-category taxonomy — gap analysis + DEFERRAL (model Claim/Lock as typed events first; promote to root Category only after producers + identity-rule + growth-theory)
 status: open
 priority: P2

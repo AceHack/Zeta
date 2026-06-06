@@ -1,5 +1,6 @@
 ---
 id: B-0543
+zetaid: 081KRMEXM0008QG0R002YSPW1X
 title: QG isomorphism proof path — Remember-When + Pay-Attention root axioms → infinite-poker-game → quantum gravity (defeat the algo-wink critique by grounding the cosmology in falsifiable physics)
 priority: P2
 status: open

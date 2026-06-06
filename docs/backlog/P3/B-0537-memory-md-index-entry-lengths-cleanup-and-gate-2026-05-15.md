@@ -1,5 +1,6 @@
 ---
 id: B-0537
+zetaid: 081KRMEXM0008QG0R0034SS319
 priority: P3
 status: open
 title: "memory/MEMORY.md index-entry length cleanup (100 long entries) + CI gate"

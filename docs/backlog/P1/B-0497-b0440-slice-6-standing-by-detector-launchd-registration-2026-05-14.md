@@ -1,5 +1,6 @@
 ---
 id: B-0497
+zetaid: 081KRHWGX0008QG0R003NT6DY9
 priority: P1
 status: open
 title: "B-0440 slice 6 — standing-by-detector launchd plist + AUTONOMOUS-LOOP.md wiring update"

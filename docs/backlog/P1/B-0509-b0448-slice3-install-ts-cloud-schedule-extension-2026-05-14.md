@@ -1,5 +1,6 @@
 ---
 id: B-0509
+zetaid: 081KRHWGX0008QG0R0014D2T5E
 priority: P1
 status: closed
 title: "B-0448 slice 3 — Extend tools/routines/install.ts to detect + surface cloud-schedule.json"

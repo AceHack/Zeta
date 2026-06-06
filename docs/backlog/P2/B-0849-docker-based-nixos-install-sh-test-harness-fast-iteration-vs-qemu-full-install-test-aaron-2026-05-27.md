@@ -1,5 +1,6 @@
 ---
 id: B-0849
+zetaid: 081KSKBP80008QG0R000E3RKPK
 priority: P2
 status: open
 title: docker-based NixOS install.sh test harness — fast iteration on tools/setup/install.sh + linux.sh changes; complements B-0831 cascade #6 QEMU full-install-test (slow) with seconds-per-iteration loop; "easy dockerfile" per operator framing (Aaron 2026-05-27)

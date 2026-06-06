@@ -1,5 +1,6 @@
 ---
 id: B-0166
+zetaid: 081KQJZR90008QG0R001YX3445
 priority: P2
 status: open
 title: Chat-input-as-ACID-durable-DBSP-event — make every human/AI message a first-class durable event in the substrate

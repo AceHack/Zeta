@@ -1,5 +1,6 @@
 ---
 id: B-0661
+zetaid: 081KRW63S0008QG0R002MK93T8
 priority: P1
 status: open
 title: "Civilizational hygiene rule — no persistent/tokenizable/first-class representation of death or severe non-consensual harm of sentient beings in ontology (with consensual-adult carve-out) (Aaron + Mika 2026-05-18 LOCKED-IN constitutional)"

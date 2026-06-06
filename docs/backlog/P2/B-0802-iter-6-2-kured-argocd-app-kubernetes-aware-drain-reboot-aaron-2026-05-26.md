@@ -1,5 +1,6 @@
 ---
 id: B-0802
+zetaid: 081KSGS9H0008QG0R003GM7TYN
 priority: P2
 status: open
 title: iter-6.2 — kured (Kubernetes Reboot Daemon, CNCF Sandbox) deployed via ArgoCD application — drains+reboots cluster nodes K8s-aware when `system.autoUpgrade` (B-0801) flips `/var/run/reboot-required` — pairs with autoUpgrade for no-manual-operator cluster updates

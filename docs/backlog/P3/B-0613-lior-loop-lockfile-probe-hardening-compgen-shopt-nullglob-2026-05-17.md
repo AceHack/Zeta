@@ -1,5 +1,6 @@
 ---
 id: B-0613
+zetaid: 081KRSKQ20008QG0R002TH55X6
 priority: P3
 status: closed
 title: "Lior loop lockfile-probe hardening — replace bare `ls .git/worktrees/*/lock` with portable `find` (Option C; resolved as zsh-portable since Lior's runtime is zsh)"

@@ -1,5 +1,6 @@
 ---
 id: B-0865
+zetaid: 081KSKBP80008QG0R003NM9XEC
 priority: P2
 status: open
 title: Zeta instantiation of ARC-AGI-3-style benchmark — USB-boot as starting state; DevOps objectives as the "levels" (NOT hand-crafted video-game-grid levels like canonical ARC); agents go through real operational substrate (operator 2026-05-27)

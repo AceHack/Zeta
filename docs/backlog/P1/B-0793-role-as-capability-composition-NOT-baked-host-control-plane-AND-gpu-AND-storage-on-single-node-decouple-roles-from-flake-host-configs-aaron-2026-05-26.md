@@ -1,5 +1,6 @@
 ---
 id: B-0793
+zetaid: 081KSGS9H0008QG0R000EDNTY5
 priority: P1
 status: open
 title: Role-as-capability-composition (NOT baked host) — a single node can be control-plane AND gpu-worker AND storage simultaneously; refactor nixos/hosts/{role}/configuration.nix → composable nixos/modules/role-*.nix capability modules; iter-5.2 hostname injection (B-0792) is partial fix at hostname scope but role-stack-as-baked-host-config remains the architectural blocker

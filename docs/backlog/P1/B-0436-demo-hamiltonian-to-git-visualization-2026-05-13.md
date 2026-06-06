@@ -1,5 +1,6 @@
 ---
 id: B-0436
+zetaid: 081KRFA460008QG0R0009TXX5S
 priority: P1
 status: open
 title: "Demo — Hamiltonian-to-git visualization (git history → phase-space rendering)"

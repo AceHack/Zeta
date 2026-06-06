@@ -1,5 +1,6 @@
 ---
 id: B-0663
+zetaid: 081KRW63S0008QG0R000488SY1
 priority: P3
 status: closed
 title: "tools/backlog/lint-frontmatter.ts — pre-push frontmatter discipline lint that mechanizes batch-7 recurring reviewer findings (Otto-CLI 2026-05-18)"

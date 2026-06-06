@@ -1,5 +1,6 @@
 ---
 id: B-0682
+zetaid: 081KS3X9Y0008QG0R000W00V73
 priority: P1
 status: in-progress
 title: ZetaId canonical string encoding (Crockford base32) + endianness + bit-numbering spec

@@ -1,5 +1,6 @@
 ---
 id: B-0301
+zetaid: 081KR2E4K0008QG0R0035QVX6S
 priority: P1
 status: open
 title: "Pages content sources - public inventory and exclusion boundary"

@@ -1,5 +1,6 @@
 ---
 id: B-0171
+zetaid: 081KQNJ500008QG0R001N94412
 priority: P1
 status: open
 title: OpenSpec catch-up — restore OpenSpec capabilities as canonical source-of-truth (Aaron 2026-05-03 architectural-debt naming; "if we deleted everything other than it [OpenSpec]")

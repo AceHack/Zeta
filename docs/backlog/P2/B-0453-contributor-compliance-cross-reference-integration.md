@@ -1,5 +1,6 @@
 ---
 id: B-0453
+zetaid: 081KRA5AR0008QG0R0004P7SWS
 priority: P2
 status: open
 title: Cross-reference CONTRIBUTOR-COMPLIANCE.md into AGENTS.md / CONTRIBUTING.md / GOVERNANCE.md

@@ -1,5 +1,6 @@
 ---
 id: B-0732
+zetaid: 081KSE6WT0008QG0R002YBWBB1
 priority: P1
 status: open
 created: 2026-05-25

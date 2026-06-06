@@ -1,5 +1,6 @@
 ---
 id: B-0920
+zetaid: 081KSNY2Z0008QG0R0017SRMHG
 title: MemoryLifetime DU — agent-initiated cleanup with history preservation (drafted / active / superseded / archived / retracted) — sibling to B-0919 MemoryBinding (Aaron 2026-05-28)
 status: open
 priority: P2

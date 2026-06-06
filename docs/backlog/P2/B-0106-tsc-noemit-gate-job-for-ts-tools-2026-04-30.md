@@ -1,5 +1,6 @@
 ---
 id: B-0106
+zetaid: 081KQDTYV0008QG0R000XFYDTT
 priority: P2
 status: closed
 title: Add `tsc --noEmit` gate job for tools/**.ts so type errors fail CI

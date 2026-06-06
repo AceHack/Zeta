@@ -1,5 +1,6 @@
 ---
 id: B-0005
+zetaid: 081KQ0YZ80008QG0R003GMGDRH
 priority: P2
 status: decomposed
 title: Split `docs/aurora/**` from courier-ferry archive — generalize "historical conversations imported from other AI systems / courier transport of messages between named entities" into its own directory

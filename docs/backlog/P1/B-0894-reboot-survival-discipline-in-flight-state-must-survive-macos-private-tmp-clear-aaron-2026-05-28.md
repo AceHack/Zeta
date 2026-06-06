@@ -1,5 +1,6 @@
 ---
 id: B-0894
+zetaid: 081KSNY2Z0008QG0R0032E7PCY
 title: Reboot-survival discipline — in-flight state must survive macOS `/private/tmp/` clear (worktrees + bus envelopes + bg-task output + sentinel)
 status: open
 priority: P1

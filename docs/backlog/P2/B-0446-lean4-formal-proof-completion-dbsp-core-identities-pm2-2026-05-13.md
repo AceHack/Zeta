@@ -1,5 +1,6 @@
 ---
 id: B-0446
+zetaid: 081KRFA460008QG0R00168759Y
 priority: P2
 status: open
 title: "Lean 4 formal proof completion — DBSP chain rule + core stream-calculus identities"

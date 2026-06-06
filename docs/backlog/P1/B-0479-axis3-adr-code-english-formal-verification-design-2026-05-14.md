@@ -1,5 +1,6 @@
 ---
 id: B-0479
+zetaid: 081KRHWGX0008QG0R0023DWW8D
 priority: P1
 status: open
 title: "Axis-3 ADR — Code/English + formal-verification three-axis design decision"

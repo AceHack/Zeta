@@ -1,5 +1,6 @@
 ---
 id: B-0051
+zetaid: 081KQ3HBZ0008QG0R002SM3G49
 priority: P2
 status: open
 title: Isomorphism / homomorphism catalog — consolidate the category-theory surface, identify gaps, lift to coherent track

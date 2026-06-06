@@ -1,5 +1,6 @@
 ---
 id: B-0087
+zetaid: 081KQ8P5D0008QG0R000JHD7AB
 priority: P1
 status: partial
 title: github-settings-drift.yml broken since PR #45 — option A landed (invalid permission removed); options B/C remain maintainer-gated

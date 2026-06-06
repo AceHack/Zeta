@@ -1,5 +1,6 @@
 ---
 id: B-0510
+zetaid: 081KRHWGX0008QG0R001VR9FNA
 priority: P1
 status: closed
 title: "B-0448 slice 4 — Author autonomous-loop/cloud-schedule.json (first Cloud Routine declaration)"

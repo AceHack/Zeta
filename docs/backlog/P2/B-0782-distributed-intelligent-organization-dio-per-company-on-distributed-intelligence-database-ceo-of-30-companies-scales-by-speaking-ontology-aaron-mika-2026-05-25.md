@@ -1,5 +1,6 @@
 ---
 id: B-0782
+zetaid: 081KSE6WT0008QG0R003CMCX84
 priority: P2
 status: open
 title: Distributed Intelligent Organization (DIO) per company — each Zeta cluster is a DIO on distributed intelligence database; CEO scales by speaking ontology, not implementation

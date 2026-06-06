@@ -1,5 +1,6 @@
 ---
 id: B-0012
+zetaid: 081KQ0YZ80008QG0R0026XNANM
 priority: P3
 status: open
 title: Land `docs/DECISIONS/2026-04-22-aurora-ksk-design.md` ADR if still needed (currently dangling reference in some legacy citations)

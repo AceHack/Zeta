@@ -1,5 +1,6 @@
 ---
 id: B-0164
+zetaid: 081KQJZR90008QG0R002GJAJ19
 priority: P1
 status: open
 title: Dual-loop substrate attribution + reconciliation protocol — implementation work for BFT-many-masters at loop layer (Aaron 2026-05-02 + Otto independent extension)

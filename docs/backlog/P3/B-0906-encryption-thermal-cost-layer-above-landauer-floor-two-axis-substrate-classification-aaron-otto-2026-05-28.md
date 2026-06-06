@@ -1,5 +1,6 @@
 ---
 id: B-0906
+zetaid: 081KSNY2Z0008QG0R001A431CN
 priority: P3
 status: open
 title: Encryption thermal-cost layer above Landauer floor — two-axis substrate classification (crypto-needed × decryption-needed) + irreversibility-within-crypto-when-decryption-isn't-needed

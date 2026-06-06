@@ -1,5 +1,6 @@
 ---
 id: B-0842
+zetaid: 081KSGS9H0008QG0R003V8C86Q
 priority: P2
 status: open
 title: universal basis-decomposition pattern — FFT + Picard/Shazam-style fingerprinting + Itron energy-disaggregation + reservoir-computing readout + Zeta substrate are all instances of `Σ ωᵢ sᵢ(t) ≈ y(t)` (Aaron 2026-05-26)

@@ -1,5 +1,6 @@
 ---
 id: B-0692
+zetaid: 081KS3X9Y0008QG0R001D454ZK
 priority: P2
 status: open
 title: Push-based hot-path — IPushOperator<'T> + per-entry callback bridged at materialize boundaries (Otto-VSCode 8-PR campaign PR #6)

@@ -1,5 +1,6 @@
 ---
 id: B-0805
+zetaid: 081KSGS9H0008QG0R002BC2ZR7
 priority: P1
 status: open
 title: iter-6.5 (capstone) — ALL nix-installed deps + ALL ArgoCD/Helm deps current-version audit + agent discipline encoding — Otto's training-data defaults to plausible-but-old versions; latest-deps-from-the-beginning principle requires search-first-authority on every pin

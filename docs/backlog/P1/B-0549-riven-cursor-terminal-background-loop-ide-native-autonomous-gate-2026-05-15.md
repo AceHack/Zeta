@@ -1,5 +1,6 @@
 ---
 id: B-0549
+zetaid: 081KRMEXM0008QG0R00037RGNY
 priority: P1
 status: open
 title: "Riven Cursor Terminal background loop — IDE-native autonomous gate with manager contract"

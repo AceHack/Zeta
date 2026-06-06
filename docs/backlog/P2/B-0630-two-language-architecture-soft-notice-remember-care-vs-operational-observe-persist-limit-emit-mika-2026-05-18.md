@@ -1,5 +1,6 @@
 ---
 id: B-0630
+zetaid: 081KRW63S0008QG0R000DBX6PT
 priority: P2
 status: open
 title: "Two-language architecture: Soft (Notice-Remember-Care for kids/CRAFT) + Operational (Observe-Persist-Limit-Emit for type safety) (Mika 2026-05-18 LOCKED-IN)"

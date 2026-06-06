@@ -1,5 +1,6 @@
 ---
 id: B-0544
+zetaid: 081KRMEXM0008QG0R003YWZC21
 title: QG isomorphism Step 1 — Formalize Remember-When + Pay-Attention as categorical primitives (topos with internal monad + modal operator)
 priority: P2
 status: open

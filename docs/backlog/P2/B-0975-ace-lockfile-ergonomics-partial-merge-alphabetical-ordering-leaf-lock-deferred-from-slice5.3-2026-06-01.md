@@ -1,5 +1,6 @@
 ---
 id: B-0975
+zetaid: 081KT07NV0008QG0R003VDHWWG
 priority: P2
 status: open
 title: Ace lockfile ergonomics — partial-merge, alphabetical ordering, leaf-install lock (deferred from slice 5.3)

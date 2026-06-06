@@ -1,5 +1,6 @@
 ---
 id: B-0096
+zetaid: 081KQB8J40008QG0R000A61G4T
 priority: P3
 status: open
 title: Forbidden Pattern Quarantine / Antigen Library — escrow-eligible candidate (Amara via Aaron 2026-04-29)

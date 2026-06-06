@@ -1,5 +1,6 @@
 ---
 id: B-0220
+zetaid: 081KQX9B50008QG0R001D089H3
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - definition precision and matrix-pill guardrails"

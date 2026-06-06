@@ -1,5 +1,6 @@
 ---
 id: B-0174
+zetaid: 081KQNJ500008QG0R002K338KN
 priority: P2
 status: open
 title: Cross-model tool-review convergence-rate replay protocol — measure how many review rounds different models need to settle on a tool-authoring PR (Otto 2026-05-03 sibling-instance of multi-harness convergence skill domain)

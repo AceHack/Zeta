@@ -1,5 +1,6 @@
 ---
 id: B-0400
+zetaid: 081KR7JY10008QG0R000R503K2
 priority: P1
 status: closed
 title: "Inter-agent ephemeral communication bus — NATS/F#/TS protocol for background service coordination"

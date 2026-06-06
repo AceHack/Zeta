@@ -1,5 +1,6 @@
 ---
 id: B-0419
+zetaid: 081KRA5AR0008QG0R003YJYT8F
 priority: P1
 status: open
 title: "Honest agenda amplification metric — actions weighted by agenda alignment"

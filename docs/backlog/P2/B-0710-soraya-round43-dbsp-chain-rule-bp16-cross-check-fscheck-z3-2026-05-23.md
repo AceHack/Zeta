@@ -1,5 +1,6 @@
 ---
 id: B-0710
+zetaid: 081KS923C0008QG0R003GHCG1P
 priority: P2
 status: open
 title: "Soraya round-43 hand-off — DBSP chain rule BP-16 cross-check (FsCheck cross-trace + Z3 pointwise lemma)"

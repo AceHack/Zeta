@@ -1,5 +1,6 @@
 ---
 id: B-0912
+zetaid: 081KSNY2Z0008QG0R003FBQ2RS
 priority: P3
 status: open
 title: Bridge today's B-0908-B-0911 attention-risk-pricing arc with pre-existing Aurora immune-system + Veridicality-detector + PoUW-CC + Maji + Veridicality.fs substrate

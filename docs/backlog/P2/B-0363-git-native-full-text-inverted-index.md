@@ -1,5 +1,6 @@
 ---
 id: B-0363
+zetaid: 081KR50HA0008QG0R00125PA8G
 priority: P2
 status: open
 title: "Git-native full-text inverted index — Lucene-style search over repo substrate"

@@ -1,5 +1,6 @@
 ---
 id: B-0788
+zetaid: 081KSE6WT0008QG0R000TMNCVS
 title: Agent-on-agent Claude Code session recovery — lift operator-runs gate for `--apply` once Zeta safety substrate stronger than classifier
 status: open
 priority: P3

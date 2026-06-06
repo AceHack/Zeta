@@ -1,5 +1,6 @@
 ---
 id: B-0725
+zetaid: 081KSE6WT0008QG0R002T0BFN4
 priority: P3
 status: open
 title: "Polyglot-accelerator hardware-shape extension — Coral / NCS / Jetson / FPGA beyond NVIDIA-only; activates as gadgets come out of drawer"

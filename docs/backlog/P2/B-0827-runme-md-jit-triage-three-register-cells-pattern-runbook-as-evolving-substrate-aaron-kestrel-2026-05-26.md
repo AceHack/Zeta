@@ -1,5 +1,6 @@
 ---
 id: B-0827
+zetaid: 081KSGS9H0008QG0R00123050G
 title: runme.md + JIT triage 3-register-cell workflow pattern — runbook as evolving substrate
 status: open
 priority: P2

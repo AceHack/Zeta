@@ -1,5 +1,6 @@
 ---
 id: B-0958
+zetaid: 081KSXN940008QG0R001A4WWX4
 priority: P1
 status: open
 title: "observe.ts agent-loop — implementation + testing checklist (the closed observe→execute→loadWorld loop; toward vendor-store distribution)"

@@ -1,5 +1,6 @@
 ---
 id: B-0582
+zetaid: 081KRQ1AB0008QG0R002469KJG
 priority: P1
 status: open
 title: "Substrate-level destructive-verb refusal gate — mechanical pre-call abort, forkable, enterprise-extensible (Kestrel layer-one)"

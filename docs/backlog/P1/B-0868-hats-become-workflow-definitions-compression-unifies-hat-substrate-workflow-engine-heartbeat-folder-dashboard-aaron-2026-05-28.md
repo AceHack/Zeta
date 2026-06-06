@@ -1,5 +1,6 @@
 ---
 id: B-0868
+zetaid: 081KSNY2Z0008QG0R0036KH026
 priority: P1
 status: open
 title: Hats become workflow definitions — compression unifying hat-substrate + workflow-engine (B-0867) + heartbeat-folder (B-0858) + tessellated-fire dashboard; canonical first-example use case for B-0867 v1; per-host adapters as hats; substrate-honest migration path from implicit-hat-conventions to explicit-hat-as-F#-DU-workflow-definitions (operator 2026-05-28)

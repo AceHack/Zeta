@@ -1,5 +1,6 @@
 ---
 id: B-0726
+zetaid: 081KSE6WT0008QG0R003C9KGQE
 priority: P2
 status: open
 title: "Reticulum throughout — cluster nodes AND edge devices on the same mesh; K8s and Reticulum compose as layers rather than partition by network tier"

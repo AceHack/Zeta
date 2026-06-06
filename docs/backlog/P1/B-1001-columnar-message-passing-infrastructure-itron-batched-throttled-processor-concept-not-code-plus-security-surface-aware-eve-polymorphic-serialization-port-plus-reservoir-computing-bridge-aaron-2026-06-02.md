@@ -1,5 +1,6 @@
 ---
 id: B-1001
+zetaid: 081KT2T2J0008QG0R000VG204F
 priority: P1
 status: open
 title: "Columnar message-passing infrastructure — Itron batched-throttled-processor batching (concept-not-code) + security-surface-aware Eve-polymorphic serialization port + the hex-core-Wall ↔ reservoir-computing bridge (Aaron 2026-06-02)"

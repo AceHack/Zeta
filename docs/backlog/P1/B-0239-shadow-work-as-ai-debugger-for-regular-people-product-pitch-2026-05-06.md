@@ -1,5 +1,6 @@
 ---
 id: B-0239
+zetaid: 081KQX9B50008QG0R001W40ZH8
 priority: P1
 status: open
 title: "Shadow work as AI debugger for regular people — product pitch + on-ramp design"

@@ -1,5 +1,6 @@
 ---
 id: B-0141
+zetaid: 081KQGDBJ0008QG0R0015RNK3P
 priority: P2
 status: open
 title: Brittle-pointer auto-rewriter — convert section-number pointers to anchor-links so markdown cross-references survive renumbering and partial-rename (Aaron 2026-05-01)

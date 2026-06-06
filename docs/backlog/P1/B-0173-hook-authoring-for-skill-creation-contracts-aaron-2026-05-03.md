@@ -1,5 +1,6 @@
 ---
 id: B-0173
+zetaid: 081KQNJ500008QG0R003ZC6PK8
 priority: P1
 status: open
 title: Hook authoring for skill-creation contracts — pre/post-condition enforcement at skill-creation + commit + PR-creation time (Aaron 2026-05-03 rule 3b from skill-design memo)

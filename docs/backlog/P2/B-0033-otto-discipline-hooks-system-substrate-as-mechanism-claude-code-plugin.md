@@ -1,5 +1,6 @@
 ---
 id: B-0033
+zetaid: 081KQ3HBZ0008QG0R0008RYCSX
 priority: P2
 status: decomposed
 title: Otto-discipline hooks system — convert recurring failure-modes from language-layer substrate to harness-layer mechanism via Claude Code hooks; package as plugin (Aaron 2026-04-26 insight from "eval" hook firing)

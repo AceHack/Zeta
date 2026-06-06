@@ -1,5 +1,6 @@
 ---
 id: B-0025
+zetaid: 081KQ0YZ80008QG0R0009EQNHP
 priority: P3
 status: closed
 title: Rename backlog schema field `directive:` → `ask:` per Otto-293 (one-way language at YAML schema layer); ~18 existing rows + tooling that reads the field

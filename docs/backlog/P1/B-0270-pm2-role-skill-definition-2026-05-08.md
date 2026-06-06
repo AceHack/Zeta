@@ -1,5 +1,6 @@
 ---
 id: B-0270
+zetaid: 081KR2E4K0008QG0R0035RG9G6
 priority: P1
 status: closed
 title: "PM-2 role - skill definition + persona agent"

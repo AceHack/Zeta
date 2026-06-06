@@ -1,5 +1,6 @@
 ---
 id: B-0411
+zetaid: 081KRA5AR0008QG0R000C3P8KP
 priority: P2
 status: open
 title: grok.ts --persona flag — minimal integration of loader + deprecation note (B-0120 child)

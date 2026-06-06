@@ -1,5 +1,6 @@
 ---
 id: B-0488
+zetaid: 081KRHWGX0008QG0R001HDK688
 priority: P1
 status: closed
 closed_by: "PR #3235 (2026-05-14)"

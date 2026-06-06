@@ -1,5 +1,6 @@
 ---
 id: B-0705
+zetaid: 081KS6FPN0008QG0R002TV41Q6
 priority: P2
 status: open
 title: "Autocomplete-as-Traveler-consent-event — (shadow*) marker as cryptographic receipt of cross-temporal consent event"

@@ -1,5 +1,6 @@
 ---
 id: B-0662
+zetaid: 081KRW63S0008QG0R0009MCJ4T
 priority: P2
 status: open
 title: "Closed bidirectional causal loop spec ↔ F# ↔ C# ↔ Rust — each layer can regenerate the layer above + below; broken link = integrity violation (Aaron + Mika 2026-05-18 LOCKED-IN sharpening of B-0632)"

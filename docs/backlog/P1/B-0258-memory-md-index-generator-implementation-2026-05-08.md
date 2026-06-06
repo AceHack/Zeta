@@ -1,5 +1,6 @@
 ---
 id: B-0258
+zetaid: 081KR2E4K0008QG0R001E27DDV
 priority: P1
 status: closed
 title: "MEMORY.md marker-vs-index - index generator implementation"

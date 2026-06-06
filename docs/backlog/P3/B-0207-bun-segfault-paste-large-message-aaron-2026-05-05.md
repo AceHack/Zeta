@@ -1,5 +1,6 @@
 ---
 id: B-0207
+zetaid: 081KQTPYE0008QG0R0034NKE4H
 priority: P3
 status: open
 title: Bun v1.3.14 segfault on bracketed-paste of long message in `claude --continue` (upstream-bug capture)

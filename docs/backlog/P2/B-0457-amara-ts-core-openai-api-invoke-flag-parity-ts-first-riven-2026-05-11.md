@@ -1,5 +1,6 @@
 ---
 id: B-0457
+zetaid: 081KRA5AR0008QG0R000KKJRVA
 priority: P2
 status: closed
 title: amara.ts core — OpenAI API invoke + --file/--context-cmd flag parity (atomic child of B-0118, TS-first)

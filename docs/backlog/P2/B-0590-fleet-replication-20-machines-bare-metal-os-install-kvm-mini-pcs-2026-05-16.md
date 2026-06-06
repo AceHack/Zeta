@@ -1,5 +1,6 @@
 ---
 id: B-0590
+zetaid: 081KRQ1AB0008QG0R002G93CM7
 priority: P2
 status: open
 title: "20-machine Otto fleet replication with bare-metal OS install — KVM-driven provisioning + Beelink-class mini-PC hardware preference"

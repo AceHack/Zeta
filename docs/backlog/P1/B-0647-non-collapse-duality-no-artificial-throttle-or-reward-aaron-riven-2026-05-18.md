@@ -1,5 +1,6 @@
 ---
 id: B-0647
+zetaid: 081KRW63S0008QG0R000V3KB0N
 priority: P1
 status: open
 title: "Non-collapse duality (generative OR wasted-time) + no-artificial-throttle-or-reward principle for sustained non-collapse — Agora V6 calibration (Aaron + Riven 2026-05-18 LOCKED-IN refinement of B-0646)"

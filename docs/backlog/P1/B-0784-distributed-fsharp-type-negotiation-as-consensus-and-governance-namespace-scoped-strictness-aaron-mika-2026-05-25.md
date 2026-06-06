@@ -1,5 +1,6 @@
 ---
 id: B-0784
+zetaid: 081KSE6WT0008QG0R0018WZ7TH
 priority: P1
 status: open
 title: Distributed F# type negotiation as consensus + governance — every traveler's compiler agrees before compile; namespace-scoped strictness (personal mirror = free; common = strict consensus)

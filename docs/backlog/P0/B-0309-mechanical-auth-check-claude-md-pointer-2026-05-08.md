@@ -1,5 +1,6 @@
 ---
 id: B-0309
+zetaid: 081KR2E4K0008QG0R0024JZ0CR
 priority: P0
 status: closed
 title: "Mechanical authorization check — CLAUDE.md discoverable-skill pointer"

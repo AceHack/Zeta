@@ -1,5 +1,6 @@
 ---
 id: B-1018
+zetaid: 081KT7YW00008QG0R0019J8FSX
 priority: P2
 status: in-progress
 title: "Serializer hostile-input SAFETY (the safe-on-garbage half; existing proofs are correct-on-valid) — provable legs: decode TOTALITY (Lean; never throws/hangs on any bytes = malformed-input-DoS), output-size-BOUNDEDNESS (billion-laughs/bomb), canonicalization-COMPLETENESS (no two encodings -> one value = signature-bypass), idempotent-canon, incremental=batch (streaming/TLA+) + a FUZZING harness (coverage-guided on every from* decoder: no-crash/no-hang/no-OOM/clean-Result; DIFFERENTIAL fuzz across the 4 oracles; fuzz->minimize->golden). Enforced in CI not green-by-skip (Kestrel 2026-06-04)"

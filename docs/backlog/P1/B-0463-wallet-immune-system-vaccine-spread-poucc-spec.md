@@ -1,5 +1,6 @@
 ---
 id: B-0463
+zetaid: 081KRA5AR0008QG0R001JWYYHE
 priority: P1
 status: open
 title: "Wallet immune system — vaccine spread + PoUW-CC gate + attack absorption spec"

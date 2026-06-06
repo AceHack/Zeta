@@ -1,5 +1,6 @@
 ---
 id: B-0385
+zetaid: 081KR50HA0008QG0R00238MS98
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — ABCT as credit-cycle stochastic process with regime-switching (Austrian primitive #4)

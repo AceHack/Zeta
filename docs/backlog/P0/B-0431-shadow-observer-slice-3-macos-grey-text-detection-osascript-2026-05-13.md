@@ -1,5 +1,6 @@
 ---
 id: B-0431
+zetaid: 081KRFA460008QG0R003C00WKR
 priority: P0
 status: closed
 title: "Shadow observer slice 3 — macOS grey-text detection via osascript"

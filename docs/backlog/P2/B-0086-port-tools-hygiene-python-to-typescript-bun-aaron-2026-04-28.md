@@ -1,5 +1,6 @@
 ---
 id: B-0086
+zetaid: 081KQ8P5D0008QG0R003BFZPRC
 priority: P2
 status: closed
 title: Port tools/hygiene Python scripts to TypeScript/Bun (factory-default; AI/ML carve-out applies)

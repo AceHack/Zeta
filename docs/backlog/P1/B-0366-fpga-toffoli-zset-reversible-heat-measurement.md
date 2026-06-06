@@ -1,5 +1,6 @@
 ---
 id: B-0366
+zetaid: 081KR50HA0008QG0R003T5MZAC
 priority: P1
 status: open
 title: "FPGA Toffoli-gate Z-set test — measure reversible vs irreversible heat dissipation"

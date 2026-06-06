@@ -1,5 +1,6 @@
 ---
 id: B-0194
+zetaid: 081KQTPYE0008QG0R001W1PS86
 priority: P2
 status: open
 title: IncrementalAuto dispatcher + checkBilinear law + capability detection (active-patterns over reflection) -- contract-by-convention gap in the algebra-capability system (Aaron 2026-05-05)

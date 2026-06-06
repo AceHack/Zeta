@@ -1,5 +1,6 @@
 ---
 id: B-0693
+zetaid: 081KS3X9Y0008QG0R003Y2X2T0
 priority: P2
 status: open
 title: Morsel/span-based execution — IMorselOperator + cache-sized chunked processing (Otto-VSCode 8-PR campaign PR #7)

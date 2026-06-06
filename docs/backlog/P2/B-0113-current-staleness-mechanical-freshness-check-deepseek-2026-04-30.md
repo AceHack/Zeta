@@ -1,5 +1,6 @@
 ---
 id: B-0113
+zetaid: 081KQDTYV0008QG0R002424VSE
 priority: P2
 status: open
 title: Mechanical CURRENT-staleness check — same-tick-update discipline as enforced rule, not vigilance (Deepseek 2026-04-30)

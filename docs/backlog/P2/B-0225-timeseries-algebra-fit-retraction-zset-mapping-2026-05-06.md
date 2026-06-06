@@ -1,5 +1,6 @@
 ---
 id: B-0225
+zetaid: 081KQX9B50008QG0R003Z7Z9EG
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - algebra fit, retraction, and ZSet mapping"

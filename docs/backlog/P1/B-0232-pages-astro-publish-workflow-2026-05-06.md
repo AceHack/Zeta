@@ -1,5 +1,6 @@
 ---
 id: B-0232
+zetaid: 081KQX9B50008QG0R001J6ARGX
 priority: P1
 status: open
 title: "GitHub Pages discoverability - Astro publish workflow"

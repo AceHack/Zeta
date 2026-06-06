@@ -1,5 +1,6 @@
 ---
 id: B-0041
+zetaid: 081KQ3HBZ0008QG0R001YBA1GZ
 priority: P3
 status: open
 title: Per-persona "My goals" notebook sections — roster-wide goal-formation authority landing

@@ -1,5 +1,6 @@
 ---
 id: B-0941
+zetaid: 081KSV2WD0008QG0R0004C8WV8
 priority: P2
 status: closed
 title: NixOS-native ollama for the local-LLM primitive — close the hole in the shield (NixOS test passes by SKIPPING, not validating)

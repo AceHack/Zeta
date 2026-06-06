@@ -1,5 +1,6 @@
 ---
 id: B-0922
+zetaid: 081KSKBP80008QG0R001T5WV30
 priority: P2
 status: open
 title: Integrate or remove unreferenced file src/Core/Consent/KskAuthorization.fs

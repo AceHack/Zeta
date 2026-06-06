@@ -1,5 +1,6 @@
 ---
 id: B-0909
+zetaid: 081KSNY2Z0008QG0R0003VAH0N
 priority: P3
 status: open
 title: BankerBot 2026-05-11 empirical anchor for B-0908 Phase 3 attention-risk backtesting (substrate-irreversibility specific-form domain on blockchain)

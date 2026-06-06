@@ -1,5 +1,6 @@
 ---
 id: B-0959
+zetaid: 081KSXN940008QG0R003FCQ7WT
 priority: P1
 status: open
 title: Zeta sovereign distributed-DB + agent-loop MASTER checklist — one git-native ZetaId Z-set substrate (algebra ladder · observe loop · git-native bus · distributed time · 4-oracle)

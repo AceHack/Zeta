@@ -1,5 +1,6 @@
 ---
 id: B-0038
+zetaid: 081KQ3HBZ0008QG0R0006NJP4K
 priority: P3
 status: open
 title: Superfluid substrate + persistable* + shape-shifter — kernel-vocabulary operationalization

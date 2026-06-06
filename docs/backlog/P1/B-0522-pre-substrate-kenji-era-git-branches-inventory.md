@@ -1,5 +1,6 @@
 ---
 id: B-0522
+zetaid: 081KRHWGX0008QG0R001Z1JM61
 priority: P1
 status: open
 title: Pre-substrate Kenji-era git branches and worktrees inventory

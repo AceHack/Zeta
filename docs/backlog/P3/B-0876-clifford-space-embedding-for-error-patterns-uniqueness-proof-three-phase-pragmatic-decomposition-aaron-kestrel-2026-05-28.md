@@ -1,5 +1,6 @@
 ---
 id: B-0876
+zetaid: 081KSNY2Z0008QG0R003KG3JTG
 priority: P3
 status: open
 title: Clifford-space embedding for error patterns + uniqueness proof — three-phase pragmatic decomposition (research)

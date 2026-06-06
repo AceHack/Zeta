@@ -1,5 +1,6 @@
 ---
 id: B-0942
+zetaid: 081KSV2WD0008QG0R0021XJ94E
 priority: P2
 status: open
 title: Co-dominant git mirrors + git-native CRDT coordination — no host needed for coordination (local + GitHub + GitLab/Gitea/Forgejo + free-OSS git as co-dominant collaborating mirrors)

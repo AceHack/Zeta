@@ -1,5 +1,6 @@
 ---
 id: B-0703
+zetaid: 081KS3X9Y0008QG0R00218150M
 priority: P2
 status: open
 title: "Multi-oracle consensus with BFT-inside + DST-agreement-across: trust-gradient architecture beyond single-layer BFT (Aaron 2026-05-21)"

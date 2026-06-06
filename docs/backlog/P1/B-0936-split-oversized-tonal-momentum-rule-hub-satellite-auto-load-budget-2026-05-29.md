@@ -1,5 +1,6 @@
 ---
 id: B-0936
+zetaid: 081KSRGFP0008QG0R002F5KY8Y
 priority: P1
 status: open
 title: Split oversized tonal-momentum rule into auto-loaded hub + companion satellite (40k char auto-load budget)

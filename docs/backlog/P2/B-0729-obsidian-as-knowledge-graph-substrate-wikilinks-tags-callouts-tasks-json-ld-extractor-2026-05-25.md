@@ -1,5 +1,6 @@
 ---
 id: B-0729
+zetaid: 081KSE6WT0008QG0R003RN2WE3
 priority: P2
 status: open
 title: "Obsidian as knowledge-graph substrate — wikilinks + frontmatter tags + callouts + Tasks-plugin format + JSON-LD extractor (5-layer adoption; team already uses Obsidian; extend where needed)"

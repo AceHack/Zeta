@@ -1,5 +1,6 @@
 ---
 id: B-0900
+zetaid: 081KSNY2Z0008QG0R001G7C89T
 priority: P3
 status: open
 title: Bell-like contextuality test with geographically distributed Zeta clusters — 5-tier experiment matrix; protocol for isolation + signed local random settings + delayed reveal

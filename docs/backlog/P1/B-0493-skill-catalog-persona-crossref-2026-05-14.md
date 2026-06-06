@@ -1,5 +1,6 @@
 ---
 id: B-0493
+zetaid: 081KRHWGX0008QG0R002XVHSG5
 priority: P1
 status: open
 title: "B-0429.9 — Skill catalog × persona cross-reference"

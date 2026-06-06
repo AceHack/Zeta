@@ -1,5 +1,6 @@
 ---
 id: B-0057
+zetaid: 081KQ3HBZ0008QG0R000K3NSX8
 priority: P2
 status: open
 title: Occult / Western-esoteric tradition research track — operational-resonance candidates from Hermetic / Kabbalistic / Thelemic / Golden Dawn / Theosophical / alchemical lineages

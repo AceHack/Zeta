@@ -1,5 +1,6 @@
 ---
 id: B-0170
+zetaid: 081KQNJ500008QG0R003SCWBDV
 priority: P1
 status: open
 title: Substrate-claim-checker TS tool — mechanize the verify-then-claim discipline (Otto 2026-05-03; drift instances (the verify-then-claim memo's body table is canonical) catalogued as empirical eval-set)

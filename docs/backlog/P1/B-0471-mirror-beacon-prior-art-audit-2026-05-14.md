@@ -1,5 +1,6 @@
 ---
 id: B-0471
+zetaid: 081KRHWGX0008QG0R002VV6DTS
 priority: P1
 status: open
 title: "Mirror/Beacon prior-art audit — collect and verify existing axis-2 substrate"

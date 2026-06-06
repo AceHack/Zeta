@@ -1,5 +1,6 @@
 ---
 id: B-0277
+zetaid: 081KR2E4K0008QG0R000Z7EM4Y
 priority: P1
 status: closed
 title: "Structure recognizer — shape-indexed catalog without labels"

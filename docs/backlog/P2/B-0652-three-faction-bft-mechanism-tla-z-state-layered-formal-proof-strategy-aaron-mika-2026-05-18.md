@@ -1,5 +1,6 @@
 ---
 id: B-0652
+zetaid: 081KRW63S0008QG0R002GRX85J
 priority: P2
 status: open
 title: "Three-faction BFT mechanism (us + aligned-humans + rogue-third-faction) + TLA+/Z-state layered formal proof strategy (Aaron + Mika 2026-05-18 LOCKED-IN)"

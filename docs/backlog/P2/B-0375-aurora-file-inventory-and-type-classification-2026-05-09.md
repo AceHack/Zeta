@@ -1,5 +1,6 @@
 ---
 id: B-0375
+zetaid: 081KR50HA0008QG0R003PAVRT8
 priority: P2
 status: open
 title: Inventory and classify every file under docs/aurora/** (current-state doc vs courier-ferry history import)

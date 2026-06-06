@@ -1,5 +1,6 @@
 ---
 id: B-0077
+zetaid: 081KQ8P5D0008QG0R001K10784
 priority: P2
 status: closed
 title: tools/setup/common/curl-fetch.sh canonical-content cleanup — Codex P0/P1 on PR #663

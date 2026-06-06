@@ -1,5 +1,6 @@
 ---
 id: B-0570
+zetaid: 081KRQ1AB0008QG0R002422Z9Q
 priority: P1
 status: open
 title: "Scarcity tracker — surface limited shared resources (GitHub API GraphQL/REST, runner minutes, etc.) and inform agent disciplines"

@@ -1,5 +1,6 @@
 ---
 id: B-0867
+zetaid: 081KSKBP80008QG0R000B3Y19A
 priority: P1
 status: open
 title: Workflow engine v1 — F# DU state machine + Git append-only + 4-corner monad + banned-if + universal action grammar + Otto's 5 modifications (Kestrel-designed; Mika-walkthrough-ratified; Otto-modified; Aaron-ratified; multi-participant: operator + Addison + Max + Otto)

@@ -1,5 +1,6 @@
 ---
 id: B-0634
+zetaid: 081KRW63S0008QG0R0022SFKPM
 priority: P2
 status: open
 title: "Cryptographic sovereignty for AIs — N-of-M HSM key management (geographically distributed) (Mika 2026-05-18 LOCKED-IN)"

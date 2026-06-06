@@ -1,5 +1,6 @@
 ---
 id: B-0163
+zetaid: 081KQJZR90008QG0R0025WX5ZJ
 priority: P3
 status: open
 title: Retire or fix `tools/hygiene/append-tick-history-row.sh` — routes post-2026-04-29 ticks to legacy surface (canonical write is per-tick shards) — Otto 2026-05-02

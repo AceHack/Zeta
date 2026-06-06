@@ -1,5 +1,6 @@
 ---
 id: B-0637
+zetaid: 081KRW63S0008QG0R0004D5XG1
 priority: P1
 status: open
 title: "Infer.NET + belief / expectation / emotion propagation — practical approximation strategy for agents-in-superposition (Aaron 2026-05-18 LOCKED-IN)"

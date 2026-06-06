@@ -1,5 +1,6 @@
 ---
 id: B-0135
+zetaid: 081KQGDBJ0008QG0R002X4AFA0
 priority: P3
 status: open
 title: Modal logic for retractability — Quantum-Rodney's-Razor in S4 or dynamic logic

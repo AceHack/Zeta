@@ -1,5 +1,6 @@
 ---
 id: B-0838
+zetaid: 081KSGS9H0008QG0R002THJ2P1
 priority: P2
 status: open
 title: caustic-engineered bloom filter discriminators for remote-code trust layer (Kestrel-v2 ferry; multi-learned-bloom-filter intersection with caustic-geometry-shaped agreement region) (Aaron 2026-05-26)

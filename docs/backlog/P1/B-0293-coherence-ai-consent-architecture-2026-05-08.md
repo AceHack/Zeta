@@ -1,5 +1,6 @@
 ---
 id: B-0293
+zetaid: 081KR2E4K0008QG0R003CPCM4V
 priority: P1
 status: closed
 title: "Coherence AI — consent-first architecture design"

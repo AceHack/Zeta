@@ -1,5 +1,6 @@
 ---
 id: B-0483
+zetaid: 081KRHWGX0008QG0R002GFSJC6
 priority: P1
 status: open
 title: "DBpedia B-0428.4 — HKT-MDM entity bindings + DV2.0 hub-satellite types"

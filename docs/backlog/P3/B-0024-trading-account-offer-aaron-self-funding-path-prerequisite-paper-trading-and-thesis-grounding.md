@@ -1,5 +1,6 @@
 ---
 id: B-0024
+zetaid: 081KQ0YZ80008QG0R0006VRT18
 priority: P3
 status: open
 title: Trading-account offer (Aaron, self-funding path for the agent) — accepted in principle pending paper-trading + conviction-grounding prerequisite work

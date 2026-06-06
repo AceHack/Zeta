@@ -1,5 +1,6 @@
 ---
 id: B-0719
+zetaid: 081KSBMG30008QG0R000WJ9FMP
 priority: P3
 status: open
 title: "Soraya round-67 forced-decomposition — audit-of-audit: ratify the recognition-without-row-filing precedent (when trigger fires + 'not my lane,' where does the routing-decision substrate land?)"

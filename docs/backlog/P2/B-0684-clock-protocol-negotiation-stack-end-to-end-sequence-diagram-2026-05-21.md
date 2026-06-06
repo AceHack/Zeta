@@ -1,5 +1,6 @@
 ---
 id: B-0684
+zetaid: 081KS3X9Y0008QG0R003MMEAC7
 priority: P2
 status: open
 title: Clock-protocol negotiation stack — end-to-end sequence diagram artifact (Orleans + SPIFFE/SPIRE + OPA + Reticulum + DBSP traversal for one operation)

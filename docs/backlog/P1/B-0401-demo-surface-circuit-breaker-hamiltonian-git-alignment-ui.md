@@ -1,5 +1,6 @@
 ---
 id: B-0401
+zetaid: 081KR7JY10008QG0R001VP6JWG
 priority: P1
 status: open
 title: "Demo surface — AI circuit breaker + Hamiltonian-to-git alignment UI + operational resonance dashboard integration"

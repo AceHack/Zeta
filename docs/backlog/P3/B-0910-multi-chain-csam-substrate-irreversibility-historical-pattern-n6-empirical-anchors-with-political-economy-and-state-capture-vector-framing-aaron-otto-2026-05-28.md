@@ -1,5 +1,6 @@
 ---
 id: B-0910
+zetaid: 081KSNY2Z0008QG0R000X6NHZ2
 priority: P3
 status: open
 title: Multi-chain CSAM substrate-irreversibility historical pattern — N=6+ web-verified empirical anchors + political-economy + state-capture-vector framing

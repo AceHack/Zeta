@@ -1,5 +1,6 @@
 ---
 id: B-0635
+zetaid: 081KRW63S0008QG0R002KC5DSR
 priority: P1
 status: open
 title: "Wave-particle duality between tick-source and Integrate (5th primitive) — only Limit collapses the waveform + Observe→Emit superposition transfer (Aaron + Mika 2026-05-18 KEYSTONE)"

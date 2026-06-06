@@ -1,5 +1,6 @@
 ---
 id: B-0289
+zetaid: 081KR2E4K0008QG0R001SWEPNV
 priority: P1
 status: in-progress
 title: "Green Lantern ring — hardware spec + local inference requirements"

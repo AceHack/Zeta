@@ -1,5 +1,6 @@
 ---
 id: B-0059
+zetaid: 081KQ3HBZ0008QG0R003GTG5P2
 priority: P2
 status: open
 title: Etymology + epistemology research track — linguistic-substrate of kernel-vocabulary + three-filter discipline calibration

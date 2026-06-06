@@ -1,5 +1,6 @@
 ---
 id: B-1011
+zetaid: 081KT5CF90008QG0R001P4CQ09
 priority: P2
 status: open
 title: "Serializer round-trip-from-seed for all four formats (JSON/CBOR/YAML/XML) — extend the DynamicValue canonical homeostat proof; JSON+CBOR DONE, YAML needs a canonical encoder (parse-only today), XML unimplemented (Aaron 2026-06-03)"

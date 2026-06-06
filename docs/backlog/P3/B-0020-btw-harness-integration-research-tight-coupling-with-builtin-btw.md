@@ -1,5 +1,6 @@
 ---
 id: B-0020
+zetaid: 081KQ0YZ80008QG0R000T0AJXS
 priority: P3
 status: open
 title: /btw harness-integration research — does our /btw integrate tightly with each harness's built-in btw equivalent? Claude Code / Codex / Gemini / Cursor surveys + tight-coupling design

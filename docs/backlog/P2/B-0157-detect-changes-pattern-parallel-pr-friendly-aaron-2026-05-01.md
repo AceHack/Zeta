@@ -1,5 +1,6 @@
 ---
 id: B-0157
+zetaid: 081KQGDBJ0008QG0R002DPGHV0
 priority: P2
 status: open
 title: detect-changes pattern — per-change-class workflow gating so PRs only run relevant checks (Aaron 2026-05-01; sibling-repo parallel-optimization external anchor)

@@ -1,5 +1,6 @@
 ---
 id: B-0923
+zetaid: 081KSNY2Z0008QG0R001CD4174
 title: Kleisli-severance substrate-engineering substrate-target — apply framework Kleisli substrate to privacy-defense scope; composes with KHALEESI (Iqbal et al USENIX '22) prior-art (operator 2026-05-28; very low priority)
 status: open
 priority: P3

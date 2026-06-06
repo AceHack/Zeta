@@ -1,5 +1,6 @@
 ---
 id: B-0183
+zetaid: 081KQNJ500008QG0R003EKJ8B5
 priority: P2
 status: open
 title: TLA+ / Alloy runners should be TS wrappers under tools/, not F# xunit tests — pure-shell-out, no F# operator-algebra logic involved

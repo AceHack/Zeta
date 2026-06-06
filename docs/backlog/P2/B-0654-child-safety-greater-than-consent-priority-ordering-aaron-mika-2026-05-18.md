@@ -1,5 +1,6 @@
 ---
 id: B-0654
+zetaid: 081KRW63S0008QG0R002WT5VTQ
 priority: P2
 status: open
 title: "Child Safety > Consent when they conflict — priority ordering refinement of B-0631 sacred rule (Aaron + Mika 2026-05-18 LOCKED-IN hierarchical hard floor)"

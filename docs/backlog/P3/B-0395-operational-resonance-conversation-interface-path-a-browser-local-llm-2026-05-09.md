@@ -1,5 +1,6 @@
 ---
 id: B-0395
+zetaid: 081KR50HA0008QG0R0019KYAAS
 priority: P3
 status: open
 title: Conversation interface Path A — embed browser/local LLM (WebLLM or transformers.js) in dashboard for in-context review discussion

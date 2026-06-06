@@ -1,5 +1,6 @@
 ---
 id: B-0006
+zetaid: 081KQ0YZ80008QG0R001V0XCYZ
 priority: P1
 status: closed
 title: MEMORY.md compression pass — distill entries to true one-liners; bring file under ~200-line cap

@@ -1,5 +1,6 @@
 ---
 id: B-0079
+zetaid: 081KQ8P5D0008QG0R002NYQ5PJ
 priority: P2
 status: closed
 title: tools/hygiene/audit-agencysignature-main-tip.ts hardening — 5 Codex findings on PR #663 (sh→ts ported)

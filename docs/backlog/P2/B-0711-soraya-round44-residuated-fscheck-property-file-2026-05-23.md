@@ -1,5 +1,6 @@
 ---
 id: B-0711
+zetaid: 081KS923C0008QG0R0005VM4FB
 priority: P2
 status: open
 title: "Soraya round-44 hand-off — Residuated FsCheck property file (Galois + residual + retraction equivalence)"

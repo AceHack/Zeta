@@ -1,5 +1,6 @@
 ---
 id: B-0830
+zetaid: 081KSGS9H0008QG0R00126RHQR
 title: Add ISO release-attach to build-ai-cluster-iso.yml workflow when Zeta starts tagging releases
 status: open
 priority: P3

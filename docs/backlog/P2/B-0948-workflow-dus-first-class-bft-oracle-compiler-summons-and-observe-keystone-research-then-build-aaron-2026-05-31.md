@@ -1,5 +1,6 @@
 ---
 id: B-0948
+zetaid: 081KSXN940008QG0R002B89QZ1
 priority: P2
 status: open
 title: Workflow DUs with first-class BFT oracle/compiler summons + observe.ts keystone -- research-to-get-clean then build

@@ -1,5 +1,6 @@
 ---
 id: B-0545
+zetaid: 081KRMEXM0008QG0R000ARAR7P
 priority: P2
 title: B-0498 ID collision — renumber sweep (Riven cursor-terminal scaffold → new ID)
 type: substrate-correction

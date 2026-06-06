@@ -1,5 +1,6 @@
 ---
 id: B-0460
+zetaid: 081KRHWGX0008QG0R001E9KEJ1
 priority: P1
 status: open
 title: "B-0441 slice 5.2 — work-assignment subscriber handler (agent-side claim-and-act)"

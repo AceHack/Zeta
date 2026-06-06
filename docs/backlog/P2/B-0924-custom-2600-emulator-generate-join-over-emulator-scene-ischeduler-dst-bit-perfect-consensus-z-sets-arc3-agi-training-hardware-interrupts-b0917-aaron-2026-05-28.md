@@ -1,5 +1,6 @@
 ---
 id: B-0924
+zetaid: 081KSNY2Z0008QG0R001HA43GG
 priority: P2
 status: open
 title: Custom Atari 2600 emulator + Generate+Join over emulator scene (vs imitation-learning) + IScheduler DST bit-perfect-consensus via z-sets + hardware interrupts via B-0917 substrate + ARC3-AGI training surface (operator 2026-05-28)

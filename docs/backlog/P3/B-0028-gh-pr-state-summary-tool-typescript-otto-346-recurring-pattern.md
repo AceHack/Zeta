@@ -1,5 +1,6 @@
 ---
 id: B-0028
+zetaid: 081KQ3HBZ0008QG0R0006Z5EXX
 priority: P3
 status: open
 title: Extract `tools/git/pr-state-summary.ts` (TypeScript) — gh-CLI-plus-JSON-parse pattern that I keep writing inline (Otto-346 application; per B-0015 P2 priority, target is TypeScript not Python or bash)

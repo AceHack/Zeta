@@ -1,5 +1,6 @@
 ---
 id: B-0871
+zetaid: 081KSNY2Z0008QG0R003R0Z7D2
 priority: P1
 status: open
 title: Reproducibility-as-causal-attribution substrate — USB-boot framework deployment + observability-stack-built-in-helm-charts + auto-DORA-collection + cross-replication-validation = resolves causal-attribution-of-AI-helps-DORA at substrate-engineering scope (operator 2026-05-28)

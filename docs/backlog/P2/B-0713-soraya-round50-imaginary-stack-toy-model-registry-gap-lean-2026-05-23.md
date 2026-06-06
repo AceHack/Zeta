@@ -1,5 +1,6 @@
 ---
 id: B-0713
+zetaid: 081KS923C0008QG0R002RH3EH8
 priority: P2
 status: open
 title: "Soraya round-50 hand-off — register Lean ImaginaryStack/ToyModel in verification-registry.md (sorry-bearing artifact with HaPPY-paper fidelity claim)"

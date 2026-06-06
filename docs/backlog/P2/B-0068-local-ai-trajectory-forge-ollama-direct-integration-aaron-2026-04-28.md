@@ -1,5 +1,6 @@
 ---
 id: B-0068
+zetaid: 081KQ8P5D0008QG0R002E1G72J
 priority: P2
 status: open
 title: Local AI trajectory — Forge CLI/harness + Ollama + direct local-model integration (umbrella)

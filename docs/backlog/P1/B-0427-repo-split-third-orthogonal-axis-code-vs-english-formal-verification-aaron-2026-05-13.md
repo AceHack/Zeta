@@ -1,5 +1,6 @@
 ---
 id: B-0427
+zetaid: 081KRFA460008QG0R000VKJF0H
 priority: P1
 status: decomposed
 title: "Repo-split THIRD orthogonal axis — code vs English + formal-verification-maybe-split + ruleset-divergence smell test"

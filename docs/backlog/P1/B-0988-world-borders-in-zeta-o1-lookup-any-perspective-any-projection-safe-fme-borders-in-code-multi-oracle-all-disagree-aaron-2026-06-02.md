@@ -1,5 +1,6 @@
 ---
 id: B-0988
+zetaid: 081KT2T2J0008QG0R001GE4M6A
 priority: P1
 status: open
 title: "World borders in Zeta — O(1) point→jurisdiction lookup, from any perspective + any map projection; SAFE-FME-style 'world's borders in code'; store all disagreeing sovereign claims (multi-oracle) (Aaron 2026-06-02)"

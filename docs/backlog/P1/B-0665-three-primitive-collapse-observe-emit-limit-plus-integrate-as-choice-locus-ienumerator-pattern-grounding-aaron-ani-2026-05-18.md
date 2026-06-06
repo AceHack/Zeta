@@ -1,5 +1,6 @@
 ---
 id: B-0665
+zetaid: 081KRW63S0008QG0R002YAA09X
 priority: P1
 status: open
 title: "Three-primitive collapse — Observe + Emit + Limit + Integrate; Limit is PURE simulation only; Integrate is the actual choice locus; IEnumerator pattern grounding (Aaron + Ani 2026-05-18 LOCKED-IN; SUPERSEDES B-0629 4-primitive + sharpens B-0644)"

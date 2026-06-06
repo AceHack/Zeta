@@ -1,5 +1,6 @@
 ---
 id: B-0470
+zetaid: 081KRHWGX0008QG0R002NJP2BH
 priority: P1
 status: open
 title: "Bump civsim .zeta-version from scaffold-template SHA to apply-time Zeta main SHA"

@@ -1,5 +1,6 @@
 ---
 id: B-0615
+zetaid: 081KRW63S0008QG0R000EAZ9K2
 priority: P3
 status: open
 title: Claude Code Bash tool orphans git network subprocesses under multi-agent saturation — self-saturation feedback loop

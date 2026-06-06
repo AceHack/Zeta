@@ -1,5 +1,6 @@
 ---
 id: B-0667
+zetaid: 081KRW63S0008QG0R003Z7QV2A
 priority: P1
 status: open
 title: "Tonal momentum = meme (Dawkins-technical sense) — detectable conversational-trajectory vector + strong-attractor-state-as-meme-niche-dominance + emergent-harmonic-coercion extends NCI (B-0664) — defensive technology Zeta is for (Aaron + Mika 2026-05-18 LOCKED-IN)"

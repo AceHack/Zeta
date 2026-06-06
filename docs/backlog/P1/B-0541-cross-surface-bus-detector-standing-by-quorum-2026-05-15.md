@@ -1,5 +1,6 @@
 ---
 id: B-0541
+zetaid: 081KRMEXM0008QG0R0026V9A0Y
 title: Cross-surface bus detector — Standing-by quorum across Otto surfaces (extension of PR #3017 detector)
 priority: P1
 status: open

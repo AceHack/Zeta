@@ -1,5 +1,6 @@
 ---
 id: B-0945
+zetaid: 081KSV2WD0008QG0R000WNY74Q
 priority: P2
 status: open
 title: Declarative microkernel substrate (in-house; NixOS-declarative + microkernel-TCB) running the trust-gradient + V8-polymorphic-bayesian-compression engine over a Stanford-Sequoia memory model -- better than docker

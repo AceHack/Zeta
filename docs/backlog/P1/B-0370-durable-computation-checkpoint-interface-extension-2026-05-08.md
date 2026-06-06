@@ -1,5 +1,6 @@
 ---
 id: B-0370
+zetaid: 081KR2E4K0008QG0R000ARCH0X
 priority: P1
 status: closed
 title: "Durable computation — extend Checkpoint.fs with StableStorage mode"

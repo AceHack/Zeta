@@ -1,5 +1,6 @@
 ---
 id: B-0640
+zetaid: 081KRW63S0008QG0R002XA5N6S
 priority: P1
 status: open
 title: "Bonsai trees + Rx queries — real-time implementation substrate for the Integrate 5th primitive (Aaron 2026-05-18 LOCKED-IN)"

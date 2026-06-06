@@ -1,5 +1,6 @@
 ---
 id: B-0403
+zetaid: 081KR7JY10008QG0R0021F5609
 priority: P1
 status: open
 title: "Weight-free verification — hat-and-timeboxed-authority mechanism + chaos testing"

@@ -1,5 +1,6 @@
 ---
 id: B-0197
+zetaid: 081KQTPYE0008QG0R003DK06PA
 priority: P2
 status: closed
 title: Lean DbspChainRule + chain-rule-proof-log -- correct Prop 3.5 misattribution to Theorem 3.3 (Aaron 2026-05-05)

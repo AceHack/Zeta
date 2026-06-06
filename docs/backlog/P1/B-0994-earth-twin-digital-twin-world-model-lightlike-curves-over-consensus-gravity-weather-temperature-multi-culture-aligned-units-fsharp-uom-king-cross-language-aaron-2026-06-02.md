@@ -1,5 +1,6 @@
 ---
 id: B-0994
+zetaid: 081KT2T2J0008QG0R0000H12VT
 priority: P1
 status: open
 title: "Earth-twin / digital-twin world-model — lightlike curves over consensus-gravity (visible in the Atsophmera/Atsophmere) + weather + temperature; multi-culture-aligned units, F# UOM is king, emulate cross-language (packages / own-interfaces / HKT-recursive-hacks) (Aaron 2026-06-02)"

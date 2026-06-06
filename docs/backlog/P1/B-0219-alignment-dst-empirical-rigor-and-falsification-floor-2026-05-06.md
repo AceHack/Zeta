@@ -1,5 +1,6 @@
 ---
 id: B-0219
+zetaid: 081KQX9B50008QG0R0026EHVW2
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - DST empirical-rigor and falsification floor"

@@ -1,5 +1,6 @@
 ---
 id: B-0371
+zetaid: 081KR2E4K0008QG0R001733JTN
 priority: P1
 status: open
 title: "Pages discoverability - SEO metadata, JSON-LD, and social previews"

@@ -1,5 +1,6 @@
 ---
 id: B-0774
+zetaid: 081KSE6WT0008QG0R001AZQA5Z
 priority: P2
 status: open
 title: Etcd-less k8s options — kine adapter family (SQLite/Postgres/MySQL/NATS/Dqlite) + Zeta-native DBSP+Raft endgame

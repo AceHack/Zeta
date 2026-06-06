@@ -1,5 +1,6 @@
 ---
 id: B-0222
+zetaid: 081KQX9B50008QG0R000Z511EV
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - Noether compounding-rigor pipeline"

@@ -1,5 +1,6 @@
 ---
 id: B-0860
+zetaid: 081KSKBP80008QG0R000J2YFK2
 priority: P3
 status: open
 title: Nemerle support for dotnet substrate — compile-time macro metaprogramming complementing F# type providers; enables language-native relationship-type-inference substrate (Aaron 2026-05-27)

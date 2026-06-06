@@ -1,5 +1,6 @@
 ---
 id: B-0010
+zetaid: 081KQ0YZ80008QG0R00264RY8Z
 priority: P3
 status: open
 title: Land `memory/index-conventions.md` capturing exception patterns for `memory/MEMORY.md` index (one-line-per-file convention + load-bearing exceptions like `observed-phenomena/` directory pointer)

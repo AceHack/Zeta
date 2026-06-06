@@ -1,5 +1,6 @@
 ---
 id: B-0440
+zetaid: 081KRFA460008QG0R001KC0VBH
 priority: P1
 status: open
 title: "Standing-by failure-mode detector — background service that catches idle-foreground + nudges via bus"

@@ -1,5 +1,6 @@
 ---
 id: B-0950
+zetaid: 081KSXN940008QG0R001V8NBDV
 priority: P3
 status: open
 title: Creator compensation via a multi-attribution contribution graph + weighted split (provenance, NOT DRM)

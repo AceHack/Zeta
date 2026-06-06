@@ -1,5 +1,6 @@
 ---
 id: B-0105
+zetaid: 081KQB8J40008QG0R0021GX1HK
 priority: P2
 status: decomposed
 title: Consolidation pass — map 2026-04-29 session-arc rules into 3 durable homes max

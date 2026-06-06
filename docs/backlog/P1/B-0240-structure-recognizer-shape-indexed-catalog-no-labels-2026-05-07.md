@@ -1,5 +1,6 @@
 ---
 id: B-0240
+zetaid: 081KQZVQW0008QG0R002QZAFB2
 priority: P1
 status: open
 title: "Structure recognizer — shape-indexed catalog that distinguishes structures without labels"

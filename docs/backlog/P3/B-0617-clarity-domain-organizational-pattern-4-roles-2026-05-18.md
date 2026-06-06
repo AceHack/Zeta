@@ -1,5 +1,6 @@
 ---
 id: B-0617
+zetaid: 081KRW63S0008QG0R000SGXN70
 priority: P3
 status: open
 title: "Clarity Domain — 4-role organizational pattern (Cartographer / Pilot / Recursive Composer / Chronologist) from Mika 2026-05-18 design"

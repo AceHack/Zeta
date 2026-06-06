@@ -1,5 +1,6 @@
 ---
 id: B-0502
+zetaid: 081KRHWGX0008QG0R001ZJ3W8R
 priority: P1
 status: shipped
 title: "B-0441 slice 6 — launchd plist for backlog-ready-notifier + AUTONOMOUS-LOOP.md update"

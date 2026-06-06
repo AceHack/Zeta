@@ -1,5 +1,6 @@
 ---
 id: B-0152
+zetaid: 081KQGDBJ0008QG0R00280ZEV2
 priority: P2
 status: open
 title: Topological quantum emulation via Bayesian inference in Zeta seed executor

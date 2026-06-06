@@ -1,5 +1,6 @@
 ---
 id: B-0792
+zetaid: 081KSGS9H0008QG0R003V23XNZ
 priority: P1
 status: open
 title: iter-5 wifi-credentials injection via USB ESP — homelab persona MOSTLY HAS NO ETHERNET; cluster must "remember the wifi on setup"; analogous to iter-4.x pubkey injection but for NetworkManager profile (Aaron 2026-05-26)

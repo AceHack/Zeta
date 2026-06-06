@@ -1,5 +1,6 @@
 ---
 id: B-0698
+zetaid: 081KS3X9Y0008QG0R0030B6KK0
 priority: P2
 status: open
 title: "ZSetW Phase 2 plan — operator + algorithm migration onto polymorphic Z-set substrate; tier-A operator parity (map/filter/cartesian/join/distinct/weightedCount); two worked-example algorithms (TropicalSemiring shortest-path; IntervalRing propagation); migration documentation for callers"

@@ -1,5 +1,6 @@
 ---
 id: B-0428
+zetaid: 081KRFA460008QG0R0018SN61J
 priority: P1
 status: decomposed
 title: "DBpedia via direct dotNetRDF + F# CE — HKT-MDM canonical demo (Path B, do now)"

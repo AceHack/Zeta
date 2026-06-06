@@ -1,5 +1,6 @@
 ---
 id: B-0929
+zetaid: 081KSRGFP0008QG0R003VAR9X2
 priority: P1
 title: "F# type-system goal — authorization-provenance as a TYPED property; shadow-auth is a TYPE ERROR (can't compile); compiler-as-asymmetric-critic catches shadow-auth-injection without a human present; the enabler of SAFE self-modifying DUs + wallet independence; concrete fork-decision criterion"
 status: open

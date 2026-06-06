@@ -1,5 +1,6 @@
 ---
 id: B-0482
+zetaid: 081KRHWGX0008QG0R001VKR0TH
 priority: P1
 status: open
 title: "DBpedia B-0428.3 — SPARQL F# computation expression (query authoring CE)"

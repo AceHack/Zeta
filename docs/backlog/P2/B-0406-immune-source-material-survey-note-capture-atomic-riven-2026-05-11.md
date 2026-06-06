@@ -1,5 +1,6 @@
 ---
 id: B-0406
+zetaid: 081KRA5AR0008QG0R003BSHKWV
 priority: P2
 status: open
 title: Immune source material survey + note capture (atomic research pass, child of B-0108)

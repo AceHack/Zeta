@@ -1,5 +1,6 @@
 ---
 id: B-0145
+zetaid: 081KQGDBJ0008QG0R000RWAA67
 priority: P1
 status: closed
 title: Product Manager (PM-2) role — research-to-predict-features-before-friction

@@ -1,5 +1,6 @@
 ---
 id: B-0443
+zetaid: 081KRFA460008QG0R000NVM36W
 priority: P2
 status: closed
 title: "Launch-substrate carve-out — persona naming allowed in docs/launch/** under existing closed-list pattern"

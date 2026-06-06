@@ -1,5 +1,6 @@
 ---
 id: B-0762
+zetaid: 081KSE6WT0008QG0R003FG3E8R
 priority: P2
 status: open
 title: AI auto-submit-back telemetry + fixes from in-the-wild installs — adoption-cost-to-zero flywheel

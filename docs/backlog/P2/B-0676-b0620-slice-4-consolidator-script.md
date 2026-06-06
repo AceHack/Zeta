@@ -1,5 +1,6 @@
 ---
 id: B-0676
+zetaid: 081KS1AX70008QG0R001Y9EN85
 status: open
 priority: P2
 title: B-0620 slice 4 consolidator script

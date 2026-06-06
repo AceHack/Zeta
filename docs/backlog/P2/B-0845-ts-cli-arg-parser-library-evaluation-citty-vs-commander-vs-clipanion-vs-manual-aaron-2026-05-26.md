@@ -1,5 +1,6 @@
 ---
 id: B-0845
+zetaid: 081KSGS9H0008QG0R0021K2X1T
 priority: P2
 status: open
 title: TS CLI arg-parser library evaluation — citty vs commander vs clipanion vs manual; choose canonical for Zeta's many shell-script-like TS tools (Aaron 2026-05-26)

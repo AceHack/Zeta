@@ -1,5 +1,6 @@
 ---
 id: B-0246
+zetaid: 081KQZVQW0008QG0R00348SHDZ
 priority: P1
 status: open
 title: "Green Lantern ring — IoT wearable running Genesis Seed with local inference + consent gating"

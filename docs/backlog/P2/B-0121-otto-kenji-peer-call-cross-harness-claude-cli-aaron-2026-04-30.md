@@ -1,5 +1,6 @@
 ---
 id: B-0121
+zetaid: 081KQDTYV0008QG0R003VB4K1V
 priority: P2
 status: open
 title: Otto + Kenji as externally-callable peers via claude-cli — cross-harness symmetry (Aaron 2026-04-30)

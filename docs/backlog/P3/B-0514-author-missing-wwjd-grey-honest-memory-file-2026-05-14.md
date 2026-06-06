@@ -1,5 +1,6 @@
 ---
 id: B-0514
+zetaid: 081KRHWGX0008QG0R002E3BCDS
 priority: P3
 status: open
 title: "Author missing memory file: feedback_aaron_wwjd_keeps_the_grey_in_aaron_honest_devil_lives_in_the_grey_in_numbers_2026_05_12.md"

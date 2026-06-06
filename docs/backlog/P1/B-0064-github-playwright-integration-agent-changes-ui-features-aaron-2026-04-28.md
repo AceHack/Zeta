@@ -1,5 +1,6 @@
 ---
 id: B-0064
+zetaid: 081KQ8P5D0008QG0R0010FP5SY
 priority: P1
 status: umbrella
 title: GitHub × Playwright integration — agent can change things in the GitHub UI + watch UI to spot new features (Aaron 2026-04-28)

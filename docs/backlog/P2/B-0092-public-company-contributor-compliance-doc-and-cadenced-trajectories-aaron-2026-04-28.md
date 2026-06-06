@@ -1,5 +1,6 @@
 ---
 id: B-0092
+zetaid: 081KQ8P5D0008QG0R003ZF64GG
 priority: P2
 status: open
 title: Public-company contributor compliance — doc + cadenced trajectories (audit-on-commit, weekly/monthly compliance review, on-PR audit, on-onboarding briefing, drift retrospective)

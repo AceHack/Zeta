@@ -1,5 +1,6 @@
 ---
 id: B-1009
+zetaid: 081KT2T2J0008QG0R001X9PWKR
 priority: P2
 status: open
 title: "z3 in CI — add z3 to gate.yml build-and-test so the Z3 SMT proofs are ENFORCED, not self-skipped (today the z3 CLI is installed in NO workflow → Z3.Laws.Tests.fs green-by-skip in the gate; assert-don't-skip hole) (Aaron 2026-06-02)"

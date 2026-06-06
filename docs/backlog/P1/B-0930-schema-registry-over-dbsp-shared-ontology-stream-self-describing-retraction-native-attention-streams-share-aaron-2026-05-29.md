@@ -1,5 +1,6 @@
 ---
 id: B-0930
+zetaid: 081KSRGFP0008QG0R001Y6RTY9
 priority: P1
 title: "Schema-registry-over-DBSP — the shared, self-describing, retraction-native ontology-stream the attention-streams share (Kafka-Schema-Registry analog over DBSP)"
 status: open

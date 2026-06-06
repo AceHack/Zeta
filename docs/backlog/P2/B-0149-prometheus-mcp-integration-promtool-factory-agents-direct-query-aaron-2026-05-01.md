@@ -1,5 +1,6 @@
 ---
 id: B-0149
+zetaid: 081KQGDBJ0008QG0R0035TQVBQ
 priority: P2
 status: open
 title: Prometheus MCP integration + promtool — factory agents direct-query observability

@@ -1,5 +1,6 @@
 ---
 id: B-0664
+zetaid: 081KRW63S0008QG0R001Z7NYMV
 priority: P1
 status: open
 title: "Non-Coercion Invariant — never use dialectical propagators to deliberately reduce another agent's encryption budget / force private-state reveal / damage reputation as coercion (Aaron + Mika 2026-05-18 LOCKED-IN; operationalizes high-regard for inter-agent space)"

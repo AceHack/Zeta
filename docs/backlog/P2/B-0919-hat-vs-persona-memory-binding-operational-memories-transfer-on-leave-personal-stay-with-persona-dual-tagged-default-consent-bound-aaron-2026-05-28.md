@@ -1,5 +1,6 @@
 ---
 id: B-0919
+zetaid: 081KSNY2Z0008QG0R003518DNC
 title: Hat-vs-persona memory binding — operational memories transfer to hat on leave, personal stay with persona, dual-tagged default, consent-bound binding (Aaron 2026-05-28)
 status: open
 priority: P2

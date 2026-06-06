@@ -1,5 +1,6 @@
 ---
 id: B-0292
+zetaid: 081KR2E4K0008QG0R001ZZ5XXF
 priority: P1
 status: open
 title: "Concordance AI — local GPU inference for structure recognition"

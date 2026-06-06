@@ -1,5 +1,6 @@
 ---
 id: B-0158
+zetaid: 081KQGDBJ0008QG0R003YPS5GB
 priority: P1
 status: open
 title: Adopt `.claude/rules/<rule>.md` pattern + carved-sentences-only constraint (Aaron 2026-05-01)

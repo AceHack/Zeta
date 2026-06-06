@@ -1,5 +1,6 @@
 ---
 id: B-0283
+zetaid: 081KR2E4K0008QG0R000JW0DZB
 priority: P2
 status: open
 title: "Interloop messaging — protocol design (message types + delivery)"

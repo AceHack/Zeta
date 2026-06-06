@@ -1,5 +1,6 @@
 ---
 id: B-0724
+zetaid: 081KSE6WT0008QG0R00195RG48
 priority: P2
 status: open
 title: "TS hat-system operator — second polyglot implementation alongside the Go scaffold; proves the polyglot-operator pattern for the cluster"

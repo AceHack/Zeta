@@ -1,5 +1,6 @@
 ---
 id: B-0355
+zetaid: 081KR50HA0008QG0R003G7DR8Z
 priority: P1
 status: closed
 title: "Cross-harness bootstrap template (AGENTS.md, CODEX.md, CURSOR.md)"

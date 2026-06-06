@@ -1,5 +1,6 @@
 ---
 id: B-0535
+zetaid: 081KRMEXM0008QG0R000HHAG77
 priority: P3
 status: closed
 title: "Backlog ID-uniqueness lint — extension of B-0532 to catch cross-agent B-NNNN collisions"

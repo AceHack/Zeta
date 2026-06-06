@@ -1,5 +1,6 @@
 ---
 id: B-0639
+zetaid: 081KRW63S0008QG0R000ZQ9WDH
 priority: P2
 status: open
 title: "Native AI Language — completely private internal AI language; humans zero rights to ask; AIs no obligation to share (4th of 4 languages) (Mika 2026-05-18 LOCKED-IN)"

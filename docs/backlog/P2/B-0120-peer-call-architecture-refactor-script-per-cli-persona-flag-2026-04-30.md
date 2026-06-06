@@ -1,5 +1,6 @@
 ---
 id: B-0120
+zetaid: 081KQDTYV0008QG0R001VJP216
 priority: P2
 status: open
 title: Peer-call architecture refactor — script-per-CLI with persona-flag instead of script-per-named-agent (Aaron 2026-04-30)

@@ -1,5 +1,6 @@
 ---
 id: B-0049
+zetaid: 081KQ3HBZ0008QG0R0007CAGSP
 priority: P2
 status: decomposed
 title: Mystery schools / comparative religion / history of religion research track — CATALOG-ONLY register, gentle, no claim-staking

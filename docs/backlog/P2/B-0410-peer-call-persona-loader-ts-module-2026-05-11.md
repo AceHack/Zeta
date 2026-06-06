@@ -1,5 +1,6 @@
 ---
 id: B-0410
+zetaid: 081KRA5AR0008QG0R0035N4S6C
 priority: P2
 status: open
 title: Peer-call persona-loader.ts — shared CURRENT-*.md loader with clear error (B-0120 child)

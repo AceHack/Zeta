@@ -1,5 +1,6 @@
 ---
 id: B-0889
+zetaid: 081KSNY2Z0008QG0R003FR5TVG
 priority: P1
 status: open
 title: Symbiotic cross-track self-healing — cloud KVMs power on + control + USB-boot local machines; local machines restart GitHub workflows; tracks reinforce each other (operator 2026-05-28 extension)

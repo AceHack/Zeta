@@ -1,5 +1,6 @@
 ---
 id: B-0879
+zetaid: 081KSNY2Z0008QG0R0031490KZ
 priority: P3
 status: open
 title: Observe / Emit / Limit / Simulate in Clifford space — unified geometric algebra for the 3-primitive + Simulate substrate

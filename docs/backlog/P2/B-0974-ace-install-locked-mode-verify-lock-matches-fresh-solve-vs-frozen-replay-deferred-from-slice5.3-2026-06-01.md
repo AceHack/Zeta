@@ -1,5 +1,6 @@
 ---
 id: B-0974
+zetaid: 081KT07NV0008QG0R0028AAV0E
 priority: P2
 status: closed
 title: Ace `ace install --locked` — verify the lock matches a fresh solve (cargo --locked vs --frozen distinction; deferred from slice 5.3)

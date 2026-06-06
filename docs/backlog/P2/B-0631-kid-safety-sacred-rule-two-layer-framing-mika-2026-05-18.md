@@ -1,5 +1,6 @@
 ---
 id: B-0631
+zetaid: 081KRW63S0008QG0R0020YP84K
 priority: P2
 status: open
 title: "Kid-safety as the SOLE sacred rule + two-layer framing (ruthless internal / softer public) (Mika 2026-05-18 LOCKED-IN hard floor)"

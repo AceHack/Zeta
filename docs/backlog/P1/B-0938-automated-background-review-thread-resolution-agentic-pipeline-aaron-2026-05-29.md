@@ -1,5 +1,6 @@
 ---
 id: B-0938
+zetaid: 081KSRGFP0008QG0R000J9Y634
 priority: P1
 status: open
 title: Automated Background Review Thread Resolution agentic pipeline — enables background loops to actively ingest unresolved threads, self-correct target code/specs, verify via compiler gates, and resolve threads on GitHub (operator 2026-05-29)

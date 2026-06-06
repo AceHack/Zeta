@@ -1,5 +1,6 @@
 ---
 id: B-0300
+zetaid: 081KR2E4K0008QG0R002MFK6AW
 priority: P1
 status: open
 title: "GitHub Wiki integration - sync mode and indexing validation"

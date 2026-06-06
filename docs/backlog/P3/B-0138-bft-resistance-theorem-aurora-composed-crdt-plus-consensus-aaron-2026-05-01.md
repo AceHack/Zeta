@@ -1,5 +1,6 @@
 ---
 id: B-0138
+zetaid: 081KQGDBJ0008QG0R0012FC7RX
 priority: P3
 status: open
 title: BFT-resistance theorem for Aurora — composed-CRDT-plus-consensus formal guarantee

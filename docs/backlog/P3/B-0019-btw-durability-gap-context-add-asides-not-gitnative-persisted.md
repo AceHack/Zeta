@@ -1,5 +1,6 @@
 ---
 id: B-0019
+zetaid: 081KQ0YZ80008QG0R002C5EC8F
 priority: P3
 status: open
 title: /btw durability gap — context-add and same-session-directive asides aren't gitnative-persisted; fresh sessions miss them; tighten classification or accept ephemeral-by-design

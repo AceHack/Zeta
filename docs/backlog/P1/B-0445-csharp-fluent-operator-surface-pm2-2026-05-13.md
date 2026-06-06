@@ -1,5 +1,6 @@
 ---
 id: B-0445
+zetaid: 081KRFA460008QG0R002JQERS5
 priority: P1
 status: closed
 title: "C# fluent operator surface — Map, Filter, Join, Distinct, Window via idiomatic CSharp API"

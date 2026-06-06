@@ -1,5 +1,6 @@
 ---
 id: B-0082
+zetaid: 081KQ8P5D0008QG0R0032HWBYK
 priority: P2
 status: open
 title: docs/GLOSSARY.md provenance entries use persona-name attribution; convert to role-refs

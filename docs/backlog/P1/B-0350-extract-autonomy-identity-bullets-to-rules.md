@@ -1,5 +1,6 @@
 ---
 id: B-0350
+zetaid: 081KR50HA0008QG0R001F2DBRV
 priority: P1
 status: closed
 title: "Extract autonomy/identity bullets to .claude/rules/"

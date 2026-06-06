@@ -1,5 +1,6 @@
 ---
 id: B-0517
+zetaid: 081KRHWGX0008QG0R0029X10F4
 priority: P3
 status: open
 title: "MEMORY.md index bloat cleanup + entry-length enforcement cadence"

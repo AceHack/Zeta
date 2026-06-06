@@ -1,5 +1,6 @@
 ---
 id: B-0505
+zetaid: 081KRHWGX0008QG0R002C038BJ
 priority: P1
 status: closed
 title: "B-0442 slice 5c — docs update (AUTONOMOUS-LOOP.md + bg/README.md) + B-0442 acceptance close"

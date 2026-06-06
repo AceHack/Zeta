@@ -1,5 +1,6 @@
 ---
 id: B-0319
+zetaid: 081KR2E4K0008QG0R0001FRW8H
 priority: P1
 status: closed
 title: "GitHub settings reconciliation — UI snapshot vs expected.json drift detection"

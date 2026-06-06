@@ -1,5 +1,6 @@
 ---
 id: B-0855
+zetaid: 081KSKBP80008QG0R000GPC0TB
 priority: P1
 status: open
 title: self-registration fires LAST (post-install + post-first-boot, when cluster is operational) + idempotent across reboots + de-duped against existing-registration AND in-flight-registration-PRs; cluster-agent coordination via /tmp folder OR Otto-pushes-PR-across-finish-line (Aaron 2026-05-27)

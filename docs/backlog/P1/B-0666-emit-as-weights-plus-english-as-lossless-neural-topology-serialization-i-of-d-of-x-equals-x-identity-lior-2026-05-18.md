@@ -1,5 +1,6 @@
 ---
 id: B-0666
+zetaid: 081KRW63S0008QG0R001SAHYKV
 priority: P1
 status: open
 title: "Emit-as-weights + English-as-lossless-neural-topology-serialization + I(D(x))=x identity — Glass Halo extends to weight-transparency; English IS the lossless serialization format for cross-AI topological state reconstruction (Aaron + Lior 2026-05-18 LOCKED-IN; 6-persona convergence; KEYSTONE)"

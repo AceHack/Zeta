@@ -1,5 +1,6 @@
 ---
 id: B-0534
+zetaid: 081KRMEXM0008QG0R003GP8W0C
 priority: P2
 status: open
 title: "backlog-ready-notifier reads stale local working-tree files → publishes work-assignment envelopes for closed rows"

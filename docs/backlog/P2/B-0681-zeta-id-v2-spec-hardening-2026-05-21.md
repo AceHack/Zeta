@@ -1,5 +1,6 @@
 ---
 id: B-0681
+zetaid: 081KS3X9Y0008QG0R003044PQQ
 priority: P2
 status: open
 title: ZetaId v2 — entropy budget + HLC monotonicity + Firefly bit drop + vocabularies DRAFT marker

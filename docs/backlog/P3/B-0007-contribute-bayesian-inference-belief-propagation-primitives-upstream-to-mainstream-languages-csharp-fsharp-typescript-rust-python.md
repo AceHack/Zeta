@@ -1,5 +1,6 @@
 ---
 id: B-0007
+zetaid: 081KQ0YZ80008QG0R001V1PMC0
 priority: P3
 status: open
 title: Contribute Bayesian inference + belief propagation primitives upstream to mainstream languages (C#, F#, TypeScript, Rust, Python, etc.)

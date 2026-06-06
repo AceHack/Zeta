@@ -1,5 +1,6 @@
 ---
 id: B-0791
+zetaid: 081KSGS9H0008QG0R002T3QMFD
 priority: P2
 status: open
 title: Microsoft VSCode-native "Agents window" surface is standardizing multi-harness ontology AT IDE SCOPE — Agents / Skills / Hooks / MCP Servers / Instructions as uniform vocabulary across .claude / .kiro / .cursor / .gemini / .codex; NOT an Anthropic-specific surface; platform-level external pull on Zeta's multi-harness substrate strategy

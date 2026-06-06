@@ -1,5 +1,6 @@
 ---
 id: B-0797
+zetaid: 081KSGS9H0008QG0R0033YXK4D
 priority: P2
 status: open
 title: Local user-scope memory ↔ in-repo git-memory delta audit + migrate substrate-to-git as autonomous-loop sometimes-task — Otto-CLI background service uses idle ticks to audit ~/.claude/projects/<slug>/memory/ vs in-repo memory/ + migrates substantive substrate via PRs; token-bounded; substrate-honest classification per file

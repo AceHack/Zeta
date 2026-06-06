@@ -1,5 +1,6 @@
 ---
 id: B-0160
+zetaid: 081KQJZR90008QG0R000FTJ1TC
 priority: P0
 status: closed
 title: Mechanical authorization check skill build — pace-instruction resolver per Claude.ai 2026-05-02 architectural correction

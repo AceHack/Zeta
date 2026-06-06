@@ -1,5 +1,6 @@
 ---
 id: B-0778
+zetaid: 081KSE6WT0008QG0R0004AP0ZA
 priority: P2
 status: open
 title: Carefully-curated commodity hardware reference for home-lab AI cluster — mini PCs + OCuLink eGPU + shared-memory AI CPUs + simple IP-KVM + remote finger

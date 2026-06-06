@@ -1,5 +1,6 @@
 ---
 id: B-0996
+zetaid: 081KT2T2J0008QG0R002RCX5MT
 priority: P1
 status: open
 title: "Zeta = engine · Agora = society · Superfluid = marketplace — three-layer positioning; Superfluid is the PRODUCT/corporate/marketplace name, NOT a metaphysical claim (Aaron 2026-06-02; naming-expert/Ilyana review before public use)"

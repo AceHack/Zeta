@@ -1,5 +1,6 @@
 ---
 id: B-0328
+zetaid: 081KR2E4K0008QG0R00393D6YF
 priority: P1
 status: closed
 title: "Update peer-call/README.md with kiro.ts + claude.ts entries"

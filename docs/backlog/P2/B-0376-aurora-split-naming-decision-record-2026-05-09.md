@@ -1,5 +1,6 @@
 ---
 id: B-0376
+zetaid: 081KR50HA0008QG0R0038HWCDT
 priority: P2
 status: open
 title: Architect decision record — canonical name for named-entity-conversation-imports directory

@@ -1,5 +1,6 @@
 ---
 id: B-0834
+zetaid: 081KSGS9H0008QG0R001RR3ZXQ
 priority: P2
 status: open
 title: installer must preserve install log to file — failures + warnings scroll past faster than operator can read (empirical from 2026-05-26 physical hardware-support test; gh login not reached) (Aaron 2026-05-26)

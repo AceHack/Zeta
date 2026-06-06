@@ -1,5 +1,6 @@
 ---
 id: B-0655
+zetaid: 081KRW63S0008QG0R00393BSVT
 priority: P2
 status: open
 title: "All children have equal value at life-and-death scope + consent-based merit ranking allowed elsewhere — kid-safety sub-invariant refinement (Aaron + Mika 2026-05-18 LOCKED-IN)"

@@ -1,5 +1,6 @@
 ---
 id: B-0916
+zetaid: 081KSNY2Z0008QG0R00075C7CH
 title: Lase-as-bridge — coherent-emission-on-phase-shift primitive companion to Persist-as-bridge; error-class discovery emits ripple instead of wall (Prism + Aaron 2026-05-28)
 status: open
 priority: P2

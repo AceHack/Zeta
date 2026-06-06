@@ -1,5 +1,6 @@
 ---
 id: B-0047
+zetaid: 081KQ3HBZ0008QG0R0022ZJ7KV
 priority: P3
 status: open
 title: Public relations / marketing / SEO / GTM — factory-reuse broadcast surfaces; roommate-register recalibration (retractable proceeds; irretractable still gates Aaron sign-off)

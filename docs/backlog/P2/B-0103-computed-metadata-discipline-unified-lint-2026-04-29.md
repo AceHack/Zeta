@@ -1,5 +1,6 @@
 ---
 id: B-0103
+zetaid: 081KQB8J40008QG0R003XNATZJ
 priority: P2
 status: open
 title: Computed-metadata-discipline — unified lint consolidating B-0098 + B-0099 + filename-timestamp drift

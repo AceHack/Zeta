@@ -1,5 +1,6 @@
 ---
 id: B-0272
+zetaid: 081KR2E4K0008QG0R001QZDAMQ
 priority: P1
 status: closed
 title: "Atari 2600 ROM canonical naming via TOSEC/No-Intro hash lookup"

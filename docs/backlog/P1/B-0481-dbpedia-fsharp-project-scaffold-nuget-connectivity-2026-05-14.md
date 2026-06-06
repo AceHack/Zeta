@@ -1,5 +1,6 @@
 ---
 id: B-0481
+zetaid: 081KRHWGX0008QG0R003MTMBGR
 priority: P1
 status: open
 title: "DBpedia B-0428.2 — F# project scaffold + NuGet add + connectivity smoke test"

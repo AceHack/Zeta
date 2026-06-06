@@ -1,5 +1,6 @@
 ---
 id: B-0071
+zetaid: 081KQ8P5D0008QG0R0030BTJZK
 priority: P2
 status: open
 title: Rename otto_275_forever memory out of "live-lock 9th pattern" subclass + reclassify per Otto-352 taxonomy split

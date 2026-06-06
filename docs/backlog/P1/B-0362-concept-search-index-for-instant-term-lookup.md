@@ -1,5 +1,6 @@
 ---
 id: B-0362
+zetaid: 081KR50HA0008QG0R000239VTZ
 priority: P1
 status: closed
 title: "Concept search index — pre-built term→file mapping for instant lookups"

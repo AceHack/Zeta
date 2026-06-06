@@ -1,5 +1,6 @@
 ---
 id: B-0455
+zetaid: 081KRA5AR0008QG0R0033TJSAF
 priority: P2
 status: open
 title: T4 onboarding briefing + T5 drift retrospective (trajectory packets)

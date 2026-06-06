@@ -1,5 +1,6 @@
 ---
 id: B-0688
+zetaid: 081KS3X9Y0008QG0R0010716X9
 priority: P2
 status: open
 title: Zeta incremental compiler host — DBSP Z-sets + Rx meta-AST tags + seeded deterministic simulation hardening

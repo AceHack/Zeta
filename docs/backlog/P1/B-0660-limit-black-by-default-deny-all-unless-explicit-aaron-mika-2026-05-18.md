@@ -1,5 +1,6 @@
 ---
 id: B-0660
+zetaid: 081KRW63S0008QG0R0004P69JA
 priority: P1
 status: open
 title: "Limit primitive defaults to BLACK (deny-all unless explicitly allowed) — security-first architectural posture (Aaron + Mika 2026-05-18 LOCKED-IN)"

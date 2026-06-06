@@ -1,5 +1,6 @@
 ---
 id: B-0142
+zetaid: 081KQGDBJ0008QG0R002WY918J
 priority: P2
 status: open
 title: Code Contracts revival — design-by-contract primitives enforcing pre/post-conditions and invariants at compile/runtime, not at review time (Aaron 2026-05-01; sibling of B-0141)

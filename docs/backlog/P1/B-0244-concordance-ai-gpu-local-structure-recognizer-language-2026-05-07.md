@@ -1,5 +1,6 @@
 ---
 id: B-0244
+zetaid: 081KQZVQW0008QG0R001PS4F8G
 priority: P1
 status: open
 title: "English language concordance AI on local GPUs — structure recognizer applied to language"

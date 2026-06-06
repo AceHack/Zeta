@@ -1,5 +1,6 @@
 ---
 id: B-0042
+zetaid: 081KQ3HBZ0008QG0R002GDRFS5
 priority: P2
 status: open
 title: Bungie corpus priority seed — Halo / Destiny / Marathon / Myth / Oni / Pathways Into Darkness / "Grimwar"

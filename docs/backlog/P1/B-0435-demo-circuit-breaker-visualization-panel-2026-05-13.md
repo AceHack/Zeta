@@ -1,5 +1,6 @@
 ---
 id: B-0435
+zetaid: 081KRFA460008QG0R001MC7D7R
 priority: P1
 status: open
 title: "Demo — circuit breaker visualization panel (mock data → live bus data)"

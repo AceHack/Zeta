@@ -1,5 +1,6 @@
 ---
 id: B-0704
+zetaid: 081KS3X9Y0008QG0R002MZF3A7
 priority: P2
 status: open
 title: "Secret-message-over-Reticulum via spectre-tile position-pressure — no-copy by geometry, not by cryptography (Aaron 2026-05-21)"

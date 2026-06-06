@@ -1,5 +1,6 @@
 ---
 id: B-0052
+zetaid: 081KQ3HBZ0008QG0R000FQ69NN
 priority: P3
 status: open
 title: Retractable emulators — design question (not implementation) for retractibility-preservation in Zeta's emulator surface

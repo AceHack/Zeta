@@ -1,5 +1,6 @@
 ---
 id: B-0844
+zetaid: 081KSGS9H0008QG0R001EZKNCB
 priority: P1
 status: open
 title: zflash --agent flag — native agent-driven auto-type challenge implementation closing the docstring-vs-actual-implementation gap; empirical anchor from 2026-05-26 USB-re-flash session (Aaron 2026-05-26)

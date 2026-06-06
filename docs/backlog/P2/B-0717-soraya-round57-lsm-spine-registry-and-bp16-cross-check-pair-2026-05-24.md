@@ -1,5 +1,6 @@
 ---
 id: B-0717
+zetaid: 081KSBMG30008QG0R003B46GWG
 priority: P2
 status: open
 title: "Soraya round-57 hand-off — LSM Spine cluster registry-rows + BP-16 cross-check pair (SpineAsyncProtocol candidate-P0 TLA+/code-drift gap)"

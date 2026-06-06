@@ -1,5 +1,6 @@
 ---
 id: B-0475
+zetaid: 081KRHWGX0008QG0R000M9RFY2
 priority: P1
 status: closed
 title: "Axis-3 prior-art audit — verify three-axis substrate composes without conflict"

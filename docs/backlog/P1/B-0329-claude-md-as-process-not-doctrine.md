@@ -1,5 +1,6 @@
 ---
 id: B-0329
+zetaid: 081KR2E4K0008QG0R001F0YB5S
 priority: P1
 status: closed
 title: "Replace CLAUDE.md doctrine with bootstrap process — rules emerge from walking, not memorizing"

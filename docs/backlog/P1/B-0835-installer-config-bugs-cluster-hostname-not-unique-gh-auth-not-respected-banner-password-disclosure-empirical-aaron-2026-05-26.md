@@ -1,5 +1,6 @@
 ---
 id: B-0835
+zetaid: 081KSGS9H0008QG0R00120EEHM
 priority: P1
 status: open
 title: installer config-bugs cluster — hostname not unique (shows control-plane); gh login not respected; login banner shows password text (default OR custom) (empirical from 2026-05-26 physical hardware-support test) (Aaron 2026-05-26)

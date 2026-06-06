@@ -1,5 +1,6 @@
 ---
 id: B-0013
+zetaid: 081KQ0YZ80008QG0R000J7N7YT
 priority: P3
 status: open
 title: Proper protocol better than Tor — replace Tor with better protocol once bootstrap stage passes (B-0009 follow-up)

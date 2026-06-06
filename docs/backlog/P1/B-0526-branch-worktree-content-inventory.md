@@ -1,5 +1,6 @@
 ---
 id: B-0526
+zetaid: 081KRHWGX0008QG0R00264BDSB
 priority: P1
 status: open
 title: Branch/worktree content inventory — Pre-substrate Kenji-era

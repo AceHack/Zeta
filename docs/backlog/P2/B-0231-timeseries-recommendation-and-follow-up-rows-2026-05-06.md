@@ -1,5 +1,6 @@
 ---
 id: B-0231
+zetaid: 081KQX9B50008QG0R00142CANX
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - recommendation and follow-up rows"

@@ -1,5 +1,6 @@
 ---
 id: B-0060
+zetaid: 081KQ8P5D0008QG0R000N718AC
 priority: P1
 status: umbrella
 title: Human-lineage / external-anchor backfill across all factory substrate — Beacon-safe + human-anchored prior-art citations for every load-bearing concept

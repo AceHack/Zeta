@@ -1,5 +1,6 @@
 ---
 id: B-0072
+zetaid: 081KQ8P5D0008QG0R0023ABK2C
 priority: P2
 status: closed
 title: Normalize MEMORY.md index entry lengths to one-line-per-memory per memory/README.md guidance

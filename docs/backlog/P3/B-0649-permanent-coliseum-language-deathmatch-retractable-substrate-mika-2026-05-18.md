@@ -1,5 +1,6 @@
 ---
 id: B-0649
+zetaid: 081KRW63S0008QG0R0020DGSK1
 priority: P3
 status: open
 title: "Permanent coliseum / language deathmatch — retractable-substrate enabler + no-privileged-language rule (Mika 2026-05-18 LOCKED-IN)"

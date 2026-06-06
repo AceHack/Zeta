@@ -1,5 +1,6 @@
 ---
 id: B-1005
+zetaid: 081KT2T2J0008QG0R003BT1RS7
 priority: P1
 status: open
 title: "Distributed tensor inference over sharded factor graphs — the group of shards IS the tensor; BP/EP message-passing becomes distributed consensus; non-fused factor graph is the tension-preserving prior, a Bayesian model marginalizes over all fused implementations (the marginal IS the canonical form); membranes-as-jelly (Aaron + Prism 2026-06-02 observation)"

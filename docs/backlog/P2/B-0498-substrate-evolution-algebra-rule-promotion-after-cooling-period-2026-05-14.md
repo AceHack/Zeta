@@ -1,5 +1,6 @@
 ---
 id: B-0498
+zetaid: 081KRHWGX0008QG0R001XFRAHC
 priority: P2
 status: open
 title: "Substrate-evolution algebra (6 invariants + HKT − Rodney's Razor) rule-promotion after cooling period"

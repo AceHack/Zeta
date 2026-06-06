@@ -1,5 +1,6 @@
 ---
 id: B-0112
+zetaid: 081KQDTYV0008QG0R003MV3WAR
 priority: P2
 status: open
 title: Stale 2026-04-27 project file internals-bleed-out cleanup

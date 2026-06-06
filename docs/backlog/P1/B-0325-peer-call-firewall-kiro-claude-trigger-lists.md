@@ -1,5 +1,6 @@
 ---
 id: B-0325
+zetaid: 081KR2E4K0008QG0R0005E727X
 priority: P1
 status: closed
 title: "Add KIRO + CLAUDE firewall trigger lists to _firewall.ts"

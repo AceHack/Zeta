@@ -1,5 +1,6 @@
 ---
 id: B-0179
+zetaid: 081KQNJ500008QG0R000S68KDE
 priority: P2
 status: open
 title: Fix SpineAsyncProtocol.tla counterexample (blocks B1 → A CI registration; depth-9 trace dump on TLC run)

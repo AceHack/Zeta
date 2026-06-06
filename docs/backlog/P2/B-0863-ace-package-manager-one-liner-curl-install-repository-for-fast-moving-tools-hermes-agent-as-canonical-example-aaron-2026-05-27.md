@@ -1,5 +1,6 @@
 ---
 id: B-0863
+zetaid: 081KSKBP80008QG0R000F4311E
 priority: P2
 status: open
 title: Ace package manager — one-liner `curl ... | bash` install repository for fast-moving tools that update faster than Homebrew can keep up; hermes-agent as canonical example (operator 2026-05-27)

@@ -1,5 +1,6 @@
 ---
 id: B-0953
+zetaid: 081KSXN940008QG0R001KZ235R
 title: Git-V2 handshake — F# looks-like-git, negotiates up to a DBSP/retraction-algebra protocol at agent-coordination speed; same objects both views; upstream the primitives to git
 status: open
 priority: P2

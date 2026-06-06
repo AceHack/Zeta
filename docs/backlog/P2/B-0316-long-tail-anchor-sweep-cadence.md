@@ -1,5 +1,6 @@
 ---
 id: B-0316
+zetaid: 081KR2E4K0008QG0R0032TWN5H
 priority: P2
 status: open
 title: "Long-tail external-anchor cadenced sweep — memory files + research docs"

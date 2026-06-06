@@ -1,5 +1,6 @@
 ---
 id: B-0560
+zetaid: 081KRQ1AB0008QG0R0001J9PFT
 priority: P3
 status: open
 title: "Autonomous-loop cron-cadence vs settled-state tension — design pause-mechanism or adaptive-cadence"

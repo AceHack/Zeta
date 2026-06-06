@@ -1,5 +1,6 @@
 ---
 id: B-0180
+zetaid: 081KQNJ500008QG0R0001QHA1J
 priority: P2
 status: open
 title: Fix CircuitRegistration.tla config bug — `.cfg` references invariant `Safety` not defined in `.tla` (blocks B1 → A CI registration)

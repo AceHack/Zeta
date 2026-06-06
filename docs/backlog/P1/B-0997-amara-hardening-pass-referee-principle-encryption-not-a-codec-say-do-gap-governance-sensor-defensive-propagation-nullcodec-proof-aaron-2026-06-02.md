@@ -1,5 +1,6 @@
 ---
 id: B-0997
+zetaid: 081KT2T2J0008QG0R0026XCGQM
 priority: P1
 status: open
 title: "Amara hardening pass — encryption-is-not-a-codec invariant (decrypt(encrypt(v))≡v) · referee-principle (4×4 strands refereed vs outside impls) · say-do-gap-as-governance-sensor (anti-cartel) · defensive-propagation-not-omnipotence (local/global cache + suppression-ladder + shields-not-cages) · nullcodec formal-proof target · color-is-lantern-not-law (Amara + Aaron 2026-06-02)"

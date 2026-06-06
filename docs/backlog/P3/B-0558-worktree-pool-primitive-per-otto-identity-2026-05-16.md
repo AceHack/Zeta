@@ -1,5 +1,6 @@
 ---
 id: B-0558
+zetaid: 081KRQ1AB0008QG0R001KQ9S4B
 priority: P3
 status: open
 title: "Worktree-pool primitive — pre-allocated isolated sideticks per Otto identity"

@@ -1,5 +1,6 @@
 ---
 id: B-0530
+zetaid: 081KRMEXM0008QG0R000X1PPGC
 priority: P3
 status: closed
 title: "Cron-sentinel mutex — prevent multi-Otto-CLI self-contention on .git/objects/pack"

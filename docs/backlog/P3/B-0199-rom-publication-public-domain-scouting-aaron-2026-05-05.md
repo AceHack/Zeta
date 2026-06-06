@@ -1,5 +1,6 @@
 ---
 id: B-0199
+zetaid: 081KQTPYE0008QG0R0028GRW88
 priority: P3
 status: open
 title: ROM publication -- scout legally-clear (public-domain or open-licensed) ROMs from Aaron's gitignored personal collection and publish for community use (Aaron 2026-05-05 absorb-and-contribute)

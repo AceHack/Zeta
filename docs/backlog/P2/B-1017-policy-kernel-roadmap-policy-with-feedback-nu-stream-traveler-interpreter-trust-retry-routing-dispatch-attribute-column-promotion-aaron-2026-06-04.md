@@ -1,5 +1,6 @@
 ---
 id: B-1017
+zetaid: 081KT7YW00008QG0R003N6PF8A
 priority: P2
 status: in-progress
 title: "Policy/fold kernel roadmap — F-level kernel + μF XML instance SHIPPED (d92115514); compose-later: (1) `Policy<input,decision,feedback>` evolution (select-not-mutate, Amara's blade) + ShapePath/ShapeContext, (2) νF stream/traveler interpreter, (3) trust/retry(Polly)/routing/dispatch interpreters reusing the kernel, (4) XML attribute-promotion slice, (5) Arrow column-promotion policy. Design once, interpret twice (μF=document, νF=stream) (Aaron 2026-06-04)"

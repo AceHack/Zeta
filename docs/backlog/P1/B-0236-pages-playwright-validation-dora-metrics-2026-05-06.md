@@ -1,5 +1,6 @@
 ---
 id: B-0236
+zetaid: 081KQX9B50008QG0R001XQV4M5
 priority: P1
 status: open
 title: "GitHub Pages discoverability - Playwright validation and DORA metrics"

@@ -1,5 +1,6 @@
 ---
 id: B-0614
+zetaid: 081KRSKQ20008QG0R0028VN0KR
 priority: P3
 status: open
 title: "Investigate forced-#6 meta-fallback edge case — when cycle has already-closed AND substrate-pool is genuinely saturated, the rule's 'ALWAYS works' claim has a counter-example"

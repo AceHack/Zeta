@@ -1,5 +1,6 @@
 ---
 id: B-0872
+zetaid: 081KSNY2Z0008QG0R000ZNRFCE
 priority: P2
 status: open
 title: OTel trace-ID composition with ZetaID — baggage propagation alongside W3C Trace Context for agent-loop events

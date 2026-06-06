@@ -1,5 +1,6 @@
 ---
 id: B-0286
+zetaid: 081KR2E4K0008QG0R000F6XXFT
 priority: P2
 status: open
 title: "ARC-4 — self-play implementation + training loop"

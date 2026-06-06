@@ -1,5 +1,6 @@
 ---
 id: B-0421
+zetaid: 081KRA5AR0008QG0R0011ZGRZT
 priority: P2
 status: closed
 title: "Grok peer-call failure — cursor-agent exit 1 during multi-agent review"

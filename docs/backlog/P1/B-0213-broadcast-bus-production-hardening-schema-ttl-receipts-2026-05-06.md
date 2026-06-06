@@ -1,5 +1,6 @@
 ---
 id: B-0213
+zetaid: 081KQX9B50008QG0R001YRPGD6
 priority: P1
 status: open
 title: "Broadcast bus production hardening — structured schema, TTL, receipts, conflict detection"

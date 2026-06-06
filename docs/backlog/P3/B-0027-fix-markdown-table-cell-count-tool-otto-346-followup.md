@@ -1,5 +1,6 @@
 ---
 id: B-0027
+zetaid: 081KQ3HBZ0008QG0R003WJ62HM
 priority: P3
 status: open
 title: Extract `tools/hygiene/fix-markdown-table-cell-count.py` — markdown-table-row-with-wrong-column-count fix tool (Otto-346 follow-up after honest-relapse-catch)

@@ -1,5 +1,6 @@
 ---
 id: B-0807
+zetaid: 081KSGS9H0008QG0R001K8P0FJ
 priority: P0
 status: closed
 title: "Classifier-bypass findings schema and redaction rules for B-0720"

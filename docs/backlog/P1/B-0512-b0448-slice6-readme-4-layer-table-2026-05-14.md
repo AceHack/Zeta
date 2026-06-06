@@ -1,5 +1,6 @@
 ---
 id: B-0512
+zetaid: 081KRHWGX0008QG0R003WEP6E9
 priority: P1
 status: open
 title: "B-0448 slice 6 — Update tools/routines/README.md with 4-layer catch-43 table"

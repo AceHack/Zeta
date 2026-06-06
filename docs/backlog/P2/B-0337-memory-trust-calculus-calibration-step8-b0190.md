@@ -1,5 +1,6 @@
 ---
 id: B-0337
+zetaid: 081KR2E4K0008QG0R001CCWHZ2
 priority: P2
 status: open
 title: Memory trust-calculus calibration — measure cross-instance transmission fidelity

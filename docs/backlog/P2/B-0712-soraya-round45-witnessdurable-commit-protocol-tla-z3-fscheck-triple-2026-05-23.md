@@ -1,5 +1,6 @@
 ---
 id: B-0712
+zetaid: 081KS923C0008QG0R001N2RSGJ
 priority: P2
 status: open
 title: "Soraya round-45 hand-off — WitnessDurable commit protocol (TLA+ spec + Z3 quorum-arithmetic lemma + FsCheck cross-check)"

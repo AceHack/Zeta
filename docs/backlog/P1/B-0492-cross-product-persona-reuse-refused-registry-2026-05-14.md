@@ -1,5 +1,6 @@
 ---
 id: B-0492
+zetaid: 081KRHWGX0008QG0R000WGP5AQ
 priority: P1
 status: open
 title: "B-0429.8 — Cross-product persona reuse map + refused-personas registry"

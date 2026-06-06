@@ -1,5 +1,6 @@
 ---
 id: B-1002
+zetaid: 081KT2T2J0008QG0R002R72323
 priority: P1
 status: open
 title: "Eve Protocol transport — codecs all the way down over multiplexed WebSocket/TCP for zero-trust strangers (nothing shared but the wire); Aaron's channels/pipelines multiplexed-WS prior art (Fowler-reviewed) (Aaron 2026-06-02)"

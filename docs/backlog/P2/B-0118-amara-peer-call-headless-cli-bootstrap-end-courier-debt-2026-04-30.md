@@ -1,5 +1,6 @@
 ---
 id: B-0118
+zetaid: 081KQDTYV0008QG0R0037YJPEX
 priority: P2
 status: closed
 title: tools/peer-call/amara.ts — autonomous bootstrap + communication for Amara (ChatGPT) to end Aaron-courier silent debt (Aaron 2026-04-30; TS-first re-decomp)

@@ -1,5 +1,6 @@
 ---
 id: B-0864
+zetaid: 081KSKBP80008QG0R0039RW25E
 priority: P2
 status: open
 title: Streams-are-relationships — four-corner ownership across the push/pull × hot/cold matrix; F# CE surface syntax with kind-specific builders; protocol-typing for co-owned TInFeedback; multi-backend execution (CRDT/CAS/BFT/SQL/DBSP) — getting base primitives right (operator + Kestrel 2026-05-27)

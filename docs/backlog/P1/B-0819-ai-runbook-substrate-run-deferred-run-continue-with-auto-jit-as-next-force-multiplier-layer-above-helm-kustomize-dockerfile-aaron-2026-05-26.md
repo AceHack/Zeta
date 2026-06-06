@@ -1,5 +1,6 @@
 ---
 id: B-0819
+zetaid: 081KSGS9H0008QG0R0005P83AP
 priority: P1
 status: open
 title: AI-runbook substrate — three primitives `run` + `deferred run / continue with` + `auto JIT` as the next force-multiplier layer above today's Helm+Kustomize+Dockerfile developer toolkit; substrate-engineering target for the AI-runbook layer Zeta is building (Aaron 2026-05-26)

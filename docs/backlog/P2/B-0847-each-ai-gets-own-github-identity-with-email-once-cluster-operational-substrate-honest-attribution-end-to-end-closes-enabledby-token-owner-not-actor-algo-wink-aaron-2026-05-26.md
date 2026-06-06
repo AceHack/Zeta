@@ -1,5 +1,6 @@
 ---
 id: B-0847
+zetaid: 081KSGS9H0008QG0R002T0XQ50
 priority: P2
 status: open
 title: each Zeta AI gets own GitHub identity + email once cluster operational — substrate-honest attribution end-to-end (closes the `gh enabledBy = token-owner ≠ actor` algo-wink-attribution-gap; Ilyana review for public-surface name + email before any creation) (Aaron 2026-05-26)

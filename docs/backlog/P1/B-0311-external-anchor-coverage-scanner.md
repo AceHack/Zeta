@@ -1,5 +1,6 @@
 ---
 id: B-0311
+zetaid: 081KR2E4K0008QG0R001ZWARTN
 priority: P1
 status: closed
 title: "External-anchor coverage scanner — per-concept anchor presence/absence audit"

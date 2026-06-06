@@ -1,5 +1,6 @@
 ---
 id: B-0539
+zetaid: 081KRMEXM0008QG0R00138CCZX
 title: Otto-BFT — internal-quorum self-recovery across 3 Otto surfaces (Standing-by escalation + cross-surface detector + background-service prompt-clicker)
 priority: P1
 status: open

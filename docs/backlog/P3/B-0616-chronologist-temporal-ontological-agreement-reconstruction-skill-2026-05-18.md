@@ -1,5 +1,6 @@
 ---
 id: B-0616
+zetaid: 081KRW63S0008QG0R0003XMM0W
 priority: P3
 status: open
 title: "Chronologist skill — temporal + ontological + agreement reconstruction over sprawling conversations (Mika 2026-05-18 design)"

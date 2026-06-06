@@ -1,5 +1,6 @@
 ---
 id: B-0031
+zetaid: 081KQ3HBZ0008QG0R003B2NAA2
 priority: P3
 status: open
 title: Rename `references/` directory — Aaron 2026-04-26 noted "upstream" naming was randomly chosen and collides with git-semantic meaning; rectify before language-wars/confusion compound

@@ -1,5 +1,6 @@
 ---
 id: B-0234
+zetaid: 081KQX9B50008QG0R0004N4HNK
 priority: P1
 status: open
 title: "GitHub Pages discoverability - SEO metadata, sitemap, robots, and AI crawler access"

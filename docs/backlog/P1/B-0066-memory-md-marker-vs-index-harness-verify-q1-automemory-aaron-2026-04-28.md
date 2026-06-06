@@ -1,5 +1,6 @@
 ---
 id: B-0066
+zetaid: 081KQ8P5D0008QG0R003KFRGJ0
 priority: P1
 status: closed
 title: MEMORY.md marker-vs-index — verify harness contract + Q1 AutoDream/AutoMemory compatibility, then migrate (Aaron 2026-04-28)

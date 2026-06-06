@@ -1,5 +1,6 @@
 ---
 id: B-1012
+zetaid: 081KT5CF90008QG0R00112FSD7
 priority: P2
 status: open
 title: "Responsible-disclosure DORA gate — split-clock metric (minimize discovery→sent, follow coordinated sent→public), hard-stop feature dev on slip, kid-floor escalation (unamendable, authorities/NCMEC, predetermined legal human-routed path) (Aaron 2026-06-03)"

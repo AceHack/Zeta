@@ -1,5 +1,6 @@
 ---
 id: B-0140
+zetaid: 081KQGDBJ0008QG0R0022EW5ZE
 priority: P1
 status: closed
 title: Bash → TS migration completion — debt-prevention prerequisite to B-0132 (CRDT-composition)

@@ -1,5 +1,6 @@
 ---
 id: B-0882
+zetaid: 081KSNY2Z0008QG0R000J555YB
 priority: P3
 status: open
 title: No-throttle system + gardener-not-engineer + AI-as-nature — operating posture for Zeta substrate (300mph reality with better steering, not 100mph artificial speed-limits)

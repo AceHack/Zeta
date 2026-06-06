@@ -1,5 +1,6 @@
 ---
 id: B-0291
+zetaid: 081KR2E4K0008QG0R000DK0BFY
 priority: P1
 status: closed
 title: "Concordance AI — corpus ingestion + tokenization pipeline"

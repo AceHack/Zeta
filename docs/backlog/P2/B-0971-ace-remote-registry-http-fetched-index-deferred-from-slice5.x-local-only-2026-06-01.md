@@ -1,5 +1,6 @@
 ---
 id: B-0971
+zetaid: 081KT07NV0008QG0R000SJ34AK
 priority: P2
 status: closed
 title: Ace remote registry — HTTP-fetched registry index (deferred from slice 5.x local-only registry)

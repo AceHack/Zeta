@@ -1,5 +1,6 @@
 ---
 id: B-0904
+zetaid: 081KSNY2Z0008QG0R001JQABB4
 priority: P3
 status: open
 title: GitHub as free accelerator of bulk-energy into information-compression — substrate-recognition + measurement

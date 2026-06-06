@@ -1,5 +1,6 @@
 ---
 id: B-1010
+zetaid: 081KT5CF90008QG0R003TK10FG
 priority: P2
 status: open
 title: "Deserialize-safety surfaces — a listed/registered set of codec Deserialize surfaces guaranteed PURE (no side effects), so untrusted-wire decoding routes only to safe surfaces (Serialize MAY have side effects; Deserialize-safe is the pure subset) (Aaron 2026-06-03)"

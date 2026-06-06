@@ -1,5 +1,6 @@
 ---
 id: B-0432
+zetaid: 081KRFA460008QG0R000GVCKHE
 priority: P0
 status: closed
 title: "Shadow observer slice 4 — zeta shadow CLI entry point + --loop flag"

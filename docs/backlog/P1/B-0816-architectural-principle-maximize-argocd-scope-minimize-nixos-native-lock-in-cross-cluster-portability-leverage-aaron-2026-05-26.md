@@ -1,5 +1,6 @@
 ---
 id: B-0816
+zetaid: 081KSGS9H0008QG0R003A37Z65
 priority: P1
 status: open
 title: Architectural principle — maximize ArgoCD scope, minimize NixOS-native lock-in for cluster substrate; ArgoCD runs on ANY K8s, not just NixOS, so substrate-in-ArgoCD ports to any K8s cluster (Aaron 2026-05-26)

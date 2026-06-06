@@ -1,5 +1,6 @@
 ---
 id: B-0783
+zetaid: 081KSE6WT0008QG0R003TBE2VB
 priority: P2
 status: open
 title: 'Eliminate tool wars — sharpening of B-0759 persona — NOT "humans do less" but "humans refocus intention to what really matters"'

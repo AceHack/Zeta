@@ -1,5 +1,6 @@
 ---
 id: B-0026
+zetaid: 081KQ0YZ80008QG0R001WZ4JE8
 priority: P2
 status: decomposed
 title: Embodiment-grounding analysis — Isaac Sim (or others) as additional axis of grounding for Claude/Otto, direct counter to Otto-340's "AI has no non-linguistic ground" claim

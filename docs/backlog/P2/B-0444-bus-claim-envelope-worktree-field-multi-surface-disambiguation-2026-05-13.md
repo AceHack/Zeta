@@ -1,5 +1,6 @@
 ---
 id: B-0444
+zetaid: 081KRFA460008QG0R001SXP0C2
 priority: P2
 status: closed
 title: "Bus claim envelope — add `worktree` field for multi-surface disambiguation + worktree-aware claim semantics"

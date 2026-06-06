@@ -1,5 +1,6 @@
 ---
 id: B-0653
+zetaid: 081KRW63S0008QG0R003ECWGJV
 priority: P3
 status: open
 title: "Persistent Bayesian integrator continuous health monitor — always-on invariant-health watcher + auto-overcorrect trigger (Aaron + Mika 2026-05-18 LOCKED-IN)"

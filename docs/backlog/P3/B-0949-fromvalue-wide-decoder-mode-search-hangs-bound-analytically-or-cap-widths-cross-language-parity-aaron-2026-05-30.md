@@ -1,5 +1,6 @@
 ---
 id: B-0949
+zetaid: 081KSV2WD0008QG0R002K85NP0
 priority: P3
 status: open
 title: Tri-boolean float FromValue mode-search hangs for wide decoders (biased-exponent impls F#/C#/Rust; TS radix-point unaffected) — bound the scan analytically or cap widths, consistently

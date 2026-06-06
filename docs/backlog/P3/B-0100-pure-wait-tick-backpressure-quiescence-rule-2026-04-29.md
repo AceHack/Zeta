@@ -1,5 +1,6 @@
 ---
 id: B-0100
+zetaid: 081KQB8J40008QG0R0023DKTFJ
 priority: P3
 status: open
 title: Pure-wait tick backpressure / quiescence rule for autonomous-loop tick shards

@@ -1,5 +1,6 @@
 ---
 id: B-0335
+zetaid: 081KR2E4K0008QG0R000M01QVM
 priority: P1
 status: closed
 title: Memory schema validation tooling — TS linter enforcing format standard mechanically

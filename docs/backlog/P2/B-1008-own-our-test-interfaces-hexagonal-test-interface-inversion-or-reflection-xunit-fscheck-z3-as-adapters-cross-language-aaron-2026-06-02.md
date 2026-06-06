@@ -1,5 +1,6 @@
 ---
 id: B-1008
+zetaid: 081KT2T2J0008QG0R003H5HVH4
 priority: P2
 status: open
 title: "Own our TEST interfaces — hexagonal/dependency-inversion on the test frameworks (test-interface-inversion OR reflection); xUnit / FsCheck / Z3 / Rust-test / TS-runner become swappable adapters behind our test-contract ports; no vendor test-interface in the core (Aaron 2026-06-02)"

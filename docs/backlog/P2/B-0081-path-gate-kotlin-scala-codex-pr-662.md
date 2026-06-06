@@ -1,5 +1,6 @@
 ---
 id: B-0081
+zetaid: 081KQ8P5D0008QG0R0010CW1RN
 priority: P2
 status: closed
 title: codeql.yml path-gate should match `*.kt` + `*.scala` not just `*.java` — Codex P2 on PR #662

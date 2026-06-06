@@ -1,5 +1,6 @@
 ---
 id: B-0898
+zetaid: 081KSNY2Z0008QG0R003WCDQTC
 priority: P3
 status: open
 title: Measure-as-bridge-operation — Infer.NET belief-update + Measure<TState, TOutcome, TFeedback> sibling to Persist-as-bridge

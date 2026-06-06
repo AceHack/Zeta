@@ -1,5 +1,6 @@
 ---
 id: B-0776
+zetaid: 081KSE6WT0008QG0R002275NDE
 priority: P1
 status: open
 title: Simplest-first plugin sequence — wrap already-deployed cluster substrate (Redis / NATS / CockroachDB / Temporal / Orleans / OPA) as Zeta interfaces, one at a time

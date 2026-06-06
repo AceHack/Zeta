@@ -1,5 +1,6 @@
 ---
 id: B-0839
+zetaid: 081KSGS9H0008QG0R002F1G7ER
 priority: P1
 status: open
 title: Artem Kirsanov computational-neuroscience YouTube channel — substrate capture (videos → code + research substrate) — composes with 1000 Brains (Hawkins) + Adinkras (Gates) + caustic bloom filters + Boltzmann machines as energy-based substrate (Aaron 2026-05-26)

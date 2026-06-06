@@ -1,5 +1,6 @@
 ---
 id: B-0338
+zetaid: 081KR2E4K0008QG0R000N124VW
 priority: P2
 status: open
 title: Memory graduation ladder — codify when feedback promotes to CLAUDE.md and when CLAUDE.md promotes to GOVERNANCE.md

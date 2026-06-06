@@ -1,5 +1,6 @@
 ---
 id: B-0153
+zetaid: 081KQGDBJ0008QG0R000E10AAM
 priority: P2
 status: open
 title: Pre-commit lint suite — consolidate the 13 mechanizable lint-classes characterized 2026-05-01

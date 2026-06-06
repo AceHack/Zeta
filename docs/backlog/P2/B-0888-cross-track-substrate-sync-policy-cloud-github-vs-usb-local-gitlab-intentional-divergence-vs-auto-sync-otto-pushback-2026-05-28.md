@@ -1,5 +1,6 @@
 ---
 id: B-0888
+zetaid: 081KSNY2Z0008QG0R003291CK8
 priority: P2
 status: open
 title: Cross-track substrate-sync policy — cloud-GitHub vs USB-local-GitLab; intentional divergence vs auto-sync-via-push-to-both-remotes vs hybrid

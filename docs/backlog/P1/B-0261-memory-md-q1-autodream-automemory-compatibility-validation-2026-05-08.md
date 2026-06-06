@@ -1,5 +1,6 @@
 ---
 id: B-0261
+zetaid: 081KR2E4K0008QG0R0004B55ND
 priority: P1
 status: closed
 title: "MEMORY.md marker-vs-index - Q1 AutoDream/AutoMemory compatibility validation"

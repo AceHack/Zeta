@@ -1,5 +1,6 @@
 ---
 id: B-1013
+zetaid: 081KT5CF90008QG0R002C943SC
 priority: P2
 status: open
 title: "Floor-change governance — unamendable-by-you + correctable only through a hard external process; asymmetric (strengthen easier than weaken); genuinely-independent multi-stakeholder public-good steward (capture-resistance = stakeholder independence); federate into existing child-safety bodies (Aaron 2026-06-03)"

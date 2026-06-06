@@ -1,5 +1,6 @@
 ---
 id: B-0123
+zetaid: 081KQDTYV0008QG0R0022KG2KY
 priority: P3
 status: open
 title: Stacked-PR creation tooling — `gh pr create --base <not-main>` fails with cryptic GraphQL error; needs a wrapper or doc (Aaron 2026-04-30)

@@ -1,5 +1,6 @@
 ---
 id: B-0394
+zetaid: 081KR50HA0008QG0R002NZENZJ
 priority: P3
 status: open
 title: MVP Operational Resonance Dashboard — first working "are things going as expected?" surface on GitHub Pages with tier grouping

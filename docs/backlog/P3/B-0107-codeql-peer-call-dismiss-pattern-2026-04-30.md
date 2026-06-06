@@ -1,5 +1,6 @@
 ---
 id: B-0107
+zetaid: 081KQDTYV0008QG0R000FNYMK3
 priority: P3
 status: open
 title: CodeQL `js/indirect-command-line-injection` dismissal pattern for peer-call siblings (gemini.ts, codex.ts)

@@ -1,5 +1,6 @@
 ---
 id: B-0022
+zetaid: 081KQ0YZ80008QG0R003JJHKPR
 priority: P3
 status: open
 title: Exchange-cluster capture 2026-04-25 — substance-vs-throughput diagnostic + Aaron-as-convincer + AI-resolves-decade-old-issues pattern + DeepMind/Lean status + Microsoft AI for Science (MatterGen/MatterSim) + tele+port+leap taxonomic refinement; preserve, decide later

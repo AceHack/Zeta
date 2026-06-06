@@ -1,5 +1,6 @@
 ---
 id: B-0990
+zetaid: 081KT2T2J0008QG0R002DFPSHX
 priority: P1
 status: open
 title: "Local-cluster dev-experience — simulated entities billed on a real live multi-node-redundant DB cluster + UI, all on ONE dev laptop, lightweight (Itron-proven; concept-not-code) (Aaron 2026-06-02)"

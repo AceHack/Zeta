@@ -1,5 +1,6 @@
 ---
 id: B-0622
+zetaid: 081KRW63S0008QG0R002V20TYJ
 priority: P3
 status: open
 title: "F# agent-wallet type-safety — banker-bot-class wallet errors won't compile (Mika 2026-05-18 design)"

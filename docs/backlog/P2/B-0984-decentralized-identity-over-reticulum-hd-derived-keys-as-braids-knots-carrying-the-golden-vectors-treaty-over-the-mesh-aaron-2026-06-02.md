@@ -1,5 +1,6 @@
 ---
 id: B-0984
+zetaid: 081KT2T2J0008QG0R003DMEKFH
 priority: P2
 status: open
 title: "Decentralized identity over Reticulum — HD-derived keys (identity/money/routing/signing) as braids/knots carrying the golden-vectors treaty over the mesh (Aaron 2026-06-02)"

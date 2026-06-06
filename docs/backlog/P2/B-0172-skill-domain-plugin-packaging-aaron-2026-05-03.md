@@ -1,5 +1,6 @@
 ---
 id: B-0172
+zetaid: 081KQNJ500008QG0R001VGMS5G
 priority: P2
 status: open
 title: Skill-domain plugin packaging — package mature skill domains as Claude Code plugins (Aaron 2026-05-03 rule 3a from skill-design memo)

@@ -1,5 +1,6 @@
 ---
 id: B-1004
+zetaid: 081KT2T2J0008QG0R0038CRFJM
 priority: P1
 status: open
 title: "Conform everything to the minimal HKT-composing vocabulary — INumerics + Rx/Bonsai-over-DBSP + Z-set/GSet/Bag/IndexedZSet (±1 retraction-native); INumerics sparingly; constraint breeds novelty; apply to the Infer.NET engine (factor-graph state/deltas → IndexedZSet + DBSP IVM) (Aaron 2026-06-02 observation)"

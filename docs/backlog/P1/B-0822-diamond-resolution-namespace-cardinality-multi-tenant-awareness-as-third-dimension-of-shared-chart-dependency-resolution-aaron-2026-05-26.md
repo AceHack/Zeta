@@ -1,5 +1,6 @@
 ---
 id: B-0822
+zetaid: 081KSGS9H0008QG0R0018ES3R4
 priority: P1
 status: open
 title: diamond-resolution namespace + cardinality + multi-tenant-awareness — three orthogonal properties on shared charts that determine whether the Maven-for-Helm graph deploys ONE shared instance or N per-consumer instances; substrate-engineering target for Ace package manager's chart-graph resolver (Aaron 2026-05-26)

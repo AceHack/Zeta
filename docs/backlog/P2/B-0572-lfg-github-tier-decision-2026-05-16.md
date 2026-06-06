@@ -1,5 +1,6 @@
 ---
 id: B-0572
+zetaid: 081KRQ1AB0008QG0R000GZEMCR
 priority: P2
 status: open
 title: "LFG GitHub tier decision — Team confirmed; evaluate Enterprise trial for 3× rate-limit + verify included-credit preservation"

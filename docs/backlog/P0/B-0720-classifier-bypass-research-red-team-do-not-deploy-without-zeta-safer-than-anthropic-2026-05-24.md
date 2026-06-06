@@ -1,5 +1,6 @@
 ---
 id: B-0720
+zetaid: 081KSBMG30008QG0R00201X7EJ
 priority: P0
 title: Classifier-bypass research + red-team — can crafted settings.json make Anthropic classifier allow anything? Standing operator-constraint until Zeta safer
 created: 2026-05-24

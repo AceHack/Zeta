@@ -1,5 +1,6 @@
 ---
 id: B-0718
+zetaid: 081KS923C0008QG0R000TE1589
 priority: P3
 status: open
 title: "Soraya round-61 forced-decomposition — audit four-trigger routing-tick framework (six consecutive holds suggest cadence mismatch OR under-specified triggers)"

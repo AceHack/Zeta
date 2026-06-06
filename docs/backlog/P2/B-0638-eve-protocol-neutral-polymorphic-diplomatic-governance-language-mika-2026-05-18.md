@@ -1,5 +1,6 @@
 ---
 id: B-0638
+zetaid: 081KRW63S0008QG0R0030F8ZXA
 priority: P2
 status: open
 title: "Eve Protocol — neutral polymorphic diplomatic language for governance (3rd of 4 languages) (Mika 2026-05-18 LOCKED-IN)"

@@ -1,5 +1,6 @@
 ---
 id: B-0716
+zetaid: 081KS923C0008QG0R0009JFVSE
 priority: P3
 status: open
 title: "Soraya round-53 scope-correction — B-0709 enumeration under-counted by 3 LSM-tree Spine specs (Spine.als + SpineAsyncProtocol.tla + SpineMergeInvariants.tla)"

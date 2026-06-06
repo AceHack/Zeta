@@ -1,5 +1,6 @@
 ---
 id: B-0756
+zetaid: 081KSE6WT0008QG0R001NG9JZH
 title: HA control-plane — multi-master k3s embedded etcd quorum + stable API endpoint (DNS round-robin or kube-vip virtual IP)
 status: open
 priority: P3

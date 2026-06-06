@@ -1,5 +1,6 @@
 ---
 id: B-0983
+zetaid: 081KT2T2J0008QG0R003WYPBY5
 priority: P2
 status: open
 title: "Topology of traveler-attractors — Euler-characteristic / persistent-homology invariant across dimensions; the remainder IS the bonsai closure state (identity fingerprint) (Aaron 2026-06-02)"

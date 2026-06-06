@@ -1,5 +1,6 @@
 ---
 id: B-0383
+zetaid: 081KR50HA0008QG0R003Z3V6VP
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — capital-structure / Hayekian triangle as multi-stage stochastic production process (Austrian primitive #2)

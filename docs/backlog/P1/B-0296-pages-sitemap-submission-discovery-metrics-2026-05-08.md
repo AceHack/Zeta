@@ -1,5 +1,6 @@
 ---
 id: B-0296
+zetaid: 081KR2E4K0008QG0R000GXGR6H
 priority: P1
 status: open
 title: "Pages discoverability - sitemap submission and discovery metrics"

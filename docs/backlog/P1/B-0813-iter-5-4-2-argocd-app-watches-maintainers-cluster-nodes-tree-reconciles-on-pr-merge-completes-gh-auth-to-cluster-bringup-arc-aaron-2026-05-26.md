@@ -1,5 +1,6 @@
 ---
 id: B-0813
+zetaid: 081KSGS9H0008QG0R002K93MWX
 priority: P1
 status: open
 title: iter-5.4.2 — ArgoCD application watches `maintainers/*/cluster-nodes/**` tree → reconciles K8s cluster state on registration-PR merge — completes the iter-5.4 arc (gh-auth foothold → self-register → cluster bring-up); decomposes B-0794 sub-target 4

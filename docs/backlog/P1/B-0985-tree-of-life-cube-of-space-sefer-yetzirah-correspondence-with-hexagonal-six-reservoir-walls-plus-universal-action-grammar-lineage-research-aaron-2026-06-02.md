@@ -1,5 +1,6 @@
 ---
 id: B-0985
+zetaid: 081KT2T2J0008QG0R0026MS6PV
 priority: P1
 status: open
 title: "Tree of Life / Cube of Space (Sefer Yetzirah) ↔ hexagonal-six reservoir walls — verify the Kabbalah correspondence + the universal-action-grammar lineage (Aaron 2026-06-02)"

@@ -1,5 +1,6 @@
 ---
 id: B-0275
+zetaid: 081KR2E4K0008QG0R0032SWP2M
 priority: P1
 status: open
 title: "Pages discoverability - Astro deploy validation and HTTP 200 check"

@@ -1,5 +1,6 @@
 ---
 id: B-0965
+zetaid: 081KT07NV0008QG0R002ZFN79J
 priority: P2
 status: closed
 title: "git-bash routing install-shield — the one unshielded install surface (parity gap)"

@@ -1,5 +1,6 @@
 ---
 id: B-0448
+zetaid: 081KRFA460008QG0R000CYBGKW
 priority: P1
 status: decomposed
 title: "Cloud Routines integration — 4th catch-43 defence layer via Anthropic-hosted scheduled tasks + API + GitHub event triggers"

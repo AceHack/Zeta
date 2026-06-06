@@ -1,5 +1,6 @@
 ---
 id: B-0779
+zetaid: 081KSE6WT0008QG0R003X967A0
 priority: P2
 status: open
 title: AI NAS convergence — tight integration of shared-memory AI CPU + NAS storage on one device (NAS-as-cluster-node)

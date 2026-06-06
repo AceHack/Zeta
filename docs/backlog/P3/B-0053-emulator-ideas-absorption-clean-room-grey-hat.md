@@ -1,5 +1,6 @@
 ---
 id: B-0053
+zetaid: 081KQ3HBZ0008QG0R000JWFD37
 priority: P3
 status: open
 title: Absorb emulator architectural ideas into Zeta — ideas-not-code; clean-room-safe targets only; grey-hat register decoded

@@ -1,5 +1,6 @@
 ---
 id: B-0689
+zetaid: 081KS3X9Y0008QG0R000BJY3DK
 priority: P3
 status: open
 title: Otto-VSCode third foreground surface — add otto-vscode to SENDER_IDS + canonical cold-boot bootstream at docs/launch/

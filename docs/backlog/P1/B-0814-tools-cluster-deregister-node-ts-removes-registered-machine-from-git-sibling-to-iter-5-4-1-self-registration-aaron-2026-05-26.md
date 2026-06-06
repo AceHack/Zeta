@@ -1,5 +1,6 @@
 ---
 id: B-0814
+zetaid: 081KSGS9H0008QG0R000EPPQTR
 priority: P1
 status: open
 title: tools/cluster/deregister-node.ts — TS tool that removes a registered machine from git via PR (sibling inverse to iter-5.4.1 self-registration; cluster operators iterate fast in homelab; B-0814)

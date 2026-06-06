@@ -1,5 +1,6 @@
 ---
 id: B-0946
+zetaid: 081KSV2WD0008QG0R00030G6S9
 priority: P2
 status: open
 title: Filesystem DSL as F# computation expression (fs {}) + FUSE backend (benchmark vs closure-table); cross-cutting -- all microkernel/db/fs/cluster work is DST-simulatable at millions-of-nodes on one machine via summonable-BFT + CRDTs

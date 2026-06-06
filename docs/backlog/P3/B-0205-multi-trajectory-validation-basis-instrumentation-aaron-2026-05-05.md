@@ -1,5 +1,6 @@
 ---
 id: B-0205
+zetaid: 081KQTPYE0008QG0R000ZJ2GW8
 priority: P3
 status: open
 title: Multi-trajectory longitudinal validation basis -- 6 orthogonal axes (DORA + less-each-time + falsifiability-rate + bootstrap-razor-pass + identity-preservation + engagement-gate-compliance) instrumentation (Aaron 2026-05-05)

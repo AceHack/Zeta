@@ -1,5 +1,6 @@
 ---
 id: B-0515
+zetaid: 081KRHWGX0008QG0R0018VR3SK
 priority: P3
 status: open
 title: "Architecture-as-externalization-of-Aaron's-dialectical-perception — dashboard acceptance criteria target shift"

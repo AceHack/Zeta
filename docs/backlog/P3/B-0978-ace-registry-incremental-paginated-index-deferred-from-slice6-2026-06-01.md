@@ -1,5 +1,6 @@
 ---
 id: B-0978
+zetaid: 081KT07NV0008QG0R001PHV1ND
 priority: P3
 status: open
 title: Ace registry incremental/paginated index — delta updates + range requests (deferred from slice 6)

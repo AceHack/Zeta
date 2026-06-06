@@ -1,5 +1,6 @@
 ---
 id: B-0730
+zetaid: 081KSE6WT0008QG0R003AJYMD3
 priority: P2
 status: open
 title: "Runbooks-as-executable-specifications — Runme base for right-now execution + `:::` deferred-task tags + AI just-in-time script compilation + 3 verbosity levels (5yo / Addison / Aaron+Max-debugging); Mika substrate via Aaron 2026-05-25"

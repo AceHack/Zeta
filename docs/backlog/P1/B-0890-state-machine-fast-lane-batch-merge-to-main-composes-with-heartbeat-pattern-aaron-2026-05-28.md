@@ -1,5 +1,6 @@
 ---
 id: B-0890
+zetaid: 081KSNY2Z0008QG0R0017JSTGD
 priority: P1
 status: open
 title: State-machine event fast-lane + batch-merge-to-main coordinator — composes with B-0858 heartbeat pattern; reduces per-event ceremony at scale

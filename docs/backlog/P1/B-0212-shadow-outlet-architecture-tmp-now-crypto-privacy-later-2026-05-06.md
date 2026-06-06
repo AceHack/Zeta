@@ -1,5 +1,6 @@
 ---
 id: B-0212
+zetaid: 081KQX9B50008QG0R00147GZX9
 priority: P1
 status: partial
 title: "Shadow outlet architecture — /tmp ephemeral now, cryptographic privacy later"

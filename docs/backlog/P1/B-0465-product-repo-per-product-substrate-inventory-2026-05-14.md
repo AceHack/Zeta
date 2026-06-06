@@ -1,5 +1,6 @@
 ---
 id: B-0465
+zetaid: 081KRHWGX0008QG0R002B2P0K0
 priority: P1
 status: closed
 title: "Per-product substrate inventory — 7 product candidates; repo-ready evaluation"

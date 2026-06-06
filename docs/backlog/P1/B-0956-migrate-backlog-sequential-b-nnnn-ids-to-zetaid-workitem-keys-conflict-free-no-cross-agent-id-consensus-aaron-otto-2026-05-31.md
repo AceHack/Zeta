@@ -1,5 +1,6 @@
 ---
 id: B-0956
+zetaid: 081KSXN940008QG0R002FWR9B2
 title: Migrate work-items to ZetaId WorkItem keys (conflict-free, no cross-agent ID consensus) — type ∈ {task, bug}; backlog is a STATE, not a type
 status: open
 priority: P1

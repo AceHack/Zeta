@@ -1,5 +1,6 @@
 ---
 id: B-0191
+zetaid: 081KQR4HQ0008QG0R002YNV361
 priority: P1
 status: closed
 title: Orchestrator branch-verify mechanization design — pre-commit hook + branch-name display + worktree-aware checks (Aaron 2026-05-04)

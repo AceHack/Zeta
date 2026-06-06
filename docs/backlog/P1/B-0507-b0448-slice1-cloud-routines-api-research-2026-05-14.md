@@ -1,5 +1,6 @@
 ---
 id: B-0507
+zetaid: 081KRHWGX0008QG0R000E8BHQ9
 priority: P1
 status: closed
 title: "B-0448 slice 1 — Research Cloud Routines auth + registration API surface (resolve unknowns)"

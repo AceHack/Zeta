@@ -1,5 +1,6 @@
 ---
 id: B-0600
+zetaid: 081KRQ1AB0008QG0R003HCZ5YM
 title: Family-distributed AI interface for the miner fleet — per-relative AI identity with accountability
 last_updated: 2026-05-20
 status: open

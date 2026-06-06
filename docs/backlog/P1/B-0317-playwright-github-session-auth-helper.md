@@ -1,5 +1,6 @@
 ---
 id: B-0317
+zetaid: 081KR2E4K0008QG0R0031QR36N
 priority: P1
 status: closed
 title: "Playwright GitHub session/auth helper — cookie-based login for agent UI access"

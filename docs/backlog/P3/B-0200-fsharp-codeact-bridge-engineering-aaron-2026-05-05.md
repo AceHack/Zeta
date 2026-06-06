@@ -1,5 +1,6 @@
 ---
 id: B-0200
+zetaid: 081KQTPYE0008QG0R0009F20NN
 priority: P3
 status: open
 title: F# <-> CodeAct bridge engineering -- four candidate architectures gated by four-property hodl invariant (Aaron 2026-05-05)

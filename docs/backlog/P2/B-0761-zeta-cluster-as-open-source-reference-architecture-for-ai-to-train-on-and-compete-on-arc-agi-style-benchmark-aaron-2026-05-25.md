@@ -1,5 +1,6 @@
 ---
 id: B-0761
+zetaid: 081KSE6WT0008QG0R0015ZF2G6
 priority: P2
 status: open
 title: Zeta cluster as open-source reference architecture for AI to train on and compete on — ARC-AGI-style benchmark substrate

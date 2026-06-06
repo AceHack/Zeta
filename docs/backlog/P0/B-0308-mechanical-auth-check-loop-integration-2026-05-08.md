@@ -1,5 +1,6 @@
 ---
 id: B-0308
+zetaid: 081KR2E4K0008QG0R002S3FDXN
 priority: P0
 status: closed
 title: "Mechanical authorization check — autonomous-loop tick-start integration"

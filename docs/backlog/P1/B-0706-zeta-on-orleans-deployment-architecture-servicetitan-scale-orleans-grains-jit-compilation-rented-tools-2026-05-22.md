@@ -1,5 +1,6 @@
 ---
 id: B-0706
+zetaid: 081KS6FPN0008QG0R003Y3MCVE
 priority: P1
 status: open
 title: "Zeta on Orleans deployment architecture (ServiceTitan-scale; grains + JIT compilation + rented tools)"

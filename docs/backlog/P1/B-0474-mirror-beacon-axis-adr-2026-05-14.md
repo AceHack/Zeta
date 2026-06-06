@@ -1,5 +1,6 @@
 ---
 id: B-0474
+zetaid: 081KRHWGX0008QG0R0023FDYVE
 priority: P1
 status: open
 title: "Mirror/Beacon axis ADR — two-axis design decision (extends 2026-04-22 ADR)"

@@ -1,5 +1,6 @@
 ---
 id: B-0857
+zetaid: 081KSKBP80008QG0R002J03WGA
 priority: P2
 status: open
 title: tools/setup/install.sh becomes the universal Unix-like-OS install entry — routes by environment (macOS / Linux-non-NixOS / NixOS-live-USB / installed-NixOS); replaces zeta-install.sh on the short-path BEFORE B-0854 Ace migration completes (Aaron 2026-05-27)

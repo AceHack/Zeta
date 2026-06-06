@@ -1,5 +1,6 @@
 ---
 id: B-0854
+zetaid: 081KSKBP80008QG0R002VRN56K
 priority: P1
 status: open
 title: zeta-install.sh → `ace install zeta` migration trajectory — declarative `package.json`-style Ace manifest in Zeta repo (like `../scratch` and `../SQLSharp` already do); composes with B-0288 Ace CLI + B-0824 meta-PM + B-0816 ArgoCD-maximization + B-0742 distributable-POC pattern (Aaron 2026-05-27)

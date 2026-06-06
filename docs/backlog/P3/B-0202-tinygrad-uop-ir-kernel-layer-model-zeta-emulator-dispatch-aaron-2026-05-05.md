@@ -1,5 +1,6 @@
 ---
 id: B-0202
+zetaid: 081KQTPYE0008QG0R002Y7X5KH
 priority: P3
 status: open
 title: Tinygrad UOp IR as kernel-layer model for Zeta's emulator dispatch + retract semantics -- substrate-engineering composition claim (Aaron 2026-05-05)

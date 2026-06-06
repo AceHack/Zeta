@@ -1,5 +1,6 @@
 ---
 id: B-0348
+zetaid: 081KR50HA0008QG0R000ZKBHE4
 priority: P1
 status: closed
 title: "Classify all CLAUDE.md bullets into extraction tiers"

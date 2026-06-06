@@ -1,5 +1,6 @@
 ---
 id: B-0848
+zetaid: 081KSGS9H0008QG0R001JNKBFD
 priority: P2
 status: open
 title: node-local Claude agent stewards own registration PR + reports K8s cluster status — operator interactive-login pattern (mirrors gh auth flow); first concrete instance of B-0847 AI-on-cluster substrate (Aaron 2026-05-26)

@@ -1,5 +1,6 @@
 ---
 id: B-0487
+zetaid: 081KRHWGX0008QG0R003WMBR3W
 priority: P1
 status: open
 title: "B-0429.3 — Aurora persona map"

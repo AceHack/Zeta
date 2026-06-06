@@ -1,5 +1,6 @@
 ---
 id: B-0540
+zetaid: 081KRMEXM0008QG0R0039V4SQQ
 title: Standing-by counter-with-escalation in the rule (N consecutive brief-acks → escalate to decomposition)
 priority: P1
 status: closed

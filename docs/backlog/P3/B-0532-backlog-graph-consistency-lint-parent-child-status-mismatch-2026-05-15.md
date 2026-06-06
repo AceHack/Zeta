@@ -1,5 +1,6 @@
 ---
 id: B-0532
+zetaid: 081KRMEXM0008QG0R003FZNK3E
 priority: P3
 status: open
 title: "Backlog-graph consistency lint — flag parent `status: closed` while declared child is `status: open`"

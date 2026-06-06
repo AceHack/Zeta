@@ -1,5 +1,6 @@
 ---
 id: B-0332
+zetaid: 081KR2E4K0008QG0R002FRQZN4
 priority: P1
 status: closed
 title: Memory load-bearing-vs-decorative classifier — identify which memory files are cited from bootstrap surfaces

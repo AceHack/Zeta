@@ -1,5 +1,6 @@
 ---
 id: B-0108
+zetaid: 081KQDTYV0008QG0R003N15ZW2
 priority: P2
 status: open
 title: Immune system upgrades — research absorb (Aaron 2026-04-30)

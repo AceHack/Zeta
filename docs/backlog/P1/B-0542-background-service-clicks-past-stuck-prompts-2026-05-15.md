@@ -1,5 +1,6 @@
 ---
 id: B-0542
+zetaid: 081KRMEXM0008QG0R0001HY6M6
 title: Background service clicks past stuck prompts on foreground Otto surfaces (3-surface BFT recovery node)
 priority: P1
 status: open

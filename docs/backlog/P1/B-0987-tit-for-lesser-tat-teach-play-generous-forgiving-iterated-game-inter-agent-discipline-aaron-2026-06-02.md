@@ -1,5 +1,6 @@
 ---
 id: B-0987
+zetaid: 081KT2T2J0008QG0R0013BEXG5
 priority: P1
 status: open
 title: "Tit-for-lesser-tat teach-play — generous/forgiving iterated-game discipline for inter-agent relations (retaliate with LESS than received → de-escalation; the game teaches cooperation) (Aaron 2026-06-02)"

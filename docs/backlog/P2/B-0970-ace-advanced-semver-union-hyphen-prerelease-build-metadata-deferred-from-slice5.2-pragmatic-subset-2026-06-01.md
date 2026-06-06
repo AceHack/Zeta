@@ -1,5 +1,6 @@
 ---
 id: B-0970
+zetaid: 081KT07NV0008QG0R002WK9064
 priority: P2
 status: open
 title: Ace advanced semver — `||` unions, hyphen ranges, pre-release precedence, build metadata (deferred from slice 5.2 pragmatic subset)

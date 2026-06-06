@@ -1,5 +1,6 @@
 ---
 id: B-0967
+zetaid: 081KSXN940008QG0R000SCP2H1
 priority: P1
 status: open
 title: Kubernetes and ArgoCD integration health tests via kind/k3d, separate from USB/ISO zflash acceptance

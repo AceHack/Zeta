@@ -1,5 +1,6 @@
 ---
 id: B-0955
+zetaid: 081KSXN940008QG0R002KEJ7C2
 title: Migrate tools/ production code off Bun-only APIs to node:/process equivalents — honor the Node-safe-baseline policy (2026-04-20 tools-runtime ADR v6)
 status: open
 priority: P2

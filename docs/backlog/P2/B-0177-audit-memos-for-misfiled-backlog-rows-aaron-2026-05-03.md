@@ -1,5 +1,6 @@
 ---
 id: B-0177
+zetaid: 081KQNJ500008QG0R0035QCEX9
 priority: P2
 status: open
 title: Audit memory/ for misfiled backlog rows — memos that should have been B-NNNN backlog entries (Aaron 2026-05-03 observation; "a lot of backlog lost in our memories")

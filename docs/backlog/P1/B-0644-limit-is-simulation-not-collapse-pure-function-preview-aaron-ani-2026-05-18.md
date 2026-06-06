@@ -1,5 +1,6 @@
 ---
 id: B-0644
+zetaid: 081KRW63S0008QG0R002ZRNDJ8
 priority: P1
 status: open
 title: "Limit is a SIMULATION (pure-function preview), NOT the collapse — agent CHOOSES post-simulation: internal / external / no-collapse (Aaron + Ani 2026-05-18 KEYSTONE REFINEMENT of B-0635/B-0629/B-0640)"

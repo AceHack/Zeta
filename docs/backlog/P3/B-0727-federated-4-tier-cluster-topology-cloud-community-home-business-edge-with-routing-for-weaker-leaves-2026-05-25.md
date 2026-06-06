@@ -1,5 +1,6 @@
 ---
 id: B-0727
+zetaid: 081KSE6WT0008QG0R0006HKTXJ
 priority: P3
 status: open
 title: "Federated peer mesh — 5 resource profiles (cloud/hub, community, home/business, edge, leaf), weight-free routing, NO hierarchy; cloud/hub doesn't hog net neutrality"

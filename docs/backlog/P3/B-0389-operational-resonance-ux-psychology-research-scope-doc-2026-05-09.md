@@ -1,5 +1,6 @@
 ---
 id: B-0389
+zetaid: 081KR50HA0008QG0R000TQKYGM
 priority: P3
 status: open
 title: UX + psychology research scope doc — catalog papers/frameworks for dashboard design (Chomsky, pre-attentive, cognitive load, UX methodology)

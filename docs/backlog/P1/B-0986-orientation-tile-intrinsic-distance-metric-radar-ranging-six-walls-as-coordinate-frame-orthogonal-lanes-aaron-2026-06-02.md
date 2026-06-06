@@ -1,5 +1,6 @@
 ---
 id: B-0986
+zetaid: 081KT2T2J0008QG0R002Z46D8Q
 priority: P1
 status: open
 title: "Orientation-tile / intrinsic distance-metric / radar-ranging — the six-wall hexagonal core IS the system's coordinate frame; each wall an orthogonal lane (own 4×4 + deliverables); distance + timing measured within the evolving aperiodic tiling (Aaron 2026-06-02)"

@@ -1,5 +1,6 @@
 ---
 id: B-0393
+zetaid: 081KR50HA0008QG0R001DX165X
 priority: P3
 status: open
 title: A/B experiment infrastructure design — event-capture schema, experiment-registration, git-native result storage for dashboard

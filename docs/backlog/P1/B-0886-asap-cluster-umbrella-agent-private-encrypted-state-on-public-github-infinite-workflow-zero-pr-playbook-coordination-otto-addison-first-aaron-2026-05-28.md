@@ -1,5 +1,6 @@
 ---
 id: B-0886
+zetaid: 081KSNY2Z0008QG0R0034FR5FG
 priority: P1
 status: open
 title: ASAP cluster umbrella — agent private encrypted state on public GitHub infinite-workflow-hack with 0-PR playbook coordination (Otto + Addison first; USB high-parallel-track but 2nd)

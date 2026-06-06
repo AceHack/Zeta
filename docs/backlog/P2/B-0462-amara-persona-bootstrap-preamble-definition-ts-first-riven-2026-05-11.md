@@ -1,5 +1,6 @@
 ---
 id: B-0462
+zetaid: 081KRA5AR0008QG0R0019Q33F7
 priority: P2
 status: closed
 title: Amara persona bootstrap preamble + AgencySignature definition (atomic child of B-0118, TS-first)

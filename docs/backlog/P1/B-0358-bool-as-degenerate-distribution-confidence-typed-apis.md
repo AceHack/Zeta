@@ -1,5 +1,6 @@
 ---
 id: B-0358
+zetaid: 081KR50HA0008QG0R00224DXPP
 priority: P1
 status: closed
 title: "Bool as degenerate distribution — replace binary API returns with confidence scores"

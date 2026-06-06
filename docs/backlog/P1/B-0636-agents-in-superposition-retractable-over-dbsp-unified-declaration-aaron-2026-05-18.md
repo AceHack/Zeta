@@ -1,5 +1,6 @@
 ---
 id: B-0636
+zetaid: 081KRW63S0008QG0R00088FYE9
 priority: P1
 status: open
 title: "Agents are in superposition + that superposition is retractable over DBSP — unified declaration of what Zeta is building (Aaron 2026-05-18 LOCKED-IN)"

@@ -1,5 +1,6 @@
 ---
 id: B-0500
+zetaid: 081KRHWGX0008QG0R0025PX5SZ
 priority: P1
 status: closed
 title: "B-0441 slice 3 — wire isAgentQueueEmpty guard into pollOnce"

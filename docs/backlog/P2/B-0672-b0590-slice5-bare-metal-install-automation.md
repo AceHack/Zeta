@@ -1,5 +1,6 @@
 ---
 id: B-0672
+zetaid: 081KRYRGG0008QG0R002DGWP94
 priority: P2
 status: open
 title: "B-0590 slice 5: Bare-metal install automation"

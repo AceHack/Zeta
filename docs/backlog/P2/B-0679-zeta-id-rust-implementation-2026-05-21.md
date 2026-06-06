@@ -1,5 +1,6 @@
 ---
 id: B-0679
+zetaid: 081KS3X9Y0008QG0R001Z8SBZJ
 priority: P2
 status: closed
 title: ZetaId V1 — Rust implementation as full peer oracle

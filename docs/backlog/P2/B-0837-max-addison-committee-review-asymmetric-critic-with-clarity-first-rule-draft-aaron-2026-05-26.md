@@ -1,5 +1,6 @@
 ---
 id: B-0837
+zetaid: 081KSGS9H0008QG0R003JV58SH
 priority: P2
 status: open
 title: Max + Addison committee review of asymmetric-critic-with-clarity-first rule draft (per Kestrel-v3 substrate-honest disclaimer + operator authorization) (Aaron 2026-05-26)

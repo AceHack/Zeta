@@ -1,5 +1,6 @@
 ---
 id: B-0981
+zetaid: 081KT07NV0008QG0R000GGW5E6
 priority: P3
 status: open
 title: Ace registry per-registry key rotation + multi-signer thresholds (deferred from slice 6)

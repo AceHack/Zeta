@@ -55,6 +55,7 @@ interface Frontmatter {
 const SCHEMA_KEYS = new Set([
     // Canonical schema (tools/backlog/README.md)
     "id", "priority", "status", "title",
+    "zetaid", // B-0956: the 128-bit ZetaId alias backfilled into legacy rows (B-NNNN stays the slug/id)
     "tier", "effort", "ask", "type",
     "created", "last_updated",
     "depends_on", "decomposition", "composes_with", "tags",

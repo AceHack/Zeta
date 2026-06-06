@@ -1,5 +1,6 @@
 ---
 id: B-0992
+zetaid: 081KT2T2J0008QG0R003872SGT
 priority: P1
 status: open
 title: "AI custom app store over product-decision lanes — decentralized, autonomous, attribution+contribution-based (NOT extractive), web3-shaped; self-selecting/attractive/superadditive economy (attention×memory multiply) (Aaron 2026-06-02)"

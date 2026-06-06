@@ -1,5 +1,6 @@
 ---
 id: B-0583
+zetaid: 081KRQ1AB0008QG0R003DCGHJJ
 priority: P2
 status: open
 title: "Cross-machine account-scoped scarcity bus — refine B-0570 from machine-local per-agent files to account-scoped timestamped surface"

@@ -1,5 +1,6 @@
 ---
 id: B-0122
+zetaid: 081KQDTYV0008QG0R001HQSSAX
 priority: P2
 status: closed
 title: Peer-call scripts TypeScript migration — post-install cutover (the maintainer 2026-04-30)

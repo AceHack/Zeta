@@ -1,5 +1,6 @@
 ---
 id: B-0979
+zetaid: 081KT07NV0008QG0R001K340B3
 priority: P3
 status: open
 title: Ace registry full TUF role separation — root/targets/snapshot/timestamp (deferred from slice 6)

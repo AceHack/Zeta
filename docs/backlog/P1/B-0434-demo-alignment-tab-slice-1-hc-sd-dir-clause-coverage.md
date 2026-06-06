@@ -1,5 +1,6 @@
 ---
 id: B-0434
+zetaid: 081KRFA460008QG0R0005DWKBG
 priority: P1
 status: closed
 title: "Demo alignment tab — slice 1: HC/SD/DIR clause coverage panel in demo/index.html"

@@ -1,5 +1,6 @@
 ---
 id: B-0699
+zetaid: 081KS3X9Y0008QG0R002HJ8P57
 priority: P3
 status: open
 title: "Dual-Adinkra architecture — full time-aware retractable default + dumb fast version with case-by-case performance justification (Aaron + Mika 2026-05-18)"

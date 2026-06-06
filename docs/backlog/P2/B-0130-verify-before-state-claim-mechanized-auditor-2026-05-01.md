@@ -1,5 +1,6 @@
 ---
 id: B-0130
+zetaid: 081KQGDBJ0008QG0R002Y31XJ3
 priority: P2
 status: open
 title: Mechanized auditor for verify-before-state-claim — file-internal metadata claim audits (companion to task #350)

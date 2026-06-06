@@ -1,5 +1,6 @@
 ---
 id: B-0241
+zetaid: 081KQZVQW0008QG0R001V420F0
 priority: P1
 status: open
 title: "Red team: hole puncher pattern applied to AI safety — capability-layer bypass of content-layer filters"

@@ -1,5 +1,6 @@
 ---
 id: B-0037
+zetaid: 081KQ3HBZ0008QG0R0002RB48Q
 priority: P2
 status: decomposed
 title: Meta-cognition as first-class factory discipline — survey, audit cadence, measurables

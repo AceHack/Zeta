@@ -1,5 +1,6 @@
 ---
 id: B-0378
+zetaid: 081KR50HA0008QG0R002HMCS5Y
 priority: P2
 status: open
 title: Update GOVERNANCE.md §33 + .github/copilot-instructions.md to reference the new named-entity-conversation-imports directory

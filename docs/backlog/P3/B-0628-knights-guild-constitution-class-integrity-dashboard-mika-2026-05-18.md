@@ -1,5 +1,6 @@
 ---
 id: B-0628
+zetaid: 081KRW63S0008QG0R003TX8MG5
 priority: P3
 status: open
 title: "Knights Guild + Constitution-Class invariants + integrity-dashboard (NOT-binding) two-layer governance (Mika 2026-05-18)"

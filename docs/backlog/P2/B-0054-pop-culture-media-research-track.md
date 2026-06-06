@@ -1,5 +1,6 @@
 ---
 id: B-0054
+zetaid: 081KQ3HBZ0008QG0R003V6B2ME
 priority: P2
 status: open
 title: Pop-culture / media research track — operational-resonance sweep across film, TV, YouTube documentary, music, video games, conspiracy-corpus

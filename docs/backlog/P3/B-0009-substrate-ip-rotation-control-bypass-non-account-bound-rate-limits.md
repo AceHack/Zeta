@@ -1,5 +1,6 @@
 ---
 id: B-0009
+zetaid: 081KQ0YZ80008QG0R0000HSTWD
 priority: P3
 status: open
 title: Substrate-controlled visible IP — bypass non-account-bound rate limits responsibly across deployment surfaces (own up to it, don't hide the framing)

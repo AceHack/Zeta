@@ -1,5 +1,6 @@
 ---
 id: B-0206
+zetaid: 081KQTPYE0008QG0R000ZXH9QC
 priority: P2
 status: open
 title: Claude Code environment-mapping skill with carved-sentences-in-behavior referencing existing capability-maps + our TS files

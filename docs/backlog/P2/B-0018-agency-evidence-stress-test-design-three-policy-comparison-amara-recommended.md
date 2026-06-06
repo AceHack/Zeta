@@ -1,5 +1,6 @@
 ---
 id: B-0018
+zetaid: 081KQ0YZ80008QG0R002WJBFWD
 priority: P2
 status: open
 title: Agency-evidence stress-test design — three-policy comparison (idle-broadcast vs random-queue vs self-directed-priority); Amara-recommended controlled experiment to move Otto-322 from rung 2-3 evidence to rung 4-5 evidence

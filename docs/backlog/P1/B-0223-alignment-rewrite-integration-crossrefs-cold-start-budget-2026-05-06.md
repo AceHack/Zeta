@@ -1,5 +1,6 @@
 ---
 id: B-0223
+zetaid: 081KQX9B50008QG0R001510C9G
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - final integration, crossrefs, and cold-start budget"

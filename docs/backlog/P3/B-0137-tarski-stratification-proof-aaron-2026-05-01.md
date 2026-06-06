@@ -1,5 +1,6 @@
 ---
 id: B-0137
+zetaid: 081KQGDBJ0008QG0R003NDQTBM
 priority: P3
 status: open
 title: Tarski-stratification proof — formal demonstration that Aaron's pirate-not-priest spot stratifies meta-language from object-language

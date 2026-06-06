@@ -1,5 +1,6 @@
 ---
 id: B-0850
+zetaid: 081KSKBP80008QG0R003Z4C0D0
 priority: P2
 status: open
 title: AI agents as systemd services OUTSIDE k8s — starting with Otto; cluster repair from OUTSIDE the failure domain; classic "control plane outside the control plane" architectural pattern (Aaron 2026-05-27)

@@ -1,5 +1,6 @@
 ---
 id: B-0195
+zetaid: 081KQTPYE0008QG0R0015SK08H
 priority: P2
 status: open
 title: DBSP chain rule formal-verification finding -- cross-check counter-example + verify Prop 3.5 reading + writeup decision (Aaron 2026-05-05)

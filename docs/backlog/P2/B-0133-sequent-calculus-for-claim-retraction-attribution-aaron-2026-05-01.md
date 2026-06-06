@@ -1,5 +1,6 @@
 ---
 id: B-0133
+zetaid: 081KQGDBJ0008QG0R0035M1YRC
 priority: P2
 status: open
 title: Sequent calculus / labeled deductive systems for claim/retraction/attribution

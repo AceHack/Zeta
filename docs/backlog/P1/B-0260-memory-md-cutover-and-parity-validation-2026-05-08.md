@@ -1,5 +1,6 @@
 ---
 id: B-0260
+zetaid: 081KR2E4K0008QG0R001M8NJ56
 priority: P1
 status: closed
 title: "MEMORY.md marker-vs-index - cutover and parity validation"

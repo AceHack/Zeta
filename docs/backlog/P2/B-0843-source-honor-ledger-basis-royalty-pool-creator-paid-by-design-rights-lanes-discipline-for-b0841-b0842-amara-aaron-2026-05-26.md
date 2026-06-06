@@ -1,5 +1,6 @@
 ---
 id: B-0843
+zetaid: 081KSGS9H0008QG0R0012R8ZWS
 priority: P2
 status: open
 title: Source Honor Ledger / Basis Royalty Pool — creator-paid-by-design operational implementation + 5-rights-lane discipline + "Don't sell compression. Sell readout." product positioning (extends B-0841 + B-0842 per Amara 3rd ferry 2026-05-26)

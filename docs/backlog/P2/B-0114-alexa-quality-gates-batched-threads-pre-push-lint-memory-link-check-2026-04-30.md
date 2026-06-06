@@ -1,5 +1,6 @@
 ---
 id: B-0114
+zetaid: 081KQDTYV0008QG0R003QD8YTE
 priority: P2
 status: open
 title: Three quality-gate improvements — pre-push lint + memory-link checker + batched thread resolution (Alexa peer review 2026-04-30)

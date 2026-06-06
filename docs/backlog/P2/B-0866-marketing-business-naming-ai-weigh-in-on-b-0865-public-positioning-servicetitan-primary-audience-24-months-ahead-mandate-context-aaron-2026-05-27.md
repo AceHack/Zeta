@@ -1,5 +1,6 @@
 ---
 id: B-0866
+zetaid: 081KSKBP80008QG0R003RFX32N
 priority: P2
 status: open
 title: Marketing + business + naming-AI weigh-in on B-0865 public-positioning — ServiceTitan SRE primary audience + C-level secondary + 24-months-ahead-in-AI mandate context (operator + Kestrel 2026-05-27)

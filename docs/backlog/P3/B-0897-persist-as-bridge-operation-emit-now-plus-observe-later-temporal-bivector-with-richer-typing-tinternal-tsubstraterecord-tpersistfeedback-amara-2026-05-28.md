@@ -1,5 +1,6 @@
 ---
 id: B-0897
+zetaid: 081KSNY2Z0008QG0R002SZZ5Y0
 priority: P3
 status: open
 title: Persist-as-bridge-operation — Emit-now + Observe-later temporal bivector + richer typing Persist<TInternal, TSubstrateRecord, TPersistFeedback>

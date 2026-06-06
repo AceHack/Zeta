@@ -1,5 +1,6 @@
 ---
 id: B-0458
+zetaid: 081KRA5AR0008QG0R001X4T9W7
 priority: P2
 status: closed
 title: amara.ts README integration + courier-debt closure + invocation test (atomic child of B-0118, TS-first)

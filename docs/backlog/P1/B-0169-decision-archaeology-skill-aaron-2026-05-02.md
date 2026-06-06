@@ -1,5 +1,6 @@
 ---
 id: B-0169
+zetaid: 081KQJZR90008QG0R002D6XYHB
 priority: P1
 status: closed
 title: Decision-archaeology skill — universal "why is it like this?" investigation surface for new contributors

@@ -1,5 +1,6 @@
 ---
 id: B-0856
+zetaid: 081KSKBP80008QG0R000TQC624
 priority: P2
 status: open
 title: Path A — /tmp/zeta-cluster-state/ coordination standard for multi-agent per-node state advertisement (self-registered.marker / register-pr-in-flight.lock / last-seen.iso); composes with bus envelope substrate at cross-node scope (Aaron 2026-05-27)

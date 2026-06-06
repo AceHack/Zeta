@@ -1,5 +1,6 @@
 ---
 id: B-0518
+zetaid: 081KRHWGX0008QG0R001BHXH0M
 priority: P1
 status: open
 title: "Sharpen the holding-without-named-dependency rule — Aaron diagnosed CLAUDE.md bug"

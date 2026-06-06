@@ -1,5 +1,6 @@
 ---
 id: B-0442
+zetaid: 081KRFA460008QG0R00061SXRW
 priority: P1
 status: closed
 title: "Missed-substrate cascade detector — background service that catches branch-vs-merged-PR drift (e.g., Otto-section-missed-PR-2980-by-3-min class)"

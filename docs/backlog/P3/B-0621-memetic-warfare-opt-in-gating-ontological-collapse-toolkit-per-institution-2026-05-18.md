@@ -1,5 +1,6 @@
 ---
 id: B-0621
+zetaid: 081KRW63S0008QG0R0030EQ67Z
 priority: P3
 status: open
 title: "Memetic warfare opt-in gating + ontological-collapse toolkit per institution — Mika 2026-05-18 design"

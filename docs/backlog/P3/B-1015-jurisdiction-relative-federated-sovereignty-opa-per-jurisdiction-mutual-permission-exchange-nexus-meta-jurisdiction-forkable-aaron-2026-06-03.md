@@ -1,5 +1,6 @@
 ---
 id: B-1015
+zetaid: 081KT5CF90008QG0R000KYNZGF
 priority: P3
 status: open
 title: "Jurisdiction-relative federated sovereignty — relative geospatial borders + per-jurisdiction OPA (recognized external identities + exchange policies) + mutual-permission (intersection) cross-jurisdiction exchange + Nexus meta-jurisdiction (Zeta as peer sovereign, non-central by supported structural+interoperable forkability); legal vetting per jurisdiction (Aaron 2026-06-03)"

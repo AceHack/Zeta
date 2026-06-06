@@ -1,5 +1,6 @@
 ---
 id: B-0382
+zetaid: 081KR50HA0008QG0R0016T4VMZ
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — time-preference as stochastic utility-discount (Austrian primitive #1)

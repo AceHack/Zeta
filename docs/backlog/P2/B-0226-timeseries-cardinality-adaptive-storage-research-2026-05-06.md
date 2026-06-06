@@ -1,5 +1,6 @@
 ---
 id: B-0226
+zetaid: 081KQX9B50008QG0R0028P9BMR
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - cardinality-adaptive storage"

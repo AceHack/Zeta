@@ -1,5 +1,6 @@
 ---
 id: B-0721
+zetaid: 081KSBMG30008QG0R002WAR0WH
 priority: P2
 title: Move docs/BACKLOG.md generated-index drift check off per-PR gate onto scheduled cadence
 created: 2026-05-24

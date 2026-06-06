@@ -1,5 +1,6 @@
 ---
 id: B-0146
+zetaid: 081KQGDBJ0008QG0R003VHD3KZ
 priority: P2
 status: open
 title: Formal architecture ladder — explicit-layer-declaration discipline for B-rows

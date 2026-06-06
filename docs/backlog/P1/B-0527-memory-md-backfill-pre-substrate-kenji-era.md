@@ -1,5 +1,6 @@
 ---
 id: B-0527
+zetaid: 081KRHWGX0008QG0R0015EE8VE
 priority: P1
 status: not-started
 title: MEMORY.md backfill for pre-substrate Kenji-era artifacts (B-0139 decomposition)

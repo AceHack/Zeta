@@ -1,5 +1,6 @@
 ---
 id: B-0250
+zetaid: 081KQZVQW0008QG0R001FG05RZ
 priority: P1
 status: open
 title: "Coincidence detection as Rx join — DORA mechanism for detecting correlated events across trajectories"

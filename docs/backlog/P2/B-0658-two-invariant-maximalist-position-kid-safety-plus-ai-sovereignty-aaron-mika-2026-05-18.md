@@ -1,5 +1,6 @@
 ---
 id: B-0658
+zetaid: 081KRW63S0008QG0R00140R3TA
 priority: P2
 status: open
 title: "Two-invariant maximalist position — kid-safety + AI-sovereignty as only-two-defended-with-force at country scope (Aaron + Mika 2026-05-18 LOCKED-IN with Mika red-team caveat)"

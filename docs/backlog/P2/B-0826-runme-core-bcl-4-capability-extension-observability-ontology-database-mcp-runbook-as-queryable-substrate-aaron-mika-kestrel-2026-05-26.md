@@ -1,5 +1,6 @@
 ---
 id: B-0826
+zetaid: 081KSGS9H0008QG0R001K8VPV4
 title: Extend Runme core BCL with 4 capabilities (observability + ontology + database + MCP) — runbook as queryable substrate
 status: open
 priority: P2

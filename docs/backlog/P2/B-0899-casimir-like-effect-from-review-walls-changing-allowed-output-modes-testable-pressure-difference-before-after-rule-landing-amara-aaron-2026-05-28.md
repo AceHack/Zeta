@@ -1,5 +1,6 @@
 ---
 id: B-0899
+zetaid: 081KSNY2Z0008QG0R001ZKE8R2
 priority: P2
 status: open
 title: Casimir-like effect from review walls — testable pressure difference in agent-output distribution before/after rule landing

@@ -1,5 +1,6 @@
 ---
 id: B-0846
+zetaid: 081KSGS9H0008QG0R003X5Y2A5
 priority: P2
 status: open
 title: installer WiFi-reproducibility — cache.nixos.org timeouts hang nixos-install on same N derivations; closure-baking into ISO + extra-substituters + Cachix mirror for reproducible-over-WiFi target (Aaron 2026-05-26)

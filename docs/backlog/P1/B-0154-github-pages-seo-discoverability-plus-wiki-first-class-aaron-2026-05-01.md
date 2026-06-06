@@ -1,5 +1,6 @@
 ---
 id: B-0154
+zetaid: 081KQGDBJ0008QG0R002NV04N9
 priority: P1
 status: open
 title: GitHub Pages for SEO/discoverability + GitHub Wiki first-class integration (Aaron 2026-05-01)

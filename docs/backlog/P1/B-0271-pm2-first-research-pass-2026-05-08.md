@@ -1,5 +1,6 @@
 ---
 id: B-0271
+zetaid: 081KR2E4K0008QG0R003VB7ZZR
 priority: P1
 status: closed
 title: "PM-2 role — first research pass on Zeta feature gaps"

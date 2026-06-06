@@ -1,5 +1,6 @@
 ---
 id: B-0833
+zetaid: 081KSGS9H0008QG0R003JNSVR5
 priority: P1
 status: open
 title: installer interactive-login vs baked-in-keys CI-test tension — resolve without shipping credentials on ISO (operator 2026-05-26 from physical hardware-support test)

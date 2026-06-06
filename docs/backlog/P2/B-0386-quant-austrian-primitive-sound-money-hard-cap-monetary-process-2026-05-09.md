@@ -1,5 +1,6 @@
 ---
 id: B-0386
+zetaid: 081KR50HA0008QG0R0027DHVPQ
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — sound-money as monetary-aggregate process with hard-cap constraint (Austrian primitive #5)

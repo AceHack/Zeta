@@ -1,5 +1,6 @@
 ---
 id: B-0259
+zetaid: 081KR2E4K0008QG0R000XCS9FT
 priority: P1
 status: closed
 title: "MEMORY.md marker-vs-index - hook and CI drift enforcement"

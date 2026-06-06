@@ -1,5 +1,6 @@
 ---
 id: B-0307
+zetaid: 081KR2E4K0008QG0R003CF4YHE
 priority: P0
 status: closed
 title: "Mechanical authorization check — source-filter + recency resolver"

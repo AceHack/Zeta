@@ -1,5 +1,6 @@
 ---
 id: B-0321
+zetaid: 081KR2E4K0008QG0R000YH9DC6
 priority: P1
 status: closed
 title: "Guarded UI mutation helpers — click/fill/save with before-after snapshots and authorization check"

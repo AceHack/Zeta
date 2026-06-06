@@ -1,5 +1,6 @@
 ---
 id: B-0318
+zetaid: 081KR2E4K0008QG0R003RVDX91
 priority: P1
 status: closed
 title: "Playwright GitHub read-only page snapshot tool — navigate + snapshot + extract"

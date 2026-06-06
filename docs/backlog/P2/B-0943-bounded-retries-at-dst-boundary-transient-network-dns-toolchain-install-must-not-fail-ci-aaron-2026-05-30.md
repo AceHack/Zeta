@@ -1,5 +1,6 @@
 ---
 id: B-0943
+zetaid: 081KSV2WD0008QG0R002A3QJ5Q
 priority: P2
 status: open
 title: Bounded retries at the DST boundary — transient network/DNS failures (mise toolchain install) must not fail CI

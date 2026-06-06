@@ -1,5 +1,6 @@
 ---
 id: B-0870
+zetaid: 081KSNY2Z0008QG0R000DA261F
 priority: P1
 status: open
 title: Two-mandate portfolio composition substrate — operator's two evaluation mandates (24-months-ahead-AI per B-0866 + DORA-of-live-system per B-0869) compose into a single time-allocation portfolio; substrate for periodic check-in + composition-discipline + tradeoff-handling when mandates compete (operator 2026-05-28)

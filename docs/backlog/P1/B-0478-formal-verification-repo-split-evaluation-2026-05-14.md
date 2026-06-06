@@ -1,5 +1,6 @@
 ---
 id: B-0478
+zetaid: 081KRHWGX0008QG0R0008EYYCA
 priority: P1
 status: open
 title: "Formal-verification sub-axis evaluation — per-property-class split vs co-locate decision"

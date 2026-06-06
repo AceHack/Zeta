@@ -1,5 +1,6 @@
 ---
 id: B-1019
+zetaid: 081KT7YW00008QG0R001DGZQKM
 priority: P2
 status: in-progress
 title: "DST: prove internal agent-difference (private state) drives UNBOUNDED evolution with NO external input -> grounds privacy as CONSTITUTIVE (anti-register-collapse: private state gone -> agents identical -> no gradient -> heat-death halt). Falsifiable: define evolves = not-halt AND not-limit-cycle, needs unbounded growing state (pigeonhole); halt/cycle refutes. Engine IS a memetic-evolution system; prior under test = chaotic-over-Bayesian-priors (orderly-local + chaotic-global) (Aaron+Kestrel 2026-06-04)"

@@ -1,5 +1,6 @@
 ---
 id: B-0812
+zetaid: 081KSGS9H0008QG0R0037H3W4T
 priority: P1
 status: open
 title: iter-5.4.1 — node self-registers via commit+push to `maintainers/<operator>/cluster-nodes/<hostname>/node.yaml` at install time — builds directly on iter-5.4.0 (PR #5210) gh-auth foothold; advances B-0794 sub-target 3 from minimum-viable (pubkey-copy only) to full (commit+push)

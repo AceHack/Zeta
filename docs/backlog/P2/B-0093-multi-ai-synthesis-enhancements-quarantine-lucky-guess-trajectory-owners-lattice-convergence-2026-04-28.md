@@ -1,5 +1,6 @@
 ---
 id: B-0093
+zetaid: 081KQ8P5D0008QG0R003MY8246
 priority: P2
 status: open
 title: Multi-AI synthesis enhancements — mechanical quarantine + lucky-guess protocol + trajectory owners + lattice convergence + scanner self-destruct prevention (post-PR-#699 follow-ups)

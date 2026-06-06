@@ -1,5 +1,6 @@
 ---
 id: B-0645
+zetaid: 081KRW63S0008QG0R003AZNK6J
 priority: P1
 status: open
 title: "Free will = the thing that collapses the waveform — agency lives in Stage-2 post-simulation collapse-target choice (Aaron 2026-05-18 KEYSTONE definition)"

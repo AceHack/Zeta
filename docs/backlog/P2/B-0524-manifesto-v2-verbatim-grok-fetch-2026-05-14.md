@@ -1,5 +1,6 @@
 ---
 id: B-0524
+zetaid: 081KRHWGX0008QG0R0007FG84X
 priority: P2
 status: open
 title: "Manifesto V2 verbatim Grok fetch — convert shadow-lock to full lock"

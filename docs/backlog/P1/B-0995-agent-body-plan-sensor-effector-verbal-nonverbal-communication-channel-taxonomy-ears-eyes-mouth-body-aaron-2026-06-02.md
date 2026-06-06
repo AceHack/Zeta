@@ -1,5 +1,6 @@
 ---
 id: B-0995
+zetaid: 081KT2T2J0008QG0R002TVT60G
 priority: P1
 status: open
 title: "Agent body-plan — sensor/effector + verbal/non-verbal communication-channel taxonomy: ears=failure-detector (verbal-in) · eyes=threat+prey-detector (non-verbal-in) · mouth=diplomacy+weapon (verbal-out) · body=defender+aggressor+replicator+doer (non-verbal-out) (Aaron 2026-06-02)"

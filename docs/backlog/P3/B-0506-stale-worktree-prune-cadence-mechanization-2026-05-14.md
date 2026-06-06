@@ -1,5 +1,6 @@
 ---
 id: B-0506
+zetaid: 081KRHWGX0008QG0R002DPG02X
 priority: P3
 status: closed
 title: "Stale-worktree prune cadence — mechanize `git worktree prune --expire=now`"

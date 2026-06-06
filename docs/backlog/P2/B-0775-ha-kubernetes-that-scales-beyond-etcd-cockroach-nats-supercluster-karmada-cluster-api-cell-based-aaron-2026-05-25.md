@@ -1,5 +1,6 @@
 ---
 id: B-0775
+zetaid: 081KSE6WT0008QG0R000QXSG91
 priority: P2
 status: open
 title: HA Kubernetes that scales beyond etcd — CockroachDB / NATS super-cluster / Karmada / KubeStellar / Cluster API / cell-based architecture

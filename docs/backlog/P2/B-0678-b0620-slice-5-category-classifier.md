@@ -1,5 +1,6 @@
 ---
 id: B-0678
+zetaid: 081KRYRGG0008QG0R001DDV68E
 status: open
 priority: P2
 title: B-0620 slice 5 category classifier

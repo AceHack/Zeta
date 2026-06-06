@@ -1,5 +1,6 @@
 ---
 id: B-0551
+zetaid: 081KRQ1AB0008QG0R000SASDNE
 title: QG isomorphism step 2 — formalize infinite-game extension topos and QECC algebraic structure
 priority: P2
 status: open

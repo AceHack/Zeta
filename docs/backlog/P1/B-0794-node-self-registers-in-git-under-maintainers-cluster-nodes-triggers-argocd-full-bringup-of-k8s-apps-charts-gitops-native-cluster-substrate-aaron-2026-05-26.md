@@ -1,5 +1,6 @@
 ---
 id: B-0794
+zetaid: 081KSGS9H0008QG0R0027HJZYH
 priority: P1
 status: open
 title: Node self-registers in git under maintainers/<name>/cluster-nodes/<node>/ on first boot → ArgoCD picks up registration → full GitOps-native bring-up of K8s + apps + charts; cluster substrate is git-source-of-truth from install moment forward

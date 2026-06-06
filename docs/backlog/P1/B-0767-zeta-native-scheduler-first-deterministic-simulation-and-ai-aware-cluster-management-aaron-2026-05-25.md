@@ -1,5 +1,6 @@
 ---
 id: B-0767
+zetaid: 081KSE6WT0008QG0R0016CEE2Z
 priority: P1
 status: open
 title: Zeta-native scheduler first (Wave 1 of B-0766) — deterministic simulation + AI-aware cluster management

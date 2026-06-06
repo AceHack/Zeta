@@ -1,5 +1,6 @@
 ---
 id: B-0753
+zetaid: 081KSE6WT0008QG0R003BCQEKW
 priority: P3
 status: open
 title: Noether decomposition land via PR — track integration of lior-decompose-4781-shadow-log onto main

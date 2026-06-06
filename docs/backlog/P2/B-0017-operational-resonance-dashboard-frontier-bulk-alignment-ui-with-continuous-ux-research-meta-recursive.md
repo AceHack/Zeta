@@ -1,5 +1,6 @@
 ---
 id: B-0017
+zetaid: 081KQ0YZ80008QG0R0003GAYYN
 priority: P2
 status: decomposed
 title: Operational Resonance Dashboard — the bulk-alignment UI within Frontier; minimise time-to-answer "are things going as expected?"; continuous UX research + meta-recursive research-on-research; every pixel earns its way via ongoing A/B experiments

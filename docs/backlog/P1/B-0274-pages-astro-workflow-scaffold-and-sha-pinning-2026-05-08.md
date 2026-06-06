@@ -1,5 +1,6 @@
 ---
 id: B-0274
+zetaid: 081KR2E4K0008QG0R003VN9WC8
 priority: P1
 status: open
 title: "Pages discoverability - Astro workflow scaffold and SHA pinning"

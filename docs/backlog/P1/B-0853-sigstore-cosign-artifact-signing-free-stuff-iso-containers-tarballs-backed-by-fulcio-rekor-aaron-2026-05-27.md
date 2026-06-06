@@ -1,5 +1,6 @@
 ---
 id: B-0853
+zetaid: 081KSKBP80008QG0R000Y2B7HC
 priority: P1
 status: open
 title: sigstore/cosign artifact signing — free-stuff coverage for ISO + containers + tarballs + Nix substitutes (Fulcio CA + Rekor transparency log; OIDC-keyless via GitHub Actions); commercial CAs deferred for proprietary OS surfaces (Aaron 2026-05-27)

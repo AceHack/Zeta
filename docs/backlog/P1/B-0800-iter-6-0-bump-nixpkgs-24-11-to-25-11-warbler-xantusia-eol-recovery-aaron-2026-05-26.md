@@ -1,5 +1,6 @@
 ---
 id: B-0800
+zetaid: 081KSGS9H0008QG0R001EKTS5A
 priority: P1
 status: open
 title: iter-6.0 — bump nixpkgs pin from `nixos-24.11` (EOL'd Jun 2025) to `nixos-25.11` Xantusia (current stable; EOL Jun 2026) — full-ai-cluster substrate is currently on an EOL channel; latest-deps-from-the-beginning principle violated; URGENT

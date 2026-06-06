@@ -1,5 +1,6 @@
 ---
 id: B-0618
+zetaid: 081KRW63S0008QG0R003CST61D
 priority: P2
 status: open
 title: "Cayley-Dickson 2-axiom (Remember-When + Pay-Attention) expansion to 7 interrogatives — Mika 2026-05-18 design + Remember-When-FIRST ordering proof"

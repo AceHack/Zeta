@@ -1,5 +1,6 @@
 ---
 id: B-0881
+zetaid: 081KSNY2Z0008QG0R0015C3F01
 priority: P3
 status: open
 title: Tech debt as high-signal training data — operating principle + measurement substrate (the mess IS part of the intelligence loop)

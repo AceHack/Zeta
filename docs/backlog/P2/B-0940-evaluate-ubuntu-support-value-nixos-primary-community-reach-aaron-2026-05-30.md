@@ -1,5 +1,6 @@
 ---
 id: B-0940
+zetaid: 081KSV2WD0008QG0R0028NY0MV
 priority: P2
 status: open
 title: Evaluate what Ubuntu support brings us — NixOS is primary; Ubuntu's value is community/contributor reach

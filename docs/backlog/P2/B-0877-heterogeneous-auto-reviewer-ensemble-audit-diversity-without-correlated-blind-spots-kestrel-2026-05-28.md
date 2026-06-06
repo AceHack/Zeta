@@ -1,5 +1,6 @@
 ---
 id: B-0877
+zetaid: 081KSNY2Z0008QG0R0004ZF85W
 priority: P2
 status: open
 title: Heterogeneous auto-reviewer ensemble audit — diversity without correlated blind spots (multi-model + static analysis + formal tools + specialized prompts)

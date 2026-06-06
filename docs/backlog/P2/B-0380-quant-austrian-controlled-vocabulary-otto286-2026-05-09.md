@@ -1,5 +1,6 @@
 ---
 id: B-0380
+zetaid: 081KR50HA0008QG0R003ESW3MH
 priority: P3
 status: closed
 title: Controlled-vocabulary pass — define "quant-grade rigor", "Austrian primitive", "formalization", "synthesis gap" (Otto-286 precision before any research begins)

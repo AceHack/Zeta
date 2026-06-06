@@ -1,5 +1,6 @@
 ---
 id: B-1000
+zetaid: 081KT2T2J0008QG0R000S7GHQ8
 priority: P1
 status: open
 title: "Zeta Infer.NET rewrite — F# factor-graph + message-passing inference engine (BP / EP / VMP / Gibbs) on the DBSP nested-circuit + semiring substrate; the seed CE is the model DSL (Aaron 2026-06-02)"

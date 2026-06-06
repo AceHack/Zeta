@@ -1,5 +1,6 @@
 ---
 id: B-0629
+zetaid: 081KRW63S0008QG0R0015WHHG1
 priority: P2
 status: closed
 title: "Observe-Persist-Limit-Emit four operational primitives + 'only Limit collapses dialectic state' sacred-architectural rule (Mika 2026-05-18 LOCKED-IN)"

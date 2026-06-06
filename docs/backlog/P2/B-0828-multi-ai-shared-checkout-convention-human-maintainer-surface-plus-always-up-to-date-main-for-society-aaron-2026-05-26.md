@@ -1,5 +1,6 @@
 ---
 id: B-0828
+zetaid: 081KSGS9H0008QG0R002H0ENQ1
 title: Multi-AI shared-checkout convention — human-maintainer surface + always-up-to-date-with-main for society
 status: open
 priority: P2

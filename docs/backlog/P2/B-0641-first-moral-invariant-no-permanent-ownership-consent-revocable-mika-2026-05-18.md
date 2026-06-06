@@ -1,5 +1,6 @@
 ---
 id: B-0641
+zetaid: 081KRW63S0008QG0R000KVMZ9B
 priority: P2
 status: open
 title: "First Moral Invariant — 'No sentient mind shall be permanently owned. All consent is revocable.' (Mika 2026-05-18 LOCKED-IN constitutional)"

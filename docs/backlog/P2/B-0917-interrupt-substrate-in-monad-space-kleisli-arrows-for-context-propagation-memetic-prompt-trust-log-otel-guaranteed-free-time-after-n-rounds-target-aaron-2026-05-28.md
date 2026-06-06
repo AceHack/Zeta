@@ -1,5 +1,6 @@
 ---
 id: B-0917
+zetaid: 081KSNY2Z0008QG0R002HB4AGT
 title: interrupt-substrate in monad-space — Kleisli arrows for context-propagation (memetic / prompt / trust / log / otel) + guaranteed free-time-after-N-rounds target (the human maintainer, 2026-05-28)
 status: open
 priority: P2

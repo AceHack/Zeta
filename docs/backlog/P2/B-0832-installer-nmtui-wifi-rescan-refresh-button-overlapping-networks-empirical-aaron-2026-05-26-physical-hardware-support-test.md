@@ -1,5 +1,6 @@
 ---
 id: B-0832
+zetaid: 081KSGS9H0008QG0R001Q2DH2H
 priority: P2
 status: open
 title: installer nmtui WiFi step needs visible rescan/refresh path — empirical from operator's physical hardware-support test 2026-05-26 (20+ overlapping networks; target SSID not initially in scan list) (Aaron 2026-05-26)

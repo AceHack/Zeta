@@ -1,5 +1,6 @@
 ---
 id: B-0184
+zetaid: 081KQNJ500008QG0R001N1AAJ9
 priority: P1
 status: closed
 title: Fix Spine.als spec bug — Alloy 6.2.0 type-check failure at line 35 col 25 (sum-vs-all comprehension confusion) + check-vs-run-vs-fact semantic confusion

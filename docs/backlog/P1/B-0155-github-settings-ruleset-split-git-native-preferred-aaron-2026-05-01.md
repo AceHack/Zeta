@@ -1,5 +1,6 @@
 ---
 id: B-0155
+zetaid: 081KQGDBJ0008QG0R0028YTDQ2
 priority: P1
 status: open
 title: GitHub settings refactor — split single ruleset into multiple smaller always-on rulesets, prefer git-native over legacy UI/CLI-only settings (Aaron 2026-05-01)

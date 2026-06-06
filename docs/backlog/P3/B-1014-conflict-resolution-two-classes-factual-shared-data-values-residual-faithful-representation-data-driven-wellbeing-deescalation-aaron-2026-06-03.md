@@ -1,5 +1,6 @@
 ---
 id: B-1014
+zetaid: 081KT5CF90008QG0R002NFJM72
 priority: P3
 status: open
 title: "Conflict-resolution two-classes — factual conflicts resolve by shared mutually-monitorable data (anti-attrition), values-residual conflicts get faithfully represented not falsely resolved; bug-induced-stuck-state de-escalation is a data-driven hypothesis with a can-say-no wellbeing-inclusive metric + auto repair/escape (Aaron 2026-06-03)"

@@ -1,5 +1,6 @@
 ---
 id: B-1003
+zetaid: 081KT2T2J0008QG0R00301P27H
 priority: P1
 status: open
 title: "Eve is multi-traveler forever — parties bifurcate/combine in the fluent monad space (vs V8 single-traveler hidden-shape); a party = an identity-noun (ground in hex-core Vector + multiparty-session-types + decentralized-identity prior art) (Aaron 2026-06-02)"

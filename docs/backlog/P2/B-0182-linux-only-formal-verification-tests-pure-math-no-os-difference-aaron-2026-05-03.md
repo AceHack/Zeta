@@ -1,5 +1,6 @@
 ---
 id: B-0182
+zetaid: 081KQNJ500008QG0R002QDZ0BG
 priority: P2
 status: open
 title: Filter formal-verification tests to standard Linux only — TLC + Alloy + Lean are pure-math computation; no OS-specific behavior

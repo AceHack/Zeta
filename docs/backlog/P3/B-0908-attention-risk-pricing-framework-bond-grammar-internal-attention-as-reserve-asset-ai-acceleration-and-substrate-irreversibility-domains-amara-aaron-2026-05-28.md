@@ -1,5 +1,6 @@
 ---
 id: B-0908
+zetaid: 081KSNY2Z0008QG0R000A5GP0X
 priority: P3
 status: open
 title: Attention-risk-pricing framework — bond as INTERNAL grammar; attention as reserve asset; AI-acceleration + substrate-irreversibility as domains

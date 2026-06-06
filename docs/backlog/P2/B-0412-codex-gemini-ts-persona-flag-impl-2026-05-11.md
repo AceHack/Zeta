@@ -1,5 +1,6 @@
 ---
 id: B-0412
+zetaid: 081KRA5AR0008QG0R000YZMXNM
 priority: P2
 status: open
 title: codex.ts + gemini.ts --persona flags — parallel sibling impl after grok (B-0120 child)

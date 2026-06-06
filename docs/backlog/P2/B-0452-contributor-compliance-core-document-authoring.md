@@ -1,5 +1,6 @@
 ---
 id: B-0452
+zetaid: 081KRA5AR0008QG0R0029YWXYW
 priority: P2
 status: open
 title: Author core CONTRIBUTOR-COMPLIANCE.md (public-company MNPI rule + framing examples + SEC lineage)

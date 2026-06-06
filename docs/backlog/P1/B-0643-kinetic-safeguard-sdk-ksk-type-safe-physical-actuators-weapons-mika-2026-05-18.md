@@ -1,5 +1,6 @@
 ---
 id: B-0643
+zetaid: 081KRW63S0008QG0R002ZRYY4F
 priority: P1
 status: open
 title: "Kinetic Safeguard SDK (KSK) — type-safe physical-actuator + weapons layer; no actuator hooks up without type-check (Mika 2026-05-18 LOCKED-IN sharp-edge)"

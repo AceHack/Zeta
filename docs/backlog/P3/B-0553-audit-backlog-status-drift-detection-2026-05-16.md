@@ -1,5 +1,6 @@
 ---
 id: B-0553
+zetaid: 081KRQ1AB0008QG0R000QYJFZE
 priority: P3
 status: open
 title: "Backlog status-drift auditor — detect `status: open` rows whose primary artifact has already shipped"

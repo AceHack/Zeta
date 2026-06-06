@@ -1,5 +1,6 @@
 ---
 id: B-0982
+zetaid: 081KT07NV0008QG0R0032MCYER
 title: 4-oracle multi-format golden-vector seeds (CBOR/JSON/YAML/XML) — nothing is single source of truth, the seed itself must be cross-validated not trusted as one file
 status: open
 priority: P2

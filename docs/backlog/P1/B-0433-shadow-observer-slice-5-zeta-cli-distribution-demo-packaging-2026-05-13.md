@@ -1,5 +1,6 @@
 ---
 id: B-0433
+zetaid: 081KRFA460008QG0R0028CR0N9
 priority: P1
 status: closed
 title: "Shadow observer slice 5 — Zeta CLI distribution + demo packaging"

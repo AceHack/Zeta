@@ -1,5 +1,6 @@
 ---
 id: B-0084
+zetaid: 081KQ8P5D0008QG0R001SRPYT7
 priority: P3
 status: mostly-implemented-verify-coverage
 title: Verify CodeQL path-gate empty-SARIF aggregate-baseline covers all matrix languages (already implemented, verify-only scope)

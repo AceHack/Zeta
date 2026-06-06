@@ -1,5 +1,6 @@
 ---
 id: B-0862
+zetaid: 081KSKBP80008QG0R0031DTHS9
 priority: P1
 status: open
 title: OPLE primitives implementation — extend Observe / Persist / Limit / Emit with TFeedback discriminated-unions at framework primitive substrate; cascade asymmetric-authorship + monad-propagation cluster to CORE primitives (operator 2026-05-27)

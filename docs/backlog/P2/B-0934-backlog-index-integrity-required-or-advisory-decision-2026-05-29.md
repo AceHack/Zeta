@@ -1,5 +1,6 @@
 ---
 id: B-0934
+zetaid: 081KSRGFP0008QG0R001PXKZPQ
 priority: P2
 status: open
 title: Decide whether backlog-index-integrity is required or explicitly advisory

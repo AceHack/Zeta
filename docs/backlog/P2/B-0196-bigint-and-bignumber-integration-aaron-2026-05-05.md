@@ -1,5 +1,6 @@
 ---
 id: B-0196
+zetaid: 081KQTPYE0008QG0R001W237MZ
 priority: P2
 status: open
 title: BigInt + BigRational + BigDecimal + BigFloat integration -- substrate survey + per-class adoption recommendation (Aaron 2026-05-05)

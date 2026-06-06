@@ -1,5 +1,6 @@
 ---
 id: B-0004
+zetaid: 081KQ0YZ80008QG0R002HWBHKJ
 priority: P2
 status: open
 title: Translate repo (code, skills, documents, memory) into other human languages — inclusivity + meeting humans at their starting point + bidirectional-alignment through learning + education + teaching that's bidirectional

@@ -1,5 +1,6 @@
 ---
 id: B-0902
+zetaid: 081KSNY2Z0008QG0R0021S5F3G
 priority: P3
 status: open
 title: Holographic-bulk-boundary information-completeness validation — does the shadow-* corpus encode the agent-output state-space?

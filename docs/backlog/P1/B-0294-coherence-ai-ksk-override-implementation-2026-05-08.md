@@ -1,5 +1,6 @@
 ---
 id: B-0294
+zetaid: 081KR2E4K0008QG0R00009QQJM
 priority: P1
 status: open
 title: "Coherence AI — KSK override implementation"

@@ -1,5 +1,6 @@
 ---
 id: B-0977
+zetaid: 081KT07NV0008QG0R000K1X7NZ
 priority: P3
 status: open
 title: Ace registry mirror/failover — multiple URLs per registry (deferred from slice 6)

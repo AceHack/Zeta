@@ -1,5 +1,6 @@
 ---
 id: B-0459
+zetaid: 081KRHWGX0008QG0R000TVGDGV
 priority: P1
 status: open
 title: "B-0440 slice 5.1 — infinite-backlog-nudge subscriber handler (standing-by failure-mode closer)"

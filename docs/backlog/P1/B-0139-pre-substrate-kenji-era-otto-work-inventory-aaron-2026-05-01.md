@@ -1,5 +1,6 @@
 ---
 id: B-0139
+zetaid: 081KQGDBJ0008QG0R002S9SWH6
 priority: P1
 status: in-progress
 title: Pre-substrate Kenji-era Otto-lineage work inventory — past recovery branches, worktrees, built artifacts not yet referenced in substrate

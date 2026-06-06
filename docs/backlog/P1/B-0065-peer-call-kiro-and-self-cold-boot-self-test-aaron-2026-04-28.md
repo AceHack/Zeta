@@ -1,5 +1,6 @@
 ---
 id: B-0065
+zetaid: 081KQ8P5D0008QG0R002M5A2M7
 priority: P1
 status: umbrella
 title: Peer-call expansion — add kiro.ts + claude.ts (self) sibling scripts; the self-call enables cold-boot self-testing (Aaron 2026-04-28)

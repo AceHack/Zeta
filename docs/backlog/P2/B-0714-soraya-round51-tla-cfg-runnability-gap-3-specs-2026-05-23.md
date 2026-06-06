@@ -1,5 +1,6 @@
 ---
 id: B-0714
+zetaid: 081KS923C0008QG0R000ECG5EC
 priority: P2
 status: open
 title: "Soraya round-51 hand-off — author 3 missing TLA+ `.cfg` files (AsyncStreamEnumerator / ConsistentHashRebalance / DictionaryStripedCAS) — runnability gap distinct from B-0709 registry gap"

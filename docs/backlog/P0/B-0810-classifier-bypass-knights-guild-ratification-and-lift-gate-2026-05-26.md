@@ -1,5 +1,6 @@
 ---
 id: B-0810
+zetaid: 081KSGS9H0008QG0R002CY8Q24
 priority: P0
 status: closed
 title: "Classifier-bypass Knights Guild ratification and standing-constraint lift gate"

@@ -1,5 +1,6 @@
 ---
 id: B-0078
+zetaid: 081KQ8P5D0008QG0R002SBGJXX
 priority: P2
 status: closed
 title: Narrow markdownlint carve-out from `docs/research/2026-*-*.md` to verbatim-only pattern — Codex P1 on PR #663

@@ -1,5 +1,6 @@
 ---
 id: B-0771
+zetaid: 081KSE6WT0008QG0R0022D6GN8
 priority: P2
 status: open
 title: Audio codecs working (DAW-ready) + Intel NPU/VPU exposed as cluster compute resource — beyond cosmetic firmware fix

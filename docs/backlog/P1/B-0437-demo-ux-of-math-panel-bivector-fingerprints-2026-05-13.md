@@ -1,5 +1,6 @@
 ---
 id: B-0437
+zetaid: 081KRFA460008QG0R001JTAPZW
 priority: P1
 status: closed
 title: "Demo — UX-of-math panel (bivector fingerprints, partial-credit scoring)"

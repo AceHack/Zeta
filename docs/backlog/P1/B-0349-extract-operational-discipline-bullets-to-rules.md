@@ -1,5 +1,6 @@
 ---
 id: B-0349
+zetaid: 081KR50HA0008QG0R0018996J2
 priority: P1
 status: closed
 title: "Extract operational-discipline bullets to .claude/rules/"

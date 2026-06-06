@@ -1,5 +1,6 @@
 ---
 id: B-0247
+zetaid: 081KQZVQW0008QG0R000ZHEN62
 priority: P1
 status: open
 title: "Ace DLC content packs — distributable kernel extensions via package manager"

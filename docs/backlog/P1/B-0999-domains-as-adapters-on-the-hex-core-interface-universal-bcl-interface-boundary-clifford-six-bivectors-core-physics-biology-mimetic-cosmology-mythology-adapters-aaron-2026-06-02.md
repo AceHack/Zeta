@@ -1,5 +1,6 @@
 ---
 id: B-0999
+zetaid: 081KT2T2J0008QG0R0019YVX8M
 priority: P1
 status: open
 title: "Domains as adapters on the hex core interface (universal bcl-interface-boundary) — core math = Clifford/Cayley-Dickson/the-6 (6 bivectors = Lorentz generators); each domain (physics/biology/mimetic-Girard/cosmology/mythology/astrology) = a domain-scoped adapter conforming to the core, refereed against its established math (Aaron 2026-06-02)"

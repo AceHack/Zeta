@@ -1,5 +1,6 @@
 ---
 id: B-0939
+zetaid: 081KSV2WD0008QG0R0020P6ZH2
 priority: P2
 status: open
 title: Self-propagating-Markdown compiler-rule + bootstrap-traveler template (every .md is a self-propagating pattern through time or it doesn't compile)

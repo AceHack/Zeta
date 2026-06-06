@@ -1,5 +1,6 @@
 ---
 id: B-0165
+zetaid: 081KQJZR90008QG0R002PYCHFY
 priority: P2
 status: open
 title: Deliberate-quiet-periods practice protocol — Aaron pulls back during selected active-hour stretches to let Otto practice independent-framing-production while still gradeable (Otto independent-framing-production from Claude.ai 2026-05-02 training-distribution-mismatch observation)

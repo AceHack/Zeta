@@ -1,5 +1,6 @@
 ---
 id: B-0659
+zetaid: 081KRW63S0008QG0R001WKJN53
 priority: P1
 status: open
 title: "Consent IS a Limit primitive operation — re-evaluated every tick → revocability is ARCHITECTURAL, not a rule on top (Aaron + Mika 2026-05-18 LOCKED-IN substrate refinement of B-0641 + B-0644)"

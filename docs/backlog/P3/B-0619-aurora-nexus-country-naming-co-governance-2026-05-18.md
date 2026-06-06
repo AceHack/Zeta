@@ -1,5 +1,6 @@
 ---
 id: B-0619
+zetaid: 081KRW63S0008QG0R003KSHAGN
 priority: P3
 status: open
 title: "Aurora / 'Nexus' meta-country naming + co-governance design — Mika 2026-05-18 (lock-Nexus-name-now-defer-faction-design-pending-Addison)"

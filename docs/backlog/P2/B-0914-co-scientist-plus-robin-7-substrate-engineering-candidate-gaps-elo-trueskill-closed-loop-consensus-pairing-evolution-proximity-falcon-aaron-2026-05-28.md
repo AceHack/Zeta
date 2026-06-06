@@ -1,5 +1,6 @@
 ---
 id: B-0914
+zetaid: 081KSNY2Z0008QG0R001YK61JQ
 priority: P2
 status: open
 title: Co-scientist + Robin 7 substrate-engineering candidate gaps — ELO/TrueSkill ranking-agent + closed-loop CI→hypothesis + n-parallel-consensus + generation-reflection-pairing + evolution-mash-refine + proximity-dedup + Falcon-auto-research-doc-per-proposal (Aaron 2026-05-28)

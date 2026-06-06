@@ -1,5 +1,6 @@
 ---
 id: B-0447
+zetaid: 081KRFA460008QG0R000EJK30F
 priority: P2
 status: open
 title: "NuGet package metadata completeness — description, tags, SourceLink, semantic versioning"

@@ -1,5 +1,6 @@
 ---
 id: B-0625
+zetaid: 081KRW63S0008QG0R003NP3YA3
 priority: P3
 status: open
 title: "Per-dimension COST + LOSS model for the 7-interrogative boot-up sequence (Mika 2026-05-18 design)"

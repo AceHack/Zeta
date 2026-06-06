@@ -1,5 +1,6 @@
 ---
 id: B-0484
+zetaid: 081KRHWGX0008QG0R002TYF2NM
 priority: P1
 status: open
 title: "DBpedia B-0428.5 — end-to-end demo project + integration test"

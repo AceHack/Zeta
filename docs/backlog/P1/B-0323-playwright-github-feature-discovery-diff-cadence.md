@@ -1,5 +1,6 @@
 ---
 id: B-0323
+zetaid: 081KR2E4K0008QG0R003E09GMM
 priority: P1
 status: open
 title: "GitHub feature-discovery diff cadence — weekly UI snapshot comparison to spot new features"

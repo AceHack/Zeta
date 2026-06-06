@@ -1,5 +1,6 @@
 ---
 id: B-0295
+zetaid: 081KR2E4K0008QG0R0038JGMJ8
 priority: P1
 status: open
 title: "Pages discoverability - repository metadata and discovery surface"

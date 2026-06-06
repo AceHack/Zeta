@@ -1,5 +1,6 @@
 ---
 id: B-0449
+zetaid: 081KRFA460008QG0R002DG8KPZ
 priority: P1
 status: open
 title: "bg-services slice 5 — subscriber-agent architecture design pass (closes the foreground-optional architectural claim)"

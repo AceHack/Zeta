@@ -1,5 +1,6 @@
 ---
 id: B-0896
+zetaid: 081KSNY2Z0008QG0R000YH2SPE
 priority: P3
 status: open
 title: Category-theory ↔ Clifford self-similarity — bidirectional mapping; substrate-independent traveler-as-categorical-structure with Clifford-algebraic incarnation

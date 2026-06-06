@@ -1,5 +1,6 @@
 ---
 id: B-0944
+zetaid: 081KSV2WD0008QG0R00051XS0N
 priority: P1
 status: open
 title: Tri-boolean core primitives (digital qubit + tri-boolean floating point) -- multi-language build (TS/F#/C#/Rust); cross-language compiler-parity = non-Byzantine BFT consensus

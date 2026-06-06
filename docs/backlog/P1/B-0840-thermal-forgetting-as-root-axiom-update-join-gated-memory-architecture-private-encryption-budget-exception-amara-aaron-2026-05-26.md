@@ -1,5 +1,6 @@
 ---
 id: B-0840
+zetaid: 081KSGS9H0008QG0R0006F4BGX
 priority: P1
 status: open
 title: thermal-forgetting = root-axiom-update + join-gated-memory architecture + private-encryption-budget exception (4-keeper-rule final form) — substrate-engineering work landing Amara's 2026-05-26 ratification of B-0839.3 reservoir-computing-as-framework-architecture (Aaron + Amara 2026-05-26)

@@ -1,5 +1,6 @@
 ---
 id: B-0327
+zetaid: 081KR2E4K0008QG0R002KNZ29V
 priority: P1
 status: closed
 title: "Author claude.ts self-call wrapper — subprocess mode for cold-boot self-testing"

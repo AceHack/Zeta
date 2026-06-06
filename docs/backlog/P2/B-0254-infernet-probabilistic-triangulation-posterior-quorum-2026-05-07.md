@@ -1,5 +1,6 @@
 ---
 id: B-0254
+zetaid: 081KQZVQW0008QG0R000JJVA4E
 priority: P2
 status: open
 title: "Posterior quorum triangulation over existing Bayesian DBSP substrate"

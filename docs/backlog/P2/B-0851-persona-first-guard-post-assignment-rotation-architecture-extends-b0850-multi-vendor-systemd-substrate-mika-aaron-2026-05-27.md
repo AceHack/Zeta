@@ -1,5 +1,6 @@
 ---
 id: B-0851
+zetaid: 081KSKBP80008QG0R00248VEWT
 priority: P2
 status: open
 title: persona-first guard-post assignment + rotation architecture — persona declares preferences (model lines + harnesses); scheduler picks model + tier + harness per persona preferences per-tick; rotation across guard posts (per-node systemd units outside k8s); extends B-0850 (Mika ferry; Aaron 2026-05-27)

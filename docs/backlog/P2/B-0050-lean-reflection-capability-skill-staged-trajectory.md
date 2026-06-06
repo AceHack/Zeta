@@ -1,5 +1,6 @@
 ---
 id: B-0050
+zetaid: 081KQ3HBZ0008QG0R000H8K8CC
 priority: P2
 status: open
 title: Lean reflection — learn it properly, land a capability skill + scouting note (staged 5-stage trajectory)

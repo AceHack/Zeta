@@ -1,5 +1,6 @@
 ---
 id: B-0820
+zetaid: 081KSGS9H0008QG0R00352WW0V
 priority: P2
 status: open
 title: Flux as second sync-engine — flag-toggle between ArgoCD (default) and Flux; eventually support BOTH long-term for multi-cluster engine A/B experimentation; composes with B-0816 Helm-as-convergence-point + B-0819 ontology-based AI-runbook substrate (Aaron 2026-05-26)

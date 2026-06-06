@@ -1,5 +1,6 @@
 ---
 id: B-0764
+zetaid: 081KSE6WT0008QG0R0009YYNP4
 priority: P2
 status: open
 title: CNCF ecosystem as force multipliers behind Zeta interfaces — KEDA, DAPR, OPA, OAM/KubeVela + Ace + ontology negotiation

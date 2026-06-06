@@ -1,5 +1,6 @@
 ---
 id: B-0178
+zetaid: 081KQNJ500008QG0R001THCSKV
 priority: P2
 status: open
 title: Decision-graph traversal tool — `tools/decision-graph/` TS scripts that emit + query the substrate's implicit provenance graph (Aaron 2026-05-03 architectural observation; fourth B-0177 audit hit)

@@ -1,5 +1,6 @@
 ---
 id: B-0372
+zetaid: 081KR2E4K0008QG0R0015BCPF7
 priority: P1
 status: open
 title: "Pages discoverability - sitemap, robots, and AI crawler policy"

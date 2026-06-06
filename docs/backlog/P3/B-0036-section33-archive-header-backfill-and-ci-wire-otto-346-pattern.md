@@ -1,5 +1,6 @@
 ---
 id: B-0036
+zetaid: 081KQ3HBZ0008QG0R001FPVG3Z
 priority: P3
 status: open
 title: "GOVERNANCE.md §33 archive-header backfill on 26 pre-existing courier-ferry research docs + wire `tools/hygiene/check-archive-header-section33.sh` to CI gate.yml lint job"

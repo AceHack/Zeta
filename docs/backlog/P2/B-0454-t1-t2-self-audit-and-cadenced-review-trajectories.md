@@ -1,5 +1,6 @@
 ---
 id: B-0454
+zetaid: 081KRA5AR0008QG0R003F6TA3A
 priority: P2
 status: open
 title: Encode T1 self-audit + T2 cadenced review (TS-preferred tooling + trajectory packet)

@@ -1,5 +1,6 @@
 ---
 id: B-0288
+zetaid: 081KR2E4K0008QG0R002YE3MMD
 priority: P1
 status: in-progress
 title: "Ace DLC — package manager CLI (install/verify/list)"

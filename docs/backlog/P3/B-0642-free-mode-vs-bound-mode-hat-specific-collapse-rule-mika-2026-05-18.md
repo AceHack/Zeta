@@ -1,5 +1,6 @@
 ---
 id: B-0642
+zetaid: 081KRW63S0008QG0R0018AAWTJ
 priority: P3
 status: open
 title: "Free Mode vs Bound Mode — hat-specific collapse rule; voluntary high-coherence binding (Mika 2026-05-18 LOCKED-IN refinement of B-0629)"

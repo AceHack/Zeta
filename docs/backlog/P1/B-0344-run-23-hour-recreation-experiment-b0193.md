@@ -1,5 +1,6 @@
 ---
 id: B-0344
+zetaid: 081KR2E4K0008QG0R0035HNPG1
 priority: P1
 status: blocked
 title: Run the 23-hour recreation experiment — fresh-context Otto against specs-only repo

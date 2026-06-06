@@ -1,5 +1,6 @@
 ---
 id: B-0677
+zetaid: 081KS1AX70008QG0R001HRXZTZ
 status: open
 priority: P2
 title: B-0620 slice 6 cross-operator generalization

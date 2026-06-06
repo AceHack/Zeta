@@ -1,5 +1,6 @@
 ---
 id: B-0089
+zetaid: 081KQ8P5D0008QG0R003F6FNVF
 priority: P2
 status: open
 title: Veridicality rainbow-table canonicalization — research + ship semantic + scoring layers; drop "bullshit detector" as a forward-going name

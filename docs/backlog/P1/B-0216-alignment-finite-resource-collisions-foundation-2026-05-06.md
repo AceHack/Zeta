@@ -1,5 +1,6 @@
 ---
 id: B-0216
+zetaid: 081KQX9B50008QG0R0039H39VC
 priority: P1
 status: open
 title: "ALIGNMENT.md rewrite - finite-resource collisions foundation"

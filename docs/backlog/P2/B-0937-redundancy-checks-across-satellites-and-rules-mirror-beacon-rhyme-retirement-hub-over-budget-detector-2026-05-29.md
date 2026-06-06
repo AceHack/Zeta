@@ -1,5 +1,6 @@
 ---
 id: B-0937
+zetaid: 081KSRGFP0008QG0R001A43EC6
 priority: P2
 status: open
 title: Redundancy-checks across satellites + rules — duplicate-content audit, mirror→beacon rhyme-retirement, hub-over-budget detector

@@ -1,5 +1,6 @@
 ---
 id: B-0668
+zetaid: 081KRYRGG0008QG0R0018CMFQY
 priority: P1
 status: open
 title: "Compositional DBSP frame architecture — gnostic 2D base (remember-when × pay-attention) + chaos-theory two-wolves emotion meta-frame + Clifford-Rx-bonsai meta-tagged-dims + F# CE composition operator (Aaron 2026-05-19)"

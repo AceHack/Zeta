@@ -1,5 +1,6 @@
 ---
 id: B-0430
+zetaid: 081KRFA460008QG0R0022THSDJ
 priority: P2
 status: open
 title: "Peer-call wrappers — CodeQL insecure-temp-file alert on autogenOutputPath() across all 8 wrappers (substrate-consistent fix needed)"

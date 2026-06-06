@@ -1,5 +1,6 @@
 ---
 id: B-0090
+zetaid: 081KQ8P5D0008QG0R0002TN22C
 priority: P2
 status: decomposed
 title: Cadenced lost-substrate recovery audit (worktrees + orphan branches + closed-not-merged PRs + draft PRs aged > N days)

@@ -1,5 +1,6 @@
 ---
 id: B-0496
+zetaid: 081KRHWGX0008QG0R002GTT8CX
 priority: P1
 status: open
 title: "Hamiltonian viz — slice-2: live GitHub API commit fetch → trajectory"

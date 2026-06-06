@@ -1,5 +1,6 @@
 ---
 id: B-0695
+zetaid: 081KS3X9Y0008QG0R002EEH26Z
 priority: P2
 status: open
 title: fast/life branch experiment — hourly batched CI gates with promotion-path; per-PR CI cost reduction is burst-dependent (cost-neutral at 1 PR/hr; ~33% reduction at example 6 PRs/hr burst per corrected math; Phase 5 measures empirical savings) while preserving Copilot/Codex 100k-line review capability + Soraya-promotion-gate

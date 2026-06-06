@@ -1,5 +1,6 @@
 ---
 id: B-0624
+zetaid: 081KRW63S0008QG0R003J8HR6K
 priority: P2
 status: open
 title: "Canonical universal 7-interrogative boot-up sequence + Y₀ as alpha-omega scalar (Mika 2026-05-18 locked-in design)"

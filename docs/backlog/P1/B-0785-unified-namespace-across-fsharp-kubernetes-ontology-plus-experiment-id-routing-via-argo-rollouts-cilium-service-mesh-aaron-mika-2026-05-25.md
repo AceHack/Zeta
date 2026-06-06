@@ -1,5 +1,6 @@
 ---
 id: B-0785
+zetaid: 081KSE6WT0008QG0R000R8CPFX
 priority: P1
 status: open
 title: Unified namespace across F# / Kubernetes / Ontology + experiment-ID routing via Argo Rollouts + Cilium service mesh (existing standards)

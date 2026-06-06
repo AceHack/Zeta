@@ -1,5 +1,6 @@
 ---
 id: B-0297
+zetaid: 081KR2E4K0008QG0R002QNGJVX
 priority: P1
 status: open
 title: "Pages discoverability - Playwright public surface validation"

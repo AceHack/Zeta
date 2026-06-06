@@ -1,5 +1,6 @@
 ---
 id: B-0787
+zetaid: 081KSE6WT0008QG0R000FN7TVJ
 priority: P1
 status: open
 title: Multi-AI experiment parallelism without stepping on each other's feet — per-AI namespace + experiment-ID routing + event-store-native twin (experiments are projections, not separate DBs)

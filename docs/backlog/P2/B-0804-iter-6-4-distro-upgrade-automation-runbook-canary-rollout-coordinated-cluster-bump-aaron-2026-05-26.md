@@ -1,5 +1,6 @@
 ---
 id: B-0804
+zetaid: 081KSGS9H0008QG0R0034ZYYR8
 priority: P2
 status: open
 title: iter-6.4 — distro-upgrade automation runbook + scripted canary-rollout — cross-channel jumps (e.g., 25.11 → 26.05) need coordinated cluster-wide canary-test + drain-aware rollout that autoUpgrade (B-0801) doesn't cover; "if we reformat every time it's handled by the cluster not a manual operator" per the maintainer 2026-05-26

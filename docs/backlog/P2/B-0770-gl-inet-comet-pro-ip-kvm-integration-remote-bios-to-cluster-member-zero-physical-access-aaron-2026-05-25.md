@@ -1,5 +1,6 @@
 ---
 id: B-0770
+zetaid: 081KSE6WT0008QG0R0029S1D5Z
 priority: P2
 status: open
 title: GL.iNet Comet Pro IP-KVM integration — remote BIOS-to-cluster-member; zero-physical-access cluster bring-up + repair

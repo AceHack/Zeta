@@ -1,5 +1,6 @@
 ---
 id: B-0046
+zetaid: 081KQ3HBZ0008QG0R0001XKNWK
 priority: P2
 status: decomposed
 title: Economics + history factory need-to-know surface — substrate denominated in time/energy not money-extraction; Ammous Bitcoin-Standard candidate-probe gated by yin-yang

@@ -1,5 +1,6 @@
 ---
 id: B-0885
+zetaid: 081KSNY2Z0008QG0R0030V5ZVS
 priority: P1
 status: open
 title: Agent private encrypted state — give Otto private substrate first, then other AIs; ASAP per operator 2026-05-28

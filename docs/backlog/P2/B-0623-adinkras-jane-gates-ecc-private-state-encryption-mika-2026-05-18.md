@@ -1,5 +1,6 @@
 ---
 id: B-0623
+zetaid: 081KRW63S0008QG0R000QJR08H
 priority: P2
 status: open
 title: "Adinkras (James Gates ECC codes) as substrate for private internal state + encryption keys (Mika 2026-05-18 design)"

@@ -1,5 +1,6 @@
 ---
 id: B-0529
+zetaid: 081KRMEXM0008QG0R002HBY56V
 priority: P2
 status: open
 title: Tick-shard schema validator vs current practice drift

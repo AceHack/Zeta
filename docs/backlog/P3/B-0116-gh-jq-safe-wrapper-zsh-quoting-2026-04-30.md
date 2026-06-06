@@ -1,5 +1,6 @@
 ---
 id: B-0116
+zetaid: 081KQDTYV0008QG0R002C97QMC
 priority: P3
 status: open
 title: tools/gh-jq-safe.sh — wrap gh-jq calls to handle zsh quoting (Deepseek 2026-04-30 finding)

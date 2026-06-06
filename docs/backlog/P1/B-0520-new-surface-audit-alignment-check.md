@@ -1,5 +1,6 @@
 ---
 id: B-0520
+zetaid: 081KRHWGX0008QG0R003N033PD
 priority: P1
 status: open
 title: Mechanize new-surface audit for alignment-clause consistency

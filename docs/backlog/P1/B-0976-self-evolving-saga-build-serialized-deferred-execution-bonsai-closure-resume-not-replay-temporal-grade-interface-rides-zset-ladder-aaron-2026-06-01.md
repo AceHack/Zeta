@@ -1,5 +1,6 @@
 ---
 id: B-0976
+zetaid: 081KT07NV0008QG0R003BE6MJ2
 priority: P1
 status: open
 title: "Self-evolving saga build — serialized deferred execution (Bonsai expr-tree + closure state), resume-not-replay, Temporal-grade interface, rides the Z-set/IndexedZSet ladder (Aaron 2026-06-01)"

@@ -1,5 +1,6 @@
 ---
 id: B-0869
+zetaid: 081KSNY2Z0008QG0R000HENSVM
 priority: P1
 status: open
 title: DORA of our live system — operator's 2nd evaluation mandate (the OTHER half of operator's performance surface beyond B-0866's 24-months-ahead-in-AI mandate); substrate for direct ServiceTitan-live-system DORA metric delivery + composition with AI mandate (operator 2026-05-28)

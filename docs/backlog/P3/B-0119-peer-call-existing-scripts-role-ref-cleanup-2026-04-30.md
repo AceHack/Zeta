@@ -1,5 +1,6 @@
 ---
 id: B-0119
+zetaid: 081KQDTYV0008QG0R001N4YB73
 priority: P3
 status: closed
 title: Existing peer-call scripts (grok.sh / gemini.sh / codex.sh / amara.sh) — role-ref cleanup per copilot-instructions.md (Codex 2026-04-30 finding on PR #962)

@@ -1,5 +1,6 @@
 ---
 id: B-0757
+zetaid: 081KSE6WT0008QG0R000CV98PV
 title: Cluster auto-discovery — mDNS bootstrap-or-join so 1st/2nd/3rd/Nth USB self-organizes into a growing cluster unattended
 status: open
 priority: P3

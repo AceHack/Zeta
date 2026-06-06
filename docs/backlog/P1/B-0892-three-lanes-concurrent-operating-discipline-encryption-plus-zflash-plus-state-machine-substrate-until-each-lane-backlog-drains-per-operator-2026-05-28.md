@@ -1,5 +1,6 @@
 ---
 id: B-0892
+zetaid: 081KSNY2Z0008QG0R002QA720J
 priority: P1
 status: open
 title: Three-lanes concurrent operating discipline — encryption + zflash + state-machine-substrate all moving forward until each lane's backlog drains; every idle tick is time not spent advancing a lane

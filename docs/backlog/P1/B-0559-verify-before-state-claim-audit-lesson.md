@@ -1,5 +1,6 @@
 ---
 id: B-0559
+zetaid: 081KRQ1AB0008QG0R002J484S1
 priority: P1
 status: open
 title: Class-level lesson encoded as a verify-before-state-claim audit (decomposed from B-0139)

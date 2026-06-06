@@ -1,5 +1,6 @@
 ---
 id: B-0980
+zetaid: 081KT07NV0008QG0R0016FVWD7
 priority: P3
 status: closed
 title: Ace `ace registry publish` — index-generation + signing tooling (deferred from slice 6)

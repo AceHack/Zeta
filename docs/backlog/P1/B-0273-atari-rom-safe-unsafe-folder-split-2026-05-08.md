@@ -1,5 +1,6 @@
 ---
 id: B-0273
+zetaid: 081KR2E4K0008QG0R001JC6S3N
 priority: P1
 status: closed
 title: "Atari 2600 ROM safe/unsafe folder split for license compliance"

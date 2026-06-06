@@ -1,5 +1,6 @@
 ---
 id: B-0504
+zetaid: 081KRHWGX0008QG0R000PVB6FF
 priority: P1
 status: closed
 title: "B-0442 slice 5b — wire --auto-recover into pollOnce + real RecoveryAdapters + config flags"

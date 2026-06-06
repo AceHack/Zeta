@@ -1,5 +1,6 @@
 ---
 id: B-0230
+zetaid: 081KQX9B50008QG0R001T7M5SK
 priority: P2
 status: open
 title: "Timeseries native-ZSet research - Pareto frontier and tradeoff synthesis"

@@ -1,5 +1,6 @@
 ---
 id: B-0554
+zetaid: 081KRQ1AB0008QG0R003WPKZ69
 priority: P1
 status: open
 title: "Riven Cursor Terminal loop graceful shutdown tombstone"

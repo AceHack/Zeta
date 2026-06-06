@@ -1,5 +1,6 @@
 ---
 id: B-0074
+zetaid: 081KQ8P5D0008QG0R0014HJFF5
 priority: P2
 status: open
 title: PR #72 punch-list / spec-consistency drift sweep — 8 codex threads on stale items + cross-doc alignment

@@ -1,5 +1,6 @@
 ---
 id: B-1006
+zetaid: 081KT2T2J0008QG0R0008TFHJT
 priority: P1
 status: open
 title: "Canonical primitives registry + promotion gate + the 'what's the difference?' suspicion test — anything without a clean adapter onto the core (two dimensions + ZSet/GSet/Bag/IndexedZSet/event-index) is suspect: if it's just a zset/gset+emit+rx composition, don't mint a special class (Aaron 2026-06-02 observation)"

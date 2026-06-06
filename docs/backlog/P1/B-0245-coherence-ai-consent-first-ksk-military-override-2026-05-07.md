@@ -1,5 +1,6 @@
 ---
 id: B-0245
+zetaid: 081KQZVQW0008QG0R002Q58F6Z
 priority: P1
 status: open
 title: "Coherence AI with consent-first design — KSK override for military/emergency use"

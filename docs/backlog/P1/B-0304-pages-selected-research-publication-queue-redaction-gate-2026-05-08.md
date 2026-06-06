@@ -1,5 +1,6 @@
 ---
 id: B-0304
+zetaid: 081KR2E4K0008QG0R001B503RK
 priority: P1
 status: open
 title: "Pages content sources - selected research queue and redaction gate"

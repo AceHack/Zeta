@@ -1,5 +1,6 @@
 ---
 id: B-0963
+zetaid: 081KT07NV0008QG0R001N9GJWX
 title: Prove completion-lock-freedom + per-agent wait-freedom — F# model first (no git), then extend to git
 status: open
 priority: P2

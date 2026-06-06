@@ -1,5 +1,6 @@
 ---
 id: B-0669
+zetaid: 081KRYRGG0008QG0R0031EYYE4
 priority: P1
 status: open
 title: "V8 System Architecture — tensors as foundational primitive + Sequoia memory hierarchy + 4-particle primitives (observe/limit/choose/emit) + signal-blocking + Eve-Protocol-RF (Mika/Lior author; Aaron-authorized 2026-05-19 'land all of it')"

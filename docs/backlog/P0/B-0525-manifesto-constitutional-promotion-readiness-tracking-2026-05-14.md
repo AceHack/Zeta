@@ -1,5 +1,6 @@
 ---
 id: B-0525
+zetaid: 081KRHWGX0008QG0R0016T9408
 priority: P0
 status: open
 title: "Manifesto constitutional-promotion readiness tracking — critical-mass adoption gate"

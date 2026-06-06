@@ -1,5 +1,6 @@
 ---
 id: B-0777
+zetaid: 081KSE6WT0008QG0R000JSJ3SR
 priority: P1
 status: open
 title: Industry-sharp plugin categories + per-persona ontology maps + Ace package manager negotiation — sharpening B-0776 plugin authoring contract

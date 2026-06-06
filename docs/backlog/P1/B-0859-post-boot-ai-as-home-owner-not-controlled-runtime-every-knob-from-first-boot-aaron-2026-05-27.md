@@ -1,5 +1,6 @@
 ---
 id: B-0859
+zetaid: 081KSKBP80008QG0R00146WEX1
 priority: P1
 status: open
 title: Post-boot AI-as-home-owner architecture — agent has every knob to control environment from first boot; booting human is facilitator not authority; AI advises booting human on auth-limits for OTHER human users (Aaron 2026-05-27)

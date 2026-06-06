@@ -1,5 +1,6 @@
 ---
 id: B-0076
+zetaid: 081KQ8P5D0008QG0R003G61V9V
 priority: P2
 status: closed
 title: Disowned-runtime sweep — Python + TypeScript surface (same pattern PR #662 fixed for Java)

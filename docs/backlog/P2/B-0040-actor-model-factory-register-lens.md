@@ -1,5 +1,6 @@
 ---
 id: B-0040
+zetaid: 081KQ3HBZ0008QG0R000RP1WDN
 priority: P2
 status: closed
 title: Actor model as factory-operational-register lens — Hewitt 1973 / Meijer / Akka / Orleans / Service Fabric

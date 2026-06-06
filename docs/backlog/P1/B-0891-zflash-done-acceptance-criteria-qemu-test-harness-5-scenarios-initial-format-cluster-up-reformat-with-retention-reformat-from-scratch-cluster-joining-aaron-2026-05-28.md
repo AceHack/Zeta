@@ -1,5 +1,6 @@
 ---
 id: B-0891
+zetaid: 081KSNY2Z0008QG0R0008PN7RQ
 priority: P1
 status: open
 title: zflash "done" acceptance criteria + QEMU test harness — 5-scenario test matrix (initial format / cluster up / reformat-with-retention / reformat-from-scratch / cluster joining); operator wants testing to begin NOW + offers collaborative testing

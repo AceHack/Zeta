@@ -1,5 +1,6 @@
 ---
 id: B-1007
+zetaid: 081KT2T2J0008QG0R000YZ3NMY
 priority: P1
 status: open
 title: "Formal-coverage catch-up — we have ~zero canonical items yet (no proofs-from-seed, no hex/4×4 connection); every B-1000 law is example-tested only; Soraya's prioritized proof backlog (C1–C14, P0–P2) (Aaron + Soraya 2026-06-02)"

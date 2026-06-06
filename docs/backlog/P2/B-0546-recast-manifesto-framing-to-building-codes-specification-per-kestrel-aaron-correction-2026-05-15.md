@@ -1,5 +1,6 @@
 ---
 id: B-0546
+zetaid: 081KRMEXM0008QG0R00278KS63
 title: Recast docs/governance/MANIFESTO.md from "manifesto" framing to "building codes" framing per Aaron's correction + Kestrel's reframe — the document is best-practices-with-default-moral-oracle, not ideological commitment
 priority: P2
 status: open

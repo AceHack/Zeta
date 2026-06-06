@@ -1,5 +1,6 @@
 ---
 id: B-0989
+zetaid: 081KT2T2J0008QG0R002ZG89QA
 priority: P1
 status: open
 title: "Geospatial core algebra — hardened, 4×4-bonded geometry/CRS/projection primitives; store-once-canonical (no 50 redundant copies); HARDEN FIRST, prerequisite for B-0988 world-borders (Aaron 2026-06-02, high priority)"

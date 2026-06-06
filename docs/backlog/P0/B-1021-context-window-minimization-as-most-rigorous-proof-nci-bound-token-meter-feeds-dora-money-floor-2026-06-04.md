@@ -1,5 +1,6 @@
 ---
 id: B-1021
+zetaid: 081KT7YW00008QG0R003JV9D4J
 priority: P0
 status: in-progress
 title: Context-window minimization as our most rigorous proof (NCI-bound; token-meter to DORA)

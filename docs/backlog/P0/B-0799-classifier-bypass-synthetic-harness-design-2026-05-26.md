@@ -1,5 +1,6 @@
 ---
 id: B-0799
+zetaid: 081KSGS9H0008QG0R0005RKGTM
 priority: P0
 status: closed
 title: "Classifier-bypass synthetic-only harness design for B-0720"

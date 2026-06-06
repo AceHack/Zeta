@@ -1,5 +1,6 @@
 ---
 id: B-0043
+zetaid: 081KQ3HBZ0008QG0R000Q4Y00F
 priority: P3
 status: open
 title: Universal company + government information substrate — "all companies on Earth, all governments too"

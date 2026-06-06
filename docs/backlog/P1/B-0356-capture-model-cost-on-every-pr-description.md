@@ -1,5 +1,6 @@
 ---
 id: B-0356
+zetaid: 081KR50HA0008QG0R003B1S5NF
 priority: P1
 status: partial
 title: "Capture model + token usage in commit trailer (git-native, cost derived at query time)"

@@ -1,5 +1,6 @@
 ---
 id: B-0823
+zetaid: 081KSGS9H0008QG0R003SWZF9J
 priority: P2
 status: open
 title: investigate nixpkgs 25.11 ISO kernel + initrd path layout (boot/bzImage + boot/initrd no longer at top-level) — audit fix-fwd accepts any-of family + diagnostic dump on failure; tighten back once empirical paths confirmed (Aaron 2026-05-26)

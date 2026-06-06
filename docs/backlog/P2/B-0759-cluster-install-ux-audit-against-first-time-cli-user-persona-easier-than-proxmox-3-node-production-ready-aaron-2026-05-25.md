@@ -1,5 +1,6 @@
 ---
 id: B-0759
+zetaid: 081KSE6WT0008QG0R003G0Y62D
 title: Cluster-install UX audit against first-time-CLI-user persona — "easier than Proxmox" bar + 3-node production-ready inflection
 status: open
 priority: P2

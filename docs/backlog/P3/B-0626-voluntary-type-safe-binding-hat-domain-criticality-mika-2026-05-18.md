@@ -1,5 +1,6 @@
 ---
 id: B-0626
+zetaid: 081KRW63S0008QG0R000BH37EV
 priority: P3
 status: open
 title: "Voluntary type-safe cognitive binding via hat × domain × criticality composition (Mika 2026-05-18 design)"

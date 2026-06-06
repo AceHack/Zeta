@@ -1,5 +1,6 @@
 ---
 id: B-0755
+zetaid: 081KSE6WT0008QG0R003612WGJ
 priority: P2
 status: open
 title: Cluster role taxonomy expansion — control-plane-gpu, worker-cpu, worker-storage, all-in-one fused host configs

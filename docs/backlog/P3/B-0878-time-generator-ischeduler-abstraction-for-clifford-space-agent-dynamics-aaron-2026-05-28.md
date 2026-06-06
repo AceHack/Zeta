@@ -1,5 +1,6 @@
 ---
 id: B-0878
+zetaid: 081KSNY2Z0008QG0R000DZHHE5
 priority: P3
 status: open
 title: Time-generator IScheduler abstraction for Clifford-space agent dynamics — temporal substrate for memes / commitments / tonal trajectories through time

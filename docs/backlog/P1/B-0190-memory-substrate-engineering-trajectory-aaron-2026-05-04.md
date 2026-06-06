@@ -1,5 +1,6 @@
 ---
 id: B-0190
+zetaid: 081KQR4HQ0008QG0R001909FPT
 priority: P1
 status: open
 title: Memory substrate-engineering trajectory — multi-row plan for memory work as a domain (not just one-shot compression) (Aaron 2026-05-04)

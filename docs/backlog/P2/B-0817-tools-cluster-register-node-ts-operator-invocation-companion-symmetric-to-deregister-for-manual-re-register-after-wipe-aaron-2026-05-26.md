@@ -1,5 +1,6 @@
 ---
 id: B-0817
+zetaid: 081KSGS9H0008QG0R002QQNA79
 priority: P2
 status: open
 title: tools/cluster/register-node.ts — operator-invocation companion symmetric to deregister-node.ts (B-0814); thin wrapper for manual register/re-register cases (post-wipe, legacy hardware, override metadata); composes with iter-5.4.1 self-registration (B-0812) for the AUTO path

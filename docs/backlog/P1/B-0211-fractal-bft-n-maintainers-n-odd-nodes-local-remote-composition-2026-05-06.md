@@ -1,5 +1,6 @@
 ---
 id: B-0211
+zetaid: 081KQX9B50008QG0R0026BG44J
 priority: P1
 status: open
 title: "Fractal BFT — N maintainers × n(odd) nodes, local broadcast + remote git composition"

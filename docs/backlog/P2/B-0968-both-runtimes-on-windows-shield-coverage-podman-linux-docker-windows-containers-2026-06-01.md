@@ -1,5 +1,6 @@
 ---
 id: B-0968
+zetaid: 081KT07NV0008QG0R00328GGFQ
 priority: P2
 status: open
 title: "Both-runtimes-on-Windows shield coverage — podman (Linux-container path via WSL2) alongside docker (Windows-container install.ps1 shield)"

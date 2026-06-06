@@ -1,5 +1,6 @@
 ---
 id: B-0650
+zetaid: 081KRW63S0008QG0R003377JG9
 priority: P3
 status: closed
 title: "rest-push.ts --delete + --rename extension — mechanizes ID-renumber pattern (closes the B-0633→B-0649 inline-gh-api workaround) (Otto-CLI 2026-05-18)"

@@ -1,5 +1,6 @@
 ---
 id: B-0831
+zetaid: 081KSGS9H0008QG0R0011BC7T2
 priority: P1
 status: open
 title: CI cascade #6 — full-install-and-cluster-auto-join (post-boot install completes; node self-registers; eliminates routine human physical USB test) (Aaron 2026-05-26)

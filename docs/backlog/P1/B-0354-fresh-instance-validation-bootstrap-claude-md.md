@@ -1,5 +1,6 @@
 ---
 id: B-0354
+zetaid: 081KR50HA0008QG0R001CNS20T
 priority: P1
 status: closed
 title: "Fresh-instance validation test for bootstrap CLAUDE.md"

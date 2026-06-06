@@ -1,5 +1,6 @@
 ---
 id: B-0715
+zetaid: 081KS923C0008QG0R002CVSTJV
 priority: P2
 status: open
 title: "Soraya round-52 hand-off — register `IsTimeInvariant` axiom in verification-registry (Class 1/2 statement+paper-drift on a load-bearing axiom that BOTH registered DBSP theorems depend on)"

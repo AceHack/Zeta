@@ -1,5 +1,6 @@
 ---
 id: B-0581
+zetaid: 081KRQ1AB0008QG0R001Q4GNST
 priority: P2
 status: open
 title: "Skill — wrap `gh auth refresh` interactive flow + record scope-grant registry (per-machine, per-human-touch)"

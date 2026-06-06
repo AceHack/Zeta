@@ -1,5 +1,6 @@
 ---
 id: B-0913
+zetaid: 081KSNY2Z0008QG0R003Q42FZY
 priority: P3
 status: open
 title: Dup-ID triage — B-0865 + B-0866 pre-existing duplicates on origin/main (non-required lint failure but real substrate-engineering item)

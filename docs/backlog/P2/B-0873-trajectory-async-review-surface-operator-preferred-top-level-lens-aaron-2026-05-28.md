@@ -1,5 +1,6 @@
 ---
 id: B-0873
+zetaid: 081KSNY2Z0008QG0R000F0C5V0
 priority: P2
 status: open
 title: Trajectory-async-review surface — operator's preferred top-level lens for own-Zeta deployment (not PR-per-deploy)

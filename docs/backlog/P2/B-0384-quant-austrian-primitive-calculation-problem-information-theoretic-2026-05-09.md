@@ -1,5 +1,6 @@
 ---
 id: B-0384
+zetaid: 081KR50HA0008QG0R000467SWT
 priority: P3
 status: open
 title: Per-primitive formalizability assessment — calculation problem as information-theoretic complexity bound (Austrian primitive #3)

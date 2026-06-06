@@ -1,5 +1,6 @@
 ---
 id: B-0161
+zetaid: 081KQJZR90008QG0R002Z4B6VW
 priority: P1
 status: closed
 title: Substrate reshelf — apply thoughts-free-actions-razored asymmetry to PR #1202's CLAUDE.md overshoot (Aaron + Claude.ai 2026-05-02)

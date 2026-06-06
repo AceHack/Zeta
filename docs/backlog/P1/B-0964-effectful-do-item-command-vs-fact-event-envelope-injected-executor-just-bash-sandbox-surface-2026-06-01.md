@@ -1,5 +1,6 @@
 ---
 id: B-0964
+zetaid: 081KT07NV0008QG0R001CBQ2X2
 title: Effectful do_item — command-vs-fact-event envelope + injected executor port + item-class-routed bash surface (just-bash text / local docker real-work / CF cloud-burst)
 status: open
 priority: P1

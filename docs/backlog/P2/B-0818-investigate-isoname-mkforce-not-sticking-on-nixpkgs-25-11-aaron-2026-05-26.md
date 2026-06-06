@@ -1,5 +1,6 @@
 ---
 id: B-0818
+zetaid: 081KSGS9H0008QG0R00033DT02
 priority: P2
 status: open
 title: investigate why `isoImage.isoName = lib.mkForce "zeta-installer-..."` is no longer sticking on nixpkgs 25.11 — workflow audit fix-fwd accepts both names but the underlying mkForce-override regression should be diagnosed + fixed at the substrate layer (Aaron 2026-05-26)

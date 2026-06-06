@@ -1,5 +1,6 @@
 ---
 id: B-0773
+zetaid: 081KSE6WT0008QG0R0008483B2
 priority: P1
 status: open
 title: Cluster as digital twin — git-native + event-store-native + AI-native; unifying frame for B-0772 observable+controllable fabric

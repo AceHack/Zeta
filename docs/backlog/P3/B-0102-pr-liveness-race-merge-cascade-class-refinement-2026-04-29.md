@@ -1,5 +1,6 @@
 ---
 id: B-0102
+zetaid: 081KQB8J40008QG0R002DQ0FDR
 priority: P3
 status: open
 title: PR-liveness race during merge cascade — micro-class rename + mechanical guard + recovery-note format

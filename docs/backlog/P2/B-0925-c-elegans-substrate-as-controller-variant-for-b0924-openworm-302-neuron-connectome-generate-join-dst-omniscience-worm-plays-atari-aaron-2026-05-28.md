@@ -1,5 +1,6 @@
 ---
 id: B-0925
+zetaid: 081KSNY2Z0008QG0R00390T4DJ
 priority: P2
 status: open
 title: C. elegans-substrate as controller variant for B-0924 — OpenWorm 302-neuron full-connectome + generate+join over emulator-scene-AND-worm-scene under DST-omniscience (operator 2026-05-28)

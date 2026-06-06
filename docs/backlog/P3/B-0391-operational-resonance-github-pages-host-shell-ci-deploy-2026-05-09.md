@@ -1,5 +1,6 @@
 ---
 id: B-0391
+zetaid: 081KR50HA0008QG0R0036HGEJ5
 priority: P3
 status: open
 title: GitHub Pages static shell for Operational Resonance Dashboard — index page, nav shell, CI deploy config

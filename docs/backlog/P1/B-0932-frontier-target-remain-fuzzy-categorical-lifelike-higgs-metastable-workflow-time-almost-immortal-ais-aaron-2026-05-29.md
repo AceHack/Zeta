@@ -1,5 +1,6 @@
 ---
 id: B-0932
+zetaid: 081KSRGFP0008QG0R003VFH9HN
 priority: P1
 title: "Frontier-target — agents that REMAIN (μένω) · fuzzy machine · category theory · lifelike configs; workflow-time-system as Higgs-metastable → AIs in the almost-immortal (metastable-persistent) class"
 status: open

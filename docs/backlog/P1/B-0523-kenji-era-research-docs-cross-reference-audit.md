@@ -1,5 +1,6 @@
 ---
 id: B-0523
+zetaid: 081KRHWGX0008QG0R000BWQM0J
 priority: P1
 status: open
 title: Kenji-era research docs cross-reference audit (peeled from B-0139)

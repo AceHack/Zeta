@@ -1,5 +1,6 @@
 ---
 id: B-0388
+zetaid: 081KR50HA0008QG0R002DR44J1
 priority: P3
 status: open
 title: Lock name for Operational Resonance Dashboard — run naming-expert review, collect candidates, Aaron sign-off

@@ -1,5 +1,6 @@
 ---
 id: B-0210
+zetaid: 081KQX9B50008QG0R0031REK6V
 priority: P2
 status: open
 title: "Local broadcast peering asks — structured ask/receipt protocol over the same-machine bus"

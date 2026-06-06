@@ -1,5 +1,6 @@
 ---
 id: B-0176
+zetaid: 081KQNJ500008QG0R0023RV2M7
 priority: P2
 status: open
 title: Substrate-claim-checker v0.7 — context-aware suppression for hypothetical / contrastive / partial-path / branch-name references (Otto 2026-05-03 empirical observation)

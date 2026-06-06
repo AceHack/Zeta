@@ -1,5 +1,6 @@
 ---
 id: B-0954
+zetaid: 081KSXN940008QG0R00171YAZW
 title: Implement the git-native cross-machine agent-bus — docs/agent-bus/ folder, ZetaId-Bus-keyed G-Set CRDT, no-PR (per the #6219 spec); the cross-machine/Windows comms channel
 status: open
 priority: P2

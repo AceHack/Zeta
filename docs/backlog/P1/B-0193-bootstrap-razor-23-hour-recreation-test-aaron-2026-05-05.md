@@ -1,5 +1,6 @@
 ---
 id: B-0193
+zetaid: 081KQTPYE0008QG0R00392KABJ
 priority: P1
 status: open
 title: Bootstrap razor + 23-hour recreation test -- specs as source of truth, anything that succeeds recreation is bootstrap and gets cut (Aaron 2026-05-05)

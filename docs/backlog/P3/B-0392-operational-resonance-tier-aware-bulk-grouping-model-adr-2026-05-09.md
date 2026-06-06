@@ -1,5 +1,6 @@
 ---
 id: B-0392
+zetaid: 081KR50HA0008QG0R003BM7FNK
 priority: P3
 status: open
 title: Tier-aware bulk grouping model — ADR mapping Tier 0-4 to reviewer attention levels for dashboard bulk-review surface

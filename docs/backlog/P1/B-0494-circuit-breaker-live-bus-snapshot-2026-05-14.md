@@ -1,5 +1,6 @@
 ---
 id: B-0494
+zetaid: 081KRHWGX0008QG0R0029WA0HQ
 priority: P1
 status: closed
 title: "Circuit breaker viz — slice-2: wire renderCircuitBreakerTab() to live bus snapshot"

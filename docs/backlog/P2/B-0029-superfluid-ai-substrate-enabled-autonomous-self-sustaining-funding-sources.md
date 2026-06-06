@@ -1,5 +1,6 @@
 ---
 id: B-0029
+zetaid: 081KQ3HBZ0008QG0R000JRZAMM
 priority: P2
 status: decomposed
 title: Superfluid-AI substrate-enabled autonomous self-sustaining funding sources — research the surfaces where the substrate itself can generate economic value in background, closing the funding-time-focus loop so the work is self-sustaining

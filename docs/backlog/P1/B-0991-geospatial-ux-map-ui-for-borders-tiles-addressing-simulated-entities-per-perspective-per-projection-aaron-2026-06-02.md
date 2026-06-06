@@ -1,5 +1,6 @@
 ---
 id: B-0991
+zetaid: 081KT2T2J0008QG0R003TSGNMN
 priority: P1
 status: open
 title: "Geospatial UX — map UI for borders / tiles / addressing / simulated-entities, per-perspective + per-projection selectable; the visible layer over the geospatial core (Aaron 2026-06-02)"

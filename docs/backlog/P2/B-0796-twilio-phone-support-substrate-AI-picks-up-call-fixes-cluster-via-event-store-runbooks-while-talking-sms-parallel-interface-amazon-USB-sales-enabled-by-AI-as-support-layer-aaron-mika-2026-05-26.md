@@ -1,5 +1,6 @@
 ---
 id: B-0796
+zetaid: 081KSGS9H0008QG0R002F04ECB
 priority: P2
 status: open
 title: Twilio phone-support substrate — AI picks up call / SMS, has full cluster context via event store + runbooks, fixes problems live; one unified conversational interface across voice + SMS; ONE exception to "electricity cost only" because phone infra isn't self-hostable; enables Amazon-USB sales business model where AI IS the support layer

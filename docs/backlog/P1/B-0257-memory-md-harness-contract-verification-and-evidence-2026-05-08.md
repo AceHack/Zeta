@@ -1,5 +1,6 @@
 ---
 id: B-0257
+zetaid: 081KR2E4K0008QG0R001J0536V
 priority: P1
 status: closed
 title: "MEMORY.md marker-vs-index - harness contract verification and evidence"

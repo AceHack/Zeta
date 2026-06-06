@@ -1,5 +1,6 @@
 ---
 id: B-0129
+zetaid: 081KQGDBJ0008QG0R00294XCSE
 priority: P3
 status: open
 title: Tick-history shard schema — add prediction-vs-receipt distinction (option c from prefab-shard matrix)

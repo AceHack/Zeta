@@ -1,5 +1,6 @@
 ---
 id: B-0333
+zetaid: 081KR2E4K0008QG0R00175HQR9
 priority: P1
 status: closed
 title: Memory-retire/supersession discipline — define what happens when a memory file is superseded

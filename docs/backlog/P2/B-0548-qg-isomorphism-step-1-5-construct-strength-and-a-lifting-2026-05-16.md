@@ -1,5 +1,6 @@
 ---
 id: B-0548
+zetaid: 081KRQ1AB0008QG0R002DQBGZF
 title: QG isomorphism Step 1.5 — Construct strength θ:M(Ω)→Ω and A-lifting Ã:Zeta→Zeta for type-correct M/A coherence laws
 priority: P2
 status: open

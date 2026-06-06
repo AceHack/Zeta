@@ -1,5 +1,6 @@
 ---
 id: B-0821
+zetaid: 081KSGS9H0008QG0R00367G209
 priority: P1
 status: open
 title: Zeta as the dependency-graph + auto-variable-passing layer on top of Helm — empty architectural slot above sync engines (ArgoCD / Flux) that nobody has claimed; load-bearing strategic-positioning substrate (Aaron 2026-05-26)

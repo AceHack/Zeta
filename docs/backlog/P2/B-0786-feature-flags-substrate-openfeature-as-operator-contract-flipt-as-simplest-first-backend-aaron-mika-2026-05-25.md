@@ -1,5 +1,6 @@
 ---
 id: B-0786
+zetaid: 081KSE6WT0008QG0R000C18G5D
 priority: P2
 status: open
 title: Feature flags substrate — OpenFeature as operator contract; Flipt as simplest first backend; composes with Argo Rollouts experiment-routing (B-0785)

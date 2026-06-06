@@ -1,5 +1,6 @@
 ---
 id: B-0340
+zetaid: 081KR2E4K0008QG0R001BRHAPK
 priority: P1
 status: closed
 title: Spec completeness audit — run inventory.ts, document coverage gaps

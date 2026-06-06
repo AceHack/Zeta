@@ -1,5 +1,6 @@
 ---
 id: B-0612
+zetaid: 081KRSKQ20008QG0R00271HPJW
 priority: P2
 status: open
 title: "Lean ImaginaryStack/ToyModel.lean structural rewrite — Imag8 projections + sorry-in-type-position + lakefile wiring (Soraya handoff)"

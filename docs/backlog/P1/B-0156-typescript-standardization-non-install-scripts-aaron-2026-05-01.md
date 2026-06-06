@@ -1,5 +1,6 @@
 ---
 id: B-0156
+zetaid: 081KQGDBJ0008QG0R000A4EZS5
 priority: P1
 status: closed
 title: TypeScript standardization — port every .sh outside install graph + every .py to TS (Aaron 2026-05-01)

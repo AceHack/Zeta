@@ -1,5 +1,6 @@
 ---
 id: B-0972
+zetaid: 081KT07NV0008QG0R003659TWT
 priority: P2
 status: open
 title: Ace solver↔installer single-fetch cache — fetch each package once (deferred from slice 5.2 clean two-phase split)

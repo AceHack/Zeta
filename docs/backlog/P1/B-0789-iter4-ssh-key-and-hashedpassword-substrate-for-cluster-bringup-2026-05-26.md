@@ -1,5 +1,6 @@
 ---
 id: B-0789
+zetaid: 081KSGS9H0008QG0R002T3BJ2R
 priority: P1
 status: open
 title: Iter-4 cluster credential substrate — hashedPassword (zeta-change-me default) + operator-ssh-keys.nix module + manual edit workflow (v1) with zflash auto-inject as iter-4.2 follow-up

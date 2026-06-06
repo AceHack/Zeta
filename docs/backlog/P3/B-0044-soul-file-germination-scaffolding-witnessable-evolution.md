@@ -1,5 +1,6 @@
 ---
 id: B-0044
+zetaid: 081KQ3HBZ0008QG0R000YYEX0R
 priority: P3
 status: open
 title: Soul-file germination + scaffolding + witnessable-self-directed-evolution — three aspirational sibling rows

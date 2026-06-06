@@ -1,5 +1,6 @@
 ---
 id: B-0021
+zetaid: 081KQ0YZ80008QG0R0026WN385
 priority: P2
 status: open
 title: Aurora world-modeling — rigorous-why economic foundation; Austrian-school as primary candidate; anti-deception requirement (Keynesian opacity → unquestioned policy-power); investigate-don't-accept per Otto-322/331

@@ -1,5 +1,6 @@
 ---
 id: B-0884
+zetaid: 081KSNY2Z0008QG0R0011XCT94
 priority: P1
 status: open
 title: Integrate post-quantum git-crypt with zflash USB-bound credential substrate — composes B-0883 with B-0852/B-0852.3/B-0737/B-0844 zflash cluster

@@ -1,5 +1,6 @@
 ---
 id: B-0150
+zetaid: 081KQGDBJ0008QG0R003PZFA49
 priority: P2
 status: open
 title: TimeSeries / observability domain expert + teacher persona

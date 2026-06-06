@@ -1,5 +1,6 @@
 ---
 id: B-0905
+zetaid: 081KSNY2Z0008QG0R002R0M026
 priority: P3
 status: open
 title: Landauer-limit physics-economics model — agent-factory as information-engine with bit-erasure cost floor + options-pricing on compression actions

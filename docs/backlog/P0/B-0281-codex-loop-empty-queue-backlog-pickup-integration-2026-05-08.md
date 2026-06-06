@@ -1,5 +1,6 @@
 ---
 id: B-0281
+zetaid: 081KR2E4K0008QG0R002FSPPQR
 priority: P0
 status: closed
 title: "Codex loop - empty queue autonomous backlog pickup"

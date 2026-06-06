@@ -1,5 +1,6 @@
 ---
 id: B-0947
+zetaid: 081KSV2WD0008QG0R001XKG1B5
 priority: P3
 status: open
 title: Windows CI build-and-test fails at Checkout with "Filename too long" (MAX_PATH 260) on long persona-archive names -- non-required so it merges CLEAN but Windows is silently red

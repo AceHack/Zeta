@@ -1,5 +1,6 @@
 ---
 id: B-0852
+zetaid: 081KSKBP80008QG0R003AX2A69
 priority: P1
 status: open
 title: credential persistence on USB ESP + boot-sequence auth-method picker — encrypted blob bound to USB UUID + operator passphrase (Phase 1); removes gh-login-throttle on USB re-boot workflow (Aaron 2026-05-27)

@@ -1,5 +1,6 @@
 ---
 id: B-0320
+zetaid: 081KR2E4K0008QG0R002A0AGBJ
 priority: P1
 status: closed
 title: "Authorized-mutation surface list — data file defining which GitHub UI surfaces the agent may mutate"

@@ -1,5 +1,6 @@
 ---
 id: B-0803
+zetaid: 081KSGS9H0008QG0R00280HHA7
 priority: P2
 status: open
 title: iter-6.3 — deploy-rs from CI (GitOps push-shape) — alt to system.autoUpgrade (B-0801); CI bumps flake.lock + runs `deploy .#<host>` per node with auto-rollback on health-check failure; better for private repos / faster-cadence ops; pick autoUpgrade XOR deploy-rs (not both)

@@ -1,5 +1,6 @@
 ---
 id: B-0763
+zetaid: 081KSE6WT0008QG0R000WVYAJ2
 priority: P2
 status: open
 title: Cloud-native plugins fit Zeta's interface shape (not vice versa) — vendor-swap capability puts the operator in the negotiation high seat

@@ -1,5 +1,6 @@
 ---
 id: B-0768
+zetaid: 081KSE6WT0008QG0R0004ZPPRP
 priority: P1
 status: open
 title: Itron strategy — co-create standards with incumbents (companion to ServiceTitan route B-0765); dual-mode adoption playbook

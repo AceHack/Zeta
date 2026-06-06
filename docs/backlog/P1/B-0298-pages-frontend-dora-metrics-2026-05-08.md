@@ -1,5 +1,6 @@
 ---
 id: B-0298
+zetaid: 081KR2E4K0008QG0R000260AAZ
 priority: P1
 status: open
 title: "Pages discoverability - frontend DORA metric definitions"

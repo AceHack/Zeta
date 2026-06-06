@@ -1,5 +1,6 @@
 ---
 id: B-0204
+zetaid: 081KQTPYE0008QG0R0028V263Z
 priority: P3
 status: open
 title: Linguistic seed kernel substrate -- OCP + carved-sentences/memes-as-kernels + formal-verification-of-docs + F# Computational Expressions implementation vehicle (Aaron 2026-05-05 4-claim synthesis collapse)

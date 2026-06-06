@@ -1,5 +1,6 @@
 ---
 id: B-0915
+zetaid: 081KSNY2Z0008QG0R002BNQVE1
 title: CliffordWorld impl target — System.Numerics SIMD + LINQ hardware/GPU-accelerated substrate-engineering substrate (the human maintainer, 2026-05-28)
 status: open
 priority: P2

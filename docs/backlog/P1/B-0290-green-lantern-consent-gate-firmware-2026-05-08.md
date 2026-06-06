@@ -1,5 +1,6 @@
 ---
 id: B-0290
+zetaid: 081KR2E4K0008QG0R003MJ4JK0
 priority: P1
 status: open
 title: "Green Lantern ring — consent gate firmware design"

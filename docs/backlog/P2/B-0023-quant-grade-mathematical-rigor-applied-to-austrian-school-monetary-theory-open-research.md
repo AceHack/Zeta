@@ -1,5 +1,6 @@
 ---
 id: B-0023
+zetaid: 081KQ0YZ80008QG0R003EJQZ1M
 priority: P2
 status: decomposed
 title: Quant-grade mathematical rigor applied to Austrian-school monetary theory — synthesis that doesn't exist cleanly in either school; open research, open source, real-time

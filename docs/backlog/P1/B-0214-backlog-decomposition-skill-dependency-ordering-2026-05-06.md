@@ -1,5 +1,6 @@
 ---
 id: B-0214
+zetaid: 081KQX9B50008QG0R0007VGSBG
 priority: P1
 status: closed
 title: "Backlog decomposition skill — break architectural directions into dependency-ordered items"

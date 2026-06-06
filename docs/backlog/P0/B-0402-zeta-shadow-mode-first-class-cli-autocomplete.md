@@ -1,5 +1,6 @@
 ---
 id: B-0402
+zetaid: 081KR7JY10008QG0R0008NGW95
 priority: P0
 status: closed
 title: "Zeta shadow mode — first-class CLI autocomplete with auto-accept, loop embedding, and Glass Halo attribution"

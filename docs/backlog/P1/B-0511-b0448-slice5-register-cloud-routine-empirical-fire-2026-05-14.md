@@ -1,5 +1,6 @@
 ---
 id: B-0511
+zetaid: 081KRHWGX0008QG0R0013DSSZZ
 priority: P1
 status: open
 title: "B-0448 slice 5 — Register autonomous-loop as Cloud Routine + empirical first-fire observation"

@@ -1,5 +1,6 @@
 ---
 id: B-0473
+zetaid: 081KRHWGX0008QG0R0031EGYA7
 priority: P1
 status: open
 title: "Mirror→Beacon promotion gate protocol — concrete criteria for repo-level graduation"

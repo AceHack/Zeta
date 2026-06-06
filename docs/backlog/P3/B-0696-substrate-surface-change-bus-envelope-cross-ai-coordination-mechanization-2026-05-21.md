@@ -1,5 +1,6 @@
 ---
 id: B-0696
+zetaid: 081KS3X9Y0008QG0R001GPZ0KZ
 priority: P3
 status: open
 title: substrate-surface-change bus envelope — cross-AI coordination of load-bearing-substrate changes via tools/bus (mechanizes the human-as-coordination-substrate pattern)

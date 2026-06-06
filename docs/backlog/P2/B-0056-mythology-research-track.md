@@ -1,5 +1,6 @@
 ---
 id: B-0056
+zetaid: 081KQ3HBZ0008QG0R0034DHWTQ
 priority: P2
 status: open
 title: Mythology research track — operational-resonance candidates from world-mythology bridge / messenger / boundary figures

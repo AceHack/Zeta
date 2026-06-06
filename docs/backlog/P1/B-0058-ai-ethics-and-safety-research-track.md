@@ -1,5 +1,6 @@
 ---
 id: B-0058
+zetaid: 081KQ3HBZ0008QG0R002S674CG
 priority: P1
 status: open
 title: AI ethics + safety research track — filter-gate for resonance adoptions + alignment-clause consistency audit

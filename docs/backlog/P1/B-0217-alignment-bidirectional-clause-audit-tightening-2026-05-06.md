@@ -1,5 +1,6 @@
 ---
 id: B-0217
+zetaid: 081KQX9B50008QG0R001FK1G36
 priority: P1
 status: in-progress
 title: "ALIGNMENT.md rewrite - bidirectional clause audit and tightening"

@@ -1,5 +1,6 @@
 ---
 id: B-0836
+zetaid: 081KSGS9H0008QG0R001VVEZQ9
 priority: P1
 status: open
 title: hardware-inventory-vs-cluster reconciliation + gap-analysis → buying decisions (no more buying willy nilly) (Aaron 2026-05-26)

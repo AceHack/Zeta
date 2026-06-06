@@ -1,5 +1,6 @@
 ---
 id: B-0962
+zetaid: 081KT07NV0008QG0R002KWQS05
 title: Phase 1 — typed Claim/Lock coordination events (optimistic CAS: mechanism-deadlock-free + symmetry-breaking observe-menu; app-level safety needs fencing + release-before-acquire)
 status: open
 priority: P2

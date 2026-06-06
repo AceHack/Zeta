@@ -1,5 +1,6 @@
 ---
 id: B-0815
+zetaid: 081KSGS9H0008QG0R000JVGZKG
 priority: P2
 status: open
 title: Cluster-node registration heartbeat / expiration pattern — keep git registration physically in sync with machine; re-register on cadence or expire stale entries (B-0815 design row)
