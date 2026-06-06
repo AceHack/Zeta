@@ -41,12 +41,15 @@ LOAD-BEARING simplifying insights (kept per his razor):
   markdown. The one expectation even for non-technical people = basic version control ("a place to store
   markdown notes"). Even Max (a developer) accepts "it's really just markdown now."
 
-- **LIVE TERMINOLOGY CHANGE: "observations" → "notes" + "note types".** Regular people don't grok
-  "observations" (programmers do, from event logs/observability); switching the user-facing primitive to
-  **notes / note types**. ⇒ affects `observe.ts` / DynamicValue naming going forward (the note-type IS the
-  observation-type). *(Note for our surfaces: the no-directives rule deliberately uses "observation" as a
-  governance term — source≠authorization; that internal governance sense is distinct from the user-facing
-  data primitive being renamed to "notes." Keep both; don't conflate.)*
+- **TERMINOLOGY — TWO REGISTERS (corrected by Aaron 2026-06-06; NOT a code rename).** Keep
+  **"observations" EVERYWHERE in code — it is the real shape** ("observations more accurately describe our
+  shape"). **"Notes" is a UX/UI-layer label ONLY**, for non-technical maintainers (e.g. **Addison**) who
+  "think of it more like notes" — but that's *not the real shape*. So: **code/shape = observation; UX
+  surface = note.** A presentation alias at the interface, not a rename of the primitive. (Mirror/Beacon
+  applied to UX: accurate term in code, friendly skin in the UI; consistent with the no-directives
+  governance sense of "observation" = source≠authorization.) My part-18 first pass over-stated this as a
+  rename — it is NOT; observations stays in code. "note types" likewise = the UX label for
+  observation-types.
 
 - **Primitive-naming discipline: 4-5-letter everyday words.** Aaron picks tiny basic-English words for
   base primitives: **note, which, way, how, many** ("remember when / pay attention / which way / how
