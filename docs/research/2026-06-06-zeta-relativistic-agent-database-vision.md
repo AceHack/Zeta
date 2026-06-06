@@ -166,6 +166,30 @@ that compiles down to plain logged Z-set deltas; the data plane stays a fast, de
 fold.** Stored procs = yang Bonsai.Exprs in DynamicValue cells, logged as commands, replayed
 deterministically.
 
+## 5c. DurableSaga: the connector at the seam (LANDED `703941ac6`, maintainer 2026-06-06)
+
+A **DurableSaga** is the control-plane primitive that lives exactly at the seam: a long-running
+deterministic workflow whose **events are the deltas** the data plane logs and whose **logic is a
+deterministic `step`** (a `YinYang.Cell`'s yang/`Bonsai.Expr` is the natural source). Built on
+`IDeltaLog` (+ recovery by replay); `'TState` snapshot is a follow-up on the `'TState` codec.
+
+- **Forward and reverse = the Z-set sign.** `step : 'TState -> 'Event -> int64 -> 'TState` sees the
+  signed weight: **+1 = apply (forward)**, **-1 = compensate (reverse)**. One reducer, both
+  directions.
+- **Retraction-driven compensation** — the load-bearing capability. Data-plane retraction is free
+  (Z-set −1); external/side-effecting surfaces are NOT natively retractable. The saga **reacts to a
+  retraction and emits the compensating action**, so retraction stays consistent across the whole
+  world. Replay-safe: external effects fire ONCE at emit; recovery rebuilds state without re-firing.
+- **Saga = connector.** It bridges **disconnected Z-sets** to each other AND bridges a **Z-set to a
+  non-retractable surface** (the adapter that turns deltas/retractions into external actions +
+  compensations). The edge primitive between the deterministic core and (a) other streams and (b)
+  the outside world.
+- **State = hierarchical discriminated unions encoding valid transitions.** The DU makes invalid
+  states unrepresentable; `step` enforces valid **forward and reverse** traversal (invalid
+  transitions ignored/rejected). DEFERRED (don't over-complicate yet): formalizing valid-transition
+  traversal may later connect to the existing **policy primitives** — not now; the DU-as-state-
+  machine + step-as-validator is enough for v1.
+
 ## 6. The hard problems (research-grade — name them honestly)
 
 1. **Merge of uncertain values has no canonical theory.** MRDT `merge(σ_lca, σ_a, σ_b)` is defined
