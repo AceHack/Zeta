@@ -109,6 +109,7 @@
     <Compile Include="DiskSpineAsync.fs" />
     <Compile Include="DeltaLog.fs" />
     <Compile Include="RecoverableSpine.fs" />
+    <Compile Include="DurableSaga.fs" />
     <Compile Include="Durability.fs" />
     <Compile Include="Checkpoint.fs" />
     <Compile Include="Consensus.fs" />
