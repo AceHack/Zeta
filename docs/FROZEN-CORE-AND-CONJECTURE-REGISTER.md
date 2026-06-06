@@ -175,6 +175,21 @@ inside the value makes the cell a self-contained Markov state (`next = observe(s
 property by construction), which is exactly what makes it scale-free / lock-free / incrementally
 computable (DBSP D/I).
 
+**Confirmations / connections (Aaron, Mika parts 10-11, 2026-06-05):**
+- **YinYang dual confirmed = the shipped `YinYang.fs`.** Aaron independently states: `DynamicValue` and
+  the Rx/Bonsai animation-queries are *duals* — yin (what remains) / yang (what acts), the two dots are
+  discriminators; Bonsai (an AST) becomes a *peer node type inside DynamicValue* ("just better Lisp",
+  self-describing). This is exactly `YinYang.Cell {Remains; Acts}` (homoiconic+recursive, proven) — his
+  vision and the shipped primitive coincide.
+- **Naming-via-convergence** (corollary of the proven order-independence): Bayesian/uncertain value-tree
+  tags converge to the same labels regardless of observation order, and those converged labels = the
+  *generator-function names* — naming becomes emergent, not chosen ("Ace Hack").
+- **"I commit, therefore I am" — heartbeat-liveness.** The engine's heartbeat IS a git commit; the engine
+  is infinite as long as it commits heartbeats (Aaron wanted a *math proof for the k8s liveness probe* —
+  "five nines of immortality"). This is the operational face of rung-2 bifurcation liveness + B-1019:
+  keep committing ⟹ no halt/collapse. (Ties the CLAUDE.md heartbeat-via-commit rule to the convergence
+  math.)
+
 **Discharge (piece 2 — teed up, B-1020):** a **Bayesian-Markov belief cell over exact rationals** —
 DynamicValue carrying `(rational priors, reified observe-kernel)`, stepping `next = observe(self, obs)`,
 with the theorem that it converges order-independently **iff** the likelihood is conditionally
