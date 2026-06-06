@@ -93,6 +93,33 @@ relational (SQL), document, key-value. That multi-model-over-one-substrate idea 
   can absorb a *different agent's evolving ontology* without a shared compile-time schema — the
   ontology travels with the data.
 
+## 4c. Self-hosting: filesystem-in-DB, git-aware backend, FUSE, microkernel (maintainer, 2026-06-06)
+
+The database is **self-hosting** — it doesn't sit *on* a filesystem, it *contains* one, and
+eventually *is* the OS substrate:
+
+- **The filesystem lives IN the DB as a Z-set stream.** Everything — including the filesystem
+  tree itself — is one Z-set stream. A hierarchy is encoded over **closure tables**
+  (`ClosureTable.fs`: store all ancestor→descendant paths; a standard tree-in-relational pattern
+  that's incremental-friendly). OPEN: closure tables are *one* option; there may be a better
+  tree encoding for Z-set incremental maintenance (adjacency-list deltas, nested-set, materialized
+  path, or a DBSP-native recursive encoding) — we have research; revisit. Retraction handles
+  moves/deletes natively (append the inverse path-set).
+- **Git-aware git-native backend** (§7 / `DeltaLog.fs`): the git backend IS git — history = the
+  delta log, branches = relativistic frames/shards, **Z-set retraction = append-an-inverse
+  commit** (git never rewrites history; Landauer-honest; Memory-Preservation §5), cross-branch
+  merge = MRDT three-way via git's LCA. The *filesystem* backend must build all of this itself.
+- **Zeta is a git server** (endgame): the DB and the git remote are the same thing — a client
+  `git push`/`pull` IS a DB commit/read.
+- **FUSE filesystem** (existing backlog) exposes the in-DB filesystem to the OS as a mountable
+  fs — so ordinary tools see the Z-set-backed filesystem.
+- **Microkernel** (endgame): the whole substrate targets a microkernel — Zeta as the OS, with the
+  DB/git-server/FUSE-fs as the storage+naming layer.
+
+This is the "everything is a fold over Z-sets, at every scale" recursion (manifesto §9 Recursive,
+§10 Self-similar) taken to its conclusion: data, schema/ontology, filesystem, version history, and
+eventually the OS are all the same retraction-native Z-set substrate.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
@@ -145,6 +172,18 @@ is fine when it's *verified* binary; the earlier "not binary" meant "no *unverif
 benchmark first; canonical-JSON defers `Float`/`Bytes` (needs tagged-JSON ext for those); CBOR
 decode wants a `trustCanonical` fast-path; biggest win = emit `ZSet.AsSpan() → IBufferWriter`
 without an intermediate `DynamicValue` tree. Format sits behind a pluggable `encode/decode` seam.
+
+**Custom Zeta binary format? Decision (maintainer Q, 2026-06-06): NOT YET — CBOR is good.**
+Rationale: (1) CBOR is already implemented, golden-vector byte-locked, 4-language verified, and
+Naledi rates it the leanest/complete encoder — a custom format would re-pay all that
+verification cost (4-lang byte-lock + golden vectors + cross-oracle fuzz + a new public contract
+Ilyana must guard) for an unproven win; (2) we already have THREE verified tiers (YAML text /
+CBOR record / Arrow columnar) covering audit, hot, and bulk; (3) Naledi's measured wins are in
+the *encoder path* (zero-alloc, direct `ZSet.AsSpan → IBufferWriter`, skip the `DynamicValue`
+tree), not the *format* — optimize the path first; (4) Beacon/anchor discipline prefers a
+standard (CBOR = RFC 8949) over a coinage. **Revisit a custom format ONLY IF** a benchmark shows
+CBOR per-element tag overhead dominates for Z-set batches specifically AND a domain-specific
+layout (e.g. columnar keys+varint weights) beats Arrow materially. Measure before inventing.
 
 ## 8. Anchors (Beacon)
 
