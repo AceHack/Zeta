@@ -89,9 +89,19 @@ completion-range queries (`done/2026/06/`) a path scan. Three refinements:
 3. **Keep a `zetaid → path` index** (extend the planned `slug → zetaid` index). The one real cost:
    completion-date is NOT derivable from the ZetaId, so by-id lookup of a done item otherwise needs a
    recursive glob over `done/**`. An index keeps cross-ref resolution O(1).
-Razor note: **start at `done/YYYY/MM/`**; deepen to `/DD/` only when a month-dir actually gets large
-(volume call, not forever). Conflict-freedom + identity-survives-move both still hold (disjoint per-file git
-rename; resolve via index or `done/**/<zetaid>-*.md`).
+4. **Completion datetime in FRONTMATTER (Aaron 2026-06-06).** Path stays coarse (`done/YYYY/MM/`);
+   frontmatter carries the *precise* completion datetime — which is what the DORA Bag-folds need
+   (lead-time = created→done uses the exact timestamp, not the month bucket). Path = routing/browse,
+   frontmatter = the real number.
+5. **The done-index is INCREMENTAL + checked into git (Aaron 2026-06-06) — sound because done is
+   IMMUTABLE.** A completed item never changes, so its index entry is append-only and never goes stale →
+   safe to materialize the `done` index and commit it (no regeneration, no drift). This is DV2.0
+   change-rate partitioning + idempotency: **done = zero-change-rate → a committed satellite**; appending
+   an entry is idempotent. The ACTIVE set may stay fold-on-read (it churns), but the done index is
+   frozen-per-entry → check it in.
+Depth DECIDED: **`done/YYYY/MM/`** (agreed; not `/DD/` — revisit only if a month-dir gets large).
+Conflict-freedom + identity-survives-move both still hold (disjoint per-file git rename; resolve via index
+or `done/**/<zetaid>-*.md`).
 
 **Third win for option A (Aaron 2026-06-06): free time-ordered lookup + ordering.** Because the ZetaId is
 time-prefixed (B-0893 targets the Snowflake/ULID family), a **lexicographic sort of the `workitems/<zetaid>.md`
