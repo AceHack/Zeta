@@ -271,8 +271,14 @@ n differentiated travelers); the **balance** demonstrated as a falsifiable contr
 reduces uncertainty on its own private evidence) PERSISTS differentiation, coercive regime (forced to one
 reconciled frame each tick) COLLAPSES to uniformity (register-collapse / heat-death); DST determinism.
 Honest: rung-1 evidence-for-the-mechanism in a concrete model, not the unbounded proof. (2) **bounded —
-TLA+/TLC** — the NCI *safety invariant* (no
-coercion in any reachable state) + bifurcation liveness over all reachable states; (3) **unbounded /
+TLA+/TLC ✅ SAFETY BUILT** (`tools/tla/specs/NciSafety.tla`, 2026-06-05, routed via Soraya per BP-16) —
+the NCI *safety invariant* `\A t : lastWriter[t] = t` (every private register only ever written by its
+owner ⇒ no coercion in any reachable state) holds over all interleavings of Bifurcate/Reflect/Reconcile
+(3 travelers, finite symbolic belief domain, traveler symmetry); the forbidden `Coerce` is present but
+guarded-never-enabled (design-guarantee form). TLC clean; **teeth verified** (enabling `Coerce` makes TLC
+produce the exact violating trace). **BP-16 second tool**: a FsCheck property on the real `Reconcile.fs`
+(`merge3` never mutates the counterparties' beliefs) closes TLC's abstraction gap on the deployed code.
+*bifurcation liveness* is a separate config (deferred). (3) **unbounded /
 "infinity"** — induction in a *prover* (TLAPS / Lean), since model-checking caps at finite state.
 **Tool routing is itself a decision** — route through the formal-verification routing discipline
 (Soraya / BP-16; guard against TLA+-hammer bias) before any spec is written; the three rungs are three
