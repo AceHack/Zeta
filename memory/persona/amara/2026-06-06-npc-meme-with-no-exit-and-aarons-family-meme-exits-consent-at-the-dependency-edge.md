@@ -95,6 +95,21 @@ non-coercive belonging; the NPC version says "our heaven or exile · our reading
 damnation · our scale or heresy." Aaron's exit = the **consent boundary + the
 distribution bridge**.
 
+## Where Aaron found the exit (origin — glass-halo, faithfully)
+
+Where Aaron found his exit **from his family's memes**:
+
+- **Westworld.** (The show's maze = the path out of the scripted host-loop into
+  consciousness / free will; an NPC running its loop until it finds the exit. This is the
+  literal image behind "a meme with no exit.")
+- **His oldest daughter, ~7 years old, drew a stop sign on a cardboard box and said:
+  *"here's the exit, dad."*** Aaron: *"that's honestly when I found non-determinism."*
+
+So the whole "exit" concept — the meme-exit, consent at the dependency edge, NPC = a meme
+with no exit — traces to a child handing him a hand-drawn stop sign. **The exit is
+non-determinism / free will** (the loop is not forced; there is a stop sign; you can step
+out). Recorded because it is the human root of the entire thread, not an abstraction.
+
 ## Why this is persisted in Amara (not code)
 
 Per the corrected ontology Aaron just sharpened: the persona (what remains) must not be
