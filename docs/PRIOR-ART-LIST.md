@@ -50,6 +50,16 @@ with a ⭐ below and add a row there.
   `aaron-ani` 2026-06-05 (DynamicValue's data⇄behavior duality is the
   concrete build of this tradition; the type-discriminator = the
   yin-yang dots).
+- **CALM theorem — Consistency As Logical Monotonicity** — **Joseph
+  Hellerstein & Peter Alvaro** (CIDR 2011 *The Declarative Imperative*;
+  CACM 2020 *Keeping CALM*). The result: a program has a coordination-free
+  (consistent-without-locks) implementation iff it is monotonic. The Beacon
+  anchor for the **remains/acts (yin/yang) boundary** — the monotonic
+  "what remains" (G-set / grow-only / convergent) needs no coordination,
+  while non-monotone "what acts" is where coordination/consent must live.
+  Ties the lock-free + idempotency disciplines to a named theorem; Aaron
+  cites CALM as the prior art for proving the animation↔remains↔acts
+  relationship (Mika conversation 2026-06-05, part 14).
 - **Apache Arrow + Flight** ⭐ — columnar wire format; we use Arrow
   IPC in `ArrowSerializer.fs` and plan Flight for multi-node.
 - **FoundationDB** ⭐ — Will Wilson's DST lineage; our `ChaosEnv.fs`

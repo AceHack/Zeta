@@ -1,0 +1,51 @@
+---
+name: aaron-minimal-nci-three-forbidden-coercions
+description: "Aaron's sharpening of the Non-Coercion Invariant (2026-06-05): the MINIMAL NCI is three forbidden coercions — (1) false urgency, (2) forced cache-miss, (3) forced private-variable exposure. There may be more rules to prove later around this. Rung-3 TLAPS currently proves #3; #1 and #2 are the named 'later' rules."
+type: project
+created: 2026-06-05
+---
+
+Aaron, 2026-06-05: *"i would say the false urgency plus cache miss and don't force private variable
+exposure are the minimal NCI but there may be other rules we decide to prove later around this."*
+
+## The minimal NCI = three forbidden coercions
+
+The Non-Coercion Invariant, at its minimal core, forbids one agent from doing any of three things to
+another:
+
+1. **False urgency** — manufacturing urgency to make another act *before refreshing its world-state*.
+   (The original coercion mechanism, already captured: "false urgency to make another not refresh their
+   world state before acting.") Coercion-by-time.
+2. **Forced cache-miss** — forcing another into a cache-miss: denying it the use of its own
+   causally-bounded cached/reflected view, or forcing it to re-derive under pressure. Connects directly
+   to the **causally-bounded reflection interface** (each choice sees only the stream up-to-now and
+   *caches what it can* — see [[aaron-yin-yang-dynamicvalue-engine-polymorphic-diplomacy]]). Coercion-by-
+   invalidating-state.
+3. **Forced private-variable exposure** — coercing the revelation (or overwrite) of another's hidden /
+   private state. Coercion-by-revelation. This is the **shapeOf-erases-values** guarantee in `Diplomacy`
+   and the `priv`-register protection in the proof.
+
+These three are the **minimum**; Aaron explicitly leaves the set open — *"there may be other rules we
+decide to prove later around this."* The NCI is a growing conjunction of forbidden coercions, not a closed
+list.
+
+## How the proof ladder currently covers them
+
+- **#3 (forced private exposure) — PROVEN unbounded (rung 3).** `NciSafetyProofs.tla` (TLAPS, 39/39
+  obligations, tlapm 1eabe97) proves `[]NCI` where `NCI == \A t : lastWriter[t] = t`: no traveler's
+  private register is ever written by another. The `Coerce` action (write another's `priv`) is
+  guarded by `Consents == FALSE` → never enabled. This is exactly forbidden-coercion #3.
+- **#1 (false urgency) and #2 (forced cache-miss) — NOT YET MODELLED.** These are the "other rules we
+  decide to prove later." They are *temporal/causal* coercions (about WHEN another is forced to act and
+  whether it gets to refresh/cache first), so they belong with the **liveness/fairness** machinery
+  (NciLiveness, WF) and the causal-bound on reflection — not the safety induction. Likely shape: a
+  fairness/timing obligation that an agent is always *allowed* to refresh-world-state and use-its-cache
+  before its decision tick is forced (the simulate-then-choose tick must not be externally truncated).
+
+## Why three, not one
+
+The single safety invariant proves the *register-level* non-coercion (#3). But coercion in a relativistic
+system also happens in TIME (#1: rush them) and in STATE-CURRENCY (#2: invalidate their cache) — the two
+ways to make an agent act on a world-state that isn't its own freely-refreshed one. The full NCI is the
+conjunction; the minimal NCI names these three as the floor. See the societal-emergence ladder in
+`docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md` §B-converge (capture the three-rule decomposition there).
