@@ -55,6 +55,14 @@ frozen slugs. **Consequence:** the B-0682 blocker hardens — the ZetaId string 
 encoding must be locked **and filename-safe** (case-fold-safe for APFS/NTFS; no `/`) before any mint.
 (Option C stays rejected — truncated ZetaId reintroduces the collision.)
 
+**Filename refinement (Aaron 2026-06-06): `workitems/<zetaid>-<description>.md`** — ZetaId PREFIX +
+human-readable description suffix. Strictly better than bare `<zetaid>.md`: keeps collision-freedom (the
+ZetaId prefix is the unique key — same description across agents still can't collide) and time-ordering
+(sort is by the leading ZetaId), and ADDS human-readability in `ls`. **Lock:** lookups + cross-refs key on
+the **ZetaId prefix** (glob `<zetaid>-*.md`), so a reworded description changes only the suffix, never the
+identity — path stays resolvable (the proven Jekyll-post / ADR `NNNN-title.md` / Zettelkasten pattern). The
+`<description>` must be filename-safe-sanitized (same charset constraint as the ZetaId).
+
 **Third win for option A (Aaron 2026-06-06): free time-ordered lookup + ordering.** Because the ZetaId is
 time-prefixed (B-0893 targets the Snowflake/ULID family), a **lexicographic sort of the `workitems/<zetaid>.md`
 filenames = chronological creation order** — `ls` sorted is day-ordered, and "items from day D" is a
@@ -104,12 +112,13 @@ monotonic alphabet (e.g. Crockford base32 like ULID, or zero-padded hex) so byte
 2. Add a **referential-integrity lint**; run on the 1116, fix any dangling refs surfaced.
 3. Resolve **B-0682** (promote P1) + ship **filename-safe** `format()`/`parse()` in the ZetaId impl
    (case-fold-safe for APFS/NTFS; no `/`) — REQUIRED because the ZetaId string is now the filename (option A).
-4. Build **`tools/backlog/new-workitem.ts`** (local mint; writes **`workitems/<zetaid>.md`** — filename =
-   ZetaId, the conflict-free key; `id`+`type`+`state`+`slug`+`title`+cross-refs frontmatter; refuses `B-`)
-   + the generated **`slug → zetaid` index** for human navigation. New items ZetaId-keyed/named from here;
-   legacy 1116 stay `B-NNNN` slugs forever (alias-and-keep).
-5. (Deferred / optional) any bulk legacy rewrite of the 1116 → `workitems/<zetaid>.md` — only if it ever
-   earns its way; not needed for the 500-agent conflict-free-create property (that's delivered at step 4).
+4. Build **`tools/backlog/new-workitem.ts`** (local mint; writes **`workitems/<zetaid>-<description>.md`** —
+   ZetaId prefix = the conflict-free + time-sortable key, description suffix = human-readable;
+   `id`+`type`+`state`+`slug`+`title`+cross-refs frontmatter; refuses `B-`). Lookups/cross-refs resolve by
+   ZetaId-prefix glob (`<zetaid>-*.md`), so reword is safe. New items ZetaId-keyed/named from here; legacy
+   1116 stay `B-NNNN` slugs forever (alias-and-keep).
+5. (Deferred / optional) any bulk legacy rewrite of the 1116 → `workitems/<zetaid>-<description>.md` — only
+   if it ever earns its way; not needed for the 500-agent conflict-free-create property (delivered at step 4).
 
 Pointer added from B-0956. Reviewers' full findings are in their agent outputs (this synthesis is the
 durable artifact).
