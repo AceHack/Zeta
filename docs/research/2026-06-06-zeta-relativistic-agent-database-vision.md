@@ -278,6 +278,72 @@ DU-state-machine (§5c) generalized + the interpreter / free-monad pattern (cont
 interpreted). Total `match` on a valid-states DU is *composition*, not branching — that's the
 sanctioned shape; collapse/`measure` only at the edge.
 
+## 4f. The bootstrap tower + the Ace⊗Zeta mutual fixpoint (maintainer, 2026-06-06)
+
+The §4e quine, made into an explicit **layered tower** — each layer persisted (so each is itself
+seed-distributable), each unfolding the next:
+
+```text
+128-bit seed                          (§4d ZetaId — the inert name of the fixpoint)
+  → seed bootstrap / interpreter      (the host that knows how to read the seed; §4e DNA+ribosome)
+  → yin/yang engine seed host         (the control plane that unfolds; §5b)
+  → DUs                               (control-flow reified as soft ADTs; §4e "control-as-data")
+  → DU state                          (single-thread-safe state over sagas + multiple agents; §5c)
+  → compiler hosts + persistence-boundary protocols   (their CODE is persisted too)
+  ⇒ self-bootstrap the whole system from the 128-bit seed
+```
+
+Everything in that tower — including the compiler hosts and the persistence-boundary protocols —
+is **persisted as data in the substrate**, so the substrate can rebuild itself from the seed. This
+is §4e's `unfold(seed) = (Zeta, unfold)` spelled out one rung at a time.
+
+**The Ace⊗Zeta mutual fixpoint (the new self-reference).** Ace (the package layer,
+workitem `081KTFKQGZP`) distributes **seeds** — and the seeds it distributes include *the seed of
+Zeta itself* **and the seed of Ace itself**. Ace carries **pointers to deps** (other ZetaId seeds);
+Zeta consumes those pointers and **extends them to git/db** (a dep pointer resolves into the
+git-native backend as a `GitDeltaLog` stream / branch). So the two layers close on each other:
+
+```text
+Ace distributes  →  the seed of Zeta        (Zeta unfolds from a package Ace ships)
+Ace distributes  →  the seed of Ace         (Ace ships its own seed — self-distributing)
+Ace pointers-to-deps  →  Zeta resolves them →  extended into git/db pointers
+```
+
+That is the "crazy self-referential" part, and it is the *intended* shape, not an accident: a
+single seed-distribution mechanism that can ship the distributor, the database, and their
+dependency graph — a system-level quine whose package manager is part of the quine.
+
+**The engine AUTHORS its own lower hosts (the active form of §4e host-progression).** §4e said the
+host *lowers* over time (managed 4-lang → ASM/CUDA/FPGA → shader). The sharpened claim: once
+bootstrapped on a **compiler host**, the **yin/yang engine writes the hardware-specific host
+implementations itself** — it is not hand-ported down the ladder; the engine generates the next
+rung. This is staged self-application (Futamura projections: specialize the interpreter to a host =
+a compiler; specialize the specializer = a compiler-generator) with the engine as the staging agent.
+
+**Packaging endgame — and even the package is replaceable.** The whole bootstrapped system can be
+contained in a **single native executable binary** — **dotnet NativeAOT first**, and *that* AOT
+binary can eventually be **replaced by a machine-optimized one** the engine emits (super-optimized
+to the target). The AOT step is itself just the first, hand-me-down host of the binary-packaging
+rung — subject to the same "engine authors its own lower host" descent.
+
+**Honest caveats (Mirror→Beacon razor; the everything-connects shape Kestrel flagged).** SHIPPED
+today: the durability seed substrate only — `Core.Git` git-native log+snapshot (PR #6696),
+`RecoverableSpine` recovery, the 4-lang/4-serializer byte-locks. Everything above the persistence
+rung (seed-unfolder, yin/yang-authors-hosts, Ace⊗Zeta closure, AOT→machine-optimized) is **vision /
+§B conjecture**, much of it unbuilt. The self-reference is elegant *and* it is exactly where the
+**Trusting-Trust risk concentrates** (§4e security corollary): a system that distributes its own
+seed and writes its own hosts must keep the **capability/inspect-before-execute boundary (§5b)** all
+the way down to the seed, the unfolder, AND every authored host — with a **reproducible /
+diverse-double-compilation** path so the seed→binary lineage is auditable, never trusted blind.
+
+**Anchors (Beacon).** Futamura projections (partial evaluation; interpreter→compiler→
+compiler-generator, Futamura 1971); metacircular evaluator (SICP `eval`/`apply`); bootstrapping /
+self-hosting compilers (GCC, rustc, T-diagrams); Thompson, *Reflections on Trusting Trust* (1984) +
+Wheeler, *Diverse Double-Compiling* (2009, the defense); quines / Kleene's recursion theorem (the
+fixpoint); von Neumann universal constructor (self-reproduction); superoptimization (Massalin 1987) /
+equality saturation (the "machine-optimized replacement"); Nix/Guix derivations + Unison
+content-addressing (seed-as-name; the Ace layer). See `docs/PRIOR-ART-LIST.md`.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
