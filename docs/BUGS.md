@@ -207,17 +207,6 @@ tempted to ship.
   "for converged-only callers; use `WithConvergence` if you
   need cap detection."
 
-### FeedbackOp permits Build with connected=0
-
-- **Site:** `src/Core/Recursive.fs:38-53`
-- **Found:** round 20 by Viktor
-- **Severity:** P1
-- **Symptom:** a `FeedbackOp` that was registered but never
-  `Connect`-ed silently no-ops in `AfterStepAsync`. Spec says
-  wired-exactly-once.
-- **Fix:** `Circuit.Build` asserts every `FeedbackOp` has
-  `connected=1`; throw otherwise.
-
 ### CountingBloomFilter hash quality on user types
 
 - **Site:** `src/Core/BloomFilter.fs:125-133`
@@ -230,18 +219,6 @@ tempted to ship.
   a `ReadOnlySpan<byte>` serialiser; fall back only with a
   `TraceWarning`.
 
-### InfoTheoreticSharder Checked.+ mid-loop overflow
-
-- **Site:** `src/Core/NovelMathExt.fs`
-- **Found:** round 20 by Kira
-- **Severity:** P1
-- **Symptom:** `Checked.(+)` inside the argmin loop throws on
-  int64 saturation mid-scan, leaving `shardLoads` in a
-  consistent but half-committed state and the caller with an
-  unrecoverable sharder.
-- **Fix:** clamp at `Int64.MaxValue` rather than throwing;
-  document the saturation as "load cap, not an error".
-
 ### Delay overload without initial uses Unchecked.defaultof
 
 - **Site:** `src/Core/Primitive.fs:74-75`
@@ -252,27 +229,6 @@ tempted to ship.
   spec says "declared initial value on very first tick."
 - **Fix:** remove the no-initial overload, or amend spec to
   define `Unchecked.defaultof` as the declared default.
-
-### BloomBench 47-bit int64 key generator
-
-- **Site:** `bench/Benchmarks/BloomBench.fs`
-- **Found:** round 20 by Kira
-- **Severity:** P1
-- **Symptom:** `int64 (rng.Next()) <<< 16 ||| int64 (rng.Next())`
-  produces a 47-bit value, not the intended 63-bit. Keys
-  cluster; FPR numbers the bench produces are optimistic.
-- **Fix:** `rng.NextInt64()`.
-
-### FeatureFlags.resetAll not atomic vs concurrent set/isEnabled
-
-- **Site:** `src/Core/FeatureFlags.fs:132-143`
-- **Found:** round 20 by Kira
-- **Severity:** P1 (test-harness only, but docstring promises
-  "clean slate")
-- **Symptom:** `ConcurrentDictionary.Clear()` is not
-  linearizable against concurrent `set` / `isEnabled`; a
-  concurrent `set` during `resetAll` can leave stale entries.
-- **Fix:** `lock overrides` around `Clear`.
 
 ---
 

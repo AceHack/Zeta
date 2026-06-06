@@ -88,6 +88,15 @@ type Op() =
     abstract IsStatefulStrict: bool
     default _.IsStatefulStrict = false
 
+    /// True iff this operator is a feedback cell that was registered but
+    /// has NOT yet been wired to its producer (`Connect`). `Circuit.Build`
+    /// rejects any pending feedback cell — a `FeedbackOp` that is never
+    /// `Connect`-ed would otherwise silently no-op in `AfterStepAsync`
+    /// (spec: wired-exactly-once). Default `false`: non-feedback operators
+    /// have nothing to connect. Overridden by `FeedbackOp`.
+    abstract ConnectionPending: bool
+    default _.ConnectionPending = false
+
 
 /// An operator with a typed output slot.
 ///
@@ -257,6 +266,21 @@ type Circuit() =
                                  retraction-lossy and breaks Z-set composition laws. See \
                                  PluginApi.fs:ISinkOperator for the contract."
                                 op.Name op.Id dep.Name dep.Id)
+            // Feedback wired-exactly-once enforcement. A `FeedbackOp` that was
+            // registered (via `Circuit.Feedback`) but never `Connect`-ed would
+            // silently no-op in `AfterStepAsync` (it reads no source), corrupting
+            // the fixed-point iteration with a phantom constant. The spec requires
+            // every feedback cell wired exactly once; reject a pending one here with
+            // a diagnostic naming the operator, rather than producing wrong results.
+            for op in ops do
+                if op.ConnectionPending then
+                    invalidOp
+                        (sprintf
+                            "Unconnected feedback: operator '%s' (id=%d) was registered as a \
+                             feedback cell but never Connect-ed to a producer before Circuit.Build. \
+                             Feedback cells must be wired exactly once (call \
+                             FeedbackConnector.Connect on the value returned by Circuit.Feedback)."
+                            op.Name op.Id)
             schedule <- order
             let sn = ResizeArray<Op>()
             for op in ops do if op.IsStrict then sn.Add op

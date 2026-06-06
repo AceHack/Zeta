@@ -64,6 +64,9 @@ type FeedbackOp<'T>(initial: 'T) =
         Volatile.Write(&this.source, source)
 
     override _.Name = "feedback"
+    // Pending until `Connect` CAS's `connected` 0→1. `Circuit.Build` reads this
+    // (acquire via the volatile field) to reject a feedback cell that was never wired.
+    override _.ConnectionPending = connected = 0
     override this.Inputs =
         // `connected` is volatile (acquire read). If we observe
         // `connected = 1`, a subsequent `Volatile.Read` of `source`

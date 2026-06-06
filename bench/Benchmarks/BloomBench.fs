@@ -33,7 +33,7 @@ type BlockedAddInt64() =
     member this.Setup() =
         this.filter <- BloomFilter.createBlocked this.N 0.01
         let rng = Random 42
-        this.keys <- Array.init this.N (fun _ -> int64 (rng.Next()) <<< 16 ||| int64 (rng.Next()))
+        this.keys <- Array.init this.N (fun _ -> rng.NextInt64())
 
     [<IterationSetup>]
     member this.IterationSetup() =
@@ -85,7 +85,7 @@ type BlockedMayContainInt64() =
     member this.Setup() =
         this.filter <- BloomFilter.createBlocked this.N 0.01
         let rng = Random 42
-        this.keys <- Array.init this.N (fun _ -> int64 (rng.Next()) <<< 16 ||| int64 (rng.Next()))
+        this.keys <- Array.init this.N (fun _ -> rng.NextInt64())
         for k in this.keys do this.filter.Add k
 
     [<Benchmark>]
@@ -136,7 +136,7 @@ type CountingAddInt64() =
     member this.Setup() =
         this.filter <- BloomFilter.createCounting this.N 0.01
         let rng = Random 42
-        this.keys <- Array.init this.N (fun _ -> int64 (rng.Next()) <<< 16 ||| int64 (rng.Next()))
+        this.keys <- Array.init this.N (fun _ -> rng.NextInt64())
 
     [<IterationSetup>]
     member this.IterationSetup() =
@@ -161,7 +161,7 @@ type CountingRemoveInt64() =
     member this.Setup() =
         this.keys <- Array.empty
         let rng = Random 42
-        this.keys <- Array.init this.N (fun _ -> int64 (rng.Next()) <<< 16 ||| int64 (rng.Next()))
+        this.keys <- Array.init this.N (fun _ -> rng.NextInt64())
 
     [<IterationSetup>]
     member this.IterationSetup() =
@@ -188,7 +188,7 @@ type CountingMayContainInt64() =
     member this.Setup() =
         this.filter <- BloomFilter.createCounting this.N 0.01
         let rng = Random 42
-        this.keys <- Array.init this.N (fun _ -> int64 (rng.Next()) <<< 16 ||| int64 (rng.Next()))
+        this.keys <- Array.init this.N (fun _ -> rng.NextInt64())
         for k in this.keys do this.filter.Add k
 
     [<Benchmark>]
@@ -219,7 +219,7 @@ type CountingMixed50() =
         // Remove. Order is shuffled so the counter hits every intermediate
         // state rather than running all Adds then all Removes.
         let distinct = this.N / 2
-        let keys = Array.init distinct (fun _ -> int64 (rng.Next()) <<< 16 ||| int64 (rng.Next()))
+        let keys = Array.init distinct (fun _ -> rng.NextInt64())
         let ops = Array.zeroCreate<struct (int64 * bool)> (distinct * 2)
         for i in 0 .. distinct - 1 do
             ops.[i * 2] <- struct (keys.[i], true)

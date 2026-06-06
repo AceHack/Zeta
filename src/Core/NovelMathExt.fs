@@ -135,15 +135,22 @@ type InfoTheoreticSharder(shardCount: int, epsilon: double, delta: double, seed:
     /// load-distribution flexibility feature, not a correctness
     /// invariant.
     member _.Pick(key: 'K) : int =
+        // Saturating add for the load comparison: shard loads and `predicted` (a CMS count
+        // estimate) are both non-negative, so a pathological sum clamps at Int64.MaxValue — a
+        // LOAD CAP, not an error. (Previously `Checked.(+)` threw mid-scan on int64 saturation,
+        // leaving the sharder in a half-committed, unrecoverable state.)
+        let satAdd (a: int64) (b: int64) : int64 =
+            if a > System.Int64.MaxValue - b then System.Int64.MaxValue else a + b
+
         let predicted = cms.Estimate key
         let hash32 = uint32 (HashCode.Combine key)
         let hashTieBreak = int ((uint64 hash32 * uint64 (uint32 shardCount)) >>> 32)
         let mutable bestShard = hashTieBreak
         let mutable bestLoad =
-            Checked.(+) (Volatile.Read &shardLoads.[hashTieBreak]) predicted
+            satAdd (Volatile.Read &shardLoads.[hashTieBreak]) predicted
         for s in 0 .. shardCount - 1 do
             if s <> hashTieBreak then
-                let load = Checked.(+) (Volatile.Read &shardLoads.[s]) predicted
+                let load = satAdd (Volatile.Read &shardLoads.[s]) predicted
                 // Strict `<` preserves the hash-tie-break slot on
                 // equal loads (see the docstring above).
                 if load < bestLoad then

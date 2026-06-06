@@ -93,7 +93,11 @@ module FeatureFlags =
     /// Programmatic overrides (test harness / explicit opt-in in
     /// hosting code). Concurrent-safe; thread writes are visible to
     /// other threads' reads.
-    let private overrides = ConcurrentDictionary<Flag, bool>()
+    /// `mutable` so `resetAll` can swap in a fresh empty map by atomic reference
+    /// assignment (see `resetAll`) rather than `ConcurrentDictionary.Clear()`,
+    /// which is NOT linearizable against concurrent writes. Lock-free on every
+    /// path: `isEnabled`/`set`/`reset` each read this field exactly once.
+    let mutable private overrides = ConcurrentDictionary<Flag, bool>()
 
     /// Canonical env-var name for a flag: `DBSP_FLAG_<UPPER_NAME>`.
     let private envName (flag: Flag) : string =
@@ -130,6 +134,8 @@ module FeatureFlags =
     /// test code or hosting configuration). Overrides both env-var
     /// and meta-flag.
     let set (flag: Flag) (value: bool) : unit =
+        // Reads `overrides` once: a `set` racing a `resetAll` either lands in the
+        // live map, or in the now-discarded map (lost — correct: `resetAll` won).
         overrides.[flag] <- value
 
     /// Remove a programmatic override, restoring env-var /
@@ -138,6 +144,13 @@ module FeatureFlags =
         overrides.TryRemove flag |> ignore
 
     /// Reset every programmatic override. Primarily for test
-    /// harnesses that want a clean slate between cases.
+    /// harnesses that want a clean slate between cases. Lock-free and
+    /// linearizable: swaps in a FRESH empty map by one atomic reference
+    /// assignment (`Interlocked.Exchange`), rather than
+    /// `ConcurrentDictionary.Clear()` — which is not linearizable against a
+    /// concurrent `set` (a racing write could survive the clear, leaving a
+    /// stale entry). After the swap, any in-flight `set` that captured the old
+    /// map writes to the discarded instance and is invisible; the contract holds.
     let resetAll () : unit =
-        overrides.Clear()
+        System.Threading.Interlocked.Exchange(&overrides, ConcurrentDictionary<Flag, bool>())
+        |> ignore
