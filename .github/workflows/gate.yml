@@ -311,6 +311,15 @@ jobs:
     # cheap and unconditional. See `path-filter` job above for the
     # detection logic.
     steps:
+      # Windows MAX_PATH (260) guard — MUST precede checkout. Zeta has memory/persona
+      # files whose paths exceed 260 chars; without this, actions/checkout fails with
+      # "Filename too long" before any setup runs (install.ps1 sets the same
+      # core.longpaths for dev machines, but it runs POST-checkout so can't help CI).
+      # Layer 1 (no admin): git prepends the extended-length prefix + bypasses MAX_PATH.
+      - name: Enable git long paths (Windows; pre-checkout)
+        if: startsWith(matrix.os, 'windows-')
+        run: git config --system core.longpaths true
+
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 

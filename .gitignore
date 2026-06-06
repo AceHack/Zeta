@@ -37,6 +37,10 @@ coverage-summary.json
 .claude/scheduled_tasks.json
 .claude/*.lock
 
+# Claude Code per-project session/transcript + state store. Machine-local,
+# regenerated per session, may contain conversation data — never commit.
+.claude/projects/
+
 # Git-worktree scratch created when agents run parallel-worktree research
 # (per `docs/research/parallel-worktree-safety-2026-04-22.md`). The parent
 # `.claude/worktrees/` dir can be left behind as an empty directory after
@@ -45,6 +49,8 @@ coverage-summary.json
 .claude/worktrees/
 .DS_Store
 Thumbs.db
+# macOS xcrun toolchain cache artifact dropped in the cwd — local junk, not source.
+xcrun_db
 StrykerOutput/
 .dotnet/
 .tools/
