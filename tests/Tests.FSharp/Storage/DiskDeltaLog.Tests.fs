@@ -82,7 +82,7 @@ let ``fsync-per-append round-trips`` () =
 [<Fact>]
 let ``end-to-end: RecoverableSpine recovers from the disk log across a fresh instance`` () =
     withDir "ddl-spine" (fun dir ->
-        let store = InMemoryAsyncBackingStore<int>() :> IAsyncBackingStore<int>
+        let store = InMemorySnapshotStore<int>() :> ISnapshotStore<int>
         // Live spine on a durable disk log.
         let live =
             let log1 = DiskDeltaLog<int>(dir, CheckpointDeltaCodec<int>()) :> IDeltaLog<int>
@@ -96,3 +96,23 @@ let ``end-to-end: RecoverableSpine recovers from the disk log across a fresh ins
         recovered.Consolidate() |> should equal (live.Consolidate())
         recovered.AppliedSeq |> should equal 7L
         (recovered.Consolidate()).[3] |> should equal 0L)        // retraction survived the round-trip
+
+
+[<Fact>]
+let ``end-to-end: snapshot+tail recovery survives a restart via the manifest`` () =
+    withDir "ddl-snap-log" (fun logDir ->
+        withDir "ddl-snap-store" (fun snapDir ->
+            let mkLog () = DiskDeltaLog<int>(logDir, CheckpointDeltaCodec<int>()) :> IDeltaLog<int>
+            let mkSnap () = DiskSnapshotStore<int>(snapDir, CheckpointDeltaCodec<int>()) :> ISnapshotStore<int>
+            // Live: commit, snapshot (manifest → seq 5), commit more.
+            let live =
+                let s = RecoverableSpine.create (mkLog ()) (mkSnap ())
+                for i in 1 .. 5 do s.CommitAsync(ZSet.ofKeys [ i ]).Wait()
+                s.SnapshotAsync().Wait()
+                for i in 6 .. 8 do s.CommitAsync(ZSet.ofKeys [ i ]).Wait()
+                s
+            // Restart: FRESH log + snapshot store over the same dirs; recover via the
+            // manifest alone (no externally-held pointer) — snapshot(1..5) + tail(6..8).
+            let recovered = RecoverableSpine<int>.RecoverAsync(mkLog (), mkSnap ()).Result
+            recovered.Consolidate() |> should equal (live.Consolidate())
+            recovered.AppliedSeq |> should equal 8L))

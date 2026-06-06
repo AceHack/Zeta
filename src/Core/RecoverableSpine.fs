@@ -4,27 +4,22 @@ open System.Threading
 open System.Threading.Tasks
 
 
-/// A durable pointer to a snapshot: the backing-store handle plus the delta-log
-/// sequence number the snapshot covers. In a real deployment this small pair
-/// lives in the manifest (a git ref / a tiny durable record); recovery needs
-/// only this + the log to rebuild. (It is itself the "manifest" of §3.)
-type SnapshotPointer = { Handle: obj; Seq: int64 }
-
-
-/// **RecoverableSpine** — increment 2 of the durability subsystem: ties an input
-/// `IDeltaLog` together with cadenced snapshots (via `IAsyncBackingStore`) and a
-/// restore→replay recovery path. Embodies "persist inputs + snapshots, recompute
-/// derived": the live state is the fold of committed input deltas; a snapshot is
-/// the consolidated fold persisted at a known sequence; recovery loads the latest
-/// snapshot and replays the log tail past it.
+/// **RecoverableSpine** — ties an input `IDeltaLog` together with cadenced
+/// snapshots (via a manifest-tracked `ISnapshotStore`) and a restore→replay
+/// recovery path. Embodies "persist inputs + snapshots, recompute derived": the
+/// live state is the fold of committed input deltas; a snapshot is the
+/// consolidated fold persisted at a known sequence; recovery loads the latest
+/// snapshot (from the store's durable manifest) and replays the log tail past it.
+///
+/// Because the snapshot store records the latest pointer in a durable manifest,
+/// recovery survives a process restart with NO externally-held pointer:
+/// `RecoverAsync(log, snap)` reads the manifest itself.
 ///
 /// v1 keeps the folded state as a single accumulated `ZSet` (snapshot = one
-/// consolidated Z-set). A later increment can make the snapshot the levels of a
-/// `BackedSpineAsync` and add snapshot cadence + log GC. Single-writer per shard
-/// (matches the writer-actor model), so no internal locking.
+/// consolidated Z-set). Single-writer per shard (writer-actor model), no locking.
 [<Sealed>]
 type RecoverableSpine<'K when 'K : comparison>
-    (log: IDeltaLog<'K>, store: IAsyncBackingStore<'K>, initialState: ZSet<'K>, initialSeq: int64) =
+    (log: IDeltaLog<'K>, snap: ISnapshotStore<'K>, initialState: ZSet<'K>, initialSeq: int64) =
 
     let mutable state = initialState
     let mutable appliedSeq = initialSeq
@@ -39,9 +34,9 @@ type RecoverableSpine<'K when 'K : comparison>
     /// Highest delta-log sequence folded into the current state.
     member _.AppliedSeq : int64 = appliedSeq
     member _.Log = log
-    member _.Store = store
-    /// The most recent snapshot pointer taken by this spine (manual or cadenced),
-    /// or None. This is the durable recovery pointer (lives in the manifest).
+    member _.SnapshotStore = snap
+    /// The most recent snapshot pointer taken by this spine this session, or None.
+    /// (The durable pointer lives in the store's manifest; this is a cache.)
     member _.LatestSnapshot : SnapshotPointer option = latest
     /// Take + GC a snapshot every N commits (0 disables). Setting it does not
     /// snapshot immediately; the next commit that crosses the threshold does.
@@ -49,13 +44,13 @@ type RecoverableSpine<'K when 'K : comparison>
         with get () = cadence
         and set (n: int) = cadence <- max 0 n
 
-    /// Persist the current consolidated state as a snapshot; records it as
-    /// `LatestSnapshot` and resets the cadence counter. Returns the pointer.
+    /// Persist the current consolidated state as a snapshot (updates the store's
+    /// durable manifest); records it as `LatestSnapshot`, resets the cadence
+    /// counter. Returns the pointer.
     member _.SnapshotAsync(?cancellationToken: CancellationToken) : Task<SnapshotPointer> =
         let ct = defaultArg cancellationToken CancellationToken.None
         task {
-            let! handle = store.SaveAsync(0, state, ct)
-            let p = { Handle = handle; Seq = appliedSeq }
+            let! p = snap.WriteAsync(appliedSeq, state, ct)
             latest <- Some p
             commitsSinceSnapshot <- 0
             return p
@@ -80,24 +75,30 @@ type RecoverableSpine<'K when 'K : comparison>
             return seq
         }
 
-    /// Recover a spine from durable state: restore the latest snapshot (if any)
-    /// then replay the log tail past it through the deterministic fold. This is
-    /// the crash-recovery path — build a fresh spine from (log, store, pointer).
+    /// Recover a spine from durable state: restore the latest snapshot then replay
+    /// the log tail past it through the deterministic fold. The crash-recovery
+    /// path. With no explicit `pointer`, the snapshot store's durable **manifest**
+    /// supplies the latest snapshot — so recovery works across a process restart
+    /// with nothing held externally.
     static member RecoverAsync
-        (log: IDeltaLog<'K>, store: IAsyncBackingStore<'K>,
+        (log: IDeltaLog<'K>, snap: ISnapshotStore<'K>,
          ?pointer: SnapshotPointer, ?cancellationToken: CancellationToken)
         : Task<RecoverableSpine<'K>> =
         let ct = defaultArg cancellationToken CancellationToken.None
         task {
-            let! baseState, baseSeq =
+            let! resolved =
                 match pointer with
+                | Some p -> Task.FromResult(Some p)
+                | None -> snap.LatestAsync ct
+            let! baseState, baseSeq =
+                match resolved with
                 | Some p ->
                     task {
-                        let! s = store.LoadAsync(p.Handle, ct)
+                        let! s = snap.ReadAsync(p, ct)
                         return s, p.Seq
                     }
                 | None -> Task.FromResult((ZSet<'K>.Empty, 0L))
-            let spine = RecoverableSpine<'K>(log, store, baseState, baseSeq)
+            let spine = RecoverableSpine<'K>(log, snap, baseState, baseSeq)
             let! tail = log.ReplayAsync(baseSeq, ct)
             for e in tail do
                 spine.ApplyReplayed(e.Delta, e.Seq)
@@ -115,5 +116,5 @@ type RecoverableSpine<'K when 'K : comparison>
 module RecoverableSpine =
 
     /// Start a fresh, empty recoverable spine over the given log + snapshot store.
-    let create (log: IDeltaLog<'K>) (store: IAsyncBackingStore<'K>) : RecoverableSpine<'K> =
-        RecoverableSpine<'K>(log, store, ZSet<'K>.Empty, 0L)
+    let create (log: IDeltaLog<'K>) (snap: ISnapshotStore<'K>) : RecoverableSpine<'K> =
+        RecoverableSpine<'K>(log, snap, ZSet<'K>.Empty, 0L)

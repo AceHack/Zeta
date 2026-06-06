@@ -15,7 +15,7 @@ open Zeta.Core
 let private ct = CancellationToken.None
 let private fresh () =
     let log = InMemoryDeltaLog<int>() :> IDeltaLog<int>
-    let store = InMemoryAsyncBackingStore<int>() :> IAsyncBackingStore<int>
+    let store = InMemorySnapshotStore<int>() :> ISnapshotStore<int>
     log, store
 
 

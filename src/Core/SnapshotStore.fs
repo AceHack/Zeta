@@ -1,0 +1,115 @@
+namespace Zeta.Core
+
+open System.Collections.Generic
+open System.IO
+open System.Text.Json
+open System.Threading
+open System.Threading.Tasks
+
+
+/// A durable pointer to a snapshot: the store handle + the delta-log sequence the
+/// snapshot covers. Recovery needs only this + the log to rebuild. The handle is
+/// store-specific (an int64 id in memory; a stable filename on disk).
+type SnapshotPointer = { Handle: obj; Seq: int64 }
+
+
+/// **Snapshot store with stable, manifest-tracked addressing.** Distinct from the
+/// spill-oriented `IAsyncBackingStore`: a snapshot store persists the consolidated
+/// state at a known sequence AND records the latest in a durable **manifest**, so
+/// `SnapshotPointer` survives a process restart (`LatestAsync` reads it back). This
+/// is the fix for the per-instance-GUID gap — snapshot+tail recovery now works
+/// across restarts, not just full log replay.
+type ISnapshotStore<'K when 'K : comparison> =
+    /// Persist `state` at `seq`; update the durable manifest; return the pointer.
+    abstract WriteAsync: seq: int64 * state: ZSet<'K> * ct: CancellationToken -> Task<SnapshotPointer>
+    /// Load a snapshot by pointer.
+    abstract ReadAsync: pointer: SnapshotPointer * ct: CancellationToken -> Task<ZSet<'K>>
+    /// The latest snapshot pointer from the manifest, or None if none written.
+    abstract LatestAsync: ct: CancellationToken -> Task<SnapshotPointer option>
+
+
+/// In-memory snapshot store — the reference + test substrate. The "manifest" is a
+/// field; survives only within the process (tests simulate restart by sharing the
+/// instance, or use `DiskSnapshotStore` for true cross-restart).
+[<Sealed>]
+type InMemorySnapshotStore<'K when 'K : comparison>() =
+    let store = Dictionary<int64, ZSet<'K>>()
+    let gate = obj ()
+    let mutable latest : SnapshotPointer option = None
+    interface ISnapshotStore<'K> with
+        member _.WriteAsync(seq, state, _ct) =
+            let p = { Handle = box seq; Seq = seq }
+            lock gate (fun () ->
+                store.[seq] <- state
+                latest <- Some p)
+            Task.FromResult p
+        member _.ReadAsync(pointer, _ct) =
+            let seq = pointer.Handle :?> int64
+            Task.FromResult(lock gate (fun () -> store.[seq]))
+        member _.LatestAsync(_ct) =
+            Task.FromResult(lock gate (fun () -> latest))
+
+
+/// Disk snapshot store — stable filenames (`snapshot-{seq:020}.snap`) + a durable
+/// `LATEST.json` manifest, both written atomically (temp + rename) with optional
+/// fsync. A fresh instance over the same dir reads the manifest and reloads the
+/// snapshot — cross-restart snapshot+tail recovery. Delta bytes via `IDeltaCodec`.
+[<Sealed>]
+type DiskSnapshotStore<'K when 'K : comparison>
+    (dir: string, codec: IDeltaCodec<'K>, ?fsyncOnWrite: bool) =
+
+    let fsync = defaultArg fsyncOnWrite false
+    let root = Path.GetFullPath dir
+    do Directory.CreateDirectory root |> ignore
+    let manifestPath = Path.Combine(root, "LATEST.json")
+    let snapName (seq: int64) = sprintf "snapshot-%020d.snap" seq
+
+    let writeAtomicAsync (path: string) (bytes: byte[]) (ct: CancellationToken) : Task =
+        task {
+            let tmp = path + ".tmp"
+            let opts =
+                if fsync then FileOptions.Asynchronous ||| FileOptions.WriteThrough
+                else FileOptions.Asynchronous
+            do! (task {
+                    use fs = new FileStream(tmp, FileMode.Create, FileAccess.Write, FileShare.None, 4096, opts)
+                    do! fs.WriteAsync(System.ReadOnlyMemory bytes, ct).AsTask()
+                    do! fs.FlushAsync ct
+                    if fsync then fs.Flush(flushToDisk = true)
+                 } : Task)
+            File.Move(tmp, path, overwrite = true)   // atomic replace on the same volume
+        }
+        :> Task
+
+    interface ISnapshotStore<'K> with
+        member _.WriteAsync(seq, state, ct) =
+            task {
+                let file = snapName seq
+                do! writeAtomicAsync (Path.Combine(root, file)) (codec.Encode state) ct
+                // Manifest as a small string→string map (robust JSON round-trip).
+                let m = Dictionary<string, string>()
+                m.["seq"] <- string seq
+                m.["file"] <- file
+                do! writeAtomicAsync manifestPath (JsonSerializer.SerializeToUtf8Bytes m) ct
+                return { Handle = box file; Seq = seq }
+            }
+
+        member _.ReadAsync(pointer, ct) =
+            task {
+                let file = pointer.Handle :?> string
+                let! bytes = File.ReadAllBytesAsync(Path.Combine(root, file), ct)
+                return codec.Decode bytes
+            }
+
+        member _.LatestAsync(ct) =
+            task {
+                if not (File.Exists manifestPath) then
+                    return None
+                else
+                    let! bytes = File.ReadAllBytesAsync(manifestPath, ct)
+                    let m = JsonSerializer.Deserialize<Dictionary<string, string>> bytes
+                    match m with
+                    | null -> return None
+                    | _ ->
+                        let seq = int64 m.["seq"]
+                        return Some { Handle = box m.["file"]; Seq = seq }
+            }

@@ -110,6 +110,7 @@
     <Compile Include="DeltaLog.fs" />
     <Compile Include="DeltaCodec.fs" />
     <Compile Include="DiskDeltaLog.fs" />
+    <Compile Include="SnapshotStore.fs" />
     <Compile Include="RecoverableSpine.fs" />
     <Compile Include="DurableSaga.fs" />
     <Compile Include="Durability.fs" />
