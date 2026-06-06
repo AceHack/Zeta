@@ -132,7 +132,10 @@ relational (SQL), document, key-value. That multi-model-over-one-substrate idea 
 Three byte-verified, golden-vector-locked format tiers (all from one codec family — "binary"
 is fine when it's *verified* binary; the earlier "not binary" meant "no *unverified* format"):
 
-- **Canonical JSON (text)** — git-native / audit / mergeable tier. Diffable in `git diff`.
+- **Canonical YAML (text)** — git-native / audit / mergeable tier. The standard git
+  serialization (maintainer 2026-06-04); already byte-locked (`Core.FSharp.Yaml`, B-1011:
+  block-style, quoted strings, insertion-order keys, invariant floats → one fixed rendering per
+  value). Fewer bytes than JSON + more readable; speed is fine here because the hot path is CBOR.
 - **CBOR (binary)** — local hot tier. Leanest encode; complete (8/8 shapes).
 - **Arrow IPC (binary, columnar)** — **inter-agent bulk state sharing** (`ArrowSerializer.fs`).
   Columnar = fast bulk transfer of a shard's state across the bus to another agent.

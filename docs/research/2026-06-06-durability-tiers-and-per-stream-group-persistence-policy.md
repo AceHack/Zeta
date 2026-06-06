@@ -200,8 +200,13 @@ contract.
   `IBufferWriter<byte>`**, never materializing an intermediate `DynamicValue` tree; (2) pooled
   output buffer (`ArrayPool`); (3) `writeText` direct UTF-8 into the writer. Don't lock the seam
   on the current `ToArray()`/string-list shape.
-- **Recommendation:** text/audit tier → canonical JSON (after Float/Bytes extension); hot tier →
-  canonical CBOR (with `trustCanonical`). Benchmark first, then optimize, then lock.
+- **Recommendation:** text/audit tier → **canonical YAML** (`Core.FSharp.Yaml`, B-1011 — already
+  byte-locked, block-style, fewer bytes than JSON, the git-standard per maintainer 2026-06-04;
+  this MOOTS the canonical-JSON Float/Bytes gap for the text tier — YAML encoder renders floats
+  via invariant "R"; bytes still need a base64/hex scalar convention, confirm). Hot tier →
+  canonical CBOR (with `trustCanonical`). Benchmark first, then optimize, then lock. (YAML
+  encoder is StringBuilder-based — same non-zero-alloc profile as canonical JSON, but the text
+  tier is not the hot path, so that's acceptable; CBOR carries the hot path.)
 
 ## Anchors (Beacon)
 
