@@ -108,6 +108,69 @@ implementation but design the log so it can be mirrored to k+1 shard replicas.
 Note (informational): per-stream-group command-logging is **beyond VoltDB** (one global
 command log). Soundness across groups rests entirely on the upward-closed invariant (§2).
 
+## 8. Storage backends: filesystem + git-native (maintainer, 2026-06-06)
+
+The delta-log / snapshot / manifest abstraction (`IDeltaLog`, `IAsyncBackingStore`) MUST stay
+backend-agnostic. Two backends are planned, **both all-text, both via our byte-verified
+serializers (§9) — NOT binary** (maintainer, 2026-06-06):
+
+- **Filesystem** — built today (`DiskAsyncBackingStore`, OS-buffered + fsync-per-save). Hot
+  perf tier. Format = our byte-verified text canonical codec, NOT Arrow/Parquet binary. Make
+  the *serializer* fast (§9), don't trade byte-verification for a binary format.
+- **Git-native — ALL TEXT, INCLUDING INDEXES (maintainer).** Every artifact is text and
+  diffable: the delta log, snapshots, AND the indexes/manifests. No binary index files; any
+  irreducibly-binary payload is byte-locked as hex/decimal-in-JSON (the
+  `no-binary-in-proof-lineage` discipline applied to storage). Human-auditable and *mergeable*
+  in a `git diff`.
+
+Why git-native fits the architecture cleanly (it maps the §3 mechanism onto git primitives):
+
+| Architecture piece | Git primitive |
+|---|---|
+| delta log (append-only commands) | **commit history** — each commit = a delta-batch |
+| content-addressed Z-set batches | **blobs/trees** — dedup by content hash (idempotency #6: content-address is idempotent) |
+| snapshot | a **tree / tag** (text Checkpoint JSON — already text today) |
+| manifest / snapshot pointer | a **ref** |
+| writer-epoch fencing / CAS-manifest (SlateDB) | **atomic ref update** (CAS via `update-ref` old-value check) |
+| recovery | checkout snapshot → replay commits |
+| HA / replication (§6) | `git push`/fetch of the deterministic commit stream |
+
+This is the existing "git-as-event-store fold" theme made concrete; the deterministic
+delta-stream replays the same way whether the log is a git commit chain or a flat file.
+
+## 9. Serialization: reuse our byte-verified canonical codecs / DynamicValue (maintainer, 2026-06-06)
+
+**Direction (not to be rushed — "get it right and performant"):** the on-storage format for
+delta-log entries, snapshots, and manifests should be **our own byte-verified, golden-vector-
+locked canonical serializers and/or `DynamicValue`** — not ad-hoc JSON, not binary. Today the
+backing store spills via `Checkpoint.toBytes` (ad-hoc JSON); the target is to route storage
+serialization through the canonical codec family that already has 4-language parity + golden
+vectors + cross-oracle differential fuzzing.
+
+Why this is the right substrate (it makes storage inherit the proof lineage):
+
+- **Cross-language readable** — a Rust/TS/C# reader can read the same git-native store
+  (4-oracle byte-lock), important for a distributable git-native tier.
+- **DST-replayable + golden-vector-covered** — the format is already proven deterministic and
+  byte-stable; storage gets that for free instead of re-proving an ad-hoc format.
+- **Text + diffable/mergeable** — `DynamicValue` canonical JSON is text, satisfying §8's
+  all-text git-native constraint and `no-binary-in-proof-lineage`.
+- **One format to verify** — not "storage JSON" + "wire format" + "proof vectors" as three
+  separate things to keep in sync.
+
+**Performance is the open question, not the direction.** Canonical text encoding costs more
+than a raw memcpy. The resolution is to **make the serializer fast** (perf-engineer / Naledi
+lane: zero-alloc canonical encode, streaming writer, reuse buffers — like FerryThrottler's
+byte-aware boats feeding the encoder) rather than abandon byte-verification for a binary
+format. MEASURE the canonical-encode cost on the delta-log hot path before committing the seam;
+if it's the bottleneck, optimize the codec, don't swap in binary.
+
+**Sequencing:** keep `IDeltaLog`/`IAsyncBackingStore` serialization behind a pluggable
+`encode/decode` seam so we can land the subsystem on `Checkpoint.toBytes` first (works today)
+and swap in the byte-verified canonical codec without touching the log/recovery logic. This is
+the "don't rush, get it right" path: ship the mechanism, then upgrade the format under a stable
+contract.
+
 ## Anchors (Beacon)
 
 - DBSP: Budiu et al., *DBSP: Automatic Incremental View Maintenance*, VLDB 2023.
