@@ -47,6 +47,7 @@
     <Compile Include="Reconcile.Legs.Tests.fs" />
     <Compile Include="EngineLoop.Tests.fs" />
     <Compile Include="SocietyEmergence.Tests.fs" />
+    <Compile Include="SocietyUnbounded.Tests.fs" />
     <Compile Include="TriBoolean/TriBoolean.Tests.fs" />
     <Compile Include="TriBoolean/Float.Tests.fs" />
     <Compile Include="Bonsai/Bonsai.Tests.fs" />
