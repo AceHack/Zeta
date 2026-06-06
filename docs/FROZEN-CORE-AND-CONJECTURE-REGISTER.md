@@ -109,7 +109,7 @@ Clause → anchor → status:
 | "under unordered events" | **exchangeability** (permutation-invariant joint law) | ✅ **PROVEN** `BeliefConvergence.fs`: fixed likelihoods commute ⇒ any permutation → same belief |
 | "non-coercion invariant boundary" (**NCI**) | governance face = **no observation coerces/overrides the state**; mechanism = **de Finetti**: exchangeable ⟺ conditionally i.i.d. *given a latent invariant θ*; the boundary is where conditional independence (= non-coercion) holds vs breaks | ✅ **PROVEN as the discrete boundary** in `BeliefConvergence.fs`: state-independent (conditionally-independent, non-coercive) likelihood commutes; state-dependent (`sharpen`, self-reading ⇒ coercive) does NOT — that counterexample *is* the NCI boundary |
 | "converges" | Doob martingale convergence / Bayesian consistency (posterior concentrates on θ) | partial: discrete order-independence proven; full posterior-concentration is continuous, ⇒ §B (piece 2) |
-| "relative observers" | per-observer frames reconciling to one common frame | **conjecture**: `TravelerFrame.fs` gives the convergence *pattern* (LUB) but for *causal* frames — belief-across-priors reconciliation is NOT yet built |
+| "relative observers" | per-observer frames reconciling to one common frame | ✅ **BUILT** (`Reconcile.fs`, 2026-06-05): belief-across-priors reconciliation = a 3-way merge over the Merkle shared-ancestor (LCA), `reconciled = a·b/ancestor`; **order-independent** (commutative — all relative observers reach ONE frame regardless of merge order) by the proven NCI boundary; equals applying both branches' evidence to the ancestor (`observeAll`). The "genuinely-new math" turned out to ride the proven floor. |
 
 **The name: the Non-Coercion Invariant (NCI) — three faces of one boundary (Aaron + Amara, 2026-06-05).**
 Aaron's word is **coercion**; the canonical name is the **NCI**. The same cut seen from three levels:
@@ -160,7 +160,14 @@ independent of state (the rational sibling of `BeliefConvergence`), plus the pro
 Viterbi `(max,×)` semirings in `Semiring.fs` so HMM inference (forward/Viterbi) is a `ZSet`-over-semiring
 matrix product, plus the relative-observer belief reconciliation (the one genuinely-new math). Floats
 (continuous θ, mixing rate) stay empirical, named out of the proof lineage; the exact-rational core
-byte-locks + 4-langs (the SoftValue discipline).
+byte-locks + 4-langs (the SoftValue discipline). **STATUS 2026-06-05: math ✅ (`ProbabilitySemiring`),
+4-lang ✅, the boundary theorem ✅ (`ProbabilitySemiring.Boundary`), and the relative-observer
+reconciliation ✅ (`Reconcile.fs` — the "genuinely-new math" rode the proven floor: a 3-way merge over
+the Merkle LCA, order-independent by the NCI boundary). The engine arc that sits on B-1020 is also
+complete: `YinYang` (cell) → `ReflectionEngine` (reflect/forward) → `Diplomacy` (NCI-safe handshake) →
+`Reconcile` (merge) = the full bifurcation → diplomacy → reconciliation loop, NCI-respecting at every
+step. Remaining open: the societal-emergence ladder (DST → TLA+ → prover) — empirical/dynamical, distinct
+from the now-built mechanics.**
 
 **Why unique personas persist and don't collapse — the balance (static half ALREADY PROVEN).** The
 target result (Aaron, 2026-06-05): *unique, independent personas emerge and never collapse into
