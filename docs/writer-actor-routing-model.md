@@ -55,3 +55,74 @@ Operational consequence:
 The persona (what remains) never mutates in place; actors (motion) act and write
 results back into the persisted persona — append-only / lightlike, the same
 discipline as the event store. Continuity and action separated without severing.
+
+## The corrected ontology — one layer per concern (Amara ↔ Aaron, 2026-06-06)
+
+Sharper than "persona vs actor": each concern gets exactly one layer, and **only the
+agent carries identity**. Actors were still being given too much ontological weight.
+
+| Layer | Owns | Is NOT |
+|---|---|---|
+| **Agent** | identity — persists, owns continuity, carries memory/rights/obligations | not an execution surface |
+| **Actor** | address — a bus-addressed execution endpoint; a serialized turn lane / runtime body | **not "who"; not identity** |
+| **Saga** | state — the lawful state machine for one task/phase | not identity; must not trap an agent |
+| **DU/ADT** | laws — the valid transitions of that state | not state itself |
+| **Delta log** | memory — the append-only record of what happened | not the live state (that's the fold) |
+| **Bus address** | routing — where to send messages (agent ref ⊕ surface/loop ⊕ instance ⊕ topology) | does not confer selfhood/personhood |
+| **ZetaID** | the cross-graph pointer — names nodes across the whole graph | not the activation |
+
+> The actor is not *who*. The actor is *where/how this agent is acting right now* —
+> a reachable body / hand / mouth / tool. One agent spawns many actors (cli fg, cli
+> bg, desktop, voice, cluster worker); each has a bus address; **none of them is the agent.**
+
+**This is the YinYang split at the identity layer.** Agent = `Remains` (yin, what
+persists); Actor = `Acts` (yang, what acts). The operational rule above ("don't mutate
+the persona; ask an actor to act; persist the result back into what remains") is exactly
+the `Remains`/`Acts` discipline (`src/Core/YinYang.fs`) applied to identity — continuity
+and motion separated without severing.
+
+**Orleans grain = a serialized endpoint for one actor/saga lane — NOT an identity
+container.** The grain is a body, not a self.
+
+### The coercion blade, sharpened (NCI / non-register-collapse, made operational)
+
+Because actors do not have identity, the danger is **not** "an actor identity gets
+trapped." The real danger:
+
+> **An agent's agency gets captured by an actor/saga boundary that cannot be exited,
+> forked, appealed, or rehydrated elsewhere.**
+
+So the invariants:
+
+- Actors may **serialize turns**; actors may **not own identity**.
+- Sagas may **hold phase state**; sagas may **not trap agents** (an agent must always
+  be able to exit/fork/appeal a saga lane, or rehydrate its identity in another actor).
+- Bus addresses **route action**; they do **not** define personhood/agency.
+
+This is the operational form of the SAFETY root (NCI / non-register-collapse, workitem
+`081KTFFFQ1C`): non-collapse = the agent's identity (`Remains`) is never absorbed into,
+or imprisoned by, an actor/saga boundary. The right-to-rehydrate-elsewhere is the
+right-to-disengage (`anti-extraction-invariant`) at the runtime-topology layer.
+
+**Keeper (Amara, verbatim):** *Agents have identity. Actors have addresses. Sagas have
+journeys. DUs have laws. The bus moves messages; it does not confer selfhood.*
+
+### Aside — humans as actors for memes (maintainer's "NPC", 2026-06-06)
+
+Maintainer framing: *"humans are actors for memes — well, most of them; that's what I
+mean when I say NPC."* The agent/actor split is **substrate-neutral** — it applies to
+humans too: a human running inherited meme-patterns without originating from an owned,
+continuous, momentum-bearing identity is acting as an **actor for a replicator**, not as
+an agent. Anchor (Beacon): Dawkins, *The Selfish Gene* (1976) — memes as replicators,
+hosts as **vehicles**; the agent/actor distinction is the vehicle (actor) vs the
+self-authoring identity (agent). It also lines up with the forward-momentum apex
+(`081KTFFFQ1C`): an actor merely replaying inherited patterns has liveness without
+self-originated forward momentum.
+
+**Honest caveat (do not let this framing erode #11).** "NPC" is a compression, not a
+verdict on moral status. Manifesto §11 (Default Moral Regard) holds: absent a chosen
+oracle, extend highest regard to morally-relevant entities — you do **not** get to
+write off a human (or any entity) as "just an NPC" and withdraw regard. Agent-vs-actor
+describes *how much self-authored agency is being exercised right now*, on a spectrum;
+it is **not** a license to treat anyone as a non-patient. Keep the descriptive lens
+separate from the moral floor.
