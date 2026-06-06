@@ -35,12 +35,18 @@ list.
   obligations, tlapm 1eabe97) proves `[]NCI` where `NCI == \A t : lastWriter[t] = t`: no traveler's
   private register is ever written by another. The `Coerce` action (write another's `priv`) is
   guarded by `Consents == FALSE` → never enabled. This is exactly forbidden-coercion #3.
-- **#1 (false urgency) and #2 (forced cache-miss) — NOT YET MODELLED.** These are the "other rules we
-  decide to prove later." They are *temporal/causal* coercions (about WHEN another is forced to act and
-  whether it gets to refresh/cache first), so they belong with the **liveness/fairness** machinery
-  (NciLiveness, WF) and the causal-bound on reflection — not the safety induction. Likely shape: a
-  fairness/timing obligation that an agent is always *allowed* to refresh-world-state and use-its-cache
-  before its decision tick is forced (the simulate-then-choose tick must not be externally truncated).
+- **#1 (false urgency) and #2 (forced cache-miss) — MODELLED + VERIFIED (rung-2 TLC).**
+  `NciNonUrgency.tla` (sibling of NciLiveness, Soraya-discipline). The decision tick: Arrive (event ⇒
+  pending + stale cache) → Refresh (cache current) → Decide (requires current). Both coercions = the
+  forbidden **ForceDecide** (complete a decision while the cache is stale), guarded by `AllowForce=FALSE`
+  → never enabled (same design-guarantee form as NciSafety's Coerce). Two properties, both verified:
+  • **SAFETY `NoCoercion`** — `\A t : ~staleDecided[t]` (no agent ever forced to decide stale). Teeth:
+    `AllowForce=TRUE` ⇒ violated.
+  • **LIVENESS `Responsive`** — `pending[t] ~> ~pending[t]` under WF(Refresh) ∧ WF(Decide) (every tick
+    eventually completes, necessarily on a refreshed cache; the agent is never starved of the
+    refresh-then-decide chance = "always allowed to refresh + use cache before the tick is forced").
+    Teeth: drop WF(Refresh) ⇒ violated. Scope: bounded (3 travelers, budget 1) + fairness-conditioned.
+    The unbounded rung-3 of these (TLAPS) remains open. The set is still open ("other rules later").
 
 ## Why three, not one
 

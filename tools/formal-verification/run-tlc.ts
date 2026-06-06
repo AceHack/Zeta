@@ -78,6 +78,7 @@ const CATALOGUE: readonly string[] = [
   "SpineAsyncProtocol",
   "NciSafety",
   "NciLiveness",
+  "NciNonUrgency",
 ];
 
 function repoRoot(): string {
