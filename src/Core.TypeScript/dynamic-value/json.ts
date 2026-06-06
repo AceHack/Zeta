@@ -23,13 +23,27 @@ export type Tagged =
   | { t: "obj"; v: [string, Tagged][] };
 
 // Why canonical JSON bytes could not be decoded into a v1 DynamicValue. (No `NonTextKey`:
-// JSON object keys are syntactically always strings, unlike CBOR map keys.)
-export type DecodeError = "UnexpectedEnd" | "TrailingData" | "Unsupported" | "IntegerOverflow" | "NonCanonical";
+// JSON object keys are syntactically always strings, unlike CBOR map keys.) `NestingTooDeep`:
+// the input's nesting exceeds MAX_NESTING_DEPTH — a resource-safety guard mirrored across
+// F#/C#/Rust/TS, rejecting a depth-bomb as data rather than overflowing the stack.
+export type DecodeError =
+  | "UnexpectedEnd"
+  | "TrailingData"
+  | "Unsupported"
+  | "IntegerOverflow"
+  | "NonCanonical"
+  | "NestingTooDeep";
 
 export type DecodeResult = { ok: true; value: Tagged } | { ok: false; error: DecodeError };
 
 const I64_MAX = 9223372036854775807n;
 const I64_MIN = -9223372036854775808n;
+
+// Maximum input nesting depth the recursive decoder walks before failing `NestingTooDeep`. A
+// fixed resource-safety bound, NOT part of the value domain: far above any realistic value, so
+// golden vectors and real data are unaffected while a depth-bomb is rejected before it overflows
+// the stack. Mirrored across F#/C#/Rust/TS.
+const MAX_NESTING_DEPTH = 256;
 
 // --- canonical JSON encode (the byte-lock target; shared with the decoder's fixed-point check) ---
 
@@ -217,7 +231,7 @@ export function fromCanonicalJson(json: string): DecodeResult {
     return { t: "int", v: big.toString() };
   };
 
-  const parseArray = (): Tagged => {
+  const parseArray = (depth: number): Tagged => {
     pos += 1; // past the opening bracket
     const items: Tagged[] = [];
     skipWs();
@@ -226,7 +240,7 @@ export function fromCanonicalJson(json: string): DecodeResult {
       return { t: "arr", v: items };
     }
     while (pos < json.length) {
-      items.push(parseValue());
+      items.push(parseValue(depth + 1));
       skipWs();
       const c = json.charAt(pos);
       if (c === ",") {
@@ -242,7 +256,7 @@ export function fromCanonicalJson(json: string): DecodeResult {
     return fail("UnexpectedEnd");
   };
 
-  const parseObject = (): Tagged => {
+  const parseObject = (depth: number): Tagged => {
     pos += 1; // past the opening brace
     const pairs: [string, Tagged][] = [];
     skipWs();
@@ -257,7 +271,7 @@ export function fromCanonicalJson(json: string): DecodeResult {
       skipWs();
       if (json.charAt(pos) !== ":") return fail("UnexpectedEnd");
       pos += 1;
-      pairs.push([key, parseValue()]);
+      pairs.push([key, parseValue(depth + 1)]);
       skipWs();
       const c = json.charAt(pos);
       if (c === ",") {
@@ -273,7 +287,10 @@ export function fromCanonicalJson(json: string): DecodeResult {
     return fail("UnexpectedEnd");
   };
 
-  function parseValue(): Tagged {
+  // `depth` guards the per-nesting-level recursion: past the fixed bound the input is rejected
+  // as data (`NestingTooDeep`) rather than overflowing the stack.
+  function parseValue(depth: number): Tagged {
+    if (depth > MAX_NESTING_DEPTH) fail("NestingTooDeep");
     skipWs();
     const c = json.charAt(pos);
     if (c === "") fail("UnexpectedEnd");
@@ -290,9 +307,9 @@ export function fromCanonicalJson(json: string): DecodeResult {
       case '"':
         return { t: "str", v: parseString() };
       case "[":
-        return parseArray();
+        return parseArray(depth);
       case "{":
-        return parseObject();
+        return parseObject(depth);
       default:
         if (c === "-" || isDigit(c)) return parseNumber();
         return fail("UnexpectedEnd");
@@ -300,7 +317,7 @@ export function fromCanonicalJson(json: string): DecodeResult {
   }
 
   try {
-    const value = parseValue();
+    const value = parseValue(0);
     skipWs();
     if (pos !== json.length) return { ok: false, error: "TrailingData" };
     // canonical fixed-point: a canonical string re-encodes to itself; anything else (extra

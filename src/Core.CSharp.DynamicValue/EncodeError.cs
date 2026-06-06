@@ -19,4 +19,10 @@ public enum EncodeError
     /// contains a character XML 1.0 forbids (NUL or a C0 control other than tab/lf/cr) — not
     /// representable even as a character reference. The XML analogue of the Bytes-not-in-YAML gap.</summary>
     NotXmlRepresentable,
+
+    /// <summary>The value's nesting depth exceeds the fixed bound (well above any realistic value),
+    /// guarding the recursive encoders against unbounded stack growth — a depth-bomb is rejected as
+    /// data rather than overflowing the stack on a tight-stack runtime. Resource-safety guard, NOT a
+    /// value-domain limit. Mirrors the F#/Rust/TS <c>NestingTooDeep</c>.</summary>
+    NestingTooDeep,
 }

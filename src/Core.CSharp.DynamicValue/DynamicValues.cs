@@ -193,11 +193,23 @@ public static class DynamicValues
     /// <param name="value">the value to encode.</param>
     /// <returns><see cref="Result{T, TError}.Ok"/> with the canonical JSON, or
     /// <see cref="Result{T, TError}.Err"/> carrying the deferred-variant reason.</returns>
+    /// <summary>
+    /// Maximum value/input nesting depth the recursive canonical codecs (JSON, XML) walk before
+    /// returning <see cref="EncodeError.NestingTooDeep"/> / <see cref="DecodeError.NestingTooDeep"/>.
+    /// A fixed resource-safety bound, NOT part of the contract's value domain: it sits FAR above any
+    /// realistic <see cref="DynamicValue"/>, so golden vectors and real data are unaffected while a
+    /// depth-bomb is rejected as data before it can overflow the stack on a tight-stack runtime. The
+    /// literal is intentionally not exposed in the public surface (it may be raised later — only ever
+    /// moving the error later, never earlier). Mirrored across F#/C#/Rust/TS. <c>internal</c> so the
+    /// sibling <see cref="DynamicValuesXml"/> codec shares the one bound (no drift).
+    /// </summary>
+    internal const int MaxNestingDepth = 256;
+
     public static Result<string, EncodeError> ToCanonicalJson(DynamicValue value)
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        if (FirstDeferred(value) is EncodeError deferred)
+        if (FirstDeferred(value, 0) is EncodeError deferred)
         {
             return new Result<string, EncodeError>.Err(deferred);
         }
@@ -207,9 +219,17 @@ public static class DynamicValues
         return new Result<string, EncodeError>.Ok(sb.ToString());
     }
 
-    // The first deferred variant (Float/Bytes) anywhere in the tree, or null if fully encodable.
-    private static EncodeError? FirstDeferred(DynamicValue value)
+    // The first deferred variant (Float/Bytes) or NestingTooDeep anywhere in the tree, or null if
+    // fully encodable. This recursive pre-pass is also the depth guard: ToCanonicalJson always runs
+    // it before WriteCanonical, so a too-deep value is rejected here (and FirstDeferred's own
+    // recursion is bounded), keeping WriteCanonical safe from stack overflow.
+    private static EncodeError? FirstDeferred(DynamicValue value, int depth)
     {
+        if (depth > MaxNestingDepth)
+        {
+            return EncodeError.NestingTooDeep;
+        }
+
         switch (value)
         {
             case DynamicValue.Float:
@@ -218,9 +238,9 @@ public static class DynamicValues
                 return EncodeError.BytesDeferred;
             case DynamicValue.Array a:
                 // first deferred among the items (Select is lazy; FirstOrDefault short-circuits)
-                return a.Items.Select(FirstDeferred).FirstOrDefault(e => e is not null);
+                return a.Items.Select(item => FirstDeferred(item, depth + 1)).FirstOrDefault(e => e is not null);
             case DynamicValue.Object o:
-                return o.Pairs.Select(pair => FirstDeferred(pair.Value)).FirstOrDefault(e => e is not null);
+                return o.Pairs.Select(pair => FirstDeferred(pair.Value, depth + 1)).FirstOrDefault(e => e is not null);
             default:
                 return null;
         }
@@ -825,7 +845,7 @@ public static class DynamicValues
     {
         ArgumentNullException.ThrowIfNull(json);
         int pos = 0;
-        DecodeError? err = TryReadJsonValue(json, ref pos, out DynamicValue value);
+        DecodeError? err = TryReadJsonValue(json, ref pos, 0, out DynamicValue value);
         if (err is DecodeError e)
         {
             return new Result<DynamicValue, DecodeError>.Err(e);
@@ -858,9 +878,16 @@ public static class DynamicValues
     }
 
     // Reads one JSON value at `pos`, advancing it. Returns null on success (value set), else the error.
-    private static DecodeError? TryReadJsonValue(string s, ref int pos, out DynamicValue value)
+    // `depth` guards the per-nesting-level recursion: past the fixed bound the input is rejected as
+    // data (NestingTooDeep) rather than overflowing the stack.
+    private static DecodeError? TryReadJsonValue(string s, ref int pos, int depth, out DynamicValue value)
     {
         value = new DynamicValue.Null();
+        if (depth > MaxNestingDepth)
+        {
+            return DecodeError.NestingTooDeep;
+        }
+
         SkipJsonWs(s, ref pos);
         if (pos >= s.Length)
         {
@@ -879,9 +906,9 @@ public static class DynamicValues
             case '"':
                 return TryReadJsonString(s, ref pos, out value);
             case '[':
-                return TryReadJsonArray(s, ref pos, out value);
+                return TryReadJsonArray(s, ref pos, depth, out value);
             case '{':
-                return TryReadJsonObject(s, ref pos, out value);
+                return TryReadJsonObject(s, ref pos, depth, out value);
             default:
                 if (c == '-' || (c >= '0' && c <= '9'))
                 {
@@ -1075,7 +1102,7 @@ public static class DynamicValues
         return null;
     }
 
-    private static DecodeError? TryReadJsonArray(string s, ref int pos, out DynamicValue value)
+    private static DecodeError? TryReadJsonArray(string s, ref int pos, int depth, out DynamicValue value)
     {
         value = new DynamicValue.Null();
         pos++; // past the opening bracket
@@ -1090,7 +1117,7 @@ public static class DynamicValues
 
         while (pos < s.Length)
         {
-            DecodeError? itemErr = TryReadJsonValue(s, ref pos, out DynamicValue item);
+            DecodeError? itemErr = TryReadJsonValue(s, ref pos, depth + 1, out DynamicValue item);
             if (itemErr is DecodeError ie)
             {
                 return ie;
@@ -1125,7 +1152,7 @@ public static class DynamicValues
 
     // Reads one "key": value pair (pos at the opening quote of the key), advancing pos.
     private static DecodeError? TryReadJsonPair(
-        string s, ref int pos, out KeyValuePair<string, DynamicValue> pair)
+        string s, ref int pos, int depth, out KeyValuePair<string, DynamicValue> pair)
     {
         pair = default;
         DecodeError? keyErr = TryReadJsonStringRaw(s, ref pos, out string key);
@@ -1141,7 +1168,7 @@ public static class DynamicValues
         }
 
         pos++;
-        DecodeError? valErr = TryReadJsonValue(s, ref pos, out DynamicValue val);
+        DecodeError? valErr = TryReadJsonValue(s, ref pos, depth, out DynamicValue val);
         if (valErr is DecodeError ve)
         {
             return ve;
@@ -1151,7 +1178,7 @@ public static class DynamicValues
         return null;
     }
 
-    private static DecodeError? TryReadJsonObject(string s, ref int pos, out DynamicValue value)
+    private static DecodeError? TryReadJsonObject(string s, ref int pos, int depth, out DynamicValue value)
     {
         value = new DynamicValue.Null();
         pos++; // past the opening brace
@@ -1172,7 +1199,7 @@ public static class DynamicValues
                 return DecodeError.UnexpectedEnd; // key must be a string
             }
 
-            DecodeError? pairErr = TryReadJsonPair(s, ref pos, out KeyValuePair<string, DynamicValue> pair);
+            DecodeError? pairErr = TryReadJsonPair(s, ref pos, depth + 1, out KeyValuePair<string, DynamicValue> pair);
             if (pairErr is DecodeError pe)
             {
                 return pe;

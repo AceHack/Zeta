@@ -150,6 +150,11 @@ type EncodeError =
     /// representable — NUL or a C0 control other than `\t \n \r`, which XML 1.0 forbids
     /// even as a character reference (the XML analogue of `BytesDeferred`).
     | NonRepresentable
+    /// The value's nesting depth exceeds `maxNestingDepth` — a fixed bound well above any
+    /// realistic value, guarding the recursive encoders against unbounded stack growth
+    /// (a deeply-nested value would otherwise overflow the stack on tight-stack runtimes).
+    /// Resource-safety guard, NOT a value-domain limit. Mirrored across F#/C#/Rust/TS.
+    | NestingTooDeep
 
 /// Why canonical CBOR bytes could not be decoded into a `DynamicValue`. Surfaced as
 /// data per the Result-over-exception hard rule (AGENTS.md), never thrown. Mirrors the
@@ -181,10 +186,26 @@ type DecodeError =
     /// of range, an unknown `kind` tag, a missing scalar payload for the kind, or any
     /// Apache.Arrow read failure (caught, never thrown). Arrow-only.
     | MalformedArrow
+    /// The input's nesting depth exceeds `maxNestingDepth` — a fixed bound well above any
+    /// realistic value, guarding the recursive decoders against unbounded stack growth
+    /// (deeply-nested input would otherwise overflow the stack on tight-stack runtimes).
+    /// Resource-safety guard, NOT a grammar limit. Mirrored across F#/C#/Rust/TS.
+    | NestingTooDeep
 
 /// Companion module (the `Option`/`List` type-plus-module pattern): the tag
 /// accessor, the lazy-bind `try*` accessors, and `PropertyPath` navigation.
 module DynamicValue =
+
+    /// Maximum value/​input nesting depth the recursive canonical codecs (JSON, XML)
+    /// will walk before returning `Error EncodeError.NestingTooDeep` /
+    /// `Error DecodeError.NestingTooDeep`. A fixed resource-safety bound, NOT part of the
+    /// contract's value domain: it sits FAR above any realistic `DynamicValue` (events,
+    /// records — nesting beyond a few dozen is already pathological), so golden vectors and
+    /// real data are unaffected, while a depth-bomb is rejected as data before it can
+    /// overflow the stack on a tight-stack runtime (e.g. a ~1 MB threadpool thread). The
+    /// literal is deliberately NOT exposed in the public contract so it can be raised later
+    /// (only ever moving the error later, never earlier). Mirrored across F#/C#/Rust/TS.
+    let internal maxNestingDepth = 256
 
     /// The runtime tag of a value — `QueryInterface`. Exhaustive by design.
     let typeOf (value: DynamicValue) : DynamicValueType =
@@ -414,28 +435,37 @@ module DynamicValue =
     /// (no canonical JSON form yet — they lock under CBOR or a tagged-JSON
     /// convention) and are surfaced as `Error EncodeError.*` data per the
     /// Result-over-exception hard rule (AGENTS.md), never thrown.
-    let rec toCanonicalJson (value: DynamicValue) : Result<string, EncodeError> =
-        match value with
-        | DynamicValue.Null -> Ok "null"
-        | DynamicValue.Bool b -> Ok(if b then "true" else "false")
-        | DynamicValue.Int i -> Ok(i.ToString(System.Globalization.CultureInfo.InvariantCulture))
-        | DynamicValue.Float _ -> Error EncodeError.FloatDeferred
-        | DynamicValue.String s -> Ok(escapeJsonString s)
-        | DynamicValue.Bytes _ -> Error EncodeError.BytesDeferred
-        | DynamicValue.Array items ->
-            items
-            |> List.fold
-                (fun acc item -> acc |> Result.bind (fun parts -> toCanonicalJson item |> Result.map (fun s -> s :: parts)))
-                (Ok [])
-            |> Result.map (fun parts -> "[" + String.concat "," (List.rev parts) + "]")
-        | DynamicValue.Object pairs ->
-            pairs
-            |> List.fold
-                (fun acc (k, v) ->
-                    acc
-                    |> Result.bind (fun parts -> toCanonicalJson v |> Result.map (fun s -> (escapeJsonString k + ":" + s) :: parts)))
-                (Ok [])
-            |> Result.map (fun parts -> "{" + String.concat "," (List.rev parts) + "}")
+    let toCanonicalJson (value: DynamicValue) : Result<string, EncodeError> =
+        // `depth` guards the per-nesting-level recursion against unbounded stack growth
+        // (a depth-bomb would otherwise overflow the stack). Past the fixed bound the value
+        // is rejected as data — `Error NestingTooDeep` — never thrown.
+        let rec go (depth: int) (value: DynamicValue) : Result<string, EncodeError> =
+            if depth > maxNestingDepth then
+                Error EncodeError.NestingTooDeep
+            else
+                match value with
+                | DynamicValue.Null -> Ok "null"
+                | DynamicValue.Bool b -> Ok(if b then "true" else "false")
+                | DynamicValue.Int i -> Ok(i.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                | DynamicValue.Float _ -> Error EncodeError.FloatDeferred
+                | DynamicValue.String s -> Ok(escapeJsonString s)
+                | DynamicValue.Bytes _ -> Error EncodeError.BytesDeferred
+                | DynamicValue.Array items ->
+                    items
+                    |> List.fold
+                        (fun acc item -> acc |> Result.bind (fun parts -> go (depth + 1) item |> Result.map (fun s -> s :: parts)))
+                        (Ok [])
+                    |> Result.map (fun parts -> "[" + String.concat "," (List.rev parts) + "]")
+                | DynamicValue.Object pairs ->
+                    pairs
+                    |> List.fold
+                        (fun acc (k, v) ->
+                            acc
+                            |> Result.bind (fun parts -> go (depth + 1) v |> Result.map (fun s -> (escapeJsonString k + ":" + s) :: parts)))
+                        (Ok [])
+                    |> Result.map (fun parts -> "{" + String.concat "," (List.rev parts) + "}")
+
+        go 0 value
 
     /// Canonical CBOR encoding (RFC 8949) — the TOTAL byte-lock target for all
     /// eight shapes (the shared seed is
@@ -867,7 +897,13 @@ module DynamicValue =
                     | true, n -> Ok(DynamicValue.Int n)
                     | false, _ -> Error DecodeError.IntegerOverflow) // token is -?[0-9]+, so only overflow fails
 
-        let rec readValue () : Result<DynamicValue, DecodeError> =
+        // `depth` guards the per-nesting-level recursion: past the fixed bound the input is
+        // rejected as data (`Error NestingTooDeep`) rather than overflowing the stack.
+        let rec readValue (depth: int) : Result<DynamicValue, DecodeError> =
+            if depth > maxNestingDepth then
+                Error DecodeError.NestingTooDeep
+            else
+
             skipWs ()
 
             if pos >= len then
@@ -878,8 +914,8 @@ module DynamicValue =
                 | 't' -> readLiteral "true" (DynamicValue.Bool true)
                 | 'f' -> readLiteral "false" (DynamicValue.Bool false)
                 | '"' -> readString () |> Result.map DynamicValue.String
-                | '[' -> readArray ()
-                | '{' -> readObject ()
+                | '[' -> readArray depth
+                | '{' -> readObject depth
                 | c when c = '-' || isDigit c -> readNumber ()
                 | _ -> Error DecodeError.UnexpectedEnd
 
@@ -890,7 +926,7 @@ module DynamicValue =
                 pos <- pos + lit.Length
                 Ok lifted
 
-        and readArray () : Result<DynamicValue, DecodeError> =
+        and readArray (depth: int) : Result<DynamicValue, DecodeError> =
             pos <- pos + 1 // past the opening bracket
             skipWs ()
 
@@ -899,7 +935,7 @@ module DynamicValue =
                 Ok(DynamicValue.Array [])
             else
                 let rec loop acc =
-                    match readValue () with
+                    match readValue (depth + 1) with
                     | Error e -> Error e
                     | Ok item ->
                         skipWs ()
@@ -917,7 +953,7 @@ module DynamicValue =
 
                 loop []
 
-        and readObject () : Result<DynamicValue, DecodeError> =
+        and readObject (depth: int) : Result<DynamicValue, DecodeError> =
             pos <- pos + 1 // past the opening brace
             skipWs ()
 
@@ -941,7 +977,7 @@ module DynamicValue =
                             else
                                 pos <- pos + 1
 
-                                match readValue () with
+                                match readValue (depth + 1) with
                                 | Error e -> Error e
                                 | Ok v ->
                                     skipWs ()
@@ -959,7 +995,7 @@ module DynamicValue =
 
                 loop []
 
-        match readValue () with
+        match readValue 0 with
         | Error e -> Error e
         | Ok value ->
             skipWs ()
@@ -1046,40 +1082,47 @@ module DynamicValue =
     /// and `Bytes` → `<bytes>HH…</bytes>` (lowercase hex). A string/key with a forbidden C0 char is
     /// NOT XML-1.0 representable → `Error EncodeError.NonRepresentable`. Surfaced as
     /// data per the Result-over-exception hard rule (AGENTS.md), never thrown.
-    let rec toCanonicalXml (value: DynamicValue) : Result<string, EncodeError> =
-        match value with
-        | DynamicValue.Null -> Ok "<null/>"
-        | DynamicValue.Bool b -> Ok(if b then "<bool>true</bool>" else "<bool>false</bool>")
-        | DynamicValue.Int i -> Ok("<int>" + i.ToString(System.Globalization.CultureInfo.InvariantCulture) + "</int>")
-        | DynamicValue.Float f ->
-            // 16 lowercase hex = the IEEE-754 f64 big-endian bit pattern — the SAME
-            // language-neutral form the CBOR float64 path uses (System.BitConverter bits).
-            // Total here: float never hits the NonRepresentable boundary.
-            let bits = System.BitConverter.DoubleToUInt64Bits f
-            Ok("<float>" + bits.ToString("x16", System.Globalization.CultureInfo.InvariantCulture) + "</float>")
-        | DynamicValue.String s -> escapeXmlText s |> Result.map (fun t -> "<str>" + t + "</str>")
-        | DynamicValue.Bytes bytes ->
-            // canonical lowercase hex (empty bytes -> <bytes></bytes>); reuses the byte
-            // payload normalization the CBOR codec applies. Total: never NonRepresentable.
-            let b = if bytes.IsDefault then ImmutableArray<byte>.Empty else bytes
-            let hex = System.Convert.ToHexString(b.AsSpan()).ToLowerInvariant()
-            Ok("<bytes>" + hex + "</bytes>")
-        | DynamicValue.Array items ->
-            items
-            |> List.fold
-                (fun acc item -> acc |> Result.bind (fun parts -> toCanonicalXml item |> Result.map (fun s -> s :: parts)))
-                (Ok [])
-            |> Result.map (fun parts -> "<arr>" + String.concat "" (List.rev parts) + "</arr>")
-        | DynamicValue.Object pairs ->
-            pairs
-            |> List.fold
-                (fun acc (k, v) ->
-                    acc
-                    |> Result.bind (fun parts ->
-                        escapeXmlAttr k
-                        |> Result.bind (fun ke -> toCanonicalXml v |> Result.map (fun s -> ("<e k=\"" + ke + "\">" + s + "</e>") :: parts))))
-                (Ok [])
-            |> Result.map (fun parts -> "<obj>" + String.concat "" (List.rev parts) + "</obj>")
+    let toCanonicalXml (value: DynamicValue) : Result<string, EncodeError> =
+        // `depth` guards the per-nesting-level recursion against unbounded stack growth.
+        let rec go (depth: int) (value: DynamicValue) : Result<string, EncodeError> =
+            if depth > maxNestingDepth then
+                Error EncodeError.NestingTooDeep
+            else
+                match value with
+                | DynamicValue.Null -> Ok "<null/>"
+                | DynamicValue.Bool b -> Ok(if b then "<bool>true</bool>" else "<bool>false</bool>")
+                | DynamicValue.Int i -> Ok("<int>" + i.ToString(System.Globalization.CultureInfo.InvariantCulture) + "</int>")
+                | DynamicValue.Float f ->
+                    // 16 lowercase hex = the IEEE-754 f64 big-endian bit pattern — the SAME
+                    // language-neutral form the CBOR float64 path uses (System.BitConverter bits).
+                    // Total here: float never hits the NonRepresentable boundary.
+                    let bits = System.BitConverter.DoubleToUInt64Bits f
+                    Ok("<float>" + bits.ToString("x16", System.Globalization.CultureInfo.InvariantCulture) + "</float>")
+                | DynamicValue.String s -> escapeXmlText s |> Result.map (fun t -> "<str>" + t + "</str>")
+                | DynamicValue.Bytes bytes ->
+                    // canonical lowercase hex (empty bytes -> <bytes></bytes>); reuses the byte
+                    // payload normalization the CBOR codec applies. Total: never NonRepresentable.
+                    let b = if bytes.IsDefault then ImmutableArray<byte>.Empty else bytes
+                    let hex = System.Convert.ToHexString(b.AsSpan()).ToLowerInvariant()
+                    Ok("<bytes>" + hex + "</bytes>")
+                | DynamicValue.Array items ->
+                    items
+                    |> List.fold
+                        (fun acc item -> acc |> Result.bind (fun parts -> go (depth + 1) item |> Result.map (fun s -> s :: parts)))
+                        (Ok [])
+                    |> Result.map (fun parts -> "<arr>" + String.concat "" (List.rev parts) + "</arr>")
+                | DynamicValue.Object pairs ->
+                    pairs
+                    |> List.fold
+                        (fun acc (k, v) ->
+                            acc
+                            |> Result.bind (fun parts ->
+                                escapeXmlAttr k
+                                |> Result.bind (fun ke -> go (depth + 1) v |> Result.map (fun s -> ("<e k=\"" + ke + "\">" + s + "</e>") :: parts))))
+                        (Ok [])
+                    |> Result.map (fun parts -> "<obj>" + String.concat "" (List.rev parts) + "</obj>")
+
+        go 0 value
 
     /// Decodes canonical XML text into a `DynamicValue` — the inverse of `toCanonicalXml`,
     /// completing the text↔value round-trip for all eight shapes (`<float>` = 16 lowercase
@@ -1237,8 +1280,12 @@ module DynamicValue =
                 else
                     Ok()
 
-        let rec parseValue () : Result<DynamicValue, DecodeError> =
-            if at () <> '<' then
+        // `depth` guards the per-nesting-level recursion: past the fixed bound the input is
+        // rejected as data (`Error NestingTooDeep`) rather than overflowing the stack.
+        let rec parseValue (depth: int) : Result<DynamicValue, DecodeError> =
+            if depth > maxNestingDepth then
+                Error DecodeError.NestingTooDeep
+            elif at () <> '<' then
                 Error DecodeError.MalformedXml
             else
                 match readTag () with
@@ -1345,7 +1392,7 @@ module DynamicValue =
                                     if at () = '<' && pos + 1 < len && xml.[pos + 1] = '/' then
                                         expectClose "arr" |> Result.map (fun () -> DynamicValue.Array(List.rev acc))
                                     else
-                                        match parseValue () with
+                                        match parseValue (depth + 1) with
                                         | Error e -> Error e
                                         | Ok item -> loop (item :: acc)
 
@@ -1364,7 +1411,7 @@ module DynamicValue =
                                             if eclose || en <> "e" || eattrK.IsNone || eselfClose then
                                                 Error DecodeError.MalformedXml
                                             else
-                                                match parseValue () with
+                                                match parseValue (depth + 1) with
                                                 | Error e -> Error e
                                                 | Ok v ->
                                                     expectClose "e"
@@ -1373,7 +1420,7 @@ module DynamicValue =
                                 loop []
                         | _ -> Error DecodeError.Unsupported // unknown tags
 
-        match parseValue () with
+        match parseValue 0 with
         | Error e -> Error e
         | Ok value ->
             if pos <> len then

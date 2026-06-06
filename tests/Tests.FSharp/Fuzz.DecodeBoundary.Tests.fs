@@ -117,6 +117,35 @@ let ``Fuzz: deeply-nested XML elements decode to a Result without throwing (dept
     let ok = completesWithin 3000 (fun () -> isTotal (fun () -> DynamicValue.fromCanonicalXml xml))
     Assert.True(ok, "deeply-nested XML hung or threw")
 
+// ── DEPTH-BOUND CONTRACT (the `NestingTooDeep` guard, mirrored F#/C#/Rust/TS). The deep-nesting
+//    Facts above prove "no process-killing SO"; these pin the exact boundary: a value AT the bound
+//    encodes/decodes fine, one level DEEPER is rejected as data (Error NestingTooDeep), never thrown.
+//    `maxNestingDepth` is internal, so the bound is exercised behaviourally via known-deep values. ──
+
+// `nest k` wraps Null in k single-element arrays → the leaf Null sits at recursion depth k.
+let private nest (k: int) : DynamicValue =
+    List.fold (fun acc _ -> DynamicValue.Array [ acc ]) DynamicValue.Null [ 1..k ]
+
+[<Fact>]
+let ``Depth bound: a value at the maximum nesting encodes Ok, one deeper is NestingTooDeep`` () =
+    // The bound (maxNestingDepth) is 256: leaf at depth 256 is accepted, depth 257 is rejected.
+    match DynamicValue.toCanonicalJson (nest 256) with
+    | Ok _ -> ()
+    | Error e -> Assert.Fail($"value at the bound should encode Ok, got {e}")
+
+    Assert.Equal(Error EncodeError.NestingTooDeep, DynamicValue.toCanonicalJson (nest 257))
+    Assert.Equal(Error EncodeError.NestingTooDeep, DynamicValue.toCanonicalXml (nest 257))
+
+[<Fact>]
+let ``Depth bound: decoding past the maximum nesting is NestingTooDeep, not a stack overflow`` () =
+    let jsonAt k = String.replicate k "[" + "null" + String.replicate k "]"
+    // at the bound: well-formed canonical → Ok; one deeper → NestingTooDeep (a Result, no SO).
+    match DynamicValue.fromCanonicalJson (jsonAt 256) with
+    | Ok _ -> ()
+    | Error e -> Assert.Fail($"input at the bound should decode Ok, got {e}")
+
+    Assert.Equal(Error DecodeError.NestingTooDeep, DynamicValue.fromCanonicalJson (jsonAt 257))
+
 // ── IDEMPOTENT DECODE: any input that decodes Ok must re-encode → re-decode to the SAME
 //    value (a fuzzer-found hostile-but-decodable input is still a stable round-trip). ──
 

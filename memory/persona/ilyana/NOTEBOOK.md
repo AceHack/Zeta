@@ -4,6 +4,38 @@ Maintained by Ilyana. Newest first.
 
 ---
 
+## 2026-06-06 — `NestingTooDeep` depth-bound error case (DynamicValue codec) — ACCEPT
+
+Otto routed a public-API review: gate red on windows-2025 only, because the DynamicValue
+canonical JSON/XML codec recurses per nesting level with no bound; a depth-2000 fuzz input
+overflows the tight windows-x64 (~1 MB) test-thread stack (an unhandleable .NET SOF kills the
+runner). Proposed adding a depth-guard error case across all four published languages.
+
+**Verdict: ACCEPT a new case; REJECT reuse of `NonRepresentable`/`Unsupported`.** Reasons recorded:
+
+- **Name `NestingTooDeep`** (not `TooDeep`/`RecursionLimit`). The existing cases are all noun-phrases
+  describing the *input condition* (`UnexpectedEnd`, `IntegerOverflow`, `NonCanonical`); `RecursionLimit`
+  leaks the impl (recursion ≠ the contract — the contract is input nesting). Same name on BOTH
+  `EncodeError` and `DecodeError` (the unions deliberately mirror).
+- **Bound = fixed private/internal const, NOT public, NOT a parameter.** A public constant freezes the
+  literal into the contract (a later bump becomes a published-value change); a parameter doubles every
+  entry point for a knob nobody tunes. Narrowest API = one case, zero knobs. Document "well above
+  realistic depth" without stating the literal in the contract; it may be raised later (only ever moving
+  the error later, never earlier).
+- **No reuse.** `NonRepresentable` is a value-domain statement ("scalar unencodable"); a deep value is
+  representable, you just decline to walk it. Folding resource-safety into it conflates two reasons —
+  defeats the discriminated type.
+
+**Flags handed to Kenji (non-blocking, pre-v1 affordances):** Rust error enums are not
+`#[non_exhaustive]` — adding a variant is a breaking change for external `match`; landing
+`#[non_exhaustive]` now is free pre-v1. TS has THREE divergent `DecodeError` unions (json/cbor/xml) +
+no Arrow TS codec — "mirrored across four languages" is already not literally true on the TS side;
+per-codec fragmentation is an API smell worth a backlog note. Viktor: a boundary golden vector
+(bound → Ok, bound+1 → `NestingTooDeep`) is needed to pin the published behaviour.
+
+Otto implemented per this verdict (JSON+XML, all 4 langs; CBOR/Arrow + TS string-encoders deferred as a
+fast-follow since they lack an `Error` channel). Advisory given; Otto integrated.
+
 ## 2026-04-18 — Round 27 — Synthesis entry (Tariq + Daya integration)
 
 Kenji returned with Tariq's algebra-owner review and Daya's AX

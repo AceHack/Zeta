@@ -60,6 +60,14 @@ pub enum DynamicValue {
     Object(Vec<(String, DynamicValue)>),
 }
 
+/// Maximum value/input nesting depth the recursive canonical codecs (JSON, XML) walk before
+/// returning `EncodeError::NestingTooDeep` / `DecodeError::NestingTooDeep`. A fixed
+/// resource-safety bound, NOT part of the contract's value domain: it sits FAR above any realistic
+/// `DynamicValue`, so golden vectors and real data are unaffected while a depth-bomb is rejected as
+/// data before it can overflow the stack. Not exposed in the public surface (may be raised later --
+/// only ever moving the error later, never earlier). Mirrored across F#/C#/Rust/TS.
+const MAX_NESTING_DEPTH: usize = 256;
+
 impl DynamicValue {
     /// The runtime tag (QueryInterface).
     #[must_use]
@@ -92,11 +100,16 @@ impl DynamicValue {
     /// never panicked. Mirrors the F#/C# `Result<string, EncodeError>` oracles.
     pub fn to_canonical_json(&self) -> Result<String, EncodeError> {
         let mut out = String::new();
-        self.write_canonical(&mut out)?;
+        self.write_canonical(&mut out, 0)?;
         Ok(out)
     }
 
-    fn write_canonical(&self, out: &mut String) -> Result<(), EncodeError> {
+    // `depth` guards the per-nesting-level recursion: past the fixed bound the value is rejected as
+    // data (`NestingTooDeep`) rather than overflowing the stack.
+    fn write_canonical(&self, out: &mut String, depth: usize) -> Result<(), EncodeError> {
+        if depth > MAX_NESTING_DEPTH {
+            return Err(EncodeError::NestingTooDeep);
+        }
         match self {
             DynamicValue::Null => out.push_str("null"),
             DynamicValue::Bool(b) => out.push_str(if *b { "true" } else { "false" }),
@@ -110,7 +123,7 @@ impl DynamicValue {
                     if k > 0 {
                         out.push(',');
                     }
-                    item.write_canonical(out)?;
+                    item.write_canonical(out, depth + 1)?;
                 }
                 out.push(']');
             }
@@ -122,7 +135,7 @@ impl DynamicValue {
                     }
                     escape_json_string(key, out);
                     out.push(':');
-                    val.write_canonical(out)?;
+                    val.write_canonical(out, depth + 1)?;
                 }
                 out.push('}');
             }
@@ -240,7 +253,7 @@ impl DynamicValue {
     pub fn from_canonical_json(json: &str) -> Result<DynamicValue, DecodeError> {
         let chars: Vec<char> = json.chars().collect();
         let mut pos = 0usize;
-        let value = read_json_value(&chars, &mut pos)?;
+        let value = read_json_value(&chars, &mut pos, 0)?;
         skip_json_ws(&chars, &mut pos);
         if pos != chars.len() {
             return Err(DecodeError::TrailingData);
@@ -271,11 +284,16 @@ impl DynamicValue {
     /// analogue of Bytes-not-in-YAML). Mirrors the TS `canonicalXml` + `XmlEncodeError`.
     pub fn to_canonical_xml(&self) -> Result<String, EncodeError> {
         let mut out = String::new();
-        self.write_canonical_xml(&mut out)?;
+        self.write_canonical_xml(&mut out, 0)?;
         Ok(out)
     }
 
-    fn write_canonical_xml(&self, out: &mut String) -> Result<(), EncodeError> {
+    // `depth` guards the per-nesting-level recursion: past the fixed bound the value is rejected as
+    // data (`NestingTooDeep`) rather than overflowing the stack.
+    fn write_canonical_xml(&self, out: &mut String, depth: usize) -> Result<(), EncodeError> {
+        if depth > MAX_NESTING_DEPTH {
+            return Err(EncodeError::NestingTooDeep);
+        }
         match self {
             DynamicValue::Null => out.push_str("<null/>"),
             DynamicValue::Bool(b) => out.push_str(if *b { "<bool>true</bool>" } else { "<bool>false</bool>" }),
@@ -312,7 +330,7 @@ impl DynamicValue {
             DynamicValue::Array(items) => {
                 out.push_str("<arr>");
                 for item in items {
-                    item.write_canonical_xml(out)?;
+                    item.write_canonical_xml(out, depth + 1)?;
                 }
                 out.push_str("</arr>");
             }
@@ -322,7 +340,7 @@ impl DynamicValue {
                     out.push_str("<e k=\"");
                     escape_xml_attr(k, out)?;
                     out.push_str("\">");
-                    v.write_canonical_xml(out)?;
+                    v.write_canonical_xml(out, depth + 1)?;
                     out.push_str("</e>");
                 }
                 out.push_str("</obj>");
@@ -346,7 +364,7 @@ impl DynamicValue {
     pub fn from_canonical_xml(xml: &str) -> Result<DynamicValue, DecodeError> {
         let chars: Vec<char> = xml.chars().collect();
         let mut pos = 0usize;
-        let value = parse_xml_value(&chars, &mut pos)?;
+        let value = parse_xml_value(&chars, &mut pos, 0)?;
         if pos != chars.len() {
             return Err(DecodeError::TrailingData);
         }
@@ -373,6 +391,11 @@ pub enum EncodeError {
     /// `\t \n \r`) that XML 1.0 cannot represent even as a character reference.
     /// Surfaced only by [`DynamicValue::to_canonical_xml`].
     NotXmlRepresentable,
+    /// The value's nesting depth exceeds the fixed bound (well above any realistic value),
+    /// guarding the recursive encoders against unbounded stack growth -- a depth-bomb is rejected
+    /// as data rather than overflowing the stack. Resource-safety guard, NOT a value-domain limit.
+    /// Mirrors the F#/C#/TS `NestingTooDeep`.
+    NestingTooDeep,
 }
 
 // `EncodeError` is public API (returned from `to_canonical_json`), so it carries
@@ -389,6 +412,9 @@ impl std::fmt::Display for EncodeError {
             }
             EncodeError::NotXmlRepresentable => {
                 "string or key contains a character not representable in XML 1.0 (NUL or a C0 control other than tab/lf/cr)"
+            }
+            EncodeError::NestingTooDeep => {
+                "value nesting depth exceeds the maximum the canonical codec accepts"
             }
         })
     }
@@ -416,6 +442,11 @@ pub enum DecodeError {
     /// int/length width, non-shortest float / non-canonical NaN, or invalid UTF-8 repaired
     /// to U+FFFD. Detected by the fixed-point check `to_canonical_cbor() == input`.
     NonCanonical,
+    /// The input's nesting depth exceeds the fixed bound (well above any realistic value),
+    /// guarding the recursive decoders against unbounded stack growth -- deeply-nested input is
+    /// rejected as data rather than overflowing the stack. Resource-safety guard, NOT a grammar
+    /// limit. Mirrors the F#/C#/TS `NestingTooDeep`.
+    NestingTooDeep,
 }
 
 impl std::fmt::Display for DecodeError {
@@ -430,6 +461,9 @@ impl std::fmt::Display for DecodeError {
             DecodeError::NonTextKey => "object (map) key was not a text string",
             DecodeError::NonCanonical => {
                 "well-formed but non-canonical input (not the canonical form this codec emits)"
+            }
+            DecodeError::NestingTooDeep => {
+                "input nesting depth exceeds the maximum the canonical codec accepts"
             }
         })
     }
@@ -616,7 +650,12 @@ fn expect_xml_close(s: &[char], pos: &mut usize, name: &str) -> Result<(), Decod
     Ok(())
 }
 
-fn parse_xml_value(s: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+// `depth` guards the per-nesting-level recursion: past the fixed bound the input is rejected as
+// data (`NestingTooDeep`) rather than overflowing the stack.
+fn parse_xml_value(s: &[char], pos: &mut usize, depth: usize) -> Result<DynamicValue, DecodeError> {
+    if depth > MAX_NESTING_DEPTH {
+        return Err(DecodeError::NestingTooDeep);
+    }
     if s.get(*pos) != Some(&'<') {
         return Err(DecodeError::Unsupported);
     }
@@ -715,7 +754,7 @@ fn parse_xml_value(s: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeEr
             }
             let mut items = Vec::new();
             while !(s.get(*pos) == Some(&'<') && s.get(*pos + 1) == Some(&'/')) {
-                items.push(parse_xml_value(s, pos)?);
+                items.push(parse_xml_value(s, pos, depth + 1)?);
             }
             expect_xml_close(s, pos, "arr")?;
             Ok(DynamicValue::Array(items))
@@ -730,7 +769,7 @@ fn parse_xml_value(s: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeEr
                 if e_tag.close || e_tag.name != "e" || e_tag.attr_k.is_none() || e_tag.self_close {
                     return Err(DecodeError::Unsupported);
                 }
-                let val = parse_xml_value(s, pos)?;
+                let val = parse_xml_value(s, pos, depth + 1)?;
                 expect_xml_close(s, pos, "e")?;
                 pairs.push((e_tag.attr_k.expect("attr_k present"), val));
             }
@@ -1034,7 +1073,12 @@ fn skip_json_ws(c: &[char], pos: &mut usize) {
 }
 
 // reads one JSON value at `pos`, advancing it
-fn read_json_value(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+// `depth` guards the per-nesting-level recursion: past the fixed bound the input is rejected as
+// data (`NestingTooDeep`) rather than overflowing the stack.
+fn read_json_value(c: &[char], pos: &mut usize, depth: usize) -> Result<DynamicValue, DecodeError> {
+    if depth > MAX_NESTING_DEPTH {
+        return Err(DecodeError::NestingTooDeep);
+    }
     skip_json_ws(c, pos);
     if *pos >= c.len() {
         return Err(DecodeError::UnexpectedEnd);
@@ -1044,8 +1088,8 @@ fn read_json_value(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeEr
         't' => read_json_literal(c, pos, "true", DynamicValue::Bool(true)),
         'f' => read_json_literal(c, pos, "false", DynamicValue::Bool(false)),
         '"' => Ok(DynamicValue::String(read_json_string(c, pos)?)),
-        '[' => read_json_array(c, pos),
-        '{' => read_json_object(c, pos),
+        '[' => read_json_array(c, pos, depth),
+        '{' => read_json_object(c, pos, depth),
         ch if ch == '-' || ch.is_ascii_digit() => read_json_number(c, pos),
         _ => Err(DecodeError::UnexpectedEnd),
     }
@@ -1188,7 +1232,7 @@ fn read_json_number(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeE
         .map_err(|_| DecodeError::IntegerOverflow)
 }
 
-fn read_json_array(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+fn read_json_array(c: &[char], pos: &mut usize, depth: usize) -> Result<DynamicValue, DecodeError> {
     *pos += 1; // past the opening bracket
     let mut items = Vec::new();
     skip_json_ws(c, pos);
@@ -1197,7 +1241,7 @@ fn read_json_array(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeEr
         return Ok(DynamicValue::Array(items));
     }
     loop {
-        items.push(read_json_value(c, pos)?);
+        items.push(read_json_value(c, pos, depth + 1)?);
         skip_json_ws(c, pos);
         if *pos >= c.len() {
             return Err(DecodeError::UnexpectedEnd);
@@ -1213,7 +1257,7 @@ fn read_json_array(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeEr
     }
 }
 
-fn read_json_object(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeError> {
+fn read_json_object(c: &[char], pos: &mut usize, depth: usize) -> Result<DynamicValue, DecodeError> {
     *pos += 1; // past the opening brace
     let mut pairs = Vec::new();
     skip_json_ws(c, pos);
@@ -1232,7 +1276,7 @@ fn read_json_object(c: &[char], pos: &mut usize) -> Result<DynamicValue, DecodeE
             return Err(DecodeError::UnexpectedEnd);
         }
         *pos += 1;
-        let val = read_json_value(c, pos)?;
+        let val = read_json_value(c, pos, depth + 1)?;
         pairs.push((key, val));
         skip_json_ws(c, pos);
         if *pos >= c.len() {

@@ -51,7 +51,7 @@ public static class DynamicValuesXml
     {
         ArgumentNullException.ThrowIfNull(value);
 
-        if (FirstNotRepresentable(value) is EncodeError notRep)
+        if (FirstNotRepresentable(value, 0) is EncodeError notRep)
         {
             return new Result<string, EncodeError>.Err(notRep);
         }
@@ -65,15 +65,23 @@ public static class DynamicValuesXml
     private static bool IsForbiddenC0(int code) =>
         code < 0x20 && code != 0x09 && code != 0x0a && code != 0x0d;
 
-    // The first string/key carrying an XML-forbidden control char, or null if all representable.
-    private static EncodeError? FirstNotRepresentable(DynamicValue value)
+    // The first string/key carrying an XML-forbidden control char, or NestingTooDeep past the depth
+    // bound, or null if all representable. This recursive pre-pass is also the depth guard: ToCanonicalXml
+    // always runs it before WriteCanonicalXml, so a too-deep value is rejected here (and this recursion is
+    // itself bounded), keeping WriteCanonicalXml safe from stack overflow.
+    private static EncodeError? FirstNotRepresentable(DynamicValue value, int depth)
     {
+        if (depth > DynamicValues.MaxNestingDepth)
+        {
+            return EncodeError.NestingTooDeep;
+        }
+
         switch (value)
         {
             case DynamicValue.String s:
                 return HasForbiddenC0(s.Value) ? EncodeError.NotXmlRepresentable : null;
             case DynamicValue.Array a:
-                return a.Items.Select(FirstNotRepresentable).FirstOrDefault(e => e is not null);
+                return a.Items.Select(item => FirstNotRepresentable(item, depth + 1)).FirstOrDefault(e => e is not null);
             case DynamicValue.Object o:
                 foreach (var pair in o.Pairs)
                 {
@@ -82,7 +90,7 @@ public static class DynamicValuesXml
                         return EncodeError.NotXmlRepresentable;
                     }
 
-                    if (FirstNotRepresentable(pair.Value) is EncodeError e)
+                    if (FirstNotRepresentable(pair.Value, depth + 1) is EncodeError e)
                     {
                         return e;
                     }
@@ -271,7 +279,7 @@ public static class DynamicValuesXml
         ArgumentNullException.ThrowIfNull(xml);
 
         int pos = 0;
-        DecodeError? err = TryParseXmlValue(xml, ref pos, out DynamicValue value);
+        DecodeError? err = TryParseXmlValue(xml, ref pos, 0, out DynamicValue value);
         if (err is DecodeError e)
         {
             return new Result<DynamicValue, DecodeError>.Err(e);
@@ -431,9 +439,16 @@ public static class DynamicValuesXml
         return null;
     }
 
-    private static DecodeError? TryParseXmlValue(string xml, ref int pos, out DynamicValue value)
+    // `depth` guards the per-nesting-level recursion: past the fixed bound the input is rejected as
+    // data (NestingTooDeep) rather than overflowing the stack.
+    private static DecodeError? TryParseXmlValue(string xml, ref int pos, int depth, out DynamicValue value)
     {
         value = new DynamicValue.Null();
+        if (depth > DynamicValues.MaxNestingDepth)
+        {
+            return DecodeError.NestingTooDeep;
+        }
+
         if (pos >= xml.Length || xml[pos] != '<')
         {
             return DecodeError.MalformedXml;
@@ -471,9 +486,9 @@ public static class DynamicValuesXml
             case "bytes":
                 return ParseBytes(xml, ref pos, tag, out value);
             case "arr":
-                return ParseArr(xml, ref pos, tag, out value);
+                return ParseArr(xml, ref pos, depth, tag, out value);
             case "obj":
-                return ParseObj(xml, ref pos, tag, out value);
+                return ParseObj(xml, ref pos, depth, tag, out value);
             default:
                 return DecodeError.Unsupported; // unknown element tags
         }
@@ -647,7 +662,7 @@ public static class DynamicValuesXml
         return null;
     }
 
-    private static DecodeError? ParseArr(string xml, ref int pos, XmlTag tag, out DynamicValue value)
+    private static DecodeError? ParseArr(string xml, ref int pos, int depth, XmlTag tag, out DynamicValue value)
     {
         value = new DynamicValue.Null();
         if (tag.SelfClose)
@@ -659,7 +674,7 @@ public static class DynamicValuesXml
         var items = ImmutableArray.CreateBuilder<DynamicValue>();
         while (!AtCloseTag(xml, pos))
         {
-            DecodeError? ive = TryParseXmlValue(xml, ref pos, out DynamicValue item);
+            DecodeError? ive = TryParseXmlValue(xml, ref pos, depth + 1, out DynamicValue item);
             if (ive is DecodeError iae)
             {
                 return iae;
@@ -678,7 +693,7 @@ public static class DynamicValuesXml
         return null;
     }
 
-    private static DecodeError? ParseObj(string xml, ref int pos, XmlTag tag, out DynamicValue value)
+    private static DecodeError? ParseObj(string xml, ref int pos, int depth, XmlTag tag, out DynamicValue value)
     {
         value = new DynamicValue.Null();
         if (tag.SelfClose)
@@ -690,7 +705,7 @@ public static class DynamicValuesXml
         var pairs = ImmutableArray.CreateBuilder<KeyValuePair<string, DynamicValue>>();
         while (!AtCloseTag(xml, pos))
         {
-            DecodeError? ee = ParseObjEntry(xml, ref pos, pairs);
+            DecodeError? ee = ParseObjEntry(xml, ref pos, depth + 1, pairs);
             if (ee is DecodeError eee)
             {
                 return eee;
@@ -708,7 +723,7 @@ public static class DynamicValuesXml
     }
 
     private static DecodeError? ParseObjEntry(
-        string xml, ref int pos, ImmutableArray<KeyValuePair<string, DynamicValue>>.Builder pairs)
+        string xml, ref int pos, int depth, ImmutableArray<KeyValuePair<string, DynamicValue>>.Builder pairs)
     {
         DecodeError? ete = ReadXmlTag(xml, ref pos, out XmlTag eTag);
         if (ete is DecodeError etee)
@@ -722,7 +737,7 @@ public static class DynamicValuesXml
             return DecodeError.MalformedXml;
         }
 
-        DecodeError? eve = TryParseXmlValue(xml, ref pos, out DynamicValue val);
+        DecodeError? eve = TryParseXmlValue(xml, ref pos, depth, out DynamicValue val);
         if (eve is DecodeError evee)
         {
             return evee;

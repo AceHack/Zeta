@@ -42,12 +42,21 @@ export type DecodeError =
   | "Unsupported"
   | "IntegerOverflow"
   | "NonCanonical"
-  | "MalformedXml";
+  | "MalformedXml"
+  // The input's nesting exceeds MAX_NESTING_DEPTH — a resource-safety guard mirrored across
+  // F#/C#/Rust/TS, rejecting a depth-bomb as data rather than overflowing the stack.
+  | "NestingTooDeep";
 
 export type DecodeResult = { ok: true; value: Tagged } | { ok: false; error: DecodeError };
 
 const I64_MAX = 9223372036854775807n;
 const I64_MIN = -9223372036854775808n;
+
+// Maximum input nesting depth the recursive decoder walks before failing `NestingTooDeep`. A
+// fixed resource-safety bound, NOT part of the value domain: far above any realistic value, so
+// golden vectors and real data are unaffected while a depth-bomb is rejected before it overflows
+// the stack. Mirrored across F#/C#/Rust/TS.
+const MAX_NESTING_DEPTH = 256;
 
 // A char is XML-1.0 legal as content iff it is \t \n \r or >= 0x20 (and not a lone
 // surrogate / 0xFFFE / 0xFFFF — left to the host string, which holds valid UTF-16).
@@ -245,7 +254,10 @@ export function fromCanonicalXml(xml: string): DecodeResult {
     if (!tag.close || tag.name !== name || tag.selfClose) fail("MalformedXml");
   };
 
-  const parseValue = (): Tagged => {
+  // `depth` guards the per-nesting-level recursion: past the fixed bound the input is rejected
+  // as data (`NestingTooDeep`) rather than overflowing the stack.
+  const parseValue = (depth: number): Tagged => {
+    if (depth > MAX_NESTING_DEPTH) fail("NestingTooDeep");
     if (at() !== "<") fail("MalformedXml");
     const tag = readTag();
     if (tag.close) fail("MalformedXml");
@@ -296,7 +308,7 @@ export function fromCanonicalXml(xml: string): DecodeResult {
         if (tag.selfClose) return { t: "arr", v: [] }; // tolerated; fixed-point rejects
         const items: Tagged[] = [];
         while (!(at() === "<" && xml.charAt(pos + 1) === "/")) {
-          items.push(parseValue());
+          items.push(parseValue(depth + 1));
         }
         expectClose("arr");
         return { t: "arr", v: items };
@@ -308,7 +320,7 @@ export function fromCanonicalXml(xml: string): DecodeResult {
           const eTag = readTag();
           if (eTag.close || eTag.name !== "e" || eTag.attrK === null || eTag.selfClose) fail("MalformedXml");
           const key = eTag.attrK!;
-          const val = parseValue();
+          const val = parseValue(depth + 1);
           expectClose("e");
           pairs.push([key, val]);
         }
@@ -321,7 +333,7 @@ export function fromCanonicalXml(xml: string): DecodeResult {
   };
 
   try {
-    const value = parseValue();
+    const value = parseValue(0);
     if (pos !== xml.length) return { ok: false, error: "TrailingData" };
     // canonical fixed-point: a canonical string re-encodes to itself; anything else
     // (self-closing empties, &#x9; vs &#9;, raw whitespace, unknown entities) is

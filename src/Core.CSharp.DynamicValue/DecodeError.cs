@@ -41,4 +41,10 @@ public enum DecodeError
     /// scalar payload is missing. The Arrow analogue of <see cref="MalformedXml"/>: any
     /// <c>Apache.Arrow</c> read failure is caught and surfaced here rather than thrown.</summary>
     MalformedArrow,
+
+    /// <summary>The input's nesting depth exceeds the fixed bound (well above any realistic value),
+    /// guarding the recursive decoders against unbounded stack growth — deeply-nested input is
+    /// rejected as data rather than overflowing the stack on a tight-stack runtime. Resource-safety
+    /// guard, NOT a grammar limit. Mirrors the F#/Rust/TS <c>NestingTooDeep</c>.</summary>
+    NestingTooDeep,
 }
