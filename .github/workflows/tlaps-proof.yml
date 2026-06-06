@@ -1,0 +1,126 @@
+name: tlaps-proof
+
+# Discharges the TLAPS (tlapm) machine-checked proofs at
+# tools/tla/specs/*.tla — rung 3 of the societal-emergence ladder
+# (docs/FROZEN-CORE-AND-CONJECTURE-REGISTER.md §B-converge). Where the
+# TLC model-checker CHECKS invariants on a bounded model (run via the
+# F# Tlc.Runner.Tests.fs inside gate.yml), tlapm PROVES them UNBOUNDED;
+# this workflow is the CI gate for that proof half — the TLAPS sibling
+# of lean-proof.yml, and the unbounded counterpart to the TLC gate.
+#
+# Currently proves: NciSafetyProofs (unbounded NCI safety, 39 obligations
+# via run-tlaps.ts --all). New proof modules are picked up automatically
+# once added to the run-tlaps.ts CATALOGUE.
+#
+# Path-filtered to only run on changes that affect the proofs (the spec
+# sources, the runner, the TLAPS install script + its manifests, or this
+# workflow). Runs OUT-OF-BAND from gate.yml because the tlapm opam
+# source-build is heavy (a dedicated OCaml switch + ~30 deps + the
+# vendored Zenon backend) — same rationale as lean-proof.yml keeping
+# Mathlib's multi-GB lake build off the main gate.
+#
+# Composes with:
+#   - tools/tla/specs/NciSafetyProofs.tla (the artifact) + NciSafety.tla
+#   - tools/formal-verification/run-tlaps.ts (the runner / catalogue)
+#   - tools/setup/common/tlaps.sh (the cross-OS opam source-build)
+#   - docs/research/verification-registry.md (rung-3 registry row)
+#   - .claude/skills/verification-drift-auditor/SKILL.md (every fire is
+#     implicit drift-check input)
+#
+# Safe-pattern compliance (per FACTORY-HYGIENE row #43):
+#   - SHA-pinned actions/checkout + actions/cache + oven-sh/setup-bun
+#   - Explicit minimum permissions: contents: read
+#   - No user-authored context; purely repo-file reads
+#   - Concurrency group + pinned runs-on
+#   - Path-filter narrows the trigger surface
+
+on:
+  pull_request:
+    paths:
+      - "tools/tla/specs/**"
+      - "tools/formal-verification/run-tlaps.ts"
+      - "tools/setup/common/tlaps.sh"
+      - "tools/setup/manifests/**"
+      - ".github/workflows/tlaps-proof.yml"
+  push:
+    branches: [main]
+    paths:
+      - "tools/tla/specs/**"
+      - "tools/formal-verification/run-tlaps.ts"
+      - "tools/setup/common/tlaps.sh"
+      - "tools/setup/manifests/**"
+      - ".github/workflows/tlaps-proof.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+# Same GITHUB_TOKEN pattern as gate.yml / lean-proof.yml: exposes the
+# repo-scoped token to steps that need it; setup/common/mise.sh masks it
+# during release lookups against other repos. Inherits permissions:
+# contents: read — no write escalation.
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  # Opt into the heavy installers (tlaps.sh is gated behind this in
+  # macos.sh/linux.sh per GOVERNANCE §24).
+  ZETA_INSTALL_FULL: "1"
+
+concurrency:
+  group: tlaps-proof-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  prove:
+    name: prove TLAPS obligations (run-tlaps --all)
+    runs-on: ubuntu-24.04
+    # Cold opam source-build of tlapm (+ ~30 OCaml deps) is 20-40 min;
+    # warm cache (~/.opam hit) drops to a few minutes (idempotency guard
+    # in tlaps.sh no-ops the rebuild) + the proof run itself (~1 min).
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up bun (run-tlaps.ts runtime)
+        uses: oven-sh/setup-bun@735343b667d3e6f658f44d0eca948eb6282f2b76 # v2.0.2
+        with:
+          bun-version: latest
+
+      # The opam switch (tlaps-build) holding the built tlapm + its
+      # ~30 OCaml deps. Keyed on tlaps.sh (which carries the exact
+      # TLAPM_COMMIT pin) + the manifests (opam/z3 versions) so the
+      # cache busts cleanly on a tlapm bump or a toolchain change.
+      # Without this, every run rebuilds tlapm from source (heavy).
+      # DEBT (named): the cached ~/.opam includes the opam-switch build
+      # tree (incl. tlapm's ~1.4GB Isabelle2025 fetch that the upstream
+      # deps Makefile pulls even though we use only SMT/Zenon) — a
+      # future optimization could prune the build tree before caching.
+      - name: Cache opam switch (tlaps-build / tlapm)
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: ~/.opam
+          key: opam-tlaps-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('tools/setup/common/tlaps.sh', 'tools/setup/manifests/apt') }}
+          restore-keys: |
+            opam-tlaps-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Install toolchain via three-way-parity script (GOVERNANCE §24)
+        # Single source of truth. With ZETA_INSTALL_FULL=1 this invokes
+        # common/tlaps.sh (opam source-build of tlapm) + installs z3 (the
+        # SMT backend, declared in manifests) + opam. tlaps.sh is
+        # idempotent — a warm ~/.opam cache makes it a fast no-op.
+        run: ./tools/setup/install.sh
+
+      - name: Verify TLAPS toolchain
+        # Exit 0 = tlapm resolvable (switch bin / PATH / opam exec) and
+        # z3 present. Fails fast with a clear message if the build did
+        # not produce a working tlapm.
+        run: bun tools/formal-verification/run-tlaps.ts --check-toolchain
+
+      - name: Prove all TLAPS obligations
+        # run-tlaps.ts --all proves every spec in the CATALOGUE
+        # (NciSafetyProofs today) and treats a missing-from-catalogue
+        # spec as catalogue drift (failure). Any unproved obligation =>
+        # non-zero exit => failed build. This is the unbounded
+        # counterpart to the TLC gate.
+        run: bun tools/formal-verification/run-tlaps.ts --all
