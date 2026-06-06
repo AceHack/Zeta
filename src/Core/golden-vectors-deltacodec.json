@@ -1,0 +1,11 @@
+{
+  "format": "zset-cbor-delta-v1",
+  "description": "Byte-lock TREATY for the CBOR delta codec. A ZSet<int> encodes as DynamicValue.Array of [Int key, Int weight] pairs, then canonical CBOR (RFC 8949, DynamicValue.toCanonicalCbor). The 4 language ports (F#/C#/Rust/TS) MUST produce these exact bytes and decode them back to the same Z-set. Hex-in-JSON per the no-binary-in-proof-lineage rule. Keys: int; weights: int64. Pairs are key-sorted ascending (ZSet canonical order).",
+  "anchors": ["RFC 8949 (CBOR)", "DynamicValue canonical codec golden-vectors-cbor.json", "no-binary-in-proof-lineage rule"],
+  "vectors": [
+    { "name": "empty",      "pairs": [],                 "cborHex": "80" },
+    { "name": "single",     "pairs": [[1, 1]],           "cborHex": "81820101" },
+    { "name": "multi",      "pairs": [[1, 1], [2, 3]],   "cborHex": "82820101820203" },
+    { "name": "retraction", "pairs": [[5, -2], [7, 1]],  "cborHex": "82820521820701" }
+  ]
+}

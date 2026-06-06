@@ -58,3 +58,20 @@ let ``empty delta round-trips through both codecs`` () =
     let cbor = CborDeltaCodec<int>(keyEnc, keyDec) :> IDeltaCodec<int>
     cp.Decode(cp.Encode ZSet<int>.Empty) |> should equal ZSet<int>.Empty
     cbor.Decode(cbor.Encode ZSet<int>.Empty) |> should equal ZSet<int>.Empty
+
+
+[<Fact>]
+let ``CBOR delta codec matches the byte-locked golden vectors (treaty)`` () =
+    // Mirrors src/Core/golden-vectors-deltacodec.json — the 4-language byte-lock
+    // treaty. The C#/Rust/TS ports must reproduce these exact hex bytes.
+    let codec = CborDeltaCodec<int>(keyEnc, keyDec) :> IDeltaCodec<int>
+    let hex (b: byte[]) = System.Convert.ToHexString(b).ToLowerInvariant()
+    let vectors =
+        [ "empty", ([]: (int * int64) list), "80"
+          "single", [ 1, 1L ], "81820101"
+          "multi", [ 1, 1L; 2, 3L ], "82820101820203"
+          "retraction", [ 5, -2L; 7, 1L ], "82820521820701" ]
+    for (_name, pairs, expected) in vectors do
+        let z = ZSet.ofSeq pairs
+        hex (codec.Encode z) |> should equal expected                          // byte-lock
+        codec.Decode(System.Convert.FromHexString expected) |> should equal z  // round-trip from hex
