@@ -8,7 +8,7 @@ describe("FastCDC golden vectors", () => {
   test("gear table samples agree", () => {
     const t = gearTable();
     for (const v of vectors.gearSamples) {
-      expect(t[v.i].toString()).toBe(v.value);
+      expect(t[v.i]!.toString()).toBe(v.value);
     }
   });
 

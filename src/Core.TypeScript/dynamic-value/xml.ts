@@ -309,7 +309,7 @@ export function fromCanonicalXml(xml: string): DecodeResult {
           if (eTag.close || eTag.name !== "e" || eTag.attrK === null || eTag.selfClose) fail("MalformedXml");
           const val = parseValue();
           expectClose("e");
-          pairs.push([eTag.attrK, val]);
+          pairs.push([eTag.attrK!, val]);
         }
         expectClose("obj");
         return { t: "obj", v: pairs };

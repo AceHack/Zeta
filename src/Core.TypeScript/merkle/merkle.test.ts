@@ -28,7 +28,7 @@ test("golden vectors are present", () => {
 });
 
 for (let i = 0; i < cases.length; i++) {
-  const c = cases[i];
+  const c = cases[i]!;
   test(`Merkle root matches F# golden vector #${i} (${c.leaves.length} leaves)`, () => {
     const leaves = c.leaves.map(hexToBytes);
     const got = toHex(new MerkleTree(leaves).root());

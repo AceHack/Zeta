@@ -48,7 +48,7 @@ export class CountMinSketch {
   }
 
   private colAt(baseHash: bigint, row: number): number {
-    let z = (baseHash & MASK64) ^ this.rowSeeds[row];
+    let z = (baseHash & MASK64) ^ this.rowSeeds[row]!;
     z = mul64(z ^ (z >> 30n), KB);
     z = mul64(z ^ (z >> 27n), KC);
     return CountMinSketch.columnFor(z ^ (z >> 31n), this.width);
@@ -58,7 +58,7 @@ export class CountMinSketch {
   add(baseHash: bigint, weight: bigint): void {
     for (let row = 0; row < this.depth; row++) {
       const idx = row * this.width + this.colAt(baseHash, row);
-      this.table[idx] = wrapI64(this.table[idx] + weight);
+      this.table[idx] = wrapI64(this.table[idx]! + weight);
     }
   }
 
@@ -66,7 +66,7 @@ export class CountMinSketch {
   estimate(baseHash: bigint): bigint {
     let result = (1n << 63n) - 1n; // i64 max
     for (let row = 0; row < this.depth; row++) {
-      const v = this.table[row * this.width + this.colAt(baseHash, row)];
+      const v = this.table[row * this.width + this.colAt(baseHash, row)]!;
       if (v < result) result = v;
     }
     return result === (1n << 63n) - 1n ? 0n : result;
@@ -75,6 +75,6 @@ export class CountMinSketch {
   /** Elementwise add (CRDT monoid merge). */
   union(other: CountMinSketch): void {
     if (other.depth !== this.depth || other.width !== this.width) throw new Error("dimension mismatch");
-    for (let i = 0; i < this.table.length; i++) this.table[i] = wrapI64(this.table[i] + other.table[i]);
+    for (let i = 0; i < this.table.length; i++) this.table[i] = wrapI64(this.table[i]! + other.table[i]!);
   }
 }

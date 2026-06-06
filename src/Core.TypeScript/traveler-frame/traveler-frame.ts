@@ -20,7 +20,7 @@ export const transform = (a: Frame, b: Frame): Frame => {
 
 /** `a` dominates `b`: a ≥ b on every coordinate of b (the semilattice order). */
 export const dominates = (a: Frame, b: Frame): boolean =>
-  Object.keys(b).every((k) => coord(a, k) >= b[k]);
+  Object.keys(b).every((k) => coord(a, k) >= b[k]!);
 
 /** The common frame of a set: fold `transform` from the origin (the LUB). */
 export const converge = (frames: readonly Frame[]): Frame => frames.reduce(transform, {} as Frame);

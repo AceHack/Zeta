@@ -15,7 +15,7 @@ const unionKeys = (a: FrameMap, b: FrameMap): string[] => [
 const normalize = (m: FrameMap): FrameMap => {
   const out: FrameMap = {};
   for (const k of Object.keys(m)) {
-    if (m[k] !== 0) out[k] = m[k];
+    if (m[k] !== 0) out[k] = m[k]!;
   }
   return out;
 };
@@ -30,7 +30,7 @@ export const compose = (a: FrameMap, b: FrameMap): FrameMap => {
 /** The group inverse: negate every shift. */
 export const inverse = (d: FrameMap): FrameMap => {
   const out: FrameMap = {};
-  for (const k of Object.keys(d)) out[k] = -d[k];
+  for (const k of Object.keys(d)) out[k] = -d[k]!;
   return normalize(out);
 };
 

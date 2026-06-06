@@ -29,7 +29,7 @@ export function pick(n: number, key: bigint): number {
   let bestScore = 0n;
   let bestIdx = 0;
   for (let i = 0; i < s.length; i++) {
-    const score = mix((key ^ s[i]) & MASK64);
+    const score = mix((key ^ s[i]!) & MASK64);
     if (score > bestScore) {
       bestScore = score;
       bestIdx = i;

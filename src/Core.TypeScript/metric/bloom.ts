@@ -52,7 +52,7 @@ export class BlockedBloomFilter {
       const bit = Number(h & 0x1ffn);
       const w = bit >> 6;
       const b = bit & 0x3f;
-      this.table[base + w] |= 1n << BigInt(b);
+      this.table[base + w] = this.table[base + w]! | (1n << BigInt(b));
       h = (h + h2 + BigInt(i)) & MASK64;
     }
   }
@@ -63,7 +63,7 @@ export class BlockedBloomFilter {
       const bit = Number(h & 0x1ffn);
       const w = bit >> 6;
       const b = bit & 0x3f;
-      if ((this.table[base + w] & (1n << BigInt(b))) === 0n) return false;
+      if ((this.table[base + w]! & (1n << BigInt(b))) === 0n) return false;
       h = (h + h2 + BigInt(i)) & MASK64;
     }
     return true;
@@ -85,6 +85,6 @@ export class BlockedBloomFilter {
   mergeFrom(other: BlockedBloomFilter): void {
     if (other.table.length !== this.table.length) throw new Error("table length differs");
     if (other.probes !== this.probes) throw new Error("probe count differs");
-    for (let i = 0; i < this.table.length; i++) this.table[i] |= other.table[i];
+    for (let i = 0; i < this.table.length; i++) this.table[i] = this.table[i]! | other.table[i]!;
   }
 }

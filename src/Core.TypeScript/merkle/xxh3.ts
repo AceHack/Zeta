@@ -45,7 +45,6 @@ const SECRET_LASTACC_START = 7;
 const SECRET_SIZE_MIN = 136;
 
 // ── primitive wrapping ops over BigInt ──
-const u64 = (x: bigint): bigint => x & MASK64;
 const add64 = (a: bigint, b: bigint): bigint => (a + b) & MASK64;
 const sub64 = (a: bigint, b: bigint): bigint => (a - b) & MASK64;
 const mul64 = (a: bigint, b: bigint): bigint => (a * b) & MASK64;
@@ -53,7 +52,6 @@ const neg64 = (x: bigint): bigint => (-x) & MASK64;
 const not64 = (x: bigint): bigint => x ^ MASK64;
 const xorshift64 = (v: bigint, s: bigint): bigint => v ^ (v >> s);
 
-const rotl64 = (x: bigint, r: bigint): bigint => ((x << r) | (x >> (64n - r))) & MASK64;
 const rotl32 = (x: bigint, r: bigint): bigint => ((x << r) | (x >> (32n - r))) & MASK32;
 
 const swap64 = (x: bigint): bigint => {
@@ -69,12 +67,12 @@ const swap32 = (x: bigint): bigint => {
 
 const readU64 = (b: Uint8Array, off: number): bigint => {
   let r = 0n;
-  for (let i = 0; i < 8; i++) r |= BigInt(b[off + i]) << BigInt(8 * i);
+  for (let i = 0; i < 8; i++) r |= BigInt(b[off + i]!) << BigInt(8 * i);
   return r;
 };
 const readU32 = (b: Uint8Array, off: number): bigint => {
   let r = 0n;
-  for (let i = 0; i < 4; i++) r |= BigInt(b[off + i]) << BigInt(8 * i);
+  for (let i = 0; i < 4; i++) r |= BigInt(b[off + i]!) << BigInt(8 * i);
   return r;
 };
 
@@ -131,9 +129,9 @@ const mix32b = (
 
 const h128_1to3 = (input: Uint8Array, secret: Uint8Array): [bigint, bigint] => {
   const len = input.length;
-  const c1 = BigInt(input[0]);
-  const c2 = BigInt(input[len >> 1]);
-  const c3 = BigInt(input[len - 1]);
+  const c1 = BigInt(input[0]!);
+  const c2 = BigInt(input[len >> 1]!);
+  const c3 = BigInt(input[len - 1]!);
   const inputLo = ((c1 << 16n) | (c2 << 24n) | c3 | (BigInt(len) << 8n)) & MASK32;
   const inputHi = rotl32(swap32(inputLo), 13n);
   const flipLo = add64((readU32(secret, 0) ^ readU32(secret, 4)), SEED);
@@ -233,15 +231,15 @@ const accumulate512 = (acc: bigint[], input: Uint8Array, ioff: number, secret: U
   for (let i = 0; i < ACC_NB; i++) {
     const dataVal = readU64(input, ioff + 8 * i);
     const dataKey = dataVal ^ readU64(secret, soff + 8 * i);
-    acc[i ^ 1] = add64(acc[i ^ 1], dataVal);
-    acc[i] = add64(acc[i], mult32to64(dataKey & MASK32, dataKey >> 32n));
+    acc[i ^ 1] = add64(acc[i ^ 1]!, dataVal);
+    acc[i] = add64(acc[i]!, mult32to64(dataKey & MASK32, dataKey >> 32n));
   }
 };
 
 const scrambleAcc = (acc: bigint[], secret: Uint8Array, soff: number): void => {
   for (let i = 0; i < ACC_NB; i++) {
     const key = readU64(secret, soff + 8 * i);
-    let v = xorshift64(acc[i], 47n);
+    let v = xorshift64(acc[i]!, 47n);
     v ^= key;
     acc[i] = mul64(v, P32_1);
   }
@@ -254,7 +252,7 @@ const accumulateLoop = (acc: bigint[], input: Uint8Array, ioff: number, secret: 
 };
 
 const mixTwoAccs = (acc: bigint[], aoff: number, secret: Uint8Array, soff: number): bigint =>
-  mul128fold64(acc[aoff] ^ readU64(secret, soff), acc[aoff + 1] ^ readU64(secret, soff + 8));
+  mul128fold64(acc[aoff]! ^ readU64(secret, soff), acc[aoff + 1]! ^ readU64(secret, soff + 8));
 
 const mergeAccs = (acc: bigint[], secret: Uint8Array, soff: number, start: bigint): bigint => {
   let result = start;

@@ -66,8 +66,8 @@ export class MerkleTree {
     while (cur.length > 1) {
       const parent: MerkleHash[] = [];
       for (let i = 0; i < cur.length; i += 2) {
-        const left = cur[i];
-        const right = i + 1 < cur.length ? cur[i + 1] : left; // duplicate last for odd
+        const left = cur[i]!;
+        const right = i + 1 < cur.length ? cur[i + 1]! : left; // duplicate last for odd
         parent.push(combine(left, right));
       }
       all.push(parent);
@@ -78,12 +78,12 @@ export class MerkleTree {
 
   /** Root digest — byte-identical to the F#/C#/Rust root over the same leaves. */
   root(): MerkleHash {
-    const top = this.levels[this.levels.length - 1];
-    return top.length === 0 ? ZERO : top[0];
+    const top = this.levels[this.levels.length - 1]!;
+    return top.length === 0 ? ZERO : top[0]!;
   }
 
   /** The leaf hashes (level 0), useful for diffing. */
   leafHashes(): readonly MerkleHash[] {
-    return this.levels[0];
+    return this.levels[0]!;
   }
 }

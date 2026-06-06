@@ -44,7 +44,7 @@ export function chunkLengths(bytes: number[], min: number, avg: number, max: num
       let hash = 0n;
       let i = head + min;
       while (i < n) {
-        hash = ((hash << 1n) + gear[bytes[i]]) & MASK64;
+        hash = ((hash << 1n) + gear[bytes[i]!]!) & MASK64;
         const offset = i - head;
         const mask = offset < avg ? MASK_S : MASK_L;
         if ((hash & mask) === 0n) {

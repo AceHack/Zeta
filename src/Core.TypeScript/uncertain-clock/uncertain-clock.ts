@@ -42,7 +42,7 @@ export function receive(c: Hlc, msg: Hlc, nowPhysical: number): Hlc {
 }
 
 /** Definite happens-before: a's whole window ends strictly before b's begins. */
-export function definitelyBefore(aPhysical: number, aEps: number, bPhysical: number, bEps: number): boolean {
+export function definitelyBefore(aPhysical: number, aEps: number, bPhysical: number, _bEps: number): boolean {
   return aPhysical + aEps < bPhysical;
 }
 

@@ -34,7 +34,7 @@ export function decide(votes: string[]): Decision {
   groups.sort((a, b) => b.count - a.count);
 
   const threshold = quorumThreshold(total);
-  const top = groups[0];
+  const top = groups[0]!;
   return top.count >= threshold
     ? { committed: true, value: top.value, count: top.count, total }
     : { committed: false, value: null, count: top.count, total };

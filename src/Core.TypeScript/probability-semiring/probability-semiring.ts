@@ -59,7 +59,7 @@ export function div(a: Rational, b: Rational): Rational {
 /** Relative-observer 3-way merge over the Merkle ancestor: merged(i) = a(i)·b(i)/ancestor(i). */
 export function merge3(ancestor: Rational[], a: Rational[], b: Rational[]): Rational[] {
   const out: Rational[] = [];
-  for (let i = 0; i < ancestor.length; i++) out.push(div(mul(a[i], b[i]), ancestor[i]));
+  for (let i = 0; i < ancestor.length; i++) out.push(div(mul(a[i]!, b[i]!), ancestor[i]!));
   return out;
 }
 
@@ -69,7 +69,7 @@ export function forwardStep(pi: Rational[], p: Rational[][]): Rational[] {
   const out: Rational[] = [];
   for (let j = 0; j < n; j++) {
     let acc = zero;
-    for (let i = 0; i < pi.length; i++) acc = add(acc, mul(pi[i], p[i][j]));
+    for (let i = 0; i < pi.length; i++) acc = add(acc, mul(pi[i]!, p[i]![j]!));
     out.push(acc);
   }
   return out;
@@ -81,7 +81,7 @@ export function viterbiStep(v: Rational[], p: Rational[][]): Rational[] {
   const out: Rational[] = [];
   for (let j = 0; j < n; j++) {
     let acc = zero;
-    for (let i = 0; i < v.length; i++) acc = max(acc, mul(v[i], p[i][j]));
+    for (let i = 0; i < v.length; i++) acc = max(acc, mul(v[i]!, p[i]![j]!));
     out.push(acc);
   }
   return out;

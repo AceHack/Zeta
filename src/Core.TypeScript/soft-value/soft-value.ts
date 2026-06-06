@@ -10,8 +10,8 @@ export type Weights = Record<string, number>;
 const argmax = (c: Weights): string | null => {
   const keys = Object.keys(c).sort();
   if (keys.length === 0) return null;
-  let best = keys[0];
-  for (const k of keys) if (c[k] > c[best]) best = k;
+  let best = keys[0]!;
+  for (const k of keys) if (c[k]! > c[best]!) best = k;
   return best;
 };
 
@@ -19,9 +19,9 @@ const argmax = (c: Weights): string | null => {
 export const resolve = (c: Weights, num: number, den: number): string | null => {
   const keys = Object.keys(c);
   if (keys.length === 0) return null;
-  const total = keys.reduce((s, k) => s + c[k], 0);
+  const total = keys.reduce((s, k) => s + c[k]!, 0);
   const best = argmax(c)!;
-  return c[best] * den >= num * total ? best : null;
+  return c[best]! * den >= num * total ? best : null;
 };
 
 /** Bayesian multiply (drop zeroed candidates — no fabricated certainty), then resolve. */
@@ -33,7 +33,7 @@ export const observeResolve = (
 ): string | null => {
   const posterior: Weights = {};
   for (const k of Object.keys(prior)) {
-    const w = prior[k] * (likelihood[k] ?? 0);
+    const w = prior[k]! * (likelihood[k] ?? 0);
     if (w > 0) posterior[k] = w;
   }
   return resolve(posterior, num, den);
