@@ -68,8 +68,9 @@ Snapshot ==
     /\ snapshotSeq' = committedSeq
     /\ UNCHANGED <<committedSeq, truncatedThroughSeq, live, crashed>>
 
-\* GC the log — ONLY through a durable snapshot (the load-bearing guard).
+\* GC the log — ONLY through a durable snapshot (the load-bearing guard); only while up.
 GC ==
+    /\ ~crashed
     /\ snapshotSeq > truncatedThroughSeq
     /\ truncatedThroughSeq' = snapshotSeq
     /\ UNCHANGED <<committedSeq, snapshotSeq, live, crashed>>
@@ -95,7 +96,10 @@ Next ==
     \/ Crash
     \/ Recover
 
-Spec == Init /\ [][Next]_vars
+\* Weak fairness on Recover: a crashed system does not stay down — the homeostat
+\* always pulls it back to the live/committed-truth state. (While crashed, ONLY Recover
+\* is enabled — Commit/Snapshot/GC/Crash all require ~crashed — so WF(Recover) suffices.)
+Spec == Init /\ [][Next]_vars /\ WF_vars(Recover)
 
 \* ── Safety: the committed register never collapses. ──
 NoCommittedLoss ==
@@ -104,5 +108,10 @@ NoCommittedLoss ==
 
 \* ── Safety: recover∘crash = fold(committed). ──
 RecoveryCorrect == (~crashed) => (live = 1..committedSeq)
+
+\* ── Liveness (the homeostat): a crash is always eventually followed by recovery —
+\*    the system never stays down; it returns to the live/committed-truth state. This is
+\*    the recovery-side of the forward-momentum root (never permanently idle/dead). ──
+Liveness == crashed ~> ~crashed
 
 ===============================================================================
