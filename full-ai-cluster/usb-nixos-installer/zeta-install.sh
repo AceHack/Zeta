@@ -1349,8 +1349,8 @@ if [ -d "$ZETA_HOME" ]; then
   # truth; operator 2026-05-27 ALIGNMENT catch) AND install peer/agent
   # CLIs via the canonical setup manifests:
   #
-  #   tools/setup/manifests/agent-clis       (claude/codex/gemini)
-  #   tools/setup/manifests/one-liner-tools  (grok/cursor/kiro/hermes/forge)
+  #   tools/setup/manifests/agent-clis       (claude/codex)
+  #   tools/setup/manifests/one-liner-tools  (grok/cursor/kiro/hermes/forge/agy)
   #
   # We pre-clone the Zeta repo at Step 6.95d-equivalent BEFORE this
   # step so .mise.toml + setup manifests are available; reorder vs the
@@ -1522,37 +1522,6 @@ if [ -d "$ZETA_HOME" ]; then
     echo "[iter-5.5.0] claude binary not found at $CLAUDE_BIN; skipping interactive login"
   fi
 
-  # 6.95b-gemini — interactive gemini auth login (mirror claude login).
-  # B-0850 Phase 3d 2nd vendor login flow. gemini-cli supports OAuth
-  # via local HTTP server OR API-key paste. The interactive prompt
-  # lets operator choose. Credentials persist to ~/.config/gemini/.
-  GEMINI_BIN="$ZETA_HOME/.bun/bin/gemini"
-  if [ -x "$GEMINI_BIN" ]; then
-    echo
-    echo "[iter-5.5.0] Trigger Gemini CLI interactive login NOW (B-0850 Phase 3d Lior)?"
-    echo "[iter-5.5.0]   - Mirrors claude login pattern (operator-interactive auth)."
-    echo "[iter-5.5.0]   - Options: OAuth via browser OR Gemini API key from AI Studio."
-    echo "[iter-5.5.0]   - Credentials land at $ZETA_HOME/.config/gemini/ and survive reboot."
-    echo "[iter-5.5.0]   - Default YES (press Enter); 'n' to skip + login post-reboot manually."
-    read -r -p "[iter-5.5.0] Run gemini auth login now? [Y/n]: " GEMINI_AUTH_REPLY
-    case "${GEMINI_AUTH_REPLY:-y}" in
-      [Yy]*|"")
-        echo "[iter-5.5.0]   running 'gemini auth login' (interactive)..."
-        sudo HOME="$ZETA_HOME" -u "#$ZETA_UID" "$GEMINI_BIN" auth login || \
-          echo "[iter-5.5.0]   WARN: gemini auth login failed; can re-run post-reboot"
-        # Parallel security restriction to claude credentials.
-        if [ -d "$ZETA_HOME/.config/gemini" ]; then
-          sudo chown -R "$ZETA_UID:$ZETA_GID" "$ZETA_HOME/.config/gemini"
-          sudo chmod -R go-rwx "$ZETA_HOME/.config/gemini"
-        fi
-        ;;
-      *)
-        echo "[iter-5.5.0]   SKIPPED gemini auth login; run 'gemini auth login' on first login"
-        ;;
-    esac
-  else
-    echo "[iter-5.5.0] gemini binary not found at $GEMINI_BIN; skipping interactive login"
-  fi
 
   # 6.95b-codex — interactive codex login (B-0850 Phase 3c Vera).
   # 3rd vendor login — codex CLI has the most explicit device-flow

@@ -22,10 +22,9 @@ EXECUTE THESE STEPS IMMEDIATELY USING YOUR TOOLS. Do not ask "How can I help you
 
 console.log(`[Lior Loop] Waking up at ${new Date().toISOString()}`);
 
-// Pipe stderr so we can inspect it for 429 patterns; stdout/stdin stay inherited.
-// maxBuffer: 10 MiB — Gemini verbose crash output can exceed the 1 MiB default,
+// maxBuffer: 10 MiB — Antigravity verbose crash output can exceed the 1 MiB default,
 // which would cause ENOBUFS and a hard failure even for transient errors.
-const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$GEMINI_PROMPT" --model gemini-2.5-pro --yolo --skip-trust --sandbox false --include-directories /Users/acehack/.local/share/zeta-broadcasts'], {
+const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && agy -p "$GEMINI_PROMPT" --model gemini-2.5-pro --dangerously-skip-permissions --add-dir /Users/acehack/.local/share/zeta-broadcasts'], {
   env: { ...process.env, GEMINI_PROMPT: prompt },
   stdio: ["inherit", "inherit", "pipe"],
   maxBuffer: 10 * 1024 * 1024,
@@ -35,9 +34,10 @@ const result = spawnSync("zsh", ["-c", 'source ~/.zshrc && gemini -p "$GEMINI_PR
 if (result.error) {
   // Spawn-level failure (binary not found, permission denied, etc.) — propagate so
   // launchd can surface the misconfiguration; this is NOT a transient rate-limit.
-  console.error(`[Lior Loop] Failed to spawn gemini: ${result.error.message}`);
+  console.error(`[Lior Loop] Failed to spawn agy: ${result.error.message}`);
   process.exit(1);
 }
+
 
 // status is null when the process was killed by a signal; treat that as an error.
 const exitCode = result.status ?? 1;

@@ -18,7 +18,6 @@
 # Pins per dep-pin-search-first (WebSearch 2026-05-31):
 #   claude-code   — @anthropic-ai/claude-code  (Anthropic; already in the Windows graph)
 #   codex (Vera)  — @openai/codex              (https://github.com/openai/codex)
-#   gemini (Lior) — @google/gemini-cli         (https://github.com/google-gemini/gemini-cli; Node 20+, bun provides)
 @anthropic-ai/claude-code  bin=claude
 @openai/codex              bin=codex
-@google/gemini-cli         bin=gemini
+

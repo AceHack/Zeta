@@ -47,3 +47,5 @@ cursor-agent  https://cursor.com/install
 kiro-cli      https://cli.kiro.dev/install                                                            os=mac
 hermes        https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh    args=--skip-setup
 forge         https://forgecode.dev/cli                                                               interp=sh
+agy           https://antigravity.google/cli/install.sh
+

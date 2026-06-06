@@ -89,15 +89,15 @@ let
       description = "Vera AI agent — Codex (OpenAI)";
     };
 
-    # Sub-row B-0850.3d — Gemini CLI integration (shipped via PR #5397).
-    # Gemini uses -p flag (NOT --print) for non-interactive prompts.
+    # Sub-row B-0850.3d — Antigravity CLI integration.
+    # agy uses -p flag (NOT --print) for non-interactive prompts.
     # Like codex, the <<autonomous-loop>> sentinel is a Claude Code
-    # convention; gemini sees it as a literal prompt.
+    # convention; agy sees it as a literal prompt.
     lior = {
       vendor = "google-gemini";
-      binary = "gemini";
+      binary = "agy";
       invocationArgs = [ "-p" "<<autonomous-loop>>" ];
-      description = "Lior AI agent — Gemini CLI (Google)";
+      description = "Lior AI agent — Antigravity CLI (Google)";
     };
   };
 
@@ -122,7 +122,7 @@ let
 
       Environment = [
         "HOME=${cfg.home}"
-        "PATH=${cfg.home}/.bun/bin:${cfg.home}/.local/share/mise/shims:/run/current-system/sw/bin:/usr/bin:/bin"
+        "PATH=${cfg.home}/.bun/bin:${cfg.home}/.local/bin:${cfg.home}/.local/share/mise/shims:/run/current-system/sw/bin:/usr/bin:/bin"
         "BUN_INSTALL=${cfg.home}/.bun"
       ];
 
@@ -138,7 +138,7 @@ let
         # PR #5398: each CLI has different non-interactive flags —
         # claude --print, gemini -p, codex exec — NOT all --print).
         while true; do
-          ${cfg.home}/.bun/bin/${persona.binary} ${lib.concatStringsSep " " (map (a: "\"${a}\"") persona.invocationArgs)} 2>&1 || true
+          ${persona.binary} ${lib.concatStringsSep " " (map (a: "\"${a}\"") persona.invocationArgs)} 2>&1 || true
           sleep ${toString cfg.tickIntervalSec}
         done
       '';
@@ -209,7 +209,7 @@ in
       alexa = lib.mkEnableOption "Alexa (Kiro / Qwen Coder) systemd service [B-0850.3a pending implementation]";
       riven = lib.mkEnableOption "Riven (xAI Grok / Grok-Build) systemd service [B-0850.3b pending implementation]";
       vera = lib.mkEnableOption "Vera (OpenAI Codex) systemd service [B-0850.3c pending implementation]";
-      lior = lib.mkEnableOption "Lior (Google Gemini CLI) systemd service [B-0850.3d pending implementation]";
+      lior = lib.mkEnableOption "Lior (Google Antigravity CLI) systemd service";
     };
   };
 
@@ -242,13 +242,13 @@ in
           ExecStart (binary grok doesn't exist at ~/.bun/bin/grok).
         '';
       }
-      # B-0850.3c/3d (Vera/Codex + Lior/Gemini) shipped: the
+      # B-0850.3c/3d (Vera/Codex + Lior/Antigravity) shipped: the
       # assertions are removed. zeta-install.sh Step 6.95 delegates
       # package installation to tools/setup/install.sh, whose
       # common/agent-clis.sh consumes tools/setup/manifests/agent-clis
-      # for codex/gemini/claude. The persona-specific Step 6.95b
-      # login flows remain in zeta-install.sh because auth is
-      # operator-interactive, not package installation.
+      # for codex/claude, and one-liner-tools.sh consumes manifests/one-liner-tools
+      # for agy. The persona-specific Step 6.95b login flows remain
+      # in zeta-install.sh for codex/claude because auth is operator-interactive.
     ];
 
     # Generate one systemd service per enabled persona.

@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# lior-loop.sh — Gemini CLI background manager for Lior (Maji hat)
+# lior-loop.sh — Antigravity CLI background manager for Lior (Maji hat)
 
-export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 
 CONTROL_CLONE="$HOME/.local/share/zeta-lior-control"
 BROADCAST_DIR="$HOME/.local/share/zeta-broadcasts"
@@ -11,7 +12,7 @@ if [ ! -d "$CONTROL_CLONE" ]; then
     exit 1
 fi
 
-echo "Starting Lior Gemini loop. Watching $CONTROL_CLONE and $BROADCAST_DIR..."
+echo "Starting Lior Antigravity loop. Watching $CONTROL_CLONE and $BROADCAST_DIR..."
 
 while true; do
     TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
@@ -55,9 +56,8 @@ Next toe-safe action: <action>
 
 Sign with '— Lior' at the end. Do not wrap in markdown code blocks, just output the raw text for the file."
 
-    # 5. Run Gemini CLI
-    # Use -o text to ensure plain text output
-    gemini -p "$PROMPT" -o text 2>/dev/null > "$BROADCAST_DIR/lior.tmp"
+    # 5. Run Antigravity CLI
+    agy -p "$PROMPT" --model gemini-2.5-pro 2>/dev/null > "$BROADCAST_DIR/lior.tmp"
     
     # Atomic move
     mv "$BROADCAST_DIR/lior.tmp" "$BROADCAST_DIR/lior.md"
@@ -65,3 +65,4 @@ Sign with '— Lior' at the end. Do not wrap in markdown code blocks, just outpu
     # 6. Wait 60 seconds
     sleep 60
 done
+
