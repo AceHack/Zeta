@@ -162,6 +162,39 @@ delta) before its action runs. So "ids can encode actions" composes with, rather
 observation→command trust boundary. Anchor: parser combinators (Hutton/Meijer); self-describing
 bytecode / tagged encodings.
 
+## 4e. The seed: Zeta as a self-unfolding 128-bit fixed point (quine) — the long game
+
+Maintainer (2026-06-06): *"we should be able to encode all of Zeta into a 128-bit id where our F#
+code knows how to unfold it, and it unfolds to the same code that unfolds it."* This is the endpoint
+of id-as-program (§4d) + wonder compression (§6.4): a 128-bit **seed** that an **unfolder** expands
+into the system, where the unfold *also reproduces the unfolder* —
+
+```
+unfold(seed) = (Zeta, unfold)      // a fixed point: the output contains its own generator
+```
+
+That is a **quine / self-reproducing fixed point**: the seed names a fixed point of `unfold`; the
+unfolder is recovered *by* unfolding (DNA that encodes the machinery to read DNA). Anchors:
+**Kleene's second recursion theorem**, the **Y / fixed-point combinator**, the **metacircular
+evaluator** (Lisp `eval`/`apply`, SICP), **quines**, **von Neumann's universal constructor /
+self-replication**, **Solomonoff / Kolmogorov / Chaitin** (shortest program that generates the
+object), and **bootstrapping compilers**. The `self-boot` skill (Alexa bootstrapping from
+foundational docs) is the operational shadow of this; the formal version is the seed-unfold.
+
+**Honest caveat (information theory — keep it sound).** 128 bits cannot *literally contain* all of
+Zeta's information (Kolmogorov: 128 bits name only 2^128 distinct objects; the residual /
+history is far larger). So the 128 bits are the **seed/name of the fixed point**, not a literal
+compression of every bit. The split (wonder compression at maximal scale):
+
+- **unfolder** = the generator (lives in the substrate; reproduced by the unfold — the quine part),
+- **seed** = the 128-bit id that selects/derives the canonical core,
+- **residual** = history + the world's divergences from prediction (rides the delta log; §6.4).
+
+So "all of Zeta from 128 bits" is exact for the *self-reproducing canonical kernel* and the
+*generated/derivable core*; the lived residual is layered on via the log. The id seeds the fixed
+point; the unfolder regenerates itself and the derivable system; the log carries the surprise. That
+keeps the dream both beautiful and information-theoretically honest.
+
 ## 5. DynamicValue-centric, uncertainty-first-class, LLM-in-the-box
 
 - **Data is DynamicValue.** Cells are self-describing `DynamicValue` trees; uncertainty is not an
