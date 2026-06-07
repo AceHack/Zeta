@@ -54,11 +54,13 @@ type GSet<'T when 'T : comparison> =
         if xa.IsEmpty then GSet<'T>(xb)
         elif xb.IsEmpty then GSet<'T>(xa)
         else
+            // Default collation = binary/ordinal (B-0969): never culture-sensitive Comparer<string>.Default.
+            let cmp = Collation.forKey<'T> ()
             let out = ImmutableArray.CreateBuilder<'T>(xa.Length + xb.Length)
             let mutable i = 0
             let mutable j = 0
             while i < xa.Length && j < xb.Length do
-                let c = Comparer<'T>.Default.Compare(xa.[i], xb.[j])
+                let c = cmp.Compare(xa.[i], xb.[j])
                 if c < 0 then
                     out.Add(xa.[i]); i <- i + 1
                 elif c > 0 then
@@ -81,12 +83,13 @@ type GSet<'T when 'T : comparison> =
         if this.items.IsDefaultOrEmpty then
             false
         else
+            let cmp = Collation.forKey<'T> ()
             let mutable lo = 0
             let mutable hi = this.items.Length - 1
             let mutable found = false
             while lo <= hi && not found do
                 let mid = lo + (hi - lo) / 2
-                let c = Comparer<'T>.Default.Compare(this.items.[mid], x)
+                let c = cmp.Compare(this.items.[mid], x)
                 if c = 0 then found <- true
                 elif c < 0 then lo <- mid + 1
                 else hi <- mid - 1
@@ -124,10 +127,11 @@ type GSet<'T when 'T : comparison> =
             if an <> bn then
                 false
             else
+                let cmp = Collation.forKey<'T> ()
                 let mutable i = 0
                 let mutable eq = true
                 while i < an && eq do
-                    if Comparer<'T>.Default.Compare(a.[i], b.[i]) <> 0 then eq <- false
+                    if cmp.Compare(a.[i], b.[i]) <> 0 then eq <- false
                     i <- i + 1
                 eq
 
@@ -139,12 +143,14 @@ module GSet =
     /// The empty G-Set (the `union` identity).
     let empty<'T when 'T : comparison> : GSet<'T> = GSet<'T>.Empty
 
-    /// Canonicalize arbitrary input: sort ascending + drop duplicates.
+    /// Canonicalize arbitrary input: sort ascending + drop duplicates. Uses the default binary/ordinal
+    /// collation (B-0969): string ordering is ordinal, never culture-sensitive.
     let ofSeq (xs: seq<'T>) : GSet<'T> =
+        let cmp = Collation.forKey<'T> ()
         let sorted =
             xs
             |> Seq.distinct
-            |> Seq.sortWith (fun a b -> Comparer<'T>.Default.Compare(a, b))
+            |> Seq.sortWith (fun a b -> cmp.Compare(a, b))
             |> ImmutableArray.CreateRange
         GSet<'T>(sorted)
 
