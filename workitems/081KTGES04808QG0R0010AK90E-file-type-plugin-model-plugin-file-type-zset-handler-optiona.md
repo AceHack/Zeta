@@ -93,6 +93,46 @@ Open: the negotiated-base schema (how a plugin declares required interfaces in D
 host-extension protocol (how a host advertises additional injectables). Composes with Eve Protocol
 (`Diplomacy.fs`), the determinism contract (`081KTGEVV75`), and `DynamicValue` as the carrier.
 
+## Serializers + primitives as plugins, and the MEF-like microcore (Aaron 2026-06-07)
+
+> "maybe even the serializers or zeta primitives themselves [can be plugins] … we can shrink into a
+> MEF-like plugin model where everything is a plugin, with a microcore based around DI and plugins."
+
+The end-state: **a microcore + everything-else-as-plugins** (MEF / microkernel architecture). The core
+shrinks to the smallest thing that can *load and compose plugins*: a **DI/composition container** over
+the **carrier nouns**. Above that, serializers and derived primitives become plugins-as-data:
+
+- **Serializers as plugins** — YAML / XML / Arrow / future formats become plugin codecs (`format ↔
+  DynamicValue`), registered + composed, not hard-wired. (The MD/frontmatter + per-file-type plugins are
+  already this shape.)
+- **Zeta primitives as plugins** — derived primitives (CRDTs, sketches, Bonsai, Curve, higher algebra
+  ladder rungs) expressed as deterministic `DynamicValue` programs + declared interfaces, composed via DI.
+
+**The bootstrap caveat (Rodney's Razor — do NOT chase infinite regress).** "Everything is a plugin"
+cannot be *literally* everything: there is an irreducible **microcore** that must be native to bootstrap
+the plugin system — you cannot encode `DynamicValue`'s own codec purely as a `DynamicValue` without a
+base implementation (a compiler written in its own language still needs a bootstrap compiler; MEF itself
+has a non-MEF composition engine). So the microcore is:
+
+- the **carrier nouns**: `ZSet` + `DynamicValue` + `Log` (the proven 3-noun base, native),
+- **one canonical serializer** (CBOR — the bootstrap codec, native; other serializers are plugins),
+- the **DI / composition container** itself (the loader + the negotiated-base resolver).
+
+Everything else — additional serializers, derived primitives, file-type handlers, views, validators,
+negotiation shapes — is a plugin composed onto the microcore. Perf-parity (the native-vs-plugin
+benchmark, below) is what keeps "everything is a plugin" from being a slowdown: a plugin serializer/
+primitive must run native-close.
+
+**Human prior art (Beacon anchor):** MEF — Managed Extensibility Framework (.NET; exports/imports +
+composition container) · OSGi (Java bundles/services) · the **microkernel / plugin architecture**
+pattern (Buschmann et al., POSA) · Eclipse plugin model. Our twist: the plugins are **data**
+(`DynamicValue`) + **deterministic** (the data-plane contract) + **cross-language** (run in any of the 4
+oracles), where MEF/OSGi plugins are host-language code.
+
+Open: where exactly the microcore boundary sits (which primitives are kernel vs plugin), and the
+composition-container contract (discovery/registration = a plugins-as-rows `Log`; the negotiated-base +
+host-extension protocol above is its import/export model).
+
 ## Performance parity + dual-implementation benchmark (Aaron 2026-06-07)
 
 > "the plugin that loads the dynamic value should be as fast as our hand-written F# we have without the
