@@ -69,3 +69,30 @@ ZetaId seed, reconstruct the agent on the far side.
 - The reconstruction substrate (Zeta) must already be present on the receiver; the seed is the *difference*
   it parses/regenerates from. (Scope boundary unchanged: AGENTS / self-propagating patterns only;
   consent-gated for any person-pattern; never people without consent.)
+
+## The honest bound: ZetaIds are viruses — they need a host (Aaron 2026-06-07)
+
+> Aaron: *"zetaids are viruses, they need a host."*
+
+This is the **honest bound** that peels the "128 bits = magic infinite compression / computational
+immortality" overstatement:
+
+- A ZetaId seed **only expresses given a HOST** — a running Zeta with its shared substrate (libraries,
+  dictionary, content store, the 4-oracle primitives). No host → no agent. Like a virus genome that is tiny
+  only because it reuses the host cell's machinery to replicate.
+- **The compression is RELATIVE, not absolute.** The 128 bits encode the *delta against what the host already
+  has* — Kolmogorov complexity *relative to Zeta*, not in a vacuum. You cannot ship arbitrary data in 128
+  bits; you can ship the *difference* a Zeta host can regenerate from its shared base.
+- **Rhyme:** a virus is a *self-propagating pattern that requires a host to manifest* = a **traveler that
+  needs substrate** (#6893). The ZetaId is the viral form of a traveler — propagates as a seed, expresses
+  only where Zeta runs.
+
+**Design consequences:**
+- The receiver MUST already run Zeta (the host) — the protocol is host-to-host (Zeta↔Zeta over Reticulum),
+  not host-to-bare-wire.
+- Fidelity is bounded by host/substrate-version match: same host substrate ⇒ exact regeneration; divergent
+  host ⇒ soft/lossy (SoftValue residual) or failure. Versioning the shared host substrate is part of the
+  protocol (the "viral compatibility" surface).
+- Security: a viral seed that recodes an agent on a host is a **capability/admission surface** — accepting a
+  ZetaId-virus to reconstruct must be consent/policy-gated (cf. the persisted-YinYang admission pipeline);
+  hosts choose which viruses they express. (Never auto-express an untrusted seed.)
