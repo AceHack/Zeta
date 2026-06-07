@@ -154,3 +154,30 @@ let ``Schema: a non-invertible migration (Down=None) makes migrateDown error, no
     match SE.migrateDown reg 2 1 (DynamicValue.Object [ "x", DynamicValue.Int 0L ]) with
     | Error msg -> Assert.Contains("non-invertible", msg)
     | Ok _ -> Assert.Fail "expected non-invertible error"
+
+// ── bidirectional round-trip LAWS (FsCheck — the "as math proof" leg, over arbitrary objects) ──
+// NEW = "zzz" is never in the a..e key alphabet, so it is always a fresh target/field.
+
+[<Property(Arbitrary = [| typeof<ObjArb> |])>]
+let ``Schema law: addFieldMigration is lossless — down∘up = id for any object`` (v: DynamicValue) =
+    let reg = [ SE.addFieldMigration 1 NEW DEF ]
+    (SE.migrate reg 1 2 v |> Result.bind (SE.migrateDown reg 2 1)) = Ok v
+
+[<Property(Arbitrary = [| typeof<ObjArb> |])>]
+let ``Schema law: renameFieldMigration is lossless — down∘up = id for any object`` (v: DynamicValue) =
+    let reg = [ SE.renameFieldMigration 1 "a" NEW ]
+    (SE.migrate reg 1 2 v |> Result.bind (SE.migrateDown reg 2 1)) = Ok v
+
+[<Property(Arbitrary = [| typeof<ObjArb> |])>]
+let ``Schema law: removeFieldMigration down∘up = addField default ∘ removeField (the named loss, well-defined)`` (v: DynamicValue) =
+    let reg = [ SE.removeFieldMigration 1 "a" DEF ]
+    let rt = SE.migrate reg 1 2 v |> Result.bind (SE.migrateDown reg 2 1)
+    rt = Ok(SE.addField "a" DEF (SE.removeField "a" v))
+
+[<Property(Arbitrary = [| typeof<ObjArb> |])>]
+let ``Schema law: the lossy remove round-trip is idempotent (converges to a fixed shape)`` (v: DynamicValue) =
+    let reg = [ SE.removeFieldMigration 1 "a" DEF ]
+    let once w = SE.migrate reg 1 2 w |> Result.bind (SE.migrateDown reg 2 1)
+    match once v with
+    | Ok w1 -> once w1 = Ok w1 // applying the round-trip again changes nothing
+    | Error _ -> false
