@@ -1,5 +1,7 @@
 namespace Zeta.Core
 
+open System.Collections.Generic
+
 
 /// **Pluggable serialization seam for the durable delta log.** Encodes a
 /// `ZSet<'K>` delta to bytes and back. Lets `DeltaLog`/`RecoverableSpine` stay
@@ -7,9 +9,7 @@ namespace Zeta.Core
 /// canonical CBOR / YAML codecs later, without touching log/recovery logic (the
 /// "stable contract, swap format" path; companion doc §9). MUST be a lossless
 /// round-trip: `Decode (Encode z) = z`.
-type IDeltaCodec<'K when 'K : comparison> =
-    abstract Encode: ZSet<'K> -> byte[]
-    abstract Decode: byte[] -> ZSet<'K>
+type IDeltaCodec<'K when 'K : comparison> = IDeltaCodec<'K, ZSet<'K>>
 
 
 /// `ZSet` ↔ `DynamicValue` mapping — the bridge that lets a Z-set ride ALL our
@@ -79,7 +79,8 @@ module DeltaLogEntryDynamic =
     let toDynamicValue (keyEnc: 'K -> DynamicValue) (entry: DeltaLogEntry<'K>) : DynamicValue =
         let captured =
             entry.Captured
-            |> Map.toList
+            |> Seq.map (fun kv -> kv.Key, kv.Value)
+            |> Seq.toList
             |> List.sortWith (fun (a, _) (b, _) -> System.String.CompareOrdinal(a, b))
             |> List.map (fun (k, v) -> k, DynamicValue.String v)
         DynamicValue.Object
@@ -109,7 +110,7 @@ module DeltaLogEntryDynamic =
                         | o -> invalidArg (nameof dv) $"DeltaLogEntryDynamic: captured['{k}'] not String: {o}")
                     |> Map.ofList
                 | o -> invalidArg (nameof dv) $"DeltaLogEntryDynamic: 'captured' not Object: {o}"
-            { Seq = seq; Delta = delta; Captured = captured }
+            DeltaLogEntry<'K>(seq, delta, captured)
         | other -> invalidArg (nameof dv) $"DeltaLogEntryDynamic: expected Object, got {other}"
 
 
@@ -153,9 +154,7 @@ module DeltaLogEntryCodec =
 /// replacing the per-backend `System.Text.Json` framing of the `Captured` map. Distinct from
 /// `IDeltaCodec` (which encodes only the ZSet delta): an entry is `(Seq, Delta, Captured)`, and the whole
 /// entry is the cross-language treaty unit. MUST be a lossless round-trip: `Decode (Encode e) = e`.
-type IEntryCodec<'K when 'K : comparison> =
-    abstract Encode: DeltaLogEntry<'K> -> byte[]
-    abstract Decode: byte[] -> DeltaLogEntry<'K>
+type IEntryCodec<'K when 'K : comparison> = IEntryCodec<'K, ZSet<'K>>
 
 
 /// Canonical **CBOR** whole-entry codec — rides `DeltaLogEntryCodec` (the DynamicValue-locked canonical

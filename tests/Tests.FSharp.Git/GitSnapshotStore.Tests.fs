@@ -46,10 +46,10 @@ let ``write + read round-trips a snapshot through git`` () =
 
 
 [<Fact>]
-let ``LatestAsync returns None before any write`` () =
+let ``LatestAsync returns null before any write`` () =
     withRepoDir (fun dir ->
         let store = openStore dir
-        store.LatestAsync(ct).Result |> should equal (None: SnapshotPointer option))
+        Assert.Null(store.LatestAsync(ct).Result))
 
 
 [<Fact>]
@@ -59,7 +59,8 @@ let ``LatestAsync tracks the most recent snapshot`` () =
         store.WriteAsync(2L, ZSet.ofKeys [ 1 ], ct).Result |> ignore
         store.WriteAsync(7L, ZSet.ofKeys [ 1; 2 ], ct).Result |> ignore
         let latest = store.LatestAsync(ct).Result
-        latest |> Option.map (fun p -> p.Seq) |> should equal (Some 7L))
+        Assert.NotNull(latest)
+        latest.Seq |> should equal 7L)
 
 
 [<Fact>]
@@ -71,7 +72,6 @@ let ``latest snapshot survives a FRESH Repository instance (durable manifest)`` 
         // Fresh instance over the same git repo — simulates restart.
         let s2 = openStore dir
         let latest = s2.LatestAsync(ct).Result
-        latest |> Option.map (fun p -> p.Seq) |> should equal (Some 11L)
-        match latest with
-        | Some p -> s2.ReadAsync(p, ct).Result |> should equal state
-        | None -> failwith "expected a latest snapshot after restart")
+        Assert.NotNull(latest)
+        latest.Seq |> should equal 11L
+        s2.ReadAsync(latest, ct).Result |> should equal state)

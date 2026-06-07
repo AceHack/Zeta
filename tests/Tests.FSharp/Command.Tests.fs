@@ -38,7 +38,8 @@ let ``Get fetches a single entry by seq; captured round-trips`` () =
     match run log (DbCommand.Get 2L) with
     | DbCommandResult.Got(Some e) ->
         Assert.Equal(2L, e.Seq)
-        Assert.Equal<Map<string, string>>(Map.ofList [ "actor", "otto" ], e.Captured)
+        Assert.Equal(1, e.Captured.Count)
+        Assert.Equal("otto", e.Captured.["actor"])
     | o -> Assert.Fail(sprintf "expected Got(Some) for seq 2, got %A" o)
 
     match run log (DbCommand.Get 99L) with

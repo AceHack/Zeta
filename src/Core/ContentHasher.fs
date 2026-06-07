@@ -11,11 +11,7 @@ open System
 /// adapter behind this port *without touching callers* and with the external dependency isolated to its
 /// adapter; SHA-256, etc. equally conform. `ZSetMerkle.rootWith` / `ContentStore.create` already take the
 /// hash as a function — `IContentHasher.Hash` IS that function, now behind a named, ownable boundary.
-type IContentHasher =
-    /// A stable name for the algorithm (for golden-vector labelling + diagnostics).
-    abstract member Name: string
-    /// Hash bytes to a `MerkleHash` content address.
-    abstract member Hash: byte[] -> MerkleHash
+// IContentHasher is defined in Zeta.Core.Abstractions C# project.
 
 [<RequireQualifiedAccess>]
 module ContentHasher =

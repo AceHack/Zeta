@@ -89,7 +89,11 @@ type RecoverableSpine<'K when 'K : comparison>
             let! resolved =
                 match pointer with
                 | Some p -> Task.FromResult(Some p)
-                | None -> snap.LatestAsync ct
+                | None ->
+                    task {
+                        let! latestSnap = snap.LatestAsync ct
+                        return Option.ofObj latestSnap
+                    }
             let! baseState, baseSeq =
                 match resolved with
                 | Some p ->

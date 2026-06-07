@@ -36,26 +36,7 @@ open System.Runtime.CompilerServices
 ///   - IPFS DAG (content-addressed Merkle DAGs)
 ///   - Xia et al. "FastCDC" USENIX ATC 2016 (the chunker we pair with)
 
-
-/// A Merkle hash — 128 bits wrapped in a struct for zero-alloc
-/// passing and equality checks.
-[<Struct; IsReadOnly; CustomEquality; NoComparison>]
-type MerkleHash =
-    val Hi: uint64
-    val Lo: uint64
-    new(hi: uint64, lo: uint64) = { Hi = hi; Lo = lo }
-
-    override this.Equals(other) =
-        match other with
-        | :? MerkleHash as h -> this.Hi = h.Hi && this.Lo = h.Lo
-        | _ -> false
-
-    override this.GetHashCode() = int (this.Hi ^^^ this.Lo)
-
-    static member Zero = MerkleHash(0UL, 0UL)
-
-    /// Hex representation for log/diagnostic output.
-    member this.ToHex() = $"{this.Hi:x16}{this.Lo:x16}"
+// MerkleHash is defined in Zeta.Core.Abstractions C# project.
 
 
 [<RequireQualifiedAccess>]

@@ -14,49 +14,8 @@ open System.Threading.Tasks
 /// (e.g. "clock", "seed"); values are the byte-verified-serializable form re-fed
 /// on replay. (Stored as string here — v1; the disk-backed log will route this
 /// through the byte-verified canonical codec behind the serialization seam.)
-type DeltaLogEntry<'K when 'K : comparison> =
-    { Seq: int64
-      Delta: ZSet<'K>
-      Captured: Map<string, string> }
-
-
-/// **Append-only delta log** — the durable-tier mechanism for "persist inputs,
-/// recompute derived". Single-writer per agent shard (matches the writer-actor
-/// model: one clone writes its shard), so ordering is a local total order.
-///
-/// `ReplayAsync` returns the tail (seq > `fromSeqExclusive`) in seq order, which
-/// recovery folds through the deterministic dataflow after restoring a snapshot.
-/// (v1 returns an array — the live log between snapshots is bounded by snapshot
-/// cadence; a streaming `IAsyncEnumerable` variant can come later if needed.)
-///
-/// **Backends map onto this abstraction differently:**
-///   - *Filesystem* — builds the log/history/branch/merge itself (the hard way).
-///   - *Git-native* — IS git: `AppendAsync` = a commit (the delta is the committed
-///     content), recovery walk = `git log` over the commit DAG (history = the log
-///     for free), branches = relativistic frames/shards, Z-set **retraction** =
-///     appending the inverse delta as a new commit (git never rewrites history —
-///     Landauer-honest; Memory-Preservation §5), cross-branch merge = MRDT
-///     three-way via git's LCA. Endgame: Zeta is a git server, so the DB and the
-///     git remote are the same thing.
-type IDeltaLog<'K when 'K : comparison> =
-    /// Append a committed delta; returns the assigned sequence number (monotonic,
-    /// starting at 1). `captured` carries any non-determinism for replay.
-    abstract AppendAsync:
-        delta: ZSet<'K> * captured: Map<string, string> * ct: CancellationToken
-            -> ValueTask<int64>
-    /// Replay entries with seq strictly greater than `fromSeqExclusive`, in order.
-    abstract ReplayAsync:
-        fromSeqExclusive: int64 * ct: CancellationToken
-            -> ValueTask<DeltaLogEntry<'K>[]>
-    /// Highest assigned sequence number (0 if empty).
-    abstract HighWater: int64
-    /// GC entries with seq ≤ `throughSeqInclusive` — the log tail a durable
-    /// snapshot has already absorbed. SAFETY: only call with a seq that a
-    /// persisted snapshot covers; afterward recovery MUST start from a snapshot
-    /// pointer whose `Seq` ≥ the truncation point (the pre-snapshot history is
-    /// gone). `HighWater` is unaffected (sequence numbers never rewind).
-    abstract TruncateAsync:
-        throughSeqInclusive: int64 * ct: CancellationToken -> ValueTask
+type DeltaLogEntry<'K when 'K : comparison> = DeltaLogEntry<'K, ZSet<'K>>
+type IDeltaLog<'K when 'K : comparison> = IDeltaLog<'K, ZSet<'K>>
 
 
 /// In-memory delta log — the reference implementation + the DST/test substrate.
@@ -73,7 +32,7 @@ type InMemoryDeltaLog<'K when 'K : comparison>() =
             let seq =
                 lock gate (fun () ->
                     nextSeq <- nextSeq + 1L
-                    entries.Add { Seq = nextSeq; Delta = delta; Captured = captured }
+                    entries.Add(DeltaLogEntry<'K>(nextSeq, delta, captured))
                     nextSeq)
             ValueTask<int64>(seq)
 

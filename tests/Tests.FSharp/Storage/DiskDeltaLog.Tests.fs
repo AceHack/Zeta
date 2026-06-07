@@ -29,7 +29,7 @@ type private FixedBytesEntryCodec(bytesPerDelta: int) =
             System.BitConverter.GetBytes(entry.Seq).CopyTo(b, 0)
             b
         member _.Decode bytes =
-            { Seq = System.BitConverter.ToInt64(bytes, 0); Delta = ZSet<int>.Empty; Captured = Map.empty }
+            DeltaLogEntry<int, ZSet<int>>(System.BitConverter.ToInt64(bytes, 0), ZSet<int>.Empty, Map.empty)
 
 let private withDir name (f: string -> unit) =
     let dir = DeterministicTestPath.nextDir name

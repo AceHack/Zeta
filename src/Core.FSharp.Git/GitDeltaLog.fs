@@ -147,7 +147,7 @@ type GitDeltaLog<'K when 'K : comparison>
                         match tip with
                         | Some c -> TreeDefinition.From c.Tree
                         | None -> TreeDefinition()
-                    let blob = GitBackend.createBlob repo (encodeEntry { Seq = s; Delta = delta; Captured = captured })
+                    let blob = GitBackend.createBlob repo (encodeEntry (DeltaLogEntry<'K>(s, delta, captured)))
                     td.Add(entryPath s, blob, Mode.NonExecutableFile) |> ignore
                     let tree = repo.ObjectDatabase.CreateTree td
                     let commit = commitTree tree (sprintf "delta seq=%d" s) (Option.toList tip)

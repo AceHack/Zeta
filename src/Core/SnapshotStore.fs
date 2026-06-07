@@ -10,22 +10,7 @@ open System.Threading.Tasks
 /// A durable pointer to a snapshot: the store handle + the delta-log sequence the
 /// snapshot covers. Recovery needs only this + the log to rebuild. The handle is
 /// store-specific (an int64 id in memory; a stable filename on disk).
-type SnapshotPointer = { Handle: obj; Seq: int64 }
-
-
-/// **Snapshot store with stable, manifest-tracked addressing.** Distinct from the
-/// spill-oriented `IAsyncBackingStore`: a snapshot store persists the consolidated
-/// state at a known sequence AND records the latest in a durable **manifest**, so
-/// `SnapshotPointer` survives a process restart (`LatestAsync` reads it back). This
-/// is the fix for the per-instance-GUID gap — snapshot+tail recovery now works
-/// across restarts, not just full log replay.
-type ISnapshotStore<'K when 'K : comparison> =
-    /// Persist `state` at `seq`; update the durable manifest; return the pointer.
-    abstract WriteAsync: seq: int64 * state: ZSet<'K> * ct: CancellationToken -> Task<SnapshotPointer>
-    /// Load a snapshot by pointer.
-    abstract ReadAsync: pointer: SnapshotPointer * ct: CancellationToken -> Task<ZSet<'K>>
-    /// The latest snapshot pointer from the manifest, or None if none written.
-    abstract LatestAsync: ct: CancellationToken -> Task<SnapshotPointer option>
+type ISnapshotStore<'K when 'K : comparison> = ISnapshotStore<'K, ZSet<'K>>
 
 
 /// In-memory snapshot store — the reference + test substrate. The "manifest" is a
@@ -38,7 +23,7 @@ type InMemorySnapshotStore<'K when 'K : comparison>() =
     let mutable latest : SnapshotPointer option = None
     interface ISnapshotStore<'K> with
         member _.WriteAsync(seq, state, _ct) =
-            let p = { Handle = box seq; Seq = seq }
+            let p = SnapshotPointer(box seq, seq)
             lock gate (fun () ->
                 store.[seq] <- state
                 latest <- Some p)
@@ -47,7 +32,7 @@ type InMemorySnapshotStore<'K when 'K : comparison>() =
             let seq = pointer.Handle :?> int64
             Task.FromResult(lock gate (fun () -> store.[seq]))
         member _.LatestAsync(_ct) =
-            Task.FromResult(lock gate (fun () -> latest))
+            Task.FromResult(match latest with Some p -> p | None -> null)
 
 
 /// Disk snapshot store — stable filenames (`snapshot-{seq:020}.snap`) + a durable
@@ -91,7 +76,7 @@ type DiskSnapshotStore<'K when 'K : comparison>
                 m.["seq"] <- string seq
                 m.["file"] <- file
                 do! writeAtomicAsync manifestPath (JsonSerializer.SerializeToUtf8Bytes m) ct
-                return { Handle = box file; Seq = seq }
+                return SnapshotPointer(box file, seq)
             }
 
         member _.ReadAsync(pointer, ct) =
@@ -104,13 +89,13 @@ type DiskSnapshotStore<'K when 'K : comparison>
         member _.LatestAsync(ct) =
             task {
                 if not (File.Exists manifestPath) then
-                    return None
+                    return null
                 else
                     let! bytes = File.ReadAllBytesAsync(manifestPath, ct)
                     let m = JsonSerializer.Deserialize<Dictionary<string, string>> bytes
                     match m with
-                    | null -> return None
+                    | null -> return null
                     | _ ->
                         let seq = int64 m.["seq"]
-                        return Some { Handle = box m.["file"]; Seq = seq }
+                        return SnapshotPointer(box m.["file"], seq)
             }

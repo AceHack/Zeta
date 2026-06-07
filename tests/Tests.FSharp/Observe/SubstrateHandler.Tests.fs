@@ -8,6 +8,11 @@ open Zeta.Core.FSharp.ObserveBridge
 
 module E = Zeta.Core.FSharp.ObserveBridge.Effects
 
+let tryFind (key: string) (dict: System.Collections.Generic.IReadOnlyDictionary<string, string>) =
+    match dict.TryGetValue key with
+    | true, v -> Some v
+    | _ -> None
+
 // ═══════════════════════════════════════════════════════════════════
 // Bridge D (substrate) — SubstrateEffectHandler. v1 wires PersistFerry (marker + dedicated
 // ferry stream): content from the bus seam -> appended to an IDeltaLog<string> ferry stream.
@@ -30,8 +35,8 @@ let ``PersistFerry appends the ferried content to the dedicated ferry stream`` (
     Assert.Equal<string list>([ "verbatim ferry payload" ], ferryContents log)
     // the ferry entry is attributed to the owning persona.
     let captured = (log.ReplayAsync(0L, ct).AsTask().Result).[0].Captured
-    Assert.Equal(Some "otto", Map.tryFind "persona" captured)
-    Assert.Equal(Some "persona", Map.tryFind "ferryType" captured)  // persona-ferry = one ferry TYPE
+    Assert.Equal(Some "otto", tryFind "persona" captured)
+    Assert.Equal(Some "persona", tryFind "ferryType" captured)  // persona-ferry = one ferry TYPE
 
 [<Fact>]
 let ``PersistFerry with no ferried content skips and appends nothing`` () =
@@ -128,8 +133,8 @@ let ``EmitResponse appends the Agent reply to the persona response stream, attri
     Assert.Equal(E.Executed, (E.runAsync h E.EmitResponse ct).Result)
     Assert.Equal<string list>([ "here is my reply" ], responseEntries rlog)
     let captured = (rlog.ReplayAsync(0L, ct).AsTask().Result).[0].Captured
-    Assert.Equal(Some "response", Map.tryFind "kind" captured)
-    Assert.Equal(Some "otto", Map.tryFind "persona" captured)
+    Assert.Equal(Some "response", tryFind "kind" captured)
+    Assert.Equal(Some "otto", tryFind "persona" captured)
 
 [<Fact>]
 let ``EmitResponse with no reply skips and sends nothing`` () =
@@ -176,8 +181,8 @@ let ``ExtendGrammar appends the new action to the grammar stream, attributed kin
     Assert.Equal(E.Executed, (E.runAsync h (E.ExtendGrammar(item "g1")) ct).Result)
     Assert.Equal<string list>([ "new action: archive(item)" ], ferryContents glog)
     let captured = (glog.ReplayAsync(0L, ct).AsTask().Result).[0].Captured
-    Assert.Equal(Some "grammar-extension", Map.tryFind "kind" captured)
-    Assert.Equal(Some "g1", Map.tryFind "item" captured)
+    Assert.Equal(Some "grammar-extension", tryFind "kind" captured)
+    Assert.Equal(Some "g1", tryFind "item" captured)
 
 [<Fact>]
 let ``ExtendGrammar above the TUNABLE threshold escalates to needs-authorization (nothing persisted)`` () =

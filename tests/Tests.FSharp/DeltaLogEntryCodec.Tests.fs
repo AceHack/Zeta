@@ -22,7 +22,7 @@ let private keyDec (dv: DynamicValue) : string =
     | o -> failwithf "key not String: %A" o
 
 let private entry seq pairs captured : DeltaLogEntry<string> =
-    { Seq = seq; Delta = ZSet.ofSeq pairs; Captured = Map.ofList captured }
+    DeltaLogEntry<string>(seq, ZSet.ofSeq pairs, Map.ofList captured)
 
 let private samples : DeltaLogEntry<string> list =
     [ entry 0L [] []                                            // empty entry
@@ -95,7 +95,7 @@ let private entryOfJson (e: JsonElement) : DeltaLogEntry<string> =
     let captured =
         [ for p in (e.GetProperty "captured").EnumerateObject() -> p.Name, p.Value.GetString() ]
         |> Map.ofList
-    { Seq = seq; Delta = delta; Captured = captured }
+    DeltaLogEntry<string>(seq, delta, captured)
 
 [<Fact>]
 let ``Golden treaty: F# reproduces the shared seed's canonical CBOR + round-trips it`` () =

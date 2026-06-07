@@ -77,7 +77,7 @@ type DiskDeltaLog<'K when 'K : comparison>
     interface IDeltaLog<'K> with
         member _.AppendAsync(delta, captured, ct) =
             let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
-            let bytes = frame { Seq = seq; Delta = delta; Captured = captured }
+            let bytes = frame (DeltaLogEntry<'K>(seq, delta, captured))
             task {
                 do! writeFileAsync (nameFor seq) bytes ct
                 return seq
@@ -252,7 +252,7 @@ type GroupCommitDiskDeltaLog<'K when 'K : comparison>
                 ValueTask<int64>(Task.FromCanceled<int64> ct)
             else
                 let seq = lock gate (fun () -> nextSeq <- nextSeq + 1L; nextSeq)
-                let payload = framePayload { Seq = seq; Delta = delta; Captured = captured }
+                let payload = framePayload (DeltaLogEntry<'K>(seq, delta, captured))
                 let req = { Seq = seq; Record = frameRecord payload }
                 throttler.ProcessAsync(req, CancellationToken.None) |> ValueTask<int64>
 

@@ -55,7 +55,7 @@ type GitSnapshotStore<'K when 'K : comparison>
                     let tree = repo.ObjectDatabase.CreateTree td
                     let commit = commitTree tree (sprintf "snapshot seq=%d" seq) (Option.toList tip)
                     GitBackend.updateRef repo refName commit
-                    { Handle = box file; Seq = seq })
+                    SnapshotPointer(box file, seq))
             Task.FromResult pointer
 
         member _.ReadAsync(pointer, ct) =
@@ -76,13 +76,13 @@ type GitSnapshotStore<'K when 'K : comparison>
             let pointer =
                 lock gate (fun () ->
                     match GitBackend.tryTip repo refName with
-                    | None -> None
+                    | None -> null
                     | Some c ->
                         match c.Tree.[manifestPath] with
-                        | null -> None
+                        | null -> null
                         | te ->
                             let m = GitBackend.mapOfJson (GitBackend.readBlob te)
                             match Map.tryFind "seq" m, Map.tryFind "file" m with
-                            | Some s, Some f -> Some { Handle = box f; Seq = int64 s }
-                            | _ -> None)
+                            | Some s, Some f -> SnapshotPointer(box f, int64 s)
+                            | _ -> null)
             Task.FromResult pointer
