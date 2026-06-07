@@ -157,6 +157,14 @@ jobs:
         working-directory: tools/lean4
         run: lake env lean Safety/ChildFloor.lean
 
+      - name: Type-check Safety/Bifurcation.lean
+        # Bifurcation / split-brain reconciliation CONVERGENCE (Face-1, Soraya-routed to Lean as a
+        # corollary of the proven CRDT/G-Set floor): a join-semilattice merge is order-independent +
+        # absorbing, so two split cells converge to the same state. The CONSERVATION face (partition /
+        # no-double-spend / divvy-liveness) is the interleaving property in tools/tla/specs/Bifurcation.tla.
+        working-directory: tools/lean4
+        run: lake env lean Safety/Bifurcation.lean
+
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
@@ -173,6 +181,8 @@ jobs:
             | cat Privacy/UnboundedNeedsInfinitePrivacy.lean - > /tmp/unbounded_axiom_audit.lean
           printf '#print axioms Zeta.ChildFloor.denied_never_executed\n#print axioms Zeta.ChildFloor.executed_admit\n#print axioms Zeta.ChildFloor.binding_denied_never_executed\n#print axioms Zeta.ChildFloor.binding_respects_gate\n' \
             | cat Safety/ChildFloor.lean - > /tmp/childfloor_axiom_audit.lean
+          printf '#print axioms Zeta.Bifurcation.reconcile_converges\n#print axioms Zeta.Bifurcation.reconcile_absorb\n' \
+            | cat Safety/Bifurcation.lean - > /tmp/bifurcation_axiom_audit.lean
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
@@ -191,6 +201,10 @@ jobs:
           fi
           if lake env lean /tmp/childfloor_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ChildFloor depends on sorryAx — the child-floor proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/bifurcation_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::Bifurcation depends on sorryAx — the reconciliation-convergence proof regressed to sorry/admit"
             exit 1
           fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."

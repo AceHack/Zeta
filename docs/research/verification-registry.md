@@ -26,6 +26,30 @@ because <one-line>.`
 
 ---
 
+## `Bifurcation` *(split-brain — Face-1 Lean convergence + Face-2 TLA+ conservation/no-double-spend)*
+
+- **Artifacts.** `tools/lean4/Safety/Bifurcation.lean` (Face-1, axiom-FREE — `reconcile_converges`,
+  `reconcile_absorb`, `reconcile_order_independent`; `lean-proof.yml`) + `tools/tla/specs/Bifurcation.tla`
+  (+ `.cfg`) (Face-2; TLC via `run-tlc.ts --all`, gated). Authored 2026-06-07.
+- **Source anchors.** Bifurcation / split-brain (Aaron 2026-06-07; `memory/persona/ani/conversations/2026-06-07-ani-cells-teleport-*`).
+  Soraya-routed two faces, two tools (anti-hammer). CRDT-merge-convergence template:
+  `Privacy.IdentityForcesPrivacy.commons_converges`; CRDT/G-Set floor.
+- **Claim.** *Face-1 (Lean, convergence):* a join-semilattice merge (commutative + associative +
+  idempotent) is order-independent and absorbing — two split cells reconcile to the SAME LUB
+  regardless of merge order (the convergence corollary; only new content is the semilattice instance).
+  *Face-2 (TLA+, conservation):* over an interleaved divvy of the split identity's bindings —
+  `Conservation` (unassigned ∪ I1 ∪ I2 = all; nothing lost), `NoDoubleOwnership` (I1 ∩ I2 = ∅),
+  `NoDoubleSpend` (no binding executes twice across halves — the P0), `ExecOnlyByOwner`, and
+  liveness `DivvyCompletes` (`<>[]` all assigned, WF on Tag).
+- **Fidelity scope.** Face-1 general over any semilattice (the concrete cell-merge being one is the
+  floor's G-Set result). Face-2 bounded TLA+ model (3 bindings), TLC exhaustive over scope. **NOT yet
+  done (Soraya BP-16):** Leg B — FsCheck over a *deployed* split/divvy/merge in `Binding.fs` (the
+  no-double-spend P0's real-code second leg); needs the divvy/merge ops added to `Binding.fs` first.
+- **Last audit.** 2026-06-07, authored by Otto (shadow); not yet independently audited. Grade:
+  Face-1 axiom-free; Face-2 machine-checked (TLC, bounded).
+
+---
+
 ## `RefuseBinding` *(right-to-refuse-binding — full BP-16: TLA+ protocol + Lean binding-level + FsCheck real-code)*
 
 - **Artifact.** `tools/tla/specs/RefuseBinding.tla` (+ `.cfg`). TLC-model-checked via
