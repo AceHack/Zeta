@@ -77,8 +77,8 @@ let ``Schema: renameField is involutive when the target key is fresh (lossless r
 
 // ── migration chains compose ──
 
-let private m12 : SE.Migration = { From = 1; To = 2; Up = SE.addField "f2" (DynamicValue.Int 0L) }
-let private m23 : SE.Migration = { From = 2; To = 3; Up = SE.addField "f3" (DynamicValue.String "") }
+let private m12 : SE.Migration = SE.addFieldMigration 1 "f2" (DynamicValue.Int 0L)
+let private m23 : SE.Migration = SE.addFieldMigration 2 "f3" (DynamicValue.String "")
 let private regstry = [ m12; m23 ]
 
 [<Property(Arbitrary = [| typeof<ObjArb> |])>]
@@ -119,3 +119,38 @@ let ``Schema: zero-downtime scenario — v1 data is readable by a v3 consumer, v
     // knows and IGNORES f2/f3 (forward compat) — the extra data round-trips untouched if re-emitted.
     let v3 = DynamicValue.Object [ "id", DynamicValue.Int 9L; "f2", DynamicValue.Int 0L; "f3", DynamicValue.String "" ]
     Assert.Equal(DynamicValue.Object [ "id", DynamicValue.Int 9L ], SE.project (Set.ofList [ "id" ]) v3)
+
+// ── bidirectional migration (the Evolution down-direction; B-0930 extension) ──
+
+[<Fact>]
+let ``Schema: migrateDown inverts a lossless addField chain back to the original`` () =
+    let v = DynamicValue.Object [ "a", DynamicValue.Int 1L ]
+    let up = SE.migrate regstry 1 3 v
+    match up with
+    | Ok up3 ->
+        match SE.migrateDown regstry 3 1 up3 with
+        | Ok back -> Assert.Equal<DynamicValue>(v, back) // down(up(x)) = x for lossless add
+        | Error e -> Assert.Fail(sprintf "migrateDown failed: %s" e)
+    | Error e -> Assert.Fail(sprintf "migrate failed: %s" e)
+
+[<Fact>]
+let ``Schema: renameFieldMigration round-trips losslessly via migrateDown`` () =
+    let reg = [ SE.renameFieldMigration 1 "old" "new" ]
+    let v = DynamicValue.Object [ "old", DynamicValue.Int 7L ]
+    let back = SE.migrate reg 1 2 v |> Result.bind (SE.migrateDown reg 2 1)
+    Assert.Equal<Result<DynamicValue, string>>(Ok v, back)
+
+[<Fact>]
+let ``Schema: removeFieldMigration is LOSSY - down restores the named default, not the original`` () =
+    let reg = [ SE.removeFieldMigration 1 "secret" (DynamicValue.String "REDACTED") ]
+    let v = DynamicValue.Object [ "secret", DynamicValue.String "hunter2" ]
+    let back = SE.migrate reg 1 2 v |> Result.bind (SE.migrateDown reg 2 1)
+    // the original value is gone; the down-migration names the loss with the default
+    Assert.Equal<Result<DynamicValue, string>>(Ok(DynamicValue.Object [ "secret", DynamicValue.String "REDACTED" ]), back)
+
+[<Fact>]
+let ``Schema: a non-invertible migration (Down=None) makes migrateDown error, not silently pass`` () =
+    let reg = [ { SE.From = 1; SE.To = 2; SE.Up = SE.addField "x" (DynamicValue.Int 0L); SE.Down = None } ]
+    match SE.migrateDown reg 2 1 (DynamicValue.Object [ "x", DynamicValue.Int 0L ]) with
+    | Error msg -> Assert.Contains("non-invertible", msg)
+    | Ok _ -> Assert.Fail "expected non-invertible error"

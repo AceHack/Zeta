@@ -21,11 +21,16 @@ namespace Zeta.Core
 [<RequireQualifiedAccess>]
 module SchemaEvolution =
 
-    /// An adjacent-version migration: transforms a value of shape `From` into shape `To = From+1`.
+    /// An adjacent-version migration: `Up` transforms shape `From` into `To = From+1`; `Down` is the
+    /// inverse (`To -> From`) used for zero-downtime ROLLBACK. `Down = None` means **non-invertible** —
+    /// rollback requires compensation, not an inverse (the invertibility taxonomy: lossless / lossy / none).
+    /// Use the smart constructors (`addFieldMigration` / `renameFieldMigration` / `removeFieldMigration`)
+    /// to get a correct `Up`+`Down` pair; the bare record stays available for custom migrations.
     type Migration =
         { From: int
           To: int
-          Up: DynamicValue -> DynamicValue }
+          Up: DynamicValue -> DynamicValue
+          Down: (DynamicValue -> DynamicValue) option }
 
     /// Ensure `key` is present, supplying `def` when absent (BACKWARD compat: a new reader gives
     /// old data a default for a field it didn't have). Idempotent; preserves existing value + order.
@@ -57,11 +62,29 @@ module SchemaEvolution =
         | DynamicValue.Object kvs -> DynamicValue.Object(kvs |> List.filter (fun (k, _) -> knownKeys.Contains k))
         | other -> other
 
+    /// `addField` is **lossless-invertible**: the inverse is `removeField key` — removing a field the
+    /// up-migration added restores the prior shape exactly, so `down(up(x)) = x`.
+    let addFieldMigration (fromV: int) (key: string) (def: DynamicValue) : Migration =
+        { From = fromV; To = fromV + 1; Up = addField key def; Down = Some(removeField key) }
+
+    /// `renameField` is **lossless-invertible**: the inverse is the rename swapped.
+    let renameFieldMigration (fromV: int) (oldKey: string) (newKey: string) : Migration =
+        { From = fromV
+          To = fromV + 1
+          Up = renameField oldKey newKey
+          Down = Some(renameField newKey oldKey) }
+
+    /// `removeField` is **LOSSY**: the removed value cannot be recovered, so the down-migration restores
+    /// only `downDefault` (it NAMES the loss rather than pretending to invert). Round-trip is therefore
+    /// `down(up(x)) = x` only on the fields other than `key`; `key` returns as `downDefault`.
+    let removeFieldMigration (fromV: int) (key: string) (downDefault: DynamicValue) : Migration =
+        { From = fromV; To = fromV + 1; Up = removeField key; Down = Some(addField key downDefault) }
+
     /// Migrate `value` from version `fromV` up to `toV` by composing the adjacent migrations in
     /// `migrations` (each must step From -> From+1). Returns Error if a step is missing or a
-    /// downgrade is requested (the seed is forward-only; downgrade = a separate Down direction).
+    /// downgrade is requested (use `migrateDown` for the inverse direction).
     let migrate (migrations: Migration list) (fromV: int) (toV: int) (value: DynamicValue) : Result<DynamicValue, string> =
-        if toV < fromV then Error(sprintf "downgrade %d -> %d not supported in the evolution seed" fromV toV)
+        if toV < fromV then Error(sprintf "downgrade %d -> %d not supported by migrate; use migrateDown" fromV toV)
         else
             let rec step cur v =
                 if cur = toV then Ok v
@@ -69,4 +92,25 @@ module SchemaEvolution =
                     match migrations |> List.tryFind (fun m -> m.From = cur && m.To = cur + 1) with
                     | Some m -> step (cur + 1) (m.Up v)
                     | None -> Error(sprintf "no migration registered from version %d to %d" cur (cur + 1))
+            step fromV value
+
+    /// Migrate `value` DOWN from `fromV` to `toV` (`toV <= fromV`) by composing the registered `Down`
+    /// inverses in reverse order. Returns Error if a step is missing OR is **non-invertible** (`Down = None`
+    /// — rollback there requires compensation, not an inverse). This is the zero-downtime ROLLBACK path:
+    /// rollback by replaying inverses, distinct from "root selection" rollback at the store layer.
+    let migrateDown (migrations: Migration list) (fromV: int) (toV: int) (value: DynamicValue) : Result<DynamicValue, string> =
+        if toV > fromV then Error(sprintf "migrateDown requires toV <= fromV, got %d -> %d" fromV toV)
+        else
+            let rec step cur v =
+                if cur = toV then Ok v
+                else
+                    match migrations |> List.tryFind (fun m -> m.To = cur && m.From = cur - 1) with
+                    | Some m ->
+                        match m.Down with
+                        | Some down -> step (cur - 1) (down v)
+                        | None ->
+                            Error(
+                                sprintf "migration %d -> %d is non-invertible (rollback needs compensation, not an inverse)" m.From m.To
+                            )
+                    | None -> Error(sprintf "no migration registered from version %d to %d" (cur - 1) cur)
             step fromV value

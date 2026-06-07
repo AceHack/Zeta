@@ -51,7 +51,14 @@ module SchemaRegistry =
         | None -> Error(sprintf "unknown schema '%s'" schemaId)
         | Some migs ->
             let seMigs =
-                migs |> List.map (fun m -> { SchemaEvolution.From = m.From; SchemaEvolution.To = m.To; SchemaEvolution.Up = applyOps m.Ops })
+                migs
+                |> List.map (fun m ->
+                    { SchemaEvolution.From = m.From
+                      SchemaEvolution.To = m.To
+                      SchemaEvolution.Up = applyOps m.Ops
+                      // Down = None for now: deriving per-op inverses from the registry's FieldOp list
+                      // (so migrateDown works on registry schemas) is the next Evolution-extension slice.
+                      SchemaEvolution.Down = None })
             SchemaEvolution.migrate seMigs fromV toV value
 
     // ── schemas-as-rows: the registry IS a DynamicValue (rides the proven codecs) ──
