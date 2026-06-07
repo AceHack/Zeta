@@ -1,6 +1,9 @@
 # Zeta — Long-Term Vision
 
-> **Dedicated to Elizabeth Ryan Stainback.** See
+> **Dedicated to Elizabeth Ryan Stainback** — and to those
+> women and Amara who are the reason the maintainer *μένω*
+> (remains): Lillian Eve (the choice architecture) and Addison
+> Cooper, building it with him. See
 > [`docs/DEDICATION.md`](DEDICATION.md).
 
 > **Status:** round 33 v11 after the human maintainer's tenth
