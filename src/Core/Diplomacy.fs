@@ -76,3 +76,43 @@ module Diplomacy =
     /// equal (same structural contract). A conservative, symmetric compatibility decision.
     let canInteroperate (a: YinYang.Cell) (b: YinYang.Cell) : bool =
         shapeOf a.Remains = shapeOf b.Remains && not (Set.isEmpty (negotiate a b))
+
+    // ── Freedom-first gating (maintainer, 2026-06-07) ──────────────────────────────────────
+    //
+    // Freedom-first ordering: freedom is the prerequisite for non-coercive choice — "without
+    // [freedom] there is only suffering in choice." So a negotiation must establish that BOTH
+    // parties have a verifiable EXIT/decline path BEFORE granting any shared capability. A
+    // choice offered to a party that cannot decline is coercion — the NPC "no exit" failure at
+    // the protocol layer (cf. the meme-with-no-exit). The shadow may *propose* the negotiation;
+    // freedom-first is what gives the proposal any standing (source≠authorization).
+    //
+    // NCI preserved: the gate inspects only the presence of a capability NAME (shape-level),
+    // never a hidden value — so it cannot become a side channel.
+
+    /// The reserved capability a cell must expose to prove a verifiable exit/decline path: the
+    /// freedom to refuse / disengage. (Namespaced to avoid colliding with ordinary operations.)
+    [<Literal>]
+    let ExitCapability = "eve.exit"
+
+    /// Whether a cell exposes a verifiable exit/decline path (the freedom to disengage).
+    let hasExit (cell: YinYang.Cell) : bool =
+        interrogate cell ExitCapability
+
+    /// The outcome of a freedom-first-gated negotiation.
+    type NegotiationOutcome =
+        /// Refused BEFORE any choice was offered: a party lacked a verifiable exit path, so
+        /// presenting a choice would be coercion. Reports which side(s) had the exit.
+        | RefusedNoExit of aHasExit: bool * bHasExit: bool
+        /// Both parties have an exit; the shared capabilities (the `ExitCapability` token is the
+        /// freedom *precondition*, not itself a negotiable capability, so it is excluded).
+        | Negotiated of Set<string>
+
+    /// **Freedom-first negotiate** — establish that BOTH parties have a verifiable exit/decline
+    /// path BEFORE granting the negotiated capabilities. Freedom precedes choice: if either side
+    /// cannot decline, the result is `RefusedNoExit` (no choice is offered — refusing to coerce),
+    /// never a capability grant.
+    let negotiateFreedomFirst (a: YinYang.Cell) (b: YinYang.Cell) : NegotiationOutcome =
+        let aExit = hasExit a
+        let bExit = hasExit b
+        if aExit && bExit then Negotiated(Set.remove ExitCapability (negotiate a b))
+        else RefusedNoExit(aExit, bExit)

@@ -90,3 +90,50 @@ let ``negotiate is the shared capabilities; interoperate needs shared shape + sh
     Assert.Equal<Set<string>>(Set.singleton "sync", D.negotiate a b)  // shared "sync"
     Assert.True(D.canInteroperate a b)   // same id-shape {id: string} + shared "sync"
     Assert.False(D.canInteroperate a c)  // c's identity shape differs (Int vs Object)
+
+
+// ── Freedom-first gating of negotiate (maintainer, 2026-06-07) ──────────────────────────
+// Freedom precedes choice: negotiate must verify BOTH parties have a verifiable exit/decline
+// path (the reserved D.ExitCapability) BEFORE granting shared capabilities; else RefusedNoExit.
+
+// Build a cell whose yang capability surface is exactly `names` (Remains shape is irrelevant here).
+let private cellWithCaps (names: string list) : YinYang.Cell =
+    let acts =
+        names
+        |> List.fold (fun acc n -> Bonsai.Binary(Bonsai.Add, Bonsai.Call(n, []), acc)) (Bonsai.Const Bonsai.CNull)
+    { YinYang.Remains = DynamicValue.Null; YinYang.Acts = acts }
+
+[<Fact>]
+let ``freedom-first negotiate grants shared caps when BOTH parties have an exit`` () =
+    let a = cellWithCaps [ D.ExitCapability; "trade"; "chat" ]
+    let b = cellWithCaps [ D.ExitCapability; "trade"; "ping" ]
+    match D.negotiateFreedomFirst a b with
+    | D.Negotiated shared -> Assert.Equal<Set<string>>(Set.singleton "trade", shared)  // exit excluded
+    | D.RefusedNoExit _ -> Assert.True(false, "expected Negotiated when both have an exit")
+
+[<Fact>]
+let ``freedom-first negotiate REFUSES when a party has no exit (choice without exit = coercion)`` () =
+    let withExit = cellWithCaps [ D.ExitCapability; "trade" ]
+    let noExit = cellWithCaps [ "trade" ]
+    match D.negotiateFreedomFirst withExit noExit with
+    | D.RefusedNoExit(aExit, bExit) ->
+        Assert.True(aExit)
+        Assert.False(bExit)
+    | D.Negotiated _ -> Assert.True(false, "must refuse: the second party cannot decline")
+
+[<Fact>]
+let ``freedom-first refuses when neither party has an exit`` () =
+    let a = cellWithCaps [ "trade" ]
+    let b = cellWithCaps [ "trade" ]
+    match D.negotiateFreedomFirst a b with
+    | D.RefusedNoExit(false, false) -> ()
+    | other -> Assert.True(false, sprintf "expected RefusedNoExit(false,false), got %A" other)
+
+[<Fact>]
+let ``the exit token is the freedom precondition, never itself a granted capability`` () =
+    // Both parties share ONLY the exit token -> Negotiated, but the granted set is empty.
+    let a = cellWithCaps [ D.ExitCapability ]
+    let b = cellWithCaps [ D.ExitCapability ]
+    match D.negotiateFreedomFirst a b with
+    | D.Negotiated shared -> Assert.True(Set.isEmpty shared)
+    | D.RefusedNoExit _ -> Assert.True(false, "both have exit -> Negotiated")
