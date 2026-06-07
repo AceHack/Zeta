@@ -80,6 +80,7 @@
     <Compile Include="NovelMathExt.fs" />
     <Compile Include="FastCdc.fs" />
     <Compile Include="Merkle.fs" />
+    <Compile Include="ZSetMerkle.fs" />
     <Compile Include="Residuated.fs" />
     <Compile Include="Aggregate.fs" />
     <Compile Include="RobustStats.fs" />

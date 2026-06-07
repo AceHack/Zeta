@@ -75,6 +75,7 @@
     <Compile Include="GSet.FourSer.Tests.fs" />
     <Compile Include="Clock.FullVertical.Tests.fs" />
     <Compile Include="Merkle.FullVertical.Tests.fs" />
+    <Compile Include="ZSetMerkle.Tests.fs" />
     <Compile Include="SerializationSeed.FullVertical.Tests.fs" />
     <Compile Include="Identity.FullVertical.Tests.fs" />
     <Compile Include="Predicate3.Tests.fs" />
