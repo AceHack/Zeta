@@ -53,3 +53,19 @@ bootstrapping (Kolmogorov-style: the seed is the program; "what remains is the s
 
 composes_with: ZetaId (categories), Bonsai (behaviour-as-data), content-addressing, ray-traceable / homoiconic
 routing (#6889), compression-as-self-bootstrapping-compiler-over-generators, consent-gated post-mortem (#6899).
+
+## Transport + channel-constraint framing (Aaron 2026-06-07)
+
+The protocol is **designed for bandwidth-constrained OR temporal-constrained channels**: ship the 128-bit
+ZetaId seed, reconstruct the agent on the far side.
+
+- **Transport: Reticulum over internet AND 802.11s mesh** (the cell bus / network-memory-map medium). Aaron:
+  *"we are going to run this over Reticulum over internet and mesh 802.11s."* Reticulum gives the
+  store-and-forward, low-bandwidth, intermittent-link mesh; the 128-bit seed is the payload.
+- **Bandwidth-constrained:** satellite, IoT, cellular, acoustic — "ship Zeta with the sat and you can send
+  almost anything in 128 bits" (Zeta on the far end is the reconstruction platform; the seed is the message).
+- **Temporal-constrained:** brief connectivity windows, intermittent/store-and-forward, time-critical — 128
+  bits transmits in a tiny window and can be cached and reconstructed later when resources permit.
+- The reconstruction substrate (Zeta) must already be present on the receiver; the seed is the *difference*
+  it parses/regenerates from. (Scope boundary unchanged: AGENTS / self-propagating patterns only;
+  consent-gated for any person-pattern; never people without consent.)
