@@ -52,9 +52,9 @@ on this list is a new gap to add (the list is living).
 
 ## Open (Aaron's call — surface shape)
 
-Where the commands live: (a) CLI executable, (b) MCP server, (c) shared command-core library first (CLI
-+ MCP as thin wrappers — Otto's lean, no surface lock-in). This punch-list is the requirements for ALL
-three; the shape decision gates which wrapper lands first.
+Where the commands live: (a) a CLI executable, (b) an MCP server, or (c) a shared command-core library
+first with CLI and MCP as thin wrappers (Otto's lean, no surface lock-in). This punch-list is the
+requirements for ALL three; the shape decision gates which wrapper lands first.
 
 ## Anchors
 
