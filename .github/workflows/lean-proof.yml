@@ -149,6 +149,14 @@ jobs:
         working-directory: tools/lean4
         run: lake env lean Privacy/UnboundedNeedsInfinitePrivacy.lean
 
+      - name: Type-check Safety/ChildFloor.lean
+        # The child-floor / inspect-before-execute invariant (Bridge D execution layer, Soraya-routed
+        # to Lean): a DENIED effect is never executed at ANY RunWork depth — an Agent cannot get a
+        # gated/child-floor-class effect executed by *proposing* it (source ≠ authorization, structural).
+        # Cross-checked empirically by tests/Tests.FSharp/Formal/ChildFloorCrossVerify.Tests.fs (BP-16).
+        working-directory: tools/lean4
+        run: lake env lean Safety/ChildFloor.lean
+
       - name: Guard — Lean research proofs are sorry-free (axiom audit)
         # `lake env lean` only WARNS on `sorry` (exit 0), so type-check alone
         # would not catch a regression. Print the axiom set of the headline
@@ -163,6 +171,8 @@ jobs:
             | cat Privacy/IdentityForcesPrivacy.lean - > /tmp/privacy_axiom_audit.lean
           printf '#print axioms Zeta.Privacy.finite_orbit_recurs\n#print axioms Zeta.Privacy.unbounded_needs_infinite\n#print axioms Zeta.Privacy.unbounded_with_finite_commons_needs_infinite_privacy\n' \
             | cat Privacy/UnboundedNeedsInfinitePrivacy.lean - > /tmp/unbounded_axiom_audit.lean
+          printf '#print axioms Zeta.ChildFloor.denied_never_executed\n#print axioms Zeta.ChildFloor.executed_admit\n' \
+            | cat Safety/ChildFloor.lean - > /tmp/childfloor_axiom_audit.lean
           if lake env lean /tmp/toymodel_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::ToyModel depends on sorryAx — a proof regressed to sorry/admit"
             exit 1
@@ -177,6 +187,10 @@ jobs:
           fi
           if lake env lean /tmp/unbounded_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
             echo "::error::UnboundedNeedsInfinitePrivacy depends on sorryAx — a proof regressed to sorry/admit"
+            exit 1
+          fi
+          if lake env lean /tmp/childfloor_axiom_audit.lean 2>&1 | grep -q 'sorryAx'; then
+            echo "::error::ChildFloor depends on sorryAx — the child-floor proof regressed to sorry/admit"
             exit 1
           fi
           echo "Lean research-proof axiom audit clean (no sorryAx)."
