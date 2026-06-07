@@ -1,11 +1,12 @@
 ---
 id: 081KTGSBXDC08QG0R000JGHFPJ
 type: task
-state: backlog
+state: done
 priority: P1
 slug: zeta-mcp-server-drive-the-command-verbs-as-native-tools-unbl
 title: "zeta MCP server — drive the command verbs as native tools (UNBLOCKED: project-level .mcp.json, check it in); the step that flips Otto's loop off git"
 created: 2026-06-07T10:17:00.076Z
+completed: 2026-06-07T10:23:31.533Z
 depends_on: []
 composes_with: ["081KTGPC2XP08QG0R000X8X1M9"]
 ---
@@ -62,3 +63,17 @@ as native tools instead of `Bash git …`). Builds on the command core (`DbComma
 
 - `src/Core/Command.fs` (DbCommand), `src/Core.Git/GitCommand.fs` + `CliParse.fs`, `tools/zeta-cli`
   (the CLI sibling). Roadmap #1 (no-git-CLI). Beacon: Model Context Protocol (Anthropic) — stdio JSON-RPC.
+
+## DONE (2026-06-07)
+
+Server delivered + smoke-tested + self-registered (#6782):
+- `tools/zeta-mcp` — minimal from-scratch MCP stdio server (newline-delimited JSON-RPC 2.0; no external
+  SDK). Tools over GitCommand: zeta_status/log/branch/checkout/commit. Smoke-tested end-to-end
+  (initialize / tools/list / tools/call → real git output via libgit2, zero git CLI).
+- `.mcp.json` (repo root) registers it (project-level check-in; blast radius cleared by Aaron).
+- **Activation is out-of-loop:** `dotnet build tools/zeta-mcp -c Release` + restart the session → the
+  `zeta_*` tools appear. (Otto can't self-restart, so the live "Otto drives via MCP" verification happens
+  on Aaron's next session.)
+
+Remaining (separate items, NOT this server): push/sync as a tool (credential source, Aaron's call) +
+the data-plane db-verbs as tools (zeta_append/history/get over DbCommand, needs a configured Log target).
