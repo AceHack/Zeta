@@ -1,4 +1,4 @@
-import type { ZetaObservation, ZetaId, Authority, Momentum } from "./types";
+import type { ZetaObservation, ZetaId, Authority, Momentum, Category, IdVersion, ZetaIdPayload } from "./types";
 
 const AUTHORITY_VALUES: Record<string, number> = {
   Simulated: 3,
@@ -85,6 +85,10 @@ export const DEFAULT_ENV: SimulationEnvironment = {
  * identical IDs.
  */
 export function pack(obs: ZetaObservation, env: SimulationEnvironment): ZetaId {
+  if (obs.category >= 9) {
+    throw new Error("ZetaObservation.category must be < 9 (0..8). Categories >= 9 are reserved for special layouts like ContentAddress.");
+  }
+
   let bits = 0n;
 
   bits = setBits(bits, BIT_MASKS.version.offset, BIT_MASKS.version.width, BigInt(obs.version));
@@ -165,4 +169,72 @@ function getAuthorityFromValue(value: number): Authority {
 function getMomentumFromValue(value: number): Momentum {
   const entry = Object.entries(MOMENTUM_VALUES).find(([, v]) => v === value);
   return entry ? { type: entry[0] as any } : { type: "Raw", value };
+}
+
+export function packGeneric(version: number, category: number, payload: bigint): ZetaId {
+  let bits = 0n;
+  bits = setBits(bits, BIT_MASKS.version.offset, BIT_MASKS.version.width, BigInt(version));
+  bits = setBits(bits, BIT_MASKS.category.offset, BIT_MASKS.category.width, BigInt(category));
+
+  // lower 65 bits of payload to bits 0..64
+  const lowMask = (1n << 65n) - 1n;
+  bits |= payload & lowMask;
+
+  // upper 54 bits of payload (65..118) mapped to bits 69..122
+  const highPart = (payload >> 65n) & ((1n << 54n) - 1n);
+  bits |= highPart << 69n;
+
+  return bits as ZetaId;
+}
+
+export function unpackGeneric(id: ZetaId): { version: IdVersion; category: Category; payload: bigint } {
+  const version = Number(getBits(id, BIT_MASKS.version.offset, BIT_MASKS.version.width)) as IdVersion;
+  const category = Number(getBits(id, BIT_MASKS.category.offset, BIT_MASKS.category.width)) as Category;
+
+  const lowMask = (1n << 65n) - 1n;
+  const lowPart = BigInt(id) & lowMask;
+
+  const highPart = (BigInt(id) >> 69n) & ((1n << 54n) - 1n);
+  const payload = lowPart | (highPart << 65n);
+
+  return { version, category, payload };
+}
+
+export function packPayload(payload: ZetaIdPayload, env: SimulationEnvironment): ZetaId {
+  switch (payload.type) {
+    case "Observation":
+      return pack(payload.value, env);
+    case "ContentAddress": {
+      const maxPayload = (1n << 119n) - 1n;
+      if (payload.payload > maxPayload) {
+        throw new Error("ContentAddress payload exceeds 119 bits.");
+      }
+      return packGeneric(payload.version, 9, payload.payload);
+    }
+    case "Generic": {
+      if (payload.category < 9 || payload.category === 9) {
+        throw new Error(`Generic payload category must be >= 10 (got ${payload.category}). Categories 0..8 are reserved for observations, and 9 is reserved for ContentAddress.`);
+      }
+      const maxPayload = (1n << 119n) - 1n;
+      if (payload.payload > maxPayload) {
+        throw new Error("Generic payload exceeds 119 bits.");
+      }
+      return packGeneric(payload.version, payload.category, payload.payload);
+    }
+    default: {
+      const _exhaustive: never = payload;
+      throw new Error(`Unknown payload type: ${JSON.stringify(_exhaustive)}`);
+    }
+  }
+}
+
+export function unpackPayload(id: ZetaId): ZetaIdPayload {
+  const { version, category, payload } = unpackGeneric(id);
+  if (category < 9) {
+    return { type: "Observation", value: unpack(id) };
+  } else if (category === 9) {
+    return { type: "ContentAddress", version, payload };
+  } else {
+    return { type: "Generic", version, category, payload };
+  }
 }

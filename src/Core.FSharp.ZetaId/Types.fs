@@ -30,6 +30,8 @@ type Category =
     | Bus = 6uy        // cross-machine agent comms (git-native bus spec, #6219)
     | Spawn = 7uy      // agent-spawning (backend-portable: GH Actions / Argo / GitLab)
     | WorkItem = 8uy   // planning umbrella (tasks + bugs; B-xxxxx -> ZetaId migration)
+    | ContentAddress = 9uy // internal content address (truncated BLAKE3 payload)
+    | Extended = 15uy   // reserved escape marker for wider extension categories
 
 /// Firefly bit — 1 bit. Mirrors `src/Core.CSharp.ZetaId/Firefly.cs`.
 type Firefly =
@@ -187,6 +189,13 @@ type ZetaObservation = {
     Momentum: Momentum
     Location: Location
 }
+
+/// Structured representation of parsed ZetaId categories.
+[<RequireQualifiedAccess>]
+type ZetaIdPayload =
+    | Observation of ZetaObservation
+    | ContentAddress of version: IdVersion * payload: System.UInt128
+    | Generic of version: IdVersion * category: Category * payload: System.UInt128
 
 /// Simulation environment interface. Provides controlled int64 generation for
 /// the 32-bit randomness field. DeterministicEnv mirrors the C# implementation;

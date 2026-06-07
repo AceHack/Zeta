@@ -22,8 +22,15 @@ export const Category = {
   Bus: 6, // cross-machine agent comms (git-native bus spec, #6219)
   Spawn: 7, // agent-spawning (backend-portable: GH Actions / Argo / GitLab)
   WorkItem: 8, // planning umbrella (tasks + bugs; B-xxxxx → ZetaId migration)
+  ContentAddress: 9, // internal content address (truncated BLAKE3 payload)
+  Extended: 15, // reserved escape marker for wider extension categories
 } as const;
 export type Category = (typeof Category)[keyof typeof Category];
+
+export type ZetaIdPayload =
+  | { readonly type: "Observation"; readonly value: ZetaObservation }
+  | { readonly type: "ContentAddress"; readonly version: IdVersion; readonly payload: bigint }
+  | { readonly type: "Generic"; readonly version: IdVersion; readonly category: Category; readonly payload: bigint };
 
 export const Firefly = { NoDirective: 1 } as const;
 export type Firefly = (typeof Firefly)[keyof typeof Firefly];

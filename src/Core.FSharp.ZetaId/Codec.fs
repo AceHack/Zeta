@@ -49,6 +49,11 @@ module ZetaIdCodec =
         validateEnumField (byte obs.Category)   4 "Category"
         validateEnumField (byte obs.Firefly)    1 "Firefly"
 
+        if byte obs.Category >= 9uy then
+            raise (System.ArgumentOutOfRangeException(
+                "obs", obs.Category :> obj,
+                sprintf "ZetaObservation.Category must be < 9 (0..8) (got %A). Categories >= 9 are reserved for special layouts like ContentAddress." obs.Category))
+
         // Re-validate Authority.Raw / Momentum.Raw at Pack time. F# DU cases
         // are inherently public — callers can construct `Authority.Raw 31` directly,
         // bypassing `Authority.raw` smart-constructor validation. Pack re-checks
@@ -114,3 +119,56 @@ module ZetaIdCodec =
             Momentum   = Momentum.fromByte  (toByte layout.Momentum)
             Location   = LanguagePrimitives.EnumOfValue<byte, Location>    (toByte layout.Location)
         }
+
+    /// Pack a generic ZetaId payload (119 bits) with a version and category.
+    let packGeneric (version: IdVersion) (category: Category) (payload: System.UInt128) : System.UInt128 =
+        let mutable id = System.UInt128.Zero
+        // version goes to bits 123-127
+        id <- id ||| (System.UInt128(0UL, (uint64 version) &&& 31UL) <<< 123)
+        // category goes to bits 65-68
+        id <- id ||| (System.UInt128(0UL, (uint64 category) &&& 15UL) <<< 65)
+        // lower 65 bits of payload to bits 0-64
+        let lowMask = (System.UInt128.One <<< 65) - System.UInt128.One
+        id <- id ||| (payload &&& lowMask)
+        // upper 54 bits of payload (bits 65-118) to bits 69-122
+        let highPart = (payload >>> 65) &&& ((System.UInt128.One <<< 54) - System.UInt128.One)
+        id <- id ||| (highPart <<< 69)
+        id
+
+    /// Unpack a generic ZetaId into version, category, and its 119-bit payload.
+    let unpackGeneric (id: System.UInt128) : IdVersion * Category * System.UInt128 =
+        let version = LanguagePrimitives.EnumOfValue<byte, IdVersion>(byte (uint64 (id >>> 123) &&& 31UL))
+        let category = LanguagePrimitives.EnumOfValue<byte, Category>(byte (uint64 (id >>> 65) &&& 15UL))
+        let lowMask = (System.UInt128.One <<< 65) - System.UInt128.One
+        let lowPart = id &&& lowMask
+        let highPart = (id >>> 69) &&& ((System.UInt128.One <<< 54) - System.UInt128.One)
+        let payload = lowPart ||| (highPart <<< 65)
+        version, category, payload
+
+    /// Pack a structured ZetaIdPayload into a System.UInt128.
+    let packPayload (payload: ZetaIdPayload) (env: ISimulationEnvironment) : System.UInt128 =
+        match payload with
+        | ZetaIdPayload.Observation obs -> pack obs env
+        | ZetaIdPayload.ContentAddress (ver, pay) ->
+            let maxPayload = (System.UInt128.One <<< 119) - System.UInt128.One
+            if pay > maxPayload then
+                raise (System.ArgumentOutOfRangeException("payload", pay :> obj, "ContentAddress payload exceeds 119 bits."))
+            packGeneric ver Category.ContentAddress pay
+        | ZetaIdPayload.Generic (ver, cat, pay) ->
+            if byte cat < 9uy || cat = Category.ContentAddress then
+                raise (System.ArgumentException(sprintf "Generic payload category must be >= 10 (got %A). Categories 0..8 are reserved for observations, and 9 is reserved for ContentAddress." cat, "payload"))
+            let maxPayload = (System.UInt128.One <<< 119) - System.UInt128.One
+            if pay > maxPayload then
+                raise (System.ArgumentOutOfRangeException("payload", pay :> obj, "Generic payload exceeds 119 bits."))
+            packGeneric ver cat pay
+
+    /// Unpack a System.UInt128 into a structured ZetaIdPayload.
+    let unpackPayload (id: System.UInt128) : ZetaIdPayload =
+        let ver, cat, pay = unpackGeneric id
+        if byte cat < 9uy then
+            ZetaIdPayload.Observation (unpack id)
+        elif cat = Category.ContentAddress then
+            ZetaIdPayload.ContentAddress (ver, pay)
+        else
+            ZetaIdPayload.Generic (ver, cat, pay)
+

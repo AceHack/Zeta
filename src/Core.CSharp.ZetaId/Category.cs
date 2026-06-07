@@ -11,4 +11,6 @@ public enum Category : byte
     Bus = 6,        // cross-machine agent comms (git-native bus spec, #6219)
     Spawn = 7,      // agent-spawning (backend-portable: GH Actions / Argo / GitLab)
     WorkItem = 8,   // planning umbrella (tasks + bugs; B-xxxxx -> ZetaId migration)
+    ContentAddress = 9, // internal content address (truncated BLAKE3 payload)
+    Extended = 15,   // reserved escape marker for wider extension categories
 }

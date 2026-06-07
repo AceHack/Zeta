@@ -45,7 +45,7 @@ let private genObs : Gen<ZetaObservation> =
                 [ Gen.choose (0, System.Int32.MaxValue) |> Gen.map int64
                   Gen.elements [ 0L; 281474976710655L ] ] // 0 .. 2^48-1 (48-bit field)
         let! chromo = Gen.choose (0, 31) |> Gen.map byte   // 5-bit
-        let! cat = Gen.choose (0, 15) |> Gen.map byte       // 4-bit
+        let! cat = Gen.choose (0, 8) |> Gen.map byte       // 4-bit (0..8 for observations)
         let! ff = Gen.elements [ Firefly.Off; Firefly.On ]  // 1-bit
         let! auth =
             Gen.elements
@@ -120,3 +120,69 @@ let ``CANONICAL ZetaId: id order respects timestamp order — the key embeds the
     let id1 = ZetaIdCodec.pack o1 DeterministicEnv.Instance
     let id2 = ZetaIdCodec.pack o2 DeterministicEnv.Instance
     compare t1 t2 = compare id1 id2
+
+let genUInt128OfWidth (width: int) : Gen<System.UInt128> =
+    gen {
+        let! b0 = Gen.choose (0, 65535) |> Gen.map uint64
+        let! b1 = Gen.choose (0, 65535) |> Gen.map uint64
+        let! b2 = Gen.choose (0, 65535) |> Gen.map uint64
+        let! b3 = Gen.choose (0, 65535) |> Gen.map uint64
+        let! b4 = Gen.choose (0, 65535) |> Gen.map uint64
+        let! b5 = Gen.choose (0, 65535) |> Gen.map uint64
+        let! b6 = Gen.choose (0, 65535) |> Gen.map uint64
+        let! b7 = Gen.choose (0, 65535) |> Gen.map uint64
+        let low64 = b0 ||| (b1 <<< 16) ||| (b2 <<< 32) ||| (b3 <<< 48)
+        let high64 = b4 ||| (b5 <<< 16) ||| (b6 <<< 32) ||| (b7 <<< 48)
+        let value = System.UInt128(high64, low64)
+        let mask = (System.UInt128.One <<< width) - System.UInt128.One
+        return value &&& mask
+    }
+
+let genPayload : Gen<ZetaIdPayload> =
+    gen {
+        let! choice = Gen.choose (0, 2)
+        match choice with
+        | 0 ->
+            let! obs = genObs
+            return ZetaIdPayload.Observation obs
+        | 1 ->
+            let! ver = Gen.elements [ IdVersion.V1 ]
+            let! pay = genUInt128OfWidth 119
+            return ZetaIdPayload.ContentAddress (ver, pay)
+        | _ ->
+            let! ver = Gen.elements [ IdVersion.V1 ]
+            let! cat = Gen.choose (10, 15) |> Gen.map byte |> Gen.map (fun b -> LanguagePrimitives.EnumOfValue<byte, Category> b)
+            let! pay = genUInt128OfWidth 119
+            return ZetaIdPayload.Generic (ver, cat, pay)
+    }
+
+type ZetaPayloadArb() =
+    static member Payload() = Arb.fromGen genPayload
+
+[<Property(Arbitrary = [| typeof<ZetaPayloadArb> |])>]
+let ``CANONICAL ZetaId: unpackPayload ∘ packPayload = id (bijective payload layout)``
+    (payload: ZetaIdPayload) =
+    ZetaIdCodec.unpackPayload (ZetaIdCodec.packPayload payload DeterministicEnv.Instance) = payload
+
+[<Property>]
+let ``CANONICAL ZetaId: packPayload throws on out-of-bounds generic/contentaddress payloads`` (ver: IdVersion) (cat: Category) =
+    let invalidPayload = System.UInt128.One <<< 119
+    let contentAddressPayload = ZetaIdPayload.ContentAddress (ver, invalidPayload)
+    let genericPayload = ZetaIdPayload.Generic (ver, cat, invalidPayload)
+    
+    let contentAddressThrows = 
+        try
+            ZetaIdCodec.packPayload contentAddressPayload DeterministicEnv.Instance |> ignore
+            false
+        with :? System.ArgumentException -> true
+             | _ -> false
+
+    let genericThrows =
+        try
+            ZetaIdCodec.packPayload genericPayload DeterministicEnv.Instance |> ignore
+            false
+        with :? System.ArgumentException -> true
+             | _ -> false
+
+    contentAddressThrows && genericThrows
+

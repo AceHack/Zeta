@@ -35,6 +35,9 @@ public static class ZetaIdCodec
         ValidateEnumField((byte)obs.Category, 4, nameof(obs.Category));
         ValidateEnumField((byte)obs.Firefly, 1, nameof(obs.Firefly));
 
+        if ((byte)obs.Category >= 9)
+            throw new ArgumentOutOfRangeException(nameof(obs), obs.Category, "ZetaObservation.Category must be < 9 (0..8). Categories >= 9 are reserved for special layouts like ContentAddress.");
+
         UInt128 id = 0;
 
         id = SetBits(id, Layout.Version, (ulong)(byte)obs.Version);
@@ -68,6 +71,79 @@ public static class ZetaIdCodec
         );
     }
 
+    public static UInt128 PackGeneric(IdVersion version, Category category, UInt128 payload)
+    {
+        UInt128 id = 0;
+        id = SetBits(id, Layout.Version, (ulong)version);
+        id = SetBits(id, Layout.Category, (ulong)category);
+
+        UInt128 lowMask = (UInt128.One << 65) - UInt128.One;
+        id |= payload & lowMask;
+
+        UInt128 highPart = (payload >> 65) & ((UInt128.One << 54) - UInt128.One);
+        id |= highPart << 69;
+
+        return id;
+    }
+
+    public static (IdVersion Version, Category Category, UInt128 Payload) UnpackGeneric(UInt128 id)
+    {
+        var version = (IdVersion)GetBits(id, Layout.Version);
+        var category = (Category)GetBits(id, Layout.Category);
+
+        UInt128 lowMask = (UInt128.One << 65) - UInt128.One;
+        UInt128 lowPart = id & lowMask;
+
+        UInt128 highPart = (id >> 69) & ((UInt128.One << 54) - UInt128.One);
+        UInt128 payload = lowPart | (highPart << 65);
+
+        return (version, category, payload);
+    }
+
+    public static UInt128 PackPayload(ZetaIdPayload payload, ISimulationEnvironment env)
+    {
+        ArgumentNullException.ThrowIfNull(payload);
+        return payload switch
+        {
+            ZetaIdPayload.Observation obs => Pack(obs.Obs, env),
+            ZetaIdPayload.ContentAddress content => PackPayloadWithBounds(content.Version, Category.ContentAddress, content.Payload),
+            ZetaIdPayload.Generic gen => PackGenericPayload(gen.Version, gen.Category, gen.Payload),
+            _ => throw new ArgumentException($"Unknown payload type: {payload.GetType()}", nameof(payload))
+        };
+    }
+
+    private static UInt128 PackGenericPayload(IdVersion version, Category category, UInt128 payload)
+    {
+        if ((byte)category < 9 || category == Category.ContentAddress)
+            throw new ArgumentException($"Generic payload category must be >= 10 (got {category}). Categories 0..8 are reserved for observations, and 9 is reserved for ContentAddress.", nameof(category));
+        return PackPayloadWithBounds(version, category, payload);
+    }
+
+    private static UInt128 PackPayloadWithBounds(IdVersion version, Category category, UInt128 payload)
+    {
+        UInt128 maxPayload = (UInt128.One << 119) - UInt128.One;
+        if (payload > maxPayload)
+            throw new ArgumentOutOfRangeException(nameof(payload), payload, "Payload exceeds 119 bits.");
+        return PackGeneric(version, category, payload);
+    }
+
+    public static ZetaIdPayload UnpackPayload(UInt128 id)
+    {
+        var (version, category, payload) = UnpackGeneric(id);
+        if ((byte)category < 9)
+        {
+            return new ZetaIdPayload.Observation(Unpack(id));
+        }
+        else if (category == Category.ContentAddress)
+        {
+            return new ZetaIdPayload.ContentAddress(version, payload);
+        }
+        else
+        {
+            return new ZetaIdPayload.Generic(version, category, payload);
+        }
+    }
+
     private static void ValidateEnumField(byte value, int widthBits, string fieldName)
     {
         int maxValid = (1 << widthBits) - 1;
@@ -95,3 +171,4 @@ public static class ZetaIdCodec
         return (ulong)((value >> offset) & mask);
     }
 }
+
