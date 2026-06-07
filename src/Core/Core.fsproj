@@ -88,6 +88,7 @@
     <Compile Include="CasStore.fs" />
     <Compile Include="DagFs.fs" />
     <Compile Include="Globals.fs" />
+    <Compile Include="TensorRef.fs" />
     <Compile Include="DvKey.fs" />
     <Compile Include="DebeziumCdc.fs" />
     <Compile Include="CloudEvents.fs" />
