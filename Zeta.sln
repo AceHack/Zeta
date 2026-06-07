@@ -139,9 +139,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.CSharp.Mediator.Handle
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zeta.Core.CSharp.Mediator.Handlers", "src\Core.CSharp.Mediator.Handlers\Zeta.Core.CSharp.Mediator.Handlers.csproj", "{E401E830-2199-469D-8D34-EE0409535CEB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.Git", "Core.Git", "{678BEB8D-980C-8504-53B1-31124DFFC07B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core.FSharp.Git", "Core.FSharp.Git", "{678BEB8D-980C-8504-53B1-31124DFFC07B}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Zeta.Core.Git", "src\Core.Git\Zeta.Core.Git.fsproj", "{B5CE1764-C6F0-43B9-A7AC-AD5A2059E789}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Zeta.Core.FSharp.Git", "src\Core.FSharp.Git\Zeta.Core.FSharp.Git.fsproj", "{B5CE1764-C6F0-43B9-A7AC-AD5A2059E789}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Tests.FSharp.Git", "tests\Tests.FSharp.Git\Tests.FSharp.Git.fsproj", "{E84DC2EA-3AE3-491A-8D4F-E21951451552}"
 EndProject

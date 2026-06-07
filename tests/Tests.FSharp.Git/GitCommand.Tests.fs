@@ -5,7 +5,7 @@ open System.IO
 open System.Threading
 open LibGit2Sharp
 open global.Xunit
-open Zeta.Core.Git
+open Zeta.Core.FSharp.Git
 
 // Git-ref command verbs (roadmap #1, no-git-CLI) — branch/checkout/commit/log/status over a real working
 // repo via LibGit2Sharp. The CLI + MCP thin-wrap GitCommand.run; these tests drive it directly.

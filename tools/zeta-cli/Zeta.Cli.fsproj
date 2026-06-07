@@ -12,6 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core.Git\Zeta.Core.Git.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Git\Zeta.Core.FSharp.Git.fsproj" />
   </ItemGroup>
 </Project>

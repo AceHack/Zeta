@@ -2,11 +2,11 @@ module Zeta.Cli.Program
 
 open System
 open LibGit2Sharp
-open Zeta.Core.Git
+open Zeta.Core.FSharp.Git
 
 /// The thin `zeta` CLI shell over the command core (roadmap #1, no-git-CLI; core-library-first). All the
 /// logic lives in CliParse (argv -> GitCommand) + GitCommand.run (over the repo) — both CI-tested in
-/// Zeta.Core.Git. This shell just opens the repo in the cwd, runs, prints, and returns an exit code.
+/// Zeta.Core.FSharp.Git. This shell just opens the repo in the cwd, runs, prints, and returns an exit code.
 ///
 /// Network verbs (push / fetch) get a host-agnostic credential source: env token (GH_TOKEN / GITHUB_TOKEN)
 /// over HTTPS. GitHub is a plugin, not git-native — the source only yields a handler or a clean error.

@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>Zeta.Core.Git</RootNamespace>
-    <AssemblyName>Zeta.Core.Git</AssemblyName>
+    <RootNamespace>Zeta.Core.FSharp.Git</RootNamespace>
+    <AssemblyName>Zeta.Core.FSharp.Git</AssemblyName>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 

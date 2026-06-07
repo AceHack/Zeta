@@ -1,4 +1,4 @@
-namespace Zeta.Core.Git
+namespace Zeta.Core.FSharp.Git
 
 /// CLI argument parser for the git-ref command verbs (roadmap #1, no-git-CLI; core-library-first). PURE:
 /// `argv -> GitCommand` (or a usage error). Kept a library function so it's CI-tested; the runnable

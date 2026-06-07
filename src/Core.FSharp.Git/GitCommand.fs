@@ -1,4 +1,4 @@
-namespace Zeta.Core.Git
+namespace Zeta.Core.FSharp.Git
 
 open System
 open LibGit2Sharp

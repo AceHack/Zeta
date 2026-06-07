@@ -3,7 +3,7 @@ module Zeta.Mcp.Program
 open System
 open System.Text.Json.Nodes
 open LibGit2Sharp
-open Zeta.Core.Git
+open Zeta.Core.FSharp.Git
 
 // Minimal MCP stdio server (newline-delimited JSON-RPC 2.0) exposing the git-ref command verbs as tools
 // (roadmap #1, no-git-CLI; the step that lets Otto drive the verbs as native tools). Server-only — the

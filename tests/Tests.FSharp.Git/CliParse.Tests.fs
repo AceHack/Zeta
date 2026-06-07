@@ -1,7 +1,7 @@
 module Zeta.Tests.Git.CliParseTests
 
 open global.Xunit
-open Zeta.Core.Git
+open Zeta.Core.FSharp.Git
 
 // The CLI arg parser (roadmap #1, no-git-CLI). Pure argv -> GitCommand; the runnable `zeta` exe is a
 // trivial shell over this + GitCommand.run. Keeping the brain a tested library fn = the exe stays thin.

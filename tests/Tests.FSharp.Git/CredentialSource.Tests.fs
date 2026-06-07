@@ -2,7 +2,7 @@ module Zeta.Tests.Git.CredentialSourceTests
 
 open System
 open global.Xunit
-open Zeta.Core.Git
+open Zeta.Core.FSharp.Git
 
 // Pluggable, host-agnostic credential source (roadmap #1 push/sync). GitHub/gh/GitLab are HOST PLUGINS,
 // not git-native (Aaron 2026-06-07) — the git layer only knows "a source yields a handler or an error".

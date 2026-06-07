@@ -6,7 +6,7 @@ open System.Threading
 open global.Xunit
 open LibGit2Sharp
 open Zeta.Core
-open Zeta.Core.Git
+open Zeta.Core.FSharp.Git
 
 module D = Zeta.Core.Diplomacy
 module DD = Zeta.Core.DurableDiplomacy

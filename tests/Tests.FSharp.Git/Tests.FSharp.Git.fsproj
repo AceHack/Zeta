@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Core\Core.fsproj" />
-    <ProjectReference Include="..\..\src\Core.Git\Zeta.Core.Git.fsproj" />
+    <ProjectReference Include="..\..\src\Core.FSharp.Git\Zeta.Core.FSharp.Git.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.Observe\Zeta.Core.FSharp.Observe.fsproj" />
     <ProjectReference Include="..\..\src\Core.FSharp.ObserveBridge\Zeta.Core.FSharp.ObserveBridge.fsproj" />
   </ItemGroup>

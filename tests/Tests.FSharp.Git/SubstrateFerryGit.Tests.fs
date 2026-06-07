@@ -6,7 +6,7 @@ open System.Threading
 open global.Xunit
 open LibGit2Sharp
 open Zeta.Core
-open Zeta.Core.Git
+open Zeta.Core.FSharp.Git
 open Zeta.Core.FSharp.ObserveBridge
 
 module E = Zeta.Core.FSharp.ObserveBridge.Effects

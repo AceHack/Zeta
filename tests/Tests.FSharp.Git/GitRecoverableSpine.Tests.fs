@@ -7,7 +7,7 @@ open FsUnit.Xunit
 open global.Xunit
 open LibGit2Sharp
 open Zeta.Core
-open Zeta.Core.Git
+open Zeta.Core.FSharp.Git
 
 
 // ═══════════════════════════════════════════════════════════════════
