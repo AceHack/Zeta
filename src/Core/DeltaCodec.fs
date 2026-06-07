@@ -144,3 +144,27 @@ module DeltaLogEntryCodec =
         match DynamicValue.fromCanonicalJson json with
         | Ok dv -> DeltaLogEntryDynamic.ofDynamicValue keyDec dv
         | Error e -> invalidArg (nameof json) $"DeltaLogEntryCodec.decodeJson: non-decodable JSON: {e}"
+
+
+/// **Whole-entry serialization seam** — encodes a full `DeltaLogEntry` (Seq + Delta + Captured) to
+/// canonical bytes and back. The migration target for the durable backends (`GitDeltaLog` /
+/// `DiskDeltaLog`): serialize the WHOLE entry through this — the proven, 4-language byte-locked
+/// `DeltaLogEntryCodec` format (golden seed `src/Core.TypeScript/delta-log-entry/golden-vectors.json`) —
+/// replacing the per-backend `System.Text.Json` framing of the `Captured` map. Distinct from
+/// `IDeltaCodec` (which encodes only the ZSet delta): an entry is `(Seq, Delta, Captured)`, and the whole
+/// entry is the cross-language treaty unit. MUST be a lossless round-trip: `Decode (Encode e) = e`.
+type IEntryCodec<'K when 'K : comparison> =
+    abstract Encode: DeltaLogEntry<'K> -> byte[]
+    abstract Decode: byte[] -> DeltaLogEntry<'K>
+
+
+/// Canonical **CBOR** whole-entry codec — rides `DeltaLogEntryCodec` (the DynamicValue-locked canonical
+/// CBOR). The backend migration target: byte-identical across F#/C#/Rust/TS, so the on-disk / in-git
+/// bytes ARE the cross-language treaty. The `Seq` rides inside the entry, so `Decode` needs no external
+/// sequence argument.
+[<Sealed>]
+type CborEntryCodec<'K when 'K : comparison>
+    (keyEnc: 'K -> DynamicValue, keyDec: DynamicValue -> 'K) =
+    interface IEntryCodec<'K> with
+        member _.Encode entry = DeltaLogEntryCodec.encodeCbor keyEnc entry
+        member _.Decode bytes = DeltaLogEntryCodec.decodeCbor keyDec bytes

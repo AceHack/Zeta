@@ -113,3 +113,17 @@ let ``Golden treaty: F# reproduces the shared seed's canonical CBOR + round-trip
         // decode(seed hex) → must round-trip back to the structured entry
         let decoded = DeltaLogEntryCodec.decodeCbor keyDec (ofHex expectedHex)
         Assert.True(eq e decoded, sprintf "round-trip mismatch for vector '%s'" name)
+
+// ── The IEntryCodec seam (CborEntryCodec) — the backend migration target. It must be byte-faithful to
+//    the proven DeltaLogEntryCodec.encodeCbor (so backends storing via the seam store the treaty bytes)
+//    and round-trip losslessly. This is the interface GitDeltaLog/DiskDeltaLog migrate onto. ──
+
+[<Fact>]
+let ``CborEntryCodec is byte-faithful to DeltaLogEntryCodec.encodeCbor + round-trips`` () =
+    let codec = CborEntryCodec<string>(keyEnc, keyDec) :> IEntryCodec<string>
+    for e in samples do
+        // the seam produces exactly the proven canonical bytes
+        Assert.Equal<byte[]>(DeltaLogEntryCodec.encodeCbor keyEnc e, codec.Encode e)
+        // and decodes back losslessly
+        let rt = codec.Decode(codec.Encode e)
+        Assert.True(eq e rt, sprintf "CborEntryCodec round-trip mismatch for seq %d" e.Seq)
