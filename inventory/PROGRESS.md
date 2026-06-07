@@ -161,6 +161,20 @@ data layer + Phase-1 audit capture + Phase-2 auth/role were already proven on th
 during the build (see the "Live-site evidence" appendix); only the structural/visual observation of
 a/b/c/d remains for the Auditor.
 
+PHASE 5 LIVE RE-VERIFY (owner-added 2026-06-03 post-merge) — the Auditor MUST run these on the
+merged, live, NO-PROXY site signed in AS THE TRUE EDITOR user (not admin), and show RAW observed output:
+  (a) editor-role write enforcement END-TO-END as the actual editor — add/edit a custom-field value and
+      confirm it is accepted, then confirm a viewer's write is refused BY THE DB (RLS, 0 rows). WHY this is
+      called out explicitly: the build-time CI proof (.github/workflows/inventory-phase5-proof.yml) ran the
+      editor-slot proofs with the ADMIN secret, because GitHub repo secrets are only readable inside an
+      Actions run and no editor password may live in this PUBLIC repo. validate_custom_fields() is SECURITY
+      DEFINER so it fires for ALL writers, and a local TRUE-editor direct-REST rejection WAS proven during the
+      build — but automated per-role CI coverage has a DOCUMENTED GAP (editor slot exercised as admin). The
+      Auditor closes that gap on the live site as the real editor.
+  (b) per-type SORT correctness over custom fields — confirm a "number" custom field sorts NUMERICALLY
+      (9 < 10 < 100, NOT lexicographic 10,100,9) and a "date" custom field sorts CHRONOLOGICALLY, both asc
+      and desc, in the live DOM. This is the single most likely place for a subtle regression.
+
 ## If a gate fails
 
 Stop the phase. Diagnose + fix + re-verify, or escalate. Never mark passed to advance.
@@ -175,7 +189,17 @@ email+password shared in chat — treat as compromised. Phase 7: delete or rotat
 supabase-js loads from jsdelivr with no SRI/fallback — Phase 7 adds exact-version pin + SRI (and
 consider vendoring) so a blocked/compromised CDN can't break or tamper with the app · **CSP
 'unsafe-inline'**: baseline CSP allows inline script/style for the single-file build — Phase 7 moves
-JS/CSS external + nonces/SRI and drops 'unsafe-inline'.
+JS/CSS external + nonces/SRI and drops 'unsafe-inline'. · **required-at-DB DEFERRED (v1 trade-off, by design)**:
+custom-field "required" is enforced as a CLIENT-SIDE UI NUDGE ONLY, not a DB trigger. Trigger-level
+"required" would break edits of the 210 pre-existing items, which have no value for a newly-added required
+field (every UPDATE of an old row would fail validation). Accepted v1 trade-off for the current
+scale/threat model; revisit if user count grows or the threat model changes (e.g., enforce required only
+for rows created after the field, or backfill before enforcing). · **OWNER-PENDING PHASE-5 PROOF CLEANUP
+(NOT orphaned data — context for the Auditor)**: the Phase-5 live proofs intentionally left throwaway items
+216/225/226/227/228 (archived) + inactive field definitions matching 'p5_mpyh93ei_%' and 'p5_mpyhaucf_%'.
+These are EXPECTED proof residue; the owner will remove them in the Supabase SQL editor when ready (disable
+change_log_immutable -> delete their change_log rows + items + defs -> re-enable). Auditor: do NOT flag
+these as orphaned/unexplained data.
 
 ## Open items (resolve in Phase 0a)
 
