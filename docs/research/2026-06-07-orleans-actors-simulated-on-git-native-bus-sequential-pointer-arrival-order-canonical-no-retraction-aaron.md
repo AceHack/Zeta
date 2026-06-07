@@ -62,6 +62,38 @@ Bonsai — resume-not-replay): the grain's behavior can be a Bonsai closure resu
   *new* compensating event, never a rewrite — which keeps the log append-only and replayable (and matches
   the "git only adds corrections" / CPT-reversible-by-compensation theme).
 
+## Simulation-time vs RUNTIME — and why per-row CAS may obviate Orleans (Aaron, 2026-06-07)
+
+> Aaron: *"that really only works for simulation time, not runtime — we need Orleans, or we have to build
+> consensus to handle if a thread fails on read/write to state. If we make state CAS per row then this is
+> not as big of an issue — maybe we don't need Orleans lol."*
+
+**The sequential pointer is sufficient for SIMULATION time, not runtime.** Under DST the pointer is exactly
+right — single-threaded, deterministic, replayable. But at **runtime** a thread can **fail mid read/write to
+state** (crash during a turn), and the bare cursor has no fault-tolerance: no single-activation guarantee,
+no recovery, so a half-applied write can corrupt or a turn can be lost/double-run. Handling that needs one
+of:
+
+1. **Orleans** — the virtual-actor runtime (single-activation + reactivation/recovery on failure).
+2. **Build consensus** — total-order + failure agreement (heavier).
+3. **Per-row CAS state** — optimistic concurrency, and the Zeta-aligned answer.
+
+**Per-row CAS likely obviates Orleans.** If each state row is updated by **compare-and-swap** (expected →
+new, e.g. expected content-hash → new content-hash on the content-addressed store), then a thread that fails
+mid-write simply **never commits** — the row stays at its prior value, and any reader/writer **retries via
+CAS**. No corruption, no need for single-activation, **lock-free** (manifesto §2 wait/lock-free). So for
+actors whose state is per-row CAS-able, *"maybe we don't need Orleans."* This is already our direction:
+**B-0962** (typed claim-lock coordination, **optimistic CAS, deadlock-free by construction**), **SlateDB**
+(CAS-manifest + `writer_epoch` fencing — PRIOR-ART-LIST), and content-addressing itself (CAS = "swap iff the
+expected content hash still holds").
+
+**The honest boundary:** per-row CAS gives per-row atomicity + lock-free progress. If an actor turn must
+update **multiple rows atomically** (a real transaction), per-row CAS isn't enough on its own — you escalate
+to the **serialized bus / saga** (the SerializedSaga lane) or a multi-row commit. So: **single-row-state
+actors → per-row CAS, no Orleans needed; multi-row-atomic actors → keep the saga/serialization.** The actor
+abstraction survives; the *runtime* under it is CAS where it can be, serialized where it must be — and DST
+remains the simulation lens over both.
+
 ## Ties
 
 - `2026-06-07-cells-as-geodes-...-cross-cell-sagas-as-partitioned-orleans-actors` (the lane this builds) ·
