@@ -1,8 +1,8 @@
 # App-definition as DynamicValue — secrets/keys with optional in-value encryption + the Twelve-Factor app built into the value (Aaron, 2026-06-07)
 
 Two coherent requirements: (1) represent **secrets/keys** in DynamicValue with optional encryption, and
-(2) build the **app-construction methodology** (the "8-fold app" — almost certainly the **Twelve-Factor
-App**) *into* DynamicValue itself. They're the same theme — *the app definition is data, and config +
+(2) build the **app-construction methodology** (the **Twelve-Factor App**, confirmed) *into* DynamicValue
+itself. They're the same theme — *the app definition is data, and config +
 secrets are factors of it.* Faithful capture; Beacon-anchored.
 
 ## 1. Secrets / keys in DynamicValue, with optional in-value encryption
@@ -40,11 +40,10 @@ already does this — "privacy is a TRANSFORM, not a 5th codec", B-0883/B-0982; 
 > Aaron: *"we are building our way up to the 8-fold app or whatever it's called, but in our DynamicValue
 > itself."*
 
-The **"8-fold app" is almost certainly the Twelve-Factor App** (Adam Wiggins / Heroku, 2011) — the
-methodology for building SaaS apps (codebase, **dependencies**, **config**, **backing services**,
+The **"8-fold app" is the Twelve-Factor App** (Adam Wiggins / Heroku, 2011 — **confirmed by Aaron**) —
+the methodology for building SaaS apps (codebase, **dependencies**, **config**, **backing services**,
 build/release/run, processes, port binding, concurrency, disposability, dev/prod parity, **logs**, admin
-processes). *(Name flagged — Aaron said "or whatever it's called"; confirm 12-Factor vs an 8-factor
-subset vs an "eightfold" coinage.)*
+processes).
 
 The move: **represent the app's factors AS DynamicValue** — everything-is-data applied to app
 construction. Config = DynamicValue (incl. the §1 secrets); dependencies = ZetaID refs (the DI-as-data /
