@@ -86,6 +86,7 @@
     <Compile Include="ContentStore.fs" />
     <Compile Include="DagFs.fs" />
     <Compile Include="DebeziumCdc.fs" />
+    <Compile Include="CloudEvents.fs" />
     <Compile Include="Residuated.fs" />
     <Compile Include="Aggregate.fs" />
     <Compile Include="RobustStats.fs" />

@@ -79,6 +79,7 @@
     <Compile Include="ContentStore.Tests.fs" />
     <Compile Include="DagFs.Tests.fs" />
     <Compile Include="DebeziumCdc.Tests.fs" />
+    <Compile Include="CloudEvents.Tests.fs" />
     <Compile Include="Collation.Tests.fs" />
     <Compile Include="EvolutionWindow.Tests.fs" />
     <Compile Include="SerializationSeed.FullVertical.Tests.fs" />

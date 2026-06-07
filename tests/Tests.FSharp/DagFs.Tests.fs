@@ -50,3 +50,16 @@ let ``link is copy-on-write; unlink drops the path`` () =
     Assert.Equal(1, FS.pathCount t1)
     let t2 = FS.unlink "/a" t1
     Assert.Equal<ZSet<int> option>(None, FS.resolve "/a" t2)
+
+[<Fact>]
+let ``editLocal to content identical to an existing file converges — pointers move to the shared node (no duplicate)`` () =
+    // Aaron 2026-06-07: if an edit lands on the same content address as an existing file, it just moves
+    // pointers (content-addressing makes convergence automatic / single-instance).
+    let c1 = v [ 1, 1L ]
+    let c2 = v [ 2, 2L ]
+    let t = tree () |> FS.link "/a" c1 |> FS.link "/b" c2
+    Assert.NotEqual((FS.addressAt "/a" t).Value, (FS.addressAt "/b" t).Value)
+    let t2 = FS.editLocal "/a" c2 t // edit /a to equal /b's content
+    Assert.Equal((FS.addressAt "/a" t2).Value, (FS.addressAt "/b" t2).Value) // converged: same node
+    Assert.Equal<ZSet<int> option>(Some c2, FS.resolve "/a" t2)
+    Assert.Equal<string list>([ "/a"; "/b" ] |> List.sort, FS.pathsOf (FS.addressAt "/b" t2).Value t2 |> List.sort)
