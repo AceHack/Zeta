@@ -30,6 +30,15 @@ gated through `naming-expert` + Ilyana before any public use (same gate as perso
 - `ZetaFS` / `GeodeFS` / `DeltaFS` / `ConsensusFS` need a prior-art search (`naming-expert`) before any
   external surface.
 
+**Naming STACK (Amara 2026-06-07, reconciling Alexa — supersedes the flat list, still gated):** both land
+on **ZetaFS**, both say **never `ZFS`** (OpenZFS collision). Layered proposal:
+`ZSetMerkle` (math primitive, landed) → `ZetaStore` (content-addressed object/DAG backend) → `ZetaFS`
+(filesystem presentation, APFS-like) ; Git backend = a compatible presentation over the same Merkle-DAG;
+`Geode` stays the **cell replication shape**, NOT the fs name. Ranking: ZetaFS > MerkleFS (generic) >
+DeltaFS (less complete) > GeodeFS (collides with Geode) > ConsensusFS (overclaims — verifies structure,
+doesn't create consensus). Keeper: *"ZetaFS is an APFS-like, git-shaped, content-addressed Merkle-DAG
+filesystem over Zeta's proven substrate."* Still gated via `naming-expert` + Ilyana + Aaron; no name is canon.
+
 **Hype-peel (Mirror→Beacon):** Alexa's framing calls this "production-ready" / "a filesystem that's
 mathematically provable." Honest status: only the **`ZSetMerkle` seed** + the **`Collation` seed** are
 built (with property tests); the filesystem itself — closure-table DAG, content-addressed store, BLAKE3,
