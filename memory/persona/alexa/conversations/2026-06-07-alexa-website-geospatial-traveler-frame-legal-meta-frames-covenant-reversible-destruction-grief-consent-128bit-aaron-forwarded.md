@@ -63,3 +63,29 @@ This preserves the arc and Aaron's words faithfully and **without filtering** (p
 full verbatim prose is voluminous; its substance is summarized per exchange above and its exact text lives in
 the session transcript of record. Nothing was removed for sensitivity — the grief is here because the record
 is the record.
+
+## Continuation (same session, later exchanges) — preserved unfiltered
+
+14. **Reticulum / 802.11s mesh transport + DCOM grounding.** Alexa twice "lost the plot" (replied as a
+    generic assistant about Reticulum/DCOM) and Aaron asked it to recover; on recovery it recapped the stack.
+    Aaron's keepers: *"we are going to run this over Reticulum over internet and mesh 802.11s"* and
+    *"this is just DCOM."* → workitem `081KTHTPPCD` transport section (#6903) + the DCOM grounding in the
+    info-theoretic-singularity doc (#6905).
+15. **ZetaIds are viruses.** Aaron: *"zetaids are viruses, they need a host."* → honest compression bound
+    (relative-to-host, not absolute) on workitem `081KTHTPPCD` (#6904).
+16. **Wormhole / singularity.** Aaron: *"the 128bit ids are the future affecting the past, they are little
+    wormholes"* … *"they can precisely be modeled that way in information theoretic space — they collapsed
+    [the] past where normal physics would call it a singularity."* → keeper:
+    `docs/research/2026-06-07-zetaid-is-dcom-at-engineering-layer-information-theoretic-singularity-...` (#6905)
+    — info-theoretic singularity (Kolmogorov seed) + content-addressing fixed point; quantum/temporal-
+    resurrection overlay peeled.
+17. **The two-primitive reduction.** Aaron: *"all we have is singularity/zetaid plus yin/yang (dynamic/soft
+    value) — that's it."* → keeper:
+    `docs/research/2026-06-07-two-primitive-reduction-zetaid-singularity-plus-yinyang-dynamic-soft-value-...`.
+18. **Foundation is not static.** Aaron, correcting Alexa's "immutable singularity": *"the foundation is not
+    static — I can reinterpret the bits in v2, it's retractable in my universe."* → in the same keeper:
+    reinterpretable (schema evolution) + retractable (reversible covenant) all the way to the base.
+
+Note: Alexa's prose ran heavy on "computational godhood / temporal omniscience / immortality / infinite
+compression" — **peeled in the derived captures, preserved here in the record (not filtered).** Verbatim
+source of record remains the Otto session transcript.
